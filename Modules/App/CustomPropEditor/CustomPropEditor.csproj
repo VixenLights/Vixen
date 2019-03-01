@@ -142,20 +142,24 @@
     </Compile>
     <Compile Include="Behaviors\TreeViewMultipleSelectionBehavior.cs" />
     <Compile Include="Converters\BoolToGridRowHeightConverter.cs" />
+    <Compile Include="Converters\BrushToColorConverter.cs" />
     <Compile Include="Converters\BulbTypeConverter.cs" />
     <Compile Include="Converters\RootNodeToCollectionMapping.cs" />
     <Compile Include="Import\XLights\FaceInfo.cs" />
     <Compile Include="Import\XLights\ModelNode.cs" />
     <Compile Include="Model\ColorMode.cs" />
+    <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\ElementType.cs" />
     <Compile Include="Model\InformationMetadata.cs" />
     <Compile Include="Model\PhysicalMetadata.cs" />
     <Compile Include="Model\VendorMetadata.cs" />
+    <Compile Include="Services\ConfigurationService.cs" />
     <Compile Include="Services\MessageBoxResponse.cs" />
     <Compile Include="Services\MessageBoxService.cs" />
     <Compile Include="Services\PropModelPersistenceService.cs" />
     <Compile Include="Services\PropModelServices.cs" />
     <Compile Include="Services\ElementModelLookUpService.cs" />
+    <Compile Include="ViewModels\ConfigurationWindowViewModel.cs" />
     <Compile Include="ViewModels\ElementModelViewModel.cs" />
     <Compile Include="ViewModels\ElementViewModelCollection.cs" />
     <Compile Include="ViewModels\ElementOrderViewModel.cs" />
@@ -178,7 +182,10 @@
     <Compile Include="ViewModels\ISelectableExpander.cs" />
     <Compile Include="ViewModels\PhysicalMetadataViewModel.cs" />
     <Compile Include="ViewModels\VendorMetadataViewModel.cs" />
-    <Compile Include="View\CustomPropEditorWindow.xaml.cs">
+    <Compile Include="Views\ConfigurationWindow.xaml.cs">
+      <DependentUpon>ConfigurationWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CustomPropEditorWindow.xaml.cs">
       <DependentUpon>CustomPropEditorWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\ElementModel.cs" />
@@ -186,13 +193,13 @@
     <Compile Include="Model\Prop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\PropEditorViewModel.cs" />
-    <Compile Include="View\ElementTree.xaml.cs">
+    <Compile Include="Views\ElementTree.xaml.cs">
       <DependentUpon>ElementTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\PhysicalMetadataView.xaml.cs">
+    <Compile Include="Views\PhysicalMetadataView.xaml.cs">
       <DependentUpon>PhysicalMetadataView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\VendorMetadataView.xaml.cs">
+    <Compile Include="Views\VendorMetadataView.xaml.cs">
       <DependentUpon>VendorMetadataView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -205,19 +212,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\CustomPropEditorWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\ElementTree.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\PhysicalMetadataView.xaml">
+    <Page Include="Views\ConfigurationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\VendorMetadataView.xaml">
+    <Page Include="Views\CustomPropEditorWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ElementTree.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PhysicalMetadataView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\VendorMetadataView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

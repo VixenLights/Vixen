@@ -1,4 +1,4 @@
-﻿namespace VixenModules.App.CustomPropEditor.View
+﻿namespace VixenModules.App.CustomPropEditor.Views
 {
 	public partial class PhysicalMetadataView
 	{

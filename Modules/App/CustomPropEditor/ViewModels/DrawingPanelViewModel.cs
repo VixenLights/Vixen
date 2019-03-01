@@ -17,10 +17,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	{
 		private readonly ElementTreeViewModel _elementTreeViewModel;
 		private readonly Dictionary<Guid, List<LightViewModel>> _elementModelMap;
-
+		private readonly Configuration _config;
 
 		public DrawingPanelViewModel(ElementTreeViewModel elementTreeViewModel)
 		{
+			_config = ConfigurationService.Instance().Config;
 			_elementTreeViewModel = elementTreeViewModel;
 			_elementModelMap = new Dictionary<Guid, List<LightViewModel>>();
 			LightNodes = new ObservableCollection<LightViewModel>();
@@ -201,6 +202,26 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// IsDrawing property data.
 		/// </summary>
 		public static readonly PropertyData IsDrawingProperty = RegisterProperty("IsDrawing", typeof(bool));
+
+		#endregion
+
+		
+
+		#region LightColor property
+
+		/// <summary>
+		/// Gets or sets the LightColor value.
+		/// </summary>
+		public Brush LightColor => _config.LightColor;
+
+		#endregion
+
+		#region SelectedLightColor property
+
+		/// <summary>
+		/// Gets or sets the SelectedLightColor value.
+		/// </summary>
+		public Brush SelectedLightColor => _config.SelectedLightColor;
 
 		#endregion
 

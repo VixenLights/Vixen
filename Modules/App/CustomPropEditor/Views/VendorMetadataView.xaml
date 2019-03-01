@@ -1,4 +1,4 @@
-﻿<catel:UserControl x:Class="VixenModules.App.CustomPropEditor.View.VendorMetadataView"
+﻿<catel:UserControl x:Class="VixenModules.App.CustomPropEditor.Views.VendorMetadataView"
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:catel="http://schemas.catelproject.com"

@@ -2,7 +2,7 @@
 using Vixen.Extensions;
 using VixenModules.App.CustomPropEditor.ViewModels;
 
-namespace VixenModules.App.CustomPropEditor.View
+namespace VixenModules.App.CustomPropEditor.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
