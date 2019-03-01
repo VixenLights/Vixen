@@ -17,7 +17,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		{
 			
 			Config = ConfigurationService.Instance().Config;
-			Title = "Edit Config";
+			Title = "Preferences";
 		}
 
 

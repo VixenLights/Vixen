@@ -98,11 +98,7 @@
 				</MenuItem>
 			</MenuItem>
 			<MenuItem Header="Options">
-				<MenuItem Header="Colors" Command="{Binding ColorOptionsCommand}">
-					<MenuItem.Icon>
-						<Image Source="/Resources;component/help.png" Width="16" Height="16" />
-					</MenuItem.Icon>
-				</MenuItem>
+				<MenuItem Header="Preferences" Command="{Binding ColorOptionsCommand}"/>
 			</MenuItem>
 			<MenuItem Header="Help">
 				<MenuItem Header="View Help" Command="{Binding HelpCommand}">

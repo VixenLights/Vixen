@@ -922,13 +922,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Method to invoke when the ColorOptions command is executed.
 		/// </summary>
-		private void ColorOptions()
+		private async void ColorOptions()
 		{
 			ConfigurationWindowViewModel vm = new ConfigurationWindowViewModel();
 			var dependencyResolver = this.GetDependencyResolver();
 			var uiVisualizerService = dependencyResolver.Resolve<UIVisualizerService>();
-			//uiVisualizerService.Register(typeof(ConfigurationViewModel), typeof(ConfigurationWindow));
-			uiVisualizerService.ShowDialogAsync(vm);
+			await uiVisualizerService.ShowDialogAsync(vm);
 		}
 
 		#endregion
