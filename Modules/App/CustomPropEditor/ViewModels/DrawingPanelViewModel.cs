@@ -261,24 +261,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
-		//#region LightColor property
-
-		///// <summary>
-		///// Gets or sets the LightColor value.
-		///// </summary>
-		//public Brush LightColor => _config.LightColor;
-
-		//#endregion
-
-		//#region SelectedLightColor property
-
-		///// <summary>
-		///// Gets or sets the SelectedLightColor value.
-		///// </summary>
-		//public Brush SelectedLightColor => _config.SelectedLightColor;
-
-		//#endregion
-
 		#endregion Properties
 
 		public bool IsLightsDirty

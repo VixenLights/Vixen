@@ -31,5 +31,6 @@ namespace VixenModules.App.CustomPropEditor.Model
 				OnPropertyChanged(nameof(SelectedLightColor));
 			}
 		}
+
 	}
 }

@@ -914,6 +914,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets the ColorOptions command.
 		/// </summary>
+		[Browsable(false)]
 		public Command ColorOptionsCommand
 		{
 			get { return _colorOptionsCommand ?? (_colorOptionsCommand = new Command(ColorOptions)); }

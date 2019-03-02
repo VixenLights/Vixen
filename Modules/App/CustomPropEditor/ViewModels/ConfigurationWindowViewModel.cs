@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Windows.Media;
 using Catel.Data;
 using Catel.MVVM;
@@ -17,9 +18,15 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		{
 			
 			Config = ConfigurationService.Instance().Config;
+			UpdateColors();
 			Title = "Preferences";
 		}
 
+		private void UpdateColors()
+		{
+			LightColor = Config.LightColor;
+			SelectedLightColor = Config.SelectedLightColor;
+		}
 
 
 		#region Config model property
@@ -46,7 +53,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets or sets the LightColor value.
 		/// </summary>
-		[ViewModelToModel("Config")]
 		public Brush LightColor
 		{
 			get { return GetValue<Brush>(LightColorProperty); }
@@ -65,7 +71,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets or sets the SelectedLightColor value.
 		/// </summary>
-		[ViewModelToModel("Config")]
 		public Brush SelectedLightColor
 		{
 			get { return GetValue<Brush>(SelectedLightColorProperty); }
@@ -122,6 +127,95 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		}
 
 		#endregion
+
+		#region RestoreDefaults command
+
+		private Command _restoreDefaultsCommand;
+
+		/// <summary>
+		/// Gets the RestoreDefaults command.
+		/// </summary>
+		public Command RestoreDefaultsCommand
+		{
+			get { return _restoreDefaultsCommand ?? (_restoreDefaultsCommand = new Command(RestoreDefaults)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the RestoreDefaults command is executed.
+		/// </summary>
+		private void RestoreDefaults()
+		{
+			RestoreColorDefaults();
+		}
+
+		#endregion
+
+		#region Cancel command
+
+		private Command _cancelCommand;
+
+		/// <summary>
+		/// Gets the Cancel command.
+		/// </summary>
+		public Command CancelCommand
+		{
+			get { return _cancelCommand ?? (_cancelCommand = new Command(Cancel)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the Cancel command is executed.
+		/// </summary>
+		public void Cancel()
+		{
+			this.CancelAndCloseViewModelAsync();
+		}
+
+		#endregion
+
+		#region Ok command
+
+		private Command _okCommand;
+
+		/// <summary>
+		/// Gets the Ok command.
+		/// </summary>
+		public Command OkCommand
+		{
+			get { return _okCommand ?? (_okCommand = new Command(Ok)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the Ok command is executed.
+		/// </summary>
+		private void Ok()
+		{
+			this.SaveAndCloseViewModelAsync();
+
+		}
+
+		#endregion
+
+		private void RestoreColorDefaults()
+		{
+			LightColor = Brushes.White;
+			SelectedLightColor = Brushes.HotPink;
+		}
+
+
+		#region Overrides of ViewModelBase
+
+		/// <inheritdoc />
+		protected override Task<bool> SaveAsync()
+		{
+			Config.LightColor = LightColor;
+			Config.SelectedLightColor = SelectedLightColor;
+		
+			return Task.FromResult(true);
+		}
+
+
+		#endregion
+
 
 		private Brush EditColor(SolidColorBrush brush)
 		{
