@@ -858,4 +858,10 @@
   <data name="ReverseColorCurve" xml:space="preserve">
     <value>Reverse</value>
   </data>
+  <data name="RandomMaxCurve" xml:space="preserve">
+    <value>Random Time</value>
+  </data>
+  <data name="RandomMovement" xml:space="preserve">
+    <value>Random Movement</value>
+  </data>
 </root>

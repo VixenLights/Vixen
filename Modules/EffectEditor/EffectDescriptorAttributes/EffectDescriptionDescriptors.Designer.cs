@@ -1502,6 +1502,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Changes the Max time used to determine when the Ball direction is change..
+        /// </summary>
+        internal static string RandomMaxCurve {
+            get {
+                return ResourceManager.GetString("RandomMaxCurve", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Randomly changes the ball direction at random times..
+        /// </summary>
+        internal static string RandomMovement {
+            get {
+                return ResourceManager.GetString("RandomMovement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates new Meteors at a Random Position.
         /// </summary>
         internal static string RandomPosition {

@@ -34,6 +34,8 @@ namespace VixenModules.Effect.Balls
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			BallEdgeWidthCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 1.0, 1.0 }));
 			Orientation = StringOrientation.Vertical;
+			RandomMovement = false;
+			RandomMaxCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 		}
 
 		[DataMember]
@@ -86,9 +88,26 @@ namespace VixenModules.Effect.Balls
 
 		[DataMember]
 		public Curve BallCountCurve { get; set; }
-
+		
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
+
+		[DataMember]
+		public bool RandomMovement { get; set; }
+
+		[DataMember]
+		public Curve RandomMaxCurve { get; set; }
+
+		[OnDeserialized]
+		public void OnDeserialized(StreamingContext c)
+		{
+			//if one of them is null the others probably are, and if this one is not then they all should be good.
+			//Try to save some cycles on every load
+			if (RandomMaxCurve == null)
+			{
+				RandomMaxCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			}
+		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
@@ -110,7 +129,9 @@ namespace VixenModules.Effect.Balls
 				SizeCurve = new Curve(SizeCurve),
 				BallCountCurve = new Curve(BallCountCurve),
 				LevelCurve = new Curve(LevelCurve),
-				BallEdgeWidthCurve = new Curve(BallEdgeWidthCurve)
+				BallEdgeWidthCurve = new Curve(BallEdgeWidthCurve),
+				RandomMovement  = RandomMovement,
+				RandomMaxCurve = new Curve(RandomMaxCurve)
 			};
 			return result;
 		}

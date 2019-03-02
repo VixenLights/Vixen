@@ -867,4 +867,10 @@
   <data name="ReverseColorCurve" xml:space="preserve">
     <value>Reverses the Color and Curve depending on direction of Movement curve.</value>
   </data>
+  <data name="RandomMaxCurve" xml:space="preserve">
+    <value>Changes the Max time used to determine when the Ball direction is change.</value>
+  </data>
+  <data name="RandomMovement" xml:space="preserve">
+    <value>Randomly changes the ball direction at random times.</value>
+  </data>
 </root>
