@@ -6,9 +6,8 @@ using VixenModules.App.WebServer.Filter;
 namespace VixenModules.App.WebServer.Controllers
 {
 	[ArgumentExceptionFilter]
-	public class BaseController: ApiController
+	public class BaseApiController: ApiController
 	{
-
 		protected void CreateResponseMessage(HttpStatusCode code, string content, string reason)
 		{
 			var resp = new HttpResponseMessage(code)

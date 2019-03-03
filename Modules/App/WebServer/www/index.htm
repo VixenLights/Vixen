@@ -184,6 +184,52 @@
 				</div>
 			</div>
 		</section>
+	<section id="Controllers" class="col-xs-12 col-sm-6 pull-right">
+		<div class="panel-group">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						<a data-toggle="collapse" href="#controllers-section-accordion">Controllers</a>
+					</h3>
+				</div>
+				<div id="controllers-section-accordion" class="panel-collapse collapse">
+					<div class="panel-body">
+						<div class="input-group">
+							<h4>All Controllers</h4>
+							<span class="input-group-btn">
+								<button class="btn btn-default" data-bind="click: function($data,event){$root.setAllControllersState('true')}, enable: $root.canStartControllers">
+									<span class="glyphicon glyphicon-play-circle glyphicon-lg" aria-hidden="true"></span>
+								</button>
+								<button class="btn btn-default" data-bind="click: function($data, event){$root.setAllControllersState('false')}, enable: $root.canStopControllers">
+									<span class="glyphicon glyphicon-stop glyphicon-lg" aria-hidden="true"></span>
+								</button>
+							</span>
+						</div>
+						<div data-bind="foreach: controllers">
+							<div class="input-group margin-top-sm">
+								<h4>
+									<span data-bind="text:Name" class="ellipsis"></span>
+									<span class="glyphicon glyphicon-small pull-left" data-bind="css:$root.controllerState($data.IsRunning())"></span>
+								</h4>
+								<span class="input-group-btn">
+									<button class="btn btn-default" data-bind="click: $root.startController, enable: !$data.IsRunning()">
+										<span class="glyphicon glyphicon-play-circle glyphicon-lg" aria-hidden="true"></span>
+									</button>
+									<button class="btn btn-default" data-bind="click: $root.stopController, enable: $data.IsRunning()">
+										<span class="glyphicon glyphicon-stop glyphicon-lg" aria-hidden="true"></span>
+									</button>
+								</span>
+
+							</div>
+						</div>
+						<button type="submit" class="btn btn-outline-primary" data-bind="click: $root.saveControllerState, enable: $root.canSaveControllers()">Save</button>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+</section>
+
 	</div>
 	<div class="collapse navbar navbar-default navbar-fixed-bottom" id="collapseExample">
 		<div class="well">

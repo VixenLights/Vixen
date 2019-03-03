@@ -1,6 +1,7 @@
 ﻿var apiUrl = "/api";
 var playerUrl = apiUrl + "/play";
 var elementUrl = apiUrl + "/element";
+var systemUrl = apiUrl + "/system";
 var timeoutTimer;
 var searchLimit = 75;
 var storeTimeKey = "timeout";
@@ -23,7 +24,7 @@ function ViewModel() {
 	self.elementIntensity = ko.observable(100);
 	self.delayedElementIntensity = ko.pureComputed(self.elementIntensity).extend({ rateLimit: { timeout: 500, method: "notifyWhenChangesStop" } });
 	self.elementResults = ko.observableArray();
-	self.elements = ko.observable();
+	//self.elements = ko.observable();
 	self.selectedElement = ko.observable();
 	self.selectedColor = ko.observable("#FFFFFF");
 	self.elementTree = ko.observableArray();
@@ -34,6 +35,8 @@ function ViewModel() {
 	self.searchTokenHold = "";
 	self.searchResultsOverflow = ko.observable(false);
 	self.nowPlayingList = ko.observableArray().extend({ rateLimit: 25 });
+	self.controllers = ko.observableArray([]);
+	self.canSaveControllers = ko.observable(false);
 	
 	
 	self.contextStatus = function(state) {
@@ -58,6 +61,10 @@ function ViewModel() {
 
 	self.isPaused = function (state) {
 		return state == 2;
+	};
+
+	self.controllerState = function(state) {
+		return self.contextStatus(state ? 1 : 0);
 	};
 
 	self.clearSearch = function() {
@@ -106,6 +113,117 @@ function ViewModel() {
 
 	}
 
+	//Controllers
+	self.getControllers = function () {
+		$.get(systemUrl + '/getControllers')
+			.done(function (data) {
+				ko.mapping.fromJS(data, {}, self.controllers);
+			}).error(function (jqXHR, status, error) {
+				self.status(error);
+				self.hideLoading();
+			});
+	}
+
+	self.saveControllerState = function() {
+		self.showLoading();
+		$.post(systemUrl + '/save', null, null, 'JSON')
+			.done(function (status) {
+				if (status.IsSuccessful) {
+					self.canSaveControllers(false);
+				}
+				self.status(status.Message);
+				self.clearStatus(5);
+				self.hideLoading();
+			}).error(function (jqXHR, status, error) {
+				self.status(error);
+				self.hideLoading();
+			});
+		self.hideLoading();
+	}
+
+	self.canStartControllers = ko.computed(function() {
+
+		var canStart = false;
+		self.controllers().forEach(
+			function(c) {
+				if (!c.IsRunning()) {
+					canStart = true;
+				}
+			}
+		);
+		return canStart;
+	});
+
+	self.canStopControllers = ko.computed(function () {
+		var canStop = false;
+		self.controllers().forEach(
+			function(c) {
+				if (c.IsRunning()) {
+					canStop = true;
+				}
+			}
+		);
+		return canStop;
+	});
+
+	self.startController = function (data) {
+
+		setControllerState(data, true);
+	}
+
+	self.stopController = function (data) {
+
+		setControllerState(data, false);
+	}
+
+	self.setAllControllersState = function(on) {
+		self.showLoading();
+
+		var param = {
+			id: null,
+			isRunning: on
+		}
+
+		$.post(systemUrl + '/setAllControllersState', param, null, 'JSON')
+			.done(function (status) {
+				if (status.IsSuccessful) {
+					self.getControllers();
+					self.canSaveControllers(true);
+				}
+				self.status(status.Message);
+				self.clearStatus(5);
+				self.hideLoading();
+			}).error(function (jqXHR, status, error) {
+				self.status(error);
+				self.hideLoading();
+			});
+		self.hideLoading();
+	}
+
+	function setControllerState(data, on) 
+	{
+		self.showLoading();
+
+		var param = {
+			id: ko.mapping.toJS(data.Id),
+			isRunning: on
+		}
+
+		$.post(systemUrl + '/setControllerState', param, null, 'JSON')
+			.done(function (status) {
+				if (status.IsSuccessful) {
+					data.IsRunning(on);
+					self.canSaveControllers(true);
+				}
+				self.status(status.Message);
+				self.clearStatus(5);
+				self.hideLoading();
+			}).error(function (jqXHR, status, error) {
+				self.status(error);
+				self.hideLoading();
+			});
+	}
+	
 	//Element retrieval 
 	self.searchElements = function (value) {
 		
@@ -317,6 +435,7 @@ function ViewModel() {
 		self.showLoading();
 		self.getElements();
 		self.getSequences();
+		self.getControllers();
 		self.retrieveStoredSettings();
 		self.initSysytemStatusHub();
 		self.hideLoading();

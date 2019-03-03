@@ -7,7 +7,7 @@ using VixenModules.App.WebServer.Service;
 namespace VixenModules.App.WebServer.Controllers
 {
 	[ArgumentExceptionFilter]
-	public class ElementController: BaseController
+	public class ElementController: BaseApiController
 	{
 
 		public IEnumerable<Element> Get()
