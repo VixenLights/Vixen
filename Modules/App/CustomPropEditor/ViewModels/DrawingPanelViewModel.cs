@@ -17,7 +17,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	{
 		private readonly ElementTreeViewModel _elementTreeViewModel;
 		private readonly Dictionary<Guid, List<LightViewModel>> _elementModelMap;
-
+		private readonly Configuration _config;
 
 		public DrawingPanelViewModel(ElementTreeViewModel elementTreeViewModel)
 		{
@@ -35,7 +35,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			DistributeVerticallyCommand = new RelayCommand(DistributeVertically, CanExecuteAlignmentMethod);
 
 			DeleteSelectedLightsCommand = new RelayCommand(DeleteSelectedLights);
-
+			Configuration = ConfigurationService.Instance().Config;
 			SelectedItems = new FastObservableCollection<LightViewModel>();
 			SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
 			IsDrawing = true;
@@ -201,6 +201,63 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// IsDrawing property data.
 		/// </summary>
 		public static readonly PropertyData IsDrawingProperty = RegisterProperty("IsDrawing", typeof(bool));
+
+		#endregion
+
+		#region Confguration model property
+
+		/// <summary>
+		/// Gets or sets the Confguration value.
+		/// </summary>
+		[Model]
+		public Configuration Configuration
+		{
+			get { return GetValue<Configuration>(ConfgurationProperty); }
+			private set { SetValue(ConfgurationProperty, value); }
+		}
+
+		/// <summary>
+		/// Confguration property data.
+		/// </summary>
+		public static readonly PropertyData ConfgurationProperty = RegisterProperty("Configuration", typeof(Configuration));
+
+		#endregion
+
+		#region LightColor property
+
+		/// <summary>
+		/// Gets or sets the LightColor value.
+		/// </summary>
+		[ViewModelToModel("Configuration")]
+		public Brush LightColor
+		{
+			get { return GetValue<Brush>(LightColorProperty); }
+			//set { SetValue(LightColorProperty, value); }
+		}
+
+		/// <summary>
+		/// LightColor property data.
+		/// </summary>
+		public static readonly PropertyData LightColorProperty = RegisterProperty("LightColor", typeof(Brush), null);
+
+		#endregion
+
+		#region SelectedLightColor property
+
+		/// <summary>
+		/// Gets or sets the SelectedLightColor value.
+		/// </summary>
+		[ViewModelToModel("Configuration")]
+		public Brush SelectedLightColor
+		{
+			get { return GetValue<Brush>(SelectedLightColorProperty); }
+			//set { SetValue(SelectedLightColorProperty, value); }
+		}
+
+		/// <summary>
+		/// SelectedLightColor property data.
+		/// </summary>
+		public static readonly PropertyData SelectedLightColorProperty = RegisterProperty("SelectedLightColor", typeof(Brush), null);
 
 		#endregion
 

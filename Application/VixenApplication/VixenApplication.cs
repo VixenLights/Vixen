@@ -75,7 +75,7 @@ namespace VixenApplication
 		        Source = new Uri("/WPFCommon;component/Theme/Theme.xaml", UriKind.Relative)
 		    };
 
-		    WPFApplication.Current.Resources.MergedDictionaries.Add(dict);
+			WPFApplication.Current.Resources.MergedDictionaries.Add(dict);
 
             //End WPF init
 

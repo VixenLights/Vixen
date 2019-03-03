@@ -20,7 +20,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using Button = System.Windows.Forms.Button;
 using Control = System.Windows.Forms.Control;
 using Cursors = System.Windows.Forms.Cursors;
-using CustomPropEditorWindow = VixenModules.App.CustomPropEditor.View.CustomPropEditorWindow;
+using CustomPropEditorWindow = VixenModules.App.CustomPropEditor.Views.CustomPropEditorWindow;
 using Size = System.Drawing.Size;
 
 namespace VixenModules.Preview.VixenPreview

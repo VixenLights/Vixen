@@ -1,0 +1,55 @@
+﻿<catel:Window x:Class="VixenModules.App.CustomPropEditor.Views.ConfigurationWindow"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:catel="http://schemas.catelproject.com"
+                  Width="296.508" Height="175" WindowStartupLocation="CenterOwner" 
+                  CanCloseUsingEscape="True" WindowStyle="ToolWindow">
+	<Window.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="..\Themes\Theme.xaml"/>
+				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+			
+		</ResourceDictionary>
+		
+	</Window.Resources>
+
+	<Border Padding="5" Background="{StaticResource BackColorBrush}">
+		<DockPanel>
+			<Grid DockPanel.Dock="Top">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"></ColumnDefinition>
+					<ColumnDefinition Width="Auto"></ColumnDefinition>
+				</Grid.ColumnDefinitions>
+				<TextBlock Grid.Row="0" Grid.Column="0" Text="Light Color" Margin="10,0,0,0" VerticalAlignment="Center"/>
+
+				<Rectangle Grid.Row="0" Grid.Column="1" x:Name="LightColorButton" 
+			           MinWidth="50" Height="25" Fill="{Binding LightColor}" 
+			           Margin="6,2,2,2">
+					<Rectangle.InputBindings>
+						<MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditLightColorCommand}"></MouseBinding>
+					</Rectangle.InputBindings>
+				</Rectangle>
+
+				<TextBlock Grid.Row="1" Grid.Column="0" Text="Selected Color" Margin="10,0,0,0" VerticalAlignment="Center"/>
+				<Rectangle Grid.Row="1" Grid.Column="1" x:Name="SelectedColorButton" 
+	                   MinWidth="50" Height="25" Fill="{Binding SelectedLightColor}" 
+	                    Margin="6,2,2,2">
+					<Rectangle.InputBindings>
+						<MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditSelectedLightColorCommand}"></MouseBinding>
+					</Rectangle.InputBindings>
+				</Rectangle>
+			</Grid>
+			<WrapPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+				<Button HorizontalAlignment="Right" Width="75" Margin="6" Command="{Binding RestoreDefaultsCommand}">Defaults</Button>
+				<Button HorizontalAlignment="Right" Width="75" Margin="6" IsDefault="True" Command="{Binding OkCommand}">Ok</Button>
+				<Button HorizontalAlignment="Right" Width="75" Margin="6" IsCancel="True" Command="{Binding CancelCommand}">Cancel</Button>
+			</WrapPanel>
+		</DockPanel>
+	</Border>
+</catel:Window>

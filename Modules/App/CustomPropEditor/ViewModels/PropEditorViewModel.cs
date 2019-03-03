@@ -907,6 +907,31 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region ColorOptions command
+
+		private Command _colorOptionsCommand;
+
+		/// <summary>
+		/// Gets the ColorOptions command.
+		/// </summary>
+		[Browsable(false)]
+		public Command ColorOptionsCommand
+		{
+			get { return _colorOptionsCommand ?? (_colorOptionsCommand = new Command(ColorOptions)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the ColorOptions command is executed.
+		/// </summary>
+		private async void ColorOptions()
+		{
+			ConfigurationWindowViewModel vm = new ConfigurationWindowViewModel();
+			var dependencyResolver = this.GetDependencyResolver();
+			var uiVisualizerService = dependencyResolver.Resolve<UIVisualizerService>();
+			await uiVisualizerService.ShowDialogAsync(vm);
+		}
+
+		#endregion
 
 		#endregion
 

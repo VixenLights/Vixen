@@ -1,0 +1,42 @@
+﻿<catel:UserControl x:Class="VixenModules.App.CustomPropEditor.Views.PhysicalMetadataView"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:catel="http://schemas.catelproject.com"
+                   xmlns:wpg="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
+                   xmlns:viewModels="clr-namespace:VixenModules.App.CustomPropEditor.ViewModels">
+	<UserControl.Resources>
+		<DataTemplate x:Key="BulbTypeEditorKey" DataType="wpg:PropertyItemValue">
+			<ComboBox ItemsSource="{Binding ParentProperty.StandardValues}" 
+			          Text="{Binding Value, Mode=TwoWay}"
+			          IsEnabled="{Binding IsEditable}"
+			          IsEditable="True">
+			</ComboBox>
+		</DataTemplate>
+	</UserControl.Resources>
+
+	<wpg:PropertyGrid Background="{StaticResource DisabledShadow}"
+	                              ItemSource="{Binding}"
+	                              ShowAttachedProperties="False"
+	                              ShowReadOnlyProperties="True"
+	                              PropertyFilterVisibility="Collapsed"
+	                              Margin="5">
+		<wpg:PropertyGrid.Editors>
+			<wpg:PropertyEditor DeclaringType="{x:Type viewModels:PhysicalMetadataViewModel}" PropertyName="BulbType" InlineTemplate="{StaticResource BulbTypeEditorKey}"></wpg:PropertyEditor>
+		</wpg:PropertyGrid.Editors>
+		<wpg:PropertyGrid.Resources>
+			<ResourceDictionary>
+				<ResourceDictionary.MergedDictionaries>
+					<wpg:KaxamlTheme/>
+				</ResourceDictionary.MergedDictionaries>
+			</ResourceDictionary>
+		</wpg:PropertyGrid.Resources>
+	</wpg:PropertyGrid>
+
+</catel:UserControl>
+
+
+
+
+
+
+
