@@ -144,6 +144,16 @@ namespace VixenModules.Effect.Pulse
 
 			return points.OrderBy(x => x).ToArray();
 		}
+		public static EffectIntents RenderNode(ElementNode node, double level, Color color, TimeSpan duration)
+		{
+			var elementData = new EffectIntents();
+			if (node.Element != null && level > 0)
+			{
+				IIntent intent = IntentBuilder.CreateIntent(color, color, level, level, TimeSpan.FromMilliseconds(duration.TotalMilliseconds));
+				elementData.AddIntentForElement(node.Element.Id, intent, TimeSpan.Zero);
+			}
+			return elementData;
+		}
 
 		private static bool IsElementDiscrete(ElementNode elementNode)
 		{

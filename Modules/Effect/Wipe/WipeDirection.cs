@@ -4,17 +4,19 @@ using Vixen.TypeConverters;
 namespace VixenModules.Effect.Wipe {
 	
 	public enum WipeDirection {
-		[Description("Wipe Up")]
-		Up = 0,
-		[Description("Wipe Down")]
-		Down = 1,
-		[Description("Wipe Right")]
-		Right = 2,
-		[Description("Wipe Left")]
-		Left = 3,
-		[Description("Burst In")]
-		In = 4,
-		[Description("Burst Out")]
-		Out = 5
+		[Description("Wipe Vertical")]
+		Vertical,
+		[Description("Wipe Horizontal")]
+		Horizontal,
+		[Description("Wipe Diagonal Up")]
+		DiagonalUp,
+		[Description("Wipe Diagonal Down")]
+		DiagonalDown,
+		[Description("Burst")]
+		Burst,
+		[Description("Circle Burst")]
+		Circle,
+		[Description("Dimaond Burst")]
+		Dimaond
 	}
 }

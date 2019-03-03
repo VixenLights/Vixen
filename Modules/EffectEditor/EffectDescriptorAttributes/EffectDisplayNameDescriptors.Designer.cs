@@ -494,6 +494,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Color Per Count.
+        /// </summary>
+        internal static string ColorPerCount {
+            get {
+                return ResourceManager.GetString("ColorPerCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Color Per Step.
         /// </summary>
         internal static string ColorPerStep {
@@ -1597,6 +1606,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string RepeatText {
             get {
                 return ResourceManager.GetString("RepeatText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reverse.
+        /// </summary>
+        internal static string ReverseColorCurve {
+            get {
+                return ResourceManager.GetString("ReverseColorCurve", resourceCulture);
             }
         }
         

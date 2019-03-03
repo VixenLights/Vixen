@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColorHandling.cs" />
+    <Compile Include="WipeMovement.cs" />
     <Compile Include="WipeDirection.cs" />
     <Compile Include="WipeData.cs" />
     <Compile Include="WipeDescriptor.cs" />
@@ -66,6 +67,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
+      <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
+      <Name>Controls</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj">
       <Project>{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}</Project>
       <Name>EffectDescriptorAttributes</Name>

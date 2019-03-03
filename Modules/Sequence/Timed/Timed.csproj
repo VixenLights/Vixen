@@ -136,6 +136,11 @@
       <Name>Spin</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Effect\Wipe\Wipe.csproj">
+      <Project>{0AE9E4AA-3FB7-4EAA-A699-C3071A58EE77}</Project>
+      <Name>Wipe</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

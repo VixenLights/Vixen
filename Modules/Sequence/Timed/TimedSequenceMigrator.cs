@@ -24,6 +24,7 @@ using VixenModules.Effect.Fireworks;
 using VixenModules.Effect.Snowflakes;
 using VixenModules.Effect.Spin;
 using VixenModules.Effect.LipSync;
+using VixenModules.Effect.Wipe;
 using ZedGraph;
 
 namespace VixenModules.Sequence.Timed
@@ -44,7 +45,8 @@ namespace VixenModules.Sequence.Timed
 									new MigrationSegment<XElement>(2, 3, _Version_2_to_3),
 									new MigrationSegment<XElement>(3, 4, _Version_3_to_4),
 									new MigrationSegment<XElement>(4, 5, _Version_4_to_5),
-									new MigrationSegment<XElement>(5, 6, _Version_5_to_6)
+									new MigrationSegment<XElement>(5, 6, _Version_5_to_6),
+									new MigrationSegment<XElement>(6, 7, _Version_6_to_7),
 				};
 		}
 
@@ -476,6 +478,18 @@ namespace VixenModules.Sequence.Timed
 			return content;
 		}
 
+		private XElement _Version_6_to_7(XElement content)
+		{
+			var messageBox = new MessageBoxForm(string.Format(
+				"Migrating sequence from version 6 to version 7. This may take a few minutes if the sequence is large.{0}{0}Changes include the following:{0}" +
+				"Changes to the Wipe direction property, Add movement curve and a reverse direction option.{0}" +
+				"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade", MessageBoxButtons.OK, SystemIcons.Information);
+			messageBox.ShowDialog();
+
+			MigrateWipeFrom6To7(content);
+			return content;
+		}
+
 		private void MigrateChaseFrom3To4(XElement content)
 		{
 			//This migration deals with changing the Fireworks effect to accomodate multiple gradients instead of miltiple colors
@@ -678,6 +692,108 @@ namespace VixenModules.Sequence.Timed
 				}
 			}
 			
+		}
+
+		private void MigrateWipeFrom6To7(XElement content)
+		{
+			// This migration deals with changing the Wipe Direction property to reduce the number of options in the Direction and add in reverse option.
+			// Add Wipe movement and movement curve.
+			// Get the standard namespaces that are needed in the sequence
+			var namespaces = GetStandardNamespaces();
+			XNamespace d2p1 = "http://schemas.datacontract.org/2004/07/VixenModules.Effect.Wipe";
+			namespaces.AddNamespace("d2p1", d2p1.NamespaceName);
+
+			//Find the Wipe effects.
+			IEnumerable<XElement> wipeElements =
+				content.XPathSelectElements(
+					"_dataModels/d1p1:anyType[@i:type = 'd2p1:WipeData']",
+					namespaces);
+
+			var datamodel = content.XPathSelectElement("_dataModels", namespaces);
+
+			foreach (var wipeElement in wipeElements.ToList())
+			{
+				XElement direction = wipeElement.XPathSelectElement("d2p1:Direction", namespaces);
+				XElement colorGradient = wipeElement.XPathSelectElement("d2p1:ColorGradient", namespaces);
+				XElement colorHandling = wipeElement.XPathSelectElement("d2p1:ColorHandling", namespaces);
+				XElement passCount = wipeElement.XPathSelectElement("d2p1:PassCount", namespaces);
+				XElement pulsePercent = wipeElement.XPathSelectElement("d2p1:PulsePercent", namespaces);
+				XElement pulseTime = wipeElement.XPathSelectElement("d2p1:PulseTime", namespaces);
+				XElement wipeByCount = wipeElement.XPathSelectElement("d2p1:WipeByCount", namespaces);
+				XElement wipeOn = wipeElement.XPathSelectElement("d2p1:WipeOn", namespaces);
+				XElement wipeOff = wipeElement.XPathSelectElement("d2p1:WipeOff", namespaces);
+				XElement curve = wipeElement.XPathSelectElement("d2p1:Curve", namespaces);
+
+				XElement moduleInstanceId = wipeElement.XPathSelectElement("ModuleInstanceId", namespaces);
+				XElement moduleTypeId = wipeElement.XPathSelectElement("ModuleTypeId", namespaces);
+
+				WipeDirection dataDirection = WipeDirection.Burst;
+				bool dataReverseDirection = false;
+
+				switch (direction.Value)
+				{
+					case "Up":
+						dataDirection = WipeDirection.Vertical;
+						dataReverseDirection = true;
+						break;
+					case "Down":
+						dataDirection = WipeDirection.Vertical;
+						dataReverseDirection = false;
+						break;
+					case "Right":
+						dataDirection = WipeDirection.Horizontal;
+						dataReverseDirection = false;
+						break;
+					case "Left":
+						dataDirection = WipeDirection.Horizontal;
+						dataReverseDirection = true;
+						break;
+					case "In":
+						dataDirection = WipeDirection.Burst;
+						dataReverseDirection = true;
+						break;
+					case "Out":
+						dataDirection = WipeDirection.Burst;
+						dataReverseDirection = false;
+						break;
+				}
+
+				WipeData data = new WipeData
+				{
+					ColorGradient = new ColorGradient(DeSerializer<ColorGradient>(colorGradient)),
+					ColorHandling = DeSerializer<ColorHandling>(colorHandling),
+					PassCount = DeSerializer<int>(passCount),
+					PulsePercent = DeSerializer<double>(pulsePercent),
+					PulseTime = DeSerializer<int>(pulseTime),
+
+					WipeMovement = DeSerializer<bool>(wipeByCount) ? WipeMovement.Count : WipeMovement.PulseLength,
+
+					WipeOn = DeSerializer<bool>(wipeOn),
+					WipeOff = DeSerializer<bool>(wipeOff),
+					ColorAcrossItemPerCount = true,
+					ReverseColorDirection = true,
+					Curve = DeSerializer<Curve>(curve),
+					MovementCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 100.0 })),
+					Direction = dataDirection,
+					ReverseDirection = dataReverseDirection,
+					ModuleInstanceId = DeSerializer<Guid>(moduleInstanceId),
+					ModuleTypeId = DeSerializer<Guid>(moduleTypeId)
+				};
+
+				//Remove the old version
+				wipeElement.Remove();
+
+				//Build up a temporary container similar to the way sequences are stored to
+				//make all the namespace prefixes line up.
+				IModuleDataModel[] dm = { data };
+				DataContainer dc = new DataContainer { _dataModels = dm };
+
+				//Serialize the object into a xelement
+				XElement glp = Serializer(dc, new[] { typeof(WipeData), typeof(IModuleDataModel[]), typeof(DataContainer) });
+
+				//Extract the new data model that we want and insert it in the tree
+				datamodel.Add(glp.XPathSelectElement("//*[local-name()='anyType']", namespaces));
+			}
 		}
 
 		private static XmlNamespaceManager GetStandardNamespaces()
