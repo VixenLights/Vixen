@@ -36,6 +36,7 @@ function ViewModel() {
 	self.searchResultsOverflow = ko.observable(false);
 	self.nowPlayingList = ko.observableArray().extend({ rateLimit: 25 });
 	self.controllers = ko.observableArray([]);
+	self.canSaveControllers = ko.observable(false);
 	
 	
 	self.contextStatus = function(state) {
@@ -123,6 +124,23 @@ function ViewModel() {
 			});
 	}
 
+	self.saveControllerState = function() {
+		self.showLoading();
+		$.post(systemUrl + '/save', null, null, 'JSON')
+			.done(function (status) {
+				if (status.IsSuccessful) {
+					self.canSaveControllers(false);
+				}
+				self.status(status.Message);
+				self.clearStatus(5);
+				self.hideLoading();
+			}).error(function (jqXHR, status, error) {
+				self.status(error);
+				self.hideLoading();
+			});
+		self.hideLoading();
+	}
+
 	self.canStartControllers = ko.computed(function() {
 
 		var canStart = false;
@@ -170,6 +188,7 @@ function ViewModel() {
 			.done(function (status) {
 				if (status.IsSuccessful) {
 					self.getControllers();
+					self.canSaveControllers(true);
 				}
 				self.status(status.Message);
 				self.clearStatus(5);
@@ -194,6 +213,7 @@ function ViewModel() {
 			.done(function (status) {
 				if (status.IsSuccessful) {
 					data.IsRunning(on);
+					self.canSaveControllers(true);
 				}
 				self.status(status.Message);
 				self.clearStatus(5);

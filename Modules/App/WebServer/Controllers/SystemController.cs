@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Http;
 using VixenModules.App.WebServer.Model;
 using VixenModules.App.WebServer.Service;
@@ -53,6 +54,17 @@ namespace VixenModules.App.WebServer.Controllers
 			var helper = new SystemHelper();
 			s.IsSuccessful = helper.SetAllControllersState(state.IsRunning);
 			s.Message = $"All controllers state {(s.IsSuccessful ? "Changed" : "Not Changed")}.";
+			return s;
+		}
+
+		[HttpPost]
+		public async Task<Status> Save()
+		{
+			var s = new Status();
+			var helper = new SystemHelper();
+			var success = await helper.Save();
+			s.IsSuccessful = success;
+			s.Message = $"Save {(s.IsSuccessful?"Successful":"Failed")}";
 			return s;
 		}
 	}

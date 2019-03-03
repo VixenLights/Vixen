@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Vixen.Sys;
 using VixenModules.App.WebServer.Model;
 
@@ -70,6 +71,11 @@ namespace VixenModules.App.WebServer.Service
 			}
 
 			return null;
+		}
+
+		public async Task<bool> Save()
+		{
+			return await VixenSystem.SaveSystemConfigAsync();
 		}
 	}
 }
