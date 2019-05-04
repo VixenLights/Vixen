@@ -1556,6 +1556,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Random Time.
+        /// </summary>
+        internal static string RandomMaxCurve {
+            get {
+                return ResourceManager.GetString("RandomMaxCurve", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Random Movement.
+        /// </summary>
+        internal static string RandomMovement {
+            get {
+                return ResourceManager.GetString("RandomMovement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Random Position.
         /// </summary>
         internal static string RandomPosition {
