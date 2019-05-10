@@ -10,6 +10,8 @@ using Catel.MVVM;
 using Common.WPFCommon.Command;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
+using Brush = System.Drawing.Brush;
+using Color = System.Drawing.Color;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels
 {
@@ -229,16 +231,16 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// Gets or sets the LightColor value.
 		/// </summary>
 		[ViewModelToModel("Configuration")]
-		public Brush LightColor
+		public Color LightColor
 		{
-			get { return GetValue<Brush>(LightColorProperty); }
+			get { return GetValue<Color>(LightColorProperty); }
 			//set { SetValue(LightColorProperty, value); }
 		}
 
 		/// <summary>
 		/// LightColor property data.
 		/// </summary>
-		public static readonly PropertyData LightColorProperty = RegisterProperty("LightColor", typeof(Brush), null);
+		public static readonly PropertyData LightColorProperty = RegisterProperty("LightColor", typeof(Color), null);
 
 		#endregion
 
@@ -248,16 +250,16 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// Gets or sets the SelectedLightColor value.
 		/// </summary>
 		[ViewModelToModel("Configuration")]
-		public Brush SelectedLightColor
+		public Color SelectedLightColor
 		{
-			get { return GetValue<Brush>(SelectedLightColorProperty); }
+			get { return GetValue<Color>(SelectedLightColorProperty); }
 			//set { SetValue(SelectedLightColorProperty, value); }
 		}
 
 		/// <summary>
 		/// SelectedLightColor property data.
 		/// </summary>
-		public static readonly PropertyData SelectedLightColorProperty = RegisterProperty("SelectedLightColor", typeof(Brush), null);
+		public static readonly PropertyData SelectedLightColorProperty = RegisterProperty("SelectedLightColor", typeof(Color), null);
 
 		#endregion
 

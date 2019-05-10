@@ -1,5 +1,5 @@
-﻿using System.Runtime.Serialization;
-using System.Windows.Media;
+﻿using System.Drawing;
+using System.Runtime.Serialization;
 using Vixen.Module;
 
 namespace VixenModules.App.CustomPropEditor
@@ -26,22 +26,22 @@ namespace VixenModules.App.CustomPropEditor
 		}
 
 		[DataMember]
-		public Brush LightColor { get; set; } = Brushes.White;
+		public Color LightColor { get; set; } = Color.White;
 
 		[DataMember]
-		public Brush SelectedLightColor { get; set; } = Brushes.HotPink;
+		public Color SelectedLightColor { get; set; } = Color.HotPink;
 
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
-			if (LightColor == null)
+			if (LightColor == Color.Empty)
 			{
-				LightColor = Brushes.White;
+				LightColor = Color.White;
 			}
 
-			if (SelectedLightColor == null)
+			if (SelectedLightColor == Color.Empty)
 			{
-				SelectedLightColor = Brushes.HotPink;
+				SelectedLightColor = Color.HotPink;
 			}
 		}
 	}

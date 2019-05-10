@@ -19,6 +19,7 @@
 				</ResourceDictionary.MergedDictionaries>
 				<commonConverters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
 				<commonConverters:AdditionConverter x:Key="AdditionConverter"/>
+				<commonConverters:ColorToSolidBrushConverter x:Key="ColorToSolidBrushConverter"/>
 		</ResourceDictionary>
 		</Window.Resources>
 
@@ -261,10 +262,10 @@
 											</Path.Data>
 											<Path.Style>
 												<Style TargetType="Path">
-													<Setter Property="Fill" Value="{Binding Path=DataContext.DrawingPanelViewModel.LightColor, RelativeSource={RelativeSource AncestorType=ItemsControl}, Mode=OneWay}"/>
+													<Setter Property="Fill" Value="{Binding Path=DataContext.DrawingPanelViewModel.LightColor, RelativeSource={RelativeSource AncestorType=ItemsControl}, Mode=OneWay, Converter={StaticResource ColorToSolidBrushConverter}}"/>
 													<Style.Triggers>
 														<DataTrigger Binding="{Binding IsSelected}" Value="True">
-															<Setter Property="Fill" Value="{Binding Path=DataContext.DrawingPanelViewModel.SelectedLightColor, RelativeSource={RelativeSource AncestorType=ItemsControl}, Mode=OneWay}"></Setter>
+															<Setter Property="Fill" Value="{Binding Path=DataContext.DrawingPanelViewModel.SelectedLightColor, RelativeSource={RelativeSource AncestorType=ItemsControl}, Mode=OneWay,Converter={StaticResource ColorToSolidBrushConverter}}"></Setter>
 														</DataTrigger>
 													</Style.Triggers>
 												</Style>
