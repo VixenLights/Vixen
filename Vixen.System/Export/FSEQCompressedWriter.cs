@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Media.Animation;
 using NLog;
+using Vixen.Export.FPP;
 using Zstandard.Net;
 using static System.String;
 
@@ -33,7 +34,7 @@ namespace Vixen.Export
 		private ushort _currentFrameInBlock = 0;
 		private ushort _currentBlock = 0;
 		private uint _blockStartFrame = 0;
-
+		private readonly List<VariableHeader> _variableHeaders;
 
 		private FileStream _outfs = null;
 		private MemoryStream _memoryStream;
@@ -50,6 +51,7 @@ namespace Vixen.Export
 			Compress = false;
 			_compressBlockMap = new Dictionary<uint, uint>();
 			_sparseRangeBlocks = new Dictionary<uint, uint>();
+			_variableHeaders = new List<VariableHeader>();
 		}
 
 		private void Reset()
@@ -63,6 +65,7 @@ namespace Vixen.Export
 			_compressBlockMap.Clear();
 			_sparseRangeBlocks.Clear();
 			_audioFileName = Empty;
+			_variableHeaders.Clear();
 		}
 
 		public int SeqPeriodTime { get; set; }
@@ -171,16 +174,10 @@ namespace Vixen.Export
 				writer.Write((byte)((keyValuePair.Value >> 16) & 0xFF));
 				
 			}
-			
-			//Write the media filename as variable header
-			if (_audioFileName.Length > 0)
+
+			foreach (var variableHeader in _variableHeaders)
 			{
-				writer.Write((byte)(_fileNameFieldLen & 0xFF));
-				writer.Write((byte)((_fileNameFieldLen >> 8) & 0xFF));
-				writer.Write('m');
-				writer.Write('f');
-				writer.Write(_audioFileName);
-				_dataOut.Write(Byte.MinValue);
+				writer.Write(variableHeader.GetHeaderBytes());
 			}
 			
 		}
@@ -196,14 +193,16 @@ namespace Vixen.Export
 			if (!IsNullOrEmpty(data.AudioFileName))
 			{
 				_audioFileName = Path.GetFileName(data.AudioFileName);
-				_fileNameFieldLen = (uint)_audioFileName.Length + 5;
+				_variableHeaders.Add(new VariableHeader(_audioFileName));
 			}
+
+			_variableHeaders.Add(new VariableHeader(HeaderType.SequenceProducer));
 			
 			var blockCount = ComputeMaxBlockCount();
 			_numberCompressionBlocks = (byte) blockCount;
 
 			_offsetToChannelData = FixedHeaderLength + blockCount * 8; //need to add for sparse if we do that
-			_offsetToChannelData += _fileNameFieldLen; //Account for audio file
+			_offsetToChannelData += (uint)_variableHeaders.Sum(x => x.HeaderLength); //Account for variable header length
 
 #if DEBUG
 			Logging.Info($"Total frames count {_numberFrames}");
