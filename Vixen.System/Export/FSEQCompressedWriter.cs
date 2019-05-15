@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text;
 using System.Windows.Media.Animation;
 using NLog;
 using Zstandard.Net;
@@ -289,11 +290,12 @@ namespace Vixen.Export
 					_zStdStream = new ZstandardStream(_memoryStream, 10);
 				}
 			}
-
+#if DEBUG
 			//if (Compress)
 			//{
 			//	Decompress(data);
 			//}
+#endif
 			return data.Length;
 		}
 		/// <inheritdoc />
@@ -361,11 +363,13 @@ namespace Vixen.Export
 				{
 					compressionStream.CopyTo(temp);
 					var output = temp.ToArray();
+					StringBuilder sb = new StringBuilder(output.Length);
 					foreach (var b in output)
 					{
-						Console.Out.Write($"{b} ");
+						sb.Append($"{b} ");
 					}
-					Console.WriteLine();
+
+					Logging.Info($"Frame data: {sb}");
 				}
 			}
 			catch (Exception e)
