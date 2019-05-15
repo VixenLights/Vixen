@@ -23,8 +23,8 @@ namespace Vixen.Export
         private UInt32 _seqNumPeriods = 0;
         private UInt16 _numUniverses = 0;    //Ignored by Pi Player
         private UInt16 _universeSize = 0;    //Ignored by Pi Player
-        private Byte _gamma = 1;             //0=encoded, 1=linear, 2=RGB
-        private Byte _colorEncoding = 2;
+        private Byte _gamma = 1;             //0=encoded, 1=linear, 2=RGB Ignored by FPP
+		private Byte _colorEncoding = 2;
         private String _audioFileName = "";
         private UInt32 _fileNamePadding = 0;
         private UInt32 _fileNameFieldLen = 0;
@@ -83,23 +83,27 @@ namespace Vixen.Export
 
                 // Step time in ms
                 _dataOut.Write((Byte)(SeqPeriodTime & 0xFF));
-                _dataOut.Write((Byte)((SeqPeriodTime >> 8) & 0xFF));
 
-                // universe count
-                _dataOut.Write((Byte)(_numUniverses & 0xFF));
+				// 19 bit flags/reserved should be zero
+                _dataOut.Write(Byte.MinValue);
+
+				// 20-21 universe count, ignored by FPP
+				_dataOut.Write((Byte)(_numUniverses & 0xFF));
                 _dataOut.Write((Byte)((_numUniverses >> 8) & 0xFF));
 
-                // universe Size
-                _dataOut.Write((Byte)(_universeSize & 0xFF));
+				// 22-23 universe Size, ignored by FPP
+				_dataOut.Write((Byte)(_universeSize & 0xFF));
                 _dataOut.Write((Byte)((_universeSize >> 8) & 0xFF));
 
-                // universe Size
+                // 24 gamma, should be 1, ignored by FPP
                 _dataOut.Write(_gamma);
 
-                // universe Size
+                // 25 color encoding 2 for RGB, ignored by FPP
                 _dataOut.Write(_colorEncoding);
-                _dataOut.Write((Byte)0);
-                _dataOut.Write((Byte)0);
+
+				//26-27 reserved, should be 0
+                _dataOut.Write(Byte.MinValue);
+                _dataOut.Write(Byte.MinValue);
 
                 //Write the media filename
                 if (_audioFileName.Length > 0)
@@ -110,12 +114,12 @@ namespace Vixen.Export
                     _dataOut.Write('m');
                     _dataOut.Write('f');
                     _dataOut.Write(_audioFileName);
-
-                     if (_fileNamePadding > 0)
-                    {
-                        Byte[] padding = Enumerable.Repeat((Byte)0, (Int32)_fileNamePadding).ToArray();
-                        _dataOut.Write(padding);
-                    }
+					_dataOut.Write(Byte.MinValue);
+                    // if (_fileNamePadding > 0)
+                    //{
+                    //    Byte[] padding = Enumerable.Repeat((Byte)0, (Int32)_fileNamePadding).ToArray();
+                    //    _dataOut.Write(padding);
+                    //}
                 }
             }
         }
@@ -132,8 +136,8 @@ namespace Vixen.Export
             _audioFileName = Path.GetFileName(data.AudioFileName);
             _fileNameFieldLen = (UInt32)_audioFileName.Length + 5;
             _dataOffset += _fileNameFieldLen;
-            _fileNamePadding = (4 - (_dataOffset % 4)) % 4;
-            _dataOffset += _fileNamePadding;
+           // _fileNamePadding = (4 - (_dataOffset % 4)) % 4;
+            //_dataOffset += _fileNamePadding;
         
             OpenSession(data.OutFileName, data.NumPeriods, data.ChannelNames.Count());
         }

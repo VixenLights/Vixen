@@ -26,7 +26,6 @@ namespace Vixen.Export
 		private uint _numberFrames = 0;
 		private uint _framesPerBlock = 0;
 		private string _audioFileName = "";
-		private uint _fileNamePadding = 0;
 		private uint _fileNameFieldLen = 0;
 		private byte _numberCompressionBlocks;
 		private byte _numberSparseRanges = 0;
@@ -48,7 +47,7 @@ namespace Vixen.Export
 
 		public FSEQCompressedWriter()
 		{
-			Compress = true;
+			Compress = false;
 			_compressBlockMap = new Dictionary<uint, uint>();
 			_sparseRangeBlocks = new Dictionary<uint, uint>();
 		}
@@ -61,9 +60,9 @@ namespace Vixen.Export
 			_currentFrameInBlock = 0;
 			_blockStartFrame = 0;
 			_fileNameFieldLen = 0;
-			_fileNamePadding = 0;
 			_compressBlockMap.Clear();
 			_sparseRangeBlocks.Clear();
+			_audioFileName = Empty;
 		}
 
 		public int SeqPeriodTime { get; set; }
@@ -181,12 +180,7 @@ namespace Vixen.Export
 				writer.Write('m');
 				writer.Write('f');
 				writer.Write(_audioFileName);
-
-				if (_fileNamePadding > 0)
-				{
-					byte[] padding = Enumerable.Repeat((byte)0, (int)_fileNamePadding).ToArray();
-					writer.Write(padding);
-				}
+				_dataOut.Write(Byte.MinValue);
 			}
 			
 		}
@@ -202,17 +196,14 @@ namespace Vixen.Export
 			if (!IsNullOrEmpty(data.AudioFileName))
 			{
 				_audioFileName = Path.GetFileName(data.AudioFileName);
-				_fileNameFieldLen = (uint)_audioFileName.Length + 4;
+				_fileNameFieldLen = (uint)_audioFileName.Length + 5;
 			}
-
+			
 			var blockCount = ComputeMaxBlockCount();
 			_numberCompressionBlocks = (byte) blockCount;
 
 			_offsetToChannelData = FixedHeaderLength + blockCount * 8; //need to add for sparse if we do that
-
-			_offsetToChannelData += _fileNameFieldLen;
-			_fileNamePadding = (4 - (_offsetToChannelData % 4)) % 4;
-			_offsetToChannelData += _fileNamePadding;
+			_offsetToChannelData += _fileNameFieldLen; //Account for audio file
 
 #if DEBUG
 			Logging.Info($"Total frames count {_numberFrames}");
