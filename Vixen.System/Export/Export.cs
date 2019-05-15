@@ -174,6 +174,11 @@ namespace Vixen.Export
             return true;
         }
 
+        public string FormatAudioFileName(string sequenceName)
+        {
+	        return sequenceName + Path.GetExtension(AudioFilename);
+        }
+
 		/// <summary>
 		/// Writes FPP Universe file in 2.x json format
 		/// </summary>
@@ -315,7 +320,7 @@ namespace Vixen.Export
 
         }
 
-        public async Task DoExport(ISequence sequence, string outFormat, IProgress<ExportProgressStatus> progress = null)
+        public async Task DoExport(ISequence sequence, string outFormat, IProgress<ExportProgressStatus> progress = null, bool matchAudioName = false)
         {
             string fileType;
 
@@ -328,7 +333,7 @@ namespace Vixen.Export
                 {
 					_generator = new SequenceIntervalGenerator(UpdateInterval, sequence);
                     //WriteControllerInfo(sequence);
-	                await Task.Factory.StartNew(() => ProcessExport(progress));
+	                await Task.Factory.StartNew(() => ProcessExport(progress, matchAudioName));
                 }
             }
         }
@@ -405,7 +410,7 @@ namespace Vixen.Export
             return retVal;
         }
 
-        private void ProcessExport(IProgress<ExportProgressStatus> progress)
+        private void ProcessExport(IProgress<ExportProgressStatus> progress, bool matchAudioName = false)
         {
             SequenceSessionData sessionData = new SequenceSessionData();
 			
@@ -439,6 +444,11 @@ namespace Vixen.Export
                     sessionData.ChannelNames = BuildChannelNames(controllers);
                     sessionData.TimeMS = _generator.Sequence.Length.TotalMilliseconds;
                     sessionData.AudioFileName = AudioFilename;
+					if(!string.IsNullOrEmpty(AudioFilename))
+					{
+						sessionData.OutputAudioFileName =
+	                    matchAudioName ? FormatAudioFileName(_generator.Sequence.Name) : Path.GetFileName(AudioFilename);
+					}
 	                try
 	                {
 		                _output.OpenSession(sessionData);
@@ -555,6 +565,7 @@ namespace Vixen.Export
         public int PeriodMS { get; set; }
         public double TimeMS { get; set; }
         public string AudioFileName { get; set; }
+        public string OutputAudioFileName { get; set; } = string.Empty;
         public List<string> ChannelNames { get; set; }
         public string OutFileName { get; set; }
         public int NumPeriods { get; set; }

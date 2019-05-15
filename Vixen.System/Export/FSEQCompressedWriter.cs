@@ -79,10 +79,13 @@ namespace Vixen.Export
 
 		public void WriteFileHeader(BinaryWriter writer)
 		{
+
+			//Reference to file spec.
+			//https://github.com/FalconChristmas/fpp/blob/master/docs/FSEQ_Sequence_File_Format.txt
+			
 			var header = new byte[FixedHeaderLength];
 
 			var length = FixedHeaderLength + _compressBlockMap.Count * 8 + _sparseRangeBlocks.Count * 6;
-
 			
 			// Header Information
 			// Format Identifier
@@ -190,10 +193,9 @@ namespace Vixen.Export
 			SeqPeriodTime = data.PeriodMS;
 			_numberFrames = (uint)data.NumPeriods;
 			_channelsPerFrame = (uint)data.ChannelNames.Count();
-			if (!IsNullOrEmpty(data.AudioFileName))
+			if (!IsNullOrEmpty(data.OutputAudioFileName))
 			{
-				_audioFileName = Path.GetFileName(data.AudioFileName);
-				_variableHeaders.Add(new VariableHeader(_audioFileName));
+				_variableHeaders.Add(new VariableHeader(data.OutputAudioFileName));
 			}
 
 			_variableHeaders.Add(new VariableHeader(HeaderType.SequenceProducer));
