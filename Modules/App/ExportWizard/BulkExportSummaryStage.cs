@@ -264,7 +264,7 @@ namespace VixenModules.App.ExportWizard
 				{
 					string audioOutputPath = Path.Combine(_data.ActiveProfile.AudioOutputFolder,
 						_data.ActiveProfile.RenameAudio
-							? sequence.Name + Path.GetExtension(_data.Export.AudioFilename)
+							? _data.Export.FormatAudioFileName(sequence.Name)
 							: Path.GetFileName(_data.Export.AudioFilename));
 					File.Copy(_data.Export.AudioFilename, audioOutputPath, true);
 				}
@@ -278,7 +278,7 @@ namespace VixenModules.App.ExportWizard
 			if (canOutput)
 			{
 				_data.Export.OutFileName = Path.Combine(_data.ActiveProfile.OutputFolder, sequence.Name + "." + _data.Export.ExportFileTypes[_data.ActiveProfile.Format]);
-				await _data.Export.DoExport(sequence, _data.ActiveProfile.Format, progress);
+				await _data.Export.DoExport(sequence, _data.ActiveProfile.Format, progress, _data.ActiveProfile.RenameAudio);
 			}
 			
 		}

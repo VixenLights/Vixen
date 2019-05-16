@@ -7,6 +7,7 @@ using System.Threading;
 using Vixen.Commands;
 using Vixen.Execution;
 using Vixen.Execution.Context;
+using Vixen.Export.FPP;
 using Vixen.Module.Controller;
 using Vixen.Module.Timing;
 using Vixen.Sys;
@@ -23,13 +24,13 @@ namespace Vixen.Export
         private UInt32 _seqNumPeriods = 0;
         private UInt16 _numUniverses = 0;    //Ignored by Pi Player
         private UInt16 _universeSize = 0;    //Ignored by Pi Player
-        private Byte _gamma = 1;             //0=encoded, 1=linear, 2=RGB
-        private Byte _colorEncoding = 2;
+        private Byte _gamma = 1;             //0=encoded, 1=linear, 2=RGB Ignored by FPP
+		private Byte _colorEncoding = 2;
         private String _audioFileName = "";
         private UInt32 _fileNamePadding = 0;
-        private UInt32 _fileNameFieldLen = 0;
+        private readonly List<VariableHeader> _variableHeaders;
 
-        private FileStream _outfs = null;
+		private FileStream _outfs = null;
         private BinaryWriter _dataOut = null;
 
         private Byte[] _padding;
@@ -40,6 +41,7 @@ namespace Vixen.Export
         public FSEQWriter()
         {
             SeqPeriodTime = 50;  //Default to 50ms
+			_variableHeaders = new List<VariableHeader>(1);
         }
 
 
@@ -52,7 +54,7 @@ namespace Vixen.Export
 
                 // Header Information
                 // Format Identifier
-                _dataOut.Write('F');
+                _dataOut.Write('P');
                 _dataOut.Write('S');
                 _dataOut.Write('E');
                 _dataOut.Write('Q');
@@ -83,41 +85,34 @@ namespace Vixen.Export
 
                 // Step time in ms
                 _dataOut.Write((Byte)(SeqPeriodTime & 0xFF));
-                _dataOut.Write((Byte)((SeqPeriodTime >> 8) & 0xFF));
 
-                // universe count
-                _dataOut.Write((Byte)(_numUniverses & 0xFF));
+				// 19 bit flags/reserved should be zero
+                _dataOut.Write(Byte.MinValue);
+
+				// 20-21 universe count, ignored by FPP
+				_dataOut.Write((Byte)(_numUniverses & 0xFF));
                 _dataOut.Write((Byte)((_numUniverses >> 8) & 0xFF));
 
-                // universe Size
-                _dataOut.Write((Byte)(_universeSize & 0xFF));
+				// 22-23 universe Size, ignored by FPP
+				_dataOut.Write((Byte)(_universeSize & 0xFF));
                 _dataOut.Write((Byte)((_universeSize >> 8) & 0xFF));
 
-                // universe Size
+                // 24 gamma, should be 1, ignored by FPP
                 _dataOut.Write(_gamma);
 
-                // universe Size
+                // 25 color encoding 2 for RGB, ignored by FPP
                 _dataOut.Write(_colorEncoding);
-                _dataOut.Write((Byte)0);
-                _dataOut.Write((Byte)0);
 
-                //Write the media filename
-                if (_audioFileName.Length > 0)
-                {
+				//26-27 reserved, should be 0
+                _dataOut.Write(Byte.MinValue);
+                _dataOut.Write(Byte.MinValue);
 
-                    _dataOut.Write((Byte)(_fileNameFieldLen & 0xFF));
-                    _dataOut.Write((Byte)((_fileNameFieldLen>> 8) & 0xFF));
-                    _dataOut.Write('m');
-                    _dataOut.Write('f');
-                    _dataOut.Write(_audioFileName);
-
-                     if (_fileNamePadding > 0)
-                    {
-                        Byte[] padding = Enumerable.Repeat((Byte)0, (Int32)_fileNamePadding).ToArray();
-                        _dataOut.Write(padding);
-                    }
-                }
-            }
+				//Write the variable headers
+				foreach (var variableHeader in _variableHeaders)
+				{
+					_dataOut.Write(variableHeader.GetHeaderBytes());
+				}
+			}
         }
 
         public void WriteFileFooter()
@@ -127,14 +122,17 @@ namespace Vixen.Export
 
         public void OpenSession(SequenceSessionData data)
         {
-            SeqPeriodTime = data.PeriodMS;
-            _audioFileName = Path.GetFileName(data.AudioFileName);
-            _fileNameFieldLen = (UInt32)_audioFileName.Length + 5;
-            _dataOffset += _fileNameFieldLen;
-            _fileNamePadding = (4 - (_dataOffset % 4)) % 4;
-            _dataOffset += _fileNamePadding;
-        
-            OpenSession(data.OutFileName, data.NumPeriods, data.ChannelNames.Count());
+			_variableHeaders.Clear();
+	        _dataOffset = _fixedHeaderLength;
+			SeqPeriodTime = data.PeriodMS;
+			
+			if (!string.IsNullOrEmpty(data.OutputAudioFileName))
+			{
+				_variableHeaders.Add(new VariableHeader(data.OutputAudioFileName));
+			}
+			_dataOffset += (uint)_variableHeaders.Sum(x => x.HeaderLength); //Account for variable header length
+																	
+			OpenSession(data.OutFileName, data.NumPeriods, data.ChannelNames.Count());
         }
 
         private void OpenSession(string fileName, Int32 numPeriods, Int32 numChannels)

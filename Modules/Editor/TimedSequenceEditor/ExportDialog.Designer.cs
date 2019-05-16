@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Test");
+			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Test");
 			this.buttonStart = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();
 			this.outputFormatComboBox = new System.Windows.Forms.ComboBox();
@@ -50,7 +50,6 @@
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.btnUserCancel = new System.Windows.Forms.Button();
 			this.chkGenerateControllerInfo = new System.Windows.Forms.CheckBox();
-			this.radioButton1 = new System.Windows.Forms.RadioButton();
 			this.radio1x = new System.Windows.Forms.RadioButton();
 			this.radio2x = new System.Windows.Forms.RadioButton();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -244,9 +243,9 @@
             this.endColumn});
 			this.networkListView.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.networkListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-			listViewItem2.StateImageIndex = 0;
+			listViewItem1.StateImageIndex = 0;
 			this.networkListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem2});
+            listViewItem1});
 			this.networkListView.Location = new System.Drawing.Point(7, 22);
 			this.networkListView.MultiSelect = false;
 			this.networkListView.Name = "networkListView";
@@ -327,17 +326,6 @@
 			this.chkGenerateControllerInfo.UseVisualStyleBackColor = true;
 			this.chkGenerateControllerInfo.CheckedChanged += new System.EventHandler(this.chkGenerateControllerInfo_CheckedChanged);
 			// 
-			// radioButton1
-			// 
-			this.radioButton1.AutoSize = true;
-			this.radioButton1.Location = new System.Drawing.Point(0, 0);
-			this.radioButton1.Name = "radioButton1";
-			this.radioButton1.Size = new System.Drawing.Size(94, 19);
-			this.radioButton1.TabIndex = 20;
-			this.radioButton1.TabStop = true;
-			this.radioButton1.Text = "radioButton1";
-			this.radioButton1.UseVisualStyleBackColor = true;
-			// 
 			// radio1x
 			// 
 			this.radio1x.AutoSize = true;
@@ -394,7 +382,6 @@
 			this.CancelButton = this.btnUserCancel;
 			this.ClientSize = new System.Drawing.Size(516, 522);
 			this.Controls.Add(this.tableLayoutPanel1);
-			this.Controls.Add(this.radioButton1);
 			this.Controls.Add(this.btnUserCancel);
 			this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.groupBox2);
@@ -446,7 +433,6 @@
 		private System.Windows.Forms.Button btnUserCancel;
 		private System.Windows.Forms.ColumnHeader endColumn;
 		private System.Windows.Forms.CheckBox chkGenerateControllerInfo;
-		private System.Windows.Forms.RadioButton radioButton1;
 		private System.Windows.Forms.RadioButton radio1x;
 		private System.Windows.Forms.RadioButton radio2x;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;

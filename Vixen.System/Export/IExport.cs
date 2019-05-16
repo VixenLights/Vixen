@@ -8,8 +8,6 @@ namespace Vixen.Export
     public interface IExportWriter
     {
         int SeqPeriodTime { get; set; }
-        void WriteFileHeader();
-        void WriteFileFooter();
         void OpenSession(SequenceSessionData sessionData);
         void WriteNextPeriodData(List<Byte> periodData);
         void CloseSession();
