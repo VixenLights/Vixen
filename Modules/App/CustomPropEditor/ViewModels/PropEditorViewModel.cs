@@ -9,6 +9,7 @@ using System.Windows.Controls.WpfPropertyGrid;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
+using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Import;
 using VixenModules.App.CustomPropEditor.Import.XLights;
 using VixenModules.App.CustomPropEditor.Model;
@@ -929,6 +930,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			var dependencyResolver = this.GetDependencyResolver();
 			var uiVisualizerService = dependencyResolver.Resolve<UIVisualizerService>();
 			await uiVisualizerService.ShowDialogAsync(vm);
+			await VixenSystem.SaveModuleConfigAsync();
 		}
 
 		#endregion

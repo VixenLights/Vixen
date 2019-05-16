@@ -53,16 +53,16 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets or sets the LightColor value.
 		/// </summary>
-		public Brush LightColor
+		public Color LightColor
 		{
-			get { return GetValue<Brush>(LightColorProperty); }
+			get { return GetValue<Color>(LightColorProperty); }
 			set { SetValue(LightColorProperty, value); }
 		}
 
 		/// <summary>
 		/// LightColor property data.
 		/// </summary>
-		public static readonly PropertyData LightColorProperty = RegisterProperty("LightColor", typeof(Brush));
+		public static readonly PropertyData LightColorProperty = RegisterProperty("LightColor", typeof(Color));
 
 		#endregion
 
@@ -71,16 +71,16 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets or sets the SelectedLightColor value.
 		/// </summary>
-		public Brush SelectedLightColor
+		public Color SelectedLightColor
 		{
-			get { return GetValue<Brush>(SelectedLightColorProperty); }
+			get { return GetValue<Color>(SelectedLightColorProperty); }
 			set { SetValue(SelectedLightColorProperty, value); }
 		}
 
 		/// <summary>
 		/// SelectedLightColor property data.
 		/// </summary>
-		public static readonly PropertyData SelectedLightColorProperty = RegisterProperty("SelectedLightColor", typeof(Brush), null);
+		public static readonly PropertyData SelectedLightColorProperty = RegisterProperty("SelectedLightColor", typeof(Color), null);
 
 		#endregion
 
@@ -101,7 +101,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private void EditLightColor()
 		{
-			LightColor = EditColor((SolidColorBrush)LightColor);
+			LightColor = EditColor(LightColor);
 		}
 
 		#endregion
@@ -123,7 +123,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private void EditSelectedLightColor()
 		{
-			SelectedLightColor = EditColor((SolidColorBrush) SelectedLightColor);
+			SelectedLightColor = EditColor(SelectedLightColor);
 		}
 
 		#endregion
@@ -197,8 +197,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		private void RestoreColorDefaults()
 		{
-			LightColor = Brushes.White;
-			SelectedLightColor = Brushes.HotPink;
+			LightColor = Color.White;
+			SelectedLightColor = Color.HotPink;
 		}
 
 
@@ -217,9 +217,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		#endregion
 
 
-		private Brush EditColor(SolidColorBrush brush)
+		private Color EditColor(Color color)
 		{
-			var color = Convert(brush.Color);
+			//var color = Convert(brush.Color);
 			var newColor = color;
 			using (ColorPicker cp = new ColorPicker())
 			{
@@ -232,7 +232,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				}
 			}
 			
-			return new SolidColorBrush(Convert(newColor)); ;
+			return newColor; 
 		}
 
 		private System.Windows.Media.Color Convert(Color color)

@@ -1,4 +1,4 @@
-﻿using System.Windows.Media;
+﻿using System.Drawing;
 using Common.WPFCommon.ViewModel;
 
 namespace VixenModules.App.CustomPropEditor.Model
@@ -12,7 +12,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 			_data = data;
 		}
 
-		public Brush LightColor
+		public Color LightColor
 		{
 			get => _data.LightColor;
 			set
@@ -22,7 +22,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 			} 
 		}
 
-		public Brush SelectedLightColor
+		public Color SelectedLightColor
 		{
 			get => _data.SelectedLightColor;
 			set
