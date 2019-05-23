@@ -787,7 +787,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				{
 					//All points are the same in standard discrete 
 					int col = 1;
-					Point xy = new Point(previewPixel.X, previewPixel.Y);
+					Vector2 xy;
+					if (_isHighPrecision)
+					{
+						xy = new Vector2((float)previewPixel.Location.X, (float)previewPixel.Location.Y);
+					}
+					else
+					{
+						xy = new Vector2(previewPixel.X, previewPixel.Y);
+					}
 					foreach (Color c in colors)
 					{
 						if (c.A > 0)
@@ -804,7 +812,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 							if (col % 2 == 0)
 							{
 								xy.Y += previewPixel.PixelSize;
-								xy.X = xy.X;
+								//xy.X = xy.X;
 							}
 							else
 							{
