@@ -1032,6 +1032,7 @@ namespace VixenModules.Output.E131
             foreach (DataGridViewRow r in univDGVN.Rows)
                 r.Selected = false;
             univDGVN.Rows[univDGVN.Rows.Count-1].Selected = true;
+			univDGVN.FirstDisplayedScrollingRowIndex = univDGVN.RowCount -1;
         }
 
         private void UnivDgvnDeletedRow(object sender, DataGridViewRowEventArgs e)
