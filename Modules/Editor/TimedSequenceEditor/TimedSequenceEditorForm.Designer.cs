@@ -2270,7 +2270,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			// saveFileDialog
 			// 
-			this.saveFileDialog.Title = "Save timed sequence";
+			this.saveFileDialog.Title = "Save Timed Sequence";
 			// 
 			// contextMenuStripElementSelection
 			// 
