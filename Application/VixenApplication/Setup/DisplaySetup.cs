@@ -96,16 +96,20 @@ namespace VixenApplication
 			//control.UpdatePatching(); //Occurs in load triggered by the table layout add above.
 		}
 
-		void control_ElementsChanged(object sender, EventArgs e)
+		void control_ElementsChanged(object sender, ElementsChangedEventArgs e)
 		{
 			if (_currentPatchingControl != null) {
 				_currentPatchingControl.UpdateElementDetails(_currentElementControl.SelectedElements);
 			}
 
-			// TODO: this is iffy, should really redo the events for this system
-			if (_currentControllersControl != null) {
-				_currentControllersControl.UpdatePatching();
+			if (e.Action == ElementsChangedEventArgs.ElementsChangedAction.Remove ||
+			    e.Action == ElementsChangedEventArgs.ElementsChangedAction.Edit)
+			{
+				// TODO: this is iffy, should really redo the events for this system
+				// TODO: The above should help a little with the iffiness of this, but I still question the brute force nature of this
+				_currentControllersControl?.UpdatePatching();
 			}
+			
 		}
 
 		void control_ElementSelectionChanged(object sender, ElementNodesEventArgs e)

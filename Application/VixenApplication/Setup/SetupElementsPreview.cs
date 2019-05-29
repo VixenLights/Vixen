@@ -18,7 +18,7 @@ namespace VixenApplication.Setup
 		}
 
 		public event EventHandler<ElementNodesEventArgs> ElementSelectionChanged;
-		public event EventHandler ElementsChanged;
+		public event EventHandler<ElementsChangedEventArgs> ElementsChanged;
 		IEnumerable<ElementNode> ISetupElementsControl.SelectedElements { get; set; }
 
 		public IEnumerable<ElementNode> SelectedElements
