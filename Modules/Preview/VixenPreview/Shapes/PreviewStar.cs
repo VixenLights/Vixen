@@ -17,6 +17,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	[DataContract]
 	public class PreviewStar : PreviewBaseShape
 	{
+		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		[DataMember] private PreviewPoint _topLeftPoint;
 		[DataMember] private PreviewPoint _bottomRightPoint;
 		[DataMember] private int _pointCount;
@@ -446,7 +448,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                         double y = point1.Y;
                         for (int linePointNum = 0; linePointNum < line1PixelCount; linePointNum++)
                         {
-                            if (pixelNum < _pixelCount)
+                            if (pixelNum < _pixelCount && pixelNum < _pixels.Count)
                             {
                                 _pixels[pixelNum].X = (int)Math.Round(x);
                                 _pixels[pixelNum].Y = (int)Math.Round(y);
@@ -455,7 +457,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                             }
                             else
                             {
-                                Console.WriteLine("pixelNum Overrun 1: " + pixelNum);
+                                Logging.Error("pixelNum Overrun 1: " + pixelNum);
                             }
                             pixelNum++;
                         }
@@ -466,7 +468,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                         y = point2.Y;
                         for (int linePointNum = 0; linePointNum < line2PixelCount; linePointNum++)
                         {
-                            if (pixelNum < _pixelCount)
+                            if (pixelNum < _pixelCount && pixelNum < _pixels.Count)
                             {
                                 _pixels[pixelNum].X = (int)Math.Round(x);
                                 _pixels[pixelNum].Y = (int)Math.Round(y);
@@ -475,7 +477,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                             }
                             else
                             {
-                                Console.WriteLine("pixelNum Overrun 2: " + pixelNum);
+	                            Logging.Error("pixelNum Overrun 2: " + pixelNum);
                             }
                             pixelNum++;
                         }
