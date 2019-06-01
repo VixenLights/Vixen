@@ -92,13 +92,13 @@
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Serialization">
@@ -960,11 +960,14 @@
   <ItemGroup>
     <Compile Include="Commands\StringCommand.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(SolutionDir)\Release Notes.txt" "$(OutDir)"
-copy "$(SolutionDir)\License.txt" "$(OutDir)"</PostBuildEvent>
+copy "$(SolutionDir)\License.txt" "$(OutDir)"
+del "$(OutDir)\System.*"
+del "$(OutDir)\Microsoft.*"
+del "$(OutDir)\netstandard.dll*"
+del "$(OutDir)\libzstd.dll*"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Zstandard.Net.1.1.5\build\Zstandard.Net.targets" Condition="Exists('..\packages\Zstandard.Net.1.1.5\build\Zstandard.Net.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
