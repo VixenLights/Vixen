@@ -519,6 +519,17 @@ namespace VixenModules.Effect.LipSync
 					SetLipsyncModeBrowsables();
 					IsDirty = true;
 					OnPropertyChanged();
+					if (_data.LipSyncMode == LipSyncMode.MarkCollection && _data.MarkCollectionId == Guid.Empty)
+					{
+						if (MarkCollections.Any())
+						{
+							var mc = MarkCollections.FirstOrDefault(x => x.CollectionType == MarkCollectionType.Phoneme);
+							if (mc != null)
+							{
+								MarkCollectionId = mc.Name;
+							}
+						}
+					}
 				}
 			}
 		}
