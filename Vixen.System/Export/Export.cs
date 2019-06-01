@@ -204,7 +204,7 @@ namespace Vixen.Export
 						if (ip == null) ip = string.Empty;
 
 						u.Address = ip;
-					    u.Description = controller.Name;
+					    u.Description = controller.Name.Replace("&","+");
 					    u.UniverseType = uc.IsMultiCast?UniverseTypes.E131_Multicast:UniverseTypes.E131_Unicast;
 					    u.Active = uc.Active;
 					    u.ChannelCount = uc.Size;
