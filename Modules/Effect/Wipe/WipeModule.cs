@@ -38,6 +38,7 @@ namespace VixenModules.Effect.Wipe
 		private int _bufferWidth;
 		private int _bufferHeight;
 		private int _pulsePercent;
+		private int _steps;
 
 		protected override void TargetNodesChanged()
 		{
@@ -112,8 +113,10 @@ namespace VixenModules.Effect.Wipe
 		private List<ElementNode[]> GetRenderedCircle(List<Tuple<ElementNode, int, int, int>> renderedNodes)
 		{
 			List<Tuple<int, ElementNode[]>> groups = new List<Tuple<int, ElementNode[]>>();
-			int steps = (int) (DistanceFromPoint(new Point(_maxX, _maxY), new Point(_minX, _minY)) / 2);
-			Point centerPoint = new Point((_bufferWidth) / 2 + _minX, _bufferHeight / 2 + _minY);
+			_steps = (int) (DistanceFromPoint(new Point(_maxX, _maxY), new Point(_minX, _minY)) / 2);
+			
+			Point centerPoint = new Point((int)((int)((XOffset + 100) / 2) * _bufferWidth / 100) + _minX, (int)((100 - (int)((YOffset + 100) / 2)) * _bufferHeight / 100) + _minY);
+			int steps = GetMaxSteps(centerPoint);
 
 			_pulsePercent = (int) (_bufferWidth * (PulsePercent / 100));
 			if (WipeMovement == WipeMovement.Movement) steps += _pulsePercent;
@@ -137,7 +140,17 @@ namespace VixenModules.Effect.Wipe
 		private List<ElementNode[]> GetRenderedDiamond(List<Tuple<ElementNode, int, int, int>> renderedNodes)
 		{
 			List<Tuple<int, ElementNode[]>> groups = new List<Tuple<int, ElementNode[]>>();
-			int steps = (int)(Math.Sqrt(Math.Pow(_bufferWidth, 2) + Math.Pow(_bufferHeight, 2)) / 1.5);
+			_steps = (int)(Math.Sqrt(Math.Pow(_bufferWidth, 2) + Math.Pow(_bufferHeight, 2)) / 1.5);
+
+			int xOffset = (int)((XOffset + 100) / 2);
+			int yOffset = (int)((YOffset + 100) / 2);
+
+			Point centerPoint = new Point((int)(xOffset * _bufferWidth / 100) + _minX, (int)((100 - yOffset) * _bufferHeight / 100) + _minY);
+			int steps = (int)(GetMaxSteps(centerPoint) * 1.41);
+
+			xOffset = (int)(Math.Round(ScaleCurveToValue(xOffset, -_bufferWidth, _bufferWidth)) / 2);
+			yOffset = (int)(Math.Round(ScaleCurveToValue(yOffset, _bufferHeight, -_bufferHeight)) / 2);
+
 			_pulsePercent = (int)(_bufferWidth * (PulsePercent / 100));
 			if (WipeMovement == WipeMovement.Movement) steps += _pulsePercent;
 			
@@ -147,23 +160,23 @@ namespace VixenModules.Effect.Wipe
 				foreach (Tuple<ElementNode, int, int, int> node in renderedNodes)
 				{
 					// Do the Down/Left or Up/Right directions
-					int nodeLocation = (node.Item3 - _minY) - (node.Item2 - _minX) +
-					                   (_bufferWidth - _bufferHeight) / 2;
+					int nodeLocation = (int)((node.Item3 - _minY + yOffset) - (node.Item2 - _minX + xOffset) +
+					                         (_bufferWidth - _bufferHeight) / 2);
 					if (nodeLocation < 0) nodeLocation = -nodeLocation;
 					if (nodeLocation == i &&
-					    ((_maxY - _midY - node.Item3) <= i && (_maxX - _midX - node.Item2) <= i) &&
-					    (node.Item3 - _minY - _midY) <= i && (node.Item2 - _minX - _midX) <= i)
+					    ((_maxY - _midY - yOffset - node.Item3) <= i && (_maxX - _midX - xOffset - node.Item2) <= i) &&
+					    (node.Item3 - _minY - _midY + yOffset) <= i && (node.Item2 - _minX - _midX + xOffset) <= i)
 					{
 						elements.Add(node.Item1);
 					}
 
-					// Do the Down/Right or Up/Left directions
-					nodeLocation = (node.Item2 - _minX + node.Item3 - _minY) -
+					//Do the Down / Right or Up/ Left directions
+					nodeLocation = (node.Item2 + xOffset - _minX + node.Item3 + yOffset - _minY) -
 					               (_bufferWidth + _bufferHeight) / 2;
 					if (nodeLocation < 0) nodeLocation = -nodeLocation;
 					if (nodeLocation == i &&
-					    ((_maxY - _midY - node.Item3) <= i && (_maxX - _midX - node.Item2) <= i) &&
-					    (node.Item3 - _minY - _midY) <= i && (node.Item2 - _minX - _midX) <= i)
+					    ((_maxY - _midY - node.Item3 - yOffset) <= i && (_maxX - _midX - node.Item2 - xOffset) <= i) &&
+					    (node.Item3 + yOffset - _minY - _midY) <= i && (node.Item2 + xOffset - _minX - _midX) <= i)
 					{
 						elements.Add(node.Item1);
 					}
@@ -179,7 +192,17 @@ namespace VixenModules.Effect.Wipe
 		private List<ElementNode[]> GetRenderedRectangle(List<Tuple<ElementNode, int, int, int>> renderedNodes)
 		{
 			List<Tuple<int, ElementNode[]>> groups = new List<Tuple<int, ElementNode[]>>();
-			int steps = (int)(Math.Max(_bufferWidth, _bufferHeight) / 2);
+			_steps = (int)(Math.Max(_bufferWidth, _bufferHeight) / 2);
+
+			int xOffset = (int)((XOffset + 100) / 2);
+			int yOffset = (int)((YOffset + 100) / 2);
+
+			Point centerPoint = new Point((int)(xOffset * _bufferWidth / 100) + _minX, (int)(yOffset * _bufferHeight / 100) + _minY);
+			int steps = GetMaxSteps(centerPoint);
+
+			xOffset = (int)Math.Round(ScaleCurveToValue(xOffset, -_bufferWidth, _bufferWidth)) / 2;
+			yOffset = (int)Math.Round(ScaleCurveToValue(yOffset, _bufferHeight, -_bufferHeight)) / 2;
+
 			_pulsePercent = (int)(_bufferWidth * (PulsePercent / 100));
 			if (WipeMovement == WipeMovement.Movement) steps += _pulsePercent;
 
@@ -190,13 +213,13 @@ namespace VixenModules.Effect.Wipe
 				foreach (Tuple<ElementNode, int, int, int> node in renderedNodes)
 				{
 					// Sets Left and Right side of burst
-					if (_maxY - _midY - node.Item3 <= i && _maxY - _midY - node.Item3 >= -i &&
-					    (_maxX - _midX - node.Item2 == i || _maxX - _midX - node.Item2 == -i))
+					if (_maxY - _midY - node.Item3 - yOffset <= i && _maxY - _midY - node.Item3 - yOffset >= -i &&
+					    (_maxX - _midX - node.Item2 - xOffset == i || _maxX - _midX - node.Item2 - xOffset == -i))
 						elements.Add(node.Item1);
 
 					// Sets Top and Bottom side of burst
-					if (_maxX - _midX - node.Item2 <= i && _maxX - _midX - node.Item2 >= -i &&
-					    (_maxY - _midY - node.Item3 == i || _maxY - _midY - node.Item3 == -i))
+					if (_maxX - _midX - node.Item2 - xOffset <= i && _maxX - _midX - node.Item2 - xOffset >= -i &&
+					    (_maxY - _midY - node.Item3 - yOffset == i || _maxY - _midY - node.Item3 - yOffset == -i))
 						elements.Add(node.Item1);
 				}
 				groups.Add(new Tuple<int, ElementNode[]>(i, elements.ToArray()));
@@ -210,11 +233,11 @@ namespace VixenModules.Effect.Wipe
 		private List<ElementNode[]> GetRenderedDiagonal(List<Tuple<ElementNode, int, int, int>> renderedNodes)
 		{
 			List<Tuple<int, ElementNode[]>> groups = new List<Tuple<int, ElementNode[]>>();
-			int steps = (int)(Math.Sqrt(Math.Pow(_bufferWidth, 2) + Math.Pow(_bufferHeight, 2))*1.41);
+			_steps = (int)(Math.Sqrt(Math.Pow(_bufferWidth, 2) + Math.Pow(_bufferHeight, 2))*1.41);
 			_pulsePercent = (int)(_bufferWidth * (PulsePercent / 100));
-			if (WipeMovement == WipeMovement.Movement) steps += _pulsePercent;
+			if (WipeMovement == WipeMovement.Movement) _steps += _pulsePercent;
 
-			for (int i = 0; i < steps; i++)
+			for (int i = 0; i < _steps; i++)
 			{
 				List<ElementNode> elements = new List<ElementNode>();
 				foreach (Tuple<ElementNode, int, int, int> node in renderedNodes)
@@ -223,7 +246,7 @@ namespace VixenModules.Effect.Wipe
 					{
 						if (Direction == WipeDirection.DiagonalUp)
 						{
-							if (node.Item2 - _minX + node.Item3 - _minY == steps - i) elements.Add(node.Item1);
+							if (node.Item2 - _minX + node.Item3 - _minY == _steps - i) elements.Add(node.Item1);
 						}
 						else
 						{
@@ -253,7 +276,7 @@ namespace VixenModules.Effect.Wipe
 		private List<ElementNode[]> GetRenderedLRUD(List<Tuple<ElementNode, int, int, int>> renderedNodes)
 		{
 			List<Tuple<int, ElementNode[]>> groups = new List<Tuple<int, ElementNode[]>>();
-			int steps = 0;
+			_steps = 0;
 
 			_pulsePercent = Direction == WipeDirection.Vertical
 				? (int)(_bufferHeight * (PulsePercent / 100))
@@ -262,16 +285,16 @@ namespace VixenModules.Effect.Wipe
 			switch (Direction)
 			{
 				case WipeDirection.Vertical:
-					steps = _bufferHeight;
+					_steps = _bufferHeight;
 					break;
 				case WipeDirection.Horizontal:
-					steps = _bufferWidth;
+					_steps = _bufferWidth;
 					break;
 			}
 			
-			if (WipeMovement == WipeMovement.Movement) steps += _pulsePercent;
+			if (WipeMovement == WipeMovement.Movement) _steps += _pulsePercent;
 			
-			for (int i = 0; i < steps; i++)
+			for (int i = 0; i < _steps; i++)
 			{
 				List<ElementNode> elements = new List<ElementNode>();
 				switch (Direction)
@@ -377,7 +400,7 @@ namespace VixenModules.Effect.Wipe
 		{
 			TimeSpan effectTime = TimeSpan.Zero;
 			int count = 0;
-			double pulseSegment = (TimeSpan.Ticks * (PulsePercent / 100)) / PassCount;
+			double pulseSegment = (TimeSpan.Ticks * ((PulsePercent * ((double)_steps / renderNodes.Count())) / 100)) / PassCount;
 			TimeSpan intervalTime = TimeSpan.FromTicks((long)((TimeSpan.Ticks - pulseSegment) / (renderNodes.Count() * PassCount)));
 			TimeSpan segmentPulse = TimeSpan.FromTicks((long)pulseSegment);
 
@@ -565,6 +588,15 @@ namespace VixenModules.Effect.Wipe
 			}
 		}
 
+		private int GetMaxSteps(Point centerPoint)
+		{
+			//Determine max distance from center point.
+			int steps = (int)(DistanceFromPoint(new Point(_maxX, _maxY), centerPoint));
+			steps = Math.Max((int)(DistanceFromPoint(new Point(_maxX, _minY), centerPoint)), steps);
+			steps = Math.Max((int)(DistanceFromPoint(new Point(_minX, _minY), centerPoint)), steps);
+			return Math.Max((int)(DistanceFromPoint(new Point(_minX, _maxY), centerPoint)), steps);
+		}
+
 		private class WipeClass
 		{
 			public int ElementIndex;
@@ -736,6 +768,42 @@ namespace VixenModules.Effect.Wipe
 		}
 
 		[Value]
+		[ProviderCategory(@"Movement", 3)]
+		[ProviderDisplayName(@"XOffset")]
+		[ProviderDescription(@"XOffset")]
+		[PropertyEditor("SliderDoubleEditor")]
+		[NumberRange(-100, 100, 1)]
+		[PropertyOrder(3)]
+		public double XOffset
+		{
+			get { return _data.XOffset; }
+			set
+			{
+				_data.XOffset = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 3)]
+		[ProviderDisplayName(@"YOffset")]
+		[ProviderDescription(@"YOffset")]
+		[PropertyEditor("SliderDoubleEditor")]
+		[NumberRange(-100, 100, 1)]
+		[PropertyOrder(3)]
+		public double YOffset
+		{
+			get { return _data.YOffset; }
+			set
+			{
+				_data.YOffset = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
 		[ProviderCategory(@"Brightness",4)]
 		[ProviderDisplayName(@"Brightness")]
 		[ProviderDescription(@"PulseShape")]
@@ -878,7 +946,9 @@ namespace VixenModules.Effect.Wipe
 				{"MovementCurve", WipeMovement == WipeMovement.Movement },
 				{"ReverseDirection", WipeMovement != WipeMovement.Movement },
 				{"ColorAcrossItemPerCount", ColorHandling == ColorHandling.ColorAcrossItems && WipeMovement != WipeMovement.Movement},
-				{"ReverseColorDirection", WipeMovement == WipeMovement.Movement}
+				{"ReverseColorDirection", WipeMovement == WipeMovement.Movement},
+				{"YOffset", Direction > (WipeDirection) 3},
+				{"XOffset",  Direction > (WipeDirection) 3}
 			};
 			SetBrowsable(propertyStates);
 		}
