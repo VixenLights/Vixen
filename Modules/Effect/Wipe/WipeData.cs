@@ -24,6 +24,8 @@ namespace VixenModules.Effect.Wipe {
 			WipeOff = false;
 			ColorAcrossItemPerCount = true;
 			ReverseColorDirection = true;
+			XOffset = 0.0;
+			YOffset = 0.0;
 		}
 		[DataMember]
 		public ColorHandling ColorHandling { get; set; }
@@ -66,6 +68,12 @@ namespace VixenModules.Effect.Wipe {
 
 		[DataMember]
 		public bool ReverseColorDirection { get; set; }
+
+		[DataMember]
+		public double XOffset { get; set; }
+
+		[DataMember]
+		public double YOffset { get; set; }
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
