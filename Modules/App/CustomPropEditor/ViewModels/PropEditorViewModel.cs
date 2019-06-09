@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.WpfPropertyGrid;
 using Catel.IoC;
@@ -14,6 +16,7 @@ using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Import;
 using VixenModules.App.CustomPropEditor.Import.XLights;
 using VixenModules.App.CustomPropEditor.Model;
+using VixenModules.App.CustomPropEditor.Model.InternalVendorInventory;
 using VixenModules.App.CustomPropEditor.Services;
 using PropertyData = Catel.Data.PropertyData;
 
@@ -779,6 +782,75 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 		}
 
+		private async Task<bool> ImportProp(string path)
+		{
+			IModelImport import = new XModelImport();
+			var p = await import.ImportAsync(path);
+			if (p != null)
+			{
+				Prop = p;
+				FilePath = String.Empty;
+			}
+
+			return true;
+		}
+
+		#endregion
+
+		#region ImportVendorXModel command
+
+		private TaskCommand _importVendorXModelCommand;
+
+		/// <summary>
+		/// Gets the ImportVendorXModel command.
+		/// </summary>
+		[Browsable(false)]
+		public TaskCommand ImportVendorXModelCommand
+		{
+			get { return _importVendorXModelCommand ?? (_importVendorXModelCommand = new TaskCommand(ImportVendorXModelAsync)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the ImportVendorXModel command is executed.
+		/// </summary>
+		private async Task ImportVendorXModelAsync()
+		{
+			XModelInventoryImporter mi = new XModelInventoryImporter();
+
+			List<ModelInventory> vendorInventories = new List<ModelInventory>();
+			foreach (var vendorUrl in GetVendorUrls())
+			{
+				vendorInventories.Add(await mi.Import(vendorUrl));
+			}
+			
+			var dependencyResolver = this.GetDependencyResolver();
+			var uiVisualizerService = dependencyResolver.Resolve<IUIVisualizerService>();
+			var vm = new VendorInventoryWindowViewModel(vendorInventories, dependencyResolver.Resolve<IProcessService>());
+			bool? result = await uiVisualizerService.ShowDialogAsync(vm);
+
+			if (result.HasValue && result.Value)
+			{
+				await ImportXModelFromUri(vm.SelectedProduct.ModelLink.First(x => x.Software==ModelType.XModel).Link);
+				Prop.PhysicalMetadata.Width = vm.SelectedProduct.Width;
+				Prop.PhysicalMetadata.Height = vm.SelectedProduct.Height;
+				Prop.PhysicalMetadata.Depth = vm.SelectedProduct.Thickness;
+				Prop.PhysicalMetadata.Material = vm.SelectedProduct.Material;
+				Prop.PhysicalMetadata.BulbType = vm.SelectedProduct.PixelDescription;
+				Prop.InformationMetadata.Notes = vm.SelectedProduct.Notes;
+				Prop.VendorMetadata.Name = vm.SelectedInventory.Vendor.Name;
+				Prop.VendorMetadata.Contact = vm.SelectedInventory.Vendor.Contact;
+				Prop.VendorMetadata.Email = vm.SelectedInventory.Vendor.Email;
+				Prop.VendorMetadata.Phone = vm.SelectedInventory.Vendor.Phone;
+				var website = vm.SelectedInventory.Vendor.WebLinks.Where(x => x.Name.Equals("Website"));
+				if (website.Any())
+				{
+					Prop.VendorMetadata.Website = website.First().Link.AbsoluteUri;
+				}
+				
+			}
+
+		}
+
 		#endregion
 
 		#region NewProp command
@@ -951,6 +1023,30 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		#endregion
 
 		#endregion
+
+		private async Task<bool> ImportXModelFromUri(Uri uri)
+		{
+			var targetPath = Path.Combine(Path.GetTempPath() + Guid.NewGuid());
+			var dependencyResolver = this.GetDependencyResolver();
+			//var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
+			//pleaseWaitService.Show();
+			//pleaseWaitService.UpdateStatus(1,3,"Downloading Model");
+			var ds = dependencyResolver.Resolve<IDownloadService>();
+			await ds.GetFileAsync(uri, targetPath);
+			//pleaseWaitService.UpdateStatus(2,3, "Importing Model");
+
+			await ImportProp(targetPath);
+
+			//pleaseWaitService.UpdateStatus(3, 3, "Model Imported");
+			//pleaseWaitService.Hide();
+
+			return true;
+		}
+
+		private string[] GetVendorUrls()
+		{
+			return new[] {@"http://hohenseefamily.com/xlights/boscoyo.xml"};
+		}
 
 		private string CleanseNameString(string name)
 		{

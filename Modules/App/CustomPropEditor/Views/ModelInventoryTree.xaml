@@ -1,0 +1,161 @@
+﻿<UserControl x:Class="VixenModules.App.CustomPropEditor.Views.ModelInventoryTree"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:interactivity="http://schemas.catelproject.com"
+             xmlns:viewModels="clr-namespace:VixenModules.App.CustomPropEditor.ViewModels"
+			 xmlns:behaviors="clr-namespace:VixenModules.App.CustomPropEditor.Behaviors"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             xmlns:commonUtils="clr-namespace:Common.WPFCommon.Utils;assembly=WPFCommon"
+             xmlns:Model="clr-namespace:VixenModules.App.CustomPropEditor.Model.InternalVendorInventory"
+             xmlns:converters="clr-namespace:VixenModules.App.CustomPropEditor.Converters"
+             xmlns:commonConverters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon">
+
+	<UserControl.Resources>
+
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+
+			<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+			<commonConverters:SingleItemToCollectionConverter x:Key="SingleItemToCollectionConverter"/>
+		
+			<Style x:Key="ModelTreeViewItemContainerStyle" TargetType="{x:Type TreeViewItem}">
+				<!--<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"></Setter>-->
+				<!--<Setter Property="behaviors:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="{Binding IsSelected, Mode=TwoWay}"></Setter>-->
+				<Setter Property="Background" Value="Transparent"/>
+				<Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment,
+				  RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+				<Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment,
+				  RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+				<Setter Property="Padding" Value="1,0,0,0"/>
+				<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
+				<Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type TreeViewItem}">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition MinWidth="19" Width="Auto"/>
+									<ColumnDefinition Width="Auto"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" IsChecked="{Binding Path=IsExpanded,
+								  RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press"/>
+								<Border Name="Bd" Grid.Column="1" BorderThickness="1" >
+									<ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+								</Border>
+								<ItemsPresenter x:Name="ItemsHost" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"/>
+							</Grid>
+							<ControlTemplate.Triggers>
+								<Trigger Property="IsExpanded" Value="false">
+									<Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
+								</Trigger>
+								<Trigger Property="HasItems" Value="false">
+									<Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
+								</Trigger>
+								<MultiTrigger>
+									<MultiTrigger.Conditions>
+										<Condition Property="HasHeader" Value="false"/>
+										<Condition Property="Width" Value="Auto"/>
+									</MultiTrigger.Conditions>
+									<Setter TargetName="PART_Header" Property="MinWidth" Value="75"/>
+								</MultiTrigger>
+								<MultiTrigger>
+									<MultiTrigger.Conditions>
+										<Condition Property="HasHeader" Value="false"/>
+										<Condition Property="Height" Value="Auto"/>
+									</MultiTrigger.Conditions>
+									<Setter TargetName="PART_Header" Property="MinHeight" Value="19"/>
+								</MultiTrigger>
+								<MultiTrigger>
+									<MultiTrigger.Conditions>
+										<Condition Property="behaviors:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="true"/>
+										<Condition Property="Selector.IsSelectionActive" Value="false"/>
+									</MultiTrigger.Conditions>
+									<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
+									<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Border}"/>
+								</MultiTrigger>
+								<MultiTrigger>
+									<MultiTrigger.Conditions>
+										<Condition Property="behaviors:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="true"/>
+										<Condition Property="Selector.IsSelectionActive" Value="True"/>
+									</MultiTrigger.Conditions>
+									<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}" />
+									<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border}"/>
+									<Setter Property="BorderThickness" TargetName="Bd" Value="1"></Setter>
+									<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
+								</MultiTrigger>
+								<Trigger Property="IsEnabled" Value="false">
+									<Setter Property="Foreground" Value="{StaticResource ForeColorDisabled}"/>
+								</Trigger>
+							</ControlTemplate.Triggers>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+
+			<Style x:Key="ModelTreeViewStyle" TargetType="{x:Type TreeView}">
+				<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
+				<Setter Property="Background" Value="{StaticResource BackColorBrush}" />
+				<Setter Property="ItemContainerStyle" Value="{StaticResource ModelTreeViewItemContainerStyle}" />
+				<Setter Property="Padding" Value="0" />
+			</Style>
+
+
+			
+		</ResourceDictionary>
+
+	</UserControl.Resources>
+
+	<Grid>
+
+		<TreeView x:Name="ModelTreeView" Style="{StaticResource ModelTreeViewStyle}"
+                  ItemsSource="{Binding SelectedInventory.Inventory}" 
+				  BorderThickness="0"
+                  VerticalAlignment="Stretch"
+                  HorizontalAlignment="Stretch"
+                  ScrollViewer.CanContentScroll="True"
+                  FocusManager.IsFocusScope="True">
+
+			<TreeView.Resources>
+				<!--<HierarchicalDataTemplate ItemsSource="{Binding Inventory}" DataType="{x:Type Model:ModelInventory}">
+					<TextBlock x:Name="VendorName" Text="{Binding Vendor.Name}" Margin="0,2,0,2"/>
+				</HierarchicalDataTemplate>-->
+
+				<HierarchicalDataTemplate  DataType="{x:Type Model:Category}">
+					<HierarchicalDataTemplate.ItemsSource>
+						<MultiBinding>
+							<MultiBinding.Converter>
+								<converters:CompositeCollectionConverter/>
+							</MultiBinding.Converter>
+							<Binding Path="Categories"/>
+							<Binding Path="Products"/>
+						</MultiBinding>
+					</HierarchicalDataTemplate.ItemsSource>
+					<TextBlock x:Name="CategoryName" Text="{Binding Name}" Margin="0,2,0,2"/>
+					
+				</HierarchicalDataTemplate>
+
+				<DataTemplate DataType="{x:Type Model:Product}">
+					<TextBlock x:Name="ProductName"  Margin="0,2,0,2">
+						<Hyperlink Command="{Binding Path=DataContext.SelectProductCommand,  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TreeView}}}" CommandParameter="{Binding}" TextDecorations="None" Foreground="Black">
+							<TextBlock Text="{Binding Name}"></TextBlock>
+						</Hyperlink>
+					</TextBlock>
+				</DataTemplate>
+
+			</TreeView.Resources>
+
+		</TreeView>
+
+	</Grid>
+</UserControl>

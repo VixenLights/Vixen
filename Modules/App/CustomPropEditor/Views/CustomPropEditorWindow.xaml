@@ -54,6 +54,7 @@
 				</MenuItem>
 				<MenuItem Header="Save As" Command="{Binding SaveModelAsCommand}"/>
 				<MenuItem Header="Import xModel" Command="{Binding ImportCommand}" CommandParameter="xModel"/>
+				<MenuItem Header="Import Vendor xModel" Command="{Binding ImportVendorXModelCommand}"/>
 				<MenuItem Header="Exit" Command="{Binding ExitCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=EditorWindow}">
 					<MenuItem.Icon>
 						<Image Source="/Resources;component/Close_6519.png" Width="16" Height="16"></Image>
