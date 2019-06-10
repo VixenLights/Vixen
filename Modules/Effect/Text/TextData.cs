@@ -43,6 +43,9 @@ namespace VixenModules.Effect.Text
 			RepeatText = false;
 			TextDuration = TextDuration.AutoFit;
 			CycleColor = false;
+			ExplodePosition = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			CycleCharacterColor = false;
+			FallSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 		}
 
 		[DataMember]
@@ -128,12 +131,21 @@ namespace VixenModules.Effect.Text
 
 		[DataMember]
 		public bool RepeatText { get; set; }
-
+		
 		[DataMember]
 		public TextDuration TextDuration { get; set; }
-
+		
 		[DataMember]
 		public bool CycleColor { get; set; }
+
+		[DataMember]
+		public bool CycleCharacterColor { get; set; }
+		
+		[DataMember]
+		public Curve ExplodePosition { get; set; }
+
+		[DataMember]
+		public Curve FallSpeedCurve { get; set; }
 
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
@@ -190,6 +202,12 @@ namespace VixenModules.Effect.Text
 					p.Y = 100 - p.Y;
 				}
 			}
+
+			if (ExplodePosition == null)
+			{
+				ExplodePosition = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+				FallSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
+			}
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
@@ -222,7 +240,10 @@ namespace VixenModules.Effect.Text
 				DirectionPerWord = DirectionPerWord,
 				RepeatText = RepeatText,
 				TextDuration = TextDuration,
-				CycleColor = CycleColor
+				CycleColor = CycleColor,
+				ExplodePosition = new Curve(ExplodePosition),
+				CycleCharacterColor = CycleCharacterColor,
+				FallSpeedCurve = new Curve(FallSpeedCurve)
 			};
 			return result;
 		}
