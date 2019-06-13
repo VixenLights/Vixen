@@ -159,7 +159,8 @@ namespace Common.Controls
 			}
 
 			// finally, if we were selecting another element, make sure we raise the selection changed event
-			if (elementTreeNodesToSelect != null) {
+			if (elementTreeNodesToSelect != null)
+			{
 				// TODO: oops, we just pass the selection changed event through to the control; oh well,
 				// an "elements have changed" event will do for now. Fix this sometime.
 				OnElementsChanged();
@@ -253,23 +254,59 @@ namespace Common.Controls
 			addedNode.Text = elementNode.Name;
 			addedNode.Tag = elementNode;
 
-			if (!elementNode.Children.Any()) {
-				if (elementNode.Element != null &&
-					VixenSystem.DataFlow.GetDestinationsOfComponent(VixenSystem.Elements.GetDataFlowComponentForElement(elementNode.Element)).Any()) {
-					if (elementNode.Element.Masked)
-						addedNode.ImageKey = addedNode.SelectedImageKey = "RedBall";
-					else
-						addedNode.ImageKey = addedNode.SelectedImageKey = "GreenBall";
-				} else
-					addedNode.ImageKey = addedNode.SelectedImageKey = "WhiteBall";
-			} else {
-				addedNode.ImageKey = addedNode.SelectedImageKey = "Group";
-			}
+			UpdateTreeNodeImage(addedNode, elementNode);
 
 			collection.Add(addedNode);
 
 			foreach (ElementNode childNode in elementNode.Children) {
 				AddNodeToTree(addedNode.Nodes, childNode);
+			}
+		}
+
+		public void RefreshElementTreeStatus()
+		{
+			treeview.BeginUpdate();
+			foreach (TreeNode node in treeview.Nodes)
+			{
+				RefreshElementTreeNode(node);
+			}
+
+			treeview.EndUpdate();
+		}
+
+		private void RefreshElementTreeNode(TreeNode node)
+		{
+			if (node.Tag is ElementNode elementNode)
+			{
+				UpdateTreeNodeImage(node, elementNode);
+
+				foreach (TreeNode childNode in node.Nodes)
+				{
+					RefreshElementTreeNode(childNode);
+				}
+			}
+		}
+
+		private static void UpdateTreeNodeImage(TreeNode node, ElementNode elementNode)
+		{
+			if (!elementNode.Children.Any())
+			{
+				if (elementNode.Element != null &&
+				    VixenSystem.DataFlow
+					    .GetDestinationsOfComponent(VixenSystem.Elements.GetDataFlowComponentForElement(elementNode.Element))
+					    .Any())
+				{
+					if (elementNode.Element.Masked)
+						node.ImageKey = node.SelectedImageKey = @"RedBall";
+					else
+						node.ImageKey = node.SelectedImageKey = @"GreenBall";
+				}
+				else
+					node.ImageKey = node.SelectedImageKey = @"WhiteBall";
+			}
+			else
+			{
+				node.ImageKey = node.SelectedImageKey = @"Group";
 			}
 		}
 
@@ -510,7 +547,7 @@ namespace Common.Controls
 						result.AddRange(
 							nameGenerator.Names.Where(name => !string.IsNullOrEmpty(name)).Select(
 								name => AddNewNode(name, false, parent, true)));
-						if (result == null || result.Count() == 0)
+						if (!result.Any())
 						{
 							//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 							MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
@@ -519,7 +556,7 @@ namespace Common.Controls
 							messageBox.ShowDialog();
 							return result;
 						}
-						PopulateNodeTree(result.FirstOrDefault());
+						AddNodePathToTree(result);
 					}
 				}
 
@@ -537,7 +574,8 @@ namespace Common.Controls
 					else
 						newName = textDialog.Response;
 
-					ElementNode en = AddNewNode(newName, true, parent);
+					ElementNode en = AddNewNode(newName, false, parent);
+					AddNodePathToTree(new []{en});
 					return en;
 				}
 			}
@@ -557,6 +595,31 @@ namespace Common.Controls
 			if (repopulateNodeTree)
 				PopulateNodeTree(newNode);
 			return newNode;
+		}
+
+		public void AddNodePathToTree(IEnumerable<ElementNode> elementNodes)
+		{
+			_selectedNodes.Clear();
+			
+			treeview.BeginUpdate();
+			treeview.SelectedNodes.Clear();
+			TreeNode resultNode = null;
+			foreach (var elementNode in elementNodes)
+			{
+				AddNodeToTree(treeview.Nodes, elementNode);
+
+				_selectedNodes.Add(GenerateEquivalentTreeNodeFullPathFromElement(elementNode, treeview.PathSeparator));
+
+				resultNode = treeview.Nodes[treeview.Nodes.Count-1];
+
+				if (resultNode != null)
+				{
+					treeview.AddSelectedNode(resultNode);
+				}
+			}
+			
+			treeview.EndUpdate();
+			resultNode?.EnsureVisible();
 		}
 
 		public bool CreateGroupFromSelectedNodes()

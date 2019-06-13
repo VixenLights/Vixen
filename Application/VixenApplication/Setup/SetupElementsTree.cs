@@ -89,13 +89,10 @@ namespace VixenApplication.Setup
 			ElementSelectionChanged(this, e);
 		}
 
-		public event EventHandler ElementsChanged;
-		public void OnElementsChanged()
+		public event EventHandler<ElementsChangedEventArgs> ElementsChanged;
+		public void OnElementsChanged(ElementsChangedEventArgs e)
 		{
-			if (ElementsChanged == null)
-				return;
-
-			ElementsChanged(this, EventArgs.Empty);
+			ElementsChanged?.Invoke(this, e);
 		}
 
 
@@ -117,7 +114,7 @@ namespace VixenApplication.Setup
 
 		public void UpdatePatching()
 		{
-			elementTree.PopulateNodeTree();
+			elementTree.RefreshElementTreeStatus();
 		}
 
 		public void UpdateScrollPosition()
@@ -136,10 +133,10 @@ namespace VixenApplication.Setup
 			if (item != null) {
 				IElementSetupHelper helper = item.Value as IElementSetupHelper;
 				helper.Perform(elementTree.SelectedElementNodes);
-				elementTree.PopulateNodeTree();
+				elementTree.RefreshElementTreeStatus();
 
 				UpdateFormWithNode();
-				OnElementsChanged();
+				OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Edit));
 			}
 		}
 
@@ -160,7 +157,7 @@ namespace VixenApplication.Setup
 					}
 
 					UpdateFormWithNode();
-					OnElementsChanged();
+					OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Edit));
 				}
 			}
 		}
@@ -189,7 +186,7 @@ namespace VixenApplication.Setup
 					}
 
 					UpdateFormWithNode();
-					OnElementsChanged();
+					OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Edit));
 				}
 			}
 
@@ -223,7 +220,7 @@ namespace VixenApplication.Setup
 								}
 							}
 
-							OnElementsChanged();
+							OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Edit));
 						}
 					}
 					else if (property.HasElementSetupHelper)
@@ -231,7 +228,7 @@ namespace VixenApplication.Setup
 						result = property.SetupElements(SelectedElements);
 						if (result)
 						{
-							OnElementsChanged();
+							OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Edit));
 						}
 					}
 				}
@@ -250,15 +247,17 @@ namespace VixenApplication.Setup
 				bool act = template.SetupTemplate(elementTree.SelectedElementNodes);
 				if (act) {
 					IEnumerable<ElementNode> createdElements = template.GenerateElements(elementTree.SelectedElementNodes);
-					if (createdElements == null || createdElements.Count() == 0) {
+					if (createdElements == null || !createdElements.Any()) {
 						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 						var messageBox = new MessageBoxForm("Could not create elements.  Ensure you use a valid name and try again.", "", false, false);
 						messageBox.ShowDialog();
 						return;
 					}
-					elementTree.PopulateNodeTree(createdElements.FirstOrDefault());
-					OnElementsChanged();
+					//elementTree.PopulateNodeTree(createdElements.FirstOrDefault());
+					elementTree.AddNodePathToTree(new []{createdElements.First()});
+					OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Add));
+					UpdateFormWithNode();
 					UpdateScrollPosition();
 				}
 			}
@@ -323,7 +322,7 @@ namespace VixenApplication.Setup
 		private void elementTree_ElementsChanged(object sender, EventArgs e)
 		{
 			UpdateFormWithNode();
-			OnElementsChanged();
+			OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Edit));
 		}
 
 		private void elementTree_treeviewAfterSelect(object sender, TreeViewEventArgs e)
@@ -419,13 +418,13 @@ namespace VixenApplication.Setup
 			}
 
 			elementTree.PopulateNodeTree();
-			OnElementsChanged();
+			OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Remove));
 		}
 
 		private void buttonRenameElements_Click(object sender, EventArgs e)
 		{
 			if (elementTree.RenameSelectedElements()) {
-				OnElementsChanged();
+				OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Rename));
 			}
 		}
 

@@ -258,6 +258,7 @@
     <Compile Include="SelectProfile.Designer.cs">
       <DependentUpon>SelectProfile.cs</DependentUpon>
     </Compile>
+    <Compile Include="Setup\ElementsChangedEventArgs.cs" />
     <Compile Include="Setup\ElementTemplates\LipSync.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -1013,7 +1013,7 @@ namespace Common.Controls
 				}
 				else {
 					// Just clicked a node, select it
-					SelectSingleNode(node);
+					SelectSingleNode(node, false);
 				}
 
 				OnAfterSelect(new TreeViewEventArgs(m_SelectedNode));
@@ -1037,7 +1037,7 @@ namespace Common.Controls
 			}
 		}
 
-		private void SelectSingleNode(TreeNode node)
+		private void SelectSingleNode(TreeNode node, bool notify=true)
 		{
 			ClearSelectedNodes();
 
@@ -1046,7 +1046,10 @@ namespace Common.Controls
 				node.EnsureVisible();
 			}
 
-			OnAfterSelect(new TreeViewEventArgs(m_SelectedNode));
+			if (notify)
+			{
+				OnAfterSelect(new TreeViewEventArgs(m_SelectedNode));
+			}
 		}
 
 		private void ToggleNode(TreeNode node, bool bSelectNode)
