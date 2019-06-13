@@ -205,19 +205,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converter\PropertySorter.cs" />
-    <Compile Include="Direct2D\Direct2DControl.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Direct2D\DisplayScene.cs" />
-    <Compile Include="Direct2D\PreviewWinform.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Direct2D\PreviewWinform.Designer.cs">
-      <DependentUpon>PreviewWinform.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Direct2D\PreviewWPF.xaml.cs">
-      <DependentUpon>PreviewWPF.xaml</DependentUpon>
-    </Compile>
     <Compile Include="DebugTimer.cs" />
     <Compile Include="IDisplayForm.cs" />
     <Compile Include="GDIPreview\GDIPreviewForm.cs">
@@ -378,12 +365,6 @@
     </Compile>
     <Compile Include="VixenPreviewData.cs" />
     <Compile Include="VixenPreviewDescriptor.cs" />
-    <Compile Include="VixenPreviewDisplayD2D.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="VixenPreviewDisplayD2D.Designer.cs">
-      <DependentUpon>VixenPreviewDisplayD2D.cs</DependentUpon>
-    </Compile>
     <Compile Include="VixenPreviewModuleInstance.cs" />
     <Compile Include="VixenPreviewModuleInstance.Designer.cs">
       <DependentUpon>VixenPreviewModuleInstance.cs</DependentUpon>
@@ -412,9 +393,6 @@
     <Compile Include="VixenPreviewSetupPropertiesDocument.Designer.cs">
       <DependentUpon>VixenPreviewSetupPropertiesDocument.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Direct2D\PreviewWinform.resx">
-      <DependentUpon>PreviewWinform.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="GDIPreview\GDIControl.resx">
       <DependentUpon>GDIControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -467,9 +445,6 @@
     <EmbeddedResource Include="VixenPreviewControl.resx">
       <DependentUpon>VixenPreviewControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="VixenPreviewDisplayD2D.resx">
-      <DependentUpon>VixenPreviewDisplayD2D.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="VixenPreviewModuleInstance.resx">
       <DependentUpon>VixenPreviewModuleInstance.cs</DependentUpon>
     </EmbeddedResource>
@@ -510,12 +485,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Flood.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Direct2D\PreviewWPF.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

@@ -191,27 +191,23 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		public string Name { get; set; }
 	}
 
-
+	internal interface IBreakdownFilter
+	{
+		double GetIntensityForState(IIntentState intentValue);
+	}
 
 	/// <summary>
-	/// This filter gets the intensity percent for a given state
+	/// This filter gets the intensity percent for a given state for non mixing colors
 	/// </summary>
-	internal class ColorBreakdownFilter : IntentStateDispatch
+	internal class ColorBreakdownFilter : IntentStateDispatch, IBreakdownFilter
 	{
 		private double _intensityValue;
 		private readonly ColorBreakdownItem _breakdownItem;
-		private readonly HSV _breakdownColorAsHSV;
-		private readonly bool _mixColors;
 		private const double Tolerance = .0001; //For how close the Hue and Saturation should match for Discrete.
 		
-		public ColorBreakdownFilter(ColorBreakdownItem breakdownItem, bool mixColors)
+		public ColorBreakdownFilter(ColorBreakdownItem breakdownItem)
 		{
 			_breakdownItem = breakdownItem;
-			_mixColors = mixColors;
-
-			_breakdownColorAsHSV = HSV.FromRGB(_breakdownItem.Color);
-			// because of bad UI, the user can pick a non-100%-brightness color. So, let's just munge it to a 100% color anyway.
-			_breakdownColorAsHSV.V = 1;
 		}
 
 		/// <summary>
@@ -244,49 +240,35 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		public override void Handle(IIntentState<RGBValue> obj)
 		{
 			RGBValue value = obj.GetValue();
-			if (_mixColors) {
-				float maxProportion = _getMaxProportion(value.FullColor);
-				if (maxProportion > 0)
-				{
-					Color finalColor = Color.FromArgb((int)(_breakdownItem.Color.R * maxProportion),
-												  (int)(_breakdownItem.Color.G * maxProportion),
-												  (int)(_breakdownItem.Color.B * maxProportion));
-					_intensityValue = HSV.VFromRgb(finalColor);
-				}
-				else
-				{
-					_intensityValue = 0;
-				}
-				
+			
+			// if we're not mixing colors, we need to compare the input color against the filter color -- but only the
+			// hue and saturation components; ignore the intensity.
+			if (Math.Abs(value.FullColor.R - _breakdownItem.Color.R) < Tolerance &&
+			        Math.Abs(value.FullColor.G - _breakdownItem.Color.G) < Tolerance &&
+			        Math.Abs(value.FullColor.B - _breakdownItem.Color.B) < Tolerance)
+			{
+				var i = HSV.VFromRgb(value.FullColor);
+				//the value types are structs, so modify our copy and then set it back
+				_intensityValue = i;
 			} else {
-				// if we're not mixing colors, we need to compare the input color against the filter color -- but only the
-				// hue and saturation components; ignore the intensity.
-				HSV inputColor = HSV.FromRGB(value.FullColor);
-				if (Math.Abs(inputColor.H - _breakdownColorAsHSV.H) < Tolerance  &&  Math.Abs(inputColor.S - _breakdownColorAsHSV.S) < Tolerance) {
-					var i = HSV.VFromRgb(value.FullColor);
-					//the value types are structs, so modify our copy and then set it back
-					_intensityValue = i;
-				} else {
-					_intensityValue = 0;
-				}
+				_intensityValue = 0;
 			}
+			
 		}
 
 		public override void Handle(IIntentState<LightingValue> obj)
 		{
 			LightingValue lightingValue = obj.GetValue();
-			if (_mixColors) {
-				_intensityValue = lightingValue.Intensity * _getMaxProportion(lightingValue.Color);
+			
+			// if we're not mixing colors, we need to compare the input color against the filter color -- but only the
+			// hue and saturation components; ignore the intensity.
+			if (Math.Abs(lightingValue.Color.R - _breakdownItem.Color.R) < Tolerance &&
+				Math.Abs(lightingValue.Color.G - _breakdownItem.Color.G) < Tolerance &&
+				Math.Abs(lightingValue.Color.B - _breakdownItem.Color.B) < Tolerance) {
+				_intensityValue = lightingValue.Intensity;
 			}
 			else {
-				// if we're not mixing colors, we need to compare the input color against the filter color -- but only the
-				// hue and saturation components; ignore the intensity.
-				if (Math.Abs(lightingValue.Hue - _breakdownColorAsHSV.H) < Tolerance  &&  Math.Abs(lightingValue.Saturation - _breakdownColorAsHSV.S) < Tolerance) {
-					_intensityValue = lightingValue.Intensity;
-				}
-				else {
-					_intensityValue = 0;
-				}
+				_intensityValue = 0;
 			}
 		}
 
@@ -307,12 +289,84 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		}
 	}
 
+	internal enum MixingChannel
+	{
+		Red,
+		Green,
+		Blue
+	}
+
+	/// <summary>
+	/// This filter gets the intensity percent for a given state in simple RGB mixing
+	/// </summary>
+	internal class ColorBreakdownMixingFilter : IntentStateDispatch, IBreakdownFilter
+	{
+		private double _intensityValue;
+		private readonly MixingChannel _mixingChannel;
+		
+		public ColorBreakdownMixingFilter(ColorBreakdownItem breakdownItem)
+		{
+			if (breakdownItem.Color.Equals(Color.Red))
+			{
+				_mixingChannel = MixingChannel.Red;
+			}
+			else if(breakdownItem.Color.Equals(Color.Lime))
+			{
+				_mixingChannel = MixingChannel.Green;
+			}
+			else
+			{
+				_mixingChannel = MixingChannel.Blue;
+			}
+		}
+
+		/// <summary>
+		/// Process the intent and return a value that represents the percent of intensity for the state
+		/// </summary>
+		/// <param name="intentValue"></param>
+		/// <returns></returns>
+		public double GetIntensityForState(IIntentState intentValue)
+		{
+			intentValue.Dispatch(this);
+			return _intensityValue;
+		}
+
+		private float _getMaxProportion(Color inputColor)
+		{
+			switch (_mixingChannel)
+			{
+				case MixingChannel.Red:
+					return (float)inputColor.R / 255;
+				case MixingChannel.Green:
+					return (float)inputColor.G / 255;
+				case MixingChannel.Blue:
+					return (float)inputColor.B / 255;
+				default:
+					return 0;
+					
+			}
+		}
+
+		public override void Handle(IIntentState<RGBValue> obj)
+		{
+			RGBValue value = obj.GetValue();
+			_intensityValue = _getMaxProportion(value.FullColor);
+		}
+
+		public override void Handle(IIntentState<LightingValue> obj)
+		{
+			LightingValue lightingValue = obj.GetValue();
+			_intensityValue = lightingValue.Intensity * _getMaxProportion(lightingValue.Color);
+		}
+
+	}
+
 
 
 
 	internal class ColorBreakdownOutput : IDataFlowOutput<IntentDataFlowData>
 	{
-		private readonly ColorBreakdownFilter _filter;
+		private readonly IBreakdownFilter _filter;
 		private readonly ColorBreakdownItem _breakdownItem;
 		private readonly StaticIntentState<IntensityValue> _state = new StaticIntentState<IntensityValue>(new IntensityValue());
 		private readonly IntentDataFlowData _data;
@@ -320,7 +374,15 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		public ColorBreakdownOutput(ColorBreakdownItem breakdownItem, bool mixColors)
 		{
 			_data = new IntentDataFlowData(_state);
-			_filter = new ColorBreakdownFilter(breakdownItem, mixColors);
+			if (mixColors)
+			{
+				_filter = new ColorBreakdownMixingFilter(breakdownItem);
+			}
+			else
+			{
+				_filter = new ColorBreakdownFilter(breakdownItem);
+			}
+			
 			_breakdownItem = breakdownItem;
 		}
 

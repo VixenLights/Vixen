@@ -15,7 +15,7 @@ namespace Vixen.Intent
 	public class NonSegmentedLinearIntent<TypeOfValue> : Dispatchable<NonSegmentedLinearIntent<TypeOfValue>>, IIntent<TypeOfValue>
 		where TypeOfValue : IIntentDataType
 	{
-		private readonly IntentState<TypeOfValue> _intentState;
+		private readonly StaticIntentState<TypeOfValue> _intentState;
 		private readonly Interpolator<TypeOfValue> _interpolator;
 
 		public NonSegmentedLinearIntent(TypeOfValue startValue, TypeOfValue endValue, TimeSpan timeSpan, Interpolator<TypeOfValue> interpolator = null)
@@ -24,7 +24,7 @@ namespace Vixen.Intent
 			StartValue = startValue;
 			EndValue = endValue;
 			TimeSpan = timeSpan;
-			_intentState = new IntentState<TypeOfValue>(this, TimeSpan.Zero);
+			_intentState = new StaticIntentState<TypeOfValue>(startValue);
 		}
 
 		public TypeOfValue StartValue { get; private set; }
@@ -35,33 +35,9 @@ namespace Vixen.Intent
 		public IIntentState CreateIntentState(TimeSpan intentRelativeTime, ILayer layer)
 		{
 			_intentState.Layer = layer;
-			_intentState.RelativeTime = intentRelativeTime;
+			_intentState.SetValue(GetStateAt(intentRelativeTime));
+			//_intentState.RelativeTime = intentRelativeTime;
 			return _intentState;
-		}
-
-		public void FractureAt(TimeSpan intentRelativeTime)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void FractureAt(IEnumerable<TimeSpan> intentRelativeTimes)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void FractureAt(ITimeNode intentRelativeTime)
-		{
-			throw new NotImplementedException();
-		}
-
-		public IIntent[] DivideAt(TimeSpan intentRelativeTime)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void ApplyFilter(ISequenceFilterNode sequenceFilterNode, TimeSpan contextAbsoluteIntentStartTime)
-		{
-			throw new NotImplementedException();
 		}
 
 		public TypeOfValue GetStateAt(TimeSpan intentRelativeTime)

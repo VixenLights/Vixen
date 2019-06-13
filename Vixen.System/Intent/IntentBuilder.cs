@@ -128,9 +128,10 @@ namespace Vixen.Intent
 			IntentStateList states = new IntentStateList();
 			foreach (IIntentNode intentNode in effectIntent.Value)
 			{
+				if (intentNode.StartTime > effectRelativeTime) break;
 				if (TimeNode.IntersectsInclusively(intentNode, effectRelativeTime))
 				{
-					IIntentState intentState = intentNode.CreateIntentState(effectRelativeTime - intentNode.StartTime, SequenceLayers.GetDefaultLayer());
+					IIntentState intentState = intentNode.CreateIntentState(effectRelativeTime - intentNode.StartTime, null);
 					states.Add(intentState);
 				}
 			}
@@ -142,7 +143,7 @@ namespace Vixen.Intent
 		public static IIntent CreateIntent(Color color, double intensity, TimeSpan duration)
 		{
 			LightingValue lightingValue = new LightingValue(color, intensity);
-			IIntent intent = new LightingIntent(lightingValue, lightingValue, duration);
+			IIntent intent = new StaticLightingIntent(lightingValue, duration);
 			return intent;
 		}
 
@@ -157,7 +158,7 @@ namespace Vixen.Intent
 		public static IIntent CreateDiscreteIntent(Color color, double intensity, TimeSpan duration)
 		{
 			DiscreteValue discreteValue = new DiscreteValue(color, intensity);
-			IIntent intent = new DiscreteLightingIntent(discreteValue, discreteValue, duration);
+			IIntent intent = new StaticDiscreteLightingIntent(discreteValue, duration);
 			return intent;
 		}
 
@@ -176,8 +177,7 @@ namespace Vixen.Intent
 			IEnumerable<IGrouping<Color, IIntentState>> colorStates = states.GroupBy(
 				(x =>
 				{
-					var state = x as IntentState<DiscreteValue>;
-					if (state != null)
+					if (x is IIntentState<DiscreteValue> state)
 					{
 						return state.GetValue().Color;
 					}
@@ -191,8 +191,7 @@ namespace Vixen.Intent
 
 				double intensity = grouping.Max(x =>
 				{
-					var state = x as IntentState<DiscreteValue>;
-					if (state != null)
+					if (x is IIntentState<DiscreteValue> state)
 					{
 						return state.GetValue().Intensity;
 					}
