@@ -812,6 +812,10 @@ namespace VixenModules.Sequence.Timed
 
 		static T DeSerializer<T>(XElement element, Type[] knownTypes = null)
 		{
+			if (element == null)
+			{
+				return default(T);
+			}
 			DataContractSerializer serializer;
 			if (knownTypes == null)
 			{
