@@ -1399,7 +1399,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			catch (Exception ee)
 			{
-				Logging.Error("TimedSequenceEditor: <LoadSequence> - Error loading sequence.", ee);
+				Logging.Error(ee, "TimedSequenceEditor: <LoadSequence> - Error loading sequence.");
 			}
 		}
 
@@ -1995,7 +1995,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			catch (Exception ex)
 			{
-				Logging.Error("TimedSequenceEditor: <OnRenderProgressChanged> - Error updating rendering progress indicator.", ex);
+				Logging.Error(ex, "TimedSequenceEditor: <OnRenderProgressChanged> - Error updating rendering progress indicator.");
 			}
 		}
 
@@ -2194,7 +2194,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						string msg = "TimedSequenceEditor: <DrawElement> - error adding effect of type " +
 						             newEffect.Descriptor.TypeId + " to row " +
 						             ((drawingRow == null) ? "<null>" : drawingRow.Name);
-							Logging.Error(msg, ex);
+							Logging.Error(ex, msg);
 					}
 				}
 				AddEffectNodes(newEffects);
@@ -2455,7 +2455,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						{
 							string msg = "TimedSequenceEditor: <AddMultipleEffects> - error adding effect of type " + newEffect.Descriptor.TypeId + " to row " +
 							             ((row == null) ? "<null>" : row.Name);
-							Logging.Error(msg, ex);
+							Logging.Error(ex, msg);
 						}
 					}
 					AddEffectNodes(newEffects);
@@ -2500,7 +2500,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							{
 								string msg = "TimedSequenceEditor: <AddEffectsToBeatMarks> - error adding effect of type " + newEffect.Descriptor.TypeId + " to row " +
 											 ((row == null) ? "<null>" : row.Name);
-								Logging.Error(msg, ex);
+								Logging.Error(ex, msg);
 							}
 						}						
 						if (skipEoBeat) skipThisBeat = (!skipThisBeat);
@@ -3472,7 +3472,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					string msg = "TimedSequenceEditor CloneElements: error adding effect of type " + newEffect.Descriptor.TypeId + " to row " +
 								 ((element.Row == null) ? "<null>" : element.Row.Name);
-					Logging.Error(msg, ex);
+					Logging.Error(ex, msg);
 				}
 			}
 
@@ -3656,7 +3656,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				string msg = "TimedSequenceEditor: error adding effect of type " + effectInstance.Descriptor.TypeId + " to row " +
 							 ((row == null) ? "<null>" : row.Name);
-				Logging.Error(msg, ex);
+				Logging.Error(ex, msg);
 			}
 
 			return effectNode;

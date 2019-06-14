@@ -280,7 +280,7 @@ namespace VixenModules.Effect.Candle
 					}
 					catch (Exception e)
 					{
-						Logging.Error("Error generating Candle intents", e);
+						Logging.Error(e, "Error generating Candle intents");
 						throw;
 					}
 				}

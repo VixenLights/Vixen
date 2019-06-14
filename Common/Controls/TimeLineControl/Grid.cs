@@ -2322,7 +2322,7 @@ namespace Common.Controls.Timeline
 		    catch (Exception exception)
 		    {
 		        // there may be some threading exceptions; if so, they're unexpected.  Log them.
-		        Logging.Error("background rendering worker exception:", exception);
+		        Logging.Error(exception,"background rendering worker exception:");
 		    }
 		    renderWorkerFinished.Set();
 		}
@@ -2614,7 +2614,7 @@ namespace Common.Controls.Timeline
 					//Logging.Info("OnPaint: " + s.ElapsedMilliseconds);
 				}
 				catch (Exception ex) {
-					Logging.Error("Exception in TimelineGrid.OnPaint()",ex);
+					Logging.Error(ex, "Exception in TimelineGrid.OnPaint()");
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("An unexpected error occured while drawing the grid. Please notify the Vixen team and provide the error logs.",

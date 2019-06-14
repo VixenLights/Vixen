@@ -319,7 +319,7 @@ namespace VixenApplication
 			}
 			catch (Exception e)
 			{
-				Logging.Warn("JIT Profiling Disabled", e);
+				Logging.Warn(e, "JIT Profiling Disabled");
 			}
 		}
 
@@ -871,7 +871,7 @@ namespace VixenApplication
 				}
 			}
 			catch (Exception ex) {
-				Logging.Error("Error trying to open file '" + filename + "': ", ex);
+				Logging.Error(ex, "Error trying to open file '" + filename + "': ");
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Error trying to open file '" + filename + "'.", "Error opening file", false, false);

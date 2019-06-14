@@ -68,7 +68,7 @@ namespace VixenModules.Output.DmxUsbPro
 				}
 			}
 			catch (Exception ex) {
-				Logging.Error(string.Format("Serial Port Open failed"), ex);
+				Logging.Error(ex, "Serial Port Open failed");
 			}
 		}
 

@@ -514,7 +514,7 @@ namespace VixenModules.App.LipSyncApp
 			catch (Exception err)
 			{
 				String errorMsg = "Unable to save copy of phoneme bitmap to Module Data Directory";
-				Logging.LogException(NLog.LogLevel.Warn, errorMsg, err);
+				Logging.Warn(err, errorMsg);
 			}
 
 		}
@@ -654,7 +654,7 @@ namespace VixenModules.App.LipSyncApp
 			catch (Exception err)
 			{
 				String errorMsg = "Unable to delete LipSync bitmap " + fileName + " from Module Data Directory";
-				Logging.LogException(NLog.LogLevel.Warn, errorMsg, err);
+				Logging.Warn(err, errorMsg);
 			}
 
 			if (_pictureBitmaps.TryGetValue(CurrentPhonemeString, out editBmap))
@@ -683,7 +683,7 @@ namespace VixenModules.App.LipSyncApp
 			catch (Exception err)
 			{
 				String errorMsg = "Error processing edited LipSync bitmap " + fileName + " from Module Data Directory";
-				Logging.LogException(NLog.LogLevel.Warn, errorMsg, err);
+				Logging.Warn(err, errorMsg);
 			}
 
 			renderPictureBoxImage();

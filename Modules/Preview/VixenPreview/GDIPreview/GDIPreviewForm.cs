@@ -361,7 +361,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 				}
 				catch (Exception e)
 				{
-					Logging.Error(e.Message, e);
+					Logging.Error(e, e.Message);
 				}
 
 				gdiControl.EndUpdate();

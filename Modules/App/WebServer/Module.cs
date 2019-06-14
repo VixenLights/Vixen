@@ -97,7 +97,7 @@ namespace VixenModules.App.WebServer
 				}
 				catch (Exception ex)
 				{
-					Logging.Error("Unable to start web _server.", ex);
+					Logging.Error(ex, "Unable to start web _server.");
 					return;
 				}
 				if (LiveContext == null)
