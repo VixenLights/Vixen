@@ -31,7 +31,7 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.BeatsNameTB = new System.Windows.Forms.TextBox();
 			this.GenerateButton = new System.Windows.Forms.Button();
-			this.CancelButton = new System.Windows.Forms.Button();
+			this.CancelBtn = new System.Windows.Forms.Button();
 			this.grpDivisions = new System.Windows.Forms.GroupBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.AllColorPanel = new System.Windows.Forms.Panel();
@@ -90,21 +90,21 @@
 			// 
 			// CancelButton
 			// 
-			this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CancelButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.CancelButton.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.CancelButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.CancelButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.CancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.CancelButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.CancelButton.Location = new System.Drawing.Point(630, 560);
-			this.CancelButton.Name = "CancelButton";
-			this.CancelButton.Size = new System.Drawing.Size(87, 27);
-			this.CancelButton.TabIndex = 5;
-			this.CancelButton.Text = "Cancel";
-			this.CancelButton.UseVisualStyleBackColor = true;
-			this.CancelButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.CancelButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.CancelBtn.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.CancelBtn.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.CancelBtn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.CancelBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.CancelBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.CancelBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.CancelBtn.Location = new System.Drawing.Point(630, 560);
+			this.CancelBtn.Name = "CancelBtn";
+			this.CancelBtn.Size = new System.Drawing.Size(87, 27);
+			this.CancelBtn.TabIndex = 5;
+			this.CancelBtn.Text = "Cancel";
+			this.CancelBtn.UseVisualStyleBackColor = true;
+			this.CancelBtn.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.CancelBtn.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// grpDivisions
 			// 
@@ -266,7 +266,7 @@
 			this.Controls.Add(this.PreviewGroupBox);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.grpDivisions);
-			this.Controls.Add(this.CancelButton);
+			this.Controls.Add(this.CancelBtn);
 			this.Controls.Add(this.GenerateButton);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Name = "BeatsAndBarsDialog";
@@ -285,7 +285,7 @@
 		private System.Windows.Forms.Button GenerateButton;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.TextBox BeatsNameTB;
-		private System.Windows.Forms.Button CancelButton;
+		private System.Windows.Forms.Button CancelBtn;
 		private MusicStaff musicStaff1;
 		private System.Windows.Forms.GroupBox grpDivisions;
 		private System.Windows.Forms.GroupBox groupBox2;

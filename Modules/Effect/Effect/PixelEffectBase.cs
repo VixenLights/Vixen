@@ -541,19 +541,6 @@ namespace VixenModules.Effect.Effect
 			return newStart + (value - originalStart) * scale;
 		}
 
-		/// <summary>
-		/// Takes an arbitrary value greater than equal to 0 and less than equal to 100 and translates it to a corresponding minimum - maximum value 
-		/// suitable for use in a range 
-		/// </summary>
-		/// <param name="value"></param>
-		/// <param name="maximum"></param>
-		/// <param name="minimum"></param>
-		/// <returns></returns>
-		protected static double ScaleCurveToValue(double value, double maximum, double minimum)
-		{
-			return ConvertRange(0, 100, minimum, maximum, value);
-		}
-
 		protected static bool IsAngleBetween(double a, double b, double n)
 		{
 			n = (360 + (n % 360)) % 360;
@@ -582,11 +569,6 @@ namespace VixenModules.Effect.Effect
 		protected static double DistanceFromPoint(Point origin, int x, int y)
 		{
 			return Math.Sqrt(Math.Pow((x - origin.X), 2) + Math.Pow((y - origin.Y), 2));
-		}
-
-		protected static double DistanceFromPoint(Point origin, Point point)
-		{
-			return Math.Sqrt(Math.Pow((point.X - origin.X), 2) + Math.Pow((point.Y - origin.Y), 2));
 		}
 
 		protected static double AddDegrees(double angle, double degrees)
