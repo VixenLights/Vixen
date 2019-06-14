@@ -221,22 +221,6 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			return _intensityValue;
 		}
 
-		private float _getMaxProportion(Color inputColor)
-		{
-			float result = 1.0f;
-
-			if (_breakdownItem.Color.R > 0)
-				result = Math.Min(result, (float) inputColor.R/_breakdownItem.Color.R);
-
-			if (_breakdownItem.Color.G > 0)
-				result = Math.Min(result, (float) inputColor.G/_breakdownItem.Color.G);
-
-			if (_breakdownItem.Color.B > 0)
-				result = Math.Min(result, (float) inputColor.B/_breakdownItem.Color.B);
-
-			return result;
-		}
-
 		public override void Handle(IIntentState<RGBValue> obj)
 		{
 			RGBValue value = obj.GetValue();
@@ -289,34 +273,26 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		}
 	}
 
-	internal enum MixingChannel
-	{
-		Red,
-		Green,
-		Blue
-	}
-
 	/// <summary>
 	/// This filter gets the intensity percent for a given state in simple RGB mixing
 	/// </summary>
 	internal class ColorBreakdownMixingFilter : IntentStateDispatch, IBreakdownFilter
 	{
 		private double _intensityValue;
-		private readonly MixingChannel _mixingChannel;
 		
 		public ColorBreakdownMixingFilter(ColorBreakdownItem breakdownItem)
 		{
 			if (breakdownItem.Color.Equals(Color.Red))
 			{
-				_mixingChannel = MixingChannel.Red;
+				_getMaxProportionFunc = color => color.R / 255f;
 			}
 			else if(breakdownItem.Color.Equals(Color.Lime))
 			{
-				_mixingChannel = MixingChannel.Green;
+				_getMaxProportionFunc = color => color.G / 255f;
 			}
 			else
 			{
-				_mixingChannel = MixingChannel.Blue;
+				_getMaxProportionFunc = color => color.B / 255f;
 			}
 		}
 
@@ -331,32 +307,18 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			return _intensityValue;
 		}
 
-		private float _getMaxProportion(Color inputColor)
-		{
-			switch (_mixingChannel)
-			{
-				case MixingChannel.Red:
-					return (float)inputColor.R / 255;
-				case MixingChannel.Green:
-					return (float)inputColor.G / 255;
-				case MixingChannel.Blue:
-					return (float)inputColor.B / 255;
-				default:
-					return 0;
-					
-			}
-		}
+		private readonly Func<Color, float> _getMaxProportionFunc;
 
 		public override void Handle(IIntentState<RGBValue> obj)
 		{
 			RGBValue value = obj.GetValue();
-			_intensityValue = _getMaxProportion(value.FullColor);
+			_intensityValue = _getMaxProportionFunc(value.FullColor);
 		}
 
 		public override void Handle(IIntentState<LightingValue> obj)
 		{
 			LightingValue lightingValue = obj.GetValue();
-			_intensityValue = lightingValue.Intensity * _getMaxProportion(lightingValue.Color);
+			_intensityValue = lightingValue.Intensity * _getMaxProportionFunc(lightingValue.Color);
 		}
 
 	}
@@ -369,11 +331,10 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		private readonly IBreakdownFilter _filter;
 		private readonly ColorBreakdownItem _breakdownItem;
 		private readonly StaticIntentState<IntensityValue> _state = new StaticIntentState<IntensityValue>(new IntensityValue());
-		private readonly IntentDataFlowData _data;
 
 		public ColorBreakdownOutput(ColorBreakdownItem breakdownItem, bool mixColors)
 		{
-			_data = new IntentDataFlowData(_state);
+			Data = new IntentDataFlowData(_state);
 			if (mixColors)
 			{
 				_filter = new ColorBreakdownMixingFilter(breakdownItem);
@@ -397,30 +358,16 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 				foreach (var intentState in data.Value)
 				{
 					var i = _filter.GetIntensityForState(intentState);
-					if (i > 0)
-					{
-						intensity = i;
-					}
+					intensity = Math.Max(i, intensity);
 				}
 			}
 
-			if (intensity > 0)
-			{
-				//Get a ref to the state value which is a struct and update it with the new intensity
-				ref IntensityValue intensityValue = ref _state.GetValueRef();
-				intensityValue.Intensity = intensity;
-				_data.Value = _state;
-			}
-			else
-			{
-				_data.Value = null;
-			}
-			
+			_state.SetValue(new IntensityValue(intensity));
 		}
 
-		public IntentDataFlowData Data => _data;
+		public IntentDataFlowData Data { get; }
 
-		IDataFlowData IDataFlowOutput.Data => _data;
+		IDataFlowData IDataFlowOutput.Data => Data;
 
 		public string Name
 		{
