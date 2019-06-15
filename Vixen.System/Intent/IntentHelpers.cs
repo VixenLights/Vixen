@@ -43,8 +43,7 @@ namespace Vixen.Intent
 
 			foreach (IIntentState intentState in states.AsList())
 			{
-				var state = intentState as IIntentState<LightingValue>;
-				if (state != null)
+				if (intentState is IIntentState<LightingValue> state)
 				{
 					var lv = state.GetValue();
 					if (lv.Intensity > 0)
@@ -55,9 +54,9 @@ namespace Vixen.Intent
 						B = Math.Max(B, intentColor.B);
 					}
 				}
-				else if (intentState is IIntentState<RGBValue>)
+				else if (intentState is IIntentState<RGBValue> rgbState)
 				{
-					var rv = ((IIntentState<RGBValue>)intentState).GetValue();
+					var rv = rgbState.GetValue();
 					R = Math.Max(R, rv.R);
 					G = Math.Max(G, rv.G);
 					B = Math.Max(B, rv.B);

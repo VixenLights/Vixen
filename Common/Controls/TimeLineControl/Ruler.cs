@@ -448,9 +448,6 @@ namespace Common.Controls.Timeline
 
 		private int m_mouseDownX;
 		private MouseButtons m_button;
-		private TimeSpan m_mark;
-		private Mark _selectedMark = null;
-		//public SortedDictionary<TimeSpan, SnapDetails> selectedMarks = new SortedDictionary<TimeSpan, SnapDetails>();
 		
 		protected override void OnMouseDown(MouseEventArgs e)
 		{

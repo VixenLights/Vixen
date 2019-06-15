@@ -93,7 +93,7 @@ namespace VixenModules.App.WebServer.Service
 				}
 				catch (Exception e)
 				{
-					Logging.Error("Error loading the sequence.", e);
+					Logging.Error(e, "Error loading the sequence.");
 					status.Message = string.Format("An error occured loading sequence {0}.", fileName);
 				}	
 			}

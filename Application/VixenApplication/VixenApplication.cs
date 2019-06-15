@@ -50,7 +50,6 @@ namespace VixenApplication
 		private bool _testBuild;
 		private string _rootDataDirectory;
 		private CpuUsage _cpuUsage;
-		private bool _perfCountersAvailable;
 		private int _currentBuildVersion;
 		private string _currentReleaseVersion;
 
@@ -283,6 +282,7 @@ namespace VixenApplication
 							}
 							catch (Exception e)
 							{
+								Logging.Error(e, "Error getting the process id to determine lock file removal.");
 								//No process with that id so release the lock.
 								RemoveLockFile(lockFilePath);
 							}
@@ -319,7 +319,7 @@ namespace VixenApplication
 			}
 			catch (Exception e)
 			{
-				Logging.Warn("JIT Profiling Disabled", e);
+				Logging.Warn(e, "JIT Profiling Disabled");
 			}
 		}
 
@@ -871,7 +871,7 @@ namespace VixenApplication
 				}
 			}
 			catch (Exception ex) {
-				Logging.Error("Error trying to open file '" + filename + "': ", ex);
+				Logging.Error(ex, "Error trying to open file '" + filename + "': ");
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Error trying to open file '" + filename + "'.", "Error opening file", false, false);
@@ -1059,29 +1059,11 @@ namespace VixenApplication
 
 		private const int StatsUpdateInterval = 1000; // ms
 		private Timer _statsTimer;
-		private Process _thisProc;
-		private PerformanceCounter _committedRamCounter;
-		private PerformanceCounter _reservedRamCounter;
 		
-
+		
 		private void InitStats()
 		{
-			_thisProc = Process.GetCurrentProcess();
 			_cpuUsage = new CpuUsage();
-
-			//try
-			//{
-			//	if (PerformanceCounterCategory.Exists(".NET CLR Memory"))
-			//	{
-			//		_committedRamCounter = new PerformanceCounter(".NET CLR Memory", "# Total committed Bytes", _thisProc.ProcessName);
-			//		_reservedRamCounter = new PerformanceCounter(".NET CLR Memory", "# Total reserved Bytes", _thisProc.ProcessName);
-			//		_perfCountersAvailable = true;
-			//	}
-			//}
-			//catch (Exception ex)
-			//{
-			//	Logging.Error("Cannot access performance counters. Refresh the counter list with lodctr /R");
-			//}
 
 			_statsTimer = new Timer();
 			_statsTimer.Interval = StatsUpdateInterval;

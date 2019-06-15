@@ -30,28 +30,6 @@ namespace Vixen.Sys
 			EndTime = StartTime + TimeSpan;
 		}
 
-		//contextAbsoluteEffectStartTime = effectNode.StartTime
-		public void ApplyFilter(ISequenceFilterNode sequenceFilterNode, TimeSpan contextAbsoluteEffectStartTime)
-		{
-			// Pre-filters have context-absolute timing, so the intent needs to be told
-			// where in context-absolute time it is.
-			Intent.ApplyFilter(sequenceFilterNode, contextAbsoluteEffectStartTime + StartTime);
-		}
-
-		public IIntentNode[] DivideAt(TimeSpan effectRelativeTime)
-		{
-			if (effectRelativeTime > StartTime && effectRelativeTime < EndTime) {
-				TimeSpan intentRelativeTime = Helper.GetIntentRelativeTime(effectRelativeTime, this);
-				IIntent[] intents = Intent.DivideAt(intentRelativeTime);
-				return new[]
-				       	{
-				       		new IntentNode(intents[0], StartTime),
-				       		new IntentNode(intents[1], effectRelativeTime)
-				       	};
-			}
-			return null;
-		}
-
 		public virtual IIntentState CreateIntentState(TimeSpan intentRelativeTime, ILayer layer)
 		{
 			IIntentState intentState = Intent.CreateIntentState(intentRelativeTime, layer);
@@ -82,8 +60,6 @@ namespace Vixen.Sys
 	{
 		IIntent Intent { get; }
 		IIntentState CreateIntentState(TimeSpan intentRelativeTime, ILayer layer);
-		void ApplyFilter(ISequenceFilterNode sequenceFilterNode, TimeSpan contextAbsoluteEffectStartTime);
-		IIntentNode[] DivideAt(TimeSpan effectRelativeTime);
 		void OffSetTime(TimeSpan offset);
 	}
 }

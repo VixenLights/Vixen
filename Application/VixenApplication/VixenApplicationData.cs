@@ -86,7 +86,7 @@ namespace VixenApplication
 				Logging.Warn("VixenApplication: loading application data, but couldn't find file", ex);
 			}
 			catch (Exception ex) {
-				Logging.Error("VixenApplication: error loading application data", ex);
+				Logging.Error(ex, "VixenApplication: error loading application data");
 			}
 			finally {
 				if (stream != null)
@@ -127,7 +127,7 @@ namespace VixenApplication
 				root.Save(stream);
 			}
 			catch (Exception ex) {
-				Logging.Error("VixenApplication: error saving application data", ex);
+				Logging.Error(ex, "VixenApplication: error saving application data");
 			}
 			finally {
 				if (stream != null)

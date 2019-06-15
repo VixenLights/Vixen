@@ -200,18 +200,12 @@
     <Compile Include="Execution\IContextCurrentEffects.cs" />
     <Compile Include="Execution\IExecutor.cs" />
     <Compile Include="Execution\DataSource\EffectNodeBuffer.cs" />
-    <Compile Include="Execution\DataSource\IntentPreFilter.cs" />
     <Compile Include="Execution\IntentStateBuilder.cs" />
     <Compile Include="Execution\IProgramExecutor.cs" />
     <Compile Include="Execution\Context\LiveContext.cs" />
-    <Compile Include="Execution\DataSource\PreFilteringBufferingDataSource.cs" />
-    <Compile Include="Execution\Context\CachingProgramContext.cs" />
-    <Compile Include="Execution\Context\CachingSequenceContext.cs" />
-    <Compile Include="Execution\Context\ContextCachingProgramContext.cs" />
     <Compile Include="Execution\Context\NonCachingSequenceContext.cs" />
     <Compile Include="Execution\Context\IProgramContext.cs" />
     <Compile Include="Execution\Context\ProgramContext.cs" />
-    <Compile Include="Execution\Context\SequenceCachingProgramContext.cs" />
     <Compile Include="Execution\Context\ISequenceContext.cs" />
     <Compile Include="Execution\Context\SequenceContext.cs" />
     <Compile Include="Execution\QueuingSequenceEnumerator.cs" />
@@ -249,12 +243,13 @@
     <Compile Include="Intent\NonSegmentedLinearIntent.cs" />
     <Compile Include="Intent\RGBIntent.cs" />
     <Compile Include="Intent\CommandIntent.cs" />
-    <Compile Include="Intent\IntentState.cs" />
     <Compile Include="Intent\LightingIntent.cs" />
     <Compile Include="Intent\PositionIntent.cs" />
+    <Compile Include="Intent\StaticDiscreteLightingIntent.cs" />
     <Compile Include="Intent\StaticIntent.cs" />
     <Compile Include="Intent\StaticIntentState.cs" />
     <Compile Include="Intent\StaticArrayIntent.cs" />
+    <Compile Include="Intent\StaticLightingIntent.cs" />
     <Compile Include="Interpolator\DiscreteValueInterpolator.cs" />
     <Compile Include="Interpolator\LightingValueInterpolator.cs" />
     <Compile Include="Interpolator\PositionValueInterpolator.cs" />
@@ -562,7 +557,6 @@
     <Compile Include="Sys\Instrumentation\OutputDeviceSleepTimeActualValue.cs" />
     <Compile Include="Sys\Instrumentation\OutputDeviceSleepTimeRequestedValue.cs" />
     <Compile Include="Sys\Instrumentation\OutputDeviceUpdateTimeValue.cs" />
-    <Compile Include="Intent\SegmentedLinearIntent.cs" />
     <Compile Include="Sys\IntentNodeCollection.cs">
       <SubType>Code</SubType>
     </Compile>

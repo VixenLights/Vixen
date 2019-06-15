@@ -206,7 +206,7 @@ namespace VixenModules.Effect.CustomValue
 			}
 			catch (Exception e)
 			{
-				Logging.Error("Exception rendering the visualization for the effect.", e);
+				Logging.Error(e, "Exception rendering the visualization for the effect.");
 			}
 		}
 

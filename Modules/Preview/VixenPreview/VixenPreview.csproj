@@ -129,10 +129,6 @@
       <HintPath>..\..\..\packages\Expression.Blend.Sdk.WPF.1.0.1\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack.DirectX">
-      <HintPath>..\..\..\Common\Libraries\Microsoft.WindowsAPICodePack.DirectX.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\NLog.4.5.11\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
@@ -169,17 +165,17 @@
     <Reference Include="System.Runtime.Serialization.Formatters, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\System.Runtime.Serialization.Formatters.4.3.0\lib\net46\System.Runtime.Serialization.Formatters.dll</HintPath>
       <Private>False</Private>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Runtime.Serialization.Primitives, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\System.Runtime.Serialization.Primitives.4.3.0\lib\net46\System.Runtime.Serialization.Primitives.dll</HintPath>
       <Private>False</Private>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Runtime.Serialization.Xml, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\System.Runtime.Serialization.Xml.4.3.0\lib\net46\System.Runtime.Serialization.Xml.dll</HintPath>
       <Private>False</Private>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
@@ -205,19 +201,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converter\PropertySorter.cs" />
-    <Compile Include="Direct2D\Direct2DControl.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Direct2D\DisplayScene.cs" />
-    <Compile Include="Direct2D\PreviewWinform.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Direct2D\PreviewWinform.Designer.cs">
-      <DependentUpon>PreviewWinform.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Direct2D\PreviewWPF.xaml.cs">
-      <DependentUpon>PreviewWPF.xaml</DependentUpon>
-    </Compile>
     <Compile Include="DebugTimer.cs" />
     <Compile Include="IDisplayForm.cs" />
     <Compile Include="GDIPreview\GDIPreviewForm.cs">
@@ -378,12 +361,6 @@
     </Compile>
     <Compile Include="VixenPreviewData.cs" />
     <Compile Include="VixenPreviewDescriptor.cs" />
-    <Compile Include="VixenPreviewDisplayD2D.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="VixenPreviewDisplayD2D.Designer.cs">
-      <DependentUpon>VixenPreviewDisplayD2D.cs</DependentUpon>
-    </Compile>
     <Compile Include="VixenPreviewModuleInstance.cs" />
     <Compile Include="VixenPreviewModuleInstance.Designer.cs">
       <DependentUpon>VixenPreviewModuleInstance.cs</DependentUpon>
@@ -412,9 +389,6 @@
     <Compile Include="VixenPreviewSetupPropertiesDocument.Designer.cs">
       <DependentUpon>VixenPreviewSetupPropertiesDocument.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Direct2D\PreviewWinform.resx">
-      <DependentUpon>PreviewWinform.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="GDIPreview\GDIControl.resx">
       <DependentUpon>GDIControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -467,9 +441,6 @@
     <EmbeddedResource Include="VixenPreviewControl.resx">
       <DependentUpon>VixenPreviewControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="VixenPreviewDisplayD2D.resx">
-      <DependentUpon>VixenPreviewDisplayD2D.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="VixenPreviewModuleInstance.resx">
       <DependentUpon>VixenPreviewModuleInstance.cs</DependentUpon>
     </EmbeddedResource>
@@ -512,12 +483,6 @@
     <None Include="Resources\Flood.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Direct2D\PreviewWPF.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
@@ -525,6 +490,12 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>del "$(OutDir)\System.*"
+del "$(OutDir)\Microsoft.*"
+del "$(OutDir)\netstandard.dll*"
+del "$(OutDir)\libzstd.dll*"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -153,7 +153,6 @@ namespace VixenApplication
 							}
 						}
 
-						int i = 0;
 						releaseVersionNames.Reverse();
 					
 					    //We are going to create a list to hold all of our parallel tasks that we spin up

@@ -404,7 +404,7 @@ namespace VixenModules.Preview.VixenPreview
 				catch (Exception ex)
 				{
 					Background = null;
-					Logging.Error("There was error loading the preview background image.", ex);
+					Logging.Error(ex, "There was error loading the preview background image.");
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("There was an error loading the background image: " + ex.Message, @"Error", false, true);

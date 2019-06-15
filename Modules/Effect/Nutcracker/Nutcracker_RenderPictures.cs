@@ -40,7 +40,7 @@ namespace VixenModules.Effect.Nutcracker
 				}
 				catch (Exception e)
 				{
-					Logging.Error("Error loading pictue file for nutcracker pictures", e);
+					Logging.Error(e, "Error loading pictue file for nutcracker pictures");
 				}
 				
 			}

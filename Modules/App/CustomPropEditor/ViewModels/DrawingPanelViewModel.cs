@@ -19,8 +19,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	{
 		private readonly ElementTreeViewModel _elementTreeViewModel;
 		private readonly Dictionary<Guid, List<LightViewModel>> _elementModelMap;
-		private readonly Configuration _config;
-
+		
 		public DrawingPanelViewModel(ElementTreeViewModel elementTreeViewModel)
 		{
 			_elementTreeViewModel = elementTreeViewModel;

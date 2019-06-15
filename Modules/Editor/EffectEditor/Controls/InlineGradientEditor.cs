@@ -10,8 +10,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 	{
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private static readonly Type ThisType = typeof(InlineGradientEditor);
-		private BadImageFormatException _image;
-
+		
 		static InlineGradientEditor()
 		{
 			DefaultStyleKeyProperty.OverrideMetadata(ThisType, new FrameworkPropertyMetadata(ThisType));

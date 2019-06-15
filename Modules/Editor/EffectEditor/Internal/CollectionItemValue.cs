@@ -95,7 +95,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 				}
 				catch (Exception exception)
 				{
-
+					Logging.Error(exception, "Get: Unable to convert property to string.");
 				}
 				return str;
 
@@ -108,7 +108,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 				}
 				catch (Exception exception)
 				{
-					Logging.Error("Unable to convert property to string." ,exception);
+					Logging.Error(exception,"Set: Unable to convert property to string.");
 				}
 			}
 		}
@@ -129,7 +129,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 				}
 				catch (Exception exception)
 				{
-					Logging.Error("Unable to set property value.", exception);
+					Logging.Error(exception, "Unable to set property value.");
 				}
 
 			}

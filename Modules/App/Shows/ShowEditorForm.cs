@@ -487,9 +487,5 @@ namespace VixenModules.App.Shows
 			}
 		}
 
-		// The size of the X in each tab's upper right corner.
-		private int Xwid = 8;
-		private const int tab_margin = 0;
-
 	}
 }

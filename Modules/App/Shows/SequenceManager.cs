@@ -83,7 +83,7 @@ namespace VixenModules.App.Shows
 				}
 				catch (Exception e)
 				{
-					Logging.Error("Error loading sequence!", e);
+					Logging.Error(e, "Error loading sequence!");
 				}
 			}
 			

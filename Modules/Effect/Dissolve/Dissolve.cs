@@ -827,7 +827,6 @@ namespace VixenModules.Effect.Dissolve
 				elementIndex.Add(node);
 			}
 
-			int i = 0;
 			int colorIndex = 0;
 			for (int x = 0; x < _totalNodes; x++)
 			{

@@ -33,8 +33,6 @@ namespace VixenModules.App.LipSyncApp
 
 		private void LipSyncMultiPicSelect_Load(object sender, EventArgs e)
 		{
-			int boxNum = 0;
-
 			infoLabel.Text = "Multiple images detected, "
 				+ Environment.NewLine
 				+ "Please select the desired mapping";
