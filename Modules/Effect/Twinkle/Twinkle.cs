@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using NLog;
 using Vixen.Attributes;
+using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Module;
 using Vixen.Sys;
@@ -27,7 +28,8 @@ namespace VixenModules.Effect.Twinkle
 
 		private TwinkleData _data;
 		private EffectIntents _elementData = null;
-
+		private Dictionary<Color, ColorValue[]> _colorValueSet;
+		
 		public Twinkle()
 		{
 			_data = new TwinkleData();
@@ -60,6 +62,10 @@ namespace VixenModules.Effect.Twinkle
 			int totalNodes = targetNodes.Count();
 			double i = 0;
 
+			
+			_colorValueSet = new Dictionary<Color, ColorValue[]>(3);
+			
+
 			foreach (ElementNode node in targetNodes) {
 				if (tokenSource != null && tokenSource.IsCancellationRequested)
 					return;
@@ -68,9 +74,12 @@ namespace VixenModules.Effect.Twinkle
 				{
 					bool discreteColors = HasDiscreteColors && ColorModule.isElementNodeDiscreteColored(node);
 					var intents = RenderElement(node, i++/totalNodes, discreteColors, twinkles);
-					_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(intents, TimeSpan, discreteColors));
+					//_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(intents, TimeSpan, discreteColors));
+					_elementData.Add(intents);
 				}
 			}
+
+			_colorValueSet = null;
 		}
 
 		//Validate that the we are using valid colors and set appropriate defaults if not.
@@ -167,9 +176,12 @@ namespace VixenModules.Effect.Twinkle
 			get { return _data.MaximumLevel; }
 			set
 			{
-				_data.MaximumLevel = value;
-				IsDirty = true;
-				OnPropertyChanged();
+				if (value <= 1 && value >= 0)
+				{
+					_data.MaximumLevel = value;
+					IsDirty = true;
+					OnPropertyChanged();
+				}
 			}
 		}
 
@@ -437,23 +449,22 @@ namespace VixenModules.Effect.Twinkle
 				}
 			}
 
+
+			_colorValueSet.Clear();
+
+			if (!IsElementDiscrete(node))
+			{
+				_colorValueSet.Add(Color.Empty, new ColorValue[(int)(TimeSpan.TotalMilliseconds / FrameTime)]);
+			}
+			
 			// render all the individual twinkles
 			foreach (IndividualTwinkleDetails twinkle in twinkles) {
 				{
-					// make a pulse for it
-					
-					//pulse.TargetNodes = new [] {node};
-					//pulse.TimeSpan = twinkle.Duration;
-					//pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 50, 100 }, new [] { twinkle.curvePoints[0], twinkle.curvePoints[1], twinkle.curvePoints[2] }));
-					var curve = new Curve(new PointPairList(new double[] { 0, 50, 100 }, new[] { twinkle.curvePoints[0], twinkle.curvePoints[1], twinkle.curvePoints[2] }));
+					var curve = new Curve(new PointPairList(new double[] { 0, 50, 100 }, new[] { twinkle.CurvePoints[0], twinkle.CurvePoints[1], twinkle.CurvePoints[2] }));
 					// figure out what color gradient to use for the pulse
 					switch (ColorHandling) {
 						case TwinkleColorHandling.GradientForEachPulse:
-							//pulse.ColorGradient = ColorGradient;
-							//pulseData = pulse.Render();
-							pulseData = PulseRenderer.RenderNode(node, curve, ColorGradient, twinkle.Duration, HasDiscreteColors);
-							pulseData.OffsetAllCommandsByTime(twinkle.StartTime);
-							result.Add(pulseData);
+							RenderPulseSegment(twinkle.StartTime, twinkle.Duration, curve, ColorGradient, node);
 							break;
 
 						case TwinkleColorHandling.GradientThroughWholeEffect:
@@ -476,30 +487,20 @@ namespace VixenModules.Effect.Twinkle
 										double proportion = ColorGradient.GetProportionOfColorAt(effectRelativePosition, color);
 										point.Y *= proportion;
 									}
-									//pulse.LevelCurve = newCurve;
-									//pulse.ColorGradient = new ColorGradient(color);
-									//pulseData = pulse.Render();
-									pulseData = PulseRenderer.RenderNode(node, curve, new ColorGradient(color), twinkle.Duration, HasDiscreteColors);
-									pulseData.OffsetAllCommandsByTime(twinkle.StartTime);
-									result.Add(pulseData);
+									RenderPulseSegment(twinkle.StartTime, twinkle.Duration, curve, new ColorGradient(color), node);
+									//pulseData = PulseRenderer.RenderNode(node, curve, new ColorGradient(color), twinkle.Duration, HasDiscreteColors);
+									//pulseData.OffsetAllCommandsByTime(twinkle.StartTime);
+									//result.Add(pulseData);
 									
 								}
 
 							} else {
-								//pulse.ColorGradient = ColorGradient.GetSubGradient(startPos, endPos);
-								//pulseData = pulse.Render();
-								pulseData = PulseRenderer.RenderNode(node, curve, ColorGradient.GetSubGradient(startPos, endPos), twinkle.Duration, HasDiscreteColors);
-								pulseData.OffsetAllCommandsByTime(twinkle.StartTime);
-								result.Add(pulseData);
+								RenderPulseSegment(twinkle.StartTime, twinkle.Duration, curve, ColorGradient.GetSubGradient(startPos, endPos), node);
 							}
 							break;
 
 						case TwinkleColorHandling.StaticColor:
-							//pulse.ColorGradient = StaticColorGradient;
-							//pulseData = pulse.Render();
-							pulseData = PulseRenderer.RenderNode(node, curve, StaticColorGradient, twinkle.Duration, HasDiscreteColors);
-							pulseData.OffsetAllCommandsByTime(twinkle.StartTime);
-							result.Add(pulseData);
+							RenderPulseSegment(twinkle.StartTime, twinkle.Duration, curve, StaticColorGradient, node);
 							break;
 
 						case TwinkleColorHandling.ColorAcrossItems:
@@ -512,28 +513,118 @@ namespace VixenModules.Effect.Twinkle
 									foreach (PointPair pointPair in curve.Points) {
 										pointPair.Y *= proportion;
 									}
-									//pulse.LevelCurve = newCurve;
-									//pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
-									//pulseData = pulse.Render();
-									pulseData = PulseRenderer.RenderNode(node, curve, new ColorGradient(colorProportion.Item1), twinkle.Duration, HasDiscreteColors);
-									pulseData.OffsetAllCommandsByTime(twinkle.StartTime);
-									result.Add(pulseData);
+									
+									RenderPulseSegment(twinkle.StartTime, twinkle.Duration, curve, new ColorGradient(colorProportion.Item1), node);
+									//pulseData = PulseRenderer.RenderNode(node, curve, new ColorGradient(colorProportion.Item1), twinkle.Duration, HasDiscreteColors);
+									//pulseData.OffsetAllCommandsByTime(twinkle.StartTime);
+									//result.Add(pulseData);
 								}
 							} else {
-								//pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup));
-								//pulseData = pulse.Render();
-								pulseData = PulseRenderer.RenderNode(node, curve, new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup)), twinkle.Duration, HasDiscreteColors);
-								pulseData.OffsetAllCommandsByTime(twinkle.StartTime);
-								result.Add(pulseData);
+								RenderPulseSegment(twinkle.StartTime, twinkle.Duration, curve, new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup)), node);
 							}
 							break;
 					}
 				}
 			}
 
+			foreach (var set in _colorValueSet)
+			{
+				if (set.Key == Color.Empty)
+				{
+					var data = CreateIntentForValues(set.Value);
+					result.AddIntentForElement(node.Element.Id, data, TimeSpan.Zero);
+				}
+				else
+				{
+					var data = CreateDiscreteIntentForValues(set.Value);
+					result.AddIntentForElement(node.Element.Id, data, TimeSpan.Zero);
+				}
+				
+			}
+			
+
 			return result;
 		}
 
+		private struct ColorValue
+		{
+			public Color c;
+			public double i;
+		}
+
+		private StaticArrayIntent<LightingValue> CreateIntentForValues(ColorValue[] values)
+		{
+			var intentValues = values.Select(x => new LightingValue(x.c, x.i));
+			var intent = new StaticArrayIntent<LightingValue>(FrameTimespan, intentValues.ToArray(), TimeSpan);
+			return intent;
+		}
+
+		private StaticArrayIntent<DiscreteValue> CreateDiscreteIntentForValues(ColorValue[] values)
+		{
+			var intentValues = values.Select(x => new DiscreteValue(x.c, x.i));
+			var intent = new StaticArrayIntent<DiscreteValue>(FrameTimespan, intentValues.ToArray(), TimeSpan);
+			return intent;
+		}
+
+		private void RenderPulseSegment(TimeSpan startTime, TimeSpan duration, Curve c, ColorGradient cg, ElementNode elementNode)
+		{
+			ColorValue[] values;
+			if (HasDiscreteColors && IsElementDiscrete(elementNode))
+			{
+				IEnumerable<Color> colors = ColorModule.getValidColorsForElementNode(elementNode, false)
+					.Intersect(cg.GetColorsInGradient());
+				foreach (Color color in colors)
+				{
+					
+					if (!_colorValueSet.TryGetValue(color, out values))
+					{
+						values = new ColorValue[(int) (TimeSpan.TotalMilliseconds / VixenSystem.DefaultUpdateInterval)];
+						_colorValueSet.Add(color, values);
+					}
+					RenderPulseSegment(values, startTime, duration, c, cg, color);
+				}
+			}
+			else
+			{
+				if (_colorValueSet.TryGetValue(Color.Empty, out values))
+				{
+					RenderPulseSegment(values, startTime, duration, c, cg);
+				}
+			}
+		}
+
+		private void RenderPulseSegment(ColorValue[] values, TimeSpan startTime, TimeSpan duration, Curve c,
+			ColorGradient cg, Color? filterColor = null)
+		{
+			var intervals = duration.TotalMilliseconds / VixenSystem.DefaultUpdateInterval;
+			var startOffset = (int)startTime.TotalMilliseconds / VixenSystem.DefaultUpdateInterval;
+			var endInterval = startOffset + intervals;
+			for (int i = startOffset; i <= endInterval; i++)
+			{
+				if (i >= values.Length) break;
+				var currentValue = values[i];
+				var samplePoint = (i - startOffset) / intervals;
+
+				if (filterColor.HasValue) //This is a discrete filter color
+				{
+					//Sample the curve
+					var intensity = (cg.GetProportionOfColorAt(samplePoint, (Color)filterColor) * c.GetValue(samplePoint * 100) / 100);
+					//Check the intensity
+					if (currentValue.i > intensity) continue;
+					values[i] = new ColorValue { c = (Color)filterColor, i = intensity };
+				}
+				else
+				{
+					//Sample the curve
+					var intensity = c.GetValue(samplePoint * 100) / 100;
+					//Check the intensity
+					if (currentValue.i > intensity) continue;
+					//sample the gradient
+					var color = cg.GetColorAt(samplePoint);
+					values[i] = new ColorValue { c = color, i = intensity };
+				}
+			}
+		}
 
 		private List<IndividualTwinkleDetails> GenerateTwinkleData()
 		{
@@ -588,7 +679,7 @@ namespace VixenModules.Effect.Twinkle
 				IndividualTwinkleDetails occurance = new IndividualTwinkleDetails();
 				occurance.StartTime = current;
 				occurance.Duration = twinkleDuration;
-				occurance.curvePoints = new [] {minLevel*100, maxLevel*100, minLevel*100};
+				occurance.CurvePoints = new [] {minLevel*100, maxLevel*100, minLevel*100};
 				result.Add(occurance);
 				
 			}
@@ -617,11 +708,11 @@ namespace VixenModules.Effect.Twinkle
 			return renderNodes.ToList();
 		}
 
-		private class IndividualTwinkleDetails
+		private struct IndividualTwinkleDetails
 		{
 			public TimeSpan StartTime;
 			public TimeSpan Duration;
-			public double[] curvePoints;
+			public double[] CurvePoints;
 		}
 	}
 }

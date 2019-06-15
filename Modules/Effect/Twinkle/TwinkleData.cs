@@ -59,6 +59,11 @@ namespace VixenModules.Effect.Twinkle
 			{
 				StaticColor = Color.White;
 			}
+
+			if (MaximumLevel > 1)
+			{
+				MaximumLevel = 1;
+			}
 		}
 
 		[DataMember]
@@ -68,7 +73,7 @@ namespace VixenModules.Effect.Twinkle
 		{
 			IndividualChannels = true;
 			MinimumLevel = 0;
-			MaximumLevel = 100;
+			MaximumLevel = 1;
 			LevelVariation = 50;
 			AveragePulseTime = 400;
 			PulseTimeVariation = 30;

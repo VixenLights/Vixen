@@ -26,8 +26,6 @@ namespace VixenModules.Effect.Effect
 	/// </summary>
 	public abstract class PixelEffectBase : BaseEffect
 	{
-
-		protected const short FrameTime = 50;
 		protected static Logger Logging = LogManager.GetCurrentClassLogger();
 		protected readonly List<int> StringPixelCounts = new List<int>();
 		protected List<ElementLocation> ElementLocations; 
@@ -367,12 +365,10 @@ namespace VixenModules.Effect.Effect
 			RenderEffectByLocation(nFrames, buffer);
 
 			// create the intents
-			var frameTs = new TimeSpan(0, 0, 0, 0, FrameTime);
-
 			foreach (var elementLocation in ElementLocations)
 			{
 				var frameData = buffer.GetFrameDataAt(elementLocation.X, elementLocation.Y);
-				IIntent intent = new StaticArrayIntent<RGBValue>(frameTs, frameData, TimeSpan);
+				IIntent intent = new StaticArrayIntent<RGBValue>(FrameTimespan, frameData, TimeSpan);
 				effectIntents.AddIntentForElement(elementLocation.ElementNode.Element.Id, intent, startTime);
 			}
 			

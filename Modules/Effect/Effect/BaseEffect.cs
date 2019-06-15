@@ -20,6 +20,8 @@ namespace VixenModules.Effect.Effect
 	public abstract class BaseEffect : EffectModuleInstanceBase
 	{
 		private bool _hasDiscreteColors;
+		protected const short FrameTime = 50;
+		protected static TimeSpan FrameTimespan = new TimeSpan(0, 0, 0, 0, FrameTime);
 
 		protected abstract EffectTypeModuleData EffectModuleData { get; }
 
