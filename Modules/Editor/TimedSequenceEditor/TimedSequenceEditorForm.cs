@@ -130,8 +130,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		//Used for color collections
 		private static Random rnd = new Random();
-		private PreCachingSequenceEngine _preCachingSequenceEngine;
-
+		
 		//Used for setting a mouse location to do repeat actions on.
 		private Point _mouseOriginalPoint = new Point(0,0);
 

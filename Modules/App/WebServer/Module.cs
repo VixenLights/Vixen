@@ -21,8 +21,7 @@ namespace VixenModules.App.WebServer
 		private IDisposable _server;
 		private Data _data;
 		private IApplication _application;
-		private AppCommand _showCommand;
-
+		
 		public override IModuleDataModel StaticModuleData
 		{
 			get { return _data; }

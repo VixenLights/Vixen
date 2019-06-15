@@ -38,7 +38,6 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 		private IDictionary<int, ICollection<ManagedFeature>> GenerateFeatures(ManagedPlugin plugin, float[] fSampleData, bool showProgress = true)
 		{
-			int i = 0;
 			int j = 0;
 			IDictionary<int, ICollection<ManagedFeature>> retVal = 
 				new ConcurrentDictionary<int, ICollection<ManagedFeature>>();

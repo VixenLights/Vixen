@@ -926,7 +926,6 @@ namespace VixenModules.App.ColorGradients
 
 			result.Colors.Add(new ColorPoint(GetColorAt(start), 0));
 
-			ColorPoint previous = null;
 			foreach (ColorPoint cp in Colors)
 			{
 				if (cp.Position > start && cp.Position < end)

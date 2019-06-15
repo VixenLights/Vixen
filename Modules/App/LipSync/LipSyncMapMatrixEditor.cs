@@ -122,9 +122,12 @@ namespace VixenModules.App.LipSyncApp
 			{
 				try
 				{
-					Directory.Delete(newDirName,true);
+					Directory.Delete(newDirName, true);
 				}
-				catch (Exception err) { }
+				catch (Exception err)
+				{
+					Logging.Error(err, "Error cloning mapping files.");
+				}
 			}
 
 			if (Directory.Exists(PictureDirPath))

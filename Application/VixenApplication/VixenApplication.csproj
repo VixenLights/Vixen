@@ -305,12 +305,6 @@
     <Compile Include="Setup\SetupControllersSimple.Designer.cs">
       <DependentUpon>SetupControllersSimple.cs</DependentUpon>
     </Compile>
-    <Compile Include="Setup\SetupElementsPreview.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Setup\SetupElementsPreview.Designer.cs">
-      <DependentUpon>SetupElementsPreview.cs</DependentUpon>
-    </Compile>
     <Compile Include="Setup\SetupElementsTree.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -424,9 +418,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Setup\SetupControllersSimple.resx">
       <DependentUpon>SetupControllersSimple.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Setup\SetupElementsPreview.resx">
-      <DependentUpon>SetupElementsPreview.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Setup\SetupElementsTree.resx">
       <DependentUpon>SetupElementsTree.cs</DependentUpon>

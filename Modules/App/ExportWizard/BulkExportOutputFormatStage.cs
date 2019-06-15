@@ -252,6 +252,7 @@ namespace VixenModules.App.ExportWizard
 				}
 				catch (Exception e)
 				{
+					Logging.Error(e, "Error determining if path can be tested.");
 					success = false;
 				}
 				

@@ -10,7 +10,6 @@ namespace VixenModules.App.CustomPropEditor
 	public class CustomPropEditorModule : AppModuleInstanceBase
 	{
 		private IApplication _application;
-		private CustomPropEditorData _data;
 		private const string MenuIdRoot = "CustomPropRoot";
 
 		public override void Loading()

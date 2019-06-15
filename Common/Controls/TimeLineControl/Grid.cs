@@ -44,7 +44,6 @@ namespace Common.Controls.Timeline
 		private Row m_mouseDownElementRow = null;
 		            // the row that the clicked m_mouseDownElement belongs to (a single element may be in multiple rows)
 
-		private TimeSpan m_cursorPosition; // the current grid 'cursor' position (line drawn vertically);
 		private BackgroundWorker renderWorker;
 		private BlockingCollection<Element> _blockingElementQueue = new BlockingCollection<Element>();
 		private ManualResetEventSlim renderWorkerFinished;
@@ -57,7 +56,6 @@ namespace Common.Controls.Timeline
 		public bool isColorDrop { get; set; }
 		public bool isCurveDrop { get; set; }
 		public bool isGradientDrop { get; set; }
-		private MouseButtons MouseButtonDown;
 		public string alignmentHelperWarning = @"Too many effects selected on the same row for this action.\nMax selected effects per row for this action is 4";
 		public bool aCadStyleSelectionBox { get; set; }
 
