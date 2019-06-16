@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Libraries</RootNamespace>
     <AssemblyName>Libraries</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -140,10 +140,10 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Catel.Core, Version=5.9.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Catel.Core.5.9.0\lib\net46\Catel.Core.dll</HintPath>
+      <HintPath>..\..\packages\Catel.Core.5.9.0\lib\net47\Catel.Core.dll</HintPath>
     </Reference>
     <Reference Include="Catel.MVVM, Version=5.9.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Catel.MVVM.5.9.0\lib\net46\Catel.MVVM.dll</HintPath>
+      <HintPath>..\..\packages\Catel.MVVM.5.9.0\lib\net47\Catel.MVVM.dll</HintPath>
     </Reference>
     <Reference Include="FTD2XX_NET">
       <HintPath>..\FTD2XX_NET\FTD2XX_NET.dll</HintPath>
@@ -163,7 +163,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Expression.Blend.Sdk.WPF.1.0.1\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Owin, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Owin.4.0.0\lib\net451\Microsoft.Owin.dll</HintPath>
@@ -207,6 +206,9 @@
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.ConfigurationManager, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Configuration.ConfigurationManager.4.4.1\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
@@ -251,7 +253,7 @@
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
+      <HintPath>..\..\packages\Expression.Blend.Sdk.WPF.1.0.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
