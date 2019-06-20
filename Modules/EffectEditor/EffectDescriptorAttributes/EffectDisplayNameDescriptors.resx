@@ -864,4 +864,13 @@
   <data name="RandomMovement" xml:space="preserve">
     <value>Random Movement</value>
   </data>
+  <data name="CycleCharacterColor" xml:space="preserve">
+    <value>Cycle Color per Character</value>
+  </data>
+  <data name="ExplodePosition" xml:space="preserve">
+    <value>Explode Position</value>
+  </data>
+  <data name="FallSpeed" xml:space="preserve">
+    <value>Fall Speed</value>
+  </data>
 </root>

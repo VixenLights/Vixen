@@ -15,7 +15,11 @@ namespace VixenModules.Effect.Text
 		[Description("Rotate")]
 		Rotate,
 		[Description("None")]
-		None
-		
+		None,
+		[Description("Explode")]
+		Explode,
+		[Description("Fall")]
+		Fall
+
 	}
 }

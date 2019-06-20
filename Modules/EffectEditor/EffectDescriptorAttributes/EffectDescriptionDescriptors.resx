@@ -873,4 +873,13 @@
   <data name="RandomMovement" xml:space="preserve">
     <value>Randomly changes the ball direction at random times.</value>
   </data>
+  <data name="CycleCharacterColor" xml:space="preserve">
+    <value>Cycles through colors for each character.</value>
+  </data>
+  <data name="ExplodePosition" xml:space="preserve">
+    <value>Adjust the Charater position from center point.</value>
+  </data>
+  <data name="FallSpeed" xml:space="preserve">
+    <value>Adjusts the speed of the falling characters.</value>
+  </data>
 </root>

@@ -566,6 +566,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cycles through colors for each character..
+        /// </summary>
+        internal static string CycleCharacterColor {
+            get {
+                return ResourceManager.GetString("CycleCharacterColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Will cycle through gradient colors for each word..
         /// </summary>
         internal static string CycleColor {
@@ -692,6 +701,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adjust the Charater position from center point..
+        /// </summary>
+        internal static string ExplodePosition {
+            get {
+                return ResourceManager.GetString("ExplodePosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls how many explosions occur..
         /// </summary>
         internal static string Explosions {
@@ -724,6 +742,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string EyeMode {
             get {
                 return ResourceManager.GetString("EyeMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adjusts the speed of the falling characters..
+        /// </summary>
+        internal static string FallSpeed {
+            get {
+                return ResourceManager.GetString("FallSpeed", resourceCulture);
             }
         }
         
