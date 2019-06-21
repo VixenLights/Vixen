@@ -233,11 +233,11 @@ Function .onInit
 	${EndIf}
 
 
-	;Here we check for Client .NET 4.6.2 profile. 
+	;Here we check for Client .NET 4.7.2 profile. 
 	ReadRegDWORD $0 HKLM 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full' Release
-	${If} $0 < '394802'
+	${If} $0 < '461808'
 		StrCpy $InstallDotNET "Yes"
-		MessageBox MB_OK|MB_ICONINFORMATION "${PRODUCT_NAME} requires that the Microsoft .NET Framework >= 4.6.2 is installed. The Microsoft .NET Framework will be downloaded and installed automatically during installation of ${PRODUCT_NAME}."
+		MessageBox MB_OK|MB_ICONINFORMATION "${PRODUCT_NAME} requires that the Microsoft .NET Framework >= 4.7.2 is installed. The Microsoft .NET Framework will be downloaded and installed automatically during installation of ${PRODUCT_NAME}."
 		Return
 	${EndIf}
 	
@@ -286,16 +286,16 @@ Section "Application" SEC01
 
 	; Get .NET if required
 	${If} $InstallDotNET == "Yes"
-		inetc::get /caption "Downloading Microsoft .NET Framework 4.6.2" /canceltext "Cancel" "https://download.microsoft.com/download/F/9/4/F942F07D-F26F-4F30-B4E3-EBD54FABA377/NDP462-KB3151800-x86-x64-AllOS-ENU.exe" "$TEMP\NDP462-KB3151800-x86-x64-AllOS-ENU.exe" /end
+		inetc::get /caption "Downloading Microsoft .NET Framework 4.7.2" /canceltext "Cancel" "https://download.microsoft.com/download/6/E/4/6E48E8AB-DC00-419E-9704-06DD46E5F81D/NDP472-KB4054530-x86-x64-AllOS-ENU.exe" "$TEMP\NDP472-KB4054530-x86-x64-AllOS-ENU.exe" /end
 		Pop $1
  
 		${If} $1 != "OK"
-			Delete "$TEMP\NDP462-KB3151800-x86-x64-AllOS-ENU.exe"
+			Delete "$TEMP\NDP472-KB4054530-x86-x64-AllOS-ENU.exe"
 			Abort "Installation cancelled."
 		${EndIf}
 		 
-		ExecWait "$TEMP\NDP462-KB3151800-x86-x64-AllOS-ENU.exe"
-		Delete "$TEMP\NDP462-KB3151800-x86-x64-AllOS-ENU.exe"
+		ExecWait "$TEMP\NDP472-KB4054530-x86-x64-AllOS-ENU.exe"
+		Delete "$TEMP\NDP472-KB4054530-x86-x64-AllOS-ENU.exe"
 	${EndIf}
 	
 	; Remove any old modules that are no longer used in case someone installs over an old version
