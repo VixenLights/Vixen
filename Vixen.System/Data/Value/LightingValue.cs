@@ -42,8 +42,9 @@ namespace Vixen.Data.Value
 		/// The lighting value as a intensity applied color with a 100% alpha channel. Results in an opaque color ranging from black
 		/// (0,0,0) when the intensity is 0 and the solid color when the intensity is 1 (ie. 100%).
 		/// </summary>
-		public Color FullColor => Color;
-		
+		public Color FullColor =>
+			Color.FromArgb(255, (int)(Color.R * Intensity),
+				(int)(Color.G * Intensity), (int)(Color.B * Intensity));
 
 		/// <summary>
 		/// Gets the lighting value as a full brightness color with the intensity value applied to the alpha channel. 
