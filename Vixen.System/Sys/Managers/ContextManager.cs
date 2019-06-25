@@ -118,7 +118,7 @@ namespace Vixen.Sys.Managers
 			}
 			catch (Exception ee)
 			{
-				Logging.Error(ee.Message, ee);
+				Logging.Error(ee, ee.Message);
 			}
 			_contextUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 			return elementsAffected;
@@ -145,7 +145,7 @@ namespace Vixen.Sys.Managers
 					}
 					catch (Exception ee)
 					{
-						Logging.Error(ee.Message, ee);
+						Logging.Error(ee,ee.Message);
 					}
 				}
 			}

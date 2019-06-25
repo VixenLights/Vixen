@@ -60,7 +60,7 @@ namespace Vixen.IO.Xml.Serializer
 
 				return controller;
 			} catch (Exception e) {
-				logging.Error("Error loading Controller from XML", e);
+				logging.Error(e, "Error loading Controller from XML");
 				return null;
 			}
 		}

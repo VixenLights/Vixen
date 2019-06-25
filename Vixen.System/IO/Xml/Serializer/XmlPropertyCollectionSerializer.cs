@@ -59,7 +59,7 @@ namespace Vixen.IO.Xml.Serializer
 
 				return properties;
 			} catch (Exception e) {
-				logging.Error("Error loading Property Collection from XML", e);
+				logging.Error(e, "Error loading Property Collection from XML");
 				return null;
 			}
 		}

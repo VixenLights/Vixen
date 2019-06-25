@@ -11,8 +11,7 @@ namespace Vixen.IO.Xml.Serializer
 	{
 		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
 
-		private IEnumerable<Element> _underlyingElements;
-		private Dictionary<Guid, Element> _underlyingElementMap; 
+		private readonly Dictionary<Guid, Element> _underlyingElementMap; 
 		private const string ELEMENT_NODE = "Node";
 		private const string ATTR_ID = "id";
 		private const string ATTR_NAME = "name";
@@ -113,7 +112,7 @@ namespace Vixen.IO.Xml.Serializer
 
 				return node;
 			} catch (Exception e) {
-				logging.Error("Error loading Element Node from XML", e);
+				logging.Error(e, "Error loading Element Node from XML");
 				return null;
 			}
 		}
