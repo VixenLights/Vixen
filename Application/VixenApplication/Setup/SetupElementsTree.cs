@@ -46,12 +46,8 @@ namespace VixenApplication.Setup
 			buttonRenameElements.Text = "";
 			buttonSelectDestinationOutputs.Image = Tools.GetIcon(Resources.table_select_row, iconSize);
 			buttonSelectDestinationOutputs.Text = "";
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-	//		comboBoxNewItemType.BackColor = ThemeColorTable.BackgroundColor;
-	//		comboBoxSetupHelperType.BackColor = ThemeColorTable.BackgroundColor;
-
+	
 			comboBoxNewItemType.BeginUpdate();
 			foreach (IElementTemplate template in elementTemplates) {
 				ComboBoxItem item = new ComboBoxItem(template.TemplateName, template);

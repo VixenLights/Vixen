@@ -1039,12 +1039,15 @@ namespace Common.Controls
 
 		private void SelectSingleNode(TreeNode node, bool notify=true)
 		{
+			BeginUpdate();
 			ClearSelectedNodes();
 
 			if (node != null) {
 				ToggleNode(node, true);
 				node.EnsureVisible();
 			}
+
+			EndUpdate();
 
 			if (notify)
 			{

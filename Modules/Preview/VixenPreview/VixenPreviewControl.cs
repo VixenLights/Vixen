@@ -764,6 +764,7 @@ namespace VixenModules.Preview.VixenPreview
 							_mouseCaptured = true;
 
 							modifyType = "AddNew";
+							OnSelectDisplayItem?.Invoke(this, _selectedDisplayItem);
 						}
 					}
 				}
@@ -1436,6 +1437,47 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
+		public void AddNodeToPixelMapping(DisplayItem item)
+		{
+			if(NodeToPixel == null) NodeToPixel = new ConcurrentDictionary<ElementNode, List<PreviewPixel>>();
+			foreach (PreviewPixel pixel in item.Shape.Pixels)
+			{
+				if (pixel.Node != null)
+				{
+					List<PreviewPixel> pixels;
+					if (NodeToPixel.TryGetValue(pixel.Node, out pixels))
+					{
+						if (!pixels.Contains(pixel))
+						{
+							pixels.Add(pixel);
+						}
+					}
+					else
+					{
+						pixels = new List<PreviewPixel>();
+						pixels.Add(pixel);
+						NodeToPixel.TryAdd(pixel.Node, pixels);
+					}
+				}
+			}
+		}
+
+		public void RemoveNodeToPixelMapping(DisplayItem item)
+		{
+			if (NodeToPixel == null) NodeToPixel = new ConcurrentDictionary<ElementNode, List<PreviewPixel>>();
+			foreach (PreviewPixel pixel in item.Shape.Pixels)
+			{
+				if (pixel.Node != null)
+				{
+					List<PreviewPixel> pixels;
+					if (NodeToPixel.TryGetValue(pixel.Node, out pixels))
+					{
+						pixels.Remove(pixel);
+					}
+				}
+			}
+		}
+
 		public void Reload()
 		{
 			if (NodeToPixel == null) NodeToPixel = new ConcurrentDictionary<ElementNode, List<PreviewPixel>>();
@@ -1568,11 +1610,13 @@ namespace VixenModules.Preview.VixenPreview
 		public void RemoveDisplayItem(DisplayItem _selectedDisplayItem)
 		{
 			DisplayItems.Remove(_selectedDisplayItem);
+			RemoveNodeToPixelMapping(_selectedDisplayItem);
 		}
 
 		public void AddDisplayItem(DisplayItem displayItem)
 		{
 			DisplayItems.Add(displayItem);
+			AddNodeToPixelMapping(displayItem);
 		}
 
 		public void Copy()
