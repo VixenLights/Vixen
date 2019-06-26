@@ -6,11 +6,16 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
+using Common.Resources;
+using Common.Resources.Properties;
 using WeifenLuo.WinFormsUI.Docking;
 using Vixen.Data.Flow;
 using Vixen.Module;
 using Vixen.Module.OutputFilter;
+using Vixen.Rule;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Output;
@@ -24,127 +29,122 @@ namespace VixenModules.Preview.VixenPreview
 		public VixenPreviewSetupElementsDocument(VixenPreviewControl preview)
 		{
 			InitializeComponent();
-			treeElements.BackColor = ThemeColorTable.BackgroundColor;
-			treeElements.ForeColor = ThemeColorTable.ForeColor;
+			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
+			buttonAddTemplate.Image = Tools.GetIcon(Resources.add, iconSize);
+			buttonAddTemplate.Text = "";
+			var elementTemplates = ApplicationServices.GetAllElementTemplates();
+			comboBoxNewItemType.BeginUpdate();
+			foreach (IElementTemplate template in elementTemplates)
+			{
+				ComboBoxItem item = new ComboBoxItem(template.TemplateName, template);
+				comboBoxNewItemType.Items.Add(item);
+			}
+			comboBoxNewItemType.EndUpdate();
+			if (comboBoxNewItemType.Items.Count > 0)
+				comboBoxNewItemType.SelectedIndex = 0;
+
+			ThemeUpdateControls.UpdateControls(this);
 			_preview = preview;
-			_preview.OnSelectDisplayItem += OnSelectDisplayItem;
-			_preview.OnDeSelectDisplayItem += OnDeSelectDisplayItem;
-            _preview.OnElementsChanged += OnElementsChanged;
+			treeElements.AllowPropertyEdit = false;
+			treeElements.AllowWireExport = false;
 		}
 
 		private void VixenPreviewSetupElementsDocument_Load(object sender, EventArgs e)
 		{
-            PopulateElementTree();	
+			treeElements.treeviewAfterSelect += treeElements_AfterSelect;
+			treeElements.treeviewDeselected += TreeElementsOnTreeviewDeselected;
+			
 		}
 
-        public void PopulateElementTree()
-        {
-            treeElements.Nodes.Clear();
-            Shapes.PreviewTools.PopulateElementTree(treeElements);
-        }
-
-		private void OnDeSelectDisplayItem(object sender, Shapes.DisplayItem displayItem)
-		{
-			// NO
-			//treeElements.SelectedNodes = null;
-		}
-
-        private void OnElementsChanged(object sender, EventArgs e)
-        {
-            PopulateElementTree();
-        }
-    
-        //
-		//
-		// This is just very slow, so I've disabled it...
-		//
-		private void OnSelectDisplayItem(object sender, Shapes.DisplayItem displayItem)
-		{
-            treeElements.SelectedNodes = null;
-            //treeElements.Nodes.Find();
-            //TreeNode visibleNode = null;
-            //foreach (Shapes.PreviewPixel pixel in displayItem.Shape.Pixels)
-            //{
-            //    if (pixel.Node != null)
-            //    {
-            //    }
-            //}
-            //if (visibleNode != null)
-            //{
-            //    bool selectParent = true;
-            //    foreach (TreeNode node in visibleNode.Parent.Nodes)
-            //    {
-            //        selectParent = (selectParent && treeElements.SelectedNodes.Contains(node));
-            //    }
-            //    if (selectParent)
-            //    {
-            //        treeElements.SelectedNodes = null;
-            //        treeElements.AddSelectedNode(visibleNode.Parent);
-            //        visibleNode.Parent.Collapse();
-            //        visibleNode.Parent.EnsureVisible();
-            //    }
-            //    else
-            //    {
-            //        visibleNode.EnsureVisible();
-            //    }
-            //}
-		}
-
-		private void HighlightNode(TreeNode node)
+		private void HighlightNode(ElementNode node)
 		{
 			// Is this a group?
-			if (node.Nodes.Count > 0) {
+			if (!node.IsLeaf) {
 				// If so, iterate through children and highlight them
-				foreach (TreeNode childNode in node.Nodes) {
+				foreach (var childNode in node.Children) {
 					HighlightNode(childNode);
 				}
 			}
+
 			// Finally, highlight the node passed to us
-			var elementNode = node.Tag as ElementNode;
-			_preview.HighlightedElements.Add(elementNode.Id);
-			_preview.DeSelectSelectedDisplayItemNoNotify();
+			_preview.HighlightedElements.Add(node.Id);
+			_preview.DeSelectSelectedDisplayItem();
 		}
 
 		private void treeElements_AfterSelect(object sender, TreeViewEventArgs e)
 		{
 			_preview.HighlightedElements.Clear();
 
-			foreach (TreeNode node in treeElements.SelectedNodes) {
+			foreach (var node in treeElements.SelectedElementNodes) {
 				HighlightNode(node);
 			}
-		}
 
-		private void treeElements_DragDrop(object sender, DragEventArgs e)
-		{
-			e.Effect = DragDropEffects.None;
-		}
-
-		private void treeElements_DragOver(object sender, DragEventArgs e)
-		{
-			e.Effect = DragDropEffects.None;
-		}
-
-		private void treeElements_DragFinishing(object sender, Common.Controls.DragFinishingEventArgs e)
-		{
-			e.FinishDrag = false;
-		}
-
-		private void treeElements_MouseClick(object sender, MouseEventArgs e)
-		{
-			_preview.HighlightedElements.Clear();
-		}
-
-		public ElementNode SelectedNode
-		{
-			get
+			if (treeElements.SelectedElementNodes.Count() == 1)
 			{
-				if (treeElements.SelectedNode != null) {
-					return treeElements.SelectedNode.Tag as ElementNode;
+				if (_preview.NodeToPixel.TryGetValue(treeElements.SelectedNode.GetLeafEnumerator().First(), out var previewPixel))
+				{
+					if (previewPixel.Any())
+					{
+						var shape = _preview.DisplayItemAtPoint(previewPixel.First().Point);
+						if (shape != null)
+						{
+							_preview.propertiesForm.ShowSetupControl(shape.Shape.GetSetupControl());
+						}
+					}
+
 				}
-				else {
-					return null;
+				else
+				{
+					if (!_preview.SelectedDisplayItems.Any())
+					{
+						_preview.propertiesForm.ClearSetupControl();
+					}
 				}
 			}
+		}
+
+		private void TreeElementsOnTreeviewDeselected(object sender, EventArgs e)
+		{
+			_preview.HighlightedElements.Clear();
+			if (!_preview.SelectedDisplayItems.Any())
+			{
+				_preview.propertiesForm.ClearSetupControl();
+			}
+		}
+
+		public ElementNode SelectedNode => treeElements.SelectedNode;
+
+		private void ButtonAddTemplate_Click(object sender, EventArgs e)
+		{
+			ComboBoxItem item = (comboBoxNewItemType.SelectedItem as ComboBoxItem);
+
+			if (item != null)
+			{
+				IElementTemplate template = item.Value as IElementTemplate;
+				bool act = template.SetupTemplate(treeElements.SelectedElementNodes);
+				if (act)
+				{
+					IEnumerable<ElementNode> createdElements = template.GenerateElements(treeElements.SelectedElementNodes);
+					if (createdElements == null || !createdElements.Any())
+					{
+						var messageBox = new MessageBoxForm("Could not create elements.  Ensure you use a valid name and try again.", "",MessageBoxButtons.OKCancel,SystemIcons.Error);
+						messageBox.ShowDialog();
+						return;
+					}
+					treeElements.AddNodePathToTree(new[] { createdElements.First() });
+					treeElements.UpdateScrollPosition();
+				}
+			}
+		}
+
+		private void ComboBoxNewItemType_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			buttonAddTemplate.Enabled = comboBoxNewItemType.SelectedIndex >= 0;
+		}
+
+		private void ComboBoxNewItemType_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			ThemeComboBoxRenderer.DrawItem(sender, e);
 		}
 	}
 }

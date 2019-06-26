@@ -185,6 +185,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+		public PreviewPoint Point
+		{
+			get
+			{
+				if (IsHighPrecision)
+				{
+					return new PreviewPoint((int)Location.X, (int)Location.Y);
+				}
+				else
+				{
+					return new PreviewPoint(X, Y);
+				}
+
+			}
+		}
+
 
 		public int X
 		{
