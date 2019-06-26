@@ -34,6 +34,7 @@
 			this.selectSequencesDialog = new System.Windows.Forms.OpenFileDialog();
 			this.btnAdd = new System.Windows.Forms.Button();
 			this.btnDelete = new System.Windows.Forms.Button();
+			this.btnAddAll = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// lblChooseSequences
@@ -84,7 +85,7 @@
 			// 
 			// btnDelete
 			// 
-			this.btnDelete.Location = new System.Drawing.Point(44, 48);
+			this.btnDelete.Location = new System.Drawing.Point(76, 48);
 			this.btnDelete.Margin = new System.Windows.Forms.Padding(1, 3, 3, 3);
 			this.btnDelete.Name = "btnDelete";
 			this.btnDelete.Size = new System.Drawing.Size(28, 23);
@@ -93,10 +94,22 @@
 			this.btnDelete.UseVisualStyleBackColor = true;
 			this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
 			// 
+			// btnAddAll
+			// 
+			this.btnAddAll.Location = new System.Drawing.Point(44, 48);
+			this.btnAddAll.Margin = new System.Windows.Forms.Padding(1, 3, 3, 3);
+			this.btnAddAll.Name = "btnAddAll";
+			this.btnAddAll.Size = new System.Drawing.Size(28, 23);
+			this.btnAddAll.TabIndex = 4;
+			this.btnAddAll.Text = "button2";
+			this.btnAddAll.UseVisualStyleBackColor = true;
+			this.btnAddAll.Click += new System.EventHandler(this.btnAddAll_Click);
+			// 
 			// BulkExportSourcesStage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.btnAddAll);
 			this.Controls.Add(this.btnDelete);
 			this.Controls.Add(this.btnAdd);
 			this.Controls.Add(this.lstSequences);
@@ -116,5 +129,6 @@
 		private System.Windows.Forms.ColumnHeader sequences;
 		private System.Windows.Forms.Button btnAdd;
 		private System.Windows.Forms.Button btnDelete;
+		private System.Windows.Forms.Button btnAddAll;
 	}
 }

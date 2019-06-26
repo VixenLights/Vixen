@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -24,6 +25,9 @@ namespace VixenModules.App.ExportWizard
 			btnAdd.Image = Tools.GetIcon(Resources.folder_open, iconSize);
 			btnAdd.Text = string.Empty;
 
+			btnAddAll.Image = Tools.GetIcon(Resources.document_copies, iconSize);
+			btnAddAll.Text = String.Empty;
+			
 			btnDelete.Image = Tools.GetIcon(Resources.delete_32, iconSize);
 			btnDelete.Text = string.Empty;
 
@@ -84,19 +88,28 @@ namespace VixenModules.App.ExportWizard
 
 			if (selectSequencesDialog.ShowDialog() == DialogResult.OK)
 			{
-				lstSequences.BeginUpdate();
-				foreach (var fileName in selectSequencesDialog.FileNames)
+				AddFiles(selectSequencesDialog.FileNames);
+			}
+		}
+
+		private void AddFiles(IEnumerable<string> fileNames)
+		{
+			lstSequences.BeginUpdate();
+			foreach (var fileName in fileNames)
+			{
+				if (!_data.ActiveProfile.SequenceFiles.Contains(fileName))
 				{
 					ListViewItem item = new ListViewItem(Path.GetFileName(fileName));
 					item.Tag = fileName;
 					lstSequences.Items.Add(item);
 					_data.ActiveProfile.SequenceFiles.Add(fileName);
 				}
-				lstSequences.EndUpdate();
-				ColumnAutoSize();
-
-				_WizardStageChanged();
 			}
+
+			lstSequences.EndUpdate();
+			ColumnAutoSize();
+
+			_WizardStageChanged();
 		}
 
 		public void ColumnAutoSize()
@@ -140,6 +153,11 @@ namespace VixenModules.App.ExportWizard
 			}
 		}
 
-		
+		private void btnAddAll_Click(object sender, EventArgs e)
+		{
+			var files = Directory.GetFiles(SequenceService.SequenceDirectory, "*.tim", SearchOption.AllDirectories);
+
+			AddFiles(files.Where(x => x.EndsWith(".tim")));
+		}
 	}
 }
