@@ -280,9 +280,9 @@ namespace VixenApplication
 								}
 
 							}
-							catch (Exception e)
+							catch (Exception)
 							{
-								Logging.Error(e, "Error getting the process id to determine lock file removal.");
+								//Ignore the normal exception when it is not found. We will just remove the lock.
 								//No process with that id so release the lock.
 								RemoveLockFile(lockFilePath);
 							}

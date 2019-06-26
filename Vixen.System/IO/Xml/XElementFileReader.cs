@@ -17,7 +17,7 @@ namespace Vixen.IO.Xml
 						return XElement.Load(reader);
 					}
 					catch (System.Exception ex) {
-						Logging.Error("Error loading '" + filePath + "'.", ex);
+						Logging.Error(ex, "Error loading '" + filePath + "'.");
 					}
 				}
 			}
