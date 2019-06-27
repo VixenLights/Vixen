@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using Common.Controls.Theme;
+using System;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using Common.Controls.Theme;
 
 namespace Common.Controls.Timeline
 {
 	[System.ComponentModel.DesignerCategory("")] // Prevent this from showing up in designer.
 	public class RowLabel : UserControl
 	{
+		private const int LableFontHeight = 12;
+
 		public RowLabel(Row parentRow)
 			: this()
 		{
@@ -50,6 +47,7 @@ namespace Common.Controls.Timeline
 
 		protected Rectangle IconArea { get; set; }
 		protected Rectangle LabelArea { get; set; }
+		protected Rectangle IndicatorArea { get; set; }
 		protected int ResizeBarWidth { get; set; }
 		protected bool Resizing { get; set; }
 		protected Point LastMouseLocation { get; set; }
@@ -172,6 +170,10 @@ namespace Common.Controls.Timeline
 
 		#region Methods
 
+		public Func<bool> ChildActiveIndicator = () => false;
+
+		public Func<bool> ActiveIndicator = () => false;
+
 		#endregion
 
 		#region Drawing
@@ -180,55 +182,76 @@ namespace Common.Controls.Timeline
 		{
 			using (SolidBrush backgroundBrush = new SolidBrush(ThemeColorTable.TimeLineLabelBackColor))
 			{
-				using (SolidBrush toggleBrush = new SolidBrush(ThemeColorTable.TimeLineLabelBackColor))
+				using (SolidBrush textBrush = new SolidBrush(ActiveIndicator()?ThemeColorTable.ActiveColor:ThemeColorTable.TimeLineForeColor))
 				{
-					using (SolidBrush nodeIconBrush = new SolidBrush(ThemeColorTable.TimeLineLabelBackColor))
+					using (Pen wholeBorderPen = new Pen(ThemeColorTable.TimeLineGridColor, 1))
 					{
-						using (SolidBrush textBrush = new SolidBrush(ThemeColorTable.TimeLineForeColor))
+						wholeBorderPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
+						using (Pen toggleBorderPen = new Pen(Color.DimGray, 1))
 						{
-							using (Pen wholeBorderPen = new Pen(ThemeColorTable.TimeLineGridColor, 1)) {
-								wholeBorderPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
-								using (Pen toggleBorderPen = new Pen(Color.DimGray, 1)) {
-									toggleBorderPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
+							toggleBorderPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
 
-									int fontHeight = 12;
-									fontHeight = Math.Min(fontHeight, (int) (Height*0.4));
-									using (Font font = new Font(Font.FontFamily, fontHeight)) {
-										if (ParentRow.ChildRows.Count > 0 || ParentRow.ParentDepth == 0)
-										{
-											IconArea = new Rectangle(0, 0, ToggleTreeButtonWidth, Height);
-											LabelArea = new Rectangle(ToggleTreeButtonWidth, 0, Width - ToggleTreeButtonWidth, Height);
-										}
-										else
-										{
-											var width = ToggleTreeButtonWidth / 2;
-											IconArea = new Rectangle(0, 0, width, Height);
-											LabelArea = new Rectangle(width, 0, Width - width, Height);
-										}
-										
+							var fontHeight = Math.Min(LableFontHeight, (int)(Height * 0.4));
 
-										Rectangle wholeBorderArea = new Rectangle(0, -1, Width - 1, Height);
-										//Rectangle iconBorderArea = new Rectangle(0, -1, IconArea.Width, IconArea.Height);
+							using (Font font = new Font(Font.FontFamily, fontHeight))
+							{
 
-										e.Graphics.FillRectangle((ParentRow.ChildRows.Count == 0) ? nodeIconBrush : toggleBrush, IconArea);
-										e.Graphics.FillRectangle(backgroundBrush, LabelArea);
+								//var indicatorSize = e.Graphics.MeasureString("O", font);
+								//var indicatorHeight = (int)(indicatorSize.Height * .3);
+								//var indicatorAreaWidth = indicatorHeight;
 
-										//e.Graphics.DrawRectangle(toggleBorderPen, iconBorderArea);
-										e.Graphics.DrawRectangle(wholeBorderPen, wholeBorderArea);
+								if (ParentRow.ChildRows.Count > 0 || ParentRow.ParentDepth == 0)
+								{
+									IconArea = new Rectangle(0, 0, ToggleTreeButtonWidth, Height);
+									//IndicatorArea = new Rectangle(IconArea.Width, 0, indicatorAreaWidth, Height);
+									//LabelArea = new Rectangle(IconArea.Width, 0, Width - IconArea.Width, Height);
+								}
+								else
+								{
+									var width = ToggleTreeButtonWidth / 2;
+									IconArea = new Rectangle(0, 0, width, Height);
+									//IndicatorArea = new Rectangle(IconArea.Width, 0, indicatorAreaWidth, Height);
+									//LabelArea = new Rectangle(IconArea.Width, 0, Width - IconArea.Width, Height);
+								}
 
-										using (StringFormat sf = new StringFormat()) {
-											sf.Alignment = StringAlignment.Near;
-											sf.LineAlignment = StringAlignment.Center;
-											sf.Trimming = StringTrimming.EllipsisCharacter;
-											sf.FormatFlags = StringFormatFlags.NoWrap;
-											Rectangle stringPos = new Rectangle(LabelArea.X, LabelArea.Y, LabelArea.Width - 6, LabelArea.Height);
-											e.Graphics.DrawString(Name, font, textBrush, stringPos, sf);
-										}
-									}
+								LabelArea = new Rectangle(IconArea.Width, 0, Width - IconArea.Width, Height);
+								//var childActiveIndicator = new RectangleF(IndicatorArea.X, Height / 2f + 1, indicatorHeight, indicatorHeight);
+								//var activeIndicatorArea = new RectangleF(IndicatorArea.X, Height / 2f - indicatorHeight - 1, indicatorHeight, indicatorHeight);
+
+								Rectangle wholeBorderArea = new Rectangle(0, -1, Width - 1, Height);
+
+								e.Graphics.FillRectangle(backgroundBrush, IconArea);
+								e.Graphics.FillRectangle(backgroundBrush, IndicatorArea);
+								//if (ActiveIndicator())
+								//{
+								//	e.Graphics.FillEllipse(Brushes.Lime, activeIndicatorArea);
+								//}
+
+								//if (ParentRow.ChildRows.Count > 0 || ParentRow.ParentDepth == 0)
+								//{
+								//	if (ChildActiveIndicator())
+								//	{
+								//		e.Graphics.FillEllipse(Brushes.Lime, childActiveIndicator);
+								//	};
+								//}
+								e.Graphics.FillRectangle(backgroundBrush, LabelArea);
+
+								//e.Graphics.DrawRectangle(toggleBorderPen, iconBorderArea);
+								e.Graphics.DrawRectangle(wholeBorderPen, wholeBorderArea);
+
+								using (StringFormat sf = new StringFormat())
+								{
+									sf.Alignment = StringAlignment.Near;
+									sf.LineAlignment = StringAlignment.Center;
+									sf.Trimming = StringTrimming.EllipsisCharacter;
+									sf.FormatFlags = StringFormatFlags.NoWrap;
+									Rectangle stringPos = new Rectangle(LabelArea.X, LabelArea.Y, LabelArea.Width - 6, LabelArea.Height);
+									e.Graphics.DrawString(Name, font, textBrush, stringPos, sf);
 								}
 							}
 						}
 					}
+
 				}
 			}
 		}
