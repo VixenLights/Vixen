@@ -121,7 +121,7 @@ namespace VixenModules.Effect.Wipe
 			_pulsePercent = (int) (_bufferWidth * (PulsePercent / 100));
 			if (WipeMovement == WipeMovement.Movement) steps += _pulsePercent;
 
-			for (int i = 0; i < steps; i++)
+			for (int i = 0; i <= steps; i++)
 			{
 				List<ElementNode> elements = new List<ElementNode>();
 				foreach (Tuple<ElementNode, int, int, int> node in renderedNodes)
@@ -154,7 +154,7 @@ namespace VixenModules.Effect.Wipe
 			_pulsePercent = (int)(_bufferWidth * (PulsePercent / 100));
 			if (WipeMovement == WipeMovement.Movement) steps += _pulsePercent;
 			
-			for (int i = 0; i < steps; i++)
+			for (int i = 0; i <= steps; i++)
 			{
 				List<ElementNode> elements = new List<ElementNode>();
 				foreach (Tuple<ElementNode, int, int, int> node in renderedNodes)
@@ -206,7 +206,7 @@ namespace VixenModules.Effect.Wipe
 			_pulsePercent = (int)(_bufferWidth * (PulsePercent / 100));
 			if (WipeMovement == WipeMovement.Movement) steps += _pulsePercent;
 
-			for (int i = 0; i < steps; i++)
+			for (int i = 0; i <= steps; i++)
 			{
 				List<ElementNode> elements = new List<ElementNode>();
 
@@ -237,7 +237,7 @@ namespace VixenModules.Effect.Wipe
 			_pulsePercent = (int)(_bufferWidth * (PulsePercent / 100));
 			if (WipeMovement == WipeMovement.Movement) _steps += _pulsePercent;
 
-			for (int i = 0; i < _steps; i++)
+			for (int i = 0; i <= _steps; i++)
 			{
 				List<ElementNode> elements = new List<ElementNode>();
 				foreach (Tuple<ElementNode, int, int, int> node in renderedNodes)
@@ -294,7 +294,7 @@ namespace VixenModules.Effect.Wipe
 			
 			if (WipeMovement == WipeMovement.Movement) _steps += _pulsePercent;
 			
-			for (int i = 0; i < _steps; i++)
+			for (int i = 0; i <= _steps; i++)
 			{
 				List<ElementNode> elements = new List<ElementNode>();
 				switch (Direction)
