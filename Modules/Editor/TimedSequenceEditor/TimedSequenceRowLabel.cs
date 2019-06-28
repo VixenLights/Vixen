@@ -31,8 +31,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 
 				Bitmap icon;
-
-				if (ActiveIndicator())
+				var showChildActive = ShowActiveIndicators && ChildActiveIndicator();
+				if (showChildActive)
 				{
 					icon = ParentRow.TreeOpen ? IconActiveOpen : IconActiveClosed;
 				}
@@ -44,7 +44,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				int x = (int)(IconArea.Width - icon.Width*ScaleFactor)/2;
 				int y = (int)(IconArea.Height - icon.Height*ScaleFactor)/2;
-				if (ChildActiveIndicator())
+				if (showChildActive)
 				{
 					e.Graphics.FillRectangle(Brushes.Yellow, x, y, icon.Width, icon.Height);
 				}

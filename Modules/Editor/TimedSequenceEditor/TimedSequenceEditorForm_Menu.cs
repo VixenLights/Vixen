@@ -373,7 +373,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 		}
-			
+
+
+		private void HighlightRowsWithEffectsToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+		{
+			TimelineControl.grid.HighlightRowsWithEffects(highlightRowsWithEffectsToolStripMenuItem.Checked);
+		}
+
 		private void effectEditorWindowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			HandleDockContentToolStripMenuClick(EffectEditorForm, DockState.DockRight);
