@@ -9,7 +9,7 @@ namespace Vixen.Execution
 	{
 		bool UpdateCurrentEffects(IDataSource dataSource, TimeSpan currentTime);
 		void RemoveEffects(IEnumerable<IEffectNode> nodes);
-		void Reset();
+		void Reset(bool now);
 		bool Resetting();
 	}
 }

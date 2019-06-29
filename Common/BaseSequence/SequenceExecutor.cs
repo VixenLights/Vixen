@@ -346,13 +346,13 @@ namespace BaseSequence
 			// Release the hook before the behaviors are shut down so that
 			// they can affect the sequence.
 			//_UnhookDataListener();
+			
+			TimingSource.Stop();
+			_StopMedia();
 
 			IsRunning = false;
 			IsPaused = false;
 
-			TimingSource.Stop();
-
-			_StopMedia();
 		}
 
 		public ITiming TimingSource { get; private set; }
