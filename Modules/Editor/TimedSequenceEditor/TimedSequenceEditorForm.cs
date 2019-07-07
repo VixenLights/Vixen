@@ -3154,6 +3154,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			UpdateButtonStates();
 		}
 
+		private void PlayPauseToggle()
+		{
+			if (!_context.IsRunning || _context.IsPaused)
+			{
+				PlaySequence();
+			}
+			else
+			{
+				PauseSequence();
+			}
+		}
+
 		private void PlaySequence()
 		{
 			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
@@ -3287,7 +3299,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				timerPostponePlay.Enabled = timerDelayCountdown.Enabled = false;
 				playBackToolStripButton_Play.Image = Resources.control_play_blue;
-				playBackToolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
+				//playBackToolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
+				UpdatePlayButton(true);
 				playBackToolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
 				//We are stopping the delay, there is no context, so get out of here to avoid false entry into error log
 				return;
@@ -3410,8 +3423,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				if (_context == null)
 				{
+					UpdatePlayButton(true);
 					playBackToolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = false;
-					playBackToolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
 					playBackToolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
 					return;
 				}
@@ -3421,21 +3434,44 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					if (_context.IsPaused)
 					{
 						playBackToolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
-						playBackToolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
+						pauseToolStripMenuItem.Enabled = false;
+						playToolStripMenuItem.Enabled = true;
+						UpdatePlayButton(true);
 					}
 					else
 					{
-						playBackToolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = false;
-						playBackToolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = true;
+						playBackToolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
+						pauseToolStripMenuItem.Enabled = true;
+						playToolStripMenuItem.Enabled = false;
+						UpdatePlayButton(false);
 					}
 					playBackToolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = true;
 				}
 				else // Stopped
 				{
 					playBackToolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
-					playBackToolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
+					pauseToolStripMenuItem.Enabled = false;
+					playToolStripMenuItem.Enabled = true;
+					UpdatePlayButton(true);
 					playBackToolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
 				}
+			}
+		}
+
+		private void UpdatePlayButton(bool playState)
+		{
+			if (playState)
+			{
+				playBackToolStripButton_Play.Image = Resources.control_play_blue;
+				playBackToolStripButton_Play.Text = @"Play";
+				playBackToolStripButton_Play.ToolTipText = @"Play F5";
+				
+			}
+			else
+			{
+				playBackToolStripButton_Play.Image = Resources.control_pause_blue;
+				playBackToolStripButton_Play.Text = @"Pause";
+				playBackToolStripButton_Play.ToolTipText = @"Pause F5";
 			}
 		}
 
@@ -5781,6 +5817,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			return defaultEffectDuration;
 		}
+
 	}
 
 	[Serializable]
