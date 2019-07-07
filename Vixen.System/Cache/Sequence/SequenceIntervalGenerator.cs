@@ -137,6 +137,7 @@ namespace Vixen.Cache.Sequence
 		{
 			TimingSource.Stop();
 			VixenSystem.Elements.ClearStates();
+			VixenSystem.Filters.Update();
 			if (_context != null)
 			{
 				VixenSystem.Contexts.ReleaseContext(_context);
