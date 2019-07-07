@@ -873,4 +873,28 @@
   <data name="FallSpeed" xml:space="preserve">
     <value>Fall Speed</value>
   </data>
+  <data name="BottomBarrier" xml:space="preserve">
+    <value>Bottom Barrier</value>
+  </data>
+  <data name="ColorArray" xml:space="preserve">
+    <value>Color Array</value>
+  </data>
+  <data name="Emitters" xml:space="preserve">
+    <value>Emitters</value>
+  </data>
+  <data name="LeftBarrier" xml:space="preserve">
+    <value>Left Barrier</value>
+  </data>
+  <data name="MixColors" xml:space="preserve">
+    <value>Mix Colors</value>
+  </data>
+  <data name="ParticleSize" xml:space="preserve">
+    <value>Particle Size</value>
+  </data>
+  <data name="RightBarrier" xml:space="preserve">
+    <value>Right Barrier</value>
+  </data>
+  <data name="TopBarrier" xml:space="preserve">
+    <value>Top Barrier</value>
+  </data>
 </root>

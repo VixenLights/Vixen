@@ -305,6 +305,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bottom Barrier.
+        /// </summary>
+        internal static string BottomBarrier {
+            get {
+                return ResourceManager.GetString("BottomBarrier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bottom Width.
         /// </summary>
         internal static string BottomBorderWidth {
@@ -445,6 +454,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Color {
             get {
                 return ResourceManager.GetString("Color", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color Array.
+        /// </summary>
+        internal static string ColorArray {
+            get {
+                return ResourceManager.GetString("ColorArray", resourceCulture);
             }
         }
         
@@ -724,6 +742,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string DissolveFlip {
             get {
                 return ResourceManager.GetString("DissolveFlip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Emitters.
+        /// </summary>
+        internal static string Emitters {
+            get {
+                return ResourceManager.GetString("Emitters", resourceCulture);
             }
         }
         
@@ -1142,6 +1169,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Left Barrier.
+        /// </summary>
+        internal static string LeftBarrier {
+            get {
+                return ResourceManager.GetString("LeftBarrier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Left Width.
         /// </summary>
         internal static string LeftBorderWidth {
@@ -1331,6 +1367,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mix Colors.
+        /// </summary>
+        internal static string MixColors {
+            get {
+                return ResourceManager.GetString("MixColors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mode.
         /// </summary>
         internal static string Mode {
@@ -1435,6 +1480,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Particles {
             get {
                 return ResourceManager.GetString("Particles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Particle Size.
+        /// </summary>
+        internal static string ParticleSize {
+            get {
+                return ResourceManager.GetString("ParticleSize", resourceCulture);
             }
         }
         
@@ -1696,6 +1750,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string RevolutionTime {
             get {
                 return ResourceManager.GetString("RevolutionTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Right Barrier.
+        /// </summary>
+        internal static string RightBarrier {
+            get {
+                return ResourceManager.GetString("RightBarrier", resourceCulture);
             }
         }
         
@@ -2155,6 +2218,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string TimingSource {
             get {
                 return ResourceManager.GetString("TimingSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Top Barrier.
+        /// </summary>
+        internal static string TopBarrier {
+            get {
+                return ResourceManager.GetString("TopBarrier", resourceCulture);
             }
         }
         

@@ -135,6 +135,94 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\EmitterAnimateCheckBoxEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\EmitterColorArrayCheckBoxEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\EmitterEdgeHandlingComboBoxEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\EmitterFlowControlComboBoxEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\EmitterFramesPerColorSliderEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\EmitterMarkCollectionComboBoxEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\EmitterMusicFlowCheckBoxEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\EmitterNozzleAngleComboBoxEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\EmitterOffTimeSliderEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\EmitterOnTimeSliderEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\EmitterOscEndAngleSliderEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\EmitterOscStartAngleSliderEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\EmitterParticleTypeComboBoxEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\InlineEmitterAngleCurveEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\InlineEmitterBrightnessCurveEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\InlineEmitterFlowCurveEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\InlineEmitterLifetimeCurveEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\InlineEmitterOscillationSpeedCurveEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\InlineEmitterParticleVelocityCurveEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\InlineEmitterSizeCurveEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\InlineEmitterVelocityXCurveEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\InlineEmitterVelocityYCurveEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\GradientLevelPairEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -154,6 +242,18 @@
     <Page Include="Themes\ColorGradientPaletteEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\InlineEmitterGradientEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\InlineEmitterXCurveEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\InlineEmitterYCurveEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\IntegerEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -222,6 +322,35 @@
     <Compile Include="Controls\BaseInlineCurveEditor.cs" />
     <Compile Include="Controls\BaseInlineGradientEditor.cs" />
     <Compile Include="Controls\CollectionView.cs" />
+    <Compile Include="Controls\Emitter\EmitterCheckBox\EmitterAnimateCheckBoxEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterCheckBox\EmitterCheckBoxEditorBase.cs" />
+    <Compile Include="Controls\Emitter\EmitterCheckBox\EmitterColorArrayCheckBoxEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterCheckBox\EmitterMusicFlowCheckBoxEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterCollectionView.cs" />
+    <Compile Include="Controls\Emitter\EmitterComboBox\EmitterComboBoxEditorBase.cs" />
+    <Compile Include="Controls\Emitter\EmitterComboBox\EmitterEdgeHandlingComboBoxEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterComboBox\EmitterFlowControlComboBoxEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterComboBox\EmitterMarkCollectionComboBoxEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterComboBox\EmitterNozzleAngleComboBoxEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterComboBox\EmitterParticleTypeComboBoxEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterCurve\InlineEmitterAngleCurveEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterCurve\InlineEmitterBrightnessCurveEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterCurve\InlineEmitterFlowCurveEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterCurve\InlineEmitterLifetimeCurveEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterCurve\InlineEmitterOscillationSpeedCurveEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterCurve\InlineEmitterSizeCurveEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterCurve\InlineEmitterParticleVelocityCurveEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterCurve\InlineEmitterVelocityXCurveEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterCurve\InlineEmitterVelocityYCurveEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterCurve\InlineEmitterXCurveEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterCurve\InlineEmitterYCurveEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterSlider\EmitterFramesPerColorSliderEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterSlider\EmitterOffTimeSliderEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterSlider\EmitterOnTimeSliderEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterSlider\EmitterOscEndAngleSliderEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterSlider\EmitterOscStartAngleSliderEditor.cs" />
+    <Compile Include="Controls\Emitter\EmitterSlider\EmitterSliderEditorBase.cs" />
+    <Compile Include="Controls\Emitter\InlineEmitterGradientEditor .cs" />
     <Compile Include="Controls\IndexingStackPanel.cs" />
     <Compile Include="Controls\InlineGradientEditor.cs" />
     <Compile Include="Controls\InlineGradientPairCurveEditor.cs" />
@@ -382,6 +511,16 @@
     <ProjectReference Include="..\..\Effect\Effect\Effect.csproj">
       <Project>{af76c902-a776-49c3-9019-d7cb0a53fb2f}</Project>
       <Name>Effect</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Effect\Liquid\Emitter\Emitter.csproj">
+      <Project>{32629b20-afd0-490a-be11-e1e6eca4408e}</Project>
+      <Name>Emitter</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Effect\Liquid\Liquid.csproj">
+      <Project>{7509face-9676-4176-a7e1-f0d68dc683b6}</Project>
+      <Name>Liquid</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Property\Color\Color.csproj">

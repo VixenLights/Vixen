@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
+using System;
 using System.Windows;
 using System.Windows.Input;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Editor.EffectEditor.Input;
 using VixenModules.Editor.EffectEditor.Internal;
+using VixenModules.Effect.Liquid;
 
 namespace VixenModules.Editor.EffectEditor
 {
@@ -48,6 +50,19 @@ namespace VixenModules.Editor.EffectEditor
 			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.AddCollectionItem, OnAddCollectionItemCommand));
 			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowGradientLevelCurveEditor, OnShowGradientLevelCurveCommand));
 			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowGradientLevelGradientEditor, OnShowGradientLevelGradientCommand));
+
+			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowEmitterXCurveEditor, OnShowEmitterXCurveCommand));
+			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowEmitterYCurveEditor, OnShowEmitterYCurveCommand));
+			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowEmitterFlowCurveEditor, OnShowEmitterFlowCurveCommand));
+			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowEmitterVelocityCurveEditor, OnShowEmitterVelocityCurveCommand));
+			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowEmitterSizeCurveEditor, OnShowEmitterSizeCurveCommand));
+			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowEmitterLifetimeCurveEditor, OnShowEmitterLifetimeCurveCommand));
+			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowEmitterGradientEditor, OnShowEmitterGradientCommand));
+			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowEmitterVelocityXCurveEditor, OnShowEmitterVelocityXCurveCommand));
+			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowEmitterVelocityYCurveEditor, OnShowEmitterVelocityYCurveCommand));
+			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowEmitterAngleCurveEditor, OnShowEmitterAngleCurveCommand));
+			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowEmitterOscillationSpeedCurveEditor, OnShowEmitterOscillationSpeedCurveCommand));
+			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowEmitterBrightnessCurveEditor, OnShowEmitterBrightnessCurveCommand));
 		}
 
 		#region Commands
@@ -189,6 +204,116 @@ namespace VixenModules.Editor.EffectEditor
 
 			}
 		}
+
+		private void OnShowEmitterGradientCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			var collectionItem = e.Parameter as CollectionItemValue;
+			if (collectionItem != null)
+			{
+				var grid = sender as EffectPropertyEditorGrid;
+				if (grid != null)
+				{
+					Editors.Editor editor = grid.GetEditors().GetEditor(typeof(ColorGradient)); 
+					IEmitter glp = collectionItem.Value as IEmitter;
+					if (glp != null)
+					{
+						var newValue = editor.ShowDialog(collectionItem.ParentProperty, glp.Color, this);
+						if (newValue is ColorGradient)
+						{
+							IEmitter emit = glp.CreateInstanceForClone();
+							emit.Color = (ColorGradient)newValue;
+							collectionItem.Value = emit;
+						}
+					}
+				}
+			}
+		}
+
+	
+
+		private void OnShowEmitterXCurveCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			OnShowEmitterCurveCommand(sender, e, (emitter, curve) => { emitter.X = curve; }, (emitter) => { return emitter.X; });
+		}
+
+		private void OnShowEmitterYCurveCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			OnShowEmitterCurveCommand(sender, e, (emitter, curve) => { emitter.Y = curve; }, (emitter) => { return emitter.Y; });
+		}
+
+		private void OnShowEmitterFlowCurveCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			OnShowEmitterCurveCommand(sender, e, (emitter, curve) => { emitter.Flow = curve; }, (emitter) => { return emitter.Flow; });
+		}
+
+		private void OnShowEmitterVelocityCurveCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			OnShowEmitterCurveCommand(sender, e, (emitter, curve) => { emitter.ParticleVelocity = curve; }, (emitter) => { return emitter.ParticleVelocity; });
+		}
+
+		private void OnShowEmitterLifetimeCurveCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			OnShowEmitterCurveCommand(sender, e, (emitter, curve) => { emitter.Lifetime = curve; }, (emitter) => { return emitter.Lifetime; });
+		}
+
+		private void OnShowEmitterSizeCurveCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			OnShowEmitterCurveCommand(sender, e, (emitter, curve) => { emitter.SourceSize = curve; }, (emitter) => { return emitter.SourceSize; });
+		}
+
+		private void OnShowEmitterVelocityXCurveCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			OnShowEmitterCurveCommand(sender, e, (emitter, curve) => { emitter.VelocityX = curve; }, (emitter) => { return emitter.VelocityX; });
+		}
+
+		private void OnShowEmitterVelocityYCurveCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			OnShowEmitterCurveCommand(sender, e, (emitter, curve) => { emitter.VelocityY = curve; }, (emitter) => { return emitter.VelocityY; });
+		}
+
+		private void OnShowEmitterAngleCurveCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			OnShowEmitterCurveCommand(sender, e, (emitter, curve) => { emitter.Angle = curve; }, (emitter) => { return emitter.Angle; });
+		}
+
+		private void OnShowEmitterOscillationSpeedCurveCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			OnShowEmitterCurveCommand(sender, e, (emitter, curve) => { emitter.OscillationSpeed = curve; }, (emitter) => { return emitter.OscillationSpeed; });
+		}
+
+		private void OnShowEmitterBrightnessCurveCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			OnShowEmitterCurveCommand(sender, e, (emitter, curve) => { emitter.Brightness = curve; }, (emitter) => { return emitter.Brightness; });
+		}
+
+
+		private void OnShowEmitterCurveCommand(object sender, ExecutedRoutedEventArgs e, Action<IEmitter, Curve> setCurve, Func<IEmitter, Curve> getCurve)
+		{
+			CollectionItemValue collectionItem = e.Parameter as CollectionItemValue;
+
+			if (collectionItem != null)
+			{
+				EffectPropertyEditorGrid grid = sender as EffectPropertyEditorGrid;
+				if (grid != null)
+				{
+					Editors.Editor editor = grid.GetEditors().GetEditor(typeof(Curve));
+					IEmitter emitter = collectionItem.Value as IEmitter;
+
+					if (emitter != null)
+					{
+						var newValue = editor.ShowDialog(collectionItem.ParentProperty, getCurve(emitter), this);
+
+						if (newValue is Curve)
+						{
+							IEmitter newEmitter = emitter.CreateInstanceForClone();
+							setCurve(newEmitter, (Curve)newValue);							
+							collectionItem.Value = newEmitter;
+						}
+					}
+				}
+			}
+		}
+
 
 		private void ShowDialogEditor(PropertyItemValue value)
 		{

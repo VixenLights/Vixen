@@ -296,6 +296,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Creates a barrier at the bottom of the element..
+        /// </summary>
+        internal static string BottomBarrier {
+            get {
+                return ResourceManager.GetString("BottomBarrier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Adjust the Bottom Border Width..
         /// </summary>
         internal static string BottomBorderWidth {
@@ -454,6 +463,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Color {
             get {
                 return ResourceManager.GetString("Color", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the color of the emitter particles..
+        /// </summary>
+        internal static string ColorArray {
+            get {
+                return ResourceManager.GetString("ColorArray", resourceCulture);
             }
         }
         
@@ -679,6 +697,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string EffectType {
             get {
                 return ResourceManager.GetString("EffectType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Defines the emitters in the effect..
+        /// </summary>
+        internal static string Emitters {
+            get {
+                return ResourceManager.GetString("Emitters", resourceCulture);
             }
         }
         
@@ -1070,6 +1097,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Creates a barrier at the left of the element..
+        /// </summary>
+        internal static string LeftBarrier {
+            get {
+                return ResourceManager.GetString("LeftBarrier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Adjust the Left Border Width..
         /// </summary>
         internal static string LeftBorderWidth {
@@ -1259,6 +1295,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Particles of different colors will combine on collision..
+        /// </summary>
+        internal static string MixColors {
+            get {
+                return ResourceManager.GetString("MixColors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls shape movement..
         /// </summary>
         internal static string Mode {
@@ -1363,6 +1408,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Particles {
             get {
                 return ResourceManager.GetString("Particles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Radius of particles in the effect..
+        /// </summary>
+        internal static string ParticleSize {
+            get {
+                return ResourceManager.GetString("ParticleSize", resourceCulture);
             }
         }
         
@@ -1651,6 +1705,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string RevolutionTime {
             get {
                 return ResourceManager.GetString("RevolutionTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creates a barrier at the right of the element..
+        /// </summary>
+        internal static string RightBarrier {
+            get {
+                return ResourceManager.GetString("RightBarrier", resourceCulture);
             }
         }
         
@@ -2137,6 +2200,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string TimingSource {
             get {
                 return ResourceManager.GetString("TimingSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creates a barrier at the top of the element..
+        /// </summary>
+        internal static string TopBarrier {
+            get {
+                return ResourceManager.GetString("TopBarrier", resourceCulture);
             }
         }
         

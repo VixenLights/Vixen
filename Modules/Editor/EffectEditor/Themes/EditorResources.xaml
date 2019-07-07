@@ -3,7 +3,10 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:VixenModules.Editor.EffectEditor.Controls"
 	xmlns:design="clr-namespace:VixenModules.Editor.EffectEditor.Design"
-	xmlns:editors="clr-namespace:VixenModules.Editor.EffectEditor.Editors">
+	xmlns:editors="clr-namespace:VixenModules.Editor.EffectEditor.Editors"
+	xmlns:emitter="clr-namespace:Emitter;assembly=Emitter"
+	xmlns:input="clr-namespace:VixenModules.Editor.EffectEditor.Input"
+	xmlns:System="clr-namespace:System;assembly=mscorlib">
 
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="Converters.xaml" />
@@ -17,6 +20,31 @@
 		<ResourceDictionary Source="ColorGradientPaletteEditor.xaml" />
 		<ResourceDictionary Source="ColorPaletteEditor.xaml" />
 		<ResourceDictionary Source="GradientLevelPairEditor.xaml" />
+		<ResourceDictionary Source="EmitterAnimateCheckboxEditor.xaml" />
+		<ResourceDictionary Source="EmitterColorArrayCheckBoxEditor.xaml" />
+		<ResourceDictionary Source="EmitterEdgeHandlingComboBoxEditor.xaml" />
+		<ResourceDictionary Source="EmitterFramesPerColorSliderEditor.xaml" />
+		<ResourceDictionary Source="EmitterMarkCollectionComboBoxEditor.xaml" />
+		<ResourceDictionary Source="EmitterMusicFlowCheckBoxEditor.xaml" />
+		<ResourceDictionary Source="EmitterOffTimeSliderEditor.xaml" />
+		<ResourceDictionary Source="EmitterOnTimeSliderEditor.xaml" />
+		<ResourceDictionary Source="EmitterOscEndAngleSliderEditor.xaml" />
+		<ResourceDictionary Source="EmitterOscStartAngleSliderEditor.xaml" />
+		<ResourceDictionary Source="EmitterParticleTypeComboBoxEditor.xaml" />
+		<ResourceDictionary Source="EmitterFlowControlComboBoxEditor.xaml" />
+		<ResourceDictionary Source="EmitterNozzleAngleComboBoxEditor.xaml" />
+		<ResourceDictionary Source="InlineEmitterGradientEditor.xaml" />
+		<ResourceDictionary Source="InlineEmitterAngleCurveEditor.xaml" />
+		<ResourceDictionary Source="InlineEmitterBrightnessCurveEditor.xaml" />
+		<ResourceDictionary Source="InlineEmitterFlowCurveEditor.xaml" />
+		<ResourceDictionary Source="InlineEmitterLifetimeCurveEditor.xaml" />
+		<ResourceDictionary Source="InlineEmitterOscillationSpeedCurveEditor.xaml" />
+		<ResourceDictionary Source="InlineEmitterParticleVelocityCurveEditor.xaml" />
+		<ResourceDictionary Source="InlineEmitterSizeCurveEditor.xaml" />
+		<ResourceDictionary Source="InlineEmitterVelocityXCurveEditor.xaml" />
+		<ResourceDictionary Source="InlineEmitterVelocityYCurveEditor.xaml" />
+		<ResourceDictionary Source="InlineEmitterXCurveEditor.xaml" />
+		<ResourceDictionary Source="InlineEmitterYCurveEditor.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 
@@ -72,4 +100,286 @@
 			IsEnabled="{Binding IsEditable}" />
 	</DataTemplate>
 
+	<DataTemplate x:Key="{x:Static editors:EditorKeys.IEmitterEditorKey}">
+		<StackPanel>
+			<controls:CollectionView
+				x:Name="PART_editor"
+				Style="{DynamicResource {x:Type ListView}}"
+				PropertyValue="{Binding }"
+				IsEnabled="{Binding IsEditable}"
+				KeyboardNavigation.TabNavigation="Continue">
+				<ListView.Resources>
+					<Style TargetType="ListViewItem">
+						<Setter Property="HorizontalContentAlignment" Value="Left" />
+						<Setter Property="VerticalContentAlignment" Value="Top" />
+					</Style>
+				</ListView.Resources>
+				<ListView.ItemContainerStyle>
+					<Style TargetType="ListViewItem">
+						<Setter Property="HorizontalContentAlignment" Value="Left" />
+						<Setter Property="VerticalContentAlignment" Value="Top" />
+					</Style>
+				</ListView.ItemContainerStyle>
+				<ListView.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel Orientation="Vertical" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}, 
+							Path=ActualWidth, Converter={StaticResource AdditionConverter}, ConverterParameter='-10'}"></WrapPanel>
+					</ItemsPanelTemplate>
+				</ListView.ItemsPanel>
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<StackPanel Name="CollectionContainer" Orientation="Vertical"  Margin="-5,0,0,0"
+												Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type WrapPanel}}, Path=ActualWidth}">
+
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="125"></ColumnDefinition>
+									<ColumnDefinition></ColumnDefinition>
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+									<RowDefinition></RowDefinition>
+								</Grid.RowDefinitions>
+
+								<Line Grid.Row="0" Grid.ColumnSpan="2" X1="0" Y1="0" X2="1"  Y2="0" 
+										Stroke="Gray" StrokeThickness="10" Stretch="Uniform"></Line>
+								<TextBlock Grid.Row="1" Grid.Column="0"  Text="Particle Type" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+								<TextBlock Grid.Row="2" Grid.Column="0"  Text="Use Color Array" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+								<TextBlock Grid.Row="3" Grid.Column="0"  Text="Frames Per Color" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+								 Visibility="{Binding Path=Value.UseColorArray, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+								<TextBlock Grid.Row="4" Grid.Column="0"  Text="Particle Color" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+											  Visibility="{Binding Path=Value.UseColor, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+								<TextBlock Grid.Row="5" Grid.Column="0"  Text="Brightness" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+								<TextBlock Grid.Row="6" Grid.Column="0"  Text="Particle Lifetime" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+								<TextBlock Grid.Row="7" Grid.Column="0"  Text="Particle Velocity" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+								<TextBlock Grid.Row="8" Grid.Column="0"  Text="Animate" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+								<TextBlock Grid.Row="9" Grid.Column="0"  Text="Edge Handling" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+											  Visibility="{Binding Path=Value.Animate, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+								<TextBlock Grid.Row="10" Grid.Column="0"  Text="Velocity X" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+											  Visibility="{Binding Path=Value.Animate, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+								<TextBlock Grid.Row="11" Grid.Column="0"  Text="Velocity Y" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+											  Visibility="{Binding Path=Value.Animate, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+								<TextBlock Grid.Row="12" Grid.Column="0"  Text="X Position" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+											  Visibility="{Binding Path=Value.ManualPosition, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+								<TextBlock Grid.Row="13" Grid.Column="0"  Text="Y Position" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+											  Visibility="{Binding Path=Value.ManualPosition, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+								<TextBlock Grid.Row="14" Grid.Column="0"  Text="Music Flow" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+								<TextBlock Grid.Row="15" Grid.Column="0"  Text="Flow" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+											  Visibility="{Binding Path=Value.ManualFlow, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+								<TextBlock Grid.Row="16" Grid.Column="0"  Text="Nozzle Size" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+								<TextBlock Grid.Row="17" Grid.Column="0"  Text="Nozzle Angle" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+								<TextBlock Grid.Row="18" Grid.Column="0"  Text="Angle" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+											  Visibility="{Binding Path=Value.FixedNozzleAngle, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+								<TextBlock Grid.Row="19" Grid.Column="0"  Text="Osc. Start Angle" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+											  Visibility="{Binding Path=Value.Oscillate, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+								<TextBlock Grid.Row="20" Grid.Column="0"  Text="Osc. End Angle" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+											  Visibility="{Binding Path=Value.Oscillate, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+								<TextBlock Grid.Row="21" Grid.Column="0"  Text="Nozzle Speed" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+											  Visibility="{Binding Path=Value.RotateNozzle, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+								<TextBlock Grid.Row="22" Grid.Column="0"  Text="Flow Control" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+								<TextBlock Grid.Row="23" Grid.Column="0"  Text="Mark Collection" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+											  Visibility="{Binding Path=Value.UseMarks, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+								<TextBlock Grid.Row="24" Grid.Column="0"  Text="On Time (sec)" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+											  Visibility="{Binding Path=Value.SliderOnOff, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+								<TextBlock Grid.Row="25" Grid.Column="0"  Text="Off Time (sec)" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+											  Visibility="{Binding Path=Value.SliderOnOff, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+								<Border Grid.Row="1" Grid.Column="1" BorderThickness="5">
+									<controls:EmitterParticleTypeComboBoxEditor
+										Value="{Binding Value, Mode=TwoWay}">
+									</controls:EmitterParticleTypeComboBoxEditor>
+								</Border>
+
+								<Border Grid.Row="2" Grid.Column="1" BorderThickness="7">
+									<controls:EmitterColorArrayCheckBoxEditor										
+										Value="{Binding Value, Mode=TwoWay}">
+									</controls:EmitterColorArrayCheckBoxEditor>
+								</Border>
+
+								<controls:EmitterFramesPerColorSliderEditor										
+										Value="{Binding Value, Mode=TwoWay}"									   
+										Grid.Row="3" Grid.Column="1"
+										Visibility="{Binding Path=Value.UseColorArray, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+								</controls:EmitterFramesPerColorSliderEditor>
+
+								<controls:InlineEmitterGradientEditor
+									  x:Name="CollectionGradientEditor"
+									  Value="{Binding Value, Mode=TwoWay}"
+										  IsEnabled="True"
+										 Component="{Binding ParentProperty.Component}"
+									Grid.Row="4" Grid.Column="1"
+									Visibility="{Binding Path=Value.UseColor, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+								<controls:InlineEmitterBrightnessCurveEditor
+								x:Name="CollectionLifetimeCurveEditor"
+								Value="{Binding Value, Mode=TwoWay}"
+								IsEnabled="True"
+								Grid.Row="5" Grid.Column="1" />
+
+								<controls:InlineEmitterLifetimeCurveEditor
+								x:Name="CollectionBrightnessCurveEditor"
+								Value="{Binding Value, Mode=TwoWay}"
+								IsEnabled="True"
+								Grid.Row="6" Grid.Column="1" />
+
+								<controls:InlineEmitterParticleVelocityCurveEditor
+								x:Name="CollectionEmitterVelocityCurveEditor" 
+								Value="{Binding Value, Mode=TwoWay}"
+								IsEnabled="True"								
+								Grid.Row="7" Grid.Column="1" />
+
+								<Border Grid.Row="8" Grid.Column="1" BorderThickness="7">
+									<controls:EmitterAnimateCheckBoxEditor
+										Value="{Binding Value, Mode=TwoWay}">
+									</controls:EmitterAnimateCheckBoxEditor>
+								</Border>
+
+								<Border Grid.Row="9" Grid.Column="1" BorderThickness="5"
+									Visibility="{Binding Path=Value.Animate, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+									<controls:EmitterEdgeHandlingComboBoxEditor										
+										Value="{Binding Value, Mode=TwoWay}">
+									</controls:EmitterEdgeHandlingComboBoxEditor>
+								</Border>
+
+								<controls:InlineEmitterVelocityXCurveEditor
+								x:Name="CollectionEmitterVelocityXCurveEditor"
+								Value="{Binding Value, Mode=TwoWay}"
+								IsEnabled="True"							   							   
+								Grid.Row="10" Grid.Column="1" 
+								Visibility="{Binding Path=Value.Animate, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+								<controls:InlineEmitterVelocityYCurveEditor
+								x:Name="CollectionEmitterVelocityYCurveEditor"
+								Value="{Binding Value, Mode=TwoWay}"
+								IsEnabled="True"
+								Grid.Row="11" Grid.Column="1"
+								Visibility="{Binding Path=Value.Animate, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+								<controls:InlineEmitterXCurveEditor
+								x:Name="CollectionEmitterXCurveEditor"
+								Value="{Binding Value, Mode=TwoWay}"
+								IsEnabled="true"
+								Grid.Row="12" Grid.Column="1" 
+								Visibility="{Binding Path=Value.ManualPosition, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+								<controls:InlineEmitterYCurveEditor
+								x:Name="CollectionEmitterYCurveEditor"
+								Value="{Binding Value, Mode=TwoWay}"
+								IsEnabled="True"
+								Grid.Row="13" Grid.Column="1"
+								Visibility="{Binding Path=Value.ManualPosition, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+								<Border Grid.Row="14" Grid.Column="1" BorderThickness="7">
+									<controls:EmitterMusicFlowCheckBoxEditor
+										Value="{Binding Value, Mode=TwoWay}">
+									</controls:EmitterMusicFlowCheckBoxEditor>
+								</Border>
+
+								<controls:InlineEmitterFlowCurveEditor
+								x:Name="CollectionEmitterFlowCurveEditor"
+								Value="{Binding Value, Mode=TwoWay}"
+								IsEnabled="True"
+								Grid.Row="15" Grid.Column="1"
+								Visibility="{Binding Path=Value.ManualFlow, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+								<controls:InlineEmitterSizeCurveEditor
+								x:Name="CollectionEmitterSizeCurveEditor"
+								Value="{Binding Value, Mode=TwoWay}"
+								IsEnabled="True"
+								Grid.Row="16" Grid.Column="1" />
+
+								<Border Grid.Row="17" Grid.Column="1" BorderThickness="5">
+									<controls:EmitterNozzleAngleComboBoxEditor
+										Value="{Binding Value, Mode=TwoWay}">
+									</controls:EmitterNozzleAngleComboBoxEditor>
+								</Border>
+
+								<controls:InlineEmitterAngleCurveEditor
+								x:Name="CollectionEmitterAngleCurveEditor"
+								Value="{Binding Value, Mode=TwoWay}"
+								IsEnabled="True"
+								Grid.Row="18" Grid.Column="1" 
+								Visibility="{Binding Path=Value.FixedNozzleAngle, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+								<controls:EmitterOscStartAngleSliderEditor
+									Value="{Binding Value, Mode=TwoWay}"
+									Grid.Row="19" Grid.Column="1">
+								</controls:EmitterOscStartAngleSliderEditor>
+
+								<controls:EmitterOscEndAngleSliderEditor
+									Value="{Binding Value, Mode=TwoWay}"
+									Grid.Row="20" Grid.Column="1">
+								</controls:EmitterOscEndAngleSliderEditor>
+
+								<controls:InlineEmitterOscillationSpeedCurveEditor
+									x:Name="InlineEmitterOscillationSpeedCurveEditor"
+									Value="{Binding Value, Mode=TwoWay}"
+									IsEnabled="True"
+									Grid.Row="21" Grid.Column="1"
+									Visibility="{Binding Path=Value.RotateNozzle, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+								<Border Grid.Row="22" Grid.Column="1" BorderThickness="5">
+									<controls:EmitterFlowControlComboBoxEditor
+										Value="{Binding Value, Mode=TwoWay}">
+									</controls:EmitterFlowControlComboBoxEditor>
+								</Border>
+
+								<Border Grid.Row="23" Grid.Column="1" BorderThickness="5"
+								 Visibility="{Binding Path=Value.UseMarks, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+									<controls:EmitterMarkCollectionComboBoxEditor
+										Value="{Binding Value, Mode=TwoWay}">
+									</controls:EmitterMarkCollectionComboBoxEditor>
+								</Border>
+
+								<controls:EmitterOnTimeSliderEditor
+									Value="{Binding Value, Mode=TwoWay}"
+									Grid.Row="24" Grid.Column="1">
+								</controls:EmitterOnTimeSliderEditor>
+
+								<controls:EmitterOffTimeSliderEditor
+									Value="{Binding Value, Mode=TwoWay}"
+									Grid.Row="25" Grid.Column="1">
+								</controls:EmitterOffTimeSliderEditor>
+							</Grid>
+						</StackPanel>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</controls:CollectionView>
+			<WrapPanel Orientation="Horizontal">
+				<Button Margin="5" Content="Add" HorizontalAlignment="Left" Padding="5,2"
+					  Command="input:PropertyEditorCommands.AddCollectionItem"
+					  CommandParameter="{Binding}"
+					  Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+				<Button Margin="5" Content="Remove" HorizontalAlignment="Left" Padding="5,2" FocusManager.IsFocusScope="True"
+					  Command="input:PropertyEditorCommands.RemoveCollectionItem"
+					  CommandParameter="{Binding}" Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+			</WrapPanel>
+		</StackPanel>
+	</DataTemplate>
 </ResourceDictionary>

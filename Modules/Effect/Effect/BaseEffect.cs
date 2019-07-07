@@ -148,7 +148,7 @@ namespace VixenModules.Effect.Effect
 		{
 			return IntentBuilder.CreateDiscreteIntent(color, startIntensity, endIntensity, duration);
 		}
-		private static double ConvertRange(double originalStart, double originalEnd, double newStart, double newEnd, double value) // value to convert
+		protected static double ConvertRange(double originalStart, double originalEnd, double newStart, double newEnd, double value) // value to convert
 		{
 			double scale = (newEnd - newStart) / (originalEnd - originalStart);
 			return newStart + (value - originalStart) * scale;
@@ -265,21 +265,7 @@ namespace VixenModules.Effect.Effect
 				mark.PropertyChanged += Mark_PropertyChanged;
 			}
 		}
-
-		protected void AddMarkCollectionListeners(IMarkCollection mc)
-		{
-			if (mc == null) return;
-			((INotifyCollectionChanged)mc.Marks).CollectionChanged += MarkCollectionPropertyChanged;
-			AddMarkListeners(mc.Marks);
-		}
-
-		protected void RemoveMarkCollectionListeners(IMarkCollection mc)
-		{
-			if (mc == null) return;
-			((INotifyCollectionChanged)mc.Marks).CollectionChanged -= MarkCollectionPropertyChanged;
-			RemoveMarkListeners(mc.Marks);
-		}
-
+		
 		/// <summary>
 		/// Gets called when a mark property changes. The default implementation looks for changes in marks that have a start time
 		/// inclusive of the effect timespan and have a change in time or text.
@@ -349,6 +335,24 @@ namespace VixenModules.Effect.Effect
 		protected double RandDouble()
 		{
 			return ThreadSafeRandom.Instance.NextDouble();
+		}
+
+		#endregion
+
+		#region Public Methods
+
+		public void AddMarkCollectionListeners(IMarkCollection mc)
+		{
+			if (mc == null) return;
+			((INotifyCollectionChanged)mc.Marks).CollectionChanged += MarkCollectionPropertyChanged;
+			AddMarkListeners(mc.Marks);
+		}
+
+		public void RemoveMarkCollectionListeners(IMarkCollection mc)
+		{
+			if (mc == null) return;
+			((INotifyCollectionChanged)mc.Marks).CollectionChanged -= MarkCollectionPropertyChanged;
+			RemoveMarkListeners(mc.Marks);
 		}
 
 		#endregion
