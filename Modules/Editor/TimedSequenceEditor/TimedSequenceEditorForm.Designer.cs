@@ -86,6 +86,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_zoomRowsOut = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+			this.highlightRowsWithEffectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolbarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.effectWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -781,6 +783,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripMenuItem_zoomRowsOut,
             this.toolStripMenuItem2,
             this.toolStripMenuItem3,
+            this.toolStripSeparator4,
+            this.highlightRowsWithEffectsToolStripMenuItem,
             this.toolStripMenuItem1,
             this.toolbarToolStripMenuItem,
             this.effectWindowToolStripMenuItem,
@@ -865,6 +869,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem3.Size = new System.Drawing.Size(234, 22);
 			this.toolStripMenuItem3.Text = "Reset Row Height to Default";
 			this.toolStripMenuItem3.Click += new System.EventHandler(this.resetRowHeightToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(231, 6);
+			// 
+			// highlightRowsWithEffectsToolStripMenuItem
+			// 
+			this.highlightRowsWithEffectsToolStripMenuItem.CheckOnClick = true;
+			this.highlightRowsWithEffectsToolStripMenuItem.Name = "highlightRowsWithEffectsToolStripMenuItem";
+			this.highlightRowsWithEffectsToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+			this.highlightRowsWithEffectsToolStripMenuItem.Text = "Highlight Rows With Effects";
+			this.highlightRowsWithEffectsToolStripMenuItem.CheckedChanged += new System.EventHandler(this.HighlightRowsWithEffectsToolStripMenuItem_CheckedChanged);
 			// 
 			// toolStripMenuItem1
 			// 
@@ -2527,5 +2544,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripDropDownButton editToolStripButton_PasteDropDown;
 		private System.Windows.Forms.ToolStripMenuItem editToolStripButton_PasteInvert;
 		private System.Windows.Forms.ToolStripMenuItem editToolStripButton_PasteVisibleMarks;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private System.Windows.Forms.ToolStripMenuItem highlightRowsWithEffectsToolStripMenuItem;
 	}
 }

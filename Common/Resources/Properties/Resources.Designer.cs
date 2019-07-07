@@ -553,6 +553,16 @@ namespace Common.Resources.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap bullet_toggle_minus_active_16px {
+            get {
+                object obj = ResourceManager.GetObject("bullet_toggle_minus_active_16px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap bullet_toggle_plus {
             get {
                 object obj = ResourceManager.GetObject("bullet_toggle_plus", resourceCulture);
@@ -566,6 +576,16 @@ namespace Common.Resources.Properties {
         public static System.Drawing.Bitmap bullet_toggle_plus_16px {
             get {
                 object obj = ResourceManager.GetObject("bullet_toggle_plus_16px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap bullet_toggle_plus_active_16px {
+            get {
+                object obj = ResourceManager.GetObject("bullet_toggle_plus_active_16px", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
