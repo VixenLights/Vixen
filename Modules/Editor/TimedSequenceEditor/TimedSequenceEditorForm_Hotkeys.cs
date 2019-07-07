@@ -160,6 +160,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				case Keys.T:
 					TimelineControl.grid.ToggleSelectedRows(e.Control);
 					break;
+
+				case Keys.D:
+					if (e.Control)
+					{
+						TimelineControl.grid.SplitSelectedElementsAtMouseLocation();
+					}
+					break;
 			}
 			// Prevents sending keystrokes to child controls. 
 			// This was causing serious slowdowns if random keys were pressed.

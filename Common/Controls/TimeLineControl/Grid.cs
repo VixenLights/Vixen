@@ -1027,6 +1027,20 @@ namespace Common.Controls.Timeline
 
 		}
 
+		public void SplitSelectedElementsAtMouseLocation()
+		{
+			if (SelectedElements.Any())
+			{
+				var time = TimeAtPosition(MousePosition);
+				if(VisibleTimeStart < time && time < VisibleTimeEnd)
+				{
+					SplitElementsAtTime(SelectedElements.Where(elem => elem.StartTime < time && elem.EndTime > time)
+						.ToList(), time);
+				}
+			}
+			
+		}
+
 		/// <summary>
 		/// Closes the gap between elements in which the gap is less than the set threshold - time in seconds.
 		/// If any effects are selected, this applies to only selected effects, otherwise it applies to all elements
