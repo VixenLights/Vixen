@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{32629B20-AFD0-490A-BE11-E1E6ECA4408E}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Emitter</RootNamespace>
+    <RootNamespace>VixenModules.Effect.Balls</RootNamespace>
     <AssemblyName>Emitter</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
