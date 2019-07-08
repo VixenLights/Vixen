@@ -60,7 +60,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>..\..\..\..\Release\Modules\Effect\</OutputPath>
+    <OutputPath>..\..\..\Release\Modules\Effect\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
