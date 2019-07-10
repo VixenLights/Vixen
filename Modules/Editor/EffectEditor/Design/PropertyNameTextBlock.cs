@@ -38,5 +38,35 @@ namespace VixenModules.Editor.EffectEditor.Design
 
 			KeyboardNavigation.SetIsTabStop(this, false);
 		}
+
+		#region Entry
+
+		/// <summary>
+		/// Identifies the <see cref="IsHeader"/> property. This is a dependency property.
+		/// </summary>
+		public static readonly DependencyProperty IsHeaderProperty =
+			DependencyProperty.Register("IsHeader", typeof(bool), typeof(PropertyNameTextBlock),
+				new PropertyMetadata(false, OnIsHeaderPropertyChanged));
+
+		private static void OnIsHeaderPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		{
+			if (sender is PropertyNameTextBlock tb)
+			{
+				tb.TextAlignment = tb.IsHeader ? TextAlignment.Center : TextAlignment.Right;
+			}
+			
+		}
+
+		/// <summary>
+		/// Gets or sets whether the entry is a Collection type.
+		/// </summary>
+		/// <value>is collection</value>
+		public bool IsHeader
+		{
+			get { return (bool)GetValue(IsHeaderProperty); }
+			set { SetValue(IsHeaderProperty, value); }
+		}
+
+		#endregion
 	}
 }

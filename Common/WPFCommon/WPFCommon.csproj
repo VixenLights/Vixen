@@ -81,8 +81,11 @@
     <Compile Include="Controls\TreeViewMultipleSelectionBehavior.cs" />
     <Compile Include="Converters\AdditionConverter.cs" />
     <Compile Include="Converters\BitmapImageConverter.cs" />
+    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\ColorToSolidBrushConverter.cs" />
+    <Compile Include="Converters\IndexOfConverter.cs" />
     <Compile Include="Converters\InverseBooleanConverter.cs" />
+    <Compile Include="Converters\BooleanConverter.cs" />
     <Compile Include="Input\DragDropManager.cs" />
     <Compile Include="Input\DragDropTargetType.cs" />
     <Compile Include="Input\DropPreviewAdorner.cs" />

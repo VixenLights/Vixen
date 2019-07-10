@@ -107,7 +107,8 @@
 				Style="{DynamicResource {x:Type ListView}}"
 				PropertyValue="{Binding }"
 				IsEnabled="{Binding IsEditable}"
-				KeyboardNavigation.TabNavigation="Continue">
+				KeyboardNavigation.TabNavigation="Continue"
+				AlternationCount="100">
 				<ListView.Resources>
 					<Style TargetType="ListViewItem">
 						<Setter Property="HorizontalContentAlignment" Value="Left" />
@@ -167,47 +168,64 @@
 									<RowDefinition></RowDefinition>
 								</Grid.RowDefinitions>
 
-								<Line Grid.Row="0" Grid.ColumnSpan="2" X1="0" Y1="0" X2="1"  Y2="0" 
-										Stroke="Gray" StrokeThickness="10" Stretch="Uniform"></Line>
-								<TextBlock Grid.Row="1" Grid.Column="0"  Text="Particle Type" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-								<TextBlock Grid.Row="2" Grid.Column="0"  Text="Use Color Array" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-								<TextBlock Grid.Row="3" Grid.Column="0"  Text="Frames Per Color" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+								<Grid Grid.Row="0" Grid.ColumnSpan="2" Margin="0,3">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*"/>
+										<ColumnDefinition Width="Auto"/>
+										<ColumnDefinition Width="*"/>
+									</Grid.ColumnDefinitions>
+									<Separator Grid.Column="0" VerticalAlignment="Center"/>
+									<TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,0" FontWeight="Bold">
+										<TextBlock.Text>
+											<MultiBinding StringFormat="{}Emitter {0}" Converter="{StaticResource IndexOfConverter}" ConverterParameter="1">
+												<Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}"/>
+												<Binding Path="."/>
+											</MultiBinding>
+										</TextBlock.Text>
+									</TextBlock>
+									<Separator Grid.Column="2" VerticalAlignment="Center"/>
+								</Grid>
+								<!--<Line Grid.Row="0" Grid.ColumnSpan="2" X1="0" Y1="0" X2="1"  Y2="0" 
+										Stroke="Gray" StrokeThickness="10" Stretch="Uniform"></Line>-->
+								<design:PropertyNameTextBlock Grid.Row="1" Grid.Column="0"  Text="Particle Type" />
+								<design:PropertyNameTextBlock Grid.Row="2" Grid.Column="0"  Text="Use Color Array"  />
+								<design:PropertyNameTextBlock Grid.Row="3" Grid.Column="0"  Text="Frames Per Color"  
 								 Visibility="{Binding Path=Value.UseColorArray, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-								<TextBlock Grid.Row="4" Grid.Column="0"  Text="Particle Color" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+								<design:PropertyNameTextBlock Grid.Row="4" Grid.Column="0"  Text="Particle Color"  
 											  Visibility="{Binding Path=Value.UseColor, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-								<TextBlock Grid.Row="5" Grid.Column="0"  Text="Brightness" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-								<TextBlock Grid.Row="6" Grid.Column="0"  Text="Particle Lifetime" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-								<TextBlock Grid.Row="7" Grid.Column="0"  Text="Particle Velocity" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-								<TextBlock Grid.Row="8" Grid.Column="0"  Text="Animate" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-								<TextBlock Grid.Row="9" Grid.Column="0"  Text="Edge Handling" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+								<design:PropertyNameTextBlock Grid.Row="5" Grid.Column="0"  Text="Brightness"  />
+								<design:PropertyNameTextBlock Grid.Row="6" Grid.Column="0"  Text="Particle Lifetime"  />
+								<design:PropertyNameTextBlock Grid.Row="7" Grid.Column="0"  Text="Particle Velocity"  />
+								<design:PropertyNameTextBlock Grid.Row="8" Grid.Column="0"  Text="Animate"  />
+								<design:PropertyNameTextBlock Grid.Row="9" Grid.Column="0"  Text="Edge Handling"  
 											  Visibility="{Binding Path=Value.Animate, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-								<TextBlock Grid.Row="10" Grid.Column="0"  Text="Velocity X" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+								<design:PropertyNameTextBlock Grid.Row="10" Grid.Column="0"  Text="Velocity X"  
 											  Visibility="{Binding Path=Value.Animate, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-								<TextBlock Grid.Row="11" Grid.Column="0"  Text="Velocity Y" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+								<design:PropertyNameTextBlock Grid.Row="11" Grid.Column="0"  Text="Velocity Y"  
 											  Visibility="{Binding Path=Value.Animate, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-								<TextBlock Grid.Row="12" Grid.Column="0"  Text="X Position" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+								<design:PropertyNameTextBlock Grid.Row="12" Grid.Column="0"  Text="X Position"  
 											  Visibility="{Binding Path=Value.ManualPosition, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-								<TextBlock Grid.Row="13" Grid.Column="0"  Text="Y Position" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+								<design:PropertyNameTextBlock Grid.Row="13" Grid.Column="0"  Text="Y Position"  
 											  Visibility="{Binding Path=Value.ManualPosition, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-								<TextBlock Grid.Row="14" Grid.Column="0"  Text="Music Flow" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-								<TextBlock Grid.Row="15" Grid.Column="0"  Text="Flow" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+								<design:PropertyNameTextBlock Grid.Row="14" Grid.Column="0"  Text="Music Flow"  />
+								<design:PropertyNameTextBlock Grid.Row="15" Grid.Column="0"  Text="Flow"  
 											  Visibility="{Binding Path=Value.ManualFlow, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-								<TextBlock Grid.Row="16" Grid.Column="0"  Text="Nozzle Size" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-								<TextBlock Grid.Row="17" Grid.Column="0"  Text="Nozzle Angle" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-								<TextBlock Grid.Row="18" Grid.Column="0"  Text="Angle" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+								<design:PropertyNameTextBlock Grid.Row="16" Grid.Column="0"  Text="Nozzle Size"  />
+								<design:PropertyNameTextBlock Grid.Row="17" Grid.Column="0"  Text="Nozzle Angle"  />
+								<design:PropertyNameTextBlock Grid.Row="18" Grid.Column="0"  Text="Angle"  
 											  Visibility="{Binding Path=Value.FixedNozzleAngle, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-								<TextBlock Grid.Row="19" Grid.Column="0"  Text="Osc. Start Angle" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+								<design:PropertyNameTextBlock Grid.Row="19" Grid.Column="0"  Text="Osc. Start Angle"  
 											  Visibility="{Binding Path=Value.Oscillate, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-								<TextBlock Grid.Row="20" Grid.Column="0"  Text="Osc. End Angle" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+								<design:PropertyNameTextBlock Grid.Row="20" Grid.Column="0"  Text="Osc. End Angle"  
 											  Visibility="{Binding Path=Value.Oscillate, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-								<TextBlock Grid.Row="21" Grid.Column="0"  Text="Nozzle Speed" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+								<design:PropertyNameTextBlock Grid.Row="21" Grid.Column="0"  Text="Nozzle Speed"  
 											  Visibility="{Binding Path=Value.RotateNozzle, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-								<TextBlock Grid.Row="22" Grid.Column="0"  Text="Flow Control" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-								<TextBlock Grid.Row="23" Grid.Column="0"  Text="Mark Collection" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+								<design:PropertyNameTextBlock Grid.Row="22" Grid.Column="0"  Text="Flow Control"  />
+								<design:PropertyNameTextBlock Grid.Row="23" Grid.Column="0"  Text="Mark Collection"  
 											  Visibility="{Binding Path=Value.UseMarks, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-								<TextBlock Grid.Row="24" Grid.Column="0"  Text="On Time (sec)" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+								<design:PropertyNameTextBlock Grid.Row="24" Grid.Column="0"  Text="On Time (sec)"  
 											  Visibility="{Binding Path=Value.SliderOnOff, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-								<TextBlock Grid.Row="25" Grid.Column="0"  Text="Off Time (sec)" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+								<design:PropertyNameTextBlock Grid.Row="25" Grid.Column="0"  Text="Off Time (sec)"  
 											  Visibility="{Binding Path=Value.SliderOnOff, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
 								<Border Grid.Row="1" Grid.Column="1" BorderThickness="5">
