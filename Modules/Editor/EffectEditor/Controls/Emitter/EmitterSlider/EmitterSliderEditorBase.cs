@@ -16,10 +16,10 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		#region Dependency Properties
 
 		public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(IEmitter),
-			ThisType, new PropertyMetadata(new EmitterViewModel(), ValueDepChanged));
+			ThisType, new PropertyMetadata(null, ValueDepChanged));
 
 		public static readonly DependencyProperty EmitterValueProperty = DependencyProperty.Register("EmitterValue", typeof(IEmitter),
-			ThisType, new PropertyMetadata(new EmitterViewModel()));
+			ThisType, new PropertyMetadata(null));
 
 		#endregion
 		

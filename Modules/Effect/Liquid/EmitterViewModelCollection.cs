@@ -9,8 +9,7 @@ namespace Liquid
 {
     /// <summary>
     /// Maintains the collection of emitters.
-    /// </summary>
-	[CollectionDataContract] 
+    /// </summary>	
 	public class EmitterViewModelCollection : ObservableCollection<IEmitter>
 	{
 		#region Public Properties

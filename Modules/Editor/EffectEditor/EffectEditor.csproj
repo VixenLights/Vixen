@@ -326,7 +326,6 @@
     <Compile Include="Controls\Emitter\EmitterCheckBox\EmitterCheckBoxEditorBase.cs" />
     <Compile Include="Controls\Emitter\EmitterCheckBox\EmitterColorArrayCheckBoxEditor.cs" />
     <Compile Include="Controls\Emitter\EmitterCheckBox\EmitterMusicFlowCheckBoxEditor.cs" />
-    <Compile Include="Controls\Emitter\EmitterCollectionView.cs" />
     <Compile Include="Controls\Emitter\EmitterComboBox\EmitterComboBoxEditorBase.cs" />
     <Compile Include="Controls\Emitter\EmitterComboBox\EmitterEdgeHandlingComboBoxEditor.cs" />
     <Compile Include="Controls\Emitter\EmitterComboBox\EmitterFlowControlComboBoxEditor.cs" />
@@ -516,11 +515,6 @@
     <ProjectReference Include="..\..\Effect\Liquid\Emitter\Emitter.csproj">
       <Project>{32629b20-afd0-490a-be11-e1e6eca4408e}</Project>
       <Name>Emitter</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Effect\Liquid\Liquid.csproj">
-      <Project>{7509face-9676-4176-a7e1-f0d68dc683b6}</Project>
-      <Name>Liquid</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Property\Color\Color.csproj">

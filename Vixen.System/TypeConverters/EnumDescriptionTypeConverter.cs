@@ -1,19 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Common.WPFCommon.Converters
-{	
+namespace Vixen.TypeConverters
+{
 	public class EnumDescriptionTypeConverter : EnumConverter
 	{
-		public EnumDescriptionTypeConverter(Type type)
-				: base(type)
+		#region Constructor
+
+		public EnumDescriptionTypeConverter(Type type) :
+			base(type)
 		{
 		}
+
+		#endregion
+
+		#region Public Methods
 
 		public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
 		{
@@ -34,5 +36,7 @@ namespace Common.WPFCommon.Converters
 
 			return base.ConvertTo(context, culture, value, destinationType);
 		}
+
+		#endregion
 	}	
 }

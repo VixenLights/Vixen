@@ -29,7 +29,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		/// Identifies the <see cref="Value"/> dependency property.
 		/// </summary>
 		public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(IEmitter),
-			ThisType, new PropertyMetadata(new EmitterViewModel(), ValueChanged));
+			ThisType, new PropertyMetadata(null, ValueChanged));
 
 
 		#endregion Dependency Property Fields

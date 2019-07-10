@@ -70,15 +70,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EmitterViewModel.cs" />
@@ -90,23 +83,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
-      <Project>{a54fb6a1-a9c3-488c-b961-41b8dbc81b36}</Project>
-      <Name>Controls</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Common\FastPixel\FastPixel.csproj">
-      <Project>{4EA5025B-5FFC-4FF8-9001-D0F64655BFB6}</Project>
-      <Name>FastPixel</Name>
+    <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
+      <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
+      <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj">
-      <Project>{1B189B36-02AF-4A57-9E1B-6DC833212725}</Project>
+      <Project>{1b189b36-02af-4a57-9e1b-6dc833212725}</Project>
       <Name>ColorGradients</Name>
-      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\App\Curves\Curves.csproj">
-      <Project>{F0BA7127-61B4-453A-802B-ABCB5A0D3D54}</Project>
+      <Project>{f0ba7127-61b4-453a-802b-abcb5a0d3d54}</Project>
       <Name>Curves</Name>
       <Private>False</Private>
     </ProjectReference>
@@ -128,11 +115,6 @@
     <ProjectReference Include="..\..\Media\Audio\Audio.csproj">
       <Project>{4243ba4c-6371-4dd1-8a1d-675bed5322af}</Project>
       <Name>Audio</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
-      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
-      <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="Emitter\Emitter.csproj">
