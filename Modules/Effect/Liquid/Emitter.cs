@@ -13,16 +13,16 @@ using ZedGraph;
 namespace VixenModules.Effect.Liquid
 {
 	/// <summary>
-	/// Maintains an emitter view model.
+	/// Maintains an emitter.
 	/// </summary>
-	public class EmitterViewModel : IEmitter, INotifyPropertyChanged
+	public class Emitter : IEmitter, INotifyPropertyChanged
 	{
 		#region Constructor
 
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		public EmitterViewModel()
+		public Emitter()
 		{
 			ParticleType = ParticleType.Water;
 			UseColorArray = false;
@@ -98,7 +98,7 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>		
 		public IEmitter CreateInstanceForClone()
 		{
-			IEmitter result = new EmitterViewModel
+			IEmitter result = new Emitter
 			{
 				Parent = Parent,
 				ParticleType = ParticleType,
@@ -142,7 +142,7 @@ namespace VixenModules.Effect.Liquid
 		}
 		
 		/// <summary>
-		/// The EmitterViewModel needs the Parent reference to register for Mark events.
+		/// The Emitter needs the Parent reference to register for Mark events.
 		/// </summary>
 		public BaseEffect Parent { get; set; }
 

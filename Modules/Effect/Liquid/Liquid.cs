@@ -104,7 +104,7 @@ namespace VixenModules.Effect.Liquid
 			_data = new LiquidData();
 
 			// Create the collection of the emitters
-			_emitterList = new EmitterViewModelCollection();
+			_emitterList = new EmitterCollection();
 
 			// Give the emitter a reference to the effect.
 			// This is needed so that the emitters can use the parent to register (listen) for mark collection events
@@ -348,13 +348,13 @@ namespace VixenModules.Effect.Liquid
 			}
 		}
 
-		private EmitterViewModelCollection _emitterList;
+		private EmitterCollection _emitterList;
 
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Emitters")]
 		[ProviderDescription(@"Emitters")]
 		[PropertyOrder(6)]
-		public EmitterViewModelCollection EmitterList
+		public EmitterCollection EmitterList
 		{
 			get
 			{
@@ -1407,7 +1407,7 @@ namespace VixenModules.Effect.Liquid
 			foreach (EmitterData emitter in liquidData.EmitterData)
 			{
 				// Create a new emitter in the view model
-				IEmitter emitterViewModel = new EmitterViewModel();
+				IEmitter emitterViewModel = new Emitter();
 
 				// Transfer the properties from the serialized effect data to the emitter view model
 				emitterViewModel.ParticleType = _serializedParticleTypeToParticleType[emitter.ParticleType];

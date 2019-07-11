@@ -10,7 +10,7 @@ namespace Liquid
     /// <summary>
     /// Maintains the collection of emitters.
     /// </summary>	
-	public class EmitterViewModelCollection : ObservableCollection<IEmitter>
+	public class EmitterCollection : ObservableCollection<IEmitter>
 	{
 		#region Public Properties
 		
@@ -104,7 +104,7 @@ namespace Liquid
 		#region Protected Methods
 		protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e) 
 		{
-			foreach(EmitterViewModel emitter in this)
+			foreach(Emitter emitter in this)
 			{				
 				if (Parent != null)
 				{

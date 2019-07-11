@@ -74,9 +74,9 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EmitterViewModel.cs" />
+    <Compile Include="Emitter.cs" />
     <Compile Include="EmitterData.cs" />
-    <Compile Include="EmitterViewModelCollection.cs" />
+    <Compile Include="EmitterCollection.cs" />
     <Compile Include="Liquid.cs" />
     <Compile Include="LiquidData.cs" />
     <Compile Include="LiquidDescriptor.cs" />
@@ -91,6 +91,7 @@
     <ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj">
       <Project>{1b189b36-02af-4a57-9e1b-6dc833212725}</Project>
       <Name>ColorGradients</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\App\Curves\Curves.csproj">
       <Project>{f0ba7127-61b4-453a-802b-abcb5a0d3d54}</Project>
