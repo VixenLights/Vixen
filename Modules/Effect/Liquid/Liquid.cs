@@ -1,4 +1,5 @@
 ﻿using Common.Controls.ColorManagement.ColorModels;
+using FastPixel;
 using Liquid;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
+using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Media.Audio;
 
@@ -38,6 +40,18 @@ namespace VixenModules.Effect.Liquid
 		#endregion
 
 		#region Private Fields
+
+		/// <summary>
+		/// Logical buffer height.
+		/// Note this height might not match the actual effect height when the effect is operating in Location mode.
+		/// </summary>
+		int _bufferHt;
+
+		/// <summary>
+		/// Logical buffer height.
+		/// Note this width might not match the actual effect width when the effect is operating in Location mode.
+		/// </summary>
+		int _bufferWt;
 
 		/// <summary>
 		/// Data associated with the effect.
@@ -100,6 +114,9 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>
 		public Liquid()
 		{
+			// Enable both string and location positioning
+			EnableTargetPositioning(true, true);
+
 			// Initialize the default liquid effect data
 			_data = new LiquidData();
 
@@ -115,7 +132,7 @@ namespace VixenModules.Effect.Liquid
 
 			// Initialize the audio utilities
 			AudioUtilities = new AudioUtilities();
-
+			
 			// Initialize the dictionaries that convert between view model enumeration types and the serialization model enumeration types
 			_particleTypeToSerializedParticleType = new Dictionary<ParticleType, EmitterData.ParticleSerializationType>();
 			_particleTypeToSerializedParticleType.Add(ParticleType.Elastic, EmitterData.ParticleSerializationType.Elastic);
@@ -187,6 +204,27 @@ namespace VixenModules.Effect.Liquid
 				OnPropertyChanged();
 			}
 		}
+		
+		[Value]
+		[ProviderCategory(@"Setup", 1)]
+		[ProviderDisplayName(@"RenderScaleFactor")]
+		[ProviderDescription(@"RenderScaleFactor")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 10, 1)]
+		[PropertyOrder(4)]
+		public int RenderScaleFactor
+		{
+			get
+			{
+				return _data.RenderScaleFactor;
+			}
+			set
+			{
+				_data.RenderScaleFactor = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
 
 		/// <summary>
 		/// Module data associated with the effect.
@@ -218,6 +256,9 @@ namespace VixenModules.Effect.Liquid
 
 				// Convert the serialized data structure into the emitter view model
 				UpdateViewModel(_data);
+
+				// Updates whether the render scale factor is visible
+				UpdateRenderScaleFactorAttributes(false);
 
 				// Give the emitter container a reference to the effect
 				_emitterList.Parent = this;
@@ -542,6 +583,15 @@ namespace VixenModules.Effect.Liquid
 		#region Protected Methods
 
 		/// <summary>
+		/// Virtual method that is called by base class when the target positioning changes.
+		/// </summary>
+		protected override void TargetPositioningChanged()
+		{
+			// Update whether the render scale factor is visible 
+			UpdateRenderScaleFactorAttributes(true);
+		}
+
+		/// <summary>
 		/// Virtualized event handler for when the mark collection changes.
 		/// </summary>
 		protected override void MarkCollectionsChanged()
@@ -661,15 +711,93 @@ namespace VixenModules.Effect.Liquid
 		}
 
 		/// <summary>
+		/// Renders the effect by location.
+		/// </summary>		
+		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
+		{			
+			// Loop over the frames
+			for (int frameNum = 0; frameNum < numFrames; frameNum++)
+			{
+				//Assign the current frame
+				frameBuffer.CurrentFrame = frameNum;
+				
+				// Get the position in the effect
+				double intervalPos = GetEffectTimeIntervalPosition(frameNum);
+				double intervalPosFactor = intervalPos * 100;
+
+				// Have the Liquid Fun Physics engine advance time and recalculate the position of particles
+				_liquidFunWrapper.StepWorld(
+					 FrameTime / 1000f,
+					 _data.MixColors,
+					 ConvertEmittersToEmitterWrappers(frameNum, intervalPos, intervalPosFactor).ToArray());
+
+				// Get the collection of particles from Liquid Fun API
+				// Tuple is composed of position in x, y and then color of the particle
+				Tuple<int, int, Color>[] particles = _liquidFunWrapper.GetParticles();
+
+				// Create a bitmap the size of the logical render area
+				// Note this render area is smaller matrix than the actual display elements
+				using (Bitmap bitmap = new Bitmap(_bufferWt, _bufferHt))
+				{					
+					// Loop over each of the liquid particles
+					foreach (Tuple<int, int, Color> particle in particles)
+					{
+						// If the particle is within the viewable area then...
+						if ((particle.Item1 >= 0 && particle.Item1 < _bufferWt) &&
+							 (particle.Item2 >= 0 && particle.Item2 < _bufferHt))
+						{
+							// Set the corresponding pixel in the bitmap
+							bitmap.SetPixel(
+								particle.Item1,
+								particle.Item2,
+								particle.Item3);
+						}
+					}
+																				
+					// Convert logical render area to the actual render area
+					using (Bitmap largerBitmap = new Bitmap(bitmap, BufferWi, BufferHt))
+					{
+						// Transfer the pixel data from the bitmap to the frame buffer
+						using (FastPixel.FastPixel fastPixel= new FastPixel.FastPixel(largerBitmap))
+						{
+							fastPixel.Lock();
+							foreach (ElementLocation elementLocation in frameBuffer.ElementLocations)
+							{								
+								UpdateFrameBufferForLocationPixel(elementLocation.X, elementLocation.Y, BufferHt, fastPixel, frameBuffer);								
+							}
+							fastPixel.Unlock(false);
+						}						
+					}						
+				}								
+			}		
+		}
+		
+		/// <summary>
 		/// Setup for rendering.
 		/// </summary>
 		protected override void SetupRender()
 		{
 			// Create a copy of the emitter list to avoid collection exceptions
 			_renderEmitterList = EmitterList.ToList();
-
+			
+			// Determine the logical render area based on the target positioning
+			if (TargetPositioning == TargetPositioningType.Locations)
+			{
+				// Since this effect uses one pixel to represent a liquid particle
+				// it looks better to render on a smaller matrix and then scale it up to the actual render matrix.
+				// When the scale factor is one liquid particles appear and disassapear because location 
+				// mode is often a sparse matrix.				
+				_bufferWt = BufferWi / RenderScaleFactor;
+				_bufferHt = BufferHt / RenderScaleFactor; 
+			}
+			else
+			{
+				_bufferWt = BufferWi;
+				_bufferHt = BufferHt; 
+			}
+			
 			// Initialize the liquid fun API wrapper
-			_liquidFunWrapper.Initialize(BufferWi, BufferHt, BottomBarrier, TopBarrier, LeftBarrier, RightBarrier, ParticleSize, CalculateEmitterParticleLifetime(0, _renderEmitterList[0]));
+			_liquidFunWrapper.Initialize(_bufferWt, _bufferHt, BottomBarrier, TopBarrier, LeftBarrier, RightBarrier, ParticleSize, CalculateEmitterParticleLifetime(0, _renderEmitterList[0]));
 
 			// Loop over emitters
 			foreach (IEmitter emitter in _renderEmitterList)
@@ -678,8 +806,8 @@ namespace VixenModules.Effect.Liquid
 				if (emitter.Animate)
 				{
 					// Initialize the position of the emitter with a random position
-					emitter.LocationX = Rand(0, BufferWi);
-					emitter.LocationY = Rand(0, BufferHt);
+					emitter.LocationX = Rand(0, _bufferWt);
+					emitter.LocationY = Rand(0, _bufferHt);
 				}
 
 				// Reset the On/Off Timers
@@ -781,6 +909,23 @@ namespace VixenModules.Effect.Liquid
 		#endregion
 
 		#region Private Methods
+
+		/// <summary>
+		/// Updates whether the render scale factor is visible.
+		/// </summary>		
+		void UpdateRenderScaleFactorAttributes(bool refresh)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
+				{
+					{"RenderScaleFactor", TargetPositioning == TargetPositioningType.Locations },
+				};
+			SetBrowsable(propertyStates);
+
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
 
 		/// <summary>
 		/// Updates the emitter's flow and updates the specified emitter wrapper.
@@ -1160,7 +1305,7 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>		
 		private int CalculateEmitterX(double intervalPos, IEmitter emitter)
 		{
-			return (int)Math.Round(ScaleCurveToValue(emitter.X.GetValue(intervalPos), BufferWi, 0));
+			return (int)Math.Round(ScaleCurveToValue(emitter.X.GetValue(intervalPos), _bufferWt, 0));
 		}
 
 		/// <summary>
@@ -1168,7 +1313,7 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>		
 		private int CalculateEmitterY(double intervalPos, IEmitter emitter)
 		{
-			return (int)Math.Round(ScaleCurveToValue(emitter.Y.GetValue(intervalPos), BufferHt, 0));
+			return (int)Math.Round(ScaleCurveToValue(emitter.Y.GetValue(intervalPos), _bufferHt, 0));
 		}
 
 		/// <summary>
@@ -1282,10 +1427,10 @@ namespace VixenModules.Effect.Liquid
 							emitter1.VelX = -emitter1.VelX;
 						}
 						// If the emitter is off matrix to the right then...
-						else if (emitter1.LocationX + radius >= BufferWi)
+						else if (emitter1.LocationX + radius >= _bufferWt)
 						{
 							// Position the emitter at the right edge of the matrix
-							emitter1.LocationX = BufferWi - radius - 1;
+							emitter1.LocationX = _bufferWt - radius - 1;
 
 							// Reverse the X velocity
 							emitter1.VelX = -emitter1.VelX;
@@ -1301,10 +1446,10 @@ namespace VixenModules.Effect.Liquid
 							emitter1.VelY = -emitter1.VelY;
 						}
 						// If the emitter is off matrix at the top then...
-						else if (emitter1.LocationY + radius >= BufferHt)
+						else if (emitter1.LocationY + radius >= _bufferHt)
 						{
 							// Position the emitter at the top of the matrix
-							emitter1.LocationY = BufferHt - radius - 1;
+							emitter1.LocationY = _bufferHt - radius - 1;
 
 							// Reverse the Y velocity
 							emitter1.VelY = -emitter1.VelY;
@@ -1317,28 +1462,28 @@ namespace VixenModules.Effect.Liquid
 						if (emitter1.LocationX + radius < 0)
 						{
 							// Move the emitter X to the right side of the matrix just out of view
-							emitter1.LocationX += BufferWi + (radius * 2);
+							emitter1.LocationX += _bufferWt + (radius * 2);
 						}
 
 						// If the emitter is off matrix to the bottom then...
 						if (emitter1.LocationY + radius < 0)
 						{
 							// Move the emitter to the top just out of view
-							emitter1.LocationY += BufferHt + (radius * 2);
+							emitter1.LocationY += _bufferHt + (radius * 2);
 						}
 
 						// If the emitter is off matrix to the right then...
-						if (emitter1.LocationX - radius > BufferWi)
+						if (emitter1.LocationX - radius > _bufferWt)
 						{
 							// Move the emitter to the left just out of view
-							emitter1.LocationX -= BufferWi + (radius * 2);
+							emitter1.LocationX -= _bufferWt + (radius * 2);
 						}
 
 						// If the emitter is off matrix to the top then...
-						if (emitter1.LocationY - radius > BufferHt)
+						if (emitter1.LocationY - radius > _bufferHt)
 						{
 							// Move the emitter to the bottom just out of view
-							emitter1.LocationY -= BufferHt + (radius * 2);
+							emitter1.LocationY -= _bufferHt + (radius * 2);
 						}
 						break;
 					default:
@@ -1492,6 +1637,25 @@ namespace VixenModules.Effect.Liquid
 				// Update the collection of mark collection names
 				UpdateMarkCollectionNames();				
 			}
+		}
+		
+		/// <summary>
+		/// Updates the frame buffer for a location based pixel.
+		/// </summary>
+		private void UpdateFrameBufferForLocationPixel(int x, int y, int bufferHt, FastPixel.FastPixel bitmap, IPixelFrameBuffer frameBuffer)
+		{
+			// Save off the original location node
+			int yCoord = y;
+			int xCoord = x;
+			
+			// Flip me over so and offset my coordinates I can act like the string version
+			y = Math.Abs((BufferHtOffset - y) + (bufferHt - 1 + BufferHtOffset));
+			y = y - BufferHtOffset;
+			x = x - BufferWiOffset;
+			
+			// Retrieve the color from the bitmap
+			Color color = bitmap.GetPixel(x, y); 
+			frameBuffer.SetPixel(xCoord, yCoord, color);
 		}
 
 		#endregion

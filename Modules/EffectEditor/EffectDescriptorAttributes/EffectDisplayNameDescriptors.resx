@@ -897,4 +897,7 @@
   <data name="TopBarrier" xml:space="preserve">
     <value>Top Barrier</value>
   </data>
+  <data name="RenderScaleFactor" xml:space="preserve">
+    <value>Render Scale Factor</value>
+  </data>
 </root>

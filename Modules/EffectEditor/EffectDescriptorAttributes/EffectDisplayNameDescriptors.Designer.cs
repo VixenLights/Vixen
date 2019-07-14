@@ -1691,6 +1691,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Render Scale Factor.
+        /// </summary>
+        internal static string RenderScaleFactor {
+            get {
+                return ResourceManager.GetString("RenderScaleFactor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Repeat.
         /// </summary>
         internal static string Repeat {

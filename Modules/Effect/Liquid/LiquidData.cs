@@ -1,7 +1,6 @@
 ﻿using Liquid;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Vixen.Module.Effect;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
@@ -9,12 +8,18 @@ using ZedGraph;
 
 namespace VixenModules.Effect.Liquid
 {
+	/// <summary>
+	/// Maintains and serializes the settings of the liquid effect.
+	/// </summary>
 	[DataContract]	
 	[KnownType(typeof(EmitterData))]	
 	class LiquidData : EffectTypeModuleData
 	{
 		#region Constructor
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
 		public LiquidData()
 		{
 			Orientation = StringOrientation.Horizontal;
@@ -34,7 +39,10 @@ namespace VixenModules.Effect.Liquid
 			
 			// Second Emitter is static
 			EmitterData[1].Color = new ColorGradient(System.Drawing.Color.Purple);
-			
+
+			// Initialize the scale factor to 1/4
+			RenderScaleFactor = 4;
+
 			Colors = new List<ColorGradient>
 			{
 				new ColorGradient(System.Drawing.Color.Blue),
@@ -105,7 +113,8 @@ namespace VixenModules.Effect.Liquid
 				Normalize = Normalize,
 				Range = Range, 
 				DecayTime = DecayTime,
-				AttackTime = AttackTime,																								
+				AttackTime = AttackTime,
+				RenderScaleFactor = RenderScaleFactor,
 			};
 
 			// Clone the emitters
@@ -142,7 +151,10 @@ namespace VixenModules.Effect.Liquid
 		public int DecayTime { get; set; }
 
 		[DataMember]
-		public int AttackTime { get; set; }												
+		public int AttackTime { get; set; }				
+		
+		[DataMember]
+		public int RenderScaleFactor { get; set; }
 	}
 
 	#endregion
