@@ -4,9 +4,8 @@
 	xmlns:controls="clr-namespace:VixenModules.Editor.EffectEditor.Controls"
 	xmlns:design="clr-namespace:VixenModules.Editor.EffectEditor.Design"
 	xmlns:editors="clr-namespace:VixenModules.Editor.EffectEditor.Editors"
-	xmlns:emitter="clr-namespace:Emitter;assembly=Emitter"
 	xmlns:input="clr-namespace:VixenModules.Editor.EffectEditor.Input"
-	xmlns:System="clr-namespace:System;assembly=mscorlib">
+	xmlns:internal="clr-namespace:VixenModules.Editor.EffectEditor.Internal">
 
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="Converters.xaml" />
@@ -128,8 +127,33 @@
 					</ItemsPanelTemplate>
 				</ListView.ItemsPanel>
 				<ListView.ItemTemplate>
-					<DataTemplate>
-						<StackPanel Name="CollectionContainer" Orientation="Vertical"  Margin="-5,0,0,0"
+					<DataTemplate DataType="{x:Type internal:CollectionItemValue}">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+							<Grid Grid.Row="0" Grid.ColumnSpan="2" Margin="0,3">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="Auto"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<Separator Grid.Column="0" VerticalAlignment="Center"/>
+								<TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,0" FontWeight="Bold">
+									<TextBlock.Text>
+										<MultiBinding StringFormat="{}Emitter {0}" Converter="{StaticResource IndexOfConverter}" ConverterParameter="1">
+											<Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}"/>
+											<Binding Path="."/>
+										</MultiBinding>
+									</TextBlock.Text>
+								</TextBlock>
+								<Separator Grid.Column="2" VerticalAlignment="Center"/>
+							</Grid>
+							<design:PropertyItemsLayout Grid.Row="1" ItemsSource="{Binding SubProperties}" />
+						</Grid>
+						
+						<!--<StackPanel Name="CollectionContainer" Orientation="Vertical"  Margin="-5,0,0,0"
 												Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type WrapPanel}}, Path=ActualWidth}">
 
 							<Grid>
@@ -185,8 +209,8 @@
 									</TextBlock>
 									<Separator Grid.Column="2" VerticalAlignment="Center"/>
 								</Grid>
-								<!--<Line Grid.Row="0" Grid.ColumnSpan="2" X1="0" Y1="0" X2="1"  Y2="0" 
-										Stroke="Gray" StrokeThickness="10" Stretch="Uniform"></Line>-->
+								--><!--<Line Grid.Row="0" Grid.ColumnSpan="2" X1="0" Y1="0" X2="1"  Y2="0" 
+										Stroke="Gray" StrokeThickness="10" Stretch="Uniform"></Line>--><!--
 								<design:PropertyNameTextBlock Grid.Row="1" Grid.Column="0"  Text="Particle Type" />
 								<design:PropertyNameTextBlock Grid.Row="2" Grid.Column="0"  Text="Use Color Array"  />
 								<design:PropertyNameTextBlock Grid.Row="3" Grid.Column="0"  Text="Frames Per Color"  
@@ -385,7 +409,7 @@
 									Grid.Row="25" Grid.Column="1">
 								</controls:EmitterOffTimeSliderEditor>
 							</Grid>
-						</StackPanel>
+						</StackPanel>-->
 					</DataTemplate>
 				</ListView.ItemTemplate>
 			</controls:CollectionView>

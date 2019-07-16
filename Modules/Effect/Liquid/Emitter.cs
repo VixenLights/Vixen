@@ -4,10 +4,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
+using Vixen.Attributes;
 using Vixen.Marks;
+using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using ZedGraph;
 
 namespace VixenModules.Effect.Liquid
@@ -140,10 +143,11 @@ namespace VixenModules.Effect.Liquid
 
 			return result;
 		}
-		
+
 		/// <summary>
 		/// The Emitter needs the Parent reference to register for Mark events.
 		/// </summary>
+		[Browsable(false)]
 		public BaseEffect Parent { get; set; }
 
 		private ParticleType _particleType;
@@ -151,6 +155,9 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Type of particles emitted by the emitter.
 		/// </summary>
+		[ProviderDisplayName(@"Particle Type")]
+		[ProviderDescription(@"ParticleType")]
+		[PropertyOrder(0)]
 		public ParticleType ParticleType
 		{
 			get
@@ -169,6 +176,9 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Controls whether the color array is used to color the emitter particles.
 		/// </summary>
+		[ProviderDisplayName(@"Use Color List")]
+		[ProviderDescription(@"UseColorList")]
+		[PropertyOrder(1)]
 		public bool UseColorArray
 		{
 			get
@@ -187,6 +197,7 @@ namespace VixenModules.Effect.Liquid
 		/// This property is the opposite of UseColorArray and is used for binding.		
 		/// Property is used by XAML.
 		/// </summary>
+		[Browsable(false)]
 		public bool UseColor
 		{
 			get
@@ -546,6 +557,10 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Name of the selected mark collection.
 		/// </summary>
+		[ProviderDisplayName(@"MarkCollection")]
+		[ProviderDescription(@"MarkCollection")]
+		[TypeConverter(typeof(Emitters.EmitterMarkCollectionNameConverter))]
+		[PropertyEditor("SelectionEditor")]
 		public string MarkCollectionName
 		{
 			get
@@ -591,6 +606,7 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Collection of the mark collection names.
 		/// </summary>
+		[Browsable(false)]
 		public ObservableCollection<string> MarkNameCollection
 		{
 			get
@@ -609,6 +625,7 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Collection of the mark collections.
 		/// </summary>
+		[Browsable(false)]
 		public ObservableCollection<IMarkCollection> MarkCollections
 		{
 			get
@@ -628,6 +645,7 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Guid of the selected mark collection.
 		/// </summary>
+		[Browsable(false)]
 		public Guid MarkCollectionId
 		{
 			get
@@ -706,6 +724,7 @@ namespace VixenModules.Effect.Liquid
 		/// This property is used by the Marks Combo Box.  This property gives the parent
 		/// effect access to the IEmitter that is bound to the drop down.
 		/// </summary>
+		[Browsable(false)]
 		public IEmitter InEdit { get; set; }
 
 		#endregion
@@ -777,6 +796,7 @@ namespace VixenModules.Effect.Liquid
 
 		#region INotifyPropertyChanged
 
+		[Browsable(false)]
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		/// <summary>

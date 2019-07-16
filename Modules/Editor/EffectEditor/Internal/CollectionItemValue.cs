@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
 using NLog;
+using Vixen.Attributes;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Editor.EffectEditor.Input;
@@ -19,10 +22,56 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		private readonly PropertyItemValue _propertyItemValue;
 		private readonly int _index;
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
+		private List<BrowsablePropertyAttribute> _browsableSubProperties;
+		
 		public CollectionItemValue(PropertyItemValue propertyItemValue, int index)
 		{
 			_propertyItemValue = propertyItemValue;
 			_index = index;
+			var objectValue = Value;
+
+			var descriptors = MetadataRepository.GetProperties(objectValue).Select(prop => prop.Descriptor);
+			
+			if (descriptors.Any())
+			{
+				//PropertyItem = new PropertyItem(_propertyItemValue.ParentProperty.Owner, objectValue, properties);
+				
+				HasSubProperties = true;
+
+				if (HasSubProperties)
+				{
+					SubProperties = new GridEntryCollection<PropertyItem>();
+					_browsableSubProperties = PropertyGridUtils.GetAttributes<BrowsablePropertyAttribute>(objectValue).ToList();
+					foreach (PropertyDescriptor d in descriptors)
+					{
+						var item = new PropertyItem(_propertyItemValue.ParentProperty.Owner, objectValue, d);
+						item.IsBrowsable = ShouldDisplayProperty(d);
+						SubProperties.Add(new PropertyItem(_propertyItemValue.ParentProperty.Owner, objectValue, d));
+						// TODO: Move to PropertyData as a public property
+						if (d.Attributes[KnownTypes.Attributes.NotifyParentPropertyAttribute] is NotifyParentPropertyAttribute notifyParent 
+						    && notifyParent.NotifyParent)
+						{
+							d.AddValueChanged(objectValue, NotifySubPropertyChanged);
+						}
+					}
+				}
+			}
+		}
+
+		private bool ShouldDisplayProperty(PropertyDescriptor propertyDescriptor)
+		{
+			if (propertyDescriptor == null) return false;
+
+		    // Check the explicit declaration
+			var attribute = _browsableSubProperties.FirstOrDefault(item => item.PropertyName == propertyDescriptor.Name);
+			if (attribute != null) return attribute.Browsable;
+
+			// Check the wildcard
+			var wildcard = _browsableSubProperties.FirstOrDefault(item => item.PropertyName == BrowsablePropertyAttribute.All);
+			if (wildcard != null) return wildcard.Browsable;
+
+			// Return default/standard Browsable settings for the property
+			return propertyDescriptor.IsBrowsable;
 		}
 		/// <summary>
 		///     Converts the string to value.
@@ -52,6 +101,26 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		{
 			get { return _propertyItemValue.CollectionItemType; }
 		}
+
+		/// <summary>
+		///     Gets the parent property.
+		/// </summary>
+		/// <value>The parent property.</value>
+		public PropertyItem PropertyItem { get; protected set; }
+
+		public GridEntryCollection<PropertyItem> SubProperties { get; }
+		
+
+		/// <summary>
+		///     Gets a value indicating whether encapsulated value has sub-properties.
+		/// </summary>
+		/// <remarks>This property is reserved for future implementations.</remarks>
+		/// <value>
+		///     <c>true</c> if this instance has sub properties; otherwise, <c>false</c>.
+		/// </value>
+		public bool HasSubProperties { get; }
+		
+
 
 		/// <summary>
 		///     Converts the value to string.
@@ -173,6 +242,8 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		/// </summary>
 		public event EventHandler RootValueChanged;
 
+		public event EventHandler SubPropertyChanged;
+
 		#endregion
 
 		#region INotifyPropertyChanged Members
@@ -195,7 +266,20 @@ namespace VixenModules.Editor.EffectEditor.Internal
 			NotifyStringValueChanged();
 		}
 
+		protected void NotifySubPropertyChanged(object sender, EventArgs args)
+		{
+			NotifyValueChanged();
+			OnSubPropertyChanged();
+		}
+
+		private void OnSubPropertyChanged()
+		{
+			var handler = SubPropertyChanged;
+			handler?.Invoke(this, EventArgs.Empty);
+		}
+
 		#endregion
+
 		public UIElement TargetUI { get; set; }
 		public bool ApplyMouseOffset { get; private set; }
 		public bool IsValidDataObject(IDataObject obj)
