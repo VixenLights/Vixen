@@ -28,33 +28,65 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		{
 			_propertyItemValue = propertyItemValue;
 			_index = index;
-			var objectValue = Value;
 
-			var descriptors = MetadataRepository.GetProperties(objectValue).Select(prop => prop.Descriptor);
-			
-			if (descriptors.Any())
+			var expandable = PropertyGridUtils.GetAttributes<ExpandableObjectAttribute>(Value).ToList();
+			if (expandable.Any())
 			{
-				//PropertyItem = new PropertyItem(_propertyItemValue.ParentProperty.Owner, objectValue, properties);
-				
-				HasSubProperties = true;
+				var descriptors = MetadataRepository.GetProperties(Value).Select(prop => prop.Descriptor);
 
-				if (HasSubProperties)
+				if (descriptors.Any())
 				{
-					SubProperties = new GridEntryCollection<PropertyItem>();
-					_browsableSubProperties = PropertyGridUtils.GetAttributes<BrowsablePropertyAttribute>(objectValue).ToList();
-					foreach (PropertyDescriptor d in descriptors)
+					object objectValue;
+					if (Value is ICloneable valueToClone)
 					{
-						var item = new PropertyItem(_propertyItemValue.ParentProperty.Owner, objectValue, d);
-						item.IsBrowsable = ShouldDisplayProperty(d);
-						SubProperties.Add(new PropertyItem(_propertyItemValue.ParentProperty.Owner, objectValue, d));
-						// TODO: Move to PropertyData as a public property
-						if (d.Attributes[KnownTypes.Attributes.NotifyParentPropertyAttribute] is NotifyParentPropertyAttribute notifyParent 
-						    && notifyParent.NotifyParent)
+						objectValue = valueToClone.Clone();
+					}
+					else
+					{
+						objectValue = Value;
+					}
+
+
+					HasSubProperties = true;
+
+					if (HasSubProperties)
+					{
+						SubProperties = new GridEntryCollection<PropertyItem>();
+						_browsableSubProperties = PropertyGridUtils.GetAttributes<BrowsablePropertyAttribute>(objectValue).ToList();
+						foreach (PropertyDescriptor d in descriptors)
 						{
-							d.AddValueChanged(objectValue, NotifySubPropertyChanged);
+							var item = new PropertyItem(_propertyItemValue.ParentProperty.Owner, objectValue, d);
+							item.IsBrowsable = ShouldDisplayProperty(d);
+							SubProperties.Add(item);
+							item.ValueChanged += ItemOnValueChanged;
+						}
+
+						if (_propertyItemValue.ParentProperty.Owner.PropertyComparer != null)
+						{
+							SubProperties.Sort(_propertyItemValue.ParentProperty.Owner.PropertyComparer);
 						}
 					}
 				}
+			}
+
+			TypeDescriptor.Refreshed += TypeDescriptor_Refreshed;
+
+		}
+
+		private void TypeDescriptor_Refreshed(RefreshEventArgs e)
+		{
+			var typeChanged = e.TypeChanged;
+			if (_propertyItemValue.Value == e.ComponentChanged ||
+			    typeChanged != null && typeChanged.IsInstanceOfType(_propertyItemValue.Value))
+			{
+				foreach (var propertyItem in SubProperties)
+				{
+					propertyItem.IsBrowsable = ShouldDisplayProperty(propertyItem.PropertyDescriptor);
+				}
+				//if (_propertyItemValue.ParentProperty.Owner.PropertyComparer != null)
+				//{
+				//	SubProperties.Sort(_propertyItemValue.ParentProperty.Owner.PropertyComparer);
+				//}
 			}
 		}
 
@@ -255,6 +287,11 @@ namespace VixenModules.Editor.EffectEditor.Internal
 			if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
 		}
 
+		private void ItemOnValueChanged(PropertyItem arg1, object[] arg2, object arg3)
+		{
+			_propertyItemValue.SetCollectionValue(arg1.Component, _index);
+		}
+
 		private void NotifyStringValueChanged()
 		{
 			OnPropertyChanged("StringValue");
@@ -268,14 +305,9 @@ namespace VixenModules.Editor.EffectEditor.Internal
 
 		protected void NotifySubPropertyChanged(object sender, EventArgs args)
 		{
-			NotifyValueChanged();
-			OnSubPropertyChanged();
-		}
 
-		private void OnSubPropertyChanged()
-		{
-			var handler = SubPropertyChanged;
-			handler?.Invoke(this, EventArgs.Empty);
+			NotifyValueChanged();
+			
 		}
 
 		#endregion

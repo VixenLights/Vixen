@@ -1520,7 +1520,6 @@ namespace VixenModules.Effect.Liquid
 				serializedEmitter.VelocityY = new Curve(emitter.VelocityY);
 				serializedEmitter.X = new Curve(emitter.X);
 				serializedEmitter.Y = new Curve(emitter.Y);
-				serializedEmitter.ManualFlow = emitter.ManualFlow;
 				serializedEmitter.Flow = new Curve(emitter.Flow);
 				serializedEmitter.SourceSize = new Curve(emitter.SourceSize);
 				serializedEmitter.NozzleAngle = _nozzleAngleToSerializedNozzleAngle[emitter.NozzleAngle];
@@ -1533,7 +1532,7 @@ namespace VixenModules.Effect.Liquid
 				serializedEmitter.MarkCollectionId = emitter.MarkCollectionId;										
 				serializedEmitter.OnTime = emitter.OnTime;
 				serializedEmitter.OffTime = emitter.OffTime;
-
+				
 				// Add the serialized emitter to the collection
 				_data.EmitterData.Add(serializedEmitter);
 			}
@@ -1552,7 +1551,7 @@ namespace VixenModules.Effect.Liquid
 			foreach (EmitterData emitter in liquidData.EmitterData)
 			{
 				// Create a new emitter in the view model
-				IEmitter emitterViewModel = new Emitter();
+				var emitterViewModel = new Emitter();
 
 				// Transfer the properties from the serialized effect data to the emitter view model
 				emitterViewModel.ParticleType = _serializedParticleTypeToParticleType[emitter.ParticleType];
@@ -1567,7 +1566,6 @@ namespace VixenModules.Effect.Liquid
 				emitterViewModel.VelocityY = new Curve(emitter.VelocityY);
 				emitterViewModel.X = new Curve(emitter.X);
 				emitterViewModel.Y = new Curve(emitter.Y);
-				emitterViewModel.ManualFlow = emitter.ManualFlow;
 				emitterViewModel.Flow = new Curve(emitter.Flow);
 				emitterViewModel.SourceSize = new Curve(emitter.SourceSize);
 				emitterViewModel.NozzleAngle = _serializedNozzleAngleToNozzleAngle[emitter.NozzleAngle];
@@ -1582,7 +1580,7 @@ namespace VixenModules.Effect.Liquid
 				emitterViewModel.OffTime = emitter.OffTime;
 				emitterViewModel.MarkNameCollection = _markCollectionNames;
 				emitterViewModel.MarkCollections = MarkCollections;
-
+				emitterViewModel.InitAllAttributes();
 				// Add the emitter to the view model emitter collection
 				EmitterList.Add(emitterViewModel);
 			}

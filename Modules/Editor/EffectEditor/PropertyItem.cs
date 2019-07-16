@@ -664,7 +664,7 @@ namespace VixenModules.Editor.EffectEditor
 
 		}
 
-		private object[] CloneValues()
+		internal object[] CloneValues()
 		{
 			if (GetValues() == null)
 			{

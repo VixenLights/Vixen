@@ -92,6 +92,7 @@ namespace VixenModules.Editor.EffectEditor
 		private void LoadCollectionValues()
 		{
 			_collectionValues = _property.GetValue() as IList;
+
 			_collectionItemValues.Clear();
 			if (_collectionValues != null)
 			{
@@ -99,8 +100,18 @@ namespace VixenModules.Editor.EffectEditor
 				{
 					var collectionitem = new CollectionItemValue(this, i);
 					_collectionItemValues.Add(collectionitem);
+					//collectionitem.PropertyChanged += CollectionitemOnPropertyChanged;
 				}
 			}
+		}
+
+		private void CollectionitemOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			if(sender is CollectionItemValue value)
+			{
+				NotifyCollectionValueChanged(_collectionItemValues.IndexOf(value));
+			}
+			
 		}
 
 		/// <summary>

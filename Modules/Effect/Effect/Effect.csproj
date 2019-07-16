@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="BaseEffect.cs" />
     <Compile Include="EffectTypeModuleData.cs" />
+    <Compile Include="ExpandoObjectBase.cs" />
     <Compile Include="IPixelFrameBuffer.cs" />
     <Compile Include="Location\ElementLocation.cs" />
     <Compile Include="Location\PixelLocationFrameBuffer.cs" />

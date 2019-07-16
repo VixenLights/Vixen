@@ -57,7 +57,7 @@ namespace VixenModules.Effect.Liquid
     /// <summary>
     /// Maintains the properties and methods of an emitter.
     /// </summary>
-	public interface IEmitter
+	public interface IEmitter: ICloneable
 	{
 		/// <summary>
       /// Parent effect of the emitter.
@@ -85,11 +85,6 @@ namespace VixenModules.Effect.Liquid
 		/// Controls whether the color array is used to color the emitter particles.
 		/// </summary>
 		bool UseColorArray { get; set; }
-
-		/// <summary>
-		/// This property is the opposite of UseColorArray and is used for binding.
-		/// </summary>
-		bool UseColor { get; set; }
 
 		/// <summary>
 		/// Controls how many frames of each color in the color array are emitted.
@@ -155,11 +150,6 @@ namespace VixenModules.Effect.Liquid
       /// Determines whether the emitter flow is determined by the associated music volume.
       /// </summary>
 		bool FlowMatchesMusic { get; set; }
-
-      /// <summary>
-      /// Whether the emitter flow is controlled manually by a curve.
-      /// </summary>
-		bool ManualFlow { get; set; }
 
       /// <summary>
       /// Manual flow of the emitter.
