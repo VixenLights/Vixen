@@ -22,14 +22,13 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		private readonly PropertyItemValue _propertyItemValue;
 		private readonly int _index;
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
-		private readonly List<BrowsablePropertyAttribute> _browsableSubProperties;
 		
 		public CollectionItemValue(PropertyItemValue propertyItemValue, int index)
 		{
 			_propertyItemValue = propertyItemValue;
 			_index = index;
 
-			var expandable = PropertyGridUtils.GetAttributes<ExpandableObjectAttribute>(Value).ToList();
+			var expandable = PropertyGridUtils.GetAttributes<ExpandableObjectAttribute>(Value);
 			if (expandable.Any())
 			{
 				var descriptors = MetadataRepository.GetProperties(Value).Select(prop => prop.Descriptor);
@@ -48,55 +47,32 @@ namespace VixenModules.Editor.EffectEditor.Internal
 
 
 					HasSubProperties = true;
-
-					if (HasSubProperties)
+					
+					var properties = new GridEntryCollection<PropertyItem>();
+					foreach (PropertyDescriptor d in descriptors)
 					{
-						SubProperties = new GridEntryCollection<PropertyItem>();
-						_browsableSubProperties = PropertyGridUtils.GetAttributes<BrowsablePropertyAttribute>(objectValue).ToList();
-						foreach (PropertyDescriptor d in descriptors)
-						{
-							var item = new PropertyItem(_propertyItemValue.ParentProperty.Owner, objectValue, d);
-							item.IsBrowsable = ShouldDisplayProperty(d);
-							SubProperties.Add(item);
-							item.ValueChanged += ItemOnValueChanged;
-						}
-
-						if (_propertyItemValue.ParentProperty.Owner.PropertyComparer != null)
-						{
-							SubProperties.Sort(_propertyItemValue.ParentProperty.Owner.PropertyComparer);
-						}
+						var item = new PropertyItem(_propertyItemValue.ParentProperty.Owner, objectValue, d);
+						item.IsBrowsable = ShouldDisplayProperty(d);
+						item.ValueChanged += ItemOnValueChanged;
+						properties.Add(item);
 					}
+
+					if (_propertyItemValue.ParentProperty.Owner.PropertyComparer != null)
+					{
+						properties.Sort(_propertyItemValue.ParentProperty.Owner.PropertyComparer);
+					}
+
+					SubProperties = properties;
 				}
+
+				MetadataRepository.Remove(Value);
 			}
 			
-			TypeDescriptor.Refreshed += TypeDescriptor_Refreshed;
-
 		}
 
-		private void TypeDescriptor_Refreshed(RefreshEventArgs e)
-		{
-			var typeChanged = e.TypeChanged;
-			if (_propertyItemValue.Value == e.ComponentChanged ||
-			    typeChanged != null && typeChanged.IsInstanceOfType(_propertyItemValue.Value))
-			{
-				foreach (var propertyItem in SubProperties)
-				{
-					propertyItem.IsBrowsable = ShouldDisplayProperty(propertyItem.PropertyDescriptor);
-				}
-			}
-		}
-
-		private bool ShouldDisplayProperty(PropertyDescriptor propertyDescriptor)
+		private static bool ShouldDisplayProperty(PropertyDescriptor propertyDescriptor)
 		{
 			if (propertyDescriptor == null) return false;
-
-		    // Check the explicit declaration
-			var attribute = _browsableSubProperties.FirstOrDefault(item => item.PropertyName == propertyDescriptor.Name);
-			if (attribute != null) return attribute.Browsable;
-
-			// Check the wildcard
-			var wildcard = _browsableSubProperties.FirstOrDefault(item => item.PropertyName == BrowsablePropertyAttribute.All);
-			if (wildcard != null) return wildcard.Browsable;
 
 			// Return default/standard Browsable settings for the property
 			return propertyDescriptor.IsBrowsable;
@@ -483,8 +459,6 @@ namespace VixenModules.Editor.EffectEditor.Internal
 					propertyItem.Dispose();
 				}
 			}
-
-			TypeDescriptor.Refreshed -= TypeDescriptor_Refreshed;
 		}
 
 		#endregion
