@@ -5,9 +5,12 @@
 	xmlns:design="clr-namespace:VixenModules.Editor.EffectEditor.Design"
 	xmlns:editors="clr-namespace:VixenModules.Editor.EffectEditor.Editors"
 	xmlns:input="clr-namespace:VixenModules.Editor.EffectEditor.Input"
-	xmlns:internal="clr-namespace:VixenModules.Editor.EffectEditor.Internal">
+	xmlns:internal="clr-namespace:VixenModules.Editor.EffectEditor.Internal"
+	xmlns:behaviors="clr-namespace:Common.WPFCommon.Behaviors;assembly=WPFCommon"
+	xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
 
 	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
 		<ResourceDictionary Source="Converters.xaml" />
 		<ResourceDictionary Source="CurveEditor.xaml" />
 		<ResourceDictionary Source="SystemColorEditor.xaml" />
@@ -107,19 +110,10 @@
 				PropertyValue="{Binding }"
 				IsEnabled="{Binding IsEditable}"
 				KeyboardNavigation.TabNavigation="Continue"
-				AlternationCount="100">
-				<ListView.Resources>
-					<Style TargetType="ListViewItem">
-						<Setter Property="HorizontalContentAlignment" Value="Left" />
-						<Setter Property="VerticalContentAlignment" Value="Top" />
-					</Style>
-				</ListView.Resources>
-				<ListView.ItemContainerStyle>
-					<Style TargetType="ListViewItem">
-						<Setter Property="HorizontalContentAlignment" Value="Left" />
-						<Setter Property="VerticalContentAlignment" Value="Top" />
-					</Style>
-				</ListView.ItemContainerStyle>
+				ItemContainerStyle="{StaticResource ListViewItemOutlineHover}">
+				<i:Interaction.Behaviors>
+					<behaviors:IgnoreMouseWheelBehavior/>
+				</i:Interaction.Behaviors>
 				<ListView.ItemsPanel>
 					<ItemsPanelTemplate>
 						<WrapPanel Orientation="Vertical" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}, 
