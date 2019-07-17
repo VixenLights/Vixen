@@ -17,12 +17,12 @@ using Point = System.Windows.Point;
 
 namespace VixenModules.Editor.EffectEditor.Internal
 {
-	internal class CollectionItemValue : INotifyPropertyChanged, IDropTargetAdvisor, IDragSourceAdvisor
+	internal class CollectionItemValue : INotifyPropertyChanged, IDropTargetAdvisor, IDragSourceAdvisor, IDisposable
 	{
 		private readonly PropertyItemValue _propertyItemValue;
 		private readonly int _index;
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
-		private List<BrowsablePropertyAttribute> _browsableSubProperties;
+		private readonly List<BrowsablePropertyAttribute> _browsableSubProperties;
 		
 		public CollectionItemValue(PropertyItemValue propertyItemValue, int index)
 		{
@@ -68,7 +68,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 					}
 				}
 			}
-
+			
 			TypeDescriptor.Refreshed += TypeDescriptor_Refreshed;
 
 		}
@@ -83,10 +83,6 @@ namespace VixenModules.Editor.EffectEditor.Internal
 				{
 					propertyItem.IsBrowsable = ShouldDisplayProperty(propertyItem.PropertyDescriptor);
 				}
-				//if (_propertyItemValue.ParentProperty.Owner.PropertyComparer != null)
-				//{
-				//	SubProperties.Sort(_propertyItemValue.ParentProperty.Owner.PropertyComparer);
-				//}
 			}
 		}
 
@@ -473,5 +469,24 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		{
 			return TargetUI;
 		}
+
+		#region IDisposable
+
+		/// <inheritdoc />
+		public void Dispose()
+		{
+			if (SubProperties != null)
+			{
+				foreach (var propertyItem in SubProperties)
+				{
+					propertyItem.ValueChanged -= ItemOnValueChanged;
+					propertyItem.Dispose();
+				}
+			}
+
+			TypeDescriptor.Refreshed -= TypeDescriptor_Refreshed;
+		}
+
+		#endregion
 	}
 }

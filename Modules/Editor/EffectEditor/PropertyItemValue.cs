@@ -38,7 +38,7 @@ namespace VixenModules.Editor.EffectEditor
 	/// <summary>
 	///     Provides a wrapper around property value to be used at presentation level.
 	/// </summary>
-	public class PropertyItemValue : INotifyPropertyChanged, IDropTargetAdvisor, IDragSourceAdvisor
+	public class PropertyItemValue : INotifyPropertyChanged, IDropTargetAdvisor, IDragSourceAdvisor, IDisposable
 	{
 		private readonly bool _hasSubProperties;
 		private readonly PropertyItem _property;
@@ -92,26 +92,24 @@ namespace VixenModules.Editor.EffectEditor
 		private void LoadCollectionValues()
 		{
 			_collectionValues = _property.GetValue() as IList;
-
+			CleanUpCollectionValues();
 			_collectionItemValues.Clear();
 			if (_collectionValues != null)
 			{
 				for (int i = 0; i < _collectionValues.Count; i++)
 				{
-					var collectionitem = new CollectionItemValue(this, i);
-					_collectionItemValues.Add(collectionitem);
-					//collectionitem.PropertyChanged += CollectionitemOnPropertyChanged;
+					var collectionItemValue = new CollectionItemValue(this, i);
+					_collectionItemValues.Add(collectionItemValue);
 				}
 			}
 		}
 
-		private void CollectionitemOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+		private void CleanUpCollectionValues()
 		{
-			if(sender is CollectionItemValue value)
+			foreach (var collectionItemValue in _collectionItemValues)
 			{
-				NotifyCollectionValueChanged(_collectionItemValues.IndexOf(value));
+				collectionItemValue?.Dispose();
 			}
-			
 		}
 
 		/// <summary>
@@ -710,6 +708,28 @@ namespace VixenModules.Editor.EffectEditor
 			if (handler != null) handler(this, new CollectionChangedEventArgs(index));
 		}
 
+
+		#endregion
+
+		#region IDisposable
+
+		/// <inheritdoc />
+		public void Dispose()
+		{
+			CleanUpCollectionValues();
+			if (_property != null)
+			{
+				_property.PropertyChanged -= ParentPropertyChanged;
+			}
+
+			if (_hasSubProperties)
+			{
+				foreach (var propertyItem in SubProperties)
+				{
+					propertyItem?.Dispose();
+				}
+			}
+		}
 
 		#endregion
 	}
