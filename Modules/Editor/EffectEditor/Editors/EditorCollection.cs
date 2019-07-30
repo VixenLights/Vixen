@@ -47,7 +47,8 @@ namespace VixenModules.Editor.EffectEditor.Editors
 			{KnownTypes.Vixen.Percentage, new TypeEditor(KnownTypes.Vixen.Percentage, EditorKeys.SliderPercentageEditorKey)},
 			{typeof (Enum), new TypeEditor(typeof (Enum), EditorKeys.EnumEditorKey)},
 			{KnownTypes.Windows.Font, new FontEditor() },
-			{typeof(IList<IEmitter>), new TypeEditor(typeof(IEmitter), EditorKeys.IEmitterEditorKey)}			
+			{typeof(IList<IEmitter>), new TypeEditor(typeof(IList<IEmitter>), EditorKeys.IEmitterEditorKey)},
+			{KnownTypes.Vixen.Emitter, new TypeEditor()},
 		};
 
 		/// <summary>

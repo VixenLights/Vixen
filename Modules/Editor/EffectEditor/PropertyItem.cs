@@ -66,6 +66,8 @@ namespace VixenModules.Editor.EffectEditor
 				if (disposing)
 				{
 					_descriptor.RemoveValueChanged(_component, ComponentValueChanged);
+					_value?.Dispose();
+					
 				}
 				base.Dispose(disposing);
 			}
@@ -664,7 +666,7 @@ namespace VixenModules.Editor.EffectEditor
 
 		}
 
-		private object[] CloneValues()
+		internal object[] CloneValues()
 		{
 			if (GetValues() == null)
 			{

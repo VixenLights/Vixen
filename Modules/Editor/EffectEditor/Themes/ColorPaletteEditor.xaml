@@ -2,7 +2,9 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:VixenModules.Editor.EffectEditor.Controls"
                     xmlns:editors="clr-namespace:VixenModules.Editor.EffectEditor.Editors"
-                    xmlns:input="clr-namespace:VixenModules.Editor.EffectEditor.Input">
+                    xmlns:input="clr-namespace:VixenModules.Editor.EffectEditor.Input"
+                    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+                    xmlns:behaviors="clr-namespace:Common.WPFCommon.Behaviors;assembly=WPFCommon">
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="Converters.xaml" />
 	</ResourceDictionary.MergedDictionaries>
@@ -15,6 +17,9 @@
 				PropertyValue="{Binding}"
 				IsEnabled="{Binding IsEditable}"
 				KeyboardNavigation.TabNavigation="Continue">
+				<i:Interaction.Behaviors>
+					<behaviors:IgnoreMouseWheelBehavior/>
+				</i:Interaction.Behaviors>
 				<ListView.ItemsPanel>
 					<ItemsPanelTemplate>
 						<WrapPanel Orientation="Horizontal" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}, Path=ActualWidth}"></WrapPanel>

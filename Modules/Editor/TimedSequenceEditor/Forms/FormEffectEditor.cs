@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Vixen.Execution.Context;
 using Vixen.Sys;
 using VixenModules.Editor.EffectEditor;
@@ -29,6 +30,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private bool _previewState;
 		private ElementHost host;
 
+		private readonly DispatcherTimer _selectionChangeBuffer;
+
 		public FormEffectEditor(TimedSequenceEditorForm sequenceEditorForm)
 		{
 			InitializeComponent();
@@ -47,6 +50,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			host.Child = _effectPropertyEditorGridEffectEffectPropertiesEditor;
 
 			Controls.Add(host);
+
+			_selectionChangeBuffer = new DispatcherTimer
+			{
+				Interval = TimeSpan.FromMilliseconds(200)
+			};
+			_selectionChangeBuffer.Tick += _selectionChangeBuffer_Tick;
 
 			sequenceEditorForm.TimelineControl.SelectionChanged += timelineControl_SelectionChanged;
 			_effectPropertyEditorGridEffectEffectPropertiesEditor.PropertyValueChanged += EffectPropertyEditorValueChanged;
@@ -105,6 +114,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void timelineControl_SelectionChanged(object sender, EventArgs e)
 		{
+			_selectionChangeBuffer.Stop();
+			_selectionChangeBuffer.Start();
+		}
+		
+		private void _selectionChangeBuffer_Tick(object sender, EventArgs e)
+		{
+			_selectionChangeBuffer.Stop();
 			Elements = _sequenceEditorForm.TimelineControl.SelectedElements;
 		}
 

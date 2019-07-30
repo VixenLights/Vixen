@@ -115,6 +115,11 @@ namespace VixenModules.Editor.EffectEditor.Design
 			var template = editor.InlineTemplate as DataTemplate;
 			if (template != null) return template;
 
+			if (editor.InlineTemplate == null)
+			{
+				Console.Out.WriteLine($"Can't find template for {Entry.Name}");
+				return null;
+			}
 			return ResourceLocator.GetResource(editor.InlineTemplate) as DataTemplate;
 		}
 	}
