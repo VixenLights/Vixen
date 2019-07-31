@@ -51,6 +51,15 @@ namespace VixenModules.App.CustomPropEditor.Services
 
 		}
 
+		public MessageBoxResponse ShowError(string message, string title)
+		{
+			MessageBoxForm mbf = new MessageBoxForm(message, title, MessageBoxButtons.OK, SystemIcons.Error);
+			CenterDialog(mbf);
+			mbf.ShowDialog();
+
+			return new MessageBoxResponse(Enum<MessageResult>.ConvertFromOtherEnumValue(mbf.DialogResult), null);
+		}
+
 		private static void CenterDialog(Form dialog)
 		{
 			var parentWindow = System.Windows.Application.Current.MainWindow;
