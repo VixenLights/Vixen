@@ -16,6 +16,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 	{
 		protected static Logger Logging = LogManager.GetCurrentClassLogger();
 		private int _scale = 4;
+		private const int Offset = 7;
 		
 		public async Task<Prop> ImportAsync(string filePath)
 		{
@@ -35,7 +36,8 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				{
 					string name = reader.GetAttribute("name");
 					p = PropModelServices.Instance().CreateProp(name);
-					
+					p.CreatedBy = @"xModel Import";
+
 					//These are the size of the grid near as I can tell
 					//We will use them to gauge a scale.
 					int x, y;
@@ -140,7 +142,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 						{
 							var modelNode = modelNodes[i];
 							modelNodes.Remove(i);
-							var lightNode = PropModelServices.Instance().AddLightNode(group, new Point(modelNode.X, modelNode.Y), modelNode.Order, nodeSize);
+							var lightNode = PropModelServices.Instance().AddLightNode(group, new Point(modelNode.X + Offset, modelNode.Y + Offset), modelNode.Order, nodeSize);
 							if(!lightNodes.ContainsKey(modelNode.Order))
 							{
 								lightNodes.Add(modelNode.Order, lightNode);
@@ -170,7 +172,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
 				foreach (var modelNode in modelNodes.OrderBy(x => x.Value.Order))
 				{
-					PropModelServices.Instance().AddLightNode(em, new Point(modelNode.Value.X, modelNode.Value.Y),
+					PropModelServices.Instance().AddLightNode(em, new Point(modelNode.Value.X+Offset, modelNode.Value.Y+Offset),
 						modelNode.Value.Order, nodeSize);
 				}
 			}
