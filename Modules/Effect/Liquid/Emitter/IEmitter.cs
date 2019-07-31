@@ -39,10 +39,12 @@ namespace VixenModules.Effect.Liquid
 		Pulsating,
 		[Description("Use Marks")]
 		UseMarks,
+		[Description("Musical")]
+		Musical,
 	}
 
 	[TypeConverter(typeof(EnumDescriptionTypeConverter))]
-	public enum NozzleAngle
+	public enum NozzleMovement
 	{
 		[Description("Fixed Angle")]
 		FixedAngle,
@@ -69,6 +71,11 @@ namespace VixenModules.Effect.Liquid
       /// Returns a clone of the emitter.
       /// </summary>        
 		IEmitter CreateInstanceForClone();
+
+		/// <summary>
+		/// Initializes the browseable state of all the emitter properties.
+		/// </summary>
+		void InitAllAttributes();
 
 		/// <summary>
 		/// Updates the selected mark name collection for the emitter.
@@ -115,12 +122,7 @@ namespace VixenModules.Effect.Liquid
       /// Whether the emitter is animated.
       /// </summary>
 		bool Animate { get; set; }
-
-      /// <summary>
-      /// Whether the emitter is positioned manually via the X and Y curves.
-      /// </summary>
-		bool ManualPosition { get; }
-
+      
       /// <summary>
       /// How the emitter behaves when animated and it reachs the edge of the element.
       /// </summary>
@@ -145,12 +147,7 @@ namespace VixenModules.Effect.Liquid
       /// Manual position of the emitter in the Y direction.
       /// </summary>
 		Curve Y { get; set; }
-
-      /// <summary>
-      /// Determines whether the emitter flow is determined by the associated music volume.
-      /// </summary>
-		bool FlowMatchesMusic { get; set; }
-
+      
       /// <summary>
       /// Manual flow of the emitter.
       /// </summary>
@@ -164,28 +161,13 @@ namespace VixenModules.Effect.Liquid
       /// <summary>
       /// Controls how the nozzle (angle) is positioned.
       /// </summary>
-		NozzleAngle NozzleAngle { get; set; }
+		NozzleMovement NozzleMovement { get; set; }
 
       /// <summary>
       /// Angle of the emitter's nozzle.
       /// </summary>
-		Curve Angle { get; set; }
-
-      /// <summary>
-      /// True when the nozzle angle is controlled manually via the curve.
-      /// </summary>
-		bool FixedNozzleAngle { get; }
-	
-      /// <summary>
-      /// True when the emitter oscillates between a start angle and an end angle.
-      /// </summary>
-		bool Oscillate { get; set; }
-
-      /// <summary>
-      /// True when the emitter nozzle is rotating.
-      /// </summary>
-		bool RotateNozzle { get; }
-		
+		Curve NozzleAngle { get; set; }
+      	          		
       /// <summary>
       /// Start angle in degrees of the emitter oscillation.
       /// </summary>
@@ -205,22 +187,7 @@ namespace VixenModules.Effect.Liquid
       /// Determines how the flow is controlled for the emitter (Continuous, Pulsating, Use Marks).
       /// </summary>
 		FlowControl FlowControl { get; set; }
-
-      /// <summary>
-      /// True when the emitter toggles On and Off.
-      /// </summary>
-		bool OnOff { get; set; }
-
-      /// <summary>
-      /// True when a mark collection controls when the emitter is On and Off.
-      /// </summary>
-		bool UseMarks { get; }
-
-      /// <summary>
-      /// True when a slider controls when the emitter is On vs Off.
-      /// </summary>
-		bool SliderOnOff { get; set; }
-
+                 
       /// <summary>
       /// Name of the selected mark collection.
       /// </summary>
@@ -240,19 +207,19 @@ namespace VixenModules.Effect.Liquid
       /// Collection of the mark collections.
       /// </summary>
 		ObservableCollection<IMarkCollection> MarkCollections { get; set; }
-	
-      /// <summary>
-      /// On Time for the emitter in seconds.
-      /// </summary>
+
+		// The following properties are not persisted but are used during rendering.
+
+		/// <summary>
+		/// On Time for the emitter in seconds.
+		/// </summary>
 		int OnTime { get; set; }
 
       /// <summary>
       /// Off time for the emitter in seconds.
       /// </summary>
 		int OffTime { get; set; }
-
-		// The following properties are not persisted but are used during rendering.
-
+		
       /// <summary>
       /// Frame counter for the color array.
       /// This counter determines when it is time to move to the next color in the array.
@@ -293,13 +260,7 @@ namespace VixenModules.Effect.Liquid
       /// Number of frames the emitter has been Off.
       /// </summary>
 		int OffTimer { get; set; }		
-
-		/// <summary>
-		/// This property is used by the Marks Combo Box.  This property gives the parent
-		/// effect access to the IEmitter that is bound to the drop down.
-		/// </summary>
-		IEmitter InEdit { get; set; }
-
+	
       /// <summary>
       /// True when the emitter is On.
       /// </summary>

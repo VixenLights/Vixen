@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
 using Vixen.Attributes;
 using Vixen.Marks;
-using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
@@ -34,7 +31,7 @@ namespace VixenModules.Effect.Liquid
 			FramesPerColor = 3;
 			FrameColorCounter = 0;
 			ColorArrayIndex = 0;
-			Color = new ColorGradient(System.Drawing.Color.Blue);
+			Color = new ColorGradient(System.Drawing.Color.White);
 			Brightness = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			Lifetime = new Curve(CurveType.Flat100);			
 			ParticleVelocity = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
@@ -44,24 +41,21 @@ namespace VixenModules.Effect.Liquid
 			VelocityY = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 			// X and Y are used when the emitter is not animated
 			X = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
-			Y = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 90.0, 90.0 }));
-
-			FlowMatchesMusic = false;
+			Y = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			
 			Flow = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 			SourceSize = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
-			Angle = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 75.0, 75.0 }));
-
-			Oscillate = false;
+			NozzleAngle = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 75.0, 75.0 }));
+			
 			OscillateStartAngle = 0;
 			OscillateEndAngle = 90;
 			OscillationSpeed = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 5.0, 5.0 }));
 
-			OnOff = false;
-			UseMarks = false;
+			FlowControl = FlowControl.Continuous;			
 			MarkNameCollection = new ObservableCollection<string>();
 
-			OnTime = 2;  // Seconds
-			OffTime = 2; // Seconds
+			OnTime = 2000;  // Milliseconds
+			OffTime = 2000; // Milliseconds
 
 			// The following properties are not persisted and are used for rendering
 			VelX = 1;
@@ -95,6 +89,67 @@ namespace VixenModules.Effect.Liquid
 			return markCollection;
 		}
 
+		/// <summary>
+		/// Updates the browseable state of the color list.
+		/// </summary>
+		private void UpdateColorListAttributes()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
+			{
+				{nameof(FramesPerColor), UseColorArray},
+				{nameof(Color), !UseColorArray }
+			};
+			SetBrowsable(propertyStates);
+		}
+
+		/// <summary>
+		/// Updates the browseable state of properties related to emitter animation.
+		/// </summary>
+		private void UpdateAnimateAttributes()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(5)
+			{
+				{nameof(VelocityX), Animate},
+				{nameof(VelocityY), Animate},
+				{nameof(EdgeHandling), Animate},
+				{nameof(X), !Animate},
+				{nameof(Y), !Animate}
+			};
+			SetBrowsable(propertyStates);
+		}
+
+		/// <summary>
+		/// Updates the browseable state of properties related to the nozzle angle.
+		/// </summary>
+		private void UpdateNozzleAngleAttributes()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			{
+				{nameof(NozzleAngle), NozzleMovement == NozzleMovement.FixedAngle},
+				{nameof(OscillateStartAngle), NozzleMovement == NozzleMovement.Oscillate},
+				{nameof(OscillateEndAngle), NozzleMovement == NozzleMovement.Oscillate},
+				{nameof(OscillationSpeed), (NozzleMovement == NozzleMovement.Oscillate ||
+													 NozzleMovement == NozzleMovement.SpinClockwise ||
+													 NozzleMovement == NozzleMovement.SpinCounterClockwise) }
+			};
+			SetBrowsable(propertyStates);
+		}
+
+		/// <summary>
+		/// Updates the browseable state of properties related to the emitter flow.
+		/// </summary>
+		private void UpdateEmitterFlowAttributes()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4)
+			{
+				{nameof(OnTime), FlowControl == FlowControl.Pulsating},
+				{nameof(OffTime), FlowControl == FlowControl.Pulsating},
+				{nameof(Flow), (FlowControl == FlowControl.Pulsating ||
+									 FlowControl == FlowControl.Continuous) },
+				{nameof(MarkCollectionName), FlowControl == FlowControl.UseMarks}
+			};
+			SetBrowsable(propertyStates);
+		}
 
 		#endregion
 
@@ -121,20 +176,16 @@ namespace VixenModules.Effect.Liquid
 				VelocityX = new Curve(VelocityX),
 				VelocityY = new Curve(VelocityY),
 				X = new Curve(X),
-				Y = new Curve(Y),
-				FlowMatchesMusic = FlowMatchesMusic,
+				Y = new Curve(Y),				
 				Flow = new Curve(Flow),
 				SourceSize = new Curve(SourceSize),
-				NozzleAngle = NozzleAngle,
-				Angle = new Curve(Angle),
-				Oscillate = Oscillate,
+				NozzleMovement = NozzleMovement,
+				NozzleAngle = new Curve(NozzleAngle),				
 				OscillateStartAngle = OscillateStartAngle,
 				OscillateEndAngle = OscillateEndAngle,
 				OscillationSpeed = OscillationSpeed,
 
-				FlowControl = FlowControl,
-				OnOff = OnOff,
-				UseMarks = UseMarks,
+				FlowControl = FlowControl,				
 				MarkCollections = MarkCollections,
 				MarkCollectionId = MarkCollectionId,				
 				MarkNameCollection = MarkNameCollection,				
@@ -159,7 +210,7 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Type of particles emitted by the emitter.
 		/// </summary>
-		[ProviderDisplayName(@"Particle Type")]
+		[ProviderDisplayName(@"ParticleType")]
 		[ProviderDescription(@"ParticleType")]
 		[PropertyOrder(0)]
 		public ParticleType ParticleType
@@ -180,7 +231,7 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Controls whether the color array is used to color the emitter particles.
 		/// </summary>
-		[ProviderDisplayName(@"Use Color List")]
+		[ProviderDisplayName(@"UseColorList")]
 		[ProviderDescription(@"UseColorList")]
 		[PropertyOrder(1)]
 		public bool UseColorArray
@@ -192,7 +243,7 @@ namespace VixenModules.Effect.Liquid
 			set
 			{
 				_useColorArray = value;	
-				UpdateColorArrayAttributes();
+				UpdateColorListAttributes();
 				OnPropertyChanged();
 			}
 		}
@@ -202,7 +253,7 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Controls how many frames of each color in the color array are emitted.
 		/// </summary>
-		[ProviderDisplayName(@"Frames Per Color")]
+		[ProviderDisplayName(@"FramesPerColor")]
 		[ProviderDescription(@"FramesPerColor")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1,60,1)]
@@ -223,7 +274,7 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Color of the emitter.
 		/// </summary>
-		[ProviderDisplayName(@"Particle Color")]
+		[ProviderDisplayName(@"ParticleColor")]
 		[ProviderDescription(@"ParticleColor")]
 		[PropertyOrder(3)]
 		public ColorGradient Color { get; set; }
@@ -231,15 +282,15 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Brightness of the emitter color.
 		/// </summary>
-		[ProviderDisplayName(@"Brightness")]
-		[ProviderDescription(@"Brightness")]
+		[ProviderDisplayName(@"EmitterBrightness")]
+		[ProviderDescription(@"EmitterBrightness")]
 		[PropertyOrder(4)]
 		public Curve Brightness { get; set; }
 
 		/// <summary>
 		/// Lifetime of the emitter particles.
 		/// </summary>
-		[ProviderDisplayName(@"Particle Lifetime")]
+		[ProviderDisplayName(@"ParticleLifetime")]
 		[ProviderDescription(@"ParticleLifetime")]
 		[PropertyOrder(5)]
 		public Curve Lifetime { get; set; }
@@ -247,7 +298,7 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Velocity of the particles.
 		/// </summary>
-		[ProviderDisplayName(@"Particle Velocity")]
+		[ProviderDisplayName(@"ParticleVelocity")]
 		[ProviderDescription(@"ParticleVelocity")]
 		[PropertyOrder(6)]
 		public Curve ParticleVelocity { get; set; }
@@ -273,31 +324,13 @@ namespace VixenModules.Effect.Liquid
 				OnPropertyChanged();
 			}
 		}
-
-		/// <summary>
-		/// Whether the emitter is positioned manually via the X and Y curves.		
-		/// Property is used by XAML.
-		/// </summary>
-		[Browsable(false)]
-		public bool ManualPosition
-		{
-			get
-			{
-				return !Animate;
-			}
-			set
-			{
-				Animate = !value;
-				OnPropertyChanged();
-			}
-		}
-
+		
 		private EdgeHandling _edgeHandling;
 
 		/// <summary>
 		/// How the emitter behaves when animated and it reachs the edge of the element.
 		/// </summary>
-		[ProviderDisplayName(@"Edge Handling")]
+		[ProviderDisplayName(@"EdgeHandling")]
 		[ProviderDescription(@"EdgeHandling")]
 		[PropertyOrder(8)]
 		public EdgeHandling EdgeHandling
@@ -316,7 +349,7 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Velocity of the emitter in the X direction.
 		/// </summary>
-		[ProviderDisplayName(@"Velocity X")]
+		[ProviderDisplayName(@"VelocityX")]
 		[ProviderDescription(@"VelocityX")]
 		[PropertyOrder(9)]
 		public Curve VelocityX { get; set; }
@@ -324,7 +357,7 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Velocity of the emittter in the Y direction.
 		/// </summary>
-		[ProviderDisplayName(@"Velocity Y")]
+		[ProviderDisplayName(@"VelocityY")]
 		[ProviderDescription(@"VelocityY")]
 		[PropertyOrder(10)]
 		public Curve VelocityY { get; set; }
@@ -332,7 +365,7 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Manual position of the emitter in the X direction.
 		/// </summary>
-		[ProviderDisplayName(@"X Position")]
+		[ProviderDisplayName(@"XPosition")]
 		[ProviderDescription(@"XPosition")]
 		[PropertyOrder(11)]
 		public Curve X { get; set; }
@@ -340,133 +373,59 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Manual position of the emitter in the Y direction.
 		/// </summary>
-		[ProviderDisplayName(@"Y Position")]
+		[ProviderDisplayName(@"YPosition")]
 		[ProviderDescription(@"YPosition")]
 		[PropertyOrder(12)]
 		public Curve Y { get; set; }
-
-		private bool _flowMatchesMusic = false;
-
-		/// <summary>
-		/// Determines whether the emitter flow is determined by the associated music volume.		
-		/// Property is used by XAML. 
-		/// </summary>
-		[ProviderDisplayName(@"Music Flow")]
-		[ProviderDescription(@"MusicFlow")]
-		[PropertyOrder(13)]
-		public bool FlowMatchesMusic
-		{
-			get
-			{
-				return _flowMatchesMusic;
-			}
-			set
-			{
-				_flowMatchesMusic = value;
-				UpdateMusicFlowAttributes();
-				OnPropertyChanged();
-			}
-		}
-
-	/// <summary>
-		/// Manual flow of the emitter.
-		/// </summary>
-		[ProviderDisplayName(@"Flow")]
-		[ProviderDescription(@"Flow")]
-		[PropertyOrder(14)]
-		public Curve Flow { get; set; }
-
+				
 		/// <summary>
 		/// Source size of the emitter.
 		/// </summary>
-		[ProviderDisplayName(@"Nozzle Size")]
+		[ProviderDisplayName(@"NozzleSize")]
 		[ProviderDescription(@"NozzleSize")]
-		[PropertyOrder(15)]
+		[PropertyOrder(13)]
 		public Curve SourceSize { get; set; }
 
-		private NozzleAngle _nozzleAngle = NozzleAngle.FixedAngle;
+		private NozzleMovement _nozzleMovement = NozzleMovement.FixedAngle;
 
 		/// <summary>
 		/// Controls how the nozzle (angle) is positioned.
 		/// </summary>
-		[ProviderDisplayName(@"Nozzle Angle")]
-		[ProviderDescription(@"NozzleAngle")]
-		[PropertyOrder(16)]
-		public NozzleAngle NozzleAngle
+		[ProviderDisplayName(@"NozzleMovement")]
+		[ProviderDescription(@"NozzleMovement")]
+		[PropertyOrder(14)]
+		public NozzleMovement NozzleMovement
 		{
 			get
 			{
-				return _nozzleAngle;
+				return _nozzleMovement;
 			}
 			set
 			{
-				_nozzleAngle = value;
+				_nozzleMovement = value;
 				UpdateNozzleAngleAttributes();
-				OnPropertyChanged();
-				//OnPropertyChanged("Oscillate");
-				//OnPropertyChanged("RotateNozzle");
+				OnPropertyChanged();				
 			}
 		}
 
 		/// <summary>
 		/// Angle of the emitter's nozzle.
 		/// </summary>
-		[ProviderDisplayName(@"Angle")]
-		[ProviderDescription(@"Angle")]
-		[PropertyOrder(17)]
-		public Curve Angle { get; set; }
-
-		/// <summary>
-		/// True when the nozzle angle is controlled manually via the curve.
-		/// </summary>
-		[Browsable(false)]
-		public bool FixedNozzleAngle
-		{
-			get
-			{
-				return _nozzleAngle == NozzleAngle.FixedAngle;
-			}
-		}
-
-		/// <summary>
-		/// True when the emitter oscillates between a start angle and an end angle.
-		/// </summary>
-		[Browsable(false)]
-		public bool Oscillate
-		{
-			get
-			{
-				return _nozzleAngle == NozzleAngle.Oscillate;
-			}
-			set
-			{			
-			}
-		}
-
-		/// <summary>
-		/// True when the emitter nozzle is rotating.
-		/// </summary>
-		[Browsable(false)]
-		public bool RotateNozzle
-		{
-			get
-			{
-				return (_nozzleAngle == NozzleAngle.SpinClockwise ||
-					     _nozzleAngle == NozzleAngle.SpinCounterClockwise ||
-						  _nozzleAngle == NozzleAngle.Oscillate);
-			}			
-		}
-
+		[ProviderDisplayName(@"NozzleAngle")]
+		[ProviderDescription(@"NozzleAngle")]
+		[PropertyOrder(15)]
+		public Curve NozzleAngle { get; set; }
+				
 		private int _oscillateStartAngle;
 
 		/// <summary>
 		/// Start angle in degrees of the emitter oscillation.
 		/// </summary>
-		[ProviderDisplayName(@"Oscillate Start Angle")]
+		[ProviderDisplayName(@"OscillateStartAngle")]
 		[ProviderDescription(@"OscillateStartAngle")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 360, 1)]
-		[PropertyOrder(18)]
+		[PropertyOrder(16)]
 		public int OscillateStartAngle
 		{
 			get
@@ -485,11 +444,11 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Start angle in degrees of the emitter oscillation.
 		/// </summary>
-		[ProviderDisplayName(@"Oscillate End Angle")]
+		[ProviderDisplayName(@"OscillateEndAngle")]
 		[ProviderDescription(@"OscillateEndAngle")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 360, 1)]
-		[PropertyOrder(19)]
+		[PropertyOrder(17)]
 		public int OscillateEndAngle
 		{
 			get
@@ -506,9 +465,9 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Speed of rotation of the emitter nozzle when rotating.
 		/// </summary>
-		[ProviderDisplayName(@"Nozzle Speed")]
+		[ProviderDisplayName(@"NozzleSpeed")]
 		[ProviderDescription(@"NozzleSpeed")]
-		[PropertyOrder(20)]
+		[PropertyOrder(18)]
 		public Curve OscillationSpeed { get; set; }
 
 		private FlowControl _flowControl = FlowControl.Continuous;
@@ -516,9 +475,9 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Determines how the flow is controlled for the emitter (Continuous, Pulsating, Use Marks).
 		/// </summary>
-		[ProviderDisplayName(@"Flow Control")]
+		[ProviderDisplayName(@"FlowControl")]
 		[ProviderDescription(@"FlowControl")]
-		[PropertyOrder(21)]
+		[PropertyOrder(19)]
 		public FlowControl FlowControl
 		{
 			get
@@ -527,63 +486,20 @@ namespace VixenModules.Effect.Liquid
 			}
 			set
 			{
-				_flowControl = value;
-				UpdateMarksAttributes();
-				UpdateOnOffAttributes();
-				OnPropertyChanged();
-				//OnPropertyChanged("OnOff");
-				//OnPropertyChanged("SliderOnOff");
-				//OnPropertyChanged("UseMarks");
-			}
-		}
-
-		/// <summary>
-		/// True when the emitter toggles On and Off.
-		/// </summary>
-		[Browsable(false)]
-		public bool OnOff
-		{
-			get
-			{ 
-				return FlowControl != FlowControl.Continuous;
-			}
-			set
-			{			
-			}
-		}
-
-		/// <summary>
-		/// True when a mark collection controls when the emitter is On and Off.
-		/// </summary>
-		[Browsable(false)]
-		public bool UseMarks
-		{
-			get
-			{
-				return FlowControl == FlowControl.UseMarks;
-			}
-			set
-			{				
-			}
-		}
-
-		/// <summary>
-		/// True when a slider controls when the emitter is On vs Off.
-		/// </summary>
-		[Browsable(false)]
-		public bool SliderOnOff
-		{
-			get
-			{
-				return !UseMarks && OnOff;
-			}
-			set
-			{
-				UseMarks = !value;
+				_flowControl = value;				
+				UpdateEmitterFlowAttributes();
 				OnPropertyChanged();				
 			}
 		}
 
+		/// <summary>
+		/// Manual flow of the emitter.
+		/// </summary>
+		[ProviderDisplayName(@"Flow")]
+		[ProviderDescription(@"Flow")]
+		[PropertyOrder(20)]
+		public Curve Flow { get; set; }
+				
 		/// <summary>
 		/// Updates the selected mark collection drop down.
 		/// This method allows for the associated mark collection to be renamed.
@@ -597,16 +513,19 @@ namespace VixenModules.Effect.Liquid
 				// Make the mark collection drop down blank
 				MarkCollectionId = new Guid();
 			}
+
+			OnPropertyChanged("MarkCollections");
+			OnPropertyChanged("MarkCollectionName");
 		}
 
 		/// <summary>
 		/// Name of the selected mark collection.
 		/// </summary>
 		[ProviderDisplayName(@"MarkCollection")]
-		[ProviderDescription(@"MarkCollection")]
+		[ProviderDescription(@"EmitterMarkCollection")]
 		[TypeConverter(typeof(Emitters.EmitterMarkCollectionNameConverter))]
 		[PropertyEditor("SelectionEditor")]
-		[PropertyOrder(22)]
+		[PropertyOrder(21)]
 		public string MarkCollectionName
 		{
 			get
@@ -735,10 +654,10 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// On Time for the emitter in seconds.
 		/// </summary>
-		[ProviderDisplayName(@"On Time")]
-		[ProviderDescription(@"OnTime")]
+		[ProviderDisplayName(@"EmitterOnTime")]
+		[ProviderDescription(@"EmitterOnTime")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 50, 1)]
+		[NumberRange(50, 10000, 50)]
 		[PropertyOrder(22)]
 		public int OnTime
 		{
@@ -758,10 +677,10 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Off time for the emitter in seconds.
 		/// </summary>
-		[ProviderDisplayName(@"Off Time")]
-		[ProviderDescription(@"OffTime")]
+		[ProviderDisplayName(@"EmitterOffTime")]
+		[ProviderDescription(@"EmitterOffTime")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(1,50,1)]
+		[NumberRange(50, 10000, 50)]
 		[PropertyOrder(23)]
 		public int OffTime
 		{
@@ -776,87 +695,18 @@ namespace VixenModules.Effect.Liquid
 			}
 		}
 
-		internal void InitAllAttributes()
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
+		public void InitAllAttributes()
 		{
-			UpdateColorArrayAttributes();
-			UpdateAnimateAttributes();
-			UpdateMusicFlowAttributes();
-			UpdateNozzleAngleAttributes();
-			UpdateMarksAttributes();
-			UpdateOnOffAttributes();
+			UpdateColorListAttributes();
+			UpdateAnimateAttributes();			
+			UpdateNozzleAngleAttributes();			
+			UpdateEmitterFlowAttributes();
 			TypeDescriptor.Refresh(this);
 		}
-
-		private void UpdateColorArrayAttributes()
-		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
-			{
-				{nameof(FramesPerColor), UseColorArray},
-				{nameof(Color), !UseColorArray }
-			};
-			SetBrowsable(propertyStates);
-		}
-
-		private void UpdateAnimateAttributes()
-		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(5)
-			{
-				{nameof(VelocityX), Animate},
-				{nameof(VelocityY), Animate},
-				{nameof(EdgeHandling), Animate},
-				{nameof(X), !Animate},
-				{nameof(Y), !Animate}
-			};
-			SetBrowsable(propertyStates);
-		}
-
-		private void UpdateMusicFlowAttributes()
-		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
-			{
-				{nameof(Flow), !FlowMatchesMusic}
-			};
-			SetBrowsable(propertyStates);
-		}
-
-		private void UpdateNozzleAngleAttributes()
-		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
-			{
-				{nameof(Angle), _nozzleAngle == NozzleAngle.FixedAngle},
-				{nameof(OscillateStartAngle), _nozzleAngle == NozzleAngle.Oscillate},
-				{nameof(OscillateEndAngle), _nozzleAngle == NozzleAngle.Oscillate},
-				{nameof(OscillationSpeed), RotateNozzle}
-			};
-			SetBrowsable(propertyStates);
-		}
-
-		private void UpdateMarksAttributes()
-		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
-			{
-				{nameof(MarkCollectionName), UseMarks}
-			};
-			SetBrowsable(propertyStates);
-		}
-
-		private void UpdateOnOffAttributes()
-		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
-			{
-				{nameof(OnTime), SliderOnOff},
-				{nameof(OffTime), SliderOnOff}
-			};
-			SetBrowsable(propertyStates);
-		}
-
-		/// <summary>
-		/// This property is used by the Marks Combo Box.  This property gives the parent
-		/// effect access to the IEmitter that is bound to the drop down.
-		/// </summary>
-		[Browsable(false)]
-		public IEmitter InEdit { get; set; }
-
+				
 		#endregion
 
 		#region Public Properties For Rendering

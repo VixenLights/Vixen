@@ -66,15 +66,13 @@ namespace VixenModules
 					int y,
 					int direction,
 					int velocity,
-					int flow,
-					bool flowMusic,
+					int flow,					
 					int lifetime,
 					int width,
 					int height,
 					const b2Color& color,
 					WrapperParticleType particleType,
-					bool mixcolors,
-					float audioLevel,
+					bool mixcolors,					
 					int sourceSize);
 								
 			private:

@@ -109,15 +109,13 @@ void VixenModules::Effect::Liquid::LiquidFunWrapper::LiquidFunWrapper::StepWorld
 			emitter->Y, 
 			emitter->Angle, 
 			emitter->Velocity, 
-			emitter->Flow, 
-			false,                  // TODO: SHOULD THIS BE FALSE ?
+			emitter->Flow, 			
 			emitter->Lifetime, 
 			_width, 
 			_height, 
 			emitterColor,
 			emitter->ParticleType, 
-			mixColors, 
-			0.0,                 // TODO: We should remove this !
+			mixColors, 			
 			emitter->SourceSize);
 	}
 		
@@ -215,15 +213,13 @@ void VixenModules::Effect::Liquid::LiquidFunWrapper::CreateParticles(
 	int y,
 	int direction,
 	int velocity,
-	int flow,
-	bool flowMusic,
+	int flow,	
 	int lifetime,
 	int width,
 	int height,
 	const b2Color& color,
 	WrapperParticleType particleType,
-	bool mixcolors,
-	float audioLevel,
+	bool mixcolors,	
 	int sourceSize)
 {	
 	// Initialize the position of the particle
@@ -289,9 +285,16 @@ void VixenModules::Effect::Liquid::LiquidFunWrapper::CreateParticles(
 		// Give particle a lifetime
 		if (lifetime > 0)
 		{
-			float randomlifeTime = particleLifetime + (particleLifetime * 0.2 * rand01()) - (particleLifetime *.01);
+			float randomlifeTime = particleLifetime + (particleLifetime * 0.2 * rand01()) - (particleLifetime *.01);			
 			pd.lifetime = randomlifeTime;
 		}
+		
+		// If the lifetime is too small the Liquid Fun API seems to revert to a very large lifetime.
+		if (pd.lifetime < 0.02)
+		{
+			pd.lifetime = 0.02;
+		}
+
 		ps->CreateParticle(pd);
 	}	
 }
@@ -301,11 +304,8 @@ void VixenModules::Effect::Liquid::LiquidFunWrapper::CreateParticleSystem(b2Worl
 	b2ParticleSystemDef particleSystemDef;
 	auto particleSystem = world->CreateParticleSystem(&particleSystemDef);
 	particleSystem->SetRadius((float)size / 1000.0f);
-	particleSystem->SetMaxParticleCount(100000);
-	if (lifetime > 0)
-	{
-		particleSystem->SetDestructionByAge(true);
-	}
+	particleSystem->SetMaxParticleCount(100000);	
+	particleSystem->SetDestructionByAge(true);	
 }
 
 void VixenModules::Effect::Liquid::LiquidFunWrapper::CreateBarrier(b2World* world, float x, float y, float width, float height)

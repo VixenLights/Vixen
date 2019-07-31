@@ -79,19 +79,19 @@ namespace VixenModules.Effect.Liquid
 		private List<double> _frameVolumes = new List<double>();
 
 		/// <summary>
-		/// Dictionaries to convert from view model enumerations to serialization enumerations.
+		/// Dictionaries to convert from odel enumerations to serialization enumerations.
 		/// </summary>
 		private Dictionary<ParticleType, EmitterData.ParticleSerializationType> _particleTypeToSerializedParticleType;
 		private Dictionary<EdgeHandling, EmitterData.EdgeHandlingSerializationType> _edgeHandlingToSerializedEdgeHandling;
-		private Dictionary<NozzleAngle, EmitterData.NozzleAngleSerializationType> _nozzleAngleToSerializedNozzleAngle;
+		private Dictionary<NozzleMovement, EmitterData.NozzleMovementSerializationType> _nozzleAngleToSerializedNozzleAngle;
 		private Dictionary<FlowControl, EmitterData.FlowControlSerializationType> _flowControlToSerializedFlowControl;
 
 		/// <summary>
-		/// Dictionaries to convert from serialization enumerations to view model enumerations.
+		/// Dictionaries to convert from serialization enumerations to model enumerations.
 		/// </summary>
 		private Dictionary<EmitterData.ParticleSerializationType, ParticleType> _serializedParticleTypeToParticleType;
 		private Dictionary<EmitterData.EdgeHandlingSerializationType, EdgeHandling> _serializedEdgeHandlingToEdgeHandling;
-		private Dictionary<EmitterData.NozzleAngleSerializationType, NozzleAngle> _serializedNozzleAngleToNozzleAngle;
+		private Dictionary<EmitterData.NozzleMovementSerializationType, NozzleMovement> _serializedNozzleAngleToNozzleAngle;
 		private Dictionary<EmitterData.FlowControlSerializationType, FlowControl> _serializedFlowControlToFlowControl;
 
 		/// <summary>
@@ -123,6 +123,9 @@ namespace VixenModules.Effect.Liquid
 			// Create the collection of the emitters
 			_emitterList = new EmitterCollection();
 
+			// Register for the EmitterList child property changed event
+			_emitterList.ChildPropertyChanged += EmitterListChildPropertyChanged;
+
 			// Give the emitter a reference to the effect.
 			// This is needed so that the emitters can use the parent to register (listen) for mark collection events
 			EmitterList.Parent = this;
@@ -133,7 +136,7 @@ namespace VixenModules.Effect.Liquid
 			// Initialize the audio utilities
 			AudioUtilities = new AudioUtilities();
 			
-			// Initialize the dictionaries that convert between view model enumeration types and the serialization model enumeration types
+			// Initialize the dictionaries that convert between model enumeration types and the serialization model enumeration types
 			_particleTypeToSerializedParticleType = new Dictionary<ParticleType, EmitterData.ParticleSerializationType>();
 			_particleTypeToSerializedParticleType.Add(ParticleType.Elastic, EmitterData.ParticleSerializationType.Elastic);
 			_particleTypeToSerializedParticleType.Add(ParticleType.Powder, EmitterData.ParticleSerializationType.Powder);
@@ -164,29 +167,31 @@ namespace VixenModules.Effect.Liquid
 			_serializedEdgeHandlingToEdgeHandling.Add(EmitterData.EdgeHandlingSerializationType.Bounce, EdgeHandling.Bounce);
 			_serializedEdgeHandlingToEdgeHandling.Add(EmitterData.EdgeHandlingSerializationType.Wrap, EdgeHandling.Wrap);
 
-			_nozzleAngleToSerializedNozzleAngle = new Dictionary<NozzleAngle, EmitterData.NozzleAngleSerializationType>();
-			_nozzleAngleToSerializedNozzleAngle.Add(NozzleAngle.FixedAngle, EmitterData.NozzleAngleSerializationType.FixedAngle);
-			_nozzleAngleToSerializedNozzleAngle.Add(NozzleAngle.Oscillate, EmitterData.NozzleAngleSerializationType.Oscillate);
-			_nozzleAngleToSerializedNozzleAngle.Add(NozzleAngle.SpinClockwise, EmitterData.NozzleAngleSerializationType.SpinClockwise);
-			_nozzleAngleToSerializedNozzleAngle.Add(NozzleAngle.SpinCounterClockwise, EmitterData.NozzleAngleSerializationType.SpinCounterClockwise);
+			_nozzleAngleToSerializedNozzleAngle = new Dictionary<NozzleMovement, EmitterData.NozzleMovementSerializationType>();
+			_nozzleAngleToSerializedNozzleAngle.Add(NozzleMovement.FixedAngle, EmitterData.NozzleMovementSerializationType.FixedAngle);
+			_nozzleAngleToSerializedNozzleAngle.Add(NozzleMovement.Oscillate, EmitterData.NozzleMovementSerializationType.Oscillate);
+			_nozzleAngleToSerializedNozzleAngle.Add(NozzleMovement.SpinClockwise, EmitterData.NozzleMovementSerializationType.SpinClockwise);
+			_nozzleAngleToSerializedNozzleAngle.Add(NozzleMovement.SpinCounterClockwise, EmitterData.NozzleMovementSerializationType.SpinCounterClockwise);
 
-			_serializedNozzleAngleToNozzleAngle = new Dictionary<EmitterData.NozzleAngleSerializationType, NozzleAngle>();
-			_serializedNozzleAngleToNozzleAngle.Add(EmitterData.NozzleAngleSerializationType.FixedAngle, NozzleAngle.FixedAngle);
-			_serializedNozzleAngleToNozzleAngle.Add(EmitterData.NozzleAngleSerializationType.Oscillate, NozzleAngle.Oscillate);
-			_serializedNozzleAngleToNozzleAngle.Add(EmitterData.NozzleAngleSerializationType.SpinClockwise, NozzleAngle.SpinClockwise);
-			_serializedNozzleAngleToNozzleAngle.Add(EmitterData.NozzleAngleSerializationType.SpinCounterClockwise, NozzleAngle.SpinCounterClockwise);
+			_serializedNozzleAngleToNozzleAngle = new Dictionary<EmitterData.NozzleMovementSerializationType, NozzleMovement>();
+			_serializedNozzleAngleToNozzleAngle.Add(EmitterData.NozzleMovementSerializationType.FixedAngle, NozzleMovement.FixedAngle);
+			_serializedNozzleAngleToNozzleAngle.Add(EmitterData.NozzleMovementSerializationType.Oscillate, NozzleMovement.Oscillate);
+			_serializedNozzleAngleToNozzleAngle.Add(EmitterData.NozzleMovementSerializationType.SpinClockwise, NozzleMovement.SpinClockwise);
+			_serializedNozzleAngleToNozzleAngle.Add(EmitterData.NozzleMovementSerializationType.SpinCounterClockwise, NozzleMovement.SpinCounterClockwise);
 
 			_flowControlToSerializedFlowControl = new Dictionary<FlowControl, EmitterData.FlowControlSerializationType>();
 			_flowControlToSerializedFlowControl.Add(FlowControl.Continuous, EmitterData.FlowControlSerializationType.Continuous);
 			_flowControlToSerializedFlowControl.Add(FlowControl.Pulsating, EmitterData.FlowControlSerializationType.Pulsating);
 			_flowControlToSerializedFlowControl.Add(FlowControl.UseMarks, EmitterData.FlowControlSerializationType.UseMarks);
+			_flowControlToSerializedFlowControl.Add(FlowControl.Musical, EmitterData.FlowControlSerializationType.Musical);
 
 			_serializedFlowControlToFlowControl = new Dictionary<EmitterData.FlowControlSerializationType, FlowControl>();
 			_serializedFlowControlToFlowControl.Add(EmitterData.FlowControlSerializationType.Continuous, FlowControl.Continuous);
 			_serializedFlowControlToFlowControl.Add(EmitterData.FlowControlSerializationType.Pulsating, FlowControl.Pulsating);
 			_serializedFlowControlToFlowControl.Add(EmitterData.FlowControlSerializationType.UseMarks, FlowControl.UseMarks);
+			_serializedFlowControlToFlowControl.Add(EmitterData.FlowControlSerializationType.Musical, FlowControl.Musical);
 		}
-
+		
 		#endregion
 
 		#region Public Properties
@@ -233,7 +238,7 @@ namespace VixenModules.Effect.Liquid
 		{
 			get
 			{
-				// Convert the view model into the serialized data structure
+				// Convert the model into the serialized data structure
 				UpdateLiquidData();
 
 				// Return the effect data
@@ -254,12 +259,12 @@ namespace VixenModules.Effect.Liquid
 				AudioUtilities.HighPass = _data.HighPass;
 				AudioUtilities.HighPassFreq = _data.HighPassFreq;
 
-				// Convert the serialized data structure into the emitter view model
-				UpdateViewModel(_data);
+				// Convert the serialized data structure into the emitter collection
+				UpdateEmitterModel(_data);
 
-				// Updates whether the render scale factor is visible
-				UpdateRenderScaleFactorAttributes(false);
-
+				// Updates the browseable state of the top level properties
+				UpdateAllAttributes();
+				
 				// Give the emitter container a reference to the effect
 				_emitterList.Parent = this;
 
@@ -372,8 +377,8 @@ namespace VixenModules.Effect.Liquid
 
 		[Value]
 		[ProviderCategory(@"Colors", 2)]
-		[ProviderDisplayName(@"ColorArray")]
-		[ProviderDescription(@"ColorArray")]
+		[ProviderDisplayName(@"ColorList")]
+		[ProviderDescription(@"ColorList")]
 		[PropertyOrder(5)]
 		public List<ColorGradient> Colors
 		{
@@ -815,7 +820,7 @@ namespace VixenModules.Effect.Liquid
 				emitter.OffTimer = 0;
 			}
 
-			GetAudioSettings();
+			GetAudioSettings();			
 			CacheOffAudioVolumes();
 		}
 
@@ -830,6 +835,10 @@ namespace VixenModules.Effect.Liquid
 
 		#region Private Audio Methods
 
+		/// <summary>
+		/// Updates the browseable state of the low and high pass frequency properties.
+		/// </summary>
+		/// <param name="refresh"></param>
 		private void UpdateLowHighPassAttributes(bool refresh = false)
 		{
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
@@ -844,6 +853,37 @@ namespace VixenModules.Effect.Liquid
 			}
 		}
 
+		/// <summary>
+		/// Returns true if audio is associated with the sequence.
+		/// </summary>		
+		private bool AudioAssociated()
+		{
+			bool audioAssociated = false;
+
+			if (Media != null)
+			{
+				foreach (IMediaModuleInstance module in Media)
+				{
+					var audio = module as Audio;
+					if (audio != null)
+					{
+						if (audio.Channels == 0)
+						{
+							continue;
+						}
+
+						audioAssociated = true;
+						break;
+					}
+				}
+			}
+
+			return audioAssociated;
+		}
+
+		/// <summary>
+		/// Loads the audio associated with the sequence into the AudioUtilities helper.
+		/// </summary>
 		private void GetAudioSettings()
 		{
 			if (Media != null)
@@ -928,6 +968,40 @@ namespace VixenModules.Effect.Liquid
 		}
 
 		/// <summary>
+		/// Update the browseable state of all top level properties.
+		/// </summary>
+		private void UpdateAllAttributes()
+		{
+			// Updates the browseable state of render scale factor property
+			UpdateRenderScaleFactorAttributes(false);
+
+			// Updates the browseable state of the audio properties
+			UpdateAudioAttributes();
+
+			// Update the browseable state of the color list collection
+			UpdateColorListAttributes();
+		}
+
+		/// <summary>
+		/// Updates the browseable state of the color list collection.
+		/// </summary>		
+		void UpdateColorListAttributes(bool refresh = true)
+		{
+			bool emittersWithColorList = EmitterList.Any(emit => emit.UseColorArray);
+
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+				{
+					{"Colors", emittersWithColorList },
+				};
+			SetBrowsable(propertyStates);
+
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		/// <summary>
 		/// Updates the emitter's flow and updates the specified emitter wrapper.
 		/// </summary>		
 		private void UpdateEmitterFlow(EmitterWrapper emitterWrapper, IEmitter emitter, int frameNum, double intervalPosFactor)
@@ -936,19 +1010,19 @@ namespace VixenModules.Effect.Liquid
 			switch (emitter.FlowControl)
 			{
 				case FlowControl.Continuous:
-					// Continuous On (do nothing)
+					// Emitter is Continously On get the flow from the curve
+					emitterWrapper.Flow = (int)Math.Round(ScaleCurveToValue(emitter.Flow.GetValue(intervalPosFactor), MaxEmitterFlow, 0));					
 					break;
 				case FlowControl.Pulsating:
-					const int FramesPerSecond = 1000 / FrameTime;
-
+					
 					// If the emitter is On then...
 					if (emitter.On)
 					{
 						// Keep track of the number of frames the emitter is on
-						emitter.OnTimer++;
+						emitter.OnTimer+= FrameTime;
 
 						// Check to see if the emitter should transition to Off
-						if (emitter.OnTimer == emitter.OnTime * FramesPerSecond)
+						if (emitter.OnTimer >= emitter.OnTime)
 						{
 							// Turn the emitter Off
 							emitter.On = false;
@@ -960,10 +1034,10 @@ namespace VixenModules.Effect.Liquid
 					else
 					{
 						// Keep track of the number of frames the emitter is Off
-						emitter.OffTimer++;
+						emitter.OffTimer += FrameTime;
 
 						// Check to see if the emitter should transition to On
-						if (emitter.OffTimer == emitter.OffTime * FramesPerSecond)
+						if (emitter.OffTimer >= emitter.OffTime)
 						{
 							// Turn the emitter On
 							emitter.On = true;
@@ -1010,13 +1084,18 @@ namespace VixenModules.Effect.Liquid
 						}
 					}
 					break;
+					case FlowControl.Musical:
+						// Get the emitter flow based on the associated music volume
+						emitterWrapper.Flow = CalculateEmitterMusicalFlow(emitter, (int)(frameNum * FrameTime), frameNum);
+					break;
 				default:
 					Debug.Assert(false, "Unsupported Flow Control");
 					break;
 			}
 
 			// If the emitter is intermittently On/Off then...
-			if (emitter.OnOff)
+			if (emitter.FlowControl == FlowControl.Pulsating ||
+				 emitter.FlowControl == FlowControl.UseMarks)
 			{
 				// If the emitter is NOT On then...
 				if (!emitter.On)
@@ -1027,21 +1106,16 @@ namespace VixenModules.Effect.Liquid
 				else
 				{
 					// Get the flow from the curve
-					emitterWrapper.Flow = CalculateEmitterFlow(intervalPosFactor, emitter, (int)(frameNum * FrameTime), frameNum);
+					emitterWrapper.Flow = (int)Math.Round(ScaleCurveToValue(emitter.Flow.GetValue(intervalPosFactor), MaxEmitterFlow, 0));
 				}
-			}
-			else
-			{
-				// Emitter is Continously On get the flow from the curve
-				emitterWrapper.Flow = CalculateEmitterFlow(intervalPosFactor, emitter, (int)(frameNum * FrameTime), frameNum);
-			}
+			}			
 		}
 
 		/// <summary>
 		/// Update the emitter's position.
 		/// </summary>		
 		private void UpdateEmitterPosition(EmitterWrapper wrapper, IEmitter emitter, double intervalPos, double intervalPosFactor)
-		{
+		{			
 			// Animate emitters as necessary
 			AnimateEmitters(intervalPos, intervalPosFactor);
 
@@ -1057,7 +1131,7 @@ namespace VixenModules.Effect.Liquid
 				// Otherwise get the position from the curves
 				wrapper.X = CalculateEmitterX(intervalPosFactor, emitter);
 				wrapper.Y = CalculateEmitterY(intervalPosFactor, emitter);
-			}
+			}		
 		}
 
 		/// <summary>
@@ -1065,10 +1139,10 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>		
 		private void UpdateEmitterNozzleAngle(EmitterWrapper emitterWrapper, IEmitter emitter, double intervalPosFactor)
 		{
-			// Determine the emitter nozzle angle setting
-			switch (emitter.NozzleAngle)
+			// Determine the emitter nozzle movement setting
+			switch (emitter.NozzleMovement)
 			{
-				case NozzleAngle.Oscillate:
+				case NozzleMovement.Oscillate:
 
 					// Determine the oscillation speed
 					emitter.AngleOscillationDelta = CalculateEmitterOscillationSpeed(intervalPosFactor, emitter);
@@ -1102,12 +1176,21 @@ namespace VixenModules.Effect.Liquid
 					// Update the emitter angle on the wrapper
 					emitterWrapper.Angle = emitter.IntAngle;
 					break;
-				case NozzleAngle.FixedAngle:
+				case NozzleMovement.FixedAngle:
 
-					// Retrieve the emitter nozzle angle from the curve
-					emitterWrapper.Angle = CalculateEmitterNozzleAngle(intervalPosFactor, emitter);
+					// If the emitter is animated and the nozzle movement is fixed then...
+					if (emitter.Animate && emitter.NozzleMovement == NozzleMovement.FixedAngle)
+					{
+						// Set the nozzle angle to point behind the movement
+						emitterWrapper.Angle = emitter.IntAngle;
+					}
+					else
+					{
+						// Retrieve the emitter nozzle angle from the curve
+						emitterWrapper.Angle = CalculateEmitterNozzleAngle(intervalPosFactor, emitter);
+					}
 					break;
-				case NozzleAngle.SpinClockwise:
+				case NozzleMovement.SpinClockwise:
 
 					// Determine the oscillation speed
 					emitter.AngleOscillationDelta = CalculateEmitterOscillationSpeed(intervalPosFactor, emitter);
@@ -1124,7 +1207,7 @@ namespace VixenModules.Effect.Liquid
 					// Update the emitter angle on the wrapper
 					emitterWrapper.Angle = emitter.IntAngle;
 					break;
-				case NozzleAngle.SpinCounterClockwise:
+				case NozzleMovement.SpinCounterClockwise:
 
 					// Determine the oscillation speed
 					emitter.AngleOscillationDelta = CalculateEmitterOscillationSpeed(intervalPosFactor, emitter);
@@ -1178,6 +1261,11 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>		
 		private Color GetColorArrayItem(IEmitter emitter, double intervalPos)
 		{
+			// Defend against the user removing colors
+			if (emitter.ColorArrayIndex >= Colors.Count)
+			{
+				emitter.ColorArrayIndex = 0;
+			}
 			return Colors[emitter.ColorArrayIndex].GetColorAt(intervalPos);
 		}
 
@@ -1205,30 +1293,30 @@ namespace VixenModules.Effect.Liquid
 
 			// Adjust the color for brightness setting
 			HSV hsv = HSV.FromRGB(emitterColor);
-			hsv.V *= emitter.Brightness.GetValue(intervalPos) / 100;
+			hsv.V *= emitter.Brightness.GetValue(intervalPosFactor) / 100;
 			emitterWrapper.Color = hsv.ToRGB();
 		}
 
 		/// <summary>
-		/// Converts the emitters from the view model into emitter wrappers to pass to the C++ Liquid Fun API.
+		/// Converts the emitters from the emitter model into emitter wrappers to pass to the C++ Liquid Fun API.
 		/// </summary>		
 		private IList<EmitterWrapper> ConvertEmittersToEmitterWrappers(int frameNum, double intervalPos, double intervalPosFactor)
 		{
 			// Create the collection of emitter wrappers
 			List<EmitterWrapper> emitterWrappers = new List<EmitterWrapper>();
 
-			// Loop over the view model emitters
+			// Loop over the model emitters
 			foreach (IEmitter emitter in _renderEmitterList)
 			{
 				// Create the emitter wrapper for interfacing with the C++
 				EmitterWrapper emitterWrapper = new EmitterWrapper();
 
 				UpdateEmitterFlow(emitterWrapper, emitter, frameNum, intervalPosFactor);
-				UpdateEmitterPosition(emitterWrapper, emitter, intervalPos, intervalPosFactor);
-				UpdateEmitterNozzleAngle(emitterWrapper, emitter, intervalPosFactor);
+				UpdateEmitterPosition(emitterWrapper, emitter, intervalPos, intervalPosFactor);								
+			   UpdateEmitterNozzleAngle(emitterWrapper, emitter, intervalPosFactor);				
 				UpdateEmitterColor(emitterWrapper, emitter, intervalPos, intervalPosFactor);
 
-				emitterWrapper.Lifetime = CalculateEmitterParticleLifetime(intervalPosFactor, emitter);
+				emitterWrapper.Lifetime = CalculateEmitterParticleLifetime(intervalPosFactor, emitter);				
 				emitterWrapper.Velocity = CalculateEmitterVelocity(intervalPosFactor, emitter);
 				emitterWrapper.SourceSize = CalculateEmitterSourceSize(intervalPosFactor, emitter);
 				emitterWrapper.ParticleType = (WrapperParticleType)emitter.ParticleType;
@@ -1241,38 +1329,29 @@ namespace VixenModules.Effect.Liquid
 		}
 
 		/// <summary>
-		/// Calculates the emitter's flow.
+		/// Calculates the emitter's flow based on the music.
 		/// </summary>		
-		private int CalculateEmitterFlow(double intervalPos, IEmitter emitter, int time, int frame)
+		private int CalculateEmitterMusicalFlow(IEmitter emitter, int time, int frame)
 		{
 			// Initialize the flow to Off
 			int value = 0;
+			
+			// Initialize the flow to the maximum musical flow
+			value = MaxEmitterMusicFlow;
 
-			// If the emitter is using musical volume flow then...
-			if (emitter.FlowMatchesMusic)
+			// Return the volume for the current frame
+			double volume = 0;
+			if (frame < _frameVolumes.Count)
 			{
-				// Initialize the flow to the maximum musical flow
-				value = MaxEmitterMusicFlow;
-
-				// Return the volume for the current frame
-				double volume = 0;
-				if (frame < _frameVolumes.Count)
-				{
-					volume = _frameVolumes[frame];
-				}
-
-				// Conver the volume to a range from zero to 1.0
-				double val = ConvertRange(_minVolume, _maxVolume, 0.0, 1.0, volume);
-
-				// Set the flow to percentage of the max based on the volume
-				value = (int)(val * value);
-			}
-			else
-			{
-				// Otherwise get the flow from the curve
-				value = (int)Math.Round(ScaleCurveToValue(emitter.Flow.GetValue(intervalPos), MaxEmitterFlow, 0));
+				volume = _frameVolumes[frame];
 			}
 
+			// Conver the volume to a range from zero to 1.0
+			double val = ConvertRange(_minVolume, _maxVolume, 0.0, 1.0, volume);
+
+			// Set the flow to percentage of the max based on the volume
+			value = (int)(val * value);
+						
 			return value;
 		}
 
@@ -1337,7 +1416,7 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>		
 		private int CalculateEmitterNozzleAngle(double intervalPos, IEmitter emitter)
 		{
-			return (int)Math.Round(ScaleCurveToValue(emitter.Angle.GetValue(intervalPos), 360, 0));
+			return (int)Math.Round(ScaleCurveToValue(emitter.NozzleAngle.GetValue(intervalPos), 360, 0));
 		}
 
 		/// <summary>
@@ -1352,12 +1431,17 @@ namespace VixenModules.Effect.Liquid
 		/// Animates emitters seleced for animation.
 		/// </summary>		
 		private void AnimateEmitters(double intervalPos, double intervalPosFactor)
-		{
+		{		
 			// Loop over the emitters
 			foreach (IEmitter emitter1 in _renderEmitterList)
 			{
+				// If the emitter is animated then...
 				if (emitter1.Animate)
 				{
+					// Store off the previous position of the emitter
+					double previousXPosition = emitter1.LocationX;
+					double previousYPosition = emitter1.LocationY;
+
 					// Determine if the X velocity is negative
 					bool negativeX = emitter1.VelX < 0;
 
@@ -1388,26 +1472,36 @@ namespace VixenModules.Effect.Liquid
 					emitter1.LocationX = emitter1.LocationX + emitter1.VelX;
 					emitter1.LocationY = emitter1.LocationY + emitter1.VelY;
 
-					// Loop over the other emitters and look for collisions
-					foreach (IEmitter otherEmitter in _renderEmitterList)
-					{
-						int maxRadius = Math.Max(CalculateEmitterSourceSize(intervalPosFactor, emitter1),
-														  CalculateEmitterSourceSize(intervalPosFactor, otherEmitter));
+					// Determine the delta from the previous position
+					double deltaX = emitter1.LocationX - previousXPosition;
+					double deltaY = emitter1.LocationY - previousYPosition;
 
-						if ((emitter1.LocationX + maxRadius >= otherEmitter.LocationX && emitter1.LocationX - maxRadius < otherEmitter.LocationX &&
-								emitter1.LocationY + maxRadius >= otherEmitter.LocationY && emitter1.LocationY - maxRadius < otherEmitter.LocationY) &&
-								emitter1 != otherEmitter)
+					// Determine the angle of the movement
+					double angleRadians = Math.Atan2(deltaY, deltaX);
+
+					// Convert the angle to degrees from radians
+					emitter1.IntAngle = (int)(angleRadians * 180 / Math.PI);				
+					
+					// Loop over the emitters and look for collisions
+					foreach (IEmitter otherEmitter in _renderEmitterList)
+					{															
+						// Calculate the distance between the two emitter's centers
+						double distanceBetweenCenters = Math.Sqrt((emitter1.LocationX - otherEmitter.LocationX) * (emitter1.LocationX - otherEmitter.LocationX) + 
+							                                       (emitter1.LocationY - otherEmitter.LocationY) * (emitter1.LocationY -otherEmitter.LocationY));
+
+						// Sum the radius of the two emitters
+						double radiusSum = CalculateEmitterSourceSize(intervalPosFactor, emitter1) + CalculateEmitterSourceSize(intervalPosFactor, otherEmitter);
+
+						// If the distance between the centers is less than or equal to radius the emitters have collided
+						if (distanceBetweenCenters <= radiusSum)
 						{
+							// Reverse the velocity of both emitters
 							otherEmitter.VelX = -otherEmitter.VelX;
 							otherEmitter.VelY = -otherEmitter.VelY;
 							emitter1.VelX = -emitter1.VelX;
-							emitter1.VelY = -emitter1.VelY;
-							otherEmitter.LocationY = otherEmitter.LocationY + otherEmitter.VelY;
-							otherEmitter.LocationX = otherEmitter.LocationX + otherEmitter.VelX;
-							emitter1.LocationY = emitter1.LocationY + emitter1.VelY;
-							emitter1.LocationX = emitter1.LocationX + emitter1.VelX;
+							emitter1.VelY = -emitter1.VelY;					
 						}
-					}
+					}						
 				}
 
 				// Determine the emitting radius of the emitter
@@ -1490,24 +1584,24 @@ namespace VixenModules.Effect.Liquid
 						Debug.Assert(false, "Unsuppported Edge Handling Value");
 						break;
 				}
-			}
+			}			
 		}
 
 		/// <summary>
-		/// Updates the serialized effect data from the view model.
+		/// Updates the serialized effect data from the emitter collection.
 		/// </summary>
 		private void UpdateLiquidData()
 		{
 			// Clear the collection of serialized emitters
 			_data.EmitterData.Clear();
 
-			// Loop over the emitters in the view model
+			// Loop over the emitters in the model emitter collection
 			foreach (IEmitter emitter in EmitterList.ToList())
 			{
 				// Create a newe serialized emitter
 				EmitterData serializedEmitter = new EmitterData();
 
-				// Transfer the properties from the view model to the serialized emitter
+				// Transfer the properties from the emitter model to the serialized emitter
 				serializedEmitter.ParticleType = _particleTypeToSerializedParticleType[emitter.ParticleType];
 				serializedEmitter.UseColorArray = emitter.UseColorArray;
 				serializedEmitter.FramesPerColor = emitter.FramesPerColor;
@@ -1522,9 +1616,8 @@ namespace VixenModules.Effect.Liquid
 				serializedEmitter.Y = new Curve(emitter.Y);
 				serializedEmitter.Flow = new Curve(emitter.Flow);
 				serializedEmitter.SourceSize = new Curve(emitter.SourceSize);
-				serializedEmitter.NozzleAngle = _nozzleAngleToSerializedNozzleAngle[emitter.NozzleAngle];
-				serializedEmitter.Angle = new Curve(emitter.Angle);
-				serializedEmitter.Oscillate = emitter.Oscillate;
+				serializedEmitter.NozzleMovement = _nozzleAngleToSerializedNozzleAngle[emitter.NozzleMovement];
+				serializedEmitter.NozzleAngle = new Curve(emitter.NozzleAngle);				
 				serializedEmitter.OscillateStartAngle = emitter.OscillateStartAngle;
 				serializedEmitter.OscillateEndAngle = emitter.OscillateEndAngle;
 				serializedEmitter.OscillationSpeed = new Curve(emitter.OscillationSpeed);
@@ -1539,10 +1632,10 @@ namespace VixenModules.Effect.Liquid
 		}
 
 		/// <summary>
-		/// updates the view model from the serialized effect data.
+		/// Updates the emitter model from the serialized effect data.
 		/// </summary>
 		/// <param name="liquidData">(Serialized) effect data</param>		
-		private void UpdateViewModel(LiquidData liquidData)
+		private void UpdateEmitterModel(LiquidData liquidData)
 		{
 			// Clear the view model emitter collection
 			EmitterList.Clear();
@@ -1550,39 +1643,38 @@ namespace VixenModules.Effect.Liquid
 			// Loop over the emitters in the serialized effect data
 			foreach (EmitterData emitter in liquidData.EmitterData)
 			{
-				// Create a new emitter in the view model
-				var emitterViewModel = new Emitter();
+				// Create a new emitter in the model
+				var emitterModel = new Emitter();
 
-				// Transfer the properties from the serialized effect data to the emitter view model
-				emitterViewModel.ParticleType = _serializedParticleTypeToParticleType[emitter.ParticleType];
-				emitterViewModel.UseColorArray = emitter.UseColorArray;
-				emitterViewModel.FramesPerColor = emitter.FramesPerColor;
-				emitterViewModel.Color = emitter.Color;
-				emitterViewModel.Lifetime = new Curve(emitter.Lifetime);
-				emitterViewModel.ParticleVelocity = new Curve(emitter.ParticleVelocity);
-				emitterViewModel.Animate = emitter.Animate;
-				emitterViewModel.EdgeHandling = _serializedEdgeHandlingToEdgeHandling[emitter.EdgeHandling];
-				emitterViewModel.VelocityX = new Curve(emitter.VelocityX);
-				emitterViewModel.VelocityY = new Curve(emitter.VelocityY);
-				emitterViewModel.X = new Curve(emitter.X);
-				emitterViewModel.Y = new Curve(emitter.Y);
-				emitterViewModel.Flow = new Curve(emitter.Flow);
-				emitterViewModel.SourceSize = new Curve(emitter.SourceSize);
-				emitterViewModel.NozzleAngle = _serializedNozzleAngleToNozzleAngle[emitter.NozzleAngle];
-				emitterViewModel.Angle = new Curve(emitter.Angle);
-				emitterViewModel.Oscillate = emitter.Oscillate;
-				emitterViewModel.OscillateStartAngle = emitter.OscillateStartAngle;
-				emitterViewModel.OscillateEndAngle = emitter.OscillateEndAngle;
-				emitterViewModel.OscillationSpeed = new Curve(emitter.OscillationSpeed);
-				emitterViewModel.FlowControl = _serializedFlowControlToFlowControl[emitter.FlowControl];
-				emitterViewModel.MarkCollectionId = emitter.MarkCollectionId;
-				emitterViewModel.OnTime = emitter.OnTime;
-				emitterViewModel.OffTime = emitter.OffTime;
-				emitterViewModel.MarkNameCollection = _markCollectionNames;
-				emitterViewModel.MarkCollections = MarkCollections;
-				emitterViewModel.InitAllAttributes();
-				// Add the emitter to the view model emitter collection
-				EmitterList.Add(emitterViewModel);
+				// Transfer the properties from the serialized effect data to the emitter model
+				emitterModel.ParticleType = _serializedParticleTypeToParticleType[emitter.ParticleType];
+				emitterModel.UseColorArray = emitter.UseColorArray;
+				emitterModel.FramesPerColor = emitter.FramesPerColor;
+				emitterModel.Color = emitter.Color;
+				emitterModel.Lifetime = new Curve(emitter.Lifetime);
+				emitterModel.ParticleVelocity = new Curve(emitter.ParticleVelocity);
+				emitterModel.Animate = emitter.Animate;
+				emitterModel.EdgeHandling = _serializedEdgeHandlingToEdgeHandling[emitter.EdgeHandling];
+				emitterModel.VelocityX = new Curve(emitter.VelocityX);
+				emitterModel.VelocityY = new Curve(emitter.VelocityY);
+				emitterModel.X = new Curve(emitter.X);
+				emitterModel.Y = new Curve(emitter.Y);
+				emitterModel.Flow = new Curve(emitter.Flow);
+				emitterModel.SourceSize = new Curve(emitter.SourceSize);
+				emitterModel.NozzleMovement = _serializedNozzleAngleToNozzleAngle[emitter.NozzleMovement];
+				emitterModel.NozzleAngle = new Curve(emitter.NozzleAngle);				
+				emitterModel.OscillateStartAngle = emitter.OscillateStartAngle;
+				emitterModel.OscillateEndAngle = emitter.OscillateEndAngle;
+				emitterModel.OscillationSpeed = new Curve(emitter.OscillationSpeed);
+				emitterModel.FlowControl = _serializedFlowControlToFlowControl[emitter.FlowControl];
+				emitterModel.MarkCollectionId = emitter.MarkCollectionId;
+				emitterModel.OnTime = emitter.OnTime;
+				emitterModel.OffTime = emitter.OffTime;
+				emitterModel.MarkNameCollection = _markCollectionNames;
+				emitterModel.MarkCollections = MarkCollections;
+				emitterModel.InitAllAttributes();
+				// Add the emitter to the emitter collection
+				EmitterList.Add(emitterModel);
 			}
 		}
 
@@ -1615,13 +1707,9 @@ namespace VixenModules.Effect.Liquid
 			int index = 0;
 			foreach (IEmitter emitter in EmitterList)
 			{
-				emitter.MarkCollectionId = selectedMarkcollectionGuid[index];
-				if (emitter.InEdit != null)
-				{
-					emitter.InEdit.MarkCollectionId = selectedMarkcollectionGuid[index];
-				}
+				emitter.MarkCollectionId = selectedMarkcollectionGuid[index];				
 				index++;
-			}
+			}			
 		}
 
 		/// <summary>
@@ -1654,6 +1742,45 @@ namespace VixenModules.Effect.Liquid
 			// Retrieve the color from the bitmap
 			Color color = bitmap.GetPixel(x, y); 
 			frameBuffer.SetPixel(xCoord, yCoord, color);
+		}
+
+		/// <summary>
+		/// Updates the browseable state of the audio properties.
+		/// </summary>		
+		private void UpdateAudioAttributes(bool refresh = true)
+		{
+			bool emittersWithMusicalFlow = EmitterList.Any(emit => emit.FlowControl == FlowControl.Musical);
+
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(13);
+			propertyStates.Add("Sensitivity", emittersWithMusicalFlow && AudioAssociated());
+			propertyStates.Add("LowPass", emittersWithMusicalFlow && AudioAssociated());
+			propertyStates.Add("LowPassFreq", emittersWithMusicalFlow && AudioAssociated());
+			propertyStates.Add("HighPass", emittersWithMusicalFlow && AudioAssociated());
+			propertyStates.Add("HighPassFreq", emittersWithMusicalFlow && AudioAssociated());
+			propertyStates.Add("Range", emittersWithMusicalFlow && AudioAssociated());
+			propertyStates.Add("Normalize", emittersWithMusicalFlow && AudioAssociated());
+			propertyStates.Add("DecayTime", emittersWithMusicalFlow && AudioAssociated());
+			propertyStates.Add("AttackTime", emittersWithMusicalFlow && AudioAssociated());
+			propertyStates.Add("Gain", emittersWithMusicalFlow && AudioAssociated());						
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+
+			UpdateLowHighPassAttributes(refresh);
+		}
+
+		/// <summary>
+		/// Event handler for when a child property within the EmitterList is modified.
+		/// </summary>		
+		private void EmitterListChildPropertyChanged(object sender, PropertyChangedEventArgs e)
+		{	
+			// Updates the browseable state of the audio attributes
+			UpdateAudioAttributes();
+
+			// Update the browseable state of the color list collection
+			UpdateColorListAttributes();			
 		}
 
 		#endregion

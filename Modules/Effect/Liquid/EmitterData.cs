@@ -30,7 +30,7 @@ namespace Liquid
 			Wrap
 		}
 
-		public enum NozzleAngleSerializationType
+		public enum NozzleMovementSerializationType
 		{
 			FixedAngle,
 			Oscillate,
@@ -43,6 +43,7 @@ namespace Liquid
 			Continuous,		
 			Pulsating,			
 			UseMarks,
+			Musical
 		}
 
 		#endregion
@@ -68,10 +69,8 @@ namespace Liquid
 			ManualFlow = true;
 			Flow = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 			SourceSize = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
-			NozzleAngle = NozzleAngleSerializationType.FixedAngle;
-			Angle = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 75.0, 75.0 }));
-
-			Oscillate = false;
+			NozzleMovement = NozzleMovementSerializationType.FixedAngle;
+			NozzleAngle = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 75.0, 75.0 }));			
 			OscillateStartAngle = 0;
 			OscillateEndAngle = 90;
 			OscillationSpeed = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 5.0, 5.0 }));
@@ -79,8 +78,8 @@ namespace Liquid
 			FlowControl = FlowControlSerializationType.Continuous;			
 			MarkCollectionId = Guid.Empty;
 
-			OnTime = 2;  // Seconds
-			OffTime = 2; // Seconds			
+			OnTime = 2000;  // Milliseconds
+			OffTime = 2000; // Milliseconds	
 		}
 
 		#endregion
@@ -106,9 +105,8 @@ namespace Liquid
 				ManualFlow = ManualFlow,
 				Flow = new Curve(Flow),
 				SourceSize = new Curve(SourceSize),
-				NozzleAngle = NozzleAngle,
-				Angle = new Curve(Angle),
-				Oscillate = Oscillate,
+				NozzleMovement = NozzleMovement,
+				NozzleAngle = new Curve(NozzleAngle),				
 				OscillateStartAngle = OscillateStartAngle,
 				OscillateEndAngle = OscillateEndAngle,
 				OscillationSpeed = OscillationSpeed,
@@ -172,14 +170,11 @@ namespace Liquid
 		public Curve SourceSize { get; set; }
 
 		[DataMember]
-		public NozzleAngleSerializationType NozzleAngle { get; set; }
+		public NozzleMovementSerializationType NozzleMovement { get; set; }
 
 		[DataMember]
-		public Curve Angle { get; set; }
-		
-		[DataMember]
-		public bool Oscillate { get; set; }
-
+		public Curve NozzleAngle { get; set; }
+				
 		[DataMember]
 		public int OscillateStartAngle { get; set; }
 

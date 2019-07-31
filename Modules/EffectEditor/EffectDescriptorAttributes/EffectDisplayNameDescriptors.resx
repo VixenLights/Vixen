@@ -900,4 +900,73 @@
   <data name="RenderScaleFactor" xml:space="preserve">
     <value>Render Scale Factor</value>
   </data>
+  <data name="Animate" xml:space="preserve">
+    <value>Animate</value>
+  </data>
+  <data name="EdgeHandling" xml:space="preserve">
+    <value>Edge Handling</value>
+  </data>
+  <data name="EmitterBrightness" xml:space="preserve">
+    <value>Particle Intensity</value>
+  </data>
+  <data name="EmitterOffTime" xml:space="preserve">
+    <value>Off Time (ms)</value>
+  </data>
+  <data name="EmitterOnTime" xml:space="preserve">
+    <value>On Time (ms)</value>
+  </data>
+  <data name="Flow" xml:space="preserve">
+    <value>Flow</value>
+  </data>
+  <data name="FlowControl" xml:space="preserve">
+    <value>Flow Control</value>
+  </data>
+  <data name="FramesPerColor" xml:space="preserve">
+    <value>Frames Per Color</value>
+  </data>
+  <data name="NozzleAngle" xml:space="preserve">
+    <value>Nozzle Angle</value>
+  </data>
+  <data name="NozzleMovement" xml:space="preserve">
+    <value>Nozzle Movement</value>
+  </data>
+  <data name="NozzleSize" xml:space="preserve">
+    <value>Nozzle Size</value>
+  </data>
+  <data name="NozzleSpeed" xml:space="preserve">
+    <value>Nozzle Speed</value>
+  </data>
+  <data name="OscillateEndAngle" xml:space="preserve">
+    <value>Oscillate End Angle</value>
+  </data>
+  <data name="OscillateStartAngle" xml:space="preserve">
+    <value>Oscillate Start Angle</value>
+  </data>
+  <data name="ParticleColor" xml:space="preserve">
+    <value>Particle Color</value>
+  </data>
+  <data name="ParticleLifetime" xml:space="preserve">
+    <value>Particle Lifetime</value>
+  </data>
+  <data name="ParticleType" xml:space="preserve">
+    <value>Particle Type</value>
+  </data>
+  <data name="ParticleVelocity" xml:space="preserve">
+    <value>Particle Velocity</value>
+  </data>
+  <data name="UseColorList" xml:space="preserve">
+    <value>Use Color List</value>
+  </data>
+  <data name="VelocityX" xml:space="preserve">
+    <value>Velocity X</value>
+  </data>
+  <data name="VelocityY" xml:space="preserve">
+    <value>Velocity Y</value>
+  </data>
+  <data name="XPosition" xml:space="preserve">
+    <value>X Position</value>
+  </data>
+  <data name="YPosition" xml:space="preserve">
+    <value>Y Position</value>
+  </data>
 </root>
