@@ -916,7 +916,7 @@
     <value>Controls the rate of particles emitted by the emitter.</value>
   </data>
   <data name="FlowControl" xml:space="preserve">
-    <value>Determines the continuity of the liquid flow (Continuous, Pulsating, Use Marks).</value>
+    <value>Determines the continuity of the liquid flow (Continuous, Pulsating, Use Marks, Musical).</value>
   </data>
   <data name="FramesPerColor" xml:space="preserve">
     <value>Determines how many frames of particles are created for each color in the list.</value>

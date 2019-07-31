@@ -953,7 +953,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Determines the continuity of the liquid flow (Continuous, Pulsating, Use Marks)..
+        ///   Looks up a localized string similar to Determines the continuity of the liquid flow (Continuous, Pulsating, Use Marks, Musical)..
         /// </summary>
         internal static string FlowControl {
             get {
