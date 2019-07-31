@@ -211,7 +211,7 @@ namespace VixenModules.App.CustomPropEditor.Behaviors
 			if (listViewItem != null && listViewItem.IsSelected)
 			{
 				AnchorItem = listViewItem;
-				Keyboard.Focus(listViewItem);
+				//Keyboard.Focus(listViewItem);
 			}
 		}
 

@@ -51,6 +51,8 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 					List<SubModel> subModels = new List<SubModel>();
 					while (reader.Read())
 					{
+						if(reader.NodeType != XmlNodeType.Element) continue;
+
 						if ("subModel".Equals(reader.Name))
 						{
 							SubModel sm = new SubModel();
@@ -130,7 +132,9 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				var group = PropModelServices.Instance().CreateNode(subModel.Name);
 				foreach (var smRange in subModel.Ranges)
 				{
-					for (int i = smRange.Start; i <= smRange.End; i++)
+					var start = smRange.Start < smRange.End ? smRange.Start : smRange.End;
+					var end = smRange.Start < smRange.End ? smRange.End : smRange.Start;
+					for (int i = start; i <= end; i++)
 					{
 						if (modelNodes.ContainsKey(i))
 						{
