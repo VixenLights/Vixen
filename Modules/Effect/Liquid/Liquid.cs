@@ -719,7 +719,10 @@ namespace VixenModules.Effect.Liquid
 		/// Renders the effect by location.
 		/// </summary>		
 		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
-		{			
+		{
+			//make a local copy that is faster than the logic to get it for reuse.
+			var localBufferHt = BufferHt;
+			var localBufferWi = BufferWi;
 			// Loop over the frames
 			for (int frameNum = 0; frameNum < numFrames; frameNum++)
 			{
@@ -763,7 +766,7 @@ namespace VixenModules.Effect.Liquid
 					fp.Unlock(true);
 
 					// Convert logical render area to the actual render area
-					using (Bitmap largerBitmap = new Bitmap(fp.Bitmap, BufferWi, BufferHt))
+					using (Bitmap largerBitmap = new Bitmap(fp.Bitmap, localBufferWi, localBufferHt))
 					{
 						// Transfer the pixel data from the bitmap to the frame buffer
 						using (FastPixel.FastPixel fastPixel = new FastPixel.FastPixel(largerBitmap))
@@ -771,7 +774,7 @@ namespace VixenModules.Effect.Liquid
 							fastPixel.Lock();
 							foreach (ElementLocation elementLocation in frameBuffer.ElementLocations)
 							{
-								UpdateFrameBufferForLocationPixel(elementLocation.X, elementLocation.Y, BufferHt,
+								UpdateFrameBufferForLocationPixel(elementLocation.X, elementLocation.Y, localBufferHt,
 									fastPixel, frameBuffer);
 							}
 
