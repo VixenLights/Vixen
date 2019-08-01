@@ -725,16 +725,16 @@ namespace VixenModules.Effect.Liquid
 			{
 				//Assign the current frame
 				frameBuffer.CurrentFrame = frameNum;
-				
+
 				// Get the position in the effect
 				double intervalPos = GetEffectTimeIntervalPosition(frameNum);
 				double intervalPosFactor = intervalPos * 100;
 
 				// Have the Liquid Fun Physics engine advance time and recalculate the position of particles
 				_liquidFunWrapper.StepWorld(
-					 FrameTime / 1000f,
-					 _data.MixColors,
-					 ConvertEmittersToEmitterWrappers(frameNum, intervalPos, intervalPosFactor).ToArray());
+					FrameTime / 1000f,
+					_data.MixColors,
+					ConvertEmittersToEmitterWrappers(frameNum, intervalPos, intervalPosFactor).ToArray());
 
 				// Get the collection of particles from Liquid Fun API
 				// Tuple is composed of position in x, y and then color of the particle
@@ -742,39 +742,44 @@ namespace VixenModules.Effect.Liquid
 
 				// Create a bitmap the size of the logical render area
 				// Note this render area is smaller matrix than the actual display elements
-				using (Bitmap bitmap = new Bitmap(_bufferWt, _bufferHt))
-				{					
+				using (var fp = new FastPixel.FastPixel(_bufferWt, _bufferHt))
+				{
+					fp.Lock();
 					// Loop over each of the liquid particles
 					foreach (Tuple<int, int, Color> particle in particles)
 					{
 						// If the particle is within the viewable area then...
 						if ((particle.Item1 >= 0 && particle.Item1 < _bufferWt) &&
-							 (particle.Item2 >= 0 && particle.Item2 < _bufferHt))
+						    (particle.Item2 >= 0 && particle.Item2 < _bufferHt))
 						{
 							// Set the corresponding pixel in the bitmap
-							bitmap.SetPixel(
+							fp.SetPixel(
 								particle.Item1,
 								particle.Item2,
 								particle.Item3);
 						}
 					}
-																				
+
+					fp.Unlock(true);
+
 					// Convert logical render area to the actual render area
-					using (Bitmap largerBitmap = new Bitmap(bitmap, BufferWi, BufferHt))
+					using (Bitmap largerBitmap = new Bitmap(fp.Bitmap, BufferWi, BufferHt))
 					{
 						// Transfer the pixel data from the bitmap to the frame buffer
-						using (FastPixel.FastPixel fastPixel= new FastPixel.FastPixel(largerBitmap))
+						using (FastPixel.FastPixel fastPixel = new FastPixel.FastPixel(largerBitmap))
 						{
 							fastPixel.Lock();
 							foreach (ElementLocation elementLocation in frameBuffer.ElementLocations)
-							{								
-								UpdateFrameBufferForLocationPixel(elementLocation.X, elementLocation.Y, BufferHt, fastPixel, frameBuffer);								
+							{
+								UpdateFrameBufferForLocationPixel(elementLocation.X, elementLocation.Y, BufferHt,
+									fastPixel, frameBuffer);
 							}
+
 							fastPixel.Unlock(false);
-						}						
-					}						
-				}								
-			}		
+						}
+					}
+				}
+			}
 		}
 		
 		/// <summary>
