@@ -95,70 +95,97 @@
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>
 						</StackPanel>
-						<!--<TextBlock Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" Text="{Binding SelectedInventory.Vendor.Description}" TextWrapping="Wrap" Padding="5,0,0,0"/>-->
 					</Grid>
 				</Grid>
 
 				<DockPanel Grid.Column="1">
 					<Grid Visibility="{Binding IsProductVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
 						<Grid.RowDefinitions>
+							<RowDefinition Height="1.2*"/>
 							<RowDefinition Height="*"/>
-							<RowDefinition Height="Auto"/>
-							<RowDefinition Height="Auto"/>
 						</Grid.RowDefinitions>
 						<Image utils:AsyncImageLoader.SourceUri="{Binding SelectedProduct.ImageUrl, IsAsync=True}" HorizontalAlignment="Center" 
 						       Margin="0,0,0,0" Name="PreviewImage" VerticalAlignment="Top" 
 						       Grid.Row="0" />
-						<Button Grid.Row="1" Margin="0,5,0,5"  Content="Import" Width="100" Command="{Binding ImportModelCommand}" CommandParameter="{Binding SelectedProduct}"/>
-						<Grid Grid.Row="2" Margin="5,3,3,10">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto"/>
-								<ColumnDefinition Width="Auto"/>
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
-								
-							</Grid.RowDefinitions>
-							
-							<TextBlock Grid.Column="0" Grid.Row="0">Product</TextBlock>
-							<TextBlock Grid.Column="1" Grid.Row="0" Padding="5,0,0,0">
+						<TabControl Background="{StaticResource BackColorBrush}"
+						            Grid.Row="1"
+						            Width="Auto" Margin="5,5,10,5">
+							<TabItem Header="Product Info">
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto"/>
+										<ColumnDefinition Width="Auto"/>
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+									</Grid.RowDefinitions>
+
+									<TextBlock Grid.Column="0" Grid.Row="0">Product</TextBlock>
+									<TextBlock Grid.Column="1" Grid.Row="0" Padding="5,0,0,0">
 								<Hyperlink Command="{Binding NavigateToUrlCommand}" CommandParameter="{Binding SelectedProduct.Url}">
 									<TextBlock Text="{Binding SelectedProduct.Name}" Style="{StaticResource HyperLink}"/>
 								</Hyperlink>
 							</TextBlock>
-							<TextBlock Grid.Column="0" Grid.Row="1">Type</TextBlock>
-							<TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding SelectedProduct.ProductType}" Padding="5,0,0,0"/>
-							<TextBlock Grid.Column="0" Grid.Row="2">Material</TextBlock>
-							<TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding SelectedProduct.Material}" Padding="5,0,0,0"/>
-							<TextBlock Grid.Column="0" Grid.Row="3">Height</TextBlock>
-							<TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding SelectedProduct.Height}" Padding="5,0,0,0"/>
-							<TextBlock Grid.Column="0" Grid.Row="4">Width</TextBlock>
-							<TextBlock Grid.Column="1" Grid.Row="4" Text="{Binding SelectedProduct.Width}" Padding="5,0,0,0"/>
-							<TextBlock Grid.Column="0" Grid.Row="5">Thickness</TextBlock>
-							<TextBlock Grid.Column="1" Grid.Row="5" Text="{Binding SelectedProduct.Thickness}" Padding="5,0,0,0"/>
-							<TextBlock Grid.Column="0" Grid.Row="6">Pixel Count</TextBlock>
-							<TextBlock Grid.Column="1" Grid.Row="6" Text="{Binding SelectedProduct.PixelCount}" Padding="5,0,0,0"/>
-							<TextBlock Grid.Column="0" Grid.Row="7">Pixel Description</TextBlock>
-							<TextBlock Grid.Column="1" Grid.Row="7" Text="{Binding SelectedProduct.PixelDescription}" Padding="5,0,0,0"/>
-							<TextBlock Grid.Column="0" Grid.Row="8">Pixel Spacing</TextBlock>
-							<TextBlock Grid.Column="1" Grid.Row="8" Text="{Binding SelectedProduct.PixelSpacing}" Padding="5,0,0,0"/>
-							<TextBlock Grid.Column="0" Grid.Row="9">Notes</TextBlock>
-							<TextBlock Grid.Column="1" Grid.Row="9" Text="{Binding SelectedProduct.Notes}" Padding="5,0,0,0"/>
-							
-							
-						</Grid>
+									<TextBlock Grid.Column="0" Grid.Row="1">Type</TextBlock>
+									<TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding SelectedProduct.ProductType}" Padding="5,0,0,0"/>
+									<TextBlock Grid.Column="0" Grid.Row="2">Material</TextBlock>
+									<TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding SelectedProduct.Material}" Padding="5,0,0,0"/>
+									<TextBlock Grid.Column="0" Grid.Row="3">Height</TextBlock>
+									<TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding SelectedProduct.Height}" Padding="5,0,0,0"/>
+									<TextBlock Grid.Column="0" Grid.Row="4">Width</TextBlock>
+									<TextBlock Grid.Column="1" Grid.Row="4" Text="{Binding SelectedProduct.Width}" Padding="5,0,0,0"/>
+									<TextBlock Grid.Column="0" Grid.Row="5">Thickness</TextBlock>
+									<TextBlock Grid.Column="1" Grid.Row="5" Text="{Binding SelectedProduct.Thickness}" Padding="5,0,0,0"/>
+									<TextBlock Grid.Column="0" Grid.Row="6">Pixel Count</TextBlock>
+									<TextBlock Grid.Column="1" Grid.Row="6" Text="{Binding SelectedProduct.PixelCount}" Padding="5,0,0,0"/>
+									<TextBlock Grid.Column="0" Grid.Row="7">Pixel Description</TextBlock>
+									<TextBlock Grid.Column="1" Grid.Row="7" Text="{Binding SelectedProduct.PixelDescription}" Padding="5,0,0,0"/>
+									<TextBlock Grid.Column="0" Grid.Row="8">Pixel Spacing</TextBlock>
+									<TextBlock Grid.Column="1" Grid.Row="8" Text="{Binding SelectedProduct.PixelSpacing}" Padding="5,0,0,0"/>
+									<TextBlock Grid.Column="0" Grid.Row="9">Notes</TextBlock>
+									<TextBlock Grid.Column="1" Grid.Row="9" Text="{Binding SelectedProduct.Notes}" Padding="5,0,0,0"/>
+								</Grid>
+							</TabItem>
+							<TabItem Header="Model Options">
+								<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+									<ItemsControl Name="ModelOptions" ItemsSource="{Binding SelectedProduct.ModelLinks}">
+										<ItemsControl.ItemTemplate>
+											<DataTemplate DataType="{x:Type internalVendorInventory:ModelLink}">
+												<Grid Margin="0,5">
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="Auto"/>
+														<ColumnDefinition Width="Auto"/>
+														<ColumnDefinition Width="*"/>
+													</Grid.ColumnDefinitions>
+													<Grid.RowDefinitions>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+													</Grid.RowDefinitions>
+													<TextBlock Grid.Column="1" Grid.Row="0" Text="Name" Padding="5,0,0,0"/>
+													<TextBlock Grid.Column="2" Grid.Row="0" Text="{Binding Name}" Padding="7,0,0,0"/>
+													<TextBlock Grid.Column="1" Grid.Row="1" Text="Description" Padding="5,0,0,0"/>
+													<TextBlock Grid.Column="2" Grid.Row="1" Text="{Binding Description}" Padding="7,0,0,0"/>
+													<Button Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Content="Select" 
+													        Command="{Binding ElementName=ModelOptions, Path=DataContext.ImportModelCommand}" CommandParameter="{Binding}"
+													        Margin="5,5"/>
+												</Grid>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
+								</ScrollViewer>
+							</TabItem>
+						</TabControl>
 					</Grid>
-					
-
 				</DockPanel>
 				<GridSplitter Grid.Row="0" Grid.Column="0" Width="3" HorizontalAlignment="Right" VerticalAlignment="Stretch" Background="{StaticResource BorderColorBrush}"/>
 				<!--<GridSplitter Grid.Row="1" Grid.Column="0" Width="Auto" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" ResizeDirection="Rows" Background="{StaticResource BorderColorBrush}"/>-->

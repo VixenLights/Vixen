@@ -1,10 +1,6 @@
-﻿using System;
-using System.IO;
-using System.Net.Http;
+﻿using System.IO;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using Catel.Threading;
-using VixenModules.App.CustomPropEditor.Services;
 
 namespace VixenModules.App.CustomPropEditor.Import.XLights
 {

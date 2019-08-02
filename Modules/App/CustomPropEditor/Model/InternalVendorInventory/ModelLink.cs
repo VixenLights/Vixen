@@ -7,18 +7,59 @@ namespace VixenModules.App.CustomPropEditor.Model.InternalVendorInventory
 	{
 		private Uri _link;
 		private ModelType _software;
+		private string _name;
+		private string _description;
 
 		public ModelLink()
 		{
+			Name = "Default Model";
+			Description = @"No description provided.";
 			Software = ModelType.Prop;
 		}
 
-		public ModelLink(ModelType type, Uri link)
+		public ModelLink(ModelType type, string name, string description, Uri link):this()
 		{
+			if (!string.IsNullOrEmpty(name))
+			{
+				Name = name;
+			}
+
+			if (!string.IsNullOrEmpty(description))
+			{
+				Description = description;
+			}
 			Link = link;
 			Software = type;
 		}
 
+		/// <summary>
+		/// The name of the model link
+		/// </summary>
+		public string Name
+		{
+			get => _name;
+			set
+			{
+				if (value == _name) return;
+				_name = value;
+				OnPropertyChanged(nameof(Name));
+			}
+		}
+
+		/// <summary>
+		/// Description for the model link
+		/// </summary>
+		public string Description
+		{
+			get => _description;
+			set
+			{
+				if (value == _description) return;
+				_description = value;
+				OnPropertyChanged(nameof(Description));
+			}
+		}
+		
 		/// <summary>
 		/// Link to the model file
 		/// </summary>

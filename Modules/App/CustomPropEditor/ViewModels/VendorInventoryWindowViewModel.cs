@@ -80,6 +80,24 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region SelectedModelLink property
+
+		/// <summary>
+		/// Gets or sets the SelectedModelLink value.
+		/// </summary>
+		public ModelLink SelectedModelLink
+		{
+			get { return GetValue<ModelLink>(SelectedModelLinkProperty); }
+			set { SetValue(SelectedModelLinkProperty, value); }
+		}
+
+		/// <summary>
+		/// SelectedModelLink property data.
+		/// </summary>
+		public static readonly PropertyData SelectedModelLinkProperty = RegisterProperty("SelectedModelLink", typeof(ModelLink));
+
+		#endregion
+
 		#region IsProductVisible property
 
 		#region IsProductVisible property
@@ -102,7 +120,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
-
 		#region SelectProduct command
 
 		private Command<Product> _selectProductCommand;
@@ -120,6 +137,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private void SelectProduct(Product p)
 		{
+			SelectedModelLink = null;
 			SelectedProduct = p;
 			IsProductVisible = p != null;
 		}
@@ -194,23 +212,24 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#region ImportModel command
 
-		private Command<Product> _importModelCommand;
+		private Command<ModelLink> _importModelCommand;
 
 		/// <summary>
 		/// Gets the ImportModel command.
 		/// </summary>
-		public Command<Product> ImportModelCommand
+		public Command<ModelLink> ImportModelCommand
 		{
-			get { return _importModelCommand ?? (_importModelCommand = new Command<Product>(ImportModel)); }
+			get { return _importModelCommand ?? (_importModelCommand = new Command<ModelLink>(ImportModel)); }
 		}
 
 		/// <summary>
 		/// Method to invoke when the ImportModel command is executed.
 		/// </summary>
-		private void ImportModel(Product p)
+		private void ImportModel(ModelLink ml)
 		{
-			if (SelectedProduct != null && SelectedProduct == p)
+			if (SelectedProduct != null && SelectedModelLink != null)
 			{
+				SelectedModelLink = ml;
 				DialogResult = true;
 				CloseViewModelAsync(true);
 			}

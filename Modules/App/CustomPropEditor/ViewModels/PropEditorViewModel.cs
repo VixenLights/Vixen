@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.WpfPropertyGrid;
-using System.Windows.Forms.VisualStyles;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
@@ -792,21 +791,21 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#region ImportVendorXModel command
 
-		private TaskCommand _importVendorXModelCommand;
+		private TaskCommand _openVendorBrowserCommand;
 
 		/// <summary>
 		/// Gets the ImportVendorXModel command.
 		/// </summary>
 		[Browsable(false)]
-		public TaskCommand ImportVendorXModelCommand
+		public TaskCommand OpenVendorBrowserCommand
 		{
-			get { return _importVendorXModelCommand ?? (_importVendorXModelCommand = new TaskCommand(ImportVendorXModelAsync)); }
+			get { return _openVendorBrowserCommand ?? (_openVendorBrowserCommand = new TaskCommand(OpenVendorBrowserAsync)); }
 		}
 
 		/// <summary>
-		/// Method to invoke when the ImportVendorXModel command is executed.
+		/// Method to invoke when the OpenVendorBrowserCommand command is executed.
 		/// </summary>
-		private async Task ImportVendorXModelAsync()
+		private async Task OpenVendorBrowserAsync()
 		{
 			XModelInventoryImporter mi = new XModelInventoryImporter();
 
@@ -841,25 +840,53 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 			if (result.HasValue && result.Value)
 			{
-				var status = await LoadVendorModelFromUri(vm.SelectedProduct.ModelLink.First(x => x.Software==ModelType.XModel).Link);
-				if (status.Item1 && status.Item2==ModelType.XModel)
+				var status = await LoadVendorModel(vm.SelectedModelLink);
+
+				if (status.Item1)
 				{
-					Prop.PhysicalMetadata.Width = vm.SelectedProduct.Width;
-					Prop.PhysicalMetadata.Height = vm.SelectedProduct.Height;
-					Prop.PhysicalMetadata.Depth = vm.SelectedProduct.Thickness;
-					Prop.PhysicalMetadata.Material = vm.SelectedProduct.Material;
-					Prop.PhysicalMetadata.BulbType = vm.SelectedProduct.PixelDescription;
-					Prop.InformationMetadata.Notes = vm.SelectedProduct.Notes;
-					Prop.VendorMetadata.Name = vm.SelectedInventory.Vendor.Name;
-					Prop.VendorMetadata.Contact = vm.SelectedInventory.Vendor.Contact;
-					Prop.VendorMetadata.Email = vm.SelectedInventory.Vendor.Email;
-					Prop.VendorMetadata.Phone = vm.SelectedInventory.Vendor.Phone;
-					var website = vm.SelectedInventory.Vendor.WebLinks.Where(x => x.Name.Equals("Website"));
-					if (website.Any())
+					if (status.Item2 == ModelType.XModel)
 					{
-						Prop.VendorMetadata.Website = website.First().Link.AbsoluteUri;
+						Prop.PhysicalMetadata.Width = vm.SelectedProduct.Width;
+						Prop.PhysicalMetadata.Height = vm.SelectedProduct.Height;
+						Prop.PhysicalMetadata.Depth = vm.SelectedProduct.Thickness;
+						Prop.PhysicalMetadata.Material = vm.SelectedProduct.Material;
+						Prop.PhysicalMetadata.BulbType = vm.SelectedProduct.PixelDescription;
+						Prop.PhysicalMetadata.NodeCount = vm.SelectedProduct.PixelCount.ToString();
+						Prop.InformationMetadata.Notes = vm.SelectedProduct.Notes;
+						Prop.Type = vm.SelectedProduct.ProductType;
+					}
+					
+					//Ensure the Vendor info is populated
+					if (string.IsNullOrEmpty(Prop.VendorMetadata.Name))
+					{
+						Prop.VendorMetadata.Name = vm.SelectedInventory.Vendor.Name;
+					}
+
+					if (string.IsNullOrEmpty(Prop.VendorMetadata.Contact))
+					{
+						Prop.VendorMetadata.Contact = vm.SelectedInventory.Vendor.Contact;
+					}
+
+					if (string.IsNullOrEmpty(Prop.VendorMetadata.Email))
+					{
+						Prop.VendorMetadata.Email = vm.SelectedInventory.Vendor.Email;
+					}
+
+					if (string.IsNullOrEmpty(Prop.VendorMetadata.Phone))
+					{
+						Prop.VendorMetadata.Phone = vm.SelectedInventory.Vendor.Phone;
+					}
+
+					if (string.IsNullOrEmpty(Prop.VendorMetadata.Website))
+					{
+						var website = vm.SelectedInventory.Vendor.WebLinks.Where(x => x.Name.Equals("Website"));
+						if (website.Any())
+						{
+							Prop.VendorMetadata.Website = website.First().Link.AbsoluteUri;
+						}
 					}
 				}
+				
 			}
 		}
 
@@ -1051,7 +1078,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 		}
 
-		private async Task<Tuple<bool, ModelType>> LoadVendorModelFromUri(Uri url)
+		private async Task<Tuple<bool, ModelType>> LoadVendorModel(ModelLink modelLink)
 		{
 			var targetPath = Path.Combine(Path.GetTempPath() + Guid.NewGuid());
 			var dependencyResolver = this.GetDependencyResolver();
@@ -1061,23 +1088,14 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			var status = new Tuple<bool, ModelType>(false, ModelType.XModel);
 
 			pleaseWaitService.Show();
-			//The vendors provide a link to the xModel, but may have a Vixen prop of the same name alongside it.
-			string propUrl = url.AbsoluteUri.Replace(@".xmodel", @".prp");
 
-			var success = await ds.GetFileAsync(new Uri(propUrl), targetPath);
-
-			if (success)
+			if (modelLink.Software == ModelType.Prop)
 			{
-				LoadPropFromPath(targetPath);
-				status = new Tuple<bool, ModelType>(true, ModelType.Prop); ;
-			}
-			else
-			{
-				success = await ds.GetFileAsync(url, targetPath);
+				bool success = await ds.GetFileAsync(modelLink.Link, targetPath);
 				if (success)
 				{
-					await ImportProp(targetPath);
-					status = new Tuple<bool, ModelType>(true, ModelType.XModel); 
+					LoadPropFromPath(targetPath);
+					status = new Tuple<bool, ModelType>(true, ModelType.Prop); ;
 				}
 				else
 				{
@@ -1085,6 +1103,36 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 					mbs.ShowError("Unable to download the model from the vendor.\nEnsure you have an active internet connection.", "Error Downloading Model.");
 				}
 			}
+			else
+			{
+				//The vendors provide a link to the xModel, but may have a Vixen prop of the same name alongside it.
+				//If it exists we will prefer it.
+				string propUrl = modelLink.Link.AbsoluteUri.Replace(@".xmodel", @".prp");
+
+				bool success = await ds.GetFileAsync(new Uri(propUrl), targetPath);
+
+				if (success)
+				{
+					LoadPropFromPath(targetPath);
+					status = new Tuple<bool, ModelType>(true, ModelType.Prop); ;
+				}
+				else
+				{
+					success = await ds.GetFileAsync(modelLink.Link, targetPath);
+					if (success)
+					{
+						await ImportProp(targetPath);
+						status = new Tuple<bool, ModelType>(true, ModelType.XModel);
+					}
+					else
+					{
+						var mbs = dependencyResolver.Resolve<IMessageBoxService>();
+						mbs.ShowError("Unable to download the model from the vendor.\nEnsure you have an active internet connection.", "Error Downloading Model.");
+					}
+				}
+			}
+
+			
 
 			pleaseWaitService.Hide();
 			return status;

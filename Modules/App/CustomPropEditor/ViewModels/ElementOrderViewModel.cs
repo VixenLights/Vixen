@@ -116,7 +116,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		private void ReOrder()
 		{
-			int index = 0;
+			int index = 1;
 			foreach (var elementModelViewModel in LeafNodes)
 			{
 				elementModelViewModel.ElementModel.Order = index++;

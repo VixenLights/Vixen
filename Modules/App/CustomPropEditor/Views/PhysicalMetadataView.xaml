@@ -5,13 +5,18 @@
                    xmlns:wpg="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
                    xmlns:viewModels="clr-namespace:VixenModules.App.CustomPropEditor.ViewModels">
 	<UserControl.Resources>
-		<DataTemplate x:Key="BulbTypeEditorKey" DataType="wpg:PropertyItemValue">
-			<ComboBox ItemsSource="{Binding ParentProperty.StandardValues}" 
-			          Text="{Binding Value, Mode=TwoWay}"
-			          IsEnabled="{Binding IsEditable}"
-			          IsEditable="True">
-			</ComboBox>
-		</DataTemplate>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+			<DataTemplate x:Key="BulbTypeEditorKey" DataType="wpg:PropertyItemValue">
+				<ComboBox ItemsSource="{Binding ParentProperty.StandardValues}" 
+				          Text="{Binding Value, Mode=TwoWay}"
+				          IsEnabled="{Binding IsEditable}"
+				          IsEditable="True">
+				</ComboBox>
+			</DataTemplate>
+		</ResourceDictionary>
 	</UserControl.Resources>
 
 	<wpg:PropertyGrid Background="{StaticResource DisabledShadow}"

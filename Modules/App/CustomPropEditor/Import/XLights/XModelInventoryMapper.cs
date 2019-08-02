@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory;
 using VixenModules.App.CustomPropEditor.Model.InternalVendorInventory;
 using Category = VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory.Category;
@@ -60,7 +61,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				{
 					Id = model.Id,
 					Name = model.Name,
-					CategoryId = model.CategoryId,
+					CategoryIds = model.CategoryIds,
 					Material = model.Material,
 					Height = model.Height,
 					Width = model.Width,
@@ -71,14 +72,20 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 					PixelSpacing = model.PixelSpacing,
 					ProductType = model.Type
 			};
-				if (!string.IsNullOrEmpty(model.ImageFile))
+				if (model.ImageFile != null && model.ImageFile.Any())
 				{
-					p.ImageUrl = new Uri(model.ImageFile);
+					p.ImageUrl = new Uri(model.ImageFile.First());
 				}
 
-				if (model.Wiring != null && !string.IsNullOrEmpty(model.Wiring.XModelLink))
+				if (model.Wiring != null && model.Wiring.Any())
 				{
-					p.ModelLink = new List<ModelLink>(new []{new ModelLink(ModelType.XModel, new Uri(model.Wiring.XModelLink))});
+					int index = 1;
+					p.ModelLinks = model.Wiring.Select(x => new ModelLink(ModelType.XModel, string.IsNullOrEmpty(x.Name)?$"Model {index++}":x.Name, x.Description, new Uri(x.XModelLink)))
+						.ToList();
+				}
+				else
+				{
+					p.ModelLinks = new List<ModelLink>();
 				}
 				
 				if (!string.IsNullOrEmpty(model.Weblink))
@@ -86,14 +93,18 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 					p.Url = new Uri(model.Weblink);
 				}
 
-				if (productMap.TryGetValue(p.CategoryId, out var catProducts))
+				foreach (var categoryId in p.CategoryIds)
 				{
-					catProducts.Add(p);
+					if (productMap.TryGetValue(categoryId, out var catProducts))
+					{
+						catProducts.Add(p);
+					}
+					else
+					{
+						productMap.Add(categoryId, new List<Product>(new[] { p }));
+					}
 				}
-				else
-				{
-					productMap.Add(p.CategoryId, new List<Product>(new []{p}));
-				}
+				
 			}
 
 			return productMap;

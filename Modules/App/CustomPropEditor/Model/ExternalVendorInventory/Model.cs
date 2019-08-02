@@ -1,4 +1,5 @@
-﻿using System.Xml.Serialization;
+﻿using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory
 {
@@ -8,7 +9,7 @@ namespace VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory
 		public uint Id { get; set; }
 
 		[XmlElement("categoryid")]
-		public uint CategoryId { get; set; }
+		public List<uint> CategoryIds { get; set; }
 
 		[XmlElement("name")]
 		public string Name { get; set; }
@@ -41,13 +42,13 @@ namespace VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory
 		public string PixelSpacing { get; set; }
 
 		[XmlElement("imagefile")]
-		public string ImageFile { get; set; }
+		public List<string> ImageFile { get; set; }
 
 		[XmlElement("notes")]
 		public string Notes { get; set; }
 
 		[XmlElement("wiring", typeof(Wiring))]
-		public Wiring Wiring { get; set; }
+		public List<Wiring> Wiring { get; set; }
 
 	}
 }

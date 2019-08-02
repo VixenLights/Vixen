@@ -7,7 +7,7 @@ namespace VixenModules.App.CustomPropEditor.Model.InternalVendorInventory
 	public class Product : BindableBase
 	{
 		private uint _id;
-		private uint _categoryId;
+		private List<uint> _categoryIds;
 		private string _name;
 		private string _productType;
 		private Uri _url;
@@ -20,7 +20,7 @@ namespace VixenModules.App.CustomPropEditor.Model.InternalVendorInventory
 		private string _pixelDescription;
 		private string _pixelSpacing;
 		private string _notes;
-		private List<ModelLink> _modelLink;
+		private List<ModelLink> _modelLinks;
 		private Uri _vixenPropLink;
 
 		/// <summary>
@@ -40,14 +40,14 @@ namespace VixenModules.App.CustomPropEditor.Model.InternalVendorInventory
 		/// <summary>
 		/// Unique Vendor Category Id
 		/// </summary>
-		public uint CategoryId
+		public List<uint> CategoryIds
 		{
-			get => _categoryId;
+			get => _categoryIds;
 			set
 			{
-				if (value == _categoryId) return;
-				_categoryId = value;
-				OnPropertyChanged(nameof(CategoryId));
+				if (value == _categoryIds) return;
+				_categoryIds = value;
+				OnPropertyChanged(nameof(CategoryIds));
 			}
 		}
 
@@ -222,14 +222,14 @@ namespace VixenModules.App.CustomPropEditor.Model.InternalVendorInventory
 		/// <summary>
 		/// Link to the software model for the product
 		/// </summary>
-		public List<ModelLink> ModelLink
+		public List<ModelLink> ModelLinks
 		{
-			get => _modelLink;
+			get => _modelLinks;
 			set
 			{
-				if (Equals(value, _modelLink)) return;
-				_modelLink = value;
-				OnPropertyChanged(nameof(ModelLink));
+				if (Equals(value, _modelLinks)) return;
+				_modelLinks = value;
+				OnPropertyChanged(nameof(ModelLinks));
 			}
 		}
 
