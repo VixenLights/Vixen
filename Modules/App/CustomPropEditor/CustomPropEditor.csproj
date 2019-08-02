@@ -97,6 +97,10 @@
       <Private>True</Private>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\NLog.4.5.11\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
@@ -182,6 +186,7 @@
     <Compile Include="Import\XLights\ModelNode.cs" />
     <Compile Include="Model\ExternalVendorInventory\Category.cs" />
     <Compile Include="Model\ExternalVendorInventory\Model.cs" />
+    <Compile Include="Model\ExternalVendorInventory\VendorLink.cs" />
     <Compile Include="Model\ExternalVendorInventory\XModelInventory.cs" />
     <Compile Include="Model\ExternalVendorInventory\Vendor.cs" />
     <Compile Include="Model\ExternalVendorInventory\Wiring.cs" />
@@ -201,6 +206,7 @@
     <Compile Include="Services\ConfigurationService.cs" />
     <Compile Include="Services\DownloadService.cs" />
     <Compile Include="Services\IDownloadService.cs" />
+    <Compile Include="Services\IMessageBoxService.cs" />
     <Compile Include="Services\MessageBoxResponse.cs" />
     <Compile Include="Services\MessageBoxService.cs" />
     <Compile Include="Services\PropModelPersistenceService.cs" />

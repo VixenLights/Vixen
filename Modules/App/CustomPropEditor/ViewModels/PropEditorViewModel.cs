@@ -8,14 +8,17 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.WpfPropertyGrid;
+using System.Windows.Forms.VisualStyles;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
+using Newtonsoft.Json.Linq;
 using NLog;
 using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Import;
 using VixenModules.App.CustomPropEditor.Import.XLights;
 using VixenModules.App.CustomPropEditor.Model;
+using VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory;
 using VixenModules.App.CustomPropEditor.Model.InternalVendorInventory;
 using VixenModules.App.CustomPropEditor.Services;
 using PropertyData = Catel.Data.PropertyData;
@@ -581,21 +584,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				if (!string.IsNullOrEmpty(path))
 				{
 					_lastOpenFolderPath = Path.GetDirectoryName(path);
-					Prop p = PropModelServices.Instance().LoadProp(path);
-					if (p != null)
-					{
-						Prop = p;
-						FilePath = path;
-						ClearDirtyFlag();
-					}
-					else
-					{
-						//Alert user
-					}
+					LoadPropFromPath(path);
 				}
 			}
 		}
-
+		
 		#endregion
 
 		#region SaveModel command
@@ -818,37 +811,56 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			XModelInventoryImporter mi = new XModelInventoryImporter();
 
 			List<ModelInventory> vendorInventories = new List<ModelInventory>();
-			foreach (var vendorUrl in GetVendorUrls())
-			{
-				vendorInventories.Add(await mi.Import(vendorUrl));
-			}
+
+			var vendorLinks = await GetVendorUrls();
+			if (!vendorLinks.Any()) { return; }
 			
+
 			var dependencyResolver = this.GetDependencyResolver();
+			var ds = dependencyResolver.Resolve<IDownloadService>();
+
+			foreach (var vendorLink in vendorLinks)
+			{
+				try
+				{
+					var xml = await ds.GetFileAsStringAsync(new Uri(vendorLink.Url));
+					vendorInventories.Add(await mi.Import(xml));
+				}
+				catch (Exception e)
+				{
+					Logging.Error(e, $"An error occured retrieveing the inventory from: {vendorLink}");
+					var mbs = dependencyResolver.Resolve<IMessageBoxService>();
+					mbs.ShowError($"Unable to retrieve inventory from {vendorLink.Name}\nEnsure you have an active internet connection.", "Error Retrieving Inventory");
+				}
+			}
+
+			if (!vendorInventories.Any()) { return; }
 			var uiVisualizerService = dependencyResolver.Resolve<IUIVisualizerService>();
 			var vm = new VendorInventoryWindowViewModel(vendorInventories, dependencyResolver.Resolve<IProcessService>());
 			bool? result = await uiVisualizerService.ShowDialogAsync(vm);
 
 			if (result.HasValue && result.Value)
 			{
-				await ImportXModelFromUri(vm.SelectedProduct.ModelLink.First(x => x.Software==ModelType.XModel).Link);
-				Prop.PhysicalMetadata.Width = vm.SelectedProduct.Width;
-				Prop.PhysicalMetadata.Height = vm.SelectedProduct.Height;
-				Prop.PhysicalMetadata.Depth = vm.SelectedProduct.Thickness;
-				Prop.PhysicalMetadata.Material = vm.SelectedProduct.Material;
-				Prop.PhysicalMetadata.BulbType = vm.SelectedProduct.PixelDescription;
-				Prop.InformationMetadata.Notes = vm.SelectedProduct.Notes;
-				Prop.VendorMetadata.Name = vm.SelectedInventory.Vendor.Name;
-				Prop.VendorMetadata.Contact = vm.SelectedInventory.Vendor.Contact;
-				Prop.VendorMetadata.Email = vm.SelectedInventory.Vendor.Email;
-				Prop.VendorMetadata.Phone = vm.SelectedInventory.Vendor.Phone;
-				var website = vm.SelectedInventory.Vendor.WebLinks.Where(x => x.Name.Equals("Website"));
-				if (website.Any())
+				var status = await LoadVendorModelFromUri(vm.SelectedProduct.ModelLink.First(x => x.Software==ModelType.XModel).Link);
+				if (status.Item1 && status.Item2==ModelType.XModel)
 				{
-					Prop.VendorMetadata.Website = website.First().Link.AbsoluteUri;
+					Prop.PhysicalMetadata.Width = vm.SelectedProduct.Width;
+					Prop.PhysicalMetadata.Height = vm.SelectedProduct.Height;
+					Prop.PhysicalMetadata.Depth = vm.SelectedProduct.Thickness;
+					Prop.PhysicalMetadata.Material = vm.SelectedProduct.Material;
+					Prop.PhysicalMetadata.BulbType = vm.SelectedProduct.PixelDescription;
+					Prop.InformationMetadata.Notes = vm.SelectedProduct.Notes;
+					Prop.VendorMetadata.Name = vm.SelectedInventory.Vendor.Name;
+					Prop.VendorMetadata.Contact = vm.SelectedInventory.Vendor.Contact;
+					Prop.VendorMetadata.Email = vm.SelectedInventory.Vendor.Email;
+					Prop.VendorMetadata.Phone = vm.SelectedInventory.Vendor.Phone;
+					var website = vm.SelectedInventory.Vendor.WebLinks.Where(x => x.Name.Equals("Website"));
+					if (website.Any())
+					{
+						Prop.VendorMetadata.Website = website.First().Link.AbsoluteUri;
+					}
 				}
-				
 			}
-
 		}
 
 		#endregion
@@ -1024,28 +1036,86 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
-		private async Task<bool> ImportXModelFromUri(Uri uri)
+		private void LoadPropFromPath(string path)
+		{
+			Prop p = PropModelServices.Instance().LoadProp(path);
+			if (p != null)
+			{
+				Prop = p;
+				FilePath = path;
+				ClearDirtyFlag();
+			}
+			else
+			{
+				//Alert user
+			}
+		}
+
+		private async Task<Tuple<bool, ModelType>> LoadVendorModelFromUri(Uri url)
 		{
 			var targetPath = Path.Combine(Path.GetTempPath() + Guid.NewGuid());
 			var dependencyResolver = this.GetDependencyResolver();
-			//var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
-			//pleaseWaitService.Show();
-			//pleaseWaitService.UpdateStatus(1,3,"Downloading Model");
 			var ds = dependencyResolver.Resolve<IDownloadService>();
-			await ds.GetFileAsync(uri, targetPath);
-			//pleaseWaitService.UpdateStatus(2,3, "Importing Model");
+			var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
 
-			await ImportProp(targetPath);
+			var status = new Tuple<bool, ModelType>(false, ModelType.XModel);
 
-			//pleaseWaitService.UpdateStatus(3, 3, "Model Imported");
-			//pleaseWaitService.Hide();
+			pleaseWaitService.Show();
+			//The vendors provide a link to the xModel, but may have a Vixen prop of the same name alongside it.
+			string propUrl = url.AbsoluteUri.Replace(@".xmodel", @".prp");
 
-			return true;
+			var success = await ds.GetFileAsync(new Uri(propUrl), targetPath);
+
+			if (success)
+			{
+				LoadPropFromPath(targetPath);
+				status = new Tuple<bool, ModelType>(true, ModelType.Prop); ;
+			}
+			else
+			{
+				success = await ds.GetFileAsync(url, targetPath);
+				if (success)
+				{
+					await ImportProp(targetPath);
+					status = new Tuple<bool, ModelType>(true, ModelType.XModel); 
+				}
+				else
+				{
+					var mbs = dependencyResolver.Resolve<IMessageBoxService>();
+					mbs.ShowError("Unable to download the model from the vendor.\nEnsure you have an active internet connection.", "Error Downloading Model.");
+				}
+			}
+
+			pleaseWaitService.Hide();
+			return status;
 		}
 
-		private string[] GetVendorUrls()
+		private async Task<VendorLink[]> GetVendorUrls()
 		{
-			return new[] {@"http://hohenseefamily.com/xlights/boscoyo.xml"};
+			var dependencyResolver = this.GetDependencyResolver();
+			var ds = dependencyResolver.Resolve<IDownloadService>();
+
+			try
+			{
+				var vendorJson = await ds.GetFileAsStringAsync(new Uri(@"https://app.vixenlights.com/vendor.json"));
+				var o = JArray.Parse(vendorJson);
+
+				var vendors = o.Select(p => new VendorLink()
+				{
+					Name = (string)p["Name"],
+					Url = (string)p["Url"]
+				}).ToArray();
+
+				return vendors;
+			}
+			catch (Exception e)
+			{
+				Logging.Error(e, "Error retrieving the vendor list.");
+				var mbs = dependencyResolver.Resolve<IMessageBoxService>();
+				mbs.ShowError("Unable to retrieve vendor list. Ensure you have an active internet connection.", "Error Retrieving Vendors");
+			}
+			
+			return new VendorLink[0];
 		}
 
 		private string CleanseNameString(string name)

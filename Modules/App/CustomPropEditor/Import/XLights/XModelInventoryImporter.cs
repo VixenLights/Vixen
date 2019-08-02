@@ -3,15 +3,15 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Catel.Threading;
+using VixenModules.App.CustomPropEditor.Services;
 
 namespace VixenModules.App.CustomPropEditor.Import.XLights
 {
 	public class XModelInventoryImporter
 	{
-		public async Task<Model.InternalVendorInventory.ModelInventory> Import(string url)
+		public async Task<Model.InternalVendorInventory.ModelInventory> Import(string xml)
 		{
-			var xml = await RequestInventory(url);
-
 			XmlRootAttribute xRoot = new XmlRootAttribute();
 			xRoot.ElementName = "modelinventory";
 			xRoot.IsNullable = true;
@@ -19,17 +19,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			Model.ExternalVendorInventory.XModelInventory xModelInventory = DeserializeObject<Model.ExternalVendorInventory.XModelInventory>(xml, xRoot);
 
 			XModelInventoryMapper mapper = new XModelInventoryMapper();
-			return mapper.Map(xModelInventory);
-		}
-
-		private async Task<string> RequestInventory(string url)
-		{
-			using (HttpClient wc = new HttpClient())
-			{
-				wc.Timeout = TimeSpan.FromMilliseconds(5000);
-				//Get Latest inventory from the url.
-				return await wc.GetStringAsync(url);
-			}
+			return await Task.FromResult(mapper.Map(xModelInventory));
 		}
 
 		private static T DeserializeObject<T>(string xml, XmlRootAttribute root)

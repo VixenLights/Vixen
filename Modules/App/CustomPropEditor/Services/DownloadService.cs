@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Catel.IoC;
 
@@ -14,21 +10,34 @@ namespace VixenModules.App.CustomPropEditor.Services
 	public class DownloadService:IDownloadService
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-
+		
 		#region Implementation of IDownloadService
 
 		/// <inheritdoc />
-		public async Task<bool> GetFileAsync(Uri url, string targetPath)
+		public Task<bool> GetFileAsync(Uri url, string targetPath)
+		{
+			return GetFileAsync(url, targetPath, false);
+		}
+
+		/// <inheritdoc />
+		public async Task<bool> GetFileAsync(Uri url, string targetPath, bool isNewer)
 		{
 			if (string.IsNullOrEmpty(targetPath))
 			{
 				throw new ArgumentNullException(nameof(targetPath));
 			}
 
+			var modifiedTime = DateTime.MinValue;
+			if (isNewer && File.Exists(targetPath))
+			{
+				modifiedTime = File.GetLastWriteTime(targetPath).ToUniversalTime();
+			}
+
 			try
 			{
 				using (HttpClient wc = new HttpClient())
 				{
+					wc.DefaultRequestHeaders.IfModifiedSince = modifiedTime;
 					wc.Timeout = TimeSpan.FromMilliseconds(5000);
 					//Get Latest inventory from the url.
 					var content = await wc.GetStreamAsync(url);
@@ -46,6 +55,16 @@ namespace VixenModules.App.CustomPropEditor.Services
 			}
 
 			return true;
+		}
+
+		/// <inheritdoc />
+		public async Task<string> GetFileAsStringAsync(Uri url)
+		{
+			using (HttpClient wc = new HttpClient())
+			{
+				wc.Timeout = TimeSpan.FromMilliseconds(5000);
+				return await wc.GetStringAsync(url);
+			}
 		}
 
 		#endregion

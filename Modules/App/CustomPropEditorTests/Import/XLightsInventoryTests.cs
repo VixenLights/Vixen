@@ -1,5 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using VixenModules.App.CustomPropEditor.Import.XLights;
+using VixenModules.App.CustomPropEditor.Services;
 
 namespace VixenModules.App.CustomPropEditor.Import.Tests
 {
@@ -10,7 +12,9 @@ namespace VixenModules.App.CustomPropEditor.Import.Tests
 		public void ImportTest()
 		{
 			XModelInventoryImporter inventoryImporter = new XModelInventoryImporter();
-			var result = inventoryImporter.Import("http://hohenseefamily.com/xlights/boscoyo.xml");
+			var ds = new DownloadService();
+			var xml = ds.GetFileAsStringAsync(new Uri("http://hohenseefamily.com/xlights/boscoyo.xml"));
+			var result = inventoryImporter.Import(xml.Result);
 			result.Wait();
 			Assert.IsNotNull(result.Result.Vendor);
 			Assert.IsNotNull(result.Result.Vendor.Name);
