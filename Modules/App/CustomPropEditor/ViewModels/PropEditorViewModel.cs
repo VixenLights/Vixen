@@ -1084,6 +1084,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			var dependencyResolver = this.GetDependencyResolver();
 			var ds = dependencyResolver.Resolve<IDownloadService>();
 			var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
+			var mbs = dependencyResolver.Resolve<IMessageBoxService>();
 
 			var status = new Tuple<bool, ModelType>(false, ModelType.XModel);
 
@@ -1099,7 +1100,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				}
 				else
 				{
-					var mbs = dependencyResolver.Resolve<IMessageBoxService>();
 					mbs.ShowError("Unable to download the model from the vendor.\nEnsure you have an active internet connection.", "Error Downloading Model.");
 				}
 			}
@@ -1110,7 +1110,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				string propUrl = modelLink.Link.AbsoluteUri.Replace(@".xmodel", @".prp");
 
 				bool success = await ds.GetFileAsync(new Uri(propUrl), targetPath);
-
+				
 				if (success)
 				{
 					LoadPropFromPath(targetPath);
@@ -1126,7 +1126,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 					}
 					else
 					{
-						var mbs = dependencyResolver.Resolve<IMessageBoxService>();
 						mbs.ShowError("Unable to download the model from the vendor.\nEnsure you have an active internet connection.", "Error Downloading Model.");
 					}
 				}

@@ -227,7 +227,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private void ImportModel(ModelLink ml)
 		{
-			if (SelectedProduct != null && SelectedModelLink != null)
+			if (SelectedProduct != null && ml != null)
 			{
 				SelectedModelLink = ml;
 				DialogResult = true;

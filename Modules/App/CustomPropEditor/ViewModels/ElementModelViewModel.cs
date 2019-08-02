@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows.Controls.WpfPropertyGrid;
 using Catel.Data;
 using Catel.MVVM;
 using VixenModules.App.CustomPropEditor.Model;

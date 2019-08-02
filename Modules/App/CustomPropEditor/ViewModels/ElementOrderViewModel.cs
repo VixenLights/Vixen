@@ -30,9 +30,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		{
 			LeafNodes = new ObservableCollection<ElementModelViewModel>();
 			SelectedItems = new ObservableCollection<ElementModelViewModel>();
+			SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
 			Prop = p;
 		}
 
+		
 		#region Prop model property
 
 		/// <summary>
@@ -89,6 +91,17 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// SelectedItems property data.
 		/// </summary>
 		public static readonly PropertyData SelectedItemsProperty = RegisterProperty("SelectedItems", typeof(ObservableCollection<ElementModelViewModel>));
+
+		#endregion
+
+		#region Events
+		
+		private void SelectedItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			var viewModelBase = this as ViewModelBase;
+			var commandManager = viewModelBase.GetViewModelCommandManager();
+			commandManager.InvalidateCommands();
+		}
 
 		#endregion
 
@@ -162,6 +175,64 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 			List<string> oldNames = new List<string>(SelectedItems.Select(x => x.ElementModel.Name).ToArray());
 			NameGenerator renamer = new NameGenerator(oldNames);
+			if (renamer.ShowDialog() == DialogResult.OK)
+			{
+				for (int i = 0; i < SelectedItems.Count; i++)
+				{
+					if (i >= renamer.Names.Count)
+					{
+						Logging.Warn("Bulk renaming elements, and ran out of new names!");
+						break;
+					}
+
+
+					SelectedItems[i].Name = PropModelServices.Instance().Uniquify(renamer.Names[i], 2, SelectedItems[i].ElementModel);
+				}
+
+				return true;
+			}
+
+			return false;
+		}
+
+		#endregion
+
+		#region SubstitutionRename command
+
+		private Command _substitutionRenameCommand;
+
+		/// <summary>
+		/// Gets the PatternRename command.
+		/// </summary>
+		public Command SubstitutionRenameCommand
+		{
+			get { return _substitutionRenameCommand ?? (_substitutionRenameCommand = new Command(SubstitutionRename, CanSubstitutionRename)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the PatternRename command is executed.
+		/// </summary>
+		private void SubstitutionRename()
+		{
+			SubstitutionRenameSelectedItems();
+		}
+
+		/// <summary>
+		/// Method to check whether the PatternRename command can be executed.
+		/// </summary>
+		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+		private bool CanSubstitutionRename()
+		{
+			return SelectedItems.Count > 1;
+		}
+
+		public bool SubstitutionRenameSelectedItems()
+		{
+			if (SelectedItems.Count <= 1)
+				return false;
+
+			List<string> oldNames = new List<string>(SelectedItems.Select(x => x.Name).ToArray());
+			SubstitutionRenamer renamer = new SubstitutionRenamer(oldNames);
 			if (renamer.ShowDialog() == DialogResult.OK)
 			{
 				for (int i = 0; i < SelectedItems.Count; i++)
