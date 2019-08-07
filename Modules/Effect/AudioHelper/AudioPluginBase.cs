@@ -502,9 +502,9 @@ namespace VixenModules.Effect.AudioHelp
 			_audioUtilities.FreeMem();
         }
 
-		private List<ElementNode> GetNodesToRenderOn()
+		private List<IElementNode> GetNodesToRenderOn()
 		{
-			IEnumerable<ElementNode> renderNodes = null;
+			IEnumerable<IElementNode> renderNodes = null;
 
 			if (DepthOfEffect == 0)
 			{

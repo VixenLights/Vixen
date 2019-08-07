@@ -286,7 +286,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			return pps;
 		}
 
-		private int PixelsPerString(ElementNode parentNode)
+		private int PixelsPerString(IElementNode parentNode)
 		{
 			//TODO: what would we do if parentNode is null?
 			int pps = 0;

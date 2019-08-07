@@ -28,7 +28,7 @@ namespace VixenModules.Property.Orientation {
 			set => _data = (OrientationData)value;
 		}
 
-		public static Orientation GetOrientationForElement(ElementNode element)
+		public static Orientation GetOrientationForElement(IElementNode element)
 		{
 			Orientation p = Property.Orientation.Orientation.Vertical;
 			OrientationModule module = element?.Properties.Get(OrientationDescriptor.ModuleId) as OrientationModule;

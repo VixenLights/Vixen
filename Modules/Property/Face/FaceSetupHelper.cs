@@ -25,7 +25,7 @@ namespace VixenModules.Property.Face {
 		private static Dictionary<string, Bitmap> _phonemeBitmaps;
 		private static Dictionary<string, Bitmap> _faceComponentBitmaps;
 		private static string COLOR_COLUMN_NAME = "Color";
-		private IEnumerable<ElementNode> _targetNodes;
+		private IEnumerable<IElementNode> _targetNodes;
 
 		public FaceSetupHelper() {
 			InitializeComponent();
@@ -61,7 +61,7 @@ namespace VixenModules.Property.Face {
 		public string HelperName => "Face Mapping";
 
 		/// <inheritdoc />
-		public bool Perform(IEnumerable<ElementNode> selectedNodes)
+		public bool Perform(IEnumerable<IElementNode> selectedNodes)
 		{
 			LoadResourceBitmaps();
 			_targetNodes = selectedNodes;
@@ -91,7 +91,7 @@ namespace VixenModules.Property.Face {
 				var otherDataRow = _otherDataTable.Rows[num];
 				string elementName = dr[0].ToString();
 				FaceMapItem item = new FaceMapItem();
-				ElementNode node = FindElementNode(elementName);
+				IElementNode node = FindElementNode(elementName);
 
 				FaceModule fm;
 				if (node.Properties.Contains(FaceDescriptor.ModuleId))
@@ -305,7 +305,7 @@ namespace VixenModules.Property.Face {
 			dgv.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
 		}
 
-		private ElementNode FindElementNode(string elementName)
+		private IElementNode FindElementNode(string elementName)
 		{
 			return _targetNodes.First(x => x.Name.Equals(elementName));
 		}
@@ -447,14 +447,14 @@ namespace VixenModules.Property.Face {
 			{
 				if (e.ColumnIndex == lastColumn)
 				{
-					List<ElementNode> chosenNodes = new List<ElementNode>();
+					List<IElementNode> chosenNodes = new List<IElementNode>();
 					//LipSyncMapColorSelect colorDialog1 = new LipSyncMapColorSelect();
 
 					foreach (DataGridViewCell selCell in view.SelectedCells)
 					{
 						if (selCell.ColumnIndex == lastColumn)
 						{
-							ElementNode theNode = FindElementNode((string)selCell.OwningRow.Cells[0].Value);
+							IElementNode theNode = FindElementNode((string)selCell.OwningRow.Cells[0].Value);
 							if (theNode != null)
 							{
 								chosenNodes.Add(theNode);
@@ -492,7 +492,7 @@ namespace VixenModules.Property.Face {
 			}
 		}
 
-		private System.Drawing.Color ValidateColorForElement(ElementNode e, System.Drawing.Color defaultColor)
+		private System.Drawing.Color ValidateColorForElement(IElementNode e, System.Drawing.Color defaultColor)
 		{
 			var colors = ColorProperty.ColorModule.getValidColorsForElementNode(e, false);
 			if (colors.Any())
@@ -506,7 +506,7 @@ namespace VixenModules.Property.Face {
 			return defaultColor;
 		}
 
-		private HashSet<System.Drawing.Color> ValidDiscreteColors(List<ElementNode> nodeList)
+		private HashSet<System.Drawing.Color> ValidDiscreteColors(List<IElementNode> nodeList)
 		{
 			HashSet<System.Drawing.Color> validColors = new HashSet<System.Drawing.Color>();
 
@@ -518,7 +518,7 @@ namespace VixenModules.Property.Face {
 			return validColors;
 		}
 
-		private Tuple<DialogResult,System.Drawing.Color> ChooseColor(List<ElementNode> selectedNodes, System.Drawing.Color color)
+		private Tuple<DialogResult,System.Drawing.Color> ChooseColor(List<IElementNode> selectedNodes, System.Drawing.Color color)
 		{
 			var returnColor = color;
 			var colors = ValidDiscreteColors(selectedNodes);

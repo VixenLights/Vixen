@@ -195,7 +195,7 @@ namespace VixenModules.Effect.Effect
 			}
 		}
 
-		private void CalculatePixelsPerString(IEnumerable<ElementNode> nodes)
+		private void CalculatePixelsPerString(IEnumerable<IElementNode> nodes)
 		{
 			StringPixelCounts.Clear();
 			foreach (var node in nodes)
@@ -204,15 +204,15 @@ namespace VixenModules.Effect.Effect
 			}
 		}
 
-		private int CalculateMaxStringCount(IEnumerable<ElementNode> nodes)
+		private int CalculateMaxStringCount(IEnumerable<IElementNode> nodes)
 		{
 			return nodes.Count();
 		}
 
-		protected IEnumerable<ElementNode> FindLeafParents()
+		protected IEnumerable<IElementNode> FindLeafParents()
 		{
-			var nodes = new List<ElementNode>();
-			var nonLeafElements = Enumerable.Empty<ElementNode>();
+			var nodes = new List<IElementNode>();
+			var nonLeafElements = Enumerable.Empty<IElementNode>();
 
 			if (TargetNodes.FirstOrDefault() != null)
 			{

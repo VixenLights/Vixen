@@ -10,9 +10,9 @@ namespace Vixen.Sys
 	{
 		private Dictionary<Guid, IPropertyModuleInstance> _items = new Dictionary<Guid, IPropertyModuleInstance>();
 		//private ModuleLocalDataSet _propertyData;
-		private ElementNode _owner;
+		private IElementNode _owner;
 
-		public PropertyManager(ElementNode owner)
+		public PropertyManager(IElementNode owner)
 		{
 			_owner = owner;
 			//PropertyData = new ModuleLocalDataSet();

@@ -121,7 +121,7 @@ namespace VixenModules.Effect.LipSync
 			}
 		}
 
-		private void RenderPropertyMapElements(ElementNode element, PhonemeType phoneme)
+		private void RenderPropertyMapElements(IElementNode element, PhonemeType phoneme)
 		{
 			var fm = element.Properties.Get(FaceDescriptor.ModuleId) as FaceModule;
 			if (fm == null) return;
@@ -199,7 +199,7 @@ namespace VixenModules.Effect.LipSync
 			}
 		}
 
-		private void RenderMapElements(LipSyncMapData mapData, ElementNode element, PhonemeType phoneme)
+		private void RenderMapElements(LipSyncMapData mapData, IElementNode element, PhonemeType phoneme)
 		{
 			LipSyncMapItem item = mapData.FindMapItem(element.Id);
 			if (item == null) return;

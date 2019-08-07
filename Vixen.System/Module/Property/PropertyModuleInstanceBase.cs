@@ -13,7 +13,7 @@ namespace Vixen.Module.Property
 	                                                   IEqualityComparer<PropertyModuleInstanceBase>,
 	                                                   IEquatable<PropertyModuleInstanceBase>
 	{
-		public virtual ElementNode Owner { get; set; }
+		public virtual IElementNode Owner { get; set; }
 
 		public virtual bool HasSetup
 		{
@@ -75,7 +75,7 @@ namespace Vixen.Module.Property
 		public virtual bool HasElementSetupHelper => false;
 
 		/// <inheritdoc />
-		public virtual bool SetupElements(IEnumerable<ElementNode> nodes)
+		public virtual bool SetupElements(IEnumerable<IElementNode> nodes)
 		{
 			return false;
 		}

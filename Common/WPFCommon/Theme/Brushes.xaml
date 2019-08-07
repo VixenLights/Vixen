@@ -80,6 +80,16 @@
 		<GradientStop Offset="1.2" Color="#181818" />
 	</LinearGradientBrush>
 
+	<LinearGradientBrush x:Key="LinearBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
+	  <GradientStop Offset="0.0" Color="#585858" />
+	  <GradientStop Offset="1.2" Color="#282828" />
+	</LinearGradientBrush>
+
+	<LinearGradientBrush x:Key="LinearHighlightBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
+	  <GradientStop Offset="0.0" Color="#505050" />
+	  <GradientStop Offset="1.2" Color="#383838" />
+	</LinearGradientBrush>
+
 	<SolidColorBrush x:Key="Item.MouseOver.Background" Color="#1F26A0DA"/>
 	<SolidColorBrush x:Key="Item.MouseOver.Border" Color="#a826A0Da"/>
 	<SolidColorBrush x:Key="Item.SelectedInactive.Background" Color="#3DDADADA"/>

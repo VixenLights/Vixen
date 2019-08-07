@@ -8,6 +8,6 @@ namespace Vixen.Module.Property
 	{
 		bool HasElementSetupHelper { get; }
 
-		bool SetupElements(IEnumerable<ElementNode> nodes);
+		bool SetupElements(IEnumerable<IElementNode> nodes);
 	}
 }

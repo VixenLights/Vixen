@@ -449,13 +449,13 @@ namespace VixenModules.Effect.Spin
 
 		private void DoRendering(CancellationTokenSource tokenSource = null)
 		{
-			List<ElementNode> renderNodes = GetNodesToRenderOn();
+			List<IElementNode> renderNodes = GetNodesToRenderOn();
 			int targetNodeCount = renderNodes.Count;
 			
 			//If there are no nodes to render on Exit!
 			if (targetNodeCount == 0) return;
 
-			ElementNode lastTargetedNode = null;
+			IElementNode lastTargetedNode = null;
 
 			//Pulse.Pulse pulse;
 			EffectIntents pulseData;
@@ -463,7 +463,7 @@ namespace VixenModules.Effect.Spin
 			// apply the 'background' values to all targets if nonzero
 			if (EnableDefaultLevel) {
 				int i = 0;
-				foreach (ElementNode target in renderNodes)
+				foreach (IElementNode target in renderNodes)
 				{
 					if (tokenSource != null && tokenSource.IsCancellationRequested) return;
 
@@ -600,7 +600,7 @@ namespace VixenModules.Effect.Spin
 					continue;
 				}
 
-				ElementNode currentNode = renderNodes[currentNodeIndex];
+				IElementNode currentNode = renderNodes[currentNodeIndex];
 				if (currentNode == lastTargetedNode)
 					continue;
 
@@ -689,9 +689,9 @@ namespace VixenModules.Effect.Spin
 			_elementData = EffectIntents.Restrict(_elementData, TimeSpan.Zero, TimeSpan);
 		}
 
-		private List<ElementNode> GetNodesToRenderOn()
+		private List<IElementNode> GetNodesToRenderOn()
 		{
-			IEnumerable<ElementNode> renderNodes = null;
+			IEnumerable<IElementNode> renderNodes = null;
 
 			if (DepthOfEffect == 0) {
 				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();

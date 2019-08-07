@@ -1142,6 +1142,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		}
 
 		/// <inheritdoc />
+		public void DragDropOperationFinished(DragDropEffects operationResult, IDragInfo dragInfo)
+		{
+			
+		}
+
+		/// <inheritdoc />
 		public void DragCancelled()
 		{
 			

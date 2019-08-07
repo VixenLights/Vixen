@@ -118,10 +118,10 @@ namespace VixenModules.Effect.Nutcracker
 			return FindLeafParents().Count();
 		}
 
-		private IEnumerable<ElementNode> FindLeafParents()
+		private IEnumerable<IElementNode> FindLeafParents()
 		{
-			var nodes = new List<ElementNode>();
-			var nonLeafElements = new List<ElementNode>();
+			var nodes = new List<IElementNode>();
+			var nonLeafElements = new List<IElementNode>();
 			
 			if (TargetNodes.FirstOrDefault() != null)
 			{
@@ -142,7 +142,7 @@ namespace VixenModules.Effect.Nutcracker
 
 		private void CalculatePixelsPerString()
 		{
-			IEnumerable<ElementNode> nodes = FindLeafParents();
+			IEnumerable<IElementNode> nodes = FindLeafParents();
 			_stringPixelCounts.Clear();
 			foreach (var node in nodes)
 			{

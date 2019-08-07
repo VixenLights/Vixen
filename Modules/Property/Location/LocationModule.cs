@@ -57,7 +57,7 @@ namespace VixenModules.Property.Location {
 
 		#endregion
 
-		public static Point GetPositionForElement(ElementNode element)
+		public static Point GetPositionForElement(IElementNode element)
 		{
 			Point p;
 			LocationModule module = element.Properties.Get(LocationDescriptor.ModuleId) as LocationModule;

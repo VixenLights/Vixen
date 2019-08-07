@@ -41,7 +41,7 @@ namespace Vixen.Module.SequenceType.Surrogate
 			}
 			else
 			{
-				effect.TargetNodes = new ElementNode[]{};
+				effect.TargetNodes = new IElementNode[]{new ProxyElementNode(TargetNodes.First().NodeId,TargetNodes.First().Name)};
 			}
 			return new EffectNode(effect, StartTime);
 		}

@@ -53,9 +53,9 @@ namespace VixenModules.Effect.Alternating
 
 		}
 
-		private IEnumerable<ElementNode> GetNodesToRenderOn()
+		private IEnumerable<IElementNode> GetNodesToRenderOn()
 		{
-			IEnumerable<ElementNode> renderNodes = TargetNodes;
+			IEnumerable<IElementNode> renderNodes = TargetNodes;
 
 			if (!EnableDepth)
 			{
@@ -404,7 +404,7 @@ namespace VixenModules.Effect.Alternating
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
-		private EffectIntents RenderNode(IEnumerable<ElementNode> nodes)
+		private EffectIntents RenderNode(IEnumerable<IElementNode> nodes)
 		{
 			EffectIntents effectIntents = new EffectIntents();
 			int intervals = 1;

@@ -13,7 +13,7 @@ namespace VixenModules.Property.Order
 {
 	public partial class OrderSetupHelper : BaseForm, IElementSetupHelper
 	{
-		private readonly Dictionary<ElementNode, int>  _elementOrderLookup = new Dictionary<ElementNode, int>();
+		private readonly Dictionary<IElementNode, int>  _elementOrderLookup = new Dictionary<IElementNode, int>();
 		private readonly ContextMenuStrip _contextMenu = new ContextMenuStrip();
 
 		public OrderSetupHelper()
@@ -72,7 +72,7 @@ namespace VixenModules.Property.Order
 		public string HelperName => "Patching Order";
 
 		/// <inheritdoc />
-		public bool Perform(IEnumerable<ElementNode> selectedNodes)
+		public bool Perform(IEnumerable<IElementNode> selectedNodes)
 		{
 			PopulateElementList(selectedNodes);
 
@@ -109,9 +109,9 @@ namespace VixenModules.Property.Order
 
 		#endregion
 
-		private void PopulateElementList(IEnumerable<ElementNode> selectedNodes)
+		private void PopulateElementList(IEnumerable<IElementNode> selectedNodes)
 		{
-			IEnumerable<ElementNode> leafElements = selectedNodes.SelectMany(x => x.GetLeafEnumerator()).Distinct();
+			IEnumerable<IElementNode> leafElements = selectedNodes.SelectMany(x => x.GetLeafEnumerator()).Distinct();
 
 			_elementOrderLookup.Clear();
 			foreach (var leafElement in leafElements)
@@ -149,14 +149,14 @@ namespace VixenModules.Property.Order
 			int index = 1;
 			foreach (ListViewItem item in elementList.Items)
 			{
-				var elementNode = item.Tag as ElementNode;
-				if (elementNode == null)
+				var IElementNode = item.Tag as IElementNode;
+				if (IElementNode == null)
 				{
 					continue; // This should not happen!
 				}
 
 				item.Text = index.ToString(CultureInfo.InvariantCulture);
-				_elementOrderLookup[elementNode] = index;
+				_elementOrderLookup[IElementNode] = index;
 				index++;
 			}
 			elementList.Invalidate();

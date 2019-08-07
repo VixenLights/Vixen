@@ -32,6 +32,13 @@
             </summary>
             <param name="dropInfo">Information about the drop.</param>
         </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DefaultDragHandler.DragDropOperationFinished(System.Windows.DragDropEffects,GongSolutions.Wpf.DragDrop.IDragInfo)">
+            <summary>
+            Notifies the drag handler that a drag and drop operation has finished.
+            </summary>
+            <param name="operationResult">The operation result.</param>
+            <param name="dragInfo">The drag information.</param>
+        </member>
         <member name="M:GongSolutions.Wpf.DragDrop.DefaultDragHandler.DragCancelled">
             <summary>
             Notifies the drag handler that a drag has been aborted.
@@ -51,6 +58,23 @@
             <summary>
             A default insertion drop handler for the most common usages
             </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DefaultDropHandler.CanAcceptData(GongSolutions.Wpf.DragDrop.IDropInfo)">
+            <summary>
+            Test the specified drop information for the right data.
+            </summary>
+            <param name="dropInfo">The drop information.</param>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DefaultDropHandler.SelectDroppedItems(GongSolutions.Wpf.DragDrop.IDropInfo,System.Collections.IEnumerable,System.Boolean,System.Boolean)">
+            <summary>
+            Clears the current selected items and selects the given items.
+            </summary>
+            <param name="dropInfo">The drop information.</param>
+            <param name="items">The items which should be select.</param>
+            <param name="applyTemplate">if set to <c>true</c> then for all items the ApplyTemplate will be invoked.</param>
+            <param name="focusVisualTarget">if set to <c>true</c> the visual target will be focused.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="dropInfo" /> is <see langword="null" /></exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="dropInfo" /> is <see langword="null" /></exception>
         </member>
         <member name="M:GongSolutions.Wpf.DragDrop.DefaultDropHandler.ShouldCopyData(GongSolutions.Wpf.DragDrop.IDropInfo)">
             <summary>
@@ -75,12 +99,6 @@
             </summary>
             <param name="dropInfo">Information about the drop.</param>
         </member>
-        <member name="M:GongSolutions.Wpf.DragDrop.DefaultDropHandler.CanAcceptData(GongSolutions.Wpf.DragDrop.IDropInfo)">
-            <summary>
-            Test the specified drop information for the right data.
-            </summary>
-            <param name="dropInfo">The drop information.</param>
-        </member>
         <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.TryGetDragHandler(GongSolutions.Wpf.DragDrop.DragInfo,System.Windows.UIElement)">
             <summary>
             Gets the drag handler from the drag info or from the sender, if the drag info is null
@@ -96,6 +114,26 @@
             <param name="dropInfo">the drop info object</param>
             <param name="sender">the sender from an event, e.g. drag over</param>
             <returns></returns>
+        </member>
+        <member name="P:GongSolutions.Wpf.DragDrop.DragDrop.DataFormat">
+            <summary>
+            The default data format which will be used for the drag and drop actions.
+            </summary>
+        </member>
+        <member name="F:GongSolutions.Wpf.DragDrop.DragDrop.DataFormatProperty">
+            <summary>
+            Gets or sets the data format which will be used for the drag and drop actions.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.GetDataFormat(System.Windows.UIElement)">
+            <summary>
+            Gets the data format which will be used for the drag and drop actions.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.SetDataFormat(System.Windows.UIElement,System.Windows.DataFormat)">
+            <summary>
+            Sets the data format which will be used for the drag and drop actions.
+            </summary>
         </member>
         <member name="F:GongSolutions.Wpf.DragDrop.DragDrop.IsDragSourceProperty">
             <summary>
@@ -125,6 +163,21 @@
         <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.SetIsDropTarget(System.Windows.UIElement,System.Boolean)">
             <summary>
             Sets whether the control can be used as drop target.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.GetDropEventType(System.Windows.DependencyObject)">
+            <summary>
+            Gets which type of events are subscribed for the drag and drop events.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.SetDropEventType(System.Windows.DependencyObject,GongSolutions.Wpf.DragDrop.EventType)">
+            <summary>
+            Sets which type of events are subscribed for the drag and drop events.
+            </summary>
+        </member>
+        <member name="F:GongSolutions.Wpf.DragDrop.DragDrop.DropEventTypeProperty">
+            <summary>
+            Gets or sets the events which are subscribed for the drag and drop events
             </summary>
         </member>
         <member name="F:GongSolutions.Wpf.DragDrop.DragDrop.CanDragWithMouseRightButtonProperty">
@@ -195,6 +248,21 @@
         <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.SetDropScrollingMode(System.Windows.UIElement,GongSolutions.Wpf.DragDrop.ScrollingMode)">
             <summary>
             Sets the ScrollingMode for the drop action.
+            </summary>
+        </member>
+        <member name="F:GongSolutions.Wpf.DragDrop.DragDrop.ShowAlwaysDropTargetAdornerProperty">
+            <summary>
+            Gets or Sets whether to show the DropTargetAdorner (DropTargetInsertionAdorner) on an empty target too.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.GetShowAlwaysDropTargetAdorner(System.Windows.UIElement)">
+            <summary>
+            Gets whether to show the DropTargetAdorner (DropTargetInsertionAdorner) on an empty target too.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.SetShowAlwaysDropTargetAdorner(System.Windows.UIElement,System.Boolean)">
+            <summary>
+            Sets whether to show the DropTargetAdorner (DropTargetInsertionAdorner) on an empty target too.
             </summary>
         </member>
         <member name="F:GongSolutions.Wpf.DragDrop.DragDrop.DropTargetAdornerBrushProperty">
@@ -321,6 +389,36 @@
             Sets the horizontal and vertical proportion at which the pointer will anchor on the DragAdorner.
             </summary>
         </member>
+        <member name="F:GongSolutions.Wpf.DragDrop.DragDrop.DragAdornerTranslationProperty">
+            <summary>
+            Gets or Sets the translation transform which will be used for the DragAdorner.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.GetDragAdornerTranslation(System.Windows.UIElement)">
+            <summary>
+            Gets the translation transform which will be used for the DragAdorner.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.SetDragAdornerTranslation(System.Windows.UIElement,System.Windows.Point)">
+            <summary>
+            Sets the translation transform which will be used for the DragAdorner.
+            </summary>
+        </member>
+        <member name="F:GongSolutions.Wpf.DragDrop.DragDrop.EffectAdornerTranslationProperty">
+            <summary>
+            Gets or Sets the translation transform which will be used for the EffectAdorner.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.GetEffectAdornerTranslation(System.Windows.UIElement)">
+            <summary>
+            Gets the translation transform which will be used for the EffectAdorner.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.SetEffectAdornerTranslation(System.Windows.UIElement,System.Windows.Point)">
+            <summary>
+            Sets the translation transform which will be used for the EffectAdorner.
+            </summary>
+        </member>
         <member name="F:GongSolutions.Wpf.DragDrop.DragDrop.DragAdornerTemplateProperty">
             <summary>
             Gets or Sets a DataTemplate for the DragAdorner.
@@ -336,6 +434,21 @@
             Sets the DataTemplate for the DragAdorner.
             </summary>
         </member>
+        <member name="F:GongSolutions.Wpf.DragDrop.DragDrop.DropAdornerTemplateProperty">
+            <summary>
+            Gets or Sets a DataTemplate for the DragAdorner based on the DropTarget.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.GetDropAdornerTemplate(System.Windows.UIElement)">
+            <summary>
+            Gets the DataTemplate for the DragAdorner based on the DropTarget.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.SetDropAdornerTemplate(System.Windows.UIElement,System.Windows.DataTemplate)">
+            <summary>
+            Sets the DataTemplate for the DragAdorner based on the DropTarget.
+            </summary>
+        </member>
         <member name="F:GongSolutions.Wpf.DragDrop.DragDrop.DragAdornerTemplateSelectorProperty">
             <summary>
             Gets or Sets a DataTemplateSelector for the DragAdorner.
@@ -349,6 +462,21 @@
         <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.GetDragAdornerTemplateSelector(System.Windows.DependencyObject)">
             <summary>
             Gets the DataTemplateSelector for the DragAdorner.
+            </summary>
+        </member>
+        <member name="F:GongSolutions.Wpf.DragDrop.DragDrop.DropAdornerTemplateSelectorProperty">
+            <summary>
+            Gets or Sets a DataTemplateSelector for the DragAdorner based on the DropTarget.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.SetDropAdornerTemplateSelector(System.Windows.DependencyObject,System.Windows.Controls.DataTemplateSelector)">
+            <summary>
+            Gets the DataTemplateSelector for the DragAdorner based on the DropTarget.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.GetDropAdornerTemplateSelector(System.Windows.DependencyObject)">
+            <summary>
+            Gets the DataTemplateSelector for the DragAdorner based on the DropTarget.
             </summary>
         </member>
         <member name="F:GongSolutions.Wpf.DragDrop.DragDrop.UseVisualSourceItemSizeForDragAdornerProperty">
@@ -492,6 +620,69 @@
             but sometimes it's necessary to force the oreintation, if the look up is wrong.
             </summary>
         </member>
+        <member name="F:GongSolutions.Wpf.DragDrop.DragDrop.MinimumHorizontalDragDistanceProperty">
+            <summary>
+            Gets or sets the minimum horizontal drag distance to allow for limited movement of the mouse pointer before a drag operation begins.
+            Default is SystemParameters.MinimumHorizontalDragDistance.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.GetMinimumHorizontalDragDistance(System.Windows.UIElement)">
+            <summary>
+            Sets the minimum horizontal drag distance.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.SetMinimumHorizontalDragDistance(System.Windows.UIElement,System.Double)">
+            <summary>
+            Sets the minimum horizontal drag distance.
+            </summary>
+        </member>
+        <member name="F:GongSolutions.Wpf.DragDrop.DragDrop.MinimumVerticalDragDistanceProperty">
+            <summary>
+            Gets or sets the minimum vertical drag distance to allow for limited movement of the mouse pointer before a drag operation begins.
+            Default is SystemParameters.MinimumVerticalDragDistance.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.GetMinimumVerticalDragDistance(System.Windows.UIElement)">
+            <summary>
+            Gets the minimum vertical drag distance.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.SetMinimumVerticalDragDistance(System.Windows.UIElement,System.Double)">
+            <summary>
+            Sets the minimum vertical drag distance.
+            </summary>
+        </member>
+        <member name="F:GongSolutions.Wpf.DragDrop.DragDrop.SelectDroppedItemsProperty">
+            <summary>
+            Gets or sets whether if the dropped items should be select again (should keep the selection).
+            Default is false.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.GetSelectDroppedItems(System.Windows.UIElement)">
+            <summary>
+            Gets whether if the dropped items should be select again (should keep the selection).
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.SetSelectDroppedItems(System.Windows.UIElement,System.Boolean)">
+            <summary>
+            Sets whether if the dropped items should be select again (should keep the selection).
+            </summary>
+        </member>
+        <member name="F:GongSolutions.Wpf.DragDrop.DragDrop.DropTargetScrollViewerProperty">
+            <summary>
+            Gets or sets the <see cref="T:System.Windows.Controls.ScrollViewer"/> that will be used as <see cref="P:GongSolutions.Wpf.DragDrop.DropInfo.TargetScrollViewer"/>.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.SetDropTargetScrollViewer(System.Windows.DependencyObject,System.Windows.Controls.ScrollViewer)">
+            <summary>
+            Sets the <see cref="T:System.Windows.Controls.ScrollViewer"/> that will be used as <see cref="P:GongSolutions.Wpf.DragDrop.DropInfo.TargetScrollViewer"/>.
+            </summary>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.DragDrop.GetDropTargetScrollViewer(System.Windows.DependencyObject)">
+            <summary>
+            Gets the <see cref="T:System.Windows.Controls.ScrollViewer"/> that will be used as <see cref="P:GongSolutions.Wpf.DragDrop.DropInfo.TargetScrollViewer"/>.
+            </summary>
+        </member>
         <member name="T:GongSolutions.Wpf.DragDrop.DragInfo">
             <summary>
             Holds information about a the source of a drag drop operation.
@@ -515,6 +706,12 @@
             <param name="e">
             The mouse event that initiated the drag.
             </param>
+        </member>
+        <member name="P:GongSolutions.Wpf.DragDrop.DragInfo.DataFormat">
+            <summary>
+            Gets or sets the data format which will be used for the drag and drop actions.
+            </summary>
+            <value>The data format.</value>
         </member>
         <member name="P:GongSolutions.Wpf.DragDrop.DragInfo.Data">
             <summary>
@@ -615,6 +812,13 @@
             a custom instance if custom drag and drop behavior is needed.
             </summary>
         </member>
+        <member name="P:GongSolutions.Wpf.DragDrop.DragInfo.DragDropHandler">
+            <summary>Initiates a drag-and-drop operation.</summary>
+            <param name="dragSource">A reference to the dependency object that is the source of the data being dragged.</param>
+            <param name="data">A data object that contains the data being dragged.</param>
+            <param name="allowedEffects">One of the <see cref="T:System.Windows.DragDropEffects" /> values that specifies permitted effects of the drag-and-drop operation.</param>
+            <returns>One of the <see cref="T:System.Windows.DragDropEffects" /> values that specifies the final effect that was performed during the drag-and-drop operation.</returns>
+        </member>
         <member name="P:GongSolutions.Wpf.DragDrop.DragInfo.DragDropCopyKeyState">
             <summary>
             Gets the drag drop copy key state indicating the effect of the drag drop operation.
@@ -631,7 +835,7 @@
             the current drop target is valid, and by <see cref="M:GongSolutions.Wpf.DragDrop.IDropTarget.Drop(GongSolutions.Wpf.DragDrop.IDropInfo)"/> to perform the drop.
             </remarks>
         </member>
-        <member name="M:GongSolutions.Wpf.DragDrop.DropInfo.#ctor(System.Object,System.Windows.DragEventArgs,GongSolutions.Wpf.DragDrop.DragInfo)">
+        <member name="M:GongSolutions.Wpf.DragDrop.DropInfo.#ctor(System.Object,System.Windows.DragEventArgs,GongSolutions.Wpf.DragDrop.DragInfo,GongSolutions.Wpf.DragDrop.EventType)">
             <summary>
             Initializes a new instance of the DropInfo class.
             </summary>
@@ -646,6 +850,10 @@
             
             <param name="dragInfo">
             Information about the source of the drag, if the drag came from within the framework.
+            </param>
+            
+            <param name="eventType">
+            The type of the underlying event (tunneled or bubbled).
             </param>
         </member>
         <member name="P:GongSolutions.Wpf.DragDrop.DropInfo.Data">
@@ -772,6 +980,11 @@
             Gets and sets the text displayed in the DropDropEffects adorner.
             </summary>
         </member>
+        <member name="P:GongSolutions.Wpf.DragDrop.DropInfo.EffectText">
+            <summary>
+            Gets and sets the effect text displayed in the DropDropEffects adorner.
+            </summary>
+        </member>
         <member name="P:GongSolutions.Wpf.DragDrop.DropInfo.InsertPosition">
             <summary>
             Gets the relative position the item will be inserted to compared to the TargetItem
@@ -785,6 +998,11 @@
         <member name="P:GongSolutions.Wpf.DragDrop.DropInfo.IsSameDragDropContextAsSource">
             <summary>
             Gets a value indicating whether the target is in the same context as the source, <see cref="F:GongSolutions.Wpf.DragDrop.DragDrop.DragDropContextProperty" />.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Wpf.DragDrop.DropInfo.EventType">
+            <summary>
+            Gets the current mode of the underlying routed event.
             </summary>
         </member>
         <member name="P:GongSolutions.Wpf.DragDrop.DropTargetAdorner.Pen">
@@ -861,6 +1079,12 @@
             <param name="brush"></param>
             <param name="pen"></param>
             <returns></returns>
+        </member>
+        <member name="P:GongSolutions.Wpf.DragDrop.IDragInfo.DataFormat">
+            <summary>
+            Gets or sets the data format which will be used for the drag and drop actions.
+            </summary>
+            <value>The data format.</value>
         </member>
         <member name="P:GongSolutions.Wpf.DragDrop.IDragInfo.Data">
             <summary>
@@ -960,6 +1184,13 @@
             a custom instance if custom drag and drop behavior is needed.
             </summary>
         </member>
+        <member name="P:GongSolutions.Wpf.DragDrop.IDragInfo.DragDropHandler">
+            <summary>Initiates a drag-and-drop operation.</summary>
+            <param name="dragSource">A reference to the dependency object that is the source of the data being dragged.</param>
+            <param name="data">A data object that contains the data being dragged.</param>
+            <param name="allowedEffects">One of the <see cref="T:System.Windows.DragDropEffects" /> values that specifies permitted effects of the drag-and-drop operation.</param>
+            <returns>One of the <see cref="T:System.Windows.DragDropEffects" /> values that specifies the final effect that was performed during the drag-and-drop operation.</returns>
+        </member>
         <member name="P:GongSolutions.Wpf.DragDrop.IDragInfo.DragDropCopyKeyState">
             <summary>
             Gets the drag drop copy key state indicating the effect of the drag drop operation.
@@ -984,7 +1215,7 @@
             should be set to a value other than <see cref="F:System.Windows.DragDropEffects.None"/>. 
             </remarks>
         </member>
-        <!-- Ungültiger XML-Kommentar wurde für den Member "M:GongSolutions.Wpf.DragDrop.IDragSource.CanStartDrag(GongSolutions.Wpf.DragDrop.IDragInfo)" ignoriert -->
+        <!-- Badly formed XML comment ignored for member "M:GongSolutions.Wpf.DragDrop.IDragSource.CanStartDrag(GongSolutions.Wpf.DragDrop.IDragInfo)" -->
         <member name="M:GongSolutions.Wpf.DragDrop.IDragSource.Dropped(GongSolutions.Wpf.DragDrop.IDropInfo)">
             <summary>
             Notifies the drag handler that a drop has occurred.
@@ -993,6 +1224,13 @@
             <param name="dropInfo">
               Information about the drop.
             </param>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.IDragSource.DragDropOperationFinished(System.Windows.DragDropEffects,GongSolutions.Wpf.DragDrop.IDragInfo)">
+            <summary>
+            Notifies the drag handler that a drag and drop operation has finished.
+            </summary>
+            <param name="operationResult">The operation result.</param>
+            <param name="dragInfo">The drag information.</param>
         </member>
         <member name="M:GongSolutions.Wpf.DragDrop.IDragSource.DragCancelled">
             <summary>
@@ -1125,6 +1363,11 @@
             Gets and sets the text displayed in the DropDropEffects adorner.
             </summary>
         </member>
+        <member name="P:GongSolutions.Wpf.DragDrop.IDropInfo.EffectText">
+            <summary>
+            Gets and sets the effect text displayed in the DropDropEffects adorner.
+            </summary>
+        </member>
         <member name="P:GongSolutions.Wpf.DragDrop.IDropInfo.InsertPosition">
             <summary>
             Gets the relative position the item will be inserted to compared to the TargetItem
@@ -1143,6 +1386,11 @@
         <member name="P:GongSolutions.Wpf.DragDrop.IDropInfo.IsSameDragDropContextAsSource">
             <summary>
             Gets a value indicating whether the target is in the same context as the source, <see cref="F:GongSolutions.Wpf.DragDrop.DragDrop.DragDropContextProperty" />.
+            </summary>
+        </member>
+        <member name="P:GongSolutions.Wpf.DragDrop.IDropInfo.EventType">
+            <summary>
+            Gets the current mode of the underlying routed event.
             </summary>
         </member>
         <member name="T:GongSolutions.Wpf.DragDrop.IDropTarget">
@@ -1219,6 +1467,23 @@
             <param name="element">The given element.</param>
             <returns>Element is ignored or not.</returns>
         </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.Utilities.DragDropExtensions.DirectlyOverElement(System.Windows.Point,System.Windows.UIElement,System.Windows.UIElement)">
+            <summary>
+            Gets if drop position is directly over element
+            </summary>
+            <param name="dropPosition">Drop position</param>
+            <param name="element">element to check whether or not the drop position is directly over or not</param>
+            <param name="relativeToElement">element to which the drop position is related</param>
+            <returns>drop position is directly over element or not</returns>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.Utilities.DragDropExtensions.GetCaptureScreenDataTemplate(System.Windows.UIElement,System.Windows.FlowDirection)">
+            <summary>
+            Capture screen and create data template containing the captured image
+            </summary>
+            <param name="element">visual source to capture screen of</param>
+            <param name="visualSourceFlowDirection">Flowdirection of visual source</param>
+            <returns></returns>
+        </member>
         <member name="M:GongSolutions.Wpf.DragDrop.Utilities.HitTestUtilities.IsNotPartOfSender(System.Object,System.Windows.Input.MouseButtonEventArgs)">
             <summary>
             thx to @osicka from issue #84
@@ -1251,6 +1516,12 @@
             </summary>
             <param name="itemsControl">The ItemsControl which contains the item.</param>
             <param name="item">The object which should be selected.</param>
+        </member>
+        <member name="M:GongSolutions.Wpf.DragDrop.Utilities.ItemsControlExtensions.ClearSelectedItems(System.Windows.Controls.ItemsControl)">
+            <summary>
+            Clears the selected items.
+            </summary>
+            <param name="itemsControl">The items control.</param>
         </member>
         <member name="T:GongSolutions.Wpf.DragDrop.Utilities.TreeViewItemExtensions">
             <summary>
@@ -1286,7 +1557,7 @@
             <param name="element">The start element.</param>
             <returns>The first element which is a drop target.</returns>
         </member>
-        <member name="M:GongSolutions.Wpf.DragDrop.Utilities.VisualTreeExtensions.GetVisualAncestor(System.Windows.DependencyObject,System.Type,System.Type)">
+        <member name="M:GongSolutions.Wpf.DragDrop.Utilities.VisualTreeExtensions.GetVisualAncestor(System.Windows.DependencyObject,System.Type,System.Windows.Controls.ItemsControl,System.Type)">
             <summary>
             find the visual ancestor item by type
             </summary>

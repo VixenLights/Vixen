@@ -48,9 +48,9 @@ namespace VixenModules.Effect.Strobe
 
 		}
 
-		private IEnumerable<ElementNode> GetNodesToRenderOn()
+		private IEnumerable<IElementNode> GetNodesToRenderOn()
 		{
-			IEnumerable<ElementNode> renderNodes = TargetNodes;
+			IEnumerable<IElementNode> renderNodes = TargetNodes;
 			
 			renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator());
 
@@ -316,7 +316,7 @@ namespace VixenModules.Effect.Strobe
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
-		private EffectIntents RenderNode(List<ElementNode> elements)
+		private EffectIntents RenderNode(List<IElementNode> elements)
 		{
 			_strobeClass = new List<StrobeClass>();
 			EffectIntents effectIntents = new EffectIntents();

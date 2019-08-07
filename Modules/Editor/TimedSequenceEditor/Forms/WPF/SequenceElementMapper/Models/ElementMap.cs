@@ -1,0 +1,85 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Catel.Data;
+
+namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Models
+{
+	public class ElementMap: ModelBase
+	{
+		public ElementMap()
+		{
+			Id= Guid.NewGuid();
+			ElementMappings = new List<ElementMapping>();
+		}
+
+		public ElementMap(List<string> elementSources):this()
+		{
+			ElementMappings.AddRange(elementSources.Select(x => new ElementMapping(x)));
+		}
+
+		#region Id property
+
+		/// <summary>
+		/// Gets or sets the Id value.
+		/// </summary>
+		public Guid Id
+		{
+			get { return GetValue<Guid>(IdProperty); }
+			protected set { SetValue(IdProperty, value); }
+		}
+
+		/// <summary>
+		/// Id property data.
+		/// </summary>
+		public static readonly PropertyData IdProperty = RegisterProperty("Id", typeof(Guid));
+
+		#endregion
+
+		#region Name property
+
+		/// <summary>
+		/// Gets or sets the Name value.
+		/// </summary>
+		public string Name
+		{
+			get { return GetValue<string>(NameProperty); }
+			set { SetValue(NameProperty, value); }
+		}
+
+		/// <summary>
+		/// Name property data.
+		/// </summary>
+		public static readonly PropertyData NameProperty = RegisterProperty("Name", typeof(string));
+
+		#endregion
+
+		#region ElementMappings property
+
+		/// <summary>
+		/// Gets or sets the ElementMappings value.
+		/// </summary>
+		public List<ElementMapping> ElementMappings
+		{
+			get { return GetValue<List<ElementMapping>>(ElementMappingsProperty); }
+			set { SetValue(ElementMappingsProperty, value); }
+		}
+
+		/// <summary>
+		/// ElementMappings property data.
+		/// </summary>
+		public static readonly PropertyData ElementMappingsProperty = RegisterProperty("ElementMappings", typeof(List<ElementMapping>));
+
+		#endregion
+
+		public void AddMap(ElementMapping map)
+		{
+			ElementMappings.Add(map);
+		}
+
+		public Dictionary<string, Guid> GetSourceIdToTargetMap()
+		{
+			return ElementMappings.ToDictionary(x => x.SourceName, x=> x.TargetId);
+		}
+	}
+}

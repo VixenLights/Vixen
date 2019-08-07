@@ -25,7 +25,7 @@ namespace Vixen.Module.Effect
 		IEquatable<EffectModuleInstanceBase>,
 		ICustomTypeDescriptor
 	{
-		private ElementNode[] _targetNodes;
+		private IElementNode[] _targetNodes;
 		private List<IMediaModuleInstance> _media;
 		private TimeSpan _timeSpan;
 		private TimeSpan _startTime;
@@ -56,7 +56,7 @@ namespace Vixen.Module.Effect
 		private ObservableCollection<IMarkCollection> _markCollections;
 
 		[Browsable(false)]
-		public ElementNode[] TargetNodes
+		public IElementNode[] TargetNodes
 		{
 			get { return _targetNodes; }
 			set

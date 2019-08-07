@@ -13,7 +13,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 using System.Xml;
+using Catel.IoC;
+using Catel.Services;
 using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
@@ -47,6 +50,8 @@ using Vixen.Sys.State;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Marks;
 using VixenModules.Editor.EffectEditor;
+using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.ViewModels;
+using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Views;
 using VixenModules.Editor.TimedSequenceEditor.Undo;
 using VixenModules.Sequence.Timed;
 using WeifenLuo.WinFormsUI.Docking;
@@ -96,7 +101,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private Dictionary<EffectNode, Element> _effectNodeToElement;
 
 		// a mapping of system elements to the (possibly multiple) rows that represent them in the grid.
-		private Dictionary<ElementNode, List<Row>> _elementNodeToRows;
+		private Dictionary<IElementNode, List<Row>> _elementNodeToRows;
 
 		// the default time for a sequence if one is loaded with 0 time
 		private static readonly TimeSpan DefaultSequenceTime = TimeSpan.FromMinutes(1);
@@ -455,7 +460,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			_effectNodeToElement = new Dictionary<EffectNode, Element>();
-			_elementNodeToRows = new Dictionary<ElementNode, List<Row>>();
+			_elementNodeToRows = new Dictionary<IElementNode, List<Row>>();
 
 			TimelineControl.grid.RenderProgressChanged += OnRenderProgressChanged;
 
@@ -1199,7 +1204,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void LoadSystemNodesToRows(bool clearCurrentRows = true)
 		{
 			TimelineControl.AllowGridResize = false;
-			_elementNodeToRows = new Dictionary<ElementNode, List<Row>>();
+			_elementNodeToRows = new Dictionary<IElementNode, List<Row>>();
 
 			_suppressModifiedEvents = true;
 			//Scale our default pixel height for the rows
@@ -3773,7 +3778,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				
 				TimedSequenceElement element = SetupNewElementFromNode(node);
-				foreach (ElementNode target in node.Effect.TargetNodes)
+				foreach (IElementNode target in node.Effect.TargetNodes)
 				{
 					if (_elementNodeToRows.ContainsKey(target))
 					{
@@ -3795,10 +3800,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						// dunno what we want to do: prompt to add new elements for them? map them to others? etc.
 						const string message = "TimedSequenceEditor: <AddElementsForEffectNodes> - No Timeline.Row is associated with a target ElementNode for this EffectNode. It now exists in the sequence, but not in the GUI.";
 						Logging.Error(message);
-						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-						var messageBox = new MessageBoxForm(message, @"", false, false);
-						messageBox.ShowDialog(this);
+
+						if (InvokeRequired)
+						{
+							Invoke(new Delegates.GenericVoidString(ShowGenericErrorMessage), message);
+						}
+						
 					}
 				}
 			}
@@ -3816,6 +3823,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				row.Key.AddBulkElements(row.Value);
 			}
 
+		}
+
+		private void ShowGenericErrorMessage(string message)
+		{
+			var messageBox = new MessageBoxForm(message, @"Error", MessageBoxButtons.OK, SystemIcons.Error);
+			messageBox.ShowDialog(this);
 		}
 
 		/// <summary>
@@ -5239,10 +5252,64 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		private void CheckMissingEffectMappings()
+		{
+			//First thing we need to do is see if we have any unmapped effects.
+			var unmappedEffects = _sequence.SequenceData.EffectData.Cast<EffectNode>()
+				.Where(x => x.Effect.TargetNodes.First().IsProxy);
+
+			if (unmappedEffects.Any())
+			{
+				MessageBoxForm mbf = new MessageBoxForm($"The sequence has Effects that belong to Elements not know to this profile." +
+				                                        $"\nWould you like to map them to existing elements?", "Unmapped Effects", MessageBoxButtons.YesNo,SystemIcons.Warning);
+
+				using (mbf)
+				{
+					var result = mbf.ShowDialog(this);
+					if(result == DialogResult.Cancel)
+					{
+						return;
+					}
+				}
+				//Lets help the user maps these.
+				var elementsToMap = unmappedEffects.Select(x => x.Effect.TargetNodes.First().Name).Distinct();
+
+				ElementMapperViewModel vm = new ElementMapperViewModel(elementsToMap.ToList());
+				ElementMapperView mapper = new ElementMapperView(vm);
+				ElementHost.EnableModelessKeyboardInterop(mapper);
+				var response = mapper.ShowDialog();
+
+				List<EffectNode> effectsToRemove = new List<EffectNode>();
+				if (response.HasValue && response.Value)
+				{
+					var map = vm.ElementMap.GetSourceIdToTargetMap();
+					foreach (var unmappedEffect in unmappedEffects)
+					{
+						if (map.TryGetValue(unmappedEffect.Effect.TargetNodes.First().Name, out Guid targetId))
+						{
+							var node = VixenSystem.Nodes.GetElementNode(targetId);
+							if (node != null)
+							{
+								unmappedEffect.Effect.TargetNodes = new[] { node };
+							}
+						}
+					}
+				}
+				else
+				{
+					effectsToRemove.AddRange(unmappedEffects);
+				}
+
+				_sequence.SequenceData.EffectData.RemoveRangeData(effectsToRemove);
+				SequenceModified();
+			}
+		}
+
 		public IEditorModuleInstance OwnerModule { get; set; }
 
 		void IEditorUserInterface.StartEditor()
 		{
+			CheckMissingEffectMappings();
 			Show();
 		}
 
