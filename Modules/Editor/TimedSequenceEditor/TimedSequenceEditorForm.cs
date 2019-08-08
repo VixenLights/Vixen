@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
+using System.Windows.Input;
 using System.Xml;
 using Catel.IoC;
 using Catel.Services;
@@ -266,6 +267,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void TimedSequenceEditorForm_Load(object sender, EventArgs e)
 		{
+			Cursor = Cursors.WaitCursor;
 			RegisterClipboardViewer();
 			_settingsPath =
 				Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen",
@@ -509,8 +511,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolBarsToolStripMenuItemLibraries.DropDown.Closing += toolStripMenuItem_Closing;
 
 			_library = ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary;
-			Cursor.Current = Cursors.Default;
-
+			
 			var splitterDistance = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SplitterDistance", Name), (int)(TimelineControl.DefaultSplitterDistance * _scaleFactor));
 
 			if (splitterDistance > 0 && TimelineControl.splitContainer.Width > splitterDistance)
@@ -534,6 +535,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			// Adjusts Toolbars layout as per saved settings.
 			SetToolBarLayout();
+
+			Cursor = Cursors.Default;
 
 #if DEBUG
 //ToolStripButton b = new ToolStripButton("[Debug Break]");
@@ -1321,6 +1324,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void LoadSequence(ISequence sequence)
 		{
+			Cursor = Cursors.WaitCursor;
+
 			var taskQueue = new Queue<Task>();
 
 			if (_loadTimer == null)
@@ -1406,6 +1411,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				Logging.Error(ee, "TimedSequenceEditor: <LoadSequence> - Error loading sequence.");
 			}
+
+			Cursor = Cursors.Default;
 		}
 
 		/// <summary>
@@ -5274,7 +5281,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//Lets help the user maps these.
 				var elementsToMap = unmappedEffects.Select(x => x.Effect.TargetNodes.First().Name).Distinct();
 
-				ElementMapperViewModel vm = new ElementMapperViewModel(elementsToMap.ToList());
+				ElementMapperViewModel vm = new ElementMapperViewModel(elementsToMap.ToList(), _sequence.Name);
 				ElementMapperView mapper = new ElementMapperView(vm);
 				ElementHost.EnableModelessKeyboardInterop(mapper);
 				var response = mapper.ShowDialog();
@@ -5309,6 +5316,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		void IEditorUserInterface.StartEditor()
 		{
+			Cursor = Cursors.WaitCursor;
 			CheckMissingEffectMappings();
 			Show();
 		}

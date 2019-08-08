@@ -1,14 +1,19 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Windows;
 using Catel.Data;
+using Catel.IoC;
 using Catel.Services;
 using Common.WPFCommon.Services;
 using GongSolutions.Wpf.DragDrop;
 using Vixen.Sys;
 using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Models;
+using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Services;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.ViewModels
 {
@@ -17,16 +22,51 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 
 	public class ElementMapperViewModel : ViewModelBase, IDropTarget
 	{
+		private const string FormTitle = @"Element Mapper";
 		private readonly List<string> _sourceElementNames;
-		public ElementMapperViewModel(List<string> elementNamesToMap)
+		private string _lastModelPath = String.Empty;
+
+		public ElementMapperViewModel(List<string> elementNamesToMap, string sequenceName)
 		{
 			_sourceElementNames = elementNamesToMap;
 			Elements = VixenSystem.Nodes.GetRootNodes().ToList();
-			ElementMap = new ElementMap(elementNamesToMap);
+			ElementMap = new ElementMap(elementNamesToMap){Name = sequenceName};
+			MapModified = true;
 		}
 
-		public override string Title { get { return "Element Mapper"; } }
+		#region Private fields
 
+		private bool _mapModified;
+		private bool MapModified
+		{
+			get => _mapModified;
+			set
+			{
+				_mapModified = value;
+				UpdateTitle();
+				UpdateCommandStates();
+			}
+		}
+
+		#endregion
+
+		#region Title property
+
+		/// <summary>
+		/// Gets or sets the Title value.
+		/// </summary>
+		public new string Title
+		{
+			get { return GetValue<string>(TitleProperty); }
+			set { SetValue(TitleProperty, value); }
+		}
+
+		/// <summary>
+		/// Title property data.
+		/// </summary>
+		public static readonly PropertyData TitleProperty = RegisterProperty("Title", typeof(string));
+
+		#endregion
 		// TODO: Register models with the vmpropmodel codesnippet
 		// TODO: Register view model properties with the vmprop or vmpropviewmodeltomodel codesnippets
 		// TODO: Register commands with the vmcommand or vmcommandwithcanexecute codesnippets
@@ -45,41 +85,42 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 			await base.CloseAsync();
 		}
 
-		#region Maps property
+		#region Overrides of ViewModelBase
 
-		/// <summary>
-		/// Gets or sets the Maps value.
-		/// </summary>
-		public List<ElementMap> Maps
+		/// <inheritdoc />
+		protected override async Task<bool> SaveAsync()
 		{
-			get { return GetValue<List<ElementMap>>(MapsProperty); }
-			set { SetValue(MapsProperty, value); }
+			((IEditableObject)ElementMap).EndEdit();
+			var dependencyResolver = this.GetDependencyResolver();
+
+			if (_lastModelPath == String.Empty || !File.Exists(_lastModelPath))
+			{
+				var saveFileService = dependencyResolver.Resolve<ISaveFileService>();
+				saveFileService.Filter = "Element Map|*.map";
+				saveFileService.Title = @"Save Element Map";
+				if (await saveFileService.DetermineFileAsync())
+				{
+					_lastModelPath = saveFileService.FileName;
+				}
+				else
+				{
+					//TODO Notify of failure!
+					return false;
+				}
+			}
+			
+			var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
+			var modelPersistenceService = dependencyResolver.Resolve<IModelPersistenceService<ElementMap>>();
+			pleaseWaitService.Show();
+			await modelPersistenceService.SaveModelAsync(ElementMap, _lastModelPath);
+			MapModified = false;
+			((IEditableObject)ElementMap).BeginEdit();
+			pleaseWaitService.Hide();
+
+			return true;
 		}
 
-		/// <summary>
-		/// Maps property data.
-		/// </summary>
-		public static readonly PropertyData MapsProperty = RegisterProperty("Maps", typeof(List<ElementMap>));
-
 		#endregion
-
-		//#region SelectedMap property
-
-		///// <summary>
-		///// Gets or sets the SelectedMap value.
-		///// </summary>
-		//public ElementMap SelectedMap
-		//{
-		//	get { return GetValue<ElementMap>(SelectedMapProperty); }
-		//	set { SetValue(SelectedMapProperty, value); }
-		//}
-
-		///// <summary>
-		///// SelectedMap property data.
-		///// </summary>
-		//public static readonly PropertyData SelectedMapProperty = RegisterProperty("SelectedMap", typeof(ElementMap));
-
-		//#endregion
 
 		#region Elements property
 
@@ -136,7 +177,14 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		/// </summary>
 		private async Task OkAsync()
 		{
-			await this.SaveAndCloseViewModelAsync();
+			if (MapModified)
+			{
+				await this.SaveAndCloseViewModelAsync();
+			}
+			else
+			{
+				await this.CloseViewModelAsync(true);
+			}
 		}
 
 		#endregion
@@ -159,35 +207,37 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		/// </summary>
 		private async Task CancelMapAsync()
 		{
+			((IEditableObject)ElementMap).CancelEdit();
 			await this.CancelAndCloseViewModelAsync();
 		}
 
 		#endregion
 
 
-		#region CreateMap command
+		#region NewMap command
 
-		private Command _createMapCommand;
+		private Command _newMapCommand;
 
 		/// <summary>
 		/// Gets the CreateMap command.
 		/// </summary>
-		public Command CreateMapCommand
+		public Command NewMapCommand
 		{
-			get { return _createMapCommand ?? (_createMapCommand = new Command(CreateMap)); }
+			get { return _newMapCommand ?? (_newMapCommand = new Command(NewMap)); }
 		}
 
 		/// <summary>
 		/// Method to invoke when the CreateMap command is executed.
 		/// </summary>
-		private void CreateMap()
+		private void NewMap()
 		{
 			MessageBoxService mbs = new MessageBoxService();
 			var result = mbs.GetUserInput("Enter new map name.", "New Map - Name", "New Map");
 			if (result.Result == MessageResult.OK)
 			{
-				ElementMap = new ElementMap(){Name = result.Response};
-
+				ElementMap = new ElementMap(_sourceElementNames){Name = result.Response};
+				MapModified = true;
+				_lastModelPath = string.Empty;
 				((IEditableObject) ElementMap).BeginEdit();
 			}
 		}
@@ -197,7 +247,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		#region OpenMap command
 
 		private TaskCommand _openMapCommand;
-
+		
 		/// <summary>
 		/// Gets the OpenMap command.
 		/// </summary>
@@ -211,15 +261,130 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		/// </summary>
 		private async Task OpenMapAsync()
 		{
+			var dependencyResolver = this.GetDependencyResolver();
+			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
+
+			openFileService.IsMultiSelect = false;
+			//_openFileService.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+			openFileService.CheckFileExists = true;
+			openFileService.Title = @"Import Zara Playlist";
+			openFileService.Filter = "Element Map (*.map) | *.map";
+			if (await openFileService.DetermineFileAsync())
+			{
+				var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
+				var modelPersistenceService = dependencyResolver.Resolve<IModelPersistenceService<ElementMap>>();
+
+				pleaseWaitService.Show();
+				var map = await modelPersistenceService.LoadModelAsync(openFileService.FileName);
+				var allGood = EnsureMapHasAllSourceNames(map);
+				//_settings.LastPlaylistPath = openFileService.FileName;
+				pleaseWaitService.Hide();
+				
+				//prompt the user about adding missing sources
+			}
+		}
+
+		#endregion
+
+		#region SaveMap command
+
+		private TaskCommand _saveMapCommand;
+
+		/// <summary>
+		/// Gets the Save command.
+		/// </summary>
+		public TaskCommand SaveMapCommand
+		{
+			get { return _saveMapCommand ?? (_saveMapCommand = new TaskCommand(SaveAsync, CanSaveMap)); }
+		}
+
+		/// <summary>
+		/// Method to check whether the Save command can be executed.
+		/// </summary>
+		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+		private bool CanSaveMap()
+		{
+			return MapModified;
+		}
+
+		#endregion
+
+		#region SaveMapAs command
+
+		private TaskCommand _saveMapAsCommand;
+
+		/// <summary>
+		/// Gets the SaveAs command.
+		/// </summary>
+		public TaskCommand SaveMapAsCommand
+		{
+			get { return _saveMapAsCommand ?? (_saveMapAsCommand = new TaskCommand(SaveAsync, CanSaveAs)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the SaveAs command is executed.
+		/// </summary>
+		private async Task SaveMapAsAsync()
+		{
+			_lastModelPath = String.Empty;
+			await SaveAsync();
+		}
+
+		/// <summary>
+		/// Method to check whether the SaveAs command can be executed.
+		/// </summary>
+		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+		private bool CanSaveAs()
+		{
+			return true;
+		}
+
+		#endregion
+
+		#region Help command
+
+		private Command _helpCommand;
+
+		/// <summary>
+		/// Gets the Help command.
+		/// </summary>
+		public Command HelpCommand
+		{
+			get { return _helpCommand ?? (_helpCommand = new Command(Help)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the Help command is executed.
+		/// </summary>
+		private void Help()
+		{
 			// TODO: Handle command logic here
 		}
 
 		#endregion
 
-		//private bool EnsureMapHasAllSourceNames(ElementMap map)
-		//{
+		#region Exit command
 
-		//}
+		private TaskCommand _exitCommand;
+
+		/// <summary>
+		/// Gets the Exit command.
+		/// </summary>
+		public TaskCommand ExitCommand
+		{
+			get { return _exitCommand ?? (_exitCommand = new TaskCommand(ExitAsync)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the Exit command is executed.
+		/// </summary>
+		private async Task ExitAsync()
+		{
+			await OkAsync();
+		}
+
+		#endregion
+
 
 		#region Implementation of IDropTarget
 
@@ -266,5 +431,22 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		}
 
 		#endregion
+
+		private bool EnsureMapHasAllSourceNames(ElementMap map)
+		{
+			return true;
+		}
+
+		private void UpdateTitle()
+		{
+			Title = $"{FormTitle} - {ElementMap.Name} {(MapModified ? "*" : string.Empty)}";
+		}
+
+		protected void UpdateCommandStates()
+		{
+			var viewModelBase = this as ViewModelBase;
+			var commandManager = viewModelBase.GetViewModelCommandManager();
+			commandManager.InvalidateCommands();
+		}
 	}
 }

@@ -114,6 +114,9 @@
     <Reference Include="Catel.MVVM, Version=5.9.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Catel.MVVM.5.9.0\lib\net47\Catel.MVVM.dll</HintPath>
     </Reference>
+    <Reference Include="Catel.Serialization.Json, Version=5.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Catel.Serialization.Json.5.9.0\lib\net47\Catel.Serialization.Json.dll</HintPath>
+    </Reference>
     <Reference Include="FTD2XX_NET">
       <HintPath>..\FTD2XX_NET\FTD2XX_NET.dll</HintPath>
     </Reference>

@@ -485,7 +485,7 @@ namespace VixenModules.Sequence.Timed
 				"Changes to the Wipe direction property, Add movement curve and a reverse direction option.{0}" +
 				"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade", MessageBoxButtons.OK, SystemIcons.Information);
 			messageBox.ShowDialog();
-
+			
 			MigrateWipeFrom6To7(content);
 			return content;
 		}

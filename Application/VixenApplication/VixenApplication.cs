@@ -731,7 +731,9 @@ namespace VixenApplication
 
 				if (descriptor.CanCreateNew) {
 					item.Tag = descriptor.FileExtension;
-					item.Click += (sender, e) => {
+					item.Click += (sender, e) =>
+					{
+						Cursor = Cursors.WaitCursor;
 						ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
 						string fileType = (string)menuItem.Tag;
 						IEditorUserInterface editor = EditorService.Instance.CreateEditor(fileType);
@@ -744,8 +746,11 @@ namespace VixenApplication
 							messageBox.ShowDialog();
 						}
 						else {
+							Cursor = Cursors.WaitCursor;
 							_OpenEditor(editor);
 						}
+
+						Cursor= Cursors.Default;
 					};
 					contextMenuStripNewSequence.Items.Add(item);
 				}
@@ -845,17 +850,15 @@ namespace VixenApplication
 
 			// if the user hit 'ok' on the dialog, try opening the selected file(s) in an approriate editor
 			if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-				Cursor = Cursors.WaitCursor;
 				foreach (string file in openFileDialog.FileNames) {
 					OpenSequenceFromFile(file);
 				}
-				Cursor = Cursors.Default;
 			}
 		}
 
 		private void OpenSequenceFromFile(string filename)
 		{
-			Cursor.Current = Cursors.WaitCursor;
+			Cursor = Cursors.WaitCursor;
 			try {
 				IEditorUserInterface editor = EditorService.Instance.CreateEditor(filename);
 
@@ -869,6 +872,7 @@ namespace VixenApplication
 				}
 				else {
 					_OpenEditor(editor);
+					Cursor = Cursors.Default;
 				}
 			}
 			catch (Exception ex) {

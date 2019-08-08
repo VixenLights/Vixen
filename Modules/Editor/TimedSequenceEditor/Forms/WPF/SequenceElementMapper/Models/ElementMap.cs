@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Catel.Collections;
 using Catel.Data;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Models
@@ -10,7 +11,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		public ElementMap()
 		{
 			Id= Guid.NewGuid();
-			ElementMappings = new List<ElementMapping>();
+			ElementMappings = new FastObservableCollection<ElementMapping>();
 		}
 
 		public ElementMap(List<string> elementSources):this()
@@ -59,16 +60,16 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		/// <summary>
 		/// Gets or sets the ElementMappings value.
 		/// </summary>
-		public List<ElementMapping> ElementMappings
+		public FastObservableCollection<ElementMapping> ElementMappings
 		{
-			get { return GetValue<List<ElementMapping>>(ElementMappingsProperty); }
+			get { return GetValue<FastObservableCollection<ElementMapping>>(ElementMappingsProperty); }
 			set { SetValue(ElementMappingsProperty, value); }
 		}
 
 		/// <summary>
 		/// ElementMappings property data.
 		/// </summary>
-		public static readonly PropertyData ElementMappingsProperty = RegisterProperty("ElementMappings", typeof(List<ElementMapping>));
+		public static readonly PropertyData ElementMappingsProperty = RegisterProperty("ElementMappings", typeof(FastObservableCollection<ElementMapping>));
 
 		#endregion
 
