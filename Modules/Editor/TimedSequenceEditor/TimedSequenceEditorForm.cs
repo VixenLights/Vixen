@@ -5299,6 +5299,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							{
 								unmappedEffect.Effect.TargetNodes = new[] { node };
 							}
+							else
+							{
+								effectsToRemove.Add(unmappedEffect);
+							}
 						}
 					}
 				}

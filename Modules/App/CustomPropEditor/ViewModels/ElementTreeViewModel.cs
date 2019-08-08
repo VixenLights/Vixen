@@ -687,7 +687,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		public void ClearIsDirty()
 		{
-			this.ClearIsDirtyOnAllChilds();
+			this.ClearIsDirtyOnAllChildren();
 		}
 
 		public void DeselectAll()

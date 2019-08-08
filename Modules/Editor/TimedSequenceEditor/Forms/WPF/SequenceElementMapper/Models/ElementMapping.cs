@@ -5,6 +5,11 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 {
 	public class ElementMapping: ModelBase,IEquatable<ElementMapping>
 	{
+		public ElementMapping():this("Unknown")
+		{
+			
+		}
+
 		public ElementMapping(string sourceName)
 		{
 			SourceName = sourceName;

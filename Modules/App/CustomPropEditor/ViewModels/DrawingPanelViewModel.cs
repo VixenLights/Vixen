@@ -274,7 +274,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		public void ClearIsDirty()
 		{
-			this.ClearIsDirtyOnAllChilds();
+			this.ClearIsDirtyOnAllChildren();
 			//RootNodesViewModels.ForEach(x => x.ClearIsDirtyOnAllChilds());
 		}
 		

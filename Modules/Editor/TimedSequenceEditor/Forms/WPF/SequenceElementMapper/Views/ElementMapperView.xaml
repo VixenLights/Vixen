@@ -8,7 +8,7 @@
                   xmlns:models="clr-namespace:VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Models"
                   xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
                   Height="600" Width="800" WindowStartupLocation="CenterScreen"
-                  Title="{Binding Title}">
+                  Title="{Binding Title}" >
 
 	<Window.Resources>
 		<ResourceDictionary>

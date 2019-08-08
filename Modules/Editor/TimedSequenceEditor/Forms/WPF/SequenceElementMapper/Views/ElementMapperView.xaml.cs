@@ -9,7 +9,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 {
 	public partial class ElementMapperView
 	{
-		public ElementMapperView(ElementMapperViewModel vm)
+		public ElementMapperView(ElementMapperViewModel viewModel)
 		{
 			var serviceLocator = ServiceLocator.Default;
 			if(!serviceLocator.IsTypeRegistered(typeof(IJsonSerializer)))
@@ -22,7 +22,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 			}
 			InitializeComponent();
 			Icon = Common.Resources.Properties.Resources.Icon_Vixen3.ToImageSource();
-			DataContext = vm;
+			DataContext = viewModel;
 		}
 	}
 }

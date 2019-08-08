@@ -1,10 +1,12 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Catel;
 using Catel.Data;
 using Catel.Runtime.Serialization;
 using Catel.Runtime.Serialization.Json;
 using Newtonsoft.Json;
+using NLog;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Services
 {
@@ -12,6 +14,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 	{
 		private readonly IJsonSerializer _serializer;
 		private readonly ISerializationConfiguration _serializationConfiguration;
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
 		public ModelPersistenceService(IJsonSerializer serializer)
 		{
@@ -29,10 +32,23 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		{
 			return await Task.Factory.StartNew(() =>
 			{
-				using (var fileStream = File.Open(path, FileMode.Open))
+				if (File.Exists(path))
 				{
-					return _serializer.Deserialize<T>(fileStream, _serializationConfiguration);
+					using (var fileStream = File.Open(path, FileMode.Open))
+					{
+						try
+						{
+							return _serializer.Deserialize<T>(fileStream, _serializationConfiguration);
+						}
+						catch (Exception e)
+						{
+							Logging.Error(e, "An error occured loading a saved map.");
+						}
+
+					}
 				}
+				
+				return null;
 			});
 		}
 

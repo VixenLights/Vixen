@@ -75,12 +75,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Catel.Core, Version=5.9.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Catel.Core.5.9.0\lib\net46\Catel.Core.dll</HintPath>
+    <Reference Include="Catel.Core, Version=5.11.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Catel.Core.5.11.0\lib\net47\Catel.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Catel.MVVM, Version=5.9.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Catel.MVVM.5.9.0\lib\net46\Catel.MVVM.dll</HintPath>
+    <Reference Include="Catel.MVVM, Version=5.11.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Catel.MVVM.5.11.0\lib\net47\Catel.MVVM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="GongSolutions.WPF.DragDrop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=91f1945125b7a587, processorArchitecture=MSIL">
@@ -120,6 +120,9 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.ConfigurationManager, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Configuration.ConfigurationManager.4.4.1\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />

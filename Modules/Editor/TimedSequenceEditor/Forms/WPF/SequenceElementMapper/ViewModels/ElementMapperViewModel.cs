@@ -261,6 +261,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		/// </summary>
 		private async Task OpenMapAsync()
 		{
+			((IEditableObject)ElementMap).EndEdit();
 			var dependencyResolver = this.GetDependencyResolver();
 			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
 
@@ -271,16 +272,27 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 			openFileService.Filter = "Element Map (*.map) | *.map";
 			if (await openFileService.DetermineFileAsync())
 			{
+
 				var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
 				var modelPersistenceService = dependencyResolver.Resolve<IModelPersistenceService<ElementMap>>();
 
 				pleaseWaitService.Show();
 				var map = await modelPersistenceService.LoadModelAsync(openFileService.FileName);
-				var allGood = EnsureMapHasAllSourceNames(map);
-				//_settings.LastPlaylistPath = openFileService.FileName;
+
+				if (map != null)
+				{
+					_lastModelPath = openFileService.FileName;
+					var allGood = EnsureMapHasAllSourceNames(map);
+					
+					//prompt the user about adding missing sources before we load it up
+
+					ElementMap = map;
+					MapModified = false;
+					((IEditableObject)ElementMap).BeginEdit();
+				}
+
 				pleaseWaitService.Hide();
-				
-				//prompt the user about adding missing sources
+
 			}
 		}
 
@@ -413,6 +425,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 					{ 
 					    mapping.TargetId = en.Id;
 						mapping.TargetName = en.Name;
+						MapModified = true;
 					}
 				}
 			}
