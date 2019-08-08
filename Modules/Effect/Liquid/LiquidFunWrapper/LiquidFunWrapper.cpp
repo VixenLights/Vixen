@@ -60,8 +60,8 @@ array < System::Tuple<int, int, System::Drawing::Color>^ >^ VixenModules::Effect
 		for (int i = 0; i < p->GetParticleCount(); ++i)
 		{
 			// Get the position of the particle
-			int x = positionBuffer[i].x;
-			int y = positionBuffer[i].y;
+			int x = Math::Round(positionBuffer[i].x, 0);
+			int y = Math::Round(positionBuffer[i].y, 0);
 
 			// Get the color of the particle
 			auto c = colorBuffer[i].GetColor();

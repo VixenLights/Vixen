@@ -11,8 +11,8 @@ namespace VixenModules.Effect.Liquid
 	/// <summary>
 	/// Maintains and serializes the settings of the liquid effect.
 	/// </summary>
-	[DataContract]	
-	[KnownType(typeof(EmitterData))]	
+	[DataContract]
+	[KnownType(typeof(EmitterData))]
 	class LiquidData : EffectTypeModuleData
 	{
 		#region Constructor
@@ -24,19 +24,19 @@ namespace VixenModules.Effect.Liquid
 		{
 			Orientation = StringOrientation.Horizontal;
 
-			MixColors = true;
+			MixColors = true;			
 			ParticleSize = 500;
 
 			// Default to two emitters
 			EmitterData = new List<EmitterData>();
 			EmitterData.Add(new EmitterData());
 			EmitterData.Add(new EmitterData());
-			
+
 			// First emitter is animated
 			EmitterData[0].Animate = true;
 			EmitterData[0].X = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			EmitterData[0].Y = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
-			
+
 			// Second Emitter is static
 			EmitterData[1].Color = new ColorGradient(System.Drawing.Color.Purple);
 
@@ -49,7 +49,7 @@ namespace VixenModules.Effect.Liquid
 				new ColorGradient(System.Drawing.Color.White),
 				new ColorGradient(System.Drawing.Color.Purple)
 			};
-						
+
 			// Audio Defaults
 			DecayTime = 1500;
 			AttackTime = 50;
@@ -59,13 +59,16 @@ namespace VixenModules.Effect.Liquid
 			LowPass = false;
 			LowPassFreq = 100;
 			HighPass = false;
-			HighPassFreq = 500;			
+			HighPassFreq = 500;
+
+			WarmUpFrames = 0;
+			DespeckleThreshold = 0;
 		}
 
 		#endregion
 
 		#region Public Properties
-	
+
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
@@ -83,26 +86,26 @@ namespace VixenModules.Effect.Liquid
 
 		[DataMember]
 		public bool MixColors { get; set; }
-
+		
 		[DataMember]
 		public int ParticleSize { get; set; }
 
 		[DataMember]
 		public List<EmitterData> EmitterData { get; set; }
-		
+
 		[DataMember]
 		public List<ColorGradient> Colors { get; set; }
-		
+
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			LiquidData result = new LiquidData
-			{				
+			{
 				Orientation = Orientation,
 				TopBarrier = TopBarrier,
 				BottomBarrier = BottomBarrier,
 				LeftBarrier = LeftBarrier,
 				RightBarrier = RightBarrier,
-				MixColors = MixColors,
+				MixColors = MixColors,			
 				ParticleSize = ParticleSize,
 
 				Gain = Gain,
@@ -111,15 +114,17 @@ namespace VixenModules.Effect.Liquid
 				LowPass = LowPass,
 				LowPassFreq = LowPassFreq,
 				Normalize = Normalize,
-				Range = Range, 
+				Range = Range,
 				DecayTime = DecayTime,
 				AttackTime = AttackTime,
 				RenderScaleFactor = RenderScaleFactor,
+				WarmUpFrames = WarmUpFrames,
+				DespeckleThreshold = DespeckleThreshold,
 			};
 
 			// Clone the emitters
 			for (int index = 0; index < EmitterData.Count; index++)
-			{				
+			{
 				result.EmitterData[index] = (EmitterData)(EmitterData[index]).CreateInstanceForClone();
 			}
 
@@ -151,10 +156,16 @@ namespace VixenModules.Effect.Liquid
 		public int DecayTime { get; set; }
 
 		[DataMember]
-		public int AttackTime { get; set; }				
-		
+		public int AttackTime { get; set; }
+
 		[DataMember]
 		public int RenderScaleFactor { get; set; }
+
+		[DataMember]
+		public int WarmUpFrames { get; set; }
+
+		[DataMember]
+		public int DespeckleThreshold { get; set; }
 	}
 
 	#endregion

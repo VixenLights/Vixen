@@ -1,5 +1,4 @@
 ﻿using Common.Controls.ColorManagement.ColorModels;
-using FastPixel;
 using Liquid;
 using System;
 using System.Collections.Generic;
@@ -32,7 +31,7 @@ namespace VixenModules.Effect.Liquid
 		private const int Spacing = 50;
 		private const int MaxEmitterAnimateSpeed = 10;
 		private const int MaxEmitterLifeTime = 1000;
-		private const int MaxEmitterVelocity = 50;
+		private const int MaxEmitterParticleVelocity = 100;
 		private const int MaxEmitterSourceSize = 100;
 		private const int MaxEmitterFlow = 200;
 		private const int MaxEmitterMusicFlow = 100;
@@ -99,6 +98,12 @@ namespace VixenModules.Effect.Liquid
 		/// A copy is made in an attempt to avoid the collection being modified while the effect is rendering.
 		/// </summary>
 		private List<IEmitter> _renderEmitterList;
+
+		/// <summary>
+		/// Copy of the render scale factor.
+		/// A copy is made in an attempt to avoid the value being modified while the effet is rendering.
+		/// </summary>
+		private int _renderScaleFactor;
 
 		/// <summary>
 		/// Mark collection names.  This collection is shared with each of the emitters.
@@ -230,7 +235,7 @@ namespace VixenModules.Effect.Liquid
 				OnPropertyChanged();
 			}
 		}
-
+		
 		/// <summary>
 		/// Module data associated with the effect.
 		/// </summary>
@@ -340,6 +345,22 @@ namespace VixenModules.Effect.Liquid
 				OnPropertyChanged();
 			}
 		}
+				
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"MixColors")]
+		[ProviderDescription(@"MixColors")]
+		[PropertyOrder(5)]
+		public bool MixColors
+		{
+			get { return _data.MixColors; }
+			set
+			{
+				_data.MixColors = value;
+				MarkDirty();
+				OnPropertyChanged();
+			}
+		}
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
@@ -347,7 +368,7 @@ namespace VixenModules.Effect.Liquid
 		[ProviderDescription(@"ParticleSize")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 10000, 1)]
-		[PropertyOrder(5)]
+		[PropertyOrder(6)]
 		public int ParticleSize
 		{
 			get { return _data.ParticleSize; }
@@ -361,15 +382,61 @@ namespace VixenModules.Effect.Liquid
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"MixColors")]
-		[ProviderDescription(@"MixColors")]
-		[PropertyOrder(5)]
-		public bool MixColors
+		[ProviderDisplayName(@"WarmUpFrames")]
+		[ProviderDescription(@"WarmUpFrames")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(0, 500, 1)]
+		[PropertyOrder(7)]
+		public int WarmUpFrames
 		{
-			get { return _data.MixColors; }
+			get
+			{
+				return _data.WarmUpFrames;
+			}
 			set
 			{
-				_data.MixColors = value;
+				_data.WarmUpFrames = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"DespeckleThreshold")]
+		[ProviderDescription(@"DespeckleThreshold")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(0, 4, 1)]
+		[PropertyOrder(8)]
+		public int DespeckleThreshold
+		{
+			get
+			{
+				return _data.DespeckleThreshold;
+			}
+			set
+			{
+				_data.DespeckleThreshold = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		private EmitterCollection _emitterList;
+
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Emitters")]
+		[ProviderDescription(@"Emitters")]
+		[PropertyOrder(9)]
+		public EmitterCollection EmitterList
+		{
+			get
+			{
+				return _emitterList;
+			}
+			set
+			{
+				_emitterList = value;
 				MarkDirty();
 				OnPropertyChanged();
 			}
@@ -393,27 +460,7 @@ namespace VixenModules.Effect.Liquid
 				OnPropertyChanged();
 			}
 		}
-
-		private EmitterCollection _emitterList;
-
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Emitters")]
-		[ProviderDescription(@"Emitters")]
-		[PropertyOrder(6)]
-		public EmitterCollection EmitterList
-		{
-			get
-			{
-				return _emitterList;
-			}
-			set
-			{
-				_emitterList = value;
-				MarkDirty();
-				OnPropertyChanged();
-			}
-		}
-
+		
 		#endregion
 
 		#region Audio Sensitivity Range
@@ -702,7 +749,7 @@ namespace VixenModules.Effect.Liquid
 				 ConvertEmittersToEmitterWrappers(frameNum, intervalPos, intervalPosFactor).ToArray());
 
 			// Get the collection of particles from Liquid Fun API
-			// Tuple is composed of position in x, y and then color of the particle
+			// Tuple is composed of the position of the particle in x, y and then the color of the particle
 			Tuple<int, int, Color>[] particles = _liquidFunWrapper.GetParticles();
 
 			// Turn on pixels for the particles
@@ -713,16 +760,102 @@ namespace VixenModules.Effect.Liquid
 					 y: particle.Item2,
 					 c: particle.Item3);
 			}
+									
+			// If despeckling is turned on then...
+			if (DespeckleThreshold > 0)
+			{
+				for (int y = 0; y < BufferHt; y++)
+				{
+					for (int x = 0; x < BufferWi; x++)
+					{
+						if (frameBuffer.GetColorAt(x, y) == Color.Transparent)
+						{
+							frameBuffer.SetPixel(x, y, GetDespeckleColor(frameBuffer, x, y, DespeckleThreshold));
+						}
+					}
+				}
+			}			
 		}
 
+		/// <summary>
+		/// Gets the color to fill in the specified pixel speck.
+		/// </summary>				
+		private Color GetDespeckleColor(IPixelFrameBuffer frameBuffer, int x, int y, int despeckle) 
+		{
+			int red = 0;
+			int green = 0;
+			int blue = 0;
+			int count = 0;
+
+			int startx = x - 1;
+			if (startx < 0)
+			{
+				startx = 0;
+			}
+	
+			int starty = y - 1;
+			if (starty < 0)
+			{
+				starty = 0;
+			}
+
+			int endx = x + 1;
+			if (endx >= BufferWi)
+			{
+				endx = BufferWi - 1;
+			}
+
+			int endy = y + 1;
+			if (endy >= BufferHt)
+			{
+				endy = BufferHt - 1;
+			}
+
+			int blacks = 0;
+			
+			for (int yy = starty; yy <= endy; ++yy)
+			{
+				for (int xx = startx; xx <= endx; ++xx)
+				{
+					if (yy != y || xx != x) // dont evaluate the pixel itself
+					{
+						Color c = frameBuffer.GetColorAt(xx, yy);
+
+						// if any surrounding pixel is also black then we return black ... we only despeckly totally surrounded pixels
+						if (c == Color.Transparent)							
+						{
+							blacks++;
+							if (blacks >= despeckle)
+							{
+								return Color.Transparent;
+							}
+						}
+						
+						red += c.R;
+						green += c.G;
+						blue += c.B;
+						count++;
+					}
+				}
+			}
+
+			if (count == 0)
+			{
+				return Color.Transparent;
+			}
+
+			return Color.FromArgb(red / count, green / count, blue / count);
+		}
+						
 		/// <summary>
 		/// Renders the effect by location.
 		/// </summary>		
 		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
 		{
-			//make a local copy that is faster than the logic to get it for reuse.
+			// Make a local copy that is faster than the logic to get it for reuse.
 			var localBufferHt = BufferHt;
 			var localBufferWi = BufferWi;
+			
 			// Loop over the frames
 			for (int frameNum = 0; frameNum < numFrames; frameNum++)
 			{
@@ -740,9 +873,9 @@ namespace VixenModules.Effect.Liquid
 					ConvertEmittersToEmitterWrappers(frameNum, intervalPos, intervalPosFactor).ToArray());
 
 				// Get the collection of particles from Liquid Fun API
-				// Tuple is composed of position in x, y and then color of the particle
+				// Tuple is composed of the position in x, y and then color of the particle
 				Tuple<int, int, Color>[] particles = _liquidFunWrapper.GetParticles();
-
+				
 				// Create a bitmap the size of the logical render area
 				// Note this render area is smaller matrix than the actual display elements
 				using (var fp = new FastPixel.FastPixel(_bufferWt, _bufferHt))
@@ -753,7 +886,7 @@ namespace VixenModules.Effect.Liquid
 					{
 						// If the particle is within the viewable area then...
 						if ((particle.Item1 >= 0 && particle.Item1 < _bufferWt) &&
-						    (particle.Item2 >= 0 && particle.Item2 < _bufferHt))
+							 (particle.Item2 >= 0 && particle.Item2 < _bufferHt))
 						{
 							// Set the corresponding pixel in the bitmap
 							fp.SetPixel(
@@ -762,27 +895,20 @@ namespace VixenModules.Effect.Liquid
 								particle.Item3);
 						}
 					}
-
-					fp.Unlock(true);
-
-					// Convert logical render area to the actual render area
-					using (Bitmap largerBitmap = new Bitmap(fp.Bitmap, localBufferWi, localBufferHt))
+					
+					foreach (ElementLocation elementLocation in frameBuffer.ElementLocations)
 					{
-						// Transfer the pixel data from the bitmap to the frame buffer
-						using (FastPixel.FastPixel fastPixel = new FastPixel.FastPixel(largerBitmap))
-						{
-							fastPixel.Lock();
-							foreach (ElementLocation elementLocation in frameBuffer.ElementLocations)
-							{
-								UpdateFrameBufferForLocationPixel(elementLocation.X, elementLocation.Y, localBufferHt,
-									fastPixel, frameBuffer);
-							}
+						UpdateFrameBufferForLocationPixel(
+							elementLocation.X, 
+							elementLocation.Y, 
+							localBufferHt,
+							fp, 
+							frameBuffer);
+					}					
 
-							fastPixel.Unlock(false);
-						}
-					}
-				}
-			}
+					fp.Unlock(false);																
+				}				
+			}			
 		}
 		
 		/// <summary>
@@ -800,8 +926,21 @@ namespace VixenModules.Effect.Liquid
 				// it looks better to render on a smaller matrix and then scale it up to the actual render matrix.
 				// When the scale factor is one liquid particles appear and disassapear because location 
 				// mode is often a sparse matrix.				
-				_bufferWt = BufferWi / RenderScaleFactor;
-				_bufferHt = BufferHt / RenderScaleFactor; 
+				_renderScaleFactor = RenderScaleFactor;
+				_bufferWt = BufferWi / _renderScaleFactor;
+				_bufferHt = BufferHt / _renderScaleFactor;
+				
+				// Need to increase the render height if the scale factor did not divide evenly
+				if (_bufferHt % _renderScaleFactor != 0)
+				{
+					_bufferHt++;
+				}
+
+				// Need to increase the render width if the scale factor did not divide evenly
+				if (_bufferWt % _renderScaleFactor != 0)
+				{
+					_bufferWt++;
+				}
 			}
 			else
 			{
@@ -830,6 +969,16 @@ namespace VixenModules.Effect.Liquid
 
 			GetAudioSettings();			
 			CacheOffAudioVolumes();
+
+			// Process the optional warm up frames
+			for(int warmUpFrame = 0; warmUpFrame < WarmUpFrames; warmUpFrame++)
+			{
+				// Advance the Liquid engine
+				_liquidFunWrapper.StepWorld(
+					FrameTime / 1000f,
+					_data.MixColors,
+					ConvertEmittersToEmitterWrappers(0, 0, 0).ToArray());
+			}
 		}
 
 		#endregion
@@ -1408,7 +1557,7 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>		
 		private int CalculateEmitterVelocity(double intervalPos, IEmitter emitter)
 		{
-			return (int)Math.Round(ScaleCurveToValue(emitter.ParticleVelocity.GetValue(intervalPos), MaxEmitterVelocity, 0));
+			return (int)Math.Round(ScaleCurveToValue(emitter.ParticleVelocity.GetValue(intervalPos), MaxEmitterParticleVelocity, 0));
 		}
 
 		/// <summary>
@@ -1746,9 +1895,15 @@ namespace VixenModules.Effect.Liquid
 			y = Math.Abs((BufferHtOffset - y) + (bufferHt - 1 + BufferHtOffset));
 			y = y - BufferHtOffset;
 			x = x - BufferWiOffset;
-			
+
+			// Scale the location down to the render bitmap so that we can retrieve the color of the pixel
+			int scaledX = x / _renderScaleFactor;
+			int scaledY = y / _renderScaleFactor;
+
 			// Retrieve the color from the bitmap
-			Color color = bitmap.GetPixel(x, y); 
+			Color color = bitmap.GetPixel(scaledX, scaledY);
+
+			// Set the pixel on the frame buffer
 			frameBuffer.SetPixel(xCoord, yCoord, color);
 		}
 
@@ -1788,9 +1943,9 @@ namespace VixenModules.Effect.Liquid
 			UpdateAudioAttributes();
 
 			// Update the browseable state of the color list collection
-			UpdateColorListAttributes();			
+			UpdateColorListAttributes();
 		}
-
+		
 		#endregion
 
 		#region Information

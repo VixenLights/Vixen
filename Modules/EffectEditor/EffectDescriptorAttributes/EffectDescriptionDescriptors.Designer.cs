@@ -647,6 +647,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This setting helps fill in empty (speck) pixels in the effect by filling them in with the average color of the surrounding pixels if the number of surrounding empty (black) pixels is less than the threshold..
+        /// </summary>
+        internal static string DespeckleThreshold {
+            get {
+                return ResourceManager.GetString("DespeckleThreshold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sets percent of deviation..
         /// </summary>
         internal static string DeviationPercent {
@@ -2524,6 +2533,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string VerticalOffset {
             get {
                 return ResourceManager.GetString("VerticalOffset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Runs the Liquid engine for the specified number of frames before rendering the effect.  This setting is useful if you want a large number of particles in the display area at the beginning of the effect..
+        /// </summary>
+        internal static string WarmUpFrames {
+            get {
+                return ResourceManager.GetString("WarmUpFrames", resourceCulture);
             }
         }
         

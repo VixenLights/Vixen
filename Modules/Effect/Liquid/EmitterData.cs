@@ -57,7 +57,7 @@ namespace Liquid
 			FramesPerColor = 3;
 			Color = new ColorGradient(System.Drawing.Color.Blue);
 			Lifetime = new Curve(CurveType.Flat100);
-			ParticleVelocity = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
+			ParticleVelocity = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			Animate = false;
 			EdgeHandling = EdgeHandlingSerializationType.Bounce;
 			VelocityX = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));

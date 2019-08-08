@@ -969,4 +969,10 @@
   <data name="YPosition" xml:space="preserve">
     <value>Y Position</value>
   </data>
+  <data name="DespeckleThreshold" xml:space="preserve">
+    <value>Despeckle Threshold</value>
+  </data>
+  <data name="WarmUpFrames" xml:space="preserve">
+    <value>Warm Up Frames</value>
+  </data>
 </root>

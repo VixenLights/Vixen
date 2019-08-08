@@ -710,6 +710,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Despeckle Threshold.
+        /// </summary>
+        internal static string DespeckleThreshold {
+            get {
+                return ResourceManager.GetString("DespeckleThreshold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deviation.
         /// </summary>
         internal static string DeviationPercent {
@@ -2488,6 +2497,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string VerticalOffset {
             get {
                 return ResourceManager.GetString("VerticalOffset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warm Up Frames.
+        /// </summary>
+        internal static string WarmUpFrames {
+            get {
+                return ResourceManager.GetString("WarmUpFrames", resourceCulture);
             }
         }
         
