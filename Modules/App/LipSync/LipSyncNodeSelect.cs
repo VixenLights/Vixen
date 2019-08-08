@@ -98,9 +98,9 @@ namespace VixenModules.App.LipSyncApp
 
 		public bool Changed { get; set; }
 		
-		private void BuildNode(TreeNode parentNode, ElementNode node)
+		private void BuildNode(TreeNode parentNode, IElementNode node)
 		{
-			foreach(ElementNode childNode in node.Children)
+			foreach(IElementNode childNode in node.Children)
 			{
 				TreeNode newNode = new TreeNode(childNode.Name);
 				BuildNode(newNode, childNode);
@@ -110,7 +110,7 @@ namespace VixenModules.App.LipSyncApp
 
 		private void LipSyncNodeSelect_Load(object sender, EventArgs e)
 		{
-			foreach (ElementNode node in VixenSystem.Nodes.GetRootNodes())
+			foreach (IElementNode node in VixenSystem.Nodes.GetRootNodes())
 			{
 				TreeNode newNode = new TreeNode(node.Name);
 				BuildNode(newNode, node);
@@ -121,12 +121,12 @@ namespace VixenModules.App.LipSyncApp
 
 		}
 
-		public List<ElementNode> SelectedElementNodes
+		public List<IElementNode> SelectedElementNodes
 		{
 			get
 			{
-				List<ElementNode> retVal = new List<ElementNode>();
-				foreach (ElementNode element in chosenTargets.Items)
+				List<IElementNode> retVal = new List<IElementNode>();
+				foreach (IElementNode element in chosenTargets.Items)
 				{
 					retVal.Add(element);
 				}
@@ -139,7 +139,7 @@ namespace VixenModules.App.LipSyncApp
 			get
 			{
 				List<string> retVal = new List<string>();
-				foreach (ElementNode element in chosenTargets.Items)
+				foreach (IElementNode element in chosenTargets.Items)
 				{
 					retVal.Add(element.Name);
 				}
@@ -164,10 +164,10 @@ namespace VixenModules.App.LipSyncApp
 			Changed = true;
 		}
 
-		private void addToChosenTargets(ElementNode node)
+		private void addToChosenTargets(IElementNode node)
 		{
 			bool found = false;
-			foreach (ElementNode chosenNode in chosenTargets.Items)
+			foreach (IElementNode chosenNode in chosenTargets.Items)
 			{
 				if (chosenNode.ToString().Equals(node.ToString()))
 				{
@@ -183,7 +183,7 @@ namespace VixenModules.App.LipSyncApp
 			Changed = true;
 		}
 
-		private void addElementNodes(ElementNode node, bool recurse)
+		private void addElementNodes(IElementNode node, bool recurse)
 		{
 			if ((allowGroupsCheckbox.Checked == true) || (node.IsLeaf == true))
 			{
@@ -192,7 +192,7 @@ namespace VixenModules.App.LipSyncApp
 
 			if (recurse == true)
 			{
-				foreach (ElementNode childNode in node.Children)
+				foreach (IElementNode childNode in node.Children)
 				{
 					addElementNodes(childNode, recurse);
 				}
@@ -201,7 +201,7 @@ namespace VixenModules.App.LipSyncApp
 
 		private void findAndAddElements(string name, bool recurse)
 		{
-			foreach (ElementNode node in VixenSystem.Nodes)
+			foreach (IElementNode node in VixenSystem.Nodes)
 			{
 				if (node.Name.Equals(name))
 				{

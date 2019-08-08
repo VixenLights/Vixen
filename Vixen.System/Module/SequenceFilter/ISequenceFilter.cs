@@ -7,7 +7,7 @@ namespace Vixen.Module.SequenceFilter
 	{
 		bool IsDirty { get; }
 		TimeSpan TimeSpan { get; set; }
-		ElementNode[] TargetNodes { get; set; }
+		IElementNode[] TargetNodes { get; set; }
 		void AffectIntent(IIntentSegment intentSegment, TimeSpan filterRelativeStartTime, TimeSpan filterRelativeEndTime);
 	}
 }

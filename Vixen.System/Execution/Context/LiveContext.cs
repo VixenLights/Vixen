@@ -106,14 +106,14 @@ namespace Vixen.Execution.Context
 			set { ; }
 		}
 
-		private class TargetNodesComparer:IEqualityComparer<ElementNode>
+		private class TargetNodesComparer:IEqualityComparer<IElementNode>
 		{
-			public bool Equals(ElementNode x, ElementNode y)
+			public bool Equals(IElementNode x, IElementNode y)
 			{
 				return x.Id.Equals(y.Id);
 			}
 
-			public int GetHashCode(ElementNode obj)
+			public int GetHashCode(IElementNode obj)
 			{
 				return obj.Id.GetHashCode();
 			}

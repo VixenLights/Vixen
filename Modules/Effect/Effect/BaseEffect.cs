@@ -91,7 +91,7 @@ namespace VixenModules.Effect.Effect
 		protected EffectIntents CreateIntentsForElement(IElementNode element, double intensity, Color color, TimeSpan duration)
 		{
 			EffectIntents effectIntents = new EffectIntents();
-			foreach (ElementNode elementNode in element.GetLeafEnumerator())
+			foreach (IElementNode elementNode in element.GetLeafEnumerator())
 			{
 				if (HasDiscreteColors && IsElementDiscrete(elementNode))
 				{

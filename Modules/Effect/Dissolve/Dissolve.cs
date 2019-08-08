@@ -79,7 +79,7 @@ namespace VixenModules.Effect.Dissolve
 			}
 
 			
-			var renderNodes1 = elements as IGrouping<int, ElementNode>[] ?? elements.ToArray();
+			var renderNodes1 = elements as IGrouping<int, IElementNode>[] ?? elements.ToArray();
 			_totalNodes = renderNodes1.Count();
 
 			_pixels = 0;

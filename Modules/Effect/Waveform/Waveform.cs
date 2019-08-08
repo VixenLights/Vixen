@@ -116,7 +116,7 @@ namespace VixenModules.Effect.Waveform
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
-		protected override void RenderNode(ElementNode node)
+		protected override void RenderNode(IElementNode node)
 		{
             if (!AudioUtilities.AudioLoaded)
                 return;
@@ -129,7 +129,7 @@ namespace VixenModules.Effect.Waveform
 				nodeCount = node.GetLeafEnumerator().Count();
 			}
 
-			foreach (ElementNode elementNode in node.GetLeafEnumerator()) {
+			foreach (IElementNode elementNode in node.GetLeafEnumerator()) {
 				// this is probably always going to be a single element for the given node, as
 				// we have iterated down to leaf nodes in RenderNode() above. May as well do
 				// it this way, though, in case something changes in future.

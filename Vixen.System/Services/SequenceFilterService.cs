@@ -17,20 +17,20 @@ namespace Vixen.Services
 			get { return _instance ?? (_instance = new SequenceFilterService()); }
 		}
 
-		public SequenceFilterLookup BuildLookup(IEnumerable<ElementNode> elementNodes,
+		public SequenceFilterLookup BuildLookup(IEnumerable<IElementNode> elementNodes,
 		                                        IEnumerable<ISequenceFilterNode> filterNodes)
 		{
 			SequenceFilterLookup lookup = new SequenceFilterLookup();
 
 			Stack<IEnumerable<ISequenceFilterNode>> filterStack = new Stack<IEnumerable<ISequenceFilterNode>>();
-			foreach (ElementNode node in elementNodes) {
+			foreach (IElementNode node in elementNodes) {
 				_SearchBranchForFilters(node, filterNodes, filterStack, lookup);
 			}
 
 			return lookup;
 		}
 
-		private void _SearchBranchForFilters(ElementNode node, IEnumerable<ISequenceFilterNode> filters,
+		private void _SearchBranchForFilters(IElementNode node, IEnumerable<ISequenceFilterNode> filters,
 		                                     Stack<IEnumerable<ISequenceFilterNode>> filtersFound, SequenceFilterLookup lookup)
 		{
 			// Must push a single value for each level we enter.
@@ -49,7 +49,7 @@ namespace Vixen.Services
 				}
 			}
 			else {
-				foreach (ElementNode childNode in node.Children) {
+				foreach (IElementNode childNode in node.Children) {
 					_SearchBranchForFilters(childNode, filters, filtersFound, lookup);
 				}
 			}
@@ -58,7 +58,7 @@ namespace Vixen.Services
 			filtersFound.Pop();
 		}
 
-		private ISequenceFilterNode[] _GetFiltersForNode(ElementNode node, IEnumerable<ISequenceFilterNode> filters)
+		private ISequenceFilterNode[] _GetFiltersForNode(IElementNode node, IEnumerable<ISequenceFilterNode> filters)
 		{
 			return filters.Where(x => x.Filter.TargetNodes.Contains(node)).ToArray();
 		}

@@ -35,7 +35,7 @@ namespace Vixen.Module.Effect
 
 		protected EffectModuleInstanceBase()
 		{
-			_targetNodes = new ElementNode[0];
+			_targetNodes = new IElementNode[0];
 				//set member directly on creation to prevent target node changed events from occuring.
 			TimeSpan = TimeSpan.Zero;
 			StartTime = TimeSpan.Zero;
@@ -382,7 +382,7 @@ namespace Vixen.Module.Effect
 					{
 						sw.WriteLine("The \"{0}\" effect has property requirements that are missing:\n", effectDescriptor.TypeName);
 
-						foreach (ElementNode elementNode in TargetNodes)
+						foreach (IElementNode elementNode in TargetNodes)
 						{
 							Guid[] missingPropertyIds =
 								effectDescriptor.PropertyDependencies.Except(elementNode.Properties.Select(x => x.Descriptor.TypeId)).ToArray();

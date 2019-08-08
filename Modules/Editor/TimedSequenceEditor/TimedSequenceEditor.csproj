@@ -215,9 +215,6 @@
     <Compile Include="Forms\WPF\SequenceElementMapper\Views\ElementMapperView.xaml.cs">
       <DependentUpon>ElementMapperView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Forms\WPF\SequenceElementMapper\Views\ElementTree.xaml.cs">
-      <DependentUpon>ElementTree.xaml</DependentUpon>
-    </Compile>
     <Compile Include="PastingMode.cs" />
     <Compile Include="AudacityImportDialog.cs">
       <SubType>Form</SubType>
@@ -624,10 +621,6 @@
     <Page Include="Forms\WPF\SequenceElementMapper\Views\ElementMapperView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Forms\WPF\SequenceElementMapper\Views\ElementTree.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

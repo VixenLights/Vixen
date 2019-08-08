@@ -68,7 +68,7 @@ namespace VixenModules.Effect.Effect
 			SetupRender();
 			int bufferSize = StringPixelCounts.Sum();
 			EffectIntents data = new EffectIntents(bufferSize);
-			foreach (ElementNode node in TargetNodes)
+			foreach (IElementNode node in TargetNodes)
 			{
 				if (node != null)
 					RenderNode(node, ref data);
@@ -344,7 +344,7 @@ namespace VixenModules.Effect.Effect
 		}
 
 
-		protected EffectIntents RenderNode(ElementNode node, ref EffectIntents effectIntents)
+		protected EffectIntents RenderNode(IElementNode node, ref EffectIntents effectIntents)
 		{
 			if (TargetPositioning == TargetPositioningType.Strings)
 			{
@@ -353,7 +353,7 @@ namespace VixenModules.Effect.Effect
 			return RenderNodeByLocation(node, ref effectIntents);
 		}
 
-		protected EffectIntents RenderNodeByLocation(ElementNode node, ref EffectIntents effectIntents)
+		protected EffectIntents RenderNodeByLocation(IElementNode node, ref EffectIntents effectIntents)
 		{
 			int nFrames = GetNumberFrames();
 			if (nFrames <= 0 | BufferWi == 0 || BufferHt == 0) return effectIntents;
@@ -375,7 +375,7 @@ namespace VixenModules.Effect.Effect
 			return effectIntents;
 		}
 
-		protected EffectIntents RenderNodeByStrings(ElementNode node, ref EffectIntents effectIntents)
+		protected EffectIntents RenderNodeByStrings(IElementNode node, ref EffectIntents effectIntents)
 		{
 			int nFrames = GetNumberFrames();
 			if (nFrames <= 0 | BufferWi==0 || BufferHt==0) return new EffectIntents();

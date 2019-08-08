@@ -443,7 +443,7 @@ namespace VixenModules.Effect.Alternating
 			{
 				if (AlternatingMode == AlternatingMode.MarkCollection) intervalTime = markInterval[i] - startTime;
 
-				foreach (IGrouping<int, ElementNode> elementGroup in elements)
+				foreach (IGrouping<int, IElementNode> elementGroup in elements)
 				{
 					var glp = Colors[gradientLevelItem];
 					foreach (var element in elementGroup)
@@ -463,7 +463,7 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		private void RenderElement(GradientLevelPair gradientLevelPair, TimeSpan startTime, TimeSpan interval,
-			ElementNode element, EffectIntents effectIntents)
+			IElementNode element, EffectIntents effectIntents)
 		{
 			if (interval <= TimeSpan.Zero) return;
 			var result = PulseRenderer.RenderNode(element, gradientLevelPair.Curve, gradientLevelPair.ColorGradient, interval, HasDiscreteColors);

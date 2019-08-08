@@ -10,7 +10,7 @@ namespace Vixen.Module.SequenceFilter
 	                                                         IEqualityComparer<SequenceFilterModuleInstanceBase>,
 	                                                         IEquatable<SequenceFilterModuleInstanceBase>
 	{
-		private ElementNode[] _targetNodes;
+		private IElementNode[] _targetNodes;
 		private TimeSpan _timeSpan;
 
 		public TimeSpan TimeSpan
@@ -25,7 +25,7 @@ namespace Vixen.Module.SequenceFilter
 			}
 		}
 
-		public ElementNode[] TargetNodes
+		public IElementNode[] TargetNodes
 		{
 			get { return _targetNodes; }
 			set

@@ -490,7 +490,7 @@ namespace VixenModules.Effect.AudioHelp
 
 			var nodes = GetNodesToRenderOn();
 
-            foreach (ElementNode node in nodes)
+            foreach (IElementNode node in nodes)
             {
                 if (tokenSource != null && tokenSource.IsCancellationRequested)
                     return;
@@ -551,7 +551,7 @@ namespace VixenModules.Effect.AudioHelp
             }
 		}
 
-       protected abstract void RenderNode(ElementNode node);
+       protected abstract void RenderNode(IElementNode node);
 
 		protected override EffectTypeModuleData EffectModuleData
 		{
@@ -570,7 +570,7 @@ namespace VixenModules.Effect.AudioHelp
 		/// <param name="startTime"></param>
 		/// <param name="isDiscrete"></param>
 		/// <returns></returns>
-		protected EffectIntents GenerateEffectIntents(ElementNode node, ColorGradient gradient, Curve level, double startPos, double endPos,
+		protected EffectIntents GenerateEffectIntents(IElementNode node, ColorGradient gradient, Curve level, double startPos, double endPos,
 			TimeSpan duration, TimeSpan startTime, bool isDiscrete)
 		{
 			EffectIntents result = new EffectIntents();
