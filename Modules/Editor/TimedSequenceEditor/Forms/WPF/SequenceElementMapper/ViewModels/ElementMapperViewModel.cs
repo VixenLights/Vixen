@@ -17,10 +17,11 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 
 	public class ElementMapperViewModel : ViewModelBase, IDropTarget
 	{
+		private readonly List<string> _sourceElementNames;
 		public ElementMapperViewModel(List<string> elementNamesToMap)
 		{
+			_sourceElementNames = elementNamesToMap;
 			Elements = VixenSystem.Nodes.GetRootNodes().ToList();
-			LoadMaps();
 			ElementMap = new ElementMap(elementNamesToMap);
 		}
 
@@ -62,23 +63,23 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 
 		#endregion
 
-		#region SelectedMap property
+		//#region SelectedMap property
 
-		/// <summary>
-		/// Gets or sets the SelectedMap value.
-		/// </summary>
-		public ElementMap SelectedMap
-		{
-			get { return GetValue<ElementMap>(SelectedMapProperty); }
-			set { SetValue(SelectedMapProperty, value); }
-		}
+		///// <summary>
+		///// Gets or sets the SelectedMap value.
+		///// </summary>
+		//public ElementMap SelectedMap
+		//{
+		//	get { return GetValue<ElementMap>(SelectedMapProperty); }
+		//	set { SetValue(SelectedMapProperty, value); }
+		//}
 
-		/// <summary>
-		/// SelectedMap property data.
-		/// </summary>
-		public static readonly PropertyData SelectedMapProperty = RegisterProperty("SelectedMap", typeof(ElementMap));
+		///// <summary>
+		///// SelectedMap property data.
+		///// </summary>
+		//public static readonly PropertyData SelectedMapProperty = RegisterProperty("SelectedMap", typeof(ElementMap));
 
-		#endregion
+		//#endregion
 
 		#region Elements property
 
@@ -150,15 +151,15 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		/// </summary>
 		public TaskCommand CancelCommand
 		{
-			get { return _cancelCommand ?? (_cancelCommand = new TaskCommand(CancelAsync)); }
+			get { return _cancelCommand ?? (_cancelCommand = new TaskCommand(CancelMapAsync)); }
 		}
 
 		/// <summary>
 		/// Method to invoke when the Cancel command is executed.
 		/// </summary>
-		private async Task CancelAsync()
+		private async Task CancelMapAsync()
 		{
-			await CancelViewModelAsync();
+			await this.CancelAndCloseViewModelAsync();
 		}
 
 		#endregion
@@ -185,46 +186,13 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 			var result = mbs.GetUserInput("Enter new map name.", "New Map - Name", "New Map");
 			if (result.Result == MessageResult.OK)
 			{
-				var map = new ElementMap(){Name = result.Response};
-				Maps.Add(map);
-				SelectedMap = map;
-				((IEditableObject) map).BeginEdit();
+				ElementMap = new ElementMap(){Name = result.Response};
+
+				((IEditableObject) ElementMap).BeginEdit();
 			}
 		}
 
 		#endregion
-
-		#region RemoveMap command
-
-		private Command _removeMapCommand;
-
-		/// <summary>
-		/// Gets the RemoveMap command.
-		/// </summary>
-		public Command RemoveMapCommand
-		{
-			get { return _removeMapCommand ?? (_removeMapCommand = new Command(RemoveMap, CanRemoveMap)); }
-		}
-
-		/// <summary>
-		/// Method to invoke when the RemoveMap command is executed.
-		/// </summary>
-		private void RemoveMap()
-		{
-			Maps.Remove(SelectedMap);
-		}
-
-		/// <summary>
-		/// Method to check whether the RemoveMap command can be executed.
-		/// </summary>
-		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
-		private bool CanRemoveMap()
-		{
-			return SelectedMap != null;
-		}
-
-		#endregion
-
 
 		#region OpenMap command
 
@@ -248,11 +216,10 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 
 		#endregion
 
-		private void LoadMaps()
-		{
-			Maps = new List<ElementMap>();
-		}
+		//private bool EnsureMapHasAllSourceNames(ElementMap map)
+		//{
 
+		//}
 
 		#region Implementation of IDropTarget
 

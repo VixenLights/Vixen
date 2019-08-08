@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Runtime.Serialization;
 using Catel.Data;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Models
 {
-	public class ElementMapping: ModelBase
+	public class ElementMapping: ModelBase,IEquatable<ElementMapping>
 	{
 		public ElementMapping(string sourceName)
 		{
@@ -67,7 +66,30 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 
 		#endregion
 
+		#region Equality members
 
+		/// <inheritdoc />
+		public bool Equals(ElementMapping other)
+		{
+			if (other.SourceName.Equals(SourceName)) return true;
+			return false;
+		}
 
+		/// <inheritdoc />
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj)) return false;
+			if (ReferenceEquals(this, obj)) return true;
+			if (obj.GetType() != this.GetType()) return false;
+			return Equals((ElementMapping) obj);
+		}
+
+		/// <inheritdoc />
+		public override int GetHashCode()
+		{
+			return SourceName.GetHashCode();
+		}
+
+		#endregion
 	}
 }

@@ -15,7 +15,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 
 		public ElementMap(List<string> elementSources):this()
 		{
-			ElementMappings.AddRange(elementSources.Select(x => new ElementMapping(x)));
+			CreateMapsForSources(elementSources);
 		}
 
 		#region Id property
@@ -80,6 +80,20 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		public Dictionary<string, Guid> GetSourceIdToTargetMap()
 		{
 			return ElementMappings.ToDictionary(x => x.SourceName, x=> x.TargetId);
+		}
+
+		public IEnumerable<string> GetSourceNames(bool distinct = false)
+		{
+			if (distinct)
+			{
+				return ElementMappings.Select(x => x.SourceName).Distinct();
+			}
+
+			return ElementMappings.Select(x => x.SourceName);
+		}
+		public void CreateMapsForSources(List<string> elementSources)
+		{
+			ElementMappings.AddRange(elementSources.Select(x => new ElementMapping(x)));
 		}
 	}
 }
