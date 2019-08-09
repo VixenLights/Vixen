@@ -124,6 +124,7 @@
     <Compile Include="Attributes\BrowsablePropertyAttribute.cs" />
     <Compile Include="Attributes\CategoryEditorAttribute.cs" />
     <Compile Include="Attributes\CategoryOrderAttribute.cs" />
+    <Compile Include="Attributes\ExpandableObjectAttribute.cs" />
     <Compile Include="Attributes\FlatternHierarchyAttribute.cs" />
     <Compile Include="Attributes\IOrderableAttribute.cs" />
     <Compile Include="Attributes\NumberRangeAttribute.cs" />
@@ -905,6 +906,7 @@
     <Compile Include="Sys\WindowsMultimedia.cs" />
     <Compile Include="Sys\XmlHelper.cs" />
     <Compile Include="TypeConverters\BooleanStringTypeConverter.cs" />
+    <Compile Include="TypeConverters\EnumDescriptionTypeConverter.cs" />
     <Compile Include="TypeConverters\IMarkCollectionNameConverter.cs" />
     <Compile Include="TypeConverters\TargetElementDepthConverter.cs" />
     <Compile Include="Utility\cEventHelper.cs" />

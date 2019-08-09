@@ -207,6 +207,7 @@ namespace FastPixel
 					float r = rgbValues[index + 2];
 					float alphaOffset = 255 - color.A;
 					float alphaPercent = color.A / 255f;
+					rgbValues[index + 3] = byte.MaxValue; //Ensure alpha is full because we are adjusting the color for it.
 					rgbValues[index + 2] = (byte) (color.R* alphaPercent + r*(alphaOffset) /255);
 					rgbValues[index + 1] = (byte)(color.G* alphaPercent + g*(alphaOffset) /255);
 					rgbValues[index] = (byte) (color.B* alphaPercent + b*(alphaOffset) /255);

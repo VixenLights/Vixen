@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
+using System;
 using System.Windows;
 using System.Windows.Input;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Editor.EffectEditor.Input;
 using VixenModules.Editor.EffectEditor.Internal;
+using VixenModules.Effect.Liquid;
 
 namespace VixenModules.Editor.EffectEditor
 {
@@ -47,7 +49,7 @@ namespace VixenModules.Editor.EffectEditor
 			CommandBindings.Add(new CommandBinding(PropertyGridCommands.TogglePreview, OnTogglePreviewCommand));
 			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.AddCollectionItem, OnAddCollectionItemCommand));
 			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowGradientLevelCurveEditor, OnShowGradientLevelCurveCommand));
-			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowGradientLevelGradientEditor, OnShowGradientLevelGradientCommand));
+			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowGradientLevelGradientEditor, OnShowGradientLevelGradientCommand));			
 		}
 
 		#region Commands
@@ -189,7 +191,7 @@ namespace VixenModules.Editor.EffectEditor
 
 			}
 		}
-
+			
 		private void ShowDialogEditor(PropertyItemValue value)
 		{
 			var property = value.ParentProperty;
@@ -210,7 +212,6 @@ namespace VixenModules.Editor.EffectEditor
 			value.Value = editor.ShowDialog(value.ParentProperty, value.Value, this);
 			
 		}
-
 		
 		private void OnTogglePreviewCommand(object sender, ExecutedRoutedEventArgs e)
 		{
