@@ -263,6 +263,23 @@ namespace Common.Controls.Timeline
 			protected set { m_rows = value; }
 		}
 
+		public void HighlightRowsWithEffects(bool enable)
+		{
+			RowLabel.ShowActiveIndicators = enable;
+			InvalidateRowLabels();
+		}
+
+		/// <summary>
+		/// Invalidates the Visible row labels so they will be redrawn.
+		/// </summary>
+		internal void InvalidateRowLabels()
+		{
+			foreach (var gridVisibleRow in VisibleRows)
+			{
+				gridVisibleRow.RowLabel.Invalidate();
+			}
+		}
+
 		public IEnumerable<Element> SelectedElements
 		{
 			get { return Rows.SelectMany(x => x.SelectedElements).Distinct(); }
@@ -1008,6 +1025,20 @@ namespace Common.Controls.Timeline
 			//Adjust the start time of the new elements
 			newElements.ForEach(elem => MoveResizeElement(elem, splitTime, elem.EndTime - splitTime));
 
+		}
+
+		public void SplitSelectedElementsAtMouseLocation()
+		{
+			if (SelectedElements.Any())
+			{
+				var time = TimeAtPosition(MousePosition);
+				if(VisibleTimeStart < time && time < VisibleTimeEnd)
+				{
+					SplitElementsAtTime(SelectedElements.Where(elem => elem.StartTime < time && elem.EndTime > time)
+						.ToList(), time);
+				}
+			}
+			
 		}
 
 		/// <summary>

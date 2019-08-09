@@ -52,12 +52,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void playToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			PlaySequence();
+			PlayPauseToggle();
 		}
 
 		private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			PauseSequence();
+			PlayPauseToggle();
 		}
 
 		private void stopToolStripMenuItem_Click(object sender, EventArgs e)
@@ -373,7 +373,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 		}
-			
+
+
+		private void HighlightRowsWithEffectsToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+		{
+			TimelineControl.grid.HighlightRowsWithEffects(highlightRowsWithEffectsToolStripMenuItem.Checked);
+		}
+
 		private void effectEditorWindowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			HandleDockContentToolStripMenuClick(EffectEditorForm, DockState.DockRight);

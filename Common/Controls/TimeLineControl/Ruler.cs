@@ -552,7 +552,11 @@ namespace Common.Controls.Timeline
 						}
 
 						_timeLineGlobalEventManager.OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
-						_timeLineGlobalEventManager.OnAlignmentActivity(new AlignmentEventArgs(true, new[] { _mouseDownMark.StartTime, _mouseDownMark.EndTime }));
+						//if the markbar is not visible, we only need the start mark for alignment
+						var times = _mouseDownMark.Parent.ShowMarkBar
+							? new[] {_mouseDownMark.StartTime, _mouseDownMark.EndTime}
+							: new[] {_mouseDownMark.StartTime};
+						_timeLineGlobalEventManager.OnAlignmentActivity(new AlignmentEventArgs(true, times));
 
 						break;
 					case MouseState.ResizeRuler:

@@ -37,7 +37,7 @@
 
 				<Setter Property="Template">
 					<Setter.Value>
-						<ControlTemplate TargetType="{x:Type ListBoxItem}">
+						<ControlTemplate TargetType="{x:Type ListViewItem}">
 							<Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
 								<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
 							</Border>
@@ -204,11 +204,11 @@
 			visual tree that is more closely related to the current data context. All we have to do then is set the style, 
 			which hooks up the context menu. -->
 			<Style x:Key="ElementModelContextMenuStyle" TargetType="{x:Type TextBlock}">
-				<Setter Property="ContextMenu" Value="{DynamicResource ElementTreeContextMenu}"/>
+				<Setter Property="ContextMenu" Value="{StaticResource ElementTreeContextMenu}"/>
 			</Style>
 
 			<Style x:Key="ElementTreeOrderContextMenuStyle" TargetType="{x:Type TextBlock}">
-				<Setter Property="ContextMenu" Value="{DynamicResource ElementOrderTreeContextMenu}"/>
+				<Setter Property="ContextMenu" Value="{StaticResource ElementOrderTreeContextMenu}"/>
 			</Style>
 		</ResourceDictionary>
 
@@ -304,12 +304,12 @@
 					<ListView.ItemTemplate >
 						<DataTemplate DataType="{x:Type viewModels:ElementModelViewModel}">
 							<StackPanel Orientation="Horizontal">
-								<TextBlock x:Name="OrderText" Margin="2,2,8,2" Text="{Binding Order}" 
+								<TextBlock x:Name="OrderText" Margin="2,2,8,2" Text="{Binding ElementModel.Order}" 
 								           Visibility="{Binding IsLightNode, Converter={StaticResource BooleanToVisibilityConverter }}">
 								</TextBlock>
-								<TextBlock x:Name="ReadOnlyText" Text="{Binding ElementModel.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,2,0,2" Style="{StaticResource ElementTreeOrderContextMenuStyle}" Focusable="True">
+								<TextBlock x:Name="ReadOnlyText" Text="{Binding ElementModel.Name}" Margin="0,2,0,2" Style="{StaticResource ElementTreeOrderContextMenuStyle}" Focusable="True">
 									<i:Interaction.Triggers>
-										<i:EventTrigger EventName="PreviewMouseUp">
+										<i:EventTrigger EventName="MouseLeftButtonUp">
 											<interactivity:EventToCommand Command="{Binding BeginEditCommand}" DisableAssociatedObjectOnCannotExecute="False" />
 										</i:EventTrigger>
 									</i:Interaction.Triggers>

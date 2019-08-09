@@ -86,6 +86,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_zoomRowsOut = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+			this.highlightRowsWithEffectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolbarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.effectWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -201,7 +203,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.playBackToolStripButton_Start = new System.Windows.Forms.ToolStripButton();
 			this.playBackToolStripButton_Play = new System.Windows.Forms.ToolStripButton();
 			this.playBackToolStripButton_Stop = new System.Windows.Forms.ToolStripButton();
-			this.playBackToolStripButton_Pause = new System.Windows.Forms.ToolStripButton();
 			this.playBackToolStripButton_End = new System.Windows.Forms.ToolStripButton();
 			this.playBackToolStripButton_Loop = new System.Windows.Forms.ToolStripButton();
 			this.toolStripColorLibrary = new System.Windows.Forms.ToolStrip();
@@ -437,15 +438,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.playToolStripMenuItem.Name = "playToolStripMenuItem";
 			this.playToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
-			this.playToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.playToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.playToolStripMenuItem.Text = "Play";
 			this.playToolStripMenuItem.Click += new System.EventHandler(this.playToolStripMenuItem_Click);
 			// 
 			// pauseToolStripMenuItem
 			// 
 			this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
-			this.pauseToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F6;
-			this.pauseToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.pauseToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+			this.pauseToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.pauseToolStripMenuItem.Text = "Pause";
 			this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
 			// 
@@ -453,7 +454,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
 			this.stopToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F8;
-			this.stopToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.stopToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.stopToolStripMenuItem.Text = "Stop";
 			this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
 			// 
@@ -463,7 +464,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_Loop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripMenuItem_Loop.Name = "toolStripMenuItem_Loop";
 			this.toolStripMenuItem_Loop.ShortcutKeys = System.Windows.Forms.Keys.F9;
-			this.toolStripMenuItem_Loop.Size = new System.Drawing.Size(141, 22);
+			this.toolStripMenuItem_Loop.Size = new System.Drawing.Size(180, 22);
 			this.toolStripMenuItem_Loop.Text = "Loop";
 			this.toolStripMenuItem_Loop.CheckedChanged += new System.EventHandler(this.toolStripMenuItem_Loop_CheckedChanged);
 			// 
@@ -477,7 +478,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.delay30SecondsToolStripMenuItem,
             this.delay60SecondsToolStripMenuItem});
 			this.playOptionsToolStripMenuItem.Name = "playOptionsToolStripMenuItem";
-			this.playOptionsToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.playOptionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.playOptionsToolStripMenuItem.Text = "Play Options";
 			// 
 			// delayOffToolStripMenuItem
@@ -782,6 +783,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripMenuItem_zoomRowsOut,
             this.toolStripMenuItem2,
             this.toolStripMenuItem3,
+            this.toolStripSeparator4,
+            this.highlightRowsWithEffectsToolStripMenuItem,
             this.toolStripMenuItem1,
             this.toolbarToolStripMenuItem,
             this.effectWindowToolStripMenuItem,
@@ -866,6 +869,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem3.Size = new System.Drawing.Size(234, 22);
 			this.toolStripMenuItem3.Text = "Reset Row Height to Default";
 			this.toolStripMenuItem3.Click += new System.EventHandler(this.resetRowHeightToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(231, 6);
+			// 
+			// highlightRowsWithEffectsToolStripMenuItem
+			// 
+			this.highlightRowsWithEffectsToolStripMenuItem.CheckOnClick = true;
+			this.highlightRowsWithEffectsToolStripMenuItem.Name = "highlightRowsWithEffectsToolStripMenuItem";
+			this.highlightRowsWithEffectsToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+			this.highlightRowsWithEffectsToolStripMenuItem.Text = "Highlight Rows With Effects";
+			this.highlightRowsWithEffectsToolStripMenuItem.CheckedChanged += new System.EventHandler(this.HighlightRowsWithEffectsToolStripMenuItem_CheckedChanged);
 			// 
 			// toolStripMenuItem1
 			// 
@@ -1750,7 +1766,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripEdit.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
 			this.toolStripEdit.Location = new System.Drawing.Point(3, 50);
 			this.toolStripEdit.Name = "toolStripEdit";
-			this.toolStripEdit.Size = new System.Drawing.Size(266, 25);
+			this.toolStripEdit.Size = new System.Drawing.Size(235, 25);
 			this.toolStripEdit.TabIndex = 17;
 			this.toolStripEdit.Text = "Edit";
 			this.toolStripEdit.EndDrag += new System.EventHandler(this.toolStrip_EndDrag);
@@ -2042,13 +2058,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.playBackToolStripButton_Start,
             this.playBackToolStripButton_Play,
             this.playBackToolStripButton_Stop,
-            this.playBackToolStripButton_Pause,
             this.playBackToolStripButton_End,
             this.playBackToolStripButton_Loop});
 			this.toolStripPlayBack.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
 			this.toolStripPlayBack.Location = new System.Drawing.Point(3, 100);
 			this.toolStripPlayBack.Name = "toolStripPlayBack";
-			this.toolStripPlayBack.Size = new System.Drawing.Size(226, 25);
+			this.toolStripPlayBack.Size = new System.Drawing.Size(184, 25);
 			this.toolStripPlayBack.TabIndex = 16;
 			this.toolStripPlayBack.Text = "PlayBack";
 			this.toolStripPlayBack.EndDrag += new System.EventHandler(this.toolStrip_EndDrag);
@@ -2087,18 +2102,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.playBackToolStripButton_Stop.Text = "Stop";
 			this.playBackToolStripButton_Stop.ToolTipText = "Stop F8";
 			this.playBackToolStripButton_Stop.Click += new System.EventHandler(this.toolStripButton_Stop_Click);
-			// 
-			// playBackToolStripButton_Pause
-			// 
-			this.playBackToolStripButton_Pause.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.playBackToolStripButton_Pause.ForeColor = System.Drawing.Color.Black;
-			this.playBackToolStripButton_Pause.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.playBackToolStripButton_Pause.Name = "playBackToolStripButton_Pause";
-			this.playBackToolStripButton_Pause.Size = new System.Drawing.Size(42, 22);
-			this.playBackToolStripButton_Pause.Tag = "Pause";
-			this.playBackToolStripButton_Pause.Text = "Pause";
-			this.playBackToolStripButton_Pause.ToolTipText = "Pause F6";
-			this.playBackToolStripButton_Pause.Click += new System.EventHandler(this.toolStripButton_Pause_Click);
 			// 
 			// playBackToolStripButton_End
 			// 
@@ -2475,7 +2478,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripButton playBackToolStripButton_Start;
 		private System.Windows.Forms.ToolStripButton playBackToolStripButton_Play;
 		private System.Windows.Forms.ToolStripButton playBackToolStripButton_Stop;
-		private System.Windows.Forms.ToolStripButton playBackToolStripButton_Pause;
 		private System.Windows.Forms.ToolStripButton playBackToolStripButton_End;
 		private System.Windows.Forms.ToolStripButton playBackToolStripButton_Loop;
 		private System.Windows.Forms.ToolStripMenuItem toolbarsToolStripMenuItem;
@@ -2542,5 +2544,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripDropDownButton editToolStripButton_PasteDropDown;
 		private System.Windows.Forms.ToolStripMenuItem editToolStripButton_PasteInvert;
 		private System.Windows.Forms.ToolStripMenuItem editToolStripButton_PasteVisibleMarks;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private System.Windows.Forms.ToolStripMenuItem highlightRowsWithEffectsToolStripMenuItem;
 	}
 }

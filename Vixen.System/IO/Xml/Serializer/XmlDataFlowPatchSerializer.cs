@@ -37,7 +37,7 @@ namespace Vixen.IO.Xml.Serializer
 				int sourceOutputIndex = XmlHelper.GetIntAttribute(source, ATTR_SOURCE_OUTPUT_INDEX).GetValueOrDefault();
 				return new DataFlowPatch(componentId.Value, sourceId, sourceOutputIndex);
 			} catch (Exception e) {
-				logging.Error("Error loading Preview from XML", e);
+				logging.Error(e, "Error loading Preview from XML");
 				return null;
 			}
 		}

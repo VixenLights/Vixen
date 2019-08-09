@@ -130,9 +130,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			playBackToolStripButton_Play.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			playBackToolStripButton_Stop.Image = Resources.control_stop_blue;
 			playBackToolStripButton_Stop.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			playBackToolStripButton_Pause.Image = Resources.control_pause_blue;
-			playBackToolStripButton_Pause.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			playBackToolStripButton_End.Image = Resources.control_end_blue;
+						playBackToolStripButton_End.Image = Resources.control_end_blue;
 			playBackToolStripButton_End.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			playBackToolStripButton_Loop.Image = Resources.arrow_repeat;
 			playBackToolStripButton_Loop.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -1908,17 +1906,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripButton_Play_Click(object sender, EventArgs e)
 		{
-			PlaySequence();
+			PlayPauseToggle();
 		}
 
 		private void toolStripButton_Stop_Click(object sender, EventArgs e)
 		{
 			StopSequence();
-		}
-
-		private void toolStripButton_Pause_Click(object sender, EventArgs e)
-		{
-			PauseSequence();
 		}
 
 		private void toolStripButton_End_Click(object sender, EventArgs e)

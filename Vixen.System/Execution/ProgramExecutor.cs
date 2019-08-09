@@ -234,7 +234,7 @@ namespace Vixen.Execution
 				}
 			}
 			catch (Exception ex) {
-				Logging.Error(ex.Message,ex);
+				Logging.Error(ex, ex.Message);
 				_DisposeSequenceExecutor();
 			}
 			finally {

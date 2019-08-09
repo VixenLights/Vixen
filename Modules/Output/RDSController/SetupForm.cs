@@ -142,7 +142,7 @@ namespace VixenModules.Output.CommandController
 				switch (RdsData.HardwareID) {
 					case Hardware.MRDS192:
 					case Hardware.MRDS1322:
-						NativeMethods.Disconnect();
+						//NativeMethods.Disconnect();
 						break;
 					case Hardware.VFMT212R:
 						break;

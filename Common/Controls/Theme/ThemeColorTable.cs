@@ -387,5 +387,7 @@ namespace Common.Controls.Theme
 		}
 
 		public static Color LinkColor { get; } = Color.FromArgb(255, 38, 160, 218);
+
+		public static Color ActiveColor { get; } = Color.Yellow;
 	}
 }

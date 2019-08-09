@@ -211,7 +211,7 @@ namespace VixenModules.Preview.VixenPreview
 		}
 
 		private void OnDeSelectDisplayItem(object sender, Shapes.DisplayItem displayItem) {
-			propertiesForm.ShowSetupControl(null);
+			propertiesForm.ClearSetupControl();
 		}
 
 		private void OnSelectDisplayItem(object sender, Shapes.DisplayItem displayItem) {

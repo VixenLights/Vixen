@@ -44,7 +44,7 @@ namespace Vixen.IO.Xml.Serializer
 
 				return sequences;
 			} catch (Exception e) {
-				logging.Error("Error loading Sequence List from XML", e);
+				logging.Error(e, "Error loading Sequence List from XML");
 				return null;
 			}
 		}

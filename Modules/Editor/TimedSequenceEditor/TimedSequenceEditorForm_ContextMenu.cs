@@ -306,7 +306,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ToolStripMenuItem contextMenuItemManipulation = new ToolStripMenuItem("Manipulation");
 				ToolStripMenuItem contextMenuItemManipulateDivide = new ToolStripMenuItem("Divide at cursor")
 				{
-					Image = Resources.divide
+					Image = Resources.divide,
+					ShortcutKeys = Keys.Control | Keys.D 
 				};
 				contextMenuItemManipulateDivide.Click += (mySender, myE) =>
 				{

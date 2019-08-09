@@ -28,8 +28,14 @@ namespace VixenModules.Preview.VixenPreview
 				Text = setupControl.Title;
 			}
 			else {
-				Text = "Properties";
+				Text = @"Properties";
 			}
+		}
+
+		public void ClearSetupControl()
+		{
+			Controls.Clear();
+			Text = @"Properties";
 		}
 	}
 }

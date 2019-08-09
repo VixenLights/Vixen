@@ -960,9 +960,6 @@
   <PropertyGroup>
     <PostBuildEvent>copy "$(SolutionDir)\Release Notes.txt" "$(OutDir)"
 copy "$(SolutionDir)\License.txt" "$(OutDir)"
-del "$(OutDir)\System.*"
-del "$(OutDir)\Microsoft.*"
-del "$(OutDir)\netstandard.dll*"
 del "$(OutDir)\libzstd.dll*"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Zstandard.Net.1.1.5\build\Zstandard.Net.targets" Condition="Exists('..\packages\Zstandard.Net.1.1.5\build\Zstandard.Net.targets')" />

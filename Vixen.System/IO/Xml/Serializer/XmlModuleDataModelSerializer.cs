@@ -38,7 +38,7 @@ namespace Vixen.IO.Xml.Serializer
 					                    XElement.Parse(objectData));
 				}
 				catch (Exception ex) {
-					Logging.Error(string.Format("Error when serializing data model of type {0}", value.GetType().Name), ex);
+					Logging.Error(ex, $"Error when serializing data model of type {value.GetType().Name}");
 					return null;
 				}
 			}
@@ -84,7 +84,7 @@ namespace Vixen.IO.Xml.Serializer
 					dataModel = _DeserializeDataModel(dataModelType, element);
 				}
 				catch (Exception ex) {
-					Logging.Error("The data for module \"" + descriptor.TypeName + "\" was not loaded due to errors.", ex);
+					Logging.Error(ex, "The data for module \"" + descriptor.TypeName + "\" was not loaded due to errors.");
 					return null;
 				}
 
@@ -95,7 +95,7 @@ namespace Vixen.IO.Xml.Serializer
 
 				return dataModel;
 			} catch (Exception e) {
-				logging.Error("Error loading Module Data Model from XML", e);
+				logging.Error(e, "Error loading Module Data Model from XML");
 				return null;
 			}
 		}

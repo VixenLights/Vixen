@@ -36,6 +36,8 @@ namespace Common.Controls
 			treeview.DragStart += treeview_DragStart;
 
 			AllowDragging = true;
+			AllowPropertyEdit = true;
+			AllowWireExport = true;
 		}
 
 		private void ElementTree_Load(object sender, EventArgs e)
@@ -54,6 +56,10 @@ namespace Common.Controls
 		// desired, or icons might not be wanted, or only groups displayed, etc., etc.
 
 		public bool AllowDragging { get; set; }
+
+		public bool AllowPropertyEdit { get; set; }
+
+		public bool AllowWireExport { get; set; }
 
 
 		#endregion
@@ -745,6 +751,7 @@ namespace Common.Controls
 			copyNodesToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 0);
 			pasteNodesToolStripMenuItem.Enabled = (_clipboardNodes != null);
 			pasteAsNewToolStripMenuItem.Enabled = (_clipboardNodes != null);
+			nodePropertiesToolStripMenuItem.Visible = AllowPropertyEdit;
 			copyPropertiesToolStripMenuItem.Enabled = (SelectedTreeNodes.Count == 1);
 			pastePropertiesToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 0) && (_clipboardProperties != null);
 			nodePropertiesToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 0);
@@ -755,20 +762,24 @@ namespace Common.Controls
 			patternRenameToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 0);
 			reverseElementsToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 1) && (treeview.CanReverseElements());
 			sortToolStripMenuItem.Enabled = CanSortSelected();
+			exportWireDiagramToolStripMenuItem.Visible = AllowWireExport;
 			exportWireDiagramToolStripMenuItem.Enabled = CanExportDiagram();
 		}
 
 		private bool CanExportDiagram()
 		{
 			var canExport = false;
-			if (SelectedTreeNodes.Count == 1)
+			if (AllowWireExport)
 			{
-				if (SelectedTreeNodes.Any(x => x.GetNodeCount(true) > 1))
+				if (SelectedTreeNodes.Count == 1)
 				{
-					canExport = true;
+					if (SelectedTreeNodes.Any(x => x.GetNodeCount(true) > 1))
+					{
+						canExport = true;
+					}
 				}
 			}
-
+			
 			return canExport;
 		}
 

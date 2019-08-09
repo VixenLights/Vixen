@@ -9,6 +9,7 @@ using System.Windows.Controls.WpfPropertyGrid;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
+using NLog;
 using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Import;
 using VixenModules.App.CustomPropEditor.Import.XLights;
@@ -20,6 +21,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 {
 	public class PropEditorViewModel : ViewModelBase
 	{
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private bool _selectionChanging;
 		private string _lastSaveFolderPath = PropModelServices.Instance().ModelsFolder;
 		private string _lastOpenFolderPath = PropModelServices.Instance().ModelsFolder;
@@ -754,12 +756,25 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				if (!string.IsNullOrEmpty(path))
 				{
 					IModelImport import = new XModelImport();
-					var p = await import.ImportAsync(path);
-					if (p != null)
+					var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
+					pleaseWaitService.Show();
+					try
 					{
-						Prop = p;
-						FilePath = String.Empty;
+						var p = await import.ImportAsync(path);
+						if (p != null)
+						{
+							Prop = p;
+							FilePath = String.Empty;
+						}
 					}
+					catch (Exception e)
+					{
+						Logging.Error(e, "An error occuring importing the xModel.");
+						var mbs = new MessageBoxService();
+						mbs.ShowError($"An error occured importing the xModel. Please notify the Vixen Team.", "Error Importing xModel");
+					}
+
+					pleaseWaitService.Hide();
 				}
 			}
 		}

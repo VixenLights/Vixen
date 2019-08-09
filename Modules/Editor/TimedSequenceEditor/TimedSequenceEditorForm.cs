@@ -332,6 +332,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			cADStyleSelectionBoxToolStripMenuItem.Checked = TimelineControl.grid.aCadStyleSelectionBox = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CadStyleSelectionBox", Name), false);
 			CheckRiColorMenuItem(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorColor", Name), "Red"));
 			zoomUnderMousePositionToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ZoomUnderMousePosition", Name), false);
+			highlightRowsWithEffectsToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/HighlightActiveElements", false);
 			TimelineControl.waveform.Height = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WaveFormHeight", Name), 50);
 			TimelineControl.ruler.Height = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/RulerHeight", Name), 50);
 			TimelineControl.AddMarks(_sequence.LabeledMarkCollections);
@@ -1434,7 +1435,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							Logging.Error("TimedSequenceEditor: <SaveSequence> - Save Sequence dialog filter could not be set, EditorModuleDescriptorBase is null!");
 						}
 
-						DialogResult result = saveFileDialog.ShowDialog();
+						DialogResult result = saveFileDialog.ShowDialog(this);
 						if (result == DialogResult.OK)
 						{
 							string name = saveFileDialog.FileName;
@@ -1703,7 +1704,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Are you sure you want to remove the audio association?", "Remove existing audio?", true, false);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 				if (messageBox.DialogResult != DialogResult.OK)
 					return;
 			}
@@ -1746,7 +1747,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Only one audio file can be associated with a sequence at a time. If you choose another, " +
 									@"the first will be removed. Continue?", @"Remove existing audio?", true, false);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 				if (messageBox.DialogResult != DialogResult.OK)
 					return;
 			}
@@ -1754,7 +1755,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// TODO: we need to be able to get the support file types, to filter the openFileDialog properly, but it's not
 			// immediately obvious how to get that; for now, just let it open any file type and complain if it's wrong
 
-			if (openFileDialog.ShowDialog() == DialogResult.OK)
+			if (openFileDialog.ShowDialog(this) == DialogResult.OK)
 			{
 				IMediaModuleInstance newInstance = _sequence.AddMedia(openFileDialog.FileName);
 				if (newInstance == null)
@@ -1763,7 +1764,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("The selected file is not a supported type.", @"Warning", false, false);
-					messageBox.ShowDialog();
+					messageBox.ShowDialog(this);
 					return;
 				}
 
@@ -1798,7 +1799,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
 						var messageBox = new MessageBoxForm("Do you want to resize the sequence to the size of the audio?",
 											@"Resize sequence?", true, false);
-						messageBox.ShowDialog();
+						messageBox.ShowDialog(this);
 						if (messageBox.DialogResult == DialogResult.OK)
 						{
 							SequenceLength = length;
@@ -1942,7 +1943,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("One or more effects were selected that do not support colors.\nAll effects that do were updated.",
 									@"Information", true, false);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 			}
 			SequenceModified();
 		}
@@ -2247,7 +2248,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				TimedSequenceEditorEffectEditor editor = new TimedSequenceEditorEffectEditor(editElements.Select(x => x.EffectNode))
 				)
 			{
-				DialogResult result = editor.ShowDialog();
+				DialogResult result = editor.ShowDialog(this);
 				if (result == DialogResult.OK)
 				{
 					foreach (Element element in editElements)
@@ -2422,7 +2423,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			eDialog.EffectName = effectName;
 			eDialog.SequenceLength = eDialog.EndTime = SequenceLength;
 			eDialog.MarkCollections = _sequence.LabeledMarkCollections;
-			eDialog.ShowDialog();
+			eDialog.ShowDialog(this);
 			if (eDialog.DialogResult == DialogResult.OK)
 			{
 				_amLastEffectCount = eDialog.EffectCount;
@@ -2521,7 +2522,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				var messageBox = new MessageBoxForm(TimelineControl.grid.alignmentHelperWarning, @"", false, false);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 				return;
 			}
 			//Before we do anything lets make sure there is time to work with
@@ -2555,7 +2556,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				var messageBox = new MessageBoxForm(string.Format(
 						"Unable to complete request. The resulting duration would fall below 50 milliseconds.\nCalculated duration: {0}",
 						effectDuration), @"Warning", false, false);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 				return;
 			}
 			var elementsToDistribute = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
@@ -2592,7 +2593,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				var messageBox = new MessageBoxForm(TimelineControl.grid.alignmentHelperWarning, @"", false, false);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 				return;
 			}
 
@@ -2600,7 +2601,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				var messageBox = new MessageBoxForm("Select at least two effects to distribute.", "Select more effects", false, false);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 				return;
 			}
 			var startTime = TimelineControl.SelectedElements.First().StartTime;
@@ -2619,7 +2620,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			dDialog.RadioEqualDuration = true;
 			dDialog.RadioStairStep = true;
 			dDialog.StartWithFirst = true;
-			dDialog.ShowDialog();
+			dDialog.ShowDialog(this);
 			if (dDialog.DialogResult == DialogResult.OK)
 			{
 				startTime = dDialog.StartTime;
@@ -2821,7 +2822,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						var messageBox = new MessageBoxForm("Unable to find Standard Phoneme Dictionary", "Error",
 							MessageBoxButtons.OK, SystemIcons.Error);
-						messageBox.ShowDialog();
+						messageBox.ShowDialog(this);
 						return;
 					}
 
@@ -2921,7 +2922,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				if (_context.IsRunning) PauseSequence();
 				var messageBox = new MessageBoxForm("Marks are stored in Mark Collections. There are no mark collections available to store this mark. Would you like to create a new one?", @"Create a Mark Collection", MessageBoxButtons.YesNo, SystemIcons.Information);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 				if (messageBox.DialogResult == DialogResult.OK)
 				{
 					mc = GetOrAddNewMarkCollection(Color.White, "Default Marks");
@@ -2934,7 +2935,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					if (_context.IsRunning) PauseSequence();
 					var messageBox = new MessageBoxForm("The active mark collection is not visible on the timeline. Would you like to enable it to add the mark?", @"New Mark", MessageBoxButtons.OKCancel, SystemIcons.Error);
-					var result = messageBox.ShowDialog();
+					var result = messageBox.ShowDialog(this);
 					if (result == DialogResult.OK)
 					{
 						mc = _sequence.LabeledMarkCollections.FirstOrDefault(x => x.IsDefault);
@@ -3131,7 +3132,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Unable to play this sequence.  See error log for details.", @"Unable to Play", false, false);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 				return;
 			}
 			TimelineControl.grid.Context = _context;
@@ -3152,6 +3153,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			VixenSystem.Contexts.ReleaseContext(_context);
 			UpdateButtonStates();
+		}
+
+		private void PlayPauseToggle()
+		{
+			if (!_context.IsRunning || _context.IsPaused)
+			{
+				PlaySequence();
+			}
+			else
+			{
+				PauseSequence();
+			}
 		}
 
 		private void PlaySequence()
@@ -3287,7 +3300,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				timerPostponePlay.Enabled = timerDelayCountdown.Enabled = false;
 				playBackToolStripButton_Play.Image = Resources.control_play_blue;
-				playBackToolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
+				//playBackToolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
+				UpdatePlayButton(true);
 				playBackToolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
 				//We are stopping the delay, there is no context, so get out of here to avoid false entry into error log
 				return;
@@ -3410,8 +3424,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				if (_context == null)
 				{
+					UpdatePlayButton(true);
 					playBackToolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = false;
-					playBackToolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
 					playBackToolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
 					return;
 				}
@@ -3421,21 +3435,44 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					if (_context.IsPaused)
 					{
 						playBackToolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
-						playBackToolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
+						pauseToolStripMenuItem.Enabled = false;
+						playToolStripMenuItem.Enabled = true;
+						UpdatePlayButton(true);
 					}
 					else
 					{
-						playBackToolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = false;
-						playBackToolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = true;
+						playBackToolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
+						pauseToolStripMenuItem.Enabled = true;
+						playToolStripMenuItem.Enabled = false;
+						UpdatePlayButton(false);
 					}
 					playBackToolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = true;
 				}
 				else // Stopped
 				{
 					playBackToolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
-					playBackToolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
+					pauseToolStripMenuItem.Enabled = false;
+					playToolStripMenuItem.Enabled = true;
+					UpdatePlayButton(true);
 					playBackToolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
 				}
+			}
+		}
+
+		private void UpdatePlayButton(bool playState)
+		{
+			if (playState)
+			{
+				playBackToolStripButton_Play.Image = Resources.control_play_blue;
+				playBackToolStripButton_Play.Text = @"Play";
+				playBackToolStripButton_Play.ToolTipText = @"Play F5";
+				
+			}
+			else
+			{
+				playBackToolStripButton_Play.Image = Resources.control_pause_blue;
+				playBackToolStripButton_Play.Text = @"Pause";
+				playBackToolStripButton_Play.ToolTipText = @"Pause F5";
 			}
 		}
 
@@ -3593,7 +3630,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Node to remove not found, the editor is in a bad state! Please close the editor and restart it.", "Error", false, false);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 			}
 		}
 
@@ -3759,7 +3796,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 						var messageBox = new MessageBoxForm(message, @"", false, false);
-						messageBox.ShowDialog();
+						messageBox.ShowDialog(this);
 					}
 				}
 			}
@@ -3815,7 +3852,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 									//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 									MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 									var messageBox = new MessageBoxForm(message, @"", false, false);
-									messageBox.ShowDialog();
+									messageBox.ShowDialog(this);
 								}
 							});
 			TimelineControl.grid.RenderElement(element);
@@ -3973,7 +4010,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm(message, @"Replace existing effects?", true, false);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 				if (messageBox.DialogResult == DialogResult.No)
 				{
 					return;
@@ -4008,7 +4045,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
 			var messageBox = new MessageBoxForm("Multiple type effects selected, this will only apply to effects of the type: " +
 									name, @"Multiple Type Effects", false, true);
-			messageBox.ShowDialog();
+			messageBox.ShowDialog(this);
 			if (messageBox.DialogResult == DialogResult.Cancel)
 			{
 				return false;
@@ -4169,7 +4206,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				FormParameterPicker parameterPicker = CreateParameterPicker(parameterPickerControls);
 
 				ShowMultiDropMessage();
-				var dr = parameterPicker.ShowDialog();
+				var dr = parameterPicker.ShowDialog(this);
 				if (dr == DialogResult.OK)
 				{
 					
@@ -4277,7 +4314,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				FormParameterPicker parameterPicker = CreateParameterPicker(parameterPickerControls);
 
 				ShowMultiDropMessage();
-				var dr = parameterPicker.ShowDialog();
+				var dr = parameterPicker.ShowDialog(this);
 				if (dr == DialogResult.OK)
 				{
 					if (parameterPicker.PropertyInfo.PropertyType == typeof (Curve))
@@ -4335,7 +4372,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var parameterPicker = CreateParameterPicker(parameterPickerControls);
 
 			ShowMultiDropMessage();
-			var dr = parameterPicker.ShowDialog();
+			var dr = parameterPicker.ShowDialog(this);
 			if (dr == DialogResult.OK)
 			{
 				var newGradientLevelPairs = gradientLevelPairs.ToList();
@@ -4426,7 +4463,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				FormParameterPicker parameterPicker = CreateParameterPicker(parameterPickerControls);
 
 				ShowMultiDropMessage();
-				var dr = parameterPicker.ShowDialog();
+				var dr = parameterPicker.ShowDialog(this);
 				if (dr == DialogResult.OK)
 				{
 
@@ -4490,7 +4527,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var parameterPicker = CreateParameterPicker(parameterPickerControls);
 
 			ShowMultiDropMessage();
-			var dr = parameterPicker.ShowDialog();
+			var dr = parameterPicker.ShowDialog(this);
 			if (dr == DialogResult.OK)
 			{
 				var newGradients = gradients.ToList();
@@ -4520,7 +4557,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var parameterPicker = CreateParameterPicker(parameterPickerControls);
 
 			ShowMultiDropMessage();
-			var dr = parameterPicker.ShowDialog();
+			var dr = parameterPicker.ShowDialog(this);
 			if (dr == DialogResult.OK)
 			{
 				var newGradients = gradients.ToList();
@@ -4674,7 +4711,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var parameterPicker = CreateParameterPicker(parameterPickerControls);
 
 			UpdateToolStrip4("Choose the Effect to use, press Escape to cancel.", 12);
-			var dr = parameterPicker.ShowDialog();
+			var dr = parameterPicker.ShowDialog(this);
 			if (dr == DialogResult.OK)
 			{
 				return parameterPicker.EffectPropertyInfo.TypeId;
@@ -5248,6 +5285,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CurveLinkCurves", Name), CurveLibraryForm.LinkCurves);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/GradientLinkGradients", Name), GradientLibraryForm.LinkGradients);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ZoomUnderMousePosition", Name), zoomUnderMousePositionToolStripMenuItem.Checked);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/HighlightActiveElements", highlightRowsWithEffectsToolStripMenuItem.Checked);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WaveFormHeight", Name), TimelineControl.waveform.Height);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/RulerHeight", Name), TimelineControl.ruler.Height);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SplitterDistance", Name), TimelineControl.splitContainer.SplitterDistance);
@@ -5334,7 +5372,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm(ex.Message, @"Error parsing time", false, false);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 				return;
 			}
 
@@ -5350,7 +5388,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			//TODO finish the clean up of removing the mark manager
 			//MarkManager manager = new MarkManager(new List<MarkCollection>(_sequence.MarkCollections), this, this, this);
-			//if (manager.ShowDialog() == DialogResult.OK)
+			//if (manager.ShowDialog(this) == DialogResult.OK)
 			//{
 			//	_sequence.MarkCollections = manager.MarkCollections;
 			//	PopulateMarkSnapTimes();
@@ -5592,7 +5630,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("Conversion Complete and copied to Clipboard \n Paste at first Mark offset", @"Convert Text", false, false);
-					messageBox.ShowDialog();
+					messageBox.ShowDialog(this);
                 }
                 SequenceModified();
             }
@@ -5643,7 +5681,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("No effects have been selected and action will be applied to your entire sequence. This can take a considerable length of time, are you sure ?",
 					@"Align effects to marks", true, false);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 				if (messageBox.DialogResult == DialogResult.No) return;
 				elements = TimelineControl.Rows.SelectMany(row => row); //add all elements within the sequence to elements list
 			}
@@ -5690,7 +5728,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				var messageBox = new MessageBoxForm("No effects have been selected and action will be applied to your entire sequence. This can take a considerable length of time, are you sure ?",
 					@"Align effects to marks", MessageBoxButtons.YesNo, SystemIcons.Information);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 				if (messageBox.DialogResult == DialogResult.No) return;
 				elements = TimelineControl.Rows.SelectMany(row => row); //add all elements within the sequence to elements list
 			}
@@ -5781,6 +5819,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			return defaultEffectDuration;
 		}
+
 	}
 
 	[Serializable]
