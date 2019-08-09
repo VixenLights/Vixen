@@ -73,9 +73,14 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 
 		#endregion
 
-		public void AddMap(ElementMapping map)
+		public void Add(ElementMapping map)
 		{
 			ElementMappings.Add(map);
+		}
+
+		public void AddRange(IEnumerable<ElementMapping> maps)
+		{
+			ElementMappings.AddItems(maps);
 		}
 
 		public Dictionary<string, Guid> GetSourceIdToTargetMap()

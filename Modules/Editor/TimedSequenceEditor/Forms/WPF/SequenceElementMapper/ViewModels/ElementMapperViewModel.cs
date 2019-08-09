@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Windows;
 using Catel.Data;
 using Catel.IoC;
@@ -101,6 +101,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 				if (await saveFileService.DetermineFileAsync())
 				{
 					_lastModelPath = saveFileService.FileName;
+					ElementMap.Name = Path.GetFileNameWithoutExtension(_lastModelPath);
 				}
 				else
 				{
@@ -282,13 +283,22 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 				if (map != null)
 				{
 					_lastModelPath = openFileService.FileName;
-					var allGood = EnsureMapHasAllSourceNames(map);
-					
-					//prompt the user about adding missing sources before we load it up
-
 					ElementMap = map;
+					ElementMap.Name = Path.GetFileNameWithoutExtension(_lastModelPath);
 					MapModified = false;
 					((IEditableObject)ElementMap).BeginEdit();
+					var missingSourceNames = DiscoverMissingSourceNames(map);
+					if (missingSourceNames.Any())
+					{
+						var mbs = dependencyResolver.Resolve<IMessageBoxService>();
+						var result = mbs.GetUserConfirmation(@"Add missing source elements to map?", "Add Missing Sources.");
+						if (result.Result == MessageResult.OK)
+						{
+							var mapsToAdd = _sourceElementNames.Except(missingSourceNames).Select(x => new ElementMapping(x));
+							ElementMap.AddRange(mapsToAdd);
+							MapModified = true;
+						}
+					}
 				}
 
 				pleaseWaitService.Hide();
@@ -370,33 +380,11 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		/// </summary>
 		private void Help()
 		{
-			// TODO: Handle command logic here
+			var url = "http://www.vixenlights.com/vixen-3-documentation/sequencer/sequence-import/";
+			System.Diagnostics.Process.Start(url);
 		}
 
 		#endregion
-
-		#region Exit command
-
-		private TaskCommand _exitCommand;
-
-		/// <summary>
-		/// Gets the Exit command.
-		/// </summary>
-		public TaskCommand ExitCommand
-		{
-			get { return _exitCommand ?? (_exitCommand = new TaskCommand(ExitAsync)); }
-		}
-
-		/// <summary>
-		/// Method to invoke when the Exit command is executed.
-		/// </summary>
-		private async Task ExitAsync()
-		{
-			await OkAsync();
-		}
-
-		#endregion
-
 
 		#region Implementation of IDropTarget
 
@@ -445,9 +433,9 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 
 		#endregion
 
-		private bool EnsureMapHasAllSourceNames(ElementMap map)
+		private IEnumerable<string> DiscoverMissingSourceNames(ElementMap map)
 		{
-			return true;
+			return ElementMap.GetSourceNames(true).ToHashSet();
 		}
 
 		private void UpdateTitle()

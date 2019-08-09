@@ -43,7 +43,7 @@ namespace Common.WPFCommon.Services
 
 		public MessageBoxResponse GetUserConfirmation(string question, string title)
 		{
-			MessageBoxForm mbf = new MessageBoxForm(question, title, MessageBoxButtons.YesNoCancel, SystemIcons.Question);
+			MessageBoxForm mbf = new MessageBoxForm(question, title, MessageBoxButtons.YesNo, SystemIcons.Question);
 			CenterDialog(mbf);
 			mbf.ShowDialog();
 

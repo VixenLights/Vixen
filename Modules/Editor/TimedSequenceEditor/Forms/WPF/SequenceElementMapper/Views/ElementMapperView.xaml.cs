@@ -1,5 +1,6 @@
 ﻿using Catel.IoC;
 using Catel.Runtime.Serialization.Json;
+using Common.WPFCommon.Services;
 using Vixen.Extensions;
 using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Models;
 using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Services;
@@ -20,6 +21,11 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 			{
 				serviceLocator.RegisterType<IModelPersistenceService<ElementMap>, ModelPersistenceService<ElementMap>>();
 			}
+			if (!serviceLocator.IsTypeRegistered(typeof(MessageBoxService)))
+			{
+				serviceLocator.RegisterType<IMessageBoxService, MessageBoxService>();
+			}
+
 			InitializeComponent();
 			Icon = Common.Resources.Properties.Resources.Icon_Vixen3.ToImageSource();
 			DataContext = viewModel;
