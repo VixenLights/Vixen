@@ -8,10 +8,12 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using Catel.Collections;
 using Catel.Data;
+using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
 using Common.Controls;
 using Common.Controls.NameGeneration;
+using Common.WPFCommon.Services;
 using GongSolutions.Wpf.DragDrop;
 using GongSolutions.Wpf.DragDrop.Utilities;
 using Vixen.Sys;
@@ -155,7 +157,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		{
 			if (SelectedItems.Count == 1)
 			{
-				MessageBoxService mbs = new MessageBoxService();
+				var dependencyResolver = this.GetDependencyResolver();
+				var mbs = dependencyResolver.Resolve<IMessageBoxService>();
 				var result = mbs.GetUserInput("Please enter the new name.", "Rename", SelectedItems[0].ElementModel.Name);
 				if (result.Result == MessageResult.OK)
 				{

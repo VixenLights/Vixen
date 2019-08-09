@@ -1,11 +1,13 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 using Catel;
+using Catel.IoC;
 using Catel.Services;
 using Common.Controls;
 
 namespace Common.WPFCommon.Services
 {
+	[ServiceLocatorRegistration(typeof(IMessageBoxService))]
 	public class MessageBoxService : IMessageBoxService
 	{
 		public MessageBoxResponse GetUserInput(string question, string title, string defaultText, Form parent=null)
@@ -49,6 +51,15 @@ namespace Common.WPFCommon.Services
 
 			return new MessageBoxResponse(Enum<MessageResult>.ConvertFromOtherEnumValue(mbf.DialogResult), null);
 
+		}
+
+		public MessageBoxResponse ShowError(string message, string title)
+		{
+			MessageBoxForm mbf = new MessageBoxForm(message, title, MessageBoxButtons.OK, SystemIcons.Error);
+			CenterDialog(mbf);
+			mbf.ShowDialog();
+
+			return new MessageBoxResponse(Enum<MessageResult>.ConvertFromOtherEnumValue(mbf.DialogResult), null);
 		}
 
 		private static void CenterDialog(Form dialog)

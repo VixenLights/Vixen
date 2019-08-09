@@ -19,6 +19,7 @@ using System.Collections.Concurrent;
 using Catel.IoC;
 using Catel.Services;
 using Common.Controls.Scaling;
+using Common.WPFCommon.Services;
 using Vixen;
 using Vixen.Rule;
 using Vixen.Services;

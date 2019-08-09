@@ -11,6 +11,7 @@ using Catel.IoC;
 using Catel.Services;
 using Common.WPFCommon.Services;
 using GongSolutions.Wpf.DragDrop;
+using NLog;
 using Vixen.Sys;
 using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Models;
 using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Services;
@@ -22,6 +23,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 
 	public class ElementMapperViewModel : ViewModelBase, IDropTarget
 	{
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private const string FormTitle = @"Element Mapper";
 		private readonly List<string> _sourceElementNames;
 		private string _lastModelPath = String.Empty;
@@ -105,7 +107,6 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 				}
 				else
 				{
-					//TODO Notify of failure!
 					return false;
 				}
 			}
@@ -113,12 +114,19 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 			var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
 			var modelPersistenceService = dependencyResolver.Resolve<IModelPersistenceService<ElementMap>>();
 			pleaseWaitService.Show();
-			await modelPersistenceService.SaveModelAsync(ElementMap, _lastModelPath);
-			MapModified = false;
-			((IEditableObject)ElementMap).BeginEdit();
+			if(await modelPersistenceService.SaveModelAsync(ElementMap, _lastModelPath))
+			{
+				MapModified = false;
+				((IEditableObject)ElementMap).BeginEdit();
+				pleaseWaitService.Hide();
+				return true;
+			}
+			
 			pleaseWaitService.Hide();
-
-			return true;
+			var mbs = dependencyResolver.Resolve<IMessageBoxService>();
+			mbs.ShowError($"An error occured loading the map.", "Error Loading Map");
+			
+			return false;
 		}
 
 		#endregion

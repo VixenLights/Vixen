@@ -15,6 +15,7 @@ using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Catel.IoC;
 using Vixen.Module.Editor;
 using Vixen.Module.SequenceType;
 using Vixen.Services;
@@ -26,6 +27,7 @@ using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NLog.Targets;
 using Application = System.Windows.Forms.Application;
 using Point = System.Drawing.Point;
 using SystemFonts = System.Drawing.SystemFonts;
@@ -347,6 +349,7 @@ namespace VixenApplication
 
 		private void VixenApplication_Load(object sender, EventArgs e)
 		{
+			RegisterIOC();
 			initializeEditorTypes();
 			menuStripMain.Renderer = new ThemeToolStripRenderer();
 			
@@ -363,6 +366,12 @@ namespace VixenApplication
 			//	logsToolStripMenuItem.DropDownItems.ForeColor = Color.FromArgb(90, 90, 90);
 			}
 			PopulateRecentSequencesList();
+		}
+
+		private void RegisterIOC()
+		{
+			var serviceLocator = ServiceLocator.Default;
+			serviceLocator.AutoRegisterTypesViaAttributes = true;
 		}
 
 		private async void VixenApplication_Shown(object sender, EventArgs e)
