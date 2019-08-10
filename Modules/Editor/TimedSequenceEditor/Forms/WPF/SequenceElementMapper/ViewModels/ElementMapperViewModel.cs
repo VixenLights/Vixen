@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using Catel.Configuration;
 using Catel.Data;
 using Catel.IoC;
 using Catel.Services;
@@ -25,10 +26,10 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 	{
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private const string FormTitle = @"Element Mapper";
-		private readonly List<string> _sourceElementNames;
+		private readonly Dictionary<string, Guid> _sourceElementNames;
 		private string _lastModelPath = String.Empty;
 
-		public ElementMapperViewModel(List<string> elementNamesToMap, string sequenceName)
+		public ElementMapperViewModel(Dictionary<string, Guid> elementNamesToMap, string sequenceName)
 		{
 			_sourceElementNames = elementNamesToMap;
 			Elements = VixenSystem.Nodes.GetRootNodes().ToList();
@@ -107,7 +108,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 				}
 				else
 				{
-					return false;
+					return true;
 				}
 			}
 			
@@ -302,7 +303,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 						var result = mbs.GetUserConfirmation(@"Add missing source elements to map?", "Add Missing Sources.");
 						if (result.Result == MessageResult.OK)
 						{
-							var mapsToAdd = _sourceElementNames.Except(missingSourceNames).Select(x => new ElementMapping(x));
+							var mapsToAdd = missingSourceNames.Select(x => new ElementMapping(x.Key, x.Value));
 							ElementMap.AddRange(mapsToAdd);
 							MapModified = true;
 						}
@@ -441,9 +442,9 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 
 		#endregion
 
-		private IEnumerable<string> DiscoverMissingSourceNames(ElementMap map)
+		private IEnumerable<KeyValuePair<string, Guid>> DiscoverMissingSourceNames(ElementMap map)
 		{
-			return ElementMap.GetSourceNames(true).ToHashSet();
+			return _sourceElementNames.Except(map.GetSourceNameIds());
 		}
 
 		private void UpdateTitle()

@@ -5,12 +5,12 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 {
 	public class ElementMapping: ModelBase,IEquatable<ElementMapping>
 	{
-		public ElementMapping():this("Unknown")
+		public ElementMapping():this("Unknown", Guid.Empty)
 		{
 			
 		}
 
-		public ElementMapping(string sourceName)
+		public ElementMapping(string sourceName, Guid id)
 		{
 			SourceName = sourceName;
 			TargetId = Guid.Empty;
@@ -32,6 +32,24 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		/// SourceName property data.
 		/// </summary>
 		public static readonly PropertyData SourceNameProperty = RegisterProperty("SourceName", typeof(string));
+
+		#endregion
+
+		#region SourceId property
+
+		/// <summary>
+		/// Gets or sets the SourceId value.
+		/// </summary>
+		public Guid SourceId
+		{
+			get { return GetValue<Guid>(SourceIdProperty); }
+			set { SetValue(SourceIdProperty, value); }
+		}
+
+		/// <summary>
+		/// SourceId property data.
+		/// </summary>
+		public static readonly PropertyData SourceIdProperty = RegisterProperty("SourceId", typeof(Guid));
 
 		#endregion
 

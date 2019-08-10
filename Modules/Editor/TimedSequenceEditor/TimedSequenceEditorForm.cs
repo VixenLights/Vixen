@@ -5279,9 +5279,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 				}
 				//Lets help the user maps these.
-				var elementsToMap = unmappedEffects.Select(x => x.Effect.TargetNodes.First().Name).Distinct();
+				var elementsToMap = unmappedEffects.Select(x => x.Effect.TargetNodes.First()).GroupBy(x => x.Name)
+					.Select(g => g.First());
 
-				ElementMapperViewModel vm = new ElementMapperViewModel(elementsToMap.ToList(), _sequence.Name);
+				ElementMapperViewModel vm = new ElementMapperViewModel(elementsToMap.ToDictionary(x=> x.Name, x=>x.Id), _sequence.Name);
 				ElementMapperView mapper = new ElementMapperView(vm);
 				ElementHost.EnableModelessKeyboardInterop(mapper);
 				var response = mapper.ShowDialog();
@@ -5289,7 +5290,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				List<EffectNode> effectsToRemove = new List<EffectNode>();
 				if (response.HasValue && response.Value)
 				{
-					var map = vm.ElementMap.GetSourceIdToTargetMap();
+					var map = vm.ElementMap.GetSourceNameToTargetIdMap();
 					foreach (var unmappedEffect in unmappedEffects)
 					{
 						if (map.TryGetValue(unmappedEffect.Effect.TargetNodes.First().Name, out Guid targetId))
