@@ -512,6 +512,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Color List.
+        /// </summary>
+        internal static string ColorList {
+            get {
+                return ResourceManager.GetString("ColorList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Color 1.
         /// </summary>
         internal static string ColorOne {

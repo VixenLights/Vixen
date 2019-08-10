@@ -16,6 +16,7 @@ namespace VixenModules.Effect.Liquid
 		Tensile,
 		Spring,
 		Viscous,
+		[Description("Static Pressure")]
 		StaticPressure,
 		Water,
 		Reactive,
