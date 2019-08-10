@@ -975,4 +975,7 @@
   <data name="WarmUpFrames" xml:space="preserve">
     <value>Warm Up Frames</value>
   </data>
+  <data name="ColorList" xml:space="preserve">
+    <value>Color List</value>
+  </data>
 </root>
