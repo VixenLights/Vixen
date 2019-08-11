@@ -1845,11 +1845,15 @@ namespace VixenModules.Preview.VixenPreview
 			var dependencyResolver = this.GetDependencyResolver();
 			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
 			openFileService.IsMultiSelect = false;
-			openFileService.InitialDirectory = PropModelServices.Instance().ModelsFolder;
+			if (openFileService.InitialDirectory == null)
+			{
+				openFileService.InitialDirectory = Paths.DataRootPath;
+			}
 			openFileService.Filter = "Prop Files(*.prp)|*.prp";
 			if (await openFileService.DetermineFileAsync())
 			{
-				string path = openFileService.FileNames.First();
+				openFileService.InitialDirectory = Path.GetDirectoryName(openFileService.FileName);
+				string path = openFileService.FileName;
 				await ImportCustomPropFromFile(path);
 			}
 		}
@@ -1911,9 +1915,8 @@ namespace VixenModules.Preview.VixenPreview
 		internal async Task AddPropToPreviewAsync(Prop p, Point location)
 		{
 			PreviewCustomPropBuilder builder = new PreviewCustomPropBuilder(p, ZoomLevel, this);
-			await builder.CreateAsync();
-			OnElementsChanged?.Invoke(this, EventArgs.Empty);
-
+			var newElement = await builder.CreateAsync();
+			elementsForm.AddNodeToTree(newElement);
 			var newDisplayItem = new DisplayItem();
 			newDisplayItem.Shape = builder.PreviewCustomProp;
 			//Ensure a reasonable size.
