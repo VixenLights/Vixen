@@ -1,12 +1,14 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 using Catel;
+using Catel.IoC;
 using Catel.Services;
 using Common.Controls;
 
 namespace VixenModules.App.CustomPropEditor.Services
 {
-	public class MessageBoxService
+	[ServiceLocatorRegistration(typeof(IMessageBoxService))]
+	public class MessageBoxService : IMessageBoxService
 	{
 		public MessageBoxResponse GetUserInput(string question, string title, string defaultText, Form parent=null)
 		{

@@ -1,19 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.WpfPropertyGrid;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
+using Newtonsoft.Json.Linq;
 using NLog;
 using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Import;
 using VixenModules.App.CustomPropEditor.Import.XLights;
 using VixenModules.App.CustomPropEditor.Model;
+using VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory;
+using VixenModules.App.CustomPropEditor.Model.InternalVendorInventory;
 using VixenModules.App.CustomPropEditor.Services;
 using PropertyData = Catel.Data.PropertyData;
 
@@ -578,21 +583,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				if (!string.IsNullOrEmpty(path))
 				{
 					_lastOpenFolderPath = Path.GetDirectoryName(path);
-					Prop p = PropModelServices.Instance().LoadProp(path);
-					if (p != null)
-					{
-						Prop = p;
-						FilePath = path;
-						ClearDirtyFlag();
-					}
-					else
-					{
-						//Alert user
-					}
+					LoadPropFromPath(path);
 				}
 			}
 		}
-
+		
 		#endregion
 
 		#region SaveModel command
@@ -779,6 +774,122 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 		}
 
+		private async Task<bool> ImportProp(string path)
+		{
+			IModelImport import = new XModelImport();
+			var p = await import.ImportAsync(path);
+			if (p != null)
+			{
+				Prop = p;
+				FilePath = String.Empty;
+			}
+
+			return true;
+		}
+
+		#endregion
+
+		#region ImportVendorXModel command
+
+		private TaskCommand _openVendorBrowserCommand;
+
+		/// <summary>
+		/// Gets the ImportVendorXModel command.
+		/// </summary>
+		[Browsable(false)]
+		public TaskCommand OpenVendorBrowserCommand
+		{
+			get { return _openVendorBrowserCommand ?? (_openVendorBrowserCommand = new TaskCommand(OpenVendorBrowserAsync)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the OpenVendorBrowserCommand command is executed.
+		/// </summary>
+		private async Task OpenVendorBrowserAsync()
+		{
+			XModelInventoryImporter mi = new XModelInventoryImporter();
+
+			List<ModelInventory> vendorInventories = new List<ModelInventory>();
+
+			var vendorLinks = await GetVendorUrls();
+			if (!vendorLinks.Any()) { return; }
+			
+
+			var dependencyResolver = this.GetDependencyResolver();
+			var ds = dependencyResolver.Resolve<IDownloadService>();
+
+			foreach (var vendorLink in vendorLinks)
+			{
+				try
+				{
+					var xml = await ds.GetFileAsStringAsync(new Uri(vendorLink.Url));
+					vendorInventories.Add(await mi.Import(xml));
+				}
+				catch (Exception e)
+				{
+					Logging.Error(e, $"An error occured retrieveing the inventory from: {vendorLink}");
+					var mbs = dependencyResolver.Resolve<IMessageBoxService>();
+					mbs.ShowError($"Unable to retrieve inventory from {vendorLink.Name}\nEnsure you have an active internet connection.", "Error Retrieving Inventory");
+				}
+			}
+
+			if (!vendorInventories.Any()) { return; }
+			var uiVisualizerService = dependencyResolver.Resolve<IUIVisualizerService>();
+			var vm = new VendorInventoryWindowViewModel(vendorInventories, dependencyResolver.Resolve<IProcessService>());
+			bool? result = await uiVisualizerService.ShowDialogAsync(vm);
+
+			if (result.HasValue && result.Value)
+			{
+				var status = await LoadVendorModel(vm.SelectedModelLink);
+
+				if (status.Item1)
+				{
+					if (status.Item2 == ModelType.XModel)
+					{
+						Prop.PhysicalMetadata.Width = vm.SelectedProduct.Width;
+						Prop.PhysicalMetadata.Height = vm.SelectedProduct.Height;
+						Prop.PhysicalMetadata.Depth = vm.SelectedProduct.Thickness;
+						Prop.PhysicalMetadata.Material = vm.SelectedProduct.Material;
+						Prop.PhysicalMetadata.BulbType = vm.SelectedProduct.PixelDescription;
+						Prop.PhysicalMetadata.NodeCount = vm.SelectedProduct.PixelCount.ToString();
+						Prop.InformationMetadata.Notes = vm.SelectedProduct.Notes;
+						Prop.Type = vm.SelectedProduct.ProductType;
+					}
+					
+					//Ensure the Vendor info is populated
+					if (string.IsNullOrEmpty(Prop.VendorMetadata.Name))
+					{
+						Prop.VendorMetadata.Name = vm.SelectedInventory.Vendor.Name;
+					}
+
+					if (string.IsNullOrEmpty(Prop.VendorMetadata.Contact))
+					{
+						Prop.VendorMetadata.Contact = vm.SelectedInventory.Vendor.Contact;
+					}
+
+					if (string.IsNullOrEmpty(Prop.VendorMetadata.Email))
+					{
+						Prop.VendorMetadata.Email = vm.SelectedInventory.Vendor.Email;
+					}
+
+					if (string.IsNullOrEmpty(Prop.VendorMetadata.Phone))
+					{
+						Prop.VendorMetadata.Phone = vm.SelectedInventory.Vendor.Phone;
+					}
+
+					if (string.IsNullOrEmpty(Prop.VendorMetadata.Website))
+					{
+						var website = vm.SelectedInventory.Vendor.WebLinks.Where(x => x.Name.Equals("Website"));
+						if (website.Any())
+						{
+							Prop.VendorMetadata.Website = website.First().Link.AbsoluteUri;
+						}
+					}
+				}
+				
+			}
+		}
+
 		#endregion
 
 		#region NewProp command
@@ -951,6 +1062,108 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		#endregion
 
 		#endregion
+
+		private void LoadPropFromPath(string path)
+		{
+			Prop p = PropModelServices.Instance().LoadProp(path);
+			if (p != null)
+			{
+				Prop = p;
+				FilePath = path;
+				ClearDirtyFlag();
+			}
+			else
+			{
+				//Alert user
+			}
+		}
+
+		private async Task<Tuple<bool, ModelType>> LoadVendorModel(ModelLink modelLink)
+		{
+			var targetPath = Path.Combine(Path.GetTempPath() + Guid.NewGuid());
+			var dependencyResolver = this.GetDependencyResolver();
+			var ds = dependencyResolver.Resolve<IDownloadService>();
+			var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
+			var mbs = dependencyResolver.Resolve<IMessageBoxService>();
+
+			var status = new Tuple<bool, ModelType>(false, ModelType.XModel);
+
+			pleaseWaitService.Show();
+
+			if (modelLink.Software == ModelType.Prop)
+			{
+				bool success = await ds.GetFileAsync(modelLink.Link, targetPath);
+				if (success)
+				{
+					LoadPropFromPath(targetPath);
+					status = new Tuple<bool, ModelType>(true, ModelType.Prop); ;
+				}
+				else
+				{
+					mbs.ShowError("Unable to download the model from the vendor.\nEnsure you have an active internet connection.", "Error Downloading Model.");
+				}
+			}
+			else
+			{
+				//The vendors provide a link to the xModel, but may have a Vixen prop of the same name alongside it.
+				//If it exists we will prefer it.
+				string propUrl = modelLink.Link.AbsoluteUri.Replace(@".xmodel", @".prp");
+
+				bool success = await ds.GetFileAsync(new Uri(propUrl), targetPath);
+				
+				if (success)
+				{
+					LoadPropFromPath(targetPath);
+					status = new Tuple<bool, ModelType>(true, ModelType.Prop); ;
+				}
+				else
+				{
+					success = await ds.GetFileAsync(modelLink.Link, targetPath);
+					if (success)
+					{
+						await ImportProp(targetPath);
+						status = new Tuple<bool, ModelType>(true, ModelType.XModel);
+					}
+					else
+					{
+						mbs.ShowError("Unable to download the model from the vendor.\nEnsure you have an active internet connection.", "Error Downloading Model.");
+					}
+				}
+			}
+
+			
+
+			pleaseWaitService.Hide();
+			return status;
+		}
+
+		private async Task<VendorLink[]> GetVendorUrls()
+		{
+			var dependencyResolver = this.GetDependencyResolver();
+			var ds = dependencyResolver.Resolve<IDownloadService>();
+
+			try
+			{
+				var vendorJson = await ds.GetFileAsStringAsync(new Uri(@"https://app.vixenlights.com/vendor.json"));
+				var o = JArray.Parse(vendorJson);
+
+				var vendors = o.Select(p => new VendorLink()
+				{
+					Name = (string)p["Name"],
+					Url = (string)p["Url"]
+				}).ToArray();
+
+				return vendors;
+			}
+			catch (Exception e)
+			{
+				Logging.Error(e, "Error retrieving the vendor list.");
+				var mbs = dependencyResolver.Resolve<IMessageBoxService>();
+				mbs.ShowError("Unable to retrieve vendor list. Ensure you have an active internet connection.", "Error Retrieving Vendors");
+			}
+			
+			return new VendorLink[0];
+		}
 
 		private string CleanseNameString(string name)
 		{

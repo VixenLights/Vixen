@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms.Integration;
+using Catel.IoC;
 using Vixen.Module.App;
 using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Model;
@@ -14,6 +15,8 @@ namespace VixenModules.App.CustomPropEditor
 
 		public override void Loading()
 		{
+			var serviceLocator = ServiceLocator.Default;
+			serviceLocator.AutoRegisterTypesViaAttributes = true;
 			AddApplicationMenu();
 			Configuration config = new Configuration((CustomPropEditorData)StaticModuleData);
 			ConfigurationService service = ConfigurationService.Instance();

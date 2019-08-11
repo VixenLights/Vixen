@@ -10,6 +10,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 	    private string _bulbType;
 	    private ColorMode _colorMode;
 	    private string _depth;
+	    private string _nodeCount;
 
 	    public string Height
 	    {
@@ -52,6 +53,17 @@ namespace VixenModules.App.CustomPropEditor.Model
 			    if (value == _material) return;
 			    _material = value;
 			    OnPropertyChanged(nameof(Material));
+		    }
+	    }
+
+	    public string NodeCount
+	    {
+		    get => _nodeCount;
+		    set
+		    {
+			    if (value == _nodeCount) return;
+			    _nodeCount = value;
+			    OnPropertyChanged(nameof(NodeCount));
 		    }
 	    }
 

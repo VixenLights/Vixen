@@ -98,6 +98,9 @@
 					</controls:SliderMenuItem>
 				</MenuItem>
 			</MenuItem>
+			<MenuItem Header="Tools">
+				<MenuItem Header="Vendor Browser" Command="{Binding OpenVendorBrowserCommand}"/>
+			</MenuItem>
 			<MenuItem Header="Options">
 				<MenuItem Header="Preferences" Command="{Binding ColorOptionsCommand}"/>
 			</MenuItem>
@@ -136,7 +139,7 @@
 				<Grid.RowDefinitions>
 					<RowDefinition Height="3*"/>
 					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="1.75*"/>
+					<RowDefinition Height="1.85*"/>
 					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 
