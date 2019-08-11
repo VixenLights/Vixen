@@ -5279,10 +5279,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 				}
 				//Lets help the user maps these.
-				var elementsToMap = unmappedEffects.Select(x => x.Effect.TargetNodes.First()).GroupBy(x => x.Name)
+				var elementsToMap = unmappedEffects.Select(x => x.Effect.TargetNodes.First()).GroupBy(x => x.Id)
 					.Select(g => g.First());
 
-				ElementMapperViewModel vm = new ElementMapperViewModel(elementsToMap.ToDictionary(x=> x.Name, x=>x.Id), _sequence.Name);
+				ElementMapperViewModel vm = new ElementMapperViewModel(elementsToMap.ToDictionary(x=> x.Id, x=>x.Name), _sequence.Name);
 				ElementMapperView mapper = new ElementMapperView(vm);
 				ElementHost.EnableModelessKeyboardInterop(mapper);
 				var response = mapper.ShowDialog();

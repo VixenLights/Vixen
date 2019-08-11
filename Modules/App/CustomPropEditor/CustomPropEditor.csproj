@@ -211,9 +211,6 @@
     <Compile Include="Services\ConfigurationService.cs" />
     <Compile Include="Services\DownloadService.cs" />
     <Compile Include="Services\IDownloadService.cs" />
-    <Compile Include="Services\IMessageBoxService.cs" />
-    <Compile Include="Services\MessageBoxResponse.cs" />
-    <Compile Include="Services\MessageBoxService.cs" />
     <Compile Include="Services\PropModelPersistenceService.cs" />
     <Compile Include="Services\PropModelServices.cs" />
     <Compile Include="Services\ElementModelLookUpService.cs" />

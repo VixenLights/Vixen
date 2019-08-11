@@ -26,10 +26,10 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 	{
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private const string FormTitle = @"Element Mapper";
-		private readonly Dictionary<string, Guid> _sourceElementNames;
+		private readonly Dictionary<Guid, string> _sourceElementNames;
 		private string _lastModelPath = String.Empty;
 
-		public ElementMapperViewModel(Dictionary<string, Guid> elementNamesToMap, string sequenceName)
+		public ElementMapperViewModel(Dictionary<Guid, string> elementNamesToMap, string sequenceName)
 		{
 			_sourceElementNames = elementNamesToMap;
 			Elements = VixenSystem.Nodes.GetRootNodes().ToList();
@@ -442,7 +442,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 
 		#endregion
 
-		private IEnumerable<KeyValuePair<string, Guid>> DiscoverMissingSourceNames(ElementMap map)
+		private IEnumerable<KeyValuePair<Guid, string>> DiscoverMissingSourceNames(ElementMap map)
 		{
 			return _sourceElementNames.Except(map.GetSourceNameIds());
 		}

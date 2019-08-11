@@ -14,7 +14,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 			ElementMappings = new FastObservableCollection<ElementMapping>();
 		}
 
-		public ElementMap(Dictionary<string, Guid> elementSources):this()
+		public ElementMap(Dictionary<Guid, string> elementSources):this()
 		{
 			CreateMapsForSources(elementSources);
 		}
@@ -98,12 +98,12 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 			return ElementMappings.Select(x => x.SourceName);
 		}
 
-		public Dictionary<string, Guid> GetSourceNameIds()
+		public Dictionary<Guid, string> GetSourceNameIds()
 		{
-			return ElementMappings.ToDictionary(x => x.SourceName, x => x.SourceId);
+			return ElementMappings.ToDictionary(x => x.SourceId, x => x.SourceName);
 		}
 
-		public void CreateMapsForSources(Dictionary<string, Guid> elementSources)
+		public void CreateMapsForSources(Dictionary<Guid, string> elementSources)
 		{
 			ElementMappings.AddRange(elementSources.Select(x => new ElementMapping(x.Key, x.Value)));
 		}

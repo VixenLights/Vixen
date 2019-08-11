@@ -5,12 +5,12 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 {
 	public class ElementMapping: ModelBase,IEquatable<ElementMapping>
 	{
-		public ElementMapping():this("Unknown", Guid.Empty)
+		public ElementMapping():this(Guid.Empty, "Unknown")
 		{
 			
 		}
 
-		public ElementMapping(string sourceName, Guid id)
+		public ElementMapping(Guid id, string sourceName)
 		{
 			SourceName = sourceName;
 			TargetId = Guid.Empty;
