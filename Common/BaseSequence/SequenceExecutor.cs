@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Timers;
 using System.Threading;
 using Vixen.Execution;
 using Vixen.Services;
@@ -10,12 +9,13 @@ using Vixen.Sys;
 using Vixen.Module.Timing;
 using Vixen.Module.Media;
 using Vixen.Sys.LayerMixing;
+using Vixen.Utility;
 
 namespace BaseSequence
 {
 	public class SequenceExecutor : ISequenceExecutor
 	{
-		private System.Timers.Timer _endCheckTimer;
+		private HighResolutionTimer _endCheckTimer;
 		private SynchronizationContext _syncContext;
 		private bool _isRunning;
 		private bool _isPaused;
@@ -29,7 +29,8 @@ namespace BaseSequence
 
 		public SequenceExecutor()
 		{
-			_endCheckTimer = new System.Timers.Timer(10);
+			_endCheckTimer = new HighResolutionTimer(10f);
+			_endCheckTimer.UseHighPriorityThread = false;
 			_endCheckTimer.Elapsed += _EndCheckTimerElapsed;
 			_syncContext = AsyncOperationManager.SynchronizationContext;
 		}
@@ -218,7 +219,7 @@ namespace BaseSequence
 			// Stop whatever is driving this crazy train.
 			lock (_endCheckTimer)
 			{
-				_endCheckTimer.Enabled=false;
+				_endCheckTimer.Stop(false);
 			}
 			
 			//Reset our position. No need to stop the source, we will just reset its position.
@@ -231,7 +232,7 @@ namespace BaseSequence
 				Thread.Sleep(1); //Give the train a chance to get out of the station.
 			}
 
-			_endCheckTimer.Enabled=true;
+			_endCheckTimer.Start();
 		}
 
 		protected virtual void _HookDataListener()
@@ -262,7 +263,7 @@ namespace BaseSequence
 		protected virtual void _LoadMedia()
 		{
 			var sequenceMedia = Sequence.GetAllMedia();
-            if (sequenceMedia != null && sequenceMedia.Any())
+            if (sequenceMedia != null)
 				foreach (IMediaModuleInstance media in sequenceMedia) {
 					media.LoadMedia(StartTime);
 				}
@@ -271,7 +272,7 @@ namespace BaseSequence
 		protected virtual void _StartMedia()
 		{
 			var sequenceMedia = Sequence.GetAllMedia();
-			if (sequenceMedia != null && sequenceMedia.Any() )
+			if (sequenceMedia != null)
 				foreach (IMediaModuleInstance media in sequenceMedia) {
 					media.Start();
 				}
@@ -280,7 +281,7 @@ namespace BaseSequence
 		protected virtual void _PauseMedia()
 		{
 			var sequenceMedia = Sequence.GetAllMedia();
-            if (sequenceMedia != null && sequenceMedia.Any())
+            if (sequenceMedia != null)
 				foreach (IMediaModuleInstance media in sequenceMedia) {
 					media.Pause();
 				}
@@ -289,7 +290,7 @@ namespace BaseSequence
 		protected virtual void _ResumeMedia()
 		{
 			var sequenceMedia = Sequence.GetAllMedia();
-            if (sequenceMedia != null && sequenceMedia.Any())
+            if (sequenceMedia != null)
 				foreach (IMediaModuleInstance media in sequenceMedia) {
 					media.Resume();
 				}
@@ -298,7 +299,7 @@ namespace BaseSequence
 		protected virtual void _StopMedia()
 		{
 			var sequenceMedia = Sequence.GetAllMedia();
-            if (sequenceMedia != null && sequenceMedia.Any())
+            if (sequenceMedia != null)
 				foreach (IMediaModuleInstance media in sequenceMedia) {
 					media.Stop();
 				}
@@ -308,14 +309,14 @@ namespace BaseSequence
 		{
 			if (!IsRunning || IsPaused) return;
 
-			if (_endCheckTimer.Enabled) {
+			if (_endCheckTimer.IsRunning) {
 				IsPaused = true;
 
 				TimingSource.Pause();
 
 				_PauseMedia();
 
-				_endCheckTimer.Enabled = false;
+				_endCheckTimer.Stop(false);
 			}
 		}
 
@@ -323,14 +324,14 @@ namespace BaseSequence
 		{
 			if (!IsPaused) return;
 
-			if (!_endCheckTimer.Enabled && Sequence != null) {
+			if (!_endCheckTimer.IsRunning && Sequence != null) {
 				IsPaused = false;
 
 				TimingSource.Resume();
 
 				_ResumeMedia();
 
-				_endCheckTimer.Enabled = true;
+				_endCheckTimer.Start();
 			}
 		}
 
@@ -340,19 +341,19 @@ namespace BaseSequence
 
 			// Stop whatever is driving this crazy train.
 			lock (_endCheckTimer) {
-				_endCheckTimer.Enabled = false;
+				_endCheckTimer.Stop(false);
 			}
 
 			// Release the hook before the behaviors are shut down so that
 			// they can affect the sequence.
 			//_UnhookDataListener();
+			
+			TimingSource.Stop();
+			_StopMedia();
 
 			IsRunning = false;
 			IsPaused = false;
 
-			TimingSource.Stop();
-
-			_StopMedia();
 		}
 
 		public ITiming TimingSource { get; private set; }
@@ -363,18 +364,19 @@ namespace BaseSequence
 			return true;
 		}
 
-		private void _EndCheckTimerElapsed(object sender, ElapsedEventArgs e)
+		private void _EndCheckTimerElapsed(object sender, HighResolutionTimerElapsedEventArgs e)
 		{
-
 			// To catch events that may trail after the timer's been disabled
 			// due to it being a threaded timer and Stop being called between the
 			// timer message being posted and acted upon.
-			if (_endCheckTimer == null || !_endCheckTimer.Enabled) return;
+			if (!_endCheckTimer.IsRunning) return;
 
-			lock (_endCheckTimer) {
+			lock (_endCheckTimer)
+			{
 
-				if (_CheckForNaturalEnd() || !IsRunning) {
-					_endCheckTimer.Enabled = false;
+				if (_CheckForNaturalEnd() || !IsRunning)
+				{
+					_endCheckTimer.Stop(false);
 				}
 			}
 		}
@@ -421,8 +423,8 @@ namespace BaseSequence
 				if (_endCheckTimer != null)
 				{
 					_endCheckTimer.Elapsed -= _EndCheckTimerElapsed;
-					_endCheckTimer.Dispose();
-					
+					_endCheckTimer = null;
+
 				}	
 			}
 			_endCheckTimer = null;

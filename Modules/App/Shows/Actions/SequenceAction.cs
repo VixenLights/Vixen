@@ -161,7 +161,7 @@ namespace VixenModules.App.Shows
 
 		private void sequence_Ended(object sender, EventArgs e)
 		{
-			base.Complete();
+			Complete();
 		}
 
 		private void DisposeCurrentContext()

@@ -9,13 +9,11 @@ namespace VixenModules.App.Shows
 {
 	public abstract class Action: IDisposable
 	{
-		Timer completeTimer;
-
+		//Timer completeTimer;
+		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		public Action(ShowItem showItem)
 		{
 			ShowItem = showItem;
-			completeTimer = new Timer(100);
-			completeTimer.Elapsed += CompleteTimer_Elapsed;
 		}
 
 		// Properties
@@ -39,28 +37,14 @@ namespace VixenModules.App.Shows
 		// Complete MUST be called when your action is complete or else the next event won't
 		// happen in the scheduler. Even if there is NO time involved in running your event, you should 
 		// still call Complete()
-		public virtual void Complete()
-		{
-			completeTimer.Start();
-		}
-
-		public virtual void FinalizeComplete() 
+		public void Complete()
 		{
 			if (IsRunning)
 			{
 				IsRunning = false;
 
-				if (ActionComplete != null)
-				{
-					ActionComplete(this, EventArgs.Empty);
-				}
+				ActionComplete?.Invoke(this, EventArgs.Empty);
 			}
-		}
-
-		private void CompleteTimer_Elapsed(object sender, EventArgs e)
-		{
-			completeTimer.Stop();
-			FinalizeComplete();
 		}
 
 		// Override if you please

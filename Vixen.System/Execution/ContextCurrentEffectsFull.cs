@@ -42,12 +42,20 @@ namespace Vixen.Execution
 			return Count > 0;
 		}
 
-		public void Reset()
+		public void Reset(bool now = false)
 		{
 #if DEBUG
 			Logging.Info("Current effects reset requested.");
 #endif
-			_reset = true;
+			if (now)
+			{
+				ResetEffectList();
+			}
+			else
+			{
+				_reset = true;
+			}
+			
 		}
 
 		public bool Resetting()
