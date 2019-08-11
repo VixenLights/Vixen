@@ -131,10 +131,16 @@ namespace VixenModules.Preview.VixenPreview
 						messageBox.ShowDialog();
 						return;
 					}
-					treeElements.AddNodePathToTree(new[] { createdElements.First() });
-					treeElements.UpdateScrollPosition();
+					AddNodeToTree(createdElements.First());
 				}
 			}
+		}
+
+		internal void AddNodeToTree(ElementNode node)
+		{
+			if (node == null) return;
+			treeElements.AddNodePathToTree(new[] { node });
+			treeElements.UpdateScrollPosition();
 		}
 
 		private void ComboBoxNewItemType_SelectedIndexChanged(object sender, EventArgs e)

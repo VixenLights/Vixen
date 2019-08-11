@@ -743,11 +743,15 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			var dependencyResolver = this.GetDependencyResolver();
 			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
 			openFileService.IsMultiSelect = false;
-			openFileService.InitialDirectory = Environment.SpecialFolder.MyDocuments.ToString();
+			if (openFileService.InitialDirectory == null)
+			{
+				openFileService.InitialDirectory = Paths.DataRootPath;
+			}
 			openFileService.Filter = "xModel (*.xmodel)|*.xmodel";
 			if (await openFileService.DetermineFileAsync())
 			{
-				string path = openFileService.FileNames.First();
+				string path = openFileService.FileName;
+				openFileService.InitialDirectory = Path.GetDirectoryName(path);
 				if (!string.IsNullOrEmpty(path))
 				{
 					IModelImport import = new XModelImport();

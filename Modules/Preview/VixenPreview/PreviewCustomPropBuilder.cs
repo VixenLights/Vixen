@@ -37,9 +37,9 @@ namespace VixenModules.Preview.VixenPreview
 
 		public PreviewCustomProp PreviewCustomProp { get; private set; }
 
-		public async Task CreateAsync()
+		public async Task<ElementNode> CreateAsync()
 		{
-			Task t = Task.Factory.StartNew(() =>
+			return await Task.Factory.StartNew(() =>
 			{
 				_elementModelMap = new Dictionary<Guid, ElementNode>();
 				//Optimize the name check for performance. We know we are going to create a bunch of them and we can handle it ourselves more efficiently
@@ -79,11 +79,9 @@ namespace VixenModules.Preview.VixenPreview
 				PreviewCustomProp.UpdateColorType();
 				
 				PreviewCustomProp.Layout();
-				
+
+				return rootElementNode;
 			});
-
-			await t;
-
 		}
 
 		private string TokenizeName(string name)
