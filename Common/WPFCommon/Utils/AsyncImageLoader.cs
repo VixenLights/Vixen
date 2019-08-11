@@ -44,15 +44,20 @@ namespace Common.WPFCommon.Utils
 		{
 			get
 			{
-				try
+				if (_givenUri != null)
 				{
-					System.Net.Dns.GetHostEntry(_givenUri.DnsSafeHost);
-					return _givenUri;
+					try
+					{
+						System.Net.Dns.GetHostEntry(_givenUri.DnsSafeHost);
+						return _givenUri;
+					}
+					catch (Exception)
+					{
+						return null;
+					}
 				}
-				catch (Exception)
-				{
-					return null;
-				}
+
+				return null;
 			}
 		}
 	}
