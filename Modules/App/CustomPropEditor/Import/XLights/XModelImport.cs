@@ -78,13 +78,14 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 							{
 								foreach (var attribute in FaceInfo.Attributes)
 								{
-									var range = reader.GetAttribute(attribute);
+									var range = reader.GetAttribute(attribute.Key);
 									if (!string.IsNullOrEmpty(range))
 									{
 										SubModel sm = new SubModel();
-										sm.Name = attribute;
+										sm.Name = attribute.Key;
 										sm.Type = SubModelType.Ranges;
 										sm.Ranges = ParseRanges(range);
+										sm.FaceInfo = new FaceInfo(attribute.Value);
 										subModels.Add(sm);
 									}
 								}
@@ -132,6 +133,10 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			foreach (var subModel in subModels)
 			{
 				var group = PropModelServices.Instance().CreateNode(subModel.Name);
+				if (subModel.FaceInfo.FaceComponent != FaceComponent.None)
+				{
+					group.FaceComponent = subModel.FaceInfo.FaceComponent;
+				}
 				foreach (var smRange in subModel.Ranges)
 				{
 					var start = smRange.Start < smRange.End ? smRange.Start : smRange.End;
@@ -143,7 +148,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 							var modelNode = modelNodes[i];
 							modelNodes.Remove(i);
 							var lightNode = PropModelServices.Instance().AddLightNode(group, new Point(modelNode.X + Offset, modelNode.Y + Offset), modelNode.Order, nodeSize);
-							if(!lightNodes.ContainsKey(modelNode.Order))
+							if (!lightNodes.ContainsKey(modelNode.Order))
 							{
 								lightNodes.Add(modelNode.Order, lightNode);
 							}

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Media.Imaging;
 using Catel.Collections;
 using NLog;
+using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Model;
 using Point = System.Windows.Point;
 
@@ -19,7 +20,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 		
 		private PropModelServices()
 		{
-			ModelsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+			ModelsFolder = Paths.DataRootPath;
 		}
 
 		public static PropModelServices Instance()

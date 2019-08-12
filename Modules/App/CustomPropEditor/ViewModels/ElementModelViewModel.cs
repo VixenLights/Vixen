@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Controls.WpfPropertyGrid;
 using Catel.Data;
 using Catel.MVVM;
 using VixenModules.App.CustomPropEditor.Model;
@@ -176,13 +177,14 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets or sets the IsLightNode value.
 		/// </summary>
-		
+		[Browsable(false)]
 		public bool IsLightNode => ElementModel.IsLightNode;
 
 		#endregion
 
 		#region Name Property
 
+		[PropertyOrder(0)]
 		public string Name
 		{
 			get { return ElementModel.Name; }
@@ -194,6 +196,39 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				RaisePropertyChanged(nameof(Name), oldValue , value);
 			}
 		}
+
+		#endregion
+
+		#region FaceComponent property
+
+		/// <summary>
+		/// Gets or sets the FaceComponent value.
+		/// </summary>
+		[PropertyOrder(1)]
+		[DisplayName("Face Component")]
+		[Description("Face component associated with this element for Lip-Sync.")]
+		public FaceComponent FaceComponent
+		{
+			get { return ElementModel.FaceComponent; }
+			set {
+				object oldValue = ElementModel.FaceComponent;
+				ElementModel.FaceComponent = value;
+				IsDirty = true;
+				RaisePropertyChanged(nameof(FaceComponent), oldValue, value);
+			}
+		}
+
+		#endregion
+
+		#region ChildCount property
+
+		/// <summary>
+		/// Gets or sets the ChildCount value.
+		/// </summary>
+		[DisplayName("Child Elements")]
+		[Description("Number of child elements associated with this element.")]
+		[PropertyOrder(3)]
+		public int ChildCount => ElementModel.Children.Count;
 
 		#endregion
 
@@ -259,6 +294,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets the CancelEditing command.
 		/// </summary>
+		[Browsable(false)]
 		public Command CancelEditingCommand
 		{
 			get { return _cancelEditingCommand ?? (_cancelEditingCommand = new Command(CancelEditing)); }

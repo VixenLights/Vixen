@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Catel.Collections;
 using Common.WPFCommon.ViewModel;
-using VixenModules.App.CustomPropEditor.Services;
 
 namespace VixenModules.App.CustomPropEditor.Model
 {
@@ -21,6 +20,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 		private int _order;
 		private string _name;
 		private int _lightSize;
+		private FaceComponent _faceComponent;
 
 		#region Constructors
 
@@ -31,6 +31,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 			Parents = new ObservableCollection<Guid>();
 			Id = Guid.NewGuid();
 			LightSize = DefaultLightSize;
+			FaceComponent = FaceComponent.None;
 		}
 
 		public ElementModel(string name) : this()
@@ -153,6 +154,21 @@ namespace VixenModules.App.CustomPropEditor.Model
 
 		#endregion
 
+		#region Face Component
+
+		public FaceComponent FaceComponent
+		{
+			get => _faceComponent;
+			set
+			{
+				if (Equals(value, _faceComponent)) return;
+				_faceComponent = value;
+				OnPropertyChanged(nameof(FaceComponent));
+			}
+		}
+
+		#endregion
+
 		#region IsLeaf
 
 		public bool IsLeaf => !Children.Any();
@@ -231,6 +247,20 @@ namespace VixenModules.App.CustomPropEditor.Model
 		}
 
 		#endregion
+
+		public static bool IsPhoneme(FaceComponent faceComponent)
+		{
+			switch (faceComponent)
+			{
+				case FaceComponent.None:
+				case FaceComponent.EyesClosed:
+				case FaceComponent.EyesOpen:
+				case FaceComponent.Outlines:
+					return false;
+				default:
+					return true;
+			}
+		}
 
 		public bool RemoveParent(ElementModel parent)
 		{

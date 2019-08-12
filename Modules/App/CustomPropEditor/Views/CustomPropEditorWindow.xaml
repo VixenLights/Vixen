@@ -144,13 +144,53 @@
 				</Grid.RowDefinitions>
 
 				<views1:ElementTree Grid.Column="0" Grid.Row="0" />
-				
-				<TabControl Background="{StaticResource BackColorBrush}"
-				            Grid.Row="2" Grid.Column="0"
-				            Width="Auto" Margin="5,5,10,5">
-					<TabItem Header="General">
-						<wpfPropertyGrid:PropertyGrid Background="{StaticResource DisabledShadow}"
+
+				<TabControl  Grid.Row="2" Grid.Column="0" Background="{DynamicResource BackColorBrush}"
+				             Width="Auto" Margin="5,5,10,5">
+					<TabItem Header="Prop Info">
+						<TabControl Width="Auto">
+							<TabItem Header="General">
+								<wpfPropertyGrid:PropertyGrid Background="{StaticResource DisabledShadow}"
 						                              ItemSource="{Binding}"
+						                              ShowAttachedProperties="False"
+						                              ShowReadOnlyProperties="True"
+						                              PropertyFilterVisibility="Collapsed"
+						                              Margin="5">
+									<wpfPropertyGrid:PropertyGrid.Resources>
+										<ResourceDictionary>
+											<ResourceDictionary.MergedDictionaries>
+												<wpfPropertyGrid:KaxamlTheme/>
+											</ResourceDictionary.MergedDictionaries>
+										</ResourceDictionary>
+									</wpfPropertyGrid:PropertyGrid.Resources>
+								</wpfPropertyGrid:PropertyGrid>
+							</TabItem>
+							<TabItem Header="Physical">
+								<views1:PhysicalMetadataView DataContext="{Binding PhysicalMetadata}"/>
+							</TabItem>
+							<TabItem Header="Vendor">
+								<views1:VendorMetadataView DataContext="{Binding VendorMetadata}"/>
+							</TabItem>
+							<TabItem Header="Notes">
+								<TabPanel Name="Panel" Background="{StaticResource DisabledShadow}">
+									<TextBox Text="{Binding InformationMetadata.Notes}"
+									        Margin="5,5,0,0"
+									        TextWrapping="Wrap" 
+									        AcceptsReturn="True" 
+									        AcceptsTab="True" 
+									        SpellCheck.IsEnabled="True" 
+									        Height="{Binding Path=ActualHeight, ElementName=Panel, Converter={StaticResource AdditionConverter}, ConverterParameter=-10}"
+									        Width="{Binding Path=ActualWidth, ElementName=Panel, Converter={StaticResource AdditionConverter}, ConverterParameter=-10}"
+											VerticalScrollBarVisibility="Auto"
+											HorizontalScrollBarVisibility="Disabled"/>
+
+								</TabPanel>
+							</TabItem>
+						</TabControl>
+					</TabItem>
+					<TabItem Header="Element Info">
+						<wpfPropertyGrid:PropertyGrid Background="{StaticResource DisabledShadow}"
+						                              ItemSource="{Binding ElementTreeViewModel.SelectedItem}"
 						                              ShowAttachedProperties="False"
 						                              ShowReadOnlyProperties="True"
 						                              PropertyFilterVisibility="Collapsed"
@@ -164,28 +204,9 @@
 							</wpfPropertyGrid:PropertyGrid.Resources>
 						</wpfPropertyGrid:PropertyGrid>
 					</TabItem>
-					<TabItem Header="Physical">
-						<views1:PhysicalMetadataView DataContext="{Binding PhysicalMetadata}"/>
-					</TabItem>
-					<TabItem Header="Vendor">
-						<views1:VendorMetadataView DataContext="{Binding VendorMetadata}"/>
-					</TabItem>
-					<TabItem Header="Notes">
-						<TabPanel Name="Panel" Background="{StaticResource DisabledShadow}">
-							<TextBox Text="{Binding InformationMetadata.Notes}"
-									        Margin="5,5,0,0"
-									        TextWrapping="Wrap" 
-									        AcceptsReturn="True" 
-									        AcceptsTab="True" 
-									        SpellCheck.IsEnabled="True" 
-									        Height="{Binding Path=ActualHeight, ElementName=Panel, Converter={StaticResource AdditionConverter}, ConverterParameter=-10}"
-									        Width="{Binding Path=ActualWidth, ElementName=Panel, Converter={StaticResource AdditionConverter}, ConverterParameter=-10}"
-											VerticalScrollBarVisibility="Auto"
-											HorizontalScrollBarVisibility="Disabled"/>
-
-						</TabPanel>
-					</TabItem>
 				</TabControl>
+				
+				
 					
 				<!--</Border>-->
 
