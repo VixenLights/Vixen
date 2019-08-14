@@ -754,39 +754,38 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				openFileService.InitialDirectory = Path.GetDirectoryName(path);
 				if (!string.IsNullOrEmpty(path))
 				{
-					IModelImport import = new XModelImport();
-					var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
-					pleaseWaitService.Show();
-					try
-					{
-						var p = await import.ImportAsync(path);
-						if (p != null)
-						{
-							Prop = p;
-							FilePath = String.Empty;
-						}
-					}
-					catch (Exception e)
-					{
-						Logging.Error(e, "An error occuring importing the xModel.");
-						var mbs = new MessageBoxService();
-						mbs.ShowError($"An error occured importing the xModel. Please notify the Vixen Team.", "Error Importing xModel");
-					}
-
-					pleaseWaitService.Hide();
+					await ImportProp(path);
 				}
 			}
 		}
 
 		private async Task<bool> ImportProp(string path)
 		{
-			IModelImport import = new XModelImport();
-			var p = await import.ImportAsync(path);
-			if (p != null)
+			var dependencyResolver = this.GetDependencyResolver();
+			var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
+			pleaseWaitService.Show();
+			try
 			{
-				Prop = p;
-				FilePath = String.Empty;
+				IModelImport import = new XModelImport();
+				var p = await import.ImportAsync(path);
+				if (p != null)
+				{
+					Prop = p;
+					FilePath = String.Empty;
+					//Switch to selection mode VIX-2784
+					DrawingPanelViewModel.IsDrawing = false;
+				}
 			}
+			catch (Exception e)
+			{
+				pleaseWaitService.Hide();
+				Logging.Error(e, "An error occuring importing the xModel.");
+				var mbs = new MessageBoxService();
+				mbs.ShowError($"An error occured importing the xModel. Please notify the Vixen Team.", "Error Importing xModel");
+				return false;
+			}
+
+			pleaseWaitService.Hide();
 
 			return true;
 		}
