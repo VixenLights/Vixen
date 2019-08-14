@@ -1710,6 +1710,10 @@
 		</Setter>
 	</Style>
 
+	<Style TargetType="{x:Type TabControl}">
+		<Setter Property="Background" Value="{DynamicResource BackColorBrush}"/>
+	</Style>
+
 	<!--<Style TargetType="{x:Type TabControl}">
 		<Setter Property="OverridesDefaultStyle" Value="True" />
 		<Setter Property="SnapsToDevicePixels" Value="True" />

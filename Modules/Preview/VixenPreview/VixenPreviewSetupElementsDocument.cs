@@ -59,9 +59,11 @@ namespace VixenModules.Preview.VixenPreview
 		private void HighlightNode(ElementNode node)
 		{
 			// Is this a group?
-			if (!node.IsLeaf) {
+			if (!node.IsLeaf)
+			{
 				// If so, iterate through children and highlight them
-				foreach (var childNode in node.Children) {
+				foreach (var childNode in node.Children)
+				{
 					HighlightNode(childNode);
 				}
 			}

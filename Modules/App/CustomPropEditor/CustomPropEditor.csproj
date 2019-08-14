@@ -193,6 +193,7 @@
     <Compile Include="Model\ColorMode.cs" />
     <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\ElementType.cs" />
+    <Compile Include="Model\FaceComponent.cs" />
     <Compile Include="Model\InformationMetadata.cs" />
     <Compile Include="Model\InternalVendorInventory\Category.cs" />
     <Compile Include="Model\InternalVendorInventory\ModelInventory.cs" />

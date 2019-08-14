@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Utility;
+using VixenModules.App.CustomPropEditor.Import.XLights;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Property.Color;
+using VixenModules.Property.Face;
 using VixenModules.Property.Order;
+using FaceComponent = VixenModules.App.CustomPropEditor.Model.FaceComponent;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -129,10 +132,41 @@ namespace VixenModules.Preview.VixenPreview
 					NamingUtilities.Uniquify(_elementNames, TokenizeName(elementModel.Name)));
 				_elementModelMap.Add(elementModel.Id, node);
 				_elementNames.Add(node.Name);
+				if (elementModel.FaceComponent != FaceComponent.None)
+				{
+					FaceModule fm = null;
+					if (node.Properties.Contains(FaceDescriptor.ModuleId))
+					{
+						fm = node.Properties.Get(FaceDescriptor.ModuleId) as FaceModule;
+					}
+					else
+					{
+						fm = node.Properties.Add(FaceDescriptor.ModuleId) as FaceModule;
+					}
+
+					if (ElementModel.IsPhoneme(elementModel.FaceComponent))
+					{
+						fm.PhonemeList.Add(elementModel.FaceComponent.ToString(), true);
+					}
+					else
+					{
+						switch (elementModel.FaceComponent)
+						{
+							case FaceComponent.EyesOpen:
+								fm.FaceComponents.Add(Property.Face.FaceComponent.EyesOpen, true);
+								break;
+							case FaceComponent.EyesClosed:
+								fm.FaceComponents.Add(Property.Face.FaceComponent.EyesClosed, true);
+								break;
+							case FaceComponent.Outlines:
+								fm.FaceComponents.Add(Property.Face.FaceComponent.Outlines, true);
+								break;
+						}
+					}
+				}
 				if (elementModel.IsLightNode)
 				{
-					var order = node.Properties.Add(OrderDescriptor.ModuleId) as OrderModule;
-					if (order != null)
+					if (node.Properties.Add(OrderDescriptor.ModuleId) is OrderModule order)
 					{
 						order.Order = elementModel.Order;
 					}
