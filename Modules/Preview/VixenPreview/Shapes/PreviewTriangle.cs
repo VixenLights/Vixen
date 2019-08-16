@@ -29,25 +29,38 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_point2 = new PreviewPoint(_bottomRightPoint);
 			_point3 = new PreviewPoint(_bottomRightPoint);
 
-			_strings = new List<PreviewBaseShape>();
+			Reconfigure(selectedNode);
+		}
 
-			if (selectedNode != null) {
-				List<ElementNode> children = PreviewTools.GetLeafNodes(selectedNode);
+		#region Overrides of PreviewBaseShape
+
+		/// <inheritdoc />
+		internal sealed override void Reconfigure(ElementNode node)
+		{
+			_strings = new List<PreviewBaseShape>();
+			_pixels.Clear();
+
+			if (node != null)
+			{
+				List<ElementNode> children = PreviewTools.GetLeafNodes(node);
 				if (children.Count >= 6)
-                    //
+					//
 				{
-					int increment = children.Count/3;
+					int increment = children.Count / 3;
 					int pixelsLeft = children.Count;
 
 					StringType = StringTypes.Pixel;
 
 					// Just add lines, they will be layed out in Layout()
-					for (int i = 0; i < 3; i++) {
+					for (int i = 0; i < 3; i++)
+					{
 						PreviewLine line;
-						if (pixelsLeft >= increment) {
+						if (pixelsLeft >= increment)
+						{
 							line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), increment, null, ZoomLevel);
 						}
-						else {
+						else
+						{
 							line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), pixelsLeft, null, ZoomLevel);
 						}
 						line.PixelColor = Color.White;
@@ -57,7 +70,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					}
 
 					int pixelNum = 0;
-					foreach (PreviewPixel pixel in Pixels) {
+					foreach (PreviewPixel pixel in Pixels)
+					{
 						pixel.Node = children[pixelNum];
 						pixel.NodeId = children[pixelNum].Id;
 						pixelNum++;
@@ -65,11 +79,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				}
 			}
 
-			if (_strings.Count == 0) {
+			if (_strings.Count == 0)
+			{
 				// Just add lines, they will be layed out in Layout()
-				for (int i = 0; i < 3; i++) {
+				for (int i = 0; i < 3; i++)
+				{
 					PreviewLine line;
-					line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), 10, selectedNode, ZoomLevel);
+					line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), 10, node, ZoomLevel);
 					line.PixelColor = Color.White;
 					_strings.Add(line);
 				}
@@ -77,6 +93,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			Layout();
 		}
+
+		#endregion
 
 		[OnDeserialized]
 		private new void OnDeserialized(StreamingContext context)

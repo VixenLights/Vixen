@@ -17,7 +17,7 @@ namespace VixenApplication.Setup.ElementTemplates
 	{
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
-		public NumberedGroup():this(@"Minitrees", @"Tree", 10)
+		public NumberedGroup():this(@"Group", @"Item", 10)
 		{
 			
 		}

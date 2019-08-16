@@ -38,46 +38,59 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_topLeftPoint = PointToZoomPoint(point);
 			_bottomRightPoint = PointToZoomPoint(point);
 
-            _pointCount = 0;
-            _pixelCount = 0;
+            Reconfigure(selectedNode);
+		}
+
+		#region Overrides of PreviewBaseShape
+
+		/// <inheritdoc />
+		internal sealed override void Reconfigure(ElementNode node)
+		{
+			_pointCount = 0;
+			_pixelCount = 0;
 			_insideSize = 40;
+			_pixels.Clear();
+			if (node != null)
+			{
 
-			if (selectedNode != null) {
-
-                AddAllChildren(selectedNode);
-                if (IsPixelStar(selectedNode))
-                    StringType = StringTypes.Pixel;
+				AddAllChildren(node);
+				if (IsPixelStar(node))
+					StringType = StringTypes.Pixel;
 			}
 
-            if (_pixels.Count >= 5 && _pointCount == 0)
-            {
-	            ConfigurePointCount(_pixels.Count);
-            }
+			if (_pixels.Count >= 5 && _pointCount == 0)
+			{
+				ConfigurePointCount(_pixels.Count);
+			}
 
 			if (PointCount == 0)
 			{
 				ConfigurePointCount(_pixels.Count + 1);
 			}
 
-            if (_pixels.Count < 5)
-            {
-                _pixelCount = 40;
-                _pointCount = 5;
-                // Just add the pixels, they will get layed out next
-				for (int lightNum = 0; lightNum < _pixelCount; lightNum++) {
+			if (_pixels.Count < 5)
+			{
+				_pixelCount = 40;
+				_pointCount = 5;
+				// Just add the pixels, they will get layed out next
+				for (int lightNum = 0; lightNum < _pixelCount; lightNum++)
+				{
 					PreviewPixel pixel = AddPixel(10, 10);
 					pixel.PixelColor = Color.White;
-					if (selectedNode != null && selectedNode.IsLeaf) {
-						pixel.Node = selectedNode;
+					if (node != null && node.IsLeaf)
+					{
+						pixel.Node = node;
 					}
 				}
-            }
+			}
 
-            //Console.WriteLine("Star Pixel Count: " + _pixelCount + ":" + _pixels.Count());
+			//Console.WriteLine("Star Pixel Count: " + _pixelCount + ":" + _pixels.Count());
 
 			// Lay out the pixels
 			Layout();
 		}
+
+		#endregion
 
 		private void ConfigurePointCount(int lightCount)
 		{

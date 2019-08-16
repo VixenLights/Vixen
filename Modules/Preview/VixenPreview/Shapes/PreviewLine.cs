@@ -19,6 +19,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[DataMember] private List<PreviewPoint> _points = new List<PreviewPoint>();
 
 		private PreviewPoint p1Start, p2Start;
+		private int _lightCount = 50;
 
 		public override string TypeName => @"Line";
 
@@ -29,35 +30,51 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			AddPoint(PointToZoomPoint(point1));
 			AddPoint(PointToZoomPoint(point2));
 
-			if (selectedNode != null) {
-				List<ElementNode> children = PreviewTools.GetLeafNodes(selectedNode);
+			_lightCount = lightCount;
+
+			Reconfigure(selectedNode);
+		}
+
+		#region Overrides of PreviewBaseShape
+
+		/// <inheritdoc />
+		internal sealed override void Reconfigure(ElementNode node)
+		{
+			_pixels.Clear();
+			if (node != null)
+			{
+				List<ElementNode> children = PreviewTools.GetLeafNodes(node);
 				// is this a single node?
-				if (children.Count == 0) {
+				if (children.Count == 0)
+				{
 					StringType = StringTypes.Standard;
 					// Just add the pixels, they will get layed out next
-					for (int lightNum = 0; lightNum < lightCount; lightNum++) {
+					for (int lightNum = 0; lightNum < _lightCount; lightNum++)
+					{
 						PreviewPixel pixel = AddPixel(10, 10);
 						pixel.PixelColor = Color.White;
-						if (selectedNode.IsLeaf)
-							pixel.Node = selectedNode;
+						if (node.IsLeaf)
+							pixel.Node = node;
 					}
 				}
-				else {
+				else
+				{
 					StringType = StringTypes.Pixel;
 					// Just add the pixels, they will get layed out next
-					foreach (ElementNode child in children) {
-						{
-							PreviewPixel pixel = AddPixel(10, 10);
-							pixel.Node = child;
-							pixel.NodeId = child.Id;
-							pixel.PixelColor = Color.White;
-						}
+					foreach (ElementNode child in children)
+					{
+						PreviewPixel pixel = AddPixel(10, 10);
+						pixel.Node = child;
+						pixel.NodeId = child.Id;
+						pixel.PixelColor = Color.White;
 					}
 				}
 			}
-			else {
+			else
+			{
 				// Just add the pixels, they will get layed out next
-				for (int lightNum = 0; lightNum < lightCount; lightNum++) {
+				for (int lightNum = 0; lightNum < _lightCount; lightNum++)
+				{
 					//Console.WriteLine("Added: " + lightNum.ToString());
 					PreviewPixel pixel = AddPixel(10, 10);
 					pixel.PixelColor = Color.White;
@@ -66,6 +83,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// Lay out the pixels
 			Layout();
 		}
+
+		#endregion
 
 		[OnDeserialized]
 		private new void OnDeserialized(StreamingContext context)

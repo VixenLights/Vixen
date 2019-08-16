@@ -123,19 +123,29 @@ namespace VixenModules.Preview.VixenPreview
 			if (item != null)
 			{
 				IElementTemplate template = item.Value as IElementTemplate;
-				bool act = template.SetupTemplate(treeElements.SelectedElementNodes);
-				if (act)
-				{
-					IEnumerable<ElementNode> createdElements = template.GenerateElements(treeElements.SelectedElementNodes);
-					if (createdElements == null || !createdElements.Any())
-					{
-						var messageBox = new MessageBoxForm("Could not create elements.  Ensure you use a valid name and try again.", "",MessageBoxButtons.OKCancel,SystemIcons.Error);
-						messageBox.ShowDialog();
-						return;
-					}
-					AddNodeToTree(createdElements.First());
-				}
+				SetupTemplate(template);
 			}
+		}
+
+		internal bool SetupTemplate(IElementTemplate template)
+		{
+			bool success = template.SetupTemplate(treeElements.SelectedElementNodes);
+			if (success)
+			{
+				IEnumerable<ElementNode> createdElements = template.GenerateElements(treeElements.SelectedElementNodes);
+				if (createdElements == null || !createdElements.Any())
+				{
+					var messageBox =
+						new MessageBoxForm("Could not create elements.  Ensure you use a valid name and try again.", "",
+							MessageBoxButtons.OKCancel, SystemIcons.Error);
+					messageBox.ShowDialog();
+					return false;
+				}
+
+				AddNodeToTree(createdElements.First());
+			}
+
+			return success;
 		}
 
 		internal void AddNodeToTree(ElementNode node)

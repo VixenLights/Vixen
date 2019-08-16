@@ -37,65 +37,75 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_bottomLeft = new PreviewPoint(_topLeft);
 			_bottomRight = new PreviewPoint(_topLeft);
 
+			Reconfigure(selectedNode);
+		}
+
+		#region Overrides of PreviewBaseShape
+
+		/// <inheritdoc />
+		internal sealed override void Reconfigure(ElementNode node)
+		{
 			_strings = new List<PreviewBaseShape>();
 
-            if (selectedNode != null)
-            {
-                List<ElementNode> parents = PreviewTools.GetParentNodes(selectedNode);
-                // Do we have the 4 sides of the rectangle defined in our elements?
-                if (parents.Count() == 4)
-                {
-                    foreach (ElementNode pixelString in parents)
-                    {
-                        PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), pixelString.Children.Count(), pixelString, ZoomLevel);
-                        line.PixelColor = Color.White;
-                        _strings.Add(line);
-                    }
-                }
-                else
-                {
-                    List<ElementNode> children = PreviewTools.GetLeafNodes(selectedNode);
-                    if (children.Count >= 8)
-                    {
-                        int increment = children.Count / 4;
-                        int pixelsLeft = children.Count;
+			if (node != null)
+			{
+				List<ElementNode> parents = PreviewTools.GetParentNodes(node);
+				// Do we have the 4 sides of the rectangle defined in our elements?
+				if (parents.Count() == 4)
+				{
+					foreach (ElementNode pixelString in parents)
+					{
+						PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), pixelString.Children.Count(), pixelString, ZoomLevel);
+						line.PixelColor = Color.White;
+						_strings.Add(line);
+					}
+				}
+				else
+				{
+					List<ElementNode> children = PreviewTools.GetLeafNodes(node);
+					if (children.Count >= 8)
+					{
+						int increment = children.Count / 4;
+						int pixelsLeft = children.Count;
 
-                        StringType = StringTypes.Pixel;
+						StringType = StringTypes.Pixel;
 
-                        // Just add lines, they will be layed out in Layout()
-                        for (int i = 0; i < 4; i++)
-                        {
-                            PreviewLine line;
-                            if (pixelsLeft >= increment)
-                            {
-                                line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), increment, null, ZoomLevel);
-                            }
-                            else
-                            {
-                                line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), pixelsLeft, null, ZoomLevel);
-                            }
-                            line.PixelColor = Color.White;
-                            _strings.Add(line);
+						// Just add lines, they will be layed out in Layout()
+						for (int i = 0; i < 4; i++)
+						{
+							PreviewLine line;
+							if (pixelsLeft >= increment)
+							{
+								line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), increment, null, ZoomLevel);
+							}
+							else
+							{
+								line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), pixelsLeft, null, ZoomLevel);
+							}
+							line.PixelColor = Color.White;
+							_strings.Add(line);
 
-                            pixelsLeft -= increment;
-                        }
+							pixelsLeft -= increment;
+						}
 
-                        int pixelNum = 0;
-                        foreach (PreviewPixel pixel in Pixels)
-                        {
-                            pixel.Node = children[pixelNum];
-                            pixel.NodeId = children[pixelNum].Id;
-                            pixelNum++;
-                        }
-                    }
-                }
-            }
+						int pixelNum = 0;
+						foreach (PreviewPixel pixel in Pixels)
+						{
+							pixel.Node = children[pixelNum];
+							pixel.NodeId = children[pixelNum].Id;
+							pixelNum++;
+						}
+					}
+				}
+			}
 
-			if (_strings.Count == 0) {
+			if (_strings.Count == 0)
+			{
 				// Just add lines, they will be layed out in Layout()
-				for (int i = 0; i < 4; i++) {
+				for (int i = 0; i < 4; i++)
+				{
 					PreviewLine line;
-					line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), 10, selectedNode, ZoomLevel);
+					line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), 10, node, ZoomLevel);
 					line.PixelColor = Color.White;
 					_strings.Add(line);
 				}
@@ -103,6 +113,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			Layout();
 		}
+
+		#endregion
 
 		[OnDeserialized]
 		private new void OnDeserialized(StreamingContext context)

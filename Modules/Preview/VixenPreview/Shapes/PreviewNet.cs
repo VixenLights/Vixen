@@ -35,10 +35,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_bottomLeft = new PreviewPoint(_topLeft);
 			_bottomRight = new PreviewPoint(_topLeft);
 
-			initiallyAssignedNode = selectedNode;
+			Reconfigure(selectedNode);
+		}
 
+		#region Overrides of PreviewBaseShape
+
+		/// <inheritdoc />
+		internal sealed override void Reconfigure(ElementNode node)
+		{
+			_pixels.Clear();
+			initiallyAssignedNode = node;
 			Layout();
 		}
+
+		#endregion
 
 		[OnDeserialized]
 		private new void OnDeserialized(StreamingContext context)
