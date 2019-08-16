@@ -20,6 +20,12 @@ namespace Vixen.Data.Value
 			_intensity = XYZ.ClipValue(intensity, 0, 1);
 		}
 
+		public DiscreteValue(DiscreteValue dv)
+		{
+			_color = dv.Color;
+			_intensity = dv.Intensity;
+		}
+
 		public Color Color
 		{
 			get { return _color; }

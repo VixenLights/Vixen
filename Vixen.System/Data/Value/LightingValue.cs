@@ -30,6 +30,12 @@ namespace Vixen.Data.Value
 			Intensity = i;
 		}
 
+		public LightingValue(LightingValue lv)
+		{
+			Color = lv.Color;
+			Intensity = lv.Intensity;
+		}
+
 		/// <summary>
 		/// The Intensity or brightness of this color in the range 0.0 -> 1.0 (from 0% to 100%).
 		/// </summary>
