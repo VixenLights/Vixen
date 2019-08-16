@@ -254,6 +254,8 @@
     <Compile Include="Interpolator\DiscreteValueInterpolator.cs" />
     <Compile Include="Interpolator\LightingValueInterpolator.cs" />
     <Compile Include="Interpolator\PositionValueInterpolator.cs" />
+    <Compile Include="Interpolator\StaticDiscreteValueInterpolator.cs" />
+    <Compile Include="Interpolator\StaticLightingValueInterpolator.cs" />
     <Compile Include="Interpolator\StaticValueInterpolator.cs" />
     <Compile Include="IO\Binary\BinaryFileReader.cs" />
     <Compile Include="IO\Binary\BinaryFileWriter.cs" />
