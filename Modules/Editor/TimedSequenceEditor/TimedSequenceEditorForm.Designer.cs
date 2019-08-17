@@ -445,7 +445,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// pauseToolStripMenuItem
 			// 
 			this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
-			this.pauseToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+			this.pauseToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.None;
 			this.pauseToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.pauseToolStripMenuItem.Text = "Pause";
 			this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
