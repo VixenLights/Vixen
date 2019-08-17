@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using Common.Controls;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Utility;
 using VixenModules.App.CustomPropEditor.Import.XLights;
 using VixenModules.App.CustomPropEditor.Model;
+using VixenModules.OutputFilter.DimmingCurve;
 using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Property.Color;
 using VixenModules.Property.Face;
@@ -58,25 +62,45 @@ namespace VixenModules.Preview.VixenPreview
 
 				CreateElementsForChildren(rootElementNode, rootNode);
 
-				if (_prop.PhysicalMetadata.ColorMode != ColorMode.Other)
+				var parent = Application.OpenForms["VixenPreviewSetup3"];
+				if (parent != null)
 				{
-					//Now lets setup the color handling.
-					ColorSetupHelper helper = new ColorSetupHelper();
-					switch (_prop.PhysicalMetadata.ColorMode)
+					//Get on the UI thread
+					parent.Invoke((MethodInvoker)delegate
 					{
-						case ColorMode.FullColor:
-							helper.SetColorType(ElementColorType.FullColor);
-							helper.SilentMode = true;
-							break;
-						case ColorMode.Multiple:
-							helper.SetColorType(ElementColorType.MultipleDiscreteColors);
-							break;
-						default:
-							helper.SetColorType(ElementColorType.SingleColor);
-							break;
-					}
+						var question = new MessageBoxForm("Would you like to configure a dimming curve for this element?", "Dimming Curve Setup", MessageBoxButtons.YesNo, SystemIcons.Question);
+						var ans = question.ShowDialog(parent);
 
-					helper.Perform(_leafNodes);
+						if (ans == DialogResult.OK)
+						{
+							DimmingCurveHelper dimmingHelper = new DimmingCurveHelper(true);
+							dimmingHelper.Owner = parent;
+							dimmingHelper.Perform(_leafNodes);
+						}
+
+						if (_prop.PhysicalMetadata.ColorMode != ColorMode.Other)
+						{
+							//Now lets setup the color handling.
+							ColorSetupHelper helper = new ColorSetupHelper();
+							helper.Owner = parent;
+							switch (_prop.PhysicalMetadata.ColorMode)
+							{
+								case ColorMode.FullColor:
+									helper.SetColorType(ElementColorType.FullColor);
+									helper.SilentMode = true;
+									break;
+								case ColorMode.Multiple:
+									helper.SetColorType(ElementColorType.MultipleDiscreteColors);
+									break;
+								default:
+									helper.SetColorType(ElementColorType.SingleColor);
+									break;
+							}
+
+							helper.Perform(_leafNodes);
+						}
+
+					});
 				}
 
 				PreviewCustomProp.UpdateColorType();
@@ -85,6 +109,15 @@ namespace VixenModules.Preview.VixenPreview
 
 				return rootElementNode;
 			});
+		}
+
+		private DialogResult ShowDimmingCurveMessage()
+		{
+			var question = new MessageBoxForm("Would you like to configure a dimming curve for this element?", "Dimming Curve Setup", MessageBoxButtons.YesNo, SystemIcons.Question);
+
+			var parent = Application.OpenForms["VixenPreviewSetup3"];
+
+			return question.ShowDialog(parent);
 		}
 
 		private string TokenizeName(string name)

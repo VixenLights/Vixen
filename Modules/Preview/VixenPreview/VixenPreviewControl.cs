@@ -1962,6 +1962,7 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			PreviewCustomPropBuilder builder = new PreviewCustomPropBuilder(p, ZoomLevel, this);
 			var newElement = await builder.CreateAsync();
+			elementsForm.ClearSelectedNodes();
 			elementsForm.AddNodeToTree(newElement);
 			var newDisplayItem = new DisplayItem();
 			newDisplayItem.Shape = builder.PreviewCustomProp;
