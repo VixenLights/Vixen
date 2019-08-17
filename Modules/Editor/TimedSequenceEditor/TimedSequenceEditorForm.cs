@@ -3299,8 +3299,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (timerPostponePlay.Enabled)
 			{
 				timerPostponePlay.Enabled = timerDelayCountdown.Enabled = false;
-				playBackToolStripButton_Play.Image = Resources.control_play_blue;
-				//playBackToolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
 				UpdatePlayButton(true);
 				playBackToolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
 				//We are stopping the delay, there is no context, so get out of here to avoid false entry into error log
@@ -3426,6 +3424,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					UpdatePlayButton(true);
 					playBackToolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = false;
+					playToolStripMenuItem.ShortcutKeys = Keys.None;
 					playBackToolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
 					return;
 				}
@@ -3435,15 +3434,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					if (_context.IsPaused)
 					{
 						playBackToolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
+						playToolStripMenuItem.ShortcutKeys = Keys.F5;
 						pauseToolStripMenuItem.Enabled = false;
-						playToolStripMenuItem.Enabled = true;
+						pauseToolStripMenuItem.ShortcutKeys = Keys.None;
 						UpdatePlayButton(true);
 					}
 					else
 					{
 						playBackToolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
-						pauseToolStripMenuItem.Enabled = true;
-						playToolStripMenuItem.Enabled = false;
+						playToolStripMenuItem.ShortcutKeys = Keys.F5;
+						pauseToolStripMenuItem.Enabled = false;
+						pauseToolStripMenuItem.ShortcutKeys = Keys.None;
 						UpdatePlayButton(false);
 					}
 					playBackToolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = true;
@@ -3451,8 +3452,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				else // Stopped
 				{
 					playBackToolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
+					playToolStripMenuItem.ShortcutKeys = Keys.F5;
 					pauseToolStripMenuItem.Enabled = false;
-					playToolStripMenuItem.Enabled = true;
+					pauseToolStripMenuItem.ShortcutKeys = Keys.None;
 					UpdatePlayButton(true);
 					playBackToolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
 				}
