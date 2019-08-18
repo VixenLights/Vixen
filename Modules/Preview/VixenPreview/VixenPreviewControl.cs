@@ -20,6 +20,8 @@ using Catel.IoC;
 using Catel.Services;
 using Common.Controls.Scaling;
 using Vixen;
+using Vixen.Rule;
+using Vixen.Services;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
 using VixenModules.Preview.VixenPreview.Undo;
@@ -690,7 +692,7 @@ namespace VixenModules.Preview.VixenPreview
 						else if (_currentTool == Tools.Ellipse)
 						{
 							newDisplayItem = new DisplayItem();
-							newDisplayItem.Shape = new PreviewEllipse(translatedPoint, 50, elementsForm.SelectedNode, ZoomLevel);
+							newDisplayItem.Shape = new PreviewEllipse(translatedPoint, elementsForm.SelectedNode, ZoomLevel);
 						}
 						else if (_currentTool == Tools.Triangle)
 						{
@@ -1205,6 +1207,16 @@ namespace VixenModules.Preview.VixenPreview
 					{
 						PreviewItemAddAction();
 						(_selectedDisplayItem.Shape as PreviewPolyLine).EndCreation();
+
+						if (elementsForm.SelectedNode == null && modifyType.Equals("AddNew"))
+						{
+							//Intercept and populate the element tree
+							if (ShowElementCreateTemplateForCurrentTool() && elementsForm.SelectedNode != null)
+							{
+								_selectedDisplayItem.Shape.Reconfigure(elementsForm.SelectedNode);
+							}
+						}
+
 						OnSelectDisplayItem(this, _selectedDisplayItem);
 						DeSelectSelectedDisplayItem();
 						ResetMouse();
@@ -1252,40 +1264,29 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			if (_mouseCaptured)
 			{
-				if (_currentTool != Tools.Select)
+				if (_currentTool == Tools.PolyLine || _currentTool == Tools.MultiString)
 				{
-					// If control is pressed, deselect the shape and immediately allow drawing another shape
-					//if ((Control.ModifierKeys & Keys.Shift) != 0) {
-					//    _selectedDisplayItem.Shape.MouseUp(sender, e);
-					//    DeSelectSelectedDisplayItem();
-					//}
-					//else 
 					if (_selectedDisplayItem != null &&
-					    _currentTool == Tools.PolyLine &&
-					    e.Button == System.Windows.Forms.MouseButtons.Left &&
+					    e.Button == MouseButtons.Left &&
 					    _selectedDisplayItem.Shape.Creating)
 					{
-						// If we are drawing a PolyLine, we want all the mouse events to be passed to the shape
+						// If we are drawing a PolyLine/Multi String, we want all the mouse events to be passed to the shape
 						_selectedDisplayItem.Shape.MouseUp(sender, e);
 						return;
-					}
-					else if (_selectedDisplayItem != null &&
-					         _currentTool == Tools.MultiString &&
-					         e.Button == System.Windows.Forms.MouseButtons.Left &&
-					         _selectedDisplayItem.Shape.Creating)
-					{
-						// If we are drawing a MultiString, we want all the mouse events to be passed to the shape
-						_selectedDisplayItem.Shape.MouseUp(sender, e);
-						return;
-					}
-					else
-					{
-						//_currentTool = Tools.Select;
 					}
 				}
 
 				if (_selectedDisplayItem != null)
 				{
+					if (elementsForm.SelectedNode == null && modifyType.Equals("AddNew"))
+					{
+						//Intercept and populate the element tree
+						if (ShowElementCreateTemplateForCurrentTool() && elementsForm.SelectedNode != null)
+						{
+							_selectedDisplayItem.Shape.Reconfigure(elementsForm.SelectedNode);
+						}
+					}
+
 					_selectedDisplayItem.Shape.MouseUp(sender, e);
 					OnSelectDisplayItem(this, _selectedDisplayItem);
 					if ((PreviewItemsMovedNew != null | PreviewItemsResizingNew != null) && m_previewItemResizeMoveInfo != null | modifyType == "AddNew")
@@ -1327,6 +1328,51 @@ namespace VixenModules.Preview.VixenPreview
 				}
 			}
 			ResetMouse();
+		}
+
+		private bool ShowElementCreateTemplateForCurrentTool()
+		{
+
+			IElementTemplate template = null;
+			switch (_currentTool)
+			{
+				case Tools.Arch:
+					template = ApplicationServices.GetElementTemplate("Arch");
+					break;
+				case Tools.Cane:
+					template = ApplicationServices.GetElementTemplate("Candy Cane");
+					break;
+				case Tools.Star:
+					template = ApplicationServices.GetElementTemplate("Star");
+					break;
+				case Tools.StarBurst:
+					template = ApplicationServices.GetElementTemplate("Starburst");
+					break;
+				case Tools.MegaTree:
+					template = ApplicationServices.GetElementTemplate("Megatree");
+					break;
+				case Tools.PixelGrid:
+					template = ApplicationServices.GetElementTemplate("Pixel Grid");
+					break;
+				case Tools.Icicle:
+					template = ApplicationServices.GetElementTemplate("Icicles");
+					break;
+				case Tools.Rectangle:
+				case Tools.Triangle:
+				case Tools.Ellipse:
+				case Tools.String:
+					template = ApplicationServices.GetElementTemplate("Generic Numbered Group");
+					break;
+			}
+
+			var success = false;
+
+			if (template != null)
+			{
+				success = elementsForm.SetupTemplate(template);
+			}
+
+			return success;
 		}
 
 		public void ResetMouse()
@@ -1916,6 +1962,7 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			PreviewCustomPropBuilder builder = new PreviewCustomPropBuilder(p, ZoomLevel, this);
 			var newElement = await builder.CreateAsync();
+			elementsForm.ClearSelectedNodes();
 			elementsForm.AddNodeToTree(newElement);
 			var newDisplayItem = new DisplayItem();
 			newDisplayItem.Shape = builder.PreviewCustomProp;

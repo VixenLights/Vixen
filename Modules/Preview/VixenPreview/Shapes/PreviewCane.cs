@@ -36,27 +36,40 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_bottomRightPoint = new PreviewPoint(newPoint.X, newPoint.Y);
 			_archLeftPoint = new PreviewPoint(newPoint.X, newPoint.Y);
 
+			Reconfigure(selectedNode);
+		}
+
+		#region Overrides of PreviewBaseShape
+
+		/// <inheritdoc />
+		internal sealed override void Reconfigure(ElementNode node)
+		{
 			_archPixelCount = 8;
 			_linePixelCount = 8;
-
+			_pixels.Clear();
 			int lightCount = _archPixelCount + _linePixelCount;
 
-			if (selectedNode != null) {
-				List<ElementNode> children = PreviewTools.GetLeafNodes(selectedNode);
+			if (node != null)
+			{
+				List<ElementNode> children = PreviewTools.GetLeafNodes(node);
 				// is this a single node?
-				if (children.Count >= 8) {
+				if (children.Count >= 8)
+				{
 					StringType = StringTypes.Pixel;
-					_archPixelCount = children.Count/2;
-					_linePixelCount = children.Count/2;
-					if (_archPixelCount + _linePixelCount > children.Count) {
+					_archPixelCount = children.Count / 2;
+					_linePixelCount = children.Count - _archPixelCount;
+					if (_archPixelCount + _linePixelCount > children.Count)
+					{
 						_archPixelCount -= 1;
 					}
-					else if (_archPixelCount + _linePixelCount < children.Count) {
+					else if (_archPixelCount + _linePixelCount < children.Count)
+					{
 						_linePixelCount -= 1;
 					}
 					lightCount = children.Count;
 					// Just add the pixels, they will get layed out next
-					foreach (ElementNode child in children) {
+					foreach (ElementNode child in children)
+					{
 						PreviewPixel pixel = AddPixel(10, 10);
 						pixel.Node = child;
 						pixel.PixelColor = Color.White;
@@ -64,20 +77,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				}
 			}
 
-			if (_pixels.Count == 0) {
-				// Just add the pixels, they will get layed out next
-				for (int lightNum = 0; lightNum < lightCount; lightNum++) {
-					PreviewPixel pixel = AddPixel(10, 10);
-					pixel.PixelColor = Color.White;
-					if (selectedNode != null && selectedNode.IsLeaf) {
-						pixel.Node = selectedNode;
-					}
-				}
-			}
+			AddPixels(node, lightCount);
 
 			// Lay out the pixels
 			Layout();
 		}
+
+		#endregion
 
 		[OnDeserialized]
 		private new void OnDeserialized(StreamingContext context)

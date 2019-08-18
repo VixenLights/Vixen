@@ -66,6 +66,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public event OnPropertiesChangedHandler OnPropertiesChanged;
 
+		internal virtual void Reconfigure(ElementNode node)
+		{
+
+		}
+
 		public void UpdateColorType()
 		{
 			foreach (var previewPixel in Pixels)
@@ -879,6 +884,23 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			Dispose(true);
 			GC.SuppressFinalize(this);
+		}
+
+		protected void AddPixels(ElementNode node, int lightCount)
+		{
+			if (_pixels.Count == 0)
+			{
+				// Just add the pixels, they will get laid out next
+				for (int lightNum = 0; lightNum < lightCount; lightNum++)
+				{
+					PreviewPixel pixel = AddPixel(10, 10);
+					pixel.PixelColor = Color.White;
+					if (node != null && node.IsLeaf)
+					{
+						pixel.Node = node;
+					}
+				}
+			}
 		}
 	}
 }

@@ -36,47 +36,59 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_bottomLeft = new PreviewPoint(_topLeft);
 			_bottomRight = new PreviewPoint(_topLeft);
 
+			Reconfigure(selectedNode);
+		}
+
+		#region Overrides of PreviewBaseShape
+
+		/// <inheritdoc />
+		internal sealed override void Reconfigure(ElementNode node)
+		{
+			_pixels.Clear();
 			_strings = new List<PreviewBaseShape>();
 
-            if (selectedNode != null)
-            {
-                List<ElementNode> children = PreviewTools.GetLeafNodes(selectedNode);
-                int stringCount = PreviewTools.GetParentNodes(selectedNode).Count();
-                if (stringCount >= 4)
-                {
-                    int spokePixelCount = 0;
-                    foreach (ElementNode node in selectedNode.Children)
-                    {
-                        spokePixelCount = Math.Max(spokePixelCount, node.Children.Count());
-                    }
+			if (node != null)
+			{
+				//List<ElementNode> children = PreviewTools.GetLeafNodes(node);
+				int stringCount = PreviewTools.GetParentNodes(node).Count();
+				if (stringCount >= 4)
+				{
+					int spokePixelCount = 0;
+					foreach (ElementNode n in node.Children)
+					{
+						spokePixelCount = Math.Max(spokePixelCount, n.Children.Count());
+					}
 
-                    StringType = StringTypes.Pixel;
+					StringType = StringTypes.Pixel;
 
-                    foreach (ElementNode node in selectedNode.Children)
-                    {
-                        PreviewLine line;
-						line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), spokePixelCount, node, ZoomLevel);
+					foreach (ElementNode n in node.Children)
+					{
+						var line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), spokePixelCount, n, ZoomLevel);
 
-                        line.PixelColor = Color.White;
-                        _strings.Add(line);
-                    }
-                }
-            }
+						line.PixelColor = Color.White;
+						_strings.Add(line);
+					}
+				}
+			}
 
-			if (_strings.Count == 0) {
+			if (_strings.Count == 0)
+			{
 				// Just add lines, they will be layed out in Layout()
-                StringType = StringTypes.Standard;
-				for (int i = 0; i < 8; i++) {
+				StringType = StringTypes.Standard;
+				for (int i = 0; i < 8; i++)
+				{
 					PreviewLine line;
-					line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), 10, selectedNode, ZoomLevel);
+					line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), 10, node, ZoomLevel);
 					line.PixelColor = Color.White;
-                    line.StringType = StringTypes.Standard;
-                    _strings.Add(line);
+					line.StringType = StringTypes.Standard;
+					_strings.Add(line);
 				}
 			}
 
 			Layout();
 		}
+
+		#endregion
 
 		[OnDeserialized]
 		private new void OnDeserialized(StreamingContext context)

@@ -19,6 +19,9 @@ using Vixen.Rule;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Output;
+using VixenModules.App.CustomPropEditor.Model;
+using VixenModules.OutputFilter.DimmingCurve;
+using VixenModules.Property.Color;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -123,19 +126,47 @@ namespace VixenModules.Preview.VixenPreview
 			if (item != null)
 			{
 				IElementTemplate template = item.Value as IElementTemplate;
-				bool act = template.SetupTemplate(treeElements.SelectedElementNodes);
-				if (act)
-				{
-					IEnumerable<ElementNode> createdElements = template.GenerateElements(treeElements.SelectedElementNodes);
-					if (createdElements == null || !createdElements.Any())
-					{
-						var messageBox = new MessageBoxForm("Could not create elements.  Ensure you use a valid name and try again.", "",MessageBoxButtons.OKCancel,SystemIcons.Error);
-						messageBox.ShowDialog();
-						return;
-					}
-					AddNodeToTree(createdElements.First());
-				}
+				SetupTemplate(template);
 			}
+		}
+
+		internal void ClearSelectedNodes()
+		{
+			treeElements.ClearSelectedNodes();
+		}
+
+		internal bool SetupTemplate(IElementTemplate template)
+		{
+			bool success = template.SetupTemplate(treeElements.SelectedElementNodes);
+			if (success)
+			{
+				IEnumerable<ElementNode> createdElements = template.GenerateElements(treeElements.SelectedElementNodes);
+				if (createdElements == null || !createdElements.Any())
+				{
+					var messageBox =
+						new MessageBoxForm("Could not create elements.  Ensure you use a valid name and try again.", "",
+							MessageBoxButtons.OKCancel, SystemIcons.Error);
+					messageBox.ShowDialog();
+					return false;
+				}
+
+				var question = new MessageBoxForm("Would you like to configure a dimming curve for this Prop?", "Dimming Curve Setup", MessageBoxButtons.YesNo, SystemIcons.Question);
+				var response = question.ShowDialog(this);
+				if (response == DialogResult.OK)
+				{
+					DimmingCurveHelper dimmingHelper = new DimmingCurveHelper(true);
+					dimmingHelper.Perform(createdElements);
+				}
+				
+				ColorSetupHelper helper = new ColorSetupHelper();
+				helper.SetColorType(ElementColorType.FullColor);
+				helper.Perform(createdElements);
+
+				AddNodeToTree(createdElements.First());
+
+			}
+
+			return success;
 		}
 
 		internal void AddNodeToTree(ElementNode node)

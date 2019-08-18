@@ -29,16 +29,28 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			TopLeft = PointToZoomPoint(point1).ToPoint();
 			BottomRight = new PreviewPoint(_topLeft.X, _topLeft.Y).ToPoint();
 
-			int lightCount = 25;
+			Reconfigure(selectedNode);
+		}
 
-			if (selectedNode != null) {
-				List<ElementNode> children = PreviewTools.GetLeafNodes(selectedNode);
+		#region Overrides of PreviewBaseShape
+
+		/// <inheritdoc />
+		internal sealed override void Reconfigure(ElementNode node)
+		{
+			_pixels.Clear();
+			var lightCount = 25;
+			
+			if (node != null)
+			{
+				List<ElementNode> children = PreviewTools.GetLeafNodes(node);
 				// is this a single node?
-				if (children.Count >= 4) {
+				if (children.Count >= 4)
+				{
 					StringType = StringTypes.Pixel;
 					lightCount = children.Count;
-					// Just add the pixels, they will get layed out next
-					foreach (ElementNode child in children) {
+					// Just add the pixels, they will get laid out next
+					foreach (ElementNode child in children)
+					{
 						{
 							PreviewPixel pixel = AddPixel(10, 10);
 							pixel.Node = child;
@@ -48,13 +60,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				}
 			}
 
-			if (_pixels.Count == 0) {
-				// Just add the pixels, they will get layed out next
-				for (int lightNum = 0; lightNum < lightCount; lightNum++) {
+			if (_pixels.Count == 0)
+			{
+				// Just add the pixels, they will get laid out next
+				for (int lightNum = 0; lightNum < lightCount; lightNum++)
+				{
 					PreviewPixel pixel = AddPixel(10, 10);
 					pixel.PixelColor = Color.White;
-					if (selectedNode != null && selectedNode.IsLeaf) {
-						pixel.Node = selectedNode;
+					if (node != null && node.IsLeaf)
+					{
+						pixel.Node = node;
 					}
 				}
 			}
@@ -62,6 +77,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// Lay out the pixels
 			Layout();
 		}
+
+		#endregion
 
 		[OnDeserialized]
 		private new void OnDeserialized(StreamingContext context)

@@ -185,7 +185,7 @@ namespace Vixen.Execution.Context
 
 		private void _SequenceExecutorSequenceEnded(object sender, SequenceEventArgs e)
 		{
-			CurrentEffects.Reset(true);
+			CurrentEffects.Reset();
 			OnSequenceEnded(e);
 			OnContextEnded(EventArgs.Empty);
 		}

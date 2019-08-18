@@ -135,6 +135,11 @@ namespace Vixen.Services
 				.ToArray();
 		}
 
+		public static IElementTemplate GetElementTemplate(string name)
+		{
+			return GetAllElementTemplates().FirstOrDefault(t => t.TemplateName.Equals(name));
+		}
+
 		public static IElementSetupHelper[] GetAllElementSetupHelpers()
 		{
 

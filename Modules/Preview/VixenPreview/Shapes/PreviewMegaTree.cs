@@ -40,36 +40,51 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_topLeft = PointToZoomPoint(point1);
 			_bottomRight = new PreviewPoint(_topLeft.X, _topLeft.Y);
 
-			_stringCount = 16;
 			_topWidth = 20;
 			_topHeight = _topWidth/2;
 			_baseHeight = 40;
-			_lightsPerString = 50;
 			_degrees = 360;
 
+			Reconfigure(selectedNode);
+		}
+
+		#region Overrides of PreviewBaseShape
+
+		/// <inheritdoc />
+		internal sealed override void Reconfigure(ElementNode node)
+		{
+			_stringCount = 16;
+			_lightsPerString = 50;
+			_pixels.Clear();
 			_strings = new List<PreviewBaseShape>();
 
 			int childLightCount;
-			if (IsPixelTreeSelected(selectedNode, out childLightCount)) {
+			if (IsPixelTreeSelected(node, out childLightCount))
+			{
 				StringType = StringTypes.Pixel;
 				_lightsPerString = childLightCount;
-				foreach (ElementNode child in selectedNode.Children) {
+				foreach (ElementNode child in node.Children)
+				{
 					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), _lightsPerString, child, ZoomLevel);
 					_strings.Add(line);
 				}
 				_stringCount = _strings.Count;
 			}
-			else if (IsStandardTreeSelected(selectedNode)) {
+			else if (IsStandardTreeSelected(node))
+			{
 				StringType = StringTypes.Standard;
-				foreach (ElementNode child in selectedNode.Children) {
+				foreach (ElementNode child in node.Children)
+				{
 					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), _lightsPerString, child, ZoomLevel);
 					_strings.Add(line);
 				}
 				_stringCount = _strings.Count;
 			}
-			else {
+			else
+			{
 				// Just add the pixels, we don't care where they go... they get positioned in Layout()
-				for (int stringNum = 0; stringNum < _stringCount; stringNum++) {
+				for (int stringNum = 0; stringNum < _stringCount; stringNum++)
+				{
 					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), _lightsPerString, null, ZoomLevel);
 					_strings.Add(line);
 				}
@@ -78,6 +93,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// Lay out the pixels
 			Layout();
 		}
+
+		#endregion
 
 		private bool IsPixelTreeSelected(ElementNode selectedNode, out int childLightCount)
 		{

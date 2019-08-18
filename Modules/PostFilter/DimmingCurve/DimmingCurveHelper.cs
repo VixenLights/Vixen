@@ -22,18 +22,30 @@ namespace VixenModules.OutputFilter.DimmingCurve
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
-		public DimmingCurveHelper()
+		public DimmingCurveHelper(bool simpleMode)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
+			SimpleMode = simpleMode;
 			_curve = new Curve();
 		}
+
+		public DimmingCurveHelper():this(false)
+		{
+		}
+
+		private bool SimpleMode { get; set; }
 
 		private void DimmingCurveHelper_Load(object sender, EventArgs e)
 		{
 			buttonOk.Enabled = false;
+			if (SimpleMode)
+			{
+				radioButtonExistingUpdate.Enabled = false;
+				radioButtonExistingAddNew.Enabled = false;
+				radioButtonExistingDoNothing.Enabled = false;
+				radioButtonInsertAfter.Checked = true;
+			}
 		}
 
 
