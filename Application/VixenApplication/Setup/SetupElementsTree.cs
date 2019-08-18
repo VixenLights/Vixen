@@ -21,6 +21,8 @@ using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Output;
 using VixenModules.App.Modeling;
+using VixenModules.OutputFilter.DimmingCurve;
+using VixenModules.Property.Color;
 
 namespace VixenApplication.Setup
 {
@@ -250,6 +252,19 @@ namespace VixenApplication.Setup
 						messageBox.ShowDialog();
 						return;
 					}
+
+					var question = new MessageBoxForm("Would you like to configure a dimming curve for this Prop?", "Dimming Curve Setup", MessageBoxButtons.YesNo, SystemIcons.Question);
+					var response = question.ShowDialog(this);
+					if (response == DialogResult.OK)
+					{
+						DimmingCurveHelper dimmingHelper = new DimmingCurveHelper(true);
+						dimmingHelper.Perform(createdElements);
+					}
+
+					ColorSetupHelper helper = new ColorSetupHelper();
+					helper.SetColorType(ElementColorType.FullColor);
+					helper.Perform(createdElements);
+
 					//elementTree.PopulateNodeTree(createdElements.FirstOrDefault());
 					elementTree.AddNodePathToTree(new []{createdElements.First()});
 					OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Add));
