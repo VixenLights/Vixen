@@ -17,7 +17,7 @@ namespace Vixen.Commands
 		object ICommand.CommandValue
 		{
 			get { return CommandValue; }
-			set { CommandValue = (Color) value; }
+			//set { CommandValue = (Color) value; }
 		}
 	}
 }

@@ -16,7 +16,7 @@ namespace Vixen.Commands
 		object ICommand.CommandValue
 		{
 			get { return CommandValue; }
-			set { CommandValue = (string)value; }
+			//set { CommandValue = (string)value; }
 		}
 	}
 }
