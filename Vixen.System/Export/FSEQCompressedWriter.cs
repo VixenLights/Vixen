@@ -4,15 +4,13 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using System.Windows.Media.Animation;
 using NLog;
 using Vixen.Export.FPP;
 using Zstandard.Net;
-using static System.String;
 
 namespace Vixen.Export
 {
-	public class FSEQCompressedWriter : IExportWriter
+	public sealed class FSEQCompressedWriter : ExportWriterBase
 	{
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
@@ -26,8 +24,6 @@ namespace Vixen.Export
 		private uint _channelsPerFrame = 0;
 		private uint _numberFrames = 0;
 		private uint _framesPerBlock = 0;
-		private string _audioFileName = "";
-		private uint _fileNameFieldLen = 0;
 		private byte _numberCompressionBlocks;
 		private byte _numberSparseRanges = 0;
 		private uint _currentFrame = 0;
@@ -41,14 +37,17 @@ namespace Vixen.Export
 		private ZstandardStream _zStdStream;
 		private BinaryWriter _dataOut = null;
 
-		private byte[] _padding;
-
 		private readonly Dictionary<uint, uint> _compressBlockMap;
 		private readonly Dictionary<uint, uint> _sparseRangeBlocks;
 
 		public FSEQCompressedWriter()
 		{
-			Compress = false;
+			FileType = "fseq";
+			FileTypeDescr = "Falcon Player Sequence 2.6+";
+			CanCompress = true;
+			Version = @"2.6";
+			IsFalconFormat = true;
+			EnableCompression = true;
 			_compressBlockMap = new Dictionary<uint, uint>();
 			_sparseRangeBlocks = new Dictionary<uint, uint>();
 			_variableHeaders = new List<VariableHeader>();
@@ -61,21 +60,10 @@ namespace Vixen.Export
 			_currentBlock = 0;
 			_currentFrameInBlock = 0;
 			_blockStartFrame = 0;
-			_fileNameFieldLen = 0;
 			_compressBlockMap.Clear();
 			_sparseRangeBlocks.Clear();
-			_audioFileName = Empty;
 			_variableHeaders.Clear();
 		}
-
-		public int SeqPeriodTime { get; set; }
-
-		/// <inheritdoc />
-		public string FileType => "fseq";
-
-		public bool Compress { get; set; }
-
-		public string FileTypeDescr => "Falcon Player Sequence 2.6+";
 
 		public void WriteFileHeader(BinaryWriter writer)
 		{
@@ -125,7 +113,7 @@ namespace Vixen.Export
 			header[19] = byte.MinValue;
 
 			//Compression flag 0 for uncompressed, 1 for zstd, 2 for libz/gzip Byte 20
-			header[20] = Compress ? (byte) 1 : byte.MinValue;
+			header[20] = EnableCompression ? (byte) 1 : byte.MinValue;
 
 			//number of compression blocks, 0 if uncompressed Byte 21
 			header[21] = _numberCompressionBlocks;
@@ -187,13 +175,13 @@ namespace Vixen.Export
 
 		
 		/// <inheritdoc />
-		public void OpenSession(SequenceSessionData data)
+		public override void OpenSession(SequenceSessionData data)
 		{
 			Reset();
 			SeqPeriodTime = data.PeriodMS;
 			_numberFrames = (uint)data.NumPeriods;
 			_channelsPerFrame = (uint)data.ChannelNames.Count();
-			if (!IsNullOrEmpty(data.OutputAudioFileName))
+			if (!string.IsNullOrEmpty(data.OutputAudioFileName))
 			{
 				_variableHeaders.Add(new VariableHeader(data.OutputAudioFileName));
 			}
@@ -237,7 +225,7 @@ namespace Vixen.Export
 		private void InitStream()
 		{
 			_memoryStream = new MemoryStream();
-			if (Compress)
+			if (EnableCompression)
 			{
 				_zStdStream = new ZstandardStream(_memoryStream, 10);
 			}
@@ -245,7 +233,7 @@ namespace Vixen.Export
 
 		private void WriteData(byte[] data)
 		{
-			if (Compress)
+			if (EnableCompression)
 			{
 				_zStdStream.Write(data, 0, data.Length);
 			}
@@ -258,7 +246,7 @@ namespace Vixen.Export
 		private int FinalizeBlock(bool last=false)
 		{
 			
-			if (Compress)
+			if (EnableCompression)
 			{
 				_zStdStream.Flush();
 			}
@@ -266,7 +254,7 @@ namespace Vixen.Export
 			var data = _memoryStream.ToArray();
 			_dataOut.Write(data);
 
-			if (Compress)
+			if (EnableCompression)
 			{
 				_zStdStream.Dispose();
 			}
@@ -277,7 +265,7 @@ namespace Vixen.Export
 			{
 				_memoryStream = new MemoryStream();
 
-				if (Compress)
+				if (EnableCompression)
 				{
 					_zStdStream = new ZstandardStream(_memoryStream, 10);
 				}
@@ -291,7 +279,7 @@ namespace Vixen.Export
 			return data.Length;
 		}
 		/// <inheritdoc />
-		public void WriteNextPeriodData(List<byte> periodData)
+		public override void WriteNextPeriodData(List<byte> periodData)
 		{
 			if (_currentBlock < 1 && _currentFrameInBlock >= 10)
 			{
@@ -320,7 +308,7 @@ namespace Vixen.Export
 		}
 
 		/// <inheritdoc />
-		public void CloseSession()
+		public override void CloseSession()
 		{
 			ChangeBlock();
 			try

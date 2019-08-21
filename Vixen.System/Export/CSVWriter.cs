@@ -2,18 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using Vixen.Commands;
-using Vixen.Execution;
-using Vixen.Execution.Context;
-using Vixen.Module.Controller;
-using Vixen.Module.Timing;
-using Vixen.Sys;
 
 namespace Vixen.Export
 {
-    public class CSVWriter : IExportWriter
+    public sealed class CSVWriter : ExportWriterBase
     {
         private Int32 _seqNumChannels = 0;
         private Int32 _seqNumPeriods = 0;
@@ -24,22 +16,11 @@ namespace Vixen.Export
         public CSVWriter()
         {
             SeqPeriodTime = 50;  //Default to 50ms
+            FileType = "csv";
+            FileTypeDescr = "CSV File";
         }
 
-
-        public int SeqPeriodTime { get; set; }
-
-        public void WriteFileHeader()
-        {
-
-        }
-
-        public void WriteFileFooter()
-        {
-
-        }
-
-        public void OpenSession(SequenceSessionData data)
+        public override void OpenSession(SequenceSessionData data)
         {
             OpenSession(data.OutFileName, data.NumPeriods, data.ChannelNames.Count());
         }
@@ -66,7 +47,7 @@ namespace Vixen.Export
             _dataOut.Seek(0, SeekOrigin.Begin);
         }
 
-        public void WriteNextPeriodData(List<Byte> periodData)
+        public override void WriteNextPeriodData(List<Byte> periodData)
         {
             if (_dataOut != null)
             {
@@ -89,7 +70,7 @@ namespace Vixen.Export
         }
 
 
-        public void CloseSession()
+        public override void CloseSession()
         {
             if (_dataOut != null)
             {
@@ -112,20 +93,5 @@ namespace Vixen.Export
             }
         }
 
-        public string FileType
-        {
-            get
-            {
-                return "csv";
-            }
-        }
-
-        public string FileTypeDescr
-        {
-            get
-            {
-                return "CSV File";
-            }
-        }
     }
 }

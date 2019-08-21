@@ -278,7 +278,7 @@ namespace VixenModules.App.ExportWizard
 			if (canOutput)
 			{
 				_data.Export.OutFileName = Path.Combine(_data.ActiveProfile.OutputFolder, sequence.Name + "." + _data.Export.ExportFileTypes[_data.ActiveProfile.Format]);
-				await _data.Export.DoExport(sequence, _data.ActiveProfile.Format, progress, _data.ActiveProfile.RenameAudio);
+				await _data.Export.DoExport(sequence, _data.ActiveProfile.Format, _data.ActiveProfile.EnableCompression, progress, _data.ActiveProfile.RenameAudio);
 			}
 			
 		}

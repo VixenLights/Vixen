@@ -50,10 +50,10 @@ namespace Vixen.Export
         {
             _exportFileTypes = new Dictionary<string, string>();
             _writers = new Dictionary<string, IExportWriter>();
-            var type = typeof(IExportWriter);
+            var interfaceType = typeof(IExportWriter);
             var types = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(s => s.GetTypes())
-                .Where(p => type.IsAssignableFrom(p) && !p.Equals(type));
+                .Where(p => interfaceType.IsAssignableFrom(p) && p.IsClass && !p.IsAbstract);
 
             IExportWriter exportWriter;
             foreach (Type theType in types.ToArray())
@@ -105,7 +105,7 @@ namespace Vixen.Export
 	    public string DefaultFormatType()
 	    {
 			//This is sketchy at best
-			return ExportFileTypes.ContainsKey("Falcon Player Sequence") ? "Falcon Player Sequence" : FormatTypes[0];
+			return ExportFileTypes.ContainsKey("Falcon Player Sequence 2.6+") ? "Falcon Player Sequence 2.6+" : FormatTypes[0];
 		}
 
         public string OutFileName { get; set; }
@@ -320,7 +320,7 @@ namespace Vixen.Export
 
         }
 
-        public async Task DoExport(ISequence sequence, string outFormat, IProgress<ExportProgressStatus> progress = null, bool matchAudioName = false)
+        public async Task DoExport(ISequence sequence, string outFormat, bool enableCompression, IProgress<ExportProgressStatus> progress = null, bool matchAudioName = false)
         {
             string fileType;
 
@@ -331,12 +331,36 @@ namespace Vixen.Export
             {
                 if (_writers.TryGetValue(outFormat, out _output))
                 {
+	                if (_output.CanCompress)
+	                {
+		                _output.EnableCompression = enableCompression;
+	                }
 					_generator = new SequenceIntervalGenerator(UpdateInterval, sequence);
                     //WriteControllerInfo(sequence);
 	                await Task.Factory.StartNew(() => ProcessExport(progress, matchAudioName));
                 }
             }
         }
+
+        public bool CanCompress(string format)
+        {
+	        if (_writers.TryGetValue(format, out var output))
+	        {
+		        return output.CanCompress;
+	        }
+
+	        return false;
+        }
+
+        public bool IsFalconFormat(string format)
+        {
+			if (_writers.TryGetValue(format, out var output))
+			{
+				return output.IsFalconFormat;
+			}
+
+			return false;
+		}
         
         public void Cancel()
         {

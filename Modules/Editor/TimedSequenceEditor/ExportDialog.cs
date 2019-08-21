@@ -86,6 +86,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			chkGenerateControllerInfo.Checked = _profile.GetSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/GenerateUniverse", false);
 			radio2x.Checked = _profile.GetSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/Universe2x", true);
 	        radio1x.Checked = !radio2x.Checked;
+	        chkCompress.Checked = _profile.GetSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/Compress", true);
+	        chkCompress.Enabled = _exportOps.CanCompress(outputFormatComboBox.SelectedItem.ToString());
 
 			buttonStop.Enabled = false;
 	        UpdateNetworkList();
@@ -153,7 +155,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			var progress = new Progress<ExportProgressStatus>(ReportExportProgress);
 	        _exportOps.AudioFilename = _audioFileName;
-			await _exportOps.DoExport(_sequence, outputFormatComboBox.SelectedItem.ToString(), progress);
+			await _exportOps.DoExport(_sequence, outputFormatComboBox.SelectedItem.ToString(), chkCompress.Checked, progress);
 
 	        if (outputFormatComboBox.SelectedItem.ToString().Contains("Falcon"))
 	        {
@@ -443,7 +445,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
         {
             ComboBox comboBox = (ComboBox)sender;
             _profile.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ExportFormat", Name), (int)comboBox.SelectedIndex);
-
+            chkCompress.Enabled = _exportOps.CanCompress(outputFormatComboBox.SelectedItem.ToString());
 			SetUniverseVersionEnabled();
         }
 
@@ -451,7 +453,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	    {
 		    if (chkGenerateControllerInfo.Checked)
 		    {
-			    if (outputFormatComboBox.SelectedItem.ToString().StartsWith("Falcon")) //Ewww...
+			    if (_exportOps.IsFalconFormat(outputFormatComboBox.SelectedItem.ToString())) 
 			    {
 				    radio2x.Enabled = radio1x.Enabled = true;
 			    }
@@ -463,7 +465,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		    else
 		    {
 			    radio2x.Enabled = radio1x.Enabled = false;
-			}
+		    }
 		    
 	    }
 
@@ -482,7 +484,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void radio2x_CheckedChanged(object sender, EventArgs e)
 		{
+			chkCompress.Enabled = radio2x.Checked;
 			_profile.PutSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/Universe2x", radio2x.Checked);
+		}
+
+		private void chkCompress_CheckedChanged(object sender, EventArgs e)
+		{
+			_profile.PutSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/Compress", chkCompress.Checked);
 		}
 	}
 }

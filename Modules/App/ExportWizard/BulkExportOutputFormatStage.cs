@@ -65,8 +65,9 @@ namespace VixenModules.App.ExportWizard
 			chkFppIncludeAudio.Checked = chkIncludeAudio.Checked = _data.ActiveProfile.IncludeAudio;
 			chkRenameAudio.Enabled = btnAudioOutputFolder.Enabled = lblAudioExportPath.Enabled = txtAudioOutputFolder.Enabled = _data.ActiveProfile.IncludeAudio;
 			chkRenameAudio.Checked = _data.ActiveProfile.RenameAudio;
+			chkCompress.Checked = _data.ActiveProfile.EnableCompression;
 			
-			grpFalcon.Visible = _data.ActiveProfile.IsFalconFormat;
+			grpFalcon.Visible = chkCompress.Enabled = _data.Export.IsFalconFormat(_data.ActiveProfile.Format); 
 			grpAudio.Visible = grpSequence.Visible = !grpFalcon.Visible;
 			chkCreateUniverseFile.Checked = _data.ActiveProfile.CreateUniverseFile;
 			chkBackupUniverseFile.Checked = _data.ActiveProfile.BackupUniverseFile;
@@ -298,8 +299,9 @@ namespace VixenModules.App.ExportWizard
 		{
 			ComboBox comboBox = (ComboBox)sender;
 			_data.ActiveProfile.Format = comboBox.SelectedItem.ToString();
-			grpFalcon.Visible = _data.ActiveProfile.IsFalconFormat;
+			grpFalcon.Visible = _data.Export.IsFalconFormat(_data.ActiveProfile.Format);
 			grpAudio.Visible = grpSequence.Visible = !grpFalcon.Visible;
+			chkCompress.Enabled =  _data.Export.CanCompress(_data.ActiveProfile.Format);
 			if (_data.ActiveProfile.IsFalconFormat)
 			{
 				UpdateFalconPaths(_data.ActiveProfile.FalconOutputFolder);
@@ -352,6 +354,11 @@ namespace VixenModules.App.ExportWizard
 		private void txtFalconOutputFolder_TextChanged(object sender, EventArgs e)
 		{
 			//UpdateFalconPaths(txtFalconOutputFolder.Text);
+		}
+
+		private void chkCompress_CheckedChanged(object sender, EventArgs e)
+		{
+			_data.ActiveProfile.EnableCompression = chkCompress.Checked;
 		}
 	}
 }

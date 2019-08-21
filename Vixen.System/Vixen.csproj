@@ -215,6 +215,7 @@
     <Compile Include="Export\ExportCommandHandler.cs" />
     <Compile Include="Export\ESEQWriter.cs" />
     <Compile Include="Export\ExportProgressStatus.cs" />
+    <Compile Include="Export\ExportWriterBase.cs" />
     <Compile Include="Export\FPP\BoolConverter.cs" />
     <Compile Include="Export\FPP\ChannelOutputs.cs" />
     <Compile Include="Export\FPP\ConfigWriter.cs" />
