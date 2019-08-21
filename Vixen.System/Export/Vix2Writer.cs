@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using Vixen.Module.Controller;
-using Vixen.Sys;
-using Vixen.Execution;
-using Vixen.Commands;
 
 
 namespace Vixen.Export
 {
-    public class Vix2Writer : IExportWriter
+    public sealed class Vix2Writer : ExportWriterBase
     {
         private Vix2XMLData _xmlData;
         private Byte[] _periodData;
@@ -22,20 +16,13 @@ namespace Vixen.Export
         private FileStream _outfs = null;
         private int _adder;
 
-
-        public int SeqPeriodTime { get; set; }
-        
-        public void WriteFileHeader()
+        public Vix2Writer()
         {
-
-        }
-        
-        public void WriteFileFooter()
-        {
-
+	        FileTypeDescr = "Vixen 2.1 Sequence";
+	        FileType = "vix";
         }
 
-        public void OpenSession(SequenceSessionData sessionData)
+        public override void OpenSession(SequenceSessionData sessionData)
         {
 
             _curPeriod = 0;
@@ -71,7 +58,7 @@ namespace Vixen.Export
 
         }
 
-        public void WriteNextPeriodData(List<Byte> periodData)
+        public override void WriteNextPeriodData(List<Byte> periodData)
         {
             int numPeriods =  _sessionData.NumPeriods + _adder;
 
@@ -83,7 +70,7 @@ namespace Vixen.Export
             _curPeriod++;
         }
 
-        public void CloseSession()
+        public override void CloseSession()
         {
             int count = 0;
             XmlWriterSettings settings = new XmlWriterSettings();
@@ -140,21 +127,6 @@ namespace Vixen.Export
                 throw e;
             }
 
-        }
-        public string FileType
-        {
-            get
-            {
-                return "vix";
-            }
-        }
-
-        public string FileTypeDescr
-        {
-            get
-            {
-                return "Vixen 2.1 Sequence";
-            }
         }
     }
 

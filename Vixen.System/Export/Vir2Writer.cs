@@ -1,42 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Xml;
-using System.Xml.Serialization;
-using Vixen.Module.Controller;
-using Vixen.Sys;
-using Vixen.Execution;
-using Vixen.Commands;
 
 
 namespace Vixen.Export
 {
-    public class Vir2Writer : IExportWriter
+    public sealed class Vir2Writer : ExportWriterBase
     {
-        private Vix2XMLData _xmlData;
-        private List<Byte> _eventData;
-        private Byte[] _periodData;
+	    private Byte[] _periodData;
         private int _curPeriod;
         private SequenceSessionData _sessionData;
         private FileStream _outfs = null;
         private BinaryWriter _dataOut = null;
 
-
-        public int SeqPeriodTime { get; set; }
-
-        public void WriteFileHeader()
+        public Vir2Writer()
         {
-
+	        FileType = "vir";
+	        FileTypeDescr = "Vixen 2 Routine";
         }
 
-        public void WriteFileFooter()
-        {
-
-        }
-
-        public void OpenSession(SequenceSessionData sessionData)
+        public override void OpenSession(SequenceSessionData sessionData)
         {
 
             _curPeriod = 0;
@@ -56,7 +39,7 @@ namespace Vixen.Export
             _periodData = new Byte[sessionData.ChannelNames.Count * _sessionData.NumPeriods];
         }
 
-        public void WriteNextPeriodData(List<Byte> periodData)
+        public override void WriteNextPeriodData(List<Byte> periodData)
         {
             for (int j = 0; j < periodData.Count; j++)
             {
@@ -66,7 +49,7 @@ namespace Vixen.Export
             _curPeriod++;
         }
 
-        public void CloseSession()
+        public override void CloseSession()
         {
 
             try
@@ -106,21 +89,6 @@ namespace Vixen.Export
                 catch (Exception e)
                 {
                 }
-            }
-        }
-        public string FileType
-        {
-            get
-            {
-                return "vir";
-            }
-        }
-
-        public string FileTypeDescr
-        {
-            get
-            {
-                return "Vixen 2 Routine";
             }
         }
     }

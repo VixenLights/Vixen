@@ -25,7 +25,7 @@ namespace VixenModules.App.ExportWizard
 
 		internal ExportProfile CreateDefaultProfile()
 		{
-			return new ExportProfile("Default", Export.DefaultFormatType(), Export.ExportDir, Export.ExportDir);
+			return new ExportProfile("Default", Export.DefaultFormatType(), Export.ExportDir, Export.ExportDir, true);
 		}
 
 		public Export Export

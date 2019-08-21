@@ -2,19 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using Vixen.Commands;
-using Vixen.Execution;
-using Vixen.Execution.Context;
 using Vixen.Export.FPP;
-using Vixen.Module.Controller;
-using Vixen.Module.Timing;
-using Vixen.Sys;
 
 namespace Vixen.Export
 {
-    public class FSEQWriter : IExportWriter
+    public sealed class FSEQWriter : ExportWriterBase
     {
         private const Byte _vMinor = 0;
         private const Byte _vMajor = 1;
@@ -26,8 +18,6 @@ namespace Vixen.Export
         private UInt16 _universeSize = 0;    //Ignored by Pi Player
         private Byte _gamma = 1;             //0=encoded, 1=linear, 2=RGB Ignored by FPP
 		private Byte _colorEncoding = 2;
-        private String _audioFileName = "";
-        private UInt32 _fileNamePadding = 0;
         private readonly List<VariableHeader> _variableHeaders;
 
 		private FileStream _outfs = null;
@@ -41,13 +31,12 @@ namespace Vixen.Export
         public FSEQWriter()
         {
             SeqPeriodTime = 50;  //Default to 50ms
+            FileTypeDescr = "Falcon Player Sequence";
+            FileType = "fseq";
 			_variableHeaders = new List<VariableHeader>(1);
         }
 
-
-        public int SeqPeriodTime { get; set; }
-
-        public void WriteFileHeader()
+		public void WriteFileHeader()
         {
             if (_dataOut != null)
             {
@@ -115,12 +104,7 @@ namespace Vixen.Export
 			}
         }
 
-        public void WriteFileFooter()
-        {
-
-        }
-
-        public void OpenSession(SequenceSessionData data)
+        public override void OpenSession(SequenceSessionData data)
         {
 			_variableHeaders.Clear();
 	        _dataOffset = _fixedHeaderLength;
@@ -162,7 +146,7 @@ namespace Vixen.Export
             }
         }
 
-        public void WriteNextPeriodData(List<Byte> periodData)
+        public override void WriteNextPeriodData(List<Byte> periodData)
         {
             if (_dataOut != null)
             {
@@ -187,7 +171,7 @@ namespace Vixen.Export
 
         }
 
-        public void CloseSession()
+        public override void CloseSession()
         {
             if (_dataOut != null)
             {
@@ -212,20 +196,5 @@ namespace Vixen.Export
             }
         }
 
-        public string FileType
-        {
-            get
-            {
-                return "fseq";
-            }
-        }
-
-        public string FileTypeDescr
-        {
-            get
-            {
-                return "Falcon Player Sequence";
-            }
-        }
     }
 }
