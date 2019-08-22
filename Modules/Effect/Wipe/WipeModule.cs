@@ -422,7 +422,7 @@ namespace VixenModules.Effect.Wipe
 							result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse,
 								HasDiscreteColors);
 							result.OffsetAllCommandsByTime(effectTime);
-							if (WipeOff && count == 0)
+							if (WipeOff && count == 0 && result.Any())
 							{
 								foreach (var effectIntent in result.FirstOrDefault().Value)
 								{
@@ -431,7 +431,7 @@ namespace VixenModules.Effect.Wipe
 								}
 							}
 
-							if (WipeOn && count == PassCount - 1)
+							if (WipeOn && result.Any() && count == PassCount - 1)
 							{
 								foreach (var effectIntent in result.FirstOrDefault().Value)
 								{
