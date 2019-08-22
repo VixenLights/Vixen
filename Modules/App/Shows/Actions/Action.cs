@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using Timer = System.Timers.Timer;
 
 namespace VixenModules.App.Shows
 {
@@ -14,7 +10,10 @@ namespace VixenModules.App.Shows
 		public Action(ShowItem showItem)
 		{
 			ShowItem = showItem;
+			Id = Guid.NewGuid();
 		}
+
+		public Guid Id { get; }
 
 		// Properties
 		public ShowItem ShowItem { get; set; }
