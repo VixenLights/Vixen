@@ -133,7 +133,7 @@ namespace VixenApplication
 			Execution.ExecutionStateChanged += executionStateChangedHandler;
 			if(!VixenSystem.Start(this, _openExecution, _disableControllers, _applicationData.DataFileDirectory))
 			{
-				var messageBox = new MessageBoxForm("An error occured starting the system and the application will be halted.", "Error",MessageBoxButtons.OK, SystemIcons.Error);
+				var messageBox = new MessageBoxForm("An error occurred starting the system and the application will be halted.", "Error",MessageBoxButtons.OK, SystemIcons.Error);
 				messageBox.ShowDialog();
 				Application.Exit();
 			}
@@ -218,7 +218,7 @@ namespace VixenApplication
 			}
 			catch (Exception e)
 			{
-				Logging.Error(e, "An error occured creating the profile lock file.");
+				Logging.Error(e, "An error occurred creating the profile lock file.");
 			}
 
 			return success;
@@ -242,7 +242,7 @@ namespace VixenApplication
 			}
 			catch (Exception e)
 			{
-				Logging.Error(e, "An error occured removing the profile lock file.");
+				Logging.Error(e, "An error occurred removing the profile lock file.");
 			}
 
 			return success;
@@ -298,7 +298,7 @@ namespace VixenApplication
 			}
 			catch (Exception e)
 			{
-				Logging.Error(e, "An error occured checking the profile lock file.");
+				Logging.Error(e, "An error occurred checking the profile lock file.");
 				locked = true;  //If we cannot determine if it is locked, then we can't assume it isn't.
 			}
 

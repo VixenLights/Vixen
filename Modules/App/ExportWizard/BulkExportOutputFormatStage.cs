@@ -181,7 +181,7 @@ namespace VixenModules.App.ExportWizard
 					messageBox = new MessageBoxForm($"Unable to create the target directory.\n{e.Message}",
 						"Error creating directory.", MessageBoxButtons.OK, SystemIcons.Error);
 					messageBox.ShowDialog(this);
-					Logging.Error(e, "An error occured trying to create the Falcon target directory structure.");
+					Logging.Error(e, "An error occurred trying to create the Falcon target directory structure.");
 				}
 			}
 
@@ -232,7 +232,7 @@ namespace VixenModules.App.ExportWizard
 						messageBox = new MessageBoxForm($"Unable to create the target directory.\n{e.Message}",
 							"Error creating directory.", MessageBoxButtons.OK, SystemIcons.Error);
 						messageBox.ShowDialog(this);
-						Logging.Error(e, "An error occured trying to create the Falcon target directory structure.");
+						Logging.Error(e, "An error occurred trying to create the Falcon target directory structure.");
 					}
 				}
 			}

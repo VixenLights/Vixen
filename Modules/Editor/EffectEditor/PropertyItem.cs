@@ -765,7 +765,7 @@ namespace VixenModules.Editor.EffectEditor
 			}
 			catch(Exception e)
 			{
-				Logging.Error(e, "An error occured setting the property value");	
+				Logging.Error(e, "An error occurred setting the property value");	
 			}
 			OnPropertyChanged("PropertyValue");
 		}

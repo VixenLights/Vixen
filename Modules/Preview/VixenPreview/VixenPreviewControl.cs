@@ -1923,7 +1923,7 @@ namespace VixenModules.Preview.VixenPreview
 				}
 				else
 				{
-					MessageBoxForm mbf = new MessageBoxForm("An error occured loading the prop.", "Prop Load Error!",MessageBoxButtons.OK,SystemIcons.Error);
+					MessageBoxForm mbf = new MessageBoxForm("An error occurred loading the prop.", "Prop Load Error!",MessageBoxButtons.OK,SystemIcons.Error);
 					mbf.ShowDialog(this);
 				}
 				Cursor = Cursors.Arrow;

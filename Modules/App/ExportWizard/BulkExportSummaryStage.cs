@@ -293,7 +293,7 @@ namespace VixenModules.App.ExportWizard
 			}
 			catch (Exception e)
 			{
-				Logging.Error(e, $"An error occured trying to create the export directory structure {path}");
+				Logging.Error(e, $"An error occurred trying to create the export directory structure {path}");
 			}
 
 			return success;
