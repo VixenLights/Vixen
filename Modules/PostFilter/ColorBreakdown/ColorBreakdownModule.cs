@@ -181,6 +181,8 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 	[DataContract]
 	public class ColorBreakdownItem
 	{
+		private string _name;
+
 		public ColorBreakdownItem()
 		{
 			Color = Color.White;
@@ -191,7 +193,11 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		public Color Color { get; set; }
 
 		[DataMember]
-		public string Name { get; set; }
+		public string Name
+		{
+			get => _name;
+			set => _name = string.Intern(value);
+		}
 	}
 
 	internal interface IBreakdownFilter

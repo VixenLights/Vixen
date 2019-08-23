@@ -27,8 +27,7 @@ namespace Vixen.Sys.Output
 		private IDataPolicy _dataPolicy;
 		private MillisecondsValue _updateTimeValue;
 		private ICommand[] commands = new ICommand[0];
-		private static readonly ICommand TempCommand= new _8BitCommand(0);
-
+		
 		private ParallelOptions _parallelOptions = new ParallelOptions()
 		{
 			MaxDegreeOfParallelism = Environment.ProcessorCount
