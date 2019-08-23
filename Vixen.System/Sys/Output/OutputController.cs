@@ -167,7 +167,7 @@ namespace Vixen.Sys.Output
 			}
 			catch (Exception e)
 			{
-				Logging.Error(e, "An error occured outputting data for controller {0}", Name);
+				Logging.Error(e, "An error occurred outputting data for controller {0}", Name);
 			}
 			finally
 			{

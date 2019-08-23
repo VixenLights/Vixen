@@ -96,7 +96,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 			}
 			catch (Exception ex)
 			{
-				Logging.Error(ex, "An error occured loading the image for a prop.");
+				Logging.Error(ex, "An error occurred loading the image for a prop.");
 			}
 		}
 

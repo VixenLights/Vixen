@@ -340,8 +340,8 @@ namespace VixenApplication
 			}
 			catch (Exception ex)
 			{
-				Logging.Error(ex, "An error occured adding files to archive");
-				MessageBoxForm mbf = new MessageBoxForm($"An error occured during the zip process.\n\r {ex.Message}","Error Zipping Files",MessageBoxButtons.OK, SystemIcons.Error);
+				Logging.Error(ex, "An error occurred adding files to archive");
+				MessageBoxForm mbf = new MessageBoxForm($"An error occurred during the zip process.\n\r {ex.Message}","Error Zipping Files",MessageBoxButtons.OK, SystemIcons.Error);
 				mbf.ShowDialog(this);
 			}
 

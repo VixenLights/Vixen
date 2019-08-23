@@ -36,9 +36,9 @@ namespace VixenModules.Editor.EffectEditor.Editors
 			}
 			catch (Exception e)
 			{
-				var messageBox = new MessageBoxForm("An error occured loading the font.", "Font Error", MessageBoxButtons.OK, SystemIcons.Error);
+				var messageBox = new MessageBoxForm("An error occurred loading the font.", "Font Error", MessageBoxButtons.OK, SystemIcons.Error);
 				messageBox.ShowDialog();
-				Logging.Error(e, "An error occured loading the font.");
+				Logging.Error(e, "An error occurred loading the font.");
 			}
 			
 

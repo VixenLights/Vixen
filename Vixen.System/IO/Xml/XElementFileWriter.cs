@@ -23,7 +23,7 @@ namespace Vixen.IO.Xml
 			}
 			catch (Exception e)
 			{
-				Logging.Error(e, "An error occured trying to save the file. Attempting to protect any backups");
+				Logging.Error(e, "An error occurred trying to save the file. Attempting to protect any backups");
 
 				try
 				{

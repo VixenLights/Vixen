@@ -1132,7 +1132,7 @@ namespace Common.Controls.Timeline
 		/// <param name="start"></param>
 		/// <param name="duration"></param>
 		/// <param name="moveType">Optional move type. Defaults to Move</param>
-		/// <returns>Boolen indicating whether the move occured</returns>
+		/// <returns>Boolen indicating whether the move occurred</returns>
 		public bool MoveResizeElement(Element element, TimeSpan start, TimeSpan duration, ElementMoveType moveType = ElementMoveType.Move)
 		{
 			if (element == null || start > TotalTime || start + duration > TotalTime 
@@ -1164,7 +1164,7 @@ namespace Common.Controls.Timeline
 		/// <param name="element"></param>
 		/// <param name="start"></param>
 		/// <param name="end"></param>
-		/// <returns>Boolen indicating whether the move occured</returns>
+		/// <returns>Boolen indicating whether the move occurred</returns>
 		public bool MoveResizeElementByStartEnd(Element element, TimeSpan start, TimeSpan end)
 		{
 			if (element == null || start > TotalTime || end > TotalTime || start >= end)
@@ -2646,7 +2646,7 @@ namespace Common.Controls.Timeline
 					Logging.Error(ex, "Exception in TimelineGrid.OnPaint()");
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-					var messageBox = new MessageBoxForm("An unexpected error occured while drawing the grid. Please notify the Vixen team and provide the error logs.",
+					var messageBox = new MessageBoxForm("An unexpected error occurred while drawing the grid. Please notify the Vixen team and provide the error logs.",
 						@"Error", false, false);
 					messageBox.ShowDialog();
 				}

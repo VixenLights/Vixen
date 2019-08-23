@@ -50,7 +50,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 			}
 			catch(Exception e)
 			{
-				Logging.Error(e, $"An error occured downloading the file {url.AbsoluteUri}");
+				Logging.Error(e, $"An error occurred downloading the file {url.AbsoluteUri}");
 				return false;
 			}
 

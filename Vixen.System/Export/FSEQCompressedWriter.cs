@@ -217,7 +217,7 @@ namespace Vixen.Export
 			{
 				_outfs = null;
 				_dataOut = null;
-				Logging.Error(e, "An error occured opening the filestreams for export.");
+				Logging.Error(e, "An error occurred opening the filestreams for export.");
 				throw e;
 			}
 		}
@@ -354,7 +354,7 @@ namespace Vixen.Export
 			}
 			catch (Exception e)
 			{
-				Logging.Error(e, "An error occured decompressing block.");
+				Logging.Error(e, "An error occurred decompressing block.");
 			}
 		}
 

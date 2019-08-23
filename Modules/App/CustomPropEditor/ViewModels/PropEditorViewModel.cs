@@ -781,7 +781,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				pleaseWaitService.Hide();
 				Logging.Error(e, "An error occuring importing the xModel.");
 				var mbs = new MessageBoxService();
-				mbs.ShowError($"An error occured importing the xModel. Please notify the Vixen Team.", "Error Importing xModel");
+				mbs.ShowError($"An error occurred importing the xModel. Please notify the Vixen Team.", "Error Importing xModel");
 				return false;
 			}
 
@@ -830,7 +830,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				}
 				catch (Exception e)
 				{
-					Logging.Error(e, $"An error occured retrieveing the inventory from: {vendorLink}");
+					Logging.Error(e, $"An error occurred retrieveing the inventory from: {vendorLink}");
 					var mbs = dependencyResolver.Resolve<IMessageBoxService>();
 					mbs.ShowError($"Unable to retrieve inventory from {vendorLink.Name}\nEnsure you have an active internet connection.", "Error Retrieving Inventory");
 				}
