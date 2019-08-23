@@ -111,8 +111,9 @@ namespace Vixen.Module.Effect
 			}
 		}
 
-		public void PreRender(CancellationTokenSource cancellationToken = null)
+		public bool PreRender(CancellationTokenSource cancellationToken = null)
 		{
+			bool success = true;
 			if (IsDirty && !IsRendering)
 			{
 				try
@@ -126,6 +127,7 @@ namespace Vixen.Module.Effect
 					//Trap any errors to prevent the effect from staying in a state of rendering.
 					Logging.Error(e, $"Error rendering {EffectName} on element {TargetNodes?.FirstOrDefault()?.Name}");
 					Logging.Error($"Error rendering Effect Property settings: {PropertyInfo()}");
+					success = false;
 				}
 				finally
 				{
@@ -142,6 +144,7 @@ namespace Vixen.Module.Effect
 				}
 			}
 
+			return success;
 		}
 
 		public EffectIntents Render()

@@ -364,8 +364,12 @@ namespace VixenModules.App.Shows
 					e.Item.ForeColor = listViewShowItems.ForeColor;
 					e.Item.BackColor = listViewShowItems.BackColor;
 				}
-				e.DrawBackground();
-				e.DrawText();
+
+				if (!e.Item.Bounds.IsEmpty)
+				{
+					e.DrawBackground();
+					e.DrawText();
+				}
 			}
 		}
 

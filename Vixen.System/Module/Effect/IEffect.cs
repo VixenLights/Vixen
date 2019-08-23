@@ -37,7 +37,7 @@ namespace Vixen.Module.Effect
 		/// </summary>
 		object[] ParameterValues { get; set; }
 
-		void PreRender(CancellationTokenSource cancellationToken = null);
+		bool PreRender(CancellationTokenSource cancellationToken = null);
 		// Having two methods instead of a single one with default values so that the
 		// effect doesn't have to check to see if there is a time frame restriction
 		// with every call.
