@@ -506,8 +506,15 @@ namespace VixenModules.App.Curves
 
 		private void btnUpdateCoordinates_Click(object sender, EventArgs e)
 		{
-			zedGraphControl.DragEditingPair.X = Convert.ToDouble(txtXValue.Text);
-			zedGraphControl.DragEditingPair.Y = Convert.ToDouble(txtYValue.Text);
+			if(double.TryParse(txtXValue.Text, out var x))
+			{
+				zedGraphControl.DragEditingPair.X = x;
+			}
+
+			if (double.TryParse(txtYValue.Text, out var y))
+			{
+				zedGraphControl.DragEditingPair.Y = y;
+			}
 			zedGraphControl.Invalidate();
 		}
 
