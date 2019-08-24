@@ -6,6 +6,8 @@
 		SingleCommand,
 		MultipleCommands,
 		MultipleIntents,
-		SingleIntent
+		SingleIntent,
+		SingleCommandOrIntent,
+		MultipleCommandOrIntent
 	}
 }

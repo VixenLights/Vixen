@@ -6,7 +6,10 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Input;
 using Common.Controls.ColorManagement.ColorModels;
+using Vixen.Commands;
+using Vixen.Data.Evaluator;
 using Vixen.Data.Flow;
 using Vixen.Data.Value;
 using Vixen.Intent;
@@ -84,7 +87,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 
 		public override DataFlowType OutputDataType
 		{
-			get { return DataFlowType.SingleIntent; }
+			get { return DataFlowType.SingleCommand; }
 		}
 
 		public override IDataFlowOutput[] Outputs
@@ -178,6 +181,8 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 	[DataContract]
 	public class ColorBreakdownItem
 	{
+		private string _name;
+
 		public ColorBreakdownItem()
 		{
 			Color = Color.White;
@@ -188,7 +193,11 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		public Color Color { get; set; }
 
 		[DataMember]
-		public string Name { get; set; }
+		public string Name
+		{
+			get => _name;
+			set => _name = string.Intern(value);
+		}
 	}
 
 	internal interface IBreakdownFilter
@@ -326,15 +335,14 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 
 
 
-	internal class ColorBreakdownOutput : IDataFlowOutput<IntentDataFlowData>
+	internal class ColorBreakdownOutput : IDataFlowOutput<CommandDataFlowData>
 	{
 		private readonly IBreakdownFilter _filter;
 		private readonly ColorBreakdownItem _breakdownItem;
-		private readonly StaticIntentState<IntensityValue> _state = new StaticIntentState<IntensityValue>(new IntensityValue());
 
 		public ColorBreakdownOutput(ColorBreakdownItem breakdownItem, bool mixColors)
 		{
-			Data = new IntentDataFlowData(_state);
+			Data = new CommandDataFlowData(CommandLookup8BitEvaluator.CommandLookup[0]); ;
 			if (mixColors)
 			{
 				_filter = new ColorBreakdownMixingFilter(breakdownItem);
@@ -362,10 +370,8 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 				}
 			}
 
-			_state.SetValue(new IntensityValue(intensity));
+			Data.Value = CommandLookup8BitEvaluator.CommandLookup[(byte)(intensity * Byte.MaxValue)];
 		}
-
-		public IntentDataFlowData Data { get; }
 
 		IDataFlowData IDataFlowOutput.Data => Data;
 
@@ -373,5 +379,8 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		{
 			get { return _breakdownItem.Name; }
 		}
+
+		/// <inheritdoc />
+		public CommandDataFlowData Data { get; }
 	}
 }

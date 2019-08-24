@@ -21,7 +21,7 @@ namespace Vixen.Data.Policy
 		private ICommand _commandResult;
 		private IEvaluator _evaluator;
 		private ICombinator _combinator;
-		private readonly List<ICommand> _commands = new List<ICommand>(4);
+		private readonly List<ICommand> _commands = new List<ICommand>(2);
 
 		public ICommand GenerateCommand(IDataFlowData dataFlowData)
 		{

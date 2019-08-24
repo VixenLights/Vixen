@@ -161,6 +161,7 @@
     <Compile Include="Data\Evaluator\64BitEvaluator.cs" />
     <Compile Include="Data\Evaluator\8BitEvaluator.cs" />
     <Compile Include="Data\Evaluator\ColorEvaluator.cs" />
+    <Compile Include="Data\Evaluator\CommandLookup8BitEvaluator.cs" />
     <Compile Include="Data\Evaluator\Evaluator.cs" />
     <Compile Include="Data\Flow\ElementDataFlowAdapter.cs" />
     <Compile Include="Data\Flow\ElementDataFlowOutputAdapter.cs" />

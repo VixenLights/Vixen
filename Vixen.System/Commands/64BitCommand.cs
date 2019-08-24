@@ -47,7 +47,7 @@ namespace Vixen.Commands
 		object ICommand.CommandValue
 		{
 			get { return CommandValue; }
-			set { CommandValue = (ulong) value; }
+			//set { CommandValue = (ulong) value; }
 		}
 	}
 }

@@ -42,7 +42,7 @@ namespace Vixen.Commands
 		object ICommand.CommandValue
 		{
 			get { return CommandValue; }
-			set { CommandValue = (ushort) value; }
+			//set { CommandValue = (ushort) value; }
 		}
 	}
 }
