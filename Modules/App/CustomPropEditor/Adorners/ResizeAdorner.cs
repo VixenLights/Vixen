@@ -364,8 +364,9 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 			_middleBottom.Arrange(new Rect(Bounds.X + Bounds.Width / 2 - _middleBottom.Width / 2, Bounds.Y + Bounds.Height, _middleBottom.Width, _middleBottom.Height));
 			_middleLeft.Arrange(new Rect(Bounds.X - _middleLeft.Width, Bounds.Y + Bounds.Height / 2 - _middleLeft.Width / 2, _middleLeft.Width, _middleLeft.Height));
 
-			_centerDrag.Arrange(new Rect(_rotationCenter.X - _centerDrag.Width / 2, _rotationCenter.Y - _centerDrag.Height / 2, _centerDrag.Width, _centerDrag.Height));
-			
+			_centerDrag.Arrange(new Rect(Bounds.X + Bounds.Width/2 - _centerDrag.Width / 2, Bounds.Y + Bounds.Height/2 - _centerDrag.Height / 2, _centerDrag.Width, _centerDrag.Height));
+			//_centerDrag.Arrange(new Rect(_rotationCenter.X - _centerDrag.Width / 2, _rotationCenter.Y - _centerDrag.Height / 2, _centerDrag.Width, _centerDrag.Height));
+
 			_rotate.Arrange(new Rect(_rotationCenter.X - _rotate.Width / 2, Bounds.Y - 3 * _rotate.Height, _rotate.Width, _rotate.Height));
 
 			return finalSize;
