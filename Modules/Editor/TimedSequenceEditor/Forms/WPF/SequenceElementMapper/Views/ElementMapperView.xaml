@@ -7,7 +7,9 @@
                   xmlns:sys="clr-namespace:Vixen.Sys;assembly=Vixen"
                   xmlns:models="clr-namespace:VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Models"
                   xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
-                  Height="600" Width="800" WindowStartupLocation="CenterScreen"
+                  xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+                  xmlns:behaviors="clr-namespace:Common.WPFCommon.Behaviors;assembly=WPFCommon"
+                  Height="600" Width="900" WindowStartupLocation="CenterScreen"
                   Title="{Binding Title}" >
 
 	<Window.Resources>
@@ -16,27 +18,34 @@
 				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 			<converters:PercentageConverter x:Key="PercentageConverter" />
+			<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter"/>
+			<converters:NullToBooleanConverter x:Key="NullToBooleanConverter"/>
 		</ResourceDictionary>
 	</Window.Resources>
 	<DockPanel Background="{DynamicResource BackColorBrush}">
 		<Menu DockPanel.Dock="Top">
 			<MenuItem Header="File" Name="FileMenu">
-				<MenuItem Header="New" Command="{Binding NewMapCommand}">
+				<MenuItem Header="New Map" Command="{Binding NewMapCommand}">
 					<MenuItem.Icon>
 						<Image Source="/Resources;component/NewFile_6276.png" Width="16" Height="16"></Image>
 					</MenuItem.Icon>
 				</MenuItem>
-				<MenuItem Header="Open" Command="{Binding OpenMapCommand}">
+				<MenuItem Header="Open Map" Command="{Binding OpenMapCommand}">
 					<MenuItem.Icon>
 						<Image Source="/Resources;component/Open_6529.png" Width="16" Height="16"></Image>
 					</MenuItem.Icon>
 				</MenuItem>
-				<MenuItem Header="Save" Command="{Binding SaveMapCommand}">
+				<MenuItem Header="Save Map" Command="{Binding SaveMapCommand}">
 					<MenuItem.Icon>
 						<Image Source="/Resources;component/Save_6530.png" Width="16" Height="16"></Image>
 					</MenuItem.Icon>
 				</MenuItem>
-				<MenuItem Header="Save As" Command="{Binding SaveMapAsCommand}"/>
+				<MenuItem Header="Save Map As" Command="{Binding SaveMapAsCommand}"/>
+				<MenuItem Header="Load Element Tree" Command="{Binding OpenIncomingElementTreeCommand}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/Open_6529.png" Width="16" Height="16"></Image>
+					</MenuItem.Icon>
+				</MenuItem>
 			</MenuItem>
 			<MenuItem Header="Help">
 				<MenuItem Header="View Help" Command="{Binding HelpCommand}">
@@ -53,18 +62,74 @@
 
 		<Grid>
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="*"/>
+				<ColumnDefinition>
+					<ColumnDefinition.Style>
+						<Style TargetType="ColumnDefinition">
+							<Setter Property="Width" Value="*" />
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding IncomingElementTree, Converter={StaticResource NullToBooleanConverter}}" Value="true">
+									<Setter Property="Width" Value="0" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</ColumnDefinition.Style>
+				</ColumnDefinition>
+				<ColumnDefinition>
+					<ColumnDefinition.Style>
+						<Style TargetType="ColumnDefinition">
+							<Setter Property="Width" Value="5" />
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding IncomingElementTree, Converter={StaticResource NullToBooleanConverter}}" Value="true">
+									<Setter Property="Width" Value="0" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</ColumnDefinition.Style>
+				</ColumnDefinition>
+				<ColumnDefinition Width="1.5*"/>
 				<ColumnDefinition Width="5"/>
 				<ColumnDefinition Width="*"/>
 			</Grid.ColumnDefinitions>
-			<ListView x:Name="EventView" Grid.Column="0" 
+			<Grid Grid.Column="0">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+				<TextBlock Text="Source" HorizontalAlignment="Center"/>
+				<TreeView Grid.Row="1" x:Name="IncomingElementModelTreeView" 
+				          ItemsSource="{Binding IncomingElementTree}" 
+				          BorderThickness="0"
+				          VerticalAlignment="Stretch"
+				          HorizontalAlignment="Stretch"
+				          ScrollViewer.CanContentScroll="True"
+				          FocusManager.IsFocusScope="True"
+				          dd:DragDrop.IsDragSource="True">
+					<TreeView.ItemTemplate>
+						<HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type sys:ElementNodeProxy}">
+							<StackPanel Orientation="Horizontal">
+								<TextBlock Text="{Binding Name}" Margin="0,2,0,2" Focusable="True">
+								</TextBlock>
+							</StackPanel>
+						</HierarchicalDataTemplate>
+					</TreeView.ItemTemplate>
+				</TreeView>
+			</Grid>
+			
+			<GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
+			<ListView x:Name="EventView" Grid.Column="2" 
 			          ItemsSource="{Binding ElementMap.ElementMappings}"  Margin="5,5,5,10"
 			          ItemContainerStyle="{StaticResource GridViewContainerStyle}"
+					  SelectedItem="{Binding SelectedMapping}"
 			          dd:DragDrop.IsDropTarget="True"
-			          dd:DragDrop.DropHandler="{Binding}">
+			          dd:DragDrop.DropHandler="{Binding}"
+			          ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+				<i:Interaction.Behaviors>
+					<behaviors:ListViewScrollToSelectedBehavior/>
+					<catel:KeyPressToCommand Command="{Binding ClearMappingCommand}" Key="Delete" />
+				</i:Interaction.Behaviors>
 				<ListView.View>
 					<GridView>
-						<GridViewColumn Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView},Path=ActualWidth, Converter={StaticResource PercentageConverter}, ConverterParameter=.49}">
+						<GridViewColumn Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView},Path=ActualWidth, Converter={StaticResource PercentageConverter}, ConverterParameter=.47}">
 							<GridViewColumn.Header>
 								<GridViewColumnHeader>Source Name</GridViewColumnHeader>
 							</GridViewColumn.Header>
@@ -74,7 +139,7 @@
 								</DataTemplate>
 							</GridViewColumn.CellTemplate>
 						</GridViewColumn>
-						<GridViewColumn Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView},Path=ActualWidth, Converter={StaticResource PercentageConverter}, ConverterParameter=.49}">
+						<GridViewColumn Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView},Path=ActualWidth, Converter={StaticResource PercentageConverter}, ConverterParameter=.47}">
 							<GridViewColumn.Header>
 								<GridViewColumnHeader>Destination Name</GridViewColumnHeader>
 							</GridViewColumn.Header>
@@ -86,30 +151,32 @@
 						</GridViewColumn>
 					</GridView>
 				</ListView.View>
-
 			</ListView>
-			<GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
-			<TreeView Grid.Column="2" x:Name="ElementModelTreeView"
-	                  ItemsSource="{Binding Elements}" 
-	                  BorderThickness="0"
-	                  VerticalAlignment="Stretch"
-	                  HorizontalAlignment="Stretch"
-	                  ScrollViewer.CanContentScroll="True"
-	                  FocusManager.IsFocusScope="True"
-	                  dd:DragDrop.IsDragSource="True">
-				<TreeView.ItemTemplate>
-			        <HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type sys:ElementNode}">
-				        <StackPanel Orientation="Horizontal">
-					        <TextBlock Text="{Binding Name}" Margin="0,2,0,2" Focusable="True">
-					        </TextBlock>
-				        </StackPanel>
-			        </HierarchicalDataTemplate>
-
-		        </TreeView.ItemTemplate>
-
-	        </TreeView>
-			
-        </Grid>
-		
+			<GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch" />
+			<Grid Grid.Column="4">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+				<TextBlock Text="Destination" HorizontalAlignment="Center"/>
+				<TreeView Grid.Row="1" x:Name="ElementModelTreeView"
+				          ItemsSource="{Binding Elements}" 
+				          BorderThickness="0"
+				          VerticalAlignment="Stretch"
+				          HorizontalAlignment="Stretch"
+				          ScrollViewer.CanContentScroll="True"
+				          FocusManager.IsFocusScope="True"
+				          dd:DragDrop.IsDragSource="True">
+					<TreeView.ItemTemplate>
+						<HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type sys:ElementNode}">
+							<StackPanel Orientation="Horizontal">
+								<TextBlock Text="{Binding Name}" Margin="0,2,0,2" Focusable="True">
+								</TextBlock>
+							</StackPanel>
+						</HierarchicalDataTemplate>
+					</TreeView.ItemTemplate>
+				</TreeView>
+			</Grid>
+		</Grid>
 	</DockPanel>
 </catel:Window>

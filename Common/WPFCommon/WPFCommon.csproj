@@ -118,6 +118,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviors\IgnoreMouseWheelBehavior.cs" />
+    <Compile Include="Behaviors\ListViewItemBehavior.cs" />
+    <Compile Include="Behaviors\ListViewScrollToSelectedBehavior.cs" />
     <Compile Include="Command\RelayCommand.cs" />
     <Compile Include="Controls\IndexingStackPanel.cs" />
     <Compile Include="Controls\NavigatableHyperLink.cs" />
@@ -130,6 +132,10 @@
     <Compile Include="Converters\IndexOfConverter.cs" />
     <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="Converters\BooleanConverter.cs" />
+    <Compile Include="Converters\NotNullToVisibilityConverter.cs" />
+    <Compile Include="Converters\NullConverter.cs" />
+    <Compile Include="Converters\NullToBooleanConverter.cs" />
+    <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\PercentageConverter.cs" />
     <Compile Include="Converters\SingleItemToCollectionConverter.cs" />
     <Compile Include="Input\DragDropManager.cs" />

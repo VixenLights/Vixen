@@ -13,8 +13,9 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		public ElementMapping(Guid id, string sourceName)
 		{
 			SourceName = sourceName;
+			SourceId = id;
 			TargetId = Guid.Empty;
-			TargetName = String.Empty;
+			TargetName = string.Empty;
 		}
 
 		#region SourceName property
@@ -88,6 +89,12 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		public static readonly PropertyData TargetIdProperty = RegisterProperty("TargetId", typeof(Guid));
 
 		#endregion
+
+		public void ClearTarget()
+		{
+			TargetId = Guid.Empty;
+			TargetName = String.Empty;
+		}
 
 		#region Equality members
 

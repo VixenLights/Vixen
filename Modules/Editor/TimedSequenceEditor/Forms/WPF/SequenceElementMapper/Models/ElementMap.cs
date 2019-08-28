@@ -8,6 +8,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 {
 	public class ElementMap: SavableModelBase<ElementMap>
 	{
+		private readonly HashSet<Guid> _sourceIds = new HashSet<Guid>();
 		public ElementMap()
 		{
 			Id= Guid.NewGuid();
@@ -75,12 +76,36 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 
 		public void Add(ElementMapping map)
 		{
-			ElementMappings.Add(map);
+			if (!_sourceIds.Contains(map.SourceId))
+			{
+				ElementMappings.Add(map);
+				_sourceIds.Add(map.SourceId);
+				SortByName();
+			}
 		}
 
 		public void AddRange(IEnumerable<ElementMapping> maps)
 		{
-			ElementMappings.AddItems(maps);
+			var mapsToAdd = maps.Where(x => !_sourceIds.Contains(x.SourceId));
+			ElementMappings.AddItems(mapsToAdd);
+			_sourceIds.AddRange(mapsToAdd.Select(x => x.SourceId));
+			SortByName();
+		}
+
+		private void SortByName()
+		{
+			ElementMappings.Sort(delegate (ElementMapping x, ElementMapping y)
+			{
+				if (x.SourceName == null && y.SourceName == null) return 0;
+				if (x.SourceName == null) return -1;
+				if (y.SourceName == null) return 1;
+				return string.Compare(x.SourceName, y.SourceName, StringComparison.CurrentCulture);
+			});
+		}
+
+		public bool Contains(Guid sourceId)
+		{
+			return _sourceIds.Contains(sourceId);
 		}
 
 		public Dictionary<string, Guid> GetSourceNameToTargetIdMap()
@@ -105,7 +130,8 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 
 		public void CreateMapsForSources(Dictionary<Guid, string> elementSources)
 		{
-			ElementMappings.AddRange(elementSources.Select(x => new ElementMapping(x.Key, x.Value)));
+			ElementMappings.AddRange(elementSources.Select(x => new ElementMapping(x.Key, x.Value)).OrderBy(x => x.SourceName));
+			_sourceIds.AddRange(GetSourceNameIds().Keys);
 		}
 	}
 }

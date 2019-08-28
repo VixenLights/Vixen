@@ -7,6 +7,7 @@ using Catel.Runtime.Serialization;
 using Catel.Runtime.Serialization.Json;
 using Newtonsoft.Json;
 using NLog;
+using Vixen.Sys;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Services
 {
@@ -65,6 +66,12 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 				return true;
 
 			});
+		}
+
+		/// <inheritdoc />
+		public async Task<ElementNodeProxy> LoadElementNodeProxyAsync(string path)
+		{
+			return await VixenSystem.Nodes.ImportElementNodeProxy(path);
 		}
 
 		#endregion

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Catel.Data;
+using Vixen.Sys;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Services
 {
@@ -8,5 +9,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		Task<T> LoadModelAsync(string path);
 
 		Task<bool> SaveModelAsync(T model, string path);
+
+		Task<ElementNodeProxy> LoadElementNodeProxyAsync(string path);
 	}
 }

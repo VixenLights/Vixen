@@ -764,6 +764,7 @@ namespace Common.Controls
 			sortToolStripMenuItem.Enabled = CanSortSelected();
 			exportWireDiagramToolStripMenuItem.Visible = AllowWireExport;
 			exportWireDiagramToolStripMenuItem.Enabled = CanExportDiagram();
+			exportElementTreeToolStripMenuItem.Enabled = treeview.Nodes.Count > 0;
 		}
 
 		private bool CanExportDiagram()
@@ -1054,6 +1055,22 @@ namespace Common.Controls
 		private void exportWireDiagramToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ExportDiagram?.Invoke(SelectedElementNodes.FirstOrDefault());
+		}
+
+		private async void ExportElementTreeToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			using (var saveFileDialog = new SaveFileDialog())
+			{
+				saveFileDialog.OverwritePrompt = true;
+				saveFileDialog.DefaultExt = ".v3m";
+				saveFileDialog.Filter = @"Vixen 3 Element Nodes (*.v3e)|*.v3e";
+				saveFileDialog.InitialDirectory = SequenceService.SequenceDirectory;
+				var result = saveFileDialog.ShowDialog(Parent);
+				if (result == DialogResult.OK)
+				{
+					VixenSystem.Nodes.ExportElementNodeProxy(saveFileDialog.FileName);
+				}
+			}
 		}
 
 		private bool CanSortSelected()

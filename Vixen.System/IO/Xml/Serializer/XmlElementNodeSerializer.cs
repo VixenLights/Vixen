@@ -23,7 +23,7 @@ namespace Vixen.IO.Xml.Serializer
 			// middle of being read/written.  This serializer has a dependency on the
 			// newly read element collection.
 			//_underlyingElements = underlyingElementsForRead;
-			_underlyingElementMap = underlyingElementsForRead.ToDictionary(x => x.Id);
+			_underlyingElementMap = underlyingElementsForRead?.ToDictionary(x => x.Id);
 		}
 
 		public XElement WriteObject(ElementNode value)

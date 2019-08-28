@@ -150,6 +150,46 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 
 		#endregion
 
+		#region IncomingElementTree property
+
+		/// <summary>
+		/// Gets or sets the IncomingElementTree value.
+		/// </summary>
+		public List<ElementNodeProxy> IncomingElementTree
+		{
+			get { return GetValue<List<ElementNodeProxy>>(IncomingElementTreeProperty); }
+			set { SetValue(IncomingElementTreeProperty, value); }
+		}
+
+		/// <summary>
+		/// IncomingElementTree property data.
+		/// </summary>
+		public static readonly PropertyData IncomingElementTreeProperty = RegisterProperty("IncomingElementTree", typeof(List<ElementNodeProxy>));
+
+		#endregion
+
+		#region SelectedMapping property
+
+		/// <summary>
+		/// Gets or sets the SelectedMapping value.
+		/// </summary>
+		public ElementMapping SelectedMapping
+		{
+			get { return GetValue<ElementMapping>(SelectedMappingProperty); }
+			set
+			{
+				SetValue(SelectedMappingProperty, value);
+				UpdateCommandStates();
+			}
+		}
+
+		/// <summary>
+		/// SelectedMapping property data.
+		/// </summary>
+		public static readonly PropertyData SelectedMappingProperty = RegisterProperty("SelectedMapping", typeof(ElementMapping));
+
+		#endregion
+
 		#region ElementMap model property
 
 		/// <summary>
@@ -278,7 +318,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 			openFileService.IsMultiSelect = false;
 			//_openFileService.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 			openFileService.CheckFileExists = true;
-			openFileService.Title = @"Import Zara Playlist";
+			openFileService.Title = @"Open Element Mapping";
 			openFileService.Filter = "Element Map (*.map) | *.map";
 			if (await openFileService.DetermineFileAsync())
 			{
@@ -372,6 +412,52 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 
 		#endregion
 
+		#region OpenIncomingElementTree command
+
+		private TaskCommand _openIncomingElementTreeCommand;
+
+		/// <summary>
+		/// Gets the OpenIncomingElementTree command.
+		/// </summary>
+		public TaskCommand OpenIncomingElementTreeCommand
+		{
+			get { return _openIncomingElementTreeCommand ?? (_openIncomingElementTreeCommand = new TaskCommand(OpenIncomingElementTreeAsync)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the OpenIncomingElementTree command is executed.
+		/// </summary>
+		private async Task OpenIncomingElementTreeAsync()
+		{
+			var dependencyResolver = this.GetDependencyResolver();
+			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
+
+			openFileService.IsMultiSelect = false;
+			//_openFileService.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+			openFileService.CheckFileExists = true;
+			openFileService.Title = @"Load Element Tree";
+			openFileService.Filter = "Element Tree (*.v3e) | *.v3e";
+			if (await openFileService.DetermineFileAsync())
+			{
+
+				var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
+				var modelPersistenceService = dependencyResolver.Resolve<IModelPersistenceService<ElementMap>>();
+
+				pleaseWaitService.Show();
+				var incomingElementNodes = await modelPersistenceService.LoadElementNodeProxyAsync(openFileService.FileName);
+				if (incomingElementNodes != null && incomingElementNodes.Children.Any())
+				{
+					IncomingElementTree = incomingElementNodes.Children;
+				}
+				
+				pleaseWaitService.Hide();
+
+			}
+		}
+
+		#endregion
+
+
 		#region Help command
 
 		private Command _helpCommand;
@@ -395,13 +481,66 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 
 		#endregion
 
+		#region ClearMapping command
+
+		private Command _clearMappingCommand;
+
+		/// <summary>
+		/// Gets the DeleteMapping command.
+		/// </summary>
+		public Command ClearMappingCommand
+		{
+			get { return _clearMappingCommand ?? (_clearMappingCommand = new Command(ClearMapping, CanClearMapping)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the DeleteMapping command is executed.
+		/// </summary>
+		private void ClearMapping()
+		{
+			SelectedMapping.ClearTarget();
+		}
+
+		/// <summary>
+		/// Method to check whether the DeleteMapping command can be executed.
+		/// </summary>
+		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+		private bool CanClearMapping()
+		{
+			return SelectedMapping != null;
+		}
+
+		#endregion
+
+
 		#region Implementation of IDropTarget
 
 		/// <inheritdoc />
 		public void DragOver(IDropInfo dropInfo)
 		{
-			dropInfo.Effects = DragDropEffects.Copy;
-			dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+			var data = ExtractData(dropInfo.Data).OfType<object>().ToList();
+			var canDrop = false;
+
+			if (data.First() is ElementNodeProxy enp)
+			{
+				if (!ElementMap.Contains(enp.Id))
+				{
+					canDrop = true;
+				}
+			}else if (data.First() is IElementNode)
+			{
+				canDrop = true;
+			}
+
+			if(canDrop)
+			{
+				dropInfo.Effects = DragDropEffects.Copy;
+				dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+			}
+			else
+			{
+				dropInfo.Effects = DragDropEffects.None;
+			}
 		}
 
 		/// <inheritdoc />
@@ -423,6 +562,15 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 					    mapping.TargetId = en.Id;
 						mapping.TargetName = en.Name;
 						MapModified = true;
+					}
+				}
+				else if(data.First() is ElementNodeProxy enp)
+				{
+					if (!ElementMap.Contains(enp.Id))
+					{
+						ElementMapping em = new ElementMapping(enp.Id, enp.Name);
+						ElementMap.Add(em);
+						SelectedMapping = em;
 					}
 				}
 			}
