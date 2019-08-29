@@ -5267,7 +5267,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (unmappedEffects.Any())
 			{
-				MessageBoxForm mbf = new MessageBoxForm($"The sequence has Effects that belong to Elements not know to this profile." +
+				MessageBoxForm mbf = new MessageBoxForm($"The sequence has Effects that belong to Elements not known to this profile." +
 				                                        $"\nWould you like to map them to existing elements?", "Unmapped Effects", MessageBoxButtons.YesNo,SystemIcons.Warning);
 
 				using (mbf)
@@ -5306,6 +5306,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							}
 						}
 					}
+
+					_sequence.FilePath = String.Empty;
 				}
 				else
 				{

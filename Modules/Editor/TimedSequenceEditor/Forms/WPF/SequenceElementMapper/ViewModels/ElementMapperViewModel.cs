@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using Catel.Configuration;
+using Catel.Collections;
 using Catel.Data;
 using Catel.IoC;
 using Catel.Services;
@@ -26,21 +24,27 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 	{
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private const string FormTitle = @"Element Mapper";
-		private readonly Dictionary<Guid, string> _sourceElementNames;
+		private readonly Dictionary<Guid, string> _sourceActiveElements;
 		private string _lastModelPath = String.Empty;
+		private IElementMapService _elementMapService;
+		private readonly string _sequenceName;
 
-		public ElementMapperViewModel(Dictionary<Guid, string> elementNamesToMap, string sequenceName)
+		public ElementMapperViewModel(Dictionary<Guid, string> sourceActiveElements, string sequenceName)
 		{
-			_sourceElementNames = elementNamesToMap;
-			Elements = VixenSystem.Nodes.GetRootNodes().ToList();
-			ElementMap = new ElementMap(elementNamesToMap){Name = sequenceName};
-			MapModified = true;
+			_sourceActiveElements = sourceActiveElements;
+			_sequenceName = sequenceName;
+		}
+
+		private void OnElementMapChanged(ElementMapService.MapMessage obj)
+		{
+			ElementMap = _elementMapService.ElementMap;
+			PopulateSourceTree(_elementMapService.ElementMap.SourceTree);
 		}
 
 		#region Private fields
 
 		private bool _mapModified;
-		private bool MapModified
+		internal bool MapModified
 		{
 			get => _mapModified;
 			set
@@ -79,6 +83,13 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 			await base.InitializeAsync();
 
 			// TODO: subscribe to events here
+			var dependencyResolver = this.GetDependencyResolver();
+			_elementMapService = dependencyResolver.Resolve<IElementMapService>();
+			_elementMapService.SourceActiveElements = _sourceActiveElements;
+			Elements = VixenSystem.Nodes.GetRootNodes().ToList();
+			ElementMap = _elementMapService.InitializeMap(_sourceActiveElements, _sequenceName);
+			_elementMapService.RegisterMapMessages(this, OnElementMapChanged);
+			MapModified = true;
 		}
 
 		protected override async Task CloseAsync()
@@ -93,7 +104,6 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		/// <inheritdoc />
 		protected override async Task<bool> SaveAsync()
 		{
-			((IEditableObject)ElementMap).EndEdit();
 			var dependencyResolver = this.GetDependencyResolver();
 
 			if (_lastModelPath == String.Empty || !File.Exists(_lastModelPath))
@@ -104,7 +114,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 				if (await saveFileService.DetermineFileAsync())
 				{
 					_lastModelPath = saveFileService.FileName;
-					ElementMap.Name = Path.GetFileNameWithoutExtension(_lastModelPath);
+					_elementMapService.ElementMap.Name = Path.GetFileNameWithoutExtension(_lastModelPath);
 				}
 				else
 				{
@@ -113,12 +123,10 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 			}
 			
 			var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
-			var modelPersistenceService = dependencyResolver.Resolve<IModelPersistenceService<ElementMap>>();
 			pleaseWaitService.Show();
-			if(await modelPersistenceService.SaveModelAsync(ElementMap, _lastModelPath))
+			if(await _elementMapService.SaveMapAsync(_lastModelPath))
 			{
 				MapModified = false;
-				((IEditableObject)ElementMap).BeginEdit();
 				pleaseWaitService.Hide();
 				return true;
 			}
@@ -150,21 +158,21 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 
 		#endregion
 
-		#region IncomingElementTree property
+		#region SourceElementTree property
 
 		/// <summary>
-		/// Gets or sets the IncomingElementTree value.
+		/// Gets or sets the SourceElementTree value.
 		/// </summary>
-		public List<ElementNodeProxy> IncomingElementTree
+		public FastObservableCollection<ElementNodeProxy> SourceElementTree
 		{
-			get { return GetValue<List<ElementNodeProxy>>(IncomingElementTreeProperty); }
-			set { SetValue(IncomingElementTreeProperty, value); }
+			get { return GetValue<FastObservableCollection<ElementNodeProxy>>(SourceElementTreeProperty); }
+			set { SetValue(SourceElementTreeProperty, value); }
 		}
 
 		/// <summary>
-		/// IncomingElementTree property data.
+		/// SourceElementTree property data.
 		/// </summary>
-		public static readonly PropertyData IncomingElementTreeProperty = RegisterProperty("IncomingElementTree", typeof(List<ElementNodeProxy>));
+		public static readonly PropertyData SourceElementTreeProperty = RegisterProperty("SourceElementTree", typeof(FastObservableCollection<ElementNodeProxy>));
 
 		#endregion
 
@@ -257,7 +265,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		/// </summary>
 		private async Task CancelMapAsync()
 		{
-			((IEditableObject)ElementMap).CancelEdit();
+			_elementMapService.CancelEdit();
 			await this.CancelAndCloseViewModelAsync();
 		}
 
@@ -285,10 +293,9 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 			var result = mbs.GetUserInput("Enter new map name.", "New Map - Name", "New Map");
 			if (result.Result == MessageResult.OK)
 			{
-				ElementMap = new ElementMap(_sourceElementNames){Name = result.Response};
+				_elementMapService.InitializeMap(_sourceActiveElements, result.Response);
 				MapModified = true;
 				_lastModelPath = string.Empty;
-				((IEditableObject) ElementMap).BeginEdit();
 			}
 		}
 
@@ -311,7 +318,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		/// </summary>
 		private async Task OpenMapAsync()
 		{
-			((IEditableObject)ElementMap).EndEdit();
+			_elementMapService.EndEdit();
 			var dependencyResolver = this.GetDependencyResolver();
 			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
 
@@ -324,28 +331,30 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 			{
 
 				var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
-				var modelPersistenceService = dependencyResolver.Resolve<IModelPersistenceService<ElementMap>>();
+				//var modelPersistenceService = dependencyResolver.Resolve<IModelPersistenceService<ElementMap>>();
 
 				pleaseWaitService.Show();
-				var map = await modelPersistenceService.LoadModelAsync(openFileService.FileName);
+				var success = await _elementMapService.LoadMapAsync(openFileService.FileName);
 
-				if (map != null)
+				if (success)
 				{
 					_lastModelPath = openFileService.FileName;
-					ElementMap = map;
-					ElementMap.Name = Path.GetFileNameWithoutExtension(_lastModelPath);
+					_elementMapService.ElementMap.Name = Path.GetFileNameWithoutExtension(_lastModelPath);
 					MapModified = false;
-					((IEditableObject)ElementMap).BeginEdit();
-					var missingSourceNames = DiscoverMissingSourceNames(map);
-					if (missingSourceNames.Any())
+
+					if (_elementMapService.ElementMap.SourceTree == null)
 					{
-						var mbs = dependencyResolver.Resolve<IMessageBoxService>();
-						var result = mbs.GetUserConfirmation(@"Add missing source elements to map?", "Add Missing Sources.");
-						if (result.Result == MessageResult.OK)
+						var missingSourceNames = DiscoverMissingSourceNames(_elementMapService.ElementMap);
+						if (missingSourceNames.Any())
 						{
-							var mapsToAdd = missingSourceNames.Select(x => new ElementMapping(x.Key, x.Value));
-							ElementMap.AddRange(mapsToAdd);
-							MapModified = true;
+							var mbs = dependencyResolver.Resolve<IMessageBoxService>();
+							var result = mbs.GetUserConfirmation(@"Add missing source elements to map?", "Add Missing Sources.");
+							if (result.Result == MessageResult.OK)
+							{
+								var mapsToAdd = missingSourceNames.Select(x => new ElementMapping(x.Key, x.Value));
+								_elementMapService.ElementMap.AddRange(mapsToAdd);
+								MapModified = true;
+							}
 						}
 					}
 				}
@@ -389,7 +398,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		/// </summary>
 		public TaskCommand SaveMapAsCommand
 		{
-			get { return _saveMapAsCommand ?? (_saveMapAsCommand = new TaskCommand(SaveAsync, CanSaveAs)); }
+			get { return _saveMapAsCommand ?? (_saveMapAsCommand = new TaskCommand(SaveMapAsAsync, CanSaveAs)); }
 		}
 
 		/// <summary>
@@ -447,7 +456,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 				var incomingElementNodes = await modelPersistenceService.LoadElementNodeProxyAsync(openFileService.FileName);
 				if (incomingElementNodes != null && incomingElementNodes.Children.Any())
 				{
-					IncomingElementTree = incomingElementNodes.Children;
+					PopulateSourceTree(incomingElementNodes);
 				}
 				
 				pleaseWaitService.Hide();
@@ -521,9 +530,9 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 			var data = ExtractData(dropInfo.Data).OfType<object>().ToList();
 			var canDrop = false;
 
-			if (data.First() is ElementNodeProxy enp)
+			if (data.First() is ElementNodeProxyViewModel enp)
 			{
-				if (!ElementMap.Contains(enp.Id))
+				if (!_elementMapService.ElementMap.Contains(enp.ElementNodeProxy.Id))
 				{
 					canDrop = true;
 				}
@@ -546,7 +555,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		/// <inheritdoc />
 		public void Drop(IDropInfo dropInfo)
 		{
-			if (dropInfo == null || dropInfo.DragInfo == null||dropInfo.TargetItem == null)
+			if (dropInfo?.DragInfo == null || dropInfo.TargetItem == null)
 			{
 				return;
 			}
@@ -564,12 +573,13 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 						MapModified = true;
 					}
 				}
-				else if(data.First() is ElementNodeProxy enp)
+				else if(data.First() is ElementNodeProxyViewModel enp)
 				{
-					if (!ElementMap.Contains(enp.Id))
+					if (!ElementMap.Contains(enp.ElementNodeProxy.Id))
 					{
-						ElementMapping em = new ElementMapping(enp.Id, enp.Name);
+						ElementMapping em = new ElementMapping(enp.ElementNodeProxy.Id, enp.Name);
 						ElementMap.Add(em);
+						enp.ElementMapping = em;
 						SelectedMapping = em;
 					}
 				}
@@ -592,7 +602,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 
 		private IEnumerable<KeyValuePair<Guid, string>> DiscoverMissingSourceNames(ElementMap map)
 		{
-			return _sourceElementNames.Except(map.GetSourceNameIds());
+			return _sourceActiveElements.Except(map.GetSourceNameIds());
 		}
 
 		private void UpdateTitle()
@@ -605,6 +615,15 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 			var viewModelBase = this as ViewModelBase;
 			var commandManager = viewModelBase.GetViewModelCommandManager();
 			commandManager.InvalidateCommands();
+		}
+
+		private void PopulateSourceTree(ElementNodeProxy sourceTree)
+		{
+			_elementMapService.ElementMap.SourceTree = sourceTree;
+			if (sourceTree != null)
+			{
+				SourceElementTree = new FastObservableCollection<ElementNodeProxy>(sourceTree.Children);
+			}
 		}
 	}
 }

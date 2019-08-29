@@ -2,6 +2,7 @@
 
 namespace Vixen.Sys
 {
+	[Serializable]
 	public class ElementProxy
 	{
 		public ElementProxy()

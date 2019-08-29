@@ -1,29 +1,25 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
-using Catel;
 using Catel.Data;
-using Catel.Runtime.Serialization;
-using Catel.Runtime.Serialization.Json;
 using Newtonsoft.Json;
 using NLog;
+using Vixen.IO.JSON;
 using Vixen.Sys;
+using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Services
 {
 	public class ModelPersistenceService<T> : IModelPersistenceService<T> where T:ModelBase
 	{
-		private readonly IJsonSerializer _serializer;
-		private readonly ISerializationConfiguration _serializationConfiguration;
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
-
-		public ModelPersistenceService(IJsonSerializer serializer)
+		private readonly JsonSerializer _serializer;
+		public ModelPersistenceService()
 		{
-			Argument.IsNotNull(() => serializer);
-			_serializer = serializer;
-			_serializer.WriteTypeInfo = false;
-			_serializer.PreserveReferences = false;
-			_serializationConfiguration = new JsonSerializationConfiguration { Formatting = Formatting.Indented };
+			_serializer = JsonSerializer.CreateDefault();
+			_serializer.NullValueHandling = NullValueHandling.Ignore;
+			_serializer.DefaultValueHandling = DefaultValueHandling.Ignore;
+			_serializer.Formatting = Formatting.Indented;
+			_serializer.ContractResolver = new CustomContractResolver();
 		}
 
 		#region Implementation of IModelPersistenceService<T>
@@ -35,17 +31,10 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 			{
 				if (File.Exists(path))
 				{
-					using (var fileStream = File.Open(path, FileMode.Open))
+					using (StreamReader sw = new StreamReader(path))
+					using (JsonReader reader = new JsonTextReader(sw))
 					{
-						try
-						{
-							return _serializer.Deserialize<T>(fileStream, _serializationConfiguration);
-						}
-						catch (Exception e)
-						{
-							Logging.Error(e, "An error occured loading a saved map.");
-						}
-
+						return _serializer.Deserialize<T>(reader);
 					}
 				}
 				
@@ -58,11 +47,13 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		{
 			return await Task.Factory.StartNew(() =>
 			{
-				using (var fileStream = File.Open(path, FileMode.Create))
+				using (StreamWriter sw = new StreamWriter(path))
+				using (JsonWriter writer = new JsonTextWriter(sw))
 				{
-					_serializer.Serialize(model, fileStream, _serializationConfiguration);
+					writer.Formatting = _serializer.Formatting;
+					_serializer.Serialize(writer, model, typeof(ElementNode));
 				}
-
+			
 				return true;
 
 			});

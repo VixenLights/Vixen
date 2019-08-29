@@ -16,11 +16,15 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 			{
 				serviceLocator.RegisterType<IJsonSerializer, JsonSerializer>();
 			}
-			if(!serviceLocator.IsTypeRegistered(typeof(ModelPersistenceService<ElementMap>)))
+			if(!serviceLocator.IsTypeRegistered(typeof(IModelPersistenceService<ElementMap>)))
 			{
 				serviceLocator.RegisterType<IModelPersistenceService<ElementMap>, ModelPersistenceService<ElementMap>>();
 			}
-			
+			if (!serviceLocator.IsTypeRegistered(typeof(IElementMapService)))
+			{
+				serviceLocator.RegisterType<IElementMapService, ElementMapService>();
+			}
+
 			InitializeComponent();
 			Icon = Common.Resources.Properties.Resources.Icon_Vixen3.ToImageSource();
 			DataContext = viewModel;

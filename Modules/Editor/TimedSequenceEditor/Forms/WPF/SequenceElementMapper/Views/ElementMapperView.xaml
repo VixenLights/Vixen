@@ -9,7 +9,9 @@
                   xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
                   xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                   xmlns:behaviors="clr-namespace:Common.WPFCommon.Behaviors;assembly=WPFCommon"
-                  Height="600" Width="900" WindowStartupLocation="CenterScreen"
+                  xmlns:viewModels="clr-namespace:VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.ViewModels"
+                  xmlns:views="clr-namespace:VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Views"
+                  Height="600" Width="800" WindowStartupLocation="CenterScreen"
                   Title="{Binding Title}" >
 
 	<Window.Resources>
@@ -18,7 +20,6 @@
 				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 			<converters:PercentageConverter x:Key="PercentageConverter" />
-			<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter"/>
 			<converters:NullToBooleanConverter x:Key="NullToBooleanConverter"/>
 		</ResourceDictionary>
 	</Window.Resources>
@@ -67,7 +68,7 @@
 						<Style TargetType="ColumnDefinition">
 							<Setter Property="Width" Value="*" />
 							<Style.Triggers>
-								<DataTrigger Binding="{Binding IncomingElementTree, Converter={StaticResource NullToBooleanConverter}}" Value="true">
+								<DataTrigger Binding="{Binding SourceElementTree, Converter={StaticResource NullToBooleanConverter}}" Value="true">
 									<Setter Property="Width" Value="0" />
 								</DataTrigger>
 							</Style.Triggers>
@@ -79,41 +80,40 @@
 						<Style TargetType="ColumnDefinition">
 							<Setter Property="Width" Value="5" />
 							<Style.Triggers>
-								<DataTrigger Binding="{Binding IncomingElementTree, Converter={StaticResource NullToBooleanConverter}}" Value="true">
+								<DataTrigger Binding="{Binding SourceElementTree, Converter={StaticResource NullToBooleanConverter}}" Value="true">
 									<Setter Property="Width" Value="0" />
 								</DataTrigger>
 							</Style.Triggers>
 						</Style>
 					</ColumnDefinition.Style>
 				</ColumnDefinition>
-				<ColumnDefinition Width="1.5*"/>
-				<ColumnDefinition Width="5"/>
+				<ColumnDefinition>
+					<ColumnDefinition.Style>
+						<Style TargetType="ColumnDefinition">
+							<Setter Property="Width" Value="1.5*" />
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding SourceElementTree, Converter={StaticResource NullToBooleanConverter}}" Value="false">
+									<Setter Property="Width" Value="0" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</ColumnDefinition.Style>
+				</ColumnDefinition>
+				<ColumnDefinition>
+					<ColumnDefinition.Style>
+						<Style TargetType="ColumnDefinition">
+							<Setter Property="Width" Value="5" />
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding SourceElementTree, Converter={StaticResource NullToBooleanConverter}}" Value="false">
+									<Setter Property="Width" Value="0" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</ColumnDefinition.Style>
+				</ColumnDefinition>
 				<ColumnDefinition Width="*"/>
 			</Grid.ColumnDefinitions>
-			<Grid Grid.Column="0">
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="*"/>
-				</Grid.RowDefinitions>
-				<TextBlock Text="Source" HorizontalAlignment="Center"/>
-				<TreeView Grid.Row="1" x:Name="IncomingElementModelTreeView" 
-				          ItemsSource="{Binding IncomingElementTree}" 
-				          BorderThickness="0"
-				          VerticalAlignment="Stretch"
-				          HorizontalAlignment="Stretch"
-				          ScrollViewer.CanContentScroll="True"
-				          FocusManager.IsFocusScope="True"
-				          dd:DragDrop.IsDragSource="True">
-					<TreeView.ItemTemplate>
-						<HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type sys:ElementNodeProxy}">
-							<StackPanel Orientation="Horizontal">
-								<TextBlock Text="{Binding Name}" Margin="0,2,0,2" Focusable="True">
-								</TextBlock>
-							</StackPanel>
-						</HierarchicalDataTemplate>
-					</TreeView.ItemTemplate>
-				</TreeView>
-			</Grid>
+			<views:SourceTreeView Grid.Column="0" DataContext="{Binding SourceElementTree}"/>
 			
 			<GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
 			<ListView x:Name="EventView" Grid.Column="2" 

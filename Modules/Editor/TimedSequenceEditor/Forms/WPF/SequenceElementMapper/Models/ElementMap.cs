@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using Catel.Collections;
 using Catel.Data;
+using Vixen.Sys;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Models
 {
 	public class ElementMap: SavableModelBase<ElementMap>
 	{
-		private readonly HashSet<Guid> _sourceIds = new HashSet<Guid>();
+		private readonly Dictionary<Guid, ElementMapping> _sourceIds = new Dictionary<Guid, ElementMapping>();
 		public ElementMap()
 		{
 			Id= Guid.NewGuid();
@@ -64,7 +66,11 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		public FastObservableCollection<ElementMapping> ElementMappings
 		{
 			get { return GetValue<FastObservableCollection<ElementMapping>>(ElementMappingsProperty); }
-			set { SetValue(ElementMappingsProperty, value); }
+			set
+			{
+				SetValue(ElementMappingsProperty, value);
+				UpdateSourceIdMap();
+			}
 		}
 
 		/// <summary>
@@ -74,21 +80,62 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 
 		#endregion
 
+		#region SourceTree property
+
+		/// <summary>
+		/// Gets or sets the SourceTree value.
+		/// </summary>
+		public ElementNodeProxy SourceTree
+		{
+			get { return GetValue<ElementNodeProxy>(SourceTreeProperty); }
+			set { SetValue(SourceTreeProperty, value); }
+		}
+
+		/// <summary>
+		/// SourceTree property data.
+		/// </summary>
+		public static readonly PropertyData SourceTreeProperty = RegisterProperty("SourceTree", typeof(ElementNodeProxy));
+
+		#endregion
+
+		#region Overrides of ModelBase
+
+		/// <inheritdoc />
+		protected override void OnDeserialized()
+		{
+			UpdateSourceIdMap();
+			base.OnDeserialized();
+		}
+
+		#endregion
+
+		[OnDeserialized]
+		internal void OnDeserialized(StreamingContext context)
+		{
+			OnDeserialized();
+		}
+
+		public void Clear()
+		{
+			ElementMappings.Clear();
+			_sourceIds.Clear();
+		}
+
 		public void Add(ElementMapping map)
 		{
-			if (!_sourceIds.Contains(map.SourceId))
+			if (!_sourceIds.ContainsKey(map.SourceId))
 			{
 				ElementMappings.Add(map);
-				_sourceIds.Add(map.SourceId);
+				_sourceIds.Add(map.SourceId, map);
 				SortByName();
 			}
 		}
 
 		public void AddRange(IEnumerable<ElementMapping> maps)
 		{
-			var mapsToAdd = maps.Where(x => !_sourceIds.Contains(x.SourceId));
+			var mapsToAdd = maps.Where(x => !_sourceIds.ContainsKey(x.SourceId));
 			ElementMappings.AddItems(mapsToAdd);
-			_sourceIds.AddRange(mapsToAdd.Select(x => x.SourceId));
+			_sourceIds.AddRange(mapsToAdd.Select(x => new KeyValuePair<Guid, ElementMapping>(x.SourceId, x)));
 			SortByName();
 		}
 
@@ -105,7 +152,13 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 
 		public bool Contains(Guid sourceId)
 		{
-			return _sourceIds.Contains(sourceId);
+			return _sourceIds.ContainsKey(sourceId);
+		}
+
+		public ElementMapping GetBySourceId(Guid id)
+		{
+			_sourceIds.TryGetValue(id, out var mapping);
+			return mapping;
 		}
 
 		public Dictionary<string, Guid> GetSourceNameToTargetIdMap()
@@ -131,7 +184,13 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMappe
 		public void CreateMapsForSources(Dictionary<Guid, string> elementSources)
 		{
 			ElementMappings.AddRange(elementSources.Select(x => new ElementMapping(x.Key, x.Value)).OrderBy(x => x.SourceName));
-			_sourceIds.AddRange(GetSourceNameIds().Keys);
+			UpdateSourceIdMap();
+		}
+
+		internal void UpdateSourceIdMap()
+		{
+			_sourceIds.Clear();
+			_sourceIds.AddRange(ElementMappings.Select(x => new KeyValuePair<Guid, ElementMapping>(x.SourceId, x)));
 		}
 	}
 }

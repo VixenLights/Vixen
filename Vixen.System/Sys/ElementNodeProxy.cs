@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace Vixen.Sys
 {
+	[Serializable]
 	public class ElementNodeProxy
 	{
 		public ElementNodeProxy()
