@@ -87,6 +87,11 @@
       <Name>Marks</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\App\TimedSequenceMapper\TimedSequenceMapper.csproj">
+      <Project>{637a998a-0c0b-46fd-915e-b1fd5e143f8e}</Project>
+      <Name>TimedSequenceMapper</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Effect\Effect\Effect.csproj">
       <Project>{AF76C902-A776-49C3-9019-D7CB0A53FB2F}</Project>
       <Name>Effect</Name>
@@ -217,24 +222,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncHelpers.cs" />
-    <Compile Include="Forms\WPF\SequenceElementMapper\Models\ElementMap.cs" />
-    <Compile Include="Forms\WPF\SequenceElementMapper\Models\ElementMapping.cs" />
-    <Compile Include="Forms\WPF\SequenceElementMapper\Services\ElementMapService.cs" />
-    <Compile Include="Forms\WPF\SequenceElementMapper\Services\IElementMapService.cs" />
-    <Compile Include="Forms\WPF\SequenceElementMapper\Services\IModelPersistenceService.cs" />
-    <Compile Include="Forms\WPF\SequenceElementMapper\Services\ModelPersistenceService.cs" />
-    <Compile Include="Forms\WPF\SequenceElementMapper\ViewModels\ElementMapperViewModel.cs" />
-    <Compile Include="Forms\WPF\SequenceElementMapper\ViewModels\ElementNodeProxyViewModel.cs" />
-    <Compile Include="Forms\WPF\SequenceElementMapper\ViewModels\SourceTreeViewModel.cs" />
-    <Compile Include="Forms\WPF\SequenceElementMapper\Views\ElementMapperView.xaml.cs">
-      <DependentUpon>ElementMapperView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\WPF\SequenceElementMapper\Views\ElementNodeProxyView.xaml.cs">
-      <DependentUpon>ElementNodeProxyView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\WPF\SequenceElementMapper\Views\SourceTreeView.xaml.cs">
-      <DependentUpon>SourceTreeView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="PastingMode.cs" />
     <Compile Include="AudacityImportDialog.cs">
       <SubType>Form</SubType>
@@ -449,7 +436,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Forms\WPF\Common\" />
-    <Folder Include="Forms\WPF\SequenceElementMapper\Behaviors\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\magnet.png" />
@@ -634,18 +620,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Forms\WPF\MarksDocker\Views\MarkDockerView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Forms\WPF\SequenceElementMapper\Views\ElementMapperView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Forms\WPF\SequenceElementMapper\Views\ElementNodeProxyView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Forms\WPF\SequenceElementMapper\Views\SourceTreeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

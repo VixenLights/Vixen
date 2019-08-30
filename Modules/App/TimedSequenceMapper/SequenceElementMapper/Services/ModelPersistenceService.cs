@@ -2,16 +2,13 @@
 using System.Threading.Tasks;
 using Catel.Data;
 using Newtonsoft.Json;
-using NLog;
 using Vixen.IO.JSON;
 using Vixen.Sys;
-using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
-namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Services
+namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Services
 {
 	public class ModelPersistenceService<T> : IModelPersistenceService<T> where T:ModelBase
 	{
-		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private readonly JsonSerializer _serializer;
 		public ModelPersistenceService()
 		{

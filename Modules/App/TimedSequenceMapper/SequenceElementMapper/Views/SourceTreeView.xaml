@@ -1,10 +1,10 @@
-﻿<catel:UserControl x:Class="VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Views.SourceTreeView"
+﻿<catel:UserControl x:Class="VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Views.SourceTreeView"
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:catel="http://schemas.catelproject.com"
                    xmlns:dd="urn:gong-wpf-dragdrop"
-                   xmlns:viewModels="clr-namespace:VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.ViewModels"
-                   xmlns:views="clr-namespace:VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Views">
+                   xmlns:viewModels1="clr-namespace:VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels"
+                   xmlns:views1="clr-namespace:VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Views">
 
 	<Grid>
 		<Grid.RowDefinitions>
@@ -22,8 +22,8 @@
 		          dd:DragDrop.IsDropTarget="True"
 		          dd:DragDrop.DropHandler="{Binding}">
 			<TreeView.ItemTemplate>
-				<HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type viewModels:ElementNodeProxyViewModel}">
-					<views:ElementNodeProxyView DataContext="{Binding}"/>
+				<HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type viewModels1:ElementNodeProxyViewModel}">
+					<views1:ElementNodeProxyView DataContext="{Binding}"/>
 				</HierarchicalDataTemplate>
 			</TreeView.ItemTemplate>
 		</TreeView>

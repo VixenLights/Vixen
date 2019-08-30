@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Catel.Data;
-using Vixen.Sys;
-using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Models;
 using Catel.MVVM;
-using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Services;
+using Vixen.Sys;
+using VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Models;
+using VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Services;
 
-namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.ViewModels
+namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 {
 	public class ElementNodeProxyViewModel : ViewModelBase
 	{

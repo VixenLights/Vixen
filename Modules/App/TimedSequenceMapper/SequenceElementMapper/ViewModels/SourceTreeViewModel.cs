@@ -6,10 +6,10 @@ using Catel.Data;
 using Catel.MVVM;
 using GongSolutions.Wpf.DragDrop;
 using Vixen.Sys;
-using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Models;
-using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Services;
+using VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Models;
+using VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Services;
 
-namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.ViewModels
+namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 {
 	public class SourceTreeViewModel:ViewModelBase, IDropTarget
 	{

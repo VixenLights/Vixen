@@ -1,4 +1,4 @@
-﻿namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Views
+﻿namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Views
 {
 	public partial class SourceTreeView
 	{

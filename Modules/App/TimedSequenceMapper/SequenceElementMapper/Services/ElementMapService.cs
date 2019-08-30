@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Catel.IoC;
 using Catel.Messaging;
-using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Models;
+using VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Models;
 
-namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Services
+namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Services
 {
 	public class ElementMapService:IElementMapService
 	{

@@ -441,6 +441,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LiquidLiquidFunWrapper", "M
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Box2D", "Common\Box2D\Box2D.vcxproj", "{14FA8548-594F-41FC-8999-E9544C7CDF67}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimedSequenceMapper", "Modules\App\TimedSequenceMapper\TimedSequenceMapper.csproj", "{637A998A-0C0B-46FD-915E-B1FD5E143F8E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -1430,6 +1432,14 @@ Global
 		{14FA8548-594F-41FC-8999-E9544C7CDF67}.Release|x64.Build.0 = Release|x64
 		{14FA8548-594F-41FC-8999-E9544C7CDF67}.Release|x86.ActiveCfg = Release|Win32
 		{14FA8548-594F-41FC-8999-E9544C7CDF67}.Release|x86.Build.0 = Release|Win32
+		{637A998A-0C0B-46FD-915E-B1FD5E143F8E}.Debug|x64.ActiveCfg = Debug|x64
+		{637A998A-0C0B-46FD-915E-B1FD5E143F8E}.Debug|x64.Build.0 = Debug|x64
+		{637A998A-0C0B-46FD-915E-B1FD5E143F8E}.Debug|x86.ActiveCfg = Debug|x86
+		{637A998A-0C0B-46FD-915E-B1FD5E143F8E}.Debug|x86.Build.0 = Debug|x86
+		{637A998A-0C0B-46FD-915E-B1FD5E143F8E}.Release|x64.ActiveCfg = Release|x64
+		{637A998A-0C0B-46FD-915E-B1FD5E143F8E}.Release|x64.Build.0 = Release|x64
+		{637A998A-0C0B-46FD-915E-B1FD5E143F8E}.Release|x86.ActiveCfg = Release|x86
+		{637A998A-0C0B-46FD-915E-B1FD5E143F8E}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1583,6 +1593,7 @@ Global
 		{32629B20-AFD0-490A-BE11-E1E6ECA4408E} = {9224D7F9-DC78-46A5-BCF5-BB9AE9D6D12C}
 		{179D72C2-55CD-4DF1-8BE7-8BADA053E390} = {9224D7F9-DC78-46A5-BCF5-BB9AE9D6D12C}
 		{14FA8548-594F-41FC-8999-E9544C7CDF67} = {25A1ED22-180F-4B61-84FC-55790AA11254}
+		{637A998A-0C0B-46FD-915E-B1FD5E143F8E} = {E301917B-FF08-4275-A4E0-830E2BEC0635}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {09F55EB1-2643-454B-A1C2-8A326FFA78E6}

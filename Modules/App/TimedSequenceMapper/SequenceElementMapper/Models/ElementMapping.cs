@@ -1,7 +1,7 @@
 ﻿using System;
 using Catel.Data;
 
-namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Models
+namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Models
 {
 	public class ElementMapping: ModelBase,IEquatable<ElementMapping>
 	{

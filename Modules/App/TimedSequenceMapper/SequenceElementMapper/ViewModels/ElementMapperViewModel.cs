@@ -3,26 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using Catel.Collections;
 using Catel.Data;
 using Catel.IoC;
+using Catel.MVVM;
 using Catel.Services;
 using Common.WPFCommon.Services;
 using GongSolutions.Wpf.DragDrop;
-using NLog;
 using Vixen.Sys;
-using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Models;
-using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Services;
+using VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Models;
+using VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Services;
 
-namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.ViewModels
+namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 {
-	using Catel.MVVM;
-	using System.Threading.Tasks;
-
 	public class ElementMapperViewModel : ViewModelBase, IDropTarget
 	{
-		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private const string FormTitle = @"Element Mapper";
 		private readonly Dictionary<Guid, string> _sourceActiveElements;
 		private string _lastModelPath = String.Empty;

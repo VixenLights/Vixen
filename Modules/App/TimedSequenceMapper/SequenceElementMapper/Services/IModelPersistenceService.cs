@@ -2,7 +2,7 @@
 using Catel.Data;
 using Vixen.Sys;
 
-namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Services
+namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Services
 {
 	public interface IModelPersistenceService<T> where T:ModelBase
 	{

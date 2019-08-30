@@ -1,21 +1,17 @@
 ﻿using Catel.IoC;
-using Catel.Runtime.Serialization.Json;
 using Vixen.Extensions;
-using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Models;
-using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Services;
-using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.ViewModels;
+using VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Models;
+using VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Services;
+using VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels;
 
-namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Views
+namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Views
 {
 	public partial class ElementMapperView
 	{
 		public ElementMapperView(ElementMapperViewModel viewModel)
 		{
 			var serviceLocator = ServiceLocator.Default;
-			if(!serviceLocator.IsTypeRegistered(typeof(IJsonSerializer)))
-			{
-				serviceLocator.RegisterType<IJsonSerializer, JsonSerializer>();
-			}
+		
 			if(!serviceLocator.IsTypeRegistered(typeof(IModelPersistenceService<ElementMap>)))
 			{
 				serviceLocator.RegisterType<IModelPersistenceService<ElementMap>, ModelPersistenceService<ElementMap>>();

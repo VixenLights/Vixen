@@ -6,7 +6,7 @@ using Catel.Collections;
 using Catel.Data;
 using Vixen.Sys;
 
-namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Models
+namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Models
 {
 	public class ElementMap: SavableModelBase<ElementMap>
 	{

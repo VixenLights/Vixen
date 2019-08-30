@@ -1,4 +1,4 @@
-﻿<catel:UserControl x:Class="VixenModules.Editor.TimedSequenceEditor.Forms.WPF.SequenceElementMapper.Views.ElementNodeProxyView"
+﻿<catel:UserControl x:Class="VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Views.ElementNodeProxyView"
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:catel="http://schemas.catelproject.com">
