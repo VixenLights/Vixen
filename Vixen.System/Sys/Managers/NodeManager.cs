@@ -177,7 +177,7 @@ namespace Vixen.Sys.Managers
 			return _instances.ContainsKey(id);
 		}
 
-		public async void ExportElementNodeProxy(string filePath)
+		public async Task ExportElementNodeProxy(string filePath)
 		{
 			if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(filePath));
 			await Task.Factory.StartNew(() =>
