@@ -83,6 +83,9 @@
       <HintPath>..\..\..\packages\Catel.MVVM.5.11.0\lib\net47\Catel.MVVM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Dataweb.NShape">
+      <HintPath>..\..\..\Common\NShape\Core\obj\x86\Debug\Dataweb.NShape.dll</HintPath>
+    </Reference>
     <Reference Include="GongSolutions.WPF.DragDrop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=91f1945125b7a587, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\gong-wpf-dragdrop.2.0.4\lib\net47\GongSolutions.WPF.DragDrop.dll</HintPath>
       <Private>False</Private>
@@ -150,6 +153,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SequenceElementMapper\Models\ElementMap.cs" />
     <Compile Include="SequenceElementMapper\Models\ElementMapping.cs" />
@@ -188,6 +192,20 @@
       <DependentUpon>SequencePackageExportSourcesStage.cs</DependentUpon>
     </Compile>
     <Compile Include="SequencePackageExport\SequencePackageExportWizard.cs" />
+    <Compile Include="SequencePackageImport\ImportConfig.cs" />
+    <Compile Include="SequencePackageImport\SequencePackageImportSequencesStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SequencePackageImport\SequencePackageImportSequencesStage.Designer.cs">
+      <DependentUpon>SequencePackageImportSequencesStage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SequencePackageImport\SequencePackageImportInputStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SequencePackageImport\SequencePackageImportInputStage.Designer.cs">
+      <DependentUpon>SequencePackageImportInputStage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SequencePackageImport\SequencePackageImportWizard.cs" />
     <Compile Include="TimedSequencePackagerData.cs" />
     <Compile Include="TimedSequencePackagerModule.cs" />
     <Compile Include="TimedSequencePackagerDescriptor.cs" />
@@ -208,7 +226,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="SequenceElementMapper\Behaviors\" />
-    <Folder Include="SequencePackageImport\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -222,6 +239,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SequencePackageExport\SequencePackageExportSourcesStage.resx">
       <DependentUpon>SequencePackageExportSourcesStage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SequencePackageImport\SequencePackageImportSequencesStage.resx">
+      <DependentUpon>SequencePackageImportSequencesStage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SequencePackageImport\SequencePackageImportInputStage.resx">
+      <DependentUpon>SequencePackageImportInputStage.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

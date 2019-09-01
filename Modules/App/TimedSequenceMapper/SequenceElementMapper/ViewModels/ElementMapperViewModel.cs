@@ -25,7 +25,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		private string _lastModelPath = String.Empty;
 		private IElementMapService _elementMapService;
 		private readonly string _sequenceName;
-
+		
 		public ElementMapperViewModel(Dictionary<Guid, string> sourceActiveElements, string sequenceName)
 		{
 			_sourceActiveElements = sourceActiveElements;
@@ -106,7 +106,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 			if (_lastModelPath == String.Empty || !File.Exists(_lastModelPath))
 			{
 				var saveFileService = dependencyResolver.Resolve<ISaveFileService>();
-				saveFileService.Filter = "Element Map|*.map";
+				saveFileService.Filter = $"Element Map|*.{Constants.MapExtension}";
 				saveFileService.Title = @"Save Element Map";
 				if (await saveFileService.DetermineFileAsync())
 				{
@@ -323,7 +323,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 			//_openFileService.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 			openFileService.CheckFileExists = true;
 			openFileService.Title = @"Open Element Mapping";
-			openFileService.Filter = "Element Map (*.map) | *.map";
+			openFileService.Filter = $"Element Map (*.{Constants.MapExtension}) | *.{Constants.MapExtension}";
 			if (await openFileService.DetermineFileAsync())
 			{
 

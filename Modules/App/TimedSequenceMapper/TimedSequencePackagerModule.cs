@@ -6,6 +6,7 @@ using Vixen.Module;
 using Vixen.Module.App;
 using Vixen.Sys;
 using VixenModules.App.TimedSequenceMapper.SequencePackageExport;
+using VixenModules.App.TimedSequenceMapper.SequencePackageImport;
 
 namespace VixenModules.App.TimedSequenceMapper
 {
@@ -15,6 +16,7 @@ namespace VixenModules.App.TimedSequenceMapper
 		private TimedSequencePackagerData _workingData;
 		private IApplication _application;
 		private SequencePackageExportWizard _exportWizard;
+		private SequencePackageImportWizard _importWizard;
 		
 		public static string MenuIdRoot = "SequenceImportExportRoot";
 		public static string MenuIdExportName = "Export Sequence Package";
@@ -73,6 +75,19 @@ namespace VixenModules.App.TimedSequenceMapper
 			_exportWizard.WizardFinished += ExportWizard_WizardFinished;
 		}
 
+		private void InitializeImportForm()
+		{
+			var data = new ImportConfig();
+			_importWizard = new SequencePackageImportWizard(data);
+			_importWizard.WizardFinished += ImportWizard_WizardFinished;
+		}
+
+		private void ImportWizard_WizardFinished(object sender, System.EventArgs e)
+		{
+			_importWizard.WizardFinished -= ImportWizard_WizardFinished;
+			_importWizard = null;
+		}
+
 		private async void ExportWizard_WizardFinished(object sender, System.EventArgs e)
 		{
 			if (_exportWizard.WizardDialogResult == DialogResult.OK)
@@ -90,7 +105,12 @@ namespace VixenModules.App.TimedSequenceMapper
 
 		private void ImportCommand_Click(object sender, System.EventArgs e)
 		{
-			
+			if (_importWizard == null)
+			{
+				InitializeImportForm();
+			}
+
+			_importWizard.Start(true);
 		}
 
 		private void ExportCommand_Click(object sender, System.EventArgs e)
