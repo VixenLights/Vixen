@@ -10,7 +10,9 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 			Stages = new List<WizardStage>
 			{
 				new SequencePackageImportInputStage(data),
-				new SequencePackageImportSequencesStage(data)
+				new SequencePackageImportSequencesStage(data),
+				new SequencePackageImportSummaryStage(data),
+				new SequencePackageImportFinishedStage()
 			};
 		}
 

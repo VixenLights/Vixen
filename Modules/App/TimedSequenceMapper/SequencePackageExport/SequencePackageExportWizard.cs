@@ -11,7 +11,8 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageExport
 			{
 				new SequencePackageExportSourcesStage(data),
 				new SequencePackageExportOutputStage(data),
-				new SequencePackageExportSummaryStage(data)
+				new SequencePackageExportSummaryStage(data),
+				new SequencePackageExportFinishedStage()
 			};
 		}
 

@@ -16,5 +16,7 @@ namespace Vixen
 		public delegate string GenericString(string s);
 
 		public delegate void GenericVoidString(string s);
+
+		public delegate string GenericStringValue();
 	}
 }

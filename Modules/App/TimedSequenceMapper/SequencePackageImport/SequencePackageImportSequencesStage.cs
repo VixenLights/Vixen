@@ -2,6 +2,7 @@
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls.Theme;
 using Common.Controls.Wizard;
@@ -25,6 +26,29 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 			ColumnAutoSize();
 			InitializeSequenceList();
 			ExtractSequences(_data.InputFile);
+			lstSequences.ItemChecked += lstSequences_ItemChecked; 
+		}
+
+		#region Overrides of WizardStage
+
+		/// <inheritdoc />
+		public override Task StageEnd()
+		{
+			lstSequences.ItemChecked -= lstSequences_ItemChecked;
+			return Task.CompletedTask;
+		}
+
+		#endregion
+
+		private void lstSequences_ItemChecked(object sender, ItemCheckedEventArgs e)
+		{
+			if (e.Item.Tag is string v)
+			{
+				if (_data.Sequences.ContainsKey(v))
+				{
+					_data.Sequences[v] = e.Item.Checked;
+				}
+			}
 		}
 
 		private void InitializeSequenceList()
@@ -35,13 +59,10 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 				lstSequences.BeginUpdate();
 				foreach (var fileName in _data.Sequences.Keys)
 				{
-					if (File.Exists(fileName))
-					{
-						ListViewItem item = new ListViewItem(Path.GetFileName(fileName));
-						item.Tag = fileName;
-						item.Checked = true;
-						lstSequences.Items.Add(item);
-					}
+					ListViewItem item = new ListViewItem(fileName);
+					item.Tag = fileName;
+					item.Checked = true;
+					lstSequences.Items.Add(item);
 				}
 				lstSequences.EndUpdate();
 				ColumnAutoSize();

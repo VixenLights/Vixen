@@ -73,6 +73,11 @@
       <Name>Resources</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Sequence\Timed\Timed.csproj">
+      <Project>{45E1228A-F714-41D5-BB9B-A776F2B23143}</Project>
+      <Name>Timed</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Catel.Core, Version=5.11.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -193,7 +198,25 @@
       <DependentUpon>SequencePackageExportSourcesStage.cs</DependentUpon>
     </Compile>
     <Compile Include="SequencePackageExport\SequencePackageExportWizard.cs" />
+    <Compile Include="SequencePackageExport\SequencePackageExportFinishedStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SequencePackageExport\SequencePackageExportFinishedStage.Designer.cs">
+      <DependentUpon>SequencePackageExportFinishedStage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SequencePackageImport\SequencePackageImportFinishedStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SequencePackageImport\SequencePackageImportFinishedStage.Designer.cs">
+      <DependentUpon>SequencePackageImportFinishedStage.cs</DependentUpon>
+    </Compile>
     <Compile Include="SequencePackageImport\ImportConfig.cs" />
+    <Compile Include="SequencePackageImport\SequencePackageImportSummaryStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SequencePackageImport\SequencePackageImportSummaryStage.Designer.cs">
+      <DependentUpon>SequencePackageImportSummaryStage.cs</DependentUpon>
+    </Compile>
     <Compile Include="SequencePackageImport\SequencePackageImportSequencesStage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -240,6 +263,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SequencePackageExport\SequencePackageExportSourcesStage.resx">
       <DependentUpon>SequencePackageExportSourcesStage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SequencePackageExport\SequencePackageExportFinishedStage.resx">
+      <DependentUpon>SequencePackageExportFinishedStage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SequencePackageImport\SequencePackageImportFinishedStage.resx">
+      <DependentUpon>SequencePackageImportFinishedStage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SequencePackageImport\SequencePackageImportSummaryStage.resx">
+      <DependentUpon>SequencePackageImportSummaryStage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SequencePackageImport\SequencePackageImportSequencesStage.resx">
       <DependentUpon>SequencePackageImportSequencesStage.cs</DependentUpon>

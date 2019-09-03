@@ -5285,10 +5285,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				List<EffectNode> effectsToRemove = new List<EffectNode>();
 				if (response.HasValue && response.Value)
 				{
-					var map = vm.ElementMap.GetSourceNameToTargetIdMap();
+					var map = vm.ElementMap;
 					foreach (var unmappedEffect in unmappedEffects)
 					{
-						if (map.TryGetValue(unmappedEffect.Effect.TargetNodes.First().Name, out Guid targetId))
+						if (map.GetBySourceId(unmappedEffect.Effect.TargetNodes.First().Id, out Guid targetId))
 						{
 							var node = VixenSystem.Nodes.GetElementNode(targetId);
 							if (node != null)
@@ -5299,6 +5299,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							{
 								effectsToRemove.Add(unmappedEffect);
 							}
+						}
+						else
+						{
+							effectsToRemove.Add(unmappedEffect);
 						}
 					}
 

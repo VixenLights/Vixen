@@ -37,6 +37,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 			txtProfileMap.BackColor = ThemeColorTable.BackgroundColor;
 
 			btnCreateMap.Enabled = false;
+			btnEditMap.Enabled = false;
 		}
 
 		
@@ -85,6 +86,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 			{
 				_data.MapFile = openFileDialog.FileName;
 				txtMapFile.Text = _data.MapFile;
+				btnEditMap.Enabled = true;
 				_WizardStageChanged();
 			}
 		}
@@ -98,7 +100,16 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 
 		private void txtMapFile_Leave(object sender, EventArgs e)
 		{
-			_data.MapFile = txtMapFile.Text;
+			
+			if (File.Exists(txtMapFile.Text))
+			{
+				_data.MapFile = txtMapFile.Text;
+				btnEditMap.Enabled = true;
+			}
+			else
+			{
+				btnEditMap.Enabled = false;
+			}
 			_WizardStageChanged();
 		}
 
@@ -169,20 +180,38 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 		private async void btnCreateMap_Click(object sender, EventArgs e)
 		{
 			var fileName = ExtractElementTree(_data.InputFile);
-			ElementMapperViewModel vm = new ElementMapperViewModel(new Dictionary<Guid, string>(), String.Empty, fileName);
+			ElementMapperViewModel vm = new ElementMapperViewModel(new Dictionary<Guid, string>(), String.Empty, fileName, String.Empty);
 			ElementMapperView mapper = new ElementMapperView(vm);
 			ElementHost.EnableModelessKeyboardInterop(mapper);
 			var response = mapper.ShowDialog();
 
 			if (response.HasValue && response.Value)
 			{
-				if (!string.IsNullOrEmpty(vm.ElementModelFilePath))
+				if (!string.IsNullOrEmpty(vm.ElementMapFilePath))
 				{
-					_data.MapFile = txtMapFile.Text = vm.ElementModelFilePath;
+					_data.MapFile = txtMapFile.Text = vm.ElementMapFilePath;
 					_WizardStageChanged();
 				}
 			}
 			
+		}
+
+		private async void btnEditMap_Click(object sender, EventArgs e)
+		{
+			var fileName = ExtractElementTree(_data.InputFile);
+			ElementMapperViewModel vm = new ElementMapperViewModel(new Dictionary<Guid, string>(), String.Empty, fileName, _data.MapFile);
+			ElementMapperView mapper = new ElementMapperView(vm);
+			ElementHost.EnableModelessKeyboardInterop(mapper);
+			var response = mapper.ShowDialog();
+
+			if (response.HasValue && response.Value)
+			{
+				if (!string.IsNullOrEmpty(vm.ElementMapFilePath))
+				{
+					_data.MapFile = txtMapFile.Text = vm.ElementMapFilePath;
+					_WizardStageChanged();
+				}
+			}
 		}
 	}
 }

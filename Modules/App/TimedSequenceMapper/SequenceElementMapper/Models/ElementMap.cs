@@ -161,6 +161,18 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Models
 			return mapping;
 		}
 
+		public bool GetBySourceId(Guid sourceId, out Guid targetId)
+		{
+			targetId = Guid.Empty;
+			var b = _sourceIds.TryGetValue(sourceId, out var em);
+			if (b)
+			{
+				targetId = em.TargetId;
+			}
+
+			return b;
+		}
+
 		public Dictionary<string, Guid> GetSourceNameToTargetIdMap()
 		{
 			return ElementMappings.ToDictionary(x => x.SourceName, x=> x.TargetId);

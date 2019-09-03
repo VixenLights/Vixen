@@ -32,9 +32,10 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 			_sequenceName = sequenceName;
 		}
 
-		public ElementMapperViewModel(Dictionary<Guid, string> sourceActiveElements, string sequenceName, string mapFileName):this(sourceActiveElements, sequenceName)
+		public ElementMapperViewModel(Dictionary<Guid, string> sourceActiveElements, string sequenceName, string elementTreeFileName, string elementMapFileName):this(sourceActiveElements, sequenceName)
 		{
-			ElementModelFilePath = mapFileName;
+			ElementTreeFilePath = elementTreeFileName;
+			ElementMapFilePath = elementMapFileName;
 		}
 
 		private void OnElementMapChanged(ElementMapService.MapMessage obj)
@@ -45,7 +46,9 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 
 		#region Private fields
 
-		public string ElementModelFilePath { get; protected set; }
+		public string ElementMapFilePath { get; protected set; }
+
+		public string ElementTreeFilePath { get; protected set; }
 
 		private bool _mapModified;
 		internal bool MapModified
@@ -91,13 +94,29 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 			_elementMapService = dependencyResolver.Resolve<IElementMapService>();
 			_elementMapService.SourceActiveElements = _sourceActiveElements;
 			Elements = VixenSystem.Nodes.GetRootNodes().ToList();
-			ElementMap = _elementMapService.InitializeMap(_sourceActiveElements, _sequenceName);
-			_elementMapService.RegisterMapMessages(this, OnElementMapChanged);
-			MapModified = true;
-			if (!string.IsNullOrEmpty(ElementModelFilePath))
+			if (string.IsNullOrEmpty(ElementMapFilePath))
 			{
-				await LoadElementTree(ElementModelFilePath);
-				ElementModelFilePath = String.Empty;
+				ElementMap = _elementMapService.InitializeMap(_sourceActiveElements, _sequenceName);
+				MapModified = true;
+			}
+			else
+			{
+				var success = await _elementMapService.LoadMapAsync(ElementMapFilePath);
+				
+				if (success)
+				{
+					_elementMapService.ElementMap.Name = Path.GetFileNameWithoutExtension(ElementMapFilePath);
+					ElementMap = _elementMapService.ElementMap;
+					MapModified = false;
+				}
+			}
+
+			_elementMapService.RegisterMapMessages(this, OnElementMapChanged);
+			
+			if (!string.IsNullOrEmpty(ElementTreeFilePath))
+			{
+				await LoadElementTree(ElementTreeFilePath);
+				MapModified = true;
 			}
 		}
 
@@ -115,15 +134,15 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		{
 			var dependencyResolver = this.GetDependencyResolver();
 
-			if (ElementModelFilePath == String.Empty || !File.Exists(ElementModelFilePath))
+			if (ElementMapFilePath == String.Empty || !File.Exists(ElementMapFilePath))
 			{
 				var saveFileService = dependencyResolver.Resolve<ISaveFileService>();
 				saveFileService.Filter = $"Element Map|*.{Constants.MapExtension}";
 				saveFileService.Title = @"Save Element Map";
 				if (await saveFileService.DetermineFileAsync())
 				{
-					ElementModelFilePath = saveFileService.FileName;
-					_elementMapService.ElementMap.Name = Path.GetFileNameWithoutExtension(ElementModelFilePath);
+					ElementMapFilePath = saveFileService.FileName;
+					_elementMapService.ElementMap.Name = Path.GetFileNameWithoutExtension(ElementMapFilePath);
 				}
 				else
 				{
@@ -133,7 +152,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 			
 			var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
 			pleaseWaitService.Show();
-			if(await _elementMapService.SaveMapAsync(ElementModelFilePath))
+			if(await _elementMapService.SaveMapAsync(ElementMapFilePath))
 			{
 				MapModified = false;
 				pleaseWaitService.Hide();
@@ -304,7 +323,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 			{
 				_elementMapService.InitializeMap(_sourceActiveElements, result.Response);
 				MapModified = true;
-				ElementModelFilePath = string.Empty;
+				ElementMapFilePath = string.Empty;
 			}
 		}
 
@@ -347,8 +366,8 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 
 				if (success)
 				{
-					ElementModelFilePath = openFileService.FileName;
-					_elementMapService.ElementMap.Name = Path.GetFileNameWithoutExtension(ElementModelFilePath);
+					ElementMapFilePath = openFileService.FileName;
+					_elementMapService.ElementMap.Name = Path.GetFileNameWithoutExtension(ElementMapFilePath);
 					MapModified = false;
 
 					if (_elementMapService.ElementMap.SourceTree == null)
@@ -415,7 +434,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		/// </summary>
 		private async Task SaveMapAsAsync()
 		{
-			ElementModelFilePath = String.Empty;
+			ElementMapFilePath = String.Empty;
 			await SaveAsync();
 		}
 
@@ -625,7 +644,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 
 		private void UpdateTitle()
 		{
-			Title = $"{FormTitle} - {ElementMap.Name} {(MapModified ? "*" : string.Empty)}";
+			Title = $"{FormTitle} - {_elementMapService.ElementMap.Name} {(MapModified ? "*" : string.Empty)}";
 		}
 
 		protected void UpdateCommandStates()

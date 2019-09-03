@@ -41,6 +41,7 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.btnOuputFolderSelect = new System.Windows.Forms.Button();
 			this.layerController1 = new Dataweb.NShape.Controllers.LayerController();
+			this.btnEditMap = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.grpSequence.SuspendLayout();
@@ -79,6 +80,7 @@
 			// groupBox1
 			// 
 			this.groupBox1.AutoSize = true;
+			this.groupBox1.Controls.Add(this.btnEditMap);
 			this.groupBox1.Controls.Add(this.btnCreateMap);
 			this.groupBox1.Controls.Add(this.txtProfileMap);
 			this.groupBox1.Controls.Add(this.txtMapFile);
@@ -192,6 +194,18 @@
 			// 
 			this.layerController1.DiagramSetController = null;
 			// 
+			// btnEditMap
+			// 
+			this.btnEditMap.Location = new System.Drawing.Point(106, 125);
+			this.btnEditMap.Name = "btnEditMap";
+			this.btnEditMap.Size = new System.Drawing.Size(75, 23);
+			this.btnEditMap.TabIndex = 27;
+			this.btnEditMap.Text = "Edit Map";
+			this.btnEditMap.UseVisualStyleBackColor = true;
+			this.btnEditMap.Click += new System.EventHandler(this.btnEditMap_Click);
+			this.btnEditMap.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.btnEditMap.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			// 
 			// SequencePackageImportInputStage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -225,5 +239,6 @@
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.TextBox txtProfileMap;
 		private System.Windows.Forms.Button btnCreateMap;
+		private System.Windows.Forms.Button btnEditMap;
 	}
 }
