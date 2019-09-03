@@ -532,12 +532,33 @@ namespace VixenModules.Effect.Twinkle
 				if (set.Key == Color.Empty)
 				{
 					var data = CreateIntentForValues(set.Value);
-					result.AddIntentForElement(node.Element.Id, data, TimeSpan.Zero);
+					if (node.IsLeaf)
+					{
+						result.AddIntentForElement(node.Element.Id, data, TimeSpan.Zero);
+					}
+					else
+					{
+						foreach (var leafNode in node.GetLeafEnumerator())
+						{
+							result.AddIntentForElement(leafNode.Element.Id, data, TimeSpan.Zero);
+						}
+					}
+
 				}
 				else
 				{
 					var data = CreateDiscreteIntentForValues(set.Value);
-					result.AddIntentForElement(node.Element.Id, data, TimeSpan.Zero);
+					if (node.IsLeaf)
+					{
+						result.AddIntentForElement(node.Element.Id, data, TimeSpan.Zero);
+					}
+					else
+					{
+						foreach (var leafNode in node.GetLeafEnumerator())
+						{
+							result.AddIntentForElement(leafNode.Element.Id, data, TimeSpan.Zero);
+						}
+					}
 				}
 				
 			}
@@ -578,7 +599,7 @@ namespace VixenModules.Effect.Twinkle
 					
 					if (!_colorValueSet.TryGetValue(color, out values))
 					{
-						values = new ColorValue[(int) (TimeSpan.TotalMilliseconds / VixenSystem.DefaultUpdateInterval)];
+						values = new ColorValue[(int) (TimeSpan.TotalMilliseconds / FrameTime)];
 						_colorValueSet.Add(color, values);
 					}
 					RenderPulseSegment(values, startTime, duration, c, cg, color);
@@ -596,8 +617,8 @@ namespace VixenModules.Effect.Twinkle
 		private void RenderPulseSegment(ColorValue[] values, TimeSpan startTime, TimeSpan duration, Curve c,
 			ColorGradient cg, Color? filterColor = null)
 		{
-			var intervals = duration.TotalMilliseconds / VixenSystem.DefaultUpdateInterval;
-			var startOffset = (int)startTime.TotalMilliseconds / VixenSystem.DefaultUpdateInterval;
+			var intervals = duration.TotalMilliseconds / FrameTime;
+			var startOffset = (int)startTime.TotalMilliseconds / FrameTime;
 			var endInterval = startOffset + intervals;
 			for (int i = startOffset; i <= endInterval; i++)
 			{
