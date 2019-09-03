@@ -532,12 +532,33 @@ namespace VixenModules.Effect.Twinkle
 				if (set.Key == Color.Empty)
 				{
 					var data = CreateIntentForValues(set.Value);
-					result.AddIntentForElement(node.Element.Id, data, TimeSpan.Zero);
+					if (node.IsLeaf)
+					{
+						result.AddIntentForElement(node.Element.Id, data, TimeSpan.Zero);
+					}
+					else
+					{
+						foreach (var leafNode in node.GetLeafEnumerator())
+						{
+							result.AddIntentForElement(leafNode.Element.Id, data, TimeSpan.Zero);
+						}
+					}
+
 				}
 				else
 				{
 					var data = CreateDiscreteIntentForValues(set.Value);
-					result.AddIntentForElement(node.Element.Id, data, TimeSpan.Zero);
+					if (node.IsLeaf)
+					{
+						result.AddIntentForElement(node.Element.Id, data, TimeSpan.Zero);
+					}
+					else
+					{
+						foreach (var leafNode in node.GetLeafEnumerator())
+						{
+							result.AddIntentForElement(leafNode.Element.Id, data, TimeSpan.Zero);
+						}
+					}
 				}
 				
 			}
