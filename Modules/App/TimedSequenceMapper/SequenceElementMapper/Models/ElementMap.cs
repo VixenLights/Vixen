@@ -125,8 +125,8 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Models
 		{
 			if (!_sourceIds.ContainsKey(map.SourceId))
 			{
-				ElementMappings.Add(map);
 				_sourceIds.Add(map.SourceId, map);
+				ElementMappings.Add(map);
 				SortByName();
 			}
 		}
@@ -134,8 +134,8 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Models
 		public void AddRange(IEnumerable<ElementMapping> maps)
 		{
 			var mapsToAdd = maps.Where(x => !_sourceIds.ContainsKey(x.SourceId));
-			ElementMappings.AddItems(mapsToAdd);
 			_sourceIds.AddRange(mapsToAdd.Select(x => new KeyValuePair<Guid, ElementMapping>(x.SourceId, x)));
+			ElementMappings.AddItems(mapsToAdd);
 			SortByName();
 		}
 

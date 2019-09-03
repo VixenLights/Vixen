@@ -30,6 +30,10 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		private void ElementMappings_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 		{
 			ElementMapping = _map.GetBySourceId(ElementNodeProxy.Id);
+			if (ElementMapping != null)
+			{
+				_map.ElementMappings.CollectionChanged -= ElementMappings_CollectionChanged;
+			}
 		}
 
 		protected override async Task CloseAsync()
@@ -44,9 +48,14 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		{
 			if (obj.Data.Equals(ElementMapService.MapMessageType.New))
 			{
+				_map.ElementMappings.CollectionChanged -= ElementMappings_CollectionChanged;
 				_map = _elementMapService.ElementMap;
 			}
 			ElementMapping = _map.GetBySourceId(ElementNodeProxy.Id);
+			if (ElementMapping == null)
+			{
+				_elementMapService.ElementMap.ElementMappings.CollectionChanged += ElementMappings_CollectionChanged;
+			}
 		}
 
 		#region ElementMapping property

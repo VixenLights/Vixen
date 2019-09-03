@@ -1,14 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Forms.Integration;
+using Catel.IoC;
+using Catel.Services;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Controls.Wizard;
 using Common.Resources;
 using Common.Resources.Properties;
 using NLog;
+using VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels;
+using VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Views;
 
 namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 {
@@ -29,6 +35,8 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 
 			ThemeUpdateControls.UpdateControls(this);
 			txtProfileMap.BackColor = ThemeColorTable.BackgroundColor;
+
+			btnCreateMap.Enabled = false;
 		}
 
 		
@@ -60,6 +68,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 			{
 				_data.InputFile = openFileDialog.FileName;
 				txtPackageFile.Text = _data.InputFile;
+				btnCreateMap.Enabled = IsPackageFile(_data.InputFile);
 				_WizardStageChanged();
 			}
 		}
@@ -83,6 +92,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 		private void txtPackageFile_Leave(object sender, EventArgs e)
 		{
 			_data.InputFile = txtPackageFile.Text;
+			btnCreateMap.Enabled = IsPackageFile(_data.InputFile);
 			_WizardStageChanged();
 		}
 
@@ -96,32 +106,47 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 		{
 			get
 			{
-				bool canMove = false;
-				canMove = Path.HasExtension(_data.InputFile) && File.Exists(_data.InputFile) && IsPackageFile(_data.InputFile);
-				if (!string.IsNullOrEmpty(_data.MapFile))
-				{
-					canMove = Path.HasExtension(_data.MapFile) && File.Exists(_data.MapFile) && Path.GetExtension(_data.MapFile).EndsWith(Constants.MapExtension);
-				}
-
+				bool canMove = Path.HasExtension(_data.InputFile) && File.Exists(_data.InputFile) && Path.HasExtension(_data.MapFile) && File.Exists(_data.MapFile) &&
+				               Path.GetExtension(_data.MapFile).EndsWith(Constants.MapExtension) && IsPackageFile(_data.InputFile);
+				
 				return canMove;
 			}
 		}
 
 		private bool IsPackageFile(string fileName)
 		{
-			try
+			if (Path.HasExtension(fileName) && File.Exists(fileName))
 			{
-				using (var archive = ZipFile.OpenRead(fileName))
+				try
 				{
-					return archive.Entries.Any(x => x.FullName.StartsWith("Sequence") && x.FullName.EndsWith(".tim"));
+					using (var archive = ZipFile.OpenRead(fileName))
+					{
+						return archive.Entries.Any(x => x.FullName.StartsWith("Sequence") && x.FullName.EndsWith(".tim"));
+					}
+				}
+				catch (Exception e)
+				{
+					Logging.Error(e, $"An error occured trying to validate a Sequence Package file. {fileName}");
 				}
 			}
-			catch (Exception e)
+			
+			return false;
+		}
+
+		private string ExtractElementTree(string packageFile)
+		{
+			string elementTreeFile = string.Empty;
+			using (var package = ZipFile.OpenRead(packageFile))
 			{
-				Logging.Error(e, $"An error occured trying to validate a Sequence Package file. {fileName}");
+				var etEntry = package.GetEntry(Path.Combine("ProfileInfo",$"ElementTree.{Constants.ElementTreeExtension}"));
+				if (etEntry != null)
+				{
+					elementTreeFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+					etEntry.ExtractToFile(elementTreeFile);
+				}
 			}
 
-			return false;
+			return elementTreeFile;
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
@@ -129,6 +154,35 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 
-		
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+		}
+
+		private async void btnCreateMap_Click(object sender, EventArgs e)
+		{
+			var fileName = ExtractElementTree(_data.InputFile);
+			ElementMapperViewModel vm = new ElementMapperViewModel(new Dictionary<Guid, string>(), String.Empty, fileName);
+			ElementMapperView mapper = new ElementMapperView(vm);
+			ElementHost.EnableModelessKeyboardInterop(mapper);
+			var response = mapper.ShowDialog();
+
+			if (response.HasValue && response.Value)
+			{
+				if (!string.IsNullOrEmpty(vm.ElementModelFilePath))
+				{
+					_data.MapFile = txtMapFile.Text = vm.ElementModelFilePath;
+					_WizardStageChanged();
+				}
+			}
+			
+		}
 	}
 }

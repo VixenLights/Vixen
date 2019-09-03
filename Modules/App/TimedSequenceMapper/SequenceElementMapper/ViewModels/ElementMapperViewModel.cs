@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Catel;
 using Catel.Collections;
 using Catel.Data;
 using Catel.IoC;
@@ -22,7 +23,6 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 	{
 		private const string FormTitle = @"Element Mapper";
 		private readonly Dictionary<Guid, string> _sourceActiveElements;
-		private string _lastModelPath = String.Empty;
 		private IElementMapService _elementMapService;
 		private readonly string _sequenceName;
 		
@@ -32,6 +32,11 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 			_sequenceName = sequenceName;
 		}
 
+		public ElementMapperViewModel(Dictionary<Guid, string> sourceActiveElements, string sequenceName, string mapFileName):this(sourceActiveElements, sequenceName)
+		{
+			ElementModelFilePath = mapFileName;
+		}
+
 		private void OnElementMapChanged(ElementMapService.MapMessage obj)
 		{
 			ElementMap = _elementMapService.ElementMap;
@@ -39,6 +44,8 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		}
 
 		#region Private fields
+
+		public string ElementModelFilePath { get; protected set; }
 
 		private bool _mapModified;
 		internal bool MapModified
@@ -87,6 +94,11 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 			ElementMap = _elementMapService.InitializeMap(_sourceActiveElements, _sequenceName);
 			_elementMapService.RegisterMapMessages(this, OnElementMapChanged);
 			MapModified = true;
+			if (!string.IsNullOrEmpty(ElementModelFilePath))
+			{
+				await LoadElementTree(ElementModelFilePath);
+				ElementModelFilePath = String.Empty;
+			}
 		}
 
 		protected override async Task CloseAsync()
@@ -103,15 +115,15 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		{
 			var dependencyResolver = this.GetDependencyResolver();
 
-			if (_lastModelPath == String.Empty || !File.Exists(_lastModelPath))
+			if (ElementModelFilePath == String.Empty || !File.Exists(ElementModelFilePath))
 			{
 				var saveFileService = dependencyResolver.Resolve<ISaveFileService>();
 				saveFileService.Filter = $"Element Map|*.{Constants.MapExtension}";
 				saveFileService.Title = @"Save Element Map";
 				if (await saveFileService.DetermineFileAsync())
 				{
-					_lastModelPath = saveFileService.FileName;
-					_elementMapService.ElementMap.Name = Path.GetFileNameWithoutExtension(_lastModelPath);
+					ElementModelFilePath = saveFileService.FileName;
+					_elementMapService.ElementMap.Name = Path.GetFileNameWithoutExtension(ElementModelFilePath);
 				}
 				else
 				{
@@ -121,7 +133,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 			
 			var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
 			pleaseWaitService.Show();
-			if(await _elementMapService.SaveMapAsync(_lastModelPath))
+			if(await _elementMapService.SaveMapAsync(ElementModelFilePath))
 			{
 				MapModified = false;
 				pleaseWaitService.Hide();
@@ -292,7 +304,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 			{
 				_elementMapService.InitializeMap(_sourceActiveElements, result.Response);
 				MapModified = true;
-				_lastModelPath = string.Empty;
+				ElementModelFilePath = string.Empty;
 			}
 		}
 
@@ -335,8 +347,8 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 
 				if (success)
 				{
-					_lastModelPath = openFileService.FileName;
-					_elementMapService.ElementMap.Name = Path.GetFileNameWithoutExtension(_lastModelPath);
+					ElementModelFilePath = openFileService.FileName;
+					_elementMapService.ElementMap.Name = Path.GetFileNameWithoutExtension(ElementModelFilePath);
 					MapModified = false;
 
 					if (_elementMapService.ElementMap.SourceTree == null)
@@ -403,7 +415,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		/// </summary>
 		private async Task SaveMapAsAsync()
 		{
-			_lastModelPath = String.Empty;
+			ElementModelFilePath = String.Empty;
 			await SaveAsync();
 		}
 
@@ -442,23 +454,32 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 			//_openFileService.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 			openFileService.CheckFileExists = true;
 			openFileService.Title = @"Load Element Tree";
-			openFileService.Filter = "Element Tree (*.v3e) | *.v3e";
+			openFileService.Filter = $"Element Tree (*.{Constants.ElementTreeExtension}) | *.{Constants.ElementTreeExtension}";
 			if (await openFileService.DetermineFileAsync())
 			{
-
-				var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
-				var modelPersistenceService = dependencyResolver.Resolve<IModelPersistenceService<ElementMap>>();
-
-				pleaseWaitService.Show();
-				var incomingElementNodes = await modelPersistenceService.LoadElementNodeProxyAsync(openFileService.FileName);
-				if (incomingElementNodes != null && incomingElementNodes.Children.Any())
-				{
-					PopulateSourceTree(incomingElementNodes);
-				}
-				
-				pleaseWaitService.Hide();
-
+				await LoadElementTree(openFileService.FileName);
 			}
+		}
+		public async Task LoadElementTree(string fileName)
+		{
+			Argument.IsNotNullOrEmpty(nameof(fileName), fileName);
+			if (!File.Exists(fileName))
+			{
+				throw new FileNotFoundException($"Element Tree file does not exist. {fileName}");
+			}
+			var dependencyResolver = this.GetDependencyResolver();
+			var modelPersistenceService = dependencyResolver.Resolve<IModelPersistenceService<ElementMap>>();
+			var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
+
+			pleaseWaitService.Show();
+
+			var incomingElementNodes = await modelPersistenceService.LoadElementNodeProxyAsync(fileName);
+			if (incomingElementNodes != null && incomingElementNodes.Children.Any())
+			{
+				PopulateSourceTree(incomingElementNodes);
+			}
+
+			pleaseWaitService.Hide();
 		}
 
 		#endregion

@@ -31,6 +31,7 @@
 			this.lblChooseOutputFormat = new System.Windows.Forms.Label();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.btnCreateMap = new System.Windows.Forms.Button();
 			this.txtProfileMap = new System.Windows.Forms.TextBox();
 			this.txtMapFile = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
@@ -78,6 +79,7 @@
 			// groupBox1
 			// 
 			this.groupBox1.AutoSize = true;
+			this.groupBox1.Controls.Add(this.btnCreateMap);
 			this.groupBox1.Controls.Add(this.txtProfileMap);
 			this.groupBox1.Controls.Add(this.txtMapFile);
 			this.groupBox1.Controls.Add(this.label1);
@@ -86,10 +88,22 @@
 			this.groupBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox1.Location = new System.Drawing.Point(3, 136);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(504, 133);
+			this.groupBox1.Size = new System.Drawing.Size(504, 170);
 			this.groupBox1.TabIndex = 16;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Profile Map Configuration";
+			// 
+			// btnCreateMap
+			// 
+			this.btnCreateMap.Location = new System.Drawing.Point(25, 125);
+			this.btnCreateMap.Name = "btnCreateMap";
+			this.btnCreateMap.Size = new System.Drawing.Size(75, 23);
+			this.btnCreateMap.TabIndex = 26;
+			this.btnCreateMap.Text = "Create Map";
+			this.btnCreateMap.UseVisualStyleBackColor = true;
+			this.btnCreateMap.Click += new System.EventHandler(this.btnCreateMap_Click);
+			this.btnCreateMap.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.btnCreateMap.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// txtProfileMap
 			// 
@@ -100,8 +114,8 @@
 			this.txtProfileMap.ReadOnly = true;
 			this.txtProfileMap.Size = new System.Drawing.Size(468, 34);
 			this.txtProfileMap.TabIndex = 25;
-			this.txtProfileMap.Text = "Optional. Select the map file locaton if you have previously mapped this pacakge " +
-    "file. If not you will be taken to a scrren to create the map.";
+			this.txtProfileMap.Text = "Select the map file locaton if you have previously mapped this pacakge file. If y" +
+    "ou have not previously mapped it, use the Create Map button to create one.";
 			// 
 			// txtMapFile
 			// 
@@ -210,5 +224,6 @@
 		private Dataweb.NShape.Controllers.LayerController layerController1;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.TextBox txtProfileMap;
+		private System.Windows.Forms.Button btnCreateMap;
 	}
 }
