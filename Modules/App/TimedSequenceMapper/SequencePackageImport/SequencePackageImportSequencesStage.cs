@@ -56,11 +56,11 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 			if (_data.Sequences.Any())
 			{
 				lstSequences.BeginUpdate();
-				foreach (var fileName in _data.Sequences.Keys)
+				foreach (var fileName in _data.Sequences)
 				{
-					ListViewItem item = new ListViewItem(fileName);
+					ListViewItem item = new ListViewItem(fileName.Key);
 					item.Tag = fileName;
-					item.Checked = true;
+					item.Checked = fileName.Value;
 					lstSequences.Items.Add(item);
 				}
 				lstSequences.EndUpdate();

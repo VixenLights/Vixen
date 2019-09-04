@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls;
@@ -41,7 +42,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 
 		private void ConfigureSummary()
 		{
-			lblSequenceCount.Text = _data.Sequences.Count.ToString();
+			lblSequenceCount.Text = _data.Sequences.Count(s => s.Value).ToString();
 			lblOutputFolder.Text = SequenceService.SequenceDirectory;
 			lblAudioOption.Text = @"Ask on duplicate name.";
 		}
@@ -142,6 +143,22 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 					progress.Report(exportProgressStatus);
 					
 					var sequence = await LoadSequence(sequenceDestination);
+
+					//try to clean up any sequence migration files becasue they are not relevant anyway.
+					var escapedFile = Regex.Escape(sequenceFile + TimedSequence.Extension);
+					Regex filter = new Regex($@"^.*{escapedFile}\.\d*$");
+					try
+					{
+						foreach (string f in Directory.EnumerateFiles(Path.GetDirectoryName(sequenceDestination), "*.*", SearchOption.TopDirectoryOnly)
+							.Where(x => filter.IsMatch(x)))
+						{
+							File.Delete(f);
+						}
+					}
+					catch (Exception e)
+					{
+						Logging.Error(e, "An error occured trying to remove sequence migration files.");
+					}
 					//End step 2
 
 					//Progress step 3 Remap Sequence

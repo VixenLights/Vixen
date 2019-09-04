@@ -5268,7 +5268,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				using (mbf)
 				{
 					var result = mbf.ShowDialog(this);
-					if(result == DialogResult.Cancel)
+					if(result == DialogResult.No)
 					{
 						return;
 					}
@@ -5306,7 +5306,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						}
 					}
 
-					_sequence.FilePath = String.Empty;
+					//If we are loading the sequence from somewhere outside our normal sequence folder, then clear out 
+					//the path so they are forced to save a new copy of it. Otherwise it may be one of our own and we just let it be.
+					if(SequenceService.SequenceDirectory != Path.GetDirectoryName(_sequence.FilePath))
+					{
+						_sequence.FilePath = String.Empty;
+					}
 				}
 				else
 				{
