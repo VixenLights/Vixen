@@ -85,21 +85,6 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 			}
 		}
 
-		private void openFileDialog1_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
-		{
-			string[] files = selectSequencesDialog.FileNames;
-
-			foreach (string file in files)
-			{
-				string folder = Path.GetDirectoryName(file);
-				if (folder != null && !folder.StartsWith(SequenceService.SequenceDirectory))
-				{
-					e.Cancel = true;
-					break;
-				}
-			}
-		}
-
 		private void AddFiles(IEnumerable<string> fileNames)
 		{
 			lstSequences.BeginUpdate();

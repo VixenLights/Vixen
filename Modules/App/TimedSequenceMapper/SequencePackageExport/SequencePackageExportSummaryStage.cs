@@ -95,6 +95,12 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageExport
 
 			exportProgressStatus.OverallProgressMessage = "Overall Progress";
 			progress.Report(exportProgressStatus);
+			bool create = true;
+			if (File.Exists(_data.ExportOutputFile))
+			{
+				//Ask the user!
+				File.Delete(_data.ExportOutputFile);
+			}
 
 			await Task.Run(async () =>
 			{
@@ -111,8 +117,10 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageExport
 					exportProgressStatus.TaskProgressMessage = $"Packaging {name}"; ;
 					progress.Report(exportProgressStatus);
 
-					Archive(_data.ExportOutputFile, new List<Tuple<string, string>>{ new Tuple<string, string>(sequenceFile, Path.Combine("Sequence", Path.GetFileName(sequenceFile))) });
-					
+					Archive(_data.ExportOutputFile, new List<Tuple<string, string>>{ new Tuple<string, string>(sequenceFile, Path.Combine("Sequence", Path.GetFileName(sequenceFile))) }, 
+						create?ZipArchiveMode.Create:ZipArchiveMode.Update);
+					create = false;
+
 					//Progress step Discover sequence effect media
 					exportProgressStatus.TaskProgressValue = 25;
 					overallProgressStep++;
@@ -231,12 +239,12 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageExport
 			return true;
 		}
 
-		private bool Archive(string archivePath, List<Tuple<string, string>> files)
+		private bool Archive(string archivePath, List<Tuple<string, string>> files, ZipArchiveMode mode = ZipArchiveMode.Update)
 		{
 			var success = false;
 			try
 			{
-				using (ZipArchive archive = ZipFile.Open(archivePath, ZipArchiveMode.Update))
+				using (ZipArchive archive = ZipFile.Open(archivePath, mode))
 				{
 					foreach (var file in files)
 					{

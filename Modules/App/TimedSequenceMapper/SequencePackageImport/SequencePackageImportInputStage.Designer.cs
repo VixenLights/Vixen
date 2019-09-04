@@ -31,6 +31,7 @@
 			this.lblChooseOutputFormat = new System.Windows.Forms.Label();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.btnEditMap = new System.Windows.Forms.Button();
 			this.btnCreateMap = new System.Windows.Forms.Button();
 			this.txtProfileMap = new System.Windows.Forms.TextBox();
 			this.txtMapFile = new System.Windows.Forms.TextBox();
@@ -41,7 +42,6 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.btnOuputFolderSelect = new System.Windows.Forms.Button();
 			this.layerController1 = new Dataweb.NShape.Controllers.LayerController();
-			this.btnEditMap = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.grpSequence.SuspendLayout();
@@ -94,6 +94,19 @@
 			this.groupBox1.TabIndex = 16;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Profile Map Configuration";
+			this.groupBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			// 
+			// btnEditMap
+			// 
+			this.btnEditMap.Location = new System.Drawing.Point(106, 125);
+			this.btnEditMap.Name = "btnEditMap";
+			this.btnEditMap.Size = new System.Drawing.Size(75, 23);
+			this.btnEditMap.TabIndex = 27;
+			this.btnEditMap.Text = "Edit Map";
+			this.btnEditMap.UseVisualStyleBackColor = true;
+			this.btnEditMap.Click += new System.EventHandler(this.btnEditMap_Click);
+			this.btnEditMap.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.btnEditMap.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// btnCreateMap
 			// 
@@ -153,10 +166,11 @@
 			this.grpSequence.Controls.Add(this.txtPackageFile);
 			this.grpSequence.Controls.Add(this.label2);
 			this.grpSequence.Controls.Add(this.btnOuputFolderSelect);
+			this.grpSequence.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.grpSequence.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.grpSequence.Location = new System.Drawing.Point(3, 48);
 			this.grpSequence.Name = "grpSequence";
-			this.grpSequence.Size = new System.Drawing.Size(499, 82);
+			this.grpSequence.Size = new System.Drawing.Size(504, 82);
 			this.grpSequence.TabIndex = 15;
 			this.grpSequence.TabStop = false;
 			this.grpSequence.Text = "Package Location";
@@ -193,18 +207,6 @@
 			// layerController1
 			// 
 			this.layerController1.DiagramSetController = null;
-			// 
-			// btnEditMap
-			// 
-			this.btnEditMap.Location = new System.Drawing.Point(106, 125);
-			this.btnEditMap.Name = "btnEditMap";
-			this.btnEditMap.Size = new System.Drawing.Size(75, 23);
-			this.btnEditMap.TabIndex = 27;
-			this.btnEditMap.Text = "Edit Map";
-			this.btnEditMap.UseVisualStyleBackColor = true;
-			this.btnEditMap.Click += new System.EventHandler(this.btnEditMap_Click);
-			this.btnEditMap.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnEditMap.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// SequencePackageImportInputStage
 			// 
