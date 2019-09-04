@@ -123,7 +123,6 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		protected override async Task CloseAsync()
 		{
 			// TODO: unsubscribe from events here
-
 			await base.CloseAsync();
 		}
 

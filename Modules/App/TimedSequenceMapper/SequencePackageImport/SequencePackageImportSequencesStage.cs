@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls.Theme;
 using Common.Controls.Wizard;
-using Vixen.Services;
 
 namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 {

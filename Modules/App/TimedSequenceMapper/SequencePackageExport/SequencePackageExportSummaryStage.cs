@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Xml;
 using System.Xml.Linq;
-using Common.Controls;
 using Common.Controls.Theme;
 using Common.Controls.Wizard;
 using NLog;

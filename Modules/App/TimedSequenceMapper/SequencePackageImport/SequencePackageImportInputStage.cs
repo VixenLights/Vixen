@@ -5,8 +5,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
-using Catel.IoC;
-using Catel.Services;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Controls.Wizard;
