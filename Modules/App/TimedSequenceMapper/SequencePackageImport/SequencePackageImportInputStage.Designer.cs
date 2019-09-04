@@ -41,7 +41,6 @@
 			this.txtPackageFile = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.btnOuputFolderSelect = new System.Windows.Forms.Button();
-			this.layerController1 = new Dataweb.NShape.Controllers.LayerController();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.grpSequence.SuspendLayout();
@@ -204,10 +203,6 @@
 			this.btnOuputFolderSelect.UseVisualStyleBackColor = true;
 			this.btnOuputFolderSelect.Click += new System.EventHandler(this.btnOutputFolderSelect_Click);
 			// 
-			// layerController1
-			// 
-			this.layerController1.DiagramSetController = null;
-			// 
 			// SequencePackageImportInputStage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -237,7 +232,6 @@
 		private System.Windows.Forms.TextBox txtMapFile;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button btnMapFile;
-		private Dataweb.NShape.Controllers.LayerController layerController1;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.TextBox txtProfileMap;
 		private System.Windows.Forms.Button btnCreateMap;
