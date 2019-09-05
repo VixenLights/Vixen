@@ -379,5 +379,6 @@ namespace Vixen.Sys
 			string dataPath = System.Configuration.ConfigurationManager.AppSettings["DataPath"];
 			return dataPath ?? Paths.DefaultDataRootPath;
 		}
+		public static string ProfileName { get; set; }
 	}
 }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
 using System.Xml;
+using Catel.Collections;
 using Common.Controls;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
@@ -15,6 +16,7 @@ using Common.Resources.Properties;
 using Vixen.Module.App;
 using Vixen.Module.Effect;
 using Vixen.Services;
+using Vixen.Sys;
 using Vixen.Sys.State;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
@@ -30,13 +32,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		//Used for the Effects ToolStrip
 		private ToolStripItem _mToolStripEffects;
 		private bool _beginNewEffectDragDrop;
-		private List<AllToolStripItems> _allToolStripItems;
-		private readonly string _toolStripFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen", "ToolStripLocationSettings.xml");
+		private ToolStripStates _toolStripStates;
+		private readonly string _standardToolStripFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen", "ToolStripState.xml");
+		private readonly string _profileToolStripFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen", $"{VixenSystem.ProfileName}_ToolStripState.xml");
 		private bool _mouseDown;
 
 		// Libraries
-		private readonly string _colorFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen", "ColorPalette.xml");
-		private List<Color> _colors = new List<Color>();
 		private ToolStrip _currentToolStrip = null;
 		private ToolStripButton _selectedButton;
 		private bool _toolStripButtonAlreadyChecked;
@@ -359,19 +360,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				foreach (Control toolsStripControl in row.Controls)
 				{
-					ToolStrip toolsStripItems = toolsStripControl as ToolStrip;
-					if (toolsStripItems.Name == "toolStripEffects") continue; // || toolsStripItems.Name.Contains("Library")) continue; // Skip the Effects Toolstrip
-					foreach (ToolStripItem item in toolsStripItems.Items)
+					if (toolsStripControl.Name == toolStripEffects.Name) continue;
+					if (toolsStripControl is ToolStrip toolStrip)
 					{
-						foreach (AllToolStripItems it in _allToolStripItems)
+						if (_toolStripStates.States.TryGetValue(toolStrip.Name, out var toolStripStates))
 						{
-							if (item.ToolTipText == it.ItemName)
+							foreach (ToolStripItem item in toolStrip.Items)
 							{
-								item.Visible = it.Visible;
-								break;
+								if (toolStripStates.TryGetValue(item.Name, out var visible))
+								{
+									item.Visible = visible;
+								}
 							}
 						}
-
 					}
 				}
 			}
@@ -383,41 +384,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#region All Toolstrip Events (Except Effects and Libraries)
 
 		// Show/Hide selected Toolstrip item.
-		private void ToolStripAllItem_Changed(object sender, EventArgs e)
+		private void ToolStripItemState_Changed(object sender, EventArgs e)
 		{
-			ItemsChanged(sender);
-			foreach (var row in toolStripContainer.TopToolStripPanel.Rows)
+			if (sender is ToolStripMenuItem tsmi)
 			{
-				foreach (Control toolsStripControl in row.Controls)
+				if (tsmi.Tag is ToolStripItem menuItem)
 				{
-					ToolStrip toolsStripItems = toolsStripControl as ToolStrip;
-					foreach (ToolStripItem item in toolsStripItems.Items)
+					menuItem.Visible = tsmi.Checked;
+					if (menuItem.Owner is ToolStrip ts)
 					{
-						AllToolStripItems ts = new AllToolStripItems();
-						ts.ItemName = item.ToolTipText;
-						ts.Visible = item.Visible;
-						_allToolStripItems.Add(ts);
-					}
-				}
-			}
-		}
-
-		private void ItemsChanged(object sender)
-		{
-			_allToolStripItems.Clear();
-			ToolStripMenuItem tsi = sender as ToolStripMenuItem;
-			foreach (var row in toolStripContainer.TopToolStripPanel.Rows)
-			{
-				foreach (Control toolsStripControl in row.Controls)
-				{
-					ToolStrip toolsStripItems = toolsStripControl as ToolStrip;
-					foreach (ToolStripItem item in toolsStripItems.Items)
-					{
-						if (item.ToolTipText != null && item.ToolTipText == tsi.Text ||
-						    item.Tag != null && item.Tag.ToString() == tsi.Text)
+						if (_toolStripStates.States.TryGetValue(ts.Name, out var itemStates))
 						{
-							item.Visible = tsi.Checked;
-							return;
+							if (itemStates.ContainsKey(menuItem.Name))
+							{
+								itemStates[menuItem.Name] = tsmi.Checked;
+							}
+							else
+							{
+								itemStates.Add(menuItem.Name, tsmi.Checked);
+							}
 						}
 					}
 				}
@@ -429,19 +414,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		// Show/Hide selected ToolBar.
 		private void ToolStripItem_Changed(object sender, EventArgs e)
 		{
-			ToolStripMenuItem tsi = sender as ToolStripMenuItem;
-			foreach (var row in toolStripContainer.TopToolStripPanel.Rows)
+			if (sender is ToolStripMenuItem tsi)
 			{
-				foreach (Control toolsStripControl in row.Controls)
+				foreach (var row in toolStripContainer.TopToolStripPanel.Rows)
 				{
-					ToolStrip toolsStripItems = toolsStripControl as ToolStrip;
-					if (toolsStripItems.Text != null && toolsStripItems.Text == tsi.Text)
+					foreach (Control toolsStripControl in row.Controls)
 					{
-						toolsStripItems.Visible = tsi.Checked;
-						break;
+						if (toolsStripControl is ToolStrip toolStrip)
+						{
+							if (toolStrip.Text != null && toolStrip.Text == tsi.Text)
+							{
+								toolStrip.Visible = tsi.Checked;
+								break;
+							}
+						}
 					}
 				}
 			}
+			
 
 			// Add Toolbar list to Context menu
 			PopulateContextToolBars(toolbarsToolStripMenuItem);
@@ -481,7 +471,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// Resets Context menu items to default.
 			ToolStripItem tsm = sender as ToolStripItem;
 			ToolStrip ts = tsm.Tag as ToolStrip;
-			foreach (ToolStripItem item in ts.Items) item.Visible = true;
+			if (_toolStripStates.States.TryGetValue(ts.Name, out var itemStates))
+			{
+				foreach (ToolStripItem item in ts.Items)
+				{
+					item.Visible = true;
+					itemStates[item.Name] = true;
+				}
+			}
+			else
+			{
+				foreach (ToolStripItem item in ts.Items)
+				{
+					item.Visible = true;
+				}
+			}
 		}
 
 		#endregion
@@ -495,7 +499,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			switch (_contextToolStrip.Name)
 			{
 				case "toolStripColorLibrary":
-					UpdateColorSettings();
+					UpdateColorLibrary();
 					break;
 				case "toolStripCurveLibrary":
 					//This is just plain wrong. We should keep track of what moved and do proper reordering.
@@ -574,7 +578,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void toolStripLibraries_MouseEnter(object sender, EventArgs e)
+		private void toolStripLibraryButton_MouseEnter(object sender, EventArgs e)
 		{
 			_selectedButton = sender as ToolStripButton;
 			if (_selectedButton != null)
@@ -586,7 +590,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_contextToolStrip.Focus();
 		}
 
-		private void toolStripLibraries_MouseLeave(object sender, EventArgs e)
+		private void toolStripLibraryButton_MouseLeave(object sender, EventArgs e)
 		{
 			_selectedButton = sender as ToolStripButton;
 			if (_selectedButton != null)
@@ -599,36 +603,70 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void toolStripLibrary_Leave(object sender, EventArgs e)
 		{
 			if (_mouseDown) return;
+			if (sender is ToolStrip ts)
+			{
+				foreach (ToolStripButton button in ts.Items)
+				{
+					button.Checked = false;
+				}
+			}
 			_currentToolStrip = null;
 			TimelineControl.Focus();
 		}
 
-		void toolStripLibraries_MouseDown(object sender, MouseEventArgs e)
+		private Rectangle _dragBoxFromToolStripMouseDown;
+		
+		void toolStripLibraryButton_MouseDown(object sender, MouseEventArgs e)
 		{
 			_selectedButton = sender as ToolStripButton;
-			if (_selectedButton == null) return;
+			if (_selectedButton == null)
+			{
+				_dragBoxFromToolStripMouseDown = Rectangle.Empty;
+				return;
+			}
 			_contextToolStrip = _selectedButton.Owner;
 			_contextToolStrip.Focus();
 			if (e.Clicks == 2)
 			{
+				_dragBoxFromToolStripMouseDown = Rectangle.Empty;
 				toolStripMenuItemEditItem_Click(sender, null);
 				return;
 			}
 			if (e.Button == MouseButtons.Right)
 			{
+				_dragBoxFromToolStripMouseDown = Rectangle.Empty;
 				_mouseDown = true;
-				SelectNodeForDrawing();
 			}
 			else 
 			{
 				SelectNodeForDrawing();
-				// Move a toolstrip item within the same toolstrip.
-				_itemMove = true;
-				_dragValid = true;
-				_contextToolStrip.DoDragDrop(_selectedButton.Tag, DragDropEffects.Move);
+				Size dragSize = SystemInformation.DragSize;
+				_dragBoxFromToolStripMouseDown = new Rectangle(new Point(e.X - (dragSize.Width /2),
+					e.Y - (dragSize.Height /2)), dragSize);
 			}
 		}
 
+		private void toolStripLibraryButton_MouseUp(object sender, MouseEventArgs e)
+		{
+			_dragBoxFromToolStripMouseDown = Rectangle.Empty;
+		}
+
+		private void toolStripLibraryButton_MouseMove(object sender, MouseEventArgs e)
+		{
+			if ((e.Button & MouseButtons.Left) == MouseButtons.Left) {
+
+                // If the mouse moves outside the rectangle, start the drag.
+                if (_dragBoxFromToolStripMouseDown != Rectangle.Empty && 
+                    !_dragBoxFromToolStripMouseDown.Contains(e.X, e.Y)) {
+
+					_itemMove = true;
+                    _dragValid = true;
+                    // Proceed with the drag-and-drop, passing in the button item.                    
+                    _contextToolStrip.DoDragDrop(_selectedButton.Tag, DragDropEffects.Move);
+                }
+            }
+        }
+        
 		private void toolStripLibrary_DragLeave(object sender, EventArgs e)
 		{
 			// Copy the Curve/Gradient/Color to an Effect.
@@ -639,19 +677,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			switch (_contextToolStrip.Name)
 			{
 				case "toolStripColorLibrary":
-					_selectedButton.Owner.DoDragDrop(_selectedButton.Tag, DragDropEffects.Copy);
+					_selectedButton.Owner?.DoDragDrop(_selectedButton.Tag, DragDropEffects.Copy);
 					break;
 				case "toolStripCurveLibrary":
 					Curve newCrve = new Curve((Curve)_selectedButton.Tag);
 					if (link) newCrve.LibraryReferenceName = _selectedButton.Name;
 					newCrve.IsCurrentLibraryCurve = false;
-					_selectedButton.Owner.DoDragDrop(newCrve, DragDropEffects.Copy);
+					_selectedButton.Owner?.DoDragDrop(newCrve, DragDropEffects.Copy);
 					break;
 				case "toolStripGradientLibrary":
 					ColorGradient newGradient = new ColorGradient((ColorGradient)_selectedButton.Tag);
 					if (link) newGradient.LibraryReferenceName = _selectedButton.Name;
 					newGradient.IsCurrentLibraryGradient = false;
-					_selectedButton.Owner.DoDragDrop(newGradient, DragDropEffects.Copy);
+					_selectedButton.Owner?.DoDragDrop(newGradient, DragDropEffects.Copy);
 					break;
 			}
 		}
@@ -691,235 +729,38 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripMenuItemImport_Click(object sender, EventArgs e)
 		{
-			string filter;
-			string defaultExt;
-			switch (_contextToolStrip.Name)
+			//Just let the form library handle it.
+			if (_contextToolStrip.Name == toolStripColorLibrary.Name)
 			{
-				case "toolStripColorLibrary":
-					defaultExt = ".vfc";
-					filter = @"Vixen 3 Favorite Colors (*.vfc)|*.vfc|All Files (*.*)|*.*";
-					break;
-				case "toolStripCurveLibrary":
-					defaultExt = ".vcl";
-					filter = @"Vixen 3 Curve Library (*.vcl)|*.vcl|All Files (*.*)|*.*";
-					break;
-				default:
-					defaultExt = ".vgl";
-					filter = @"Vixen 3 Color Gradient Library (*.vgl)|*.vgl|All Files (*.*)|*.*";
-					break;
+				ColorLibraryForm.ImportColorLibrary();
 			}
-
-			OpenFileDialog openFileDialog = new OpenFileDialog
+			else if(_contextToolStrip.Name == toolStripCurveLibrary.Name)
 			{
-				DefaultExt = defaultExt,
-				Filter = filter,
-				FilterIndex = 0
-			};
-
-			if (_lastFolder != string.Empty) openFileDialog.InitialDirectory = _lastFolder;
-			if (openFileDialog.ShowDialog() != DialogResult.OK) return;
-			_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
-
-			switch (_contextToolStrip.Name)
-			{
-				case "toolStripColorLibrary":
-					List<Color> colors = new List<Color>();
-
-					try
-					{
-						using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
-						{
-							DataContractSerializer ser = new DataContractSerializer(typeof(List<Color>));
-							colors = (List<Color>)ser.ReadObject(reader);
-						}
-
-						foreach (Color color in colors)
-						{
-							_colors.Add(color);
-						}
-					}
-					catch (Exception ex)
-					{
-						SendImportErrorMsg(ex, "Invalid file while importing Favorite Colors: ");
-					}
-					PopulateColors();
-					Save_ColorPaletteFile();
-					ColorLibraryForm.Load_ColorPaletteFile();
-					ColorLibraryForm.PopulateColors();
-					break;
-				case "toolStripCurveLibrary":
-					Dictionary<string, Curve> curves = new Dictionary<string, Curve>();
-
-					try
-					{
-						using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
-						{
-							DataContractSerializer ser = new DataContractSerializer(typeof(Dictionary<string, Curve>));
-							curves = (Dictionary<string, Curve>)ser.ReadObject(reader);
-						}
-
-						_contextMenuStrip.SuspendLayout();
-						_curveLibrary.BeginBulkUpdate();
-						foreach (KeyValuePair<string, Curve> curve in curves)
-						{
-							//This was just easier than prompting for a rename
-							//and rechecking, and repormpting... and on and on and on...
-							string curveName = curve.Key;
-							int i = 2;
-							while (_curveLibrary.Contains(curveName))
-							{
-								curveName = curve.Key + " " + i;
-								i++;
-							}
-
-							_curveLibrary.AddCurve(curveName, curve.Value);
-						}
-						_curveLibrary.EndBulkUpdate();
-						Populate_Curves();
-						_contextMenuStrip.ResumeLayout();
-					}
-					catch (Exception ex)
-					{
-						SendImportErrorMsg(ex, "Invalid file while importing Curve Library: ");
-					}
-					break;
-				case "toolStripGradientLibrary":
-					Dictionary<string, ColorGradient> gradients = new Dictionary<string, ColorGradient>();
-					try
-					{
-						using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
-						{
-							DataContractSerializer ser = new DataContractSerializer(typeof(Dictionary<string, ColorGradient>));
-							gradients = (Dictionary<string, ColorGradient>)ser.ReadObject(reader);
-						}
-						
-						_contextToolStrip.SuspendLayout();
-						_colorGradientLibrary.BeginBulkUpdate();
-						foreach (KeyValuePair<string, ColorGradient> gradient in gradients)
-						{
-							//This was just easier than prompting for a rename
-							//and rechecking, and repormpting... and on and on and on...
-							string gradientName = gradient.Key;
-							int i = 2;
-							while (_colorGradientLibrary.Contains(gradientName))
-							{
-								gradientName = gradient.Key + " " + i;
-								i++;
-							}
-
-							_colorGradientLibrary.AddColorGradient(gradientName, gradient.Value);
-						}
-						_colorGradientLibrary.EndBulkUpdate();
-						Populate_Gradients();
-						_contextToolStrip.ResumeLayout();
-
-					}
-					catch (Exception ex)
-					{
-						SendImportErrorMsg(ex, "Invalid file while importing Color Gradient Library: ");
-					}
-					break;
+				CurveLibraryForm.ImportCurveLibrary();
 			}
-
+			else if (_contextToolStrip.Name == toolStripGradientLibrary.Name)
+			{
+				GradientLibraryForm.ImportGradientLibrary();
+			}
+			TimelineControl.Focus();
 		}
 
 		private void toolStripMenuItemExport_Click(object sender, EventArgs e)
 		{
-			string filter;
-			string defaultExt;
-			switch (_contextToolStrip.Name)
+			//Just let the form library handle it.
+			if (_contextToolStrip.Name == toolStripColorLibrary.Name)
 			{
-				case "toolStripColorLibrary":
-					defaultExt = ".vfc";
-					filter = @"Vixen 3 Favorite Colors (*.vfc)|*.vfc|All Files (*.*)|*.*";
-					break;
-				case "toolStripCurveLibrary":
-					defaultExt = ".vcl";
-					filter = @"Vixen 3 Curve Library (*.vcl)|*.vcl|All Files (*.*)|*.*";
-					break;
-				default:
-					defaultExt = ".vgl";
-					filter = @"Vixen 3 Color Gradient Library (*.vgl)|*.vgl|All Files (*.*)|*.*";
-					break;
+				ColorLibraryForm.ExportColorLibrary();
 			}
-
-			SaveFileDialog saveFileDialog = new SaveFileDialog
+			else if(_contextToolStrip.Name == toolStripCurveLibrary.Name)
 			{
-				DefaultExt = defaultExt,
-				Filter = filter
-			};
-
-			if (_lastFolder != string.Empty) saveFileDialog.InitialDirectory = _lastFolder;
-			if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
-			_lastFolder = Path.GetDirectoryName(saveFileDialog.FileName);
-
-			var xmlsettings = new XmlWriterSettings
-			{
-				Indent = true,
-				IndentChars = "\t",
-			};
-
-			switch (_contextToolStrip.Name)
-			{
-				case "toolStripColorLibrary":
-					try
-					{
-						DataContractSerializer ser = new DataContractSerializer(typeof(List<Color>));
-						var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
-						ser.WriteObject(writer, _colors);
-						writer.Close();
-					}
-					catch (Exception ex)
-					{
-						SendExportErrorMsg(ex, "While exporting Favorite Colors: ");
-					}
-					break;
-				case "toolStripCurveLibrary":
-					try
-					{
-						Dictionary<string, Curve> curves = _curveLibrary.ToDictionary(curve => curve.Key, curve => curve.Value);
-
-						DataContractSerializer ser = new DataContractSerializer(typeof(Dictionary<string, Curve>));
-						var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
-						ser.WriteObject(writer, curves);
-						writer.Close();
-					}
-					catch (Exception ex)
-					{
-						SendExportErrorMsg(ex, "While exporting Curve Library: ");
-					}
-					break;
-				case "toolStripGradientLibrary":
-					try
-					{
-						Dictionary<string, ColorGradient> gradients = _colorGradientLibrary.ToDictionary(gradient => gradient.Key, gradient => gradient.Value);
-
-						DataContractSerializer ser = new DataContractSerializer(typeof(Dictionary<string, ColorGradient>));
-						var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
-						ser.WriteObject(writer, gradients);
-						writer.Close();
-					}
-					catch (Exception ex)
-					{
-						SendExportErrorMsg(ex, "While exporting Color Gradient Library: ");
-					}
-					break;
+				CurveLibraryForm.ExportCurveLibrary();
 			}
-		}
-
-		private void SendExportErrorMsg(Exception ex, string errorMsg)
-		{
-			Logging.Error(errorMsg + saveFileDialog.FileName + " " + ex.InnerException);
-			var messageBox = new MessageBoxForm("Unable to export data, please check the error log for details.",
-				"Error", MessageBoxButtons.OK, SystemIcons.Error);
-			messageBox.ShowDialog();
-		}
-
-		private void SendImportErrorMsg(Exception ex, string errorMsg)
-		{
-			Logging.Error(errorMsg + openFileDialog.FileName + " " + ex.InnerException);
-			var messageBox = new MessageBoxForm("Sorry, we didn't recognize the data in that file.", "Invalid file", MessageBoxButtons.OK, SystemIcons.Error);
-			messageBox.ShowDialog();
+			else if (_contextToolStrip.Name == toolStripGradientLibrary.Name)
+			{
+				GradientLibraryForm.ExportGradientLibrary();
+			}
+			TimelineControl.Focus();
 		}
 
 		#endregion
@@ -933,108 +774,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void ToolStripMenu(bool dragDrop, string newButtonName)
 		{
-			ToolStripButton tsb = new ToolStripButton();
 			switch (_contextToolStrip.Name)
 			{
 				case "toolStripColorLibrary":
-					using (ColorPicker cp = new ColorPicker())
-					{
-						cp.LockValue_V = false;
-						cp.Color = XYZ.FromRGB(Color.White);
-						DialogResult result = cp.ShowDialog();
-						if (result != DialogResult.OK) return;
-						Color colorValue = cp.Color.ToRGB().ToArgb();
-
-						_colors.Add(colorValue);
-						tsb = new ToolStripButton
-						{
-							ToolTipText = string.Format("R: {0} G: {1} B: {2}", colorValue.R, colorValue.G, colorValue.B),
-							Tag = colorValue,
-							Image = CreateColorListItem(colorValue)
-						};
-
-						toolStripColorLibrary.Items.Add(tsb);
-
-						UpdateColorSettings();
-					}
+					ColorLibraryForm.AddNewColor();
 					break;
 				case "toolStripCurveLibrary":
-					if (!dragDrop) newButtonName = AddCurveToLibrary(new Curve());
-					
-					foreach (ToolStripItem item in toolStripCurveLibrary.Items)
+					if (!dragDrop)
 					{
-						if (item.Name == newButtonName)
-						{
-							Populate_Curves();
-							return;
-						}
+						CurveLibraryForm.AddCurveToLibrary(new Curve());
 					}
-
-					foreach (KeyValuePair<string, Curve> kvp in _curveLibrary)
-					{
-						if (kvp.Key == newButtonName)
-						{
-							var curveImage = kvp.Value.GenerateGenericCurveImage(new Size(_iconSize, _iconSize));
-
-							curveImage = DrawButtonBorder(curveImage);
-							string curveName = kvp.Key;
-
-							tsb = new ToolStripButton
-							{
-								ToolTipText = curveName,
-								Tag = kvp.Value,
-								Name = curveName,
-								ImageKey = curveName,
-								Image = curveImage
-							};
-
-							toolStripCurveLibrary.Items.Add(tsb);
-						}
-					}
-
 					break;
 				case "toolStripGradientLibrary":
-					if (!dragDrop) newButtonName = AddGradientToLibrary(new ColorGradient());
-
-					foreach (ToolStripItem item in toolStripGradientLibrary.Items)
+					if (!dragDrop)
 					{
-						if (item.Name == newButtonName)
-						{
-							Populate_Gradients();
-							return;
-						}
-					}
-
-					foreach (KeyValuePair<string, ColorGradient> kvp in _colorGradientLibrary)
-					{
-						if (kvp.Key == newButtonName)
-						{
-
-							var gradientImage =
-								new Bitmap(kvp.Value.GenerateColorGradientImage(new Size(_iconSize, _iconSize), false),
-									_iconSize,
-									_iconSize);
-							gradientImage = DrawButtonBorder(gradientImage);
-							string name = kvp.Key;
-
-							tsb = new ToolStripButton
-							{
-								ToolTipText = name,
-								Tag = kvp.Value,
-								Name = name,
-								ImageKey = name,
-								Image = gradientImage
-							};
-
-							toolStripGradientLibrary.Items.Add(tsb);
-						}
+						GradientLibraryForm.AddGradientToLibrary(new ColorGradient());
 					}
 					break;
 			}
-
-			tsb.MouseDown += toolStripLibraries_MouseDown;
-			tsb.MouseEnter += toolStripLibraries_MouseEnter;
-			tsb.MouseLeave += toolStripLibraries_MouseLeave;
+			TimelineControl.Focus();
 		}
 
 		private void toolStripMenuItemEditItem_Click(object sender, EventArgs e)
@@ -1055,7 +813,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						_selectedButton.Tag = colorValue;
 						_selectedButton.Image = CreateColorListItem(colorValue);
 
-						UpdateColorSettings();
+						UpdateColorLibrary();
 					}
 					break;
 				case "toolStripCurveLibrary":
@@ -1088,6 +846,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					break;
 			}
+			TimelineControl.Focus();
 		}
 
 		private void toolStripMenuItemDeleteItem_Click(object sender, EventArgs e)
@@ -1096,20 +855,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			switch (_contextToolStrip.Name)
 			{
 				case "toolStripColorLibrary":
+					var colors = new List<Color>();
 					foreach (ToolStripButton tsb in toolStripColorLibrary.Items)
 					{
 						if (tsb.Checked)
 						{
-							_colors.Remove((Color)tsb.Tag);
-							removeButtons.Add(tsb);
+							colors.Add((Color)tsb.Tag);
 						}
 					}
-					foreach (ToolStripButton tsb in removeButtons)
-					{
-						toolStripColorLibrary.Items.Remove(tsb);
-					}
-
-					UpdateColorSettings();
+					ColorLibraryForm.RemoveColors(colors);
 					break;
 				case "toolStripCurveLibrary":
 					_curveLibrary.BeginBulkUpdate();
@@ -1144,6 +898,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_colorGradientLibrary.EndBulkUpdate();
 					break;
 			}
+			TimelineControl.Focus();
 		}
 		
 		private void imageSizeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1188,16 +943,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void Populate_Colors(object sender, EventArgs e)
 		{
 			_currentToolStrip = null;
-			PopulateColorLibraryToolStrip_Context();
+			PopulateColors();
 		}
 
 		private void PopulateColorLibraryToolStrip_Context()
 		{
-			if (File.Exists(_colorFilePath))
-			{
-				Load_ColorPaletteFile();
-				PopulateColors();
-			}
+			PopulateColors();
 		}
 
 		public void PopulateColors()
@@ -1206,49 +957,36 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				toolStripColorLibrary.SuspendLayout();
 				toolStripColorLibrary.Items.Clear();
-				foreach (Color colorItem in _colors)
+				var itemsState = new Dictionary<string, bool>();
+				if (_toolStripStates.States.TryGetValue(toolStripGradientLibrary.Name, out var state))
 				{
+					itemsState = state;
+				}
+				foreach (Color colorItem in ColorLibraryForm.Colors)
+				{
+					string name = $"R: {colorItem.R} G: {colorItem.G} B: {colorItem.B}";
 					ToolStripButton tsb = new ToolStripButton
 					{
-						ToolTipText = string.Format("R: {0} G: {1} B: {2}", colorItem.R, colorItem.G, colorItem.B),
+						ToolTipText = name,
 						Tag = colorItem,
 						Image = CreateColorListItem(colorItem),
-						TextImageRelation = TextImageRelation.ImageAboveText
+						TextImageRelation = TextImageRelation.ImageAboveText,
+						Name = name
 					};
 
-					tsb.MouseDown += toolStripLibraries_MouseDown;
-					tsb.MouseEnter += toolStripLibraries_MouseEnter;
-					tsb.MouseLeave += toolStripLibraries_MouseLeave;
+					tsb.MouseDown += toolStripLibraryButton_MouseDown;
+					tsb.MouseUp += toolStripLibraryButton_MouseUp;
+					tsb.MouseMove += toolStripLibraryButton_MouseMove;
+					tsb.MouseEnter += toolStripLibraryButton_MouseEnter;
+					tsb.MouseLeave += toolStripLibraryButton_MouseLeave;
+					if (itemsState.TryGetValue(tsb.Name, out var visible))
+					{
+						tsb.Visible = visible;
+					}
 					toolStripColorLibrary.Items.Add(tsb);
 				}
 				toolStripColorLibrary.ResumeLayout();
 			}
-		}
-
-		public void Load_ColorPaletteFile()
-		{
-			if (File.Exists(_colorFilePath))
-			{
-				using (FileStream reader = new FileStream(_colorFilePath, FileMode.Open, FileAccess.Read))
-				{
-					DataContractSerializer ser = new DataContractSerializer(typeof(List<Color>));
-					_colors = (List<Color>)ser.ReadObject(reader);
-				}
-			}
-		}
-
-		public void Save_ColorPaletteFile()
-		{
-			var xmlsettings = new XmlWriterSettings
-			{
-				Indent = true,
-				IndentChars = "\t",
-			};
-
-			DataContractSerializer dataSer = new DataContractSerializer(typeof(List<Color>));
-			var dataWriter = XmlWriter.Create(_colorFilePath, xmlsettings);
-			dataSer.WriteObject(dataWriter, _colors);
-			dataWriter.Close();
 		}
 
 		private Bitmap CreateColorListItem(Color colorItem)
@@ -1267,28 +1005,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return result;
 		}
 
-		private void Update_ColorOrder()
+		private void UpdateColorLibrary()
 		{
-			_colors.Clear();
-			foreach (ToolStripButton tsb in toolStripColorLibrary.Items) _colors.Add((Color)tsb.Tag);
-			Save_ColorPaletteFile();
-		}
-
-		private void UpdateColorSettings()
-		{
-			Update_ColorOrder();
-
-			if (_colorLibraryForm != null && _colors != null)
-			{
-				ColorLibraryForm.Load_ColorPaletteFile();
-				ColorLibraryForm.PopulateColors();
-			}
-		}
-
-		public event EventHandler SelectionChanged
-		{
-			add { ColorLibraryForm.SelectionChanged += value; }
-			remove { if (ColorLibraryForm != null) ColorLibraryForm.SelectionChanged -= value; }
+			var colors = new List<Color>();
+			foreach (ToolStripButton tsb in toolStripColorLibrary.Items) colors.Add((Color)tsb.Tag);
+			ColorLibraryForm.UpdateColorSet(colors);
 		}
 
 		#endregion
@@ -1321,24 +1042,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void toolStripColorLibrary_DragDrop(object sender, DragEventArgs e)
 		{
 			ToolStrip selectedToolStrip = sender as ToolStrip;
-			if (selectedToolStrip != null) _contextToolStrip = selectedToolStrip;
+			if (selectedToolStrip != null)
+			{
+				_contextToolStrip = selectedToolStrip;
+			}
 			if (e.Effect == DragDropEffects.Copy)
 			{
 				Color colorItem = (Color)e.Data.GetData(typeof(Color));
-
-				ToolStripButton tsb = new ToolStripButton
-				{
-					ToolTipText = string.Format("R: {0} G: {1} B: {2}", colorItem.R, colorItem.G, colorItem.B),
-					Tag = colorItem,
-					Image = CreateColorListItem(colorItem)
-				};
-
-				tsb.MouseDown += toolStripLibraries_MouseDown;
-				tsb.MouseEnter += toolStripLibraries_MouseEnter;
-				tsb.MouseLeave += toolStripLibraries_MouseLeave;
-				toolStripColorLibrary.Items.Add(tsb);
-
-				UpdateColorSettings();
+				ColorLibraryForm.AddColor(colorItem);
 			}
 			else if (e.Effect == DragDropEffects.Move)
 			{
@@ -1368,6 +1079,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				toolStripCurveLibrary.SuspendLayout();
 				toolStripCurveLibrary.Items.Clear();
+				var itemsState = new Dictionary<string, bool>();
+				if (_toolStripStates.States.TryGetValue(toolStripCurveLibrary.Name, out var state))
+				{
+					itemsState = state;
+				}
 				using (var p = new Pen(ThemeColorTable.BorderColor, 2))
 				{
 					foreach (KeyValuePair<string, Curve> kvp in _curveLibrary)
@@ -1390,62 +1106,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							TextImageRelation = TextImageRelation.ImageAboveText
 						};
 
-						tsb.MouseDown += toolStripLibraries_MouseDown;
-						tsb.MouseEnter += toolStripLibraries_MouseEnter;
-						tsb.MouseLeave += toolStripLibraries_MouseLeave;
+						tsb.MouseDown += toolStripLibraryButton_MouseDown;
+						tsb.MouseUp += toolStripLibraryButton_MouseUp;
+						tsb.MouseMove += toolStripLibraryButton_MouseMove;
+						tsb.MouseEnter += toolStripLibraryButton_MouseEnter;
+						tsb.MouseLeave += toolStripLibraryButton_MouseLeave;
+						if (itemsState.TryGetValue(tsb.Name, out var visible))
+						{
+							tsb.Visible = visible;
+						}
 						toolStripCurveLibrary.Items.Add(tsb);
 					}
 				}
 
-				foreach (ToolStripItem item in toolStripCurveLibrary.Items)
-				{
-					foreach (AllToolStripItems it in _allToolStripItems)
-					{
-						if (item.ToolTipText == it.ItemName)
-						{
-							item.Visible = it.Visible;
-							break;
-						}
-					}
-
-				}
 				toolStripCurveLibrary.ResumeLayout();
 			}
-		}
-
-		private string AddCurveToLibrary(Curve c, bool edit = true)
-		{
-			TextDialog dialog = new TextDialog("Curve name?");
-
-			while (dialog.ShowDialog() == DialogResult.OK)
-			{
-				if (dialog.Response == string.Empty)
-				{
-					var messageBox = new MessageBoxForm("Please enter a name.", "Curve Name", MessageBoxButtons.OK, SystemIcons.Warning);
-					messageBox.ShowDialog();
-					continue;
-				}
-
-				if (_curveLibrary.Contains(dialog.Response))
-				{
-					var messageBox = new MessageBoxForm("There is already a curve with that name. Do you want to overwrite it?", "Overwrite curve?", MessageBoxButtons.YesNoCancel, SystemIcons.Error);
-					messageBox.ShowDialog();
-					if (messageBox.DialogResult == DialogResult.OK)
-					{
-						if (edit) _curveLibrary.EditLibraryCurve(dialog.Response);
-						break;
-					}
-
-					if (messageBox.DialogResult == DialogResult.Cancel) break;
-				}
-				else
-				{
-					_curveLibrary.AddCurve(dialog.Response, c);
-					if (edit) _curveLibrary.EditLibraryCurve(dialog.Response);
-					break;
-				}
-			}
-			return dialog.Response;
 		}
 
 		#endregion
@@ -1461,9 +1136,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				// Copy the Curve to an Effect.
 				_currentToolStrip = null;
 				Curve c = (Curve)e.Data.GetData(typeof(Curve));
-				string newButtonName = AddCurveToLibrary(c, false);
+				
+				CurveLibraryForm.AddCurveToLibrary(c, false);
 
-				ToolStripMenu(true, newButtonName);
 				_currentToolStrip = selectedToolStrip;
 			}
 			else if (e.Effect == DragDropEffects.Move)
@@ -1522,6 +1197,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				toolStripGradientLibrary.SuspendLayout();
 				toolStripGradientLibrary.Items.Clear();
+
+				var itemsState = new Dictionary<string, bool>();
+				if (_toolStripStates.States.TryGetValue(toolStripGradientLibrary.Name, out var state))
+				{
+					itemsState = state;
+				}
 				using (var p = new Pen(ThemeColorTable.BorderColor, 2))
 				{
 					foreach (KeyValuePair<string, ColorGradient> kvp in _colorGradientLibrary)
@@ -1544,62 +1225,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							TextImageRelation = TextImageRelation.ImageAboveText
 						};
 
-						tsb.MouseDown += toolStripLibraries_MouseDown;
-						tsb.MouseEnter += toolStripLibraries_MouseEnter;
-						tsb.MouseLeave += toolStripLibraries_MouseLeave;
+						tsb.MouseDown += toolStripLibraryButton_MouseDown;
+						tsb.MouseUp += toolStripLibraryButton_MouseUp;
+						tsb.MouseMove += toolStripLibraryButton_MouseMove;
+						tsb.MouseEnter += toolStripLibraryButton_MouseEnter;
+						tsb.MouseLeave += toolStripLibraryButton_MouseLeave;
+
+						if (itemsState.TryGetValue(tsb.Name, out var visible))
+						{
+							tsb.Visible = visible;
+						}
 						toolStripGradientLibrary.Items.Add(tsb);
 					}
 				}
 
-				foreach (ToolStripItem item in toolStripGradientLibrary.Items)
-				{
-					foreach (AllToolStripItems it in _allToolStripItems)
-					{
-						if (item.ToolTipText == it.ItemName)
-						{
-							item.Visible = it.Visible;
-							break;
-						}
-					}
-
-				}
 				toolStripGradientLibrary.ResumeLayout();
 			}
-		}
-
-		private string AddGradientToLibrary(ColorGradient cg, bool edit = true)
-		{
-			TextDialog dialog = new TextDialog("Gradient name?");
-
-			while (dialog.ShowDialog() == DialogResult.OK)
-			{
-				if (dialog.Response == string.Empty)
-				{
-					var messageBox = new MessageBoxForm("Please enter a name.", "Gradient Name", MessageBoxButtons.OK, SystemIcons.Warning);
-					messageBox.ShowDialog();
-					continue;
-				}
-
-				if (_colorGradientLibrary.Contains(dialog.Response))
-				{
-					var messageBox = new MessageBoxForm("There is already a Gradient with that name. Do you want to overwrite it?", "Overwrite Gradient?", MessageBoxButtons.YesNoCancel, SystemIcons.Error);
-					messageBox.ShowDialog();
-					if (messageBox.DialogResult == DialogResult.OK)
-					{
-						if (edit) _colorGradientLibrary.EditLibraryItem(dialog.Response);
-						break;
-					}
-
-					if (messageBox.DialogResult == DialogResult.Cancel) break;
-				}
-				else
-				{
-					_colorGradientLibrary.AddColorGradient(dialog.Response, cg);
-					if (edit) _colorGradientLibrary.EditLibraryItem(dialog.Response);
-					break;
-				}
-			}
-			return dialog.Response;
 		}
 
 		#endregion
@@ -1612,12 +1253,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (selectedToolStrip != null) _contextToolStrip = selectedToolStrip;
 			if (e.Effect == DragDropEffects.Copy)
 			{
-				// Copy the Gradient to an Effect.
-				_currentToolStrip = null;
+				// Add the Gradient to to the library.
 				ColorGradient c = (ColorGradient)e.Data.GetData(typeof(ColorGradient));
-				string newButtonName = AddGradientToLibrary(c, false);
-
-				ToolStripMenu(true, newButtonName);
+				GradientLibraryForm.AddGradientToLibrary(c, false);
 				_currentToolStrip = selectedToolStrip;
 			}
 			else if (e.Effect == DragDropEffects.Move)
@@ -1710,6 +1348,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			ToolStripButton tsb = new ToolStripButton
 			{
+				Name = effectDescriptor.EffectName,
 				ToolTipText = effectDescriptor.EffectName,
 				Tag = effectDescriptor.TypeId,
 				ImageIndex = toolStripEffects.Items.Count - 1,
@@ -1722,24 +1361,29 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			tsb.MouseMove += tsb_MouseMove;
 
 			ToolStripMenuItem tsmi = new ToolStripMenuItem();
-			tsmi.Text = effectDescriptor.EffectName;
+			tsmi.Text = tsmi.Name = effectDescriptor.EffectName;
 			tsmi.CheckState = CheckState.Checked;
 			tsmi.Checked = true;
 			tsmi.CheckOnClick = true;
 			tsmi.Image = tsb.Image;
 			tsmi.Click += ToolStripEffectItem_Changed;
-			foreach (AllToolStripItems it in _allToolStripItems)
-			{
-				if (tsmi.Text == it.ItemName)
-				{
-					tsmi.Checked = it.Visible;
-					if (!toolStripMenuItem.Checked) tsb.Visible = false;
-					else if (!tsmi.Checked) tsb.Visible = false;
-					break;
-				}
-			}
 			tsmi.Tag = tsb;
 			toolStripMenuItem.DropDownItems.Add(tsmi);
+			if (_toolStripStates.States.TryGetValue(toolStripEffects.Name, out var stripItemStates))
+			{
+				if (stripItemStates.TryGetValue(tsmi.Name, out var visible))
+				{
+					tsmi.Checked = visible;
+					if (!toolStripMenuItem.Checked)
+					{
+						tsb.Visible = false;
+					}
+					else if (!tsmi.Checked)
+					{
+						tsb.Visible = false;
+					}
+				}
+			}
 		}
 
 		private void SelectNodeForDrawing(ToolStripButton selectedButton)
@@ -2094,11 +1738,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			DistributeSelectedEffectsEqually();
 		}
 
-		private void alignmentToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
-		{
-			toolStripAlignment.Visible = !toolStripAlignment.Visible;
-		}
-
 		#endregion
 
 		#region File Toolstrip Events
@@ -2174,10 +1813,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			foreach (ToolStripItem tsi in _contextToolStrip.Items)
 			{
 				ToolStripMenuItem tsmi = new ToolStripMenuItem();
+				tsmi.Tag = tsi;
 				tsmi.Text = tsi.ToolTipText;
 				tsmi.CheckOnClick = true;
 				tsmi.CheckState = CheckState.Checked;
-				tsmi.Click += ToolStripAllItem_Changed;
+				tsmi.Click += ToolStripItemState_Changed;
 				tsmi.Checked = tsi.Visible;
 				if (tsi.DisplayStyle != ToolStripItemDisplayStyle.None) tsmi.Image = tsi.Image;
 				tsm.DropDownItems.Add(tsmi);
@@ -2229,9 +1869,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void contextMenuStripLibraries_Closing(object sender, ToolStripDropDownClosingEventArgs e)
 		{
 			_mouseDown = false;
-			UpdateCurrentLibrary();
+			if(e.CloseReason != ToolStripDropDownCloseReason.ItemClicked)
+			{
+				if (_currentToolStrip is ToolStrip ts)
+				{
+					foreach (ToolStripButton button in ts.Items)
+					{
+						button.Checked = false;
+					}
+				}
+				TimelineControl.Focus();
+			}
 			_currentToolStrip = null;
-			TimelineControl.Focus();
 		}
 
 		private void toolStrip_EndDrag(object sender, EventArgs e)
@@ -2249,19 +1898,43 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public void Load_ToolsStripItemsFile()
 		{
-			_allToolStripItems = new List<AllToolStripItems>();
+			_toolStripStates = new ToolStripStates();
 
-			if (File.Exists(_toolStripFilePath))
+			if (File.Exists(_standardToolStripFilePath))
 			{
-				using (FileStream reader = new FileStream(_toolStripFilePath, FileMode.Open, FileAccess.Read))
+				using (FileStream reader = new FileStream(_standardToolStripFilePath, FileMode.Open, FileAccess.Read))
 				{
-					DataContractSerializer ser = new DataContractSerializer(typeof(List<AllToolStripItems>));
-					_allToolStripItems = (List<AllToolStripItems>)ser.ReadObject(reader);
+					try
+					{
+						DataContractSerializer ser = new DataContractSerializer(typeof(ToolStripStates));
+						_toolStripStates = (ToolStripStates)ser.ReadObject(reader);
+					}
+					catch (Exception e)
+					{
+						Logging.Error(e, "An error occured trying to restore the tool strip state.");
+					}
+				}
+
+				if (File.Exists(_profileToolStripFilePath))
+				{
+					using (FileStream reader = new FileStream(_profileToolStripFilePath, FileMode.Open, FileAccess.Read))
+					{
+						try
+						{
+							DataContractSerializer ser = new DataContractSerializer(typeof(ToolStripStates));
+							var profileStates = (ToolStripStates)ser.ReadObject(reader);
+							_toolStripStates.States.AddRange(profileStates.States);
+						}
+						catch (Exception e)
+						{
+							Logging.Error(e, "An error occured trying to restore the profile tool strip state.");
+						}
+					}
 				}
 			}
 			else
 			{
-				PopulateToolStripClass(true);
+				PopulateToolStripStates(true);
 			}
 		}
 
@@ -2346,29 +2019,60 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				toolStripAlignment.ImageScalingSize.Height);
 
 			// Save each Toolstrip settings
-			_allToolStripItems.Clear();
-			PopulateToolStripClass(false);
-			var xmlsettings = new XmlWriterSettings
+			PopulateToolStripStates(false);
+			var xmlSettings = new XmlWriterSettings
 			{
 				Indent = true,
 				IndentChars = "\t",
 			};
 
-			DataContractSerializer dataSer = new DataContractSerializer(typeof(List<AllToolStripItems>));
-			var dataWriter = XmlWriter.Create(_toolStripFilePath, xmlsettings);
-			dataSer.WriteObject(dataWriter, _allToolStripItems);
-			dataWriter.Close();
+			var profileStates = new ToolStripStates
+			{
+				States = _toolStripStates.States.Where(x => x.Key == toolStripGradientLibrary.Name ||
+				                                            x.Key == toolStripCurveLibrary.Name ||
+				                                            x.Key == toolStripColorLibrary.Name)
+					.ToDictionary(val => val.Key, val => val.Value)
+			};
+
+
+
+			var regularStates = new ToolStripStates
+			{
+				States = _toolStripStates.States.Except(profileStates.States)
+					.ToDictionary(val => val.Key, val => val.Value)
+			};
+
+			try
+			{
+				DataContractSerializer dataSer = new DataContractSerializer(typeof(ToolStripStates));
+				var dataWriter = XmlWriter.Create(_standardToolStripFilePath, xmlSettings);
+				dataSer.WriteObject(dataWriter, regularStates);
+				dataWriter.Close();
+
+				dataWriter = XmlWriter.Create(_profileToolStripFilePath, xmlSettings);
+				dataSer.WriteObject(dataWriter, profileStates);
+				dataWriter.Close();
+			}
+			catch (Exception e)
+			{
+				Logging.Error(e, "An error occured saving the tool strip states.");
+			}
 		}
 
-		private void PopulateToolStripClass(bool initialLoad)
+		private void PopulateToolStripStates(bool initialLoad)
 		{
 			toolStripContainer.SuspendLayout();
 			bool checkVisibility = false;
+			_toolStripStates.States.Clear();
 			foreach (var row in toolStripContainer.TopToolStripPanel.Rows)
 			{
 				foreach (Control toolsStripControl in row.Controls)
 				{
 					ToolStrip toolsStripItems = toolsStripControl as ToolStrip;
+
+					var toolStripItemStates = new Dictionary<string, bool>();
+					_toolStripStates.States.Add(toolsStripControl.Name, toolStripItemStates);
+
 					if (!toolsStripItems.Visible && !initialLoad)
 					{
 						toolsStripItems.Visible = true;
@@ -2376,36 +2080,33 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					foreach (ToolStripItem item in toolsStripItems.Items)
 					{
-						AllToolStripItems ts = new AllToolStripItems();
-						ts.ItemName = item.ToolTipText;
-						if (initialLoad)
+						var state = new Tuple<string, bool>(item.Name, true);
+						if(!initialLoad)
 						{
-							ts.Visible = true;
-						}
-						else
-						{
-							switch (toolsStripItems.Name)
+							if (toolsStripItems.Name == toolStripEffects.Name)
 							{
-								case "toolStripEffects":
-									foreach (ToolStripMenuItem group in effectGroupsToolStripMenuItem.DropDownItems)
+								foreach (ToolStripMenuItem group in effectGroupsToolStripMenuItem.DropDownItems)
+								{
+									foreach (ToolStripMenuItem menuItem in group.DropDownItems)
 									{
-										foreach (ToolStripMenuItem menuItem in group.DropDownItems)
+										if (item.Name == menuItem.Text)
 										{
-											if (ts.ItemName == menuItem.Text)
-											{
-												ts.Visible = menuItem.Checked;
-												break;
-											}
+											state = new Tuple<string, bool>(item.Name, menuItem.Checked);
+											break;
 										}
 									}
-									break;
-								default:
-									ts.Visible = item.Visible;
-									break;
+								}
+							}
+							else {
+								state = new Tuple<string, bool>(item.Name, item.Visible);
 							}
 
 						}
-						_allToolStripItems.Add(ts);
+						if (!toolStripItemStates.ContainsKey(item.Name))
+						{
+							toolStripItemStates.Add(state.Item1, state.Item2);
+						}
+
 					}
 					
 					if (checkVisibility) toolsStripItems.Visible = false;
@@ -2414,12 +2115,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripContainer.ResumeLayout();
 		}
 
-		[Serializable]
-		internal class AllToolStripItems
+		[DataContract]
+		internal class ToolStripStates
 		{
-			public string ItemName;
-			public bool Visible;
+			public ToolStripStates()
+			{
+				States = new Dictionary<string, Dictionary<string, bool>>();
+			}
+
+			[DataMember]
+			public Dictionary<string, Dictionary<string, bool>> States { get; set; }
 		}
+
 
 		#endregion
 

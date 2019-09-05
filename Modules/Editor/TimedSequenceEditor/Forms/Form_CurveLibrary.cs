@@ -117,6 +117,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewCurves.BackColor = ThemeColorTable.BackgroundColor;
 
 			listViewCurves.Alignment = ListViewAlignment.Top;
+			_curveLibrary = ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary;
 		}
 
 		private void ImageSetup()
@@ -137,7 +138,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public void Load_Curves()
 		{
-			_curveLibrary = ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary;
 			if (_curveLibrary != null)
 			{
 				Populate_Curves();
@@ -195,7 +195,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 
 			_curveLibrary.EditLibraryCurve(listViewCurves.SelectedItems[0].Name);
-			_SelectionChanged();
+			OnCurveLibraryChanged();
 		}
 
 		private void toolStripButtonNewCurve_Click(object sender, EventArgs e)
@@ -203,7 +203,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			AddCurveToLibrary(new Curve());
 		}
 
-		private bool AddCurveToLibrary(Curve c, bool edit=true)
+		internal bool AddCurveToLibrary(Curve c, bool edit=true)
 		{
 			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Curve name?");
 
@@ -230,7 +230,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						{
 							_curveLibrary.EditLibraryCurve(dialog.Response);
 						}
-						_SelectionChanged();
+						OnCurveLibraryChanged();
 						return false;
 					}
 
@@ -246,7 +246,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						_curveLibrary.EditLibraryCurve(dialog.Response);
 					}
-					_SelectionChanged();
+					OnCurveLibraryChanged();
 					return false;
 				}
 			}
@@ -269,7 +269,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_curveLibrary.BeginBulkUpdate();
 				foreach (ListViewItem item in listViewCurves.SelectedItems) _curveLibrary.RemoveCurve(item.Name);
 				_curveLibrary.EndBulkUpdate();
-				_SelectionChanged();
+				OnCurveLibraryChanged();
 			}
 		}
 
@@ -290,12 +290,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				Populate_Curves();
 		}
 
-		public event EventHandler SelectionChanged;
+		public event EventHandler CurveLibraryChanged;
 
-		private void _SelectionChanged()
+		private void OnCurveLibraryChanged()
 		{
-			if (SelectionChanged != null)
-				SelectionChanged(this, EventArgs.Empty);
+			CurveLibraryChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		#endregion
@@ -384,7 +383,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				foreach (ListViewItem curve in listViewCurves.Items) _curveLibrary.Library[curve.Text] = (Curve)curve.Tag;
 				_curveLibrary.EndBulkUpdate();
 				ImageSetup();
-				_SelectionChanged();
+				OnCurveLibraryChanged();
 			}
 		}
 
@@ -392,7 +391,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Import/Export
 
-		private void toolStripButtonExportCurves_Click(object sender, EventArgs e)
+		internal void ExportCurveLibrary()
 		{
 			SaveFileDialog saveFileDialog = new SaveFileDialog
 			{
@@ -423,13 +422,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				Logging.Error("While exporting Curve Library: " + saveFileDialog.FileName + " " + ex.InnerException);
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-				var messageBox = new MessageBoxForm("Unable to export data, please check the error log for details", "Unable to export", false, false);
+				MessageBoxForm.msgIcon =
+					SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Unable to export data, please check the error log for details",
+					"Unable to export", false, false);
 				messageBox.ShowDialog();
 			}
 		}
 
-		private void toolStripButtonImportCurves_Click(object sender, EventArgs e)
+		internal void ImportCurveLibrary()
 		{
 			OpenFileDialog openFileDialog = new OpenFileDialog
 			{
@@ -447,7 +448,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
 				{
 					DataContractSerializer ser = new DataContractSerializer(typeof(Dictionary<string, Curve>));
-					curves = (Dictionary<string, Curve>)ser.ReadObject(reader);
+					curves = (Dictionary<string, Curve>) ser.ReadObject(reader);
 				}
 
 				_curveLibrary.BeginBulkUpdate();
@@ -465,19 +466,37 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					_curveLibrary.AddCurve(curveName, curve.Value);
 				}
+
 				_curveLibrary.EndBulkUpdate();
-				_SelectionChanged();
+				OnCurveLibraryChanged();
 			}
 			catch (Exception ex)
 			{
-				Logging.Error("Invalid file while importing Curve Library: " + openFileDialog.FileName + " " + ex.InnerException);
+				Logging.Error(
+					"Invalid file while importing Curve Library: " + openFileDialog.FileName + " " + ex.InnerException);
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-				var messageBox = new MessageBoxForm("Sorry, we didn't reconize the data in that file as valid Curve Library data.", "Invalid file", false, false);
+				MessageBoxForm.msgIcon =
+					SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox =
+					new MessageBoxForm("Sorry, we didn't reconize the data in that file as valid Curve Library data.",
+						"Invalid file", false, false);
 				messageBox.ShowDialog();
 			}
 		}
 
+		#endregion
+
+		#region Events
+
+		private void toolStripButtonExportCurves_Click(object sender, EventArgs e)
+		{
+			ExportCurveLibrary();
+		}
+
+		private void toolStripButtonImportCurves_Click(object sender, EventArgs e)
+		{
+			ImportCurveLibrary();
+		}
 
 		#endregion
 

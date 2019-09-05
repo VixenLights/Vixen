@@ -642,6 +642,7 @@ namespace VixenApplication
 
 		private void UpdateTitleWithProfileName(string profileName)
 		{
+			VixenSystem.ProfileName = profileName;
 			Text = string.Format("Vixen Administration - {0} Profile", profileName);
 		}
 

@@ -52,6 +52,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public TimelineControl TimelineControl { get; set; }
 
+		/// <summary>
+		/// A read only list of the colors in the library
+		/// </summary>
+		public List<Color> Colors => _colors.ToList();
+
 		#endregion
 
 		#region Private Members
@@ -75,7 +80,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 			TimelineControl = timelineControl;
 			Icon = Resources.Icon_Vixen3;
-			ThemeUpdateControls.UpdateControls(this);
 			toolStripColors.Renderer = new ThemeToolStripRenderer();
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			toolStripColors.ImageScalingSize = new Size(iconSize, iconSize);
@@ -98,12 +102,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			ImageSetup();
 
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			//Over-ride the auto theme listview back color
 			listViewColors.BackColor = ThemeColorTable.BackgroundColor;
 			listViewColors.Alignment = ListViewAlignment.Top;
+
+			_colorFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen", "ColorPalette.xml");
+
+			if (File.Exists(_colorFilePath))
+			{
+				Load_ColorPaletteFile();
+			}
 		}
 
 		private void ImageSetup()
@@ -122,13 +131,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (File.Exists(_colorFilePath))
 			{
 				Load_ColorPaletteFile();
-				PopulateColors();
 			}
 			else
 			{
 				listViewColors.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = _imageSize };
 			}
-			
+			PopulateColors();
 		}
 
 		#endregion
@@ -145,10 +153,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_colors = (List<Color>)ser.ReadObject(reader);
 				}
 			}
-			_SelectionChanged();
 		}
 
-		public void Save_ColorPaletteFile()
+		private void Save_ColorPaletteFile()
 		{
 			var xmlsettings = new XmlWriterSettings
 			{
@@ -160,10 +167,67 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var dataWriter = XmlWriter.Create(_colorFilePath, xmlsettings);
 			dataSer.WriteObject(dataWriter, _colors);
 			dataWriter.Close();
-			_SelectionChanged();
+			OnColorsChanged();
 		}
 
-		public void PopulateColors()
+		internal void UpdateColorSet(List<Color> colors)
+		{
+			_colors = colors;
+			PopulateColors();
+			Save_ColorPaletteFile();
+			OnColorsChanged();
+		}
+
+		internal void AddColorSet(IEnumerable<Color> colors)
+		{
+			_colors.AddRange(colors);
+			PopulateColors();
+			Save_ColorPaletteFile();
+			OnColorsChanged();
+		}
+
+		internal void AddColor(Color color)
+		{
+			_colors.Add(color);
+			PopulateColors();
+			Save_ColorPaletteFile();
+			OnColorsChanged();
+		}
+
+		internal void AddNewColor()
+		{
+			using (ColorPicker cp = new ColorPicker())
+			{
+				cp.LockValue_V = false;
+				cp.Color = XYZ.FromRGB(Color.White);
+				DialogResult result = cp.ShowDialog();
+				if (result != DialogResult.OK) return;
+				Color colorValue = cp.Color.ToRGB().ToArgb();
+
+				_colors.Add(colorValue);
+				PopulateColors();
+				Save_ColorPaletteFile();
+				OnColorsChanged();
+			}
+		}
+
+		internal void RemoveColor(Color color)
+		{
+			_colors.Remove(color);
+			PopulateColors();
+			Save_ColorPaletteFile();
+			OnColorsChanged();
+		}
+
+		internal void RemoveColors(List<Color> colors)
+		{
+			colors.ForEach(x => _colors.Remove(x));
+			PopulateColors();
+			Save_ColorPaletteFile();
+			OnColorsChanged();
+		}
+
+		private void PopulateColors()
 		{
 			listViewColors.BeginUpdate();
 			listViewColors.Items.Clear();
@@ -179,7 +243,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			listViewColors.EndUpdate();
 			toolStripButtonEditColor.Enabled = toolStripButtonDeleteColor.Enabled = false;
-			_SelectionChanged();
 		}
 
 		private ListViewItem CreateColorListItem(Color colorItem)
@@ -218,6 +281,92 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#endregion
 
+		#region Import/Export
+
+		internal void ExportColorLibrary()
+		{
+			SaveFileDialog saveFileDialog = new SaveFileDialog
+			{
+				DefaultExt = ".vfc",
+				Filter = @"Vixen 3 Favorite Colors (*.vfc)|*.vfc|All Files (*.*)|*.*"
+			};
+
+			if (_lastFolder != string.Empty) saveFileDialog.InitialDirectory = _lastFolder;
+			if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
+			_lastFolder = Path.GetDirectoryName(saveFileDialog.FileName);
+
+			var xmlsettings = new XmlWriterSettings
+			{
+				Indent = true,
+				IndentChars = "\t",
+			};
+
+			try
+			{
+				DataContractSerializer ser = new DataContractSerializer(typeof(List<Color>));
+				var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
+				ser.WriteObject(writer, _colors);
+				writer.Close();
+			}
+			catch (Exception ex)
+			{
+				Logging.Error("While exporting Favorite Colors: " + saveFileDialog.FileName + " " + ex.InnerException);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon =
+					SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Unable to export data, please check the error log for details",
+					"Unable to export", false, false);
+				messageBox.ShowDialog();
+			}
+		}
+
+		internal void ImportColorLibrary()
+		{
+			OpenFileDialog openFileDialog = new OpenFileDialog
+			{
+				DefaultExt = ".vfc",
+				Filter = @"Vixen 3 Favorite Colors (*.vfc)|*.vfc|All Files (*.*)|*.*",
+				FilterIndex = 0
+			};
+
+			if (_lastFolder != string.Empty) openFileDialog.InitialDirectory = _lastFolder;
+			if (openFileDialog.ShowDialog() != DialogResult.OK) return;
+			_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
+			List<Color> colors = new List<Color>();
+
+			try
+			{
+				using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
+				{
+					DataContractSerializer ser = new DataContractSerializer(typeof(List<Color>));
+					colors = (List<Color>) ser.ReadObject(reader);
+				}
+
+				foreach (Color color in colors)
+				{
+					_colors.Add(color);
+				}
+			}
+			catch (Exception ex)
+			{
+				Logging.Error("Invalid file while importing Favorite Colors: " + openFileDialog.FileName + " " +
+				              ex.InnerException);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon =
+					SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox =
+					new MessageBoxForm("Sorry, we didn't reconize the data in that file as valid Favorite Color data.",
+						"Invalid file", false, false);
+				messageBox.ShowDialog();
+			}
+
+			PopulateColors();
+			Save_ColorPaletteFile();
+			OnColorsChanged();
+		}
+
+		#endregion
+
 		#region Event Handlers
 
 		private void toolStripButtonEditColor_Click(object sender, EventArgs e)
@@ -239,25 +388,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				listViewColors.SelectedItems[0].Tag = colorValue;
 				listViewColors.EndUpdate();
 
-				Update_ColorOrder();
+				Update_ColorOrder(); //Does a save
 				PopulateColors();
+				OnColorsChanged();
 			}
 		}
 
 		private void toolStripButtonNewColor_Click(object sender, EventArgs e)
 		{
-			using (ColorPicker cp = new ColorPicker())
-			{
-				cp.LockValue_V = false;
-				cp.Color = XYZ.FromRGB(Color.White);
-				DialogResult result = cp.ShowDialog();
-				if (result != DialogResult.OK) return;
-				Color colorValue = cp.Color.ToRGB().ToArgb();
-
-				_colors.Add(colorValue);
-				PopulateColors();
-				Save_ColorPaletteFile();
-			}
+			AddNewColor();
 		}
 
 		private void toolStripButtonDeleteColor_Click(object sender, EventArgs e)
@@ -277,6 +416,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			PopulateColors();
 			Save_ColorPaletteFile();
+			OnColorsChanged();
 		}
 
 		private void listViewColors_SelectedIndexChanged(object sender, EventArgs e)
@@ -295,12 +435,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				toolStripButtonEditColor.PerformClick();
 		}
 
-		public event EventHandler SelectionChanged;
+		public event EventHandler ColorsChanged;
 
-		private void _SelectionChanged()
+		private void OnColorsChanged()
 		{
-			if (SelectionChanged != null)
-				SelectionChanged(this, EventArgs.Empty);
+			ColorsChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		private void toolStripButtonExportColors_Click(object sender, EventArgs e)
+		{
+			ExportColorLibrary();
+		}
+
+		private void toolStripButtonImportColors_Click(object sender, EventArgs e)
+		{
+			ImportColorLibrary();
 		}
 
 		#endregion
@@ -357,6 +506,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					
 					ListViewItem_SetSpacing(listViewColors, _sideGap, _sideGap);
 					Update_ColorOrder();
+					OnColorsChanged();
 
 				}
 				else if (e.Effect == DragDropEffects.Move)
@@ -375,87 +525,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					listViewColors.Alignment = ListViewAlignment.Top;
 					listViewColors.EndUpdate();
 					Update_ColorOrder();
+					OnColorsChanged();
 				}
 				ImageSetup();
 			}
-		}
-
-		#endregion
-
-		#region Import/Export
-
-		private void toolStripButtonExportColors_Click(object sender, EventArgs e)
-		{
-			SaveFileDialog saveFileDialog = new SaveFileDialog
-			{
-				DefaultExt = ".vfc",
-				Filter = @"Vixen 3 Favorite Colors (*.vfc)|*.vfc|All Files (*.*)|*.*"
-			};
-
-			if (_lastFolder != string.Empty) saveFileDialog.InitialDirectory = _lastFolder;
-			if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
-			_lastFolder = Path.GetDirectoryName(saveFileDialog.FileName);
-
-			var xmlsettings = new XmlWriterSettings
-			{
-				Indent = true,
-				IndentChars = "\t",
-			};
-
-			try
-			{
-				DataContractSerializer ser = new DataContractSerializer(typeof(List<Color>));
-				var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
-				ser.WriteObject(writer, _colors);
-				writer.Close();
-			}
-			catch (Exception ex)
-			{
-				Logging.Error("While exporting Favorite Colors: " + saveFileDialog.FileName + " " + ex.InnerException);
-				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-				var messageBox = new MessageBoxForm("Unable to export data, please check the error log for details", "Unable to export", false, false);
-				messageBox.ShowDialog();
-			}
-		}
-
-		private void toolStripButtonImportColors_Click(object sender, EventArgs e)
-		{
-			OpenFileDialog openFileDialog = new OpenFileDialog
-			{
-				DefaultExt = ".vfc",
-				Filter = @"Vixen 3 Favorite Colors (*.vfc)|*.vfc|All Files (*.*)|*.*",
-				FilterIndex = 0
-			};
-
-			if (_lastFolder != string.Empty) openFileDialog.InitialDirectory = _lastFolder;
-			if (openFileDialog.ShowDialog() != DialogResult.OK) return;
-			_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
-			List<Color> colors = new List<Color>();
-
-			try
-			{
-				using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
-				{
-					DataContractSerializer ser = new DataContractSerializer(typeof(List<Color>));
-					colors = (List<Color>)ser.ReadObject(reader);
-				}
-
-				foreach (Color color in colors)
-				{
-					_colors.Add(color);
-				}
-			}
-			catch (Exception ex)
-			{
-				Logging.Error("Invalid file while importing Favorite Colors: " + openFileDialog.FileName + " " + ex.InnerException);
-				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-				var messageBox = new MessageBoxForm("Sorry, we didn't reconize the data in that file as valid Favorite Color data.", "Invalid file", false, false);
-				messageBox.ShowDialog();
-			}
-			PopulateColors();
-			Save_ColorPaletteFile();
 		}
 
 		#endregion
