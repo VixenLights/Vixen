@@ -107,11 +107,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_gradientLibraryImageScale = 0.1;
 			ImageSetup();
 
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			//Over-ride the auto theme listview back color
 			listViewGradients.BackColor = ThemeColorTable.BackgroundColor;
+			_colorGradientLibrary = ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary;
 		}
 
 		private void ImageSetup()
@@ -132,7 +131,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public void Load_Gradients()
 		{
-			_colorGradientLibrary = ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary;
 			if (_colorGradientLibrary != null)
 			{
 				Populate_Gradients();

@@ -117,6 +117,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewCurves.BackColor = ThemeColorTable.BackgroundColor;
 
 			listViewCurves.Alignment = ListViewAlignment.Top;
+			_curveLibrary = ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary;
 		}
 
 		private void ImageSetup()
@@ -137,7 +138,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public void Load_Curves()
 		{
-			_curveLibrary = ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary;
 			if (_curveLibrary != null)
 			{
 				Populate_Curves();

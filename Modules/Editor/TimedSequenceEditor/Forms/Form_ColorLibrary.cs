@@ -80,7 +80,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 			TimelineControl = timelineControl;
 			Icon = Resources.Icon_Vixen3;
-			ThemeUpdateControls.UpdateControls(this);
 			toolStripColors.Renderer = new ThemeToolStripRenderer();
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			toolStripColors.ImageScalingSize = new Size(iconSize, iconSize);
@@ -103,12 +102,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			ImageSetup();
 
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			//Over-ride the auto theme listview back color
 			listViewColors.BackColor = ThemeColorTable.BackgroundColor;
 			listViewColors.Alignment = ListViewAlignment.Top;
+
+			_colorFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen", "ColorPalette.xml");
+
+			if (File.Exists(_colorFilePath))
+			{
+				Load_ColorPaletteFile();
+			}
 		}
 
 		private void ImageSetup()
@@ -132,7 +136,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				listViewColors.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = _imageSize };
 			}
-			
+			PopulateColors();
 		}
 
 		#endregion
@@ -148,7 +152,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					DataContractSerializer ser = new DataContractSerializer(typeof(List<Color>));
 					_colors = (List<Color>)ser.ReadObject(reader);
 				}
-				PopulateColors();
 			}
 		}
 
