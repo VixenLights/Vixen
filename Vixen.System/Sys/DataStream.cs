@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Vixen.Extensions;
 using Vixen.Sys.Enumerator;
 
 namespace Vixen.Sys
@@ -41,6 +42,11 @@ namespace Vixen.Sys
 		public bool RemoveData(IDataNode data)
 		{
 			return _data.Remove(data);
+		}
+
+		public void RemoveRangeData(IEnumerable<IDataNode> data)
+		{
+			_data.RemoveAll(data);
 		}
 
 		public void AddData(IEnumerable<IDataNode> data)

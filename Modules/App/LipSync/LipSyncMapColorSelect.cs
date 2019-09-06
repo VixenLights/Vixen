@@ -31,7 +31,7 @@ namespace VixenModules.App.LipSyncApp
 		}
 
 
-		public List<ElementNode> ChosenNodes
+		public List<IElementNode> ChosenNodes
 		{
 			set
 			{

@@ -8,7 +8,7 @@ namespace Vixen.Module.Property
 {
 	public interface IProperty : IHasSetup
 	{
-		ElementNode Owner { get; set; }
+		IElementNode Owner { get; set; }
 
 		/// <summary>
 		/// Set or reset the property's values to a property-specific default.

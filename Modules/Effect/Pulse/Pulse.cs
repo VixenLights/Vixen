@@ -29,7 +29,7 @@ namespace VixenModules.Effect.Pulse
 		{
 			_elementData = new EffectIntents();
 			
-			foreach (ElementNode node in TargetNodes) {
+			foreach (IElementNode node in TargetNodes) {
 				if (tokenSource != null && tokenSource.IsCancellationRequested)
 					return;
 
@@ -145,7 +145,7 @@ namespace VixenModules.Effect.Pulse
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
-		private EffectIntents RenderNode(ElementNode node)
+		private EffectIntents RenderNode(IElementNode node)
 		{
 			return PulseRenderer.RenderNode(node, LevelCurve, ColorGradient, TimeSpan, HasDiscreteColors);
 		}

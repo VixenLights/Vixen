@@ -15,6 +15,6 @@ namespace Vixen.Rule
 		/// </summary>
 		/// <param name="selectedNodes">The node(s) that have been selected by the user when called.</param>
 		/// <returns>true if the process was successful, false if not.</returns>
-		bool Perform(IEnumerable<ElementNode> selectedNodes);
+		bool Perform(IEnumerable<IElementNode> selectedNodes);
 	}
 }

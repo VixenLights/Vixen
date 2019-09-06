@@ -286,6 +286,9 @@
     <Compile Include="IO\IObjectMigratorService.cs" />
     <Compile Include="IO\IObjectPersistor.cs" />
     <Compile Include="IO\IObjectPersistorService.cs" />
+    <Compile Include="IO\JSON\CustomContrractResolver.cs" />
+    <Compile Include="IO\JSON\ElementTreeReader.cs" />
+    <Compile Include="IO\JSON\ElementTreeWriter.cs" />
     <Compile Include="IO\Loader\ElementNodeTemplateLoader.cs" />
     <Compile Include="IO\Loader\ModuleStoreLoader.cs" />
     <Compile Include="IO\Loader\ProgramLoader.cs" />
@@ -382,7 +385,11 @@
     <Compile Include="Services\IFileService.cs" />
     <Compile Include="Services\LayerMixingFilterService.cs" />
     <Compile Include="Sys\ElementIntentStates.cs" />
+    <Compile Include="Sys\ElementNodeProxy.cs" />
+    <Compile Include="Sys\ElementProxy.cs" />
     <Compile Include="Sys\IDataPolicyFactory.cs" />
+    <Compile Include="Sys\IElementNode.cs" />
+    <Compile Include="Sys\IGroupNode.cs" />
     <Compile Include="Sys\IHasLayers.cs" />
     <Compile Include="Sys\IHasMarks.cs" />
     <Compile Include="Sys\IStateCombinator.cs" />
@@ -601,6 +608,7 @@
     <Compile Include="Sys\Output\OutputPreview.cs" />
     <Compile Include="Sys\Output\SmartOutputController.cs" />
     <Compile Include="Data\Value\PositionValue.cs" />
+    <Compile Include="Sys\ProxyElementNode.cs" />
     <Compile Include="Sys\SequenceFilterLookup.cs" />
     <Compile Include="Sys\OutputIntentStateList.cs" />
     <Compile Include="Sys\ParameterSignature.cs" />
@@ -961,6 +969,7 @@
   <ItemGroup>
     <Compile Include="Commands\StringCommand.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(SolutionDir)\Release Notes.txt" "$(OutDir)"

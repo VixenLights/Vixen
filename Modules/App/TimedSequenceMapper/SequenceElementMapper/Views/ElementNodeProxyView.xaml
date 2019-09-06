@@ -1,0 +1,29 @@
+﻿<catel:UserControl x:Class="VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Views.ElementNodeProxyView"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:catel="http://schemas.catelproject.com">
+
+	<catel:UserControl.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+			<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+			<Style x:Key="SourceNode" TargetType="TextBlock">
+				<Style.Triggers>
+					<DataTrigger Binding="{Binding Path=IsActive}" Value="True">
+						<Setter Property="Foreground" Value="Yellow"/>
+					</DataTrigger>
+					<DataTrigger Binding="{Binding Path=IsActive}" Value="False">
+						<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
+					</DataTrigger>
+				</Style.Triggers>
+			</Style>
+		</ResourceDictionary>
+	</catel:UserControl.Resources>
+	<StackPanel Orientation="Horizontal" Margin="0,2,0,2">
+		<TextBlock Text="{Binding Name}" Focusable="True" Style="{StaticResource SourceNode}"/>
+		<TextBlock Text=" -> " Visibility="{Binding IsMapped, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+		<TextBlock Text="{Binding TargetName}"/>
+	</StackPanel>
+</catel:UserControl>

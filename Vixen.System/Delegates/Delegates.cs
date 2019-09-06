@@ -14,5 +14,9 @@ namespace Vixen
 		public delegate void GenericBool(bool val);
 
 		public delegate string GenericString(string s);
+
+		public delegate void GenericVoidString(string s);
+
+		public delegate string GenericStringValue();
 	}
 }

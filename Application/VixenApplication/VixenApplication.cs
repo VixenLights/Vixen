@@ -15,6 +15,7 @@ using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Catel.IoC;
 using Vixen.Module.Editor;
 using Vixen.Module.SequenceType;
 using Vixen.Services;
@@ -26,6 +27,7 @@ using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NLog.Targets;
 using Application = System.Windows.Forms.Application;
 using Point = System.Drawing.Point;
 using SystemFonts = System.Drawing.SystemFonts;
@@ -347,6 +349,7 @@ namespace VixenApplication
 
 		private void VixenApplication_Load(object sender, EventArgs e)
 		{
+			RegisterIOC();
 			initializeEditorTypes();
 			menuStripMain.Renderer = new ThemeToolStripRenderer();
 			
@@ -363,6 +366,12 @@ namespace VixenApplication
 			//	logsToolStripMenuItem.DropDownItems.ForeColor = Color.FromArgb(90, 90, 90);
 			}
 			PopulateRecentSequencesList();
+		}
+
+		private void RegisterIOC()
+		{
+			var serviceLocator = ServiceLocator.Default;
+			serviceLocator.AutoRegisterTypesViaAttributes = true;
 		}
 
 		private async void VixenApplication_Shown(object sender, EventArgs e)
@@ -731,7 +740,9 @@ namespace VixenApplication
 
 				if (descriptor.CanCreateNew) {
 					item.Tag = descriptor.FileExtension;
-					item.Click += (sender, e) => {
+					item.Click += (sender, e) =>
+					{
+						Cursor = Cursors.WaitCursor;
 						ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
 						string fileType = (string)menuItem.Tag;
 						IEditorUserInterface editor = EditorService.Instance.CreateEditor(fileType);
@@ -744,8 +755,11 @@ namespace VixenApplication
 							messageBox.ShowDialog();
 						}
 						else {
+							Cursor = Cursors.WaitCursor;
 							_OpenEditor(editor);
 						}
+
+						Cursor= Cursors.Default;
 					};
 					contextMenuStripNewSequence.Items.Add(item);
 				}
@@ -845,17 +859,15 @@ namespace VixenApplication
 
 			// if the user hit 'ok' on the dialog, try opening the selected file(s) in an approriate editor
 			if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-				Cursor = Cursors.WaitCursor;
 				foreach (string file in openFileDialog.FileNames) {
 					OpenSequenceFromFile(file);
 				}
-				Cursor = Cursors.Default;
 			}
 		}
 
 		private void OpenSequenceFromFile(string filename)
 		{
-			Cursor.Current = Cursors.WaitCursor;
+			Cursor = Cursors.WaitCursor;
 			try {
 				IEditorUserInterface editor = EditorService.Instance.CreateEditor(filename);
 
@@ -869,6 +881,7 @@ namespace VixenApplication
 				}
 				else {
 					_OpenEditor(editor);
+					Cursor = Cursors.Default;
 				}
 			}
 			catch (Exception ex) {

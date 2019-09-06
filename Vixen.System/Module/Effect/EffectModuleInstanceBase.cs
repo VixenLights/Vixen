@@ -25,7 +25,7 @@ namespace Vixen.Module.Effect
 		IEquatable<EffectModuleInstanceBase>,
 		ICustomTypeDescriptor
 	{
-		private ElementNode[] _targetNodes;
+		private IElementNode[] _targetNodes;
 		private List<IMediaModuleInstance> _media;
 		private TimeSpan _timeSpan;
 		private TimeSpan _startTime;
@@ -35,7 +35,7 @@ namespace Vixen.Module.Effect
 
 		protected EffectModuleInstanceBase()
 		{
-			_targetNodes = new ElementNode[0];
+			_targetNodes = new IElementNode[0];
 				//set member directly on creation to prevent target node changed events from occuring.
 			TimeSpan = TimeSpan.Zero;
 			StartTime = TimeSpan.Zero;
@@ -56,7 +56,7 @@ namespace Vixen.Module.Effect
 		private ObservableCollection<IMarkCollection> _markCollections;
 
 		[Browsable(false)]
-		public ElementNode[] TargetNodes
+		public IElementNode[] TargetNodes
 		{
 			get { return _targetNodes; }
 			set
@@ -382,7 +382,7 @@ namespace Vixen.Module.Effect
 					{
 						sw.WriteLine("The \"{0}\" effect has property requirements that are missing:\n", effectDescriptor.TypeName);
 
-						foreach (ElementNode elementNode in TargetNodes)
+						foreach (IElementNode elementNode in TargetNodes)
 						{
 							Guid[] missingPropertyIds =
 								effectDescriptor.PropertyDependencies.Except(elementNode.Properties.Select(x => x.Descriptor.TypeId)).ToArray();

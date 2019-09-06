@@ -31,12 +31,12 @@ namespace VixenModules.App.LipSyncApp
 		}
 
 
-		public List<ElementNode> ChosenNodes
+		public List<IElementNode> ChosenNodes
 		{
 			//get { return _targetEffect; }
 			set
 			{
-				List<ElementNode> nodeList = value;
+				List<IElementNode> nodeList = value;
 				_discreteColors = false;
 				if (value == null) return;
 

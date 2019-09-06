@@ -13,6 +13,7 @@ using Catel.MVVM;
 using Catel.Services;
 using Newtonsoft.Json.Linq;
 using NLog;
+using Common.WPFCommon.Services;
 using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Import;
 using VixenModules.App.CustomPropEditor.Import.XLights;
@@ -706,7 +707,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		{
 			if (TestIsDirty())
 			{
-				MessageBoxService mbs = new MessageBoxService();
+				var dependencyResolver = this.GetDependencyResolver();
+				var mbs = dependencyResolver.Resolve<IMessageBoxService>();
 				var response = mbs.GetUserConfirmation($"Save Prop \"{CleanseNameString(Prop.Name)}\" ", "Save");
 				if (response.Result == MessageResult.OK)
 				{

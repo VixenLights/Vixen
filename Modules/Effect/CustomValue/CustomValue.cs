@@ -242,7 +242,7 @@ namespace VixenModules.Effect.CustomValue
 
 			CommandValue value = new CommandValue(command);
 
-			foreach (ElementNode node in TargetNodes)
+			foreach (IElementNode node in TargetNodes)
 			{
 				foreach (var leafNode in node.GetLeafEnumerator())
 				{

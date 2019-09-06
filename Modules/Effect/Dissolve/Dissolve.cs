@@ -47,8 +47,8 @@ namespace VixenModules.Effect.Dissolve
 		protected override void _PreRender(CancellationTokenSource cancellationToken = null)
 		{
 			_elementData = new EffectIntents();
-			IEnumerable<IGrouping<int, ElementNode>> elements;
-			IEnumerable<ElementNode> renderNodes = GetNodesToRenderOn();
+			IEnumerable<IGrouping<int, IElementNode>> elements;
+			IEnumerable<IElementNode> renderNodes = GetNodesToRenderOn();
 			switch (DissolveMode)
 			{
 				case DissolveMode.MarkCollection:
@@ -79,7 +79,7 @@ namespace VixenModules.Effect.Dissolve
 			}
 
 			
-			var renderNodes1 = elements as IGrouping<int, ElementNode>[] ?? elements.ToArray();
+			var renderNodes1 = elements as IGrouping<int, IElementNode>[] ?? elements.ToArray();
 			_totalNodes = renderNodes1.Count();
 
 			_pixels = 0;
@@ -99,9 +99,9 @@ namespace VixenModules.Effect.Dissolve
 			_renderElements = null;
 		}
 
-		private IEnumerable<ElementNode> GetNodesToRenderOn()
+		private IEnumerable<IElementNode> GetNodesToRenderOn()
 		{
-			IEnumerable<ElementNode> renderNodes = TargetNodes;
+			IEnumerable<IElementNode> renderNodes = TargetNodes;
 
 			if (!EnableDepth)
 			{
@@ -547,7 +547,7 @@ namespace VixenModules.Effect.Dissolve
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
-		private EffectIntents RenderNode(IGrouping<int, ElementNode>[] elements)
+		private EffectIntents RenderNode(IGrouping<int, IElementNode>[] elements)
 		{
 			EffectIntents effectIntents = new EffectIntents();
 			TimeSpan intervalTime = TimeSpan;
@@ -776,7 +776,7 @@ namespace VixenModules.Effect.Dissolve
 			// Now render element
 			foreach (DissolveClass dissolveNode in _renderElements)
 			{
-				IGrouping<int, ElementNode> elementGroup = elements[dissolveNode.ElementIndex];
+				IGrouping<int, IElementNode> elementGroup = elements[dissolveNode.ElementIndex];
 				foreach (var element in elementGroup)
 				{
 					if (GroupColors)
@@ -799,7 +799,7 @@ namespace VixenModules.Effect.Dissolve
 		}
 
 		private void RenderElement(GradientLevelPair gradient, TimeSpan startTime, TimeSpan interval,
-			ElementNode element, EffectIntents effectIntents)
+			IElementNode element, EffectIntents effectIntents)
 		{
 			if (interval <= TimeSpan.Zero) return;
 			var result = PulseRenderer.RenderNode(element, gradient.Curve, gradient.ColorGradient, interval, HasDiscreteColors);

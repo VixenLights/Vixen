@@ -54,7 +54,7 @@ namespace VixenModules.OutputFilter.DimmingCurve
 			get { return "Dimming Curve"; }
 		}
 
-		public bool Perform(IEnumerable<ElementNode> selectedNodes)
+		public bool Perform(IEnumerable<IElementNode> selectedNodes)
 		{
 			DialogResult dr = ShowDialog();
 			if (dr != DialogResult.OK)
@@ -74,13 +74,13 @@ namespace VixenModules.OutputFilter.DimmingCurve
 				Logging.Warn("no radio button selected");
 
 
-			IEnumerable<ElementNode> leafElements = selectedNodes.SelectMany(x => x.GetLeafEnumerator()).Distinct();
+			IEnumerable<IElementNode> leafElements = selectedNodes.SelectMany(x => x.GetLeafEnumerator()).Distinct();
 			int modulesCreated = 0;
 			int modulesConfigured = 0;
 			int modulesSkipped = 0;
 			
 
-			foreach (ElementNode leafNode in leafElements) {
+			foreach (IElementNode leafNode in leafElements) {
 
 				// get the leaf 'things' to deal with -- ie. either existing dimming curves on a filter branch, or data component outputs
 				// (if we're adding new ones, ignore any existing dimming curves: always go to the outputs and we'll add new ones)

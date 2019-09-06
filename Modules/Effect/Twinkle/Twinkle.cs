@@ -53,7 +53,7 @@ namespace VixenModules.Effect.Twinkle
 		{
 			_elementData = new EffectIntents();
 
-			IEnumerable<ElementNode> targetNodes = GetNodesToRenderOn();
+			IEnumerable<IElementNode> targetNodes = GetNodesToRenderOn();
 
 			List<IndividualTwinkleDetails> twinkles = null;
 			if (!IndividualElements)
@@ -66,7 +66,7 @@ namespace VixenModules.Effect.Twinkle
 			_colorValueSet = new Dictionary<Color, ColorValue[]>(3);
 			
 
-			foreach (ElementNode node in targetNodes) {
+			foreach (IElementNode node in targetNodes) {
 				if (tokenSource != null && tokenSource.IsCancellationRequested)
 					return;
 
@@ -372,7 +372,7 @@ namespace VixenModules.Effect.Twinkle
 			}
 		}
 
-		private EffectIntents RenderElement(ElementNode node, double positionWithinGroup, bool discreteColors,
+		private EffectIntents RenderElement(IElementNode node, double positionWithinGroup, bool discreteColors,
 		                                    List<IndividualTwinkleDetails> twinkles = null)
 		{
 			if (twinkles == null)
@@ -587,7 +587,7 @@ namespace VixenModules.Effect.Twinkle
 			return intent;
 		}
 
-		private void RenderPulseSegment(TimeSpan startTime, TimeSpan duration, Curve c, ColorGradient cg, ElementNode elementNode)
+		private void RenderPulseSegment(TimeSpan startTime, TimeSpan duration, Curve c, ColorGradient cg, IElementNode elementNode)
 		{
 			ColorValue[] values;
 			if (HasDiscreteColors && IsElementDiscrete(elementNode))
@@ -707,9 +707,9 @@ namespace VixenModules.Effect.Twinkle
 			return result;
 		}
 
-		private List<ElementNode> GetNodesToRenderOn()
+		private List<IElementNode> GetNodesToRenderOn()
 		{
-			IEnumerable<ElementNode> renderNodes = null;
+			IEnumerable<IElementNode> renderNodes = null;
 
 			if (DepthOfEffect == 0 || !IndividualElements) {
 				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).Distinct();

@@ -8,10 +8,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using Catel.Data;
+using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
 using Common.Controls;
 using Common.Controls.NameGeneration;
+using Common.WPFCommon.Services;
 using GongSolutions.Wpf.DragDrop;
 using GongSolutions.Wpf.DragDrop.Utilities;
 using VixenModules.App.CustomPropEditor.Converters;
@@ -687,7 +689,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		public void ClearIsDirty()
 		{
-			this.ClearIsDirtyOnAllChilds();
+			this.ClearIsDirtyOnAllChildren();
 		}
 
 		public void DeselectAll()
@@ -724,9 +726,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			       SelectedItems.Select(x => x.ElementModel).All(x => x != Prop.RootNode && x.ElementType == type);
 		}
 
-		private static MessageBoxResponse RequestNewGroupName(string suggestedName)
+		private MessageBoxResponse RequestNewGroupName(string suggestedName)
 		{
-			MessageBoxService mbs = new MessageBoxService();
+			var dependencyResolver = this.GetDependencyResolver();
+			var mbs = dependencyResolver.Resolve<IMessageBoxService>();
 			return mbs.GetUserInput("Please enter the group name.", "Create Group", suggestedName);
 		}
 
@@ -1137,6 +1140,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		/// <inheritdoc />
 		public void Dropped(IDropInfo dropInfo)
+		{
+			
+		}
+
+		/// <inheritdoc />
+		public void DragDropOperationFinished(DragDropEffects operationResult, IDragInfo dragInfo)
 		{
 			
 		}

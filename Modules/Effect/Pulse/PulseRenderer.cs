@@ -17,12 +17,12 @@ namespace VixenModules.Effect.Pulse
 	{
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
-		public static EffectIntents RenderNode(ElementNode node, Curve levelCurve, ColorGradient colorGradient, TimeSpan duration, bool isDiscrete, bool allowZeroIntensity = false)
+		public static EffectIntents RenderNode(IElementNode node, Curve levelCurve, ColorGradient colorGradient, TimeSpan duration, bool isDiscrete, bool allowZeroIntensity = false)
 		{
 			//Collect all the points first.
 			var allPointsTimeOrdered = _GetAllSignificantDataPoints(levelCurve, colorGradient);
 			var elementData = new EffectIntents();
-			foreach (ElementNode elementNode in node.GetLeafEnumerator().Distinct())
+			foreach (IElementNode elementNode in node.GetLeafEnumerator().Distinct())
 			{
 				// this is probably always going to be a single element for the given node, as
 				// we have iterated down to leaf nodes in RenderNode() above. May as well do
@@ -144,7 +144,7 @@ namespace VixenModules.Effect.Pulse
 
 			return points.OrderBy(x => x).ToArray();
 		}
-		public static EffectIntents RenderNode(ElementNode node, double level, Color color, TimeSpan duration)
+		public static EffectIntents RenderNode(IElementNode node, double level, Color color, TimeSpan duration)
 		{
 			var elementData = new EffectIntents();
 			if (node.Element != null && level > 0)
@@ -155,12 +155,12 @@ namespace VixenModules.Effect.Pulse
 			return elementData;
 		}
 
-		private static bool IsElementDiscrete(ElementNode elementNode)
+		private static bool IsElementDiscrete(IElementNode elementNode)
 		{
 			return ColorModule.isElementNodeTreeDiscreteColored(elementNode);
 		}
 
-		public static EffectIntents GenerateExtendedStaticPulse(ElementNode target, IIntentNode intentNode, TimeSpan timeSpan, bool hasDiscreteIntents, ColorGradient gradient = null)
+		public static EffectIntents GenerateExtendedStaticPulse(IElementNode target, IIntentNode intentNode, TimeSpan timeSpan, bool hasDiscreteIntents, ColorGradient gradient = null)
 		{
 			if (intentNode == null || intentNode.EndTime >= timeSpan)
 			{
@@ -185,14 +185,14 @@ namespace VixenModules.Effect.Pulse
 			return new EffectIntents();
 		}
 
-		public static EffectIntents GenerateExtendedStaticPulse(ElementNode target, Curve newCurve, ColorGradient gradient, TimeSpan duration, TimeSpan offset, bool hasDiscreteColors)
+		public static EffectIntents GenerateExtendedStaticPulse(IElementNode target, Curve newCurve, ColorGradient gradient, TimeSpan duration, TimeSpan offset, bool hasDiscreteColors)
 		{
 			var result = RenderNode(target, newCurve, gradient, duration, hasDiscreteColors);
 			result.OffsetAllCommandsByTime(offset);
 			return result;
 		}
 
-		public static EffectIntents GenerateStartingStaticPulse(ElementNode target, IIntentNode intentNode, bool hasDiscreteColors, ColorGradient gradient = null)
+		public static EffectIntents GenerateStartingStaticPulse(IElementNode target, IIntentNode intentNode, bool hasDiscreteColors, ColorGradient gradient = null)
 		{
 			if (intentNode == null || intentNode.StartTime <= TimeSpan.Zero)
 			{
@@ -217,7 +217,7 @@ namespace VixenModules.Effect.Pulse
 
 		}
 
-		private static EffectIntents GenerateStartingStaticPulse(ElementNode target, Curve newCurve, ColorGradient gradient, TimeSpan time, bool hasDiscreteColors)
+		private static EffectIntents GenerateStartingStaticPulse(IElementNode target, Curve newCurve, ColorGradient gradient, TimeSpan time, bool hasDiscreteColors)
 		{
 			var result = RenderNode(target, newCurve, gradient, time, hasDiscreteColors);
 			return result;
