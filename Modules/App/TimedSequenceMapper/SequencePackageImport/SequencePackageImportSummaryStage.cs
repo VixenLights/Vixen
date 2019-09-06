@@ -306,7 +306,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 		private bool ExtractMedia(string archivePath, string sequenceName)
 		{
 			var success = false;
-			var searchPath = Path.Combine(sequenceName, @"Media");
+			var searchPath = Path.Combine(Path.Combine(Constants.PackageSequenceDataFolder,sequenceName), @"Media");
 
 			try
 			{
