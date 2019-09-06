@@ -28,6 +28,8 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		
 		public ElementMapperViewModel(Dictionary<Guid, string> sourceActiveElements, string sequenceName)
 		{
+			SourceTreeView = Visibility.Collapsed;
+			BasicView = Visibility.Collapsed;
 			_sourceActiveElements = sourceActiveElements;
 			_sequenceName = sequenceName;
 		}
@@ -108,6 +110,10 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 					_elementMapService.ElementMap.Name = Path.GetFileNameWithoutExtension(ElementMapFilePath);
 					ElementMap = _elementMapService.ElementMap;
 					MapModified = false;
+					if (_elementMapService.ElementMap.SourceTree != null)
+					{
+						PopulateSourceTree(_elementMapService.ElementMap.SourceTree);
+					}
 				}
 			}
 
@@ -117,6 +123,15 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 			{
 				await LoadElementTree(ElementTreeFilePath);
 				MapModified = true;
+			}
+
+			if (SourceElementTree != null)
+			{
+				SourceTreeView = Visibility.Visible;
+			}
+			else
+			{
+				BasicView = Visibility.Visible;
 			}
 		}
 
@@ -164,6 +179,42 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 			
 			return false;
 		}
+
+		#endregion
+
+		#region SourceTreeView property
+
+		/// <summary>
+		/// Gets or sets the SourceTreeView value.
+		/// </summary>
+		public Visibility SourceTreeView
+		{
+			get { return GetValue<Visibility>(SourceTreeViewProperty); }
+			set { SetValue(SourceTreeViewProperty, value); } 
+		}
+
+		/// <summary>
+		/// SourceTreeView property data.
+		/// </summary>
+		public static readonly PropertyData SourceTreeViewProperty = RegisterProperty("SourceTreeView", typeof(Visibility));
+
+		#endregion
+
+		#region BasicView property
+
+		/// <summary>
+		/// Gets or sets the BasicView value.
+		/// </summary>
+		public Visibility BasicView
+		{
+			get { return GetValue<Visibility>(BasicViewProperty); }
+			set { SetValue(BasicViewProperty, value); }
+		}
+
+		/// <summary>
+		/// BasicView property data.
+		/// </summary>
+		public static readonly PropertyData BasicViewProperty = RegisterProperty("BasicView", typeof(Visibility));
 
 		#endregion
 

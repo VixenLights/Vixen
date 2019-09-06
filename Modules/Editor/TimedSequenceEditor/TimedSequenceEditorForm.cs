@@ -5262,6 +5262,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (unmappedEffects.Any())
 			{
+				//If we are loading the sequence from somewhere outside our normal sequence folder, then clear out 
+				//the path so they are forced to save a new copy of it. Otherwise it may be one of our own and we just let it be.
+				var foreignSequence = SequenceService.SequenceDirectory != Path.GetDirectoryName(_sequence.FilePath);
+				                      
 				MessageBoxForm mbf = new MessageBoxForm($"The sequence has Effects that belong to Elements not known to this profile." +
 				                                        $"\nWould you like to map them to existing elements?", "Unmapped Effects", MessageBoxButtons.YesNo,SystemIcons.Warning);
 
@@ -5270,6 +5274,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					var result = mbf.ShowDialog(this);
 					if(result == DialogResult.No)
 					{
+						if (foreignSequence)
+						{
+							_sequence.FilePath = String.Empty;
+						}
 						return;
 					}
 				}
@@ -5306,9 +5314,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						}
 					}
 
-					//If we are loading the sequence from somewhere outside our normal sequence folder, then clear out 
-					//the path so they are forced to save a new copy of it. Otherwise it may be one of our own and we just let it be.
-					if(SequenceService.SequenceDirectory != Path.GetDirectoryName(_sequence.FilePath))
+					if (foreignSequence)
 					{
 						_sequence.FilePath = String.Empty;
 					}
@@ -5316,6 +5322,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				else
 				{
 					effectsToRemove.AddRange(unmappedEffects);
+					if (foreignSequence)
+					{
+						_sequence.FilePath = String.Empty;
+					}
 				}
 
 				_sequence.SequenceData.EffectData.RemoveRangeData(effectsToRemove);

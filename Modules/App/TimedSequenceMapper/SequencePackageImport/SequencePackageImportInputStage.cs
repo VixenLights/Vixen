@@ -145,13 +145,17 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 		private string ExtractElementTree(string packageFile)
 		{
 			string elementTreeFile = string.Empty;
-			using (var package = ZipFile.OpenRead(packageFile))
+			if(File.Exists(packageFile))
 			{
-				var etEntry = package.GetEntry(Path.Combine("ProfileInfo",$"ElementTree.{Constants.ElementTreeExtension}"));
-				if (etEntry != null)
+				using (var package = ZipFile.OpenRead(packageFile))
 				{
-					elementTreeFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-					etEntry.ExtractToFile(elementTreeFile);
+					var etEntry =
+						package.GetEntry(Path.Combine("ProfileInfo", $"ElementTree.{Constants.ElementTreeExtension}"));
+					if (etEntry != null)
+					{
+						elementTreeFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+						etEntry.ExtractToFile(elementTreeFile);
+					}
 				}
 			}
 
