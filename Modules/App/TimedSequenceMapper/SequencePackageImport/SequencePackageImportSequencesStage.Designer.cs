@@ -55,6 +55,8 @@
 			this.lstSequences.TabIndex = 1;
 			this.lstSequences.UseCompatibleStateImageBehavior = false;
 			this.lstSequences.View = System.Windows.Forms.View.Details;
+			this.lstSequences.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lstSequences_ItemChecked);
+			this.lstSequences.KeyUp += new System.Windows.Forms.KeyEventHandler(this.lstSequences_KeyUp);
 			// 
 			// sequenceColumn
 			// 

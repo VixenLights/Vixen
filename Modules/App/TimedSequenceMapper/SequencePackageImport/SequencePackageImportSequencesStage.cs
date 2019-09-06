@@ -46,6 +46,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 				if (_data.Sequences.ContainsKey(v))
 				{
 					_data.Sequences[v] = e.Item.Checked;
+					_WizardStageChanged();
 				}
 			}
 		}
@@ -135,6 +136,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 						}
 					}
 				}
+				_WizardStageChanged();
 			}
 			else
 			{
@@ -146,17 +148,13 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 						{
 							if (_data.Sequences.ContainsKey(v))
 							{
-								_data.Sequences[v] = item.Checked = !item.Checked;
+								_data.Sequences[v] = item.Checked;
 							}
 						}
 					}
+					_WizardStageChanged();
 				}
 			}
-		}
-
-		private void GroupBox_Paint(object sender, PaintEventArgs e)
-		{
-			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 	}
 }

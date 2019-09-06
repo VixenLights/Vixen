@@ -146,7 +146,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageExport
 									{
 										effectSupportingFiles.Add(
 											new Tuple<string, string>(file, 
-												Path.Combine(name, moduleDataFolder, file.Replace(Paths.ModuleDataFilesPath, "").TrimStart(Path.DirectorySeparatorChar))));
+												Path.Combine(Path.Combine(Constants.PackageSequenceDataFolder, name), moduleDataFolder, file.Replace(Paths.ModuleDataFilesPath, "").TrimStart(Path.DirectorySeparatorChar))));
 									}
 								}
 
@@ -156,7 +156,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageExport
 									{
 										mediaSupportingFiles.Add(
 											new Tuple<string, string>(file, 
-												Path.Combine(name, mediaFolder, file.Replace(MediaService.MediaDirectory, "").TrimStart(Path.DirectorySeparatorChar))));
+												Path.Combine(Path.Combine(Constants.PackageSequenceDataFolder, name), mediaFolder, file.Replace(MediaService.MediaDirectory, "").TrimStart(Path.DirectorySeparatorChar))));
 									}
 								}
 							}

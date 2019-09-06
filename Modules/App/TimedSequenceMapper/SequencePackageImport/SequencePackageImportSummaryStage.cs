@@ -287,7 +287,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 		private bool ExtractModuleData(string archivePath, string sequenceName)
 		{
 			var success = false;
-			var searchPath = Path.Combine(sequenceName, @"Module Data Files");
+			var searchPath = Path.Combine(Path.Combine(Constants.PackageSequenceDataFolder,sequenceName), @"Module Data Files");
 
 			try
 			{
