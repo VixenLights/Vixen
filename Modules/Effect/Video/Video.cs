@@ -632,6 +632,8 @@ namespace VixenModules.Effect.Video
 				{
 					var messageBox = new MessageBoxForm("Entered Start Time plus Effect length is greater than the Video Length of " + _data.FileName,
 						"Invalid Start Time. Decrease the Start Time", MessageBoxButtons.OK, SystemIcons.Error);
+					messageBox.StartPosition = FormStartPosition.CenterScreen;
+					messageBox.TopMost = true;
 					messageBox.ShowDialog();
 					_videoFileDetected = false;
 				}
@@ -641,6 +643,8 @@ namespace VixenModules.Effect.Video
 				Logging.Error(ex, $"There was a problem converting {videoFilename}");
 				var messageBox = new MessageBoxForm("There was a problem converting " + videoFilename + ": " + ex.Message,
 					"Error Converting Video", MessageBoxButtons.OK, SystemIcons.Error);
+				messageBox.StartPosition = FormStartPosition.CenterScreen;
+				messageBox.TopMost = true;
 				messageBox.ShowDialog();
 				_videoFileDetected = false;
 			}
