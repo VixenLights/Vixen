@@ -56,7 +56,6 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			treeElements.treeviewAfterSelect += treeElements_AfterSelect;
 			treeElements.treeviewDeselected += TreeElementsOnTreeviewDeselected;
-			
 		}
 
 		private void HighlightNode(ElementNode node)
@@ -78,43 +77,36 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void treeElements_AfterSelect(object sender, TreeViewEventArgs e)
 		{
+			_preview.BeginUpdate();
 			_preview.HighlightedElements.Clear();
 
 			foreach (var node in treeElements.SelectedElementNodes) {
 				HighlightNode(node);
 			}
 
-			if (treeElements.SelectedElementNodes.Count() == 1)
+			if (!_preview.SelectedDisplayItems.Any())
 			{
-				if (_preview.NodeToPixel.TryGetValue(treeElements.SelectedNode.GetLeafEnumerator().First(), out var previewPixel))
-				{
-					if (previewPixel.Any())
-					{
-						var shape = _preview.DisplayItemAtPoint(previewPixel.First().Point);
-						if (shape != null)
-						{
-							_preview.propertiesForm.ShowSetupControl(shape.Shape.GetSetupControl());
-						}
-					}
-
-				}
-				else
-				{
-					if (!_preview.SelectedDisplayItems.Any())
-					{
-						_preview.propertiesForm.ClearSetupControl();
-					}
-				}
+				_preview.propertiesForm.ClearSetupControl();
 			}
+
+			_preview.EndUpdate();
 		}
 
 		private void TreeElementsOnTreeviewDeselected(object sender, EventArgs e)
 		{
+			TreeViewNodesDeselected();
+		}
+
+		private void TreeViewNodesDeselected()
+		{
+			_preview.BeginUpdate();
 			_preview.HighlightedElements.Clear();
 			if (!_preview.SelectedDisplayItems.Any())
 			{
 				_preview.propertiesForm.ClearSetupControl();
 			}
+
+			_preview.EndUpdate();
 		}
 
 		public ElementNode SelectedNode => treeElements.SelectedNode;
@@ -133,6 +125,7 @@ namespace VixenModules.Preview.VixenPreview
 		internal void ClearSelectedNodes()
 		{
 			treeElements.ClearSelectedNodes();
+			TreeViewNodesDeselected();
 		}
 
 		internal bool SetupTemplate(IElementTemplate template)

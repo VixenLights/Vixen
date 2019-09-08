@@ -366,7 +366,7 @@ namespace Common.Controls
 				// Check to see if a node was clicked on 
 				TreeNode node = GetNodeAt(e.Location);
 				if (node != null) {
-					if (ModifierKeys == Keys.None && m_SelectedNodes.Contains(node) && e.Button != MouseButtons.Right &&
+					if (ModifierKeys == Keys.None && !m_SelectedNodes.Contains(node) && e.Button != MouseButtons.Right &&
 					    _clickedNodeWasInBounds)
 						SelectNode(node);
 					if (ModifierKeys == Keys.Control && !_selectedNodeWithControlKey)

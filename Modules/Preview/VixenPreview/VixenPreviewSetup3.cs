@@ -140,7 +140,7 @@ namespace VixenModules.Preview.VixenPreview
 			PreviewItemsAlignNew += vixenpreviewControl_PreviewItemsAlignNew;
 
 			elementsForm = new VixenPreviewSetupElementsDocument(previewForm.Preview);
-			propertiesForm = new VixenPreviewSetupPropertiesDocument();
+			propertiesForm = new VixenPreviewSetupPropertiesDocument(previewForm.Preview);
 
 			previewForm.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.Document);
 			elementsForm.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
@@ -216,7 +216,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void OnSelectDisplayItem(object sender, Shapes.DisplayItem displayItem) {
 			Shapes.DisplayItemBaseControl setupControl = displayItem.Shape.GetSetupControl();
-
+			elementsForm.ClearSelectedNodes();
 			if (setupControl != null) {
 				propertiesForm.ShowSetupControl(setupControl);
 			}

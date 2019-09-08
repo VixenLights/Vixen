@@ -17,12 +17,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			ThemeUpdateControls.UpdateControls(this);
 			ThemePropertyGridRenderer.PropertyGridRender(propertyGrid);
 			propertyGrid.SelectedObject = Shape;
+			propertyGrid.PropertyValueChanged += PropertyGrid_PropertyValueChanged;
 			Shape.OnPropertiesChanged += OnPropertiesChanged;
 			if (ScalingTools.GetScaleFactor() >= 2)
 			{
 				propertyGrid.LargeButtons = true;
 			}
+		}
 
+		private void PropertyGrid_PropertyValueChanged(object s, System.Windows.Forms.PropertyValueChangedEventArgs e)
+		{
+			OnPropertyEdited();
 		}
 
 		~PreviewShapeBaseSetupControl()
@@ -40,4 +45,5 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_BasicShapes);
 		}
 	}
+
 }
