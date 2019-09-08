@@ -747,8 +747,15 @@ namespace VixenModules.Effect.Video
 
 			int pictureCount = _moviePicturesFileList.Count;
 
-			int currentImage = Convert.ToInt32(_currentMovieImageNum);
-			if (currentImage >= pictureCount || currentImage < 0) _currentMovieImageNum = 0;
+			int currentImage = (int)_currentMovieImageNum;
+			if (currentImage >= pictureCount)
+			{
+				_currentMovieImageNum = currentImage = pictureCount-1;
+			}
+			else if(currentImage < 0)
+			{
+				_currentMovieImageNum = currentImage = 0;
+			}
 			var image = Image.FromFile(_moviePicturesFileList[currentImage]);
 			// Convert to Grey scale if selected.
 			_fp = EffectColorType == EffectColorType.RenderGreyScale ? new FastPixel.FastPixel(new Bitmap(ConvertToGrayScale(image))) : new FastPixel.FastPixel(new Bitmap(image, (int)(_renderWidth * _ratioWidth), (int)(_renderHeight * _ratioHeight)));
