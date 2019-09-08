@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -24,9 +18,9 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void timerRender_Tick(object sender, EventArgs e)
 		{
-			timerRender.Stop();
-			Preview.RenderInForeground();
-			timerRender.Start();
+			//timerRender.Stop();
+			//Preview.RenderInForeground();
+			//timerRender.Start();
 		}
 
 		private void VixenPreviewSetupDocument_Load(object sender, EventArgs e)
@@ -40,7 +34,12 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void VixenPreviewSetupDocument_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			timerRender.Stop();
+			//timerRender.Stop();
+		}
+
+		private void VixenPreviewSetupDocument_Paint(object sender, PaintEventArgs e)
+		{
+			Preview.RenderInForeground();
 		}
 	}
 }

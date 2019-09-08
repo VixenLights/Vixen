@@ -28,7 +28,6 @@ using VixenModules.App.CustomPropEditor.Services;
 using VixenModules.Preview.VixenPreview.Undo;
 using VixenModules.Property.Location;
 using DisplayItem = VixenModules.Preview.VixenPreview.Shapes.DisplayItem;
-using Element = Vixen.Sys.Element;
 using Size = System.Drawing.Size;
 
 namespace VixenModules.Preview.VixenPreview
@@ -44,11 +43,7 @@ namespace VixenModules.Preview.VixenPreview
 		private bool _paused = false;
 		private BufferedGraphicsContext context;
 		private BufferedGraphics bufferedGraphics;
-		public static double averageUpdateTime = 0;
 		public static double updateCount = 0;
-		public static double totalUpdateTime = 0;
-		public static double lastUpdateTime = 0;
-		public double lastRenderUpdateTime = 0;
 		private bool DefaultBackground = true;
 		private Point zoomTo;
 		private bool _displayItemsLoaded = false;
@@ -109,10 +104,6 @@ namespace VixenModules.Preview.VixenPreview
 		public List<DisplayItem> _selectedDisplayItems;
 
 		private Rectangle _bandRect = new Rectangle();
-
-		// For debug, status line, etc.
-		private Random random = new Random();
-		private Stopwatch renderTimer = new Stopwatch();
 
 		#endregion
 
@@ -214,6 +205,8 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				vScroll.Value = newYValue;
 			}
+
+			RenderInForeground();
 		}
 
 		public HashSet<Guid> HighlightedElements
@@ -331,8 +324,12 @@ namespace VixenModules.Preview.VixenPreview
 			AllowDrop = true;
 			DragEnter += VixenPreviewSetup3_DragEnter;
 			DragDrop += VixenPreviewSetup3_DragDrop;
-			SetStyle(ControlStyles.UserPaint, true);
+			
+			//SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
+			SetStyle(ControlStyles.UserPaint, true);
+			//SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+			//SetStyle(ControlStyles.ResizeRedraw, true);
 			_selectedDisplayItem = null;
 		}
 
@@ -342,10 +339,22 @@ namespace VixenModules.Preview.VixenPreview
 		private void VixenPreviewControl_Load(object sender, EventArgs e)
 		{
 			MouseWheel += VixenPreviewControl_MouseWheel;
+			vScroll.Scroll += VScroll_Scroll;
+			hScroll.Scroll += HScroll_Scroll;
 			Controls.Add(vScroll);
 			Controls.Add(hScroll);
 			ZoomLevel = 1;
 			LayoutProps();
+		}
+
+		private void HScroll_Scroll(object sender, ScrollEventArgs e)
+		{
+			RenderInForeground();
+		}
+
+		private void VScroll_Scroll(object sender, ScrollEventArgs e)
+		{
+			RenderInForeground();
 		}
 
 		public void LayoutProps()
@@ -357,6 +366,8 @@ namespace VixenModules.Preview.VixenPreview
 					item.Shape.Layout();
 				}
 			}
+
+			RenderInForeground();
 		}
 
 		public Bitmap Background
@@ -420,6 +431,7 @@ namespace VixenModules.Preview.VixenPreview
 			}
 
 			SetupBackgroundAlphaImage();
+			RenderInForeground();
 		}
 
 		public void LoadBackground()
@@ -455,7 +467,7 @@ namespace VixenModules.Preview.VixenPreview
 
 				SetupScrollBars();
 
-				if (bufferedGraphics != null) bufferedGraphics.Graphics.Clear(Color.Black);
+				bufferedGraphics?.Graphics.Clear(Color.Black);
 			}
 		}
 
@@ -487,6 +499,8 @@ namespace VixenModules.Preview.VixenPreview
 							bufferedGraphics = context.Allocate(this.CreateGraphics(),
 								new Rectangle(0, 0, this.Width + 1, this.Height + 1));
 						}
+
+						bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
 					}
 				}
 			}
@@ -533,18 +547,10 @@ namespace VixenModules.Preview.VixenPreview
 
 					OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 				}
+
+				RenderInForeground();
 			}
 		}
-
-		//public void selectItem(PreviewPoint point)
-		//{
-		//	_selectedDisplayItem = DisplayItemAtPoint(point);
-		//	if (_selectedDisplayItem != null)
-		//	{
-		//		_selectedDisplayItem.Shape.Select(true);
-		//		OnSelectDisplayItem(this, _selectedDisplayItem);
-		//	}
-		//}
 
 		private bool _mouseCaptured = false;
 		private bool _banding = false;
@@ -566,11 +572,13 @@ namespace VixenModules.Preview.VixenPreview
 							{
 								SelectedDisplayItems.Remove(item);
 								OnSelectionChanged?.Invoke(this, EventArgs.Empty);
+								RenderInForeground();
 							}
 							else
 							{
 								SelectItemUnderPoint(translatedPoint, controlPressed);
 							}
+							
 							return;
 						}
 
@@ -648,15 +656,15 @@ namespace VixenModules.Preview.VixenPreview
 						StartMove(translatedPoint.X, translatedPoint.Y);
 					}
 
-						// If we're not Selecting items, we're drawing them
-					else if (_currentTool == Tools.PolyLine && _mouseCaptured)
-					{
-						return;
-					}
-					else if (_currentTool == Tools.MultiString && _mouseCaptured)
-					{
-						return;
-					}
+					// If we're not Selecting items, we're drawing them
+					//else if (_currentTool == Tools.PolyLine && _mouseCaptured)
+					//{
+					//	return;
+					//}
+					//else if (_currentTool == Tools.MultiString && _mouseCaptured)
+					//{
+					//	return;
+					//}
 					else
 					{
 						DeSelectSelectedDisplayItem();
@@ -907,6 +915,7 @@ namespace VixenModules.Preview.VixenPreview
 					zoomTo = MousePointToZoomPoint(e.Location);
 
 				}
+				RenderInForeground();
 			}
 		}
 
@@ -923,6 +932,7 @@ namespace VixenModules.Preview.VixenPreview
 					{
 						_selectedDisplayItem.Shape.Select(true);
 					}
+					RenderInForeground();
 					break;
 				case "Group":
 					_selectedDisplayItem = CreateGroup();
@@ -930,6 +940,7 @@ namespace VixenModules.Preview.VixenPreview
 					{
 						_selectedDisplayItem.Shape.Select(true);
 					}
+					RenderInForeground();
 					break;
 				case "Ungroup":
 					if (_selectedDisplayItem != null)
@@ -986,6 +997,8 @@ namespace VixenModules.Preview.VixenPreview
 				SaveLocations(SelectedDisplayItems);
 				SelectedDisplayItems.Clear();
 			}
+
+			RenderInForeground();
 		}
 
 		private void SetDisplayItemZ(DisplayItem displayItem, int pos)
@@ -1000,7 +1013,7 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			dragStart.X = x;
 			dragStart.Y = y;
-			if (SelectedDisplayItems.Count() > 0)
+			if (SelectedDisplayItems.Any())
 			{
 				foreach (DisplayItem item in SelectedDisplayItems)
 				{
@@ -1013,6 +1026,7 @@ namespace VixenModules.Preview.VixenPreview
 			}
 			Capture = true;
 			_mouseCaptured = true;
+			RenderInForeground();
 		}
 
 		private void VixenPreviewControl_MouseMove(object sender, MouseEventArgs e)
@@ -1038,6 +1052,7 @@ namespace VixenModules.Preview.VixenPreview
 					if (_mouseCaptured && _selectedDisplayItem != null)
 					{
 						_selectedDisplayItem.Shape.MouseMove(dragCurrent.X, dragCurrent.Y, changeX, changeY);
+						RenderInForeground();
 					}
 						// If we get here, we're drwing a rubber band
 					else if (_banding)
@@ -1068,6 +1083,8 @@ namespace VixenModules.Preview.VixenPreview
 								OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 							}
 						}
+
+						RenderInForeground();
 					}
 						// Are we moving a group of display items?
 					else if (_mouseCaptured && _selectedDisplayItem == null && SelectedDisplayItems.Count() > 0)
@@ -1076,6 +1093,7 @@ namespace VixenModules.Preview.VixenPreview
 						{
 							item.Shape.MouseMove(zoomPoint.X, zoomPoint.Y, changeX, changeY);
 						}
+						RenderInForeground();
 					}
 
 					if (_selectedDisplayItem != null)
@@ -1155,6 +1173,8 @@ namespace VixenModules.Preview.VixenPreview
 						if (SelectedDisplayItems.Contains(item))
 							item.Shape.Nudge(0, -1);
 					}
+
+					RenderInForeground();
 				}
 				e.Handled = true;
 			}
@@ -1169,6 +1189,8 @@ namespace VixenModules.Preview.VixenPreview
 						if (SelectedDisplayItems.Contains(item))
 							item.Shape.Nudge(0, 1);
 					}
+
+					RenderInForeground();
 				}
 				e.Handled = true;
 			}
@@ -1183,6 +1205,8 @@ namespace VixenModules.Preview.VixenPreview
 						if (SelectedDisplayItems.Contains(item))
 							item.Shape.Nudge(1, 0);
 					}
+
+					RenderInForeground();
 				}
 				e.Handled = true;
 			}
@@ -1197,6 +1221,8 @@ namespace VixenModules.Preview.VixenPreview
 						if (SelectedDisplayItems.Contains(item))
 							item.Shape.Nudge(-1, 0);
 					}
+
+					RenderInForeground();
 				}
 				e.Handled = true;
 			}
@@ -1221,6 +1247,7 @@ namespace VixenModules.Preview.VixenPreview
 						OnSelectDisplayItem(this, _selectedDisplayItem);
 						DeSelectSelectedDisplayItem();
 						ResetMouse();
+						RenderInForeground();
 					}
 					else if (_selectedDisplayItem.Shape is PreviewMultiString && _selectedDisplayItem.Shape.Creating)
 					{
@@ -1229,6 +1256,7 @@ namespace VixenModules.Preview.VixenPreview
 						OnSelectDisplayItem(this, _selectedDisplayItem);
 						DeSelectSelectedDisplayItem();
 						ResetMouse();
+						RenderInForeground();
 					}
 					else
 					{
@@ -1329,6 +1357,8 @@ namespace VixenModules.Preview.VixenPreview
 				}
 			}
 			ResetMouse();
+
+			RenderInForeground();
 		}
 
 		private bool ShowElementCreateTemplateForCurrentTool()
@@ -1418,6 +1448,7 @@ namespace VixenModules.Preview.VixenPreview
 				Background = null;
 			}
 			SetupScrollBars();
+			RenderInForeground();
 		}
 
 		private void SetupScrollBars()
@@ -1472,15 +1503,7 @@ namespace VixenModules.Preview.VixenPreview
 				_selectedDisplayItem.Shape.Deselect();
 				_selectedDisplayItem = null;
 				OnSelectionChanged?.Invoke(this, EventArgs.Empty);
-			}
-		}
-
-		public void DeSelectSelectedDisplayItemNoNotify()
-		{
-			if (_selectedDisplayItem != null)
-			{
-				_selectedDisplayItem.Shape.Deselect();
-				_selectedDisplayItem = null;
+				RenderInForeground();
 			}
 		}
 
@@ -1561,6 +1584,7 @@ namespace VixenModules.Preview.VixenPreview
 				}
 			}
 			LoadBackground();
+			RenderInForeground();
 		}
 
 		public bool Paused
@@ -1592,7 +1616,7 @@ namespace VixenModules.Preview.VixenPreview
 			string xml = Clipboard.GetText();
 			SelectedDisplayItems = (List<DisplayItem>) PreviewTools.DeSerializeToDisplayItemList(xml);
 			List<DisplayItem> selected = new List<DisplayItem>(SelectedDisplayItems.ToArray());
-			if (SelectedDisplayItems.Count() > 0)
+			if (SelectedDisplayItems.Any())
 			{
 				var action = new PreviewItemsPasteUndoAction(this, selected);//Start Undo Action.
 				UndoManager.AddUndoAction(action);
@@ -1625,6 +1649,7 @@ namespace VixenModules.Preview.VixenPreview
 					item.Shape.Top -= deltaY;
 				}
 				StartMove(mousePoint.X, mousePoint.Y);
+				RenderInForeground();
 			}
 		}
 
@@ -1638,6 +1663,7 @@ namespace VixenModules.Preview.VixenPreview
 
 				RemoveDisplayItem(_selectedDisplayItem);
 				DeSelectSelectedDisplayItem();
+				RenderInForeground();
 			}
 			else if (SelectedDisplayItems != null && SelectedDisplayItems.Count > 0)
 			{
@@ -1651,6 +1677,7 @@ namespace VixenModules.Preview.VixenPreview
 				}
 				SelectedDisplayItems.Clear();
 				OnSelectionChanged?.Invoke(this, EventArgs.Empty);
+				RenderInForeground();
 			}
 		}
 
@@ -1702,9 +1729,10 @@ namespace VixenModules.Preview.VixenPreview
 				if (_selectedDisplayItem != null)
 				propertiesForm.ShowSetupControl(_selectedDisplayItem.Shape.GetSetupControl());
 			}
+			RenderInForeground();
 		}
 
-		public static void Resize_MoveSwapPlaces(DisplayItem lhs, PreviewItemPositionInfo rhs)
+		public void Resize_MoveSwapPlaces(DisplayItem lhs, PreviewItemPositionInfo rhs)
 		{
 			var displayItemTemp = PreviewTools.DeSerializeToDisplayItemList(rhs.OriginalPreviewItem[0]);
 			foreach (var temp1 in displayItemTemp)
@@ -1716,6 +1744,7 @@ namespace VixenModules.Preview.VixenPreview
 				rhs.OriginalPreviewItem.Add(PreviewTools.SerializeToString(newObjectList));
 				lhs.Shape = temp1.Shape;
 			}
+			RenderInForeground();
 		}
 
 		#endregion
@@ -1730,6 +1759,7 @@ namespace VixenModules.Preview.VixenPreview
 				e.Shape.ResizePixelsBy(reverseChange);
 				info.ChangeAmount = reverseChange;
 			}
+			RenderInForeground();
 		}
 
 		#endregion
@@ -1790,6 +1820,7 @@ namespace VixenModules.Preview.VixenPreview
 			OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 			var action = new PreviewItemsGroupAddedUndoAction(this, newDisplayItem);//Start Undo Action.
 			UndoManager.AddUndoAction(action);
+			RenderInForeground();
 			return newDisplayItem;
 		}
 
@@ -1811,6 +1842,7 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				DisplayItems.Remove(item);
 			}
+			RenderInForeground();
 		}
 
 		public DisplayItem CreateTemplate()
@@ -1883,6 +1915,8 @@ namespace VixenModules.Preview.VixenPreview
 					_selectedDisplayItem.Shape.SetSelectPoint(null);
 
 					PreviewItemAddAction(); //starts Undo_Redo Action
+
+					RenderInForeground();
 				}
 			}
 		}
@@ -1903,6 +1937,7 @@ namespace VixenModules.Preview.VixenPreview
 				string path = openFileService.FileName;
 				await ImportCustomPropFromFile(path);
 			}
+			RenderInForeground();
 		}
 
 		private async Task ImportCustomPropFromFile(string path)
@@ -1945,6 +1980,7 @@ namespace VixenModules.Preview.VixenPreview
 					await ImportCustomPropFromFile(file, translatedPoint);
 				}
 			}
+			RenderInForeground();
 		}
 
 		private void VixenPreviewSetup3_DragEnter(object sender, DragEventArgs e)
@@ -1980,6 +2016,7 @@ namespace VixenModules.Preview.VixenPreview
 			DisplayItems.Add(newDisplayItem);
 			SelectedDisplayItems.Clear();
 			OnSelectionChanged?.Invoke(this, EventArgs.Empty);
+			RenderInForeground();
 		}
 
 		internal string GetSubstitutionString(string token)
@@ -2024,6 +2061,7 @@ namespace VixenModules.Preview.VixenPreview
 				SelectedDisplayItems.Clear();
 				OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 			}
+			RenderInForeground();
 		}
 
 		#endregion
@@ -2045,6 +2083,7 @@ namespace VixenModules.Preview.VixenPreview
 				}
 				PixelResize(1, SelectedDisplayItems);
 			}
+			RenderInForeground();
 		}
 
 		public void DecreaseBulbSize()
@@ -2062,6 +2101,8 @@ namespace VixenModules.Preview.VixenPreview
 				}
 				PixelResize(-1, SelectedDisplayItems);
 			}
+
+			RenderInForeground();
 		}
 
 		public void MatchBulbSize()
@@ -2073,6 +2114,7 @@ namespace VixenModules.Preview.VixenPreview
 					shape.MatchPixelSize(SelectedShapes()[0]);
 				}
 			}
+			RenderInForeground();
 		}
 
 		#endregion
@@ -2092,6 +2134,8 @@ namespace VixenModules.Preview.VixenPreview
 				}
 			}
 
+			RenderInForeground();
+
 		}
 
 		public void AlignRight()
@@ -2101,6 +2145,8 @@ namespace VixenModules.Preview.VixenPreview
 				if (shape != SelectedShapes()[0])
 					shape.Left = SelectedShapes()[0].Right - (shape.Right - shape.Left);
 			}
+
+			RenderInForeground();
 		}
 
 		public void AlignTop()
@@ -2110,6 +2156,8 @@ namespace VixenModules.Preview.VixenPreview
 				if (shape != SelectedShapes()[0])
 					shape.Top = SelectedShapes()[0].Top;
 			}
+
+			RenderInForeground();
 		}
 
 		public void AlignBottom()
@@ -2119,6 +2167,8 @@ namespace VixenModules.Preview.VixenPreview
 				if (shape != SelectedShapes()[0])
 					shape.Top = SelectedShapes()[0].Bottom - (shape.Bottom - shape.Top);
 			}
+
+			RenderInForeground();
 		}
 
 		public void AlignHorizontal()
@@ -2131,6 +2181,8 @@ namespace VixenModules.Preview.VixenPreview
 					shape.Top = matchMidPoint - ((shape.Bottom - shape.Top)/2);
 				}
 			}
+
+			RenderInForeground();
 		}
 
 		public void AlignVertical()
@@ -2143,6 +2195,8 @@ namespace VixenModules.Preview.VixenPreview
 					shape.Left = matchMidPoint - ((shape.Right - shape.Left)/2);
 				}
 			}
+
+			RenderInForeground();
 		}
 
 		public void DistributeHorizontal()
@@ -2168,6 +2222,8 @@ namespace VixenModules.Preview.VixenPreview
 						propSpaceSoFar += shapes[shapeNum].Right - shapes[shapeNum].Left;
 					}
 				}
+
+				RenderInForeground();
 			}
 		}
 
@@ -2194,6 +2250,8 @@ namespace VixenModules.Preview.VixenPreview
 						propSpaceSoFar += shapes[shapeNum].Bottom - shapes[shapeNum].Top;
 					}
 				}
+
+				RenderInForeground();
 			}
 		}
 
@@ -2216,136 +2274,14 @@ namespace VixenModules.Preview.VixenPreview
                         shape.Match(SelectedShapes()[0]);
                     }
                 }
+
+                RenderInForeground();
             }
         }
 
 		#endregion
 
-		//#region "Update in a BeginInvoke"
-		//public void ProcessUpdate(ElementIntentStates elementStates)
-		//{
-		//    renderTimer.Reset();
-		//    renderTimer.Start();
-		//    if (!_paused)
-		//    {
-		//        FastPixel fp = new FastPixel(new Bitmap(_alphaBackground));
-
-		//        fp.Lock();
-		//        Color c;
-		//        foreach (var channelIntentState in elementStates)
-		//        {
-		//            var elementId = channelIntentState.Key;
-		//            Element element = VixenSystem.Elements.GetElement(elementId);
-		//            if (element == null) continue;
-		//            ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-		//            if (node == null) continue;
-
-		//            foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
-		//            {
-		//                c = intentState.GetValue().GetAlphaChannelIntensityAffectedColor();
-		//                if (_background != null)
-		//                {
-		//                    List<PreviewPixel> pixels;
-		//                    if (NodeToPixel.TryGetValue(node, out pixels))
-		//                    {
-		//                        foreach (PreviewPixel pixel in pixels)
-		//                        {
-		//                            pixel.Draw(fp, c);
-		//                        }
-		//                    }
-		//                }
-		//            }
-		//        }
-
-		//        fp.Unlock(true);
-
-		//        // First, draw our background image opaque
-		//        bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-		//        bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
-
-		//        if (!this.Disposing && bufferedGraphics != null)
-		//            bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
-
-		//        fp = null;
-		//    }
-
-		//    renderTimer.Stop();
-		//    lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
-		//}
-		//#endregion
-
-		//public void ProcessUpdateParallel( /*Vixen.Preview.PreviewElementIntentStates elementStates*/)
-		//{
-		//	renderTimer.Reset();
-		//	renderTimer.Start();
-		//	CancellationTokenSource tokenSource = new CancellationTokenSource();
-		//	if (!_paused)
-		//	{
-		//		Bitmap clone = (Bitmap) _alphaBackground.Clone();
-		//		using (FastPixel.FastPixel fp = new FastPixel.FastPixel(clone))
-		//		{
-		//			try
-		//			{
-		//				fp.Lock();
-
-		//				Vixen.Preview.PreviewElementIntentStates elementStates =
-		//					new Vixen.Preview.PreviewElementIntentStates(VixenSystem.Elements.ToDictionary(x => x, x => x.State));
-
-		//				elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState =>
-		//				{
-		//					Element element = channelIntentState.Key;
-		//					if (element != null)
-		//					{
-		//						ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-		//						if (node != null)
-		//						{
-		//							List<PreviewPixel> pixels;
-		//							if (NodeToPixel.TryGetValue(node, out pixels))
-		//							{
-		//								foreach (PreviewPixel pixel in pixels)
-		//								{
-		//									pixel.Draw(fp, channelIntentState.Value);
-		//								}
-		//							}
-		//						}
-		//					}
-		//				});
-		//				fp.Unlock(true);
-		//				RenderBufferedGraphics(fp);
-		//			}
-		//			catch (Exception)
-		//			{
-		//				tokenSource.Cancel();
-		//			}
-		//		}
-		//	}
-
-		//	renderTimer.Stop();
-		//	lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
-		//}
-
-		//private object lockObject = new object();
-
 		private delegate void RenderBufferedGraphicsDelgate(FastPixel.FastPixel fp /*, Bitmap floodBG*/);
-
-		//private void RenderBufferedGraphics(FastPixel.FastPixel fp /*, Bitmap floodBG*/)
-		//{
-		//	if (this.InvokeRequired)
-		//	{
-		//		this.Invoke(new RenderBufferedGraphicsDelgate(RenderBufferedGraphics), fp /*, floodBG*/);
-		//	}
-		//	else
-		//		// No, this doesn't allocate every time. It first checks to see if the screen is 
-		//		// resized or the graphics buffer is not allocated. So it is checked for validity every time
-		//		// and re-allocated only if the something changed.
-		//		AllocateGraphicsBuffer(false);
-
-		//	// First, draw our background image opaque
-		//	bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-		//	bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
-		//	if (!this.Disposing && bufferedGraphics != null)
-		//		bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
-		//}
 
 		#region "Foreground updates"
 
@@ -2355,9 +2291,8 @@ namespace VixenModules.Preview.VixenPreview
 		/// </summary>
 		public void RenderInForeground()
 		{
-			renderTimer.Reset();
-			renderTimer.Start();
-
+			if (DisplayItems == null) return;
+			Console.Out.WriteLine("Render");
 			AllocateGraphicsBuffer(false);
 			if (Background != null)
 			{
@@ -2376,7 +2311,7 @@ namespace VixenModules.Preview.VixenPreview
 				}
 				fp.Unlock(true);
 
-				if (ShowInfo && _editMode)
+				if (_editMode && ShowInfo)
 				{
 					foreach (DisplayItem displayItem in DisplayItems)
 					{
@@ -2392,15 +2327,11 @@ namespace VixenModules.Preview.VixenPreview
 					g.DrawRectangle(Pens.White, _bandRect);
 				}
 
-				bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-
 				// Now, draw our "pixel" image using alpha blending
 				if (vScroll.Visible && hScroll.Visible)
 				{
 					int drawWidth = Width - vScroll.Width + hScroll.Value;
 					int drawHeight = Height - hScroll.Height + vScroll.Value;
-					int drawX = -hScroll.Value;
-					int drawY = -vScroll.Value;
 					Rectangle dest = new Rectangle(0, 0, drawWidth, drawHeight);
 					Rectangle src = new Rectangle(hScroll.Value, vScroll.Value, drawWidth, drawHeight);
 					bufferedGraphics.Graphics.DrawImage(fp.Bitmap, dest, src, GraphicsUnit.Pixel);
@@ -2414,13 +2345,12 @@ namespace VixenModules.Preview.VixenPreview
 			}
 
 			bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
-			renderTimer.Stop();
-			lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
 		}
 
 		public void EraseScreen()
 		{
 			bufferedGraphics.Graphics.Clear(Color.Black);
+			RenderInForeground();
 		}
 
 		#endregion
@@ -2513,6 +2443,12 @@ namespace VixenModules.Preview.VixenPreview
 				SelectedDisplayItems.Clear();
 				OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 			}
+			RenderInForeground();
+		}
+
+		private void VixenPreviewControl_Paint(object sender, PaintEventArgs e)
+		{
+			RenderInForeground();
 		}
 
 		public void PixelResize(int changeAmount, List<DisplayItem> displayItems)

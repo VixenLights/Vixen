@@ -28,26 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
-			this.components = new System.ComponentModel.Container();
-			this.timerRender = new System.Windows.Forms.Timer(this.components);
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VixenPreviewSetupDocument));
 			this.previewControl = new VixenModules.Preview.VixenPreview.VixenPreviewControl();
 			this.SuspendLayout();
 			// 
-			// timerRender
-			// 
-			this.timerRender.Enabled = true;
-			this.timerRender.Interval = 10;
-			this.timerRender.Tick += new System.EventHandler(this.timerRender_Tick);
-			// 
 			// previewControl
 			// 
+			this.previewControl.AllowDrop = true;
+			this.previewControl.Background = ((System.Drawing.Bitmap)(resources.GetObject("previewControl.Background")));
 			this.previewControl.BackgroundAlpha = 255;
 			this.previewControl.CurrentTool = VixenModules.Preview.VixenPreview.VixenPreviewControl.Tools.Select;
 			this.previewControl.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.previewControl.EditMode = false;
 			this.previewControl.Location = new System.Drawing.Point(0, 0);
 			this.previewControl.Name = "previewControl";
 			this.previewControl.Paused = false;
+			this.previewControl.SelectedDisplayItems = ((System.Collections.Generic.List<VixenModules.Preview.VixenPreview.Shapes.DisplayItem>)(resources.GetObject("previewControl.SelectedDisplayItems")));
 			this.previewControl.ShowInfo = false;
 			this.previewControl.Size = new System.Drawing.Size(758, 394);
 			this.previewControl.TabIndex = 0;
@@ -66,6 +61,7 @@
 			this.Text = "Preview";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.VixenPreviewSetupDocument_FormClosing);
 			this.Load += new System.EventHandler(this.VixenPreviewSetupDocument_Load);
+			this.Paint += new System.Windows.Forms.PaintEventHandler(this.VixenPreviewSetupDocument_Paint);
 			this.ResumeLayout(false);
 
         }
@@ -73,7 +69,6 @@
         #endregion
 
         private VixenPreviewControl previewControl;
-		private System.Windows.Forms.Timer timerRender;
 
     }
 }
