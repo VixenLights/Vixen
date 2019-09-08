@@ -283,12 +283,6 @@ namespace VixenModules.Effect.Bars
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			var buffer = frameBuffer as PixelLocationFrameBuffer;
-			if (buffer != null)
-			{
-				RenderEffectByLocation(frame, buffer);
-			}
-			
 			int x, y, n, colorIdx;
 			int colorcnt = Colors.Count();
 			int barCount = Repeat * colorcnt;
@@ -326,15 +320,17 @@ namespace VixenModules.Effect.Bars
 				{
 					fOffset = (int)(Math.Floor(_position*barCount)*barHt);
 				}
-				int indexAdjust = 1;
+
+				var indexAdjust = 1;
 				
 				for (y = 0; y < BufferHt; y++)
 				{
 					n = y + fOffset;
 					colorIdx = ((n + indexAdjust) % blockHt) / barHt;
 					//we need the integer division here to make things work
-					float colorPosition = ((n + indexAdjust) / barHt) - ((n + indexAdjust) / barHt);
+					double colorPosition = (n + indexAdjust) % barHt / (double)barHt;
 					Color c = Colors[colorIdx].GetColorAt(colorPosition);
+					
 					if (Highlight || Show3D)
 					{
 						var hsv = HSV.FromRGB(c);
@@ -374,7 +370,7 @@ namespace VixenModules.Effect.Bars
 							}
 
 							break;
-						case BarDirection.Expand:
+						case BarDirection.Compress:
 							// expand
 							if (_negPosition)
 							{
@@ -399,7 +395,7 @@ namespace VixenModules.Effect.Bars
 								}
 							}
 							break;
-						case BarDirection.Compress:
+						case BarDirection.Expand:
 							// compress
 							if (!_negPosition)
 							{
@@ -460,14 +456,15 @@ namespace VixenModules.Effect.Bars
 				for (x = 0; x < BufferWi; x++)
 				{
 					n = x + fOffset;
-					colorIdx = ((n + 1) % blockWi) / barWi;
 					//we need the integer division here to make things work
-					float colorPosition = ((n + 1) / barWi) - ((n + 1) / barWi);
+					colorIdx = ((n + 1) % blockWi) / barWi;
+					var colorPosition = (n + 1) % barWi / (double)barWi;
 					Color c = Colors[colorIdx].GetColorAt( colorPosition );
+					
 					if (Highlight || Show3D)
 					{
 						var hsv = HSV.FromRGB(c);
-						if (Highlight && n % barWi == 0) hsv.S = 0.0f;
+						if (Highlight && (n+1) % barWi == 0) hsv.S = 0.0f;
 						if (Show3D) hsv.V *= (float)(barWi - n % barWi - 1) / barWi;
 						hsv.V *= level;
 						c = hsv.ToRGB();
@@ -542,6 +539,11 @@ namespace VixenModules.Effect.Bars
 			int blockWi = colorcnt * barWi;
 			if (blockWi < 1) blockWi = 1;
 
+			var bufferHt = BufferHt;
+			var bufferWi = BufferWi;
+			var bufferHtOffset = BufferHtOffset;
+			var bufferWiOffset = BufferWiOffset;
+
 			IEnumerable<IGrouping<int, ElementLocation>> nodes;
 			List<IGrouping<int, ElementLocation>> reversedNodes = new List<IGrouping<int, ElementLocation>>();
 			
@@ -603,29 +605,36 @@ namespace VixenModules.Effect.Bars
 					{
 						fOffset = (int)(Math.Floor(_position * barCount) * barHt);
 					}
-					if (Direction == BarDirection.Down || Direction == BarDirection.AlternateDown || Direction == BarDirection.Expand)
-					{
-						fOffset = -fOffset;
-					}
-
+					
 					int indexAdjust = 1;
 
 					int i = 0;
 					bool exitLoop = false;
 					foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
 					{
-						
 						int y = elementLocations.Key;
-						n = y + fOffset;
-						colorIdx = Math.Abs( ((n + indexAdjust) % blockHt) / barHt );
+
+						switch (Direction)
+						{
+							case BarDirection.Down:
+							case BarDirection.AlternateDown:
+							case BarDirection.Expand:
+								n = (bufferHt+bufferHtOffset) - y + fOffset;
+								break;
+							default:
+								n =  y - bufferHtOffset + fOffset;
+								break;
+						}
 						
+						colorIdx = ((n + indexAdjust) % blockHt) / barHt;
 						//we need the integer division here to make things work
-						double colorPosition = Math.Abs( (double)(n + indexAdjust) / barHt - (n + indexAdjust) / barHt );
-						Color c = Colors[colorIdx].GetColorAt(colorPosition);
+						var colorPosition =(n + indexAdjust) % barHt / (double)barHt;
+						Color c = Colors[colorIdx].GetColorAt(colorPosition); 
+						
 						if (Highlight || Show3D)
 						{
 							var hsv = HSV.FromRGB(c);
-							if (Highlight && (n + indexAdjust) % barHt == 0) hsv.S = 0.0f;
+							if (Highlight && (n + indexAdjust) % barHt == 0 || colorPosition > .95) hsv.S = 0.0f;
 							if (Show3D) hsv.V *= (float)(barHt - (n + indexAdjust) % barHt - 1) / barHt;
 							hsv.V *= level;
 							c = hsv.ToRGB();
@@ -686,26 +695,34 @@ namespace VixenModules.Effect.Bars
 					{
 						fOffset = (int)(Math.Floor(_position * barCount) * barWi);
 					}
-					if (Direction == BarDirection.Right || Direction == BarDirection.AlternateRight || Direction == BarDirection.HCompress)
-					{
-						fOffset = -fOffset;
-					}
-
+					
 					int i = 0;
 					
 					foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
 					{
 						int x = elementLocations.Key;
-						n = x + fOffset;
-						colorIdx = Math.Abs( ((n + 1) % blockWi) / barWi );
+						
+						switch (Direction)
+						{
+							case BarDirection.Right:
+							case BarDirection.AlternateRight:
+								case BarDirection.HCompress:
+								n = (bufferWi+bufferWiOffset) - x + fOffset;
+								break;
+							default:
+								n = x - bufferWiOffset + fOffset;
+								break;
+						}
+						
 						//we need the integer division here to make things work
-						double colorPosition = Math.Abs(  (double)(n + 1) / barWi - (n + 1) / barWi );
+						colorIdx = (n + 1) % blockWi / barWi;
+						double colorPosition = (n + 1) % barWi / (double)barWi;
 						Color c = Colors[colorIdx].GetColorAt(colorPosition);
-
+						
 						if (Highlight || Show3D)
 						{
 							var hsv = HSV.FromRGB(c);
-							if (Highlight && n % barWi == 0) hsv.S = 0.0f;
+							if (Highlight && (n+1) % barWi == 0 || colorPosition > .95) hsv.S = 0.0f;
 							if (Show3D) hsv.V *= (float)(barWi - n % barWi - 1) / barWi;
 							hsv.V *= level;
 							c = hsv.ToRGB();
