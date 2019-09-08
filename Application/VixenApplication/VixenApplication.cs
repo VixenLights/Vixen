@@ -122,7 +122,7 @@ namespace VixenApplication
 			if (IsProfileLocked(_rootDataDirectory) || !CreateLockFile())
 			{
 				var form = new MessageBoxForm("Profile is already in use or unable to the lock the profile.","Error",MessageBoxButtons.OK, SystemIcons.Error);
-				form.ShowDialog();
+				form.ShowDialog(this);
 				form.Dispose(); 
 				Environment.Exit(0);
 			}
@@ -136,7 +136,7 @@ namespace VixenApplication
 			if(!VixenSystem.Start(this, _openExecution, _disableControllers, _applicationData.DataFileDirectory))
 			{
 				var messageBox = new MessageBoxForm("An error occurred starting the system and the application will be halted.", "Error",MessageBoxButtons.OK, SystemIcons.Error);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 				Application.Exit();
 			}
 
@@ -541,7 +541,7 @@ namespace VixenApplication
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Exclamation;
 				var messageBox = new MessageBoxForm("Please be aware that this is a development version. Some parts of the software may not work, and data loss is possible! Please backup your data before using this version of the software.", "Development/Test Software", false, false);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 			}
 		}
 
@@ -620,10 +620,10 @@ namespace VixenApplication
 				}
 				else if (result == DialogResult.Cancel)
 				{
-					var messageBox = new MessageBoxForm(Application.ProductName + " cannot continue without a vaild profile." + Environment.NewLine + Environment.NewLine +
+					var messageBox = new MessageBoxForm(Application.ProductName + " cannot continue without a valid profile." + Environment.NewLine + Environment.NewLine +
 						"Are you sure you want to exit " + Application.ProductName + "?",
 						Application.ProductName,MessageBoxButtons.YesNo, SystemIcons.Warning);
-					messageBox.ShowDialog();
+					messageBox.ShowDialog(this);
 					if (messageBox.DialogResult == DialogResult.OK)
 					{
 						Environment.Exit(0);
@@ -646,6 +646,7 @@ namespace VixenApplication
 					"Selected profile {0} {1}!\n\nSelect a different profile to load or use the Profile Editor to create a new profile.",
 					name, isLocked ? "is locked by another instance" : "data directory does not exist");
 			var messageBox = new MessageBoxForm(message, "Error", MessageBoxButtons.OK, SystemIcons.Error);
+			messageBox.StartPosition = FormStartPosition.CenterScreen;
 			messageBox.ShowDialog();
 		}
 
@@ -752,7 +753,7 @@ namespace VixenApplication
 							MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 							var messageBox = new MessageBoxForm("Can't find an editor to open this file type. (\"" + fileType + "\")",
 											"Error opening file", false, false);
-							messageBox.ShowDialog();
+							messageBox.ShowDialog(this);
 						}
 						else {
 							Cursor = Cursors.WaitCursor;
@@ -786,7 +787,7 @@ namespace VixenApplication
 			if (!_CloseEditor(editor))
 			{
 				e.Cancel = true;
-		}
+			}
 			else
 			{
 				editor.EditorClosing();
@@ -799,6 +800,7 @@ namespace VixenApplication
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Save changes to the sequence?", "Save Changes?", true, true);
+				messageBox.StartPosition = FormStartPosition.CenterScreen;
 				messageBox.ShowDialog();
 				if (messageBox.DialogResult == DialogResult.Cancel)
 					return false;
@@ -877,7 +879,7 @@ namespace VixenApplication
 					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("Can't find an editor to open this file type. (\"" + Path.GetFileName(filename) + "\")",
 									"Error opening file", false, false);
-					messageBox.ShowDialog();
+					messageBox.ShowDialog(this);
 				}
 				else {
 					_OpenEditor(editor);
@@ -889,7 +891,7 @@ namespace VixenApplication
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Error trying to open file '" + filename + "'.", "Error opening file", false, false);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 			}
 		}
 
@@ -1009,7 +1011,7 @@ namespace VixenApplication
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Can't find selected sequence.", "Error", false, false);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 			}
 		}
 
@@ -1119,7 +1121,7 @@ namespace VixenApplication
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("You must re-start Vixen for the changes to take effect.", "Profiles Changed", false, false);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 			}
 		}
 
@@ -1164,7 +1166,7 @@ namespace VixenApplication
 			if (! await CheckForConnectionToWebsite())
 			{
 				var messageBox = new MessageBoxForm("Unable to reach http://bugs.vixenlights.com. Please check your internet connection and verify you can reach the site and try again.", "Error", MessageBoxButtons.OK, SystemIcons.Error);
-				messageBox.ShowDialog();
+				messageBox.ShowDialogThreadSafe(this);
 				Cursor = Cursors.Arrow;
 				return;
 			}

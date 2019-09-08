@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls.Theme;
 
@@ -120,6 +121,18 @@ namespace Common.Controls
 			int border = txtMessage.Height - txtMessage.ClientSize.Height;
 			// set height (height of one line * number of lines + spacing)
 			txtMessage.Height = txtMessage.Font.Height * numLines + padding + border;
+		}
+
+		public DialogResult ShowDialogThreadSafe(IWin32Window owner)
+		{
+			if (InvokeRequired)
+			{
+				return (DialogResult) Invoke(new Func<DialogResult>(
+					() => ShowDialog(owner)));
+			}
+			
+			return ShowDialog(owner);
+			
 		}
 	}
 }
