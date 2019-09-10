@@ -1248,6 +1248,12 @@ namespace Common.Controls
 			if (x == y)
 				return 0;
 
+			if (x.Parent == y.Parent)
+			{
+				if (x.Index > y.Index) return 1;
+				return -1;
+			}
+
 			TreeNode first = FindFirstInCollection(_treeView.Nodes, x, y);
 
 			if (first == x)
