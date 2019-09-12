@@ -41,7 +41,7 @@ namespace Vixen.Data.Value
 			{
 				HSV hsv = HSV.FromRGB(_color);
 				hsv.V = hsv.V*_intensity;
-				return hsv.ToRGB().ToArgb();
+				return hsv.ToRGB();
 			}
 		}
 
