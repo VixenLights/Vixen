@@ -490,87 +490,6 @@ namespace Common.Controls.ColorManagement.ColorModels
 			_v = XYZ.ClipValue(v, 0.0, 1.0);
 		}
 
-		public static double VFromRgb(RGB col)
-		{
-			double max = Math.Max(Math.Max(col.R, col.G), col.B);
-			return max;
-		}
-
-		public static double VFromRgb(double r, double b, double g)
-		{
-			double max = Math.Max(Math.Max(r, g), b)/255d;
-			return max;
-		}
-
-		public static double VFromRgb(Color col)
-		{
-			return Math.Max(Math.Max(col.R, col.G), col.B)/255d;
-		}
-
-		public static HSV FromRGB(RGB col)
-		{
-			return FromRGB(col.R, col.G, col.B);	
-		}
-
-		public static HSV FromRGB(double r, double g, double b)
-		{
-			double
-				min = Math.Min(Math.Min(r, g), b),
-				max = Math.Max(Math.Max(r, g), b),
-				delta_max = max - min;
-
-			HSV ret = new HSV {_v = max};
-
-			if (delta_max > 0.0)
-			{
-				ret._s = delta_max / max;
-
-				double del_R = (((max - r) / 6.0) + (delta_max / 2.0)) / delta_max;
-				double del_G = (((max - g) / 6.0) + (delta_max / 2.0)) / delta_max;
-				double del_B = (((max - b) / 6.0) + (delta_max / 2.0)) / delta_max;
-
-				if (r == max) ret._h = del_B - del_G;
-				else if (g == max) ret._h = (1.0 / 3.0) + del_R - del_B;
-				else if (b == max) ret._h = (2.0 / 3.0) + del_G - del_R;
-
-				if (ret._h < 0.0) ret._h += 1.0;
-				if (ret._h > 1.0) ret._h -= 1.0;
-			}
-			return ret;
-		}
-		public static void FromRGB(RGB col, out double hue, out double saturation, out double value)
-		{
-			double
-				min = Math.Min(Math.Min(col.R, col.G), col.B),
-				max = Math.Max(Math.Max(col.R, col.G), col.B),
-				delta_max = max - min;
-
-			var s = 0.0d;
-			var h = 0.0d;
-
-			if (delta_max != 0.0)
-			{
-				s = delta_max / max;
-
-				double del_R = (((max - col.R) / 6.0) + (delta_max / 2.0)) / delta_max;
-				double del_G = (((max - col.G) / 6.0) + (delta_max / 2.0)) / delta_max;
-				double del_B = (((max - col.B) / 6.0) + (delta_max / 2.0)) / delta_max;
-
-				if (col.R == max) h = del_B - del_G;
-				else if (col.G == max) h = (1.0 / 3.0) + del_R - del_B;
-				else if (col.B == max) h = (2.0 / 3.0) + del_G - del_R;
-
-				if (h < 0.0) h += 1.0;
-				if (h > 1.0) h -= 1.0;
-
-			}
-
-			hue = h;
-			saturation = s;
-			value = max;
-		}
-
-
 		#endregion
 
 		#region operators
@@ -607,68 +526,111 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		#region conversion
 
-		public RGB ToRGB()
+		public static double VFromRgb(double r, double b, double g)
+		{
+			double max = Math.Max(Math.Max(r, g), b)/255d;
+			return max;
+		}
+
+		public static double VFromRgb(Color col)
+		{
+			return Math.Max(Math.Max(col.R, col.G), col.B)/255d;
+		}
+
+		public static HSV FromRGB(Color c)
+		{
+			return FromRGB(c.R, c.G, c.B);
+		}
+
+		/// <summary>
+		/// Convert from RGB values to HSV
+		/// </summary>
+		/// <param name="r">255 based red</param>
+		/// <param name="g">255 based green</param>
+		/// <param name="b">255 based blue</param>
+		/// <returns></returns>
+		public static HSV FromRGB(double r, double g, double b)
+		{
+			double k = 0.0;
+			if (g < b)
+			{
+				//Swap g and b
+				(g, b) = (b, g);
+				k = -1.0;
+			}
+			double minGb = b;
+			if (r < g)
+			{
+				//Swap r and g
+				(r, g) = (g, r);
+				k = -.3333333333333 - k;
+				minGb = Math.Min(g, b);
+			}
+			double chroma = r - minGb;
+
+			HSV hsv = new HSV {
+				_v = r/255.0, 
+				_h = Math.Abs(k + (g - b) / (6.0 * chroma + 1e-20)), 
+				_s = chroma / (r + 1e-20)
+
+			};
+
+			return hsv;
+		}
+
+		public Color ToRGB()
 		{
 			return ToRGB(_h, _s, _v);
 		}
 
-		public static RGB ToRGB(double hue, double saturation, double value)
+		public static Color ToRGB(double hue, double saturation, double value)
 		{
 			if (saturation == 0.0)
 			{
-				return new RGB(value, value, value);
+				return Color.FromArgb((int)(value*255), (int)(value*255), (int)(value*255));
 			}
-			else
+			
+			double h = hue * 6.0;
+			if (h == 6.0) h = 0.0;
+			int i = (int)Math.Floor(h);
+			double var1 = value * (1.0 - saturation);
+
+			double r, g, b;
+			switch (i)
 			{
-				double h = hue * 6.0;
-				if (h == 6.0) h = 0.0;
-				int h_i = (int)Math.Floor(h);
-				double
-					var_1 = value * (1.0 - saturation),
-					var_2 = value * (1.0 - saturation * (h - h_i)),
-					var_3 = value * (1.0 - saturation * (1.0 - (h - h_i)));
-
-				double r, g, b;
-				switch (h_i)
-				{
-					case 0:
-						r = value;
-						g = var_3;
-						b = var_1;
-						break;
-					case 1:
-						r = var_2;
-						g = value;
-						b = var_1;
-						break;
-					case 2:
-						r = var_1;
-						g = value;
-						b = var_3;
-						break;
-					case 3:
-						r = var_1;
-						g = var_2;
-						b = value;
-						break;
-					case 4:
-						r = var_3;
-						g = var_1;
-						b = value;
-						break;
-					default:
-						r = value;
-						g = var_1;
-						b = var_2;
-						break;
-				}
-				return new RGB(r, g, b);
+				case 0:
+					r = value;
+					g = value * (1.0 - saturation * (1.0 - (h - i)));
+					b = var1;
+					break;
+				case 1:
+					r = value * (1.0 - saturation * (h - i));
+					g = value;
+					b = var1;
+					break;
+				case 2:
+					r = var1;
+					g = value;
+					b = value * (1.0 - saturation * (1.0 - (h - i)));
+					break;
+				case 3:
+					r = var1;
+					g = value * (1.0 - saturation * (h - i));
+					b = value;
+					break;
+				case 4:
+					r = value * (1.0 - saturation * (1.0 - (h - i)));
+					g = var1;
+					b = value;
+					break;
+				default:
+					r = value;
+					g = var1;
+					b = value * (1.0 - saturation * (h - i));
+					break;
 			}
-		}
 
-		public void SetFullIntensity()
-		{
-			_v = 1;
+			return Color.FromArgb((int)(r*255.0f), (int)(g*255.0f), (int)(b*255.0f));
 		}
 
 		public override string ToString()
