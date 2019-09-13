@@ -334,7 +334,12 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 					//if a same named file exists, skip overwriting it.
 					if (!File.Exists(destinationPath))
 					{
-						file.ExtractToFile(destinationPath, true);
+						var dir = Path.GetDirectoryName(destinationPath);
+						if(!string.IsNullOrEmpty(dir))
+						{
+							Directory.CreateDirectory(dir);
+							file.ExtractToFile(destinationPath, true);
+						}
 					}
 					else
 					{

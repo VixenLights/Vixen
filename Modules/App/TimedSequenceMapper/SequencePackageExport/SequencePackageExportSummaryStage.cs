@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml.Linq;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Controls.Wizard;
 using NLog;
+using Vixen;
 using Vixen.Export;
 using Vixen.Services;
 using Vixen.Sys;
+using VixenModules.App.TimedSequenceMapper.SequencePackageImport;
 
 namespace VixenModules.App.TimedSequenceMapper.SequencePackageExport
 {
@@ -63,8 +68,6 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageExport
 			lblTaskProgress.Visible = true;
 			lblOverallProgress.Visible = true;
 			await DoExport(progress);
-			
-			//_data.ActiveProfile = null;
 		}
 
 		public override void StageCancelled()
@@ -93,8 +96,22 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageExport
 			bool create = true;
 			if (File.Exists(_data.ExportOutputFile))
 			{
-				//Ask the user!
-				File.Delete(_data.ExportOutputFile);
+				if (ShowExportArchiveExistsMessage(Path.GetFileName(_data.ExportOutputFile)))
+				{
+					try
+					{
+						File.Delete(_data.ExportOutputFile);
+					}
+					catch (Exception e)
+					{
+						ShowErrorMessage($"An error occurred overwriting the existing package.\n\r {e.Message}");
+						return false;
+					}
+				}
+				else
+				{
+					return false;
+				}
 			}
 
 			await Task.Run(async () =>
@@ -129,13 +146,38 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageExport
 					try
 					{
 						var seq = XDocument.Load(sequenceFile);
-						var fileElements = seq.Descendants().Where(x => x.Name.LocalName.Equals("FileName"));
+						var fileElements = seq.Descendants().Where(x => x.Name.LocalName.Equals(@"FileName") 
+						                                                || x.Name.LocalName.Equals(@"Movie_DataPath")
+						                                                || x.Name.LocalName.Equals(@"Picture_FileName")
+						                                                || x.Name.LocalName.Equals(@"Glediator_FileName"));
 						foreach (var xElement in fileElements)
 						{
+							if (_cancelled)
+							{
+								break;
+							}
 							if (!string.IsNullOrEmpty(xElement.Value))
 							{
 								var effectFiles = Directory.GetFiles(Paths.ModuleDataFilesPath, xElement.Value,
 									SearchOption.AllDirectories);
+								if (xElement.Name.LocalName.Equals(@"Movie_DataPath"))
+								{
+									var nutcrackerMovieDirectories =
+										Directory.GetDirectories(Paths.ModuleDataFilesPath, xElement.Value, SearchOption.AllDirectories);
+									if (nutcrackerMovieDirectories.Any())
+									{
+										var nutcrackerMovieFiles = new List<string>();
+										foreach (var nutcrackerMovieDirectory in nutcrackerMovieDirectories)
+										{
+											var movieFiles = Directory.GetFiles(nutcrackerMovieDirectory);
+											nutcrackerMovieFiles.AddRange(movieFiles);
+										}
+										
+										var temp = effectFiles.ToList();
+											temp.AddRange(nutcrackerMovieFiles);
+											effectFiles = temp.ToArray();
+									}
+								}
 
 								var mediaFiles = Directory.GetFiles(MediaService.MediaDirectory, xElement.Value,
 									SearchOption.TopDirectoryOnly);
@@ -198,15 +240,24 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageExport
 					
 				}
 
+				if (_cancelled)
+				{
+					return;
+				}
+
 				exportProgressStatus.TaskProgressValue = 0;
 				overallProgressStep++;
 				exportProgressStatus.OverallProgressValue = (int)(overallProgressStep / overallProgressSteps * 100);
 				exportProgressStatus.TaskProgressMessage = "Creating Profile Element Map";
 				progress.Report(exportProgressStatus);
+				
 
 				var tempFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 				await VixenSystem.Nodes.ExportElementNodeProxy(tempFile);
-
+				if (_cancelled)
+				{
+					return;
+				}
 				exportProgressStatus.TaskProgressValue = 50;
 				overallProgressStep++;
 				exportProgressStatus.OverallProgressValue = (int)(overallProgressStep / overallProgressSteps * 100);
@@ -243,11 +294,6 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageExport
 				{
 					foreach (var file in files)
 					{
-						//if (_bw.CancellationPending)
-						//{
-						//	break;
-						//}
-						
 						var addFile = Path.GetFullPath(file.Item1);
 						if (addFile != archivePath)
 						{
@@ -261,30 +307,40 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageExport
 			catch (Exception ex)
 			{
 				Logging.Error(ex, "An error occurred adding files to archive");
-				//MessageBoxForm mbf = new MessageBoxForm($"An error occurred during the zip process.\n\r {ex.Message}", "Error Zipping Files", MessageBoxButtons.OK, SystemIcons.Error);
-				//mbf.ShowDialog(this);
+				ShowErrorMessage($"An error occurred during the export process.\n\r {ex.Message}");
 			}
 
 			return success;
 		}
 
-		private bool CreateDirectory(string path)
+		private void ShowErrorMessage(string message)
 		{
-			bool success = false;
-			try
+			if (InvokeRequired)
 			{
-				Directory.CreateDirectory(path);
-				success = true;
+				Invoke(new Delegates.GenericVoidString(ShowErrorMessage),message);
 			}
-			catch (Exception e)
+			else
 			{
-				Logging.Error(e, $"An error occurred trying to create the export directory structure {path}");
+				MessageBoxForm mbf = new MessageBoxForm(message, "Error Importing Package", MessageBoxButtons.OK, SystemIcons.Error);
+				mbf.ShowDialog(this);
 			}
-
-			return success;
 		}
 
-		
+		private delegate bool OkCancelDelegate(string val);
+		private bool ShowExportArchiveExistsMessage(string archiveName)
+		{
+			if (InvokeRequired)
+			{
+				return (bool)Invoke(new OkCancelDelegate(ShowExportArchiveExistsMessage), archiveName);
+			}
+			else
+			{
+				MessageBoxForm mbf = new MessageBoxForm($"The Export package {archiveName} already exists. Overwrite?", "Export package exists.", MessageBoxButtons.YesNo, SystemIcons.Question);
+				var result = mbf.ShowDialog(this);
+				return result == DialogResult.OK;
+			}
+		}
+
 		private void ReportProgress(ExportProgressStatus progressStatus)
 		{
 			switch (progressStatus.StatusType)
