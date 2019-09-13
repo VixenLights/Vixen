@@ -170,7 +170,7 @@ namespace VixenModules.Effect.Pulse
 			if (lightingIntent != null && lightingIntent.EndValue.Intensity > 0)
 			{
 				var newCurve = new Curve(lightingIntent.EndValue.Intensity * 100);
-				return GenerateExtendedStaticPulse(target, newCurve, gradient ?? new ColorGradient(lightingIntent.EndValue.FullColor),
+				return GenerateExtendedStaticPulse(target, newCurve, gradient ?? new ColorGradient(lightingIntent.EndValue.Color),
 					timeSpan - intentNode.EndTime, intentNode.EndTime, hasDiscreteIntents);
 			}
 			
@@ -178,7 +178,7 @@ namespace VixenModules.Effect.Pulse
 			if (discreteIntent != null && discreteIntent.EndValue.Intensity > 0)
 			{
 				var newCurve = new Curve(discreteIntent.EndValue.Intensity * 100);
-				return GenerateExtendedStaticPulse(target, newCurve, gradient ?? new ColorGradient(discreteIntent.EndValue.FullColor),
+				return GenerateExtendedStaticPulse(target, newCurve, gradient ?? new ColorGradient(discreteIntent.EndValue.Color),
 					timeSpan - intentNode.EndTime, intentNode.EndTime, hasDiscreteIntents);
 			}
 			
@@ -202,14 +202,14 @@ namespace VixenModules.Effect.Pulse
 			if (lightingIntent != null && lightingIntent.StartValue.Intensity > 0)
 			{
 				var newCurve = new Curve(lightingIntent.StartValue.Intensity * 100);
-				return GenerateStartingStaticPulse(target, newCurve, gradient ?? new ColorGradient(lightingIntent.StartValue.FullColor), intentNode.StartTime, hasDiscreteColors);
+				return GenerateStartingStaticPulse(target, newCurve, gradient ?? new ColorGradient(lightingIntent.StartValue.Color), intentNode.StartTime, hasDiscreteColors);
 			}
 			
 			var discreteIntent = intentNode.Intent as DiscreteLightingIntent;
 			if (discreteIntent != null && discreteIntent.StartValue.Intensity > 0)
 			{
 				var newCurve = new Curve(discreteIntent.StartValue.Intensity * 100);
-				return GenerateStartingStaticPulse(target, newCurve, gradient ?? new ColorGradient(discreteIntent.StartValue.FullColor),
+				return GenerateStartingStaticPulse(target, newCurve, gradient ?? new ColorGradient(discreteIntent.StartValue.Color),
 					intentNode.StartTime, hasDiscreteColors);
 			}
 
