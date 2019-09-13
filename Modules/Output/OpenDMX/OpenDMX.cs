@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using FTD2XX_NET;
+using NLog;
 using Vixen.Commands;
 
 namespace VixenModules.Controller.OpenDMX
 {
 	public class OpenDmx    
 	{
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 	    private readonly FTDI _openDmxConnection= new FTDI();   
         private readonly byte[] _buffer = new byte[513];
 	    private bool _done;
@@ -19,16 +22,39 @@ namespace VixenModules.Controller.OpenDMX
 	    private const ushort FlowNone = 0;
 	    private const byte PurgeRx = 1;
 	    private const byte PurgeTx = 2;
+	    private OpenDMXData _data;
+
+	    public OpenDmx(OpenDMXData data)
+	    {
+		    _data = data;
+	    }
 
 		public void Start()
 		{
-            _status = _openDmxConnection.OpenByIndex(0);
+			Logging.Info("Starting OpenDmx");
+			uint deviceIndex = 0;
 
-            if (_status != FTDI.FT_STATUS.FT_OK) //failure
-            {
-				var message = "Failed to open FTDI device.  Error from Driver: " + _status;
+			if (_data.Device != null)
+			{
+				var i = FindDeviceIndex(_data.Device);
+				if (i >= 0)
+				{
+					deviceIndex = (uint)i;
+					Logging.Info($"Specified OpenDMX device {_data.Device} found at index: {deviceIndex}");
+				}
+			}
+			
+			Logging.Info($"Attempting to open OpenDMX device {_data.Device}");
+			//try to open the device
+			_status = _openDmxConnection.OpenByIndex(deviceIndex);
+
+			if (_status != FTDI.FT_STATUS.FT_OK) //failure
+			{
+				Logging.Error($"Error opening the OpenDMX device {deviceIndex} : {_status.ToString()}");
+				var message = "Failed to open OpenDMX device.  Error from Driver: " + _status;
 				throw new Exception(message);
 			}
+
 			//Initialize the universe and start code to all 0s
 		    InitOpenDmx();
             for (var i = 0; i < 513; i++)
@@ -37,6 +63,7 @@ namespace VixenModules.Controller.OpenDMX
 			//Create and start the thread that sends the output data to the driver
 			var thread = new Thread(WriteData);
 			thread.Start();
+			Logging.Info($"Open OpenDMX device {_data.Device} successful");
 		}
 
 		public void Stop()
@@ -94,7 +121,7 @@ namespace VixenModules.Controller.OpenDMX
                     _openDmxConnection.GetTxBytesWaiting(ref txBuf);
 				}
 
-				//Keep buffer from channging while being copied to the output.
+				//Keep buffer from changing while being copied to the output.
 				lock (_buffer) {
 					//Create a break signal in the output before the DMX data.
 				    _openDmxConnection.SetBreak(true);
@@ -127,6 +154,63 @@ namespace VixenModules.Controller.OpenDMX
             _status = _openDmxConnection.Purge(PurgeTx);
 		    _status = _openDmxConnection.Purge(PurgeRx);
 		}
+
+	    public int FindDeviceIndex(Device device)
+	    {
+		    var devices = GetDeviceList();
+		    return devices.FindIndex(x => x.Id == device.Id && x.SerialNumber == device.SerialNumber && x.Description == device.Description);
+	    }
+
+	    public static List<Device> GetDeviceList()
+	    {
+			List<Device> devices = new List<Device>();
+		    UInt32 ftdiDeviceCount = 0;
+		    // Create new instance of the FTDI device class
+		    FTDI tempFtdiDevice = new FTDI();
+		    Logging.Info("Interogating FTDI for devices.");
+		    // Determine the number of FTDI devices connected to the machine
+		    FTDI.FT_STATUS ftStatus = tempFtdiDevice.GetNumberOfDevices(ref ftdiDeviceCount);
+		    // Check status
+		    if (ftStatus != FTDI.FT_STATUS.FT_OK)
+		    {
+			    Logging.Error($"An error occured getting FTDI devices. {ftStatus.ToString()}");
+			    return devices;
+		    }
+
+		    if (ftdiDeviceCount > 0)
+		    {
+			    // Allocate storage for device info list
+			    FTDI.FT_DEVICE_INFO_NODE[] ftdiDeviceList = new FTDI.FT_DEVICE_INFO_NODE[ftdiDeviceCount];
+			    // Populate our device list
+			    ftStatus = tempFtdiDevice.GetDeviceList(ftdiDeviceList);
+			    //Show device properties
+			    if (ftStatus == FTDI.FT_STATUS.FT_OK)
+			    {
+				    for (var i = 0; i < ftdiDeviceCount; i++)
+				    {
+					    Device d = new Device
+					    {
+						    Index = i,
+						    Type = ftdiDeviceList[i].Type.ToString(),
+						    Id = ftdiDeviceList[i].ID.ToString(),
+						    Description = ftdiDeviceList[i].Description,
+						    SerialNumber = ftdiDeviceList[i].SerialNumber
+					    };
+					    devices.Add(d);
+				    }
+			    }
+			    else
+			    {
+				    Logging.Error($"Error getting FTDI device list {ftStatus.ToString()}");
+			    }
+		    }
+
+		    //Close device
+		    ftStatus = tempFtdiDevice.Close();
+			Logging.Info("Closing FTDI device interogation.");
+
+		    return devices;
+	    }
 	}
 
 }

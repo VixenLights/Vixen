@@ -20,6 +20,8 @@ namespace VixenModules.Controller.OpenDMX
 			get { return typeof (VixenOpenDMXInstance); }
 		}
 
+		public override Type ModuleDataClass => typeof (OpenDMXData);
+
 		public override Guid TypeId
 		{
 			get { return Guid.Parse("7911568a-8eda-4d1d-9e72-be41d7a843e4"); }

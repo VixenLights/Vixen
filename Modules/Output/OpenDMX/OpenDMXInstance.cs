@@ -1,18 +1,20 @@
 ﻿using System;
-using System.Drawing;
-using Common.Controls;
+using System.Windows.Forms;
 using Vixen.Module.Controller;
 using Vixen.Commands;
+using Vixen.Module;
 
 namespace VixenModules.Controller.OpenDMX
 {
 	public class VixenOpenDMXInstance : ControllerModuleInstanceBase
 	{
-		private OpenDmx _dmxPort = new OpenDmx();
+		private OpenDmx _dmxPort;
 		private int _outputCount;
+		private OpenDMXData _moduleData;
 
 		public VixenOpenDMXInstance()
 		{
+			_moduleData = new OpenDMXData();
 			DataPolicyFactory = new DataPolicyFactory();
 		}
 
@@ -31,29 +33,40 @@ namespace VixenModules.Controller.OpenDMX
 			}
 		}
 
+		public override IModuleDataModel ModuleData
+		{
+			get => _moduleData;
+			set => _moduleData = value as OpenDMXData;
+		}
+
 		public override void UpdateState(int chainInex, ICommand[] outputStates)
 		{
 			//Pass the lighting data onto the hardware controller class
 			_dmxPort.UpdateData(outputStates);
 		}
 
-		public override bool HasSetup
-		{
-			get { return true; }
-		}
+		public override bool HasSetup => true;
 
 		public override bool Setup()
 		{
-			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-			MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
-			var messageBox = new MessageBoxForm("Nothing to Setup", "", false, false);
-			messageBox.ShowDialog();
-			return base.Setup();
+			SetupDialog dialog = new SetupDialog(_moduleData);
+			var dr = dialog.ShowDialog();
+			if (dr == DialogResult.OK)
+			{
+				_dmxPort.Stop();
+				_dmxPort.Start();
+			}
+
+			return true;
 		}
 
 		public override void Start()
 		{
 			base.Start();
+			if (_dmxPort == null)
+			{
+				_dmxPort = new OpenDmx(_moduleData);
+			}
 			//Open up FTDI interface
 			_dmxPort.Start();
 		}
