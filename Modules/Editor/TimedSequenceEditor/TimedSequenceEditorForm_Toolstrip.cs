@@ -1462,20 +1462,31 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void ToolStripEffectItem_Changed(object sender, EventArgs e)
 		{
 			ToolStripMenuItem tsi = sender as ToolStripMenuItem;
-			ToolStripMenuItem tso = tsi.OwnerItem as ToolStripMenuItem;
-			tso.Checked = true;
-
-			foreach (ToolStripItem item in toolStripEffects.Items)
+			if (tsi.OwnerItem is ToolStripMenuItem tso)
 			{
-				if (item.ToolTipText != null && item.ToolTipText == tsi.Text ||
-				    item.Tag != null && item.Tag.ToString() == tsi.Text)
+				tso.Checked = true;
+				if (!_toolStripStates.States.TryGetValue(toolStripEffects.Name, out var itemStates))
+				{
+					itemStates = new Dictionary<string, bool>();
+					_toolStripStates.States.Add(toolStripEffects.Name, itemStates);
+				
+				}
+
+				if (tsi.Tag is ToolStripItem item)
 				{
 					item.Visible = tsi.Checked;
-					break;
+					if (itemStates.ContainsKey(item.Name))
+					{
+						itemStates[item.Name] = tsi.Checked;
+					}
+					else
+					{
+						itemStates.Add(item.Name, tsi.Checked);
+					}
 				}
-			}
 
-			toolStripMenuItemEffectGroup_Change(tso);
+				toolStripMenuItemEffectGroup_Change(tso);
+			}
 		}
 
 		private void tsb_MouseDown(object sender, MouseEventArgs e)
@@ -1934,7 +1945,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
-				PopulateToolStripStates(true);
+				PopulateToolStripStates();
 			}
 		}
 
@@ -2018,8 +2029,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/Alignment", Name),
 				toolStripAlignment.ImageScalingSize.Height);
 
-			// Save each Toolstrip settings
-			PopulateToolStripStates(false);
+			// Save each Toolstrip item visible settings
 			var xmlSettings = new XmlWriterSettings
 			{
 				Indent = true,
@@ -2059,30 +2069,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void PopulateToolStripStates(bool initialLoad)
+		private void PopulateToolStripStates()
 		{
 			toolStripContainer.SuspendLayout();
-			bool checkVisibility = false;
+			
 			_toolStripStates.States.Clear();
 			foreach (var row in toolStripContainer.TopToolStripPanel.Rows)
 			{
 				foreach (Control toolsStripControl in row.Controls)
 				{
-					ToolStrip toolsStripItems = toolsStripControl as ToolStrip;
-
-					var toolStripItemStates = new Dictionary<string, bool>();
-					_toolStripStates.States.Add(toolsStripControl.Name, toolStripItemStates);
-
-					if (!toolsStripItems.Visible && !initialLoad)
+					if (toolsStripControl is ToolStrip toolsStripItems)
 					{
-						toolsStripItems.Visible = true;
-						checkVisibility = true;
-					}
-					foreach (ToolStripItem item in toolsStripItems.Items)
-					{
-						var state = new Tuple<string, bool>(item.Name, true);
-						if(!initialLoad)
+						var toolStripItemStates = new Dictionary<string, bool>();
+						_toolStripStates.States.Add(toolsStripControl.Name, toolStripItemStates);
+
+						foreach (ToolStripItem item in toolsStripItems.Items)
 						{
+							var state = new Tuple<string, bool>(item.Name, true);
+						
 							if (toolsStripItems.Name == toolStripEffects.Name)
 							{
 								foreach (ToolStripMenuItem group in effectGroupsToolStripMenuItem.DropDownItems)
@@ -2101,17 +2105,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								state = new Tuple<string, bool>(item.Name, item.Visible);
 							}
 
+							if (!toolStripItemStates.ContainsKey(item.Name))
+							{
+								toolStripItemStates.Add(state.Item1, state.Item2);
+							}
 						}
-						if (!toolStripItemStates.ContainsKey(item.Name))
-						{
-							toolStripItemStates.Add(state.Item1, state.Item2);
-						}
-
 					}
-					
-					if (checkVisibility) toolsStripItems.Visible = false;
 				}
 			}
+
 			toolStripContainer.ResumeLayout();
 		}
 
