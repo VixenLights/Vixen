@@ -14,7 +14,7 @@ namespace VixenApplication.Setup
 		// really, this SHOULD have a parameter with what elements changed; however, for now we'll make
 		// it parameterless and assume everything has changed (ie. just use SelectedElements); it's a shitload easier.
 		//event EventHandler<ElementNodesEventArgs> ElementsChanged;
-		event EventHandler ElementsChanged;
+		event EventHandler<ElementsChangedEventArgs> ElementsChanged;
 
 		IEnumerable<ElementNode> SelectedElements { get; set; }
 

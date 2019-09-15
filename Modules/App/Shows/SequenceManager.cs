@@ -13,16 +13,16 @@ namespace VixenModules.App.Shows
 	{
 		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private static readonly ConcurrentDictionary<string, SequenceEntry> ActiveSequences = new ConcurrentDictionary<string, SequenceEntry>();
+		private static readonly ConcurrentDictionary<string, SequenceEntry> RetiredSequences = new ConcurrentDictionary<string, SequenceEntry>();
 
-		public static void ConsumerFinished(string sequenceFile)
+		public static void ConsumerFinished(string sequenceFile, Guid id)
 		{
-			
 			SequenceEntry entry = null;
 			if (ActiveSequences.TryGetValue(sequenceFile, out entry))
 			{
 				lock (entry)
 				{
-					entry.RemoveConsumer();
+					entry.RemoveConsumer(id);
 					if (!entry.HasConsumers())
 					{
 						SequenceEntry junk = null;
@@ -30,28 +30,78 @@ namespace VixenModules.App.Shows
 						DisposeSequence(entry.Sequence);
 					}
 				}
-			}
-		}
-
-		public static async Task<SequenceEntry> GetSequenceAsync(string sequenceFile)
-		{
-			//Returning the entry with a placeholder to the sequence facilitates parallel loading
-			SequenceEntry entry = null;
-			if (ActiveSequences.TryGetValue(sequenceFile, out entry))
+			}else if (RetiredSequences.TryGetValue(sequenceFile, out entry))
 			{
 				lock (entry)
 				{
-					entry.AddConsumer();
+					entry.RemoveConsumer(id);
+					if (!entry.HasConsumers())
+					{
+						SequenceEntry junk = null;
+						RetiredSequences.TryRemove(sequenceFile, out junk);
+						DisposeSequence(entry.Sequence);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets a copy of the sequence and registers the consumer as a user
+		/// </summary>
+		/// <param name="sequenceFile"></param>
+		/// <param name="id">Unique Id of a consumer</param>
+		/// <returns></returns>
+		public static async Task<SequenceEntry> GetSequenceAsync(string sequenceFile, Guid id)
+		{
+			//Returning the entry with a placeholder to the sequence facilitates parallel loading
+			if (ActiveSequences.TryGetValue(sequenceFile, out var entry))
+			{
+				if (IsSequenceStale(sequenceFile))
+				{
+					ActiveSequences.TryRemove(sequenceFile, out entry);
+					entry.RemoveConsumer(id);
+					if (entry.HasConsumers())
+					{
+						RetiredSequences.TryAdd(sequenceFile, entry);
+					}
+					entry = await LoadSequenceAsync(sequenceFile);
+				}
+
+				lock (entry)
+				{
+					entry.AddConsumer(id);
 					return entry;
 				}
 			}
 
 			entry = await LoadSequenceAsync(sequenceFile);
-			if (entry != null)
-			{
-				entry.AddConsumer();
-			}
+			entry?.AddConsumer(id);
 			return entry;
+		}
+
+		private static DateTime SequenceLastModified(string sequenceFile)
+		{
+			if (ActiveSequences.TryGetValue(sequenceFile, out var entry))
+			{
+				return entry.SequenceLastModified;
+			}
+
+			return DateTime.MaxValue;
+		}
+
+		public static bool IsSequenceStale(string sequenceFile)
+		{
+			return SequenceLastModified(sequenceFile) < LastModifiedTime(sequenceFile);
+		}
+
+		private static DateTime LastModifiedTime(string file)
+		{
+			if (System.IO.File.Exists(file))
+			{
+				return System.IO.File.GetLastWriteTime(file);
+			}
+
+			return DateTime.MaxValue;
 		}
 
 		public static async Task PreLoadSequenceAsync(string sequenceFile)
@@ -77,13 +127,14 @@ namespace VixenModules.App.Shows
 				try
 				{
 					var sequence = await Task.Run(() => SequenceService.Instance.Load(sequenceFile));
+					entry.SequenceLastModified = LastModifiedTime(sequenceFile);
 					entry.Sequence = sequence;
 					entry.SequenceLoading = false;
 					return entry;
 				}
 				catch (Exception e)
 				{
-					Logging.Error("Error loading sequence!", e);
+					Logging.Error(e, "Error loading sequence!");
 				}
 			}
 			
@@ -102,34 +153,32 @@ namespace VixenModules.App.Shows
 
 		public class SequenceEntry
 		{
-			private long _consumerCount;
+			private readonly HashSet<Guid> _consumerIds = new HashSet<Guid>();
 
 			public ISequence Sequence { get; set; }
 
-			public long ConsumerCount
-			{
-				get { return Interlocked.Read(ref _consumerCount); } 
-			}
+			public DateTime SequenceLastModified { get; set; }
+
+			public long ConsumerCount => _consumerIds.Count;
 
 			public bool SequenceLoading { get; internal set; }
 
-			internal void AddConsumer()
+			internal void AddConsumer(Guid id)
 			{
-				Interlocked.Increment(ref _consumerCount);
+				if (!_consumerIds.Contains(id))
+				{
+					_consumerIds.Add(id);
+				}
 			}
 
-			internal void RemoveConsumer()
+			internal bool RemoveConsumer(Guid id)
 			{
-				if (ConsumerCount > 0)
-				{
-					Interlocked.Decrement(ref _consumerCount);
-				}
-
+				return _consumerIds.Remove(id);
 			}
 
 			public bool HasConsumers()
 			{
-				return ConsumerCount > 0;
+				return _consumerIds.Count>0;
 			}
 		}
 

@@ -182,6 +182,13 @@ namespace VixenModules.Editor.EffectEditor
 			TypeAttributes.Clear();
 		}
 
+		public static void Remove(object target)
+		{
+			Properties.Remove(target);
+			PropertyAttributes.Remove(target);
+			TypeAttributes.Remove(target);
+		}
+
 		private class PropertySet : Dictionary<string, PropertyData>
 		{
 		}
@@ -202,7 +209,7 @@ namespace VixenModules.Editor.EffectEditor
 			if (target == null) throw new ArgumentNullException("target");
 
 			PropertySet result;
-			if (!Properties.TryGetValue(target.GetType(), out result))
+			if (!Properties.TryGetValue(target, out result))
 				result = CollectProperties(target);
 
 			return result.Values;

@@ -97,7 +97,7 @@ namespace Vixen.Module.Effect {
 			}
 			catch (Exception e)
 			{
-				Logging.Error(e.Message, e);
+				Logging.Error(e, e.Message);
 				return null;
 			}
 		}

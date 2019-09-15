@@ -94,7 +94,11 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			    if (value >= 0 && value <= 1)
 			    {
 					_normalizedPosition = value;
-				    Center = value * Parent.Width;
+					if (Parent != null)
+					{
+						Center = value * Parent.Width;
+					}
+					
 					SetToolTip();
 				}
 		    }

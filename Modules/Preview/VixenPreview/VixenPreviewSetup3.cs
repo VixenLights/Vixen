@@ -20,7 +20,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using Button = System.Windows.Forms.Button;
 using Control = System.Windows.Forms.Control;
 using Cursors = System.Windows.Forms.Cursors;
-using CustomPropEditorWindow = VixenModules.App.CustomPropEditor.View.CustomPropEditorWindow;
+using CustomPropEditorWindow = VixenModules.App.CustomPropEditor.Views.CustomPropEditorWindow;
 using Size = System.Drawing.Size;
 
 namespace VixenModules.Preview.VixenPreview
@@ -140,7 +140,7 @@ namespace VixenModules.Preview.VixenPreview
 			PreviewItemsAlignNew += vixenpreviewControl_PreviewItemsAlignNew;
 
 			elementsForm = new VixenPreviewSetupElementsDocument(previewForm.Preview);
-			propertiesForm = new VixenPreviewSetupPropertiesDocument();
+			propertiesForm = new VixenPreviewSetupPropertiesDocument(previewForm.Preview);
 
 			previewForm.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.Document);
 			elementsForm.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
@@ -177,6 +177,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void VixenPreviewSetup3_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			previewForm.Preview.ZoomLevel = 1;
 			PreviewItemsAlignNew -= vixenpreviewControl_PreviewItemsAlignNew;
 			previewForm.Preview.OnSelectDisplayItem -= OnSelectDisplayItem;
 			previewForm.Preview.OnDeSelectDisplayItem -= OnDeSelectDisplayItem;
@@ -210,12 +211,12 @@ namespace VixenModules.Preview.VixenPreview
 		}
 
 		private void OnDeSelectDisplayItem(object sender, Shapes.DisplayItem displayItem) {
-			propertiesForm.ShowSetupControl(null);
+			propertiesForm.ClearSetupControl();
 		}
 
 		private void OnSelectDisplayItem(object sender, Shapes.DisplayItem displayItem) {
 			Shapes.DisplayItemBaseControl setupControl = displayItem.Shape.GetSetupControl();
-
+			elementsForm.ClearSelectedNodes();
 			if (setupControl != null) {
 				propertiesForm.ShowSetupControl(setupControl);
 			}

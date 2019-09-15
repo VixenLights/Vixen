@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VixenApplication</RootNamespace>
     <AssemblyName>VixenApplication</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -105,6 +105,16 @@
       <Name>Modeling</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Modules\PostFilter\DimmingCurve\DimmingCurve.csproj">
+      <Project>{C80B084A-064A-422C-B66E-58AB9ED7B32C}</Project>
+      <Name>DimmingCurve</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Modules\Property\Color\Color.csproj">
+      <Project>{73068A83-B3B7-4A2C-923D-71C7886CD5E3}</Project>
+      <Name>Color</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Modules\Property\Order\Order.csproj">
       <Project>{A4254642-2965-469A-8FBD-B45F6EDD651C}</Project>
       <Name>Order</Name>
@@ -117,21 +127,57 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Catel.Core, Version=5.11.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Catel.Core.5.11.0\lib\net47\Catel.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\..\packages\NLog.4.5.11\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ComponentModel.Annotations.4.5.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.ConfigurationManager, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Configuration.ConfigurationManager.4.4.1\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Runtime.Serialization.Formatters, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.Serialization.Formatters.4.3.0\lib\net46\System.Runtime.Serialization.Formatters.dll</HintPath>
+      <Private>True</Private>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization.Primitives, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.Serialization.Primitives.4.3.0\lib\net46\System.Runtime.Serialization.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization.Xml, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.Serialization.Xml.4.3.0\lib\net46\System.Runtime.Serialization.Xml.dll</HintPath>
+      <Private>True</Private>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -171,6 +217,7 @@
     <Compile Include="AboutVixen.Designer.cs">
       <DependentUpon>AboutVixen.cs</DependentUpon>
     </Compile>
+    <Compile Include="NLogListener.cs" />
     <Compile Include="ReleaseNotes.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -254,6 +301,13 @@
     <Compile Include="SelectProfile.Designer.cs">
       <DependentUpon>SelectProfile.cs</DependentUpon>
     </Compile>
+    <Compile Include="Setup\ElementsChangedEventArgs.cs" />
+    <Compile Include="Setup\ElementTemplates\Arch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Setup\ElementTemplates\CandyCane.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Setup\ElementTemplates\LipSync.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -265,6 +319,9 @@
     </Compile>
     <Compile Include="Setup\ElementTemplates\Icicles.Designer.cs">
       <DependentUpon>Icicles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Setup\ElementTemplates\Star.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Setup\ElementTemplates\StarBurst.cs">
       <SubType>Form</SubType>
@@ -299,12 +356,6 @@
     </Compile>
     <Compile Include="Setup\SetupControllersSimple.Designer.cs">
       <DependentUpon>SetupControllersSimple.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Setup\SetupElementsPreview.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Setup\SetupElementsPreview.Designer.cs">
-      <DependentUpon>SetupElementsPreview.cs</DependentUpon>
     </Compile>
     <Compile Include="Setup\SetupElementsTree.cs">
       <SubType>UserControl</SubType>
@@ -420,9 +471,6 @@
     <EmbeddedResource Include="Setup\SetupControllersSimple.resx">
       <DependentUpon>SetupControllersSimple.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Setup\SetupElementsPreview.resx">
-      <DependentUpon>SetupElementsPreview.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Setup\SetupElementsTree.resx">
       <DependentUpon>SetupElementsTree.cs</DependentUpon>
     </EmbeddedResource>
@@ -457,7 +505,7 @@
     </None>
     <None Include="app.manifest" />
     <Content Include="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>

@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
 using NLog;
+using Vixen.Attributes;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Editor.EffectEditor.Input;
@@ -14,15 +17,65 @@ using Point = System.Windows.Point;
 
 namespace VixenModules.Editor.EffectEditor.Internal
 {
-	internal class CollectionItemValue : INotifyPropertyChanged, IDropTargetAdvisor, IDragSourceAdvisor
+	internal class CollectionItemValue : INotifyPropertyChanged, IDropTargetAdvisor, IDragSourceAdvisor, IDisposable
 	{
 		private readonly PropertyItemValue _propertyItemValue;
 		private readonly int _index;
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
+		
 		public CollectionItemValue(PropertyItemValue propertyItemValue, int index)
 		{
 			_propertyItemValue = propertyItemValue;
 			_index = index;
+
+			var expandable = PropertyGridUtils.GetAttributes<ExpandableObjectAttribute>(Value);
+			if (expandable.Any())
+			{
+				var descriptors = MetadataRepository.GetProperties(Value).Select(prop => prop.Descriptor);
+
+				if (descriptors.Any())
+				{
+					object objectValue;
+					if (Value is ICloneable valueToClone)
+					{
+						objectValue = valueToClone.Clone();
+					}
+					else
+					{
+						objectValue = Value;
+					}
+
+
+					HasSubProperties = true;
+					
+					var properties = new GridEntryCollection<PropertyItem>();
+					foreach (PropertyDescriptor d in descriptors)
+					{
+						var item = new PropertyItem(_propertyItemValue.ParentProperty.Owner, objectValue, d);
+						item.IsBrowsable = ShouldDisplayProperty(d);
+						item.ValueChanged += ItemOnValueChanged;
+						properties.Add(item);
+					}
+
+					if (_propertyItemValue.ParentProperty.Owner.PropertyComparer != null)
+					{
+						properties.Sort(_propertyItemValue.ParentProperty.Owner.PropertyComparer);
+					}
+
+					SubProperties = properties;
+				}
+
+				MetadataRepository.Remove(Value);
+			}
+			
+		}
+
+		private static bool ShouldDisplayProperty(PropertyDescriptor propertyDescriptor)
+		{
+			if (propertyDescriptor == null) return false;
+
+			// Return default/standard Browsable settings for the property
+			return propertyDescriptor.IsBrowsable;
 		}
 		/// <summary>
 		///     Converts the string to value.
@@ -52,6 +105,26 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		{
 			get { return _propertyItemValue.CollectionItemType; }
 		}
+
+		/// <summary>
+		///     Gets the parent property.
+		/// </summary>
+		/// <value>The parent property.</value>
+		public PropertyItem PropertyItem { get; protected set; }
+
+		public GridEntryCollection<PropertyItem> SubProperties { get; }
+		
+
+		/// <summary>
+		///     Gets a value indicating whether encapsulated value has sub-properties.
+		/// </summary>
+		/// <remarks>This property is reserved for future implementations.</remarks>
+		/// <value>
+		///     <c>true</c> if this instance has sub properties; otherwise, <c>false</c>.
+		/// </value>
+		public bool HasSubProperties { get; }
+		
+
 
 		/// <summary>
 		///     Converts the value to string.
@@ -95,7 +168,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 				}
 				catch (Exception exception)
 				{
-
+					Logging.Error(exception, "Get: Unable to convert property to string.");
 				}
 				return str;
 
@@ -108,7 +181,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 				}
 				catch (Exception exception)
 				{
-					Logging.Error("Unable to convert property to string." ,exception);
+					Logging.Error(exception,"Set: Unable to convert property to string.");
 				}
 			}
 		}
@@ -129,7 +202,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 				}
 				catch (Exception exception)
 				{
-					Logging.Error("Unable to set property value.", exception);
+					Logging.Error(exception, "Unable to set property value.");
 				}
 
 			}
@@ -173,6 +246,8 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		/// </summary>
 		public event EventHandler RootValueChanged;
 
+		public event EventHandler SubPropertyChanged;
+
 		#endregion
 
 		#region INotifyPropertyChanged Members
@@ -182,6 +257,11 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		{
 			var handler = PropertyChanged;
 			if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		private void ItemOnValueChanged(PropertyItem arg1, object[] arg2, object arg3)
+		{
+			_propertyItemValue.SetCollectionValue(arg1.Component, _index);
 		}
 
 		private void NotifyStringValueChanged()
@@ -195,7 +275,15 @@ namespace VixenModules.Editor.EffectEditor.Internal
 			NotifyStringValueChanged();
 		}
 
+		protected void NotifySubPropertyChanged(object sender, EventArgs args)
+		{
+
+			NotifyValueChanged();
+			
+		}
+
 		#endregion
+
 		public UIElement TargetUI { get; set; }
 		public bool ApplyMouseOffset { get; private set; }
 		public bool IsValidDataObject(IDataObject obj)
@@ -357,5 +445,22 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		{
 			return TargetUI;
 		}
+
+		#region IDisposable
+
+		/// <inheritdoc />
+		public void Dispose()
+		{
+			if (SubProperties != null)
+			{
+				foreach (var propertyItem in SubProperties)
+				{
+					propertyItem.ValueChanged -= ItemOnValueChanged;
+					propertyItem.Dispose();
+				}
+			}
+		}
+
+		#endregion
 	}
 }

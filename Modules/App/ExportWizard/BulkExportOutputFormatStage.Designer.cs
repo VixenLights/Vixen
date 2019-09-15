@@ -45,6 +45,7 @@
 			this.lblAudioExportPath = new System.Windows.Forms.Label();
 			this.btnAudioOutputFolder = new System.Windows.Forms.Button();
 			this.grpFalcon = new System.Windows.Forms.GroupBox();
+			this.chkCompress = new System.Windows.Forms.CheckBox();
 			this.txtFalconInfo = new System.Windows.Forms.TextBox();
 			this.chkFppIncludeAudio = new System.Windows.Forms.CheckBox();
 			this.chkBackupUniverseFile = new System.Windows.Forms.CheckBox();
@@ -170,6 +171,7 @@
 			this.txtOutputFolder.ReadOnly = true;
 			this.txtOutputFolder.Size = new System.Drawing.Size(438, 23);
 			this.txtOutputFolder.TabIndex = 9;
+			this.txtOutputFolder.Leave += new System.EventHandler(this.txtOutputFolder_Leave);
 			// 
 			// label2
 			// 
@@ -226,6 +228,7 @@
 			this.txtAudioOutputFolder.ReadOnly = true;
 			this.txtAudioOutputFolder.Size = new System.Drawing.Size(437, 23);
 			this.txtAudioOutputFolder.TabIndex = 12;
+			this.txtAudioOutputFolder.Leave += new System.EventHandler(this.txtAudioOutputFolder_Leave);
 			// 
 			// lblAudioExportPath
 			// 
@@ -249,6 +252,7 @@
 			// grpFalcon
 			// 
 			this.grpFalcon.AutoSize = true;
+			this.grpFalcon.Controls.Add(this.chkCompress);
 			this.grpFalcon.Controls.Add(this.txtFalconInfo);
 			this.grpFalcon.Controls.Add(this.chkFppIncludeAudio);
 			this.grpFalcon.Controls.Add(this.chkBackupUniverseFile);
@@ -263,6 +267,18 @@
 			this.grpFalcon.TabStop = false;
 			this.grpFalcon.Text = "Falcon Pi Player 2.x";
 			this.grpFalcon.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			// 
+			// chkCompress
+			// 
+			this.chkCompress.AutoSize = true;
+			this.chkCompress.Enabled = false;
+			this.chkCompress.Location = new System.Drawing.Point(179, 47);
+			this.chkCompress.Name = "chkCompress";
+			this.chkCompress.Size = new System.Drawing.Size(134, 19);
+			this.chkCompress.TabIndex = 28;
+			this.chkCompress.Text = "Enable Compression";
+			this.chkCompress.UseVisualStyleBackColor = true;
+			this.chkCompress.CheckedChanged += new System.EventHandler(this.chkCompress_CheckedChanged);
 			// 
 			// txtFalconInfo
 			// 
@@ -333,6 +349,7 @@
 			// 
 			// tableLayoutPanel1
 			// 
+			this.tableLayoutPanel1.AutoSize = true;
 			this.tableLayoutPanel1.ColumnCount = 1;
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel1.Controls.Add(this.lblChooseOutputFormat, 0, 0);
@@ -349,7 +366,7 @@
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(509, 505);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(510, 510);
 			this.tableLayoutPanel1.TabIndex = 24;
 			// 
 			// BulkExportOutputFormatStage
@@ -359,7 +376,7 @@
 			this.AutoSize = true;
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.Name = "BulkExportOutputFormatStage";
-			this.Size = new System.Drawing.Size(509, 505);
+			this.Size = new System.Drawing.Size(510, 510);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.grpSequence.ResumeLayout(false);
@@ -371,6 +388,7 @@
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel1.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -400,5 +418,6 @@
 		private System.Windows.Forms.CheckBox chkBackupUniverseFile;
 		private System.Windows.Forms.CheckBox chkFppIncludeAudio;
 		private System.Windows.Forms.TextBox txtFalconInfo;
+		private System.Windows.Forms.CheckBox chkCompress;
 	}
 }

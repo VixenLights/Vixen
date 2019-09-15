@@ -15,7 +15,7 @@ namespace VixenModules.App.ExportWizard
 	{
 		private string _name;
 
-		public ExportProfile(string name, string format, string sequenceFolder, string audioFolder)
+		public ExportProfile(string name, string format, string sequenceFolder, string audioFolder, bool enableCompression = false)
 		{
 			SequenceFiles = new List<string>();
 			Interval = 50;
@@ -24,6 +24,7 @@ namespace VixenModules.App.ExportWizard
 			AudioOutputFolder = audioFolder;
 			Id = Guid.NewGuid();
 			Name = name;
+			EnableCompression = enableCompression;
 			SyncronizeControllerInfo();
 		}
 
@@ -79,8 +80,13 @@ namespace VixenModules.App.ExportWizard
 		[DataMember]
 		public List<Controller> Controllers { get; private set; }
 
+		[DataMember(EmitDefaultValue = false)]
+		public bool EnableCompression { get; set; }
+
 		public bool IsFalconFormat => Format.Contains("Falcon");
-		
+
+		public bool IsFalcon2xFormat => Format.Contains("Falcon Player Sequence 2.6+");
+
 		public bool IsFalconEffectFormat => Format.Equals("Falcon Player Effect");
 		
 		public override string ToString()
@@ -138,7 +144,8 @@ namespace VixenModules.App.ExportWizard
 				AudioOutputFolder = AudioOutputFolder,
 				FalconOutputFolder = FalconOutputFolder,
 				CreateUniverseFile = CreateUniverseFile,
-				BackupUniverseFile = BackupUniverseFile
+				BackupUniverseFile = BackupUniverseFile,
+				EnableCompression = EnableCompression
 				
 			};
 			return data;

@@ -99,7 +99,7 @@ SetCompressorDictSize 64
 	!define VC++_REDIST_NAMEx86 "vcredist_x86.exe"
 !endif
 
-
+!define NET_WEB_INSTALLER "NDP472-KB4054531-Web.exe"
 
 ; Get the application binary version
 !insertmacro GetVersionLocal "${BUILD_DIR}\VixenApplication.exe" AssemblyVersion_
@@ -233,11 +233,11 @@ Function .onInit
 	${EndIf}
 
 
-	;Here we check for Client .NET 4.6.2 profile. 
+	;Here we check for Client .NET 4.7.2 profile. 
 	ReadRegDWORD $0 HKLM 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full' Release
-	${If} $0 < '394802'
+	${If} $0 < '461808' ; 461808 is 4.7.2 
 		StrCpy $InstallDotNET "Yes"
-		MessageBox MB_OK|MB_ICONINFORMATION "${PRODUCT_NAME} requires that the Microsoft .NET Framework >= 4.6.2 is installed. The Microsoft .NET Framework will be downloaded and installed automatically during installation of ${PRODUCT_NAME}."
+		MessageBox MB_OK|MB_ICONINFORMATION "${PRODUCT_NAME} requires that the Microsoft .NET Framework >= 4.7.2 is installed. The Microsoft .NET Framework will be downloaded and installed automatically during installation of ${PRODUCT_NAME}."
 		Return
 	${EndIf}
 	
@@ -284,19 +284,7 @@ FunctionEnd
 
 Section "Application" SEC01
 
-	; Get .NET if required
-	${If} $InstallDotNET == "Yes"
-		inetc::get /caption "Downloading Microsoft .NET Framework 4.6.2" /canceltext "Cancel" "https://download.microsoft.com/download/F/9/4/F942F07D-F26F-4F30-B4E3-EBD54FABA377/NDP462-KB3151800-x86-x64-AllOS-ENU.exe" "$TEMP\NDP462-KB3151800-x86-x64-AllOS-ENU.exe" /end
-		Pop $1
- 
-		${If} $1 != "OK"
-			Delete "$TEMP\NDP462-KB3151800-x86-x64-AllOS-ENU.exe"
-			Abort "Installation cancelled."
-		${EndIf}
-		 
-		ExecWait "$TEMP\NDP462-KB3151800-x86-x64-AllOS-ENU.exe"
-		Delete "$TEMP\NDP462-KB3151800-x86-x64-AllOS-ENU.exe"
-	${EndIf}
+	
 	
 	; Remove any old modules that are no longer used in case someone installs over an old version
 	RMDir /r $INSTDIR\Modules
@@ -307,15 +295,6 @@ Section "Application" SEC01
   SetOverwrite ifnewer
   SetOutPath "$INSTDIR"
   File /r /x *.res /x *.obj /x *.pch /x *.pdb "${BUILD_DIR}\*.*"
-
-  ;Save the VC++ Redistributable files as part of the install image
-  File /oname=$TEMP\${VC++_REDIST_NAMEx86} "${INSTALLERDIR}\Redist\${VC++_REDIST_NAMEx86}"
-  ExecWait "$TEMP\${VC++_REDIST_NAMEx86} /install /quiet"
-  
-  ${If} ${BITS} == 64
-		File /oname=$TEMP\${VC++_REDIST_NAMEx64} "${INSTALLERDIR}\Redist\${VC++_REDIST_NAMEx64}"
-		ExecWait "$TEMP\${VC++_REDIST_NAMEx64} /install /quiet"
-  ${EndIf}
 
   ; Shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
@@ -336,8 +315,6 @@ Section "Application" SEC01
   CreateShortCut "$DESKTOP\${PRODUCT_NAME_FULL}.lnk" "$INSTDIR\VixenApplication.exe"
   !insertmacro MUI_STARTMENU_WRITE_END
 
-
-  
   Push $0 ; save
 
   Push "Marker"
@@ -350,6 +327,43 @@ Section "Application" SEC01
 
   Continue:
   Pop $0 ; restore
+  
+  ; Install .NET if required
+	${If} $InstallDotNET == "Yes"
+		;inetc::get /caption "Downloading Microsoft .NET Framework 4.7.2" /canceltext "Cancel" "https://download.microsoft.com/download/6/E/4/6E48E8AB-DC00-419E-9704-06DD46E5F81D/NDP472-KB4054530-x86-x64-AllOS-ENU.exe" "$TEMP\NDP472-KB4054530-x86-x64-AllOS-ENU.exe" /end
+		;Pop $1
+ 
+		;${If} $1 != "OK"
+		;	Delete "$TEMP\NDP472-KB4054530-x86-x64-AllOS-ENU.exe"
+		;	Abort "Installation cancelled."
+		;${EndIf}
+		 
+		;ExecWait "$TEMP\NDP472-KB4054530-x86-x64-AllOS-ENU.exe /norestart"
+		;Delete "$TEMP\NDP472-KB4054530-x86-x64-AllOS-ENU.exe"
+		File /oname=$TEMP\${NET_WEB_INSTALLER} "${INSTALLERDIR}\Redist\${NET_WEB_INSTALLER}"
+	    ExecWait "$TEMP\${NET_WEB_INSTALLER} /norestart /passive /showrmui" $0
+		${If} $0 == 3010
+			SetRebootFlag true
+		${EndIf}
+	${EndIf}
+	
+	
+	;Save the VC++ Redistributable files as part of the install image
+	${If} ${BITS} == 32
+		File /oname=$TEMP\${VC++_REDIST_NAMEx86} "${INSTALLERDIR}\Redist\${VC++_REDIST_NAMEx86}"
+		ExecWait "$TEMP\${VC++_REDIST_NAMEx86} /install /passive /norestart" $0
+		${If} $0 == 3010
+			SetRebootFlag true
+		${EndIf}
+	${EndIf}
+
+	${If} ${BITS} == 64
+		File /oname=$TEMP\${VC++_REDIST_NAMEx64} "${INSTALLERDIR}\Redist\${VC++_REDIST_NAMEx64}"
+		ExecWait "$TEMP\${VC++_REDIST_NAMEx64} /install /passive /norestart" $0
+		${If} $0 == 3010
+			SetRebootFlag true
+		${EndIf}
+	${EndIf}
   
 SectionEnd
 
@@ -368,6 +382,17 @@ Section -Post
   StrCpy $0 "$INSTDIR\install.log"
   Push $0
   Call DumpLog
+  
+  IfRebootFlag r_boot nr_boot
+  
+  r_boot:
+    MessageBox MB_OKCANCEL "You must now reboot your system to complete the install." IDCANCEL end
+    Reboot
+  goto end
+  
+  nr_boot:
+  end:
+  
 SectionEnd
 
 

@@ -43,30 +43,45 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_bottomRight = new PreviewPoint(_topLeft.X, _topLeft.Y);
             _bottomLeft = new PreviewPoint(_bottomRight);
 
+			Reconfigure(selectedNode);
+		}
+
+		#region Overrides of PreviewBaseShape
+
+		/// <inheritdoc />
+		internal sealed override void Reconfigure(ElementNode node)
+		{
 			int defaultStringCount = 16;
 			int defaultLightsPerString = 50;
 
 			_strings = new List<PreviewBaseShape>();
+			_pixels.Clear();
 
 			int childLightCount;
-			if (IsPixelGridSelected(selectedNode, out childLightCount)) {
+			if (IsPixelGridSelected(node, out childLightCount))
+			{
 				StringType = StringTypes.Pixel;
-				foreach (ElementNode child in selectedNode.Children) {
+				foreach (ElementNode child in node.Children)
+				{
 					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), childLightCount, child, ZoomLevel);
 					_strings.Add(line);
 				}
 				LightsPerString = childLightCount;
 			}
-			else if (IsStandardGridSelected(selectedNode)) {
+			else if (IsStandardGridSelected(node))
+			{
 				StringType = StringTypes.Standard;
-				foreach (ElementNode child in selectedNode.Children) {
+				foreach (ElementNode child in node.Children)
+				{
 					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), defaultLightsPerString, child, ZoomLevel);
 					_strings.Add(line);
 				}
 			}
-			else {
+			else
+			{
 				// Just add the pixels, we don't care where they go... they get positioned in Layout()
-				for (int stringNum = 0; stringNum < defaultStringCount; stringNum++) {
+				for (int stringNum = 0; stringNum < defaultStringCount; stringNum++)
+				{
 					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), defaultLightsPerString, null, ZoomLevel);
 					_strings.Add(line);
 				}
@@ -77,9 +92,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			StringCount = _strings.Count();
 
-			if (selectedNode!= null && selectedNode.Properties.Contains(OrientationDescriptor._typeId))
+			if (node != null && node.Properties.Contains(OrientationDescriptor._typeId))
 			{
-				var m = selectedNode.Properties.Get(OrientationDescriptor._typeId) as OrientationModule;
+				var m = node.Properties.Get(OrientationDescriptor._typeId) as OrientationModule;
 				if (m.Orientation == Orientation.Horizontal)
 				{
 					_stringOrientation = StringOrientations.Horizontal;
@@ -88,6 +103,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// Lay out the pixels
 			Layout();
 		}
+
+		#endregion
 
 		private bool IsPixelGridSelected(ElementNode selectedNode, out int childLightCount)
 		{
@@ -388,31 +405,33 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					int width = _bottomRight.X - _topLeft.X;
 					int height = _bottomRight.Y - _topLeft.Y;
 					double stringXSpacing = (double)width / (double)(StringCount - 1);
-					int x = _topLeft.X;
+					double x = _topLeft.X;
 					int y = _topLeft.Y;
 					for (int stringNum = 0; stringNum < StringCount; stringNum++)
 					{
 						PreviewLine line = _strings[stringNum] as PreviewLine;
-						line.SetPoint0(x, y + height);
-						line.SetPoint1(x, y);
+						var x1 = (int)Math.Round(x, MidpointRounding.AwayFromZero);
+						line.SetPoint0(x1, y + height);
+						line.SetPoint1(x1, y);
 						line.Layout();
-						x += (int)stringXSpacing;
+						x += stringXSpacing;
 					}
 				}
 				else
 				{
 					int width = _bottomRight.X - _bottomLeft.X;
 					int height = _bottomLeft.Y - _topLeft.Y;
-					double stringYSpacing = (double)height / (double)(StringCount - 1);
+					double stringYSpacing = height / (double)(StringCount - 1);
 					int x = _bottomLeft.X;
-					int y = _bottomLeft.Y;
+					double y = _bottomLeft.Y;
 					for (int stringNum = 0; stringNum < StringCount; stringNum++)
 					{
 						PreviewLine line = _strings[stringNum] as PreviewLine;
-						line.SetPoint0(x, y);
-						line.SetPoint1(x + width, y);
+						var y1 = (int)Math.Round(y, MidpointRounding.AwayFromZero);
+						line.SetPoint0(x, y1);
+						line.SetPoint1((x + width), y1);
 						line.Layout();
-						y -= (int)stringYSpacing;
+						y -= stringYSpacing;
 					}
 				}
 				SetPixelZoom();

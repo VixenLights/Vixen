@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Windows.Forms;
 using Common.Controls.ColorManagement.ColorModels;
+using Vixen.Commands;
+using Vixen.Data.Evaluator;
 using Vixen.Data.Flow;
 using Vixen.Data.Value;
 using Vixen.Intent;
@@ -71,6 +71,19 @@ namespace VixenModules.OutputFilter.DimmingCurve
 	{
 		private DimmingCurveData _data;
 		private DimmingCurveOutput[] _output;
+
+		#region Overrides of OutputFilterModuleInstanceBase
+
+		/// <inheritdoc />
+		public override void Handle(CommandDataFlowData obj)
+		{
+			foreach (var dimmingCurveOutput in _output)
+			{
+				dimmingCurveOutput.ProcessInputData(obj);
+			}
+		}
+
+		#endregion
 
 		public override void Handle(IntentsDataFlowData obj)
 		{
@@ -182,6 +195,19 @@ namespace VixenModules.OutputFilter.DimmingCurve
 			return _intentValue;
 		}
 
+		public ICommand Filter(ICommand command)
+		{
+			if (command is _8BitCommand cmd)
+			{
+				double newIntensity = _curve.GetValue(cmd.CommandValue / Byte.MaxValue) * Byte.MaxValue;
+				return CommandLookup8BitEvaluator.CommandLookup[(byte) newIntensity];
+			}
+
+			return command;
+		}
+
+		
+
 		public override void Handle(IIntentState<LightingValue> obj)
 		{
 			LightingValue lightingValue = obj.GetValue();
@@ -257,15 +283,18 @@ namespace VixenModules.OutputFilter.DimmingCurve
 	}
 
 
-	internal class DimmingCurveOutput : IDataFlowOutput<IntentsDataFlowData>
+	internal class DimmingCurveOutput : IDataFlowOutput<IntentsDataFlowData>, IDataFlowOutput<CommandDataFlowData>
 	{
 		private readonly DimmingCurveFilter _filter;
-		private readonly IntentsDataFlowData _data;
 		private readonly List<IIntentState> _states = new List<IIntentState>();
+		private readonly CommandDataFlowData _commandState;
+		private IntentsDataFlowData _intentData;
+		private CommandDataFlowData _data;
 
 		public DimmingCurveOutput(Curve curve)
 		{
-			_data = new IntentsDataFlowData(Enumerable.Empty<IIntentState>().ToList());
+			_intentData = new IntentsDataFlowData(Enumerable.Empty<IIntentState>().ToList());
+			_commandState = new CommandDataFlowData(CommandLookup8BitEvaluator.CommandLookup[0]);
 			_filter = new DimmingCurveFilter(curve);
 		}
 
@@ -287,12 +316,29 @@ namespace VixenModules.OutputFilter.DimmingCurve
 					}
 				}
 
-				_data.Value = _states;
+				_intentData.Value = _states;
 			}
 			else
 			{
-				_data.Value = null;
+				_intentData.Value = null;
 			}
+
+			InternalData = _intentData;
+		}
+
+		public void ProcessInputData(CommandDataFlowData data)
+		{
+			if (data.Value != null)
+			{
+				var command = _filter.Filter(data.Value);
+				_commandState.Value = command;
+			}
+			else
+			{
+				_commandState.Value = CommandLookup8BitEvaluator.CommandLookup[0];
+			}
+
+			InternalData = _commandState;
 		}
 
 		public void ProcessInputData(IntentDataFlowData data)
@@ -309,24 +355,31 @@ namespace VixenModules.OutputFilter.DimmingCurve
 				{
 					states.Add(state);
 				}
-				_data.Value = states;
+				_intentData.Value = states;
 			}
 			else
 			{
-				_data.Value = null;
+				_intentData.Value = null;
 			}
 			
 		}
 
-		public IntentsDataFlowData Data => _data;
-
-
-		IDataFlowData IDataFlowOutput.Data => _data;
-
+		public IDataFlowData InternalData { get; private set; }
+		
 		public string Name
 		{
 			get { return "Dimming Curve Output"; }
 		}
 
+		/// <inheritdoc />
+		IDataFlowData IDataFlowOutput.Data => InternalData;
+
+		/// <inheritdoc />
+		public IntentsDataFlowData Data => _intentData;
+
+		/// <inheritdoc />
+		CommandDataFlowData IDataFlowOutput<CommandDataFlowData>.Data => _commandState;
+
+	
 	}
 }

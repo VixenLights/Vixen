@@ -22,6 +22,7 @@ using System.Drawing;
 using System.Linq;
 using Vixen.Attributes;
 using VixenModules.App.ColorGradients;
+using VixenModules.Effect.Liquid;
 
 namespace VixenModules.Editor.EffectEditor.Editors
 {
@@ -45,7 +46,9 @@ namespace VixenModules.Editor.EffectEditor.Editors
 			{typeof(List<string>), new TypeEditor(typeof(List<string>),EditorKeys.StringCollectionEditorKey)},
 			{KnownTypes.Vixen.Percentage, new TypeEditor(KnownTypes.Vixen.Percentage, EditorKeys.SliderPercentageEditorKey)},
 			{typeof (Enum), new TypeEditor(typeof (Enum), EditorKeys.EnumEditorKey)},
-			{KnownTypes.Windows.Font, new FontEditor()}
+			{KnownTypes.Windows.Font, new FontEditor() },
+			{typeof(IList<IEmitter>), new TypeEditor(typeof(IList<IEmitter>), EditorKeys.IEmitterEditorKey)},
+			{KnownTypes.Vixen.Emitter, new TypeEditor()},
 		};
 
 		/// <summary>

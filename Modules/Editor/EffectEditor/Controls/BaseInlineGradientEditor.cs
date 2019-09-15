@@ -52,11 +52,15 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		private void InlineGradientEditor_Loaded(object sender, RoutedEventArgs e)
 		{
 			_canvas = (Canvas)Template.FindName("FaderCanvas", this);
-			_canvas.MouseMove += _canvas_MouseMove; ;
-			_canvas.MouseDown += CanvasOnMouseDown;
-			_canvas.MouseLeftButtonDown += CanvasOnMouseLeftButtonDown;
-			OnComponentChanged();
-			OnGradientValueChanged();
+
+			if (_canvas != null)
+			{
+				_canvas.MouseMove += _canvas_MouseMove; ;
+				_canvas.MouseDown += CanvasOnMouseDown;
+				_canvas.MouseLeftButtonDown += CanvasOnMouseLeftButtonDown;
+				OnComponentChanged();
+				OnGradientValueChanged();
+			}
 		}
 
 		protected void OnGradientValueChanged()

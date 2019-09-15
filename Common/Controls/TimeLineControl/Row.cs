@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Navigation;
 
 namespace Common.Controls.Timeline
 {
@@ -26,6 +27,8 @@ namespace Common.Controls.Timeline
 		{
 			RowLabel = trl;
 			ChildRows = new List<Row>();
+			trl.ActiveIndicator = () => !IsEmpty;
+			trl.ChildActiveIndicator = IsTreeActive;
 		}
 
 		public Row()
@@ -44,11 +47,11 @@ namespace Common.Controls.Timeline
 			{
 				// cap the height to a minimum of 10 pixels
 				m_height = Math.Max(value, 10);
-				if(m_visible)
-				{ RowLabel.Height = m_height;}
-
-				//_RowChanged();
-				_RowHeightChanged();
+				if (m_visible)
+				{
+					RowLabel.Height = m_height;
+					_RowHeightChanged();
+				}
 			}
 		}
 
@@ -89,6 +92,11 @@ namespace Common.Controls.Timeline
 		public bool IsEmpty
 		{
 			get { return (m_elements.Count == 0); }
+		}
+
+		public bool IsTreeActive()
+		{
+			return ChildRows.Any(x => !x.IsEmpty || x.IsTreeActive());
 		}
 
 		private RowLabel m_rowLabel;
@@ -250,6 +258,15 @@ namespace Common.Controls.Timeline
 		public int ElementCount
 		{
 			get { return m_elements.Count; }
+		}
+
+		internal void InvalidateRowLabel()
+		{
+			if (Visible)
+			{
+				RowLabel.Invalidate();
+			}
+			ParentRow?.InvalidateRowLabel();
 		}
 
 		#endregion
@@ -506,6 +523,7 @@ namespace Common.Controls.Timeline
 			element.SelectedChanged += ElementSelectedHandler;
 			m_elements.Sort();
 			_ElementAdded(element);
+			InvalidateRowLabel();
 			_RowChanged();
 		}
 
@@ -529,6 +547,7 @@ namespace Common.Controls.Timeline
 				element.SelectedChanged -= ElementSelectedHandler;
 				m_elements.Sort();
 				_ElementRemoved(element);
+				InvalidateRowLabel();
 				_RowChanged();
 			}
 		}

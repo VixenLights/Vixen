@@ -633,7 +633,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			}
 			catch (Exception e)
 			{
-				Logging.Error(e, "An error occured rendering display items.");
+				Logging.Error(e, "An error occurred rendering display items.");
 			}
 			//Logging.Debug("Exiting DrawPoints.");
 		}

@@ -13,7 +13,7 @@ namespace VixenModules.Property.Orientation
 		public string HelperName => "Orientation";
 
 		/// <inheritdoc />
-		public bool Perform(IEnumerable<ElementNode> selectedNodes)
+		public bool Perform(IEnumerable<IElementNode> selectedNodes)
 		{
 			SetupForm form = new SetupForm(Orientation.Vertical);
 			DialogResult dr = form.ShowDialog();

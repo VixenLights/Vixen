@@ -287,12 +287,17 @@ namespace VixenModules.Effect.Circles
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
+			var bufferHt = BufferHt;
+			var bufferWi = BufferWi;
 			double intervalPos = GetEffectTimeIntervalPosition(frame);
 			double intervalPosFactor = intervalPos*100;
+			int xOffset = CalculateXOffset(intervalPosFactor);
+			int yOffset = CalculateYOffset(intervalPosFactor);
 			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
 			double radius1 = CalculateRadialSize(intervalPosFactor);
 			double radius = radius1 / 2 / _circleCount;
 			double currentRadius = radius;
+			double edgeWidth = CalculateEdgeWidth(intervalPosFactor, currentRadius);
 			double barht = _maxBuffer / _circleCount;
 			if (CircleFill == CircleFill.Empty || CircleFill == CircleFill.Fade) barht /= _circleCount;
 			if (barht < 1) barht = 1;
@@ -307,13 +312,15 @@ namespace VixenModules.Effect.Circles
 			{
 				for (int x = 0; x < BufferWi; x++)
 				{
-					CalculatePixel(x, y, level, frameBuffer, intervalPosFactor, intervalPos, radius, radius1, currentRadius, foffset, barht, blockHt);
+					CalculatePixel(x, y, level, frameBuffer, intervalPos, radius, radius1, currentRadius, foffset, barht, blockHt, bufferWi, bufferHt, xOffset, yOffset, edgeWidth);
 				}
 			}
 		}
 
 		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
 		{
+			var bufferHt = BufferHt;
+			var bufferWi = BufferWi;
 			var nodes = frameBuffer.ElementLocations.OrderBy(x => x.X).ThenBy(x => x.Y).GroupBy(x => x.X);
 			for (int frame = 0; frame < numFrames; frame++)
 			{
@@ -321,10 +328,13 @@ namespace VixenModules.Effect.Circles
 				frameBuffer.CurrentFrame = frame;
 				double intervalPos = GetEffectTimeIntervalPosition(frame);
 				double intervalPosFactor = intervalPos * 100;
+				int xOffset = CalculateXOffset(intervalPosFactor);
+				int yOffset = CalculateYOffset(intervalPosFactor);
 				double level = LevelCurve.GetValue(intervalPosFactor) / 100;
 				double radius1 = CalculateRadialSize(intervalPosFactor);
 				double radius = radius1 / 2 / _circleCount;
 				double currentRadius = radius;
+				double edgeWidth = CalculateEdgeWidth(intervalPosFactor, currentRadius);
 				double barht = _maxBuffer / _circleCount;
 				if (CircleFill == CircleFill.Empty || CircleFill == CircleFill.Fade) barht /= _circleCount;
 				if (barht < 1) barht = 1;
@@ -338,55 +348,60 @@ namespace VixenModules.Effect.Circles
 				{
 					foreach (var elementLocation in elementLocations)
 					{
-						CalculatePixel(elementLocation.X, elementLocation.Y, level, frameBuffer, intervalPosFactor, intervalPos, radius, radius1, currentRadius, foffset, barht, blockHt);
+						CalculatePixel(elementLocation.X, elementLocation.Y, level, frameBuffer, intervalPos, radius, radius1, currentRadius, foffset, barht, blockHt, bufferWi, bufferHt, xOffset, yOffset, edgeWidth);
 					}
 				}
 			}
 		}
 
-		private void CalculatePixel(int x, int y, double level, IPixelFrameBuffer frameBuffer, double intervalPosFactor, double intervalPos, double radius, double radius1, double currentRadius, double foffset, double barht, double blockHt)
+		private void CalculatePixel(int x, int y, double level, IPixelFrameBuffer frameBuffer, double intervalPos, double radius, double radius1, double currentRadius, double foffset, double barht, double blockHt, int bufferWi, int bufferHt, int xOffset, int yOffset, double edgeWidth)
 		{
 			int yCoord = y;
 			int xCoord = x;
 			if (TargetPositioning == TargetPositioningType.Locations)
 			{
 				//Flip me over so and offset my coordinates I can act like the string version
-				y = Math.Abs((BufferHtOffset - y) + (BufferHt - 1 + BufferHtOffset));
+				y = Math.Abs((BufferHtOffset - y) + (bufferHt - 1 + BufferHtOffset));
 				y = y - BufferHtOffset;
 				x = x - BufferWiOffset;
 			}
 
 			//This saves going through all X and Y locations significantly reducing render times.
-			if ((y >= ((BufferWi - 1) / 2) + radius1 + 1 || y <= ((BufferWi - 1) / 2) - radius1) && (x >= ((BufferWi - 1) / 2) + radius1 + 1 || x <= ((BufferWi - 1) / 2) - radius1)) return;
+			if ((y >= ((bufferWi - 1) / 2) + radius1 + 1 || y <= ((bufferWi - 1) / 2) - radius1) && (x >= ((bufferWi - 1) / 2) + radius1 + 1 || x <= ((bufferWi - 1) / 2) - radius1)) return;
 
-			double distanceFromBallCenter = DistanceFromPoint(new Point((BufferWi - 1) / 2, (BufferHt - 1) / 2), x + CalculateXOffset(intervalPosFactor), y + CalculateYOffset(intervalPosFactor));
+			double distanceFromBallCenter = DistanceFromPoint(new Point((bufferWi - 1) / 2, (bufferHt - 1) / 2), x + xOffset, y + yOffset);
 
 			int distance = distanceFromBallCenter > 1.4 && distanceFromBallCenter < 1.51
 				? 2
 				: (int) Math.Round(distanceFromBallCenter);
 
+			radius = (radius * _circleCount);
+			bool finished = false;
+
 			switch (CircleRadialDirection)
 			{
 				case CircleRadialDirection.In:
-					for (int i = (int)_circleCount; i >= 0; i--)
+					for (int i = 0; i <= _circleCount; i++)
 					{
-						SetFramePixel(i, foffset, blockHt, barht, intervalPos, intervalPosFactor, level, frameBuffer, xCoord, yCoord,
-							distance, radius, currentRadius, radius1);
-						radius = radius + currentRadius;
+						finished = SetFramePixel(i, foffset, blockHt, barht, intervalPos, level, frameBuffer, xCoord, yCoord,
+							distance, radius, currentRadius, radius1, edgeWidth);
+						if (finished) return;
+						radius = radius - currentRadius;
 					}
 					break;
 				case CircleRadialDirection.Out:
-					for (int i = 0; i <= _circleCount; i++)
+					for (int i = (int)_circleCount; i >= 0; i--)
 					{
-						SetFramePixel(i, foffset, blockHt, barht, intervalPos, intervalPosFactor, level, frameBuffer, xCoord, yCoord,
-							distance, radius, currentRadius, radius1);
-						radius = radius + currentRadius;
+						finished = SetFramePixel(i, foffset, blockHt, barht, intervalPos, level, frameBuffer, xCoord, yCoord,
+							distance, radius, currentRadius, radius1, edgeWidth);
+						if (finished) return;
+						radius = radius - currentRadius;
 					}
 					break;
 			}
 		}
 
-		private void SetFramePixel(int i, double foffset, double blockHt, double barht, double intervalPos, double intervalPosFactor, double level, IPixelFrameBuffer frameBuffer, int xCoord, int yCoord, int distance, double radius, double currentRadius, double radius1)
+		private bool SetFramePixel(int i, double foffset, double blockHt, double barht, double intervalPos, double level, IPixelFrameBuffer frameBuffer, int xCoord, int yCoord, int distance, double radius, double currentRadius, double radius1, double edgeWidth)
 		{
 			if (distance <= radius && distance >= radius - currentRadius)
 			{
@@ -400,13 +415,13 @@ namespace VixenModules.Effect.Circles
 						color = Colors[_colorIndex].GetColorAt((1 / radius1) * radius);
 						break;
 					case CircleFill.Empty:
-						if (!(distance >= radius - CalculateEdgeWidth(intervalPosFactor, currentRadius))) return;
+						if (!(distance >= radius - edgeWidth)) return false;
 						break;
 					case CircleFill.Fade:
 						HSV hsv = HSV.FromRGB(color);
 						hsv.V *= 1.0 - distance/radius * level;
 						frameBuffer.SetPixel(xCoord, yCoord, hsv);
-						return;
+						return true;
 				}
 				if (level < 1)
 				{
@@ -415,7 +430,10 @@ namespace VixenModules.Effect.Circles
 					color = hsv.ToRGB();
 				}
 				frameBuffer.SetPixel(xCoord, yCoord, color);
+				return true;
 			}
+
+			return false;
 		}
 
 		private double CalculateCenterSpeed(double intervalPos)

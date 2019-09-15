@@ -378,10 +378,7 @@ namespace VixenModules.Effect.Spirograph
 		}
 		private double CalculateSpeed(double intervalPos)
 		{
-			var value = ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 100, 1);
-			if (value < 1) value = 1;
-
-			return value;
+			return ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 100, 0);
 		}
 
 		private double CalculateDistance(double intervalPos)

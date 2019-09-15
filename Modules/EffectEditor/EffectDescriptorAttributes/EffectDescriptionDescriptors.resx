@@ -845,4 +845,149 @@
   </data>
   <data name="BorderThickness" xml:space="preserve">
     <value>Adjust the Thickness of the border.</value>
-  </data></root>
+  </data>
+  <data name="FilmSpinner" xml:space="preserve">
+    <value>Adds a film spinner around the number.</value>
+  </data>
+  <data name="FilmSpinnerColors" xml:space="preserve">
+    <value>Controls the swipe color of the film spinner.</value>
+  </data>
+  <data name="FilmSpinnerGradientMode" xml:space="preserve">
+    <value>Controls how the gradient is applied to the swipe color of the film spinner.</value>
+  </data>
+  <data name="IntensityPerIteration" xml:space="preserve">
+    <value>Adjusts the Intensity over each iteration.</value>
+  </data>
+  <data name="ColorPerStep" xml:space="preserve">
+    <value>When enabled the color will change for each Step variation.</value>
+  </data>
+  <data name="ColorPerCount" xml:space="preserve">
+    <value>Spreads the Color across each count or entire length of the effect.</value>
+  </data>
+  <data name="ReverseColorCurve" xml:space="preserve">
+    <value>Reverses the Color and Curve depending on direction of Movement curve.</value>
+  </data>
+  <data name="RandomMaxCurve" xml:space="preserve">
+    <value>Changes the Max time used to determine when the Ball direction is change.</value>
+  </data>
+  <data name="RandomMovement" xml:space="preserve">
+    <value>Randomly changes the ball direction at random times.</value>
+  </data>
+  <data name="CycleCharacterColor" xml:space="preserve">
+    <value>Cycles through colors for each character.</value>
+  </data>
+  <data name="ExplodePosition" xml:space="preserve">
+    <value>Adjust the Charater position from center point.</value>
+  </data>
+  <data name="FallSpeed" xml:space="preserve">
+    <value>Adjusts the speed of the falling characters.</value>
+  </data>
+  <data name="Animate" xml:space="preserve">
+    <value>This option animates the position of the emitter within the display area.</value>
+  </data>
+  <data name="BottomBarrier" xml:space="preserve">
+    <value>Creates a barrier at the bottom of the display area.  This barrier prevents liquid particles the falling out of the display area.</value>
+  </data>
+  <data name="ColorList" xml:space="preserve">
+    <value>Defines the list of colors that are cycled through for an emitter when the Use Color List option is selected for an emitter.</value>
+  </data>
+  <data name="EdgeHandling" xml:space="preserve">
+    <value>This option controls how the emitters behave when they reach the edge of the display area.  Bounce setting causes the emitter to bounce off the edge of the display area.  Wrap setting causes the emitter to wrap around from the other side of the display area.</value>
+  </data>
+  <data name="NozzleAngle" xml:space="preserve">
+    <value>Controls the angle of the emitter's nozzle.  The angle is more discernible at lower flow rates.</value>
+  </data>
+  <data name="EmitterBrightness" xml:space="preserve">
+    <value>Determines the brightness of the emitter's liquid particles.</value>
+  </data>
+  <data name="EmitterMarkCollection" xml:space="preserve">
+    <value>Selects the Mark Collection to use to determine when the emitter is emitting (On).</value>
+  </data>
+  <data name="EmitterOffTime" xml:space="preserve">
+    <value>Controls the number of milliseconds the emitter is off in 50ms increments.</value>
+  </data>
+  <data name="EmitterOnTime" xml:space="preserve">
+    <value>Controls the number of milliseconds the emitter is emitting in 50 ms increments.</value>
+  </data>
+  <data name="Emitters" xml:space="preserve">
+    <value>This list defines the emitters in the effect.  Emitters can be added or removed via buttons at the bottom of the list.</value>
+  </data>
+  <data name="Flow" xml:space="preserve">
+    <value>Controls the rate of particles emitted by the emitter.</value>
+  </data>
+  <data name="FlowControl" xml:space="preserve">
+    <value>Determines the continuity of the liquid flow (Continuous, Pulsating, Use Marks, Musical).</value>
+  </data>
+  <data name="FramesPerColor" xml:space="preserve">
+    <value>Determines how many frames of particles are created for each color in the list.</value>
+  </data>
+  <data name="LeftBarrier" xml:space="preserve">
+    <value>Creates a barrier at the left side of the display area.  This barrier prevents liquid particles from leaving the left side of the display area.</value>
+  </data>
+  <data name="MixColors" xml:space="preserve">
+    <value>When selected liquid particles of different colors will combine colors when the particles collide or come into contact with each other.</value>
+  </data>
+  <data name="NozzleMovement" xml:space="preserve">
+    <value>Controls the movement of the emitter's nozzle (Fixed Angle, Oscillate, Spin Clockwise, Spin Counter Clockwise)</value>
+  </data>
+  <data name="NozzleSpeed" xml:space="preserve">
+    <value>Determines the emitter's nozzle rotation speed.</value>
+  </data>
+  <data name="Oscillate" xml:space="preserve">
+    <value>This option repeatedly oscillates the emitter's nozzle from a start angle to an end angle and then back to the starting position.</value>
+  </data>
+  <data name="OscillateEndAngle" xml:space="preserve">
+    <value>Defines the end angle of the oscillation. This is the point where the nozzle will reverse the direction of rotation.</value>
+  </data>
+  <data name="OscillateStartAngle" xml:space="preserve">
+    <value>Defines the starting angle of the oscillation.</value>
+  </data>
+  <data name="ParticleColor" xml:space="preserve">
+    <value>Determines the color of the emitter's liquid particles.</value>
+  </data>
+  <data name="ParticleLifetime" xml:space="preserve">
+    <value>Determines how long the emitter's particles exist.</value>
+  </data>
+  <data name="ParticleSize" xml:space="preserve">
+    <value>Defines the radius of all particles in the effect.</value>
+  </data>
+  <data name="ParticleType" xml:space="preserve">
+    <value>Determines the type of particle created by the emitter.  The differences between the types is subtle.  Powder is one type that produces a different behavior that is visually discernible.</value>
+  </data>
+  <data name="ParticleVelocity" xml:space="preserve">
+    <value>Determines the speed of the particles emitting from the emitter.</value>
+  </data>
+  <data name="RenderScaleFactor" xml:space="preserve">
+    <value>Determines the factor used to scale the liquid matrix to the sparse matrix formed by the selected elements.</value>
+  </data>
+  <data name="RightBarrier" xml:space="preserve">
+    <value>Creates a barrier at the right side of the display area.  This barrier prevents liquid particles from leaving the right side of the display area.</value>
+  </data>
+  <data name="TopBarrier" xml:space="preserve">
+    <value>Creates a barrier at the top of the display area.  This barrier prevents the liquid particles from leaving the top of the display area.</value>
+  </data>
+  <data name="UseColorList" xml:space="preserve">
+    <value>When selected this option controls the color of the particles created by the emitter.  The particles will cycle through the colors in the list for a configurable number of frames.</value>
+  </data>
+  <data name="VelocityX" xml:space="preserve">
+    <value>Controls the speed of the emitter in the X axis when animated.</value>
+  </data>
+  <data name="VelocityY" xml:space="preserve">
+    <value>Controls the speed of the emitter in the Y axis when animated.</value>
+  </data>
+  <data name="XPosition" xml:space="preserve">
+    <value>Controls the position of the emitter on the display area in the X axis.</value>
+  </data>
+  <data name="YPosition" xml:space="preserve">
+    <value>Controls the position of the emitter on the display area in the Y axis.</value>
+  </data>
+  <data name="NozzleSize" xml:space="preserve">
+    <value>Controls the size of the area the particles are released from the emitter.</value>
+  </data>
+  <data name="DespeckleThreshold" xml:space="preserve">
+    <value>This setting helps fill in empty (speck) pixels in the effect by filling them in with the average color of the surrounding pixels if the number of surrounding empty (black) pixels is less than the threshold.</value>
+  </data>
+  <data name="WarmUpFrames" xml:space="preserve">
+    <value>Runs the Liquid engine for the specified number of frames before rendering the effect.  This setting is useful if you want a large number of particles in the display area at the beginning of the effect.</value>
+  </data>
+</root>

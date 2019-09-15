@@ -1,18 +1,26 @@
 ﻿using System.Windows.Forms.Integration;
+using Catel.IoC;
 using Vixen.Module.App;
 using Vixen.Sys;
+using VixenModules.App.CustomPropEditor.Model;
+using VixenModules.App.CustomPropEditor.Views;
+using ConfigurationService = VixenModules.App.CustomPropEditor.Services.ConfigurationService;
 
 namespace VixenModules.App.CustomPropEditor
 {
 	public class CustomPropEditorModule : AppModuleInstanceBase
 	{
 		private IApplication _application;
-		private CustomPropEditorData _data;
 		private const string MenuIdRoot = "CustomPropRoot";
 
 		public override void Loading()
 		{
+			var serviceLocator = ServiceLocator.Default;
+			serviceLocator.AutoRegisterTypesViaAttributes = true;
 			AddApplicationMenu();
+			Configuration config = new Configuration((CustomPropEditorData)StaticModuleData);
+			ConfigurationService service = ConfigurationService.Instance();
+			service.Config = config;
 		}
 
 		public override void Unloading()
@@ -48,7 +56,7 @@ namespace VixenModules.App.CustomPropEditor
 
 		private void RootCommand_Click(object sender, System.EventArgs e)
 		{
-			View.CustomPropEditorWindow mw = new View.CustomPropEditorWindow();
+			CustomPropEditorWindow mw = new CustomPropEditorWindow();
 			//PropEditorWindow mw = new PropEditorWindow();
 			ElementHost.EnableModelessKeyboardInterop(mw);
 			mw.Show();

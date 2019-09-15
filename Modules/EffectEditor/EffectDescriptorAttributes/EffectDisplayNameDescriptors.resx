@@ -836,4 +836,146 @@
   </data>
   <data name="BorderThickness" xml:space="preserve">
     <value>Thickness</value>
-  </data></root>
+  </data>
+  <data name="FilmSpinner" xml:space="preserve">
+    <value>Film Spinner</value>
+  </data>
+  <data name="FilmSpinnerColors" xml:space="preserve">
+    <value>Film Spinner Gradients</value>
+  </data>
+  <data name="FilmSpinnerGradientMode" xml:space="preserve">
+    <value>Film Spinner Gradient Mode</value>
+  </data>
+  <data name="IntensityPerIteration" xml:space="preserve">
+    <value>Intensity Per Iteration</value>
+  </data>
+  <data name="ColorPerStep" xml:space="preserve">
+    <value>Color Per Step</value>
+  </data>
+  <data name="ColorPerCount" xml:space="preserve">
+    <value>Color Per Count</value>
+  </data>
+  <data name="ReverseColorCurve" xml:space="preserve">
+    <value>Reverse</value>
+  </data>
+  <data name="RandomMaxCurve" xml:space="preserve">
+    <value>Random Time</value>
+  </data>
+  <data name="RandomMovement" xml:space="preserve">
+    <value>Random Movement</value>
+  </data>
+  <data name="CycleCharacterColor" xml:space="preserve">
+    <value>Cycle Color per Character</value>
+  </data>
+  <data name="ExplodePosition" xml:space="preserve">
+    <value>Explode Position</value>
+  </data>
+  <data name="FallSpeed" xml:space="preserve">
+    <value>Fall Speed</value>
+  </data>
+  <data name="BottomBarrier" xml:space="preserve">
+    <value>Bottom Barrier</value>
+  </data>
+  <data name="ColorArray" xml:space="preserve">
+    <value>Color Array</value>
+  </data>
+  <data name="Emitters" xml:space="preserve">
+    <value>Emitters</value>
+  </data>
+  <data name="LeftBarrier" xml:space="preserve">
+    <value>Left Barrier</value>
+  </data>
+  <data name="MixColors" xml:space="preserve">
+    <value>Mix Colors</value>
+  </data>
+  <data name="ParticleSize" xml:space="preserve">
+    <value>Particle Size</value>
+  </data>
+  <data name="RightBarrier" xml:space="preserve">
+    <value>Right Barrier</value>
+  </data>
+  <data name="TopBarrier" xml:space="preserve">
+    <value>Top Barrier</value>
+  </data>
+  <data name="RenderScaleFactor" xml:space="preserve">
+    <value>Render Scale Factor</value>
+  </data>
+  <data name="Animate" xml:space="preserve">
+    <value>Animate</value>
+  </data>
+  <data name="EdgeHandling" xml:space="preserve">
+    <value>Edge Handling</value>
+  </data>
+  <data name="EmitterBrightness" xml:space="preserve">
+    <value>Particle Intensity</value>
+  </data>
+  <data name="EmitterOffTime" xml:space="preserve">
+    <value>Off Time (ms)</value>
+  </data>
+  <data name="EmitterOnTime" xml:space="preserve">
+    <value>On Time (ms)</value>
+  </data>
+  <data name="Flow" xml:space="preserve">
+    <value>Flow</value>
+  </data>
+  <data name="FlowControl" xml:space="preserve">
+    <value>Flow Control</value>
+  </data>
+  <data name="FramesPerColor" xml:space="preserve">
+    <value>Frames Per Color</value>
+  </data>
+  <data name="NozzleAngle" xml:space="preserve">
+    <value>Nozzle Angle</value>
+  </data>
+  <data name="NozzleMovement" xml:space="preserve">
+    <value>Nozzle Movement</value>
+  </data>
+  <data name="NozzleSize" xml:space="preserve">
+    <value>Nozzle Size</value>
+  </data>
+  <data name="NozzleSpeed" xml:space="preserve">
+    <value>Nozzle Speed</value>
+  </data>
+  <data name="OscillateEndAngle" xml:space="preserve">
+    <value>Oscillate End Angle</value>
+  </data>
+  <data name="OscillateStartAngle" xml:space="preserve">
+    <value>Oscillate Start Angle</value>
+  </data>
+  <data name="ParticleColor" xml:space="preserve">
+    <value>Particle Color</value>
+  </data>
+  <data name="ParticleLifetime" xml:space="preserve">
+    <value>Particle Lifetime</value>
+  </data>
+  <data name="ParticleType" xml:space="preserve">
+    <value>Particle Type</value>
+  </data>
+  <data name="ParticleVelocity" xml:space="preserve">
+    <value>Particle Velocity</value>
+  </data>
+  <data name="UseColorList" xml:space="preserve">
+    <value>Use Color List</value>
+  </data>
+  <data name="VelocityX" xml:space="preserve">
+    <value>Velocity X</value>
+  </data>
+  <data name="VelocityY" xml:space="preserve">
+    <value>Velocity Y</value>
+  </data>
+  <data name="XPosition" xml:space="preserve">
+    <value>X Position</value>
+  </data>
+  <data name="YPosition" xml:space="preserve">
+    <value>Y Position</value>
+  </data>
+  <data name="DespeckleThreshold" xml:space="preserve">
+    <value>Despeckle Threshold</value>
+  </data>
+  <data name="WarmUpFrames" xml:space="preserve">
+    <value>Warm Up Frames</value>
+  </data>
+  <data name="ColorList" xml:space="preserve">
+    <value>Color List</value>
+  </data>
+</root>

@@ -2,18 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using Vixen.Commands;
-using Vixen.Execution;
-using Vixen.Execution.Context;
-using Vixen.Module.Controller;
-using Vixen.Module.Timing;
-using Vixen.Sys;
 
 namespace Vixen.Export
 {
-    public class ESEQWriter : IExportWriter
+    public sealed class ESEQWriter : ExportWriterBase
     {
         private const UInt32 _dataOffset = 20;
         private const UInt16 _fixedHeaderLength = 20;
@@ -34,12 +26,12 @@ namespace Vixen.Export
         public ESEQWriter()
         {
             SeqPeriodTime = 50;  //Default to 50ms
+            IsFalconFormat = true;
+			FileTypeDescr = "Falcon Player Effect";
+			FileType = "eseq";
         }
 
-
-        public int SeqPeriodTime { get; set; }
-
-        public void WriteFileHeader()
+		public void WriteFileHeader()
         {
             if (_dataOut != null)
             {
@@ -80,12 +72,7 @@ namespace Vixen.Export
             }
         }
 
-        public void WriteFileFooter()
-        {
-
-        }
-
-        public void OpenSession(SequenceSessionData data)
+        public override void OpenSession(SequenceSessionData data)
         {
             this.SeqPeriodTime = data.PeriodMS;
             OpenSession(data.OutFileName, data.NumPeriods, data.ChannelNames.Count());
@@ -118,7 +105,7 @@ namespace Vixen.Export
             }
         }
 
-        public void WriteNextPeriodData(List<Byte> periodData)
+        public override void WriteNextPeriodData(List<Byte> periodData)
         {
             if (_dataOut != null)
             {
@@ -142,7 +129,7 @@ namespace Vixen.Export
             }
         }
 
-        public void CloseSession()
+        public override void CloseSession()
         {
             if (_dataOut != null)
             {
@@ -165,21 +152,6 @@ namespace Vixen.Export
                 }
             }
         }
-
-        public string FileType
-        {
-            get
-            {
-                return "eseq";
-            }
-        }
-
-        public string FileTypeDescr
-        {
-            get
-            {
-                return "Falcon Player Effect";
-            }
-        }
+		
     }
 }

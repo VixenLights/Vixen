@@ -105,7 +105,7 @@ namespace Vixen.Sys
 				catch (Exception ex) {
 					// The client is expected to have subscribed to the logging event
 					// so that it knows that an exception occurred during loading.
-					Logging.Error("Error during system startup!", ex);
+					Logging.Error(ex,"Error during system startup!");
 					return false;
 				}
 			}
@@ -379,5 +379,7 @@ namespace Vixen.Sys
 			string dataPath = System.Configuration.ConfigurationManager.AppSettings["DataPath"];
 			return dataPath ?? Paths.DefaultDataRootPath;
 		}
+
+		public static string ProfileName { get; set; }
 	}
 }

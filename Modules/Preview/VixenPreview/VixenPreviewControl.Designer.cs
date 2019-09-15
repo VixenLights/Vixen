@@ -54,7 +54,7 @@
 			// contextMenuStrip1
 			// 
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(153, 26);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
 			this.contextMenuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenuStrip1_ItemClicked);
 			// 
 			// VixenPreviewControl
@@ -64,6 +64,7 @@
 			this.Name = "VixenPreviewControl";
 			this.Size = new System.Drawing.Size(290, 240);
 			this.Load += new System.EventHandler(this.VixenPreviewControl_Load);
+			this.Paint += new System.Windows.Forms.PaintEventHandler(this.VixenPreviewControl_Paint);
 			this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.VixenPreviewControl_MouseDown);
 			this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.VixenPreviewControl_MouseMove);
 			this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.VixenPreviewControl_MouseUp);

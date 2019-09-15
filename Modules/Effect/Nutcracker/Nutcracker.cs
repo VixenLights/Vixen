@@ -52,7 +52,7 @@ namespace VixenModules.Effect.Nutcracker
 				
 			_elementData = new EffectIntents();
 
-			foreach (ElementNode node in TargetNodes) {
+			foreach (IElementNode node in TargetNodes) {
 				if (tokenSource != null && tokenSource.IsCancellationRequested)
 					return;
 				
@@ -118,10 +118,10 @@ namespace VixenModules.Effect.Nutcracker
 			return FindLeafParents().Count();
 		}
 
-		private IEnumerable<ElementNode> FindLeafParents()
+		private IEnumerable<IElementNode> FindLeafParents()
 		{
-			var nodes = new List<ElementNode>();
-			var nonLeafElements = new List<ElementNode>();
+			var nodes = new List<IElementNode>();
+			var nonLeafElements = new List<IElementNode>();
 			
 			if (TargetNodes.FirstOrDefault() != null)
 			{
@@ -142,7 +142,7 @@ namespace VixenModules.Effect.Nutcracker
 
 		private void CalculatePixelsPerString()
 		{
-			IEnumerable<ElementNode> nodes = FindLeafParents();
+			IEnumerable<IElementNode> nodes = FindLeafParents();
 			_stringPixelCounts.Clear();
 			foreach (var node in nodes)
 			{
@@ -152,7 +152,7 @@ namespace VixenModules.Effect.Nutcracker
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
-		private void RenderNode(ElementNode node)
+		private void RenderNode(IElementNode node)
 		{
 			int wid;
 			int ht;

@@ -1,5 +1,131 @@
 Release Notes - Vixen 3
 
+Release Notes - Vixen 3 - 3.6 Release Build 
+
+** New Feature
+    * [VIX-488] - Add option to Balls effect to enable random Balls movement.
+    * [VIX-784] - Wipe Movement Curve
+    * [VIX-2226] - Create New Toolbars for the Curve, Gradient and Color Libraries
+    * [VIX-2229] - Extend the grid cursor position line onto the audio track.
+    * [VIX-2234] - Add Web support for enable/disable controllers
+    * [VIX-2272] - Split effects
+    * [VIX-2373] - Add a Strobe effect
+    * [VIX-2394] - Playback Controls in Preview
+    * [VIX-2489] - Bring back "paste effects to mark
+    * [VIX-2542] - Adding a media toolbar to the display preview
+    * [VIX-2646] - Always on Top Preview - but only when playing
+    * [VIX-2679] - Freeze Butterfly effect
+    * [VIX-2683] - Add compression to FPP export format
+    * [VIX-2698] - "Egg Timer" Fill
+    * [VIX-2699] - Create toolbar for Alignment tools
+    * [VIX-2746] - Dev Build Wipe Effect Location
+    * [VIX-2766] - Add the ability to edit the element tree from the Preview.
+    * [VIX-2777] - Create a Vendor inventory / Model Browser
+
+** Bug
+    * [VIX-750] - Objects in preview not aligned after using zoom in configure preview.
+    * [VIX-2014] - Preview Grid Element does fill bounding box
+    * [VIX-2213] - Color Copy with Only One Choice
+    * [VIX-2223] - Crash while configuring controller
+    * [VIX-2258] - Crash when toggling "View Timeline Window"
+    * [VIX-2269] - Taking a long time for simple operations in the Display Setup
+    * [VIX-2382] - LipSync Pixel Map Editor Title Cut Off
+    * [VIX-2447] - Import Type Selection Form Missing Vixen Icon
+    * [VIX-2565] - Lip Sync ~ System.NullReferenceException: Object reference not set to an instance of an object
+    * [VIX-2580] - Elements sometimes lose proper perception, but maintain proper relative location
+    * [VIX-2633] - Crash when exporting to FPP.
+    * [VIX-2636] - Show setup form has several bugs.
+    * [VIX-2638] - When trying to switch a gradient color from a color stop, full crash and shutdown
+    * [VIX-2640] - Text effect - iteration setting ignored with rotate option
+    * [VIX-2644] - The link elements form in the preview shape setup does not resize the columns correctly when items are linked.
+    * [VIX-2649] - Updating element settings causes crash
+    * [VIX-2650] - When cloning a Spin effect the enable minimum brightness setting does not transfer.
+    * [VIX-2654] - The FPP universe file export has a bug where it calculates the start channel incorrectly at every controller switch.
+    * [VIX-2657] - Pinwheel Offset position is limited to +-100 pixels, but it should be based off Buffer size.
+    * [VIX-2660] - Streaming ACN Controller crash on some edits when using multicast.
+    * [VIX-2661] - Using the tile wheel to pan left in the timeline does not work, but right does.
+    * [VIX-2668] - Countdown effect is not shown in the editor when using 32bit version of V ixen
+    * [VIX-2671] - Curve Editor X and Y value boxes no longer allow decimal values.
+    * [VIX-2672] - Extra mark line through wave form
+    * [VIX-2674] - The Picture effect looses one row at the top of all images.
+    * [VIX-2677] - Direction in Countdown effect when Location is selected is not working correctly.
+    * [VIX-2678] - The color module updating is inconsistent and does not always update.
+    * [VIX-2704] - Video with mega tree or grid not ok for other defaut duration (2.0s)
+    * [VIX-2713] - FPP Export 2.0 universe file nulls instead of empty field
+    * [VIX-2719] - Vixen Crashes or Exits without saving
+    * [VIX-2722] - Plasma effect has a speed range of 1 to 100 so can not be stopped.
+    * [VIX-2724] - Butterfly effect not working correctly under certain conditions.
+    * [VIX-2725] - Colorwash effect not working correctly over a long period of time.
+    * [VIX-2726] - Spirograph effect has a speed range of 1 to 100 so can not be stopped.
+    * [VIX-2727] - Dragging an effect from the Effects toolstrip through the a new Library toolstrip loses it's visual drag.
+    * [VIX-2729] - Drag Color to Toolstrip Color library not working and a couple of null issues.
+    * [VIX-2733] - Meteor speed still moves when speed and variation is set to 0.
+    * [VIX-2734] - Wipe On and Wipe off when using Burst In or Out in Wipe effect doesn't do anything.
+    * [VIX-2739] - Crash when import my custom prop
+    * [VIX-2741] - Exporting a universe file from the wizard crashes Vixen. 
+    * [VIX-2744] - Chroma Key config issues when using multiple Chroma Key layers
+    * [VIX-2749] - Auto Save As Dialog gets hidden behind other windows
+    * [VIX-2751] - Serialization error in the prop editor module stemming from VIX-2655
+    * [VIX-2754] - Discrete custom props are not properly displayed in the OpenGL previewer.
+    * [VIX-2757] - Dependency libraries being copied to the root when they should not be.
+    * [VIX-2758] - Shapes Output path in Debug X86 config is incorrect and Shapes effect is not displayed in Sequencer.
+    * [VIX-2760] - Wipe migration from several versions ago can crash because the migration does not handle missing properties correctly.
+    * [VIX-2764] - Layer mixing is not working correctly
+    * [VIX-2767] - Update the remaining deprecated NLog methods.
+    * [VIX-2768] - Adding Marks with Fill to Gap option does not initially render correctly. 
+    * [VIX-2769] - Wipe effect does not render properly
+    * [VIX-2771] - Time Editor Overlapping Effects no longer displayed
+    * [VIX-2774] - Export can leave outputs in a bad state when it finishes.
+    * [VIX-2776] - Clean up unused libraries and build dependencies. 
+    * [VIX-2778] - App crashes when importing xModel from Xlights
+    * [VIX-2781] - Crash all vixen software with build 863
+    * [VIX-2783] - Imported models in the preview do not show in the element tree after import.
+
+** Improvement
+    * [VIX-2273] - Effect default length change
+    * [VIX-2291] - Export Sequence Output Network File Option
+    * [VIX-2537] - Changing to Mark Collections in the Lip-sync should try to select a phoneme collection if one is available.
+    * [VIX-2589] - Add more directions to the wipe. 
+    * [VIX-2634] - Allow FPP universe file generation when export includes non sACN controllers
+    * [VIX-2635] - Update FPP Export for FPP 2.x format
+    * [VIX-2647] - Scroll to newly added universe in SACN cofig screen
+    * [VIX-2651] - Seamless show transitioning
+    * [VIX-2655] - I am colorblind and can't use the Custom Prop Editor. Please change the color of the selected light in the Custom Prop Editor. 
+    * [VIX-2662] - Add ability to copy/paste marks in the mark bar.
+    * [VIX-2676] - Improve Render speed of the Text, Countdown and Shapes effects.
+    * [VIX-2687] - Dissolve needs additional color options on the grouping.
+    * [VIX-2688] - Add a ? help icon to the header of the effect editor that links to the website documentation.
+    * [VIX-2689] - Child elements has effects indicator
+    * [VIX-2694] - Add X and Y Movement curves to the Meteor effect.
+    * [VIX-2695] - Add X and Y Movement curves to the Snowflake effect.
+    * [VIX-2696] - Add X and Y Movement curves and Height curve to the Border effect. 
+    * [VIX-2701] - Create a default mixing filter for the layers to do simple mixing so you can stack multiple layer groups.
+    * [VIX-2703] - Make editor toolbars movable/customizable
+    * [VIX-2707] - Ordering Within Color/Gradient/Curve Libraries
+    * [VIX-2708] - Add Spinning Film Leader to Count Down Effect
+    * [VIX-2709] - Update dependent libraries to current versions
+    * [VIX-2714] - Add select all button to sequence selection page in bulk exporter.
+    * [VIX-2717] - Change the Effect Toolstrip so when labels are hidden it reduces the Toolstrip height.
+    * [VIX-2718] - Add configuration to the source to allow TortoiseGit to auto link the ticket number to the bug tracker.
+    * [VIX-2720] - Add Motion selection (Iterations/Speed) and Speed Curve to the ColorWash effect
+    * [VIX-2721] - Add Motion selection (Iterations/Position) and PositionCurve to the Curtain effect
+    * [VIX-2723] - Add Motion selection (Iterations/Speed) and SpeedCurve to the Spiral effect
+    * [VIX-2731] - Add Liquid Effect
+    * [VIX-2736] - Add Circle Burst to the Wipe effect.
+    * [VIX-2753] - Save timed sequence form capitalization 
+    * [VIX-2759] - Performance optimizations in the core engine.
+    * [VIX-2761] - Upgrade to .Net Framework 4.7.2 
+    * [VIX-2762] - Add Character Explode and Fall direction to Text Effect
+    * [VIX-2763] - Improve the performance of the Circles effect
+    * [VIX-2765] - Remove mark end indicator while moving when mark bars aren't shown
+    * [VIX-2772] - Pause Button
+    * [VIX-2782] - Change format of Liquid effect text
+    * [VIX-2784] - Switch to selection mode after importing custom prop
+    * [VIX-2789] - Add the ability to assign face mapping to props in the Custom Prop Editor
+    * [VIX-2790] - Create Element templates for Arch, Star, and Candy Cane to align with smart objects.
+
+
+
 Release Notes - Vixen 3 - 3.5u4 Release Build 
 
 ** Improvement

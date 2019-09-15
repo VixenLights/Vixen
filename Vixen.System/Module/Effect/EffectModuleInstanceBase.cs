@@ -25,7 +25,7 @@ namespace Vixen.Module.Effect
 		IEquatable<EffectModuleInstanceBase>,
 		ICustomTypeDescriptor
 	{
-		private ElementNode[] _targetNodes;
+		private IElementNode[] _targetNodes;
 		private List<IMediaModuleInstance> _media;
 		private TimeSpan _timeSpan;
 		private TimeSpan _startTime;
@@ -35,7 +35,7 @@ namespace Vixen.Module.Effect
 
 		protected EffectModuleInstanceBase()
 		{
-			_targetNodes = new ElementNode[0];
+			_targetNodes = new IElementNode[0];
 				//set member directly on creation to prevent target node changed events from occuring.
 			TimeSpan = TimeSpan.Zero;
 			StartTime = TimeSpan.Zero;
@@ -56,7 +56,7 @@ namespace Vixen.Module.Effect
 		private ObservableCollection<IMarkCollection> _markCollections;
 
 		[Browsable(false)]
-		public ElementNode[] TargetNodes
+		public IElementNode[] TargetNodes
 		{
 			get { return _targetNodes; }
 			set
@@ -111,26 +111,23 @@ namespace Vixen.Module.Effect
 			}
 		}
 
-		public void PreRender(CancellationTokenSource cancellationToken = null)
+		public bool PreRender(CancellationTokenSource cancellationToken = null)
 		{
-			_PreRender();
-			IsDirty = false;
-		}
-
-		public EffectIntents Render()
-		{
+			bool success = true;
 			if (IsDirty && !IsRendering)
 			{
-				IsRendering = true;
 				try
 				{
-					PreRender();
+					IsRendering = true;
+					_PreRender();
+					IsDirty = false;
 				}
 				catch (Exception e)
 				{
 					//Trap any errors to prevent the effect from staying in a state of rendering.
 					Logging.Error(e, $"Error rendering {EffectName} on element {TargetNodes?.FirstOrDefault()?.Name}");
 					Logging.Error($"Error rendering Effect Property settings: {PropertyInfo()}");
+					success = false;
 				}
 				finally
 				{
@@ -145,6 +142,16 @@ namespace Vixen.Module.Effect
 				{
 					Thread.Sleep(1);
 				}
+			}
+
+			return success;
+		}
+
+		public EffectIntents Render()
+		{
+			if (IsDirty)
+			{
+				PreRender();
 			}
 
 			return _Render();
@@ -375,7 +382,7 @@ namespace Vixen.Module.Effect
 					{
 						sw.WriteLine("The \"{0}\" effect has property requirements that are missing:\n", effectDescriptor.TypeName);
 
-						foreach (ElementNode elementNode in TargetNodes)
+						foreach (IElementNode elementNode in TargetNodes)
 						{
 							Guid[] missingPropertyIds =
 								effectDescriptor.PropertyDependencies.Except(elementNode.Properties.Select(x => x.Descriptor.TypeId)).ToArray();

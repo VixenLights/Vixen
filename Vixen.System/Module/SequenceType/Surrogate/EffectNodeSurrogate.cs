@@ -34,14 +34,14 @@ namespace Vixen.Module.SequenceType.Surrogate
 			effect.TimeSpan = TimeSpan;
 			effect.StartTime = StartTime;
 			//effect.TargetNodes = validElementIds.Select(x => elementNodes[x]).ToArray();
-			ElementNode node;
-			if (elementNodes.TryGetValue(TargetNodes.First().NodeId, out node))
+			
+			if (elementNodes.TryGetValue(TargetNodes.First().NodeId, out var node))
 			{
-				effect.TargetNodes = new[] {node};
+				effect.TargetNodes = new IElementNode[] {node};
 			}
 			else
 			{
-				effect.TargetNodes = new ElementNode[]{};
+				effect.TargetNodes = new IElementNode[]{new ProxyElementNode(TargetNodes.First().NodeId,TargetNodes.First().Name)};
 			}
 			return new EffectNode(effect, StartTime);
 		}

@@ -35,7 +35,7 @@ namespace VixenModules.Effect.SetLevel
 		{
 			_elementData = new EffectIntents();
 			
-			foreach (ElementNode node in TargetNodes) {
+			foreach (IElementNode node in TargetNodes) {
 				if (tokenSource != null && tokenSource.IsCancellationRequested)
 					return;
 
@@ -135,10 +135,12 @@ namespace VixenModules.Effect.SetLevel
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
-		private EffectIntents RenderNode(ElementNode node)
+		private EffectIntents RenderNode(IElementNode node)
 		{
 			EffectIntents effectIntents = new EffectIntents();
-			foreach (ElementNode elementNode in node.GetLeafEnumerator())
+			var leafs = node.GetLeafEnumerator();
+			IIntent intent = CreateIntent(leafs.First(), Color, IntensityLevel, TimeSpan);
+			foreach (IElementNode elementNode in node.GetLeafEnumerator())
 			{
 				if (HasDiscreteColors && IsElementDiscrete(elementNode))
 				{
@@ -148,8 +150,7 @@ namespace VixenModules.Effect.SetLevel
 						continue;
 					}
 				}
-
-				IIntent intent = CreateIntent(elementNode, Color, IntensityLevel, TimeSpan);
+				
 				effectIntents.AddIntentForElement(elementNode.Element.Id, intent, TimeSpan.Zero);
 			}
 

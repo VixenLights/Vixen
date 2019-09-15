@@ -29,12 +29,15 @@ namespace VixenModules.Effect.Text
 		private float _newFontSize;
 		private List<string> _text;
 		private List<TextClass> _textClass;
+		private List<DirectionClass> _directionClass;
 		private IEnumerable<IMark> _marks = null;
 		private double _directionPosition;
 		private double _fade;
 		private double _level;
 		private int _wordIteration;
-
+		private double _explodePosition;
+		private int _characterNumber;
+		private double _fallSpeed;
 
 		public Text()
 		{
@@ -302,9 +305,41 @@ namespace VixenModules.Effect.Text
 
 		[Value]
 		[ProviderCategory(@"Movement", 2)]
+		[ProviderDisplayName(@"ExplodePosition")]
+		[ProviderDescription(@"ExplodePosition")]
+		[PropertyOrder(3)]
+		public Curve ExplodePositionCurve
+		{
+			get { return _data.ExplodePosition; }
+			set
+			{
+				_data.ExplodePosition = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 2)]
+		[ProviderDisplayName(@"FallSpeed")]
+		[ProviderDescription(@"FallSpeed")]
+		[PropertyOrder(4)]
+		public Curve FallSpeedCurve
+		{
+			get { return _data.FallSpeedCurve; }
+			set
+			{
+				_data.FallSpeedCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 2)]
 		[ProviderDisplayName(@"CenterStop")]
 		[ProviderDescription(@"CenterStop")]
-		[PropertyOrder(3)]
+		[PropertyOrder(5)]
 		public bool CenterStop
 		{
 			get { return _data.CenterStop; }
@@ -422,9 +457,26 @@ namespace VixenModules.Effect.Text
 
 		[Value]
 		[ProviderCategory(@"Color", 3)]
+		[ProviderDisplayName(@"CycleCharacterColor")]
+		[ProviderDescription(@"CycleCharacterColor")]
+		[PropertyOrder(1)]
+		public bool CycleCharacterColor
+		{
+			get { return _data.CycleCharacterColor; }
+			set
+			{
+				_data.CycleCharacterColor = value;
+				IsDirty = true;
+				UpdateTextModeAttributes();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"CycleColor")]
 		[ProviderDescription(@"CycleColor")]
-		[PropertyOrder(1)]
+		[PropertyOrder(2)]
 		public bool CycleColor
 		{
 			get { return _data.CycleColor; }
@@ -440,7 +492,7 @@ namespace VixenModules.Effect.Text
 		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"GradientMode")]
 		[ProviderDescription(@"GradientMode")]
-		[PropertyOrder(2)]
+		[PropertyOrder(3)]
 		public GradientMode GradientMode
 		{
 			get { return _data.GradientMode; }
@@ -460,7 +512,7 @@ namespace VixenModules.Effect.Text
 		[BoolDescription("Yes", "No")]
 		[PropertyEditor("SelectionEditor")]
 		[Browsable(true)]
-		[PropertyOrder(3)]
+		[PropertyOrder(4)]
 		public override bool UseBaseColor
 		{
 			get { return _data.UseBaseColor; }
@@ -477,7 +529,7 @@ namespace VixenModules.Effect.Text
 		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"BaseColor")]
 		[ProviderDescription(@"BaseColor")]
-		[PropertyOrder(4)]
+		[PropertyOrder(5)]
 		public override Color BaseColor
 		{
 			get { return _data.BaseColor; }
@@ -583,7 +635,7 @@ namespace VixenModules.Effect.Text
 
 				{"TextLines", TextSource != TextSource.MarkCollectionLabels},
 
-				{"CycleColor", TextSource != TextSource.None}
+				{"CycleColor", TextSource != TextSource.None && !CycleCharacterColor || Direction == TextDirection.Rotate}
 			};
 			SetBrowsable(propertyStates);
 			if (refresh)
@@ -621,7 +673,7 @@ namespace VixenModules.Effect.Text
 					hideYOffsetCurve = true;
 					break;
 			}
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3)
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(10)
 			{
 				{"XOffsetCurve", !hideXOffsetCurve},
 
@@ -633,7 +685,15 @@ namespace VixenModules.Effect.Text
 
 				{"Speed", Direction < TextDirection.Rotate},
 
-				{"CenterStop", Direction < TextDirection.Rotate}
+				{"CenterStop", Direction < TextDirection.Rotate},
+
+				{"ExplodePositionCurve", Direction == TextDirection.Explode},
+
+				{"FallSpeedCurve", Direction == TextDirection.Fall},
+
+				{"CycleCharacterColor", Direction != TextDirection.Rotate},
+
+				{"CycleColor", TextSource != TextSource.None && !CycleCharacterColor || Direction == TextDirection.Rotate }
 			};
 			SetBrowsable(propertyStates);
 
@@ -674,6 +734,7 @@ namespace VixenModules.Effect.Text
 			_newfont = null;
 			_text.Clear();
 			_textClass = null;
+			_directionClass = null;
 		}
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
@@ -733,11 +794,45 @@ namespace VixenModules.Effect.Text
 			var intervalPos = GetEffectTimeIntervalPosition(frame);
 			var intervalPosFactor = intervalPos * 100;
 			var textAngle = CalculateAngle(intervalPosFactor);
-
+			_explodePosition = CalculateExplodeSpeed(intervalPosFactor);
+			_fallSpeed = CalculateFallSpeedScale(intervalPosFactor);
+			_characterNumber = 0;
 			using (Graphics graphics = Graphics.FromImage(bitmap))
 			{
 				// Sets Fade level and text position offsets.
 				SetFadePositionLevel(frame);
+
+				if (frame == 0)
+				{
+					if (Direction != TextDirection.Rotate && CycleCharacterColor || Direction > (TextDirection)5)
+					{
+						_directionClass = new List<DirectionClass>();
+						if (TextSource != TextSource.None)
+						{
+							foreach (var text in _textClass)
+							{
+								foreach (string txt in text.Text)
+								{
+									for (int i = 0; i <= txt.Length; i++)
+									{
+										CreateDirectionClass();
+									}
+								}
+							}
+						}
+						else
+						{
+							foreach (var text in _text)
+							{
+								for (int i = 0; i < text.Length + text.Split(new[]{' '}, StringSplitOptions.RemoveEmptyEntries).Length; i++)
+								{
+									CreateDirectionClass();
+								}
+							}
+						}
+					}
+
+				}
 
 				if (_text.Count == 0) return; // No point going any further as there is no text to be display for this frame.
 
@@ -836,6 +931,17 @@ namespace VixenModules.Effect.Text
 			}
 		}
 
+		private void CreateDirectionClass()
+		{
+			DirectionClass d = new DirectionClass();
+			var angle = Rand(0, 360);
+			d.XOffset = Math.Cos(angle);
+			d.YOffset = Math.Sin(angle);
+			d.Delta = 0;
+			_directionClass.Add(d);
+
+		}
+
 		private void SetFadePositionLevel(int frame)
 		{
 			_directionPosition = (GetEffectTimeIntervalPosition(frame) * Speed) % 1;
@@ -848,7 +954,11 @@ namespace VixenModules.Effect.Text
 					TextClass text = _textClass[i];
 					if (frame >= text.StartFrame && frame < text.EndFrame)
 					{
+						_explodePosition = CalculateExplodeSpeed((double)(frame - text.StartFrame) / (text.EndFrame - text.StartFrame) * (100));
 						_wordIteration = i;
+						
+						if(TextSource != TextSource.MarkCollection) _characterNumber = text.CharacterStart;
+						
 						_text = new List<string>(text.Text);
 						switch (TextFade)
 						{
@@ -905,6 +1015,17 @@ namespace VixenModules.Effect.Text
 		private float CalculateFontScale(double intervalPos)
 		{
 			return (float)ScaleCurveToValue(FontScaleCurve.GetValue(intervalPos), 100, 1);
+		}
+
+		private double CalculateFallSpeedScale(double intervalPos)
+		{
+			return (double)ScaleCurveToValue(FallSpeedCurve.GetValue(intervalPos), 20, 0);
+		}
+
+		private float CalculateExplodeSpeed(double intervalPos)
+		{
+			var bufferLength = (int) Math.Sqrt(Math.Pow(BufferWi, 2) + Math.Pow(BufferHt, 2));
+			return (float)ScaleCurveToValue(ExplodePositionCurve.GetValue(intervalPos), bufferLength, -bufferLength);
 		}
 
 		private void CalculatePixel(int x, int y, ref int bufferHt, FastPixel.FastPixel bitmap, IPixelFrameBuffer frameBuffer)
@@ -1008,7 +1129,7 @@ namespace VixenModules.Effect.Text
 				var brush = new LinearGradientBrush(new Rectangle(brushPointX, p.Y, TextMode==TextMode.Rotated && TextSource == TextSource.None ? _maxTextSize:(int)size.Width, (int)size.Height), Color.Black,
 					Color.Black, mode) { InterpolationColors = cg.GetColorBlend() };
 				
-				DrawTextWithBrush(text, brush, g, CenterText?offsetPoint:p);
+				DrawTextWithBrush(text, brush, g, CenterText?offsetPoint:p, mode, size);
 				brush.Dispose();
 				p.Y += (int)size.Height;
 				if (TextMode == TextMode.Normal || TextSource == TextSource.MarkCollection)
@@ -1040,7 +1161,7 @@ namespace VixenModules.Effect.Text
 				var brush = new LinearGradientBrush(new Rectangle(0, 0, BufferWi, BufferHt),
 					Color.Black,
 					Color.Black, mode) { InterpolationColors = cg.GetColorBlend() };
-				DrawTextWithBrush(text, brush, g, CenterText ? offsetPoint : p);
+				DrawTextWithBrush(text, brush, g, CenterText ? offsetPoint : p, mode, size);
 				brush.Dispose();
 
 				p.Y += (int)size.Height;
@@ -1058,12 +1179,82 @@ namespace VixenModules.Effect.Text
 			}
 		}
 
-		private void DrawTextWithBrush(string text, Brush brush, Graphics g, Point p)
+		private void DrawTextWithBrush(string text, Brush brush, Graphics g, Point p, LinearGradientMode mode, SizeF size)
 		{
 			g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
-			g.DrawString(text, _newfont, brush, p);
+			if (Direction != TextDirection.Rotate && CycleCharacterColor || Direction > (TextDirection) 5)
+			{
+				// We only need to go into here if we are required to draw each character
+				string[] result = text.Split(' ');
+
+				foreach (var s in result)
+				{
+					string word = s + " ";
+					SizeF textSize = g.MeasureString(word, _newfont);
+					// Make CharacterRanges to indicate which ranges we want to measure.
+					CharacterRange[] ranges = new CharacterRange[word.Length];
+					for (int i = 0; i < word.Length; i++) ranges[i] = new CharacterRange(i, 1);
+
+					using (StringFormat string_format = new StringFormat())
+					{
+						string_format.SetMeasurableCharacterRanges(ranges);
+						// Measure the word to see where each character range goes.
+						Region[] regions = g.MeasureCharacterRanges(word, _newfont,
+							new RectangleF(p.X, p.Y, size.Width, size.Height), string_format);
+
+						// Draw the characters one at a time.
+						for (int i = 0; i < word.Length; i++)
+						{
+							// See where this character would be drawn.
+							RectangleF rectf = regions[i].GetBounds(g);
+							Rectangle rect;
+							switch (Direction)
+							{
+								case TextDirection.Explode:
+									rect = new Rectangle(
+										(int) ((int) rectf.X + _directionClass[_characterNumber].XOffset *
+										       _explodePosition),
+										(int) ((int) p.Y + _directionClass[_characterNumber].YOffset *
+										       _explodePosition),
+										(int)((rectf.Width + 1) * 1.6), (int) rectf.Height + 1);
+									break;
+								case TextDirection.Fall:
+									_directionClass[_characterNumber].Delta += (RandDouble() * _fallSpeed);
+									rect = new Rectangle(
+										(int) rectf.X,
+										(int) (p.Y + _directionClass[_characterNumber].Delta % BufferHt),
+										(int)((rectf.Width + 1) * 1.6), (int) rectf.Height + 1);
+									break;
+								default:
+									rect = new Rectangle((int) rectf.X, p.Y, (int) ((rectf.Width + 1) * 1.6),
+										(int) rectf.Height + 1);
+									break;
+							}
+
+							if (CycleCharacterColor)
+							{
+								// Create a brush with cycling color.
+								ColorGradient cg = Colors[_characterNumber % Colors.Count];
+								if (_level < 1 || TextFade != TextFade.None) cg = GetNewGolorGradient(cg);
+								brush = new LinearGradientBrush(rect, Color.Black, Color.Black, mode)
+									{InterpolationColors = cg.GetColorBlend()};
+							}
+
+							g.DrawString(word.Substring(i, 1), _newfont, brush, rect, string_format);
+
+							_characterNumber++;
+						}
+					}
+
+					p.X += (int)textSize.Width;
+				}
+			}
+			else
+			{
+				g.DrawString(text, _newfont, brush, p);
+			}
 		}
-		
+
 		private ColorGradient GetNewGolorGradient(ColorGradient cg)
 		{
 			cg = new ColorGradient(cg);
@@ -1084,6 +1275,15 @@ namespace VixenModules.Effect.Text
 			public int StartFrame;
 			public int Frame;
 			public int EndFrame;
+			public int CharacterStart;
+		}
+
+		// Direction Class
+		public class DirectionClass
+		{
+			public double XOffset;
+			public double YOffset;
+			public double Delta;
 		}
 
 		private void SetupMarks()
@@ -1118,10 +1318,12 @@ namespace VixenModules.Effect.Text
 					if (_textClass.Count == 0)
 					{
 						t.StartFrame = 0;
+						t.CharacterStart = 0;
 					}
 					else
 					{
 						t.StartFrame = ((t.Frame - _textClass[_textClass.Count - 1].Frame) / 2) + _textClass[_textClass.Count - 1].Frame;
+						t.CharacterStart = _textClass[_textClass.Count - 1].CharacterStart + _textClass[_textClass.Count - 1].Text[0].Length;
 						if (TextDuration != TextDuration.MarkDuration)
 						{
 							_textClass[_textClass.Count - 1].EndFrame = t.StartFrame;
@@ -1300,12 +1502,59 @@ namespace VixenModules.Effect.Text
 			Font adjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, displayedText, clipRectangle, Font.Name, 48, Font);
 			SizeF adjustedSizeNew = g.MeasureString(displayedText, adjustedFont);
 			int adjustedStartPosition = TextSource == TextSource.None ? startX : clipRectangle.X + startX;
-			var brush = new LinearGradientBrush(
-					new Rectangle(adjustedStartPosition, 2, (int)adjustedSizeNew.Width, (int)adjustedSizeNew.Height),
-					Color.Black,
-					Color.Black, mode)
-				{ InterpolationColors = Colors[_wordIteration % Colors.Count].GetColorBlend() };
-			g.DrawString(displayedText, adjustedFont, brush, adjustedStartPosition, 2);
+			LinearGradientBrush brush;
+			if (CycleCharacterColor)
+			{
+				// We only need to go into here if we are required to draw each character
+				string[] result = displayedText.Split(' ');
+
+				foreach (var s in result)
+				{
+					string word = s + " ";
+					SizeF textSize = g.MeasureString(word, adjustedFont);
+					// Make CharacterRanges to indicate which ranges we want to measure.
+					CharacterRange[] ranges = new CharacterRange[word.Length];
+					for (int i = 0; i < word.Length; i++) ranges[i] = new CharacterRange(i, 1);
+
+					using (StringFormat string_format = new StringFormat())
+					{
+						string_format.SetMeasurableCharacterRanges(ranges);
+						// Measure the word to see where each character range goes.
+						Region[] regions = g.MeasureCharacterRanges(word, adjustedFont,
+							new RectangleF(adjustedStartPosition, 2, (int) adjustedSizeNew.Width + 25,
+								(int) adjustedSizeNew.Height), string_format);
+
+						// Draw the characters one at a time.
+						for (int i = 0; i < word.Length; i++)
+						{
+							// See where this character would be drawn.
+							RectangleF rectf = regions[i].GetBounds(g);
+							Rectangle rect;
+							rect = new Rectangle((int) rectf.X, (int) rectf.Y, (int) ((rectf.Width + 1) * 1.6),
+								(int) rectf.Height + 1);
+
+							// Create a brush with cycling color.
+							brush = new LinearGradientBrush(rect, Color.Black, Color.Black, mode)
+								{InterpolationColors = Colors[i % Colors.Count].GetColorBlend()};
+
+							g.DrawString(word.Substring(i, 1), adjustedFont, brush, rect, string_format);
+
+						}
+					}
+
+					adjustedStartPosition += (int)textSize.Width;
+				}
+			}
+			else
+			{
+				brush = new LinearGradientBrush(
+						new Rectangle(adjustedStartPosition, 2, (int)adjustedSizeNew.Width, (int)adjustedSizeNew.Height),
+						Color.Black,
+						Color.Black, mode)
+					{ InterpolationColors = Colors[_wordIteration % Colors.Count].GetColorBlend() };
+				g.DrawString(displayedText, adjustedFont, brush, adjustedStartPosition, 2);
+			}
+			
 		}
 
 		public override bool ForceGenerateVisualRepresentation { get { return true; } }

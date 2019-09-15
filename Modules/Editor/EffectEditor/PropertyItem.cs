@@ -66,6 +66,8 @@ namespace VixenModules.Editor.EffectEditor
 				if (disposing)
 				{
 					_descriptor.RemoveValueChanged(_component, ComponentValueChanged);
+					_value?.Dispose();
+					
 				}
 				base.Dispose(disposing);
 			}
@@ -664,7 +666,7 @@ namespace VixenModules.Editor.EffectEditor
 
 		}
 
-		private object[] CloneValues()
+		internal object[] CloneValues()
 		{
 			if (GetValues() == null)
 			{
@@ -763,7 +765,7 @@ namespace VixenModules.Editor.EffectEditor
 			}
 			catch(Exception e)
 			{
-				Logging.Error("An error occured setting the property value", e);	
+				Logging.Error(e, "An error occurred setting the property value");	
 			}
 			OnPropertyChanged("PropertyValue");
 		}

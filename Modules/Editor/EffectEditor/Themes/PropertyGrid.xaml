@@ -5,10 +5,11 @@
     xmlns:design="clr-namespace:VixenModules.Editor.EffectEditor.Design"
 	xmlns:input="clr-namespace:VixenModules.Editor.EffectEditor.Input"
 	xmlns:local="clr-namespace:VixenModules.Editor.EffectEditor"
-	xmlns:controls1="clr-namespace:Common.WPFCommon.Controls;assembly=WPFCommon"
-	xmlns:controls="clr-namespace:VixenModules.Editor.EffectEditor.Controls">
+	xmlns:controls="clr-namespace:VixenModules.Editor.EffectEditor.Controls"
+	xmlns:commonConverters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon">
 
-	<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+	<commonConverters:BooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" True="Collapsed" False="Visible"/>
+	<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 	<converters:MultiBooleanToVisibilityConverter x:Key="MultiBooleanToVisibilityConverter" />
 
     <Style TargetType="{x:Type local:EffectPropertyEditorGrid}">
@@ -70,16 +71,30 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate>
-					<Grid Margin="4">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*" SharedSizeGroup="PropertyNameSizeGroup" />
-							<ColumnDefinition Width="*" />
-						</Grid.ColumnDefinitions>
-						<design:PropertyNameTextBlock Grid.Column="0" Margin="0,0,8,0" ToolTip="{Binding ToolTip}"
-						                              Text="{Binding DisplayName, Mode=OneTime}"
-						                              Foreground="{Binding ItemsForeground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:EffectPropertyEditorGrid}}}" />
-						<design:PropertyEditorContentPresenter Grid.Column="1" VerticalAlignment="Center" />
+					<Grid>
+						<Grid Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityConverter}}">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+							<design:PropertyNameTextBlock Grid.Row="0" Margin="0,0,8,0" ToolTip="{Binding ToolTip}"
+														  IsHeader="True"
+							                              Text="{Binding DisplayName, Mode=OneTime}"
+							                              Foreground="{Binding ItemsForeground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:EffectPropertyEditorGrid}}}"/>
+							<design:PropertyEditorContentPresenter  Grid.Row="1" Margin="4" VerticalAlignment="Center"/>
+						</Grid>
+						<Grid Margin="4" Visibility="{Binding IsCollection, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" SharedSizeGroup="PropertyNameSizeGroup" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<design:PropertyNameTextBlock Grid.Column="0" Margin="0,0,8,0" ToolTip="{Binding ToolTip}"
+							                              Text="{Binding DisplayName, Mode=OneTime}"
+							                              Foreground="{Binding ItemsForeground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:EffectPropertyEditorGrid}}}"/>
+							<design:PropertyEditorContentPresenter Grid.Column="1" VerticalAlignment="Center" />
+						</Grid>
 					</Grid>
+					
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>

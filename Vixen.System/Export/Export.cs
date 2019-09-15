@@ -50,16 +50,16 @@ namespace Vixen.Export
         {
             _exportFileTypes = new Dictionary<string, string>();
             _writers = new Dictionary<string, IExportWriter>();
-            var type = typeof(IExportWriter);
+            var interfaceType = typeof(IExportWriter);
             var types = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(s => s.GetTypes())
-                .Where(p => type.IsAssignableFrom(p) && !p.Equals(type));
+                .Where(p => interfaceType.IsAssignableFrom(p) && p.IsClass && !p.IsAbstract);
 
             IExportWriter exportWriter;
             foreach (Type theType in types.ToArray())
             {
                 exportWriter = (IExportWriter)Activator.CreateInstance(theType);
-                _writers[exportWriter.FileType] = exportWriter;
+                _writers[exportWriter.FileTypeDescr] = exportWriter;
                 _exportFileTypes[exportWriter.FileTypeDescr] = exportWriter.FileType;
             }
 
@@ -105,7 +105,7 @@ namespace Vixen.Export
 	    public string DefaultFormatType()
 	    {
 			//This is sketchy at best
-			return ExportFileTypes.ContainsKey("Falcon Player Sequence") ? "Falcon Player Sequence" : FormatTypes[0];
+			return ExportFileTypes.ContainsKey("Falcon Player Sequence 2.6+") ? "Falcon Player Sequence 2.6+" : FormatTypes[0];
 		}
 
         public string OutFileName { get; set; }
@@ -172,6 +172,11 @@ namespace Vixen.Export
                 }
             }
             return true;
+        }
+
+        public string FormatAudioFileName(string sequenceName)
+        {
+	        return sequenceName + Path.GetExtension(AudioFilename);
         }
 
 		/// <summary>
@@ -315,7 +320,7 @@ namespace Vixen.Export
 
         }
 
-        public async Task DoExport(ISequence sequence, string outFormat, IProgress<ExportProgressStatus> progress = null)
+        public async Task DoExport(ISequence sequence, string outFormat, bool enableCompression, IProgress<ExportProgressStatus> progress = null, bool matchAudioName = false)
         {
             string fileType;
 
@@ -324,14 +329,38 @@ namespace Vixen.Export
 
             if ((sequence != null) && (_exportFileTypes.TryGetValue(outFormat,out fileType)))
             {
-                if (_writers.TryGetValue(fileType, out _output))
+                if (_writers.TryGetValue(outFormat, out _output))
                 {
+	                if (_output.CanCompress)
+	                {
+		                _output.EnableCompression = enableCompression;
+	                }
 					_generator = new SequenceIntervalGenerator(UpdateInterval, sequence);
                     //WriteControllerInfo(sequence);
-	                await Task.Factory.StartNew(() => ProcessExport(progress));
+	                await Task.Factory.StartNew(() => ProcessExport(progress, matchAudioName));
                 }
             }
         }
+
+        public bool CanCompress(string format)
+        {
+	        if (_writers.TryGetValue(format, out var output))
+	        {
+		        return output.CanCompress;
+	        }
+
+	        return false;
+        }
+
+        public bool IsFalconFormat(string format)
+        {
+			if (_writers.TryGetValue(format, out var output))
+			{
+				return output.IsFalconFormat;
+			}
+
+			return false;
+		}
         
         public void Cancel()
         {
@@ -405,7 +434,7 @@ namespace Vixen.Export
             return retVal;
         }
 
-        private void ProcessExport(IProgress<ExportProgressStatus> progress)
+        private void ProcessExport(IProgress<ExportProgressStatus> progress, bool matchAudioName = false)
         {
             SequenceSessionData sessionData = new SequenceSessionData();
 			
@@ -439,6 +468,11 @@ namespace Vixen.Export
                     sessionData.ChannelNames = BuildChannelNames(controllers);
                     sessionData.TimeMS = _generator.Sequence.Length.TotalMilliseconds;
                     sessionData.AudioFileName = AudioFilename;
+					if(!string.IsNullOrEmpty(AudioFilename))
+					{
+						sessionData.OutputAudioFileName =
+	                    matchAudioName ? FormatAudioFileName(_generator.Sequence.Name) : Path.GetFileName(AudioFilename);
+					}
 	                try
 	                {
 		                _output.OpenSession(sessionData);
@@ -555,6 +589,7 @@ namespace Vixen.Export
         public int PeriodMS { get; set; }
         public double TimeMS { get; set; }
         public string AudioFileName { get; set; }
+        public string OutputAudioFileName { get; set; } = string.Empty;
         public List<string> ChannelNames { get; set; }
         public string OutFileName { get; set; }
         public int NumPeriods { get; set; }

@@ -31,7 +31,7 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.buttonSetupCurve = new System.Windows.Forms.Button();
 			this.radioButtonExistingDoNothing = new System.Windows.Forms.RadioButton();
-			this.label3 = new System.Windows.Forms.Label();
+			this.lblQuestion = new System.Windows.Forms.Label();
 			this.radioButtonExistingUpdate = new System.Windows.Forms.RadioButton();
 			this.radioButtonExistingAddNew = new System.Windows.Forms.RadioButton();
 			this.buttonCancel = new System.Windows.Forms.Button();
@@ -82,14 +82,14 @@
 			this.radioButtonExistingDoNothing.Text = "Leave the existing dimming curve alone.";
 			this.radioButtonExistingDoNothing.UseVisualStyleBackColor = true;
 			// 
-			// label3
+			// lblQuestion
 			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(28, 159);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(447, 15);
-			this.label3.TabIndex = 4;
-			this.label3.Text = "If some elements are already patched to a dimming curve, what do you want to do?";
+			this.lblQuestion.AutoSize = true;
+			this.lblQuestion.Location = new System.Drawing.Point(28, 159);
+			this.lblQuestion.Name = "lblQuestion";
+			this.lblQuestion.Size = new System.Drawing.Size(447, 15);
+			this.lblQuestion.TabIndex = 4;
+			this.lblQuestion.Text = "If some elements are already patched to a dimming curve, what do you want to do?";
 			// 
 			// radioButtonExistingUpdate
 			// 
@@ -172,7 +172,7 @@
 			this.Controls.Add(this.buttonOk);
 			this.Controls.Add(this.radioButtonExistingAddNew);
 			this.Controls.Add(this.radioButtonExistingUpdate);
-			this.Controls.Add(this.label3);
+			this.Controls.Add(this.lblQuestion);
 			this.Controls.Add(this.radioButtonExistingDoNothing);
 			this.Controls.Add(this.buttonSetupCurve);
 			this.Controls.Add(this.label2);
@@ -189,6 +189,7 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Dimming Curve Configuration";
 			this.HelpButtonClicked += new System.ComponentModel.CancelEventHandler(this.DimmingCurveHelper_HelpButtonClicked);
+			this.Load += new System.EventHandler(this.DimmingCurveHelper_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -200,7 +201,7 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Button buttonSetupCurve;
 		private System.Windows.Forms.RadioButton radioButtonExistingDoNothing;
-		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Label lblQuestion;
 		private System.Windows.Forms.RadioButton radioButtonExistingUpdate;
 		private System.Windows.Forms.RadioButton radioButtonExistingAddNew;
 		private System.Windows.Forms.Button buttonCancel;

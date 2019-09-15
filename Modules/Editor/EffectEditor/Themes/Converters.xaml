@@ -25,4 +25,5 @@
     <converters:ToolTipVisibilityConverter x:Key="ToolTipVisibilityConverter"/>
     <converters:ColorGradientIsLibraryToVisibilityConverter x:Key="ColorGradientIsLibraryToVisibilityConverter"/>
     <converters:CurveIsLibraryToVisibilityConverter x:Key="CurveIsLibraryToVisibilityConverter"/>
+	<commonConverters:IndexOfConverter x:Key="IndexOfConverter"/>
 </ResourceDictionary>

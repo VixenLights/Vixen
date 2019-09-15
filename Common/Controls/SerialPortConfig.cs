@@ -44,7 +44,7 @@ namespace Common.Controls
                     }
                     else
                     {
-                        logging.Warn("Serial port exception encountered while scanning", e);
+                        logging.Warn(e,"Serial port exception encountered while scanning");
                         continue;
                     }
                 }
@@ -56,7 +56,9 @@ namespace Common.Controls
 			comboBoxStopBits.Enabled = allowStopEdit;
 
 			comboBoxParity.Items.AddRange(Enum.GetValues(typeof (Parity)).Cast<object>().ToArray());
-			comboBoxStopBits.Items.AddRange(Enum.GetValues(typeof (StopBits)).Cast<object>().ToArray());
+			var stopBits = Enum.GetValues(typeof(StopBits)).Cast<object>().ToList();
+			stopBits.Remove(StopBits.None);
+			comboBoxStopBits.Items.AddRange(stopBits.ToArray());
 
 			//set our text value
 			if (serialPort != null) {

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VixenModules.Effect.Spiral</RootNamespace>
     <AssemblyName>Spiral</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -56,6 +56,7 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MovementType.cs" />
     <Compile Include="Spiral.cs" />
     <Compile Include="SpiralData.cs" />
     <Compile Include="SpiralDescriptor.cs" />

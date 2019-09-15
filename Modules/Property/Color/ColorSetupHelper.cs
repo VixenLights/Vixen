@@ -21,9 +21,9 @@ namespace VixenModules.Property.Color
 	public partial class ColorSetupHelper : BaseForm, IElementSetupHelper
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		private static readonly string Red = "Red";
-		private static readonly string Green = "Green";
-		private static readonly string Blue = "Blue";
+		private const string Red = "Red";
+		private const string Green = "Green";
+		private const string Blue = "Blue";
 
 		public ColorSetupHelper()
 		{
@@ -41,7 +41,7 @@ namespace VixenModules.Property.Color
 			get { return "Color Handling"; }
 		}
 
-		public bool Perform(IEnumerable<ElementNode> selectedNodes)
+		public bool Perform(IEnumerable<IElementNode> selectedNodes)
 		{
 			if (!SilentMode)
 			{
@@ -83,8 +83,8 @@ namespace VixenModules.Property.Color
 			// PROPERTY SETUP
 			// go through all elements, making a color property for each one.
 			// (If any has one already, check with the user as to what they want to do.)
-			IEnumerable<ElementNode> leafElements = selectedNodes.SelectMany(x => x.GetLeafEnumerator()).Distinct();
-			List<ElementNode> leafElementList = leafElements.ToList();
+			IEnumerable<IElementNode> leafElements = selectedNodes.SelectMany(x => x.GetLeafEnumerator()).Distinct();
+			List<IElementNode> leafElementList = leafElements.ToList();
 
 			bool askedUserAboutExistingProperties = false;
 			bool overrideExistingProperties = false;
@@ -95,7 +95,7 @@ namespace VixenModules.Property.Color
 
 			MessageBoxForm messageBox;
 
-			foreach (ElementNode leafElement in leafElementList) {
+			foreach (IElementNode leafElement in leafElementList) {
 				bool skip = false;
 				ColorModule existingProperty = null;
 
@@ -141,7 +141,7 @@ namespace VixenModules.Property.Color
 			// filter for each 'leaf' of the patching process. If it's fully patched to an output, ignore it.
 
 			List<IDataFlowComponentReference> leafOutputs = new List<IDataFlowComponentReference>();
-			foreach (ElementNode leafElement in leafElementList.Where(x => x.Element != null)) {
+			foreach (IElementNode leafElement in leafElementList.Where(x => x.Element != null)) {
 				leafOutputs.AddRange(_FindLeafOutputsOrBreakdownFilters(VixenSystem.DataFlow.GetComponent(leafElement.Element.Id)));
 			}
 

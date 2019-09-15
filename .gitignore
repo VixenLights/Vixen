@@ -18,3 +18,7 @@ Vixen.opensdf
 Debug64
 Debug
 /.vs
+/Common/Box2D/x64
+/Common/Box2D/Win32
+/Modules/Effect/Liquid/LiquidFunWrapper/x64
+/x64

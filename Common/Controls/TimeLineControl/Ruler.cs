@@ -41,11 +41,17 @@ namespace Common.Controls.Timeline
 			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager;
 			_timeLineGlobalEventManager.MarksMoving += TimeLineGlobalEventManagerTimeLineGlobalMoving;
 			_timeLineGlobalEventManager.DeleteMark += TimeLineGlobalEventManagerDeleteTimeLineGlobal;
+			_timeLineGlobalEventManager.CursorMoved += OnCursorMoved;
 			_marksSelectionManager.SelectionChanged += _marksSelectionManager_SelectionChanged;
 			recalculate();
 			double factor = ScalingTools.GetScaleFactor();
 			_arrowBase = (int) (16 * factor);
 			_arrowLength = (int)(10 * factor);
+		}
+
+		private void OnCursorMoved(object sender, TimeSpanEventArgs e)
+		{
+			Invalidate();
 		}
 
 		private Font m_font = null;
@@ -79,6 +85,7 @@ namespace Common.Controls.Timeline
 				// (ie. Drawing coordinates take into account where we start at in time)
 				e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
 
+				DrawCursor(e.Graphics);
 				drawTicks(e.Graphics, MajorTick, 2, 0.4);
 				drawTicks(e.Graphics, MinorTick, 1, 0.20);
 				drawTimes(e.Graphics);
@@ -212,6 +219,15 @@ namespace Common.Controls.Timeline
 				                             		new Point(x - _arrowBase/2, 0), // top left point
 				                             		new Point(x + _arrowBase/2, 0), // top right point
 				                             	});
+			}
+		}
+
+		private void DrawCursor(Graphics g)
+		{
+			using (Pen p = new Pen(Color.Blue, 1))
+			{
+				var curPos = timeToPixels(TimeLineGlobalStateManager.Manager.CursorPosition);
+				g.DrawLine(p, curPos, 0, curPos, Height);
 			}
 		}
 
@@ -432,9 +448,6 @@ namespace Common.Controls.Timeline
 
 		private int m_mouseDownX;
 		private MouseButtons m_button;
-		private TimeSpan m_mark;
-		private Mark _selectedMark = null;
-		//public SortedDictionary<TimeSpan, SnapDetails> selectedMarks = new SortedDictionary<TimeSpan, SnapDetails>();
 		
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
@@ -539,7 +552,11 @@ namespace Common.Controls.Timeline
 						}
 
 						_timeLineGlobalEventManager.OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
-						_timeLineGlobalEventManager.OnAlignmentActivity(new AlignmentEventArgs(true, new[] { _mouseDownMark.StartTime, _mouseDownMark.EndTime }));
+						//if the markbar is not visible, we only need the start mark for alignment
+						var times = _mouseDownMark.Parent.ShowMarkBar
+							? new[] {_mouseDownMark.StartTime, _mouseDownMark.EndTime}
+							: new[] {_mouseDownMark.StartTime};
+						_timeLineGlobalEventManager.OnAlignmentActivity(new AlignmentEventArgs(true, times));
 
 						break;
 					case MouseState.ResizeRuler:

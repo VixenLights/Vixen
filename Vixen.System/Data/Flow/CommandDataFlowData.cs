@@ -10,7 +10,7 @@ namespace Vixen.Data.Flow
 			Value = command;
 		}
 
-		public ICommand Value { get; private set; }
+		public ICommand Value { get; set; }
 
 		object IDataFlowData.Value
 		{

@@ -20,6 +20,8 @@ namespace VixenModules.Effect.Effect
 	public abstract class BaseEffect : EffectModuleInstanceBase
 	{
 		private bool _hasDiscreteColors;
+		protected const short FrameTime = 50;
+		protected static TimeSpan FrameTimespan = new TimeSpan(0, 0, 0, 0, FrameTime);
 
 		protected abstract EffectTypeModuleData EffectModuleData { get; }
 
@@ -81,15 +83,15 @@ namespace VixenModules.Effect.Effect
 
 		}
 
-		protected bool IsElementDiscrete(ElementNode elementNode)
+		protected bool IsElementDiscrete(IElementNode elementNode)
 		{
 			return ColorModule.isElementNodeDiscreteColored(elementNode);
 		}
 
-		protected EffectIntents CreateIntentsForElement(ElementNode element, double intensity, Color color, TimeSpan duration)
+		protected EffectIntents CreateIntentsForElement(IElementNode element, double intensity, Color color, TimeSpan duration)
 		{
 			EffectIntents effectIntents = new EffectIntents();
-			foreach (ElementNode elementNode in element.GetLeafEnumerator())
+			foreach (IElementNode elementNode in element.GetLeafEnumerator())
 			{
 				if (HasDiscreteColors && IsElementDiscrete(elementNode))
 				{
@@ -107,7 +109,7 @@ namespace VixenModules.Effect.Effect
 			return effectIntents;
 		}
 
-		protected IIntent CreateIntent(ElementNode node, Color color, double intensity, TimeSpan duration)
+		protected IIntent CreateIntent(IElementNode node, Color color, double intensity, TimeSpan duration)
 		{
 			if (HasDiscreteColors && IsElementDiscrete(node))
 			{
@@ -117,7 +119,7 @@ namespace VixenModules.Effect.Effect
 			return CreateIntent(color, intensity, duration);
 		}
 
-		protected IIntent CreateIntent(ElementNode node, Color startColor, Color endColor, double startIntensity, double endIntensity, TimeSpan duration)
+		protected IIntent CreateIntent(IElementNode node, Color startColor, Color endColor, double startIntensity, double endIntensity, TimeSpan duration)
 		{
 			if (HasDiscreteColors && IsElementDiscrete(node))
 			{
@@ -146,7 +148,7 @@ namespace VixenModules.Effect.Effect
 		{
 			return IntentBuilder.CreateDiscreteIntent(color, startIntensity, endIntensity, duration);
 		}
-		private static double ConvertRange(double originalStart, double originalEnd, double newStart, double newEnd, double value) // value to convert
+		protected static double ConvertRange(double originalStart, double originalEnd, double newStart, double newEnd, double value) // value to convert
 		{
 			double scale = (newEnd - newStart) / (originalEnd - originalStart);
 			return newStart + (value - originalStart) * scale;
@@ -168,6 +170,11 @@ namespace VixenModules.Effect.Effect
 		protected double GetEffectTimeIntervalPosition(TimeSpan startTime)
 		{
 			return startTime.TotalMilliseconds / TimeSpan.TotalMilliseconds;
+		}
+
+		protected static double DistanceFromPoint(Point origin, Point point)
+		{
+			return Math.Sqrt(Math.Pow((point.X - origin.X), 2) + Math.Pow((point.Y - origin.Y), 2));
 		}
 
 		#region Overrides of ModuleInstanceBase
@@ -258,21 +265,7 @@ namespace VixenModules.Effect.Effect
 				mark.PropertyChanged += Mark_PropertyChanged;
 			}
 		}
-
-		protected void AddMarkCollectionListeners(IMarkCollection mc)
-		{
-			if (mc == null) return;
-			((INotifyCollectionChanged)mc.Marks).CollectionChanged += MarkCollectionPropertyChanged;
-			AddMarkListeners(mc.Marks);
-		}
-
-		protected void RemoveMarkCollectionListeners(IMarkCollection mc)
-		{
-			if (mc == null) return;
-			((INotifyCollectionChanged)mc.Marks).CollectionChanged -= MarkCollectionPropertyChanged;
-			RemoveMarkListeners(mc.Marks);
-		}
-
+		
 		/// <summary>
 		/// Gets called when a mark property changes. The default implementation looks for changes in marks that have a start time
 		/// inclusive of the effect timespan and have a change in time or text.
@@ -342,6 +335,24 @@ namespace VixenModules.Effect.Effect
 		protected double RandDouble()
 		{
 			return ThreadSafeRandom.Instance.NextDouble();
+		}
+
+		#endregion
+
+		#region Public Methods
+
+		public void AddMarkCollectionListeners(IMarkCollection mc)
+		{
+			if (mc == null) return;
+			((INotifyCollectionChanged)mc.Marks).CollectionChanged += MarkCollectionPropertyChanged;
+			AddMarkListeners(mc.Marks);
+		}
+
+		public void RemoveMarkCollectionListeners(IMarkCollection mc)
+		{
+			if (mc == null) return;
+			((INotifyCollectionChanged)mc.Marks).CollectionChanged -= MarkCollectionPropertyChanged;
+			RemoveMarkListeners(mc.Marks);
 		}
 
 		#endregion

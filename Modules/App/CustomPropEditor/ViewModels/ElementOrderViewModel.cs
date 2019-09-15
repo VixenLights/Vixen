@@ -8,10 +8,12 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using Catel.Collections;
 using Catel.Data;
+using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
 using Common.Controls;
 using Common.Controls.NameGeneration;
+using Common.WPFCommon.Services;
 using GongSolutions.Wpf.DragDrop;
 using GongSolutions.Wpf.DragDrop.Utilities;
 using Vixen.Sys;
@@ -30,9 +32,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		{
 			LeafNodes = new ObservableCollection<ElementModelViewModel>();
 			SelectedItems = new ObservableCollection<ElementModelViewModel>();
+			SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
 			Prop = p;
 		}
 
+		
 		#region Prop model property
 
 		/// <summary>
@@ -92,6 +96,17 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region Events
+		
+		private void SelectedItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			var viewModelBase = this as ViewModelBase;
+			var commandManager = viewModelBase.GetViewModelCommandManager();
+			commandManager.InvalidateCommands();
+		}
+
+		#endregion
+
 		public void Select(IEnumerable<Guid> modelIds)
 		{
 			var modelsToSelect = LeafNodes.Where(x => modelIds.Contains(x.ElementModel.Id));
@@ -116,7 +131,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		private void ReOrder()
 		{
-			int index = 0;
+			int index = 1;
 			foreach (var elementModelViewModel in LeafNodes)
 			{
 				elementModelViewModel.ElementModel.Order = index++;
@@ -142,7 +157,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		{
 			if (SelectedItems.Count == 1)
 			{
-				MessageBoxService mbs = new MessageBoxService();
+				var dependencyResolver = this.GetDependencyResolver();
+				var mbs = dependencyResolver.Resolve<IMessageBoxService>();
 				var result = mbs.GetUserInput("Please enter the new name.", "Rename", SelectedItems[0].ElementModel.Name);
 				if (result.Result == MessageResult.OK)
 				{
@@ -162,6 +178,64 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 			List<string> oldNames = new List<string>(SelectedItems.Select(x => x.ElementModel.Name).ToArray());
 			NameGenerator renamer = new NameGenerator(oldNames);
+			if (renamer.ShowDialog() == DialogResult.OK)
+			{
+				for (int i = 0; i < SelectedItems.Count; i++)
+				{
+					if (i >= renamer.Names.Count)
+					{
+						Logging.Warn("Bulk renaming elements, and ran out of new names!");
+						break;
+					}
+
+
+					SelectedItems[i].Name = PropModelServices.Instance().Uniquify(renamer.Names[i], 2, SelectedItems[i].ElementModel);
+				}
+
+				return true;
+			}
+
+			return false;
+		}
+
+		#endregion
+
+		#region SubstitutionRename command
+
+		private Command _substitutionRenameCommand;
+
+		/// <summary>
+		/// Gets the PatternRename command.
+		/// </summary>
+		public Command SubstitutionRenameCommand
+		{
+			get { return _substitutionRenameCommand ?? (_substitutionRenameCommand = new Command(SubstitutionRename, CanSubstitutionRename)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the PatternRename command is executed.
+		/// </summary>
+		private void SubstitutionRename()
+		{
+			SubstitutionRenameSelectedItems();
+		}
+
+		/// <summary>
+		/// Method to check whether the PatternRename command can be executed.
+		/// </summary>
+		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+		private bool CanSubstitutionRename()
+		{
+			return SelectedItems.Count > 1;
+		}
+
+		public bool SubstitutionRenameSelectedItems()
+		{
+			if (SelectedItems.Count <= 1)
+				return false;
+
+			List<string> oldNames = new List<string>(SelectedItems.Select(x => x.Name).ToArray());
+			SubstitutionRenamer renamer = new SubstitutionRenamer(oldNames);
 			if (renamer.ShowDialog() == DialogResult.OK)
 			{
 				for (int i = 0; i < SelectedItems.Count; i++)

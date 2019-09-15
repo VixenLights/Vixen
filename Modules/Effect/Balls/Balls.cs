@@ -29,6 +29,8 @@ namespace VixenModules.Effect.Balls
 		private double _centerSpeed;
 		private double _speedVariation;
 		private double _level;
+		private int _bufferHt;
+		private int _bufferWi;
 
 		public Balls()
 		{
@@ -170,9 +172,42 @@ namespace VixenModules.Effect.Balls
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"RandomMaxCurve")]
+		[ProviderDescription(@"RandomMaxCurve")]
+		[PropertyOrder(7)]
+		public Curve RandomMaxCurve
+		{
+			get { return _data.RandomMaxCurve; }
+			set
+			{
+				_data.RandomMaxCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"RandomMovement")]
+		[ProviderDescription(@"RandomMovement")]
+		[PropertyOrder(8)]
+		public bool RandomMovement
+		{
+			get { return _data.RandomMovement; }
+			set
+			{
+				_data.RandomMovement = value;
+				UpdateRandomMoveAttributes();
+				 IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"RandomRadius")]
 		[ProviderDescription(@"RandomRadius")]
-		[PropertyOrder(7)]
+		[PropertyOrder(9)]
 		public bool RandomRadius
 		{
 			get { return _data.RandomRadius; }
@@ -188,7 +223,7 @@ namespace VixenModules.Effect.Balls
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Collide")]
 		[ProviderDescription(@"Collide")]
-		[PropertyOrder(8)]
+		[PropertyOrder(10)]
 		public bool Collide
 		{
 			get { return _data.Collide; }
@@ -205,7 +240,7 @@ namespace VixenModules.Effect.Balls
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"ChangeCollideColor")]
 		[ProviderDescription(@"ChangeCollideColor")]
-		[PropertyOrder(9)]
+		[PropertyOrder(11)]
 		public bool ChangeCollideColor
 		{
 			get { return _data.ChangeCollideColor; }
@@ -281,6 +316,7 @@ namespace VixenModules.Effect.Balls
 		{
 			UpdateFillAttribute(false);
 			UpdateCollideAttributes(false);
+			UpdateRandomMoveAttributes(false);
 			UpdateStringOrientationAttributes();
 			TypeDescriptor.Refresh(this);
 		}
@@ -305,6 +341,19 @@ namespace VixenModules.Effect.Balls
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1);
 			{
 				propertyStates.Add("ChangeCollideColor", Collide);
+			}
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		private void UpdateRandomMoveAttributes(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1);
+			{
+				propertyStates.Add("RandomMaxCurve", RandomMovement);
 			}
 			SetBrowsable(propertyStates);
 			if (refresh)
@@ -347,8 +396,10 @@ namespace VixenModules.Effect.Balls
 
 		protected override void SetupRender()
 		{
-			_minBuffer = Math.Min(BufferHt, BufferWi);
-			_maxBuffer = Math.Max(BufferHt, BufferWi);
+			_bufferWi = BufferWi;
+			_bufferHt = BufferHt;
+			  _minBuffer = Math.Min(_bufferHt, _bufferWi);
+			_maxBuffer = Math.Max(_bufferHt, _bufferWi);
 			_balls = new List<BallClass>(7);
 			_removeBalls = new List<BallClass>();
 		}
@@ -368,26 +419,27 @@ namespace VixenModules.Effect.Balls
 			_centerSpeed = CalculateCenterSpeed(_intervalPosFactor);
 			_speedVariation = CalculateSpeedVariation(_intervalPosFactor);
 			_level = LevelCurve.GetValue(_intervalPosFactor) / 100;
+			int maxRandomTime = CalculateRandomMax(_intervalPosFactor);
 			Color inverseBackColor = BackgroundColor.GetColorAt(_intervalPos);
 
 			double minSpeed = _centerSpeed - (_speedVariation / 2);
 			double maxSpeed = _centerSpeed + (_speedVariation / 2);
 
 			_ballCount = CalculateBallCount(_intervalPosFactor);
-
+			
 			// Create new Balls and add balls due to increase in ball count curve.
-			CreateBalls(minSpeed, maxSpeed);
+			CreateBalls(minSpeed, maxSpeed, maxRandomTime);
 
 			// Update Ball location, radius and speed.
-			UpdateBalls();
+			UpdateBalls(minSpeed, maxSpeed, maxRandomTime);
 
 			//Remove Excess Balls due to BallCount Curve.
 			RemoveBalls();
 
 			//Iterate through all grid locations.
-			for (int y = 0; y < BufferHt; y++)
+			for (int y = 0; y < _bufferHt; y++)
 			{
-				for (int x = 0; x < BufferWi; x++)
+				for (int x = 0; x < _bufferWi; x++)
 				{
 					CalculatePixel(x, y, frameBuffer, inverseBackColor);
 				}
@@ -408,6 +460,7 @@ namespace VixenModules.Effect.Balls
 				_centerSpeed = CalculateCenterSpeed(_intervalPosFactor);
 				_speedVariation = CalculateSpeedVariation(_intervalPosFactor);
 				_level = LevelCurve.GetValue(_intervalPosFactor)/100;
+				int maxRandomTime = CalculateRandomMax(_intervalPosFactor);
 				Color inverseBackColor = BackgroundColor.GetColorAt(_intervalPos);
 
 				double minSpeed = _centerSpeed - (_speedVariation/2);
@@ -416,10 +469,10 @@ namespace VixenModules.Effect.Balls
 				_ballCount = CalculateBallCount(_intervalPosFactor);
 
 				// Create new Balls and add balls due to increase in ball count curve.
-				CreateBalls(minSpeed, maxSpeed);
+				CreateBalls(minSpeed, maxSpeed, maxRandomTime);
 
 				// Update Ball location, radius and speed.
-				UpdateBalls();
+				UpdateBalls(minSpeed, maxSpeed, maxRandomTime);
 
 				//Remove Excess Balls due to BallCount Curve.
 				RemoveBalls();
@@ -435,45 +488,62 @@ namespace VixenModules.Effect.Balls
 			}
 		}
 
-		private void UpdateBalls()
+		private void UpdateBalls(double minSpeed, double maxSpeed, int maxRandomTime)
 		{
 			foreach (var ball in _balls)
 			{
 				if (_ballCount < _balls.Count - _removeBalls.Count)
 				{
 					//Removes balls if ball count curve position is below the current number of balls. Will only remove ones that hit the edge of the grid.
-					if (ball.LocationX + _radius >= BufferWi - 1 || ball.LocationY + _radius >= BufferHt - 1 ||
+					if (ball.LocationX + _radius >= _bufferWi - 1 || ball.LocationY + _radius >= _bufferHt - 1 ||
 					    ball.LocationX - _radius <= 1 || ball.LocationY + _radius <= 1)
 					{
 						_removeBalls.Add(ball);
 					}
 				}
-
-				//Adjust ball speeds when user adjust Speed curve
-				if (_centerSpeed > CalculateCenterSpeed(_intervalPosFactor - 1) ||
-				    _centerSpeed < CalculateCenterSpeed(_intervalPosFactor - 1))
-				{
-					double ratio = CalculateCenterSpeed(_intervalPosFactor)/CalculateCenterSpeed(_intervalPosFactor - 1);
-					ball.VelocityX *= ratio;
-					ball.VelocityY *= ratio;
-				}
-
-				if (_speedVariation > CalculateSpeedVariation(_intervalPosFactor - 1) ||
-				    _speedVariation < CalculateSpeedVariation(_intervalPosFactor - 1))
-				{
-					double ratio = CalculateSpeedVariation(_intervalPosFactor)/CalculateSpeedVariation(_intervalPosFactor - 1);
-					ball.VelocityX *= ratio;
-					ball.VelocityY *= ratio;
-				}
-
-				int previousBallSize = CalculateSize(_intervalPosFactor - 1);
-				if (_radius > previousBallSize || _radius < previousBallSize)
-				{
-					double ratio = (double)CalculateSize(_intervalPosFactor) / previousBallSize;
-					ball.Radius *= ratio;
-				}
-
+				
 				// Move the ball.
+				if (RandomMovement && ball.MoveCount == 0)
+				{
+					double speed = RandDouble() * (maxSpeed - minSpeed) + minSpeed;
+					double vx = RandDouble() * speed;
+					double vy = RandDouble() * speed;
+					if (Rand(0, 2) == 0) vx = -vx;
+					if (Rand(0, 2) == 0) vy = -vy;
+					ball.VelocityX = vx;
+					ball.VelocityY = vy;
+					ball.MoveCount = Rand(5, maxRandomTime);
+				}
+				else
+				{
+					//Adjust ball speeds when user adjust Speed curve
+					if (_centerSpeed > CalculateCenterSpeed(_intervalPosFactor - 1) ||
+					    _centerSpeed < CalculateCenterSpeed(_intervalPosFactor - 1))
+					{
+						double ratio = CalculateCenterSpeed(_intervalPosFactor) /
+						               CalculateCenterSpeed(_intervalPosFactor - 1);
+						ball.VelocityX *= ratio;
+						ball.VelocityY *= ratio;
+					}
+
+					if (_speedVariation > CalculateSpeedVariation(_intervalPosFactor - 1) ||
+					    _speedVariation < CalculateSpeedVariation(_intervalPosFactor - 1))
+					{
+						double ratio = CalculateSpeedVariation(_intervalPosFactor) /
+						               CalculateSpeedVariation(_intervalPosFactor - 1);
+						ball.VelocityX *= ratio;
+						ball.VelocityY *= ratio;
+					}
+
+					int previousBallSize = CalculateSize(_intervalPosFactor - 1);
+					if (_radius > previousBallSize || _radius < previousBallSize)
+					{
+						double ratio = (double) CalculateSize(_intervalPosFactor) / previousBallSize;
+						ball.Radius *= ratio;
+					}
+					ball.MoveCount--;
+				}
+
 				ball.LocationX = ball.LocationX + ball.VelocityX;
 				ball.LocationY = ball.LocationY + ball.VelocityY;
 
@@ -525,9 +595,9 @@ namespace VixenModules.Effect.Balls
 							ball.LocationX = ball.Radius;
 							ball.VelocityX = -ball.VelocityX;
 						}
-						else if (ball.LocationX + ball.Radius >= BufferWi)
+						else if (ball.LocationX + ball.Radius >= _bufferWi)
 						{
-							ball.LocationX = BufferWi - ball.Radius - 1;
+							ball.LocationX = _bufferWi - ball.Radius - 1;
 							ball.VelocityX = -ball.VelocityX;
 						}
 						if (ball.LocationY - ball.Radius < 0)
@@ -535,9 +605,9 @@ namespace VixenModules.Effect.Balls
 							ball.LocationY = ball.Radius;
 							ball.VelocityY = -ball.VelocityY;
 						}
-						else if (ball.LocationY + ball.Radius >= BufferHt)
+						else if (ball.LocationY + ball.Radius >= _bufferHt)
 						{
-							ball.LocationY = BufferHt - ball.Radius - 1;
+							ball.LocationY = _bufferHt - ball.Radius - 1;
 							ball.VelocityY = -ball.VelocityY;
 						}
 						break;
@@ -545,19 +615,19 @@ namespace VixenModules.Effect.Balls
 					case BallType.Wrap:
 						if (ball.LocationX + ball.Radius < 0)
 						{
-							ball.LocationX += BufferWi + (ball.Radius* 2);
+							ball.LocationX += _bufferWi + (ball.Radius* 2);
 						}
 						if (ball.LocationY + ball.Radius < 0)
 						{
-							ball.LocationY += BufferHt + (ball.Radius * 2);
+							ball.LocationY += _bufferHt + (ball.Radius * 2);
 						}
-						if (ball.LocationX - ball.Radius > BufferWi)
+						if (ball.LocationX - ball.Radius > _bufferWi)
 						{
-							ball.LocationX -= BufferWi + (ball.Radius * 2);
+							ball.LocationX -= _bufferWi + (ball.Radius * 2);
 						}
-						if (ball.LocationY - ball.Radius > BufferHt)
+						if (ball.LocationY - ball.Radius > _bufferHt)
 						{
-							ball.LocationY -= BufferHt + (ball.Radius * 2);
+							ball.LocationY -= _bufferHt + (ball.Radius * 2);
 						}
 						break;
 				}
@@ -571,7 +641,7 @@ namespace VixenModules.Effect.Balls
 			if (TargetPositioning == TargetPositioningType.Locations)
 			{
 				//Flip me over so and offset my coordinates I can act like the string version
-				y = Math.Abs((BufferHtOffset - y) + (BufferHt - 1 + BufferHtOffset));
+				y = Math.Abs((BufferHtOffset - y) + (_bufferHt - 1 + BufferHtOffset));
 				y = y - BufferHtOffset;
 				x = x - BufferWiOffset;
 			}
@@ -659,7 +729,7 @@ namespace VixenModules.Effect.Balls
 			}
 		}
 
-		private void CreateBalls(double minSpeed, double maxSpeed)
+		private void CreateBalls(double minSpeed, double maxSpeed, int maxRandomTime)
 		{
 			while (_ballCount > _balls.Count)
 			{
@@ -667,8 +737,8 @@ namespace VixenModules.Effect.Balls
 
 				//Sets Radius size and Ball location
 				int radius = RandomRadius ? Rand(1, _radius + 1) : _radius;
-				m.LocationX = Rand(radius, BufferWi - radius);
-				m.LocationY = Rand(radius, BufferHt - radius);
+				m.LocationX = Rand(radius, _bufferWi - radius);
+				m.LocationY = Rand(radius, _bufferHt - radius);
 
 				if (Collide)
 				{
@@ -690,6 +760,7 @@ namespace VixenModules.Effect.Balls
 				m.Radius = radius;
 				m.BallGuid = Guid.NewGuid();
 				m.ColorIndex = Rand(0, Colors.Count);
+				m.MoveCount = Rand(5, maxRandomTime);
 				_balls.Add(m);
 			}
 		}
@@ -715,6 +786,7 @@ namespace VixenModules.Effect.Balls
 			public int ColorIndex;
 			public double Radius;
 			public Guid BallGuid;
+			public int MoveCount;
 		}
 
 		private double CalculateCenterSpeed(double intervalPosFactor)
@@ -740,12 +812,17 @@ namespace VixenModules.Effect.Balls
 			if (value < 1) value = 1;
 			return value;
 		}
-
+		
 		private int CalculateBallCount(double intervalPosFactor)
 		{
 			int value = (int)ScaleCurveToValue(BallCountCurve.GetValue(intervalPosFactor), 100, 1);
 			if (value < 1) value = 1;
 			return value;
+		}
+
+		private int CalculateRandomMax(double intervalPosFactor)
+		{
+			return (int)ScaleCurveToValue(RandomMaxCurve.GetValue(intervalPosFactor), 40, 5);
 		}
 	}
 }

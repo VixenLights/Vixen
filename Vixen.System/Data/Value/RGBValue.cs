@@ -25,7 +25,7 @@ namespace Vixen.Data.Value
 		}
 
 		/// <summary>
-		/// The RGB value as a intensity appplied color with a 100% alpha channel. Results in an opaque color ranging from black
+		/// The RGB value as a intensity applied color with a 100% alpha channel. Results in an opaque color ranging from black
 		/// (0,0,0) when the intensity is 0 and the solid color when the intensity is 1 (ie. 100%).
 		/// </summary>
 		public Color FullColor

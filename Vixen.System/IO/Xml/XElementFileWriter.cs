@@ -23,7 +23,7 @@ namespace Vixen.IO.Xml
 			}
 			catch (Exception e)
 			{
-				Logging.Error("An error occured trying to save the file. Attempting to protect any backups", e);
+				Logging.Error(e, "An error occurred trying to save the file. Attempting to protect any backups");
 
 				try
 				{
@@ -35,7 +35,7 @@ namespace Vixen.IO.Xml
 				}
 				catch (Exception e2)
 				{
-					Logging.Error("Could not protect the backup file.", e2);
+					Logging.Error(e2, "Could not protect the backup file.");
 				}
 
 				throw;
@@ -96,7 +96,7 @@ namespace Vixen.IO.Xml
 			}
 			catch (Exception e)
 			{
-				Logging.Error("Error while backing up file!", e);
+				Logging.Error(e, "Error while backing up file!");
 			}
 
 			return success;

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using Vixen.IO.JSON;
 
 namespace Vixen.Sys.Managers
 {
@@ -172,6 +175,29 @@ namespace Vixen.Sys.Managers
 		public bool ElementNodeExists(Guid id)
 		{
 			return _instances.ContainsKey(id);
+		}
+
+		public async Task ExportElementNodeProxy(string filePath)
+		{
+			if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(filePath));
+			await Task.Factory.StartNew(() =>
+			{
+				var proxy = new ElementNodeProxy(RootNode);
+				ElementTreeWriter writer = new ElementTreeWriter();
+				writer.WriteFile(filePath, proxy);
+			});
+		}
+		
+		public async Task<ElementNodeProxy> ImportElementNodeProxy(string filePath)
+		{
+			if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(filePath));
+			if (!File.Exists(filePath)) throw new FileNotFoundException("Invalid file path", filePath);
+			return await Task.Factory.StartNew(() =>
+			{
+				ElementTreeReader reader = new ElementTreeReader();
+				var node = reader.ReadFile(filePath);
+				return node;
+			});
 		}
 
 		protected virtual void OnNodesChanged()

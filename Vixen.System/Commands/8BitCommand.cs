@@ -38,7 +38,7 @@ namespace Vixen.Commands
 		{
 		}
 
-		public byte CommandValue { get; set; }
+		public byte CommandValue { get; }
 
 		//public sbyte SignedValue { get; private set; }
 
@@ -47,7 +47,7 @@ namespace Vixen.Commands
 		object ICommand.CommandValue
 		{
 			get { return CommandValue; }
-			set { CommandValue = (byte) value; }
+			//set { CommandValue = (byte) value; }
 		}
 	}
 }

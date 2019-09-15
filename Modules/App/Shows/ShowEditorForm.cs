@@ -364,8 +364,12 @@ namespace VixenModules.App.Shows
 					e.Item.ForeColor = listViewShowItems.ForeColor;
 					e.Item.BackColor = listViewShowItems.BackColor;
 				}
-				e.DrawBackground();
-				e.DrawText();
+
+				if (!e.Item.Bounds.IsEmpty)
+				{
+					e.DrawBackground();
+					e.DrawText();
+				}
 			}
 		}
 
@@ -486,10 +490,6 @@ namespace VixenModules.App.Shows
 				DialogResult = DialogResult.No;
 			}
 		}
-
-		// The size of the X in each tab's upper right corner.
-		private int Xwid = 8;
-		private const int tab_margin = 0;
 
 	}
 }

@@ -875,96 +875,161 @@ namespace VixenModules.Output.E131
         private void SetupForm_FormClosing(object sender, FormClosingEventArgs e)
         {
 
-            if (this.DialogResult == System.Windows.Forms.DialogResult.OK)
+            if (DialogResult == DialogResult.OK)
             {
-                bool overlapWarning = false;
+	            // only test for range if more than 0 channels, otherwise wait for runtime
+				if (pluginChannelCount > 0)
+				{
+					var valid = true;
+					var errorList = new StringBuilder();
+					var totalChannels = 0;
+					for(int x = 0; x < UniverseCount; x++ )
+					{
+						bool active = false;
+						int start = 0;
+						int size = 0;
+						int universe = 0;
+						UniverseGet(x, ref active, ref universe, ref start, ref size);
+						// now test for valid channel start
+						if (start > pluginChannelCount)
+						{
+							if (!valid)
+							{
+								errorList.Append("\n\n");
+							}
 
-                //Validate that a given Vixen input channel doesn't go to multiple sACN output channels
-                //Technically nothing bad will happen, but the user should be aware as it is most likely an accident.
-                foreach(DataGridViewRow r1 in univDGVN.Rows){
-                    foreach (DataGridViewRow r2 in univDGVN.Rows)
-                    {
-                        if (r1 != r2)
-                        {
-                            int r1LowerBound = ((string)r1.Cells[START_COLUMN].Value).TryParseInt32(0);
-                            int r1UpperBound  = (((string)r1.Cells[START_COLUMN].Value).TryParseInt32(0) + ((string)r1.Cells[SIZE_COLUMN].Value).TryParseInt32(0)-1);
-                            int r2LowerBound = ((string)r2.Cells[START_COLUMN].Value).TryParseInt32(0);
-                            int r2UpperBound  = (((string)r2.Cells[START_COLUMN].Value).TryParseInt32(0) + ((string)r2.Cells[SIZE_COLUMN].Value).TryParseInt32(0)-1);
+							errorList.Append($"Universe {universe} start channel exceeds controller output count of {pluginChannelCount}");
+							valid = false;
+						}
 
-                            if ((r1LowerBound >= r2LowerBound && r1LowerBound <= r2UpperBound) || (r1UpperBound >= r2LowerBound && r1UpperBound <= r2UpperBound))
-                            {
+						// now test for valid channel size
+						if (start + size - 1 > pluginChannelCount)
+						{
+							if (!valid)
+							{
+								errorList.Append("\n\n");
+							}
+
+							errorList.Append($"Universe {universe} {start} + {size} exceeds controller output count of {pluginChannelCount}");
+							valid = false;
+						}
+
+						totalChannels += size;
+				    
+					}
+
+					if (totalChannels != pluginChannelCount)
+					{
+						if (!valid)
+						{
+							errorList.Append("\n\n");
+						}
+
+						errorList.Append($"Total universe channel count of {totalChannels} does not match the controller output count of {pluginChannelCount}.\n\n" +
+						                 "Check your universe setup or adjust the amount of output channels to match.");
+						valid = false;
+					}
+
+					if (!valid)
+					{
+						var messageBox = new MessageBoxForm($"{errorList}", "Universe Channel / Output count conflict.", MessageBoxButtons.OKCancel, SystemIcons.Warning);
+						messageBox.ShowDialog();
+						if (messageBox.DialogResult == DialogResult.Cancel)
+						{
+							e.Cancel = true;
+							return;
+						}
+					}
+				}
+
+				bool overlapWarning = false;
+
+				//Validate that a given Vixen input channel doesn't go to multiple sACN output channels
+				//Technically nothing bad will happen, but the user should be aware as it is most likely an accident.
+				foreach(DataGridViewRow r1 in univDGVN.Rows){
+					foreach (DataGridViewRow r2 in univDGVN.Rows)
+					{
+						if (r1 != r2)
+						{
+							int r1LowerBound = ((string)r1.Cells[START_COLUMN].Value).TryParseInt32(0);
+							int r1UpperBound  = (((string)r1.Cells[START_COLUMN].Value).TryParseInt32(0) + ((string)r1.Cells[SIZE_COLUMN].Value).TryParseInt32(0)-1);
+							int r2LowerBound = ((string)r2.Cells[START_COLUMN].Value).TryParseInt32(0);
+							int r2UpperBound  = (((string)r2.Cells[START_COLUMN].Value).TryParseInt32(0) + ((string)r2.Cells[SIZE_COLUMN].Value).TryParseInt32(0)-1);
+
+							if ((r1LowerBound >= r2LowerBound && r1LowerBound <= r2UpperBound) || (r1UpperBound >= r2LowerBound && r1UpperBound <= r2UpperBound))
+							{
 
 								var messageBox = new MessageBoxForm("The start values seem to be setup in an unusual way. You are sending identical lighting values to multiple sACN outputs. The start value column refers to where a given universe starts reading values in from the list of output channel data from Vixen. For example, setting Universe 1's start value to 5 will map Channel 1 in Universe 1 to output channel #5 in the Vixen controller setup. Would you like to review your settings?", "Warning", MessageBoxButtons.OKCancel, SystemIcons.Warning);
 								messageBox.ShowDialog();
 								if (messageBox.DialogResult == DialogResult.OK)
 								{
-                                    e.Cancel = false;
-                                    return;
-                                }
-                                overlapWarning = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (overlapWarning) break;
-                }
+									e.Cancel = false;
+									return;
+								}
+								overlapWarning = true;
+								break;
+							}
+						}
+					}
+					if (overlapWarning) break;
+				}
 
-                var destination = new Tuple<string, string>(null, null);
-                destination = GetDestination(); //Item1 Unicast, Item2 Multicast
+				var destination = new Tuple<string, string>(null, null);
+				destination = GetDestination(); //Item1 Unicast, Item2 Multicast
 
-                //prevent duplicates in this plugin instance
-                foreach (DataGridViewRow r1 in univDGVN.Rows)
-                {
-                    int univ = ((string)r1.Cells[UNIVERSE_COLUMN].Value).TryParseInt32(1);
-                    foreach(DataGridViewRow r2 in univDGVN.Rows){
-                        if(r1 != r2 && univ == ((string)r2.Cells[UNIVERSE_COLUMN].Value).TryParseInt32(1)){
+				//prevent duplicates in this plugin instance
+				foreach (DataGridViewRow r1 in univDGVN.Rows)
+				{
+					int univ = ((string)r1.Cells[UNIVERSE_COLUMN].Value).TryParseInt32(1);
+					foreach(DataGridViewRow r2 in univDGVN.Rows){
+						if(r1 != r2 && univ == ((string)r2.Cells[UNIVERSE_COLUMN].Value).TryParseInt32(1)){
 							//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 							MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 							var messageBox = new MessageBoxForm("Universe numbers must be unique.", "Error", false, false);
 							messageBox.ShowDialog();
-                            e.Cancel = true;
-                            return;
-                        }
-                    }
-                }
+							e.Cancel = true;
+							return;
+						}
+					}
+				}
 
-                //Validate that the same universe isn't being broadcasted to the same devices from multiple
-                //instances of the plugin
-                foreach (E131OutputPlugin p in E131OutputPlugin.PluginInstances)
-                {
-                    if (p.isSetupOpen) //don't validate against this instance of the plugin
-                        continue;
+				//Validate that the same universe isn't being broadcasted to the same devices from multiple
+				//instances of the plugin
+				foreach (E131OutputPlugin p in E131OutputPlugin.PluginInstances)
+				{
+					if (p.isSetupOpen) //don't validate against this instance of the plugin
+						continue;
 
-                    //Conditions which we need to validate for overlap
-                    if(
-                        !(((p.ModuleData as E131ModuleDataModel).Unicast != null && destination.Item1 != null && (p.ModuleData as E131ModuleDataModel).Unicast != destination.Item1) //unicasting to different IPs
-                        || ((p.ModuleData as E131ModuleDataModel).Multicast != null && destination.Item2 != null && (p.ModuleData as E131ModuleDataModel).Multicast != destination.Item2))) //Multicasting to different networks
-                    {
-                        int[] usedUniverses = (p.ModuleData as E131ModuleDataModel).Universes.Select(x => x.Universe).ToArray();
+					//Conditions which we need to validate for overlap
+					if(
+						!(((p.ModuleData as E131ModuleDataModel).Unicast != null && destination.Item1 != null && (p.ModuleData as E131ModuleDataModel).Unicast != destination.Item1) //unicasting to different IPs
+						  || ((p.ModuleData as E131ModuleDataModel).Multicast != null && destination.Item2 != null && (p.ModuleData as E131ModuleDataModel).Multicast != destination.Item2))) //Multicasting to different networks
+					{
+						int[] usedUniverses = (p.ModuleData as E131ModuleDataModel).Universes.Select(x => x.Universe).ToArray();
 
-                        for (int i = 0; i < UniverseCount; i++)
-                        {
-                            bool active = true;
-                            int universe = 0;
-                            int start = 0;
-                            int size = 0;
+						for (int i = 0; i < UniverseCount; i++)
+						{
+							bool active = true;
+							int universe = 0;
+							int start = 0;
+							int size = 0;
 
-                            if (UniverseGet(
-                                i, ref active, ref universe, ref start, ref size))
-                            {
-                                if (usedUniverses.Contains(universe))
-                                {
+							if (UniverseGet(
+								i, ref active, ref universe, ref start, ref size))
+							{
+								if (usedUniverses.Contains(universe))
+								{
 									//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 									MessageBoxForm.msgIcon = SystemIcons.Exclamation; //this is used if you want to add a system icon to the message form.
 									var messageBox = new MessageBoxForm(string.Format("Universe {0} already exists on another controller transmitting to the same device or network. Please configure a different universe to prevent hardware errors.", universe), "Existing Universe", false, false);
 									messageBox.ShowDialog();
-                                    e.Cancel = true;
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                }
+									e.Cancel = true;
+									return;
+								}
+							}
+						}
+					}
+				}
             }
 		}
 
@@ -1032,6 +1097,7 @@ namespace VixenModules.Output.E131
             foreach (DataGridViewRow r in univDGVN.Rows)
                 r.Selected = false;
             univDGVN.Rows[univDGVN.Rows.Count-1].Selected = true;
+			univDGVN.FirstDisplayedScrollingRowIndex = univDGVN.RowCount -1;
         }
 
         private void UnivDgvnDeletedRow(object sender, DataGridViewRowEventArgs e)

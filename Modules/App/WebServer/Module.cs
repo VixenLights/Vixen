@@ -21,8 +21,7 @@ namespace VixenModules.App.WebServer
 		private IDisposable _server;
 		private Data _data;
 		private IApplication _application;
-		private AppCommand _showCommand;
-
+		
 		public override IModuleDataModel StaticModuleData
 		{
 			get { return _data; }
@@ -97,7 +96,7 @@ namespace VixenModules.App.WebServer
 				}
 				catch (Exception ex)
 				{
-					Logging.Error("Unable to start web _server.", ex);
+					Logging.Error(ex, "Unable to start web _server.");
 					return;
 				}
 				if (LiveContext == null)

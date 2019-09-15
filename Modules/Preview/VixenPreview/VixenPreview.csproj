@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VixenModules.Preview.VixenPreview</RootNamespace>
     <AssemblyName>VixenPreview</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -90,6 +90,11 @@
       <Name>CustomPropEditor</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\PostFilter\DimmingCurve\DimmingCurve.csproj">
+      <Project>{C80B084A-064A-422C-B66E-58AB9ED7B32C}</Project>
+      <Name>DimmingCurve</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Property\Color\Color.csproj">
       <Project>{73068A83-B3B7-4A2C-923D-71C7886CD5E3}</Project>
       <Name>Color</Name>
@@ -98,6 +103,11 @@
     <ProjectReference Include="..\..\..\Common\FastPixel\FastPixel.csproj">
       <Project>{4EA5025B-5FFC-4FF8-9001-D0F64655BFB6}</Project>
       <Name>FastPixel</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Property\Face\Face.csproj">
+      <Project>{5FCC5484-8894-4E36-BA81-B2F1B9008404}</Project>
+      <Name>Face</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Property\Location\Location.csproj">
@@ -117,24 +127,20 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Catel.Core, Version=5.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Catel.Core.5.4.0\lib\net46\Catel.Core.dll</HintPath>
+    <Reference Include="Catel.Core, Version=5.11.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Catel.Core.5.11.0\lib\net47\Catel.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Catel.MVVM, Version=5.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Catel.MVVM.5.4.0\lib\net46\Catel.MVVM.dll</HintPath>
+    <Reference Include="Catel.MVVM, Version=5.11.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Catel.MVVM.5.11.0\lib\net47\Catel.MVVM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Expression.Blend.Sdk.WPF.1.0.1\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack.DirectX">
-      <HintPath>..\..\..\Common\Libraries\Microsoft.WindowsAPICodePack.DirectX.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\..\..\packages\NLog.4.5.11\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="OpenTK">
@@ -148,11 +154,47 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.ComponentModel.Annotations.4.5.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.ConfigurationManager, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Configuration.ConfigurationManager.4.4.1\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Catel.MVVM.5.4.0\lib\net46\System.Windows.Interactivity.dll</HintPath>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Reflection, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Reflection.4.3.0\lib\net462\System.Reflection.dll</HintPath>
+      <Private>False</Private>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Runtime.Serialization.Formatters, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Runtime.Serialization.Formatters.4.3.0\lib\net46\System.Runtime.Serialization.Formatters.dll</HintPath>
+      <Private>False</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization.Primitives, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Runtime.Serialization.Primitives.4.3.0\lib\net46\System.Runtime.Serialization.Primitives.dll</HintPath>
+      <Private>False</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization.Xml, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Runtime.Serialization.Xml.4.3.0\lib\net46\System.Runtime.Serialization.Xml.dll</HintPath>
+      <Private>False</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Expression.Blend.Sdk.WPF.1.0.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xaml" />
@@ -164,12 +206,12 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=3.0.4.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\DockPanelSuite.3.0.4\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=3.0.6.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\DockPanelSuite.3.0.6\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015, Version=3.0.4.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\DockPanelSuite.ThemeVS2015.3.0.4\lib\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015, Version=3.0.6.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\DockPanelSuite.ThemeVS2015.3.0.6\lib\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="WindowsBase" />
@@ -177,19 +219,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converter\PropertySorter.cs" />
-    <Compile Include="Direct2D\Direct2DControl.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Direct2D\DisplayScene.cs" />
-    <Compile Include="Direct2D\PreviewWinform.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Direct2D\PreviewWinform.Designer.cs">
-      <DependentUpon>PreviewWinform.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Direct2D\PreviewWPF.xaml.cs">
-      <DependentUpon>PreviewWPF.xaml</DependentUpon>
-    </Compile>
     <Compile Include="DebugTimer.cs" />
     <Compile Include="IDisplayForm.cs" />
     <Compile Include="GDIPreview\GDIPreviewForm.cs">
@@ -350,12 +379,6 @@
     </Compile>
     <Compile Include="VixenPreviewData.cs" />
     <Compile Include="VixenPreviewDescriptor.cs" />
-    <Compile Include="VixenPreviewDisplayD2D.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="VixenPreviewDisplayD2D.Designer.cs">
-      <DependentUpon>VixenPreviewDisplayD2D.cs</DependentUpon>
-    </Compile>
     <Compile Include="VixenPreviewModuleInstance.cs" />
     <Compile Include="VixenPreviewModuleInstance.Designer.cs">
       <DependentUpon>VixenPreviewModuleInstance.cs</DependentUpon>
@@ -384,9 +407,6 @@
     <Compile Include="VixenPreviewSetupPropertiesDocument.Designer.cs">
       <DependentUpon>VixenPreviewSetupPropertiesDocument.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Direct2D\PreviewWinform.resx">
-      <DependentUpon>PreviewWinform.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="GDIPreview\GDIControl.resx">
       <DependentUpon>GDIControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -439,9 +459,6 @@
     <EmbeddedResource Include="VixenPreviewControl.resx">
       <DependentUpon>VixenPreviewControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="VixenPreviewDisplayD2D.resx">
-      <DependentUpon>VixenPreviewDisplayD2D.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="VixenPreviewModuleInstance.resx">
       <DependentUpon>VixenPreviewModuleInstance.cs</DependentUpon>
     </EmbeddedResource>
@@ -484,12 +501,6 @@
     <None Include="Resources\Flood.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Direct2D\PreviewWPF.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
@@ -497,6 +508,12 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>del "$(OutDir)\System.*"
+del "$(OutDir)\Microsoft.*"
+del "$(OutDir)\netstandard.dll*"
+del "$(OutDir)\libzstd.dll*"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

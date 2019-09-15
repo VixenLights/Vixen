@@ -1,35 +1,53 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Common.Controls.Theme;
+using VixenModules.Preview.VixenPreview.Shapes;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace VixenModules.Preview.VixenPreview
 {
 	public partial class VixenPreviewSetupPropertiesDocument : DockContent
 	{
-		public VixenPreviewSetupPropertiesDocument()
+		private readonly VixenPreviewControl _previewControl;
+		private DisplayItemBaseControl _setupControl;
+
+		public VixenPreviewSetupPropertiesDocument(VixenPreviewControl previewControl)
 		{
 			InitializeComponent();
 			ThemeUpdateControls.UpdateControls(this);
+			_previewControl = previewControl;
 		}
 
-		public void ShowSetupControl(VixenModules.Preview.VixenPreview.Shapes.DisplayItemBaseControl setupControl)
+		public void ShowSetupControl(DisplayItemBaseControl setupControl)
 		{
+			if (_setupControl != null)
+			{
+				_setupControl.PropertyEdited -= SetupControlPropertyEdited;
+			}
+
+			_setupControl = setupControl;
 			Controls.Clear();
-			if (setupControl != null) {
+			if (setupControl != null)
+			{
+				setupControl.PropertyEdited += SetupControlPropertyEdited;
 				Controls.Add(setupControl);
 				setupControl.Dock = DockStyle.Fill;
 				Text = setupControl.Title;
 			}
 			else {
-				Text = "Properties";
+				Text = @"Properties";
 			}
+		}
+
+		private void SetupControlPropertyEdited(object sender, EventArgs e)
+		{
+			_previewControl.EndUpdate();
+		}
+
+		public void ClearSetupControl()
+		{
+			Controls.Clear();
+			Text = @"Properties";
 		}
 	}
 }

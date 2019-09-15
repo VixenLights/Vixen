@@ -165,7 +165,7 @@ namespace Vixen.IO.Xml.ModuleStore
 						{
 							Directory.Delete(newDirName, true);
 						}
-						catch (Exception e) { }
+						catch (Exception) { }
 					}
 
 					//If this throws an exception, we want it to fall thru and abort the conversion 
@@ -283,7 +283,7 @@ namespace Vixen.IO.Xml.ModuleStore
 								{
 									phonemeBitmap.SetPixel(x, y, c);
 								}
-								catch (Exception err) { }
+								catch (Exception) { }
 							}
 
 							col = (++col) % matrixPixelsPerString;

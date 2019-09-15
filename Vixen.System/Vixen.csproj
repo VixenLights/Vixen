@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Vixen</RootNamespace>
     <AssemblyName>Vixen</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -32,6 +32,8 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>$(SolutionDir)\Release\</OutputPath>
@@ -78,25 +80,32 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.5.11\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Serialization">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq">
@@ -104,6 +113,10 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
+    <Reference Include="Zstandard.Net, Version=1.1.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Zstandard.Net.1.1.5\lib\net45\Zstandard.Net.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\BoolDescriptionAttribute.cs" />
@@ -111,6 +124,7 @@
     <Compile Include="Attributes\BrowsablePropertyAttribute.cs" />
     <Compile Include="Attributes\CategoryEditorAttribute.cs" />
     <Compile Include="Attributes\CategoryOrderAttribute.cs" />
+    <Compile Include="Attributes\ExpandableObjectAttribute.cs" />
     <Compile Include="Attributes\FlatternHierarchyAttribute.cs" />
     <Compile Include="Attributes\IOrderableAttribute.cs" />
     <Compile Include="Attributes\NumberRangeAttribute.cs" />
@@ -147,6 +161,7 @@
     <Compile Include="Data\Evaluator\64BitEvaluator.cs" />
     <Compile Include="Data\Evaluator\8BitEvaluator.cs" />
     <Compile Include="Data\Evaluator\ColorEvaluator.cs" />
+    <Compile Include="Data\Evaluator\CommandLookup8BitEvaluator.cs" />
     <Compile Include="Data\Evaluator\Evaluator.cs" />
     <Compile Include="Data\Flow\ElementDataFlowAdapter.cs" />
     <Compile Include="Data\Flow\ElementDataFlowOutputAdapter.cs" />
@@ -187,18 +202,12 @@
     <Compile Include="Execution\IContextCurrentEffects.cs" />
     <Compile Include="Execution\IExecutor.cs" />
     <Compile Include="Execution\DataSource\EffectNodeBuffer.cs" />
-    <Compile Include="Execution\DataSource\IntentPreFilter.cs" />
     <Compile Include="Execution\IntentStateBuilder.cs" />
     <Compile Include="Execution\IProgramExecutor.cs" />
     <Compile Include="Execution\Context\LiveContext.cs" />
-    <Compile Include="Execution\DataSource\PreFilteringBufferingDataSource.cs" />
-    <Compile Include="Execution\Context\CachingProgramContext.cs" />
-    <Compile Include="Execution\Context\CachingSequenceContext.cs" />
-    <Compile Include="Execution\Context\ContextCachingProgramContext.cs" />
     <Compile Include="Execution\Context\NonCachingSequenceContext.cs" />
     <Compile Include="Execution\Context\IProgramContext.cs" />
     <Compile Include="Execution\Context\ProgramContext.cs" />
-    <Compile Include="Execution\Context\SequenceCachingProgramContext.cs" />
     <Compile Include="Execution\Context\ISequenceContext.cs" />
     <Compile Include="Execution\Context\SequenceContext.cs" />
     <Compile Include="Execution\QueuingSequenceEnumerator.cs" />
@@ -207,6 +216,7 @@
     <Compile Include="Export\ExportCommandHandler.cs" />
     <Compile Include="Export\ESEQWriter.cs" />
     <Compile Include="Export\ExportProgressStatus.cs" />
+    <Compile Include="Export\ExportWriterBase.cs" />
     <Compile Include="Export\FPP\BoolConverter.cs" />
     <Compile Include="Export\FPP\ChannelOutputs.cs" />
     <Compile Include="Export\FPP\ConfigWriter.cs" />
@@ -214,6 +224,8 @@
     <Compile Include="Export\FPP\OutputTypes.cs" />
     <Compile Include="Export\FPP\Universe.cs" />
     <Compile Include="Export\FPP\UniverseTypes.cs" />
+    <Compile Include="Export\FPP\VariableHeader.cs" />
+    <Compile Include="Export\FSEQCompressedWriter.cs" />
     <Compile Include="Export\FSEQWriter.cs" />
     <Compile Include="Export\IExport.cs" />
     <Compile Include="Export\Vir2Writer.cs" />
@@ -234,15 +246,18 @@
     <Compile Include="Intent\NonSegmentedLinearIntent.cs" />
     <Compile Include="Intent\RGBIntent.cs" />
     <Compile Include="Intent\CommandIntent.cs" />
-    <Compile Include="Intent\IntentState.cs" />
     <Compile Include="Intent\LightingIntent.cs" />
     <Compile Include="Intent\PositionIntent.cs" />
+    <Compile Include="Intent\StaticDiscreteLightingIntent.cs" />
     <Compile Include="Intent\StaticIntent.cs" />
     <Compile Include="Intent\StaticIntentState.cs" />
     <Compile Include="Intent\StaticArrayIntent.cs" />
+    <Compile Include="Intent\StaticLightingIntent.cs" />
     <Compile Include="Interpolator\DiscreteValueInterpolator.cs" />
     <Compile Include="Interpolator\LightingValueInterpolator.cs" />
     <Compile Include="Interpolator\PositionValueInterpolator.cs" />
+    <Compile Include="Interpolator\StaticDiscreteValueInterpolator.cs" />
+    <Compile Include="Interpolator\StaticLightingValueInterpolator.cs" />
     <Compile Include="Interpolator\StaticValueInterpolator.cs" />
     <Compile Include="IO\Binary\BinaryFileReader.cs" />
     <Compile Include="IO\Binary\BinaryFileWriter.cs" />
@@ -271,6 +286,9 @@
     <Compile Include="IO\IObjectMigratorService.cs" />
     <Compile Include="IO\IObjectPersistor.cs" />
     <Compile Include="IO\IObjectPersistorService.cs" />
+    <Compile Include="IO\JSON\CustomContrractResolver.cs" />
+    <Compile Include="IO\JSON\ElementTreeReader.cs" />
+    <Compile Include="IO\JSON\ElementTreeWriter.cs" />
     <Compile Include="IO\Loader\ElementNodeTemplateLoader.cs" />
     <Compile Include="IO\Loader\ModuleStoreLoader.cs" />
     <Compile Include="IO\Loader\ProgramLoader.cs" />
@@ -367,7 +385,11 @@
     <Compile Include="Services\IFileService.cs" />
     <Compile Include="Services\LayerMixingFilterService.cs" />
     <Compile Include="Sys\ElementIntentStates.cs" />
+    <Compile Include="Sys\ElementNodeProxy.cs" />
+    <Compile Include="Sys\ElementProxy.cs" />
     <Compile Include="Sys\IDataPolicyFactory.cs" />
+    <Compile Include="Sys\IElementNode.cs" />
+    <Compile Include="Sys\IGroupNode.cs" />
     <Compile Include="Sys\IHasLayers.cs" />
     <Compile Include="Sys\IHasMarks.cs" />
     <Compile Include="Sys\IStateCombinator.cs" />
@@ -547,7 +569,6 @@
     <Compile Include="Sys\Instrumentation\OutputDeviceSleepTimeActualValue.cs" />
     <Compile Include="Sys\Instrumentation\OutputDeviceSleepTimeRequestedValue.cs" />
     <Compile Include="Sys\Instrumentation\OutputDeviceUpdateTimeValue.cs" />
-    <Compile Include="Intent\SegmentedLinearIntent.cs" />
     <Compile Include="Sys\IntentNodeCollection.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -587,6 +608,7 @@
     <Compile Include="Sys\Output\OutputPreview.cs" />
     <Compile Include="Sys\Output\SmartOutputController.cs" />
     <Compile Include="Data\Value\PositionValue.cs" />
+    <Compile Include="Sys\ProxyElementNode.cs" />
     <Compile Include="Sys\SequenceFilterLookup.cs" />
     <Compile Include="Sys\OutputIntentStateList.cs" />
     <Compile Include="Sys\ParameterSignature.cs" />
@@ -896,9 +918,11 @@
     <Compile Include="Sys\WindowsMultimedia.cs" />
     <Compile Include="Sys\XmlHelper.cs" />
     <Compile Include="TypeConverters\BooleanStringTypeConverter.cs" />
+    <Compile Include="TypeConverters\EnumDescriptionTypeConverter.cs" />
     <Compile Include="TypeConverters\IMarkCollectionNameConverter.cs" />
     <Compile Include="TypeConverters\TargetElementDepthConverter.cs" />
     <Compile Include="Utility\cEventHelper.cs" />
+    <Compile Include="Utility\HighResolutionTimer.cs" />
     <Compile Include="Utility\MiniStackTrace.cs" />
     <Compile Include="Utility\NamingUtilities.cs" />
     <Compile Include="Utility\PathUtility.cs" />
@@ -949,8 +973,16 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(SolutionDir)\Release Notes.txt" "$(OutDir)"
-copy "$(SolutionDir)\License.txt" "$(OutDir)"</PostBuildEvent>
+copy "$(SolutionDir)\License.txt" "$(OutDir)"
+del "$(OutDir)\libzstd.dll*"</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\Zstandard.Net.1.1.5\build\Zstandard.Net.targets" Condition="Exists('..\packages\Zstandard.Net.1.1.5\build\Zstandard.Net.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Zstandard.Net.1.1.5\build\Zstandard.Net.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Zstandard.Net.1.1.5\build\Zstandard.Net.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

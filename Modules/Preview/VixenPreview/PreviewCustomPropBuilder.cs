@@ -1,15 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using Common.Controls;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Utility;
+using VixenModules.App.CustomPropEditor.Import.XLights;
 using VixenModules.App.CustomPropEditor.Model;
+using VixenModules.OutputFilter.DimmingCurve;
 using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Property.Color;
+using VixenModules.Property.Face;
 using VixenModules.Property.Order;
+using FaceComponent = VixenModules.App.CustomPropEditor.Model.FaceComponent;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -37,9 +44,9 @@ namespace VixenModules.Preview.VixenPreview
 
 		public PreviewCustomProp PreviewCustomProp { get; private set; }
 
-		public async Task CreateAsync()
+		public async Task<ElementNode> CreateAsync()
 		{
-			Task t = Task.Factory.StartNew(() =>
+			return await Task.Factory.StartNew(() =>
 			{
 				_elementModelMap = new Dictionary<Guid, ElementNode>();
 				//Optimize the name check for performance. We know we are going to create a bunch of them and we can handle it ourselves more efficiently
@@ -55,39 +62,67 @@ namespace VixenModules.Preview.VixenPreview
 
 				CreateElementsForChildren(rootElementNode, rootNode);
 
-				if (_prop.PhysicalMetadata.ColorMode != ColorMode.Other)
+				var parent = Application.OpenForms["VixenPreviewSetup3"];
+				if (parent != null)
 				{
-					//Now lets setup the color handling.
-					ColorSetupHelper helper = new ColorSetupHelper();
-					switch (_prop.PhysicalMetadata.ColorMode)
+					//Get on the UI thread
+					parent.Invoke((MethodInvoker)delegate
 					{
-						case ColorMode.FullColor:
-							helper.SetColorType(ElementColorType.FullColor);
-							helper.SilentMode = true;
-							break;
-						case ColorMode.Multiple:
-							helper.SetColorType(ElementColorType.MultipleDiscreteColors);
-							break;
-						default:
-							helper.SetColorType(ElementColorType.SingleColor);
-							break;
-					}
+						var question = new MessageBoxForm("Would you like to configure a dimming curve for this element?", "Dimming Curve Setup", MessageBoxButtons.YesNo, SystemIcons.Question);
+						var ans = question.ShowDialog(parent);
 
-					helper.Perform(_leafNodes);
+						if (ans == DialogResult.OK)
+						{
+							DimmingCurveHelper dimmingHelper = new DimmingCurveHelper(true);
+							dimmingHelper.Owner = parent;
+							dimmingHelper.Perform(_leafNodes);
+						}
+
+						if (_prop.PhysicalMetadata.ColorMode != ColorMode.Other)
+						{
+							//Now lets setup the color handling.
+							ColorSetupHelper helper = new ColorSetupHelper();
+							helper.Owner = parent;
+							switch (_prop.PhysicalMetadata.ColorMode)
+							{
+								case ColorMode.FullColor:
+									helper.SetColorType(ElementColorType.FullColor);
+									helper.SilentMode = true;
+									break;
+								case ColorMode.Multiple:
+									helper.SetColorType(ElementColorType.MultipleDiscreteColors);
+									break;
+								default:
+									helper.SetColorType(ElementColorType.SingleColor);
+									break;
+							}
+
+							helper.Perform(_leafNodes);
+						}
+
+					});
 				}
 
 				PreviewCustomProp.UpdateColorType();
 				
 				PreviewCustomProp.Layout();
-				
+
+				return rootElementNode;
 			});
+		}
 
-			await t;
+		private DialogResult ShowDimmingCurveMessage()
+		{
+			var question = new MessageBoxForm("Would you like to configure a dimming curve for this element?", "Dimming Curve Setup", MessageBoxButtons.YesNo, SystemIcons.Question);
 
+			var parent = Application.OpenForms["VixenPreviewSetup3"];
+
+			return question.ShowDialog(parent);
 		}
 
 		private string TokenizeName(string name)
 		{
+			if (name == null) return string.Empty;
 			var returnValue = name;
 			var match = Regex.Match(name);
 			while (match.Success)
@@ -120,15 +155,51 @@ namespace VixenModules.Preview.VixenPreview
 			ElementNode node;
 			if (!_elementModelMap.TryGetValue(elementModel.Id, out node))
 			{
+				//Validate we have a name
+				if (string.IsNullOrEmpty(elementModel.Name))
+				{
+					elementModel.Name = @"Unnamed";
+				}
 				//We have not created our element yet
 				node = ElementNodeService.Instance.CreateSingle(parentNode,
 					NamingUtilities.Uniquify(_elementNames, TokenizeName(elementModel.Name)));
 				_elementModelMap.Add(elementModel.Id, node);
 				_elementNames.Add(node.Name);
+				if (elementModel.FaceComponent != FaceComponent.None)
+				{
+					FaceModule fm = null;
+					if (node.Properties.Contains(FaceDescriptor.ModuleId))
+					{
+						fm = node.Properties.Get(FaceDescriptor.ModuleId) as FaceModule;
+					}
+					else
+					{
+						fm = node.Properties.Add(FaceDescriptor.ModuleId) as FaceModule;
+					}
+
+					if (ElementModel.IsPhoneme(elementModel.FaceComponent))
+					{
+						fm.PhonemeList.Add(elementModel.FaceComponent.ToString(), true);
+					}
+					else
+					{
+						switch (elementModel.FaceComponent)
+						{
+							case FaceComponent.EyesOpen:
+								fm.FaceComponents.Add(Property.Face.FaceComponent.EyesOpen, true);
+								break;
+							case FaceComponent.EyesClosed:
+								fm.FaceComponents.Add(Property.Face.FaceComponent.EyesClosed, true);
+								break;
+							case FaceComponent.Outlines:
+								fm.FaceComponents.Add(Property.Face.FaceComponent.Outlines, true);
+								break;
+						}
+					}
+				}
 				if (elementModel.IsLightNode)
 				{
-					var order = node.Properties.Add(OrderDescriptor.ModuleId) as OrderModule;
-					if (order != null)
+					if (node.Properties.Add(OrderDescriptor.ModuleId) is OrderModule order)
 					{
 						order.Order = elementModel.Order;
 					}

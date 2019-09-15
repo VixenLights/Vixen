@@ -33,9 +33,6 @@ namespace VixenModules.Property.Face
 		public System.Drawing.Color ElementColor { get; set; }
 
 		[DataMember]
-		private string _stringName;
-
-		[DataMember]
 		public Guid ElementGuid { get; set; }
 
 		[DataMember]

@@ -6,8 +6,7 @@ using Vixen.Execution;
 using Vixen.Execution.Context;
 using Vixen.Module.Media;
 using Vixen.Sys;
-using Vixen.Services;
-using VixenModules.Sequence.Timed;
+using Vixen.Sys.State.Execution;
 
 namespace VixenModules.App.Shows
 {
@@ -16,6 +15,8 @@ namespace VixenModules.App.Shows
 		private ISequenceContext _sequenceContext = null;
 		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private ISequence _sequence;
+		private bool _canExecute = true;
+		private bool _preProcessingCompleted;
 		
 		public SequenceAction(ShowItem showItem)
 			: base(showItem)
@@ -24,48 +25,50 @@ namespace VixenModules.App.Shows
 
 		public override void Execute()
 		{
-			try
+			IsRunning = true;
+			if (_canExecute)
 			{
-				IsRunning = true;
-				PreProcess();
-				_sequenceContext.Start();
+				try
+				{
+					if (!_preProcessingCompleted)
+					{
+						PreProcess();
+					}
+					_sequenceContext?.Start();
+				}
+				catch (Exception ex)
+				{
+					Logging.Error("Could not execute sequence. " + ShowItem.SequencePath + "; " + ex.Message);
+					_canExecute = false;
+					Complete();
+				}
 			}
-			catch (Exception ex)
+			else
 			{
-			    Logging.Error("Could not execute sequence " + ShowItem.SequencePath + "; " + ex.Message);
+				Logging.Error($"Could not execute sequence. {ShowItem.SequencePath}");
+				Complete();
 			}
+			
 		}
-
-		//public override TimeSpan Duration()
-		//{
-		//	if (_sequenceContext != null) 
-		//		return _sequenceContext.Sequence.Length;
-		//	else
-		//		return TimeSpan.Zero;
-		//}
 
 		public override void Stop()
 		{
-			if (_sequenceContext != null)
-				_sequenceContext.Stop();
+			_sequenceContext?.Stop();
 			base.Stop();
 		}
 
-		bool _preProcessingCompleted = false;
 		public override bool PreProcessingCompleted
 		{
 			get
 			{
-				bool changed = SequenceChanged();
-				bool complete = _preProcessingCompleted && !changed;
-				//Console.WriteLine("Get PreProcessingCompleted" + ShowItem.Name + "=" + complete + ":" + !changed + ":" + _preProcessingCompleted);
-				return complete;
+				if (SequenceManager.IsSequenceStale(ShowItem.SequencePath))
+				{
+					_preProcessingCompleted = false;
+					_canExecute = true;
+				}
+				return _preProcessingCompleted;
 			}
-			set
-			{
-				//Console.WriteLine("Set PreProcessingCompleted" + ShowItem.Name + "=" + value);
-				_preProcessingCompleted = value;
-			}
+			set => _preProcessingCompleted = value;
 		}
 
 		public override void PreProcess(CancellationTokenSource cancellationTokenSource = null)
@@ -75,26 +78,27 @@ namespace VixenModules.App.Shows
 
 			try
 			{
-				if (_sequenceContext == null || SequenceChanged() || _sequence == null)
+				if (!_preProcessingCompleted || _sequenceContext == null || _sequence == null)
 				{
 					if (_sequenceContext != null)
 					{
 						DisposeCurrentContext();
 					}
 
-					var entry = SequenceManager.GetSequenceAsync(ShowItem.SequencePath);
+					var entry = SequenceManager.GetSequenceAsync(ShowItem.SequencePath, Id);
 					entry.Wait();
 					var sequenceEntry = entry.Result;
 
 					if (sequenceEntry == null)
 					{
-						Logging.Error("Failed to preprocess sequence {1} because it could not be loaded.", ShowItem.Name);
+						Logging.Error("Failed to preprocess sequence {1} because it could not be loaded.",
+							ShowItem.Name);
 						return;
 					}
 
 					//Give up to 30 seconds for the sequence to load.
 					int retryCount = 0;
-					while (sequenceEntry.SequenceLoading && retryCount<30)
+					while (sequenceEntry.SequenceLoading && retryCount < 30)
 					{
 						retryCount++;
 						Logging.Info("Waiting for sequence to load. {1}", ShowItem.Name);
@@ -103,27 +107,37 @@ namespace VixenModules.App.Shows
 
 					if (sequenceEntry.Sequence == null)
 					{
-						Logging.Error("Failed to preprocess sequence {1} because it could not be loaded.", ShowItem.Name);
+						Logging.Error("Failed to preprocess sequence {1} because it could not be loaded.",
+							ShowItem.Name);
 						return;
 					}
+
 					_sequence = sequenceEntry.Sequence;
-					
+
 					//Initialize the media if we have it so any audio effects can be rendered 
 					LoadMedia();
 					
-					ISequenceContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.NoCaching), _sequence);
-
 					Parallel.ForEach(_sequence.SequenceData.EffectData.Cast<IEffectNode>(), RenderEffect);
 
-					context.SequenceEnded += sequence_Ended;
-
-					_sequenceContext = context;
+					if (_canExecute)
+					{
+						ISequenceContext context =
+							VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.NoCaching),
+								_sequence);
+						context.SequenceEnded += sequence_Ended;
+						_sequenceContext = context;
+					}
 				}
-				PreProcessingCompleted = true;
+
 			}
 			catch (Exception ex)
 			{
-				Logging.Error("Could not pre-render sequence " + ShowItem.SequencePath + "; ",ex);
+				_canExecute = false;
+				Logging.Error(ex, "Could not pre-render sequence. Sequence will not play until the issue is corrected." + ShowItem.SequencePath + "; ");
+			}
+			finally
+			{
+				PreProcessingCompleted = true;
 			}
 		}
 
@@ -141,27 +155,17 @@ namespace VixenModules.App.Shows
 		{
 			if (node.Effect.IsDirty)
 			{
-				node.Effect.PreRender();
+				var success = node.Effect.PreRender();
+				if (!success)
+				{
+					_canExecute = false;
+				}
 			}
-		}
-
-		DateTime _lastSequenceDateTime = DateTime.Now;
-		private bool SequenceChanged()
-		{
-			bool datesEqual = false;
-
-			if (System.IO.File.Exists(ShowItem.SequencePath))
-			{
-				DateTime lastWriteTime = System.IO.File.GetLastWriteTime(ShowItem.SequencePath);
-				datesEqual = (_lastSequenceDateTime == lastWriteTime);
-				_lastSequenceDateTime = lastWriteTime;
-			}
-			return !datesEqual;
 		}
 
 		private void sequence_Ended(object sender, EventArgs e)
 		{
-			base.Complete();
+			Complete();
 		}
 
 		private void DisposeCurrentContext()
@@ -180,7 +184,7 @@ namespace VixenModules.App.Shows
 				DisposeCurrentContext();
 				
 			}
-			SequenceManager.ConsumerFinished(ShowItem.SequencePath);
+			SequenceManager.ConsumerFinished(ShowItem.SequencePath, Id);
 			_sequenceContext = null;
 			base.Dispose(disposing);
 		}

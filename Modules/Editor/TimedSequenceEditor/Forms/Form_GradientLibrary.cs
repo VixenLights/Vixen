@@ -69,7 +69,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private int _dragX;
 		private int _dragY;
 		private bool _scaleText;
-		
+
 		#endregion
 
 		#region Initialization
@@ -107,11 +107,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_gradientLibraryImageScale = 0.1;
 			ImageSetup();
 
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			//Over-ride the auto theme listview back color
 			listViewGradients.BackColor = ThemeColorTable.BackgroundColor;
+			_colorGradientLibrary = ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary;
 		}
 
 		private void ImageSetup()
@@ -127,13 +126,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void ColorPalette_Load(object sender, EventArgs e)
 		{
-			_colorGradientLibrary = ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary;
+			Load_Gradients();
+		}
+
+		public void Load_Gradients()
+		{
 			if (_colorGradientLibrary != null)
 			{
 				Populate_Gradients();
-				_colorGradientLibrary.GradientChanged += GradientLibrary_GradientChanged;
+				_colorGradientLibrary.GradientsChanged += GradientsLibrary_GradientsChanged;
 			}
-			
 		}
 
 		#endregion
@@ -186,6 +188,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 
 			_colorGradientLibrary.EditLibraryItem(listViewGradients.SelectedItems[0].Name);
+			OnGradientLibraryChanged();
 		}
 
 		private void toolStripButtonNewGradient_Click(object sender, EventArgs e)
@@ -193,7 +196,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			AddGradientToLibrary(new ColorGradient());
 		}
 
-		private void AddGradientToLibrary(ColorGradient cg, bool edit = true)
+		internal bool AddGradientToLibrary(ColorGradient cg, bool edit = true)
 		{
 			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Gradient name?");
 
@@ -219,14 +222,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						_colorGradientLibrary.AddColorGradient(dialog.Response, cg);
 						if (edit)
 						{
-							_colorGradientLibrary.EditLibraryItem(dialog.Response);	
+							_colorGradientLibrary.EditLibraryItem(dialog.Response);
 						}
-						break;
+						OnGradientLibraryChanged();
+						return false;
 					}
 
 					if (messageBox.DialogResult == DialogResult.Cancel)
 					{
-						break;
+						return true;
 					}
 				}
 				else
@@ -234,11 +238,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_colorGradientLibrary.AddColorGradient(dialog.Response, cg);
 					if (edit)
 					{
-						_colorGradientLibrary.EditLibraryItem(dialog.Response);	
+						_colorGradientLibrary.EditLibraryItem(dialog.Response);
 					}
-					break;
+					OnGradientLibraryChanged();
+					return false;
 				}
 			}
+			return true;
 		}
 
 		private void toolStripButtonDeleteGradient_Click(object sender, EventArgs e)
@@ -254,10 +260,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (messageBox.DialogResult == DialogResult.OK)
 			{
-				foreach (ListViewItem item in listViewGradients.SelectedItems)
-				{
-					_colorGradientLibrary.RemoveColorGradient(item.Name);
-				}
+				_colorGradientLibrary.BeginBulkUpdate();
+				foreach (ListViewItem item in listViewGradients.SelectedItems) _colorGradientLibrary.RemoveColorGradient(item.Name);
+				_colorGradientLibrary.EndBulkUpdate();
+				OnGradientLibraryChanged();
 			}
 		}
 
@@ -273,31 +279,47 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				toolStripButtonEditGradient.PerformClick();
 		}
 
-		public void GradientLibrary_GradientChanged(object sender, EventArgs e)
+		public void GradientsLibrary_GradientsChanged(object sender, EventArgs e)
 		{
 				Populate_Gradients();
+		}
+
+		public event EventHandler GradientLibraryChanged;
+
+		private void OnGradientLibraryChanged()
+		{
+			GradientLibraryChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		#endregion
 
 		#region Drag/Drop
 
-		private void listViewGradients_DragDrop(object sender, DragEventArgs e)
+		private void listViewGradient_ItemDrag(object sender, ItemDragEventArgs e)
 		{
-			if (_dragX + 10 < e.X || _dragY + 10 < e.Y || _dragX - 10 > e.X || _dragY - 10 > e.Y)
-			{
-				if (e.Effect == DragDropEffects.Copy)
-				{
-					ColorGradient c = (ColorGradient) e.Data.GetData(typeof (ColorGradient));
-					AddGradientToLibrary(c, false);
-				}
-			}
+			listViewGradients.DoDragDrop(listViewGradients.SelectedItems[0], DragDropEffects.Move);
+		}
+
+		private void listViewGradients_DragLeave(object sender, EventArgs e)
+		{
+			if (listViewGradients.SelectedItems.Count == 0) return;
+			ColorGradient newGradient = new ColorGradient((ColorGradient)listViewGradients.SelectedItems[0].Tag);
+			if (LinkGradients) newGradient.LibraryReferenceName = listViewGradients.SelectedItems[0].Name;
+
+			newGradient.IsCurrentLibraryGradient = false;
+			listViewGradients.DoDragDrop(newGradient, DragDropEffects.Copy);
 		}
 
 		private void listViewGradients_DragEnter(object sender, DragEventArgs e)
 		{
 			_dragX = e.X;
 			_dragY = e.Y;
+
+			if (e.Data.GetDataPresent(typeof(ListViewItem)))
+			{
+				e.Effect = DragDropEffects.Move;
+				return;
+			}
 
 			if (e.Data.GetDataPresent(typeof(ColorGradient)))
 			{
@@ -311,24 +333,60 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			e.Effect = DragDropEffects.None;
 		}
 
-		private void listViewGradient_ItemDrag(object sender, ItemDragEventArgs e)
+		private void listViewGradients_DragDrop(object sender, DragEventArgs e)
 		{
-			//StartGradientDrag(this, e);
-
-			ColorGradient newGradient = new ColorGradient((ColorGradient)listViewGradients.SelectedItems[0].Tag);
-			if (LinkGradients)
+			if (_dragX + 10 < e.X || _dragY + 10 < e.Y || _dragX - 10 > e.X || _dragY - 10 > e.Y)
 			{
-				newGradient.LibraryReferenceName = listViewGradients.SelectedItems[0].Name;
+				Point p = listViewGradients.PointToClient(new Point(e.X, e.Y));
+				ListViewItem movetoNewPosition = listViewGradients.GetItemAt(p.X, p.Y);
+				if (e.Effect == DragDropEffects.Copy)
+				{
+					ColorGradient c = (ColorGradient)e.Data.GetData(typeof(ColorGradient));
+					int index = movetoNewPosition?.Index ?? listViewGradients.Items.Count;
+
+					if(AddGradientToLibrary(c, false)) return;
+
+					Populate_Gradients();
+
+					if (listViewGradients.Items.Count == _colorGradientLibrary.Count())
+					{
+						ListViewItem cloneToNew =
+							(ListViewItem)listViewGradients.Items[listViewGradients.Items.Count - 1].Clone();
+						listViewGradients.Items.Remove(listViewGradients.Items[listViewGradients.Items.Count - 1]);
+						listViewGradients.Items.Insert(index, cloneToNew);
+					}
+				}
+				else if (e.Effect == DragDropEffects.Move)
+				{
+					listViewGradients.BeginUpdate();
+					listViewGradients.Alignment = ListViewAlignment.Default;
+					List<ListViewItem> listViewItems = listViewGradients.SelectedItems.Cast<ListViewItem>().ToList();
+					if (movetoNewPosition != null && listViewGradients.SelectedItems[0].Index > movetoNewPosition.Index) listViewItems.Reverse();
+					int index = movetoNewPosition?.Index ?? listViewGradients.Items.Count - 1;
+					foreach (ListViewItem item in listViewItems)
+					{
+						listViewGradients.Items.Remove(item);
+						listViewGradients.Items.Insert(index, item);
+					}
+					listViewGradients.Alignment = ListViewAlignment.Top;
+					listViewGradients.EndUpdate();
+				}
+
+				_colorGradientLibrary.BeginBulkUpdate();
+				_colorGradientLibrary.Library.Clear();
+				foreach (ListViewItem gradient in listViewGradients.Items) _colorGradientLibrary.Library[gradient.Text] = (ColorGradient)gradient.Tag;
+				_colorGradientLibrary.EndBulkUpdate();
+				ImageSetup();
+
+				OnGradientLibraryChanged();
 			}
-			newGradient.IsCurrentLibraryGradient = false;
-			listViewGradients.DoDragDrop(newGradient, DragDropEffects.Copy);
 		}
 
 		#endregion
 
 		#region Import/Export
 
-		private void toolStripButtonExportGradients_Click(object sender, EventArgs e)
+		internal void ExportGradientLibrary()
 		{
 			SaveFileDialog saveFileDialog = new SaveFileDialog
 			{
@@ -340,7 +398,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
 			_lastFolder = Path.GetDirectoryName(saveFileDialog.FileName);
 
-			var xmlsettings = new XmlWriterSettings
+			var xmlSettings = new XmlWriterSettings
 			{
 				Indent = true,
 				IndentChars = "\t",
@@ -348,10 +406,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			try
 			{
-				Dictionary<string, ColorGradient> gradients = _colorGradientLibrary.ToDictionary(gradient => gradient.Key, gradient => gradient.Value);
+				Dictionary<string, ColorGradient> gradients =
+					_colorGradientLibrary.ToDictionary(gradient => gradient.Key, gradient => gradient.Value);
 
 				DataContractSerializer ser = new DataContractSerializer(typeof(Dictionary<string, ColorGradient>));
-				var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
+				var writer = XmlWriter.Create(saveFileDialog.FileName, xmlSettings);
 				ser.WriteObject(writer, gradients);
 				writer.Close();
 			}
@@ -359,13 +418,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				Logging.Error("While exporting Color Gradient Library: " + saveFileDialog.FileName + " " + ex.InnerException);
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-				var messageBox = new MessageBoxForm("Unable to export data, please check the error log for details.", "Unable to export", false, false);
+				MessageBoxForm.msgIcon =
+					SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Unable to export data, please check the error log for details.",
+					"Unable to export", false, false);
 				messageBox.ShowDialog();
 			}
 		}
 
-		private void toolStripButtonImportGradients_Click(object sender, EventArgs e)
+		internal void ImportGradientLibrary()
 		{
 			OpenFileDialog openFileDialog = new OpenFileDialog
 			{
@@ -384,9 +445,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
 				{
 					DataContractSerializer ser = new DataContractSerializer(typeof(Dictionary<string, ColorGradient>));
-					gradients = (Dictionary<string, ColorGradient>)ser.ReadObject(reader);
+					gradients = (Dictionary<string, ColorGradient>) ser.ReadObject(reader);
 				}
 
+				_colorGradientLibrary.BeginBulkUpdate();
 				foreach (KeyValuePair<string, ColorGradient> gradient in gradients)
 				{
 					//This was just easier than prompting for a rename
@@ -401,24 +463,43 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					_colorGradientLibrary.AddColorGradient(gradientName, gradient.Value);
 				}
+
+				_colorGradientLibrary.EndBulkUpdate();
+				OnGradientLibraryChanged();
 			}
 			catch (Exception ex)
 			{
-				Logging.Error("Invalid file while importing Color Gradient Library: " + openFileDialog.FileName + " " + ex.InnerException);
+				Logging.Error("Invalid file while importing Color Gradient Library: " + openFileDialog.FileName + " " +
+				              ex.InnerException);
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-				var messageBox = new MessageBoxForm("Sorry, we didn't reconize the data in that file as valid Color Gradient Library data.", "Invalid file", false, false);
+				MessageBoxForm.msgIcon =
+					SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox =
+					new MessageBoxForm("Sorry, we didn't reconize the data in that file as valid Color Gradient Library data.",
+						"Invalid file", false, false);
 				messageBox.ShowDialog();
 			}
 		}
 
 		#endregion
 
+		#region Events
+
+		private void toolStripButtonExportGradients_Click(object sender, EventArgs e)
+		{
+			ExportGradientLibrary();
+		}
+
+		private void toolStripButtonImportGradients_Click(object sender, EventArgs e)
+		{
+			ImportGradientLibrary();
+		}
+
 		private void Form_ToolPalette_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			if (_colorGradientLibrary != null)
 			{
-				_colorGradientLibrary.GradientChanged -= GradientLibrary_GradientChanged;
+				_colorGradientLibrary.GradientsChanged -= GradientsLibrary_GradientsChanged;
 			}
 			var xml = new XMLProfileSettings();
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/GradientLibraryTextScale", Name), _gradientLibraryTextScale.ToString(CultureInfo.InvariantCulture));
@@ -475,5 +556,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			_scaleText = false;
 		}
+
+		#endregion
 	}
 }

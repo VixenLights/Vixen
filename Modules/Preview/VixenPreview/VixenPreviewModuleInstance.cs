@@ -83,7 +83,7 @@ namespace VixenModules.Preview.VixenPreview
 			}
 			catch (Exception e)
 			{
-				Logging.Error(e, "An error occured testing for OpenGL support.");
+				Logging.Error(e, "An error occurred testing for OpenGL support.");
 			}
 
 			return supported;
@@ -114,7 +114,7 @@ namespace VixenModules.Preview.VixenPreview
 					catch (Exception ex)
 					{
 
-						Logging.Error(ex, "An error occured trying to create the OpenGL Preview.");
+						Logging.Error(ex, "An error occurred trying to create the OpenGL Preview.");
 					}
 					
 				}

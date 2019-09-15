@@ -15,6 +15,7 @@ using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Catel.IoC;
 using Vixen.Module.Editor;
 using Vixen.Module.SequenceType;
 using Vixen.Services;
@@ -26,6 +27,7 @@ using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NLog.Targets;
 using Application = System.Windows.Forms.Application;
 using Point = System.Drawing.Point;
 using SystemFonts = System.Drawing.SystemFonts;
@@ -50,7 +52,6 @@ namespace VixenApplication
 		private bool _testBuild;
 		private string _rootDataDirectory;
 		private CpuUsage _cpuUsage;
-		private bool _perfCountersAvailable;
 		private int _currentBuildVersion;
 		private string _currentReleaseVersion;
 
@@ -75,7 +76,7 @@ namespace VixenApplication
 		        Source = new Uri("/WPFCommon;component/Theme/Theme.xaml", UriKind.Relative)
 		    };
 
-		    WPFApplication.Current.Resources.MergedDictionaries.Add(dict);
+			WPFApplication.Current.Resources.MergedDictionaries.Add(dict);
 
             //End WPF init
 
@@ -121,7 +122,7 @@ namespace VixenApplication
 			if (IsProfileLocked(_rootDataDirectory) || !CreateLockFile())
 			{
 				var form = new MessageBoxForm("Profile is already in use or unable to the lock the profile.","Error",MessageBoxButtons.OK, SystemIcons.Error);
-				form.ShowDialog();
+				form.ShowDialog(this);
 				form.Dispose(); 
 				Environment.Exit(0);
 			}
@@ -134,8 +135,8 @@ namespace VixenApplication
 			Execution.ExecutionStateChanged += executionStateChangedHandler;
 			if(!VixenSystem.Start(this, _openExecution, _disableControllers, _applicationData.DataFileDirectory))
 			{
-				var messageBox = new MessageBoxForm("An error occured starting the system and the application will be halted.", "Error",MessageBoxButtons.OK, SystemIcons.Error);
-				messageBox.ShowDialog();
+				var messageBox = new MessageBoxForm("An error occurred starting the system and the application will be halted.", "Error",MessageBoxButtons.OK, SystemIcons.Error);
+				messageBox.ShowDialog(this);
 				Application.Exit();
 			}
 
@@ -219,7 +220,7 @@ namespace VixenApplication
 			}
 			catch (Exception e)
 			{
-				Logging.Error(e, "An error occured creating the profile lock file.");
+				Logging.Error(e, "An error occurred creating the profile lock file.");
 			}
 
 			return success;
@@ -243,7 +244,7 @@ namespace VixenApplication
 			}
 			catch (Exception e)
 			{
-				Logging.Error(e, "An error occured removing the profile lock file.");
+				Logging.Error(e, "An error occurred removing the profile lock file.");
 			}
 
 			return success;
@@ -281,8 +282,9 @@ namespace VixenApplication
 								}
 
 							}
-							catch (Exception e)
+							catch (Exception)
 							{
+								//Ignore the normal exception when it is not found. We will just remove the lock.
 								//No process with that id so release the lock.
 								RemoveLockFile(lockFilePath);
 							}
@@ -298,7 +300,7 @@ namespace VixenApplication
 			}
 			catch (Exception e)
 			{
-				Logging.Error(e, "An error occured checking the profile lock file.");
+				Logging.Error(e, "An error occurred checking the profile lock file.");
 				locked = true;  //If we cannot determine if it is locked, then we can't assume it isn't.
 			}
 
@@ -319,7 +321,7 @@ namespace VixenApplication
 			}
 			catch (Exception e)
 			{
-				Logging.Warn("JIT Profiling Disabled", e);
+				Logging.Warn(e, "JIT Profiling Disabled");
 			}
 		}
 
@@ -347,6 +349,7 @@ namespace VixenApplication
 
 		private void VixenApplication_Load(object sender, EventArgs e)
 		{
+			RegisterIOC();
 			initializeEditorTypes();
 			menuStripMain.Renderer = new ThemeToolStripRenderer();
 			
@@ -363,6 +366,12 @@ namespace VixenApplication
 			//	logsToolStripMenuItem.DropDownItems.ForeColor = Color.FromArgb(90, 90, 90);
 			}
 			PopulateRecentSequencesList();
+		}
+
+		private void RegisterIOC()
+		{
+			var serviceLocator = ServiceLocator.Default;
+			serviceLocator.AutoRegisterTypesViaAttributes = true;
 		}
 
 		private async void VixenApplication_Shown(object sender, EventArgs e)
@@ -532,7 +541,7 @@ namespace VixenApplication
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Exclamation;
 				var messageBox = new MessageBoxForm("Please be aware that this is a development version. Some parts of the software may not work, and data loss is possible! Please backup your data before using this version of the software.", "Development/Test Software", false, false);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 			}
 		}
 
@@ -611,10 +620,10 @@ namespace VixenApplication
 				}
 				else if (result == DialogResult.Cancel)
 				{
-					var messageBox = new MessageBoxForm(Application.ProductName + " cannot continue without a vaild profile." + Environment.NewLine + Environment.NewLine +
+					var messageBox = new MessageBoxForm(Application.ProductName + " cannot continue without a valid profile." + Environment.NewLine + Environment.NewLine +
 						"Are you sure you want to exit " + Application.ProductName + "?",
 						Application.ProductName,MessageBoxButtons.YesNo, SystemIcons.Warning);
-					messageBox.ShowDialog();
+					messageBox.ShowDialog(this);
 					if (messageBox.DialogResult == DialogResult.OK)
 					{
 						Environment.Exit(0);
@@ -637,11 +646,13 @@ namespace VixenApplication
 					"Selected profile {0} {1}!\n\nSelect a different profile to load or use the Profile Editor to create a new profile.",
 					name, isLocked ? "is locked by another instance" : "data directory does not exist");
 			var messageBox = new MessageBoxForm(message, "Error", MessageBoxButtons.OK, SystemIcons.Error);
+			messageBox.StartPosition = FormStartPosition.CenterScreen;
 			messageBox.ShowDialog();
 		}
 
 		private void UpdateTitleWithProfileName(string profileName)
 		{
+			VixenSystem.ProfileName = profileName;
 			Text = string.Format("Vixen Administration - {0} Profile", profileName);
 		}
 
@@ -730,7 +741,9 @@ namespace VixenApplication
 
 				if (descriptor.CanCreateNew) {
 					item.Tag = descriptor.FileExtension;
-					item.Click += (sender, e) => {
+					item.Click += (sender, e) =>
+					{
+						Cursor = Cursors.WaitCursor;
 						ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
 						string fileType = (string)menuItem.Tag;
 						IEditorUserInterface editor = EditorService.Instance.CreateEditor(fileType);
@@ -740,11 +753,14 @@ namespace VixenApplication
 							MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 							var messageBox = new MessageBoxForm("Can't find an editor to open this file type. (\"" + fileType + "\")",
 											"Error opening file", false, false);
-							messageBox.ShowDialog();
+							messageBox.ShowDialog(this);
 						}
 						else {
+							Cursor = Cursors.WaitCursor;
 							_OpenEditor(editor);
 						}
+
+						Cursor= Cursors.Default;
 					};
 					contextMenuStripNewSequence.Items.Add(item);
 				}
@@ -771,7 +787,7 @@ namespace VixenApplication
 			if (!_CloseEditor(editor))
 			{
 				e.Cancel = true;
-		}
+			}
 			else
 			{
 				editor.EditorClosing();
@@ -784,6 +800,7 @@ namespace VixenApplication
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Save changes to the sequence?", "Save Changes?", true, true);
+				messageBox.StartPosition = FormStartPosition.CenterScreen;
 				messageBox.ShowDialog();
 				if (messageBox.DialogResult == DialogResult.Cancel)
 					return false;
@@ -844,17 +861,15 @@ namespace VixenApplication
 
 			// if the user hit 'ok' on the dialog, try opening the selected file(s) in an approriate editor
 			if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-				Cursor = Cursors.WaitCursor;
 				foreach (string file in openFileDialog.FileNames) {
 					OpenSequenceFromFile(file);
 				}
-				Cursor = Cursors.Default;
 			}
 		}
 
 		private void OpenSequenceFromFile(string filename)
 		{
-			Cursor.Current = Cursors.WaitCursor;
+			Cursor = Cursors.WaitCursor;
 			try {
 				IEditorUserInterface editor = EditorService.Instance.CreateEditor(filename);
 
@@ -864,18 +879,19 @@ namespace VixenApplication
 					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("Can't find an editor to open this file type. (\"" + Path.GetFileName(filename) + "\")",
 									"Error opening file", false, false);
-					messageBox.ShowDialog();
+					messageBox.ShowDialog(this);
 				}
 				else {
 					_OpenEditor(editor);
+					Cursor = Cursors.Default;
 				}
 			}
 			catch (Exception ex) {
-				Logging.Error("Error trying to open file '" + filename + "': ", ex);
+				Logging.Error(ex, "Error trying to open file '" + filename + "': ");
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Error trying to open file '" + filename + "'.", "Error opening file", false, false);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 			}
 		}
 
@@ -995,7 +1011,7 @@ namespace VixenApplication
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Can't find selected sequence.", "Error", false, false);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 			}
 		}
 
@@ -1059,29 +1075,11 @@ namespace VixenApplication
 
 		private const int StatsUpdateInterval = 1000; // ms
 		private Timer _statsTimer;
-		private Process _thisProc;
-		private PerformanceCounter _committedRamCounter;
-		private PerformanceCounter _reservedRamCounter;
 		
-
+		
 		private void InitStats()
 		{
-			_thisProc = Process.GetCurrentProcess();
 			_cpuUsage = new CpuUsage();
-
-			//try
-			//{
-			//	if (PerformanceCounterCategory.Exists(".NET CLR Memory"))
-			//	{
-			//		_committedRamCounter = new PerformanceCounter(".NET CLR Memory", "# Total committed Bytes", _thisProc.ProcessName);
-			//		_reservedRamCounter = new PerformanceCounter(".NET CLR Memory", "# Total reserved Bytes", _thisProc.ProcessName);
-			//		_perfCountersAvailable = true;
-			//	}
-			//}
-			//catch (Exception ex)
-			//{
-			//	Logging.Error("Cannot access performance counters. Refresh the counter list with lodctr /R");
-			//}
 
 			_statsTimer = new Timer();
 			_statsTimer.Interval = StatsUpdateInterval;
@@ -1123,7 +1121,7 @@ namespace VixenApplication
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("You must re-start Vixen for the changes to take effect.", "Profiles Changed", false, false);
-				messageBox.ShowDialog();
+				messageBox.ShowDialog(this);
 			}
 		}
 
@@ -1168,7 +1166,7 @@ namespace VixenApplication
 			if (! await CheckForConnectionToWebsite())
 			{
 				var messageBox = new MessageBoxForm("Unable to reach http://bugs.vixenlights.com. Please check your internet connection and verify you can reach the site and try again.", "Error", MessageBoxButtons.OK, SystemIcons.Error);
-				messageBox.ShowDialog();
+				messageBox.ShowDialogThreadSafe(this);
 				Cursor = Cursors.Arrow;
 				return;
 			}

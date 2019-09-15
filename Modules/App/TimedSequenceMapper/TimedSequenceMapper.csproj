@@ -1,0 +1,289 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{637A998A-0C0B-46FD-915E-B1FD5E143F8E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VixenModules.App.TimedSequenceMapper</RootNamespace>
+    <AssemblyName>TimedSequenceMapper</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>$(SolutionDir)\Release\Modules\App\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>$(SolutionDir)\Release64\Modules\App\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <OutputPath>..\..\..\Debug\Modules\App\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>false</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <OutputPath>..\..\..\Debug64\Modules\App\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>false</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
+      <Project>{a54fb6a1-a9c3-488c-b961-41b8dbc81b36}</Project>
+      <Name>Controls</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\WPFCommon\WPFCommon.csproj">
+      <Project>{44c23ecf-ea1c-4806-956a-07ec1203f8b4}</Project>
+      <Name>WPFCommon</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
+      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
+      <Name>Vixen</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
+      <Project>{F7A80169-6310-4585-9D58-A6F6F5C5B380}</Project>
+      <Name>Resources</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Sequence\Timed\Timed.csproj">
+      <Project>{45E1228A-F714-41D5-BB9B-A776F2B23143}</Project>
+      <Name>Timed</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Catel.Core, Version=5.11.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Catel.Core.5.11.0\lib\net47\Catel.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Catel.MVVM, Version=5.11.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Catel.MVVM.5.11.0\lib\net47\Catel.MVVM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="GongSolutions.WPF.DragDrop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=91f1945125b7a587, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\gong-wpf-dragdrop.2.0.4\lib\net47\GongSolutions.WPF.DragDrop.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Expression.Blend.Sdk.WPF.1.0.1\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\NLog.4.6.7\lib\net45\NLog.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.ComponentModel.Annotations.4.5.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.ConfigurationManager, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Configuration.ConfigurationManager.4.4.1\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization.Formatters, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Runtime.Serialization.Formatters.4.3.0\lib\net46\System.Runtime.Serialization.Formatters.dll</HintPath>
+      <Private>False</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization.Primitives, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Runtime.Serialization.Primitives.4.3.0\lib\net46\System.Runtime.Serialization.Primitives.dll</HintPath>
+      <Private>False</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization.Xml, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Runtime.Serialization.Xml.4.3.0\lib\net46\System.Runtime.Serialization.Xml.dll</HintPath>
+      <Private>False</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Expression.Blend.Sdk.WPF.1.0.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Constants.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SequenceElementMapper\Models\ElementMap.cs" />
+    <Compile Include="SequenceElementMapper\Models\ElementMapping.cs" />
+    <Compile Include="SequenceElementMapper\Services\ElementMapService.cs" />
+    <Compile Include="SequenceElementMapper\Services\IElementMapService.cs" />
+    <Compile Include="SequenceElementMapper\Services\IModelPersistenceService.cs" />
+    <Compile Include="SequenceElementMapper\Services\ModelPersistenceService.cs" />
+    <Compile Include="SequenceElementMapper\ViewModels\ElementMapperViewModel.cs" />
+    <Compile Include="SequenceElementMapper\ViewModels\ElementNodeProxyViewModel.cs" />
+    <Compile Include="SequenceElementMapper\ViewModels\SourceTreeViewModel.cs" />
+    <Compile Include="SequenceElementMapper\Views\ElementMapperView.xaml.cs">
+      <DependentUpon>ElementMapperView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SequenceElementMapper\Views\ElementNodeProxyView.xaml.cs">
+      <DependentUpon>ElementNodeProxyView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SequenceElementMapper\Views\SourceTreeView.xaml.cs">
+      <DependentUpon>SourceTreeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SequencePackageExport\SequencePackageExportSummaryStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SequencePackageExport\SequencePackageExportSummaryStage.Designer.cs">
+      <DependentUpon>SequencePackageExportSummaryStage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SequencePackageExport\SequencePackageExportOutputStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SequencePackageExport\SequencePackageExportOutputStage.Designer.cs">
+      <DependentUpon>SequencePackageExportOutputStage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SequencePackageExport\SequencePackageExportSourcesStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SequencePackageExport\SequencePackageExportSourcesStage.Designer.cs">
+      <DependentUpon>SequencePackageExportSourcesStage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SequencePackageExport\SequencePackageExportWizard.cs" />
+    <Compile Include="SequencePackageExport\SequencePackageExportFinishedStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SequencePackageExport\SequencePackageExportFinishedStage.Designer.cs">
+      <DependentUpon>SequencePackageExportFinishedStage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SequencePackageImport\SequencePackageImportFinishedStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SequencePackageImport\SequencePackageImportFinishedStage.Designer.cs">
+      <DependentUpon>SequencePackageImportFinishedStage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SequencePackageImport\ImportConfig.cs" />
+    <Compile Include="SequencePackageImport\SequencePackageImportSummaryStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SequencePackageImport\SequencePackageImportSummaryStage.Designer.cs">
+      <DependentUpon>SequencePackageImportSummaryStage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SequencePackageImport\SequencePackageImportSequencesStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SequencePackageImport\SequencePackageImportSequencesStage.Designer.cs">
+      <DependentUpon>SequencePackageImportSequencesStage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SequencePackageImport\SequencePackageImportInputStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SequencePackageImport\SequencePackageImportInputStage.Designer.cs">
+      <DependentUpon>SequencePackageImportInputStage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SequencePackageImport\SequencePackageImportWizard.cs" />
+    <Compile Include="TimedSequencePackagerData.cs" />
+    <Compile Include="TimedSequencePackagerModule.cs" />
+    <Compile Include="TimedSequencePackagerDescriptor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="SequenceElementMapper\Views\ElementMapperView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SequenceElementMapper\Views\ElementNodeProxyView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SequenceElementMapper\Views\SourceTreeView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SequenceElementMapper\Behaviors\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SequencePackageExport\SequencePackageExportSummaryStage.resx">
+      <DependentUpon>SequencePackageExportSummaryStage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SequencePackageExport\SequencePackageExportOutputStage.resx">
+      <DependentUpon>SequencePackageExportOutputStage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SequencePackageExport\SequencePackageExportSourcesStage.resx">
+      <DependentUpon>SequencePackageExportSourcesStage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SequencePackageExport\SequencePackageExportFinishedStage.resx">
+      <DependentUpon>SequencePackageExportFinishedStage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SequencePackageImport\SequencePackageImportFinishedStage.resx">
+      <DependentUpon>SequencePackageImportFinishedStage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SequencePackageImport\SequencePackageImportSummaryStage.resx">
+      <DependentUpon>SequencePackageImportSummaryStage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SequencePackageImport\SequencePackageImportSequencesStage.resx">
+      <DependentUpon>SequencePackageImportSequencesStage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SequencePackageImport\SequencePackageImportInputStage.resx">
+      <DependentUpon>SequencePackageImportInputStage.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -366,7 +366,7 @@ namespace Common.Controls
 				// Check to see if a node was clicked on 
 				TreeNode node = GetNodeAt(e.Location);
 				if (node != null) {
-					if (ModifierKeys == Keys.None && m_SelectedNodes.Contains(node) && e.Button != MouseButtons.Right &&
+					if (ModifierKeys == Keys.None && !m_SelectedNodes.Contains(node) && e.Button != MouseButtons.Right &&
 					    _clickedNodeWasInBounds)
 						SelectNode(node);
 					if (ModifierKeys == Keys.Control && !_selectedNodeWithControlKey)
@@ -1013,7 +1013,7 @@ namespace Common.Controls
 				}
 				else {
 					// Just clicked a node, select it
-					SelectSingleNode(node);
+					SelectSingleNode(node, false);
 				}
 
 				OnAfterSelect(new TreeViewEventArgs(m_SelectedNode));
@@ -1037,8 +1037,9 @@ namespace Common.Controls
 			}
 		}
 
-		private void SelectSingleNode(TreeNode node)
+		private void SelectSingleNode(TreeNode node, bool notify=true)
 		{
+			BeginUpdate();
 			ClearSelectedNodes();
 
 			if (node != null) {
@@ -1046,7 +1047,12 @@ namespace Common.Controls
 				node.EnsureVisible();
 			}
 
-			OnAfterSelect(new TreeViewEventArgs(m_SelectedNode));
+			EndUpdate();
+
+			if (notify)
+			{
+				OnAfterSelect(new TreeViewEventArgs(m_SelectedNode));
+			}
 		}
 
 		private void ToggleNode(TreeNode node, bool bSelectNode)
@@ -1241,6 +1247,12 @@ namespace Common.Controls
 				return 1;
 			if (x == y)
 				return 0;
+
+			if (x.Parent == y.Parent)
+			{
+				if (x.Index > y.Index) return 1;
+				return -1;
+			}
 
 			TreeNode first = FindFirstInCollection(_treeView.Nodes, x, y);
 

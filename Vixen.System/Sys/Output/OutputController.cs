@@ -27,7 +27,7 @@ namespace Vixen.Sys.Output
 		private IDataPolicy _dataPolicy;
 		private MillisecondsValue _updateTimeValue;
 		private ICommand[] commands = new ICommand[0];
-
+		
 		private ParallelOptions _parallelOptions = new ParallelOptions()
 		{
 			MaxDegreeOfParallelism = Environment.ProcessorCount
@@ -145,12 +145,12 @@ namespace Vixen.Sys.Output
 
 				if (OutputCount > 15000)
 				{
-					Parallel.For(0, OutputCount, _parallelOptions, () => ControllerModule.DataPolicyFactory.CreateDataPolicy(),  (x, loopState, dataPolicy) =>
-					{
-						var o = Outputs[x].State;
-						commands[x] = o?.Value != null ? dataPolicy.GenerateCommand(o) : null;
-						return dataPolicy;
-					}, (x) => {  }); //nothing to do but let the datapolicy expire
+					Parallel.For(0, OutputCount, _parallelOptions, () => ControllerModule.DataPolicyFactory.CreateDataPolicy(), (x, loopState, dataPolicy) =>
+				   {
+					   var o = Outputs[x].State;
+					   commands[x] = o?.Value != null ? dataPolicy.GenerateCommand(o) : null;
+					   return dataPolicy;
+				   }, x => { }); //nothing to do but let the datapolicy expire
 				}
 				else
 				{
@@ -167,7 +167,7 @@ namespace Vixen.Sys.Output
 			}
 			catch (Exception e)
 			{
-				Logging.Error(e, "An error occured outputting data for controller {0}", Name);
+				Logging.Error(e, "An error occurred outputting data for controller {0}", Name);
 			}
 			finally
 			{

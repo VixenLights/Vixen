@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using Catel.Logging;
 using Common.Controls;
 using Vixen.Sys;
 
@@ -26,10 +27,12 @@ namespace VixenApplication
 			try
 			{
 				Logging.Info("Vixen app starting.");
+				LogManager.AddListener(new NLogListener());
 				AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 				Application.ThreadException += Application_ThreadException;
 				Application.EnableVisualStyles();
 				Application.SetCompatibleTextRenderingDefault(false);
+
 				_app = new VixenApplication();
 				Application.Run(_app);
 			}

@@ -36,27 +36,39 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			AddPoint(PointToZoomPoint(point1));
 			AddPoint(PointToZoomPoint(point2));
 
-			if (selectedNode != null) {
-				if (selectedNode.Children.Count() > 0 && PreviewTools.GetLeafNodes(selectedNode).Count == 0) 
+			Reconfigure(selectedNode);
+		}
+
+		#region Overrides of PreviewBaseShape
+
+		/// <inheritdoc />
+		internal sealed override void Reconfigure(ElementNode node)
+		{
+			if (node != null)
+			{
+				if (node.Children.Count() > 0 && PreviewTools.GetLeafNodes(node).Count == 0)
 				{
 					StringType = StringTypes.Pixel;
-                    _strings = new List<PreviewBaseShape>();
-                    foreach (ElementNode child in selectedNode.Children)
-                    {
-                        int pixelCount = child.Children.Count();
-                        PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), pixelCount, child, ZoomLevel);
-                        line.Parent = this;
-                        _strings.Add(line);
-                    }
-                    _stringCount = _strings.Count;
-                    creating = false;
-				} else
-                {
+					_strings = new List<PreviewBaseShape>();
+					foreach (ElementNode child in node.Children)
+					{
+						int pixelCount = child.Children.Count();
+						PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), pixelCount, child, ZoomLevel);
+						line.Parent = this;
+						_strings.Add(line);
+					}
+					_stringCount = _strings.Count;
+					creating = false;
+				}
+				else
+				{
 					StringType = StringTypes.Standard;
 				}
 			}
 			Layout();
 		}
+
+		#endregion
 
 		[OnDeserialized]
 		private new void OnDeserialized(StreamingContext context)

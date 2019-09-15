@@ -50,7 +50,7 @@ namespace VixenModules.App.Shows
 			}
 			catch (Exception e)
 			{
-				Logging.Error("An error occured during launch event.", e);
+				Logging.Error(e, "An error occurred during launch event.");
 				ResultString = e.Message;
 				Complete();
 			}

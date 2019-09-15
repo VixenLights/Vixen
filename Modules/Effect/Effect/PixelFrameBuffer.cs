@@ -69,7 +69,7 @@ namespace VixenModules.Effect.Effect
 		// 0,0 is lower left
 		public void SetPixel(int x, int y, HSV hsv)
 		{
-			Color color = hsv.ToRGB().ToArgb();
+			Color color = hsv.ToRGB();
 			SetPixel(x, y, color);
 		}
 

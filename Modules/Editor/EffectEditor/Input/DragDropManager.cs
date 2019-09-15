@@ -25,7 +25,6 @@ namespace VixenModules.Editor.EffectEditor.Input
 
 		private static UIElement _draggedElt;
 		private static Point _dragStartPoint;
-		private static bool _isMouseDown;
 		private static Point _offsetPoint;
 		private static DropPreviewAdorner _overlayElt;
 		private static IDragSourceAdvisor s_currentDragSourceAdvisor;

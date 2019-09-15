@@ -204,7 +204,7 @@ namespace VixenModules.App.LipSyncApp
 				{
 					HSV hsvVal = HSV.FromRGB(item.ElementColor);
 					hsvVal.V = 1;
-					colorRetVal = hsvVal.ToRGB().ToArgb();
+					colorRetVal = hsvVal.ToRGB();
 					intensityRetVal = HSV.VFromRgb(item.ElementColor);
 				}
 			}
@@ -249,7 +249,7 @@ namespace VixenModules.App.LipSyncApp
 				{
 					HSV hsvVal = HSV.FromRGB(item.ElementColor);
 					hsvVal.V = 1;
-					retVal = hsvVal.ToRGB().ToArgb();
+					retVal = hsvVal.ToRGB();
 				}
 			}
 			

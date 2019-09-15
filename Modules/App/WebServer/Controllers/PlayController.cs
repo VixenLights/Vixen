@@ -9,7 +9,7 @@ using VixenModules.App.WebServer.Service;
 namespace VixenModules.App.WebServer.Controllers
 {
 	[ArgumentExceptionFilter]
-	public class PlayController : BaseController
+	public class PlayController : BaseApiController
 	{
 		[HttpGet]
 		public IEnumerable<Status> Status()

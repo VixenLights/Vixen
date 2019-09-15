@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Common.Resources</RootNamespace>
     <AssemblyName>Resources</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -271,6 +271,8 @@
     <Resource Include="buttonBulbSmaller.png" />
     <Resource Include="buttonBulbEqual.png" />
     <Resource Include="buttonBulbBigger.png" />
+    <None Include="bullet_toggle_minus_active_16px.png" />
+    <None Include="bullet_toggle_plus_active_16px.png" />
     <Content Include="buttonAlignBottom.BackgroundImage.png" />
     <Content Include="buttonAlignHorizMid.BackgroundImage.png" />
     <Content Include="buttonAlignLeft.BackgroundImage.png" />
@@ -353,11 +355,36 @@
     <None Include="Resources\check-mark.png" />
     <None Include="Resources\Saveall.png" />
     <None Include="Resources\Save.png" />
-    <None Include="Resources\SaveAs.png" />
     <None Include="Resources\ColorGradient.png" />
     <None Include="Resources\Color.png" />
     <None Include="Resources\Curve.png" />
     <None Include="Resources\Lipsync.png" />
+    <None Include="Resources\zoom_row_in.png" />
+    <None Include="Resources\zoom_row_out.png" />
+    <None Include="Resources\Export.png" />
+    <None Include="Resources\Close.png" />
+    <None Include="Resources\Save_6530.png" />
+    <None Include="Resources\SaveAs.png" />
+    <None Include="Resources\zoom_time_out.png" />
+    <None Include="Resources\zoom_time_in.png" />
+    <None Include="Resources\Auto_Save.png" />
+    <None Include="Resources\AudioDevices.png" />
+    <None Include="Resources\TimingSpeed_25.png" />
+    <None Include="Resources\TimingSpeed_50.png" />
+    <None Include="Resources\TimingSpeed_200.png" />
+    <None Include="Resources\TimingSpeed_175.png" />
+    <None Include="Resources\TimingSpeed_125.png" />
+    <None Include="Resources\TimingSpeed_100.png" />
+    <None Include="Resources\TimingSpeed_75.png" />
+    <None Include="Resources\TimingSpeed_150.png" />
+    <None Include="Resources\Exit.png" />
+    <None Include="Resources\Audio_Devices.png" />
+    <None Include="Resources\TimingSpeed_350.png" />
+    <None Include="Resources\TimingSpeed_250.png" />
+    <None Include="Resources\TimingSpeed.png" />
+    <None Include="Resources\paste_invert.png" />
+    <None Include="Resources\paste_special.png" />
+    <None Include="Resources\paste_marks.png" />
     <Content Include="table_chart_left.png" />
     <Resource Include="folder_open.png" />
     <None Include="hourglass_link.png" />

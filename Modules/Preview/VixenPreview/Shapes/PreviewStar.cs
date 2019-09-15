@@ -17,6 +17,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	[DataContract]
 	public class PreviewStar : PreviewBaseShape
 	{
+		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		[DataMember] private PreviewPoint _topLeftPoint;
 		[DataMember] private PreviewPoint _bottomRightPoint;
 		[DataMember] private int _pointCount;
@@ -36,46 +38,59 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_topLeftPoint = PointToZoomPoint(point);
 			_bottomRightPoint = PointToZoomPoint(point);
 
-            _pointCount = 0;
-            _pixelCount = 0;
+            Reconfigure(selectedNode);
+		}
+
+		#region Overrides of PreviewBaseShape
+
+		/// <inheritdoc />
+		internal sealed override void Reconfigure(ElementNode node)
+		{
+			_pointCount = 0;
+			_pixelCount = 0;
 			_insideSize = 40;
+			_pixels.Clear();
+			if (node != null)
+			{
 
-			if (selectedNode != null) {
-
-                AddAllChildren(selectedNode);
-                if (IsPixelStar(selectedNode))
-                    StringType = StringTypes.Pixel;
+				AddAllChildren(node);
+				if (IsPixelStar(node))
+					StringType = StringTypes.Pixel;
 			}
 
-            if (_pixels.Count >= 5 && _pointCount == 0)
-            {
-	            ConfigurePointCount(_pixels.Count);
-            }
+			if (_pixels.Count >= 5 && _pointCount == 0)
+			{
+				ConfigurePointCount(_pixels.Count);
+			}
 
 			if (PointCount == 0)
 			{
 				ConfigurePointCount(_pixels.Count + 1);
 			}
 
-            if (_pixels.Count < 5)
-            {
-                _pixelCount = 40;
-                _pointCount = 5;
-                // Just add the pixels, they will get layed out next
-				for (int lightNum = 0; lightNum < _pixelCount; lightNum++) {
+			if (_pixels.Count < 5)
+			{
+				_pixelCount = 40;
+				_pointCount = 5;
+				// Just add the pixels, they will get layed out next
+				for (int lightNum = 0; lightNum < _pixelCount; lightNum++)
+				{
 					PreviewPixel pixel = AddPixel(10, 10);
 					pixel.PixelColor = Color.White;
-					if (selectedNode != null && selectedNode.IsLeaf) {
-						pixel.Node = selectedNode;
+					if (node != null && node.IsLeaf)
+					{
+						pixel.Node = node;
 					}
 				}
-            }
+			}
 
-            //Console.WriteLine("Star Pixel Count: " + _pixelCount + ":" + _pixels.Count());
+			//Console.WriteLine("Star Pixel Count: " + _pixelCount + ":" + _pixels.Count());
 
 			// Lay out the pixels
 			Layout();
 		}
+
+		#endregion
 
 		private void ConfigurePointCount(int lightCount)
 		{
@@ -446,7 +461,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                         double y = point1.Y;
                         for (int linePointNum = 0; linePointNum < line1PixelCount; linePointNum++)
                         {
-                            if (pixelNum < _pixelCount)
+                            if (pixelNum < _pixelCount && pixelNum < _pixels.Count)
                             {
                                 _pixels[pixelNum].X = (int)Math.Round(x);
                                 _pixels[pixelNum].Y = (int)Math.Round(y);
@@ -455,7 +470,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                             }
                             else
                             {
-                                Console.WriteLine("pixelNum Overrun 1: " + pixelNum);
+                                Logging.Error("pixelNum Overrun 1: " + pixelNum);
                             }
                             pixelNum++;
                         }
@@ -466,7 +481,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                         y = point2.Y;
                         for (int linePointNum = 0; linePointNum < line2PixelCount; linePointNum++)
                         {
-                            if (pixelNum < _pixelCount)
+                            if (pixelNum < _pixelCount && pixelNum < _pixels.Count)
                             {
                                 _pixels[pixelNum].X = (int)Math.Round(x);
                                 _pixels[pixelNum].Y = (int)Math.Round(y);
@@ -475,7 +490,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                             }
                             else
                             {
-                                Console.WriteLine("pixelNum Overrun 2: " + pixelNum);
+	                            Logging.Error("pixelNum Overrun 2: " + pixelNum);
                             }
                             pixelNum++;
                         }

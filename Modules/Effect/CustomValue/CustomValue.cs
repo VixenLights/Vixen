@@ -206,7 +206,7 @@ namespace VixenModules.Effect.CustomValue
 			}
 			catch (Exception e)
 			{
-				Logging.Error("Exception rendering the visualization for the effect.", e);
+				Logging.Error(e, "Exception rendering the visualization for the effect.");
 			}
 		}
 
@@ -242,7 +242,7 @@ namespace VixenModules.Effect.CustomValue
 
 			CommandValue value = new CommandValue(command);
 
-			foreach (ElementNode node in TargetNodes)
+			foreach (IElementNode node in TargetNodes)
 			{
 				foreach (var leafNode in node.GetLeafEnumerator())
 				{

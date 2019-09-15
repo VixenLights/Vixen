@@ -115,12 +115,33 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region NodeCount property
+
+		/// <summary>
+		/// Gets or sets the NodeCount value.
+		/// </summary>
+		[PropertyOrder(4)]
+		[DisplayName("Node Count")]
+		[ViewModelToModel("PhysicalMetadata")]
+		public string NodeCount
+		{
+			get { return GetValue<string>(NodeCountProperty); }
+			set { SetValue(NodeCountProperty, value); }
+		}
+
+		/// <summary>
+		/// NodeCount property data.
+		/// </summary>
+		public static readonly PropertyData NodeCountProperty = RegisterProperty("NodeCount", typeof(string));
+
+		#endregion
+
 		#region BulbType property
 
 		/// <summary>
 		/// Gets or sets the BulbType value.
 		/// </summary>
-		[PropertyOrder(4)]
+		[PropertyOrder(5)]
 		[DisplayName("Bulb Type")]
 		[ViewModelToModel("PhysicalMetadata")]
 		[TypeConverter(typeof(BulbTypeConverter))]
@@ -142,7 +163,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets or sets the ColorMode value.
 		/// </summary>
-		[PropertyOrder(5)]
+		[PropertyOrder(6)]
 		[DisplayName("Color Mode")]
 		[Description("Declares color handling for the entire prop. \nIf the prop contains multiple color modes, choose other.")]
 		[ViewModelToModel("PhysicalMetadata")]

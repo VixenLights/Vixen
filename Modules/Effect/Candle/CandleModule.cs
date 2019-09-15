@@ -208,7 +208,7 @@ namespace VixenModules.Effect.Candle
 			var elementGroup = nodes.Select((x, index) => new { x, index })
 					.GroupBy(x => x.index / GroupLevel, y => y.x);
 
-			foreach (IGrouping<int, ElementNode> block in elementGroup)
+			foreach (IGrouping<int, IElementNode> block in elementGroup)
 			{
 				_RenderCandleOnElements(block.ToList());
 			}
@@ -222,7 +222,7 @@ namespace VixenModules.Effect.Candle
 			return _effectIntents;
 		}
 
-		private void _RenderCandleOnElements(List<ElementNode> elements)
+		private void _RenderCandleOnElements(List<IElementNode> elements)
 		{
 			TimeSpan startTime = TimeSpan.Zero;
 			double currentLevel = _GenerateStartingLevel();
@@ -280,7 +280,7 @@ namespace VixenModules.Effect.Candle
 					}
 					catch (Exception e)
 					{
-						Logging.Error("Error generating Candle intents", e);
+						Logging.Error(e, "Error generating Candle intents");
 						throw;
 					}
 				}

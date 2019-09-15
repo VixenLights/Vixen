@@ -18,7 +18,7 @@ namespace VixenModules.Effect.Butterfly
 			Gradient.Colors.Clear();
 			Gradient.Colors.Add(new ColorPoint(Color.Red,0.0));
 			Gradient.Colors.Add(new ColorPoint(Color.Lime, 1.0));
-			Iterations = 1;
+			Iterations = 2;
 			ColorScheme = ColorScheme.Gradient;
 			ButterflyType = ButterflyType.Type1;
 			Repeat = 1;
@@ -27,6 +27,8 @@ namespace VixenModules.Effect.Butterfly
 			Direction = Direction.Forward;
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			Orientation=StringOrientation.Vertical;
+			SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 60.0, 60.0 }));
+			MovementType = MovementType.Iterations;
 		}
 
 		[DataMember]
@@ -57,7 +59,24 @@ namespace VixenModules.Effect.Butterfly
 		public int Iterations { get; set; }
 
 		[DataMember]
+		public MovementType MovementType { get; set; }
+
+		[DataMember]
 		public StringOrientation Orientation { get; set; }
+
+		[DataMember]
+		public Curve SpeedCurve { get; set; }
+
+		[OnDeserialized]
+		public void OnDeserialized(StreamingContext c)
+		{
+			//if one of them is null the others probably are, and if this one is not then they all should be good.
+			//Try to save some cycles on every load
+			if (SpeedCurve == null)
+			{
+				SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 60.0, 60.0 }));
+			}
+		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
@@ -73,7 +92,9 @@ namespace VixenModules.Effect.Butterfly
 				Direction = Direction,
 				BackgroundChunks = BackgroundChunks,
 				ColorScheme = ColorScheme,
-				Iterations = Iterations
+				Iterations = Iterations,
+				SpeedCurve = new Curve(SpeedCurve),
+				MovementType = MovementType
 			};
 			return result;
 		}

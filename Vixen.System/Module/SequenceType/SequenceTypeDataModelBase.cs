@@ -124,7 +124,7 @@ namespace Vixen.Module.SequenceType
 			var elementNodes = VixenSystem.Nodes.Distinct().ToDictionary(x => x.Id);
 			IEffectNode[] effectNodes = _effectNodeSurrogates.Select(x => x.CreateEffectNode(elementNodes)).ToArray();
 			// weed out effects without nodes..
-			effectNodes = effectNodes.Where(x => x.Effect.TargetNodes.Count() != 0).ToArray();
+			//effectNodes = effectNodes.Where(x => x.Effect.TargetNodes.Count() != 0).ToArray();
 
 			ISequenceFilterNode[] sequenceFilterNodes = _filterNodeSurrogates.Select(x => x.CreateFilterNode()).ToArray();
 

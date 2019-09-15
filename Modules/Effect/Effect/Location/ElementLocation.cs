@@ -8,7 +8,7 @@ namespace VixenModules.Effect.Effect.Location
 {
 	public class ElementLocation:IEquatable<ElementLocation>, IEqualityComparer<ElementLocation>
 	{
-		public ElementLocation(ElementNode node)
+		public ElementLocation(IElementNode node)
 		{
 			ElementNode = node;
 			InitializeLocation(node);
@@ -17,16 +17,16 @@ namespace VixenModules.Effect.Effect.Location
 
 		public int Y { get; set; }
 
-		public ElementNode ElementNode { get; set; }
+		public IElementNode ElementNode { get; set; }
 
-		private void InitializeLocation(ElementNode node)
+		private void InitializeLocation(IElementNode node)
 		{
 			var point = GetLocation(node);
 			X = point.X;
 			Y = point.Y;
 		}
 
-		private static Point GetLocation(ElementNode node)
+		private static Point GetLocation(IElementNode node)
 		{
 			return LocationModule.GetPositionForElement(node);
 		}

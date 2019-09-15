@@ -171,7 +171,7 @@ namespace VixenApplication.Setup
 
 		public void UpdatePatching()
 		{
-			controllerTree.PopulateControllerTree();
+			controllerTree.RefreshControllerOutputStatus();
 		}
 
 		public void UpdateScrollPosition()

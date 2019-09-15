@@ -64,7 +64,7 @@ namespace VixenModules.Output.GenericSerial
 					}
 					catch (Exception ex)
 					{
-						Logging.Error(ex, "An error occured writing to the serial port.");
+						Logging.Error(ex, "An error occurred writing to the serial port.");
 					}
 				}
 			}

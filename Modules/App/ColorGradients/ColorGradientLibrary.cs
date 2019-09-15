@@ -13,7 +13,8 @@ namespace VixenModules.App.ColorGradients
 	{
 		private ColorGradientLibraryStaticData _data;
 		private bool _bulkUpdating;
-		public event EventHandler GradientChanged;
+		public event EventHandler GradientsChanged;
+		private HashSet<string> _bulkGradientChangeNames;
 
 		public override void Loading()
 		{
@@ -65,10 +66,15 @@ namespace VixenModules.App.ColorGradients
 			cg.IsCurrentLibraryGradient = true;
 			cg.LibraryReferenceName = string.Empty;
 			Library[name] = cg;
-			_GradientChanged(name);
+			
 			if (!_bulkUpdating)
 			{
+				_GradientsChanged(new []{name});
 				VixenSystem.SaveModuleConfigAsync();
+			}
+			else
+			{
+				_bulkGradientChangeNames.Add(name);
 			}
 			return inLibrary;
 		}
@@ -78,10 +84,14 @@ namespace VixenModules.App.ColorGradients
 			bool removed = _RemoveColorGradient(name);
 			if (removed)
 			{
-				_GradientChanged(name);
 				if (!_bulkUpdating)
 				{
+					_GradientsChanged(new []{name});
 					VixenSystem.SaveModuleConfigAsync();
+				}
+				else
+				{
+					_bulkGradientChangeNames.Add(name);
 				}
 			}
 
@@ -127,10 +137,9 @@ namespace VixenModules.App.ColorGradients
 			return Library.GetEnumerator();
 		}
 
-		private void _GradientChanged(string name)
+		private void _GradientsChanged(IEnumerable<string> names)
 		{
-			if (GradientChanged != null)
-				GradientChanged(this, new ColorGradientLibraryEventArgs(name));
+			GradientsChanged?.Invoke(this, new ColorGradientLibraryEventArgs(names));
 		}
 
 		/// <summary>
@@ -139,6 +148,7 @@ namespace VixenModules.App.ColorGradients
 		public void BeginBulkUpdate()
 		{
 			_bulkUpdating = true;
+			_bulkGradientChangeNames = new HashSet<string>();
 		}
 
 		/// <summary>
@@ -146,19 +156,21 @@ namespace VixenModules.App.ColorGradients
 		/// </summary>
 		public async void EndBulkUpdate()
 		{
-			await VixenSystem.SaveModuleConfigAsync();
 			_bulkUpdating = false;
+			_GradientsChanged(_bulkGradientChangeNames);
+			_bulkGradientChangeNames = null;
+			await VixenSystem.SaveModuleConfigAsync();
 		}
 
 	}
 
 	public class ColorGradientLibraryEventArgs : EventArgs
 	{
-		public ColorGradientLibraryEventArgs(string name)
+		public ColorGradientLibraryEventArgs(IEnumerable<string> names)
 		{
-			Name = name;
+			Names = names;
 		}
 
-		public string Name { get; private set; }
+		public IEnumerable<string> Names { get; private set; }
 	}
 }

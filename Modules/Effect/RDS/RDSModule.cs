@@ -36,7 +36,7 @@ namespace VixenModules.Effect.RDS
 
 			CommandValue value = new CommandValue(new StringCommand(string.Format("{0}|{1}", "RDS", _data.Title)));
 
-			foreach (ElementNode node in TargetNodes) {
+			foreach (IElementNode node in TargetNodes) {
 				if (tokenSource != null && tokenSource.IsCancellationRequested)
 					return;
 				 

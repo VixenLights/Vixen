@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VixenModules.Effect.ColorWash</RootNamespace>
     <AssemblyName>ColorWash</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -66,6 +66,7 @@
     <Compile Include="ColorWashDescriptor.cs" />
     <Compile Include="ColorWashData.cs" />
     <Compile Include="ColorWash.cs" />
+    <Compile Include="MovementType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

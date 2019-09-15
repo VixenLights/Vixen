@@ -256,13 +256,6 @@ namespace Common.Controls.Timeline
 		}
 
 		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public TimeSpan CursorPosition
-		{
-			get { return grid.CursorPosition; }
-			set { grid.CursorPosition = value; }
-		}
-
-		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public override TimeSpan VisibleTimeSpan
 		{
 			get { return grid.VisibleTimeSpan; }
@@ -598,12 +591,6 @@ namespace Common.Controls.Timeline
 		{
 			add { grid.ElementsFinishedMoving += value; }
 			remove { if (grid != null) grid.ElementsFinishedMoving -= value; }
-		}
-
-		public event EventHandler<TimeSpanEventArgs> CursorMoved
-		{
-			add { grid.CursorMoved += value; }
-			remove { if (grid != null) grid.CursorMoved -= value; }
 		}
 
 		public event EventHandler VerticalOffsetChanged

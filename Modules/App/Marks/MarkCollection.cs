@@ -208,6 +208,8 @@ namespace VixenModules.App.Marks
 			{
 				mark.Duration = Marks[index + 1].StartTime - TimeSpan.FromMilliseconds(1) - mark.StartTime;
 			}
+
+			OnPropertyChanged(nameof(Marks));
 		}
 
 		[OnDeserialized]

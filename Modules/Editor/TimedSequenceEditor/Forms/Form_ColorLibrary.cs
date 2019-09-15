@@ -52,6 +52,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public TimelineControl TimelineControl { get; set; }
 
+		/// <summary>
+		/// A read only list of the colors in the library
+		/// </summary>
+		public List<Color> Colors => _colors.ToList();
+
 		#endregion
 
 		#region Private Members
@@ -65,11 +70,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private int _dragX;
 		private int _dragY;
 		private short _sideGap;
-
-		private bool ShiftPressed
-		{
-			get { return ModifierKeys.HasFlag(Keys.Shift); }
-		}
 		
 		#endregion
 
@@ -80,7 +80,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 			TimelineControl = timelineControl;
 			Icon = Resources.Icon_Vixen3;
-			ThemeUpdateControls.UpdateControls(this);
 			toolStripColors.Renderer = new ThemeToolStripRenderer();
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			toolStripColors.ImageScalingSize = new Size(iconSize, iconSize);
@@ -103,18 +102,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			ImageSetup();
 
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			//Over-ride the auto theme listview back color
 			listViewColors.BackColor = ThemeColorTable.BackgroundColor;
+			listViewColors.Alignment = ListViewAlignment.Top;
+
+			_colorFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen", "ColorPalette.xml");
+
+			if (File.Exists(_colorFilePath))
+			{
+				Load_ColorPaletteFile();
+			}
 		}
 
 		private void ImageSetup()
 		{
 			var t = (int)Math.Round(48 * _colorLibraryScale * ScalingTools.GetScaleFactor());
 			_imageSize = new Size(t, t);
-			_sideGap = (short)(_imageSize.Width + (7 * ScalingTools.GetScaleFactor()));
+			_sideGap = (short)(_imageSize.Width + (10 * ScalingTools.GetScaleFactor()));
 
 			ListViewItem_SetSpacing(listViewColors, _sideGap, _sideGap);
 		}
@@ -126,13 +131,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (File.Exists(_colorFilePath))
 			{
 				Load_ColorPaletteFile();
-				PopulateColors();
 			}
 			else
 			{
 				listViewColors.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = _imageSize };
 			}
-			
+			PopulateColors();
 		}
 
 		#endregion
@@ -151,7 +155,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		public void Save_ColorPaletteFile()
+		private void Save_ColorPaletteFile()
 		{
 			var xmlsettings = new XmlWriterSettings
 			{
@@ -163,6 +167,64 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var dataWriter = XmlWriter.Create(_colorFilePath, xmlsettings);
 			dataSer.WriteObject(dataWriter, _colors);
 			dataWriter.Close();
+			OnColorsChanged();
+		}
+
+		internal void UpdateColorSet(List<Color> colors)
+		{
+			_colors = colors;
+			PopulateColors();
+			Save_ColorPaletteFile();
+			OnColorsChanged();
+		}
+
+		internal void AddColorSet(IEnumerable<Color> colors)
+		{
+			_colors.AddRange(colors);
+			PopulateColors();
+			Save_ColorPaletteFile();
+			OnColorsChanged();
+		}
+
+		internal void AddColor(Color color)
+		{
+			_colors.Add(color);
+			PopulateColors();
+			Save_ColorPaletteFile();
+			OnColorsChanged();
+		}
+
+		internal void AddNewColor()
+		{
+			using (ColorPicker cp = new ColorPicker())
+			{
+				cp.LockValue_V = false;
+				cp.Color = XYZ.FromRGB(Color.White);
+				DialogResult result = cp.ShowDialog();
+				if (result != DialogResult.OK) return;
+				Color colorValue = cp.Color.ToRGB().ToArgb();
+
+				_colors.Add(colorValue);
+				PopulateColors();
+				Save_ColorPaletteFile();
+				OnColorsChanged();
+			}
+		}
+
+		internal void RemoveColor(Color color)
+		{
+			_colors.Remove(color);
+			PopulateColors();
+			Save_ColorPaletteFile();
+			OnColorsChanged();
+		}
+
+		internal void RemoveColors(List<Color> colors)
+		{
+			colors.ForEach(x => _colors.Remove(x));
+			PopulateColors();
+			Save_ColorPaletteFile();
+			OnColorsChanged();
 		}
 
 		private void PopulateColors()
@@ -219,171 +281,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#endregion
 
-		#region Event Handlers
-
-		private void toolStripButtonEditColor_Click(object sender, EventArgs e)
-		{
-			if (listViewColors.SelectedItems.Count == 0)
-				return;
-
-			using (ColorPicker cp = new ColorPicker())
-			{
-				cp.LockValue_V = false;
-				cp.Color = XYZ.FromRGB((Color)listViewColors.SelectedItems[0].Tag);
-				DialogResult result = cp.ShowDialog();
-				if (result != DialogResult.OK) return;
-				Color colorValue = cp.Color.ToRGB().ToArgb();
-
-				listViewColors.BeginUpdate();
-				listViewColors.SelectedItems[0].ToolTipText = string.Format("R: {0} G: {1} B: {2}", colorValue.R, colorValue.G, colorValue.B);
-				listViewColors.SelectedItems[0].ImageKey = colorValue.ToString();
-				listViewColors.SelectedItems[0].Tag = colorValue;
-				listViewColors.EndUpdate();
-
-				Update_ColorOrder();
-				PopulateColors();
-			}
-		}
-
-		private void toolStripButtonNewColor_Click(object sender, EventArgs e)
-		{
-			using (ColorPicker cp = new ColorPicker())
-			{
-				cp.LockValue_V = false;
-				cp.Color = XYZ.FromRGB(Color.White);
-				DialogResult result = cp.ShowDialog();
-				if (result != DialogResult.OK) return;
-				Color colorValue = cp.Color.ToRGB().ToArgb();
-
-				_colors.Add(colorValue);
-				PopulateColors();
-				Save_ColorPaletteFile();
-			}
-		}
-
-		private void toolStripButtonDeleteColor_Click(object sender, EventArgs e)
-		{
-			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-			MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-			var messageBox = new MessageBoxForm("Are you sure you want to delete the selected color(s)?", "Delete color?", true, true);
-			messageBox.ShowDialog();
-
-			if (messageBox.DialogResult == DialogResult.OK)
-			{
-				foreach (ListViewItem item in listViewColors.SelectedItems)
-				{
-					_colors.Remove((Color)item.Tag);
-				}
-			}
-
-			PopulateColors();
-			Save_ColorPaletteFile();
-		}
-
-		private void listViewColors_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			toolStripButtonDeleteColor.Enabled = (listViewColors.SelectedItems.Count > 0);
-			toolStripButtonEditColor.Enabled = (listViewColors.SelectedItems.Count == 1);
-			foreach (ListViewItem VARIABLE in listViewColors.Items)
-			{
-				VARIABLE.Text = VARIABLE.Selected ? "" : " ";
-			}
-		}
-
-		private void listViewColors_MouseDoubleClick(object sender, EventArgs e)
-		{
-			if (listViewColors.SelectedItems.Count == 1)
-				toolStripButtonEditColor.PerformClick();
-		}
-
-		#endregion
-
-		#region Drag/Drop
-
-		private void listViewColors_ItemDrag(object sender, ItemDragEventArgs e)
-		{
-			if (ShiftPressed)
-			{
-				listViewColors.DoDragDrop(listViewColors.SelectedItems, DragDropEffects.Move);
-			}
-			else
-			{
-				//StartColorDrag(this, e);
-				listViewColors.DoDragDrop(listViewColors.SelectedItems[0].Tag, DragDropEffects.Copy);
-			} 
-
-		}
-
-		private void listViewColors_DragDrop(object sender, DragEventArgs e)
-		{
-			if (_dragX + 10 < e.X || _dragY + 10 < e.Y || _dragX - 10 > e.X || _dragY - 10 > e.Y)
-			{
-				if (e.Effect == DragDropEffects.Copy)
-				{
-					Color c = (Color) e.Data.GetData(typeof (Color));
-					ListViewItem item = CreateColorListItem(c);
-					Point p = listViewColors.PointToClient(new Point(e.X, e.Y));
-					ListViewItem referenceItem = listViewColors.GetItemAt(p.X, p.Y);
-					if (referenceItem != null)
-					{
-						int index = referenceItem.Index;
-						listViewColors.Items.Insert(index, item);
-					}
-					else
-					{
-						listViewColors.Items.Add(item);
-					}
-
-					listViewColors.Alignment = ListViewAlignment.SnapToGrid;
-					ListViewItem_SetSpacing(listViewColors, _sideGap, _sideGap);
-					Update_ColorOrder();
-
-				}
-				else if (e.Effect == DragDropEffects.Move)
-				{
-					listViewColors.Alignment = ListViewAlignment.Default;
-					if (listViewColors.SelectedItems.Count == 0)
-						return;
-					Point p = listViewColors.PointToClient(new Point(e.X, e.Y));
-					ListViewItem movetoNewPosition = listViewColors.GetItemAt(p.X, p.Y);
-					if (movetoNewPosition == null) return;
-					ListViewItem dropToNewPosition =
-						(e.Data.GetData(typeof (ListView.SelectedListViewItemCollection)) as ListView.SelectedListViewItemCollection)[0];
-					ListViewItem cloneToNew = (ListViewItem) dropToNewPosition.Clone();
-					int index = movetoNewPosition.Index;
-					listViewColors.Items.Remove(dropToNewPosition);
-					listViewColors.Items.Insert(index, cloneToNew);
-					listViewColors.Alignment = ListViewAlignment.SnapToGrid;
-					ListViewItem_SetSpacing(listViewColors, _sideGap, _sideGap);
-					Update_ColorOrder();
-				}
-			}
-		}
-
-		private void listViewColors_DragEnter(object sender, DragEventArgs e)
-		{
-			_dragX = e.X;
-			_dragY = e.Y;
-
-			if (e.Data.GetDataPresent(typeof(ListView.SelectedListViewItemCollection)))
-			{
-				e.Effect = DragDropEffects.Move;
-				return;
-			}
-			if (e.Data.GetDataPresent(typeof (Color)))
-			{
-				e.Effect = DragDropEffects.Copy;
-				return;
-			}
-			e.Effect = DragDropEffects.None;
-			
-		}
-
-		#endregion
-
 		#region Import/Export
 
-		private void toolStripButtonExportColors_Click(object sender, EventArgs e)
+		internal void ExportColorLibrary()
 		{
 			SaveFileDialog saveFileDialog = new SaveFileDialog
 			{
@@ -412,13 +312,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				Logging.Error("While exporting Favorite Colors: " + saveFileDialog.FileName + " " + ex.InnerException);
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-				var messageBox = new MessageBoxForm("Unable to export data, please check the error log for details", "Unable to export", false, false);
+				MessageBoxForm.msgIcon =
+					SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Unable to export data, please check the error log for details",
+					"Unable to export", false, false);
 				messageBox.ShowDialog();
 			}
 		}
 
-		private void toolStripButtonImportColors_Click(object sender, EventArgs e)
+		internal void ImportColorLibrary()
 		{
 			OpenFileDialog openFileDialog = new OpenFileDialog
 			{
@@ -437,7 +339,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
 				{
 					DataContractSerializer ser = new DataContractSerializer(typeof(List<Color>));
-					colors = (List<Color>)ser.ReadObject(reader);
+					colors = (List<Color>) ser.ReadObject(reader);
 				}
 
 				foreach (Color color in colors)
@@ -447,14 +349,186 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			catch (Exception ex)
 			{
-				Logging.Error("Invalid file while importing Favorite Colors: " + openFileDialog.FileName + " " + ex.InnerException);
+				Logging.Error("Invalid file while importing Favorite Colors: " + openFileDialog.FileName + " " +
+				              ex.InnerException);
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-				var messageBox = new MessageBoxForm("Sorry, we didn't reconize the data in that file as valid Favorite Color data.", "Invalid file", false, false);
+				MessageBoxForm.msgIcon =
+					SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox =
+					new MessageBoxForm("Sorry, we didn't reconize the data in that file as valid Favorite Color data.",
+						"Invalid file", false, false);
 				messageBox.ShowDialog();
 			}
+
 			PopulateColors();
 			Save_ColorPaletteFile();
+			OnColorsChanged();
+		}
+
+		#endregion
+
+		#region Event Handlers
+
+		private void toolStripButtonEditColor_Click(object sender, EventArgs e)
+		{
+			if (listViewColors.SelectedItems.Count == 0)
+				return;
+
+			using (ColorPicker cp = new ColorPicker())
+			{
+				cp.LockValue_V = false;
+				cp.Color = XYZ.FromRGB((Color)listViewColors.SelectedItems[0].Tag);
+				DialogResult result = cp.ShowDialog();
+				if (result != DialogResult.OK) return;
+				Color colorValue = cp.Color.ToRGB().ToArgb();
+
+				listViewColors.BeginUpdate();
+				listViewColors.SelectedItems[0].ToolTipText = string.Format("R: {0} G: {1} B: {2}", colorValue.R, colorValue.G, colorValue.B);
+				listViewColors.SelectedItems[0].ImageKey = colorValue.ToString();
+				listViewColors.SelectedItems[0].Tag = colorValue;
+				listViewColors.EndUpdate();
+
+				Update_ColorOrder(); //Does a save
+				PopulateColors();
+				OnColorsChanged();
+			}
+		}
+
+		private void toolStripButtonNewColor_Click(object sender, EventArgs e)
+		{
+			AddNewColor();
+		}
+
+		private void toolStripButtonDeleteColor_Click(object sender, EventArgs e)
+		{
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+			var messageBox = new MessageBoxForm("Are you sure you want to delete the selected color(s)?", "Delete color?", true, true);
+			messageBox.ShowDialog();
+
+			if (messageBox.DialogResult == DialogResult.OK)
+			{
+				foreach (ListViewItem item in listViewColors.SelectedItems)
+				{
+					_colors.Remove((Color)item.Tag);
+				}
+			}
+
+			PopulateColors();
+			Save_ColorPaletteFile();
+			OnColorsChanged();
+		}
+
+		private void listViewColors_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			toolStripButtonDeleteColor.Enabled = (listViewColors.SelectedItems.Count > 0);
+			toolStripButtonEditColor.Enabled = (listViewColors.SelectedItems.Count == 1);
+			foreach (ListViewItem VARIABLE in listViewColors.Items)
+			{
+				VARIABLE.Text = VARIABLE.Selected ? "" : " ";
+			}
+		}
+
+		private void listViewColors_MouseDoubleClick(object sender, EventArgs e)
+		{
+			if (listViewColors.SelectedItems.Count == 1)
+				toolStripButtonEditColor.PerformClick();
+		}
+
+		public event EventHandler ColorsChanged;
+
+		private void OnColorsChanged()
+		{
+			ColorsChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		private void toolStripButtonExportColors_Click(object sender, EventArgs e)
+		{
+			ExportColorLibrary();
+		}
+
+		private void toolStripButtonImportColors_Click(object sender, EventArgs e)
+		{
+			ImportColorLibrary();
+		}
+
+		#endregion
+
+		#region Drag/Drop
+
+		private void listViewColors_ItemDrag(object sender, ItemDragEventArgs e)
+		{
+			listViewColors.DoDragDrop(listViewColors.SelectedItems, DragDropEffects.Move);
+		}
+		private void listViewColors_DragLeave(object sender, EventArgs e)
+		{
+			if (listViewColors.SelectedItems.Count == 0) return;
+			listViewColors.DoDragDrop(listViewColors.SelectedItems[0].Tag, DragDropEffects.Copy);
+		}
+
+		private void listViewColors_DragEnter(object sender, DragEventArgs e)
+		{
+			_dragX = e.X;
+			_dragY = e.Y;
+
+			if (e.Data.GetDataPresent(typeof(ListView.SelectedListViewItemCollection)))
+			{
+				e.Effect = DragDropEffects.Move;
+				return;
+			}
+			if (e.Data.GetDataPresent(typeof(Color)))
+			{
+				e.Effect = DragDropEffects.Copy;
+				return;
+			}
+			e.Effect = DragDropEffects.None;
+		}
+
+		private void listViewColors_DragDrop(object sender, DragEventArgs e)
+		{
+			if (_dragX + 10 < e.X || _dragY + 10 < e.Y || _dragX - 10 > e.X || _dragY - 10 > e.Y)
+			{
+				Point p = listViewColors.PointToClient(new Point(e.X, e.Y));
+				ListViewItem movetoNewPosition = listViewColors.GetItemAt(p.X, p.Y);
+				if (e.Effect == DragDropEffects.Copy)
+				{
+					Color c = (Color) e.Data.GetData(typeof (Color));
+					ListViewItem item = CreateColorListItem(c);
+					if (movetoNewPosition != null)
+					{
+						int index = movetoNewPosition.Index;
+						listViewColors.Items.Insert(index, item);
+					}
+					else
+					{
+						listViewColors.Items.Add(item);
+					}
+					
+					ListViewItem_SetSpacing(listViewColors, _sideGap, _sideGap);
+					Update_ColorOrder();
+					OnColorsChanged();
+
+				}
+				else if (e.Effect == DragDropEffects.Move)
+				{
+					listViewColors.BeginUpdate();
+					listViewColors.Alignment = ListViewAlignment.Default;
+					List<ListViewItem> listViewItems = listViewColors.SelectedItems.Cast<ListViewItem>().ToList();
+					if (movetoNewPosition != null && listViewColors.SelectedItems[0].Index > movetoNewPosition.Index) listViewItems.Reverse();
+					int index = movetoNewPosition?.Index ?? listViewColors.Items.Count - 1;
+					foreach (ListViewItem item in listViewItems)
+					{
+						listViewColors.Items.Remove(item);
+						listViewColors.Items.Insert(index, item);
+					}
+
+					listViewColors.Alignment = ListViewAlignment.Top;
+					listViewColors.EndUpdate();
+					Update_ColorOrder();
+					OnColorsChanged();
+				}
+				ImageSetup();
+			}
 		}
 
 		#endregion

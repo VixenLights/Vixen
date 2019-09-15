@@ -19,7 +19,9 @@ namespace VixenModules.Effect.Butterfly
 	{
 		private ButterflyData _data;
 		private const double pi2 = 6.283185307;
-		
+		private double _position;
+		private bool _negPosition;
+
 		public Butterfly()
 		{
 			_data = new ButterflyData();
@@ -79,11 +81,28 @@ namespace VixenModules.Effect.Butterfly
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"MovementType")]
+		[ProviderDescription(@"MovementType")]
+		[PropertyOrder(2)]
+		public MovementType MovementType
+		{
+			get { return _data.MovementType; }
+			set
+			{
+				_data.MovementType = value;
+				IsDirty = true;
+				UpdateMovementTypeAttribute();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Iterations")]
 		[ProviderDescription(@"Iterations")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 20, 1)]
-		[PropertyOrder(2)]
+		[PropertyOrder(3)]
 		public int Iterations
 		{
 			get { return _data.Iterations; }
@@ -97,11 +116,27 @@ namespace VixenModules.Effect.Butterfly
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Speed")]
+		[ProviderDescription(@"Speed")]
+		[PropertyOrder(4)]
+		public Curve SpeedCurve
+		{
+			get { return _data.SpeedCurve; }
+			set
+			{
+				_data.SpeedCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Repeat")]
 		[ProviderDescription(@"Repeat")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 20, 1)]
-		[PropertyOrder(3)]
+		[PropertyOrder(5)]
 		public int Repeat
 		{
 			get { return _data.Repeat; }
@@ -119,7 +154,7 @@ namespace VixenModules.Effect.Butterfly
 		[ProviderDescription(@"BackgroundSkips")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(2, 10, 1)]
-		[PropertyOrder(4)]
+		[PropertyOrder(6)]
 		public int BackgroundSkips
 		{
 			get { return _data.BackgroundSkips; }
@@ -137,7 +172,7 @@ namespace VixenModules.Effect.Butterfly
 		[ProviderDescription(@"BackgroundChunks")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 10, 1)]
-		[PropertyOrder(5)]
+		[PropertyOrder(7)]
 		public int BackgroundChunks
 		{
 			get { return _data.BackgroundChunks; }
@@ -236,7 +271,23 @@ namespace VixenModules.Effect.Butterfly
 		{
 			UpdateGradientColorAttribute(false);
 			UpdateStringOrientationAttributes();
+			UpdateMovementTypeAttribute(false);
 			TypeDescriptor.Refresh(this);
+		}
+
+		private void UpdateMovementTypeAttribute(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
+			{
+				{ "SpeedCurve", MovementType == MovementType.Speed},
+				{ "Iterations", MovementType != MovementType.Speed},
+				{ "Direction", MovementType != MovementType.Speed}
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
 		}
 
 		private void UpdateGradientColorAttribute(bool refresh = true)
@@ -259,7 +310,7 @@ namespace VixenModules.Effect.Butterfly
 
 		protected override void SetupRender()
 		{
-			//Not required
+			_position = 0;
 		}
 
 		protected override void CleanUpRender()
@@ -272,14 +323,49 @@ namespace VixenModules.Effect.Butterfly
 			
 			int repeat = ConfigureRepeat();
 			int maxframe=BufferHt;
-			double position = (GetEffectTimeIntervalPosition(effectFrame) * Iterations) % 1;
-			int curState = (int)(TimeSpan.TotalMilliseconds*position*repeat);
+			double position;
+			double intervalPosFactor = GetEffectTimeIntervalPosition(effectFrame) * 100;
+
+			if (MovementType == MovementType.Iterations)
+			{
+				position = (GetEffectTimeIntervalPosition(effectFrame) * Iterations) % 1;
+			}
+			else
+			{
+				_position += CalculateSpeed(intervalPosFactor) / 200;
+				if (_position < 0)
+				{
+					_negPosition = true;
+					position = -_position % 1;
+				}
+				else
+				{
+					_negPosition = false;
+					position = _position % 1;
+				}
+			}
+			
+			int curState = (int)(TimeSpan.TotalMilliseconds* position * repeat);
 			int frame = (BufferHt * curState / (int)TimeSpan.TotalMilliseconds) % maxframe;
 			double offset=curState/TimeSpan.TotalMilliseconds;
 			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(effectFrame) * 100) / 100;
-
-
-			if (Direction==Direction.Forward) offset = -offset;
+			
+			switch (MovementType)
+			{
+				case MovementType.Speed:
+				{
+					if (!_negPosition) offset = -offset;
+					break;
+				}
+				default:
+				{
+					if (Direction == Direction.Forward)
+					{
+						offset = -offset;
+					}
+					break;
+				}
+			}
 
 			int bufferDim = 0;
 			if (ButterflyType == ButterflyType.Type1 || ButterflyType == ButterflyType.Type4)
@@ -303,20 +389,56 @@ namespace VixenModules.Effect.Butterfly
 		{
 			int repeat = ConfigureRepeat();
 			int maxframe = BufferHt;
+			double position;
 
 			var nodes = frameBuffer.ElementLocations.OrderBy(x => x.X).ThenBy(x => x.Y).GroupBy(x => x.X);
 
 			for (int effectFrame = 0; effectFrame < numFrames; effectFrame++)
 			{
 				frameBuffer.CurrentFrame = effectFrame;
-				double position = (GetEffectTimeIntervalPosition(effectFrame) * Iterations) % 1;
+
+				double intervalPosFactor = GetEffectTimeIntervalPosition(effectFrame) * 100;
+
+				if (MovementType == MovementType.Iterations)
+				{
+					position = (GetEffectTimeIntervalPosition(effectFrame) * Iterations) % 1;
+				}
+				else
+				{
+					_position += CalculateSpeed(intervalPosFactor) / 200;
+					if (_position < 0)
+					{
+						_negPosition = true;
+						position = -_position % 1;
+					}
+					else
+					{
+						_negPosition = false;
+						position = _position % 1;
+					}
+				}
+
 				int curState = (int)(TimeSpan.TotalMilliseconds * position * repeat);
 				int frame = (BufferHt * curState / (int)TimeSpan.TotalMilliseconds) % maxframe;
 				double offset = curState / TimeSpan.TotalMilliseconds;
 				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(effectFrame) * 100) / 100;
 
-
-				if (Direction == Direction.Forward) offset = -offset;
+				switch (MovementType)
+				{
+					case MovementType.Speed:
+					{
+						if (!_negPosition) offset = -offset;
+						break;
+					}
+					default:
+					{
+						if (Direction == Direction.Forward)
+						{
+							offset = -offset;
+						}
+						break;
+					}
+				}
 
 				int bufferDim = 0;
 				if (ButterflyType == ButterflyType.Type1 || ButterflyType == ButterflyType.Type4)
@@ -496,6 +618,11 @@ namespace VixenModules.Effect.Butterfly
 					break;
 			}
 			return repeat;
+		}
+
+		private double CalculateSpeed(double intervalPos)
+		{
+			return ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 80, -80);
 		}
 	}
 }

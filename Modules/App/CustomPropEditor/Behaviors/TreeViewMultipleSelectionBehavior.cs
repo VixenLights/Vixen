@@ -302,6 +302,7 @@ namespace VixenModules.App.CustomPropEditor.Behaviors
 
 				foreach (var item in items)
 				{
+					if(!item.IsVisible) continue;
 					if (ReferenceEquals(item, treeViewItem) || ReferenceEquals(item, AnchorItem))
 					{
 						// Toggle isBetweenAnchors when first item is found, and back again when last item is found.

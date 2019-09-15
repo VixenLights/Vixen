@@ -10,6 +10,8 @@ using Catel.MVVM;
 using Common.WPFCommon.Command;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
+using Brush = System.Drawing.Brush;
+using Color = System.Drawing.Color;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels
 {
@@ -17,8 +19,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	{
 		private readonly ElementTreeViewModel _elementTreeViewModel;
 		private readonly Dictionary<Guid, List<LightViewModel>> _elementModelMap;
-
-
+		
 		public DrawingPanelViewModel(ElementTreeViewModel elementTreeViewModel)
 		{
 			_elementTreeViewModel = elementTreeViewModel;
@@ -35,7 +36,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			DistributeVerticallyCommand = new RelayCommand(DistributeVertically, CanExecuteAlignmentMethod);
 
 			DeleteSelectedLightsCommand = new RelayCommand(DeleteSelectedLights);
-
+			Configuration = ConfigurationService.Instance().Config;
 			SelectedItems = new FastObservableCollection<LightViewModel>();
 			SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
 			IsDrawing = true;
@@ -204,6 +205,63 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region Confguration model property
+
+		/// <summary>
+		/// Gets or sets the Confguration value.
+		/// </summary>
+		[Model]
+		public Configuration Configuration
+		{
+			get { return GetValue<Configuration>(ConfgurationProperty); }
+			private set { SetValue(ConfgurationProperty, value); }
+		}
+
+		/// <summary>
+		/// Confguration property data.
+		/// </summary>
+		public static readonly PropertyData ConfgurationProperty = RegisterProperty("Configuration", typeof(Configuration));
+
+		#endregion
+
+		#region LightColor property
+
+		/// <summary>
+		/// Gets or sets the LightColor value.
+		/// </summary>
+		[ViewModelToModel("Configuration")]
+		public Color LightColor
+		{
+			get { return GetValue<Color>(LightColorProperty); }
+			//set { SetValue(LightColorProperty, value); }
+		}
+
+		/// <summary>
+		/// LightColor property data.
+		/// </summary>
+		public static readonly PropertyData LightColorProperty = RegisterProperty("LightColor", typeof(Color), null);
+
+		#endregion
+
+		#region SelectedLightColor property
+
+		/// <summary>
+		/// Gets or sets the SelectedLightColor value.
+		/// </summary>
+		[ViewModelToModel("Configuration")]
+		public Color SelectedLightColor
+		{
+			get { return GetValue<Color>(SelectedLightColorProperty); }
+			//set { SetValue(SelectedLightColorProperty, value); }
+		}
+
+		/// <summary>
+		/// SelectedLightColor property data.
+		/// </summary>
+		public static readonly PropertyData SelectedLightColorProperty = RegisterProperty("SelectedLightColor", typeof(Color), null);
+
+		#endregion
+
 		#endregion Properties
 
 		public bool IsLightsDirty
@@ -216,7 +274,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		public void ClearIsDirty()
 		{
-			this.ClearIsDirtyOnAllChilds();
+			this.ClearIsDirtyOnAllChildren();
 			//RootNodesViewModels.ForEach(x => x.ClearIsDirtyOnAllChilds());
 		}
 		

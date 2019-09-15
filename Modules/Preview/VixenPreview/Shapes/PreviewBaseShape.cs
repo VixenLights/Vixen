@@ -66,6 +66,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public event OnPropertiesChangedHandler OnPropertiesChanged;
 
+		internal virtual void Reconfigure(ElementNode node)
+		{
+
+		}
+
 		public void UpdateColorType()
 		{
 			foreach (var previewPixel in Pixels)
@@ -787,7 +792,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				{
 					//All points are the same in standard discrete 
 					int col = 1;
-					Point xy = new Point(previewPixel.X, previewPixel.Y);
+					Vector2 xy;
+					if (_isHighPrecision)
+					{
+						xy = new Vector2((float)previewPixel.Location.X, (float)previewPixel.Location.Y);
+					}
+					else
+					{
+						xy = new Vector2(previewPixel.X, previewPixel.Y);
+					}
 					foreach (Color c in colors)
 					{
 						if (c.A > 0)
@@ -804,7 +817,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 							if (col % 2 == 0)
 							{
 								xy.Y += previewPixel.PixelSize;
-								xy.X = xy.X;
+								//xy.X = xy.X;
 							}
 							else
 							{
@@ -871,6 +884,23 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			Dispose(true);
 			GC.SuppressFinalize(this);
+		}
+
+		protected void AddPixels(ElementNode node, int lightCount)
+		{
+			if (_pixels.Count == 0)
+			{
+				// Just add the pixels, they will get laid out next
+				for (int lightNum = 0; lightNum < lightCount; lightNum++)
+				{
+					PreviewPixel pixel = AddPixel(10, 10);
+					pixel.PixelColor = Color.White;
+					if (node != null && node.IsLeaf)
+					{
+						pixel.Node = node;
+					}
+				}
+			}
 		}
 	}
 }

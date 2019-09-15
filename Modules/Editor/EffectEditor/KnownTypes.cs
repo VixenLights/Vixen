@@ -8,6 +8,7 @@ using Common.ValueTypes;
 using Vixen.Attributes;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using VixenModules.Effect.Liquid;
 using Brush = System.Windows.Media.Brush;
 using FontFamily = System.Windows.Media.FontFamily;
 using FontStyle = System.Windows.FontStyle;
@@ -39,6 +40,7 @@ namespace VixenModules.Editor.EffectEditor
 			public static readonly Type Curve = typeof (Curve);
 			public static readonly Type ColorGradient = typeof (ColorGradient);
 			public static readonly Type Percentage = typeof (Percentage);
+			public static readonly Type Emitter = typeof(IEmitter);
 		}
 
 		public static class Wpf

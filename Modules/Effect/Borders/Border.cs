@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
-using Common.Controls.Direct2D.Interop;
 using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Sys.Attribute;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using Vixen.Data.StateCombinator;
 
 namespace Vixen.Sys
@@ -49,6 +50,7 @@ namespace Vixen.Sys
 			_stateIndex = nextIndex;
 		}
 
+		[JsonIgnore]
 		public IIntentStates State
 		{
 			get { return _stateLists[_stateIndex]; }

@@ -121,7 +121,7 @@ namespace VixenModules.Effect.LipSync
 			}
 		}
 
-		private void RenderPropertyMapElements(ElementNode element, PhonemeType phoneme)
+		private void RenderPropertyMapElements(IElementNode element, PhonemeType phoneme)
 		{
 			var fm = element.Properties.Get(FaceDescriptor.ModuleId) as FaceModule;
 			if (fm == null) return;
@@ -199,7 +199,7 @@ namespace VixenModules.Effect.LipSync
 			}
 		}
 
-		private void RenderMapElements(LipSyncMapData mapData, ElementNode element, PhonemeType phoneme)
+		private void RenderMapElements(LipSyncMapData mapData, IElementNode element, PhonemeType phoneme)
 		{
 			LipSyncMapItem item = mapData.FindMapItem(element.Id);
 			if (item == null) return;
@@ -519,6 +519,17 @@ namespace VixenModules.Effect.LipSync
 					SetLipsyncModeBrowsables();
 					IsDirty = true;
 					OnPropertyChanged();
+					if (_data.LipSyncMode == LipSyncMode.MarkCollection && _data.MarkCollectionId == Guid.Empty)
+					{
+						if (MarkCollections.Any())
+						{
+							var mc = MarkCollections.FirstOrDefault(x => x.CollectionType == MarkCollectionType.Phoneme);
+							if (mc != null)
+							{
+								MarkCollectionId = mc.Name;
+							}
+						}
+					}
 				}
 			}
 		}

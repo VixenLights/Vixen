@@ -640,7 +640,7 @@ namespace VixenModules.Effect.Meteors
 			double spreadSpeed = CalculateSpeedVariation(intervalPosFactor);
 			double minSpeed = centerSpeed - (spreadSpeed / 2);
 			double maxSpeed = centerSpeed + (spreadSpeed / 2);
-			if (minSpeed < 1) minSpeed = 1;
+			if (minSpeed < 0) minSpeed = 0;
 			if (maxSpeed > 200) maxSpeed = 200;
 			if (tailLength < 1) tailLength = 1;
 
@@ -1136,18 +1136,12 @@ namespace VixenModules.Effect.Meteors
 
 		private double CalculateSpeedVariation(double intervalPos)
 		{
-			var value = ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPos), 200, 0);
-			if (value < 0) value = 0;
-
-			return value;
+			return ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPos), 200, 0);
 		}
 
 		private double CalculateCenterSpeed(double intervalPos)
 		{
-			var value = ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPos), 200, 1);
-			if (value < 1) value = 1;
-
-			return value;
+			return ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPos), 200, 0);
 		}
 
 		private int CalculatePixelCount(double intervalPos)

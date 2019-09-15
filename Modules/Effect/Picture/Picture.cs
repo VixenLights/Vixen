@@ -22,7 +22,6 @@ namespace VixenModules.Effect.Picture
 
 	public class Picture : PixelEffectBase
 	{
-		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private PictureData _data;
 
 		private double _currentGifImageNum;

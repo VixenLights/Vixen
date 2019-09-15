@@ -67,7 +67,7 @@ namespace VixenModules.Property.Face {
 			}
 		}
 
-		public static FaceModule GetFaceModuleForElement(ElementNode element)
+		public static FaceModule GetFaceModuleForElement(IElementNode element)
 		{
 			return element.Properties.Get(FaceDescriptor.ModuleId) as FaceModule;
 		}
@@ -111,7 +111,7 @@ namespace VixenModules.Property.Face {
 		public override bool HasElementSetupHelper => true;
 
 		/// <inheritdoc />
-		public override bool SetupElements(IEnumerable<ElementNode> nodes)
+		public override bool SetupElements(IEnumerable<IElementNode> nodes)
 		{
 			var helper = new FaceSetupHelper();
 			return helper.Perform(nodes);

@@ -196,6 +196,23 @@ namespace VixenModules.Effect.CountDown
 			}
 		}
 
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"FilmSpinner")]
+		[ProviderDescription(@"FilmSpinner")]
+		[PropertyOrder(7)]
+		public bool Spinner
+		{
+			get { return _data.Spinner; }
+			set
+			{
+				_data.Spinner = value;
+				UpdateFilmSpinnerAttributes();
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
 		#endregion
 
 		#region Movement properties
@@ -334,7 +351,7 @@ namespace VixenModules.Effect.CountDown
 				OnPropertyChanged();
 			}
 		}
-
+		
 		[Value]
 		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"GradientMode")]
@@ -346,6 +363,38 @@ namespace VixenModules.Effect.CountDown
 			set
 			{
 				_data.GradientMode = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Color", 3)]
+		[ProviderDisplayName(@"FilmSpinnerColors")]
+		[ProviderDescription(@"FilmSpinnerColors")]
+		[PropertyOrder(2)]
+		public List<ColorGradient> SpinnerColors
+		{
+			get { return _data.SpinnerColors; }
+			set
+			{
+				_data.SpinnerColors = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Color", 3)]
+		[ProviderDisplayName(@"FilmSpinnerGradientMode")]
+		[ProviderDescription(@"FilmSpinnerGradientMode")]
+		[PropertyOrder(3)]
+		public SpinnerGradientMode SpinnerGradientMode
+		{
+			get { return _data.SpinnerGradientMode; }
+			set
+			{
+				_data.SpinnerGradientMode = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -372,8 +421,8 @@ namespace VixenModules.Effect.CountDown
 		}
 
 		#endregion
-
-		public override IModuleDataModel ModuleData
+				
+      public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
 			set
@@ -409,6 +458,7 @@ namespace VixenModules.Effect.CountDown
 			UpdateCountDownTypeAttributes(false);
 			UpdateSizeModeAttributes(false);
 			UpdateStringOrientationAttributes();
+			UpdateFilmSpinnerAttributes(false);
 			TypeDescriptor.Refresh(this);
 		}
 
@@ -434,6 +484,20 @@ namespace VixenModules.Effect.CountDown
 			if (refresh)
 			{
 				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		private void UpdateFilmSpinnerAttributes(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
+			{
+				{"SpinnerColors", Spinner },
+				{"SpinnerGradientMode", Spinner }
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+					TypeDescriptor.Refresh(this);
 			}
 		}
 
@@ -566,7 +630,7 @@ namespace VixenModules.Effect.CountDown
 				switch (SizeMode)
 				{
 					case SizeMode.Grow:
-						_newFontSize = _font.SizeInPoints / 20 * _sizeAdjust;
+						_newFontSize = _font.SizeInPoints / 20 * _sizeAdjust; 
 						break;
 					case SizeMode.Shrink:
 						_newFontSize = _font.SizeInPoints / 20 * (21 - _sizeAdjust);
@@ -592,19 +656,7 @@ namespace VixenModules.Effect.CountDown
 
 				int xOffset = CalculateXOffset(intervalPosFactor);
 				int yOffset = CalculateYOffset(intervalPosFactor, maxht);
-
-				//Rotate the text based off the angle setting
-				if (_direction == CountDownDirection.Rotate)
-				{
-					//move rotation point to center of image
-					graphics.TranslateTransform((float) (bitmap.Width / 2 + xOffset), (float) (bitmap.Height / 2 + (yOffset / 2)));
-					//rotate
-					graphics.SmoothingMode = SmoothingMode.HighQuality;
-					graphics.RotateTransform(textAngle);
-					//move image back
-					graphics.TranslateTransform(-(float) (bitmap.Width / 2 + xOffset), -(float) (bitmap.Height / 2 + (yOffset / 2)));
-				}
-
+					 
 				switch (_direction)
 				{
 					case CountDownDirection.Left:
@@ -656,10 +708,52 @@ namespace VixenModules.Effect.CountDown
 						point = new Point((bufferWi - _maxTextSize) / 2 + xOffset, offsetTop);
 						break;
 				}
+
+				Point centerOfText = new Point(point.X + (int)textsize.Width / 2, point.Y + (int)textsize.Height / 2);
+
+				int movementXOffset = 0;
+				int movementYOffset = 0;
+				int filmSpinnerRadialLineAngleInDegrees = 0;
+
+				if (Spinner)
+				{									
+					movementXOffset = centerOfText.X - (bufferWi / 2);
+					movementYOffset = centerOfText.Y - (bufferHt / 2);
+					
+					filmSpinnerRadialLineAngleInDegrees = GetFilmSpinnerRadialLineAngle(frame);
+
+					// Drawing the spinner swipe needs to be done before the transformation below otherwise the 
+					// swipe gradient will not fit the matrix and gets repeated
+					DrawFilmSpinnerSwipe(graphics, bufferWi, bufferHt, movementXOffset, movementYOffset, frame, textAngle, filmSpinnerRadialLineAngleInDegrees);
+				}
+
+				//Rotate the text based off the angle setting
+				if (_direction == CountDownDirection.Rotate)
+				{
+					//move rotation point to center of image
+					graphics.TranslateTransform((float) (bitmap.Width / 2 + xOffset), (float) (bitmap.Height / 2 + (yOffset / 2)));
+					//rotate
+					graphics.SmoothingMode = SmoothingMode.None;
+					graphics.RotateTransform(textAngle);
+					//move image back
+					graphics.TranslateTransform(-(float) (bitmap.Width / 2 + xOffset), -(float) (bitmap.Height / 2 + (yOffset / 2)));
+				}
+
+				if (Spinner)
+				{
+					int crossHashWidth = GetCrossHashWidth(bufferHt, bufferWi);
+					int left = (bufferWi - crossHashWidth) / 2 + movementXOffset;
+					int top = (bufferHt - crossHashWidth) / 2 + movementYOffset;
+
+					int spinnerRadialLineLength = (int)Math.Ceiling(Math.Sqrt(bufferWi * bufferWi + bufferHt * bufferHt));
+
+					Rectangle crossHashRect = new Rectangle(left, top, crossHashWidth, crossHashWidth);                    
+					DrawFilmSpinner(graphics, crossHashRect, frame, spinnerRadialLineLength, filmSpinnerRadialLineAngleInDegrees);                            
+				}
 				DrawText(_text, graphics, point);
 			}
 		}
-
+		  
 		private void SetFadePositionLevel(int frame)
 		{
 			var totalFrames = GetNumberFrames();
@@ -828,33 +922,47 @@ namespace VixenModules.Effect.CountDown
 			var offset = _maxTextSize - (int) size.Width;
 			var offsetPoint = new Point(p.X + offset / 2, p.Y);
 			var brushPointX = offsetPoint.X;
-			ColorGradient cg = _level < 1 || CountDownFade != CountDownFade.None ? GetNewGolorGradient() : new ColorGradient(GradientColors[_countDownNumberIteration % GradientColors.Count()]);
-			var brush = new LinearGradientBrush(new Rectangle(brushPointX, p.Y, _maxTextSize, (int) size.Height), Color.Black,
-					Color.Black, mode)
-				{InterpolationColors = cg.GetColorBlend()};
+
+			Rectangle rect = new Rectangle(brushPointX, p.Y, _maxTextSize, (int)size.Height);
+			Brush brush = CreateGradientBrushForRectangle(mode, GradientColors, rect);
+				
 			DrawTextWithBrush(text, brush, g, offsetPoint);
 			brush.Dispose();
 			p.Y += (int) size.Height;
 		}
 
+		private Brush CreateGradientBrushForRectangle(LinearGradientMode mode, List<ColorGradient> gradientColors, Rectangle brushRect)
+		{
+			ColorGradient cg = _level < 1 || CountDownFade != CountDownFade.None ? GetNewGolorGradient(gradientColors) : new ColorGradient(gradientColors[_countDownNumberIteration % gradientColors.Count()]);
+
+			var brush = new LinearGradientBrush(            
+				brushRect,
+				Color.Black,
+				Color.Black, 
+				mode)
+				{ InterpolationColors = cg.GetColorBlend() };
+
+			return brush;
+		}
+	
 		private void DrawTextAcrossGradient(String text, Graphics g, Point p, LinearGradientMode mode)
 		{
 			var size = g.MeasureString(text, _newfont);
 			var offset = _maxTextSize - (int) size.Width;
 			var offsetPoint = new Point(p.X + offset / 2, p.Y);
-			ColorGradient cg = _level < 1 || CountDownFade != CountDownFade.None ? GetNewGolorGradient() : new ColorGradient(GradientColors[_countDownNumberIteration % GradientColors.Count()]);
-			var brush = new LinearGradientBrush(new Rectangle(0, 0, BufferWi, BufferHt),
-					Color.Black,
-					Color.Black, mode)
-				{InterpolationColors = cg.GetColorBlend()};
-			DrawTextWithBrush(text, brush, g, offsetPoint);
+
+			Rectangle rect = new Rectangle(0, 0, BufferWi, BufferHt);
+			Brush brush = CreateGradientBrushForRectangle(mode, GradientColors, rect);
+
+			DrawTextWithBrush(text, brush, g, offsetPoint);            
 			brush.Dispose();
+
 			p.Y += (int) size.Height;
 		}
 
-		private ColorGradient GetNewGolorGradient()
+		private ColorGradient GetNewGolorGradient(List<ColorGradient> gradientColors)
 		{
-			ColorGradient cg = new ColorGradient(GradientColors[_countDownNumberIteration % GradientColors.Count()]);
+			ColorGradient cg = new ColorGradient(gradientColors[_countDownNumberIteration % gradientColors.Count()]);
 			foreach (var color in cg.Colors)
 			{
 				HSV hsv = HSV.FromRGB(color.Color.ToRGB());
@@ -909,7 +1017,7 @@ namespace VixenModules.Effect.CountDown
 							else
 							{
 								displayTime = countTime.ToString();
-							}
+							}																					
 							DrawText(g, clipRectangle, displayTime, mode, i);
 							countTime -= 1;
 						}
@@ -983,11 +1091,227 @@ namespace VixenModules.Effect.CountDown
 					new Rectangle(clipRectangle.X + startX, 2, (int)adjustedSizeNew.Width, (int)adjustedSizeNew.Height),
 					Color.Black,
 					Color.Black, mode)
-			{ InterpolationColors = GradientColors[_countDownNumberIteration % GradientColors.Count()].GetColorBlend() };
+			{ InterpolationColors = GradientColors[_countDownNumberIteration % GradientColors.Count()].GetColorBlend() }; 
 			g.DrawString(displayedText, adjustedFont, brush, clipRectangle.X + startX, 2);
 			_countDownNumberIteration++;
+
+			if (Spinner)
+			{
+				int squareWidth = Math.Min((int)adjustedSizeNew.Width, (int)adjustedSizeNew.Height);
+				Rectangle rect = new Rectangle(clipRectangle.X + startX, 2 + ((int)adjustedSizeNew.Height - squareWidth) / 2, squareWidth, squareWidth);
+
+				using (Brush crossHashBrush = CreateCrossHashBrush(g, rect))
+				{
+					using (Pen pen = new Pen(crossHashBrush, 1))
+					{
+						DrawFilmSpinnerCrossHash(g, rect, pen);
+					}
+				}
+			}			
 		}
 
 		public override bool ForceGenerateVisualRepresentation { get { return true; } }
-	}
+
+		#region Film Spinner Draw Methods
+
+		private void DrawFilmSpinner(
+			Graphics graphics,
+			Rectangle crossHashRect,
+			int frame,
+			int spinnerRadialLineLength,
+			int radialLineAngleInDegrees)
+		{
+			Rectangle brushRectangle = new Rectangle(crossHashRect.Left - 1, crossHashRect.Top - 1, crossHashRect.Width + 2, crossHashRect.Height + 2);
+
+			using (Brush brush = CreateCrossHashBrush(graphics, brushRectangle))
+			{
+				using (Pen pen = new Pen(brush, 1))
+				{
+					DrawFilmSpinnerCrossHash(graphics, crossHashRect, pen);
+															
+					DrawFilmSpinnerRadialLine(
+						graphics,
+						pen,
+						radialLineAngleInDegrees + 90,  // Adding 90 degrees to get 0 back to the X-axis
+						crossHashRect.Left + crossHashRect.Width / 2,
+						crossHashRect.Top + crossHashRect.Height / 2,
+						spinnerRadialLineLength);
+				}
+			}
+		}
+
+		private void DrawFilmSpinnerCrossHash(Graphics graphics, Rectangle rect, Pen pen)
+		{
+			// Draw circle
+			graphics.DrawEllipse(pen, rect);
+
+			// Draw vertical line            
+			graphics.DrawLine(pen, rect.Left + rect.Width / 2, rect.Top, rect.Left + rect.Width / 2, rect.Bottom);
+
+			// Draw horizontal line            
+			graphics.DrawLine(pen, rect.Left, rect.Top + rect.Height / 2, rect.Left + rect.Width, rect.Top + rect.Height / 2);
+		}
+
+		private void DrawFilmSpinnerRadialLine(Graphics graphics, Pen pen, int angleInDegrees, int lineStartX, int lineStartY, int lineLength)
+		{
+			double angleInRadians = angleInDegrees * (Math.PI / 180.0);
+			double ptX = lineStartX + lineLength * Math.Cos(angleInRadians);
+			double ptY = lineStartY - 1 * lineLength * Math.Sin(angleInRadians);
+
+			graphics.DrawLine(pen, lineStartX, lineStartY, (int)ptX, (int)ptY);
+		}
+		private void DrawFilmSpinnerSwipe(
+			Graphics graphics, 
+			int bufferWi, 
+			int bufferHt, 
+			int movementXOffset, 
+			int movementYOffset, 
+			int frame, 
+			int textRotationAngle,
+			int radialLineAngleInDegrees)
+		{
+			// Calculate the length of the diagonal of the matrix 
+			double swipeRadius = (int)Math.Sqrt(bufferWi * bufferWi + bufferHt * bufferHt);
+			int swipeRadiusInt = (int)Math.Ceiling(swipeRadius);
+
+			// Get the max width of the spinner cross hash
+			int maxCrossHashWidth = GetMaxCrossHashWidth(bufferHt, bufferWi);
+
+			// Swipe circle needs to be big enough so that it covers the matrix even when
+			// the cross hash is slightly off the matrix
+			int swipeCircleSize = 2 * swipeRadiusInt + maxCrossHashWidth;
+
+			// Center the swipe rectangle over the matrix by adjusting the X and Y of the rectangle
+			int negativeX = (int)Math.Ceiling((bufferWi - swipeCircleSize) / 2.0);
+			int negativeY = (int)Math.Ceiling((bufferHt - swipeCircleSize) / 2.0);
+
+			Rectangle swipeRect = new Rectangle(
+				negativeX + movementXOffset,
+				negativeY + movementYOffset,
+				swipeCircleSize,
+				swipeCircleSize);
+
+			using (Brush swipeBrush = CreateSpinnerSwipeBrush(new Rectangle(0, 0, bufferWi, BufferHt)))
+			{
+				int rotateAngle = 0;
+				if (_direction == CountDownDirection.Rotate)
+				{
+					rotateAngle = textRotationAngle;
+				}
+
+				// Offset by -90 because zero needs to be along the Y axis
+				int startAngle = -90 + rotateAngle;
+				int endAngle = 360 - radialLineAngleInDegrees;
+
+				graphics.FillPie(swipeBrush, swipeRect, startAngle, endAngle);
+			}
+		}
+
+		#endregion
+
+		#region Film Spinner Size Methods
+
+		private int GetMaxCrossHashWidth(int bufferHt, int bufferWi)
+		{
+			// 2 Pixel margin at top and bottom of matrix
+			return Math.Min(bufferHt, bufferWi) - 4;
+		}
+
+		private int GetCrossHashWidth(int bufferHt, int bufferWi)
+		{
+			int maxCrossHashWidth = GetMaxCrossHashWidth(bufferHt, bufferWi);
+					
+			// Attempt to create 20 Pixels differece between minimum and maximum cross hash size			
+			int minCrossHashWidth = maxCrossHashWidth - 20;
+
+			if (minCrossHashWidth < 0)
+			{
+				minCrossHashWidth = 1;
+			}
+
+			int crossHashWidth = 0;
+
+			switch (SizeMode)
+			{
+				case SizeMode.Grow:
+					crossHashWidth = minCrossHashWidth + _sizeAdjust;
+					break;
+				case SizeMode.Shrink:
+					crossHashWidth = maxCrossHashWidth - _sizeAdjust; 
+					break;
+				case SizeMode.None:
+				default:
+					crossHashWidth = maxCrossHashWidth;
+					break;
+			}
+			
+			return crossHashWidth;
+		}
+
+		private int GetFilmSpinnerRadialLineAngle(int frame)
+		{
+			const int MillisecondsPerSecond = 1000;
+			double timeRemainingInMilliSeconds = Math.Ceiling(GetRemainingTime(frame) % MillisecondsPerSecond);
+			int angleInDegrees = (int)Math.Ceiling((decimal)timeRemainingInMilliSeconds / MillisecondsPerSecond * 360);
+
+			return angleInDegrees;
+		}
+
+		#endregion
+
+		#region Film Spinner Brush Methods
+
+		private Brush CreateCrossHashBrush(Graphics graphics, Rectangle rect)
+		{
+			Brush brush;
+
+			switch (GradientMode)
+			{
+				case GradientMode.AcrossElement:
+				case GradientMode.AcrossText:
+					brush = CreateGradientBrushForRectangle(LinearGradientMode.Horizontal, GradientColors, rect);
+					break;
+				case GradientMode.VerticalAcrossElement:
+				case GradientMode.VerticalAcrossText:
+					brush = CreateGradientBrushForRectangle(LinearGradientMode.Vertical, GradientColors, rect);
+					break;
+				case GradientMode.DiagonalAcrossElement:
+				case GradientMode.DiagonalAcrossText:
+					brush = CreateGradientBrushForRectangle(LinearGradientMode.ForwardDiagonal, GradientColors, rect);
+					break;
+				case GradientMode.BackwardDiagonalAcrossElement:
+				case GradientMode.BackwardDiagonalAcrossText:
+				default:
+					brush = CreateGradientBrushForRectangle(LinearGradientMode.BackwardDiagonal, GradientColors, rect);
+					break;
+			}
+
+			return brush;
+		}
+		private Brush CreateSpinnerSwipeBrush(Rectangle swipeRect)
+		{
+			Brush brush;
+
+			switch (SpinnerGradientMode)
+			{
+				case SpinnerGradientMode.Horizontal:
+					brush = CreateGradientBrushForRectangle(LinearGradientMode.Horizontal, SpinnerColors, swipeRect); 
+					break;
+				case SpinnerGradientMode.Vertical:
+					brush = CreateGradientBrushForRectangle(LinearGradientMode.Vertical, SpinnerColors, swipeRect);
+					break;
+				case SpinnerGradientMode.Diagonal:
+					brush = CreateGradientBrushForRectangle(LinearGradientMode.ForwardDiagonal, SpinnerColors, swipeRect);
+					break;
+				case SpinnerGradientMode.ReverseDiagonal:
+				default:
+					brush = CreateGradientBrushForRectangle(LinearGradientMode.BackwardDiagonal, SpinnerColors, swipeRect);
+					break;
+			}
+
+			return brush;
+		}
+
+		#endregion		
+	 }
 }

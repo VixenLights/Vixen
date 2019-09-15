@@ -50,11 +50,11 @@
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.btnUserCancel = new System.Windows.Forms.Button();
 			this.chkGenerateControllerInfo = new System.Windows.Forms.CheckBox();
-			this.radioButton1 = new System.Windows.Forms.RadioButton();
 			this.radio1x = new System.Windows.Forms.RadioButton();
 			this.radio2x = new System.Windows.Forms.RadioButton();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.chkCompress = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -73,7 +73,7 @@
 			this.buttonStart.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonStart.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonStart.Location = new System.Drawing.Point(17, 453);
+			this.buttonStart.Location = new System.Drawing.Point(19, 490);
 			this.buttonStart.Name = "buttonStart";
 			this.buttonStart.Size = new System.Drawing.Size(104, 27);
 			this.buttonStart.TabIndex = 8;
@@ -161,7 +161,7 @@
             this.progressLabel,
             this.exportProgressBar,
             this.currentTimeLabel});
-			this.statusStrip1.Location = new System.Drawing.Point(0, 498);
+			this.statusStrip1.Location = new System.Drawing.Point(0, 520);
 			this.statusStrip1.Name = "statusStrip1";
 			this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
 			this.statusStrip1.Size = new System.Drawing.Size(516, 24);
@@ -200,7 +200,7 @@
 			this.buttonStop.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonStop.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonStop.Location = new System.Drawing.Point(127, 453);
+			this.buttonStop.Location = new System.Drawing.Point(129, 490);
 			this.buttonStop.Name = "buttonStop";
 			this.buttonStop.Size = new System.Drawing.Size(104, 27);
 			this.buttonStop.TabIndex = 15;
@@ -221,7 +221,7 @@
 			this.groupBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox2.Location = new System.Drawing.Point(12, 88);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(488, 259);
+			this.groupBox2.Size = new System.Drawing.Size(488, 281);
 			this.groupBox2.TabIndex = 16;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Network";
@@ -251,7 +251,7 @@
 			this.networkListView.MultiSelect = false;
 			this.networkListView.Name = "networkListView";
 			this.networkListView.OwnerDraw = true;
-			this.networkListView.Size = new System.Drawing.Size(473, 228);
+			this.networkListView.Size = new System.Drawing.Size(473, 254);
 			this.networkListView.TabIndex = 1;
 			this.networkListView.UseCompatibleStateImageBehavior = false;
 			this.networkListView.View = System.Windows.Forms.View.Details;
@@ -286,7 +286,7 @@
 			this.textBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.textBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.textBox1.Location = new System.Drawing.Point(12, 358);
+			this.textBox1.Location = new System.Drawing.Point(12, 370);
 			this.textBox1.Multiline = true;
 			this.textBox1.Name = "textBox1";
 			this.textBox1.Size = new System.Drawing.Size(488, 36);
@@ -306,7 +306,7 @@
 			this.btnUserCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.btnUserCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnUserCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.btnUserCancel.Location = new System.Drawing.Point(373, 453);
+			this.btnUserCancel.Location = new System.Drawing.Point(375, 490);
 			this.btnUserCancel.Name = "btnUserCancel";
 			this.btnUserCancel.Size = new System.Drawing.Size(104, 27);
 			this.btnUserCancel.TabIndex = 18;
@@ -326,17 +326,6 @@
 			this.chkGenerateControllerInfo.Text = "Generate Controller File";
 			this.chkGenerateControllerInfo.UseVisualStyleBackColor = true;
 			this.chkGenerateControllerInfo.CheckedChanged += new System.EventHandler(this.chkGenerateControllerInfo_CheckedChanged);
-			// 
-			// radioButton1
-			// 
-			this.radioButton1.AutoSize = true;
-			this.radioButton1.Location = new System.Drawing.Point(0, 0);
-			this.radioButton1.Name = "radioButton1";
-			this.radioButton1.Size = new System.Drawing.Size(94, 19);
-			this.radioButton1.TabIndex = 20;
-			this.radioButton1.TabStop = true;
-			this.radioButton1.Text = "radioButton1";
-			this.radioButton1.UseVisualStyleBackColor = true;
 			// 
 			// radio1x
 			// 
@@ -368,7 +357,7 @@
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel1.Controls.Add(this.chkGenerateControllerInfo, 0, 0);
 			this.tableLayoutPanel1.Controls.Add(this.panel1, 1, 0);
-			this.tableLayoutPanel1.Location = new System.Drawing.Point(19, 400);
+			this.tableLayoutPanel1.Location = new System.Drawing.Point(19, 412);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
 			this.tableLayoutPanel1.RowCount = 1;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -384,6 +373,16 @@
 			this.panel1.Size = new System.Drawing.Size(314, 26);
 			this.panel1.TabIndex = 20;
 			// 
+			// chkCompress
+			// 
+			this.chkCompress.AutoSize = true;
+			this.chkCompress.Location = new System.Drawing.Point(22, 450);
+			this.chkCompress.Name = "chkCompress";
+			this.chkCompress.Size = new System.Drawing.Size(134, 19);
+			this.chkCompress.TabIndex = 24;
+			this.chkCompress.Text = "Enable Compression";
+			this.chkCompress.UseVisualStyleBackColor = true;
+			// 
 			// ExportDialog
 			// 
 			this.AcceptButton = this.buttonStart;
@@ -392,9 +391,9 @@
 			this.AutoSize = true;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.btnUserCancel;
-			this.ClientSize = new System.Drawing.Size(516, 522);
+			this.ClientSize = new System.Drawing.Size(516, 544);
+			this.Controls.Add(this.chkCompress);
 			this.Controls.Add(this.tableLayoutPanel1);
-			this.Controls.Add(this.radioButton1);
 			this.Controls.Add(this.btnUserCancel);
 			this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.groupBox2);
@@ -446,10 +445,10 @@
 		private System.Windows.Forms.Button btnUserCancel;
 		private System.Windows.Forms.ColumnHeader endColumn;
 		private System.Windows.Forms.CheckBox chkGenerateControllerInfo;
-		private System.Windows.Forms.RadioButton radioButton1;
 		private System.Windows.Forms.RadioButton radio1x;
 		private System.Windows.Forms.RadioButton radio2x;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.CheckBox chkCompress;
 	}
 }

@@ -29,7 +29,7 @@ namespace Vixen.Execution
 			return Count>0;
 		}
 
-		public void Reset()
+		public void Reset(bool now)
 		{
 			//Nothing to do we reset every time.
 		}

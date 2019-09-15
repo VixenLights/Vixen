@@ -15,7 +15,6 @@ namespace VixenModules.Effect.Glediator
 {
 	public class Glediator : PixelEffectBase
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private GlediatorData _data;
 		private double _speed = 1;
 		private FileStream _f;
@@ -258,7 +257,7 @@ namespace VixenModules.Effect.Glediator
 				}
 				catch (Exception e)
 				{
-					Logging.Error("Failed to dispose of the filestream properly.", e);
+					Logging.Error(e, "Failed to dispose of the filestream properly.");
 				}
 			}
 		}

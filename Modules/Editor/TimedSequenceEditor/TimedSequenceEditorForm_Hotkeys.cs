@@ -140,8 +140,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						return;
 					EffectsForm.DeselectAllNodes();
 					TimelineControl.grid.EnableDrawMode = false;
-					toolStripButton_DrawMode.Checked = false;
-					toolStripButton_SelectionMode.Checked = true;
+					modeToolStripButton_DrawMode.Checked = false;
+					modeToolStripButton_SelectionMode.Checked = true;
 					break;
 
 				case Keys.OemMinus:
@@ -159,6 +159,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					break;
 				case Keys.T:
 					TimelineControl.grid.ToggleSelectedRows(e.Control);
+					break;
+
+				case Keys.D:
+					if (e.Control)
+					{
+						TimelineControl.grid.SplitSelectedElementsAtMouseLocation();
+					}
 					break;
 			}
 			// Prevents sending keystrokes to child controls. 

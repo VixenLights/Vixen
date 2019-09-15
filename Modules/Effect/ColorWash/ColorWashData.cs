@@ -24,6 +24,8 @@ namespace VixenModules.Effect.ColorWash
 			HorizontalFade = false;
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			Orientation=StringOrientation.Vertical;
+			SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 23.0, 23.0 }));
+			MovementType = MovementType.Iterations;
 		}
 
 		[DataMember]
@@ -50,6 +52,23 @@ namespace VixenModules.Effect.ColorWash
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
+		[DataMember]
+		public MovementType MovementType { get; set; }
+
+		[DataMember]
+		public Curve SpeedCurve { get; set; }
+
+		[OnDeserialized]
+		public void OnDeserialized(StreamingContext c)
+		{
+			//if one of them is null the others probably are, and if this one is not then they all should be good.
+			//Try to save some cycles on every load
+			if (SpeedCurve == null)
+			{
+				SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 23.0, 23.0 }));
+			}
+		}
+
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			ColorWashData result = new ColorWashData
@@ -60,7 +79,9 @@ namespace VixenModules.Effect.ColorWash
 				Orientation = Orientation,
 				VerticalFade = VerticalFade,
 				HorizontalFade = HorizontalFade,
-				LevelCurve = new Curve(LevelCurve)
+				LevelCurve = new Curve(LevelCurve),
+				SpeedCurve = new Curve(SpeedCurve),
+				MovementType = MovementType
 			};
 			return result;
 		}

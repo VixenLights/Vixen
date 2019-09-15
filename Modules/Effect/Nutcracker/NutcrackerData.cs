@@ -28,7 +28,7 @@ namespace VixenModules.Effect.Nutcracker
 			Text_Font = new SerializableFont(new Font("Arial", 8));
 		}
 
-		public ElementNode[] TargetNodes;
+		public IElementNode[] TargetNodes;
 
 		[DataMember] public NutcrackerEffects.PreviewType PreviewType = NutcrackerEffects.PreviewType.Tree180;
 

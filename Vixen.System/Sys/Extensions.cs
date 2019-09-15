@@ -182,12 +182,12 @@ namespace Vixen.Sys
 				Math.Max(color.B, otherColor.B));
 		}
 
-		public static Element[] GetElements(this IEnumerable<ElementNode> nodes)
+		public static Element[] GetElements(this IEnumerable<IElementNode> nodes)
 		{
 			return nodes.SelectMany(x => x.GetElementEnumerator()).ToArray();
 		}
 
-		public static List<Element> GetElementList(this IEnumerable<ElementNode> nodes)
+		public static List<Element> GetElementList(this IEnumerable<IElementNode> nodes)
 		{
 			return nodes.SelectMany(x => x.GetElementEnumerator()).ToList();
 		}

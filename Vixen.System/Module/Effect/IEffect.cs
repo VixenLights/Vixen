@@ -7,7 +7,6 @@ using System.Threading;
 using Vixen.Marks;
 using Vixen.Module.Media;
 using Vixen.Sys;
-using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Module.Effect
 {
@@ -20,7 +19,7 @@ namespace Vixen.Module.Effect
 		/// <summary>
 		/// Nodes the effect is being applied to as a single collection.
 		/// </summary>
-		ElementNode[] TargetNodes { get; set; }
+		IElementNode[] TargetNodes { get; set; }
 
 		/// <summary>
 		/// The length of the entire effect.
@@ -37,7 +36,7 @@ namespace Vixen.Module.Effect
 		/// </summary>
 		object[] ParameterValues { get; set; }
 
-		void PreRender(CancellationTokenSource cancellationToken = null);
+		bool PreRender(CancellationTokenSource cancellationToken = null);
 		// Having two methods instead of a single one with default values so that the
 		// effect doesn't have to check to see if there is a time frame restriction
 		// with every call.

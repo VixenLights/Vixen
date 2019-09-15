@@ -682,30 +682,29 @@ namespace VixenModules.Controller.E131
 				return;
 			}
 
-			if (channelValues == null || channelValues.Length != outputStates.Length)
-				channelValues = new byte[outputStates.Length];
-
-			for (int index = 0; index < outputStates.Length; index++)
-			{
-				var command = outputStates[index] as _8BitCommand;
-
-				if (command == null)
-				{
-					// State reset
-					channelValues[index] = 0;
-					continue;
-				}
-
-				channelValues[index] = command.CommandValue;
-			}
-
-			_eventCnt++;
-
 			if (_data.Universes == null || _data.Universes.Count == 0)
 			{
 				return;
 			}
 
+			if (channelValues == null || channelValues.Length != outputStates.Length)
+				channelValues = new byte[outputStates.Length];
+
+			for (int index = 0; index < outputStates.Length; index++)
+			{
+				if (outputStates[index] is _8BitCommand command)
+				{
+					channelValues[index] = command.CommandValue;
+				}
+				else
+				{
+					// State reset
+					channelValues[index] = 0;
+				}
+			}
+
+			_eventCnt++;
+			
 			foreach (var uE in _data.Universes)
 			{
 				//Not sure why phybuf can be null, but the plugin will crash after being reconfigured otherwise.

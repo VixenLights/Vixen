@@ -337,10 +337,9 @@ namespace VixenModules.App.ColorGradients
 		/// </summary>
 		public static float Clamp(float value)
 		{
-			if (float.IsNaN(value) ||
-			    float.IsNegativeInfinity(value) || value < 0f)
+			if (value < 0f)
 				return 0f;
-			if (float.IsPositiveInfinity(value) || value > 1f)
+			if (value > 1f)
 				return 1f;
 			return value;
 		}
@@ -926,7 +925,6 @@ namespace VixenModules.App.ColorGradients
 
 			result.Colors.Add(new ColorPoint(GetColorAt(start), 0));
 
-			ColorPoint previous = null;
 			foreach (ColorPoint cp in Colors)
 			{
 				if (cp.Position > start && cp.Position < end)

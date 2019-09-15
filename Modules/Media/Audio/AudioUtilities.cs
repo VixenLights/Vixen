@@ -268,7 +268,7 @@ namespace VixenModules.Media.Audio
                 throw new AudioNotLoadedException();
             if (time < 0)
                 return 0;
-            if (time > TimeSpan.TotalMilliseconds)
+            if (time >= TimeSpan.TotalMilliseconds)
                 return _volume.Length-1;
             else
                 return (int)(time * _audioSampleRate / 1000.0);

@@ -155,7 +155,6 @@ namespace Vixen.Execution.Context
 
 		private void _SequenceExecutorSequenceStarted(object sender, SequenceStartedEventArgs e)
 		{
-			CurrentEffects.Reset();
 			OnContextStarted(EventArgs.Empty);
 			OnSequenceStarted(e);
 		}

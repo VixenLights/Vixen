@@ -16,7 +16,41 @@ namespace VixenModules.Editor.EffectEditor.Controls
 	{
 		private static readonly Type ThisType = typeof(BaseInlineCurveEditor);
 		private Image _image;
-		protected Canvas Canvas;
+
+		protected Image Image
+		{
+			get
+			{
+				if (_image == null)
+				{
+					_image = (Image)Template.FindName("CurveImage", this);
+				}
+				return _image;
+			}
+			set
+			{
+				_image = value;
+			}
+		}
+
+		private Canvas _canvas;
+		protected Canvas Canvas {
+			get
+			{
+				if (_canvas == null)
+				{
+					_canvas = (Canvas)Template.FindName("FaderCanvas", this);
+				}
+				return _canvas;
+			}
+			set
+			{
+				_canvas = value;
+			}				
+		}
+
+
+
 		private SliderPoint _levelPoint;
 		private ToolTip _toolTip;
 
@@ -539,7 +573,10 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private void UpdateImage(Curve curve)
 		{
-			_image.Source = (BitmapImage)Converter.Convert(curve, null, true, null);
+			if (_image != null)
+			{
+				_image.Source = (BitmapImage)Converter.Convert(curve, null, true, null);
+			}
 		}
 
 		protected abstract void SetCurveValue(Curve c);
@@ -575,12 +612,12 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private PointPair TranslateMouseLocation(Point pos)
 		{
-			var position = TranslatePoint(pos, _image);
+			var position = TranslatePoint(pos, Image);
 			//Console.Out.WriteLine("Mouse Location;{0},{1}", position.X, position.Y);
-			var pct = position.X / _image.Width;
+			var pct = position.X / Image.Width;
 			var x = 100 * pct;
 
-			pct = (_image.Height - position.Y) / _image.Height;
+			pct = (_image.Height - position.Y) / Image.Height;
 			var y = 100 * pct;
 
 			return new PointPair(x, y);

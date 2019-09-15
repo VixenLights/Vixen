@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Common.Controls</RootNamespace>
     <AssemblyName>Controls</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -74,21 +74,21 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.WindowsAPICodePack.DirectX">
-      <HintPath>..\Libraries\Microsoft.WindowsAPICodePack.DirectX.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\..\packages\NLog.4.5.11\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -150,27 +150,6 @@
     </Compile>
     <Compile Include="Theme\ThemeColorTable.cs" />
     <Compile Include="Theme\ThemeToolStripRenderer.cs" />
-    <Compile Include="Direct2D\AnimatedScene.cs" />
-    <Compile Include="Direct2D\D3D10Image.cs" />
-    <Compile Include="Direct2D\Direct2DControl.cs" />
-    <Compile Include="Direct2D\Direct2DControlWinForm.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Direct2D\Direct2DControlWinForm.Designer.cs">
-      <DependentUpon>Direct2DControlWinForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Direct2D\Direct2DControlWPF.xaml.cs">
-      <DependentUpon>Direct2DControlWPF.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Direct2D\Extensions.cs" />
-    <Compile Include="Direct2D\Interop\ComInterface.cs" />
-    <Compile Include="Direct2D\Interop\Direct3D9Ex.cs" />
-    <Compile Include="Direct2D\Interop\Direct3DDevice9Ex.cs" />
-    <Compile Include="Direct2D\Interop\Direct3DSurface9.cs" />
-    <Compile Include="Direct2D\Interop\Direct3DTexture9.cs" />
-    <Compile Include="Direct2D\Interop\NativeMethods.cs" />
-    <Compile Include="Direct2D\Interop\NativeStructs.cs" />
-    <Compile Include="Direct2D\Scene.cs" />
     <Compile Include="ComboBoxItem.cs" />
     <Compile Include="ConfigureElements\AddMegatree.cs">
       <SubType>Form</SubType>
@@ -242,6 +221,7 @@
     <Compile Include="TimelineControl\LabeledMarks\MarksMoveResizeInfo.cs" />
     <Compile Include="TimelineControl\LabeledMarks\MarkTimeInfo.cs" />
     <Compile Include="TimelineControl\ResizeZone.cs" />
+    <Compile Include="TimelineControl\TimeLineGlobalStateManager.cs" />
     <Compile Include="Undo\AddToListUndoAction.cs" />
     <Compile Include="Undo\ModifyItemUndoAction.cs" />
     <Compile Include="Wizard\Wizard.cs" />
@@ -442,9 +422,6 @@
     <EmbeddedResource Include="ControllerTree.resx">
       <DependentUpon>ControllerTree.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Direct2D\Direct2DControlWinForm.resx">
-      <DependentUpon>Direct2DControlWinForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ConfigureElements\AddMegatree.resx">
       <DependentUpon>AddMegatree.cs</DependentUpon>
     </EmbeddedResource>
@@ -546,12 +523,6 @@
       <Name>Audio</Name>
       <Private>False</Private>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Direct2D\Direct2DControlWPF.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />

@@ -19,8 +19,7 @@ namespace VixenModules.Effect.SnowStorm
 		private SnowStormData _data;
 		private double _gradientPosition = 0;
 		private List<SnowstormClass> _snowstormItems;
-		private int _lastSnowstormCount = 0;
-
+		
 		public SnowStorm()
 		{
 			_data = new SnowStormData();
