@@ -1247,6 +1247,26 @@ namespace Common.Controls.Timeline
 			return containingRow;
 		}
 
+		protected List<Row> RowsIn(Rectangle r)
+		{
+			List<Row> containingRows= new List<Row>();
+			int currentHeight = 0;
+			var areaBottomY = r.Y + r.Height;
+			foreach (Row row in VisibleRows)
+			{
+				if (r.Y < currentHeight + row.Height) {
+					containingRows.Add(row);
+				}
+				currentHeight += row.Height;
+				if (currentHeight > areaBottomY)
+				{
+					break;
+				}
+			}
+
+			return containingRows;
+		}
+
 		public Element ElementAtPosition(Point p)
 		{
 			Point client = PointToClient(p);
@@ -1449,13 +1469,9 @@ namespace Common.Controls.Timeline
 		private void selectElementsWithin(Rectangle SelectedArea)
 		{
 			if (SelectedArea.Size.IsEmpty) return;
-			Row startRow = rowAt(SelectedArea.Location);
-			Row endRow = rowAt(SelectedArea.BottomRight());
-
+			var containingRows = RowsIn(SelectedArea);
 			TimeSpan selStart = pixelsToTime(SelectedArea.Left);
 			TimeSpan selEnd = pixelsToTime(SelectedArea.Right);
-			int selTop = SelectedArea.Top;
-			int selBottom = selTop + SelectedArea.Height;
 			string moveDirection = (SelectedArea.Left < mouseDownGridLocation.X || !aCadStyleSelectionBox) ? "Left" : "Right";
 
 			SelectionBorder = (moveDirection == "Right") ? Color.Green : Color.Blue;
@@ -1474,63 +1490,37 @@ namespace Common.Controls.Timeline
 			}
 
 			// Iterate all elements of only the rows within our selection.
-			bool startFound = false, endFound = false;
-			foreach (var row in Rows) {
-				if (
-					!row.Visible || // row is invisible
-					endFound || // we already passed the end row
-					(!startFound && (row != startRow)) //we haven't found the first row, and this isn't it
-					) {
-					continue;
-				}
-
-				// If we already found the first row, or we haven't, but this is it
-				if (startFound || row == startRow) {
-					startFound = true;
-
-					// This row is in our selection
-					foreach (var elem in row) {
-						int elemTop = elem.DisplayTop;
-						int elemBottom = elemTop + elem.DisplayHeight;
-						if (DragBoxFilterEnabled)
+			foreach (var row in containingRows) {
+				
+				// This row is in our selection
+				foreach (var elem in row) {
+					if(elem.StartTime > selEnd) break;
+					if (DragBoxFilterEnabled)
+					{
+						if (moveDirection == "Left")
 						{
-							if (moveDirection == "Left")
-							{
-								elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem)
-									? true
-									: ((elem.StartTime < selEnd && elem.EndTime > selStart) && (elemTop < selBottom && elemBottom > selTop) &&
-									   DragBoxFilterTypes.Contains(elem.EffectNode.Effect.TypeId)));
-							}
-							else
-							{
-								elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem)
-									? true
-									: ((elem.StartTime > selStart && elem.EndTime < selEnd) && (elemTop > selTop && elemBottom < selBottom) &&
-									   DragBoxFilterTypes.Contains(elem.EffectNode.Effect.TypeId)));
-							}
+							elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem) || ((elem.StartTime < selEnd && elem.EndTime > selStart) && 
+							                                                                         DragBoxFilterTypes.Contains(elem.EffectNode.Effect.TypeId)));
 						}
 						else
 						{
-							if (moveDirection == "Left")
-							{
-								elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem)
-									? true
-									: ((elem.StartTime < selEnd && elem.EndTime > selStart) && (elemTop < selBottom && elemBottom > selTop)));
-							}
-							else
-							{
-								elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem)
-									? true
-									: ((elem.StartTime > selStart && elem.EndTime < selEnd) && (elemTop > selTop && elemBottom < selBottom)));
-							}
+							elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem) || ((elem.StartTime > selStart && elem.EndTime < selEnd) && 
+							                                                                         DragBoxFilterTypes.Contains(elem.EffectNode.Effect.TypeId)));
 						}
 					}
-
-					if (row == endRow) {
-						endFound = true;
-						continue;
+					else
+					{
+						if (moveDirection == "Left")
+						{
+							elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem) || elem.StartTime < selEnd && elem.EndTime > selStart);
+						}
+						else
+						{
+							elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem) || elem.StartTime > selStart && elem.EndTime < selEnd);
+						}
 					}
 				}
+			
 			} // end foreach
 			SupressSelectionEvents = false;
 			_SelectionChanged();
