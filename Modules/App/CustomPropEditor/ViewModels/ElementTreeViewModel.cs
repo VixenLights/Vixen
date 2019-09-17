@@ -942,7 +942,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 				if (targetModel != null)
 				{
-					foreach (var elementModelViewModel in models.Reverse())
+					bool reverse = dropInfo.KeyStates == DragDropKeyStates.ControlKey;
+					var elementIndex = 0;
+					foreach (var elementModelViewModel in reverse?models.Reverse():models)
 					{
 					    elementModelViewModel.IsSelected = false;
                         if (dropInfo.Effects == DragDropEffects.Move)
@@ -959,13 +961,13 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 						            if (sourceModelParent == targetModelParent)
 						            {
                                         //Our parent is the same so we can just move it within the parent
-                                        pms.MoveWithinParent(sourceModelParent.ElementModel, elementModelViewModel.ElementModel, dropInfo.InsertIndex);
+                                        pms.MoveWithinParent(sourceModelParent.ElementModel, elementModelViewModel.ElementModel, dropInfo.InsertIndex+elementIndex);
 						                elementModelViewModel.IsSelected = true;
 						            }
 						            else
 						            {
                                         //We are moving to a new parent
-						                pms.InsertToParent(elementModelViewModel.ElementModel, targetModelParent.ElementModel, dropInfo.InsertIndex);
+						                pms.InsertToParent(elementModelViewModel.ElementModel, targetModelParent.ElementModel, dropInfo.InsertIndex+elementIndex);
                                         pms.RemoveFromParent(elementModelViewModel.ElementModel, sourceModelParent.ElementModel);
 										SelectModelWithParent(elementModelViewModel, targetModelParent);
 						            }
@@ -986,7 +988,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 						            else
 						            {
 						                //We are moving to a new parent
-						                pms.InsertToParent(elementModelViewModel.ElementModel, targetModelParent.ElementModel, dropInfo.InsertIndex);
+						                pms.InsertToParent(elementModelViewModel.ElementModel, targetModelParent.ElementModel, dropInfo.InsertIndex+elementIndex);
 						                pms.RemoveFromParent(elementModelViewModel.ElementModel, sourceModelParent.ElementModel);
 										SelectModelWithParent(elementModelViewModel, targetModelParent);
                                     }
@@ -1009,6 +1011,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 						        }
                             }
 						}
+
+                        elementIndex++;
 					}
 				}
 			}
