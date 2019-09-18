@@ -19,11 +19,12 @@ namespace Common.Controls
 	{
 		// sets of data to keep track of which items in the treeview are open, selected, visible etc., so that
 		// when we reload the tree, we can keep it looking relatively consistent with what the user had before.
-		private HashSet<string> _expandedNodes; // TreeNode paths that are expanded
+		private readonly HashSet<string> _expandedNodes = new HashSet<string>(); // TreeNode paths that are expanded
 		private HashSet<string> _selectedNodes; // TreeNode paths that are selected
 		private List<string> _topDisplayedNodes; // TreeNode paths that are at the top of the view. Should only
 		// need one, but will have multiple in case the top node is deleted.
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private const string VirtualNodeName = @"VIRT";
 
 		public ElementTree()
 		{
@@ -35,9 +36,29 @@ namespace Common.Controls
 			treeview.DragOverVerify += treeviewDragVerifyHandler;
 			treeview.DragStart += treeview_DragStart;
 
+			treeview.BeforeExpand += Treeview_BeforeExpand;
+			treeview.AfterCollapse += TreeviewOnAfterCollapse;
 			AllowDragging = true;
 			AllowPropertyEdit = true;
 			AllowWireExport = true;
+		}
+
+		private void TreeviewOnAfterCollapse(object sender, TreeViewEventArgs e)
+		{
+			_expandedNodes.Remove(GenerateTreeNodeFullPath(e.Node, treeview.PathSeparator));
+		}
+
+		private void Treeview_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+		{
+			if (e.Node.Tag is ElementNode elementNode)
+			{
+				if (elementNode.Children.Any() && e.Node.Nodes.Count == 1 && e.Node.Nodes[0].Name.Equals(VirtualNodeName))
+				{
+					AddChildrenToTree(e.Node, e.Node.Tag as ElementNode);
+				}
+
+				_expandedNodes.Add(GenerateTreeNodeFullPath(e.Node, treeview.PathSeparator));
+			}
 		}
 
 		private void ElementTree_Load(object sender, EventArgs e)
@@ -99,7 +120,6 @@ namespace Common.Controls
 		private void _PopulateNodeTree(IEnumerable<string> elementTreeNodesToSelect = null)
 		{
 			// save metadata that is currently in the treeview
-			_expandedNodes = new HashSet<string>();
 			_selectedNodes = new HashSet<string>();
 			_topDisplayedNodes = new List<string>();
 
@@ -108,22 +128,22 @@ namespace Common.Controls
 
 			// clear the treeview, and repopulate it
 			treeview.BeginUpdate();
-			treeview.Nodes.Clear();
+			treeview.SelectedNode = null;
 			treeview.SelectedNodes.Clear();
+			treeview.Nodes.Clear();
 
-			foreach (ElementNode element in VixenSystem.Nodes.GetRootNodes()) {
-				AddNodeToTree(treeview.Nodes, element);
+			foreach (ElementNode element in VixenSystem.Nodes.GetRootNodes())
+			{
+				AddNodeToTree(treeview.Nodes, element, false);
 			}
 
 			// go through all the data we saved, and try to update the treeview to look
 			// like it used to (expanded nodes, selected nodes, node at the top)
 
-			foreach (string node in _expandedNodes) {
+			foreach (string node in _expandedNodes)
+			{
 				TreeNode resultNode = FindNodeInTreeAtPath(treeview, node);
-
-				if (resultNode != null) {
-					resultNode.Expand();
-				}
+				resultNode?.Expand();
 			}
 
 			// if a new element has been passed in to select, select it instead.
@@ -145,7 +165,6 @@ namespace Common.Controls
 					
 				}
 			}
-
 
 			treeview.EndUpdate();
 
@@ -225,10 +244,6 @@ namespace Common.Controls
 		private void SaveTreeNodeState(TreeNodeCollection collection)
 		{
 			foreach (TreeNode tn in collection) {
-				if (tn.IsExpanded) {
-					_expandedNodes.Add(GenerateTreeNodeFullPath(tn, treeview.PathSeparator));
-				}
-
 				if (treeview.SelectedNodes.Contains(tn)) {
 					_selectedNodes.Add(GenerateTreeNodeFullPath(tn, treeview.PathSeparator));
 				}
@@ -253,20 +268,48 @@ namespace Common.Controls
 			}
 		}
 
-		private void AddNodeToTree(TreeNodeCollection collection, ElementNode elementNode)
+		private TreeNode AddNodeToTree(TreeNodeCollection collection, ElementNode elementNode, bool addChildren = true)
 		{
 			TreeNode addedNode = new TreeNode();
 			addedNode.Name = elementNode.Id.ToString();
 			addedNode.Text = elementNode.Name;
 			addedNode.Tag = elementNode;
-
+			
 			UpdateTreeNodeImage(addedNode, elementNode);
 
 			collection.Add(addedNode);
 
-			foreach (ElementNode childNode in elementNode.Children) {
-				AddNodeToTree(addedNode.Nodes, childNode);
+			if(addChildren)
+			{
+				foreach (ElementNode childNode in elementNode.Children)
+				{
+					AddNodeToTree(addedNode.Nodes, childNode);
+				}
 			}
+			else if(elementNode.Children.Any())
+			{
+				TreeNode virtNode = new TreeNode();
+				virtNode.Name = VirtualNodeName;
+				addedNode.Nodes.Add(virtNode);
+			}
+
+			return addedNode;
+		}
+
+		private void AddChildrenToTree(TreeNode node, ElementNode elementNode)
+		{
+			node.Nodes.Clear();
+			var nodesToExpand = new List<TreeNode>();
+			foreach (ElementNode childNode in elementNode.Children)
+			{
+				var addedNode = AddNodeToTree(node.Nodes, childNode, false);
+				var path = GenerateTreeNodeFullPath(addedNode, treeview.PathSeparator);
+				if (_expandedNodes.Contains(path))
+				{
+					nodesToExpand.Add(addedNode);
+				}
+			}
+			nodesToExpand.ForEach(x => x.Expand());
 		}
 
 		public void RefreshElementTreeStatus()
@@ -612,7 +655,7 @@ namespace Common.Controls
 			TreeNode resultNode = null;
 			foreach (var elementNode in elementNodes)
 			{
-				AddNodeToTree(treeview.Nodes, elementNode);
+				AddNodeToTree(treeview.Nodes, elementNode, false);
 
 				_selectedNodes.Add(GenerateEquivalentTreeNodeFullPathFromElement(elementNode, treeview.PathSeparator));
 
@@ -1020,7 +1063,6 @@ namespace Common.Controls
 		private void renameNodesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (RenameSelectedElements()) {
-				PopulateNodeTree();
 				OnElementsChanged();
 			}
 		}
