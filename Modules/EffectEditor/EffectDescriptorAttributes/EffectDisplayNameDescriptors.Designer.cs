@@ -413,6 +413,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Chase.
+        /// </summary>
+        internal static string ChaseTargetNodeSelection {
+            get {
+                return ResourceManager.GetString("ChaseTargetNodeSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Christmas Shapes.
         /// </summary>
         internal static string ChristmasShapes {
@@ -2191,6 +2200,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string SpeedVariation {
             get {
                 return ResourceManager.GetString("SpeedVariation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spin.
+        /// </summary>
+        internal static string SpinTargetNodeSelection {
+            get {
+                return ResourceManager.GetString("SpinTargetNodeSelection", resourceCulture);
             }
         }
         

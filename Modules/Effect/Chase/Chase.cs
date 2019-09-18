@@ -38,11 +38,22 @@ namespace VixenModules.Effect.Chase
 			if (TargetNodes.Any())
 			{
 				CheckForInvalidColorData();
-				var firstNode = TargetNodes.FirstOrDefault();
-				if (firstNode != null && DepthOfEffect > firstNode.GetMaxChildDepth() - 1)
+
+				if (TargetNodes.Length > 1)
 				{
 					DepthOfEffect = 0;
 				}
+				else
+				{
+					var firstNode = TargetNodes.FirstOrDefault();
+					if (firstNode != null && DepthOfEffect > firstNode.GetMaxChildDepth() - 1)
+					{
+						DepthOfEffect = 0;
+					}
+				}
+				
+				UpdateTargetingAttributes();
+				TypeDescriptor.Refresh(this);
 			}
 		}
 
@@ -50,8 +61,41 @@ namespace VixenModules.Effect.Chase
 		{
 			_elementData = new EffectIntents();
 
-			DoRendering(tokenSource);
-
+			if (TargetNodeHandling == TargetNodeSelection.Group)
+			{
+				if (TargetNodes.Length == 1)
+				{
+					var renderNodes = GetNodesToRenderOn(TargetNodes.First());
+					DoRendering(renderNodes, tokenSource);
+				}
+				else
+				{
+					DoRendering(TargetNodes.ToList(), tokenSource);
+				}
+				
+			}
+			else 
+			{
+				if (TargetNodes.Length == 1)
+				{
+					var targetNodes = GetNodesToRenderOn(TargetNodes.First());
+					foreach (var elementNode in targetNodes)
+					{
+						var renderNodes = GetNodesToRenderOn(elementNode);
+						DoRendering(renderNodes, tokenSource);
+					}
+				}
+				else
+				{
+					foreach (var elementNode in TargetNodes)
+					{
+						var renderNodes = GetNodesToRenderOn(elementNode);
+						DoRendering(renderNodes, tokenSource);
+					}
+				}
+				
+				
+			}
 			//_elementData = IntentBuilder.ConvertToStaticArrayIntents(_elementData, TimeSpan, IsDiscrete());
 		}
 
@@ -102,7 +146,23 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[ProviderCategory(@"Color",0)]
+		[ProviderCategory(@"Behavior", 0)]
+		[ProviderDisplayName(@"ChaseTargetNodeSelection")]
+		[ProviderDescription(@"ChaseTargetNodeSelection")]
+		public TargetNodeSelection TargetNodeHandling
+		{
+			get => _data.TargetNodeSelection;
+			set
+			{
+				_data.TargetNodeSelection = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+
+		[Value]
+		[ProviderCategory(@"Color",1)]
 		[ProviderDisplayName(@"ColorHandling")]
 		[ProviderDescription(@"ColorHandling")]
 		[PropertyOrder(1)]
@@ -120,7 +180,7 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[ProviderCategory(@"Color", 0)]
+		[ProviderCategory(@"Color", 1)]
 		[ProviderDisplayName(@"Color")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(2)]
@@ -140,7 +200,7 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness", 1)]
+		[ProviderCategory(@"Brightness", 2)]
 		[ProviderDisplayName(@"EnableMinimumBrightness")]
 		[ProviderDescription(@"EnableMinimumBrightness")]
 		[PropertyOrder(2)]
@@ -158,7 +218,7 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness",1)]
+		[ProviderCategory(@"Brightness",2)]
 		[ProviderDisplayName(@"MinimumBrightness")]
 		[ProviderDescription(@"MinimumBrightness")]
 		[PropertyOrder(3)]
@@ -175,7 +235,7 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[ProviderCategory(@"Pulse", 3)]
+		[ProviderCategory(@"Pulse", 4)]
 		[ProviderDisplayName(@"PulseOverlap")]
 		[ProviderDescription(@"PulseOverlap")]
 		public int PulseOverlap
@@ -198,7 +258,7 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[ProviderCategory(@"Color",0)]
+		[ProviderCategory(@"Color",1)]
 		[ProviderDisplayName(@"ColorGradient")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(3)]
@@ -217,7 +277,7 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness",1)]
+		[ProviderCategory(@"Brightness",2)]
 		[ProviderDisplayName(@"PulseShape")]
 		[ProviderDescription(@"PulseShape")]
 		[PropertyOrder(1)]
@@ -233,7 +293,7 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[ProviderCategory(@"Direction",2)]
+		[ProviderCategory(@"Direction",3)]
 		[ProviderDisplayName(@"Direction")]
 		[ProviderDescription(@"Direction")]
 		public Curve ChaseMovement
@@ -248,7 +308,7 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[ProviderCategory(@"Depth",4)]
+		[ProviderCategory(@"Depth",5)]
 		[ProviderDisplayName(@"Depth")]
 		[ProviderDescription(@"Depth")]
 		[TypeConverter(typeof(TargetElementDepthConverter))]
@@ -265,7 +325,7 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[ProviderCategory(@"Pulse",3)]
+		[ProviderCategory(@"Pulse",4)]
 		[ProviderDisplayName(@"ExtendPulseStart")]
 		[ProviderDescription(@"ExtendPulseStart")]
 		public bool ExtendPulseToStart
@@ -280,7 +340,7 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[ProviderCategory(@"Pulse",3)]
+		[ProviderCategory(@"Pulse",4)]
 		[ProviderDisplayName(@"ExtendPulseEnd")]
 		[ProviderDescription(@"ExtendPulseEnd")]
 		public bool ExtendPulseToEnd
@@ -310,9 +370,18 @@ namespace VixenModules.Effect.Chase
 		{
 			UpdateColorHandlingAttributes();
 			UpdateDefaultLevelAttributes();
+			UpdateTargetingAttributes();
 			TypeDescriptor.Refresh(this);
 		}
 
+		private void UpdateTargetingAttributes()
+		{
+			var depth = DetermineDepth();
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2);
+			propertyStates.Add(nameof(TargetNodeHandling), TargetNodes.Length > 1 || depth > 2);
+			propertyStates.Add(nameof(DepthOfEffect), depth > 2);
+			SetBrowsable(propertyStates);
+		}
 
 		private void UpdateColorHandlingAttributes()
 		{
@@ -350,10 +419,8 @@ namespace VixenModules.Effect.Chase
 		}
 
 
-		private void DoRendering(CancellationTokenSource tokenSource = null)
+		private void DoRendering(List<IElementNode> renderNodes, CancellationTokenSource tokenSource = null)
 		{
-			List<IElementNode> renderNodes = GetNodesToRenderOn();
-
 			int targetNodeCount = renderNodes.Count;
 
 			// apply the 'background' values to all targets if the level is supposed to be enabled
@@ -436,7 +503,6 @@ namespace VixenModules.Effect.Chase
 				sampleMs = 2;
 			}
 			TimeSpan increment = TimeSpan.FromTicks((long)(sampleMs*TimeSpan.TicksPerMillisecond));
-			
 
 			// we need to keep track of the element that is 'under' the curve at a given time, to see if it changes,
 			// and when it does, we make the effect for it then (since it's a variable time pulse).
@@ -493,15 +559,16 @@ namespace VixenModules.Effect.Chase
 			_elementData = EffectIntents.Restrict(_elementData, TimeSpan.Zero, TimeSpan);
 		}
 
-		private List<IElementNode> GetNodesToRenderOn()
+		private List<IElementNode> GetNodesToRenderOn(IElementNode node)
 		{
 			IEnumerable<IElementNode> renderNodes = null;
 
 			if (DepthOfEffect == 0) {
-				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
+				renderNodes = node.GetLeafEnumerator().ToList();
 			}
-			else {
-				renderNodes = TargetNodes;
+			else
+			{
+				renderNodes = new[] {node};
 				for (int i = 0; i < DepthOfEffect; i++) {
 					renderNodes = renderNodes.SelectMany(x => x.Children);
 				}
@@ -510,7 +577,7 @@ namespace VixenModules.Effect.Chase
 			// If the given DepthOfEffect results in no nodes (because it goes "too deep" and misses all nodes), 
 			// then we'll default to the LeafElements, which will at least return 1 element (the TargetNode)
 			if (!renderNodes.Any())
-				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator());
+				renderNodes = node.GetLeafEnumerator();
 
 			return renderNodes.ToList();
 		}

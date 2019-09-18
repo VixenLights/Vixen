@@ -120,6 +120,9 @@
   <data name="AudioSensitivityRange" xml:space="preserve">
     <value>Audio Sensitivity Range</value>
   </data>
+  <data name="Behavior" xml:space="preserve">
+    <value>Behavior</value>
+  </data>
   <data name="Brightness" xml:space="preserve">
     <value>Brightness</value>
   </data>
