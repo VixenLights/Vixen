@@ -70,6 +70,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Behavior.
+        /// </summary>
+        internal static string Behavior {
+            get {
+                return ResourceManager.GetString("Behavior", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Brightness.
         /// </summary>
         internal static string Brightness {

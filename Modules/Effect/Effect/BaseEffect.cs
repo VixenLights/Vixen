@@ -176,6 +176,19 @@ namespace VixenModules.Effect.Effect
 		{
 			return Math.Sqrt(Math.Pow((point.X - origin.X), 2) + Math.Pow((point.Y - origin.Y), 2));
 		}
+		protected int DetermineDepth()
+		{
+			int tempDepth = Int32.MaxValue;
+			foreach (var node in TargetNodes)
+			{
+				if (node != null)
+				{
+					tempDepth = Math.Min(node.GetMaxChildDepth(), tempDepth);
+				}
+			}
+
+			return tempDepth;
+		}
 
 		#region Overrides of ModuleInstanceBase
 

@@ -978,4 +978,10 @@
   <data name="ColorList" xml:space="preserve">
     <value>Color List</value>
   </data>
+  <data name="ChaseTargetNodeSelection" xml:space="preserve">
+    <value>Chase</value>
+  </data>
+  <data name="SpinTargetNodeSelection" xml:space="preserve">
+    <value>Spin</value>
+  </data>
 </root>
