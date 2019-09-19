@@ -659,14 +659,10 @@ namespace VixenModules.Preview.VixenPreview
 					}
 
 					// If we're not Selecting items, we're drawing them
-					//else if (_currentTool == Tools.PolyLine && _mouseCaptured)
-					//{
-					//	return;
-					//}
-					//else if (_currentTool == Tools.MultiString && _mouseCaptured)
-					//{
-					//	return;
-					//}
+					else if (_mouseCaptured && (_currentTool == Tools.PolyLine || _currentTool == Tools.MultiString))
+					{
+						return;
+					}
 					else
 					{
 						DeSelectSelectedDisplayItem();
