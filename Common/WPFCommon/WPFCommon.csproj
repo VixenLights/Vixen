@@ -120,6 +120,7 @@
     <Compile Include="Behaviors\IgnoreMouseWheelBehavior.cs" />
     <Compile Include="Behaviors\ListViewItemBehavior.cs" />
     <Compile Include="Behaviors\ListViewScrollToSelectedBehavior.cs" />
+    <Compile Include="Behaviors\TreeViewSelectedItemBehavior.cs" />
     <Compile Include="Command\RelayCommand.cs" />
     <Compile Include="Controls\IndexingStackPanel.cs" />
     <Compile Include="Controls\NavigatableHyperLink.cs" />
