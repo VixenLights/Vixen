@@ -4,7 +4,9 @@
                    xmlns:catel="http://schemas.catelproject.com"
                    xmlns:dd="urn:gong-wpf-dragdrop"
                    xmlns:viewModels1="clr-namespace:VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels"
-                   xmlns:views1="clr-namespace:VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Views">
+                   xmlns:views1="clr-namespace:VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Views"
+                   xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+                   xmlns:behaviors="clr-namespace:Common.WPFCommon.Behaviors;assembly=WPFCommon">
 
 	<Grid>
 		<Grid.RowDefinitions>
@@ -14,13 +16,17 @@
 		<TextBlock Text="Source" HorizontalAlignment="Center"/>
 		<TreeView Grid.Row="1" x:Name="IncomingElementModelTreeView" 
 		          ItemsSource="{Binding SourceTreeNodes}" 
-		          BorderThickness="0"
+				  BorderThickness="0"
 		          VerticalAlignment="Stretch"
 		          HorizontalAlignment="Stretch"
 		          ScrollViewer.CanContentScroll="True"
 		          FocusManager.IsFocusScope="True"
 		          dd:DragDrop.IsDropTarget="True"
 		          dd:DragDrop.DropHandler="{Binding}">
+			<i:Interaction.Behaviors>
+				<behaviors:TreeViewSelectedItemBehavior SelectedItem="{Binding SourceTreeSelectedItem, Mode=TwoWay}"/>
+				<catel:KeyPressToCommand Command="{Binding ClearMappingCommand}" Key="Delete" />
+			</i:Interaction.Behaviors>
 			<TreeView.ItemTemplate>
 				<HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type viewModels1:ElementNodeProxyViewModel}">
 					<views1:ElementNodeProxyView DataContext="{Binding}"/>

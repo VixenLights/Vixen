@@ -40,6 +40,51 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 
 		#endregion
 
+		#region SourceTreeSelectedItem property
+
+		/// <summary>
+		/// Gets or sets the SourceTreeSelectedItem value.
+		/// </summary>
+		public ElementNodeProxy SourceTreeSelectedItem
+		{
+			get { return GetValue<ElementNodeProxy>(SourceTreeSelectedItemProperty); }
+			set { SetValue(SourceTreeSelectedItemProperty, value);}
+		}
+
+		/// <summary>
+		/// SourceTreeSelectedItem property data.
+		/// </summary>
+		public static readonly PropertyData SourceTreeSelectedItemProperty = RegisterProperty("SourceTreeSelectedItem", typeof(ElementNodeProxy));
+
+		#endregion
+
+		#region ClearMapping command
+
+		private Command _clearMappingCommand;
+
+		/// <summary>
+		/// Gets the ClearMapping command.
+		/// </summary>
+		public Command ClearMappingCommand
+		{
+			get { return _clearMappingCommand ?? (_clearMappingCommand = new Command(ClearMapping)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the ClearMapping command is executed.
+		/// </summary>
+		private void ClearMapping()
+		{
+			if (SourceTreeSelectedItem != null)
+			{
+				var map = _elementMapService.ElementMap.GetBySourceId(SourceTreeSelectedItem.Id);
+				map?.ClearTarget();
+			}
+		}
+
+		#endregion
+
+
 		#region Implementation of IDropTarget
 
 		/// <inheritdoc />
