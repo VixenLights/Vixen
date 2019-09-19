@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Drawing;
 using Vixen.Sys;
 using System.Runtime.Serialization;
-using System.Diagnostics;
 using System.ComponentModel;
-using System.Windows.Forms;
-using System.Drawing.Design;
-using System.Windows.Forms.Design;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -325,7 +319,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private int Width
 		{
-			get { return Math.Abs(_bottomRightPoint.X - _topLeftPoint.Y); }
+			get { return Math.Abs(_bottomRightPoint.X - _topLeftPoint.X); }
 		}
 
 		private int Height
@@ -342,13 +336,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private void RecalcPoints()
 		{
 			pixelsPerPoint = PixelCount/_pointCount;
-			while (
-				((pixelsPerPoint%2) != 0)
-				) {
+			while (pixelsPerPoint%2 != 0) {
 				pixelsPerPoint--;
 			}
+
 			if (pixelsPerPoint < 2)
+			{
 				pixelsPerPoint = 2;
+			}
 
 			int newPixelCount = pixelsPerPoint*_pointCount;
 			while (_pixelCount > newPixelCount) {
@@ -356,7 +351,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				_pixelCount--;
 			}
 			while (_pixelCount < newPixelCount) {
-				PreviewPixel pixel = AddPixel(10, 10);
+				AddPixel(10, 10);
 				_pixelCount++;
 			}
 		}
@@ -413,12 +408,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 																			 rot);
 
                     int pixelNum = 0;
-                    int ellipsePointNum = 0;
                     for (int i = 0; i < _pointCount; i++)
                     {
                         Point point1;
                         Point point2;
                         Point point3;
+                        var ellipsePointNum = 0;
                         if (StringDirection == StringDirections.Clockwise)
                         {
                             ellipsePointNum = i;
@@ -449,14 +444,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                             }
                         }
 
-                        int line1PixelCount = (int)(pixelsPerPoint / 2);
-                        int line2PixelCount = line1PixelCount;
+                        var line1PixelCount = pixelsPerPoint / 2d;
+                        var line2PixelCount = line1PixelCount;
                         if (line1PixelCount + line2PixelCount < pixelsPerPoint)
                         {
                             line1PixelCount++;
                         }
-                        double xSpacing = (double)(point1.X - point2.X) / (double)(line1PixelCount);
-                        double ySpacing = (double)(point1.Y - point2.Y) / (double)(line1PixelCount); 
+                        double xSpacing = (point1.X - point2.X) / line1PixelCount;
+                        double ySpacing = (point1.Y - point2.Y) / line1PixelCount; 
                         double x = point1.X;
                         double y = point1.Y;
                         for (int linePointNum = 0; linePointNum < line1PixelCount; linePointNum++)
@@ -475,8 +470,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                             pixelNum++;
                         }
 
-                        xSpacing = (double)(point2.X - point3.X) / (double)(line2PixelCount);
-                        ySpacing = (double)(point2.Y - point3.Y) / (double)(line2PixelCount);
+                        xSpacing = (point2.X - point3.X) / line2PixelCount;
+                        ySpacing = (point2.Y - point3.Y) / line2PixelCount;
                         x = point2.X;
                         y = point2.Y;
                         for (int linePointNum = 0; linePointNum < line2PixelCount; linePointNum++)
@@ -517,12 +512,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				SelectDragPoints();
 			}
 				// If we get here, we're moving
-			else {
-				_bottomRightPoint.X = Convert.ToInt32(bottomRightStart.X * ZoomLevel) + changeX;
-				_bottomRightPoint.Y = Convert.ToInt32(bottomRightStart.Y * ZoomLevel) + changeY;
-				_topLeftPoint.X = Convert.ToInt32(topLeftStart.X * ZoomLevel) + changeX;
-				_topLeftPoint.Y = Convert.ToInt32(topLeftStart.Y * ZoomLevel) + changeY;
-
+			else
+			{
+				_bottomRightPoint.X = (int)(bottomRightStart.X * ZoomLevel + changeX);
+				_bottomRightPoint.Y = (int)(bottomRightStart.Y * ZoomLevel + changeY);
+				_topLeftPoint.X = (int)(topLeftStart.X * ZoomLevel + changeX);
+				_topLeftPoint.Y = (int)(topLeftStart.Y * ZoomLevel + changeY);
 				PointToZoomPointRef(_topLeftPoint);
 				PointToZoomPointRef(_bottomRightPoint);
 
