@@ -325,7 +325,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// <summary>
 		/// Decorator property data.
 		/// </summary>
-		public static readonly PropertyData DecoratorProperty = RegisterProperty("Decorator", typeof(MarkDecorator), null);
+		public static readonly PropertyData DecoratorProperty = RegisterProperty("Decorator", typeof(IMarkDecorator), null);
 
 		#endregion
 
