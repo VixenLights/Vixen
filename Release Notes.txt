@@ -1,5 +1,52 @@
 Release Notes - Vixen 3
 
+Release Notes - Vixen 3 - 3.6u1 Release Build 
+
+** Improvement
+    * [VIX-391] - Opening sequences with unknown elements
+    * [VIX-2785] - Center move handle doesn't move while resizing.
+    * [VIX-2791] - Connect element creation wizards to Preview prop creation process.
+    * [VIX-2795] - Sync up the library references between the QMLibrary and the Liquid so they are consistent.
+    * [VIX-2805] - Optimize further the output section to improve capacity and reduce CPU usage.
+    * [VIX-2819] - Improve the render performance of the Preview Setup
+    * [VIX-2822] - Optimize the color conversions from HSV to RGB to improve performance.
+    * [VIX-2827] - Enhance the OpenDMX plugin to support choosing the device.
+    * [VIX-2832] - Improve the performance of the Element Tree in the Display Setup / Preview
+    * [VIX-2833] - Add element targeting options for the Chase and Spin effects.
+
+** New Feature
+    * [VIX-679] - Import/Export of native V3 sequences
+
+** Bug
+    * [VIX-837] - Movement of mutiple items glitchy in preview
+    * [VIX-2025] - .net installer prompts for reboot before vixen install is done.  
+    * [VIX-2641] - Bars Effect 3D - Move Right & Horizontal Expand issue
+    * [VIX-2693] - Scheduler problems
+    * [VIX-2792] - Vixen 3.6 Set Level not working, on some elements
+    * [VIX-2793] - Entering non numeric data in the Curve Editor causes crash
+    * [VIX-2794] - Keyboard shortcuts for play sequence (F5) not working
+    * [VIX-2800] - Vixen crashing during effect color selection from gradient menu
+    * [VIX-2802] - FPP 2.6+ compression is not enabled.
+    * [VIX-2803] - New Install start-up error
+    * [VIX-2808] - Video does not render in preview
+    * [VIX-2810] - The levels deep function on the Twinkle does not render.
+    * [VIX-2811] - Ghost / Empty Toolbar items in the sequence editor. 
+    * [VIX-2812] - Audio files are being missed in new Sequence import.
+    * [VIX-2813] - Bar effect 3D setting not rendering properly
+    * [VIX-2817] - Some message dialogs may popup in odd places. 
+    * [VIX-2820] - Preview link elements slow and abnormal warning.
+    * [VIX-2821] - Open multiple sequence takes long time
+    * [VIX-2825] - Wipe on and off abnormal when brightness less than 100%
+    * [VIX-2826] - Native Sequence export does not include the old Nutcracker data files.
+    * [VIX-2828] - Universe setup should warn if the total channel count is out of sync with the controller count.
+    * [VIX-2829] - Cannot lasso / shift select multiple effects when the rows they are in are visible in multiple groups.
+    * [VIX-2831] - Custom Prop Editor drag drop elements can reverse order of dropped elements in some cases.
+    * [VIX-2834] - Mark Collection Editor field binding warning,
+    * [VIX-2835] - Multi String smart objects are not staying connected.
+    * [VIX-2836] - The delete mapping functionality is not working in the source tree of the profile mapper.
+
+
+
 Release Notes - Vixen 3 - 3.6 Release Build 
 
 ** New Feature
