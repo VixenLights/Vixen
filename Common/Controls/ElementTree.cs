@@ -54,7 +54,7 @@ namespace Common.Controls
 			{
 				if (elementNode.Children.Any() && e.Node.Nodes.Count == 1 && e.Node.Nodes[0].Name.Equals(VirtualNodeName))
 				{
-					AddChildrenToTree(e.Node, e.Node.Tag as ElementNode);
+					AddChildrenToTree(e.Node, elementNode);
 				}
 
 				_expandedNodes.Add(GenerateTreeNodeFullPath(e.Node, treeview.PathSeparator));
