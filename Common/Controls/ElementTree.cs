@@ -150,20 +150,26 @@ namespace Common.Controls
 			if (elementTreeNodesToSelect != null) {
 				_selectedNodes = new HashSet<string>(elementTreeNodesToSelect);
 			}
-			foreach (string node in _selectedNodes) {
-				TreeNode resultNode = FindNodeInTreeAtPath(treeview, node);
+			foreach (string node in _selectedNodes)
+			{
+
+				var paths = node.Split(treeview.PathSeparator.ToCharArray());
+				TreeNode resultNode = null;
+				for (int i = 1; i <= paths.Length; i++)
+				{
+					var path = string.Join(treeview.PathSeparator, paths, 0, i);
+					resultNode = FindNodeInTreeAtPath(treeview, path);
+					if (i != paths.Length)
+					{
+						resultNode?.Expand();
+					}
+				}
 
 				if (resultNode != null) {
 					treeview.AddSelectedNode(resultNode);
-					//ensure selected are visible
-					var parent = resultNode.Parent;
-					while (parent != null)
-					{
-						parent.Expand();
-						parent = parent.Parent;
-					}
-					
 				}
+
+				
 			}
 
 			treeview.EndUpdate();
