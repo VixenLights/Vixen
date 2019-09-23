@@ -4,9 +4,9 @@ namespace VixenModules.Effect.Effect
 {
 	public enum TargetNodeSelection
 	{
-		[Description("Each Element/Group")]
-		Individual,
 		[Description("Across Elements/Groups")]
-		Group
+		Group,
+		[Description("Each Element/Group")]
+		Individual
 	}
 }
