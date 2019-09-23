@@ -1247,15 +1247,15 @@ namespace Common.Controls.Timeline
 			return containingRow;
 		}
 
-		protected List<Row> RowsIn(Rectangle r)
+		protected List<Tuple<Row, int>> RowsIn(Rectangle r)
 		{
-			List<Row> containingRows= new List<Row>();
+			List<Tuple<Row,int>> containingRows= new List<Tuple<Row, int>>();
 			int currentHeight = 0;
 			var areaBottomY = r.Y + r.Height;
 			foreach (Row row in VisibleRows)
 			{
 				if (r.Y < currentHeight + row.Height) {
-					containingRows.Add(row);
+					containingRows.Add(new Tuple<Row, int>(row, currentHeight));
 				}
 				currentHeight += row.Height;
 				if (currentHeight > areaBottomY)
@@ -1466,15 +1466,20 @@ namespace Common.Controls.Timeline
 		// 
 		// Thus, until proven otherwise, I say we leave it like this. A cursory look at CPU usage says we
 		// are no worse than Windows Explorer (although it would be hard to be much worse.)
-		private void selectElementsWithin(Rectangle SelectedArea)
+		private void selectElementsWithin(Rectangle SelectedArea, bool useCAD = false)
 		{
 			if (SelectedArea.Size.IsEmpty) return;
 			var containingRows = RowsIn(SelectedArea);
 			TimeSpan selStart = pixelsToTime(SelectedArea.Left);
 			TimeSpan selEnd = pixelsToTime(SelectedArea.Right);
-			string moveDirection = (SelectedArea.Left < mouseDownGridLocation.X || !aCadStyleSelectionBox) ? "Left" : "Right";
+			int selBottom = SelectedArea.Top + SelectedArea.Height;
+			string moveDirection = "Left";
+			if (useCAD)
+			{
+				moveDirection = (SelectedArea.Left < mouseDownGridLocation.X || !aCadStyleSelectionBox) ? "Left" : "Right";
+			}
 
-			SelectionBorder = (moveDirection == "Right") ? Color.Green : Color.Blue;
+			SelectionBorder = moveDirection == "Right" ? Color.Green : Color.Blue;
 
 			SupressSelectionEvents = true;
 			// deselect all elements in the grid first, then only select the ones in the box.
@@ -1493,30 +1498,36 @@ namespace Common.Controls.Timeline
 			foreach (var row in containingRows) {
 				
 				// This row is in our selection
-				foreach (var elem in row) {
+				foreach (var elem in row.Item1) {
 					if(elem.StartTime > selEnd) break;
+
+					var elemTop = row.Item2 + elem.RowTopOffset;
+					var elemBottom = elemTop + elem.DisplayHeight;
+
 					if (DragBoxFilterEnabled)
 					{
 						if (moveDirection == "Left")
 						{
 							elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem) || ((elem.StartTime < selEnd && elem.EndTime > selStart) && 
-							                                                                         DragBoxFilterTypes.Contains(elem.EffectNode.Effect.TypeId)));
+							                                                                         elemTop < selBottom && elemBottom > SelectedArea.Top && DragBoxFilterTypes.Contains(elem.EffectNode.Effect.TypeId)));
 						}
 						else
 						{
 							elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem) || ((elem.StartTime > selStart && elem.EndTime < selEnd) && 
-							                                                                         DragBoxFilterTypes.Contains(elem.EffectNode.Effect.TypeId)));
+							                                                                         elemTop > SelectedArea.Top && elemBottom < selBottom && DragBoxFilterTypes.Contains(elem.EffectNode.Effect.TypeId)));
 						}
 					}
 					else
 					{
 						if (moveDirection == "Left")
 						{
-							elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem) || elem.StartTime < selEnd && elem.EndTime > selStart);
+							elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem) || (elem.StartTime < selEnd && elem.EndTime > selStart && 
+							                                                                         elemTop < selBottom && elemBottom > SelectedArea.Top ));
 						}
 						else
 						{
-							elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem) || elem.StartTime > selStart && elem.EndTime < selEnd);
+							elem.Selected = (ShiftPressed && tempSelectedElements.Contains(elem) || elem.StartTime > selStart && elem.EndTime < selEnd && 
+							                 elemTop > SelectedArea.Top && elemBottom < selBottom);
 						}
 					}
 				}
