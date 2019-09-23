@@ -18,6 +18,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         private List<PreviewSetElementString> _strings = new List<PreviewSetElementString>();
         private List<PreviewBaseShape> _shapes;
         private bool connectStandardStrings;
+        private const string VirtualNodeName = @"VIRT";
 
         public PreviewSetElements(List<PreviewBaseShape> shapes)
         {
@@ -76,9 +77,59 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         private void PreviewSetElements_Load(object sender, EventArgs e)
         {
-            PreviewTools.PopulateElementTree(treeElements);
+            PopulateElementTree(treeElements);
+			treeElements.BeforeExpand += TreeElements_BeforeExpand;
             PopulateStringList();
             UpdateListLinkedElements();
+        }
+
+		private void TreeElements_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+		{
+			if (e.Node.Tag is ElementNode elementNode)
+			{
+				if (elementNode.Children.Any() && e.Node.Nodes.Count == 1 && e.Node.Nodes[0].Name.Equals(VirtualNodeName))
+				{
+					AddChildrenToTree(e.Node, elementNode);
+				}
+			}
+		}
+
+		// 
+		// Add the root nodes to the Display Element tree
+		//
+		private static void PopulateElementTree(TreeView tree)
+        {
+	        foreach (ElementNode channel in VixenSystem.Nodes.GetRootNodes()) {
+		        AddNodeToElementTree(tree.Nodes, channel);
+	        }
+        }
+
+        // 
+        // Add each child Display Element or Display Element Group to the tree
+        // 
+        private static void AddNodeToElementTree(TreeNodeCollection collection, ElementNode elementNode)
+        {
+	        TreeNode addedNode = new TreeNode();
+	        addedNode.Name = elementNode.Id.ToString();
+	        addedNode.Text = elementNode.Name;
+	        addedNode.Tag = elementNode;
+	        collection.Add(addedNode);
+
+	        if(elementNode.Children.Any())
+	        {
+		        TreeNode virtNode = new TreeNode();
+		        virtNode.Name = VirtualNodeName;
+		        addedNode.Nodes.Add(virtNode);
+	        }
+        }
+
+        private void AddChildrenToTree(TreeNode node, ElementNode elementNode)
+        {
+	        node.Nodes.Clear();
+	        foreach (ElementNode childNode in elementNode.Children)
+	        {
+		        AddNodeToElementTree(node.Nodes, childNode);
+	        }
         }
 
         private void PopulateStringList()
