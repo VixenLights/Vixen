@@ -49,6 +49,7 @@ namespace VixenModules.Editor.EffectEditor.Editors
 		private static readonly ComponentResourceKey _FontEditorKey = new ComponentResourceKey(typeof(EditorKeys), "FontEditor");
 		private static readonly ComponentResourceKey _StringCollectionEditorKey = new ComponentResourceKey(ThisType, "StringCollectionEditor");
 		private static readonly ComponentResourceKey _IEmitterEditorKey = new ComponentResourceKey(ThisType, "IEmitterCollectionEditor");
+		private static readonly ComponentResourceKey _IWaveformEditorKey = new ComponentResourceKey(ThisType, "IWaveformCollectionEditor");
 
 		/// <summary>
 		///     Gets the File editor key.
@@ -242,6 +243,11 @@ namespace VixenModules.Editor.EffectEditor.Editors
 		public static ComponentResourceKey IEmitterEditorKey
 		{
 			get { return _IEmitterEditorKey; }
+		}
+		
+		public static ComponentResourceKey IWaveformEditorKey
+		{
+			get { return _IWaveformEditorKey; }
 		}
 	}
 }
