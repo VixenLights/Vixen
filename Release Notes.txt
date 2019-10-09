@@ -1,4 +1,16 @@
-Release Notes - Vixen 3
+Release Notes - Vixen 3 - 3.6u2 Release Build 
+
+** Bug
+    * [VIX-2837] - Gradient toolbar does not automatically update new gradients
+    * [VIX-2838] - Find sources button from controller pane is not working. 
+    * [VIX-2839] - Spin Effect in 3.6u1 Build 911 is not working, works fine in Build 899
+    * [VIX-2841] - The lasso selection does not handle overlapping elements on the same row correctly.
+    * [VIX-2842] - If the export wizard is cancelled it can still try to write the universe file which might fail and crash the application.
+
+** Improvement
+    * [VIX-2840] - Speed up link elements tree when selecting nodes
+
+
 
 Release Notes - Vixen 3 - 3.6u1 Release Build 
 
