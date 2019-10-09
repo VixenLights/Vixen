@@ -265,7 +265,6 @@ namespace VixenApplication.Setup
 					helper.SetColorType(ElementColorType.FullColor);
 					helper.Perform(createdElements);
 
-					//elementTree.PopulateNodeTree(createdElements.FirstOrDefault());
 					elementTree.AddNodePathToTree(new []{createdElements.First()});
 					OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Add));
 					UpdateFormWithNode();
