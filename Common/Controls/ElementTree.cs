@@ -152,24 +152,7 @@ namespace Common.Controls
 			}
 			foreach (string node in _selectedNodes)
 			{
-
-				var paths = node.Split(treeview.PathSeparator.ToCharArray());
-				TreeNode resultNode = null;
-				for (int i = 1; i <= paths.Length; i++)
-				{
-					var path = string.Join(treeview.PathSeparator, paths, 0, i);
-					resultNode = FindNodeInTreeAtPath(treeview, path);
-					if (i != paths.Length)
-					{
-						resultNode?.Expand();
-					}
-				}
-
-				if (resultNode != null) {
-					treeview.AddSelectedNode(resultNode);
-				}
-
-				
+				SelectNodeAtPath(node);
 			}
 
 			treeview.EndUpdate();
@@ -196,6 +179,33 @@ namespace Common.Controls
 				// an "elements have changed" event will do for now. Fix this sometime.
 				OnElementsChanged();
 			}
+		}
+
+		private void SelectNodeAtPath(string nodePath)
+		{
+			var paths = nodePath.Split(treeview.PathSeparator.ToCharArray());
+			TreeNode resultNode = null;
+			for (int i = 1; i <= paths.Length; i++)
+			{
+				var path = string.Join(treeview.PathSeparator, paths, 0, i);
+				resultNode = FindNodeInTreeAtPath(treeview, path);
+				if (i != paths.Length)
+				{
+					resultNode?.Expand();
+				}
+			}
+
+			if (resultNode != null)
+			{
+				treeview.AddSelectedNode(resultNode);
+			}
+		}
+
+		public void SelectElementNode(ElementNode node)
+		{
+			ClearSelectedNodes();
+			var path = GenerateEquivalentTreeNodeFullPathFromElement(node, treeview.PathSeparator);
+			SelectNodeAtPath(path);
 		}
 
 		private string GenerateTreeNodeFullPath(TreeNode node, string separator)
