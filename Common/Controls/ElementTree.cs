@@ -657,7 +657,7 @@ namespace Common.Controls
 			_selectedNodes.Clear();
 			
 			treeview.BeginUpdate();
-			treeview.SelectedNodes.Clear();
+			ClearSelectedNodes();
 			TreeNode resultNode = null;
 			foreach (var elementNode in elementNodes)
 			{
