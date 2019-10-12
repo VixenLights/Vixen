@@ -54,7 +54,7 @@ namespace VixenApplication
 		private CpuUsage _cpuUsage;
 		private int _currentBuildVersion;
 		private string _currentReleaseVersion;
-
+		private bool _closing;
 
 		private VixenApplicationData _applicationData;
 
@@ -327,6 +327,19 @@ namespace VixenApplication
 
 		private async void VixenApp_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			if (_openEditors.Any(x => x.IsModified))
+			{
+				MessageBoxForm mbf = new MessageBoxForm("You have open editor(s) with unsaved changes, are you sure you want to close Vixen?\n\n If you choose yes, you will be prompted to save those editors as they are closed.", 
+					"Close Vixen?", MessageBoxButtons.YesNo, SystemIcons.Warning);
+				var result = mbf.ShowDialog(this);
+				if (result == DialogResult.No)
+				{
+					e.Cancel = true;
+					return;
+				}
+			}
+
+			_closing = true;
 			// close all open editors
 			foreach (IEditorUserInterface editor in _openEditors.ToArray()) {
 				editor.CloseEditor();
@@ -797,9 +810,7 @@ namespace VixenApplication
 		private bool _CloseEditor(IEditorUserInterface editor)
 		{
 			if (editor.IsModified) {
-				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-				var messageBox = new MessageBoxForm("Save changes to the sequence?", "Save Changes?", true, true);
+				var messageBox = new MessageBoxForm($"Save changes to the sequence {editor.Sequence?.Name}?", "Save Changes?",_closing?MessageBoxButtons.YesNo:MessageBoxButtons.YesNoCancel, SystemIcons.Question);
 				messageBox.StartPosition = FormStartPosition.CenterScreen;
 				messageBox.ShowDialog();
 				if (messageBox.DialogResult == DialogResult.Cancel)
