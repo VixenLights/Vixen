@@ -1670,7 +1670,7 @@ namespace VixenModules.Effect.Wave
 			IWaveform wave,
 			DirectionType direction)
 		{
-			// Grow and shrink the square wave
+			// Grow and shrink the sine wave
 			GrowAndShrink(mirrorWave, numberOfWaves, waveThickness, waveHeight, wspeed, yOffset, fillColor, angleOffset, frameBuffer, wave, direction, RenderColumnSine);			
 		}
 
