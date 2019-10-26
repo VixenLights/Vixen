@@ -1678,7 +1678,7 @@ namespace VixenModules.Effect.Wave
 			r -= wave.DecayFactor;
 
 			// Increase the decay factor with each frame so that the wave amplitude gets smaller
-			wave.DecayFactor++;
+			wave.DecayFactor += _speedIncrement;
 
 			// If the amplitude is down to zero then...
 			if (r <= 0)
