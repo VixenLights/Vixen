@@ -36,9 +36,7 @@ namespace VixenModules.Effect.Wave
 			WaveformData[1].ColorHandling = WaveColorHandling.Across;
 			WaveformData[1].PhaseShift = 90;
 			WaveformData[1].Direction = DirectionType.RightToLeft;
-
-			RenderScaleFactor = 4; // 1/4			
-
+			
 			Colors = new List<ColorGradient>
 			{
 				new ColorGradient(System.Drawing.Color.Blue),
@@ -56,10 +54,7 @@ namespace VixenModules.Effect.Wave
 						
 		[DataMember]
 		public List<WaveformData> WaveformData { get; set; }
-
-		[DataMember]
-		public int RenderScaleFactor { get; set; }
-
+		
 		[DataMember]
 		public List<ColorGradient> Colors { get; set; }
 
@@ -71,8 +66,7 @@ namespace VixenModules.Effect.Wave
 		{
 			WaveData result = new WaveData
 			{
-				Orientation = Orientation,	
-				RenderScaleFactor = RenderScaleFactor,
+				Orientation = Orientation,					
 			};
 
 			// Clone the waves

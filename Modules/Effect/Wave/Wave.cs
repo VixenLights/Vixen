@@ -56,13 +56,7 @@ namespace VixenModules.Effect.Wave
 		/// Data associated with the effect.
 		/// </summary>
 		private WaveData _data;
-
-		/// <summary>
-		/// Copy of the render scale factor.
-		/// A copy is made in an attempt to avoid the value being modified while the effet is rendering.
-		/// </summary>
-		private int _renderScaleFactor;
-
+		
 		/// <summary>
 		/// Random number generator for Ivey waveform.
 		/// </summary>
@@ -79,6 +73,11 @@ namespace VixenModules.Effect.Wave
 		/// Note this width might not match the actual effect width when the effect is operating in Location mode.
 		/// </summary>
 		private int _bufferWi;
+
+		/// <summary>
+		/// Number of columns to render each frame.
+		/// </summary>
+		private int _speedIncrement;
 
 		#endregion
 
@@ -142,8 +141,8 @@ namespace VixenModules.Effect.Wave
 				// Update the wave model data
 				UpdateWaveModel(_data);
 
-				// Determine if the Render Scale Factor should be visible
-				UpdateRenderScaleFactorAttributes(false);
+				// Determine if the Render Scale Factor should be visible				
+				UpdateAttributes();
 
 				// Mark the effect as dirty
 				MarkDirty();
@@ -151,28 +150,7 @@ namespace VixenModules.Effect.Wave
 		}
 
 		private ExpandoObjectObservableCollection<IWaveform> _waves;
-
-		[Value]
-		[ProviderCategory(@"Setup", 3)]
-		[ProviderDisplayName(@"RenderScaleFactor")]
-		[ProviderDescription(@"RenderScaleFactor")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 10, 1)]
-		[PropertyOrder(1)]
-		public int RenderScaleFactor
-		{
-			get
-			{
-				return _data.RenderScaleFactor;
-			}
-			set
-			{
-				_data.RenderScaleFactor = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
+		
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Waves")]
 		[ProviderDescription(@"Waves")]
@@ -261,13 +239,9 @@ namespace VixenModules.Effect.Wave
 			y = Math.Abs((BufferHtOffset - y) + (bufferHt - 1 + BufferHtOffset));
 			y = y - BufferHtOffset;
 			x = x - BufferWiOffset;
-
-			// Scale the location down to the render bitmap so that we can retrieve the color of the pixel
-			int scaledX = x / _renderScaleFactor;
-			int scaledY = y / _renderScaleFactor;
-
+			
 			// Retrieve the color from the bitmap
-			Color color = tempFrameBuffer.GetColorAt(scaledX, scaledY);
+			Color color = tempFrameBuffer.GetColorAt(x, y);
 
 			// Set the pixel on the frame buffer
 			frameBuffer.SetPixel(xCoord, yCoord, color);
@@ -318,36 +292,25 @@ namespace VixenModules.Effect.Wave
 		/// Setup for rendering.
 		/// </summary>
 		protected override void SetupRender()
-		{
-			// Determine the logical render area based on the target positioning
-			if (TargetPositioning == TargetPositioningType.Locations)
+		{					
+			// Store off the matrix width and height
+			_bufferWi = BufferWi;
+			_bufferHt = BufferHt;
+
+			// Determine the width of the matrix when in string mode
+			double matrixWidth;
+			if (TargetPositioning == TargetPositioningType.Strings)
 			{
-				// Save off the render scale factor to avoid threading issues
-				_renderScaleFactor = RenderScaleFactor;
-
-				// Update the virtual matrix based on the render scale factor
-				_bufferWi = BufferWi / _renderScaleFactor;
-				_bufferHt = BufferHt / _renderScaleFactor;
-
-				// Need to increase the render height if the scale factor did not divide evenly
-				if (BufferHt % _renderScaleFactor != 0)
-				{
-					_bufferHt++;
-				}
-
-				// Need to increase the render width if the scale factor did not divide evenly
-				if (BufferWi % _renderScaleFactor != 0)
-				{
-					_bufferWi++;
-				}
+				matrixWidth = BufferWi;
 			}
 			else
 			{
-				// If in string mode no scale factor is necessary
-				_bufferWi = BufferWi;
-				_bufferHt = BufferHt;
+				matrixWidth = MaxPixelsPerString;
 			}
 
+			// Determine the speed of the wave.  In string mode the default (minimum) speed is one column per frame.
+			_speedIncrement = (int)Math.Round(BufferWi / matrixWidth, MidpointRounding.AwayFromZero);
+			
 			// Loop over the waves
 			foreach (IWaveform wave in Waves.ToList())
 			{
@@ -509,13 +472,23 @@ namespace VixenModules.Effect.Wave
 		#endregion
 
 		#region Private Methods
-		
+
+		/// <summary>
+		/// Updates the visibility of fields.
+		/// </summary>
+		private void UpdateAttributes()
+		{
+			UpdateRenderScaleFactorAttributes(false);
+			UpdateStringOrientationAttributes();
+			TypeDescriptor.Refresh(this);
+		}
+
 		/// <summary>
 		/// Calculates the speed of the wave.
 		/// </summary>		
 		private int CalculateWaveSpeed(IWaveform waveform, double intervalPos)
 		{
-			int speed = (int)Math.Round(ScaleCurveToValue(waveform.Speed.GetValue(intervalPos), MaxWaveVelocity, 0));
+			int speed = (int)Math.Round(ScaleCurveToValue(waveform.Speed.GetValue(intervalPos), MaxWaveVelocity * _speedIncrement, 0));
 
 			if (speed == 0)
 			{
