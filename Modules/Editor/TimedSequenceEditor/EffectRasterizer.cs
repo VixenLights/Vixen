@@ -42,13 +42,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				int skipCount = count>tmpsiz ? count / tmpsiz: 1;
 
-				double heightPerElement = height/ ( count / skipCount);
-
 				double y = 0;
 				int ctr = 0;
 
 				var elements = effect.TargetNodes.GetElements();
 
+				double heightPerElement = height/ ( elements.Length / skipCount);
+				
 				foreach (var element in elements)
 				{
 					if(ctr++ % skipCount != 0) continue;
