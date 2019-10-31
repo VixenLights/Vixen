@@ -199,15 +199,15 @@ namespace VixenModules.Effect.Wave
 		{
 			// Make a local copy that is faster than the logic to get it for reuse.
 			var localBufferHt = BufferHt;
-			
+
+			// Create a virtual matrix based on the rendering scale factor
+			PixelFrameBuffer virtualFrameBuffer = new PixelFrameBuffer(_bufferWi, _bufferHt);
+
 			// Loop over the frames
 			for (int frameNum = 0; frameNum < numFrames; frameNum++)
 			{
 				//Assign the current frame
 				frameBuffer.CurrentFrame = frameNum;
-
-				// Create a virtual matrix based on the rendering scale factor
-				IPixelFrameBuffer virtualFrameBuffer = new PixelFrameBuffer(_bufferWi, _bufferHt);
 
 				// Render the effet to the virtual frame buffer
 				RenderEffect(frameNum, virtualFrameBuffer);
@@ -223,6 +223,8 @@ namespace VixenModules.Effect.Wave
 						virtualFrameBuffer,
 						frameBuffer);
 				}
+
+				virtualFrameBuffer.ClearBuffer();
 			}
 		}
 
