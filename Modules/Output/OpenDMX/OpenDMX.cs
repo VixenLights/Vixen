@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using FTD2XX_NET;
 using NLog;
@@ -32,29 +33,51 @@ namespace VixenModules.Controller.OpenDMX
 		public void Start()
 		{
 			Logging.Info("Starting OpenDmx");
-			uint deviceIndex = 0;
-
-			if (_data.Device != null)
+			Device device = _data.Device;
+			var deviceFound = false;
+			if (device != null)
 			{
-				var i = FindDeviceIndex(_data.Device);
+				var i = FindDeviceIndex(device);
 				if (i >= 0)
 				{
-					deviceIndex = (uint)i;
-					Logging.Info($"Specified OpenDMX device {_data.Device} found at index: {deviceIndex}");
+					deviceFound = true;
+					Logging.Info($"Specified OpenDMX device {device} found at index: {i}");
 				}
 			}
 			
-			Logging.Info($"Attempting to open OpenDMX device {_data.Device}");
-			//try to open the device
-			_status = _openDmxConnection.OpenByIndex(deviceIndex);
-
-			if (_status != FTDI.FT_STATUS.FT_OK) //failure
+			if(device == null || !deviceFound)
 			{
-				Logging.Error($"Error opening the OpenDMX device {deviceIndex} : {_status.ToString()}");
-				var message = "Failed to open OpenDMX device.  Error from Driver: " + _status;
+				device = GetDefaultDevice();
+				if (device != null)
+				{
+					deviceFound = true;
+					_data.Device = device;
+					Logging.Info($"Using default OpenDMX device {device}");
+				}
+			}
+			
+			
+			//try to open the device
+			if (deviceFound)
+			{
+				Logging.Info($"Attempting to open OpenDMX device {device}");
+				Logging.Info($"Attempting to open by serial number {device.SerialNumber}");
+				_status = _openDmxConnection.OpenBySerialNumber(device.SerialNumber);
+			}
+			else
+			{
+				Logging.Error("No devices found to open.");
+				var message = "No devices found to open.";
 				throw new Exception(message);
 			}
-
+			
+			if (_status != FTDI.FT_STATUS.FT_OK) //failure
+			{
+				Logging.Error($"Error opening the OpenDMX device {device} : {_status}");
+				var message = "Failed to open OpenDMX device. Error from Driver: " + _status;
+				throw new Exception(message);
+			}
+			
 			//Initialize the universe and start code to all 0s
 		    InitOpenDmx();
             for (var i = 0; i < 513; i++)
@@ -63,7 +86,7 @@ namespace VixenModules.Controller.OpenDMX
 			//Create and start the thread that sends the output data to the driver
 			var thread = new Thread(WriteData);
 			thread.Start();
-			Logging.Info($"Open OpenDMX device {_data.Device} successful");
+			Logging.Info($"Open OpenDMX device {device} successful");
 		}
 
 		public void Stop()
@@ -147,18 +170,36 @@ namespace VixenModules.Controller.OpenDMX
 	    private void InitOpenDmx()
 		{
             _status = _openDmxConnection.ResetDevice();
+            Logging.Info($"Reset device: {_status}");
 		    _status = _openDmxConnection.SetBaudRate(Baudrate);
+		    Logging.Info($"Set device baudrate: {_status}");
 		    _status = _openDmxConnection.SetDataCharacteristics(Bits8, StopBits2, ParityNone);
+		    Logging.Info($"Set device data characteristics: {_status}");
 		    _status = _openDmxConnection.SetFlowControl(FlowNone, 0, 0);
+		    Logging.Info($"Set device flow control: {_status}");
 		    _status = _openDmxConnection.SetRTS(false);
+		    Logging.Info($"Set device RTS: {_status}");
             _status = _openDmxConnection.Purge(PurgeTx);
+            Logging.Info($"Purge TX: {_status}");
 		    _status = _openDmxConnection.Purge(PurgeRx);
+		    Logging.Info($"Purge RX: {_status}");
 		}
 
 	    public int FindDeviceIndex(Device device)
 	    {
 		    var devices = GetDeviceList();
 		    return devices.FindIndex(x => x.Id == device.Id && x.SerialNumber == device.SerialNumber && x.Description == device.Description);
+	    }
+
+	    public Device GetDefaultDevice()
+	    {
+		    var devices = GetDeviceList();
+		    if (devices.Any())
+		    {
+			    return devices[0];
+		    }
+
+		    return null;
 	    }
 
 	    public static List<Device> GetDeviceList()

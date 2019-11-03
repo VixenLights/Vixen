@@ -37,23 +37,61 @@ namespace VixenModules.Effect.Spin
 		{
 			if (TargetNodes.Any())
 			{
-				CheckForInvalidColorData();
-				var firstNode = TargetNodes.FirstOrDefault();
-				if (firstNode != null && DepthOfEffect > firstNode.GetMaxChildDepth() - 1)
+				if (TargetNodes.Length > 1)
 				{
 					DepthOfEffect = 0;
 				}
+				else
+				{ 
+					CheckForInvalidColorData(); 
+					var firstNode = TargetNodes.FirstOrDefault();
+					if (firstNode != null && DepthOfEffect > firstNode.GetMaxChildDepth() - 1)
+					{
+						DepthOfEffect = 0;
+					}
+				}
 			}
-			
+			UpdateTargetingAttributes();
+			TypeDescriptor.Refresh(this);
 		}
 
 		protected override void _PreRender(CancellationTokenSource tokenSource = null)
 		{
 			_elementData = new EffectIntents();
 
-			DoRendering(tokenSource);
-
-			//_elementData = IntentBuilder.ConvertToStaticArrayIntents(_elementData, TimeSpan, IsDiscrete());
+			if (TargetNodeHandling == TargetNodeSelection.Group)
+			{
+				if (TargetNodes.Length == 1)
+				{
+					var renderNodes = GetNodesToRenderOn(TargetNodes.First());
+					DoRendering(renderNodes, tokenSource);
+				}
+				else
+				{
+					DoRendering(TargetNodes.ToList(), tokenSource);
+				}
+				
+			}
+			else 
+			{
+				if (TargetNodes.Length == 1)
+				{
+					var targetNodes = GetNodesToRenderOn(TargetNodes.First());
+					foreach (var elementNode in targetNodes)
+					{
+						var renderNodes = GetNodesToRenderOn(elementNode);
+						DoRendering(renderNodes, tokenSource);
+					}
+				}
+				else
+				{
+					foreach (var elementNode in TargetNodes)
+					{
+						var renderNodes = GetNodesToRenderOn(elementNode);
+						DoRendering(renderNodes, tokenSource);
+					}
+				}
+			}
 		}
 
 		//Validate that the we are using valid colors and set appropriate defaults if not.
@@ -149,6 +187,21 @@ namespace VixenModules.Effect.Spin
 				OnPropertyChanged();
 				UpdatePulseLengthFormatAttributes();
 				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Behavior", 0)]
+		[ProviderDisplayName(@"SpinTargetNodeSelection")]
+		[ProviderDescription(@"SpinTargetNodeSelection")]
+		public TargetNodeSelection TargetNodeHandling
+		{
+			get => _data.TargetNodeSelection;
+			set
+			{
+				_data.TargetNodeSelection = value;
+				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 
@@ -403,7 +456,17 @@ namespace VixenModules.Effect.Spin
 			UpdateSpeedFormatAttributes();
 			UpdatePulseLengthFormatAttributes();
 			UpdateDefaultLevelAttributes();
+			UpdateTargetingAttributes();
 			TypeDescriptor.Refresh(this);
+		}
+		
+		private void UpdateTargetingAttributes()
+		{
+			var depth = DetermineDepth();
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2);
+			propertyStates.Add(nameof(TargetNodeHandling), TargetNodes.Length > 1 || depth > 2);
+			propertyStates.Add(nameof(DepthOfEffect), depth > 2);
+			SetBrowsable(propertyStates);
 		}
 
 		private void UpdateDefaultLevelAttributes()
@@ -447,9 +510,8 @@ namespace VixenModules.Effect.Spin
 
 		#endregion
 
-		private void DoRendering(CancellationTokenSource tokenSource = null)
+		private void DoRendering(List<IElementNode> renderNodes, CancellationTokenSource tokenSource = null)
 		{
-			List<IElementNode> renderNodes = GetNodesToRenderOn();
 			int targetNodeCount = renderNodes.Count;
 			
 			//If there are no nodes to render on Exit!
@@ -689,15 +751,16 @@ namespace VixenModules.Effect.Spin
 			_elementData = EffectIntents.Restrict(_elementData, TimeSpan.Zero, TimeSpan);
 		}
 
-		private List<IElementNode> GetNodesToRenderOn()
+		private List<IElementNode> GetNodesToRenderOn(IElementNode node)
 		{
 			IEnumerable<IElementNode> renderNodes = null;
 
 			if (DepthOfEffect == 0) {
-				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
+				renderNodes = node.GetLeafEnumerator().ToList();
 			}
-			else {
-				renderNodes = TargetNodes;
+			else 
+			{
+				renderNodes = new []{node};
 				for (int i = 0; i < DepthOfEffect; i++) {
 					renderNodes = renderNodes.SelectMany(x => x.Children);
 				}
@@ -706,7 +769,7 @@ namespace VixenModules.Effect.Spin
 			// If the given DepthOfEffect results in no nodes (because it goes "too deep" and misses all nodes), 
 			// then we'll default to the LeafElements, which will at least return 1 element (the TargetNode)
 			if (!renderNodes.Any())
-				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator());
+				renderNodes = node.GetLeafEnumerator();
 
 			return renderNodes.ToList();
 		}

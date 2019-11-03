@@ -990,4 +990,10 @@
   <data name="WarmUpFrames" xml:space="preserve">
     <value>Runs the Liquid engine for the specified number of frames before rendering the effect.  This setting is useful if you want a large number of particles in the display area at the beginning of the effect.</value>
   </data>
+  <data name="ChaseTargetNodeSelection" xml:space="preserve">
+    <value>Determines how the Chase is applied across the target elements that are presented to the effect.</value>
+  </data>
+  <data name="SpinTargetNodeSelection" xml:space="preserve">
+    <value>Determines how the Spin is applied across the target elements that are presented to the effect.</value>
+  </data>
 </root>

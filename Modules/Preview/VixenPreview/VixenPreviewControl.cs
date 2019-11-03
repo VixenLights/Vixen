@@ -557,11 +557,12 @@ namespace VixenModules.Preview.VixenPreview
 
 		private bool _mouseCaptured = false;
 		private bool _banding = false;
-
+		private ElementNode _elementSelected = null;
 		private void VixenPreviewControl_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (_editMode)
 			{
+				_elementSelected = elementsForm.SelectedNode;
 				bool controlPressed = (Control.ModifierKeys == Keys.Control);
 				PreviewPoint translatedPoint = new PreviewPoint(e.X + hScroll.Value, e.Y + vScroll.Value);
 				if (e.Button == System.Windows.Forms.MouseButtons.Left)
@@ -659,14 +660,10 @@ namespace VixenModules.Preview.VixenPreview
 					}
 
 					// If we're not Selecting items, we're drawing them
-					//else if (_currentTool == Tools.PolyLine && _mouseCaptured)
-					//{
-					//	return;
-					//}
-					//else if (_currentTool == Tools.MultiString && _mouseCaptured)
-					//{
-					//	return;
-					//}
+					else if (_mouseCaptured && (_currentTool == Tools.PolyLine || _currentTool == Tools.MultiString))
+					{
+						return;
+					}
 					else
 					{
 						DeSelectSelectedDisplayItem();
@@ -1309,7 +1306,8 @@ namespace VixenModules.Preview.VixenPreview
 
 				if (_selectedDisplayItem != null)
 				{
-					if (elementsForm.SelectedNode == null && modifyType.Equals("AddNew"))
+					Console.Out.WriteLineAsync($"Element Selected is null {_elementSelected == null}");
+					if (_elementSelected == null && modifyType.Equals("AddNew"))
 					{
 						//Intercept and populate the element tree
 						if (ShowElementCreateTemplateForCurrentTool() && elementsForm.SelectedNode != null)

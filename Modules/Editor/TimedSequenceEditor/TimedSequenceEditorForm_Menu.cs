@@ -450,12 +450,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			var selector = new CurveLibrarySelector{DoubleClickMode = CurveLibrarySelector.Mode.Edit};
 			selector.ShowDialog();
+			_currentToolStrip = null;
+			Populate_Curves();
 		}
 
 		private void colorGradientToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			var selector = new ColorGradientLibrarySelector{DoubleClickMode = ColorGradientLibrarySelector.Mode.Edit};
 			selector.ShowDialog();
+			_currentToolStrip = null;
+			Populate_Gradients();
 		}
 
 		private async void editMapsToolStripMenuItem_Click(object sender, EventArgs e)

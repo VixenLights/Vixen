@@ -111,6 +111,11 @@ namespace VixenModules.Preview.VixenPreview
 
 		public ElementNode SelectedNode => treeElements.SelectedNode;
 
+		public void SelectElementNode(ElementNode node)
+		{
+			treeElements.SelectElementNode(node);
+		}
+
 		private void ButtonAddTemplate_Click(object sender, EventArgs e)
 		{
 			ComboBoxItem item = (comboBoxNewItemType.SelectedItem as ComboBoxItem);

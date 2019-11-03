@@ -68,6 +68,9 @@ namespace VixenModules.Effect.Spin
 
 		[DataMember]
 		public int DepthOfEffect { get; set; }
+		
+		[DataMember]
+		public TargetNodeSelection TargetNodeSelection { get; set; }
 
 		[OnDeserialized]
 		void OnDeserialized(StreamingContext c)
@@ -95,6 +98,7 @@ namespace VixenModules.Effect.Spin
 			PulseCurve = new Curve();
 			ReverseSpin = false;
 			DepthOfEffect = 0;
+			TargetNodeSelection = TargetNodeSelection.Group;
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
@@ -115,6 +119,7 @@ namespace VixenModules.Effect.Spin
 			result.ReverseSpin = ReverseSpin;
 			result.DepthOfEffect = DepthOfEffect;
 			result.EnableDefaultLevel = EnableDefaultLevel;
+			result.TargetNodeSelection = TargetNodeSelection;
 			return result;
 		}
 	}

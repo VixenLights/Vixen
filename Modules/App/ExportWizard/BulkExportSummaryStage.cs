@@ -170,6 +170,12 @@ namespace VixenModules.App.ExportWizard
 					LoadMedia(sequence);
 					//Render it
 					RenderSequence(sequence, progress);
+
+					if (_cancelled)
+					{
+						break;
+					}
+
 					//Update over all progress with next step
 					overallProgressStep++;
 					exportProgressStatus.OverallProgressValue = (int)(overallProgressStep / overallProgressSteps * 100);
@@ -185,7 +191,10 @@ namespace VixenModules.App.ExportWizard
 					
 				}
 
-				await CreateUniverseFile();
+				if (!_cancelled)
+				{
+					await CreateUniverseFile();
+				}
 				exportProgressStatus.TaskProgressMessage = "";
 				exportProgressStatus.TaskProgressValue = 0;
 				exportProgressStatus.OverallProgressMessage = "Completed";

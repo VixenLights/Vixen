@@ -284,18 +284,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public void SetPixelZoom() 
 		{
 			// Zoom
+			if (ZoomLevel == 1) return;
 			foreach (PreviewPixel pixel in _pixels)
 			{
-                try
-                {
-                    pixel.X = Convert.ToInt32((Convert.ToDouble(pixel.X) * ZoomLevel));
-                    pixel.Y = Convert.ToInt32((Convert.ToDouble(pixel.Y) * ZoomLevel));
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("SetPixelZoom: " + ex.Message);
-                }
-            }
+				pixel.X = (int)(pixel.X * ZoomLevel);
+				pixel.Y = (int)(pixel.Y * ZoomLevel);
+			}
 		}
 
 		[Browsable(false)]
@@ -541,8 +535,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public void PointToZoomPointRef(PreviewPoint p)
 		{
-			int xDif = p.X - Convert.ToInt32(p.X / ZoomLevel);
-			int yDif = p.Y - Convert.ToInt32(p.Y / ZoomLevel);
+			int xDif = p.X - (int)(p.X / ZoomLevel);
+			int yDif = p.Y - (int)(p.Y / ZoomLevel);
 			p.X = p.X - xDif;
 			p.Y = p.Y - yDif;
 		}

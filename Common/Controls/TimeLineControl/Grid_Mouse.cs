@@ -597,7 +597,7 @@ namespace Common.Controls.Timeline
 			                              Math.Max(m_selectionRectangleStart.Y, gridLocation.Y));
 
 			SelectionArea = Util.RectangleFromPoints(topLeft, bottomRight);
-			selectElementsWithin(SelectionArea);
+			selectElementsWithin(SelectionArea, true);
 			Invalidate();
 			Update();
 		}

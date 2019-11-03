@@ -32,12 +32,14 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 			BasicView = Visibility.Collapsed;
 			_sourceActiveElements = sourceActiveElements;
 			_sequenceName = sequenceName;
+			Title = FormTitle;
 		}
 
 		public ElementMapperViewModel(Dictionary<Guid, string> sourceActiveElements, string sequenceName, string elementTreeFileName, string elementMapFileName):this(sourceActiveElements, sequenceName)
 		{
 			ElementTreeFilePath = elementTreeFileName;
 			ElementMapFilePath = elementMapFileName;
+			Title = FormTitle;
 		}
 
 		private void OnElementMapChanged(ElementMapService.MapMessage obj)

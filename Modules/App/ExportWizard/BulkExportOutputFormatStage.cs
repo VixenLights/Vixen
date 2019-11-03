@@ -194,7 +194,8 @@ namespace VixenModules.App.ExportWizard
 			{
 				if (_data.ActiveProfile.IsFalconFormat)
 				{
-					if (CanTestPath() && Directory.Exists(_data.ActiveProfile.FalconOutputFolder))
+					if (CanTestPath() && 
+					    Directory.Exists(_data.ActiveProfile.IsFalconFormat ? _data.ActiveProfile.OutputFolder : _data.ActiveProfile.FalconOutputFolder))
 					{
 						return true;
 					}
@@ -241,11 +242,14 @@ namespace VixenModules.App.ExportWizard
 		private bool CanTestPath()
 		{
 			bool success = true;
-			if (!string.IsNullOrEmpty(_data.ActiveProfile.FalconOutputFolder))
+			var pathToTest = _data.ActiveProfile.IsFalconFormat
+				? _data.ActiveProfile.OutputFolder
+				: _data.ActiveProfile.FalconOutputFolder;
+			if (!string.IsNullOrEmpty(pathToTest))
 			{
 				try
 				{
-					Uri uri = new Uri(_data.ActiveProfile.FalconOutputFolder);
+					Uri uri = new Uri(pathToTest);
 					if (uri.HostNameType != UriHostNameType.Unknown && !string.IsNullOrEmpty(uri.Host))
 					{
 						success = PingHost(uri.Host);
