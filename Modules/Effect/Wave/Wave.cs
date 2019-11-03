@@ -215,7 +215,7 @@ namespace VixenModules.Effect.Wave
 				// Loop through the sparse matrix
 				foreach (ElementLocation elementLocation in frameBuffer.ElementLocations)
 				{
-					// Lookup and extrapolate the pixel from the smaller virtual frame buffer
+					// Lookup the pixel from the virtual frame buffer
 					UpdateFrameBufferForLocationPixel(
 						elementLocation.X,
 						elementLocation.Y,
@@ -223,7 +223,7 @@ namespace VixenModules.Effect.Wave
 						virtualFrameBuffer,
 						frameBuffer);
 				}
-
+				
 				virtualFrameBuffer.ClearBuffer();
 			}
 		}
