@@ -983,6 +983,7 @@
   </data>
   <data name="SpinTargetNodeSelection" xml:space="preserve">
     <value>Spin</value>
+  </data>
   <data name="PhaseShift" xml:space="preserve">
     <value>Phase Shift</value>
   </data>
