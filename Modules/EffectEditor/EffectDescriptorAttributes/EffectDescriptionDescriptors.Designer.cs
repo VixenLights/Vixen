@@ -80,6 +80,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Determines the height of the waveform..
+        /// </summary>
+        internal static string Amplitude {
+            get {
+                return ResourceManager.GetString("Amplitude", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the rotation angle..
         /// </summary>
         internal static string Angle {
@@ -1016,6 +1025,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Determines how many times the waveform repeats on the display element..
+        /// </summary>
+        internal static string Frequency {
+            get {
+                return ResourceManager.GetString("Frequency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Changes the garland type..
         /// </summary>
         internal static string GarlandType {
@@ -1394,6 +1412,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mirrors the waveform across an imaginary y-axis..
+        /// </summary>
+        internal static string Mirror {
+            get {
+                return ResourceManager.GetString("Mirror", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to When selected liquid particles of different colors will combine colors when the particles collide or come into contact with each other..
         /// </summary>
         internal static string MixColors {
@@ -1628,6 +1655,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Determines how far the waveform is shifted horizontally from the usual position.  The phase shift is adjustable from zero to 180 degrees..
+        /// </summary>
+        internal static string PhaseShift {
+            get {
+                return ResourceManager.GetString("PhaseShift", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The map to use to associate phonemes with images..
         /// </summary>
         internal static string PhonemeMapping {
@@ -1660,6 +1696,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Position {
             get {
                 return ResourceManager.GetString("Position", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By default the wave grows across the display element.  This setting primes the waveform such that it fills the entire display element at the start of the effect..
+        /// </summary>
+        internal static string PrimeWave {
+            get {
+                return ResourceManager.GetString("PrimeWave", resourceCulture);
             }
         }
         
@@ -2141,6 +2186,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Determines the length of the snake. .
+        /// </summary>
+        internal static string SnakeLength {
+            get {
+                return ResourceManager.GetString("SnakeLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Allows the Snowflakes to build-up at the bottom of the Element..
         /// </summary>
         internal static string SnowBuildUp {
@@ -2510,6 +2564,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enables the Mark Collection Name drop down to select a mark collection to determine when the Decaying Sine will bounce back to the normal amplitude..
+        /// </summary>
+        internal static string UseMarks {
+            get {
+                return ResourceManager.GetString("UseMarks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the velocity of the particles..
         /// </summary>
         internal static string Velocity {
@@ -2569,6 +2632,87 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string WaveAcceleration {
             get {
                 return ResourceManager.GetString("WaveAcceleration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Determines the color of the wave over the duration of the effect..
+        /// </summary>
+        internal static string WaveColor {
+            get {
+                return ResourceManager.GetString("WaveColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls how the color gradient is applied to the wave..
+        /// </summary>
+        internal static string WaveColorHandling {
+            get {
+                return ResourceManager.GetString("WaveColorHandling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Determines the direction of the waveform.  This setting allows for multiple waveforms to move in opposing directions..
+        /// </summary>
+        internal static string WaveDirection {
+            get {
+                return ResourceManager.GetString("WaveDirection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mark collection used to determine when the amplitude bounces back..
+        /// </summary>
+        internal static string WaveMarkCollection {
+            get {
+                return ResourceManager.GetString("WaveMarkCollection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Determines the movement of the waveform..
+        /// </summary>
+        internal static string WaveMovementType {
+            get {
+                return ResourceManager.GetString("WaveMovementType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Determines how fast the waveform moves.  The speed determines how many columns of the waveform are rendered each frame.  This setting is in columns (or pixels) where each 10 units in the curve editor equals 1 column..
+        /// </summary>
+        internal static string WaveSpeed {
+            get {
+                return ResourceManager.GetString("WaveSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Determines the vertical thickness of the waveform..
+        /// </summary>
+        internal static string WaveThickness {
+            get {
+                return ResourceManager.GetString("WaveThickness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Determines the type of of waveform..
+        /// </summary>
+        internal static string WaveType {
+            get {
+                return ResourceManager.GetString("WaveType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Moves the waveform up or down in the display element..
+        /// </summary>
+        internal static string WaveYOffset {
+            get {
+                return ResourceManager.GetString("WaveYOffset", resourceCulture);
             }
         }
         

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -983,5 +983,29 @@
   </data>
   <data name="SpinTargetNodeSelection" xml:space="preserve">
     <value>Spin</value>
+  </data>
+  <data name="PhaseShift" xml:space="preserve">
+    <value>Phase Shift</value>
+  </data>
+  <data name="PrimeWave" xml:space="preserve">
+    <value>Prime Wave</value>
+  </data>
+  <data name="WaveMovementType" xml:space="preserve">
+    <value>Movement Type</value>
+  </data>
+  <data name="WaveType" xml:space="preserve">
+    <value>Wave Type</value>
+  </data>
+  <data name="Amplitude" xml:space="preserve">
+    <value>Amplitude</value>
+  </data>
+  <data name="Mirror" xml:space="preserve">
+    <value>Mirror</value>
+  </data>
+  <data name="SnakeLength" xml:space="preserve">
+    <value>Snake Length</value>
+  </data>
+  <data name="UseMarks" xml:space="preserve">
+    <value>Use Marks</value>
   </data>
 </root>

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -995,5 +995,53 @@
   </data>
   <data name="SpinTargetNodeSelection" xml:space="preserve">
     <value>Determines how the Spin is applied across the target elements that are presented to the effect.</value>
+  </data>
+  <data name="Amplitude" xml:space="preserve">
+    <value>Determines the height of the waveform.</value>
+  </data>
+  <data name="Frequency" xml:space="preserve">
+    <value>Determines how many times the waveform repeats on the display element.</value>
+  </data>
+  <data name="Mirror" xml:space="preserve">
+    <value>Mirrors the waveform across an imaginary y-axis.</value>
+  </data>
+  <data name="PhaseShift" xml:space="preserve">
+    <value>Determines how far the waveform is shifted horizontally from the usual position.  The phase shift is adjustable from zero to 180 degrees.</value>
+  </data>
+  <data name="PrimeWave" xml:space="preserve">
+    <value>By default the wave grows across the display element.  This setting primes the waveform such that it fills the entire display element at the start of the effect.</value>
+  </data>
+  <data name="SnakeLength" xml:space="preserve">
+    <value>Determines the length of the snake. </value>
+  </data>
+  <data name="UseMarks" xml:space="preserve">
+    <value>Enables the Mark Collection Name drop down to select a mark collection to determine when the Decaying Sine will bounce back to the normal amplitude.</value>
+  </data>
+  <data name="WaveColor" xml:space="preserve">
+    <value>Determines the color of the wave over the duration of the effect.</value>
+  </data>
+  <data name="WaveDirection" xml:space="preserve">
+    <value>Determines the direction of the waveform.  This setting allows for multiple waveforms to move in opposing directions.</value>
+  </data>
+  <data name="WaveMarkCollection" xml:space="preserve">
+    <value>Mark collection used to determine when the amplitude bounces back.</value>
+  </data>
+  <data name="WaveMovementType" xml:space="preserve">
+    <value>Determines the movement of the waveform.</value>
+  </data>
+  <data name="WaveSpeed" xml:space="preserve">
+    <value>Determines how fast the waveform moves.  The speed determines how many columns of the waveform are rendered each frame.  This setting is in columns (or pixels) where each 10 units in the curve editor equals 1 column.</value>
+  </data>
+  <data name="WaveThickness" xml:space="preserve">
+    <value>Determines the vertical thickness of the waveform.</value>
+  </data>
+  <data name="WaveType" xml:space="preserve">
+    <value>Determines the type of of waveform.</value>
+  </data>
+  <data name="WaveYOffset" xml:space="preserve">
+    <value>Moves the waveform up or down in the display element.</value>
+  </data>
+  <data name="WaveColorHandling" xml:space="preserve">
+    <value>Controls how the color gradient is applied to the wave.</value>
   </data>
 </root>
