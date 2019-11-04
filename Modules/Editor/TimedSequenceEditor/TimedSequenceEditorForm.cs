@@ -3800,13 +3800,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						// we don't have a row for the element this effect is referencing; most likely, the row has
 						// been deleted, or we're opening someone else's sequence, etc. Big fat TODO: here for that, then.
 						// dunno what we want to do: prompt to add new elements for them? map them to others? etc.
-						const string message = "TimedSequenceEditor: <AddElementsForEffectNodes> - No Timeline.Row is associated with a target ElementNode for this EffectNode. It now exists in the sequence, but not in the GUI.";
-						Logging.Error(message);
-
-						if (InvokeRequired)
+						var message =
+							"TimedSequenceEditor: No Timeline.Row is associated with a target ElementNode for this EffectNode. " +
+							"The user has likely chosen not to map it, so we will drop it.";
+						Logging.Warn(message);
+						if (nodesToRemove == null)
 						{
-							Invoke(new Delegates.GenericVoidString(ShowGenericErrorMessage), message);
+							nodesToRemove = new List<EffectNode>();
 						}
+						nodesToRemove.Add(node);
+						//if (InvokeRequired)
+						//{
+						//	Invoke(new Delegates.GenericVoidString(ShowGenericErrorMessage), message);
+						//}
 						
 					}
 				}
