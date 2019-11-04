@@ -995,6 +995,7 @@
   </data>
   <data name="SpinTargetNodeSelection" xml:space="preserve">
     <value>Determines how the Spin is applied across the target elements that are presented to the effect.</value>
+  </data>
   <data name="Amplitude" xml:space="preserve">
     <value>Determines the height of the waveform.</value>
   </data>
