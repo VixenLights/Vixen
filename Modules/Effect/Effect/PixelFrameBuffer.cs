@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using Common.Controls.ColorManagement.ColorModels;
 
@@ -35,11 +36,12 @@ namespace VixenModules.Effect.Effect
 
 		public void ClearBuffer()
 		{
-			for (int i = 0; i < _bufferWi; i++)
+			if (_pixels.Length > 0)
 			{
-				for (int z = 0; z < _bufferHt; z++)
+				InitArray(_pixels[0], _baseColor);
+				for (int i = 1; i < _bufferWi; i++)
 				{
-					_pixels[i][z] = _baseColor;
+					Array.Copy(_pixels[0],_pixels[i], _pixels[i].Length);
 				}
 			}
 		}
@@ -48,11 +50,12 @@ namespace VixenModules.Effect.Effect
 		{
 			var hsv = HSV.FromRGB(_baseColor);
 			hsv.V = hsv.V * level;
-			for (int i = 0; i < _bufferWi; i++)
+			if (_pixels.Length > 0)
 			{
-				for (int z = 0; z < _bufferHt; z++)
+				InitArray(_pixels[0], hsv.ToRGB());
+				for (int i = 1; i < _bufferWi; i++)
 				{
-					_pixels[i][z] = hsv.ToRGB();
+					Array.Copy(_pixels[0],_pixels[i], _pixels[i].Length);
 				}
 			}
 		}
@@ -85,6 +88,25 @@ namespace VixenModules.Effect.Effect
 		public Color GetColorAt(int x, int y)
 		{
 			return _pixels[x][y];
+		}
+
+		/// <summary>
+		/// Initializes an array with a specific value in a highly optimized fashion.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="array"></param>
+		/// <param name="value"></param>
+		private static void InitArray<T>(T[] array, T value) 
+		{
+			int length = array.Length;
+			if (length == 0) return;
+			array[0] = value;
+			int count;
+			for (count = 1; count <= length / 2; count *= 2)
+			{
+				Array.Copy(array, 0, array, count, count);
+			}
+			Array.Copy(array, 0, array, count, length - count);
 		}
 	}
 }

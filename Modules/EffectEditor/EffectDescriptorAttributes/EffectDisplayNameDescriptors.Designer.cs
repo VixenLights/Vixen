@@ -71,6 +71,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Amplitude.
+        /// </summary>
+        internal static string Amplitude {
+            get {
+                return ResourceManager.GetString("Amplitude", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Angle.
         /// </summary>
         internal static string Angle {
@@ -1466,6 +1475,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mirror.
+        /// </summary>
+        internal static string Mirror {
+            get {
+                return ResourceManager.GetString("Mirror", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mix Colors.
         /// </summary>
         internal static string MixColors {
@@ -1691,6 +1709,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Phase Shift.
+        /// </summary>
+        internal static string PhaseShift {
+            get {
+                return ResourceManager.GetString("PhaseShift", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Image Map.
         /// </summary>
         internal static string PhonemeMapping {
@@ -1723,6 +1750,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Position {
             get {
                 return ResourceManager.GetString("Position", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prime Wave.
+        /// </summary>
+        internal static string PrimeWave {
+            get {
+                return ResourceManager.GetString("PrimeWave", resourceCulture);
             }
         }
         
@@ -2159,6 +2195,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Snake Length.
+        /// </summary>
+        internal static string SnakeLength {
+            get {
+                return ResourceManager.GetString("SnakeLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Snow Build-up.
         /// </summary>
         internal static string SnowBuildUp {
@@ -2474,6 +2519,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use Marks.
+        /// </summary>
+        internal static string UseMarks {
+            get {
+                return ResourceManager.GetString("UseMarks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Variation.
         /// </summary>
         internal static string Variation {
@@ -2533,6 +2587,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string WarmUpFrames {
             get {
                 return ResourceManager.GetString("WarmUpFrames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Movement Type.
+        /// </summary>
+        internal static string WaveMovementType {
+            get {
+                return ResourceManager.GetString("WaveMovementType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wave Type.
+        /// </summary>
+        internal static string WaveType {
+            get {
+                return ResourceManager.GetString("WaveType", resourceCulture);
             }
         }
         

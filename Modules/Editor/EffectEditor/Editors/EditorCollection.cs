@@ -23,6 +23,7 @@ using System.Linq;
 using Vixen.Attributes;
 using VixenModules.App.ColorGradients;
 using VixenModules.Effect.Liquid;
+using VixenModules.Effect.Wave;
 
 namespace VixenModules.Editor.EffectEditor.Editors
 {
@@ -49,6 +50,8 @@ namespace VixenModules.Editor.EffectEditor.Editors
 			{KnownTypes.Windows.Font, new FontEditor() },
 			{typeof(IList<IEmitter>), new TypeEditor(typeof(IList<IEmitter>), EditorKeys.IEmitterEditorKey)},
 			{KnownTypes.Vixen.Emitter, new TypeEditor()},
+			{typeof(IList<IWaveform>), new TypeEditor(typeof(IList<IWaveform>), EditorKeys.IWaveformEditorKey)},
+			{KnownTypes.Vixen.Waveform, new TypeEditor()},
 		};
 
 		/// <summary>

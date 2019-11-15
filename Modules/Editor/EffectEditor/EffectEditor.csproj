@@ -392,6 +392,10 @@
       <Name>Emitter</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Effect\Wave\IWaveform\IWaveform.csproj">
+      <Project>{a9136cb2-83f8-462e-918b-15ea1fb4a431}</Project>
+      <Name>IWaveform</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Property\Color\Color.csproj">
       <Project>{73068A83-B3B7-4A2C-923D-71C7886CD5E3}</Project>
       <Name>Color</Name>

@@ -80,7 +80,6 @@
     <Compile Include="Liquid.cs" />
     <Compile Include="LiquidData.cs" />
     <Compile Include="LiquidDescriptor.cs" />
-    <Compile Include="NotifyPropertyObservableCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

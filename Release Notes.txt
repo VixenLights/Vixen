@@ -1,3 +1,5 @@
+Release Notes - Vixen 3
+
 Release Notes - Vixen 3 - 3.6u2 Release Build 
 
 ** Bug
