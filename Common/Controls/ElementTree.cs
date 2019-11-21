@@ -671,12 +671,28 @@ namespace Common.Controls
 			TreeNode resultNode = null;
 			foreach (var elementNode in elementNodes)
 			{
-				AddNodeToTree(treeview.Nodes, elementNode, false);
-
-				_selectedNodes.Add(GenerateEquivalentTreeNodeFullPathFromElement(elementNode, treeview.PathSeparator));
-
-				resultNode = treeview.Nodes[treeview.Nodes.Count-1];
-
+				if (elementNode.Parents.Any(x => x.Name!=@"Root"))
+				{
+					foreach (var nodeParent in elementNode.Parents)
+					{
+						var parentTreeNode = FindNodeInTreeAtPath(treeview, GenerateEquivalentTreeNodeFullPathFromElement(nodeParent, treeview.PathSeparator));
+						if (parentTreeNode != null)
+						{
+							parentTreeNode.Nodes.Clear();
+							AddChildrenToTree(parentTreeNode, nodeParent);
+							_expandedNodes.Add(GenerateTreeNodeFullPath(parentTreeNode, treeview.PathSeparator));
+							resultNode = FindNodeInTreeAtPath(treeview, GenerateEquivalentTreeNodeFullPathFromElement(elementNode, treeview.PathSeparator));
+							_selectedNodes.Add(GenerateEquivalentTreeNodeFullPathFromElement(elementNode, treeview.PathSeparator));
+							parentTreeNode.Expand();
+						}
+					}
+				}
+				else
+				{
+					resultNode = AddNodeToTree(treeview.Nodes, elementNode, false);
+					_selectedNodes.Add(GenerateEquivalentTreeNodeFullPathFromElement(elementNode, treeview.PathSeparator));
+				}
+				
 				if (resultNode != null)
 				{
 					treeview.AddSelectedNode(resultNode);
