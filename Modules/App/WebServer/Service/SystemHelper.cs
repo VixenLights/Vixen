@@ -25,7 +25,7 @@ namespace VixenModules.App.WebServer.Service
 				{
 					if (!c.IsRunning || c.IsPaused)
 					{
-						c.Start();
+						VixenSystem.OutputControllers.Start(c);
 						success = true;
 					}
 				}
@@ -33,7 +33,7 @@ namespace VixenModules.App.WebServer.Service
 				{
 					if (c.IsRunning)
 					{
-						c.Stop();
+						VixenSystem.OutputControllers.Stop(c);
 						success = true;
 					}
 				}
