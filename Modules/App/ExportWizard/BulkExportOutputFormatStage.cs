@@ -121,7 +121,7 @@ namespace VixenModules.App.ExportWizard
 
 		private void txtAudioOutputFolder_Leave(object sender, EventArgs e)
 		{
-			_data.ActiveProfile.OutputFolder = txtAudioOutputFolder.Text;
+			_data.ActiveProfile.AudioOutputFolder = txtAudioOutputFolder.Text;
 			ValidatePath(_data.ActiveProfile.AudioOutputFolder);
 			_WizardStageChanged();
 		}
@@ -161,6 +161,7 @@ namespace VixenModules.App.ExportWizard
 			if (CanTestPath() && Directory.Exists(path))
 			{
 				_data.ActiveProfile.FalconOutputFolder = path;
+				_WizardStageChanged();
 				return true;
 			}
 		
@@ -195,7 +196,7 @@ namespace VixenModules.App.ExportWizard
 				if (_data.ActiveProfile.IsFalconFormat)
 				{
 					if (CanTestPath() && 
-					    Directory.Exists(_data.ActiveProfile.IsFalconFormat ? _data.ActiveProfile.OutputFolder : _data.ActiveProfile.FalconOutputFolder))
+					    Directory.Exists(_data.ActiveProfile.IsFalconFormat ? _data.ActiveProfile.FalconOutputFolder: _data.ActiveProfile.OutputFolder))
 					{
 						return true;
 					}
@@ -308,8 +309,14 @@ namespace VixenModules.App.ExportWizard
 			chkCompress.Enabled =  _data.Export.CanCompress(_data.ActiveProfile.Format);
 			if (_data.ActiveProfile.IsFalconFormat)
 			{
+				chkFppIncludeAudio.Checked = _data.ActiveProfile.IncludeAudio;
 				UpdateFalconPaths(_data.ActiveProfile.FalconOutputFolder);
 				ValidateFalconOutputFolder();
+			}
+			else
+			{
+				chkIncludeAudio.Checked = _data.ActiveProfile.IncludeAudio;
+				txtAudioOutputFolder.Text = _data.ActiveProfile.AudioOutputFolder;
 			}
 			_WizardStageChanged();
 		}
