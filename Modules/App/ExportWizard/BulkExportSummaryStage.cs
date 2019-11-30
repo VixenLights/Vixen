@@ -144,6 +144,8 @@ namespace VixenModules.App.ExportWizard
 
 		private async Task<bool> DoExport(IProgress<ExportProgressStatus> progress)
 		{
+			var updateIntervalHold = VixenSystem.DefaultUpdateInterval;
+			VixenSystem.DefaultUpdateInterval = _data.ActiveProfile.Interval;
 			var exportProgressStatus = new ExportProgressStatus();
 			var overallProgressSteps = _data.ActiveProfile.SequenceFiles.Count * 2d; //There are basically 2 steps for each. Render and export.
 			var overallProgressStep = 0;
@@ -201,6 +203,8 @@ namespace VixenModules.App.ExportWizard
 				progress.Report(exportProgressStatus);
 
 			});
+
+			VixenSystem.DefaultUpdateInterval = updateIntervalHold;
 			return true;
 		}
 
