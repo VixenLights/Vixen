@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Vixen.Sys;
 using VixenModules.App.Shows;
+using Action = VixenModules.App.Shows.Action;
 
 namespace VixenModules.App.SuperScheduler
 {
@@ -25,6 +26,10 @@ namespace VixenModules.App.SuperScheduler
 	[DataContract]
 	public class ScheduleItem: IDisposable
 	{
+		public ScheduleItem()
+		{
+			_actionLock = new object();
+		}
 		#region Data Members
 
 		[DataMember]
@@ -51,6 +56,7 @@ namespace VixenModules.App.SuperScheduler
 
 		#region Variables
 
+		private Object _actionLock;
 		Shows.ShowItem _currentItem = null;
 		CancellationTokenSource tokenSourcePreProcess;
 		//CancellationToken tokenPreProcess;
@@ -62,15 +68,7 @@ namespace VixenModules.App.SuperScheduler
 		#region Properties
 
 		private List<Shows.Action> runningActions = null;
-		public List<Shows.Action> RunningActions
-		{
-			get
-			{
-				if (runningActions == null)
-					runningActions = new List<Shows.Action>();
-				return runningActions;
-			}
-		}
+		public List<Shows.Action> RunningActions => runningActions ?? (runningActions = new List<Shows.Action>());
 
 		private StateType _state = StateType.Waiting;
 		public StateType State
@@ -287,13 +285,21 @@ namespace VixenModules.App.SuperScheduler
 				ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Show stopping gracefully");
 			} else {
 				State = StateType.Waiting;
-				int runningCount = RunningActions.Count();
 
 				ItemQueue.Clear();
-				for (int i = 0; i < runningCount; i++) {
-					ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Stopping action: " + RunningActions[i].ShowItem.Name);
-					RunningActions[i].Stop();
+
+				Action[] actions;
+				lock (_actionLock)
+				{
+					actions = RunningActions.ToArray();
 				}
+				
+				foreach (var action in actions)
+				{
+					ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Stopping action: " + action.ShowItem.Name);
+					action.Stop();
+				}
+				
 				if (Show != null)
 				{
 					Show.ReleaseAllActions();
@@ -372,7 +378,10 @@ namespace VixenModules.App.SuperScheduler
 						{
 							ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Starting action: " + action.ShowItem.Name);
 							action.Execute();
-							RunningActions.Add(action);
+							lock (_actionLock)
+							{
+								RunningActions.Add(action);
+							}
 						}
 					);
 
@@ -382,7 +391,10 @@ namespace VixenModules.App.SuperScheduler
 				{
 					ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Starting action: " + action.ShowItem.Name);
 					action.Execute();
-					RunningActions.Add(action);
+					lock (_actionLock)
+					{
+						RunningActions.Add(action);
+					}
 				}
 			}
 		}
@@ -430,7 +442,10 @@ namespace VixenModules.App.SuperScheduler
 			var action = (sender as Shows.Action);
 			if (action != null) {
 				action.ActionComplete -= OnStartupActionComplete;
-				RunningActions.Remove(action);
+				lock(_actionLock)
+				{
+					RunningActions.Remove(action);
+				}
 
 				ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Startup action complete: " + action.ShowItem.Name);
 				action.Dispose();
@@ -492,7 +507,10 @@ namespace VixenModules.App.SuperScheduler
 		{
 			Shows.Action action = (sender as Shows.Action);
 			action.ActionComplete -= OnSequentialActionComplete;
-			RunningActions.Remove(action);
+			lock (_actionLock)
+			{
+				RunningActions.Remove(action);
+			}
 			ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Sequential action complete: " + action.ShowItem.Name);
 			if (!StartShutdownIfRequested())
 			{
@@ -531,7 +549,10 @@ namespace VixenModules.App.SuperScheduler
 		{
 			Shows.Action action = (sender as Shows.Action);
 			action.ActionComplete -= OnBackgroundActionComplete;
-			RunningActions.Remove(action);
+			lock (_actionLock)
+			{
+				RunningActions.Remove(action);
+			}
 			ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Background action complete: " + action.ShowItem.Name);
 
 			// Run it again and again and again and again and again and again and again and...
@@ -625,12 +646,24 @@ namespace VixenModules.App.SuperScheduler
 		{
 			Shows.Action action = (sender as Shows.Action);
 			action.ActionComplete -= OnShutdownActionComplete;
-			RunningActions.Remove(action);
+			lock (_actionLock)
+			{
+				RunningActions.Remove(action);
+			}
 			ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Shutdown action complete: " + action.ShowItem.Name);
 			ExecuteNextShutdownItem();
 		}
 
 		#endregion // Shutdown Items
+
+		[OnDeserializing]
+		private void OnDeserializing(StreamingContext c)
+		{
+			if (_actionLock == null)
+			{
+				_actionLock = new object();
+			}
+		}
 
 		public void Dispose()
 		{
