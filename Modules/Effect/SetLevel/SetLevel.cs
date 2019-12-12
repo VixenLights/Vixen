@@ -139,8 +139,7 @@ namespace VixenModules.Effect.SetLevel
 		{
 			EffectIntents effectIntents = new EffectIntents();
 			var leafs = node.GetLeafEnumerator();
-			IIntent intent = CreateIntent(leafs.First(), Color, IntensityLevel, TimeSpan);
-			foreach (IElementNode elementNode in node.GetLeafEnumerator())
+			foreach (IElementNode elementNode in leafs)
 			{
 				if (HasDiscreteColors && IsElementDiscrete(elementNode))
 				{
@@ -150,7 +149,7 @@ namespace VixenModules.Effect.SetLevel
 						continue;
 					}
 				}
-				
+				var intent = CreateIntent(leafs.First(), Color, IntensityLevel, TimeSpan);
 				effectIntents.AddIntentForElement(elementNode.Element.Id, intent, TimeSpan.Zero);
 			}
 
