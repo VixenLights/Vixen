@@ -1,5 +1,37 @@
 Release Notes - Vixen 3
 
+Release Notes - Vixen 3 - 3.6u4 Release Build 
+
+** Bug
+    * [VIX-2845] - Math Error in Liquid SetupRender method
+    * [VIX-2866] - Location offsets are not properly applied to custom props
+    * [VIX-2867] - Adding element(s) to an existing group does not properly reflect their position in the tree.
+    * [VIX-2871] - certain effects do not work on certain elements
+    * [VIX-2872] - Crash when pasting non-vixen content into editor
+    * [VIX-2875] - Controllers may not start correctly when started from the web interface.
+    * [VIX-2877] - Cannot Export
+    * [VIX-2880] - Fatal error during sequence execution
+
+** Improvement
+    * [VIX-2876] - Have the pixel effect frame interval match the default update interval.
+
+
+
+Release Notes - Vixen 3 - 3.6u3 Release Build 
+
+** New Feature
+    * [VIX-2806] - Add Wave Effect
+
+** Bug
+    * [VIX-2850] - When closing "Vixen Adminstration" with the sequencer open, it asks if you want to save, Yes, no or cancel, if you click cancel, everything closes.
+    * [VIX-2852] - Selection oddness in the element tree when adding items with the wizard.
+    * [VIX-2853] - Trying to link a smart object to existing elements in Preview invokes setup wizard when it should not.
+    * [VIX-2856] - Certain discreet colors not showing up on timeline
+    * [VIX-2857] - Legacy FPP 1.x export output folder validation is not working correctly.
+    * [VIX-2862] - Cancelling the effect mapping does not clear the old effects.
+
+
+
 Release Notes - Vixen 3 - 3.6u2 Release Build 
 
 ** Bug

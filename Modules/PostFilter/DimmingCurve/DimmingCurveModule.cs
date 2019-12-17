@@ -199,7 +199,7 @@ namespace VixenModules.OutputFilter.DimmingCurve
 		{
 			if (command is _8BitCommand cmd)
 			{
-				double newIntensity = _curve.GetValue(cmd.CommandValue / Byte.MaxValue) * Byte.MaxValue;
+				double newIntensity = _curve.GetValue(cmd.CommandValue / 255d) * Byte.MaxValue;
 				return CommandLookup8BitEvaluator.CommandLookup[(byte) newIntensity];
 			}
 

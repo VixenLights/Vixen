@@ -854,8 +854,7 @@ namespace VixenModules.Effect.Liquid
 		{
 			// Make a local copy that is faster than the logic to get it for reuse.
 			var localBufferHt = BufferHt;
-			var localBufferWi = BufferWi;
-			
+						
 			// Loop over the frames
 			for (int frameNum = 0; frameNum < numFrames; frameNum++)
 			{
@@ -931,13 +930,13 @@ namespace VixenModules.Effect.Liquid
 				_bufferHt = BufferHt / _renderScaleFactor;
 				
 				// Need to increase the render height if the scale factor did not divide evenly
-				if (_bufferHt % _renderScaleFactor != 0)
+				if (BufferHt % _renderScaleFactor != 0)
 				{
 					_bufferHt++;
 				}
 
 				// Need to increase the render width if the scale factor did not divide evenly
-				if (_bufferWt % _renderScaleFactor != 0)
+				if (BufferWi % _renderScaleFactor != 0)
 				{
 					_bufferWt++;
 				}

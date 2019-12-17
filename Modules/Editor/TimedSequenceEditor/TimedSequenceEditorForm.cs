@@ -4874,6 +4874,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				data = dataObject.GetData(ClipboardFormatName.Name) as TimelineElementsClipboardData;
 			}
 
+			if(data == null)
+			{
+				return result;
+			}
+
 			List<int> index = new List<int>();
 			List<TimeSpan> markStartTimes = new List<TimeSpan>();
 			List<KeyValuePair<EffectModelCandidate, int>> effects;
