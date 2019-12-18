@@ -287,7 +287,6 @@ namespace VixenModules.Effect.Bars
 			int colorcnt = Colors.Count();
 			int barCount = Repeat * colorcnt;
 			double intervalPosFactor = GetEffectTimeIntervalPosition(frame) * 100;
-
 			_negPosition = false;
 
 			if (MovementType == MovementType.Iterations)
@@ -296,8 +295,9 @@ namespace VixenModules.Effect.Bars
 			}
 			else
 			{
-				if (frame == 0) _position = CalculateSpeed(intervalPosFactor);
-				_position += CalculateSpeed(intervalPosFactor) / 100;
+				var s = CalculateSpeed(intervalPosFactor);
+				if (frame == 0) _position = s;
+				_position += s / 100 * FrameTime / 50d; //Adjust the speed setting for different frame rates with FrameTime / 50d
 				if (_position < 0)
 				{
 					_negPosition = true;
@@ -590,9 +590,10 @@ namespace VixenModules.Effect.Bars
 					_position = (GetEffectTimeIntervalPosition(frame) * Speed) % 1;
 				}
 				else
-				{
-					if (frame == 0) _position = CalculateSpeed(intervalPosFactor);
-					_position += CalculateSpeed(intervalPosFactor) / 100;
+				{   
+					var s = CalculateSpeed(intervalPosFactor);
+					if (frame == 0) _position = s;
+					_position += s / 100 * FrameTime / 50d; //Adjust the speed setting for different frame rates with FrameTime / 50d
 				}
 
 				int n;

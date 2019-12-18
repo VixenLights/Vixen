@@ -1136,12 +1136,12 @@ namespace VixenModules.Effect.Meteors
 
 		private double CalculateSpeedVariation(double intervalPos)
 		{
-			return ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPos), 200, 0);
+			return ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPos), 200, 0)* FrameTime / 50d;
 		}
 
 		private double CalculateCenterSpeed(double intervalPos)
 		{
-			return ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPos), 200, 0);
+			return ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPos), 200, 0)* FrameTime / 50d;
 		}
 
 		private int CalculatePixelCount(double intervalPos)
