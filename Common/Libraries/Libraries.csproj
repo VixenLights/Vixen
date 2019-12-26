@@ -205,7 +205,7 @@
       <Version>12.0.2</Version>
     </PackageReference>
     <PackageReference Include="NLog">
-      <Version>4.5.11</Version>
+      <Version>4.6.8</Version>
     </PackageReference>
     <PackageReference Include="Nowin">
       <Version>0.26.0</Version>
