@@ -98,8 +98,9 @@
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
     <PackageReference Include="Svg">
-      <Version>2.4.0</Version>
+      <Version>3.0.84</Version>
       <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Dynamic.Runtime">
       <Version>4.3.0</Version>
