@@ -96,6 +96,7 @@
   <ItemGroup>
     <PackageReference Include="NLog">
       <Version>4.6.8</Version>
+	    <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
