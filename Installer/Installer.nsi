@@ -233,11 +233,11 @@ Function .onInit
 	${EndIf}
 
 
-	;Here we check for Client .NET 4.7.2 profile. 
+	;Here we check for Client .NET 4.8 profile. 
 	ReadRegDWORD $0 HKLM 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full' Release
-	${If} $0 < '461808' ; 461808 is 4.7.2 
+	${If} $0 < '528040' ; 528040 is 4.8 minimum version
 		StrCpy $InstallDotNET "Yes"
-		MessageBox MB_OK|MB_ICONINFORMATION "${PRODUCT_NAME} requires that the Microsoft .NET Framework >= 4.7.2 is installed. The Microsoft .NET Framework will be downloaded and installed automatically during installation of ${PRODUCT_NAME}."
+		MessageBox MB_OK|MB_ICONINFORMATION "${PRODUCT_NAME} requires that the Microsoft .NET Framework >= 4.8 is installed. The Microsoft .NET Framework will be downloaded and installed automatically during installation of ${PRODUCT_NAME}."
 		Return
 	${EndIf}
 	
