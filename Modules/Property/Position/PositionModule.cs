@@ -20,7 +20,7 @@ namespace VixenModules.Property.Position
 			float start = 0;
 
 			// Make sure each child has a value.
-			foreach (ElementNode node in Owner.Children) {
+			foreach (IElementNode node in Owner.Children) {
 				if (!_data.ChildrenPositions.ContainsKey(node.Id)) {
 					_data.ChildrenPositions[node.Id] = new PositionValue(start, spanPerChild);
 				}
