@@ -79,6 +79,20 @@ namespace VixenModules.Effect.Wave
 		/// </summary>
 		private int _speedIncrement;
 
+		/// <summary>
+		/// This effect is designed around a 50 ms refresh rate.  This sets a base slow speed for the effect.
+		/// No matter what the Vixen refresh rate is set to the this effect is going to update the Waves
+		/// at a 20 Hz rate.
+		/// This could be improved in the future.
+		/// </summary>
+		private int _50msFrameNumber;
+
+		/// <summary>
+		/// Since Vixen can be refreshing at any rate, this field keeps track of the frame time so that
+		/// we can render the effect as close to 20 Hz as possible.
+		/// </summary>
+		private int _frameTime;
+
 		#endregion
 
 		#region Constructor
@@ -258,35 +272,78 @@ namespace VixenModules.Effect.Wave
 			double intervalPos = GetEffectTimeIntervalPosition(frameNum);
 			double intervalPosFactor = intervalPos * 100;
 
-			// Loop over the waves in the effect
-			foreach (IWaveform wave in Waves.ToList())
-			{
-				// Create temporary frame counter
-				int frame = frameNum;
+			// Accumulate the frame time 
+			_frameTime += FrameTime;
 
-				// If the wave has been primed then...
-				if (wave.PrimeWave)
+			// If at least 50ms has expired since the last time we updated the wave then...
+			if (_frameTime >= 50)
+			{
+				// Calculate how many 50 ms frames we need to process
+				int logicalFrames = _frameTime / 50;
+
+				// Loop over the logical 50ms frames
+				for (int index = 0; index < logicalFrames; index++)
 				{
-					// Advance the frame for the priming
-					frame += wave.BufferWi;
+					// Loop over the waves in the effect
+					foreach (IWaveform wave in Waves.ToList())
+					{
+						// If the wave has been primed then...
+						if (wave.PrimeWave)
+						{
+							// Advance the frame for the priming
+							_50msFrameNumber += wave.BufferWi;
+						}
+
+						IPixelFrameBuffer waveframeBuffer = null;
+
+						// Only want to actually update the frame buffer if we are 
+						// processing a true Vixen frame.  If we are processing a 
+						// logical 50ms frame then we just want to update the wave 
+						// data structures but not render pixels.  Setting the frame
+						// buffer to null will prevent rendering pixels.
+						if (index == logicalFrames - 1)
+						{
+							waveframeBuffer = frameBuffer;
+						}
+
+						// Render the specified wave
+						RenderWave(
+							wave,
+							_50msFrameNumber,
+							wave.Mirror,
+							CalculateWaveFrequency(wave, intervalPosFactor),
+							CalculateWaveThickness(wave, intervalPosFactor),
+							CalculateWaveHeight(wave, intervalPosFactor),
+							CalculateWaveSpeed(wave, intervalPosFactor),
+							CalculateWaveYOffset(wave, intervalPosFactor),
+							GetColor(wave, intervalPos),
+							wave.WaveType,
+							wave.PhaseShift,
+							waveframeBuffer,
+							wave,
+							wave.Direction);
+					}
+
+					// Advance to the next logical frame
+					_50msFrameNumber++;
+					_frameTime -= 50;
 				}
-				
-				// Render the specified wave
-				RenderWave(
-					wave,
-					frame,
-					wave.Mirror,
-					CalculateWaveFrequency(wave, intervalPosFactor),
-					CalculateWaveThickness(wave, intervalPosFactor),
-					CalculateWaveHeight(wave, intervalPosFactor),
-					CalculateWaveSpeed(wave, intervalPosFactor),
-					CalculateWaveYOffset(wave, intervalPosFactor),
-					GetColor(wave, intervalPos),					
-					wave.WaveType,
-					wave.PhaseShift,
-					frameBuffer,
-					wave,
-					wave.Direction);
+			}
+			else
+			{
+				// Update all the waves with existing pixel data from the last frame
+				foreach (IWaveform wave in Waves.ToList())
+				{					
+					// This else block handles when the Vixen refresh rate is faster than
+					// 20 Hz.  In this case we just repeat the last frame of Wave data
+					// until the next 50 Hz.
+					RenderColumns(
+						wave,
+						frameBuffer,
+						wave.Direction,
+						CalculateWaveSpeed(wave, intervalPosFactor),
+						false);
+				}
 			}
 		}
 		
@@ -298,6 +355,12 @@ namespace VixenModules.Effect.Wave
 			// Store off the matrix width and height
 			_bufferWi = BufferWi;
 			_bufferHt = BufferHt;
+
+			// Reset the frame counter
+			_50msFrameNumber = 0;
+
+			// Reset the frame time within the effect
+			_frameTime = 0;
 
 			// Determine the width of the matrix when in string mode
 			double matrixWidth;
@@ -797,10 +860,11 @@ namespace VixenModules.Effect.Wave
 
 			// Render the wave onto the frame buffer
 			RenderColumns(
-				wave,				
+				wave,
 				frameBuffer,
 				direction,
-				wspeed);
+				wspeed,
+				true);
 		}
 
 		/// <summary>
@@ -810,7 +874,8 @@ namespace VixenModules.Effect.Wave
 			IWaveform wave,			
 			IPixelFrameBuffer frameBuffer,
 			DirectionType direction,
-			int wspeed)
+			int wspeed,
+			bool updateWindow)			
 		{
 			// If the queue has more Y coordinates than the display element then...
 			while (wave.Pixels.Count > wave.BufferWi)
@@ -819,16 +884,21 @@ namespace VixenModules.Effect.Wave
 				wave.Pixels.Dequeue();
 			}
 
-			// Move the snake window
-			wave.WindowStart += wspeed;
-			wave.WindowStop += wspeed;
-
-			// If the snake window has moved off the display element then...
-			if (wave.WindowStart >= wave.BufferWi)
+			// Only want to update the snake window if this is a 50ms frame
+			// where we are rendering new wave data
+			if (updateWindow)
 			{
-				// Reset the window back to the start of the display element
-				wave.WindowStart = 0;
-				wave.WindowStop = (int)(wave.BufferWi * (wave.WindowPercentage / 100.0));
+				// Move the snake window
+				wave.WindowStart += wspeed;
+				wave.WindowStop += wspeed;
+			
+				// If the snake window has moved off the display element then...
+				if (wave.WindowStart >= wave.BufferWi)
+				{
+					// Reset the window back to the start of the display element
+					wave.WindowStart = 0;
+					wave.WindowStop = (int)(wave.BufferWi * (wave.WindowPercentage / 100.0));
+				}
 			}
 			
 			// Get the columns of the display element
@@ -1111,7 +1181,8 @@ namespace VixenModules.Effect.Wave
 				wave,
 				frameBuffer,
 				direction,
-				wspeed);
+				wspeed,
+				true);
 
 			// Clear out the pixels for the next frame
 			wave.Pixels.Clear();
@@ -1681,8 +1752,8 @@ namespace VixenModules.Effect.Wave
 
 			// Increase the decay factor with each frame so that the wave amplitude gets smaller
 			wave.DecayFactor += _speedIncrement;
-
-			// If the amplitude is down to zero then...
+			
+			// If the amplitude is at zero or below then...
 			if (r <= 0)
 			{
 				// If a mark is active then...
@@ -1713,7 +1784,8 @@ namespace VixenModules.Effect.Wave
 				wave,				
 				frameBuffer,
 				direction,
-				wspeed);
+				wspeed,
+				true);
 
 			// Clear out the pixels for the next frame
 			wave.Pixels.Clear();
