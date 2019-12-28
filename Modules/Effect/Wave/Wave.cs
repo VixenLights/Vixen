@@ -1681,8 +1681,8 @@ namespace VixenModules.Effect.Wave
 
 			// Increase the decay factor with each frame so that the wave amplitude gets smaller
 			wave.DecayFactor += _speedIncrement;
-
-			// If the amplitude is down to zero then...
+			
+			// If the amplitude is at zero or below then...
 			if (r <= 0)
 			{
 				// If a mark is active then...
@@ -1695,6 +1695,15 @@ namespace VixenModules.Effect.Wave
 				{
 					// Keep the amplitude at zero
 					r = 0;
+				}
+			}
+			else
+			{
+				// If a mark is active then...
+				if (!string.IsNullOrEmpty(wave.MarkCollectionName) && IsMarkActive(wave, frame))
+				{
+					// Reset the decay factor such that the wave returns to full amplitude
+					wave.DecayFactor = 0;
 				}
 			}
 
