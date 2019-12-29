@@ -2733,9 +2733,14 @@ void b2ParticleSystem::RemoveSpuriousBodyContacts()
 				b2ParticleSystem::BodyContactCompare);
 
 	int32 discarded = 0;
-	std::remove_if(m_bodyContactBuffer.Begin(),
+	b2ParticleBodyContact* dontCare = std::remove_if(m_bodyContactBuffer.Begin(),
 					m_bodyContactBuffer.End(),
 					b2ParticleBodyContactRemovePredicate(this, &discarded));
+	
+	// This line of code was added to work around compiler warning C2220.
+	// It is possible that in the future remove_if will be excluded from this warning and
+	// this line of code can be removed.
+	dontCare = NULL;
 
 	m_bodyContactBuffer.SetCount(m_bodyContactBuffer.GetCount() - discarded);
 }
