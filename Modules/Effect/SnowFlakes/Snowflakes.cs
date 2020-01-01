@@ -1183,7 +1183,7 @@ namespace VixenModules.Effect.Snowflakes
 
 		private double CalculateSpeedVariation(double intervalPos)
 		{
-			var value = ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPos), 60, 1);
+			var value = ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPos), 60, 1) * FrameTime / 50d;
 			if (value < 1) value = 1;
 
 			return value;
@@ -1191,7 +1191,7 @@ namespace VixenModules.Effect.Snowflakes
 
 		private double CalculateCenterSpeed(double intervalPos)
 		{
-			var value = ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPos), 60, 1);
+			var value = ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPos), 60, 1) * FrameTime / 50d;
 			if (value < 1) value = 1;
 
 			return value;

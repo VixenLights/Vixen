@@ -398,7 +398,7 @@ namespace VixenModules.Effect.Garlands
 
 		private int CalculateSpeed(double intervalPos)
 		{
-			var value = (int)Math.Round(ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 100, 1));
+			var value = (int)Math.Round(ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 100, 1) * FrameTime / 50d);
 			if (value < 1) value = 1;
 
 			return value;

@@ -1906,12 +1906,12 @@ namespace VixenModules.Effect.Shapes
 
 		private double CalculateCenterSpeed(double intervalPosFactor)
 		{
-			return ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPosFactor), (double)_maxBuffer / 10, 0);
+			return ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPosFactor), (double)_maxBuffer / 10, 0) * FrameTime / 50d;
 		}
 
 		private double CalculateSpeedVariation(double intervalPosFactor)
 		{
-			return ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPosFactor), (double)_maxBuffer / 10, 0);
+			return ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPosFactor), (double)_maxBuffer / 10, 0) * FrameTime / 50d;
 		}
 
 		private int CalculateSize(double intervalPosFactor, float locationRatio1)
