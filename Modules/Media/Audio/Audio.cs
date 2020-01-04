@@ -186,7 +186,7 @@ namespace VixenModules.Media.Audio
 		{
 			List<Sample> pi = new List<Sample>();
 			if (_cachedAudioData == null) return pi;
-			MaxPeakProvider provider = new MaxPeakProvider();
+			var provider = new MaxPeakProvider();
 			CachedSoundSampleProvider cad = new CachedSoundSampleProvider(_cachedAudioData);
 			provider.Init(cad, samplesPerInterval);
 			while (cad.Position < cad.Length)
@@ -204,18 +204,11 @@ namespace VixenModules.Media.Audio
 		/// <returns></returns>
 		public byte[] GetSamples(int startSample, int numSamples)
 		{
-			byte[] buffer;
-			using (var reader = new AudioFileReader(MediaFilePath))
-			{
-				int bytesPerSample = (reader.WaveFormat.BitsPerSample / 8);
-				var samples = reader.Length / (bytesPerSample);
-				reader.Position = startSample * bytesPerSample;
-				buffer = new byte[numSamples*bytesPerSample];
-				var samplesRead = reader.Read(buffer, 0, buffer.Length);
-				Console.Out.WriteLine($"Samples Read {samplesRead}");
-			}
-
-			return buffer;
+			float[] buffer = new float[numSamples];
+			
+			Array.Copy(_cachedAudioData.AudioData,startSample ,buffer,0,buffer.Length);
+			
+			return buffer.Select(x => (byte)(x*255)).ToArray();
 		}
 
 		public override void Start()

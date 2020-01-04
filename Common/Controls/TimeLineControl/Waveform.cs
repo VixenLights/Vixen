@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using NLog;
 using VixenModules.Media.Audio;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using Common.Controls.TimelineControl;
 using Common.Controls.TimelineControl.LabeledMarks;
 using VixenModules.App.Marks;
@@ -87,21 +88,21 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-		private void CreateWorker()
-		{
-			if (bw != null) {
-				bw.DoWork -= new DoWorkEventHandler(bw_createScaleSamples);
-				bw.RunWorkerCompleted -= new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
-			}
-			bw = new BackgroundWorker();
-			bw.WorkerSupportsCancellation = true;
-			bw.DoWork += new DoWorkEventHandler(bw_createScaleSamples);
-			bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
-		}
+		//private void CreateWorker()
+		//{
+		//	if (bw != null) {
+		//		bw.DoWork -= new DoWorkEventHandler(bw_createScaleSamples);
+		//		bw.RunWorkerCompleted -= new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
+		//	}
+		//	bw = new BackgroundWorker();
+		//	bw.WorkerSupportsCancellation = true;
+		//	bw.DoWork += new DoWorkEventHandler(bw_createScaleSamples);
+		//	bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
+		//}
 
 		//Create samples to scale based on the current timeline ticks period.
 		//Runs in background to keep the ui free.
-		private void bw_createScaleSamples(object sender, DoWorkEventArgs args)
+		private void CreateSamples()
 		{
 			_creatingSamples = true;
 			
@@ -118,14 +119,18 @@ namespace Common.Controls.Timeline
 			samplesPerPixel = audio.NumberSamples / totalPixels;
 			samples = audio.GetSamples((int) samplesPerPixel);
 			_creatingSamples = false;
+
+			if (InvokeRequired)
+			{
+				BeginInvoke((Action)FinishedSamples);
+			}
 		}
 
-		private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		private void FinishedSamples()
 		{
 			//invalidate the control after the samples are created
-			this.Invalidate();
+			Invalidate();
 		}
-
 
 		/// <summary>
 		/// sets the associated audio module to produce a waveform on
@@ -149,12 +154,9 @@ namespace Common.Controls.Timeline
 					audio.Dispose();
 				}
 				audio = value;
-				if (audio != null) {
-					if (bw != null && bw.IsBusy) {
-						bw.CancelAsync();
-					}
-					CreateWorker();
-					bw.RunWorkerAsync();
+				if (audio != null)
+				{
+					Task.Factory.StartNew(CreateSamples);
 					Visible = true;
 					// Make us visible if we have audio to display.
 				}
@@ -173,15 +175,11 @@ namespace Common.Controls.Timeline
 
 		protected override void OnTimePerPixelChanged(object sender, EventArgs e)
 		{
-			if (bw != null && bw.IsBusy) {
-				bw.CancelAsync();
-			}
 			while (_creatingSamples)
 			{
 				Thread.Sleep(1);
 			}
-			CreateWorker();
-			bw.RunWorkerAsync();
+			Task.Factory.StartNew(CreateSamples);
 		}
 
 		protected override void OnPlaybackStartTimeChanged(object sender, EventArgs e)
