@@ -12,6 +12,7 @@ using System.ComponentModel;
 using Common.Controls.TimelineControl;
 using Common.Controls.TimelineControl.LabeledMarks;
 using VixenModules.App.Marks;
+using VixenModules.Media.Audio.SampleProviders;
 using Font = System.Drawing.Font;
 using FontStyle = System.Drawing.FontStyle;
 
@@ -24,7 +25,7 @@ namespace Common.Controls.Timeline
 	public sealed class Waveform : TimelineControlBase
 	{
 		private double samplesPerPixel;
-		private SampleAggregator samples;
+		private List<Sample> samples;
 		private Audio audio;
 		private BackgroundWorker bw;
 		private bool _creatingSamples = false;
@@ -40,7 +41,7 @@ namespace Common.Controls.Timeline
 		public Waveform(TimeInfo timeinfo)
 			: base(timeinfo)
 		{
-			samples = new SampleAggregator();
+			samples = new List<Sample>();
 			BackColor = Color.Gray;
 			Visible = false;
 			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager;
@@ -103,44 +104,19 @@ namespace Common.Controls.Timeline
 		private void bw_createScaleSamples(object sender, DoWorkEventArgs args)
 		{
 			_creatingSamples = true;
-			BackgroundWorker worker = sender as BackgroundWorker;
+			
 			if (audio == null)
 			{
 				_creatingSamples = false;
 				return;
 			}
 			if (!audio.MediaLoaded) {
-				audio.LoadMedia(TimeSpan.MinValue);
+				audio.LoadMedia(TimeSpan.Zero);
 			}
-			samplesPerPixel = (double) pixelsToTime(1).Ticks/TimeSpan.TicksPerMillisecond*audio.Frequency/1000;
-			int step = audio.BytesPerSample;
-			samples.Clear();
-			double samplesRead = 0;
-			while (samplesRead < audio.NumberSamples) {
-				if ((worker.CancellationPending)) {
-					args.Cancel = true;
-					break;
-				}
-				int low = 0;
-				int high = 0;
-				//Might need a better way to dither the partial samples out. Casting to int rounds it out while
-				//the counter tries to maintian some sanity. A few random samples might be off at some zoom levels,
-				//but we are doing a fair amount of averaging to begin with. The farther in the zoom the more chances 
-				//a artifact might be visible.
-				byte[] waveData = audio.GetSamples((int) samplesRead, (int) samplesPerPixel);
-				samplesRead += samplesPerPixel;
-				if (waveData == null)
-					break;
 
-				for (int n = 0; n < waveData.Length; n += step) {
-					//Allow for 16 or 32 bit data. Should be 16 most of the time.
-					int sample = step == 2 ? BitConverter.ToInt16(waveData, n) : BitConverter.ToInt32(waveData, n);
-
-					if (sample < low) low = sample;
-					if (sample > high) high = sample;
-				}
-				samples.Add(new SampleAggregator.Sample {High = ClampValue(high), Low = ClampValue(low)});
-			}
+			var totalPixels = timeToPixels(audio.MediaDuration);
+			samplesPerPixel = audio.NumberSamples / totalPixels;
+			samples = audio.GetSamples((int) samplesPerPixel);
 			_creatingSamples = false;
 		}
 
@@ -248,7 +224,7 @@ namespace Common.Controls.Timeline
 
 					//Draws Waveform
 					e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
-					float maxSample = Math.Max(Math.Abs(samples.Low), samples.High);
+					float maxSample = 1;
 					int workingHeight = Height - (int) (Height*.1); //Leave a little margin
 					float factor = workingHeight/maxSample;
 
@@ -292,127 +268,5 @@ namespace Common.Controls.Timeline
 				g.DrawLine(p, curPos, 0, curPos, Height);
 			}
 		}
-
-		private int ClampValue(int value)
-		{
-			if (value == Int32.MinValue)
-			{
-				return value+1; //We will later use this in some abs calcs and abs value of min value will overflow in an integer field VIX-1859
-			}
-			return value;
-		}
-
-		private class SampleAggregator : IList<SampleAggregator.Sample>
-		{
-			private readonly List<Sample> samples = new List<Sample>();
-
-			public struct Sample
-			{
-				public int Low;
-
-				public int High;
-			}
-
-			public int Low { get; set; }
-
-			public int High { get; set; }
-
-			public void Add(Sample sample)
-			{
-				samples.Add(sample);
-				if (sample.Low < Low) {
-					Low = sample.Low;
-				}
-				if (sample.High > High) {
-					High = sample.High;
-				}
-			}
-
-			public void Clear()
-			{
-				samples.Clear();
-				High = 0;
-				Low = 0;
-			}
-
-			public bool Contains(Sample item)
-			{
-				return samples.Contains(item);
-			}
-
-			public void CopyTo(Sample[] array, int arrayIndex)
-			{
-				throw new NotImplementedException();
-			}
-
-			public bool Remove(Sample item)
-			{
-				throw new NotImplementedException();
-			}
-
-			public int Count
-			{
-				get { return samples.Count; }
-			}
-
-			public bool IsReadOnly
-			{
-				get { return false; }
-			}
-
-			public IEnumerator<Sample> GetEnumerator()
-			{
-				return samples.GetEnumerator();
-			}
-
-			public int IndexOf(Sample item)
-			{
-				return samples.IndexOf(item);
-			}
-
-			public void Insert(int index, Sample item)
-			{
-				throw new NotImplementedException();
-			}
-
-			public void RemoveAt(int index)
-			{
-				throw new NotImplementedException();
-			}
-
-			public Sample this[int index]
-			{
-				get { return samples[index]; }
-				set { throw new NotImplementedException(); }
-			}
-
-			IEnumerator IEnumerable.GetEnumerator()
-			{
-				return GetEnumerator();
-			}
-		}
-		protected override void Dispose(bool disposing)
-		{
-			//Only delete the Audio if Dispose call is explicit.
-			if ((audio != null) && (disposing == true)) 
-			{
-				audio.Dispose();
-				audio= null;
-			}
-
-			if (samples != null) {
-				samples.Clear();
-				samples	 = null;
-				//samples = new SampleAggregator();
-			}
-
-			if (disposing)
-			{
-				_timeLineGlobalEventManager.AlignmentActivity -= WaveFormSelectedTimeLineGlobalMove;
-			}
-
-			base.Dispose(disposing);
-		}
-
 	}
 }

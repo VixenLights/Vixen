@@ -1694,7 +1694,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			ToolStripDropDownItem menuItem = sender as ToolStripDropDownItem;
 			foreach (ToolStripDropDownItem item in audioToolStripButton_Audio_Devices.DropDownItems) ((ToolStripMenuItem) item).Checked = item == menuItem;
-			if (menuItem != null) Variables.SelectedAudioDeviceIndex = (int) menuItem.Tag;
+			if (menuItem != null) Variables.AudioDeviceId = (string) menuItem.Tag;
 		}
 
 		#endregion

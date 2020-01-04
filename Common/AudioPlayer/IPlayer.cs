@@ -1,54 +1,44 @@
 ﻿using System;
-using System.Collections.Generic;
-using Dopamine.Core.Enums;
 
 namespace Common.AudioPlayer
 {
-    public delegate void PlaybackInterruptedEventHandler(object sender, PlaybackInterruptedEventArgs e);
+	public interface IPlayer:IDisposable
+	{
+		bool IsPaused { get; }
 
-    public interface IPlayer
-    {
-        bool CanPlay { get; }
+		bool IsStopped { get; }
 
-        bool CanPause { get; }
+		bool IsPlaying { get; }
 
-        bool CanStop { get; }
+		string Filename { get; }
 
-        string Filename { get; }
+		TimeSpan Duration { get; }
 
-        void Stop();
+		void Stop();
 
-        void Play(string filename, AudioDevice audioDevice);
+		void Play();
 
-        void Skip(int gotoSeconds);
+		void Pause();
 
-        void SetVolume(float volume);
+		bool Resume();
 
-        void SetPlaybackSettings(int latency, bool eventMode, bool exclusiveMode, double[] filterValues, bool useAllAvailableChannels);
+		TimeSpan Position { get; set; }
 
-        void Pause();
+		int BytesPerSample { get; }
 
-        bool Resume();
+		long NumberSamples { get; }
 
-        float GetVolume();
+		int Channels { get; }
 
-        TimeSpan GetCurrentTime();
+		float Frequency { get; }
 
-        TimeSpan GetTotalTime();
+		float Volume { get; set; }
 
-        void Dispose();
+		void SetPlaybackSettings(int latency, bool eventMode, bool exclusiveMode);
+		void SwitchAudioDevice(string mediaDeviceId);
 
-        void ApplyFilterValue(int index, double value);
+		string CurrentAudioDeviceId { get; }
 
-        void ApplyFilter(double[] filterValues);
-
-        ISpectrumPlayer GetWrapperSpectrumPlayer(SpectrumChannel channel);
-
-        void SwitchAudioDevice(AudioDevice audioDevice);
-
-        IList<AudioDevice> GetAllAudioDevices();
-
-        event EventHandler PlaybackFinished;
-        event PlaybackInterruptedEventHandler PlaybackInterrupted;
-    }
+		event Action PlaybackEnded;
+	}
 }

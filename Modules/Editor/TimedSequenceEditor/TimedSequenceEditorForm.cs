@@ -15,6 +15,7 @@ using System.Timers;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Xml;
+using Common.AudioPlayer;
 using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
@@ -23,6 +24,7 @@ using Common.Controls.TimelineControl;
 using Common.Controls.TimelineControl.LabeledMarks;
 using Common.Resources;
 using Common.Resources.Properties;
+using Microsoft.VisualBasic;
 using NLog;
 using Vixen;
 using Vixen.Execution;
@@ -1575,19 +1577,29 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					int i = 0;
 					audioToolStripButton_Audio_Devices.DropDownItems.Clear();
-					fmod.AudioDevices.OrderBy(a => a.Item1).Select(b => b.Item2).ToList().ForEach(device =>
+					foreach (var audioDevice in AudioPlayback.GetActiveDevices())
 					{
 						ToolStripMenuItem tsmi = new ToolStripMenuItem();
-						tsmi.Text = device;
-						tsmi.Tag = i;
+						tsmi.Text = audioDevice.FriendlyName;
+						tsmi.Tag = audioDevice.Id;
 						tsmi.Click += audioDevicesToolStripMenuItem_Click;
 						audioToolStripButton_Audio_Devices.DropDownItems.Add(tsmi);
 						i++;
-					});
+					}
+					//fmod.AudioDevices.OrderBy(a => a.Item1).Select(b => b.Item2).ToList().ForEach(device =>
+					//{
+					//	ToolStripMenuItem tsmi = new ToolStripMenuItem();
+					//	tsmi.Text = device;
+					//	tsmi.Tag = i;
+					//	tsmi.Click += audioDevicesToolStripMenuItem_Click;
+					//	audioToolStripButton_Audio_Devices.DropDownItems.Add(tsmi);
+					//	i++;
+					//});
 					if (audioToolStripButton_Audio_Devices.DropDownItems.Count > 0)
 					{
-						((ToolStripMenuItem)audioToolStripButton_Audio_Devices.DropDownItems[0]).Checked = true;
-						Variables.SelectedAudioDeviceIndex = 0;
+						var item = (ToolStripMenuItem)audioToolStripButton_Audio_Devices.DropDownItems[0];
+						item.Checked = true;
+						Variables.AudioDeviceId = (string)item.Tag;
 						PopulateWaveformAudio();
 					}
 				}

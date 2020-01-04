@@ -53,10 +53,11 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CSCore, Version=1.2.1.2, Culture=neutral, PublicKeyToken=5a08f2b6f4415dea, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CSCore.1.2.1.2\lib\net35-client\CSCore.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="NAudio, Version=1.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NAudio.1.9.0\lib\net35\NAudio.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NLog.4.5.11\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
@@ -72,18 +73,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AudioDevice.cs" />
-    <Compile Include="Base\Enums.cs" />
-    <Compile Include="Base\FileFormats.cs" />
-    <Compile Include="CoreAudioPlayer.cs" />
-    <Compile Include="Enums\SpectrumEnums.cs" />
-    <Compile Include="EqualizerPreset.cs" />
+    <Compile Include="Device.cs" />
+    <Compile Include="AudioPlayback.cs" />
     <Compile Include="IPlayer.cs" />
-    <Compile Include="IPlayerFactory.cs" />
-    <Compile Include="ISpectrumPlayer.cs" />
-    <Compile Include="PlaybackInterruptedEventArgs.cs" />
-    <Compile Include="PlayerFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VolumeEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

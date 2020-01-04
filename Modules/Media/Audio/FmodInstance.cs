@@ -47,7 +47,7 @@ namespace VixenModules.Media.Audio
 		public FmodInstance(string fileName=null)
 		{
 			lock (lockObject) {
-				_audioSystem = fmod.GetInstance(fileName==null?-1:Vixen.Sys.State.Variables.SelectedAudioDeviceIndex);
+				_audioSystem = fmod.GetInstance(fileName==null?-1:/*Vixen.Sys.State.Variables.SelectedAudioDeviceIndex*/0);
 				if (_audioSystem == null || _audioSystem.SystemObject==null) return;
 				_audioSystem.SystemObject.createDSPByType(FMOD.DSP_TYPE.LOWPASS, ref dsplowpass);
 				_audioSystem.SystemObject.createDSPByType(FMOD.DSP_TYPE.HIGHPASS, ref dsphighpass);
@@ -247,7 +247,7 @@ namespace VixenModules.Media.Audio
 
 		public void Play()
 		{	
-			AudioDeviceIndex=	Vixen.Sys.State.Variables.SelectedAudioDeviceIndex;
+			AudioDeviceIndex=	0/*Vixen.Sys.State.Variables.SelectedAudioDeviceIndex*/;
 			
 			if (_channel != null && !_channel.IsPlaying) {
 				SetStartTime(_startTime);
