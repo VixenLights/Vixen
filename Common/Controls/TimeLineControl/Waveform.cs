@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using NLog;
 using VixenModules.Media.Audio;
 using System.ComponentModel;
+using System.Drawing.Drawing2D;
 using System.Threading.Tasks;
 using Common.Controls.TimelineControl;
 using Common.Controls.TimelineControl.LabeledMarks;
@@ -43,7 +44,7 @@ namespace Common.Controls.Timeline
 			: base(timeinfo)
 		{
 			samples = new List<Sample>();
-			BackColor = Color.Gray;
+			BackColor = Color.FromArgb(120,120,120);
 			Visible = false;
 			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager;
 			_timeLineGlobalEventManager.AlignmentActivity += WaveFormSelectedTimeLineGlobalMove;
@@ -87,18 +88,6 @@ namespace Common.Controls.Timeline
 				Height = 50;
 			}
 		}
-
-		//private void CreateWorker()
-		//{
-		//	if (bw != null) {
-		//		bw.DoWork -= new DoWorkEventHandler(bw_createScaleSamples);
-		//		bw.RunWorkerCompleted -= new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
-		//	}
-		//	bw = new BackgroundWorker();
-		//	bw.WorkerSupportsCancellation = true;
-		//	bw.DoWork += new DoWorkEventHandler(bw_createScaleSamples);
-		//	bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
-		//}
 
 		//Create samples to scale based on the current timeline ticks period.
 		//Runs in background to keep the ui free.
@@ -218,28 +207,30 @@ namespace Common.Controls.Timeline
 						p.Dispose();
 					}
 
-					
-
 					//Draws Waveform
 					e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
-					float maxSample = 1;
-					int workingHeight = Height - (int) (Height*.1); //Leave a little margin
-					float factor = workingHeight/maxSample;
+					
+					int workingHeight = Height - 2 - Height % 2; //Leave a little margin
+					int topHeight = workingHeight/2;
+					int bottomHeight = topHeight;
+					int midPoint = topHeight;
 
-					float maxValue = 2*maxSample*factor;
-					float minValue = -maxSample*factor;
+					var topPen = CreateTopPen(topHeight);
+					var bottomPen = CreateBottomPen(topHeight, bottomHeight);
 					int start = (int) timeToPixels(VisibleTimeStart);
 					int end = (int) timeToPixels(VisibleTimeEnd <= audio.MediaDuration ? VisibleTimeEnd : audio.MediaDuration);
 					
 					for (int x = start; x < end; x += 1)
 					{
 						if (samples.Count <= x) break;
-						{
-							float lowPercent = (((samples[x].Low*factor) - minValue)/maxValue);
-							float highPercent = (((samples[x].High*factor) - minValue)/maxValue);
-							e.Graphics.DrawLine(Pens.Black, x, workingHeight*lowPercent, x, workingHeight*highPercent);
-						}
+						var lineHeight = topHeight * samples[x].High;
+						e.Graphics.DrawLine(topPen, x, midPoint, x, midPoint - lineHeight);
+						lineHeight = bottomHeight * samples[x].Low;
+						e.Graphics.DrawLine(bottomPen, x, midPoint, x, midPoint - lineHeight);
 					}
+
+					topPen.Dispose();
+					bottomPen.Dispose();
 
 					DrawCursor(e.Graphics);
 				}
@@ -256,6 +247,27 @@ namespace Common.Controls.Timeline
 			}
 
 			base.OnPaint(e);
+		}
+
+		private static Pen CreateTopPen(int height)
+		{
+			var brush = new LinearGradientBrush(new Point(0, 0), new Point(0, height), Color.FromArgb(60, 60, 60), Color.FromArgb(20, 20, 20));
+			return new Pen(brush);
+		}
+
+		private Pen CreateBottomPen(int topHeight, int bottomHeight)
+		{
+			var bottomGradient = new LinearGradientBrush(new Point(0, topHeight), new Point(0, topHeight + bottomHeight), 
+				Color.FromArgb(16, 16, 16), Color.FromArgb(70, 70, 70));
+			var colorBlend = new ColorBlend(3);
+			colorBlend.Colors[0] = Color.FromArgb(16, 16, 16);
+			colorBlend.Colors[1] = Color.FromArgb(62, 62, 62);
+			colorBlend.Colors[2] = Color.FromArgb(70, 70, 70);
+			colorBlend.Positions[0] = 0;
+			colorBlend.Positions[1] = 0.1f;
+			colorBlend.Positions[2] = 1.0f;
+			bottomGradient.InterpolationColors = colorBlend;
+			return new Pen(bottomGradient);
 		}
 
 		private void DrawCursor(Graphics g)
