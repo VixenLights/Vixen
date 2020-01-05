@@ -1008,4 +1008,16 @@
   <data name="UseMarks" xml:space="preserve">
     <value>Use Marks</value>
   </data>
+  <data name="Fade" xml:space="preserve">
+    <value>Fade Type</value>
+  </data>
+  <data name="FadeSpeed" xml:space="preserve">
+    <value>Fade Speed</value>
+  </data>
+  <data name="HFlakeCount" xml:space="preserve">
+    <value>Horizontal Flake Count</value>
+  </data>
+  <data name="VFlakeCount" xml:space="preserve">
+    <value>Vertical Flake Count</value>
+  </data>
 </root>

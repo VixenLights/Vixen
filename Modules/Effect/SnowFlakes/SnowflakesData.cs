@@ -27,7 +27,7 @@ namespace VixenModules.Effect.Snowflakes
 			CenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 11.0, 11.0 }));
 			MinDirection = 145;
 			MaxDirection = 215;
-			RandomBrightness = false;
+			RandomBrightness = true;
 			PointFlake45 = false;
 			SnowflakeEffect = SnowflakeEffect.None;
 			ColorType = SnowflakeColorType.Palette;
@@ -42,6 +42,11 @@ namespace VixenModules.Effect.Snowflakes
 			SnowFlakeMovement = SnowFlakeMovement.None;
 			WobbleCurve = new Curve(new PointPairList(new[] { 0.0, 33.0, 66.0, 100.0 }, new[] { 30.0, 70.0, 30.0, 70.0 }));
 			WobbleVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
+			HFlakeCount = 4;
+			VFlakeCount = 4;
+			FadeType = FadeType.None;
+			FadeSpeed = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 40.0, 40.0 }));
+			CycleColor = true;
 		}
 
 		[DataMember]
@@ -134,12 +139,35 @@ namespace VixenModules.Effect.Snowflakes
 		[DataMember]
 		public Curve WobbleVariationCurve { get; set; }
 
+		[DataMember]
+		public int HFlakeCount { get; set; }
+
+		[DataMember]
+		public int VFlakeCount { get; set; }
+
+		[DataMember]
+		public FadeType FadeType { get; set; }
+		
+		[DataMember]
+		public Curve FadeSpeed { get; set; }
+
+		[DataMember]
+		public bool CycleColor { get; set; }
+
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
-
 			//if one of them is null the others probably are, and if this one is not then they all should be good.
 			//Try to save some cycles on every load
+			if (FadeSpeed == null)
+			{
+				FadeSpeed = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 40.0, 40.0 }));
+				CycleColor = true;
+				HFlakeCount = 4;
+				VFlakeCount = 4;
+				FadeType = FadeType.None;
+			}
+
 			if (BuildUpSpeedCurve == null)
 			{
 				double value;
@@ -234,7 +262,12 @@ namespace VixenModules.Effect.Snowflakes
 				YSpeedVariationCurve = new Curve(YSpeedVariationCurve),
 				SnowFlakeMovement = SnowFlakeMovement,
 				WobbleVariationCurve = new Curve(WobbleVariationCurve),
-				WobbleCurve = new Curve(WobbleCurve)
+				WobbleCurve = new Curve(WobbleCurve),
+				HFlakeCount = HFlakeCount,
+				VFlakeCount = VFlakeCount,
+				FadeType = FadeType,
+				FadeSpeed = new Curve(FadeSpeed),
+				CycleColor = CycleColor
 			};
 			return result;
 		}

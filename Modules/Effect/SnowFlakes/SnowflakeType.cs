@@ -16,6 +16,12 @@ namespace VixenModules.Effect.Snowflakes
 		Nine,
 		[Description("13 Point")]
 		Thirteen,
+		[Description("13-2 Point")]
+		ThirteenV2,
+		[Description("17 Point")]
+		Seventeen,
+		[Description("29 Point")]
+		TwentyNine,
 		[Description("45 Point")]
 		FortyFive
 	}
@@ -34,5 +40,17 @@ namespace VixenModules.Effect.Snowflakes
 		Wobble,
 		[Description("Wobble Both Directions")]
 		Wobble2
+	}
+
+	public enum FadeType
+	{
+		[Description("None")]
+		None,
+		[Description("In")]
+		In,
+		[Description("Out")]
+		Out,
+		[Description("In/Out")]
+		InOut
 	}
 }
