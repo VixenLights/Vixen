@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Common.AudioPlayer;
 using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
 using Vixen.Module;
 using Vixen.Module.Media;
 using Vixen.Module.Timing;
@@ -205,10 +206,19 @@ namespace VixenModules.Media.Audio
 		public byte[] GetSamples(int startSample, int numSamples)
 		{
 			float[] buffer = new float[numSamples];
-			
-			Array.Copy(_cachedAudioData.AudioData,startSample ,buffer,0,buffer.Length);
-			
+			Array.Copy(_cachedAudioData.AudioData, startSample ,buffer,0,buffer.Length);
 			return buffer.Select(x => (byte)(x*255)).ToArray();
+		}
+
+		public double[] GetMonoSamples(int startSample, int numSamples)
+		{	
+			if (_cachedAudioData == null) return new double[0];
+			CachedSoundSampleProvider cad = new CachedSoundSampleProvider(_cachedAudioData);
+			var provider = new MonoSampleProvider(cad);
+			cad.Position = startSample;
+			var buffer = new double[numSamples];
+			provider.Read(buffer, 0, numSamples);
+			return buffer;
 		}
 
 		public override void Start()

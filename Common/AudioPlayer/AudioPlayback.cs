@@ -159,7 +159,7 @@ namespace Common.AudioPlayer
 	        var status = false;
             try
             {
-                var inputStream = new MediaFoundationReader(fileName);
+                var inputStream = new AudioFileReader(fileName);
 				_fileStream = inputStream;
                 Initialize(inputStream.ToSampleProvider());
                 status = true;
