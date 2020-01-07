@@ -114,6 +114,7 @@ namespace VixenModules.Effect.Snowflakes
 			{
 				_data.FadeType = value;
 				IsDirty = true;
+				UpdateFadeAttribute();
 				OnPropertyChanged();
 			}
 		}
@@ -533,6 +534,7 @@ namespace VixenModules.Effect.Snowflakes
 		{
 			UpdateColorAttribute(false);
 			UpdateDirectionAttribute(false);
+			UpdateFadeAttribute(false);
 			UpdateFlakeAttribute(false);
 			UpdateFlakeBuildUpAttribute(false);
 			TypeDescriptor.Refresh(this);
@@ -545,6 +547,16 @@ namespace VixenModules.Effect.Snowflakes
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2);
 			propertyStates.Add("InnerColor", snowFlakeType);
 			propertyStates.Add("OutSideColor", snowFlakeType);
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+		private void UpdateFadeAttribute(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1);
+			propertyStates.Add("FadeSpeed", FadeType != FadeType.None);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
@@ -577,17 +589,17 @@ namespace VixenModules.Effect.Snowflakes
 				direction = true;
 				variableDirection = true;
 			}
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(13);
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(16);
 			propertyStates.Add("Direction", !direction && SnowflakeEffect <= (SnowflakeEffect)2);
 			propertyStates.Add("MinDirection", variableDirection && SnowflakeEffect <= (SnowflakeEffect)2);
 			propertyStates.Add("MaxDirection", variableDirection && SnowflakeEffect <= (SnowflakeEffect)2);
 			propertyStates.Add("SnowBuildUp", SnowflakeEffect != SnowflakeEffect.Explode && SnowFlakeMovement == SnowFlakeMovement.None && SnowflakeEffect <= (SnowflakeEffect) 2);
 			propertyStates.Add("WobbleCurve", SnowFlakeMovement >= SnowFlakeMovement.Wobble && SnowflakeEffect <= (SnowflakeEffect)2);
 			propertyStates.Add("WobbleVariationCurve", SnowFlakeMovement >= SnowFlakeMovement.Wobble && SnowflakeEffect <= (SnowflakeEffect)2);
-			propertyStates.Add("XCenterSpeedCurve", SnowFlakeMovement == SnowFlakeMovement.Speed && SnowflakeEffect <= (SnowflakeEffect)2);
-			propertyStates.Add("YCenterSpeedCurve", SnowFlakeMovement == SnowFlakeMovement.Speed && SnowflakeEffect <= (SnowflakeEffect)2);
-			propertyStates.Add("XSpeedVariationCurve", SnowFlakeMovement == SnowFlakeMovement.Speed && SnowflakeEffect <= (SnowflakeEffect)2);
-			propertyStates.Add("YSpeedVariationCurve", SnowFlakeMovement == SnowFlakeMovement.Speed && SnowflakeEffect <= (SnowflakeEffect)2);
+			propertyStates.Add("XCenterSpeedCurve", SnowFlakeMovement == SnowFlakeMovement.Speed || SnowflakeEffect > (SnowflakeEffect)2);
+			propertyStates.Add("YCenterSpeedCurve", SnowFlakeMovement == SnowFlakeMovement.Speed || SnowflakeEffect > (SnowflakeEffect)2);
+			propertyStates.Add("XSpeedVariationCurve", SnowFlakeMovement == SnowFlakeMovement.Speed || SnowflakeEffect > (SnowflakeEffect)2);
+			propertyStates.Add("YSpeedVariationCurve", SnowFlakeMovement == SnowFlakeMovement.Speed || SnowflakeEffect > (SnowflakeEffect)2);
 			propertyStates.Add("HFlakeCount", SnowflakeEffect > (SnowflakeEffect) 2); 
 			propertyStates.Add("VFlakeCount", SnowflakeEffect > (SnowflakeEffect) 2);
 			propertyStates.Add("FlakeCountCurve", SnowflakeEffect <= (SnowflakeEffect) 2);
@@ -717,7 +729,12 @@ namespace VixenModules.Effect.Snowflakes
 			switch (SnowFlakeMovement)
 			{
 				case SnowFlakeMovement.Speed:
-				{
+				case SnowFlakeMovement.None when SnowflakeEffect > (SnowflakeEffect)2:
+				case SnowFlakeMovement.Bounce when SnowflakeEffect > (SnowflakeEffect)2:
+				case SnowFlakeMovement.Wobble when SnowflakeEffect > (SnowflakeEffect)2:
+				case SnowFlakeMovement.Wobble2 when SnowflakeEffect > (SnowflakeEffect)2:
+				case SnowFlakeMovement.Wrap when SnowflakeEffect > (SnowflakeEffect)2:
+					{
 					// Horizontal Speed Control
 					double xCenterSpeed = CalculateXCenterSpeed(intervalPosFactor);
 					double xSpreadSpeed = CalculateXSpeedVariation(intervalPosFactor);
@@ -911,12 +928,6 @@ namespace VixenModules.Effect.Snowflakes
 					m.DeltaXOrig = m.DeltaX;
 					m.DeltaYOrig = m.DeltaY;
 
-					if (SnowFlakeMovement == SnowFlakeMovement.Speed)
-					{
-						m.XSpeed = (RandDouble() * ((maxXSpeed) - minXSpeed) + minXSpeed);
-						m.YSpeed = (RandDouble() * ((maxYSpeed) - minYSpeed) + minYSpeed);
-					}
-
 					m.Wobble = Rand(minWobble, maxWobble);
 					if (Rand(0, 2) == 1 && SnowFlakeMovement == SnowFlakeMovement.Wobble2) m.Wobble = -m.Wobble;
 				}
@@ -945,6 +956,12 @@ namespace VixenModules.Effect.Snowflakes
 					if (m.X >= BufferWi - 2 && m.X <= BufferWi) m.X = BufferWi - m.SnowflakeWidth - 1;
 					if (m.Y >= BufferHt - 2 && m.Y <= BufferHt) m.Y = BufferHt - m.SnowflakeWidth - 1;
 					if (m.Y > BufferHt || m.X > BufferWi) continue;
+				}
+
+				if (SnowFlakeMovement == SnowFlakeMovement.Speed || SnowflakeEffect > (SnowflakeEffect)2)
+				{
+					m.XSpeed = (RandDouble() * ((maxXSpeed) - minXSpeed) + minXSpeed);
+					m.YSpeed = (RandDouble() * ((maxYSpeed) - minYSpeed) + minYSpeed);
 				}
 
 				//Set the SnowFlake colors during the creation of the snowflake.
@@ -1297,7 +1314,9 @@ namespace VixenModules.Effect.Snowflakes
 						case SnowFlakeMovement.Wobble when snowFlakes.Expired:
 						case SnowFlakeMovement.Wobble2 when snowFlakes.Expired:
 						case SnowFlakeMovement.Wrap when snowFlakes.Expired:
-						{
+						case SnowFlakeMovement.None when SnowflakeEffect > (SnowflakeEffect)2:
+						case SnowFlakeMovement.Bounce when SnowflakeEffect > (SnowflakeEffect)2:
+							{
 							if (colorX < 0)
 							{
 								snowFlakes.DeltaX = 0;
@@ -1360,8 +1379,7 @@ namespace VixenModules.Effect.Snowflakes
 					}
 				}
 			}
-
-
+			
 			if (SnowFlakeMovement == SnowFlakeMovement.None)
 			{
 				// Deletes SnowFlakes that have expired when reaching the edge of the grid, allowing new Snowflakes to be created.
