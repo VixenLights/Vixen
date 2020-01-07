@@ -25,8 +25,8 @@ namespace VixenModules.Effect.Snowflakes
 		private double _ySpeedAdjustment;
 		private int _wobbleAdjustment;
 		private int _maxBufferSize;
-		private int Xposition;
-		private int Yposition;
+		private double Xposition;
+		private double Yposition;
 		private bool Offset;
 
 		public Snowflakes()
@@ -547,6 +547,7 @@ namespace VixenModules.Effect.Snowflakes
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2);
 			propertyStates.Add("InnerColor", snowFlakeType);
 			propertyStates.Add("OutSideColor", snowFlakeType);
+			propertyStates.Add("CycleColor", FadeType != FadeType.None && ColorType != SnowflakeColorType.Alternate);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
@@ -557,6 +558,7 @@ namespace VixenModules.Effect.Snowflakes
 		{
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1);
 			propertyStates.Add("FadeSpeed", FadeType != FadeType.None);
+			propertyStates.Add("CycleColor", FadeType != FadeType.None && ColorType != SnowflakeColorType.Alternate);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
@@ -669,8 +671,6 @@ namespace VixenModules.Effect.Snowflakes
 			_ySpeedAdjustment = 1;
 			_wobbleAdjustment = 1;
 			_maxBufferSize = Math.Max(BufferHt / 2, BufferWi / 2);
-			Yposition = 0;
-			Xposition = 0;
 		}
 
 		protected override void CleanUpRender()
@@ -722,9 +722,10 @@ namespace VixenModules.Effect.Snowflakes
 			int minWobble = 1;
 			int maxWobble = 1;
 			double wobbleRatio = 1;
-			int XGridSpacing = BufferWi / (HFlakeCount - 1);
-			int YGridSpacing = BufferHt / (VFlakeCount - 1);
-			int gridOffset;
+			double XGridSpacing = ((double)BufferWi / HFlakeCount - 1) +1;
+			double YGridSpacing = ((double)BufferHt / VFlakeCount - 1) +1;
+			Yposition = YGridSpacing / 2;
+			Xposition = XGridSpacing / 2;
 
 			switch (SnowFlakeMovement)
 			{
@@ -936,26 +937,19 @@ namespace VixenModules.Effect.Snowflakes
 					if (frame != 0) break;
 					// Sets grid location of Snowflakes when Grid or Grid Offset is selected
 
-					gridOffset = Offset ? SnowflakeEffect == SnowflakeEffect.GridOffset ? YGridSpacing / 2 : 0 : 0;
+					var gridOffset = Offset ? SnowflakeEffect == SnowflakeEffect.GridOffset ? YGridSpacing / 2 : 0 : 0;
 
-					m.X = Xposition;
-					m.Y = Yposition + gridOffset;
+					m.X = (int)Xposition;
+					m.Y = (int)((int)Yposition + gridOffset);
 
-					Xposition += XGridSpacing;
+					Xposition += XGridSpacing ;
 					if ((i + 1) % HFlakeCount == 0)
 					{
 						Yposition += YGridSpacing;
-						Xposition = 0;
+						Xposition = XGridSpacing / 2;
 						if(HFlakeCount % 2 != 0) Offset = !Offset;
 					}
 					Offset = !Offset;
-
-					// This adjusts the location for the first and last of each grid row so teh entire Snowflake is on the matrix
-					if (m.X <= 1) m.X = m.SnowflakeWidth;
-					if (m.Y <= 1) m.Y = m.SnowflakeWidth;
-					if (m.X >= BufferWi - 2 && m.X <= BufferWi) m.X = BufferWi - m.SnowflakeWidth - 1;
-					if (m.Y >= BufferHt - 2 && m.Y <= BufferHt) m.Y = BufferHt - m.SnowflakeWidth - 1;
-					if (m.Y > BufferHt || m.X > BufferWi) continue;
 				}
 
 				if (SnowFlakeMovement == SnowFlakeMovement.Speed || SnowflakeEffect > (SnowflakeEffect)2)
@@ -977,10 +971,17 @@ namespace VixenModules.Effect.Snowflakes
 							HSV.FromRGB(InnerColor[Rand() % colorcntInside].GetColorAt((intervalPosFactor) / 100)));
 						break;
 					case SnowflakeColorType.Palette: //All user colors are used
+					case SnowflakeColorType.Alternate when SnowflakeEffect <= (SnowflakeEffect)2:
 						m.OuterHsv = HSV.FromRGB(OutSideColor[Rand() % colorcntOutSide]
 							.GetColorAt((intervalPosFactor) / 100));
 						m.InnerHsv =
 							HSV.FromRGB(InnerColor[Rand() % colorcntInside].GetColorAt((intervalPosFactor) / 100));
+						break;
+					case SnowflakeColorType.Alternate:
+						m.OuterHsv = HSV.FromRGB(OutSideColor[i % colorcntOutSide]
+							.GetColorAt((intervalPosFactor) / 100));
+						m.InnerHsv =
+							HSV.FromRGB(InnerColor[i % colorcntInside].GetColorAt((intervalPosFactor) / 100));
 						break;
 					default:
 						m.InnerHsv =
@@ -1400,9 +1401,10 @@ namespace VixenModules.Effect.Snowflakes
 
 		private void UpdateSnowFlakes(double fadeSpeed, int colorcntOutSide, int colorcntInside, double intervalPosFactor)
 		{
+			int i = 0;
 			foreach (SnowFlakeClass snowFlake in _snowFlakes)
 			{
-				if ((snowFlake.OuterHsvBrightness + fadeSpeed) >= 1)
+				if (snowFlake.OuterHsvBrightness + fadeSpeed >= 1)
 				{
 					if (FadeType == FadeType.InOut) snowFlake.FadeType = snowFlake.FadeType == FadeType.In ? FadeType.Out : FadeType.In;
 					snowFlake.OuterHsvBrightness = -0.7;
@@ -1430,6 +1432,12 @@ namespace VixenModules.Effect.Snowflakes
 									HSV.FromRGB(InnerColor[Rand() % colorcntInside]
 										.GetColorAt((intervalPosFactor) / 100));
 								break;
+							case SnowflakeColorType.Alternate:
+								snowFlake.OuterHsv = HSV.FromRGB(OutSideColor[i % colorcntOutSide]
+									.GetColorAt((intervalPosFactor) / 100));
+								snowFlake.InnerHsv =
+									HSV.FromRGB(InnerColor[i % colorcntInside].GetColorAt((intervalPosFactor) / 100));
+								break;
 							default:
 								snowFlake.InnerHsv =
 									HSV.FromRGB(InnerColor[Rand() % colorcntInside]
@@ -1437,6 +1445,8 @@ namespace VixenModules.Effect.Snowflakes
 								break;
 						}
 					}
+
+					i++;
 				}
 				else
 				{
