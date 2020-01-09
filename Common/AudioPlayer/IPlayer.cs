@@ -32,9 +32,14 @@ namespace Common.AudioPlayer
 
 		float Frequency { get; }
 
+		float PlaybackRate { get; set; }
+
+		bool UseTempo { get; set; }
+
 		float Volume { get; set; }
 
 		void SetPlaybackSettings(int latency, bool eventMode, bool exclusiveMode);
+
 		void SwitchAudioDevice(string mediaDeviceId);
 
 		string CurrentAudioDeviceId { get; }

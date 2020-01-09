@@ -13,7 +13,13 @@ namespace VixenModules.Media.Audio.SampleProviders
 			WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(sourceProvider.WaveFormat.SampleRate, 1);
 		}
 
-		/// <inheritdoc />
+		/// <summary>
+		/// Provides a multichannel to mono sample set by averaging all channels into a single channel.
+		/// </summary>
+		/// <param name="buffer"></param>
+		/// <param name="offset"></param>
+		/// <param name="count"></param>
+		/// <returns></returns>
 		public int Read(float[] buffer, int offset, int count)
 		{
 			var sourceSamplesRequired = count * WaveFormat.Channels;

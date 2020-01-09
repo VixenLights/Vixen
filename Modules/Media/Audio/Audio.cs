@@ -18,7 +18,8 @@ namespace VixenModules.Media.Audio
 		private AudioPlayback _audioSystem;
 		private AudioData _data;
 		private CachedAudioData _cachedAudioData;
-
+		
+		[Obsolete("Based on old libraries and not currently implemented.")]
 		public string[] DetectionNotes
 		{
 			get
@@ -40,6 +41,7 @@ namespace VixenModules.Media.Audio
 			}
 		}
 
+		[Obsolete("Based on old libraries and not currently implemented.")]
 		public float[] DetectionNoteFreq
 		{
 			get
@@ -56,6 +58,7 @@ namespace VixenModules.Media.Audio
 			get { return _audioSystem != null; }
 		}
 
+		[Obsolete("Based on old libraries and not currently implemented.")]
 		public bool DetectFrequeniesEnabled
 		{
 			get
@@ -71,6 +74,7 @@ namespace VixenModules.Media.Audio
 			}
 		}
 
+		[Obsolete("Based on old libraries and not currently implemented.")]
 		public bool LowPassFilterEnabled
 		{
 			get
@@ -86,6 +90,7 @@ namespace VixenModules.Media.Audio
 			}
 		}
 
+		[Obsolete("Based on old libraries and not currently implemented.")]
 		public float LowPassFilterValue
 		{
 			get
@@ -97,6 +102,7 @@ namespace VixenModules.Media.Audio
 			set { /*_audioSystem.LowPassFilterValue = value;*/ }
 		}
 
+		[Obsolete("Based on old libraries and not currently implemented.")]
 		public float HighPassFilterValue
 		{
 			get
@@ -108,6 +114,7 @@ namespace VixenModules.Media.Audio
 			set { /*_audioSystem.HighPassFilterValue = value;*/ }
 		}
 
+		[Obsolete("Based on old libraries and not currently implemented.")]
 		public bool HighPassFilterEnabled
 		{
 			get
@@ -183,6 +190,11 @@ namespace VixenModules.Media.Audio
 			_cachedAudioData = new CachedAudioData(MediaFilePath);
 		}
 
+		/// <summary>
+		/// Provides raw -1 to 1 averaged samples for by taking the max value over the number of samples to create a max sample.
+		/// </summary>
+		/// <param name="samplesPerInterval"></param>
+		/// <returns></returns>
 		public List<Sample> GetSamples(int samplesPerInterval)
 		{
 			List<Sample> pi = new List<Sample>();
@@ -198,7 +210,7 @@ namespace VixenModules.Media.Audio
 		}
 
 		/// <summary>
-		/// Get the number samples as a byte array from the starting sample. 
+		/// Get the range of samples as a byte array from the starting sample. Converts -1 to 1 to byte values
 		/// </summary>
 		/// <param name="startSample">0 based starting sample</param>
 		/// <param name="numSamples">Number of samples to include in the byte array</param>
@@ -210,6 +222,12 @@ namespace VixenModules.Media.Audio
 			return buffer.Select(x => (byte)(x*255)).ToArray();
 		}
 
+		/// <summary>
+		/// Gets the range of samples converted to a mono channel
+		/// </summary>
+		/// <param name="startSample"></param>
+		/// <param name="numSamples"></param>
+		/// <returns></returns>
 		public double[] GetMonoSamples(int startSample, int numSamples)
 		{	
 			if (_cachedAudioData == null) return new double[0];
@@ -301,13 +319,7 @@ namespace VixenModules.Media.Audio
 		{
 			get { return File.Exists(MediaFilePath); } 
 		}
-		//public List<Tuple<int, string>> AudioDevices
-		//{
-		//	get
-		//	{
-		//		return _audioSystem.AudioDevices;
-		//	}
-		//}
+		
 		// If a media file is used as the timing source, it's also being
 		// executed as media for the sequence.
 		// That means we're either media or media and timing, so only
@@ -385,8 +397,14 @@ namespace VixenModules.Media.Audio
 
 		public float Speed
 		{
-			get { return _audioSystem.Frequency; }
-			set { /*_audioSystem.Speed = value;*/ }
+			get => _audioSystem.PlaybackRate;
+			set => _audioSystem.PlaybackRate = value;
+		}
+
+		public bool UseTempo
+		{
+			get => _audioSystem.UseTempo;
+			set => _audioSystem.UseTempo = value;
 		}
 	}
 }

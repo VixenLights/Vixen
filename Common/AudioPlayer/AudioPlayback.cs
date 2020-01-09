@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Common.AudioPlayer.SampleProvider;
+using Common.AudioPlayer.SoundTouch;
 using NAudio.CoreAudioApi;
 using NAudio.CoreAudioApi.Interfaces;
 using NAudio.Wave;
@@ -14,23 +16,16 @@ namespace Common.AudioPlayer
     {
 	    private static Logger Logging = LogManager.GetCurrentClassLogger();
 
+	    private MMDevice _currentDevice;
         private IWavePlayer _playbackDevice;
         private WaveStream _fileStream;
+		private VarispeedSampleProvider _speedControl;
+		private readonly SoundTouchProfile _soundTouchProfile;
 
         public event Action PlaybackResumed;
         public event Action PlaybackStopped;
-
-        /// <inheritdoc />
-        public byte[] GetSamples(int startSample, int numSamples)
-        {
-	        return new byte[0];
-        }
-
         public event Action PlaybackEnded;
 		public event Action PlaybackPaused;
-		public event Action<VolumeEventArgs> OnPreVolumeMeter;
-		public event Action<VolumeEventArgs> OnSteamVolume;
-		public MMDevice CurrentDevice;
 		private VolumeSampleProvider _volumeProvider;
 		private float _volume = 1f;
 		private static readonly MMDeviceEnumerator DeviceEnumerator;
@@ -53,7 +48,7 @@ namespace Common.AudioPlayer
 			{
 				throw new ArgumentNullException(nameof(fileName));
 			}
-
+			_soundTouchProfile = new SoundTouchProfile(false , false);
 			MMDevice mmDevice = null;
 			if (device != null)
 			{
@@ -111,6 +106,16 @@ namespace Common.AudioPlayer
 			return devices;
 		}
 
+		protected MMDevice CurrentDevice
+		{
+			get => _currentDevice;
+			set
+			{
+				_currentDevice = value;
+				CurrentAudioDeviceId = _currentDevice.ID;
+			}
+		}
+
 		/// <summary>
 		/// Registers a call back for Device Events
 		/// </summary>
@@ -161,8 +166,8 @@ namespace Common.AudioPlayer
             {
                 var inputStream = new AudioFileReader(fileName);
 				_fileStream = inputStream;
-                Initialize(inputStream.ToSampleProvider());
-                status = true;
+				Initialize();
+				status = true;
             }
             catch (Exception e)
             {
@@ -173,25 +178,14 @@ namespace Common.AudioPlayer
             return status;
         }
 
-        private void Initialize(ISampleProvider inputStream)
+        private void Initialize()
         {
-	        _volumeProvider = new VolumeSampleProvider(inputStream);
-			//var postVolumeMeter = new MeteringSampleProvider(_volumeProvider);
-			//postVolumeMeter.StreamVolume += PostVolumeMeter_StreamVolume;
-			_playbackDevice.Init(_volumeProvider);
+	        _volumeProvider = new VolumeSampleProvider(_fileStream.ToSampleProvider());
+			_speedControl = new VarispeedSampleProvider(_volumeProvider, 20, new SoundTouchProfile(true, false));
+			_playbackDevice.Init(_speedControl);
         }
 
-		private void PostVolumeMeter_StreamVolume(object sender, StreamVolumeEventArgs e)
-		{
-			OnSteamVolume?.Invoke(new VolumeEventArgs(e.MaxSampleValues.Length > 0 ? e.MaxSampleValues[0] : 0, e.MaxSampleValues.Length> 1?e.MaxSampleValues[1]:0));
-		}
-
-		private void SampleChannelOnPreVolumeMeter(object sender, StreamVolumeEventArgs e)
-        {
-	        OnPreVolumeMeter?.Invoke(new VolumeEventArgs(e.MaxSampleValues[0], e.MaxSampleValues[1]));
-        }
-
-        private void EnsureDeviceCreated()
+	    private void EnsureDeviceCreated()
         {
             if (_playbackDevice == null)
             {
@@ -207,8 +201,7 @@ namespace Common.AudioPlayer
 
         private void PlaybackDeviceOnPlaybackStopped(object sender, StoppedEventArgs e)
         {
-	        //DisposePlaybackDevice();
-			PlaybackEnded?.Invoke();
+	        PlaybackEnded?.Invoke();
         }
 
         public void Play()
@@ -234,8 +227,7 @@ namespace Common.AudioPlayer
         public void Stop()
         {
 			_playbackDevice?.Stop();
-			//DisposePlaybackDevice();
-            if (_fileStream != null)
+			if (_fileStream != null)
             {
                 _fileStream.Position = 0;
             }
@@ -262,13 +254,14 @@ namespace Common.AudioPlayer
         }
 
 		public TimeSpan Position
-        {
-	        get => _fileStream?.CurrentTime ?? TimeSpan.Zero;
-	        set
+		{
+			get => _fileStream.CurrentTime;
+			set
 	        {
 		        if (_fileStream != null)
 		        {
 			        _fileStream.CurrentTime = value;
+					_speedControl.Reposition();
 		        }
 			}
 		}
@@ -281,6 +274,24 @@ namespace Common.AudioPlayer
 		public int Channels => _fileStream.WaveFormat.Channels;
 
 		public float Frequency => _fileStream.WaveFormat.SampleRate;
+
+		/// <inheritdoc />
+		public float PlaybackRate
+		{
+			get => _speedControl?.PlaybackRate ?? 1; 
+			set => _speedControl.PlaybackRate=value;
+		}
+
+		/// <inheritdoc />
+		public bool UseTempo
+		{
+			get=>_soundTouchProfile.UseTempo;
+			set
+			{
+				_soundTouchProfile.UseTempo = value;
+				_speedControl.SetSoundTouchProfile(_soundTouchProfile);
+			}
+		}
 
 		public TimeSpan Duration => _fileStream.TotalTime;
 
@@ -304,7 +315,6 @@ namespace Common.AudioPlayer
 		{
 			_audioClientShareMode = exclusiveMode?AudioClientShareMode.Exclusive:AudioClientShareMode.Shared;
 			_latency = latency;
-
 		}
 
 		public void Dispose()
@@ -315,7 +325,7 @@ namespace Common.AudioPlayer
         }
 
 		/// <inheritdoc />
-		public string CurrentAudioDeviceId => CurrentDevice?.ID;
+		public string CurrentAudioDeviceId { get; private set; }
 
 		/// <inheritdoc />
 		public void SwitchAudioDevice(string mediaDeviceId)
@@ -337,7 +347,7 @@ namespace Common.AudioPlayer
 				resume = true;
 				_playbackDevice?.Stop();
 			}
-			DisposePlaybackDevice();
+			
 			if (resume)
 			{
 				Play();
@@ -367,7 +377,7 @@ namespace Common.AudioPlayer
         /// <inheritdoc />
         public void OnDeviceRemoved(string deviceId)
         {
-	        
+	        SwitchAudioDevice(GetDefaultDevice().Id);
         }
 
         /// <inheritdoc />
