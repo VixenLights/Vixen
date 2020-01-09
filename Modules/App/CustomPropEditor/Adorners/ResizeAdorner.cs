@@ -291,7 +291,20 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 			Point pos = Mouse.GetPosition(AdornedElement);
 
 			_rotationAngle = GetAngle(_rotationCenter, pos);
-			
+
+			// Use Detents of 0, 45, 90, 135, 180, 225, 270 and 315 when holding the Shift modifier key down.
+			if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+			{
+				if (_rotationAngle >= 22.5 && _rotationAngle < 67.5) _rotationAngle = 45;
+				else if (_rotationAngle >= 67.5 && _rotationAngle < 112.5) _rotationAngle = 90;
+				else if (_rotationAngle >= 112.5 && _rotationAngle < 157.5) _rotationAngle = 135;
+				else if (_rotationAngle >= 157.5 && _rotationAngle < 202.5) _rotationAngle = 180;
+				else if (_rotationAngle >= 202.5 && _rotationAngle < 247.5) _rotationAngle = 225;
+				else if (_rotationAngle >= 247.5 && _rotationAngle < 292.5) _rotationAngle = 270;
+				else if (_rotationAngle >= 292.5 && _rotationAngle < 337.5) _rotationAngle = 315;
+				else if (_rotationAngle >= 337.5 || _rotationAngle < 22.5) _rotationAngle = 0;
+			}
+
 			var difference = _rotationAngle - _rotateTransform.Angle;
 
 			_rotateTransform.Angle = _rotationAngle;

@@ -431,6 +431,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				{
 					//We are rotating!
 					double angle = GetAngle(_rotationCenter, new Point(x, y));
+
+					// Use Detents of 0, 45, 90, 135, 180, 225, 270 and 315 when holding the Shift modifier key down.
+					if (Control.ModifierKeys == Keys.Control)
+					{
+						if (angle >= 22.5 && angle < 67.5) angle = 45;
+						else if (angle >= 67.5 && angle < 112.5) angle = 90;
+						else if (angle >= 112.5 && angle < 157.5) angle = 135;
+						else if (angle >= 157.5 && angle < 202.5) angle = 180;
+						else if (angle >= 202.5 && angle < 247.5) angle = 225;
+						else if (angle >= 247.5 && angle < 292.5) angle = 270;
+						else if (angle >= 292.5 && angle < 337.5) angle = 315;
+						else if (angle >= 337.5 || angle < 22.5) angle = 0;
+					}
+
 					RotationAngle = (int)Math.Round(angle, MidpointRounding.AwayFromZero);
 					_selectionPoint = _dragPoints[4];
 				}
