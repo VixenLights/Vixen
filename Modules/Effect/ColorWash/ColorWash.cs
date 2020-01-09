@@ -285,7 +285,7 @@ namespace VixenModules.Effect.ColorWash
 			}
 			else
 			{
-				_position += CalculateSpeed(intervalPosFactor) / 1000;
+				_position += CalculateSpeed(intervalPosFactor) / 1000 * FrameTime / 50d;;
 				position = _position % 1;
 			}
 			

@@ -438,7 +438,7 @@ namespace VixenModules.Effect.Circles
 
 		private double CalculateCenterSpeed(double intervalPos)
 		{
-			return ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPos), 10, 0);
+			return ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPos), 10, 0)  * FrameTime / 50d;
 		}
 
 		private double CalculateRadialSize(double intervalPos)

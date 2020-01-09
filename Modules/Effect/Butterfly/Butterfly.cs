@@ -622,7 +622,7 @@ namespace VixenModules.Effect.Butterfly
 
 		private double CalculateSpeed(double intervalPos)
 		{
-			return ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 80, -80);
+			return ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 80, -80)  * FrameTime / 50d;
 		}
 	}
 }
