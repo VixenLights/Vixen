@@ -36,6 +36,9 @@ namespace VixenModules.Effect.Liquid
 			Lifetime = new Curve(CurveType.Flat100);			
 			ParticleVelocity = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			Animate = false;
+			RandomStartingPosition = true;
+			AnimateXStart = 0;
+			AnimateYStart = 0;
 			EdgeHandling = EdgeHandling.Bounce;
 			VelocityX = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 			VelocityY = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
@@ -112,16 +115,33 @@ namespace VixenModules.Effect.Liquid
 				{nameof(VelocityX), Animate},
 				{nameof(VelocityY), Animate},
 				{nameof(EdgeHandling), Animate},
-				{nameof(X), !Animate},
-				{nameof(Y), !Animate}
+				{nameof(X), (!Animate)},
+				{nameof(Y), (!Animate)},
+				{nameof(AnimateXStart), (Animate && !RandomStartingPosition)},
+				{nameof(AnimateYStart), (Animate && !RandomStartingPosition)},
+				{nameof(RandomStartingPosition), Animate}
 			};
 			SetBrowsable(propertyStates);
 		}
 
 		/// <summary>
-		/// Updates the browseable state of properties related to the nozzle angle.
+		/// Updates the browseable state of properties related to whether the emitter's
+		/// starting position is random or not.
 		/// </summary>
-		private void UpdateNozzleAngleAttributes()
+		private void UpdateRandomStartingPositionAttributes()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(5)
+			{
+				{ nameof(AnimateXStart), !RandomStartingPosition},
+				{ nameof(AnimateYStart), !RandomStartingPosition},
+			};
+			SetBrowsable(propertyStates);
+		}
+
+			/// <summary>
+			/// Updates the browseable state of properties related to the nozzle angle.
+			/// </summary>
+			private void UpdateNozzleAngleAttributes()
 		{
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
 			{
@@ -172,6 +192,9 @@ namespace VixenModules.Effect.Liquid
 				Lifetime = new Curve(Lifetime),
 				ParticleVelocity = new Curve(ParticleVelocity),
 				Animate = Animate,
+				RandomStartingPosition = RandomStartingPosition,
+				AnimateXStart = AnimateXStart,
+				AnimateYStart = AnimateYStart,
 				EdgeHandling = EdgeHandling,
 				VelocityX = new Curve(VelocityX),
 				VelocityY = new Curve(VelocityY),
@@ -324,7 +347,75 @@ namespace VixenModules.Effect.Liquid
 				OnPropertyChanged();
 			}
 		}
-		
+
+		private bool _randomStartingPosition = true;
+
+		/// <summary>
+		/// Whether the starting position of an animated emitter is random.
+		/// </summary>
+		[ProviderDisplayName(@"RandomStartingPosition")]
+		[ProviderDescription(@"RandomStartingPosition")]
+		[PropertyOrder(8)]
+		public bool RandomStartingPosition 
+		{ 
+			get
+			{
+				return _randomStartingPosition;
+			}
+			set
+			{
+				_randomStartingPosition = value;
+				OnPropertyChanged();
+				UpdateRandomStartingPositionAttributes();
+			}
+		}
+
+		private int _animateXStart;
+
+		/// <summary>
+		/// Starting X position of the emitter.  Only applicable to animated emitters.
+		/// </summary>
+		[ProviderDisplayName(@"AnimateXStart")]
+		[ProviderDescription(@"AnimateXStart")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(0, 100, 1)]
+		[PropertyOrder(9)]
+		public int AnimateXStart 
+		{ 
+			get
+			{
+				return _animateXStart;
+			}
+			set
+			{
+				_animateXStart = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private int _animateYStart;
+
+		/// <summary>
+		/// Starting Y position of the emitter.  Only applicable to animated emitters.
+		/// </summary>
+		[ProviderDisplayName(@"AnimateYStart")]
+		[ProviderDescription(@"AnimateYStart")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(0, 100, 1)]
+		[PropertyOrder(10)]
+		public int AnimateYStart
+		{ 
+			get
+			{
+				return _animateYStart;
+			}
+			set
+			{
+				_animateYStart = value;
+				OnPropertyChanged();
+			}
+		}
+
 		private EdgeHandling _edgeHandling;
 
 		/// <summary>
@@ -332,7 +423,7 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>
 		[ProviderDisplayName(@"EdgeHandling")]
 		[ProviderDescription(@"EdgeHandling")]
-		[PropertyOrder(8)]
+		[PropertyOrder(11)]
 		public EdgeHandling EdgeHandling
 		{
 			get
@@ -351,7 +442,7 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>
 		[ProviderDisplayName(@"VelocityX")]
 		[ProviderDescription(@"VelocityX")]
-		[PropertyOrder(9)]
+		[PropertyOrder(12)]
 		public Curve VelocityX { get; set; }
 
 		/// <summary>
@@ -359,7 +450,7 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>
 		[ProviderDisplayName(@"VelocityY")]
 		[ProviderDescription(@"VelocityY")]
-		[PropertyOrder(10)]
+		[PropertyOrder(13)]
 		public Curve VelocityY { get; set; }
 
 		/// <summary>
@@ -367,7 +458,7 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>
 		[ProviderDisplayName(@"XPosition")]
 		[ProviderDescription(@"XPosition")]
-		[PropertyOrder(11)]
+		[PropertyOrder(14)]
 		public Curve X { get; set; }
 
 		/// <summary>
@@ -375,7 +466,7 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>
 		[ProviderDisplayName(@"YPosition")]
 		[ProviderDescription(@"YPosition")]
-		[PropertyOrder(12)]
+		[PropertyOrder(15)]
 		public Curve Y { get; set; }
 				
 		/// <summary>
@@ -383,7 +474,7 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>
 		[ProviderDisplayName(@"NozzleSize")]
 		[ProviderDescription(@"NozzleSize")]
-		[PropertyOrder(13)]
+		[PropertyOrder(16)]
 		public Curve SourceSize { get; set; }
 
 		private NozzleMovement _nozzleMovement = NozzleMovement.FixedAngle;
@@ -393,7 +484,7 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>
 		[ProviderDisplayName(@"NozzleMovement")]
 		[ProviderDescription(@"NozzleMovement")]
-		[PropertyOrder(14)]
+		[PropertyOrder(17)]
 		public NozzleMovement NozzleMovement
 		{
 			get
@@ -413,7 +504,7 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>
 		[ProviderDisplayName(@"NozzleAngle")]
 		[ProviderDescription(@"NozzleAngle")]
-		[PropertyOrder(15)]
+		[PropertyOrder(18)]
 		public Curve NozzleAngle { get; set; }
 				
 		private int _oscillateStartAngle;
@@ -425,7 +516,7 @@ namespace VixenModules.Effect.Liquid
 		[ProviderDescription(@"OscillateStartAngle")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 360, 1)]
-		[PropertyOrder(16)]
+		[PropertyOrder(19)]
 		public int OscillateStartAngle
 		{
 			get
@@ -448,7 +539,7 @@ namespace VixenModules.Effect.Liquid
 		[ProviderDescription(@"OscillateEndAngle")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 360, 1)]
-		[PropertyOrder(17)]
+		[PropertyOrder(20)]
 		public int OscillateEndAngle
 		{
 			get
@@ -467,7 +558,7 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>
 		[ProviderDisplayName(@"NozzleSpeed")]
 		[ProviderDescription(@"NozzleSpeed")]
-		[PropertyOrder(18)]
+		[PropertyOrder(21)]
 		public Curve OscillationSpeed { get; set; }
 
 		private FlowControl _flowControl = FlowControl.Continuous;
@@ -477,7 +568,7 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>
 		[ProviderDisplayName(@"FlowControl")]
 		[ProviderDescription(@"FlowControl")]
-		[PropertyOrder(19)]
+		[PropertyOrder(22)]
 		public FlowControl FlowControl
 		{
 			get
@@ -497,7 +588,7 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>
 		[ProviderDisplayName(@"Flow")]
 		[ProviderDescription(@"Flow")]
-		[PropertyOrder(20)]
+		[PropertyOrder(23)]
 		public Curve Flow { get; set; }
 				
 		/// <summary>
@@ -525,7 +616,7 @@ namespace VixenModules.Effect.Liquid
 		[ProviderDescription(@"EmitterMarkCollection")]
 		[TypeConverter(typeof(Emitters.EmitterMarkCollectionNameConverter))]
 		[PropertyEditor("SelectionEditor")]
-		[PropertyOrder(21)]
+		[PropertyOrder(24)]
 		public string MarkCollectionName
 		{
 			get

@@ -125,6 +125,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controls the X starting position of the animated emitter..
+        /// </summary>
+        internal static string AnimateXStart {
+            get {
+                return ResourceManager.GetString("AnimateXStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the Y starting position of the animated emitter..
+        /// </summary>
+        internal static string AnimateYStart {
+            get {
+                return ResourceManager.GetString("AnimateYStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Adjusts the time the word is displayed to auto fit between words either side..
         /// </summary>
         internal static string AutoFit {
@@ -1885,6 +1903,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string RandomSpeed {
             get {
                 return ResourceManager.GetString("RandomSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls whether the animated emitter start position is random..
+        /// </summary>
+        internal static string RandomStartingPosition {
+            get {
+                return ResourceManager.GetString("RandomStartingPosition", resourceCulture);
             }
         }
         

@@ -1008,4 +1008,13 @@
   <data name="UseMarks" xml:space="preserve">
     <value>Use Marks</value>
   </data>
+  <data name="RandomStartingPosition" xml:space="preserve">
+    <value>Random Start</value>
+  </data>
+  <data name="AnimateXStart" xml:space="preserve">
+    <value>X Start Position</value>
+  </data>
+  <data name="AnimateYStart" xml:space="preserve">
+    <value>Y Start Position</value>
+  </data>
 </root>

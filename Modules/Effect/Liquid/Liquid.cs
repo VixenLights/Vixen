@@ -956,9 +956,20 @@ namespace VixenModules.Effect.Liquid
 				// If the emitter uses animated movement then...
 				if (emitter.Animate)
 				{
-					// Initialize the position of the emitter with a random position
-					emitter.LocationX = Rand(0, _bufferWt);
-					emitter.LocationY = Rand(0, _bufferHt);
+					// If the emitter's initial position should be random then...
+					if (emitter.RandomStartingPosition)
+					{
+						// Initialize the position of the emitter with a random position
+						emitter.LocationX = Rand(0, _bufferWt);
+						emitter.LocationY = Rand(0, _bufferHt);
+					}
+					// Otherwise let the user pick the starting position using the X, Y sliders
+					else
+					{
+						// Scale the initial X and Y position of the emitter based on the overall display element width and height
+						emitter.LocationX = (emitter.AnimateXStart / 100.0) * _bufferWt; // Zero = Left, 100 = Right
+						emitter.LocationY = (emitter.AnimateYStart / 100.0) * _bufferHt; // Zero = Bottom, 100 = Top
+					}
 				}
 
 				// Reset the On/Off Timers
@@ -1765,6 +1776,9 @@ namespace VixenModules.Effect.Liquid
 				serializedEmitter.Lifetime = new Curve(emitter.Lifetime);
 				serializedEmitter.ParticleVelocity = new Curve(emitter.ParticleVelocity);
 				serializedEmitter.Animate = emitter.Animate;
+				serializedEmitter.FixedStartingPosition = !emitter.RandomStartingPosition;
+				serializedEmitter.AnimateXStart = emitter.AnimateXStart;
+				serializedEmitter.AnimateYStart = emitter.AnimateYStart;
 				serializedEmitter.EdgeHandling = _edgeHandlingToSerializedEdgeHandling[emitter.EdgeHandling];
 				serializedEmitter.VelocityX = new Curve(emitter.VelocityX);
 				serializedEmitter.VelocityY = new Curve(emitter.VelocityY);
@@ -1810,6 +1824,9 @@ namespace VixenModules.Effect.Liquid
 				emitterModel.Lifetime = new Curve(emitter.Lifetime);
 				emitterModel.ParticleVelocity = new Curve(emitter.ParticleVelocity);
 				emitterModel.Animate = emitter.Animate;
+				emitterModel.RandomStartingPosition = !emitter.FixedStartingPosition;
+				emitterModel.AnimateXStart = emitter.AnimateXStart;
+				emitterModel.AnimateYStart = emitter.AnimateYStart;
 				emitterModel.EdgeHandling = _serializedEdgeHandlingToEdgeHandling[emitter.EdgeHandling];
 				emitterModel.VelocityX = new Curve(emitter.VelocityX);
 				emitterModel.VelocityY = new Curve(emitter.VelocityY);
