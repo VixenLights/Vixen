@@ -1776,7 +1776,7 @@ namespace VixenModules.Effect.Liquid
 				serializedEmitter.Lifetime = new Curve(emitter.Lifetime);
 				serializedEmitter.ParticleVelocity = new Curve(emitter.ParticleVelocity);
 				serializedEmitter.Animate = emitter.Animate;
-				serializedEmitter.FixedStartingPosition = !emitter.RandomStartingPosition;
+				serializedEmitter.RandomStartingPosition = emitter.RandomStartingPosition;
 				serializedEmitter.AnimateXStart = emitter.AnimateXStart;
 				serializedEmitter.AnimateYStart = emitter.AnimateYStart;
 				serializedEmitter.EdgeHandling = _edgeHandlingToSerializedEdgeHandling[emitter.EdgeHandling];
@@ -1824,7 +1824,7 @@ namespace VixenModules.Effect.Liquid
 				emitterModel.Lifetime = new Curve(emitter.Lifetime);
 				emitterModel.ParticleVelocity = new Curve(emitter.ParticleVelocity);
 				emitterModel.Animate = emitter.Animate;
-				emitterModel.RandomStartingPosition = !emitter.FixedStartingPosition;
+				emitterModel.RandomStartingPosition = emitter.RandomStartingPosition;
 				emitterModel.AnimateXStart = emitter.AnimateXStart;
 				emitterModel.AnimateYStart = emitter.AnimateYStart;
 				emitterModel.EdgeHandling = _serializedEdgeHandlingToEdgeHandling[emitter.EdgeHandling];

@@ -13,7 +13,7 @@ namespace VixenModules.Effect.Liquid
 	/// </summary>
 	[DataContract]
 	[KnownType(typeof(EmitterData))]
-	class LiquidData : EffectTypeModuleData
+	public class LiquidData : EffectTypeModuleData
 	{
 		#region Constructor
 

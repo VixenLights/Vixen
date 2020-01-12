@@ -7,7 +7,7 @@ using ZedGraph;
 namespace Liquid
 {
 	[DataContract]
-	class EmitterData
+	public class EmitterData
 	{
 		#region Public Types 
 
@@ -59,7 +59,7 @@ namespace Liquid
 			Lifetime = new Curve(CurveType.Flat100);
 			ParticleVelocity = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			Animate = false;
-			FixedStartingPosition = false;
+			RandomStartingPosition = true;
 			AnimateXStart = 0;
 			AnimateYStart = 0;
 			EdgeHandling = EdgeHandlingSerializationType.Bounce;
@@ -100,7 +100,7 @@ namespace Liquid
 				Lifetime = new Curve(Lifetime),
 				ParticleVelocity = new Curve(ParticleVelocity),
 				Animate = Animate,
-				FixedStartingPosition = FixedStartingPosition,
+				RandomStartingPosition = RandomStartingPosition,
 				AnimateXStart = AnimateXStart,
 				AnimateYStart = AnimateYStart,
 				EdgeHandling = EdgeHandling,
@@ -152,7 +152,7 @@ namespace Liquid
 		public bool Animate { get; set; }
 
 		[DataMember]
-		public bool FixedStartingPosition { get; set; }
+		public bool RandomStartingPosition { get; set; }
 		
 		[DataMember]
 		public int AnimateXStart { get; set; }

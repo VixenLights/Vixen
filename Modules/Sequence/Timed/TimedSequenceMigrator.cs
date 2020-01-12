@@ -24,8 +24,10 @@ using VixenModules.Effect.Fireworks;
 using VixenModules.Effect.Snowflakes;
 using VixenModules.Effect.Spin;
 using VixenModules.Effect.LipSync;
+using VixenModules.Effect.Liquid;
 using VixenModules.Effect.Wipe;
 using ZedGraph;
+using Liquid;
 
 namespace VixenModules.Sequence.Timed
 {
@@ -47,6 +49,7 @@ namespace VixenModules.Sequence.Timed
 									new MigrationSegment<XElement>(4, 5, _Version_4_to_5),
 									new MigrationSegment<XElement>(5, 6, _Version_5_to_6),
 									new MigrationSegment<XElement>(6, 7, _Version_6_to_7),
+									new MigrationSegment<XElement>(7, 8, _Version_7_to_8),
 				};
 		}
 
@@ -498,6 +501,19 @@ namespace VixenModules.Sequence.Timed
 			return content;
 		}
 
+		private XElement _Version_7_to_8(XElement content)
+		{
+			var messageBox = new MessageBoxForm(string.Format(
+				"Migrating sequence from version 7 to version 8. This may take a few minutes if the sequence is large.{0}{0}Changes include the following:{0}" +
+				"Minor changes to the Liquid Effect, adding the ability to specify the start position of animated emitters.{0}" +
+				"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade", MessageBoxButtons.OK, SystemIcons.Information);
+			messageBox.StartPosition = FormStartPosition.CenterScreen;
+			messageBox.ShowDialog();
+
+			MigrateLiquidFrom7To8(content);
+			return content;
+		}
+
 		private void MigrateChaseFrom3To4(XElement content)
 		{
 			//This migration deals with changing the Fireworks effect to accomodate multiple gradients instead of miltiple colors
@@ -800,6 +816,48 @@ namespace VixenModules.Sequence.Timed
 				XElement glp = Serializer(dc, new[] { typeof(WipeData), typeof(IModuleDataModel[]), typeof(DataContainer) });
 
 				//Extract the new data model that we want and insert it in the tree
+				datamodel.Add(glp.XPathSelectElement("//*[local-name()='anyType']", namespaces));
+			}
+		}
+
+		private void MigrateLiquidFrom7To8(XElement content)
+		{
+			// This migration deals with changing the Liquid effect to accomodate allowing the user to control
+			// the initial position of anmiated emitters.
+			var namespaces = GetStandardNamespaces();
+			//Add in the ones for this effect
+			XNamespace d2p1 = "http://schemas.datacontract.org/2004/07/VixenModules.Effect.Liquid";				            
+			namespaces.AddNamespace("d2p1", d2p1.NamespaceName);
+
+			// Find the Liquid effects
+			IEnumerable<XElement> liquidElements =
+				content.XPathSelectElements(
+					"_dataModels/d1p1:anyType[@i:type = 'd2p1:LiquidData']",
+					namespaces);
+
+			var datamodel = content.XPathSelectElement("_dataModels", namespaces);
+
+			foreach (var liquidElement in liquidElements.ToList())
+			{
+				var liquidData = DeSerializer<LiquidData>(liquidElement);
+
+				foreach(EmitterData emitterData in liquidData.EmitterData)
+				{
+					emitterData.RandomStartingPosition = true;					
+				}
+
+				// Remove the old version
+				liquidElement.Remove();
+
+				// Build up a temporary container similar to the way sequences are stored to
+				// make all the namespace prefixes line up.
+				IModuleDataModel[] dm = { liquidData };
+				DataContainer dc = new DataContainer { _dataModels = dm };
+
+				// Serialize the object into a xelement
+				XElement glp = Serializer(dc, new[] { typeof(LiquidData), typeof(IModuleDataModel[]), typeof(DataContainer) });
+
+				// Extract the new data model that we want and insert it in the tree
 				datamodel.Add(glp.XPathSelectElement("//*[local-name()='anyType']", namespaces));
 			}
 		}
