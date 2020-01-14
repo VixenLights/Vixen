@@ -136,8 +136,12 @@
 			this.treeview.TabIndex = 13;
 			this.treeview.UsingCustomDragCursor = false;
 			this.treeview.Deselected += new System.EventHandler(this.treeview_Deselected);
+			this.treeview.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeView_BeforeCollapse);
+			this.treeview.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeView_BeforeExpand);
 			this.treeview.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeview_AfterSelect);
+			this.treeview.DoubleClick += new System.EventHandler(this.treeview_DoubleClick);
 			this.treeview.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeview_KeyDown);
+			this.treeview.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeView_MouseDown);
 			// 
 			// ControllerTree
 			// 
