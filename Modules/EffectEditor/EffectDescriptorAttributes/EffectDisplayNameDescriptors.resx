@@ -1016,6 +1016,7 @@
   </data>
   <data name="AnimateYStart" xml:space="preserve">
     <value>Y Start Position</value>
+  </data>
   <data name="Fade" xml:space="preserve">
     <value>Fade Type</value>
   </data>
