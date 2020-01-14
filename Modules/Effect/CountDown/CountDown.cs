@@ -34,6 +34,7 @@ namespace VixenModules.Effect.CountDown
 		private int _previousCountDownNumber;
 		private CountDownDirection _direction;
 		private int _sizeAdjust;
+		private double _fps;
 
 		public CountDown()
 		{
@@ -540,6 +541,7 @@ namespace VixenModules.Effect.CountDown
 
 		protected override void SetupRender()
 		{
+			_fps = 1000d / FrameTime;
 			_countDownNumberIteration = -1;
 			_direction = Direction;
 			_sizeAdjust = 0;
@@ -630,10 +632,10 @@ namespace VixenModules.Effect.CountDown
 				switch (SizeMode)
 				{
 					case SizeMode.Grow:
-						_newFontSize = _font.SizeInPoints / 20 * _sizeAdjust; 
+						_newFontSize = _font.SizeInPoints / (float)_fps * _sizeAdjust; 
 						break;
 					case SizeMode.Shrink:
-						_newFontSize = _font.SizeInPoints / 20 * (21 - _sizeAdjust);
+						_newFontSize = _font.SizeInPoints / (float)_fps * (21 - _sizeAdjust);
 						break;
 					default:
 						_newFontSize = _font.SizeInPoints * (CalculateFontScale(intervalPosFactor) / 100);
@@ -758,13 +760,13 @@ namespace VixenModules.Effect.CountDown
 		{
 			var totalFrames = GetNumberFrames();
 			int startFrame = 0;
-			if (CountDownType == CountDownType.Effect) startFrame = (int)(((decimal)totalFrames / 20 - Math.Floor((decimal)totalFrames / 20)) * 20);
+			if (CountDownType == CountDownType.Effect) startFrame = (int)((totalFrames / _fps - Math.Floor(totalFrames / _fps)) * _fps);
 
 			if (PerIteration)
 			{
 				_directionPosition = CountDownType != CountDownType.Effect
 					? (double) 1 / totalFrames * (TimeSpan.TotalSeconds) * frame % 1
-					: (double) 1 / 20 * ((frame - startFrame - 1) % 20);
+					: 1 / _fps * ((frame - startFrame - 1) % _fps);
 			}
 			else
 			{
@@ -777,24 +779,24 @@ namespace VixenModules.Effect.CountDown
 			switch (CountDownFade)
 			{
 				case CountDownFade.In:
-					_fade = (double) 1 / 20 * ((frame - startFrame) % 20);
+					_fade = 1 / _fps * ((frame - startFrame) % _fps);
 					if (_fade < 0) _fade += 1;
 					break;
 				case CountDownFade.Out:
-					_fade = 1 - (double) 1 / 20 * ((frame - startFrame - 1) % 20);
+					_fade = 1 - 1 / _fps * ((frame - startFrame - 1) % _fps);
 					if (_fade > 1) _fade -= 1;
 						break;
 				case CountDownFade.InOut:
-					_fade = (frame - startFrame) % 20;
+					_fade = (frame - startFrame) % _fps;
 					if (_fade < 0) _fade = -_fade;
 					if (_fade < 10)
 					{
-						_fade = (double) 1 / 20 * _fade;
+						_fade = 1 / _fps * _fade;
 						if (_fade < 0) _fade += 1;
 					}
 					else
 					{
-						_fade = 1 - (double)1 / 20 * _fade;
+						_fade = 1 - 1 / _fps * _fade;
 						if (_fade > 1) _fade -= 1;
 					}
 					break;
@@ -832,12 +834,12 @@ namespace VixenModules.Effect.CountDown
 			{
 				case CountDownType.CountDown:
 					countDownNumber =
-						(int) Math.Ceiling((Convert.ToInt16(CountDownTime) * 1000 - (double) (frame * 50)) / 1000);
+						(int) Math.Ceiling((Convert.ToInt16(CountDownTime) * 1000 - (double) (frame * FrameTime)) / 1000);
 					if (CountDownFade == CountDownFade.In) countDownNumber -= 1;
 					break;
 				case CountDownType.CountUp:
 					countDownNumber =
-						(int)Math.Floor((Convert.ToInt16(CountDownTime) * 1000 + (double)(frame * 50)) / 1000);
+						(int)Math.Floor((Convert.ToInt16(CountDownTime) * 1000 + (double)(frame * FrameTime)) / 1000);
 					if (CountDownFade == CountDownFade.In) countDownNumber += 1;
 					break;
 				default:
@@ -1046,9 +1048,9 @@ namespace VixenModules.Effect.CountDown
 				default:
 					double totalFrames = GetNumberFrames();
 					string displayTime1 = "";
-					bool isInt = ((double)totalFrames / 20) == (int)(totalFrames / 20);
-					int startTick = (int)((double)clipRectangle.Width / totalFrames * (int)((totalFrames / 20 - Math.Floor(totalFrames / 20)) * 20));
-					countTime = (int)Math.Ceiling(totalFrames * .050);
+					bool isInt = Math.Abs((totalFrames / _fps) % 1) <= Double.Epsilon * 100;
+					int startTick = (int)((double)clipRectangle.Width / totalFrames * (int)((totalFrames / _fps - Math.Floor(totalFrames / _fps)) * _fps));
+					countTime = (int)Math.Ceiling(totalFrames / _fps);
 					if (!isInt) countTime--;
 					secondTicks = (int)((double)clipRectangle.Width / (int)TimeSpan.Ticks * 10000000);
 					for ( int i = 0; i < clipRectangle.Width; i++)

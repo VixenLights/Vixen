@@ -463,7 +463,7 @@ namespace VixenModules.Effect.SnowStorm
 
 		private double CalculateSpeed(double intervalPos)
 		{
-			var value = ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 100, 1);
+			var value = ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 100, 1) * FrameTime / 50d;
 			if (value < 1) value = 1;
 
 			return value;

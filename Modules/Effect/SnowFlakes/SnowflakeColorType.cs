@@ -9,6 +9,8 @@ namespace VixenModules.Effect.Snowflakes
 		[Description("Palette")]
 		Palette,
 		[Description("Rainbow")]
-		RainBow
+		RainBow,
+		[Description("Alternate")]
+		Alternate
 	}
 }

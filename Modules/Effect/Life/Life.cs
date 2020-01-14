@@ -352,7 +352,7 @@ namespace VixenModules.Effect.Life
 
 		private double CalculateSpeed(double intervalPos)
 		{
-			var value = ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 20, 1);
+			var value = ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 20, 1) * FrameTime / 50d;
 			if (value < 1) value = 1;
 
 			return value;

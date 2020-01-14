@@ -872,6 +872,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Type of Fade applied to each Snowflake..
+        /// </summary>
+        internal static string Fade {
+            get {
+                return ResourceManager.GetString("Fade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adjusts the Fade speed of each Snowflake over the length o fthe effect..
+        /// </summary>
+        internal static string FadeSpeed {
+            get {
+                return ResourceManager.GetString("FadeSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Adjusts the speed of the falling characters..
         /// </summary>
         internal static string FallSpeed {
@@ -1147,6 +1165,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Height {
             get {
                 return ResourceManager.GetString("Height", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adjust the number of Horizontal Snowflakes..
+        /// </summary>
+        internal static string HFlakeCount {
+            get {
+                return ResourceManager.GetString("HFlakeCount", resourceCulture);
             }
         }
         
@@ -2645,6 +2672,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adjust the number of Vertical Snowflakes..
+        /// </summary>
+        internal static string VFlakeCount {
+            get {
+                return ResourceManager.GetString("VFlakeCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Runs the Liquid engine for the specified number of frames before rendering the effect.  This setting is useful if you want a large number of particles in the display area at the beginning of the effect..
         /// </summary>
         internal static string WarmUpFrames {
@@ -2816,7 +2852,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Horizontal Center Speed.
+        ///   Looks up a localized string similar to Horizontal Center Speed..
         /// </summary>
         internal static string XSpeed {
             get {
@@ -2852,7 +2888,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Horizontal Center Speed.
+        ///   Looks up a localized string similar to Horizontal Center Speed..
         /// </summary>
         internal static string YSpeed {
             get {

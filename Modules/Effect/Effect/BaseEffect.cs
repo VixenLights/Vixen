@@ -21,7 +21,7 @@ namespace VixenModules.Effect.Effect
 	{
 		private bool _hasDiscreteColors;
 		protected int FrameTime;
-		protected static TimeSpan FrameTimespan;
+		protected TimeSpan FrameTimespan;
 
 		protected BaseEffect()
 		{
