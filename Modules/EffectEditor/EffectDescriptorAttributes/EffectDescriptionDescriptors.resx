@@ -1044,6 +1044,15 @@
   <data name="WaveColorHandling" xml:space="preserve">
     <value>Controls how the color gradient is applied to the wave.</value>
   </data>
+  <data name="AnimateXStart" xml:space="preserve">
+    <value>Controls the X starting position of the animated emitter.</value>
+  </data>
+  <data name="AnimateYStart" xml:space="preserve">
+    <value>Controls the Y starting position of the animated emitter.</value>
+  </data>
+  <data name="RandomStartingPosition" xml:space="preserve">
+    <value>Controls whether the animated emitter start position is random.</value>
+  </data>
   <data name="Fade" xml:space="preserve">
     <value>Type of Fade applied to each Snowflake.</value>
   </data>

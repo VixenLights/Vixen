@@ -116,6 +116,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to X Start Position.
+        /// </summary>
+        internal static string AnimateXStart {
+            get {
+                return ResourceManager.GetString("AnimateXStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Y Start Position.
+        /// </summary>
+        internal static string AnimateYStart {
+            get {
+                return ResourceManager.GetString("AnimateYStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Attack Time.
         /// </summary>
         internal static string AttackTime {
@@ -1939,6 +1957,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string RandomSpeed {
             get {
                 return ResourceManager.GetString("RandomSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Random Start.
+        /// </summary>
+        internal static string RandomStartingPosition {
+            get {
+                return ResourceManager.GetString("RandomStartingPosition", resourceCulture);
             }
         }
         
