@@ -1052,6 +1052,7 @@
   </data>
   <data name="RandomStartingPosition" xml:space="preserve">
     <value>Controls whether the animated emitter start position is random.</value>
+  </data>
   <data name="Fade" xml:space="preserve">
     <value>Type of Fade applied to each Snowflake.</value>
   </data>
