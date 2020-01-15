@@ -84,12 +84,12 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Catel.Core">
-      <Version>5.12.0</Version>
+      <Version>5.12.2</Version>
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Svg">
-      <Version>3.0.84</Version>
+      <Version>3.0.102</Version>
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
