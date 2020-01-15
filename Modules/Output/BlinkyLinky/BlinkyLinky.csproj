@@ -9,7 +9,6 @@
     <Company>Microsoft</Company>
     <Product>BlinkyLinky</Product>
     <Copyright>Copyright © Microsoft 2011</Copyright>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Platforms>x64;x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>

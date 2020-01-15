@@ -8,9 +8,6 @@
     <AssemblyTitle>VixenPreview</AssemblyTitle>
     <Product>VixenPreview</Product>
     <Copyright>Copyright ©  2013</Copyright>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Platforms>x64;x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <PostBuildEvent>del "$(OutDir)\System.*"

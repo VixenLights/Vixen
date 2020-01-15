@@ -5,7 +5,6 @@
     <AssemblyTitle>Spirograph</AssemblyTitle>
     <Product>Spirograph</Product>
     <Copyright>Copyright ©  2016</Copyright>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Platforms>x64;x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>

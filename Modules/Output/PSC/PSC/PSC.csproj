@@ -9,7 +9,6 @@
     <Company>Toshiba</Company>
     <Product>PSC</Product>
     <Copyright>Copyright © Toshiba 2011</Copyright>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Platforms>x64;x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>

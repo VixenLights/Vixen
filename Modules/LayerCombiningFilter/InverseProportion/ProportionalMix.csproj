@@ -9,7 +9,6 @@
     <Company>Vixen</Company>
     <Product>Proportional Mix</Product>
     <Copyright>Copyright 2016</Copyright>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Platforms>x64;x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>

@@ -5,7 +5,6 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <RootNamespace>VixenModules.Controller.Olsen595</RootNamespace>
     <TargetFramework>net48</TargetFramework>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Platforms>x64;x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>

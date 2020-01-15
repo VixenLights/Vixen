@@ -8,7 +8,6 @@
     <AssemblyTitle>WPFCommon</AssemblyTitle>
     <Product>WPFCommon</Product>
     <Copyright>2018</Copyright>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Platforms>x64;x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>

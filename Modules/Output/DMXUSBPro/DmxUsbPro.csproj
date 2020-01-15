@@ -12,7 +12,6 @@
     <Product>Vixen</Product>
     <Description>DmxUsbPro</Description>
     <Copyright>Copyright � Vixen 2011</Copyright>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Platforms>x64;x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>

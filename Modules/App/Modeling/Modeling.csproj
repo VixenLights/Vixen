@@ -8,12 +8,8 @@
     <AssemblyTitle>Modeling</AssemblyTitle>
     <Product>Modeling</Product>
     <Copyright>Copyright Vixen ©  2018</Copyright>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Platforms>x64;x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <PostBuildEvent />
-    <PostBuildEvent />
-    <PostBuildEvent />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>..\..\..\$(Configuration)\Modules\App\</OutputPath>

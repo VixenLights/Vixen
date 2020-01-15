@@ -8,7 +8,6 @@
     <AssemblyTitle>Help</AssemblyTitle>
     <Product>Help</Product>
     <Copyright>Copyright ©  2013</Copyright>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Platforms>x64;x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>

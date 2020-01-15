@@ -6,7 +6,6 @@
     <AssemblyTitle>LayerEditor</AssemblyTitle>
     <Product>LayerEditor</Product>
     <Copyright>Copyright ©  2016</Copyright>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <UseWPF>true</UseWPF>
     <Platforms>x64;x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>

@@ -9,7 +9,6 @@
     <Company>K.C. Oaks</Company>
     <Product>Grid</Product>
     <Copyright>Copyright © K.C. Oaks 2012</Copyright>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Platforms>x64;x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>

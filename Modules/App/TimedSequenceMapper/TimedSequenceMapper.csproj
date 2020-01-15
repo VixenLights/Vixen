@@ -10,7 +10,6 @@
     <Product>Vixen</Product>
     <Description>Maps a foreign sequence to the current profile</Description>
     <Copyright>Copyright � Vixen 2019</Copyright>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Platforms>x64;x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>

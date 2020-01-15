@@ -7,7 +7,6 @@
     <Company>Toshiba</Company>
     <Product>BaseSequence</Product>
     <Copyright>Copyright © Toshiba 2012</Copyright>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Platforms>x64;x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>

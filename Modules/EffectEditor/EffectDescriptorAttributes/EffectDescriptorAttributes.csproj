@@ -7,7 +7,6 @@
     <AssemblyTitle>EffectDescriptorAttributes</AssemblyTitle>
     <Product>EffectDescriptorAttributes</Product>
     <Copyright>Copyright ©  2015</Copyright>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Platforms>x64;x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>

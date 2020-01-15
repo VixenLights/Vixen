@@ -8,8 +8,7 @@
     <AssemblyTitle>ffmpeg</AssemblyTitle>
     <Product>ffmpeg</Product>
     <Copyright>Copyright ©  2013</Copyright>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Platforms>x64;x86</Platforms>
+	  <Platforms>x64;x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <PostBuildEvent />
     <PostBuildEvent />
