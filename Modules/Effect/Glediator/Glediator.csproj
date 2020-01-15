@@ -26,9 +26,6 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.IO.Compression" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>

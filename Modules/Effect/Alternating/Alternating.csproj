@@ -26,9 +26,6 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.IO.Compression" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>

@@ -29,10 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System.IO.Compression" />
-  </ItemGroup>
-  <ItemGroup>
+	<ItemGroup>
     <ProjectReference Include="..\..\..\Common\FastPixel\FastPixel.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>

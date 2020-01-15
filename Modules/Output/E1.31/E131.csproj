@@ -32,9 +32,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Platforms>x64;x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <PostBuildEvent />
-    <PostBuildEvent />
-    <PostBuildEvent />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -68,8 +65,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Windows.Forms" />
+	  <Reference Include="System.Windows.Forms" />
     <Reference Include="TabControlEX">
       <HintPath>..\..\..\Common\Libraries\TabControlEX.dll</HintPath>
       <Private>False</Private>

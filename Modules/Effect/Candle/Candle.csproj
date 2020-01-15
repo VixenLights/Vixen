@@ -41,10 +41,7 @@
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System.IO.Compression" />
-  </ItemGroup>
-  <ItemGroup>
+	<ItemGroup>
     <ProjectReference Include="..\..\..\common\ValueTypes\ValueTypes.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>

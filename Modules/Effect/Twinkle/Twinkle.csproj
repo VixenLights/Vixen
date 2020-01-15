@@ -35,10 +35,7 @@
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System.IO.Compression" />
-  </ItemGroup>
-  <ItemGroup>
+	<ItemGroup>
     <ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>

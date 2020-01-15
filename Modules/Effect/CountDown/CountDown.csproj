@@ -30,10 +30,7 @@
     <OutputPath>..\..\..\Release64\Modules\Effect\</OutputPath>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System.IO.Compression" />
-  </ItemGroup>
-  <ItemGroup>
+	<ItemGroup>
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>

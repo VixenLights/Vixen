@@ -49,8 +49,7 @@
     <PostBuildEvent />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Windows.Forms" />
+	  <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">

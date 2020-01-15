@@ -21,10 +21,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>..\..\..\$(Configuration)\Modules\Effect\</OutputPath>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System.IO.Compression" />
-  </ItemGroup>
-  <ItemGroup>
+	<ItemGroup>
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>

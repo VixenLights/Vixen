@@ -22,7 +22,6 @@
     <OutputPath>..\..\..\$(Configuration)\Modules\Effect\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>

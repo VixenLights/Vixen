@@ -26,10 +26,7 @@
     <OutputPath>..\..\..\Debug64\Modules\Effect\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System.IO.Compression" />
-  </ItemGroup>
-  <ItemGroup>
+	<ItemGroup>
     <ProjectReference Include="..\..\..\Common\FastPixel\FastPixel.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>

@@ -35,8 +35,7 @@
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Windows.Forms" />
+	  <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="SetupDialog.cs">
