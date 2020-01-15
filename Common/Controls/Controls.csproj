@@ -81,11 +81,6 @@
     <Compile Update="NumericTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Update="RoundButton.cs">
       <SubType>Component</SubType>
     </Compile>
