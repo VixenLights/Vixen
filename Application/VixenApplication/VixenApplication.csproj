@@ -95,11 +95,6 @@
       <Name>Resources</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Common\WPFCommon\WPFCommon.csproj">
-      <Project>{44c23ecf-ea1c-4806-956a-07ec1203f8b4}</Project>
-      <Name>WPFCommon</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\Modules\App\Modeling\Modeling.csproj">
       <Project>{fe86f615-e983-47e2-944e-14ee273f7530}</Project>
       <Name>Modeling</Name>
@@ -130,15 +125,10 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />

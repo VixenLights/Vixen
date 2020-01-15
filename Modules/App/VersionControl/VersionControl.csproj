@@ -54,13 +54,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="NGit">
       <HintPath>..\..\..\Common\Libraries\NGit.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="NSch">
-      <HintPath>..\..\..\Common\Libraries\NSch.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Sharpen">
@@ -68,17 +63,11 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Descriptor.cs" />
@@ -155,10 +144,6 @@
     <Content Include="git.ico" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Mono.Security">
-      <Version>5.4.0.201</Version>
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </PackageReference>
     <PackageReference Include="NLog">
       <Version>4.6.8</Version>
       <ExcludeAssets>runtime</ExcludeAssets>
