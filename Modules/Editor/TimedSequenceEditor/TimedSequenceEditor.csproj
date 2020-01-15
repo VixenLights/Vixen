@@ -127,23 +127,15 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="TabControlEX">
-      <HintPath>..\..\..\Common\Libraries\TabControlEX.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
@@ -470,11 +462,6 @@
     <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
       <Project>{F7A80169-6310-4585-9D58-A6F6F5C5B380}</Project>
       <Name>Resources</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Common\ValueTypes\ValueTypes.csproj">
-      <Project>{D9A7E8BC-5617-486D-9DA5-89C5861A0F88}</Project>
-      <Name>ValueTypes</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Analysis\BeatsAndBars\BeatsAndBars.csproj">
