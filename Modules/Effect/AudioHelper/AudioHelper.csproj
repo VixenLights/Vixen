@@ -1,119 +1,64 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C5C25088-6305-4D15-8469-52995E03C611}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VixenModules.Effect.AudioHelp</RootNamespace>
     <AssemblyName>AudioHelp</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyTitle>AudioHelper</AssemblyTitle>
+    <Product>AudioHelper</Product>
+    <Copyright>Copyright ©  2014</Copyright>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Platforms>x64;x86</Platforms>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\..\..\Debug64\Modules\Effect\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>..\..\..\Release64\Modules\Effect\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\..\Debug\Modules\Effect\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
+    <OutputPath>..\..\..\$(Configuration)\Modules\Effect\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>..\..\..\Release\Modules\Effect\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
+    <OutputPath>..\..\..\$(Configuration)\Modules\Effect\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AudioPluginBase.cs" />
-    <Compile Include="AudioPluginData.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
-      <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
-      <Name>Vixen</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj">
-      <Project>{1b189b36-02af-4a57-9e1b-6dc833212725}</Project>
-      <Name>ColorGradients</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\App\Curves\Curves.csproj">
-      <Project>{f0ba7127-61b4-453a-802b-abcb5a0d3d54}</Project>
-      <Name>Curves</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj">
-      <Project>{1c84da63-a5db-4086-88ae-b2b43fccad7b}</Project>
-      <Name>EffectDescriptorAttributes</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Media\Audio\Audio.csproj">
-      <Project>{4243ba4c-6371-4dd1-8a1d-675bed5322af}</Project>
-      <Name>Audio</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Property\Color\Color.csproj">
-      <Project>{73068a83-b3b7-4a2c-923d-71c7886cd5e3}</Project>
-      <Name>Color</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\Effect\Effect.csproj">
-      <Project>{af76c902-a776-49c3-9019-d7cb0a53fb2f}</Project>
-      <Name>Effect</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NLog">
-      <Version>4.6.8</Version>
+    <PackageReference Include="NLog" Version="4.6.8">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

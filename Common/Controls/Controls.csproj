@@ -1,502 +1,390 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Common.Controls</RootNamespace>
-    <AssemblyName>Controls</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyTitle>Common.Controls</AssemblyTitle>
+    <Company>Vixen</Company>
+    <Product>Vixen</Product>
+    <Description>Common.Controls</Description>
+    <Copyright>Copyright � Vixen 2011</Copyright>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Platforms>x64;x86</Platforms>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>$(SolutionDir)\Release\Common\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
+    <OutputPath>$(SolutionDir)\$(Configuration)\Common\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>$(SolutionDir)\Release64\Common\</OutputPath>
     <DefineConstants>TRACE;WIN64</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <OutputPath>..\..\Debug\Common\</OutputPath>
+    <OutputPath>..\..\$(Configuration)\Common\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>false</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <OutputPath>..\..\Debug64\Common\</OutputPath>
     <DefineConstants>TRACE;WIN64</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>false</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
-      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
-      <Name>Vixen</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Modules\App\Marks\Marks.csproj">
-      <Project>{27d283df-52ad-4857-8359-de134db94728}</Project>
-      <Name>Marks</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\Resources\Resources.csproj">
-      <Project>{F7A80169-6310-4585-9D58-A6F6F5C5B380}</Project>
-      <Name>Resources</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
     <Reference Include="System.Design" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseForm.cs">
+    <Compile Update="BaseForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BaseForm.Designer.cs">
+    <Compile Update="BaseForm.Designer.cs">
       <DependentUpon>BaseForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="BaseUserControl.cs">
+    <Compile Update="BaseUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="DragDropListView\CancelListViewItemDragEventArgs.cs" />
-    <Compile Include="DragDropListView\InsertionMode.cs" />
-    <Compile Include="DragDropListView\DragDropListView.cs">
+    <Compile Update="DragDropListView\DragDropListView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="DragDropListView\ListViewItemDragEventArgs.cs" />
-    <Compile Include="MessageBoxForm.cs">
+    <Compile Update="MessageBoxForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MessageBoxForm.Designer.cs">
+    <Compile Update="MessageBoxForm.Designer.cs">
       <DependentUpon>MessageBoxForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="NameGeneration\SubstitutionRenamer.cs">
+    <Compile Update="NameGeneration\SubstitutionRenamer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NameGeneration\SubstitutionRenamer.Designer.cs">
+    <Compile Update="NameGeneration\SubstitutionRenamer.Designer.cs">
       <DependentUpon>SubstitutionRenamer.cs</DependentUpon>
     </Compile>
-    <Compile Include="NumericTextBox.cs">
+    <Compile Update="NumericTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Update="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="RoundButton.cs">
+    <Compile Update="RoundButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Scaling\ScalingTools.cs" />
-    <Compile Include="Theme\ThemePropertyGridRenderer.cs" />
-    <Compile Include="Theme\ThemeComboBoxRenderer.cs" />
-    <Compile Include="Theme\ThemeUpdateControls.cs" />
-    <Compile Include="ControllerTree.cs">
+    <Compile Update="ControllerTree.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ControllerTree.Designer.cs">
+    <Compile Update="ControllerTree.Designer.cs">
       <DependentUpon>ControllerTree.cs</DependentUpon>
     </Compile>
-    <Compile Include="Theme\ThemeColorTable.cs" />
-    <Compile Include="Theme\ThemeToolStripRenderer.cs" />
-    <Compile Include="ComboBoxItem.cs" />
-    <Compile Include="ConfigureElements\AddMegatree.cs">
+    <Compile Update="ConfigureElements\AddMegatree.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ConfigureElements\AddMegatree.Designer.cs">
+    <Compile Update="ConfigureElements\AddMegatree.Designer.cs">
       <DependentUpon>AddMegatree.cs</DependentUpon>
     </Compile>
-    <Compile Include="ConfigureElements\AddPixelGrid.cs">
+    <Compile Update="ConfigureElements\AddPixelGrid.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ConfigureElements\AddPixelGrid.designer.cs">
+    <Compile Update="ConfigureElements\AddPixelGrid.designer.cs">
       <DependentUpon>AddPixelGrid.cs</DependentUpon>
     </Compile>
-    <Compile Include="DiscreteColorPicker.cs">
+    <Compile Update="DiscreteColorPicker.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DiscreteColorPicker.Designer.cs">
+    <Compile Update="DiscreteColorPicker.Designer.cs">
       <DependentUpon>DiscreteColorPicker.cs</DependentUpon>
     </Compile>
-    <Compile Include="DiscreteColorPickerItem.cs">
+    <Compile Update="DiscreteColorPickerItem.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="DiscreteColorPickerItem.Designer.cs">
+    <Compile Update="DiscreteColorPickerItem.Designer.cs">
       <DependentUpon>DiscreteColorPickerItem.cs</DependentUpon>
     </Compile>
-    <Compile Include="DragAndDropListView.cs">
+    <Compile Update="DragAndDropListView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="EffectParameterPickerControl.cs">
+    <Compile Update="EffectParameterPickerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="EffectParameterPickerControl.Designer.cs">
+    <Compile Update="EffectParameterPickerControl.Designer.cs">
       <DependentUpon>EffectParameterPickerControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="ElementTree.cs">
+    <Compile Update="ElementTree.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ElementTree.Designer.cs">
+    <Compile Update="ElementTree.Designer.cs">
       <DependentUpon>ElementTree.cs</DependentUpon>
     </Compile>
-    <Compile Include="PictureComboBox.cs">
+    <Compile Update="PictureComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="PictureComboBox.Designer.cs">
+    <Compile Update="PictureComboBox.Designer.cs">
       <DependentUpon>PictureComboBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="PictureComboBoxItem.cs" />
-    <Compile Include="Theme\ThemeGroupBoxRenderer.cs" />
-    <Compile Include="TimelineControl\AlignmentEventArgs.cs" />
-    <Compile Include="TimelineControl\BlockingCollectionExtensions.cs" />
-    <Compile Include="TimelineControl\DelegateBasedObserver.cs" />
-    <Compile Include="TimelineControl\DragState.cs" />
-    <Compile Include="TimelineControl\ElementMoveType.cs" />
-    <Compile Include="TimelineControl\Grid.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TimelineControl\LabeledMarks\MarksPastedEventArgs.cs" />
-    <Compile Include="TimelineControl\LabeledMarks\PhonemeBreakdownEventArgs.cs" />
-    <Compile Include="TimelineControl\LabeledMarks\MarksDeletedEventArgs.cs" />
-    <Compile Include="TimelineControl\LabeledMarks\MarksTextChangedEventArgs.cs" />
-    <Compile Include="TimelineControl\LabeledMarks\PlayRangeEventArgs.cs" />
-    <Compile Include="TimelineControl\LabeledMarks\TimeLineGlobalEventManager.cs" />
-    <Compile Include="TimelineControl\LabeledMarks\MarksMovedEventArgs.cs" />
-    <Compile Include="TimelineControl\LabeledMarks\MarksMovingEventArgs.cs" />
-    <Compile Include="TimelineControl\LabeledMarks\MarksSelectionManager.cs" />
-    <Compile Include="TimelineControl\LabeledMarks\SelectedMarkMoveEventArgs.cs" />
-    <Compile Include="TimelineControl\MarkRow.cs" />
-    <Compile Include="TimelineControl\MarksBar.cs" />
-    <Compile Include="TimelineControl\LabeledMarks\MarksMoveResizeInfo.cs" />
-    <Compile Include="TimelineControl\LabeledMarks\MarkTimeInfo.cs" />
-    <Compile Include="TimelineControl\ResizeZone.cs" />
-    <Compile Include="TimelineControl\TimeLineGlobalStateManager.cs" />
-    <Compile Include="Undo\AddToListUndoAction.cs" />
-    <Compile Include="Undo\ModifyItemUndoAction.cs" />
-    <Compile Include="Wizard\Wizard.cs" />
-    <Compile Include="Wizard\WizardForm.cs">
+    <Compile Update="Wizard\WizardForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Wizard\WizardForm.Designer.cs">
+    <Compile Update="Wizard\WizardForm.Designer.cs">
       <DependentUpon>WizardForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MenuStripEx.cs">
+    <Compile Update="MenuStripEx.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="NameGeneration\NameGenerator.cs">
+    <Compile Update="NameGeneration\NameGenerator.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NameGeneration\NameGenerator.Designer.cs">
+    <Compile Update="NameGeneration\NameGenerator.Designer.cs">
       <DependentUpon>NameGenerator.cs</DependentUpon>
     </Compile>
-    <Compile Include="NameGeneration\NameGeneratorEditor.cs">
+    <Compile Update="NameGeneration\NameGeneratorEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="NameGeneration\WordIteratorEditor.cs">
+    <Compile Update="NameGeneration\WordIteratorEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="NameGeneration\WordIteratorEditor.Designer.cs">
+    <Compile Update="NameGeneration\WordIteratorEditor.Designer.cs">
       <DependentUpon>WordIteratorEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="NameGeneration\LetterIteratorEditor.cs">
+    <Compile Update="NameGeneration\LetterIteratorEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="NameGeneration\LetterIteratorEditor.Designer.cs">
+    <Compile Update="NameGeneration\LetterIteratorEditor.Designer.cs">
       <DependentUpon>LetterIteratorEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="NameGeneration\LetterCounterEditor.cs">
+    <Compile Update="NameGeneration\LetterCounterEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="NameGeneration\LetterCounterEditor.Designer.cs">
+    <Compile Update="NameGeneration\LetterCounterEditor.Designer.cs">
       <DependentUpon>LetterCounterEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="NameGeneration\NumericCounterEditor.cs">
+    <Compile Update="NameGeneration\NumericCounterEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="NameGeneration\NumericCounterEditor.Designer.cs">
+    <Compile Update="NameGeneration\NumericCounterEditor.Designer.cs">
       <DependentUpon>NumericCounterEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="NumberDialog.cs">
+    <Compile Update="NumberDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NumberDialog.Designer.cs">
+    <Compile Update="NumberDialog.Designer.cs">
       <DependentUpon>NumberDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="ParallelPortConfig.cs">
+    <Compile Update="ParallelPortConfig.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ParallelPortConfig.Designer.cs">
+    <Compile Update="ParallelPortConfig.Designer.cs">
       <DependentUpon>ParallelPortConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="TimelineControl\Waveform.cs" />
-    <Compile Include="ToolStripEx.cs">
+    <Compile Update="ToolStripEx.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ColorPicker\ColorBgra.cs" />
-    <Compile Include="ColorPicker\ColorLabel.cs">
+    <Compile Update="ColorPicker\ColorLabel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ColorPicker\ColorPicker.cs">
+    <Compile Update="ColorPicker\ColorPicker.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ColorPicker\ColorSelectionFader.cs">
+    <Compile Update="ColorPicker\ColorSelectionFader.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ColorPicker\ColorSelectionModules.cs" />
-    <Compile Include="ColorPicker\ColorSelectionModules_HSV.cs" />
-    <Compile Include="ColorPicker\ColorSelectionModules_LAB.cs" />
-    <Compile Include="ColorPicker\ColorSelectionModules_RGB.cs" />
-    <Compile Include="ColorPicker\ColorSelectionPlane.cs">
+    <Compile Update="ColorPicker\ColorSelectionPlane.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ColorPicker\ColorUtility.cs" />
-    <Compile Include="ColorPicker\GDI32.cs" />
-    <Compile Include="ControlsEx\BorderedControl.cs">
+    <Compile Update="ControlsEx\BorderedControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ControlsEx\BorderedScrollableControl.cs">
+    <Compile Update="ControlsEx\BorderedScrollableControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ControlsEx\CollectionBase.cs" />
-    <Compile Include="ControlsEx\ExtendsList.cs" />
-    <Compile Include="ControlsEx\GraphicsEx.cs" />
-    <Compile Include="ControlsEx\ListControls\ActionList.cs">
+    <Compile Update="ControlsEx\ListControls\ActionList.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ControlsEx\ListControls\DisplayItems.cs" />
-    <Compile Include="ControlsEx\ListControls\DisplayList.cs">
+    <Compile Update="ControlsEx\ListControls\DisplayList.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ControlsEx\ListControls\DisplayListDesigner.cs" />
-    <Compile Include="ControlsEx\ListControls\Layout.cs" />
-    <Compile Include="ControlsEx\ListControls\SingleLineDisplayList.cs">
+    <Compile Update="ControlsEx\ListControls\SingleLineDisplayList.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ControlsEx\ListControls\TableDisplayList.cs">
+    <Compile Update="ControlsEx\ListControls\TableDisplayList.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ControlsEx\ScaleFactor.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ControlsEx\UltimateWin32.cs" />
-    <Compile Include="ControlsEx\ValueControls\FloatingContainer.cs">
+    <Compile Update="ControlsEx\ValueControls\FloatingContainer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ControlsEx\ValueControls\MiniTracker.cs">
+    <Compile Update="ControlsEx\ValueControls\MiniTracker.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ControlsEx\ValueControls\ValueControl.cs">
+    <Compile Update="ControlsEx\ValueControls\ValueControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ControlsEx\ValueControls\ValueScrollbar.cs">
+    <Compile Update="ControlsEx\ValueControls\ValueScrollbar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ControlsEx\ValueControls\ValueUpDown.cs">
+    <Compile Update="ControlsEx\ValueControls\ValueUpDown.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ControlsEx\ZoomBar.cs">
+    <Compile Update="ControlsEx\ZoomBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ListSelectDialog.cs">
+    <Compile Update="ListSelectDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ListSelectDialog.Designer.cs">
+    <Compile Update="ListSelectDialog.Designer.cs">
       <DependentUpon>ListSelectDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="MultiSelectTreeview.cs">
+    <Compile Update="MultiSelectTreeview.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SerialPortConfig.cs">
+    <Compile Update="SerialPortConfig.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SerialPortConfig.Designer.cs">
+    <Compile Update="SerialPortConfig.Designer.cs">
       <DependentUpon>SerialPortConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="TablessTabControl.cs">
+    <Compile Update="TablessTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="TablessTabControl.Designer.cs">
+    <Compile Update="TablessTabControl.Designer.cs">
       <DependentUpon>TablessTabControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="TextDialog.cs">
+    <Compile Update="TextDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TextDialog.Designer.cs">
+    <Compile Update="TextDialog.Designer.cs">
       <DependentUpon>TextDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="TimelineControl\Element.cs" />
-    <Compile Include="TimelineControl\EventArgs.cs" />
-    <Compile Include="TimelineControl\ExtensionMethods.cs" />
-    <Compile Include="TimelineControl\Grid_Mouse.cs" />
-    <Compile Include="TimelineControl\Row.cs" />
-    <Compile Include="TimelineControl\RowLabel.cs" />
-    <Compile Include="TimelineControl\RowList.cs" />
-    <Compile Include="TimelineControl\TimeInfo.cs" />
-    <Compile Include="TimelineControl\TimelineControl.cs" />
-    <Compile Include="TimelineControl\TimelineControlBase.cs" />
-    <Compile Include="TimelineControl\Ruler.cs" />
-    <Compile Include="Undo\UndoAction.cs" />
-    <Compile Include="Undo\UndoButton.cs" />
-    <Compile Include="Undo\UndoDropDownControl.cs">
+    <Compile Update="Undo\UndoDropDownControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Undo\UndoDropDownControl.designer.cs">
+    <Compile Update="Undo\UndoDropDownControl.designer.cs">
       <DependentUpon>UndoDropDownControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Undo\UndoManager.cs" />
-    <Compile Include="Undo\RemoveFromListUndoAction.cs" />
-    <Compile Include="Wizard\WizardStage.cs">
+    <Compile Update="Wizard\WizardStage.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="XMLProfileSettings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="BaseForm.resx">
+    <EmbeddedResource Update="BaseForm.resx">
       <DependentUpon>BaseForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ColorPicker\ColorLabel.resx">
+    <EmbeddedResource Update="ColorPicker\ColorLabel.resx">
       <DependentUpon>ColorLabel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ColorPicker\ColorPicker.resx">
+    <EmbeddedResource Update="ColorPicker\ColorPicker.resx">
       <DependentUpon>ColorPicker.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ColorPicker\ColorSelectionFader.resx">
+    <EmbeddedResource Update="ColorPicker\ColorSelectionFader.resx">
       <DependentUpon>ColorSelectionFader.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ColorPicker\ColorSelectionPlane.resx">
+    <EmbeddedResource Update="ColorPicker\ColorSelectionPlane.resx">
       <DependentUpon>ColorSelectionPlane.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ControllerTree.resx">
+    <EmbeddedResource Update="ControllerTree.resx">
       <DependentUpon>ControllerTree.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ConfigureElements\AddMegatree.resx">
+    <EmbeddedResource Update="ConfigureElements\AddMegatree.resx">
       <DependentUpon>AddMegatree.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ConfigureElements\AddPixelGrid.resx">
+    <EmbeddedResource Update="ConfigureElements\AddPixelGrid.resx">
       <DependentUpon>AddPixelGrid.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DiscreteColorPicker.resx">
+    <EmbeddedResource Update="DiscreteColorPicker.resx">
       <DependentUpon>DiscreteColorPicker.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DiscreteColorPickerItem.resx">
+    <EmbeddedResource Update="DiscreteColorPickerItem.resx">
       <DependentUpon>DiscreteColorPickerItem.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="EffectParameterPickerControl.resx">
+    <EmbeddedResource Update="EffectParameterPickerControl.resx">
       <DependentUpon>EffectParameterPickerControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ElementTree.resx">
+    <EmbeddedResource Update="ElementTree.resx">
       <DependentUpon>ElementTree.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MessageBoxForm.resx">
+    <EmbeddedResource Update="MessageBoxForm.resx">
       <DependentUpon>MessageBoxForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NameGeneration\SubstitutionRenamer.resx">
+    <EmbeddedResource Update="NameGeneration\SubstitutionRenamer.resx">
       <DependentUpon>SubstitutionRenamer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Wizard\WizardForm.resx">
+    <EmbeddedResource Update="Wizard\WizardForm.resx">
       <DependentUpon>WizardForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ControlsEx\BorderedControl.resx">
+    <EmbeddedResource Update="ControlsEx\BorderedControl.resx">
       <DependentUpon>BorderedControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ControlsEx\BorderedScrollableControl.resx">
+    <EmbeddedResource Update="ControlsEx\BorderedScrollableControl.resx">
       <DependentUpon>BorderedScrollableControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ControlsEx\ValueControls\FloatingContainer.resx">
+    <EmbeddedResource Update="ControlsEx\ValueControls\FloatingContainer.resx">
       <DependentUpon>FloatingContainer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ControlsEx\ValueControls\ValueControl.resx">
+    <EmbeddedResource Update="ControlsEx\ValueControls\ValueControl.resx">
       <DependentUpon>ValueControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ControlsEx\ValueControls\ValueScrollbar.resx">
+    <EmbeddedResource Update="ControlsEx\ValueControls\ValueScrollbar.resx">
       <DependentUpon>ValueScrollbar.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ControlsEx\ValueControls\ValueUpDown.resx">
+    <EmbeddedResource Update="ControlsEx\ValueControls\ValueUpDown.resx">
       <DependentUpon>ValueUpDown.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ControlsEx\ZoomBar.resx">
+    <EmbeddedResource Update="ControlsEx\ZoomBar.resx">
       <DependentUpon>ZoomBar.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ListSelectDialog.resx">
+    <EmbeddedResource Update="ListSelectDialog.resx">
       <DependentUpon>ListSelectDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NameGeneration\NameGenerator.resx">
+    <EmbeddedResource Update="NameGeneration\NameGenerator.resx">
       <DependentUpon>NameGenerator.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NameGeneration\WordIteratorEditor.resx">
+    <EmbeddedResource Update="NameGeneration\WordIteratorEditor.resx">
       <DependentUpon>WordIteratorEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NameGeneration\LetterIteratorEditor.resx">
+    <EmbeddedResource Update="NameGeneration\LetterIteratorEditor.resx">
       <DependentUpon>LetterIteratorEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NameGeneration\LetterCounterEditor.resx">
+    <EmbeddedResource Update="NameGeneration\LetterCounterEditor.resx">
       <DependentUpon>LetterCounterEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NameGeneration\NumericCounterEditor.resx">
+    <EmbeddedResource Update="NameGeneration\NumericCounterEditor.resx">
       <DependentUpon>NumericCounterEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NumberDialog.resx">
+    <EmbeddedResource Update="NumberDialog.resx">
       <DependentUpon>NumberDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ParallelPortConfig.resx">
+    <EmbeddedResource Update="ParallelPortConfig.resx">
       <DependentUpon>ParallelPortConfig.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SerialPortConfig.resx">
+    <EmbeddedResource Update="SerialPortConfig.resx">
       <DependentUpon>SerialPortConfig.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TextDialog.resx">
+    <EmbeddedResource Update="TextDialog.resx">
       <DependentUpon>TextDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TimelineControl\TimelineControl.resx">
+    <EmbeddedResource Update="TimelineControl\TimelineControl.resx">
       <DependentUpon>TimelineControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Undo\UndoDropDownControl.resx">
+    <EmbeddedResource Update="Undo\UndoDropDownControl.resx">
       <DependentUpon>UndoDropDownControl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
@@ -507,27 +395,21 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Modules\Media\Audio\Audio.csproj">
-      <Project>{4243BA4C-6371-4DD1-8A1D-675BED5322AF}</Project>
-      <Name>Audio</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="NLog">
-      <Version>4.6.8</Version>
+    <PackageReference Include="NLog" Version="4.6.8">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <Compile Remove="ControlsEx\HexEditor.cs" />
+    <Compile Remove="ControlsEx\ImageDisplay.cs" />
+    <Compile Remove="ControlsEx\IPBox.cs" />
+    <Compile Remove="ControlsEx\Ruler.cs" />
+    <Compile Remove="ControlsEx\ScrollableView.cs" />
+  </ItemGroup>
 </Project>

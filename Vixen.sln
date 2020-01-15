@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vixen", "Vixen.System\Vixen.csproj", "{50B78623-FCF4-48AF-93FF-FA87C937028F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vixen", "Vixen.System\Vixen.csproj", "{50B78623-FCF4-48AF-93FF-FA87C937028F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VixenModules", "VixenModules", "{F1B3198B-977F-40CD-85B3-CAA3F5B5C948}"
 EndProject
@@ -24,17 +24,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sequence", "Sequence", "{C1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Timing", "Timing", "{8C3F147E-FAE4-4EB5-AE03-7F82D7DAD7C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorGradients", "Modules\App\ColorGradients\ColorGradients.csproj", "{1B189B36-02AF-4A57-9E1B-6DC833212725}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColorGradients", "Modules\App\ColorGradients\ColorGradients.csproj", "{1B189B36-02AF-4A57-9E1B-6DC833212725}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Curves", "Modules\App\Curves\Curves.csproj", "{F0BA7127-61B4-453A-802B-ABCB5A0D3D54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curves", "Modules\App\Curves\Curves.csproj", "{F0BA7127-61B4-453A-802B-ABCB5A0D3D54}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimedSequenceEditor", "Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj", "{47EA8E72-BEAB-44D0-893D-8F184FCFEF31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimedSequenceEditor", "Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj", "{47EA8E72-BEAB-44D0-893D-8F184FCFEF31}"
 	ProjectSection(ProjectDependencies) = postProject
 		{4004A720-E4D2-4AAF-B5F6-2288FFDC156A} = {4004A720-E4D2-4AAF-B5F6-2288FFDC156A}
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
@@ -43,36 +43,36 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimedSequenceEditor", "Modu
 		{3233ADD6-FB95-4C57-AF81-34C6C19717DB} = {3233ADD6-FB95-4C57-AF81-34C6C19717DB}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pulse", "Modules\Effect\Pulse\Pulse.csproj", "{A815A79E-305D-4167-A0BC-FFA590BB4644}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pulse", "Modules\Effect\Pulse\Pulse.csproj", "{A815A79E-305D-4167-A0BC-FFA590BB4644}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AF76C902-A776-49C3-9019-D7CB0A53FB2F} = {AF76C902-A776-49C3-9019-D7CB0A53FB2F}
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 		{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B} = {1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetLevel", "Modules\Effect\SetLevel\SetLevel.csproj", "{8910163E-A2A3-4F8B-B5D8-0E311166B8BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SetLevel", "Modules\Effect\SetLevel\SetLevel.csproj", "{8910163E-A2A3-4F8B-B5D8-0E311166B8BA}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AF76C902-A776-49C3-9019-D7CB0A53FB2F} = {AF76C902-A776-49C3-9019-D7CB0A53FB2F}
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 		{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B} = {1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Olsen595", "Modules\Output\595\Olsen595.csproj", "{4ADC4F0D-2F3B-4F4D-A5FC-C6AEB6B222CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Olsen595", "Modules\Output\595\Olsen595.csproj", "{4ADC4F0D-2F3B-4F4D-A5FC-C6AEB6B222CE}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Renard", "Modules\Output\Renard\Renard.csproj", "{2149D717-7256-477B-BEC5-F9E7E6E93885}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Renard", "Modules\Output\Renard\Renard.csproj", "{2149D717-7256-477B-BEC5-F9E7E6E93885}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timed", "Modules\Sequence\Timed\Timed.csproj", "{45E1228A-F714-41D5-BB9B-A776F2B23143}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Timed", "Modules\Sequence\Timed\Timed.csproj", "{45E1228A-F714-41D5-BB9B-A776F2B23143}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Generic", "Modules\Timing\Generic\Generic.csproj", "{D5B54EEF-5D27-4E30-9073-847C9996C552}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Generic", "Modules\Timing\Generic\Generic.csproj", "{D5B54EEF-5D27-4E30-9073-847C9996C552}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
@@ -81,74 +81,74 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EffectEditor", "EffectEdito
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{25A1ED22-180F-4B61-84FC-55790AA11254}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FMOD", "Common\FMOD\FMOD.csproj", "{3A2B3153-2B4B-4EC4-B85F-A824682CC054}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FMOD", "Common\FMOD\FMOD.csproj", "{3A2B3153-2B4B-4EC4-B85F-A824682CC054}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audio", "Modules\Media\Audio\Audio.csproj", "{4243BA4C-6371-4DD1-8A1D-675BED5322AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Audio", "Modules\Media\Audio\Audio.csproj", "{4243BA4C-6371-4DD1-8A1D-675BED5322AF}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scheduler", "Modules\App\Scheduler\Scheduler.csproj", "{6B152433-894B-4CFB-AD22-48D10D5024C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scheduler", "Modules\App\Scheduler\Scheduler.csproj", "{6B152433-894B-4CFB-AD22-48D10D5024C3}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Twinkle", "Modules\Effect\Twinkle\Twinkle.csproj", "{4D474A34-9319-4439-A35E-98B5C2AFE3DC}"
-	ProjectSection(ProjectDependencies) = postProject
-		{AF76C902-A776-49C3-9019-D7CB0A53FB2F} = {AF76C902-A776-49C3-9019-D7CB0A53FB2F}
-		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spin", "Modules\Effect\Spin\Spin.csproj", "{56296134-41F2-4B20-95FC-6EB3049CFFEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Twinkle", "Modules\Effect\Twinkle\Twinkle.csproj", "{4D474A34-9319-4439-A35E-98B5C2AFE3DC}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AF76C902-A776-49C3-9019-D7CB0A53FB2F} = {AF76C902-A776-49C3-9019-D7CB0A53FB2F}
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chase", "Modules\Effect\Chase\Chase.csproj", "{27EC771C-D03C-4C94-915B-E18E33CB6C43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spin", "Modules\Effect\Spin\Spin.csproj", "{56296134-41F2-4B20-95FC-6EB3049CFFEB}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AF76C902-A776-49C3-9019-D7CB0A53FB2F} = {AF76C902-A776-49C3-9019-D7CB0A53FB2F}
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstrumentationPanel", "Modules\App\InstrumentationPanel\InstrumentationPanel.csproj", "{30B3A665-8CAB-4327-83D1-3815A265EA6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chase", "Modules\Effect\Chase\Chase.csproj", "{27EC771C-D03C-4C94-915B-E18E33CB6C43}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AF76C902-A776-49C3-9019-D7CB0A53FB2F} = {AF76C902-A776-49C3-9019-D7CB0A53FB2F}
+		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstrumentationPanel", "Modules\App\InstrumentationPanel\InstrumentationPanel.csproj", "{30B3A665-8CAB-4327-83D1-3815A265EA6B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DummyLighting", "Modules\Output\DummyLighting\DummyLighting.csproj", "{BBCE89B7-AFD8-48D6-A368-AD87D3BE0A68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DummyLighting", "Modules\Output\DummyLighting\DummyLighting.csproj", "{BBCE89B7-AFD8-48D6-A368-AD87D3BE0A68}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlinkyLinky", "Modules\Output\BlinkyLinky\BlinkyLinky.csproj", "{4FF97A6E-2376-4257-B45F-A88D6EB441ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlinkyLinky", "Modules\Output\BlinkyLinky\BlinkyLinky.csproj", "{4FF97A6E-2376-4257-B45F-A88D6EB441ED}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DmxUsbPro", "Modules\Output\DMXUSBPro\DmxUsbPro.csproj", "{A10F47EE-E097-48EF-A9E5-BE0BD83D9CF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DmxUsbPro", "Modules\Output\DMXUSBPro\DmxUsbPro.csproj", "{A10F47EE-E097-48EF-A9E5-BE0BD83D9CF3}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E131", "Modules\Output\E1.31\E131.csproj", "{3D42FC86-9EA6-4D6B-8E4A-1F4EE1A1D8B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "E131", "Modules\Output\E1.31\E131.csproj", "{3D42FC86-9EA6-4D6B-8E4A-1F4EE1A1D8B5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vixen2x", "Modules\Sequence\Vixen2x\Vixen2x.csproj", "{BD18AB57-1ABF-4C5B-A3F6-8B4AC6013C36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vixen2x", "Modules\Sequence\Vixen2x\Vixen2x.csproj", "{BD18AB57-1ABF-4C5B-A3F6-8B4AC6013C36}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Input", "Input", "{E61E332D-B9E1-45C4-875A-521031406B07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSC", "Modules\Output\PSC\PSC\PSC.csproj", "{0A94E357-EC2B-4B72-895F-1F7907D846D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSC", "Modules\Output\PSC\PSC\PSC.csproj", "{0A94E357-EC2B-4B72-895F-1F7907D846D4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hill320", "Modules\Output\Hill320\Hill320.csproj", "{8791C204-4BFE-4D65-AA9F-837B2C8B7B65}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hill320", "Modules\Output\Hill320\Hill320.csproj", "{8791C204-4BFE-4D65-AA9F-837B2C8B7B65}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
@@ -161,278 +161,274 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OutputFilter", "OutputFilte
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Preview", "Preview", "{741290E1-6A59-4AA2-90D0-CB39B7448BA7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseSequence", "Common\BaseSequence\BaseSequence.csproj", "{8D6C81FD-5117-414A-8985-7BD5AA0F5135}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaseSequence", "Common\BaseSequence\BaseSequence.csproj", "{8D6C81FD-5117-414A-8985-7BD5AA0F5135}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controls", "Common\Controls\Controls.csproj", "{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controls", "Common\Controls\Controls.csproj", "{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{C64A0DA3-349F-4D36-A434-9F6DCC1410DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VixenApplication", "Application\VixenApplication\VixenApplication.csproj", "{2572F3DF-7CF2-4B6C-9FC2-8E11D0BC08D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VixenApplication", "Application\VixenApplication\VixenApplication.csproj", "{2572F3DF-7CF2-4B6C-9FC2-8E11D0BC08D6}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{0DD0A5D8-93C7-46D9-BE36-878CAF59D52F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grid", "Modules\Property\Grid\Grid.csproj", "{5DC36B2F-09DF-414C-8B50-2973CFB0652F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grid", "Modules\Property\Grid\Grid.csproj", "{5DC36B2F-09DF-414C-8B50-2973CFB0652F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NShape", "NShape", "{B21B530A-394C-4A30-8325-FB859613FAA5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NShape", "Common\NShape\Core\NShape.csproj", "{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NShape", "Common\NShape\Core\NShape.csproj", "{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NShapeGeneralShapes", "Common\NShape\GeneralShapes\NShapeGeneralShapes.csproj", "{1272F77E-D926-4310-AE8B-858909B10F0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NShapeGeneralShapes", "Common\NShape\GeneralShapes\NShapeGeneralShapes.csproj", "{1272F77E-D926-4310-AE8B-858909B10F0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NShapeWinFormsUI", "Common\NShape\WinFormsUI\NShapeWinFormsUI.csproj", "{5EAB131C-1C93-4C3F-A1D8-D711053DE33C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NShapeWinFormsUI", "Common\NShape\WinFormsUI\NShapeWinFormsUI.csproj", "{5EAB131C-1C93-4C3F-A1D8-D711053DE33C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Candle", "Modules\Effect\Candle\Candle.csproj", "{DAAD1EF0-61DF-412D-A6B5-393E81BC314B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Candle", "Modules\Effect\Candle\Candle.csproj", "{DAAD1EF0-61DF-412D-A6B5-393E81BC314B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AF76C902-A776-49C3-9019-D7CB0A53FB2F} = {AF76C902-A776-49C3-9019-D7CB0A53FB2F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValueTypes", "Common\ValueTypes\ValueTypes.csproj", "{D9A7E8BC-5617-486D-9DA5-89C5861A0F88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ValueTypes", "Common\ValueTypes\ValueTypes.csproj", "{D9A7E8BC-5617-486D-9DA5-89C5861A0F88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StateMach", "Common\StateMach\StateMach.csproj", "{8F61BFE3-8D89-41E8-B296-C01537B03707}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StateMach", "Common\StateMach\StateMach.csproj", "{8F61BFE3-8D89-41E8-B296-C01537B03707}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorBreakdown", "Modules\PostFilter\ColorBreakdown\ColorBreakdown.csproj", "{ED386F64-644A-439D-AB12-96E341F20EDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColorBreakdown", "Modules\PostFilter\ColorBreakdown\ColorBreakdown.csproj", "{ED386F64-644A-439D-AB12-96E341F20EDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DimmingCurve", "Modules\PostFilter\DimmingCurve\DimmingCurve.csproj", "{C80B084A-064A-422C-B66E-58AB9ED7B32C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DimmingCurve", "Modules\PostFilter\DimmingCurve\DimmingCurve.csproj", "{C80B084A-064A-422C-B66E-58AB9ED7B32C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenDMX", "Modules\Output\OpenDMX\OpenDMX.csproj", "{A9C0EA61-72C6-45DB-BCAC-1132DE113330}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenDMX", "Modules\Output\OpenDMX\OpenDMX.csproj", "{A9C0EA61-72C6-45DB-BCAC-1132DE113330}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenericSerial", "Modules\Output\GenericSerial\GenericSerial.csproj", "{EAB3947D-202C-4C92-92EB-017580C581B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenericSerial", "Modules\Output\GenericSerial\GenericSerial.csproj", "{EAB3947D-202C-4C92-92EB-017580C581B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FGDimmer", "Modules\Output\FGDimmer\FGDimmer.csproj", "{13FC249E-F7BE-48CC-964A-1E688F3C0C06}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FGDimmer", "Modules\Output\FGDimmer\FGDimmer.csproj", "{13FC249E-F7BE-48CC-964A-1E688F3C0C06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VixenPreview", "Modules\Preview\VixenPreview\VixenPreview.csproj", "{F7975FD4-E1E1-4E96-88FD-6CA89A7DD77C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VixenPreview", "Modules\Preview\VixenPreview\VixenPreview.csproj", "{F7975FD4-E1E1-4E96-88FD-6CA89A7DD77C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Color", "Modules\Property\Color\Color.csproj", "{73068A83-B3B7-4A2C-923D-71C7886CD5E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Color", "Modules\Property\Color\Color.csproj", "{73068A83-B3B7-4A2C-923D-71C7886CD5E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nutcracker", "Modules\Effect\Nutcracker\Nutcracker.csproj", "{49EC1F56-362B-4880-805C-474B6B5BC91B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nutcracker", "Modules\Effect\Nutcracker\Nutcracker.csproj", "{49EC1F56-362B-4880-805C-474B6B5BC91B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ffmpeg", "Common\ffmpeg\ffmpeg.csproj", "{E2A22920-D333-4D92-936C-CA1782E1F042}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ffmpeg", "Common\ffmpeg\ffmpeg.csproj", "{E2A22920-D333-4D92-936C-CA1782E1F042}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alternating", "Modules\Effect\Alternating\Alternating.csproj", "{86572287-5AD9-4941-AEB1-939C3F787978}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alternating", "Modules\Effect\Alternating\Alternating.csproj", "{86572287-5AD9-4941-AEB1-939C3F787978}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AF76C902-A776-49C3-9019-D7CB0A53FB2F} = {AF76C902-A776-49C3-9019-D7CB0A53FB2F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wipe", "Modules\Effect\Wipe\Wipe.csproj", "{0AE9E4AA-3FB7-4EAA-A699-C3071A58EE77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wipe", "Modules\Effect\Wipe\Wipe.csproj", "{0AE9E4AA-3FB7-4EAA-A699-C3071A58EE77}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AF76C902-A776-49C3-9019-D7CB0A53FB2F} = {AF76C902-A776-49C3-9019-D7CB0A53FB2F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastPixel", "Common\FastPixel\FastPixel.csproj", "{4EA5025B-5FFC-4FF8-9001-D0F64655BFB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastPixel", "Common\FastPixel\FastPixel.csproj", "{4EA5025B-5FFC-4FF8-9001-D0F64655BFB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RDS", "Modules\Effect\RDS\RDS.csproj", "{D9A2A1D3-C76E-4756-B16D-852C48FF6A83}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RDS", "Modules\Effect\RDS\RDS.csproj", "{D9A2A1D3-C76E-4756-B16D-852C48FF6A83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RDS", "Modules\Output\RDSController\RDS.csproj", "{9B9214AF-B94B-43DD-8FEB-13DEBF50123F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RDS", "Modules\Output\RDSController\RDS.csproj", "{9B9214AF-B94B-43DD-8FEB-13DEBF50123F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VixenHelp", "Common\Help\VixenHelp.csproj", "{BD12BFFC-7039-4C79-ABA0-51F99773A916}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VixenHelp", "Common\Help\VixenHelp.csproj", "{BD12BFFC-7039-4C79-ABA0-51F99773A916}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugController", "Modules\Output\DebugController\DebugController.csproj", "{235A5B5B-EA92-488E-A30B-F60D032FB7C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DebugController", "Modules\Output\DebugController\DebugController.csproj", "{235A5B5B-EA92-488E-A30B-F60D032FB7C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomValue", "Modules\Effect\CustomValue\CustomValue.csproj", "{F0B63309-9376-498E-BA89-72610FAC90D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomValue", "Modules\Effect\CustomValue\CustomValue.csproj", "{F0B63309-9376-498E-BA89-72610FAC90D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libraries", "Common\Libraries\Libraries.csproj", "{9E516488-F4AF-49DC-8257-A4EBF68A3B66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Libraries", "Common\Libraries\Libraries.csproj", "{9E516488-F4AF-49DC-8257-A4EBF68A3B66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Location", "Modules\Property\Location\Location.csproj", "{7D5D4BE4-576A-4092-A3E2-1A6F27CDC213}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Location", "Modules\Property\Location\Location.csproj", "{7D5D4BE4-576A-4092-A3E2-1A6F27CDC213}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebServer", "Modules\App\WebServer\WebServer.csproj", "{B3CC7739-0179-462E-AAC5-30C31805C95F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebServer", "Modules\App\WebServer\WebServer.csproj", "{B3CC7739-0179-462E-AAC5-30C31805C95F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElexolEtherIO", "Modules\Output\ElexolEtherIO\ElexolEtherIO.csproj", "{89AD863C-4B4B-4FB8-990A-95499FE98DDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElexolEtherIO", "Modules\Output\ElexolEtherIO\ElexolEtherIO.csproj", "{89AD863C-4B4B-4FB8-990A-95499FE98DDF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7CF9ED7A-CDBD-4EE5-896C-55FC8D41B909}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Launcher", "Modules\Effect\Launcher\Launcher.csproj", "{5A72F7C4-09F3-4D17-8996-F0ABD21C97A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Launcher", "Modules\Effect\Launcher\Launcher.csproj", "{5A72F7C4-09F3-4D17-8996-F0ABD21C97A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shows", "Modules\App\Shows\Shows.csproj", "{0C1F1B4A-E161-44EA-8E5F-B7A159029FC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shows", "Modules\App\Shows\Shows.csproj", "{0C1F1B4A-E161-44EA-8E5F-B7A159029FC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperScheduler", "Modules\App\SuperScheduler\SuperScheduler.csproj", "{60E7EDD5-0798-466B-8510-BC572CF0E710}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperScheduler", "Modules\App\SuperScheduler\SuperScheduler.csproj", "{60E7EDD5-0798-466B-8510-BC572CF0E710}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElexolUSBIO", "Modules\Output\ElexolUSBIO\ElexolUSBIO.csproj", "{C2FBDB6C-1768-4A23-B581-6A6D9CC6D1CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElexolUSBIO", "Modules\Output\ElexolUSBIO\ElexolUSBIO.csproj", "{C2FBDB6C-1768-4A23-B581-6A6D9CC6D1CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionControl", "Modules\App\VersionControl\VersionControl.csproj", "{3486C5C0-CF77-4EA1-9A3E-1101899CC8AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VersionControl", "Modules\App\VersionControl\VersionControl.csproj", "{3486C5C0-CF77-4EA1-9A3E-1101899CC8AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resources", "Common\Resources\Resources.csproj", "{F7A80169-6310-4585-9D58-A6F6F5C5B380}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Resources", "Common\Resources\Resources.csproj", "{F7A80169-6310-4585-9D58-A6F6F5C5B380}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K8055 Controller", "Modules\Output\K8055 Controller\K8055 Controller.csproj", "{988C89F2-F9A3-41CD-832E-18CFAADD210F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "K8055 Controller", "Modules\Output\K8055 Controller\K8055 Controller.csproj", "{988C89F2-F9A3-41CD-832E-18CFAADD210F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LipSync", "Modules\Effect\LipSync\LipSync.csproj", "{6DE9A846-AC25-40B6-B8B2-B306EC9F2569}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LipSync", "Modules\Effect\LipSync\LipSync.csproj", "{6DE9A846-AC25-40B6-B8B2-B306EC9F2569}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AF76C902-A776-49C3-9019-D7CB0A53FB2F} = {AF76C902-A776-49C3-9019-D7CB0A53FB2F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LipSyncApp", "Modules\App\LipSync\LipSyncApp.csproj", "{E3689E21-2204-48B9-8370-D45EE4A23451}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LipSyncApp", "Modules\App\LipSync\LipSyncApp.csproj", "{E3689E21-2204-48B9-8370-D45EE4A23451}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helix", "Modules\Output\HelixController\Helix.csproj", "{12890B19-CBDF-473B-AF59-4DCA654E6ACA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Helix", "Modules\Output\HelixController\Helix.csproj", "{12890B19-CBDF-473B-AF59-4DCA654E6ACA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Analysis", "Analysis", "{9865500E-D5C0-4F51-8A6E-BFD7946C801A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QMLibrary", "Modules\Analysis\QMLibrary\QMLibrary.vcxproj", "{4004A720-E4D2-4AAF-B5F6-2288FFDC156A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatsAndBars", "Modules\Analysis\BeatsAndBars\BeatsAndBars.csproj", "{B848A227-50AA-4FF7-8B7F-73FE36893485}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatsAndBars", "Modules\Analysis\BeatsAndBars\BeatsAndBars.csproj", "{B848A227-50AA-4FF7-8B7F-73FE36893485}"
 	ProjectSection(ProjectDependencies) = postProject
 		{4004A720-E4D2-4AAF-B5F6-2288FFDC156A} = {4004A720-E4D2-4AAF-B5F6-2288FFDC156A}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EffectDescriptorAttributes", "Modules\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj", "{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EffectDescriptorAttributes", "Modules\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj", "{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EffectEditor", "Modules\Editor\EffectEditor\EffectEditor.csproj", "{5A48B67F-1E7E-4ED6-A201-F6CC8E7E6788}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EffectEditor", "Modules\Editor\EffectEditor\EffectEditor.csproj", "{5A48B67F-1E7E-4ED6-A201-F6CC8E7E6788}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bars", "Modules\Effect\Bars\Bars.csproj", "{BFE7A351-F16D-42C7-91DF-F96ACAF87381}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bars", "Modules\Effect\Bars\Bars.csproj", "{BFE7A351-F16D-42C7-91DF-F96ACAF87381}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AF76C902-A776-49C3-9019-D7CB0A53FB2F} = {AF76C902-A776-49C3-9019-D7CB0A53FB2F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spiral", "Modules\Effect\Spiral\Spiral.csproj", "{37C170E7-E5A3-4A9F-8B6F-1E7AE62B113B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spiral", "Modules\Effect\Spiral\Spiral.csproj", "{37C170E7-E5A3-4A9F-8B6F-1E7AE62B113B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AF76C902-A776-49C3-9019-D7CB0A53FB2F} = {AF76C902-A776-49C3-9019-D7CB0A53FB2F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Text", "Modules\Effect\Text\Text.csproj", "{F0874098-3486-47B4-B594-CABE7D867A2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Text", "Modules\Effect\Text\Text.csproj", "{F0874098-3486-47B4-B594-CABE7D867A2F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AF76C902-A776-49C3-9019-D7CB0A53FB2F} = {AF76C902-A776-49C3-9019-D7CB0A53FB2F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fire", "Modules\Effect\Fire\Fire.csproj", "{520A6D1D-711E-4C1C-8696-0F31A12220AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fire", "Modules\Effect\Fire\Fire.csproj", "{520A6D1D-711E-4C1C-8696-0F31A12220AA}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AF76C902-A776-49C3-9019-D7CB0A53FB2F} = {AF76C902-A776-49C3-9019-D7CB0A53FB2F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Picture", "Modules\Effect\Picture\Picture.csproj", "{2AAE930F-8D4A-451B-B66E-2F3024F079FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Picture", "Modules\Effect\Picture\Picture.csproj", "{2AAE930F-8D4A-451B-B66E-2F3024F079FB}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AF76C902-A776-49C3-9019-D7CB0A53FB2F} = {AF76C902-A776-49C3-9019-D7CB0A53FB2F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snowflakes", "Modules\Effect\SnowFlakes\Snowflakes.csproj", "{5437F188-1867-4BF5-890E-431721F1B57D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Snowflakes", "Modules\Effect\SnowFlakes\Snowflakes.csproj", "{5437F188-1867-4BF5-890E-431721F1B57D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AF76C902-A776-49C3-9019-D7CB0A53FB2F} = {AF76C902-A776-49C3-9019-D7CB0A53FB2F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Butterfly", "Modules\Effect\Butterfly\Butterfly.csproj", "{4EA6EF1F-B9C9-4DE9-9343-A2F1246A423A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Butterfly", "Modules\Effect\Butterfly\Butterfly.csproj", "{4EA6EF1F-B9C9-4DE9-9343-A2F1246A423A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AF76C902-A776-49C3-9019-D7CB0A53FB2F} = {AF76C902-A776-49C3-9019-D7CB0A53FB2F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fireworks", "Modules\Effect\Fireworks\Fireworks.csproj", "{BDF7F625-5041-428D-9C68-CB5462671C6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fireworks", "Modules\Effect\Fireworks\Fireworks.csproj", "{BDF7F625-5041-428D-9C68-CB5462671C6B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AF76C902-A776-49C3-9019-D7CB0A53FB2F} = {AF76C902-A776-49C3-9019-D7CB0A53FB2F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NutcrackerEffectEditor", "Modules\EffectEditor\NutcrackerEffectEditor\NutcrackerEffectEditor.csproj", "{C259F8FF-5210-4475-BD40-374B1F7F7599}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NutcrackerEffectEditor", "Modules\EffectEditor\NutcrackerEffectEditor\NutcrackerEffectEditor.csproj", "{C259F8FF-5210-4475-BD40-374B1F7F7599}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioHelper", "Modules\Effect\AudioHelper\AudioHelper.csproj", "{C5C25088-6305-4D15-8469-52995E03C611}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AudioHelper", "Modules\Effect\AudioHelper\AudioHelper.csproj", "{C5C25088-6305-4D15-8469-52995E03C611}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VerticalMeter", "Modules\Effect\VerticalMeter\VerticalMeter.csproj", "{C240B197-A6FB-442D-BFD0-F95C146758FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VerticalMeter", "Modules\Effect\VerticalMeter\VerticalMeter.csproj", "{C240B197-A6FB-442D-BFD0-F95C146758FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VUMeter", "Modules\Effect\VUMeter\VUMeter.csproj", "{C1BFAA1E-A6D3-40DC-B663-3E37215EAFFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VUMeter", "Modules\Effect\VUMeter\VUMeter.csproj", "{C1BFAA1E-A6D3-40DC-B663-3E37215EAFFE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waveform", "Modules\Effect\Waveform\Waveform.csproj", "{FDB91428-9BD4-47DD-9A7D-D33FF955985B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Effect", "Modules\Effect\Effect\Effect.csproj", "{AF76C902-A776-49C3-9019-D7CB0A53FB2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Effect", "Modules\Effect\Effect\Effect.csproj", "{AF76C902-A776-49C3-9019-D7CB0A53FB2F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LayerMixingFilter", "LayerMixingFilter", "{1F565F1F-0815-4819-B72C-FE4CAE9DECD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProportionalMix", "Modules\LayerCombiningFilter\InverseProportion\ProportionalMix.csproj", "{C6B46FE9-16AE-4BCD-82D7-AAB944F88854}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProportionalMix", "Modules\LayerCombiningFilter\InverseProportion\ProportionalMix.csproj", "{C6B46FE9-16AE-4BCD-82D7-AAB944F88854}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mask", "Modules\LayerCombiningFilter\Mask\Mask.csproj", "{FF20D252-96DB-4B7F-B073-108EE95BF177}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mask", "Modules\LayerCombiningFilter\Mask\Mask.csproj", "{FF20D252-96DB-4B7F-B073-108EE95BF177}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayerEditor", "Modules\Editor\LayerEditor\LayerEditor.csproj", "{3233ADD6-FB95-4C57-AF81-34C6C19717DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LayerEditor", "Modules\Editor\LayerEditor\LayerEditor.csproj", "{3233ADD6-FB95-4C57-AF81-34C6C19717DB}"
 	ProjectSection(ProjectDependencies) = postProject
 		{44C23ECF-EA1C-4806-956A-07EC1203F8B4} = {44C23ECF-EA1C-4806-956A-07EC1203F8B4}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFCommon", "Common\WPFCommon\WPFCommon.csproj", "{44C23ECF-EA1C-4806-956A-07EC1203F8B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPFCommon", "Common\WPFCommon\WPFCommon.csproj", "{44C23ECF-EA1C-4806-956A-07EC1203F8B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntensityOverlay", "Modules\LayerCombiningFilter\IntensityOverlay\IntensityOverlay.csproj", "{5A80172D-2C62-463A-8271-4F4FEE9214E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntensityOverlay", "Modules\LayerCombiningFilter\IntensityOverlay\IntensityOverlay.csproj", "{5A80172D-2C62-463A-8271-4F4FEE9214E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiplyColor", "Modules\LayerCombiningFilter\MultiplyColor\MultiplyColor.csproj", "{B8772D9D-49D5-4DD2-A27B-F5A3C67C9925}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultiplyColor", "Modules\LayerCombiningFilter\MultiplyColor\MultiplyColor.csproj", "{B8772D9D-49D5-4DD2-A27B-F5A3C67C9925}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaskFill", "Modules\LayerCombiningFilter\MaskFill\MaskFill.csproj", "{63B2964A-6190-4746-B12D-7D79DFCA7BB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaskFill", "Modules\LayerCombiningFilter\MaskFill\MaskFill.csproj", "{63B2964A-6190-4746-B12D-7D79DFCA7BB7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tree", "Modules\Effect\Tree\Tree.csproj", "{2994DE01-EB3D-4674-9561-7C1474C07BF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tree", "Modules\Effect\Tree\Tree.csproj", "{2994DE01-EB3D-4674-9561-7C1474C07BF0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnowStorm", "Modules\Effect\SnowStorm\SnowStorm.csproj", "{6818EAC5-EA99-4753-864B-CE3EAC6B85A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SnowStorm", "Modules\Effect\SnowStorm\SnowStorm.csproj", "{6818EAC5-EA99-4753-864B-CE3EAC6B85A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glediator", "Modules\Effect\Glediator\Glediator.csproj", "{3B88D0A6-CD89-4E14-996A-3EB6B27F4DA7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glediator", "Modules\Effect\Glediator\Glediator.csproj", "{3B88D0A6-CD89-4E14-996A-3EB6B27F4DA7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Garlands", "Modules\Effect\Garlands\Garlands.csproj", "{A23EA1BF-1AEF-499A-BAA8-4E58EC9A1A46}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Garlands", "Modules\Effect\Garlands\Garlands.csproj", "{A23EA1BF-1AEF-499A-BAA8-4E58EC9A1A46}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PinWheel", "Modules\Effect\PinWheel\PinWheel.csproj", "{6F110A5E-C126-44B9-9F60-E24AB9332949}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PinWheel", "Modules\Effect\PinWheel\PinWheel.csproj", "{6F110A5E-C126-44B9-9F60-E24AB9332949}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Video", "Modules\Effect\Video\Video.csproj", "{C5606015-2166-4866-A856-8EAB67A5DE26}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Video", "Modules\Effect\Video\Video.csproj", "{C5606015-2166-4866-A856-8EAB67A5DE26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Curtain", "Modules\Effect\Curtain\Curtain.csproj", "{9E984FC3-44EC-405F-90F7-94B2D99027F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curtain", "Modules\Effect\Curtain\Curtain.csproj", "{9E984FC3-44EC-405F-90F7-94B2D99027F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spirograph", "Modules\Effect\Spirograph\Spirograph.csproj", "{D1081A18-8BA9-4263-9650-6BF6710B4239}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spirograph", "Modules\Effect\Spirograph\Spirograph.csproj", "{D1081A18-8BA9-4263-9650-6BF6710B4239}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Life", "Modules\Effect\Life\Life.csproj", "{6AF57086-0809-408B-B6DF-6411F2F5BDE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Life", "Modules\Effect\Life\Life.csproj", "{6AF57086-0809-408B-B6DF-6411F2F5BDE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorWash", "Modules\Effect\ColorWash\ColorWash.csproj", "{228B432D-6C8A-41A6-8579-2E980FF347F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColorWash", "Modules\Effect\ColorWash\ColorWash.csproj", "{228B432D-6C8A-41A6-8579-2E980FF347F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meteors", "Modules\Effect\Meteor\Meteors.csproj", "{BE0266F4-6100-4457-91EC-4BE370DC5C5E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meteors", "Modules\Effect\Meteor\Meteors.csproj", "{BE0266F4-6100-4457-91EC-4BE370DC5C5E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plasma", "Modules\Effect\Plasma\Plasma.csproj", "{F250EE2E-F556-4207-9485-E52F30C42597}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plasma", "Modules\Effect\Plasma\Plasma.csproj", "{F250EE2E-F556-4207-9485-E52F30C42597}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shockwave", "Modules\Effect\Shockwave\Shockwave.csproj", "{D6494CE3-3C8D-4C7C-8FBD-6CBFAEAA5522}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shockwave", "Modules\Effect\Shockwave\Shockwave.csproj", "{D6494CE3-3C8D-4C7C-8FBD-6CBFAEAA5522}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LauncherController", "Modules\Output\LauncherController\LauncherController.csproj", "{52FE5E03-F65F-4F61-915F-740BAE28C395}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LauncherController", "Modules\Output\LauncherController\LauncherController.csproj", "{52FE5E03-F65F-4F61-915F-740BAE28C395}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Border", "Modules\Effect\Borders\Border.csproj", "{F2DC1D7A-9A86-46FB-84F6-9A07CFCCE023}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Border", "Modules\Effect\Borders\Border.csproj", "{F2DC1D7A-9A86-46FB-84F6-9A07CFCCE023}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExportWizard", "Modules\App\ExportWizard\ExportWizard.csproj", "{36351875-49EF-43A3-A175-032673FDC9A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExportWizard", "Modules\App\ExportWizard\ExportWizard.csproj", "{36351875-49EF-43A3-A175-032673FDC9A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Balls", "Modules\Effect\Balls\Balls.csproj", "{D6DFE715-3D3C-4178-B698-798DB0FD36DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Balls", "Modules\Effect\Balls\Balls.csproj", "{D6DFE715-3D3C-4178-B698-798DB0FD36DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Circles", "Modules\Effect\Circles\Circles.csproj", "{970A371C-B910-46AE-B9FC-4BF94F3C0EE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Circles", "Modules\Effect\Circles\Circles.csproj", "{970A371C-B910-46AE-B9FC-4BF94F3C0EE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LumaKey", "Modules\LayerCombiningFilter\LumaKey\LumaKey.csproj", "{2E8DE19A-E0DB-4220-BCB7-EFAFA05CAA35}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LumaKey", "Modules\LayerCombiningFilter\LumaKey\LumaKey.csproj", "{2E8DE19A-E0DB-4220-BCB7-EFAFA05CAA35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChromaKey", "Modules\LayerCombiningFilter\ChromaKey\ChromaKey.csproj", "{9246118A-0BE2-422F-80EB-26883BEF26BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChromaKey", "Modules\LayerCombiningFilter\ChromaKey\ChromaKey.csproj", "{9246118A-0BE2-422F-80EB-26883BEF26BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomPropEditor", "Modules\App\CustomPropEditor\CustomPropEditor.csproj", "{37FE2E42-50DA-4973-88F7-072BA570F997}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomPropEditor", "Modules\App\CustomPropEditor\CustomPropEditor.csproj", "{37FE2E42-50DA-4973-88F7-072BA570F997}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order", "Modules\Property\Order\Order.csproj", "{A4254642-2965-469A-8FBD-B45F6EDD651C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order", "Modules\Property\Order\Order.csproj", "{A4254642-2965-469A-8FBD-B45F6EDD651C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marks", "Modules\App\Marks\Marks.csproj", "{27D283DF-52AD-4857-8359-DE134DB94728}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marks", "Modules\App\Marks\Marks.csproj", "{27D283DF-52AD-4857-8359-DE134DB94728}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Face", "Modules\Property\Face\Face.csproj", "{5FCC5484-8894-4E36-BA81-B2F1B9008404}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Face", "Modules\Property\Face\Face.csproj", "{5FCC5484-8894-4E36-BA81-B2F1B9008404}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CountDown", "Modules\Effect\CountDown\CountDown.csproj", "{4F77A059-7A41-4630-8A3B-DAE87217F6C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CountDown", "Modules\Effect\CountDown\CountDown.csproj", "{4F77A059-7A41-4630-8A3B-DAE87217F6C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shapes", "Modules\Effect\Shapes\Shapes.csproj", "{0FF95798-EB47-47F4-A640-4ADFC85D99AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shapes", "Modules\Effect\Shapes\Shapes.csproj", "{0FF95798-EB47-47F4-A640-4ADFC85D99AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orientation", "Modules\Property\Orientation\Orientation.csproj", "{3BCD7307-C584-4770-BC60-4142DDC88C76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orientation", "Modules\Property\Orientation\Orientation.csproj", "{3BCD7307-C584-4770-BC60-4142DDC88C76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dissolve", "Modules\Effect\Dissolve\Dissolve.csproj", "{49A555E2-0740-4884-9D70-780500706F2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dissolve", "Modules\Effect\Dissolve\Dissolve.csproj", "{49A555E2-0740-4884-9D70-780500706F2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modeling", "Modules\App\Modeling\Modeling.csproj", "{FE86F615-E983-47E2-944E-14EE273F7530}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modeling", "Modules\App\Modeling\Modeling.csproj", "{FE86F615-E983-47E2-944E-14EE273F7530}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorChange", "Modules\LayerCombiningFilter\ColorChange\ColorChange.csproj", "{4AA17571-2592-453E-9976-368D0E9E0A56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColorChange", "Modules\LayerCombiningFilter\ColorChange\ColorChange.csproj", "{4AA17571-2592-453E-9976-368D0E9E0A56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Strobe", "Modules\Effect\Strobe\Strobe.csproj", "{FBD9C6E2-9E33-4B5F-B2BF-0F4C22C259A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Strobe", "Modules\Effect\Strobe\Strobe.csproj", "{FBD9C6E2-9E33-4B5F-B2BF-0F4C22C259A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HighestValue", "Modules\LayerCombiningFilter\HighestValueWins\HighestValue.csproj", "{01D6D526-9586-44BB-82F4-10ABACF58B61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HighestValue", "Modules\LayerCombiningFilter\HighestValueWins\HighestValue.csproj", "{01D6D526-9586-44BB-82F4-10ABACF58B61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomPropEditorTests", "Modules\App\CustomPropEditorTests\CustomPropEditorTests.csproj", "{9384ADC5-0120-4956-885D-639426D05472}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomPropEditorTests", "Modules\App\CustomPropEditorTests\CustomPropEditorTests.csproj", "{9384ADC5-0120-4956-885D-639426D05472}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Liquid", "Liquid", "{9224D7F9-DC78-46A5-BCF5-BB9AE9D6D12C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Liquid", "Modules\Effect\Liquid\Liquid.csproj", "{7509FACE-9676-4176-A7E1-F0D68DC683B6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emitter", "Modules\Effect\Liquid\Emitter\Emitter.csproj", "{32629B20-AFD0-490A-BE11-E1E6ECA4408E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Emitter", "Modules\Effect\Liquid\Emitter\Emitter.csproj", "{32629B20-AFD0-490A-BE11-E1E6ECA4408E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LiquidLiquidFunWrapper", "Modules\Effect\Liquid\LiquidFunWrapper\LiquidLiquidFunWrapper.vcxproj", "{179D72C2-55CD-4DF1-8BE7-8BADA053E390}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -441,7 +437,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LiquidLiquidFunWrapper", "M
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Box2D", "Common\Box2D\Box2D.vcxproj", "{14FA8548-594F-41FC-8999-E9544C7CDF67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimedSequenceMapper", "Modules\App\TimedSequenceMapper\TimedSequenceMapper.csproj", "{637A998A-0C0B-46FD-915E-B1FD5E143F8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimedSequenceMapper", "Modules\App\TimedSequenceMapper\TimedSequenceMapper.csproj", "{637A998A-0C0B-46FD-915E-B1FD5E143F8E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FTD2XX_NET", "FTD2XX_NET", "{DA40CE06-2DD4-4C1A-987D-8800953CB8FD}"
 	ProjectSection(SolutionItems) = preProject
@@ -450,11 +446,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FTD2XX_NET", "FTD2XX_NET", 
 		Common\FTD2XX_NET\License.txt = Common\FTD2XX_NET\License.txt
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Wave", "Wave", "{BE6CE88A-2A15-404D-A634-29BE023E2653}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wave", "Modules\Effect\Wave\Wave.csproj", "{C1D64BDE-72C6-4EEC-91A7-3250267D1B98}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Wave", "Wave", "{A716022B-C182-4127-BE26-BA88C57C0471}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IWaveform", "Modules\Effect\Wave\IWaveform\IWaveform.csproj", "{A9136CB2-83F8-462E-918B-15EA1FB4A431}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wave", "Modules\Effect\Wave\Wave\Wave.csproj", "{107FCA78-07F2-472E-AA16-1A3995AEC998}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Liquid", "Modules\Effect\Liquid\Liquid\Liquid.csproj", "{BAE2929C-4261-4972-B536-0377DAD3B9FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1077,14 +1075,6 @@ Global
 		{C1BFAA1E-A6D3-40DC-B663-3E37215EAFFE}.Release|x64.Build.0 = Release|x64
 		{C1BFAA1E-A6D3-40DC-B663-3E37215EAFFE}.Release|x86.ActiveCfg = Release|x86
 		{C1BFAA1E-A6D3-40DC-B663-3E37215EAFFE}.Release|x86.Build.0 = Release|x86
-		{FDB91428-9BD4-47DD-9A7D-D33FF955985B}.Debug|x64.ActiveCfg = Debug|x64
-		{FDB91428-9BD4-47DD-9A7D-D33FF955985B}.Debug|x64.Build.0 = Debug|x64
-		{FDB91428-9BD4-47DD-9A7D-D33FF955985B}.Debug|x86.ActiveCfg = Debug|x86
-		{FDB91428-9BD4-47DD-9A7D-D33FF955985B}.Debug|x86.Build.0 = Debug|x86
-		{FDB91428-9BD4-47DD-9A7D-D33FF955985B}.Release|x64.ActiveCfg = Release|x64
-		{FDB91428-9BD4-47DD-9A7D-D33FF955985B}.Release|x64.Build.0 = Release|x64
-		{FDB91428-9BD4-47DD-9A7D-D33FF955985B}.Release|x86.ActiveCfg = Release|x86
-		{FDB91428-9BD4-47DD-9A7D-D33FF955985B}.Release|x86.Build.0 = Release|x86
 		{AF76C902-A776-49C3-9019-D7CB0A53FB2F}.Debug|x64.ActiveCfg = Debug|x64
 		{AF76C902-A776-49C3-9019-D7CB0A53FB2F}.Debug|x64.Build.0 = Debug|x64
 		{AF76C902-A776-49C3-9019-D7CB0A53FB2F}.Debug|x86.ActiveCfg = Debug|x86
@@ -1413,14 +1403,6 @@ Global
 		{9384ADC5-0120-4956-885D-639426D05472}.Release|x64.Build.0 = Release|x64
 		{9384ADC5-0120-4956-885D-639426D05472}.Release|x86.ActiveCfg = Release|x86
 		{9384ADC5-0120-4956-885D-639426D05472}.Release|x86.Build.0 = Release|x86
-		{7509FACE-9676-4176-A7E1-F0D68DC683B6}.Debug|x64.ActiveCfg = Debug|x64
-		{7509FACE-9676-4176-A7E1-F0D68DC683B6}.Debug|x64.Build.0 = Debug|x64
-		{7509FACE-9676-4176-A7E1-F0D68DC683B6}.Debug|x86.ActiveCfg = Debug|x86
-		{7509FACE-9676-4176-A7E1-F0D68DC683B6}.Debug|x86.Build.0 = Debug|x86
-		{7509FACE-9676-4176-A7E1-F0D68DC683B6}.Release|x64.ActiveCfg = Release|x64
-		{7509FACE-9676-4176-A7E1-F0D68DC683B6}.Release|x64.Build.0 = Release|x64
-		{7509FACE-9676-4176-A7E1-F0D68DC683B6}.Release|x86.ActiveCfg = Release|x86
-		{7509FACE-9676-4176-A7E1-F0D68DC683B6}.Release|x86.Build.0 = Release|x86
 		{32629B20-AFD0-490A-BE11-E1E6ECA4408E}.Debug|x64.ActiveCfg = Debug|x64
 		{32629B20-AFD0-490A-BE11-E1E6ECA4408E}.Debug|x64.Build.0 = Debug|x64
 		{32629B20-AFD0-490A-BE11-E1E6ECA4408E}.Debug|x86.ActiveCfg = Debug|x86
@@ -1453,14 +1435,6 @@ Global
 		{637A998A-0C0B-46FD-915E-B1FD5E143F8E}.Release|x64.Build.0 = Release|x64
 		{637A998A-0C0B-46FD-915E-B1FD5E143F8E}.Release|x86.ActiveCfg = Release|x86
 		{637A998A-0C0B-46FD-915E-B1FD5E143F8E}.Release|x86.Build.0 = Release|x86
-		{C1D64BDE-72C6-4EEC-91A7-3250267D1B98}.Debug|x64.ActiveCfg = Debug|x64
-		{C1D64BDE-72C6-4EEC-91A7-3250267D1B98}.Debug|x64.Build.0 = Debug|x64
-		{C1D64BDE-72C6-4EEC-91A7-3250267D1B98}.Debug|x86.ActiveCfg = Debug|x86
-		{C1D64BDE-72C6-4EEC-91A7-3250267D1B98}.Debug|x86.Build.0 = Debug|x86
-		{C1D64BDE-72C6-4EEC-91A7-3250267D1B98}.Release|x64.ActiveCfg = Release|x64
-		{C1D64BDE-72C6-4EEC-91A7-3250267D1B98}.Release|x64.Build.0 = Release|x64
-		{C1D64BDE-72C6-4EEC-91A7-3250267D1B98}.Release|x86.ActiveCfg = Release|x86
-		{C1D64BDE-72C6-4EEC-91A7-3250267D1B98}.Release|x86.Build.0 = Release|x86
 		{A9136CB2-83F8-462E-918B-15EA1FB4A431}.Debug|x64.ActiveCfg = Debug|x64
 		{A9136CB2-83F8-462E-918B-15EA1FB4A431}.Debug|x64.Build.0 = Debug|x64
 		{A9136CB2-83F8-462E-918B-15EA1FB4A431}.Debug|x86.ActiveCfg = Debug|x86
@@ -1469,6 +1443,22 @@ Global
 		{A9136CB2-83F8-462E-918B-15EA1FB4A431}.Release|x64.Build.0 = Release|x64
 		{A9136CB2-83F8-462E-918B-15EA1FB4A431}.Release|x86.ActiveCfg = Release|x86
 		{A9136CB2-83F8-462E-918B-15EA1FB4A431}.Release|x86.Build.0 = Release|x86
+		{107FCA78-07F2-472E-AA16-1A3995AEC998}.Debug|x64.ActiveCfg = Debug|x64
+		{107FCA78-07F2-472E-AA16-1A3995AEC998}.Debug|x64.Build.0 = Debug|x64
+		{107FCA78-07F2-472E-AA16-1A3995AEC998}.Debug|x86.ActiveCfg = Debug|x86
+		{107FCA78-07F2-472E-AA16-1A3995AEC998}.Debug|x86.Build.0 = Debug|x86
+		{107FCA78-07F2-472E-AA16-1A3995AEC998}.Release|x64.ActiveCfg = Release|x64
+		{107FCA78-07F2-472E-AA16-1A3995AEC998}.Release|x64.Build.0 = Release|x64
+		{107FCA78-07F2-472E-AA16-1A3995AEC998}.Release|x86.ActiveCfg = Release|x86
+		{107FCA78-07F2-472E-AA16-1A3995AEC998}.Release|x86.Build.0 = Release|x86
+		{BAE2929C-4261-4972-B536-0377DAD3B9FE}.Debug|x64.ActiveCfg = Debug|x64
+		{BAE2929C-4261-4972-B536-0377DAD3B9FE}.Debug|x64.Build.0 = Debug|x64
+		{BAE2929C-4261-4972-B536-0377DAD3B9FE}.Debug|x86.ActiveCfg = Debug|x86
+		{BAE2929C-4261-4972-B536-0377DAD3B9FE}.Debug|x86.Build.0 = Debug|x86
+		{BAE2929C-4261-4972-B536-0377DAD3B9FE}.Release|x64.ActiveCfg = Release|x64
+		{BAE2929C-4261-4972-B536-0377DAD3B9FE}.Release|x64.Build.0 = Release|x64
+		{BAE2929C-4261-4972-B536-0377DAD3B9FE}.Release|x86.ActiveCfg = Release|x86
+		{BAE2929C-4261-4972-B536-0377DAD3B9FE}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1574,7 +1564,6 @@ Global
 		{C5C25088-6305-4D15-8469-52995E03C611} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
 		{C240B197-A6FB-442D-BFD0-F95C146758FE} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
 		{C1BFAA1E-A6D3-40DC-B663-3E37215EAFFE} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
-		{FDB91428-9BD4-47DD-9A7D-D33FF955985B} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
 		{AF76C902-A776-49C3-9019-D7CB0A53FB2F} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
 		{1F565F1F-0815-4819-B72C-FE4CAE9DECD9} = {FFEF21BE-17BF-4C68-AE19-409AE444AC53}
 		{C6B46FE9-16AE-4BCD-82D7-AAB944F88854} = {1F565F1F-0815-4819-B72C-FE4CAE9DECD9}
@@ -1618,15 +1607,15 @@ Global
 		{01D6D526-9586-44BB-82F4-10ABACF58B61} = {1F565F1F-0815-4819-B72C-FE4CAE9DECD9}
 		{9384ADC5-0120-4956-885D-639426D05472} = {E301917B-FF08-4275-A4E0-830E2BEC0635}
 		{9224D7F9-DC78-46A5-BCF5-BB9AE9D6D12C} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
-		{7509FACE-9676-4176-A7E1-F0D68DC683B6} = {9224D7F9-DC78-46A5-BCF5-BB9AE9D6D12C}
 		{32629B20-AFD0-490A-BE11-E1E6ECA4408E} = {9224D7F9-DC78-46A5-BCF5-BB9AE9D6D12C}
 		{179D72C2-55CD-4DF1-8BE7-8BADA053E390} = {9224D7F9-DC78-46A5-BCF5-BB9AE9D6D12C}
 		{14FA8548-594F-41FC-8999-E9544C7CDF67} = {25A1ED22-180F-4B61-84FC-55790AA11254}
 		{637A998A-0C0B-46FD-915E-B1FD5E143F8E} = {E301917B-FF08-4275-A4E0-830E2BEC0635}
 		{DA40CE06-2DD4-4C1A-987D-8800953CB8FD} = {25A1ED22-180F-4B61-84FC-55790AA11254}
-		{BE6CE88A-2A15-404D-A634-29BE023E2653} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
-		{C1D64BDE-72C6-4EEC-91A7-3250267D1B98} = {BE6CE88A-2A15-404D-A634-29BE023E2653}
-		{A9136CB2-83F8-462E-918B-15EA1FB4A431} = {BE6CE88A-2A15-404D-A634-29BE023E2653}
+		{A716022B-C182-4127-BE26-BA88C57C0471} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
+		{A9136CB2-83F8-462E-918B-15EA1FB4A431} = {A716022B-C182-4127-BE26-BA88C57C0471}
+		{107FCA78-07F2-472E-AA16-1A3995AEC998} = {A716022B-C182-4127-BE26-BA88C57C0471}
+		{BAE2929C-4261-4972-B536-0377DAD3B9FE} = {9224D7F9-DC78-46A5-BCF5-BB9AE9D6D12C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {09F55EB1-2643-454B-A1C2-8A326FFA78E6}

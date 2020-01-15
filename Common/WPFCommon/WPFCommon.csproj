@@ -1,120 +1,47 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{44C23ECF-EA1C-4806-956A-07EC1203F8B4}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Common.WPFCommon</RootNamespace>
-    <AssemblyName>WPFCommon</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyTitle>WPFCommon</AssemblyTitle>
+    <Product>WPFCommon</Product>
+    <Copyright>2018</Copyright>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Platforms>x64;x86</Platforms>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>$(SolutionDir)\Release\Common\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
+    <OutputPath>$(SolutionDir)\$(Configuration)\Common\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>$(SolutionDir)\Release64\Common\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <OutputPath>..\..\Debug\Common\</OutputPath>
+    <OutputPath>..\..\$(Configuration)\Common\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <Optimize>false</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <OutputPath>..\..\Debug64\Common\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <Optimize>false</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Aero" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Behaviors\IgnoreMouseWheelBehavior.cs" />
-    <Compile Include="Behaviors\ListViewItemBehavior.cs" />
-    <Compile Include="Behaviors\ListViewScrollToSelectedBehavior.cs" />
-    <Compile Include="Behaviors\TreeViewSelectedItemBehavior.cs" />
-    <Compile Include="Command\RelayCommand.cs" />
-    <Compile Include="Controls\IndexingStackPanel.cs" />
-    <Compile Include="Controls\NavigatableHyperLink.cs" />
-    <Compile Include="Controls\SearchTextBox.cs" />
-    <Compile Include="Controls\TreeViewMultipleSelectionBehavior.cs" />
-    <Compile Include="Converters\AdditionConverter.cs" />
-    <Compile Include="Converters\BitmapImageConverter.cs" />
-    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Converters\ColorToSolidBrushConverter.cs" />
-    <Compile Include="Converters\IndexOfConverter.cs" />
-    <Compile Include="Converters\InverseBooleanConverter.cs" />
-    <Compile Include="Converters\BooleanConverter.cs" />
-    <Compile Include="Converters\NotNullToVisibilityConverter.cs" />
-    <Compile Include="Converters\NullConverter.cs" />
-    <Compile Include="Converters\NullToBooleanConverter.cs" />
-    <Compile Include="Converters\NullToVisibilityConverter.cs" />
-    <Compile Include="Converters\PercentageConverter.cs" />
-    <Compile Include="Converters\SingleItemToCollectionConverter.cs" />
-    <Compile Include="Input\DragDropManager.cs" />
-    <Compile Include="Input\DragDropTargetType.cs" />
-    <Compile Include="Input\DropPreviewAdorner.cs" />
-    <Compile Include="Input\IDragSourceAdvisor.cs" />
-    <Compile Include="Input\IDropTargetAdvisor.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\IMessageBoxService.cs" />
-    <Compile Include="Utils\AsyncImageLoader.cs" />
-    <Compile Include="Services\MessageBoxResponse.cs" />
-    <Compile Include="Services\MessageBoxService.cs" />
-    <Compile Include="Utils\DependencyObjectExtensions.cs" />
-    <Compile Include="Utils\DialogResultBehavior.cs" />
-    <Compile Include="Utils\TextBoxExtender.cs" />
-    <Compile Include="Utils\TransformedCollection.cs" />
-    <Compile Include="Utils\TreeViewSelectionHelper.cs" />
-    <Compile Include="ViewModel\BindableBase.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\Vixen.System\Vixen.csproj">
-      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
-      <Name>Vixen</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\Controls\Controls.csproj">
-      <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
-      <Name>Controls</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -132,18 +59,13 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Catel.MVVM">
-      <Version>5.12.2</Version>
+    <PackageReference Include="Catel.MVVM" Version="5.12.2">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <Compile Remove="obj\x64\Release\GeneratedInternalTypeHelper.g.cs" />
+    <Compile Remove="obj\x64\Release\GeneratedInternalTypeHelper.g.i.cs" />
+  </ItemGroup>
 </Project>

@@ -1,21 +1,13 @@
-<?xml version="1.0"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28}</ProjectGuid>
-    <OutputType>Library</OutputType>
     <RootNamespace>Dataweb.NShape</RootNamespace>
     <AssemblyName>Dataweb.NShape</AssemblyName>
-    <ApplicationIcon>
-    </ApplicationIcon>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
+    <ApplicationIcon />
+    <FileUpgradeFlags />
+    <UpgradeBackupLocation />
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -31,194 +23,87 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <Win32Resource>
-    </Win32Resource>
+    <Win32Resource />
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Dataweb.nShape.snk</AssemblyOriginatorKeyFile>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyTitle>NShape Core Components</AssemblyTitle>
+    <Product>NShape Core Components</Product>
+    <Description>NShape Core Components for .NET 2.0</Description>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Platforms>x64;x86</Platforms>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <PostBuildEvent />
+    <PostBuildEvent />
+    <PostBuildEvent />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>$(SolutionDir)\Release\Common\</OutputPath>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
+    <OutputPath>$(SolutionDir)\$(Configuration)\Common\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>$(SolutionDir)\Release64\Common\</OutputPath>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\..\Debug\Common\</OutputPath>
-    <Optimize>false</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <OutputPath>..\..\..\$(Configuration)\Common\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\..\..\Debug64\Common\</OutputPath>
-    <Optimize>false</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants />
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
-    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\CommonAssemblyInfo.cs">
-      <Link>CommonAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="Buffers.cs" />
-    <Compile Include="CircularArcBase.cs" />
-    <Compile Include="CursorProvider.cs" />
-    <Compile Include="FlowLayouter.cs" />
-    <Compile Include="FreeHandTool.cs" />
-    <Compile Include="FuzzyLogic.cs" />
-    <Compile Include="Layer.cs" />
-    <Compile Include="MenuItemDef.cs" />
-    <Compile Include="AdoNetStore.cs" />
-    <Compile Include="DiagramPresenter.cs" />
-    <Compile Include="Exceptions.cs" />
-    <Compile Include="GdiHelpers.cs" />
-    <Compile Include="LayerPresenter.cs">
+    <Compile Update="LayerPresenter.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="MultiHashList.cs" />
-    <Compile Include="Polygone.cs" />
-    <Compile Include="PolyLineBase.cs" />
-    <Compile Include="PropertyMappings.cs" />
-    <Compile Include="RectangularLineBase.cs" />
-    <Compile Include="ShapeCollection.cs" />
-    <Compile Include="ShapeDuplicator.cs" />
-    <Compile Include="ShapeGroup.cs" />
-    <Compile Include="DiameterShape.cs" />
-    <Compile Include="ImageBasedShape.cs" />
-    <Compile Include="RectangleShape.cs" />
-    <Compile Include="Caption.cs" />
-    <Compile Include="Collections.cs" />
-    <Compile Include="Command.cs" />
-    <Compile Include="Core.cs" />
-    <Compile Include="DesignController.cs">
+    <Compile Update="DesignController.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Design.cs" />
-    <Compile Include="Diagram.cs" />
-    <Compile Include="DiagramController.cs">
-    </Compile>
-    <Compile Include="DiagramSetController.cs">
+    <Compile Update="DiagramSetController.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="EmfHelper.cs" />
-    <Compile Include="Geometry.cs" />
-    <Compile Include="GridLayouter.cs" />
-    <Compile Include="History.cs" />
-    <Compile Include="LinearShape.cs" />
-    <Compile Include="PathBasedShape.cs" />
-    <Compile Include="Repository.cs" />
-    <Compile Include="ModelController.cs">
+    <Compile Update="ModelController.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="LayerController.cs">
+    <Compile Update="LayerController.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Layouter.cs" />
-    <Compile Include="Model.cs" />
-    <Compile Include="CachedRepository.cs">
+    <Compile Update="CachedRepository.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Optimizer.cs" />
-    <Compile Include="Entity.cs" />
-    <Compile Include="Security.cs" />
-    <Compile Include="ShapeType.cs" />
-    <Compile Include="Project.cs">
+    <Compile Update="Project.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Update="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="PropertyController.cs">
+    <Compile Update="PropertyController.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Resources.cs" />
-    <Compile Include="Shape.cs" />
-    <Compile Include="ShapeAggregation.cs" />
-    <Compile Include="ShapeBase.cs" />
-    <Compile Include="Shaper.cs" />
-    <Compile Include="ShapeUtils.cs" />
-    <Compile Include="SqlStore.cs">
+    <Compile Update="SqlStore.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Store.cs">
+    <Compile Update="Store.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Styles.cs" />
-    <Compile Include="Template.cs" />
-    <Compile Include="TemplateController.cs">
+    <Compile Update="TemplateController.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="TextMeasurer.cs" />
-    <Compile Include="TextShape.cs" />
-    <Compile Include="Tool.cs" />
-    <Compile Include="ToolSetController.cs">
+    <Compile Update="ToolSetController.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ToolCache.cs" />
-    <Compile Include="TriangleBase.cs" />
-    <Compile Include="TypeDescriptionProviders.cs" />
-    <Compile Include="XmlStore.cs">
+    <Compile Update="XmlStore.cs">
       <SubType>Component</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
+    <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
@@ -288,16 +173,4 @@
     <EmbeddedResource Include="SqlStore.bmp" />
     <EmbeddedResource Include="XmlStore.bmp" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
 </Project>

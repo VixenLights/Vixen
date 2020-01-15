@@ -1,256 +1,109 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F0BA7127-61B4-453A-802B-ABCB5A0D3D54}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VixenModules.App.Curves</RootNamespace>
-    <AssemblyName>Curves</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyTitle>Curves</AssemblyTitle>
+    <Company>Vixen</Company>
+    <Product>Vixen</Product>
+    <Description>Curves</Description>
+    <Copyright>Copyright � Vixen 2011</Copyright>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Platforms>x64;x86</Platforms>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>$(SolutionDir)\Release\Modules\App\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
+    <OutputPath>$(SolutionDir)\$(Configuration)\Modules\App\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>$(SolutionDir)\Release64\Modules\App\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <OutputPath>..\..\..\Debug\Modules\App\</OutputPath>
+    <OutputPath>..\..\..\$(Configuration)\Modules\App\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <Optimize>false</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <OutputPath>..\..\..\Debug64\Modules\App\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <Optimize>false</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
-      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
-      <Name>Vixen</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
-      <Project>{F7A80169-6310-4585-9D58-A6F6F5C5B380}</Project>
-      <Name>Resources</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Curve.cs" />
-    <Compile Include="CurveEditor.cs">
+    <Compile Update="CurveEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CurveEditor.Designer.cs">
+    <Compile Update="CurveEditor.Designer.cs">
       <DependentUpon>CurveEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="CurveLibraryDescriptor.cs" />
-    <Compile Include="CurveLibrary.cs" />
-    <Compile Include="CurveLibrarySelector.cs">
+    <Compile Update="CurveLibrarySelector.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CurveLibrarySelector.Designer.cs">
+    <Compile Update="CurveLibrarySelector.Designer.cs">
       <DependentUpon>CurveLibrarySelector.cs</DependentUpon>
     </Compile>
-    <Compile Include="CurveLibraryStaticData.cs" />
-    <Compile Include="CurveType.cs" />
-    <Compile Include="CurveTypeConverter.cs" />
-    <Compile Include="FunctionGenerator.cs">
+    <Compile Update="FunctionGenerator.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FunctionGenerator.Designer.cs">
+    <Compile Update="FunctionGenerator.Designer.cs">
       <DependentUpon>FunctionGenerator.cs</DependentUpon>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ZedGraph\ArrowObj.cs" />
-    <Compile Include="ZedGraph\Axis.cs" />
-    <Compile Include="ZedGraph\AxisLabel.cs" />
-    <Compile Include="ZedGraph\Bar.cs" />
-    <Compile Include="ZedGraph\BarItem.cs" />
-    <Compile Include="ZedGraph\BarSettings.cs" />
-    <Compile Include="ZedGraph\BasicArrayPointList.cs" />
-    <Compile Include="ZedGraph\Border.cs" />
-    <Compile Include="ZedGraph\BoxObj.cs" />
-    <Compile Include="ZedGraph\Chart.cs" />
-    <Compile Include="ZedGraph\CollectionPlus.cs" />
-    <Compile Include="ZedGraph\ColorSymbolRotator.cs" />
-    <Compile Include="ZedGraph\CurveItem.cs" />
-    <Compile Include="ZedGraph\CurveList.cs" />
-    <Compile Include="ZedGraph\DataSourcePointList.cs" />
-    <Compile Include="ZedGraph\DateAsOrdinalScale.cs" />
-    <Compile Include="ZedGraph\DateScale.cs" />
-    <Compile Include="ZedGraph\EllipseObj.cs" />
-    <Compile Include="ZedGraph\ErrorBar.cs" />
-    <Compile Include="ZedGraph\ErrorBarItem.cs" />
-    <Compile Include="ZedGraph\ExponentScale.cs" />
-    <Compile Include="ZedGraph\Fill.cs" />
-    <Compile Include="ZedGraph\FilteredPointList.cs" />
-    <Compile Include="ZedGraph\FontSpec.cs" />
-    <Compile Include="ZedGraph\GapLabel.cs" />
-    <Compile Include="ZedGraph\GasGaugeNeedle.cs" />
-    <Compile Include="ZedGraph\GasGaugeRegion.cs" />
-    <Compile Include="ZedGraph\GraphObj.cs" />
-    <Compile Include="ZedGraph\GraphObjList.cs" />
-    <Compile Include="ZedGraph\GraphPane.cs" />
-    <Compile Include="ZedGraph\HiLowBar.cs" />
-    <Compile Include="ZedGraph\HiLowBarItem.cs" />
-    <Compile Include="ZedGraph\HSBColor.cs" />
-    <Compile Include="ZedGraph\ImageObj.cs" />
-    <Compile Include="ZedGraph\IPointList.cs" />
-    <Compile Include="ZedGraph\IPointListEdit.cs" />
-    <Compile Include="ZedGraph\JapaneseCandleStick.cs" />
-    <Compile Include="ZedGraph\JapaneseCandleStickItem.cs" />
-    <Compile Include="ZedGraph\Label.cs" />
-    <Compile Include="ZedGraph\Legend.cs" />
-    <Compile Include="ZedGraph\Line.cs" />
-    <Compile Include="ZedGraph\LinearAsOrdinalScale.cs" />
-    <Compile Include="ZedGraph\LinearScale.cs" />
-    <Compile Include="ZedGraph\LineBase.cs" />
-    <Compile Include="ZedGraph\LineItem.cs" />
-    <Compile Include="ZedGraph\LineObj.cs" />
-    <Compile Include="ZedGraph\Link.cs" />
-    <Compile Include="ZedGraph\Location.cs" />
-    <Compile Include="ZedGraph\LogScale.cs" />
-    <Compile Include="ZedGraph\MajorGrid.cs" />
-    <Compile Include="ZedGraph\MajorTic.cs" />
-    <Compile Include="ZedGraph\Margin.cs" />
-    <Compile Include="ZedGraph\MasterPane.cs" />
-    <Compile Include="ZedGraph\MinorGrid.cs" />
-    <Compile Include="ZedGraph\MinorTic.cs" />
-    <Compile Include="ZedGraph\NoDupePointList.cs" />
-    <Compile Include="ZedGraph\OHLCBar.cs" />
-    <Compile Include="ZedGraph\OHLCBarItem.cs" />
-    <Compile Include="ZedGraph\OrdinalScale.cs" />
-    <Compile Include="ZedGraph\PaneBase.cs" />
-    <Compile Include="ZedGraph\PaneLayoutMgr.cs" />
-    <Compile Include="ZedGraph\PaneList.cs" />
-    <Compile Include="ZedGraph\PieItem.cs" />
-    <Compile Include="ZedGraph\PointD.cs" />
-    <Compile Include="ZedGraph\PointPair.cs" />
-    <Compile Include="ZedGraph\PointPair4.cs" />
-    <Compile Include="ZedGraph\PointPairBase.cs" />
-    <Compile Include="ZedGraph\PointPairCV.cs" />
-    <Compile Include="ZedGraph\PointPairList.cs" />
-    <Compile Include="ZedGraph\PolyObj.cs" />
-    <Compile Include="ZedGraph\RadarPointList.cs" />
-    <Compile Include="ZedGraph\RollingPointPairList.cs" />
-    <Compile Include="ZedGraph\SampleMultiPointList.cs" />
-    <Compile Include="ZedGraph\SamplePointList.cs" />
-    <Compile Include="ZedGraph\Scale.cs" />
-    <Compile Include="ZedGraph\ScaleState.cs" />
-    <Compile Include="ZedGraph\ScaleStateList.cs" />
-    <Compile Include="ZedGraph\ScrollRange.cs" />
-    <Compile Include="ZedGraph\ScrollRangeList.cs" />
-    <Compile Include="ZedGraph\Selection.cs" />
-    <Compile Include="ZedGraph\StickItem.cs" />
-    <Compile Include="ZedGraph\StockPointList.cs" />
-    <Compile Include="ZedGraph\StockPt.cs" />
-    <Compile Include="ZedGraph\Symbol.cs" />
-    <Compile Include="ZedGraph\TextObj.cs" />
-    <Compile Include="ZedGraph\TextScale.cs" />
-    <Compile Include="ZedGraph\Types.cs" />
-    <Compile Include="ZedGraph\ValueHandler.cs" />
-    <Compile Include="ZedGraph\X2Axis.cs" />
-    <Compile Include="ZedGraph\XAxis.cs" />
-    <Compile Include="ZedGraph\XDate.cs" />
-    <Compile Include="ZedGraph\Y2Axis.cs" />
-    <Compile Include="ZedGraph\Y2AxisList.cs" />
-    <Compile Include="ZedGraph\YAxis.cs" />
-    <Compile Include="ZedGraph\YAxisList.cs" />
-    <Compile Include="ZedGraph\ZedGraphControl.ContextMenu.cs">
+    <Compile Update="ZedGraph\ZedGraphControl.ContextMenu.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ZedGraph\ZedGraphControl.cs">
+    <Compile Update="ZedGraph\ZedGraphControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ZedGraph\ZedGraphControl.Designer.cs">
+    <Compile Update="ZedGraph\ZedGraphControl.Designer.cs">
       <DependentUpon>ZedGraphControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="ZedGraph\ZedGraphControl.Events.cs">
+    <Compile Update="ZedGraph\ZedGraphControl.Events.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ZedGraph\ZedGraphControl.Printing.cs">
+    <Compile Update="ZedGraph\ZedGraphControl.Printing.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ZedGraph\ZedGraphControl.Properties.cs">
+    <Compile Update="ZedGraph\ZedGraphControl.Properties.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ZedGraph\ZedGraphControl.ScrollBars.cs">
+    <Compile Update="ZedGraph\ZedGraphControl.ScrollBars.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ZedGraph\ZedGraphException.cs" />
-    <Compile Include="ZedGraph\ZoomState.cs" />
-    <Compile Include="ZedGraph\ZoomStateStack.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CurveEditor.resx">
+    <EmbeddedResource Update="CurveEditor.resx">
       <DependentUpon>CurveEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="CurveLibrarySelector.resx">
+    <EmbeddedResource Update="CurveLibrarySelector.resx">
       <DependentUpon>CurveLibrarySelector.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="FunctionGenerator.resx">
+    <EmbeddedResource Update="FunctionGenerator.resx">
       <DependentUpon>FunctionGenerator.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ZedGraph\ZedGraphLocale.resx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
-      <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
-      <Name>Controls</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ncalc">
-      <Version>1.3.8</Version>
+    <PackageReference Include="ncalc" Version="1.3.8">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

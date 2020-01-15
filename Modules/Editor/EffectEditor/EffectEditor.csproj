@@ -1,33 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5A48B67F-1E7E-4ED6-A201-F6CC8E7E6788}</ProjectGuid>
-    <OutputType>library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VixenModules.Editor.EffectEditor</RootNamespace>
-    <AssemblyName>EffectEditor</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>net48</TargetFramework>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccProvider>
-    </SccProvider>
-    <SignAssembly>false</SignAssembly>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
+    <AssemblyOriginatorKeyFile />
+    <FileUpgradeFlags />
     <UpgradeBackupLocation />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -43,301 +22,41 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
-    <TargetFrameworkProfile />
+    <AssemblyTitle>WPF EffectPropertyEditorGrid</AssemblyTitle>
+    <Product>WPF EffectPropertyEditorGrid</Product>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <Description>WPF EffectPropertyEditorGrid Control</Description>
+    <AssemblyVersion>2015.05.10</AssemblyVersion>
+    <FileVersion>2015.05.10</FileVersion>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <UseWPF>true</UseWPF>
+    <Platforms>x64;x86</Platforms>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>..\..\..\Release64\Modules\Editor\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
     <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>..\..\..\Release\Modules\Editor\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
+    <OutputPath>..\..\..\$(Configuration)\Modules\Editor\</OutputPath>
     <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <OutputPath>..\..\..\Debug64\Modules\Editor\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <Optimize>false</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <OutputPath>..\..\..\Debug\Modules\Editor\</OutputPath>
+    <OutputPath>..\..\..\$(Configuration)\Modules\Editor\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <Optimize>false</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase">
-      <RequiredTargetFramework>3.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="PresentationCore">
-      <RequiredTargetFramework>3.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="PresentationFramework">
-      <RequiredTargetFramework>3.0</RequiredTargetFramework>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Design\AlphabeticalLayout.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Design\CategorizedLayout.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\GradientLevelPairEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\ColorPaletteEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\Converters.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Themes\ColorGradientEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\ColorGradientPaletteEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\IntegerEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\FontEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\TextEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\EnumEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\SliderEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\SystemColorEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\CurveEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Themes\EditorResources.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\Generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\DoubleEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\PropertyGrid.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\SliderPoint.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\ToggleSwitch.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="CategoryEditor.cs" />
-    <Compile Include="CategoryItem.cs" />
-    <Compile Include="Controls\BaseInlineCurveEditor.cs" />
-    <Compile Include="Controls\BaseInlineGradientEditor.cs" />
-    <Compile Include="Controls\CollectionView.cs" />
-    <Compile Include="Controls\IndexingStackPanel.cs" />
-    <Compile Include="Controls\InlineGradientEditor.cs" />
-    <Compile Include="Controls\InlineGradientPairCurveEditor.cs" />
-    <Compile Include="Controls\InlineCurveEditor.cs" />
-    <Compile Include="Controls\InlineGradientPairGradientEditor.cs" />
-    <Compile Include="Controls\IntegerEditor.cs" />
-    <Compile Include="Controls\RepeatEditor.cs" />
-    <Compile Include="Controls\Reveal.cs" />
-    <Compile Include="Controls\SliderEditorBase.cs" />
-    <Compile Include="Controls\SliderPoint.cs" />
-    <Compile Include="Controls\ToggleSwitch.cs" />
-    <Compile Include="Converters\BitmapImageConverter.cs" />
-    <Compile Include="Converters\CurveIsLibraryToVisibilityConverter.cs" />
-    <Compile Include="Converters\ColorGradientIsLibraryToVisibilityConverter.cs" />
-    <Compile Include="Converters\ColorGradientToImageConverter.cs" />
-    <Compile Include="Converters\CurveToDoubleConverter.cs" />
-    <Compile Include="Converters\CurveToImageConverter.cs" />
-    <Compile Include="Converters\ToolTipVisibilityConverter.cs" />
-    <Compile Include="Converters\DebugConverter.cs" />
-    <Compile Include="Converters\DoubleToIntConverter.cs" />
-    <Compile Include="Converters\EnumValueConverter.cs" />
-    <Compile Include="Converters\ExpanderHeaderWidthConverter.cs" />
-    <Compile Include="Converters\FontConverterDecorator.cs" />
-    <Compile Include="Converters\FontStretchConverterDecorator.cs" />
-    <Compile Include="Converters\FontStyleConverterDecorator.cs" />
-    <Compile Include="Converters\FontWeightConverterDecorator.cs" />
-    <Compile Include="Converters\IntToDoubleConverter.cs" />
-    <Compile Include="Converters\LevelToIntConverter.cs" />
-    <Compile Include="Converters\NullToVisibilityConverter.cs" />
-    <Compile Include="Converters\PercentageToIntConverter.cs" />
-    <Compile Include="Converters\PercentageValueConverter.cs" />
-    <Compile Include="Converters\LevelValueConverter.cs" />
-    <Compile Include="Converters\MultiBooleanToVisibilityConverter.cs" />
-    <Compile Include="Converters\NullValueConverter.cs" />
-    <Compile Include="Converters\StringNullOrEmptyToVisibilityConverter.cs" />
-    <Compile Include="Converters\SystemColorToSolidBrushConverter.cs" />
-    <Compile Include="Converters\WidthToVisibilityConverter.cs" />
-    <Compile Include="Design\GridEntryContainer.cs" />
-    <Compile Include="Design\GridEntryLayout.cs" />
-    <Compile Include="Editors\EditorCollection.cs" />
-    <Compile Include="Design\CategoryContainer.cs" />
-    <Compile Include="Controls\EnumDropdown.cs" />
-    <Compile Include="Design\CategoryEditorContentPresenter.cs" />
-    <Compile Include="Design\CategoryItemsLayout.cs" />
-    <Compile Include="Design\PropertyContainer.cs" />
-    <Compile Include="Design\PropertyEditorContentPresenter.cs" />
-    <Compile Include="Design\PropertyItemsLayout.cs" />
-    <Compile Include="Design\PropertyNameTextBlock.cs" />
-    <Compile Include="Editors\EditorKeys.cs" />
-    <Compile Include="Editors\BaseColorTypeEditor.cs" />
-    <Compile Include="Editors\ColorTypeEditor.cs" />
-    <Compile Include="Editors\GledPathEditor.cs" />
-    <Compile Include="Editors\SvgPathEditor.cs" />
-    <Compile Include="Editors\ImagePathEditor.cs" />
-    <Compile Include="Editors\FilePathEditor.cs" />
-    <Compile Include="Editors\FontEditor.cs" />
-    <Compile Include="Editors\SelectionEditor.cs" />
-    <Compile Include="Editors\CurveEditor.cs" />
-    <Compile Include="Editors\Editor.cs" />
-    <Compile Include="Editors\GradientTypeEditor.cs" />
-    <Compile Include="Editors\PropertyEditor.cs" />
-    <Compile Include="Editors\SliderDoubleEditor.cs" />
-    <Compile Include="Editors\SliderEditor.cs" />
-    <Compile Include="Editors\LevelEditor.cs" />
-    <Compile Include="Editors\SliderPercentageEditor.cs" />
-    <Compile Include="Editors\TypeEditor.cs" />
-    <Compile Include="Editors\VideoPathEditor.cs" />
-    <Compile Include="GridEntryCollection.cs" />
-    <Compile Include="Input\DragDropManager.cs" />
-    <Compile Include="Input\DragDropTargetType.cs" />
-    <Compile Include="Input\DropPreviewAdorner.cs" />
-    <Compile Include="Input\IDragSourceAdvisor.cs" />
-    <Compile Include="Input\IDropTargetAdvisor.cs" />
-    <Compile Include="Internal\CollectionItems.cs" />
-    <Compile Include="Internal\CollectionItemValue.cs" />
-    <Compile Include="Internal\CollectionPropertyDescriptor.cs" />
-    <Compile Include="Internal\Util.cs" />
-    <Compile Include="KnownTypes.cs" />
-    <Compile Include="MetadataRepository.cs" />
-    <Compile Include="PreviewStateChanged.cs" />
-    <Compile Include="PropertyEditingEventArgs.cs" />
-    <Compile Include="PropertyEditing\CollectionChangedEventArgs.cs" />
-    <Compile Include="PropertyEditing\Filters\PropertyFilterAppliedEventArgs.cs" />
-    <Compile Include="GridEntry.cs" />
-    <Compile Include="ResourceLocator.cs" />
-    <Compile Include="PropertyValueChangedEventArgs.cs" />
-    <Compile Include="Input\PropertyEditorCommands.cs" />
-    <Compile Include="Internal\MathUtil.cs" />
-    <Compile Include="Internal\MergedPropertyDescriptor.cs" />
-    <Compile Include="Design\AlphabeticalLayout.cs" />
-    <Compile Include="Design\CategorizedLayout.cs" />
-    <Compile Include="Metadata\AttributesContainer.cs" />
-    <Compile Include="Input\PropertyGridCommands.cs" />
-    <Compile Include="Controls\DoubleEditor.cs" />
-    <Compile Include="ObjectServices.cs" />
-    <Compile Include="PropertyGrid.Commands.cs" />
-    <Compile Include="PropertyGridUtils.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <Compile Include="PropertyDisplayMode.cs" />
-    <Compile Include="PropertyEditing\CategoryItemComparer.cs" />
-    <Compile Include="PropertyEditing\Filters\IPropertyFilterTarget.cs" />
-    <Compile Include="PropertyEditing\Filters\PropertyFilter.cs" />
-    <Compile Include="PropertyEditing\Filters\PropertyFilterPredicate.cs" />
-    <Compile Include="PropertyEditing\PropertyItemComparer.cs" />
-    <Compile Include="PropertyEditing\ValueExceptionEventArgs.cs" />
-    <Compile Include="PropertyEditing\ValueExceptionSource.cs" />
-    <Compile Include="EffectPropertyEditorGrid.cs" />
-    <Compile Include="PropertyItem.cs" />
-    <Compile Include="PropertyItemValue.cs" />
-    <Compile Include="Utils\ClipBorder.cs" />
-    <Compile Include="Utils\GeometryHelper.cs" />
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <AppDesigner Include="Properties\" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Themes\Images\clear.png" />
@@ -348,72 +67,73 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\WPFCommon\WPFCommon.csproj">
-      <Project>{44c23ecf-ea1c-4806-956a-07ec1203f8b4}</Project>
-      <Name>WPFCommon</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj">
-      <Project>{1B189B36-02AF-4A57-9E1B-6DC833212725}</Project>
-      <Name>ColorGradients</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\App\Curves\Curves.csproj">
-      <Project>{F0BA7127-61B4-453A-802B-ABCB5A0D3D54}</Project>
-      <Name>Curves</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Effect\Effect\Effect.csproj">
-      <Project>{af76c902-a776-49c3-9019-d7cb0a53fb2f}</Project>
-      <Name>Effect</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Effect\Liquid\Emitter\Emitter.csproj">
-      <Project>{32629b20-afd0-490a-be11-e1e6eca4408e}</Project>
-      <Name>Emitter</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Effect\Wave\IWaveform\IWaveform.csproj">
-      <Project>{a9136cb2-83f8-462e-918b-15ea1fb4a431}</Project>
-      <Name>IWaveform</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Property\Color\Color.csproj">
-      <Project>{73068A83-B3B7-4A2C-923D-71C7886CD5E3}</Project>
-      <Name>Color</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
-      <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
-      <Name>Vixen</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
-      <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
-      <Name>Controls</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\ValueTypes\ValueTypes.csproj">
-      <Project>{D9A7E8BC-5617-486D-9DA5-89C5861A0F88}</Project>
-      <Name>ValueTypes</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Themes\Images\librarylink.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NLog">
-      <Version>4.6.8</Version>
+    <PackageReference Include="Expression.Blend.Sdk.WPF" Version="1.0.1">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="NLog" Version="4.6.8">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <Compile Remove="obj\x64\Release\GeneratedInternalTypeHelper.g.cs" />
+    <Compile Remove="obj\x64\Release\GeneratedInternalTypeHelper.g.i.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
 </Project>

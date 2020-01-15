@@ -1,88 +1,61 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{37FE2E42-50DA-4973-88F7-072BA570F997}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VixenModules.App.CustomPropEditor</RootNamespace>
-    <AssemblyName>CustomPropEditor</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyTitle>CustomPropEditor</AssemblyTitle>
+    <Product>CustomPropEditor</Product>
+    <Platforms>x64;x86</Platforms>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <PostBuildEvent />
+    <PostBuildEvent />
+    <PostBuildEvent />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
     <OutputPath>$(SolutionDir)\Release64\Modules\App\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>$(SolutionDir)\Release\Modules\App\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
+    <OutputPath>$(SolutionDir)\$(Configuration)\Modules\App\</OutputPath>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <OutputPath>..\..\..\Debug\Modules\App\</OutputPath>
+    <OutputPath>..\..\..\$(Configuration)\Modules\App\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <Optimize>false</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <OutputPath>..\..\..\Debug64\Modules\App\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <Optimize>false</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent />
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
-      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
-      <Name>Vixen</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
-      <Project>{a54fb6a1-a9c3-488c-b961-41b8dbc81b36}</Project>
-      <Name>Controls</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
-      <Project>{f7a80169-6310-4585-9d58-a6f6f5c5b380}</Project>
-      <Name>Resources</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\WPFCommon\WPFCommon.csproj">
-      <Project>{44c23ecf-ea1c-4806-956a-07ec1203f8b4}</Project>
-      <Name>WPFCommon</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Controls.WpfPropertyGrid">
       <HintPath>..\..\..\Common\Libraries\System.Windows.Controls.WpfPropertyGrid.dll</HintPath>
       <Private>False</Private>
@@ -93,101 +66,32 @@
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Adorners\ResizeAdorner.cs" />
-    <Compile Include="Adorners\RubberbandAdorner.cs" />
-    <Compile Include="Controls\IGroupable.cs" />
-    <Compile Include="Controls\SliderMenuItem.xaml.cs">
+    <Compile Update="Controls\SliderMenuItem.xaml.cs">
       <DependentUpon>SliderMenuItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Behaviors\TreeViewMultipleSelectionBehavior.cs" />
-    <Compile Include="Converters\BoolToGridRowHeightConverter.cs" />
-    <Compile Include="Converters\BrushToColorConverter.cs" />
-    <Compile Include="Converters\BulbTypeConverter.cs" />
-    <Compile Include="Converters\CompositeCollectionConverter.cs" />
-    <Compile Include="Converters\RootNodeToCollectionMapping.cs" />
-    <Compile Include="Import\XLights\XModelInventoryImporter.cs" />
-    <Compile Include="Import\XLights\FaceInfo.cs" />
-    <Compile Include="Import\XLights\XModelInventoryMapper.cs" />
-    <Compile Include="Import\XLights\ModelNode.cs" />
-    <Compile Include="Model\ExternalVendorInventory\Category.cs" />
-    <Compile Include="Model\ExternalVendorInventory\Model.cs" />
-    <Compile Include="Model\ExternalVendorInventory\VendorLink.cs" />
-    <Compile Include="Model\ExternalVendorInventory\XModelInventory.cs" />
-    <Compile Include="Model\ExternalVendorInventory\Vendor.cs" />
-    <Compile Include="Model\ExternalVendorInventory\Wiring.cs" />
-    <Compile Include="Model\ColorMode.cs" />
-    <Compile Include="Model\Configuration.cs" />
-    <Compile Include="Model\ElementType.cs" />
-    <Compile Include="Model\FaceComponent.cs" />
-    <Compile Include="Model\InformationMetadata.cs" />
-    <Compile Include="Model\InternalVendorInventory\Category.cs" />
-    <Compile Include="Model\InternalVendorInventory\ModelInventory.cs" />
-    <Compile Include="Model\InternalVendorInventory\ModelLink.cs" />
-    <Compile Include="Model\InternalVendorInventory\Product.cs" />
-    <Compile Include="Model\InternalVendorInventory\ModelType.cs" />
-    <Compile Include="Model\InternalVendorInventory\Vendor.cs" />
-    <Compile Include="Model\InternalVendorInventory\WebLink.cs" />
-    <Compile Include="Model\PhysicalMetadata.cs" />
-    <Compile Include="Model\VendorMetadata.cs" />
-    <Compile Include="Services\ConfigurationService.cs" />
-    <Compile Include="Services\DownloadService.cs" />
-    <Compile Include="Services\IDownloadService.cs" />
-    <Compile Include="Services\PropModelPersistenceService.cs" />
-    <Compile Include="Services\PropModelServices.cs" />
-    <Compile Include="Services\ElementModelLookUpService.cs" />
-    <Compile Include="ViewModels\ConfigurationWindowViewModel.cs" />
-    <Compile Include="ViewModels\ElementModelViewModel.cs" />
-    <Compile Include="ViewModels\ElementViewModelCollection.cs" />
-    <Compile Include="ViewModels\ElementOrderViewModel.cs" />
-    <Compile Include="ViewModels\LightViewModelCollection.cs" />
-    <Compile Include="ViewModels\IExpandable.cs" />
-    <Compile Include="ViewModels\ISelectable.cs" />
-    <Compile Include="Controls\PropDesigner.cs" />
-    <Compile Include="Converters\LightNodeToPathConverter.cs" />
-    <Compile Include="Converters\PointMappingConverter.cs" />
-    <Compile Include="CustomPropEditorData.cs" />
-    <Compile Include="CustomPropEditorDescriptor.cs" />
-    <Compile Include="CustomPropEditorModule.cs" />
-    <Compile Include="Import\IModelImport.cs" />
-    <Compile Include="Import\XLights\SubModel.cs" />
-    <Compile Include="Import\XLights\XModelImport.cs" />
-    <Compile Include="ViewModels\DrawingPanelViewModel.cs" />
-    <Compile Include="ViewModels\ElementTreeViewModel.cs" />
-    <Compile Include="ViewModels\LightViewModel.cs" />
-    <Compile Include="Behaviors\MultiSelectionBehavior.cs" />
-    <Compile Include="ViewModels\ISelectableExpander.cs" />
-    <Compile Include="ViewModels\PhysicalMetadataViewModel.cs" />
-    <Compile Include="ViewModels\VendorMetadataViewModel.cs" />
-    <Compile Include="ViewModels\VendorInventoryWindowViewModel.cs" />
-    <Compile Include="Views\ConfigurationWindow.xaml.cs">
+    <Compile Update="Views\ConfigurationWindow.xaml.cs">
       <DependentUpon>ConfigurationWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CustomPropEditorWindow.xaml.cs">
+    <Compile Update="Views\CustomPropEditorWindow.xaml.cs">
       <DependentUpon>CustomPropEditorWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model\ElementModel.cs" />
-    <Compile Include="Model\Light.cs" />
-    <Compile Include="Model\Prop.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModels\PropEditorViewModel.cs" />
-    <Compile Include="Views\ModelInventoryTree.xaml.cs">
+    <Compile Update="Views\ModelInventoryTree.xaml.cs">
       <DependentUpon>ModelInventoryTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ElementTree.xaml.cs">
+    <Compile Update="Views\ElementTree.xaml.cs">
       <DependentUpon>ElementTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PhysicalMetadataView.xaml.cs">
+    <Compile Update="Views\PhysicalMetadataView.xaml.cs">
       <DependentUpon>PhysicalMetadataView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\VendorInventoryWindow.xaml.cs">
+    <Compile Update="Views\VendorInventoryWindow.xaml.cs">
       <DependentUpon>VendorInventoryWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\VendorMetadataView.xaml.cs">
+    <Compile Update="Views\VendorMetadataView.xaml.cs">
       <DependentUpon>VendorMetadataView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -255,62 +159,55 @@
     <Resource Include="Images\buttonBulbSmaller.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Catel.MVVM">
-      <Version>5.12.2</Version>
+    <PackageReference Include="Catel.MVVM" Version="5.12.2">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="gong-wpf-dragdrop">
-      <Version>2.2.0</Version>
+    <PackageReference Include="gong-wpf-dragdrop" Version="2.2.0">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="LiteDB">
-      <Version>4.1.4</Version>
+    <PackageReference Include="LiteDB" Version="4.1.4">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CSharp">
-      <Version>4.7.0</Version>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.3</Version>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="NLog">
-      <Version>4.6.8</Version>
+    <PackageReference Include="NLog" Version="4.6.8">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Dynamic.Runtime">
-      <Version>4.3.0</Version>
+    <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Reflection">
-      <Version>4.3.0</Version>
+    <PackageReference Include="System.Reflection" Version="4.3.0">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Xml.XDocument">
-      <Version>4.3.0</Version>
+    <PackageReference Include="System.Xml.XDocument" Version="4.3.0">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Xml.XmlSerializer">
-      <Version>4.3.0</Version>
+    <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <Compile Remove="obj\x64\Release\GeneratedInternalTypeHelper.g.cs" />
+    <Compile Remove="obj\x64\Release\GeneratedInternalTypeHelper.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Controls\SliderMenuItem.g.cs" />
+    <Compile Remove="obj\x64\Release\Controls\SliderMenuItem.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Views\ConfigurationWindow.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Views\CustomPropEditorWindow.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Views\ElementTree.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Views\ModelInventoryTree.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Views\PhysicalMetadataView.g.cs" />
+    <Compile Remove="obj\x64\Release\Views\PhysicalMetadataView.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Views\VendorInventoryWindow.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Views\VendorMetadataView.g.cs" />
+    <Compile Remove="obj\x64\Release\Views\VendorMetadataView.g.i.cs" />
+  </ItemGroup>
 </Project>

@@ -1,19 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{47EA8E72-BEAB-44D0-893D-8F184FCFEF31}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VixenModules.Editor.TimedSequenceEditor</RootNamespace>
-    <AssemblyName>TimedSequenceEditor</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>net48</TargetFramework>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -29,419 +20,353 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <AssemblyTitle>TimedSequenceEditor</AssemblyTitle>
+    <Product>VixenModules.Editor.TimedSequenceEditor.Properties</Product>
+    <Copyright>Copyright ©  2015</Copyright>
+    <Platforms>x64;x86</Platforms>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <PostBuildEvent />
+    <PostBuildEvent />
+    <PostBuildEvent />
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>$(SolutionDir)\Release\Modules\Editor\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
+    <OutputPath>$(SolutionDir)\$(Configuration)\Modules\Editor\</OutputPath>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <OutputPath>$(SolutionDir)\Debug\Modules\Editor\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <Optimize>false</Optimize>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
+    <OutputPath>$(SolutionDir)\$(Configuration)\Modules\Editor\</OutputPath>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>$(SolutionDir)\Release64\Modules\Editor\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <OutputPath>..\..\..\Debug64\Modules\Editor\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent />
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
-      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
-      <Name>Vixen</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Help\VixenHelp.csproj">
-      <Project>{bd12bffc-7039-4c79-aba0-51f99773a916}</Project>
-      <Name>VixenHelp</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\WPFCommon\WPFCommon.csproj">
-      <Project>{44c23ecf-ea1c-4806-956a-07ec1203f8b4}</Project>
-      <Name>WPFCommon</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\App\Marks\Marks.csproj">
-      <Project>{27d283df-52ad-4857-8359-de134db94728}</Project>
-      <Name>Marks</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\App\TimedSequenceMapper\TimedSequenceMapper.csproj">
-      <Project>{637a998a-0c0b-46fd-915e-b1fd5e143f8e}</Project>
-      <Name>TimedSequenceMapper</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Effect\Effect\Effect.csproj">
-      <Project>{AF76C902-A776-49C3-9019-D7CB0A53FB2F}</Project>
-      <Name>Effect</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Effect\Picture\Picture.csproj">
-      <Project>{2aae930f-8d4a-451b-b66e-2f3024f079fb}</Project>
-      <Name>Picture</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Effect\Shapes\Shapes.csproj">
-      <Project>{0ff95798-eb47-47f4-a640-4adfc85d99ae}</Project>
-      <Name>Shapes</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Property\Face\Face.csproj">
-      <Project>{5FCC5484-8894-4E36-BA81-B2F1B9008404}</Project>
-      <Name>Face</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\EffectEditor\EffectEditor.csproj">
-      <Project>{5a48b67f-1e7e-4ed6-a201-f6cc8e7e6788}</Project>
-      <Name>EffectEditor</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\LayerEditor\LayerEditor.csproj">
-      <Project>{3233add6-fb95-4c57-af81-34c6c19717db}</Project>
-      <Name>LayerEditor</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsyncHelpers.cs" />
-    <Compile Include="PastingMode.cs" />
-    <Compile Include="AudacityImportDialog.cs">
+    <Compile Update="AudacityImportDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AudacityImportDialog.Designer.cs">
+    <Compile Update="AudacityImportDialog.Designer.cs">
       <DependentUpon>AudacityImportDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="AutomaticMusicDetection.cs">
+    <Compile Update="AutomaticMusicDetection.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AutomaticMusicDetection.Designer.cs">
+    <Compile Update="AutomaticMusicDetection.Designer.cs">
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\WPF\MarksDocker\Services\MarkImportExportService.cs" />
-    <Compile Include="Forms\WPF\MarksDocker\ViewModels\CheckBoxStateBase.cs" />
-    <Compile Include="Forms\WPF\MarksDocker\ViewModels\CollectionTypeCheckBoxState.cs" />
-    <Compile Include="Forms\WPF\MarksDocker\ViewModels\LinkedToCheckBoxState.cs" />
-    <Compile Include="Forms\WPF\MarksDocker\ViewModels\MarkCollectionViewModel.cs" />
-    <Compile Include="Forms\WPF\MarksDocker\ViewModels\MarkDockerViewModel.cs" />
-    <Compile Include="Forms\WPF\MarksDocker\ViewModels\LevelCheckBoxState.cs" />
-    <Compile Include="Forms\WPF\MarksDocker\Views\MarkCollectionView.xaml.cs">
+    <Compile Update="Forms\WPF\MarksDocker\Views\MarkCollectionView.xaml.cs">
       <DependentUpon>MarkCollectionView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Forms\WPF\MarksDocker\Views\MarkDockerView.xaml.cs">
+    <Compile Update="Forms\WPF\MarksDocker\Views\MarkDockerView.xaml.cs">
       <DependentUpon>MarkDockerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TimeFormats.cs" />
-    <Compile Include="TimedSequenceEditorForm_Menu.cs">
+    <Compile Update="TimedSequenceEditorForm_Menu.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TimedSequenceEditorForm_ContextMenu.cs">
+    <Compile Update="TimedSequenceEditorForm_ContextMenu.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TimedSequenceEditorForm_Toolstrip.cs">
+    <Compile Update="TimedSequenceEditorForm_Toolstrip.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TimedSequenceEditorForm_Hotkeys.cs">
+    <Compile Update="TimedSequenceEditorForm_Hotkeys.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FindEffectForm.cs">
+    <Compile Update="Forms\FindEffectForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FindEffectForm.Designer.cs">
+    <Compile Update="Forms\FindEffectForm.Designer.cs">
       <DependentUpon>FindEffectForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="BulkEffectMoveForm.cs">
+    <Compile Update="BulkEffectMoveForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BulkEffectMoveForm.Designer.cs">
+    <Compile Update="BulkEffectMoveForm.Designer.cs">
       <DependentUpon>BulkEffectMoveForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="EffectDistributionDialog.cs">
+    <Compile Update="EffectDistributionDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="EffectDistributionDialog.Designer.cs">
+    <Compile Update="EffectDistributionDialog.Designer.cs">
       <DependentUpon>EffectDistributionDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="BeatMarkExportDialog.cs">
+    <Compile Update="BeatMarkExportDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BeatMarkExportDialog.Designer.cs">
+    <Compile Update="BeatMarkExportDialog.Designer.cs">
       <DependentUpon>BeatMarkExportDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="EffectModelCandidate.cs" />
-    <Compile Include="ExportDialog.cs">
+    <Compile Update="ExportDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ExportDialog.Designer.cs">
+    <Compile Update="ExportDialog.Designer.cs">
       <DependentUpon>ExportDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormParameterPicker.cs">
+    <Compile Update="Forms\FormParameterPicker.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormParameterPicker.Designer.cs">
+    <Compile Update="Forms\FormParameterPicker.Designer.cs">
       <DependentUpon>FormParameterPicker.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Form_AddMultipleEffects.cs">
+    <Compile Update="Forms\Form_AddMultipleEffects.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Form_AddMultipleEffects.Designer.cs">
+    <Compile Update="Forms\Form_AddMultipleEffects.Designer.cs">
       <DependentUpon>Form_AddMultipleEffects.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormEffectEditor.cs">
+    <Compile Update="Forms\FormEffectEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormEffectEditor.Designer.cs">
+    <Compile Update="Forms\FormEffectEditor.Designer.cs">
       <DependentUpon>FormEffectEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Form_Marks.cs">
+    <Compile Update="Forms\Form_Marks.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Form_Marks.Designer.cs">
+    <Compile Update="Forms\Form_Marks.Designer.cs">
       <DependentUpon>Form_Marks.cs</DependentUpon>
     </Compile>
-    <Compile Include="EffectRasterizer.cs" />
-    <Compile Include="EffectTimeEditor.cs">
+    <Compile Update="EffectTimeEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="EffectTimeEditor.Designer.cs">
+    <Compile Update="EffectTimeEditor.Designer.cs">
       <DependentUpon>EffectTimeEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Form_Effects.cs">
+    <Compile Update="Forms\Form_Effects.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Form_Effects.Designer.cs">
+    <Compile Update="Forms\Form_Effects.Designer.cs">
       <DependentUpon>Form_Effects.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Form_Grid.cs">
+    <Compile Update="Forms\Form_Grid.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Form_Grid.Designer.cs">
+    <Compile Update="Forms\Form_Grid.Designer.cs">
       <DependentUpon>Form_Grid.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Form_ColorLibrary.cs">
+    <Compile Update="Forms\Form_ColorLibrary.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Form_ColorLibrary.Designer.cs">
+    <Compile Update="Forms\Form_ColorLibrary.Designer.cs">
       <DependentUpon>Form_ColorLibrary.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Form_GradientLibrary.cs">
+    <Compile Update="Forms\Form_GradientLibrary.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Form_GradientLibrary.Designer.cs">
+    <Compile Update="Forms\Form_GradientLibrary.Designer.cs">
       <DependentUpon>Form_GradientLibrary.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Form_CurveLibrary.cs">
+    <Compile Update="Forms\Form_CurveLibrary.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Form_CurveLibrary.Designer.cs">
+    <Compile Update="Forms\Form_CurveLibrary.Designer.cs">
       <DependentUpon>Form_CurveLibrary.cs</DependentUpon>
     </Compile>
-    <Compile Include="IntentRasterizer.cs" />
-    <Compile Include="InvalidAudioPathDialog.cs">
+    <Compile Update="InvalidAudioPathDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InvalidAudioPathDialog.Designer.cs">
+    <Compile Update="InvalidAudioPathDialog.Designer.cs">
       <DependentUpon>InvalidAudioPathDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="PapagayoDoc.cs" />
-    <Compile Include="MarkManager.cs">
+    <Compile Update="MarkManager.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MarkManager.Designer.cs">
+    <Compile Update="MarkManager.Designer.cs">
       <DependentUpon>MarkManager.cs</DependentUpon>
     </Compile>
-    <Compile Include="MarkTapper.cs">
+    <Compile Update="MarkTapper.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MarkTapper.Designer.cs">
+    <Compile Update="MarkTapper.Designer.cs">
       <DependentUpon>MarkTapper.cs</DependentUpon>
     </Compile>
-    <Compile Include="ParameterEditor.cs">
+    <Compile Update="ParameterEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ParameterEditor.Designer.cs">
+    <Compile Update="ParameterEditor.Designer.cs">
       <DependentUpon>ParameterEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Settings.Designer.cs">
+    <Compile Update="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ColorCollectionLibrary_Form.cs">
+    <Compile Update="Forms\ColorCollectionLibrary_Form.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ColorCollectionLibrary_Form.Designer.cs">
+    <Compile Update="Forms\ColorCollectionLibrary_Form.Designer.cs">
       <DependentUpon>ColorCollectionLibrary_Form.cs</DependentUpon>
     </Compile>
-    <Compile Include="TimedSequenceEditor.cs" />
-    <Compile Include="TimedSequenceEditorDescriptor.cs" />
-    <Compile Include="TimedSequenceEditorEffectEditor.cs">
+    <Compile Update="TimedSequenceEditorEffectEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TimedSequenceEditorEffectEditor.Designer.cs">
+    <Compile Update="TimedSequenceEditorEffectEditor.Designer.cs">
       <DependentUpon>TimedSequenceEditorEffectEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="TimedSequenceEditorForm.cs">
+    <Compile Update="TimedSequenceEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TimedSequenceEditorForm.Designer.cs">
+    <Compile Update="TimedSequenceEditorForm.Designer.cs">
       <DependentUpon>TimedSequenceEditorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="TimedSequenceEditorResources.Designer.cs">
+    <Compile Update="TimedSequenceEditorResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>TimedSequenceEditorResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="TimedSequenceElement.cs" />
-    <Compile Include="TimedSequenceRowLabel.cs" />
-    <Compile Include="Undo\MarksRemovedUndoAction.cs" />
-    <Compile Include="Undo\MarksAddedUndoAction .cs" />
-    <Compile Include="Undo\MarksAddedRemovedUndoAction.cs" />
-    <Compile Include="Undo\EffectsAddedRemovedUndoAction.cs" />
-    <Compile Include="Undo\EffectsAddedUndoAction.cs" />
-    <Compile Include="Undo\EffectsLayerChangedUndoAction.cs" />
-    <Compile Include="Undo\EffectsModifiedUndoAction.cs" />
-    <Compile Include="Undo\EffectsPastedUndoAction.cs" />
-    <Compile Include="Undo\EffectsPropertyModifiedUndoAction.cs" />
-    <Compile Include="Undo\EffectsRemovedUndoAction.cs" />
-    <Compile Include="Undo\ElementsTimeChangedUndoAction.cs" />
-    <Compile Include="Undo\EffectsCutUndoAction.cs" />
-    <Compile Include="LayerEditor.cs">
+    <Compile Update="LayerEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LayerEditor.Designer.cs">
+    <Compile Update="LayerEditor.Designer.cs">
       <DependentUpon>LayerEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Undo\MarksTimeChangedUndoAction.cs" />
-    <Compile Include="User32.cs" />
-    <Compile Include="Shell32.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Forms\WPF\Common\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\magnet.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AudacityImportDialog.resx">
+    <EmbeddedResource Update="AudacityImportDialog.resx">
       <DependentUpon>AudacityImportDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AutomaticMusicDetection.resx">
+    <EmbeddedResource Update="AutomaticMusicDetection.resx">
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FindEffectForm.resx">
+    <EmbeddedResource Update="Forms\FindEffectForm.resx">
       <DependentUpon>FindEffectForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="BulkEffectMoveForm.resx">
+    <EmbeddedResource Update="BulkEffectMoveForm.resx">
       <DependentUpon>BulkEffectMoveForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="EffectDistributionDialog.resx">
+    <EmbeddedResource Update="EffectDistributionDialog.resx">
       <DependentUpon>EffectDistributionDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="BeatMarkExportDialog.resx">
+    <EmbeddedResource Update="BeatMarkExportDialog.resx">
       <DependentUpon>BeatMarkExportDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ExportDialog.resx">
+    <EmbeddedResource Update="ExportDialog.resx">
       <DependentUpon>ExportDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormEffectEditor.resx">
+    <EmbeddedResource Update="Forms\FormEffectEditor.resx">
       <DependentUpon>FormEffectEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormParameterPicker.resx">
+    <EmbeddedResource Update="Forms\FormParameterPicker.resx">
       <DependentUpon>FormParameterPicker.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Form_AddMultipleEffects.resx">
+    <EmbeddedResource Update="Forms\Form_AddMultipleEffects.resx">
       <DependentUpon>Form_AddMultipleEffects.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Form_Marks.resx">
+    <EmbeddedResource Update="Forms\Form_Marks.resx">
       <DependentUpon>Form_Marks.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="EffectTimeEditor.resx">
+    <EmbeddedResource Update="EffectTimeEditor.resx">
       <DependentUpon>EffectTimeEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Form_Effects.resx">
+    <EmbeddedResource Update="Forms\Form_Effects.resx">
       <DependentUpon>Form_Effects.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Form_Grid.resx">
+    <EmbeddedResource Update="Forms\Form_Grid.resx">
       <DependentUpon>Form_Grid.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Form_ColorLibrary.resx">
+    <EmbeddedResource Update="Forms\Form_ColorLibrary.resx">
       <DependentUpon>Form_ColorLibrary.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Form_GradientLibrary.resx">
+    <EmbeddedResource Update="Forms\Form_GradientLibrary.resx">
       <DependentUpon>Form_GradientLibrary.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Form_CurveLibrary.resx">
+    <EmbeddedResource Update="Forms\Form_CurveLibrary.resx">
       <DependentUpon>Form_CurveLibrary.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="InvalidAudioPathDialog.resx">
+    <EmbeddedResource Update="InvalidAudioPathDialog.resx">
       <DependentUpon>InvalidAudioPathDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MarkManager.resx">
+    <EmbeddedResource Update="MarkManager.resx">
       <DependentUpon>MarkManager.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MarkTapper.resx">
+    <EmbeddedResource Update="MarkTapper.resx">
       <DependentUpon>MarkTapper.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ParameterEditor.resx">
+    <EmbeddedResource Update="ParameterEditor.resx">
       <DependentUpon>ParameterEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ColorCollectionLibrary_Form.resx">
+    <EmbeddedResource Update="Forms\ColorCollectionLibrary_Form.resx">
       <DependentUpon>ColorCollectionLibrary_Form.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TimedSequenceEditorEffectEditor.resx">
+    <EmbeddedResource Update="TimedSequenceEditorEffectEditor.resx">
       <DependentUpon>TimedSequenceEditorEffectEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TimedSequenceEditorForm.resx">
+    <EmbeddedResource Update="TimedSequenceEditorForm.resx">
       <DependentUpon>TimedSequenceEditorForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TimedSequenceEditorResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>TimedSequenceEditorResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LayerEditor.resx">
+    <EmbeddedResource Update="LayerEditor.resx">
       <DependentUpon>LayerEditor.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -450,82 +375,49 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\BaseSequence\BaseSequence.csproj">
-      <Project>{8D6C81FD-5117-414A-8985-7BD5AA0F5135}</Project>
-      <Name>BaseSequence</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
-      <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
-      <Name>Controls</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
-      <Project>{F7A80169-6310-4585-9D58-A6F6F5C5B380}</Project>
-      <Name>Resources</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Analysis\BeatsAndBars\BeatsAndBars.csproj">
-      <Project>{b848a227-50aa-4ff7-8b7f-73fe36893485}</Project>
-      <Name>BeatsAndBars</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj">
-      <Project>{1b189b36-02af-4a57-9e1b-6dc833212725}</Project>
-      <Name>ColorGradients</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\App\Curves\Curves.csproj">
-      <Project>{f0ba7127-61b4-453a-802b-abcb5a0d3d54}</Project>
-      <Name>Curves</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\App\LipSync\LipSyncApp.csproj">
-      <Project>{e3689e21-2204-48b9-8370-d45ee4a23451}</Project>
-      <Name>LipSyncApp</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Effect\LipSync\LipSync.csproj">
-      <Project>{6de9a846-ac25-40b6-b8b2-b306ec9f2569}</Project>
-      <Name>LipSync</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Media\Audio\Audio.csproj">
-      <Project>{4243BA4C-6371-4DD1-8A1D-675BED5322AF}</Project>
-      <Name>Audio</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Property\Color\Color.csproj">
-      <Project>{73068a83-b3b7-4a2c-923d-71c7886cd5e3}</Project>
-      <Name>Color</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Sequence\Timed\Timed.csproj">
-      <Project>{45E1228A-F714-41D5-BB9B-A776F2B23143}</Project>
-      <Name>Timed</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Forms\WPF\MarksDocker\Views\MarkCollectionView.xaml">
@@ -538,76 +430,58 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Catel.Core">
-      <Version>5.12.2</Version>
+    <PackageReference Include="Catel.Core" Version="5.12.2">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Catel.MVVM">
-      <Version>5.12.2</Version>
+    <PackageReference Include="Catel.MVVM" Version="5.12.2">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Catel.Serialization.Json">
-      <Version>5.12.2</Version>
+    <PackageReference Include="Catel.Serialization.Json" Version="5.12.2">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="DockPanelSuite">
-      <Version>3.0.6</Version>
+    <PackageReference Include="DockPanelSuite" Version="3.0.6">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="DockPanelSuite.ThemeVS2015">
-      <Version>3.0.6</Version>
+    <PackageReference Include="DockPanelSuite.ThemeVS2015" Version="3.0.6">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="gong-wpf-dragdrop">
-      <Version>2.2.0</Version>
+    <PackageReference Include="gong-wpf-dragdrop" Version="2.2.0">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CSharp">
-      <Version>4.7.0</Version>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.3</Version>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="NLog">
-      <Version>4.6.8</Version>
+    <PackageReference Include="NLog" Version="4.6.8">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Dynamic.Runtime">
-      <Version>4.3.0</Version>
+    <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Reflection">
-      <Version>4.3.0</Version>
+    <PackageReference Include="System.Reflection" Version="4.3.0">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Xml.XDocument">
-      <Version>4.3.0</Version>
+    <PackageReference Include="System.Xml.XDocument" Version="4.3.0">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Xml.XmlSerializer">
-      <Version>4.3.0</Version>
+    <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <Compile Remove="BeatDetection.cs" />
+    <Compile Remove="BeatDetection.Designer.cs" />
+    <Compile Remove="obj\x64\Release\GeneratedInternalTypeHelper.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Forms\WPF\MarksDocker\Views\MarkCollectionView.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Forms\WPF\MarksDocker\Views\MarkDockerView.g.i.cs" />
+  </ItemGroup>
 </Project>

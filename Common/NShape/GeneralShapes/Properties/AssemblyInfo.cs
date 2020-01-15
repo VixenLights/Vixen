@@ -15,16 +15,6 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-// General Information about an library is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an library.
-
-[assembly: AssemblyTitle("NShapes General Shapes")]
-[assembly: AssemblyDescription("NShape Basic Shapes for .NET 2.0")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("NShape General Shapes Library")]
-[assembly: AssemblyTrademark("")]
-
 // Setting ComVisible to false makes the types in this library not visible 
 // to COM components.  If you need to access a type in this library from 
 // COM, set the ComVisible attribute to true on that type.
