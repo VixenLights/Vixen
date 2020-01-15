@@ -4,9 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
-using NLog;
 using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
@@ -15,7 +13,6 @@ using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
 using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
-using ZedGraph;
 
 namespace VixenModules.Effect.Picture
 {

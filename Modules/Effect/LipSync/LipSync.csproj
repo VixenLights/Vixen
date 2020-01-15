@@ -55,17 +55,11 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EyeMode.cs" />
@@ -104,19 +98,9 @@
       <Name>LipSyncApp</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\App\Marks\Marks.csproj">
-      <Project>{27D283DF-52AD-4857-8359-DE134DB94728}</Project>
-      <Name>Marks</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj">
       <Project>{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}</Project>
       <Name>EffectDescriptorAttributes</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Property\Color\Color.csproj">
-      <Project>{73068A83-B3B7-4A2C-923D-71C7886CD5E3}</Project>
-      <Name>Color</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Property\Face\Face.csproj">
@@ -132,11 +116,6 @@
     <ProjectReference Include="..\Picture\Picture.csproj">
       <Project>{2aae930f-8d4a-451b-b66e-2f3024f079fb}</Project>
       <Name>Picture</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\SetLevel\SetLevel.csproj">
-      <Project>{8910163e-a2a3-4f8b-b5d8-0e311166b8ba}</Project>
-      <Name>SetLevel</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

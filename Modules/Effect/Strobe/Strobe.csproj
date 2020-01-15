@@ -73,12 +73,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="StrobeMode.cs" />
@@ -106,19 +100,9 @@
       <Name>Curves</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\App\Marks\Marks.csproj">
-      <Project>{27d283df-52ad-4857-8359-de134db94728}</Project>
-      <Name>Marks</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj">
       <Project>{1c84da63-a5db-4086-88ae-b2b43fccad7b}</Project>
       <Name>EffectDescriptorAttributes</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Property\Color\Color.csproj">
-      <Project>{73068a83-b3b7-4a2c-923d-71c7886cd5e3}</Project>
-      <Name>Color</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Effect\Effect.csproj">
@@ -129,11 +113,6 @@
     <ProjectReference Include="..\Pulse\Pulse.csproj">
       <Project>{a815a79e-305d-4167-a0bc-ffa590bb4644}</Project>
       <Name>Pulse</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\SetLevel\SetLevel.csproj">
-      <Project>{8910163e-a2a3-4f8b-b5d8-0e311166b8ba}</Project>
-      <Name>SetLevel</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

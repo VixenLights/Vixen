@@ -54,11 +54,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GarlandsDescriptor.cs" />
@@ -87,11 +82,6 @@
     <ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj">
       <Project>{1c84da63-a5db-4086-88ae-b2b43fccad7b}</Project>
       <Name>EffectDescriptorAttributes</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Property\Color\Color.csproj">
-      <Project>{73068a83-b3b7-4a2c-923d-71c7886cd5e3}</Project>
-      <Name>Color</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Effect\Effect.csproj">

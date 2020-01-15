@@ -69,17 +69,11 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -110,11 +104,6 @@
     <ProjectReference Include="..\..\App\Curves\Curves.csproj">
       <Project>{f0ba7127-61b4-453a-802b-abcb5a0d3d54}</Project>
       <Name>Curves</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\App\Marks\Marks.csproj">
-      <Project>{27d283df-52ad-4857-8359-de134db94728}</Project>
-      <Name>Marks</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj">
@@ -252,10 +241,6 @@
     <EmbeddedResource Include="SVGShapes\Christmas\Star.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Fizzler">
-      <Version>1.2.0</Version>
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </PackageReference>
     <PackageReference Include="NLog">
       <Version>4.6.8</Version>
       <ExcludeAssets>runtime</ExcludeAssets>
