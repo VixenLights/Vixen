@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Vixen.Module;
 using System.Runtime.Serialization;
 using System.IO.Ports;

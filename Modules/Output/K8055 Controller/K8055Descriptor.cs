@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Vixen.Module.Controller;
 
 namespace VixenModules.Output.K8055_Controller
