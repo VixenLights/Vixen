@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <ProductVersion>9.0.30729</ProductVersion>
     <TargetFramework>net48</TargetFramework>
@@ -6,8 +6,6 @@
     <Product>Vixen</Product>
     <Description>Vixen</Description>
     <Copyright>Copyright © K.C. Oaks 2005-2013</Copyright>
-    <AssemblyVersion>0.0.0.0</AssemblyVersion>
-    <FileVersion>3.7.0.0</FileVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Platforms>x64;x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -20,6 +18,7 @@ del "$(OutDir)\libzstd.dll*"</PostBuildEvent>
     <PostBuildEvent>copy "$(SolutionDir)\Release Notes.txt" "$(OutDir)"
 copy "$(SolutionDir)\License.txt" "$(OutDir)"
 del "$(OutDir)\libzstd.dll*"</PostBuildEvent>
+    <Version>0.0.0.0</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>$(SolutionDir)\$(Configuration)\</OutputPath>
