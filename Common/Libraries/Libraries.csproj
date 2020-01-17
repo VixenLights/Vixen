@@ -7,21 +7,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Platforms>x64;x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <PostBuildEvent>del "$(OutDir)\K8055D*"
-del "$(OutDir)\fmstick*"
-del "$(OutDir)\inpout*"
-del "$(OutDir)\mrdsio*"
-del "$(OutDir)\System.Windows.Forms.Calendar35.dll*"</PostBuildEvent>
-    <PostBuildEvent>del "$(OutDir)\K8055D*"
-del "$(OutDir)\fmstick*"
-del "$(OutDir)\inpout*"
-del "$(OutDir)\mrdsio*"
-del "$(OutDir)\System.Windows.Forms.Calendar35.dll*"</PostBuildEvent>
-    <PostBuildEvent>del "$(OutDir)\K8055D*"
-del "$(OutDir)\fmstick*"
-del "$(OutDir)\inpout*"
-del "$(OutDir)\mrdsio*"
-del "$(OutDir)\System.Windows.Forms.Calendar35.dll*"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -40,14 +25,7 @@ del "$(OutDir)\System.Windows.Forms.Calendar35.dll*"</PostBuildEvent>
     <OutputPath>..\..\Debug64\Common\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>del "$(OutDir)\K8055D*"
-del "$(OutDir)\fmstick*"
-del "$(OutDir)\inpout*"
-del "$(OutDir)\mrdsio*"
-del "$(OutDir)\System.Windows.Forms.Calendar35.dll*"</PostBuildEvent>
-  </PropertyGroup>
-  <ItemGroup>
+	<ItemGroup>
     <Content Include="fmstick.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -154,4 +132,7 @@ del "$(OutDir)\System.Windows.Forms.Calendar35.dll*"</PostBuildEvent>
     <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0" />
     <PackageReference Include="Zstandard.Net" Version="1.1.7" />
   </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="del &quot;$(OutDir)\K8055D*&quot;&#xD;&#xA;del &quot;$(OutDir)\fmstick*&quot;&#xD;&#xA;del &quot;$(OutDir)\inpout*&quot;&#xD;&#xA;del &quot;$(OutDir)\mrdsio*&quot;&#xD;&#xA;del &quot;$(OutDir)\System.Windows.Forms.Calendar35.dll*&quot;" />
+  </Target>
 </Project>

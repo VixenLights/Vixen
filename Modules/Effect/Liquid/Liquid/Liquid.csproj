@@ -24,10 +24,7 @@
     <OutputPath>..\..\..\..\$(Configuration)\Modules\Effect\</OutputPath>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent />
-  </PropertyGroup>
-  <ItemGroup>
+	<ItemGroup>
     <ProjectReference Include="..\..\..\..\Common\FastPixel\FastPixel.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>

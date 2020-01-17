@@ -31,10 +31,7 @@
     <OutputPath>..\..\..\Debug64\Common\</OutputPath>
     <DefineConstants />
   </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent />
-  </PropertyGroup>
-  <ItemGroup>
+	<ItemGroup>
     <Compile Update="LayerPresenter.cs">
       <SubType>Component</SubType>
     </Compile>

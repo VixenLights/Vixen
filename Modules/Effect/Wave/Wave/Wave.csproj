@@ -24,9 +24,6 @@
     <OutputPath>..\..\..\..\$(Configuration)\Modules\Effect\</OutputPath>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent />
-  </PropertyGroup>
 	<ItemGroup>
     <ProjectReference Include="..\..\..\..\Common\Controls\Controls.csproj">
       <Private>false</Private>

@@ -10,18 +10,6 @@
     <Copyright>Copyright ©  2013</Copyright>
     <Platforms>x64;x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <PostBuildEvent>del "$(OutDir)\System.*"
-del "$(OutDir)\Microsoft.*"
-del "$(OutDir)\netstandard.dll*"
-del "$(OutDir)\libzstd.dll*"</PostBuildEvent>
-    <PostBuildEvent>del "$(OutDir)\System.*"
-del "$(OutDir)\Microsoft.*"
-del "$(OutDir)\netstandard.dll*"
-del "$(OutDir)\libzstd.dll*"</PostBuildEvent>
-    <PostBuildEvent>del "$(OutDir)\System.*"
-del "$(OutDir)\Microsoft.*"
-del "$(OutDir)\netstandard.dll*"
-del "$(OutDir)\libzstd.dll*"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -38,13 +26,7 @@ del "$(OutDir)\libzstd.dll*"</PostBuildEvent>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <OutputPath>..\..\..\Debug64\Modules\Preview\</OutputPath>
   </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>del "$(OutDir)\System.*"
-del "$(OutDir)\Microsoft.*"
-del "$(OutDir)\netstandard.dll*"
-del "$(OutDir)\libzstd.dll*"</PostBuildEvent>
-  </PropertyGroup>
-  <ItemGroup>
+	<ItemGroup>
     <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>

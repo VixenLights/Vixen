@@ -25,10 +25,7 @@
     <OutputPath>..\..\..\Debug64\Modules\App\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent />
-  </PropertyGroup>
-  <ItemGroup>
+	<ItemGroup>
     <ProjectReference Include="..\..\Property\Location\Location.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
