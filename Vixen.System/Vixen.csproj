@@ -9,16 +9,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Platforms>x64;x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <PostBuildEvent>copy "$(SolutionDir)\Release Notes.txt" "$(OutDir)"
-copy "$(SolutionDir)\License.txt" "$(OutDir)"
-del "$(OutDir)\libzstd.dll*"</PostBuildEvent>
-    <PostBuildEvent>copy "$(SolutionDir)\Release Notes.txt" "$(OutDir)"
-copy "$(SolutionDir)\License.txt" "$(OutDir)"
-del "$(OutDir)\libzstd.dll*"</PostBuildEvent>
-    <PostBuildEvent>copy "$(SolutionDir)\Release Notes.txt" "$(OutDir)"
-copy "$(SolutionDir)\License.txt" "$(OutDir)"
-del "$(OutDir)\libzstd.dll*"</PostBuildEvent>
-    <Version>0.0.0.0</Version>
+	  <Version>0.0.0.0</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>$(SolutionDir)\$(Configuration)\</OutputPath>
@@ -32,12 +23,7 @@ del "$(OutDir)\libzstd.dll*"</PostBuildEvent>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <OutputPath>..\Debug64\</OutputPath>
   </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>copy "$(SolutionDir)\Release Notes.txt" "$(OutDir)"
-copy "$(SolutionDir)\License.txt" "$(OutDir)"
-del "$(OutDir)\libzstd.dll*"</PostBuildEvent>
-  </PropertyGroup>
-  <ItemGroup>
+	<ItemGroup>
     <Reference Include="Microsoft.CSharp">
       <Private>false</Private>
     </Reference>
@@ -278,4 +264,7 @@ del "$(OutDir)\libzstd.dll*"</PostBuildEvent>
     <Compile Remove="Sys\Enumerator\MultiStateTimedEnumerator.cs" />
     <Compile Remove="Sys\Enumerator\SingleTimedEnumerator.cs" />
   </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy &quot;$(SolutionDir)\Release Notes.txt&quot; &quot;$(OutDir)&quot;&#xD;&#xA;copy &quot;$(SolutionDir)\License.txt&quot; &quot;$(OutDir)&quot;&#xD;&#xA;del &quot;$(SolutionDir)\libzstd.dll&quot;" />
+  </Target>
 </Project>
