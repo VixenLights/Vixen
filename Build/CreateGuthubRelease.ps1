@@ -34,11 +34,11 @@ else
 
 Write-Host "Testing to see if release exists."
 
-$status = .\Installer\github-release info -s $token -u $user -r $repo -t $version
+$status = .\Build\github-release info -s $token -u $user -r $repo -t $version
 
 if(-Not[string]::IsNullOrEmpty($status) -And ($status.StartsWith("error: could not find the release corresponding to tag"))){
 	Write-Host "Release Exists: Attempting to delete it."
-	.\Installer\github-release delete -s $token -u $user -r $repo -t $version
+	.\Build\github-release delete -s $token -u $user -r $repo -t $version
 }
 
 Write-Host "Creating release with description $($description) for version $($version)"
