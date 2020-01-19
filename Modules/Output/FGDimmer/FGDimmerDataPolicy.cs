@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Vixen.Data.Policy;
 using Vixen.Sys;
 using Vixen.Data.Evaluator;

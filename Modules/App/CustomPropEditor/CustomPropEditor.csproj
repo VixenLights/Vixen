@@ -1,156 +1,55 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{37FE2E42-50DA-4973-88F7-072BA570F997}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VixenModules.App.CustomPropEditor</RootNamespace>
-    <AssemblyName>CustomPropEditor</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyTitle>CustomPropEditor</AssemblyTitle>
+    <Product>CustomPropEditor</Product>
+    <Platforms>x64;x86</Platforms>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
     <OutputPath>$(SolutionDir)\Release64\Modules\App\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>$(SolutionDir)\Release\Modules\App\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
+    <OutputPath>$(SolutionDir)\$(Configuration)\Modules\App\</OutputPath>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <OutputPath>..\..\..\Debug\Modules\App\</OutputPath>
+    <OutputPath>..\..\..\$(Configuration)\Modules\App\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <Optimize>false</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <OutputPath>..\..\..\Debug64\Modules\App\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <Optimize>false</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <ItemGroup>
+	<ItemGroup>
     <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
-      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
-      <Name>Vixen</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
-      <Project>{a54fb6a1-a9c3-488c-b961-41b8dbc81b36}</Project>
-      <Name>Controls</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
-      <Project>{f7a80169-6310-4585-9d58-a6f6f5c5b380}</Project>
-      <Name>Resources</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\WPFCommon\WPFCommon.csproj">
-      <Project>{44c23ecf-ea1c-4806-956a-07ec1203f8b4}</Project>
-      <Name>WPFCommon</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Catel.Core, Version=5.11.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Catel.Core.5.11.0\lib\net47\Catel.Core.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Catel.MVVM, Version=5.11.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Catel.MVVM.5.11.0\lib\net47\Catel.MVVM.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="GongSolutions.WPF.DragDrop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=91f1945125b7a587, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\gong-wpf-dragdrop.2.0.4\lib\net47\GongSolutions.WPF.DragDrop.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="LiteDB, Version=4.1.4.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\LiteDB.4.1.4\lib\net40\LiteDB.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Expression.Blend.Sdk.WPF.1.0.1\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
-      <Private>True</Private>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\NLog.4.5.11\lib\net45\NLog.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\System.ComponentModel.Annotations.4.5.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.ComponentModel.DataAnnotations">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Configuration.ConfigurationManager, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\System.Configuration.ConfigurationManager.4.4.1\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Reflection, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\System.Reflection.4.3.0\lib\net462\System.Reflection.dll</HintPath>
-      <Private>False</Private>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Runtime.Serialization.Formatters, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\System.Runtime.Serialization.Formatters.4.3.0\lib\net46\System.Runtime.Serialization.Formatters.dll</HintPath>
-      <Private>False</Private>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization.Primitives, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\System.Runtime.Serialization.Primitives.4.3.0\lib\net46\System.Runtime.Serialization.Primitives.dll</HintPath>
-      <Private>False</Private>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization.Xml, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\System.Runtime.Serialization.Xml.4.3.0\lib\net46\System.Runtime.Serialization.Xml.dll</HintPath>
-      <Private>False</Private>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Controls.WpfPropertyGrid">
       <HintPath>..\..\..\Common\Libraries\System.Windows.Controls.WpfPropertyGrid.dll</HintPath>
       <Private>False</Private>
@@ -160,108 +59,33 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Adorners\ResizeAdorner.cs" />
-    <Compile Include="Adorners\RubberbandAdorner.cs" />
-    <Compile Include="Controls\IGroupable.cs" />
-    <Compile Include="Controls\SliderMenuItem.xaml.cs">
+    <Compile Update="Controls\SliderMenuItem.xaml.cs">
       <DependentUpon>SliderMenuItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Behaviors\TreeViewMultipleSelectionBehavior.cs" />
-    <Compile Include="Converters\BoolToGridRowHeightConverter.cs" />
-    <Compile Include="Converters\BrushToColorConverter.cs" />
-    <Compile Include="Converters\BulbTypeConverter.cs" />
-    <Compile Include="Converters\CompositeCollectionConverter.cs" />
-    <Compile Include="Converters\RootNodeToCollectionMapping.cs" />
-    <Compile Include="Import\XLights\XModelInventoryImporter.cs" />
-    <Compile Include="Import\XLights\FaceInfo.cs" />
-    <Compile Include="Import\XLights\XModelInventoryMapper.cs" />
-    <Compile Include="Import\XLights\ModelNode.cs" />
-    <Compile Include="Model\ExternalVendorInventory\Category.cs" />
-    <Compile Include="Model\ExternalVendorInventory\Model.cs" />
-    <Compile Include="Model\ExternalVendorInventory\VendorLink.cs" />
-    <Compile Include="Model\ExternalVendorInventory\XModelInventory.cs" />
-    <Compile Include="Model\ExternalVendorInventory\Vendor.cs" />
-    <Compile Include="Model\ExternalVendorInventory\Wiring.cs" />
-    <Compile Include="Model\ColorMode.cs" />
-    <Compile Include="Model\Configuration.cs" />
-    <Compile Include="Model\ElementType.cs" />
-    <Compile Include="Model\FaceComponent.cs" />
-    <Compile Include="Model\InformationMetadata.cs" />
-    <Compile Include="Model\InternalVendorInventory\Category.cs" />
-    <Compile Include="Model\InternalVendorInventory\ModelInventory.cs" />
-    <Compile Include="Model\InternalVendorInventory\ModelLink.cs" />
-    <Compile Include="Model\InternalVendorInventory\Product.cs" />
-    <Compile Include="Model\InternalVendorInventory\ModelType.cs" />
-    <Compile Include="Model\InternalVendorInventory\Vendor.cs" />
-    <Compile Include="Model\InternalVendorInventory\WebLink.cs" />
-    <Compile Include="Model\PhysicalMetadata.cs" />
-    <Compile Include="Model\VendorMetadata.cs" />
-    <Compile Include="Services\ConfigurationService.cs" />
-    <Compile Include="Services\DownloadService.cs" />
-    <Compile Include="Services\IDownloadService.cs" />
-    <Compile Include="Services\PropModelPersistenceService.cs" />
-    <Compile Include="Services\PropModelServices.cs" />
-    <Compile Include="Services\ElementModelLookUpService.cs" />
-    <Compile Include="ViewModels\ConfigurationWindowViewModel.cs" />
-    <Compile Include="ViewModels\ElementModelViewModel.cs" />
-    <Compile Include="ViewModels\ElementViewModelCollection.cs" />
-    <Compile Include="ViewModels\ElementOrderViewModel.cs" />
-    <Compile Include="ViewModels\LightViewModelCollection.cs" />
-    <Compile Include="ViewModels\IExpandable.cs" />
-    <Compile Include="ViewModels\ISelectable.cs" />
-    <Compile Include="Controls\PropDesigner.cs" />
-    <Compile Include="Converters\LightNodeToPathConverter.cs" />
-    <Compile Include="Converters\PointMappingConverter.cs" />
-    <Compile Include="CustomPropEditorData.cs" />
-    <Compile Include="CustomPropEditorDescriptor.cs" />
-    <Compile Include="CustomPropEditorModule.cs" />
-    <Compile Include="Import\IModelImport.cs" />
-    <Compile Include="Import\XLights\SubModel.cs" />
-    <Compile Include="Import\XLights\XModelImport.cs" />
-    <Compile Include="ViewModels\DrawingPanelViewModel.cs" />
-    <Compile Include="ViewModels\ElementTreeViewModel.cs" />
-    <Compile Include="ViewModels\LightViewModel.cs" />
-    <Compile Include="Behaviors\MultiSelectionBehavior.cs" />
-    <Compile Include="ViewModels\ISelectableExpander.cs" />
-    <Compile Include="ViewModels\PhysicalMetadataViewModel.cs" />
-    <Compile Include="ViewModels\VendorMetadataViewModel.cs" />
-    <Compile Include="ViewModels\VendorInventoryWindowViewModel.cs" />
-    <Compile Include="Views\ConfigurationWindow.xaml.cs">
+    <Compile Update="Views\ConfigurationWindow.xaml.cs">
       <DependentUpon>ConfigurationWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CustomPropEditorWindow.xaml.cs">
+    <Compile Update="Views\CustomPropEditorWindow.xaml.cs">
       <DependentUpon>CustomPropEditorWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model\ElementModel.cs" />
-    <Compile Include="Model\Light.cs" />
-    <Compile Include="Model\Prop.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModels\PropEditorViewModel.cs" />
-    <Compile Include="Views\ModelInventoryTree.xaml.cs">
+    <Compile Update="Views\ModelInventoryTree.xaml.cs">
       <DependentUpon>ModelInventoryTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ElementTree.xaml.cs">
+    <Compile Update="Views\ElementTree.xaml.cs">
       <DependentUpon>ElementTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PhysicalMetadataView.xaml.cs">
+    <Compile Update="Views\PhysicalMetadataView.xaml.cs">
       <DependentUpon>PhysicalMetadataView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\VendorInventoryWindow.xaml.cs">
+    <Compile Update="Views\VendorInventoryWindow.xaml.cs">
       <DependentUpon>VendorInventoryWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\VendorMetadataView.xaml.cs">
+    <Compile Update="Views\VendorMetadataView.xaml.cs">
       <DependentUpon>VendorMetadataView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -304,9 +128,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\buttonAlignBottom.png" />
     <Resource Include="Images\buttonAlignHorizMid.png" />
     <Resource Include="Images\buttonAlignLeft.png" />
@@ -331,16 +152,56 @@
     <Resource Include="Images\buttonBulbEqual.png" />
     <Resource Include="Images\buttonBulbSmaller.png" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <PackageReference Include="Catel.MVVM" Version="5.12.2">
+      <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="gong-wpf-dragdrop" Version="2.2.0">
+      <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="LiteDB" Version="4.1.4">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0">
+      <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3">
+      <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NLog" Version="4.6.8">
+      <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Reflection" Version="4.3.0">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Xml.XDocument" Version="4.3.0">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="obj\x64\Release\GeneratedInternalTypeHelper.g.cs" />
+    <Compile Remove="obj\x64\Release\GeneratedInternalTypeHelper.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Controls\SliderMenuItem.g.cs" />
+    <Compile Remove="obj\x64\Release\Controls\SliderMenuItem.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Views\ConfigurationWindow.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Views\CustomPropEditorWindow.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Views\ElementTree.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Views\ModelInventoryTree.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Views\PhysicalMetadataView.g.cs" />
+    <Compile Remove="obj\x64\Release\Views\PhysicalMetadataView.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Views\VendorInventoryWindow.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Views\VendorMetadataView.g.cs" />
+    <Compile Remove="obj\x64\Release\Views\VendorMetadataView.g.i.cs" />
+  </ItemGroup>
 </Project>

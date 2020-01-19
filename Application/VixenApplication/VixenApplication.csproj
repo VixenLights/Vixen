@@ -1,34 +1,21 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+	  <UseWPF>true</UseWPF>
+      <UseWindowsForms>true</UseWindowsForms>
+	  <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2572F3DF-7CF2-4B6C-9FC2-8E11D0BC08D6}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VixenApplication</RootNamespace>
-    <AssemblyName>VixenApplication</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <FileAlignment>512</FileAlignment>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>3.0.4.0</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFramework>net48</TargetFramework>
+	  <AssemblyTitle>VixenApplication</AssemblyTitle>
+    <Company>Vixen</Company>
+    <Product>Vixen</Product>
+    <Description>VixenApplication</Description>
+    <Copyright>Copyright © K.C. Oaks 2005-2013</Copyright>
+	  <Platforms>x64;x86</Platforms>
+	  <RuntimeIdentifiers>win-x64;win-x86;win7-x64;win7-x86;win10-x64;win10-x86</RuntimeIdentifiers>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	  <Version>0.0.0.0</Version>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>VixenApplication.Program</StartupObject>
@@ -37,472 +24,367 @@
     <ApplicationIcon>..\..\Common\Resources\Vixen3.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>$(SolutionDir)\Release\</OutputPath>
+    <OutputPath>$(SolutionDir)\$(Configuration)\</OutputPath>
     <DefineConstants>TRACE;AUTOBUILD</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>$(SolutionDir)\Release64\</OutputPath>
     <DefineConstants>TRACE;AUTOBUILD</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <OutputPath>..\..\Debug\</OutputPath>
+    <OutputPath>..\..\$(Configuration)\</OutputPath>
     <DefineConstants>TRACE;AUTOBUILD</DefineConstants>
-    <Optimize>false</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <OutputPath>..\..\Debug64\</OutputPath>
     <DefineConstants>DEBUG;TRACE;AUTOBUILD</DefineConstants>
-    <Optimize>false</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <ItemGroup>
+	<ItemGroup>
     <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
-      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
-      <Name>Vixen</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Common\Help\VixenHelp.csproj">
-      <Project>{bd12bffc-7039-4c79-aba0-51f99773a916}</Project>
-      <Name>VixenHelp</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Common\Resources\Resources.csproj">
-      <Project>{F7A80169-6310-4585-9D58-A6F6F5C5B380}</Project>
-      <Name>Resources</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Common\WPFCommon\WPFCommon.csproj">
-      <Project>{44c23ecf-ea1c-4806-956a-07ec1203f8b4}</Project>
-      <Name>WPFCommon</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Modules\App\Modeling\Modeling.csproj">
-      <Project>{fe86f615-e983-47e2-944e-14ee273f7530}</Project>
-      <Name>Modeling</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Modules\PostFilter\DimmingCurve\DimmingCurve.csproj">
-      <Project>{C80B084A-064A-422C-B66E-58AB9ED7B32C}</Project>
-      <Name>DimmingCurve</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Modules\Property\Color\Color.csproj">
-      <Project>{73068A83-B3B7-4A2C-923D-71C7886CD5E3}</Project>
-      <Name>Color</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Modules\Property\Order\Order.csproj">
-      <Project>{A4254642-2965-469A-8FBD-B45F6EDD651C}</Project>
-      <Name>Order</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Modules\Property\Orientation\Orientation.csproj">
-      <Project>{3BCD7307-C584-4770-BC60-4142DDC88C76}</Project>
-      <Name>Orientation</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Catel.Core, Version=5.11.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Catel.Core.5.11.0\lib\net47\Catel.Core.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NLog.4.5.11\lib\net45\NLog.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.ComponentModel.Annotations.4.5.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Configuration.ConfigurationManager, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Configuration.ConfigurationManager.4.4.1\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
-    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Runtime.Serialization.Formatters, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Runtime.Serialization.Formatters.4.3.0\lib\net46\System.Runtime.Serialization.Formatters.dll</HintPath>
-      <Private>True</Private>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization.Primitives, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Runtime.Serialization.Primitives.4.3.0\lib\net46\System.Runtime.Serialization.Primitives.dll</HintPath>
-      <Private>True</Private>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization.Xml, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Runtime.Serialization.Xml.4.3.0\lib\net46\System.Runtime.Serialization.Xml.dll</HintPath>
-      <Private>True</Private>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConfigControllersOutputs.cs">
+    <Compile Update="ConfigControllersOutputs.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ConfigControllersOutputs.Designer.cs">
+    <Compile Update="ConfigControllersOutputs.Designer.cs">
       <DependentUpon>ConfigControllersOutputs.cs</DependentUpon>
     </Compile>
-    <Compile Include="DataProfileForm.cs">
+    <Compile Update="DataProfileForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DataProfileForm.Designer.cs">
+    <Compile Update="DataProfileForm.Designer.cs">
       <DependentUpon>DataProfileForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="DataZipForm.cs">
+    <Compile Update="DataZipForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DataZipForm.Designer.cs">
+    <Compile Update="DataZipForm.Designer.cs">
       <DependentUpon>DataZipForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CheckForUpdates.cs">
+    <Compile Update="CheckForUpdates.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CheckForUpdates.Designer.cs">
+    <Compile Update="CheckForUpdates.Designer.cs">
       <DependentUpon>CheckForUpdates.cs</DependentUpon>
     </Compile>
-    <Compile Include="AboutVixen.cs">
+    <Compile Update="AboutVixen.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AboutVixen.Designer.cs">
+    <Compile Update="AboutVixen.Designer.cs">
       <DependentUpon>AboutVixen.cs</DependentUpon>
     </Compile>
-    <Compile Include="NLogListener.cs" />
-    <Compile Include="ReleaseNotes.cs">
+    <Compile Update="ReleaseNotes.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ReleaseNotes.Designer.cs">
+    <Compile Update="ReleaseNotes.Designer.cs">
       <DependentUpon>ReleaseNotes.cs</DependentUpon>
     </Compile>
-    <Compile Include="Setup\DisplaySetup.cs">
+    <Compile Update="Setup\DisplaySetup.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Setup\DisplaySetup.Designer.cs">
+    <Compile Update="Setup\DisplaySetup.Designer.cs">
       <DependentUpon>DisplaySetup.cs</DependentUpon>
     </Compile>
-    <Compile Include="FiltersAndPatching\ConfigFiltersAndPatching-Shapes.cs" />
-    <Compile Include="FiltersAndPatching\ConfigFiltersAndPatching-Tools.cs" />
-    <Compile Include="ConfigPreviews.cs">
+    <Compile Update="ConfigPreviews.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ConfigPreviews.Designer.cs">
+    <Compile Update="ConfigPreviews.Designer.cs">
       <DependentUpon>ConfigPreviews.cs</DependentUpon>
     </Compile>
-    <Compile Include="CpuUsage.cs" />
-    <Compile Include="EffectParametersForm.cs">
+    <Compile Update="EffectParametersForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="EffectParametersForm.Designer.cs">
+    <Compile Update="EffectParametersForm.Designer.cs">
       <DependentUpon>EffectParametersForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="FiltersAndPatching\ConfigFiltersAndPatching.cs">
+    <Compile Update="FiltersAndPatching\ConfigFiltersAndPatching.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FiltersAndPatching\ConfigFiltersAndPatching.Designer.cs">
+    <Compile Update="FiltersAndPatching\ConfigFiltersAndPatching.Designer.cs">
       <DependentUpon>ConfigFiltersAndPatching.cs</DependentUpon>
     </Compile>
-    <Compile Include="FiltersAndPatching\PatchingWizard-1-Sources.cs">
+    <Compile Update="FiltersAndPatching\PatchingWizard-1-Sources.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="FiltersAndPatching\PatchingWizard-1-Sources.Designer.cs">
+    <Compile Update="FiltersAndPatching\PatchingWizard-1-Sources.Designer.cs">
       <DependentUpon>PatchingWizard-1-Sources.cs</DependentUpon>
     </Compile>
-    <Compile Include="FiltersAndPatching\PatchingWizard-2-Filters.cs">
+    <Compile Update="FiltersAndPatching\PatchingWizard-2-Filters.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="FiltersAndPatching\PatchingWizard-2-Filters.Designer.cs">
+    <Compile Update="FiltersAndPatching\PatchingWizard-2-Filters.Designer.cs">
       <DependentUpon>PatchingWizard-2-Filters.cs</DependentUpon>
     </Compile>
-    <Compile Include="FiltersAndPatching\PatchingWizard-3-Destinations.cs">
+    <Compile Update="FiltersAndPatching\PatchingWizard-3-Destinations.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="FiltersAndPatching\PatchingWizard-3-Destinations.Designer.cs">
+    <Compile Update="FiltersAndPatching\PatchingWizard-3-Destinations.Designer.cs">
       <DependentUpon>PatchingWizard-3-Destinations.cs</DependentUpon>
     </Compile>
-    <Compile Include="FiltersAndPatching\PatchingWizard-4-Summary.cs">
+    <Compile Update="FiltersAndPatching\PatchingWizard-4-Summary.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="FiltersAndPatching\PatchingWizard-4-Summary.Designer.cs">
+    <Compile Update="FiltersAndPatching\PatchingWizard-4-Summary.Designer.cs">
       <DependentUpon>PatchingWizard-4-Summary.cs</DependentUpon>
     </Compile>
-    <Compile Include="FiltersAndPatching\PatchingWizard.cs" />
-    <Compile Include="InstalledModules.cs">
+    <Compile Update="InstalledModules.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InstalledModules.Designer.cs">
+    <Compile Update="InstalledModules.Designer.cs">
       <DependentUpon>InstalledModules.cs</DependentUpon>
     </Compile>
-    <Compile Include="OptionsDialog.cs">
+    <Compile Update="OptionsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="OptionsDialog.Designer.cs">
+    <Compile Update="OptionsDialog.Designer.cs">
       <DependentUpon>OptionsDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProfileItem.cs" />
-    <Compile Include="RuleEditorContainer.cs">
+    <Compile Update="RuleEditorContainer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="RuleEditorContainer.Designer.cs">
+    <Compile Update="RuleEditorContainer.Designer.cs">
       <DependentUpon>RuleEditorContainer.cs</DependentUpon>
     </Compile>
-    <Compile Include="SelectProfile.cs">
+    <Compile Update="SelectProfile.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SelectProfile.Designer.cs">
+    <Compile Update="SelectProfile.Designer.cs">
       <DependentUpon>SelectProfile.cs</DependentUpon>
     </Compile>
-    <Compile Include="Setup\ElementsChangedEventArgs.cs" />
-    <Compile Include="Setup\ElementTemplates\Arch.cs">
+    <Compile Update="Setup\ElementTemplates\Arch.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Setup\ElementTemplates\CandyCane.cs">
+    <Compile Update="Setup\ElementTemplates\CandyCane.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Setup\ElementTemplates\LipSync.cs">
+    <Compile Update="Setup\ElementTemplates\LipSync.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Setup\ElementTemplates\LipSync.Designer.cs">
+    <Compile Update="Setup\ElementTemplates\LipSync.Designer.cs">
       <DependentUpon>LipSync.cs</DependentUpon>
     </Compile>
-    <Compile Include="Setup\ElementTemplates\Icicles.cs">
+    <Compile Update="Setup\ElementTemplates\Icicles.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Setup\ElementTemplates\Icicles.Designer.cs">
+    <Compile Update="Setup\ElementTemplates\Icicles.Designer.cs">
       <DependentUpon>Icicles.cs</DependentUpon>
     </Compile>
-    <Compile Include="Setup\ElementTemplates\Star.cs">
+    <Compile Update="Setup\ElementTemplates\Star.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Setup\ElementTemplates\StarBurst.cs">
+    <Compile Update="Setup\ElementTemplates\StarBurst.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Setup\ElementTemplates\StarBurst.Designer.cs">
+    <Compile Update="Setup\ElementTemplates\StarBurst.Designer.cs">
       <DependentUpon>StarBurst.cs</DependentUpon>
     </Compile>
-    <Compile Include="Setup\ElementTemplates\Megatree.cs">
+    <Compile Update="Setup\ElementTemplates\Megatree.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Setup\ElementTemplates\Megatree.Designer.cs">
+    <Compile Update="Setup\ElementTemplates\Megatree.Designer.cs">
       <DependentUpon>Megatree.cs</DependentUpon>
     </Compile>
-    <Compile Include="Setup\ElementTemplates\NumberedGroup.cs">
+    <Compile Update="Setup\ElementTemplates\NumberedGroup.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Setup\ElementTemplates\NumberedGroup.Designer.cs">
+    <Compile Update="Setup\ElementTemplates\NumberedGroup.Designer.cs">
       <DependentUpon>NumberedGroup.cs</DependentUpon>
     </Compile>
-    <Compile Include="Setup\ElementTemplates\PixelGrid.cs">
+    <Compile Update="Setup\ElementTemplates\PixelGrid.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Setup\ElementTemplates\PixelGrid.Designer.cs">
+    <Compile Update="Setup\ElementTemplates\PixelGrid.Designer.cs">
       <DependentUpon>PixelGrid.cs</DependentUpon>
     </Compile>
-    <Compile Include="Setup\ElementTemplates\SingleItem.cs" />
-    <Compile Include="Setup\ISetupControllersControl.cs" />
-    <Compile Include="Setup\ISetupElementsControl.cs" />
-    <Compile Include="Setup\ISetupPatchingControl.cs" />
-    <Compile Include="Setup\SetupControllersSimple.cs">
+    <Compile Update="Setup\SetupControllersSimple.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Setup\SetupControllersSimple.Designer.cs">
+    <Compile Update="Setup\SetupControllersSimple.Designer.cs">
       <DependentUpon>SetupControllersSimple.cs</DependentUpon>
     </Compile>
-    <Compile Include="Setup\SetupElementsTree.cs">
+    <Compile Update="Setup\SetupElementsTree.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Setup\SetupElementsTree.Designer.cs">
+    <Compile Update="Setup\SetupElementsTree.Designer.cs">
       <DependentUpon>SetupElementsTree.cs</DependentUpon>
     </Compile>
-    <Compile Include="Setup\SetupPatchingGraphical.cs">
+    <Compile Update="Setup\SetupPatchingGraphical.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Setup\SetupPatchingGraphical.Designer.cs">
+    <Compile Update="Setup\SetupPatchingGraphical.Designer.cs">
       <DependentUpon>SetupPatchingGraphical.cs</DependentUpon>
     </Compile>
-    <Compile Include="Setup\SetupPatchingSimple.cs">
+    <Compile Update="Setup\SetupPatchingSimple.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Setup\SetupPatchingSimple.Designer.cs">
+    <Compile Update="Setup\SetupPatchingSimple.Designer.cs">
       <DependentUpon>SetupPatchingSimple.cs</DependentUpon>
     </Compile>
-    <Compile Include="VixenApplication.cs">
+    <Compile Update="VixenApplication.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="VixenApplication.Designer.cs">
+    <Compile Update="VixenApplication.Designer.cs">
       <DependentUpon>VixenApplication.cs</DependentUpon>
     </Compile>
-    <Compile Include="ConfigElements.cs">
+    <Compile Update="ConfigElements.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ConfigElements.Designer.cs">
+    <Compile Update="ConfigElements.Designer.cs">
       <DependentUpon>ConfigElements.cs</DependentUpon>
     </Compile>
-    <Compile Include="ConfigControllers.cs">
+    <Compile Update="ConfigControllers.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ConfigControllers.Designer.cs">
+    <Compile Update="ConfigControllers.Designer.cs">
       <DependentUpon>ConfigControllers.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VixenApplicationData.cs" />
-    <EmbeddedResource Include="ConfigControllersOutputs.resx">
+    <EmbeddedResource Update="ConfigControllersOutputs.resx">
       <DependentUpon>ConfigControllersOutputs.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ConfigPreviews.resx">
+    <EmbeddedResource Update="ConfigPreviews.resx">
       <DependentUpon>ConfigPreviews.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DataProfileForm.resx">
+    <EmbeddedResource Update="DataProfileForm.resx">
       <DependentUpon>DataProfileForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DataZipForm.resx">
+    <EmbeddedResource Update="DataZipForm.resx">
       <DependentUpon>DataZipForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CheckForUpdates.resx">
+    <EmbeddedResource Update="CheckForUpdates.resx">
       <DependentUpon>CheckForUpdates.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AboutVixen.resx">
+    <EmbeddedResource Update="AboutVixen.resx">
       <DependentUpon>AboutVixen.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ReleaseNotes.resx">
+    <EmbeddedResource Update="ReleaseNotes.resx">
       <DependentUpon>ReleaseNotes.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Setup\DisplaySetup.resx">
+    <EmbeddedResource Update="Setup\DisplaySetup.resx">
       <DependentUpon>DisplaySetup.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="EffectParametersForm.resx">
+    <EmbeddedResource Update="EffectParametersForm.resx">
       <DependentUpon>EffectParametersForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FiltersAndPatching\ConfigFiltersAndPatching.resx">
+    <EmbeddedResource Update="FiltersAndPatching\ConfigFiltersAndPatching.resx">
       <DependentUpon>ConfigFiltersAndPatching.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FiltersAndPatching\PatchingWizard-1-Sources.resx">
+    <EmbeddedResource Update="FiltersAndPatching\PatchingWizard-1-Sources.resx">
       <DependentUpon>PatchingWizard-1-Sources.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FiltersAndPatching\PatchingWizard-2-Filters.resx">
+    <EmbeddedResource Update="FiltersAndPatching\PatchingWizard-2-Filters.resx">
       <DependentUpon>PatchingWizard-2-Filters.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FiltersAndPatching\PatchingWizard-3-Destinations.resx">
+    <EmbeddedResource Update="FiltersAndPatching\PatchingWizard-3-Destinations.resx">
       <DependentUpon>PatchingWizard-3-Destinations.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FiltersAndPatching\PatchingWizard-4-Summary.resx">
+    <EmbeddedResource Update="FiltersAndPatching\PatchingWizard-4-Summary.resx">
       <DependentUpon>PatchingWizard-4-Summary.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="InstalledModules.resx">
+    <EmbeddedResource Update="InstalledModules.resx">
       <DependentUpon>InstalledModules.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="OptionsDialog.resx">
+    <EmbeddedResource Update="OptionsDialog.resx">
       <DependentUpon>OptionsDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="RuleEditorContainer.resx">
+    <EmbeddedResource Update="RuleEditorContainer.resx">
       <DependentUpon>RuleEditorContainer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SelectProfile.resx">
+    <EmbeddedResource Update="SelectProfile.resx">
       <DependentUpon>SelectProfile.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Setup\ElementTemplates\LipSync.resx">
+    <EmbeddedResource Update="Setup\ElementTemplates\LipSync.resx">
       <DependentUpon>LipSync.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Setup\ElementTemplates\Icicles.resx">
+    <EmbeddedResource Update="Setup\ElementTemplates\Icicles.resx">
       <DependentUpon>Icicles.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Setup\ElementTemplates\StarBurst.resx">
+    <EmbeddedResource Update="Setup\ElementTemplates\StarBurst.resx">
       <DependentUpon>StarBurst.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Setup\ElementTemplates\Megatree.resx">
+    <EmbeddedResource Update="Setup\ElementTemplates\Megatree.resx">
       <DependentUpon>Megatree.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Setup\ElementTemplates\NumberedGroup.resx">
+    <EmbeddedResource Update="Setup\ElementTemplates\NumberedGroup.resx">
       <DependentUpon>NumberedGroup.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Setup\ElementTemplates\PixelGrid.resx">
+    <EmbeddedResource Update="Setup\ElementTemplates\PixelGrid.resx">
       <DependentUpon>PixelGrid.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Setup\SetupControllersSimple.resx">
+    <EmbeddedResource Update="Setup\SetupControllersSimple.resx">
       <DependentUpon>SetupControllersSimple.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Setup\SetupElementsTree.resx">
+    <EmbeddedResource Update="Setup\SetupElementsTree.resx">
       <DependentUpon>SetupElementsTree.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Setup\SetupPatchingGraphical.resx">
+    <EmbeddedResource Update="Setup\SetupPatchingGraphical.resx">
       <DependentUpon>SetupPatchingGraphical.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Setup\SetupPatchingSimple.resx">
+    <EmbeddedResource Update="Setup\SetupPatchingSimple.resx">
       <DependentUpon>SetupPatchingSimple.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="VixenApplication.resx">
+    <EmbeddedResource Update="VixenApplication.resx">
       <DependentUpon>VixenApplication.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ConfigElements.resx">
+    <EmbeddedResource Update="ConfigElements.resx">
       <DependentUpon>ConfigElements.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ConfigControllers.resx">
+    <EmbeddedResource Update="ConfigControllers.resx">
       <DependentUpon>ConfigControllers.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
+    <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Update="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="app.config">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="app.manifest" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -510,59 +392,23 @@
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Controls\Controls.csproj">
-      <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
-      <Name>Controls</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Common\NShape\Core\NShape.csproj">
-      <Project>{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28}</Project>
-      <Name>NShape</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Common\NShape\GeneralShapes\NShapeGeneralShapes.csproj">
-      <Project>{1272F77E-D926-4310-AE8B-858909B10F0C}</Project>
-      <Name>NShapeGeneralShapes</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Common\NShape\WinFormsUI\NShapeWinFormsUI.csproj">
-      <Project>{5EAB131C-1C93-4C3F-A1D8-D711053DE33C}</Project>
-      <Name>NShapeWinFormsUI</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -575,24 +421,26 @@
     <EmbeddedResource Include="Resources\HandCursor.cur" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="..\..\Common\Resources\Vixen3.ico">
       <Link>Vixen3.ico</Link>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <PackageReference Include="Catel.Core" Version="5.12.2">
+      <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3">
+      <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NLog.Config" Version="4.6.8">
+      <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="TestForm.cs" />
+    <Compile Remove="TestForm.Designer.cs" />
+  </ItemGroup>
 </Project>
