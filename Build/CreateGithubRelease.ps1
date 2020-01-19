@@ -21,7 +21,7 @@ if([string]::IsNullOrEmpty($status)){
 }
 
 $description = "Test builds can be downloaded here: <br/>"
-$command = 'github-release release -s $token -u $user -r $repo -t $version -d $description'
+$command = '.\Build\github-release release -s $token -u $user -r $repo -t $version -d $description'
 
 if($buildType -ieq "dev"){
 	$description += $testUrl
