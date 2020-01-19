@@ -16,6 +16,10 @@ param (
 	[string] $buildType
 )
 
+if($fixVersion.EndsWith('u0')){
+	$fixVersion = $fixVersion -replace ".{2}$"
+}
+
 # Trim the Jira URL for trailing slashes
 if ($jiraUrl.EndsWith('/'))
 {

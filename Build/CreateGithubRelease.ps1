@@ -7,6 +7,10 @@ param (
 	[string] $token
 )
 
+if($version.EndsWith('u0')){
+	$version = $version -replace ".{2}$"
+}
+
 $testUrl = "http://www.vixenlights.com/downloads/devbuild/"
 $releaseUrl = "http://www.vixenlights.com/downloads/vixen-3-downloads/"
 
