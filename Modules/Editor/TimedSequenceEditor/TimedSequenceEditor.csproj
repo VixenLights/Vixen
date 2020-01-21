@@ -95,15 +95,11 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="MarkCollectionImportDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="MarkCollectionImportDialog.cs" />
     <Compile Update="MarkCollectionImportDialog.Designer.cs">
       <DependentUpon>MarkCollectionImportDialog.cs</DependentUpon>
     </Compile>
-    <Compile Update="AutomaticMusicDetection.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="AutomaticMusicDetection.cs" />
     <Compile Update="AutomaticMusicDetection.Designer.cs">
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
     </Compile>
@@ -113,57 +109,37 @@
     <Compile Update="Forms\WPF\MarksDocker\Views\MarkDockerView.xaml.cs">
       <DependentUpon>MarkDockerView.xaml</DependentUpon>
     </Compile>
-    <Compile Update="TimedSequenceEditorForm_Menu.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="TimedSequenceEditorForm_ContextMenu.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="TimedSequenceEditorForm_Toolstrip.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="TimedSequenceEditorForm_Hotkeys.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="TimedSequenceEditorForm_Menu.cs" />
+    <Compile Update="TimedSequenceEditorForm_ContextMenu.cs" />
+    <Compile Update="TimedSequenceEditorForm_Toolstrip.cs" />
+    <Compile Update="TimedSequenceEditorForm_Hotkeys.cs" />
     <Compile Update="Forms\FindEffectForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Forms\FindEffectForm.Designer.cs">
       <DependentUpon>FindEffectForm.cs</DependentUpon>
     </Compile>
-    <Compile Update="BulkEffectMoveForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="BulkEffectMoveForm.cs" />
     <Compile Update="BulkEffectMoveForm.Designer.cs">
       <DependentUpon>BulkEffectMoveForm.cs</DependentUpon>
     </Compile>
-    <Compile Update="EffectDistributionDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="EffectDistributionDialog.cs" />
     <Compile Update="EffectDistributionDialog.Designer.cs">
       <DependentUpon>EffectDistributionDialog.cs</DependentUpon>
     </Compile>
-    <Compile Update="BeatMarkExportDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="BeatMarkExportDialog.cs" />
     <Compile Update="BeatMarkExportDialog.Designer.cs">
       <DependentUpon>BeatMarkExportDialog.cs</DependentUpon>
     </Compile>
-    <Compile Update="ExportDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="ExportDialog.cs" />
     <Compile Update="ExportDialog.Designer.cs">
       <DependentUpon>ExportDialog.cs</DependentUpon>
     </Compile>
-    <Compile Update="Forms\FormParameterPicker.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Forms\FormParameterPicker.cs" />
     <Compile Update="Forms\FormParameterPicker.Designer.cs">
       <DependentUpon>FormParameterPicker.cs</DependentUpon>
     </Compile>
-    <Compile Update="Forms\Form_AddMultipleEffects.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Forms\Form_AddMultipleEffects.cs" />
     <Compile Update="Forms\Form_AddMultipleEffects.Designer.cs">
       <DependentUpon>Form_AddMultipleEffects.cs</DependentUpon>
     </Compile>
@@ -179,9 +155,7 @@
     <Compile Update="Forms\Form_Marks.Designer.cs">
       <DependentUpon>Form_Marks.cs</DependentUpon>
     </Compile>
-    <Compile Update="EffectTimeEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="EffectTimeEditor.cs" />
     <Compile Update="EffectTimeEditor.Designer.cs">
       <DependentUpon>EffectTimeEditor.cs</DependentUpon>
     </Compile>
@@ -215,21 +189,15 @@
     <Compile Update="Forms\Form_CurveLibrary.Designer.cs">
       <DependentUpon>Form_CurveLibrary.cs</DependentUpon>
     </Compile>
-    <Compile Update="InvalidAudioPathDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="InvalidAudioPathDialog.cs" />
     <Compile Update="InvalidAudioPathDialog.Designer.cs">
       <DependentUpon>InvalidAudioPathDialog.cs</DependentUpon>
     </Compile>
-    <Compile Update="MarkManager.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="MarkManager.cs" />
     <Compile Update="MarkManager.Designer.cs">
       <DependentUpon>MarkManager.cs</DependentUpon>
     </Compile>
-    <Compile Update="MarkTapper.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="MarkTapper.cs" />
     <Compile Update="MarkTapper.Designer.cs">
       <DependentUpon>MarkTapper.cs</DependentUpon>
     </Compile>
@@ -244,21 +212,15 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Update="Forms\ColorCollectionLibrary_Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Forms\ColorCollectionLibrary_Form.cs" />
     <Compile Update="Forms\ColorCollectionLibrary_Form.Designer.cs">
       <DependentUpon>ColorCollectionLibrary_Form.cs</DependentUpon>
     </Compile>
-    <Compile Update="TimedSequenceEditorEffectEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="TimedSequenceEditorEffectEditor.cs" />
     <Compile Update="TimedSequenceEditorEffectEditor.Designer.cs">
       <DependentUpon>TimedSequenceEditorEffectEditor.cs</DependentUpon>
     </Compile>
-    <Compile Update="TimedSequenceEditorForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="TimedSequenceEditorForm.cs" />
     <Compile Update="TimedSequenceEditorForm.Designer.cs">
       <DependentUpon>TimedSequenceEditorForm.cs</DependentUpon>
     </Compile>

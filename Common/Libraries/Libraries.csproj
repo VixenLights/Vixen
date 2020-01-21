@@ -64,8 +64,12 @@
     <Content Include="Sharpen.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SoundTouch.dll" />
-    <Content Include="SoundTouch_x64.dll" />
+    <Content Include="SoundTouch.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SoundTouch_x64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="System.Windows.Controls.WpfPropertyGrid.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
