@@ -1,19 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using NLog;
 using VixenModules.Media.Audio;
-using System.ComponentModel;
 using System.Drawing.Drawing2D;
 using System.Threading.Tasks;
 using Common.Controls.TimelineControl;
 using Common.Controls.TimelineControl.LabeledMarks;
-using VixenModules.App.Marks;
 using VixenModules.Media.Audio.SampleProviders;
 using Font = System.Drawing.Font;
 using FontStyle = System.Drawing.FontStyle;
@@ -29,10 +23,10 @@ namespace Common.Controls.Timeline
 		private double samplesPerPixel;
 		private List<Sample> samples;
 		private Audio audio;
-		private BackgroundWorker bw;
 		private bool _creatingSamples = false;
 		private bool _showMarkAlignment;
 		private IEnumerable<TimeSpan> _activeTimes;
+		private const int MinimumHeight = 30;
 		
 		private readonly TimeLineGlobalEventManager _timeLineGlobalEventManager;
 
@@ -68,7 +62,7 @@ namespace Common.Controls.Timeline
 			base.OnMouseMove(e);
 
 			//Adjusts WaveForm Height with a minimum of 40 pixels
-			if (e.Button == MouseButtons.Left & Cursor == Cursors.HSplit & e.Location.Y > 40)
+			if (e.Button == MouseButtons.Left & Cursor == Cursors.HSplit & e.Location.Y > MinimumHeight)
 			{
 				Height = e.Location.Y + 1;
 			}
@@ -209,14 +203,16 @@ namespace Common.Controls.Timeline
 
 					//Draws Waveform
 					e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
+
+					var drawBottom = false;
 					
 					int workingHeight = Height - 2 - Height % 2; //Leave a little margin
-					int topHeight = workingHeight/2;
+					int topHeight = drawBottom?workingHeight/2:workingHeight;
 					int bottomHeight = topHeight;
 					int midPoint = topHeight;
 
 					var topPen = CreateTopPen(topHeight);
-					var bottomPen = CreateBottomPen(topHeight, bottomHeight);
+					var bottomPen = drawBottom?CreateBottomPen(topHeight, bottomHeight):Pens.Transparent;
 					int start = (int) timeToPixels(VisibleTimeStart);
 					int end = (int) timeToPixels(VisibleTimeEnd <= audio.MediaDuration ? VisibleTimeEnd : audio.MediaDuration);
 					
@@ -225,12 +221,18 @@ namespace Common.Controls.Timeline
 						if (samples.Count <= x) break;
 						var lineHeight = topHeight * samples[x].High;
 						e.Graphics.DrawLine(topPen, x, midPoint, x, midPoint - lineHeight);
-						lineHeight = bottomHeight * samples[x].Low;
-						e.Graphics.DrawLine(bottomPen, x, midPoint, x, midPoint - lineHeight);
+						if (drawBottom)
+						{
+							lineHeight = bottomHeight * samples[x].Low;
+							e.Graphics.DrawLine(bottomPen, x, midPoint, x, midPoint - lineHeight);
+						}
 					}
 
 					topPen.Dispose();
-					bottomPen.Dispose();
+					if (drawBottom)
+					{
+						bottomPen.Dispose();
+					}
 
 					DrawCursor(e.Graphics);
 				}
