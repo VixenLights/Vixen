@@ -1370,6 +1370,10 @@ namespace VixenModules.Effect.Shapes
 				
 				if (!ScaleToGrid)
 				{
+					if (shape.SvgImage.Transforms == null)
+					{
+						shape.SvgImage.Transforms = new SvgTransformCollection();
+					}
 					// Rotates and scasles the shape, scaling is used as SVG images may have different sizes, especially for Imported files as they are not controlled.
 					shape.SvgImage.Transforms[0] = new SvgRotate(shape.RotateAngle, shape.SvgImage.ViewBox.Width * shape.LocationRatio1 * _scaleShapeWidth / 2, shape.SvgImage.ViewBox.Height * shape.LocationRatio1 * _scaleShapeHeight / 2);
 					shape.SvgImage.Transforms[1] = new SvgScale(_scaleShapeWidth, _scaleShapeHeight);
@@ -1540,6 +1544,10 @@ namespace VixenModules.Effect.Shapes
 					-((m.SvgImage.ViewBox.Height * 1.42f - m.SvgImage.ViewBox.Height) / 2), m.SvgImage.ViewBox.Width * 1.42f,
 					m.SvgImage.ViewBox.Height * 1.42f);
 				m.Scale = _svgViewBoxSize / m.SvgImage.ViewBox.Height;
+				if (m.SvgImage.Transforms == null)
+				{
+					m.SvgImage.Transforms = new SvgTransformCollection();
+				}
 				m.SvgImage.Transforms.Add(new SvgRotate(0, (int) (m.SvgImage.Width / 2), (int) (m.SvgImage.Height / 2)));
 				m.LocationRatio = StringCount / m.SvgImage.ViewBox.Height * 2 * ((float) _minBuffer / StringCount);
 				m.LocationRatio1 = m.LocationRatio * m.LocationRatio;
