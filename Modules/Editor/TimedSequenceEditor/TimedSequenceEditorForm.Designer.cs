@@ -89,6 +89,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.highlightRowsWithEffectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.showEffectInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+			this.fullWaveformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolbarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.effectWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -786,6 +788,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripSeparator4,
             this.highlightRowsWithEffectsToolStripMenuItem,
             this.showEffectInfoToolStripMenuItem,
+            this.toolStripSeparator5,
+            this.fullWaveformToolStripMenuItem,
             this.toolStripMenuItem1,
             this.toolbarToolStripMenuItem,
             this.effectWindowToolStripMenuItem,
@@ -893,6 +897,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.showEffectInfoToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
 			this.showEffectInfoToolStripMenuItem.Text = "Show Effect Info";
 			this.showEffectInfoToolStripMenuItem.Click += new System.EventHandler(this.showEffectInfoToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator5
+			// 
+			this.toolStripSeparator5.Name = "toolStripSeparator5";
+			this.toolStripSeparator5.Size = new System.Drawing.Size(231, 6);
+			// 
+			// fullWaveformToolStripMenuItem
+			// 
+			this.fullWaveformToolStripMenuItem.CheckOnClick = true;
+			this.fullWaveformToolStripMenuItem.Name = "fullWaveformToolStripMenuItem";
+			this.fullWaveformToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+			this.fullWaveformToolStripMenuItem.Text = "Full Waveform";
+			this.fullWaveformToolStripMenuItem.CheckedChanged += new System.EventHandler(this.fullWaveformToolStripMenuItem_CheckedChanged);
 			// 
 			// toolStripMenuItem1
 			// 
@@ -2560,5 +2577,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 		private System.Windows.Forms.ToolStripMenuItem highlightRowsWithEffectsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem showEffectInfoToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 	}
 }

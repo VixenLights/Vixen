@@ -325,6 +325,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			dockPanel.DockRightPortion = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockRightPortion", Name), 150);
 			fileToolStripButton_AutoSave.Checked = autoSaveToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AutoSaveEnabled", Name), true);
 			modeToolStripButton_SnapTo.Checked = toolStripMenuItem_SnapTo.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapToSelected", Name), true);
+			fullWaveformToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/FullWaveform", false);
 			PopulateSnapStrength(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapStrength", Name), 2));
 			TimelineControl.grid.CloseGap_Threshold = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CloseGapThreshold", Name), ".100");
 			AlignTo_Threshold = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlignToThreshold", Name), ".800");
@@ -5410,6 +5411,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/RulerHeight", Name), TimelineControl.ruler.Height);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SplitterDistance", Name), TimelineControl.splitContainer.SplitterDistance);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/ShowEffectInfo", TimelineControl.grid.ShowEffectToolTip);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/FullWaveform", fullWaveformToolStripMenuItem.Checked);
 
 			Save_ToolsStripItemsFile();
 
@@ -5940,6 +5942,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			return defaultEffectDuration;
 		}
+
 	}
 
 	[Serializable]

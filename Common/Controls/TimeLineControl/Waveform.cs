@@ -125,6 +125,8 @@ namespace Common.Controls.Timeline
 			get { return audio; }
 		}
 
+		public WaveformStyle WaveformStyle { get; set; } = WaveformStyle.Half;
+
 		private delegate void SetAudioDelegate(VixenModules.Media.Audio.Audio value);
 
 		private void SetAudio(VixenModules.Media.Audio.Audio value)
@@ -204,15 +206,20 @@ namespace Common.Controls.Timeline
 					//Draws Waveform
 					e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
 
-					var drawBottom = false;
+					var drawBottom = WaveformStyle==WaveformStyle.Full?true:false;
 					
 					int workingHeight = Height - 2 - Height % 2; //Leave a little margin
 					int topHeight = drawBottom?workingHeight/2:workingHeight;
 					int bottomHeight = topHeight;
 					int midPoint = topHeight;
 
-					var topPen = CreateTopPen(topHeight);
-					var bottomPen = drawBottom?CreateBottomPen(topHeight, bottomHeight):Pens.Transparent;
+					Pen bottomPen = null; 
+					var topPen = CreatePen(topHeight);
+					if (drawBottom)
+					{
+						bottomPen = CreatePen(bottomHeight,true);
+					}
+
 					int start = (int) timeToPixels(VisibleTimeStart);
 					int end = (int) timeToPixels(VisibleTimeEnd <= audio.MediaDuration ? VisibleTimeEnd : audio.MediaDuration);
 					
@@ -229,10 +236,7 @@ namespace Common.Controls.Timeline
 					}
 
 					topPen.Dispose();
-					if (drawBottom)
-					{
-						bottomPen.Dispose();
-					}
+					bottomPen?.Dispose();
 
 					DrawCursor(e.Graphics);
 				}
@@ -251,25 +255,13 @@ namespace Common.Controls.Timeline
 			base.OnPaint(e);
 		}
 
-		private static Pen CreateTopPen(int height)
+		private static Pen CreatePen(int height, bool reverse = false)
 		{
-			var brush = new LinearGradientBrush(new Point(0, 0), new Point(0, height), Color.FromArgb(60, 60, 60), Color.FromArgb(20, 20, 20));
+			var color1 = reverse ? Color.FromArgb(20, 20, 20) : Color.FromArgb(60, 60, 60);
+			var color2 = reverse ? Color.FromArgb(60, 60, 60) : Color.FromArgb(20, 20, 20);
+			var rect = new Rectangle(0, 0, 1, reverse?--height:height);
+			var brush = new LinearGradientBrush(rect, color1, color2, LinearGradientMode.Vertical);
 			return new Pen(brush);
-		}
-
-		private Pen CreateBottomPen(int topHeight, int bottomHeight)
-		{
-			var bottomGradient = new LinearGradientBrush(new Point(0, topHeight), new Point(0, topHeight + bottomHeight), 
-				Color.FromArgb(16, 16, 16), Color.FromArgb(70, 70, 70));
-			var colorBlend = new ColorBlend(3);
-			colorBlend.Colors[0] = Color.FromArgb(16, 16, 16);
-			colorBlend.Colors[1] = Color.FromArgb(62, 62, 62);
-			colorBlend.Colors[2] = Color.FromArgb(70, 70, 70);
-			colorBlend.Positions[0] = 0;
-			colorBlend.Positions[1] = 0.1f;
-			colorBlend.Positions[2] = 1.0f;
-			bottomGradient.InterpolationColors = colorBlend;
-			return new Pen(bottomGradient);
 		}
 
 		private void DrawCursor(Graphics g)
@@ -280,5 +272,11 @@ namespace Common.Controls.Timeline
 				g.DrawLine(p, curPos, 0, curPos, Height);
 			}
 		}
+	}
+
+	public enum WaveformStyle
+	{
+		Half,
+		Full
 	}
 }
