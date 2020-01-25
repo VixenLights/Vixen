@@ -34,6 +34,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			AlignRightCommand = new RelayCommand(AlignRight, CanExecuteAlignmentMethod);
 			DistributeHorizontallyCommand = new RelayCommand(DistributeHorizontally, CanExecuteAlignmentMethod);
 			DistributeVerticallyCommand = new RelayCommand(DistributeVertically, CanExecuteAlignmentMethod);
+			FlipHorizontalCommand = new RelayCommand(FlipHorizontal, CanExecuteAlignmentMethod);
+			FlipVerticalCommand = new RelayCommand(FlipVertical, CanExecuteAlignmentMethod);
 
 			DeleteSelectedLightsCommand = new RelayCommand(DeleteSelectedLights);
 			Configuration = ConfigurationService.Instance().Config;
@@ -51,6 +53,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			AlignTopsCommand.RaiseCanExecuteChanged();
 			DistributeVerticallyCommand.RaiseCanExecuteChanged();
 			DistributeHorizontallyCommand.RaiseCanExecuteChanged();
+			FlipHorizontalCommand.RaiseCanExecuteChanged();
+			FlipVerticalCommand.RaiseCanExecuteChanged();
 
 			DecreaseLightSizeCommand.RaiseCanExecuteChanged();
 			IncreaseLightSizeCommand.RaiseCanExecuteChanged();
@@ -398,6 +402,28 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 		}
 
+		public void FlipHorizontal()
+		{
+			// Find min and max X position
+			var max = SelectedItems.Max(element => Math.Abs(element.X));
+			var min = SelectedItems.Min(element => Math.Abs(element.X));
+			foreach (var lightViewModel in SelectedItems)
+			{
+				lightViewModel.Light.X = max - (lightViewModel.Light.X - min);
+			}
+		}
+
+		public void FlipVertical()
+		{
+			// Find min and max Y position
+			var max = SelectedItems.Max(element => Math.Abs(element.Y));
+			var min = SelectedItems.Min(element => Math.Abs(element.Y));
+			foreach (var lightViewModel in SelectedItems)
+			{
+				lightViewModel.Light.Y = max - (lightViewModel.Light.Y - min);
+			}
+		}
+
 		public void DistributeHorizontally()
 		{
 			if (SelectedItems.Count > 2)
@@ -466,6 +492,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		public RelayCommand AlignBottomsCommand { get; private set; }
 		public RelayCommand DistributeHorizontallyCommand { get; private set; }
 		public RelayCommand DistributeVerticallyCommand { get; private set; }
+		public RelayCommand FlipHorizontalCommand { get; private set; }
+		public RelayCommand FlipVerticalCommand { get; private set; }
 
 
 		#endregion
