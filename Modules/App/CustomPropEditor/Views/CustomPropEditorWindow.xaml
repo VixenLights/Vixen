@@ -257,10 +257,10 @@
                             </Button>
                             <Separator />
                             <Button Command="{Binding DrawingPanelViewModel.FlipHorizontalCommand}" ToolTip="Flip Horizontal">
-                                <Image Source="/CustomPropEditor;component/Images/buttonAlignRight.png" Height="20"/>
+                                <Image Source="/CustomPropEditor;component/Images/buttonFlipHorizontal.png" Height="20"/>
                             </Button>
                             <Button Command="{Binding DrawingPanelViewModel.FlipVerticalCommand}" ToolTip="Flip Vertical">
-                                <Image Source="/CustomPropEditor;component/Images/buttonAlignRight.png" Height="20"/>
+                                <Image Source="/CustomPropEditor;component/Images/buttonFlipVertical.png" Height="20"/>
                             </Button>
                             <Separator />
 							<Button Command="{Binding DrawingPanelViewModel.IncreaseLightSizeCommand}" ToolTip="Increase Light Size">
