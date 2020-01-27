@@ -42,6 +42,14 @@ namespace Common.AudioPlayer.SoundTouch
                 SoundTouchInterop32.soundtouch_setPitchOctaves(handle, pitchOctaves);
         }
 
+        public void SetPitchSemiTones(float pitchSemiTones)
+        {
+	        if (is64Bit)
+		        SoundTouchInterop64.soundtouch_setPitchSemiTones(handle, pitchSemiTones);
+	        else
+		        SoundTouchInterop32.soundtouch_setPitchSemiTones(handle, pitchSemiTones);
+        }
+
         public void SetSampleRate(int sampleRate)
         {
             if (is64Bit)
@@ -156,6 +164,14 @@ namespace Common.AudioPlayer.SoundTouch
                 SoundTouchInterop64.soundtouch_setTempo(handle, newTempo);
             else
                 SoundTouchInterop32.soundtouch_setTempo(handle, newTempo);
+        }
+
+        public void SetTempoChange(float newTempo)
+        {
+	        if (is64Bit)
+		        SoundTouchInterop64.soundtouch_setTempoChange(handle, newTempo);
+	        else
+		        SoundTouchInterop32.soundtouch_setTempoChange(handle, newTempo);
         }
 
         public int GetUseAntiAliasing()

@@ -15,7 +15,7 @@ namespace VixenModules.Media.Audio
 	public class Audio : MediaModuleInstanceBase, ITiming
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		private AudioPlayback _audioSystem;
+		private IPlayer _audioSystem;
 		private AudioData _data;
 		private CachedAudioData _cachedAudioData;
 		
@@ -295,7 +295,7 @@ namespace VixenModules.Media.Audio
 		{
 			get
 			{
-				if (_audioSystem != null && AudioPlayback.GetActiveDevices().Any())
+				if (_audioSystem != null && CoreAudioPlayer.GetActiveDevices().Any())
 				{
 					return this;
 				}
@@ -335,7 +335,8 @@ namespace VixenModules.Media.Audio
 				_DisposeAudio();
 				if (File.Exists(MediaFilePath))
 				{
-					_audioSystem = new AudioPlayback(AudioPlayback.GetDeviceOrDefault(Vixen.Sys.State.Variables.AudioDeviceId), MediaFilePath);
+					//_audioSystem = new AudioPlayback(AudioPlayback.GetDeviceOrDefault(Vixen.Sys.State.Variables.AudioDeviceId), MediaFilePath);
+					_audioSystem = new CoreAudioPlayer(CoreAudioPlayer.GetDeviceOrDefault(Vixen.Sys.State.Variables.AudioDeviceId), MediaFilePath);
 					//_audioSystem.FrequencyDetected += _audioSystem_FrequencyDetected;
 					_audioSystem.Position = startTime;
 					InitSampleProvider();

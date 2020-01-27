@@ -1578,7 +1578,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					int i = 0;
 					audioToolStripButton_Audio_Devices.DropDownItems.Clear();
-					foreach (var audioDevice in AudioPlayback.GetActiveDevices())
+					foreach (var audioDevice in CoreAudioPlayer.GetActiveDevices())
 					{
 						ToolStripMenuItem tsmi = new ToolStripMenuItem();
 						tsmi.Text = audioDevice.FriendlyName;

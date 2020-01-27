@@ -38,12 +38,13 @@ namespace Common.AudioPlayer
 
 		float Volume { get; set; }
 
-		void SetPlaybackSettings(int latency, bool eventMode, bool exclusiveMode);
-
 		void SwitchAudioDevice(string mediaDeviceId);
 
 		string CurrentAudioDeviceId { get; }
 
 		event Action PlaybackEnded;
+		event Action PlaybackResumed;
+		event Action PlaybackStopped;
+		event Action PlaybackPaused;
 	}
 }

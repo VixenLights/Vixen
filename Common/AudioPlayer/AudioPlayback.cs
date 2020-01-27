@@ -310,13 +310,6 @@ namespace Common.AudioPlayer
 	        }
         }
 
-		/// <inheritdoc />
-		public void SetPlaybackSettings(int latency, bool eventMode, bool exclusiveMode)
-		{
-			_audioClientShareMode = exclusiveMode?AudioClientShareMode.Exclusive:AudioClientShareMode.Shared;
-			_latency = latency;
-		}
-
 		public void Dispose()
         {
             Stop();

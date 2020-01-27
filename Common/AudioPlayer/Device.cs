@@ -9,6 +9,12 @@ namespace Common.AudioPlayer
 			
 	    }
 
+	    public Device(string deviceFriendlyName, string deviceId, bool isDefault)
+	    {
+		    FriendlyName = deviceFriendlyName;
+		    Id = deviceId;
+	    }
+
 	    public Device(MMDevice device, bool isDefault)
 	    {
 		    FriendlyName = device.FriendlyName;
