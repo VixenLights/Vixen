@@ -136,6 +136,8 @@
     <Resource Include="Images\buttonAlignVertMid.png" />
     <Resource Include="Images\buttonDistributeHorizontal.png" />
     <Resource Include="Images\buttonDistributeVertical.png" />
+    <Resource Include="Images\buttonFlipHorizontal.png" />
+    <Resource Include="Images\buttonFlipVertical.png" />
     <Resource Include="Images\buttonSelect.png" />
     <Resource Include="Images\cut.png" />
     <Resource Include="Images\copy.png" />
