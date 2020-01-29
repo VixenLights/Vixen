@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Common.AudioPlayer;
-using NAudio.Wave;
-using NAudio.Wave.SampleProviders;
 using Vixen.Module;
 using Vixen.Module.Media;
 using Vixen.Module.Timing;
+using Vixen.Sys;
 using VixenModules.Media.Audio.SampleProviders;
 
 namespace VixenModules.Media.Audio
@@ -31,13 +30,10 @@ namespace VixenModules.Media.Audio
 		}
 		public override string CurrentPlaybackDeviceId
 		{
-			get
-			{
-				return Vixen.Sys.State.Variables.AudioDeviceId;
-			}
+			get => _audioSystem.CurrentAudioDeviceId;
 			set
 			{
-				Vixen.Sys.State.Variables.AudioDeviceId = value;
+				_audioSystem?.SwitchAudioDevice(value);
 			}
 		}
 
@@ -246,7 +242,7 @@ namespace VixenModules.Media.Audio
 				{
 					_audioSystem.SwitchAudioDevice(CurrentPlaybackDeviceId);
 				}
-				_audioSystem.Play();
+				_audioSystem.Play(); 
 			}
 		}
 
@@ -295,7 +291,7 @@ namespace VixenModules.Media.Audio
 		{
 			get
 			{
-				if (_audioSystem != null && CoreAudioPlayer.GetActiveDevices().Any())
+				if (_audioSystem != null && AudioDevices.GetActiveOutputDevices().Any())
 				{
 					return this;
 				}
@@ -335,12 +331,11 @@ namespace VixenModules.Media.Audio
 				_DisposeAudio();
 				if (File.Exists(MediaFilePath))
 				{
-					//_audioSystem = new AudioPlayback(AudioPlayback.GetDeviceOrDefault(Vixen.Sys.State.Variables.AudioDeviceId), MediaFilePath);
-					_audioSystem = new CoreAudioPlayer(CoreAudioPlayer.GetDeviceOrDefault(Vixen.Sys.State.Variables.AudioDeviceId), MediaFilePath);
-					//_audioSystem.FrequencyDetected += _audioSystem_FrequencyDetected;
+					_audioSystem = PlayerFactory.CreateNew(AudioDevices.GetDeviceOrDefault(AudioDevices.PreferredAudioDeviceId), MediaFilePath);
 					_audioSystem.Position = startTime;
 					InitSampleProvider();
-				} else
+				} 
+				else
 				{
 					Logging.Error("Media file does not exist: " + MediaFilePath);
 				}	
@@ -349,18 +344,19 @@ namespace VixenModules.Media.Audio
 		}
 
 		/// <inheritdoc />
+		[Obsolete("No longer populated and will be zero. Use CurrentPlaybackDeviceId")]
 		public override int CurrentPlaybackDeviceIndex { get; set; }
 
-		public delegate void FrequencyDetectedHandler(object sender, FrequencyEventArgs e);
+		//public delegate void FrequencyDetectedHandler(object sender, FrequencyEventArgs e);
 
-		public event FrequencyDetectedHandler FrequencyDetected;
+		//public event FrequencyDetectedHandler FrequencyDetected;
 
-		private void _audioSystem_FrequencyDetected(object sender, FrequencyEventArgs e)
-		{
-			if (FrequencyDetected != null) {
-				FrequencyDetected(this, e);
-			}
-		}
+		//private void _audioSystem_FrequencyDetected(object sender, FrequencyEventArgs e)
+		//{
+		//	if (FrequencyDetected != null) {
+		//		FrequencyDetected(this, e);
+		//	}
+		//}
 
 		public TimeSpan Position
 		{

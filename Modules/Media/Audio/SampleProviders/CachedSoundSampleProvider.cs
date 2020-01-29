@@ -1,9 +1,9 @@
 ﻿using System;
-using NAudio.Wave;
+using CSCore;
 
-namespace VixenModules.Media.Audio
+namespace VixenModules.Media.Audio.SampleProviders
 {
-	public sealed class CachedSoundSampleProvider : ISampleProvider
+	public sealed class CachedSoundSampleProvider : ISampleSource
 	{
 		private readonly CachedAudioData _cachedAudioData;
 		
@@ -25,8 +25,20 @@ namespace VixenModules.Media.Audio
 
 		public long Position { get; set; }
 
-		public int Length { get; }
+		public long Length { get; }
 
+		/// <inheritdoc />
+		public bool CanSeek { get; }
 		public WaveFormat WaveFormat => _cachedAudioData.WaveFormat;
+
+		#region Implementation of IDisposable
+
+		/// <inheritdoc />
+		public void Dispose()
+		{
+			
+		}
+
+		#endregion
 	}
 }

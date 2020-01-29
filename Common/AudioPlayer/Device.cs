@@ -1,6 +1,4 @@
-﻿using NAudio.CoreAudioApi;
-
-namespace Common.AudioPlayer
+﻿namespace Common.AudioPlayer
 {
     public class Device
     {
@@ -13,12 +11,6 @@ namespace Common.AudioPlayer
 	    {
 		    FriendlyName = deviceFriendlyName;
 		    Id = deviceId;
-	    }
-
-	    public Device(MMDevice device, bool isDefault)
-	    {
-		    FriendlyName = device.FriendlyName;
-		    Id = device.ID;
 	    }
 
 	    public string FriendlyName { get; set; }

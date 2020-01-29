@@ -225,6 +225,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolbarsToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
 			toolbarsToolStripMenuItem_Effect.DropDown.Closing += toolStripMenuItem_Closing;
 			toolbarToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
+			audioToolStripButton_Audio_Devices.DropDownOpening += AudioToolStripButton_Audio_Devices_DropDownOpening;
+
 
 			PerformAutoScale();
 			Execution.ExecutionStateChanged += OnExecutionStateChanged;
@@ -1378,7 +1380,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				//This path is followed for new and existing sequences so we need to determine which we have and set modified accordingly.
 				//Added logic to determine if the sequence has a filepath to set modified JU 8/1/2012. 
-				PopulateAudioDropdown();
+				
+				PopulateWaveformAudio();
+				
 				_SetTimingToolStripEnabledState();
 
 				if (String.IsNullOrEmpty(_sequence.FilePath))
@@ -1574,34 +1578,32 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
-				using (var fmod = new FmodInstance())
+				int i = 0;
+				var useDefaultAudioDevice = true;
+				var preferredDevice = AudioDevices.PreferredAudioDeviceId;
+				audioToolStripButton_Audio_Devices.DropDownItems.Clear();
+				foreach (var audioDevice in AudioDevices.GetActiveOutputDevices())
 				{
-					int i = 0;
-					audioToolStripButton_Audio_Devices.DropDownItems.Clear();
-					foreach (var audioDevice in CoreAudioPlayer.GetActiveDevices())
+					ToolStripMenuItem tsmi = new ToolStripMenuItem();
+					tsmi.Text = audioDevice.FriendlyName;
+					tsmi.Tag = audioDevice.Id;
+					tsmi.Click += audioDevicesToolStripMenuItem_Click;
+					if (audioDevice.Id == preferredDevice)
 					{
-						ToolStripMenuItem tsmi = new ToolStripMenuItem();
-						tsmi.Text = audioDevice.FriendlyName;
-						tsmi.Tag = audioDevice.Id;
-						tsmi.Click += audioDevicesToolStripMenuItem_Click;
-						audioToolStripButton_Audio_Devices.DropDownItems.Add(tsmi);
-						i++;
+						tsmi.Checked = true;
+						useDefaultAudioDevice = false;
 					}
-					//fmod.AudioDevices.OrderBy(a => a.Item1).Select(b => b.Item2).ToList().ForEach(device =>
-					//{
-					//	ToolStripMenuItem tsmi = new ToolStripMenuItem();
-					//	tsmi.Text = device;
-					//	tsmi.Tag = i;
-					//	tsmi.Click += audioDevicesToolStripMenuItem_Click;
-					//	audioToolStripButton_Audio_Devices.DropDownItems.Add(tsmi);
-					//	i++;
-					//});
-					if (audioToolStripButton_Audio_Devices.DropDownItems.Count > 0)
+					audioToolStripButton_Audio_Devices.DropDownItems.Add(tsmi);
+					i++;
+				}
+
+				if (audioToolStripButton_Audio_Devices.DropDownItems.Count > 0)
+				{
+					if (useDefaultAudioDevice)
 					{
-						var item = (ToolStripMenuItem)audioToolStripButton_Audio_Devices.DropDownItems[0];
+						var item = (ToolStripMenuItem) audioToolStripButton_Audio_Devices.DropDownItems[0];
 						item.Checked = true;
-						Variables.AudioDeviceId = (string)item.Tag;
-						PopulateWaveformAudio();
+						AudioDevices.PreferredAudioDeviceId = (string) item.Tag;
 					}
 				}
 			}
@@ -1793,6 +1795,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_sequence.RemoveMedia(module);
 				}
 				//Remove any associated audio from the timeline.
+				TimelineControl.Audio.Dispose();
 				TimelineControl.Audio = null;
 
 				TimeSpan length = TimeSpan.Zero;

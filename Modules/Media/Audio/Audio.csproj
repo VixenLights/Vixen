@@ -37,11 +37,6 @@
       <Name>AudioPlayer</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Common\FMOD\FMOD.csproj">
-      <Project>{3a2b3153-2b4b-4ec4-b85f-a824682cc054}</Project>
-      <Name>FMOD</Name>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.IO.Compression" />

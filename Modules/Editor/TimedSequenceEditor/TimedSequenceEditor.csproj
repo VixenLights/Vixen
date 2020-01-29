@@ -294,9 +294,6 @@
     <EmbeddedResource Update="InvalidAudioPathDialog.resx">
       <DependentUpon>InvalidAudioPathDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="MarkManager.resx">
-      <DependentUpon>MarkManager.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Update="MarkTapper.resx">
       <DependentUpon>MarkTapper.cs</DependentUpon>
     </EmbeddedResource>

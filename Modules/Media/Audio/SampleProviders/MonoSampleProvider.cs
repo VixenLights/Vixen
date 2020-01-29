@@ -1,16 +1,17 @@
-﻿using NAudio.Wave;
+﻿using System;
+using CSCore;
 
 namespace VixenModules.Media.Audio.SampleProviders
 {
-	public class MonoSampleProvider:ISampleProvider
+	public class MonoSampleProvider:ISampleSource
 	{
-		private readonly ISampleProvider _sourceProvider;
+		private readonly ISampleSource _sourceProvider;
 		private float[] _sourceBuffer;
 		
-		public MonoSampleProvider(ISampleProvider sourceProvider)
+		public MonoSampleProvider(ISampleSource sourceProvider)
 		{
-			_sourceProvider = sourceProvider;
-			WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(sourceProvider.WaveFormat.SampleRate, 1);
+			_sourceProvider = sourceProvider.ToMono();
+			WaveFormat = _sourceProvider.WaveFormat; //.CreateIeeeFloatWaveFormat(sourceProvider.WaveFormat.SampleRate, 1);
 		}
 
 		/// <summary>
@@ -22,51 +23,47 @@ namespace VixenModules.Media.Audio.SampleProviders
 		/// <returns></returns>
 		public int Read(float[] buffer, int offset, int count)
 		{
-			var sourceSamplesRequired = count * WaveFormat.Channels;
-			if (_sourceBuffer == null || _sourceBuffer.Length < sourceSamplesRequired) _sourceBuffer = new float[sourceSamplesRequired];
-
-			var sourceSamplesRead = _sourceProvider.Read(_sourceBuffer, 0, sourceSamplesRequired);
-			var destOffset = offset;
-			for (var sourceSample = 0; sourceSample < sourceSamplesRead; sourceSample += WaveFormat.Channels)
-			{
-				float audioSum = 0;
-				for (int i = 0; i < WaveFormat.Channels; i++)
-				{
-					audioSum += _sourceBuffer[sourceSample + i];
-				}
-				var outSample = audioSum / WaveFormat.Channels;
-				buffer[destOffset++] = outSample;
-			}
-			return sourceSamplesRead / WaveFormat.Channels;
+			return _sourceProvider.Read(buffer, offset, count);
 		}
+
+		/// <inheritdoc />
+		public bool CanSeek { get; }
 
 		/// <summary>
 		/// Output Wave Format
 		/// </summary>
 		public WaveFormat WaveFormat { get; }
 
+		/// <inheritdoc />
+		public long Position { get; set; }
+
+		/// <inheritdoc />
+		public long Length { get; }
+
 		/// <summary>
 		/// Reads bytes from this SampleProvider
 		/// </summary>
 		public int Read(double[] buffer, int offset, int count)
 		{
-			int numChannels = _sourceProvider.WaveFormat.Channels;
-			var sourceSamplesRequired = count * numChannels;
-			if (_sourceBuffer == null || _sourceBuffer.Length < sourceSamplesRequired) _sourceBuffer = new float[sourceSamplesRequired];
-
-			var sourceSamplesRead = _sourceProvider.Read(_sourceBuffer, 0, sourceSamplesRequired);
-			var destOffset = offset;
-			for (var sourceSample = 0; sourceSample < sourceSamplesRead; sourceSample += numChannels)
+			if(offset + count > buffer.Length) throw new ArgumentOutOfRangeException(nameof(offset));
+			var temp = new float[count]; 
+			_sourceProvider.Read(temp, 0, count);
+			for (int i = 0; i < temp.Length; i++)
 			{
-				double audioSum = 0;
-				for (int i = 0; i < numChannels; i++)
-				{
-					audioSum += _sourceBuffer[sourceSample + i];
-				}
-				var outSample = audioSum / numChannels;
-				buffer[destOffset++] = outSample;
+				buffer[offset++] = temp[i];
 			}
-			return sourceSamplesRead / numChannels;
+
+			return count;
 		}
+
+		#region Implementation of IDisposable
+
+		/// <inheritdoc />
+		public void Dispose()
+		{
+			
+		}
+
+		#endregion
 	}
 }

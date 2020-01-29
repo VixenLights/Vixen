@@ -8,6 +8,7 @@ using System.Runtime.Serialization;
 using System.Windows.Forms;
 using System.Xml;
 using Catel.Collections;
+using Common.AudioPlayer;
 using Common.Controls;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
@@ -1693,8 +1694,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void audioDevicesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ToolStripDropDownItem menuItem = sender as ToolStripDropDownItem;
-			foreach (ToolStripDropDownItem item in audioToolStripButton_Audio_Devices.DropDownItems) ((ToolStripMenuItem) item).Checked = item == menuItem;
-			if (menuItem != null) Variables.AudioDeviceId = (string) menuItem.Tag;
+			foreach (ToolStripDropDownItem item in audioToolStripButton_Audio_Devices.DropDownItems)
+			{
+				((ToolStripMenuItem) item).Checked = item == menuItem;
+			}
+
+			if (menuItem != null)
+			{
+				AudioDevices.PreferredAudioDeviceId = (string) menuItem.Tag;
+			}
+			TimelineControl.Audio.CurrentPlaybackDeviceId = AudioDevices.PreferredAudioDeviceId;
 		}
 
 		#endregion
@@ -1869,6 +1878,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				});
 			tsmi.DropDownItems.Clear();
 			tsmi.DropDownItems.AddRange(temp);
+		}
+
+		private void AudioToolStripButton_Audio_Devices_DropDownOpening(object sender, EventArgs e)
+		{
+			PopulateAudioDropdown();
 		}
 
 		private void toolStripMenuItem_Closing(object sender, ToolStripDropDownClosingEventArgs e)
