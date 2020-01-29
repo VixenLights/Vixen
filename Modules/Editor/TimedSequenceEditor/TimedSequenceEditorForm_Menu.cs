@@ -332,6 +332,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Tools Menu
 
+		private void speedTempoToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			TimelineControl.Audio.UseTempo = speedTempoToolStripMenuItem.Checked;
+		}
+
 		private void toolStripMenuItem_removeAudio_Click(object sender, EventArgs e)
 		{
 			RemoveAudioAssociation();

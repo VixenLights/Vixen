@@ -108,6 +108,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_removeAudio = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.beatBarDetectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.speedTempoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.modifySequenceLengthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.curveEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.colorGradientEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1010,7 +1011,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripMenuItem_associateAudio,
             this.toolStripMenuItem_removeAudio,
             this.toolStripSeparator7,
-            this.beatBarDetectionToolStripMenuItem});
+            this.beatBarDetectionToolStripMenuItem,
+            this.speedTempoToolStripMenuItem});
 			this.audioToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.audioToolStripMenuItem.Name = "audioToolStripMenuItem";
 			this.audioToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
@@ -1046,6 +1048,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.beatBarDetectionToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
 			this.beatBarDetectionToolStripMenuItem.Text = "Beat/Bar Detection";
 			this.beatBarDetectionToolStripMenuItem.Click += new System.EventHandler(this.toolStripMenuItem_BeatBarDetection_Click);
+			// 
+			// speedTempoToolStripMenuItem
+			// 
+			this.speedTempoToolStripMenuItem.CheckOnClick = true;
+			this.speedTempoToolStripMenuItem.Name = "speedTempoToolStripMenuItem";
+			this.speedTempoToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+			this.speedTempoToolStripMenuItem.Text = "Speed / Tempo";
+			this.speedTempoToolStripMenuItem.Click += new System.EventHandler(this.speedTempoToolStripMenuItem_Click);
 			// 
 			// modifySequenceLengthToolStripMenuItem
 			// 
@@ -2578,5 +2588,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem highlightRowsWithEffectsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem showEffectInfoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+		private System.Windows.Forms.ToolStripMenuItem speedTempoToolStripMenuItem;
 	}
 }

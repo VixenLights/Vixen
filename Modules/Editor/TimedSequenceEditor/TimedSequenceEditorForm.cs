@@ -346,7 +346,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				$"{Name}/ShowEffectInfo", true);
 
 			TimelineControl.AddMarks(_sequence.LabeledMarkCollections);
-			
+			speedTempoToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/UseTempoForSpeed", false);
 			_curveLibrary = ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary;
 			if (_curveLibrary != null)
 			{
@@ -1643,6 +1643,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					if (audio.MediaExists)
 					{
 						TimelineControl.Audio = audio;
+						TimelineControl.Audio.UseTempo = speedTempoToolStripMenuItem.Checked;
 						toolStripButton_AssociateAudio.ToolTipText = string.Format("Associated Audio: {0}",
 							Path.GetFileName(audio.MediaFilePath));
 					}
@@ -1797,12 +1798,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//Remove any associated audio from the timeline.
 				TimelineControl.Audio.Dispose();
 				TimelineControl.Audio = null;
-
+				
 				TimeSpan length = TimeSpan.Zero;
 				if (newInstance is Audio)
 				{
 					length = (newInstance as Audio).MediaDuration;
 					TimelineControl.Audio = newInstance as Audio;
+					TimelineControl.Audio.UseTempo = speedTempoToolStripMenuItem.Checked;
 				}
 
 				_UpdateTimingSourceToSelectedMedia();
@@ -5415,7 +5417,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SplitterDistance", Name), TimelineControl.splitContainer.SplitterDistance);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/ShowEffectInfo", TimelineControl.grid.ShowEffectToolTip);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/FullWaveform", fullWaveformToolStripMenuItem.Checked);
-
+			xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/UseTempoForSpeed", speedTempoToolStripMenuItem.Checked);
+			
 			Save_ToolsStripItemsFile();
 
 			//This .Close is here because we need to save some of the settings from the form before it is closed.
@@ -5945,7 +5948,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			return defaultEffectDuration;
 		}
-
 	}
 
 	[Serializable]
