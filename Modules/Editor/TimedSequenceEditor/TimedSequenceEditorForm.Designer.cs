@@ -1051,6 +1051,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			// speedTempoToolStripMenuItem
 			// 
+			this.speedTempoToolStripMenuItem.Enabled = false;
 			this.speedTempoToolStripMenuItem.CheckOnClick = true;
 			this.speedTempoToolStripMenuItem.Name = "speedTempoToolStripMenuItem";
 			this.speedTempoToolStripMenuItem.Size = new System.Drawing.Size(173, 22);

@@ -1644,6 +1644,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						TimelineControl.Audio = audio;
 						TimelineControl.Audio.UseTempo = speedTempoToolStripMenuItem.Checked;
+						speedTempoToolStripMenuItem.Enabled = true;
 						toolStripButton_AssociateAudio.ToolTipText = string.Format("Associated Audio: {0}",
 							Path.GetFileName(audio.MediaFilePath));
 					}
@@ -1659,6 +1660,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					Logging.Error("TimedSequenceEditor: <PopulateWaveformAudio> - Attempting to process null audio!");
 				}
+			}
+			else
+			{
+				speedTempoToolStripMenuItem.Enabled = false;
 			}
 		}
 
@@ -1743,6 +1748,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripMenuItem_removeAudio.Enabled = false;
 			beatBarDetectionToolStripMenuItem.Enabled = false;
 			toolStripButton_AssociateAudio.ToolTipText = @"Associate Audio";
+			speedTempoToolStripMenuItem.Enabled = false;
 
 			SequenceModified();
 		}
@@ -1796,7 +1802,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_sequence.RemoveMedia(module);
 				}
 				//Remove any associated audio from the timeline.
-				TimelineControl.Audio.Dispose();
+				TimelineControl.Audio?.Dispose();
 				TimelineControl.Audio = null;
 				
 				TimeSpan length = TimeSpan.Zero;
@@ -1804,8 +1810,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					length = (newInstance as Audio).MediaDuration;
 					TimelineControl.Audio = newInstance as Audio;
-					TimelineControl.Audio.UseTempo = speedTempoToolStripMenuItem.Checked;
+					if(TimelineControl.Audio != null)
+					{
+						TimelineControl.Audio.UseTempo = speedTempoToolStripMenuItem.Checked;
+					}
 				}
+
+				speedTempoToolStripMenuItem.Enabled = TimelineControl.Audio != null;
 
 				_UpdateTimingSourceToSelectedMedia();
 
@@ -5417,7 +5428,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SplitterDistance", Name), TimelineControl.splitContainer.SplitterDistance);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/ShowEffectInfo", TimelineControl.grid.ShowEffectToolTip);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/FullWaveform", fullWaveformToolStripMenuItem.Checked);
-			xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/UseTempoForSpeed", speedTempoToolStripMenuItem.Checked);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/UseTempoForSpeed", speedTempoToolStripMenuItem.Checked);
 			
 			Save_ToolsStripItemsFile();
 

@@ -334,7 +334,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void speedTempoToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			TimelineControl.Audio.UseTempo = speedTempoToolStripMenuItem.Checked;
+			if (TimelineControl.Audio != null)
+			{
+				TimelineControl.Audio.UseTempo = speedTempoToolStripMenuItem.Checked;
+			}
 		}
 
 		private void toolStripMenuItem_removeAudio_Click(object sender, EventArgs e)
@@ -345,11 +348,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void toolStripMenuItem_associateAudio_Click(object sender, EventArgs e)
 		{
 			AddAudioAssociation();
-		}
-
-		private void toolStripMenuItem_MarkManager_Click(object sender, EventArgs e)
-		{
-			ShowMarkManager();
 		}
 
 		private void modifySequenceLengthToolStripMenuItem_Click(object sender, EventArgs e)
