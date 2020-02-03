@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Common.AudioPlayer;
 using Vixen.Module;
 using Vixen.Module.Media;
@@ -191,7 +192,7 @@ namespace VixenModules.Media.Audio
 		/// </summary>
 		/// <param name="samplesPerInterval"></param>
 		/// <returns></returns>
-		public List<Sample> GetSamples(int samplesPerInterval)
+		public List<Sample> GetSamples(int samplesPerInterval, CancellationToken ct)
 		{
 			List<Sample> pi = new List<Sample>();
 			if (_cachedAudioData == null) return pi;
@@ -200,6 +201,8 @@ namespace VixenModules.Media.Audio
 			provider.Init(cad, samplesPerInterval);
 			while (cad.Position < cad.Length)
 			{
+				// Were we canceled?
+				ct.ThrowIfCancellationRequested();
 				pi.Add(provider.GetNextPeak());
 			}
 			return pi;

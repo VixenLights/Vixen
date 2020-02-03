@@ -102,7 +102,7 @@ namespace Common.AudioPlayer
 				}
 				catch (Exception e)
 				{
-					Logging.Error(e, "Unable to read audio device id.");
+					Logging.Warn(e, "Unable to read audio device id. Useing the default device.");
 				}
 
 				var d = GetDeviceOrDefault(id);

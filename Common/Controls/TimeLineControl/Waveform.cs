@@ -5,12 +5,16 @@ using System.Threading;
 using System.Windows.Forms;
 using VixenModules.Media.Audio;
 using System.Drawing.Drawing2D;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using Common.Controls.TimelineControl;
 using Common.Controls.TimelineControl.LabeledMarks;
+using NLog;
 using VixenModules.Media.Audio.SampleProviders;
 using Font = System.Drawing.Font;
 using FontStyle = System.Drawing.FontStyle;
+using Timer = System.Threading.Timer;
 
 namespace Common.Controls.Timeline
 {
@@ -20,6 +24,7 @@ namespace Common.Controls.Timeline
 	[System.ComponentModel.DesignerCategory("")] // Prevent this from showing up in designer.
 	public sealed class Waveform : TimelineControlBase
 	{
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private double samplesPerPixel;
 		private List<Sample> samples;
 		private Audio audio;
@@ -27,7 +32,9 @@ namespace Common.Controls.Timeline
 		private bool _showMarkAlignment;
 		private IEnumerable<TimeSpan> _activeTimes;
 		private const int MinimumHeight = 30;
-		
+		private readonly Subject<TimeSpan> _timePerPixelChangeSubject;
+		private CancellationTokenSource _updateCancellationTokenSource;
+
 		private readonly TimeLineGlobalEventManager _timeLineGlobalEventManager;
 
 		/// <summary>
@@ -40,6 +47,8 @@ namespace Common.Controls.Timeline
 			samples = new List<Sample>();
 			BackColor = Color.FromArgb(120,120,120);
 			Visible = false;
+			_timePerPixelChangeSubject = new Subject<TimeSpan>();
+			_timePerPixelChangeSubject.Throttle(TimeSpan.FromMilliseconds(250)).Subscribe(x => CreateSamples());
 			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager;
 			_timeLineGlobalEventManager.AlignmentActivity += WaveFormSelectedTimeLineGlobalMove;
 			_timeLineGlobalEventManager.CursorMoved += CursorMoved;
@@ -87,26 +96,56 @@ namespace Common.Controls.Timeline
 		//Runs in background to keep the ui free.
 		private void CreateSamples()
 		{
-			_creatingSamples = true;
+			if (_creatingSamples && _updateCancellationTokenSource != null)
+			{
+				_updateCancellationTokenSource?.Cancel();
+				_updateCancellationTokenSource?.Dispose();
+				_updateCancellationTokenSource = null;
+			}
+			_updateCancellationTokenSource = new CancellationTokenSource();
+			var ct = _updateCancellationTokenSource.Token;
+
+			var t = Task.Factory.StartNew(() =>
+			{
+				// Were we already canceled?
+				ct.ThrowIfCancellationRequested();
 			
-			if (audio == null)
-			{
-				_creatingSamples = false;
-				return;
-			}
-			if (!audio.MediaLoaded) {
-				audio.LoadMedia(TimeSpan.Zero);
-			}
+				_creatingSamples = true;
 
-			var totalPixels = timeToPixels(audio.MediaDuration);
-			samplesPerPixel = audio.NumberSamples / totalPixels;
-			samples = audio.GetSamples((int) samplesPerPixel);
-			_creatingSamples = false;
+				if (audio == null)
+				{
+					_creatingSamples = false;
+					return;
+				}
 
-			if (InvokeRequired)
-			{
-				BeginInvoke((Action)FinishedSamples);
-			}
+				if (!audio.MediaLoaded)
+				{
+					audio.LoadMedia(TimeSpan.Zero);
+				}
+			
+				var totalPixels = timeToPixels(audio.MediaDuration);
+				samplesPerPixel = audio.NumberSamples / totalPixels;
+				try
+				{
+					samples = audio.GetSamples((int) samplesPerPixel, ct);
+					_creatingSamples = false;
+
+					if (InvokeRequired)
+					{
+						BeginInvoke((Action) FinishedSamples);
+					}
+				}
+				catch (OperationCanceledException e)
+				{
+					Logging.Info("Waveform create samples canceled.");
+				}
+				finally
+				{
+					_creatingSamples = false;
+					_updateCancellationTokenSource?.Dispose();
+					_updateCancellationTokenSource = null;
+				}
+			});
 		}
 
 		private void FinishedSamples()
@@ -141,7 +180,7 @@ namespace Common.Controls.Timeline
 				audio = value;
 				if (audio != null)
 				{
-					Task.Factory.StartNew(CreateSamples);
+					_timePerPixelChangeSubject.OnNext(TimePerPixel);
 					Visible = true;
 					// Make us visible if we have audio to display.
 				}
@@ -160,11 +199,7 @@ namespace Common.Controls.Timeline
 
 		protected override void OnTimePerPixelChanged(object sender, EventArgs e)
 		{
-			while (_creatingSamples)
-			{
-				Thread.Sleep(1);
-			}
-			Task.Factory.StartNew(CreateSamples);
+			_timePerPixelChangeSubject.OnNext(TimePerPixel);
 		}
 
 		protected override void OnPlaybackStartTimeChanged(object sender, EventArgs e)
