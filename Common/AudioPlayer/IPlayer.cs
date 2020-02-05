@@ -38,10 +38,8 @@ namespace Common.AudioPlayer
 
 		float Volume { get; set; }
 
-		void SwitchAudioDevice(string mediaDeviceId);
-
-		string CurrentAudioDeviceId { get; }
-
+		AudioOutputManager AudioOutputManager { get; }
+		
 		event Action PlaybackEnded;
 		event Action PlaybackResumed;
 		event Action PlaybackStopped;

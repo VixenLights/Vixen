@@ -1,7 +1,6 @@
 ﻿using System;
 using Common.AudioPlayer.SampleProvider;
 using CSCore;
-using CSCore.CoreAudioAPI;
 using CSCore.SoundOut;
 using NLog;
 
@@ -10,49 +9,26 @@ namespace Common.AudioPlayer
 	public class CoreAudioPlayer:IPlayer
 	{
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
-		private MMDevice _currentDevice;
 		private ISoundOut _soundOut;
 		private IWaveSource _waveSource;
-		private int _latency = 25;
 		private SoundTouchSource _speedControl;
 		
-		internal CoreAudioPlayer(string fileName):this(null, fileName)
-		{
-			
-		}
-
-		internal CoreAudioPlayer(Device device, string fileName)
+		internal CoreAudioPlayer(string fileName)
 		{
 			if (string.IsNullOrEmpty(fileName))
 			{
 				throw new ArgumentNullException(nameof(fileName));
 			}
 
-			MMDevice mmDevice = null;
-			if (device != null)
-			{
-				mmDevice = AudioDevices.GetDevice(device.Id);
-			}
-
-			if (mmDevice != null && mmDevice.DeviceState == DeviceState.Active)
-			{
-				CurrentDevice = mmDevice;
-			}
-			else
-			{
-				CurrentDevice = mmDevice ?? AudioDevices.GetDefaultAudioEndpoint();
-			}
-
+			AudioOutputManager = AudioOutputManager.Instance();
+			
 			Filename = fileName;
 			Volume = 1.0f;
 			Load();
 		}
 
-		public bool Load()
+		private bool Load()
 		{
-			Stop();
-			CloseFile();
-			//EnsureDeviceCreated();
 			return OpenFile(Filename);
 		}
 		
@@ -74,12 +50,13 @@ namespace Common.AudioPlayer
 			var status = false;
 			try
 			{
+				_speedControl?.Dispose();
+				_waveSource?.Dispose();
 				_waveSource =
 					CSCore.Codecs.CodecFactory.Instance.GetCodec(fileName)
 						.ToSampleSource()
 						.AppendSource(x => new SoundTouchSource(x, 20), out _speedControl)
 						.ToWaveSource();
-				//InitializeSound();
 				status = true;
 			}
 			catch (Exception e)
@@ -91,18 +68,7 @@ namespace Common.AudioPlayer
 			return status;
 		}
 
-		private void InitializeSound()
-		{
-			try
-			{
-				_soundOut.Initialize(_waveSource);
-				_soundOut.Volume = Volume;
-			}
-			catch (Exception e)
-			{
-				Logging.Error(e, $"An error occurred initializing the sound out device.");
-			}
-		}
+		public AudioOutputManager AudioOutputManager { get; }
 
 		public PlaybackState PlaybackState
 		{
@@ -117,8 +83,6 @@ namespace Common.AudioPlayer
 		#region Implementation of IPlayer
 
 		/// <inheritdoc />
-		
-        
 		public bool IsPaused => PlaybackState == PlaybackState.Paused;
         
 		/// <inheritdoc />
@@ -180,8 +144,19 @@ namespace Common.AudioPlayer
 		{
 			get
 			{
-				if (_waveSource != null)
-					return _waveSource.GetPosition();
+
+				try
+				{
+					if (_waveSource != null)
+						return _waveSource.GetPosition();
+				}
+				catch (Exception e)
+				{
+					Logging.Error(e, "An error occured trying to get the position.");
+					Stop();
+					PlaybackEnded?.Invoke();
+					CleanupSoundOut();
+				}
 				return TimeSpan.Zero;
 			}
 			set
@@ -275,25 +250,6 @@ namespace Common.AudioPlayer
 		}
 
 		/// <inheritdoc />
-		public void SwitchAudioDevice(string mediaDeviceId)
-		{
-			if (CurrentAudioDeviceId == mediaDeviceId) return;
-			var mmDevice = AudioDevices.GetDevice(mediaDeviceId);
-			
-			if (mmDevice != null && mmDevice.DeviceState == DeviceState.Active)
-			{
-				CurrentDevice = mmDevice;
-			}
-			else
-			{
-				CurrentDevice = mmDevice ?? AudioDevices.GetDefaultAudioEndpoint();
-			}
-		}
-
-		/// <inheritdoc />
-		public string CurrentAudioDeviceId { get; private set; }
-
-		/// <inheritdoc />
 		public event Action PlaybackEnded;
 		public event Action PlaybackResumed;
 		public event Action PlaybackStopped;
@@ -303,12 +259,15 @@ namespace Common.AudioPlayer
 
 		private void CleanupPlayback()
 		{
+			CleanUpWaveSource();
 			CleanupSoundOut();
-			if (_waveSource != null)
-			{
-				_waveSource.Dispose();
-				_waveSource = null;
-			}
+		}
+
+		private void CleanUpWaveSource()
+		{
+			_speedControl?.Dispose();
+			_waveSource?.Dispose();
+			_waveSource = null;
 		}
 
 		private void CleanupSoundOut(bool dispose=true)
@@ -324,56 +283,41 @@ namespace Common.AudioPlayer
 			}
 		}
 
-		protected MMDevice CurrentDevice
-		{
-			get => _currentDevice;
-			set
-			{
-				_currentDevice = value;
-				CurrentAudioDeviceId = _currentDevice.DeviceID;
-			}
-		}
-
 		private bool EnsureDeviceCreated()
 		{
-			if (_soundOut == null)
+			if (_soundOut == null || _waveSource == null)
 			{
-				return CreateDevice();
+				return InitializeDevice();
 			}
 
 			return true;
 		}
 
-		private bool CreateDevice()
+		private bool InitializeDevice()
 		{
-			if(CurrentDevice == null || CurrentDevice.DeviceState != DeviceState.Active)
+			if (_waveSource == null)
 			{
-				var d = AudioDevices.GetDefaultDevice();
-				if (d != null)
-				{
-					SwitchAudioDevice(d.Id);
-				}
-				else
-				{
-					return false;
-				}
-			};
-
-			if (WasapiOut.IsSupportedOnCurrentPlatform)
-				_soundOut = new WasapiOut{Latency = _latency, Device = CurrentDevice};
-			else
-			{
-				Logging.Warn("Wasapi audio not supported. Defaulting to DirectSound on the default device.");
-				_soundOut = new DirectSoundOut{Latency = _latency};
+				var status = Load();
+				if (!status || _waveSource == null) return false;
 			}
 
-			_soundOut.Stopped += PlaybackDeviceOnPlaybackStopped;
-			if (_waveSource != null)
+			if (_soundOut == null)
+			{
+				_soundOut = AudioOutputManager.GetAudioOutput();
+				_soundOut.Stopped += PlaybackDeviceOnPlaybackStopped;
+			}
+
+			try
 			{
 				_soundOut.Initialize(_waveSource);
 				_soundOut.Volume = Volume;
 			}
-
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				throw;
+			}
+			
 			return true;
 		}
 

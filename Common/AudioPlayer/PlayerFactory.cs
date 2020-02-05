@@ -2,9 +2,10 @@
 {
 	public class PlayerFactory
 	{
-		public static IPlayer CreateNew(Device device, string fileName)
+		
+		public static IPlayer CreateNew(string fileName)
 		{
-			return new CoreAudioPlayer(device, fileName);
+			return new CoreAudioPlayer(fileName);
 		}
 	}
 }

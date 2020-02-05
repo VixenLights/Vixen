@@ -227,7 +227,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolbarToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
 			audioToolStripButton_Audio_Devices.DropDownOpening += AudioToolStripButton_Audio_Devices_DropDownOpening;
 
-
 			PerformAutoScale();
 			Execution.ExecutionStateChanged += OnExecutionStateChanged;
 			_autoSaveTimer.Tick += AutoSaveEventProcessor;
@@ -1580,32 +1579,38 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				int i = 0;
 				var useDefaultAudioDevice = true;
-				var preferredDevice = AudioDevices.PreferredAudioDeviceId;
+				
+				var preferredDevice = AudioOutputManager.Instance().AudioOutputDeviceId;
 				audioToolStripButton_Audio_Devices.DropDownItems.Clear();
-				foreach (var audioDevice in AudioDevices.GetActiveOutputDevices())
+				var devices = AudioOutputManager.Instance().AudioOutputList;
+				if (devices.Any())
 				{
-					ToolStripMenuItem tsmi = new ToolStripMenuItem();
-					tsmi.Text = audioDevice.FriendlyName;
-					tsmi.Tag = audioDevice.Id;
-					tsmi.Click += audioDevicesToolStripMenuItem_Click;
-					if (audioDevice.Id == preferredDevice)
+					foreach (var audioDevice in devices)
 					{
-						tsmi.Checked = true;
-						useDefaultAudioDevice = false;
+						ToolStripMenuItem tsmi = new ToolStripMenuItem();
+						tsmi.Text = audioDevice.FriendlyName;
+						tsmi.Tag = audioDevice.Id;
+						tsmi.Click += audioDevicesToolStripMenuItem_Click;
+						if (audioDevice.Id == preferredDevice)
+						{
+							tsmi.Checked = true;
+							useDefaultAudioDevice = false;
+						}
+						audioToolStripButton_Audio_Devices.DropDownItems.Add(tsmi);
+						i++;
 					}
-					audioToolStripButton_Audio_Devices.DropDownItems.Add(tsmi);
-					i++;
-				}
 
-				if (audioToolStripButton_Audio_Devices.DropDownItems.Count > 0)
-				{
-					if (useDefaultAudioDevice)
+					if (audioToolStripButton_Audio_Devices.DropDownItems.Count > 0)
 					{
-						var item = (ToolStripMenuItem) audioToolStripButton_Audio_Devices.DropDownItems[0];
-						item.Checked = true;
-						AudioDevices.PreferredAudioDeviceId = (string) item.Tag;
+						if (useDefaultAudioDevice)
+						{
+							var item = (ToolStripMenuItem) audioToolStripButton_Audio_Devices.DropDownItems[0];
+							item.Checked = true;
+							AudioOutputManager.Instance().AudioOutputDeviceId = (string) item.Tag;
+						}
 					}
 				}
+				
 			}
 		}
 

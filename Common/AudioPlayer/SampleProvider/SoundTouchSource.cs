@@ -20,9 +20,6 @@ namespace Common.AudioPlayer.SampleProvider
         private ISampleSource _sampleSource;
         private SoundTouch.SoundTouch _soundTouch;
 
-        private SoundTouchProfile _currentSoundTouchProfile;
-        private float _playbackRate = 1.0f;
-
         public SoundTouchSource(ISampleSource sampleSource, int latency)
             : base(sampleSource)
         {

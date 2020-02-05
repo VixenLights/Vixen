@@ -47,6 +47,10 @@
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
+    <ProjectReference Include="..\..\Common\AudioPlayer\AudioPlayer.csproj">
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
     <ProjectReference Include="..\..\Common\Help\VixenHelp.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>

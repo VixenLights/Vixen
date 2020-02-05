@@ -29,15 +29,7 @@ namespace VixenModules.Media.Audio
 				//return _audioSystem.NOTE;
 			}
 		}
-		public override string CurrentPlaybackDeviceId
-		{
-			get => _audioSystem.CurrentAudioDeviceId;
-			set
-			{
-				_audioSystem?.SwitchAudioDevice(value);
-			}
-		}
-
+		
 		[Obsolete("Based on old libraries and not currently implemented.")]
 		public float[] DetectionNoteFreq
 		{
@@ -241,10 +233,10 @@ namespace VixenModules.Media.Audio
 		public override void Start()
 		{
 			if (_audioSystem != null && !_audioSystem.IsPlaying) {
-				if (_audioSystem.CurrentAudioDeviceId != CurrentPlaybackDeviceId)
-				{
-					_audioSystem.SwitchAudioDevice(CurrentPlaybackDeviceId);
-				}
+				//if (_audioSystem.CurrentAudioDeviceId != CurrentPlaybackDeviceId)
+				//{
+				//	_audioSystem.SwitchAudioDevice(CurrentPlaybackDeviceId);
+				//}
 				_audioSystem.Play(); 
 			}
 		}
@@ -294,7 +286,7 @@ namespace VixenModules.Media.Audio
 		{
 			get
 			{
-				if (_audioSystem != null && AudioDevices.GetActiveOutputDevices().Any())
+				if (_audioSystem != null && _audioSystem.AudioOutputManager.AudioOutputList.Any())
 				{
 					return this;
 				}
@@ -334,7 +326,7 @@ namespace VixenModules.Media.Audio
 				_DisposeAudio();
 				if (File.Exists(MediaFilePath))
 				{
-					_audioSystem = PlayerFactory.CreateNew(AudioDevices.GetDeviceOrDefault(AudioDevices.PreferredAudioDeviceId), MediaFilePath);
+					_audioSystem = PlayerFactory.CreateNew(MediaFilePath);
 					_audioSystem.Position = startTime;
 					InitSampleProvider();
 				} 
@@ -345,6 +337,8 @@ namespace VixenModules.Media.Audio
 			}
 			
 		}
+
+		public AudioOutputManager AudioOutputManager => _audioSystem.AudioOutputManager;
 
 		/// <inheritdoc />
 		[Obsolete("No longer populated and will be zero. Use CurrentPlaybackDeviceId")]

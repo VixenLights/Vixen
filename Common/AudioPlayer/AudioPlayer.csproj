@@ -63,28 +63,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AudioDevice.cs" />
-    <Compile Include="Base\Enums.cs" />
-    <Compile Include="Base\FileFormats.cs" />
-    <Compile Include="CoreAudioPlayer.cs" />
-    <Compile Include="Enums\SpectrumEnums.cs" />
-    <Compile Include="EqualizerPreset.cs" />
-    <Compile Include="IPlayer.cs" />
-    <Compile Include="IPlayerFactory.cs" />
-    <Compile Include="ISpectrumPlayer.cs" />
-    <Compile Include="PlaybackInterruptedEventArgs.cs" />
-    <Compile Include="PlayerFactory.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <ProjectReference Include="..\Preferences\Preferences.csproj">
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

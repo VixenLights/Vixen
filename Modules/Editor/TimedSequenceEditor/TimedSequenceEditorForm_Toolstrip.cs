@@ -1701,9 +1701,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (menuItem != null)
 			{
-				AudioDevices.PreferredAudioDeviceId = (string) menuItem.Tag;
+				TimelineControl.Audio.AudioOutputManager.AudioOutputDeviceId = (string) menuItem.Tag;
 			}
-			TimelineControl.Audio.CurrentPlaybackDeviceId = AudioDevices.PreferredAudioDeviceId;
 		}
 
 		#endregion

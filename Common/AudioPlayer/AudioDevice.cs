@@ -1,14 +1,10 @@
 ﻿namespace Common.AudioPlayer
 {
-    public class Device
+    public class AudioDevice
     {
-	    public Device()
+	    public AudioDevice(string deviceFriendlyName, string deviceId, bool isDefault = false)
 	    {
-			
-	    }
-
-	    public Device(string deviceFriendlyName, string deviceId, bool isDefault)
-	    {
+		    IsDefault = isDefault;
 		    FriendlyName = deviceFriendlyName;
 		    Id = deviceId;
 	    }
@@ -23,7 +19,7 @@
 	    #region Equality members
 
 	    /// <inheritdoc />
-	    public bool Equals(Device other)
+	    public bool Equals(AudioDevice other)
 	    {
 		    if (ReferenceEquals(null, other)) return false;
 		    if (ReferenceEquals(this, other)) return true;
@@ -36,7 +32,7 @@
 		    if (ReferenceEquals(null, obj)) return false;
 		    if (ReferenceEquals(this, obj)) return true;
 		    if (obj.GetType() != this.GetType()) return false;
-		    return Equals((Device) obj);
+		    return Equals((AudioDevice) obj);
 	    }
 
 	    /// <inheritdoc />

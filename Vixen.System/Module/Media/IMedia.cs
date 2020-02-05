@@ -21,8 +21,6 @@ namespace Vixen.Module.Media
 		[Obsolete("Use CurrentPlaybackDeviceId instead")]
 		int CurrentPlaybackDeviceIndex { get; set; }
 
-		string CurrentPlaybackDeviceId { get; set; }
-
 		ITiming TimingSource { get; }
 	}
 }
