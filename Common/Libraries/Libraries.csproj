@@ -122,6 +122,7 @@
     <PackageReference Include="Microsoft.Owin.Security" Version="4.1.0" />
     <PackageReference Include="Microsoft.Owin.StaticFiles" Version="4.1.0" />
     <PackageReference Include="Mono.Security" Version="5.4.0.201" />
+    <PackageReference Include="NCalc2" Version="2.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NLog" Version="4.6.8" />
     <PackageReference Include="Nowin" Version="0.26.0" />
