@@ -48,7 +48,7 @@ namespace Common.Controls.Timeline
 			BackColor = Color.FromArgb(120,120,120);
 			Visible = false;
 			_timePerPixelChangeSubject = new Subject<TimeSpan>();
-			_timePerPixelChangeSubject.Throttle(TimeSpan.FromMilliseconds(250)).Subscribe(x => CreateSamples());
+			_timePerPixelChangeSubject.Throttle(TimeSpan.FromMilliseconds(125)).Subscribe(x => CreateSamples());
 			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager;
 			_timeLineGlobalEventManager.AlignmentActivity += WaveFormSelectedTimeLineGlobalMove;
 			_timeLineGlobalEventManager.CursorMoved += CursorMoved;
