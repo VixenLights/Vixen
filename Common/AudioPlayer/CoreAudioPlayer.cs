@@ -112,9 +112,11 @@ namespace Common.AudioPlayer
 		/// <inheritdoc />
 		public void Play()
 		{
-			if (IsStopped && EnsureDeviceCreated())
+			if ((IsPaused || IsStopped) && EnsureDeviceCreated())
 			{
+				Volume = 0;
 				_soundOut?.Play();
+				Volume = 1.0f;
 				PlaybackResumed?.Invoke();
 			}
 		}

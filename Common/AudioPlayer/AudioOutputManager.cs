@@ -144,7 +144,7 @@ namespace Common.AudioPlayer
                     }
                 }
                 _currentDeviceId = device.DeviceID;
-                return new WasapiOut(true, AudioClientShareMode.Shared, _preferences.Latency) {Device = device};
+                return new WasapiOut(true, AudioClientShareMode.Shared, _preferences.Latency) {Device = device, StreamRoutingOptions = StreamRoutingOptions.OnDeviceDisconnect|StreamRoutingOptions.OnFormatChange};
             }
             
         }
