@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Media.Animation;
 using Common.Controls;
 using Common.Controls.Timeline;
 using Common.Controls.TimelineControl;
@@ -280,6 +281,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#endregion
 
 		#region View Menu
+
+		private void showEffectInfoToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			TimelineControl.grid.ShowEffectToolTip = showEffectInfoToolStripMenuItem.Checked;
+		}
 
 		private void toolStripMenuItem_zoomTimeIn_Click(object sender, EventArgs e)
 		{
