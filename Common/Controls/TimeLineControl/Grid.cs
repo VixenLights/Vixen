@@ -211,6 +211,8 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		public bool ShowEffectToolTip { get; set; } = true;
+
 		public bool EnableSnapTo { get; set; }
 
 		public int SnapStrength
@@ -2496,7 +2498,7 @@ namespace Common.Controls.Timeline
 		private void _drawInfo(Graphics g)
 		{
 
-			if (capturedElements.Any())
+			if (ShowEffectToolTip && capturedElements.Any())
 			{
 				Element element = capturedElements.First();
 				if (element == null) return;
