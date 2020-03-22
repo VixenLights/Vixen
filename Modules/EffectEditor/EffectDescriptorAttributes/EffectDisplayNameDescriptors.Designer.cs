@@ -116,6 +116,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to X Start Position.
+        /// </summary>
+        internal static string AnimateXStart {
+            get {
+                return ResourceManager.GetString("AnimateXStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Y Start Position.
+        /// </summary>
+        internal static string AnimateYStart {
+            get {
+                return ResourceManager.GetString("AnimateYStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Attack Time.
         /// </summary>
         internal static string AttackTime {
@@ -899,6 +917,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fade Type.
+        /// </summary>
+        internal static string Fade {
+            get {
+                return ResourceManager.GetString("Fade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fade Speed.
+        /// </summary>
+        internal static string FadeSpeed {
+            get {
+                return ResourceManager.GetString("FadeSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fall Speed.
         /// </summary>
         internal static string FallSpeed {
@@ -1165,6 +1201,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Height {
             get {
                 return ResourceManager.GetString("Height", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Horizontal Flake Count.
+        /// </summary>
+        internal static string HFlakeCount {
+            get {
+                return ResourceManager.GetString("HFlakeCount", resourceCulture);
             }
         }
         
@@ -1916,6 +1961,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Random Start.
+        /// </summary>
+        internal static string RandomStartingPosition {
+            get {
+                return ResourceManager.GetString("RandomStartingPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Render Scale Factor.
         /// </summary>
         internal static string RenderScaleFactor {
@@ -2578,6 +2632,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string VerticalOffset {
             get {
                 return ResourceManager.GetString("VerticalOffset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vertical Flake Count.
+        /// </summary>
+        internal static string VFlakeCount {
+            get {
+                return ResourceManager.GetString("VFlakeCount", resourceCulture);
             }
         }
         

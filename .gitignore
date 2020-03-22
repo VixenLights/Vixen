@@ -2,8 +2,8 @@ bin/
 obj/
 *.pdb
 _ReSharper*
-*.exe
-*.exe.*
+/*.exe
+/*.exe.*
 *.user
 *.suo
 /Output

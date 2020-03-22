@@ -8,7 +8,7 @@ using Vixen.Module.App;
 using Vixen.Services;
 using ZedGraph;
 using Common.Controls.Theme;
-using NCalc;
+using NCalc2;
 using Point = System.Drawing.Point;
 
 namespace VixenModules.App.Curves

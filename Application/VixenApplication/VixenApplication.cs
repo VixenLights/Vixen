@@ -15,6 +15,7 @@ using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using Catel.IoC;
 using Vixen.Module.Editor;
 using Vixen.Module.SequenceType;
@@ -180,6 +181,7 @@ namespace VixenApplication
 		//	if (labelDebugVersion.Text == "Test Build") updatesMenu.Enabled = false;
 
 			toolStripItemClearSequences.Click += (mySender, myE) => ClearRecentSequencesList();
+			
 		}
 
 		public string LockFilePath { get; set; }

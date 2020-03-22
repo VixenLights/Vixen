@@ -1,142 +1,94 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{E3689E21-2204-48B9-8370-D45EE4A23451}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VixenModules.App.LipSyncApp</RootNamespace>
-    <AssemblyName>LipSyncApp</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyTitle>LipSyncApp</AssemblyTitle>
+    <Product>LipSyncApp</Product>
+    <Copyright>Copyright ©  2014</Copyright>
+    <Platforms>x64;x86</Platforms>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>$(SolutionDir)\Release\Modules\App\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
+    <OutputPath>$(SolutionDir)\$(Configuration)\Modules\App\</OutputPath>
     <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>$(SolutionDir)\Release64\Modules\App\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <OutputPath>..\..\..\Debug\Modules\App\</OutputPath>
+    <OutputPath>..\..\..\$(Configuration)\Modules\App\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <Optimize>false</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <OutputPath>..\..\..\Debug64\Modules\App\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <Optimize>false</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\NLog.4.5.11\lib\net45\NLog.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="TabControlEX">
-      <HintPath>..\..\..\Common\Libraries\TabControlEX.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LipSyncMapColorCtrl.cs">
+    <Compile Update="LipSyncMapColorCtrl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="LipSyncMapColorCtrl.Designer.cs">
+    <Compile Update="LipSyncMapColorCtrl.Designer.cs">
       <DependentUpon>LipSyncMapColorCtrl.cs</DependentUpon>
     </Compile>
-    <Compile Include="LipSyncMapColorSelect.cs">
+    <Compile Update="LipSyncMapColorSelect.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LipSyncMapColorSelect.Designer.cs">
+    <Compile Update="LipSyncMapColorSelect.Designer.cs">
       <DependentUpon>LipSyncMapColorSelect.cs</DependentUpon>
     </Compile>
-    <Compile Include="LipSyncMapData.cs" />
-    <Compile Include="LipSyncMapDescriptor.cs" />
-    <Compile Include="LipSyncMapMatrixEditor.cs">
+    <Compile Update="LipSyncMapMatrixEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LipSyncMapMatrixEditor.Designer.cs">
+    <Compile Update="LipSyncMapMatrixEditor.Designer.cs">
       <DependentUpon>LipSyncMapMatrixEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="LipSyncMapLibrary.cs" />
-    <Compile Include="LipSyncMapItem.cs" />
-    <Compile Include="LipSyncMapSelector.cs">
+    <Compile Update="LipSyncMapSelector.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LipSyncMapSelector.Designer.cs">
+    <Compile Update="LipSyncMapSelector.Designer.cs">
       <DependentUpon>LipSyncMapSelector.cs</DependentUpon>
     </Compile>
-    <Compile Include="LipSyncMapStaticData.cs" />
-    <Compile Include="LipSyncMultiPicSelect.cs">
+    <Compile Update="LipSyncMultiPicSelect.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LipSyncMultiPicSelect.Designer.cs">
+    <Compile Update="LipSyncMultiPicSelect.Designer.cs">
       <DependentUpon>LipSyncMultiPicSelect.cs</DependentUpon>
     </Compile>
-    <Compile Include="LipSyncNodeSelect.cs">
+    <Compile Update="LipSyncNodeSelect.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LipSyncNodeSelect.Designer.cs">
+    <Compile Update="LipSyncNodeSelect.Designer.cs">
       <DependentUpon>LipSyncNodeSelect.cs</DependentUpon>
     </Compile>
-    <Compile Include="LipSyncResources.Designer.cs">
+    <Compile Update="LipSyncResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>LipSyncResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="LipSyncTextConvertFailForm.cs">
+    <Compile Update="LipSyncTextConvertFailForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LipSyncTextConvertFailForm.Designer.cs">
+    <Compile Update="LipSyncTextConvertFailForm.Designer.cs">
       <DependentUpon>LipSyncTextConvertFailForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="LipSyncTextConvertForm.cs">
+    <Compile Update="LipSyncTextConvertForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LipSyncTextConvertForm.Designer.cs">
+    <Compile Update="LipSyncTextConvertForm.Designer.cs">
       <DependentUpon>LipSyncTextConvertForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="LipSyncPhonemeUtils.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Update="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
@@ -144,69 +96,63 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
-      <Project>{a54fb6a1-a9c3-488c-b961-41b8dbc81b36}</Project>
-      <Name>Controls</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
-      <Project>{f7a80169-6310-4585-9d58-a6f6f5c5b380}</Project>
-      <Name>Resources</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
-      <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
-      <Name>Vixen</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Property\Color\Color.csproj">
-      <Project>{73068a83-b3b7-4a2c-923d-71c7886cd5e3}</Project>
-      <Name>Color</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Property\Face\Face.csproj">
-      <Project>{5fcc5484-8894-4e36-ba81-b2f1b9008404}</Project>
-      <Name>Face</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\Marks\Marks.csproj">
-      <Project>{27D283DF-52AD-4857-8359-DE134DB94728}</Project>
-      <Name>Marks</Name>
-      <Private>False</Private>
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="LipSyncMapColorCtrl.resx">
+    <EmbeddedResource Update="LipSyncMapColorCtrl.resx">
       <DependentUpon>LipSyncMapColorCtrl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LipSyncMapColorSelect.resx">
+    <EmbeddedResource Update="LipSyncMapColorSelect.resx">
       <DependentUpon>LipSyncMapColorSelect.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LipSyncMapMatrixEditor.resx">
+    <EmbeddedResource Update="LipSyncMapMatrixEditor.resx">
       <DependentUpon>LipSyncMapMatrixEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LipSyncMapSelector.resx">
+    <EmbeddedResource Update="LipSyncMapSelector.resx">
       <DependentUpon>LipSyncMapSelector.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LipSyncMultiPicSelect.resx">
+    <EmbeddedResource Update="LipSyncMultiPicSelect.resx">
       <DependentUpon>LipSyncMultiPicSelect.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LipSyncNodeSelect.resx">
+    <EmbeddedResource Update="LipSyncNodeSelect.resx">
       <DependentUpon>LipSyncNodeSelect.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LipSyncTextConvertFailForm.resx">
+    <EmbeddedResource Update="LipSyncTextConvertFailForm.resx">
       <DependentUpon>LipSyncTextConvertFailForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LipSyncTextConvertForm.resx">
+    <EmbeddedResource Update="LipSyncTextConvertForm.resx">
       <DependentUpon>LipSyncTextConvertForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LipSyncResources.resx">
+    <EmbeddedResource Update="LipSyncResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>LipSyncResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
+    <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
@@ -215,14 +161,13 @@
     <EmbeddedResource Include="Resources\standard_dictionary" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <PackageReference Include="NLog" Version="4.6.8">
+      <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <Compile Remove="LipSyncColorEditor.cs" />
+    <Compile Remove="LipSyncColorEditor.Designer.cs" />
+  </ItemGroup>
 </Project>

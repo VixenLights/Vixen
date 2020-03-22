@@ -817,13 +817,13 @@
     <value>Selects what source is used to determine change.</value>
   </data>
   <data name="XSpeed" xml:space="preserve">
-    <value>Horizontal Center Speed</value>
+    <value>Horizontal Center Speed.</value>
   </data>
   <data name="XSpeedVariation" xml:space="preserve">
     <value>Randomly adjust the Speed around the center Speed by the amount of variation.</value>
   </data>
   <data name="YSpeed" xml:space="preserve">
-    <value>Horizontal Center Speed</value>
+    <value>Horizontal Center Speed.</value>
   </data>
   <data name="YSpeedVariation" xml:space="preserve">
     <value>Randomly adjust the Speed around the center Speed by the amount of variation.</value>
@@ -1043,5 +1043,26 @@
   </data>
   <data name="WaveColorHandling" xml:space="preserve">
     <value>Controls how the color gradient is applied to the wave.</value>
+  </data>
+  <data name="AnimateXStart" xml:space="preserve">
+    <value>Controls the X starting position of the animated emitter.</value>
+  </data>
+  <data name="AnimateYStart" xml:space="preserve">
+    <value>Controls the Y starting position of the animated emitter.</value>
+  </data>
+  <data name="RandomStartingPosition" xml:space="preserve">
+    <value>Controls whether the animated emitter start position is random.</value>
+  </data>
+  <data name="Fade" xml:space="preserve">
+    <value>Type of Fade applied to each Snowflake.</value>
+  </data>
+  <data name="FadeSpeed" xml:space="preserve">
+    <value>Adjusts the Fade speed of each Snowflake over the length o fthe effect.</value>
+  </data>
+  <data name="HFlakeCount" xml:space="preserve">
+    <value>Adjust the number of Horizontal Snowflakes.</value>
+  </data>
+  <data name="VFlakeCount" xml:space="preserve">
+    <value>Adjust the number of Vertical Snowflakes.</value>
   </data>
 </root>

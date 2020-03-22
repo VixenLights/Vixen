@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace VixenModules.Output.DmxUsbPro
+﻿namespace VixenModules.Output.DmxUsbPro
 {
 	using System.IO.Ports;
 	using System.Runtime.Serialization;

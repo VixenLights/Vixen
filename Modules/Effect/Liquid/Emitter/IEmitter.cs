@@ -123,10 +123,25 @@ namespace VixenModules.Effect.Liquid
       /// Whether the emitter is animated.
       /// </summary>
 		bool Animate { get; set; }
-      
-      /// <summary>
-      /// How the emitter behaves when animated and it reachs the edge of the element.
-      /// </summary>
+
+		/// <summary>
+		/// Whether the starting position of an animated emitter is random.
+		/// </summary>
+		bool RandomStartingPosition { get; set; }
+
+		/// <summary>
+		/// Starting X position of the emitter.  Only applicable to animated emitters.
+		/// </summary>
+		int AnimateXStart { get; set; }
+
+		/// <summary>
+		/// Starting Y position of the emitter.  Only applicable to animated emitters.
+		/// </summary>
+		int AnimateYStart { get; set; }
+
+		/// <summary>
+		/// How the emitter behaves when animated and it reachs the edge of the element.
+		/// </summary>
 		EdgeHandling EdgeHandling { get; set; }
 
       /// <summary>

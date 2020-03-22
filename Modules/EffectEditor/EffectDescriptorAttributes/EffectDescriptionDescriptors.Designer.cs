@@ -125,6 +125,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controls the X starting position of the animated emitter..
+        /// </summary>
+        internal static string AnimateXStart {
+            get {
+                return ResourceManager.GetString("AnimateXStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the Y starting position of the animated emitter..
+        /// </summary>
+        internal static string AnimateYStart {
+            get {
+                return ResourceManager.GetString("AnimateYStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Adjusts the time the word is displayed to auto fit between words either side..
         /// </summary>
         internal static string AutoFit {
@@ -854,6 +872,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Type of Fade applied to each Snowflake..
+        /// </summary>
+        internal static string Fade {
+            get {
+                return ResourceManager.GetString("Fade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adjusts the Fade speed of each Snowflake over the length o fthe effect..
+        /// </summary>
+        internal static string FadeSpeed {
+            get {
+                return ResourceManager.GetString("FadeSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Adjusts the speed of the falling characters..
         /// </summary>
         internal static string FallSpeed {
@@ -1129,6 +1165,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Height {
             get {
                 return ResourceManager.GetString("Height", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adjust the number of Horizontal Snowflakes..
+        /// </summary>
+        internal static string HFlakeCount {
+            get {
+                return ResourceManager.GetString("HFlakeCount", resourceCulture);
             }
         }
         
@@ -1889,6 +1934,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controls whether the animated emitter start position is random..
+        /// </summary>
+        internal static string RandomStartingPosition {
+            get {
+                return ResourceManager.GetString("RandomStartingPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Determines the factor used to scale the liquid matrix to the sparse matrix formed by the selected elements..
         /// </summary>
         internal static string RenderScaleFactor {
@@ -2618,6 +2672,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adjust the number of Vertical Snowflakes..
+        /// </summary>
+        internal static string VFlakeCount {
+            get {
+                return ResourceManager.GetString("VFlakeCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Runs the Liquid engine for the specified number of frames before rendering the effect.  This setting is useful if you want a large number of particles in the display area at the beginning of the effect..
         /// </summary>
         internal static string WarmUpFrames {
@@ -2789,7 +2852,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Horizontal Center Speed.
+        ///   Looks up a localized string similar to Horizontal Center Speed..
         /// </summary>
         internal static string XSpeed {
             get {
@@ -2825,7 +2888,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Horizontal Center Speed.
+        ///   Looks up a localized string similar to Horizontal Center Speed..
         /// </summary>
         internal static string YSpeed {
             get {

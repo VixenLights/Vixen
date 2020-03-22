@@ -29,6 +29,7 @@ namespace Common.Controls
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private bool _someSelectedControllersRunning;
 		private bool _someSelectedControllersNotRunning;
+		private bool isDoubleClick;
 
 		public ControllerTree()
 		{
@@ -679,6 +680,26 @@ namespace Common.Controls
 			_someSelectedControllersNotRunning = notRunningCount > 0;
 			startControllerToolStripMenuItem.Enabled = _someSelectedControllersNotRunning;
 			stopControllerToolStripMenuItem.Enabled = _someSelectedControllersRunning;
+		}
+		
+		private void treeView_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
+		{
+			if (isDoubleClick && e.Action == TreeViewAction.Collapse) e.Cancel = true;
+		}
+
+		private void treeView_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+		{
+			if (isDoubleClick && e.Action == TreeViewAction.Expand)e.Cancel = true;
+		}
+
+		private void treeView_MouseDown(object sender, MouseEventArgs e)
+		{
+			isDoubleClick = e.Clicks > 1;
+		}
+
+		private void treeview_DoubleClick(object sender, EventArgs e)
+		{
+			if (SelectedControllers.Any()) ConfigureController(SelectedControllers.First());
 		}
 	}
 }

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
-using System.Windows.Navigation;
 
 namespace Common.Controls.Timeline
 {

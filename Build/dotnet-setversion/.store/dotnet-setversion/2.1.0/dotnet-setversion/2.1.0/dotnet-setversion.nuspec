@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>dotnet-setversion</id>
+    <version>2.1.0</version>
+    <authors>ThymineC,Skulblaka</authors>
+    <owners>ThymineC,Skulblaka</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/TAGC/dotnet-setversion</projectUrl>
+    <description>A CLI tool to set/update the Version property in csproj files</description>
+    <copyright>Copyright 2018 ThymineC</copyright>
+    <packageTypes>
+      <packageType name="DotnetTool" />
+    </packageTypes>
+    <repository url="git@github.com:TAGC/dotnet-setversion.git" />
+  </metadata>
+</package>

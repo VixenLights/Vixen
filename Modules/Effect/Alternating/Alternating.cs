@@ -15,7 +15,6 @@ using VixenModules.App.ColorGradients;
 using VixenModules.Effect.Effect;
 using VixenModules.Effect.Pulse;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
-using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.Alternating
 {

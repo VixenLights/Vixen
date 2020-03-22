@@ -12,7 +12,6 @@ using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
-using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.Candle
 {

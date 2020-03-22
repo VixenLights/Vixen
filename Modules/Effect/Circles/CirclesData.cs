@@ -2,8 +2,6 @@
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
-using NLog.LayoutRenderers.Wrappers;
-using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;

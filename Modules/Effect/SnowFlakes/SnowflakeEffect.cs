@@ -9,6 +9,10 @@ namespace VixenModules.Effect.Snowflakes
 		[Description("Random")]
 		RandomDirection,
 		[Description("Explode")]
-		Explode
+		Explode,
+		[Description("Grid")]
+		Grid,
+		[Description("Grid Offset")]
+		GridOffset
 	}
 }
