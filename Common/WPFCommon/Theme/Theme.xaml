@@ -431,12 +431,18 @@
         <Setter Property="BorderThickness" Value="0"/>
     </Style>
 
+
+	<!--
     <Style TargetType="{x:Type ItemsControl}">
         <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
         <Setter Property="Background" Value="{StaticResource BackColorBrush}"/>
-        <Setter Property="BorderThickness" Value="1"/>
-
-    </Style>
+		<Setter Property="BorderThickness" Value="1"/>
+	</Style>
+	-->
+	
+	
+	
+	
     <Style x:Key="FocusVisual">
         <Setter Property="Control.Template">
             <Setter.Value>

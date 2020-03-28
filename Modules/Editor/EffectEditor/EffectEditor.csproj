@@ -88,6 +88,7 @@
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
+    <ProjectReference Include="..\PolygonEditor\PolygonEditor.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Themes\Images\librarylink.png" />

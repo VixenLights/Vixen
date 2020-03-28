@@ -52,6 +52,7 @@ namespace VixenModules.Editor.EffectEditor.Editors
 			{KnownTypes.Vixen.Emitter, new TypeEditor()},
 			{typeof(IList<IWaveform>), new TypeEditor(typeof(IList<IWaveform>), EditorKeys.IWaveformEditorKey)},
 			{KnownTypes.Vixen.Waveform, new TypeEditor()},
+			{KnownTypes.Vixen.Polygon, new PolygonTypeEditor()},			
 		};
 
 		/// <summary>

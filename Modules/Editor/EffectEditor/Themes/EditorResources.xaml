@@ -22,6 +22,7 @@
 		<ResourceDictionary Source="ColorGradientPaletteEditor.xaml" />
 		<ResourceDictionary Source="ColorPaletteEditor.xaml" />
 		<ResourceDictionary Source="GradientLevelPairEditor.xaml" />
+		<ResourceDictionary Source="PolygonEditor.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 
