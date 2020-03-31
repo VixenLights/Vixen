@@ -60,6 +60,10 @@
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
+    <ProjectReference Include="..\..\App\Polygon\Polygon.csproj">
+      <Private>false</Private>
+      <ExcludeAssets>None</ExcludeAssets>
+    </ProjectReference>
     <ProjectReference Include="..\..\Effect\Effect\Effect.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
@@ -88,7 +92,10 @@
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
-    <ProjectReference Include="..\PolygonEditor\PolygonEditor.csproj" />
+    <ProjectReference Include="..\PolygonEditor\PolygonEditor.csproj">
+      <Private>false</Private>
+      <ExcludeAssets>None</ExcludeAssets>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Themes\Images\librarylink.png" />

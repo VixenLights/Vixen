@@ -8,9 +8,9 @@ namespace PolygonEditor
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
-	public partial class MainWindow : Window
+	public partial class PolygonEditorView
     {
-		public MainWindow()
+		public PolygonEditorView()
 		{
 			InitializeComponent();
 			this.KeyDown += MainWindow_KeyDown;

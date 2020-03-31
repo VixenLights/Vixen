@@ -1,9 +1,10 @@
-﻿<Window x:Class="PolygonEditor.MainWindow"
+﻿<catel:Window x:Class="PolygonEditor.PolygonEditorView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PolygonEditor"
+        xmlns:local="clr-namespace:PolygonEditor" 
+        xmlns:catel="http://schemas.catelproject.com"
         mc:Ignorable="d"
         Title="Polygon Editor" Height="550" Width="1000">
 	<Window.Resources>
@@ -56,20 +57,8 @@
 			<local:InverseBooleanConverter x:Key="InverseBoolConverter" />
 		</ResourceDictionary>
 	</Window.Resources>
-	<Grid>
-		<DockPanel LastChildFill="true">
-									
-			<UniformGrid HorizontalAlignment="Right" Rows="1" Columns="2" DockPanel.Dock="Bottom">
-				<UniformGrid.Resources>
-					<Style TargetType="{x:Type Button}">
-						<Setter Property="Margin" Value="5"/>
-					</Style>
-				</UniformGrid.Resources>
-				<Button>OK</Button>
-				<Button>Cancel</Button>
-			</UniformGrid>
-									
-			<ToolBarTray DockPanel.Dock="Top">
+	<DockPanel LastChildFill="true" Background="{DynamicResource BackColorBrush}">
+			<ToolBarTray DockPanel.Dock="Top" Background="{DynamicResource BackColorBrush}">
 				<ToolBar>
 					<RadioButton IsChecked="{Binding IsSelecting, Converter={StaticResource InverseBoolConverter}}" ToolTip="Draw mode" GroupName="SelectDraw"
 							             Width="30">
@@ -97,12 +86,14 @@
 					</Button>
 				</ToolBar>
 			</ToolBarTray>
-
-
+			<WrapPanel DockPanel.Dock="Bottom" Margin="5" Style="{StaticResource RowButtonRightContainerStyle}">
+				<Button Content="Ok" Command="{Binding OkCommand}" IsDefault="True" Style="{StaticResource RowButtonStyle}"/>
+				<Button Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True" Style="{StaticResource RowButtonStyle}"/>
+			</WrapPanel>
 			<Grid>
 				<local:PolygonControl Width="1500" Height="420" x:Name="PolygonUserControl">
 				</local:PolygonControl>
 			</Grid>
+			
 		</DockPanel>
-	</Grid>
-</Window>
+</catel:Window>
