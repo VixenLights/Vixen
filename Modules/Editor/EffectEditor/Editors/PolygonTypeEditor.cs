@@ -23,7 +23,7 @@ namespace VixenModules.Editor.EffectEditor.Editors
 
 			try
 			{
-				var newWindow = new PolygonEditor.MainWindow();
+				var newWindow = new PolygonEditor.PolygonEditorView();
 				newWindow.Show();
 
 				/*using (FontDialog ofd = new FontDialog())
