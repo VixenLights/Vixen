@@ -2590,5 +2590,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem showEffectInfoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripMenuItem speedTempoToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem fullWaveformToolStripMenuItem;
 	}
 }

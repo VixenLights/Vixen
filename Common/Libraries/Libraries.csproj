@@ -116,6 +116,7 @@
     <PackageReference Include="Catel.Core" Version="5.12.2" />
     <PackageReference Include="Catel.MVVM" Version="5.12.2" />
     <PackageReference Include="Catel.Serialization.Json" Version="5.12.2" />
+    <PackageReference Include="CSCore" Version="1.2.1.2" />
     <PackageReference Include="DockPanelSuite" Version="3.0.6" />
     <PackageReference Include="DockPanelSuite.ThemeVS2015" Version="3.0.6" />
     <PackageReference Include="gong-wpf-dragdrop" Version="2.4.0" />
