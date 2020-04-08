@@ -1793,7 +1793,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				IMediaModuleInstance newInstance = _sequence.AddMedia(openFileDialog.FileName);
 				if (newInstance == null)
 				{
-					Logging.Warn(string.Format("Unsupported audio file {0}", openFileDialog.FileName));
+					Logging.Error(string.Format("Unsupported audio file {0}", openFileDialog.FileName));
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("The selected file is not a supported type.", @"Warning", false, false);

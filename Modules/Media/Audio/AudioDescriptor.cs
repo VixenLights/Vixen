@@ -47,7 +47,7 @@ namespace VixenModules.Media.Audio
 
 		public override string[] FileExtensions
 		{
-			get { return new string[] {".mp3", ".wma", ".aiff", ".flac", ".ogg", ".wav",}; }
+			get { return new string[] {".mp3", ".wma", ".aiff", ".flac", ".ogg", ".wav",".mp4"}; }
 		}
 
 		public override bool IsTimingSource
