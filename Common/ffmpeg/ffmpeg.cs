@@ -46,11 +46,11 @@ namespace ffmpeg
 		}
 
 		//Native Video Effect
-		public void MakeScaledThumbNails(string outputPath, double startPosition, double duration, int width, int height, bool maintainAspect, int rotateVideo, string cropVideo)
+		public void MakeScaledThumbNails(string outputPath, double startPosition, double duration, int width, int height, bool maintainAspect, int rotateVideo, string cropVideo, int fps=20)
 		{
 			int maintainAspectValue = maintainAspect ? -1 : height;
 			//make arguements string
-			string args = $" -y -ss {startPosition} -i \"{_movieFile}\" -an -t {duration.ToString(CultureInfo.InvariantCulture)} -vf \"scale={width}:{maintainAspectValue}{cropVideo}, rotate={rotateVideo}*(PI/180)\" -r 20 \"{outputPath}\\%5d.bmp\"";
+			string args = $" -y -ss {startPosition} -i \"{_movieFile}\" -an -t {duration.ToString(CultureInfo.InvariantCulture)} -vf \"scale={width}:{maintainAspectValue}{cropVideo}, rotate={rotateVideo}*(PI/180)\" -r {fps} \"{outputPath}\\%5d.bmp\"";
 			string ffmpegPath = AppDomain.CurrentDomain.BaseDirectory;
 			ffmpegPath += "Common\\ffmpeg.exe";
 			
