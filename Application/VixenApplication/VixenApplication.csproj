@@ -77,6 +77,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="E131">
+      <HintPath>..\..\Modules\Output\E1.31\obj\x86\Debug\E131.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System.IO.Compression" />
