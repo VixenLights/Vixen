@@ -1091,7 +1091,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 				NutcrackerProcessingMovie f = new NutcrackerProcessingMovie();
 				f.Show();
 				ffmpeg.ffmpeg converter = new ffmpeg.ffmpeg(movieFileName);
-				converter.MakeThumbnails(50, 50, destinationFolder);
+				converter.MakeThumbnails(50, 50, destinationFolder, 1000 / VixenSystem.DefaultUpdateInterval);
 				f.Close();
 			}
 			catch (Exception ex) {
