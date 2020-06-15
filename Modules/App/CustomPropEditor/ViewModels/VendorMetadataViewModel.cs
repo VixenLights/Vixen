@@ -159,7 +159,13 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 	    [Browsable(false)]
 	    public new IViewModel ParentViewModel => base.ParentViewModel;
+		
+	    [Browsable(false)]
+	    public new bool IsCanceled => base.IsCanceled;
 
+	    [Browsable(false)]
+	    public new bool IsSaved => base.IsSaved;
+		
 	    #endregion
 
 	}

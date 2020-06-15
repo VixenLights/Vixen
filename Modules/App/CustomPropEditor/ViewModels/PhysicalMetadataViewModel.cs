@@ -41,6 +41,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// Gets or sets the Height value.
 		/// </summary>
 		[PropertyOrder(1)]
+		[Description("The overall height of the prop.")]
 		[ViewModelToModel("PhysicalMetadata")]
 		public string Height
 		{
@@ -61,6 +62,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// Gets or sets the Width value.
 		/// </summary>
 		[PropertyOrder(1)]
+		[Description("The overall width of the prop.")]
 		[ViewModelToModel("PhysicalMetadata")]
 		public string Width
 		{
@@ -81,6 +83,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// Gets or sets the Material value.
 		/// </summary>
 		[PropertyOrder(0)]
+		[Description("The predominate material the props is made of.")]
 		[ViewModelToModel("PhysicalMetadata")]
 		public string Material
 		{
@@ -101,6 +104,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// Gets or sets the Depth value.
 		/// </summary>
 		[PropertyOrder(3)]
+		[Description("The overall depth of the prop.")]
 		[ViewModelToModel("PhysicalMetadata")]
 		public string Depth
 		{
@@ -144,6 +148,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		[PropertyOrder(5)]
 		[DisplayName("Bulb Type")]
 		[ViewModelToModel("PhysicalMetadata")]
+		[Description("The light type used.")]
 		[TypeConverter(typeof(BulbTypeConverter))]
 		public string BulbType
 		{
@@ -165,7 +170,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		[PropertyOrder(6)]
 		[DisplayName("Color Mode")]
-		[Description("Declares color handling for the entire prop. \nIf the prop contains multiple color modes, choose other.")]
+		[Description(@"Declares color handling for the entire prop.
+If the prop contains multiple color modes, choose other.
+This maps to color handling in the Display Setup.")]
 		[ViewModelToModel("PhysicalMetadata")]
 		public ColorMode ColorMode
 		{
@@ -182,7 +189,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#region Overrides
 
-		//We are not using these properties in the view so hiding them so the property giris does not expose them.
+		//We are not using these properties in the view so hiding them so the property grid does not expose them.
 
 		[Browsable(false)]
 		public new DateTime ViewModelConstructionTime => base.ViewModelConstructionTime;
@@ -198,6 +205,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		[Browsable(false)]
 		public new IViewModel ParentViewModel => base.ParentViewModel;
+
+		[Browsable(false)]
+		public new bool IsCanceled => base.IsCanceled;
+
+		[Browsable(false)]
+		public new bool IsSaved => base.IsSaved;
 
 		#endregion
 	}
