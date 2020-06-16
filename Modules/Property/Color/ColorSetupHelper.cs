@@ -320,6 +320,22 @@ namespace VixenModules.Property.Color
 			}
 		}
 
+		public ElementColorType GetColorType()
+		{
+			if (radioButtonOptionFullColor.Checked)
+			{
+				return ElementColorType.FullColor;
+			}
+
+			if (radioButtonOptionMultiple.Checked)
+			{
+				return ElementColorType.MultipleDiscreteColors;
+			}
+
+			return ElementColorType.SingleColor;
+
+		}
+
 		public bool SilentMode { get; set; }
 
 		private void ColorSetupHelper_Load(object sender, EventArgs e)

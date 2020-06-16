@@ -98,6 +98,10 @@ namespace VixenModules.Preview.VixenPreview
 							}
 
 							helper.Perform(_leafNodes);
+							if (helper.GetColorType() != ElementColorType.FullColor)
+							{
+								EnsureFaceMapColors(rootElementNode);
+							}
 						}
 
 					});
@@ -109,6 +113,19 @@ namespace VixenModules.Preview.VixenPreview
 
 				return rootElementNode;
 			});
+		}
+
+		private void EnsureFaceMapColors(IElementNode node)
+		{
+			foreach (var elementNode in node.GetNodeEnumerator())
+			{
+				var fm = FaceModule.GetFaceModuleForElement(elementNode);
+				if (fm != null)
+				{
+					var color = ColorModule.getValidColorsForElementNode(elementNode, true).FirstOrDefault();
+					fm.DefaultColor = color;
+				}
+			}
 		}
 
 		private DialogResult ShowDimmingCurveMessage()
