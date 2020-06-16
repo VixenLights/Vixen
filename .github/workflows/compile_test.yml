@@ -1,0 +1,68 @@
+name: Compile Test
+
+on:
+  push:
+    branches-ignore: 
+      - master
+    tags-ignore:
+      - '**'
+    paths-ignore:
+      - '**/.gitignore'
+      - '**/README.md'
+      - .github/**
+      - .tgitconfig
+
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - '**/.gitignore'
+      - '**/README.md'
+      - .github/**
+      - .tgitconfig
+    
+
+jobs:
+
+  compile_x86:
+  
+    runs-on: windows-2019
+
+    steps:
+    
+      - uses: actions/checkout@v2
+      
+      - uses: nuget/setup-nuget@v1
+        
+      - uses: microsoft/setup-msbuild@v1.0.0
+      
+      - name: NuGet Restore
+        run: nuget restore Vixen.sln
+        
+      - name: Build x86
+        run: msbuild Vixen.sln -m -t:Rebuild -p:Configuration=Release -p:Platform=x86
+  
+      - run: dir
+        shell: cmd
+
+
+  compile_x64:
+  
+    runs-on: windows-2019
+
+    steps:
+    
+      - uses: actions/checkout@v2
+      
+      - uses: nuget/setup-nuget@v1
+        
+      - uses: microsoft/setup-msbuild@v1.0.0
+      
+      - name: NuGet Restore
+        run: nuget restore Vixen.sln
+        
+      - name: Build x64
+        run: msbuild Vixen.sln -m -t:Rebuild -p:Configuration=Release -p:Platform=x64
+  
+      - run: dir
+        shell: cmd

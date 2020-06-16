@@ -102,6 +102,17 @@ foreach ($type in $issueMap.keys)
 	$output += "`r`n"
 }
 
+# Store the release notes as Github Actions output to use in release body
+$actionsOutput = $output.Trim()
+# Transform into markdown
+$actionsOutput = $actionsOutput -replace '\A', '## '
+$actionsOutput = $actionsOutput -replace '(?m)^\*\* ', '### '
+$actionsOutput = $actionsOutput -replace '(?m)^    \* ', '* '
+# set-env doesn't like multiline strings - escape CR/LF
+$actionsOutput = $actionsOutput -replace '%', '%25'
+$actionsOutput = $actionsOutput -replace "`r", '%0D'
+$actionsOutput = $actionsOutput -replace "`n", '%0A'
+Write-Host "::set-env name=VIX_RELEASE_NOTES_MARKDOWN::$actionsOutput"
 
 $file = './Release Notes.txt'
 $regex = '^Release Notes - Vixen 3$'
