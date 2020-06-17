@@ -119,7 +119,7 @@ namespace VixenApplication
 				ProcessProfiles();
 				Logging.Info("Finished Processing Profiles");
 			}
-
+			AppCommands = new AppCommand(this);
 			_applicationData = new VixenApplicationData(_rootDataDirectory);
 
 			_rootDataDirectory = _applicationData.DataFileDirectory;
@@ -136,7 +136,6 @@ namespace VixenApplication
 			toolStripStatusUpdates.Text = "";
 			PopulateVersionStrings();
 
-			AppCommands = new AppCommand(this);
 			Execution.ExecutionStateChanged += executionStateChangedHandler;
 			updateExecutionState();
 			
@@ -151,6 +150,15 @@ namespace VixenApplication
 			myMenu.Click += optionsToolStripMenuItem_Click;
 			toolsMenu.Add(myMenu);
 
+			//Disables the Check for updates menu item as there is no need to have it enabled for Test Builds.
+		//	if (labelDebugVersion.Text == "Test Build") updatesMenu.Enabled = false;
+
+			toolStripItemClearSequences.Click += (mySender, myE) => ClearRecentSequencesList();
+			
+		}
+
+		private void CreateHelpMenu()
+		{
 			ToolStripMenuItem helpMenu = new ToolStripMenuItem("Help");
 			menuStripMain.Items.Add(helpMenu);
 
@@ -173,12 +181,6 @@ namespace VixenApplication
 			ToolStripMenuItem aboutMenu = new ToolStripMenuItem("About Vixen");
 			aboutMenu.Click += new System.EventHandler(this.AboutMenu_Click);
 			helpMenu.DropDown.Items.Add(aboutMenu);
-
-			//Disables the Check for updates menu item as there is no need to have it enabled for Test Builds.
-		//	if (labelDebugVersion.Text == "Test Build") updatesMenu.Enabled = false;
-
-			toolStripItemClearSequences.Click += (mySender, myE) => ClearRecentSequencesList();
-			
 		}
 
 		public string LockFilePath { get; set; }
@@ -394,6 +396,8 @@ namespace VixenApplication
 			var di = new System.IO.DirectoryInfo(logDirectory);
 
 			_startupProgress.Report(Tuple.Create(90, "Finalizing"));
+
+			CreateHelpMenu();
 
 			foreach (string logName in di.GetFiles().Select(x => x.Name)) {
 				logsToolStripMenuItem.DropDownItems.Add(logName, null,
