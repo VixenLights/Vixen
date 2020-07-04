@@ -9,8 +9,31 @@ namespace VixenModules.Effect.Effect
 	/// Collection that fires an event when any property of the items in the collection changes.	
 	/// </summary>
 	/// <typeparam name="T">Type of item in collection</typeparam>
-	public class NotifyPropertyObservableCollection<T> : ObservableCollection<T>	
+	public class NotifyPropertyObservableCollection<T> : ObservableCollection<T>
 	{
+		#region Constructor
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="propertyName">Name of the collection for child property change events</param>
+		public NotifyPropertyObservableCollection(string propertyName)
+		{
+			// Save off the name of the collection
+			_propertyName = propertyName;
+		}
+
+		#endregion
+
+		#region Private Fields
+
+		/// <summary>
+		/// Name of the collection for the purpose of child property change events.
+		/// </summary>
+		private string _propertyName;
+
+		#endregion
+
 		#region Protected Methods
 
 		/// <summary>
@@ -34,7 +57,7 @@ namespace VixenModules.Effect.Effect
 					}
 					break;
 				case NotifyCollectionChangedAction.Replace:
-					NotifyChildPropertyChanged(this, "Emitters");
+					NotifyChildPropertyChanged(this, _propertyName);
 					break;
 				case NotifyCollectionChangedAction.Reset:
 					break;
