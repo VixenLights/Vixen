@@ -6,6 +6,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Common.WPFCommon.Controls;
+using NLog;
 using VixenModules.App.Curves;
 using VixenModules.Editor.EffectEditor.Converters;
 using ZedGraph;
@@ -14,6 +15,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 {
 	public abstract class BaseInlineCurveEditor: Control
 	{
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private static readonly Type ThisType = typeof(BaseInlineCurveEditor);
 		private Image _image;
 
@@ -285,72 +287,82 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
-			var curve = GetCurveValue();
-			if (curve == null || curve.IsLibraryReference) return;
-
-			if ((Keyboard.Modifiers & (ModifierKeys.Shift)) != 0)
+			try
 			{
-				Canvas.Visibility = Visibility.Visible;
-			}
-			else
-			{
-				Canvas.Visibility = Visibility.Collapsed;
-			}
+				var curve = GetCurveValue();
+				if (curve == null || curve.IsLibraryReference) return;
 
-			Point position = e.GetPosition(this);
-			Vector vector = position - _dragStartPoint;
-
-			if (_isMouseDown)
-			{
-				if (!IsDragging)
+				if ((Keyboard.Modifiers & (ModifierKeys.Shift)) != 0)
 				{
-					if (vector.Length > DragTolerance)
-					{
-						IsDragging = true;
-						e.Handled = true;
+					Canvas.Visibility = Visibility.Visible;
+				}
+				else
+				{
+					Canvas.Visibility = Visibility.Collapsed;
+				}
 
-						_dragStartPoint = position;
+				Point position = e.GetPosition(this);
+				Vector vector = position - _dragStartPoint;
+
+				if (_isMouseDown)
+				{
+					if (!IsDragging)
+					{
+						if (vector.Length > DragTolerance)
+						{
+							IsDragging = true;
+							e.Handled = true;
+
+							_dragStartPoint = position;
+						}
+					}
+					else
+					{
+						if (Keyboard.Modifiers == ModifierKeys.Shift)
+						{
+							SetLevel(position);
+						}
+						else
+						{
+							MovePoint(position);
+						}
+
+						e.Handled = true;
 					}
 				}
 				else
 				{
+					var point = TranslateMouseLocation(position);
+					var index = FindClosestPoint(curve.Points, point);
 					if (Keyboard.Modifiers == ModifierKeys.Shift)
 					{
-						SetLevel(position);
+						if (IsMouseOverLevelHandle())
+						{
+							DisableToolTip();
+							Cursor = Cursors.SizeWE;
+						}
+						else
+						{
+							Cursor = Cursors.SizeNS;
+						}
+					}
+					else if (Dist(point, curve.Points[index]) < DistanceTolerance)
+					{
+						Cursor = Cursors.Cross;
 					}
 					else
-					{
-						MovePoint(position);
-					}
-
-					e.Handled = true;
-				}
-			}
-			else
-			{
-				var point = TranslateMouseLocation(position);
-				var index = FindClosestPoint(curve.Points, point);
-				if (Keyboard.Modifiers == ModifierKeys.Shift)
-				{
-					if (IsMouseOverLevelHandle())
 					{
 						DisableToolTip();
-						Cursor = Cursors.SizeWE;
-					}
-					else
-					{
-						Cursor = Cursors.SizeNS;
+						Cursor = Cursors.Arrow;
 					}
 				}
-				else if (Dist(point, curve.Points[index]) < DistanceTolerance)
-				{
-					Cursor = Cursors.Cross;
-				}
-				else
-				{
-					DisableToolTip();
-					Cursor = Cursors.Arrow;
-				}
+			}
+			catch (Exception ex)
+			{
+				//There is an object null error that occurs at random times in this method that I have been unable to effectively track down
+				//It causes the app to crash and potentially loses data. This method is not doing a critical operation, so we can eat the 
+				//exception to avoid crashing the user. Hopefully I can eventually track it down and fix the root cause.
+				Logging.Error(ex, "An unexpected error occured during the mouse move in the curve and was swallowed.");
 			}
 
 		}

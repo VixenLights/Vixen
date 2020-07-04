@@ -92,6 +92,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		[PropertyOrder(18)]
 		[Category("Details")]
+		[Description("A useful category like Christmas, Halloween, General")]
 		[ViewModelToModel("Prop")]
 		public string Type
 		{
@@ -251,6 +252,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		[Browsable(false)]
 		public new IViewModel ParentViewModel => base.ParentViewModel;
+
+		[Browsable(false)]
+		public new bool IsCanceled => base.IsCanceled;
+
+		[Browsable(false)]
+		public new bool IsSaved => base.IsSaved;
 
 		#endregion
 

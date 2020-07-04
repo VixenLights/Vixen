@@ -1,0 +1,285 @@
+name: Release Build
+
+on:
+  push:
+    branches: 
+      - master
+    tags:
+      - '[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+u[0-9]+'
+    paths-ignore:
+      - '**/.gitignore'
+      - '**/README.md'
+      - .github/**
+      - .tgitconfig
+
+jobs:
+
+  setup:
+  
+    if: github.repository == 'VixenLights/Vixen'
+  
+    runs-on: windows-2019
+
+    outputs:
+      build_number: ${{ env.BUILD_NUMBER }}
+      notes_build_type: ${{ env.VIX_NOTES_BUILD_TYPE }}
+      notes_fix_version: ${{ env.VIX_NOTES_FIX_VERSION }}
+      pre_release: ${{ env.VIX_PRE_RELEASE }}
+      release_notes_markdown: ${{ env.VIX_RELEASE_NOTES_MARKDOWN }}
+      release_tag: ${{ env.VIX_RELEASE_TAG }}
+      version: ${{ env.VIX_VERSION }}
+      
+    steps:
+    
+      - uses: actions/checkout@v2
+
+      - name: Set BUILD_NUMBER
+        uses: einaregilsson/build-number@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set variables
+        shell: bash
+        run: |
+          if echo "${GITHUB_REF}" | grep -q "^refs/tags/" ;then
+            VIX_RELEASE_TAG=$(echo "${GITHUB_REF}" | sed -e 's!^refs/tags/!!')
+            set -- $(echo "${VIX_RELEASE_TAG}" | tr '.u' ' ')
+  
+            echo "::set-env name=VIX_NOTES_FIX_VERSION::DevBuild"
+            echo "::set-env name=VIX_NOTES_BUILD_TYPE::${1}.${2}u${3:-0}"
+            echo "::set-env name=VIX_PRE_RELEASE::false"
+            echo "::set-env name=VIX_RELEASE_TAG::${VIX_RELEASE_TAG}"
+            echo "::set-env name=VIX_VERSION::${1}.${2}.${BUILD_NUMBER}.${3:-0}"
+          else
+            echo "::set-env name=VIX_NOTES_FIX_VERSION::DevBuild"
+            echo "::set-env name=VIX_NOTES_BUILD_TYPE::Development"
+            echo "::set-env name=VIX_PRE_RELEASE::true"
+            echo "::set-env name=VIX_RELEASE_TAG::Testbuild-${BUILD_NUMBER}"
+            echo "::set-env name=VIX_VERSION::0.0.${BUILD_NUMBER}.0"
+          fi
+
+      - name: Update release notes
+        run: ./Build/CreateReleaseNotes.ps1 -jiraUrl "http://bugs.vixenlights.com" -project "Vixen 3" -fixVersion "${env:VIX_NOTES_FIX_VERSION}" -buildType "${env:VIX_NOTES_BUILD_TYPE}"
+      
+      - name: Upload Release Notes artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: _releaseNotes
+          path: "Release Notes.txt"
+
+
+  build_x86:
+  
+    needs:
+      - setup
+    
+    outputs:
+      setup_32: ${{ env.SETUP_32 }}
+
+    runs-on: windows-2019
+
+    steps:
+    
+      - uses: actions/checkout@v2
+      
+      - name: Download Release Notes artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: _releaseNotes
+      
+      - name: Move Release Notes into place
+        run: Copy-Item "_releaseNotes\Release Notes.txt" -Destination "Release Notes.txt" -Force
+        
+      - uses: nuget/setup-nuget@v1
+        
+      - uses: microsoft/setup-msbuild@v1.0.0
+      
+      - name: Setup custom NSIS
+        id: setup-nsis
+        uses: VixenLights/makensis-action@bld01-v2.51
+        with:
+          just-include: true
+          include-more-plugins: true
+            
+      - name: Update versions
+        run: |
+          ./Build/dotnet-setversion/setversion ${{ needs.setup.outputs.version }} Vixen.System\Vixen.csproj
+          ./Build/dotnet-setversion/setversion ${{ needs.setup.outputs.version }} Application\VixenApplication\VixenApplication.csproj
+        
+      - name: NuGet Restore
+        run: nuget restore Vixen.sln
+        
+      - name: Build x86
+        run: msbuild Vixen.sln -m -t:Rebuild -p:Configuration=Release -p:Platform=x86
+  
+      - name: Build x86 installer
+        run: ${{ steps.setup-nsis.outputs.nsis-path }} /DBUILDARCH=32 Installer\Installer.nsi
+        shell: cmd
+      
+      - run: dir
+        shell: cmd
+        
+      - name: Set installer name in environment
+        shell: bash
+        run: |
+          echo "::set-env name=SETUP_32::$(echo Vixen*Setup-32bit.exe)"
+        
+      - name: Upload _setup32 artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: _setup32
+          path: ${{ env.SETUP_32 }}
+
+
+  build_x64:
+  
+    needs:
+      - setup
+    
+    outputs:
+      setup_64: ${{ env.SETUP_64 }}
+
+    runs-on: windows-2019
+
+    steps:
+    
+      - uses: actions/checkout@v2
+      
+      - name: Download Release Notes artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: _releaseNotes
+      
+      - name: Move Release Notes into place
+        run: Copy-Item "_releaseNotes\Release Notes.txt" -Destination "Release Notes.txt" -Force
+        
+      - uses: nuget/setup-nuget@v1
+        
+      - uses: microsoft/setup-msbuild@v1.0.0
+      
+      - name: Setup custom NSIS
+        id: setup-nsis
+        uses: VixenLights/makensis-action@bld01-v2.51
+        with:
+          just-include: true
+          include-more-plugins: true
+            
+      - name: Update versions
+        run: |
+          ./Build/dotnet-setversion/setversion ${{ needs.setup.outputs.version }} Vixen.System\Vixen.csproj
+          ./Build/dotnet-setversion/setversion ${{ needs.setup.outputs.version }} Application\VixenApplication\VixenApplication.csproj
+        
+      - name: NuGet Restore
+        run: nuget restore Vixen.sln
+        
+      - name: Build x64
+        run: msbuild Vixen.sln -m -t:Rebuild -p:Configuration=Release -p:Platform=x64
+  
+      - name: Build x64 installer
+        run: ${{ steps.setup-nsis.outputs.nsis-path }} /DBUILDARCH=64 Installer\Installer.nsi
+        shell: cmd
+      
+      - run: dir
+        shell: cmd
+        
+      - name: Set installer name in environment
+        shell: bash
+        run: |
+          echo "::set-env name=SETUP_64::$(echo Vixen*Setup-64bit.exe)"
+
+      - name: Upload _setup64 artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: _setup64
+          path: ${{ env.SETUP_64 }}
+
+
+  create_release:
+  
+    needs:
+      - setup
+      - build_x86
+      - build_x64
+    
+    runs-on: windows-2019
+
+    steps:
+
+      - name: Download _setup32 artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: _setup32
+      
+      - name: Download _setup64 artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: _setup64
+      
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ needs.setup.outputs.release_tag }}
+          release_name: ${{ needs.setup.outputs.release_tag }}
+          body: |
+            ${{ needs.setup.outputs.release_notes_markdown }}
+          draft: false
+          prerelease: ${{ needs.setup.outputs.pre_release }}
+      
+      - name: Upload x86 release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: _setup32/${{ needs.build_x86.outputs.setup_32 }}
+          asset_name: ${{ needs.build_x86.outputs.setup_32 }}
+          asset_content_type: application/vnd.microsoft.portable-executable
+        
+      - name: Upload x64 release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: _setup64/${{ needs.build_x64.outputs.setup_64 }}
+          asset_name: ${{ needs.build_x64.outputs.setup_64 }}
+          asset_content_type: application/vnd.microsoft.portable-executable
+
+      ###########################################
+      # Required secrets:
+      # SSH_KNOWN_HOSTS - output of "ssh-keyscan -p <port> <target_host>"
+      # SSH_PORT - sshd port on <target_host>
+      # SSH_PRIVATE_KEY - user's private key
+      # SSH_TARGET - <target_host>:/path/to/dir
+      # SSH_USER - username to login with
+      ###########################################
+      - name: Upload assets to vixenlights.com
+        shell: bash
+        run: |
+          if [[ -z "${{ secrets.SSH_TARGET }}" ]] ;then
+            exit 0
+          fi
+          
+          TARGET_EXTRA=
+          if [[ "${{ needs.setup.outputs.pre_release }}" = "false" ]] ;then
+            TARGET_EXTRA=/releases
+          fi
+          
+          mkdir -p ~/.ssh
+          touch ~/.ssh/id_rsa ~/.ssh/known_hosts
+          chmod 700 ~/.ssh
+          chmod 600 ~/.ssh/id_rsa ~/.ssh/known_hosts
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          scp \
+            -P ${{ secrets.SSH_PORT }} \
+            -o CheckHostIP=no \
+            -o StrictHostKeyChecking=yes \
+            -o NumberOfPasswordPrompts=0 \
+            _setup32/${{ needs.build_x86.outputs.setup_32 }} \
+            _setup64/${{ needs.build_x64.outputs.setup_64 }} \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_TARGET }}${TARGET_EXTRA}
