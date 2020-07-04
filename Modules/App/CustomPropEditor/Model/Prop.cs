@@ -34,6 +34,7 @@ namespace VixenModules.App.CustomPropEditor.Model
             Name = "New Prop";
 			CreationDate = DateTime.Now;
 	        ModifiedDate = CreationDate;
+	        CreatedBy = Environment.UserName;
 			VendorMetadata = new VendorMetadata();
 			PhysicalMetadata = new PhysicalMetadata();
 			InformationMetadata = new InformationMetadata();
