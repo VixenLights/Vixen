@@ -72,6 +72,9 @@
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
+    <ProjectReference Include="..\..\Effect\Morph\MorphPolygon\IMorphPolygon.csproj">
+      <Private>false</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Effect\Wave\IWaveform\IWaveform.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>

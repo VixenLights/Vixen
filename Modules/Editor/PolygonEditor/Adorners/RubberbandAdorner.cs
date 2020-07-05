@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 
-namespace PolygonEditor
+namespace VixenModules.Editor.PolygonEditor.Adorners
 {
 	public class RubberbandAdorner : Adorner
 	{

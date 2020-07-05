@@ -13,12 +13,12 @@ namespace VixenModules.App.Polygon
 		/// <summary>
 		/// Gets or sets the X position of the point.
 		/// </summary>
-		double X { get; set; }
+		public double X { get; set; }
 
 		/// <summary>
 		/// Gets or sets the Y position of the point.
 		/// </summary>
-		double Y { get; set; }
+		public double Y { get; set; }
 
 		#endregion
 	}

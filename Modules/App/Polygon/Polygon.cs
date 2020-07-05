@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace VixenModules.App.Polygon
 {
 	/// <summary>
-	/// Defines a polygon.
+	/// Maintains a polygon.
 	/// </summary>
 	[Serializable]
-	public class Polygon
+	public class Polygon : PointBasedShape
 	{
 		#region Constructor
 
@@ -15,18 +14,26 @@ namespace VixenModules.App.Polygon
 		/// Constructor
 		/// </summary>
 		public Polygon()
-		{
-			Points = new List<PolygonPoint>();
+		{						
 		}
 
 		#endregion
 
-		#region Public Properties
-
-		public List<PolygonPoint> Points
+		#region Public Methods
+		
+		/// <summary>
+		/// Clones the polygon.
+		/// </summary>		
+		public Polygon Clone()
 		{
-			get;
-			private set;
+			// Make a copy the polygon 
+			Polygon copy = new Polygon();
+			copy.Copy(this);
+			
+			// Since it is a clone we should give it a unique ID
+			copy.ID = Guid.NewGuid();
+
+			return copy;
 		}
 
 		#endregion

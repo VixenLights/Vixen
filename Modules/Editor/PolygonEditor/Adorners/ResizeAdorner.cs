@@ -9,25 +9,8 @@ using Cursor = System.Windows.Input.Cursor;
 using Cursors = System.Windows.Input.Cursors;
 using Size = System.Windows.Size;
 
-namespace PolygonEditor
-{
-	public interface IResizeable
-	{
-		void RotateSelectedItems(double angle, Point center);
-		bool IsRotateable(double angle, Point center);
-
-		void DoneRotating();
-
-		void TransformSelectedItems(TransformGroup t);
-		void MoveSelectedItems(Transform transform);
-
-		//object FindResource(object resourceKey);
-
-		double GetWidth();
-		double GetHeight();
-	}
-
-
+namespace VixenModules.Editor.PolygonEditor.Adorners
+{	
 	public class ResizeAdorner : Adorner
 	{
 		// Resizing adorner uses Thumbs for visual elements.  
@@ -210,13 +193,17 @@ namespace PolygonEditor
 			{
 				scaleX = scaleY = Math.Max(scaleX, scaleY);
 			}
+			ScaleTransform t = new ScaleTransform(scaleX, scaleY, Bounds.BottomLeft.X, Bounds.BottomLeft.Y);
 
-			if (EnforceSize(scaleX, scaleY))
+			Rect boundsCopy = Bounds;
+
+			boundsCopy = TransformItems(t, boundsCopy);
+
+			if (EnforceSize(boundsCopy))
 			{
-				ScaleTransform t = new ScaleTransform(scaleX, scaleY, Bounds.BottomLeft.X, Bounds.BottomLeft.Y);
-				TransformItems(t);
+			
+				TransformItems(t);				
 			}
-
 		}
 
 		// Handler for resizing from the top-left.
@@ -232,10 +219,13 @@ namespace PolygonEditor
 			{
 				scaleX = scaleY = Math.Max(scaleX, scaleY);
 			}
+			
+			ScaleTransform t = new ScaleTransform(scaleX, scaleY, Bounds.BottomRight.X, Bounds.BottomRight.Y);
+			Rect boundsCopy = Bounds;
+			boundsCopy = TransformItems(t, boundsCopy);
 
-			if (EnforceSize(scaleX, scaleY))
-			{
-				ScaleTransform t = new ScaleTransform(scaleX, scaleY, Bounds.BottomRight.X, Bounds.BottomRight.Y);
+			if (EnforceSize(boundsCopy))
+			{				
 				TransformItems(t);
 			}
 
@@ -254,10 +244,13 @@ namespace PolygonEditor
 			{
 				scaleX = scaleY = Math.Max(scaleX, scaleY);
 			}
+			ScaleTransform t = new ScaleTransform(scaleX, scaleY, Bounds.TopRight.X, Bounds.TopRight.Y);
+			Rect boundsCopy = Bounds;
+			boundsCopy = TransformItems(t, boundsCopy);
 
-			if (EnforceSize(scaleX, scaleY))
+			if (EnforceSize(boundsCopy))
 			{
-				ScaleTransform t = new ScaleTransform(scaleX, scaleY, Bounds.TopRight.X, Bounds.TopRight.Y);
+				
 				TransformItems(t);
 			}
 		}
@@ -265,14 +258,20 @@ namespace PolygonEditor
 		private void HandleMiddleLeft(object sender, DragDeltaEventArgs args)
 		{
 			var scaleX = -args.HorizontalChange / Bounds.Width;
-
 			scaleX += 1;
 
-			if (EnforceSize(scaleX, 1))
+			Rect boundsCopy;
+		
+			var centerPoint = new Point(Bounds.Right, (Bounds.Bottom - Bounds.Top) / 2);
+			ScaleTransform t = new ScaleTransform(scaleX, 1, centerPoint.X, centerPoint.Y);
+			boundsCopy = Bounds;
+			boundsCopy = TransformItems(t, boundsCopy);
+		
+			if (EnforceSize(boundsCopy))
 			{
-				var centerPoint = new Point(Bounds.Right, (Bounds.Bottom - Bounds.Top) / 2);
-				ScaleTransform t = new ScaleTransform(scaleX, 1, centerPoint.X, centerPoint.Y);
-				TransformItems(t);
+				var centerPt = new Point(Bounds.Right, (Bounds.Bottom - Bounds.Top) / 2);
+				ScaleTransform scaleTransform = new ScaleTransform(scaleX, 1, centerPt.X, centerPt.Y);
+				TransformItems(scaleTransform);
 			}
 		}
 
@@ -306,17 +305,31 @@ namespace PolygonEditor
 
 		private void HandleMiddleTop(object sender, DragDeltaEventArgs args)
 		{
-			var scaleY = -args.VerticalChange / Bounds.Height;
+			bool scaled = false;
 
+			double scaleY = -args.VerticalChange / Bounds.Height;
 			scaleY += 1;
+						
+			do
+			{								
+				Rect boundsCopy = Bounds;
 
-			if (EnforceSize(1, scaleY))
-			{
 				var centerPoint = new Point((Bounds.Right - Bounds.Left) / 2, Bounds.Bottom);
 				ScaleTransform t = new ScaleTransform(1, scaleY, centerPoint.X, centerPoint.Y);
-				TransformItems(t);
-			}
+				boundsCopy = TransformItems(t, boundsCopy);
 
+				if (EnforceSize(boundsCopy))
+				{
+					var centerPt = new Point((Bounds.Right - Bounds.Left) / 2, Bounds.Bottom);
+					ScaleTransform scaleTransform = new ScaleTransform(1, scaleY, centerPt.X, centerPt.Y);
+					TransformItems(scaleTransform);
+					scaled = true;
+				}
+				scaleY = scaleY - 1.0;
+				scaleY /= 2.0;
+				scaleY += 1.0;				
+			}
+			while (!scaled);
 		}
 
 		private void HandleRotate(object sender, DragDeltaEventArgs e)
@@ -326,16 +339,10 @@ namespace PolygonEditor
 			double rotationAngle = GetAngle(_rotationCenter, pos);
 			
 			var difference = rotationAngle - _rotateTransform.Angle;
-
-			//_rotateTransform.Angle = rotationAngle;
-			//_reverseRotateTransform.Angle = -_rotationAngle;
-
+		
 			if (vm.IsRotateable(difference, _rotationCenter))
 			{
 				_rotationAngle = GetAngle(_rotationCenter, pos);
-
-				//var difference = _rotationAngle - _rotateTransform.Angle;
-
 				_rotateTransform.Angle = _rotationAngle;
 				_reverseRotateTransform.Angle = -_rotationAngle;
 
@@ -343,8 +350,16 @@ namespace PolygonEditor
 			}		
 			else
 			{
+				vm.ClipSelectedPoints();
 				_rotate.CancelDrag();
 			}
+		}
+
+		private Rect TransformItems(ScaleTransform scaleTransform, Rect bounds)
+		{
+			bounds = scaleTransform.TransformBounds(bounds);
+			
+			return bounds;
 		}
 
 		private void TransformItems(ScaleTransform scaleTransform)
@@ -442,25 +457,41 @@ namespace PolygonEditor
 			_visualChildren.Add(cornerThumb);
 		}
 
+		private bool EnforceSize(Rect r)
+		{
+			bool sizeValid = false;
+
+			if (r.Left >= 0 &&
+				r.Top >= 0 &&
+				r.Right < vm.GetWidth() &&
+				r.Bottom < vm.GetHeight())
+			{
+				sizeValid = true;
+			}
+
+			return sizeValid;
+		}
+
 		// This method ensures that the Widths and Heights are initialized.  Sizing to content produces
 		// Width and Height values of Double.NaN.  Because this Adorner explicitly resizes, the Width and Height
 		// need to be set first.  It also sets the maximum size of the adorned element.
 		private bool EnforceSize(double scaleX, double scaleY)
 		{
-
+			
 			var el = AdornedElement as FrameworkElement;
 			if (el != null)
 			{
 				Rect r = new Rect(Bounds.X, Bounds.Y, Bounds.Width, Bounds.Height);
 				r.Scale(scaleX, scaleY);
-				if (r.Left > 0 && 
-					r.Top > 0 && 
-					r.Right < vm.GetWidth() && 
-					r.Bottom < vm.GetHeight())
+				if (r.Left >= 0 && 
+					r.Top >= 0 && 
+					r.Right <= vm.GetWidth() && 
+					r.Bottom <= vm.GetHeight())
 				{
 					return true;
 				}
 			}
+			
 
 			return false;
 		}

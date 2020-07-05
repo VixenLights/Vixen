@@ -54,7 +54,7 @@ namespace VixenModules.Effect.Effect
 			return _elementData;
 		}
 
-		protected override void _PreRender(CancellationTokenSource tokenSource = null)
+		protected void ConfigureDisplayElementSize()
 		{
 			if (TargetPositioning == TargetPositioningType.Strings)
 			{
@@ -64,7 +64,12 @@ namespace VixenModules.Effect.Effect
 			{
 				ConfigureVirtualBuffer();
 			}
-			
+		}
+
+		protected override void _PreRender(CancellationTokenSource tokenSource = null)
+		{
+			ConfigureDisplayElementSize();
+
 			SetupRender();
 			int bufferSize = StringPixelCounts.Sum();
 			EffectIntents data = new EffectIntents(bufferSize);

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Shapes;
 
-namespace PolygonEditor
+namespace VixenModules.Editor.PolygonEditor.ViewModels
 {
 	/// <summary>
 	/// Maintains a polygon line segment.

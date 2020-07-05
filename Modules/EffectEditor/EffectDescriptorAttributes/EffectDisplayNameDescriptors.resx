@@ -1029,4 +1029,43 @@
   <data name="VFlakeCount" xml:space="preserve">
     <value>Vertical Flake Count</value>
   </data>
+  <data name="Acceleration" xml:space="preserve">
+    <value>Acceleration</value>
+  </data>
+  <data name="FillType" xml:space="preserve">
+    <value>Fill Type</value>
+  </data>
+  <data name="HeadColor" xml:space="preserve">
+    <value>Head Color</value>
+  </data>
+  <data name="HeadDuration" xml:space="preserve">
+    <value>Head Duration</value>
+  </data>
+  <data name="HeadLength" xml:space="preserve">
+    <value>Head Length</value>
+  </data>
+  <data name="PolygonType" xml:space="preserve">
+    <value>Polygon Type</value>
+  </data>
+  <data name="RepeatCount" xml:space="preserve">
+    <value>Repeat Count</value>
+  </data>
+  <data name="RepeatDirection" xml:space="preserve">
+    <value>Repeat Direction</value>
+  </data>
+  <data name="RepeatSkip" xml:space="preserve">
+    <value>Repeat Skip</value>
+  </data>
+  <data name="Stagger" xml:space="preserve">
+    <value>Stagger</value>
+  </data>
+  <data name="TailColor" xml:space="preserve">
+    <value>Tail Color</value>
+  </data>
+  <data name="FillPolygon" xml:space="preserve">
+    <value>Fill Polygon</value>
+  </data>
+  <data name="PolygonColor" xml:space="preserve">
+    <value>Polygon Color</value>
+  </data>
 </root>

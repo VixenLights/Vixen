@@ -2,14 +2,14 @@
 using Vixen.Module.Effect;
 using Vixen.Sys;
 
-namespace VixenModules.Effect.NorthStar
+namespace VixenModules.Effect.Morph
 {
 	/// <summary>
-	/// Provides descriptor data describing the North Star effect.
+	/// Provides descriptor data describing the morph effect.
 	/// </summary>
 	public class Descriptor : EffectModuleDescriptorBase
 	{
-		#region Static Fields
+		#region Private Static Fields
 
 		private static readonly Guid _typeId = new Guid("461FB199-437F-4EBA-9C54-6AB126342379");
 

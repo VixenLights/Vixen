@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace PolygonEditor
+namespace VixenModules.Editor.PolygonEditor.Views
 {
     /// <summary>
     /// Polygon canvas.  This class adds the grid and tick marks.
@@ -25,11 +25,13 @@ namespace PolygonEditor
             for (int i = 0; i <= numberOfLines; ++i)
             {
                 // Draw a vertical line to form the grid
-                drawingContext.DrawLine(pen, new Point(offset, 0), new Point(offset, ActualHeight));
+                drawingContext.DrawLine(pen, new Point(offset, 0), new Point(offset, ActualHeight - 1));
 
                 // Advance to the next line
                 offset += gridWidth;
             }
+
+            drawingContext.DrawLine(pen, new Point(ActualWidth - 1, 0), new Point(ActualWidth - 1, ActualHeight - 1));
         }
 
         /// <summary>
@@ -46,11 +48,13 @@ namespace PolygonEditor
             for (int i = 0; i <= numberOfLines; ++i)
             {
                 // Draw a horizontal line to form the grid
-                drawingContext.DrawLine(pen, new Point(0, offset), new Point(ActualWidth, offset));
+                drawingContext.DrawLine(pen, new Point(0, offset), new Point(ActualWidth - 1, offset));
 
                 // Advance to the next line
                 offset += gridWidth;
             }
+
+            drawingContext.DrawLine(pen, new Point(0, ActualHeight - 1), new Point(ActualWidth - 1, ActualHeight-1));
         }
 
         /// <summary>

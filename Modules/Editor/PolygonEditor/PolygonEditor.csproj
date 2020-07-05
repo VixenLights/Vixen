@@ -25,6 +25,28 @@
 		<DefineConstants>TRACE</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
+	  <Compile Remove="Behaviors\**" />
+	  <EmbeddedResource Remove="Behaviors\**" />
+	  <None Remove="Behaviors\**" />
+	  <Page Remove="Behaviors\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Remove="Converters\ColorToSolidColorBrushvalueConverter.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="Cursors\cursor_arrow_dragbox.cur" />
+	  <None Remove="Images\AddPoint.png" />
+	  <None Remove="Images\arrow_left.png" />
+	  <None Remove="Images\arrow_right.png" />
+	  <None Remove="Images\buttonDrawLine.png" />
+	  <None Remove="Images\LineToPolygon.png" />
+	  <None Remove="Images\PolygonToLine.png" />
+	  <None Remove="Images\ToggleStartPoint.png" />
+	  <None Remove="Images\ToggleStartSide.png" />
+	  <None Remove="PolygonToLine_Old.png" />
+	  <None Remove="ViewModels\PolygonEditorViewModel.cs_BeforeGettingRidOfTemporaryVariables" />
+	</ItemGroup>
+	<ItemGroup>
 	  <PackageReference Include="Catel.Core" Version="5.12.2">
 	    <ExcludeAssets>runtime</ExcludeAssets>
 	  </PackageReference>
@@ -33,13 +55,22 @@
 	  </PackageReference>
 	</ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\buttonDrawPixel.png" />
+    <Resource Include="Cursors\cursor_arrow_dragbox.cur" />
+    <Resource Include="Images\AddPoint.png" />
+    <Resource Include="Images\arrow_left.png" />
+    <Resource Include="Images\arrow_right.png" />
+    <Resource Include="Images\buttonDrawLine.png" />
+    <Resource Include="Images\buttonDrawPolygon.png" />
     <Resource Include="Images\buttonSelect.png" />
     <Resource Include="Images\copy.png" />
     <Resource Include="Images\cut.png" />
     <Resource Include="Images\delete_32.png" />
+    <Resource Include="Images\LineToPolygon.png" />
     <Resource Include="Images\paste.png" />
+    <Resource Include="Images\PolygonToLine.png" />
     <Resource Include="Images\SnapToGrid.png" />
+    <Resource Include="Images\ToggleStartPoint.png" />
+    <Resource Include="Images\ToggleStartSide.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\WPFCommon\WPFCommon.csproj">

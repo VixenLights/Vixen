@@ -1065,4 +1065,46 @@
   <data name="VFlakeCount" xml:space="preserve">
     <value>Adjust the number of Vertical Snowflakes.</value>
   </data>
+  <data name="Acceleration" xml:space="preserve">
+    <value>Determines the acceleration of the polygon/line wipe.</value>
+  </data>
+  <data name="EditPolygons" xml:space="preserve">
+    <value>Click to edit the polygons and lines.</value>
+  </data>
+  <data name="FillPolygon" xml:space="preserve">
+    <value>Determines if the polygon is solid or outlined with the Polygon Color.</value>
+  </data>
+  <data name="FillType" xml:space="preserve">
+    <value>Determines how the polygon/line is filled (Wipe, Solid or Outline).</value>
+  </data>
+  <data name="HeadColor" xml:space="preserve">
+    <value>Determines the wipe head color over the duration of the effect.</value>
+  </data>
+  <data name="HeadDuration" xml:space="preserve">
+    <value>Determines the percentage of the effect duration it takes the wipe head to travel across the polygon/line.</value>
+  </data>
+  <data name="HeadLength" xml:space="preserve">
+    <value>Determines the length of the wipe head over the duration of the effect.</value>
+  </data>
+  <data name="PolygonColor" xml:space="preserve">
+    <value>Determines the color of the polygon/line for the duration of the effect.</value>
+  </data>
+  <data name="PolygonType" xml:space="preserve">
+    <value>Determines the type of polygon or line.</value>
+  </data>
+  <data name="RepeatCount" xml:space="preserve">
+    <value>Determines how many times to repeat the polygon/line.</value>
+  </data>
+  <data name="RepeatDirection" xml:space="preserve">
+    <value>Determines the direction of the repeating pattern of polygons or lines.</value>
+  </data>
+  <data name="RepeatSkip" xml:space="preserve">
+    <value>Determines the spacing in-between the repeating polygons or lines.</value>
+  </data>
+  <data name="Stagger" xml:space="preserve">
+    <value>Determines if the start of wipe is staggered for the repeating polygons/lines.</value>
+  </data>
+  <data name="TailColor" xml:space="preserve">
+    <value>Determines the wipe tail color over the duration of the effect.</value>
+  </data>
 </root>

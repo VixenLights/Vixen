@@ -1,13 +1,18 @@
 ﻿
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Shapes;
+using System.Windows.Media;
+using VixenModules.Editor.PolygonEditor.Adorners;
+using VixenModules.Editor.PolygonEditor.ViewModels;
 
-namespace PolygonEditor
+namespace VixenModules.Editor.PolygonEditor.Views
 {
     /// <summary>
     /// Interaction logic for Polygon.xaml
@@ -21,7 +26,8 @@ namespace PolygonEditor
 		/// </summary>
 		public PolygonControl()
 		{
-			InitializeComponent();                       
+			InitializeComponent();
+            Loaded += PolygonControl_Loaded;
         }
 
         #endregion
@@ -45,40 +51,14 @@ namespace PolygonEditor
         private Point _originMouseStartPoint;
 
         /// <summary>
-        /// True when the user just selected a polygon.
-        /// This field inhibits drawing the rubberband adorner when selecting polygon via
+        /// True when the user just selected a shape (polygon or line).
+        /// This field inhibits drawing the rubberband adorner when selecting a shape via
         /// the center cross hair.
         /// </summary>
-        bool _selectedPolygon;
+        bool _selectedShape;
 
         #endregion
-
-        #region Public Methods
-
-        /// <summary>
-        /// Attempts to delete a polygon point if one is selected.
-        /// </summary>
-        /// <returns>True if apoint was deleted.</returns>
-        public bool TryDeletePoint()
-        {
-            bool handled = false;
-
-            // If we can delete a polygon point then...
-            if (VM.SelectedPolygon != null &&
-                VM.SelectedPoints.Count == 1 &&
-                VM.SelectedPolygon.DeletePointCommand.CanExecute(null))
-            {
-                // Execute the command on the view model
-                VM.SelectedPolygon.DeletePointCommand.Execute(null);
-
-                handled = true;                
-            }
-
-            return handled;
-        }
-
-		#endregion
-
+        
 		#region Public Properties
 
 		private PolygonEditorViewModel _vm;
@@ -101,146 +81,18 @@ namespace PolygonEditor
                 _vm.RemoveResizeAdorner += RemoveResizeAdorner;
                 _vm.DisplayResizeAdorner += DisplayResizeAdorner;
                 _vm.RepositionResizeAdorner += RepositionResizeAdorner;
-
-
-                dgSimple.ItemsSource = VM.SelectedPoints;
+           
+                // Give the data grid the SelectedPoints for its ItemsSource
+                pointDataGrid.ItemsSource = VM.SelectedPoints;
             }                
         }
 
-		#endregion
-
-		#region Private Methods
-
-        /// <summary>
-        /// Updates the mouse cursor for the specified location.
-        /// </summary>
-        /// <param name="mousePosition">Mouse position</param>
-		private void UpdateCursor(Point mousePosition)
-        {
-            // Default to the normal arrow cursor
-            Cursor cursor = Cursors.Arrow;
-
-            PolygonLineSegment lineSegment = null;
-            PolygonViewModel polygon = null; 
-
-            // If the editor is in selection mode and
-            // the mouse over a moveable item then....
-            if (VM.IsSelecting &&
-                VM.IsMouseOverMoveableItem(mousePosition))
-            {
-                // Change to the sizing cursor
-                cursor = Cursors.SizeAll;
-            }
-            else if (!VM.IsSelecting &&                
-                     IsMouseOverLine(mousePosition, ref lineSegment, ref polygon))
-            {
-                if (polygon.PolygonClosed)
-                {
-                    cursor = //new Cursor("C:\\Users\\JenAndJohn\\source\\repos\\PolygonEditor\\AddPoint.cur");
-                        new Cursor(@"E:\SteamLibrary\steamapps\common\Portal 2\portal2_dlc2\materials\puzzlemaker\cursors\cursor_arrow_dragbox.cur");
-                }
-            }
-
-            // Set cursor for the control
-            Cursor = cursor;
-        }
-
-        /// <summary>
-        /// Updates the rubber band lasso for selecting points.
-        /// </summary>
-        /// <param name="canvas">Polygon canvas</param>
-        /// <param name="mousePosition">Position of the mouse</param>
-        private void LassoPoints(Canvas canvas, Point mousePosition)
-        {
-            // Capture the mouse while lasso'ing points
-            canvas.CaptureMouse();
-
-            // Get the adorner layer
-            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(this);
-
-            // If the rubber band adorner has not been created then...
-            if (adornerLayer != null && _rubberbandAdorner == null)
-            {
-                // Create the rubber band adorner 
-                _rubberbandAdorner = new RubberbandAdorner(canvas, _originMouseStartPoint);
-                adornerLayer.Add(_rubberbandAdorner);
-            }
-
-            if (_rubberbandAdorner != null)
-            {
-                // Set the current mouse position as the end of the rubber band area
-                _rubberbandAdorner.EndPoint = mousePosition;
-            }
-        }
-
-        /*
-        /// <summary>
-        /// Event handler that creates the columns for the DataGridView.
-        /// </summary>        
-        private void DG1_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
-        {
-            // Determine which columns are visible
-            switch (e.Column.Header.ToString())
-            {
-                case "X":
-                    e.Column.Visibility = Visibility.Visible;
-                    break;
-                case "Y":
-                    e.Column.Visibility = Visibility.Visible;
-                    break;
-                default:
-                    e.Column.Visibility = Visibility.Hidden;
-                    break;
-            }
-        }
-        */
-
-        /// <summary>
-        /// Redraws the resize adorner.
-        /// </summary>
-        private void RefreshResizeAdorner()
-        {
-            // Get the adorner layer
-            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
-
-            if (adornerLayer != null)
-            {
-                // Update the adorners in the layer
-                adornerLayer.Update();
-            }
-        }
-
-        /// <summary>
-        /// Updates the resize adorner based on the specified polygon points.
-        /// </summary>
-        /// <param name="points">Polygon points to include in the resize adorner</param>
-        private void UpdateResizeAdorner(ObservableCollection<PolygonPointViewModel> points)
-        {
-            // Get the bounds of the selected points
-            Rect bounds = GetSelectedContentBounds(points);
-
-            // Get the adorner layer from the canvas
-            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
-
-            if (adornerLayer != null)
-            {
-                // Remove the resizing adorner
-                RemoveResizeAdorner();
-
-                // Create the resizing adorner
-                _resizingAdorner = new ResizeAdorner(this, canvas, VM, bounds);
-                
-                // Add the resizing adorner to the canvas
-                adornerLayer.Add(_resizingAdorner);
-            }                            
-        }
-
         #endregion
-
+        
         #region Private View Model Event Handlers
 
         /// <summary>
-        /// Event handler repositions (re-creates) the resize adorner based  on the selected points.
+        /// Event handler repositions (re-creates) the resize adorner based on the selected points.
         /// </summary>        
         private void RepositionResizeAdorner(object sender, EventArgs e)
         {
@@ -259,6 +111,9 @@ namespace PolygonEditor
         {
             // Deselect all polygon points
             VM.DeselectAllPolygons();
+
+            // Deselect all line points
+            VM.DeselectAllLines();
             
             // Remove the resize adorner
             RemoveResizeAdorner();            
@@ -269,8 +124,16 @@ namespace PolygonEditor
         /// </summary>        
         private void DisplayResizeAdorner(object sender, EventArgs e)
         {
-            // Update the resize adorner based on the selected polygon
-            UpdateResizeAdorner(VM.SelectedPolygon.PointCollection);
+            if (VM.SelectedPolygon != null)
+            {
+                // Update the resize adorner based on the selected polygon
+                UpdateResizeAdorner(VM.SelectedPolygon.PointCollection);
+            }
+            else if (VM.SelectedLine != null)
+            {
+                // Update the resize adorner based on the selected line
+                UpdateResizeAdorner(VM.SelectedLine.PointCollection);
+            }
         }
 
         /// <summary>
@@ -282,7 +145,7 @@ namespace PolygonEditor
         }
 
         /// <summary>
-        /// Gets the rectangle bounds of the specified polygon points.
+        /// Gets the rectangle bounds of the specified polygon/line points.
         /// </summary>        
         private Rect GetSelectedContentBounds(ObservableCollection<PolygonPointViewModel> points)
         {
@@ -360,7 +223,7 @@ namespace PolygonEditor
         private void Canvas_MouseEnter(object sender, MouseEventArgs e)
         {
             // Give the editor view model the boundaries of the canvas
-            VM.UpdateEditorSize(canvas.ActualWidth, canvas.ActualHeight);
+            VM.UpdateEditorSize(canvas.ActualWidth, canvas.ActualHeight);            
         }
 
         /// <summary>
@@ -368,6 +231,7 @@ namespace PolygonEditor
         /// </summary>        
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
+            // Get the position of the mouse click
             Point mousePosition = e.GetPosition((Canvas)sender);
 
             // Update the cursor based on what the mouse is over
@@ -383,11 +247,11 @@ namespace PolygonEditor
             // If the editor is in selection mode and
             // the user is NOT moving a point and
             // the left mouse button is down and
-            // user did not just select a polygon then...
+            // user did not just select a shape then...
             if (VM.IsSelecting &&
                 !VM.MovingPoint &&                
                 e.LeftButton == MouseButtonState.Pressed &&
-                !_selectedPolygon)
+                !_selectedShape)
             {
                 // Use the rubber band adorner to select (lasso) points
                 LassoPoints(canvas, mousePosition);
@@ -408,43 +272,50 @@ namespace PolygonEditor
             // Store off the mouse click position
             _originMouseStartPoint = clickPosition;
 
-            // Default to not selecting a polygon
-            _selectedPolygon = false;
+            // Default to not selecting a shape
+            _selectedShape = false;
 
-            // If the editor is in polygon draw mode then...
+            // If the editor is not in selection mode then...
             if (!VM.IsSelecting)
             {
-                PolygonLineSegment lineSegment = null;
-                PolygonViewModel polygon = null;
-
-                // If the mouse is over a polygon line segment then...
-                if (IsMouseOverLine(clickPosition, ref lineSegment, ref polygon))
+                // If we are adding points to existing polygons then...
+                if (VM.AddPoint)
                 {
-                    // If the polygon is closed then the user must want to add a new point along the line segment
-                    if (polygon.PolygonClosed)
-                    {
-                        // Find the index of the start point of the line segment
-                        int index = polygon.PointCollection.IndexOf(lineSegment.StartPoint);
+                    PolygonLineSegment lineSegment = null;
+                    PolygonViewModel polygon = null;
 
-                        // Insert the point into the point collection
-                        polygon.InsertPoint(clickPosition, index + 1);                        
-                    }
-                    else
+                    // If the mouse is over a polygon line segment then...
+                    if (IsMouseOverLine(clickPosition, ref lineSegment, ref polygon))
                     {
-                        // Add a polygon point at the click position
-                        VM.AddPoint(clickPosition);
-                    }
+                        // If the polygon is closed then the user must want to add a new point along the line segment
+                        if (polygon.PolygonClosed)
+                        {
+                            // Find the index of the start point of the line segment
+                            int index = polygon.PointCollection.IndexOf(lineSegment.StartPoint);
+
+                            // Insert the point into the point collection
+                            polygon.InsertPoint(clickPosition, index + 1);
+                        }            
+                    }                    
                 }
-                else
+                // If the editor is in draw polygon mode then...
+                else if (VM.DrawPolygon)
                 {
                     // Add a polygon point at the click position
-                    VM.AddPoint(clickPosition);
+                    VM.AddPolygonPoint(clickPosition);                    
+                }
+                // Otherwise if we are draw line mode then...
+                else if (VM.DrawLine)
+                {
+                    VM.AddLinePoint(clickPosition);
                 }
             }
             else // Editor is in Select mode
-            {                                                
-                // Attempt to select either a polygon or polygon points
-                _selectedPolygon = VM.SelectPolygonOrPolygonPoint(clickPosition);                        
+            {
+                ((Canvas)sender).CaptureMouse();
+
+                // Attempt to select either a polygon, line or point
+                _selectedShape = VM.SelectPolygonLineOrPoint(clickPosition);                        
             }
 
             // Remove the resize adorner
@@ -462,6 +333,15 @@ namespace PolygonEditor
                 // Update the resize adorner for the selected polygon
                 UpdateResizeAdorner(VM.SelectedPolygon.PointCollection);
             }
+            // If the editor is in selection mode and
+            // there is a selected line with all points selected then...
+            else if (VM.IsSelecting &&
+                     VM.SelectedLine != null &&
+                     VM.SelectedLine.AllPointsSelected)
+            {
+                // Update the resize adorner for the selected line
+                UpdateResizeAdorner(VM.SelectedLine.PointCollection);
+            }
                         
             // Indicate that the event was handled
             e.Handled = true;
@@ -475,15 +355,18 @@ namespace PolygonEditor
             // Position of the mouse when the button was released
             Point clickPosition = e.GetPosition(canvas);
 
+            // Release the mouse
+            ((Canvas)sender).ReleaseMouseCapture();
+
             // If the user is moving a polygon point then...
             if (VM.MovingPoint)
             {
                 // End the point move
-                VM.EndMoveSelectedPoint(clickPosition);              
+                VM.EndMoveSelectedPoint(clickPosition);                
             }
 
-            // If the user did not select a polygon on the mouse down event then...
-            if (!_selectedPolygon)
+            // If the user did not select a shape on the mouse down event then...
+            if (!_selectedShape)
             {             
                 // Get the adorner layer from the canvas
                 AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
@@ -509,7 +392,7 @@ namespace PolygonEditor
                     Rect lasso = new Rect(startPoint, endPoint);
 
                     // Select the polygon points inside the lasso
-                    VM.SelectPolygonPoints(lasso);
+                    VM.SelectShapePoints(lasso);
 
                     // If more than one polygon point is selected then...
                     if (VM.SelectedPoints.Count > 1)
@@ -531,8 +414,22 @@ namespace PolygonEditor
                         // Find the polygon associated with the selected polygon point
                         PolygonViewModel selectedPolygon = VM.FindPolygon(VM.SelectedPoints[0]);
 
-                        // Select the polygon point                        
-                        VM.SelectPoint(VM.SelectedPoints[0], selectedPolygon);                                             
+                        if (selectedPolygon != null)
+                        {
+                            // Select the polygon point                        
+                            VM.SelectPolygonPoint(VM.SelectedPoints[0], selectedPolygon);
+                        }
+                        else
+                        {
+                            // Find the line associated with the selected point
+                            LineViewModel selectedLine = VM.FindLine(VM.SelectedPoints[0]);
+
+                            if (selectedLine != null)
+                            {
+                                // Select the line point
+                                VM.SelectLinePoint(VM.SelectedPoints[0], selectedLine);
+                            }
+                        }
                     }
                 }
             }
@@ -543,92 +440,336 @@ namespace PolygonEditor
 
         #endregion
 
-        private void UpdatePolygonLines()
+        #region Private Methods
+
+        /// <summary>
+        /// Control loaded event handler.
+        /// </summary>
+        /// <param name="sender">Event sender</param>
+        /// <param name="e">Event arguments</param>
+        private void PolygonControl_Loaded(object sender, RoutedEventArgs e)
         {
+            //Hack this to fit the existing property but this is not ideal. This control should have its own view model and then
+            //the control can inherit from Catel:UserControl and Catel can inject that VM behind this control.
+            //That VM will have a parent of the VM being used here and then you can walk the ladder if needed.
+            //However VM should be mostly self contained and not need to rely on their parents. They can expose functions that the
+            //parents can interact with when needed.
+            if (DataContext is PolygonEditorViewModel vm)
+            {
+                VM = vm;
+            }
+
+            // Display the resize adorner if a selected polygon or line exists
+            VM.DisplayResizeAdornerForSelectedPolygonOrLine();
+        }
+
+        /// <summary>
+        /// Updates the mouse cursor for the specified location.
+        /// </summary>
+        /// <param name="mousePosition">Mouse position</param>
+		private void UpdateCursor(Point mousePosition)
+        {
+            // Default to the normal arrow cursor
+            Cursor cursor = Cursors.Arrow;
+
+            PolygonLineSegment lineSegment = null;
+            PolygonViewModel polygon = null;
+
+            // If the editor is in selection mode and
+            // the mouse over a moveable item then....
+            if (VM.IsSelecting &&
+                VM.IsMouseOverMoveableItem(mousePosition))
+            {
+                // Change to the sizing cursor
+                cursor = Cursors.SizeAll;
+            }
+            // If the editor is add point mode and
+            // the mouse is over a polygon line then...
+            else if (VM.AddPoint &&
+                     IsMouseOverLine(mousePosition, ref lineSegment, ref polygon))
+            {
+                // The polygon that is associated with the line is closed then...
+                if (polygon.PolygonClosed)
+                {
+                    // Load special add point cursor
+                    using (Stream stream = GetAssemblyResourceStream(Assembly.GetExecutingAssembly(), "Cursors/cursor_arrow_dragbox.cur"))
+                    {
+                        cursor = new Cursor(stream);
+                    }
+                }
+            }
+
+            // Set cursor for the control
+            Cursor = cursor;
+        }
+
+        /// <summary>
+        /// Loads the resource at the specified path.
+        /// The path separator is '/'.  The path should not start with '/'.
+        /// </summary>
+        /// <param name="asm"></param>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private Stream GetAssemblyResourceStream(Assembly asm, string path)
+        {
+            // Just to be sure
+            if (path[0] == '/')
+            {
+                path = path.Substring(1);
+            }
+
+            // Just to be sure
+            if (path.IndexOf('\\') == -1)
+            {
+                path = path.Replace('\\', '/');
+            }
+
+            Stream resStream = null;
+
+            string resName = asm.GetName().Name + ".g.resources"; // Ref: Thomas Levesque Answer at:
+                                                                  // http://stackoverflow.com/questions/2517407/enumerating-net-assembly-resources-at-runtime
+
+            using (var stream = asm.GetManifestResourceStream(resName))
+            {
+                using (var resReader = new System.Resources.ResourceReader(stream))
+                {
+                    string dataType = null;
+                    byte[] data = null;
+
+                    resReader.GetResourceData(path.ToLower(), out dataType, out data);
+
+                    if (data != null)
+                    {
+                        switch (dataType) // COde from 
+                        {
+                            // Handle internally serialized string data (ResourceTypeCode members).
+                            case "ResourceTypeCode.String":
+                                BinaryReader reader = new BinaryReader(new MemoryStream(data));
+                                string binData = reader.ReadString();
+                                Console.WriteLine("   Recreated Value: {0}", binData);
+                                break;
+                            case "ResourceTypeCode.Int32":
+                                Console.WriteLine("   Recreated Value: {0}", BitConverter.ToInt32(data, 0));
+                                break;
+                            case "ResourceTypeCode.Boolean":
+                                Console.WriteLine("   Recreated Value: {0}", BitConverter.ToBoolean(data, 0));
+                                break;
+                            // .jpeg image stored as a stream.
+                            case "ResourceTypeCode.Stream":
+                                ////const int OFFSET = 4;
+                                ////int size = BitConverter.ToInt32(data, 0);
+                                ////Bitmap value1 = new Bitmap(new MemoryStream(data, OFFSET, size));
+                                ////Console.WriteLine("   Recreated Value: {0}", value1);
+
+                                const int OFFSET = 4;
+                                resStream = new MemoryStream(data, OFFSET, data.Length - OFFSET);
+
+                                break;
+                            // Our only other type is DateTimeTZI.
+                            default:
+                                Debug.Assert(false, "Unsupported Resource Type");
+                                break;
+                        }
+                    }
+                }
+            }
+
+            return resStream;
+        }
+
+        /// <summary>
+        /// Updates the rubber band lasso for selecting points.
+        /// </summary>
+        /// <param name="canvas">Polygon canvas</param>
+        /// <param name="mousePosition">Position of the mouse</param>
+        private void LassoPoints(Canvas canvas, Point mousePosition)
+        {
+            // Capture the mouse while lasso'ing points
+            canvas.CaptureMouse();
+
+            // Get the adorner layer
+            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(this);
+
+            // If the rubber band adorner has not been created then...
+            if (adornerLayer != null && _rubberbandAdorner == null)
+            {
+                // Create the rubber band adorner 
+                _rubberbandAdorner = new RubberbandAdorner(canvas, _originMouseStartPoint);
+                adornerLayer.Add(_rubberbandAdorner);
+            }
+
+            if (_rubberbandAdorner != null)
+            {
+                // Set the current mouse position as the end of the rubber band area
+                _rubberbandAdorner.EndPoint = mousePosition;
+            }
+        }
+
+        /// <summary>
+        /// Redraws the resize adorner.
+        /// </summary>
+        private void RefreshResizeAdorner()
+        {
+            // Get the adorner layer
+            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
+
+            if (adornerLayer != null)
+            {
+                // Update the adorners in the layer
+                adornerLayer.Update();
+            }
+        }
+
+        /// <summary>
+        /// Updates the resize adorner based on the specified polygon points.
+        /// </summary>
+        /// <param name="points">Polygon points to include in the resize adorner</param>
+        private void UpdateResizeAdorner(ObservableCollection<PolygonPointViewModel> points)
+        {
+            // Get the bounds of the selected points
+            Rect bounds = GetSelectedContentBounds(points);
+
+            // Get the adorner layer from the canvas
+            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
+
+            if (adornerLayer != null)
+            {
+                // Remove the resizing adorner
+                RemoveResizeAdorner();
+
+                // Create the resizing adorner
+                _resizingAdorner = new ResizeAdorner(this, canvas, VM, bounds);
+
+                // Add the resizing adorner to the canvas
+                adornerLayer.Add(_resizingAdorner);
+            }
+        }
+
+        /// <summary>
+        /// Updates all the polygon line segments.
+        /// The line segments are used to perform hit testing when in aded polygon point mode.
+        /// </summary>
+		private void UpdatePolygonLines()
+        {
+            // Loop over all the polygons
             foreach (PolygonViewModel polygon in VM.Polygons)
             {
+                // If the polygon line segments need to be updated then...
                 if (polygon.Dirty)
                 {
+                    // Update the polygon line segments
                     UpdatePolygonLines(polygon);
+
+                    // Reset the dirty flag
                     polygon.Dirty = false;
                 }
             }
         }
 
+        /// <summary>
+        /// Creates a polygon line segment.
+        /// </summary>
+        /// <param name="polygon">Polygon to create the line segment for</param>
+        /// <param name="previousPoint">Previous polygon point</param>
+        /// <param name="nextPoint">Next polygon point</param>
+        private void CreatePolygonLineSegment(PolygonViewModel polygon, PolygonPointViewModel previousPoint, PolygonPointViewModel nextPoint)
+        {
+            PolygonLineSegment segment = new PolygonLineSegment();                        
+            segment.Line.Visibility = Visibility.Visible;
+            segment.Line.Opacity = 0.0;
+            segment.Line.StrokeThickness = 4;
+            segment.Line.Stroke = Brushes.Black;
+            segment.Line.X1 =  previousPoint.X;
+            segment.Line.Y1 = previousPoint.Y;
+            segment.Line.X2 = nextPoint.X;
+            segment.Line.Y2 = nextPoint.Y;
+            segment.StartPoint = previousPoint;
+            segment.EndPoint = nextPoint;
+
+            canvas.Children.Add(segment.Line);
+            polygon.LineSegments.Add(segment);            
+        }
+
+        /// <summary>
+        /// Updates hidden polygon segment lines to aid when knowing the mouse is over a polygon line.
+        /// </summary>
+        /// <param name="polygon">Polygon to update the line segments for</param>
         private void UpdatePolygonLines(PolygonViewModel polygon)
         {
-            int previousPoint = 0;
-
+            // Clear the previous line segments
             polygon.LineSegments.Clear();
 
-            for (int index = 1; index < polygon.PointCollection.Count; index++)
-            {
-                PolygonLineSegment segment = new PolygonLineSegment();
-                //Thickness thickness = new Thickness(101, -11, 362, 250);
-                //line.Margin = thickness;
-                segment.Line.Visibility = System.Windows.Visibility.Visible;
-                segment.Line.Opacity = 0.0;
-                segment.Line.StrokeThickness = 4;
-                segment.Line.Stroke = System.Windows.Media.Brushes.Black;
-                segment.Line.X1 = polygon.PointCollection[previousPoint].X;
-                segment.Line.Y1 = polygon.PointCollection[previousPoint].Y;
-                segment.Line.X2 = polygon.PointCollection[index].X;
-                segment.Line.Y2 = polygon.PointCollection[index].Y;
-                segment.StartPoint = polygon.PointCollection[previousPoint];
-                segment.EndPoint = polygon.PointCollection[index];
-
-                canvas.Children.Add(segment.Line);
-                polygon.LineSegments.Add(segment);
-
-                previousPoint++;
-
+            // Loop over the points
+            int previousPoint = 0;
+            for (int index = 1; index < polygon.PointCollection.Count; index++, previousPoint++)
+            {                
+                // Create a polygon line segment from the previous point to the next point
+                CreatePolygonLineSegment(
+                    polygon,
+                    polygon.PointCollection[previousPoint],
+                    polygon.PointCollection[index]);
+                
+                // If this is the last point then... 
                 if (index == polygon.PointCollection.Count - 1)
                 {
-                    PolygonLineSegment segment2 = new PolygonLineSegment();
-                    //Thickness thickness = new Thickness(101, -11, 362, 250);
-                    //line.Margin = thickness;
-                    segment2.Line.Visibility = System.Windows.Visibility.Visible;
-                    segment2.Line.Opacity = 0.0;
-                    segment2.Line.StrokeThickness = 4;
-                    segment2.Line.Stroke = System.Windows.Media.Brushes.Black;
-                    segment2.Line.X1 = polygon.PointCollection[index].X;
-                    segment2.Line.Y1 = polygon.PointCollection[index].Y;
-                    segment2.Line.X2 = polygon.PointCollection[0].X;
-                    segment2.Line.Y2 = polygon.PointCollection[0].Y;
-                    segment2.StartPoint = polygon.PointCollection[previousPoint];
-                    segment2.EndPoint = polygon.PointCollection[index];
-
-                    canvas.Children.Add(segment2.Line);
-                    polygon.LineSegments.Add(segment2);
+                    // Create a segment back to the first point
+                    CreatePolygonLineSegment(
+                        polygon,
+                        polygon.PointCollection[index],
+                        polygon.PointCollection[0]);                                       
                 }
             }
         }
 
+        /// <summary>
+        /// Returns true if the mouse is over a polygon line.
+        /// </summary>
+        /// <param name="mousePosition">Mouse position</param>
+        /// <param name="polygonLineSegment">Polygon line segment the mouse is over</param>
+        /// <param name="polygonParent">Polygon the line segment belongs to</param>
+        /// <returns></returns>
         private bool IsMouseOverLine(Point mousePosition, 
             ref PolygonLineSegment polygonLineSegment,
             ref PolygonViewModel polygonParent)
         {
-            bool mouseOverLine = false;
-
+            // Default to NOT being over a polygon line
+            bool mouseOverLine = false;            
             polygonLineSegment = null;
+            polygonParent = null;
 
-            UpdatePolygonLines();
-
-            foreach (PolygonViewModel polygon in VM.Polygons)
+            // No need to do this processing if the editor is not in
+            // add polygon point mode
+            if (VM.AddPoint)
             {
-                foreach (PolygonLineSegment segment in polygon.LineSegments)
-                {
-                    if (segment.Line.IsMouseOver)
-                    {
-                        polygonLineSegment = segment;
-                        polygonParent = polygon;
+                // Update all the polygon lines to make sure they are accurate
+                UpdatePolygonLines();
 
-                        mouseOverLine = true;
+                // Loop over all the polygons
+                foreach (PolygonViewModel polygon in VM.Polygons)
+                {
+                    // Loop over all the line segments
+                    foreach (PolygonLineSegment segment in polygon.LineSegments)
+                    {
+                        // If the mouse is over a line then...
+                        if (segment.Line.IsMouseOver)
+                        {
+                            // Return the line segment
+                            polygonLineSegment = segment;
+
+                            // Return the polygon which contains the line segment
+                            polygonParent = polygon;
+
+                            // Indicate that the mouse is over a polygon line segment
+                            mouseOverLine = true;
+                        }
                     }
                 }
             }
 
+            // Return whether the mouse is over a polygon line segment
             return mouseOverLine;
-        }        
+        }
+
+        #endregion
     }
 }

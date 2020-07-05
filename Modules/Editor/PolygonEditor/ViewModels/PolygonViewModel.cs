@@ -3,25 +3,26 @@ using Catel.MVVM;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
-using Point = System.Windows.Point;
-using System.Linq;
 using VixenModules.App.Polygon;
+using Point = System.Windows.Point;
 
-namespace PolygonEditor
+namespace VixenModules.Editor.PolygonEditor.ViewModels
 {
 	/// <summary>
 	/// Maintains a polygon view model.
 	/// </summary>
-	public class PolygonViewModel : ViewModelBase
+	public class PolygonViewModel : ShapeViewModel
 	{
 		#region Constructor
 
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		public PolygonViewModel(Polygon polygon, PolygonEditorViewModel parent)
+		public PolygonViewModel(Polygon polygon)
 		{
 			// Store off the model
 			Polygon = polygon;
@@ -33,26 +34,26 @@ namespace PolygonEditor
 			PolygonClosed = false;
 			
 			// Create a colletion of line segments to draw the polygon until it is closed
-			Segments = new ObservableCollection<Tuple<PolygonPointViewModel, PolygonPointViewModel>>();
+			Segments = new ObservableCollection<LineSegmentViewModel>();
 			
 			// Initialize the segments to visible
 			SegmentsVisible = true;
-
-			// Create the collection of polygon points
-			PointCollection = new ObservableCollection<PolygonPointViewModel>();
-
+			
 			// Loop over all the points in the polygon model
 			foreach(PolygonPoint pt in Polygon.Points)
 			{
 				// Add a view model point for each model point
 				PointCollection.Add(new PolygonPointViewModel(pt, this));
 			}
-
+			
 			// If this is complete polygon then...
 			if (Polygon.Points.Count >= 3)
 			{
 				// Calculate the center of the polygon
 				UpdateCenterPoint();
+
+				// Add the line segment to the collection
+				Segments.Add(new LineSegmentViewModel(PointCollection[0], PointCollection[1]));
 
 				// Make the WPF polygon visible
 				ClosePolygon();
@@ -69,7 +70,7 @@ namespace PolygonEditor
 			
 			// Create a collection of line segments
 			LineSegments = new List<PolygonLineSegment>();
-
+			
 			// Mark the polygon as dirty, this causes the line segments to get refreshed
 			Dirty = true;
 		}
@@ -81,10 +82,10 @@ namespace PolygonEditor
 		/// <summary>
 		/// Point Collection changed event handler.
 		/// </summary>		
-		private void PointCollection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		private void PointCollection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
 			// Raise the property changed event so the converter runs in the view
-			RaisePropertyChanged("PointCollection");
+			RaisePropertyChanged(nameof(PointCollection));
 		}
 
 		#endregion
@@ -97,16 +98,7 @@ namespace PolygonEditor
 		public Polygon Polygon { get; set; }
 
 		#endregion
-
-		#region Public Properties
-
-		/// <summary>
-		/// Parent view model.
-		/// </summary>
-		public PolygonEditorViewModel Parent { get; set; }
-
-		#endregion
-
+		
 		#region Public Catel Line Segment Properties
 
 		/// <summary>
@@ -121,14 +113,14 @@ namespace PolygonEditor
 		/// <summary>
 		/// SegmentsVisible property data.
 		/// </summary>
-		public static readonly PropertyData SegmentsVisibleProperty = RegisterProperty("SegmentsVisible", typeof(bool), null);
-
+		public static readonly PropertyData SegmentsVisibleProperty = RegisterProperty(nameof(SegmentsVisible), typeof(bool), null);
+				
 		/// <summary>
 		/// Maintains a collection of line segments.  The line segments help define the polygon until the polygon has been closed.
 		/// </summary>
-		public ObservableCollection<Tuple<PolygonPointViewModel, PolygonPointViewModel>> Segments
+		public ObservableCollection<LineSegmentViewModel> Segments
 		{
-			get { return GetValue<ObservableCollection<Tuple<PolygonPointViewModel, PolygonPointViewModel>>>(SegmentsProperty); }
+			get { return GetValue<ObservableCollection<LineSegmentViewModel>>(SegmentsProperty); }
 			private set { SetValue(SegmentsProperty, value); }
 		}
 
@@ -136,96 +128,12 @@ namespace PolygonEditor
 		/// SegmentsVisible property data.
 		/// </summary>
 		public static readonly PropertyData SegmentsProperty =
-			RegisterProperty("Segments", typeof(ObservableCollection<Tuple<PolygonPointViewModel, PolygonPointViewModel>>), null);
+			RegisterProperty(nameof(Segments), typeof(ObservableCollection<LineSegmentViewModel>), null);
 
 		#endregion
-		
-		#region Public Catel Properties
-		
-		/// <summary>
-		/// Collection of polygon points.
-		/// </summary>
-		public ObservableCollection<PolygonPointViewModel> PointCollection
-		{
-			get { return GetValue<ObservableCollection<PolygonPointViewModel>>(PointCollectionProperty); }
-			private set { SetValue(PointCollectionProperty, value); }			
-		}
-
-		/// <summary>		
-		/// PointCollection property data.
-		/// </summary>
-		public static readonly PropertyData PointCollectionProperty = RegisterProperty("PointCollection", typeof(ObservableCollection<PolygonPointViewModel>));
-
-		/// <summary>
-		/// True when the underlying polygon is visible.
-		/// Until three points are defined the polygon is not visible.
-		/// </summary>
-		public bool Visibility
-		{
-			get { return GetValue<bool>(VisibilityProperty); }
-			set { SetValue(VisibilityProperty, value); }
-		}
-
-		/// <summary>
-		/// Visibility property data.
-		/// </summary>
-		public static readonly PropertyData VisibilityProperty = RegisterProperty("Visibility", typeof(bool), null);
-
-		/// <summary>
-		/// Position of the center point hash mark.
-		/// </summary>
-		public PolygonPointViewModel CenterPoint
-		{
-			get { return GetValue<PolygonPointViewModel>(CenterPointProperty); }
-			set { SetValue(CenterPointProperty, value); }
-		}
-
-		/// <summary>
-		/// CenterPoint property data.
-		/// </summary>
-		public static readonly PropertyData CenterPointProperty = RegisterProperty("CenterPoint", typeof(PolygonPointViewModel), null);
-
-		/// <summary>
-		/// Selected vertex of the polygon.
-		/// </summary>
-		public PolygonPointViewModel SelectedVertex
-		{
-			get { return GetValue<PolygonPointViewModel>(SelectedVertextProperty); }
-			set { SetValue(SelectedVertextProperty, value); }
-		}
-
-		/// <summary>
-		/// SelectedVertex property data.
-		/// </summary>
-		public static readonly PropertyData SelectedVertextProperty = RegisterProperty("SelectedVertext", typeof(PolygonPointViewModel), null);
-		
-		/// <summary>
-		/// Color of the center point hash.
-		/// </summary>
-		public Color CenterPointColor
-		{
-			get { return GetValue<Color>(CenterPointColorProperty); }
-			set { SetValue(CenterPointColorProperty, value); }
-		}
-
-		/// <summary>
-		/// CenterPointColor property data.
-		/// </summary>
-		public static readonly PropertyData CenterPointColorProperty = RegisterProperty("CenterPointColor", typeof(Color), null);
-
-		#endregion
-
+				
 		#region Public Properties
-
-		/// <summary>
-		/// True when polygon has been selected.
-		/// </summary>
-		public bool AllPointsSelected
-		{
-			get;
-			set;
-		}
-
+		
 		/// <summary>
 		/// True when the polygon has been completed.
 		/// </summary>
@@ -258,14 +166,10 @@ namespace PolygonEditor
 		/// Raises the property change event from the PointCollection and Segments properties.		
 		/// </summary>
 		/// <remarks>This method is needed to trigger a converter in the view.</remarks>
-		public void NotifyPointCollectionChanged()
+		public override void NotifyPointCollectionChanged()
 		{
-			// Notify the view that the points have changed
-			RaisePropertyChanged("PointCollection");
-			RaisePropertyChanged("Segments");
-
-			// Update the center point of the polygon 
-			UpdateCenterPoint();
+			// Call the base class implementation
+			base.NotifyPointCollectionChanged();
 
 			// Mark the polygon as dirty so that the line segments are refreshed
 			Dirty = true;
@@ -289,44 +193,7 @@ namespace PolygonEditor
 			// Return true if all points are selected
 			return PointCollection.All(point => point.Selected);			
 		}
-
-		/// <summary>
-		/// Moves the selected point to the specified position.
-		/// </summary>
-		/// <param name="clickPosition">New position of point.</param>
-		public void MoveSelectedPoint(Point clickPosition)
-		{
-			SelectedVertex.X = clickPosition.X;
-			SelectedVertex.Y = clickPosition.Y;
-
-			NotifyPointCollectionChanged();
-		}
-
-		/// <summary>
-		/// Returns true if the specified position is over the center of the polygon.
-		/// </summary>
-		/// <param name="position">Position to test</param>
-		/// <returns>True if the position is over the center of the polygon</returns>
-		public bool IsOverCenterCrossHash(Point position)
-		{
-			bool overCenterHash = false;
-			const int Tolerance = 5;
-
-			if (CenterPoint != null)
-			{
-				double deltaX = Math.Abs(CenterPoint.X - position.X);
-				double deltaY = Math.Abs(CenterPoint.Y - position.Y);
-
-				if (deltaX <= Tolerance && 
-					deltaY <= Tolerance)
-				{
-					overCenterHash = true;
-				}
-			}
-
-			return overCenterHash;
-		}
-
+				
 		/// <summary>
 		/// Get the next point on the polygon following the selected point.
 		/// </summary>
@@ -334,15 +201,20 @@ namespace PolygonEditor
 		/// <returns>Next polygon point</returns>
 		public PolygonPointViewModel GetNextPoint()
 		{
+			// Get the index of the selected point
 			int selectedPointIndex = PointCollection.IndexOf(SelectedVertex);
 
+			// Attempt to advance to the next point
 			int nextPoint = selectedPointIndex + 1;
 
+			// If we have passed the last point then...
 			if (nextPoint > PointCollection.Count - 1)
 			{
+				// Wrap around to the first point
 				nextPoint = 0;
 			}
 
+			// Return the next point
 			return PointCollection[nextPoint];
 		}
 
@@ -353,15 +225,20 @@ namespace PolygonEditor
 		/// <returns>Next polygon point</returns>
 		public PolygonPointViewModel GetPreviousPoint()
 		{
+			// Get the index of the selected point
 			int selectedPointIndex = PointCollection.IndexOf(SelectedVertex);
 
+			// Attempt to move to the previous point
 			int prevPoint = selectedPointIndex - 1;
 
+			// If we passed the first point then...
 			if (prevPoint < 0)
 			{
+				// Wrap around to the last point
 				prevPoint = PointCollection.Count - 1;
 			}
 
+			// Return the previous point
 			return PointCollection[prevPoint];
 		}
 
@@ -393,7 +270,7 @@ namespace PolygonEditor
 		/// Adds the specified point to the point collection.
 		/// </summary>
 		/// <param name="position">Position of the new point</param>
-		public void AddPoint(Point position)
+		public override void AddPoint(Point position)
 		{						
 			// Create the new model point
 			PolygonPoint modelPoint = new PolygonPoint();
@@ -415,8 +292,8 @@ namespace PolygonEditor
 			if (PointCollection.Count > 1)
 			{
 				// Create a segment between the points
-				Tuple<PolygonPointViewModel, PolygonPointViewModel> segment =
-					new Tuple<PolygonPointViewModel, PolygonPointViewModel>(
+				LineSegmentViewModel segment =				
+					new LineSegmentViewModel(
 						viewModelPoint,
 						PointCollection[PointCollection.Count - 2]);
 
@@ -446,30 +323,7 @@ namespace PolygonEditor
 				}
 			}			
 		}
-
-		/// <summary>
-		/// Deselects all points on the specified polygon.
-		/// </summary>
-		/// <param name="polygon">Polygon to update</param>
-		public void DeselectAllPoints()
-		{
-			// Clear the flag that indicates that all points are selected
-			AllPointsSelected = false;
-
-			// Reset the center hash color
-			CenterPointColor = Colors.Black;
-
-			// Clear out the selected point
-			SelectedVertex = null;
-
-			// Loop over all the points on the polygon
-			foreach (PolygonPointViewModel point in PointCollection)
-			{
-				// Deselect the point
-				point.Selected = false;
-			}
-		}
-
+		
 		/// <summary>
 		/// Selects all the points on the polygon and the center hash mark.
 		/// </summary>
@@ -490,16 +344,31 @@ namespace PolygonEditor
 		}
 
 		/// <summary>
-		/// Selects the specified point.
+		/// Toggles the start side of a polygon.
 		/// </summary>
-		/// <param name="point">Point to select</param>
-		public void SelectPoint(PolygonPointViewModel point)
-		{			
-			// Mark the point as selected
-			point.Selected = true;
+		public void ToggleStartSide()
+		{
+			// Get first view model point
+			PolygonPointViewModel point1 = PointCollection[0];
 
-			// Store off the selected point
-			SelectedVertex = point;
+			// Remove the first view model point
+			PointCollection.Remove(point1);
+
+			// Add the point to the end of the point collection
+			PointCollection.Add(point1);
+
+			// Get the first model point
+			PolygonPoint pt1 = Polygon.Points[0];
+
+			// Remove the first model point
+			Polygon.Points.Remove(pt1);
+
+			// Add the point to the end of the point collection
+			Polygon.Points.Add(pt1);
+
+			// Update the green line segment
+			Segments[0] = new LineSegmentViewModel(PointCollection[0], PointCollection[1]);
+			Segments[0].Color = Colors.Green;
 		}
 
 		#endregion
@@ -512,7 +381,17 @@ namespace PolygonEditor
 		public ICommand DeletePointCommand { get; private set; }
 
 		#endregion
-		
+
+		#region Public Static Properties
+
+		/// <summary>
+		/// Configure the polygons to draw the start side in a special color.
+		/// </summary>
+		/// <remarks>This property is static due to this value is not available at the time of polygon construction.</remarks>
+		public static bool ColorStartSide { get; set; }
+
+		#endregion
+
 		#region Private Methods
 
 		/// <summary>
@@ -522,11 +401,25 @@ namespace PolygonEditor
 		{
 			// Remember that we closed the polygon
 			PolygonClosed = true;
+			
+			// If the start side is being colored a special color then...
+			if (ColorStartSide)
+			{
+				// Remove all the segments except the last one
+				while (Segments.Count > 1)
+				{
+					Segments.Remove(Segments[Segments.Count - 1]);
+				}
 
-			// Once the polygon is closed there is no use for the line segments
-			Segments.Clear();
-			SegmentsVisible = false;
-
+				// Color the start side green
+				Segments[0].Color = Colors.Green;
+			}
+			// Otherwise hide all segements
+			else
+			{
+				SegmentsVisible = false;
+			}
+						
 			// Fire the property changed event so the converters run
 			NotifyPointCollectionChanged();
 
@@ -537,7 +430,7 @@ namespace PolygonEditor
 		/// <summary>
 		/// Updates the center point of the polygon.
 		/// </summary>
-		private void UpdateCenterPoint()
+		protected override void UpdateCenterPoint()
 		{
 			// If the polygon contains at least three points then...
 			if (PointCollection.Count > 2)
@@ -545,6 +438,9 @@ namespace PolygonEditor
 				// Update the center point of the polygon
 				CenterPoint = GetCenterOfPolygon();
 			}
+
+			// Update the point labels
+			UpdatePointLabels();
 		}
 
 		/// <summary>
@@ -554,49 +450,17 @@ namespace PolygonEditor
 		private PolygonPointViewModel GetCenterOfPolygon()
 		{
 			// Default the minimum X to the first point
-			double xMin = PointCollection[0].X;
+			double xMin = PointCollection.Min(point => point.X);
 
 			// Default the maximum X to the first point
-			double xMax = PointCollection[0].X;
+			double xMax = PointCollection.Max(point => point.X);
 
 			// Default the minimum Y to the first point
-			double yMin = PointCollection[0].Y;
+			double yMin = PointCollection.Min(point => point.Y);
 
 			// Default the maximum Y to the first point
-			double yMax = PointCollection[0].Y;
-
-			// Loop over the points in the polygon point collection
-			foreach (PolygonPointViewModel point in PointCollection)
-			{
-				// If the point is less than the minimum X then...
-				if (point.X < xMin)
-				{
-					// Update the minimum X
-					xMin = point.X;
-				}
-
-				// If the point is less than the minimum Y then...
-				if (point.Y < yMin)
-				{
-					// Update the minimum Y
-					yMin = point.Y;
-				}
-
-				// If the point is greater than the maximum X then...
-				if (point.X > xMax)
-				{
-					// Update the maximum X
-					xMax = point.X;
-				}
-
-				// If the point is greater than the maximum Y then...
-				if (point.Y > yMax)
-				{
-					// Update the maximum Y
-					yMax = point.Y;
-				}
-			}
-
+			double yMax = PointCollection.Max(point => point.Y);
+			
 			// Create a new polygon point view model object; not giving it a model object 
 			PolygonPointViewModel centerPoint = new PolygonPointViewModel(null, null);
 			
@@ -642,27 +506,6 @@ namespace PolygonEditor
 				PointCollection.Count > 3;
 		}
 
-		#endregion
-
-		
-		/*
-		// TODO: Should we add an AddPoint command ? 
-		 
-		public Command<object> AddPointCommand
-		{
-			get;
-			private set;
-		}
-
-		//public Command RemovePoint { get; private set; }
-
-
-		private void OnAddPointExecuted(object parameter)
-		{
-			Point clickPosition = (Point)parameter;
-
-			AddPoint(clickPosition);
-		}
-		*/		
+		#endregion		
 	}
 }

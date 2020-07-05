@@ -1,0 +1,72 @@
+﻿using System.Runtime.Serialization;
+using VixenModules.App.ColorGradients;
+using VixenModules.App.Curves;
+using VixenModules.App.Polygon;
+
+namespace VixenModules.Effect.Morph
+{
+	/// <summary>
+	/// Serialized data for a Morph polygon.
+	/// </summary>
+	[DataContract]
+	class MorphPolygonData
+	{
+		#region Public Properties
+
+		[DataMember]
+		public PolygonFillType FillType { get; set; }
+
+		[DataMember]
+		public Curve HeadLength { get; set; }
+
+		[DataMember]
+		public int HeadDuration { get; set; }
+
+		[DataMember]
+		public int Acceleration { get; set; }
+
+		[DataMember]
+		public ColorGradient HeadColor { get; set; }
+
+		[DataMember]
+		public ColorGradient TailColor { get; set; }
+
+		[DataMember]
+		public ColorGradient FillColor { get; set; }
+
+		[DataMember]
+		public double Time { get; set; }
+
+		[DataMember]
+		public Polygon Polygon { get; set; }
+
+		[DataMember]
+		public Line Line { get; set; }
+					
+		#endregion
+
+		#region Public Methods
+
+		/// <summary>
+		/// Creates a clone of the Morph Polygon data.
+		/// </summary>		
+		public MorphPolygonData CreateInstanceForClone()
+		{
+			MorphPolygonData result = new MorphPolygonData
+			{
+				FillType = FillType,
+				HeadLength = new Curve(HeadLength),
+				HeadDuration = HeadDuration,
+				Acceleration = Acceleration,
+				HeadColor = new ColorGradient(HeadColor),
+				TailColor = new ColorGradient(TailColor),
+				FillColor = new ColorGradient(FillColor),
+				Time = Time,								
+			};
+
+			return result;
+		}
+
+		#endregion
+	}
+}

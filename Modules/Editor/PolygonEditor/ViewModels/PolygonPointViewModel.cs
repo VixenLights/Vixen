@@ -4,10 +4,10 @@ using System.Windows;
 using System.Windows.Media;
 using VixenModules.App.Polygon;
 
-namespace PolygonEditor
+namespace VixenModules.Editor.PolygonEditor.ViewModels
 {
 	/// <summary>
-	/// Maintains the a polygon point view model.
+	/// Maintains a polygon point view model.
 	/// </summary>
 	public class PolygonPointViewModel : ViewModelBase
 	{
@@ -23,6 +23,7 @@ namespace PolygonEditor
 
 			// Default the points to black
 			Color = Colors.Black;
+			DeselectedColor = Colors.Black;
 
 			// Store off a reference to the parent view model
 			Parent = parent;
@@ -71,7 +72,7 @@ namespace PolygonEditor
 		/// <summary>
 		/// X property data.
 		/// </summary>
-		public static readonly PropertyData XProperty = RegisterProperty("X", typeof(double), null);
+		public static readonly PropertyData XProperty = RegisterProperty(nameof(X), typeof(double), null);
 		
 		/// <summary>
 		/// Gets or sets the Y position of the point.
@@ -91,12 +92,29 @@ namespace PolygonEditor
 		}
 
 		/// <summary>
-		/// X property data.
+		/// Y property data.
 		/// </summary>
-		public static readonly PropertyData YProperty = RegisterProperty("Y", typeof(double), null);
+		public static readonly PropertyData YProperty = RegisterProperty(nameof(Y), typeof(double), null);
 		
 		/// <summary>
-		/// True when the point has been selected by the user.
+		/// Gets or sets the label of the point.
+		/// </summary>		
+		public string Label
+		{
+			get { return GetValue<string>(LabelProperty); }
+			set
+			{
+				SetValue(LabelProperty, value);				
+			}
+		}
+
+		/// <summary>
+		/// Label property data.
+		/// </summary>
+		public static readonly PropertyData LabelProperty = RegisterProperty(nameof(Label), typeof(string), null);
+
+		/// <summary>
+		/// True when the point has been selected.
 		/// </summary>
 		public bool Selected
 		{
@@ -104,13 +122,22 @@ namespace PolygonEditor
 			set 
 			{ 
 				SetValue(SelectedProperty, value); 
+
+				// If the point is selected then...
 				if (Selected)
 				{
-					Color = Colors.HotPink;
+					// If the point is not part of the start side of polygon then...
+					if (Color != Colors.Green)
+					{
+						// Change the point's color to the selection color
+						Color = Colors.HotPink;
+					}
 				}
+				// Otherwise
 				else
 				{
-					Color = Colors.Black;
+					// Change the color the deselected color
+					Color = DeselectedColor;
 				}
 			}
 		}
@@ -118,7 +145,7 @@ namespace PolygonEditor
 		/// <summary>
 		/// Selected property data.
 		/// </summary>
-		public static readonly PropertyData SelectedProperty = RegisterProperty("Selected", typeof(bool), null);
+		public static readonly PropertyData SelectedProperty = RegisterProperty(nameof(Selected), typeof(bool), null);
 
 		/// <summary>
 		/// Color of the center point hash.
@@ -132,11 +159,16 @@ namespace PolygonEditor
 		/// <summary>
 		/// CenterPointColor property data.
 		/// </summary>
-		public static readonly PropertyData ColorProperty = RegisterProperty("Color", typeof(Color), null);
+		public static readonly PropertyData ColorProperty = RegisterProperty(nameof(Color), typeof(Color), null);
 
 		#endregion
 
 		#region Public Properties
+
+		/// <summary>
+		/// Color of the center point hash.
+		/// </summary>
+		public Color DeselectedColor { get; set; }
 		
 		/// <summary>
 		/// Gets or sets the parent view model.
@@ -148,15 +180,36 @@ namespace PolygonEditor
 		#region Public Methods
 
 		/// <summary>
+		/// .Net Point representation of the vertex.
+		/// </summary>
+		public Point Point
+		{
+			get 
+			{ 
+				return GetPoint();
+			}
+			set
+			{
+				// Store off the new point
+				X = value.X;
+				Y = value.Y;
+			}
+		}
+
+		/// <summary>
 		/// Converts the polygon point into a .NET Point structure.
 		/// </summary>
 		/// <returns>Point data structure</returns>
 		public Point GetPoint()
 		{
+			// Create a new .NET point
 			Point point = new Point();
+
+			// Initialize the point's coordinates
 			point.X = X;
 			point.Y = Y;
 
+			// Return the .NET point
 			return point;
 		}
 
