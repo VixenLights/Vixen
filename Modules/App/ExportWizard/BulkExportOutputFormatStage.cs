@@ -60,6 +60,11 @@ namespace VixenModules.App.ExportWizard
 			outputFormatComboBox.SelectedItem = _data.ActiveProfile.Format;
 
 			resolutionComboBox.SelectedItem = _data.ActiveProfile.Interval.ToString();
+			//Allow for non standard resolutions to be restored.
+			if (resolutionComboBox.Text != _data.ActiveProfile.Interval.ToString())
+			{
+				resolutionComboBox.Text = _data.ActiveProfile.Interval.ToString();
+			}
 			txtOutputFolder.Text = _data.ActiveProfile.OutputFolder;
 
 			chkFppIncludeAudio.Checked = chkIncludeAudio.Checked = _data.ActiveProfile.IncludeAudio;
@@ -193,6 +198,7 @@ namespace VixenModules.App.ExportWizard
 		{
 			get
 			{
+				if (!IsIntervalValid()) return false;
 				if (_data.ActiveProfile.IsFalconFormat)
 				{
 					if (CanTestPath() && 
@@ -214,6 +220,16 @@ namespace VixenModules.App.ExportWizard
 			}
 		}
 
+		private bool IsIntervalValid()
+		{
+			if (Int32.TryParse(resolutionComboBox.Text, out int interval))
+			{
+				_data.ActiveProfile.Interval = interval;
+				return true;
+			}
+
+			return false;
+		}
 		private void ValidatePath(string path)
 		{
 			if (!Directory.Exists(path))
@@ -321,12 +337,6 @@ namespace VixenModules.App.ExportWizard
 			_WizardStageChanged();
 		}
 
-		private void resolutionComboBox_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			ComboBox comboBox = (ComboBox)sender;
-			_data.ActiveProfile.Interval = Convert.ToInt32(comboBox.SelectedItem);
-		}
-
 		private void chkIncludeAudio_CheckedChanged(object sender, EventArgs e)
 		{
 			if (_data.ActiveProfile.IsFalconFormat)
@@ -370,6 +380,11 @@ namespace VixenModules.App.ExportWizard
 		private void chkCompress_CheckedChanged(object sender, EventArgs e)
 		{
 			_data.ActiveProfile.EnableCompression = chkCompress.Checked;
+		}
+
+		private void resolutionComboBox_TextChanged(object sender, EventArgs e)
+		{
+			_WizardStageChanged();
 		}
 	}
 }
