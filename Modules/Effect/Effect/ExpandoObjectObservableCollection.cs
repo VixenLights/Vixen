@@ -12,6 +12,18 @@ namespace VixenModules.Effect.Effect
 	public class ExpandoObjectObservableCollection<T> : NotifyPropertyObservableCollection<T>
 		where T : IMarkCollectionExpandoObject
 	{
+		#region Constructor
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="propertyName">Name of the collection for child property change events</param>
+		public ExpandoObjectObservableCollection(string propertyName) : base(propertyName)
+		{
+		}
+
+		#endregion
+
 		#region Public Properties
 
 		private BaseEffect _parent;
