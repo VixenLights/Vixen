@@ -39,9 +39,7 @@
 	  <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="SetupDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="SetupDialog.cs" />
     <Compile Update="SetupDialog.Designer.cs">
       <DependentUpon>SetupDialog.cs</DependentUpon>
     </Compile>

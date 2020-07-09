@@ -28,11 +28,12 @@ namespace VixenModules.Effect.LipSync
 			StaticPhoneme = PhonemeType.REST;
 			PhonemeMapping = string.Empty;
 			MappingType = MappingType.FaceDefinition;
+			LipSyncMode = LipSyncMode.MarkCollection;
 			ScaleToGrid = true;
 			ScalePercent = 100;
 			Level = 100;
-			ShowOutline = false;
-			EyeMode = EyeMode.Off;
+			ShowOutline = true;
+			EyeMode = EyeMode.Open;
 			YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 		}

@@ -32,7 +32,6 @@ namespace VixenModules.Effect.LipSync
 		private static Dictionary<PhonemeType, Bitmap> _phonemeBitmaps = null;
 		private readonly LipSyncMapLibrary _library = null;
 		private List<IMark> _marks = null;
-
 		private FastPictureEffect _thePic;
 		
 		static LipSync()
@@ -380,6 +379,22 @@ namespace VixenModules.Effect.LipSync
 
 		private void SetupMarks()
 		{
+			if (MarkCollections == null || !MarkCollections.Any())
+			{
+				LipSyncMode = LipSyncMode.Phoneme;
+				return;
+			}
+
+			if (string.IsNullOrEmpty(MarkCollectionId))
+			{
+				var dmc = MarkCollections.FirstOrDefault(x => x.CollectionType == MarkCollectionType.Phoneme);
+				if (dmc != null && string.IsNullOrEmpty(MarkCollectionId))
+				{
+					MarkCollectionId = dmc.Name;
+				}
+			}
+			
+			
 			IMarkCollection mc = MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
 			if (mc != null)
 			{
