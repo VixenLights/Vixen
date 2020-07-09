@@ -56,12 +56,15 @@ namespace VixenApplication
 		private int _currentBuildVersion;
 		private string _currentReleaseVersion;
 		private bool _closing;
+		private readonly IProgress<Tuple<int, string>> _startupProgress;
 
-		private VixenApplicationData _applicationData;
+		private readonly VixenApplicationData _applicationData;
 
 		public VixenApplication()
 		{
 			InitializeComponent();
+
+			_startupProgress = new Progress<Tuple<int, string>>(UpdateProgress);
 
             //Begin WPF init
 		    if (WPFApplication.Current == null)
@@ -81,6 +84,7 @@ namespace VixenApplication
 
             //End WPF init
 
+			listViewRecentSequences.Items.Clear();
             labelVersion.Font = new Font("Segoe UI", 14);
 			//Get rid of the ugly grip that we dont want to show anyway. 
 			//Workaround for a MS bug
@@ -115,7 +119,7 @@ namespace VixenApplication
 				ProcessProfiles();
 				Logging.Info("Finished Processing Profiles");
 			}
-
+			AppCommands = new AppCommand(this);
 			_applicationData = new VixenApplicationData(_rootDataDirectory);
 
 			_rootDataDirectory = _applicationData.DataFileDirectory;
@@ -132,17 +136,9 @@ namespace VixenApplication
 			toolStripStatusUpdates.Text = "";
 			PopulateVersionStrings();
 
-			AppCommands = new AppCommand(this);
 			Execution.ExecutionStateChanged += executionStateChangedHandler;
-			if(!VixenSystem.Start(this, _openExecution, _disableControllers, _applicationData.DataFileDirectory))
-			{
-				var messageBox = new MessageBoxForm("An error occurred starting the system and the application will be halted.", "Error",MessageBoxButtons.OK, SystemIcons.Error);
-				messageBox.ShowDialog(this);
-				Application.Exit();
-			}
-
-			InitStats();
-
+			updateExecutionState();
+			
 			// other modules look for and create it this way...
 			AppCommand toolsMenu = AppCommands.Find("Tools");
 			if (toolsMenu == null)
@@ -154,6 +150,15 @@ namespace VixenApplication
 			myMenu.Click += optionsToolStripMenuItem_Click;
 			toolsMenu.Add(myMenu);
 
+			//Disables the Check for updates menu item as there is no need to have it enabled for Test Builds.
+		//	if (labelDebugVersion.Text == "Test Build") updatesMenu.Enabled = false;
+
+			toolStripItemClearSequences.Click += (mySender, myE) => ClearRecentSequencesList();
+			
+		}
+
+		private void CreateHelpMenu()
+		{
 			ToolStripMenuItem helpMenu = new ToolStripMenuItem("Help");
 			menuStripMain.Items.Add(helpMenu);
 
@@ -176,17 +181,17 @@ namespace VixenApplication
 			ToolStripMenuItem aboutMenu = new ToolStripMenuItem("About Vixen");
 			aboutMenu.Click += new System.EventHandler(this.AboutMenu_Click);
 			helpMenu.DropDown.Items.Add(aboutMenu);
-
-			//Disables the Check for updates menu item as there is no need to have it enabled for Test Builds.
-		//	if (labelDebugVersion.Text == "Test Build") updatesMenu.Enabled = false;
-
-			toolStripItemClearSequences.Click += (mySender, myE) => ClearRecentSequencesList();
-			
 		}
 
 		public string LockFilePath { get; set; }
 
 		private static string _uniqueProcessId = null;
+
+		private void UpdateProgress(Tuple<int, string> status)
+		{
+			progressBar.Value = status.Item1;
+			progressBar.CustomText = status.Item2;
+		}
 
 		public static string GetUniqueProcessId()
 		{
@@ -362,8 +367,23 @@ namespace VixenApplication
 			Application.Exit();
 		}
 
-		private void VixenApplication_Load(object sender, EventArgs e)
+		private async void VixenApplication_Load(object sender, EventArgs e)
 		{
+			EnableButtons(false);
+			Cursor = Cursors.WaitCursor;
+			_startupProgress?.Report(Tuple.Create(10, "Starting up"));
+			
+
+			if(! await VixenSystem.Start(this, _disableControllers, _rootDataDirectory, _openExecution, _startupProgress))
+			{
+				var messageBox = new MessageBoxForm("An error occurred starting the system and the application will be halted.", "Error",MessageBoxButtons.OK, SystemIcons.Error);
+				messageBox.ShowDialog(this);
+				Application.Exit();
+			}
+
+			_startupProgress.Report(Tuple.Create(80, "Initializing editors"));
+			InitStats();
+
 			RegisterIOC();
 			initializeEditorTypes();
 			menuStripMain.Renderer = new ThemeToolStripRenderer();
@@ -375,12 +395,29 @@ namespace VixenApplication
 
 			var di = new System.IO.DirectoryInfo(logDirectory);
 
+			_startupProgress.Report(Tuple.Create(90, "Finalizing"));
+
+			CreateHelpMenu();
+
 			foreach (string logName in di.GetFiles().Select(x => x.Name)) {
 				logsToolStripMenuItem.DropDownItems.Add(logName, null,
 				                                        (menuSender, menuArgs) => _ViewLog(((ToolStripMenuItem) menuSender).Text));
 			//	logsToolStripMenuItem.DropDownItems.ForeColor = Color.FromArgb(90, 90, 90);
 			}
+
+			_startupProgress.Report(Tuple.Create(100, "Ready"));
+
+			progressBar.Visible = false;
 			PopulateRecentSequencesList();
+			EnableButtons();
+			Cursor = Cursors.Default;
+		}
+
+		private void EnableButtons(bool enable = true)
+		{
+			buttonNewSequence.Enabled = buttonOpenSequence.Enabled =
+				buttonSetupDisplay.Enabled = buttonSetupOutputPreviews.Enabled = enable;
+			menuStripMain.Enabled = enable;
 		}
 
 		private void RegisterIOC()

@@ -36,68 +36,23 @@ namespace Vixen.Sys
 			return _systemConfigSaving || _moduleConfigSaving;
 		}
 
-		public static bool Start(IApplication clientApplication, bool openExecution = true, bool disableDevices = false,
-		                         string dataRootDirectory = null)
+		public static async Task<bool> Start(IApplication clientApplication, bool disableDevices, string dataDirectory, bool openExecution = true, IProgress<Tuple<int, string>> progress=null)
 		{
 			if (_state == RunState.Stopped) {
 				try {
-					_state = RunState.Starting;
-					ApplicationServices.ClientApplication = clientApplication;
-
-					// A user data file in the binary branch will give any alternate
-					// data branch to use.
-					Paths.DataRootPath = dataRootDirectory ?? _GetUserDataPath();
-
-					 
 					Logging.Info("Vixen System starting up...");
+
+					_state = RunState.Starting;
+					
+					ApplicationServices.ClientApplication = clientApplication;
 
 					Instrumentation = new Instrumentation.Instrumentation();
 
-					ModuleImplementation[] moduleImplementations = Modules.GetImplementations();
-
-					// Build branches for each module type.
-					foreach (ModuleImplementation moduleImplementation in moduleImplementations) {
-						Helper.EnsureDirectory(Path.Combine(Modules.Directory, moduleImplementation.TypeOfModule));
-					}
-					// There is going to be a "Common" directory for non-module DLLs.
-					// This will give them a place to be other than the module directories.
-					// If they're in a module directory, the system will try to load them and
-					// it will result in an unnecessary log notification for the user.
-					// All other binary directories (module directories) have something driving
-					// their presence, but this doesn't.  So it's going to be a blatantly
-					// ugly statement for now.
-					Helper.EnsureDirectory(Path.Combine(Paths.BinaryRootPath, "Common"));
-
-					// Load all module descriptors.
-					Modules.LoadAllModules();
-
-					LoadSystemConfig();
-
-					DefaultUpdateTimeSpan = TimeSpan.FromMilliseconds(SystemConfig.DefaultUpdateInterval);
-
-					// Add modules to repositories.
-					Modules.PopulateRepositories();
-
-					if (disableDevices) {
-						SystemConfig.DisabledDevices = OutputDeviceManagement.Devices;
-					}
-
-					if (MigrationOccured)
-					{
-						//save the configs to ensure they do not get lost. We no longer automatically save on close.
-						SaveSystemAndModuleConfigAsync();
-						MigrationOccured = false;
-					}
+					await LoadConfiguration(disableDevices, dataDirectory, progress);
 
 					if (openExecution) {
 						Execution.OpenExecution();
 					}
-
-					//var temp = Modules.ModuleManagement.GetEffect(new Guid("{32cff8e0-5b10-4466-a093-0d232c55aac0}"));
-					//if (temp == null)
-					//{
-					//	Logging.Error("Module Management init error!");
-					//}
 
 					_state = RunState.Started;
 					Logging.Info("Vixen System successfully started.");
@@ -111,6 +66,61 @@ namespace Vixen.Sys
 			}
 
 			return true;
+		}
+
+		public static async Task LoadConfiguration(bool disableDevices = false, string dataRootDirectory = null, IProgress<Tuple<int, string>> progress = null)
+		{
+
+			await Task.Factory.StartNew(async () =>
+			{
+				progress?.Report(Tuple.Create(10, "Preparing modules"));
+				// A user data file in the binary branch will give any alternate
+				// data branch to use.
+				Paths.DataRootPath = dataRootDirectory ?? _GetUserDataPath();
+					
+				ModuleImplementation[] moduleImplementations = Modules.GetImplementations();
+
+				// Build branches for each module type.
+				foreach (ModuleImplementation moduleImplementation in moduleImplementations) {
+					Helper.EnsureDirectory(Path.Combine(Modules.Directory, moduleImplementation.TypeOfModule));
+				}
+				// There is going to be a "Common" directory for non-module DLLs.
+				// This will give them a place to be other than the module directories.
+				// If they're in a module directory, the system will try to load them and
+				// it will result in an unnecessary log notification for the user.
+				// All other binary directories (module directories) have something driving
+				// their presence, but this doesn't.  So it's going to be a blatantly
+				// ugly statement for now.
+				Helper.EnsureDirectory(Path.Combine(Paths.BinaryRootPath, "Common"));
+
+				progress?.Report(Tuple.Create(20, "Loading modules"));
+
+				// Load all module descriptors.
+				Modules.LoadAllModules();
+
+				progress?.Report(Tuple.Create(30, "Loading system config"));
+				LoadSystemConfig(progress);
+
+				DefaultUpdateTimeSpan = TimeSpan.FromMilliseconds(SystemConfig.DefaultUpdateInterval);
+
+				// Add modules to repositories.
+				Modules.PopulateRepositories();
+
+				if (disableDevices) {
+					SystemConfig.DisabledDevices = OutputDeviceManagement.Devices;
+				}
+
+				if (MigrationOccured)
+				{
+					progress?.Report(Tuple.Create(80, "Saving migrated config"));
+					//save the configs to ensure they do not get lost. We no longer automatically save on close.
+					await SaveSystemAndModuleConfigAsync();
+					MigrationOccured = false;
+				}
+
+				progress?.Report(Tuple.Create(70, "Config loaded"));
+			});
+			
 		}
 
 		public static async Task Stop(bool save = true)
@@ -217,7 +227,7 @@ namespace Vixen.Sys
 
 		}
 
-		public static void LoadSystemConfig()
+		public static void LoadSystemConfig(IProgress<Tuple<int, string>> progress= null)
 		{
 			Execution.initInstrumentation();
 			DataFlow = new DataFlowManager();
@@ -251,7 +261,9 @@ namespace Vixen.Sys
 			// Load module data before system config.
 			// System config creates objects that use modules that have data in the store.
 			ModuleStore = _LoadModuleStore(systemDataPath) ?? new ModuleStore();
+			progress?.Report(Tuple.Create(50, "Module config loaded"));
 			SystemConfig = _LoadSystemConfig(systemDataPath) ?? new SystemConfig();
+			progress?.Report(Tuple.Create(70, "System config loaded"));
 
 			Elements.AddElements(SystemConfig.Elements);
 			Nodes.AddNodes(SystemConfig.Nodes);
