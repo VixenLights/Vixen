@@ -16,7 +16,8 @@
 
 	<UserControl.Resources>
 		<polygonConverters:PointCollectionConverter x:Key="mcolconv" />
-		<polygonConverters:PolygonPointConverter x:Key="polyPointConv" />
+		<polygonConverters:PolygonPointXConverter x:Key="polyPointXConv" />
+		<polygonConverters:PolygonPointYConverter x:Key="polyPointYConv" />
 		<ikriv:MathConverter x:Key="MathConverter" />
 		<Color x:Key="BackColor">#444444</Color>
 		<BooleanToVisibilityConverter x:Key="BoolToVis" />
@@ -287,16 +288,27 @@
 						</ItemsControl>
 					</views:PolygonCanvas>
 				</Viewbox>
-
 			
 			<DataGrid Name="pointDataGrid" AutoGenerateColumns="False" DataContext="Binding Path=SelectedPoints" Margin="10,0,0,0" 
 				  RowHeaderWidth="0" DockPanel.Dock="Right" Grid.Column="1">
 				<DataGrid.Columns>
+					<DataGridTextColumn Header="#" Width="*" IsReadOnly="True">
+						<DataGridTextColumn.Binding>
+							<Binding Path="Label">
+							</Binding>
+						</DataGridTextColumn.Binding>
+						<DataGridTextColumn.ElementStyle>
+							<Style TargetType="TextBlock">
+								<Setter Property="Background" Value="DarkGray"></Setter>
+							</Style>
+						</DataGridTextColumn.ElementStyle>
+					</DataGridTextColumn>
+
 					<DataGridTextColumn Header="X" Width="*">
 						<DataGridTextColumn.Binding>
 							<Binding Path="X">
 								<Binding.Converter>
-									<polygonConverters:PolygonPointConverter/>
+									<polygonConverters:PolygonPointXConverter/>
 								</Binding.Converter>
 								<Binding.ValidationRules>
 									<viewmodels:XValidationRule/>
@@ -327,7 +339,7 @@
 						<DataGridTextColumn.Binding>
 							<Binding Path="Y">
 								<Binding.Converter>
-									<polygonConverters:PolygonPointConverter/>
+									<polygonConverters:PolygonPointYConverter/>
 								</Binding.Converter>
 								<Binding.ValidationRules>
 									<viewmodels:YValidationRule/>

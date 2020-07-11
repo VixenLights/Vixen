@@ -17,7 +17,7 @@ namespace VixenModules.Effect.Morph
 		public PolygonFillType FillType { get; set; }
 
 		[DataMember]
-		public Curve HeadLength { get; set; }
+		public int HeadLength { get; set; }
 
 		[DataMember]
 		public int HeadDuration { get; set; }
@@ -55,7 +55,7 @@ namespace VixenModules.Effect.Morph
 			MorphPolygonData result = new MorphPolygonData
 			{
 				FillType = FillType,
-				HeadLength = new Curve(HeadLength),
+				HeadLength = HeadLength,
 				HeadDuration = HeadDuration,
 				Acceleration = Acceleration,
 				HeadColor = new ColorGradient(HeadColor),

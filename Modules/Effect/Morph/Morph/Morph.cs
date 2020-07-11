@@ -79,6 +79,15 @@ namespace VixenModules.Effect.Morph
 
 		#endregion
 
+		#region Private Constants
+
+		/// <summary>
+		/// Maximum acceleration of the wipe.
+		/// </summary>
+		private const double MaxAcceleration = 10.0;
+
+		#endregion
+
 		#region Constructor
 
 		/// <summary>
@@ -90,7 +99,7 @@ namespace VixenModules.Effect.Morph
 			EnableTargetPositioning(true, true);
 
 			// Initialize the collection of morph polygons
-			_morphPolygons = new NotifyPropertyObservableCollection<IMorphPolygon>("MorphPolygons");
+			_morphPolygons = new MorphPolygonsObservableCollection();
 
 			// Initialize the render data for patterned polygons			
 			_wipePolygonRenderData = new List<MorphWipePolygonRenderData>();
@@ -473,14 +482,16 @@ namespace VixenModules.Effect.Morph
 		#region Wipe Configuration Properties
 
 		/// <summary>
-		/// Determines the length of the wipe head over the duration of the effect.
+		/// Determines the length of the wipe head.
 		/// </summary>
 		[Value]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(0, 100, 1)]
 		[ProviderCategory(@"WipeConfiguration", 4)]
 		[ProviderDisplayName(@"HeadLength")]
 		[ProviderDescription(@"HeadLength")]
 		[PropertyOrder(1)]		
-		public Curve HeadLength
+		public int HeadLength
 		{
 			get
 			{
@@ -634,7 +645,7 @@ namespace VixenModules.Effect.Morph
 
 		#region Configuration Properties
 
-		private NotifyPropertyObservableCollection<IMorphPolygon> _morphPolygons;
+		private MorphPolygonsObservableCollection _morphPolygons;
 
 		/// <summary>
 		/// Gets and sets the Morph polygons.  This property is visible in the
@@ -644,7 +655,7 @@ namespace VixenModules.Effect.Morph
 		[ProviderDisplayName(@"Polygons")]
 		[ProviderDescription(@"Polygons")]
 		[PropertyOrder(2)]
-		public NotifyPropertyObservableCollection<IMorphPolygon> MorphPolygons
+		public MorphPolygonsObservableCollection MorphPolygons
 		{
 			get
 			{
@@ -782,7 +793,7 @@ namespace VixenModules.Effect.Morph
 			if (PolygonType == PolygonType.Pattern)
 			{
 				// Transfer the top level settings to the morph polygon
-				MorphPolygons[0].HeadLength = new Curve(HeadLength);
+				MorphPolygons[0].HeadLength = HeadLength;
 				MorphPolygons[0].HeadDuration = HeadDuration;
 				MorphPolygons[0].Acceleration = Acceleration;
 				MorphPolygons[0].HeadColor = new ColorGradient(HeadColor);
@@ -793,12 +804,13 @@ namespace VixenModules.Effect.Morph
 			_bufferWi = BufferWi;
 			_bufferHt = BufferHt;
 						
-			// Clear the wip poygon render data
+			// Clear the wipe polygon render data
 			_wipePolygonRenderData.Clear();
 
 			// Setup the pattern wipe polygons
 			SetupRenderPattern();
 
+			// Discard the expanded morph polygons
 			_patternExpandedMorphPolygons = null;
 		}
 
@@ -879,12 +891,25 @@ namespace VixenModules.Effect.Morph
 				// Subtracting off all the staggers
 				double time = TimeSpan.TotalMilliseconds - TimeSpan.TotalMilliseconds * (_stagger / 100.0) * RepeatCount;
 
+				// Need the head to travel past the end of the polygon/line for the length of the head
+				int polygonLengthForHead = length + morphPolygon.HeadLength;
+
 				// If the user selected an acceleration or de-acceleration then...
 				if (morphPolygon.Acceleration != 0)
 				{
-					// Calculate the head and tail accelerations
-					_wipePolygonRenderData[polygonIndex].HeadAcceleration = GetHeadAcceleration(length + CalculateHeadLength(1.0, morphPolygon), time) * morphPolygon.Acceleration / 10.0;
-					_wipePolygonRenderData[polygonIndex].TailAcceleration = GetTailAcceleration(length, time);
+					// If the acceleration is negative then...
+					if (morphPolygon.Acceleration < 0)
+					{
+						// Calculate the head and tail accelerations using special iterative methods
+						_wipePolygonRenderData[polygonIndex].HeadAcceleration = GetNegativeAcceleration(polygonLengthForHead, time * (morphPolygon.HeadDuration / 100.0), morphPolygon) * Math.Abs(morphPolygon.Acceleration / MaxAcceleration);
+						_wipePolygonRenderData[polygonIndex].TailAcceleration = GetNegativeAcceleration(length, time, morphPolygon) * Math.Abs(morphPolygon.Acceleration / MaxAcceleration);
+					}
+					else				
+					{
+						// Otherwise calculate the positive accelerations
+						_wipePolygonRenderData[polygonIndex].HeadAcceleration = GetPositiveAcceleration(length, time * (morphPolygon.HeadDuration / 100.0)) * morphPolygon.Acceleration / MaxAcceleration;
+						_wipePolygonRenderData[polygonIndex].TailAcceleration = GetPositiveAcceleration(length, time) * morphPolygon.Acceleration / MaxAcceleration;
+					}
 				}
 				else
 				{
@@ -894,8 +919,8 @@ namespace VixenModules.Effect.Morph
 				}
 
 				// Calculate the head and tail initial velocities of the wipe
-				_wipePolygonRenderData[polygonIndex].HeadVelocityZero = GetHeadVelocityZero(length + CalculateHeadLength(1.0, morphPolygon), _wipePolygonRenderData[polygonIndex].HeadAcceleration, time, morphPolygon);
-				_wipePolygonRenderData[polygonIndex].TailVelocityZero = GetIncreasingVelocityZero(_wipePolygonRenderData[polygonIndex].TailAcceleration, length, time);			
+				_wipePolygonRenderData[polygonIndex].HeadVelocityZero = GetHeadVelocityZero(polygonLengthForHead, _wipePolygonRenderData[polygonIndex].HeadAcceleration, time, morphPolygon);
+				_wipePolygonRenderData[polygonIndex].TailVelocityZero = GetIncreasingVelocityZero(_wipePolygonRenderData[polygonIndex].TailAcceleration, length, time);
 			}
 		}
 
@@ -1215,16 +1240,17 @@ namespace VixenModules.Effect.Morph
 				if (e2<dy) { err += dx; y0 += sy; }
 			}
 		}
-		
+
 		/// <summary>
-		/// Calculates the maximum the head acceleration for the specified morph polygon.
+		/// Calculates the smallest positive acceleration for the specified morph polygon
+		/// that allows the wipe to make it to the end of the polygon/line with a zero starting velocity.
 		/// </summary>		
 		/// <remarks>
 		/// If the acceleration gets any larger the velocity zero starts negative.
 		/// This method finds the largest acceleration where the velocity zero is positive.
 		/// This value is then scaled based on the user's selection for acceleration.
 		/// </remarks>
-		private double GetHeadAcceleration(int length, double time)
+		private double GetPositiveAcceleration(int length, double time)
 		{
 			return length / (time * time * time) * 6.0;						
 		}
@@ -1238,13 +1264,123 @@ namespace VixenModules.Effect.Morph
 		}
 
 		/// <summary>
-		/// Calculates the tail acceleration such that the tail reaches the end of the polygon at the end of the effect.
-		/// </summary>		
-		private double GetTailAcceleration(int length, double time)
+		/// Refines the acceleration using the specified good and bad accelerations.  Using a binary search approach.
+		/// </summary>
+		/// <param name="validAcceleration">Valid acceleration</param>
+		/// <param name="invalidAcceleration">Invalid acceleration</param>
+		/// <param name="length">Length of the polygon/line</param>
+		/// <param name="time">Time of the wipe</param>
+		/// <returns>Refined acceleration</returns>
+		private double RefineAcceleration(double invalidAcceleration, double validAcceleration, int length, double time)
 		{
-			return length / (time * time * time) * 6;
+			const int MaxIterations = 10000;
+			int iterations = 0;
+
+			// Loop until the acceleration converge or we have iterated for the maximum number of iterations
+			while (invalidAcceleration != validAcceleration && iterations < MaxIterations)
+			{
+				// Try an acceleration between the two accelerations
+				double testAcceleration = (invalidAcceleration + validAcceleration) / 2.0;
+
+				// If the middle acceleration is valid then...
+				if (IsIncreasingAccelerationValid(testAcceleration, length, time))
+				{
+					// Swap out the valid acceleration
+					validAcceleration = testAcceleration;
+				}
+				else
+				{
+					// Swap out the invalid acceleration
+					invalidAcceleration = testAcceleration;
+				}
+
+				iterations++;
+			}
+
+			// Return the refined acceleration
+			return validAcceleration;
+		}
+		
+
+		/// <summary>
+		/// Calculates the tail acceleration when the acceleration is negative.
+		/// </summary>
+		/// <param name="length">Length of the polygon/line</param>
+		/// <param name="time">Time for the wipe</param>
+		/// <param name="morphPolygon">Morph polygon associated with the wipe</param>
+		/// <returns>Acceleration of the wipe</returns>
+		private double GetNegativeAcceleration(int length, double time, IMorphPolygon morphPolygon)
+		{
+			// Default the acceleration to the morph polygon setting to something large
+			double tailAcceleration = morphPolygon.Acceleration;
+			
+			// Keep track of the previous acceleration
+			double previousAcceleration = 0.0;
+
+			// Loop until we find a valid acceleration
+			while (!IsIncreasingAccelerationValid(tailAcceleration, length, time))
+			{
+				// Keep reducing the acceleration by half until we find a valid acceleration
+				previousAcceleration = tailAcceleration;
+				tailAcceleration = tailAcceleration / 2.0;
+			}
+
+			// Now we have a valid acceleration and an invalid acceleration
+			// Use these two values to refine the acceleration
+			return RefineAcceleration(previousAcceleration, tailAcceleration, length, time);
 		}
 
+		/// <summary>
+		/// Returns true if the specified acceleration is valid for the duration of the effect.
+		/// </summary>
+		/// <param name="acceleration">Acceleration to test</param>
+		/// <param name="length">Length of the wipe</param>
+		/// <param name="time">Duration of the wipe in milliseconds</param>
+		/// <returns>Whether the acceleration is valid</returns>
+		/// <remarks>
+		/// Some of the math used in this method was derived from:
+		/// https://math.stackexchange.com/questions/1777751/calculate-position-with-increasing-acceleration
+		///</remarks>
+		private bool IsIncreasingAccelerationValid(double acceleration, double length, double time)
+		{
+			// Store off the time of the wipe
+			double t = time;
+
+			// Initialize the acceleration
+			double i = acceleration;
+
+			// Calculate initial velocity of the wipe
+			double v = (length - 1.0 / 6.0 * i * t * t * t) / t;
+
+			// Default the acceleration to valid
+			bool valid = true;
+
+			// Keep track of the previous X position
+			double xPrevious = 0;
+
+			// Iterate over all the frames
+			for (double ti = 0; ti < t; ti += FrameTime)
+			{
+				// Calculate the position of X
+				double x = GetIncreasingHeadPosition(i, ti, v);
+				
+				// If X starts backing up at any point then...
+				if (x < xPrevious)
+				{
+					// Indicate the acceleration is invalid
+					valid = false;
+					break;
+				}
+
+				// Update the previous X value
+				xPrevious = x;
+			}
+
+			// Return whether the starting velocity was positive and
+			// that the wipe never starts going backwards
+			return (v > 0.0) && valid;
+		}
+		
 		/// <summary>
 		/// Gets the head velocity zero for the specified morph polygon.
 		/// </summary>		
@@ -1476,34 +1612,41 @@ namespace VixenModules.Effect.Morph
 		/// </summary>		
 		private void RenderStaticPolygons(IPixelFrameBuffer frameBuffer, double intervalPos, List<IMorphPolygon> expandedMorphPolygon)
 		{
-			// Make copies of the display element width and height for performance
-			int bufferHt = BufferHt;
-			int bufferWi = BufferWi;
-
-			// Create a bitmap the size of the display element			
-			using (Bitmap bitmap = new Bitmap(bufferWi, bufferHt))
+			// If there are any static polygon/lines then...
+			if (expandedMorphPolygon.Any())
 			{
-				// Loop over the morph polygons
-				foreach (IMorphPolygon morphPolygon in expandedMorphPolygon)
+				// Make copies of the display element width and height for performance
+				int bufferHt = BufferHt;
+				int bufferWi = BufferWi;
+
+				// Create a bitmap the size of the display element			
+				using (Bitmap bitmap = new Bitmap(bufferWi, bufferHt))
 				{
-					// Convert the polygon/line points into Microsoft Drawing Points
-					List<Point> points = morphPolygon.GetPolygonPoints().Select(pt => new Point((int)Math.Round(pt.X), (int)Math.Round(pt.Y))).ToList();
+					// Loop over the morph polygons
+					foreach (IMorphPolygon morphPolygon in expandedMorphPolygon)
+					{
+						// Convert the polygon/line points into Microsoft Drawing Points
+						List<Point> points = morphPolygon.GetPolygonPoints()
+							.Select(pt => new Point((int) Math.Round(pt.X), (int) Math.Round(pt.Y))).ToList();
 
-					// If the points make a polygon then...
-					if (points.Count > 2)
-					{
-						// Render the polygon
-						InitialRenderPolygon(bitmap, points.ToArray(), morphPolygon.FillType == PolygonFillType.Solid, GetFillColor(intervalPos, morphPolygon));
+						// If the points make a polygon then...
+						if (points.Count > 2)
+						{
+							// Render the polygon
+							InitialRenderPolygon(bitmap, points.ToArray(),
+								morphPolygon.FillType == PolygonFillType.Solid,
+								GetFillColor(intervalPos, morphPolygon));
+						}
+						else
+						{
+							// Otherwise render the line
+							InitialRenderLine(bitmap, points.ToArray(), GetFillColor(intervalPos, morphPolygon));
+						}
 					}
-					else
-					{
-						// Otherwise render the line
-						InitialRenderLine(bitmap, points.ToArray(), GetFillColor(intervalPos, morphPolygon));
-					}
+
+					// Copy the polygons/lines to the frame buffer
+					CopyBitmapToPixelFrameBuffer(bitmap, frameBuffer);
 				}
-
-				// Copy the polygons/lines to the frame buffer
-				CopyBitmapToPixelFrameBuffer(bitmap, frameBuffer);
 			}
 		}
 		
@@ -1742,7 +1885,6 @@ namespace VixenModules.Effect.Morph
 				// Get the specified morph polygon
 				MorphPolygon morphPolygon = (MorphPolygon)morphPolygons[polygonIndex];
 
-
 				// Determine which side of the polygon is the longest in the x direction
 				// Note this is NOT the start and stop sides.
 				int length = GetLengthOfWipePolygon(_wipePolygonRenderData[polygonIndex]);
@@ -1779,21 +1921,24 @@ namespace VixenModules.Effect.Morph
 						double headPosition = GetIncreasingHeadPosition(
 							_wipePolygonRenderData[polygonIndex].HeadAcceleration,
 							timeInWipe,
-							_wipePolygonRenderData[polygonIndex].HeadVelocityZero);								
+							_wipePolygonRenderData[polygonIndex].HeadVelocityZero);
+
+						// Calculate the interval position factor (0-100.0)
+						double intervalPosFactor = intervalPos * 100;
 
 						// Once the head has completed the wipe set a flag so that it doesn't back up
-						// back onto the display element when deaccelerating.
-						if (headPosition >= length + CalculateHeadLength(intervalPos, morphPolygon))
+						// back onto the display element when de-accelerating.
+						if (headPosition > length + morphPolygon.HeadLength - 1)
 						{
 							_wipePolygonRenderData[polygonIndex].HeadIsDone = true;								
 						}
 
-						// If the head has wiped accross the polygon then....
+						// If the head has wiped across the polygon then....
 						if (_wipePolygonRenderData[polygonIndex].HeadIsDone)
 						{
 							// Set its position just past the end of the polygon so that the tail
 							// can wipe off the polygon							
-							headPosition = length + CalculateHeadLength(intervalPos, morphPolygon);
+							headPosition = length + morphPolygon.HeadLength;
 						}
 
 						// Calculate the tail position					
@@ -1811,25 +1956,25 @@ namespace VixenModules.Effect.Morph
 						Color tailColor = GetTailColor(intervalPos, morphPolygon);
 
 						// Determine which set of points is longer
-						if (_wipePolygonRenderData[polygonIndex].X1Points.Count > _wipePolygonRenderData[polygonIndex].X2Points.Count)								
+						if (_wipePolygonRenderData[polygonIndex].X1Points.Count > _wipePolygonRenderData[polygonIndex].X2Points.Count)
 						{
-							DrawWipe(																		
+							DrawWipe(
 								intervalHeadPos,
 								frameBuffer,
 								tailPosition,
 								x2PointsCopy, // Short Points
-								y2PointsCopy, 
+								y2PointsCopy,
 								x1PointsCopy, // Long Points
-								y1PointsCopy, 
+								y1PointsCopy,
 								length,
-								_wipePolygonRenderData[polygonIndex].Direction,									
+								_wipePolygonRenderData[polygonIndex].Direction,
 								headColor,
 								tailColor,
-								CalculateHeadLength(intervalHeadPosFactor, morphPolygon));
+								morphPolygon.HeadLength);
 						}
 						else
 						{
-							DrawWipe(																		
+							DrawWipe(
 								intervalHeadPos,
 								frameBuffer,
 								tailPosition,
@@ -1841,7 +1986,7 @@ namespace VixenModules.Effect.Morph
 								_wipePolygonRenderData[polygonIndex].Direction,
 								headColor,
 								tailColor,
-								CalculateHeadLength(intervalHeadPosFactor, morphPolygon));
+								morphPolygon.HeadLength);
 						}
 					}
 
@@ -1940,7 +2085,7 @@ namespace VixenModules.Effect.Morph
 			}
 
 			// If the start of the head is off the display element then...
-			if (startOfHead > length)						
+			if (startOfHead > length - 1)						
 			{
 				// Set the start of the head to just off the display element
 				startOfHead = length;
@@ -2074,7 +2219,7 @@ namespace VixenModules.Effect.Morph
 				MorphPolygonData serializedPolygon = new MorphPolygonData();
 
 				// Transfer the properties from the polygon model to the serialized polygon data
-				serializedPolygon.HeadLength = new Curve(morphPolygon.HeadLength);
+				serializedPolygon.HeadLength = morphPolygon.HeadLength;
 				serializedPolygon.HeadDuration = morphPolygon.HeadDuration;
 				serializedPolygon.Acceleration = morphPolygon.Acceleration;
 				serializedPolygon.HeadColor = new ColorGradient(morphPolygon.HeadColor);
@@ -2112,7 +2257,7 @@ namespace VixenModules.Effect.Morph
 				MorphPolygon morphPolygon = new MorphPolygon();
 
 				// Transfer the properties from the serialized effect data to the morph polygon model
-				morphPolygon.HeadLength = new Curve(serializedPolygon.HeadLength);
+				morphPolygon.HeadLength = serializedPolygon.HeadLength;
 				morphPolygon.HeadDuration = serializedPolygon.HeadDuration;
 				morphPolygon.Acceleration = serializedPolygon.Acceleration;
 				morphPolygon.HeadColor = new ColorGradient(serializedPolygon.HeadColor);
@@ -2163,14 +2308,6 @@ namespace VixenModules.Effect.Morph
 			{
 				TypeDescriptor.Refresh(this);
 			}
-		}
-
-		/// <summary>
-		/// Calculates head length of the wipe head.
-		/// </summary>		
-		private int CalculateHeadLength(double intervalPos, IMorphPolygon morphPolygon)
-		{
-			return (int)Math.Round(ScaleCurveToValue(morphPolygon.HeadLength.GetValue(intervalPos), 100, 0));						
 		}
 
 		/// <summary>

@@ -232,12 +232,12 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			foreach (PolygonPointViewModel point in PointCollection)
 			{
 				// Round to the nearest display element pixel
-				int x = (int)Math.Round(point.X / PolygonPointConverter.XScaleFactor);
-				int y = (int)Math.Round(point.Y / PolygonPointConverter.YScaleFactor);
+				int x = (int)Math.Round(point.X / PolygonPointXConverter.XScaleFactor);
+				int y = (int)Math.Round(point.Y / PolygonPointYConverter.YScaleFactor);
 
 				// Convert back to computer display pixels
-				point.X = x * PolygonPointConverter.XScaleFactor;
-				point.Y = y * PolygonPointConverter.YScaleFactor;
+				point.X = x * PolygonPointXConverter.XScaleFactor;
+				point.Y = y * PolygonPointYConverter.YScaleFactor;
 
 				// Make sure the X coordinate did not get rounded outside the canvas
 				if (point.X > actualWidth - 1)

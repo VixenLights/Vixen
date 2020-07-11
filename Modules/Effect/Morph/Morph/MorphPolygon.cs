@@ -25,7 +25,7 @@ namespace VixenModules.Effect.Morph
 		public MorphPolygon()
 		{
 			FillType = PolygonFillType.Wipe;
-			HeadLength = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 4.0, 4.0 }));
+			HeadLength = 4;
 			HeadDuration = 20;
 			Acceleration = 0;
 			HeadColor = new ColorGradient(System.Drawing.Color.White);
@@ -61,9 +61,10 @@ namespace VixenModules.Effect.Morph
 		[ProviderCategory(@"Configuration", 1)]
 		[ProviderDisplayName(@"HeadLength")]
 		[ProviderDescription(@"HeadLength")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(0, 100, 1)]
 		[PropertyOrder(2)]
-		
-		public Curve HeadLength { get; set; }
+		public int HeadLength { get; set; }
 
 		[Value]
 		[ProviderCategory(@"Configuration", 1)]
@@ -188,7 +189,7 @@ namespace VixenModules.Effect.Morph
 			IMorphPolygon clone = new MorphPolygon
 			{
 				FillType = FillType,
-				HeadLength = new Curve(HeadLength),
+				HeadLength = HeadLength,
 				HeadDuration = HeadDuration,
 				Acceleration = Acceleration,
 				HeadColor = new ColorGradient(HeadColor),

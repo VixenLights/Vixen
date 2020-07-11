@@ -75,8 +75,8 @@ namespace VixenModules.Editor.PolygonEditor.Views
 				vm.CanvasHeight = (int)(_polygonContainer.Height * factor);
 
 				// Give the polygon point converter the scale factor
-				PolygonPointConverter.XScaleFactor = xScaleFactor;
-				PolygonPointConverter.YScaleFactor = yScaleFactor;
+				PolygonPointXConverter.XScaleFactor = xScaleFactor;
+				PolygonPointYConverter.YScaleFactor = yScaleFactor;
 
 				// Give the view model the model polygons, polygon times
 				vm.InitializePolygons(_polygonContainer.Polygons, _polygonContainer.PolygonTimes);
@@ -159,7 +159,7 @@ namespace VixenModules.Editor.PolygonEditor.Views
 				foreach(Polygon polygon in polygons)
 				{
 					// Scale the polygon model points to the display element dimensions
-					polygon.ScalePoints(1.0 / PolygonPointConverter.XScaleFactor, 1.0 / PolygonPointConverter.YScaleFactor);					
+					polygon.ScalePoints(1.0 / PolygonPointXConverter.XScaleFactor, 1.0 / PolygonPointYConverter.YScaleFactor);					
 				}
 
 				return polygons;
@@ -212,7 +212,7 @@ namespace VixenModules.Editor.PolygonEditor.Views
 				foreach (Line line in lines)
 				{
 					// Scale the polygon model points to the display element dimensions
-					line.ScalePoints(1.0 / PolygonPointConverter.XScaleFactor, 1.0 / PolygonPointConverter.YScaleFactor);					
+					line.ScalePoints(1.0 / PolygonPointXConverter.XScaleFactor, 1.0 / PolygonPointYConverter.YScaleFactor);					
 				}
 
 				return lines;

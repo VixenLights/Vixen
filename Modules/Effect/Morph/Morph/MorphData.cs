@@ -30,7 +30,7 @@ namespace VixenModules.Effect.Morph
 			RepeatSkip = 0;
 			Stagger = 0;
 			HeadDuration = 20; // Percent
-			HeadLength = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 4.0, 4.0 }));
+			HeadLength = 4;
 			HeadColor = new ColorGradient(System.Drawing.Color.White);
 			TailColor = new ColorGradient(System.Drawing.Color.Red);
 			Acceleration = 0;			
@@ -65,7 +65,7 @@ namespace VixenModules.Effect.Morph
 		public int Stagger { get; set; }
 
 		[DataMember]
-		public Curve HeadLength { get; set; }
+		public int HeadLength { get; set; }
 
 		[DataMember]
 		public int HeadDuration { get; set; }
@@ -104,7 +104,7 @@ namespace VixenModules.Effect.Morph
 				RepeatSkip = RepeatSkip,
 				Stagger = Stagger,
 				HeadDuration = HeadDuration,
-				HeadLength = new Curve(HeadLength),
+				HeadLength = HeadLength,
 				HeadColor = new ColorGradient(HeadColor),
 				TailColor = new ColorGradient(TailColor),
 				Acceleration = Acceleration,

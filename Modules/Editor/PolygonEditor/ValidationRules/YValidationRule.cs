@@ -44,7 +44,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
                 result = new ValidationResult(false, "Not valid Y value.");
             }
             // Otherwise check to see if the value is off the canvas to the top
-            else if (doubleValue > (Height - 1) / PolygonPointConverter.YScaleFactor + 1)
+            else if (doubleValue > (Height - 1) / PolygonPointYConverter.YScaleFactor + 1)
             {
                 result = new ValidationResult(false, "Y value is larger than display element.");
             }

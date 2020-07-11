@@ -44,7 +44,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
                 result = new ValidationResult(false, "Not valid X value.");
             }
             // Otherwise check to see if the value is off the canvas to the right
-            else if (doubleValue > (Width - 1)  / PolygonPointConverter.XScaleFactor + 1)
+            else if (doubleValue > (Width - 1)  / PolygonPointXConverter.XScaleFactor + 1)
             {
                 result = new ValidationResult(false, "X value is larger than display element.");
             }

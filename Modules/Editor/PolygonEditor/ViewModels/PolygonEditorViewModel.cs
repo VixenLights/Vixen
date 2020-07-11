@@ -1764,9 +1764,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			line.Points.Add(pt2);
 			Lines[0].StartPoint = new PolygonPointViewModel(pt1, null);
 			Lines[0].EndPoint = new PolygonPointViewModel(pt2, null);
-			Lines[0].StartPoint.X = ActualWidth / PolygonPointConverter.XScaleFactor - 1;
+			Lines[0].StartPoint.X = ActualWidth / PolygonPointXConverter.XScaleFactor - 1;
 			Lines[0].StartPoint.Y = 0;
-			Lines[0].EndPoint.X = ActualWidth / PolygonPointConverter.XScaleFactor - 1;
+			Lines[0].EndPoint.X = ActualWidth / PolygonPointXConverter.XScaleFactor - 1;
 			Lines[0].EndPoint.Y = ActualHeight - 1;
 			Lines[0].PointCollection.Add(Lines[0].StartPoint);
 			Lines[0].PointCollection.Add(Lines[0].EndPoint);
@@ -2573,7 +2573,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			foreach(Polygon polygon in polygons)
 			{
 				// Scale the points for the editor canvas size
-				polygon.ScalePoints(PolygonPointConverter.XScaleFactor, PolygonPointConverter.YScaleFactor);				
+				polygon.ScalePoints(PolygonPointXConverter.XScaleFactor, PolygonPointYConverter.YScaleFactor);				
 			}
 
 			// Sort the polygons by the associated times
@@ -2601,7 +2601,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 					// Select the polygon
 					SelectPolygon(Polygons[0], true);
 				}				
-			}				
+			}
 		}
 		
 		/// <summary>
@@ -2615,7 +2615,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			foreach (Line line in lines)
 			{
 				// Scale the points for the editor canvas size
-				line.ScalePoints(PolygonPointConverter.XScaleFactor, PolygonPointConverter.YScaleFactor);
+				line.ScalePoints(PolygonPointXConverter.XScaleFactor, PolygonPointYConverter.YScaleFactor);
 			}
 
 			// Sort the polygons by the associated times
@@ -3098,8 +3098,10 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 						Point transformedPoint = st.Transform(point.GetPoint());
 
 						// Update the view model point
+						point.SuppressChangeEvents = true;
 						point.X = transformedPoint.X;						
 						point.Y = transformedPoint.Y;
+						point.SuppressChangeEvents = false;
 
 						// Make sure the point is still on the drawing canvas
 						LimitPointToCanvas(point);											
@@ -3126,8 +3128,10 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				Point transformedPoint = translateTransform.Transform(point.GetPoint());
 
 				// Update the view model point
+				point.SuppressChangeEvents = true;
 				point.X = transformedPoint.X;
 				point.Y = transformedPoint.Y;
+				point.SuppressChangeEvents = false;
 			}
 
 			// Refresh all shapes for the transform

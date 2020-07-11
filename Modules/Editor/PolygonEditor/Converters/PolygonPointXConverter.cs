@@ -8,7 +8,7 @@ namespace VixenModules.Editor.PolygonEditor.Converters
 	/// Converts points from editor coordinates to Vixen display element coordinates.
 	/// This converter also changes from zero based coordinates to one based.
 	/// </summary>
-	public class PolygonPointConverter : IValueConverter
+	public class PolygonPointXConverter : IValueConverter
 	{
 		#region Static Public Properties
 		
@@ -16,11 +16,6 @@ namespace VixenModules.Editor.PolygonEditor.Converters
 		/// X Axis Scale Factor of the drawing canvas.
 		/// </summary>
 		public static double XScaleFactor { get; set; }
-
-		/// <summary>
-		/// Y Axis Scale Factor of the drawing canvas.
-		/// </summary>
-		public static double YScaleFactor { get; set; }
 
 		#endregion
 

@@ -38,6 +38,11 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			
 			// Initialize the segments to visible
 			SegmentsVisible = true;
+
+			// Create the center point but set the parent to null so that it doesn't
+			// fire property change events on both the X and Y coordinates.
+			// One event is done for the pair when the point is updated.
+			CenterPoint = new PolygonPointViewModel(new PolygonPoint(), null);
 			
 			// Loop over all the points in the polygon model
 			foreach(PolygonPoint pt in Polygon.Points)
@@ -435,41 +440,28 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// If the polygon contains at least three points then...
 			if (PointCollection.Count > 2)
 			{
-				// Update the center point of the polygon
-				CenterPoint = GetCenterOfPolygon();
+				// Default the minimum X to the first point
+				double xMin = PointCollection.Min(point => point.X);
+
+				// Default the maximum X to the first point
+				double xMax = PointCollection.Max(point => point.X);
+
+				// Default the minimum Y to the first point
+				double yMin = PointCollection.Min(point => point.Y);
+
+				// Default the maximum Y to the first point
+				double yMax = PointCollection.Max(point => point.Y);
+
+				// Calculate the center of the polygon
+				CenterPoint.X = (xMax - xMin) / 2.0 + xMin;
+				CenterPoint.Y = (yMax - yMin) / 2.0 + yMin;
+
+				// Notify the view that the center has changed
+				RaisePropertyChanged(nameof(CenterPoint));
 			}
 
 			// Update the point labels
 			UpdatePointLabels();
-		}
-
-		/// <summary>
-		/// Calculates the center of the polygon.
-		/// </summary>
-		/// <returns>Center of the polygon.</returns>
-		private PolygonPointViewModel GetCenterOfPolygon()
-		{
-			// Default the minimum X to the first point
-			double xMin = PointCollection.Min(point => point.X);
-
-			// Default the maximum X to the first point
-			double xMax = PointCollection.Max(point => point.X);
-
-			// Default the minimum Y to the first point
-			double yMin = PointCollection.Min(point => point.Y);
-
-			// Default the maximum Y to the first point
-			double yMax = PointCollection.Max(point => point.Y);
-			
-			// Create a new polygon point view model object; not giving it a model object 
-			PolygonPointViewModel centerPoint = new PolygonPointViewModel(null, null);
-			
-			// Calculate the center of the polygon
-			centerPoint.X = (xMax - xMin) / 2.0 + xMin;
-			centerPoint.Y = (yMax - yMin) / 2.0 + yMin;
-
-			// Return the center of the polygon
-			return centerPoint;
 		}
 
 		#endregion

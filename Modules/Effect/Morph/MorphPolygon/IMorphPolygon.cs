@@ -27,9 +27,9 @@ namespace VixenModules.Effect.Morph
 		PolygonFillType FillType { get; set; }
 
 		/// <summary>
-		/// Determines the length of the wipe head over the duration of the effect.
+		/// Determines the length of the wipe head.
 		/// </summary>
-		Curve HeadLength { get; set; }
+		int HeadLength { get; set; }
 
 		/// <summary>
 		/// Determines the percentage of the effect duration it takes the wipe head to travel across the polygon/line. 

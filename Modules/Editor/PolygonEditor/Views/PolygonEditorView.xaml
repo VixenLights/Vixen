@@ -74,9 +74,11 @@
 							Visibility="{Binding Path=ShowDelete, Converter={StaticResource BoolToVis}}">
 					<Image Source="/PolygonEditor;component/Images/Delete_32.png" Height="20" Width="20"/>
 				</Button>
+				<!--
 				<Button Command="{Binding SnapToGridCommand}"  ToolTip="Snap To Pixels">
 					<Image Source="/PolygonEditor;component/Images/SnapToGrid.png" Height="20" Width="20"/>
 				</Button>
+				-->
 				<Button Command="{Binding ToggleStartSideCommand}"  ToolTip="Toggle Start Side"
 					    Visibility="{Binding Path=ShowToggleStartSide, Converter={StaticResource BoolToVis}}">
 					<Image Source="/PolygonEditor;component/Images/ToggleStartSide.png" Height="20" Width="20" />

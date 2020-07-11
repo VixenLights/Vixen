@@ -201,7 +201,6 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 
 			if (EnforceSize(boundsCopy))
 			{
-			
 				TransformItems(t);				
 			}
 		}
