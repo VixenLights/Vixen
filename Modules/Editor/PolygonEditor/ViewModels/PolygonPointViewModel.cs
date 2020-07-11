@@ -62,7 +62,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			set 
 			{ 
 				SetValue(XProperty, value);
-				if (Parent != null)
+				if (Parent != null && !SuppressChangeEvents)
 				{
 					Parent.NotifyPointCollectionChanged();
 				}				
@@ -84,7 +84,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			set 
 			{ 
 				SetValue(YProperty, value);
-				if (Parent != null)
+				if (Parent != null && !SuppressChangeEvents)
 				{
 					Parent.NotifyPointCollectionChanged();
 				}				
@@ -175,10 +175,6 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// </summary>
 		public PolygonViewModel Parent { get; set; }
 
-		#endregion
-
-		#region Public Methods
-
 		/// <summary>
 		/// .Net Point representation of the vertex.
 		/// </summary>
@@ -195,6 +191,16 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				Y = value.Y;
 			}
 		}
+
+		/// <summary>
+		/// This property suppresses INotifyProperty change events
+		/// to improve the performance of the editor.
+		/// </summary>
+		public bool SuppressChangeEvents { get; set; }
+
+		#endregion
+
+		#region Public Methods
 
 		/// <summary>
 		/// Converts the polygon point into a .NET Point structure.
