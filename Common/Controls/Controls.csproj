@@ -53,228 +53,128 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="BaseForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="BaseForm.cs" />
     <Compile Update="BaseForm.Designer.cs">
       <DependentUpon>BaseForm.cs</DependentUpon>
     </Compile>
-    <Compile Update="BaseUserControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="DragDropListView\DragDropListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="MessageBoxForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="BaseUserControl.cs" />
+    <Compile Update="DragDropListView\DragDropListView.cs" />
+    <Compile Update="MessageBoxForm.cs" />
     <Compile Update="MessageBoxForm.Designer.cs">
       <DependentUpon>MessageBoxForm.cs</DependentUpon>
     </Compile>
-    <Compile Update="NameGeneration\SubstitutionRenamer.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="NameGeneration\SubstitutionRenamer.cs" />
     <Compile Update="NameGeneration\SubstitutionRenamer.Designer.cs">
       <DependentUpon>SubstitutionRenamer.cs</DependentUpon>
     </Compile>
-    <Compile Update="NumericTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="RoundButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="ControllerTree.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="NumericTextBox.cs" />
+    <Compile Update="RoundButton.cs" />
+    <Compile Update="ControllerTree.cs" />
     <Compile Update="ControllerTree.Designer.cs">
       <DependentUpon>ControllerTree.cs</DependentUpon>
     </Compile>
-    <Compile Update="ConfigureElements\AddMegatree.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="ConfigureElements\AddMegatree.cs" />
     <Compile Update="ConfigureElements\AddMegatree.Designer.cs">
       <DependentUpon>AddMegatree.cs</DependentUpon>
     </Compile>
-    <Compile Update="ConfigureElements\AddPixelGrid.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="ConfigureElements\AddPixelGrid.cs" />
     <Compile Update="ConfigureElements\AddPixelGrid.designer.cs">
       <DependentUpon>AddPixelGrid.cs</DependentUpon>
     </Compile>
-    <Compile Update="DiscreteColorPicker.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="DiscreteColorPicker.cs" />
     <Compile Update="DiscreteColorPicker.Designer.cs">
       <DependentUpon>DiscreteColorPicker.cs</DependentUpon>
     </Compile>
-    <Compile Update="DiscreteColorPickerItem.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="DiscreteColorPickerItem.cs" />
     <Compile Update="DiscreteColorPickerItem.Designer.cs">
       <DependentUpon>DiscreteColorPickerItem.cs</DependentUpon>
     </Compile>
-    <Compile Update="DragAndDropListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="EffectParameterPickerControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="DragAndDropListView.cs" />
+    <Compile Update="EffectParameterPickerControl.cs" />
     <Compile Update="EffectParameterPickerControl.Designer.cs">
       <DependentUpon>EffectParameterPickerControl.cs</DependentUpon>
     </Compile>
-    <Compile Update="ElementTree.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="ElementTree.cs" />
     <Compile Update="ElementTree.Designer.cs">
       <DependentUpon>ElementTree.cs</DependentUpon>
     </Compile>
-    <Compile Update="PictureComboBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="PictureComboBox.cs" />
     <Compile Update="PictureComboBox.Designer.cs">
       <DependentUpon>PictureComboBox.cs</DependentUpon>
     </Compile>
-    <Compile Update="Wizard\WizardForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Wizard\WizardForm.cs" />
     <Compile Update="Wizard\WizardForm.Designer.cs">
       <DependentUpon>WizardForm.cs</DependentUpon>
     </Compile>
-    <Compile Update="MenuStripEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="NameGeneration\NameGenerator.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="MenuStripEx.cs" />
+    <Compile Update="NameGeneration\NameGenerator.cs" />
     <Compile Update="NameGeneration\NameGenerator.Designer.cs">
       <DependentUpon>NameGenerator.cs</DependentUpon>
     </Compile>
-    <Compile Update="NameGeneration\NameGeneratorEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="NameGeneration\WordIteratorEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="NameGeneration\NameGeneratorEditor.cs" />
+    <Compile Update="NameGeneration\WordIteratorEditor.cs" />
     <Compile Update="NameGeneration\WordIteratorEditor.Designer.cs">
       <DependentUpon>WordIteratorEditor.cs</DependentUpon>
     </Compile>
-    <Compile Update="NameGeneration\LetterIteratorEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="NameGeneration\LetterIteratorEditor.cs" />
     <Compile Update="NameGeneration\LetterIteratorEditor.Designer.cs">
       <DependentUpon>LetterIteratorEditor.cs</DependentUpon>
     </Compile>
-    <Compile Update="NameGeneration\LetterCounterEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="NameGeneration\LetterCounterEditor.cs" />
     <Compile Update="NameGeneration\LetterCounterEditor.Designer.cs">
       <DependentUpon>LetterCounterEditor.cs</DependentUpon>
     </Compile>
-    <Compile Update="NameGeneration\NumericCounterEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="NameGeneration\NumericCounterEditor.cs" />
     <Compile Update="NameGeneration\NumericCounterEditor.Designer.cs">
       <DependentUpon>NumericCounterEditor.cs</DependentUpon>
     </Compile>
-    <Compile Update="NumberDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="NumberDialog.cs" />
     <Compile Update="NumberDialog.Designer.cs">
       <DependentUpon>NumberDialog.cs</DependentUpon>
     </Compile>
-    <Compile Update="ParallelPortConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="ParallelPortConfig.cs" />
     <Compile Update="ParallelPortConfig.Designer.cs">
       <DependentUpon>ParallelPortConfig.cs</DependentUpon>
     </Compile>
-    <Compile Update="ToolStripEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="ColorPicker\ColorLabel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="ColorPicker\ColorPicker.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="ColorPicker\ColorSelectionFader.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="ColorPicker\ColorSelectionPlane.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="ControlsEx\BorderedControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="ControlsEx\BorderedScrollableControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="ControlsEx\ListControls\ActionList.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="ControlsEx\ListControls\DisplayList.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="ControlsEx\ListControls\SingleLineDisplayList.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="ControlsEx\ListControls\TableDisplayList.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="ControlsEx\ValueControls\FloatingContainer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="ControlsEx\ValueControls\MiniTracker.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="ControlsEx\ValueControls\ValueControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="ControlsEx\ValueControls\ValueScrollbar.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="ControlsEx\ValueControls\ValueUpDown.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="ControlsEx\ZoomBar.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="ListSelectDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="ToolStripEx.cs" />
+    <Compile Update="ColorPicker\ColorLabel.cs" />
+    <Compile Update="ColorPicker\ColorPicker.cs" />
+    <Compile Update="ColorPicker\ColorSelectionFader.cs" />
+    <Compile Update="ColorPicker\ColorSelectionPlane.cs" />
+    <Compile Update="ControlsEx\BorderedControl.cs" />
+    <Compile Update="ControlsEx\BorderedScrollableControl.cs" />
+    <Compile Update="ControlsEx\ListControls\ActionList.cs" />
+    <Compile Update="ControlsEx\ListControls\DisplayList.cs" />
+    <Compile Update="ControlsEx\ListControls\SingleLineDisplayList.cs" />
+    <Compile Update="ControlsEx\ListControls\TableDisplayList.cs" />
+    <Compile Update="ControlsEx\ValueControls\FloatingContainer.cs" />
+    <Compile Update="ControlsEx\ValueControls\MiniTracker.cs" />
+    <Compile Update="ControlsEx\ValueControls\ValueControl.cs" />
+    <Compile Update="ControlsEx\ValueControls\ValueScrollbar.cs" />
+    <Compile Update="ControlsEx\ValueControls\ValueUpDown.cs" />
+    <Compile Update="ControlsEx\ZoomBar.cs" />
+    <Compile Update="ListSelectDialog.cs" />
     <Compile Update="ListSelectDialog.Designer.cs">
       <DependentUpon>ListSelectDialog.cs</DependentUpon>
     </Compile>
-    <Compile Update="MultiSelectTreeview.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="SerialPortConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="MultiSelectTreeview.cs" />
+    <Compile Update="SerialPortConfig.cs" />
     <Compile Update="SerialPortConfig.Designer.cs">
       <DependentUpon>SerialPortConfig.cs</DependentUpon>
     </Compile>
-    <Compile Update="TablessTabControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="TablessTabControl.cs" />
     <Compile Update="TablessTabControl.Designer.cs">
       <DependentUpon>TablessTabControl.cs</DependentUpon>
     </Compile>
-    <Compile Update="TextDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="TextDialog.cs" />
     <Compile Update="TextDialog.Designer.cs">
       <DependentUpon>TextDialog.cs</DependentUpon>
     </Compile>
-    <Compile Update="Undo\UndoDropDownControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="Undo\UndoDropDownControl.cs" />
     <Compile Update="Undo\UndoDropDownControl.designer.cs">
       <DependentUpon>UndoDropDownControl.cs</DependentUpon>
     </Compile>
-    <Compile Update="Wizard\WizardStage.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="Wizard\WizardStage.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="BaseForm.resx">

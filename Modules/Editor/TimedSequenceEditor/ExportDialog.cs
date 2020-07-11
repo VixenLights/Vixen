@@ -151,7 +151,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			
             _outFileName = saveDialog.FileName;
             _exportOps.OutFileName = _outFileName;
-            _exportOps.UpdateInterval = Convert.ToInt32(resolutionComboBox.Text);
+
+            if (Int32.TryParse(resolutionComboBox.Text, out int interval))
+            {
+	            _exportOps.UpdateInterval = interval;
+            }
+            else
+            {
+	            var messageBox = new MessageBoxForm($"Invalid timing interval {resolutionComboBox.Text}, check the value and try again.",
+		            "Error", MessageBoxButtons.OK, SystemIcons.Warning);
+	            messageBox.ShowDialog();
+	            return;
+            }
 
 			var progress = new Progress<ExportProgressStatus>(ReportExportProgress);
 	        _exportOps.AudioFilename = _audioFileName;
@@ -471,8 +482,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 	    private void resolutionComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+			ComboBox comboBox = (ComboBox)sender;
+			if (!Int32.TryParse(comboBox.Text, out int value))
+			{
+				comboBox.SelectedIndex = exportResolutionDefault;
+			}
 
-            ComboBox comboBox = (ComboBox)sender;
             _profile.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ExportResolution", Name), (int)comboBox.SelectedIndex);
         }
 

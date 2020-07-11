@@ -80,7 +80,6 @@
 			// 
 			this.resolutionComboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.resolutionComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-			this.resolutionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.resolutionComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.resolutionComboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.resolutionComboBox.FormattingEnabled = true;
@@ -93,7 +92,7 @@
 			this.resolutionComboBox.Size = new System.Drawing.Size(61, 24);
 			this.resolutionComboBox.TabIndex = 2;
 			this.resolutionComboBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
-			this.resolutionComboBox.SelectedIndexChanged += new System.EventHandler(this.resolutionComboBox_SelectedIndexChanged);
+			this.resolutionComboBox.TextChanged += new System.EventHandler(this.resolutionComboBox_TextChanged);
 			// 
 			// label4
 			// 
@@ -101,7 +100,7 @@
 			this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label4.Location = new System.Drawing.Point(350, 27);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(75, 15);
+			this.label4.Size = new System.Drawing.Size(74, 15);
 			this.label4.TabIndex = 11;
 			this.label4.Text = "Timing (ms):";
 			// 

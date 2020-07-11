@@ -10,6 +10,8 @@ namespace Vixen.IO.Xml
 	internal class XElementFileWriter : IFileWriter<XElement>
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private const int BackupsToKeep = 3;
+
 		public void WriteFile(string filePath, XElement content)
 		{
 		    while (IsFileLocked(filePath))
@@ -24,20 +26,7 @@ namespace Vixen.IO.Xml
 			catch (Exception e)
 			{
 				Logging.Error(e, "An error occurred trying to save the file. Attempting to protect any backups");
-
-				try
-				{
-					var backupFile = string.Format("{0}_{1}", filePath, "backup");
-					if (File.Exists(backupFile))
-					{
-						File.Copy(backupFile, string.Format("{0}.protected.{1}", filePath, DateTime.Now.ToFileTime()));
-					}
-				}
-				catch (Exception e2)
-				{
-					Logging.Error(e2, "Could not protect the backup file.");
-				}
-
+				ProtectBackups(filePath);
 				throw;
 			}
 		}
@@ -49,7 +38,7 @@ namespace Vixen.IO.Xml
 			var success = BackupFile(filePath);
 			if (!success)
 			{
-				var result = MessageBox.Show("Config backups failed prior to save! Possible file system issue!", "Warning!",
+				var result = MessageBox.Show("Backups failed prior to save! Possible file system issue!", "Warning!",
 					MessageBoxButton.OKCancel);
 				if (result == MessageBoxResult.Cancel)
 				{
@@ -90,7 +79,15 @@ namespace Vixen.IO.Xml
 			{
 				if (File.Exists(filePath))
 				{
-					File.Copy(filePath, string.Format("{0}_{1}", filePath, "backup"), true);
+					var backupFile = $"{filePath}_backup.{DateTime.Now:dd-MM-yyyy_h_m_s}";
+					if (File.Exists(backupFile))
+					{
+						//This should never happen being as we are using the date time as part of the file name
+						File.Delete(backupFile);
+					}
+					//Under the covers move does a rename which should be safer and faster than a copy
+					File.Move(filePath, backupFile);
+					success = PurgeOldBackups(filePath);
 				}
 				success = true;
 			}
@@ -102,5 +99,66 @@ namespace Vixen.IO.Xml
 			return success;
 
 		}
+
+		private bool PurgeOldBackups(string filePath)
+		{
+			var folderPath = Path.GetDirectoryName(filePath);
+			var fileName = Path.GetFileName(filePath);
+			if (!string.IsNullOrEmpty(fileName) && !string.IsNullOrEmpty(folderPath))
+			{
+				var folderContent = new DirectoryInfo(folderPath).GetFileSystemInfos();
+				var backups = folderContent.Where(x => x.Name.StartsWith($"{fileName}_backup"));
+				if (backups.Count() > BackupsToKeep)
+				{
+					var orderedBackups = backups.OrderBy(x => x.LastWriteTime);
+					int numToDelete = backups.Count() - BackupsToKeep;
+
+					try
+					{
+						foreach (var fileSystemInfo in orderedBackups)
+						{
+							fileSystemInfo.Delete();
+							if (--numToDelete <= 0) break;
+						}
+					}
+					catch (Exception e)
+					{
+						Logging.Error(e, "Error while pruning the backup files.");
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
+		private bool ProtectBackups(string filePath)
+		{
+			var folderPath = Path.GetDirectoryName(filePath);
+			var fileName = Path.GetFileName(filePath);
+			if (!string.IsNullOrEmpty(fileName) && !string.IsNullOrEmpty(folderPath))
+			{
+				var folderContent = new DirectoryInfo(folderPath).GetFileSystemInfos();
+				var backups = folderContent.Where(x => x.Name.StartsWith($"{fileName}_backup"));
+				if (backups.Any())
+				{
+					try
+					{
+						foreach (var fileSystemInfo in backups)
+						{
+							File.Move(fileSystemInfo.FullName, fileSystemInfo.FullName.Replace("backup", "protected"));
+						}
+					}
+					catch (Exception e)
+					{
+						Logging.Error(e, "Error while protecting the backup files.");
+						return false;
+					}
+				}
+			}
+			
+			return true;
+		}
+
     }
 }

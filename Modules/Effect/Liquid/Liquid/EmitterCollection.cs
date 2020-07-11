@@ -12,8 +12,19 @@ namespace Liquid
     /// </summary>	
 	public class EmitterCollection : NotifyPropertyObservableCollection<IEmitter>
 	{
+		#region Constructor 
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		public EmitterCollection() : base("Emitters")
+		{
+		}
+
+		#endregion
+
 		#region Public Properties
-		
+
 		private BaseEffect _parent;
 
         /// <summary>

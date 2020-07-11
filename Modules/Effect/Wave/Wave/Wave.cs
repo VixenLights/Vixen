@@ -109,7 +109,7 @@ namespace VixenModules.Effect.Wave
 			_data = new WaveData();
 
 			// Create the collection of waves
-			_waves = new ExpandoObjectObservableCollection<IWaveform>();
+			_waves = new ExpandoObjectObservableCollection<IWaveform>("Waves");
 
 			// Give the wave a reference to the effect.
 			// This is needed so that the waveforms can use the parent to register (listen) for mark collection events

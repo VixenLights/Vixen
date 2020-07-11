@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Test");
+			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Test");
 			this.buttonStart = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();
 			this.outputFormatComboBox = new System.Windows.Forms.ComboBox();
@@ -114,7 +114,7 @@
 			this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label4.Location = new System.Drawing.Point(323, 28);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(75, 15);
+			this.label4.Size = new System.Drawing.Size(74, 15);
 			this.label4.TabIndex = 11;
 			this.label4.Text = "Timing (ms):";
 			// 
@@ -122,7 +122,6 @@
 			// 
 			this.resolutionComboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.resolutionComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-			this.resolutionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.resolutionComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.resolutionComboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.resolutionComboBox.FormattingEnabled = true;
@@ -244,9 +243,10 @@
             this.endColumn});
 			this.networkListView.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.networkListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-			listViewItem2.StateImageIndex = 0;
+			this.networkListView.HideSelection = false;
+			listViewItem1.StateImageIndex = 0;
 			this.networkListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem2});
+            listViewItem1});
 			this.networkListView.Location = new System.Drawing.Point(7, 22);
 			this.networkListView.MultiSelect = false;
 			this.networkListView.Name = "networkListView";
@@ -332,7 +332,7 @@
 			this.radio1x.AutoSize = true;
 			this.radio1x.Location = new System.Drawing.Point(3, 3);
 			this.radio1x.Name = "radio1x";
-			this.radio1x.Size = new System.Drawing.Size(62, 19);
+			this.radio1x.Size = new System.Drawing.Size(63, 19);
 			this.radio1x.TabIndex = 21;
 			this.radio1x.Text = "FPP 1.x";
 			this.radio1x.UseVisualStyleBackColor = true;
@@ -343,7 +343,7 @@
 			this.radio2x.Checked = true;
 			this.radio2x.Location = new System.Drawing.Point(71, 3);
 			this.radio2x.Name = "radio2x";
-			this.radio2x.Size = new System.Drawing.Size(62, 19);
+			this.radio2x.Size = new System.Drawing.Size(63, 19);
 			this.radio2x.TabIndex = 22;
 			this.radio2x.TabStop = true;
 			this.radio2x.Text = "FPP 2.x";
@@ -382,6 +382,7 @@
 			this.chkCompress.TabIndex = 24;
 			this.chkCompress.Text = "Enable Compression";
 			this.chkCompress.UseVisualStyleBackColor = true;
+			this.chkCompress.CheckedChanged += new System.EventHandler(this.chkCompress_CheckedChanged);
 			// 
 			// ExportDialog
 			// 

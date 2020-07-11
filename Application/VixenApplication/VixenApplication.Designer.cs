@@ -34,12 +34,12 @@ namespace VixenApplication
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem("asdfadsa");
-			System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem("rewqrewq");
-			System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem("vbcbxvxc");
-			System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem("gfdsgfsd");
-			System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem("ytreyre");
-			System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem("xvcbxvcx");
+			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("asdfadsa");
+			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("rewqrewq");
+			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("vbcbxvxc");
+			System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("gfdsgfsd");
+			System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem("ytreyre");
+			System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("xvcbxvcx");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VixenApplication));
 			this.contextMenuStripNewSequence = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
@@ -76,8 +76,9 @@ namespace VixenApplication
 			this.toolStripStatusLabelExecutionState = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel_memory = new System.Windows.Forms.ToolStripStatusLabel();
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.toolStripStatusUpdates = new System.Windows.Forms.ToolStripStatusLabel();
+			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.progressBar = new Common.Controls.TextProgressBar();
 			this.menuStripMain.SuspendLayout();
 			this.groupBoxSequences.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
@@ -107,9 +108,9 @@ namespace VixenApplication
             this.vixenToolStripMenuItem});
 			this.menuStripMain.Location = new System.Drawing.Point(0, 0);
 			this.menuStripMain.Name = "menuStripMain";
-			this.menuStripMain.Padding = new System.Windows.Forms.Padding(11, 4, 0, 4);
+			this.menuStripMain.Padding = new System.Windows.Forms.Padding(9, 3, 0, 3);
 			this.menuStripMain.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-			this.menuStripMain.Size = new System.Drawing.Size(574, 32);
+			this.menuStripMain.Size = new System.Drawing.Size(459, 25);
 			this.menuStripMain.TabIndex = 2;
 			this.menuStripMain.Text = "menuStrip1";
 			// 
@@ -125,21 +126,21 @@ namespace VixenApplication
             this.exitToolStripMenuItem});
 			this.vixenToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.vixenToolStripMenuItem.Name = "vixenToolStripMenuItem";
-			this.vixenToolStripMenuItem.Size = new System.Drawing.Size(68, 24);
+			this.vixenToolStripMenuItem.Size = new System.Drawing.Size(57, 19);
 			this.vixenToolStripMenuItem.Text = "System";
 			// 
 			// logsToolStripMenuItem
 			// 
 			this.logsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.logsToolStripMenuItem.Name = "logsToolStripMenuItem";
-			this.logsToolStripMenuItem.Size = new System.Drawing.Size(237, 26);
+			this.logsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.logsToolStripMenuItem.Text = "Logs";
 			// 
 			// viewInstalledModulesToolStripMenuItem
 			// 
 			this.viewInstalledModulesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.viewInstalledModulesToolStripMenuItem.Name = "viewInstalledModulesToolStripMenuItem";
-			this.viewInstalledModulesToolStripMenuItem.Size = new System.Drawing.Size(237, 26);
+			this.viewInstalledModulesToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.viewInstalledModulesToolStripMenuItem.Text = "View Installed Modules";
 			this.viewInstalledModulesToolStripMenuItem.Click += new System.EventHandler(this.viewInstalledModulesToolStripMenuItem_Click);
 			// 
@@ -147,7 +148,7 @@ namespace VixenApplication
 			// 
 			this.profilesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.profilesToolStripMenuItem.Name = "profilesToolStripMenuItem";
-			this.profilesToolStripMenuItem.Size = new System.Drawing.Size(237, 26);
+			this.profilesToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.profilesToolStripMenuItem.Text = "Profiles...";
 			this.profilesToolStripMenuItem.Click += new System.EventHandler(this.profilesToolStripMenuItem_Click);
 			// 
@@ -158,14 +159,14 @@ namespace VixenApplication
             this.setupPreviewsToolStripMenuItem});
 			this.systemConfigurationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.systemConfigurationToolStripMenuItem.Name = "systemConfigurationToolStripMenuItem";
-			this.systemConfigurationToolStripMenuItem.Size = new System.Drawing.Size(237, 26);
+			this.systemConfigurationToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.systemConfigurationToolStripMenuItem.Text = "System Configuration";
 			// 
 			// setupDisplayToolStripMenuItem
 			// 
 			this.setupDisplayToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.setupDisplayToolStripMenuItem.Name = "setupDisplayToolStripMenuItem";
-			this.setupDisplayToolStripMenuItem.Size = new System.Drawing.Size(183, 26);
+			this.setupDisplayToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
 			this.setupDisplayToolStripMenuItem.Text = "Setup Display";
 			this.setupDisplayToolStripMenuItem.Click += new System.EventHandler(this.setupDisplayToolStripMenuItem_Click);
 			// 
@@ -173,7 +174,7 @@ namespace VixenApplication
 			// 
 			this.setupPreviewsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.setupPreviewsToolStripMenuItem.Name = "setupPreviewsToolStripMenuItem";
-			this.setupPreviewsToolStripMenuItem.Size = new System.Drawing.Size(183, 26);
+			this.setupPreviewsToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
 			this.setupPreviewsToolStripMenuItem.Text = "Setup Previews";
 			this.setupPreviewsToolStripMenuItem.Click += new System.EventHandler(this.setupPreviewsToolStripMenuItem_Click);
 			// 
@@ -184,20 +185,20 @@ namespace VixenApplication
             this.stopToolStripMenuItem});
 			this.executionToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.executionToolStripMenuItem.Name = "executionToolStripMenuItem";
-			this.executionToolStripMenuItem.Size = new System.Drawing.Size(237, 26);
+			this.executionToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.executionToolStripMenuItem.Text = "Execution Engine";
 			// 
 			// startToolStripMenuItem
 			// 
 			this.startToolStripMenuItem.Name = "startToolStripMenuItem";
-			this.startToolStripMenuItem.Size = new System.Drawing.Size(115, 26);
+			this.startToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
 			this.startToolStripMenuItem.Text = "Start";
 			this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
 			// 
 			// stopToolStripMenuItem
 			// 
 			this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-			this.stopToolStripMenuItem.Size = new System.Drawing.Size(115, 26);
+			this.stopToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
 			this.stopToolStripMenuItem.Text = "Stop";
 			this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
 			// 
@@ -205,13 +206,13 @@ namespace VixenApplication
 			// 
 			this.toolStripSeparator1.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(234, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(192, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(237, 26);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.exitToolStripMenuItem.Text = "Shutdown and E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -219,10 +220,10 @@ namespace VixenApplication
 			// 
 			this.label2.AutoSize = true;
 			this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label2.Location = new System.Drawing.Point(5, 100);
-			this.label2.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+			this.label2.Location = new System.Drawing.Point(4, 80);
+			this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(131, 20);
+			this.label2.Size = new System.Drawing.Size(105, 15);
 			this.label2.TabIndex = 8;
 			this.label2.Text = "Recent Sequences:";
 			// 
@@ -233,10 +234,10 @@ namespace VixenApplication
 			this.buttonOpenSequence.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonOpenSequence.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonOpenSequence.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonOpenSequence.Location = new System.Drawing.Point(5, 56);
-			this.buttonOpenSequence.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+			this.buttonOpenSequence.Location = new System.Drawing.Point(4, 45);
+			this.buttonOpenSequence.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonOpenSequence.Name = "buttonOpenSequence";
-			this.buttonOpenSequence.Size = new System.Drawing.Size(225, 38);
+			this.buttonOpenSequence.Size = new System.Drawing.Size(180, 30);
 			this.buttonOpenSequence.TabIndex = 2;
 			this.buttonOpenSequence.Text = "Open Sequence...";
 			this.buttonOpenSequence.UseVisualStyleBackColor = true;
@@ -251,10 +252,10 @@ namespace VixenApplication
 			this.buttonNewSequence.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonNewSequence.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonNewSequence.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonNewSequence.Location = new System.Drawing.Point(5, 6);
-			this.buttonNewSequence.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+			this.buttonNewSequence.Location = new System.Drawing.Point(4, 5);
+			this.buttonNewSequence.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonNewSequence.Name = "buttonNewSequence";
-			this.buttonNewSequence.Size = new System.Drawing.Size(225, 38);
+			this.buttonNewSequence.Size = new System.Drawing.Size(180, 30);
 			this.buttonNewSequence.TabIndex = 1;
 			this.buttonNewSequence.Text = "New Sequence...";
 			this.buttonNewSequence.UseVisualStyleBackColor = true;
@@ -267,11 +268,11 @@ namespace VixenApplication
 			this.groupBoxSequences.AutoSize = true;
 			this.groupBoxSequences.Controls.Add(this.flowLayoutPanel1);
 			this.groupBoxSequences.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.groupBoxSequences.Location = new System.Drawing.Point(16, 256);
-			this.groupBoxSequences.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+			this.groupBoxSequences.Location = new System.Drawing.Point(13, 205);
+			this.groupBoxSequences.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBoxSequences.Name = "groupBoxSequences";
-			this.groupBoxSequences.Padding = new System.Windows.Forms.Padding(5, 6, 5, 6);
-			this.groupBoxSequences.Size = new System.Drawing.Size(254, 339);
+			this.groupBoxSequences.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxSequences.Size = new System.Drawing.Size(203, 271);
 			this.groupBoxSequences.TabIndex = 0;
 			this.groupBoxSequences.TabStop = false;
 			this.groupBoxSequences.Text = "Sequences";
@@ -286,10 +287,9 @@ namespace VixenApplication
 			this.flowLayoutPanel1.Controls.Add(this.listViewRecentSequences);
 			this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-			this.flowLayoutPanel1.Location = new System.Drawing.Point(5, 26);
-			this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
+			this.flowLayoutPanel1.Location = new System.Drawing.Point(4, 21);
 			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-			this.flowLayoutPanel1.Size = new System.Drawing.Size(244, 307);
+			this.flowLayoutPanel1.Size = new System.Drawing.Size(195, 245);
 			this.flowLayoutPanel1.TabIndex = 18;
 			// 
 			// listViewRecentSequences
@@ -302,18 +302,19 @@ namespace VixenApplication
 			this.listViewRecentSequences.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.listViewRecentSequences.FullRowSelect = true;
 			this.listViewRecentSequences.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.listViewRecentSequences.HideSelection = false;
 			this.listViewRecentSequences.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem7,
-            listViewItem8,
-            listViewItem9,
-            listViewItem10,
-            listViewItem11,
-            listViewItem12});
-			this.listViewRecentSequences.Location = new System.Drawing.Point(5, 126);
-			this.listViewRecentSequences.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            listViewItem1,
+            listViewItem2,
+            listViewItem3,
+            listViewItem4,
+            listViewItem5,
+            listViewItem6});
+			this.listViewRecentSequences.Location = new System.Drawing.Point(4, 100);
+			this.listViewRecentSequences.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.listViewRecentSequences.MultiSelect = false;
 			this.listViewRecentSequences.Name = "listViewRecentSequences";
-			this.listViewRecentSequences.Size = new System.Drawing.Size(225, 162);
+			this.listViewRecentSequences.Size = new System.Drawing.Size(180, 130);
 			this.listViewRecentSequences.TabIndex = 0;
 			this.listViewRecentSequences.UseCompatibleStateImageBehavior = false;
 			this.listViewRecentSequences.View = System.Windows.Forms.View.Details;
@@ -329,13 +330,13 @@ namespace VixenApplication
 			this.contextMenuStripRecent.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripItemClearSequences});
 			this.contextMenuStripRecent.Name = "contextMenuStripRecent";
-			this.contextMenuStripRecent.Size = new System.Drawing.Size(236, 28);
+			this.contextMenuStripRecent.Size = new System.Drawing.Size(200, 26);
 			// 
 			// toolStripItemClearSequences
 			// 
 			this.toolStripItemClearSequences.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripItemClearSequences.Name = "toolStripItemClearSequences";
-			this.toolStripItemClearSequences.Size = new System.Drawing.Size(235, 24);
+			this.toolStripItemClearSequences.Size = new System.Drawing.Size(199, 22);
 			this.toolStripItemClearSequences.Text = "Clear Recent Sequences";
 			this.toolStripItemClearSequences.ToolTipText = "Clears the Recent Sequence list";
 			// 
@@ -343,10 +344,10 @@ namespace VixenApplication
 			// 
 			this.labelVersion.AutoSize = true;
 			this.labelVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.labelVersion.Location = new System.Drawing.Point(399, 171);
-			this.labelVersion.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+			this.labelVersion.Location = new System.Drawing.Point(319, 137);
+			this.labelVersion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.labelVersion.Name = "labelVersion";
-			this.labelVersion.Size = new System.Drawing.Size(49, 20);
+			this.labelVersion.Size = new System.Drawing.Size(39, 15);
 			this.labelVersion.TabIndex = 1;
 			this.labelVersion.Text = "[0.0.0]";
 			// 
@@ -355,11 +356,11 @@ namespace VixenApplication
 			this.groupBoxSystemConfig.AutoSize = true;
 			this.groupBoxSystemConfig.Controls.Add(this.flowLayoutPanel2);
 			this.groupBoxSystemConfig.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.groupBoxSystemConfig.Location = new System.Drawing.Point(294, 256);
-			this.groupBoxSystemConfig.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+			this.groupBoxSystemConfig.Location = new System.Drawing.Point(235, 205);
+			this.groupBoxSystemConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBoxSystemConfig.Name = "groupBoxSystemConfig";
-			this.groupBoxSystemConfig.Padding = new System.Windows.Forms.Padding(5, 6, 5, 6);
-			this.groupBoxSystemConfig.Size = new System.Drawing.Size(256, 145);
+			this.groupBoxSystemConfig.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxSystemConfig.Size = new System.Drawing.Size(205, 116);
 			this.groupBoxSystemConfig.TabIndex = 1;
 			this.groupBoxSystemConfig.TabStop = false;
 			this.groupBoxSystemConfig.Text = "System Configuration";
@@ -372,10 +373,9 @@ namespace VixenApplication
 			this.flowLayoutPanel2.Controls.Add(this.buttonSetupOutputPreviews);
 			this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-			this.flowLayoutPanel2.Location = new System.Drawing.Point(5, 26);
-			this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(4);
+			this.flowLayoutPanel2.Location = new System.Drawing.Point(4, 21);
 			this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-			this.flowLayoutPanel2.Size = new System.Drawing.Size(246, 113);
+			this.flowLayoutPanel2.Size = new System.Drawing.Size(197, 90);
 			this.flowLayoutPanel2.TabIndex = 18;
 			// 
 			// buttonSetupDisplay
@@ -385,10 +385,10 @@ namespace VixenApplication
 			this.buttonSetupDisplay.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonSetupDisplay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonSetupDisplay.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonSetupDisplay.Location = new System.Drawing.Point(5, 6);
-			this.buttonSetupDisplay.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+			this.buttonSetupDisplay.Location = new System.Drawing.Point(4, 5);
+			this.buttonSetupDisplay.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonSetupDisplay.Name = "buttonSetupDisplay";
-			this.buttonSetupDisplay.Size = new System.Drawing.Size(225, 38);
+			this.buttonSetupDisplay.Size = new System.Drawing.Size(180, 30);
 			this.buttonSetupDisplay.TabIndex = 3;
 			this.buttonSetupDisplay.Text = "Setup Display";
 			this.buttonSetupDisplay.UseVisualStyleBackColor = true;
@@ -403,10 +403,10 @@ namespace VixenApplication
 			this.buttonSetupOutputPreviews.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonSetupOutputPreviews.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonSetupOutputPreviews.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonSetupOutputPreviews.Location = new System.Drawing.Point(5, 56);
-			this.buttonSetupOutputPreviews.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+			this.buttonSetupOutputPreviews.Location = new System.Drawing.Point(4, 45);
+			this.buttonSetupOutputPreviews.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonSetupOutputPreviews.Name = "buttonSetupOutputPreviews";
-			this.buttonSetupOutputPreviews.Size = new System.Drawing.Size(225, 38);
+			this.buttonSetupOutputPreviews.Size = new System.Drawing.Size(180, 30);
 			this.buttonSetupOutputPreviews.TabIndex = 4;
 			this.buttonSetupOutputPreviews.Text = "Setup Previews";
 			this.buttonSetupOutputPreviews.UseVisualStyleBackColor = true;
@@ -418,10 +418,10 @@ namespace VixenApplication
 			// 
 			this.labelDebugVersion.AutoSize = true;
 			this.labelDebugVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.labelDebugVersion.Location = new System.Drawing.Point(399, 208);
-			this.labelDebugVersion.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+			this.labelDebugVersion.Location = new System.Drawing.Point(319, 166);
+			this.labelDebugVersion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.labelDebugVersion.Name = "labelDebugVersion";
-			this.labelDebugVersion.Size = new System.Drawing.Size(49, 20);
+			this.labelDebugVersion.Size = new System.Drawing.Size(39, 15);
 			this.labelDebugVersion.TabIndex = 16;
 			this.labelDebugVersion.Text = "[0.0.0]";
 			// 
@@ -431,13 +431,13 @@ namespace VixenApplication
 			this.toolStripStatusLabelExecutionLight.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
 			this.toolStripStatusLabelExecutionLight.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabelExecutionLight.Name = "toolStripStatusLabelExecutionLight";
-			this.toolStripStatusLabelExecutionLight.Size = new System.Drawing.Size(22, 28);
+			this.toolStripStatusLabelExecutionLight.Size = new System.Drawing.Size(22, 22);
 			// 
 			// toolStripStatusLabel1
 			// 
 			this.toolStripStatusLabel1.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-			this.toolStripStatusLabel1.Size = new System.Drawing.Size(17, 28);
+			this.toolStripStatusLabel1.Size = new System.Drawing.Size(13, 22);
 			this.toolStripStatusLabel1.Text = "  ";
 			// 
 			// toolStripStatusLabelExecutionState
@@ -446,7 +446,7 @@ namespace VixenApplication
 			this.toolStripStatusLabelExecutionState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.toolStripStatusLabelExecutionState.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabelExecutionState.Name = "toolStripStatusLabelExecutionState";
-			this.toolStripStatusLabelExecutionState.Size = new System.Drawing.Size(145, 28);
+			this.toolStripStatusLabelExecutionState.Size = new System.Drawing.Size(120, 22);
 			this.toolStripStatusLabelExecutionState.Text = "Execution: Unknown";
 			// 
 			// toolStripStatusLabel_memory
@@ -455,7 +455,7 @@ namespace VixenApplication
 			this.toolStripStatusLabel_memory.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.toolStripStatusLabel_memory.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabel_memory.Name = "toolStripStatusLabel_memory";
-			this.toolStripStatusLabel_memory.Size = new System.Drawing.Size(259, 28);
+			this.toolStripStatusLabel_memory.Size = new System.Drawing.Size(231, 22);
 			this.toolStripStatusLabel_memory.Spring = true;
 			this.toolStripStatusLabel_memory.Text = "Resource Usage";
 			this.toolStripStatusLabel_memory.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -471,38 +471,51 @@ namespace VixenApplication
             this.toolStripStatusLabelExecutionState,
             this.toolStripStatusUpdates,
             this.toolStripStatusLabel_memory});
-			this.statusStrip.Location = new System.Drawing.Point(0, 625);
+			this.statusStrip.Location = new System.Drawing.Point(0, 515);
 			this.statusStrip.Name = "statusStrip";
-			this.statusStrip.Padding = new System.Windows.Forms.Padding(2, 0, 26, 0);
-			this.statusStrip.Size = new System.Drawing.Size(574, 30);
+			this.statusStrip.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
+			this.statusStrip.Size = new System.Drawing.Size(459, 24);
 			this.statusStrip.SizingGrip = false;
 			this.statusStrip.TabIndex = 13;
 			this.statusStrip.Text = "statusStrip";
 			// 
+			// toolStripStatusUpdates
+			// 
+			this.toolStripStatusUpdates.Name = "toolStripStatusUpdates";
+			this.toolStripStatusUpdates.Size = new System.Drawing.Size(50, 19);
+			this.toolStripStatusUpdates.Text = "Updates";
+			// 
 			// pictureBox1
 			// 
 			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-			this.pictureBox1.Location = new System.Drawing.Point(16, 38);
-			this.pictureBox1.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+			this.pictureBox1.Location = new System.Drawing.Point(13, 30);
+			this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(534, 206);
+			this.pictureBox1.Size = new System.Drawing.Size(427, 165);
 			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.pictureBox1.TabIndex = 14;
 			this.pictureBox1.TabStop = false;
 			// 
-			// toolStripStatusUpdates
+			// progressBar
 			// 
-			this.toolStripStatusUpdates.Name = "toolStripStatusUpdates";
-			this.toolStripStatusUpdates.Size = new System.Drawing.Size(64, 25);
-			this.toolStripStatusUpdates.Text = "Updates";
+			this.progressBar.CustomText = "";
+			this.progressBar.Location = new System.Drawing.Point(12, 484);
+			this.progressBar.Name = "progressBar";
+			this.progressBar.ProgressColor = System.Drawing.Color.Lime;
+			this.progressBar.Size = new System.Drawing.Size(428, 23);
+			this.progressBar.TabIndex = 17;
+			this.progressBar.TextColor = System.Drawing.Color.Black;
+			this.progressBar.TextFont = new System.Drawing.Font("Segoe UI", 9F);
+			this.progressBar.VisualMode = Common.Controls.ProgressBarDisplayMode.CustomText;
 			// 
 			// VixenApplication
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.AutoSize = true;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.ClientSize = new System.Drawing.Size(574, 655);
+			this.ClientSize = new System.Drawing.Size(459, 539);
+			this.Controls.Add(this.progressBar);
 			this.Controls.Add(this.groupBoxSequences);
 			this.Controls.Add(this.labelDebugVersion);
 			this.Controls.Add(this.statusStrip);
@@ -512,9 +525,9 @@ namespace VixenApplication
 			this.Controls.Add(this.pictureBox1);
 			this.DoubleBuffered = true;
 			this.MainMenuStrip = this.menuStripMain;
-			this.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.MaximizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(586, 645);
+			this.MinimumSize = new System.Drawing.Size(472, 524);
 			this.Name = "VixenApplication";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Vixen Administration";
@@ -580,6 +593,7 @@ namespace VixenApplication
 		private ContextMenuStrip contextMenuStripRecent;
 		private ToolStripMenuItem toolStripItemClearSequences;
 		private ToolStripStatusLabel toolStripStatusUpdates;
+		private Common.Controls.TextProgressBar progressBar;
 	}
 }
 
