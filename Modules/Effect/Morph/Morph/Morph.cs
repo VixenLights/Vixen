@@ -148,7 +148,7 @@ namespace VixenModules.Effect.Morph
 				DefaultToSelect = false,
 				ToggleStartSide = false,
 				ToggleStartPoint = false,
-				CopyPolygons = false,
+				CopyPolygons = true,
 				ShowStartSide = false,
 				ShowTimeBar = true,
 				AddPoint = true,
@@ -601,7 +601,7 @@ namespace VixenModules.Effect.Morph
 		/// Determines the color of the polygon or line.  This setting is only applicable to Time Based mode.
 		/// </summary>
 		[Value]
-		[ProviderCategory(@"WipeConfiguration", 4)]
+		[ProviderCategory(@"PolygonConfiguration", 4)]
 		[ProviderDisplayName(@"PolygonColor")]
 		[ProviderDescription(@"PolygonColor")]
 		[PropertyOrder(6)]
@@ -623,7 +623,7 @@ namespace VixenModules.Effect.Morph
 		/// Determines if the Fill Type of the polygon (Solid or Outline).
 		/// </summary>
 		[Value]
-		[ProviderCategory(@"WipeConfiguration", 4)]
+		[ProviderCategory(@"PolygonConfiguration", 4)]
 		[ProviderDisplayName(@"FillPolygon")]
 		[ProviderDescription(@"FillPolygon")]
 		[PropertyOrder(7)]
@@ -832,8 +832,26 @@ namespace VixenModules.Effect.Morph
 				// Get the specified morph polygon
 				IMorphPolygon morphPolygon = wipePolygons[polygonIndex];
 
+				// Create the wipe render data
+				MorphWipePolygonRenderData wipeRenderData = new MorphWipePolygonRenderData();
+
+				// If the polygon is pattern then...
+				if (PolygonType == PolygonType.Pattern)
+				{
+					// Add a head is done flag for each repeating polygon
+					for (int index = 0; index < RepeatCount + 1; index++)
+					{
+						wipeRenderData.HeadIsDone.Add(false);
+					}
+				}
+				else
+				{
+					// Otherwise just add one flag 
+					wipeRenderData.HeadIsDone.Add(false);
+				}
+
 				// Create a new instance of wipe render data
-				_wipePolygonRenderData.Add(new MorphWipePolygonRenderData());
+				_wipePolygonRenderData.Add(wipeRenderData);
 
 				// Get the model polygon from the morph polygon
 				Polygon polygonModel = morphPolygon.Polygon;
@@ -1930,11 +1948,11 @@ namespace VixenModules.Effect.Morph
 						// back onto the display element when de-accelerating.
 						if (headPosition > length + morphPolygon.HeadLength - 1)
 						{
-							_wipePolygonRenderData[polygonIndex].HeadIsDone = true;								
+							_wipePolygonRenderData[polygonIndex].HeadIsDone[index] = true;								
 						}
 
 						// If the head has wiped across the polygon then....
-						if (_wipePolygonRenderData[polygonIndex].HeadIsDone)
+						if (_wipePolygonRenderData[polygonIndex].HeadIsDone[index])
 						{
 							// Set its position just past the end of the polygon so that the tail
 							// can wipe off the polygon							

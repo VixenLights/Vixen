@@ -1561,6 +1561,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// </summary>
 		private void OK()
 		{
+			// Round the points the nearest pixel
+			SnapToGrid();
+
 			// If there are any polygons then...
 			if (Polygons.Any())
 			{
@@ -2124,6 +2127,16 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				// Select the pasted line
 				SelectLine(copiedLineVM, true);
 
+				// If we are in time based mode then...
+				if (EditorCapabilities.ShowTimeBar)
+				{
+					// Update the snapshot polygon with the copied view model polygon
+					SelectedSnapShot.LineViewModel = copiedLineVM;
+
+					// Reselect the polygon snapshot to reconfigure the bindings
+					SelectPolygonSnapShot(SelectedSnapShot);
+				}
+
 				// Display the resize adorner
 				EventHandler handler = DisplayResizeAdorner;
 				handler?.Invoke(this, new EventArgs());				
@@ -2166,6 +2179,16 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 
 				// Select the pasted polygon
 				SelectPolygon(copiedPolygonVM, true);
+
+				// If we are in time based mode then...
+				if (EditorCapabilities.ShowTimeBar)
+				{
+					// Update the snapshot polygon with the copied view model polygon
+					SelectedSnapShot.PolygonViewModel = copiedPolygonVM;
+
+					// Reselect the polygon snapshot to reconfigure the bindings
+					SelectPolygonSnapShot(SelectedSnapShot);
+				}
 
 				// Display the resize adorner
 				EventHandler handler = DisplayResizeAdorner;

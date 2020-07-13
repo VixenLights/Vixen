@@ -10,6 +10,9 @@ namespace VixenModules.Effect.Morph
 	{
 		#region Constructor
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
 		public MorphWipePolygonRenderData()
 		{
 			X1Points = new List<int>();
@@ -17,6 +20,8 @@ namespace VixenModules.Effect.Morph
 
 			X2Points = new List<int>();			
 			Y2Points = new List<int>();
+
+			HeadIsDone = new List<bool>();
 		}
 
 		#endregion
@@ -55,7 +60,7 @@ namespace VixenModules.Effect.Morph
 		/// <summary>
 		/// Gets or sets the flag that indicates the head has wiped off the polygon.
 		/// </summary>
-		public bool HeadIsDone { get; set; }
+		public List<bool> HeadIsDone { get; set; }
 
 		/// <summary>
 		/// Gets or sets the acceleration of the head.
