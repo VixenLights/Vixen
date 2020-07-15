@@ -113,7 +113,20 @@ namespace VixenModules.App.Polygon
 				pt.Y = pt.Y * yScaleFactor;
 			}
 		}
-		
+
+		/// <summary>
+		/// Rounds the points to the nearest integer;
+		/// </summary>
+		public void RoundPoints()
+		{
+			foreach (PolygonPoint pt in Points)
+			{
+				// Scale the points for the editor canvas size
+				pt.X = Math.Round(pt.X);
+				pt.Y = Math.Round(pt.Y);
+			}
+		}
+
 		#endregion
 	}
 }

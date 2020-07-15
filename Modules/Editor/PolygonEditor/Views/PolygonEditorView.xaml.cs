@@ -142,7 +142,7 @@ namespace VixenModules.Editor.PolygonEditor.Views
 					{
 						// If a polygon view model is populated then...
 						if (snapShot.PolygonViewModel != null)
-						{							
+						{
 							// Add the polygon to the return collection
 							polygons.Add(snapShot.PolygonViewModel.Polygon);
 						}						
@@ -160,6 +160,7 @@ namespace VixenModules.Editor.PolygonEditor.Views
 				{
 					// Scale the polygon model points to the display element dimensions
 					polygon.ScalePoints(1.0 / PolygonPointXConverter.XScaleFactor, 1.0 / PolygonPointYConverter.YScaleFactor);					
+					polygon.RoundPoints();
 				}
 
 				return polygons;

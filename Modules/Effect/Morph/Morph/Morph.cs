@@ -674,6 +674,18 @@ namespace VixenModules.Effect.Morph
 		#region Protected Methods
 
 		/// <summary>
+		/// Allows derived effects to react to when the target positioning has changed.
+		/// </summary>
+		protected override void TargetPositioningChanged()
+		{
+			// Call the base class implementation
+			base.TargetPositioningChanged();
+
+			// Make sure the polygons/lines still fit on the display area				
+			LimitShapes();
+		}
+
+		/// <summary>
 		/// Handles resizing polygons/lines when the display element changes.
 		/// </summary>
 		protected override void TargetNodesChanged()
