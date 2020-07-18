@@ -203,7 +203,11 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		public PolygonViewModel SelectedPolygon
 		{
 			get { return GetValue<PolygonViewModel>(SelectedPolygonProperty); }
-			private set { SetValue(SelectedPolygonProperty, value); }
+			private set
+			{
+				SetValue(SelectedPolygonProperty, value);
+				SelectedShape = value;
+			}
 		}
 
 		//  Why is the SelectedPolygon Catel?
@@ -220,13 +224,28 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		public LineViewModel SelectedLine
 		{
 			get { return GetValue<LineViewModel>(SelectedLineProperty); }
-			private set { SetValue(SelectedLineProperty, value); }
+			private set
+			{
+				SetValue(SelectedLineProperty, value);
+				SelectedShape = value;
+			}
 		}
 
 		/// <summary>
 		/// SelectedLine property data.
 		/// </summary>
 		public static readonly PropertyData SelectedLineProperty = RegisterProperty(nameof(SelectedLine), typeof(LineViewModel));
+
+		public ShapeViewModel SelectedShape
+		{
+			get { return GetValue<ShapeViewModel>(SelectedShapeProperty); }
+			private set { SetValue(SelectedShapeProperty, value); }
+		}
+
+		/// <summary>
+		/// SelectedLine property data.
+		/// </summary>
+		public static readonly PropertyData SelectedShapeProperty = RegisterProperty(nameof(SelectedShape), typeof(ShapeViewModel));
 
 		/// <summary>
 		/// Gets or sets the previous point during a point move operation.
@@ -1312,7 +1331,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		{
 			// Store off the selected polygon
 			SelectedPolygon = polygon;
-
+			
 			// Select all the points on the polygon and the center hash
 			SelectedPolygon.SelectPolygon();
 		}
@@ -1364,7 +1383,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 
 			// Initialize the new line as the SelectedLine
 			SelectedLine = NewLine;
-
+			
 			// Save off the model line
 			LineModels.Add(line);
 
@@ -1396,7 +1415,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 
 			// Clear out the selected line
 			SelectedLine = null;
-
+			
 			// Since there is no longer a selected polygon or line update the commands
 			((Command)CopyCommand).RaiseCanExecuteChanged();
 			((Command)DeleteCommand).RaiseCanExecuteChanged();
@@ -1605,25 +1624,30 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// Snaps the polygon points to pixel positions.  The editor resolution is not the same as the display element.  
 		/// </summary>
 		private void SnapToGrid()
-		{			
-			// Loop over the polygons
-			foreach (PolygonViewModel polygon in Polygons)
+		{
+			// If the width and height have been intialized then...
+			// TODO: Find a better way to do this than mouse enter
+			if (ActualWidth != 0 && ActualHeight != 0)
 			{
-				// Snap the polygon to the display element
-				polygon.SnapToGrid(ActualWidth, ActualHeight);
-				
-				// Raise the property change events for the points to the converters run
-				polygon.NotifyPointCollectionChanged();
-			}
+				// Loop over the polygons
+				foreach (PolygonViewModel polygon in Polygons)
+				{
+					// Snap the polygon to the display element
+					polygon.SnapToGrid(ActualWidth, ActualHeight);
 
-			// Loop over the lines
-			foreach (LineViewModel line in Lines)
-			{
-				// Snap the polygon to the display element
-				line.SnapToGrid(ActualWidth, ActualHeight);
+					// Raise the property change events for the points to the converters run
+					polygon.NotifyPointCollectionChanged();
+				}
 
-				// Raise the property change events for the points to the converters run
-				line.NotifyPointCollectionChanged();
+				// Loop over the lines
+				foreach (LineViewModel line in Lines)
+				{
+					// Snap the polygon to the display element
+					line.SnapToGrid(ActualWidth, ActualHeight);
+
+					// Raise the property change events for the points to the converters run
+					line.NotifyPointCollectionChanged();
+				}
 			}
 		}
 
