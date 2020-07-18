@@ -1107,4 +1107,7 @@
   <data name="TailColor" xml:space="preserve">
     <value>Determines the wipe tail color over the duration of the effect.</value>
   </data>
+  <data name="Label" xml:space="preserve">
+    <value>Label of the polygon or line.  Helps with identifying the shape when in Free Form mode.</value>
+  </data>
 </root>

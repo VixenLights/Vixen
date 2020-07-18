@@ -1068,4 +1068,7 @@
   <data name="PolygonColor" xml:space="preserve">
     <value>Polygon Color</value>
   </data>
+  <data name="Label" xml:space="preserve">
+    <value>Label</value>
+  </data>
 </root>
