@@ -812,10 +812,14 @@ namespace VixenModules.Effect.Morph
 				MorphPolygons[0].TailColor = new ColorGradient(TailColor);
 			}
 
-			// Store off the matrix width and height
+			// Store off the display element width and height
 			_bufferWi = BufferWi;
 			_bufferHt = BufferHt;
-						
+
+			// Give the morph polygon access to the display element dimensions
+			MorphPolygon.BufferWidth = _bufferWi;
+			MorphPolygon.BufferHeight = _bufferHt;
+
 			// Clear the wipe polygon render data
 			_wipePolygonRenderData.Clear();
 

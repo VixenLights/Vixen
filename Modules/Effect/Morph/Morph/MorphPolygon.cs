@@ -31,6 +31,38 @@ namespace VixenModules.Effect.Morph
 			HeadColor = new ColorGradient(System.Drawing.Color.White);
 			TailColor = new ColorGradient(System.Drawing.Color.Red);
 			FillColor = new ColorGradient(System.Drawing.Color.Red);
+
+			int width = 10;
+			int height = 10;
+
+			// If the display element size is available then...
+			if (BufferWidth != 0 && BufferHeight != 0)
+			{
+				// Default to the polygon being 1/4 the display element
+				width = BufferWidth / 4;
+				height = BufferHeight / 4;
+			}
+
+			// Create the default polygon
+			Polygon = new Polygon();
+			PolygonPoint ptTopLeft = new PolygonPoint();
+			ptTopLeft.X = 0;
+			ptTopLeft.Y = 0;
+			PolygonPoint ptTopRight = new PolygonPoint();
+			ptTopRight.X = width - 1;
+			ptTopRight.Y = 0;
+			PolygonPoint ptBottomRight = new PolygonPoint();
+			ptBottomRight.X = width - 1;
+			ptBottomRight.Y = height - 1;
+			PolygonPoint ptBottomLeft = new PolygonPoint();
+			ptBottomLeft.X = 0;
+			ptBottomLeft.Y = height - 1;
+
+			// Add the points to the polygon
+			Polygon.Points.Add(ptTopLeft);
+			Polygon.Points.Add(ptTopRight);
+			Polygon.Points.Add(ptBottomRight);
+			Polygon.Points.Add(ptBottomLeft);
 		}
 
 		#endregion
@@ -260,6 +292,20 @@ namespace VixenModules.Effect.Morph
 			};
 			SetBrowsable(propertyStates);
 		}
+
+		#endregion
+
+		#region Public Static Properties
+
+		/// <summary>
+		/// Width of the display element associated with the effect.
+		/// </summary>
+		public static int BufferWidth { get; set; }
+
+		/// <summary>
+		/// Height of the display element associated with the effect.
+		/// </summary>
+		public static int BufferHeight { get; set; }
 
 		#endregion
 	}
