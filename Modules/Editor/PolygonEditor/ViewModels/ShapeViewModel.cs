@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using VixenModules.Editor.PolygonEditor.Converters;
 
 namespace VixenModules.Editor.PolygonEditor.ViewModels
@@ -37,6 +38,50 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		#endregion
 
 		#region Catel Public Properties
+
+		/// <summary>
+		/// Shape model property.
+		/// </summary>
+		[Model]
+		public App.Polygon.Shape Shape
+		{
+			get { return GetValue<App.Polygon.Shape>(ShapeProperty); }
+			set { SetValue(ShapeProperty, value); }
+		}
+
+		/// <summary>
+		/// Shape model property data.
+		/// </summary>
+		public static readonly PropertyData ShapeProperty = RegisterProperty(nameof(Shape), typeof(App.Polygon.Shape));
+
+		/// <summary>
+		/// Label of the shape.
+		/// </summary>
+		[ViewModelToModel("Shape")]
+		public string Label
+		{
+			get { return GetValue<string>(LabelProperty); }
+			set { SetValue(LabelProperty, value); }
+		}
+
+		/// <summary>
+		/// Label property data.
+		/// </summary>
+		public static readonly PropertyData LabelProperty = RegisterProperty(nameof(Label), typeof(string), null);
+
+		/// <summary>
+		/// Controls whether the shape's label is visible.
+		/// </summary>
+		public bool LabelVisible
+		{
+			get { return GetValue<bool>(LabelVisibleProperty); }
+			set { SetValue(LabelVisibleProperty, value); }
+		}
+
+		/// <summary>
+		/// LabelVisible property data.
+		/// </summary>
+		public static readonly PropertyData LabelVisibleProperty = RegisterProperty(nameof(LabelVisible), typeof(bool), null);
 
 		/// <summary>
 		/// Color of the center point hash.

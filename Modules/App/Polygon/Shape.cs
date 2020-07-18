@@ -28,6 +28,11 @@ namespace VixenModules.App.Polygon
 		/// </summary>
 		public Guid ID { get; set; }
 
+		/// <summary>
+		/// Gets or sets the label of the shape.
+		/// </summary>
+		public string Label { get; set; }
+
 		#endregion
 
 		#region Public Methods
@@ -39,6 +44,9 @@ namespace VixenModules.App.Polygon
 		{
 			// Copy the ID of the source shape
 			ID = sourceShape.ID;
+
+			// Copy the label of the shape
+			Label = sourceShape.Label;
 		}
 
 		#endregion

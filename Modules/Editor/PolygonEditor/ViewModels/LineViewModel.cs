@@ -89,7 +89,17 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Model representation of the line.
 		/// </summary>
-		public Line Line { get; set; }
+		public Line Line
+		{
+			get
+			{
+				return (Line)Shape;
+			}
+			set
+			{
+				Shape = value;
+			}
+		}
 
 		#endregion
 

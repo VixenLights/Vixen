@@ -2257,6 +2257,7 @@ namespace VixenModules.Effect.Morph
 				serializedPolygon.Time = morphPolygon.Time;
 				serializedPolygon.FillType = morphPolygon.FillType;
 				serializedPolygon.FillColor = new ColorGradient(morphPolygon.FillColor);
+				serializedPolygon.Label = morphPolygon.Label;
 
 				if (morphPolygon.Polygon != null)
 				{
@@ -2295,6 +2296,7 @@ namespace VixenModules.Effect.Morph
 				morphPolygon.Time = serializedPolygon.Time;
 				morphPolygon.FillType = serializedPolygon.FillType;
 				morphPolygon.FillColor = new ColorGradient(serializedPolygon.FillColor);
+				morphPolygon.Label = serializedPolygon.Label;
 
 				if (serializedPolygon.Polygon != null)
 				{

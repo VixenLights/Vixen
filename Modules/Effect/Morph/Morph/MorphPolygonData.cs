@@ -42,6 +42,9 @@ namespace VixenModules.Effect.Morph
 
 		[DataMember]
 		public Line Line { get; set; }
+
+		[DataMember]
+		public string Label { get; set; }
 					
 		#endregion
 
@@ -62,6 +65,7 @@ namespace VixenModules.Effect.Morph
 				TailColor = new ColorGradient(TailColor),
 				FillColor = new ColorGradient(FillColor),
 				Time = Time,								
+				Label = Label,
 			};
 
 			return result;

@@ -93,6 +93,11 @@ namespace VixenModules.Effect.Morph
 		/// Gets a point based shape for either the polygon or line.
 		/// </summary>		
 		/// <remarks>This method allows for common shape processing code for polygon or line</remarks>
-		PointBasedShape GetPointBasedShape();		
+		PointBasedShape GetPointBasedShape();	
+		
+		/// <summary>
+		/// Label of the shape.
+		/// </summary>
+		string Label { get; set; }
 	}
 }

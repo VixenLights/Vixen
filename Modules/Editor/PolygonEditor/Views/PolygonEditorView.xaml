@@ -94,6 +94,12 @@
 				<Button Command="{Binding LineToPolygonCommand}"  ToolTip="Convert to Polygon">
 					<Image Source="/PolygonEditor;component/Images/LineToPolygon.png" Height="20" Width="20" />
 				</Button>
+				<RadioButton Command="{Binding ToggleLabelsCommand}" IsChecked="{Binding ShowLabels}"
+				             ToolTip="Show Polygon/Line Labels" GroupName="ShowLabels"
+				             Width="30">
+					<Image Source="/PolygonEditor;component/Images/Label.png" Height="20" Width="20"/>
+				</RadioButton>
+
 			</ToolBar>
 		</ToolBarTray>
 		<views:PolygonControl  x:Name="PolygonUserControl" Grid.Column="1" Grid.Row="1" DockPanel.Dock="Left" HorizontalAlignment="Stretch">

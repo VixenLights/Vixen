@@ -90,7 +90,29 @@
 				Canvas.Top="{Binding Path=PointMoving.Y, Converter={ikriv:MathConverter}, ConverterParameter=x-3}" 
 				Visibility="{Binding Path=MovingPointVisibilityPrevious, Converter={StaticResource BoolToVis}}"/>
 
-						<ItemsControl ItemsSource="{Binding Polygons}">
+					<ItemsControl ItemsSource="{Binding Polygons}">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<Canvas></Canvas>
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<TextBlock FontSize="24" Text="{Binding Label}"
+								           Visibility = "{Binding LabelVisible, Converter={StaticResource BoolToVis}}"/>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+
+						<ItemsControl.ItemContainerStyle>
+							<Style>
+								<Setter Property="Canvas.Left" Value="{Binding CenterPoint.X, Converter={ikriv:MathConverter}, ConverterParameter=x+5}"/>
+								<Setter Property="Canvas.Top" Value="{Binding CenterPoint.Y, Converter={ikriv:MathConverter}, ConverterParameter=x+5}"/>
+							</Style>
+						</ItemsControl.ItemContainerStyle>
+					</ItemsControl>
+
+
+					<ItemsControl ItemsSource="{Binding Polygons}">
 							<ItemsControl.ItemsPanel>
 								<ItemsPanelTemplate>
 									<Canvas>
@@ -281,16 +303,18 @@
 											</Style>
 										</ItemsControl.ItemContainerStyle>
 									</ItemsControl>
-
-								</Grid>
+									</Grid>
 								</DataTemplate>
 							</ItemsControl.ItemTemplate>
 						</ItemsControl>
 					</views:PolygonCanvas>
 				</Viewbox>
-			
-			<DataGrid Name="pointDataGrid" AutoGenerateColumns="False" DataContext="Binding Path=SelectedPoints" Margin="10,0,0,0" 
-				  RowHeaderWidth="0" DockPanel.Dock="Right" Grid.Column="1">
+			<StackPanel Grid.Column="1">
+				<Label Content="Name:"></Label>
+				<TextBox Margin="10,0,0,0" Text="{Binding SelectedShape.Label, UpdateSourceTrigger=PropertyChanged, FallbackValue=Select Shape}" Background="White"></TextBox>
+
+				<DataGrid Name="pointDataGrid" AutoGenerateColumns="False" DataContext="Binding Path=SelectedPoints" Margin="10,0,0,0" 
+				          RowHeaderWidth="0" DockPanel.Dock="Right" Grid.Column="1">
 				<DataGrid.Columns>
 					<DataGridTextColumn Header="#" Width="*" IsReadOnly="True">
 						<DataGridTextColumn.Binding>
@@ -382,6 +406,7 @@
 				</ControlTemplate>
 			</DataGrid.RowValidationErrorTemplate>
 		</DataGrid>
+			</StackPanel>
 		</Grid>
 	</DockPanel>
 </UserControl>

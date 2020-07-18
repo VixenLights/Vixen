@@ -78,7 +78,8 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			MoveSnapshotCommand = new Command<MouseEventArgs>(MoveMouseSnapshot);
 			MouseLeftButtonDownTimeBarCommand = new Command<MouseEventArgs>(MouseLeftButtonDownTimeBar);
 			MouseLeftButtonUpTimeBarCommand = new Command<MouseEventArgs>(MouseLeftButtonUpTimeBar);
-			MouseLeaveTimeBarCommand = new Command<MouseEventArgs>(MouseLeaveTimeBar);			
+			MouseLeaveTimeBarCommand = new Command<MouseEventArgs>(MouseLeaveTimeBar);
+			ToggleLabelsCommand = new Command(ToggleLabels);
 		}
 		
 		#endregion
@@ -509,6 +510,20 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// </summary>
 		public static readonly PropertyData TimeBarActualWidthProperty = RegisterProperty(nameof(TimeBarActualWidth), typeof(double));
 
+		/// <summary>
+		/// Gets or sets whether the polygon/line labels should be shown.
+		/// </summary>
+		public bool ShowLabels
+		{
+			get { return GetValue<bool>(ShowLabelsProperty); }
+			set { SetValue(ShowLabelsProperty, value); }
+		}
+
+		/// <summary>
+		/// ShowLabels property data.
+		/// </summary>
+		public static readonly PropertyData ShowLabelsProperty = RegisterProperty(nameof(ShowLabels), typeof(bool));
+
 		#endregion
 
 		#region Public Properties
@@ -826,7 +841,12 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// Time bar mouse leave command.
 		/// </summary>
 		public ICommand MouseLeaveTimeBarCommand { get; private set; }
-		
+
+		/// <summary>
+		/// Toggles Polygon/Line Labels On/Off.
+		/// </summary>
+		public ICommand ToggleLabelsCommand { get; private set; }
+
 		#endregion
 
 		#region Public Mouse Over Methods
@@ -1712,6 +1732,29 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				// Execute the command on the view model
 				SelectedPolygon.DeletePointCommand.Execute(null);		
 			}			
+		}
+
+		/// <summary>
+		/// Turns/on off the polygon/line labels.
+		/// </summary>
+		private void ToggleLabels()
+		{
+			// Toggle the toolbar button
+			ShowLabels = !ShowLabels;
+
+			// Loop over all the polygons
+			foreach (PolygonViewModel polygon in Polygons)
+			{
+				// Toggle the visibility of the labels
+				polygon.LabelVisible = !polygon.LabelVisible;
+			}
+
+			// Loop over all the lines
+			foreach (LineViewModel line in Lines)
+			{
+				// Toggle the visibility of the labels
+				line.LabelVisible = !line.LabelVisible;
+			}
 		}
 
 		/// <summary>

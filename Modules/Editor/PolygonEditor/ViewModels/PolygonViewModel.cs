@@ -96,11 +96,21 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		#endregion
 
 		#region Public Model Properties
-		
+
 		/// <summary>
 		/// Model representation of the polygon.
 		/// </summary>
-		public Polygon Polygon { get; set; }
+		public Polygon Polygon
+		{
+			get
+			{
+				return (Polygon)Shape;
+			}
+			set
+			{
+				Shape = value;
+			}
+		}
 
 		#endregion
 		

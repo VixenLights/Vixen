@@ -39,6 +39,7 @@
 	  <None Remove="Images\arrow_left.png" />
 	  <None Remove="Images\arrow_right.png" />
 	  <None Remove="Images\buttonDrawLine.png" />
+	  <None Remove="Images\Label.png" />
 	  <None Remove="Images\LineToPolygon.png" />
 	  <None Remove="Images\PolygonToLine.png" />
 	  <None Remove="Images\ToggleStartPoint.png" />
@@ -65,6 +66,7 @@
     <Resource Include="Images\copy.png" />
     <Resource Include="Images\cut.png" />
     <Resource Include="Images\delete_32.png" />
+    <Resource Include="Images\Label.png" />
     <Resource Include="Images\LineToPolygon.png" />
     <Resource Include="Images\paste.png" />
     <Resource Include="Images\PolygonToLine.png" />

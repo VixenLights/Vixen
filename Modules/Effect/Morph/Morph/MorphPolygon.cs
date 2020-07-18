@@ -126,6 +126,43 @@ namespace VixenModules.Effect.Morph
 
 		/// <summary>
 		/// Refer to interface documentation.
+		/// </summary>
+		[Value]
+		[ProviderCategory(@"Configuration", 1)]
+		[ProviderDisplayName(@"Label")]
+		[ProviderDescription(@"Label")]
+		[PropertyOrder(8)]
+		public string Label
+		{
+			get
+			{
+				string label = string.Empty;
+				if (Polygon != null)
+				{
+					label = Polygon.Label;
+				}
+				else if (Line != null)
+				{
+					label = Line.Label;
+				}
+
+				return label;
+			}
+			set
+			{
+				if (Polygon != null)
+				{
+					Polygon.Label = value;
+				}
+				else if (Line != null)
+				{
+					Line.Label = value;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Refer to interface documentation.
 		/// </summary>		
 		public void LimitPoints(int width, int height)
 		{
@@ -198,6 +235,7 @@ namespace VixenModules.Effect.Morph
 				Polygon = Polygon == null ? null : Polygon.Clone(),
 				Line = Line == null ? null : Line.Clone(),
 				Time = Time,
+				Label = Label,
 			};
 
 			return clone;
