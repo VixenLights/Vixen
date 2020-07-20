@@ -1,11 +1,14 @@
-﻿using Common.Controls.ColorManagement.ColorModels;
+﻿using Common.Controls;
+using Common.Controls.ColorManagement.ColorModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Windows.Forms;
 using Vixen.Attributes;
+using Vixen.Extensions;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
@@ -71,11 +74,6 @@ namespace VixenModules.Effect.Morph
 		/// Used in <c>CalculatePixel</c> to transfer pixels from bitmap to frame buffer.
 		/// </summary>
 		private static Color _emptyColor = Color.FromArgb(0, 0, 0, 0);
-
-		/// <summary>
-		/// Stagger used to draw repeating wipe patterns.
-		/// </summary>
-		private int _stagger;
 
 		#endregion
 
@@ -152,7 +150,12 @@ namespace VixenModules.Effect.Morph
 				ShowStartSide = false,
 				ShowTimeBar = true,
 				AddPoint = true,
-			};			
+			};
+		}
+
+		private void PerformConversion()
+		{
+			PolygonType = PolygonType.FreeForm;
 		}
 
 		#endregion
@@ -241,10 +244,42 @@ namespace VixenModules.Effect.Morph
 			get { return _data.PolygonType; }
 			set
 			{
+				// If the user is switching between Pattern type and Free Form type
+				// and a repeating pattern was established then...
+				if (_data.PolygonType == PolygonType.Pattern &&
+				    value == PolygonType.FreeForm &&
+				    RepeatCount != 0)
+				{
+					// Create the message box prompt to see if the user wants the Pattern polygons converted into Free Form polygons
+					MessageBoxForm messageBox = new MessageBoxForm(
+						"Would you like to convert the Pattern polygons to Free Form?", 
+						"Convert Polygons", 
+						MessageBoxButtons.YesNo, 
+						SystemIcons.Question);
+					
+					// Display the prompt
+					DialogResult result = messageBox.ShowDialog();
+
+					// If the user selected to convert the 
+					if (result == DialogResult.OK)
+					{
+						// Convert the pattern polygons into Morph polygons
+						ExpandPatternMorphPolygons();
+						
+						// Clear the Morph Polygon collection
+						MorphPolygons.Clear();
+
+						// Add the pattern polygons to the collection
+						MorphPolygons.AddRange(_patternExpandedMorphPolygons);
+					}
+				}
+
 				_data.PolygonType = value;
 
+				// If the polygon type is Free Form then...
 				if (_data.PolygonType == PolygonType.FreeForm)
 				{
+					// Reset the repeat count
 					RepeatCount = 0;
 				}
 
@@ -293,7 +328,7 @@ namespace VixenModules.Effect.Morph
 				UpdatePolygonFillTypeAttributes();
 			}
 		}
-		
+
 		/// <summary>
 		/// This property is used as the input to the Polygon Editor.  This property type is associated to the polygon editor.		
 		/// </summary>
@@ -859,11 +894,23 @@ namespace VixenModules.Effect.Morph
 					{
 						wipeRenderData.HeadIsDone.Add(false);
 					}
+
+					// Transfer the stagger spacing to the render data 
+					wipeRenderData.Stagger = Stagger;
+
+					// Adjust the stagger so that it does not exceed the total duration of the effect
+					if (TimeSpan.TotalMilliseconds * (_wipePolygonRenderData[polygonIndex].Stagger / 100.0) * RepeatCount > TimeSpan.TotalMilliseconds)
+					{
+						_wipePolygonRenderData[polygonIndex].Stagger = (int)(((TimeSpan.TotalMilliseconds / RepeatCount) / TimeSpan.TotalMilliseconds) * 100);
+					}
 				}
 				else
 				{
 					// Otherwise just add one flag 
 					wipeRenderData.HeadIsDone.Add(false);
+
+					// Otherwise set the stagger to the start offset
+					wipeRenderData.Stagger = morphPolygon.StartOffset;
 				}
 
 				// Create a new instance of wipe render data
@@ -912,18 +959,23 @@ namespace VixenModules.Effect.Morph
 				// Determine the length of the long side of the polygon				
 				int length = GetLengthOfWipePolygon(_wipePolygonRenderData[polygonIndex]);
 
-				// Make a copy of the stagger spacing
-				_stagger = Stagger;
+				double time = 0.0;
 
-				// Adjust the stagger so that it does not exceed the total duration of the effect
-				if (TimeSpan.TotalMilliseconds * (_stagger / 100.0) * RepeatCount > TimeSpan.TotalMilliseconds)
+				// If this is Free Form polygon then...
+				if (RepeatCount == 0 && morphPolygon.StartOffset != 0)
 				{
-					_stagger = (int)(((TimeSpan.TotalMilliseconds / RepeatCount) / TimeSpan.TotalMilliseconds) * 100);
+					// Calculate the time each polygon has to perform the wipe
+					// Subtracting off all the staggers
+					time = TimeSpan.TotalMilliseconds -
+					       TimeSpan.TotalMilliseconds * (_wipePolygonRenderData[polygonIndex].Stagger / 100.0);
 				}
-
-				// Calculate the time each polygon has to perform the wipe
-				// Subtracting off all the staggers
-				double time = TimeSpan.TotalMilliseconds - TimeSpan.TotalMilliseconds * (_stagger / 100.0) * RepeatCount;
+				else
+				{
+					// Calculate the time each polygon has to perform the wipe
+					// Subtracting off all the staggers
+					time = TimeSpan.TotalMilliseconds -
+					       TimeSpan.TotalMilliseconds * (_wipePolygonRenderData[polygonIndex].Stagger / 100.0) * polygonIndex;
+				}
 
 				// Need the head to travel past the end of the polygon/line for the length of the head
 				int polygonLengthForHead = length + morphPolygon.HeadLength;
@@ -1793,11 +1845,17 @@ namespace VixenModules.Effect.Morph
 			// Add the user drawn polygon to the collection
 			_patternExpandedMorphPolygons.Add(MorphPolygons[0]);
 			
+			// The first polygon gets the entire effect duration
+			MorphPolygons[0].StartOffset = 0;
+
 			// Create morph polygons for the repeating pattern
 			for (int index = 0; index < RepeatCount; index++)
 			{
 				// Clone the previous morph polygon
 				IMorphPolygon morphPolygon = (IMorphPolygon)_patternExpandedMorphPolygons.Last().Clone();
+
+				// Calculate the start delay of the wipe
+				morphPolygon.StartOffset = Stagger * (index + 1);
 				
 				// Add the cloned morph polygon to the collection
 				_patternExpandedMorphPolygons.Add(morphPolygon);
@@ -1806,10 +1864,10 @@ namespace VixenModules.Effect.Morph
 				switch (RepeatDirection)
 				{
 					case WipeRepeatDirection.Down:
-						morphPolygon.GetPointBasedShape().MovePoints(0, -RepeatSkip);
+						morphPolygon.GetPointBasedShape().MovePoints(0, RepeatSkip);
 						break;
 					case WipeRepeatDirection.Up:
-						morphPolygon.GetPointBasedShape().MovePoints(0, +RepeatSkip);
+						morphPolygon.GetPointBasedShape().MovePoints(0, -RepeatSkip);
 						break;
 					case WipeRepeatDirection.Left:
 						morphPolygon.GetPointBasedShape().MovePoints(-RepeatSkip, 0);
@@ -1926,13 +1984,6 @@ namespace VixenModules.Effect.Morph
 				// Initialize the time for the wipe
 				double time = TimeSpan.TotalMilliseconds;
 
-				// If stagger has been specified then...
-				if (_stagger != 0)
-				{
-					// Reduce the time for this wipe based on the number of polygons and the amount of stagger
-					time = time - (_stagger * RepeatCount / 100.0) * time;
-				}
-
 				// Make copies of all the points
 				List<int> x1PointsCopy = UpdatePointList(_wipePolygonRenderData[polygonIndex].X1Points, 0);
 				List<int> x2PointsCopy = UpdatePointList(_wipePolygonRenderData[polygonIndex].X2Points, 0);
@@ -1945,8 +1996,17 @@ namespace VixenModules.Effect.Morph
 					// Determine the time in the wipe
 					double timeInWipe = frameNum * FrameTime;
 
-					// Adjust the time for the stagger
-					timeInWipe = timeInWipe - (index * (Stagger / 100.0) * time);
+					// If this is Free Form polygon then....
+					if (RepeatCount == 0 && morphPolygon.StartOffset != 0)
+					{
+						// Adjust the time for the stagger
+						timeInWipe = timeInWipe - ((_wipePolygonRenderData[polygonIndex].Stagger / 100.0) * time);
+					}
+					else
+					{
+						// Adjust the time for the stagger
+						timeInWipe = timeInWipe - (index * (_wipePolygonRenderData[polygonIndex].Stagger / 100.0) * time);
+					}
 
 					// If the wipe time is valid (positive) then...
 					if (timeInWipe >= 0.0)
@@ -2262,6 +2322,7 @@ namespace VixenModules.Effect.Morph
 				serializedPolygon.FillType = morphPolygon.FillType;
 				serializedPolygon.FillColor = new ColorGradient(morphPolygon.FillColor);
 				serializedPolygon.Label = morphPolygon.Label;
+				serializedPolygon.StartOffset = morphPolygon.StartOffset;
 
 				if (morphPolygon.Polygon != null)
 				{
@@ -2301,6 +2362,7 @@ namespace VixenModules.Effect.Morph
 				morphPolygon.FillType = serializedPolygon.FillType;
 				morphPolygon.FillColor = new ColorGradient(serializedPolygon.FillColor);
 				morphPolygon.Label = serializedPolygon.Label;
+				morphPolygon.StartOffset = serializedPolygon.StartOffset;
 
 				if (serializedPolygon.Polygon != null)
 				{

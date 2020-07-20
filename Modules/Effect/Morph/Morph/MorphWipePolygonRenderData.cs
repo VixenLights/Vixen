@@ -82,6 +82,11 @@ namespace VixenModules.Effect.Morph
 		/// </summary>
 		public double TailVelocityZero { get; set; }
 
+		/// <summary>
+		/// Gets or sets the start offset of the wipe.
+		/// </summary>
+		public double Stagger { get; set; }
+
 		#endregion
 	}
 }

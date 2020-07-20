@@ -45,7 +45,10 @@ namespace VixenModules.Effect.Morph
 
 		[DataMember]
 		public string Label { get; set; }
-					
+
+		[DataMember]
+		public int StartOffset { get; set; }
+
 		#endregion
 
 		#region Public Methods
@@ -66,6 +69,7 @@ namespace VixenModules.Effect.Morph
 				FillColor = new ColorGradient(FillColor),
 				Time = Time,								
 				Label = Label,
+				StartOffset = StartOffset,
 			};
 
 			return result;

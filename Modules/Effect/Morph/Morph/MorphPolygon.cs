@@ -161,9 +161,21 @@ namespace VixenModules.Effect.Morph
 		/// </summary>
 		[Value]
 		[ProviderCategory(@"Configuration", 1)]
+		[ProviderDisplayName(@"StartOffset")]
+		[ProviderDescription(@"StartOffset")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(0, 100, 1)]
+		[PropertyOrder(8)]
+		public int StartOffset { get; set; }
+
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
+		[Value]
+		[ProviderCategory(@"Configuration", 1)]
 		[ProviderDisplayName(@"Label")]
 		[ProviderDescription(@"Label")]
-		[PropertyOrder(8)]
+		[PropertyOrder(9)]
 		public string Label
 		{
 			get
@@ -268,6 +280,7 @@ namespace VixenModules.Effect.Morph
 				Line = Line == null ? null : Line.Clone(),
 				Time = Time,
 				Label = Label,
+				StartOffset = StartOffset,
 			};
 
 			return clone;

@@ -99,5 +99,11 @@ namespace VixenModules.Effect.Morph
 		/// Label of the shape.
 		/// </summary>
 		string Label { get; set; }
+
+		/// <summary>
+		/// Determines the percentage into the effect when the wipe should start.
+		/// This property is similar to the stagger property but is used for Free Form mode. 
+		/// </summary>
+		int StartOffset { get; set; }
 	}
 }
