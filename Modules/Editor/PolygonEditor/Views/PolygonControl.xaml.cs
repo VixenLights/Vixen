@@ -2,10 +2,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
-using System.Reflection;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -17,7 +14,7 @@ namespace VixenModules.Editor.PolygonEditor.Views
     /// <summary>
     /// Interaction logic for Polygon.xaml
     /// </summary>
-    public partial class PolygonControl 
+    public partial class PolygonControl
     {
 		#region Constructor
 
@@ -44,19 +41,6 @@ namespace VixenModules.Editor.PolygonEditor.Views
         /// </summary>
         private ResizeAdorner _resizingAdorner;
 
-        /// <summary>
-        /// Stores the position of the mouse when the user left clicks.
-        /// This field is used to draw the rubber band selection lasso. 
-        /// </summary>
-        private Point _originMouseStartPoint;
-
-        /// <summary>
-        /// True when the user just selected a shape (polygon or line).
-        /// This field inhibits drawing the rubberband adorner when selecting a shape via
-        /// the center cross hair.
-        /// </summary>
-        bool _selectedShape;
-
         #endregion
         
 		#region Public Properties
@@ -66,6 +50,7 @@ namespace VixenModules.Editor.PolygonEditor.Views
         /// <summary>
         /// View model for the polygon editor.
         /// </summary>
+        // ReSharper disable once InconsistentNaming
         public PolygonEditorViewModel VM
         {
             get
@@ -80,28 +65,56 @@ namespace VixenModules.Editor.PolygonEditor.Views
                 _vm.RefreshResizeAdorner += RefreshResizeAdorner;
                 _vm.RemoveResizeAdorner += RemoveResizeAdorner;
                 _vm.DisplayResizeAdorner += DisplayResizeAdorner;
+                _vm.DisplayResizeAdornerForSelectedPoints += DisplayResizeAdornerForSelectedPoints;
                 _vm.RepositionResizeAdorner += RepositionResizeAdorner;
-           
+                _vm.RemoveRubberBandAdorner += RemoveRubberBandAdorner;
+                _vm.LassoPoints += LassoPoints;
+                _vm.IsMouseOverLine = IsMouseOverLine;
+                _vm.Canvas = canvas;
+
                 // Give the data grid the SelectedPoints for its ItemsSource
                 pointDataGrid.ItemsSource = VM.SelectedPoints;
             }                
         }
 
         #endregion
-        
+
         #region Private View Model Event Handlers
+
+        /// <summary>
+        /// Lassos (selects) the points under the rubber band.
+        /// </summary>
+        /// <param name="sender">Event sender</param>
+        /// <param name="e">Event arguments</param>
+        private void LassoPoints(object sender, EventArgs e)
+        {
+	        // Use the rubber band adorner to select (lasso) points
+	        LassoPoints((MouseEventArgs)e);
+        }
 
         /// <summary>
         /// Event handler repositions (re-creates) the resize adorner based on the selected points.
         /// </summary>        
         private void RepositionResizeAdorner(object sender, EventArgs e)
         {
-            // If there are selected points then...
-            if (VM.SelectedPoints.Count > 0)
-            {
-                // Reposition the resizing adorner
-                UpdateResizeAdorner(VM.SelectedPoints);
-            }
+	        // Reposition the resizing adorner
+            UpdateResizeAdorner(VM.SelectedPoints);
+        }
+
+        /// <summary>
+        /// Removes the rubber band (lasso) adorner.
+        /// </summary>
+        /// <param name="sender">Event sender</param>
+        /// <param name="e">Event arguments</param>
+        private void RemoveRubberBandAdorner(object sender, EventArgs e)
+        {
+	        // Get the adorner layer from the canvas
+	        AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
+	        Debug.Assert(adornerLayer != null, nameof(adornerLayer) + " != null");
+
+	        // Remove the rubber band adorner
+	        adornerLayer.Remove(_rubberbandAdorner);
+	        _rubberbandAdorner = null;
         }
 
         /// <summary>
@@ -109,31 +122,28 @@ namespace VixenModules.Editor.PolygonEditor.Views
         /// </summary>        
 		private void RemoveResizeAdorner(object sender, EventArgs e)
         {
-            // Deselect all polygon points
-            VM.DeselectAllPolygons();
-
-            // Deselect all line points
-            VM.DeselectAllLines();
-            
-            // Remove the resize adorner
+	        // Remove the resize adorner
             RemoveResizeAdorner();            
         }
 
         /// <summary>
-        /// Event handler dipslays the resize adorner for the specified polygon.
+        /// Event handler displays the resize adorner for the specified shape.
         /// </summary>        
         private void DisplayResizeAdorner(object sender, EventArgs e)
         {
-            if (VM.SelectedPolygon != null)
-            {
-                // Update the resize adorner based on the selected polygon
-                UpdateResizeAdorner(VM.SelectedPolygon.PointCollection);
-            }
-            else if (VM.SelectedLine != null)
-            {
-                // Update the resize adorner based on the selected line
-                UpdateResizeAdorner(VM.SelectedLine.PointCollection);
-            }
+	        // Update the resize adorner based on the selected shape
+	        UpdateResizeAdorner(VM.SelectedShape.PointCollection);
+        }
+
+        /// <summary>
+        /// Event handler displays the resize adorner for the selected points.
+        /// </summary>
+        /// <param name="sender">Event sender</param>
+        /// <param name="e">Event arguments</param>
+        private void DisplayResizeAdornerForSelectedPoints(object sender, EventArgs e)
+        {
+            // Update the resize adorner based on the selected points
+	        UpdateResizeAdorner(VM.SelectedPoints);
         }
 
         /// <summary>
@@ -141,57 +151,8 @@ namespace VixenModules.Editor.PolygonEditor.Views
         /// </summary>        
         private void RefreshResizeAdorner(object sender, EventArgs e)
         {
+            // Redraw the resize adorner
             RefreshResizeAdorner();
-        }
-
-        /// <summary>
-        /// Gets the rectangle bounds of the specified polygon/line points.
-        /// </summary>        
-        private Rect GetSelectedContentBounds(ObservableCollection<PolygonPointViewModel> points)
-        {
-            // Initialize the rectangle to the first point
-            double left = points[0].X;
-            double top = points[0].Y;
-            double right = points[0].X;
-            double bottom = points[0].Y;
-
-            // Loop through the polygon points
-            foreach (PolygonPointViewModel point in points)
-            {
-                // If the point is less than the current left point then...
-                if (point.X < left)
-                {
-                    // Update the left point
-                    left = point.X;
-                }
-
-                // If the point is less than the current top point then...
-                if (point.Y < top)
-                {
-                    // Update the top point
-                    top = point.Y;
-                }
-
-                // If the point is greater than the current right point then...
-                if (point.X > right)
-                {
-                    // Update the right point
-                    right = point.X;
-                }
-
-                // if the point is greater than the current bottom point then...
-                if (point.Y > bottom)
-                {
-                    // Update the bottom point
-                    bottom = point.Y;
-                }
-            }
-
-            // Create a rectangle from the four points
-            Rect bounds = new Rect(left, top, right - left, bottom - top);
-
-            // Return the bounds of the points
-            return bounds;
         }
 
         /// <summary>
@@ -204,6 +165,7 @@ namespace VixenModules.Editor.PolygonEditor.Views
             {
                 // Retrieve the resize adorner
                 AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
+                Debug.Assert(adornerLayer != null, nameof(adornerLayer) + " != null");
 
                 // Remove the resize adorner
                 adornerLayer.Remove(_resizingAdorner);
@@ -224,218 +186,6 @@ namespace VixenModules.Editor.PolygonEditor.Views
         {
             // Give the editor view model the boundaries of the canvas
             VM.UpdateEditorSize(canvas.ActualWidth, canvas.ActualHeight);            
-        }
-
-        /// <summary>
-        /// Moves and selects polygon points.
-        /// </summary>        
-        private void Canvas_MouseMove(object sender, MouseEventArgs e)
-        {
-            // Get the position of the mouse click
-            Point mousePosition = e.GetPosition((Canvas)sender);
-
-            // Update the cursor based on what the mouse is over
-            UpdateCursor(mousePosition);
-
-            // If a point is being moved then...
-            if (VM.MovingPoint)
-            {
-                // Move the currently selected point
-                VM.MovePoint(mousePosition);
-            }
-
-            // If the editor is in selection mode and
-            // the user is NOT moving a point and
-            // the left mouse button is down and
-            // user did not just select a shape then...
-            if (VM.IsSelecting &&
-                !VM.MovingPoint &&                
-                e.LeftButton == MouseButtonState.Pressed &&
-                !_selectedShape)
-            {
-                // Use the rubber band adorner to select (lasso) points
-                LassoPoints(canvas, mousePosition);
-            }
-
-            // Indicate the event was handled
-            e.Handled = true;
-        }
-        
-        /// <summary>
-        /// Canvas left mouse down event handler.
-        /// </summary>        
-        private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {        
-            // Get the mouse click position
-            Point clickPosition = e.GetPosition((Canvas)sender);
-
-            // Store off the mouse click position
-            _originMouseStartPoint = clickPosition;
-
-            // Default to not selecting a shape
-            _selectedShape = false;
-
-            // If the editor is not in selection mode then...
-            if (!VM.IsSelecting)
-            {
-                // If we are adding points to existing polygons then...
-                if (VM.AddPoint)
-                {
-                    PolygonLineSegment lineSegment = null;
-                    PolygonViewModel polygon = null;
-
-                    // If the mouse is over a polygon line segment then...
-                    if (IsMouseOverLine(clickPosition, ref lineSegment, ref polygon))
-                    {
-                        // If the polygon is closed then the user must want to add a new point along the line segment
-                        if (polygon.PolygonClosed)
-                        {
-                            // Find the index of the start point of the line segment
-                            int index = polygon.PointCollection.IndexOf(lineSegment.StartPoint);
-
-                            // Insert the point into the point collection
-                            polygon.InsertPoint(clickPosition, index + 1);
-                        }            
-                    }                    
-                }
-                // If the editor is in draw polygon mode then...
-                else if (VM.DrawPolygon)
-                {
-                    // Add a polygon point at the click position
-                    VM.AddPolygonPoint(clickPosition);                    
-                }
-                // Otherwise if we are draw line mode then...
-                else if (VM.DrawLine)
-                {
-                    VM.AddLinePoint(clickPosition);
-                }
-            }
-            else // Editor is in Select mode
-            {
-                ((Canvas)sender).CaptureMouse();
-
-                // Attempt to select either a polygon, line or point
-                _selectedShape = VM.SelectPolygonLineOrPoint(clickPosition);                        
-            }
-
-            // Remove the resize adorner
-            RemoveResizeAdorner();
-
-            // If the editor is in selection mode and
-            // there is a selected polygon with all points selected then...
-            if (VM.IsSelecting &&
-                VM.SelectedPolygon != null &&
-                VM.SelectedPolygon.AllPointsSelected)                
-            {
-                // Select all the points on the polygon
-                VM.SelectPolygonPoints();
-
-                // Update the resize adorner for the selected polygon
-                UpdateResizeAdorner(VM.SelectedPolygon.PointCollection);
-            }
-            // If the editor is in selection mode and
-            // there is a selected line with all points selected then...
-            else if (VM.IsSelecting &&
-                     VM.SelectedLine != null &&
-                     VM.SelectedLine.AllPointsSelected)
-            {
-                // Update the resize adorner for the selected line
-                UpdateResizeAdorner(VM.SelectedLine.PointCollection);
-            }
-                        
-            // Indicate that the event was handled
-            e.Handled = true;
-        }
-
-        /// <summary>
-        /// Canvas left mouse up event handler.
-        /// </summary>        
-        private void Canvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            // Position of the mouse when the button was released
-            Point clickPosition = e.GetPosition(canvas);
-
-            // Release the mouse
-            ((Canvas)sender).ReleaseMouseCapture();
-
-            // If the user is moving a polygon point then...
-            if (VM.MovingPoint)
-            {
-                // End the point move
-                VM.EndMoveSelectedPoint(clickPosition);                
-            }
-
-            // If the user did not select a shape on the mouse down event then...
-            if (!_selectedShape)
-            {             
-                // Get the adorner layer from the canvas
-                AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
-
-                // If the rubber band adorner was created then...
-                if (adornerLayer != null && _rubberbandAdorner != null)
-                {
-                    // Retrieve the points of the rubbber band
-                    Point endPoint = _rubberbandAdorner.EndPoint.Value;
-                    Point startPoint = _originMouseStartPoint;
-
-                    // Remove the rubber band adorner
-                    adornerLayer.Remove(_rubberbandAdorner);
-                    _rubberbandAdorner = null;
-
-                    // Release the mouse
-                    canvas.ReleaseMouseCapture();
-
-                    // Clears the selected points
-                    VM.ClearSelectedPoints();
-
-                    // Create a rectangle from the rubber band
-                    Rect lasso = new Rect(startPoint, endPoint);
-
-                    // Select the polygon points inside the lasso
-                    VM.SelectShapePoints(lasso);
-
-                    // If more than one polygon point is selected then...
-                    if (VM.SelectedPoints.Count > 1)
-                    {
-                        // If an entire polygon was captured in the lasso then...
-                        PolygonViewModel selectedPolygon = null;
-                        if (VM.IsEntirePolygonSelected(VM.SelectedPoints, ref selectedPolygon))
-                        {
-                            // Select the polygon
-                            VM.SelectPolygon(selectedPolygon, false);
-                        }
-
-                        // Update the resize adorner
-                        UpdateResizeAdorner(VM.SelectedPoints);
-                    }
-                    // If only one point is selected then...
-                    else if (VM.SelectedPoints.Count == 1)
-                    {
-                        // Find the polygon associated with the selected polygon point
-                        PolygonViewModel selectedPolygon = VM.FindPolygon(VM.SelectedPoints[0]);
-
-                        if (selectedPolygon != null)
-                        {
-                            // Select the polygon point                        
-                            VM.SelectPolygonPoint(VM.SelectedPoints[0], selectedPolygon);
-                        }
-                        else
-                        {
-                            // Find the line associated with the selected point
-                            LineViewModel selectedLine = VM.FindLine(VM.SelectedPoints[0]);
-
-                            if (selectedLine != null)
-                            {
-                                // Select the line point
-                                VM.SelectLinePoint(VM.SelectedPoints[0], selectedLine);
-                            }
-                        }
-                    }
-                }
-            }
-                         
-            // Indicate the event was handled
-            e.Handled = true;
         }
 
         #endregion
@@ -459,131 +209,19 @@ namespace VixenModules.Editor.PolygonEditor.Views
                 VM = vm;
             }
 
-            // Display the resize adorner if a selected polygon or line exists
-            VM.DisplayResizeAdornerForSelectedPolygonOrLine();
-        }
-
-        /// <summary>
-        /// Updates the mouse cursor for the specified location.
-        /// </summary>
-        /// <param name="mousePosition">Mouse position</param>
-		private void UpdateCursor(Point mousePosition)
-        {
-            // Default to the normal arrow cursor
-            Cursor cursor = Cursors.Arrow;
-
-            PolygonLineSegment lineSegment = null;
-            PolygonViewModel polygon = null;
-
-            // If the editor is in selection mode and
-            // the mouse over a moveable item then....
-            if (VM.IsSelecting &&
-                VM.IsMouseOverMoveableItem(mousePosition))
-            {
-                // Change to the sizing cursor
-                cursor = Cursors.SizeAll;
-            }
-            // If the editor is add point mode and
-            // the mouse is over a polygon line then...
-            else if (VM.AddPoint &&
-                     IsMouseOverLine(mousePosition, ref lineSegment, ref polygon))
-            {
-                // The polygon that is associated with the line is closed then...
-                if (polygon.PolygonClosed)
-                {
-                    // Load special add point cursor
-                    using (Stream stream = GetAssemblyResourceStream(Assembly.GetExecutingAssembly(), "Cursors/cursor_arrow_dragbox.cur"))
-                    {
-                        cursor = new Cursor(stream);
-                    }
-                }
-            }
-
-            // Set cursor for the control
-            Cursor = cursor;
-        }
-
-        /// <summary>
-        /// Loads the resource at the specified path.
-        /// The path separator is '/'.  The path should not start with '/'.
-        /// </summary>
-        /// <param name="asm"></param>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        private Stream GetAssemblyResourceStream(Assembly asm, string path)
-        {
-            // Just to be sure
-            if (path[0] == '/')
-            {
-                path = path.Substring(1);
-            }
-
-            // Just to be sure
-            if (path.IndexOf('\\') == -1)
-            {
-                path = path.Replace('\\', '/');
-            }
-
-            Stream resStream = null;
-
-            string resName = asm.GetName().Name + ".g.resources"; // Ref: Thomas Levesque Answer at:
-                                                                  // http://stackoverflow.com/questions/2517407/enumerating-net-assembly-resources-at-runtime
-
-            using (var stream = asm.GetManifestResourceStream(resName))
-            {
-                using (var resReader = new System.Resources.ResourceReader(stream))
-                {
-                    string dataType = null;
-                    byte[] data = null;
-
-                    resReader.GetResourceData(path.ToLower(), out dataType, out data);
-
-                    if (data != null)
-                    {
-                        switch (dataType) // COde from 
-                        {
-                            // Handle internally serialized string data (ResourceTypeCode members).
-                            case "ResourceTypeCode.String":
-                                BinaryReader reader = new BinaryReader(new MemoryStream(data));
-                                string binData = reader.ReadString();
-                                Console.WriteLine("   Recreated Value: {0}", binData);
-                                break;
-                            case "ResourceTypeCode.Int32":
-                                Console.WriteLine("   Recreated Value: {0}", BitConverter.ToInt32(data, 0));
-                                break;
-                            case "ResourceTypeCode.Boolean":
-                                Console.WriteLine("   Recreated Value: {0}", BitConverter.ToBoolean(data, 0));
-                                break;
-                            // .jpeg image stored as a stream.
-                            case "ResourceTypeCode.Stream":
-                                ////const int OFFSET = 4;
-                                ////int size = BitConverter.ToInt32(data, 0);
-                                ////Bitmap value1 = new Bitmap(new MemoryStream(data, OFFSET, size));
-                                ////Console.WriteLine("   Recreated Value: {0}", value1);
-
-                                const int OFFSET = 4;
-                                resStream = new MemoryStream(data, OFFSET, data.Length - OFFSET);
-
-                                break;
-                            // Our only other type is DateTimeTZI.
-                            default:
-                                Debug.Assert(false, "Unsupported Resource Type");
-                                break;
-                        }
-                    }
-                }
-            }
-
-            return resStream;
+            // Display the resize adorner if a selected shape exists
+            VM.DisplayResizeAdornerForSelectedShape();
         }
 
         /// <summary>
         /// Updates the rubber band lasso for selecting points.
         /// </summary>
-        /// <param name="canvas">Polygon canvas</param>
-        /// <param name="mousePosition">Position of the mouse</param>
-        private void LassoPoints(Canvas canvas, Point mousePosition)
+        /// <param name="mouseEventArgs">Position of the mouse</param>
+        private void LassoPoints(MouseEventArgs mouseEventArgs)
         {
+	        // Get the position of the mouse click
+	        Point mousePosition = mouseEventArgs.GetPosition(canvas);
+
             // Capture the mouse while lasso'ing points
             canvas.CaptureMouse();
 
@@ -594,10 +232,16 @@ namespace VixenModules.Editor.PolygonEditor.Views
             if (adornerLayer != null && _rubberbandAdorner == null)
             {
                 // Create the rubber band adorner 
-                _rubberbandAdorner = new RubberbandAdorner(canvas, _originMouseStartPoint);
+                _rubberbandAdorner = new RubberbandAdorner(canvas, VM.LassoMouseStartPoint);
+
+                // Set a flag indicating a lasso operation is in progress
+                VM.LassoingPoints = true;
+
+                // Add the rubber band adorner to the display
                 adornerLayer.Add(_rubberbandAdorner);
             }
 
+            // If the rubber band adorner has been created then...
             if (_rubberbandAdorner != null)
             {
                 // Set the current mouse position as the end of the rubber band area
@@ -627,7 +271,7 @@ namespace VixenModules.Editor.PolygonEditor.Views
         private void UpdateResizeAdorner(ObservableCollection<PolygonPointViewModel> points)
         {
             // Get the bounds of the selected points
-            Rect bounds = GetSelectedContentBounds(points);
+            Rect bounds = VM.GetSelectedContentBounds(points);
 
             // Get the adorner layer from the canvas
             AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
@@ -645,11 +289,15 @@ namespace VixenModules.Editor.PolygonEditor.Views
             }
         }
 
+        #endregion
+
+        #region Private Mouse Over Polygon Line Methods
+
         /// <summary>
         /// Updates all the polygon line segments.
-        /// The line segments are used to perform hit testing when in aded polygon point mode.
+        /// The line segments are used to perform hit testing when in add polygon point mode.
         /// </summary>
-		private void UpdatePolygonLines()
+        private void UpdatePolygonLines()
         {
             // Loop over all the polygons
             foreach (PolygonViewModel polygon in VM.Polygons)
@@ -729,7 +377,9 @@ namespace VixenModules.Editor.PolygonEditor.Views
         /// <param name="polygonParent">Polygon the line segment belongs to</param>
         /// <returns></returns>
         private bool IsMouseOverLine(Point mousePosition, 
-            ref PolygonLineSegment polygonLineSegment,
+	        // ReSharper disable once RedundantAssignment
+	        ref PolygonLineSegment polygonLineSegment,
+	        // ReSharper disable once RedundantAssignment
             ref PolygonViewModel polygonParent)
         {
             // Default to NOT being over a polygon line

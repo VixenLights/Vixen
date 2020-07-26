@@ -12,7 +12,20 @@
 			 xmlns:common="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
 			 mc:Ignorable="d" 
              d:DesignHeight="420" d:DesignWidth="800"
-			 x:Name="PolygonUserControl">
+			 x:Name="PolygonUserControl"
+             Cursor="{Binding CanvasCursor}">
+
+	<i:Interaction.Triggers>
+		<i:EventTrigger EventName="MouseMove">
+			<catel:EventToCommand Command="{Binding CanvasMouseMoveCommand}" PassEventArgsToCommand="True" />
+		</i:EventTrigger>
+		<i:EventTrigger EventName="MouseLeftButtonDown">
+			<catel:EventToCommand Command="{Binding CanvasMouseLeftButtonDownCommand}" PassEventArgsToCommand="True" />
+		</i:EventTrigger>
+		<i:EventTrigger EventName="MouseLeftButtonUp">
+			<catel:EventToCommand Command="{Binding CanvasMouseLeftButtonUpCommand}" PassEventArgsToCommand="True" />
+		</i:EventTrigger>
+	</i:Interaction.Triggers>
 
 	<UserControl.Resources>
 		<polygonConverters:PointCollectionConverter x:Key="mcolconv" />
@@ -56,11 +69,8 @@
 			
 			<Viewbox Stretch="Uniform" x:Name="viewBox" Grid.Column="0">
 					<views:PolygonCanvas  x:Name="canvas" 
-             MouseMove="Canvas_MouseMove" 
-             MouseLeftButtonDown="Canvas_MouseLeftButtonDown"  		                  
-			 MouseEnter="Canvas_MouseEnter"
-			 MouseLeftButtonUp="Canvas_MouseLeftButtonUp"
-				Height="{Binding Path=CanvasHeight}" 
+				 MouseEnter="Canvas_MouseEnter"
+			 Height="{Binding Path=CanvasHeight}" 
 				Width="{Binding Path=CanvasWidth}">
 
 						<Canvas.Background>
@@ -172,7 +182,7 @@
 										</ItemsControl.ItemsPanel>
 										<ItemsControl.ItemTemplate>
 											<DataTemplate>
-												<Rectangle Width="6" Height="6" 
+												<Rectangle Width="7" Height="7" 
 											   Stroke="{Binding Color, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}" 
 											   Fill="{Binding Color, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}"
 											   IsHitTestVisible="False"/>

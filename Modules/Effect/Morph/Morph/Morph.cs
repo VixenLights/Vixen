@@ -295,6 +295,7 @@ namespace VixenModules.Effect.Morph
 				IsDirty = true;
 				OnPropertyChanged();
 
+				// Update the visible attributes based on the polygon type
 				UpdatePolygonTypeAttributes(true);
 			}
 		}
@@ -899,9 +900,9 @@ namespace VixenModules.Effect.Morph
 					wipeRenderData.Stagger = Stagger;
 
 					// Adjust the stagger so that it does not exceed the total duration of the effect
-					if (TimeSpan.TotalMilliseconds * (_wipePolygonRenderData[polygonIndex].Stagger / 100.0) * RepeatCount > TimeSpan.TotalMilliseconds)
+					if (TimeSpan.TotalMilliseconds * (wipeRenderData.Stagger / 100.0) * RepeatCount > TimeSpan.TotalMilliseconds)
 					{
-						_wipePolygonRenderData[polygonIndex].Stagger = (int)(((TimeSpan.TotalMilliseconds / RepeatCount) / TimeSpan.TotalMilliseconds) * 100);
+						wipeRenderData.Stagger = (int)(((TimeSpan.TotalMilliseconds / RepeatCount) / TimeSpan.TotalMilliseconds) * 100);
 					}
 				}
 				else

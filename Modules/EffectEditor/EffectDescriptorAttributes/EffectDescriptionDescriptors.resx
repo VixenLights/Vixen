@@ -1110,4 +1110,7 @@
   <data name="Label" xml:space="preserve">
     <value>Label of the polygon or line.  Helps with identifying the shape when in Free Form mode.</value>
   </data>
+  <data name="StartOffset" xml:space="preserve">
+    <value>Determines when the wipe starts.  This offset is the percentage of the effect's total duration to wait before starting the wipe.</value>
+  </data>
 </root>

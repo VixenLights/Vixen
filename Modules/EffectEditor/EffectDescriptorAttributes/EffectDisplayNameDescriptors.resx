@@ -1071,4 +1071,7 @@
   <data name="Label" xml:space="preserve">
     <value>Label</value>
   </data>
+  <data name="StartOffset" xml:space="preserve">
+    <value>Start Offset</value>
+  </data>
 </root>
