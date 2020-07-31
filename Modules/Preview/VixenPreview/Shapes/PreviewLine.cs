@@ -339,7 +339,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			newLine._pixels = new List<PreviewPixel>();
 
 			foreach (PreviewPixel pixel in _pixels) {
-				newLine.AddPixel(pixel.X, pixel.Y);
+				newLine._pixels.Add(pixel.Clone());
+			}
+
+			newLine._points = new List<PreviewPoint>();
+			foreach (var previewPoint in _points)
+			{
+				newLine._points.Add(previewPoint.Copy());
 			}
 			return newLine;
 		}

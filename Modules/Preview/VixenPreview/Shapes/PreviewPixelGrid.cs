@@ -543,8 +543,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				PreviewBaseShape newLine = (PreviewLine) line.Clone();
 				newGrid._strings.Add(newLine);
 			}
-			newGrid._topLeft = new PreviewPoint(_topLeft);
-			newGrid._bottomRight = new PreviewPoint(_bottomRight);
+			newGrid._topLeft = _topLeft.Copy();
+			newGrid._topRight = _topRight.Copy();
+			newGrid._bottomRight = _bottomRight.Copy();
+			newGrid._bottomLeft = _bottomLeft.Copy();
 
 			return newGrid;
 		}

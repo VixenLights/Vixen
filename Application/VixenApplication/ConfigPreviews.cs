@@ -32,11 +32,10 @@ namespace VixenApplication
 		{
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			this.ShowInTaskbar = false;
 			_displayedController = null;
+			buttonDeleteController.Enabled = buttonDuplicateSelected.Enabled = false;
 		}
 
 		private void ConfigPreviews_Load(object sender, EventArgs e)
@@ -53,6 +52,8 @@ namespace VixenApplication
 			else {
 				_PopulateFormWithController(listViewControllers.SelectedItems[0].Tag as OutputPreview);
 			}
+
+			buttonDuplicateSelected.Enabled = buttonDeleteController.Enabled = listViewControllers.SelectedItems.Count > 0;
 		}
 
 		private void buttonAddController_Click(object sender, EventArgs e)
@@ -117,6 +118,42 @@ namespace VixenApplication
 			}
 		}
 
+		private void buttonDuplicateSelected_Click(object sender, EventArgs e)
+		{
+			if (listViewControllers.SelectedItems.Count > 0)
+			{
+				foreach (ListViewItem item in listViewControllers.SelectedItems)
+				{
+					OutputPreview op = item.Tag as OutputPreview;
+
+					PreviewFactory previewFactory = new PreviewFactory();
+					OutputPreview preview = (OutputPreview) previewFactory.CreateDevice(op.ModuleId, op.Name + "-copy");
+					if (preview.PreviewModule is IPreviewModuleInstance newInstance)
+					{
+						if (op.PreviewModule is IPreviewModuleInstance origInstance)
+						{
+							var md = origInstance.ModuleData.Clone();
+							//The new module will have it's own instance data. If we want to replace it we need to replace it in the
+							//ModuleStore as well so it will be saved. So remove it and then assign it and then update it in the store
+							md.ModuleDataSet.RemoveModuleInstanceData(newInstance);
+							newInstance.ModuleData = md;
+							md.ModuleDataSet.AssignModuleInstanceData(newInstance);
+						}
+						
+					}
+					VixenSystem.Previews.Add(preview);
+					_PopulateFormWithController(preview);
+
+				}
+
+				_PopulateControllerList();
+
+				_changesMade = true;
+				Refresh();
+			}
+
+		}
+
 		private void buttonUpdate_Click(object sender, EventArgs e)
 		{
 			if (_displayedController == null)
@@ -176,27 +213,15 @@ namespace VixenApplication
 
 			if (oc == null) {
 				textBoxName.Text = string.Empty;
-				buttonDeleteController.Enabled = false;
 				textBoxName.Enabled = false;
 				buttonUpdate.Enabled = false;
-				buttonUpdate.ForeColor = ThemeColorTable.ForeColorDisabled;
-				buttonConfigureController.Enabled = false;
-				buttonDeleteController.ForeColor = ThemeColorTable.ForeColorDisabled;
-				buttonConfigureController.ForeColor = ThemeColorTable.ForeColorDisabled;
-				label1.ForeColor = ThemeColorTable.ForeColorDisabled;
-				label2.ForeColor = ThemeColorTable.ForeColorDisabled;
+				buttonConfigureController.Enabled = label1.Enabled = label2.Enabled = false;
 			}
 			else {
 				textBoxName.Text = oc.Name;
-				buttonDeleteController.Enabled = true;
 				textBoxName.Enabled = true;
 				buttonUpdate.Enabled = true;
-				buttonUpdate.ForeColor = ThemeColorTable.ForeColor;
-				buttonConfigureController.Enabled = true;
-				buttonDeleteController.ForeColor = ThemeColorTable.ForeColor;
-				buttonConfigureController.ForeColor = ThemeColorTable.ForeColor;
-				label1.ForeColor = ThemeColorTable.ForeColor;
-				label2.ForeColor = ThemeColorTable.ForeColor;
+				buttonConfigureController.Enabled = label1.Enabled = label2.Enabled = true;
 			}
 		}
 
@@ -296,5 +321,6 @@ namespace VixenApplication
 		{
 			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
+
 	}
 }

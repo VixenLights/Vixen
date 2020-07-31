@@ -552,7 +552,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public virtual object Clone()
 		{
-			return this.MemberwiseClone();
+			var shape = (PreviewBaseShape)this.MemberwiseClone();
+			foreach (var previewPixel in Pixels)
+			{
+				shape.Pixels.Add(previewPixel.Clone());
+			}
+
+			return shape;
 		}
 
 		public abstract void MoveTo(int x, int y);

@@ -10,26 +10,23 @@ namespace VixenModules.Preview.VixenPreview
 	public class VixenPreviewData : ModuleDataModelBase
 	{
 		private List<DisplayItem> _displayItems = new List<DisplayItem>();
-		private int _backgroundAlpha = 255;
-		private bool _saveLocations = true;
 
 		public override IModuleDataModel Clone()
 		{
 			//Console.WriteLine("Clone");
-			VixenPreviewData result = new VixenPreviewData
-			                          	{
-			                          		Width = 1024,
-			                          		Height = 800
-			                          	};
+			VixenPreviewData result = (VixenPreviewData)MemberwiseClone();
+			List<DisplayItem> displayItemCopy = new List<DisplayItem>(DisplayItems.Count);
+			foreach (var displayItem in DisplayItems)
+			{
+				displayItemCopy.Add((DisplayItem)displayItem.Clone());
+			}
+
+			result.DisplayItems = displayItemCopy;
 			return result;
 		}
 
 		[DataMember]
-		public int BackgroundAlpha
-		{
-			get { return _backgroundAlpha; }
-			set { _backgroundAlpha = value; }
-		}
+		public int BackgroundAlpha { get; set; } = 255;
 
 		[DataMember]
 		public string BackgroundFileName { get; set; }
@@ -59,11 +56,7 @@ namespace VixenModules.Preview.VixenPreview
 		public int Height { get; set; }
 
 		[DataMember]
-		public bool SaveLocations
-		{
-			get { return _saveLocations; }
-			set { _saveLocations = value; }
-		}
+		public bool SaveLocations { get; set; } = true;
 
 		[DataMember]
 		public Vector3D LocationOffset { get; set; }

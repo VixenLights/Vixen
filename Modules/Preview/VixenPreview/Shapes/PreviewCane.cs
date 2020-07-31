@@ -415,5 +415,27 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_archLeftPoint.Y = archStart.Y;
 			Resize(aspect);
 		}
+
+		#region Overrides of PreviewBaseShape
+
+		/// <inheritdoc />
+		public override object Clone()
+		{
+			var newCane = (PreviewCane) MemberwiseClone();
+
+			newCane._topLeftPoint = _topLeftPoint.Copy();
+			newCane._bottomRightPoint = _bottomRightPoint.Copy();
+			newCane._archLeftPoint = _archLeftPoint.Copy();
+			newCane._pixels = new List<PreviewPixel>();
+
+			foreach (PreviewPixel pixel in _pixels) {
+				newCane._pixels.Add(pixel.Clone());
+			}
+
+			
+			return newCane;
+		}
+
+		#endregion
 	}
 }
