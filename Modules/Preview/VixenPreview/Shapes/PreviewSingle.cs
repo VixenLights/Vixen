@@ -221,5 +221,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			p1.Y = p1Start.Y;
 			Resize(aspect);
 		}
+
+		#region Overrides of PreviewBaseShape
+
+		/// <inheritdoc />
+		public override object Clone()
+		{
+			var newSingle = (PreviewSingle) MemberwiseClone();
+			newSingle.p1 = p1.Copy();
+			return newSingle;
+		}
+
+		#endregion
 	}
 }

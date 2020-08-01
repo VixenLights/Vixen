@@ -588,8 +588,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				PreviewBaseShape newLine = (PreviewLine) line.Clone();
 				newTree._strings.Add(newLine);
 			}
-			newTree._topLeft = new PreviewPoint(_topLeft);
-			newTree._bottomRight = new PreviewPoint(_bottomRight);
+			newTree._topLeft = _topLeft.Copy();
+			newTree._bottomRight = _bottomRight.Copy();
 
 			return newTree;
 		}

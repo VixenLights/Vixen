@@ -403,14 +403,21 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override object Clone()
 		{
-            PreviewIcicle newLine = (PreviewIcicle)this.MemberwiseClone();
+            PreviewIcicle newIcicle = (PreviewIcicle)this.MemberwiseClone();
 
-			//newLine._pixels = new List<Preview Pixel>();
+			newIcicle._points = new List<PreviewPoint>();
+
+			foreach (var previewPoint in _points)
+			{
+				newIcicle._points.Add(previewPoint.Copy());
+			}
+
+			newIcicle._pixels = new List<PreviewPixel>();
 
 			foreach (PreviewPixel pixel in _pixels) {
-				newLine.AddPixel(pixel.X, pixel.Y);
+				newIcicle.Pixels.Add(pixel.Clone());
 			}
-			return newLine;
+			return newIcicle;
 		}
 
 		public override void MoveTo(int x, int y)

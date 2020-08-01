@@ -283,5 +283,27 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			throw new NotImplementedException();
 		}
+
+		#region Overrides of PreviewBaseShape
+
+		/// <inheritdoc />
+		public override object Clone()
+		{
+			var newCustom = (PreviewCustom) MemberwiseClone();
+
+			newCustom.Strings = new List<PreviewBaseShape>(Strings.Count);
+
+			newCustom._topLeft = _topLeft.Copy();
+
+			foreach (var previewBaseShape in Strings)
+			{
+				newCustom.Strings.Add((PreviewBaseShape)previewBaseShape.Clone());
+			}
+
+
+			return newCustom;
+		}
+
+		#endregion
 	}
 }

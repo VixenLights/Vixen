@@ -123,7 +123,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public object Clone()
 		{
-			DisplayItem item = new DisplayItem();
+			DisplayItem item = (DisplayItem) MemberwiseClone();
 			item.Shape = Shape.Clone() as PreviewBaseShape;
 			return item;
 		}
