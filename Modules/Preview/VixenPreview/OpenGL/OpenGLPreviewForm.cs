@@ -464,9 +464,17 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			var distance = _camera.Position.Z + direction;
 
-			if (distance > FarDistance || distance < NearDistance)
+			// If the user is attempting to zoom to far out then...
+			if (distance > FarDistance)
 			{
-				return;
+				// Zoom them back to the edge of the limits
+				direction = (int)Math.Round(FarDistance - _camera.Position.Z, MidpointRounding.AwayFromZero);
+			}
+			// Otherwise if the user attempt to zoom too far in then...
+			else if (distance < NearDistance)
+			{
+				// Zoom them back to the edge of the limits
+				direction = (int)(NearDistance - (int)_camera.Position.Z);
 			}
 
 			_camera.Move(new Vector3(0, 0, direction));
