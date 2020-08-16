@@ -132,7 +132,7 @@ namespace VixenModules.Editor.PolygonEditor.Views
         private void DisplayResizeAdorner(object sender, EventArgs e)
         {
 	        // Update the resize adorner based on the selected shape
-	        UpdateResizeAdorner(VM.SelectedShape.PointCollection);
+		    UpdateResizeAdorner(VM.SelectedShape.PointCollection);
         }
 
         /// <summary>
@@ -276,16 +276,67 @@ namespace VixenModules.Editor.PolygonEditor.Views
             // Get the adorner layer from the canvas
             AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
 
+            // If the resize adorner is NOT null then...
             if (adornerLayer != null)
             {
                 // Remove the resizing adorner
                 RemoveResizeAdorner();
 
-                // Create the resizing adorner
-                _resizingAdorner = new ResizeAdorner(this, canvas, VM, bounds);
+                // If the selected shape is an ellipse and
+                if (VM.SelectedEllipse != null)
+                {
+	                // If the ellipse has a resize adorner associated with it then...
+	                if (VM.SelectedEllipse.ResizeAdorner != null)
+	                {
+		                // Retrieve the resize adorner from the ellipse view model
+		                _resizingAdorner = VM.SelectedEllipse.ResizeAdorner;
+	                }
+	                else
+	                {
+		                // Create a collection of point view models
+		                ObservableCollection<PolygonPointViewModel> copyPoints =
+			                new ObservableCollection<PolygonPointViewModel>();
 
+		                // Create a reverse transform for the ellipse
+		                RotateTransform reverseRotateTransform = new RotateTransform(-VM.SelectedEllipse.Angle,
+			                VM.SelectedEllipse.CenterPoint.X, VM.SelectedEllipse.CenterPoint.Y);
+
+		                // Loop over the points on the rectangle that surrounds the ellipse
+		                foreach (PolygonPointViewModel pt in points)
+		                {
+			                // Clone the ellipse (rectangle) point
+			                PolygonPointViewModel clonedPoint =
+				                new PolygonPointViewModel(pt.PolygonPoint.Clone(), null);
+
+			                // Transform the point
+			                Point transformedPoint = reverseRotateTransform.Transform(pt.GetPoint());
+
+			                // Update the cloned point
+			                clonedPoint.X = transformedPoint.X;
+			                clonedPoint.Y = transformedPoint.Y;
+
+			                // Add the point to the collection
+			                copyPoints.Add(clonedPoint);
+		                }
+
+		                // Determine the bounds of the resize adorner based on the transformed points
+		                bounds = VM.GetSelectedContentBounds(copyPoints);
+
+		                // Create the resizing adorner for the ellipse with the specified angle
+		                _resizingAdorner = new ResizeAdorner(VM.SelectedEllipse.Angle, this, canvas, VM, bounds);
+
+		                // Store off the resize adorner with the ellipse
+		                VM.SelectedEllipse.ResizeAdorner = _resizingAdorner;
+                    }
+                }
+                else
+                {
+	                // Create the resizing adorner
+	                _resizingAdorner = new ResizeAdorner(0.0, this, canvas, VM, bounds);
+                }
+                
                 // Add the resizing adorner to the canvas
-                adornerLayer.Add(_resizingAdorner);
+	            adornerLayer.Add(_resizingAdorner);
             }
         }
 

@@ -4,6 +4,16 @@ using System.Collections.Generic;
 namespace VixenModules.App.Polygon
 {
 	/// <summary>
+	/// Defines the fill type of the shape.
+	/// </summary>
+	public enum PolygonFillType
+	{
+		Wipe,
+		Solid,
+		Outline,
+	};
+
+	/// <summary>
 	/// Maintains a point based shape.
 	/// </summary>
 	[Serializable]
@@ -18,6 +28,9 @@ namespace VixenModules.App.Polygon
 		{
 			// Create the collection of points
 			Points = new List<PolygonPoint>();
+
+			// Default the fill type to a Wipe
+			FillType = PolygonFillType.Wipe;
 		}
 
 		#endregion
@@ -33,6 +46,11 @@ namespace VixenModules.App.Polygon
 			private set;
 		}
 
+		/// <summary>
+		/// Determines how the shape is filled(Wipe, Solid or Outline).
+		/// </summary>
+		public PolygonFillType FillType { get; set; }
+		
 		#endregion
 
 		#region Public Methods
@@ -44,6 +62,9 @@ namespace VixenModules.App.Polygon
 		{
 			// Call the base class implementation
 			base.Copy(sourceShape);
+
+			// Copy the shape fill type
+			FillType = ((PointBasedShape)sourceShape).FillType;
 
 			// Clear the existing points on the destination
 			Points.Clear();
@@ -64,7 +85,7 @@ namespace VixenModules.App.Polygon
 		/// <summary>
 		/// Limts the shape points to the specified width and height.
 		/// </summary>		
-		public void LimitPoints(int width, int height)
+		public virtual void LimitPoints(int width, int height)
 		{
 			// Loop over the shape's points
 			foreach (PolygonPoint point in Points)
@@ -117,7 +138,7 @@ namespace VixenModules.App.Polygon
 		/// <summary>
 		/// Rounds the points to the nearest integer;
 		/// </summary>
-		public void RoundPoints()
+		public virtual void RoundPoints()
 		{
 			foreach (PolygonPoint pt in Points)
 			{

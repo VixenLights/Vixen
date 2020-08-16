@@ -38,7 +38,9 @@
 	  <None Remove="Images\AddPoint.png" />
 	  <None Remove="Images\arrow_left.png" />
 	  <None Remove="Images\arrow_right.png" />
+	  <None Remove="Images\buttonDrawEllipse.png" />
 	  <None Remove="Images\buttonDrawLine.png" />
+	  <None Remove="Images\ConvertToEllipse.png" />
 	  <None Remove="Images\Label.png" />
 	  <None Remove="Images\LineToPolygon.png" />
 	  <None Remove="Images\PolygonToLine.png" />
@@ -60,6 +62,7 @@
     <Resource Include="Images\AddPoint.png" />
     <Resource Include="Images\arrow_left.png" />
     <Resource Include="Images\arrow_right.png" />
+    <Resource Include="Images\buttonDrawEllipse.png" />
     <Resource Include="Images\buttonDrawLine.png" />
     <Resource Include="Images\buttonDrawPolygon.png" />
     <Resource Include="Images\buttonSelect.png" />
@@ -73,6 +76,7 @@
     <Resource Include="Images\SnapToGrid.png" />
     <Resource Include="Images\ToggleStartPoint.png" />
     <Resource Include="Images\ToggleStartSide.png" />
+    <Resource Include="Images\ConvertToEllipse.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\WPFCommon\WPFCommon.csproj">

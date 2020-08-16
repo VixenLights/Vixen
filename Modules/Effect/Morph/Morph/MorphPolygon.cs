@@ -8,6 +8,7 @@ using VixenModules.App.Polygon;
 using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using ZedGraph;
+using Line = VixenModules.App.Polygon.Line;
 
 namespace VixenModules.Effect.Morph
 {	
@@ -24,7 +25,6 @@ namespace VixenModules.Effect.Morph
 		/// </summary>
 		public MorphPolygon()
 		{
-			FillType = PolygonFillType.Wipe;
 			HeadLength = 4;
 			HeadDuration = 20;
 			Acceleration = 0;
@@ -63,6 +63,8 @@ namespace VixenModules.Effect.Morph
 			Polygon.Points.Add(ptTopRight);
 			Polygon.Points.Add(ptBottomRight);
 			Polygon.Points.Add(ptBottomLeft);
+
+			FillType = PolygonFillType.Wipe;
 		}
 
 		#endregion
@@ -85,6 +87,10 @@ namespace VixenModules.Effect.Morph
 			set
 			{
 				_fillType = value;
+
+				// Forward the fill type to the associated shape
+				GetPointBasedShape().FillType = value;
+			
 				UpdatePolygonFillTypeAttributes();
 			}
 		}
@@ -116,7 +122,6 @@ namespace VixenModules.Effect.Morph
 		[NumberRange(-10, 10, 1)]
 		[PropertyOrder(4)]
 
-
 		public int Acceleration { get; set; }
 
 		[Value]
@@ -144,11 +149,68 @@ namespace VixenModules.Effect.Morph
 			set;			
 		}
 
-		[Browsable(false)]
-		public Polygon Polygon { get; set; }
+		private Polygon _polygon;
 
 		[Browsable(false)]
-		public App.Polygon.Line Line { get; set; }
+		public Polygon Polygon 
+		{
+			get
+			{
+				return _polygon;
+			}
+			set
+			{
+				_polygon = value;
+				if (value != null)
+				{
+					// Clear out the other shape types
+					Line = null;
+					Ellipse = null;
+				}
+			}
+		}
+
+		private Line _line;
+
+		[Browsable(false)]
+		public App.Polygon.Line Line
+		{
+			get
+			{
+				return _line;
+			}
+			set
+			{
+				_line = value;
+				if (value != null)
+				{
+					// Clear out the other shape types
+					Polygon = null;
+					Ellipse = null;
+				}
+			}
+		}
+
+		private Ellipse _ellipse;
+
+		[Browsable(false)]
+		public Ellipse Ellipse
+		{
+			get
+			{
+				return _ellipse;
+			}
+			set
+			{
+				_ellipse = value;
+				if (value != null)
+				{
+					// Clear out the other shape types
+					Polygon = null;
+					Line = null;
+				}
+			}
+		}
 
 		[Browsable(false)]
 		public bool Removed { get; set; }
@@ -189,6 +251,10 @@ namespace VixenModules.Effect.Morph
 				{
 					label = Line.Label;
 				}
+				else if (Ellipse != null)
+				{
+					label = Ellipse.Label;
+				}
 
 				return label;
 			}
@@ -201,6 +267,10 @@ namespace VixenModules.Effect.Morph
 				else if (Line != null)
 				{
 					Line.Label = value;
+				}
+				else if (Ellipse != null)
+				{
+					Ellipse.Label = value;
 				}
 			}
 		}
@@ -218,6 +288,10 @@ namespace VixenModules.Effect.Morph
 			{
 				Line.LimitPoints(width, height);
 			}
+			if (Ellipse != null)
+			{
+				Ellipse.LimitPoints(width, height);
+			}
 		}
 
 		/// <summary>
@@ -231,9 +305,13 @@ namespace VixenModules.Effect.Morph
 			{
 				points = Polygon.Points;
 			}
-			else
+			else if (Line != null)
 			{
 				points = Line.Points;
+			}
+			else /*if (Ellipse != null)*/
+			{
+				points = Ellipse.Points;
 			}
 
 			return points;
@@ -250,9 +328,13 @@ namespace VixenModules.Effect.Morph
 			{
 				shape = Polygon;
 			}
-			else
+			else if (Line != null)
 			{
 				shape = Line;
+			}
+			else /*if (Ellipse != null)*/
+			{
+				shape = Ellipse;
 			}
 
 			return shape;
@@ -278,6 +360,7 @@ namespace VixenModules.Effect.Morph
 				FillColor = new ColorGradient(FillColor),
 				Polygon = Polygon == null ? null : Polygon.Clone(),
 				Line = Line == null ? null : Line.Clone(),
+				Ellipse = Ellipse == null ? null : Ellipse.Clone(),
 				Time = Time,
 				Label = Label,
 				StartOffset = StartOffset,

@@ -37,5 +37,5 @@ namespace VixenModules.App.Polygon
 		}
 
 		#endregion
-	}	
+	}
 }

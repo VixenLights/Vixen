@@ -32,7 +32,9 @@
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\App\Polygon\Polygon.csproj" />
+    <ProjectReference Include="..\..\..\App\Polygon\Polygon.csproj">
+      <Private>false</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Effect\Effect.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>

@@ -1,8 +1,6 @@
-﻿using Catel.Data;
-using Catel.MVVM;
+﻿using Catel.MVVM;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Input;
@@ -15,14 +13,17 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 	/// <summary>
 	/// Maintains a polygon view model.
 	/// </summary>
-	public class PolygonViewModel : ShapeViewModel
+	public class PolygonViewModel : PointBasedViewModel
 	{
 		#region Constructor
 
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		public PolygonViewModel(Polygon polygon)
+		/// <param name="polygon">Model polygon</param>
+		/// <param name="labelVisible">Whether the label is visible</param>
+		public PolygonViewModel(Polygon polygon, bool labelVisible) :
+			base(labelVisible)
 		{
 			// Store off the model
 			Polygon = polygon;
@@ -33,12 +34,6 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// By default the polygon starts with no points, so we are in point mode			
 			PolygonClosed = false;
 			
-			// Create a colletion of line segments to draw the polygon until it is closed
-			Segments = new ObservableCollection<LineSegmentViewModel>();
-			
-			// Initialize the segments to visible
-			SegmentsVisible = true;
-
 			// Create the center point but set the parent to null so that it doesn't
 			// fire property change events on both the X and Y coordinates.
 			// One event is done for the pair when the point is updated.
@@ -62,15 +57,15 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 
 				// Make the WPF polygon visible
 				ClosePolygon();
+
+				// Display the green line if the fill type is a wipe
+				SegmentsVisible = (Polygon.FillType == PolygonFillType.Wipe);
 			}
 
 			// Register for the collection changed event
 			PointCollection.CollectionChanged += PointCollection_CollectionChanged;
 
-			// Initialize the center hash mark to black						
-			CenterPointColor = Colors.Black;
-
-			// Create commands
+			// Create the delete point command
 			DeletePointCommand = new Command(DeletePoint, CanExecuteDeletePoint);			
 			
 			// Create a collection of line segments
@@ -114,39 +109,6 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 
 		#endregion
 		
-		#region Public Catel Line Segment Properties
-
-		/// <summary>
-		/// Controls whether the segments are visible.  These segment lines help define the polygon until the polygon has been closed.
-		/// </summary>
-		public bool SegmentsVisible
-		{
-			get { return GetValue<bool>(SegmentsVisibleProperty); }
-			set { SetValue(SegmentsVisibleProperty, value); }
-		}
-
-		/// <summary>
-		/// SegmentsVisible property data.
-		/// </summary>
-		public static readonly PropertyData SegmentsVisibleProperty = RegisterProperty(nameof(SegmentsVisible), typeof(bool), null);
-				
-		/// <summary>
-		/// Maintains a collection of line segments.  The line segments help define the polygon until the polygon has been closed.
-		/// </summary>
-		public ObservableCollection<LineSegmentViewModel> Segments
-		{
-			get { return GetValue<ObservableCollection<LineSegmentViewModel>>(SegmentsProperty); }
-			private set { SetValue(SegmentsProperty, value); }
-		}
-
-		/// <summary>
-		/// SegmentsVisible property data.
-		/// </summary>
-		public static readonly PropertyData SegmentsProperty =
-			RegisterProperty(nameof(Segments), typeof(ObservableCollection<LineSegmentViewModel>), null);
-
-		#endregion
-				
 		#region Public Properties
 		
 		/// <summary>
@@ -340,25 +302,6 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		}
 		
 		/// <summary>
-		/// Selects all the points on the polygon and the center hash mark.
-		/// </summary>
-		public void SelectPolygon()
-		{
-			// Loop over all points
-			foreach (PolygonPointViewModel point in PointCollection)
-			{
-				// Select the point
-				point.Selected = true;
-			}
-
-			// Color the center hash red
-			CenterPointColor = Colors.HotPink;
-
-			// Set a flag indicating the entire polygon is selected
-			AllPointsSelected = true;
-		}
-
-		/// <summary>
 		/// Toggles the start side of a polygon.
 		/// </summary>
 		public void ToggleStartSide()
@@ -384,6 +327,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// Update the green line segment
 			Segments[0] = new LineSegmentViewModel(PointCollection[0], PointCollection[1]);
 			Segments[0].Color = Colors.Green;
+
+			// Tell the view to refresh
+			NotifyPointCollectionChanged();
 		}
 
 		#endregion
@@ -429,7 +375,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				// Color the start side green
 				Segments[0].Color = Colors.Green;
 			}
-			// Otherwise hide all segements
+			// Otherwise hide all segments
 			else
 			{
 				SegmentsVisible = false;
@@ -450,16 +396,16 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// If the polygon contains at least three points then...
 			if (PointCollection.Count > 2)
 			{
-				// Default the minimum X to the first point
+				// Get the minimum X coordinate 
 				double xMin = PointCollection.Min(point => point.X);
 
-				// Default the maximum X to the first point
+				// Get the maximum X coordinate 
 				double xMax = PointCollection.Max(point => point.X);
 
-				// Default the minimum Y to the first point
+				// Get the minimum Y coordinate 
 				double yMin = PointCollection.Min(point => point.Y);
 
-				// Default the maximum Y to the first point
+				// Get the maximum Y coordinate 
 				double yMax = PointCollection.Max(point => point.Y);
 
 				// Calculate the center of the polygon

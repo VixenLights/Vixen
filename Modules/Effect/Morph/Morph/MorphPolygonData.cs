@@ -44,6 +44,9 @@ namespace VixenModules.Effect.Morph
 		public Line Line { get; set; }
 
 		[DataMember]
+		public Ellipse Ellipse { get; set; }
+
+		[DataMember]
 		public string Label { get; set; }
 
 		[DataMember]

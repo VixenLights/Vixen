@@ -20,10 +20,17 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		public ShapeViewModel()
+		/// <param name="labelVisible">Whether the label is visible</param>
+		public ShapeViewModel(bool labelVisible)
 		{
 			// Initialize the point collection
 			PointCollection = new ObservableCollection<PolygonPointViewModel>();
+
+			// Show or hide the label
+			LabelVisible = labelVisible;
+
+			// Initialize the center hash mark to black						
+			CenterPointColor = Colors.Black;
 		}
 
 		#endregion
@@ -171,6 +178,25 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		#region Public Methods
 
 		/// <summary>
+		/// Selects all the points on the shape and the center hash mark.
+		/// </summary>
+		public void SelectShape()
+		{
+			// Loop over all points
+			foreach (PolygonPointViewModel point in PointCollection)
+			{
+				// Select the point
+				point.Selected = true;
+			}
+
+			// Color the center hash red
+			CenterPointColor = Colors.HotPink;
+
+			// Set a flag indicating the entire shape is selected
+			AllPointsSelected = true;
+		}
+
+		/// <summary>
 		/// Adds the specified point to the point collection.
 		/// </summary>
 		/// <param name="position">Position of the new point</param>
@@ -225,15 +251,14 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		}
 
 		/// <summary>
-		/// Raises the property change event from the PointCollection and Segments properties.		
+		/// Raises the property change event for the PointCollection property.		
 		/// </summary>
 		/// <remarks>This method is needed to trigger a converter in the view.</remarks>
 		public virtual void NotifyPointCollectionChanged()
 		{
 			// Notify the view that the points have changed
-			RaisePropertyChanged("PointCollection");
-			RaisePropertyChanged("Segments");
-
+			RaisePropertyChanged(nameof(PointCollection));
+			
 			// Update the center point of the polygon 
 			UpdateCenterPoint();			
 		}

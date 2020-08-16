@@ -11,14 +11,14 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 	/// Maintains a polygon snapshot view model.  
 	/// This view model maintains a polygon/line reference and a time position within the effect.
 	/// </summary>
-	public class PolygonSnapShotViewModel : ViewModelBase
+	public class PolygonSnapshotViewModel : ViewModelBase
 	{
 		#region Constructor
 
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		public PolygonSnapShotViewModel()
+		public PolygonSnapshotViewModel()
 		{
 			PointCollection = new ObservableCollection<PolygonPointViewModel>();
 
@@ -141,6 +141,11 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// Associated line view model.
 		/// </summary>
 		public LineViewModel LineViewModel { get; set; }
+
+		/// <summary>
+		/// Associated ellipse view model.
+		/// </summary>
+		public EllipseViewModel EllipseViewModel { get; set; }
 
 		#endregion
 

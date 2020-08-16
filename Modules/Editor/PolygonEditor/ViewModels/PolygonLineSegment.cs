@@ -5,7 +5,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 	/// <summary>
 	/// Maintains a polygon line segment.
 	/// </summary>
-	/// <remarks>This data structure helps with hit tests to determine if the mouse is over a polygon line segement.</remarks>
+	/// <remarks>This data structure helps with hit tests to determine if the mouse is over a polygon line segment.</remarks>
 	public class PolygonLineSegment
 	{
 		#region Constructor 

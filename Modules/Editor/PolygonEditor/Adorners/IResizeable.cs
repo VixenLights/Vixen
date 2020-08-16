@@ -25,12 +25,24 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 		bool IsRotateable(double angle, Point center);
 
 		/// <summary>
+		/// Returns true if the move is valid.
+		/// </summary>
+		/// <param name="offset">Offset to move</param>
+		/// <returns>True if the move is valid</returns>
+		bool IsMoveable(Point offset);
+
+		/// <summary>
+		/// Returns true if the transform group is valid.
+		/// </summary>
+		/// <param name="transformGroup">Transform group to evaluate</param>
+		/// <returns>True if the transform group is valid</returns>
+		bool IsTransformValid(TransformGroup transformGroup);
+
+		/// <summary>
 		/// Gives view models the opportunity to refresh state when the rotation is complete.
 		/// </summary>
 		void DoneRotating();
 		
-		void ClipSelectedPoints();
-
 		/// <summary>
 		/// Transforms the selected items using the specified transform group.
 		/// </summary>

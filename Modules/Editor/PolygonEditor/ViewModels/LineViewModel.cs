@@ -16,7 +16,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// Constructor
 		/// </summary>
 		/// <param name="line">Line model object</param>
-		public LineViewModel(Line line)
+		/// <param name="labelVisible">Determines if the label is visible</param>
+		public LineViewModel(Line line, bool labelVisible):
+			base(labelVisible)
 		{
 			// Store off the line model object
 			Line = line;			
@@ -33,10 +35,14 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			{
 				// Initialize the start point
 				StartPoint = PointCollection[0];
-			
-				// Point #1 is always green
-				StartPoint.DeselectedColor = Colors.Green;
-				StartPoint.Color = StartPoint.DeselectedColor;
+
+				// If the fill type is a Wipe then...
+				if (Line.FillType == PolygonFillType.Wipe)
+				{
+					// Point #1 is always green
+					StartPoint.DeselectedColor = Colors.Green;
+					StartPoint.Color = StartPoint.DeselectedColor;
+				}
 			}
 
 			// If the line has two points then...
@@ -51,9 +57,6 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				// Update the center point of the line
 				UpdateCenterPoint();
 			}
-
-			// Initialize the center hash mark to black						
-			CenterPointColor = Colors.Black;
 		}
 
 		#endregion
@@ -140,25 +143,6 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				// Make the line visible
 				Visibility = true;
 			}
-		}
-
-		/// <summary>
-		/// Selects line points and the center hash mark.
-		/// </summary>
-		public void SelectLine()
-		{
-			// Loop over all points
-			foreach (PolygonPointViewModel point in PointCollection)
-			{
-				// Select the point
-				point.Selected = true;
-			}
-
-			// Color the center hash red
-			CenterPointColor = Colors.HotPink;
-
-			// Set a flag indicating the entire line is selected
-			AllPointsSelected = true;
 		}
 
 		/// <summary>

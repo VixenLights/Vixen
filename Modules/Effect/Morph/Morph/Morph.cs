@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 using Vixen.Attributes;
@@ -371,7 +372,7 @@ namespace VixenModules.Effect.Morph
 						container.Polygons.Add(clone);
 						container.PolygonTimes.Add(morphPolygon.Time);
 					}
-					else
+					else if (morphPolygon.Line != null)
 					{
 						Line clone = morphPolygon.Line.Clone();
 
@@ -379,6 +380,15 @@ namespace VixenModules.Effect.Morph
 						clone.ID = morphPolygon.Line.ID;
 						container.Lines.Add(clone);
 						container.LineTimes.Add(morphPolygon.Time);						
+					}
+					else if (morphPolygon.Ellipse != null)
+					{
+						Ellipse clone = morphPolygon.Ellipse.Clone();
+
+						// Reset the GUID as we want to maintain identity of the cloned ellipse
+						clone.ID = morphPolygon.Ellipse.ID;
+						container.Ellipses.Add(clone);
+						container.EllipseTimes.Add(morphPolygon.Time);
 					}
 				}
 
@@ -398,8 +408,9 @@ namespace VixenModules.Effect.Morph
 
 				UpdateMorphPolygonsFromContainerPolygons(value);
 				UpdateMorphPolygonsFromContainerLines(value);
+				UpdateMorphPolygonsFromContainerEllipses(value);
 
-				// Remove any morph polygons were the corresponding polygon or line was removed in the polygon editor
+				// Remove any morph polygons were the corresponding shape was removed in the polygon editor
 				foreach (IMorphPolygon morphPolygon in MorphPolygons.ToList())
 				{
 					if (morphPolygon.Removed)
@@ -407,7 +418,19 @@ namespace VixenModules.Effect.Morph
 						MorphPolygons.Remove(morphPolygon);
 					}
 				}
-				
+
+				// If we are in time based mode then...
+				if (PolygonType == PolygonType.TimeBased)
+				{
+					// Sort the morph polygons by the associated time
+					List<IMorphPolygon> morphPolygons = MorphPolygons.OrderBy(mp => mp.Time).ToList();
+					
+					// Add the sorted morph polygons back to the collection
+					MorphPolygons.Clear();
+					MorphPolygons.AddRange(morphPolygons);
+				}
+
+				// Force the view to refresh
 				OnPropertyChanged(nameof(MorphPolygons));
 
 				IsDirty = true;
@@ -920,8 +943,27 @@ namespace VixenModules.Effect.Morph
 				// Get the model polygon from the morph polygon
 				Polygon polygonModel = morphPolygon.Polygon;
 
-				// If the MorphPolygon is a line then...
-				if (polygonModel == null)
+				// If the MorphPolygon is an ellipse then...
+				if (morphPolygon.Polygon == null &&
+				    morphPolygon.Ellipse != null)
+				{
+					// Create a new polygon model
+					polygonModel = new Polygon();
+
+					// Transfer the ellipse rectangle to polygon points
+					PolygonPoint pt1 = morphPolygon.Ellipse.Points[0];
+					PolygonPoint pt2 = morphPolygon.Ellipse.Points[1];
+					PolygonPoint pt3 = morphPolygon.Ellipse.Points[2];
+					PolygonPoint pt4 = morphPolygon.Ellipse.Points[3];
+
+					// Add the points to the polygon model
+					polygonModel.Points.Add(pt1);
+					polygonModel.Points.Add(pt2);
+					polygonModel.Points.Add(pt3);
+					polygonModel.Points.Add(pt4);
+				}
+				// Otherwise if the morph polygon is a line then...
+				else if (morphPolygon.Line != null)
 				{
 					// Create a new polygon model
 					polygonModel = new Polygon();
@@ -943,16 +985,16 @@ namespace VixenModules.Effect.Morph
 				// Note this is neither the start or end side
 				StoreLine(
 					(int)(polygonModel.Points[1].X),
-					BufferHt - (int)(polygonModel.Points[1].Y),
+					(int)(polygonModel.Points[1].Y),
 					(int)(polygonModel.Points[2].X),
-					BufferHt - (int)(polygonModel.Points[2].Y), _wipePolygonRenderData[polygonIndex].X1Points, _wipePolygonRenderData[polygonIndex].Y1Points);
+					(int)(polygonModel.Points[2].Y), _wipePolygonRenderData[polygonIndex].X1Points, _wipePolygonRenderData[polygonIndex].Y1Points);
 
 				// Calculate the points along the other side of the polygon
 				StoreLine(
 					(int)(polygonModel.Points[0].X),
-					BufferHt - (int)(polygonModel.Points[0].Y),
+					(int)(polygonModel.Points[0].Y),
 					(int)(polygonModel.Points[3].X),
-					BufferHt - (int)(polygonModel.Points[3].Y), _wipePolygonRenderData[polygonIndex].X2Points, _wipePolygonRenderData[polygonIndex].Y2Points);
+					(int)(polygonModel.Points[3].Y), _wipePolygonRenderData[polygonIndex].X2Points, _wipePolygonRenderData[polygonIndex].Y2Points);
 
 				// Calculate the direction of the polygon
 				_wipePolygonRenderData[polygonIndex].Direction = CalculateDirection(polygonModel);
@@ -1083,6 +1125,68 @@ namespace VixenModules.Effect.Morph
 					{
 						// Set the polygon's normalized time
 						morphPolygon.Time = container.LineTimes[lineIndex];
+					}
+					else
+					{
+						// Otherwise just set the time to zero since it is a don't care
+						morphPolygon.Time = 0.0;
+					}
+
+					// Indicate that we don't need to remove this morph polygon
+					morphPolygon.Removed = false;
+
+					// Add the polygon to collection
+					MorphPolygons.Add(morphPolygon);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Updates the morph polygon ellipse from the specified polygon container ellipses.
+		/// </summary>		
+		private void UpdateMorphPolygonsFromContainerEllipses(PolygonContainer container)
+		{
+			// Loop over the ellipses coming out of the polygon editor							
+			for (int ellipseIndex = 0; ellipseIndex < container.Ellipses.Count; ellipseIndex++)
+			{
+				// Get the specified ellipse
+				Ellipse ellipse = container.Ellipses[ellipseIndex];
+
+				// If the line already existed in the morph collection then...
+				if (MorphPolygons.Any(poly => poly.Ellipse != null && poly.Ellipse.ID == ellipse.ID))
+				{
+					// Find the ellipse in the morph collection by GUID
+					IMorphPolygon morphPolygon = MorphPolygons.Single(poly => poly.Ellipse != null && poly.Ellipse.ID == ellipse.ID);
+
+					// Indicate that we don't need to remove this morph polygon
+					morphPolygon.Removed = false;
+
+					// Update the line model associated with morph ellipse
+					morphPolygon.Ellipse = ellipse;
+
+					// If we are in time based mode then...
+					if (PolygonType == PolygonType.TimeBased)
+					{
+						// Set the polygon's normalized time
+						morphPolygon.Time = container.EllipseTimes[ellipseIndex];
+					}
+					else
+					{
+						// Otherwise just set the time to zero since it is a don't care
+						morphPolygon.Time = 0.0;
+					}
+				}
+				// Else the ellipse was not found...
+				else
+				{
+					IMorphPolygon morphPolygon = new MorphPolygon();
+					morphPolygon.Ellipse = ellipse;
+
+					// If we are in time based mode then...
+					if (PolygonType == PolygonType.TimeBased)
+					{
+						// Set the ellipses' normalized time
+						morphPolygon.Time = container.EllipseTimes[ellipseIndex];
 					}
 					else
 					{
@@ -1232,6 +1336,21 @@ namespace VixenModules.Effect.Morph
 		}
 
 		/// <summary>
+		/// This method is needed to compare two colors for masking ellipse wipes.
+		/// The built in Equals method was not working because of the empty property of one of the two colors.
+		/// </summary>
+		/// <param name="left">Left color to compare</param>
+		/// <param name="right">Right color to compare</param>
+		/// <returns>True if the two colors are identical for base color attributes</returns>
+		private bool ColorEquals(Color left, Color right)
+		{
+			return (left.A == right.A &&
+			       left.R == right.R &&
+			       left.G == right.G &&
+			       left.B == right.B);
+		}
+		
+		/// <summary>
 		/// Draws a line between the specified two points.
 		/// </summary>		
 		private void DrawThickLine(
@@ -1243,7 +1362,10 @@ namespace VixenModules.Effect.Morph
 			int x1_,
 			// ReSharper disable once InconsistentNaming
 			int y1_, 
-			Color color, bool direction, IPixelFrameBuffer frameBuffer)
+			Color color, 
+			bool direction, 
+			IPixelFrameBuffer frameBuffer,
+			IPixelFrameBuffer maskFrameBuffer)
 		{
 			int x0 = x0_;
 			int x1 = x1_;
@@ -1257,8 +1379,18 @@ namespace VixenModules.Effect.Morph
 			int err = (dx > dy ? dx : -dy) / 2, e2;
 
 			for(;;)
-			{			
-				frameBuffer.SetPixel(x0, y0, color);				
+			{
+				// Ellipses are being drawn using a mask buffer
+				// This if check is checking to see if the corresponding pixel is set in the mask buffer OR
+				// if the mask buffer is not applicable (Polygons and lines).
+				if (maskFrameBuffer == null || 
+					(_bufferHt - y0 -1) >= 0 &&
+					x0 >= 0 &&
+					!ColorEquals(maskFrameBuffer.GetColorAt(x0, _bufferHt - y0 - 1), _emptyColor))
+				{
+					frameBuffer.SetPixel(x0, y0, color);
+				}
+
 				if((x0 != lastx) && (y0 != lasty) && (x0_ != x1_) && (y0_ != y1_) )
 				{
 					int fix = 0;
@@ -1269,20 +1401,56 @@ namespace VixenModules.Effect.Morph
 					{
 					case 2:
 					case 4:
-						if(x0<BufferWi -2) frameBuffer.SetPixel(x0+1,y0, color);
-						break;
+							if (x0 < BufferWi - 2)
+							{
+								// If the mask is NOT applicable or
+								// if the pixel is set in the mask then...
+								if (maskFrameBuffer == null ||
+								    !ColorEquals(maskFrameBuffer.GetColorAt(x0 + 1, _bufferHt - y0 - 1), _emptyColor))
+								{
+									frameBuffer.SetPixel(x0 + 1, y0, color);
+								}
+							}
+							break;
 					case 3:
 					case 5:
-						if(x0 > 0) frameBuffer.SetPixel(x0-1, y0, color);
-						break;
+							if (x0 > 0)
+							{
+								// If the mask is NOT applicable or
+								// if the pixel is set in the mask then...
+								if (maskFrameBuffer == null ||
+								    !ColorEquals(maskFrameBuffer.GetColorAt(x0 - 1, _bufferHt - y0 - 1), _emptyColor))
+								{
+									frameBuffer.SetPixel(x0 - 1, y0, color);
+								}
+							}
+							break;
 					case 0:
 					case 1:
-						if(y0<BufferHt -2) frameBuffer.SetPixel(x0, y0+1, color);
-						break;
+							if (y0 < BufferHt - 2)
+							{
+								// If the mask is NOT applicable or
+								// if the pixel is set in the mask then...
+								if (maskFrameBuffer == null ||
+								    !ColorEquals(maskFrameBuffer.GetColorAt(x0, _bufferHt - (y0 + 1) - 1), _emptyColor))
+								{
+									frameBuffer.SetPixel(x0, y0 + 1, color);
+								}
+							}
+							break;
 					case 6:
 					case 7:
-						if(y0 > 0) frameBuffer.SetPixel(x0, y0-1, color);
-						break;
+							if (y0 > 0)
+							{
+								// If the mask is NOT applicable or
+								// if the pixel is set in the mask then...
+								if (maskFrameBuffer == null || 
+								    !ColorEquals(maskFrameBuffer.GetColorAt(x0, _bufferHt -(y0 - 1) - 1), _emptyColor))
+								{
+									frameBuffer.SetPixel(x0, y0 - 1, color);
+								}
+							}
+							break;
 					}
 				}
 				lastx = x0;
@@ -1500,6 +1668,11 @@ namespace VixenModules.Effect.Morph
 				{
 					RenderEffectTimeBasedLine(frameNum, frameBuffer, intervalPos, sparseMatrix, locationFrameBuffer);
 				}
+				// Otherwise if the morph polygon contains an ellipse then...
+				else if (MorphPolygons[0].Ellipse != null)
+				{
+					RenderEffectTimeBasedEllipse(frameNum, frameBuffer, intervalPos, sparseMatrix, locationFrameBuffer);
+				}
 			}
 		}
 
@@ -1551,6 +1724,23 @@ namespace VixenModules.Effect.Morph
 		}
 
 		/// <summary>
+		///  Renders the time based ellipse.
+		/// </summary>		
+		private void RenderEffectTimeBasedEllipse(
+			int frameNum,
+			IPixelFrameBuffer frameBuffer,
+			double intervalPos,
+			IEnumerable<ElementLocation> sparseMatrix,
+			PixelLocationFrameBuffer locationFrameBuffer)
+		{
+			// Get the morph polygons that contain an ellipse
+			List<IMorphPolygon> morpPolygons = MorphPolygons.Where(morphPolygon => morphPolygon.Ellipse != null).ToList();
+
+			// Render the time based morph ellipses
+			RenderEffectTimeBasedMorphEllipse(frameNum, morpPolygons, frameBuffer, intervalPos, sparseMatrix, locationFrameBuffer);
+		}
+
+		/// <summary>
 		/// Renders the time based line.
 		/// </summary>		
 		private void RenderEffectTimeBasedLine(
@@ -1582,7 +1772,7 @@ namespace VixenModules.Effect.Morph
 			// Calculate how far into effect we are
 			double time = frameNum * FrameTime;
 
-			// Find the index of the two polygons based on where we are on the timelime of the effect
+			// Find the index of the two polygons based on where we are on the timeline of the effect
 			// The polygonIndex points to the first polygon			
 			int polygonIndex = FindTwoPolygonsOnTimeline(time, morpPolygons);
 
@@ -1609,6 +1799,68 @@ namespace VixenModules.Effect.Morph
 		}
 
 		/// <summary>
+		/// Renders the collection of time based morph polygon ellipses.
+		/// </summary>		
+		private void RenderEffectTimeBasedMorphEllipse(
+			int frameNum,
+			List<IMorphPolygon> morpPolygons,
+			IPixelFrameBuffer frameBuffer,
+			double intervalPos,
+			IEnumerable<ElementLocation> sparseMatrix,
+			PixelLocationFrameBuffer locationFrameBuffer)
+		{
+			// Calculate how far into effect we are
+			double time = frameNum * FrameTime;
+
+			// Find the index of the two polygons based on where we are on the timeline of the effect
+			// The polygonIndex points to the first polygon			
+			int polygonIndex = FindTwoPolygonsOnTimeline(time, morpPolygons);
+
+			// If two polygons were found then...
+			if (polygonIndex < MorphPolygons.Count - 1 && polygonIndex != -1)
+			{
+				// Collection of points for the polygon that is moving between the two frame snapshots
+				List<Point> points = new List<Point>();
+
+				// Get the start polygon and the end polygon
+				IMorphPolygon startPolygon = MorphPolygons[polygonIndex];
+				IMorphPolygon endPolygon = MorphPolygons[polygonIndex + 1];
+
+				// Loop over the polygon points
+				for (int ptIndex = 0; ptIndex < MorphPolygons[polygonIndex].GetPolygonPoints().Count; ptIndex++)
+				{
+					// Add the point to the intermediate snapshot
+					points.Add(CalculateItermediatePoint(time, startPolygon.GetPolygonPoints()[ptIndex], endPolygon.GetPolygonPoints()[ptIndex], startPolygon.Time, endPolygon.Time));
+				}
+
+				// Calculate a new center for the ellipse based on the time line
+				Point newCenter = CalculateItermediatePoint(time, startPolygon.Ellipse.Center, endPolygon.Ellipse.Center, startPolygon.Time, endPolygon.Time);
+				
+				// Clone the starting polygon
+				Ellipse intermediateEllipse = startPolygon.Ellipse.Clone();
+				
+				// Update the center of the polygon
+				intermediateEllipse.Center.X = newCenter.X;
+				intermediateEllipse.Center.Y = newCenter.Y;
+
+				// Calculates the intermediate angle of the ellipse
+				intermediateEllipse.Angle = -1 * CalculateIntermediateValue(time, startPolygon.Ellipse.Angle,
+					endPolygon.Ellipse.Angle, startPolygon.Time, endPolygon.Time);
+
+				// Calculate the intermediate width of the ellipse
+				intermediateEllipse.Width = CalculateIntermediateValue(time, startPolygon.Ellipse.Width,
+					endPolygon.Ellipse.Width, startPolygon.Time, endPolygon.Time);
+
+				// Calculate the intermediate height of the ellipse
+				intermediateEllipse.Height = CalculateIntermediateValue(time, startPolygon.Ellipse.Height,
+					endPolygon.Ellipse.Height, startPolygon.Time, endPolygon.Time);
+
+				// Render the intermediate ellipse
+				RenderStaticEllipse(frameBuffer, intervalPos, points, sparseMatrix, locationFrameBuffer, intermediateEllipse.Angle, intermediateEllipse);
+			}
+		}
+
+		/// <summary> 
 		/// Calculate a point on the intermediate snapshot polygon/line.
 		/// </summary>		
 		private Point CalculateItermediatePoint(double time, PolygonPoint startPoint, PolygonPoint endPoint, double startTime, double endTime)
@@ -1619,7 +1871,7 @@ namespace VixenModules.Effect.Morph
 			// Calculate the distance in the x-axis between the two points
 			double distanceX = endPoint.X - startPoint.X;
 
-			// calculate the velocity in the x-axis required to move between the two points
+			// Calculate the velocity in the x-axis required to move between the two points
 			double velocityX = distanceX / totalTimeOnLine;
 
 			// Calculate the distance in the y-axis between the two points
@@ -1640,6 +1892,35 @@ namespace VixenModules.Effect.Morph
 		}
 
 		/// <summary>
+		/// Calculates an intermediate value based on a start and and end value and a time line.
+		/// </summary>
+		/// <param name="time">Current time in the effect</param>
+		/// <param name="startValue">Start value</param>
+		/// <param name="endValue">End value</param>
+		/// <param name="startTime">Start time associated with the start value</param>
+		/// <param name="endTime">End time associated with the end value</param>
+		/// <returns>Intermediate value based on time line</returns>
+		private double CalculateIntermediateValue(double time, double startValue, double endValue, double startTime, double endTime)
+		{
+			// Calculate the total time between the two ellipses
+			double totalTimeOnLine = (endTime - startTime) * TimeSpan.TotalMilliseconds;
+
+			// Calculate the difference in the two values
+			double difference = endValue - startValue;
+
+			// Calculate the velocity of the value 
+			double velocity = difference / totalTimeOnLine;
+
+			// Calculate the time on the time line
+			double currentTimeOnLine = time - (startTime * TimeSpan.TotalMilliseconds);
+
+			// Calculate the intermediate value
+			double intermediateValue= startValue + velocity * currentTimeOnLine;
+
+			return intermediateValue;
+		}
+
+		/// <summary>
 		/// Renders a static polygon.
 		/// </summary>		
 		private void RenderStaticPolygon(IPixelFrameBuffer frameBuffer, 
@@ -1649,8 +1930,8 @@ namespace VixenModules.Effect.Morph
 			PixelLocationFrameBuffer locationFrameBuffer)
 		{
 			// Make copies of the display element width and height for performance
-			var bufferHt = BufferHt;
-			var bufferWi = BufferWi;
+			int bufferHt = BufferHt;
+			int bufferWi = BufferWi;
 			
 			// Create a bitmap the size of the display element			
 			using (var bitmap = new Bitmap(bufferWi, bufferHt))
@@ -1693,7 +1974,56 @@ namespace VixenModules.Effect.Morph
 				}				
 			}
 		}
-		
+
+		/// <summary>
+		/// Renders a static polygon.
+		/// </summary>		
+		private void RenderStaticEllipse(IPixelFrameBuffer frameBuffer,
+			double intervalPos,
+			List<Point> points,
+			IEnumerable<ElementLocation> sparseMatrix,
+			PixelLocationFrameBuffer locationFrameBuffer,
+			double angle,
+			Ellipse ellipse)
+		{
+			// Make copies of the display element width and height for performance
+			var bufferHt = BufferHt;
+			var bufferWi = BufferWi;
+
+			// Create a bitmap the size of the display element			
+			using (var bitmap = new Bitmap(bufferWi, bufferHt))
+			{
+				// Render the ellipse on the bitmap
+				InitialRenderEllipse(bitmap, points.ToArray(), FillPolygon, GetFillColor(intervalPos), angle, ellipse, true);
+				
+				// Create a FastPixel instance based on the bitmap				
+				using (FastPixel.FastPixel fp = new FastPixel.FastPixel(bitmap))
+				{
+					// If rendering in String mode then...
+					if (sparseMatrix == null)
+					{
+						// Copy from the fastpixel bitmap to the frame buffer
+						CopyBitmapToPixelFrameBuffer(bitmap, frameBuffer);
+					}
+					// Otherwise we are in location mode...
+					else
+					{
+						fp.Lock();
+
+						// Loop over the sparse matrix pixels
+						foreach (ElementLocation location in sparseMatrix)
+						{
+							// Copy the pixel from the fast pixel to the specified sparse matrix pixel (location frame buffer)
+							CalculatePixel(location.X, location.Y, ref bufferHt, fp, locationFrameBuffer);
+						}
+
+						// Unlock the fast pixel
+						fp.Unlock(false);
+					}
+				}
+			}
+		}
+
 		/// <summary>
 		/// Renders the collection of morph polygons.
 		/// </summary>		
@@ -1712,9 +2042,11 @@ namespace VixenModules.Effect.Morph
 					// Loop over the morph polygons
 					foreach (IMorphPolygon morphPolygon in expandedMorphPolygon)
 					{
+					
 						// Convert the polygon/line points into Microsoft Drawing Points
 						List<Point> points = morphPolygon.GetPolygonPoints()
-							.Select(pt => new Point((int) Math.Round(pt.X), (int) Math.Round(pt.Y))).ToList();
+							.Select(pt => new Point((int) Math.Round(pt.X), BufferHt - 1 - (int) Math.Round(pt.Y)))
+							.ToList();
 
 						// If the points make a polygon then...
 						if (points.Count > 2)
@@ -1736,15 +2068,90 @@ namespace VixenModules.Effect.Morph
 				}
 			}
 		}
-		
+
+		/// <summary>
+		/// Renders the collection of morph ellipses.
+		/// </summary>		
+		private void RenderStaticEllipseMask(IPixelFrameBuffer frameBuffer, double intervalPos, Ellipse ellipse, bool flip)
+		{
+			// Make copies of the display element width and height for performance
+			int bufferHt = BufferHt;
+			int bufferWi = BufferWi;
+
+			// Create a bitmap the size of the display element			
+			using (Bitmap bitmap = new Bitmap(bufferWi, bufferHt))
+			{
+				// Convert the polygon/line points into Microsoft Drawing Points
+				List<Point> points = ellipse.Points
+					.Select(pt => new Point((int)Math.Round(pt.X), (int)Math.Round(pt.Y))).ToList();
+
+				// Render the ellipse
+				InitialRenderEllipse(
+					bitmap, 
+					points.ToArray(),
+					true,
+					Color.Red,  // Could use any color here
+					ellipse.Angle, 
+					ellipse, 
+					flip);
+					
+				// Copy the ellipse to the frame buffer
+				CopyBitmapToPixelFrameBuffer(bitmap, frameBuffer);
+			}
+		}
+
+		/// <summary>
+		/// Renders the collection of morph ellipses.
+		/// </summary>		
+		private void RenderStaticEllipse(
+			IPixelFrameBuffer frameBuffer, 
+			double intervalPos, 
+			List<IMorphPolygon> expandedMorphPolygon, 
+			bool flip)
+		{
+			// If there are any static ellipses then...
+			if (expandedMorphPolygon.Any())
+			{
+				// Make copies of the display element width and height for performance
+				int bufferHt = BufferHt;
+				int bufferWi = BufferWi;
+
+				// Create a bitmap the size of the display element			
+				using (Bitmap bitmap = new Bitmap(bufferWi, bufferHt))
+				{
+					// Loop over the morph polygons
+					foreach (IMorphPolygon morphPolygon in expandedMorphPolygon)
+					{
+						// Convert the ellipse points into Microsoft Drawing Points
+						List<Point> points = morphPolygon.GetPolygonPoints()
+							.Select(pt => new Point((int)Math.Round(pt.X), (int)Math.Round(pt.Y))).ToList();
+
+						// Render the ellipse
+						InitialRenderEllipse(
+							bitmap, 
+							points.ToArray(),
+							morphPolygon.FillType == PolygonFillType.Solid ||
+							morphPolygon.FillType == PolygonFillType.Wipe,
+							GetFillColor(intervalPos, morphPolygon), 
+							morphPolygon.Ellipse.Angle, 
+							morphPolygon.Ellipse, 
+							flip);
+					}
+
+					// Copy the ellipse to the frame buffer
+					CopyBitmapToPixelFrameBuffer(bitmap, frameBuffer);
+				}
+			}
+		}
+
 		/// <summary>
 		/// Copies the bitmap to the pixel frame buffer.
 		/// </summary>		
 		private void CopyBitmapToPixelFrameBuffer(Bitmap bitmap, IPixelFrameBuffer frameBuffer)
 		{
 			// Make copies of the display element width and height for performance
-			var bufferHt = BufferHt;
-			var bufferWi = BufferWi;
+			int bufferHt = BufferHt;
+			int bufferWi = BufferWi;
 
 			// Create a FastPixel instance based on the bitmap				
 			using (FastPixel.FastPixel fp = new FastPixel.FastPixel(bitmap))
@@ -1784,6 +2191,61 @@ namespace VixenModules.Effect.Morph
 					{
 						graphics.DrawPolygon(pen, points);
 					}					
+				}
+			}
+		}
+
+		/// <summary>
+		/// Renders the specified ellipse.
+		/// </summary>		
+		private void InitialRenderEllipse(Bitmap bitmap, Point[] points, bool fillEllipse, Color fillColor, double angle, Ellipse ellipse, bool flip)
+		{
+			// Create a Graphics instance from the bitmap
+			using (Graphics graphics = Graphics.FromImage(bitmap))
+			{
+				// If the Y coordinates need to be flipped then...
+				if (flip)
+				{
+					// Translate the Graphics origin to the (rotation) center of the ellipse
+					graphics.TranslateTransform((int)ellipse.Center.X, _bufferHt - 1 - (int)(ellipse.Center.Y));
+					graphics.RotateTransform(-1.0f * (float)angle);
+				}
+				else
+				{
+					// Translate the Graphics origin to the (rotation) center of the ellipse
+					graphics.TranslateTransform((int)ellipse.Center.X, (int)ellipse.Center.Y);
+					graphics.RotateTransform((float)angle);
+				}
+
+				// If the ellipse is filled then...
+				if (fillEllipse)
+				{
+					// Create a solid brush with the fill color
+					using (SolidBrush brush = new SolidBrush(fillColor))
+					{
+						// Draw the ellipse using the brush
+						graphics.FillEllipse(
+							brush,
+							new Rectangle(
+								(int)(- ellipse.Width / 2.0),(int)(-ellipse.Height / 2.0),
+								(int)ellipse.Width,
+								(int)ellipse.Height));
+					}
+				}
+				// Otherwise the ellipse is just an outline
+				else
+				{
+					// Create a pen using the fill color
+					using (Pen pen = new Pen(fillColor))
+					{
+						// Draw the ellipse using the pen
+						graphics.DrawEllipse(
+							pen,
+							new Rectangle(
+								(int)(-ellipse.Width / 2.0), (int)(-ellipse.Height / 2.0),
+								(int)ellipse.Width,
+								(int)ellipse.Height));
+					}
 				}
 			}
 		}
@@ -1866,15 +2328,19 @@ namespace VixenModules.Effect.Morph
 				{
 					case WipeRepeatDirection.Down:
 						morphPolygon.GetPointBasedShape().MovePoints(0, RepeatSkip);
+						UpdateEllipseForYOffset(morphPolygon.Ellipse, RepeatSkip);
 						break;
 					case WipeRepeatDirection.Up:
 						morphPolygon.GetPointBasedShape().MovePoints(0, -RepeatSkip);
+						UpdateEllipseForYOffset(morphPolygon.Ellipse, -RepeatSkip);
 						break;
 					case WipeRepeatDirection.Left:
 						morphPolygon.GetPointBasedShape().MovePoints(-RepeatSkip, 0);
+						UpdateEllipseForXOffset(morphPolygon.Ellipse, -RepeatSkip);
 						break;
 					case WipeRepeatDirection.Right:
 						morphPolygon.GetPointBasedShape().MovePoints(RepeatSkip, 0);
+						UpdateEllipseForXOffset(morphPolygon.Ellipse, RepeatSkip);
 						break;
 					default:
 						Debug.Assert(false, "Unsupported Direction");
@@ -1904,8 +2370,18 @@ namespace VixenModules.Effect.Morph
 					ExpandPatternMorphPolygons();
 				}
 
-				// Render the solid or outline pattern polygons
-				RenderStaticPolygons(frameBuffer, intervalPos, _patternExpandedMorphPolygons);
+				// If the morph polygon is a polygon or a line then...
+				if (MorphPolygons[0].Polygon != null || MorphPolygons[0].Line != null)
+				{
+					// Render the solid or outline polygon/line
+					RenderStaticPolygons(frameBuffer, intervalPos, _patternExpandedMorphPolygons);
+				}
+				// Otherwise the morph polygon is an ellipse
+				else
+				{
+					// Render the solid or outline ellipse
+					RenderStaticEllipse(frameBuffer, intervalPos, _patternExpandedMorphPolygons, true);
+				}
 			}
 		}
 
@@ -1914,13 +2390,19 @@ namespace VixenModules.Effect.Morph
 		/// </summary>		
 		private void RenderEffectFreeForm(int frameNum, IPixelFrameBuffer frameBuffer, double intervalPos)
 		{
-			// Render the wipe polygons/lines
+			// Render the wipe polygons/lines/ellipses
 			List<IMorphPolygon> wipePolygons = GetWipePolygons();				
 			RenderEffectWipes(frameNum, frameBuffer, intervalPos, wipePolygons);
 
 			// Render the solid and outline polygons/lines
-			List<IMorphPolygon> staticPolygons = MorphPolygons.Where(mp => mp.FillType != PolygonFillType.Wipe).ToList();			
+			List<IMorphPolygon> staticPolygons = MorphPolygons.Where(mp => (
+				mp.Polygon != null || mp.Line != null)  && mp.FillType != PolygonFillType.Wipe).ToList();			
 			RenderStaticPolygons(frameBuffer, intervalPos, staticPolygons);
+
+			// Render the solid and outline ellipses
+			List<IMorphPolygon> ellipses = MorphPolygons.Where(
+				mp => mp.Ellipse != null && mp.FillType != PolygonFillType.Wipe).ToList();
+			RenderStaticEllipse(frameBuffer, intervalPos, ellipses, true);
 		}
 					
 		/// <summary>
@@ -1991,6 +2473,16 @@ namespace VixenModules.Effect.Morph
 				List<int> y1PointsCopy = UpdatePointList(_wipePolygonRenderData[polygonIndex].Y1Points, 0);
 				List<int> y2PointsCopy = UpdatePointList(_wipePolygonRenderData[polygonIndex].Y2Points, 0);
 
+				Ellipse ellipseMask = null;
+
+				// If the morph polygon contains an ellipse then...
+				if (morphPolygon.Ellipse != null)
+				{
+					// Make a copy of the ellipse to draw the mask.  Need a copy because it is going to modified
+					// as it is repeated.
+					ellipseMask = morphPolygon.Ellipse.Clone();
+				}
+
 				// Draw a wipe for each repeated polygon
 				for (int index = 0; index < RepeatCount + 1; index++)
 				{
@@ -2050,12 +2542,25 @@ namespace VixenModules.Effect.Morph
 						Color headColor = GetHeadColor(intervalPos, morphPolygon);
 						Color tailColor = GetTailColor(intervalPos, morphPolygon);
 
+						IPixelFrameBuffer maskFrameBuffer = null;
+ 					
+						// If the morph polygong contains an ellipse then...
+						if (morphPolygon.Ellipse != null)
+						{
+							// Create a frame buffer for the ellipse mask
+							maskFrameBuffer = new PixelFrameBuffer(_bufferWi, _bufferHt);
+							
+							// Render the ellipse mask
+							RenderStaticEllipseMask(maskFrameBuffer, intervalPos, ellipseMask, false);
+						}
+
 						// Determine which set of points is longer
 						if (_wipePolygonRenderData[polygonIndex].X1Points.Count > _wipePolygonRenderData[polygonIndex].X2Points.Count)
 						{
 							DrawWipe(
 								intervalHeadPos,
 								frameBuffer,
+								maskFrameBuffer,
 								tailPosition,
 								x2PointsCopy, // Short Points
 								y2PointsCopy,
@@ -2072,10 +2577,11 @@ namespace VixenModules.Effect.Morph
 							DrawWipe(
 								intervalHeadPos,
 								frameBuffer,
+								maskFrameBuffer,
 								tailPosition,
 								x1PointsCopy, // Short Points
-								y1PointsCopy, // Long Points
-								x2PointsCopy,
+								y1PointsCopy, 
+								x2PointsCopy, // Long Points
 								y2PointsCopy,
 								length,
 								_wipePolygonRenderData[polygonIndex].Direction,
@@ -2091,24 +2597,72 @@ namespace VixenModules.Effect.Morph
 						case WipeRepeatDirection.Down:
 							y1PointsCopy = UpdatePointList(y1PointsCopy, -RepeatSkip);
 							y2PointsCopy = UpdatePointList(y2PointsCopy, -RepeatSkip);
+							UpdateEllipseForYOffset(ellipseMask, -RepeatSkip);
 							break;
 						case WipeRepeatDirection.Up:
 							y1PointsCopy = UpdatePointList(y1PointsCopy, RepeatSkip);
 							y2PointsCopy = UpdatePointList(y2PointsCopy, RepeatSkip);
+							UpdateEllipseForYOffset(ellipseMask, RepeatSkip);
 							break;
 						case WipeRepeatDirection.Left:
 							x1PointsCopy = UpdatePointList(x1PointsCopy, -RepeatSkip);
 							x2PointsCopy = UpdatePointList(x2PointsCopy, -RepeatSkip);
+							UpdateEllipseForXOffset(ellipseMask, -RepeatSkip);
 							break;
 						case WipeRepeatDirection.Right:
 							x1PointsCopy = UpdatePointList(x1PointsCopy, RepeatSkip);
 							x2PointsCopy = UpdatePointList(x2PointsCopy, RepeatSkip);
+							UpdateEllipseForXOffset(ellipseMask, RepeatSkip);
 							break;
 						default:
 							Debug.Assert(false, "Unsupported Direction");
 							break;
 					}
 				}				
+			}
+		}
+
+		/// <summary>
+		/// Updates the ellipse points and center for the specified Y offset.
+		/// </summary>
+		/// <param name="ellipse">Ellipse to update</param>
+		/// <param name="yOffset">Y offset</param>
+		private void UpdateEllipseForYOffset(Ellipse ellipse, int yOffset)
+		{
+			// If the ellipse mask is in use then...
+			if (ellipse != null)
+			{
+				// Loop over the ellipse points
+				for (int index = 0; index < ellipse.Points.Count; index++)
+				{
+					// Update the Y coordinate
+					ellipse.Points[index].Y += yOffset;
+				}
+
+				// Update the center of the ellipse
+				ellipse.Center.Y += yOffset;
+			}
+		}
+
+		/// <summary>
+		/// Updates the ellipse points and center for the specified X offset.
+		/// </summary>
+		/// <param name="ellipse">Ellipse to update</param>
+		/// <param name="xOffset">X offset</param>
+		private void UpdateEllipseForXOffset(Ellipse ellipse, int xOffset)
+		{
+			// If the ellipse mask is in use then...
+			if (ellipse != null)
+			{
+				// Loop over the ellipse points
+				for (int index = 0; index < ellipse.Points.Count; index++)
+				{
+					// Update the X coordinate
+					ellipse.Points[index].X += xOffset;
+				}
+
+				// Update the center of the ellipse
+				ellipse.Center.X += xOffset;
 			}
 		}
 
@@ -2155,6 +2709,7 @@ namespace VixenModules.Effect.Morph
 		private void DrawWipe(			
 			double intervalHeadPos,
 			IPixelFrameBuffer frameBuffer,
+			IPixelFrameBuffer maskFrameBuffer,
 			int tailPosition,
 			List<int> xShortPoints,
 			List<int> yShortPoints,
@@ -2194,7 +2749,7 @@ namespace VixenModules.Effect.Morph
 				int index = (int)x;
 				hsv.V *= GetTailIntensity(index, tailPosition, startOfHead);
 
-				DrawThickLine(x, length, xShortPoints, yShortPoints, xLongPoints, yLongPoints, hsv.ToRGB(), direction, frameBuffer);				
+				DrawThickLine(x, length, xShortPoints, yShortPoints, xLongPoints, yLongPoints, hsv.ToRGB(), direction, frameBuffer, maskFrameBuffer);				
 			}
 
 			// If the start of the head is NOT off the display element then...
@@ -2210,7 +2765,7 @@ namespace VixenModules.Effect.Morph
 				// Loop over the head lines
 				for (double x = startOfHead; x < endOfHead; x+=0.1)
 				{
-					DrawThickLine(x, length, xShortPoints, yShortPoints, xLongPoints, yLongPoints, headColor, direction, frameBuffer);
+					DrawThickLine(x, length, xShortPoints, yShortPoints, xLongPoints, yLongPoints, headColor, direction, frameBuffer, maskFrameBuffer);
 				}
 			}			
 		}
@@ -2227,7 +2782,8 @@ namespace VixenModules.Effect.Morph
 			List<int> yLongPoints,
 			Color color, 
 			bool direction,
-			IPixelFrameBuffer frameBuffer)
+			IPixelFrameBuffer frameBuffer,
+			IPixelFrameBuffer maskFrameBuffer)
 		{
 			// Get the length of the short side
 			int shortLength = xShortPoints.Count;
@@ -2242,7 +2798,7 @@ namespace VixenModules.Effect.Morph
 			int integerLongIndex = (int)longIndex;
 
 			// Draw a line from the short side to the long side
-			DrawThickLine(xShortPoints[shortIndex], yShortPoints[shortIndex], xLongPoints[integerLongIndex], yLongPoints[integerLongIndex], color, direction, frameBuffer);
+			DrawThickLine(xShortPoints[shortIndex], yShortPoints[shortIndex], xLongPoints[integerLongIndex], yLongPoints[integerLongIndex], color, direction, frameBuffer, maskFrameBuffer);
 		}
 		
 		/// <summary>
@@ -2250,10 +2806,13 @@ namespace VixenModules.Effect.Morph
 		/// </summary>		
 		private List<IMorphPolygon> GetWipePolygons()
 		{
-			// Find all the morph polygons that are a polygon with 4 points OR is a line			
+			// Find all the morph polygons that are a polygon with 4 points OR
+			// is a line OR
+			// is an ellipse
 			return MorphPolygons.Where(mp => mp.FillType == PolygonFillType.Wipe &&
 			                           ((mp.Polygon != null && mp.Polygon.Points.Count == 4 ||
-									    mp.Line != null))).ToList();					
+									    mp.Line != null ||
+									    mp.Ellipse != null))).ToList();					
 		}
 
 		/// <summary>
@@ -2329,9 +2888,13 @@ namespace VixenModules.Effect.Morph
 				{
 					serializedPolygon.Polygon = morphPolygon.Polygon.Clone();					
 				}
-				else
+				else if (morphPolygon.Line != null)
 				{
 					serializedPolygon.Line = morphPolygon.Line.Clone();						
+				}
+				else if (morphPolygon.Ellipse != null)
+				{
+					serializedPolygon.Ellipse = morphPolygon.Ellipse.Clone();
 				}
 
 				// Add the serialized polygon to the collection
@@ -2369,9 +2932,13 @@ namespace VixenModules.Effect.Morph
 				{
 					morphPolygon.Polygon = serializedPolygon.Polygon.Clone();						
 				}
-				else
+				else if (serializedPolygon.Line != null)
 				{
 					morphPolygon.Line = serializedPolygon.Line.Clone();												
+				}
+				else if (serializedPolygon.Ellipse != null)
+				{
+					morphPolygon.Ellipse = serializedPolygon.Ellipse.Clone();
 				}
 
 				// Add the polygon to the effect's collection

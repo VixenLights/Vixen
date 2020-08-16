@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 using VixenModules.App.ColorGradients;
-using VixenModules.App.Curves;
+using VixenModules.App.Polygon;
 using VixenModules.Effect.Effect;
-using ZedGraph;
 
 namespace VixenModules.Effect.Morph
 {

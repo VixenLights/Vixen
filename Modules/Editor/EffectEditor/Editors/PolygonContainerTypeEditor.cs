@@ -58,6 +58,9 @@ namespace VixenModules.Editor.EffectEditor.Editors
 					polygonContainerUpdated.PolygonTimes.AddRange(newWindow.PolygonTimes);
 					polygonContainerUpdated.Lines.AddRange(newWindow.Lines);
 					polygonContainerUpdated.LineTimes.AddRange(newWindow.LineTimes);
+					polygonContainerUpdated.Ellipses.AddRange(newWindow.Ellipses);
+					polygonContainerUpdated.EllipseTimes.AddRange(newWindow.EllipseTimes);
+
 					polygonContainerUpdated.Width = polygonContainer.Width;
 					polygonContainerUpdated.Height = polygonContainer.Height;
 

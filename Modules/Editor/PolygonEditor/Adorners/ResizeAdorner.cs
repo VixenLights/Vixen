@@ -34,6 +34,22 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 
 		private Point _rotationCenter;
 
+		/// <summary>
+		/// Gets or sets the vertex for rotating points.
+		/// </summary>
+		public Point RotationCenter 
+		{
+			get
+			{
+				return _rotationCenter;
+			}
+			set
+			{
+				_rotationCenter = value;
+				UpdateRotationTransform();
+			}
+		}
+
 		// To store and manage the adorner’s visual children.
 		private readonly VisualCollection _visualChildren;
 		private Rect _bounds;
@@ -41,13 +57,15 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 		private Point _dragStart;
 		FrameworkElement _frameworkElement;
 
-		private readonly IResizeable vm;
+		private readonly IResizeable _vm;
 		// Initialize the ResizingAdorner.
-		public ResizeAdorner(FrameworkElement frameworkElement, Canvas adornedElement, IResizeable vm, Rect bounds)
+		public ResizeAdorner(double rotationAngle, FrameworkElement frameworkElement, Canvas adornedElement, IResizeable vm, Rect bounds)
 			: base(adornedElement)
 		{
-			this.vm = vm;
+			_vm = vm;
 			_bounds = bounds;
+
+			_rotationAngle = rotationAngle;
 
 			_frameworkElement = frameworkElement;
 
@@ -99,13 +117,12 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 
 			_rotationCenter = Center(Bounds);
 			_rotateTransform = new RotateTransform(_rotationAngle, _rotationCenter.X, _rotationCenter.Y);
-			_reverseRotateTransform = new RotateTransform(_rotationAngle, _rotationCenter.X, _rotationCenter.Y);
-
+			_reverseRotateTransform = new RotateTransform(-_rotationAngle, _rotationCenter.X, _rotationCenter.Y);
 		}
 
 		private void DragCompleted(object sender, DragCompletedEventArgs e)
 		{
-			vm.DoneRotating();
+			_vm.DoneRotating();
 		}
 		
 		protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -148,11 +165,11 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 			Point pos = Mouse.GetPosition(AdornedElement);
 			
 			var offset = new Point(pos.X - _dragStart.X, pos.Y - _dragStart.Y);
-			_dragStart = pos;
-
-			if (Bounds.Left + offset.X > 0 && Bounds.Right + offset.X < el.ActualWidth &&
-				Bounds.Top + offset.Y > 0 && Bounds.Bottom + offset.Y < el.ActualHeight)
+			
+			// If the move operation is valid then...
+			if (_vm.IsMoveable(offset))
 			{
+				_dragStart = pos;
 				var transform = new TranslateTransform(offset.X, offset.Y);
 				MoveTransformItems(transform);
 			}
@@ -172,12 +189,13 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 				scaleX = scaleY = Math.Max(scaleX, scaleY);
 			}
 
-			if (EnforceSize(scaleX, scaleY))
+			ScaleTransform t = new ScaleTransform(scaleX, scaleY, Bounds.TopLeft.X, Bounds.TopLeft.Y);
+
+			// If the transform is valid then...
+			if (IsTransformValid(t))
 			{
-				ScaleTransform t = new ScaleTransform(scaleX, scaleY, Bounds.TopLeft.X, Bounds.TopLeft.Y);
 				TransformItems(t);
 			}
-
 		}
 
 		// Handler for resizing from the top-right.
@@ -195,12 +213,9 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 			}
 			ScaleTransform t = new ScaleTransform(scaleX, scaleY, Bounds.BottomLeft.X, Bounds.BottomLeft.Y);
 
-			Rect boundsCopy = Bounds;
-
-			boundsCopy = TransformItems(t, boundsCopy);
-
-			if (EnforceSize(boundsCopy))
-			{
+			// If the transform is valid then...
+			if (IsTransformValid(t))
+			{ 
 				TransformItems(t);				
 			}
 		}
@@ -220,14 +235,12 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 			}
 			
 			ScaleTransform t = new ScaleTransform(scaleX, scaleY, Bounds.BottomRight.X, Bounds.BottomRight.Y);
-			Rect boundsCopy = Bounds;
-			boundsCopy = TransformItems(t, boundsCopy);
-
-			if (EnforceSize(boundsCopy))
+			
+			// If the transform is valid then...
+			if (IsTransformValid(t))
 			{				
 				TransformItems(t);
 			}
-
 		}
 
 		// Handler for resizing from the bottom-left.
@@ -244,10 +257,9 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 				scaleX = scaleY = Math.Max(scaleX, scaleY);
 			}
 			ScaleTransform t = new ScaleTransform(scaleX, scaleY, Bounds.TopRight.X, Bounds.TopRight.Y);
-			Rect boundsCopy = Bounds;
-			boundsCopy = TransformItems(t, boundsCopy);
-
-			if (EnforceSize(boundsCopy))
+			
+			// If the transform is valid then...
+			if (IsTransformValid(t))
 			{
 				
 				TransformItems(t);
@@ -263,14 +275,11 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 		
 			var centerPoint = new Point(Bounds.Right, (Bounds.Bottom - Bounds.Top) / 2);
 			ScaleTransform t = new ScaleTransform(scaleX, 1, centerPoint.X, centerPoint.Y);
-			boundsCopy = Bounds;
-			boundsCopy = TransformItems(t, boundsCopy);
-		
-			if (EnforceSize(boundsCopy))
+			
+			// If the transform is valid then...
+			if (IsTransformValid(t))
 			{
-				var centerPt = new Point(Bounds.Right, (Bounds.Bottom - Bounds.Top) / 2);
-				ScaleTransform scaleTransform = new ScaleTransform(scaleX, 1, centerPt.X, centerPt.Y);
-				TransformItems(scaleTransform);
+				TransformItems(t);
 			}
 		}
 
@@ -280,10 +289,12 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 
 			scaleY += 1;
 
-			if (EnforceSize(1, scaleY))
+			var centerPoint = new Point((Bounds.Right - Bounds.Left) / 2, Bounds.Top);
+			ScaleTransform t = new ScaleTransform(1, scaleY, centerPoint.X, centerPoint.Y);
+			
+			// If the transform is valid then...
+			if (IsTransformValid(t))
 			{
-				var centerPoint = new Point((Bounds.Right - Bounds.Left) / 2, Bounds.Top);
-				ScaleTransform t = new ScaleTransform(1, scaleY, centerPoint.X, centerPoint.Y);
 				TransformItems(t);
 			}
 		}
@@ -294,10 +305,12 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 
 			scaleX += 1;
 
-			if (EnforceSize(scaleX, 1))
+			var centerPoint = new Point(Bounds.Left, (Bounds.Bottom - Bounds.Top) / 2);
+			var t = new ScaleTransform(scaleX, 1, centerPoint.X, centerPoint.Y);
+
+			// If the transform is valid then...
+			if (IsTransformValid(t))
 			{
-				var centerPoint = new Point(Bounds.Left, (Bounds.Bottom - Bounds.Top) / 2);
-				var t = new ScaleTransform(scaleX, 1, centerPoint.X, centerPoint.Y);
 				TransformItems(t);
 			}
 		}
@@ -315,13 +328,11 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 
 				var centerPoint = new Point((Bounds.Right - Bounds.Left) / 2, Bounds.Bottom);
 				ScaleTransform t = new ScaleTransform(1, scaleY, centerPoint.X, centerPoint.Y);
-				boundsCopy = TransformItems(t, boundsCopy);
-
-				if (EnforceSize(boundsCopy))
+				
+				// If the transform is valid then...
+				if (IsTransformValid(t))
 				{
-					var centerPt = new Point((Bounds.Right - Bounds.Left) / 2, Bounds.Bottom);
-					ScaleTransform scaleTransform = new ScaleTransform(1, scaleY, centerPt.X, centerPt.Y);
-					TransformItems(scaleTransform);
+					TransformItems(t);
 					scaled = true;
 				}
 				scaleY = scaleY - 1.0;
@@ -339,17 +350,16 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 			
 			var difference = rotationAngle - _rotateTransform.Angle;
 		
-			if (vm.IsRotateable(difference, _rotationCenter))
+			if (_vm.IsRotateable(difference, _rotationCenter))
 			{
 				_rotationAngle = GetAngle(_rotationCenter, pos);
 				_rotateTransform.Angle = _rotationAngle;
 				_reverseRotateTransform.Angle = -_rotationAngle;
 
-				vm.RotateSelectedItems(difference, _rotationCenter);
+				_vm.RotateSelectedItems(difference, _rotationCenter);
 			}		
 			else
 			{
-				vm.ClipSelectedPoints();
 				_rotate.CancelDrag();
 			}
 		}
@@ -361,14 +371,31 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 			return bounds;
 		}
 
-		private void TransformItems(ScaleTransform scaleTransform)
+		private bool IsTransformValid(ScaleTransform scaleTransform)
 		{
-			Bounds = scaleTransform.TransformBounds(Bounds);
 			TransformGroup tg = new TransformGroup();
 			tg.Children.Add(_reverseRotateTransform);
 			tg.Children.Add(scaleTransform);
 			tg.Children.Add(_rotateTransform);
-			vm.TransformSelectedItems(tg);
+
+			return _vm.IsTransformValid(tg);
+		}
+
+		private void TransformItems(ScaleTransform scaleTransform)
+		{
+			Bounds = scaleTransform.TransformBounds(Bounds);
+
+			TransformGroup tg = new TransformGroup();
+			tg.Children.Add(_reverseRotateTransform);
+			tg.Children.Add(scaleTransform);
+			tg.Children.Add(_rotateTransform); 
+			_vm.TransformSelectedItems(tg);
+
+			// If we haven't rotated yet, then it is safe to update the rotation center
+			if (_rotationAngle == 0)
+			{
+				RotationCenter = Center(Bounds);
+			}
 		}
 
 		private void MoveTransformItems(Transform transform)
@@ -376,7 +403,7 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 			_rotationCenter = transform.Transform(_rotationCenter);
 			UpdateRotationTransform();
 			Bounds = transform.TransformBounds(Bounds);
-			vm.MoveSelectedItems(transform);
+			_vm.MoveSelectedItems(transform);
 		}
 
 		private void UpdateRotationTransform()
@@ -454,45 +481,6 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 			cornerThumb.Height = cornerThumb.Width = 10;
 			
 			_visualChildren.Add(cornerThumb);
-		}
-
-		private bool EnforceSize(Rect r)
-		{
-			bool sizeValid = false;
-
-			if (r.Left >= 0 &&
-				r.Top >= 0 &&
-				r.Right < vm.GetWidth() &&
-				r.Bottom < vm.GetHeight())
-			{
-				sizeValid = true;
-			}
-
-			return sizeValid;
-		}
-
-		// This method ensures that the Widths and Heights are initialized.  Sizing to content produces
-		// Width and Height values of Double.NaN.  Because this Adorner explicitly resizes, the Width and Height
-		// need to be set first.  It also sets the maximum size of the adorned element.
-		private bool EnforceSize(double scaleX, double scaleY)
-		{
-			
-			var el = AdornedElement as FrameworkElement;
-			if (el != null)
-			{
-				Rect r = new Rect(Bounds.X, Bounds.Y, Bounds.Width, Bounds.Height);
-				r.Scale(scaleX, scaleY);
-				if (r.Left >= 0 && 
-					r.Top >= 0 && 
-					r.Right <= vm.GetWidth() && 
-					r.Bottom <= vm.GetHeight())
-				{
-					return true;
-				}
-			}
-			
-
-			return false;
 		}
 
 		public override GeneralTransform GetDesiredTransform(GeneralTransform transform)

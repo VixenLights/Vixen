@@ -29,7 +29,6 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		/// <param name="polygons">Collection of polygon model objects</param>
 		public PolygonEditorViewModel()
 		{
 			// Create the collection of model polygons
@@ -38,14 +37,20 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// Create the collection of model lines
 			LineModels = new ObservableCollection<Line>();
 
+			// Create the collection of model ellipses
+			EllipseModels = new ObservableCollection<Ellipse>();
+
 			// Create the collection of view model polygons	 						
 			Polygons = new ObservableCollection<PolygonViewModel>();
 
 			// Create the collection of view model lines
 			Lines = new ObservableCollection<LineViewModel>();
 
+			// Create the collection of view model ellipses
+			Ellipses = new ObservableCollection<EllipseViewModel>();
+
 			// Create the collection of polygon snapshots
-			PolygonSnapshots = new ObservableCollection<PolygonSnapShotViewModel>();
+			PolygonSnapshots = new ObservableCollection<PolygonSnapshotViewModel>();
 			
 			// If the editor is being displayed without any polygons then...
 			if (Polygons.Count == 0)
@@ -66,17 +71,19 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			OkCommand = new Command(OK);
 			CancelCommand = new Command(Cancel);
 			DeletePointCommand = new Command(DeletePoint);
-			ToggleStartSideCommand = new Command(ToggleStartSide, IsPolygonSelected);
+			ToggleStartSideCommand = new Command(ToggleStartSide, IsToggleableShapeSelected);
 			ToggleStartPointCommand = new Command(ToggleStartPoint, IsLineSelected);
-			PolygonToLineCommand = new Command(TogglePolygonToLine, IsPolygon);
-			LineToPolygonCommand = new Command(ToggleLineToPolygon, IsLine);
-			AddPolygonSnapShotCommand = new Command(AddPolygonSnapShot);
-			DeletePolygonSnapShotCommand = new Command(DeletePolygonSnapShot, IsDeleteSnapshotPolygonEnabled);
-			NextPolygonSnapShotCommand = new Command(NextPolygonSnapShot, IsNextPolygonSnapShotEnabled);
-			PreviousPolygonSnapShotCommand = new Command(PreviousPolygonSnapShot, IsPreviousPolygonSnapShotEnabled);
+			ConvertToLineCommand = new Command(ConvertToLine, IsNotLine);
+			ConvertToPolygonCommand = new Command(ConvertToPolygon, IsNotPolygon);
+			ConvertToEllipseCommand = new Command(ConvertToEllipse, IsNotEllipse);
+			AddPolygonSnapshotCommand = new Command(AddPolygonSnapshot);
+			DeletePolygonSnapshotCommand = new Command(DeletePolygonSnapshot, IsDeleteSnapshotPolygonEnabled);
+			NextPolygonSnapshotCommand = new Command(NextPolygonSnapshot, IsNextPolygonSnapshotEnabled);
+			PreviousPolygonSnapshotCommand = new Command(PreviousPolygonSnapshot, IsPreviousPolygonSnapshotEnabled);
 			AddPointCommand = new Command(AddPolygonPoint, IsAddPolygonPointEnabled);
 			DrawPolygonCommand = new Command(DrawPolygonAction, IsDrawShapeEnabled);
 			DrawLineCommand = new Command(DrawLineAction, IsDrawShapeEnabled);			
+			DrawEllipseCommand = new Command(DrawEllipseAction, IsDrawShapeEnabled);
 			MoveSnapshotCommand = new Command<MouseEventArgs>(MoveMouseSnapshot);
 			MouseLeftButtonDownTimeBarCommand = new Command<MouseEventArgs>(MouseLeftButtonDownTimeBar);
 			MouseLeftButtonUpTimeBarCommand = new Command<MouseEventArgs>(MouseLeftButtonUpTimeBar);
@@ -85,6 +92,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			CanvasMouseMoveCommand = new Command<MouseEventArgs>(CanvasMouseMove);
 			CanvasMouseLeftButtonDownCommand = new Command<MouseEventArgs>(CanvasMouseLeftButtonDown);
 			CanvasMouseLeftButtonUpCommand = new Command<MouseEventArgs>(CanvasMouseLeftButtonUp);
+
+			// Ellipse points are not editable by default
+			SelectedPointsReadOnly = true;
 		}
 		
 		#endregion
@@ -101,9 +111,28 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// </summary>
 		const string LineClipboardFormat = "LineClipboardFormat";
 
+		/// <summary>
+		/// Clipboard format identifier for an ellipse.
+		/// </summary>
+		const string EllipseClipboardFormat = "EllipseClipboardFormat";
+
 		#endregion
 
 		#region Catel Public Properties
+
+		/// <summary>
+		/// Determines if the selected points grid is read-only.
+		/// </summary>
+		public bool SelectedPointsReadOnly
+		{
+			get { return GetValue<bool>(SelectedPointsReadOnlyProperty); }
+			set { SetValue(SelectedPointsReadOnlyProperty, value); }
+		}
+
+		/// <summary>
+		/// SelectedPointsReadOnly property data.
+		/// </summary>
+		public static readonly PropertyData SelectedPointsReadOnlyProperty = RegisterProperty(nameof(SelectedPointsReadOnly), typeof(bool));
 
 		/// <summary>
 		/// Cursor applicable to the time bar.
@@ -230,9 +259,6 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			}
 		}
 
-		//  Why is the SelectedPolygon Catel?
-		public PolygonSnapShotViewModel SelectedSnapShot { get; set; }
-
 		/// <summary>
 		/// SelectedPolygon property data.
 		/// </summary>
@@ -256,6 +282,27 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// </summary>
 		public static readonly PropertyData SelectedLineProperty = RegisterProperty(nameof(SelectedLine), typeof(LineViewModel));
 
+		/// <summary>
+		/// Gets or sets the view model's selected ellipse.
+		/// </summary>
+		public EllipseViewModel SelectedEllipse
+		{
+			get { return GetValue<EllipseViewModel>(SelectedEllipseProperty); }
+			private set
+			{
+				SetValue(SelectedEllipseProperty, value);
+				SelectedShape = value;
+			}
+		}
+
+		/// <summary>
+		/// SelectedLine property data.
+		/// </summary>
+		public static readonly PropertyData SelectedEllipseProperty = RegisterProperty(nameof(SelectedEllipse), typeof(EllipseViewModel));
+
+		/// <summary>
+		/// Currently selected shape.
+		/// </summary>
 		public ShapeViewModel SelectedShape
 		{
 			get { return GetValue<ShapeViewModel>(SelectedShapeProperty); }
@@ -340,16 +387,16 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Collection of polygon snapshots.
 		/// </summary>
-		public ObservableCollection<PolygonSnapShotViewModel> PolygonSnapshots
+		public ObservableCollection<PolygonSnapshotViewModel> PolygonSnapshots
 		{
-			get { return GetValue<ObservableCollection<PolygonSnapShotViewModel>>(PolygonSnapShotsProperty); }
-			private set { SetValue(PolygonSnapShotsProperty, value); }
+			get { return GetValue<ObservableCollection<PolygonSnapshotViewModel>>(PolygonSnapshotsProperty); }
+			private set { SetValue(PolygonSnapshotsProperty, value); }
 		}
 
 		/// <summary>		
 		/// PolygonSnapshots property data.
 		/// </summary>
-		public static readonly PropertyData PolygonSnapShotsProperty = RegisterProperty(nameof(PolygonSnapshots), typeof(ObservableCollection<PolygonSnapShotViewModel>));
+		public static readonly PropertyData PolygonSnapshotsProperty = RegisterProperty(nameof(PolygonSnapshots), typeof(ObservableCollection<PolygonSnapshotViewModel>));
 		
 		/// <summary>
 		/// Draw polygon mode flag.
@@ -362,6 +409,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				if (value)
 				{
 					// Clear the other mode flags
+					DrawEllipse = false;
 					DrawLine = false;
 					AddPoint = false;
 					IsSelecting = false;
@@ -402,6 +450,39 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		public static readonly PropertyData DrawPolygonProperty = RegisterProperty(nameof(DrawPolygon), typeof(bool));
 
 		/// <summary>
+		/// Draw Ellipse mode flag.
+		/// </summary>
+		public bool DrawEllipse
+		{
+			get { return GetValue<bool>(DrawEllipseProperty); }
+			set
+			{
+				// If drawing an ellipse
+				if (value)
+				{
+					// Clear the other mode flags
+					DrawPolygon = false;
+					DrawLine = false;
+					AddPoint = false;
+					IsSelecting = false;
+
+					// Deselect all the other shapes
+					DeselectAllShapes();
+
+					// Remove the resize adorner
+					RaiseRemoveResizeAdorner();
+				}
+				
+				SetValue(DrawEllipseProperty, value);
+			}
+		}
+
+		/// <summary>
+		/// DrawEllipse property data.
+		/// </summary>
+		public static readonly PropertyData DrawEllipseProperty = RegisterProperty(nameof(DrawEllipse), typeof(bool));
+
+		/// <summary>
 		/// Draw line mode flag.
 		/// </summary>
 		public bool DrawLine
@@ -412,6 +493,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				if (value)
 				{
 					// Clear the other mode flags
+					DrawEllipse = false;
 					DrawPolygon = false;
 					IsSelecting = false;
 					AddPoint = false;
@@ -457,6 +539,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				if (value)
 				{
 					// Clear the other mode flags
+					DrawEllipse = false;
 					DrawLine = false;
 					DrawPolygon = false;
 					IsSelecting = false;					
@@ -484,6 +567,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 					DrawPolygon = false;
 					DrawLine = false;
 					AddPoint = false;
+					DrawEllipse = false;
 				}
 				SetValue(IsSelectingProperty, value);
 
@@ -495,21 +579,27 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// IsSelecting property data.
 		/// </summary>
-		public static readonly PropertyData IsSelectingProperty = RegisterProperty(nameof(IsSelectingProperty), typeof(bool));
+		public static readonly PropertyData IsSelectingProperty = RegisterProperty(nameof(IsSelecting), typeof(bool));
 
 		/// <summary>
 		/// 
 		/// </summary>
 		public bool TimeBarVisible
 		{
-			get { return GetValue<bool>(TimeBarVisibleProperty); }
-			set { SetValue(TimeBarVisibleProperty, value); }
+			get
+			{
+				return GetValue<bool>(TimeBarVisibleProperty);
+			}
+			set
+			{
+				SetValue(TimeBarVisibleProperty, value);
+			}
 		}
 
 		/// <summary>
 		/// TimeBarVisible property data.
 		/// </summary>
-		public static readonly PropertyData TimeBarVisibleProperty = RegisterProperty(nameof(TimeBarVisible), typeof(bool), null);
+		public static readonly PropertyData TimeBarVisibleProperty = RegisterProperty(nameof(TimeBarVisible), typeof(bool));
 
 		/// <summary>
 		/// Width of time bar.
@@ -520,7 +610,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			set
 			{
 				SetValue(TimeBarActualWidthProperty, value);
-				UpdatePolygonSnapShots();
+				UpdatePolygonSnapshots();
 			}
 		}
 
@@ -546,6 +636,12 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		#endregion
 
 		#region Public Properties
+
+		/// <summary>
+		/// Gets or sets the selected snapshot.
+		/// </summary>
+		public PolygonSnapshotViewModel SelectedSnapshot { get; set; }
+
 
 		/// <summary>
 		/// Flag that indicates the user lassoing points.
@@ -707,7 +803,12 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// Gets or sets the model lines.
 		/// </summary>
 		public ObservableCollection<Line> LineModels { get; set; }
-		
+
+		/// <summary>
+		/// Gets or sets the ellipse models.
+		/// </summary>
+		public ObservableCollection<Ellipse> EllipseModels { get; set; }
+
 		/// <summary>
 		/// Gets or sets the view model polygons.
 		/// </summary>
@@ -727,6 +828,15 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		}
 
 		/// <summary>
+		/// Gets or sets the view model ellipses.
+		/// </summary>
+		public ObservableCollection<EllipseViewModel> Ellipses
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
 		/// Gets or sets the SelectedPoints.  Note the points could be on one or more polygons.
 		/// </summary>
 		public ObservableCollection<PolygonPointViewModel> SelectedPoints { get; private set; }
@@ -739,7 +849,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Gets or sets whether a polygon snapshot is being moved.
 		/// </summary>
-		public bool MovingSnapShot { get; set; }
+		public bool MovingSnapshot { get; set; }
 
 		private PolygonEditorCapabilities _editorCapabilities;
 
@@ -833,34 +943,39 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		public ICommand ToggleStartPointCommand { get; private set; }
 
 		/// <summary>
-		/// Converts the polygon to a line command.
+		/// Converts the shape to a line command.
 		/// </summary>
-		public ICommand PolygonToLineCommand { get; private set; }
+		public ICommand ConvertToLineCommand { get; private set; }
 
 		/// <summary>
-		/// Converts the line to a polygon command.
+		/// Converts the shape to an ellipse.
 		/// </summary>
-		public ICommand LineToPolygonCommand { get; private set; }
+		public ICommand ConvertToEllipseCommand { get; private set; }
+
+		/// <summary>
+		/// Converts the shape to a polygon command.
+		/// </summary>
+		public ICommand ConvertToPolygonCommand { get; private set; }
 
 		/// <summary>
 		/// Adds a polygon snapshot command.
 		/// </summary>
-		public ICommand AddPolygonSnapShotCommand { get; private set; }
+		public ICommand AddPolygonSnapshotCommand { get; private set; }
 
 		/// <summary>
 		/// Delete polygon snapshot command.
 		/// </summary>
-		public ICommand DeletePolygonSnapShotCommand { get; private set; }
+		public ICommand DeletePolygonSnapshotCommand { get; private set; }
 
 		/// <summary>
 		/// Selects the next polygon snapshot command.
 		/// </summary>
-		public ICommand NextPolygonSnapShotCommand { get; private set; }
+		public ICommand NextPolygonSnapshotCommand { get; private set; }
 
 		/// <summary>
 		/// Selects the previous polygon snapshot command.
 		/// </summary>
-		public ICommand PreviousPolygonSnapShotCommand { get; private set; }
+		public ICommand PreviousPolygonSnapshotCommand { get; private set; }
 		
 		/// <summary>
 		/// Add a polygon point command.
@@ -871,6 +986,11 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// Draw a new polygon command.
 		/// </summary>
 		public ICommand DrawPolygonCommand { get; private set; }
+
+		/// <summary>
+		/// Draw a new ellipse command.
+		/// </summary>
+		public ICommand DrawEllipseCommand { get; private set; }
 
 		/// <summary>
 		/// Draw a new line command.
@@ -926,19 +1046,21 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// </summary>
 		/// <param name="position">Position of mouse</param>
 		/// <returns>True if the mouse is over a moveable item</returns>
-		public bool IsMouseOverTimeBar(Point position, ref PolygonSnapShotViewModel snapShot)
+		/// <param name="snapshot">Snapshot the mouse is over</param>
+		/// <returns>True if the mouse is over a moveable item</returns>
+		public bool IsMouseOverTimeBar(Point position, ref PolygonSnapshotViewModel snapshot)
 		{
 			// Default to NOT over a snapshot
 			bool overTimeBar = false;
 			
 			// Loop over the polygon snapshots
-			foreach (PolygonSnapShotViewModel polygonSnapShot in PolygonSnapshots)
+			foreach (PolygonSnapshotViewModel polygonSnapshot in PolygonSnapshots)
 			{
 				// If the mouse is over the polygon snapshot then...
-				if (polygonSnapShot.IsMouseOverTimeBar(position))
+				if (polygonSnapshot.IsMouseOverTimeBar(position))
 				{
 					// Save off the snapshot
-					snapShot = polygonSnapShot;
+					snapshot = polygonSnapshot;
 
 					// Indicate we are over a snapshot
 					overTimeBar = true;
@@ -952,6 +1074,39 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		}
 
 		/// <summary>
+		/// Returns true if the mouse is over the center of a shape.
+		/// </summary>
+		/// <param name="position">Position of the mouse</param>
+		/// <returns>true if the mouse is over the center of a shape</returns>
+		private bool IsMouseOverCenterOfShape(Point position)
+		{
+			PolygonViewModel selectedPolygon = null;
+			EllipseViewModel selectedEllipse = null;
+			LineViewModel selectedLine = null;
+
+			// Default to not being over the center of a shape
+			bool mouseOverMoveableItem = false;
+
+			// If the mouse is over a polygon then...
+			if (IsMouseOverPolygonCenterCrossHash(position, ref selectedPolygon))
+			{
+				mouseOverMoveableItem = true;
+			}
+			// Check to see if the mouse is over a line
+			else if (IsMouseOverLineCenterCrossHash(position, ref selectedLine))
+			{
+				mouseOverMoveableItem = true;
+			}
+			// Otherwise check to see if the mouse is over an ellipse
+			else if (IsMouseOverEllipseCenterCrossHash(position, ref selectedEllipse))
+			{
+				mouseOverMoveableItem = true;
+			}
+
+			return mouseOverMoveableItem;
+		}
+
+		/// <summary>
 		/// Returns true if the mouse is over a moveable item.
 		/// </summary>
 		/// <param name="position">Position of mouse</param>
@@ -961,39 +1116,42 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// Default to not being over a moveable item
 			bool mouseOverMoveableItem = false;
 
-			// Loop over all the polygons
-			foreach (PolygonViewModel poly in Polygons)
-			{				
-				PolygonViewModel selectedPolygon = null;
-				PolygonPointViewModel selectedPolygonPoint = null;
-				
-				// If the mouse is over a polygon point or
-				// it is over the center cross hash
-				if (IsMouseOverPolygonPoint(position, ref selectedPolygonPoint, ref selectedPolygon) ||
-					IsMouseOverPolygonCenterCrossHash(position, ref selectedPolygon))
-				{
-					// Indicate the mouse is over a moveable item and break out of loop
-					mouseOverMoveableItem = true;
-					break;
-				}
+			PolygonViewModel selectedPolygon = null;
+			PolygonPointViewModel selectedPolygonPoint = null;
+			
+			// If the mouse is over a polygon point or
+			// it is over the center cross hash
+			if (IsMouseOverPolygonPoint(position, ref selectedPolygonPoint, ref selectedPolygon) ||
+				IsMouseOverPolygonCenterCrossHash(position, ref selectedPolygon))
+			{
+				// Indicate the mouse is over a moveable item and break out of loop
+				mouseOverMoveableItem = true;
 			}
-
+			
 			// If the mouse is not over a moveable item then check the lines
 			if (!mouseOverMoveableItem)
 			{
-				// Loop over all the lines
-				foreach (LineViewModel line in Lines)
-				{
-					LineViewModel selectedLine = null;
-					PolygonPointViewModel selectedPoint = null;
+				LineViewModel selectedLine = null;
+				PolygonPointViewModel selectedPoint = null;
 
-					if (IsMouseOverLinePoint(position, ref selectedPoint, ref selectedLine) ||
-						IsMouseOverLineCenterCrossHash(position, ref selectedLine))
-					{
-						// Indicate the mouse is over a moveable item and break out of loop
-						mouseOverMoveableItem = true;
-						break;
-					}
+				if (IsMouseOverLinePoint(position, ref selectedPoint, ref selectedLine) ||
+					IsMouseOverLineCenterCrossHash(position, ref selectedLine))
+				{
+					// Indicate the mouse is over a moveable item and break out of loop
+					mouseOverMoveableItem = true;
+				}
+			}
+
+			// If the mouse is not over a moveable item then check the ellipses
+			if (!mouseOverMoveableItem)
+			{
+				EllipseViewModel selectedEllipse = null;
+				PolygonPointViewModel selectedPoint = null;
+
+				if (IsMouseOverEllipseCenterCrossHash(position, ref selectedEllipse))
+				{
+					// Indicate the mouse is over a moveable item and break out of loop
+					mouseOverMoveableItem = true;
 				}
 			}
 
@@ -1007,68 +1165,85 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Selects the specified polygon snapshot.
 		/// </summary>
-		/// <param name="snapShot">Polygon snapshot to select</param>
-		public void SelectPolygonSnapShot(PolygonSnapShotViewModel snapShot)
+		/// <param name="snapshot">Polygon snapshot to select</param>
+		public void SelectPolygonSnapshot(PolygonSnapshotViewModel snapshot)
 		{
 			// If a selected snapshot exists then...
-			if (SelectedSnapShot != null)
+			if (SelectedSnapshot != null)
 			{
 				// Remove the resize adorner
 				RaiseRemoveResizeAdorner();
 
 				// Mark the previous snapshot as NOT selected
-				SelectedSnapShot.Selected = false;
+				SelectedSnapshot.Selected = false;
 			}
 			
 			// Mark the specified polygon as selected
-			snapShot.Selected = true;
-			SelectedSnapShot = snapShot;
+			snapshot.Selected = true;
+			SelectedSnapshot = snapshot;
 
 			// Clear all the containers the editor binds to
 			Polygons.Clear();
 			PolygonModels.Clear();
 			Lines.Clear();
 			LineModels.Clear();
+			Ellipses.Clear();
+			EllipseModels.Clear();
 
 			// If the selected snapshot has a polygon then...
-			if (SelectedSnapShot.PolygonViewModel != null)
+			if (SelectedSnapshot.PolygonViewModel != null)
 			{
 				// Add the polygon to the editor collections
-				PolygonModels.Add(SelectedSnapShot.PolygonViewModel.Polygon);
-				Polygons.Add(SelectedSnapShot.PolygonViewModel);
+				PolygonModels.Add(SelectedSnapshot.PolygonViewModel.Polygon);
+				Polygons.Add(SelectedSnapshot.PolygonViewModel);
 
 				// Select the polygon
-				SelectPolygon(SelectedSnapShot.PolygonViewModel, true);
+				SelectPolygon(SelectedSnapshot.PolygonViewModel, true);
 
 				// Display the resize adorner
 				RaiseDisplayResizeAdorner();
 			}
 			// Otherwise if the selected snapshot has a line then...
-			else if (SelectedSnapShot.LineViewModel != null)
+			else if (SelectedSnapshot.LineViewModel != null)
 			{
 				// Add the line to the editor collections
-				LineModels.Add(SelectedSnapShot.LineViewModel.Line);
-				Lines.Add(SelectedSnapShot.LineViewModel);
+				LineModels.Add(SelectedSnapshot.LineViewModel.Line);
+				Lines.Add(SelectedSnapshot.LineViewModel);
 
 				// Select the line
-				SelectLine(SelectedSnapShot.LineViewModel, true);
+				SelectLine(SelectedSnapshot.LineViewModel, true);
+
+				// Display the resize adorner
+				RaiseDisplayResizeAdorner();
+			}
+			// Otherwise if the selected snapshot has an ellipse then...
+			else if (SelectedSnapshot.EllipseViewModel != null)
+			{
+				// Add the ellipse to the editor collection
+				EllipseModels.Add(SelectedSnapshot.EllipseViewModel.Ellipse);
+				Ellipses.Add(SelectedSnapshot.EllipseViewModel);
+
+				// Select the ellipse
+				SelectEllipse(SelectedSnapshot.EllipseViewModel, true);
 
 				// Display the resize adorner
 				RaiseDisplayResizeAdorner();
 			}
 			else
 			{
-				// Clear out the selected line and polygon
+				// Clear out the selected line, polygon, and ellipse
 				SelectedLine = null;
 				SelectedPolygon = null;
+				SelectedEllipse = null;
 			}
 
 			// Force the editor to refresh
-			RaisePropertyChanged("Polygons");
-			RaisePropertyChanged("Lines");
+			RaisePropertyChanged(nameof(Polygons));
+			RaisePropertyChanged(nameof(Lines));
+			RaisePropertyChanged(nameof(Ellipses));
 
 			// Force the toolbar commands to refresh
-			((Command)DeletePolygonSnapShotCommand).RaiseCanExecuteChanged();
+			((Command)DeletePolygonSnapshotCommand).RaiseCanExecuteChanged();
 			((Command)AddPointCommand).RaiseCanExecuteChanged();
 		}
 
@@ -1076,6 +1251,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// Selects the specified polygon.
 		/// </summary>
 		/// <param name="polygon">Polygon to select</param>
+		/// <param name="updateSelectedPoints">Determines whether the selected points are updated</param>
 		public void SelectPolygon(PolygonViewModel polygon, bool updateSelectedPoints)
 		{
 			// Select the polygon and all its points
@@ -1083,6 +1259,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 
 			// Clear out the selected line
 			SelectedLine = null;
+
+			// Clear out the selected ellipse
+			SelectedEllipse = null;
 
 			// Store off the selected polygon
 			SelectedPolygon = polygon;
@@ -1095,19 +1274,20 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 
 				// Select all the points on the polygon
 				SelectedPoints.AddRange(SelectedPolygon.PointCollection);
+
+				// Polygon points are editable in the grid
+				SelectedPointsReadOnly = false;
 			}
 
-			// Since the selected polygon changed update the commands
-			((Command)CopyCommand).RaiseCanExecuteChanged();
-			((Command)DeleteCommand).RaiseCanExecuteChanged();
-			((Command)CutCommand).RaiseCanExecuteChanged();
-			((Command)ToggleStartSideCommand).RaiseCanExecuteChanged();
+			// Since the selected shape changed update the commands
+			RefreshToolbarSelectedShapeCommands();
 		}
 
 		/// <summary>
 		/// Selects the specified line.
 		/// </summary>
 		/// <param name="line">Line to select</param>
+		/// <param name="updateSelectedPoints">Determines whether the selected points are updated</param>
 		public void SelectLine(LineViewModel line, bool updateSelectedPoints)
 		{
 			// Select the line and all its points
@@ -1115,6 +1295,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 
 			// Clear out the selected polygon
 			SelectedPolygon = null;
+
+			// Clear out the selected ellipse
+			SelectedEllipse = null;
 
 			// Store off the selected line
 			SelectedLine = line;
@@ -1127,14 +1310,50 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 
 				// Select all the points on the line
 				SelectedPoints.AddRange(SelectedLine.PointCollection);
+
+				// Line points are editable in the grid
+				SelectedPointsReadOnly = false;
 			}
 
-			// Since the selected polygon changed update the commands
-			((Command)CopyCommand).RaiseCanExecuteChanged();
-			((Command)DeleteCommand).RaiseCanExecuteChanged();
-			((Command)CutCommand).RaiseCanExecuteChanged();
-			((Command)ToggleStartSideCommand).RaiseCanExecuteChanged();
-			((Command)ToggleStartPointCommand).RaiseCanExecuteChanged();
+			// Since the selected shape changed update the commands
+			RefreshToolbarSelectedShapeCommands();
+		}
+
+		/// <summary>
+		/// Selects the specified ellipse.
+		/// </summary>
+		/// <param name="ellipse">Ellipse to select</param>
+		/// <param name="updateSelectedPoints">Determines whether the selected points are updated</param>
+		public void SelectEllipse(EllipseViewModel ellipse, bool updateSelectedPoints)
+		{
+			// Select the ellipse and all its points
+			SelectAllPointsOnEllipse(ellipse);
+
+			// Clear out the selected polygon
+			SelectedPolygon = null;
+
+			// Clear out the selected line
+			SelectedLine = null;
+
+			// Store off the selected ellipse
+			SelectedEllipse = ellipse;
+
+			// If the selected points need to be updated then...
+			if (updateSelectedPoints)
+			{
+				// Clear out the selected points
+				SelectedPoints.Clear();
+
+				// Select all the points on the line
+				SelectedPoints.AddRange(SelectedEllipse.PointCollection);
+
+				// Ellipse points are not editable in the grid because we need to maintain 90 degree
+				// angles between the sides of the rectangle
+				SelectedPointsReadOnly = true;
+			}
+
+			// Since the selected shape changed update the commands
+			RefreshToolbarSelectedShapeCommands();
 		}
 
 		/// <summary>
@@ -1142,15 +1361,8 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// </summary>
 		public void DisplayResizeAdornerForSelectedShape()
 		{
-			// If there is selected polygon with points then...
-			if (SelectedPolygon != null &&
-				SelectedPolygon.PointCollection.Count > 0)
-			{
-				// Display the resize adorner
-				RaiseDisplayResizeAdorner();
-			}
-			else if (SelectedLine != null &&
-					 SelectedLine.PointCollection.Count == 2)
+			// If there is a selected shape then...
+			if (SelectedShape != null)
 			{
 				// Display the resize adorner
 				RaiseDisplayResizeAdorner();
@@ -1165,7 +1377,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// Returns true when the mouse is over the polygon's center cross hash.		
 		/// </summary>
 		/// <param name="mousePosition">Position of the mouse</param>
-		/// <param name="polygon">Polygon the mouse is over or NULL</param>
+		/// <param name="crossHashPolygon">Polygon the mouse is over or NULL</param>
 		/// <returns>True when the mouse is over the polygon's center cross hash</returns>
 		private bool IsMouseOverPolygonCenterCrossHash(Point mousePosition, ref PolygonViewModel crossHashPolygon)
 		{
@@ -1189,7 +1401,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// </summary>
 		/// <param name="mousePosition">Position of the mouse</param>
 		/// <param name="polygon">Polygon the mouse is over or NULL</param>
-		/// <returns>True when the mouse is over he line's center cross hash.</returns>
+		/// <returns>True when the mouse is over the line's center cross hash.</returns>
 		private bool IsMouseOverLineCenterCrossHash(Point mousePosition, ref LineViewModel crossHashLine)
 		{
 			// Default to not being over the center of a line
@@ -1208,18 +1420,42 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		}
 
 		/// <summary>
+		/// Returns true when the mouse is over the ellipse's center cross hash.		
+		/// </summary>
+		/// <param name="mousePosition">Position of the mouse</param>
+		/// <param name="crossHashEllipse">Ellipse the mouse is over or NULL</param>
+		/// <returns>True when the mouse is over the ellipse's center cross hash.</returns>
+		private bool IsMouseOverEllipseCenterCrossHash(Point mousePosition, ref EllipseViewModel crossHashEllipse)
+		{
+			// Default to not being over the center of an ellipse
+			ShapeViewModel crossHashShape = null;
+
+			// Default to not being over the center cross hash
+			bool mouseOverCenterCrossHash = IsMouseOverShapeCenterCrossHash(
+				mousePosition,
+				ref crossHashShape,
+				Ellipses.Cast<ShapeViewModel>().ToList());
+
+			// If the mouse was over an ellipse cross hash then return the ellipse reference
+			crossHashEllipse = crossHashShape as EllipseViewModel;
+
+			return mouseOverCenterCrossHash;
+		}
+
+		/// <summary>
 		/// Returns true when the mouse is over one of the shape's center cross hash.		
 		/// </summary>
 		/// <param name="mousePosition">Position of the mouse</param>
-		/// <param name="shape">Shape the mouse is over or NULL</param>
-		/// <returns>True if the mouse is over a shape's point</returns>
+		/// <param name="crossHashShape">Shape the mouse is over or NULL</param>
+		/// <param name="shapes">Shapes to inspect</param>
+		/// <returns>True if the mouse is over a shape's cross hash</returns>
 		private bool IsMouseOverShapeCenterCrossHash(
 			Point mousePosition, 
-			ref ShapeViewModel crossHashLine,
+			ref ShapeViewModel crossHashShape,
 			List<ShapeViewModel> shapes)
 		{
 			// Default to not being over the center cross hash
-			crossHashLine = null;
+			crossHashShape = null;
 
 			// Default to not being over the center cross hash
 			bool mouseOverCenterCrossHash = false;
@@ -1231,7 +1467,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				if (shape.IsOverCenterCrossHash(mousePosition))
 				{
 					// Set shape the mouse is over
-					crossHashLine = shape;
+					crossHashShape = shape;
 
 					// Indicate that the mouse is over the cross hash
 					mouseOverCenterCrossHash = true;
@@ -1242,7 +1478,6 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 
 			return mouseOverCenterCrossHash;
 		}
-
 
 		/// <summary>
 		/// Returns true if the mouse is over polygon point.
@@ -1369,6 +1604,39 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		#region Private Methods
 		
 		/// <summary>
+		/// Refreshes toolbar commands impacted by the selected shape.
+		/// </summary>
+		private void RefreshToolbarSelectedShapeCommands()
+		{
+			((Command)CopyCommand).RaiseCanExecuteChanged();
+			((Command)DeleteCommand).RaiseCanExecuteChanged();
+			((Command)CutCommand).RaiseCanExecuteChanged();
+			((Command)ToggleStartSideCommand).RaiseCanExecuteChanged();
+			((Command)ToggleStartPointCommand).RaiseCanExecuteChanged();
+		}
+
+		/// <summary>
+		/// Refreshes toolbar commands impacted by the selection vs draw mode.
+		/// </summary>
+		private void RefreshToolbarSelectionModeCommands()
+		{
+			((Command) AddPointCommand).RaiseCanExecuteChanged();
+			((Command) DrawPolygonCommand).RaiseCanExecuteChanged();
+			((Command) DrawLineCommand).RaiseCanExecuteChanged();
+			((Command) DrawEllipseCommand).RaiseCanExecuteChanged();
+		}
+
+		/// <summary>
+		/// Refreshes toolbar command for converting shapes to different types.
+		/// </summary>
+		private void RefreshToolbarConvertCommands()
+		{
+			((Command)ConvertToLineCommand).RaiseCanExecuteChanged();
+			((Command)ConvertToPolygonCommand).RaiseCanExecuteChanged();
+			((Command)ConvertToEllipseCommand).RaiseCanExecuteChanged();
+		}
+
+		/// <summary>
 		/// Handles the polygon/line canvas left button down command.
 		/// </summary>
 		/// <param name="args"></param>
@@ -1377,79 +1645,173 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// Get the mouse click position
 			Point clickPosition = args.GetPosition(Canvas);
 
-			// Store off the mouse click position
-			LassoMouseStartPoint = clickPosition;
-
-			// Default to not selecting a shape
-			SelectedShapeFlag = false;
-
-			// If the editor is not in selection mode then...
-			if (!IsSelecting)
+			// These mouse move commands seem to get called when the mouse is outside the canvas area.
+			if (clickPosition.X < ActualWidth)
 			{
-				// If we are adding points to existing polygons then...
-				if (AddPoint)
+				// Store off the mouse click position
+				LassoMouseStartPoint = clickPosition;
+
+				// Default to not selecting a shape
+				SelectedShapeFlag = false;
+
+				// If the editor is not in selection mode then...
+				if (!IsSelecting)
 				{
-					PolygonLineSegment lineSegment = null;
-					PolygonViewModel polygon = null;
-
-					// If the mouse is over a polygon line segment then...
-					if (IsMouseOverLine(clickPosition, ref lineSegment, ref polygon))
+					// If we are adding points to existing polygons then...
+					if (AddPoint)
 					{
-						// If the polygon is closed then the user must want to add a new point along the line segment
-						if (polygon.PolygonClosed)
-						{
-							// Find the index of the start point of the line segment
-							int index = polygon.PointCollection.IndexOf(lineSegment.StartPoint);
+						PolygonLineSegment lineSegment = null;
+						PolygonViewModel polygon = null;
 
-							// Insert the point into the point collection
-							polygon.InsertPoint(clickPosition, index + 1);
+						// If the mouse is over a polygon line segment then...
+						if (IsMouseOverLine(clickPosition, ref lineSegment, ref polygon))
+						{
+							// If the polygon is closed then the user must want to add a new point along the line segment
+							if (polygon.PolygonClosed)
+							{
+								// Find the index of the start point of the line segment
+								int index = polygon.PointCollection.IndexOf(lineSegment.StartPoint);
+
+								// Insert the point into the point collection
+								polygon.InsertPoint(clickPosition, index + 1);
+							}
 						}
 					}
+					// If the editor is in draw polygon mode then...
+					else if (DrawPolygon)
+					{
+						// Add a polygon point at the click position
+						AddPolygonPoint(clickPosition);
+					}
+					// Otherwise if we are draw line mode then...
+					else if (DrawLine)
+					{
+						// Add a line point at the click position
+						AddLinePoint(clickPosition);
+					}
+					// Otherwise if we are in draw ellipse mode then...
+					else if (DrawEllipse)
+					{
+						// Add a default ellipse at the click position
+						AddEllipse(clickPosition);
+					}
 				}
-				// If the editor is in draw polygon mode then...
-				else if (DrawPolygon)
+				else // Editor is in Select mode
 				{
-					// Add a polygon point at the click position
-					AddPolygonPoint(clickPosition);
+					Canvas.CaptureMouse();
+
+					// Attempt to select either a polygon, line, ellipse or point
+					SelectedShapeFlag = SelectPolygonLineOrPoint(clickPosition);
 				}
-				// Otherwise if we are draw line mode then...
-				else if (DrawLine)
+
+				// Remove the resize adorner
+				RaiseRemoveResizeAdorner(false);
+
+				// If the editor is in selection mode and
+				// there is a selected polygon with all points selected then...
+				if (IsSelecting &&
+				    SelectedPolygon != null &&
+				    SelectedPolygon.AllPointsSelected)
 				{
-					AddLinePoint(clickPosition);
+					// Select all the points on the polygon
+					SelectPolygonPoints();
+
+					// Display the resize adorner for the selected polygon
+					RaiseDisplayResizeAdorner();
+				}
+				// If the editor is in selection mode and
+				// there is a selected line with all points selected then...
+				else if (IsSelecting &&
+				         SelectedLine != null &&
+				         SelectedLine.AllPointsSelected)
+				{
+					// Display the resize adorner for the selected line
+					RaiseDisplayResizeAdorner();
+				}
+				else if (IsSelecting &&
+				         SelectedEllipse != null &&
+				         SelectedEllipse.AllPointsSelected)
+				{
+					// Display the resize adorner for the selected ellipse
+					RaiseDisplayResizeAdorner();
 				}
 			}
-			else // Editor is in Select mode
-			{
-				Canvas.CaptureMouse();
+		}
 
-				// Attempt to select either a polygon, line or point
-				SelectedShapeFlag = SelectPolygonLineOrPoint(clickPosition);
-			}
+		/// <summary>
+		/// Adds an ellipse at the specified point.
+		/// </summary>
+		/// <param name="clickPosition">Position of mouse</param>
+		private void AddEllipse(Point clickPosition)
+		{
+			// Create a new ellipse model
+			Ellipse ellipseModel = new Ellipse();
 
-			// Remove the resize adorner
-			RaiseRemoveResizeAdorner(false);
+			// Create a new ellipse view model
+			EllipseViewModel ellipseViewModel = new EllipseViewModel(ellipseModel, ShowLabels);
 			
-			// If the editor is in selection mode and
-			// there is a selected polygon with all points selected then...
-			if (IsSelecting &&
-				SelectedPolygon != null &&
-				SelectedPolygon.AllPointsSelected)
-			{
-				// Select all the points on the polygon
-				SelectPolygonPoints();
+			// Default the smallest dimension of the display element to be the height
+			double smallestDimension = ActualHeight;
 
-				// Display the resize adorner for the selected polygon
-				RaiseDisplayResizeAdorner();
-			}
-			// If the editor is in selection mode and
-			// there is a selected line with all points selected then...
-			else if (IsSelecting &&
-					 SelectedLine != null &&
-					 SelectedLine.AllPointsSelected)
+			// Check to see if the width is smaller than the height
+			if (ActualWidth < smallestDimension)
 			{
-				// Display the resize adorner for the selected line
-				RaiseDisplayResizeAdorner();
+				// Set the smallest dimension to the width
+				smallestDimension = ActualWidth;
 			}
+
+			// Create dimensions 20 percent the size of the smallest dimension of the display element
+			int left = (int)(clickPosition.X - smallestDimension * 0.1);
+			int top = (int)(clickPosition.Y - smallestDimension * 0.1);
+			int right = (int)(clickPosition.X + smallestDimension * 0.1);
+			int bottom = (int)(clickPosition.Y + smallestDimension * 0.1);
+
+			// Create points based on the 20% factor
+			Point topLeft = new Point(left, top);
+			topLeft = LimitPointToCanvas(topLeft);
+
+			Point topRight = new Point(right, top);
+			topRight = LimitPointToCanvas(topRight);
+
+			Point bottomRight = new Point(right, bottom);
+			bottomRight = LimitPointToCanvas(bottomRight);
+
+			Point bottomLeft = new Point(left, bottom);
+			bottomLeft = LimitPointToCanvas(bottomLeft);
+
+			// Add the points to the ellipse view model
+			ellipseViewModel.AddPoint(topLeft);
+			ellipseViewModel.AddPoint(topRight);
+			ellipseViewModel.AddPoint(bottomRight);
+			ellipseViewModel.AddPoint(bottomLeft);
+
+			// Add the ellipse model to the collection of models
+			EllipseModels.Add(ellipseModel);
+
+			// Add the ellipse view model to the collection of view models
+			Ellipses.Add(ellipseViewModel);
+
+			// Initialize the green wipe line on the ellipse
+			ellipseViewModel.InitializeGreenLine();
+
+			// If the editor is time frame mode then...
+			if (TimeBarVisible)
+			{
+				// Associate the ellipse with the snapshot
+				SelectedSnapshot.EllipseViewModel = ellipseViewModel;
+
+				// Re-selecting the snapshot to make sure editor is bound to the correct polygon
+				SelectPolygonSnapshot(SelectedSnapshot);
+
+				// Switch to selection mode
+				IsSelecting = true;
+
+				// Refresh the toolbar commands
+				RefreshToolbarSelectionModeCommands();
+			}
+
+			// Force the view to refresh the converters
+			ellipseViewModel.NotifyPointCollectionChanged();
 		}
 
 		/// <summary>
@@ -1460,75 +1822,79 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// Position of the mouse when the button was released
 			Point clickPosition = args.GetPosition(Canvas);
 
-			// Release the mouse
-			Canvas.ReleaseMouseCapture();
-
-			// If the user is moving a polygon point then...
-			if (MovingPoint)
+			// The mouse commands are being called when the mouse is not over the canvas
+			if (clickPosition.X < ActualWidth)
 			{
-				// End the point move
-				EndMoveSelectedPoint(clickPosition);
-			}
+				// Release the mouse
+				Canvas.ReleaseMouseCapture();
 
-			// If the user did not select a shape on the mouse down event then...
-			if (!SelectedShapeFlag)
-			{
-				// If the rubber band adorner was created then...
-				if (LassoingPoints)
+				// If the user is moving a polygon point then...
+				if (MovingPoint)
 				{
-					// Retrieve the points of the rubbber band
-					Point endPoint = clickPosition; 
-					Point startPoint = LassoMouseStartPoint;
+					// End the point move
+					EndMoveSelectedPoint(clickPosition);
+				}
 
-					// Remove the rubber band adorner
-					RaiseRemoveRubberBandAdorner();
-
-					// Release the mouse
-					Canvas.ReleaseMouseCapture();
-
-					// Clears the selected points
-					ClearSelectedPoints();
-
-					// Create a rectangle from the rubber band
-					Rect lasso = new Rect(startPoint, endPoint);
-
-					// Select the polygon points inside the lasso
-					SelectShapePoints(lasso);
-
-					// If more than one polygon point is selected then...
-					if (SelectedPoints.Count > 1)
+				// If the user did not select a shape on the mouse down event then...
+				if (!SelectedShapeFlag)
+				{
+					// If the rubber band adorner was created then...
+					if (LassoingPoints)
 					{
-						// If an entire polygon was captured in the lasso then...
-						PolygonViewModel selectedPolygon = null;
-						if (IsEntirePolygonSelected(SelectedPoints, ref selectedPolygon))
-						{
-							// Select the polygon
-							SelectPolygon(selectedPolygon, false);
-						}
+						// Retrieve the points of the rubbber band
+						Point endPoint = clickPosition;
+						Point startPoint = LassoMouseStartPoint;
 
-						// Update the resize adorner for the selected points
-						RaiseDisplayResizeAdornerForSelectedPoints();
-					}
-					// If only one point is selected then...
-					else if (SelectedPoints.Count == 1)
-					{
-						// Find the polygon associated with the selected polygon point
-						PolygonViewModel selectedPolygon = FindPolygon(SelectedPoints[0]);
+						// Remove the rubber band adorner
+						RaiseRemoveRubberBandAdorner();
 
-						if (selectedPolygon != null)
-						{
-							// Select the polygon point                        
-							SelectPolygonPoint(SelectedPoints[0], selectedPolygon);
-						}
-						else
-						{
-							// Find the line associated with the selected point
-							LineViewModel selectedLine = FindLine(SelectedPoints[0]);
+						// Release the mouse
+						Canvas.ReleaseMouseCapture();
 
-							if (selectedLine != null)
+						// Clears the selected points
+						ClearSelectedPoints();
+
+						// Create a rectangle from the rubber band
+						Rect lasso = new Rect(startPoint, endPoint);
+
+						// Select the polygon points inside the lasso
+						SelectShapePoints(lasso);
+
+						// If more than one polygon point is selected then...
+						if (SelectedPoints.Count > 1)
+						{
+							// If an entire polygon was captured in the lasso then...
+							PolygonViewModel selectedPolygon = null;
+							if (IsEntirePolygonSelected(SelectedPoints, ref selectedPolygon))
 							{
-								// Select the line point
-								SelectLinePoint(SelectedPoints[0], selectedLine);
+								// Select the polygon
+								SelectPolygon(selectedPolygon, false);
+							}
+
+							// Update the resize adorner for the selected points
+							RaiseDisplayResizeAdornerForSelectedPoints();
+						}
+						// If only one point is selected then...
+						else if (SelectedPoints.Count == 1)
+						{
+							// Find the polygon associated with the selected polygon point
+							PolygonViewModel selectedPolygon = FindPolygon(SelectedPoints[0]);
+
+							if (selectedPolygon != null)
+							{
+								// Select the polygon point                        
+								SelectPolygonPoint(SelectedPoints[0], selectedPolygon);
+							}
+							else
+							{
+								// Find the line associated with the selected point
+								LineViewModel selectedLine = FindLine(SelectedPoints[0]);
+
+								if (selectedLine != null)
+								{
+									// Select the line point
+									SelectLinePoint(SelectedPoints[0], selectedLine);
+								}
 							}
 						}
 					}
@@ -1542,16 +1908,16 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <param name="normalizedTime">Normalized time of the snapshot</param>
 		/// <param name="index">Index into the collection of snapshots</param>
 		/// <returns>Reference to the new snapshot</returns>
-		private PolygonSnapShotViewModel CreatePolygonSnapShot(double normalizedTime, int index)
+		private PolygonSnapshotViewModel CreatePolygonSnapshot(double normalizedTime, int index)
 		{
 			// Create the new snapshot
-			PolygonSnapShotViewModel snapshot = new PolygonSnapShotViewModel();
+			PolygonSnapshotViewModel snapshot = new PolygonSnapshotViewModel();
 			
 			// Set the normalized time of the snapshot
 			snapshot.NormalizedTime = normalizedTime;
 			
 			// Convert the normalized time into a pixel based position
-			snapshot.Initialize((int)(normalizedTime * AdjustedTimeBarActualWidth) + PolygonSnapShotViewModel.HalfWidth);
+			snapshot.Initialize((int)(normalizedTime * AdjustedTimeBarActualWidth) + PolygonSnapshotViewModel.HalfWidth);
 			
 			// Insert the new snapshot into the collection
 			PolygonSnapshots.Insert(index, snapshot);
@@ -1578,6 +1944,13 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				// Fire the property changed event so that the converters run
 				line.NotifyPointCollectionChanged();
 			}
+
+			// Loop over the ellipse view models
+			foreach (EllipseViewModel ellipse in Ellipses)
+			{
+				// Fire the property changed event so that the converters run
+				ellipse.NotifyPointCollectionChanged();
+			}
 		}
 		
 		/// <summary>
@@ -1590,22 +1963,35 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			SelectedPolygon = polygon;
 			
 			// Select all the points on the polygon and the center hash
-			SelectedPolygon.SelectPolygon();
+			SelectedPolygon.SelectShape();
 		}
 
 		/// <summary>
 		/// Selects the specified polygon.
 		/// </summary>
-		/// <param name="polygon"></param>
+		/// <param name="line">Line to select</param>
 		private void SelectAllPointsOnLine(LineViewModel line)
 		{
 			// Store off the selected line
 			SelectedLine = line;
 
-			// Select all the points on the polygon and the center hash
-			SelectedLine.SelectLine();
+			// Select all the points on the line and the center hash
+			SelectedLine.SelectShape();
 		}
-				
+
+		/// <summary>
+		/// Selects the specified ellipse.
+		/// </summary>
+		/// <param name="ellipse">Ellipse to select</param>
+		private void SelectAllPointsOnEllipse(EllipseViewModel ellipse)
+		{
+			// Store off the selected ellipse
+			SelectedEllipse = ellipse;
+
+			// Select all the points on the ellipse and the center hash
+			SelectedEllipse.SelectShape();
+		}
+
 		/// <summary>
 		/// Creates a new polygon.
 		/// </summary>
@@ -1615,7 +2001,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			Polygon polygon = new Polygon();
 
 			// Create a new view model polygon
-			NewPolygon = new PolygonViewModel(polygon);
+			NewPolygon = new PolygonViewModel(polygon, ShowLabels);
 
 			// Initialize the new polygon as the SelectedPolygon
 			SelectedPolygon = NewPolygon;
@@ -1636,7 +2022,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			Line line = new Line();
 
 			// Create a new Line view model
-			NewLine = new LineViewModel(line);
+			NewLine = new LineViewModel(line, ShowLabels);
 
 			// Initialize the new line as the SelectedLine
 			SelectedLine = NewLine;
@@ -1647,40 +2033,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// Save off the view model polygon
 			Lines.Add(NewLine);
 		}
-	
-		/// <summary>
-		/// Deselects the current selected polygon.
-		/// </summary>
-		private void DeselectShapes()
-		{
-			// If a polygon was previously selected then...
-			if (SelectedPolygon != null)
-			{
-				// Deselect all points on the polygon
-				SelectedPolygon.DeselectAllPoints();
-			}
-
-			// Clear out the selected polygon
-			SelectedPolygon = null;
-
-			// If a line was previously selected then...
-			if (SelectedLine != null)
-			{
-				// Deselect all points on the line
-				SelectedLine.DeselectAllPoints();
-			}
-
-			// Clear out the selected line
-			SelectedLine = null;
-			
-			// Since there is no longer a selected polygon or line update the commands
-			((Command)CopyCommand).RaiseCanExecuteChanged();
-			((Command)DeleteCommand).RaiseCanExecuteChanged();
-			((Command)ToggleStartSideCommand).RaiseCanExecuteChanged();
-			((Command)ToggleStartSideCommand).RaiseCanExecuteChanged();
-			((Command)ToggleStartPointCommand).RaiseCanExecuteChanged();
-		}
-
+		
 		/// <summary>
 		/// Fires an event to remove the resize adorner.
 		/// </summary>
@@ -1821,6 +2174,14 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		}
 
 		/// <summary>
+		/// Puts the editor into draw ellipse mode.
+		/// </summary>
+		private void DrawEllipseAction()
+		{
+			DrawEllipse = true;
+		}
+
+		/// <summary>
 		/// Puts the editor into draw polygon mode.
 		/// </summary>
 		private void DrawPolygonAction()
@@ -1851,9 +2212,10 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			if (TimeBarVisible)
 			{
 				// Can only draw a new shape if the previous shape has been deleted
-				isEnabled = SelectedSnapShot != null &&
-							SelectedSnapShot.PolygonViewModel == null &&
-							SelectedSnapShot.LineViewModel == null;
+				isEnabled = SelectedSnapshot != null &&
+				            SelectedSnapshot.PolygonViewModel == null &&
+				            SelectedSnapshot.LineViewModel == null &&
+				            SelectedSnapshot.EllipseViewModel == null;
 			}
 
 			return isEnabled;
@@ -1947,7 +2309,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		}
 
 		/// <summary>
-		/// Deletes the selected polygon/line.
+		/// Deletes the selected shape.
 		/// </summary>
 		private void Delete()
 		{
@@ -1973,25 +2335,32 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				SelectedPolygon = null;
 			}
 
+			// If there is a selected ellipse then...
+			if (SelectedEllipse != null)
+			{
+				// Remove the specified ellipse
+				Ellipses.Remove(SelectedEllipse);
+				EllipseModels.Remove(SelectedEllipse.Ellipse);
+
+				// Clear out the selected ellipse
+				SelectedEllipse = null;
+			}
+
 			// Remove the resize adorner
 			RaiseRemoveResizeAdorner();
 			
 			// If we are in Time-Based mode then...
 			if (TimeBarVisible)
 			{
-				// Remove the polygon from the snap-shot
-				SelectedSnapShot.PolygonViewModel = null;				
+				// Remove the shape from the snap-shot
+				SelectedSnapshot.PolygonViewModel = null;
+				SelectedSnapshot.LineViewModel = null;
+				SelectedSnapshot.EllipseViewModel = null;
 			}
 
 			// Update the enable status of the copy, cut and delete commands
-			((Command)CopyCommand).RaiseCanExecuteChanged();
-			((Command)DeleteCommand).RaiseCanExecuteChanged();
-			((Command)CutCommand).RaiseCanExecuteChanged();
-			((Command)ToggleStartSideCommand).RaiseCanExecuteChanged();
-			((Command)ToggleStartPointCommand).RaiseCanExecuteChanged();
-			((Command)AddPointCommand).RaiseCanExecuteChanged();
-			((Command)DrawPolygonCommand).RaiseCanExecuteChanged();
-			((Command)DrawLineCommand).RaiseCanExecuteChanged();
+			RefreshToolbarSelectedShapeCommands();
+			RefreshToolbarSelectionModeCommands();
 		}
 
 		/// <summary>
@@ -2014,21 +2383,25 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// </summary>
 		private void ToggleLabels()
 		{
-			// Toggle the toolbar button
-			ShowLabels = !ShowLabels;
-
 			// Loop over all the polygons
 			foreach (PolygonViewModel polygon in Polygons)
 			{
 				// Toggle the visibility of the labels
-				polygon.LabelVisible = !polygon.LabelVisible;
+				polygon.LabelVisible = ShowLabels;
 			}
 
 			// Loop over all the lines
 			foreach (LineViewModel line in Lines)
 			{
 				// Toggle the visibility of the labels
-				line.LabelVisible = !line.LabelVisible;
+				line.LabelVisible = ShowLabels;
+			}
+
+			// Loop over all the ellipses
+			foreach (EllipseViewModel ellipse in Ellipses)
+			{
+				// Toggle the visibility of the labels
+				ellipse.LabelVisible = ShowLabels;
 			}
 		}
 
@@ -2041,25 +2414,29 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			SelectedLine.ToggleStartPoint();
 
 			// Deselect all shapes
-			DeselectShapes();
+			DeselectAllShapes();
 
 			// Remove the resize adorner
 			RaiseRemoveResizeAdorner();
 		}
 
 		/// <summary>
-		/// Toggles the line into a polygon.
+		/// Converts the selected shape into a polygon.
 		/// </summary>
-		private void ToggleLineToPolygon()
+		private void ConvertToPolygon()
 		{
 			// Clear the line collections
 			Lines.Clear();
 			LineModels.Clear();
 
+			// Clear the ellipse collections
+			Ellipses.Clear();
+			EllipseModels.Clear();
+
 			// Create a new polygon
 			Polygon polygon = new Polygon();
 			PolygonModels.Add(polygon);
-			Polygons.Add(new PolygonViewModel(polygon));
+			Polygons.Add(new PolygonViewModel(polygon, ShowLabels));
 
 			// Configure the polygon to be the size of the display element
 			Polygons[0].AddPoint(new Point(0, 0));
@@ -2072,35 +2449,38 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			if (TimeBarVisible)
 			{
 				// Associate the polygon with the snapshot
-				SelectedSnapShot.PolygonViewModel = Polygons[0];
-				SelectedSnapShot.LineViewModel = null;
+				SelectedSnapshot.PolygonViewModel = Polygons[0];
+				SelectedSnapshot.LineViewModel = null;
 
 				// Select the snapshot
-				SelectPolygonSnapShot(SelectedSnapShot);
+				SelectPolygonSnapshot(SelectedSnapshot);
 			}
 
 			// Deselect all shapes and remove the resize adorner
-			DeselectShapes();
+			DeselectAllShapes();
 			RaiseRemoveResizeAdorner();
 
 			// Refresh the toolbar buttons
-			((Command)PolygonToLineCommand).RaiseCanExecuteChanged();
-			((Command)LineToPolygonCommand).RaiseCanExecuteChanged();
+			RefreshToolbarConvertCommands();
 		}
 
 		/// <summary>
-		/// Toggles the polygon into a line.
+		/// Converts the selected shape into a line.
 		/// </summary>
-		private void TogglePolygonToLine()
+		private void ConvertToLine()
 		{
 			// Clear the polygon collections
 			Polygons.Clear();
 			PolygonModels.Clear();
+			
+			// Clear the ellipse collections
+			Ellipses.Clear();
+			EllipseModels.Clear();
 
 			// Create a new line
 			Line line = new Line();
 			LineModels.Add(line);
-			Lines.Add(new LineViewModel(line));
+			Lines.Add(new LineViewModel(line, ShowLabels));
 
 			// Initialize the line to be on the left of the display element extending the length of the display element
 			PolygonPoint pt1 = new PolygonPoint();
@@ -2126,40 +2506,88 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			if (TimeBarVisible)
 			{
 				// Associate the line with the snapshot
-				SelectedSnapShot.PolygonViewModel = null;
-				SelectedSnapShot.LineViewModel = Lines[0];
+				SelectedSnapshot.PolygonViewModel = null;
+				SelectedSnapshot.LineViewModel = Lines[0];
 
-				SelectPolygonSnapShot(SelectedSnapShot);
+				SelectPolygonSnapshot(SelectedSnapshot);
 			}
 
 			// Deselect all shapes and remove the resize adorner
-			DeselectShapes();
+			DeselectAllShapes();
 			RaiseRemoveResizeAdorner();
 
 			// Refresh the toolbar buttons
-			((Command)PolygonToLineCommand).RaiseCanExecuteChanged();
-			((Command)LineToPolygonCommand).RaiseCanExecuteChanged();
+			RefreshToolbarConvertCommands();
 		}
 
 		/// <summary>
-		/// Toggles the start side of a polygon.
+		/// Converts the selected shape into an ellipse.
+		/// </summary>
+		void ConvertToEllipse()
+		{
+			// Clear the polygon collections
+			Polygons.Clear();
+			PolygonModels.Clear();
+
+			// Clear the line collections
+			Lines.Clear();
+			LineModels.Clear();
+
+			// If the time bar is visible then...
+			if (TimeBarVisible)
+			{
+				SelectedSnapshot.LineViewModel = null;
+				SelectedSnapshot.PolygonViewModel = null;
+			}
+
+			// Add the ellipse in the center of the editor
+			Point clickPosition = new Point(ActualWidth / 2.0, ActualHeight / 2.0);
+			AddEllipse(clickPosition);
+
+			// Deselect all shapes and remove the resize adorner
+			DeselectAllShapes();
+			RaiseRemoveResizeAdorner();
+
+			// Refresh the toolbar buttons
+			RefreshToolbarConvertCommands();
+		}
+
+		/// <summary>
+		/// Toggles the start side of a polygon or ellipse.
 		/// </summary>
 		private void ToggleStartSide()
 		{
-			// Forward the request to the selected polygon
-			SelectedPolygon.ToggleStartSide();
+			if (SelectedPolygon != null)
+			{
+				// Forward the request to the selected polygon
+				SelectedPolygon.ToggleStartSide();
+			}
+			else if (SelectedEllipse != null)
+			{
+				// Forward the request to the selected ellipse
+				SelectedEllipse.ToggleStartSide();
+			}
+		}
+
+		/// <summary>
+		/// Returns true if a polygon or ellipse is selected.
+		/// </summary>
+		/// <returns>true if a polygon or ellipse is selected</returns>
+		private bool IsToggleableShapeSelected()
+		{
+			return IsPolygonSelected() || IsEllipseSelected();
 		}
 
 		/// <summary>
 		/// Adds a new polygon snapshot.
 		/// </summary>
-		private void AddPolygonSnapShot()
+		private void AddPolygonSnapshot()
 		{
 			// Retrieve the index of the currently selected snapshot
-			int index = PolygonSnapshots.IndexOf(SelectedSnapShot);
+			int index = PolygonSnapshots.IndexOf(SelectedSnapshot);
 
 			// Calculate the time of the new polygon; attempt to move it to the right
-			double time = (SelectedSnapShot.Time + 20) / AdjustedTimeBarActualWidth;
+			double time = (SelectedSnapshot.Time + 20) / AdjustedTimeBarActualWidth;
 
 			// If the time is off the scale
 			if (time > 1.0)
@@ -2169,113 +2597,119 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			}
 
 			// Create a new polyogn snapshot at the specified time and index
-			PolygonSnapShotViewModel snapShot = CreatePolygonSnapShot(time, index + 1);
+			PolygonSnapshotViewModel snapshot = CreatePolygonSnapshot(time, index + 1);
 
 			// If a polygon is associated with the snapshot then...
-			if (SelectedSnapShot.PolygonViewModel != null)				
+			if (SelectedSnapshot.PolygonViewModel != null)				
 			{
 				// Clone the polygon of the selected snapshot
 				PolygonViewModel newPolygonViewModel = new PolygonViewModel(
-					SelectedSnapShot.PolygonViewModel.Polygon.Clone());
+					SelectedSnapshot.PolygonViewModel.Polygon.Clone(), ShowLabels);
 				
 				// Associate the cloned polygon with the snapshot
-				snapShot.PolygonViewModel = newPolygonViewModel;
+				snapshot.PolygonViewModel = newPolygonViewModel;
 			}
 			// If a line is associated with the snapshot then...
-			else if (SelectedSnapShot.LineViewModel != null)
+			else if (SelectedSnapshot.LineViewModel != null)
 			{
-				// Clone the line of the selected snapshot
-				LineViewModel newLineViewModel = new LineViewModel(SelectedSnapShot.LineViewModel.Line.Clone());
+				// Associate the cloned line with the snapshot
+				snapshot.LineViewModel = new LineViewModel(SelectedSnapshot.LineViewModel.Line.Clone(), ShowLabels);
+			}
+			// If an ellipse is associated with the snapshot then...
+			else if (SelectedSnapshot.EllipseViewModel != null)
+			{
+				// Clone the ellipse of the selected snapshot
+				EllipseViewModel newEllipseViewModel = new EllipseViewModel(SelectedSnapshot.EllipseViewModel.Ellipse.Clone(), ShowLabels);
 
 				// Associate the cloned line with the snapshot
-				snapShot.LineViewModel = newLineViewModel;
+				snapshot.EllipseViewModel = newEllipseViewModel;
 			}
-			
+
 			// Select the newly created snapshot
-			SelectPolygonSnapShot(snapShot);
+			SelectPolygonSnapshot(snapshot);
 
 			// Update the toolbar commands
-			((Command)DeletePolygonSnapShotCommand).RaiseCanExecuteChanged();
+			((Command)DeletePolygonSnapshotCommand).RaiseCanExecuteChanged();
 		}
 	
 		/// <summary>
 		/// Deletes the selected snapshot.
 		/// </summary>
-		private void DeletePolygonSnapShot()
+		private void DeletePolygonSnapshot()
 		{
 			// Get the index of the selected snapshot
-			int index = PolygonSnapshots.IndexOf(SelectedSnapShot);
+			int index = PolygonSnapshots.IndexOf(SelectedSnapshot);
 
 			// Remove the selected snapshot
-			PolygonSnapshots.Remove(SelectedSnapShot);
+			PolygonSnapshots.Remove(SelectedSnapshot);
 
 			// If the index is not the first index then...
 			if (index > 0)
 			{
 				// Select the previous snapshot
-				SelectPolygonSnapShot(PolygonSnapshots[index - 1]);
+				SelectPolygonSnapshot(PolygonSnapshots[index - 1]);
 			}
 			// Otherwise
 			else
 			{
 				// Select the new first snapshot
-				SelectPolygonSnapShot(PolygonSnapshots[0]);
+				SelectPolygonSnapshot(PolygonSnapshots[0]);
 			}
 						
 			// Update the toolbar commands
-			((Command)DeletePolygonSnapShotCommand).RaiseCanExecuteChanged();			
+			((Command)DeletePolygonSnapshotCommand).RaiseCanExecuteChanged();			
 		}
 
 		/// <summary>
 		/// Selects the next polygon snapshot.
 		/// </summary>
-		private void NextPolygonSnapShot()
+		private void NextPolygonSnapshot()
 		{
 			// Get the index of the selected snapshot
-			int index = PolygonSnapshots.IndexOf(SelectedSnapShot);
+			int index = PolygonSnapshots.IndexOf(SelectedSnapshot);
 
 			// Select the next polygon snapshot to the right
-			SelectPolygonSnapShot(PolygonSnapshots[index + 1]);
+			SelectPolygonSnapshot(PolygonSnapshots[index + 1]);
 			
 			// Update the toolbar commands
-			((Command)NextPolygonSnapShotCommand).RaiseCanExecuteChanged();
-			((Command)PreviousPolygonSnapShotCommand).RaiseCanExecuteChanged();
+			((Command)NextPolygonSnapshotCommand).RaiseCanExecuteChanged();
+			((Command)PreviousPolygonSnapshotCommand).RaiseCanExecuteChanged();
 		}
 		
 		/// <summary>
 		/// Selects the previous snapshot.
 		/// </summary>
-		private void PreviousPolygonSnapShot()
+		private void PreviousPolygonSnapshot()
 		{
 			// Get the index of the selected snapshot
-			int index = PolygonSnapshots.IndexOf(SelectedSnapShot);
+			int index = PolygonSnapshots.IndexOf(SelectedSnapshot);
 
 			// Select the next polygon snapshot to the left
-			SelectPolygonSnapShot(PolygonSnapshots[index - 1]);
+			SelectPolygonSnapshot(PolygonSnapshots[index - 1]);
 
 			// Update the toolbar commands
-			((Command)NextPolygonSnapShotCommand).RaiseCanExecuteChanged();
-			((Command)PreviousPolygonSnapShotCommand).RaiseCanExecuteChanged();
+			((Command)NextPolygonSnapshotCommand).RaiseCanExecuteChanged();
+			((Command)PreviousPolygonSnapshotCommand).RaiseCanExecuteChanged();
 		}
 
 		/// <summary>
 		/// Returns true if the Next Polygon Snapshot command is enabled.
 		/// </summary>
 		/// <returns>True if the Next Polygon Snapshot command is enabled</returns>
-		private bool IsNextPolygonSnapShotEnabled()
+		private bool IsNextPolygonSnapshotEnabled()
 		{
 			// Command is enabled if the current snapshot is not the last snapshot
-			return PolygonSnapshots.IndexOf(SelectedSnapShot) < PolygonSnapshots.Count - 1;
+			return PolygonSnapshots.IndexOf(SelectedSnapshot) < PolygonSnapshots.Count - 1;
 		}
 
 		/// <summary>
 		/// Returns true if the Previous Polygon Snapshot command is enabled.
 		/// </summary>
 		/// <returns>True if the Previous Polygon Snapshot command is enabled</returns>
-		private bool IsPreviousPolygonSnapShotEnabled()
+		private bool IsPreviousPolygonSnapshotEnabled()
 		{
 			// Command is enabled if the current snapshot is not the first snapshot
-			return PolygonSnapshots.IndexOf(SelectedSnapShot) != 0;
+			return PolygonSnapshots.IndexOf(SelectedSnapshot) != 0;
 		}
 
 		/// <summary>
@@ -2287,8 +2721,8 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// Default to the normal arrow cursor
 			Cursor cursor = Cursors.Arrow;
 
-			PolygonSnapShotViewModel snapShot = null;
-			if (IsMouseOverTimeBar(mousePosition, ref snapShot))
+			PolygonSnapshotViewModel snapshot = null;
+			if (IsMouseOverTimeBar(mousePosition, ref snapshot))
 			{
 				// Change to the sizing cursor
 				cursor = Cursors.SizeWE;
@@ -2304,6 +2738,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <param name="eventArgs">Mouse move event arguments</param>
 		private void MoveMouseSnapshot(MouseEventArgs eventArgs)
 		{
+			// Indicate the event has been handled
+			eventArgs.Handled = true;
+
 			// Get the position of the mouse
 			Point mousePosition = eventArgs.GetPosition((Canvas)eventArgs.OriginalSource);
 
@@ -2311,10 +2748,10 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			UpdateCursor(mousePosition);
 
 			// If a snapshot is being moved then...
-			if (MovingSnapShot)
+			if (MovingSnapshot)
 			{				
 				// Move the snapshot
-				MovePolygonSnapshot(SelectedSnapShot, (int)mousePosition.X);
+				MovePolygonSnapshot(SelectedSnapshot, (int)mousePosition.X);
 			}
 		}
 
@@ -2324,19 +2761,22 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <param name="eventArgs">Mouse event arguments</param>
 		private void MouseLeftButtonDownTimeBar(MouseEventArgs eventArgs)
 		{
+			// Indicate the event has been handled
+			eventArgs.Handled = true;
+
 			// Get the position of the mouse
 			Point clickPosition = eventArgs.GetPosition((Canvas)eventArgs.OriginalSource);
 			
-			PolygonSnapShotViewModel polygonSnapShot = null;
+			PolygonSnapshotViewModel polygonSnapshot = null;
 
 			// If the mouse is over a snapshot then...
-			if (IsMouseOverTimeBar(clickPosition, ref polygonSnapShot))
+			if (IsMouseOverTimeBar(clickPosition, ref polygonSnapshot))
 			{
 				// Indicate we are moving a snapshot
-				MovingSnapShot = true;
+				MovingSnapshot = true;
 
 				// Select the snapshot under the mouse
-				SelectPolygonSnapShot(polygonSnapShot);
+				SelectPolygonSnapshot(polygonSnapshot);
 			}
 		}
 
@@ -2346,70 +2786,76 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <param name="eventArgs"></param>
 		private void MouseLeftButtonUpTimeBar(MouseEventArgs eventArgs)
 		{
+			// Indicate the event has been handled
+			eventArgs.Handled = true;
+
 			// Get the position of the mouse
 			Point clickPosition = eventArgs.GetPosition((Canvas)eventArgs.OriginalSource);
 
 			// If a snapshot is being moved then...
-			if (MovingSnapShot)
+			if (MovingSnapshot)
 			{				
 				// Move the selected snapshot to the specified position
-				MovePolygonSnapshot(SelectedSnapShot, (int)clickPosition.X);
+				MovePolygonSnapshot(SelectedSnapshot, (int)clickPosition.X);
 			}
 
 			// Clear the flag that indicates a snapshot move is in progress
-			MovingSnapShot = false;
+			MovingSnapshot = false;
 		}
 
 		/// <summary>
 		/// Handles the time bar mouse leave command.
 		/// </summary>
 		private void MouseLeaveTimeBar()
-		{			
+		{
 			// If the mouse leaves the time bar it ends the snapshot move
-			MovingSnapShot = false;
+			MovingSnapshot = false;
 		}
 				
 		/// <summary>
 		/// Moves the specified polygon to the specified position.
 		/// </summary>
-		/// <param name="polygonSnapShot">Polygon to move</param>
+		/// <param name="polygonSnapshot">Polygon to move</param>
 		/// <param name="position">Position to move the snapshot to</param>
-		public void MovePolygonSnapshot(PolygonSnapShotViewModel polygonSnapShot, int position)
+		public void MovePolygonSnapshot(PolygonSnapshotViewModel polygonSnapshot, int position)
 		{			
 			// If the pointer has gone off the scale to the left then...
-			if (position < PolygonSnapShotViewModel.HalfWidth)
+			if (position < PolygonSnapshotViewModel.HalfWidth)
 			{
 				// Reset the position to the start of the scale
-				position = PolygonSnapShotViewModel.HalfWidth;
+				position = PolygonSnapshotViewModel.HalfWidth;
 			}
 
 			// If the pointer has gone off the scale to the right then...
-			if (position > (AdjustedTimeBarActualWidth + PolygonSnapShotViewModel.HalfWidth))
+			if (position > (AdjustedTimeBarActualWidth + PolygonSnapshotViewModel.HalfWidth))
 			{
 				// Reset the position to the end of the scale
-				position = (int)(AdjustedTimeBarActualWidth + PolygonSnapShotViewModel.HalfWidth);
+				position = (int)(AdjustedTimeBarActualWidth + PolygonSnapshotViewModel.HalfWidth);
 			}
 
 			// Forward the command to the polygon snapshot
-			polygonSnapShot.Move(position);
+			polygonSnapshot.Move(position);
 
 			// Calculate the normalized time (0.0 - 1.0)
-			polygonSnapShot.NormalizedTime = (position - PolygonSnapShotViewModel.HalfWidth) / AdjustedTimeBarActualWidth;
-			Debug.Assert(polygonSnapShot.NormalizedTime >= 0.0);
-			Debug.Assert(polygonSnapShot.NormalizedTime <= 1.0);
+			polygonSnapshot.NormalizedTime = (position - PolygonSnapshotViewModel.HalfWidth) / AdjustedTimeBarActualWidth;
+			Debug.Assert(polygonSnapshot.NormalizedTime >= 0.0);
+			Debug.Assert(polygonSnapshot.NormalizedTime <= 1.0);
 
 			// Sort the snapshots by the associated time
-			List<PolygonSnapShotViewModel> sortedSnapshots = PolygonSnapshots.OrderBy(snapShot => snapShot.Time).ToList();
+			List<PolygonSnapshotViewModel> sortedSnapshots = PolygonSnapshots.OrderBy(snapShot => snapShot.Time).ToList();
 			
-			// Clear teh collection of snapshots
+			// Clear the collection of snapshots
 			PolygonSnapshots.Clear();
 
 			// Add the snapshots back in increasing time order
 			PolygonSnapshots.AddRange(sortedSnapshots);
 
-			// Update the toolbar commands
-			((Command)NextPolygonSnapShotCommand).RaiseCanExecuteChanged();
-			((Command)PreviousPolygonSnapShotCommand).RaiseCanExecuteChanged();
+			// Force the view to refresh
+			RaisePropertyChanged(nameof(PolygonSnapshots));
+
+			// Update the button enabled status
+			((Command)NextPolygonSnapshotCommand).RaiseCanExecuteChanged();
+			((Command)PreviousPolygonSnapshotCommand).RaiseCanExecuteChanged();
 		}
 
 		/// <summary>
@@ -2440,7 +2886,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				LineModels.Add(copiedLine);
 
 				// Create a line view model object
-				LineViewModel copiedLineVM = new LineViewModel(copiedLine);
+				LineViewModel copiedLineVM = new LineViewModel(copiedLine, ShowLabels);
 
 				// Retrieve the center point of the line
 				PolygonPointViewModel centerPoint = copiedLineVM.CenterPoint;
@@ -2461,7 +2907,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				
 				// Deselect any line or line points
 				DeselectAllLines();
-				DeselectShapes();
+				DeselectAllShapes();
 
 				// Remove the resize adorner
 				RaiseRemoveResizeAdorner();
@@ -2473,10 +2919,10 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				if (EditorCapabilities.ShowTimeBar)
 				{
 					// Update the snapshot polygon with the copied view model polygon
-					SelectedSnapShot.LineViewModel = copiedLineVM;
+					SelectedSnapshot.LineViewModel = copiedLineVM;
 
 					// Reselect the polygon snapshot to reconfigure the bindings
-					SelectPolygonSnapShot(SelectedSnapShot);
+					SelectPolygonSnapshot(SelectedSnapshot);
 				}
 
 				// Display the resize adorner
@@ -2492,8 +2938,8 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				PolygonModels.Add(copiedPolygon);
 
 				// Create a polygon view model object
-				PolygonViewModel copiedPolygonVM = new PolygonViewModel(copiedPolygon);
-				
+				PolygonViewModel copiedPolygonVM = new PolygonViewModel(copiedPolygon, ShowLabels);
+
 				// Retrieve the center point of the polygon
 				PolygonPointViewModel centerPoint = copiedPolygonVM.CenterPoint;
 				
@@ -2513,7 +2959,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 
 				// Deselect any polygons or polygon points
 				DeselectAllPolygons();
-				DeselectShapes();
+				DeselectAllShapes();
 
 				// Remove the resize adorner
 				RaiseRemoveResizeAdorner();
@@ -2525,10 +2971,61 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				if (EditorCapabilities.ShowTimeBar)
 				{
 					// Update the snapshot polygon with the copied view model polygon
-					SelectedSnapShot.PolygonViewModel = copiedPolygonVM;
+					SelectedSnapshot.PolygonViewModel = copiedPolygonVM;
 
 					// Reselect the polygon snapshot to reconfigure the bindings
-					SelectPolygonSnapShot(SelectedSnapShot);
+					SelectPolygonSnapshot(SelectedSnapshot);
+				}
+
+				// Display the resize adorner
+				RaiseDisplayResizeAdorner();
+			}
+			// If the clipboard contains ellipse data then...
+			else if (Clipboard.ContainsData(EllipseClipboardFormat))
+			{
+				// Retrieve the ellipse model object from the clipboard
+				Ellipse copiedEllipse = ((Ellipse)Clipboard.GetData(EllipseClipboardFormat)).Clone();
+
+				// Add the model ellipse to the collection
+				EllipseModels.Add(copiedEllipse);
+
+				// Create an ellipse view model object
+				EllipseViewModel copiedEllipseVM = new EllipseViewModel(copiedEllipse, ShowLabels);
+
+				// Retrieve the center point of the ellipse
+				PolygonPointViewModel centerPoint = copiedEllipseVM.CenterPoint;
+
+				// Determine how far from center the clipboard ellipse is positioned
+				// This is the distance required to move the ellipse to the center of the editor.
+				double moveX = centerX - centerPoint.X;
+				double moveY = centerY - centerPoint.Y;
+
+				// Move the points so the ellipse is centered in the middle of the editor
+				copiedEllipseVM.MovePoints(moveX, moveY, LimitPointToCanvas);
+
+				// Add the ellipse view model to the collection
+				Ellipses.Add(copiedEllipseVM);
+
+				// Fire the Property Changed event to ensure the converters run
+				copiedEllipseVM.NotifyPointCollectionChanged();
+
+				// Deselect all shapes
+				DeselectAllShapes();
+				
+				// Remove the resize adorner
+				RaiseRemoveResizeAdorner();
+
+				// Select the pasted ellipse
+				SelectEllipse(copiedEllipseVM, true);
+
+				// If we are in time based mode then...
+				if (EditorCapabilities.ShowTimeBar)
+				{
+					// Update the snapshot polygon with the copied view model ellipse
+					SelectedSnapshot.EllipseViewModel = copiedEllipseVM;
+					
+					// Reselect the polygon snapshot to reconfigure the bindings
+					SelectPolygonSnapshot(SelectedSnapshot);
 				}
 
 				// Display the resize adorner
@@ -2563,10 +3060,11 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <returns>True when the Paste command can execute</returns>
 		private bool CanExecutePaste()
 		{
-			// Return whether polygon or line data is on the clipboard and 
+			// Return whether polygon, line, or ellipse data is on the clipboard and 
 			// the editor is configured to allow pasting new shapes
 			return (Clipboard.ContainsData(PolygonClipboardFormat) ||
-					Clipboard.ContainsData(LineClipboardFormat)) &&
+					Clipboard.ContainsData(LineClipboardFormat) ||
+					Clipboard.ContainsData(EllipseClipboardFormat)) &&
 				   EditorCapabilities != null &&
 				   EditorCapabilities.AddPolygons;
 		}
@@ -2577,33 +3075,20 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <returns>True when the Delete command can execute</returns>
 		private bool CanExecuteDelete()
 		{
-			// Return whether polygon or line is selected and 
+			// Return whether polygon, line, or ellipse is selected and 
 			// the editor is configured to allow deleting shapes
-			return (IsPolygonSelected() || IsLineSelected()) &&
+			return (IsPolygonSelected() || IsLineSelected() || IsEllipseSelected()) &&
 				EditorCapabilities != null &&
 				EditorCapabilities.DeletePolygons;
 		}
 
 		/// <summary>
-		/// Returns true when the Toggle Start Side command can execute.
+		/// Returns true when a shaped is selected.
 		/// </summary>
-		/// <returns>True when the Toggle Start Side command can execute</returns>
-		private bool CanToggleStartSide()
-		{
-			// Return whether a polygon is selected and
-			// the editor is configured to allow toggling the start side
-			return IsPolygonSelected() &&
-				EditorCapabilities != null &&
-				EditorCapabilities.ToggleStartSide;
-		}
-
-		/// <summary>
-		/// Returns true when the Toggle Start Side command can execute.
-		/// </summary>
-		/// <returns>True when the Toggle Start Side command can execute</returns>
+		/// <returns>True when a shape is selected</returns>
 		private bool IsShapeSelected()
 		{
-			return IsPolygonSelected() || IsLineSelected();
+			return IsPolygonSelected() || IsLineSelected() || IsEllipseSelected();
 		}
 
 		/// <summary>
@@ -2633,6 +3118,16 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		}
 
 		/// <summary>
+		/// Returns true if an ellipse is selected.
+		/// </summary>
+		/// <returns>True if an ellipse is selected</returns>
+		private bool IsEllipseSelected()
+		{
+			return IsSelecting &&
+			       SelectedEllipse != null;
+		}
+
+		/// <summary>
 		/// Returns true when the Delete Snapshot command can execute.
 		/// </summary>
 		/// <returns>True when the Delete Snapshot command can execute</returns>
@@ -2643,21 +3138,30 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		}
 
 		/// <summary>
-		/// Returns true if there is at least one polygon.
+		/// Returns true if there are not any ellipses.
 		/// </summary>
-		/// <returns>True if there is at least one polygon</returns>
-		private bool IsPolygon()
+		/// <returns>True if there are not any ellipses</returns>
+		private bool IsNotEllipse()
 		{
-			return (Polygons.Count > 0);
+			return (Ellipses.Count == 0);
 		}
 
 		/// <summary>
-		/// Returns true if there is at least one line.
+		/// Returns true if there are not any polygons.
 		/// </summary>
-		/// <returns>True if there is at least one line</returns>
-		private bool IsLine()
+		/// <returns>True if there are not any polygons</returns>
+		private bool IsNotPolygon()
 		{
-			return (Lines.Count > 0);
+			return (Polygons.Count == 0);
+		}
+
+		/// <summary>
+		/// Returns true if there are not any lines.
+		/// </summary>
+		/// <returns>True if there are not any lines</returns>
+		private bool IsNotLine()
+		{
+			return (Lines.Count == 0);
 		}
 
 		/// <summary>
@@ -2672,9 +3176,16 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			PolygonLineSegment lineSegment = null;
 			PolygonViewModel polygon = null;
 
+			// If the mouse is over the center of a shape then...
+			if (IsSelecting &&
+			    IsMouseOverCenterOfShape(mousePosition))
+			{
+				// Use special cross cursor to indicate the shape can be selected
+				cursor = Cursors.Cross;
+			}
 			// If the editor is in selection mode and
 			// the mouse over a moveable item then....
-			if (IsSelecting &&
+			else if (IsSelecting &&
 			    IsMouseOverMoveableItem(mousePosition))
 			{
 				// Change to the sizing cursor
@@ -2796,11 +3307,13 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// If the editor is in selection mode and
 			// the user is NOT moving a point and
 			// the left mouse button is down and
-			// user did not just select a shape then...
+			// user did not just select a shape and
+			// the mouse is over the canvas then...
 			if (IsSelecting &&
 			    !MovingPoint &&
 			    mouseEventArgs.LeftButton == MouseButtonState.Pressed &&
-			    !SelectedShapeFlag)
+			    !SelectedShapeFlag &&
+			    mousePosition.X < ActualWidth)
 			{
 				// Use the rubber band adorner to select (lasso) points
 				EventHandler handler = LassoPoints;
@@ -2822,6 +3335,12 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 
 			// Deselect all the lines
 			DeselectAllLines();
+
+			// Deselect all the ellipses
+			DeselectAllEllipses();
+
+			// Since there is no longer a selected shape update the commands
+			RefreshToolbarSelectedShapeCommands();
 		}
 
 		/// <summary>
@@ -2835,6 +3354,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				// Deselect all points on the polygon
 				polygon.DeselectAllPoints();
 			}
+
+			// Clear out the selected polygon
+			SelectedPolygon = null;
 
 			// Clear all selected points
 			SelectedPoints.Clear();
@@ -2851,6 +3373,28 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				// Deselect all points on the line
 				line.DeselectAllPoints();
 			}
+
+			// Clear out the selected line
+			SelectedLine = null;
+
+			// Clear all selected points
+			SelectedPoints.Clear();
+		}
+
+		/// <summary>
+		/// Deselect all ellipses.
+		/// </summary>
+		public void DeselectAllEllipses()
+		{
+			// Loop over all the ellipses
+			foreach (EllipseViewModel ellipse in Ellipses)
+			{
+				// Deselect all points on the ellipse
+				ellipse.DeselectAllPoints();
+			}
+
+			// Clear out the selected ellipse
+			SelectedEllipse = null;
 
 			// Clear all selected points
 			SelectedPoints.Clear();
@@ -2869,7 +3413,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		}
 				
 		/// <summary>
-		/// Selects a polygon, line or point based on the click position.
+		/// Selects a polygon, line, ellipse or point based on the click position.
 		/// </summary>
 		/// <param name="clickPosition">Click position</param>
 		public bool SelectPolygonLineOrPoint(Point clickPosition)
@@ -2878,12 +3422,13 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			bool shapeSelected = false;
 			
 			// Deselect the currently selected polygon or line
-			DeselectShapes();
+			DeselectAllShapes();
 
 			PolygonViewModel selectedPolygon = null;
 			LineViewModel selectedLine = null;
+			EllipseViewModel selectedEllipse = null;
 			PolygonPointViewModel selectedPoint = null;
-
+			
 			// If the mouse is over a polygon/line point then...
 			if (IsMouseOverPolygonPoint(clickPosition, ref selectedPoint, ref selectedPolygon))
 			{
@@ -2900,7 +3445,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				PointMoving.X = SelectedPolygon.SelectedVertex.X;
 				PointMoving.Y = SelectedPolygon.SelectedVertex.Y;
 			}
-			// If the mouse is over the center cross hash then...
+			// If the mouse is over a polygon center cross hash then...
 			else if (IsMouseOverPolygonCenterCrossHash(clickPosition, ref selectedPolygon))
 			{
 				// Select the polygon and all its points
@@ -2925,7 +3470,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				PointMoving.X = SelectedLine.SelectedVertex.X;
 				PointMoving.Y = SelectedLine.SelectedVertex.Y;
 			}
-			// If the mouse is over the center cross hash then...
+			// If the mouse is over the line center cross hash then...
 			else if (IsMouseOverLineCenterCrossHash(clickPosition, ref selectedLine))
 			{
 				// Select the line and all its points
@@ -2934,14 +3479,20 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				// Return that the entire polygon was selected
 				shapeSelected = true;
 			}
-			// Otherwise the mouse isn't over a polygon or line point 
-			else					
+			// If the mouse is over the ellipse center cross hash then...
+			else if (IsMouseOverEllipseCenterCrossHash(clickPosition, ref selectedEllipse))
 			{
-				// Deselect all polygons
-				DeselectAllPolygons();
+				// Select the ellipse and all its points
+				SelectEllipse(selectedEllipse, true);
 
-				// Deselect all lines
-				DeselectAllLines();
+				// Return that the entire polygon was selected
+				shapeSelected = true;
+			}
+			// Otherwise the mouse isn't over a polygon or line point 
+			else
+			{
+				// Deselect all shapes
+				DeselectAllShapes();
 			}
 			
 			// Return whether a shape was selected
@@ -2964,10 +3515,10 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				if (TimeBarVisible)
 				{
 					// Associate the polygon with the snapshot
-					SelectedSnapShot.PolygonViewModel = NewPolygon;
+					SelectedSnapshot.PolygonViewModel = NewPolygon;
 
 					// Re-selecting the snapshot to make sure editor is bound to the correct polygon
-					SelectPolygonSnapShot(SelectedSnapShot);
+					SelectPolygonSnapshot(SelectedSnapshot);
 
 					// Clear out the new polygon
 					NewPolygon = null;
@@ -2986,9 +3537,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			}
 
 			// If the polygon was closed then we need to evaluate what toolbar commands are valid
-			((Command)AddPointCommand).RaiseCanExecuteChanged();
-			((Command)DrawPolygonCommand).RaiseCanExecuteChanged();
-			((Command)DrawLineCommand).RaiseCanExecuteChanged();
+			RefreshToolbarSelectionModeCommands();
 		}
 
 		/// <summary>
@@ -3013,10 +3562,10 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				if (TimeBarVisible)
 				{
 					// Associate the polygon with the snapshot
-					SelectedSnapShot.LineViewModel = NewLine;
+					SelectedSnapshot.LineViewModel = NewLine;
 
 					// Re-selecting the snapshot to make sure editor is bound to the correct line
-					SelectPolygonSnapShot(SelectedSnapShot);
+					SelectPolygonSnapshot(SelectedSnapshot);
 
 					// Clear out the new line
 					NewLine = null;
@@ -3038,21 +3587,23 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Initializes the polygon snapshots.
 		/// </summary>
-		public void InitializePolygonSnapShots(
+		public void InitializePolygonSnapshots(
 			IList<Polygon> polygons, 
 			IList<double> polygonTimes,
 			IList<Line> lines,
-			IList<double> lineTimes)
+			IList<double> lineTimes,
+			IList<Ellipse> ellipses,
+			IList<double> ellipseTimes)
 		{			
 			// Loop over the polygon models
 			int index = 0;
 			foreach (Polygon polygon in polygons)
 			{	
 				// Create the snapshot 
-				PolygonSnapShotViewModel snapShot = CreatePolygonSnapShot(polygonTimes[index], PolygonSnapshots.Count);
+				PolygonSnapshotViewModel snapshot = CreatePolygonSnapshot(polygonTimes[index], PolygonSnapshots.Count);
 					
 				// Associate the polygon with the snapshot
-				snapShot.PolygonViewModel = new PolygonViewModel(polygon);
+				snapshot.PolygonViewModel = new PolygonViewModel(polygon, ShowLabels);
 				index++;
 			}
 								
@@ -3061,27 +3612,39 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			foreach (Line line in lines)
 			{
 				// Create the snapshot 
-				PolygonSnapShotViewModel snapShot = CreatePolygonSnapShot(lineTimes[index], PolygonSnapshots.Count);
+				PolygonSnapshotViewModel snapshot = CreatePolygonSnapshot(lineTimes[index], PolygonSnapshots.Count);
 					
 				// Associate the line with the snapshot
-				snapShot.LineViewModel = new LineViewModel(line);
+				snapshot.LineViewModel = new LineViewModel(line, ShowLabels);
 				index++;
 			}
-				
+
+			// Loop over the model ellipses
+			index = 0;
+			foreach (Ellipse ellipse in ellipses)
+			{
+				// Create the snapshot 
+				PolygonSnapshotViewModel snapshot = CreatePolygonSnapshot(ellipseTimes[index], PolygonSnapshots.Count);
+
+				// Associate the ellipse with the snapshot
+				snapshot.EllipseViewModel = new EllipseViewModel(ellipse, ShowLabels);
+				index++;
+			}
+
 			// Select the first snapshot
-			SelectPolygonSnapShot(PolygonSnapshots[0]);				
+			SelectPolygonSnapshot(PolygonSnapshots[0]);				
 		}
 
 		/// <summary>
 		/// Update the position of the snapshot sliders when the view is resized.
 		/// </summary>
-		public void UpdatePolygonSnapShots()
+		public void UpdatePolygonSnapshots()
 		{
 			// Loop over the snapshots
-			foreach(PolygonSnapShotViewModel snapShot in PolygonSnapshots)
+			foreach(PolygonSnapshotViewModel snapShot in PolygonSnapshots)
 			{
 				// Update the snapshots position based on the normalized time
-				snapShot.Move((int)((snapShot.NormalizedTime * AdjustedTimeBarActualWidth) + PolygonSnapShotViewModel.HalfWidth));
+				snapShot.Move((int)((snapShot.NormalizedTime * AdjustedTimeBarActualWidth) + PolygonSnapshotViewModel.HalfWidth));
 			}
 		}
 
@@ -3099,9 +3662,6 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				polygon.ScalePoints(PolygonPointXConverter.XScaleFactor, PolygonPointYConverter.YScaleFactor);				
 			}
 
-			// Sort the polygons by the associated times
-			SortSnapshots(polygons, times);
-						
 			// Clear the polygon view models and models		
 			Polygons.Clear();
 			PolygonModels.Clear();
@@ -3112,9 +3672,11 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				// Loop over the polygon models
 				foreach (Polygon polygon in polygons)
 				{
-					// Create polygon view models
+					// Add the polygon model
 					PolygonModels.Add(polygon);
-					Polygons.Add(new PolygonViewModel(polygon));					
+
+					// Add the polygon view model
+					Polygons.Add(new PolygonViewModel(polygon, ShowLabels));
 				}
 
 				// If the editor is configured to be in select mode and 
@@ -3141,9 +3703,6 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				line.ScalePoints(PolygonPointXConverter.XScaleFactor, PolygonPointYConverter.YScaleFactor);
 			}
 
-			// Sort the polygons by the associated times
-			SortSnapshots(lines, times);
-
 			// Clear the line view models and models
 			Lines.Clear();
 			LineModels.Clear();
@@ -3154,9 +3713,11 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				// Loop over the line models
 				foreach (Line line in lines)
 				{
-					// Create line view models
+					// Add line model
 					LineModels.Add(line);
-					Lines.Add(new LineViewModel(line));
+
+					// Add the line view model
+					Lines.Add(new LineViewModel(line, ShowLabels));
 				}
 
 				// If the editor is configured to be in select mode and 
@@ -3170,6 +3731,47 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		}
 
 		/// <summary>
+		/// Initializes the editor with the ellipse models.
+		/// </summary>
+		/// <param name="ellipses">Model ellipses</param>
+		/// <param name="times">Model ellipse times</param>		
+		public void InitializeEllipses(IList<Ellipse> ellipses, IList<double> times)
+		{
+			// Loop over the ellipses
+			foreach (Ellipse ellipse in ellipses)
+			{
+				// Scale the points for the editor canvas size
+				ellipse.ScalePoints(PolygonPointXConverter.XScaleFactor, PolygonPointYConverter.YScaleFactor);
+			}
+
+			// Clear the line view models and models
+			Ellipses.Clear();
+			EllipseModels.Clear();
+
+			// If the editor is NOT in time mode then...
+			if (!EditorCapabilities.ShowTimeBar)
+			{
+				// Loop over the ellipse models
+				foreach (Ellipse ellipse in ellipses)
+				{
+					// Create ellipse model
+					EllipseModels.Add(ellipse);
+
+					// Create ellipse view model
+					Ellipses.Add(new EllipseViewModel(ellipse, ShowLabels));
+				}
+
+				// If the editor is configured to be in select mode and 
+				// there is only one ellipse then...
+				if (_editorCapabilities.DefaultToSelect && Ellipses.Count == 1)
+				{
+					// Select the ellipse
+					SelectEllipse(Ellipses[0], true);
+				}
+			}
+		}
+
+		/// <summary>
 		/// Gets the line snapshot times.
 		/// </summary>
 		/// <returns>Collection of normalized (0-1) line times</returns>
@@ -3179,7 +3781,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			List<double> times = new List<double>();
 
 			// Loop over the snapshots
-			foreach(PolygonSnapShotViewModel snapShot in PolygonSnapshots)
+			foreach(PolygonSnapshotViewModel snapShot in PolygonSnapshots)
 			{
 				// If the snapshot contains a line then...
 				if (snapShot.LineViewModel != null)
@@ -3194,7 +3796,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		}
 
 		/// <summary>
-		/// Gets the polyogn snapshot times.
+		/// Gets the polygon snapshot times.
 		/// </summary>
 		/// <returns>Collection of normalized (0-1) polygons times</returns>
 		public IList<double> GetPolygonTimes()
@@ -3203,7 +3805,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			List<double> times = new List<double>();
 
 			// Loop over the snapshots
-			foreach (PolygonSnapShotViewModel snapShot in PolygonSnapshots)
+			foreach (PolygonSnapshotViewModel snapShot in PolygonSnapshots)
 			{
 				// If the snapshot contains a polygon then...
 				if (snapShot.PolygonViewModel != null)
@@ -3219,7 +3821,31 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// Return the polygon times
 			return times;
 		}
-		
+
+		/// <summary>
+		/// Gets the ellipse snapshot times.
+		/// </summary>
+		/// <returns>Collection of normalized (0-1) ellipse times</returns>
+		public IList<double> GetEllipseTimes()
+		{
+			// Create the return collection
+			List<double> times = new List<double>();
+
+			// Loop over the snapshots
+			foreach (PolygonSnapshotViewModel snapShot in PolygonSnapshots)
+			{
+				// If the snapshot contains an ellipse then...
+				if (snapShot.EllipseViewModel != null)
+				{
+					// Add the time to the collection
+					times.Add(snapShot.NormalizedTime);
+				}
+			}
+
+			// Return the ellipse times
+			return times;
+		}
+
 		/// <summary>		
 		/// Moves the selected point.
 		/// </summary>
@@ -3339,6 +3965,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// Select the specified point
 			SelectedLine.SelectPoint(selectedPoint);
 
+			// Line points are editable in the grid
+			SelectedPointsReadOnly = false;
+
 			// Add the point to the selected points collection
 			SelectedPoints.Clear();
 			SelectedPoints.Add(selectedPoint);
@@ -3426,6 +4055,11 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				// Add the points of the lines included in the lasso rectangle
 				SelectedPoints.AddRange(line.SelectShapePoints(lasso));				
 			}
+
+			// Polygon and line points are editable in the grid
+			// Note ellipse points are not supported in this method because
+			// of the potential to distort the rectangle angles.
+			SelectedPointsReadOnly = false;
 		}
 
 		/// <summary>
@@ -3574,6 +4208,47 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		#region IResizeable Methods
 
 		/// <summary>
+		/// Returns true if the specified offset is valid for the selected points.
+		/// </summary>
+		/// <param name="offset">Offset to move the points</param>
+		/// <returns>true if the specified offset is valid</returns>
+		public bool IsMoveable(Point offset)
+		{
+			// Default to the move being valid
+			bool isMoveable = true;
+
+			// Loop over the selected points
+			foreach (PolygonPointViewModel selectedPoint in SelectedPoints)
+			{
+				// Check that the point is not off the canvas to the left
+				if (selectedPoint.X + offset.X < 0)
+				{
+					isMoveable = false;
+				}
+
+				// Check that the point is not off the canvas to the top
+				if (selectedPoint.Y + offset.Y < 0)
+				{
+					isMoveable = false;
+				}
+
+				// Check that the point is not off the canvas to the bottom
+				if (selectedPoint.Y + offset.Y > ActualHeight - 1)
+				{
+					isMoveable = false;
+				}
+
+				// Check that the point is not off the canvas to the right
+				if (selectedPoint.X + offset.X > ActualWidth - 1)
+				{
+					isMoveable = false;
+				}
+			}
+
+			return isMoveable;
+		}
+
+		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>		
 		public void RotateSelectedItems(double angle, Point center)
@@ -3593,6 +4268,13 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				// Update the view model point
 				point.X = transformedPoint.X;				
 				point.Y = transformedPoint.Y;
+			}
+
+			// If the selected shaped is an ellipse then...
+			if (SelectedEllipse != null)
+			{
+				// Save off the rotation angle
+				SelectedEllipse.Angle += angle;
 			}
 		
 			// Refresh all the shapes for the transform
@@ -3659,14 +4341,43 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>
-		public void ClipSelectedPoints()
+		public bool IsTransformValid(TransformGroup scaleTransform)
 		{
-			// Loop over the selected view model points
+			// Default to the transform being valid
+			bool isTransformValid = true;
+			
+			// Loop over the selected points
 			foreach (PolygonPointViewModel point in SelectedPoints)
 			{
-				// Ensure the point is on the canvas
-				LimitPointToCanvas(point);				
+				// Transform the point
+				Point transformedPoint = scaleTransform.Transform(point.GetPoint());
+				
+				// If the point is off the canvas to the left
+				if (transformedPoint.X < 0)
+				{
+					isTransformValid = false;
+				}
+
+				// If the point is off the canvas to the top
+				if (transformedPoint.Y < 0)
+				{
+					isTransformValid = false;
+				}
+
+				// If the point is off the canvas to the right
+				if (transformedPoint.X > ActualWidth - 1)
+				{
+					isTransformValid = false;
+				}
+
+				// If the point is off the canvas to the bottom
+				if (transformedPoint.Y > ActualHeight - 1)
+				{
+					isTransformValid = false;
+				}
 			}
+
+			return isTransformValid;
 		}
 
 		/// <summary>
@@ -3674,35 +4385,28 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// </summary>		
 		public void TransformSelectedItems(TransformGroup t)
 		{
-			// Loop over the transforms
-			foreach (Transform tc in t.Children)
-			{
-				// If the transform is a scale transform then...
-				if (tc is ScaleTransform)
-				{
-					// Cast to the scale transform
-					ScaleTransform st = (ScaleTransform)tc;
-					
-					// Loop over the selected view model points
-					foreach (PolygonPointViewModel point in SelectedPoints)
-					{						
-						// Transform the point
-						Point transformedPoint = st.Transform(point.GetPoint());
+			// Loop over the selected view model points
+			foreach (PolygonPointViewModel point in SelectedPoints)
+			{						
+				// Transform the point
+				Point transformedPoint = t.Transform(point.GetPoint());
 
-						// Update the view model point
-						point.SuppressChangeEvents = true;
-						point.X = transformedPoint.X;						
-						point.Y = transformedPoint.Y;
-						point.SuppressChangeEvents = false;
+				// Update the view model point
+				point.SuppressChangeEvents = true;
+				point.X = transformedPoint.X;						
+				point.Y = transformedPoint.Y;
+				point.SuppressChangeEvents = false;
 
-						// Make sure the point is still on the drawing canvas
-						LimitPointToCanvas(point);											
-					}
-				}
+				// Make sure the point is still on the drawing canvas
+				LimitPointToCanvas(point);											
 			}
-
+	
 			// Refresh all shapes for the transform
-			RefreshAllShapes();			
+			RefreshAllShapes();
+
+			// Update the resize adorner
+			EventHandler handler = RefreshResizeAdorner;
+			handler?.Invoke(this, new EventArgs());
 		}
 
 		/// <summary>
@@ -3727,7 +4431,11 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			}
 
 			// Refresh all shapes for the transform
-			RefreshAllShapes();			
+			RefreshAllShapes();
+
+			// Update the resize adorner
+			EventHandler handler = RefreshResizeAdorner;
+			handler?.Invoke(this, new EventArgs());
 		}
 		
 		/// <summary>

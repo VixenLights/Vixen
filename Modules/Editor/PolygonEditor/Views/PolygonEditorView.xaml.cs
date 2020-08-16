@@ -78,21 +78,26 @@ namespace VixenModules.Editor.PolygonEditor.Views
 				PolygonPointXConverter.XScaleFactor = xScaleFactor;
 				PolygonPointYConverter.YScaleFactor = yScaleFactor;
 
-				// Give the view model the model polygons, polygon times
+				// Give the view model the model polygons and polygon times
 				vm.InitializePolygons(_polygonContainer.Polygons, _polygonContainer.PolygonTimes);
 
-				// Give the view model the model lines, line times, 
+				// Give the view model the model lines and line times, 
 				vm.InitializeLines(_polygonContainer.Lines, _polygonContainer.LineTimes);
+
+				// Give the view model the model ellipses and ellipse and times
+				vm.InitializeEllipses(_polygonContainer.Ellipses, _polygonContainer.EllipseTimes);
 
 				// If the edit is in time based mode then...
 				if (_polygonContainer.EditorCapabilities.ShowTimeBar)
 				{
 					// Initialize the snapshots with the polygons/lines
-					vm.InitializePolygonSnapShots(
+					vm.InitializePolygonSnapshots(
 						_polygonContainer.Polygons,
 						_polygonContainer.PolygonTimes,
 						_polygonContainer.Lines,
-						_polygonContainer.LineTimes);
+						_polygonContainer.LineTimes,
+						_polygonContainer.Ellipses,
+						_polygonContainer.EllipseTimes);
 				}
 				
 				// Initialize the window width to the canvas width
@@ -138,7 +143,7 @@ namespace VixenModules.Editor.PolygonEditor.Views
 				if (_polygonContainer.EditorCapabilities.ShowTimeBar)
 				{		
 					// Loop over the snapshots
-					foreach (PolygonSnapShotViewModel snapShot in _vm.PolygonSnapshots)
+					foreach (PolygonSnapshotViewModel snapShot in _vm.PolygonSnapshots)
 					{
 						// If a polygon view model is populated then...
 						if (snapShot.PolygonViewModel != null)
@@ -160,6 +165,8 @@ namespace VixenModules.Editor.PolygonEditor.Views
 				{
 					// Scale the polygon model points to the display element dimensions
 					polygon.ScalePoints(1.0 / PolygonPointXConverter.XScaleFactor, 1.0 / PolygonPointYConverter.YScaleFactor);					
+					
+					// Round the polygon points to the display element pixels
 					polygon.RoundPoints();
 				}
 
@@ -192,7 +199,7 @@ namespace VixenModules.Editor.PolygonEditor.Views
 				if (_polygonContainer.EditorCapabilities.ShowTimeBar)
 				{
 					// Loop over the snapshots
-					foreach (PolygonSnapShotViewModel snapShot in ((PolygonEditorViewModel)ViewModel).PolygonSnapshots)
+					foreach (PolygonSnapshotViewModel snapShot in ((PolygonEditorViewModel)ViewModel).PolygonSnapshots)
 					{
 						// If a polygon view model is populated then...
 						if (snapShot.LineViewModel != null)
@@ -213,7 +220,10 @@ namespace VixenModules.Editor.PolygonEditor.Views
 				foreach (Line line in lines)
 				{
 					// Scale the polygon model points to the display element dimensions
-					line.ScalePoints(1.0 / PolygonPointXConverter.XScaleFactor, 1.0 / PolygonPointYConverter.YScaleFactor);					
+					line.ScalePoints(1.0 / PolygonPointXConverter.XScaleFactor, 1.0 / PolygonPointYConverter.YScaleFactor);
+
+					// Round the line points to the display element pixels
+					line.RoundPoints();
 				}
 
 				return lines;
@@ -229,6 +239,63 @@ namespace VixenModules.Editor.PolygonEditor.Views
 			{
 				return _vm.GetLineTimes();
 			}			
+		}
+
+		/// <summary>
+		/// Gets the ellipse models from the view model. 
+		/// </summary>
+		public IList<Ellipse> Ellipses
+		{
+			get
+			{
+				// Create the return collection
+				List<Ellipse> ellipses = new List<Ellipse>();
+
+				// If the editor is in time based mode then...
+				if (_polygonContainer.EditorCapabilities.ShowTimeBar)
+				{
+					// Loop over the snapshots
+					foreach (PolygonSnapshotViewModel snapShot in ((PolygonEditorViewModel)ViewModel).PolygonSnapshots)
+					{
+						// If a ellipse view model is populated then...
+						if (snapShot.EllipseViewModel != null)
+						{
+							// Add the ellipse to the return collection
+							ellipses.Add(snapShot.EllipseViewModel.Ellipse);
+						}
+					}
+				}
+				// Otherwise we are not in time based mode
+				else
+				{
+					// Add all the ellipse models to the return collection
+					ellipses.AddRange(_vm.EllipseModels);
+				}
+
+				// Loop over the ellipse models
+				foreach (Ellipse ellipse in ellipses)
+				{
+					// Scale the polygon model points to the display element dimensions
+					ellipse.ScalePoints(1.0 / PolygonPointXConverter.XScaleFactor, 1.0 / PolygonPointYConverter.YScaleFactor);
+					ellipse.Center.X *= 1.0 / PolygonPointXConverter.XScaleFactor;
+					ellipse.Center.Y *= 1.0 / PolygonPointYConverter.YScaleFactor;
+					ellipse.Width *= 1.0 / PolygonPointXConverter.XScaleFactor;
+					ellipse.Height *= 1.0 / PolygonPointYConverter.YScaleFactor;
+				}
+
+				return ellipses;
+			}
+		}
+
+		/// <summary>
+		/// Gets the times associated with the ellipses.
+		/// </summary>
+		public IList<double> EllipseTimes
+		{
+			get
+			{
+				return _vm.GetEllipseTimes();
+			}
 		}
 
 		#endregion

@@ -3,7 +3,7 @@
 namespace VixenModules.App.Polygon
 {
 	/// <summary>
-	/// Maintains polygons and lines and associated meta-data.
+	/// Maintains shapes (polygons, lines, ellipses) and associated meta-data.
 	/// Also contains information about the the associated display element.
 	/// </summary>
 	/// <remarks>This container is used to pass shapes between effects and the polygon editor.</remarks>
@@ -18,8 +18,10 @@ namespace VixenModules.App.Polygon
 		{
 			Polygons = new List<Polygon>();
 			Lines = new List<Line>();
+			Ellipses = new List<Ellipse>();
 			PolygonTimes = new List<double>();
 			LineTimes = new List<double>();
+			EllipseTimes = new List<double>();
 		}
 
 		#endregion
@@ -45,6 +47,16 @@ namespace VixenModules.App.Polygon
 		/// Gets or sets the collection of times associated with the lines.
 		/// </summary>
 		public List<double> LineTimes { get; set; }
+
+		/// <summary>
+		/// Gets or sets the collection of ellipses.
+		/// </summary>
+		public List<Ellipse> Ellipses { get; set; }
+
+		/// <summary>
+		/// Gets or sets the collection of times associated with the ellipses.
+		/// </summary>
+		public List<double> EllipseTimes { get; set; }
 
 		/// <summary>
 		/// Gets or sets Width of the associated display element.
@@ -100,8 +112,21 @@ namespace VixenModules.App.Polygon
 				clonedContainer.Lines.Add(cloneLine);
 			}
 
+			// Clone the ellipses
+			foreach (Ellipse ellipse in Ellipses)
+			{
+				// Clone the ellipse
+				Ellipse cloneEllipse = ellipse.Clone();
+
+				// Restore the original ID
+				cloneEllipse.ID = ellipse.ID;
+
+				// Add the ellipse to the container
+				clonedContainer.Ellipses.Add(cloneEllipse);
+			}
+
 			// Clone the polygon times
-			foreach(double time in PolygonTimes)
+			foreach (double time in PolygonTimes)
 			{
 				clonedContainer.PolygonTimes.Add(time);
 			}
@@ -110,6 +135,12 @@ namespace VixenModules.App.Polygon
 			foreach (double time in LineTimes)
 			{
 				clonedContainer.LineTimes.Add(time);
+			}
+
+			// Clone the ellipse times
+			foreach (double time in EllipseTimes)
+			{
+				clonedContainer.EllipseTimes.Add(time);
 			}
 
 			// Copy the width and height

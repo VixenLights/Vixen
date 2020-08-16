@@ -39,11 +39,18 @@
 					<Image Source="/PolygonEditor;component/Images/buttonDrawLine.png" Height="20" Width="20"/>
 				</RadioButton>
 
-				<RadioButton  Command="{Binding DrawPolygonCommand}" IsChecked="{Binding DrawPolygon}" ToolTip="Draw Polygon" GroupName="SelectDraw"
+				<RadioButton Command="{Binding DrawPolygonCommand}" IsChecked="{Binding DrawPolygon}" ToolTip="Draw Polygon" GroupName="SelectDraw"
 							     Width="30"
 								 Visibility="{Binding Path=ShowSelectDraw, Converter={StaticResource BoolToVis}}">
 					<Image Source="/PolygonEditor;component/Images/buttonDrawPolygon.png" Height="20" Width="20"/>
 				</RadioButton>
+
+				<RadioButton  Command="{Binding DrawEllipseCommand}" IsChecked="{Binding DrawEllipse}" ToolTip="Draw Ellipse" GroupName="SelectDraw"
+				              Width="30"
+				              Visibility="{Binding Path=ShowSelectDraw, Converter={StaticResource BoolToVis}}">
+					<Image Source="/PolygonEditor;component/Images/buttonDrawEllipse.png" Height="20" Width="20"/>
+				</RadioButton>
+
 				<RadioButton  Command="{Binding AddPointCommand}" IsChecked="{Binding AddPoint}"
 							  ToolTip="Add Point" GroupName="SelectDraw"					        
 							     Width="30"
@@ -51,8 +58,7 @@
 					<Image Source="/PolygonEditor;component/Images/AddPoint.png" Height="20" Width="20"/>
 				</RadioButton>
 
-
-				<RadioButton IsChecked="{Binding IsSelecting}" 
+				<RadioButton IsChecked="{Binding Path=IsSelecting, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 							     ToolTip="Selection mode" GroupName="SelectDraw"
 							     Width="30"
 								 Visibility="{Binding Path=ShowSelect, Converter={StaticResource BoolToVis}}">
@@ -88,18 +94,22 @@
 					<Image Source="/PolygonEditor;component/Images/ToggleStartPoint.png" Height="20" Width="20" />
 				</Button>
 
-				<Button Command="{Binding PolygonToLineCommand}"  ToolTip="Convert to Line">
+				<Button Command="{Binding ConvertToLineCommand}"  ToolTip="Convert to Line">
 					<Image Source="/PolygonEditor;component/Images/PolygonToLine.png" Height="20" Width="20" />
 				</Button>
-				<Button Command="{Binding LineToPolygonCommand}"  ToolTip="Convert to Polygon">
+				<Button Command="{Binding ConvertToPolygonCommand}"  ToolTip="Convert to Polygon">
 					<Image Source="/PolygonEditor;component/Images/LineToPolygon.png" Height="20" Width="20" />
 				</Button>
-				<RadioButton Command="{Binding ToggleLabelsCommand}" IsChecked="{Binding ShowLabels}"
-				             ToolTip="Show Polygon/Line Labels" GroupName="ShowLabels"
-				             Width="30">
+				<Button Command="{Binding ConvertToEllipseCommand}"  ToolTip="Convert to Ellipse">
+					<Image Source="/PolygonEditor;component/Images/ConvertToEllipse.png" Height="20" Width="20" />
+				</Button>
+
+				<RadioButton  Command="{Binding ToggleLabelsCommand}" IsChecked="{Binding ShowLabels}"
+				              ToolTip="Shows or hides shape labels" GroupName="ShowLabels"					        
+				              Width="30"
+				              Visibility="{Binding Path=ShowAddPoint, Converter={StaticResource BoolToVis}}">
 					<Image Source="/PolygonEditor;component/Images/Label.png" Height="20" Width="20"/>
 				</RadioButton>
-
 			</ToolBar>
 		</ToolBarTray>
 		<views:PolygonControl  x:Name="PolygonUserControl" Grid.Column="1" Grid.Row="1" DockPanel.Dock="Left" HorizontalAlignment="Stretch">

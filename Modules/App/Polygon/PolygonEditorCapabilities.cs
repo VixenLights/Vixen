@@ -13,7 +13,7 @@
 		public bool DeletePoints { get; set; }
 
 		/// <summary>
-		/// True when adding polygon/lines should be enabled.
+		/// True when adding polygon/lines/ellipses should be enabled.
 		/// </summary>
 		public bool AddPolygons { get; set; }
 		

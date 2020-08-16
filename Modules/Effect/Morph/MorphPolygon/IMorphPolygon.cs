@@ -7,16 +7,6 @@ using VixenModules.App.Polygon;
 namespace VixenModules.Effect.Morph
 {
 	/// <summary>
-	/// Defines the fill type of the polygon.
-	/// </summary>
-	public enum PolygonFillType
-	{
-		Wipe,
-		Solid,
-		Outline,
-	};
-	
-	/// <summary>
 	/// Maintains the properties of a polygon/line for the morph effect.
 	/// </summary>
 	public interface IMorphPolygon : ICloneable
@@ -71,6 +61,11 @@ namespace VixenModules.Effect.Morph
 		/// Line associated with the morph polygon.  
 		/// </summary>
 		Line Line { get; set; }
+
+		/// <summary>
+		/// Ellipse associated with the morph polygon.
+		/// </summary>
+		Ellipse Ellipse { get; set; }
 
 		/// <summary>
 		/// Returns true if the morph polygon is to be deleted.
