@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Windows;
+using System.Windows.Media;
 
 namespace VixenModules.App.Polygon
 {
@@ -123,6 +125,55 @@ namespace VixenModules.App.Polygon
 
 			Width = Math.Round(Width);
 			Height = Math.Round(Height);
+		}
+
+		/// <summary>
+		/// Refer to base class documentation.
+		/// </summary>
+		public override void Scale(double xScaleFactor, double yScaleFactor)
+		{
+			// Create a reverse transform for the ellipse
+			RotateTransform reverseRotateTransform = new RotateTransform(-Angle, Center.X, Center.Y);
+				
+			// Rotate the points that make up the rectangle that surrounds the ellipse
+			// such that the ellipse is no longer rotated
+			foreach (PolygonPoint pt in Points)
+			{
+				// Transform the point
+				Point transformedPoint = reverseRotateTransform.Transform(new Point(pt.X, pt.Y));
+
+				// Update the point
+				pt.X = transformedPoint.X;
+				pt.Y = transformedPoint.Y;
+			}
+
+			// Call the base class implementation to scale the points
+			base.Scale(xScaleFactor, yScaleFactor);
+
+			// Scale the center for the new display element size
+			Center.X = Center.X * xScaleFactor;
+			Center.Y = Center.Y * yScaleFactor;
+
+			// Scale the width of the ellipse
+			Width = Width * xScaleFactor;
+
+			// Scale the height of the ellipse
+			Height = Height * yScaleFactor;
+
+			// Create the transform to rotate the ellipse back to the original angle
+			RotateTransform rotateTransform = new RotateTransform(Angle, Center.X, Center.Y);
+
+			// Rotate the points that make up the rectangle that surrounds the ellipse
+			// such that the ellipse is no longer rotated
+			foreach (PolygonPoint pt in Points)
+			{
+				// Transform the point
+				Point transformedPoint = rotateTransform.Transform(new Point(pt.X, pt.Y));
+
+				// Update the point
+				pt.X = transformedPoint.X;
+				pt.Y = transformedPoint.Y;
+			}
 		}
 
 		#endregion

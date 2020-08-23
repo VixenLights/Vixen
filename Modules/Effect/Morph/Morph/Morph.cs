@@ -173,8 +173,14 @@ namespace VixenModules.Effect.Morph
 				IsDirty = true;
 				OnPropertyChanged();
 
-				// Make sure the polygons/lines still fit on the display area				
-				LimitShapes();
+				// When the TargetPositioning changes from String to Locations the
+				// String Orientation may change.  Don't want to limit the shapes
+				// when transition to strings.
+				if (TargetPositioning != TargetPositioningType.Locations)
+				{
+					// Make sure the shapes still fit on the display element
+					LimitShapes();
+				}
 			}
 		}
 
@@ -735,9 +741,23 @@ namespace VixenModules.Effect.Morph
 		/// </summary>
 		protected override void TargetPositioningChanged()
 		{
+			// Save off the previous width and height
+			int previousBufferWidth = _bufferWi;
+			int previousBufferHeight = _bufferHt;
+
 			// Call the base class implementation
 			base.TargetPositioningChanged();
 
+			// Configure the new display element size for the target positioning changing
+			ConfigureDisplayElementSize();
+
+			// Loop over the morph polygons
+			foreach (IMorphPolygon morphPolygon in MorphPolygons)
+			{
+				// Scale the shapes associated with the morph polygons
+				morphPolygon.Scale((BufferWi -1.0) / (previousBufferWidth - 1.0),  (BufferHt - 1.0) / (previousBufferHeight - 1.0));
+			}
+			
 			// Make sure the polygons/lines still fit on the display area				
 			LimitShapes();
 		}
@@ -1285,7 +1305,7 @@ namespace VixenModules.Effect.Morph
 		/// Limits the shapes so that they fit on the display element.
 		/// </summary>
 		private void LimitShapes()
-		{			
+		{
 			// Loop over all the morph polygon shapes
 			foreach (IMorphPolygon morphPolygon in MorphPolygons)
 			{

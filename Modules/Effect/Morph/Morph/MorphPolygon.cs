@@ -340,6 +340,15 @@ namespace VixenModules.Effect.Morph
 			return shape;
 		}
 
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
+		public void Scale(double xScaleFactor, double yScaleFactor)
+		{
+			// Scale the associated shape using the specified scale factors
+			GetPointBasedShape().Scale(xScaleFactor, yScaleFactor);
+		}
+
 		#endregion
 
 		#region ICloneable

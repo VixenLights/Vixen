@@ -1800,6 +1800,12 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				// Associate the ellipse with the snapshot
 				SelectedSnapshot.EllipseViewModel = ellipseViewModel;
 
+				// Set the fill type to solid
+				ellipseModel.FillType = PolygonFillType.Solid;
+
+				// Green line is only necessary when ;the ellipse is a wipe ellipse
+				ellipseViewModel.SegmentsVisible = false;
+
 				// Re-selecting the snapshot to make sure editor is bound to the correct polygon
 				SelectPolygonSnapshot(SelectedSnapshot);
 
@@ -2011,6 +2017,13 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 
 			// Save off the view model polygon
 			Polygons.Add(NewPolygon);
+
+			// If the effect is in time mode then...
+			if (TimeBarVisible)
+			{
+				// Set the fill type to solid
+				polygon.FillType = PolygonFillType.Solid;
+			}
 		}
 
 		/// <summary>
@@ -2032,6 +2045,13 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 
 			// Save off the view model polygon
 			Lines.Add(NewLine);
+
+			// If the effect is in time mode then...
+			if (TimeBarVisible)
+			{
+				// Set the fill type to solid
+				line.FillType = PolygonFillType.Solid;
+			}
 		}
 		
 		/// <summary>
@@ -2448,9 +2468,13 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// If the time bar is visible then...
 			if (TimeBarVisible)
 			{
+				// Set the fill type to solid
+				polygon.FillType = PolygonFillType.Solid;
+
 				// Associate the polygon with the snapshot
 				SelectedSnapshot.PolygonViewModel = Polygons[0];
 				SelectedSnapshot.LineViewModel = null;
+				SelectedSnapshot.EllipseViewModel = null;
 
 				// Select the snapshot
 				SelectPolygonSnapshot(SelectedSnapshot);
@@ -2505,8 +2529,12 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// If the time bar is visible then...
 			if (TimeBarVisible)
 			{
+				// Set the fill type to solid
+				line.FillType = PolygonFillType.Solid;
+
 				// Associate the line with the snapshot
 				SelectedSnapshot.PolygonViewModel = null;
+				SelectedSnapshot.EllipseViewModel = null;
 				SelectedSnapshot.LineViewModel = Lines[0];
 
 				SelectPolygonSnapshot(SelectedSnapshot);

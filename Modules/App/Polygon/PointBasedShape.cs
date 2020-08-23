@@ -17,7 +17,7 @@ namespace VixenModules.App.Polygon
 	/// Maintains a point based shape.
 	/// </summary>
 	[Serializable]
-	public class PointBasedShape : Shape
+	public abstract class PointBasedShape : Shape
 	{
 		#region Constructor
 
@@ -146,6 +146,15 @@ namespace VixenModules.App.Polygon
 				pt.X = Math.Round(pt.X);
 				pt.Y = Math.Round(pt.Y);
 			}
+		}
+
+		/// <summary>
+		/// Refer to base class documentation.
+		/// </summary>
+		public override void Scale(double xScaleFactor, double yScaleFactor)
+		{
+			// Scale the points that make up the shape
+			ScalePoints(xScaleFactor, yScaleFactor);
 		}
 
 		#endregion

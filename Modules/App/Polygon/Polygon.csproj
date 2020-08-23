@@ -24,4 +24,9 @@
 		<OutputPath>..\..\..\Debug64\Modules\App\</OutputPath>
 		<DefineConstants>TRACE</DefineConstants>
 	</PropertyGroup>
+	<ItemGroup>
+	  <Reference Include="PresentationCore" />
+	  <Reference Include="System.Windows" />
+	  <Reference Include="WindowsBase" />
+	</ItemGroup>
 </Project>

@@ -100,5 +100,12 @@ namespace VixenModules.Effect.Morph
 		/// This property is similar to the stagger property but is used for Free Form mode. 
 		/// </summary>
 		int StartOffset { get; set; }
+
+		/// <summary>
+		/// Scales the associated shape by the X and Y scale factors.
+		/// </summary>
+		/// <param name="xScaleFactor">X Axis scale factor</param>
+		/// <param name="yScaleFactor">Y Axis scale factor</param>
+		void Scale(double xScaleFactor, double yScaleFactor);
 	}
 }

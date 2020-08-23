@@ -22,7 +22,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// </summary>
 		/// <param name="ellipseModel">Ellipse model</param>
 		/// <param name="labelVisible">Determines if the label is visible</param>
-		public EllipseViewModel(App.Polygon.Ellipse ellipseModel, bool labelVisible) :
+		public EllipseViewModel(Ellipse ellipseModel, bool labelVisible) :
 			base(labelVisible)
 		{
 			// Store off the model
@@ -343,7 +343,6 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			Segments[0] = new LineSegmentViewModel(PointCollection[0], PointCollection[1]);
 			Segments[0].Color = Colors.Green;
 
-			
 			// Force the view converters to run
 			NotifyPointCollectionChanged();
 		}
