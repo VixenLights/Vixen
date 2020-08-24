@@ -1074,4 +1074,13 @@
   <data name="StartOffset" xml:space="preserve">
     <value>Start Offset</value>
   </data>
+  <data name="FillBrightness" xml:space="preserve">
+    <value>Polygon Intensity</value>
+  </data>
+  <data name="HeadBrightness" xml:space="preserve">
+    <value>Head Intensity</value>
+  </data>
+  <data name="TailBrightness" xml:space="preserve">
+    <value>Tail Intensity</value>
+  </data>
 </root>

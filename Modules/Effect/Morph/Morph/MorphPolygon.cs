@@ -65,6 +65,11 @@ namespace VixenModules.Effect.Morph
 			Polygon.Points.Add(ptBottomLeft);
 
 			FillType = PolygonFillType.Wipe;
+
+			// Default the brightness to 100%
+			TailBrightness = new Curve(CurveType.Flat100);
+			HeadBrightness = new Curve(CurveType.Flat100);
+			FillBrightness = new Curve(CurveType.Flat100);
 		}
 
 		#endregion
@@ -125,29 +130,59 @@ namespace VixenModules.Effect.Morph
 		public int Acceleration { get; set; }
 
 		[Value]
-		[ProviderCategory(@"Wipe", 1)]
+		[ProviderCategory(@"Configuration", 1)]
 		[ProviderDisplayName(@"HeadColor")]
 		[ProviderDescription(@"HeadColor")]
 		[PropertyOrder(5)]
 		public ColorGradient HeadColor { get; set; }
 
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
+		[Value]
+		[ProviderCategory(@"Configuration", 1)]
+		[ProviderDisplayName(@"HeadBrightness")]
+		[ProviderDescription(@"HeadBrightness")]
+		[PropertyOrder(6)]
+		public Curve HeadBrightness { get; set; }
+
 		[Value]
 		[ProviderCategory(@"Configuration", 1)]
 		[ProviderDisplayName(@"TailColor")]
 		[ProviderDescription(@"TailColor")]
-		[PropertyOrder(6)]
+		[PropertyOrder(7)]
 		public ColorGradient TailColor { get; set; }
+
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
+		[Value]
+		[ProviderCategory(@"Configuration", 1)]
+		[ProviderDisplayName(@"TailBrightness")]
+		[ProviderDescription(@"TailBrightness")]
+		[PropertyOrder(8)]
+		public Curve TailBrightness { get; set; }
 
 		[Value]
 		[ProviderCategory(@"Configuration", 1)]
 		[ProviderDisplayName(@"PolygonColor")]
 		[ProviderDescription(@"PolygonColor")]
-		[PropertyOrder(7)]
+		[PropertyOrder(9)]
 		public ColorGradient FillColor
 		{
 			get;
 			set;			
 		}
+
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
+		[Value]
+		[ProviderCategory(@"Configuration", 1)]
+		[ProviderDisplayName(@"FillBrightness")]
+		[ProviderDescription(@"FillBrightness")]
+		[PropertyOrder(10)]
+		public Curve FillBrightness { get; set; }
 
 		private Polygon _polygon;
 
@@ -227,7 +262,7 @@ namespace VixenModules.Effect.Morph
 		[ProviderDescription(@"StartOffset")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 100, 1)]
-		[PropertyOrder(8)]
+		[PropertyOrder(11)]
 		public int StartOffset { get; set; }
 
 		/// <summary>
@@ -237,7 +272,7 @@ namespace VixenModules.Effect.Morph
 		[ProviderCategory(@"Configuration", 1)]
 		[ProviderDisplayName(@"Label")]
 		[ProviderDescription(@"Label")]
-		[PropertyOrder(9)]
+		[PropertyOrder(12)]
 		public string Label
 		{
 			get
@@ -373,6 +408,9 @@ namespace VixenModules.Effect.Morph
 				Time = Time,
 				Label = Label,
 				StartOffset = StartOffset,
+				TailBrightness = new Curve(TailBrightness),
+				HeadBrightness = new Curve(HeadBrightness),
+				FillBrightness = new Curve(FillBrightness)
 			};
 
 			return clone;
@@ -394,6 +432,10 @@ namespace VixenModules.Effect.Morph
 				{nameof(HeadColor), FillType == PolygonFillType.Wipe },
 				{nameof(TailColor), FillType == PolygonFillType.Wipe },
 				{nameof(FillColor), (FillType == PolygonFillType.Solid || FillType == PolygonFillType.Outline) },
+
+				{nameof(HeadBrightness), FillType == PolygonFillType.Wipe },
+				{nameof(TailBrightness), FillType == PolygonFillType.Wipe },
+				{nameof(FillBrightness), (FillType == PolygonFillType.Solid || FillType == PolygonFillType.Outline) },
 			};
 			SetBrowsable(propertyStates);
 		}
@@ -411,7 +453,7 @@ namespace VixenModules.Effect.Morph
 		/// Height of the display element associated with the effect.
 		/// </summary>
 		public static int BufferHeight { get; set; }
-
+		
 		#endregion
 	}
 }

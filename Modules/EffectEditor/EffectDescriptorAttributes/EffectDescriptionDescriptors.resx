@@ -1113,4 +1113,13 @@
   <data name="StartOffset" xml:space="preserve">
     <value>Determines when the wipe starts.  This offset is the percentage of the effect's total duration to wait before starting the wipe.</value>
   </data>
+  <data name="FillBrightness" xml:space="preserve">
+    <value>Controls the brightness of the shape.</value>
+  </data>
+  <data name="HeadBrightness" xml:space="preserve">
+    <value>Controls the brightness of the wipe head.</value>
+  </data>
+  <data name="TailBrightness" xml:space="preserve">
+    <value>Controls the brightness of the wipe tail.</value>
+  </data>
 </root>

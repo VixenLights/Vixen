@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 using VixenModules.App.ColorGradients;
+using VixenModules.App.Curves;
 using VixenModules.App.Polygon;
 using VixenModules.Effect.Effect;
 
@@ -35,7 +36,12 @@ namespace VixenModules.Effect.Morph
 			Acceleration = 0;			
 			FillColor = new ColorGradient(System.Drawing.Color.Red);
 			FillPolygon = true;			
-			MorphPolygonData = new List<MorphPolygonData>();					
+			MorphPolygonData = new List<MorphPolygonData>();
+
+			// Default the brightness to 100%
+			TailBrightness = new Curve(CurveType.Flat100);
+			HeadBrightness = new Curve(CurveType.Flat100);
+			FillBrightness = new Curve(CurveType.Flat100);
 		}
 
 		#endregion
@@ -87,6 +93,15 @@ namespace VixenModules.Effect.Morph
 		[DataMember]
 		public List<MorphPolygonData> MorphPolygonData { get; set; }
 
+		[DataMember]
+		public Curve TailBrightness { get; set; }
+
+		[DataMember]
+		public Curve HeadBrightness { get; set; }
+
+		[DataMember]
+		public Curve FillBrightness { get; set; }
+
 		#endregion
 
 		#region Protected Methods
@@ -109,6 +124,9 @@ namespace VixenModules.Effect.Morph
 				Acceleration = Acceleration,
 				FillColor = new ColorGradient(FillColor),
 				FillPolygon = FillPolygon,
+				TailBrightness = new Curve(TailBrightness),
+				HeadBrightness = new Curve(HeadBrightness),
+				FillBrightness = new Curve(FillBrightness)
 			};
 
 			// Clone the Morph Polygons

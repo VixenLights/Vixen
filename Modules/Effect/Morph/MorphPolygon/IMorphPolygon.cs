@@ -107,5 +107,20 @@ namespace VixenModules.Effect.Morph
 		/// <param name="xScaleFactor">X Axis scale factor</param>
 		/// <param name="yScaleFactor">Y Axis scale factor</param>
 		void Scale(double xScaleFactor, double yScaleFactor);
+
+		/// <summary>
+		/// Determines the brightness of the wipe tail.
+		/// </summary>
+		Curve TailBrightness { get; set; }
+
+		/// <summary>
+		/// Determines the brightness of the wipe head.
+		/// </summary>
+		Curve HeadBrightness { get; set; }
+
+		/// <summary>
+		/// Determines the brightness of the associated solid or outlined shape.
+		/// </summary>
+		Curve FillBrightness { get; set; }
 	}
 }

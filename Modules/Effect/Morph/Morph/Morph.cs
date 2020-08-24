@@ -12,6 +12,7 @@ using Vixen.Extensions;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
+using VixenModules.App.Curves;
 using VixenModules.App.Polygon;
 using VixenModules.Effect.Effect;
 using VixenModules.Effect.Effect.Location;
@@ -150,11 +151,6 @@ namespace VixenModules.Effect.Morph
 				ShowTimeBar = true,
 				AddPoint = true,
 			};
-		}
-
-		private void PerformConversion()
-		{
-			PolygonType = PolygonType.FreeForm;
 		}
 
 		#endregion
@@ -615,6 +611,35 @@ namespace VixenModules.Effect.Morph
 		}
 
 		/// <summary>
+		/// Determines brightness of the wipe head.
+		/// </summary>
+		[Value]
+		[ProviderCategory(@"WipeConfiguration", 4)]
+		[ProviderDisplayName(@"HeadBrightness")]
+		[ProviderDescription(@"HeadBrightness")]
+		[PropertyOrder(6)]
+		public Curve HeadBrightness
+		{
+			get
+			{
+				return _data.HeadBrightness;
+			}
+			set
+			{
+				_data.HeadBrightness = value;
+				IsDirty = true;
+
+				// Update the wipe head brightness on each of the morph polygons
+				foreach (IMorphPolygon morphPolygon in MorphPolygons)
+				{
+					morphPolygon.HeadBrightness = value;
+				}
+
+				OnPropertyChanged();
+			}
+		}
+
+		/// <summary>
 		/// Determines the wipe tail color over the duration of the effect.
 		/// </summary>
 		[Value]
@@ -637,7 +662,36 @@ namespace VixenModules.Effect.Morph
 		}
 
 		/// <summary>
-		/// Determines the acceleration of the polygon/line wipe.  The acceleration can be either increasing or decreasing (deceleration).
+		/// Determines brightness of the wipe tail.
+		/// </summary>
+		[Value]
+		[ProviderCategory(@"WipeConfiguration", 4)]
+		[ProviderDisplayName(@"TailBrightness")]
+		[ProviderDescription(@"TailBrightness")]
+		[PropertyOrder(8)]
+		public Curve TailBrightness
+		{
+			get
+			{
+				return _data.TailBrightness;
+			}
+			set
+			{
+				_data.TailBrightness = value;
+				IsDirty = true;
+
+				// Update the wipe tail brightness on each of the morph polygons
+				foreach (IMorphPolygon morphPolygon in MorphPolygons)
+				{
+					morphPolygon.TailBrightness = value;
+				}
+
+				OnPropertyChanged();
+			}
+		}
+
+		/// <summary>
+		/// Determines the acceleration of the wipe.  The acceleration can be either increasing or decreasing (deceleration).
 		/// </summary>
 		[Value]
 		[ProviderCategory(@"WipeConfiguration", 4)]
@@ -645,7 +699,7 @@ namespace VixenModules.Effect.Morph
 		[ProviderDescription(@"Acceleration")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(-10, 10, 1)]
-		[PropertyOrder(2)]		
+		[PropertyOrder(9)]		
 		public int Acceleration
 		{
 			get
@@ -683,13 +737,42 @@ namespace VixenModules.Effect.Morph
 		}
 
 		/// <summary>
+		/// Determines brightness of the wipe tail.
+		/// </summary>
+		[Value]
+		[ProviderCategory(@"PolygonConfiguration", 4)]
+		[ProviderDisplayName(@"FillBrightness")]
+		[ProviderDescription(@"FillBrightness")]
+		[PropertyOrder(7)]
+		public Curve FillBrightness
+		{
+			get
+			{
+				return _data.FillBrightness;
+			}
+			set
+			{
+				_data.FillBrightness = value;
+				IsDirty = true;
+
+				// Update the fill brightness on each of the morph polygons
+				foreach (IMorphPolygon morphPolygon in MorphPolygons)
+				{
+					morphPolygon.FillBrightness = value;
+				}
+
+				OnPropertyChanged();
+			}
+		}
+
+		/// <summary>
 		/// Determines if the Fill Type of the polygon (Solid or Outline).
 		/// </summary>
 		[Value]
 		[ProviderCategory(@"PolygonConfiguration", 4)]
 		[ProviderDisplayName(@"FillPolygon")]
 		[ProviderDescription(@"FillPolygon")]
-		[PropertyOrder(7)]
+		[PropertyOrder(8)]
 		public bool FillPolygon
 		{
 			get
@@ -1824,7 +1907,7 @@ namespace VixenModules.Effect.Morph
 				}
 
 				// Render the intermediate polygon
-				RenderStaticPolygon(frameBuffer, intervalPos, points);
+				RenderStaticPolygon(frameBuffer, intervalPos, points, FillBrightness);
 			}
 		}
 
@@ -1884,7 +1967,7 @@ namespace VixenModules.Effect.Morph
 					endPolygon.Ellipse.Height, startPolygon.Time, endPolygon.Time);
 
 				// Render the intermediate ellipse
-				RenderStaticEllipse(frameBuffer, points, intermediateEllipse.Angle, intermediateEllipse, FillPolygon, GetFillColor(intervalPos));
+				RenderStaticEllipse(frameBuffer, points, intermediateEllipse.Angle, intermediateEllipse, FillPolygon, GetFillColor(intervalPos, FillBrightness));
 			}
 		}
 
@@ -1953,7 +2036,8 @@ namespace VixenModules.Effect.Morph
 		/// </summary>		
 		private void RenderStaticPolygon(IPixelFrameBuffer frameBuffer, 
 			double intervalPos, 
-			List<Point> points)
+			List<Point> points,
+			Curve intensity)
 		{
 			// Make copies of the display element width and height for performance
 			int bufferHt = BufferHt;
@@ -1965,12 +2049,12 @@ namespace VixenModules.Effect.Morph
 				if (points.Count > 2)
 				{
 					// Render the polygon on the bitmap
-					InitialRenderPolygon(bitmap, points.ToArray(), FillPolygon, GetFillColor(intervalPos));
+					InitialRenderPolygon(bitmap, points.ToArray(), FillPolygon, GetFillColor(intervalPos, intensity));
 				}
 				else
 				{
 					// Render the line on the bitmap
-					InitialRenderLine(bitmap, points.ToArray(), GetFillColor(intervalPos));
+					InitialRenderLine(bitmap, points.ToArray(), GetFillColor(intervalPos, intensity));
 				}
 
 				// Copy from the bitmap into the frame buffer
@@ -2740,7 +2824,16 @@ namespace VixenModules.Effect.Morph
 		/// </summary>		
 		private Color GetHeadColor(double intervalPos, MorphPolygon morphPolygon)
 		{
-			return morphPolygon.HeadColor.GetColorAt(intervalPos);
+			Color headColor = morphPolygon.HeadColor.GetColorAt(intervalPos);
+
+			double intervalPosFactor = intervalPos * 100;
+
+			// Adjust the color for brightness setting
+			HSV hsv = HSV.FromRGB(headColor);
+			hsv.V *= morphPolygon.HeadBrightness.GetValue(intervalPosFactor) / 100;
+			headColor = hsv.ToRGB();
+
+			return headColor;
 		}
 
 		/// <summary>
@@ -2748,24 +2841,51 @@ namespace VixenModules.Effect.Morph
 		/// </summary>		
 		private Color GetTailColor(double intervalPos, IMorphPolygon morphPolygon)
 		{
-			return morphPolygon.TailColor.GetColorAt(intervalPos);
+			Color tailColor = morphPolygon.TailColor.GetColorAt(intervalPos);
+
+			double intervalPosFactor = intervalPos * 100;
+
+			// Adjust the color for brightness setting
+			HSV hsv = HSV.FromRGB(tailColor);
+			hsv.V *= morphPolygon.TailBrightness.GetValue(intervalPosFactor) / 100;
+			tailColor = hsv.ToRGB();
+
+			return tailColor;
 		}
 
 		/// <summary>
-		/// Gets the fill color of the morph polygon.  This property only applies to time based mode.
+		/// Gets the fill color with the specified intensity.  This method only applies to time based mode.
 		/// </summary>		
-		private Color GetFillColor(double intervalPos)
+		private Color GetFillColor(double intervalPos, Curve intensity)
 		{
-			return FillColor.GetColorAt(intervalPos);
+			Color fillColor = FillColor.GetColorAt(intervalPos);
+			
+			double intervalPosFactor = intervalPos * 100;
+
+			// Adjust the color for brightness setting
+			HSV hsv = HSV.FromRGB(fillColor);
+			hsv.V *= intensity.GetValue(intervalPosFactor) / 100;
+			fillColor = hsv.ToRGB();
+
+			return fillColor;
 		}
 
 		/// <summary>
-		/// Gets the fill color of the specified morph polygon.  This property applies to free form mode and
+		/// Gets the fill color of the specified morph polygon.  This method applies to free form mode and
 		/// when the pattern mode is expanded out into morph polygons.
 		/// </summary>		
 		private Color GetFillColor(double intervalPos, IMorphPolygon morphPolygon)
 		{
-			return morphPolygon.FillColor.GetColorAt(intervalPos);
+			Color fillColor = morphPolygon.FillColor.GetColorAt(intervalPos);
+
+			double intervalPosFactor = intervalPos * 100;
+
+			// Adjust the color for brightness setting
+			HSV hsv = HSV.FromRGB(fillColor);
+			hsv.V *= morphPolygon.FillBrightness.GetValue(intervalPosFactor) / 100;
+			fillColor = hsv.ToRGB();
+
+			return fillColor;
 		}
 
 		/// <summary>
@@ -2793,6 +2913,9 @@ namespace VixenModules.Effect.Morph
 				serializedPolygon.FillColor = new ColorGradient(morphPolygon.FillColor);
 				serializedPolygon.Label = morphPolygon.Label;
 				serializedPolygon.StartOffset = morphPolygon.StartOffset;
+				serializedPolygon.TailBrightness = new Curve(morphPolygon.TailBrightness);
+				serializedPolygon.HeadBrightness = new Curve(morphPolygon.HeadBrightness);
+				serializedPolygon.FillBrightness = new Curve(morphPolygon.FillBrightness);
 
 				if (morphPolygon.Polygon != null)
 				{
@@ -2824,7 +2947,7 @@ namespace VixenModules.Effect.Morph
 			foreach (MorphPolygonData serializedPolygon in morphData.MorphPolygonData)
 			{
 				// Create a new morph polygon in the model
-				MorphPolygon morphPolygon = new MorphPolygon();
+				IMorphPolygon morphPolygon = new MorphPolygon();
 
 				// Transfer the properties from the serialized effect data to the morph polygon model
 				morphPolygon.HeadLength = serializedPolygon.HeadLength;
@@ -2837,6 +2960,9 @@ namespace VixenModules.Effect.Morph
 				morphPolygon.FillColor = new ColorGradient(serializedPolygon.FillColor);
 				morphPolygon.Label = serializedPolygon.Label;
 				morphPolygon.StartOffset = serializedPolygon.StartOffset;
+				morphPolygon.FillBrightness = new Curve(serializedPolygon.FillBrightness);
+				morphPolygon.HeadBrightness = new Curve(serializedPolygon.HeadBrightness);
+				morphPolygon.TailBrightness = new Curve(serializedPolygon.TailBrightness);
 
 				if (serializedPolygon.Polygon != null)
 				{
@@ -2876,7 +3002,11 @@ namespace VixenModules.Effect.Morph
 					{ nameof(HeadLength), PolygonType == PolygonType.Pattern },
 					{ nameof(Acceleration), PolygonType == PolygonType.Pattern },		
 					{ nameof(FillPolygon), PolygonType == PolygonType.TimeBased },
-					{ nameof(FillType), PolygonType == PolygonType.Pattern},					
+					{ nameof(FillType), PolygonType == PolygonType.Pattern},
+
+					{ nameof(HeadBrightness), PolygonType == PolygonType.Pattern},
+					{ nameof(TailBrightness), PolygonType == PolygonType.Pattern},
+					{ nameof(FillBrightness), PolygonType == PolygonType.TimeBased}
 				};
 			SetBrowsable(propertyStates);
 

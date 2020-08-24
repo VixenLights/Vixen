@@ -52,6 +52,15 @@ namespace VixenModules.Effect.Morph
 		[DataMember]
 		public int StartOffset { get; set; }
 
+		[DataMember]
+		public Curve TailBrightness { get; set; }
+
+		[DataMember]
+		public Curve HeadBrightness { get; set; }
+
+		[DataMember]
+		public Curve FillBrightness { get; set; }
+
 		#endregion
 
 		#region Public Methods
@@ -73,6 +82,9 @@ namespace VixenModules.Effect.Morph
 				Time = Time,								
 				Label = Label,
 				StartOffset = StartOffset,
+				TailBrightness = new Curve(TailBrightness),
+				HeadBrightness = new Curve(HeadBrightness),
+				FillBrightness =  new Curve(FillBrightness)
 			};
 
 			return result;
