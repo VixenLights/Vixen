@@ -31,6 +31,11 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// </summary>
 		public PolygonEditorViewModel()
 		{
+			// Create the convert to commands
+			ConvertToLineCommand = new Command(ConvertToLine, ConvertToLineEnabled);
+			ConvertToPolygonCommand = new Command(ConvertToPolygon, ConvertToPolygonEnabled);
+			ConvertToEllipseCommand = new Command(ConvertToEllipse, ConvertToEllipseEnabled);
+
 			// Create the collection of model polygons
 			PolygonModels = new ObservableCollection<Polygon>();
 
@@ -73,9 +78,6 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			DeletePointCommand = new Command(DeletePoint);
 			ToggleStartSideCommand = new Command(ToggleStartSide, IsToggleableShapeSelected);
 			ToggleStartPointCommand = new Command(ToggleStartPoint, IsLineSelected);
-			ConvertToLineCommand = new Command(ConvertToLine, IsNotLine);
-			ConvertToPolygonCommand = new Command(ConvertToPolygon, IsNotPolygon);
-			ConvertToEllipseCommand = new Command(ConvertToEllipse, IsNotEllipse);
 			AddPolygonSnapshotCommand = new Command(AddPolygonSnapshot);
 			DeletePolygonSnapshotCommand = new Command(DeletePolygonSnapshot, IsDeleteSnapshotPolygonEnabled);
 			NextPolygonSnapshotCommand = new Command(NextPolygonSnapshot, IsNextPolygonSnapshotEnabled);
@@ -306,7 +308,13 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		public ShapeViewModel SelectedShape
 		{
 			get { return GetValue<ShapeViewModel>(SelectedShapeProperty); }
-			private set { SetValue(SelectedShapeProperty, value); }
+			private set
+			{
+				SetValue(SelectedShapeProperty, value);
+
+				// Refresh the convert commands since the selected shape changed
+				RefreshToolbarConvertCommands();
+			}
 		}
 
 		/// <summary>
@@ -1631,9 +1639,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// </summary>
 		private void RefreshToolbarConvertCommands()
 		{
-			((Command)ConvertToLineCommand).RaiseCanExecuteChanged();
-			((Command)ConvertToPolygonCommand).RaiseCanExecuteChanged();
-			((Command)ConvertToEllipseCommand).RaiseCanExecuteChanged();
+			((Command) ConvertToLineCommand).RaiseCanExecuteChanged();
+			((Command) ConvertToPolygonCommand).RaiseCanExecuteChanged();
+			((Command) ConvertToEllipseCommand).RaiseCanExecuteChanged();
 		}
 
 		/// <summary>
@@ -2445,13 +2453,33 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// </summary>
 		private void ConvertToPolygon()
 		{
-			// Clear the line collections
-			Lines.Clear();
-			LineModels.Clear();
+			// If the editor is configured to allow multiple shapes then...
+			if (EditorCapabilities.AllowMultipleShapes)
+			{
+				// Remove the selected shape if it is a line
+				if (SelectedShape is LineViewModel)
+				{
+					LineModels.Remove(SelectedLine.Line);
+					Lines.Remove(SelectedLine);
+				}
+				// Otherwise remove the selected ellipse
+				else if (SelectedShape is EllipseViewModel)
+				{
+					EllipseModels.Remove(SelectedEllipse.Ellipse);
+					Ellipses.Remove(SelectedEllipse);
+				}
+			}
+			// If the editor only allows one shape then clear the lines and ellipses
+			else
+			{
+				// Clear the line collections
+				Lines.Clear();
+				LineModels.Clear();
 
-			// Clear the ellipse collections
-			Ellipses.Clear();
-			EllipseModels.Clear();
+				// Clear the ellipse collections
+				Ellipses.Clear();
+				EllipseModels.Clear();
+			}
 
 			// Create a new polygon
 			Polygon polygon = new Polygon();
@@ -2459,11 +2487,11 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			Polygons.Add(new PolygonViewModel(polygon, ShowLabels));
 
 			// Configure the polygon to be the size of the display element
-			Polygons[0].AddPoint(new Point(0, 0));
-			Polygons[0].AddPoint(new Point(ActualWidth - 1, 0));
-			Polygons[0].AddPoint(new Point(ActualWidth - 1 , ActualHeight - 1));
-			Polygons[0].AddPoint(new Point(0, ActualHeight - 1));
-			Polygons[0].AddPoint(new Point(0, 0));
+			Polygons[Polygons.Count - 1].AddPoint(new Point(0, 0));
+			Polygons[Polygons.Count - 1].AddPoint(new Point(ActualWidth - 1, 0));
+			Polygons[Polygons.Count - 1].AddPoint(new Point(ActualWidth - 1 , ActualHeight - 1));
+			Polygons[Polygons.Count - 1].AddPoint(new Point(0, ActualHeight - 1));
+			Polygons[Polygons.Count - 1].AddPoint(new Point(0, 0));
 
 			// If the time bar is visible then...
 			if (TimeBarVisible)
@@ -2472,7 +2500,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				polygon.FillType = PolygonFillType.Solid;
 
 				// Associate the polygon with the snapshot
-				SelectedSnapshot.PolygonViewModel = Polygons[0];
+				SelectedSnapshot.PolygonViewModel = Polygons[Polygons.Count - 1];
 				SelectedSnapshot.LineViewModel = null;
 				SelectedSnapshot.EllipseViewModel = null;
 
@@ -2493,13 +2521,33 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// </summary>
 		private void ConvertToLine()
 		{
-			// Clear the polygon collections
-			Polygons.Clear();
-			PolygonModels.Clear();
-			
-			// Clear the ellipse collections
-			Ellipses.Clear();
-			EllipseModels.Clear();
+			// If the editor is configured to allow multiple shapes then...
+			if (EditorCapabilities.AllowMultipleShapes)
+			{
+				// Remove the selected shape if it is a polygon
+				if (SelectedShape is PolygonViewModel)
+				{
+					PolygonModels.Remove(SelectedPolygon.Polygon);
+					Polygons.Remove(SelectedPolygon);
+				}
+				// Otherwise remove the selected ellipse
+				else if (SelectedShape is EllipseViewModel)
+				{
+					EllipseModels.Remove(SelectedEllipse.Ellipse);
+					Ellipses.Remove(SelectedEllipse);
+				}
+			}
+			// If the editor only allows one shape then clear the polygons and ellipses
+			else
+			{
+				// Clear the polygon collections
+				Polygons.Clear();
+				PolygonModels.Clear();
+
+				// Clear the ellipse collections
+				Ellipses.Clear();
+				EllipseModels.Clear();
+			}
 
 			// Create a new line
 			Line line = new Line();
@@ -2553,13 +2601,33 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// </summary>
 		void ConvertToEllipse()
 		{
-			// Clear the polygon collections
-			Polygons.Clear();
-			PolygonModels.Clear();
+			// If the editor is configured to allow multiple shapes then...
+			if (EditorCapabilities.AllowMultipleShapes)
+			{
+				// Remove the selected shape if it is a polygon
+				if (SelectedShape is PolygonViewModel)
+				{
+					PolygonModels.Remove(SelectedPolygon.Polygon);
+					Polygons.Remove(SelectedPolygon);
+				}
+				// Otherwise remove the selected line
+				else if (SelectedShape is LineViewModel)
+				{
+					LineModels.Remove(SelectedLine.Line);
+					Lines.Remove(SelectedLine);
+				}
+			}
+			// If the editor only allows one shape then clear the polygons and lines
+			else
+			{
+				// Clear the polygon collections
+				Polygons.Clear();
+				PolygonModels.Clear();
 
-			// Clear the line collections
-			Lines.Clear();
-			LineModels.Clear();
+				// Clear the line collections
+				Lines.Clear();
+				LineModels.Clear();
+			}
 
 			// If the time bar is visible then...
 			if (TimeBarVisible)
@@ -3166,30 +3234,75 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		}
 
 		/// <summary>
-		/// Returns true if there are not any ellipses.
+		/// Returns true if a shape can be converted to an ellipse.
 		/// </summary>
-		/// <returns>True if there are not any ellipses</returns>
-		private bool IsNotEllipse()
+		/// <returns>True if the shape can be converted</returns>
+		private bool ConvertToEllipseEnabled()
 		{
-			return (Ellipses.Count == 0);
+			// Default to NOT enabling the command
+			bool convertToEllipseEnabled = false;
+
+			// If the editor is configured to allow multiple shapes then...
+			if (EditorCapabilities.AllowMultipleShapes)
+			{
+				// Return true if the selected shape is not an ellipse
+				convertToEllipseEnabled = SelectedShape != null && !(SelectedShape is EllipseViewModel);
+			}
+			// Otherwise only allow the conversion if the current shape is NOT an ellipse
+			else
+			{
+				convertToEllipseEnabled = (Ellipses.Count == 0);
+			}
+
+			return convertToEllipseEnabled;
 		}
 
 		/// <summary>
-		/// Returns true if there are not any polygons.
+		/// Returns true if a shape can be converted to a polygon.
 		/// </summary>
-		/// <returns>True if there are not any polygons</returns>
-		private bool IsNotPolygon()
+		/// <returns>True if the shape can be converted</returns>
+		private bool ConvertToPolygonEnabled()
 		{
-			return (Polygons.Count == 0);
+			// Default to NOT enabling the command
+			bool convertToPolygonEnabled = false;
+
+			// If the editor is configured to allow multiple shapes then...
+			if (EditorCapabilities.AllowMultipleShapes)
+			{
+				// Return true if the selected shape is not a polygon
+				convertToPolygonEnabled = SelectedShape != null && !(SelectedShape is PolygonViewModel);
+			}
+			// Otherwise only allow the conversion if the current shape is NOT a polygon
+			else
+			{
+				convertToPolygonEnabled = (Polygons.Count == 0);
+			}
+
+			return convertToPolygonEnabled;
 		}
 
 		/// <summary>
-		/// Returns true if there are not any lines.
+		/// Returns true if a shape can be converted to a line.
 		/// </summary>
-		/// <returns>True if there are not any lines</returns>
-		private bool IsNotLine()
+		/// <returns>True if the shape can be converted</returns>
+		private bool ConvertToLineEnabled()
 		{
-			return (Lines.Count == 0);
+			// Default to NOT enabling the command
+			bool convertToLineEnabled = false;
+
+			// If the editor is configured to allow multiple shapes then...
+			if (EditorCapabilities.AllowMultipleShapes)
+			{
+				// Return true if the selected shape is not a line
+				convertToLineEnabled = SelectedShape != null && !(SelectedShape is LineViewModel);
+			}
+			// Otherwise only allow the conversion if the current shape is NOT a polygon
+			else
+			{
+				convertToLineEnabled = (Lines.Count == 0);
+			}
+
+			return convertToLineEnabled;
 		}
 
 		/// <summary>

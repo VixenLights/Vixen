@@ -116,6 +116,7 @@ namespace VixenModules.Effect.Morph
 				CopyPolygons = false,
 				ShowStartSide = true,
 				ShowTimeBar = false,
+				AllowMultipleShapes = false,
 			};
 
 			// Initialize the capabilities of the free form mode polygon editor
@@ -133,6 +134,7 @@ namespace VixenModules.Effect.Morph
 				ShowStartSide = true,
 				ShowTimeBar = false,
 				AddPoint = true,
+				AllowMultipleShapes = true,
 			};
 
 			// Initialize the capabilities of the time based mode polygon editor
@@ -150,6 +152,7 @@ namespace VixenModules.Effect.Morph
 				ShowStartSide = false,
 				ShowTimeBar = true,
 				AddPoint = true,
+				AllowMultipleShapes = false,
 			};
 		}
 

@@ -67,6 +67,11 @@
 		/// </summary>
 		public bool ShowTimeBar { get; set; }
 
+		/// <summary>
+		/// True when the user is allowed to draw more than one shape.
+		/// </summary>
+		public bool AllowMultipleShapes { get; set; }
+
 		#endregion
 	}
 }
