@@ -1955,7 +1955,7 @@ namespace VixenModules.Effect.Morph
 				intermediateEllipse.Center.Y = newCenter.Y;
 
 				// Calculates the intermediate angle of the ellipse
-				intermediateEllipse.Angle = -1 * CalculateIntermediateValue(time, startPolygon.Ellipse.Angle,
+				intermediateEllipse.Angle = CalculateIntermediateValue(time, startPolygon.Ellipse.Angle,
 					endPolygon.Ellipse.Angle, startPolygon.Time, endPolygon.Time);
 
 				// Calculate the intermediate width of the ellipse
