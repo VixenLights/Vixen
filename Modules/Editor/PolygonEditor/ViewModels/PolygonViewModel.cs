@@ -372,8 +372,18 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 					Segments.Remove(Segments[Segments.Count - 1]);
 				}
 
-				// Color the start side green
-				Segments[0].Color = Colors.Green;
+				// Wipe fill type is only valid for polygons with four sides
+				if (PointCollection.Count == 4)
+				{
+					// Color the start side green
+					Segments[0].Color = Colors.Green;
+				}
+				// Otherwise if the fill type is set to wipe then...
+				else if (Polygon.FillType == PolygonFillType.Wipe)
+				{
+					// Set the fill type to solid since the polygon does meet the requirements of a wipe
+					Polygon.FillType = PolygonFillType.Solid;
+				}
 			}
 			// Otherwise hide all segments
 			else

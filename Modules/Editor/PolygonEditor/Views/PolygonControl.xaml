@@ -258,7 +258,7 @@
 										Width="{Binding Width}"
 										Height="{Binding Height}"
 										Stroke="Black"
-										StrokeThickness="2"
+										StrokeThickness="3"
 										RenderTransformOrigin="0.5,0.5">
 										<Ellipse.RenderTransform>
 											<RotateTransform Angle="{Binding Angle}"/>
@@ -322,7 +322,7 @@
 
 										<ItemsControl.ItemTemplate>
 											<DataTemplate>
-												<Line Stroke="{Binding Color, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}" StrokeThickness="2" IsHitTestVisible="False"
+												<Line Stroke="{Binding Color, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}" StrokeThickness="3" IsHitTestVisible="False"
 									X1="{Binding Point1.X}"
 									Y1="{Binding Point1.Y}"
 									X2="{Binding Point2.X}"
@@ -394,7 +394,7 @@
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>
 									<Grid>
-										<Line Stroke="Black" StrokeThickness="2" IsHitTestVisible="False"
+										<Line Stroke="Black" StrokeThickness="3" IsHitTestVisible="False"
 									X1="{Binding StartPoint.X}"
 									Y1="{Binding StartPoint.Y}"
 									X2="{Binding EndPoint.X}"

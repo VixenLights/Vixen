@@ -1347,6 +1347,9 @@ namespace VixenModules.Effect.Morph
 					// Update the polygon model associated with morph polygon
 					morphPolygon.Polygon = polygon;
 
+					// Update the morph polygon fill type
+					morphPolygon.FillType = polygon.FillType;
+
 					// If we are in time based mode then...
 					if (PolygonType == PolygonType.TimeBased)
 					{
@@ -1380,6 +1383,9 @@ namespace VixenModules.Effect.Morph
 
 					// Indicate that we don't need to remove this morph polygon
 					morphPolygon.Removed = false;
+
+					// Update the morph polygon fill type
+					morphPolygon.FillType = polygon.FillType;
 
 					// Add the polygon to collection
 					MorphPolygons.Add(morphPolygon);
