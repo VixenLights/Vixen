@@ -256,7 +256,7 @@ namespace VixenModules.Effect.Morph
 				{
 					// Create the message box prompt to see if the user wants the Pattern polygons converted into Free Form polygons
 					MessageBoxForm messageBox = new MessageBoxForm(
-						"Would you like to convert the Pattern polygons to Free Form?", 
+						"Would you like to convert the Pattern polygons to Free Form Polygons?", 
 						"Convert Polygons", 
 						MessageBoxButtons.YesNo, 
 						SystemIcons.Question);
@@ -273,8 +273,9 @@ namespace VixenModules.Effect.Morph
 						// Clear the Morph Polygon collection
 						MorphPolygons.Clear();
 
-						// Add the pattern polygons to the collection
-						MorphPolygons.AddRange(_patternExpandedMorphPolygons);
+						// Add the pattern polygons that fit on the display element to the collection
+						MorphPolygons.AddRange(_patternExpandedMorphPolygons.Where(shape => 
+							!shape.GetPointBasedShape().IsShapeOffDisplayElement(BufferWi, BufferHt)).ToList());
 					}
 				}
 

@@ -83,6 +83,35 @@ namespace VixenModules.App.Polygon
 		}
 
 		/// <summary>
+		/// Returns true if the shape is outside the bounds of the display element.
+		/// </summary>
+		/// <param name="width">Width of the display element</param>
+		/// <param name="height">Height of the display element</param>
+		/// <returns>true if the shape is outside the bounds of the display element</returns>
+		public bool IsShapeOffDisplayElement(int width, int height)
+		{
+			bool isShapeOffDisplayElement = false;
+
+			// Loop over the shape's points
+			foreach (PolygonPoint point in Points)
+			{
+				// If the shape is outside the bounds then...
+				if (point.X > width - 1 || 
+				    point.Y > height - 1 ||
+				    point.X < 0 || 
+				    point.Y < 0)
+				{
+					// Indicate the shape is outside the bounds
+					isShapeOffDisplayElement = true;
+
+					break;
+				}
+			}
+
+			return isShapeOffDisplayElement;
+		}
+
+		/// <summary>
 		/// Limts the shape points to the specified width and height.
 		/// </summary>		
 		public virtual void LimitPoints(int width, int height)
