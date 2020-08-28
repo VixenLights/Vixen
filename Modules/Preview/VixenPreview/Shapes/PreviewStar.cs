@@ -104,17 +104,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private bool IsPixelStar(ElementNode selectedNode)
 		{
-			int childCount = 0;
-			// Iterate through each child
-			foreach (ElementNode child in selectedNode.Children)
-			{
-				// If we have children and this is a group
-				if (child.Children.ToList().Count() > 0 && !child.IsLeaf)
-				{
-					childCount++;
-				}
-			}
-			return (childCount >= 2);
+			return !selectedNode.IsLeaf && selectedNode.GetLeafEnumerator().Count() >= 2;
 		}
 
 		private void AddAllChildren(ElementNode selectedNode)
