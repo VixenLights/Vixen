@@ -1066,7 +1066,7 @@
     <value>Adjust the number of Vertical Snowflakes.</value>
   </data>
   <data name="Acceleration" xml:space="preserve">
-    <value>Determines the acceleration of the polygon/line wipe.</value>
+    <value>Determines the acceleration of the shape's (polygon/ellipse/line) wipe.  The acceleration can be either increasing or decreasing (deceleration).</value>
   </data>
   <data name="EditPolygons" xml:space="preserve">
     <value>Click to edit the polygons and lines.</value>
@@ -1075,22 +1075,22 @@
     <value>Determines if the polygon is solid or outlined with the Polygon Color.</value>
   </data>
   <data name="FillType" xml:space="preserve">
-    <value>Determines how the polygon/line is filled (Wipe, Solid or Outline).</value>
+    <value>Determines how the shape (polygon/ellipse/line) is filled (Wipe, Solid or Outline).</value>
   </data>
   <data name="HeadColor" xml:space="preserve">
     <value>Determines the wipe head color over the duration of the effect.</value>
   </data>
   <data name="HeadDuration" xml:space="preserve">
-    <value>Determines the percentage of the effect duration it takes the wipe head to travel across the polygon/line.</value>
+    <value>Determines the percentage of the effect duration it takes the wipe head to travel across the shape (polygon/ellipse/line).</value>
   </data>
   <data name="HeadLength" xml:space="preserve">
-    <value>Determines the length of the wipe head over the duration of the effect.</value>
+    <value>Determines the length of the wipe head in pixels.</value>
   </data>
   <data name="PolygonColor" xml:space="preserve">
-    <value>Determines the color of the polygon/line for the duration of the effect.</value>
+    <value>Determines the color of the shape (polygon/ellipse/line) for the duration of the effect.</value>
   </data>
   <data name="PolygonType" xml:space="preserve">
-    <value>Determines the type of polygon or line.</value>
+    <value>Determines the mode of the morph effect.</value>
   </data>
   <data name="RepeatCount" xml:space="preserve">
     <value>Determines how many times to repeat the polygon/line.</value>
@@ -1114,7 +1114,7 @@
     <value>Determines when the wipe starts.  This offset is the percentage of the effect's total duration to wait before starting the wipe.</value>
   </data>
   <data name="FillBrightness" xml:space="preserve">
-    <value>Controls the brightness of the shape.</value>
+    <value>Controls the brightness of the shape over the duration of the effect.</value>
   </data>
   <data name="HeadBrightness" xml:space="preserve">
     <value>Controls the brightness of the wipe head.</value>

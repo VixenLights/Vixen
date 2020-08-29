@@ -434,6 +434,7 @@ namespace VixenModules.Effect.Morph
 				{nameof(FillColor), (FillType == PolygonFillType.Solid || FillType == PolygonFillType.Outline) },
 
 				{nameof(HeadBrightness), FillType == PolygonFillType.Wipe },
+				{nameof(StartOffset), FillType == PolygonFillType.Wipe },
 				{nameof(TailBrightness), FillType == PolygonFillType.Wipe },
 				{nameof(FillBrightness), (FillType == PolygonFillType.Solid || FillType == PolygonFillType.Outline) },
 			};
