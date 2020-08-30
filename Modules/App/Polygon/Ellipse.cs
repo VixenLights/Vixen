@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Media;
 
@@ -8,6 +9,7 @@ namespace VixenModules.App.Polygon
 	/// <summary>
 	/// Maintains an ellipse.
 	/// </summary>
+	[DataContract]
 	public class Ellipse : PointBasedShape
 	{
 		#region Constructor 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace VixenModules.App.Polygon
 {
@@ -16,7 +17,7 @@ namespace VixenModules.App.Polygon
 	/// <summary>
 	/// Maintains a point based shape.
 	/// </summary>
-	[Serializable]
+	[DataContract]
 	public abstract class PointBasedShape : Shape
 	{
 		#region Constructor
@@ -40,7 +41,8 @@ namespace VixenModules.App.Polygon
 		/// <summary>
 		/// Gets the collection of points that make up the shape.
 		/// </summary>
-		public IList<PolygonPoint> Points
+		[DataMember]
+		public List<PolygonPoint> Points
 		{
 			get;
 			private set;
@@ -49,6 +51,7 @@ namespace VixenModules.App.Polygon
 		/// <summary>
 		/// Determines how the shape is filled(Wipe, Solid or Outline).
 		/// </summary>
+		[DataMember]
 		public PolygonFillType FillType { get; set; }
 		
 		#endregion

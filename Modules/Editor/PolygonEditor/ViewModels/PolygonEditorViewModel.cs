@@ -1616,6 +1616,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// </summary>
 		private void RefreshToolbarSelectedShapeCommands()
 		{
+			((Command)PasteCommand).RaiseCanExecuteChanged();
 			((Command)CopyCommand).RaiseCanExecuteChanged();
 			((Command)DeleteCommand).RaiseCanExecuteChanged();
 			((Command)CutCommand).RaiseCanExecuteChanged();
@@ -2386,7 +2387,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				SelectedSnapshot.EllipseViewModel = null;
 			}
 
-			// Update the enable status of the copy, cut and delete commands
+			// Update the enable status of the paste, copy, cut and delete commands
 			RefreshToolbarSelectedShapeCommands();
 			RefreshToolbarSelectionModeCommands();
 		}
@@ -3158,11 +3159,24 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		{
 			// Return whether polygon, line, or ellipse data is on the clipboard and 
 			// the editor is configured to allow pasting new shapes
-			return (Clipboard.ContainsData(PolygonClipboardFormat) ||
-					Clipboard.ContainsData(LineClipboardFormat) ||
-					Clipboard.ContainsData(EllipseClipboardFormat)) &&
+			bool canExecutePaste =
+				(Clipboard.ContainsData(PolygonClipboardFormat) ||
+				 Clipboard.ContainsData(LineClipboardFormat) ||
+				 Clipboard.ContainsData(EllipseClipboardFormat)) &&
 				   EditorCapabilities != null &&
 				   EditorCapabilities.AddPolygons;
+
+			// If the editor is in time bar mode and the paste command would be enabled then...
+			if (_editorCapabilities.ShowTimeBar && canExecutePaste)
+			{
+				// Only enable paste when the snapshot doesn't already have a shape
+				canExecutePaste = SelectedSnapshot.PolygonViewModel == null &&
+				                  SelectedSnapshot.EllipseViewModel == null &&
+				                  SelectedSnapshot.LineViewModel == null;
+			}
+
+			// Return whether it is valid to enable paste
+			return canExecutePaste;
 		}
 
 		/// <summary>

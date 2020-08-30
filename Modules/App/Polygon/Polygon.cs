@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace VixenModules.App.Polygon
 {
 	/// <summary>
 	/// Maintains a polygon.
 	/// </summary>
-	[Serializable]
+	[DataContract]
 	public class Polygon : PointBasedShape
 	{
 		#region Constructor

@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace VixenModules.App.Polygon
 {
 	/// <summary>
 	/// Maintains properties of a shape.
 	/// </summary>
-	[Serializable]
+	[DataContract]
 	public abstract class Shape 
 	{
 		#region Constructor 
@@ -26,11 +27,13 @@ namespace VixenModules.App.Polygon
 		/// <summary>
 		/// Gets or sets the unique ID of the shape.
 		/// </summary>
+		[DataMember]
 		public Guid ID { get; set; }
 
 		/// <summary>
 		/// Gets or sets the label of the shape.
 		/// </summary>
+		[DataMember]
 		public string Label { get; set; }
 
 		#endregion
