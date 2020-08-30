@@ -1093,16 +1093,16 @@
     <value>Determines the mode of the morph effect.</value>
   </data>
   <data name="RepeatCount" xml:space="preserve">
-    <value>Determines how many times to repeat the polygon/line.</value>
+    <value>Determines how many times to repeat the shape (polygon/ellipse/line).</value>
   </data>
   <data name="RepeatDirection" xml:space="preserve">
-    <value>Determines the direction of the repeating pattern of polygons or lines.</value>
+    <value>Determines the direction of the repeating pattern of shapes (polygons/ellipses/lines).</value>
   </data>
   <data name="RepeatSkip" xml:space="preserve">
-    <value>Determines the spacing in-between the repeating polygons or lines.</value>
+    <value>Determines the spacing in-between the repeating shapes (polygons/ellipses/lines).</value>
   </data>
   <data name="Stagger" xml:space="preserve">
-    <value>Determines if the start of wipe is staggered for the repeating polygons/lines.</value>
+    <value>Determines if the start of the wipe is staggered for the repeating shapes (polygons/ellipses/lines).</value>
   </data>
   <data name="TailColor" xml:space="preserve">
     <value>Determines the wipe tail color over the duration of the effect.</value>
