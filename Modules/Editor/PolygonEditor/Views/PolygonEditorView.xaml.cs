@@ -59,6 +59,7 @@ namespace VixenModules.Editor.PolygonEditor.Views
 				vm.EditorCapabilities = _polygonContainer.EditorCapabilities;
 
 				// Attempting to size the editor to fill 70% of the primary monitor
+				// ReSharper disable once InconsistentNaming
 				const double PercentOfScreen = 0.7;
 				double wfactor = ((SystemParameters.PrimaryScreenWidth * PercentOfScreen) / _polygonContainer.Width);
 				double hfactor = ((SystemParameters.PrimaryScreenHeight * PercentOfScreen) / _polygonContainer.Height);
@@ -106,7 +107,7 @@ namespace VixenModules.Editor.PolygonEditor.Views
 				Width = vm.CanvasWidth; 
 
 				// If the display element is long and tall don't let the window
-				// get too skiny
+				// get too skinny
 				if (Width < PercentOfScreen * SystemParameters.PrimaryScreenWidth)
 				{
 					Width = SystemParameters.PrimaryScreenWidth * PercentOfScreen;
