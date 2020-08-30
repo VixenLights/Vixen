@@ -64,19 +64,19 @@
 								 Visibility="{Binding Path=ShowSelect, Converter={StaticResource BoolToVis}}">
 					<Image Source="/PolygonEditor;component/Images/buttonSelect.png" Height="20" Width="20"/>
 				</RadioButton>
-				<Button Command="{Binding PasteCommand}" ToolTip="Paste Polygon/Line"
+				<Button Command="{Binding PasteCommand}" ToolTip="Paste Polygon/Ellipse/Line"
 							Visibility="{Binding Path=ShowPaste, Converter={StaticResource BoolToVis}}">
 					<Image Source="/PolygonEditor;component/Images/Paste.png" Height="20" Width="20"/>
 				</Button>
-				<Button Command="{Binding CutCommand}" ToolTip="Cut Polygon/Line"
+				<Button Command="{Binding CutCommand}" ToolTip="Cut Polygon/Ellipse/Line"
 							Visibility="{Binding Path=ShowCut, Converter={StaticResource BoolToVis}}">
 					<Image Source="/PolygonEditor;component/Images/Cut.png" Height="20" Width="20"/>
 				</Button>
-				<Button Command="{Binding CopyCommand}" ToolTip="Copy Polygon/Line"
+				<Button Command="{Binding CopyCommand}" ToolTip="Copy Polygon/Ellipse/Line"
 							Visibility="{Binding Path=ShowCopy, Converter={StaticResource BoolToVis}}">
 					<Image Source="/PolygonEditor;component/Images/Copy.png" Height="20" Width="20"/>
 				</Button>
-				<Button Command="{Binding DeleteCommand}"  ToolTip="Delete Polygon/Line"
+				<Button Command="{Binding DeleteCommand}"  ToolTip="Delete Polygon/Ellipse/Line"
 							Visibility="{Binding Path=ShowDelete, Converter={StaticResource BoolToVis}}">
 					<Image Source="/PolygonEditor;component/Images/Delete_32.png" Height="20" Width="20"/>
 				</Button>

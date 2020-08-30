@@ -25,7 +25,7 @@ namespace VixenModules.Editor.PolygonEditor.Views
 		{
 			InitializeComponent();
             Loaded += PolygonControl_Loaded;
-        }
+		}
 
         #endregion
 

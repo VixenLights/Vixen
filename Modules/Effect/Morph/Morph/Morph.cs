@@ -960,7 +960,15 @@ namespace VixenModules.Effect.Morph
 			switch (PolygonType)
 			{
 				case PolygonType.TimeBased:
-					RenderEffectTimeBased(frameNum, frameBuffer, intervalPos);
+					// If there is only one morph polygon revert to free form mode
+					if (MorphPolygons.Count > 1)
+					{
+						RenderEffectTimeBased(frameNum, frameBuffer, intervalPos);
+					}
+					else
+					{
+						RenderEffectFreeForm(frameNum, frameBuffer, intervalPos);
+					}
 					break;
 				case PolygonType.Pattern:
 					RenderEffectPattern(frameNum, frameBuffer, intervalPos);

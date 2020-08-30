@@ -78,15 +78,6 @@ namespace VixenModules.Editor.PolygonEditor.Views
 				PolygonPointXConverter.XScaleFactor = xScaleFactor;
 				PolygonPointYConverter.YScaleFactor = yScaleFactor;
 
-				// Give the view model the model polygons and polygon times
-				vm.InitializePolygons(_polygonContainer.Polygons, _polygonContainer.PolygonTimes);
-
-				// Give the view model the model lines and line times, 
-				vm.InitializeLines(_polygonContainer.Lines, _polygonContainer.LineTimes);
-
-				// Give the view model the model ellipses and ellipse and times
-				vm.InitializeEllipses(_polygonContainer.Ellipses, _polygonContainer.EllipseTimes);
-
 				// If the edit is in time based mode then...
 				if (_polygonContainer.EditorCapabilities.ShowTimeBar)
 				{
@@ -98,6 +89,17 @@ namespace VixenModules.Editor.PolygonEditor.Views
 						_polygonContainer.LineTimes,
 						_polygonContainer.Ellipses,
 						_polygonContainer.EllipseTimes);
+				}
+				else
+				{
+					// Give the view model the model polygons and polygon times
+					vm.InitializePolygons(_polygonContainer.Polygons, _polygonContainer.PolygonTimes);
+
+					// Give the view model the model lines and line times, 
+					vm.InitializeLines(_polygonContainer.Lines, _polygonContainer.LineTimes);
+
+					// Give the view model the model ellipses and ellipse and times
+					vm.InitializeEllipses(_polygonContainer.Ellipses, _polygonContainer.EllipseTimes);
 				}
 				
 				// Initialize the window width to the canvas width

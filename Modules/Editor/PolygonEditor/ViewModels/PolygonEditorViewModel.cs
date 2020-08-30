@@ -3753,7 +3753,10 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// Loop over the polygon models
 			int index = 0;
 			foreach (Polygon polygon in polygons)
-			{	
+			{
+				// Scale the points for the editor canvas size
+				polygon.ScalePoints(PolygonPointXConverter.XScaleFactor, PolygonPointYConverter.YScaleFactor);
+
 				// Create the snapshot 
 				PolygonSnapshotViewModel snapshot = CreatePolygonSnapshot(polygonTimes[index], PolygonSnapshots.Count);
 					
@@ -3766,6 +3769,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			index = 0;
 			foreach (Line line in lines)
 			{
+				// Scale the points for the editor canvas size
+				line.ScalePoints(PolygonPointXConverter.XScaleFactor, PolygonPointYConverter.YScaleFactor);
+
 				// Create the snapshot 
 				PolygonSnapshotViewModel snapshot = CreatePolygonSnapshot(lineTimes[index], PolygonSnapshots.Count);
 					
@@ -3778,6 +3784,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			index = 0;
 			foreach (Ellipse ellipse in ellipses)
 			{
+				// Scale the points for the editor canvas size
+				ellipse.ScalePoints(PolygonPointXConverter.XScaleFactor, PolygonPointYConverter.YScaleFactor);
+
 				// Create the snapshot 
 				PolygonSnapshotViewModel snapshot = CreatePolygonSnapshot(ellipseTimes[index], PolygonSnapshots.Count);
 
