@@ -1065,4 +1065,7 @@
   <data name="VFlakeCount" xml:space="preserve">
     <value>Adjust the number of Vertical Snowflakes.</value>
   </data>
+  <data name="ScaledRadius" xml:space="preserve">
+    <value>Scale the radius setting to the size of the element.</value>
+  </data>
 </root>
