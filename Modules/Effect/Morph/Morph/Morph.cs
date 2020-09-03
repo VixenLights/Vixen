@@ -168,6 +168,10 @@ namespace VixenModules.Effect.Morph
 			get { return _data.Orientation; }
 			set
 			{
+				// Save off the previous display element dimensions
+				int previousBufferWidth = BufferWi;
+				int previousBufferHeight = BufferHt;
+
 				_data.Orientation = value;
 				IsDirty = true;
 				OnPropertyChanged();
@@ -177,8 +181,8 @@ namespace VixenModules.Effect.Morph
 				// when transition to strings.
 				if (TargetPositioning != TargetPositioningType.Locations)
 				{
-					// Make sure the shapes still fit on the display element
-					LimitShapes();
+					// Scale the shapes associated with the morph polygons
+					ScaleShapesToFitDisplayElement(previousBufferWidth, previousBufferHeight);
 				}
 			}
 		}
@@ -838,15 +842,8 @@ namespace VixenModules.Effect.Morph
 			// Configure the new display element size for the target positioning changing
 			ConfigureDisplayElementSize();
 
-			// Loop over the morph polygons
-			foreach (IMorphPolygon morphPolygon in MorphPolygons)
-			{
-				// Scale the shapes associated with the morph polygons
-				morphPolygon.Scale((BufferWi -1.0) / (previousBufferWidth - 1.0),  (BufferHt - 1.0) / (previousBufferHeight - 1.0));
-			}
-			
-			// Make sure the polygons/lines still fit on the display area				
-			LimitShapes();
+			// Scale the shapes associated with the morph polygons
+			ScaleShapesToFitDisplayElement(previousBufferWidth, previousBufferHeight);
 		}
 
 		/// <summary>
@@ -854,12 +851,16 @@ namespace VixenModules.Effect.Morph
 		/// </summary>
 		protected override void TargetNodesChanged()
 		{
+			// Save off the previous width and height
+			int previousBufferWidth = _data.DisplayElementWidth; 
+			int previousBufferHeight = _data.DisplayElementHeight;
+
 			// Call the base class implementation
 			base.TargetNodesChanged();
 
 			// Configure the display element size (strings vs position)
 			ConfigureDisplayElementSize();
-			
+
 			// If there are not any polygons or lines then...
 			if (MorphPolygons.Count == 0)
 			{
@@ -888,8 +889,16 @@ namespace VixenModules.Effect.Morph
 				morphPolygon.Polygon.Points.Add(ptBottomLeft);
 			}
 
-			// Make sure all polygons/lines fit on the display element
-			LimitShapes();			
+			// Save off the display element width and height
+			_data.DisplayElementWidth = BufferWi;
+			_data.DisplayElementHeight = BufferHt;
+
+			// If effect has been associated with a display element then...
+			if (previousBufferHeight != 0 && previousBufferWidth != 0)
+			{
+				// Scale the shapes associated with the morph polygons
+				ScaleShapesToFitDisplayElement(previousBufferWidth, previousBufferHeight);
+			}
 		}
 
 		/// <summary>
@@ -1000,6 +1009,8 @@ namespace VixenModules.Effect.Morph
 			// Store off the display element width and height
 			_bufferWi = BufferWi;
 			_bufferHt = BufferHt;
+			_data.DisplayElementWidth = _bufferWi;
+			_data.DisplayElementHeight = _bufferHt;
 
 			// Give the morph polygon access to the display element dimensions
 			MorphPolygon.BufferWidth = _bufferWi;
@@ -1019,6 +1030,31 @@ namespace VixenModules.Effect.Morph
 
 		#region Private Methods
 
+		/// <summary>
+		/// Scales the shapes to fit the current display element.
+		/// </summary>
+		/// <param name="previousBufferWidth">Previous display element width</param>
+		/// <param name="previousBufferHeight">Previous display element height</param>
+		private void ScaleShapesToFitDisplayElement(int previousBufferWidth, int previousBufferHeight)
+		{
+			// If the current display element is not the same as the previous and
+			// the previous display element size was saved off then...
+			if ((previousBufferWidth != BufferWi || previousBufferHeight != BufferHt) &&
+			     previousBufferHeight != 0 && previousBufferWidth != 0)
+			{
+				// Loop over the morph polygons
+				foreach (IMorphPolygon morphPolygon in MorphPolygons)
+				{
+					// Scale the shapes associated with the morph polygon
+					morphPolygon.Scale(
+						(BufferWi - 1.0) / (previousBufferWidth - 1.0),
+						(BufferHt - 1.0) / (previousBufferHeight - 1.0),
+						BufferWi,
+						BufferHt);
+				}
+			}
+		}
+		
 		/// <summary>
 		/// Setup for render pattern polygons.
 		/// </summary>
@@ -1402,19 +1438,6 @@ namespace VixenModules.Effect.Morph
 			}
 		}
 
-		/// <summary>
-		/// Limits the shapes so that they fit on the display element.
-		/// </summary>
-		private void LimitShapes()
-		{
-			// Loop over all the morph polygon shapes
-			foreach (IMorphPolygon morphPolygon in MorphPolygons)
-			{
-				// Limit the points on the shape
-				morphPolygon.LimitPoints(BufferWi, BufferHt);				
-			}
-		}
-						
 		/// <summary>
 		/// Updates the frame buffer for a location based pixel.
 		/// </summary>

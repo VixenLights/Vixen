@@ -106,7 +106,9 @@ namespace VixenModules.Effect.Morph
 		/// </summary>
 		/// <param name="xScaleFactor">X Axis scale factor</param>
 		/// <param name="yScaleFactor">Y Axis scale factor</param>
-		void Scale(double xScaleFactor, double yScaleFactor);
+		/// <param name="width">Width of the display element</param>
+		/// <param name="height">Height of the display element</param>
+		void Scale(double xScaleFactor, double yScaleFactor, int width, int height);
 
 		/// <summary>
 		/// Determines the brightness of the wipe tail.

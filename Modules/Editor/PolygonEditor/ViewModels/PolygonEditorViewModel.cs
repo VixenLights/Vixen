@@ -3141,10 +3141,14 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				// Copy the polygon data to the clipboard
 				Clipboard.SetData(PolygonClipboardFormat, SelectedPolygon.Polygon.Clone());
 			}
-			else
+			else if (IsLineSelected())
 			{
 				// Copy the line data to the clipboard
 				Clipboard.SetData(LineClipboardFormat, SelectedLine.Line.Clone());
+			}
+			else
+			{
+				Clipboard.SetData(EllipseClipboardFormat, SelectedEllipse.Ellipse.Clone());
 			}
 			
 			// Update the execute status of the paste command

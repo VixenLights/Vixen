@@ -7,6 +7,7 @@ namespace VixenModules.App.Polygon
 	/// Maintains a line.
 	/// </summary>
 	[DataContract]
+	[Serializable]
 	public class Line : PointBasedShape
 	{
 		#region Constructor

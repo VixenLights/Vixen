@@ -37,6 +37,8 @@ namespace VixenModules.Effect.Morph
 			FillColor = new ColorGradient(System.Drawing.Color.Red);
 			FillPolygon = true;			
 			MorphPolygonData = new List<MorphPolygonData>();
+			DisplayElementWidth = 0;
+			DisplayElementHeight = 0;
 
 			// Default the brightness to 100%
 			TailBrightness = new Curve(CurveType.Flat100);
@@ -102,6 +104,12 @@ namespace VixenModules.Effect.Morph
 		[DataMember]
 		public Curve FillBrightness { get; set; }
 
+		[DataMember] 
+		public int DisplayElementWidth { get; set; }
+
+		[DataMember]
+		public int DisplayElementHeight { get; set; }
+
 		#endregion
 
 		#region Protected Methods
@@ -126,7 +134,9 @@ namespace VixenModules.Effect.Morph
 				FillPolygon = FillPolygon,
 				TailBrightness = new Curve(TailBrightness),
 				HeadBrightness = new Curve(HeadBrightness),
-				FillBrightness = new Curve(FillBrightness)
+				FillBrightness = new Curve(FillBrightness),
+				DisplayElementWidth = DisplayElementWidth,
+				DisplayElementHeight = DisplayElementHeight,
 			};
 
 			// Clone the Morph Polygons

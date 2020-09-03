@@ -72,8 +72,8 @@ namespace VixenModules.Editor.PolygonEditor.Views
 				double yScaleFactor = (_polygonContainer.Height * factor - 1.0) / (_polygonContainer.Height - 1.0);
 
 				// Give the view model the drawing canvas width and height
-				vm.CanvasWidth = (int)(_polygonContainer.Width * factor);
-				vm.CanvasHeight = (int)(_polygonContainer.Height * factor);
+				vm.CanvasWidth = (int)Math.Round(_polygonContainer.Width * factor, MidpointRounding.AwayFromZero);
+				vm.CanvasHeight = (int) Math.Round(_polygonContainer.Height * factor, MidpointRounding.AwayFromZero);
 
 				// Give the polygon point converter the scale factor
 				PolygonPointXConverter.XScaleFactor = xScaleFactor;

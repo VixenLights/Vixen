@@ -7,6 +7,7 @@ namespace VixenModules.App.Polygon
 	/// Maintains a polygon.
 	/// </summary>
 	[DataContract]
+	[Serializable]
 	public class Polygon : PointBasedShape
 	{
 		#region Constructor

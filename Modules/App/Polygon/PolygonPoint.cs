@@ -7,6 +7,7 @@ namespace VixenModules.App.Polygon
 	/// Maintains a shape point.
 	/// </summary>
 	[DataContract]
+	[Serializable]
 	public class PolygonPoint
 	{
 		#region Public Properties

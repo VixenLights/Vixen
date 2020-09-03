@@ -7,6 +7,7 @@ namespace VixenModules.App.Polygon
 	/// Maintains properties of a shape.
 	/// </summary>
 	[DataContract]
+	[Serializable]
 	public abstract class Shape 
 	{
 		#region Constructor 
@@ -51,13 +52,15 @@ namespace VixenModules.App.Polygon
 			// Copy the label of the shape
 			Label = sourceShape.Label;
 		}
-		
+
 		/// <summary>
 		/// Scales the shape using the specified scale factors.
 		/// </summary>
 		/// <param name="xScaleFactor">X-axis scale factor</param>
 		/// <param name="yScaleFactor">Y-axis scale factor</param>
-		public abstract void Scale(double xScaleFactor, double yScaleFactor);
+		/// <param name="width">Width of display element</param>
+		/// <param name="height">Height of display element</param>
+		public abstract void Scale(double xScaleFactor, double yScaleFactor, int width, int height);
 
 		#endregion
 	}
