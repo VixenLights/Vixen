@@ -19,14 +19,13 @@ namespace VixenModules.Effect.Shockwave
 			Gradient.Colors.Add(new ColorPoint(Color.Lime, .5));
 			Gradient.Colors.Add(new ColorPoint(Color.Blue, 1.0));
 			WidthCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 2.0, 4.0 }));
-			//EndWidthCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 4.0, 4.0 }));
-			RadiusCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.2, 1.2 }));
-			//EndRadiusCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 1.2, 1.2 }));
+			RadiusCurve = new Curve(CurveType.RampUp);
 			CenterXCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			CenterYCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
-			AccelerationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			AccelerationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 55.0, 55.0 }));
 			BlendEdges = true;
 			Orientation=StringOrientation.Vertical;
+			ScaledRadius = true;
 		}
 
 		[DataMember]
@@ -70,6 +69,9 @@ namespace VixenModules.Effect.Shockwave
 
 		[DataMember]
 		public bool BlendEdges { get; set; }
+
+		[DataMember]
+		public bool ScaledRadius { get; set; }
 
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
