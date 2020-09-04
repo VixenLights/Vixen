@@ -118,6 +118,14 @@ namespace VixenModules.Effect.Effect
 			}
 		}
 
+		/// <summary>
+		/// Flag to track that the target positioning is changing.
+		/// This allows derived effects to differentiate between the user
+		/// changing the orientation vs the orientation changing due to
+		/// the target positioning changing.
+		/// </summary>
+		protected bool TargetPositioningChanging { get; set; }
+
 		[Value]
 		[Browsable(false)]
 		[ProviderCategory(@"Setup", 0)]
@@ -129,6 +137,8 @@ namespace VixenModules.Effect.Effect
 			get { return EffectModuleData.TargetPositioning; }
 			set
 			{
+				TargetPositioningChanging = true;
+
 				EffectModuleData.TargetPositioning = value;
 				if (TargetPositioning == TargetPositioningType.Locations)
 				{
@@ -142,6 +152,8 @@ namespace VixenModules.Effect.Effect
 				TargetPositioningChanged();
 				IsDirty = true;
 				OnPropertyChanged();
+
+				TargetPositioningChanging = false;
 			}
 		}
 

@@ -169,17 +169,16 @@ namespace VixenModules.Effect.Morph
 			set
 			{
 				// Save off the previous display element dimensions
-				int previousBufferWidth = BufferWi;
-				int previousBufferHeight = BufferHt;
+				int previousBufferWidth = _data.DisplayElementWidth;
+				int previousBufferHeight = _data.DisplayElementHeight;
 
 				_data.Orientation = value;
 				IsDirty = true;
 				OnPropertyChanged();
 
-				// When the TargetPositioning changes from String to Locations the
-				// String Orientation may change.  Don't want to limit the shapes
-				// when transition to strings.
-				if (TargetPositioning != TargetPositioningType.Locations)
+				// When the TargetPositioning changes the orientation may change.
+				// Only want to scale the shapes when the user explicitly changes the orientation.
+				if (!TargetPositioningChanging)
 				{
 					// Scale the shapes associated with the morph polygons
 					ScaleShapesToFitDisplayElement(previousBufferWidth, previousBufferHeight);
@@ -833,8 +832,8 @@ namespace VixenModules.Effect.Morph
 		protected override void TargetPositioningChanged()
 		{
 			// Save off the previous width and height
-			int previousBufferWidth = _bufferWi;
-			int previousBufferHeight = _bufferHt;
+			int previousBufferWidth = _data.DisplayElementWidth;
+			int previousBufferHeight = _data.DisplayElementHeight;
 
 			// Call the base class implementation
 			base.TargetPositioningChanged();
