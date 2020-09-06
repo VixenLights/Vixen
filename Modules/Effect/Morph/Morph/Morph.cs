@@ -1182,7 +1182,7 @@ namespace VixenModules.Effect.Morph
 					// Calculate the time each polygon has to perform the wipe
 					// Subtracting off all the staggers
 					time = TimeSpan.TotalMilliseconds -
-					       TimeSpan.TotalMilliseconds * (_wipePolygonRenderData[polygonIndex].Stagger / 100.0) * polygonIndex;
+					       TimeSpan.TotalMilliseconds * (_wipePolygonRenderData[polygonIndex].Stagger / 100.0) * RepeatCount;
 				}
 
 				// Need the head to travel past the end of the polygon/line for the length of the head

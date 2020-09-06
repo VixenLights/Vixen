@@ -2553,7 +2553,8 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// Create a new line
 			Line line = new Line();
 			LineModels.Add(line);
-			Lines.Add(new LineViewModel(line, ShowLabels));
+			LineViewModel lineViewModel = new LineViewModel(line, ShowLabels);
+			Lines.Add(lineViewModel);
 
 			// Initialize the line to be on the left of the display element extending the length of the display element
 			PolygonPoint pt1 = new PolygonPoint();
@@ -2589,9 +2590,14 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				SelectPolygonSnapshot(SelectedSnapshot);
 			}
 
-			// Deselect all shapes and remove the resize adorner
-			DeselectAllShapes();
+			// Remove the resize adorner
 			RaiseRemoveResizeAdorner();
+
+			// Select the new line
+			SelectLine(lineViewModel, true);
+
+			// Display the resize adorner
+			RaiseDisplayResizeAdorner();
 
 			// Refresh the toolbar buttons
 			RefreshToolbarConvertCommands();
