@@ -69,10 +69,12 @@
 				</Grid.ColumnDefinitions>
 			
 			<Viewbox Stretch="Uniform" x:Name="viewBox" Grid.Column="0">
-					<views:PolygonCanvas  x:Name="canvas" 
-				 MouseEnter="Canvas_MouseEnter"
-			 Height="{Binding Path=CanvasHeight}" 
-				Width="{Binding Path=CanvasWidth}">
+				<views:PolygonCanvas  x:Name="canvas" 
+				 Height="{Binding Path=CanvasHeight}" 
+				 Width="{Binding Path=CanvasWidth}"
+				 views:SizeObserver.Observe="True"
+				 views:SizeObserver.ObservedWidth="{Binding CanvasActualWidth, Mode=OneWayToSource}"
+				 views:SizeObserver.ObservedHeight="{Binding CanvasActualHeight, Mode=OneWayToSource}">
 
 						<Canvas.Background>
 							<SolidColorBrush Color="#444444" Opacity="1"/>
@@ -485,8 +487,17 @@
 				<TextBox Margin="10,0,0,0" Text="{Binding SelectedShape.Label, UpdateSourceTrigger=PropertyChanged, FallbackValue=Select Shape}" Background="White"></TextBox>
 
 				<DataGrid Name="pointDataGrid" AutoGenerateColumns="False" DataContext="Binding Path=SelectedPoints" Margin="10,0,0,0" 
-				          RowHeaderWidth="0" DockPanel.Dock="Right" Grid.Column="1" IsReadOnly="{Binding Data.SelectedPointsReadOnly, Source={StaticResource proxy}}">
-					
+				          RowHeaderWidth="0" DockPanel.Dock="Right" Grid.Column="1" 
+				          IsReadOnly="{Binding Data.SelectedPointsReadOnly, Source={StaticResource proxy}}">
+					<i:Interaction.Triggers>
+						<i:EventTrigger EventName="CurrentCellChanged">
+							<i:InvokeCommandAction Command="{Binding Data.CurrentCellChangedCommand, Source={StaticResource proxy}}"/>
+						</i:EventTrigger>
+						<i:EventTrigger EventName="CellEditEnding">
+							<i:InvokeCommandAction Command="{Binding Data.CellEditEndingCommand, Source={StaticResource proxy}}"/>
+						</i:EventTrigger>
+					</i:Interaction.Triggers>
+
 					<DataGrid.Columns>
 					<DataGridTextColumn Header="#" Width="*" IsReadOnly="True">
 						<DataGridTextColumn.Binding>

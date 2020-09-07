@@ -66,7 +66,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 
 			// Create the collection of selected points
 			SelectedPoints = new ObservableCollection<PolygonPointViewModel>();
-
+			
 			// Create the commands
 			CopyCommand = new Command(Copy, IsShapeSelected);
 			PasteCommand = new Command(Paste, CanExecutePaste);
@@ -94,11 +94,13 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			CanvasMouseMoveCommand = new Command<MouseEventArgs>(CanvasMouseMove);
 			CanvasMouseLeftButtonDownCommand = new Command<MouseEventArgs>(CanvasMouseLeftButtonDown);
 			CanvasMouseLeftButtonUpCommand = new Command<MouseEventArgs>(CanvasMouseLeftButtonUp);
+			CellEditEndingCommand = new Command(CellEditEnding);
+			CurrentCellChangedCommand = new Command(CurrentCellChanged);
 
 			// Ellipse points are not editable by default
 			SelectedPointsReadOnly = true;
 		}
-		
+
 		#endregion
 
 		#region Private Constants
@@ -623,9 +625,53 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		}
 
 		/// <summary>
-		/// TimeBarWidth property data.
+		/// TimeBarActualWidth property data.
 		/// </summary>
 		public static readonly PropertyData TimeBarActualWidthProperty = RegisterProperty(nameof(TimeBarActualWidth), typeof(double));
+
+		/// <summary>
+		/// Width of the canvas.
+		/// </summary>
+		public double CanvasActualWidth
+		{
+			get { return GetValue<double>(CanvasActualWidthProperty); }
+			set
+			{
+				SetValue(CanvasActualWidthProperty, value);
+
+				// Give the grid validation rule the canvas width
+				XValidationRule.Width = (int)value;
+
+				ActualWidth = (int)value;
+			}
+		}
+
+		/// <summary>
+		/// CanvasActualWidth property data.
+		/// </summary>
+		public static readonly PropertyData CanvasActualWidthProperty = RegisterProperty(nameof(CanvasActualWidth), typeof(double));
+
+		/// <summary>
+		/// Height of the canvas.
+		/// </summary>
+		public double CanvasActualHeight
+		{
+			get { return GetValue<double>(CanvasActualHeightProperty); }
+			set
+			{
+				SetValue(CanvasActualHeightProperty, value);
+
+					// Give the grid validation rule the canvas height
+				YValidationRule.Height = (int)value;
+
+				ActualHeight = (int)value;
+			}
+		}
+
+		/// <summary>
+		/// CanvasActualHeight property data.
+		/// </summary>
+		public static readonly PropertyData CanvasActualHeightProperty = RegisterProperty(nameof(CanvasActualHeight), typeof(double));
 
 		/// <summary>
 		/// Gets or sets whether the polygon/line labels should be shown.
@@ -801,7 +847,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				YValidationRule.Height = (int)value;
 			}
 		}
-						
+		
 		/// <summary>
 		/// Gets or sets the model polygons.
 		/// </summary>
@@ -1045,6 +1091,16 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// </summary>
 		public ICommand CanvasMouseLeftButtonUpCommand { get; private set; }
 
+		/// <summary>
+		/// DataGrid command when the current cell changes.
+		/// </summary>
+		public ICommand CurrentCellChangedCommand { get; private set; }
+
+		/// <summary>
+		/// DataGrid command when a cell is ending edit.
+		/// </summary>
+		public ICommand CellEditEndingCommand { get; private set; }
+
 		#endregion
 
 		#region Public Mouse Over Methods
@@ -1169,6 +1225,45 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		#endregion
 
 		#region Public Methods
+
+		/// <summary>
+		/// Ensures the specified point is on the editor canvas.
+		/// </summary>
+		/// <param name="position">Position of point</param>
+		/// <returns>Limited point</returns>
+		public Point LimitPointToCanvas(Point position)
+		{
+			// If the X coordinate is off the canvas to the right then...
+			if (position.X > ActualWidth - 1)
+			{
+				// Reset the X coordinate to the edge of the canvas
+				position.X = ActualWidth - 1;
+			}
+
+			// If the X coordinate is off the canvas to the left then...
+			if (position.X < 0)
+			{
+				// Reset the X coordinate to the edge of the canvas
+				position.X = 0;
+			}
+
+			// If the Y coordinate is off the canvas then...
+			if (position.Y > ActualHeight - 1)
+			{
+				// Reest the Y coordinate to the edge of the canvas
+				position.Y = ActualHeight - 1;
+			}
+
+			// If the Y coordinates is off the canvas then...	
+			if (position.Y < 0)
+			{
+				// Reest the Y coordinate to the edge of the canvas
+				position.Y = 0;
+			}
+
+			// Return the limited point
+			return position;
+		}
 
 		/// <summary>
 		/// Selects the specified polygon snapshot.
@@ -1598,6 +1693,11 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		#region Private Properties
 
 		/// <summary>
+		/// Flag that indicates a change was made in the point grid.
+		/// </summary>
+		private bool GridEditMade { get; set; }
+
+		/// <summary>
 		/// Polygon that is in the process of getting created.
 		/// </summary>
 		private PolygonViewModel NewPolygon { get; set; }
@@ -1610,7 +1710,39 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		#endregion
 
 		#region Private Methods
-		
+
+		/// <summary>
+		/// Event handler for when the current cell in the point grid has changed.
+		/// </summary>
+		private void CurrentCellChanged()
+		{
+			// If an edit was made in the point grid then...
+			if (GridEditMade)
+			{
+				// If there are more than one selected point then...
+				if (SelectedPoints.Count > 1)
+				{
+					// Remove the resize adorner
+					RaiseRemoveResizeAdorner(false);
+
+					// Display the resize adorner
+					RaiseDisplayResizeAdornerForSelectedPoints();
+				}
+			}
+
+			// Clear the grid edit flag
+			GridEditMade = false;
+		}
+
+		/// <summary>
+		/// Event handler for when an edit is made in the point grid
+		/// </summary>
+		private void CellEditEnding()
+		{
+			// Remember that an edit was made
+			GridEditMade = true;
+		}
+
 		/// <summary>
 		/// Refreshes toolbar commands impacted by the selected shape.
 		/// </summary>
@@ -1838,7 +1970,8 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			Point clickPosition = args.GetPosition(Canvas);
 
 			// The mouse commands are being called when the mouse is not over the canvas
-			if (clickPosition.X < ActualWidth)
+			// If a move point or lasso operation in progress we still need to handle the event/command
+			if (clickPosition.X < ActualWidth || MovingPoint || LassoingPoints)
 			{
 				// Release the mouse
 				Canvas.ReleaseMouseCapture();
@@ -2135,44 +2268,6 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// Break down the tuples into the shapes and the times
 			shapes = sortedShapes.Select(tuple => tuple.Item1).ToList();
 			times = sortedShapes.Select(tuple => tuple.Item2).ToList();
-		}
-		/// <summary>
-		/// Ensures the specified point is on the editor canvas.
-		/// </summary>
-		/// <param name="position">Position of point</param>
-		/// <returns>Limited point</returns>
-		private Point LimitPointToCanvas(Point position)
-		{
-			// If the X coordinate is off the canvas to the right then...
-			if (position.X > ActualWidth - 1)
-			{
-				// Reset the X coordinate to the edge of the canvas
-				position.X = ActualWidth - 1;
-			}
-
-			// If the X coordinate is off the canvas to the left then...
-			if (position.X < 0)
-			{
-				// Reset the X coordinate to the edge of the canvas
-				position.X = 0;
-			}
-
-			// If the Y coordinate is off the canvas then...
-			if (position.Y > ActualHeight - 1)
-			{
-				// Reest the Y coordinate to the edge of the canvas
-				position.Y = ActualHeight - 1;
-			}
-
-			// If the Y coordinates is off the canvas then...	
-			if (position.Y < 0)
-			{
-				// Reest the Y coordinate to the edge of the canvas
-				position.Y = 0;
-			}
-
-			// Return the limited point
-			return position;
 		}
 
 		/// <summary>
@@ -2561,8 +2656,8 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			PolygonPoint pt2 = new PolygonPoint();
 			line.Points.Add(pt1);
 			line.Points.Add(pt2);
-			Lines[0].StartPoint = new PolygonPointViewModel(pt1, null);
-			Lines[0].EndPoint = new PolygonPointViewModel(pt2, null);
+			Lines[0].StartPoint = new PolygonPointViewModel(pt1, lineViewModel);
+			Lines[0].EndPoint = new PolygonPointViewModel(pt2, lineViewModel);
 			Lines[0].StartPoint.X = ActualWidth / 2.0;
 			Lines[0].StartPoint.Y = ActualHeight * 0.2 - 1;
 			Lines[0].EndPoint.X = ActualWidth / 2.0;
@@ -3565,18 +3660,6 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			SelectedPoints.Clear();
 		}
 
-		/// <summary>
-		/// Gives the view model the bounds of the editor.
-		/// </summary>
-		/// <param name="actualWidth">Width of editor</param>
-		/// <param name="actualHeight">Height of editor</param>
-		public void UpdateEditorSize(double actualWidth, double actualHeight)
-		{
-			// Store off the dimensions of the editor
-			ActualWidth = actualWidth;
-			ActualHeight = actualHeight;			
-		}
-				
 		/// <summary>
 		/// Selects a polygon, line, ellipse or point based on the click position.
 		/// </summary>

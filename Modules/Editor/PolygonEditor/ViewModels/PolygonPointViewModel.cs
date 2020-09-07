@@ -1,4 +1,5 @@
-﻿using Catel.Data;
+﻿using System;
+using Catel.Data;
 using Catel.MVVM;
 using System.Windows;
 using System.Windows.Media;
@@ -16,7 +17,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Constructor
 		/// </summary>		
-		public PolygonPointViewModel(PolygonPoint point, PolygonViewModel parent)
+		public PolygonPointViewModel(PolygonPoint point, ShapeViewModel parent)
 		{
 			// Store off the model
 			PolygonPoint = point;
@@ -30,9 +31,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		}
 
 		#endregion
-		
+
 		#region Model Property
-		
+
 		/// <summary>
 		/// Gets or sets the PolygonPoint value.
 		/// </summary>
@@ -62,8 +63,11 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			set 
 			{ 
 				SetValue(XProperty, value);
+
+				// If the point has a parent and change events are not being suppressed then...
 				if (Parent != null && !SuppressChangeEvents)
 				{
+					// Notify the parent that a point changed
 					Parent.NotifyPointCollectionChanged();
 				}				
 			}
@@ -84,8 +88,11 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			set 
 			{ 
 				SetValue(YProperty, value);
+
+				// If the point has a parent and change events are not being suppressed then...
 				if (Parent != null && !SuppressChangeEvents)
 				{
+					// Notify the parent that a point changed
 					Parent.NotifyPointCollectionChanged();
 				}				
 			}
@@ -126,12 +133,8 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				// If the point is selected then...
 				if (Selected)
 				{
-					// If the point is not part of the start side of polygon then...
-					if (Color != Colors.Green)
-					{
-						// Change the point's color to the selection color
-						Color = Colors.HotPink;
-					}
+					// Change the point's color to the selection color
+					Color = Colors.HotPink;
 				}
 				// Otherwise
 				else
@@ -173,7 +176,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Gets or sets the parent view model.
 		/// </summary>
-		public PolygonViewModel Parent { get; set; }
+		public ShapeViewModel Parent { get; set; }
 
 		/// <summary>
 		/// .Net Point representation of the vertex.

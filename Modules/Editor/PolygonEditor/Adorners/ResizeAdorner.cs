@@ -158,7 +158,6 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 			_dragStart = pos;
 		}
 
-
 		private void HandleCenterDrag(object sender, DragDeltaEventArgs e)
 		{
 			FrameworkElement el = AdornedElement as FrameworkElement;
@@ -174,12 +173,44 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 				MoveTransformItems(transform);
 			}
 		}
-	
+
+		/// <summary>
+		/// Returns the height of the bounds while
+		/// guarding against scaling with a zero denominator.
+		/// </summary>
+		/// <returns>Y-Axis scale factor denominator</returns>
+		private double GetYScaleDenominator()
+		{
+			double yDenominator = Bounds.Height;
+			if (yDenominator == 0.0)
+			{
+				yDenominator = 1.0;
+			}
+
+			return yDenominator;
+		}
+
+		/// <summary>
+		/// Returns the width of the bounds while
+		/// guarding against scaling with a zero denominator.
+		/// </summary>
+		/// <returns>x-Axis scale factor denominator</returns>
+		private double GetXScaleDenominator()
+		{
+			double xDenominator = Bounds.Width;
+			if (xDenominator == 0.0)
+			{
+				xDenominator = 1.0;
+			}
+
+			return xDenominator;
+		}
+
 		// Handler for resizing from the bottom-right.
 		private void HandleBottomRight(object sender, DragDeltaEventArgs args)
 		{
-			var scaleY = args.VerticalChange / Bounds.Height;
-			var scaleX = args.HorizontalChange / Bounds.Width;
+			var scaleY = args.VerticalChange / GetYScaleDenominator();
+			var scaleX = args.HorizontalChange / GetXScaleDenominator(); 
 
 			scaleY += 1;
 			scaleX += 1;
@@ -201,8 +232,8 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 		// Handler for resizing from the top-right.
 		private void HandleTopRight(object sender, DragDeltaEventArgs args)
 		{
-			var scaleY = -args.VerticalChange / Bounds.Height;
-			var scaleX = args.HorizontalChange / Bounds.Width;
+			var scaleY = -args.VerticalChange / GetYScaleDenominator();
+			var scaleX = args.HorizontalChange / GetXScaleDenominator();
 
 			scaleY += 1;
 			scaleX += 1;
@@ -223,8 +254,8 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 		// Handler for resizing from the top-left.
 		private void HandleTopLeft(object sender, DragDeltaEventArgs args)
 		{
-			var scaleY = -args.VerticalChange / Bounds.Height;
-			var scaleX = -args.HorizontalChange / Bounds.Width;
+			var scaleY = -args.VerticalChange / GetYScaleDenominator();
+			var scaleX = -args.HorizontalChange / GetXScaleDenominator();
 
 			scaleY += 1;
 			scaleX += 1;
@@ -246,8 +277,8 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 		// Handler for resizing from the bottom-left.
 		private void HandleBottomLeft(object sender, DragDeltaEventArgs args)
 		{
-			var scaleY = args.VerticalChange / Bounds.Height;
-			var scaleX = -args.HorizontalChange / Bounds.Width;
+			var scaleY = args.VerticalChange / GetYScaleDenominator();
+			var scaleX = -args.HorizontalChange / GetXScaleDenominator();
 
 			scaleY += 1;
 			scaleX += 1;
@@ -268,11 +299,9 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 
 		private void HandleMiddleLeft(object sender, DragDeltaEventArgs args)
 		{
-			var scaleX = -args.HorizontalChange / Bounds.Width;
+			var scaleX = -args.HorizontalChange / GetXScaleDenominator();
 			scaleX += 1;
 
-			Rect boundsCopy;
-		
 			var centerPoint = new Point(Bounds.Right, (Bounds.Bottom - Bounds.Top) / 2);
 			ScaleTransform t = new ScaleTransform(scaleX, 1, centerPoint.X, centerPoint.Y);
 			
@@ -285,7 +314,7 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 
 		private void HandleMiddleBottom(object sender, DragDeltaEventArgs args)
 		{
-			var scaleY = args.VerticalChange / Bounds.Height;
+			double scaleY = args.VerticalChange / GetYScaleDenominator();
 
 			scaleY += 1;
 
@@ -301,7 +330,7 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 
 		private void HandleMiddleRight(object sender, DragDeltaEventArgs args)
 		{
-			var scaleX = args.HorizontalChange / Bounds.Width;
+			var scaleX = args.HorizontalChange / GetXScaleDenominator();
 
 			scaleX += 1;
 
@@ -319,7 +348,7 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 		{
 			bool scaled = false;
 
-			double scaleY = -args.VerticalChange / Bounds.Height;
+			double scaleY = -args.VerticalChange / GetYScaleDenominator();
 			scaleY += 1;
 						
 			do

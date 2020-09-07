@@ -27,7 +27,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			foreach (PolygonPoint pt in Line.Points)
 			{
 				// Add a view model point for each model point
-				PointCollection.Add(new PolygonPointViewModel(pt, null));
+				PointCollection.Add(new PolygonPointViewModel(pt, this));
 			}
 
 			// If the line has at least one point then...
@@ -121,7 +121,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			Line.Points.Add(modelPoint);
 
 			// Create the new view model point
-			PolygonPointViewModel viewModelPoint = new PolygonPointViewModel(modelPoint, null);
+			PolygonPointViewModel viewModelPoint = new PolygonPointViewModel(modelPoint, this);
 
 			// Initialize the position of the point
 			viewModelPoint.X = position.X;

@@ -867,25 +867,64 @@ namespace VixenModules.Effect.Morph
 				IMorphPolygon morphPolygon = new MorphPolygon();
 				MorphPolygons.Add(morphPolygon);
 
-				morphPolygon.Polygon = new Polygon();
+				// Check to see if we are dealing with a really skinny display element in
+				// which case a line is going to be more appropriate
+				if (BufferWi == 1 || BufferHt == 1)
+				{
+					// Determine which way to orient the line
+					if (BufferWi > BufferHt)
+					{
+						// Create the line along the x-axis
+						Line line = new Line();
+						morphPolygon.Line = line;
+						PolygonPoint pt1 = new PolygonPoint();
+						pt1.X = 0;
+						pt1.Y = 0;
+						line.Points.Add(pt1);
 
-				PolygonPoint ptTopLeft = new PolygonPoint();
-				ptTopLeft.X = 0;
-				ptTopLeft.Y = 0;
-				PolygonPoint ptTopRight = new PolygonPoint();
-				ptTopRight.X = BufferWi - 1;
-				ptTopRight.Y = 0;
-				PolygonPoint ptBottomRight = new PolygonPoint();
-				ptBottomRight.X = BufferWi - 1;
-				ptBottomRight.Y = BufferHt - 1;
-				PolygonPoint ptBottomLeft = new PolygonPoint();
-				ptBottomLeft.X = 0;
-				ptBottomLeft.Y = BufferHt - 1;
+						PolygonPoint pt2 = new PolygonPoint();
+						pt2.X = BufferWi - 1;
+						pt2.Y = 0;
+						line.Points.Add(pt2);
+					}
+					else
+					{
+						// Create the line along the Y-axis
+						Line line = new Line();
+						PolygonPoint pt1 = new PolygonPoint();
+						pt1.X = 0;
+						pt1.Y = 0;
+						line.Points.Add(pt1);
 
-				morphPolygon.Polygon.Points.Add(ptTopLeft);
-				morphPolygon.Polygon.Points.Add(ptTopRight);
-				morphPolygon.Polygon.Points.Add(ptBottomRight);
-				morphPolygon.Polygon.Points.Add(ptBottomLeft);
+						PolygonPoint pt2 = new PolygonPoint();
+						pt2.X = 0;
+						pt2.Y = BufferHt - 1;
+						line.Points.Add(pt2);
+					}
+				}
+				else
+				{
+					// Otherwise create a polygon to fill the display element
+					morphPolygon.Polygon = new Polygon();
+
+					PolygonPoint ptTopLeft = new PolygonPoint();
+					ptTopLeft.X = 0;
+					ptTopLeft.Y = 0;
+					PolygonPoint ptTopRight = new PolygonPoint();
+					ptTopRight.X = BufferWi - 1;
+					ptTopRight.Y = 0;
+					PolygonPoint ptBottomRight = new PolygonPoint();
+					ptBottomRight.X = BufferWi - 1;
+					ptBottomRight.Y = BufferHt - 1;
+					PolygonPoint ptBottomLeft = new PolygonPoint();
+					ptBottomLeft.X = 0;
+					ptBottomLeft.Y = BufferHt - 1;
+
+					morphPolygon.Polygon.Points.Add(ptTopLeft);
+					morphPolygon.Polygon.Points.Add(ptTopRight);
+					morphPolygon.Polygon.Points.Add(ptBottomRight);
+					morphPolygon.Polygon.Points.Add(ptBottomLeft);
+				}
 			}
 
 			// Save off the display element width and height
@@ -1044,10 +1083,26 @@ namespace VixenModules.Effect.Morph
 				// Loop over the morph polygons
 				foreach (IMorphPolygon morphPolygon in MorphPolygons)
 				{
+					double widthDenominator = previousBufferWidth - 1.0;
+				
+					// Make sure we don't attempt to scale with a zero denominator
+					if (widthDenominator == 0.0)
+					{
+						widthDenominator = 1.0;
+					}
+
+					double heightDenominator = previousBufferHeight - 1.0;
+
+					// Make sure we don't attempt to scale with a zero denominator
+					if (heightDenominator == 0.0)
+					{
+						heightDenominator = 1.0;
+					}
+
 					// Scale the shapes associated with the morph polygon
 					morphPolygon.Scale(
-						(BufferWi - 1.0) / (previousBufferWidth - 1.0),
-						(BufferHt - 1.0) / (previousBufferHeight - 1.0),
+						(BufferWi - 1.0) / widthDenominator,
+						(BufferHt - 1.0) / heightDenominator,
 						BufferWi,
 						BufferHt);
 				}

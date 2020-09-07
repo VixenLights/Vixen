@@ -177,19 +177,6 @@ namespace VixenModules.Editor.PolygonEditor.Views
         
         #endregion
 
-        #region Private XAML Canvas Events
-
-        /// <summary>
-        /// Gives the view model the size of the canvas for limiting move, rotate and resize operations.
-        /// </summary>        
-        private void Canvas_MouseEnter(object sender, MouseEventArgs e)
-        {
-            // Give the editor view model the boundaries of the canvas
-            VM.UpdateEditorSize(canvas.ActualWidth, canvas.ActualHeight);            
-        }
-
-        #endregion
-
         #region Private Methods
 
         /// <summary>
@@ -245,10 +232,10 @@ namespace VixenModules.Editor.PolygonEditor.Views
             if (_rubberbandAdorner != null)
             {
                 // Set the current mouse position as the end of the rubber band area
-                _rubberbandAdorner.EndPoint = mousePosition;
+                _rubberbandAdorner.EndPoint = VM.LimitPointToCanvas(mousePosition);
             }
         }
-
+        
         /// <summary>
         /// Redraws the resize adorner.
         /// </summary>

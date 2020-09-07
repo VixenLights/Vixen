@@ -68,9 +68,30 @@ namespace VixenModules.Editor.PolygonEditor.Views
 				double factor = Math.Min(wfactor, hfactor);
 
 				// Determine the X and Y scale factors
-				double xScaleFactor = (_polygonContainer.Width * factor - 1.0) / (_polygonContainer.Width - 1.0);
-				double yScaleFactor = (_polygonContainer.Height * factor - 1.0) / (_polygonContainer.Height - 1.0);
+				double xScaleFactor = 1.0; 
 
+				// Need to guard against dividing by zero when working with 1 pixel width
+				if ((_polygonContainer.Width - 1.0) == 0.0)
+				{
+					xScaleFactor = 1.0;
+				}
+				else
+				{
+					xScaleFactor = (_polygonContainer.Width * factor - 1.0) / (_polygonContainer.Width - 1.0);
+				}
+
+				double yScaleFactor = 1.0;
+
+				// Need to guard against dividing by zero when working with 1 pixel height
+				if ((_polygonContainer.Height - 1.0) == 0.0)
+				{
+					yScaleFactor = (_polygonContainer.Height * factor - 1.0); 
+				}
+				else
+				{
+					yScaleFactor = (_polygonContainer.Height * factor - 1.0) / (_polygonContainer.Height - 1.0);
+				}
+				
 				// Give the view model the drawing canvas width and height
 				vm.CanvasWidth = (int)Math.Round(_polygonContainer.Width * factor, MidpointRounding.AwayFromZero);
 				vm.CanvasHeight = (int) Math.Round(_polygonContainer.Height * factor, MidpointRounding.AwayFromZero);
@@ -122,6 +143,14 @@ namespace VixenModules.Editor.PolygonEditor.Views
 
 				// Set the height of the window
 				Height = vm.CanvasHeight + timeBarHeight;
+
+				// If the calculated height is less than the minimum then...
+				const double MinimumHeightPercentage = 0.25;
+				if (Height < MinimumHeightPercentage * SystemParameters.PrimaryScreenHeight)
+				{
+					// Set the height to the minimum
+					Height = MinimumHeightPercentage * SystemParameters.PrimaryScreenHeight;
+				}
 
 				// Give the view model the width of the window
 				vm.WindowWidth = (int)this.Width;				
