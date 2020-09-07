@@ -1693,6 +1693,13 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		#region Private Properties
 
 		/// <summary>
+		/// Once a WPF radio button in a radio button group is set a radio button in that
+		/// group has to be set.  Since ShowLabels is a group of one we need extra logic to
+		/// maintain the desired state.
+		/// </summary>
+		private bool PreviousShowLabels { get; set; }
+
+		/// <summary>
 		/// Flag that indicates a change was made in the point grid.
 		/// </summary>
 		private bool GridEditMade { get; set; }
@@ -2507,6 +2514,13 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// </summary>
 		private void ToggleLabels()
 		{
+			// If the ShowLabels was previously true then...
+			if (ShowLabels && PreviousShowLabels)
+			{
+				// Turn off the labels
+				ShowLabels = false;
+			}
+
 			// Loop over all the polygons
 			foreach (PolygonViewModel polygon in Polygons)
 			{
@@ -2527,6 +2541,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				// Toggle the visibility of the labels
 				ellipse.LabelVisible = ShowLabels;
 			}
+
+			// Save off the current state of the labels
+			PreviousShowLabels = ShowLabels;
 		}
 
 		/// <summary>
