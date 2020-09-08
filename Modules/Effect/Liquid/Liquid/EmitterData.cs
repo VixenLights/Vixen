@@ -83,6 +83,9 @@ namespace Liquid
 
 			OnTime = 2000;  // Milliseconds
 			OffTime = 2000; // Milliseconds	
+
+			// Default the brightness to 100%
+			Brightness = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 		}
 
 		#endregion
@@ -121,6 +124,7 @@ namespace Liquid
 				MarkCollectionId = MarkCollectionId,
 				OnTime = OnTime,
 				OffTime = OffTime,
+				Brightness = new Curve(Brightness),
 			};
 
 			return result;
@@ -210,6 +214,9 @@ namespace Liquid
 		
 		[DataMember]
 		public int OffTime { get; set; }
+
+		[DataMember]
+		public Curve Brightness { get; set; }
 
 		#endregion
 	}

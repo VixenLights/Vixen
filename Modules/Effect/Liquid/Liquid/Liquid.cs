@@ -1795,6 +1795,7 @@ namespace VixenModules.Effect.Liquid
 				serializedEmitter.MarkCollectionId = emitter.MarkCollectionId;										
 				serializedEmitter.OnTime = emitter.OnTime;
 				serializedEmitter.OffTime = emitter.OffTime;
+				serializedEmitter.Brightness = new Curve(emitter.Brightness);
 				
 				// Add the serialized emitter to the collection
 				_data.EmitterData.Add(serializedEmitter);
@@ -1843,6 +1844,13 @@ namespace VixenModules.Effect.Liquid
 				emitterModel.MarkCollectionId = emitter.MarkCollectionId;
 				emitterModel.OnTime = emitter.OnTime;
 				emitterModel.OffTime = emitter.OffTime;
+				
+				// The Brightness property was omitted from the serialization in the initial release of this effect
+				// so we need to check for null to support existing sequences
+				if (emitter.Brightness != null)
+				{
+					emitterModel.Brightness = new Curve(emitter.Brightness);
+				}
 				emitterModel.MarkNameCollection = _markCollectionNames;
 				emitterModel.MarkCollections = MarkCollections;
 				emitterModel.InitAllAttributes();

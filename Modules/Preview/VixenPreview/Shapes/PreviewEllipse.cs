@@ -385,5 +385,21 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_bottomRight.Y = p2Start.Y;
 			Resize(aspect);
 		}
+
+		/// <inheritdoc />
+		public override object Clone()
+		{
+			var newEllipse = (PreviewEllipse) MemberwiseClone();
+			newEllipse._topLeft = _topLeft.Copy();
+			newEllipse._bottomRight = _bottomRight.Copy();
+
+			newEllipse.Pixels = new List<PreviewPixel>();
+			foreach (var previewPixel in Pixels)
+			{
+				newEllipse.Pixels.Add(previewPixel.Clone());
+			}
+			
+			return newEllipse;
+		}
 	}
 }

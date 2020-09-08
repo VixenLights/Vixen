@@ -92,6 +92,22 @@ namespace VixenModules.Effect.Shockwave
 				OnPropertyChanged();
 			}
 		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"ScaledRadius")]
+		[ProviderDescription(@"ScaledRadius")]
+		[PropertyOrder(6)]
+		public bool ScaledRadius
+		{
+			get { return _data.ScaledRadius; }
+			set
+			{
+				_data.ScaledRadius = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
 		
 		[Value]
 		[ProviderCategory(@"Config", 1)]
@@ -234,7 +250,7 @@ namespace VixenModules.Effect.Shockwave
 			}
 
 			Point centerPoint = new Point((int)posX, (int)posY);
-			double centerRadius = CalculateRadius(effectPositionAdjust);
+			double centerRadius = CalculateRadius(effectPositionAdjust, ScaledRadius?Math.Max(BufferHt, BufferWi):750);
 			double halfWidth = CalculateWidth(effectPositionAdjust) / 2.0;
 			var radius1 = Math.Max(0.0, centerRadius - halfWidth);
 			var radius2 = centerRadius + halfWidth;
@@ -287,7 +303,7 @@ namespace VixenModules.Effect.Shockwave
 				frameBuffer.CurrentFrame = effectFrame;
 				double effectPositionAdjust = CalculateAcceleration(intervalPos, CalculateAcceleration(intervalPosFactor))*100.0;
 				Color c = Color.GetColorAt(intervalPos);
-				double centerRadius = CalculateRadius(effectPositionAdjust);
+				double centerRadius = CalculateRadius(effectPositionAdjust, ScaledRadius?Math.Max(BufferHt, BufferWi):750);
 				double halfWidth = CalculateWidth(effectPositionAdjust) / 2.0;
 
 				var radius1 = Math.Max(0.0, centerRadius - halfWidth);
@@ -354,9 +370,9 @@ namespace VixenModules.Effect.Shockwave
 			return ScaleCurveToValue(AccelerationCurve.GetValue(intervalPos), 10, -10);
 		}
 
-		private double CalculateRadius(double intervalPos)
+		private double CalculateRadius(double intervalPos, int scale)
 		{
-			return ScaleCurveToValue(RadiusCurve.GetValue(intervalPos), 750, 0);
+			return ScaleCurveToValue(RadiusCurve.GetValue(intervalPos), scale, 0);
 		}
 
 		private double DistanceFromCenter(Point center, Point point)

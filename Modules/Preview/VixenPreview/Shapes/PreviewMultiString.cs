@@ -449,12 +449,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             PreviewMultiString newMultiString = (PreviewMultiString)this.MemberwiseClone();
 
-            //foreach (PreviewPixel pixel in _pixels)
-            //{
-            //    newLine.AddPixel(pixel.X, pixel.Y);
-            //}
-            //Console.WriteLine("Clone");
-            return newMultiString;
+			foreach (PreviewPixel pixel in _pixels)
+			{
+				newMultiString.AddPixel(pixel.X, pixel.Y);
+			}
+
+			newMultiString._points = new List<PreviewPoint>();
+			foreach (var previewPoint in _points)
+			{
+				newMultiString._points.Add(previewPoint.Copy());
+			}
+
+			//Console.WriteLine("Clone");
+			return newMultiString;
         }
 
         public override void MoveTo(int x, int y)

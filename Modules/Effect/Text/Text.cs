@@ -741,11 +741,11 @@ namespace VixenModules.Effect.Text
 		{
 			var bufferHt = BufferHt;
 			var bufferWi = BufferWi;
+			_level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 			using (var bitmap = new Bitmap(bufferWi, bufferHt))
 			{
 				InitialRender(frame, bitmap, bufferHt, bufferWi);
 				if (_text.Count == 0 && !UseBaseColor) return;
-				_level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 				FastPixel.FastPixel fp = new FastPixel.FastPixel(bitmap);
 				fp.Lock();
 				// copy to frameBuffer

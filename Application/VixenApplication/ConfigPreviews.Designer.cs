@@ -39,6 +39,7 @@
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
+			this.buttonDuplicateSelected = new System.Windows.Forms.Button();
 			this.groupBoxSelectedController.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -53,9 +54,9 @@
 			this.groupBoxSelectedController.Controls.Add(this.textBoxName);
 			this.groupBoxSelectedController.Controls.Add(this.buttonConfigureController);
 			this.groupBoxSelectedController.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.groupBoxSelectedController.Location = new System.Drawing.Point(12, 275);
+			this.groupBoxSelectedController.Location = new System.Drawing.Point(14, 317);
 			this.groupBoxSelectedController.Name = "groupBoxSelectedController";
-			this.groupBoxSelectedController.Size = new System.Drawing.Size(390, 158);
+			this.groupBoxSelectedController.Size = new System.Drawing.Size(455, 182);
 			this.groupBoxSelectedController.TabIndex = 1;
 			this.groupBoxSelectedController.TabStop = false;
 			this.groupBoxSelectedController.Text = "Selected Preview";
@@ -66,9 +67,9 @@
 			this.label1.AutoSize = true;
 			this.label1.BackColor = System.Drawing.SystemColors.Control;
 			this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.label1.Location = new System.Drawing.Point(129, 66);
+			this.label1.Location = new System.Drawing.Point(150, 76);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(197, 13);
+			this.label1.Size = new System.Drawing.Size(221, 15);
 			this.label1.TabIndex = 33;
 			this.label1.Text = "Configure details specific to the preview.";
 			// 
@@ -80,9 +81,9 @@
 			this.buttonUpdate.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonUpdate.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.buttonUpdate.Location = new System.Drawing.Point(308, 21);
+			this.buttonUpdate.Location = new System.Drawing.Point(359, 24);
 			this.buttonUpdate.Name = "buttonUpdate";
-			this.buttonUpdate.Size = new System.Drawing.Size(73, 25);
+			this.buttonUpdate.Size = new System.Drawing.Size(85, 29);
 			this.buttonUpdate.TabIndex = 2;
 			this.buttonUpdate.Text = "Update";
 			this.buttonUpdate.UseVisualStyleBackColor = false;
@@ -95,9 +96,9 @@
 			this.label2.AutoSize = true;
 			this.label2.BackColor = System.Drawing.SystemColors.Control;
 			this.label2.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.label2.Location = new System.Drawing.Point(14, 27);
+			this.label2.Location = new System.Drawing.Point(16, 31);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(38, 13);
+			this.label2.Size = new System.Drawing.Size(42, 15);
 			this.label2.TabIndex = 26;
 			this.label2.Text = "Name:";
 			// 
@@ -106,9 +107,9 @@
 			this.textBoxName.BackColor = System.Drawing.SystemColors.Control;
 			this.textBoxName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBoxName.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.textBoxName.Location = new System.Drawing.Point(58, 24);
+			this.textBoxName.Location = new System.Drawing.Point(68, 28);
 			this.textBoxName.Name = "textBoxName";
-			this.textBoxName.Size = new System.Drawing.Size(136, 20);
+			this.textBoxName.Size = new System.Drawing.Size(158, 23);
 			this.textBoxName.TabIndex = 1;
 			// 
 			// buttonConfigureController
@@ -119,9 +120,9 @@
 			this.buttonConfigureController.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonConfigureController.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonConfigureController.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.buttonConfigureController.Location = new System.Drawing.Point(13, 60);
+			this.buttonConfigureController.Location = new System.Drawing.Point(15, 69);
 			this.buttonConfigureController.Name = "buttonConfigureController";
-			this.buttonConfigureController.Size = new System.Drawing.Size(110, 25);
+			this.buttonConfigureController.Size = new System.Drawing.Size(128, 29);
 			this.buttonConfigureController.TabIndex = 0;
 			this.buttonConfigureController.Text = "Configure Preview";
 			this.buttonConfigureController.UseVisualStyleBackColor = false;
@@ -148,10 +149,10 @@
             listViewGroup2});
 			this.listViewControllers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewControllers.HideSelection = false;
-			this.listViewControllers.Location = new System.Drawing.Point(12, 30);
+			this.listViewControllers.Location = new System.Drawing.Point(14, 35);
 			this.listViewControllers.Name = "listViewControllers";
 			this.listViewControllers.ShowGroups = false;
-			this.listViewControllers.Size = new System.Drawing.Size(391, 190);
+			this.listViewControllers.Size = new System.Drawing.Size(456, 219);
 			this.listViewControllers.TabIndex = 0;
 			this.listViewControllers.UseCompatibleStateImageBehavior = false;
 			this.listViewControllers.View = System.Windows.Forms.View.Details;
@@ -178,9 +179,9 @@
 			this.buttonOk.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonOk.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.buttonOk.Location = new System.Drawing.Point(216, 447);
+			this.buttonOk.Location = new System.Drawing.Point(252, 516);
 			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.Size = new System.Drawing.Size(90, 25);
+			this.buttonOk.Size = new System.Drawing.Size(105, 29);
 			this.buttonOk.TabIndex = 4;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = false;
@@ -196,9 +197,9 @@
 			this.buttonDeleteController.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonDeleteController.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonDeleteController.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.buttonDeleteController.Location = new System.Drawing.Point(237, 236);
+			this.buttonDeleteController.Location = new System.Drawing.Point(318, 272);
 			this.buttonDeleteController.Name = "buttonDeleteController";
-			this.buttonDeleteController.Size = new System.Drawing.Size(120, 25);
+			this.buttonDeleteController.Size = new System.Drawing.Size(140, 29);
 			this.buttonDeleteController.TabIndex = 3;
 			this.buttonDeleteController.Text = "Delete Selected";
 			this.buttonDeleteController.UseVisualStyleBackColor = false;
@@ -216,9 +217,9 @@
 			this.buttonAddController.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonAddController.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAddController.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.buttonAddController.Location = new System.Drawing.Point(62, 236);
+			this.buttonAddController.Location = new System.Drawing.Point(17, 272);
 			this.buttonAddController.Name = "buttonAddController";
-			this.buttonAddController.Size = new System.Drawing.Size(120, 25);
+			this.buttonAddController.Size = new System.Drawing.Size(140, 29);
 			this.buttonAddController.TabIndex = 2;
 			this.buttonAddController.Text = "Add New Preview";
 			this.buttonAddController.UseVisualStyleBackColor = false;
@@ -236,9 +237,9 @@
 			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonCancel.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.buttonCancel.Location = new System.Drawing.Point(312, 447);
+			this.buttonCancel.Location = new System.Drawing.Point(364, 516);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(90, 25);
+			this.buttonCancel.Size = new System.Drawing.Size(105, 29);
 			this.buttonCancel.TabIndex = 5;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = false;
@@ -249,9 +250,9 @@
 			// 
 			this.label3.AutoSize = true;
 			this.label3.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.label3.Location = new System.Drawing.Point(12, 12);
+			this.label3.Location = new System.Drawing.Point(14, 14);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(35, 13);
+			this.label3.Size = new System.Drawing.Size(39, 15);
 			this.label3.TabIndex = 6;
 			this.label3.Text = "Name";
 			// 
@@ -259,20 +260,39 @@
 			// 
 			this.label4.AutoSize = true;
 			this.label4.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.label4.Location = new System.Drawing.Point(197, 12);
+			this.label4.Location = new System.Drawing.Point(230, 14);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(31, 13);
+			this.label4.Size = new System.Drawing.Size(31, 15);
 			this.label4.TabIndex = 7;
 			this.label4.Text = "Type";
+			// 
+			// buttonDuplicateSelected
+			// 
+			this.buttonDuplicateSelected.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+			this.buttonDuplicateSelected.BackColor = System.Drawing.Color.Transparent;
+			this.buttonDuplicateSelected.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			this.buttonDuplicateSelected.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.buttonDuplicateSelected.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.buttonDuplicateSelected.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.buttonDuplicateSelected.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonDuplicateSelected.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.buttonDuplicateSelected.Location = new System.Drawing.Point(167, 272);
+			this.buttonDuplicateSelected.Name = "buttonDuplicateSelected";
+			this.buttonDuplicateSelected.Size = new System.Drawing.Size(140, 29);
+			this.buttonDuplicateSelected.TabIndex = 8;
+			this.buttonDuplicateSelected.Text = "Duplicate Selected";
+			this.buttonDuplicateSelected.UseVisualStyleBackColor = false;
+			this.buttonDuplicateSelected.Click += new System.EventHandler(this.buttonDuplicateSelected_Click);
 			// 
 			// ConfigPreviews
 			// 
 			this.AcceptButton = this.buttonOk;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Control;
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(413, 493);
+			this.ClientSize = new System.Drawing.Size(482, 569);
+			this.Controls.Add(this.buttonDuplicateSelected);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.groupBoxSelectedController);
@@ -284,9 +304,9 @@
 			this.DoubleBuffered = true;
 			this.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(429, 1982);
+			this.MaximumSize = new System.Drawing.Size(498, 2281);
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(429, 502);
+			this.MinimumSize = new System.Drawing.Size(498, 573);
 			this.Name = "ConfigPreviews";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Setup Previews";
@@ -316,5 +336,6 @@
 		private System.Windows.Forms.Button buttonCancel;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Button buttonDuplicateSelected;
 	}
 }

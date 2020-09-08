@@ -9,7 +9,7 @@ namespace VixenModules.Effect.Effect
 	/// for sharing mark collections with these objects.
 	/// </summary>
 	/// <typeparam name="T">Collection Item Type</typeparam>
-	public class ExpandoObjectObservableCollection<T> : NotifyPropertyObservableCollection<T>
+	public abstract class ExpandoObjectObservableCollection<T> : NotifyPropertyObservableCollection<T>
 		where T : IMarkCollectionExpandoObject
 	{
 		#region Constructor
