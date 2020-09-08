@@ -2656,7 +2656,7 @@ namespace VixenModules.Effect.Morph
 								maskFrameBuffer,
 								points,
 								morphPolygon.Ellipse.Angle,
-								morphPolygon.Ellipse,
+								ellipseMask,
 								true,
 								Color.Red); // Could pick any color here
 						}
