@@ -1,0 +1,91 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+	  <RootNamespace>VixenModules.Editor.PolygonEditor</RootNamespace>
+	  <TargetFramework>net48</TargetFramework>
+	  <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+	  <AssemblyTitle>PolygonEditor</AssemblyTitle>
+	  <Product>PolygonEditor</Product>
+	  <Copyright>Copyright ©  2020</Copyright>
+	  <UseWPF>true</UseWPF>
+	  <Platforms>x64;x86</Platforms>
+	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+		<OutputPath>..\..\..\Release64\Modules\Editor\</OutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+		<OutputPath>..\..\..\$(Configuration)\Modules\Editor\</OutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+		<OutputPath>..\..\..\Debug64\Modules\Editor\</OutputPath>
+		<DefineConstants>TRACE</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+		<OutputPath>..\..\..\$(Configuration)\Modules\Editor\</OutputPath>
+		<DefineConstants>TRACE</DefineConstants>
+	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="Behaviors\**" />
+	  <EmbeddedResource Remove="Behaviors\**" />
+	  <None Remove="Behaviors\**" />
+	  <Page Remove="Behaviors\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Remove="Converters\ColorToSolidColorBrushvalueConverter.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="Cursors\cursor_arrow_dragbox.cur" />
+	  <None Remove="Images\AddPoint.png" />
+	  <None Remove="Images\arrow_left.png" />
+	  <None Remove="Images\arrow_right.png" />
+	  <None Remove="Images\buttonDrawEllipse.png" />
+	  <None Remove="Images\buttonDrawLine.png" />
+	  <None Remove="Images\ConvertToEllipse.png" />
+	  <None Remove="Images\Label.png" />
+	  <None Remove="Images\LineToPolygon.png" />
+	  <None Remove="Images\PolygonToLine.png" />
+	  <None Remove="Images\ToggleStartPoint.png" />
+	  <None Remove="Images\ToggleStartSide.png" />
+	  <None Remove="PolygonToLine_Old.png" />
+	  <None Remove="ViewModels\PolygonEditorViewModel.cs_BeforeGettingRidOfTemporaryVariables" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="Catel.Core" Version="5.12.2">
+	    <ExcludeAssets>runtime</ExcludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="Catel.MVVM" Version="5.12.2">
+	    <ExcludeAssets>runtime</ExcludeAssets>
+	  </PackageReference>
+	</ItemGroup>
+  <ItemGroup>
+    <Resource Include="Cursors\cursor_arrow_dragbox.cur" />
+    <Resource Include="Images\AddPoint.png" />
+    <Resource Include="Images\arrow_left.png" />
+    <Resource Include="Images\arrow_right.png" />
+    <Resource Include="Images\buttonDrawEllipse.png" />
+    <Resource Include="Images\buttonDrawLine.png" />
+    <Resource Include="Images\buttonDrawPolygon.png" />
+    <Resource Include="Images\buttonSelect.png" />
+    <Resource Include="Images\copy.png" />
+    <Resource Include="Images\cut.png" />
+    <Resource Include="Images\delete_32.png" />
+    <Resource Include="Images\Label.png" />
+    <Resource Include="Images\LineToPolygon.png" />
+    <Resource Include="Images\paste.png" />
+    <Resource Include="Images\PolygonToLine.png" />
+    <Resource Include="Images\SnapToGrid.png" />
+    <Resource Include="Images\ToggleStartPoint.png" />
+    <Resource Include="Images\ToggleStartSide.png" />
+    <Resource Include="Images\ConvertToEllipse.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\WPFCommon\WPFCommon.csproj">
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\App\Polygon\Polygon.csproj">
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

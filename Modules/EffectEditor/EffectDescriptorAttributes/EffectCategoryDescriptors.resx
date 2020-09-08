@@ -156,6 +156,12 @@
   <data name="Movement" xml:space="preserve">
     <value>Movement</value>
   </data>
+  <data name="PatternConfiguration" xml:space="preserve">
+    <value>Pattern Configuration</value>
+  </data>
+  <data name="PolygonConfiguration" xml:space="preserve">
+    <value>Polygon Configuration</value>
+  </data>
   <data name="Pulse" xml:space="preserve">
     <value>Pulse</value>
   </data>
@@ -176,5 +182,8 @@
   </data>
   <data name="Type" xml:space="preserve">
     <value>Type</value>
+  </data>
+  <data name="WipeConfiguration" xml:space="preserve">
+    <value>Wipe Configuration</value>
   </data>
 </root>
