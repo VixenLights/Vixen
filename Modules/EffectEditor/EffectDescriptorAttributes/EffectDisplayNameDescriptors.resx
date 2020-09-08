@@ -1029,4 +1029,7 @@
   <data name="VFlakeCount" xml:space="preserve">
     <value>Vertical Flake Count</value>
   </data>
+  <data name="ScaledRadius" xml:space="preserve">
+    <value>Scaled Radius</value>
+  </data>
 </root>

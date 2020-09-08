@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using System.Windows;
 using System.Windows.Forms;
 
 namespace Vixen.Sys
@@ -13,12 +14,18 @@ namespace Vixen.Sys
 	{
 		// Could be a menu item, context menu item, toolstrip item.
 		private ToolStripItem _toolStripItem;
-		private Control _rootControl;
+		private readonly Control _rootControl;
 
 		public const char PathDelimiter = '\\';
 
+		private delegate void SafeCallDelegate<in T>(T cmd);
+
 		public AppCommand(Control rootControl)
 		{
+			if (MainWindow == null && rootControl != null)
+			{
+				MainWindow = rootControl;
+			}
 			// Default to a menu command.
 			Style = AppCommandStyle.Menu;
 			Visible = true;
@@ -30,52 +37,72 @@ namespace Vixen.Sys
 			}
 		}
 
+		internal static Control MainWindow { get; set; }
+
 		private void _AddToRoot(AppCommand appCommand)
 		{
-			if (_rootControl != null) {
-				switch (appCommand.Style) {
-					case AppCommandStyle.Context:
-						// Control, as-is
-						// Don't do anything.  Not going to create a context menu and parent it.
-						break;
-					case AppCommandStyle.Menu:
-						// MenuStrip child control
-						if (_rootControl is Form) {
-							MenuStrip menuStrip = (_rootControl as Form).MainMenuStrip;
-							if (menuStrip != null) {
-								menuStrip.Items.Add(appCommand.Item);
+			if (MainWindow.InvokeRequired)
+			{
+				var d = new SafeCallDelegate<AppCommand>(_AddToRoot);
+				MainWindow.Invoke(d, appCommand);
+			}
+			else
+			{
+				if (_rootControl != null) {
+					switch (appCommand.Style) {
+						case AppCommandStyle.Context:
+							// Control, as-is
+							// Don't do anything.  Not going to create a context menu and parent it.
+							break;
+						case AppCommandStyle.Menu:
+							// MenuStrip child control
+							if (_rootControl is Form) {
+								MenuStrip menuStrip = (_rootControl as Form).MainMenuStrip;
+								if (menuStrip != null) {
+									menuStrip.Items.Add(appCommand.Item);
+								}
 							}
-						}
-						else if (_rootControl is MenuStrip) {
-							(_rootControl as MenuStrip).Items.Add(appCommand.Item);
-						}
-						break;
+							else if (_rootControl is MenuStrip) {
+								(_rootControl as MenuStrip).Items.Add(appCommand.Item);
+							}
+							break;
+					}
 				}
 			}
+			
 		}
 
 		private void _RemoveFromRoot(AppCommand appCommand)
 		{
-			if (_rootControl != null) {
-				switch (appCommand.Style) {
-					case AppCommandStyle.Context:
-						// Control, as-is
-						// Don't do anything.
-						break;
-					case AppCommandStyle.Menu:
-						// MenuStrip child control
-						if (_rootControl is Form) {
-							MenuStrip menuStrip = (_rootControl as Form).MainMenuStrip;
-							if (menuStrip != null) {
-								menuStrip.Items.Remove(appCommand.Item);
+			if (MainWindow.InvokeRequired)
+			{
+				var d = new SafeCallDelegate<AppCommand>(_RemoveFromRoot);
+				MainWindow.Invoke(d, appCommand);
+			}
+			else
+			{
+				if (_rootControl != null) {
+					switch (appCommand.Style) {
+						case AppCommandStyle.Context:
+							// Control, as-is
+							// Don't do anything.
+							break;
+						case AppCommandStyle.Menu:
+							// MenuStrip child control
+							if (_rootControl is Form) {
+								MenuStrip menuStrip = (_rootControl as Form).MainMenuStrip;
+								if (menuStrip != null) {
+									menuStrip.Items.Remove(appCommand.Item);
+								}
 							}
-						}
-						else if (_rootControl is MenuStrip) {
-							(_rootControl as MenuStrip).Items.Remove(appCommand.Item);
-						}
-						break;
+							else if (_rootControl is MenuStrip) {
+								(_rootControl as MenuStrip).Items.Remove(appCommand.Item);
+							}
+							break;
+					}
 				}
 			}
+			
 		}
 
 		public AppCommand()
@@ -174,25 +201,43 @@ namespace Vixen.Sys
 
 		public void Add(AppCommand appCommand)
 		{
-			appCommand.Parent = this;
-			_items.Add(appCommand);
-			(_toolStripItem as ToolStripMenuItem).DropDownItems.Add(appCommand.Item);
-			if (_rootControl != null) {
-				_AddToRoot(appCommand);
+			if (MainWindow.InvokeRequired)
+			{
+				var d = new SafeCallDelegate<AppCommand>(Add);
+				MainWindow.Invoke(d, appCommand);
 			}
+			else
+			{
+				appCommand.Parent = this;
+				_items.Add(appCommand);
+				(_toolStripItem as ToolStripMenuItem).DropDownItems.Add(appCommand.Item);
+				if (_rootControl != null) {
+					_AddToRoot(appCommand);
+				}
+			}
+			
 		}
 
 		public void Remove(string appCommandName)
 		{
-			AppCommand appCommand = _items.FirstOrDefault(x => x.Name == appCommandName);
-			if (appCommand != null) {
-				appCommand.Parent = null;
-				_items.Remove(appCommand);
-				(_toolStripItem as ToolStripMenuItem).DropDownItems.Remove(appCommand.Item);
-				if (_rootControl != null) {
-					_RemoveFromRoot(appCommand);
+			if (MainWindow.InvokeRequired)
+			{
+				var d = new SafeCallDelegate<string>(Remove);
+				MainWindow.Invoke(d, appCommandName);
+			}
+			else
+			{
+				AppCommand appCommand = _items.FirstOrDefault(x => x.Name == appCommandName);
+				if (appCommand != null) {
+					appCommand.Parent = null;
+					_items.Remove(appCommand);
+					(_toolStripItem as ToolStripMenuItem).DropDownItems.Remove(appCommand.Item);
+					if (_rootControl != null) {
+						_RemoveFromRoot(appCommand);
+					}
 				}
 			}
+			
 		}
 
 		private List<AppCommand> _items = new List<AppCommand>();
@@ -211,7 +256,7 @@ namespace Vixen.Sys
 
 		private AppCommandStyle _style;
 
-		public AppCommandStyle Style
+		protected AppCommandStyle Style
 		{
 			get { return _style; }
 			set
@@ -302,5 +347,6 @@ namespace Vixen.Sys
 		}
 
 		public AppCommand Parent { get; private set; }
+
 	}
 }

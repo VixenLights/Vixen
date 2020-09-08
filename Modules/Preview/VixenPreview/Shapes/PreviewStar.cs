@@ -104,17 +104,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private bool IsPixelStar(ElementNode selectedNode)
 		{
-			int childCount = 0;
-			// Iterate through each child
-			foreach (ElementNode child in selectedNode.Children)
-			{
-				// If we have children and this is a group
-				if (child.Children.ToList().Count() > 0 && !child.IsLeaf)
-				{
-					childCount++;
-				}
-			}
-			return (childCount >= 2);
+			return !selectedNode.IsLeaf && selectedNode.GetLeafEnumerator().Count() >= 2;
 		}
 
 		private void AddAllChildren(ElementNode selectedNode)
@@ -603,5 +593,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_bottomRightPoint.Y = bottomRightStart.Y;
 			Resize(aspect);
 		}
+
+		#region Overrides of PreviewBaseShape
+
+		/// <inheritdoc />
+		public override object Clone()
+		{
+			var newStar = (PreviewStar) MemberwiseClone();
+			newStar._topLeftPoint = _topLeftPoint.Copy();
+			newStar._bottomRightPoint = _bottomRightPoint.Copy();
+			newStar.Pixels = new List<PreviewPixel>();
+			foreach (var previewPixel in Pixels)
+			{
+				newStar.Pixels.Add(previewPixel.Clone());
+			}
+
+			return newStar;
+		}
+
+		#endregion
 	}
 }

@@ -7,7 +7,6 @@ using System.Linq;
 using Vixen.Attributes;
 using Vixen.Marks;
 using Vixen.Module;
-using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
@@ -109,7 +108,7 @@ namespace VixenModules.Effect.Wave
 			_data = new WaveData();
 
 			// Create the collection of waves
-			_waves = new ExpandoObjectObservableCollection<IWaveform>();
+			_waves = new WaveFormCollection();
 
 			// Give the wave a reference to the effect.
 			// This is needed so that the waveforms can use the parent to register (listen) for mark collection events

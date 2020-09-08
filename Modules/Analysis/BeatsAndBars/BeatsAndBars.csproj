@@ -26,27 +26,19 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="BeatsAndBarsProgress.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="BeatsAndBarsProgress.cs" />
     <Compile Update="BeatsAndBarsProgress.Designer.cs">
       <DependentUpon>BeatsAndBarsProgress.cs</DependentUpon>
     </Compile>
-    <Compile Update="BeatsAndBarsSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="BeatsAndBarsSettings.cs" />
     <Compile Update="BeatsAndBarsSettings.Designer.cs">
       <DependentUpon>BeatsAndBarsSettings.cs</DependentUpon>
     </Compile>
-    <Compile Update="MusicStaff.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="MusicStaff.cs" />
     <Compile Update="MusicStaff.Designer.cs">
       <DependentUpon>MusicStaff.cs</DependentUpon>
     </Compile>
-    <Compile Update="PreviewWaveform.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="PreviewWaveform.cs" />
     <Compile Update="PreviewWaveform.Designer.cs">
       <DependentUpon>PreviewWaveform.cs</DependentUpon>
     </Compile>

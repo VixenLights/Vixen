@@ -367,7 +367,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override object Clone()
 		{
-			return this.MemberwiseClone();
+			var newArch =(PreviewArch)MemberwiseClone();
+			newArch._topLeft = _topLeft.Copy();
+			newArch._bottomRight = _bottomRight.Copy();
+			newArch.Pixels = new List<PreviewPixel>();
+			foreach (var previewPixel in Pixels)
+			{
+				newArch.Pixels.Add(previewPixel.Clone());
+			}
+
+			return newArch;
 		}
 
 		public override void MoveTo(int x, int y)

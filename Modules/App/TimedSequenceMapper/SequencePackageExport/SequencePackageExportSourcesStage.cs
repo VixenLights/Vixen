@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Controls.Wizard;
@@ -71,7 +73,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageExport
 			foreach (string file in files)
 			{
 				string folder = Path.GetDirectoryName(file);
-				if (folder != null && !folder.StartsWith(SequenceService.SequenceDirectory))
+				if (folder == null)
 				{
 					e.Cancel = true;
 					break;
@@ -93,9 +95,15 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageExport
 
 		private void AddFiles(IEnumerable<string> fileNames)
 		{
+			bool warn = false;
 			lstSequences.BeginUpdate();
 			foreach (var fileName in fileNames)
 			{
+				string folder = Path.GetDirectoryName(fileName);
+				if(folder != null && !folder.StartsWith(SequenceService.SequenceDirectory))
+				{
+					warn = true;
+				}
 				if (!_data.ExportSequenceFiles.Contains(fileName))
 				{
 					ListViewItem item = new ListViewItem(Path.GetFileName(fileName));
@@ -107,6 +115,11 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageExport
 
 			lstSequences.EndUpdate();
 			ColumnAutoSize();
+
+			if (warn)
+			{
+				NotifyPossibleForeignSequences();
+			}
 
 			_WizardStageChanged();
 		}
@@ -157,6 +170,13 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageExport
 			var files = Directory.GetFiles(SequenceService.SequenceDirectory, "*.tim", SearchOption.AllDirectories);
 
 			AddFiles(files.Where(x => x.EndsWith(".tim")));
+		}
+
+		private void NotifyPossibleForeignSequences()
+		{
+			var messageBox = new MessageBoxForm("Some selected sequences are not located in the current profile sequence folder. " +
+			                                    "Please ensure all sequences are compatible and play with the current setup before exporting for best results.", "Warning", MessageBoxButtons.OK, SystemIcons.Warning);
+			messageBox.ShowDialog(this);
 		}
 	}
 }

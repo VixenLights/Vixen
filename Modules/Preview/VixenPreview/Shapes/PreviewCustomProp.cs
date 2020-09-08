@@ -647,7 +647,26 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Layout();
 		}
 
+		#region Overrides of PreviewBaseShape
 
+		/// <inheritdoc />
+		public override object Clone()
+		{
+			var newProp = (PreviewCustomProp) MemberwiseClone();
+			newProp.PropPixels = new List<PreviewPixel>();
+
+			foreach (PreviewPixel pixel in PropPixels)
+			{
+				var p = pixel.Clone();
+				newProp.PropPixels.Add(p);
+			}
+
+			newProp.Pixels = PropPixels;
+
+			return newProp;
+		}
+
+		#endregion
 	}
 
 	public static class Extensions

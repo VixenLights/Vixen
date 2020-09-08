@@ -599,5 +599,27 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			Resize(aspect);
 		}
+
+		#region Overrides of PreviewBaseShape
+
+		/// <inheritdoc />
+		public override object Clone()
+		{
+			var newRectangle = (PreviewRectangle) MemberwiseClone();
+			newRectangle._topRight = _topRight.Copy();
+			newRectangle._topLeft = _topLeft.Copy();
+			newRectangle._bottomRight = _bottomRight.Copy();
+			newRectangle._bottomLeft = _bottomLeft.Copy();
+
+			newRectangle.Pixels = new List<PreviewPixel>();
+			foreach (var previewPixel in Pixels)
+			{
+				newRectangle.Pixels.Add(previewPixel.Clone());
+			}
+
+			return newRectangle;
+		}
+
+		#endregion
 	}
 }

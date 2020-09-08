@@ -48,6 +48,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			_x = pointToClone.X;
 			_y = pointToClone.Y;
+			_pointType = pointToClone.PointType;
 		}
 
 		public PreviewPoint(Point point)
@@ -78,6 +79,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public override string ToString()
 		{
 			return string.Format("{{{0},{1}}}", X,Y);
+		}
+
+		public PreviewPoint Copy()
+		{
+			return new PreviewPoint(this);
 		}
 	}
 }
