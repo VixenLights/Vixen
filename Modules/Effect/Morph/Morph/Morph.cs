@@ -1446,6 +1446,15 @@ namespace VixenModules.Effect.Morph
 					// Update the polygon model associated with morph polygon
 					morphPolygon.Polygon = polygon;
 
+					// If the polygon's fill type is set to wipe and
+					// the polygon is not a rectangle then...
+					if (polygon.FillType == PolygonFillType.Wipe &&
+					    polygon.Points.Count != 4)
+					{
+						// Set the polygon fill type to solid
+						polygon.FillType = PolygonFillType.Solid;
+					}
+
 					// Update the morph polygon fill type
 					morphPolygon.FillType = polygon.FillType;
 
@@ -1483,7 +1492,16 @@ namespace VixenModules.Effect.Morph
 					// Indicate that we don't need to remove this morph polygon
 					morphPolygon.Removed = false;
 
-					// Update the morph polygon fill type
+					// If the polygon's fill type is set to wipe and
+					// the polygon is not a rectangle then...
+					if (polygon.FillType == PolygonFillType.Wipe &&
+					    polygon.Points.Count != 4)
+					{
+						// Set the polygon fill type to solid
+						polygon.FillType = PolygonFillType.Solid;
+					}
+					
+					// Update the morph polygon fill ;type
 					morphPolygon.FillType = polygon.FillType;
 
 					// Add the polygon to collection

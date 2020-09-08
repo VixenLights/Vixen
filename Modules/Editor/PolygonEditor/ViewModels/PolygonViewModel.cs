@@ -446,6 +446,10 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// Clear out the selected point
 			SelectedVertex = null;
 
+			// If we have deleted a point then the polygon is either no longer
+			// a rectangle or already had more than 4 points so it is was not a wipe polygon
+			SegmentsVisible = false;
+
 			// Raise the collection Property changed event so that the converters in the view run
 			NotifyPointCollectionChanged();
 		}

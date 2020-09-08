@@ -2502,6 +2502,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// If we can delete a polygon point then...
 			if (SelectedPolygon != null &&
 				SelectedPoints.Count == 1 &&
+				_editorCapabilities.DeletePoints &&
 				SelectedPolygon.DeletePointCommand.CanExecute(null))
 			{
 				// Execute the command on the view model
