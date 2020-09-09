@@ -77,6 +77,15 @@ namespace VixenModules.Effect.Morph
 
 		#endregion
 
+		#region Private Properties
+
+		/// <summary>
+		/// Flag to track that the target nodes are changing.
+		/// </summary>
+		private bool TargetNodesChanging { get; set; }
+
+		#endregion
+
 		#region Private Constants
 
 		/// <summary>
@@ -176,9 +185,9 @@ namespace VixenModules.Effect.Morph
 				IsDirty = true;
 				OnPropertyChanged();
 
-				// When the TargetPositioning changes the orientation may change.
+				// When the TargetPositioning or TargetNodes change the orientation may change.
 				// Only want to scale the shapes when the user explicitly changes the orientation.
-				if (!TargetPositioningChanging)
+				if (!TargetPositioningChanging && !TargetNodesChanging)
 				{
 					// Scale the shapes associated with the morph polygons
 					ScaleShapesToFitDisplayElement(previousBufferWidth, previousBufferHeight);
@@ -850,6 +859,9 @@ namespace VixenModules.Effect.Morph
 		/// </summary>
 		protected override void TargetNodesChanged()
 		{
+			// Set flag that the target nodes are changing
+			TargetNodesChanging = true;
+
 			// Save off the previous width and height
 			int previousBufferWidth = _data.DisplayElementWidth; 
 			int previousBufferHeight = _data.DisplayElementHeight;
@@ -937,6 +949,9 @@ namespace VixenModules.Effect.Morph
 				// Scale the shapes associated with the morph polygons
 				ScaleShapesToFitDisplayElement(previousBufferWidth, previousBufferHeight);
 			}
+
+			// Clear flag that target nodes are no longer changing
+			TargetNodesChanging = false;
 		}
 
 		/// <summary>
