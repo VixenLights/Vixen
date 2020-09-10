@@ -47,7 +47,7 @@
 			 views:SizeObserver.ObservedWidth="{Binding TimeBarActualWidth, Mode=OneWayToSource}">
 
 			<Canvas.Background>
-				<SolidColorBrush Color="White" Opacity="1"/>
+				<SolidColorBrush Color="Gray" Opacity="1"/>
 			</Canvas.Background>
 
 			<ItemsControl ItemsSource="{Binding PolygonSnapshots}">
