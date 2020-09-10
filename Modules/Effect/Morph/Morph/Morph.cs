@@ -2237,7 +2237,7 @@ namespace VixenModules.Effect.Morph
 					
 						// Convert the polygon/line points into Microsoft Drawing Points
 						List<Point> points = morphPolygon.GetPolygonPoints()
-							.Select(pt => new Point((int) Math.Round(pt.X), (int) Math.Round(pt.Y)))
+							.Select(pt => new Point((int) Math.Round(pt.X, MidpointRounding.AwayFromZero), (int) Math.Round(pt.Y, MidpointRounding.AwayFromZero)))
 							.ToList();
 
 						// If the points make a polygon then...
