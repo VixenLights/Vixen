@@ -28,17 +28,23 @@
 	</i:Interaction.Triggers>
 
 	<UserControl.Resources>
-		<polygonConverters:PointCollectionConverter x:Key="mcolconv" />
-		<polygonConverters:PolygonPointXConverter x:Key="polyPointXConv" />
-		<polygonConverters:PolygonPointYConverter x:Key="polyPointYConv" />
-		<ikriv:MathConverter x:Key="MathConverter" />
-		<Color x:Key="BackColor">#444444</Color>
-		<BooleanToVisibilityConverter x:Key="BoolToVis" />
-		<common:ColorToSolidBrushConverter  x:Key="ColorToSolidColorBrush_ValueConverter"/>
-		<views:BindingProxy x:Key="proxy" Data="{Binding}" />
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		
+			<polygonConverters:PointCollectionConverter x:Key="mcolconv" />
+			<polygonConverters:PolygonPointXConverter x:Key="polyPointXConv" />
+			<polygonConverters:PolygonPointYConverter x:Key="polyPointYConv" />
+			<ikriv:MathConverter x:Key="MathConverter" />
+			<Color x:Key="BackColor">#444444</Color>
+			<BooleanToVisibilityConverter x:Key="BoolToVis" />
+			<common:ColorToSolidBrushConverter  x:Key="ColorToSolidColorBrush_ValueConverter"/>
+			<views:BindingProxy x:Key="proxy" Data="{Binding}" />
+		</ResourceDictionary>
 	</UserControl.Resources>
 
-	<DockPanel Margin="20,20,20,20">
+	<DockPanel Margin="20,20,20,10">
 		<Grid DockPanel.Dock="Bottom" HorizontalAlignment="Stretch">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition/>
@@ -46,19 +52,18 @@
 			<Grid.RowDefinitions>
 				<RowDefinition/>
 				<RowDefinition/>
-				<RowDefinition/>
 			</Grid.RowDefinitions>
-			<views:PolygonTimeBar x:Name="PolygonTimeBar" Grid.Column="1" Grid.Row="1" Visibility="{Binding Path=TimeBarVisible, Converter={StaticResource BoolToVis}}">
+			<views:PolygonTimeBar x:Name="PolygonTimeBar" Margin="0,5" Grid.Column="0" Grid.Row="0" Visibility="{Binding Path=TimeBarVisible, Converter={StaticResource BoolToVis}}">
 			</views:PolygonTimeBar>
-			<WrapPanel Grid.Column="1" Grid.Row="2" Margin="20,2,0,0" Visibility="{Binding Path=TimeBarVisible, Converter={StaticResource BoolToVis}}">
-				<Button Width="30" Height="30" Grid.Column="1" Grid.Row="2" Command="{Binding PreviousPolygonSnapshotCommand}">
-					<Image Source="/PolygonEditor;component/Images/arrow_left.png"></Image>
+			<WrapPanel Grid.Column="0" Grid.Row="1" Margin="5,5,0,0" Visibility="{Binding Path=TimeBarVisible, Converter={StaticResource BoolToVis}}">
+				<Button Command="{Binding PreviousPolygonSnapshotCommand}">
+					<Image Source="/PolygonEditor;component/Images/arrow_left.png" Height="20"></Image>
 				</Button>
-				<Button Width="30" Height="30" Grid.Column="1" Grid.Row="2" Margin="10,0,0,0" Command="{Binding NextPolygonSnapshotCommand}">
-					<Image Source="/PolygonEditor;component/Images/arrow_right.png"></Image>
+				<Button Margin="10,0,0,0" Command="{Binding NextPolygonSnapshotCommand}">
+					<Image Source="/PolygonEditor;component/Images/arrow_right.png" Height="20"></Image>
 				</Button>
-				<Button Grid.Column="1" Grid.Row="2" Margin="10,0,0,0" Command="{Binding AddPolygonSnapshotCommand}">Add Frame</Button>
-				<Button Grid.Column="1" Grid.Row="2" Margin="10,0,0,0" Command="{Binding DeletePolygonSnapshotCommand}">Delete Frame</Button>
+				<Button Margin="10,0,0,0" Command="{Binding AddPolygonSnapshotCommand}">Add Frame</Button>
+				<Button Margin="10,0,0,0" Command="{Binding DeletePolygonSnapshotCommand}">Delete Frame</Button>
 			</WrapPanel>
 		</Grid>
 				

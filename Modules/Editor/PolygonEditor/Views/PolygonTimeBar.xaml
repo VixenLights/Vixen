@@ -30,69 +30,76 @@
 	</i:Interaction.Triggers>
 
 	<UserControl.Resources>
-		<polygonConverters:PointCollectionConverter x:Key="mcolconv" />
-		<ikriv:MathConverter x:Key="MathConverter" />
-		<Color x:Key="BackColor">#444444</Color>
-		<BooleanToVisibilityConverter x:Key="BoolToVis" />
-		<common:ColorToSolidBrushConverter  x:Key="ColorToSolidColorBrush_ValueConverter"/>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="..\Themes\Theme.xaml"/>
+				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+			<polygonConverters:PointCollectionConverter x:Key="mcolconv" />
+			<ikriv:MathConverter x:Key="MathConverter" />
+			<common:ColorToSolidBrushConverter  x:Key="ColorToSolidColorBrush_ValueConverter"/>
+		</ResourceDictionary>
 	</UserControl.Resources>
 	
-	<WrapPanel Orientation="Horizontal">
-		<Viewbox>
-			<views:PolygonTimeBarCanvas  x:Name="TimeBarCanvas"
-			 Height="50" 			 			                           			 
-			 Width="{Binding Path=WindowWidth}"
-			 Margin="0,20,0,0"
-			 views:SizeObserver.Observe="True"
-			 views:SizeObserver.ObservedWidth="{Binding TimeBarActualWidth, Mode=OneWayToSource}">
+	
+		<WrapPanel Orientation="Horizontal" Margin="0,15,0,0">
+			<Viewbox>
+				<Border BorderBrush="Black" BorderThickness="1">
+				<views:PolygonTimeBarCanvas  x:Name="TimeBarCanvas"
+				                             Height="40" 			 			                           			 
+				                             Width="{Binding Path=WindowWidth}"
+				                             Margin="0,0,0,0"
+				                             views:SizeObserver.Observe="True"
+				                             views:SizeObserver.ObservedWidth="{Binding TimeBarActualWidth, Mode=OneWayToSource}">
+				
+				<Canvas.Background>
+					<SolidColorBrush Color="Gray" Opacity="1"/>
+				</Canvas.Background>
+				
+				<ItemsControl ItemsSource="{Binding PolygonSnapshots}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<Canvas></Canvas>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<Rectangle Width="10" Height="20" 
+								   Fill="{Binding Color, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}"
+								   Stroke="{StaticResource SliderRectangleBorder}"
+									StrokeThickness="1"
+								   IsHitTestVisible="False"/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
 
-			<Canvas.Background>
-				<SolidColorBrush Color="Gray" Opacity="1"/>
-			</Canvas.Background>
+					<ItemsControl.ItemContainerStyle>
+						<Style>
+								<Setter Property="Canvas.Left" Value="{Binding Time, Converter={StaticResource MathConverter}, ConverterParameter=x-5}"/>
+							<Setter Property="Canvas.Top" Value="0"/>
+						</Style>
+					</ItemsControl.ItemContainerStyle>
+				</ItemsControl>
 
-			<ItemsControl ItemsSource="{Binding PolygonSnapshots}">
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<Canvas></Canvas>
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
-				<ItemsControl.ItemTemplate>
-					<DataTemplate>
-						<Rectangle Width="10" Height="30" 
-							   Fill="{Binding Color, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}"
-								Stroke="{Binding Color, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}"
-								StrokeThickness="1"
-							   IsHitTestVisible="False"/>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-
-				<ItemsControl.ItemContainerStyle>
-					<Style>
-							<Setter Property="Canvas.Left" Value="{Binding Time, Converter={ikriv:MathConverter}, ConverterParameter=x-5}"/>
-						<Setter Property="Canvas.Top" Value="0"/>
-					</Style>
-				</ItemsControl.ItemContainerStyle>
-			</ItemsControl>
-
-			<ItemsControl ItemsSource="{Binding PolygonSnapshots}">
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<Canvas></Canvas>
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
-				<ItemsControl.ItemTemplate>
-					<DataTemplate>
-						<Grid>
-							<Polygon Name="Pointer"  StrokeThickness="1" 								 
-								 Fill="{Binding Color, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}"
-								 Stroke="{Binding Color, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}"
-							Points="{Binding PointCollection, Converter={StaticResource mcolconv}}" 							
-						    IsHitTestVisible="False"/>
-						</Grid>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
-		</views:PolygonTimeBarCanvas>
-		</Viewbox>
-	</WrapPanel>
+				<ItemsControl ItemsSource="{Binding PolygonSnapshots}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<Canvas></Canvas>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<Grid>
+								<Polygon Name="Pointer"  StrokeThickness="1" 								 
+									 Fill="{Binding Color, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}"
+									 Stroke="{StaticResource SliderPointBorder}"
+								Points="{Binding PointCollection, Converter={StaticResource mcolconv}}" 							
+							    IsHitTestVisible="False"/>
+							</Grid>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</views:PolygonTimeBarCanvas>
+				</Border>
+			</Viewbox>
+		</WrapPanel>
 </UserControl>

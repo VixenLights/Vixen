@@ -2,6 +2,18 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+    <LinearGradientBrush x:Key="SliderRectangleBorder" StartPoint="0,0" EndPoint="1,1">
+	    <GradientStop Offset="0.0" Color="#C5C5C5"/>
+	    <GradientStop Offset="0.75" Color="#808080"/>
+	    <GradientStop Offset="0.95" Color="#606060"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="SliderPointBorder" StartPoint="0,0" EndPoint="1,1">
+	    <GradientStop Offset="0.0" Color="Transparent"/>
+	    <GradientStop Offset="0.2" Color="#606060"/>
+	    <GradientStop Offset="0.95" Color="#606060"/>
+    </LinearGradientBrush>
    
     <Style x:Key="RotateThumbStyle" TargetType="{x:Type Thumb}">
         <Setter Property="Template">

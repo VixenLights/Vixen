@@ -2958,7 +2958,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			eventArgs.Handled = true;
 
 			// Get the position of the mouse
-			Point mousePosition = eventArgs.GetPosition((Canvas)eventArgs.OriginalSource);
+			Point mousePosition = eventArgs.GetPosition((IInputElement)eventArgs.OriginalSource);
 
 			// Update the cursor based on what the mouse is over
 			UpdateCursor(mousePosition);
