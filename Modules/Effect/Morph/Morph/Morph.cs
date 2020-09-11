@@ -2339,17 +2339,23 @@ namespace VixenModules.Effect.Morph
 			{
 				if (fillPolygon)
 				{
+					// Create a brush using the fill color
 					using (SolidBrush brush = new SolidBrush(fillColor))
 					{
+						// Fill the polygon
 						graphics.FillPolygon(brush, points);
 					}
 				}
-				else				
+
+				// Create a pen using the fill color
+				// Doesn't seem like DrawPolyon should be necessary when
+				// the polygon is filled but testing has proven otherwise.
+				// The documentation for FillPolygon does mention that FillPolygon
+				// fills the interior of the polygon.
+				using (Pen pen = new Pen(fillColor))
 				{
-					using (Pen pen = new Pen(fillColor))
-					{
-						graphics.DrawPolygon(pen, points);
-					}					
+					// Outline the polygon
+					graphics.DrawPolygon(pen, points);
 				}
 			}
 		}
