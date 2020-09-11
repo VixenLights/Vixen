@@ -2440,6 +2440,9 @@ namespace VixenModules.Effect.Morph
 			// Transfer the Fill Type to the morph polygon
 			MorphPolygons[0].FillType = FillType;
 
+			// Transfer the Fill color to the morph polygon
+			MorphPolygons[0].FillColor = FillColor;
+
 			// Add the user drawn polygon to the collection
 			_patternExpandedMorphPolygons.Add(MorphPolygons[0]);
 			
