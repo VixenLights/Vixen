@@ -64,30 +64,6 @@
 					</ItemsControl.ItemsPanel>
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<Rectangle Width="10" Height="20" 
-								   Fill="{Binding Color, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}"
-								   Stroke="{StaticResource SliderRectangleBorder}"
-									StrokeThickness="1"
-								   IsHitTestVisible="False"/>
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-
-					<ItemsControl.ItemContainerStyle>
-						<Style>
-								<Setter Property="Canvas.Left" Value="{Binding Time, Converter={StaticResource MathConverter}, ConverterParameter=x-5}"/>
-							<Setter Property="Canvas.Top" Value="0"/>
-						</Style>
-					</ItemsControl.ItemContainerStyle>
-				</ItemsControl>
-
-				<ItemsControl ItemsSource="{Binding PolygonSnapshots}">
-					<ItemsControl.ItemsPanel>
-						<ItemsPanelTemplate>
-							<Canvas></Canvas>
-						</ItemsPanelTemplate>
-					</ItemsControl.ItemsPanel>
-					<ItemsControl.ItemTemplate>
-						<DataTemplate>
 							<Grid>
 								<Polygon Name="Pointer"  StrokeThickness="1" 								 
 									 Fill="{Binding Color, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}"

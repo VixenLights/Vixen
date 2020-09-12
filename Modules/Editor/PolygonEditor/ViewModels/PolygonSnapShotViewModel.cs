@@ -9,7 +9,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 {
 	/// <summary>
 	/// Maintains a polygon snapshot view model.  
-	/// This view model maintains a polygon/line reference and a time position within the effect.
+	/// This view model maintains a polygon/line/ellipse reference and a time position within the effect.
 	/// </summary>
 	public class PolygonSnapshotViewModel : ViewModelBase
 	{
@@ -199,8 +199,10 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			PointCollection[0].X = x - HalfWidth;
 			PointCollection[1].X = x;
 			PointCollection[2].X = x + HalfWidth;
-			PointCollection[3].X = x - HalfWidth;
-			
+			PointCollection[3].X = x + HalfWidth;
+			PointCollection[4].X = x - HalfWidth;
+			PointCollection[5].X = x - HalfWidth;
+
 			// Refresh the snapshot pointers
 			NotifyPointCollectionChanged();
 		}
@@ -215,25 +217,44 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			Time = position;
 
 			const int HeightOfPointer = 25;
-			const int HeightOfRectangle = 20;			
+			const int HeightOfRectangle = 20;
 
+			//
 			// Initialize the time bar points
+			//
+			
+			// Bottom Left Corner
 			PolygonPointViewModel p1 = new PolygonPointViewModel(new PolygonPoint(), null);
 			p1.X = Time - HalfWidth;
 			p1.Y = HeightOfRectangle;
+
+			// Center Pointer
 			PolygonPointViewModel p2 = new PolygonPointViewModel(new PolygonPoint(), null);
 			p2.X = Time;
 			p2.Y = HeightOfPointer;
+
+			// Bottom Right Corner
 			PolygonPointViewModel p3 = new PolygonPointViewModel(new PolygonPoint(), null);
 			p3.X = Time + HalfWidth;
 			p3.Y = HeightOfRectangle;
+
+			// Top Right Corner
 			PolygonPointViewModel p4 = new PolygonPointViewModel(new PolygonPoint(), null);
-			p4.X = Time - HalfWidth;
-			p4.Y = HeightOfRectangle;
+			p4.X = Time + HalfWidth;
+			p4.Y = 0; 
+
+			// Top Left Corner
+			PolygonPointViewModel p5 = new PolygonPointViewModel(new PolygonPoint(), null);
+			p5.X = Time - HalfWidth;
+			p5.Y = 0; 
+
+			// Add the points to the point collection	
 			PointCollection.Add(p1);
 			PointCollection.Add(p2);
 			PointCollection.Add(p3);
 			PointCollection.Add(p4);
+			PointCollection.Add(p5);
+			PointCollection.Add(p1);
 		}
 		
 		/// <summary>

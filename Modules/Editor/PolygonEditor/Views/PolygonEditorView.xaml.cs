@@ -100,6 +100,9 @@ namespace VixenModules.Editor.PolygonEditor.Views
 				PolygonPointXConverter.XScaleFactor = xScaleFactor;
 				PolygonPointYConverter.YScaleFactor = yScaleFactor;
 
+				// Give the polygon point converter the Y dimension of the drawing canvas
+				PolygonPointYConverter.BufferHt = _polygonContainer.Height;
+
 				// If the edit is in time based mode then...
 				if (_polygonContainer.EditorCapabilities.ShowTimeBar)
 				{

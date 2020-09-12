@@ -17,6 +17,11 @@ namespace VixenModules.Editor.PolygonEditor.Converters
 		/// </summary>
 		public static double YScaleFactor { get; set; }
 
+		/// <summary>
+		/// Height of the drawing canvas.
+		/// </summary>
+		public static double BufferHt { get; set; }
+
 		#endregion
 
 		#region IValueConverter
@@ -35,7 +40,7 @@ namespace VixenModules.Editor.PolygonEditor.Converters
 			double point = (double)value;
 
 			// Apply the scale factor and then add 1
-			point = (point / YScaleFactor) + 1;
+			point = ((BufferHt - 1) - (point / YScaleFactor)) + 1;
 
 			// Round to the nearest integer
 			point = Math.Round(point);
@@ -57,7 +62,7 @@ namespace VixenModules.Editor.PolygonEditor.Converters
 			double dblValue = double.Parse((string)value);
 
 			// Subtract one and then apply the scale factor
-			return ((double)dblValue - 1) * YScaleFactor;
+			return ((BufferHt - 1) - ((double) dblValue - 1)) * YScaleFactor;
 		}
 
 		#endregion
