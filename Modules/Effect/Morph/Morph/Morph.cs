@@ -1029,6 +1029,25 @@ namespace VixenModules.Effect.Morph
 					}
 					else
 					{
+						// Time Based mode really requires at least two
+						// morph polygons but this code allows the effect to
+						// produce an output rather than being blank
+
+						// Transfer the fill color to the morph polygon
+						MorphPolygons[0].FillColor = FillColor;
+
+						// If the polygon is to be filled then...
+						if (FillPolygon)
+						{
+							// Set the fill type to solid on the morph polygon
+							MorphPolygons[0].FillType = PolygonFillType.Solid;
+						}
+						else
+						{
+							// Otherwise set the fill type to outline
+							MorphPolygons[0].FillType = PolygonFillType.Outline;
+						}
+
 						RenderEffectFreeForm(frameNum, frameBuffer, intervalPos);
 					}
 					break;
