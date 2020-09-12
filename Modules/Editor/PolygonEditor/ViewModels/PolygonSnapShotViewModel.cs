@@ -214,8 +214,8 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// Store off the position
 			Time = position;
 
-			const int HeightOfPointer = 35;
-			const int HeightOfRectangle = 30;			
+			const int HeightOfPointer = 25;
+			const int HeightOfRectangle = 20;			
 
 			// Initialize the time bar points
 			PolygonPointViewModel p1 = new PolygonPointViewModel(new PolygonPoint(), null);
