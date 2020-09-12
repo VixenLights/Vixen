@@ -115,7 +115,7 @@ namespace VixenModules.Effect.Morph
 			_patternEditorCapabilities = new PolygonEditorCapabilities()
 			{
 				DeletePolygons = false,
-				DeletePoints = false,
+				DeletePoints = true,
 				AddPolygons = false,				
 				PastePolygons = false,
 				CutPolygons = false,
@@ -1193,9 +1193,29 @@ namespace VixenModules.Effect.Morph
 				// Get the model polygon from the morph polygon
 				Polygon polygonModel = morphPolygon.Polygon;
 
+				// If the morph polyon is a triangle then...
+				if (morphPolygon.Polygon != null &&
+					morphPolygon.Polygon.Points.Count == 3)
+				{
+					// Create a new polygon model
+					polygonModel = new Polygon();
+
+					// Transfer the triangle to polygon points
+					// duplicating the last point
+					PolygonPoint pt1 = morphPolygon.Polygon.Points[0];
+					PolygonPoint pt2 = morphPolygon.Polygon.Points[1];
+					PolygonPoint pt3 = morphPolygon.Polygon.Points[2];
+					PolygonPoint pt4 = morphPolygon.Polygon.Points[2];
+
+					// Add the points to the polygon model
+					polygonModel.Points.Add(pt1);
+					polygonModel.Points.Add(pt2);
+					polygonModel.Points.Add(pt3);
+					polygonModel.Points.Add(pt4);
+				}
 				// If the MorphPolygon is an ellipse then...
-				if (morphPolygon.Polygon == null &&
-				    morphPolygon.Ellipse != null)
+				else if (morphPolygon.Polygon == null && 
+				         morphPolygon.Ellipse != null)
 				{
 					// Create a new polygon model
 					polygonModel = new Polygon();
@@ -1481,9 +1501,10 @@ namespace VixenModules.Effect.Morph
 					morphPolygon.Polygon = polygon;
 
 					// If the polygon's fill type is set to wipe and
-					// the polygon is not a rectangle then...
+					// the polygon is not a rectangle or triangle then...
 					if (polygon.FillType == PolygonFillType.Wipe &&
-					    polygon.Points.Count != 4)
+					    !(polygon.Points.Count == 4 ||
+					      polygon.Points.Count == 3))
 					{
 						// Set the polygon fill type to solid
 						polygon.FillType = PolygonFillType.Solid;
@@ -2956,13 +2977,14 @@ namespace VixenModules.Effect.Morph
 		/// </summary>		
 		private List<IMorphPolygon> GetWipePolygons()
 		{
-			// Find all the morph polygons that are a polygon with 4 points OR
+			// Find all the morph polygons that are a polygon with 3 or 4 points OR
 			// is a line OR
 			// is an ellipse
 			return MorphPolygons.Where(mp => mp.FillType == PolygonFillType.Wipe &&
 			                           ((mp.Polygon != null && mp.Polygon.Points.Count == 4 ||
-									    mp.Line != null ||
-									    mp.Ellipse != null))).ToList();					
+										 mp.Polygon != null && mp.Polygon.Points.Count == 3 || 
+									     mp.Line != null ||
+									     mp.Ellipse != null))).ToList();					
 		}
 
 		/// <summary>
@@ -3143,7 +3165,7 @@ namespace VixenModules.Effect.Morph
 		/// </summary>		
 		private void UpdatePolygonTypeAttributes(bool refresh)
 		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4)
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(16)
 				{					
 					{ nameof(RepeatCount), PolygonType == PolygonType.Pattern },
 					{ nameof(RepeatSkip), PolygonType == PolygonType.Pattern },

@@ -372,8 +372,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 					Segments.Remove(Segments[Segments.Count - 1]);
 				}
 
-				// Wipe fill type is only valid for polygons with four sides
-				if (PointCollection.Count == 4)
+				// Wipe fill type is only valid for polygons with four or three sides
+				if (PointCollection.Count == 4 ||
+				    PointCollection.Count == 3)
 				{
 					// Color the start side green
 					Segments[0].Color = Colors.Green;
@@ -446,9 +447,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// Clear out the selected point
 			SelectedVertex = null;
 
-			// If we have deleted a point then the polygon is either no longer
-			// a rectangle or already had more than 4 points so it is was not a wipe polygon
-			SegmentsVisible = false;
+			// Update the green line segment
+			Segments[0] = new LineSegmentViewModel(PointCollection[0], PointCollection[1]);
+			Segments[0].Color = Colors.Green;
 
 			// Raise the collection Property changed event so that the converters in the view run
 			NotifyPointCollectionChanged();
