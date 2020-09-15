@@ -24,8 +24,8 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			Point1 = point1; 
 			Point2 = point2; 
 
-			// Set the line segment color to black
-			Color = Colors.Black;
+			// Set the line segment color to blue
+			Color = Colors.DodgerBlue;
 		}
 
 		#endregion

@@ -23,8 +23,8 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			PolygonPoint = point;
 
 			// Default the points to black
-			Color = Colors.Black;
-			DeselectedColor = Colors.Black;
+			Color = Colors.DodgerBlue;
+			DeselectedColor = Colors.DodgerBlue;
 
 			// Store off a reference to the parent view model
 			Parent = parent;

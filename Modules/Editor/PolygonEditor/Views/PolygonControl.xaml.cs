@@ -364,7 +364,7 @@ namespace VixenModules.Editor.PolygonEditor.Views
             segment.Line.Visibility = Visibility.Visible;
             segment.Line.Opacity = 0.0;
             segment.Line.StrokeThickness = 4;
-            segment.Line.Stroke = Brushes.Black;
+            segment.Line.Stroke = Brushes.DodgerBlue;
             segment.Line.X1 =  previousPoint.X;
             segment.Line.Y1 = previousPoint.Y;
             segment.Line.X2 = nextPoint.X;

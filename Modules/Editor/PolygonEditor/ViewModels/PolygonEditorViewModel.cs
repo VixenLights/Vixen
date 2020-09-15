@@ -75,7 +75,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			SnapToGridCommand = new Command(SnapToGrid);
 			OkCommand = new Command(OK);
 			CancelCommand = new Command(Cancel);
-			DeletePointCommand = new Command(DeletePoint);
+			DeleteShapeOrPointsCommand = new Command(DeleteShapeOrPoints);
 			ToggleStartSideCommand = new Command(ToggleStartSide, IsToggleableShapeSelected);
 			ToggleStartPointCommand = new Command(ToggleStartPoint, IsLineSelected);
 			AddPolygonSnapshotCommand = new Command(AddPolygonSnapshot);
@@ -440,15 +440,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				}
 				else
 				{
-					// If we were in the middle of creating a new polygon then...
-					if (NewPolygon != null)
-					{
-						// Remove the partial polygon
-						Polygons.Remove(NewPolygon);
-						PolygonModels.Remove(NewPolygon.Polygon);
-						NewPolygon = null;
-						SelectedPolygon = null;
-					}
+					// If we were in the middle of creating a new polygon 
+					// then remove the partial polygon
+					RemovePartialPolygon();
 				}
 				SetValue(DrawPolygonProperty, value); 
 			}
@@ -518,15 +512,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				}
 				else
 				{
-					// If we were in the middle of creating a new line then...
-					if (NewLine != null)
-					{
-						// Remove the partial line
-						Lines.Remove(NewLine);
-						LineModels.Remove(NewLine.Line);
-						NewLine = null;
-						SelectedLine = null;
-					}					
+					// If we were in the middle of creating a new line 
+					// then remove the partial line
+					RemovePartialLine();
 				}
 
 				SetValue(DrawLineProperty, value); 
@@ -695,7 +683,6 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// Gets or sets the selected snapshot.
 		/// </summary>
 		public PolygonSnapshotViewModel SelectedSnapshot { get; set; }
-
 
 		/// <summary>
 		/// Flag that indicates the user lassoing points.
@@ -982,9 +969,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		public ICommand CancelCommand { get; private set; }
 
 		/// <summary>
-		/// Delete polygon point command.
+		/// Delete the selected shape or points command.
 		/// </summary>
-		public ICommand DeletePointCommand { get; private set; }
+		public ICommand DeleteShapeOrPointsCommand { get; private set; }
 
 		/// <summary>
 		/// Toggle polygon start side command.
@@ -1210,8 +1197,8 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			if (!mouseOverMoveableItem)
 			{
 				EllipseViewModel selectedEllipse = null;
-				PolygonPointViewModel selectedPoint = null;
-
+				
+				// If the mouse is over the center of the ellipse then...
 				if (IsMouseOverEllipseCenterCrossHash(position, ref selectedEllipse))
 				{
 					// Indicate the mouse is over a moveable item and break out of loop
@@ -1717,6 +1704,52 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		#endregion
 
 		#region Private Methods
+
+		/// <summary>
+		/// Returns true if the specified point is off the drawing canvas.
+		/// </summary>
+		/// <param name="point">Point to test</param>
+		/// <returns>True if the point is off the drawing canvas</returns>
+		private bool PointIsOffCanvas(Point point)
+		{
+			// Returns true if the point is off the drawing canvas
+			return (point.X < 0 ||
+			        point.Y < 0 ||
+			        point.X > ActualWidth - 1 ||
+			        point.Y > ActualHeight - 1);
+		}
+
+		/// <summary>
+		/// Aborts an incomplete line.
+		/// </summary>
+		private void RemovePartialLine()
+		{
+			// If creating a new line is in progress then...
+			if (NewLine != null)
+			{
+				// Remove the partial line
+				Lines.Remove(NewLine);
+				LineModels.Remove(NewLine.Line);
+				NewLine = null;
+				SelectedLine = null;
+			}
+		}
+
+		/// <summary>
+		/// Aborts a new incomplete polygon.
+		/// </summary>
+		private void RemovePartialPolygon()
+		{
+			// If creating a new polygon is in progress then...
+			if (NewPolygon != null)
+			{
+				// Remove the partial polygon
+				Polygons.Remove(NewPolygon);
+				PolygonModels.Remove(NewPolygon.Polygon);
+				NewPolygon = null;
+				SelectedPolygon = null;
+			}
+		}
 
 		/// <summary>
 		/// Event handler for when the current cell in the point grid has changed.
@@ -2495,19 +2528,46 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		}
 
 		/// <summary>
-		/// Deletes the selected polygon point.
+		/// Deletes the selected shape or selected polygon points.
 		/// </summary>
-		private void DeletePoint()
-		{			
-			// If we can delete a polygon point then...
-			if (SelectedPolygon != null &&
-				SelectedPoints.Count == 1 &&
-				_editorCapabilities.DeletePoints &&
-				SelectedPolygon.DeletePointCommand.CanExecute(null))
+		private void DeleteShapeOrPoints()
+		{
+			// If a shape can be deleted then...
+			if (CanExecuteDelete())
 			{
-				// Execute the command on the view model
-				SelectedPolygon.DeletePointCommand.Execute(null);		
-			}			
+				// Delete the currently selected shape
+				Delete();
+			}
+			// Otherwise try to delete the selected points
+			else
+			{
+				// Attempt to delete all the points
+				int index = 0;
+				while (index < SelectedPoints.Count && SelectedPoints.Count > 0)
+				{
+					// Retrieve the specified point
+					PolygonPointViewModel pt = SelectedPoints[index];
+
+					// Find the point's parent polygon
+					// Note that deleting a point from a line or ellipse is not supported
+					PolygonViewModel polygon = FindPolygon(pt);
+
+					// If the parent polygon was found and the polygon has more than three points then...
+					if (polygon != null && polygon.PointCollection.Count > 3)
+					{
+						// Delete the specified point
+						polygon.DeletePoint(pt);
+					}
+					else
+					{
+						// Otherwise move onto the next point
+						index++;
+					}
+				}
+
+				// Remove the resize adorner since it is possible points were removed
+				RaiseRemoveResizeAdorner();
+			}
 		}
 
 		/// <summary>
@@ -3383,12 +3443,15 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			if (EditorCapabilities.AllowMultipleShapes)
 			{
 				// Return true if the selected shape is not an ellipse
-				convertToEllipseEnabled = SelectedShape != null && !(SelectedShape is EllipseViewModel);
+				convertToEllipseEnabled =
+					SelectedShape != null &&
+					!(SelectedShape is EllipseViewModel) &&
+					IsSelecting;
 			}
 			// Otherwise only allow the conversion if the current shape is NOT an ellipse
 			else
 			{
-				convertToEllipseEnabled = (Ellipses.Count == 0);
+				convertToEllipseEnabled = (Ellipses.Count == 0) && IsSelecting;
 			}
 
 			return convertToEllipseEnabled;
@@ -3407,12 +3470,15 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			if (EditorCapabilities.AllowMultipleShapes)
 			{
 				// Return true if the selected shape is not a polygon
-				convertToPolygonEnabled = SelectedShape != null && !(SelectedShape is PolygonViewModel);
+				convertToPolygonEnabled =
+					SelectedShape != null &&
+					!(SelectedShape is PolygonViewModel) &&
+					IsSelecting;
 			}
 			// Otherwise only allow the conversion if the current shape is NOT a polygon
 			else
 			{
-				convertToPolygonEnabled = (Polygons.Count == 0);
+				convertToPolygonEnabled = (Polygons.Count == 0) && IsSelecting;
 			}
 
 			return convertToPolygonEnabled;
@@ -3431,12 +3497,15 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			if (EditorCapabilities.AllowMultipleShapes)
 			{
 				// Return true if the selected shape is not a line
-				convertToLineEnabled = SelectedShape != null && !(SelectedShape is LineViewModel);
+				convertToLineEnabled =
+					IsSelecting &&
+					SelectedShape != null && 
+				    !(SelectedShape is LineViewModel);
 			}
 			// Otherwise only allow the conversion if the current shape is NOT a polygon
 			else
 			{
-				convertToLineEnabled = (Lines.Count == 0);
+				convertToLineEnabled = (Lines.Count == 0) && IsSelecting;
 			}
 
 			return convertToLineEnabled;
@@ -3454,17 +3523,27 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			PolygonLineSegment lineSegment = null;
 			PolygonViewModel polygon = null;
 
+			// If a new polygon is being created and
+			// the polygon contains 2 points and the 
+			// mouse is over the first point then...
+			if (NewPolygon != null &&
+			    NewPolygon.PointCollection.Count >= 2 &&
+			    NewPolygon.IsMouseOverFirstPolygonPoint(mousePosition))
+			{
+				// Use the cross cursor to indicate the polygon can be closed
+				cursor = Cursors.Cross;
+			}
 			// If the mouse is over the center of a shape then...
-			if (IsSelecting &&
-			    IsMouseOverCenterOfShape(mousePosition))
+			else if (IsSelecting && 
+			         IsMouseOverCenterOfShape(mousePosition))
 			{
 				// Use special cross cursor to indicate the shape can be selected
 				cursor = Cursors.Cross;
 			}
 			// If the editor is in selection mode and
 			// the mouse over a moveable item then....
-			else if (IsSelecting &&
-			    IsMouseOverMoveableItem(mousePosition))
+			else if (IsSelecting && 
+			         IsMouseOverMoveableItem(mousePosition))
 			{
 				// Change to the sizing cursor
 				cursor = Cursors.SizeAll;
@@ -3566,7 +3645,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Handles polygon/line canvas mouse move command.
 		/// </summary>
-		/// <param name="mouseEventArgs"></param>
+		/// <param name="mouseEventArgs">Mouse event arguments</param>
 		private void CanvasMouseMove(MouseEventArgs mouseEventArgs)
 		{
 			// Get the position of the mouse click
@@ -3575,11 +3654,69 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// Update the cursor based on what the mouse is over
 			UpdateCanvasCursor(mousePosition);
 
+			// If the mouse if off the canvas and we are creating
+			// a new polygon or line then...
+			if (PointIsOffCanvas(mousePosition) &&
+			    (DrawPolygon || DrawLine))
+			{
+				// Hide the ghost line
+				MovingPointVisibilityPrevious = false;
+
+				// If we are in draw polygon then...
+				if (DrawPolygon)
+				{
+					// Remove the partial polygon
+					RemovePartialPolygon();
+					AddNewPolygon();
+				}
+				// Otherwise we are in draw line mode then...
+				else if (DrawLine)
+				{
+					// Remove the partial line
+					RemovePartialLine();
+					AddNewLine();
+				}
+			}
+
 			// If a point is being moved then...
 			if (MovingPoint)
 			{
 				// Move the currently selected point
 				MovePoint(mousePosition);
+			}
+			// If a new polygon is being created and 
+			// the polygon is NOT closed
+			// and there is at least one point then...
+			else if (NewPolygon != null &&
+			         !NewPolygon.IsClosed &&
+			         NewPolygon.PointCollection.Count > 0)
+			{
+				// Update the position of the ghost point 
+				PointMoving = new PolygonPointViewModel(new PolygonPoint(), null);
+				PointMoving.X = mousePosition.X;
+				PointMoving.Y = mousePosition.Y;
+
+				// Set the starting point for the ghost line
+				PreviousPointMoving = NewPolygon.PointCollection[NewPolygon.PointCollection.Count - 1];
+				
+				// Make the ghost point and associated line visible
+				MovingPointVisibilityPrevious = true;
+			}
+			// Otherwise if a new line is being created and
+			// the first point has already been created then...
+			else if (NewLine != null &&
+			         NewLine.PointCollection.Count == 1)
+			{
+				// Update the position of the ghost point 
+				PointMoving = new PolygonPointViewModel(new PolygonPoint(), null);
+				PointMoving.X = mousePosition.X;
+				PointMoving.Y = mousePosition.Y;
+
+				// Set the starting point for the ghost line
+				PreviousPointMoving = NewLine.PointCollection[NewLine.PointCollection.Count - 1];
+
+				// Make the ghost point and associated line visible
+				MovingPointVisibilityPrevious = true;
 			}
 
 			// If the editor is in selection mode and
@@ -3777,6 +3914,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// If the polygon was closed then...
 			if (NewPolygon.PolygonClosed)
 			{
+				// Hide the ghost point and associated line
+				MovingPointVisibilityPrevious = false;
+
 				// If the editor is time frame mode then...
 				if (TimeBarVisible)
 				{
@@ -3818,10 +3958,13 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// If the line has two points then..
 			if (NewLine.PointCollection.Count == 2)
 			{
+				// Hide the ghost point and associated line
+				MovingPointVisibilityPrevious = false;
+
 				// Save off the start point
 				NewLine.StartPoint = NewLine.PointCollection[0];
 
-				// Save off the end piont
+				// Save off the end point
 				NewLine.EndPoint = NewLine.PointCollection[1];
 				
 				// If the editor is time frame mode then...
@@ -4595,10 +4738,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				Point transformedPoint = rt.Transform(tempPoint);
 
 				// If the point is outside of the drawing canvas then...				
-				if (transformedPoint.X < 0 ||
-					transformedPoint.Y < 0 ||
-					transformedPoint.X > ActualWidth - 1 ||
-					transformedPoint.Y > ActualHeight - 1)
+				if (PointIsOffCanvas(transformedPoint))
 				{
 					// Remove the resize adorner 
 					RaiseRemoveResizeAdorner();					

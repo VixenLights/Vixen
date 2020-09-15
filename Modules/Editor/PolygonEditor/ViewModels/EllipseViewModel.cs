@@ -303,7 +303,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			SegmentsVisible = (Ellipse.FillType == PolygonFillType.Wipe);
 
 			// Color the segment green to indicate where the wipe starts
-			Segments[0].Color = Colors.Green;
+			Segments[0].Color = Colors.Lime;
 		}
 
 		/// <summary>
@@ -341,7 +341,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 
 			// Update the green line segment
 			Segments[0] = new LineSegmentViewModel(PointCollection[0], PointCollection[1]);
-			Segments[0].Color = Colors.Green;
+			Segments[0].Color = Colors.Lime;
 
 			// Force the view converters to run
 			NotifyPointCollectionChanged();

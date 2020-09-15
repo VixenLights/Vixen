@@ -65,9 +65,6 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			// Register for the collection changed event
 			PointCollection.CollectionChanged += PointCollection_CollectionChanged;
 
-			// Create the delete point command
-			DeletePointCommand = new Command(DeletePoint, CanExecuteDeletePoint);			
-			
 			// Create a collection of line segments
 			LineSegments = new List<PolygonLineSegment>();
 			
@@ -278,29 +275,41 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				Segments.Add(segment);
 			}
 
-			// If there are three or more points then...
-			if (PointCollection.Count >= 3)
+			// If there are two or more points then...
+			if (PointCollection.Count >= 2)
 			{
-				// Calculate the distance from this point to the first point
-				double deltaX = Math.Abs(PointCollection[0].X - PointCollection[PointCollection.Count - 1].X);
-				double deltaY = Math.Abs(PointCollection[0].Y - PointCollection[PointCollection.Count - 1].Y);
-
-				const int Tolerance = 5;
-
-				// If this point is within the tolerance then close the polygon
-				if (deltaX <= Tolerance && 
-					deltaY <= Tolerance)
+				// If the mouse is over the first polygon point then...
+				if (IsMouseOverFirstPolygonPoint(position))
 				{
 					// Remove the last point since we are going to connect up to the first point
 					PointCollection.Remove(PointCollection[PointCollection.Count - 1]);
 					Polygon.Points.Remove(Polygon.Points[Polygon.Points.Count - 1]);
 
 					// Make the WPF polygon visible
-					ClosePolygon();					
+					ClosePolygon();
 				}
 			}			
 		}
-		
+
+		/// <summary>
+		/// Returns true if the mouse is over the first polygon point.
+		/// </summary>
+		/// <param name="mousePosition">Position of the mouse</param>
+		/// <returns>True if the mouse is over the first polygon point</returns>
+		public bool IsMouseOverFirstPolygonPoint(Point mousePosition)
+		{
+			// Calculate the distance from this point to the first point
+			double deltaX = Math.Abs(PointCollection[0].X - mousePosition.X);
+			double deltaY = Math.Abs(PointCollection[0].Y - mousePosition.Y);
+
+			// The user has to get within 10 pixels of the first point
+			const int Tolerance = 10;
+
+			// Return whether the mouse is over the first polygon point
+			return deltaX <= Tolerance &&
+			       deltaY <= Tolerance;
+		}
+
 		/// <summary>
 		/// Toggles the start side of a polygon.
 		/// </summary>
@@ -326,20 +335,28 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 
 			// Update the green line segment
 			Segments[0] = new LineSegmentViewModel(PointCollection[0], PointCollection[1]);
-			Segments[0].Color = Colors.Green;
+			Segments[0].Color = Colors.Lime;
 
 			// Tell the view to refresh
 			NotifyPointCollectionChanged();
 		}
 
-		#endregion
-
-		#region Public Commands
-
 		/// <summary>
-		/// Delete polygon point command.
+		/// Deletes the specified polygon point.
 		/// </summary>
-		public ICommand DeletePointCommand { get; private set; }
+		public void DeletePoint(PolygonPointViewModel pt)
+		{
+			// Remove the point from the polygon
+			PointCollection.Remove(pt);
+			Polygon.Points.Remove(pt.PolygonPoint);
+
+			// Update the green line segment
+			Segments[0] = new LineSegmentViewModel(PointCollection[0], PointCollection[1]);
+			Segments[0].Color = Colors.Lime;
+
+			// Raise the collection Property changed event so that the converters in the view run
+			NotifyPointCollectionChanged();
+		}
 
 		#endregion
 
@@ -377,13 +394,16 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				    PointCollection.Count == 3)
 				{
 					// Color the start side green
-					Segments[0].Color = Colors.Green;
+					Segments[0].Color = Colors.Lime;
 				}
 				// Otherwise if the fill type is set to wipe then...
 				else if (Polygon.FillType == PolygonFillType.Wipe)
 				{
 					// Set the fill type to solid since the polygon does meet the requirements of a wipe
 					Polygon.FillType = PolygonFillType.Solid;
+					
+					// Hide the green line
+					SegmentsVisible = false;
 				}
 			}
 			// Otherwise hide all segments
@@ -391,7 +411,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			{
 				SegmentsVisible = false;
 			}
-						
+
 			// Fire the property changed event so the converters run
 			NotifyPointCollectionChanged();
 
@@ -433,42 +453,5 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 
 		#endregion
 
-		#region Private Command Methods
-
-		/// <summary>
-		/// Deletes the currently selected polygon point.
-		/// </summary>
-		private void DeletePoint()
-		{
-			// Remove the point from the polygon
-			PointCollection.Remove(SelectedVertex);
-			Polygon.Points.Remove(SelectedVertex.PolygonPoint);
-
-			// Clear out the selected point
-			SelectedVertex = null;
-
-			// Update the green line segment
-			Segments[0] = new LineSegmentViewModel(PointCollection[0], PointCollection[1]);
-			Segments[0].Color = Colors.Green;
-
-			// Raise the collection Property changed event so that the converters in the view run
-			NotifyPointCollectionChanged();
-		}
-
-		/// <summary>
-		/// Returns true if the selected point can be deleted.
-		/// </summary>
-		/// <returns>Returns true if the selected point can be deleted.</returns>
-		private bool CanExecuteDeletePoint()
-		{
-			// Can only delete a polygon point after the polygon is complete (closed) and
-			// a point has been selected and
-			// there are more than three points
-			return PolygonClosed &&
-				IsPointSelected() &&
-				PointCollection.Count > 3;
-		}
-
-		#endregion		
 	}
 }

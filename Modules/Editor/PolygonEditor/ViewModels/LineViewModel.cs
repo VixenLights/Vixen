@@ -137,7 +137,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 				UpdateCenterPoint();
 
 				// Color the first point green
-				PointCollection[0].DeselectedColor = Colors.Green;
+				PointCollection[0].DeselectedColor = Colors.Lime;
 				PointCollection[0].Color = PointCollection[0].DeselectedColor;
 
 				// Make the line visible
@@ -159,8 +159,8 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			PolygonPoint endPoint = Line.Points[1];
 
 			// Swap the colors on the points
-			tempStart.DeselectedColor = Colors.Black;
-			tempEnd.DeselectedColor = Colors.Green;
+			tempStart.DeselectedColor = Colors.DodgerBlue;
+			tempEnd.DeselectedColor = Colors.Lime;
 
 			// Swap the points on the view model
 			PointCollection.Clear();

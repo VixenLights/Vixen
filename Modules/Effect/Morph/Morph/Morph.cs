@@ -301,7 +301,9 @@ namespace VixenModules.Effect.Morph
 				}
 
 				// Pattern mode only allows one polygon to be drawn by the user
-				if (_data.PolygonType == PolygonType.Pattern)
+				// Time Based mode starts out with one polygon
+				if (_data.PolygonType == PolygonType.Pattern ||
+				    _data.PolygonType == PolygonType.TimeBased)
 				{					
 					while (MorphPolygons.Count > 1)
 					{

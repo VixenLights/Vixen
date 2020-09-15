@@ -89,14 +89,14 @@
 				  Y1="{Binding Path=PreviousPointMoving.Y}"
 				  X2="{Binding Path=PointMoving.X}" 
                   Y2="{Binding Path=PointMoving.Y}"
-				  Stroke="LightGray" StrokeThickness="1" StrokeDashArray="2 2"
+				  Stroke="DodgerBlue" StrokeThickness="1" StrokeDashArray="2 2"
 				  Visibility="{Binding Path=MovingPointVisibilityPrevious, Converter={StaticResource BoolToVis}}"/>
 
 						<Line X1="{Binding Path=PointMoving.X}"
 				  Y1="{Binding Path=PointMoving.Y}"
 				  X2="{Binding Path=NextPointMoving.X}" 
                   Y2="{Binding Path=NextPointMoving.Y}"
-				  Stroke="LightGray" StrokeThickness="1" StrokeDashArray="2 2"
+				  Stroke="DodgerBlue" StrokeThickness="1" StrokeDashArray="2 2"
 				  Visibility="{Binding Path=MovingPointVisibilityNext, Converter={StaticResource BoolToVis}}"/>
 
 						<Rectangle
@@ -141,10 +141,14 @@
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
 								<Grid>
-									<Polygon Name="Polygon" Stroke="Black" StrokeThickness="3" 
+									<Polygon Name="Polygon" Stroke="DodgerBlue" StrokeThickness="3" 
 							Points="{Binding PointCollection, Converter={StaticResource mcolconv}}" 
 							Visibility = "{Binding Visibility, Converter={StaticResource BoolToVis}}"
-						    IsHitTestVisible="False"/>
+						    IsHitTestVisible="False">
+										<Polygon.Fill>
+											<SolidColorBrush Color="DodgerBlue" Opacity=".5"/>
+										</Polygon.Fill>
+									</Polygon>
 
 									<Line X1="{Binding CenterPoint.X, Converter={ikriv:MathConverter}, ConverterParameter=x-20}"
 							  Y1="{Binding CenterPoint.Y }"
@@ -264,12 +268,15 @@
 									<Ellipse
 										Width="{Binding Width}"
 										Height="{Binding Height}"
-										Stroke="Black"
+										Stroke="DodgerBlue"
 										StrokeThickness="3"
 										RenderTransformOrigin="0.5,0.5">
 										<Ellipse.RenderTransform>
 											<RotateTransform Angle="{Binding Angle}"/>
 										</Ellipse.RenderTransform>
+										<Ellipse.Fill>
+											<SolidColorBrush Color="DodgerBlue" Opacity=".5"/>
+										</Ellipse.Fill>
 									</Ellipse>
 							</DataTemplate>
 							</ItemsControl.ItemTemplate>
@@ -295,11 +302,12 @@
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
 								<Grid>
-									<Polygon Name="Polygon" Stroke="LightGray" StrokeThickness="1"
+									<Polygon Name="Polygon" Stroke="DodgerBlue" StrokeThickness="1"
 									         StrokeDashArray="1,1"
 							Points="{Binding PointCollection, Converter={StaticResource mcolconv}}" 
 							Visibility = "{Binding Visibility, Converter={StaticResource BoolToVis}}"
-						    IsHitTestVisible="False"/>
+						    IsHitTestVisible="False">
+									</Polygon>
 
 									<Line X1="{Binding CenterPoint.X, Converter={ikriv:MathConverter}, ConverterParameter=x-20}"
 							  Y1="{Binding CenterPoint.Y }"
@@ -401,7 +409,7 @@
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>
 									<Grid>
-										<Line Stroke="Black" StrokeThickness="3" IsHitTestVisible="False"
+										<Line Stroke="DodgerBlue" StrokeThickness="3" IsHitTestVisible="False"
 									X1="{Binding StartPoint.X}"
 									Y1="{Binding StartPoint.Y}"
 									X2="{Binding EndPoint.X}"

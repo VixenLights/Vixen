@@ -23,7 +23,7 @@
 	</Window.Resources>
 
 	<i:Interaction.Behaviors>
-		<catel:KeyPressToCommand Command="{Binding DeletePointCommand}" Key="Delete" />
+		<catel:KeyPressToCommand Command="{Binding DeleteShapeOrPointsCommand}" Key="Delete" />
 	</i:Interaction.Behaviors>
 
 	<DockPanel LastChildFill="true" Background="{DynamicResource BackColorBrush}">
