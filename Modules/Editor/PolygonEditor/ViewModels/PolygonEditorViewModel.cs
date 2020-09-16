@@ -744,7 +744,9 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// </summary>
 		public bool ShowSelect
 		{
-			get { return ShowSelectDraw; }
+			// The selection toolbar icon should be visible when
+			// the draw toolbars are visible or the add point toolbar is visible (pattern mode)
+			get { return ShowSelectDraw || ShowAddPoint; }
 		}
 
 		/// <summary>
@@ -1855,6 +1857,16 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 
 								// Insert the point into the point collection
 								polygon.InsertPoint(clickPosition, index + 1);
+
+								// Select the polygon so all the points show up in the point grid
+								SelectPolygon(polygon, true);
+
+								// If the number of points is greater than four then...
+								if (polygon.PointCollection.Count > 4)
+								{
+									// A wipe is no longer applicable so hide the green line
+									polygon.SegmentsVisible = false;
+								}
 							}
 						}
 					}
@@ -2391,9 +2403,8 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <returns>Returns true when the add polygon point is enabled</returns>
 		private bool IsAddPolygonPointEnabled()
 		{
-			// Adding polygon points is only valid after the selected polygon is completed (closed).
-			return SelectedPolygon != null &&
-				   SelectedPolygon.PolygonClosed;
+			// Only enable the add points capability when a polygon exists
+			return Polygons.Count > 0;
 		}
 
 		/// <summary>		
@@ -2557,6 +2568,18 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 					{
 						// Delete the specified point
 						polygon.DeletePoint(pt);
+
+						// If the time bar is NOT visible and
+						// the polygon was previously a wipe polygon and
+						// the point count is 3 or 4 then...
+						if (!TimeBarVisible &&
+							polygon.Polygon.FillType == PolygonFillType.Wipe &&
+						    (polygon.PointCollection.Count == 4 ||
+						     polygon.PointCollection.Count == 3))
+						{
+							// Display the green line
+							polygon.SegmentsVisible = true;
+						}
 					}
 					else
 					{

@@ -125,6 +125,7 @@ namespace VixenModules.Effect.Morph
 				CopyPolygons = false,
 				ShowStartSide = true,
 				ShowTimeBar = false,
+				AddPoint = true,
 				AllowMultipleShapes = false,
 			};
 
@@ -446,6 +447,17 @@ namespace VixenModules.Effect.Morph
 					// Add the sorted morph polygons back to the collection
 					MorphPolygons.Clear();
 					MorphPolygons.AddRange(morphPolygons);
+				}
+				// Otherwise if the polygon type is pattern then...
+				else if (PolygonType == PolygonType.Pattern)
+				{
+					// If there is a morph polygon then...
+					if (MorphPolygons.Count > 0)
+					{
+						// Update the effect fill type from the morph polygon fill type
+						// The polygon might be more than four points at which a wipe is not applicable
+						FillType = MorphPolygons[0].FillType;
+					}
 				}
 
 				// Force the view to refresh
@@ -1550,9 +1562,10 @@ namespace VixenModules.Effect.Morph
 					morphPolygon.Removed = false;
 
 					// If the polygon's fill type is set to wipe and
-					// the polygon is not a rectangle then...
+					// the polygon is not a rectangle or triangle then...
 					if (polygon.FillType == PolygonFillType.Wipe &&
-					    polygon.Points.Count != 4)
+					    !(polygon.Points.Count == 4 ||
+					      polygon.Points.Count == 3))
 					{
 						// Set the polygon fill type to solid
 						polygon.FillType = PolygonFillType.Solid;
