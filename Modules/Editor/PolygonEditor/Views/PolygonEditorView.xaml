@@ -1,0 +1,119 @@
+﻿<catel:Window x:Class="VixenModules.Editor.PolygonEditor.Views.PolygonEditorView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
+        xmlns:catel="http://schemas.catelproject.com"
+	    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+	    xmlns:views="clr-namespace:VixenModules.Editor.PolygonEditor.Views"
+	    xmlns:converters="clr-namespace:VixenModules.Editor.PolygonEditor.Converters"
+	    xmlns:common="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
+        mc:Ignorable="d"
+        Title="Polygon Editor"
+        WindowStartupLocation="CenterScreen">
+	<Window.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="..\Themes\Theme.xaml"/>
+				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+			<common:InverseBooleanConverter x:Key="InverseBoolConverter" />
+			<BooleanToVisibilityConverter x:Key="BoolToVis"/>
+		</ResourceDictionary>
+	</Window.Resources>
+
+	<i:Interaction.Behaviors>
+		<catel:KeyPressToCommand Command="{Binding DeleteShapeOrPointsCommand}" Key="Delete" />
+	</i:Interaction.Behaviors>
+
+	<DockPanel LastChildFill="true" Background="{DynamicResource BackColorBrush}">
+		<WrapPanel DockPanel.Dock="Bottom" Style="{StaticResource RowButtonRightContainerStyle}">
+			<Button Content="Ok" Command="{Binding OkCommand}" IsDefault="True" Style="{StaticResource RowButtonStyle}"/>
+			<Button Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True" Style="{StaticResource RowButtonStyle}"/>
+		</WrapPanel>
+
+		<ToolBarTray DockPanel.Dock="Top" Background="{DynamicResource BackColorBrush}">
+			<ToolBar>
+				<RadioButton Command="{Binding DrawLineCommand}" IsChecked="{Binding DrawLine}" ToolTip="Draw Line" GroupName="SelectDraw"
+							     Width="30"
+								 Visibility="{Binding Path=ShowSelectDraw, Converter={StaticResource BoolToVis}}">
+					<Image Source="/PolygonEditor;component/Images/buttonDrawLine.png" Height="20" Width="20"/>
+				</RadioButton>
+
+				<RadioButton Command="{Binding DrawPolygonCommand}" IsChecked="{Binding DrawPolygon}" ToolTip="Draw Polygon" GroupName="SelectDraw"
+							     Width="30"
+								 Visibility="{Binding Path=ShowSelectDraw, Converter={StaticResource BoolToVis}}">
+					<Image Source="/PolygonEditor;component/Images/buttonDrawPolygon.png" Height="20" Width="20"/>
+				</RadioButton>
+
+				<RadioButton  Command="{Binding DrawEllipseCommand}" IsChecked="{Binding DrawEllipse}" ToolTip="Draw Ellipse" GroupName="SelectDraw"
+				              Width="30"
+				              Visibility="{Binding Path=ShowSelectDraw, Converter={StaticResource BoolToVis}}">
+					<Image Source="/PolygonEditor;component/Images/buttonDrawEllipse.png" Height="20" Width="20"/>
+				</RadioButton>
+
+				<RadioButton  Command="{Binding AddPointCommand}" IsChecked="{Binding AddPoint}"
+							  ToolTip="Add Point" GroupName="SelectDraw"					        
+							     Width="30"
+								 Visibility="{Binding Path=ShowAddPoint, Converter={StaticResource BoolToVis}}">
+					<Image Source="/PolygonEditor;component/Images/AddPoint.png" Height="20" Width="20"/>
+				</RadioButton>
+
+				<RadioButton IsChecked="{Binding Path=IsSelecting, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+							     ToolTip="Selection mode" GroupName="SelectDraw"
+							     Width="30"
+								 Visibility="{Binding Path=ShowSelect, Converter={StaticResource BoolToVis}}">
+					<Image Source="/PolygonEditor;component/Images/buttonSelect.png" Height="20" Width="20"/>
+				</RadioButton>
+				<Button Command="{Binding PasteCommand}" ToolTip="Paste Polygon/Ellipse/Line"
+							Visibility="{Binding Path=ShowPaste, Converter={StaticResource BoolToVis}}">
+					<Image Source="/PolygonEditor;component/Images/Paste.png" Height="20" Width="20"/>
+				</Button>
+				<Button Command="{Binding CutCommand}" ToolTip="Cut Polygon/Ellipse/Line"
+							Visibility="{Binding Path=ShowCut, Converter={StaticResource BoolToVis}}">
+					<Image Source="/PolygonEditor;component/Images/Cut.png" Height="20" Width="20"/>
+				</Button>
+				<Button Command="{Binding CopyCommand}" ToolTip="Copy Polygon/Ellipse/Line"
+							Visibility="{Binding Path=ShowCopy, Converter={StaticResource BoolToVis}}">
+					<Image Source="/PolygonEditor;component/Images/Copy.png" Height="20" Width="20"/>
+				</Button>
+				<Button Command="{Binding DeleteCommand}"  ToolTip="Delete Polygon/Ellipse/Line"
+							Visibility="{Binding Path=ShowDelete, Converter={StaticResource BoolToVis}}">
+					<Image Source="/PolygonEditor;component/Images/Delete_32.png" Height="20" Width="20"/>
+				</Button>
+				<!--
+				<Button Command="{Binding SnapToGridCommand}"  ToolTip="Snap To Pixels">
+					<Image Source="/PolygonEditor;component/Images/SnapToGrid.png" Height="20" Width="20"/>
+				</Button>
+				-->
+				<Button Command="{Binding ToggleStartSideCommand}"  ToolTip="Toggle Start Side"
+					    Visibility="{Binding Path=ShowToggleStartSide, Converter={StaticResource BoolToVis}}">
+					<Image Source="/PolygonEditor;component/Images/ToggleStartSide.png" Height="20" Width="20" />
+				</Button>
+				<Button Command="{Binding ToggleStartPointCommand}"  ToolTip="Toggle Start Point"
+					    Visibility="{Binding Path=ShowToggleStartPoint, Converter={StaticResource BoolToVis}}">
+					<Image Source="/PolygonEditor;component/Images/ToggleStartPoint.png" Height="20" Width="20" />
+				</Button>
+
+				<Button Command="{Binding ConvertToLineCommand}"  ToolTip="Convert to Line">
+					<Image Source="/PolygonEditor;component/Images/PolygonToLine.png" Height="20" Width="20" />
+				</Button>
+				<Button Command="{Binding ConvertToPolygonCommand}"  ToolTip="Convert to Polygon">
+					<Image Source="/PolygonEditor;component/Images/LineToPolygon.png" Height="20" Width="20" />
+				</Button>
+				<Button Command="{Binding ConvertToEllipseCommand}"  ToolTip="Convert to Ellipse">
+					<Image Source="/PolygonEditor;component/Images/ConvertToEllipse.png" Height="20" Width="20" />
+				</Button>
+
+				<RadioButton  Command="{Binding ToggleLabelsCommand}" IsChecked="{Binding ShowLabels}"
+				              ToolTip="Shows or hides shape labels" GroupName="ShowLabels"					        
+				              Width="30"
+				              Visibility="{Binding Path=ShowAddPoint, Converter={StaticResource BoolToVis}}">
+					<Image Source="/PolygonEditor;component/Images/Label.png" Height="20" Width="20"/>
+				</RadioButton>
+			</ToolBar>
+		</ToolBarTray>
+		<views:PolygonControl  x:Name="PolygonUserControl" Grid.Column="1" Grid.Row="1" DockPanel.Dock="Left" HorizontalAlignment="Stretch">
+		</views:PolygonControl>
+	</DockPanel>
+</catel:Window>

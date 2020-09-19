@@ -60,6 +60,10 @@
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
+    <ProjectReference Include="..\..\App\Polygon\Polygon.csproj">
+      <Private>false</Private>
+      <ExcludeAssets>None</ExcludeAssets>
+    </ProjectReference>
     <ProjectReference Include="..\..\Effect\Effect\Effect.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
@@ -67,6 +71,9 @@
     <ProjectReference Include="..\..\Effect\Liquid\Emitter\Emitter.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Effect\Morph\MorphPolygon\IMorphPolygon.csproj">
+      <Private>false</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Effect\Wave\IWaveform\IWaveform.csproj">
       <Private>false</Private>
@@ -87,6 +94,10 @@
     <ProjectReference Include="..\..\..\Common\ValueTypes\ValueTypes.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\PolygonEditor\PolygonEditor.csproj">
+      <Private>false</Private>
+      <ExcludeAssets>None</ExcludeAssets>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
