@@ -1,0 +1,81 @@
+﻿<UserControl x:Class="VixenModules.Editor.PolygonEditor.Views.PolygonTimeBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VixenModules.Editor.PolygonEditor.Views"
+			 xmlns:views="clr-namespace:VixenModules.Editor.PolygonEditor.Views"
+			 xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+			 xmlns:ikriv="clr-namespace:IKriv.Wpf"
+			 xmlns:polygonConverters="clr-namespace:VixenModules.Editor.PolygonEditor.Converters"
+			 xmlns:common="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
+			 xmlns:catel="http://schemas.catelproject.com"
+			 xmlns:cmd="http://schemas.catelproject.com"
+			 mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+			 Cursor="{Binding TimeBarCusor}">
+	<i:Interaction.Triggers>
+		<i:EventTrigger EventName="MouseMove">
+			<catel:EventToCommand Command="{Binding MoveSnapshotCommand}" PassEventArgsToCommand="True" />
+		</i:EventTrigger>
+		<i:EventTrigger EventName="MouseLeftButtonDown">
+			<catel:EventToCommand Command="{Binding MouseLeftButtonDownTimeBarCommand}" PassEventArgsToCommand="True"/>
+		</i:EventTrigger>
+		<i:EventTrigger EventName="MouseLeftButtonUp">
+			<catel:EventToCommand Command="{Binding MouseLeftButtonUpTimeBarCommand}" PassEventArgsToCommand="True"/>
+		</i:EventTrigger>
+		<i:EventTrigger EventName="MouseLeave">
+			<catel:EventToCommand Command="{Binding MouseLeaveTimeBarCommand}" PassEventArgsToCommand="false"/>
+		</i:EventTrigger>
+	</i:Interaction.Triggers>
+
+	<UserControl.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="..\Themes\Theme.xaml"/>
+				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+			<polygonConverters:PointCollectionConverter x:Key="mcolconv" />
+			<ikriv:MathConverter x:Key="MathConverter" />
+			<common:ColorToSolidBrushConverter  x:Key="ColorToSolidColorBrush_ValueConverter"/>
+		</ResourceDictionary>
+	</UserControl.Resources>
+	
+	
+		<WrapPanel Orientation="Horizontal" Margin="0,15,0,0">
+			<Viewbox>
+				<Border BorderBrush="Black" BorderThickness="1">
+				<views:PolygonTimeBarCanvas  x:Name="TimeBarCanvas"
+				                             Height="40" 			 			                           			 
+				                             Width="{Binding Path=WindowWidth}"
+				                             Margin="0,0,0,0"
+				                             views:SizeObserver.Observe="True"
+				                             views:SizeObserver.ObservedWidth="{Binding TimeBarActualWidth, Mode=OneWayToSource}">
+				
+				<Canvas.Background>
+					<SolidColorBrush Color="Gray" Opacity="1"/>
+				</Canvas.Background>
+				
+				<ItemsControl ItemsSource="{Binding PolygonSnapshots}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<Canvas></Canvas>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<Grid>
+								<Polygon Name="Pointer"  StrokeThickness="1" 								 
+									 Fill="{Binding Color, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}"
+									 Stroke="{StaticResource SliderPointBorder}"
+								Points="{Binding PointCollection, Converter={StaticResource mcolconv}}" 							
+							    IsHitTestVisible="False"/>
+							</Grid>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</views:PolygonTimeBarCanvas>
+				</Border>
+			</Viewbox>
+		</WrapPanel>
+</UserControl>

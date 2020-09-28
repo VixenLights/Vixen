@@ -8,7 +8,9 @@ using Common.ValueTypes;
 using Vixen.Attributes;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using VixenModules.App.Polygon;
 using VixenModules.Effect.Liquid;
+using VixenModules.Effect.Morph;
 using VixenModules.Effect.Wave;
 using Brush = System.Windows.Media.Brush;
 using FontFamily = System.Windows.Media.FontFamily;
@@ -43,6 +45,8 @@ namespace VixenModules.Editor.EffectEditor
 			public static readonly Type Percentage = typeof (Percentage);
 			public static readonly Type Emitter = typeof(IEmitter);
 			public static readonly Type Waveform = typeof(IWaveform);
+			public static readonly Type PolygonContainer = typeof(PolygonContainer);
+			public static readonly Type MorphPolygon = typeof(IMorphPolygon);
 		}
 
 		public static class Wpf

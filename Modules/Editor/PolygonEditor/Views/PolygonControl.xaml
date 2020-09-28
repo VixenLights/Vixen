@@ -1,0 +1,608 @@
+﻿<UserControl x:Class="VixenModules.Editor.PolygonEditor.Views.PolygonControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:catel="http://schemas.catelproject.com"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"              
+			 xmlns:ikriv="clr-namespace:IKriv.Wpf"
+			 xmlns:polygonConverters="clr-namespace:VixenModules.Editor.PolygonEditor.Converters"			 			 
+		     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+			 xmlns:views="clr-namespace:VixenModules.Editor.PolygonEditor.Views"
+			 xmlns:viewmodels="clr-namespace:VixenModules.Editor.PolygonEditor.ViewModels"
+			 xmlns:common="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
+			 mc:Ignorable="d" 
+             d:DesignHeight="420" d:DesignWidth="800"
+			 x:Name="PolygonUserControl"
+             Cursor="{Binding CanvasCursor}">
+
+	<i:Interaction.Triggers>
+		<i:EventTrigger EventName="MouseMove">
+			<catel:EventToCommand Command="{Binding CanvasMouseMoveCommand}" PassEventArgsToCommand="True" />
+		</i:EventTrigger>
+		<i:EventTrigger EventName="MouseLeftButtonDown">
+			<catel:EventToCommand Command="{Binding CanvasMouseLeftButtonDownCommand}" PassEventArgsToCommand="True" />
+		</i:EventTrigger>
+		<i:EventTrigger EventName="MouseLeftButtonUp">
+			<catel:EventToCommand Command="{Binding CanvasMouseLeftButtonUpCommand}" PassEventArgsToCommand="True" />
+		</i:EventTrigger>
+	</i:Interaction.Triggers>
+
+	<UserControl.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		
+			<polygonConverters:PointCollectionConverter x:Key="mcolconv" />
+			<polygonConverters:PolygonPointXConverter x:Key="polyPointXConv" />
+			<polygonConverters:PolygonPointYConverter x:Key="polyPointYConv" />
+			<ikriv:MathConverter x:Key="MathConverter" />
+			<Color x:Key="BackColor">#444444</Color>
+			<BooleanToVisibilityConverter x:Key="BoolToVis" />
+			<common:ColorToSolidBrushConverter  x:Key="ColorToSolidColorBrush_ValueConverter"/>
+			<views:BindingProxy x:Key="proxy" Data="{Binding}" />
+		</ResourceDictionary>
+	</UserControl.Resources>
+
+	<DockPanel Margin="20,20,20,10">
+		<Grid DockPanel.Dock="Bottom" HorizontalAlignment="Stretch">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition/>
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+			<views:PolygonTimeBar x:Name="PolygonTimeBar" Margin="0,5" Grid.Column="0" Grid.Row="0" Visibility="{Binding Path=TimeBarVisible, Converter={StaticResource BoolToVis}}">
+			</views:PolygonTimeBar>
+			<WrapPanel Grid.Column="0" Grid.Row="1" Margin="5,5,0,0" Visibility="{Binding Path=TimeBarVisible, Converter={StaticResource BoolToVis}}">
+				<Button Command="{Binding PreviousPolygonSnapshotCommand}">
+					<Image Source="/PolygonEditor;component/Images/arrow_left.png" Height="20"></Image>
+				</Button>
+				<Button Margin="10,0,0,0" Command="{Binding NextPolygonSnapshotCommand}">
+					<Image Source="/PolygonEditor;component/Images/arrow_right.png" Height="20"></Image>
+				</Button>
+				<Button Margin="10,0,0,0" Command="{Binding AddPolygonSnapshotCommand}">Add Frame</Button>
+				<Button Margin="10,0,0,0" Command="{Binding DeletePolygonSnapshotCommand}">Delete Frame</Button>
+			</WrapPanel>
+		</Grid>
+				
+			<Grid HorizontalAlignment="Stretch">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="120" />
+				</Grid.ColumnDefinitions>
+			
+			<Viewbox Stretch="Uniform" x:Name="viewBox" Grid.Column="0">
+				<views:PolygonCanvas  x:Name="canvas" 
+				 Height="{Binding Path=CanvasHeight}" 
+				 Width="{Binding Path=CanvasWidth}"
+				 views:SizeObserver.Observe="True"
+				 views:SizeObserver.ObservedWidth="{Binding CanvasActualWidth, Mode=OneWayToSource}"
+				 views:SizeObserver.ObservedHeight="{Binding CanvasActualHeight, Mode=OneWayToSource}">
+
+						<Canvas.Background>
+							<SolidColorBrush Color="#444444" Opacity="1"/>
+						</Canvas.Background>
+
+						<Line X1="{Binding Path=PreviousPointMoving.X}"
+				  Y1="{Binding Path=PreviousPointMoving.Y}"
+				  X2="{Binding Path=PointMoving.X}" 
+                  Y2="{Binding Path=PointMoving.Y}"
+				  Stroke="DodgerBlue" StrokeThickness="1" StrokeDashArray="2 2"
+				  Visibility="{Binding Path=MovingPointVisibilityPrevious, Converter={StaticResource BoolToVis}}"/>
+
+						<Line X1="{Binding Path=PointMoving.X}"
+				  Y1="{Binding Path=PointMoving.Y}"
+				  X2="{Binding Path=NextPointMoving.X}" 
+                  Y2="{Binding Path=NextPointMoving.Y}"
+				  Stroke="DodgerBlue" StrokeThickness="1" StrokeDashArray="2 2"
+				  Visibility="{Binding Path=MovingPointVisibilityNext, Converter={StaticResource BoolToVis}}"/>
+
+						<Rectangle
+				Width="6"
+				Height="6"
+				Stroke="LightGray"
+				Fill="LightGray"
+				Canvas.Left="{Binding Path=PointMoving.X, Converter={ikriv:MathConverter}, ConverterParameter=x-3}"
+				Canvas.Top="{Binding Path=PointMoving.Y, Converter={ikriv:MathConverter}, ConverterParameter=x-3}" 
+				Visibility="{Binding Path=MovingPointVisibilityPrevious, Converter={StaticResource BoolToVis}}"/>
+
+					<ItemsControl ItemsSource="{Binding Polygons}">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<Canvas></Canvas>
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<TextBlock FontSize="24" Text="{Binding Label}"
+								           Visibility = "{Binding LabelVisible, Converter={StaticResource BoolToVis}}"/>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+
+						<ItemsControl.ItemContainerStyle>
+							<Style>
+								<Setter Property="Canvas.Left" Value="{Binding CenterPoint.X, Converter={ikriv:MathConverter}, ConverterParameter=x+5}"/>
+								<Setter Property="Canvas.Top" Value="{Binding CenterPoint.Y, Converter={ikriv:MathConverter}, ConverterParameter=x+5}"/>
+							</Style>
+						</ItemsControl.ItemContainerStyle>
+					</ItemsControl>
+
+
+					<ItemsControl ItemsSource="{Binding Polygons}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<Canvas>
+									</Canvas>
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Grid>
+									<Polygon Name="Polygon" Stroke="DodgerBlue" StrokeThickness="3" 
+							Points="{Binding PointCollection, Converter={StaticResource mcolconv}}" 
+							Visibility = "{Binding Visibility, Converter={StaticResource BoolToVis}}"
+						    IsHitTestVisible="False">
+										<Polygon.Fill>
+											<SolidColorBrush Color="DodgerBlue" Opacity=".5"/>
+										</Polygon.Fill>
+									</Polygon>
+
+									<Line X1="{Binding CenterPoint.X, Converter={ikriv:MathConverter}, ConverterParameter=x-20}"
+							  Y1="{Binding CenterPoint.Y }"
+							  X2="{Binding CenterPoint.X, Converter={ikriv:MathConverter}, ConverterParameter=x+20}" 
+							  Y2="{Binding CenterPoint.Y }"
+							  Stroke="{Binding CenterPointColor, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}" StrokeThickness="1"
+							  Visibility="{Binding Visibility, Converter={StaticResource BoolToVis}}"
+							  IsHitTestVisible="False"/>
+
+									<Line X1="{Binding CenterPoint.X}"
+						      Y1="{Binding CenterPoint.Y, Converter={ikriv:MathConverter}, ConverterParameter=x-20}"
+							  X2="{Binding CenterPoint.X}" 
+							  Y2="{Binding CenterPoint.Y, Converter={ikriv:MathConverter}, ConverterParameter=x+20}"
+							  Stroke="{Binding CenterPointColor, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}" StrokeThickness="1" 
+							  Visibility="{Binding Visibility, Converter={StaticResource BoolToVis}}"
+							  IsHitTestVisible="False"/>
+
+									<ItemsControl ItemsSource="{Binding Segments}"
+						    Visibility="{Binding Path=SegmentsVisible, Converter={StaticResource BoolToVis}}">
+
+										<ItemsControl.ItemsPanel>
+											<ItemsPanelTemplate>
+												<Canvas></Canvas>
+											</ItemsPanelTemplate>
+										</ItemsControl.ItemsPanel>
+
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<Line Stroke="{Binding Color, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}" StrokeThickness="2" IsHitTestVisible="False"
+									X1="{Binding Point1.X}"
+									Y1="{Binding Point1.Y}"
+									X2="{Binding Point2.X}"
+									Y2="{Binding Point2.Y}" />
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
+
+									<!-- Begin Child ItemsControl-->
+									<ItemsControl ItemsSource="{Binding PointCollection}">
+										<ItemsControl.ItemsPanel>
+											<ItemsPanelTemplate>
+												<Canvas></Canvas>
+											</ItemsPanelTemplate>
+										</ItemsControl.ItemsPanel>
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<Rectangle Width="7" Height="7" 
+											   Stroke="{Binding Color, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}" 
+											   Fill="{Binding Color, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}"
+											   IsHitTestVisible="False"/>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+
+										<ItemsControl.ItemContainerStyle>
+											<Style>
+												<Setter Property="Canvas.Left" Value="{Binding X, Converter={ikriv:MathConverter}, ConverterParameter=x-3}"/>
+												<Setter Property="Canvas.Top" Value="{Binding Y, Converter={ikriv:MathConverter}, ConverterParameter=x-3}"/>
+											</Style>
+										</ItemsControl.ItemContainerStyle>
+									</ItemsControl>
+									<!-- End Child Items Control -->
+
+									<ItemsControl ItemsSource="{Binding PointCollection}">
+										<ItemsControl.ItemsPanel>
+											<ItemsPanelTemplate>
+												<Canvas></Canvas>
+											</ItemsPanelTemplate>
+										</ItemsControl.ItemsPanel>
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<TextBlock Text="{Binding Label}"/>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+
+										<ItemsControl.ItemContainerStyle>
+											<Style>
+												<Setter Property="Canvas.Left" Value="{Binding X, Converter={ikriv:MathConverter}, ConverterParameter=x+5}"/>
+												<Setter Property="Canvas.Top" Value="{Binding Y, Converter={ikriv:MathConverter}, ConverterParameter=x+5}"/>
+											</Style>
+										</ItemsControl.ItemContainerStyle>
+									</ItemsControl>
+								</Grid>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+						<!-- Start Ellipses -->
+
+						<ItemsControl ItemsSource="{Binding Ellipses}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<Canvas></Canvas>
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<TextBlock FontSize="24" Text="{Binding Label}"
+									           Visibility = "{Binding LabelVisible, Converter={StaticResource BoolToVis}}"/>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+							<ItemsControl.ItemContainerStyle>
+								<Style>
+									<Setter Property="Canvas.Left" Value="{Binding CenterPoint.X, Converter={ikriv:MathConverter}, ConverterParameter=x+5}"/>
+									<Setter Property="Canvas.Top" Value="{Binding CenterPoint.Y, Converter={ikriv:MathConverter}, ConverterParameter=x+5}"/>
+								</Style>
+							</ItemsControl.ItemContainerStyle>
+						</ItemsControl>
+
+						<ItemsControl ItemsSource="{Binding Ellipses}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<Canvas></Canvas>
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Ellipse
+										Width="{Binding Width}"
+										Height="{Binding Height}"
+										Stroke="DodgerBlue"
+										StrokeThickness="3"
+										RenderTransformOrigin="0.5,0.5">
+										<Ellipse.RenderTransform>
+											<RotateTransform Angle="{Binding Angle}"/>
+										</Ellipse.RenderTransform>
+										<Ellipse.Fill>
+											<SolidColorBrush Color="DodgerBlue" Opacity=".5"/>
+										</Ellipse.Fill>
+									</Ellipse>
+							</DataTemplate>
+							</ItemsControl.ItemTemplate>
+
+							<ItemsControl.ItemContainerStyle>
+								<Style>
+									<Setter Property="Canvas.Left" Value="{Binding Left}"/>
+									<Setter Property="Canvas.Top" Value="{Binding Top}"/>
+								</Style>
+							</ItemsControl.ItemContainerStyle>
+						</ItemsControl>
+
+
+
+					<ItemsControl ItemsSource="{Binding Ellipses}">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<Canvas>
+								</Canvas>
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Grid>
+									<Polygon Name="Polygon" Stroke="DodgerBlue" StrokeThickness="1"
+									         StrokeDashArray="1,1"
+							Points="{Binding PointCollection, Converter={StaticResource mcolconv}}" 
+							Visibility = "{Binding Visibility, Converter={StaticResource BoolToVis}}"
+						    IsHitTestVisible="False">
+									</Polygon>
+
+									<Line X1="{Binding CenterPoint.X, Converter={ikriv:MathConverter}, ConverterParameter=x-20}"
+							  Y1="{Binding CenterPoint.Y }"
+							  X2="{Binding CenterPoint.X, Converter={ikriv:MathConverter}, ConverterParameter=x+20}" 
+							  Y2="{Binding CenterPoint.Y }"
+							  Stroke="{Binding CenterPointColor, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}" StrokeThickness="1"
+							  Visibility="{Binding Visibility, Converter={StaticResource BoolToVis}}"
+							  IsHitTestVisible="False"/>
+
+									<Line X1="{Binding CenterPoint.X}"
+						      Y1="{Binding CenterPoint.Y, Converter={ikriv:MathConverter}, ConverterParameter=x-20}"
+							  X2="{Binding CenterPoint.X}" 
+							  Y2="{Binding CenterPoint.Y, Converter={ikriv:MathConverter}, ConverterParameter=x+20}"
+							  Stroke="{Binding CenterPointColor, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}" StrokeThickness="1" 
+							  Visibility="{Binding Visibility, Converter={StaticResource BoolToVis}}"
+							  IsHitTestVisible="False"/>
+
+									
+									<ItemsControl ItemsSource="{Binding Segments}"
+						    Visibility="{Binding Path=SegmentsVisible, Converter={StaticResource BoolToVis}}">
+
+										<ItemsControl.ItemsPanel>
+											<ItemsPanelTemplate>
+												<Canvas></Canvas>
+											</ItemsPanelTemplate>
+										</ItemsControl.ItemsPanel>
+
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<Line Stroke="{Binding Color, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}" StrokeThickness="3" IsHitTestVisible="False"
+									X1="{Binding Point1.X}"
+									Y1="{Binding Point1.Y}"
+									X2="{Binding Point2.X}"
+									Y2="{Binding Point2.Y}" />
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
+									
+									
+									<!-- Begin Child ItemsControl-->
+									<ItemsControl ItemsSource="{Binding PointCollection}">
+										<ItemsControl.ItemsPanel>
+											<ItemsPanelTemplate>
+												<Canvas></Canvas>
+											</ItemsPanelTemplate>
+										</ItemsControl.ItemsPanel>
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<Rectangle Width="7" Height="7" 
+											   Stroke="{Binding Color, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}" 
+											   Fill="{Binding Color, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}"
+											   IsHitTestVisible="False"/>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+
+										<ItemsControl.ItemContainerStyle>
+											<Style>
+												<Setter Property="Canvas.Left" Value="{Binding X, Converter={ikriv:MathConverter}, ConverterParameter=x-3}"/>
+												<Setter Property="Canvas.Top" Value="{Binding Y, Converter={ikriv:MathConverter}, ConverterParameter=x-3}"/>
+											</Style>
+										</ItemsControl.ItemContainerStyle>
+									</ItemsControl>
+									<!-- End Child Items Control -->
+
+									<ItemsControl ItemsSource="{Binding PointCollection}">
+										<ItemsControl.ItemsPanel>
+											<ItemsPanelTemplate>
+												<Canvas></Canvas>
+											</ItemsPanelTemplate>
+										</ItemsControl.ItemsPanel>
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<TextBlock Text="{Binding Label}"/>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+
+										<ItemsControl.ItemContainerStyle>
+											<Style>
+												<Setter Property="Canvas.Left" Value="{Binding X, Converter={ikriv:MathConverter}, ConverterParameter=x+5}"/>
+												<Setter Property="Canvas.Top" Value="{Binding Y, Converter={ikriv:MathConverter}, ConverterParameter=x+5}"/>
+											</Style>
+										</ItemsControl.ItemContainerStyle>
+									</ItemsControl>
+								</Grid>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+					
+						<!-- End Ellipse -->
+
+					<ItemsControl ItemsSource="{Binding Lines}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<Canvas>
+									</Canvas>
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Grid>
+										<Line Stroke="DodgerBlue" StrokeThickness="3" IsHitTestVisible="False"
+									X1="{Binding StartPoint.X}"
+									Y1="{Binding StartPoint.Y}"
+									X2="{Binding EndPoint.X}"
+									Y2="{Binding EndPoint.Y}"/>
+
+										<Line X1="{Binding CenterPoint.X, Converter={ikriv:MathConverter}, ConverterParameter=x-20}"
+							  Y1="{Binding CenterPoint.Y }"
+							  X2="{Binding CenterPoint.X, Converter={ikriv:MathConverter}, ConverterParameter=x+20}" 
+							  Y2="{Binding CenterPoint.Y }"
+							  Stroke="{Binding CenterPointColor, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}" StrokeThickness="1"
+							  Visibility="{Binding Visibility, Converter={StaticResource BoolToVis}}"
+							  IsHitTestVisible="False"/>
+
+										<Line X1="{Binding CenterPoint.X}"
+						      Y1="{Binding CenterPoint.Y, Converter={ikriv:MathConverter}, ConverterParameter=x-20}"
+							  X2="{Binding CenterPoint.X}" 
+							  Y2="{Binding CenterPoint.Y, Converter={ikriv:MathConverter}, ConverterParameter=x+20}"
+							  Stroke="{Binding CenterPointColor, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}" StrokeThickness="1" 
+							  Visibility="{Binding Visibility, Converter={StaticResource BoolToVis}}"
+							  IsHitTestVisible="False"/>
+
+
+
+										<Path 
+								Visibility="{Binding Visibility, Converter={StaticResource BoolToVis}}"
+								IsHitTestVisible="False"
+								Stroke="{Binding CenterPointColor, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}" 
+								StrokeThickness="1" >
+											<Path.Data>
+												<EllipseGeometry 									
+						            Center="{Binding Path=CenterPoint.Point}" 
+									RadiusX="20" 
+									RadiusY="20" />
+											</Path.Data>
+										</Path>
+																				
+										<!-- Square Points -->
+										<ItemsControl ItemsSource="{Binding PointCollection}">
+											<ItemsControl.ItemsPanel>
+												<ItemsPanelTemplate>
+													<Canvas></Canvas>
+												</ItemsPanelTemplate>
+											</ItemsControl.ItemsPanel>
+											<ItemsControl.ItemTemplate>
+												<DataTemplate>
+													<Rectangle Width="6" Height="6" 
+											   Stroke="{Binding Color, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}" 
+											   Fill="{Binding Color, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}"
+											   IsHitTestVisible="False"/>
+												</DataTemplate>
+											</ItemsControl.ItemTemplate>
+
+											<ItemsControl.ItemContainerStyle>
+												<Style>
+													<Setter Property="Canvas.Left" Value="{Binding X, Converter={ikriv:MathConverter}, ConverterParameter=x-3}"/>
+													<Setter Property="Canvas.Top" Value="{Binding Y, Converter={ikriv:MathConverter}, ConverterParameter=x-3}"/>
+												</Style>
+											</ItemsControl.ItemContainerStyle>
+										</ItemsControl>
+
+									<ItemsControl ItemsSource="{Binding PointCollection}">
+										<ItemsControl.ItemsPanel>
+											<ItemsPanelTemplate>
+												<Canvas></Canvas>
+											</ItemsPanelTemplate>
+										</ItemsControl.ItemsPanel>
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<TextBlock Text="{Binding Label}"/>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+
+										<ItemsControl.ItemContainerStyle>
+											<Style>
+												<Setter Property="Canvas.Left" Value="{Binding X, Converter={ikriv:MathConverter}, ConverterParameter=x+5}"/>
+												<Setter Property="Canvas.Top" Value="{Binding Y, Converter={ikriv:MathConverter}, ConverterParameter=x+5}"/>
+											</Style>
+										</ItemsControl.ItemContainerStyle>
+									</ItemsControl>
+									</Grid>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</views:PolygonCanvas>
+				</Viewbox>
+			<StackPanel Grid.Column="1">
+				<Label Content="Name:"></Label>
+				<TextBox Margin="10,0,0,0" Text="{Binding SelectedShape.Label, UpdateSourceTrigger=PropertyChanged, FallbackValue=Select Shape}" Background="White"></TextBox>
+
+				<DataGrid Name="pointDataGrid" AutoGenerateColumns="False" DataContext="Binding Path=SelectedPoints" Margin="10,0,0,0" 
+				          RowHeaderWidth="0" DockPanel.Dock="Right" Grid.Column="1" 
+				          IsReadOnly="{Binding Data.SelectedPointsReadOnly, Source={StaticResource proxy}}">
+					<i:Interaction.Triggers>
+						<i:EventTrigger EventName="CurrentCellChanged">
+							<i:InvokeCommandAction Command="{Binding Data.CurrentCellChangedCommand, Source={StaticResource proxy}}"/>
+						</i:EventTrigger>
+						<i:EventTrigger EventName="CellEditEnding">
+							<i:InvokeCommandAction Command="{Binding Data.CellEditEndingCommand, Source={StaticResource proxy}}"/>
+						</i:EventTrigger>
+					</i:Interaction.Triggers>
+
+					<DataGrid.Columns>
+					<DataGridTextColumn Header="#" Width="*" IsReadOnly="True">
+						<DataGridTextColumn.Binding>
+							<Binding Path="Label">
+							</Binding>
+						</DataGridTextColumn.Binding>
+						<DataGridTextColumn.ElementStyle>
+							<Style TargetType="TextBlock">
+								<Setter Property="Background" Value="DarkGray"></Setter>
+							</Style>
+						</DataGridTextColumn.ElementStyle>
+					</DataGridTextColumn>
+
+					<DataGridTextColumn Header="X" Width="*">
+						<DataGridTextColumn.Binding>
+							<Binding Path="X">
+								<Binding.Converter>
+									<polygonConverters:PolygonPointXConverter/>
+								</Binding.Converter>
+								<Binding.ValidationRules>
+									<viewmodels:XValidationRule/>
+								</Binding.ValidationRules>
+							</Binding>
+						</DataGridTextColumn.Binding>
+						<DataGridTextColumn.EditingElementStyle>
+							<Style TargetType="TextBox">
+								<Setter Property="Validation.ErrorTemplate">
+									<Setter.Value>
+										<ControlTemplate>
+											<StackPanel>
+												<AdornedElementPlaceholder x:Name="placeholder" />
+												<Popup HorizontalAlignment="Left" PopupAnimation="Fade" Placement="Bottom" IsOpen="true">
+													<Grid Background="White">
+														<TextBlock Foreground="Red"  Text="{Binding [0].ErrorContent}"/>
+													</Grid>
+												</Popup>
+											</StackPanel>
+										</ControlTemplate>
+									</Setter.Value>
+								</Setter>
+							</Style>
+						</DataGridTextColumn.EditingElementStyle>
+					</DataGridTextColumn>
+
+					<DataGridTextColumn Header="Y" Width="*">
+						<DataGridTextColumn.Binding>
+							<Binding Path="Y">
+								<Binding.Converter>
+									<polygonConverters:PolygonPointYConverter/>
+								</Binding.Converter>
+								<Binding.ValidationRules>
+									<viewmodels:YValidationRule/>
+								</Binding.ValidationRules>
+							</Binding>
+						</DataGridTextColumn.Binding>
+						<DataGridTextColumn.EditingElementStyle>
+							<Style TargetType="TextBox">
+								<Setter Property="Validation.ErrorTemplate">
+									<Setter.Value>
+										<ControlTemplate>
+											<StackPanel>
+												<AdornedElementPlaceholder x:Name="placeholder" />
+												<Popup HorizontalAlignment="Left" PopupAnimation="Fade" Placement="Bottom" IsOpen="true">
+													<Grid Background="White">
+														<TextBlock Foreground="Red"  Text="{Binding [0].ErrorContent}"/>
+													</Grid>
+												</Popup>
+											</StackPanel>
+										</ControlTemplate>
+									</Setter.Value>
+								</Setter>
+							</Style>
+						</DataGridTextColumn.EditingElementStyle>
+					</DataGridTextColumn>
+				</DataGrid.Columns>
+			<DataGrid.RowValidationErrorTemplate>
+				<ControlTemplate>
+					<Grid Margin="0,-2,0,-2"
+					ToolTip="{Binding RelativeSource={RelativeSource
+					FindAncestor, AncestorType={x:Type DataGridRow}},
+					Path=(Validation.Errors)[0].ErrorContent}">
+						<Ellipse StrokeThickness="0" Fill="Red" 
+					Width="{TemplateBinding FontSize}" 
+					Height="{TemplateBinding FontSize}" />
+						<TextBlock Text="!" FontSize="{TemplateBinding FontSize}" 
+					FontWeight="Bold" Foreground="White" 
+					HorizontalAlignment="Center"  />
+					</Grid>
+				</ControlTemplate>
+			</DataGrid.RowValidationErrorTemplate>
+		</DataGrid>
+			</StackPanel>
+		</Grid>
+	</DockPanel>
+</UserControl>
