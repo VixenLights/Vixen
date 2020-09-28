@@ -346,29 +346,17 @@ namespace VixenModules.Editor.PolygonEditor.Adorners
 
 		private void HandleMiddleTop(object sender, DragDeltaEventArgs args)
 		{
-			bool scaled = false;
-
 			double scaleY = -args.VerticalChange / GetYScaleDenominator();
 			scaleY += 1;
-						
-			do
-			{								
-				Rect boundsCopy = Bounds;
-
-				var centerPoint = new Point((Bounds.Right - Bounds.Left) / 2, Bounds.Bottom);
-				ScaleTransform t = new ScaleTransform(1, scaleY, centerPoint.X, centerPoint.Y);
+			
+			var centerPoint = new Point((Bounds.Right - Bounds.Left) / 2, Bounds.Bottom);
+			ScaleTransform t = new ScaleTransform(1, scaleY, centerPoint.X, centerPoint.Y);
 				
-				// If the transform is valid then...
-				if (IsTransformValid(t))
-				{
-					TransformItems(t);
-					scaled = true;
-				}
-				scaleY = scaleY - 1.0;
-				scaleY /= 2.0;
-				scaleY += 1.0;				
+			// If the transform is valid then...
+			if (IsTransformValid(t))
+			{
+				TransformItems(t);
 			}
-			while (!scaled);
 		}
 
 		private void HandleRotate(object sender, DragDeltaEventArgs e)
