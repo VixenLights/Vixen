@@ -10,6 +10,9 @@ namespace VixenModules.App.CustomPropEditor.Services
 {
 	public class PropModelPersistenceService
 	{
+		private const string ImageFileName = "background.jpg";
+		private const string LegacyImageFileName = "background.png"; //Bug workaround. There were two flavors of the image filename. This is the legacy one.
+
 		public static bool SaveModel(Prop prop, string path)
 		{
 			using (var db = new LiteDatabase(path))
@@ -22,8 +25,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 
 				}
 				col.Insert(prop);
-				var fileName = "background.png";
-				db.FileStorage.Upload($"$/image/{fileName}", fileName, StreamFromBitmapSource(prop.Image));
+				db.FileStorage.Upload($"$/image/{ImageFileName}", ImageFileName, StreamFromBitmapSource(prop.Image));
 			}
 
 			return true;
@@ -35,8 +37,8 @@ namespace VixenModules.App.CustomPropEditor.Services
 			{
 				var col = db.GetCollection<Prop>("props");
 				col.Update(prop);
-				var fileName = "background.jpg";
-				db.FileStorage.Upload($"$/image/{fileName}", fileName, StreamFromBitmapSource(prop.Image));
+				CleanUpLegacyImages(db);
+				db.FileStorage.Upload($"$/image/{ImageFileName}", ImageFileName, StreamFromBitmapSource(prop.Image));
 
 				db.Shrink();
 			}
@@ -53,9 +55,11 @@ namespace VixenModules.App.CustomPropEditor.Services
 
 				p = col.FindAll().FirstOrDefault();
 
-				var fileName = "background.jpg";
-				
-				var file = db.FileStorage.FindById($"$/image/{fileName}");
+				var file = db.FileStorage.FindById($"$/image/{ImageFileName}");
+				if (file == null)
+				{
+					file = db.FileStorage.FindById($"$/image/{LegacyImageFileName}");
+				}
 				if (file != null)
 				{
 					Stream bmp = new MemoryStream();
@@ -115,6 +119,15 @@ namespace VixenModules.App.CustomPropEditor.Services
 
 			BitmapSource bmp = decoder.Frames[0];
 			return bmp;
+		}
+
+		private static void CleanUpLegacyImages(LiteDatabase db)
+		{
+			var file = db.FileStorage.FindById($"$/image/{LegacyImageFileName}");
+			if (file != null)
+			{
+				db.FileStorage.Delete($"$/image/{LegacyImageFileName}");
+			}
 		}
 	}
 }

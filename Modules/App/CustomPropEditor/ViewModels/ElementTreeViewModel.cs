@@ -181,7 +181,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			var result = RequestNewGroupName(String.Empty);
 			if (result.Result == MessageResult.OK)
 			{
-				var elementsToGroup = SelectedItems.Select(x => x.ElementModel).ToList();
+				var elementsToGroup = SelectedItems.Select(x => x.ElementModel).Distinct().ToList();
 				DeselectAll();
 				PropModelServices.Instance().CreateGroupForElementModels(result.Response, elementsToGroup);
 				OnModelsChanged();

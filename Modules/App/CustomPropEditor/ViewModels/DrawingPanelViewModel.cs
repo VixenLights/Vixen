@@ -6,8 +6,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Catel.Collections;
 using Catel.Data;
+using Catel.IoC;
 using Catel.MVVM;
+using Catel.Services;
 using Common.WPFCommon.Command;
+using Common.WPFCommon.Services;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
 using Brush = System.Drawing.Brush;
@@ -308,11 +311,25 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		public void DeleteSelectedLights()
 		{
-		    var lightstoDelete = SelectedItems.Select(l => l.Light).ToList();
-		    DeselectAll();
-            PropModelServices.Instance().RemoveLights(lightstoDelete);
-			RefreshLightViewModels();
-			OnLightModelsChanged();
+			var lightstoDelete = SelectedItems.Select(l => l.Light).ToList();
+			if (lightstoDelete.Any())
+			{
+				var dependencyResolver = this.GetDependencyResolver();
+				var mbs = dependencyResolver.Resolve<IMessageBoxService>();
+				var response = mbs.GetUserConfirmation(
+					"Deleting lights will remove them from all any/all groups they are part of. Are you sure?",
+					"Delete lights");
+
+				if (response.Result == MessageResult.OK)
+				{
+					DeselectAll();
+					PropModelServices.Instance().RemoveLights(lightstoDelete);
+					RefreshLightViewModels();
+					OnLightModelsChanged();
+				}
+				
+			}
+		   
 		}
 
 		public void DeselectAll()
