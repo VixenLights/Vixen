@@ -380,7 +380,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 			_centerDrag.Arrange(new Rect(Bounds.X + Bounds.Width/2 - _centerDrag.Width / 2, Bounds.Y + Bounds.Height/2 - _centerDrag.Height / 2, _centerDrag.Width, _centerDrag.Height));
 			//_centerDrag.Arrange(new Rect(_rotationCenter.X - _centerDrag.Width / 2, _rotationCenter.Y - _centerDrag.Height / 2, _centerDrag.Width, _centerDrag.Height));
 
-			_rotate.Arrange(new Rect(_rotationCenter.X - _rotate.Width / 2, Bounds.Y - 3 * _rotate.Height, _rotate.Width, _rotate.Height));
+			_rotate.Arrange(new Rect(_rotationCenter.X - _rotate.Width / 2, Bounds.Y - 5 * _rotate.Height, _rotate.Width, _rotate.Height));
 
 			return finalSize;
 		}
