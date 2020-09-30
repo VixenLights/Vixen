@@ -197,6 +197,7 @@
 			</ContextMenu>
 
 			<ContextMenu x:Key="ElementOrderTreeContextMenu">
+				<MenuItem Header="Reverse" Command="{Binding Path=DataContext.ElementOrderViewModel.ReverseSelectedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"></MenuItem>
 				<MenuItem Header="Rename" Command="{Binding Path=DataContext.ElementOrderViewModel.TemplateRenameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"></MenuItem>
 				<MenuItem Header="Find/Replace Rename" Command="{Binding Path=DataContext.ElementOrderViewModel.SubstitutionRenameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"></MenuItem>
 			</ContextMenu>
