@@ -200,6 +200,7 @@ namespace VixenApplication
 				var id = Process.GetCurrentProcess().Id;
 				var machineName = Environment.MachineName;
 				_uniqueProcessId = string.Format("{0}@{1}", id, machineName);
+				Logging.Info($"Process info: {_uniqueProcessId}");
 			}
 
 			return _uniqueProcessId;
@@ -269,7 +270,12 @@ namespace VixenApplication
 					{
 						var lockProcessInfo = File.ReadAllText(lockFilePath).Split('@');
 						var myProcessInfo = GetUniqueProcessId().Split('@');
-						if (lockProcessInfo[1].Equals(myProcessInfo[1]))
+						if (myProcessInfo.Length < 2 || lockProcessInfo.Length < 2)
+						{
+							//We have no real way of knowing, so have to assume it is locked.
+							locked = true;
+						}
+						else if (lockProcessInfo[1].Equals(myProcessInfo[1]))
 						{
 							//The machine name is the same so it was locked by this machine
 							var lockProcessId = Convert.ToInt32(lockProcessInfo[0]);
