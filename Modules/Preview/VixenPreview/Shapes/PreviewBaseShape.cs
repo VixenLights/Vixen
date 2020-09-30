@@ -484,13 +484,27 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 int X2 = Math.Max(rect.X, rect.X + rect.Width);
                 int Y1 = Math.Min(rect.Y, rect.Y + rect.Height);
                 int Y2 = Math.Max(rect.Y, rect.Y + rect.Height);
-                if (pixel.X >= X1 &&
-                    pixel.X <= X2 &&
-                    pixel.Y >= Y1 &&
-                    pixel.Y <= Y2)
+                if (_isHighPrecision)
                 {
-                    return true;
+	                if (pixel.Location.X >= X1 &&
+	                    pixel.Location.X <= X2 &&
+	                    pixel.Location.Y >= Y1 &&
+	                    pixel.Location.Y <= Y2)
+	                {
+		                return true;
+	                }
                 }
+                else
+                {
+	                if (pixel.X >= X1 &&
+	                    pixel.X <= X2 &&
+	                    pixel.Y >= Y1 &&
+	                    pixel.Y <= Y2)
+	                {
+		                return true;
+	                }
+                }
+                
             }
 			return false;
 		}
