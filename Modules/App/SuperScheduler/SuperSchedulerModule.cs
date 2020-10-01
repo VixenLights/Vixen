@@ -28,7 +28,7 @@ namespace VixenModules.App.SuperScheduler
 			CreateMenu();
 			//SetSchedulerEnableState(_data.IsEnabled);
 			_executor = new ScheduleExecutor(_data);
-			_executor.CheckSchedule();
+			//_executor.CheckSchedule();
 		}
 
 		public override void Unloading()
@@ -47,6 +47,11 @@ namespace VixenModules.App.SuperScheduler
 		{
 			get { return _data; }
 			set { _data = (SuperSchedulerData) value; }
+		}
+
+		public void Start()
+		{
+			_executor.CheckSchedule();
 		}
 
 		//private System.Timers.Timer Timer

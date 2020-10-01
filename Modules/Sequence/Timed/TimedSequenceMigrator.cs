@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
@@ -28,6 +29,8 @@ using VixenModules.Effect.Liquid;
 using VixenModules.Effect.Wipe;
 using ZedGraph;
 using Liquid;
+using Vixen.Module.Preview;
+using Vixen.Sys;
 
 namespace VixenModules.Sequence.Timed
 {
@@ -38,6 +41,7 @@ namespace VixenModules.Sequence.Timed
 	/// </summary>
 	public class TimedSequenceMigrator : IContentMigrator<XElement>
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		public TimedSequenceMigrator()
 		{
 			ValidMigrations = new[]
@@ -53,6 +57,17 @@ namespace VixenModules.Sequence.Timed
 				};
 		}
 
+		private static bool CanShowMessage()
+		{
+			//TODO Not thrilled with the use of this logic. This whole message thing needs to be refactored.
+			if (VixenSystem.UIThread == Thread.CurrentThread)
+			{
+				return true;
+			}
+
+			return false;
+		}
+
 		public XElement MigrateContent(XElement content, int fromVersion, int toVersion)
 		{
 			IMigrationSegment<XElement> migrationSegment =
@@ -63,6 +78,7 @@ namespace VixenModules.Sequence.Timed
 			}
 			content = migrationSegment.Execute(content);
 			ShowCompleteMessage(fromVersion, toVersion);
+			
 			return content;
 		}
 
@@ -81,20 +97,34 @@ namespace VixenModules.Sequence.Timed
 		}
 		private static void ShowCompleteMessage(int fromVersion, int toVersion)
 		{
-			var messageBox = new MessageBoxForm(
-				string.Format("Migration from version {0} to {1} is complete. You will need to save the sequence in the editor for the migration to persist or use it in a Vixen scheduled show.", fromVersion, toVersion),
-				"Sequence Upgrade", MessageBoxButtons.OK, SystemIcons.Information);
-			messageBox.StartPosition = FormStartPosition.CenterScreen;
-			messageBox.ShowDialog();
+			var msg =
+				$"Migration from version {fromVersion} to {toVersion} is complete. You will need to save the sequence in the editor for the migration to persist or use it in a Vixen scheduled show.";
+			if (CanShowMessage())
+			{
+				var messageBox = new MessageBoxForm(msg,
+					"Sequence Upgrade", MessageBoxButtons.OK, SystemIcons.Information);
+				messageBox.StartPosition = FormStartPosition.CenterScreen;
+				messageBox.ShowDialog();
+			}
+			else
+			{
+				Logging.Info(msg);
+			}
 		}
 
 
 		private XElement _Version_0_to_1(XElement content)
 		{
-			var messageBox = new MessageBoxForm(string.Format("Migrating sequence from version 0 to version 1. Changes include moving Nutcracker and Audio files to the common media folder.{0}{0}" +
-				"These changes are not backward compatible", Environment.NewLine), "Sequence Upgrade", MessageBoxButtons.OK, SystemIcons.Information);
-			messageBox.StartPosition = FormStartPosition.CenterScreen;
-			messageBox.ShowDialog();
+			if (CanShowMessage())
+			{
+				var messageBox = new MessageBoxForm(string.Format(
+						"Migrating sequence from version 0 to version 1. Changes include moving Nutcracker and Audio files to the common media folder.{0}{0}" +
+						"These changes are not backward compatible", Environment.NewLine), "Sequence Upgrade",
+					MessageBoxButtons.OK, SystemIcons.Information);
+				messageBox.StartPosition = FormStartPosition.CenterScreen;
+				messageBox.ShowDialog();
+			}
+
 			//  3/14/2015
 			//Migrate full path name of the background image to just the filename. Code will now look 
  			//relative to the profile for the module path to the filenames
@@ -196,11 +226,17 @@ namespace VixenModules.Sequence.Timed
 
 		private XElement _Version_1_to_2(XElement content)
 		{
-			var messageBox = new MessageBoxForm(string.Format(
-					"Migrating sequence from version 1 to version 2. Changes include upgrades to the Alternating effect to allow more than 2 colors.{0}{0}" +
-					"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade", MessageBoxButtons.OK, SystemIcons.Information);
-			messageBox.StartPosition = FormStartPosition.CenterScreen;
-			messageBox.ShowDialog();
+
+			if (CanShowMessage())
+			{
+				var messageBox = new MessageBoxForm(string.Format(
+						"Migrating sequence from version 1 to version 2. Changes include upgrades to the Alternating effect to allow more than 2 colors.{0}{0}" +
+						"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade",
+					MessageBoxButtons.OK, SystemIcons.Information);
+				messageBox.StartPosition = FormStartPosition.CenterScreen;
+				messageBox.ShowDialog();
+			}
+
 			//This migration deals with changing the Alternating effect to a Multi Alternating
 			//Style that allows N number of colors. 
 			var namespaces = GetStandardNamespaces();
@@ -305,13 +341,17 @@ namespace VixenModules.Sequence.Timed
 
 		private XElement _Version_2_to_3(XElement content)
 		{
-			var messageBox = new MessageBoxForm(string.Format(
-					"Migrating sequence from version 2 to version 3. This may take a few minutes if the sequence is large.{0}{0}Changes include the following:{0}{0}Snowflakes and Fireworks now allow more color options as well as enhanced features.{0}" + 
-					"Snowflakes had a bug where the flakes only went one direction. This has been corrected, so you may see some different behavior than before. "+
-					"You may need to set the string orientation to get them going the right direction. Please review them.{0}{0}" +
-					"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade", MessageBoxButtons.OK, SystemIcons.Information);
-			messageBox.StartPosition = FormStartPosition.CenterScreen;
-			messageBox.ShowDialog();
+			if (CanShowMessage())
+			{
+				var messageBox = new MessageBoxForm(string.Format(
+						"Migrating sequence from version 2 to version 3. This may take a few minutes if the sequence is large.{0}{0}Changes include the following:{0}{0}Snowflakes and Fireworks now allow more color options as well as enhanced features.{0}" +
+						"Snowflakes had a bug where the flakes only went one direction. This has been corrected, so you may see some different behavior than before. " +
+						"You may need to set the string orientation to get them going the right direction. Please review them.{0}{0}" +
+						"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade",
+					MessageBoxButtons.OK, SystemIcons.Information);
+				messageBox.StartPosition = FormStartPosition.CenterScreen;
+				messageBox.ShowDialog();
+			}
 
 			MigrateSnowflakesFrom2To3(content);
 
@@ -448,12 +488,16 @@ namespace VixenModules.Sequence.Timed
 
 		private XElement _Version_3_to_4(XElement content)
 		{
-			var messageBox = new MessageBoxForm(string.Format(
-					"Migrating sequence from version 3 to version 4. This may take a few minutes if the sequence is large.{0}{0}Changes include the following:{0}{0}" +
-					"Minor changes to how the default brightness is handled in the Chase and Spin effect to make it easier to use in layer mixing.{0}" +
-					"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade", MessageBoxButtons.OK, SystemIcons.Information);
-			messageBox.StartPosition = FormStartPosition.CenterScreen;
-			messageBox.ShowDialog();
+			if (CanShowMessage())
+			{
+				var messageBox = new MessageBoxForm(string.Format(
+						"Migrating sequence from version 3 to version 4. This may take a few minutes if the sequence is large.{0}{0}Changes include the following:{0}{0}" +
+						"Minor changes to how the default brightness is handled in the Chase and Spin effect to make it easier to use in layer mixing.{0}" +
+						"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade",
+					MessageBoxButtons.OK, SystemIcons.Information);
+				messageBox.StartPosition = FormStartPosition.CenterScreen;
+				messageBox.ShowDialog();
+			}
 
 			MigrateChaseFrom3To4(content);
 			MigrateSpinFrom3To4(content);
@@ -463,13 +507,17 @@ namespace VixenModules.Sequence.Timed
 
 		private XElement _Version_4_to_5(XElement content)
 		{
-			var messageBox = new MessageBoxForm(string.Format(
-					"Migrating sequence from version 4 to version 5. This may take a few minutes if the sequence is large.{0}{0}Changes include the following:{0}{0}" +
-					"Minor change to allow LipSync Matrix elements to work with Bitmap pictures .{0}" +
-					"Changes to allow compatibility with new Vixen3 ModuleStore.{0}" +
-					"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade", MessageBoxButtons.OK, SystemIcons.Information);
-			messageBox.StartPosition = FormStartPosition.CenterScreen;
-			messageBox.ShowDialog();
+			if (CanShowMessage())
+			{
+				var messageBox = new MessageBoxForm(string.Format(
+						"Migrating sequence from version 4 to version 5. This may take a few minutes if the sequence is large.{0}{0}Changes include the following:{0}{0}" +
+						"Minor change to allow LipSync Matrix elements to work with Bitmap pictures .{0}" +
+						"Changes to allow compatibility with new Vixen3 ModuleStore.{0}" +
+						"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade",
+					MessageBoxButtons.OK, SystemIcons.Information);
+				messageBox.StartPosition = FormStartPosition.CenterScreen;
+				messageBox.ShowDialog();
+			}
 
 			MigrateLipSyncFrom4To5(content);
 			return content;
@@ -477,12 +525,16 @@ namespace VixenModules.Sequence.Timed
 
 		private XElement _Version_5_to_6(XElement content)
 		{
-			var messageBox = new MessageBoxForm(string.Format(
-				"Migrating sequence from version 5 to version 6. This may take a few minutes if the sequence is large.{0}{0}Changes include the following:{0}{0}" +
-				"Changes to allow LipSync string elements to work with Face properties instead of maps.{0}" +
-				"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade", MessageBoxButtons.OK, SystemIcons.Information);
-			messageBox.StartPosition = FormStartPosition.CenterScreen;
-			messageBox.ShowDialog();
+			if (CanShowMessage())
+			{
+				var messageBox = new MessageBoxForm(string.Format(
+						"Migrating sequence from version 5 to version 6. This may take a few minutes if the sequence is large.{0}{0}Changes include the following:{0}{0}" +
+						"Changes to allow LipSync string elements to work with Face properties instead of maps.{0}" +
+						"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade",
+					MessageBoxButtons.OK, SystemIcons.Information);
+				messageBox.StartPosition = FormStartPosition.CenterScreen;
+				messageBox.ShowDialog();
+			}
 
 			MigrateLipSyncFrom5To6(content);
 			return content;
@@ -490,25 +542,33 @@ namespace VixenModules.Sequence.Timed
 
 		private XElement _Version_6_to_7(XElement content)
 		{
-			var messageBox = new MessageBoxForm(string.Format(
-				"Migrating sequence from version 6 to version 7. This may take a few minutes if the sequence is large.{0}{0}Changes include the following:{0}" +
-				"Changes to the Wipe direction property, Add movement curve and a reverse direction option.{0}" +
-				"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade", MessageBoxButtons.OK, SystemIcons.Information);
-			messageBox.StartPosition = FormStartPosition.CenterScreen;
-			messageBox.ShowDialog();
-			
+			if (CanShowMessage())
+			{
+				var messageBox = new MessageBoxForm(string.Format(
+						"Migrating sequence from version 6 to version 7. This may take a few minutes if the sequence is large.{0}{0}Changes include the following:{0}" +
+						"Changes to the Wipe direction property, Add movement curve and a reverse direction option.{0}" +
+						"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade",
+					MessageBoxButtons.OK, SystemIcons.Information);
+				messageBox.StartPosition = FormStartPosition.CenterScreen;
+				messageBox.ShowDialog();
+			}
+
 			MigrateWipeFrom6To7(content);
 			return content;
 		}
 
 		private XElement _Version_7_to_8(XElement content)
 		{
-			var messageBox = new MessageBoxForm(string.Format(
-				"Migrating sequence from version 7 to version 8. This may take a few minutes if the sequence is large.{0}{0}Changes include the following:{0}" +
-				"Minor changes to the Liquid Effect, adding the ability to specify the start position of animated emitters.{0}" +
-				"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade", MessageBoxButtons.OK, SystemIcons.Information);
-			messageBox.StartPosition = FormStartPosition.CenterScreen;
-			messageBox.ShowDialog();
+			if (CanShowMessage())
+			{
+				var messageBox = new MessageBoxForm(string.Format(
+						"Migrating sequence from version 7 to version 8. This may take a few minutes if the sequence is large.{0}{0}Changes include the following:{0}" +
+						"Minor changes to the Liquid Effect, adding the ability to specify the start position of animated emitters.{0}" +
+						"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade",
+					MessageBoxButtons.OK, SystemIcons.Information);
+				messageBox.StartPosition = FormStartPosition.CenterScreen;
+				messageBox.ShowDialog();
+			}
 
 			MigrateLiquidFrom7To8(content);
 			return content;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Vixen.Module;
@@ -29,7 +30,9 @@ namespace Vixen.Sys
 		private static bool _systemConfigSaving;
 		private static bool _moduleConfigSaving;
 
-		internal static bool MigrationOccured { get; set; }	
+		internal static bool MigrationOccured { get; set; }
+
+		public static Thread UIThread { get; set; }
 
 		public static bool IsSaving()
 		{
