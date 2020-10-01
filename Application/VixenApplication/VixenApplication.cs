@@ -29,6 +29,8 @@ using Common.Controls.Theme;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog.Targets;
+using Vixen.Module.App;
+using VixenModules.App.SuperScheduler;
 using Application = System.Windows.Forms.Application;
 using Point = System.Drawing.Point;
 using SystemFonts = System.Drawing.SystemFonts;
@@ -64,6 +66,7 @@ namespace VixenApplication
 		{
 			InitializeComponent();
 
+			VixenSystem.UIThread = Thread.CurrentThread;
 			_startupProgress = new Progress<Tuple<int, string>>(UpdateProgress);
 
             //Begin WPF init
@@ -416,6 +419,11 @@ namespace VixenApplication
 			progressBar.Visible = false;
 			PopulateRecentSequencesList();
 			EnableButtons();
+
+		    // This is a hack to workaround threading issues in the Scheduler start up. TODO revisit and solve this in a better way.
+			var scheduler = ApplicationServices.Get<IAppModuleInstance>(SuperSchedulerDescriptor._typeId) as SuperSchedulerModule;
+			scheduler?.Start();
+
 			Cursor = Cursors.Default;
 		}
 

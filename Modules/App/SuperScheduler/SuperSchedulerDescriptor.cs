@@ -5,7 +5,7 @@ namespace VixenModules.App.SuperScheduler
 {
 	public class SuperSchedulerDescriptor : AppModuleDescriptorBase
 	{
-		private Guid _typeId = new Guid("{985315E8-2B83-4D1A-89D1-58BFEA7835A0}");
+		public static Guid _typeId = new Guid("{985315E8-2B83-4D1A-89D1-58BFEA7835A0}");
 
 		public override string TypeName
 		{

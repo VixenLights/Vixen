@@ -59,6 +59,10 @@
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
+    <ProjectReference Include="..\..\Modules\App\SuperScheduler\SuperScheduler.csproj">
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
     <ProjectReference Include="..\..\Modules\PostFilter\DimmingCurve\DimmingCurve.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
