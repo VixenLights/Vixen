@@ -33,6 +33,7 @@ namespace Vixen.Sys
 		internal static bool MigrationOccured { get; set; }
 
 		public static Thread UIThread { get; set; }
+		public static SynchronizationContext UIContext { get; set; }
 
 		public static bool IsSaving()
 		{

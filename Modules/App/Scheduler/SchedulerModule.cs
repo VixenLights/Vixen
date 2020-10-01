@@ -37,7 +37,7 @@ namespace VixenModules.App.Scheduler
 			
 			_AddApplicationMenu();
 			_SetEnableState(_data.IsEnabled);
-			_synchronizationContext = SynchronizationContext.Current;
+			_synchronizationContext = VixenSystem.UIContext;
 			Logging.Info("Scheduler module loaded.");
 		}
 
