@@ -22,7 +22,7 @@ namespace VixenModules.App.SuperScheduler
 		public ScheduleExecutor(SuperSchedulerData data)
 		{
 			Data = data;
-			_synchronizationContext = SynchronizationContext.Current;
+			_synchronizationContext = VixenSystem.UIContext;
 			if (Enabled)
 			{
 				Timer.Enabled = true;
@@ -57,7 +57,8 @@ namespace VixenModules.App.SuperScheduler
 			set
 			{
 				_enabled = value;
-				ShowStatusForm(_enabled);
+				_synchronizationContext.Send(o => ShowStatusForm(_enabled), null);
+				
 				if (Enabled)
 				{
 					Timer.Enabled = true;
