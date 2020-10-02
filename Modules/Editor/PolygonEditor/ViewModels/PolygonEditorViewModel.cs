@@ -4789,27 +4789,32 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			{
 				// Transform the point
 				Point transformedPoint = scaleTransform.Transform(point.GetPoint());
-				
+
+				// Round the point to ten fractional digits to account for floating point errors
+				// when scaling the points
+				double x = Math.Round(transformedPoint.X, 10);
+				double y = Math.Round(transformedPoint.Y, 10);
+
 				// If the point is off the canvas to the left
-				if (transformedPoint.X < 0)
+				if (x < 0)
 				{
 					isTransformValid = false;
 				}
 
 				// If the point is off the canvas to the top
-				if (transformedPoint.Y < 0)
+				if (y < 0)
 				{
 					isTransformValid = false;
 				}
 
 				// If the point is off the canvas to the right
-				if (transformedPoint.X > ActualWidth - 1)
+				if (x > ActualWidth - 1)
 				{
 					isTransformValid = false;
 				}
 
 				// If the point is off the canvas to the bottom
-				if (transformedPoint.Y > ActualHeight - 1)
+				if (y > ActualHeight - 1)
 				{
 					isTransformValid = false;
 				}
