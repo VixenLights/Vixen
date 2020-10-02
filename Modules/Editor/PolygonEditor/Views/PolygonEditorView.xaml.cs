@@ -67,35 +67,36 @@ namespace VixenModules.Editor.PolygonEditor.Views
 				// Take the minimum scale factor between the width and height
 				double factor = Math.Min(wfactor, hfactor);
 
+				// Calculate the width and height of the canvas using the scale factor and rounding to the next largest pixel
+				vm.CanvasWidth = (int)Math.Ceiling(_polygonContainer.Width * factor);
+				vm.CanvasHeight = (int)Math.Ceiling(_polygonContainer.Height * factor);
+
 				// Determine the X and Y scale factors
 				double xScaleFactor = 1.0; 
 
 				// Need to guard against dividing by zero when working with 1 pixel width
-				if ((_polygonContainer.Width - 1.0) == 0.0)
+				if (_polygonContainer.Width - 1.0 == 0.0)
 				{
-					xScaleFactor = 1.0;
+					xScaleFactor = (vm.CanvasWidth - 1.0);
 				}
 				else
 				{
-					xScaleFactor = (_polygonContainer.Width * factor - 1.0) / (_polygonContainer.Width - 1.0);
+					xScaleFactor = (vm.CanvasWidth - 1.0) / (_polygonContainer.Width - 1.0);
 				}
 
 				double yScaleFactor = 1.0;
 
 				// Need to guard against dividing by zero when working with 1 pixel height
-				if ((_polygonContainer.Height - 1.0) == 0.0)
+				if (_polygonContainer.Height - 1.0 == 0.0)
 				{
-					yScaleFactor = (_polygonContainer.Height * factor - 1.0); 
+					yScaleFactor = (vm.CanvasHeight - 1.0);
 				}
 				else
 				{
-					yScaleFactor = (_polygonContainer.Height * factor - 1.0) / (_polygonContainer.Height - 1.0);
+					yScaleFactor = (vm.CanvasHeight - 1.0) / (_polygonContainer.Height - 1.0);
 				}
 				
-				// Give the view model the drawing canvas width and height
-				vm.CanvasWidth = (int)Math.Ceiling(_polygonContainer.Width * factor);
-				vm.CanvasHeight = (int) Math.Ceiling(_polygonContainer.Height * factor);
-
+				
 				// Give the polygon point converter the scale factor
 				PolygonPointXConverter.XScaleFactor = xScaleFactor;
 				PolygonPointYConverter.YScaleFactor = yScaleFactor;
