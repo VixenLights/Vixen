@@ -11,6 +11,7 @@ on:
       - '**/README.md'
       - .github/**
       - .tgitconfig
+      - 'Release Notes.txt'
 
   pull_request:
     branches:
@@ -20,6 +21,7 @@ on:
       - '**/README.md'
       - .github/**
       - .tgitconfig
+      - 'Release Notes.txt'
     
 
 jobs:
