@@ -162,13 +162,13 @@ namespace VixenModules.Effect.Wave
 			}
 		}
 
-		private ExpandoObjectObservableCollection<IWaveform> _waves;
+		private WaveFormCollection _waves;
 		
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Waves")]
 		[ProviderDescription(@"Waves")]
 		[PropertyOrder(2)]
-		public ExpandoObjectObservableCollection<IWaveform> Waves
+		public WaveFormCollection Waves
 		{
 			get
 			{
