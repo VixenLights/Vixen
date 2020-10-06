@@ -12,6 +12,7 @@ on:
       - '**/README.md'
       - .github/**
       - .tgitconfig
+      - 'Release Notes.txt'
 
 jobs:
 
