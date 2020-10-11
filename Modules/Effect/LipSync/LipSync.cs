@@ -379,7 +379,7 @@ namespace VixenModules.Effect.LipSync
 
 		private void SetupMarks()
 		{
-			if (MarkCollections == null || !MarkCollections.Any())
+			if (MarkCollections == null || MarkCollections.All(x => x.CollectionType == MarkCollectionType.Generic))
 			{
 				LipSyncMode = LipSyncMode.Phoneme;
 				return;
