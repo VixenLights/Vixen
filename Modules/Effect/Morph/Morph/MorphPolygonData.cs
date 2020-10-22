@@ -84,7 +84,10 @@ namespace VixenModules.Effect.Morph
 				StartOffset = StartOffset,
 				TailBrightness = new Curve(TailBrightness),
 				HeadBrightness = new Curve(HeadBrightness),
-				FillBrightness =  new Curve(FillBrightness)
+				FillBrightness =  new Curve(FillBrightness),
+				Polygon = Polygon?.Clone(),
+				Line = Line?.Clone(),
+				Ellipse = Ellipse?.Clone()
 			};
 
 			return result;
