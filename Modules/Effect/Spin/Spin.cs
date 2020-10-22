@@ -603,9 +603,14 @@ namespace VixenModules.Effect.Spin
 			double pulseInterpolationOffset = 1.0/(double) targetNodeCount;
 
 			// figure out either the revolution count or time, based on what data we have
-			if (SpeedFormat == SpinSpeedFormat.RevolutionCount) {
-				revTimeMs = (TimeSpan.TotalMilliseconds - pulseConstant)/
-				            (RevolutionCount + pulseFractional - pulseInterpolationOffset);
+			if (SpeedFormat == SpinSpeedFormat.RevolutionCount)
+			{
+				var t = (RevolutionCount + pulseFractional - pulseInterpolationOffset);
+				if (t <= 0)
+				{
+					t = RevolutionCount > 0?RevolutionCount:1;
+				}
+				revTimeMs = (TimeSpan.TotalMilliseconds - pulseConstant) / t;
 			}
 			else if (SpeedFormat == SpinSpeedFormat.RevolutionFrequency) {
 				revTimeMs = (1.0/RevolutionFrequency)*1000.0; // convert Hz to period ms
