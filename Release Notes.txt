@@ -1,5 +1,17 @@
 Release Notes - Vixen 3
 
+
+Release Notes - Vixen 3 - 3.7u1 Build 
+
+** Bug
+    * [VIX-2969] - Wave Effect does not allow the user to change the Wave Type
+    * [VIX-2978] - Lipsync effects may not properly adjust back to the old Phoneme default.
+
+** Improvement
+    * [VIX-2974] - Add End of Mark alignment indicators
+	
+	
+
 Release Notes - Vixen 3 - 3.7u0 Build 
 
 ** Improvement
