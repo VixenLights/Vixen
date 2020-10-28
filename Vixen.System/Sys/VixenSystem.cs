@@ -156,10 +156,10 @@ namespace Vixen.Sys
 
 		public static async Task<bool> SaveSystemAndModuleConfigAsync()
 		{
-			var systemConfig = SaveSystemConfigAsync();
-			var moduleConfig = SaveModuleConfigAsync();
-			await systemConfig;
-			await moduleConfig;
+			List<Task> taskList = new List<Task>();
+			taskList.Add(SaveSystemConfigAsync());
+			taskList.Add(SaveModuleConfigAsync());
+			await Task.WhenAll(taskList.ToArray());
 			return true;
 		}
 
@@ -233,6 +233,11 @@ namespace Vixen.Sys
 
 		public static void LoadSystemConfig(IProgress<Tuple<int, string>> progress= null)
 		{
+			while (_systemConfigSaving || _moduleConfigSaving)
+			{
+				Logging.Info("Reload Requested while save in progress. Waiting 5 ms.");
+				Thread.Sleep(5);
+			}
 			Execution.initInstrumentation();
 			DataFlow = new DataFlowManager();
 			Elements = new ElementManager();
