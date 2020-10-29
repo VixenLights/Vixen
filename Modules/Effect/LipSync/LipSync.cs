@@ -916,6 +916,19 @@ namespace VixenModules.Effect.LipSync
 							}
 						}
 					}
+					else
+					{
+						//in mark mode with no marks, draw a rest.
+						if (_phonemeBitmaps.TryGetValue(PhonemeType.REST, out displayImage))
+						{
+							var endX = (int)((TimeSpan.Ticks + StartTime.Ticks) / (double)TimeSpan.Ticks * clipRectangle.Width);
+							var startX = (int)(StartTime.Ticks / (double)TimeSpan.Ticks * clipRectangle.Width);
+							scaledImage = new Bitmap(displayImage,
+								Math.Min(clipRectangle.Width, endX - startX),
+								clipRectangle.Height);
+							g.DrawImage(scaledImage, clipRectangle.X, clipRectangle.Y);
+						}
+					}
 				}
 				else
 				{
