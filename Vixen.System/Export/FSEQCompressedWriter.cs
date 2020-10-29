@@ -18,6 +18,7 @@ namespace Vixen.Export
 		private const byte VMinor = 0;
 		private const byte VMajor = 2;
 		private const ushort FixedHeaderLength = 32;
+		private const double V2FseqOutCompressionBlockSize = 64 * 1024; // 64KB blocks
 
 		//Working fields
 		private uint _offsetToChannelData = 0;
@@ -74,6 +75,10 @@ namespace Vixen.Export
 			var header = new byte[FixedHeaderLength];
 
 			var length = FixedHeaderLength + _compressBlockMap.Count * 8 + _sparseRangeBlocks.Count * 6;
+
+#if DEBUG
+			Logging.Info($"Number of Compression blocks {_compressBlockMap.Count} Calculated {_numberCompressionBlocks}");
+#endif
 			
 			// Header Information
 			// Format Identifier
@@ -361,8 +366,8 @@ namespace Vixen.Export
 		private uint ComputeMaxBlockCount()
 		{
 			ulong size = (ulong) (_channelsPerFrame * _numberFrames);
-			var numberBlocks = size;
-			numberBlocks /= (64 * 2014);
+			var numberBlocks = Math.Ceiling(size / V2FseqOutCompressionBlockSize);
+			
 			if (numberBlocks > 255)
 			{
 				numberBlocks = 255;
@@ -380,12 +385,12 @@ namespace Vixen.Export
 			}
 
 			var frameCount = _numberFrames - 10;  //peel off ten frames that we will put in the first block
-			numberBlocks = frameCount / _framesPerBlock + 1;
+			numberBlocks = Math.Ceiling(frameCount / (double)_framesPerBlock);
 
 			while (numberBlocks > 254)
 			{
 				_framesPerBlock++;
-				numberBlocks = frameCount / _framesPerBlock + 1;
+				numberBlocks = Math.Ceiling(frameCount / (double)_framesPerBlock);
 			}
 
 			// first block is going to be smaller and special so add one for it
