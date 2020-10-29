@@ -106,6 +106,8 @@ namespace VixenApplication
 			toolStripStatusLabelExecutionState.ForeColor = ThemeColorTable.ForeColor;
 			toolStripStatusLabel_memory.ForeColor = ThemeColorTable.ForeColor;
 			contextMenuStripRecent.Renderer = new ThemeToolStripRenderer();
+			progressBar.TextColor = ThemeColorTable.ForeColor;
+			progressBar.ProgressColor = Color.DarkGreen;
 
 			string[] args = Environment.GetCommandLineArgs();
 			foreach (string arg in args) {
@@ -419,7 +421,7 @@ namespace VixenApplication
 			progressBar.Visible = false;
 			PopulateRecentSequencesList();
 			EnableButtons();
-
+			MakeTopMost();
 			Cursor = Cursors.Default;
 		}
 
@@ -436,15 +438,23 @@ namespace VixenApplication
 			serviceLocator.AutoRegisterTypesViaAttributes = true;
 		}
 
-		private async void VixenApplication_Shown(object sender, EventArgs e)
+		private void VixenApplication_Shown(object sender, EventArgs e)
 		{
 			CheckForTestBuild();
-			//Try to make sure at load we are on top.
-			await Task.Delay(750);
 			MakeTopMost();
 		}
 
-		private void MakeTopMost()
+		private async void MakeTopMost()
+		{
+			await Task.Run(async delegate
+			{
+				await Task.Delay(1000);
+				Invoke(new MethodInvoker(SetTopMost));
+			});
+			
+		}
+
+		private void SetTopMost()
 		{
 			TopMost = true;
 			TopMost = false;
@@ -960,10 +970,25 @@ namespace VixenApplication
 			using (ConfigPreviews form = new ConfigPreviews()) {
 				DialogResult result = form.ShowDialog();
 				if (result == DialogResult.OK) {
+					Cursor = Cursors.WaitCursor;
+					EnableButtons(false);
+					progressBar.Visible = true;
+					UpdateProgress(Tuple.Create(0,"Saving Configuration"));
 					await VixenSystem.SaveSystemAndModuleConfigAsync();
+					progressBar.Visible = false;
+					EnableButtons();
+					Cursor = Cursors.Default;
 				}
 				else {
+					Cursor = Cursors.WaitCursor;
+					EnableButtons(false);
+					progressBar.Visible = true;
+					UpdateProgress(Tuple.Create(0,"Reloading Configuration"));
 					VixenSystem.ReloadSystemConfig();
+					progressBar.Visible = false;
+					EnableButtons();
+					Cursor = Cursors.Default;
+					MakeTopMost();
 				}
 			}
 		}
@@ -974,10 +999,25 @@ namespace VixenApplication
 				DialogResult dr = form.ShowDialog();
 
 				if (dr == DialogResult.OK) {
+					Cursor = Cursors.WaitCursor;
+					EnableButtons(false);
+					progressBar.Visible = true;
+					UpdateProgress(Tuple.Create(0,"Saving Configuration"));
 					await VixenSystem.SaveSystemAndModuleConfigAsync();
+					progressBar.Visible = false;
+					EnableButtons();
+					Cursor = Cursors.Default;
 				}
 				else {
+					Cursor = Cursors.WaitCursor;
+					EnableButtons(false);
+					progressBar.Visible = true;
+					UpdateProgress(Tuple.Create(0,"Reloading Configuration"));
 					VixenSystem.ReloadSystemConfig();
+					progressBar.Visible = false;
+					EnableButtons();
+					Cursor = Cursors.Default;
+					MakeTopMost();
 				}
 			}
 		}
