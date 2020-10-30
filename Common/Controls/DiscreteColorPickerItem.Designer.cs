@@ -49,6 +49,7 @@
 			this.panelColor.Name = "panelColor";
 			this.panelColor.Size = new System.Drawing.Size(40, 40);
 			this.panelColor.TabIndex = 1;
+			this.panelColor.Click += new System.EventHandler(this.panelColor_Click);
 			// 
 			// radioButtonSelected
 			// 
