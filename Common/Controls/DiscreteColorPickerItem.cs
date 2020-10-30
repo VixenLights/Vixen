@@ -64,5 +64,10 @@ namespace Common.Controls
 		{
 			OnSelectedChanged();
 		}
+
+		private void panelColor_Click(object sender, EventArgs e)
+		{
+			Selected = !Selected;
+		}
 	}
 }
