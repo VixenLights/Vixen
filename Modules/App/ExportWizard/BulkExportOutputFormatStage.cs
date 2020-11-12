@@ -202,7 +202,7 @@ namespace VixenModules.App.ExportWizard
 				if (_data.ActiveProfile.IsFalconFormat)
 				{
 					if (CanTestPath() && 
-					    Directory.Exists(_data.ActiveProfile.IsFalconFormat ? _data.ActiveProfile.FalconOutputFolder: _data.ActiveProfile.OutputFolder))
+					    Directory.Exists(_data.ActiveProfile.IsFalcon2xFormat ? _data.ActiveProfile.FalconOutputFolder: _data.ActiveProfile.OutputFolder))
 					{
 						return true;
 					}
@@ -339,7 +339,7 @@ namespace VixenModules.App.ExportWizard
 
 		private void chkIncludeAudio_CheckedChanged(object sender, EventArgs e)
 		{
-			if (_data.ActiveProfile.IsFalconFormat)
+			if (_data.ActiveProfile.IsFalcon2xFormat)
 			{
 				_data.ActiveProfile.RenameAudio = chkFppIncludeAudio.Checked;
 				_data.ActiveProfile.IncludeAudio = chkFppIncludeAudio.Checked;
