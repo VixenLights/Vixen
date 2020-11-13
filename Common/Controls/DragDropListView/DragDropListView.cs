@@ -483,7 +483,10 @@ namespace Common.Controls.DragDropListView
 		private void List_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
 		{
 			var backgroundColor = ThemeColorTable.TextBoxBackgroundColor;
-			if ((e.ItemState & ListViewItemStates.Selected) != 0)
+
+			//Using item selected here as this looks like a known bug since about 2006, in evidence when the ListView.HideSelection property is set to FALSE.
+			//The only workaround on file is to use e.Item.Selected.
+			if (e.Item.Selected)
 			{
 				// Draw the background and focus rectangle for a selected item.
 				backgroundColor = ThemeColorTable.BackgroundColor;
