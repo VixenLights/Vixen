@@ -466,11 +466,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public override void MoveTo(int x, int y)
         {
-            PreviewPoint p = new PreviewPoint(x, y);
-            PointToZoomPoint(p);
+            //PreviewPoint p = new PreviewPoint(x, y);
+            //PointToZoomPoint(p);
 
-            Top = p.Y;
-            Left = p.X;
+            Top = y;
+            Left = x;
 
             Layout();
         }

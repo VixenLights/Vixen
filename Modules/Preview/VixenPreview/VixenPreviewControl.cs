@@ -2229,7 +2229,16 @@ namespace VixenModules.Preview.VixenPreview
 					int propSpaceSoFar = 0;
 					for (int shapeNum = 1; shapeNum < shapeCount - 1; shapeNum++)
 					{
-						shapes[shapeNum].Left = shapes[0].Right + propSpaceSoFar + (Convert.ToInt32(shapeSpacing*(float) shapeNum));
+						var newLeft = shapes[0].Right + propSpaceSoFar + (Convert.ToInt32(shapeSpacing*(float) shapeNum));
+						if (newLeft >= 0 && newLeft < Background.Width)
+						{
+							//only move to valid coordinates.
+							shapes[shapeNum].Left = newLeft;
+						}
+						else
+						{
+							Logging.Error("Attempt to distribute horizontally outside of bounds.");
+						}
 						propSpaceSoFar += shapes[shapeNum].Right - shapes[shapeNum].Left;
 					}
 				}
@@ -2257,7 +2266,11 @@ namespace VixenModules.Preview.VixenPreview
 					int propSpaceSoFar = 0;
 					for (int shapeNum = 1; shapeNum < shapeCount - 1; shapeNum++)
 					{
-						shapes[shapeNum].Top = shapes[0].Bottom + propSpaceSoFar + (Convert.ToInt32(shapeSpacing*(float) shapeNum));
+						var newTop = shapes[0].Bottom + propSpaceSoFar + (Convert.ToInt32(shapeSpacing*(float) shapeNum));
+						if (newTop >= 0 && newTop < Background.Height)
+						{
+							shapes[shapeNum].Top = newTop;
+						}
 						propSpaceSoFar += shapes[shapeNum].Bottom - shapes[shapeNum].Top;
 					}
 				}
