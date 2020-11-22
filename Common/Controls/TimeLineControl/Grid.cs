@@ -101,6 +101,7 @@ namespace Common.Controls.Timeline
 			Row.RowSelectedChanged += RowSelectedChangedHandler;
 			Row.RowToggled += RowToggledHandler;
             Row.RowHeightChanged += RowHeightChangedHandler;
+			TimeLineGlobalEventManager.Manager.AlignmentActivity += TimeLineAlignmentHandler;
 
 			// Drag & Drop
 			AllowDrop = true;
@@ -146,6 +147,7 @@ namespace Common.Controls.Timeline
 			Row.RowSelectedChanged -= RowSelectedChangedHandler;
 			Row.RowToggled -= RowToggledHandler;
 			Row.RowHeightChanged -= RowHeightChangedHandler;
+			TimeLineGlobalEventManager.Manager.AlignmentActivity -= TimeLineAlignmentHandler;
 
 			TimeInfo= null;
 
@@ -381,6 +383,8 @@ namespace Common.Controls.Timeline
 		private int CurrentRowIndexUnderMouse { get; set; }
 		private SortedDictionary<TimeSpan, List<SnapDetails>> StaticSnapPoints { get; set; }
 		private SortedDictionary<TimeSpan, List<SnapDetails>> CurrentDragSnapPoints { get; set; }
+
+		private IEnumerable<TimeSpan> MarkAlignmentPoints { get; set; } = Enumerable.Empty<TimeSpan>();
 		private List<Element> tempSelectedElements = new List<Element>();
 
 		public SequenceLayers SequenceLayers { get; set; }
@@ -477,6 +481,12 @@ namespace Common.Controls.Timeline
 		#endregion
 
 		#region Event Handlers - non-mouse events
+
+		private void TimeLineAlignmentHandler(object sender, AlignmentEventArgs e)
+		{
+			Logging.Info($"Alignment event {e.Active}");
+			MarkAlignmentPoints = e.Times ?? Enumerable.Empty<TimeSpan>();
+		}
 
 		protected void RowChangedHandler(object sender, EventArgs e)
 		{
@@ -2230,6 +2240,7 @@ namespace Common.Controls.Timeline
 			foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in StaticSnapPoints)
 			{
 				if (kvp.Key >= VisibleTimeEnd) break;
+				if(MarkAlignmentPoints.Contains(kvp.Key)) continue;
 				if (kvp.Key >= VisibleTimeStart) {
 					SnapDetails details = null;
 					foreach (SnapDetails d in kvp.Value)
@@ -2253,6 +2264,18 @@ namespace Common.Controls.Timeline
 					
 				}
 			}
+
+			if (m_dragState == DragState.Normal)
+			{
+				p = new Pen(Brushes.Yellow) { DashPattern = new float[] { 2, 2 } };
+
+				foreach (var activeTime in MarkAlignmentPoints)
+				{
+					var x1 = timeToPixels(activeTime);
+					g.DrawLine(p, x1, 0, x1, AutoScrollMinSize.Height);
+				}
+			}
+
 			p.Dispose();
 		}
 

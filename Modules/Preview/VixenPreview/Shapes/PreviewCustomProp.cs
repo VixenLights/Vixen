@@ -599,6 +599,21 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			
 		}
 
+		public override bool ShapeAllInRect(Rectangle rect)
+		{
+			PreviewPoint p1 = PointToZoomPoint(new PreviewPoint(rect.X, rect.Y));
+			PreviewPoint p2 = PointToZoomPoint(new PreviewPoint(rect.X + rect.Width, rect.Y + rect.Height));
+			int X1 = Math.Min(p1.X, p2.X);
+			int X2 = Math.Max(p1.X, p2.X);
+			int Y1 = Math.Min(p1.Y, p2.Y);
+			int Y2 = Math.Max(p1.Y, p2.Y);
+			
+			var rt = new RotateTransform(RotationAngle, _rotationCenter.X, _rotationCenter.Y);
+			var b = rt.TransformBounds(Bounds);
+
+			return (b.Top >= Y1 && b.Bottom <= Y2 && b.Left >= X1 && b.Right <= X2);
+		}
+
 		/// <inheritdoc />
 		public override void MoveTo(int x, int y)
 		{

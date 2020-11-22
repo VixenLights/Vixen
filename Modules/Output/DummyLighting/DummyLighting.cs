@@ -17,7 +17,6 @@ namespace VixenModules.Output.DummyLighting
 
 		public DummyLighting()
 		{
-			_form = new DummyLightingOutputForm();
 			_sw = new Stopwatch();
 		}
 
@@ -27,17 +26,12 @@ namespace VixenModules.Output.DummyLighting
 			set
 			{
 				_data = (DummyLightingData) value;
-				_form.renderingStyle = _data.RenderStyle;
-				_form.Text = _data.FormTitle;
 				_SetDataPolicy();
 			}
 		}
 
-		public override int OutputCount
-		{
-			get { return _form.OutputCount; }
-			set { _form.OutputCount = value; }
-		}
+		public override int OutputCount { get; set; }
+		
 
 		public override void UpdateState(int chainIndex, ICommand[] outputStates)
 		{
@@ -46,11 +40,19 @@ namespace VixenModules.Output.DummyLighting
 				_sw.Start();
 			}
 
+			if (_form.OutputCount != OutputCount)
+			{
+				_form.OutputCount = OutputCount;
+			}
 			_form.UpdateState(1000*((double) _updateCount/_sw.ElapsedMilliseconds), outputStates);
 		}
 
 		public override void Start()
 		{
+			_form = new DummyLightingOutputForm();
+			_form.renderingStyle = _data.RenderStyle;
+			_form.Text = _data.FormTitle;
+			_form.OutputCount = OutputCount;
 			_form.Show();
 			_updateCount = 0;
 		}

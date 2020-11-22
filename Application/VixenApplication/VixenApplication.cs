@@ -29,6 +29,7 @@ using Common.Controls.Theme;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog.Targets;
+using Vixen.Module.App;
 using Application = System.Windows.Forms.Application;
 using Point = System.Drawing.Point;
 using SystemFonts = System.Drawing.SystemFonts;
@@ -64,6 +65,8 @@ namespace VixenApplication
 		{
 			InitializeComponent();
 
+			VixenSystem.UIThread = Thread.CurrentThread;
+			VixenSystem.UIContext = SynchronizationContext.Current;
 			_startupProgress = new Progress<Tuple<int, string>>(UpdateProgress);
 
             //Begin WPF init
@@ -103,6 +106,8 @@ namespace VixenApplication
 			toolStripStatusLabelExecutionState.ForeColor = ThemeColorTable.ForeColor;
 			toolStripStatusLabel_memory.ForeColor = ThemeColorTable.ForeColor;
 			contextMenuStripRecent.Renderer = new ThemeToolStripRenderer();
+			progressBar.TextColor = ThemeColorTable.ForeColor;
+			progressBar.ProgressColor = Color.DarkGreen;
 
 			string[] args = Environment.GetCommandLineArgs();
 			foreach (string arg in args) {
@@ -200,6 +205,7 @@ namespace VixenApplication
 				var id = Process.GetCurrentProcess().Id;
 				var machineName = Environment.MachineName;
 				_uniqueProcessId = string.Format("{0}@{1}", id, machineName);
+				Logging.Info($"Process info: {_uniqueProcessId}");
 			}
 
 			return _uniqueProcessId;
@@ -269,7 +275,12 @@ namespace VixenApplication
 					{
 						var lockProcessInfo = File.ReadAllText(lockFilePath).Split('@');
 						var myProcessInfo = GetUniqueProcessId().Split('@');
-						if (lockProcessInfo[1].Equals(myProcessInfo[1]))
+						if (myProcessInfo.Length < 2 || lockProcessInfo.Length < 2)
+						{
+							//We have no real way of knowing, so have to assume it is locked.
+							locked = true;
+						}
+						else if (lockProcessInfo[1].Equals(myProcessInfo[1]))
 						{
 							//The machine name is the same so it was locked by this machine
 							var lockProcessId = Convert.ToInt32(lockProcessInfo[0]);
@@ -410,6 +421,7 @@ namespace VixenApplication
 			progressBar.Visible = false;
 			PopulateRecentSequencesList();
 			EnableButtons();
+			MakeTopMost();
 			Cursor = Cursors.Default;
 		}
 
@@ -426,15 +438,23 @@ namespace VixenApplication
 			serviceLocator.AutoRegisterTypesViaAttributes = true;
 		}
 
-		private async void VixenApplication_Shown(object sender, EventArgs e)
+		private void VixenApplication_Shown(object sender, EventArgs e)
 		{
 			CheckForTestBuild();
-			//Try to make sure at load we are on top.
-			await Task.Delay(750);
 			MakeTopMost();
 		}
 
-		private void MakeTopMost()
+		private async void MakeTopMost()
+		{
+			await Task.Run(async delegate
+			{
+				await Task.Delay(1000);
+				Invoke(new MethodInvoker(SetTopMost));
+			});
+			
+		}
+
+		private void SetTopMost()
 		{
 			TopMost = true;
 			TopMost = false;
@@ -950,10 +970,25 @@ namespace VixenApplication
 			using (ConfigPreviews form = new ConfigPreviews()) {
 				DialogResult result = form.ShowDialog();
 				if (result == DialogResult.OK) {
+					Cursor = Cursors.WaitCursor;
+					EnableButtons(false);
+					progressBar.Visible = true;
+					UpdateProgress(Tuple.Create(0,"Saving Configuration"));
 					await VixenSystem.SaveSystemAndModuleConfigAsync();
+					progressBar.Visible = false;
+					EnableButtons();
+					Cursor = Cursors.Default;
 				}
 				else {
+					Cursor = Cursors.WaitCursor;
+					EnableButtons(false);
+					progressBar.Visible = true;
+					UpdateProgress(Tuple.Create(0,"Reloading Configuration"));
 					VixenSystem.ReloadSystemConfig();
+					progressBar.Visible = false;
+					EnableButtons();
+					Cursor = Cursors.Default;
+					MakeTopMost();
 				}
 			}
 		}
@@ -964,10 +999,25 @@ namespace VixenApplication
 				DialogResult dr = form.ShowDialog();
 
 				if (dr == DialogResult.OK) {
+					Cursor = Cursors.WaitCursor;
+					EnableButtons(false);
+					progressBar.Visible = true;
+					UpdateProgress(Tuple.Create(0,"Saving Configuration"));
 					await VixenSystem.SaveSystemAndModuleConfigAsync();
+					progressBar.Visible = false;
+					EnableButtons();
+					Cursor = Cursors.Default;
 				}
 				else {
+					Cursor = Cursors.WaitCursor;
+					EnableButtons(false);
+					progressBar.Visible = true;
+					UpdateProgress(Tuple.Create(0,"Reloading Configuration"));
 					VixenSystem.ReloadSystemConfig();
+					progressBar.Visible = false;
+					EnableButtons();
+					Cursor = Cursors.Default;
+					MakeTopMost();
 				}
 			}
 		}

@@ -166,6 +166,65 @@ namespace VixenModules.Preview.VixenPreview
 			SetZoomTextAndTracker(previewForm.Preview.ZoomLevel);
 			
 			InitUndo();
+
+			VerifyPreviewShapeLocations();
+		}
+
+		private static void VerifyPreviewShapeLocations()
+		{
+			var movedProps = 0;
+			var newOriginX = 10;
+			List<DisplayItem> itemsToRemove = new List<DisplayItem>();
+			foreach (var previewDisplayItem in previewForm.Preview.DisplayItems)
+			{
+				if (previewDisplayItem.Shape.Bottom < 1 || previewDisplayItem.Shape.Top > previewForm.Preview.Background.Height ||
+				    previewDisplayItem.Shape.Right < 1 || previewDisplayItem.Shape.Left > previewForm.Preview.Background.Width)
+				{
+					if (previewDisplayItem.Shape.Top == previewDisplayItem.Shape.Bottom &&
+					    previewDisplayItem.Shape.Left == previewDisplayItem.Shape.Right)
+					{
+						//if items don't have any size then they were probably added by mistake.
+						itemsToRemove.Add(previewDisplayItem);
+						Logging.Info($"Removing preview item that has no size. {previewDisplayItem.Shape.Name}");
+						continue;
+					}
+
+					if (previewDisplayItem.Shape is PreviewMultiString ms)
+					{
+						if (ms.Strings.Count == 0)
+						{
+							itemsToRemove.Add(previewDisplayItem);
+							Logging.Info($"Removing preview MultiString that has no Strings. {previewDisplayItem.Shape.Name}");
+							continue;
+						}
+					}
+
+					Logging.Info($"Moving preview item back in bounds. {newOriginX},10 : {previewDisplayItem.Shape.Name}");
+					var width = previewDisplayItem.Shape.Right - previewDisplayItem.Shape.Left;
+					previewDisplayItem.Shape.MoveTo(newOriginX, 10);
+					newOriginX = newOriginX + width + 5;
+					if (newOriginX > previewForm.Preview.Background.Width || newOriginX <=0)
+					{
+						newOriginX = 10;
+					}
+
+					movedProps++;
+				}
+			}
+
+			if (movedProps > 0)
+			{
+				var messageBox =
+					new MessageBoxForm(
+						$"{movedProps} Preview Props were found outside of the preview bounds and have been moved back to the top left.",
+						"Invalid Prop Locations", MessageBoxButtons.OK, SystemIcons.Information);
+				messageBox.ShowDialog();
+			}
+
+			if (itemsToRemove.Any())
+			{
+				itemsToRemove.ForEach(x => previewForm.Preview.RemoveDisplayItem(x));
+			}
 		}
 
 		private bool IsVisibleOnAnyScreen(Rectangle rect)

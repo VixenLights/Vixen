@@ -49,6 +49,11 @@ namespace VixenModules.App.SuperScheduler
 			set { _data = (SuperSchedulerData) value; }
 		}
 
+		public void Start()
+		{
+			_executor.CheckSchedule();
+		}
+
 		//private System.Timers.Timer Timer
 		//{
 		//    get

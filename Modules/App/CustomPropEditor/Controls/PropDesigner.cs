@@ -477,6 +477,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
 							adornerLayer.Add(_resizingAdorner);
 							//_resizingAdorner.Bounds = bounds.Value;
 						}
+						UpdateLayout();
 						adornerLayer.Update();
 					}
 				}

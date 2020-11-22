@@ -1,5 +1,69 @@
 Release Notes - Vixen 3
 
+
+Release Notes - Vixen 3 - 3.7u1 Build 
+
+** Bug
+    * [VIX-2969] - Wave Effect does not allow the user to change the Wave Type
+    * [VIX-2978] - Lipsync effects may not properly adjust back to the old Phoneme default.
+
+** Improvement
+    * [VIX-2974] - Add End of Mark alignment indicators
+	
+	
+
+Release Notes - Vixen 3 - 3.7u0 Build 
+
+** Improvement
+    * [VIX-989] - Improved Zig Zag Support
+    * [VIX-2275] - Double click on a controller name should open the configure form rather than unfold the channels
+    * [VIX-2750] - Add Progress Dialog while profile is loading
+    * [VIX-2786] - Add flip vertical and horizontal options to toolbar in custom prop editor
+    * [VIX-2787] - Add detents when rotating a selection while holding a modifier key in the Custom Prop and Preview editor.
+    * [VIX-2890] - Update all dependencies and prepare for moving to .NET Core.
+    * [VIX-2893] - Box2D contains warning/error when compiled under latest VS2019 Update
+    * [VIX-2895] - Update Snowflake effect to include a grid pattern
+    * [VIX-2896] - Make start of liquid effect movement deterministic
+    * [VIX-2904] - Move the effect pop-up info box in the editor
+    * [VIX-2916] - Migrate TeamCity workflows to GitHub Actions
+    * [VIX-2924] - Ability to set Export timing to the same as the Update Interval
+    * [VIX-2927] - Improve Face imports for analog props and provide better Lipsync effect defaults.
+    * [VIX-2929] - Improve the config and sequence file backup mechanism.
+    * [VIX-2943] - Modify Shockwave to use scaled radius curve.
+    * [VIX-2958] - Add ability to reverse a group of selected elements in the wire order tab of the Custom Prop Editor 
+
+** New Feature
+    * [VIX-2120] - Add polygon effect
+    * [VIX-2933] - Add a feature to duplicate a preview
+
+** Bug
+    * [VIX-2601] - Crash when using pinwheel effect
+    * [VIX-2792] - Vixen 3.6 Set Level not working, on some elements
+    * [VIX-2851] - Setup Display - Undo refresh
+    * [VIX-2863] - Wave Effect - Improve Mark Support of Decaying Sine
+    * [VIX-2889] - Incorrect speed on effects
+    * [VIX-2899] - Bars Effect Bug (with workaround)
+    * [VIX-2900] - Shapes no longer working
+    * [VIX-2903] - Dev Build Crash; Preview has completely disappeared
+    * [VIX-2905] - Waveform effect missing from current dev builds.
+    * [VIX-2911] - Incorrect speed on Video effect after Update Interval is changed to 25ms
+    * [VIX-2917] - Particle Intensity on Liquid Effect will not Save
+    * [VIX-2920] - Fix unneeded fields exposed by recent Catel upgrade in Prop Editor
+    * [VIX-2922] - Reference to Liquid (Emitter) Effect in common code
+    * [VIX-2932] - Preview zoom gets stuck if you zoom to far in or out
+    * [VIX-2934] - Text effect introduces a small gap or blink after saving and reopening
+    * [VIX-2936] - Export Sequence Package not working
+    * [VIX-2941] - Make ExpandObjectObservableCollection Abstract
+    * [VIX-2942] - Preview Star does not detect Pixel or Standard properly when linked.
+    * [VIX-2952] - Custom prop selection in preview not working correctly.
+    * [VIX-2953] - Morph causing Vixen to freeze
+    * [VIX-2955] - Token replacement window title "naming" needs capatilized.
+    * [VIX-2957] - Custom prop editor has several minor bugs that can lead to a troublesome experience. 
+    * [VIX-2959] - The wire order diagram menu in the display setup may not be enabled when it should be.
+    * [VIX-2960] - The profile Lock file may be empty an cause an error.
+    * [VIX-2961] - Scheduler can hang if sequences have not been migrated first.
+
+
 Release Notes - Vixen 3 - 3.6u4 Release Build 
 
 ** Bug

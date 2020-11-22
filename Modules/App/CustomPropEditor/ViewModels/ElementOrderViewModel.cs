@@ -258,6 +258,45 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region ReverseSelected command
+
+		private Command _reverseSelectedCommand;
+
+		/// <summary>
+		/// Gets the ReverseSelected command.
+		/// </summary>
+		public Command ReverseSelectedCommand
+		{
+			get { return _reverseSelectedCommand ?? (_reverseSelectedCommand = new Command(ReverseSelected, CanReverseSelected)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the ReverseSelected command is executed.
+		/// </summary>
+		private void ReverseSelected()
+		{
+			var workList = SelectedItems.ToList();
+			int ctr=0;
+			foreach (var elementModelViewModel in SelectedItems.Reverse().ToList())
+			{
+				LeafNodes.Remove(elementModelViewModel);
+				LeafNodes.Insert(workList[ctr].ElementModel.Order-1, elementModelViewModel);
+				ctr++;
+			}
+			ReOrder();
+		}
+
+		/// <summary>
+		/// Method to check whether the ReverseSelected command can be executed.
+		/// </summary>
+		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+		private bool CanReverseSelected()
+		{
+			return SelectedItems.Any();
+		}
+
+		#endregion
+
 
 		#region Implementation of IDropTarget
 

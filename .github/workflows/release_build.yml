@@ -12,6 +12,7 @@ on:
       - '**/README.md'
       - .github/**
       - .tgitconfig
+      - 'Release Notes.txt'
 
 jobs:
 
@@ -93,7 +94,7 @@ jobs:
         
       - uses: nuget/setup-nuget@v1
         
-      - uses: microsoft/setup-msbuild@v1.0.0
+      - uses: microsoft/setup-msbuild@v1.0.2
       
       - name: Setup custom NSIS
         id: setup-nsis
@@ -156,7 +157,7 @@ jobs:
         
       - uses: nuget/setup-nuget@v1
         
-      - uses: microsoft/setup-msbuild@v1.0.0
+      - uses: microsoft/setup-msbuild@v1.0.2
       
       - name: Setup custom NSIS
         id: setup-nsis

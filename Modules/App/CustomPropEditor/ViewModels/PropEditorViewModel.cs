@@ -29,8 +29,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	{
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private bool _selectionChanging;
-		private string _lastSaveFolderPath = PropModelServices.Instance().ModelsFolder;
-		private string _lastOpenFolderPath = PropModelServices.Instance().ModelsFolder;
+		
 		public PropEditorViewModel()
 		{
 			FilePath = String.Empty;
@@ -582,7 +581,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			var dependencyResolver = this.GetDependencyResolver();
 			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
 			openFileService.IsMultiSelect = false;
-			openFileService.InitialDirectory = _lastOpenFolderPath;
 			openFileService.Filter = "Prop Files(*.prp)|*.prp";
 			openFileService.FileName = string.Empty;
 			if (await openFileService.DetermineFileAsync())
@@ -590,7 +588,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				string path = openFileService.FileNames.First();
 				if (!string.IsNullOrEmpty(path))
 				{
-					_lastOpenFolderPath = Path.GetDirectoryName(path);
+					openFileService.InitialDirectory = Path.GetDirectoryName(path);
 					LoadPropFromPath(path);
 				}
 			}
@@ -653,11 +651,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			var saveFileService = dependencyResolver.Resolve<ISaveFileService>();
 			saveFileService.Filter = "Prop Files(*.prp)|*.prp";
 			saveFileService.CheckPathExists = true;
-			saveFileService.InitialDirectory = _lastSaveFolderPath;
 			saveFileService.FileName = CleanseNameString(Prop.Name);
 			if (await saveFileService.DetermineFileAsync())
 			{
-				_lastSaveFolderPath = Path.GetDirectoryName(saveFileService.FileName);
+				saveFileService.InitialDirectory = Path.GetDirectoryName(saveFileService.FileName);
 				// User selected a file
 				if (PropModelPersistenceService.SaveModel(Prop, saveFileService.FileName))
 				{

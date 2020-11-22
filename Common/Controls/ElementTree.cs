@@ -849,7 +849,7 @@ namespace Common.Controls
 			{
 				if (SelectedTreeNodes.Count == 1)
 				{
-					if (SelectedTreeNodes.Any(x => x.GetNodeCount(true) > 1))
+					if (SelectedElementNodes.Any(x => x.Children.Any()))
 					{
 						canExport = true;
 					}

@@ -30,6 +30,11 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="NLog" Version="4.6.8">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>

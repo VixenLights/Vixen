@@ -386,9 +386,9 @@ namespace Common.Controls.Timeline
 			//The following ensures the screen is not refreshed in any way, saving a lot of redraw time and rows now resize smoothly.
 			grid.AllowGridResize = false;
 			EnableDisableHandlers(false);
-			//sets the new rowheight
+			//sets the new row height
 			rowHeight = (int)(rowHeight * scale);
-			//Updastes all rows with new rowheight
+			//Updates all rows with new row height
 			foreach (Row r in Rows)
 			{
 				if (r.Height * scale > grid.Height) continue; //Don't scale a row beyond the grid height. How big do you need it?
@@ -398,7 +398,6 @@ namespace Common.Controls.Timeline
 			EnableDisableHandlers();
 			grid.AllowGridResize = true;
 			LayoutRows();
-			Rows.ElementAt(0).Height = Rows.ElementAt(0).Height;
 		}
 
 		public void ResizeGrid()

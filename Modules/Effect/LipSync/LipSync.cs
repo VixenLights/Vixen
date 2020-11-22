@@ -379,7 +379,7 @@ namespace VixenModules.Effect.LipSync
 
 		private void SetupMarks()
 		{
-			if (MarkCollections == null || !MarkCollections.Any())
+			if (MarkCollections == null || MarkCollections.All(x => x.CollectionType == MarkCollectionType.Generic))
 			{
 				LipSyncMode = LipSyncMode.Phoneme;
 				return;
@@ -914,6 +914,19 @@ namespace VixenModules.Effect.LipSync
 								//draw a closing line on the image
 								g.DrawLine(Pens.Black, new Point(clipRectangle.X + endX, 0), new Point(clipRectangle.X + endX, clipRectangle.Height));
 							}
+						}
+					}
+					else
+					{
+						//in mark mode with no marks, draw a rest.
+						if (_phonemeBitmaps.TryGetValue(PhonemeType.REST, out displayImage))
+						{
+							var endX = (int)((TimeSpan.Ticks + StartTime.Ticks) / (double)TimeSpan.Ticks * clipRectangle.Width);
+							var startX = (int)(StartTime.Ticks / (double)TimeSpan.Ticks * clipRectangle.Width);
+							scaledImage = new Bitmap(displayImage,
+								Math.Min(clipRectangle.Width, endX - startX),
+								clipRectangle.Height);
+							g.DrawImage(scaledImage, clipRectangle.X, clipRectangle.Y);
 						}
 					}
 				}
