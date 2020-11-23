@@ -228,7 +228,7 @@ jobs:
         with:
           tag_name: ${{ needs.setup.outputs.release_tag }}
           release_name: ${{ needs.setup.outputs.release_tag }}
-          body: |
+          body_path: |
             ${{ needs.setup.outputs.release_notes_markdown }}
           draft: false
           prerelease: ${{ needs.setup.outputs.pre_release }}
