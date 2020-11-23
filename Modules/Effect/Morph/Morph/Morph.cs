@@ -214,8 +214,15 @@ namespace VixenModules.Effect.Morph
 				// Save off the data for the effect
 				_data = value as MorphData;
 
+				// Save off the width and height from the effect data
+				int	width = _data.DisplayElementWidth;
+				int	height = _data.DisplayElementHeight;
+				
 				// Update the morph polygon model data
 				UpdatePolygonModel(_data);
+
+				// Scale the shapes associated with the morph polygons
+				ScaleShapesToFitDisplayElement(width, height);
 
 				// Update the visibility of controls
 				UpdateAttributes();
@@ -1126,7 +1133,10 @@ namespace VixenModules.Effect.Morph
 			// If the current display element is not the same as the previous and
 			// the previous display element size was saved off then...
 			if ((previousBufferWidth != BufferWi || previousBufferHeight != BufferHt) &&
-			     previousBufferHeight != 0 && previousBufferWidth != 0)
+			     previousBufferHeight != 0 && 
+			     previousBufferWidth != 0 &&
+			     BufferWi != 0 &&
+			     BufferHt != 0)
 			{
 				// Loop over the morph polygons
 				foreach (IMorphPolygon morphPolygon in MorphPolygons)
