@@ -18,7 +18,7 @@ jobs:
 
   setup:
   
-    if: github.repository == 'VixenLights/Vixen'
+    if: github.repository == 'jeffu231/Vixen'
   
     runs-on: windows-2019
 
@@ -253,37 +253,4 @@ jobs:
           asset_name: ${{ needs.build_x64.outputs.setup_64 }}
           asset_content_type: application/vnd.microsoft.portable-executable
 
-      ###########################################
-      # Required secrets:
-      # SSH_KNOWN_HOSTS - output of "ssh-keyscan -p <port> <target_host>"
-      # SSH_PORT - sshd port on <target_host>
-      # SSH_PRIVATE_KEY - user's private key
-      # SSH_TARGET - <target_host>:/path/to/dir
-      # SSH_USER - username to login with
-      ###########################################
-      - name: Upload assets to vixenlights.com
-        shell: bash
-        run: |
-          if [[ -z "${{ secrets.SSH_TARGET }}" ]] ;then
-            exit 0
-          fi
-          
-          TARGET_EXTRA=
-          if [[ "${{ needs.setup.outputs.pre_release }}" = "false" ]] ;then
-            TARGET_EXTRA=/releases
-          fi
-          
-          mkdir -p ~/.ssh
-          touch ~/.ssh/id_rsa ~/.ssh/known_hosts
-          chmod 700 ~/.ssh
-          chmod 600 ~/.ssh/id_rsa ~/.ssh/known_hosts
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
-          scp \
-            -P ${{ secrets.SSH_PORT }} \
-            -o CheckHostIP=no \
-            -o StrictHostKeyChecking=yes \
-            -o NumberOfPasswordPrompts=0 \
-            _setup32/${{ needs.build_x86.outputs.setup_32 }} \
-            _setup64/${{ needs.build_x64.outputs.setup_64 }} \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_TARGET }}${TARGET_EXTRA}
+      

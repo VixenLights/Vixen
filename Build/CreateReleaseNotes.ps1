@@ -108,10 +108,6 @@ $actionsOutput = $output.Trim()
 $actionsOutput = $actionsOutput -replace '\A', '## '
 $actionsOutput = $actionsOutput -replace '(?m)^\*\* ', '### '
 $actionsOutput = $actionsOutput -replace '(?m)^    \* ', '* '
-# set-env doesn't like multiline strings - escape CR/LF
-$actionsOutput = $actionsOutput -replace '%', '%25'
-$actionsOutput = $actionsOutput -replace "`r", '%0D'
-$actionsOutput = $actionsOutput -replace "`n", '%0A'
 echo "VIX_RELEASE_NOTES_MARKDOWN=$actionsOutput" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
 
