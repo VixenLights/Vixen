@@ -16,6 +16,8 @@ param (
 	[string] $buildType
 )
 
+$nl = [Environment]::NewLine
+
 if($fixVersion.EndsWith('u0')){
 	$fixVersion = $fixVersion -replace ".{2}$"
 }
@@ -86,20 +88,20 @@ foreach ($issue in $issues)
 $output = [string]::Empty
 
 $output += "Release Notes - Vixen 3 - " + $buildType + " Build "
-$output += "`r`n`r`n"
+$output += "$nl$nl"
 
 
 foreach ($type in $issueMap.keys)
 {
-	$output += "** $type`r`n"
+	$output += "** $type$nl"
 
 	foreach ($issue in $issueMap[$type].keys)
 	{
 		$summary = $issueMap[$type][$issue]
-		$output += "    * [$issue] - $summary`r`n"
+		$output += "    * [$issue] - $summary$nl"
 	}
 
-	$output += "`r`n"
+	$output += "$nl"
 }
 
 # Store the release notes as Github Actions output to use in release body
@@ -108,9 +110,6 @@ $actionsOutput = $output.Trim()
 $actionsOutput = $actionsOutput -replace '\A', '## '
 $actionsOutput = $actionsOutput -replace '(?m)^\*\* ', '### '
 $actionsOutput = $actionsOutput -replace '(?m)^    \* ', '* '
-# set-env doesn't like multiline strings - escape CR/LF
-$actionsOutput = $actionsOutput -replace "`r", '\r'
-$actionsOutput = $actionsOutput -replace "`n", '\n'
 echo "VIX_RELEASE_NOTES_MARKDOWN=$actionsOutput" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
 
