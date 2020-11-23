@@ -43,6 +43,8 @@ namespace Common.Controls.Theme
 			//Top2
 			g.DrawLine(borderPen, new Point(rect.X + groupBox.Padding.Left + (int)(strSize.Width), rect.Y), new Point(rect.X + rect.Width, rect.Y));
 
+			borderBrush.Dispose();
+			borderPen.Dispose();
 		}
 
 		#endregion
