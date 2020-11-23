@@ -112,7 +112,8 @@ $actionsOutput = $actionsOutput -replace '(?m)^    \* ', '* '
 $actionsOutput = $actionsOutput -replace '%', '%25'
 $actionsOutput = $actionsOutput -replace "`r", '%0D'
 $actionsOutput = $actionsOutput -replace "`n", '%0A'
-Write-Host "::set-env name=VIX_RELEASE_NOTES_MARKDOWN::$actionsOutput"
+echo "VIX_RELEASE_NOTES_MARKDOWN=$actionsOutput" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
 
 $file = './Release Notes.txt'
 $regex = '^Release Notes - Vixen 3$'
