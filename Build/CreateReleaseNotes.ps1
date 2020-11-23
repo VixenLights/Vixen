@@ -109,8 +109,8 @@ $actionsOutput = $actionsOutput -replace '\A', '## '
 $actionsOutput = $actionsOutput -replace '(?m)^\*\* ', '### '
 $actionsOutput = $actionsOutput -replace '(?m)^    \* ', '* '
 # set-env doesn't like multiline strings - escape CR/LF
-$actionsOutput = $actionsOutput -replace "`r", '<br />'
-$actionsOutput = $actionsOutput -replace "`n", '<br />'
+$actionsOutput = $actionsOutput -replace "`r", '\r'
+$actionsOutput = $actionsOutput -replace "`n", '\n'
 echo "VIX_RELEASE_NOTES_MARKDOWN=$actionsOutput" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
 
