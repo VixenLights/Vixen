@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -617,8 +618,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <inheritdoc />
 		public override void MoveTo(int x, int y)
 		{
-			int xOffset = x - (int)Bounds.X;
-			int yOffset = y - (int)Bounds.Y;
+			var xOffset = ZoomCoordToOriginal(x - Bounds.X);
+			var yOffset = ZoomCoordToOriginal(y - Bounds.Y);
+			
 			foreach (var previewPixel in PropPixels)
 			{
 				var p = new Point(previewPixel.Location.X + xOffset, previewPixel.Location.Y + yOffset);
