@@ -27,7 +27,6 @@ jobs:
       notes_build_type: ${{ env.VIX_NOTES_BUILD_TYPE }}
       notes_fix_version: ${{ env.VIX_NOTES_FIX_VERSION }}
       pre_release: ${{ env.VIX_PRE_RELEASE }}
-      release_notes_markdown: ${{ env.VIX_RELEASE_NOTES_MARKDOWN }}
       release_tag: ${{ env.VIX_RELEASE_TAG }}
       version: ${{ env.VIX_VERSION }}
       
@@ -239,7 +238,7 @@ jobs:
         with:
           tag_name: ${{ needs.setup.outputs.release_tag }}
           release_name: ${{ needs.setup.outputs.release_tag }}
-          body_path: _releaseNotesMd/${{ needs.setup.outputs.release_notes_markdown }}
+          body_path: "_releaseNotesMd\Release Notes.md"
           draft: false
           prerelease: ${{ needs.setup.outputs.pre_release }}
       
