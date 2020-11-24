@@ -113,8 +113,6 @@ $actionsOutput = $actionsOutput -replace '(?m)^    \* ', '* '
 
 $file = 'Release Notes.md'
 Out-File -FilePath $file -InputObject $actionsOutput -Encoding UTF8
-echo "VIX_RELEASE_NOTES_MARKDOWN=$file" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-
 
 $file = './Release Notes.txt'
 $regex = '^Release Notes - Vixen 3$'
