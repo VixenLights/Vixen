@@ -27,7 +27,6 @@ jobs:
       notes_build_type: ${{ env.VIX_NOTES_BUILD_TYPE }}
       notes_fix_version: ${{ env.VIX_NOTES_FIX_VERSION }}
       pre_release: ${{ env.VIX_PRE_RELEASE }}
-      release_notes_markdown: ${{ env.VIX_RELEASE_NOTES_MARKDOWN }}
       release_tag: ${{ env.VIX_RELEASE_TAG }}
       version: ${{ env.VIX_VERSION }}
       
@@ -71,6 +70,12 @@ jobs:
         with:
           name: _releaseNotes
           path: "Release Notes.txt"
+          
+      - name: Upload Build Release Notes Markdown artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: _releaseNotesMd
+          path: "Release Notes.md"
 
 
   build_x86:
@@ -219,7 +224,12 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: _setup64
-      
+          
+      - name: Download Build Release Notes Markdown artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: _releaseNotesMd
+          
       - name: Create release
         id: create_release
         uses: actions/create-release@v1
@@ -228,8 +238,7 @@ jobs:
         with:
           tag_name: ${{ needs.setup.outputs.release_tag }}
           release_name: ${{ needs.setup.outputs.release_tag }}
-          body: |
-            ${{ needs.setup.outputs.release_notes_markdown }}
+          body_path: _releaseNotesMd\Release Notes.md
           draft: false
           prerelease: ${{ needs.setup.outputs.pre_release }}
       
