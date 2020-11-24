@@ -238,7 +238,7 @@ jobs:
         with:
           tag_name: ${{ needs.setup.outputs.release_tag }}
           release_name: ${{ needs.setup.outputs.release_tag }}
-          body_path: "_releaseNotesMd\Release Notes.md"
+          body_path: _releaseNotesMd\"Release Notes.md"
           draft: false
           prerelease: ${{ needs.setup.outputs.pre_release }}
       
