@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Windows.Shapes;
 using Common.Controls.Theme;
 using VixenModules.Preview.VixenPreview.Shapes;
 using WeifenLuo.WinFormsUI.Docking;
@@ -37,6 +38,11 @@ namespace VixenModules.Preview.VixenPreview
 			else {
 				Text = @"Properties";
 			}
+		}
+
+		public PreviewBaseShape SetupPreviewShape()
+		{
+			return _setupControl?.Shape;
 		}
 
 		private void SetupControlPropertyEdited(object sender, EventArgs e)

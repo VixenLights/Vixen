@@ -80,6 +80,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				UpdateDragPoints();
 			}
+			FireOnPropertiesChanged(this,this);
 		}
 
 		#region Overrides of PreviewBaseShape
@@ -113,7 +114,26 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				MoveTo((int)Bounds.X, value);
 			}
+		}
 
+		[Browsable(true)]
+		[Category("Position")]
+		[PropertyOrder(3)]
+		[DisplayName("Top Left")]
+		public System.Drawing.Point TopLeft
+		{
+			get => new System.Drawing.Point((int)Bounds.Left, (int)Bounds.Top);
+			set => MoveTo(value.X, value.Y);
+		}
+
+		[Browsable(true)]
+		[Category("Position")]
+		[PropertyOrder(4)]
+		[DisplayName("Bottom Right")]
+		public System.Drawing.Point BottomRight
+		{
+			get => new System.Drawing.Point((int)Bounds.Right, (int)Bounds.Bottom);
+			set => MoveTo(value.X, value.Y);
 		}
 
 		/// <inheritdoc />
@@ -121,7 +141,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		[DataMember]
 		[DisplayName("Rotation Angle")]
-		[PropertyOrder(3)]
+		[PropertyOrder(5)]
 		[Category("Position")]
 		public int RotationAngle
 		{
@@ -618,6 +638,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <inheritdoc />
 		public override void MoveTo(int x, int y)
 		{
+			if(x < 0 || y < 0)
+			{
+				x = 10;
+				y = 10;
+
+			}
 			var xOffset = ZoomCoordToOriginal(x - Bounds.X);
 			var yOffset = ZoomCoordToOriginal(y - Bounds.Y);
 			
