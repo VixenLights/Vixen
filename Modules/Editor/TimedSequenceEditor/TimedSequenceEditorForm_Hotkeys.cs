@@ -96,6 +96,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					break;
 				
 				case Keys.S:
+					if (TimelineControl.grid.IsResizeDragInProgress)
+					{
+						break;
+					}
 					if (e.Shift & e.Control)
 					{
 						AlignEffectsToNearestMarks("Start");
@@ -108,7 +112,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					break;
 				case Keys.E:
-
+					if (TimelineControl.grid.IsResizeDragInProgress)
+					{
+						break;
+					}
 					if (e.Shift & e.Control)
 					{
 						AlignEffectsToNearestMarks("End");
@@ -122,6 +129,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					break;
 					
 				case Keys.B:
+					if (TimelineControl.grid.IsResizeDragInProgress)
+					{
+						break;
+					}
 					if (e.Shift & e.Control)
 					{
 						AlignEffectsToNearestMarks("Both");

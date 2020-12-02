@@ -390,6 +390,8 @@ namespace Common.Controls.Timeline
 			get { return ModifierKeys.HasFlag(Keys.Alt); }
 		}
 
+		public bool IsResizeDragInProgress => m_dragState != DragState.Normal;
+
 		private int CurrentRowIndexUnderMouse { get; set; }
 		private SortedDictionary<TimeSpan, List<SnapDetails>> StaticSnapPoints { get; set; }
 		private SortedDictionary<TimeSpan, List<SnapDetails>> CurrentDragSnapPoints { get; set; }
