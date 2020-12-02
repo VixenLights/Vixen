@@ -398,6 +398,9 @@ namespace Common.Controls.Timeline
 			EnableDisableHandlers();
 			grid.AllowGridResize = true;
 			LayoutRows();
+			//This seemingly do nothing line of code actually forces the row to fire the row height changed to 
+			//compensate for the events being disabled in the code above that actually makes the changes
+			Rows.ElementAt(0).Height = Rows.ElementAt(0).Height;
 		}
 
 		public void ResizeGrid()
