@@ -275,10 +275,14 @@ namespace VixenModules.Preview.VixenPreview
 		}
 
 		private void OnSelectDisplayItem(object sender, Shapes.DisplayItem displayItem) {
-			Shapes.DisplayItemBaseControl setupControl = displayItem.Shape.GetSetupControl();
-			elementsForm.ClearSelectedNodes();
-			if (setupControl != null) {
-				propertiesForm.ShowSetupControl(setupControl);
+
+			if (propertiesForm.SetupPreviewShape() != displayItem.Shape)
+			{
+				DisplayItemBaseControl setupControl = displayItem.Shape.GetSetupControl();
+				elementsForm.ClearSelectedNodes();
+				if (setupControl != null) {
+					propertiesForm.ShowSetupControl(setupControl);
+				}
 			}
 		}
 
