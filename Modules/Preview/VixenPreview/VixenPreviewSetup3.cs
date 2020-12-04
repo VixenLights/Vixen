@@ -178,7 +178,8 @@ namespace VixenModules.Preview.VixenPreview
 			foreach (var previewDisplayItem in previewForm.Preview.DisplayItems)
 			{
 				if (previewDisplayItem.Shape.Top == previewDisplayItem.Shape.Bottom &&
-				    previewDisplayItem.Shape.Left == previewDisplayItem.Shape.Right)
+				    previewDisplayItem.Shape.Left == previewDisplayItem.Shape.Right &&
+				    previewDisplayItem.Shape.Top == previewDisplayItem.Shape.Left)
 				{
 					//if items don't have any size then they were probably added by mistake.
 					itemsToRemove.Add(previewDisplayItem);
