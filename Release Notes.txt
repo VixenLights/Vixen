@@ -1,6 +1,20 @@
 Release Notes - Vixen 3
 
 
+Release Notes - Vixen 3 - 3.7u3 Build 
+
+** Improvement
+    * [VIX-2878] - Add bounds checking for preview items to ensure they are visible.
+    * [VIX-3016] - No size fields for custom props
+
+** Bug
+    * [VIX-3006] - Off-center effects
+    * [VIX-3012] - Morph polygons not saving
+    * [VIX-3017] - Crash while aligning effects 
+    * [VIX-3018] - Row zoom draws effects in the wrong location.
+
+
+
 Release Notes - Vixen 3 - 3.7u2 Build 
 
 ** Improvement
