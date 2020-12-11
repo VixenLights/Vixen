@@ -315,7 +315,7 @@ namespace VixenModules.Effect.Tree
 			HSV backgroundhsv = HSV.FromRGB(BackgroundColor.GetColorAt(pos));
 			int x, y, mod, b;
 			float V;
-			int cycleLen = frame * Speed;
+			int cycleLen = (int)(frame * Speed * (FrameTimespan.Milliseconds / 50d));
 			int pixelsPerBranch = (int)(0.5 + (double)BufferHt / Branches);
 			if (pixelsPerBranch == 0)
 			{
