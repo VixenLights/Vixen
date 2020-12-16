@@ -54,6 +54,7 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			Controls.Clear();
 			Text = @"Properties";
-		}
+            _setupControl = null;
+        }
 	}
 }
