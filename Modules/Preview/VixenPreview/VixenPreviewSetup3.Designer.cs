@@ -46,7 +46,7 @@
 			this.buttonDistributeHorizontal = new System.Windows.Forms.Button();
 			this.buttonAlignTop = new System.Windows.Forms.Button();
 			this.label7 = new System.Windows.Forms.Label();
-			this.panel6 = new System.Windows.Forms.Panel();
+			this.pnlSelect = new System.Windows.Forms.Panel();
 			this.buttonSelect = new System.Windows.Forms.Button();
 			this.label8 = new System.Windows.Forms.Label();
 			this.lblCustomProp = new System.Windows.Forms.Label();
@@ -133,7 +133,7 @@
 			this.panel11.SuspendLayout();
 			this.toolStripUndo.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
-			this.panel6.SuspendLayout();
+			this.pnlSelect.SuspendLayout();
 			this.tableLayoutPanel3.SuspendLayout();
 			this.panel2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundAlpha)).BeginInit();
@@ -409,16 +409,16 @@
 			this.label7.Text = "Align";
 			this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
-			// panel6
+			// pnlSelect
 			// 
-			this.panel6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panel6.Controls.Add(this.buttonSelect);
-			this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel6.Location = new System.Drawing.Point(172, 26);
-			this.panel6.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-			this.panel6.Name = "panel6";
-			this.panel6.Size = new System.Drawing.Size(63, 78);
-			this.panel6.TabIndex = 12;
+			this.pnlSelect.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.pnlSelect.Controls.Add(this.buttonSelect);
+			this.pnlSelect.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.pnlSelect.Location = new System.Drawing.Point(172, 26);
+			this.pnlSelect.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.pnlSelect.Name = "pnlSelect";
+			this.pnlSelect.Size = new System.Drawing.Size(63, 78);
+			this.pnlSelect.TabIndex = 12;
 			// 
 			// buttonSelect
 			// 
@@ -1378,7 +1378,7 @@
 			this.tlpToolBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tlpToolBar.Controls.Add(this.panel11, 7, 1);
 			this.tlpToolBar.Controls.Add(this.panel2, 0, 1);
-			this.tlpToolBar.Controls.Add(this.panel6, 1, 1);
+			this.tlpToolBar.Controls.Add(this.pnlSelect, 1, 1);
 			this.tlpToolBar.Controls.Add(this.pnlBasicDrawing, 2, 1);
 			this.tlpToolBar.Controls.Add(this.pnlSmartObjects, 3, 1);
 			this.tlpToolBar.Controls.Add(this.panel4, 4, 1);
@@ -1547,7 +1547,7 @@
 			this.toolStripUndo.ResumeLayout(false);
 			this.toolStripUndo.PerformLayout();
 			this.tableLayoutPanel2.ResumeLayout(false);
-			this.panel6.ResumeLayout(false);
+			this.pnlSelect.ResumeLayout(false);
 			this.tableLayoutPanel3.ResumeLayout(false);
 			this.panel2.ResumeLayout(false);
 			this.panel2.PerformLayout();
@@ -1595,7 +1595,7 @@
 		private System.Windows.Forms.OpenFileDialog dialogSelectBackground;
 		private System.Windows.Forms.Button buttonSemiCircle;
 		private System.Windows.Forms.Button buttonTriangle;
-		private System.Windows.Forms.Panel panel6;
+		private System.Windows.Forms.Panel pnlSelect;
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.Button buttonSelect;
 		private System.Windows.Forms.Button buttonNet;

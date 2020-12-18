@@ -782,8 +782,9 @@ namespace VixenModules.Preview.VixenPreview
 			//}
 			ResetButtonBackground(pnlBasicDrawing);
 			ResetButtonBackground(pnlSmartObjects);
+			ResetButtonBackground(pnlSelect);
 			selectedButton.BackColor = ThemeColorTable.TextBoxBackgroundColor;
-	    }
+		}
 
 	    private void ResetButtonBackground(Control c)
 	    {
