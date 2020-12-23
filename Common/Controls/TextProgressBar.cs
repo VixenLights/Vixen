@@ -136,10 +136,16 @@ namespace Common.Controls
         private void DrawProgressBar(Graphics g)
         {
             Rectangle rect = ClientRectangle;
+
+			if (ProgressBarRenderer.IsSupported)
+			{
+				ProgressBarRenderer.DrawHorizontalBar(g, rect);
+			}
+			else
+			{
+				g.FillRectangle(new SolidBrush(ThemeColorTable.BackgroundColor), rect);
+            }
             
-
-            ProgressBarRenderer.DrawHorizontalBar(g, rect);
-
             rect.Inflate(-1, -1);
             g.FillRectangle(new SolidBrush(ThemeColorTable.BackgroundColor), ClientRectangle);
 
