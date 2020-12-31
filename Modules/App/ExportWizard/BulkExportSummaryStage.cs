@@ -210,7 +210,7 @@ namespace VixenModules.App.ExportWizard
 
 		private async Task CreateUniverseFile()
 		{
-			if (_data.ActiveProfile.IsFalconFormat)
+			if (_data.ActiveProfile.IsFalcon2xFormat)
 			{
 				var path = Path.Combine(_data.ActiveProfile.FalconOutputFolder, "config");
 				if (!Directory.Exists(path))
@@ -229,6 +229,7 @@ namespace VixenModules.App.ExportWizard
 
 				await _data.Export.Write2xUniverseFile(fileName);
 			}
+			
 		}
 
 		private bool RenderSequence(ISequence sequence, IProgress<ExportProgressStatus> progress)
