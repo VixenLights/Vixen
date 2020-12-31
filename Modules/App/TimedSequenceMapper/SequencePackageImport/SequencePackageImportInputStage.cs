@@ -53,10 +53,13 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 		{
 			var openFileDialog = new OpenFileDialog();
 			openFileDialog.CheckPathExists = true;
-			var dir = Path.GetDirectoryName(_data.InputFile);
-			if (!Directory.Exists(dir))
+			if (!string.IsNullOrEmpty(_data.InputFile))
 			{
-				openFileDialog.InitialDirectory = dir;
+				var dir = Path.GetDirectoryName(_data.InputFile);
+				if (!Directory.Exists(dir))
+				{
+					openFileDialog.InitialDirectory = dir;
+				}
 			}
 			
 			var filter = $"Vixen 3 Sequence Package (*.{Constants.PackageExtension})|*.{Constants.PackageExtension}";
