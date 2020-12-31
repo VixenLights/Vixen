@@ -233,6 +233,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bar Type.
+        /// </summary>
+        internal static string BarType {
+            get {
+                return ResourceManager.GetString("BarType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Base Color Intensity.
         /// </summary>
         internal static string BaseBrightness {
@@ -2785,6 +2794,42 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string YSpeedVariation {
             get {
                 return ResourceManager.GetString("YSpeedVariation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Amplitude.
+        /// </summary>
+        internal static string ZigZagAmplitude {
+            get {
+                return ResourceManager.GetString("ZigZagAmplitude", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Period.
+        /// </summary>
+        internal static string ZigZagPeriod {
+            get {
+                return ResourceManager.GetString("ZigZagPeriod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spacing.
+        /// </summary>
+        internal static string ZigZagSpacing {
+            get {
+                return ResourceManager.GetString("ZigZagSpacing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thickness.
+        /// </summary>
+        internal static string ZigZagThickness {
+            get {
+                return ResourceManager.GetString("ZigZagThickness", resourceCulture);
             }
         }
         

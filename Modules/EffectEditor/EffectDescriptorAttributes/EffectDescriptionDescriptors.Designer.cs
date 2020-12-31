@@ -224,6 +224,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Selects either a flat or an angled zig zag styled bar..
+        /// </summary>
+        internal static string BarType {
+            get {
+                return ResourceManager.GetString("BarType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the brightness of the base color of the effect..
         /// </summary>
         internal static string BaseBrightness {
@@ -2902,6 +2911,42 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string YSpeedVariation {
             get {
                 return ResourceManager.GetString("YSpeedVariation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the height of the zig zag&apos;s crest..
+        /// </summary>
+        internal static string ZigZagAmplitude {
+            get {
+                return ResourceManager.GetString("ZigZagAmplitude", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the width or wave length of the zig zag..
+        /// </summary>
+        internal static string ZigZagPeriod {
+            get {
+                return ResourceManager.GetString("ZigZagPeriod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the blank area between each zig zag color..
+        /// </summary>
+        internal static string ZigZagSpacing {
+            get {
+                return ResourceManager.GetString("ZigZagSpacing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the thickness of the zig zag..
+        /// </summary>
+        internal static string ZigZagThickness {
+            get {
+                return ResourceManager.GetString("ZigZagThickness", resourceCulture);
             }
         }
     }
