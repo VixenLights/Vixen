@@ -460,7 +460,7 @@ namespace VixenModules.Effect.Bars
         /// <returns>Amplitude of the zig zag</returns>
         private int GetZigZagAmplitude(int scaleValue)
         {
-            // Gets the amplitude setting and scales it to the display element
+            // Gets the amplitude setting and scales based on the display element size
             int amplitude = (int)((ZigZagAmplitude) / 100.0 * scaleValue);
             
             return amplitude;
@@ -473,6 +473,7 @@ namespace VixenModules.Effect.Bars
         /// <returns>Period of the zig zag</returns>
         private int GetZigZagPeriod(int scaleValue)
         {           
+            // Get the scaled zig zag period
             int period = (int)((ZigZagPeriod) / 100.0 * scaleValue);
 
             // Ensure the period is always at least 2 pixels
@@ -551,7 +552,7 @@ namespace VixenModules.Effect.Bars
         /// </summary>        
         /// <param name="zigZagThickness">Thickness of the zig zag</param>
         /// <param name="zigZagSpacing">Spacing in between the zig zag bars</param>
-        /// <returns></returns>
+        /// <returns>Zig zag repeating tile height</returns>
         private int GetZigZagRepeatingHeight(int zigZagThickness, int zigZagSpacing)
         {
             // The repeating height is the thickness of the bar plus the spacing between the bars times the number of bars (colors)
@@ -594,7 +595,7 @@ namespace VixenModules.Effect.Bars
         /// <summary>
         /// Gets the highlight color for the flat bar / zig zag color index.
         /// </summary>
-        /// <returns>Highlight color for the current bar / zig zag</returns>
+        /// <returns>Highlight color for the specified color index</returns>
         private Color GetHighlightColor(int colorIndex)
         {
             // The color gradients run perpendicular to the bars or zig zags so the highlight always
@@ -722,7 +723,7 @@ namespace VixenModules.Effect.Bars
         /// </summary>
         /// <param name="colorIndex">Index of the current color</param>       
         /// <param name="currentThicknessCounter">Pixel position within the bar</param>
-        /// <returns></returns>
+        /// <returns>Gets the color for the specified zig zag pixel</returns>
         private Color GetZigZagColor(int colorIndex, int currentThicknessCounter)
         {
             Color color;
@@ -752,11 +753,11 @@ namespace VixenModules.Effect.Bars
         }
 
         /// <summary>
-        /// Gets the 3-D color for specified zig zag pixel.
+        /// Gets the 3-D color for the specified zig zag pixel.
         /// </summary>
         /// <param name="colorIndex">Index into the color array</param>
         /// <param name="currentWidthCounter">Zig zag pixel being drawn</param>
-        /// <returns></returns>
+        /// <returns>3-D color for the specified zig zag pixel</returns>
         private Color Get3DColor(int colorIndex, int currentThicknessCounter)
         {
             // Get the specified color from the color array
@@ -777,7 +778,7 @@ namespace VixenModules.Effect.Bars
         /// </summary>
         /// <param name="frame">Current frame number</param>
         /// <param name="frameBuffer">Frame buffer to render in</param>
-        private void RenderEffectZigZag(int frame, IPixelFrameBuffer frameBuffer)
+        private void RenderEffectStringsZigZag(int frame, IPixelFrameBuffer frameBuffer)
         {
             // If the zig zag bars are moving in one of the alternate directions then...
             if (Direction == BarDirection.AlternateUp ||
@@ -823,7 +824,8 @@ namespace VixenModules.Effect.Bars
         }
         
         /// <summary>
-        /// Updates the zig zag position for the Direction is one of the Alternating values.
+        /// Updates the zig zag position.  This position is only used when the Direction is 
+        /// one of the Alternating values.
         /// </summary>
         /// <param name="frame">Current frame number</param>
         private void UpdateZigZagPosition(int frame)
@@ -904,7 +906,7 @@ namespace VixenModules.Effect.Bars
         /// and draw up.
         /// </summary>       
         /// <returns>Y start position within the repeating tile</returns>
-        private int GetTileStartPosition()
+        private int GetTileYStartPosition()
         {
             // Skip the first 
             return (_zigZagAmplitude + _zigZagThickness - 1 + _zigZagSpacing) + (Colors.Count - 1) * (_zigZagThickness + _zigZagSpacing);
@@ -912,7 +914,7 @@ namespace VixenModules.Effect.Bars
 
         #endregion
 
-        #region Private Zig Zag String Render Methods
+        #region Private Zig Zag Render String Methods
 
         /// <summary>
         /// Renders a vertical zig zag for string mode.
@@ -921,7 +923,7 @@ namespace VixenModules.Effect.Bars
         /// <param name="frameBuffer">Frame buffer to render in</param>
         private void RenderEffectZigZagVertical(int frame, IPixelFrameBuffer frameBuffer)
         {
-           // Render the zig zag 
+           // Render the vertical zig zag 
             RenderEffectZigZag(
                 frame,
                 frameBuffer,
@@ -1026,7 +1028,7 @@ namespace VixenModules.Effect.Bars
         /// <param name="zigZagThickness">Thickness of the zig zag</param>
         /// <param name="zigZagSpacing">Spacing between the zig zags</param>
         /// <param name="frame">Current frame number</param>
-        /// <returns></returns>
+        /// <returns>Initial Y position within the repeating tile</returns>
         private int InitializeZigZagTileYPosition(
             bool increment, 
             int heightOfTile, 
@@ -1091,28 +1093,7 @@ namespace VixenModules.Effect.Bars
 
             return tileY;
         }
-
-        /// <summary>
-        /// Renders a horizontal expanding or compressing zig zag.
-        /// </summary>
-        /// <param name="frame">Current frame number</param>
-        /// <param name="frameBuffer">Frame buffer to render in</param>
-        /// <param name="expand">True when the zig zag is expanding</param>
-        private void RenderEffectZigZagHorizontalExpandCompress(int frame, IPixelFrameBuffer frameBuffer, bool expand)
-        {           
-            // Render the expanding or compressing zig zag
-            RenderEffectZigZagExpandCompress(
-                frame,
-                frameBuffer,
-                expand,
-                _heightOfTile,
-                _widthOfTile,
-                _yTileStartPosition,
-                BufferWi,
-                BufferHt,
-                SetPixelHorizontal);
-        }
-
+       
         /// <summary>
         /// Renders an expanding or compressing zig zag.
         /// </summary>
@@ -1214,7 +1195,17 @@ namespace VixenModules.Effect.Bars
         /// <param name="frameBuffer">Frame buffer to render in</param>
         private void RenderEffectZigZagHorizontalExpand(int frame, IPixelFrameBuffer frameBuffer)
         {
-            RenderEffectZigZagHorizontalExpandCompress(frame, frameBuffer, true);
+            // Render the expanding horizontal zig zag bars
+            RenderEffectZigZagExpandCompress(
+                frame,
+                frameBuffer,
+                true,
+                _heightOfTile,
+                _widthOfTile,
+                _yTileStartPosition,
+                BufferWi,
+                BufferHt,
+                SetPixelHorizontal);
         }
 
         /// <summary>
@@ -1224,7 +1215,17 @@ namespace VixenModules.Effect.Bars
         /// <param name="frameBuffer">Frame buffer to render in</param>
         private void RenderEffectZigZagHorizontalCompress(int frame, IPixelFrameBuffer frameBuffer)
         {
-            RenderEffectZigZagHorizontalExpandCompress(frame, frameBuffer, false);
+            // Render the compressing zig zag bars
+            RenderEffectZigZagExpandCompress(
+                frame,
+                frameBuffer,
+                false,
+                _heightOfTile,
+                _widthOfTile,
+                _yTileStartPosition,
+                BufferWi,
+                BufferHt,
+                SetPixelHorizontal);
         }
 
         /// <summary>
@@ -1234,32 +1235,11 @@ namespace VixenModules.Effect.Bars
         /// <param name="frameBuffer">Frame buffer to render in</param>
         private void RenderEffectZigZagVerticalExpand(int frame, IPixelFrameBuffer frameBuffer)
         {
-            RenderEffectZigZagVerticalExpandCompress(frame, frameBuffer, true);
-        }
-
-        /// <summary>
-        /// Renders a compressing vertical zig zag.
-        /// </summary>
-        /// <param name="frame">Current frame number</param>
-        /// <param name="frameBuffer">Frame buffer to render in</param>
-        private void RenderEffectZigZagVerticalCompress(int frame, IPixelFrameBuffer frameBuffer)
-        {
-            RenderEffectZigZagVerticalExpandCompress(frame, frameBuffer, false);
-        }
-
-        /// <summary>
-        /// Renders an expanding vertical zig zag.
-        /// </summary>
-        /// <param name="frame">Current frame number</param>
-        /// <param name="frameBuffer">Frame buffer to render in</param>
-        /// <param name="expand">True when the zig zag is expanding</param>
-        private void RenderEffectZigZagVerticalExpandCompress(int frame, IPixelFrameBuffer frameBuffer, bool expand)
-        {            
-            // Render the expanding / compressing zig zag bars
+            // Render the expanding verticdal zig zag bars
             RenderEffectZigZagExpandCompress(
                 frame,
                 frameBuffer,
-                expand,
+                true,
                 _heightOfTile,
                 _widthOfTile,
                 _yTileStartPosition,
@@ -1268,6 +1248,26 @@ namespace VixenModules.Effect.Bars
                 SetPixelVertical);
         }
 
+        /// <summary>
+        /// Renders a compressing vertical zig zag.
+        /// </summary>
+        /// <param name="frame">Current frame number</param>
+        /// <param name="frameBuffer">Frame buffer to render in</param>
+        private void RenderEffectZigZagVerticalCompress(int frame, IPixelFrameBuffer frameBuffer)
+        {           
+            // Render the compressing vertical zig zag bars
+            RenderEffectZigZagExpandCompress(
+                frame,
+                frameBuffer,
+                false,
+                _heightOfTile,
+                _widthOfTile,
+                _yTileStartPosition,
+                BufferHt,
+                BufferWi,
+                SetPixelVertical);
+        }
+       
         #endregion
 
         #region Private Zig Zag Render Location Methods
@@ -1336,7 +1336,7 @@ namespace VixenModules.Effect.Bars
         /// <param name="zigZagThickness">Thickness of the zig zag bar</param>
         /// <param name="zigZagSpacing">Space between zig zag bars</param>
         /// <param name="leftRight">Whether the zig zag is moving left or right</param>
-        /// <param name="moveRight">Whether the zig zag is moving right</param>
+        /// <param name="movesRight">Whether the zig zag is moving right</param>
         /// <param name="convertFromLocationToStringCoordinates">Delete to convert location coordinates to string coordinates</param>
         /// <param name="setPixel">Delegate that sets a pixel on the frame buffer</param>
         private void RenderEffectByLocationZigZag(
@@ -1394,7 +1394,7 @@ namespace VixenModules.Effect.Bars
         /// <returns>The Y coordinate within the repeating tile</returns>
         private int CalculateZigZagYTilePosition(bool incrementing, int y, int movementY, int heightOfTile, int yOffset = 0)
         {
-            int yTile = 0;
+            int yTile;
 
             // If the movement is increasing then...
             if (incrementing)
@@ -1445,6 +1445,7 @@ namespace VixenModules.Effect.Bars
         /// <param name="yOut">Resulting Y string coordinate</param>
         private void ConvertFromHorizontalLocationToStringCoordinatesFlip(int x, int y, out int xOut, out int yOut)
         {
+            // Swap the input y and x coordinates 
             ConvertFromHorizontalLocationToStringCoordinates(y, x, out xOut, out yOut);
         }
 
@@ -1462,26 +1463,7 @@ namespace VixenModules.Effect.Bars
             yOut = y - BufferHtOffset;
             xOut = x - BufferWiOffset;
         }
-
-        /// <summary>
-        /// Renders an expanding zig zag for location mode.
-        /// </summary>
-        /// <param name="frame">Current frame number</param>
-        /// <param name="frameBuffer">Frame buffer to render in</param>
-        private void RenderEffectLocationZigZagVerticalExpand(int frame, PixelLocationFrameBuffer frameBuffer)
-        {          
-            // Render the expanding zig zag bars
-            RenderEffectLocationZigZagExpandCompress(
-                frame,
-                frameBuffer,
-                true,
-                _heightOfTile,
-                _widthOfTile,
-                _yTileStartPosition,
-                BufferHt,          
-                ConvertFromVerticalLocationToStringCoordinates);
-        }
-
+       
         /// <summary>
         /// Renders an expanding or compressing zig zag.
         /// </summary>
@@ -1555,7 +1537,45 @@ namespace VixenModules.Effect.Bars
                 _heightOfTile,
                 _widthOfTile,
                 _yTileStartPosition,
-                BufferWi,    
+                BufferWi,
+                ConvertFromHorizontalLocationToStringCoordinatesFlip);
+        }
+
+        /// <summary>
+        /// Renders a horizontal compressing zig zag for location mode.
+        /// </summary>
+        /// <param name="frame">Current frame number</param>
+        /// <param name="frameBuffer">Frame buffer to render in</param>
+        private void RenderEffectLocationZigZagHorizontalCompress(int frame, PixelLocationFrameBuffer frameBuffer)
+        {
+            // Render the compressing zig zag bars
+            RenderEffectLocationZigZagExpandCompress(
+                frame,
+                frameBuffer,
+                false,
+                _heightOfTile,
+                _widthOfTile,
+                _yTileStartPosition,
+                BufferWi,
+                ConvertFromHorizontalLocationToStringCoordinatesFlip);
+        }
+
+        /// <summary>
+        /// Renders an expanding zig zag for location mode.
+        /// </summary>
+        /// <param name="frame">Current frame number</param>
+        /// <param name="frameBuffer">Frame buffer to render in</param>
+        private void RenderEffectLocationZigZagVerticalExpand(int frame, PixelLocationFrameBuffer frameBuffer)
+        {
+            // Render the expanding zig zag bars
+            RenderEffectLocationZigZagExpandCompress(
+                frame,
+                frameBuffer,
+                true,
+                _heightOfTile,
+                _widthOfTile,
+                _yTileStartPosition,
+                BufferHt,
                 ConvertFromVerticalLocationToStringCoordinates);
         }
 
@@ -1577,26 +1597,7 @@ namespace VixenModules.Effect.Bars
                BufferHt,       
                ConvertFromVerticalLocationToStringCoordinates);
         }
-
-        /// <summary>
-        /// Renders a horizontal compressing zig zag for location mode.
-        /// </summary>
-        /// <param name="frame">Current frame number</param>
-        /// <param name="frameBuffer">Frame buffer to render in</param>
-        private void RenderEffectLocationZigZagHorizontalCompress(int frame, PixelLocationFrameBuffer frameBuffer)
-        {            
-            // Render the compression Zig Zag bars
-            RenderEffectLocationZigZagExpandCompress(
-                frame,
-                frameBuffer,
-                false,
-                _heightOfTile,
-                _widthOfTile,
-                _yTileStartPosition,
-                BufferWi,        
-                ConvertFromHorizontalLocationToStringCoordinatesFlip);
-        }
-
+        
         /// <summary>
         /// Applies the intensity setting to the specified color.
         /// </summary>
@@ -1638,11 +1639,12 @@ namespace VixenModules.Effect.Bars
             // The Y value for the zig zag is a function of the speed and how far the zig zag travels in a 50 ms frame
             int yValue = (int)(frame * (FrameTime / 50.0) * CalculateZigZagSpeed(GetEffectTimeIntervalPosition(frame)));
 
+            // Return the Y value for the zig zag
             return yValue;
         }
 
         /// <summary>
-        /// Get ths speed of the zig zag as a function of the display element size.
+        /// Get ths speed of the zig zag. 
         /// </summary>
         /// <param name="intervalPos">Interval position within the effect duration</param>            
         /// <returns>Speed of the zig zag</returns>
@@ -1656,23 +1658,43 @@ namespace VixenModules.Effect.Bars
         }
 
         /// <summary>
-        /// Gets the smaller value between the width and the height to use as a scale factor for effect settings.
+        /// Gets appropriate scale value for the effect settings.
         /// </summary>
         /// <param name="bufferHt">Height of the dsisplay element</param>
         /// <param name="bufferWi">Width of the display element</param>
         /// <returns>Scale value used to scale effect settings</returns>
         private int GetScaleValue(int bufferHt, int bufferWi)
         {
-            // Default to the display element height
-            int scaleValue = bufferHt;
+            // Use the minimum dimension of the display element as the scale factor
+            int scaleValue = Math.Min(bufferHt, bufferWi);
 
-            // If the display width is smaller then...
-            if (bufferWi < scaleValue)
+            /*
+            // Determine the scale value based on the Direction of the bars
+            switch (Direction)
             {
-                // Set the scale value to the width
-                scaleValue = bufferWi;
+                case BarDirection.Up:
+                case BarDirection.Down:
+                case BarDirection.AlternateUp:
+                case BarDirection.AlternateDown:
+                case BarDirection.Expand:
+                case BarDirection.Compress:
+                    scaleValue = bufferHt;
+                    break;
+                case BarDirection.Left:
+                case BarDirection.Right:
+                case BarDirection.AlternateLeft:
+                case BarDirection.AlternateRight:
+                case BarDirection.HExpand:
+                case BarDirection.HCompress:
+                    scaleValue = bufferWi;
+                    break;
+                default:
+                    scaleValue = bufferHt;
+                    Debug.Assert(false, "Unsupported Direction!");
+                    break;
             }
-
+            */
+          
             return scaleValue;
         }
 
@@ -1682,9 +1704,10 @@ namespace VixenModules.Effect.Bars
 
         protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
         {
+            // If the bar type is flat then...
             if (BarType == BarType.Flat)
             {
-                RenderEffectByLocationSolid(numFrames, frameBuffer);
+                RenderEffectByLocationFlat(numFrames, frameBuffer);
             }
             else
             {                                
@@ -1693,7 +1716,7 @@ namespace VixenModules.Effect.Bars
         }
 
         /// <summary>
-        /// Performs calculations that only need to be performed once per rendering.
+        /// Perform calculations that only need to be performed once per rendering.
         /// </summary>
         protected override void SetupRender()
 		{
@@ -1722,7 +1745,7 @@ namespace VixenModules.Effect.Bars
                 _zigZagAmplitude = GetZigZagAmplitude(_scaleValue);
 
                 // Calculate the Y start position of the repeating tile
-                _yTileStartPosition = GetTileStartPosition();
+                _yTileStartPosition = GetTileYStartPosition();
 
                 // Calculate the height of the repeating tile frame buffer
                 _staticZigZagTileFrameBufferHeight = _heightOfTile + _yTileStartPosition;
@@ -1745,11 +1768,11 @@ namespace VixenModules.Effect.Bars
             // If the bar type is flat then...
             if (BarType == BarType.Flat)
             {
-                RenderEffectSolid(frame, frameBuffer);
+                RenderEffectFlat(frame, frameBuffer);
             }
             else
             {
-                RenderEffectZigZag(frame, frameBuffer);
+                RenderEffectStringsZigZag(frame, frameBuffer);
             }
         }
 
@@ -1757,7 +1780,7 @@ namespace VixenModules.Effect.Bars
                                    
         #region Private Solid Bar Methods
 
-        private void RenderEffectByLocationSolid(int numFrames, PixelLocationFrameBuffer frameBuffer)
+        private void RenderEffectByLocationFlat(int numFrames, PixelLocationFrameBuffer frameBuffer)
 		{
 			int colorcnt = Colors.Count();
 			int barCount = Repeat * colorcnt;
@@ -2008,7 +2031,7 @@ namespace VixenModules.Effect.Bars
 			}
 		}
 
-        private void RenderEffectSolid(int frame, IPixelFrameBuffer frameBuffer)
+        private void RenderEffectFlat(int frame, IPixelFrameBuffer frameBuffer)
         {
             int x, y, n, colorIdx;
             int colorcnt = Colors.Count();
