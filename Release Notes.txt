@@ -1,5 +1,15 @@
 Release Notes - Vixen 3
 
+Release Notes - Vixen 3 - 3.7u4 Build 
+
+** Bug
+    * [VIX-2937] - Sequence package import crashes on initial use.
+    * [VIX-2988] - Bug in export wizard
+    * [VIX-3019] - Floods disappear from preview
+    * [VIX-3026] - "Tree" effect operates 2X faster on FPP export compared to Preview
+    * [VIX-3031] - Updated from 3.6u2 to 3.7u3 and Vixen crashes on Windows 7 with Visual Styles disabled
+    * [VIX-3032] - Display item properties and button backgrounds do not update properly on some selection changes. 
+
 
 Release Notes - Vixen 3 - 3.7u3 Build 
 
@@ -12,7 +22,6 @@ Release Notes - Vixen 3 - 3.7u3 Build
     * [VIX-3012] - Morph polygons not saving
     * [VIX-3017] - Crash while aligning effects 
     * [VIX-3018] - Row zoom draws effects in the wrong location.
-
 
 
 Release Notes - Vixen 3 - 3.7u2 Build 
