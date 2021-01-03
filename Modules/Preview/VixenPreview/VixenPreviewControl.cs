@@ -373,6 +373,8 @@ namespace VixenModules.Preview.VixenPreview
 			EndUpdate();
 		}
 
+		public Size VirtualSize => new Size(Width+hScroll.Maximum, Height+vScroll.Maximum);
+
 		public Bitmap Background
 		{
 			get { return _background; }

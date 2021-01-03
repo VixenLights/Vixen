@@ -38,6 +38,7 @@ namespace Common.Controls.Theme
 			Graphics g = e.Graphics;
 			Pen pen = new Pen(ThemeColorTable.BorderColor, 1);
 			g.DrawLine(pen, startPoint, endPoint);
+			pen.Dispose();
 		}
 
 		protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
@@ -190,9 +191,10 @@ namespace Common.Controls.Theme
 			}
 			
 			// Set the color of border when item is selected.
-			Pen pen = new Pen(ThemeColorTable.ForeColor);
-			g.DrawRectangle(pen, bounds.X, bounds.Y, bounds.Width - 1, bounds.Height - 1);
-			
+			using (Pen pen = new Pen(ThemeColorTable.ForeColor))
+			{
+				g.DrawRectangle(pen, bounds.X, bounds.Y, bounds.Width - 1, bounds.Height - 1);
+			}
 		}
 
 		protected override void OnRenderItemBackground(ToolStripItemRenderEventArgs e)
@@ -215,8 +217,10 @@ namespace Common.Controls.Theme
 			var menuItem = e.Item as ToolStripMenuItem;
 			if (menuItem != null && menuItem.CheckOnClick && menuItem.Checked && e.ImageRectangle != Rectangle.Empty)
 			{
-				Pen p = new Pen(ThemeColorTable.HighlightColor, 1);
-				e.Graphics.DrawRectangle(p, 2, 0, e.ImageRectangle.Width + 5, e.ImageRectangle.Height + 5);
+				using (Pen p = new Pen(ThemeColorTable.HighlightColor, 1))
+				{
+					e.Graphics.DrawRectangle(p, 2, 0, e.ImageRectangle.Width + 5, e.ImageRectangle.Height + 5);
+				}
 			}
 		}
 

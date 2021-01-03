@@ -1,5 +1,53 @@
 Release Notes - Vixen 3
 
+Release Notes - Vixen 3 - 3.7u4 Build 
+
+** Bug
+    * [VIX-2937] - Sequence package import crashes on initial use.
+    * [VIX-2988] - Bug in export wizard
+    * [VIX-3019] - Floods disappear from preview
+    * [VIX-3026] - "Tree" effect operates 2X faster on FPP export compared to Preview
+    * [VIX-3031] - Updated from 3.6u2 to 3.7u3 and Vixen crashes on Windows 7 with Visual Styles disabled
+    * [VIX-3032] - Display item properties and button backgrounds do not update properly on some selection changes. 
+
+
+Release Notes - Vixen 3 - 3.7u3 Build 
+
+** Improvement
+    * [VIX-2878] - Add bounds checking for preview items to ensure they are visible.
+    * [VIX-3016] - No size fields for custom props
+
+** Bug
+    * [VIX-3006] - Off-center effects
+    * [VIX-3012] - Morph polygons not saving
+    * [VIX-3017] - Crash while aligning effects 
+    * [VIX-3018] - Row zoom draws effects in the wrong location.
+
+
+Release Notes - Vixen 3 - 3.7u2 Build 
+
+** Improvement
+    * [VIX-2864] - Allow clicking the color in the discrete color picker
+    * [VIX-2878] - Add bounds checking for preview items to ensure they are visible.
+    * [VIX-2980] - Improve the drag performance of moving effects in the editor.
+
+** Bug
+    * [VIX-2981] - Spin Effect fails to render when the fixed pulse time is invalid.
+    * [VIX-2982] - Copying the Morph effect by Ctrl Drag on an existing effect does not retain polygon settings.
+    * [VIX-2983] - Export won't open in FPP
+    * [VIX-2986] - Lipsync render visual in timeline may be blank at times.
+    * [VIX-2987] - The save/cancel routines in the Display / Preview Setup can conflict with rapid changes.
+    * [VIX-2989] - Vixen crashes when associating certain audio files.
+    * [VIX-2996] - Dimming filter interpolates command values incorrectly.
+    * [VIX-2997] - Attempting to Zoom rows in the editor when there are none can crash the application.
+    * [VIX-2998] - Rendering artifacts on the patching order screen
+    * [VIX-2999] - The Dummy Lighting controller fails to load with a thread contention issue.
+    * [VIX-3000] - Location property for one element resets to zeros when preview is edited
+    * [VIX-3006] - Off-center effects
+    * [VIX-3010] - Theme memory optimizations
+    * [VIX-3011] - Moving Custom Props at other than 100% zoom can be erratic.
+	
+
 
 Release Notes - Vixen 3 - 3.7u1 Build 
 

@@ -14,15 +14,23 @@ namespace Common.Controls.Theme
 			combo.BackColor = ThemeColorTable.ComboBoxBackColor;
 			if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
 			{
-				e.Graphics.FillRectangle(new SolidBrush(ThemeColorTable.ComboBoxHighlightColor),
-					e.Bounds);
-				e.DrawFocusRectangle();
+				using (var sb = new SolidBrush(ThemeColorTable.ComboBoxHighlightColor))
+				{
+					e.Graphics.FillRectangle(sb,
+						e.Bounds);
+					e.DrawFocusRectangle();
+				}
 			}
 			else
 			{
 				e.DrawBackground();
 			}
-			e.Graphics.DrawString(combo.Items[e.Index].ToString(), e.Font, new SolidBrush(ThemeColorTable.ForeColor), new Point(e.Bounds.X, e.Bounds.Y));
+
+			using (var sb = new SolidBrush(ThemeColorTable.ForeColor))
+			{
+				e.Graphics.DrawString(combo.Items[e.Index].ToString(), e.Font, sb, new Point(e.Bounds.X, e.Bounds.Y));
+			}
+			
 		}
 	}
 }

@@ -27,7 +27,6 @@ jobs:
       notes_build_type: ${{ env.VIX_NOTES_BUILD_TYPE }}
       notes_fix_version: ${{ env.VIX_NOTES_FIX_VERSION }}
       pre_release: ${{ env.VIX_PRE_RELEASE }}
-      release_notes_markdown: ${{ env.VIX_RELEASE_NOTES_MARKDOWN }}
       release_tag: ${{ env.VIX_RELEASE_TAG }}
       version: ${{ env.VIX_VERSION }}
       
@@ -36,7 +35,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Set BUILD_NUMBER
-        uses: einaregilsson/build-number@v2
+        uses: einaregilsson/build-number@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -47,18 +46,21 @@ jobs:
             VIX_RELEASE_TAG=$(echo "${GITHUB_REF}" | sed -e 's!^refs/tags/!!')
             set -- $(echo "${VIX_RELEASE_TAG}" | tr '.u' ' ')
   
-            echo "::set-env name=VIX_NOTES_FIX_VERSION::DevBuild"
-            echo "::set-env name=VIX_NOTES_BUILD_TYPE::${1}.${2}u${3:-0}"
-            echo "::set-env name=VIX_PRE_RELEASE::false"
-            echo "::set-env name=VIX_RELEASE_TAG::${VIX_RELEASE_TAG}"
-            echo "::set-env name=VIX_VERSION::${1}.${2}.${BUILD_NUMBER}.${3:-0}"
+            echo "VIX_NOTES_FIX_VERSION=DevBuild" >> $GITHUB_ENV
+            echo "VIX_NOTES_BUILD_TYPE=${1}.${2}u${3:-0}" >> $GITHUB_ENV
+            echo "VIX_PRE_RELEASE=false" >> $GITHUB_ENV
+            echo "VIX_RELEASE_TAG=${VIX_RELEASE_TAG}" >> $GITHUB_ENV
+            echo "VIX_VERSION=${1}.${2}.${BUILD_NUMBER}.${3:-0}" >> $GITHUB_ENV
           else
-            echo "::set-env name=VIX_NOTES_FIX_VERSION::DevBuild"
-            echo "::set-env name=VIX_NOTES_BUILD_TYPE::Development"
-            echo "::set-env name=VIX_PRE_RELEASE::true"
-            echo "::set-env name=VIX_RELEASE_TAG::Testbuild-${BUILD_NUMBER}"
-            echo "::set-env name=VIX_VERSION::0.0.${BUILD_NUMBER}.0"
+            echo "VIX_NOTES_FIX_VERSION=DevBuild" >> $GITHUB_ENV
+            echo "VIX_NOTES_BUILD_TYPE=Development" >> $GITHUB_ENV
+            echo "VIX_PRE_RELEASE=true" >> $GITHUB_ENV
+            echo "VIX_RELEASE_TAG=Testbuild-${BUILD_NUMBER}" >> $GITHUB_ENV
+            echo "VIX_VERSION=0.0.${BUILD_NUMBER}.0" >> $GITHUB_ENV
           fi
+          
+      - name: show github env
+        run: echo "${GITHUB_ENV}"
 
       - name: Update release notes
         run: ./Build/CreateReleaseNotes.ps1 -jiraUrl "http://bugs.vixenlights.com" -project "Vixen 3" -fixVersion "${env:VIX_NOTES_FIX_VERSION}" -buildType "${env:VIX_NOTES_BUILD_TYPE}"
@@ -68,6 +70,12 @@ jobs:
         with:
           name: _releaseNotes
           path: "Release Notes.txt"
+          
+      - name: Upload Build Release Notes Markdown artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: _releaseNotesMd
+          path: "Release Notes.md"
 
 
   build_x86:
@@ -124,7 +132,7 @@ jobs:
       - name: Set installer name in environment
         shell: bash
         run: |
-          echo "::set-env name=SETUP_32::$(echo Vixen*Setup-32bit.exe)"
+          echo "SETUP_32=$(echo Vixen*Setup-32bit.exe)" >> $GITHUB_ENV
         
       - name: Upload _setup32 artifact
         uses: actions/upload-artifact@v1
@@ -187,7 +195,7 @@ jobs:
       - name: Set installer name in environment
         shell: bash
         run: |
-          echo "::set-env name=SETUP_64::$(echo Vixen*Setup-64bit.exe)"
+          echo "SETUP_64=$(echo Vixen*Setup-64bit.exe)" >> $GITHUB_ENV
 
       - name: Upload _setup64 artifact
         uses: actions/upload-artifact@v1
@@ -216,7 +224,12 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: _setup64
-      
+          
+      - name: Download Build Release Notes Markdown artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: _releaseNotesMd
+          
       - name: Create release
         id: create_release
         uses: actions/create-release@v1
@@ -225,8 +238,7 @@ jobs:
         with:
           tag_name: ${{ needs.setup.outputs.release_tag }}
           release_name: ${{ needs.setup.outputs.release_tag }}
-          body: |
-            ${{ needs.setup.outputs.release_notes_markdown }}
+          body_path: _releaseNotesMd\Release Notes.md
           draft: false
           prerelease: ${{ needs.setup.outputs.pre_release }}
       

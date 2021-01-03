@@ -216,7 +216,7 @@ namespace VixenModules.Effect.Morph
 
 				// Update the morph polygon model data
 				UpdatePolygonModel(_data);
-
+				
 				// Update the visibility of controls
 				UpdateAttributes();
 
@@ -953,10 +953,6 @@ namespace VixenModules.Effect.Morph
 				}
 			}
 
-			// Save off the display element width and height
-			_data.DisplayElementWidth = BufferWi;
-			_data.DisplayElementHeight = BufferHt;
-
 			// If effect has been associated with a display element then...
 			if (previousBufferHeight != 0 && previousBufferWidth != 0)
 			{
@@ -1082,6 +1078,17 @@ namespace VixenModules.Effect.Morph
 		/// </summary>
 		protected override void SetupRender()
 		{
+			// Store off the display element width and height
+			_bufferWi = BufferWi;
+			_bufferHt = BufferHt;
+
+			// Check to see if the display element changed size and if the morph polygons needs to scaled
+			ScaleShapesToFitDisplayElement(_data.DisplayElementWidth, _data.DisplayElementHeight);
+
+			// Save off the display element width and height
+			_data.DisplayElementWidth = _bufferWi;
+			_data.DisplayElementHeight = _bufferHt;
+
 			if (PolygonType == PolygonType.Pattern)
 			{
 				// Transfer the top level settings to the morph polygon
@@ -1091,12 +1098,6 @@ namespace VixenModules.Effect.Morph
 				MorphPolygons[0].HeadColor = new ColorGradient(HeadColor);
 				MorphPolygons[0].TailColor = new ColorGradient(TailColor);
 			}
-
-			// Store off the display element width and height
-			_bufferWi = BufferWi;
-			_bufferHt = BufferHt;
-			_data.DisplayElementWidth = _bufferWi;
-			_data.DisplayElementHeight = _bufferHt;
 
 			// Give the morph polygon access to the display element dimensions
 			MorphPolygon.BufferWidth = _bufferWi;
@@ -1126,7 +1127,10 @@ namespace VixenModules.Effect.Morph
 			// If the current display element is not the same as the previous and
 			// the previous display element size was saved off then...
 			if ((previousBufferWidth != BufferWi || previousBufferHeight != BufferHt) &&
-			     previousBufferHeight != 0 && previousBufferWidth != 0)
+			     previousBufferHeight != 0 && 
+			     previousBufferWidth != 0 &&
+			     BufferWi != 0 &&
+			     BufferHt != 0)
 			{
 				// Loop over the morph polygons
 				foreach (IMorphPolygon morphPolygon in MorphPolygons)
@@ -1154,6 +1158,14 @@ namespace VixenModules.Effect.Morph
 						BufferWi,
 						BufferHt);
 				}
+
+				// Save off the display element width and height
+				_data.DisplayElementWidth = BufferWi;
+				_data.DisplayElementHeight = BufferHt;
+
+				// Mark the sequence dirty so that the scaled polygons and the new width and height of the display element
+				// are saved off
+				IsDirty = true;
 			}
 		}
 		

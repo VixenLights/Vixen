@@ -101,6 +101,7 @@ namespace Common.Controls.Timeline
 			Row.RowSelectedChanged += RowSelectedChangedHandler;
 			Row.RowToggled += RowToggledHandler;
             Row.RowHeightChanged += RowHeightChangedHandler;
+			Row.RowVisibilityChanged += RowVisibilityChangedHandler;
 			TimeLineGlobalEventManager.Manager.AlignmentActivity += TimeLineAlignmentHandler;
 
 			// Drag & Drop
@@ -284,9 +285,18 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		private IEnumerable<Element> _selectedElements;
 		public IEnumerable<Element> SelectedElements
 		{
-			get { return Rows.SelectMany(x => x.SelectedElements).Distinct(); }
+			get
+			{
+				if (_selectedElements == null)
+				{
+					_selectedElements = Rows.SelectMany(x => x.SelectedElements).Distinct().ToList();
+				}
+
+				return _selectedElements;
+			}
 		}
 
 		public IEnumerable<Row> SelectedRows
@@ -380,6 +390,8 @@ namespace Common.Controls.Timeline
 			get { return ModifierKeys.HasFlag(Keys.Alt); }
 		}
 
+		public bool IsResizeDragInProgress => m_dragState != DragState.Normal;
+
 		private int CurrentRowIndexUnderMouse { get; set; }
 		private SortedDictionary<TimeSpan, List<SnapDetails>> StaticSnapPoints { get; set; }
 		private SortedDictionary<TimeSpan, List<SnapDetails>> CurrentDragSnapPoints { get; set; }
@@ -405,6 +417,7 @@ namespace Common.Controls.Timeline
 
 		private void _SelectionChanged()
 		{
+			_selectedElements = null;
 			if (SupressSelectionEvents) return;
 			if (SelectionChanged != null)
 				SelectionChanged(this, EventArgs.Empty);
@@ -493,7 +506,10 @@ namespace Common.Controls.Timeline
 			// when dragging, the control will invalidate after it's done, in case multiple elements are changing.
 			if (m_dragState != DragState.Moving && !SequenceLoading)
 				if (!SuppressInvalidate) Invalidate();
+		}
 
+		protected void RowVisibilityChangedHandler(object sender, EventArgs e)
+		{
 			_visibleRowsDirty = true;
 		}
 

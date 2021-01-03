@@ -59,12 +59,17 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageExport
 			saveFileDialog.CheckPathExists = true;
 			//saveFileDialog.CreatePrompt = true;
 			saveFileDialog.OverwritePrompt = true;
-			var dir = Path.GetDirectoryName(_data.ExportOutputFile);
-			if (!Directory.Exists(dir))
+
+			if (!string.IsNullOrEmpty(_data.ExportOutputFile))
 			{
-				dir = Path.Combine(Paths.DataRootPath, "Export");
+				var dir = Path.GetDirectoryName(_data.ExportOutputFile);
+				if (!Directory.Exists(dir))
+				{
+					dir = Path.Combine(Paths.DataRootPath, "Export");
+					saveFileDialog.InitialDirectory = dir;
+				}
 			}
-			saveFileDialog.InitialDirectory = dir;
+
 			saveFileDialog.FileName = $"{VixenSystem.ProfileName}.{PackageExtension}";
 
 			var filter = $"Vixen 3 Sequence Package (*.{PackageExtension})|*.{PackageExtension}";

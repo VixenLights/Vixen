@@ -72,7 +72,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 					PixelSpacing = model.PixelSpacing,
 					ProductType = model.Type
 			};
-				if (model.ImageFile != null && model.ImageFile.Any())
+				if (model.ImageFile != null && model.ImageFile.Any() && !string.IsNullOrEmpty(model.ImageFile.First()))
 				{
 					p.ImageUrl = new Uri(model.ImageFile.First());
 				}
@@ -80,7 +80,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				if (model.Wiring != null && model.Wiring.Any())
 				{
 					int index = 1;
-					p.ModelLinks = model.Wiring.Select(x => new ModelLink(ModelType.XModel, string.IsNullOrEmpty(x.Name)?$"Model {index++}":x.Name, x.Description, new Uri(x.XModelLink)))
+					p.ModelLinks = model.Wiring.Where(l=> l.IsValid).Select(x => new ModelLink(ModelType.XModel, string.IsNullOrEmpty(x.Name)?$"Model {index++}":x.Name, x.Description, x.XModelLink != null?new Uri(x.XModelLink):null))
 						.ToList();
 				}
 				else

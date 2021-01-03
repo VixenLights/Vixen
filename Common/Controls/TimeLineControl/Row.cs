@@ -230,6 +230,7 @@ namespace Common.Controls.Timeline
 					RowLabel.Height = Height;
 				}
 				_RowChanged();
+				_RowVisibilityChanged();
 			}
 		}
 
@@ -280,6 +281,7 @@ namespace Common.Controls.Timeline
 		public static event EventHandler RowHeightResized;
 		public static event EventHandler RowLabelContextMenuSelect;
 		public static event EventHandler<ModifierKeysEventArgs> RowSelectedChanged;
+		public static event EventHandler RowVisibilityChanged;
 
 		private void _ElementAdded(Element te)
 		{
@@ -319,6 +321,11 @@ namespace Common.Controls.Timeline
 		private void _RowSelectedChanged(Keys k)
 		{
 			if (RowSelectedChanged != null) RowSelectedChanged(this, new ModifierKeysEventArgs(k));
+		}
+
+		private void _RowVisibilityChanged()
+		{
+			RowVisibilityChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		#endregion
@@ -528,7 +535,7 @@ namespace Common.Controls.Timeline
 
 		public bool AddUniqueElement(Element element)
 		{
-			if (m_elements.Contains(element))
+			if (ContainsElement(element))
 				return false;
 
 			AddElement(element);

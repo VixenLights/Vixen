@@ -177,33 +177,35 @@ namespace VixenModules.Preview.VixenPreview
 			List<DisplayItem> itemsToRemove = new List<DisplayItem>();
 			foreach (var previewDisplayItem in previewForm.Preview.DisplayItems)
 			{
-				if (previewDisplayItem.Shape.Bottom < 1 || previewDisplayItem.Shape.Top > previewForm.Preview.Background.Height ||
-				    previewDisplayItem.Shape.Right < 1 || previewDisplayItem.Shape.Left > previewForm.Preview.Background.Width)
+				if (previewDisplayItem.Shape.Top == previewDisplayItem.Shape.Bottom &&
+				    previewDisplayItem.Shape.Left == previewDisplayItem.Shape.Right &&
+				    previewDisplayItem.Shape.Top == previewDisplayItem.Shape.Left)
 				{
-					if (previewDisplayItem.Shape.Top == previewDisplayItem.Shape.Bottom &&
-					    previewDisplayItem.Shape.Left == previewDisplayItem.Shape.Right)
+					//if items don't have any size then they were probably added by mistake.
+					itemsToRemove.Add(previewDisplayItem);
+					Logging.Info($"Removing preview item that has no size. {previewDisplayItem.Shape.Name}");
+					continue;
+				}
+
+				if (previewDisplayItem.Shape is PreviewMultiString ms)
+				{
+					if (ms.Strings.Count == 0)
 					{
-						//if items don't have any size then they were probably added by mistake.
 						itemsToRemove.Add(previewDisplayItem);
-						Logging.Info($"Removing preview item that has no size. {previewDisplayItem.Shape.Name}");
+						Logging.Info($"Removing preview MultiString that has no Strings. {previewDisplayItem.Shape.Name}");
 						continue;
 					}
+				}
 
-					if (previewDisplayItem.Shape is PreviewMultiString ms)
-					{
-						if (ms.Strings.Count == 0)
-						{
-							itemsToRemove.Add(previewDisplayItem);
-							Logging.Info($"Removing preview MultiString that has no Strings. {previewDisplayItem.Shape.Name}");
-							continue;
-						}
-					}
-
+				if (previewDisplayItem.Shape.Bottom < 1 || previewDisplayItem.Shape.Right < 1 &&
+					previewDisplayItem.Shape.Top < previewDisplayItem.Shape.Bottom &&
+					previewDisplayItem.Shape.Left < previewDisplayItem.Shape.Right)
+				{
 					Logging.Info($"Moving preview item back in bounds. {newOriginX},10 : {previewDisplayItem.Shape.Name}");
 					var width = previewDisplayItem.Shape.Right - previewDisplayItem.Shape.Left;
 					previewDisplayItem.Shape.MoveTo(newOriginX, 10);
 					newOriginX = newOriginX + width + 5;
-					if (newOriginX > previewForm.Preview.Background.Width || newOriginX <=0)
+					if (newOriginX > previewForm.Preview.Background.Width || newOriginX <= 0)
 					{
 						newOriginX = 10;
 					}
@@ -274,10 +276,14 @@ namespace VixenModules.Preview.VixenPreview
 		}
 
 		private void OnSelectDisplayItem(object sender, Shapes.DisplayItem displayItem) {
-			Shapes.DisplayItemBaseControl setupControl = displayItem.Shape.GetSetupControl();
-			elementsForm.ClearSelectedNodes();
-			if (setupControl != null) {
-				propertiesForm.ShowSetupControl(setupControl);
+
+			if (propertiesForm.SetupPreviewShape() != displayItem.Shape)
+			{
+				DisplayItemBaseControl setupControl = displayItem.Shape.GetSetupControl();
+				elementsForm.ClearSelectedNodes();
+				if (setupControl != null) {
+					propertiesForm.ShowSetupControl(setupControl);
+				}
 			}
 		}
 
@@ -776,8 +782,9 @@ namespace VixenModules.Preview.VixenPreview
 			//}
 			ResetButtonBackground(pnlBasicDrawing);
 			ResetButtonBackground(pnlSmartObjects);
+			ResetButtonBackground(pnlSelect);
 			selectedButton.BackColor = ThemeColorTable.TextBoxBackgroundColor;
-	    }
+		}
 
 	    private void ResetButtonBackground(Control c)
 	    {

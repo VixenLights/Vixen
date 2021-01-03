@@ -139,7 +139,7 @@ namespace Common.Controls.Timeline
 					if (sample < low) low = sample;
 					if (sample > high) high = sample;
 				}
-				samples.Add(new SampleAggregator.Sample {High = high, Low = low});
+				samples.Add(new SampleAggregator.Sample {High = ClampValue(high), Low = ClampValue(low)});
 			}
 			_creatingSamples = false;
 		}
@@ -248,7 +248,7 @@ namespace Common.Controls.Timeline
 
 					//Draws Waveform
 					e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
-					float maxSample = Math.Max(Math.Abs(ClampValue(samples.Low)), samples.High);
+					float maxSample = Math.Max(Math.Abs(samples.Low), samples.High);
 					int workingHeight = Height - (int) (Height*.1); //Leave a little margin
 					float factor = workingHeight/maxSample;
 
@@ -295,9 +295,9 @@ namespace Common.Controls.Timeline
 
 		private int ClampValue(int value)
 		{
-			if (value == -32768)
+			if (value == Int32.MinValue)
 			{
-				return -32767; //We will later use this in some abs calcs and -32768 will overflow in an integer field VIX-1859
+				return value+1; //We will later use this in some abs calcs and abs value of min value will overflow in an integer field VIX-1859
 			}
 			return value;
 		}

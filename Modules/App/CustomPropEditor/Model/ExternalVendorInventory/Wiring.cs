@@ -16,5 +16,7 @@ namespace VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory
 
 		[XmlElement("imageFile")]
 		public List<string> Images { get; set; }
+
+		public bool IsValid => !string.IsNullOrEmpty(XModelLink);
 	}
 }
