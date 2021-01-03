@@ -98,6 +98,24 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region IsModelValid property
+
+		/// <summary>
+		/// Gets or sets the ShowModelTab value.
+		/// </summary>
+		public bool IsModelValid
+		{
+			get { return GetValue<bool>(IsModelValidProperty); }
+			set { SetValue(IsModelValidProperty, value); }
+		}
+
+		/// <summary>
+		/// ShowModelTab property data.
+		/// </summary>
+		public static readonly PropertyData IsModelValidProperty = RegisterProperty("IsModelValid", typeof(bool));
+
+		#endregion
+
 		#region IsProductVisible property
 
 		#region IsProductVisible property
@@ -117,6 +135,24 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		public static readonly PropertyData IsProductVisibleProperty = RegisterProperty("IsProductVisible", typeof(bool));
 
 		#endregion
+
+		#endregion
+
+		#region IsProductViewSelected property
+
+		/// <summary>
+		/// Gets or sets the ProductTabSelected value.
+		/// </summary>
+		public bool IsProductViewSelected
+		{
+			get { return GetValue<bool>(IsProductViewSelectedProperty); }
+			set { SetValue(IsProductViewSelectedProperty, value); }
+		}
+
+		/// <summary>
+		/// ProductTabSelected property data.
+		/// </summary>
+		public static readonly PropertyData IsProductViewSelectedProperty = RegisterProperty("IsProductViewSelected", typeof(bool));
 
 		#endregion
 
@@ -140,6 +176,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			SelectedModelLink = null;
 			SelectedProduct = p;
 			IsProductVisible = p != null;
+			IsModelValid = p.ModelLinks != null && p.ModelLinks.Any(x => x.Link != null);
+			IsProductViewSelected = true;
+
 		}
 
 		#endregion
@@ -227,7 +266,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private void ImportModel(ModelLink ml)
 		{
-			if (SelectedProduct != null && ml != null)
+			if (SelectedProduct != null && ml != null && ml.Link != null)
 			{
 				SelectedModelLink = ml;
 				DialogResult = true;
