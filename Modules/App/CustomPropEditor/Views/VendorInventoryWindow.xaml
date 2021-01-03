@@ -14,6 +14,7 @@
 				<ResourceDictionary Source="..\Themes\Theme.xaml"/>
 				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
+			<catel:BooleanToHidingVisibilityConverter x:Key="BooleanToHidingVisibilityConverter" />
 		</ResourceDictionary>
 	</Window.Resources>
 	<DockPanel Background="{StaticResource BackColorBrush}">
@@ -110,7 +111,7 @@
 						<TabControl Background="{StaticResource BackColorBrush}"
 						            Grid.Row="1"
 						            Width="Auto" Margin="5,5,10,5">
-							<TabItem Header="Product Info">
+							<TabItem Header="Product Info" IsSelected="{Binding IsProductViewSelected}">
 								<Grid>
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="Auto"/>
@@ -155,7 +156,7 @@
 									<TextBlock Grid.Column="1" Grid.Row="9" Text="{Binding SelectedProduct.Notes}" Padding="5,0,0,0"/>
 								</Grid>
 							</TabItem>
-							<TabItem Header="Model Options">
+							<TabItem Header="Model Options" Visibility="{Binding IsModelValid, Converter={StaticResource BooleanToVisibilityConverter}}">
 								<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
 									<ItemsControl Name="ModelOptions" ItemsSource="{Binding SelectedProduct.ModelLinks}">
 										<ItemsControl.ItemTemplate>
