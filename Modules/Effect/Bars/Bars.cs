@@ -29,55 +29,59 @@ namespace VixenModules.Effect.Bars
         /// This frame buffer contains a tile of the zig zags.
         /// This tile can be repeated to fill the dispay element.
         /// </summary>
-        IPixelFrameBuffer _staticZigZagTileFrameBuffer;
+        private IPixelFrameBuffer _staticZigZagTileFrameBuffer;
 
         /// <summary>
         /// The height of the zig zag tile frame buffer.       
         /// </summary>
-        int _staticZigZagTileFrameBufferHeight;
+        private int _staticZigZagTileFrameBufferHeight;
 
         /// <summary>
         /// Height of the zig zag repeating tile.
         /// Note thie frame buffer associated with this repeating tile is actually larger because the first part
         /// of the buffer contains a subset of the zig zag colors (ie it is incomplete). 
         /// </summary>
-        int _heightOfTile;
+        private int _heightOfTile;
 
         /// <summary>
         /// Width of the zig zag repeating tile.
         /// </summary>
-        int _widthOfTile;
+        private int _widthOfTile;
 
         /// <summary>
         /// Start position or offset into the tile frame buffer.  This offset accounts for the first part of the
         /// frame buffer being incomplete.
         /// </summary>
-        int _yTileStartPosition;
+        private int _yTileStartPosition;
 
         /// <summary>
         /// Zig zag thickness in pixels.
         /// </summary>
-        int _zigZagThickness;
+        private int _zigZagThickness;
 
         /// <summary>
         /// Spacing between the zig zags in pixels.
         /// </summary>
-        int _zigZagSpacing;
+        private int _zigZagSpacing;
 
         /// <summary>
         /// Amplitude of the zig zag in pixels.
         /// </summary>
-        int _zigZagAmplitude;
+        private int _zigZagAmplitude;
 
         /// <summary>
         /// Period of the zig zag in pixels.
         /// </summary>
-        int _zigZagPeriod;
+        private int _zigZagPeriod;
 
         /// <summary>
         /// Scale factor used on all the zig zag settings.
         /// </summary>
-        int _scaleValue;
+        private int _scaleValue;
+
+        private int _bufferHt;
+        private int _bufferWi;
+        private int _length;
 
         #endregion
 
@@ -956,7 +960,7 @@ namespace VixenModules.Effect.Bars
                 _zigZagSpacing,
                 _yTileStartPosition,
                 (Direction == BarDirection.Left || Direction == BarDirection.Right),
-                (Direction == BarDirection.Right || Direction == BarDirection.AlternateRight),
+                (Direction == BarDirection.Left || Direction == BarDirection.AlternateLeft),
                 BufferWi,
                 BufferHt,
                 SetPixelHorizontal);
