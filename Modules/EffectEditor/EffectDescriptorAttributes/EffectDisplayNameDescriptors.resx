@@ -1086,4 +1086,19 @@
   <data name="TailBrightness" xml:space="preserve">
     <value>Tail Intensity</value>
   </data>
+  <data name="BarType" xml:space="preserve">
+    <value>Bar Type</value>
+  </data>
+  <data name="ZigZagAmplitude" xml:space="preserve">
+    <value>Amplitude</value>
+  </data>
+  <data name="ZigZagPeriod" xml:space="preserve">
+    <value>Period</value>
+  </data>
+  <data name="ZigZagSpacing" xml:space="preserve">
+    <value>Spacing</value>
+  </data>
+  <data name="ZigZagThickness" xml:space="preserve">
+    <value>Thickness</value>
+  </data>
 </root>

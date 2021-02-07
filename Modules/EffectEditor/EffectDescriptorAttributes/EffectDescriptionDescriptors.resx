@@ -1125,4 +1125,19 @@
   <data name="TailBrightness" xml:space="preserve">
     <value>Controls the brightness of the wipe tail.</value>
   </data>
+  <data name="ZigZagAmplitude" xml:space="preserve">
+    <value>Controls the height of the zig zag's crest.</value>
+  </data>
+  <data name="ZigZagPeriod" xml:space="preserve">
+    <value>Controls the width or wave length of the zig zag.</value>
+  </data>
+  <data name="ZigZagSpacing" xml:space="preserve">
+    <value>Controls the blank area between each zig zag color.</value>
+  </data>
+  <data name="ZigZagThickness" xml:space="preserve">
+    <value>Controls the thickness of the zig zag.</value>
+  </data>
+  <data name="BarType" xml:space="preserve">
+    <value>Selects either a flat or an angled zig zag styled bar.</value>
+  </data>
 </root>
