@@ -186,4 +186,7 @@
   <data name="WipeConfiguration" xml:space="preserve">
     <value>Wipe Configuration</value>
   </data>
+  <data name="ZigZagConfig" xml:space="preserve">
+    <value>Zig Zag Configuration</value>
+  </data>
 </root>

@@ -239,5 +239,14 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
                 return ResourceManager.GetString("Type", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zig Zag Configuration.
+        /// </summary>
+        internal static string ZigZagConfig {
+            get {
+                return ResourceManager.GetString("ZigZagConfig", resourceCulture);
+            }
+        }
     }
 }
