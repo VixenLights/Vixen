@@ -13,7 +13,6 @@ namespace VixenModules.Effect.Bars
 	[DataContract]
 	public class BarsData: EffectTypeModuleData
 	{
-
 		public BarsData()
 		{
 			Colors = new List<ColorGradient>{new ColorGradient(Color.Red), new ColorGradient(Color.Lime), new ColorGradient(Color.Blue)};
@@ -29,7 +28,9 @@ namespace VixenModules.Effect.Bars
             ZigZagSpacing = 5;           
             BarType = BarType.Flat;
             ZigZagPeriod = 25;
-        }
+			RotationAngle = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+			HighlightPercentage = 5;
+		}
 
 		[DataMember]
 		public List<ColorGradient> Colors { get; set; }
@@ -76,7 +77,13 @@ namespace VixenModules.Effect.Bars
         [DataMember]
         public int ZigZagPeriod { get; set; }
 
-        [OnDeserialized]
+        [DataMember]
+        public Curve RotationAngle { get; set; }
+
+        [DataMember]
+        public int HighlightPercentage { get; set; }
+
+		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
 			//if one of them is null the others probably are, and if this one is not then they all should be good.
@@ -106,6 +113,8 @@ namespace VixenModules.Effect.Bars
                 ZigZagBarThickness = ZigZagBarThickness,
                 ZigZagSpacing = ZigZagSpacing,               
                 ZigZagPeriod = ZigZagPeriod,
+				RotationAngle = RotationAngle,
+				HighlightPercentage = HighlightPercentage,
             };
 			return result;
 		}

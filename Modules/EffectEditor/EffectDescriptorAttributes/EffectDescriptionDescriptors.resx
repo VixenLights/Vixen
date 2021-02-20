@@ -1140,4 +1140,10 @@
   <data name="BarType" xml:space="preserve">
     <value>Selects either a flat or an angled zig zag styled bar.</value>
   </data>
+  <data name="BarsRotation" xml:space="preserve">
+    <value>Controls the rotation of the bars. 100 = 180 degrees counter clockwise rotation.  0 =180 clockwise rotation.</value>
+  </data>
+  <data name="HighlightPercentage" xml:space="preserve">
+    <value>Controls the percentage of the bar that is highlighted.</value>
+  </data>
 </root>
