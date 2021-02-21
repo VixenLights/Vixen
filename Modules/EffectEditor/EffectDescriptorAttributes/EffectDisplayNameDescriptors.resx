@@ -1101,4 +1101,8 @@
   <data name="ZigZagThickness" xml:space="preserve">
     <value>Thickness</value>
   </data>
+  <data name="Margin" xml:space="preserve">
+    <value>Margin</value>
+  </data>
+  
 </root>

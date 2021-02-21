@@ -75,6 +75,16 @@ namespace VixenModules.Effect.Morph
 		/// </summary>
 		private static Color _emptyColor = Color.FromArgb(0, 0, 0, 0);
 
+		/// <summary>
+		/// X axis offset from the virtual frame buffer to the actual/true frame buffer.
+		/// </summary>
+		private int _marginOffsetX;
+
+		/// <summary>
+		/// Y axis offset from the virtual frame buffer to the actual/true frame buffer.
+		/// </summary>
+		private int _marginOffsetY;
+
 		#endregion
 
 		#region Private Properties
@@ -179,8 +189,8 @@ namespace VixenModules.Effect.Morph
 			set
 			{
 				// Save off the previous display element dimensions
-				int previousBufferWidth = _data.DisplayElementWidth;
-				int previousBufferHeight = _data.DisplayElementHeight;
+				int previousBufferWidth = _bufferWi; 
+				int previousBufferHeight = _bufferHt; 
 
 				_data.Orientation = value;
 				IsDirty = true;
@@ -190,6 +200,9 @@ namespace VixenModules.Effect.Morph
 				// Only want to scale the shapes when the user explicitly changes the orientation.
 				if (!TargetPositioningChanging && !TargetNodesChanging)
 				{
+					// Update the virtual buffer size for the orientation change
+					UpdateVirtualFrameBufferSize();
+
 					// Scale the shapes associated with the morph polygons
 					ScaleShapesToFitDisplayElement(previousBufferWidth, previousBufferHeight);
 				}
@@ -288,7 +301,7 @@ namespace VixenModules.Effect.Morph
 
 						// Add the pattern polygons that fit on the display element to the collection
 						MorphPolygons.AddRange(_patternExpandedMorphPolygons.Where(shape => 
-							!shape.GetPointBasedShape().IsShapeOffDisplayElement(BufferWi, BufferHt)).ToList());
+							!shape.GetPointBasedShape().IsShapeOffDisplayElement(_bufferWi, _bufferHt)).ToList());
 					}
 				}
 
@@ -347,6 +360,42 @@ namespace VixenModules.Effect.Morph
 
 				OnPropertyChanged();
 				UpdatePolygonFillTypeAttributes();
+			}
+		}
+
+		/// <summary>
+		/// Margin of the display element drawing surface.
+		/// </summary>
+		[Value]
+		[ProviderCategory(@"PolygonConfiguration", 2)]
+		[ProviderDisplayName(@"Margin")]
+		[ProviderDescription(@"Margin")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(0, 100, 1)]
+		[PropertyOrder(4)]
+		public int Margin
+		{
+			get
+			{
+				return _data.Margin;
+			}
+			set
+			{
+				// Move all the morph polygons as if there is no margin
+				int oldMarginX = -1 * (int)Math.Round(BufferWi * _data.Margin / 100.0);
+				int oldMarginY = -1 * (int)Math.Round(BufferHt * _data.Margin / 100.0);
+
+				MoveMorphPolygons(oldMarginX, oldMarginY);
+
+				_data.Margin = value;
+				IsDirty = true;
+				OnPropertyChanged();
+
+				// Move the morph polygons for the new margin
+				int marginChangeX = (int)Math.Round(BufferWi * _data.Margin / 100.0);
+				int marginChangeY = (int)Math.Round(BufferHt * _data.Margin / 100.0);
+
+				MoveMorphPolygons(marginChangeX, marginChangeY);
 			}
 		}
 
@@ -411,9 +460,16 @@ namespace VixenModules.Effect.Morph
 					}
 				}
 
-				// Give the container the dimensions of the display element
-				container.Height = BufferHt;
-				container.Width = BufferWi;
+				// Give the container the dimensions of the (virtual) display element
+				container.Width = _bufferWi; 
+				container.Height = _bufferHt;
+
+				// Give the polygon container
+				container.DisplayElementWidth = BufferWi;
+				container.DisplayElementHeight = BufferHt;
+
+				// Determine if the display element outline should be displayed
+				container.ShowDisplayElement = (Margin != 0);
 
 				return container;
 			}
@@ -850,19 +906,22 @@ namespace VixenModules.Effect.Morph
 		#region Protected Methods
 
 		/// <summary>
-		/// Allows derived effects to react to when the target positioning has changed.
+		/// Allows derived effects to react to when the target positioning (strings vs locations) has changed.
 		/// </summary>
 		protected override void TargetPositioningChanged()
 		{
 			// Save off the previous width and height
-			int previousBufferWidth = _data.DisplayElementWidth;
-			int previousBufferHeight = _data.DisplayElementHeight;
+			int previousBufferWidth = _bufferWi; 
+			int previousBufferHeight = _bufferHt; 
 
 			// Call the base class implementation
 			base.TargetPositioningChanged();
 
 			// Configure the new display element size for the target positioning changing
 			ConfigureDisplayElementSize();
+
+			// Update the virtual buffer size for the change in target positioning
+			UpdateVirtualFrameBufferSize();
 
 			// Scale the shapes associated with the morph polygons
 			ScaleShapesToFitDisplayElement(previousBufferWidth, previousBufferHeight);
@@ -877,14 +936,17 @@ namespace VixenModules.Effect.Morph
 			TargetNodesChanging = true;
 
 			// Save off the previous width and height
-			int previousBufferWidth = _data.DisplayElementWidth; 
-			int previousBufferHeight = _data.DisplayElementHeight;
+			int previousBufferWidth = _bufferWi; 
+			int previousBufferHeight = _bufferHt;
 
 			// Call the base class implementation
 			base.TargetNodesChanged();
 
 			// Configure the display element size (strings vs position)
 			ConfigureDisplayElementSize();
+
+			// Update the virtual buffer size for the display element changing
+			UpdateVirtualFrameBufferSize();
 
 			// If there are not any polygons or lines then...
 			if (MorphPolygons.Count == 0)
@@ -895,10 +957,10 @@ namespace VixenModules.Effect.Morph
 
 				// Check to see if we are dealing with a really skinny display element in
 				// which case a line is going to be more appropriate
-				if (BufferWi == 1 || BufferHt == 1)
+				if (_bufferWi == 1 || _bufferHt == 1)
 				{
 					// Determine which way to orient the line
-					if (BufferWi > BufferHt)
+					if (_bufferWi > _bufferHt)
 					{
 						// Create the line along the x-axis
 						Line line = new Line();
@@ -988,9 +1050,25 @@ namespace VixenModules.Effect.Morph
 		/// </summary>		
 		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
 		{
-			// Make a local copy that is faster than the logic to get it for reuse.
-			int localBufferHt = BufferHt;
+			// If there is no margin then...
+			if (Margin == 0)
+			{
+				// Render the effect normally
+				RenderEffectByLocationInternal(numFrames, frameBuffer);
+			}
+			// Otherwise render the effect on the virtual display element
+			else
+			{
+				// Render the effect on the virtual display element
+				RenderEffectByLocationVirtual(numFrames, frameBuffer);
+			}
+		}
 
+		/// <summary>
+		/// Renders the effect by location.
+		/// </summary>		
+		protected void RenderEffectByLocationInternal(int numFrames, PixelLocationFrameBuffer frameBuffer)
+		{
 			// Create a virtual matrix based on the rendering scale factor
 			PixelFrameBuffer virtualFrameBuffer = new PixelFrameBuffer(_bufferWi, _bufferHt);
 
@@ -1010,11 +1088,11 @@ namespace VixenModules.Effect.Morph
 					UpdateFrameBufferForLocationPixel(
 						elementLocation.X,
 						elementLocation.Y,
-						localBufferHt,
+						_bufferHt,
 						virtualFrameBuffer,
 						frameBuffer);
 				}
-				
+
 				// Clear the buffer for the next frame,
 				virtualFrameBuffer.ClearBuffer();
 			}
@@ -1024,6 +1102,38 @@ namespace VixenModules.Effect.Morph
 		/// Renders the effect for string based display elements.
 		/// </summary>		
 		protected override void RenderEffect(int frameNum, IPixelFrameBuffer frameBuffer)
+		{
+			// If a Margin has been defined then...
+			if (Margin != 0)
+			{
+				// Create a virtual matrix based on the display element and the margin
+				PixelFrameBuffer virtualFrameBuffer = new PixelFrameBuffer(_bufferWi, _bufferHt);
+
+				// Render the effect on the virtual frame buffer
+				RenderEffectInternal(frameNum, virtualFrameBuffer);
+
+				// Extract the pixels that correspond to actual frame buffer
+				for (int x = 0; x < BufferWi; x++)
+				{
+					for (int y = 0; y < BufferHt; y++)
+					{
+						frameBuffer.SetPixel(x, y, virtualFrameBuffer.GetColorAt(x + _marginOffsetX, y + _marginOffsetY));
+					}
+				}
+			}
+			// Otherwise render the effect normally into the actual frame buffer
+			else
+			{
+				RenderEffectInternal(frameNum, frameBuffer);
+			}
+		}
+
+		/// <summary>
+		/// Render the effect in String mode to the specified frame buffer.
+		/// </summary>
+		/// <param name="frameNum">Current frame number being processed</param>
+		/// <param name="frameBuffer">Frame buffer to render in</param>
+		private void RenderEffectInternal(int frameNum, IPixelFrameBuffer frameBuffer)
 		{
 			// Get the position within the effect
 			double intervalPos = GetEffectTimeIntervalPosition(frameNum);
@@ -1074,21 +1184,45 @@ namespace VixenModules.Effect.Morph
 		}
 
 		/// <summary>
+		/// Updates the virtual frame buffer size.
+		/// </summary>
+		private void UpdateVirtualFrameBufferSize()
+		{
+			// Calculate the margin for the display element
+			_marginOffsetX = (int)Math.Round(BufferWi * Margin / 100.0);
+			_marginOffsetY = (int)Math.Round(BufferHt * Margin / 100.0);
+
+			// Store off the virtual frame buffer dimensions by putting a margin on all sides of the
+			// original frame buffer
+			_bufferWi = BufferWi + 2 * _marginOffsetX;
+			_bufferHt = BufferHt + 2 * _marginOffsetY;
+		}
+
+		/// <summary>
 		/// Setup for rendering.
 		/// </summary>
 		protected override void SetupRender()
 		{
-			// Store off the display element width and height
-			_bufferWi = BufferWi;
-			_bufferHt = BufferHt;
+			// Calculate the previous margin offsets for the display element
+			int marginOffsetX = (int)Math.Round(_data.DisplayElementWidth * Margin / 100.0);
+			int marginOffsetY = (int)Math.Round(_data.DisplayElementHeight * Margin / 100.0);
+
+			// Calculate the previous margin for the display element
+			int previousBufferWi = _data.DisplayElementWidth + 2 * marginOffsetX;
+			int previousBufferHt = _data.DisplayElementHeight + 2 * marginOffsetY;
+
+			// Calculate the virtual frame buffer size
+			UpdateVirtualFrameBufferSize();
 
 			// Check to see if the display element changed size and if the morph polygons needs to scaled
-			ScaleShapesToFitDisplayElement(_data.DisplayElementWidth, _data.DisplayElementHeight);
+			ScaleShapesToFitDisplayElement(previousBufferWi, previousBufferHt);
 
 			// Save off the display element width and height
-			_data.DisplayElementWidth = _bufferWi;
-			_data.DisplayElementHeight = _bufferHt;
+			// Note we are saving off the size of the actual display element not including any margin!
+			_data.DisplayElementWidth = BufferWi;
+			_data.DisplayElementHeight = BufferHt;
 
+			// If the polygon type is Pattern then...
 			if (PolygonType == PolygonType.Pattern)
 			{
 				// Transfer the top level settings to the morph polygon
@@ -1118,6 +1252,55 @@ namespace VixenModules.Effect.Morph
 		#region Private Methods
 
 		/// <summary>
+		/// Renders the effect by location on a virtual display element.
+		/// </summary>		
+		private void RenderEffectByLocationVirtual(int numFrames, PixelLocationFrameBuffer frameBuffer)
+		{
+			// Create a virtual matrix based on the display element and the margin
+			PixelFrameBuffer virtualFrameBuffer = new PixelFrameBuffer(_bufferWi, _bufferHt);
+
+			// Loop over the frames
+			for (int frameNum = 0; frameNum < numFrames; frameNum++)
+			{
+				// Assign the current frame
+				frameBuffer.CurrentFrame = frameNum;
+
+				// Render the effet to the virtual frame buffer
+				RenderEffectInternal(frameNum, virtualFrameBuffer);
+
+				// Loop through the sparse matrix
+				foreach (ElementLocation elementLocation in frameBuffer.ElementLocations)
+				{
+					// Lookup the pixel from the virtual frame buffer
+					UpdateFrameBufferForLocationPixel(
+						elementLocation.X,
+						elementLocation.Y,
+						_bufferHt,
+						virtualFrameBuffer,
+						frameBuffer);
+				}
+
+				// Clear the buffer for the next frame,
+				virtualFrameBuffer.ClearBuffer();
+			}
+		}
+
+		/// <summary>
+		/// Moves all the morph polygons by specified X and Y offsets.
+		/// </summary>
+		/// <param name="x">Amount to move the morph polygons in the X axis</param>
+		/// <param name="y">Amount to move the morph polygons in the Y axis</param>
+		private void MoveMorphPolygons(int x, int y)
+		{
+			// Loop over the morph polygons
+			foreach (IMorphPolygon morphPolygon in MorphPolygons)
+			{
+				// Move the points associated the specified morph polygon
+				morphPolygon.GetPointBasedShape().MovePoints(x, y);
+			}
+		} 
+		
+		/// <summary>
 		/// Scales the shapes to fit the current display element.
 		/// </summary>
 		/// <param name="previousBufferWidth">Previous display element width</param>
@@ -1126,11 +1309,11 @@ namespace VixenModules.Effect.Morph
 		{
 			// If the current display element is not the same as the previous and
 			// the previous display element size was saved off then...
-			if ((previousBufferWidth != BufferWi || previousBufferHeight != BufferHt) &&
+			if ((previousBufferWidth != _bufferWi || previousBufferHeight != _bufferHt) &&
 			     previousBufferHeight != 0 && 
 			     previousBufferWidth != 0 &&
-			     BufferWi != 0 &&
-			     BufferHt != 0)
+			     _bufferWi != 0 &&
+			     _bufferHt != 0)
 			{
 				// Loop over the morph polygons
 				foreach (IMorphPolygon morphPolygon in MorphPolygons)
@@ -1153,10 +1336,10 @@ namespace VixenModules.Effect.Morph
 
 					// Scale the shapes associated with the morph polygon
 					morphPolygon.Scale(
-						(BufferWi - 1.0) / widthDenominator,
-						(BufferHt - 1.0) / heightDenominator,
-						BufferWi,
-						BufferHt);
+						(_bufferWi - 1.0) / widthDenominator,
+						(_bufferHt - 1.0) / heightDenominator,
+						_bufferWi,
+						_bufferHt);
 				}
 
 				// Save off the display element width and height
@@ -1281,18 +1464,18 @@ namespace VixenModules.Effect.Morph
 				// Note this is neither the start or end side
 				StoreLine(
 					(int)(polygonModel.Points[1].X),
-					BufferHt - (int)(polygonModel.Points[1].Y) - 1,
+					_bufferHt - (int)(polygonModel.Points[1].Y) - 1,
 					(int)(polygonModel.Points[2].X),
-					BufferHt - (int)(polygonModel.Points[2].Y) - 1, 
+					_bufferHt - (int)(polygonModel.Points[2].Y) - 1, 
 					_wipePolygonRenderData[polygonIndex].X1Points, 
 					_wipePolygonRenderData[polygonIndex].Y1Points);
 
 				// Calculate the points along the other side of the polygon
 				StoreLine(
 					(int)(polygonModel.Points[0].X),
-					BufferHt - (int)(polygonModel.Points[0].Y) - 1,
+					_bufferHt - (int)(polygonModel.Points[0].Y) - 1,
 					(int)(polygonModel.Points[3].X),
-					BufferHt - (int)(polygonModel.Points[3].Y) - 1, 
+					_bufferHt - (int)(polygonModel.Points[3].Y) - 1, 
 					_wipePolygonRenderData[polygonIndex].X2Points, 
 					_wipePolygonRenderData[polygonIndex].Y2Points);
 
@@ -1359,16 +1542,16 @@ namespace VixenModules.Effect.Morph
 		private bool CalculateDirection(Polygon polygonModel)
 		{
 			int x1A = (int)(polygonModel.Points[1].X);
-			int y1A = BufferHt - (int)(polygonModel.Points[1].Y);
+			int y1A = _bufferHt - (int)(polygonModel.Points[1].Y);
 
 			int x1B = (int)(polygonModel.Points[0].X);
-			int y1B = BufferHt - (int)(polygonModel.Points[0].Y);
+			int y1B = _bufferHt - (int)(polygonModel.Points[0].Y);
 
 			int x2A = (int)(polygonModel.Points[2].X);
-			int y2A = BufferHt - (int)(polygonModel.Points[2].Y);
+			int y2A = _bufferHt - (int)(polygonModel.Points[2].Y);
 
 			int x2B = (int)(polygonModel.Points[3].X);
-			int y2B = BufferHt - (int)(polygonModel.Points[3].Y);
+			int y2B = _bufferHt - (int)(polygonModel.Points[3].Y);
 
 			int deltaXa = x2A - x1A;
 			int deltaXb = x2B - x1B;
@@ -1602,9 +1785,9 @@ namespace VixenModules.Effect.Morph
 			int xCoord = x;
 
 			// Flip me over so and offset my coordinates I can act like the string version
-			y = Math.Abs((BufferHtOffset - y) + (bufferHt - 1 + BufferHtOffset));
-			y = y - BufferHtOffset;
-			x = x - BufferWiOffset;
+			y = Math.Abs((BufferHtOffset - _marginOffsetY) + bufferHt - y - 1);
+			y = y;
+			x = x - (BufferWiOffset - _marginOffsetX);
 
 			// Retrieve the color from the bitmap
 			Color color = tempFrameBuffer.GetColorAt(x, y);
@@ -1714,7 +1897,7 @@ namespace VixenModules.Effect.Morph
 					{
 					case 2:
 					case 4:
-							if (x0 < BufferWi - 2)
+							if (x0 < _bufferWi - 2)
 							{
 								// If the mask is NOT applicable or
 								// if the pixel is set in the mask then...
@@ -1740,7 +1923,7 @@ namespace VixenModules.Effect.Morph
 							break;
 					case 0:
 					case 1:
-							if (y0 < BufferHt - 2)
+							if (y0 < _bufferHt - 2)
 							{
 								// If the mask is NOT applicable or
 								// if the pixel is set in the mask then...
@@ -2234,12 +2417,8 @@ namespace VixenModules.Effect.Morph
 			List<Point> points,
 			Curve intensity)
 		{
-			// Make copies of the display element width and height for performance
-			int bufferHt = BufferHt;
-			int bufferWi = BufferWi;
-			
 			// Create a bitmap the size of the display element			
-			using (var bitmap = new Bitmap(bufferWi, bufferHt))
+			using (var bitmap = new Bitmap(_bufferWi, _bufferHt))
 			{
 				if (points.Count > 2)
 				{
@@ -2268,12 +2447,8 @@ namespace VixenModules.Effect.Morph
 			bool fillEllipse,
 			Color color)
 		{
-			// Make copies of the display element width and height for performance
-			var bufferHt = BufferHt;
-			var bufferWi = BufferWi;
-
 			// Create a bitmap the size of the display element			
-			using (var bitmap = new Bitmap(bufferWi, bufferHt))
+			using (var bitmap = new Bitmap(_bufferWi, _bufferHt))
 			{
 				// Render the ellipse on the bitmap
 				InitialRenderEllipse(bitmap, points.ToArray(), fillEllipse, color, angle, ellipse);
@@ -2291,12 +2466,8 @@ namespace VixenModules.Effect.Morph
 			// If there are any static polygon/lines then...
 			if (expandedMorphPolygon.Any())
 			{
-				// Make copies of the display element width and height for performance
-				int bufferHt = BufferHt;
-				int bufferWi = BufferWi;
-
 				// Create a bitmap the size of the display element			
-				using (Bitmap bitmap = new Bitmap(bufferWi, bufferHt))
+				using (Bitmap bitmap = new Bitmap(_bufferWi, _bufferHt))
 				{
 					// Loop over the morph polygons
 					foreach (IMorphPolygon morphPolygon in expandedMorphPolygon)
@@ -2339,12 +2510,8 @@ namespace VixenModules.Effect.Morph
 			// If there are any static ellipses then...
 			if (expandedMorphPolygon.Any())
 			{
-				// Make copies of the display element width and height for performance
-				int bufferHt = BufferHt;
-				int bufferWi = BufferWi;
-
 				// Create a bitmap the size of the display element			
-				using (Bitmap bitmap = new Bitmap(bufferWi, bufferHt))
+				using (Bitmap bitmap = new Bitmap(_bufferWi, _bufferHt))
 				{
 					// Loop over the morph polygons
 					foreach (IMorphPolygon morphPolygon in expandedMorphPolygon)
@@ -2375,22 +2542,18 @@ namespace VixenModules.Effect.Morph
 		/// </summary>		
 		private void CopyBitmapToPixelFrameBuffer(Bitmap bitmap, IPixelFrameBuffer frameBuffer) 
 		{
-			// Make copies of the display element width and height for performance
-			int bufferHt = BufferHt;
-			int bufferWi = BufferWi;
-
 			// Create a FastPixel instance based on the bitmap				
 			using (FastPixel.FastPixel fp = new FastPixel.FastPixel(bitmap))
 			{
 				fp.Lock();
 
 				// Copy from the fastpixel bitmap to the frame buffer
-				for (int x = 0; x < bufferWi; x++)
+				for (int x = 0; x < _bufferWi; x++)
 				{
-					for (int y = 0; y < bufferHt; y++)
+					for (int y = 0; y < _bufferHt; y++)
 					{
 						// Transfer the pixel from the bitmap to the frame buffer
-						CalculatePixelFlip(x, y, bufferHt, fp, frameBuffer);
+						CalculatePixelFlip(x, y, _bufferHt, fp, frameBuffer);
 					}
 				}
 				fp.Unlock(false);
