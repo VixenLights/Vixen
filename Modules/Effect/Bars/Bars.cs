@@ -2955,6 +2955,8 @@ namespace VixenModules.Effect.Bars
                     fOffset = (int)(Math.Floor(_position * barCount) * barWi);
                 }
 
+                var indexAdjust = 1;
+
                 for (x = 0; x < _bufferWi; x++)
                 {
                     n = x + fOffset;
@@ -2967,7 +2969,7 @@ namespace VixenModules.Effect.Bars
                     {
                         var hsv = HSV.FromRGB(c);
                         if (Highlight && (n + 1) % barWi == 0) hsv.S = 0.0f;
-                        if (Show3D) hsv.V *= (float)(barWi - n % barWi - 1) / barWi;
+                        if (Show3D) hsv.V *= (float)(barWi - (n + indexAdjust) % barWi - 1) / barWi;
                         hsv.V *= level;
                         c = hsv.ToRGB();
                     }
