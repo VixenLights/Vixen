@@ -251,6 +251,76 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		public static readonly PropertyData CanvasHeightProperty = RegisterProperty(nameof(CanvasHeight), typeof(int));
 
 		/// <summary>
+		/// Display element width excluding any margin.
+		/// </summary>
+		public double DisplayElementWidth
+		{
+			get { return GetValue<double>(DisplayElementWidthProperty); }
+			set { SetValue(DisplayElementWidthProperty, value); }
+		}
+
+		/// <summary>
+		/// DisplayElementWidth property data.
+		/// </summary>
+		public static readonly PropertyData DisplayElementWidthProperty = RegisterProperty(nameof(DisplayElementWidth), typeof(double));
+
+		/// <summary>
+		/// Display element height excluding any margin.
+		/// </summary>
+		public double DisplayElementHeight
+		{
+			get { return GetValue<double>(DisplayElementHeightProperty); }
+			set { SetValue(DisplayElementHeightProperty, value); }
+		}
+
+		/// <summary>
+		/// DisplayElementHeight property data.
+		/// </summary>
+		public static readonly PropertyData DisplayElementHeightProperty = RegisterProperty(nameof(DisplayElementHeight), typeof(double));
+
+		/// <summary>
+		/// Display element X axis origin.  This is an offset into the virtual display element.
+		/// </summary>
+		public double DisplayElementXOrigin
+		{
+			get { return GetValue<double>(DisplayElementXOriginProperty); }
+			set { SetValue(DisplayElementXOriginProperty, value); }
+		}
+
+		/// <summary>
+		/// Display element X axis origin.  
+		/// </summary>
+		public static readonly PropertyData DisplayElementXOriginProperty = RegisterProperty(nameof(DisplayElementXOrigin), typeof(double));
+
+		/// <summary>
+		/// Display element Y axis origin.  This is an offset into the virtual display element.
+		/// </summary>
+		public double DisplayElementYOrigin
+		{
+			get { return GetValue<double>(DisplayElementYOriginProperty); }
+			set { SetValue(DisplayElementYOriginProperty, value); }
+		}
+
+		/// <summary>
+		/// DisplayElementYOrigin property data.
+		/// </summary>
+		public static readonly PropertyData DisplayElementYOriginProperty = RegisterProperty(nameof(DisplayElementYOrigin), typeof(double));
+
+		/// <summary>
+		/// Controls whether the display element outline should be displayed.
+		/// </summary>
+		public bool ShowDisplayElement
+		{
+			get { return GetValue<bool>(ShowDisplayElementProperty); }
+			set { SetValue(ShowDisplayElementProperty, value); }
+		}
+
+		/// <summary>
+		/// ShowDisplayElement property data.
+		/// </summary>
+		public static readonly PropertyData ShowDisplayElementProperty = RegisterProperty(nameof(ShowDisplayElement), typeof(bool));
+
+		/// <summary>
 		/// Gets or sets the view model's selected polygon.
 		/// </summary>
 		public PolygonViewModel SelectedPolygon

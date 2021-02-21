@@ -108,6 +108,14 @@
 				Canvas.Top="{Binding Path=PointMoving.Y, Converter={ikriv:MathConverter}, ConverterParameter=x-3}" 
 				Visibility="{Binding Path=MovingPointVisibilityPrevious, Converter={StaticResource BoolToVis}}"/>
 
+					<Rectangle
+							Width="{Binding Path=DisplayElementWidth}"
+							Height="{Binding Path=DisplayElementHeight}"
+							Stroke="Red"
+							Canvas.Left="{Binding Path=DisplayElementXOrigin}"
+							Canvas.Top="{Binding Path=DisplayElementYOrigin}"
+							Visibility="{Binding Path=ShowDisplayElement, Converter={StaticResource BoolToVis}}"/>
+
 					<ItemsControl ItemsSource="{Binding Polygons}">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>

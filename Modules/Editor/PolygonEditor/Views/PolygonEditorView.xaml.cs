@@ -95,8 +95,16 @@ namespace VixenModules.Editor.PolygonEditor.Views
 				{
 					yScaleFactor = (vm.CanvasHeight - 1.0) / (_polygonContainer.Height - 1.0);
 				}
+
+				// Set the size of the actual display element
+				vm.DisplayElementWidth = (_polygonContainer.DisplayElementWidth - 1.0) * xScaleFactor;
+				vm.DisplayElementHeight = (_polygonContainer.DisplayElementHeight - 1.0) * yScaleFactor;
+				vm.DisplayElementXOrigin = (_vm.CanvasWidth - vm.DisplayElementWidth) / 2.0 - 1.0;
+				vm.DisplayElementYOrigin = (_vm.CanvasHeight - vm.DisplayElementHeight) / 2.0 - 1.0;
 				
-				
+				// Configure whether to display the outline of the display element
+				vm.ShowDisplayElement = _polygonContainer.ShowDisplayElement;
+
 				// Give the polygon point converter the scale factor
 				PolygonPointXConverter.XScaleFactor = xScaleFactor;
 				PolygonPointYConverter.YScaleFactor = yScaleFactor;
