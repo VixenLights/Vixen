@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Runtime.Serialization;
-using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
@@ -32,6 +31,7 @@ namespace VixenModules.Effect.Picture
 			TilePictures = TilePictures.BlueGlowDots;
 			GifSpeed = 1;
 			StretchToGrid = false;
+			CenterStop = false;
 		}
 
 		[DataMember]
@@ -100,6 +100,9 @@ namespace VixenModules.Effect.Picture
 		[DataMember]
 		public bool FitToTime { get; set; }
 
+		[DataMember]
+		public bool CenterStop { get; set; }
+
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
@@ -158,7 +161,8 @@ namespace VixenModules.Effect.Picture
 				GifSpeed = GifSpeed,
 				Colors = Colors,
 				Source = Source,
-				StretchToGrid = StretchToGrid
+				StretchToGrid = StretchToGrid,
+				CenterStop = CenterStop
 			};
 			return result;
 		}
