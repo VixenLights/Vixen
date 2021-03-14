@@ -1104,4 +1104,7 @@
   <data name="HighlightPercentage" xml:space="preserve">
     <value>Highlight %</value>
   </data>
+  <data name="PictureCenterStop" xml:space="preserve">
+    <value>Center Stop</value>
+  </data>
 </root>

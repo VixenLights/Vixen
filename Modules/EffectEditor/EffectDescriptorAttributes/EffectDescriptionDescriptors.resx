@@ -1146,4 +1146,7 @@
   <data name="HighlightPercentage" xml:space="preserve">
     <value>Controls the percentage of the bar that is highlighted.</value>
   </data>
+   <data name="PictureCenterStop" xml:space="preserve">
+    <value>Moves the image into view and stops it in the center.</value>
+  </data>
 </root>
