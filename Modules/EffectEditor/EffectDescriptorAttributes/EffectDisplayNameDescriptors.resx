@@ -1104,5 +1104,10 @@
   <data name="Margin" xml:space="preserve">
     <value>Margin</value>
   </data>
-  
+  <data name="HighlightPercentage" xml:space="preserve">
+    <value>Highlight %</value>
+  </data>
+  <data name="PictureCenterStop" xml:space="preserve">
+    <value>Center Stop</value>
+  </data>
 </root>

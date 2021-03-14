@@ -1143,4 +1143,13 @@
   <data name="Margin" xml:space="preserve">
     <value>Percentage of the display element to use as a margin for drawing shapes outside (or partially outside) the display element.</value>
   </data>
+  <data name="BarsRotation" xml:space="preserve">
+    <value>Controls the rotation of the bars. 100 = 180 degrees counter clockwise rotation.  0 =180 clockwise rotation.</value>
+  </data>
+ <data name="HighlightPercentage" xml:space="preserve">
+    <value>Controls the percentage of the bar that is highlighted.</value>
+  </data>
+   <data name="PictureCenterStop" xml:space="preserve">
+    <value>Moves the image into view and stops it in the center.</value>
+  </data>
 </root>
