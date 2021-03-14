@@ -3083,7 +3083,7 @@ namespace VixenModules.Effect.Morph
 			int headLength)
 		{								
 			// Calculate the end of the head			
-			int endOfHead = (int)(length * intervalHeadPos);
+			int endOfHead = (int)Math.Round(length * intervalHeadPos);
 			
 			// Calculate the start of the head based on the current head length
 			int startOfHead = endOfHead - headLength;
