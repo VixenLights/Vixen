@@ -25,6 +25,7 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\FastPixel\FastPixel.csproj" />
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
@@ -48,5 +49,10 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\EffectImage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="System.Windows" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
 </Project>

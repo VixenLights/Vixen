@@ -61,6 +61,7 @@ namespace VixenModules.Effect.Picture
 				IsDirty = true;
 				UpdateDirectionAttribute();
 				UpdateMovementRateAttribute();
+				UpdateCenterStopAttribute();
 				OnPropertyChanged();
 			}
 		}
@@ -71,7 +72,7 @@ namespace VixenModules.Effect.Picture
 		[ProviderDescription(@"Direction based on angle")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 360, 1)]
-		[PropertyOrder(1)]
+		[PropertyOrder(2)]
 		public int Direction
 		{
 			get { return _data.Direction; }
@@ -89,7 +90,7 @@ namespace VixenModules.Effect.Picture
 		[ProviderDescription(@"Iterations")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 20, 1)]
-		[PropertyOrder(2)]
+		[PropertyOrder(3)]
 		public int Speed
 		{
 			get { return _data.Speed; }
@@ -107,7 +108,7 @@ namespace VixenModules.Effect.Picture
 		[ProviderDescription(@"Number of Iterations for the Gif file")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 20, 1)]
-		[PropertyOrder(3)]
+		[PropertyOrder(4)]
 		public int GifSpeed
 		{
 			get { return _data.GifSpeed; }
@@ -124,7 +125,7 @@ namespace VixenModules.Effect.Picture
 		[ProviderDisplayName(@"XOffset")]
 		[ProviderDescription(@"XOffset")]
 		//[NumberRange(-100, 100, 1)]
-		[PropertyOrder(4)]
+		[PropertyOrder(5)]
 		public Curve XOffsetCurve
 		{
 			get { return _data.XOffsetCurve; }
@@ -141,13 +142,29 @@ namespace VixenModules.Effect.Picture
 		[ProviderDisplayName(@"YOffset")]
 		[ProviderDescription(@"YOffset")]
 		//[NumberRange(-100, 100, 1)]
-		[PropertyOrder(5)]
+		[PropertyOrder(6)]
 		public Curve YOffsetCurve
 		{
 			get { return _data.YOffsetCurve; }
 			set
 			{
 				_data.YOffsetCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 1)]
+		[ProviderDisplayName(@"PictureCenterStop")]
+		[ProviderDescription(@"PictureCenterStop")]
+		[PropertyOrder(2)]
+		public bool CenterStop
+		{
+			get { return _data.CenterStop; }
+			set
+			{
+				_data.CenterStop = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -401,6 +418,7 @@ namespace VixenModules.Effect.Picture
 			UpdateMovementRateAttribute(false);
 			UpdateStringOrientationAttributes();
 			UpdatePictureSourceAttribute(false);
+			UpdateCenterStopAttribute(false);
 			TypeDescriptor.Refresh(this);
 		}
 
@@ -432,6 +450,30 @@ namespace VixenModules.Effect.Picture
 				TypeDescriptor.Refresh(this);
 			}
 		}
+
+		/// <summary>
+		/// Determines when the 'Center Stop' setting is applicable. 
+		/// </summary>
+		private void UpdateCenterStopAttribute(bool refresh = true)
+		{
+			// Center Stop is only applicable for movement types Up, Down, Left and Right
+			bool centerStopApplicable =
+				Type == EffectType.RenderPictureUp ||
+				Type == EffectType.RenderPictureDown ||
+				Type == EffectType.RenderPictureLeft ||
+				Type == EffectType.RenderPictureRight;
+
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			{
+				{nameof(CenterStop), centerStopApplicable }
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
 
 		private void UpdateMovementRateAttribute(bool refresh = true)
 		{
@@ -854,6 +896,57 @@ namespace VixenModules.Effect.Picture
 			}
 		}
 
+		/// <summary>
+		/// Calculates the position of the image.  Taking into account if a 'Center Stop' has
+		/// been commanded.
+		/// </summary>
+		/// <param name="bufferLength">Length of the frame buffer in the direction of the movement</param>
+		/// <param name="imageLength">Length of the image in the direction of the movement</param>
+		/// <returns>Position of the image</returns>
+		private int CalculatePosition(int bufferLength, int imageLength)
+		{
+			// Calculating the position based on how many frames we are into the effect
+			// and expecting the image to travel the length of the frame buffer plus the length of the image.
+			// This allows the image enter and exit the frame buffer during the effect's duration.
+			int xPosition = (int)(_position * (_imageWi + bufferLength));
+
+			// If the image should stop in the center then...
+			if (CenterStop)
+			{
+				// Calculate the position of the centered image
+				int centerOfFrameBuffer = bufferLength - (bufferLength - imageLength) / 2;
+
+				// If the calculated position is past the center then...
+				if (xPosition > (centerOfFrameBuffer))
+				{
+					// Reset it back to the center
+					xPosition = centerOfFrameBuffer;
+				}
+			}
+
+			return xPosition;
+		}
+
+		/// <summary>
+		/// Calculates the X position of the image.
+		/// </summary>
+		/// <param name="bufferWi">Width of the frame buffer</param>
+		/// <returns>X position of the image</returns>
+		private int CalculateXPosition(int bufferWi)
+		{
+			return CalculatePosition(bufferWi, _imageWi);
+		}
+
+		/// <summary>
+		/// Calculates the Y position of the image.
+		/// </summary>
+		/// <param name="bufferHt">Height of the frame buffer</param>
+		/// <returns>Y position of the image</returns>
+		private int CalculateYPosition(int bufferHt)
+		{
+			return CalculatePosition(bufferHt, _imageHt);
+		}
+
 		private void CalculatePixel(int x, int y, IPixelFrameBuffer frameBuffer, int frame, double level, double adjustedBrightness, ref int bufferHt, ref int bufferWi)
 		{
 			int yCoord = y;
@@ -937,41 +1030,62 @@ namespace VixenModules.Effect.Picture
 				case EffectType.RenderPictureLeft:
 					if (TargetPositioning == TargetPositioningType.Locations)
 					{
+						int movementLocationX = CalculateXPosition(bufferWi);
+
 						locationY = _yoffset - y + _yOffsetAdj;
-						locationX = ((x - bufferWi) + (int)(_position * (_imageWi + bufferWi))) + _xOffsetAdj;
+						locationX = ((x - bufferWi) + movementLocationX) + _xOffsetAdj;
 						break;
 					}
-					int leftX = xCoord + (bufferWi - (int)(_position * (_imageWi + bufferWi)));
+
+					int movementLeftX = CalculateXPosition(bufferWi);
+
+					int leftX = xCoord + (bufferWi - movementLeftX);
 					frameBuffer.SetPixel(leftX + _xOffsetAdj, _yoffset - y + _yOffsetAdj, fpColor);
 					return;
 				case EffectType.RenderPictureRight:
+
 					if (TargetPositioning == TargetPositioningType.Locations)
 					{
+						int movementLocationX = CalculateXPosition(bufferWi);
+						
 						locationY = _yoffset - y + _yOffsetAdj;
-						locationX = ((x + _imageWi) - (int)(_position * (_imageWi + bufferWi))) + _xOffsetAdj;
+						locationX = ((x + _imageWi) - movementLocationX) + _xOffsetAdj;
 						break;
 					}
-					int rightX = xCoord + -_imageWi + (int)(_position * (_imageWi + bufferWi));
+
+					int movementRightX = CalculateXPosition(bufferWi);
+
+					int rightX = xCoord + -_imageWi + movementRightX;
 					frameBuffer.SetPixel(rightX + _xOffsetAdj, _yoffset - yCoord + _yOffsetAdj, fpColor);
 					return;
 				case EffectType.RenderPictureUp:
 					if (TargetPositioning == TargetPositioningType.Locations)
 					{
-						locationY = ((int)((_imageHt + bufferHt) * _position) - y) + _yOffsetAdj;
+						int movementLocationY = CalculateYPosition(bufferHt);
+
+						locationY =  movementLocationY - y + _yOffsetAdj;
 						locationX = x + _xoffset - _xOffsetAdj;
 						break;
 					}
-					int upY = (int)((_imageHt + bufferHt) * _position) - y;
+
+					int movementUpY = CalculateYPosition(bufferHt);
+
+					int upY = movementUpY - y;
 					frameBuffer.SetPixel(xCoord - _xoffset + _xOffsetAdj, upY + _yOffsetAdj, fpColor);
 					return;
 				case EffectType.RenderPictureDown:
 					if (TargetPositioning == TargetPositioningType.Locations)
 					{
-						locationY = ((bufferHt + _imageHt - 1) - (int)((_imageHt + bufferHt) * _position) - y) + _yOffsetAdj;
+						int movementLocationY = CalculateYPosition(bufferHt);
+
+						locationY = ((bufferHt + _imageHt - 1) - movementLocationY - y) + _yOffsetAdj;
 						locationX = x + _xoffset - _xOffsetAdj;
 						break;
 					}
-					int downY = (bufferHt + _imageHt - 1) - (int)((_imageHt + bufferHt) * _position) - yCoord;
+
+					int movementDownY = CalculateYPosition(bufferHt);
+
+					int downY = (bufferHt + _imageHt - 1) - movementDownY - yCoord;
 					frameBuffer.SetPixel(x - _xoffset + _xOffsetAdj, downY + _yOffsetAdj, fpColor);
 					return;
 				case EffectType.RenderPictureUpleft:
