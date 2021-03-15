@@ -110,6 +110,9 @@ namespace VixenModules.Effect.Morph
 		[DataMember]
 		public int DisplayElementHeight { get; set; }
 
+		[DataMember]
+		public int Margin { get; set; }
+
 		#endregion
 
 		#region Protected Methods
@@ -137,6 +140,7 @@ namespace VixenModules.Effect.Morph
 				FillBrightness = new Curve(FillBrightness),
 				DisplayElementWidth = DisplayElementWidth,
 				DisplayElementHeight = DisplayElementHeight,
+				Margin = Margin,
 			};
 
 			// Clone the Morph Polygons

@@ -1140,6 +1140,9 @@
   <data name="BarType" xml:space="preserve">
     <value>Selects either a flat or an angled zig zag styled bar.</value>
   </data>
+  <data name="Margin" xml:space="preserve">
+    <value>Percentage of the display element to use as a margin for drawing shapes outside (or partially outside) the display element.</value>
+  </data>
   <data name="BarsRotation" xml:space="preserve">
     <value>Controls the rotation of the bars. 100 = 180 degrees counter clockwise rotation.  0 =180 clockwise rotation.</value>
   </data>

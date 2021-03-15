@@ -69,6 +69,23 @@ namespace VixenModules.App.Polygon
 		public int Height { get; set; }
 
 		/// <summary>
+		/// Gets or sets Width of the associated display element.
+		/// This property excludes any margin.
+		/// </summary>
+		public int DisplayElementWidth { get; set; }
+
+		/// <summary>
+		/// Gets or sets Height of the associated display element.
+		/// This property excludes any margin.
+		/// </summary>
+		public int DisplayElementHeight { get; set; }
+
+		/// <summary>
+		/// True when the outline of the display element should be shown.
+		/// </summary>
+		public bool ShowDisplayElement { get; set; }
+
+		/// <summary>
 		/// Gets or sets the editor capabilities desired.
 		/// This property allows the client to configure the capabilities of the Polygon Editor.
 		/// </summary>
@@ -143,10 +160,17 @@ namespace VixenModules.App.Polygon
 				clonedContainer.EllipseTimes.Add(time);
 			}
 
-			// Copy the width and height
+			// Copy the width and height (including margin)
 			clonedContainer.Width = Width;
 			clonedContainer.Height = Height;
 
+			// Copy the width and height (excluding margin)
+			clonedContainer.DisplayElementWidth = DisplayElementWidth;
+			clonedContainer.DisplayElementHeight = DisplayElementHeight;
+			
+			// Copy whether the outline of the display should be shown
+			clonedContainer.ShowDisplayElement = ShowDisplayElement;
+				
 			// Making a copy of the Editor capability reference
 			clonedContainer.EditorCapabilities = EditorCapabilities;
 
