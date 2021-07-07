@@ -327,9 +327,11 @@
     </PackageReference>
     <PackageReference Include="OpenTK" Version="3.2.0">
       <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile</IncludeAssets>
     </PackageReference>
     <PackageReference Include="OpenTK.GLControl" Version="3.1.0">
       <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile</IncludeAssets>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
