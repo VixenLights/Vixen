@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Linq;
@@ -434,7 +435,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		public virtual void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected,
-		                         bool forceDraw)
+		                         bool forceDraw, double zoomLevel)
 		{
 			foreach (PreviewPixel pixel in Pixels) {
 
@@ -656,6 +657,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				setupControl = new PreviewShapeBaseSetupControl(this);
 			}
+			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.MovingHead")
+			{
+				Debug.Assert(false, "SetupControl not supported for Moving Heads");
+			}
 
 			return setupControl;
 		}
@@ -845,6 +850,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+
 		private void CreateFullColorPoints(int referenceHeight)
 		{
 			foreach (PreviewPixel previewPixel in _pixelCache)
@@ -878,7 +884,21 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		protected void Dispose(bool disposing)
+		/// <summary>
+		/// Gives derived shapes the opportunity to configure and adjust the shape after an Add New using the mouse.
+		/// </summary>
+		public virtual void EndAddNew()
+		{			
+		}
+
+		/// <summary>
+		/// Gives derived shapes the opportunity to adjust the shape after a point has been moved. 
+		/// </summary>
+		public virtual void OnMovePoint()
+		{
+		}
+
+		protected virtual void Dispose(bool disposing)
 		{
 			if (disposing) {
 				if (_selectPoints != null)

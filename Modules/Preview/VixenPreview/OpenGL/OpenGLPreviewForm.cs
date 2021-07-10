@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -17,7 +18,9 @@ using OpenTK.Graphics.OpenGL;
 using Vixen;
 using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
+using VixenModules.Preview.VixenPreview.Fixtures.OpenGL;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
+using VixenModules.Preview.VixenPreview.Shapes;
 
 namespace VixenModules.Preview.VixenPreview.OpenGL
 {
@@ -33,7 +36,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private readonly Stopwatch _sw = Stopwatch.StartNew();
 		private readonly Stopwatch _sw2 = Stopwatch.StartNew();
 		private readonly Stopwatch _frameRateTimer = Stopwatch.StartNew();
-
+		
 		private int _width = 800, _height = 600;
 		private float _focalDepth = 0;
 		private float _aspectRatio;
@@ -63,6 +66,13 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private string _programLog = string.Empty;
 
 		internal static readonly Object ContextLock = new Object();
+
+		/// <summary>
+		/// Moving head render strategy.  This class renders graphical volumes that are associated with an OpenGL shader.
+		/// This class exists to improve performance.  We are violating the enapsulation of the display item shaps so that
+		/// we can group like shapes together and minimize shader program transitions on the GPU.
+		/// </summary>
+		private MovingHeadRenderStrategy _movingHeadRenderStrategy;
 
 		private readonly ParallelOptions _parallelOptions = new ParallelOptions()
 		{
@@ -236,6 +246,13 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			if (disposing && glControl != null)
 			{
+				// Loop over the display item shapes that implement IDrawStaticPreviewShape
+				foreach (IDrawStaticPreviewShape staticShape in GetIDrawStaticPreviewShapes())
+				{
+					// Dispose of the OpenGL resources associated with this shape
+					staticShape.DisposeOpenGLResources();					
+				}
+
 				glControl.MouseWheel -= GlControl_MouseWheel;
 				lock (ContextLock)
 				{
@@ -249,7 +266,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 					glControl.Context.MakeCurrent(null);
 				}
 
-				glControl.Dispose();
+				glControl.Dispose();				
 			}
 			
 
@@ -280,7 +297,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				//Logging.Info("Blend");
 				GL.Enable(EnableCap.Blend);
 				//Logging.Info("Blend Func");
-				GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+				GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 				//Logging.Info("Point Sprite");
 				GL.Enable(EnableCap.PointSprite);
 				//Logging.Info("Vertex Point Sprite");
@@ -289,8 +306,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				GL.Enable(EnableCap.ProgramPointSize);
 				//Logging.Info("Cull Face");
 				GL.Disable(EnableCap.CullFace);
-			}
-			
+												
+				GL.Enable(EnableCap.DepthTest);				
+			}			
 		}
 
 		private void Initialize()
@@ -360,7 +378,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				if (_needsUpdate)
 				{
 					OnRenderFrame();
-					_needsUpdate = false;
+					
+					//TODO: This line should NOT be commented out!!!
+					//      When moving heads are added to the Vixen workflow we should put this line back.
+					//      This line of code prevents the OpenGL Preview from refreshing properly when testing the moving heads using the fake effect.
+					//_needsUpdate = false;
 				}
 				toolStripStatusFPS.Text = @"0";
 			}
@@ -423,6 +445,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			{
 				SaveWindowState();
 			}
+
 			glControl.Invalidate();
 		}
 
@@ -568,16 +591,107 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			return perspective;
 		}
 
+		/// <summary>
+		/// Initializes the moving head render strategy with shapes that are made up of graphical volumes.
+		/// </summary>
+		private void InitializeMovingHeadRenderStrategy()
+		{
+			// If the moving head render strategy has not been created then...
+			if (_movingHeadRenderStrategy == null)
+			{
+				// Create the moving head render strategy
+				_movingHeadRenderStrategy = new MovingHeadRenderStrategy();
+
+				// Loop over the moving heads
+				foreach (IOpenGLMovingHeadShape movingHeadVolumes in GetMovingHeadShapes())
+				{
+					// Initialize the moving head with the reference height
+					int referenceHeight = _background.HasBackground ? _background.Height : Height;
+					movingHeadVolumes.Initialize(referenceHeight);
+
+					// Give the shape to the render strategy
+					_movingHeadRenderStrategy.Shapes.Add(movingHeadVolumes.MovingHead);					
+				}
+
+				// Initialize the moving head render strategy
+				_movingHeadRenderStrategy.Initialize();
+			}
+		}
+
+		/// <summary>
+		/// Reeturns the display item shapes that implement <c>IDrawMovingHeadVolumes</c>.
+		/// </summary>
+		/// <returns></returns>
+		private IEnumerable<IOpenGLMovingHeadShape> GetMovingHeadShapes()
+		{
+			// Get the display item shapes that implement IDrawMovingHeadVolumes
+			return Data.DisplayItems.Where(displayItem => displayItem.Shape is IOpenGLMovingHeadShape).
+				Select(displayItem => displayItem.Shape).
+					Cast< IOpenGLMovingHeadShape >().ToList();
+		}
+
+		/// <summary>
+		/// Reeturns the display item shapes that implement <c>IDrawMovingHeadVolumes</c>.
+		/// </summary>
+		/// <returns></returns>
+		private IEnumerable<IDrawStaticPreviewShape> GetIDrawStaticPreviewShapes()
+		{
+			// Get the display item shapes that implement IDrawMovingHeadVolumes
+			return Data.DisplayItems.Where(displayItem => displayItem.Shape is IDrawStaticPreviewShape)
+				.Select(displayItem => displayItem.Shape)
+					.Cast<IDrawStaticPreviewShape>().ToList();
+		}
+
+		/// <summary>
+		/// Renders static preview shapes.
+		/// </summary>
+		/// <param name="perspective">Perspective matrix used to render 3-D onto 2-D</param>
+		private void RenderStaticPreviewShapes(Matrix4 perspective)
+		{
+			// Deselect any previous shader programs
+			GL.UseProgram(0);
+
+			// Calculate the reference height
+			int referenceHeight = _background.HasBackground ? _background.Height : Height;
+
+			float sizeScale = ((float)_width / _background.Width + (float)_height / _background.Height) / 2f;
+
+			// The beam does not seem to cover the background so adding multiplier
+			int maxBeamLength = (int)Math.Round(Math.Max(_width, _height) / sizeScale, MidpointRounding.AwayFromZero);
+			
+			// Loop over all the moving heads
+			Parallel.ForEach(GetMovingHeadShapes(), (movingHead) =>
+			{
+				// Update the position and rotation uniforms for the volumes
+				movingHead.UpdateVolumes(maxBeamLength, referenceHeight);
+			});
+
+			// Disable depth checks as we want the static preview shapes to show up on top of the background
+			GL.Clear(ClearBufferMask.DepthBufferBit);
+
+			// Render the moving head volumes
+			_movingHeadRenderStrategy.RenderVolumes(perspective, _camera.Position, _camera.ViewMatrix);
+
+			// Loop over the IDrawStaticPreviewShape display item shapes
+			foreach (IDrawStaticPreviewShape shape in GetIDrawStaticPreviewShapes())
+			{
+				// Draw the static preview shapes using OpenGL				
+				shape.DrawOpenGL(_camera.Position.Z, _width, _height, perspective, _camera.ViewMatrix, _pointScaleFactor, referenceHeight, _camera.Position);
+			}			
+		}
 
 		private void OnRenderFrame()
-		{
+		{			
+			// Initialize the moving head render strategy with the applicable display item shapes
+			InitializeMovingHeadRenderStrategy();
+
 			//Logging.Debug("Entering RenderFrame");
 			if (_isRendering || _formLoading || WindowState==FormWindowState.Minimized) return;
 			UpdateStatusDistance(_camera.Position.Z);
 			_isRendering = true;
 			_sw.Restart();
 			var perspective = CreatePerspective();
-			
+
 			if (VixenSystem.Elements.ElementsHaveState)
 			{
 				//Logging.Debug("Elements have state.");
@@ -589,11 +703,17 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				{
 					glControl.MakeCurrent();
 					ClearScreen();
+										
 					_sw2.Restart();
 					_background.Draw(perspective, _camera.ViewMatrix);
 					_backgroundDraw.Set(_sw2.ElapsedMilliseconds);
 					_sw2.Restart();
+					
+					// Render static preview shapes (moving heads)
+					RenderStaticPreviewShapes(perspective);
+					
 					DrawPoints(mvp);
+										
 					_pointsDraw.Set(_sw2.ElapsedMilliseconds);
 					glControl.SwapBuffers();
 					glControl.Context.MakeCurrent(null);
@@ -605,9 +725,14 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				{
 					glControl.MakeCurrent();
 					ClearScreen();
+					
 					_sw2.Restart();
 					_background.Draw(perspective, _camera.ViewMatrix);
 					_backgroundDraw.Set(_sw2.ElapsedMilliseconds);
+					
+					// Render static preview shapes (moving heads)
+					RenderStaticPreviewShapes(perspective);
+
 					glControl.SwapBuffers();
 					glControl.Context.MakeCurrent(null);
 				}

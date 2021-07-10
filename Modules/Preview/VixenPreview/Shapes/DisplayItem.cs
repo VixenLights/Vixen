@@ -29,6 +29,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
     [KnownType(typeof(PreviewPolyLine))]
     [KnownType(typeof(PreviewMultiString))]
 	[KnownType(typeof(PreviewCustomProp))]
+	[KnownType(typeof(PreviewMovingHead))]
 	public class DisplayItem : IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<CommandValue>>, IDisposable, IEnumerable<DisplayItem>, ICloneable
 	{
 		private PreviewBaseShape _shape;
@@ -47,7 +48,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected, bool forceDraw)
 		{
-			_shape.Draw(fp, editMode, highlightedElements, selected, forceDraw);
+			_shape.Draw(fp, editMode, highlightedElements, selected, forceDraw, _zoomLevel);
 		}
 
 		public void DrawInfo(Graphics g)
