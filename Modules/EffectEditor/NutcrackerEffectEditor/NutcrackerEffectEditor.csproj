@@ -29,9 +29,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="NutcrackerProcessingMovie.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="NutcrackerProcessingMovie.cs" />
     <Compile Update="NutcrackerProcessingMovie.Designer.cs">
       <DependentUpon>NutcrackerProcessingMovie.cs</DependentUpon>
     </Compile>
