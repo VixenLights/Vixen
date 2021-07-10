@@ -29,7 +29,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
     [KnownType(typeof(PreviewPolyLine))]
     [KnownType(typeof(PreviewMultiString))]
 	[KnownType(typeof(PreviewCustomProp))]
-	[KnownType(typeof(PreviewLightBaseShape))]
+	[KnownType(typeof(PreviewMovingHead))]
 	public class DisplayItem : IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<CommandValue>>, IDisposable, IEnumerable<DisplayItem>, ICloneable
 	{
 		private PreviewBaseShape _shape;
@@ -37,19 +37,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public DisplayItem()
 		{
 			_shape = new PreviewLine(new PreviewPoint(1, 1), new PreviewPoint(10, 10), 1, null, ZoomLevel);
-		}
-
-		public bool IsLightShape()
-		{
-			return Shape is PreviewLightBaseShape;
-		}
-
-		public PreviewLightBaseShape LightShape
-		{
-			get
-			{
-				return Shape as PreviewLightBaseShape;
-			}
 		}
 
 		[DataMember]
@@ -66,12 +53,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public void DrawInfo(Graphics g)
 		{
-			if (IsLightShape() &&
-				LightShape.Pixels.Count > 0) 
+			if (Shape.Pixels.Count > 0) 
 			{
 				int margin = 1;
 				string info;
-				info = "Z:" + LightShape.Pixels[0].Z;
+				info = "Z:" + Shape.Pixels[0].Z;
 				Font font = new Font(SystemFonts.MessageBoxFont.FontFamily, 7);
 				SizeF textSize = g.MeasureString(info, font);
 				Rectangle rect = new Rectangle(Shape.Left, Shape.Top, (int)textSize.Width + (margin * 2), (int)textSize.Height + (margin * 2));
