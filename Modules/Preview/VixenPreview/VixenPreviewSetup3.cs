@@ -441,6 +441,11 @@ namespace VixenModules.Preview.VixenPreview
 				DrawShape = "Multi String";
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MultiString;
 			}
+			else if (button == buttonMovingHead)
+			{
+				DrawShape = "Moving Head";
+				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MovingHead;
+			}
         }
 
         private void toolbarAlignButton_Click(object sender, EventArgs e)
