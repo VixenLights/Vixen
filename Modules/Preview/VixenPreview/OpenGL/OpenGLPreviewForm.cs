@@ -280,7 +280,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				//Logging.Info("Blend");
 				GL.Enable(EnableCap.Blend);
 				//Logging.Info("Blend Func");
-				GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+				GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 				//Logging.Info("Point Sprite");
 				GL.Enable(EnableCap.PointSprite);
 				//Logging.Info("Vertex Point Sprite");
