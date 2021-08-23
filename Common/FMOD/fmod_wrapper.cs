@@ -115,7 +115,10 @@ namespace FMOD {
                 for(i = 0; i < driverCount; i++) {
                     GUID GUID = new GUID();
                     system.getDriverInfo(i, sb, sb.Capacity, ref GUID);
-                    m_deviceList.Add(sb.ToString());
+                    if (!sb.ToString().Contains("DAX"))
+                    {
+	                    m_deviceList.Add(sb.ToString());
+                    }
                 }
             }
 
