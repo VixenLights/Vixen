@@ -37,7 +37,7 @@
     <EmbeddedResource Include="Images\EffectImage.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NLog" Version="4.6.8">
+    <PackageReference Include="NLog" Version="4.7.11">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
