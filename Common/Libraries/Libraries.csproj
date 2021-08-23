@@ -126,7 +126,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NLog" Version="4.7.11" />
     <PackageReference Include="Nowin" Version="0.26.0" />
-    <PackageReference Include="Svg" Version="3.0.102" />
+    <PackageReference Include="Svg" Version="3.2.3" />
     <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
     <PackageReference Include="System.Reflection" Version="4.3.0" />
     <PackageReference Include="System.Xml.XDocument" Version="4.3.0" />
