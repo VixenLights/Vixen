@@ -25,7 +25,6 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <OutputPath>..\..\..\Debug64\Modules\Preview\</OutputPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 	<ItemGroup>
     <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
@@ -318,7 +317,7 @@
     <PackageReference Include="DockPanelSuite.ThemeVS2015" Version="3.0.6">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="NLog" Version="4.6.8">
+    <PackageReference Include="NLog" Version="4.7.11">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -327,6 +326,7 @@
     </PackageReference>
     <PackageReference Include="OpenTK.GLControl" Version="3.1.0">
       <ExcludeAssets>runtime</ExcludeAssets>
+       <IncludeAssets>compile</IncludeAssets>
     </PackageReference>
     <PackageReference Include="SharpFont" Version="4.0.1">
       <ExcludeAssets>runtime, all</ExcludeAssets>
