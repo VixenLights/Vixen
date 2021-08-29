@@ -52,27 +52,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		[OnDeserialized]
 		private new void OnDeserialized(StreamingContext context)
-		{
-			_pixels.Clear();
+		{		
 			Layout();
 		}
 
-		public override List<PreviewPixel> Pixels
-		{
-			get
-			{
-				List<PreviewPixel> pixels = new List<PreviewPixel>();
-				if (_strings != null) {
-					for (int i = 0; i < 4; i++) {
-						foreach (PreviewPixel pixel in _strings[i]._pixels) {
-							pixels.Add(pixel);
-						}
-					}
-				}
-				return pixels;
-			}
-		}
-
+	
 		[CategoryAttribute("Position"),
 		 DisplayName("Top Left"),
 		 DescriptionAttribute("Rectangles are defined by 4 points. This is point 1.")]
@@ -147,82 +131,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Settings"),
-		 DisplayName("String 1 Light Count"),
-		 DescriptionAttribute("Number of pixels or lights in string 1 of the rectangle.")]
-		public int LightCountString1
-		{
-			get { return Strings[0].Pixels.Count; }
-			set
-			{
-				(Strings[0] as PreviewLine).PixelCount = value;
-				Layout();
-			}
-		}
-
-		[CategoryAttribute("Settings"),
-		 DisplayName("String 2 Light Count"),
-		 DescriptionAttribute("Number of pixels or lights in string 2 of the rectangle.")]
-		public int LightCountString2
-		{
-			get { return Strings[1].Pixels.Count; }
-			set
-			{
-				(Strings[1] as PreviewLine).PixelCount = value;
-				Layout();
-			}
-		}
-
-		[CategoryAttribute("Settings"),
-		 DisplayName("String 3 Light Count"),
-		 DescriptionAttribute("Number of pixels or lights in string 3 of the rectangle.")]
-		public int LightCountString3
-		{
-			get { return Strings[2].Pixels.Count; }
-			set
-			{
-				(Strings[2] as PreviewLine).PixelCount = value;
-				Layout();
-			}
-		}
-
-		[CategoryAttribute("Settings"),
-		 DisplayName("String 4 Light Count"),
-		 DescriptionAttribute("Number of pixels or lights in string 4 of the rectangle.")]
-		public int LightCountString4
-		{
-			get { return Strings[3].Pixels.Count; }
-			set
-			{
-				(Strings[3] as PreviewLine).PixelCount = value;
-				Layout();
-			}
-		}
-
-		private Directions _direction = Directions.Clockwise;
-
-		[CategoryAttribute("Settings"),
-		 DisplayName("Direction"),
-		 DescriptionAttribute("Wrap direction."),
-		 DataMember]
-		public Directions Direction
-		{
-			get
-			{
-				return _direction;
-			}
-			set
-			{
-				_direction = value;
-				Layout();
-			}
-		}
-
-		public int PixelCount
-		{
-			get { return Pixels.Count; }
-		}
-
+	
 		public override int Top
 		{
 			get
@@ -323,8 +232,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void Match(PreviewBaseShape matchShape)
 		{
-			PreviewMovingHead shape = (matchShape as PreviewMovingHead);
-			PixelSize = shape.PixelSize;
+			PreviewMovingHead shape = (matchShape as PreviewMovingHead);			
 			_topRight.X = _topLeft.X + (shape._topRight.X - shape._topLeft.X);
 			_topRight.Y = _topLeft.Y + (shape._topRight.Y - shape._topRight.Y);
 			_bottomRight.X = _topLeft.X + (shape._bottomRight.X - shape._topLeft.X);
@@ -384,11 +292,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		public override void Select(bool selectDragPoints)
-		{
-			base.Select(selectDragPoints);
-			connectStandardStrings = true;
-		}
+		
 
 		public override void SelectDragPoints()
 		{
@@ -479,11 +383,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			newRectangle._bottomRight = _bottomRight.Copy();
 			newRectangle._bottomLeft = _bottomLeft.Copy();
 
-			newRectangle.Pixels = new List<PreviewPixel>();
-			foreach (var previewPixel in Pixels)
-			{
-				newRectangle.Pixels.Add(previewPixel.Clone());
-			}
+		
 
 			newRectangle.InitializeGDI();
 

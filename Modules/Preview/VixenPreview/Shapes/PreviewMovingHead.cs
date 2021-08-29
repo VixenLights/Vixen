@@ -239,6 +239,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			return pointInShape;
 		}
 
+		public override bool ShapeInRect(Rectangle rect)
+		{
+			PreviewPoint topLeft = new PreviewPoint(rect.X, rect.Y);
+			PreviewPoint topRight = new PreviewPoint(rect.X + rect.Width, rect.Y);
+			PreviewPoint bottomLeft = new PreviewPoint(rect.X, rect.Y + rect.Height);
+			PreviewPoint bottomRight = new PreviewPoint(rect.X +  rect.Width, rect.Y + rect.Height);
+
+			return PointInShape(topLeft) ||
+				PointInShape(topRight) ||
+				PointInShape(bottomLeft) ||
+				PointInShape(bottomRight);
+		}
+
 		/// <summary>
 		/// Draws the shape for the GDI Preview and when editing the preview.
 		/// </summary>
