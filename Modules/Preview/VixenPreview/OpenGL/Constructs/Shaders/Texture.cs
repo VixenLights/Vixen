@@ -154,7 +154,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 					default:
 						compressed = false;
 						if (imageData.PixelFormat.ABitMask == 0xf000 && imageData.PixelFormat.RBitMask == 0x0f00 &&
-						    imageData.PixelFormat.GBitMask == 0x00f0 && imageData.PixelFormat.BBitMask == 0x000f &&
+							imageData.PixelFormat.GBitMask == 0x00f0 && imageData.PixelFormat.BBitMask == 0x000f &&
 						    imageData.PixelFormat.RGBBitCount == 16)
 						{
 							format = InternalFormat.Rgba;
