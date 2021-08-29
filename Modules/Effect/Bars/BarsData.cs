@@ -92,6 +92,11 @@ namespace VixenModules.Effect.Bars
 			{
 				SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			}
+
+			if (RotationAngle == null)
+			{
+				RotationAngle = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+			}
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
