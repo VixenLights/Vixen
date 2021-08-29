@@ -383,8 +383,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			newRectangle._bottomRight = _bottomRight.Copy();
 			newRectangle._bottomLeft = _bottomLeft.Copy();
 
-		
-
 			newRectangle.InitializeGDI();
 
 			return newRectangle;
