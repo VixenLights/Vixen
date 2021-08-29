@@ -77,16 +77,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="OpenTK">
-      <HintPath>..\..\..\Common\Libraries\OpenTK.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="OpenTK.GLControl">
-      <HintPath>..\..\..\Common\Libraries\OpenTK.GLControl.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="QuickFont">
+      <HintPath>..\..\..\Common\Libraries\QuickFont.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Windows.Forms" />
@@ -327,9 +323,16 @@
     </PackageReference>
     <PackageReference Include="OpenTK" Version="3.2.0">
       <ExcludeAssets>runtime</ExcludeAssets>
-      <IncludeAssets>compile</IncludeAssets>
     </PackageReference>
     <PackageReference Include="OpenTK.GLControl" Version="3.1.0">
+      <ExcludeAssets>runtime</ExcludeAssets>
+       <IncludeAssets>compile</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="SharpFont" Version="4.0.1">
+      <ExcludeAssets>runtime, all</ExcludeAssets>
+      <IncludeAssets>compile</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="SharpFont.Dependencies" Version="2.6.0">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile</IncludeAssets>
     </PackageReference>
