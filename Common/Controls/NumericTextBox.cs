@@ -321,6 +321,8 @@ namespace Common.Controls
 				return 0;
 			if (txt.StartsWith("e"))
 				return 0;
+			if (txt == ".")
+				return 0;
 			if (txt.EndsWith("e") || txt.EndsWith("e" + NegativeSign))
 				return System.Convert.ToDouble(txt.Substring(0, txt.IndexOf('e')));
 			return System.Convert.ToDouble(txt);
