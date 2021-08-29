@@ -11,7 +11,7 @@ using System.Drawing.Design;
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	[DataContract]
-	public class PreviewIcicle : PreviewBaseShape
+	public class PreviewIcicle : PreviewLightBaseShape
 	{
         [DataMember] private int _stringCount;
         [DataMember] private List<PreviewPoint> _points = new List<PreviewPoint>();
@@ -152,13 +152,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                         {
                             if (creating)
                             {
-                                _strings[0].Pixels[0].Node = initialNode;
+                                LightStrings[0].Pixels[0].Node = initialNode;
                             }
                             standardString.connectStandardStrings = true;
                             standardString.StringType = StringTypes.Standard;
                             foreach (PreviewPixel pixel in standardString.Pixels)
                             {
-                                pixel.Node = _strings[0].Pixels[0].Node;
+                                pixel.Node = LightStrings[0].Pixels[0].Node;
                             }
                         }
                     }
@@ -172,7 +172,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         [Editor(typeof(PreviewSetElementsUIEditor), typeof(UITypeEditor)),
          CategoryAttribute("Settings"),
          DisplayName("Linked Elements")]
-        public override List<PreviewBaseShape> Strings
+        public override List<PreviewLightBaseShape> Strings
         {
             get
             {
@@ -192,8 +192,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 }
                 else
                 {
-                    stringsResult = _strings;
-                    if (stringsResult == null)
+					stringsResult = _strings;
+					if (stringsResult == null)
                     {
                         stringsResult = new List<PreviewBaseShape>();
                         stringsResult.Add(this);
@@ -203,7 +203,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 {
                     line.Parent = this;
                 }
-                return stringsResult;
+				return stringsResult.Cast<PreviewLightBaseShape>().ToList();
             }
             set { }
         }

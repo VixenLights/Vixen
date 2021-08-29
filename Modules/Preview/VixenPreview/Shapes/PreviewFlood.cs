@@ -15,7 +15,7 @@ using System.Windows.Forms.Design;
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	[DataContract]
-	public class PreviewFlood : PreviewBaseShape
+	public class PreviewFlood : PreviewLightBaseShape
 	{
 		[DataMember] private PreviewPoint _p1;
 		private PreviewPoint p1Start;

@@ -359,7 +359,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			foreach (var dataDisplayItem in Data.DisplayItems)
 			{
 				dataDisplayItem.Shape.Layout();
-				pixelCount += dataDisplayItem.Shape.UpdatePixelCache();
+
+				if (dataDisplayItem.IsLightShape())
+				{					
+					pixelCount += dataDisplayItem.LightShape.UpdatePixelCache();				
+				}
 			}
 			toolStripStatusPixels.Text = pixelCount.ToString();
 		}
@@ -759,9 +763,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				_program["mvp"].SetValue(mvp);
 				_program["pointScale"].SetValue(_pointScaleFactor);
 
-				foreach (var dataDisplayItem in Data.DisplayItems)
-				{
-					dataDisplayItem.Shape.Draw(_program);
+				foreach (var dataDisplayItem in Data.DisplayItems.Where(item => item.IsLightShape()))
+				{															
+					dataDisplayItem.LightShape.Draw(_program);					
 				}
 			}
 			catch (Exception e)
@@ -802,7 +806,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			//Prepare the points
 			//Logging.Debug("Begin Update Shape Points.");
 			int height = _background.HasBackground ? _background.Height : Height;
-			Parallel.ForEach(Data.DisplayItems, _parallelOptions, d => d.Shape.UpdateDrawPoints(height));
+			Parallel.ForEach(Data.DisplayItems.Where(item => item.IsLightShape()), _parallelOptions, d => ((PreviewLightBaseShape)d.Shape).UpdateDrawPoints(height)); 
 		}
 
 		private double ConvertToRadians(double angle)

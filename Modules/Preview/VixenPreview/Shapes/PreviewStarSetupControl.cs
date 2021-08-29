@@ -4,7 +4,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	public partial class PreviewStarSetupControl : PreviewShapeBaseSetupControl
 	{
-		public PreviewStarSetupControl(PreviewBaseShape shape) : base(shape)
+		public PreviewStarSetupControl(PreviewLightBaseShape shape) : base(shape)
 		{
 		}
 
