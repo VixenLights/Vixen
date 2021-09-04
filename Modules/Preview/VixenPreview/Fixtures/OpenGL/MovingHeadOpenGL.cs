@@ -538,8 +538,8 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL
 				Vector3 positionOfText = new Vector3(
 					(float)(translateX + _geometry.GetBaseLegendXPosition()),
 					(float)(translateY + _geometry.GetBaseLegendYPosition() + _geometry.GetBaseHeight()),
-					(float)(_geometry.GetBaseDepth() / 2.0));
-										
+					(float)-_geometry.GetBaseDepth());
+														
 				// Draw the text
 				_qFontDrawing.Print(_qFont, MovingHead.Legend, positionOfText, QFontAlignment.Left, MovingHead.LegendColor);
 				_qFontDrawing.RefreshBuffers();
