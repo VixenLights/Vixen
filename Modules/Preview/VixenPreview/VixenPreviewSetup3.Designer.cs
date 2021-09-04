@@ -1171,7 +1171,7 @@
 			this.buttonMovingHead.Size = new System.Drawing.Size(22, 23);
 			this.buttonMovingHead.TabIndex = 15;
 			this.buttonMovingHead.Tag = "";
-			this.toolTip.SetToolTip(this.buttonMovingHead, "DMX Moving Head");
+			this.toolTip.SetToolTip(this.buttonMovingHead, "Moving Head");
 			this.buttonMovingHead.UseVisualStyleBackColor = false;
 			this.buttonMovingHead.Click += new System.EventHandler(this.toolbarButton_Click);
 			// 
