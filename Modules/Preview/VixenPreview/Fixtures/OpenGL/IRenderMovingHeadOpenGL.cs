@@ -15,7 +15,8 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL
 		/// </summary>
 		/// <param name="length">Width and height of the drawing area</param>
 		/// <param name="maxBeamLength">Maximum length of the light beam</param>
-		void Initialize(double length, double maxBeamLength);
+		/// <param name="beamTransparency">Transparency of the light beam</param>
+		void Initialize(double length, double maxBeamLength, double beamTransparency);
 
 		/// <summary>
 		/// Gets the graphical volumes associated with the moving head.

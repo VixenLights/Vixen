@@ -501,8 +501,17 @@ namespace VixenModules.Preview.VixenPreview
 		}
 
 
-        private void trackBarBackgroundAlpha_ValueChanged(object sender, EventArgs e) {
-			previewForm.Preview.BackgroundAlpha = trackBarBackgroundAlpha.Value;
+        private void trackBarBackgroundAlpha_ValueChanged(object sender, EventArgs e) 
+		{
+			// Loop over the display items
+			foreach (DisplayItem displayItem in previewForm.Preview.DisplayItems)
+			{
+				// Give each shape associated with the display item the background alpha
+				displayItem.Shape.BackgroundAlpha = trackBarBackgroundAlpha.Value;
+			}
+
+			// Give the preview the background alpha
+			previewForm.Preview.BackgroundAlpha = trackBarBackgroundAlpha.Value;			
 		}
 
 		public void Setup()
