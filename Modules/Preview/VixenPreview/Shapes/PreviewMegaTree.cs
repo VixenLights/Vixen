@@ -613,7 +613,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				}
 				else
 				{
-					stringsResult = _strings;
+					stringsResult = _strings; 
 					if (stringsResult == null)
 					{
 						stringsResult = new List<PreviewBaseShape>();
