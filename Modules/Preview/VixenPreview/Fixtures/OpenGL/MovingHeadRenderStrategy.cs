@@ -3,6 +3,7 @@ using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VixenModules.Preview.VixenPreview.Fixtures.OpenGL.Shaders;
 using VixenModules.Preview.VixenPreview.Fixtures.OpenGL.Volumes;
 
 namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL
@@ -221,13 +222,21 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL
 		/// <param name="projectionMatrix">Projection matrix to use during rendering</param>
 		/// <param name="camera">Camera position to use during rendering</param>		
 		/// <param name="viewMatrix">View matrix to use during rendering</param>
-		private void RenderStaticVolumes(Matrix4? projectionMatrix, Vector3? camera, Matrix4? viewMatrix)
+		/// <param name="backgroundAlpha">Alpaha component of the preview background</param>
+		private void RenderStaticVolumes(Matrix4? projectionMatrix, Vector3? camera, Matrix4? viewMatrix, int backgroundAlpha)
 		{
 			// Loop over the static volume groups organized by shader type
 			foreach (IGrouping<Guid, Tuple<IVolume, Guid>> shaderGroup in _staticVolumesGroupedByShader)
 			{
 				// Retrieve the shader associated with the GUID
 				VolumeShader shader = RetrieveShader(shaderGroup.Key);
+
+				// If the shader supports intensity then...
+				if (shader is ISpecifyVolumeIntensity)
+				{
+					// Give the shader the background alpha as the intensity
+					((ISpecifyVolumeIntensity)shader).Intensity = backgroundAlpha;
+				}
 
 				// Extract the static volumes
 				List<IVolume> staticVolumes = shaderGroup.Select(vol => vol.Item1).ToList();
@@ -272,7 +281,8 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL
 		/// <param name="projectionMatrix">Projection matrix to use during rendering</param>
 		/// <param name="camera">Camera position to use during rendering</param>
 		/// <param name="viewMatrix">View matrix to use during rendering</param>
-		public void RenderVolumes(Matrix4 projectionMatrix, Vector3 camera, Matrix4 viewMatrix)
+		/// <param name="backgroundAlpha">Alpaha component of the preview background</param>
+		public void RenderVolumes(Matrix4 projectionMatrix, Vector3 camera, Matrix4 viewMatrix, int backgroundAlpha)
 		{
 			// Declare nullable projection matrix
 			// When the matrix is null it won't be sent to the GPU
@@ -317,7 +327,7 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL
 			}
 
 			// Render the static volumes
-			RenderStaticVolumes(optimizedProjectionMatrix, optimizedCamera, optimizedViewMatrix);
+			RenderStaticVolumes(optimizedProjectionMatrix, optimizedCamera, optimizedViewMatrix, backgroundAlpha);
 
 			// Render the dynamic volumes
 			RenderDynamicVolumes(optimizedProjectionMatrix, optimizedCamera, optimizedViewMatrix);									

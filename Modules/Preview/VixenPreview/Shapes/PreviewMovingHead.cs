@@ -1,6 +1,10 @@
 ﻿using OpenTK;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Runtime.Serialization;
+using Vixen.Sys;
 using VixenModules.Preview.VixenPreview.Fixtures;
 using VixenModules.Preview.VixenPreview.Fixtures.OpenGL;
 using VixenModules.Preview.VixenPreview.Fixtures.WPF;
@@ -27,8 +31,49 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public PreviewMovingHead()
 		{
 			// Initialize the WPF moving head 
-			InitializeGDI();			
+			InitializeGDI();
+
+			// Default the movement constraints of the moving head
+			PanStartPosition = DefaultPanStartPosition;
+			PanStopPosition = DefaultPanStopPosition;
+			TiltStartPosition = DefaultTiltStartPosition;
+			TiltStartPosition = DefaultTiltStopPosition;
+
+			// Default the beam length percentage
+			BeamLength = DefaultBeamLength;
+
+			// Default to partially transparent
+			BeamTransparency = 40;
 		}
+
+		#endregion
+
+		#region Constants
+
+		/// <summary>
+		/// Default pan start position in degrees.
+		/// </summary>
+		const int DefaultPanStartPosition = 0;
+
+		/// <summary>
+		/// Default pan stop position in degrees.
+		/// </summary>
+		const int DefaultPanStopPosition = 360;
+
+		/// <summary>
+		/// Default tilt start position in degrees.
+		/// </summary>
+		const int DefaultTiltStartPosition = 0;
+
+		/// <summary>
+		/// Default tilt stop position in degrees.
+		/// </summary>
+		const int DefaultTiltStopPosition = 180;
+
+		/// <summary>
+		/// Default beam length factor (50%).
+		/// </summary>
+		const int DefaultBeamLength = 50;
 
 		#endregion
 
@@ -61,6 +106,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// </summary>
 		private IMovingHead _prevousMovingHeadSettings;
 
+		/// <summary>
+		/// Current moving head settings.  This property aids with determining if the graphics are stale.
+		/// </summary>
+		private IMovingHead _movingHeadCurrentSettings;
+
+		/// <summary>
+		/// Moving head intent handler for the shape.
+		/// </summary>
+		private MovingHeadIntentHandler _intentHandler;
+
 		#endregion
 
 		#region IDrawStaticPreviewShape
@@ -70,8 +125,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// </summary>
 		public void InitializeGDI()
 		{
-			// Create the WPF moving head
-			_movingHead = new MovingHeadWPF();
+			// Create the WPF moving head grpahics
+			CreateWPFMovingHead();
 			
 			// Initialize the meta-data on the cached image to ensure
 			// the bitmap is rendered on the first frame.			
@@ -120,7 +175,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Refer to interface documentation.
 		/// </summary>		
 		public void DrawGDI(FastPixel.FastPixel fp, bool editMode, bool selected, double zoomLevel)
-		{
+		{			
+			// If an intent handler has been created then...
+			if (_intentHandler != null)
+			{
+				// Retrieve the intents
+				IIntentStates states = Node.Element.State;
+
+				// Dispatch the current intents
+				_intentHandler.Dispatch(states);
+			}
+
 			// Create an empty HashSet to indicate that no elements are selected
 			HashSet<Guid> highlightedElements = new HashSet<Guid>();
 
@@ -227,16 +292,36 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			bool pointInShape = false;
 			
 			// If the point is inside the rectangle then...
-			if (point.X >= Left &&
-			    point.X <= Right &&
-			    point.Y >= Top &&
-			    point.Y <= Bottom)
+			if (point.X >= Left * ZoomLevel &&
+			    point.X <= Right * ZoomLevel &&
+			    point.Y >= Top * ZoomLevel &&
+			    point.Y <= Bottom * ZoomLevel)
 			{
 				// Indicate the point is inside the shape
 				pointInShape = true;
 			}
 			
 			return pointInShape;
+		}
+
+		/// <summary>
+		/// Returns true if any corner of the specified rect is inside the moving head rectangle.
+		/// </summary>
+		/// <param name="rect">Rectangle to evaluate</param>
+		/// <returns>True if the rectangle is inside the shape</returns>
+		public override bool ShapeInRect(Rectangle rect)
+		{
+			// Create preview points for the rectangle
+			PreviewPoint topLeft = new PreviewPoint(rect.X, rect.Y);
+			PreviewPoint topRight = new PreviewPoint(rect.X + rect.Width, rect.Y);
+			PreviewPoint bottomLeft = new PreviewPoint(rect.X, rect.Y + rect.Height);
+			PreviewPoint bottomRight = new PreviewPoint(rect.X +  rect.Width, rect.Y + rect.Height);
+
+			// Check to see if any of the points are inside the shape
+			return PointInShape(topLeft) ||
+				PointInShape(topRight) ||
+				PointInShape(bottomLeft) ||
+				PointInShape(bottomRight);
 		}
 
 		/// <summary>
@@ -287,8 +372,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					// If the WPF moving head has not been created yet then...
 					if (_movingHead == null)
 					{
-						// Create the WPF moving head graphic class
-						_movingHead = new MovingHeadWPF();						
+						// Create the WPF moving head graphics
+						CreateWPFMovingHead();						
 					}
 					else
 					{
@@ -296,7 +381,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						if (!_movingHead.CheckAccess())
 						{
 							// Create a new moving head associated with this thread
-							_movingHead = new MovingHeadWPF();							
+							CreateWPFMovingHead();							
 						}
 					}
 					
@@ -305,7 +390,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					_movingHead.DrawFixture(width, height, scaleFactor, 0, 0);
 
 					// Update the settings associated with the bitmap.
-					_prevousMovingHeadSettings = MovingHeadWPF.MovingHead.Clone();					
+					_prevousMovingHeadSettings = _movingHeadCurrentSettings.Clone();						
 				}
 			}
 
@@ -318,14 +403,54 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				// Copy the cached fixture bitmap into the preview
 				CopyFixturePixelsIntoPreview(fp, width, height, scaleFactor);
 			}
-		
-			// Draw the outline around the fixture
-			DrawRectangleOutline(fp);
+
+			// If the fixture has been selected then..
+			if (selected)
+			{
+				// Draw the outline around the fixture
+				DrawRectangleOutline(fp);
+			}
 		}
 
 		#endregion
 
 		#region Private Methods
+
+		/// <summary>
+		/// Creates the intent handler for the moving head position.
+		/// </summary>
+		private void CreateIntentHandler()
+		{
+			// Create the intent handler
+			_intentHandler = new MovingHeadIntentHandler();
+
+			// Give the intent handler the current movement constraints
+			_intentHandler.PanStartPosition = PanStartPosition;
+			_intentHandler.PanStopPosition = PanStopPosition;
+			_intentHandler.TiltStartPosition = TiltStartPosition;
+			_intentHandler.TiltStopPosition = TiltStopPosition;
+
+			// Give the intent handler the beam length scale factor
+			_intentHandler.BeamLength = BeamLength;
+
+			// Give the intent handler the current moving head settings
+			_intentHandler.MovingHead = _movingHeadCurrentSettings;
+		}
+
+		/// <summary>
+		/// Creates the WPF moving head graphics.
+		/// </summary>
+		private void CreateWPFMovingHead()
+		{
+			// Create the WPF moving head
+			_movingHead = new MovingHeadWPF();
+
+			// Assign the settings to the generic member variable that can switch between WPF and OpenGL
+			_movingHeadCurrentSettings = _movingHead.MovingHead;
+
+			// Create the intent handler
+			CreateIntentHandler();
+		}
 
 		/// <summary>
 		/// Adjusts the dimensions of the shape to keep a perfect square.
@@ -368,7 +493,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				 _fixtureHeight != height ||
 				 _fixtureZoom != _zoomLevel ||
 				 _prevousMovingHeadSettings == null ||
-				 !_prevousMovingHeadSettings.Equals(MovingHeadOpenGL.MovingHead));
+				 _movingHeadCurrentSettings == null ||
+				 !_prevousMovingHeadSettings.Equals(_movingHeadCurrentSettings));
 		}
 
 		/// <summary>
@@ -400,17 +526,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// </summary>
 		/// <param name="fp">FastPixel frame buffer</param>
 		private void DrawRectangleOutline(FastPixel.FastPixel fp)
-		{
-			// Default the outline color to gray
-			Color outlineColor = Color.Gray;
-
-			// If the fixture is selected then...
-			if (Selected)
-			{
-				// Set the outline color to Hot Pink
-				outlineColor = Color.HotPink;
-			}
-
+		{						
+			// Set the outline color to Hot Pink
+			Color outlineColor = Color.HotPink;
+			
 			// Loop over the width of the rectangle
 			for (int x = Left; x <= Right; x++)
 			{
@@ -461,6 +580,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>
+		[Browsable(false)]
 		public IRenderMovingHeadOpenGL MovingHead { get; private set; }
 
 		/// <summary>
@@ -470,9 +590,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			// Create the moving head OpenGL implementation
 			_movingHeadOpenGL = new MovingHeadOpenGL();
+
+			// Set the moving head settings to the OpenGL settings
+			_movingHeadCurrentSettings = _movingHeadOpenGL.MovingHead;
+
+			// Create the intent handler
+			CreateIntentHandler();
 			
 			// Initialize the moving head
-			_movingHeadOpenGL.Initialize(CalculateDrawingLength(), referenceHeight);
+			_movingHeadOpenGL.Initialize(CalculateDrawingLength(), referenceHeight, BeamTransparency / 100.0);
 
 			// Expose the moving head as a property
 			MovingHead = _movingHeadOpenGL;			
@@ -483,6 +609,21 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// </summary>		
 		public void UpdateVolumes(int maxBeamLength, int referenceHeight)
 		{
+			// Turn off the moving head 
+			_movingHeadOpenGL.MovingHead.OnOff = false;
+
+			// If the associated element contains intents then...
+			if (Node != null && 
+				Node.Element != null && 
+				Node.Element.State != null)
+			{
+				// Retrieve the intents from the element 
+				IIntentStates states = Node.Element.State;
+				
+				// Dispatch the current intents
+				_intentHandler.Dispatch(states);
+			}
+
 			// Calculate the height of the drawing area
 			int fixtureHeight = Bottom - Top;
 
@@ -501,6 +642,160 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				translateX,
 				translateY,
 				maxBeamLength);
+		}
+
+		#endregion
+
+		#region Internal Methods
+
+		/// <summary>
+		/// Reconfigures the shape with an element.
+		/// </summary>
+		/// <param name="node">Element node associated with the shape</param>
+		internal sealed override void Reconfigure(ElementNode node)
+		{
+			// Store off the element node associated with the shape
+			_node = node;
+
+			// If the node is not NULL then...
+			if (node != null)
+			{
+				// Save off the node ID associated with the shape
+				_nodeId = node.Id;
+			}
+		}
+
+		#endregion
+
+		#region Public Properties
+
+		private ElementNode _node;
+
+		/// <summary>
+		/// Display element Node associated with the preview shape.
+		/// </summary>
+		[Browsable(false)]
+		public ElementNode Node
+		{
+			get
+			{
+				if (_node == null)
+				{
+					_node = VixenSystem.Nodes.GetElementNode(NodeId);					
+				}
+				return _node;
+			}
+			set
+			{
+				if (value == null)
+					NodeId = Guid.Empty;
+				else
+					NodeId = value.Id;
+				_node = value;				
+			}
+		}
+		
+		private Guid _nodeId;
+
+		/// <summary>
+		/// Display element Node Id associated with the preview shape.
+		/// </summary>
+		[Browsable(false)]
+		[DataMember(EmitDefaultValue = false)]
+		public Guid NodeId
+		{
+			get { return _nodeId; }
+			set
+			{
+				_nodeId = value;
+				_node = VixenSystem.Nodes.GetElementNode(NodeId);				
+			}
+		}
+
+		/// <summary>
+		/// Pan start position in degrees.
+		/// </summary>
+		[DataMember(EmitDefaultValue = false),
+		 Category("Settings"),
+		 Description("The pan starting point angle (in degrees)."),
+		 DisplayName("Pan Start Position (Degrees)")]
+		public int PanStartPosition { get; set; }
+
+		/// <summary>
+		/// Pan stop position in degrees.
+		/// </summary>
+		[DataMember(EmitDefaultValue = false),
+		 Category("Settings"),
+		 Description("The pan stopping point angle (in degrees)."),
+		 DisplayName("Pan Stop Position (Degrees)")]
+		public int PanStopPosition { get; set; }
+
+		/// <summary>
+		/// Tilt start position in degrees.
+		/// </summary>
+		[DataMember(EmitDefaultValue = false),
+		 Category("Settings"),
+		 Description("The tilt starting point angle (in degrees)."),
+		 DisplayName("Tilt Start Position (Degrees)")]
+		public int TiltStartPosition { get; set; }
+
+		/// <summary>
+		/// Tilt stop position in degrees.
+		/// </summary>
+		[DataMember(EmitDefaultValue = false),
+		 Category("Settings"),
+		 Description("The tilt stopping point angle (in degrees)."),
+		 DisplayName("Tilt Stop Position (Degrees)")]
+		public int TiltStopPosition { get; set; }
+
+		/// <summary>
+		/// Beam length scale factor (1-100%).
+		/// </summary>
+		[DataMember(EmitDefaultValue = false),
+		 Category("Settings"),
+		 Description("Length of the beam."),
+		 DisplayName("Beam Length")]
+		public int BeamLength
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Beam transparecny (1-100%).
+		/// </summary>
+		[DataMember(EmitDefaultValue = false),
+		 Category("Settings"),
+		 Description("Beam transparency"),
+		 DisplayName("Beam Transparency (%)")]
+		public int BeamTransparency
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Alpha value of the preview background.
+		/// </summary>
+		/// <remarks>The moving head fixture dims with the background.</remarks>
+		[Browsable(false)]
+		public override int BackgroundAlpha 
+		{ 
+			get
+			{
+				return base.BackgroundAlpha;
+			}
+			set
+			{
+				// Forward the background alpha as the intensity of the fixture
+				_movingHead.MovingHead.FixtureIntensity = value;
+				
+				// Invalidate the moving head so that it is redrawn
+				_movingHead.InvalidateGeometry();
+				
+				// Let the base class store off the new background alpha
+				base.BackgroundAlpha = value;
+			}
 		}
 
 		#endregion
