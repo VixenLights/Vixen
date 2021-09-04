@@ -70,5 +70,11 @@ namespace VixenModules.Preview.VixenPreview.Fixtures
 		/// </summary>
 		/// <returns>Clone of the moving head settings.</returns>
 		IMovingHead Clone();
+
+		/// <summary>
+		/// Intensity of the fixture (0-255).
+		/// </summary>
+		/// <remarks>This property allows the fixture to match the intensity of the background as it is dimmed.</remarks>
+		int FixtureIntensity { get; set; }
 	}
 }

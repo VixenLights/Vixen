@@ -34,30 +34,20 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL
 
 			// Create the collections for the volumes
 			_grayVolumes = new List<IVolume>();
-			_beamVolumes = new List<IVolume>();			
-		}
+			_beamVolumes = new List<IVolume>();
 
-		#endregion
-
-		#region Static Constructor
-
-		/// <summary>
-		/// Static Constructor
-		/// </summary>
-		static MovingHeadOpenGL()
-		{
-			// Create the settings class used to communicate with the dummy effect
+			// Create the settings class 
 			MovingHead = new MovingHeadSettings();
 		}
 
 		#endregion
-
-		#region Public Static Properties
+		
+		#region Public Properties
 
 		/// <summary>
-		/// This property is temporary and is used for testing with a fake Pixel effect.
+		/// This property maintains the settings of the moving head graphics.
 		/// </summary>
-		public static IMovingHead MovingHead { get; set; }
+		public IMovingHead MovingHead { get; set; }
 
 		#endregion
 
@@ -97,6 +87,12 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL
 		/// Width and height of the drawing area.
 		/// </summary>
 		private double _length;
+
+		/// <summary>
+		/// Transparency of the light beam.
+		/// </summary>
+		/// <remarks>This field allows the fixture body to dim as the background dims.</remarks>
+		private double _beamTransparency;
 
 		/// <summary>
 		/// The following fields determine if the static volumes are dirty.
@@ -144,7 +140,8 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL
 		/// </summary>
 		/// <param name="length">Length of the light beam</param>
 		/// <param name="maxBeamLength">Maximum length of the beam</param>
-		private void UpdateDynamicVolumes(double length, double maxBeamLength)
+		/// <param name="beamTransparency">Transparency of the light beam</param>
+		private void UpdateDynamicVolumes(double length, double maxBeamLength, double beamTransparency)
 		{
 			// Determine the current length of the light beam
 			double lightSimulationLength = maxBeamLength * MovingHead.BeamLength / 100.0; 
@@ -171,12 +168,15 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL
 			if (_beamVolumes.Count == 0)
 			{
 				// Create the light beam with the specified color
-				_beamVolumes.Add(new RotatingCylinderWithEndCaps(
+				_beamVolumes.Add(new BeamRotatingCylinderWithEndCaps(
 					0.0f,
 					(float) lightSimulationLength,
 					(float) lightBottomRadius,
 					(float) lightTopRadius,					
 					true));
+
+				// Set the beam transparency
+				((ISpecifyVolumeTransparency)_beamVolumes[0]).Transparency = beamTransparency;
 
 				// Set the light beam color
 				((ISpecifyVolumeColor)_beamVolumes[0]).Color = beamColor;
@@ -466,7 +466,7 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>		
-		public void Initialize(double length, double maxBeamLength)
+		public void Initialize(double length, double maxBeamLength, double beamTransparency)
 		{
 			// Create the geometry constants object
 			_geometry = new MovingHeadGeometryConstants(length);
@@ -474,8 +474,11 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL
 			// Create the static volumes
 			InitializeStaticVolumes(length);
 
+			// Save off the beam transparency setting
+			_beamTransparency = beamTransparency;
+
 			// Create / update the dynamic volumes
-			UpdateDynamicVolumes(length, maxBeamLength);			
+			UpdateDynamicVolumes(length, maxBeamLength, beamTransparency);			
 		}
 
 		/// <summary>
@@ -504,14 +507,14 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL
 			if (AreStaticVolumesDirty(MovingHead.PanAngle, MovingHead.TiltAngle, translateX, translateY))
 			{
 				// Update the position and rotation of the static volumes
-				UpdateFrame(MovingHead.PanAngle, MovingHead.TiltAngle, translateX, translateY);
+				UpdateFrame(MovingHead.PanAngle, MovingHead.TiltAngle + 180.0, translateX, translateY);
 			}
 
 			// If the dynamic volumes are dirty then...
 			if (AreDynamicVolumesDirty(_length, maxBeamLength))
 			{
 				// Update the position and rotation of the dynamic volumes
-				UpdateDynamicVolumes(_length, maxBeamLength);
+				UpdateDynamicVolumes(_length, maxBeamLength, _beamTransparency);
 			}
 		}
 

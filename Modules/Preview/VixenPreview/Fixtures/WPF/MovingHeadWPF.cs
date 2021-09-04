@@ -27,7 +27,10 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.WPF
 		/// Constructor
 		/// </summary>
 		public MovingHeadWPF()
-		{						
+		{
+			// Create the moving head settings
+			MovingHead = new MovingHeadSettings();
+
 			// Default the beam length to something that looks reasonable in the edit preview
 			MovingHead.BeamLength = 20.0;
 
@@ -50,26 +53,13 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.WPF
 		}
 
 		#endregion
-
-		#region Static Constructor
-
-		/// <summary>
-		/// Static Constructor
-		/// </summary>
-		static MovingHeadWPF()
-		{
-			// Create the settings class used to communicate with the dummy effect
-			MovingHead = new MovingHeadSettings();
-		}
-
-		#endregion
-
-		#region Public Static Properties
+		
+		#region Public Properties
 
 		/// <summary>
-		/// This property is temporary and is used for testing with a fake Pixel effect.
+		/// This property maintains the settings of the moving head graphics.
 		/// </summary>
-		public static IMovingHead MovingHead { get; set; }
+		public IMovingHead MovingHead { get; set; }
 
 		#endregion
 		
@@ -355,9 +345,10 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.WPF
 				geometry.GetLightHousingRadius(),
 				geometry.GetLightHousingRadius(),
 				numberOfCylinderSides);
-			
+
 			// Color the light housing dark gray
-			SolidColorBrush brush = Brushes.DarkGray;
+			SolidColorBrush brush = new SolidColorBrush(GetGrayTint()); 
+
 			DiffuseMaterial material = new DiffuseMaterial(brush);
 			GeometryModel3D lightHousingGeometry = new GeometryModel3D(mesh, material);
 
@@ -440,12 +431,32 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.WPF
 				geometry.GetHorizontalCylinderRadius(),
 				numberOfSides);
 
-			// Color the horizontal support gray
-			SolidColorBrush brush = Brushes.Gray;
+			// Color the horizontal support gray			
+			SolidColorBrush brush = new SolidColorBrush(GetGrayTint());
+
 			DiffuseMaterial material = new DiffuseMaterial(brush);
 			GeometryModel3D model2 = new GeometryModel3D(mesh2, material);
 
 			return model2;
+		}
+
+		/// <summary>
+		/// Gets the gray color taking into acount the fixture intensity.
+		/// </summary>
+		/// <returns>Gray color taking into account the fixture intensity</returns>
+		private System.Windows.Media.Color GetGrayTint()
+		{
+			// Convert the RGB color to HSV format
+			HSV hsv = HSV.FromRGB(Color.Gray);
+
+			// Update the beam color for the fixture intensity 
+			hsv.V *= MovingHead.FixtureIntensity / 255.0;
+
+			// Convert the HSV color back to RGB
+			Color color = hsv.ToRGB();
+
+			// Get the beam color taking into account the intensity
+			return System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
 		}
 
 		/// <summary>
@@ -618,8 +629,8 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.WPF
 			cubeGeometryModel.Geometry = cubeMesh;
 
 			// Color the cube Dark Gray
-			cubeGeometryModel.Material = new DiffuseMaterial(new SolidColorBrush(Colors.DarkGray));
-
+			cubeGeometryModel.Material = new DiffuseMaterial(new SolidColorBrush(GetGrayTint()));
+			
 			return cubeGeometryModel;
 		}
 
@@ -685,7 +696,7 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.WPF
 			support.Geometry = supportMesh;
 
 			// Color the support Dark Gray
-			support.Material = new DiffuseMaterial(new SolidColorBrush(Colors.DarkGray));
+			support.Material = new DiffuseMaterial(new SolidColorBrush(GetGrayTint()));
 
 			return support;
 		}
@@ -729,8 +740,7 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.WPF
 			textblock.Measure(new System.Windows.Size(text.Length * height, height));
 
 			textblock.Arrange(new Rect(0, 0, text.Length * height, height));
-
-			//SolidColorBrush brush = Brushes.Red;
+			
 			DiffuseMaterial mataterialWithLabel = new DiffuseMaterial(); //new SolidColorBrush(System.Windows.Media.Colors.Green));
 																		 // Allows the application of a 2-D brush,
 																		 // like a SolidColorBrush or TileBrush, to a diffusely-lit 3-D model.
@@ -1240,6 +1250,16 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.WPF
 				_refresh = true;
 			}
         }
+
+		/// <summary>
+		/// Invalidates the geometry of the moving head.
+		/// </summary>
+		public void InvalidateGeometry()
+		{
+			// Set flags to force the moving head to redraw
+			_initializedFixtureGeometry = false;
+			_refresh = true;
+		}
 
 		#endregion
 	}
