@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using VixenModules.Preview.VixenPreview.Fixtures.Geometry;
+using VixenModules.Preview.VixenPreview.Fixtures.OpenGL.Shaders;
 using VixenModules.Preview.VixenPreview.Fixtures.OpenGL.Volumes;
 using Rectangle = VixenModules.Preview.VixenPreview.Fixtures.OpenGL.Volumes.Rectangle;
 
@@ -281,9 +282,9 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL
 			
 			// Convert the tilt angle rotation into radians
 			float tiltAngleRadians = (float)(verticalRotation * Math.PI / 180.0f);
-
-			// Keep all position points in the X-Y plane
-			float zPosition = 0; 
+			
+			// Position the moving heads behind the X-Y plan so that they don't obscure the pixel props
+			float zPosition = (float)(-2.0 * _geometry.GetBaseDepth());
 
 			// Configure the position of the base
 			_grayVolumes[0].Position = new Vector3((float)xPosition, (float)(-_geometry.GetBottomOfViewport() + yPosition), zPosition);

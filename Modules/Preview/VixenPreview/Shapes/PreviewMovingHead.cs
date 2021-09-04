@@ -71,9 +71,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		const int DefaultTiltStopPosition = 180;
 
 		/// <summary>
-		/// Default beam length factor (50%).
+		/// Default beam length factor (100%).
 		/// </summary>
-		const int DefaultBeamLength = 50;
+		const int DefaultBeamLength = 100;
 
 		#endregion
 
@@ -511,7 +511,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{				
 				// Loop over the Y dimension
 				for (int y = 0; y < height; y++)
-				{
+				{					
 					// Set the pixel in the FastPixel buffer from the cached bitmap
 					fp.SetPixel(
 						new Point(x + (int)(Left * scaleFactor), 
