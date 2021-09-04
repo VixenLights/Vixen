@@ -25,6 +25,7 @@ namespace VixenModules.Preview.VixenPreview.Fixtures
 			Legend = "G:0 P:O";
 			IncludeLegend = true;
 			OptimizeOpenGLVertexData = true;
+			FixtureIntensity = 255;
 
 			// Default the legend color to red
 			LegendColor = Color.Red;
@@ -97,7 +98,12 @@ namespace VixenModules.Preview.VixenPreview.Fixtures
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>
-		/// <returns></returns>
+		public int FixtureIntensity { get; set; }
+
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
+		/// <returns>Clone of the moving head settings.</returns>
 		public IMovingHead Clone()
 		{
 			// Return a clone of all the settings
@@ -114,6 +120,7 @@ namespace VixenModules.Preview.VixenPreview.Fixtures
 				IncludeLegend = IncludeLegend,
 				LegendColor = LegendColor,
 				EnableGDI = EnableGDI,
+				FixtureIntensity = FixtureIntensity,
 			};
 		}
 
@@ -139,7 +146,8 @@ namespace VixenModules.Preview.VixenPreview.Fixtures
 				   movingHead.Focus == Focus &&
 				   movingHead.Legend == Legend &&
 				   movingHead.IncludeLegend == IncludeLegend &&
-				   movingHead.LegendColor == LegendColor);
+				   movingHead.LegendColor == LegendColor &&
+				   movingHead.FixtureIntensity == FixtureIntensity);
 		}
 
 		#endregion
