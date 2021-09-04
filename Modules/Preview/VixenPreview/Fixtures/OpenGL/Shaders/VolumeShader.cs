@@ -5,9 +5,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using VixenModules.Preview.VixenPreview.Fixtures.OpenGL.Primitives;
+using VixenModules.Preview.VixenPreview.Fixtures.OpenGL.Volumes;
 using Vector3 = OpenTK.Vector3;
 
-namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL.Volumes
+namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL.Shaders
 {
 	/// <summary>
 	/// Maintains a shader program for a graphical volumes.
@@ -389,7 +390,7 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL.Volumes
 		/// <param name="lightPosition">Position of the light source</param>
 		/// <param name="projectionMatrix">Projection matrix used to draw</param>
 		/// <param name="viewMatrix">View matrix used to draw</param>
-		protected void TransferGlobalUniforms(
+		protected virtual void TransferGlobalUniforms(
 			Vector3? lightPosition,
 			Matrix4? projectionMatrix,
 			Matrix4? viewMatrix)
