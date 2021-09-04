@@ -221,7 +221,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 		private void DrawMovingHeads()
 		{
 			// If the moving head GDI support is enabled then...
-			if (MovingHeadWPF.MovingHead.EnableGDI)
+			if (false)
 			{
 				// Wait for the frame buffer to be available
 				lock (FastPixelLock)
