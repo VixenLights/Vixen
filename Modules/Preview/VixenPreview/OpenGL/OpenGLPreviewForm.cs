@@ -379,10 +379,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				{
 					OnRenderFrame();
 					
-					//TODO: This line should NOT be commented out!!!
-					//      When moving heads are added to the Vixen workflow we should put this line back.
-					//      This line of code prevents the OpenGL Preview from refreshing properly when testing the moving heads using the fake effect.
-					//_needsUpdate = false;
+					_needsUpdate = false;
 				}
 				toolStripStatusFPS.Text = @"0";
 			}
@@ -670,7 +667,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			GL.Clear(ClearBufferMask.DepthBufferBit);
 
 			// Render the moving head volumes
-			_movingHeadRenderStrategy.RenderVolumes(perspective, _camera.Position, _camera.ViewMatrix);
+			_movingHeadRenderStrategy.RenderVolumes(perspective, _camera.Position, _camera.ViewMatrix,  Data.BackgroundAlpha);
 
 			// Loop over the IDrawStaticPreviewShape display item shapes
 			foreach (IDrawStaticPreviewShape shape in GetIDrawStaticPreviewShapes())
