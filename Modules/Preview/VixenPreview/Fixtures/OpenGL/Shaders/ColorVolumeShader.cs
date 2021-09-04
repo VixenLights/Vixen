@@ -3,8 +3,9 @@ using OpenTK.Graphics.OpenGL;
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using VixenModules.Preview.VixenPreview.Fixtures.OpenGL.Volumes;
 
-namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL.Volumes
+namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL.Shaders
 {
 	/// <summary>
 	/// Shader for graphical volumes that are assigned a color.
@@ -59,7 +60,14 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL.Volumes
 			
 			// Convert the color to a vector and tranfer it to the GPU
 			Color c = ((ISpecifyVolumeColor)volume).Color;
-			GL.Uniform3(GetUniform("color"), new Vector3(c.R / 255.0f, c.G / 255.0f, c.B / 255.0f));			
+			GL.Uniform3(GetUniform("color"), new Vector3(c.R / 255.0f, c.G / 255.0f, c.B / 255.0f));
+
+			// If the volume supports transparency then...
+			if (volume is ISpecifyVolumeTransparency)
+			{
+				// Transfer the transparency setting to the GPU
+				GL.Uniform1(GetUniform("transparency"), (float)((ISpecifyVolumeTransparency)volume).Transparency);
+			}
 		}
 
 		#endregion
@@ -76,6 +84,7 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL.Volumes
 		uniform vec3 lightColor;
 		uniform vec3 viewPosition;
 		uniform vec3 color;
+	    uniform float transparency;
 
 		in vec3 v_norm;
 		in vec3 FragPos;
@@ -104,7 +113,7 @@ namespace VixenModules.Preview.VixenPreview.Fixtures.OpenGL.Volumes
 			
 		    // Calculate the overall color
 			vec3 result = (ambient + diffuse + specular) * color.xyz;     
-			outputColor = vec4(result, 1.0f);    
+			outputColor = vec4(result, transparency);    
 			}
 		";
 
