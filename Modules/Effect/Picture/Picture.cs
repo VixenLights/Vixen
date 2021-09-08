@@ -908,7 +908,7 @@ namespace VixenModules.Effect.Picture
 			// Calculating the position based on how many frames we are into the effect
 			// and expecting the image to travel the length of the frame buffer plus the length of the image.
 			// This allows the image enter and exit the frame buffer during the effect's duration.
-			int xPosition = (int)(_position * (_imageWi + bufferLength));
+			int xPosition = (int)(_position * (imageLength + bufferLength));
 
 			// If the image should stop in the center then...
 			if (CenterStop)
