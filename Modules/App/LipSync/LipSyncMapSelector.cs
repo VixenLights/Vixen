@@ -53,7 +53,6 @@ namespace VixenModules.App.LipSyncApp
 		{
 			var data = (ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary)?.StaticModuleData as
 				LipSyncMapStaticData;
-			data.SelectorWindowBounds = Bounds;
 		}
 
 		private void UpdateListViewCtrl()

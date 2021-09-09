@@ -104,10 +104,6 @@ namespace VixenModules.Effect.LipSync
 					{
 						//We should never get here becasue we no longer have string maps
 						Logging.Error("Trying to render as deprecated string maps!");
-						foreach (var element in renderNodes)
-						{
-							RenderMapElements(mapData, element, phoneme);
-						}
 					}
 				}
 			}
@@ -191,78 +187,6 @@ namespace VixenModules.Effect.LipSync
 					if (fm.PhonemeState(phoneme.ToString()))
 					{
 						var colorVal = fm.ConfiguredColorAndIntensity();
-						var result = CreateIntentsForElement(element, colorVal.Item1, colorVal.Item2, TimeSpan);
-						_elementData.Add(result);
-					}
-				}
-			}
-		}
-
-		private void RenderMapElements(LipSyncMapData mapData, IElementNode element, PhonemeType phoneme)
-		{
-			LipSyncMapItem item = mapData.FindMapItem(element.Id);
-			if (item == null) return;
-
-			if (mapData.IsFaceComponentType(FaceComponent.Outlines, item))
-			{
-				var colorVal = mapData.ConfiguredColorAndIntensity(item);
-				var result = CreateIntentsForElement(element, colorVal.Item1, colorVal.Item2, TimeSpan);
-				_elementData.Add(result);
-			}
-			else if (mapData.IsFaceComponentType(FaceComponent.EyesOpen, item))
-			{
-				var colorVal = mapData.ConfiguredColorAndIntensity(item);
-				var result = CreateIntentsForElement(element, colorVal.Item1, colorVal.Item2, TimeSpan);
-				_elementData.Add(result);
-			}
-			else
-			{
-				if (LipSyncMode == LipSyncMode.MarkCollection && _marks != null)
-				{
-					TimeSpan lastMarkTime = StartTime;
-					foreach (var mark in _marks)
-					{
-						if (!AllowMarkGaps)
-						{
-							var gapDuration = mark.StartTime - lastMarkTime;
-							if (gapDuration.TotalMilliseconds > 10 && mapData.PhonemeState("REST", item))
-							{
-								//Fill the gap with a rest
-								var colorVal = mapData.ConfiguredColorAndIntensity(item);
-								var result = CreateIntentsForElement(element, colorVal.Item1, colorVal.Item2, gapDuration);
-								result.OffsetAllCommandsByTime(lastMarkTime - StartTime);
-								_elementData.Add(result);
-							}
-
-							lastMarkTime = mark.EndTime;
-						}
-						if (mapData.PhonemeState(mark.Text, item))
-						{
-							var colorVal = mapData.ConfiguredColorAndIntensity(item);
-							var result = CreateIntentsForElement(element, colorVal.Item1, colorVal.Item2, mark.Duration);
-							result.OffsetAllCommandsByTime(mark.StartTime - StartTime);
-							_elementData.Add(result);
-						}
-					}
-
-					if (!AllowMarkGaps)
-					{
-						var gapDuration = StartTime + TimeSpan - lastMarkTime;
-						if (gapDuration.TotalMilliseconds > 10 && mapData.PhonemeState("REST", item))
-						{
-							//Fill the gap with a rest
-							var colorVal = mapData.ConfiguredColorAndIntensity(item);
-							var result = CreateIntentsForElement(element, colorVal.Item1, colorVal.Item2, gapDuration);
-							result.OffsetAllCommandsByTime(lastMarkTime - StartTime);
-							_elementData.Add(result);
-						}
-					}
-				}
-				else
-				{
-					if (mapData.PhonemeState(phoneme.ToString(), item))
-					{
-						var colorVal = mapData.ConfiguredColorAndIntensity(item);
 						var result = CreateIntentsForElement(element, colorVal.Item1, colorVal.Item2, TimeSpan);
 						_elementData.Add(result);
 					}

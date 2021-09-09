@@ -15,9 +15,6 @@ namespace VixenModules.App.LipSyncApp
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		[DataMember]
-		public Rectangle SelectorWindowBounds { get; set; }
-
-		[DataMember]
 		private Dictionary<string, LipSyncMapData> _library;
 
 		internal bool NeedsStringMapMigration
@@ -85,6 +82,10 @@ namespace VixenModules.App.LipSyncApp
 					}
 					
 					migratedMapKeys.Add(lipSyncMapData.Key);
+				}
+				else
+				{
+					lipSyncMapData.Value.MapItems = null;
 				}
 			}
 
