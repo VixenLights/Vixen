@@ -1,19 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Resources;
-using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources;
 using Common.Resources.Properties;
 using Vixen.Services;
-using Vixen.Sys;
 using Vixen.Module.App;
 
 namespace VixenModules.App.LipSyncApp
@@ -90,25 +82,9 @@ namespace VixenModules.App.LipSyncApp
 				mappingsListView.Items.Add(lvi);
 			}
 
-			if (!Library.Any())
-			{
-				SetWidths();
-			}
-			else
-			{
-				int totalSize = mappingsListView.Columns.Count + 1;
-				foreach (ColumnHeader column in mappingsListView.Columns)
-				{
-					if (column.Index != mappingsListView.Columns.Count - 1)
-					{
-						column.Width = -1;
-					}
-					else
-					{
-						column.Width = -2;
-					}
-				}
-			}
+			
+			SetWidths();
+			
 		}
 
 		private void PopulateListWithMappings()
@@ -136,10 +112,7 @@ namespace VixenModules.App.LipSyncApp
 
 			}
 
-			if (!Library.Any())
-			{
-				SetWidths();
-			}
+			SetWidths();
 			
 			mappingsListView.EndUpdate();
 
@@ -315,21 +288,8 @@ namespace VixenModules.App.LipSyncApp
 
 		private void SetWidths()
 		{
-			foreach (ColumnHeader col in mappingsListView.Columns)
-			{
-				var width = col.Width;
-
-				// column items greatest width
-				col.Width = -1;
-				if (width > col.Width)
-					col.Width = width;
-
-				// column header width
-				col.Width = -2;
-				if (width > col.Width)
-					col.Width = width;
-			}
-
+			mappingsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+			mappingsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
 		}
 	}
 }

@@ -194,7 +194,9 @@ namespace VixenModules.App.LipSyncApp
 			bool doRemove = true;
 
 			LipSyncMapMatrixEditor editor = new LipSyncMapMatrixEditor(newMapping);
-			if (editor.ShowDialog() == DialogResult.OK)
+			
+			var parent = System.Windows.Forms.Application.OpenForms.Cast<Form>().FirstOrDefault(x => x.Name.Equals("LipSyncMapSelector"));
+			if (editor.ShowDialog(parent) == DialogResult.OK)
 			{
 				if ((name.Equals(editor.LibraryMappingName) == false) &&
 					(this.Contains(editor.LibraryMappingName) == true))
