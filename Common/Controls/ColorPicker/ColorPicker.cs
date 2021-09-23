@@ -65,6 +65,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateButton(btnCancel);
 			ThemeUpdateControls.UpdateButton(btnOK);
+			Icon = Resources.Properties.Resources.Icon_Vixen3;
 			whiteButton.BackColor = System.Drawing.Color.White;
 			whiteButton.BackgroundImage = null;
 			redButton.BackColor = System.Drawing.Color.Red;
