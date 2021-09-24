@@ -174,7 +174,7 @@
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(400, 480);
 			this.Name = "ColorBreakdownSetup";
-			this.ShowIcon = false;
+            this.ShowInTaskbar = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Color Breakdown Filter Setup";
