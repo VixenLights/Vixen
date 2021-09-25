@@ -297,22 +297,19 @@ namespace Common.Controls.TimelineControl
 				delete.Enabled = _marksSelectionManager.SelectedMarks.Any();
 				delete.Click += DeleteMark_Click;
 				
-				if (c.Items.Count > 0)
-				{
-					c.Items.Add(new ToolStripSeparator());
-				}
-
 				if (_mouseDownLocation == location && _mouseDownMark != null)
 				{
 					if (_marksSelectionManager.SelectedMarks.All(x =>
 						x.Parent.CollectionType == MarkCollectionType.Phoneme))
 					{
+						if (c.Items[c.Items.Count - 1].Text == "Delete") c.Items.Add(new ToolStripSeparator());
 						c.Items.Add(CreatePhonemeMenuItem());
 					}
 
 					if (_marksSelectionManager.SelectedMarks.All(x =>
 						x.Parent.CollectionType == MarkCollectionType.Phrase))
 					{
+						if (c.Items[c.Items.Count - 1].Text == "Delete") c.Items.Add(new ToolStripSeparator());
 						var breakdownPhrase = c.Items.Add("Breakdown Phrase");
 						breakdownPhrase.Click += BreakdownPhrase_Click;
 					}
@@ -320,6 +317,7 @@ namespace Common.Controls.TimelineControl
 					if (_marksSelectionManager.SelectedMarks.All(x =>
 						x.Parent.CollectionType == MarkCollectionType.Word))
 					{
+						if (c.Items[c.Items.Count - 1].Text == "Delete") c.Items.Add(new ToolStripSeparator());
 						var breakdownWord = c.Items.Add("Breakdown Word");
 						breakdownWord.Click += BreakdownWord_Click;
 					}
