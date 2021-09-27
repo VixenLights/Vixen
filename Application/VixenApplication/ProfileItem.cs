@@ -23,7 +23,24 @@ namespace VixenApplication
 			set { _dataFolder = value; }
 		}
 
-		public bool IsLocked { get; set; }
+		private DateTime _dateLastLoaded;
+      
+        public DateTime DateLastLoaded
+		{
+			get { return _dateLastLoaded; }
+			set { _dateLastLoaded = value; }
+		}
+
+        private int _profileNumber;
+
+        public int ProfileNumber
+        {
+            get { return _profileNumber; }
+            set { _profileNumber = value; }
+        }
+
+
+        public bool IsLocked { get; set; }
 
 		public override string ToString()
 		{
