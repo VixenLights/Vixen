@@ -123,17 +123,19 @@ namespace VixenApplication
             for (int i = 0; i < profileCount; i++)
             {
 				var dataFolder = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/DataFolder", string.Empty);
-	           // if (!VixenApplication.IsProfileLocked(dataFolder)) //Only add the profile if it is not locked.
-	            //{
-		        ProfileItem item = new ProfileItem();
-		        item.Name = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/Name",
-			        "New Profile");
-		        item.DataFolder = dataFolder;
-	            item.IsLocked = VixenApplication.IsProfileLocked(dataFolder);
-				item.DateLastLoaded = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/DateLastLoaded", DateTime.Now);
-				item.ProfileNumber = i;
+                // if (!VixenApplication.IsProfileLocked(dataFolder)) //Only add the profile if it is not locked.
+                //{
+                ProfileItem item = new ProfileItem
+                {
+                    Name = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/Name",
+                    "New Profile"),
+                    DataFolder = dataFolder,
+                    IsLocked = VixenApplication.IsProfileLocked(dataFolder),
+                    DateLastLoaded = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/DateLastLoaded", DateTime.Now.AddDays(-1)),
+                    ProfileNumber = i
+                };
 
-				profiles.Add(item);
+                profiles.Add(item);
 	            //}
             }
 
