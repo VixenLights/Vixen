@@ -132,7 +132,7 @@
 			this.radioButtonOptionSingle.AutoSize = true;
 			this.radioButtonOptionSingle.Location = new System.Drawing.Point(42, 63);
 			this.radioButtonOptionSingle.Name = "radioButtonOptionSingle";
-			this.radioButtonOptionSingle.Size = new System.Drawing.Size(377, 19);
+			this.radioButtonOptionSingle.Size = new System.Drawing.Size(375, 19);
 			this.radioButtonOptionSingle.TabIndex = 24;
 			this.radioButtonOptionSingle.TabStop = true;
 			this.radioButtonOptionSingle.Text = "They are a single color, and do not change color at all. The color is:";
@@ -215,12 +215,11 @@
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOk);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(557, 410);
 			this.Name = "ColorSetupHelper";
-			this.ShowIcon = false;
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Color Configuration";
