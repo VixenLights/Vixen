@@ -131,7 +131,7 @@ namespace VixenApplication
                     "New Profile"),
                     DataFolder = dataFolder,
                     IsLocked = VixenApplication.IsProfileLocked(dataFolder),
-                    DateLastLoaded = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/DateLastLoaded", DateTime.Now.AddDays(-1)),
+                    DateLastLoaded = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/DateLastLoaded", DateTime.MinValue),
                     ProfileNumber = i
                 };
 
