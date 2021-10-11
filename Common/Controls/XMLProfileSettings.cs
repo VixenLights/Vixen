@@ -62,6 +62,11 @@ namespace Common.Controls
 			PutSetting(type, xPath, Convert.ToString(value));
 		}
 
+		public void PutSetting(SettingType type, string xPath, DateTime value)
+		{
+			PutSetting(type, xPath, Convert.ToString(value));
+		}
+
 		public void PutSetting(SettingType type, string xPath, string value)
 		{
 			string path = String.Format("{0}/{1}/{2}", Root, type, xPath);
@@ -92,6 +97,11 @@ namespace Common.Controls
 		public bool GetSetting(SettingType type, string xPath, bool defaultValue)
 		{
 			return Convert.ToBoolean(GetSetting(type, xPath, Convert.ToString(defaultValue)));
+		}
+
+		public DateTime GetSetting(SettingType type, string xPath, DateTime defaultValue)
+		{
+			return Convert.ToDateTime(GetSetting(type, xPath, Convert.ToString(defaultValue)));
 		}
 
 		public string GetSetting(SettingType type, string xPath, string defaultValue)
