@@ -244,7 +244,6 @@
 			this.AutoSize = true;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(507, 282);
-			this.ControlBox = false;
 			this.Controls.Add(this.buttonZipWizard);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
