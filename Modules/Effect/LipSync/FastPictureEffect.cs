@@ -60,7 +60,7 @@ namespace VixenModules.Effect.LipSync
 		/// <inheritdoc />
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			var intervalPosFactor = ((double)100 / EffectEndTime.TotalMilliseconds) * (StartTime.TotalMilliseconds + frame * 50);
+			var intervalPosFactor = ((double)100 / EffectEndTime.TotalMilliseconds) * (StartTime.TotalMilliseconds + frame * FrameTime);
 			var yOffsetAdjust = CalculateYOffset(intervalPosFactor);
 			var xOffsetAdjust = CalculateXOffset(intervalPosFactor);
 			if (_fp != null)
