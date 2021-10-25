@@ -435,61 +435,61 @@ namespace VixenModules.Property.Face {
 
 		private void dataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
 		{
-			DataGridView view = sender as DataGridView;
-			if (view == null)
+			if (sender is DataGridView view)
 			{
-				//How did that happen?
-				return;
-			}
-
-			int lastColumn = view.Columns.Count - 1;
-			if (e.RowIndex > -1)
-			{
-				if (e.ColumnIndex == lastColumn)
+				int lastColumn = view.Columns.Count - 1;
+				if (e.RowIndex > -1)
 				{
-					List<IElementNode> chosenNodes = new List<IElementNode>();
-					//LipSyncMapColorSelect colorDialog1 = new LipSyncMapColorSelect();
-
-					foreach (DataGridViewCell selCell in view.SelectedCells)
+					if (e.ColumnIndex == lastColumn)
 					{
-						if (selCell.ColumnIndex == lastColumn)
-						{
-							IElementNode theNode = FindElementNode((string)selCell.OwningRow.Cells[0].Value);
-							if (theNode != null)
-							{
-								chosenNodes.Add(theNode);
-							}
-						}
-					}
+						List<IElementNode> chosenNodes = new List<IElementNode>();
+						//LipSyncMapColorSelect colorDialog1 = new LipSyncMapColorSelect();
 
-					//colorDialog1.ChosenNodes = chosenNodes;
-					var origColor = (System.Drawing.Color)view.SelectedCells[0].Value;
-
-					// Show the color dialog.
-					//DialogResult result = colorDialog1.ShowDialog();
-					var result = ChooseColor(chosenNodes, origColor);
-
-					// See if user pressed ok.
-					if (result.Item1 == DialogResult.OK)
-					{
-						_mouthDataTable.Columns[COLOR_COLUMN_NAME].ReadOnly = false;
-						_otherDataTable.Columns[COLOR_COLUMN_NAME].ReadOnly = false;
 						foreach (DataGridViewCell selCell in view.SelectedCells)
 						{
 							if (selCell.ColumnIndex == lastColumn)
 							{
-								_mouthDataTable.Rows[selCell.RowIndex][_mouthDataTable.Columns[COLOR_COLUMN_NAME]] = result.Item2;
-								_otherDataTable.Rows[selCell.RowIndex][_otherDataTable.Columns[COLOR_COLUMN_NAME]] = result.Item2;
-								//selCell.Value = colorDialog1.Color;
+								IElementNode theNode = FindElementNode((string)selCell.OwningRow.Cells[0].Value);
+								if (theNode != null)
+								{
+									chosenNodes.Add(theNode);
+								}
 							}
 						}
-						DataGridViewCell cell = view.Rows[e.RowIndex].Cells[e.ColumnIndex];
-						cell.Value = result.Item2;
-						_mouthDataTable.Columns[COLOR_COLUMN_NAME].ReadOnly = true;
-						_otherDataTable.Columns[COLOR_COLUMN_NAME].ReadOnly = true;
+
+						//colorDialog1.ChosenNodes = chosenNodes;
+						if (view.SelectedCells[0].Value is System.Drawing.Color origColor)
+						{
+							// Show the color dialog.
+							//DialogResult result = colorDialog1.ShowDialog();
+							var result = ChooseColor(chosenNodes, origColor);
+
+							// See if user pressed ok.
+							if (result.Item1 == DialogResult.OK)
+							{
+								_mouthDataTable.Columns[COLOR_COLUMN_NAME].ReadOnly = false;
+								_otherDataTable.Columns[COLOR_COLUMN_NAME].ReadOnly = false;
+								foreach (DataGridViewCell selCell in view.SelectedCells)
+								{
+									if (selCell.ColumnIndex == lastColumn)
+									{
+										_mouthDataTable.Rows[selCell.RowIndex][_mouthDataTable.Columns[COLOR_COLUMN_NAME]] = result.Item2;
+										_otherDataTable.Rows[selCell.RowIndex][_otherDataTable.Columns[COLOR_COLUMN_NAME]] = result.Item2;
+										//selCell.Value = colorDialog1.Color;
+									}
+								}
+								DataGridViewCell cell = view.Rows[e.RowIndex].Cells[e.ColumnIndex];
+								cell.Value = result.Item2;
+								_mouthDataTable.Columns[COLOR_COLUMN_NAME].ReadOnly = true;
+								_otherDataTable.Columns[COLOR_COLUMN_NAME].ReadOnly = true;
+							}
+						}
+						
 					}
 				}
 			}
+			
+			
 		}
 
 		private System.Drawing.Color ValidateColorForElement(IElementNode e, System.Drawing.Color defaultColor)
