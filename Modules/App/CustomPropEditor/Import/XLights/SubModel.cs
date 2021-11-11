@@ -15,7 +15,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
 		public SubModelType Type { get; set; }
 
-		public List<Range> Ranges { get; set; }
+		public List<RangeGroup> Ranges { get; set; }
 
 		public FaceInfo FaceInfo { get; set; }
 	}
@@ -26,6 +26,16 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
 		public int End { get; set; }
 	}
+
+    public class RangeGroup
+    {
+        public RangeGroup(List<Range> ranges)
+        {
+            Ranges = ranges;
+        }
+
+		public List<Range> Ranges { get; set; }
+    }
 
 	public enum SubModelType
 	{
