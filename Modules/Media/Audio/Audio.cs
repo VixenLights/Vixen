@@ -187,7 +187,10 @@ namespace VixenModules.Media.Audio
 		public List<Sample> GetSamples(int samplesPerInterval, CancellationToken ct)
 		{
 			List<Sample> pi = new List<Sample>();
-			if (_cachedAudioData == null) return pi;
+            if (_cachedAudioData == null && MediaLoaded)
+            {
+                InitSampleProvider();
+            }
 			var provider = new MaxPeakProvider();
 			CachedSoundSampleProvider cad = new CachedSoundSampleProvider(_cachedAudioData);
 			provider.Init(cad, samplesPerInterval);
