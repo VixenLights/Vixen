@@ -65,7 +65,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 							{
 								case "ranges":
 									sm.Type = SubModelType.Ranges;
-									sm.Ranges = ParseRanges(reader.GetAttribute("line0"));
+                                    sm.Ranges = ProcessRanges(reader);//ParseRanges(reader.GetAttribute("line0"));
 									break;
 							}
 							subModels.Add(sm);
@@ -84,7 +84,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 										SubModel sm = new SubModel();
 										sm.Name = attribute.Key;
 										sm.Type = SubModelType.Ranges;
-										sm.Ranges = ParseRanges(range);
+										sm.Ranges = new List<RangeGroup>{ ParseRanges(range) };
 										sm.FaceInfo = new FaceInfo(attribute.Value);
 										subModels.Add(sm);
 									}
@@ -110,6 +110,28 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			return p;
 		}
 
+        private List<RangeGroup> ProcessRanges(XmlReader reader)
+        {
+            int line = 0;
+            bool found = true;
+            List<RangeGroup> rangeGroups = new List<RangeGroup>();
+            while (found)
+            {
+                var range = reader.GetAttribute($"line{line}");
+                if (!string.IsNullOrEmpty(range))
+                {
+                    rangeGroups.Add(ParseRanges(range));
+                    line++;
+				}
+                else
+                {
+                    found = false;
+                }
+            }
+
+            return rangeGroups;
+        }
+
 		private void CalculateScale(int x, int y)
 		{
 			if (x < 100 && y < 100)
@@ -131,42 +153,61 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			Dictionary<int, ElementModel> lightNodes = new Dictionary<int, ElementModel>();
 			
 			foreach (var subModel in subModels)
-			{
-				var group = PropModelServices.Instance().CreateNode(subModel.Name);
-				if (subModel.FaceInfo.FaceComponent != FaceComponent.None)
-				{
-					group.FaceComponent = subModel.FaceInfo.FaceComponent;
-				}
-				foreach (var smRange in subModel.Ranges)
-				{
-					var start = smRange.Start < smRange.End ? smRange.Start : smRange.End;
-					var end = smRange.Start < smRange.End ? smRange.End : smRange.Start;
-					for (int i = start; i <= end; i++)
-					{
-						if (modelNodes.ContainsKey(i))
-						{
-							var modelNode = modelNodes[i];
-							modelNodes.Remove(i);
-							var lightNode = PropModelServices.Instance().AddLightNode(group, new Point(modelNode.X + Offset, modelNode.Y + Offset), modelNode.Order, nodeSize);
-							if (!lightNodes.ContainsKey(modelNode.Order))
-							{
-								lightNodes.Add(modelNode.Order, lightNode);
-							}
-						}
-						else
-						{
-							//We have probably already associated it with another group so look it up
-							ElementModel lightNode;
-							if (lightNodes.TryGetValue(i, out lightNode))
-							{
-								PropModelServices.Instance().AddToParent(lightNode, group);
-							}
-						}
-					}
-				}
-			}
+            {
 
-			if (modelNodes.Any())
+                var subModelGroup = PropModelServices.Instance().CreateNode(subModel.Name);
+                if (subModel.FaceInfo.FaceComponent != FaceComponent.None)
+                {
+                    subModelGroup.FaceComponent = subModel.FaceInfo.FaceComponent;
+                }
+
+                bool addRangeGroup = subModel.Ranges.Count > 1;
+                int rangeGroupIndex = 1;
+
+                var subModelRangeGroup = subModelGroup;
+				foreach (var rangeGroup in subModel.Ranges)
+                {
+					
+                    if (addRangeGroup)
+                    {
+                        subModelRangeGroup = PropModelServices.Instance().CreateNode($"{subModelGroup.Name} {rangeGroupIndex}", subModelGroup);
+                    }
+
+                    foreach (var smRange in rangeGroup.Ranges)
+                    {
+                        var start = smRange.Start < smRange.End ? smRange.Start : smRange.End;
+                        var end = smRange.Start < smRange.End ? smRange.End : smRange.Start;
+                        for (int i = start; i <= end; i++)
+                        {
+                            if (modelNodes.ContainsKey(i))
+                            {
+                                var modelNode = modelNodes[i];
+                                modelNodes.Remove(i);
+                                var lightNode = PropModelServices.Instance().AddLightNode(subModelRangeGroup, new Point(modelNode.X + Offset, modelNode.Y + Offset), modelNode.Order, nodeSize);
+                                if (!lightNodes.ContainsKey(modelNode.Order))
+                                {
+                                    lightNodes.Add(modelNode.Order, lightNode);
+                                }
+                            }
+                            else
+                            {
+                                //We have probably already associated it with another group so look it up
+                                ElementModel lightNode;
+                                if (lightNodes.TryGetValue(i, out lightNode))
+                                {
+                                    PropModelServices.Instance().AddToParent(lightNode, subModelRangeGroup);
+                                }
+                            }
+                        }
+                    }
+
+                    rangeGroupIndex++;
+				}
+
+                
+            }
+
+            if (modelNodes.Any())
 			{
 				ElementModel em = null;
 				if (subModels.Any())
@@ -185,7 +226,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
 
 
-		private List<Range> ParseRanges(string rangeLines)
+		private RangeGroup ParseRanges(string rangeLines)
 		{
 			List<Range> rangeList = new List<Range>();
 			var ranges = rangeLines.Split(',');
@@ -210,7 +251,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				}
 			}
 
-			return rangeList;
+			return new RangeGroup(rangeList);
 
 		}
 
