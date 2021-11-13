@@ -175,10 +175,18 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
                     foreach (var smRange in rangeGroup.Ranges)
                     {
-                        var start = smRange.Start < smRange.End ? smRange.Start : smRange.End;
-                        var end = smRange.Start < smRange.End ? smRange.End : smRange.Start;
-                        for (int i = start; i <= end; i++)
+                        int inc = smRange.Start > smRange.End ? -1 : 1;
+                        for (int i = smRange.Start; ;i=i+inc)
                         {
+                            if (inc > 0 && i > smRange.End)
+                            {
+                                break;
+                            }
+                            if (inc < 0 && i < smRange.End)
+                            {
+                                break;
+                            }
+
                             if (modelNodes.ContainsKey(i))
                             {
                                 var modelNode = modelNodes[i];
