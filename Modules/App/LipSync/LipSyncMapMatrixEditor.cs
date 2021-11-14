@@ -21,8 +21,8 @@ namespace VixenModules.App.LipSyncApp
 	{
 		private static int MIN_PICTUREBOX_WIDTH = 96;
 		private static int MIN_PICTUREBOX_HEIGHT = 96;
-		private static int MAX_PICTUREBOX_WIDTH = 1024;
-		private static int MAX_PICTUREBOX_HEIGHT = 1024;
+		private static int MAX_PICTUREBOX_WIDTH = 128;
+		private static int MAX_PICTUREBOX_HEIGHT = 128;
 
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private LipSyncMapData _origMapping;
@@ -46,8 +46,8 @@ namespace VixenModules.App.LipSyncApp
 			renderedPicture.MinimumSize = new Size(MIN_PICTUREBOX_WIDTH, MIN_PICTUREBOX_HEIGHT);
 			renderedPicture.MaximumSize = new Size(MAX_PICTUREBOX_WIDTH, MAX_PICTUREBOX_HEIGHT);
 			renderedPicture.SizeMode = PictureBoxSizeMode.CenterImage;
-			FormBorderStyle = FormBorderStyle.FixedDialog;
-			SizeGripStyle = SizeGripStyle.Hide;
+			//FormBorderStyle = FormBorderStyle.FixedDialog;
+			//SizeGripStyle = SizeGripStyle.Hide;
 
 			_moduleDirPath = Paths.ModuleDataFilesPath + "\\LipSync";
 			_pictureBitmaps = new Dictionary<string, Bitmap>();
@@ -598,8 +598,10 @@ namespace VixenModules.App.LipSyncApp
 				LipSyncMultiPicSelect _mps = new LipSyncMultiPicSelect();
 				_mps.DropFileNames = fileNames;
 				_mps.CurrentMappings = _pictureBitmaps;
-				_mps.CurrentPhonemeString = CurrentPhonemeString; 
-				DialogResult result = _mps.ShowDialog();
+				_mps.CurrentPhonemeString = CurrentPhonemeString;
+				var parent = System.Windows.Forms.Application.OpenForms.Cast<Form>()
+					.FirstOrDefault(x => x.Name.Equals("LipSyncMapMatrixEditor"));
+				DialogResult result = _mps.ShowDialog(parent);
 				if (DialogResult.OK == result)
 				{
 					this.UseWaitCursor = true;

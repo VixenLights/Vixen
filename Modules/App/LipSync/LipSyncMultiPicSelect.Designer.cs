@@ -372,6 +372,7 @@
 			this.Controls.Add(this.ai_comboBox);
 			this.Name = "LipSyncMultiPicSelect";
 			this.ShowIcon = false;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Image Mapper";
 			this.Load += new System.EventHandler(this.LipSyncMultiPicSelect_Load);
 			this.ResumeLayout(false);
