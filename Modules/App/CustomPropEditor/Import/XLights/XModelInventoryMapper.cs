@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
+using NLog;
 using VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory;
 using VixenModules.App.CustomPropEditor.Model.InternalVendorInventory;
 using Category = VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory.Category;
@@ -10,6 +12,8 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 {
 	public class XModelInventoryMapper
 	{
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
+
 		public ModelInventory Map(XModelInventory xModelInventory)
 		{
 			ModelInventory mi = new ModelInventory();
@@ -59,7 +63,6 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			{
 				var p = new Product
 				{
-					Id = model.Id,
 					Name = model.Name,
 					CategoryIds = model.CategoryIds,
 					Material = model.Material,
@@ -67,11 +70,25 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 					Width = model.Width,
 					Thickness = model.Thickness,
 					Notes = model.Notes,
-					PixelCount = model.PixelCount,
 					PixelDescription = model.PixelDescription,
 					PixelSpacing = model.PixelSpacing,
 					ProductType = model.Type
-			};
+				};
+
+				if (uint.TryParse(model.Id, out var id))
+				{
+					p.Id= id;
+				}
+				else
+				{
+					Logging.Error($"Unable to parse id for model {model.Id}, {model.Name}");
+				}
+
+				if (uint.TryParse(model.PixelCount, out var pc))
+				{
+					p.PixelCount = pc;
+				}
+
 				if (model.ImageFile != null && model.ImageFile.Any() && !string.IsNullOrEmpty(model.ImageFile.First()))
 				{
 					p.ImageUrl = new Uri(model.ImageFile.First());

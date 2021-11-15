@@ -37,8 +37,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private void OnPropertiesChanged(object sender, PreviewBaseShape shape)
 		{
-			propertyGrid.Refresh();
-		}
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(propertyGrid.Refresh));
+			}
+            else
+            {
+                propertyGrid.Refresh();
+			}
+        }
 
 		protected virtual void buttonHelp_Click(object sender, EventArgs e)
 		{

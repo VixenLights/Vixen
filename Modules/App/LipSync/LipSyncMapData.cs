@@ -14,32 +14,21 @@ namespace VixenModules.App.LipSyncApp
 	public class LipSyncMapData : ModuleDataModelBase
 	{
 		private readonly ConcurrentDictionary<string, Image> _imageCache = new ConcurrentDictionary<string, Image>(StringComparer.OrdinalIgnoreCase);
+		public const string EyesClosedTag = "_EC";
+
 		public LipSyncMapData()
 		{
-			MapItems = new List<LipSyncMapItem>();
-			MapItems.Add(new LipSyncMapItem());
 			IsDefaultMapping = false;
-			StringsAreRows = false;
-			GroupsAllowed = false;
-			RecursionAllowed = true;
 			IsMatrix = true; //All maps are now matrix / image based
 			Notes = string.Empty;
 			UsingDefaults = true;
-
-			StartNode = "";
 		}
 
 		public LipSyncMapData(LipSyncMapData mapSetup)
 		{
-			MapItems = new List<LipSyncMapItem>(mapSetup.MapItems);
 			IsCurrentLibraryMapping = mapSetup.IsCurrentLibraryMapping;
 			LibraryReferenceName = (string)mapSetup.LibraryReferenceName.Clone();
 			IsDefaultMapping = mapSetup.IsDefaultMapping;
-			StringCount = mapSetup.StringCount;
-			StartNode = mapSetup.StartNode;
-			StringsAreRows = mapSetup.StringsAreRows;
-			GroupsAllowed = mapSetup.GroupsAllowed;
-			RecursionAllowed = mapSetup.RecursionAllowed;
 			IsMatrix = mapSetup.IsMatrix;
 			Notes = mapSetup.Notes;
 			UsingDefaults = mapSetup.UsingDefaults;
@@ -48,19 +37,8 @@ namespace VixenModules.App.LipSyncApp
 		public override IModuleDataModel Clone()
 		{
 			LipSyncMapData newInstance = new LipSyncMapData();
-			newInstance.MapItems = new List<LipSyncMapItem>();
-
-			foreach (LipSyncMapItem item in MapItems)
-			{
-				newInstance.MapItems.Add(item.Clone());
-			}
-			newInstance.StringCount = StringCount;
 			newInstance.LibraryReferenceName = LibraryReferenceName;
 			newInstance.IsDefaultMapping = false;
-			newInstance.StartNode = StartNode;
-			newInstance.StringsAreRows = StringsAreRows;
-			newInstance.GroupsAllowed = GroupsAllowed;
-			newInstance.RecursionAllowed = RecursionAllowed;
 			newInstance.IsMatrix = IsMatrix;
 			newInstance.Notes = Notes;
 			newInstance.UsingDefaults = UsingDefaults;
@@ -69,33 +47,16 @@ namespace VixenModules.App.LipSyncApp
 		}
 
 		[DataMember]
-		public int StringCount { get; set; }
-
-		//Deprecated
-		[DataMember(EmitDefaultValue = false)]
-		[Obsolete("No longer used.", false)]
-		public int MatrixStringCount { get; set; }
-
-		//Deprecated
-		[DataMember(EmitDefaultValue = false)]
-		[Obsolete("No longer used.", false)]
-		public int MatrixPixelsPerString { get; set; }
-
-		[DataMember]
 		public bool IsMatrix { get; set; }
 
-		[DataMember]
-		public string StartNode { get; set; }
+		//Deprecated
+		[DataMember(EmitDefaultValue = false)]
+		[Obsolete("No longer used.", false)]
+		public bool StringsAreRows { get; set; }
 
 		//Deprecated
 		[DataMember(EmitDefaultValue = false)]
 		[Obsolete("No longer used.", false)]
-		public int ZoomLevel { get; set; }
-
-		[DataMember]
-		public bool StringsAreRows { get; set; }
-
-		[DataMember]
 		public List<LipSyncMapItem> MapItems { get; set; }
 
 		[DataMember]
@@ -105,34 +66,17 @@ namespace VixenModules.App.LipSyncApp
 		public bool IsDefaultMapping { get; set; }
 
 		[DataMember]
-		public bool GroupsAllowed { get; set; }
-
-		[DataMember]
-		public bool RecursionAllowed { get; set; }
-
-		[DataMember]
 		protected string _libraryReferenceName;
 
-		[DataMember]
-		public string PictureDirectory
-		{
-			get
-			{
-				return Paths.ModuleDataFilesPath + "\\LipSync\\" + LibraryReferenceName + "\\";
-			}
-		}
+		public string PictureDirectory => Paths.ModuleDataFilesPath + "\\LipSync\\" + LibraryReferenceName + "\\";
 
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public string Notes { get; set; }
 
 		[DataMember]
 		public bool UsingDefaults { get; set; }
 
-		public string PictureFileName(PhonemeType phoneme)
-		{
-			return Path.Combine(PictureDirectory, $"{phoneme}.bmp");
-		}
-
+		
 		public Image ImageForPhoneme(PhonemeType phoneme)
 		{
 			return ImageForPhoneme(phoneme.ToString());
@@ -140,24 +84,21 @@ namespace VixenModules.App.LipSyncApp
 
 		public Image ImageForPhoneme(string phoneme)
 		{
-			Image image;
-			if (!_imageCache.TryGetValue(phoneme, out image))
+			if (!_imageCache.TryGetValue(phoneme, out var image))
 			{
-				using (var fs = new FileStream(Path.Combine(PictureDirectory, $"{phoneme}.bmp"), FileMode.Open, FileAccess.Read))
-				{
-					image = Image.FromStream(fs);
-				}
-
+				image = RetrieveImage(Path.Combine(PictureDirectory, $"{phoneme}.bmp"));
 				_imageCache.TryAdd(phoneme, image);
 			}
 
 			return image;
-
 		}
 
-		public string PictureFileName(string phoneme)
+		private static Image RetrieveImage(string filename)
 		{
-			return Path.Combine(PictureDirectory, $"{phoneme}.bmp");
+			using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
+			{
+				return Image.FromStream(fs);
+			}
 		}
 
 		public string LibraryReferenceName
@@ -172,6 +113,8 @@ namespace VixenModules.App.LipSyncApp
 			set { _libraryReferenceName = value; }
 		}
 
+		//Deprecated
+		[Obsolete("No longer used.", false)]
 		public LipSyncMapItem FindMapItem(Guid id)
 		{
 			return MapItems.Find(x => x.ElementGuid.Equals(id));
@@ -185,12 +128,6 @@ namespace VixenModules.App.LipSyncApp
 			{
 				oldImage.Dispose();
 			}
-		}
-
-		public Tuple<double, Color> ConfiguredColorAndIntensity(Guid id)
-		{
-			var item = FindMapItem(id);
-			return ConfiguredColorAndIntensity(item);
 		}
 
 		public Tuple<double, Color> ConfiguredColorAndIntensity(LipSyncMapItem item)
@@ -212,56 +149,6 @@ namespace VixenModules.App.LipSyncApp
 			return new Tuple<double, Color>(intensityRetVal, colorRetVal);
 		}
 
-		public double ConfiguredIntensity(Guid id)
-		{
-			var item = FindMapItem(id);
-			return ConfiguredIntensity(item);
-		}
-
-		public double ConfiguredIntensity(LipSyncMapItem item)
-		{
-			double retVal = 0;
-
-			if (!IsMatrix)
-			{
-				if (item != null)
-				{
-					retVal = HSV.VFromRgb(item.ElementColor);
-				}
-			}
-
-			return retVal;
-		}
-
-		public Color ConfiguredColor(Guid id)
-		{
-			var item = FindMapItem(id);
-			return ConfiguredColor(item);
-		}
-
-		public Color ConfiguredColor(LipSyncMapItem item)
-		{
-			Color retVal = Color.Black;
-
-			if (!IsMatrix)
-			{
-				if (item != null)
-				{
-					HSV hsvVal = HSV.FromRGB(item.ElementColor);
-					hsvVal.V = 1;
-					retVal = hsvVal.ToRGB();
-				}
-			}
-			
-			return retVal;
-		}
-
-		public bool PhonemeState(Guid id, string phonemeName)
-		{
-			var item = FindMapItem(id);
-			return PhonemeState(phonemeName, item);
-		}
-
 		public bool PhonemeState(string phonemeName, LipSyncMapItem item)
 		{
 			bool retVal = false;
@@ -279,18 +166,6 @@ namespace VixenModules.App.LipSyncApp
 
 			return retVal;
 		}
-
-		//public bool IsNonMouth(Guid id)
-		//{
-		//	var item = FindMapItem(id);
-		//	return item.FaceComponents.Any(x => x.Key != FaceComponent.Mouth);
-		//}
-
-		//public List<FaceComponent> GetFaceComponents(Guid id)
-		//{
-		//	var item = FindMapItem(id);
-		//	return item.FaceComponents.Where(x => x.Value).Select(f => f.Key).ToList();
-		//}
 
 		public override string ToString()
 		{

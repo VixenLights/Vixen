@@ -31,6 +31,7 @@ namespace VixenModules.Property.Color
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
+			Icon = Resources.Icon_Vixen3;
 			colorPanelSingleColor.BackColor = System.Drawing.Color.RoyalBlue;
 			colorPanelSingleColor.Color = System.Drawing.Color.RoyalBlue;
 			comboBoxColorOrder.SelectedIndex = 0;

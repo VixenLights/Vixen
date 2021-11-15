@@ -15,6 +15,8 @@ namespace VixenApplication
 	public partial class SelectProfile : BaseForm
 	{
 		private string _dataFolder = string.Empty;
+		private DateTime _dateLastLoaded;
+		private int _profileNumber;
 
 		public SelectProfile()
 		{
@@ -89,6 +91,18 @@ namespace VixenApplication
 			set { _dataFolder = value; }
 		}
 
+		public DateTime DateLastLoaded
+		{
+			get { return _dateLastLoaded; }
+			set { _dateLastLoaded = value; }
+		}
+
+		public int ProfileNumber
+		{
+			get { return _profileNumber; }
+			set { _profileNumber = value; }
+		}
+
 		public string ProfileName { get; set; }
 
 		private void SelectProfile_Load(object sender, EventArgs e)
@@ -99,6 +113,8 @@ namespace VixenApplication
         private void PopulateProfileList()
         {
             XMLProfileSettings profile = new XMLProfileSettings();
+			List<ProfileItem> profiles = new List<ProfileItem>();
+
 
 			listBoxProfiles.BeginUpdate();
             //Make sure we start with an empty listbox since we may repopulate after editing profiles
@@ -107,17 +123,24 @@ namespace VixenApplication
             for (int i = 0; i < profileCount; i++)
             {
 				var dataFolder = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/DataFolder", string.Empty);
-	           // if (!VixenApplication.IsProfileLocked(dataFolder)) //Only add the profile if it is not locked.
-	            //{
-		        ProfileItem item = new ProfileItem();
-		        item.Name = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/Name",
-			        "New Profile");
-		        item.DataFolder = dataFolder;
-	            item.IsLocked = VixenApplication.IsProfileLocked(dataFolder);
-		        listBoxProfiles.Items.Add(item);
+                // if (!VixenApplication.IsProfileLocked(dataFolder)) //Only add the profile if it is not locked.
+                //{
+                ProfileItem item = new ProfileItem
+                {
+                    Name = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/Name",
+                    "New Profile"),
+                    DataFolder = dataFolder,
+                    IsLocked = VixenApplication.IsProfileLocked(dataFolder),
+                    DateLastLoaded = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/DateLastLoaded", DateTime.MinValue),
+                    ProfileNumber = i
+                };
 
+                profiles.Add(item);
 	            //}
             }
+
+			profiles.Sort((x, y) => y.DateLastLoaded.CompareTo(x.DateLastLoaded));
+			listBoxProfiles.DataSource = profiles;
 
 			listBoxProfiles.EndUpdate();
         }
@@ -135,6 +158,10 @@ namespace VixenApplication
 				ProfileItem item = listBoxProfiles.SelectedItem as ProfileItem;
 				DataFolder = item.DataFolder;
 				ProfileName = item.Name;
+				ProfileNumber = item.ProfileNumber;
+
+				XMLProfileSettings profile = new XMLProfileSettings();
+				profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + ProfileNumber.ToString() + "/DateLastLoaded", DateTime.Now);
 				DialogResult = System.Windows.Forms.DialogResult.OK;
 				Close();
 			}

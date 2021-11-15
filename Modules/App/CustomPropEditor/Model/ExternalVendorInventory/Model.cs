@@ -6,7 +6,7 @@ namespace VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory
 	public class Model 
 	{
 		[XmlElement("id")]
-		public uint Id { get; set; }
+		public string Id { get; set; }
 
 		[XmlElement("categoryid")]
 		public List<uint> CategoryIds { get; set; }
@@ -33,7 +33,7 @@ namespace VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory
 		public string Thickness { get; set; }
 
 		[XmlElement("pixelcount")]
-		public uint PixelCount { get; set; }
+		public string PixelCount { get; set; }
 
 		[XmlElement("pixeldescription")]
 		public string PixelDescription { get; set; }

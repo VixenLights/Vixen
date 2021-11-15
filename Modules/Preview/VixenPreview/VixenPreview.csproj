@@ -321,9 +321,17 @@
     <PackageReference Include="DockPanelSuite.ThemeVS2015" Version="3.0.6">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="NLog" Version="4.6.8">
+    <PackageReference Include="NLog" Version="4.7.11">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="OpenTK" Version="3.2.0">
+      <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="OpenTK.GLControl" Version="3.1.0">
+      <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile</IncludeAssets>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

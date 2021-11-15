@@ -21,6 +21,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
+			Icon = Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
 			_data = breakdownData;
 		}

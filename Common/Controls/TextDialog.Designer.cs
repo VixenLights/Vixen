@@ -100,13 +100,12 @@
 			this.Controls.Add(this.buttonOk);
 			this.Controls.Add(this.textBoxResponse);
 			this.Controls.Add(this.labelPrompt);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "TextDialog";
-			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextDialog_KeyDown);

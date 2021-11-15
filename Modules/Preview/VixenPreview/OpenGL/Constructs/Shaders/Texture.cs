@@ -129,21 +129,25 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 
 				bool compressed = true;
 				int factor = 0, buffersize = 0, blocksize = 0;
-				PixelInternalFormat format;
+				InternalFormat format;
+				PixelInternalFormat pixelFormat;
 				switch (imageData.PixelFormat.FourCC)       // check the compression type
 				{
 					case "DXT1":    // DXT1 compression ratio is 8:1
-						format = PixelInternalFormat.CompressedRgbaS3tcDxt1Ext;
+						format = InternalFormat.CompressedRgbaS3tcDxt1Ext;
+						pixelFormat = PixelInternalFormat.CompressedRgbaS3tcDxt1Ext;
 						factor = 2;
 						blocksize = 8;
 						break;
 					case "DXT3":    // DXT3 compression ratio is 4:1
-						format = PixelInternalFormat.CompressedRgbaS3tcDxt3Ext;
+						format = InternalFormat.CompressedRgbaS3tcDxt3Ext;
+						pixelFormat = PixelInternalFormat.CompressedRgbaS3tcDxt3Ext;
 						factor = 4;
 						blocksize = 16;
 						break;
 					case "DXT5":    // DXT5 compression ratio is 4:1
-						format = PixelInternalFormat.CompressedRgbaS3tcDxt5Ext;
+						format = InternalFormat.CompressedRgbaS3tcDxt5Ext;
+						pixelFormat = PixelInternalFormat.CompressedRgbaS3tcDxt5Ext;
 						factor = 4;
 						blocksize = 16;
 						break;
@@ -151,10 +155,20 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 						compressed = false;
 						if (imageData.PixelFormat.ABitMask == 0xf000 && imageData.PixelFormat.RBitMask == 0x0f00 &&
 							imageData.PixelFormat.GBitMask == 0x00f0 && imageData.PixelFormat.BBitMask == 0x000f &&
-							imageData.PixelFormat.RGBBitCount == 16) format = PixelInternalFormat.Rgba;
-						else if (imageData.PixelFormat.ABitMask == unchecked((int)0xff000000) && imageData.PixelFormat.RBitMask == 0x00ff0000 &&
-							imageData.PixelFormat.GBitMask == 0x0000ff00 && imageData.PixelFormat.BBitMask == 0x000000ff &&
-							imageData.PixelFormat.RGBBitCount == 32) format = PixelInternalFormat.Rgba;
+						    imageData.PixelFormat.RGBBitCount == 16)
+						{
+							format = InternalFormat.Rgba;
+							pixelFormat = PixelInternalFormat.Rgba;
+						}
+						else if (imageData.PixelFormat.ABitMask == unchecked((int) 0xff000000) &&
+						         imageData.PixelFormat.RBitMask == 0x00ff0000 &&
+						         imageData.PixelFormat.GBitMask == 0x0000ff00 &&
+						         imageData.PixelFormat.BBitMask == 0x000000ff &&
+						         imageData.PixelFormat.RGBBitCount == 32)
+						{
+							format = InternalFormat.Rgba;
+							pixelFormat = PixelInternalFormat.Rgba;
+						}
 						else throw new Exception(string.Format("File compression \"{0}\" is not supported.", imageData.PixelFormat.FourCC));
 						break;
 				}
@@ -194,7 +208,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 							PixelType pixelType = imageData.PixelFormat.RGBBitCount == 16 ? PixelType.UnsignedShort4444Reversed : PixelType.UnsignedInt8888Reversed;
 
 							nSize = nWidth * nHeight * imageData.PixelFormat.RGBBitCount / 8;
-							GL.TexImage2D(TextureTarget, i, format, nWidth, nHeight, 0, PixelFormat.Bgra, pixelType, (IntPtr)(pinned.AddrOfPinnedObject().ToInt64() + nOffset));
+							GL.TexImage2D(TextureTarget, i, pixelFormat, nWidth, nHeight, 0, PixelFormat.Bgra, pixelType, (IntPtr)(pinned.AddrOfPinnedObject().ToInt64() + nOffset));
 						}
 
 						nOffset += nSize;

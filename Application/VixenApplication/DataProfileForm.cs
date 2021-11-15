@@ -310,7 +310,7 @@ namespace VixenApplication
 				return;
 			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 			MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-			var messageBox = new MessageBoxForm("Are you sure you want to delete this profile? The data folder and all its contents will remain and must be removed manually.",
+			var messageBox = new MessageBoxForm("Are you sure you want to delete the " + item.Name + " profile? The data folder and all its contents will remain and must be removed manually.",
 				@"Delete a Profile", true, true);
 			messageBox.ShowDialog();
 
