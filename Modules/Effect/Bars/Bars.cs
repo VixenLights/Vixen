@@ -2256,23 +2256,22 @@ namespace VixenModules.Effect.Bars
             if (incrementing)
             {
                 // Calculate the Y position within the tile
-                yTile = (y + movementY) % heightOfTile;
+                yTile = (y + movementY) % heightOfTile;               
             }
             // Otherwise the movement is decreasing then...
             else
             {
-                int yTest = y - yOffset - movementY;
-
-                // If the edge of the tile has been reached then...
-                if (yTest < 0)
-                {
-                    // Loop around to the end of the tile
-                    yTest += heightOfTile;
-                }
-
-                // Ensure the coordinate is within the tile
-                yTile = yTest % heightOfTile;
+                yTile = y - yOffset - movementY;               
             }
+
+            // If the edge of the tile has been reached then...
+            if (yTile < 0)
+            {
+                yTile += heightOfTile;
+            }
+
+            // Ensure the coordinate is within the tile
+            yTile = yTile % heightOfTile;
 
             return yTile;
         }
@@ -2573,8 +2572,11 @@ namespace VixenModules.Effect.Bars
 	        // Transform (rotate) the point
 	        System.Windows.Point transformedPoint = rt.Transform(tempPoint);
 
-	        // Updated the x and y coordinates for the rotation
-	        x = (int)Math.Round(transformedPoint.X);
+            //transformedPoint.X -= xOffset;
+            //transformedPoint.Y -= yOffset;
+            
+            // Updated the x and y coordinates for the rotation
+            x = (int)Math.Round(transformedPoint.X);
 	        y = (int)Math.Round(transformedPoint.Y);
         }
 
