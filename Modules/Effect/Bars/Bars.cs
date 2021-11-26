@@ -2571,10 +2571,7 @@ namespace VixenModules.Effect.Bars
 
 	        // Transform (rotate) the point
 	        System.Windows.Point transformedPoint = rt.Transform(tempPoint);
-
-            //transformedPoint.X -= xOffset;
-            //transformedPoint.Y -= yOffset;
-            
+                       
             // Updated the x and y coordinates for the rotation
             x = (int)Math.Round(transformedPoint.X);
 	        y = (int)Math.Round(transformedPoint.Y);
