@@ -18,7 +18,9 @@ namespace Common.Controls
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			
+			Icon = Resources.Properties.Resources.Icon_Vixen3;
+			ShowIcon = true;
+			FormBorderStyle = FormBorderStyle.FixedDialog;
 			numericUpDownChooser.Minimum = minimum;
 			numericUpDownChooser.Maximum = maximum;
             numericUpDownChooser.Value = value;
