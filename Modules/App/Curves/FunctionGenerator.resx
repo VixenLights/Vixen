@@ -118,6 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="txtDescription.Text" xml:space="preserve">
-    <value>Enter the mathmatical f(x) that provides the value of y. The function will be run with values of x from 0 -100 incremented by the Draw Interval to produce the x,y values in the curve.  Example gamma correction function Pow(x/100, 2.8) * 100 +.5</value>
+    <value>Enter the mathmatical f(x) that provides the value of y. The function will be run with values of x from 0-100 incremented by the Draw Interval to get the x,y values in the curve.  Example gamma function where 2.2 is the gamma and 80 is the max level: Pow(x/100, 2.2) * 80.</value>
   </data>
 </root>
