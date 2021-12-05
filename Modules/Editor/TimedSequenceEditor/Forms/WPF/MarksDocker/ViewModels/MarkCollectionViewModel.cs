@@ -7,6 +7,7 @@ using System.Windows.Input;
 using Catel.Data;
 using Catel.IoC;
 using Catel.MVVM;
+using Common.WPFCommon.Services;
 using Vixen.Marks;
 using VixenModules.App.Marks;
 
@@ -375,6 +376,36 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		{
 			var model = ParentViewModel as MarkDockerViewModel;
 			model?.DeleteCollection(MarkCollection);
+		}
+
+		#endregion
+
+		#region OffsetTime command
+
+		private Command _offsetTimeCommand;
+
+		/// <summary>
+		/// Gets the OffsetTime command.
+		/// </summary>
+		public Command OffsetTimeCommand
+		{
+			get { return _offsetTimeCommand ?? (_offsetTimeCommand = new Command(OffsetTime)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the OffsetTime command is executed.
+		/// </summary>
+		private void OffsetTime()
+		{
+			var dependencyResolver = this.GetDependencyResolver();
+			var mbs = dependencyResolver.Resolve<IMessageBoxService>();
+			var response = mbs.GetNumericUserInput("Time to offset (in milliseconds):", "Offset Mark Time",1000,-30000, 30000);
+			if(response.Result == Catel.Services.MessageResult.OK)
+            {
+				if(int.TryParse(response.Response, out int ms)){
+					MarkCollection.OffsetMarksByTime(TimeSpan.FromMilliseconds(ms));
+				}
+            }
 		}
 
 		#endregion

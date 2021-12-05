@@ -265,6 +265,7 @@
     <Resource Include="Resources\boldLine.png" />
     <None Include="Resources\openMarkManager.png" />
     <Resource Include="Resources\add_Collection.png" />
+    <Resource Include="Resources\clock_go.png" />
     <Resource Include="Resources\dottedLine.png" />
     <Resource Include="Resources\delete_32.png" />
     <None Include="Resources\marks.png" />
@@ -527,5 +528,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="LipSync\Tools.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Resources\clock_go.png" />
   </ItemGroup>
 </Project>
