@@ -800,6 +800,8 @@ namespace Common.Controls.Timeline
 
 		private void _markCollections_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
+			RemoveMarkCollectionEvents();
+			AddMarkCollectionEvents();
 			Invalidate();
 		}
 
