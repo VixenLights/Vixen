@@ -117,7 +117,8 @@ namespace VixenApplication
 
 
 			listBoxProfiles.BeginUpdate();
-            //Make sure we start with an empty listbox since we may repopulate after editing profiles
+			//Make sure we start with an empty listbox since we may repopulate after editing profiles
+	
             listBoxProfiles.Items.Clear();
 			int profileCount = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "ProfileCount", 0);
             for (int i = 0; i < profileCount; i++)
@@ -140,7 +141,10 @@ namespace VixenApplication
             }
 
 			profiles.Sort((x, y) => y.DateLastLoaded.CompareTo(x.DateLastLoaded));
-			listBoxProfiles.DataSource = profiles;
+			foreach (ProfileItem item in profiles)
+            {
+				listBoxProfiles.Items.Add(item);
+            }
 
 			listBoxProfiles.EndUpdate();
         }
