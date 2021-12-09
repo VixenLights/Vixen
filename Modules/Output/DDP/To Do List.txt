@@ -1,0 +1,9 @@
+Remove FakingIt() logic.
+
+Remove extraneous fields from setup form
+
+Add hostname support
+
+Remove all references to _networkStream
+
+Move the section for building the header to after the state copy stage.
