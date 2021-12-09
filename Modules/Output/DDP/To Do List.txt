@@ -6,4 +6,6 @@ Add hostname support
 
 Remove all references to _networkStream
 
+Get rid of _nullCommands
+
 Move the section for building the header to after the state copy stage.
