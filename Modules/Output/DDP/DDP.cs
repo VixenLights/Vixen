@@ -12,11 +12,8 @@ namespace VixenModules.Output.DDP
 	internal class DDP : ControllerModuleInstanceBase
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		private Dictionary<int, byte> _lastValues;
-		private Dictionary<int, int> _nullCommands;
 		private DDPData _data;
 		private UdpClient _udpClient;
-		//private NetworkStream _networkStream;
 		private Stopwatch _timeoutStopwatch;
 		private int _outputCount;
 
@@ -42,22 +39,9 @@ namespace VixenModules.Output.DDP
 		public DDP()
 		{
 			Logging.Trace("Constructor()");
-			_lastValues = new Dictionary<int, byte>();
-			_nullCommands = new Dictionary<int, int>();
 			_data = new DDPData();
 			_timeoutStopwatch = new Stopwatch();
 			DataPolicyFactory = new DataPolicyFactory();
-		}
-
-		private void _setupDataBuffers()
-		{
-			Logging.Trace(LogTag + "_setupDataBuffers()");
-			for (int i = 0; i < this.OutputCount; i++) {
-				if (!_lastValues.ContainsKey(i))
-					_lastValues[i] = 0;
-				if (!_nullCommands.ContainsKey(i))
-					_nullCommands[i] = 0;
-			}
 		}
 
 		public override int OutputCount
@@ -66,7 +50,6 @@ namespace VixenModules.Output.DDP
 			set
 			{
 				_outputCount = value;
-				_setupDataBuffers();
 			}
 		}
 
@@ -139,11 +122,6 @@ namespace VixenModules.Output.DDP
 				return false;
 				}
 
-			// reset the last values. That means that *any* values that come in will be 'new', and be sent out.
-			_lastValues = new Dictionary<int, byte>();
-			//_nullCommands = new Dictionary<int, int>();
-			_setupDataBuffers();
-
 			_timeoutStopwatch.Reset();
 			_timeoutStopwatch.Start();
 
@@ -170,7 +148,6 @@ namespace VixenModules.Output.DDP
 		public override void Start()
 		{
 			Logging.Trace(LogTag + "Start()");
-			_setupDataBuffers();
 			base.Start();
 		}
 
@@ -203,9 +180,9 @@ namespace VixenModules.Output.DDP
 			}
 			int dataOffset = 0;  //need to incorporate offset counter.
 			int pktChanCtr = 0;
-			byte[] packetData = new byte[DDP_CHANNELS_PER_PACKET+10];
-			//************this is my 2nd attempt at the output drive
-			for(int output = 0; output < _outputCount; output++)
+			byte[] packetData = new byte[DDP_CHANNELS_PER_PACKET+11];
+
+            for (int output = 0; output < _outputCount; output++)
 				{				
 				if(pktChanCtr < DDP_CHANNELS_PER_PACKET)
 					{
