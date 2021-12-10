@@ -42,22 +42,19 @@ namespace VixenModules.Output.DDP
 			_data = new DDPData();
 			_timeoutStopwatch = new Stopwatch();
 			DataPolicyFactory = new DataPolicyFactory();
+			OpenConnection();
 		}
 
 		public override int OutputCount
 		{
 			get { return _outputCount; }
-			set
-			{
-				_outputCount = value;
-			}
+			set { _outputCount = value;	}
 		}
 
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set
-			{
+			set	{
 				_data = value as DDPData;
 				CloseConnection();
 			}
@@ -78,23 +75,97 @@ namespace VixenModules.Output.DDP
 				CloseConnection();
 				return true;
 			}
-
 			return false;
 		}
 
-		private bool FakingIt()
+		public override void Start()
 		{
-			return _data.Address.ToString().Equals("1.1.1.1");
+			Logging.Trace(LogTag + "Start()");
+			OpenConnection();
+			base.Start();
 		}
 
-		private string HostInfo()
+		public override void Stop()
 		{
-			return _data.Address + ":";
+			Logging.Trace(LogTag + "Stop()");
+			CloseConnection();
+			base.Stop();
 		}
 
-		private string LogTag
+		public override void Pause()
 		{
-			get { return "[" + HostInfo() + "]: "; }
+			Logging.Trace(LogTag + "Pause()");
+			CloseConnection();
+			base.Pause();
+		}
+
+		public override void Resume()
+		{
+			Logging.Trace(LogTag + "Resume()");
+			OpenConnection();
+			base.Resume();
+		}
+
+		public override void UpdateState(int chainIndex, ICommand[] outputStates)
+		{
+			/*bool success = OpenConnection();
+			if (!success) {
+				Logging.Warn(LogTag + "failed to connect to device, not updating state");
+				return;
+				}*/
+			int pktChanCtr = 0;
+			byte[] packetData = new byte[DDP_CHANNELS_PER_PACKET];
+			int packetNumber = 0;  //zero based packet per frame counter
+			for (int output = 0; output < _outputCount; output++)
+
+				{
+				if (outputStates[output] is _8BitCommand command)
+					packetData[pktChanCtr] = (byte)outputStates[output].CommandValue;
+				else
+					packetData[pktChanCtr] = 0; //not a command, send a zero
+
+				if (pktChanCtr == DDP_CHANNELS_PER_PACKET - 1)
+					{
+					SendPacket(packetData, false, packetNumber);
+					pktChanCtr = 0;
+					packetNumber++;
+				}
+				else
+					pktChanCtr++;				
+				}
+			//send last packet here
+			SendPacket(packetData, true, packetNumber);
+			//CloseConnection();			
+		}
+
+		private void SendPacket(byte[] packetPayload, bool isLastPacket, int packetNumber)
+		{
+			byte[] ddpPacket = new byte[DDP_CHANNELS_PER_PACKET + 10];
+			Array.Copy(packetPayload, 0, ddpPacket, 10, packetPayload.Length);
+			//build header
+			if (!isLastPacket)
+				ddpPacket[0] = DDP_FLAGS1_VER1;
+			else
+				ddpPacket[0] = DDP_FLAGS1_VER1 | DDP_FLAGS1_PUSH;
+			ddpPacket[1] = 0; //reserved for future use
+			ddpPacket[2] = 1; //Custom Data = 1
+			ddpPacket[3] = DDP_ID_DISPLAY;
+
+			//Header Bytes 4-7	Data offset in bytes
+			//					(in units based on data-type.  ie: RGB=3 bytes=1 unit) or bytes??  32-bit number, MSB first
+			int offset = 0;
+			offset = packetNumber * DDP_CHANNELS_PER_PACKET;
+			ddpPacket[4] = (byte)((offset & 0xFF000000) >> 24);
+			ddpPacket[5] = (byte)((offset & 0xFF0000) >> 16);
+			ddpPacket[6] = (byte)((offset & 0xFF00) >> 8);
+			ddpPacket[7] = (byte)((offset & 0xFF));
+
+			//Header Bytes 8-9	Packet Size
+			ddpPacket[8] = (byte)(packetPayload.Length & 0xFF00 >> 8);
+			ddpPacket[9] = (byte)(packetPayload.Length & 0xFF);
+
+			//Send Packet Now.
+			_udpClient.Send(ddpPacket, ddpPacket.Length);
 		}
 
 		private bool OpenConnection()
@@ -107,23 +178,17 @@ namespace VixenModules.Output.DDP
 			if (_data.Address == null) {
 				Logging.Warn(LogTag + "Trying to connect with a null IP address.");
 				return false;
-				}
-
-			if( FakingIt())
-				return true;
+			}
 
 			try {
 				_udpClient = new UdpClient();
 				_udpClient.Connect(_data.Address, DDP_PORT);
 				//_udpClient.Connect(_data Hostname, DDP_PORT);  //Switch to add Hostname support
-				}
+			}
 			catch (Exception ex) {
 				Logging.Warn(LogTag + "DDP: Failed connect to host", ex);
 				return false;
-				}
-
-			_timeoutStopwatch.Reset();
-			_timeoutStopwatch.Start();
+			}
 
 			return true;
 		}
@@ -132,96 +197,23 @@ namespace VixenModules.Output.DDP
 		{
 			Logging.Trace(LogTag + "CloseConnection()");
 
-			if (FakingIt())
-				return;
-
-			if (_udpClient != null) {
+			if (_udpClient != null)
+			{
 				Logging.Trace(LogTag + "Closing UDP client...");
 				_udpClient.Close();
 				Logging.Trace(LogTag + "UDP client closed.");
 				_udpClient = null;
 			}
-
-			_timeoutStopwatch.Reset();
 		}
 
-		public override void Start()
+		private string HostInfo()
 		{
-			Logging.Trace(LogTag + "Start()");
-			base.Start();
+			return _data.Address + ":";
 		}
 
-		public override void Stop()
+		private string LogTag
 		{
-			Logging.Trace(LogTag + "Stop()");
-			base.Stop();
-		}
-
-		public override void Pause()
-		{
-			Logging.Trace(LogTag + "Pause()");
-			base.Pause();
-		}
-
-		public override void Resume()
-		{
-			Logging.Trace(LogTag + "Resume()");
-			base.Resume();
-		}
-
-		public override void UpdateState(int chainIndex, ICommand[] outputStates)
-		{
-			if (!FakingIt()) {
-				bool success = OpenConnection();
-				if (!success) {
-					Logging.Warn(LogTag + "failed to connect to device, not updating state");
-					return;
-				}
-			}
-			int dataOffset = 0;  //need to incorporate offset counter.
-			int pktChanCtr = 0;
-			byte[] packetData = new byte[DDP_CHANNELS_PER_PACKET+11];
-
-            for (int output = 0; output < _outputCount; output++)
-				{				
-				if(pktChanCtr < DDP_CHANNELS_PER_PACKET)
-					{
-					pktChanCtr++;
-					dataOffset++;
-					if (outputStates[output] is _8BitCommand command)
-                        packetData[pktChanCtr+10] = (byte)outputStates[output].CommandValue;
-					else
-						packetData[pktChanCtr+10] = 0; //not a command, send a zero
-					}
-				else
-					{
-					//build header
-					if(output < _outputCount)
-						packetData[0] = DDP_FLAGS1_VER1;
-					else
-						packetData[0] = DDP_FLAGS1_VER1 | DDP_FLAGS1_PUSH;
-					packetData[1] = 0; //reserved for future use
-					packetData[2] = 1; //Custom Data = 1
-					packetData[3] = DDP_ID_DISPLAY;
-
-					//Header Bytes 4-7	Data offset in bytes
-					//					(in units based on data-type.  ie: RGB=3 bytes=1 unit) or bytes??  32-bit number, MSB first
-					packetData[4] = (byte)((dataOffset & 0xFF000000) >> 24);
-					packetData[5] = (byte)((dataOffset & 0xFF0000) >> 16);
-					packetData[6] = (byte)((dataOffset & 0xFF00) >> 8);
-					packetData[7] = (byte)((dataOffset & 0xFF));
-
-					//Header Bytes 8-9	Packet Size
-					packetData[8] = (byte)(pktChanCtr & 0xFF00 >> 8);
-					packetData[9] = (byte)(pktChanCtr & 0xFF);
-
-					pktChanCtr = 0; //reset packet channel counter
-
-					//Send Packet Now.
-					_udpClient.Send(packetData, packetData.Length);
-				}
-			CloseConnection();
-			}
+			get { return "[" + HostInfo() + "]: "; }
 		}
 	}
 }
