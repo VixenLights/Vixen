@@ -5,7 +5,7 @@ namespace VixenModules.Output.DDP
 {
 	internal class DDPDescriptor : ControllerModuleDescriptorBase
 	{
-		private Guid _typeId = new Guid("{b9d5d3a1-c746-4395-8e19-a0c975ced438}");
+		private Guid _typeId = new Guid("{110B5FE9-CD4D-4E73-BB5B-67552A1AD6D1}");
 
 		public override string Author
 		{
