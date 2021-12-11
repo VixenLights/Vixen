@@ -5,7 +5,6 @@ using Vixen.Module.Controller;
 using Vixen.Commands;
 using System.Net.Sockets;
 using System.Windows.Forms;
-using System.Diagnostics;
 
 namespace VixenModules.Output.DDP
 {
@@ -15,8 +14,8 @@ namespace VixenModules.Output.DDP
 		private DDPData _data;
 		private UdpClient _udpClient;
 		private int _outputCount;
-		private List<int> _packetSize = new List<int>();
-		private List<byte> _channelBuffer = new List<byte>();
+		private List<int> _packetSize;
+		private List<byte> _channelBuffer;
 		private List<byte> _ddpPacket;
 
 
@@ -43,6 +42,11 @@ namespace VixenModules.Output.DDP
 		{
 			Logging.Trace("Constructor()");
 			_data = new DDPData();
+			//_udpClient = new UdpClient();  //this doesn't work when I initialize it here
+			_outputCount = 0;
+			_packetSize = new List<int>();
+			_channelBuffer = new List<byte>();
+			_ddpPacket = new List<byte>();
 			DataPolicyFactory = new DataPolicyFactory();
 			OpenConnection();
 		}
@@ -52,7 +56,6 @@ namespace VixenModules.Output.DDP
 			get { return _outputCount; }
 			set {				
 				_outputCount = value;
-				SetupPackets();  //move this somewhere to the updateState class?
 			}
 		}
 
@@ -86,7 +89,7 @@ namespace VixenModules.Output.DDP
 
 		public override void Start()
 		{
-			Logging.Trace(LogTag + "Start()");
+			Logging.Trace(LogTag + "DDP: Start()");
 			SetupPackets();
 			OpenConnection();
 			base.Start();
@@ -94,45 +97,48 @@ namespace VixenModules.Output.DDP
 
 		public override void Stop()
 		{
-			Logging.Trace(LogTag + "Stop()");
+			Logging.Trace(LogTag + "DDP: Stop()");
 			CloseConnection();
 			base.Stop();
 		}
 
 		public override void Pause()
 		{
-			Logging.Trace(LogTag + "Pause()");
+			Logging.Trace(LogTag + "DDP: Pause()");
 			CloseConnection();
 			base.Pause();
 		}
 
 		public override void Resume()
 		{
-			Logging.Trace(LogTag + "Resume()");
+			Logging.Trace(LogTag + "DDP: Resume()");
 			OpenConnection();
 			base.Resume();
 		}
 
 		public override void UpdateState(int chainIndex, ICommand[] outputStates)
 		{
+			if (outputStates is null)  //added to prevent exceptions while loading profile
+				return; 
+
 			if (outputStates.Length != _channelBuffer.Count)
 				SetupPackets();
 
-			if (outputStates is null)
-				return;
-			_channelBuffer.Clear();			
+			//Copy outputStates to channelBuffer in Byte form
+			_channelBuffer.Clear();
 			foreach (ICommand outputState in outputStates)
             {
-				_channelBuffer.Add( (byte)outputState.CommandValue);
-            }
+				if (outputState is null)
+					_channelBuffer.Add(0);
+				else
+					_channelBuffer.Add((byte)outputState.CommandValue);
+			}
 
-			//MOVE TO SEPARATE METHOD? SendData(_channelBuffer);
+			//Move blocks from buffer to packet and send packets
 			int dataStart = 0;
-			bool isLastPacket;
 			int i = 0;
 			foreach (int packetSize in _packetSize)
             {
-				//byte[] packetData = _channelBuffer.GetRange(dataStart, packetSize).ToArray();
 				_ddpPacket.Clear(); 
 				_ddpPacket.AddRange(_channelBuffer.GetRange(dataStart, packetSize));
 				SendPacket( i );
@@ -141,133 +147,69 @@ namespace VixenModules.Output.DDP
             }
 		}
 
-		/*  SAVED COPY FROM BEFORE REWRITE
-		public override void UpdateState(int chainIndex, ICommand[] outputStates)
-		{
-			//if(outputStates.Length != packetData.Length)
-			int pktChanCtr = 0;
-			byte[] packetData = new byte[DDP_CHANNELS_PER_PACKET];
-			int packetNumber = 0;  //zero based packet per frame counter
-			for (int output = 0; output < _outputCount; output++)
-
-			{
-				if (outputStates[output] is _8BitCommand command)
-					packetData[pktChanCtr] = (byte)outputStates[output].CommandValue;
-				else
-					packetData[pktChanCtr] = 0; //not a command, send a zero
-
-				if (pktChanCtr == DDP_CHANNELS_PER_PACKET - 1)
-				{
-					SendPacket(packetData, false, packetNumber);
-					pktChanCtr = 0;
-					packetNumber++;
-				}
-				else
-					pktChanCtr++;
-			}
-			//send last packet here
-			SendPacket(packetData, true, packetNumber);
-			
-		}
-		*/
-
-		private void SetupPackets()
+		private void SetupPackets()  //creates an indexed list of the sizes of each packet
 		{
 			int numPackets = _outputCount / DDP_CHANNELS_PER_PACKET; //numPackets is zero based
 			int lastPacketSize = _outputCount % DDP_CHANNELS_PER_PACKET;
 			_packetSize.Clear();
 			if(numPackets > 0)
             {
-				int i = 0;
-				for (i = 0; i < numPackets; i++)
-					{ _packetSize.Add( 1440 ); }
+				for (int i = 0; i < numPackets; i++)
+					{ _packetSize.Add( DDP_CHANNELS_PER_PACKET ); }
 				_packetSize.Add( lastPacketSize );
 			}
 			else
 				{ _packetSize.Add( lastPacketSize); }
-			int temp = _packetSize.Count;
 		}
 
 		private void SendPacket( int packetNumber )
 		{
+			// When this is called, ddpPacket list should already contain
+			// only the channel payload starting at index 0
 			bool isLastPacket = packetNumber == _packetSize.Count - 1;
-			//build header
+			//Build Header
 			if (!isLastPacket)
-				_ddpPacket.Add( DDP_FLAGS1_VER1 );
+				_ddpPacket.Insert( 0, DDP_FLAGS1_VER1 );
 			else
-				_ddpPacket.Add( DDP_FLAGS1_VER1 | DDP_FLAGS1_PUSH );
-			_ddpPacket.Add( 0 ); //reserved for future use
-			_ddpPacket.Add( 1 ); //Custom Data = 1
-			_ddpPacket.Add( DDP_ID_DISPLAY );
+				_ddpPacket.Insert( 0, DDP_FLAGS1_VER1 | DDP_FLAGS1_PUSH );
+			_ddpPacket.Insert( 1, 0 ); //reserved for future use
+			_ddpPacket.Insert( 2, 1 ); //Custom Data = 1
+			_ddpPacket.Insert( 3, DDP_ID_DISPLAY );
 
-			//Header Bytes 4-7	Data offset in bytes
-			//					(in units based on data-type.  ie: RGB=3 bytes=1 unit) or bytes??  32-bit number, MSB first
+			//Header Bytes 4-7:	Data offset in bytes - 32-bit number, MSB first
 			int offset = packetNumber * DDP_CHANNELS_PER_PACKET;
-			_ddpPacket.Add( (byte) ( (offset & 0xFF000000) >> 24 ) );
-			_ddpPacket.Add( (byte) ( (offset & 0xFF0000) >> 16 ) );
-			_ddpPacket.Add( (byte) ( (offset & 0xFF00) >> 8 ) );
-			_ddpPacket.Add( (byte) ( (offset & 0xFF) ) );
+			_ddpPacket.Insert( 4, (byte) ( (offset & 0xFF000000) >> 24 ) );
+			_ddpPacket.Insert( 5, (byte) ( (offset & 0xFF0000) >> 16 ) );
+			_ddpPacket.Insert( 6, (byte) ( (offset & 0xFF00) >> 8 ) );
+			_ddpPacket.Insert( 7, (byte) ( (offset & 0xFF) ) );
 
-			//Header Bytes 8-9	Packet Size
-			_ddpPacket.Add( (byte)((_packetSize[packetNumber] & 0xFF00) >> 8));
-			_ddpPacket.Add( (byte)(_packetSize[packetNumber] & 0xFF) );
+			//Header Bytes 8-9:	Payload Length
+			_ddpPacket.Insert( 8, (byte)((_packetSize[packetNumber] & 0xFF00) >> 8));
+			_ddpPacket.Insert( 9, (byte)(_packetSize[packetNumber] & 0xFF) );
 
-			//Add Payload
-			_ddpPacket.Add( 1 );
-			_ddpPacket.ToArray();
-			//Send Packet Now.
+			//Open Fire!!
 			_udpClient.Send(_ddpPacket.ToArray(), _ddpPacket.Count);
-		}
-
-		private void SendPacket2(byte[] packetPayload, bool isLastPacket, int packetNumber)
-		{
-			byte[] ddpPacket = new byte[DDP_CHANNELS_PER_PACKET + 10];
-			Array.Copy(packetPayload, 0, ddpPacket, 10, packetPayload.Length);
-			//build header
-			if (!isLastPacket)
-				ddpPacket[0] = DDP_FLAGS1_VER1;
-			else
-				ddpPacket[0] = DDP_FLAGS1_VER1 | DDP_FLAGS1_PUSH;
-			ddpPacket[1] = 0; //reserved for future use
-			ddpPacket[2] = 1; //Custom Data = 1
-			ddpPacket[3] = DDP_ID_DISPLAY;
-
-			//Header Bytes 4-7	Data offset in bytes
-			//					(in units based on data-type.  ie: RGB=3 bytes=1 unit) or bytes??  32-bit number, MSB first
-			int offset = 0;
-			offset = packetNumber * DDP_CHANNELS_PER_PACKET;
-			ddpPacket[4] = (byte)((offset & 0xFF000000) >> 24);
-			ddpPacket[5] = (byte)((offset & 0xFF0000) >> 16);
-			ddpPacket[6] = (byte)((offset & 0xFF00) >> 8);
-			ddpPacket[7] = (byte)((offset & 0xFF));
-
-			//Header Bytes 8-9	Packet Size
-			ddpPacket[8] = (byte)(packetPayload.Length & 0xFF00 >> 8);
-			ddpPacket[9] = (byte)(packetPayload.Length & 0xFF);
-
-			//Send Packet Now.
-			_udpClient.Send(ddpPacket, ddpPacket.Length);
 		}
 
 		private bool OpenConnection()
 		{
-			Logging.Trace(LogTag + "OpenConnection()");
+			Logging.Trace(LogTag + "DDP: OpenConnection()");
 
 			// start off by closing the connection
 			CloseConnection();
 
 			if (_data.Address == null) {
-				Logging.Warn(LogTag + "Trying to connect with a null IP address.");
+				Logging.Warn(LogTag + "DDP: Trying to connect with a null IP address.");
 				return false;
 			}
 
 			try {
-				_udpClient = new UdpClient();
+				_udpClient = new UdpClient(); //doesn't work when in class constructor
 				_udpClient.Connect(_data.Address, DDP_PORT);
 				//_udpClient.Connect(_data Hostname, DDP_PORT);  //Switch to add Hostname support
 			}
-			catch (Exception ex) {
-				Logging.Warn(LogTag + "DDP: Failed connect to host", ex);
+			catch {
+				Logging.Warn(LogTag + "DDP: Failed connect to host");
 				return false;
 			}
 
@@ -276,13 +218,13 @@ namespace VixenModules.Output.DDP
 
 		private void CloseConnection()
 		{
-			Logging.Trace(LogTag + "CloseConnection()");
+			Logging.Trace(LogTag + "DDP: CloseConnection()");
 
 			if (_udpClient != null)
 			{
-				Logging.Trace(LogTag + "Closing UDP client...");
+				Logging.Trace(LogTag + "DDP: Closing UDP client...");
 				_udpClient.Close();
-				Logging.Trace(LogTag + "UDP client closed.");
+				Logging.Trace(LogTag + "DDP: UDP client closed.");
 				_udpClient = null;
 			}
 		}
