@@ -27,6 +27,12 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="DDP-List.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DDP-List.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
