@@ -80,7 +80,7 @@ namespace VixenModules.Output.DDP
 			if (setup.ShowDialog() == DialogResult.OK) {
 				if (setup.Address != null)
 					_data.Address = setup.Address;
-				CloseConnection();
+				OpenConnection();
 				return true;
 			}
 
