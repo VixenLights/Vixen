@@ -190,11 +190,11 @@ namespace VixenModules.Output.DDP
 			_ddpPacket[8] = (byte)((_packetSize[packetNumber] & 0xFF00) >> 8);
 			_ddpPacket[9] = (byte)(_packetSize[packetNumber] & 0xFF);
 
-			if (!(packetNumber == _packetSize.Count - 1))  //if not last packet
+			if ( !(packetNumber == _packetSize.Count - 1) )  //if not last packet
 				_ddpPacket[0] = DDP_FLAGS1_VER1;  //No push flag
 			else
 				_ddpPacket[0] = DDP_FLAGS1_VER1 | DDP_FLAGS1_PUSH; //Set push flag on last packet
-			_udpClient.Send(_ddpPacket, _packetSize[packetNumber]);
+			_udpClient.Send(_ddpPacket, _packetSize[packetNumber]+10);
 		}
 
 		private bool OpenConnection()
