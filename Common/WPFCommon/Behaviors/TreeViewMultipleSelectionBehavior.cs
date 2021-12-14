@@ -8,7 +8,7 @@ using System.Windows.Input;
 using System.Windows.Interactivity;
 using Common.WPFCommon.Utils;
 
-namespace VixenModules.App.CustomPropEditor.Behaviors
+namespace Common.WPFCommon.Behaviors
 {
 	/// <summary>
 	/// A behavior that extends a <see cref="TreeView"/> with multiple selection capabilities.

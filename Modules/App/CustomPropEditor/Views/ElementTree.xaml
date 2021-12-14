@@ -10,7 +10,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              xmlns:dd="urn:gong-wpf-dragdrop"
-             xmlns:commonUtils="clr-namespace:Common.WPFCommon.Utils;assembly=WPFCommon">
+             xmlns:commonUtils="clr-namespace:Common.WPFCommon.Utils;assembly=WPFCommon"
+             xmlns:behaviors1="clr-namespace:Common.WPFCommon.Behaviors;assembly=WPFCommon">
 
 	<UserControl.Resources>
 
@@ -77,7 +78,7 @@
 
 			<Style x:Key="ElementTreeViewItemContainerStyle" TargetType="{x:Type TreeViewItem}">
 				<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"></Setter>
-				<Setter Property="behaviors:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="{Binding IsSelected, Mode=TwoWay}"></Setter>
+				<Setter Property="behaviors1:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="{Binding IsSelected, Mode=TwoWay}"></Setter>
 				<Setter Property="Background" Value="Transparent"/>
 				<Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment,
 				  RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
@@ -129,7 +130,7 @@
 								</MultiTrigger>
 								<MultiTrigger>
 									<MultiTrigger.Conditions>
-										<Condition Property="behaviors:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="true"/>
+										<Condition Property="behaviors1:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="true"/>
 										<Condition Property="Selector.IsSelectionActive" Value="false"/>
 									</MultiTrigger.Conditions>
 									<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
@@ -137,7 +138,7 @@
 								</MultiTrigger>
 								<MultiTrigger>
 									<MultiTrigger.Conditions>
-										<Condition Property="behaviors:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="true"/>
+										<Condition Property="behaviors1:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="true"/>
 										<Condition Property="Selector.IsSelectionActive" Value="True"/>
 									</MultiTrigger.Conditions>
 									<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}" />
@@ -235,7 +236,7 @@
 
 
 					<i:Interaction.Behaviors>
-						<behaviors:TreeViewMultipleSelectionBehavior SelectedItems="{Binding ElementTreeViewModel.SelectedItems}" />
+						<behaviors1:TreeViewMultipleSelectionBehavior SelectedItems="{Binding ElementTreeViewModel.SelectedItems}" />
 						<interactivity:KeyPressToCommand Command="{Binding DrawingPanelViewModel.DeleteSelectedLightsCommand}" Key="Delete" />
 						<interactivity:KeyPressToCommand Command="{Binding ElementTreeViewModel.CutCommand}" Key="X" Modifiers="Control" />
 						<interactivity:KeyPressToCommand Command="{Binding ElementTreeViewModel.CopyCommand}" Key="C" Modifiers="Control"/>

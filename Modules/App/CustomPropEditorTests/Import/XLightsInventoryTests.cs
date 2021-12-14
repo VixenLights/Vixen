@@ -1,4 +1,5 @@
 ﻿using System;
+using Common.WPFCommon.Services;
 using NUnit.Framework;
 using VixenModules.App.CustomPropEditor.Import.XLights;
 using VixenModules.App.CustomPropEditor.Services;
