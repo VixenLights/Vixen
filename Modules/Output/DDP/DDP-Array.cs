@@ -14,8 +14,8 @@ namespace VixenModules.Output.DDP
 		private DDPData _data;
 		private UdpClient _udpClient;
 		private int _outputCount;
+		private int _channelCount;
 		private List<int> _packetSize;
-		private byte[] _channelBuffer;
 		private byte[] _ddpPacket;
 		private byte[] _ddpLastPacket;
 
@@ -45,6 +45,7 @@ namespace VixenModules.Output.DDP
 			_data = new DDPData();
 			//_udpClient = new UdpClient();  //this doesn't work when I initialize it here
 			_outputCount = 0;
+			_channelCount = 0;
 			_packetSize = new List<int>();
 			_ddpPacket = new byte[DDP_PACKET_LEN];
 			DataPolicyFactory = new DataPolicyFactory();
@@ -119,31 +120,45 @@ namespace VixenModules.Output.DDP
 
 		public override void UpdateState(int chainIndex, ICommand[] outputStates)
 		{
-			if ( (outputStates is null) || (_outputCount ==0) )  //added to prevent exceptions while loading profile
+			if ((outputStates is null) || (_outputCount == 0))  //added to prevent exceptions while loading profile
 				return;
 
-			if (outputStates.Length != _channelBuffer.Length)
+			if (outputStates.Length != _channelCount)
 				SetupPackets();
-
-			//Copy outputStates to channelBuffer in Byte form
-			for (int i = 0; i < outputStates.Length; i++)
-			{
-				if (outputStates[i] is null)
-				_channelBuffer[i] = 0;
-				else
-					_channelBuffer[i] = (byte)outputStates[i].CommandValue;
-			}
 
 			//Move blocks from buffer to packet and send packets
 			int dataStart = 0;
 			int packet = 0;
+			int channel = 0;
 			foreach (int packetSize in _packetSize)
-            {
-				Array.Copy(_channelBuffer, packet*DDP_CHANNELS_PER_PACKET, _ddpPacket, 10, packetSize);
-				SendPacket(packet);
+			{
+				if (packet < _packetSize.Count - 1)  //fill and send all full packets
+				{
+					for (int i = 0; i < packetSize; i++)
+					{
+						if (outputStates[channel] is null)
+							_ddpPacket[i + 10] = 0;
+						else
+							_ddpPacket[i + 10] = (byte)outputStates[channel].CommandValue;
+						channel++;
+					}
+					SendPacket(packet);
+				}
+				else //fill and send last packet.
+				{
+					for (int i = 0; i < packetSize; i++)
+					{
+						if (outputStates[channel] is null)
+							_ddpLastPacket[i + 10] = 0;
+						else
+							_ddpLastPacket[i + 10] = (byte)outputStates[channel].CommandValue;
+						channel++;
+					}
+					SendPacket(packet);
+				}
 				dataStart += packetSize;
 				packet++;
-            }
+			}
 		}
 
 		private void SetupPackets()  //creates an indexed list of the sizes of each packet
@@ -152,7 +167,7 @@ namespace VixenModules.Output.DDP
 				return;
 			int numPackets = _outputCount / DDP_CHANNELS_PER_PACKET; //numPackets is zero based
 			int lastPacketSize = _outputCount % DDP_CHANNELS_PER_PACKET;
-			_channelBuffer = new byte[_outputCount];
+			_channelCount = _outputCount;
 			_ddpLastPacket = new byte[lastPacketSize+DDP_HEADER_LEN];
 
 			_packetSize.Clear();
