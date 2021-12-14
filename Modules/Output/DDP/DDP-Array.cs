@@ -17,8 +17,6 @@ namespace VixenModules.Output.DDP
 		private int _channelCount;
 		private List<int> _packetSize;
 		private byte[] _ddpPacket;
-		private byte[] _ddpLastPacket;
-
 
 		private const int DDP_HEADER_LEN = 10;
 		private const int DDP_SYNCPACKET_LEN = 10;
@@ -125,37 +123,23 @@ namespace VixenModules.Output.DDP
 
 			if (outputStates.Length != _channelCount)
 				SetupPackets();
-
-			//Move blocks from buffer to packet and send packets
+			
 			int dataStart = 0;
 			int packet = 0;
 			int channel = 0;
 			foreach (int packetSize in _packetSize)
 			{
-				if (packet < _packetSize.Count - 1)  //fill and send all full packets
+				//copy bytes from state buffer to packet
+				for (int i = 0; i < packetSize; i++)
 				{
-					for (int i = 0; i < packetSize; i++)
-					{
-						if (outputStates[channel] is null)
-							_ddpPacket[i + 10] = 0;
-						else
-							_ddpPacket[i + 10] = (byte)outputStates[channel].CommandValue;
-						channel++;
-					}
-					SendPacket(packet);
+					if (outputStates[channel] is _8BitCommand cmd)
+						_ddpPacket[i + 10] = cmd.CommandValue;
+					else
+						_ddpPacket[i + 10] = 0;
+					channel++;
 				}
-				else //fill and send last packet.
-				{
-					for (int i = 0; i < packetSize; i++)
-					{
-						if (outputStates[channel] is null)
-							_ddpLastPacket[i + 10] = 0;
-						else
-							_ddpLastPacket[i + 10] = (byte)outputStates[channel].CommandValue;
-						channel++;
-					}
-					SendPacket(packet);
-				}
+				SendPacket(packet);
+
 				dataStart += packetSize;
 				packet++;
 			}
@@ -165,11 +149,12 @@ namespace VixenModules.Output.DDP
 		{
 			if (_outputCount == 0)
 				return;
+			_channelCount = _outputCount;
+
 			int numPackets = _outputCount / DDP_CHANNELS_PER_PACKET; //numPackets is zero based
 			int lastPacketSize = _outputCount % DDP_CHANNELS_PER_PACKET;
-			_channelCount = _outputCount;
-			_ddpLastPacket = new byte[lastPacketSize+DDP_HEADER_LEN];
 
+			//Build a list containing the size of each packet.
 			_packetSize.Clear();
 			if(numPackets > 0)
             {
@@ -178,51 +163,38 @@ namespace VixenModules.Output.DDP
 				_packetSize.Add( lastPacketSize );
 			}
 			else
-				{ _packetSize.Add( lastPacketSize); }
+				_packetSize.Add( lastPacketSize);
 
 			//Prefill Header Info
 			_ddpPacket[0] = DDP_FLAGS1_VER1;
 			_ddpPacket[1] = 0; //reserved for future use
 			_ddpPacket[2] = 1; //Custom Data = 1
 			_ddpPacket[3] = DDP_ID_DISPLAY;
-			Array.Copy(_ddpPacket, _ddpLastPacket, 4);  //duplicate to lastPacket
-			_ddpLastPacket[0] = DDP_FLAGS1_VER1 | DDP_FLAGS1_PUSH; //Set last packet to push
-
-			//Header Bytes 8-9:	Payload Length
-			_ddpPacket[8] = (byte)((DDP_CHANNELS_PER_PACKET & 0xFF00) >> 8);
-			_ddpPacket[9] = (byte)(DDP_CHANNELS_PER_PACKET & 0xFF);
-
-			_ddpLastPacket[8] = (byte)((lastPacketSize & 0xFF00) >> 8);
-			_ddpLastPacket[9] = (byte)(lastPacketSize & 0xFF);
 		}
 
 		private void SendPacket( int packetNumber )
 		{
-			// When this is called, _ddpPacket or _ddpLastPacket should already contain
-			// the fixed header and channel payload starting at index 10
-			// still need to calculate offset
-			
-			//Add Offset to Header.  Then Send.
+			// When this is called, _ddpPacket should already contain the fixed 
+			// header bytes and the channel payload starting at index 10
+			// We still need to calculate offset
+
 			//Header Bytes 4-7:	Data offset in bytes - 32-bit number, MSB first
 			int offset = packetNumber * DDP_CHANNELS_PER_PACKET;
+
+			_ddpPacket[4] = (byte)((offset & 0xFF000000) >> 24);
+			_ddpPacket[5] = (byte)((offset & 0xFF0000) >> 16);
+			_ddpPacket[6] = (byte)((offset & 0xFF00) >> 8);
+			_ddpPacket[7] = (byte)((offset & 0xFF));
+
+			//Header Bytes 8-9:	Payload Length
+			_ddpPacket[8] = (byte)((_packetSize[packetNumber] & 0xFF00) >> 8);
+			_ddpPacket[9] = (byte)(_packetSize[packetNumber] & 0xFF);
+
 			if (!(packetNumber == _packetSize.Count - 1))  //if not last packet
-			{
-				_ddpPacket[4] = (byte)((offset & 0xFF000000) >> 24);
-				_ddpPacket[5] = (byte)((offset & 0xFF0000) >> 16);
-				_ddpPacket[6] = (byte)((offset & 0xFF00) >> 8);
-				_ddpPacket[7] = (byte)((offset & 0xFF));
-
-				_udpClient.Send(_ddpPacket, _ddpPacket.Length);
-			}
+				_ddpPacket[0] = DDP_FLAGS1_VER1;  //No push flag
 			else
-			{
-				_ddpLastPacket[4] = (byte)((offset & 0xFF000000) >> 24);
-				_ddpLastPacket[5] = (byte)((offset & 0xFF0000) >> 16);
-				_ddpLastPacket[6] = (byte)((offset & 0xFF00) >> 8);
-				_ddpLastPacket[7] = (byte)((offset & 0xFF));
-
-				_udpClient.Send(_ddpLastPacket, _ddpLastPacket.Length);
-			}
+				_ddpPacket[0] = DDP_FLAGS1_VER1 | DDP_FLAGS1_PUSH; //Set push flag on last packet
+			_udpClient.Send(_ddpPacket, _packetSize[packetNumber]);
 		}
 
 		private bool OpenConnection()
