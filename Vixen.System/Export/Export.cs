@@ -194,33 +194,48 @@ namespace Vixen.Export
 		    {
 			    if (controller.HasNetworkSupport)
 			    {
-				    var universes = controller.ControllerNetworkConfiguration.Universes;
-					foreach (var uc in universes)
-				    {
-						Universe u = new Universe();
-						channelOutputs.Universes.Add(u);
-					    string ip = controller.ControllerNetworkConfiguration.IpAddress.ToString();
+				
+                    var universes = controller.ControllerNetworkConfiguration.Universes;
+                    string ip = controller.ControllerNetworkConfiguration.IpAddress.ToString();
+                    if (ip is null) ip = string.Empty;
+                    switch (controller.ControllerNetworkConfiguration.ProtocolType)
+                    {
+                        case ProtocolTypes.sACN:
+                            var isMulticast = controller.ControllerNetworkConfiguration.TransmissionMethod == TransmissionMethods.Multicast
+                            foreach (var uc in universes)
+                            {
+                                Universe u = new Universe();
+                                channelOutputs.Universes.Add(u);
+                                u.Address = ip;
+                                u.Description = controller.Name;
+                                u.UniverseType = isMulticast ? UniverseTypes. E131_Multicast:UniverseTypes.E131_Unicast;
+                                u.Active = uc.Active;
+                                u.ChannelCount = uc.Size;
+                                u.StartChannel = fppStartChannel;
+                                u.UniverseId = uc.UniverseNumber;
+                                fppStartChannel = fppStartChannel + uc.Size;
+                            }
+                            break;
 
-						if (ip == null) ip = string.Empty;
+                        case ProtocolTypes.DDP:
+                            var uc = universes[0];
+                            Universe u = new Universe();
+                            channelOutputs.Universes.Add(u);
+                            u.Address = ip;
+                            u.Description = controller.Name;
+                            u.UniverseType = UniverseTypes.DDP_1_Based;
+                            u.Active = true;
+                            u.ChannelCount = uc.Size;
+                            u.StartChannel = fppStartChannel;
+                            u.UniverseId = 0;
+                            fppStartChannel = fppStartChannel + uc.Size;
+                            break;
 
-						u.Address = ip;
-					    u.Description = controller.Name;
-                        if (controller.ControllerNetworkConfiguration.TransmissionMethod == TransmissionMethods.Multicast)
-                            u.UniverseType = UniverseTypes.E131_Multicast;
-                        else
-                            u.UniverseType = UniverseTypes.E131_Unicast;
-                        //u.UniverseType = uc.IsMultiCast?UniverseTypes.E131_Multicast:UniverseTypes.E131_Unicast;
-					    u.Active = uc.Active;
-					    u.ChannelCount = uc.Size;
-					    u.StartChannel = fppStartChannel;
-					    u.UniverseId = uc.UniverseNumber;
-						fppStartChannel = fppStartChannel + uc.Size;
-				    }
+                        default: break;
+                    }
+
 			    }
-			    else
-			    {
-				    fppStartChannel = fppStartChannel + controller.Channels;
-			    }
+			    //else fppStartChannel = fppStartChannel + controller.Channels;
 		    }
 
 		    using (var writer = new StreamWriter(fileName))
@@ -236,12 +251,13 @@ namespace Vixen.Export
 			}
 	    }
 
-		/// <summary>
+	    
+        /// <summary>
 		/// Writes FPP universe file in 1.x format
 		/// </summary>
 		/// <param name="fileName"></param>
 		/// <returns></returns>
-	    public async Task WriteUniverseFile(string fileName)
+        public async Task WriteUniverseFile(string fileName)
 	    {
 		    using (var writer = new StreamWriter(fileName))
 		    {
@@ -253,34 +269,31 @@ namespace Vixen.Export
 					    var universes = controller.ControllerNetworkConfiguration.Universes;
 					    foreach (var uc in universes)
 					    {
-						    /*******  Commented out to make it build without fixing this
 						    string ip = string.Empty;
-						    if (!uc.IsMultiCast)
+						    if (controller.ControllerNetworkConfiguration.TransmissionMethod != TransmissionMethods.Multicast)
 						    {
 							    //Validate ip address
-							    ip = uc.IpAddress?.Address.ToString();
+							    ip = controller.ControllerNetworkConfiguration.IpAddress.ToString();
 							    if (ip == null)
-							    {
 								    ip = string.Empty;
-							    }
 						    }
 						    var s =
-							    $"{(uc.Active ? "1" : "0")},{uc.UniverseNumber},{fppStartChannel},{uc.Size},{(uc.IsMultiCast ? "0" : "1")},{ip},\n";
+							    $"{(uc.Active ? "1" : "0")},{uc.UniverseNumber}," +
+                                $"{fppStartChannel},{uc.Size}," +
+                                $"{(controller.ControllerNetworkConfiguration.TransmissionMethod == TransmissionMethods.Multicast ? "1" : "0")}," +
+                                $"{ip},\n";
 						    await writer.WriteAsync(s);
 						    fppStartChannel = fppStartChannel + uc.Size;
-                            */
+                            
 					    }
 					}
 				    else
-				    {
-					    fppStartChannel = fppStartChannel + controller.Channels;
-					}
-				    
+					    fppStartChannel = fppStartChannel + controller.Channels;				    
 			    }
-
 			    await writer.FlushAsync();
 		    }
 	    }
+        
 
 		public void WriteControllerInfo(ISequence sequence)
         {
