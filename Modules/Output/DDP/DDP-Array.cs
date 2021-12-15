@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using Vixen.Module;
 using Vixen.Module.Controller;
+using Vixen.Export.FPP;
 using Vixen.Commands;
+using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
 
@@ -246,6 +248,27 @@ namespace VixenModules.Output.DDP
 		private string LogTag
 		{
 			get { return "[" + HostInfo() + "]: "; }
+		}
+		/*****************************************
+		 *    Support for FPP Universe Export
+		 *****************************************/
+		public override ControllerNetworkConfiguration GetNetworkConfiguration()
+		{
+			var config = new ControllerNetworkConfiguration();
+			config.SupportsUniverses = true;
+			var universes = new List<UniverseConfiguration>(1);
+			
+			var uc = new UniverseConfiguration();
+			uc.Universe = 1; //not needed for DDP
+			uc.Start = 1; //not needed for DDP
+			uc.Size = _outputCount;
+			uc.Active = true;  //not applicable for DDP
+			uc.UniverseType = UniverseTypes.DDP_1_Based;  //need to adjust export.cs to accomodate.
+			uc.IpAddress = new IPEndPoint(_data.Address,DDP_PORT);  //change to something that supports host or IP
+			universes.Add(uc);
+			
+			config.Universes = universes;
+			return config;
 		}
 	}
 }
