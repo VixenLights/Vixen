@@ -199,17 +199,21 @@ namespace Vixen.Export
 				    {
 						Universe u = new Universe();
 						channelOutputs.Universes.Add(u);
-					    string ip = uc.IpAddress?.Address.ToString();
+					    string ip = controller.ControllerNetworkConfiguration.IpAddress?.ToString();
 
 						if (ip == null) ip = string.Empty;
 
 						u.Address = ip;
 					    u.Description = controller.Name;
-					    u.UniverseType = uc.IsMultiCast?UniverseTypes.E131_Multicast:UniverseTypes.E131_Unicast;
+                        if (controller.ControllerNetworkConfiguration.TransmissionMethod == TransmissionMethods.Multicast)
+                            u.UniverseType = UniverseTypes.E131_Multicast;
+                        else
+                            u.UniverseType = UniverseTypes.E131_Unicast;
+                        //u.UniverseType = uc.IsMultiCast?UniverseTypes.E131_Multicast:UniverseTypes.E131_Unicast;
 					    u.Active = uc.Active;
 					    u.ChannelCount = uc.Size;
 					    u.StartChannel = fppStartChannel;
-					    u.UniverseId = uc.Universe;
+					    u.UniverseId = uc.UniverseNumber;
 						fppStartChannel = fppStartChannel + uc.Size;
 				    }
 			    }
@@ -251,6 +255,7 @@ namespace Vixen.Export
 					    var universes = controller.ControllerNetworkConfiguration.Universes;
 					    foreach (var uc in universes)
 					    {
+						    /*******  Commented out to make it build without fixing this
 						    string ip = string.Empty;
 						    if (!uc.IsMultiCast)
 						    {
@@ -262,9 +267,10 @@ namespace Vixen.Export
 							    }
 						    }
 						    var s =
-							    $"{(uc.Active ? "1" : "0")},{uc.Universe},{fppStartChannel},{uc.Size},{(uc.IsMultiCast ? "0" : "1")},{ip},\n";
+							    $"{(uc.Active ? "1" : "0")},{uc.UniverseNumber},{fppStartChannel},{uc.Size},{(uc.IsMultiCast ? "0" : "1")},{ip},\n";
 						    await writer.WriteAsync(s);
 						    fppStartChannel = fppStartChannel + uc.Size;
+                            */
 					    }
 					}
 				    else
