@@ -607,11 +607,11 @@ namespace VixenModules.Controller.E131
 			config.SupportsUniverses = true;
 			if (_data.Multicast == null)
 			{
-				config.transmissionMethod = TransmissionMethods.Unicast;
+				config.TransmissionMethod = TransmissionMethods.Unicast;
 				config.IpAddress = DetermineIp().Address;
 			}
 			else
-				config.transmissionMethod = TransmissionMethods.Multicast;
+				config.TransmissionMethod = TransmissionMethods.Multicast;
 
 			List<UniverseConfiguration> universes = new List<UniverseConfiguration>(_data.Universes.Count);
 			foreach (var universeEntry in _data.Universes)

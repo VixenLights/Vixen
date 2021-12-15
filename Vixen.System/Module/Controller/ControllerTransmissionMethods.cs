@@ -21,7 +21,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN 
 // THE SOFTWARE.
 
-namespace Vixen.Module.Controller{
+namespace Vixen.Module.Controller
+{
 	public enum TransmissionMethods
 	{
 		Unicast,

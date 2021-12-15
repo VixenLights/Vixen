@@ -199,7 +199,7 @@ namespace Vixen.Export
 				    {
 						Universe u = new Universe();
 						channelOutputs.Universes.Add(u);
-					    string ip = controller.ControllerNetworkConfiguration.IpAddress?.ToString();
+					    string ip = controller.ControllerNetworkConfiguration.IpAddress.ToString();
 
 						if (ip == null) ip = string.Empty;
 
@@ -230,9 +230,7 @@ namespace Vixen.Export
 				    NamingStrategy = new CamelCaseNamingStrategy()
 			    };
 				var s = JsonConvert.SerializeObject(config, Formatting.Indented, new JsonSerializerSettings
-				{
-					ContractResolver = contractResolver
-				});
+				                    { ContractResolver = contractResolver } );
 			    await writer.WriteAsync(s);
 				await writer.FlushAsync();
 			}

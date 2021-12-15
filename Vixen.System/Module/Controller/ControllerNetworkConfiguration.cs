@@ -5,6 +5,13 @@ namespace Vixen.Module.Controller
 {
 	public class ControllerNetworkConfiguration
 	{
+		public ProtocolTypes ProtocolType { get; set; }
+
+		public TransmissionMethods TransmissionMethod { get; set; }
+
+		public IPAddress IpAddress { get; set; }
+
+		//public string HostName { get; set; }
 		public bool SupportsUniverses { get; set; }
 
 		public List<UniverseConfiguration> Universes { get; set; }
@@ -12,16 +19,12 @@ namespace Vixen.Module.Controller
 
 	public class UniverseConfiguration
 	{
-		public int Universe { get; set; }
+		public int UniverseNumber { get; set; }
 
 		public bool Active { get; set; }
 
 		public int Start { get; set; }
 
 		public int Size { get; set; }
-
-		public bool IsMultiCast { get; set; }
-
-		public IPEndPoint IpAddress { get; set; }
 	}
 }
