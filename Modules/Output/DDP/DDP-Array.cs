@@ -13,8 +13,8 @@ namespace VixenModules.Output.DDP
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private DDPData _data;
 		private UdpClient _udpClient;
-		private int _outputCount;
-		private List<int> _packetSize;
+		private int _outputCount = 0;
+		private List<int> _packetSize = new List<int>();
 		private byte[] _ddpPacket;
 		private bool _isRunning = false;
 
@@ -41,12 +41,8 @@ namespace VixenModules.Output.DDP
 		{
 			Logging.Trace("Constructor()");
 			_data = new DDPData();
-			//_udpClient = new UdpClient();  //this doesn't work when I initialize it here
-			_outputCount = 0;
-			_packetSize = new List<int>();
 			_ddpPacket = new byte[DDP_PACKET_LEN];
 			DataPolicyFactory = new DataPolicyFactory();
-			_isRunning = false;
 			SetupPackets();
 			OpenConnection();
 		}
