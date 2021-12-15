@@ -14,9 +14,9 @@ namespace VixenModules.Output.DDP
 		private DDPData _data;
 		private UdpClient _udpClient;
 		private int _outputCount;
-		private int _channelCount;
 		private List<int> _packetSize;
 		private byte[] _ddpPacket;
+		private bool _isRunning = false;
 
 		private const int DDP_HEADER_LEN = 10;
 		private const int DDP_SYNCPACKET_LEN = 10;
@@ -43,10 +43,10 @@ namespace VixenModules.Output.DDP
 			_data = new DDPData();
 			//_udpClient = new UdpClient();  //this doesn't work when I initialize it here
 			_outputCount = 0;
-			_channelCount = 0;
 			_packetSize = new List<int>();
 			_ddpPacket = new byte[DDP_PACKET_LEN];
 			DataPolicyFactory = new DataPolicyFactory();
+			_isRunning = false;
 			SetupPackets();
 			OpenConnection();
 		}
@@ -76,6 +76,7 @@ namespace VixenModules.Output.DDP
 		public override bool Setup()
 		{
 			Logging.Trace(LogTag + "Setup()");
+			_isRunning = false;
 			DDPSetup setup = new DDPSetup(_data);
 			if (setup.ShowDialog() == DialogResult.OK) {
 				if (setup.Address != null)
@@ -83,7 +84,7 @@ namespace VixenModules.Output.DDP
 				OpenConnection();
 				return true;
 			}
-
+			_isRunning = true;
 			return false;
 		}
 
@@ -93,11 +94,13 @@ namespace VixenModules.Output.DDP
 			SetupPackets();
 			OpenConnection();
 			base.Start();
+			_isRunning = true;
 		}
 
 		public override void Stop()
 		{
 			Logging.Trace(LogTag + "DDP: Stop()");
+			_isRunning = false;
 			CloseConnection();
 			base.Stop();
 		}
@@ -105,6 +108,7 @@ namespace VixenModules.Output.DDP
 		public override void Pause()
 		{
 			Logging.Trace(LogTag + "DDP: Pause()");
+			_isRunning = false;
 			CloseConnection();
 			base.Pause();
 		}
@@ -114,14 +118,18 @@ namespace VixenModules.Output.DDP
 			Logging.Trace(LogTag + "DDP: Resume()");
 			OpenConnection();
 			base.Resume();
+			_isRunning = true;
 		}
 
 		public override void UpdateState(int chainIndex, ICommand[] outputStates)
 		{
+			if (!_isRunning)
+				return;
+
 			if ((outputStates is null) || (_outputCount == 0))  //added to prevent exceptions while loading profile
 				return;
 
-			if (outputStates.Length != _channelCount)
+			if (outputStates.Length != _outputCount)
 				SetupPackets();
 			
 			int dataStart = 0;
@@ -149,7 +157,6 @@ namespace VixenModules.Output.DDP
 		{
 			if (_outputCount == 0)
 				return;
-			_channelCount = _outputCount;
 
 			int numPackets = _outputCount / DDP_CHANNELS_PER_PACKET; //numPackets is zero based
 			int lastPacketSize = _outputCount % DDP_CHANNELS_PER_PACKET;
