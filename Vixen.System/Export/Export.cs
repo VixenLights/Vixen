@@ -201,7 +201,7 @@ namespace Vixen.Export
                     switch (controller.ControllerNetworkConfiguration.ProtocolType)
                     {
                         case ProtocolTypes.sACN:
-                            var isMulticast = controller.ControllerNetworkConfiguration.TransmissionMethod == TransmissionMethods.Multicast
+                            var isMulticast = controller.ControllerNetworkConfiguration.TransmissionMethod == TransmissionMethods.Multicast;
                             foreach (var uc in universes)
                             {
                                 Universe u = new Universe();
@@ -218,6 +218,7 @@ namespace Vixen.Export
                             break;
 
                         case ProtocolTypes.DDP:
+                            {
                             var uc = universes[0];
                             Universe u = new Universe();
                             channelOutputs.Universes.Add(u);
@@ -229,13 +230,16 @@ namespace Vixen.Export
                             u.StartChannel = fppStartChannel;
                             u.UniverseId = 0;
                             fppStartChannel = fppStartChannel + uc.Size;
+                            }
                             break;
 
                         default: break;
                     }
 
 			    }
-			    //else fppStartChannel = fppStartChannel + controller.Channels;
+                //if(controller.hasExportOtherSupport)
+
+			    else fppStartChannel = fppStartChannel + controller.Channels;
 		    }
 
 		    using (var writer = new StreamWriter(fileName))
