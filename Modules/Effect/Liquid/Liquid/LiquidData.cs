@@ -122,10 +122,13 @@ namespace VixenModules.Effect.Liquid
 				DespeckleThreshold = DespeckleThreshold,
 			};
 
+			// Clear out the default 2 emitters
+			result.EmitterData.Clear();
+
 			// Clone the emitters
 			for (int index = 0; index < EmitterData.Count; index++)
-			{
-				result.EmitterData[index] = (EmitterData)(EmitterData[index]).CreateInstanceForClone();
+			{				
+				result.EmitterData.Add((EmitterData)(EmitterData[index]).CreateInstanceForClone());
 			}
 
 			return result;
