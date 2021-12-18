@@ -193,11 +193,11 @@ namespace Vixen.Export
 		    foreach (var controller in ControllerExportInfo.Where(x => x.IsActive).OrderBy(x => x.Index))
 		    {
 			    if (controller.HasNetworkSupport)
-			    {
-				
+			    {			
                     var universes = controller.ControllerNetworkConfiguration.Universes;
-                    string ip = controller.ControllerNetworkConfiguration.IpAddress.ToString();
+                    string ip = controller.ControllerNetworkConfiguration.IpAddress?.ToString();
                     if (ip is null) ip = string.Empty;
+                    
                     switch (controller.ControllerNetworkConfiguration.ProtocolType)
                     {
                         case ProtocolTypes.sACN:
@@ -205,7 +205,6 @@ namespace Vixen.Export
                             foreach (var uc in universes)
                             {
                                 Universe u = new Universe();
-                                channelOutputs.Universes.Add(u);
                                 u.Address = ip;
                                 u.Description = controller.Name;
                                 u.UniverseType = isMulticast ? UniverseTypes. E131_Multicast:UniverseTypes.E131_Unicast;
@@ -213,6 +212,7 @@ namespace Vixen.Export
                                 u.ChannelCount = uc.Size;
                                 u.StartChannel = fppStartChannel;
                                 u.UniverseId = uc.UniverseNumber;
+                                channelOutputs.Universes.Add(u);
                                 fppStartChannel = fppStartChannel + uc.Size;
                             }
                             break;
@@ -221,7 +221,6 @@ namespace Vixen.Export
                             {
                             var uc = universes[0];
                             Universe u = new Universe();
-                            channelOutputs.Universes.Add(u);
                             u.Address = ip;
                             u.Description = controller.Name;
                             u.UniverseType = UniverseTypes.DDP_1_Based;
@@ -229,6 +228,7 @@ namespace Vixen.Export
                             u.ChannelCount = uc.Size;
                             u.StartChannel = fppStartChannel;
                             u.UniverseId = 0;
+                            channelOutputs.Universes.Add(u);
                             fppStartChannel = fppStartChannel + uc.Size;
                             }
                             break;
