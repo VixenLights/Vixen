@@ -193,30 +193,53 @@ namespace Vixen.Export
 		    foreach (var controller in ControllerExportInfo.Where(x => x.IsActive).OrderBy(x => x.Index))
 		    {
 			    if (controller.HasNetworkSupport)
-			    {
-				    var universes = controller.ControllerNetworkConfiguration.Universes;
-					foreach (var uc in universes)
-				    {
-						Universe u = new Universe();
-						channelOutputs.Universes.Add(u);
-					    string ip = uc.IpAddress?.Address.ToString();
+			    {			
+                    var universes = controller.ControllerNetworkConfiguration.Universes;
+                    string ip = controller.ControllerNetworkConfiguration.IpAddress?.ToString();
+                    if (ip is null) ip = string.Empty;
+                    
+                    switch (controller.ControllerNetworkConfiguration.ProtocolType)
+                    {
+                        case ProtocolTypes.sACN:
+                            var isMulticast = controller.ControllerNetworkConfiguration.TransmissionMethod == TransmissionMethods.Multicast;
+                            foreach (var uc in universes)
+                            {
+                                Universe u = new Universe();
+                                u.Address = ip;
+                                u.Description = controller.Name;
+                                u.UniverseType = isMulticast ? UniverseTypes. E131_Multicast:UniverseTypes.E131_Unicast;
+                                u.Active = uc.Active;
+                                u.ChannelCount = uc.Size;
+                                u.StartChannel = fppStartChannel;
+                                u.UniverseId = uc.UniverseNumber;
+                                channelOutputs.Universes.Add(u);
+                                fppStartChannel = fppStartChannel + uc.Size;
+                            }
+                            break;
 
-						if (ip == null) ip = string.Empty;
+                        case ProtocolTypes.DDP:
+                            {
+                            var uc = universes[0];
+                            Universe u = new Universe();
+                            u.Address = ip;
+                            u.Description = controller.Name;
+                            u.UniverseType = UniverseTypes.DDP_1_Based;
+                            u.Active = true;
+                            u.ChannelCount = uc.Size;
+                            u.StartChannel = fppStartChannel;
+                            u.UniverseId = 0;
+                            channelOutputs.Universes.Add(u);
+                            fppStartChannel = fppStartChannel + uc.Size;
+                            }
+                            break;
 
-						u.Address = ip;
-					    u.Description = controller.Name;
-					    u.UniverseType = uc.IsMultiCast?UniverseTypes.E131_Multicast:UniverseTypes.E131_Unicast;
-					    u.Active = uc.Active;
-					    u.ChannelCount = uc.Size;
-					    u.StartChannel = fppStartChannel;
-					    u.UniverseId = uc.Universe;
-						fppStartChannel = fppStartChannel + uc.Size;
-				    }
+                        default: break;
+                    }
+
 			    }
-			    else
-			    {
-				    fppStartChannel = fppStartChannel + controller.Channels;
-			    }
+                //if(controller.hasExportOtherSupport)
+
+			    else fppStartChannel = fppStartChannel + controller.Channels;
 		    }
 
 		    using (var writer = new StreamWriter(fileName))
@@ -226,20 +249,19 @@ namespace Vixen.Export
 				    NamingStrategy = new CamelCaseNamingStrategy()
 			    };
 				var s = JsonConvert.SerializeObject(config, Formatting.Indented, new JsonSerializerSettings
-				{
-					ContractResolver = contractResolver
-				});
+				                    { ContractResolver = contractResolver } );
 			    await writer.WriteAsync(s);
 				await writer.FlushAsync();
 			}
 	    }
 
-		/// <summary>
+	    
+        /// <summary>
 		/// Writes FPP universe file in 1.x format
 		/// </summary>
 		/// <param name="fileName"></param>
 		/// <returns></returns>
-	    public async Task WriteUniverseFile(string fileName)
+        public async Task WriteUniverseFile(string fileName)
 	    {
 		    using (var writer = new StreamWriter(fileName))
 		    {
@@ -252,31 +274,30 @@ namespace Vixen.Export
 					    foreach (var uc in universes)
 					    {
 						    string ip = string.Empty;
-						    if (!uc.IsMultiCast)
+						    if (controller.ControllerNetworkConfiguration.TransmissionMethod != TransmissionMethods.Multicast)
 						    {
 							    //Validate ip address
-							    ip = uc.IpAddress?.Address.ToString();
+							    ip = controller.ControllerNetworkConfiguration.IpAddress.ToString();
 							    if (ip == null)
-							    {
 								    ip = string.Empty;
-							    }
 						    }
 						    var s =
-							    $"{(uc.Active ? "1" : "0")},{uc.Universe},{fppStartChannel},{uc.Size},{(uc.IsMultiCast ? "0" : "1")},{ip},\n";
+							    $"{(uc.Active ? "1" : "0")},{uc.UniverseNumber}," +
+                                $"{fppStartChannel},{uc.Size}," +
+                                $"{(controller.ControllerNetworkConfiguration.TransmissionMethod == TransmissionMethods.Multicast ? "1" : "0")}," +
+                                $"{ip},\n";
 						    await writer.WriteAsync(s);
 						    fppStartChannel = fppStartChannel + uc.Size;
+                            
 					    }
 					}
 				    else
-				    {
-					    fppStartChannel = fppStartChannel + controller.Channels;
-					}
-				    
+					    fppStartChannel = fppStartChannel + controller.Channels;				    
 			    }
-
 			    await writer.FlushAsync();
 		    }
 	    }
+        
 
 		public void WriteControllerInfo(ISequence sequence)
         {
