@@ -43,6 +43,7 @@ namespace VixenModules.Output.DDP
 			_data = new DDPData();
 			_ddpPacket = new byte[DDP_PACKET_LEN];
 			DataPolicyFactory = new DataPolicyFactory();
+			SupportsNetwork = true;
 			SetupPackets();
 			OpenConnection();
 		}
@@ -246,6 +247,28 @@ namespace VixenModules.Output.DDP
 		private string LogTag
 		{
 			get { return "[" + HostInfo() + "]: "; }
+		}
+		/*****************************************
+		 *    Support for FPP Universe Export
+		 *****************************************/
+		public override ControllerNetworkConfiguration GetNetworkConfiguration()
+		{
+			var config = new ControllerNetworkConfiguration();
+			config.SupportsUniverses = true;
+			config.IpAddress = _data.Address;
+			config.ProtocolType = ProtocolTypes.DDP;
+			config.TransmissionMethod = TransmissionMethods.Unicast;
+			var universes = new List<UniverseConfiguration>(1);
+			
+			var uc = new UniverseConfiguration();
+			uc.UniverseNumber = 1; //not needed for DDP
+			uc.Start = 1; //not needed for DDP
+			uc.Size = _outputCount;
+			uc.Active = true;
+			universes.Add(uc);
+			
+			config.Universes = universes;
+			return config;
 		}
 	}
 }
