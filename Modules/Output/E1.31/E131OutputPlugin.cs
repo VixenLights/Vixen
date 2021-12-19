@@ -57,6 +57,7 @@ using Vixen.Commands;
 using Vixen.Module.Controller;
 using Vixen.Sys;
 using Vixen.Sys.Output;
+using Vixen.Export.FPP;
 using VixenModules.Controller.E131.J1Sys;
 using VixenModules.Output.E131;
 
@@ -604,19 +605,22 @@ namespace VixenModules.Controller.E131
 		{
 			ControllerNetworkConfiguration config = new ControllerNetworkConfiguration();
 			config.SupportsUniverses = true;
+			if (_data.Multicast == null)
+			{
+				config.TransmissionMethod = TransmissionMethods.Unicast;
+				config.IpAddress = DetermineIp().Address;
+			}
+			else
+				config.TransmissionMethod = TransmissionMethods.Multicast;
+
 			List<UniverseConfiguration> universes = new List<UniverseConfiguration>(_data.Universes.Count);
 			foreach (var universeEntry in _data.Universes)
 			{
 				var uc = new UniverseConfiguration();
-				uc.Universe = universeEntry.Universe;
+				uc.UniverseNumber = universeEntry.Universe;
 				uc.Start = universeEntry.Start+1;
 				uc.Size = universeEntry.Size;
 				uc.Active = universeEntry.Active;
-				uc.IsMultiCast = _data.Multicast != null;
-				if (!uc.IsMultiCast)
-				{
-					uc.IpAddress = DetermineIp();
-				}
 				universes.Add(uc);
 			}
 

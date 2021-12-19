@@ -1,4 +1,4 @@
-﻿// Copyright 2019 Vixen Lights
+﻿// Copyright 2021 Vixen Lights
 // All rights reserved.
 // 
 // This code is licensed under the MIT License.
@@ -21,17 +21,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN 
 // THE SOFTWARE.
 
-namespace Vixen.Export.FPP
+
+namespace Vixen.Module.Controller
 {
-	public enum UniverseTypes
-	{
-		E131_Multicast,
-		E131_Unicast,
-		ArtNet_Broadcast,
-		ArtNet_Unicast,
-		DDP_Raw,
-		DDP_1_Based,
-		KiNet_V1,
-		KiNet_V2
-	}
+    public enum ProtocolTypes
+    {
+        sACN,
+        ArtNet,
+        DDP,
+        KiNet,
+        Renard,
+        DMXPro,
+        DMXOpen,
+        GenericSerial
+    }
 }
