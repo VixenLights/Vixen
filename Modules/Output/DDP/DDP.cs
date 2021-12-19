@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Vixen.Module;
 using Vixen.Module.Controller;
-using Vixen.Export.FPP;
 using Vixen.Commands;
 using System.Net;
 using System.Net.Sockets;
@@ -45,6 +44,7 @@ namespace VixenModules.Output.DDP
 			_data = new DDPData();
 			_ddpPacket = new byte[DDP_PACKET_LEN];
 			DataPolicyFactory = new DataPolicyFactory();
+			SupportsNetwork = true;
 			SetupPackets();
 			OpenConnection();
 		}
@@ -256,15 +256,16 @@ namespace VixenModules.Output.DDP
 		{
 			var config = new ControllerNetworkConfiguration();
 			config.SupportsUniverses = true;
+			config.IpAddress = _data.Address;
+			config.ProtocolType = ProtocolTypes.DDP;
+			config.TransmissionMethod = TransmissionMethods.Unicast;
 			var universes = new List<UniverseConfiguration>(1);
 			
 			var uc = new UniverseConfiguration();
-			uc.Universe = 1; //not needed for DDP
+			uc.UniverseNumber = 1; //not needed for DDP
 			uc.Start = 1; //not needed for DDP
 			uc.Size = _outputCount;
-			uc.Active = true;  //not applicable for DDP
-			uc.UniverseType = UniverseTypes.DDP_1_Based;  //need to adjust export.cs to accomodate.
-			uc.IpAddress = new IPEndPoint(_data.Address,DDP_PORT);  //change to something that supports host or IP
+			uc.Active = true;
 			universes.Add(uc);
 			
 			config.Universes = universes;
