@@ -1,0 +1,23 @@
+﻿<catel:UserControl x:Class="VixenModules.App.TimingTrackBrowser.Views.VendorMetadataView"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:catel="http://schemas.catelproject.com"
+                   xmlns:wpfPropertyGrid="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid">
+
+
+    <wpfPropertyGrid:PropertyGrid Background="{StaticResource DisabledShadow}" 
+                                  ItemSource="{Binding}"
+                                  ShowAttachedProperties="False"
+                                  ShowReadOnlyProperties="True"
+                                  PropertyFilterVisibility="Collapsed"
+	                              Margin="5">
+    </wpfPropertyGrid:PropertyGrid>
+
+</catel:UserControl>
+
+
+
+
+
+
+

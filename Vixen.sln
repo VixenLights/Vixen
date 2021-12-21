@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29102.190
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vixen", "Vixen.System\Vixen.csproj", "{50B78623-FCF4-48AF-93FF-FA87C937028F}"
 EndProject
@@ -467,6 +467,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IMorphPolygon", "Modules\Effect\Morph\MorphPolygon\IMorphPolygon.csproj", "{699BA63F-E537-4624-A506-D01C14F564BD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDP", "Modules\Output\DDP\DDP.csproj", "{1270E5B8-AE6E-4EE2-815B-1949088E6665}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimingTrackBrowser", "Modules\App\TimingTrackBrowser\TimingTrackBrowser.csproj", "{3A751FC1-C30D-4262-8223-45F99D9FBF51}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1521,6 +1523,14 @@ Global
 		{1270E5B8-AE6E-4EE2-815B-1949088E6665}.Release|x64.Build.0 = Release|x64
 		{1270E5B8-AE6E-4EE2-815B-1949088E6665}.Release|x86.ActiveCfg = Release|x86
 		{1270E5B8-AE6E-4EE2-815B-1949088E6665}.Release|x86.Build.0 = Release|x86
+		{3A751FC1-C30D-4262-8223-45F99D9FBF51}.Debug|x64.ActiveCfg = Debug|x64
+		{3A751FC1-C30D-4262-8223-45F99D9FBF51}.Debug|x64.Build.0 = Debug|x64
+		{3A751FC1-C30D-4262-8223-45F99D9FBF51}.Debug|x86.ActiveCfg = Debug|x86
+		{3A751FC1-C30D-4262-8223-45F99D9FBF51}.Debug|x86.Build.0 = Debug|x86
+		{3A751FC1-C30D-4262-8223-45F99D9FBF51}.Release|x64.ActiveCfg = Release|x64
+		{3A751FC1-C30D-4262-8223-45F99D9FBF51}.Release|x64.Build.0 = Release|x64
+		{3A751FC1-C30D-4262-8223-45F99D9FBF51}.Release|x86.ActiveCfg = Release|x86
+		{3A751FC1-C30D-4262-8223-45F99D9FBF51}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1685,6 +1695,7 @@ Global
 		{C6E283BE-6BAB-4F13-B3CB-DD12D709008E} = {862B0D2C-7F90-4FCF-92D3-6094FFBD46FC}
 		{699BA63F-E537-4624-A506-D01C14F564BD} = {862B0D2C-7F90-4FCF-92D3-6094FFBD46FC}
 		{1270E5B8-AE6E-4EE2-815B-1949088E6665} = {01824B6E-B567-4974-849B-44A1ABEB4B39}
+		{3A751FC1-C30D-4262-8223-45F99D9FBF51} = {E301917B-FF08-4275-A4E0-830E2BEC0635}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {09F55EB1-2643-454B-A1C2-8A326FFA78E6}

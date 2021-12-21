@@ -50,6 +50,10 @@
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
+    <ProjectReference Include="..\..\App\TimingTrackBrowser\TimingTrackBrowser.csproj">
+      <IncludeAssets>None</IncludeAssets>
+	    <Private>false</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Effect\Effect\Effect.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
@@ -86,11 +90,11 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="AudacityImportDialog.cs">
+    <Compile Update="MarkCollectionImportDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="AudacityImportDialog.Designer.cs">
-      <DependentUpon>AudacityImportDialog.cs</DependentUpon>
+    <Compile Update="MarkCollectionImportDialog.Designer.cs">
+      <DependentUpon>MarkCollectionImportDialog.cs</DependentUpon>
     </Compile>
     <Compile Update="AutomaticMusicDetection.cs">
       <SubType>Form</SubType>
@@ -269,8 +273,8 @@
     <Content Include="Resources\magnet.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Update="AudacityImportDialog.resx">
-      <DependentUpon>AudacityImportDialog.cs</DependentUpon>
+    <EmbeddedResource Update="MarkCollectionImportDialog.resx">
+      <DependentUpon>MarkCollectionImportDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="AutomaticMusicDetection.resx">
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>

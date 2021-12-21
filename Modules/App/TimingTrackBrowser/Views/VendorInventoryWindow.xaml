@@ -1,0 +1,121 @@
+﻿<catel:Window x:Class="VixenModules.App.TimingTrackBrowser.Views.VendorInventoryWindow"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:catel="http://schemas.catelproject.com"
+                  xmlns:views="clr-namespace:VixenModules.App.TimingTrackBrowser.Views"
+                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                  xmlns:viewModels="clr-namespace:VixenModules.App.TimingTrackBrowser.ViewModels"
+                  mc:Ignorable="d"
+                  Height="600" Width="800" WindowStartupLocation="CenterOwner">
+
+	<Window.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+	</Window.Resources>
+	<DockPanel Background="{StaticResource BackColorBrush}">
+		
+		<StatusBar DockPanel.Dock="Bottom">
+        </StatusBar>
+		<Border BorderThickness="0 0 0 1" >
+			<Grid Background="{StaticResource BackColorBrush}">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="1*"/>
+					<ColumnDefinition Width="2*"/>
+				</Grid.ColumnDefinitions>
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+					<Grid Grid.Row="0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+						<Label Content="Provider" Grid.Column="0"/>
+						<ComboBox Grid.Column="1" Margin="3,0" ItemsSource="{Binding SongInventories}" DisplayMemberPath="Vendor.Name" SelectedValue="{Binding SelectedInventory}"/>
+					</Grid>
+					
+					<views:SongInventoryTree Grid.Row="1" DataContext="{Binding }"/>
+					<Grid Grid.Row="2" Name="ProviderDetails" Margin="5,3,3,10">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Grid.Row="0">Name</TextBlock>
+						<TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding SelectedInventory.Vendor.Name}" Padding="5,0,0,0"/>
+						<TextBlock Grid.Column="0" Grid.Row="1">Website</TextBlock>
+                        <TextBlock Grid.Column="1" Grid.Row="1" Padding="5,0,0,0">
+                            <Hyperlink Command="{Binding Path=NavigateToUrlCommand}" CommandParameter="{Binding SelectedInventory.Vendor.Website}">
+                                <TextBlock Text="{Binding SelectedInventory.Vendor.Name}" Style="{StaticResource HyperLink}"/>
+                            </Hyperlink>
+                        </TextBlock>
+                    </Grid>
+				</Grid>
+
+				<DockPanel Grid.Column="1">
+					<Grid Visibility="{Binding IsSongVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="1.2*"/>
+							<RowDefinition Height="*"/>
+						</Grid.RowDefinitions>
+                        <TabControl Background="{StaticResource BackColorBrush}"
+                                    Grid.Row="0"
+                                    Width="Auto" Margin="5,5,10,5">
+							<TabItem Header="Song Info" IsSelected="{Binding IsSongViewSelected}">
+								<StackPanel>
+                                <Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto"/>
+										<ColumnDefinition Width="Auto"/>
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+									</Grid.RowDefinitions>
+
+									<TextBlock Grid.Column="0" Grid.Row="0">Song:</TextBlock>
+									<TextBlock Grid.Column="1" Grid.Row="0" Padding="5,0,0,0">
+								        <Hyperlink Command="{Binding NavigateToUrlCommand}" CommandParameter="{Binding SelectedSong.SongLink}">
+									        <TextBlock Text="{Binding SelectedSong.Title}" Style="{StaticResource HyperLink}"/>
+								        </Hyperlink>
+							        </TextBlock>
+									<TextBlock Grid.Column="0" Grid.Row="1">Title:</TextBlock>
+									<TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding SelectedSong.Title}" Padding="5,0,0,0"/>
+									<TextBlock Grid.Column="0" Grid.Row="2">Artist:</TextBlock>
+									<TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding SelectedSong.Artist}" Padding="5,0,0,0"/>
+                                    <TextBlock Grid.Column="0" Grid.Row="3">Creator:</TextBlock>
+									<TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding SelectedSong.Creator}" Padding="5,0,0,0"/>
+                                    <TextBlock Grid.Column="0" Grid.Row="4" Margin="0,5"></TextBlock>
+                                    <Button Grid.Column="1" Grid.Row="4" Content="Select" 
+                                            Command="{Binding ImportSongCommand}"
+                                            Margin="5,5"/>
+                                </Grid>
+                                    <TextBlock TextWrapping="Wrap">All song links and timing are provided by the contributing project and are not validated by the Vixen Team.</TextBlock>
+                                </StackPanel>
+                            </TabItem>
+                        </TabControl>
+					</Grid>
+				</DockPanel>
+				<GridSplitter Grid.Row="0" Grid.Column="0" Width="3" HorizontalAlignment="Right" VerticalAlignment="Stretch" Background="{StaticResource BorderColorBrush}"/>
+            </Grid>
+		</Border>
+	</DockPanel>
+</catel:Window>

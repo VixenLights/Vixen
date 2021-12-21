@@ -1,0 +1,150 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+	  <RootNamespace>VixenModules.App.TimingTrackBrowser</RootNamespace>
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyTitle>TimingTrackBrowser</AssemblyTitle>
+    <Product>TimingTrackBrowser</Product>
+    <Platforms>x64;x86</Platforms>
+	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>$(SolutionDir)\Release64\Modules\App\</OutputPath>
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>$(SolutionDir)\$(Configuration)\Modules\App\</OutputPath>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <OutputPath>..\..\..\$(Configuration)\Modules\App\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <OutputPath>..\..\..\Debug64\Modules\App\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Controls\**" />
+    <Compile Remove="Images\**" />
+    <EmbeddedResource Remove="Controls\**" />
+    <EmbeddedResource Remove="Images\**" />
+    <None Remove="Controls\**" />
+    <None Remove="Images\**" />
+  </ItemGroup>
+	<ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\WPFCommon\WPFCommon.csproj">
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Controls.WpfPropertyGrid">
+      <HintPath>..\..\..\Common\Libraries\System.Windows.Controls.WpfPropertyGrid.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Windows.Controls.WpfPropertyGrid.Themes">
+      <HintPath>..\..\..\Common\Libraries\System.Windows.Controls.WpfPropertyGrid.Themes.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Views\ConfigurationWindow.xaml.cs">
+      <DependentUpon>ConfigurationWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\CustomPropEditorWindow.xaml.cs">
+      <DependentUpon>CustomPropEditorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SongInventoryTree.xaml.cs">
+      <DependentUpon>SongInventoryTree.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ElementTree.xaml.cs">
+      <DependentUpon>ElementTree.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PhysicalMetadataView.xaml.cs">
+      <DependentUpon>PhysicalMetadataView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\VendorInventoryWindow.xaml.cs">
+      <DependentUpon>VendorInventoryWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\VendorMetadataView.xaml.cs">
+      <DependentUpon>VendorMetadataView.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Catel.MVVM" Version="5.12.2">
+      <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="NLog" Version="4.7.11">
+      <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Reflection" Version="4.3.0">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Xml.XDocument" Version="4.3.0">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="obj\x64\Release\GeneratedInternalTypeHelper.g.cs" />
+    <Compile Remove="obj\x64\Release\GeneratedInternalTypeHelper.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Controls\SliderMenuItem.g.cs" />
+    <Compile Remove="obj\x64\Release\Controls\SliderMenuItem.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Views\ConfigurationWindow.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Views\CustomPropEditorWindow.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Views\ElementTree.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Views\ModelInventoryTree.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Views\PhysicalMetadataView.g.cs" />
+    <Compile Remove="obj\x64\Release\Views\PhysicalMetadataView.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Views\VendorInventoryWindow.g.i.cs" />
+    <Compile Remove="obj\x64\Release\Views\VendorMetadataView.g.cs" />
+    <Compile Remove="obj\x64\Release\Views\VendorMetadataView.g.i.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Views\SongInventoryTree.xaml" />
+    <None Remove="Views\VendorInventoryWindow.xaml" />
+    <None Remove="Views\VendorMetadataView.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Themes\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\SongInventoryTree.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\VendorInventoryWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\VendorMetadataView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+</Project>

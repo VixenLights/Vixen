@@ -10,11 +10,16 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
 using Catel.Collections;
+using Catel.IoC;
+using Catel.Services;
 using Common.Controls;
+using Common.WPFCommon.Services;
 using NLog;
 using Vixen.Marks;
 using Vixen.Sys;
 using VixenModules.App.Marks;
+using VixenModules.App.TimingTrackBrowser.ViewModels;
+using VixenModules.App.TimingTrackBrowser.Views;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 {
@@ -135,7 +140,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			}
 		}
 
-		private static void SetDefaultCollection(ObservableCollection<IMarkCollection> collections)
+		private static void SetDefaultCollection(ICollection<IMarkCollection> collections)
 		{
 			//Set one of them active
 			if (!collections.Any()) return;
@@ -282,48 +287,53 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			openFileDialog.FilterIndex = 0;
 			openFileDialog.InitialDirectory = _lastFolder;
 			if (openFileDialog.ShowDialog() == DialogResult.OK)
-			{
-				_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
-				try
-				{
-					var xmlDoc = new XmlDocument();
-					xmlDoc.Load(openFileDialog.FileName);
-					XmlNode timingGroups = xmlDoc.SelectSingleNode("/timings");
-					if (timingGroups != null)
-					{
-						//We have multiples
-						var timingNodes = timingGroups.SelectNodes("timing");
-						foreach (XmlNode timingNode in timingNodes)
-						{
-							ProcessTiming(timingNode, collections);
-						}
-					}
-					else
-					{
-						XmlNode timingNode = xmlDoc.SelectSingleNode("/timing");
-						if (timingNode != null)
-						{
-							ProcessTiming(timingNode, collections);
-						}
-					}
-					
-					if (!collections.Any(x => x.IsDefault))
-					{
-						SetDefaultCollection(collections);
-					}
-
-				}
-				catch (Exception ex)
-				{
-					string msg = "There was an error importing the Audacity bar marks.";
-					Logging.Error(ex, msg);
-					var messageBox = new MessageBoxForm(msg, "Audacity Import Error", MessageBoxButtons.OK, SystemIcons.Error);
-					messageBox.ShowDialog();
-				}
-			}
+            {
+                _lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
+                var xmlDoc = new XmlDocument();
+                xmlDoc.Load(openFileDialog.FileName);
+				LoadXTimingTracks(xmlDoc, collections);
+            }
 		}
 
-		private static void ProcessTiming(XmlNode timingNode,  ObservableCollection<IMarkCollection> collections)
+        private static void LoadXTimingTracks(XmlDocument xmlDoc, ICollection<IMarkCollection> collections)
+        {
+            try
+            {
+               
+                XmlNode timingGroups = xmlDoc.SelectSingleNode("/timings");
+                if (timingGroups != null)
+                {
+                    //We have multiples
+                    var timingNodes = timingGroups.SelectNodes("timing");
+                    foreach (XmlNode timingNode in timingNodes)
+                    {
+                        ProcessTiming(timingNode, collections);
+                    }
+                }
+                else
+                {
+                    XmlNode timingNode = xmlDoc.SelectSingleNode("/timing");
+                    if (timingNode != null)
+                    {
+                        ProcessTiming(timingNode, collections);
+                    }
+                }
+
+                if (!collections.Any(x => x.IsDefault))
+                {
+                    SetDefaultCollection(collections);
+                }
+            }
+            catch (Exception ex)
+            {
+                string msg = "There was an error importing the Audacity bar marks.";
+                Logging.Error(ex, msg);
+                var messageBox = new MessageBoxForm(msg, "Audacity Import Error", MessageBoxButtons.OK, SystemIcons.Error);
+                messageBox.ShowDialog();
+            }
+        }
+
+        private static void ProcessTiming(XmlNode timingNode,  ICollection<IMarkCollection> collections)
 		{
 			if (timingNode == null)
 			{
@@ -479,6 +489,25 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			messageBox.ShowDialog();
 		}
 
+        public static async void ImportSingingFacesTracks(ICollection<IMarkCollection> markCollection)
+        {
+            VendorInventoryWindow viw = new VendorInventoryWindow();
+            var result = viw.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                if (viw.ViewModel is VendorInventoryWindowViewModel vm)
+                {
+                    if (vm.SelectedSong != null)
+                    {
+                        var timing = await vm.GetSelectedSongTiming();
+                        var xmlDoc = new XmlDocument();
+						xmlDoc.LoadXml(timing);
+						LoadXTimingTracks(xmlDoc, markCollection);
+                    }
+                    
+                }
+            }
+        }
 
 		//Beat Mark Collection Export routine 2-7-2014 JMB
 		//In the audacity section, if the MarkCollections.Count = 1 then we assume the collection is bars and iMarkCollection++
@@ -538,5 +567,6 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 				}
 			}
 		}
+
 	}
 }
