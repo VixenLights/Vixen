@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Catel.IoC;
 
-namespace VixenModules.App.CustomPropEditor.Services
+namespace Common.WPFCommon.Services
 {
 	[ServiceLocatorRegistration(typeof(IDownloadService))]
 	public class DownloadService:IDownloadService

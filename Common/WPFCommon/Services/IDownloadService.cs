@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace VixenModules.App.CustomPropEditor.Services
+namespace Common.WPFCommon.Services
 {
 	public interface IDownloadService
 	{

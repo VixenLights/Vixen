@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="VixenModules.App.TimingTrackBrowser.Views.SongInventoryTree"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             xmlns:internalModel="clr-namespace:VixenModules.App.TimingTrackBrowser.Model.InternalVendorInventory"
+             xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon">
+
+    <UserControl.Resources>
+
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <converters:CompositeCollectionConverter x:Key="CompositeCollectionConverter" />
+        </ResourceDictionary>
+
+        
+
+    </UserControl.Resources>
+
+    <Grid>
+        <TreeView ItemsSource="{Binding SelectedInventory.Inventory}"
+                  BorderThickness="0"
+                  VerticalAlignment="Stretch"
+                  HorizontalAlignment="Stretch"
+                  ScrollViewer.CanContentScroll="True"
+                  FocusManager.IsFocusScope="True">
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type internalModel:Category}">
+                    <HierarchicalDataTemplate.ItemsSource>
+                        <MultiBinding Converter="{StaticResource CompositeCollectionConverter}">
+                            <Binding Path="Categories"/>
+                            <Binding Path="Songs"/>
+                        </MultiBinding>
+                    </HierarchicalDataTemplate.ItemsSource>
+                    <TextBlock Text="{Binding Name}" Margin="0,2,0,2"/>
+                </HierarchicalDataTemplate>
+                <DataTemplate DataType="{x:Type internalModel:Song}">
+                    <TextBlock x:Name="SongName"  Margin="0,2,0,2">
+                        <Hyperlink Command="{Binding Path=DataContext.SelectSongCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TreeView}}}" CommandParameter="{Binding}" TextDecorations="None" Foreground="Black">
+                            <TextBlock Text="{Binding Title}"></TextBlock>
+                        </Hyperlink>
+                    </TextBlock>
+                </DataTemplate>
+            </TreeView.Resources>
+           
+        </TreeView>
+
+    </Grid>
+</UserControl>

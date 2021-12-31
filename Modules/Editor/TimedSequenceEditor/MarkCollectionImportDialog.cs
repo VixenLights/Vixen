@@ -6,9 +6,9 @@ using Common.Resources.Properties;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	public partial class AudacityImportDialog : BaseForm
+	public partial class MarkCollectionImportDialog : BaseForm
 	{
-		public AudacityImportDialog()
+		public MarkCollectionImportDialog()
 		{
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
@@ -49,7 +49,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		public bool IsPapagayoSelection => radioPapagayo.Checked;
+        public bool IsTimingTrackBrowserSelection => radioTimingTrackBrowser.Checked;
+
+        public bool IsPapagayoSelection => radioPapagayo.Checked;
 
 		public bool IsXTimingSelection => radioXTiming.Checked;
 

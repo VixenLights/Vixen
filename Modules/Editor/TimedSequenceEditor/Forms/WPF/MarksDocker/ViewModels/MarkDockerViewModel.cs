@@ -9,10 +9,16 @@ using System.Windows.Forms;
 using System.Xml;
 using Catel.Collections;
 using Catel.Data;
+using Catel.IoC;
 using Catel.MVVM;
+using Catel.Services;
 using Common.Controls;
+using Common.WPFCommon.Services;
 using Vixen.Marks;
 using VixenModules.App.Marks;
+using VixenModules.App.TimingTrackBrowser.Import.XLights;
+using VixenModules.App.TimingTrackBrowser.Model.InternalVendorInventory;
+using VixenModules.App.TimingTrackBrowser.ViewModels;
 using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewModels
@@ -116,7 +122,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// </summary>
 		private void ImportCollection()
 		{
-			var aDialog = new AudacityImportDialog();
+			var aDialog = new MarkCollectionImportDialog();
 
 			if (aDialog.ShowDialog() == DialogResult.OK)
 			{
@@ -130,6 +136,8 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 					MarkImportExportService.LoadXTiming(MarkCollections);
 				if (aDialog.IsPapagayoSelection)
 					MarkImportExportService.ImportPapagayoTracks(MarkCollections);
+				if(aDialog.IsTimingTrackBrowserSelection)
+					MarkImportExportService.ImportSingingFacesTracks(MarkCollections);
 			}
 		}
 
@@ -235,6 +243,15 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		}
 
 		#endregion
+
+        private void LaunchTimingTrackBrowser()
+        {
+
+			
+
+            //var xml = ds.GetFileAsStringAsync(
+             //   new Uri("https://www.xlightsfaces.com/wp-content/uploads/xlights_music_free.xml"));
+		}
 
 	}
 }
