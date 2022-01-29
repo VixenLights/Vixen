@@ -9,7 +9,6 @@ namespace Vixen.Module
 		/// <summary>
 		/// Module type that the data model belongs to.
 		/// </summary>
-		[DataMember]
 		public Guid ModuleTypeId { get; set; }
 
 		/// <summary>
@@ -20,7 +19,6 @@ namespace Vixen.Module
 		/// <summary>
 		/// The InstanceId of the of module that the data model belongs to.
 		/// </summary>
-		[DataMember]
 		public Guid ModuleInstanceId { get; set; }
 
 		/// <summary>
