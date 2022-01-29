@@ -291,5 +291,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			_previousTime = Duration;
 		}
+
+		private void btnSetFullSequence_Click(object sender, EventArgs e)
+		{
+			Start = TimeSpan.Zero;
+			End = _sequenceLength;
+			Duration = _sequenceLength;
+
+		}
 	}
 }
