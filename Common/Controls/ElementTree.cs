@@ -824,8 +824,8 @@ namespace Common.Controls
 			//When this gets fixed enable the keydown event handler as well
 			cutNodesToolStripMenuItem.Enabled = false; // (SelectedTreeNodes.Count > 0);
 			copyNodesToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 0);
-			pasteNodesToolStripMenuItem.Enabled = (_clipboardNodes != null);
-			pasteAsNewToolStripMenuItem.Enabled = (_clipboardNodes != null);
+			pasteNodesToolStripMenuItem.Enabled = CanPaste();
+			pasteAsNewToolStripMenuItem.Enabled = CanPaste(true);
 			nodePropertiesToolStripMenuItem.Visible = AllowPropertyEdit;
 			copyPropertiesToolStripMenuItem.Enabled = (SelectedTreeNodes.Count == 1);
 			pastePropertiesToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 0) && (_clipboardProperties != null);
@@ -840,6 +840,7 @@ namespace Common.Controls
 			exportWireDiagramToolStripMenuItem.Visible = AllowWireExport;
 			exportWireDiagramToolStripMenuItem.Enabled = CanExportDiagram();
 			exportElementTreeToolStripMenuItem.Enabled = treeview.Nodes.Count > 0;
+			
 		}
 
 		private bool CanExportDiagram()
@@ -908,6 +909,35 @@ namespace Common.Controls
 			PasteNodes();
 		}
 
+		private bool CanPaste(bool asNew=false)
+		{
+			if (_clipboardNodes == null)
+				return false;
+
+			ElementNode destinationNode = null;
+			TreeNode selectedTreeNode = treeview.SelectedNode;
+
+			if (selectedTreeNode != null)
+				destinationNode = selectedTreeNode.Tag as ElementNode;
+
+			IEnumerable<ElementNode> invalidNodesForTarget = Enumerable.Empty<ElementNode>();
+			if (destinationNode == null && !asNew)
+			{
+				invalidNodesForTarget = VixenSystem.Nodes.InvalidRootNodes;
+			}
+			else if(destinationNode!=null)
+			{
+				invalidNodesForTarget = destinationNode.InvalidChildren();
+			}
+			IEnumerable<ElementNode> invalidSourceNodes = invalidNodesForTarget.Intersect(_clipboardNodes);
+			if (invalidSourceNodes.Any())
+			{
+				return false;
+			}
+
+			return true;
+		}
+
 		private void PasteNodes(bool pasteAsNew = false)
 		{
 			if (_clipboardNodes == null)
@@ -918,31 +948,11 @@ namespace Common.Controls
 
 			if (selectedTreeNode != null)
 				destinationNode = selectedTreeNode.Tag as ElementNode;
-			if (!pasteAsNew)
+				
+			if (!CanPaste(pasteAsNew))
 			{
-				IEnumerable<ElementNode> invalidNodesForTarget;
-				if (destinationNode == null)
-				{
-					invalidNodesForTarget = VixenSystem.Nodes.InvalidRootNodes;
-				}
-				else
-				{
-					invalidNodesForTarget = destinationNode.InvalidChildren();
-				}
-				IEnumerable<ElementNode> invalidSourceNodes = invalidNodesForTarget.Intersect(_clipboardNodes);
-				if (invalidSourceNodes.Any())
-				{
-					SystemSounds.Hand.Play();
-					return;
-				}
-			}
-			else
-			{
-				if (destinationNode != null && destinationNode.IsLeaf)
-				{
-					SystemSounds.Hand.Play();
-					return;
-				}
+				SystemSounds.Hand.Play();
+				return;
 			}
 			
 			// Check to see if the new parent node would be 'losing' the Element (ie. becoming a
