@@ -793,4 +793,471 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		#endregion
 	}
+
+	/// <summary>
+	/// Maintains a color in the HSI color space.
+	/// </summary>
+	[Serializable]
+	public struct HSI
+	{
+		#region Constructor 
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="h">Hue in radians</param>
+		/// <param name="s">Saturation (0-1.0)</param>
+		/// <param name="i">Intensity (0-1.0)</param>
+		public HSI(double h, double s, double i)
+		{
+			_h = h;
+			_s = s;
+			_i = i;
+		}
+
+		#endregion
+
+		#region Private Fields
+
+		/// <summary>
+		/// Hue in radians.
+		/// </summary>
+		private double _h;
+
+		/// <summary>
+		/// Saturation (0-1.0)
+		/// </summary>
+		private double _s;
+
+		/// <summary>
+		/// Intensity (0-1.0)
+		/// </summary>
+		private double _i;
+
+		#endregion
+
+		#region Public Properties
+
+		/// <summary>
+		/// Gets or sets the Hue in radians.
+		/// </summary>
+		public double H
+		{
+			get { return _h; }
+			set { _h = Clamp(value, 0.0, 2 * Math.PI); }
+		}
+
+		/// <summary>
+		/// Gets or sets the Saturation.  Allowable range is 0-1.0.
+		/// </summary>
+		public double S
+		{
+			get { return _s; }
+			set { _s = Clamp(value, 0.0, 1.0); }
+		}
+
+		/// <summary>
+		/// Gets or sets the intensity.  Allowable range is 0-1.0.
+		/// </summary>
+		public double I
+		{
+			get { return _i; }
+			set { _i = Clamp(value, 0.0, 1.0); }
+		}
+
+		#endregion
+
+		#region Public Methods
+
+		/// <summary>
+		/// Converts the color to RGBW format.
+		/// </summary>
+		/// <returns>RGBW structure representing the color</returns>
+		public RGBW ToRGBW()
+		{
+			// Convert the color to RGBW format
+			double red;
+			double green;
+			double blue;
+			double white;
+			HSI_To_RGBW(H, S, I, out red, out green, out blue, out white);
+
+			// Two algorithms are included in this namespace for converting from RGB to RGBW.
+			// To get the Saiko alorithm to match the stack exchange algorithm I needed to
+			// round the r,g,b,w values to the nearest integer.
+			int r1 = (int)Math.Round(red);
+			int g1 = (int)Math.Round(green);
+			int b1 = (int)Math.Round(blue);
+			int w1 = (int)Math.Round(white);
+
+			// Return RGBW struct converting from 0-255 to 0-1
+			return new RGBW(r1 / 255.0, g1 / 255.0, b1 / 255.0, w1 / 255.0);
+		}
+
+		#endregion
+
+		#region Private Methods
+
+		/// <summary>
+		/// Constrains the value to the specified range.
+		/// </summary>
+		/// <param name="value">Value to constrain</param>
+		/// <param name="min">Minimum of the allowable range</param>
+		/// <param name="max">Maximum of the allowable range</param>
+		/// <returns>Constrained value</returns>
+		private double Clamp(double value, double min, double max)
+		{
+			return (value < min) ? min : (value > max) ? max : value;
+		}
+
+		/// <summary>
+		/// Converts the HSI color to RGBW format.
+		/// </summary>
+		/// <param name="H">Hue in radians</param>
+		/// <param name="S">Saturation (0-1.0)</param>
+		/// <param name="I">Intensity (0-1.0)</param>
+		/// <param name="red">Red component (0-255)</param>
+		/// <param name="green">Green component (0-255)</param>
+		/// <param name="blue">Blue component (0-255)</param>
+		/// <param name="white">White component (0-255)</param>
+		/// <remarks>
+		/// This method was dervied from:
+		/// https://blog.saikoled.com/post/44677718712/how-to-convert-from-hsi-to-rgb-white
+		///
+		/// The algorithm was further adjust based on this Python library.
+		/// https://github.com/iamh2o/rgbw_colorspace_converter/
+		/// </remarks>
+		private void HSI_To_RGBW(double H, double S, double I, out double red, out double green, out double blue, out double white)
+		{
+			double r, g, b, w;
+			double cos_h;
+			double cos_1047_h;
+
+			H = H % (2 * Math.PI); // cycle H around to 0-360 degrees
+			
+			S = S > 0 ? (S < 1 ? S : 1) : 0; // clamp S and I to interval [0,1]
+			I = I > 0 ? (I < 1 ? I : 1) : 0;
+
+			if (H < 2.09439)
+			{
+				cos_h = Math.Cos(H);
+				cos_1047_h = Math.Cos(1.047196667 - H);
+				r = (S * 255 * I / 3 * (1 + cos_h / cos_1047_h));
+				g = (S * 255 * I / 3 * (1 + (1 - cos_h / cos_1047_h)));
+				b = 0;
+				w = (255 * (1 - S) * I);
+			}
+			else if (H < 4.188787)
+			{
+				H = H - 2.09439;
+				cos_h = Math.Cos(H);
+				cos_1047_h = Math.Cos(1.047196667 - H);
+				g = (S * 255 * I / 3 * (1 + cos_h / cos_1047_h));
+				b = (S * 255 * I / 3 * (1 + (1 - cos_h / cos_1047_h)));
+				r = 0;
+				w = (255 * (1 - S) * I);
+			}
+			else
+			{
+				H = H - 4.188787;
+				cos_h = Math.Cos(H);
+				cos_1047_h = Math.Cos(1.047196667 - H);
+				b = (S * 255 * I / 3 * (1 + cos_h / cos_1047_h));
+				r = (S * 255 * I / 3 * (1 + (1 - cos_h / cos_1047_h)));
+				g = 0;
+				w = (255 * (1 - S) * I);
+			}
+
+			// These checks were added because during testing I saw large negative numbers
+			// instead of zero.
+			if (Double.IsNaN(r))
+			{
+				r = 0.0;
+			}
+
+			if (Double.IsNaN(g))
+			{
+				g = 0.0;
+			}
+
+			if (Double.IsNaN(b))
+			{
+				b = 0.0;
+			}
+
+			if (Double.IsNaN(w))
+			{
+				w = 0.0;
+			}
+
+			red = Clamp(r * 3, 0, 255);
+			green = Clamp(g * 3, 0, 255);
+			blue = Clamp(b * 3, 0, 255);
+			white = Clamp(w, 0, 255);
+		}
+
+		#endregion
+	}
+
+	/// <summary>
+	/// Maintains a color in RGBW format.
+	/// </summary>
+	[Serializable]
+	public struct RGBW
+	{
+		#region Constructor 
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="r">Red component (0-1.0)</param>
+		/// <param name="g">Green component (0-1.0)</param>
+		/// <param name="b">Blue component (0-1.0)</param>
+		/// <param name="w">White component (0-1.0)</param>
+		public RGBW(double r, double g, double b, double w)
+		{
+			_r = r;
+			_g = g;
+			_b = b;
+			_w = w;
+		}
+
+		#endregion
+
+		#region Private Fields
+
+		/// <summary>
+		/// Red component.
+		/// </summary>
+		private double _r;
+
+		/// <summary>
+		/// Green component.
+		/// </summary>
+		private double _g;
+
+		/// <summary>
+		/// Blue component.
+		/// </summary>
+		private double _b;
+
+		/// <summary>
+		/// White component.
+		/// </summary>
+		private double _w;
+
+		#endregion
+
+		#region Public Properties
+
+		/// <summary>
+		/// Gets or sets the red component of the color.
+		/// </summary>
+		public double R
+		{
+			get { return _r; }
+			set { _r = Clamp(value, 0.0, 1.0); }
+		}
+
+		/// <summary>
+		/// Gets or sets the green component of the color.
+		/// </summary>
+		public double G
+		{
+			get { return _g; }
+			set { _g = Clamp(value, 0.0, 1.0); }
+		}
+
+		/// <summary>
+		/// Gets or sets the blue component of the color.
+		/// </summary>
+		public double B
+		{
+			get { return _b; }
+			set { _b = Clamp(value, 0.0, 1.0); }
+		}
+
+		/// <summary>
+		/// Gets or sets the white component of the color.
+		/// </summary>
+		public double W
+		{
+			get { return _w; }
+			set { _w = Clamp(value, 0.0, 1.0); }
+		}
+
+		#endregion
+
+		#region Private Methods
+
+		/// <summary>
+		/// Constrains the value to the specified range.
+		/// </summary>
+		/// <param name="value">Value to constrain</param>
+		/// <param name="min">Minimum of the allowable range</param>
+		/// <param name="max">Maximum of the allowable range</param>
+		/// <returns>Constrained value</returns>
+		private double Clamp(double value, double min, double max)
+		{
+			return (value < min) ? min : (value > max) ? max : value;
+		}
+
+		#endregion
+	}
+
+	/// <summary>
+	/// Extension methods for the Microsoft Color class.
+	/// </summary>
+	public static class ColorExtensions
+	{
+		/// <summary>
+		/// Converts the color to RGBW format.
+		/// </summary>
+		/// <param name="color">Color to convert</param>
+		/// <returns>RGBW struct representing the color</returns>
+		/// <remarks>This method uses the Saiko algorithm</remarks>
+		public static RGBW ToRGBW(this Color color)
+		{
+			// First step convert the color to HSI color space
+			HSI hsi = color.ToHSI();
+
+			// Second step convert to RGBW
+			return hsi.ToRGBW();
+		}
+
+		/// <summary>
+		/// Converts the color to RGBW format.
+		/// </summary>
+		/// <param name="color">Color to convert</param>
+		/// <returns>RGBW struct representing the color</returns>
+		/// <remarks>This method uses the stack exchange algorithm</remarks>
+		public static RGBW ToRGBWFast(this Color color)
+		{
+			int r;
+			int g;
+			int b;
+			int w;
+			
+			// Convert the color to RGBW
+			RGBToRGBW(color, out r, out g, out b, out w);
+
+			// Create an RGBW struct normalizing the component values to 0-1.0 range
+			RGBW rgbw = new RGBW(r / 255.0, g / 255.0, b / 255.0, w / 255.0);
+			
+			return rgbw;
+		}
+
+		/// <summary>
+		/// Converts a Color struct to an HSI struct.
+		/// </summary>
+		/// <param name="color">Color to convert</param>
+		/// <returns>HSI struct representing the color</returns>
+		public static HSI ToHSI(this Color color)
+		{
+			// Convert the RBG to HSI
+			double h;
+			double s;
+			double i;
+			RGBToHSI(color.R / 255.0, color.G / 255.0, color.B / 255.0, out h, out s, out i);
+
+			// Create the HSI struct
+			HSI hsi = new HSI(h, s, i);
+
+			// Return the HSI struct
+			return hsi;
+		}
+
+		/// <summary>
+		/// Converts RGB values to HSI values.
+		/// </summary>
+		/// <param name="r">Red component (0-255)</param>
+		/// <param name="g">Green component (0-255)</param>
+		/// <param name="b">Blue component (0-255)</param>
+		/// <param name="h">Hue Output In Radians</param>
+		/// <param name="s">Saturation Output (0-1)</param>
+		/// <param name="i">Intensity Output (0-1)</param>
+		/// <remarks>
+		/// This function was derived from:
+		/// https://en.wikipedia.org/wiki/HSL_and_HSV
+		/// </remarks>
+		private static void RGBToHSI(double r, double g, double b, out double h, out double s, out double i)
+		{
+			i = (r + g + b) / 3.0;
+
+			double rn = r / (r + g + b);
+			double gn = g / (r + g + b);
+			double bn = b / (r + g + b);
+
+			h = Math.Acos((0.5 * ((rn - gn) + (rn - bn))) / (Math.Sqrt((rn - gn) * (rn - gn) + (rn - bn) * (gn - bn))));
+			if (b > g)
+			{
+				h = 2 * Math.PI - h;
+			}
+
+			s = 1 - 3 * Math.Min(rn, Math.Min(gn, bn));
+		}
+
+		/// <summary>
+		/// Converts an RGB value to RGBW value.
+		/// </summary>
+		/// <param name="color">Color to convert</param>
+		/// <param name="r">Red component (0-255)</param>
+		/// <param name="g">Green component (0-255)</param>
+		/// <param name="b">Blue component (0-255)</param>
+		/// <param name="w">White component (0-255)</param>
+		/// <remarks>
+		/// This method was found at the following article.
+		/// https://stackoverflow.com/questions/40312216/converting-rgb-to-rgbw
+		/// </remarks>
+		static void RGBToRGBW(Color color, out int r, out int g, out int b, out int w)
+		{
+			float Ri = color.R;
+			float Gi = color.G;
+			float Bi = color.B;
+
+			float tM = Math.Max(Ri, Math.Max(Gi, Bi));
+
+			//If the maximum value is 0, immediately return pure black.
+			if (tM == 0)
+			{
+				r = 0;
+				g = 0;
+				b = 0;
+				w = 0;
+				return;
+			}
+
+			//This section serves to figure out what the color with 100% hue is
+			float multiplier = 255.0f / tM;
+			float hR = Ri * multiplier;
+			float hG = Gi * multiplier;
+			float hB = Bi * multiplier;
+
+			//This calculates the Whiteness (not strictly speaking Luminance) of the color
+			float M = Math.Max(hR, Math.Max(hG, hB));
+			float m = Math.Min(hR, Math.Min(hG, hB));
+			float Luminance = ((M + m) / 2.0f - 127.5f) * (255.0f / 127.5f) / multiplier;
+
+			//Calculate the output values
+			int Wo = Convert.ToInt32(Luminance);
+			int Bo = Convert.ToInt32(Bi - Luminance);
+			int Ro = Convert.ToInt32(Ri - Luminance);
+			int Go = Convert.ToInt32(Gi - Luminance);
+
+			//Trim them so that they are all between 0 and 255
+			if (Wo < 0) Wo = 0;
+			if (Bo < 0) Bo = 0;
+			if (Ro < 0) Ro = 0;
+			if (Go < 0) Go = 0;
+			if (Wo > 255) Wo = 255;
+			if (Bo > 255) Bo = 255;
+			if (Ro > 255) Ro = 255;
+			if (Go > 255) Go = 255;
+
+			r = Ro;
+			g = Go;
+			b = Bo;
+			w = Wo;
+		}
+	}
 }

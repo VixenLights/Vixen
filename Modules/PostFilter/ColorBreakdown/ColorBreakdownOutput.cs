@@ -9,12 +9,30 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		private readonly IBreakdownFilter _filter;
 		private readonly ColorBreakdownItem _breakdownItem;
 
-		public ColorBreakdownOutput(ColorBreakdownItem breakdownItem, bool mixColors)
+		#region Constructor
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="breakdownItem">Breakdown item associated with the output</param>
+		/// <param name="mixColors">True when this output is using color mixing</param>
+		/// <param name="rgbToRGBWConverter">Optional RGB to RGBW converter</param>
+		public ColorBreakdownOutput(ColorBreakdownItem breakdownItem, bool mixColors, RGBToRGBWConverter rgbToRGBWConverter)
 		{
 			Data = new CommandDataFlowData(CommandLookup8BitEvaluator.CommandLookup[0]);
 			if (mixColors)
 			{
-				_filter = new ColorBreakdownMixingFilter(breakdownItem);
+				// If an RGB to RGBW converter was specified then...
+				if (rgbToRGBWConverter != null)
+				{
+					// An RGBW mixing filter is needed
+					_filter = new RGBWColorBreakdownMixingFilter(breakdownItem, rgbToRGBWConverter);
+				}
+				else
+				{
+					// Otherwise a normal RGB mixing filter is needed
+					_filter = new RGBColorBreakdownMixingFilter(breakdownItem);
+				}
 			}
 			else
 			{
@@ -23,6 +41,8 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 
 			_breakdownItem = breakdownItem;
 		}
+
+		#endregion
 
 		public void ProcessInputData(IntentsDataFlowData data)
 		{
