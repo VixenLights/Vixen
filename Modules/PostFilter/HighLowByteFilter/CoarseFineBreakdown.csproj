@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<UseWindowsForms>true</UseWindowsForms>
+		<Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+		<Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+		<ProductVersion>1.0</ProductVersion>
+		<RootNamespace>VixenModules.OutputFilter.CoarseFineBreakdown</RootNamespace>
+		<TargetFramework>net48</TargetFramework>
+		<AssemblyTitle>CoarseFineBreakdown</AssemblyTitle>
+		<AssemblyName>CoarseFineBreakdown</AssemblyName>
+		<Product>CoarseFineBreakdown</Product>
+		<Copyright>Copyright ©  2021</Copyright>
+		<Platforms>x64;x86</Platforms>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+		<OutputPath>$(SolutionDir)\$(Configuration)\Modules\OutputFilter\</OutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+		<OutputPath>$(SolutionDir)\Release64\Modules\OutputFilter\</OutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+		<OutputPath>..\..\..\$(Configuration)\Modules\OutputFilter\</OutputPath>
+		<DefineConstants>TRACE</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+		<OutputPath>..\..\..\Debug64\Modules\OutputFilter\</OutputPath>
+		<DefineConstants>TRACE</DefineConstants>
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include="System.Windows.Forms" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
+			<Private>false</Private>
+			<IncludeAssets>None</IncludeAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
+			<Private>false</Private>
+			<IncludeAssets>None</IncludeAssets>
+		</ProjectReference>
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
+			<Private>false</Private>
+			<IncludeAssets>None</IncludeAssets>
+		</ProjectReference>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="NLog" Version="4.7.11">
+			<ExcludeAssets>runtime</ExcludeAssets>
+		</PackageReference>
+	</ItemGroup>
+</Project>
