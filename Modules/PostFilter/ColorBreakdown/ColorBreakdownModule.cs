@@ -89,8 +89,10 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			// If this converter is null then the logic below will use normal RGB filtering
 			RGBToRGBWConverter rgbToRGBWConverter = null;
 
-			// If the break down contains four colors then...
-			if (_data.BreakdownItems.Count == 4)
+			// If mixing colors AND
+			// the break down contains four colors then...
+			if (_data.MixColors && 
+			    _data.BreakdownItems.Count == 4)
 			{
 				// Verify the colors are in the expected order
 				Debug.Assert(_data.BreakdownItems[0].Color == Color.Red);
