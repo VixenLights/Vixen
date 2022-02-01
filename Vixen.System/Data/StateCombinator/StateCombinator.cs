@@ -36,7 +36,7 @@ namespace Vixen.Data.StateCombinator
 		{
 		}
 
-		public virtual void Handle(IIntentState<PositionValue> obj)
+		public virtual void Handle(IIntentState<RangeValue> obj)
 		{
 			StateCombinatorValue.Add(obj);
 		}
