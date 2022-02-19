@@ -48,7 +48,12 @@
 												<Image Source="/Resources;component/Resources/delete_32.png" Width="16" Height="16"/>
 											</MenuItem.Icon>
 										</MenuItem>
-										<MenuItem Header="Solid Line" IsCheckable="True" IsChecked="{Binding Decorator.IsSolidLine}"/>
+                                        <MenuItem Header="Offset Time" Command="{Binding OffsetTimeCommand}">
+                                            <MenuItem.Icon>
+                                                <Image Source="/Resources;component/Resources/clock_go.png" Width="16" Height="16"/>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="Solid Line" IsCheckable="True" IsChecked="{Binding Decorator.IsSolidLine}"/>
 										<MenuItem Header="Bold" IsCheckable="True" IsChecked="{Binding Decorator.IsBold}"/>
 										<MenuItem Header="Color" Command="{Binding PickColorCommand}">
 											<MenuItem.Icon>

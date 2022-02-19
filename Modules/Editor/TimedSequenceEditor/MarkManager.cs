@@ -1257,7 +1257,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		static string lastFolder = "";
 		private void buttonImportAudacity_Click(object sender, EventArgs e)
 		{
-			var aDialog = new AudacityImportDialog();
+			var aDialog = new MarkCollectionImportDialog();
 
 			if (aDialog.ShowDialog() == DialogResult.OK)
 			{

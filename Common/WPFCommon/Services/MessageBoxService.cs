@@ -89,5 +89,37 @@ namespace Common.WPFCommon.Services
 			}
 		}
 
-	}
+        public MessageBoxResponse GetNumericUserInput(string question, string title, int defaultValue, int minValue, int maxValue, Form parent = null)
+        {
+			NumberDialog dialog = new NumberDialog(title, question, defaultValue,minValue, maxValue);
+			
+			if (parent == null)
+			{
+				CenterDialog(dialog);
+			}
+
+			var input = 0;
+
+			var validInput = false;
+			DialogResult result;
+			do
+			{
+				result = dialog.ShowDialog(parent);
+				if (result == DialogResult.OK)
+				{
+					if (dialog.Value == 0)
+					{
+						continue;
+					}
+
+					input = dialog.Value;
+				}
+
+				validInput = true;
+			}
+			while (!validInput && result != DialogResult.OK);
+
+			return new MessageBoxResponse(Enum<MessageResult>.ConvertFromOtherEnumValue(result), input.ToString());
+		}
+    }
 }

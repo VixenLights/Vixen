@@ -212,6 +212,15 @@ namespace VixenModules.App.Marks
 			OnPropertyChanged(nameof(Marks));
 		}
 
+		public void OffsetMarksByTime(TimeSpan time)
+        {
+			foreach(var m in Marks)
+            {
+				m.StartTime = m.StartTime + time;
+            }
+			OnPropertyChanged(nameof(Marks));
+		}
+
 		[OnDeserialized]
 		void OnDeserialized(StreamingContext c)
 		{

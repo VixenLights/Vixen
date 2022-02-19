@@ -181,7 +181,8 @@
             "GBR",
             "GRB",
             "BRG",
-            "BGR"});
+            "BGR",
+            "RGBW"});
 			this.comboBoxColorOrder.Location = new System.Drawing.Point(141, 301);
 			this.comboBoxColorOrder.Name = "comboBoxColorOrder";
 			this.comboBoxColorOrder.Size = new System.Drawing.Size(114, 23);

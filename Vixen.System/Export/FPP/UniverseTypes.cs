@@ -21,8 +21,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN 
 // THE SOFTWARE.
 
-using Newtonsoft.Json;
-
 namespace Vixen.Export.FPP
 {
 	public enum UniverseTypes
@@ -32,6 +30,8 @@ namespace Vixen.Export.FPP
 		ArtNet_Broadcast,
 		ArtNet_Unicast,
 		DDP_Raw,
-		DDP_1_Based
+		DDP_1_Based,
+		KiNet_V1,
+		KiNet_V2
 	}
 }

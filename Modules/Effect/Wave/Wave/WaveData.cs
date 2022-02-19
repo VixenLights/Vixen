@@ -69,10 +69,14 @@ namespace VixenModules.Effect.Wave
 				Orientation = Orientation,					
 			};
 
-			// Clone the waves
-			for (int index = 0; index < WaveformData.Count; index++)
+			// Clear out the default waveforms
+			result.WaveformData.Clear();
+
+			// Loop over the waveforms
+			foreach(WaveformData waveForm in WaveformData)
 			{
-				result.WaveformData[index] = (WaveformData)(WaveformData[index]).CreateInstanceForClone();
+				// Clone the waveform
+				result.WaveformData.Add(waveForm.CreateInstanceForClone());
 			}
 		
 			return result;

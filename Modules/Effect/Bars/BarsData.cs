@@ -28,7 +28,7 @@ namespace VixenModules.Effect.Bars
             ZigZagSpacing = 5;           
             BarType = BarType.Flat;
             ZigZagPeriod = 25;
-			RotationAngle = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+			RotationAngle = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			HighlightPercentage = 5;
 		}
 
@@ -95,7 +95,7 @@ namespace VixenModules.Effect.Bars
 
 			if (RotationAngle == null)
 			{
-				RotationAngle = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+				RotationAngle = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			}
 		}
 
