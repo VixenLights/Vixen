@@ -7,7 +7,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,7 +19,6 @@ using Vixen;
 using Vixen.Execution.Context;
 using Vixen.Marks;
 using Vixen.Sys.LayerMixing;
-using VixenModules.App.Marks;
 
 namespace Common.Controls.Timeline
 {
@@ -53,9 +51,6 @@ namespace Common.Controls.Timeline
 		public ISequenceContext Context = null;
 		public bool SequenceLoading { get; set; }
 		public Element _workingElement; //This is the element that was left clicked, is set to null on mouse up
-		public bool isColorDrop { get; set; }
-		public bool isCurveDrop { get; set; }
-		public bool isGradientDrop { get; set; }
 		public string alignmentHelperWarning = @"Too many effects selected on the same row for this action.\nMax selected effects per row for this action is 4";
 		public bool aCadStyleSelectionBox { get; set; }
 
@@ -106,9 +101,6 @@ namespace Common.Controls.Timeline
 
 			// Drag & Drop
 			AllowDrop = true;
-			//DragEnter += TimelineGrid_DragEnter;
-			//DragDrop += TimelineGrid_DragDrop;
-			//DragOver += TimelineGrid_DragOver;
 			StartBackgroundRendering();
 			CurrentDragSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>();
 			EnableSnapTo = true;
@@ -497,7 +489,6 @@ namespace Common.Controls.Timeline
 
 		private void TimeLineAlignmentHandler(object sender, AlignmentEventArgs e)
 		{
-			Logging.Info($"Alignment event {e.Active}");
 			MarkAlignmentPoints = e.Times ?? Enumerable.Empty<TimeSpan>();
 		}
 
