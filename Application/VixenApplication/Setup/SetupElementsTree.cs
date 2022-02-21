@@ -398,7 +398,17 @@ namespace VixenApplication.Setup
 				}
 			}
 
-			MasterForm.SelectControllersAndOutputs(controllersAndOutputs, true);
+			if (controllersAndOutputs.Count == 0)
+			{
+				var msg = new MessageBoxForm("No controller patch points found.", "Not Found", MessageBoxButtons.OK,
+					SystemIcons.Information);
+				msg.ShowDialog(this);
+			}
+			else
+			{
+				MasterForm.SelectControllersAndOutputs(controllersAndOutputs, true);
+			}
+			
 		}
 
 		private IEnumerable<IDataFlowComponent> _findComponentsOfTypeInTreeFromComponent(IDataFlowComponent dataFlowComponent, Type dfctype)
