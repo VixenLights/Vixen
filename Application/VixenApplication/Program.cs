@@ -24,6 +24,7 @@ namespace VixenApplication
 		[STAThread]
 		private static void Main()
 		{
+			//Add some comment to test.
 			try
 			{
 				Logging.Info("Vixen app starting.");
