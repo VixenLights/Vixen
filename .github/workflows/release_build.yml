@@ -13,6 +13,7 @@ on:
       - .github/**
       - .tgitconfig
       - 'Release Notes.txt'
+      - 'Build/**'
 
 jobs:
 
