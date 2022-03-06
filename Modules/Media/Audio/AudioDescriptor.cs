@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Common.AudioPlayer;
 using Vixen.Module.Media;
 
 namespace VixenModules.Media.Audio
@@ -45,10 +46,7 @@ namespace VixenModules.Media.Audio
 			get { return "Audio"; }
 		}
 
-		public override string[] FileExtensions
-		{
-			get { return new string[] {".mp3", ".wma", ".aiff", ".flac", ".ogg", ".wav",".mp4"}; }
-		}
+		public override string[] FileExtensions => AudioOutputManager.GetSupportedFileExtensions();
 
 		public override bool IsTimingSource
 		{

@@ -1787,7 +1787,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			// TODO: we need to be able to get the support file types, to filter the openFileDialog properly, but it's not
 			// immediately obvious how to get that; for now, just let it open any file type and complain if it's wrong
-
+			openFileDialog.Filter = AudioOutputManager.GetSupportedFilesFilter();
+			
 			if (openFileDialog.ShowDialog(this) == DialogResult.OK)
 			{
 				IMediaModuleInstance newInstance = _sequence.AddMedia(openFileDialog.FileName);
@@ -1847,6 +1848,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 				}
 
+				openFileDialog.Filter = string.Empty;
 				UpdateMediaOnSupportedEffects();
 
 				toolStripMenuItem_removeAudio.Enabled = true;

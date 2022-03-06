@@ -306,6 +306,7 @@ namespace Common.AudioPlayer
 			if (_soundOut == null)
 			{
 				_soundOut = AudioOutputManager.GetAudioOutput();
+				if (_soundOut == null) return false;
 				_soundOut.Stopped += PlaybackDeviceOnPlaybackStopped;
 			}
 
@@ -316,8 +317,8 @@ namespace Common.AudioPlayer
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e);
-				throw;
+				Logging.Error(e,"An exception occured trying to initialize the audio player.");
+				return false;
 			}
 			
 			return true;

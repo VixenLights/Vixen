@@ -236,10 +236,6 @@ namespace VixenModules.Media.Audio
 		public override void Start()
 		{
 			if (_audioSystem != null && !_audioSystem.IsPlaying) {
-				//if (_audioSystem.CurrentAudioDeviceId != CurrentPlaybackDeviceId)
-				//{
-				//	_audioSystem.SwitchAudioDevice(CurrentPlaybackDeviceId);
-				//}
 				_audioSystem.Play(); 
 			}
 		}

@@ -35,14 +35,17 @@
 			this.ctlUpdateInteral = new System.Windows.Forms.NumericUpDown();
 			this.label3 = new System.Windows.Forms.Label();
 			this.wasapiLatency = new System.Windows.Forms.NumericUpDown();
+			this.label4 = new System.Windows.Forms.Label();
+			this.grpAudio = new System.Windows.Forms.GroupBox();
 			((System.ComponentModel.ISupportInitialize)(this.ctlUpdateInteral)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.wasapiLatency)).BeginInit();
+			this.grpAudio.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// btnOK
 			// 
 			this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnOK.Location = new System.Drawing.Point(196, 133);
+			this.btnOK.Location = new System.Drawing.Point(196, 207);
 			this.btnOK.Name = "btnOK";
 			this.btnOK.Size = new System.Drawing.Size(87, 27);
 			this.btnOK.TabIndex = 1;
@@ -55,7 +58,7 @@
 			// btnCancel
 			// 
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(290, 133);
+			this.btnCancel.Location = new System.Drawing.Point(290, 207);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(87, 27);
 			this.btnCancel.TabIndex = 2;
@@ -107,11 +110,11 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(14, 80);
+			this.label3.Location = new System.Drawing.Point(6, 31);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(92, 15);
+			this.label3.Size = new System.Drawing.Size(51, 15);
 			this.label3.TabIndex = 4;
-			this.label3.Text = "Wasapi Latency:";
+			this.label3.Text = "Latency:";
 			// 
 			// wasapiLatency
 			// 
@@ -120,7 +123,7 @@
             0,
             0,
             0});
-			this.wasapiLatency.Location = new System.Drawing.Point(116, 73);
+			this.wasapiLatency.Location = new System.Drawing.Point(99, 29);
 			this.wasapiLatency.Maximum = new decimal(new int[] {
             500,
             0,
@@ -140,15 +143,34 @@
             0,
             0});
 			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(6, 62);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(0, 15);
+			this.label4.TabIndex = 6;
+			// 
+			// grpAudio
+			// 
+			this.grpAudio.Controls.Add(this.label3);
+			this.grpAudio.Controls.Add(this.label4);
+			this.grpAudio.Controls.Add(this.wasapiLatency);
+			this.grpAudio.Location = new System.Drawing.Point(17, 86);
+			this.grpAudio.Name = "grpAudio";
+			this.grpAudio.Size = new System.Drawing.Size(343, 76);
+			this.grpAudio.TabIndex = 7;
+			this.grpAudio.TabStop = false;
+			this.grpAudio.Text = "Audio";
+			// 
 			// OptionsDialog
 			// 
 			this.AcceptButton = this.btnOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(392, 170);
-			this.Controls.Add(this.wasapiLatency);
-			this.Controls.Add(this.label3);
+			this.ClientSize = new System.Drawing.Size(392, 246);
+			this.Controls.Add(this.grpAudio);
 			this.Controls.Add(this.ctlUpdateInteral);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
@@ -156,9 +178,8 @@
 			this.Controls.Add(this.btnOK);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(408, 209);
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(408, 209);
+			this.MinimumSize = new System.Drawing.Size(408, 39);
 			this.Name = "OptionsDialog";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -166,6 +187,8 @@
 			this.Load += new System.EventHandler(this.OptionsDialog_Load);
 			((System.ComponentModel.ISupportInitialize)(this.ctlUpdateInteral)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.wasapiLatency)).EndInit();
+			this.grpAudio.ResumeLayout(false);
+			this.grpAudio.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -180,5 +203,7 @@
 		private System.Windows.Forms.NumericUpDown ctlUpdateInteral;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.NumericUpDown wasapiLatency;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.GroupBox grpAudio;
 	}
 }

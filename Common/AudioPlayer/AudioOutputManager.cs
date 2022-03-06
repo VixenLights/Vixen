@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using CSCore.Codecs;
 using CSCore.CoreAudioAPI;
 using CSCore.DirectSound;
 using CSCore.SoundOut;
@@ -108,6 +109,27 @@ namespace Common.AudioPlayer
 	        }
         }
 
+        public bool AudioClientShared
+        {
+	        get => _preferences.AudioClientShareMode == AudioClientShareMode.Shared;
+	        set
+	        {
+		        _preferences.AudioClientShareMode = value?AudioClientShareMode.Shared:AudioClientShareMode.Exclusive;
+		        _preferences.Save(AudioPreferences.SettingsPath);
+	        }
+        }
+
+        public static string GetSupportedFilesFilter()
+        {   
+	        return CodecFactory.SupportedFilesFilterEn;
+        }
+
+        public static string[] GetSupportedFileExtensions()
+        {
+	        var ext =  CodecFactory.Instance.GetSupportedFileExtensions();
+	        return ext.Select(x => "." + x).ToArray();
+        }
+
         public ISoundOut GetAudioOutput()
         {
             MMDevice defaultDevice;
@@ -144,7 +166,14 @@ namespace Common.AudioPlayer
                     }
                 }
                 _currentDeviceId = device.DeviceID;
-                return new WasapiOut(true, AudioClientShareMode.Shared, _preferences.Latency) {Device = device, StreamRoutingOptions = StreamRoutingOptions.OnDeviceDisconnect|StreamRoutingOptions.OnFormatChange};
+                if(device.DeviceState == DeviceState.Active)
+                {
+	                return new WasapiOut(true, _preferences.AudioClientShareMode, _preferences.Latency) { Device = device, StreamRoutingOptions = StreamRoutingOptions.OnDeviceDisconnect | StreamRoutingOptions.OnFormatChange };
+                }
+
+                Logging.Error("Specified audio device is not active.");
+
+                return null;
             }
             
         }
