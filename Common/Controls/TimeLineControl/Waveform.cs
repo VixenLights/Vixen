@@ -124,10 +124,10 @@ namespace Common.Controls.Timeline
 				}
 			
 				var totalPixels = timeToPixels(audio.MediaDuration);
-				samplesPerPixel = audio.NumberSamples / totalPixels;
+				
 				try
 				{
-					samples = audio.GetSamples((int) samplesPerPixel, ct);
+					samples = audio.GetSamples((int)totalPixels, ct);
 					_creatingSamples = false;
 
 					if (InvokeRequired)
@@ -145,7 +145,7 @@ namespace Common.Controls.Timeline
 					_updateCancellationTokenSource?.Dispose();
 					_updateCancellationTokenSource = null;
 				}
-			});
+			}, ct);
 		}
 
 		private void FinishedSamples()
