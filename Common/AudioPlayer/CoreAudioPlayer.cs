@@ -149,8 +149,16 @@ namespace Common.AudioPlayer
 
 				try
 				{
+					if (PlaybackState == PlaybackState.Stopped)
+					{
+						return TimeSpan.Zero;
+					}
+
 					if (_waveSource != null)
+					{
 						return _waveSource.GetPosition();
+					}
+
 				}
 				catch (Exception e)
 				{
