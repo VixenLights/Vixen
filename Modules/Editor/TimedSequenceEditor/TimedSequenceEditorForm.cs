@@ -15,6 +15,7 @@ using System.Timers;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Xml;
+using Common.AudioPlayer;
 using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
@@ -23,6 +24,7 @@ using Common.Controls.TimelineControl;
 using Common.Controls.TimelineControl.LabeledMarks;
 using Common.Resources;
 using Common.Resources.Properties;
+using Microsoft.VisualBasic;
 using NLog;
 using Vixen;
 using Vixen.Execution;
@@ -223,6 +225,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolbarsToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
 			toolbarsToolStripMenuItem_Effect.DropDown.Closing += toolStripMenuItem_Closing;
 			toolbarToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
+			audioToolStripButton_Audio_Devices.DropDownOpening += AudioToolStripButton_Audio_Devices_DropDownOpening;
 
 			PerformAutoScale();
 			Execution.ExecutionStateChanged += OnExecutionStateChanged;
@@ -323,6 +326,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			dockPanel.DockRightPortion = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockRightPortion", Name), 150);
 			fileToolStripButton_AutoSave.Checked = autoSaveToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AutoSaveEnabled", Name), true);
 			modeToolStripButton_SnapTo.Checked = toolStripMenuItem_SnapTo.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapToSelected", Name), true);
+			fullWaveformToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/FullWaveform", false);
 			PopulateSnapStrength(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapStrength", Name), 2));
 			TimelineControl.grid.CloseGap_Threshold = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CloseGapThreshold", Name), ".100");
 			AlignTo_Threshold = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlignToThreshold", Name), ".800");
@@ -341,7 +345,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				$"{Name}/ShowEffectInfo", true);
 
 			TimelineControl.AddMarks(_sequence.LabeledMarkCollections);
-			
+			speedTempoToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/UseTempoForSpeed", false);
 			_curveLibrary = ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary;
 			if (_curveLibrary != null)
 			{
@@ -1375,7 +1379,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				//This path is followed for new and existing sequences so we need to determine which we have and set modified accordingly.
 				//Added logic to determine if the sequence has a filepath to set modified JU 8/1/2012. 
-				PopulateAudioDropdown();
+				
+				PopulateWaveformAudio();
+				
 				_SetTimingToolStripEnabledState();
 
 				if (String.IsNullOrEmpty(_sequence.FilePath))
@@ -1571,26 +1577,40 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
-				using (var fmod = new FmodInstance())
+				int i = 0;
+				var useDefaultAudioDevice = true;
+				
+				var preferredDevice = AudioOutputManager.Instance().AudioOutputDeviceId;
+				audioToolStripButton_Audio_Devices.DropDownItems.Clear();
+				var devices = AudioOutputManager.Instance().AudioOutputList;
+				if (devices.Any())
 				{
-					int i = 0;
-					audioToolStripButton_Audio_Devices.DropDownItems.Clear();
-					fmod.AudioDevices.OrderBy(a => a.Item1).Select(b => b.Item2).ToList().ForEach(device =>
+					foreach (var audioDevice in devices)
 					{
 						ToolStripMenuItem tsmi = new ToolStripMenuItem();
-						tsmi.Text = device;
-						tsmi.Tag = i;
+						tsmi.Text = audioDevice.FriendlyName;
+						tsmi.Tag = audioDevice.Id;
 						tsmi.Click += audioDevicesToolStripMenuItem_Click;
+						if (audioDevice.Id == preferredDevice)
+						{
+							tsmi.Checked = true;
+							useDefaultAudioDevice = false;
+						}
 						audioToolStripButton_Audio_Devices.DropDownItems.Add(tsmi);
 						i++;
-					});
+					}
+
 					if (audioToolStripButton_Audio_Devices.DropDownItems.Count > 0)
 					{
-						((ToolStripMenuItem)audioToolStripButton_Audio_Devices.DropDownItems[0]).Checked = true;
-						Variables.SelectedAudioDeviceIndex = 0;
-						PopulateWaveformAudio();
+						if (useDefaultAudioDevice)
+						{
+							var item = (ToolStripMenuItem) audioToolStripButton_Audio_Devices.DropDownItems[0];
+							item.Checked = true;
+							AudioOutputManager.Instance().AudioOutputDeviceId = (string) item.Tag;
+						}
 					}
 				}
+				
 			}
 		}
 
@@ -1628,6 +1648,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					if (audio.MediaExists)
 					{
 						TimelineControl.Audio = audio;
+						TimelineControl.Audio.UseTempo = speedTempoToolStripMenuItem.Checked;
+						speedTempoToolStripMenuItem.Enabled = true;
 						toolStripButton_AssociateAudio.ToolTipText = string.Format("Associated Audio: {0}",
 							Path.GetFileName(audio.MediaFilePath));
 					}
@@ -1643,6 +1665,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					Logging.Error("TimedSequenceEditor: <PopulateWaveformAudio> - Attempting to process null audio!");
 				}
+			}
+			else
+			{
+				speedTempoToolStripMenuItem.Enabled = false;
 			}
 		}
 
@@ -1727,6 +1753,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripMenuItem_removeAudio.Enabled = false;
 			beatBarDetectionToolStripMenuItem.Enabled = false;
 			toolStripButton_AssociateAudio.ToolTipText = @"Associate Audio";
+			speedTempoToolStripMenuItem.Enabled = false;
 
 			SequenceModified();
 		}
@@ -1760,13 +1787,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			// TODO: we need to be able to get the support file types, to filter the openFileDialog properly, but it's not
 			// immediately obvious how to get that; for now, just let it open any file type and complain if it's wrong
-
+			openFileDialog.Filter = AudioOutputManager.GetSupportedFilesFilter();
+			
 			if (openFileDialog.ShowDialog(this) == DialogResult.OK)
 			{
 				IMediaModuleInstance newInstance = _sequence.AddMedia(openFileDialog.FileName);
 				if (newInstance == null)
 				{
-					Logging.Warn(string.Format("Unsupported audio file {0}", openFileDialog.FileName));
+					Logging.Error(string.Format("Unsupported audio file {0}", openFileDialog.FileName));
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("The selected file is not a supported type.", @"Warning", false, false);
@@ -1780,14 +1808,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_sequence.RemoveMedia(module);
 				}
 				//Remove any associated audio from the timeline.
+				TimelineControl.Audio?.Dispose();
 				TimelineControl.Audio = null;
-
+				
 				TimeSpan length = TimeSpan.Zero;
 				if (newInstance is Audio)
 				{
 					length = (newInstance as Audio).MediaDuration;
 					TimelineControl.Audio = newInstance as Audio;
+					if(TimelineControl.Audio != null)
+					{
+						TimelineControl.Audio.UseTempo = speedTempoToolStripMenuItem.Checked;
+					}
 				}
+
+				speedTempoToolStripMenuItem.Enabled = TimelineControl.Audio != null;
 
 				_UpdateTimingSourceToSelectedMedia();
 
@@ -1813,6 +1848,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 				}
 
+				openFileDialog.Filter = string.Empty;
 				UpdateMediaOnSupportedEffects();
 
 				toolStripMenuItem_removeAudio.Enabled = true;
@@ -5398,7 +5434,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/RulerHeight", Name), TimelineControl.ruler.Height);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SplitterDistance", Name), TimelineControl.splitContainer.SplitterDistance);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/ShowEffectInfo", TimelineControl.grid.ShowEffectToolTip);
-
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/FullWaveform", fullWaveformToolStripMenuItem.Checked);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/UseTempoForSpeed", speedTempoToolStripMenuItem.Checked);
+			
 			Save_ToolsStripItemsFile();
 
 			//This .Close is here because we need to save some of the settings from the form before it is closed.
