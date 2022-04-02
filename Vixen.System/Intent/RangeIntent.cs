@@ -3,9 +3,9 @@ using Vixen.Data.Value;
 
 namespace Vixen.Intent
 {
-	public class RangeIntent : NonSegmentedLinearIntent<RangeValue>
+	public class RangeIntent : NonSegmentedLinearIntent<RangeValue<FunctionIdentity>>
 	{
-		public RangeIntent(RangeValue startValue, RangeValue endValue, TimeSpan timeSpan)
+		public RangeIntent(RangeValue<FunctionIdentity> startValue, RangeValue<FunctionIdentity> endValue, TimeSpan timeSpan)
 			: base(startValue, endValue, timeSpan)
 		{
 		}

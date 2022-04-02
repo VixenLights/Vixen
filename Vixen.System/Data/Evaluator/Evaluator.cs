@@ -24,7 +24,7 @@ namespace Vixen.Data.Evaluator
 		{
 		}
 		
-		public virtual void Handle(IIntentState<RangeValue> obj)
+		public virtual void Handle(IIntentState<RangeValue<FunctionIdentity>> obj)
 		{
 		}
 

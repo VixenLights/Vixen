@@ -12,10 +12,10 @@ namespace Vixen.Sys.Dispatch
 		{
 		}
 	
-		public virtual void Handle(IIntentState<RangeValue> obj)
+		public virtual void Handle(IIntentState<RangeValue<FunctionIdentity>> obj)
 		{
 		}
-	
+
 		public virtual void Handle(IIntentState<CommandValue> obj)
 		{
 		}

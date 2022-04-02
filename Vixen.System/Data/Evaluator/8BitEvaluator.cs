@@ -18,7 +18,7 @@ namespace Vixen.Data.Evaluator
 			EvaluatorValue = CommandLookup8BitEvaluator.CommandLookup[i];
 		}
 
-		public override void Handle(IIntentState<RangeValue> obj)
+		public override void Handle(IIntentState<RangeValue<FunctionIdentity>> obj)
 		{
 			var i = (byte)(byte.MaxValue * obj.GetValue().Value);
 			EvaluatorValue = CommandLookup8BitEvaluator.CommandLookup[i];

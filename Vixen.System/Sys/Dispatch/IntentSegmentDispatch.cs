@@ -8,7 +8,7 @@ namespace Vixen.Sys.Dispatch
 		{
 		}
 		
-		public virtual void Handle(IIntentSegment<RangeValue> obj)
+		public virtual void Handle(IIntentSegment<RangeValue<FunctionIdentity>> obj)
 		{
 		}
 
