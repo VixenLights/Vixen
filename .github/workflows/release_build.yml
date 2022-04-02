@@ -1,6 +1,7 @@
 name: Release Build
 
 on:
+  workflow_dispatch:
   push:
     branches: 
       - master
@@ -13,6 +14,7 @@ on:
       - .github/**
       - .tgitconfig
       - 'Release Notes.txt'
+      - 'Build/**'
 
 jobs:
 
@@ -113,8 +115,8 @@ jobs:
             
       - name: Update versions
         run: |
-          ./Build/dotnet-setversion/setversion ${{ needs.setup.outputs.version }} Vixen.System\Vixen.csproj
-          ./Build/dotnet-setversion/setversion ${{ needs.setup.outputs.version }} Application\VixenApplication\VixenApplication.csproj
+          ./Build/dotnet-setversion/dotnet-setversion ${{ needs.setup.outputs.version }} Vixen.System\Vixen.csproj
+          ./Build/dotnet-setversion/dotnet-setversion ${{ needs.setup.outputs.version }} Application\VixenApplication\VixenApplication.csproj
         
       - name: NuGet Restore
         run: nuget restore Vixen.sln
@@ -176,8 +178,8 @@ jobs:
             
       - name: Update versions
         run: |
-          ./Build/dotnet-setversion/setversion ${{ needs.setup.outputs.version }} Vixen.System\Vixen.csproj
-          ./Build/dotnet-setversion/setversion ${{ needs.setup.outputs.version }} Application\VixenApplication\VixenApplication.csproj
+          ./Build/dotnet-setversion/dotnet-setversion ${{ needs.setup.outputs.version }} Vixen.System\Vixen.csproj
+          ./Build/dotnet-setversion/dotnet-setversion ${{ needs.setup.outputs.version }} Application\VixenApplication\VixenApplication.csproj
         
       - name: NuGet Restore
         run: nuget restore Vixen.sln

@@ -17,7 +17,7 @@
             {
                 components.Dispose();
             }
-            _audio.FrequencyDetected -= _audio_FrequencyDetected;
+            //_audio.FrequencyDetected -= _audio_FrequencyDetected;
             base.Dispose(disposing);
         }
 

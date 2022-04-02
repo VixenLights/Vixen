@@ -257,7 +257,18 @@ namespace VixenApplication.Setup
 				}
 			}
 
-			MasterForm.SelectElements(elementNodesToSelect, true);
+			if (elementNodesToSelect.Count == 0)
+			{
+				var msg = new MessageBoxForm("No element patch points found.", "Not Found", MessageBoxButtons.OK,
+					SystemIcons.Information);
+				msg.ShowDialog(this);
+			}
+			else
+			{
+				MasterForm.SelectElements(elementNodesToSelect, true);
+			}
+
+			
 		}
 
 		private IDataFlowComponent FindRootSourceOfDataComponent(IDataFlowComponent component)

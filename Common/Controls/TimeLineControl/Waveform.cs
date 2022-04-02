@@ -1,19 +1,20 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using NLog;
 using VixenModules.Media.Audio;
-using System.ComponentModel;
+using System.Drawing.Drawing2D;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Threading.Tasks;
 using Common.Controls.TimelineControl;
 using Common.Controls.TimelineControl.LabeledMarks;
-using VixenModules.App.Marks;
+using NLog;
+using VixenModules.Media.Audio.SampleProviders;
 using Font = System.Drawing.Font;
 using FontStyle = System.Drawing.FontStyle;
+using Timer = System.Threading.Timer;
 
 namespace Common.Controls.Timeline
 {
@@ -23,14 +24,17 @@ namespace Common.Controls.Timeline
 	[System.ComponentModel.DesignerCategory("")] // Prevent this from showing up in designer.
 	public sealed class Waveform : TimelineControlBase
 	{
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private double samplesPerPixel;
-		private SampleAggregator samples;
+		private List<Sample> samples;
 		private Audio audio;
-		private BackgroundWorker bw;
 		private bool _creatingSamples = false;
 		private bool _showMarkAlignment;
 		private IEnumerable<TimeSpan> _activeTimes;
-		
+		private const int MinimumHeight = 30;
+		private readonly Subject<TimeSpan> _timePerPixelChangeSubject;
+		private CancellationTokenSource _updateCancellationTokenSource;
+
 		private readonly TimeLineGlobalEventManager _timeLineGlobalEventManager;
 
 		/// <summary>
@@ -40,9 +44,11 @@ namespace Common.Controls.Timeline
 		public Waveform(TimeInfo timeinfo)
 			: base(timeinfo)
 		{
-			samples = new SampleAggregator();
-			BackColor = Color.Gray;
+			samples = new List<Sample>();
+			BackColor = Color.FromArgb(120,120,120);
 			Visible = false;
+			_timePerPixelChangeSubject = new Subject<TimeSpan>();
+			_timePerPixelChangeSubject.Throttle(TimeSpan.FromMilliseconds(125)).Subscribe(x => CreateSamples());
 			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager;
 			_timeLineGlobalEventManager.AlignmentActivity += WaveFormSelectedTimeLineGlobalMove;
 			_timeLineGlobalEventManager.CursorMoved += CursorMoved;
@@ -65,7 +71,7 @@ namespace Common.Controls.Timeline
 			base.OnMouseMove(e);
 
 			//Adjusts WaveForm Height with a minimum of 40 pixels
-			if (e.Button == MouseButtons.Left & Cursor == Cursors.HSplit & e.Location.Y > 40)
+			if (e.Button == MouseButtons.Left & Cursor == Cursors.HSplit & e.Location.Y > MinimumHeight)
 			{
 				Height = e.Location.Y + 1;
 			}
@@ -86,70 +92,67 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-		private void CreateWorker()
-		{
-			if (bw != null) {
-				bw.DoWork -= new DoWorkEventHandler(bw_createScaleSamples);
-				bw.RunWorkerCompleted -= new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
-			}
-			bw = new BackgroundWorker();
-			bw.WorkerSupportsCancellation = true;
-			bw.DoWork += new DoWorkEventHandler(bw_createScaleSamples);
-			bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
-		}
-
 		//Create samples to scale based on the current timeline ticks period.
 		//Runs in background to keep the ui free.
-		private void bw_createScaleSamples(object sender, DoWorkEventArgs args)
+		private void CreateSamples()
 		{
-			_creatingSamples = true;
-			BackgroundWorker worker = sender as BackgroundWorker;
-			if (audio == null)
+			if (_creatingSamples && _updateCancellationTokenSource != null)
 			{
-				_creatingSamples = false;
-				return;
+				_updateCancellationTokenSource?.Cancel();
+				_updateCancellationTokenSource?.Dispose();
+				_updateCancellationTokenSource = null;
 			}
-			if (!audio.MediaLoaded) {
-				audio.LoadMedia(TimeSpan.MinValue);
-			}
-			samplesPerPixel = (double) pixelsToTime(1).Ticks/TimeSpan.TicksPerMillisecond*audio.Frequency/1000;
-			int step = audio.BytesPerSample;
-			samples.Clear();
-			double samplesRead = 0;
-			while (samplesRead < audio.NumberSamples) {
-				if ((worker.CancellationPending)) {
-					args.Cancel = true;
-					break;
-				}
-				int low = 0;
-				int high = 0;
-				//Might need a better way to dither the partial samples out. Casting to int rounds it out while
-				//the counter tries to maintian some sanity. A few random samples might be off at some zoom levels,
-				//but we are doing a fair amount of averaging to begin with. The farther in the zoom the more chances 
-				//a artifact might be visible.
-				byte[] waveData = audio.GetSamples((int) samplesRead, (int) samplesPerPixel);
-				samplesRead += samplesPerPixel;
-				if (waveData == null)
-					break;
+			_updateCancellationTokenSource = new CancellationTokenSource();
+			var ct = _updateCancellationTokenSource.Token;
 
-				for (int n = 0; n < waveData.Length; n += step) {
-					//Allow for 16 or 32 bit data. Should be 16 most of the time.
-					int sample = step == 2 ? BitConverter.ToInt16(waveData, n) : BitConverter.ToInt32(waveData, n);
+			var t = Task.Factory.StartNew(() =>
+			{
+				// Were we already canceled?
+				ct.ThrowIfCancellationRequested();
+			
+				_creatingSamples = true;
 
-					if (sample < low) low = sample;
-					if (sample > high) high = sample;
+				if (audio == null)
+				{
+					_creatingSamples = false;
+					return;
 				}
-				samples.Add(new SampleAggregator.Sample {High = ClampValue(high), Low = ClampValue(low)});
-			}
-			_creatingSamples = false;
+
+				if (!audio.MediaLoaded)
+				{
+					audio.LoadMedia(TimeSpan.Zero);
+				}
+			
+				var totalPixels = timeToPixels(audio.MediaDuration);
+				
+				try
+				{
+					samples = audio.GetSamples((int)totalPixels, ct);
+					_creatingSamples = false;
+
+					if (InvokeRequired)
+					{
+						BeginInvoke((Action) FinishedSamples);
+					}
+				}
+				catch (OperationCanceledException e)
+				{
+					Logging.Info("Waveform create samples canceled.");
+				}
+				finally
+				{
+					_creatingSamples = false;
+					_updateCancellationTokenSource?.Dispose();
+					_updateCancellationTokenSource = null;
+				}
+			}, ct);
 		}
 
-		private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		private void FinishedSamples()
 		{
 			//invalidate the control after the samples are created
-			this.Invalidate();
+			Invalidate();
 		}
-
 
 		/// <summary>
 		/// sets the associated audio module to produce a waveform on
@@ -160,6 +163,8 @@ namespace Common.Controls.Timeline
 
 			get { return audio; }
 		}
+
+		public WaveformStyle WaveformStyle { get; set; } = WaveformStyle.Half;
 
 		private delegate void SetAudioDelegate(VixenModules.Media.Audio.Audio value);
 
@@ -173,12 +178,9 @@ namespace Common.Controls.Timeline
 					audio.Dispose();
 				}
 				audio = value;
-				if (audio != null) {
-					if (bw != null && bw.IsBusy) {
-						bw.CancelAsync();
-					}
-					CreateWorker();
-					bw.RunWorkerAsync();
+				if (audio != null)
+				{
+					_timePerPixelChangeSubject.OnNext(TimePerPixel);
 					Visible = true;
 					// Make us visible if we have audio to display.
 				}
@@ -197,15 +199,7 @@ namespace Common.Controls.Timeline
 
 		protected override void OnTimePerPixelChanged(object sender, EventArgs e)
 		{
-			if (bw != null && bw.IsBusy) {
-				bw.CancelAsync();
-			}
-			while (_creatingSamples)
-			{
-				Thread.Sleep(1);
-			}
-			CreateWorker();
-			bw.RunWorkerAsync();
+			_timePerPixelChangeSubject.OnNext(TimePerPixel);
 		}
 
 		protected override void OnPlaybackStartTimeChanged(object sender, EventArgs e)
@@ -244,28 +238,40 @@ namespace Common.Controls.Timeline
 						p.Dispose();
 					}
 
-					
-
 					//Draws Waveform
 					e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
-					float maxSample = Math.Max(Math.Abs(samples.Low), samples.High);
-					int workingHeight = Height - (int) (Height*.1); //Leave a little margin
-					float factor = workingHeight/maxSample;
 
-					float maxValue = 2*maxSample*factor;
-					float minValue = -maxSample*factor;
+					var drawBottom = WaveformStyle==WaveformStyle.Full?true:false;
+					
+					int workingHeight = Height - 2 - Height % 2; //Leave a little margin
+					int topHeight = drawBottom?workingHeight/2:workingHeight;
+					int bottomHeight = topHeight;
+					int midPoint = topHeight;
+
+					Pen bottomPen = null; 
+					var topPen = CreatePen(topHeight);
+					if (drawBottom)
+					{
+						bottomPen = CreatePen(bottomHeight,true);
+					}
+
 					int start = (int) timeToPixels(VisibleTimeStart);
 					int end = (int) timeToPixels(VisibleTimeEnd <= audio.MediaDuration ? VisibleTimeEnd : audio.MediaDuration);
 					
 					for (int x = start; x < end; x += 1)
 					{
 						if (samples.Count <= x) break;
+						var lineHeight = topHeight * samples[x].High;
+						e.Graphics.DrawLine(topPen, x, midPoint, x, midPoint - lineHeight);
+						if (drawBottom)
 						{
-							float lowPercent = (((samples[x].Low*factor) - minValue)/maxValue);
-							float highPercent = (((samples[x].High*factor) - minValue)/maxValue);
-							e.Graphics.DrawLine(Pens.Black, x, workingHeight*lowPercent, x, workingHeight*highPercent);
+							lineHeight = bottomHeight * samples[x].Low;
+							e.Graphics.DrawLine(bottomPen, x, midPoint, x, midPoint - lineHeight);
 						}
 					}
+
+					topPen.Dispose();
+					bottomPen?.Dispose();
 
 					DrawCursor(e.Graphics);
 				}
@@ -284,6 +290,15 @@ namespace Common.Controls.Timeline
 			base.OnPaint(e);
 		}
 
+		private static Pen CreatePen(int height, bool reverse = false)
+		{
+			var color1 = reverse ? Color.FromArgb(20, 20, 20) : Color.FromArgb(60, 60, 60);
+			var color2 = reverse ? Color.FromArgb(60, 60, 60) : Color.FromArgb(20, 20, 20);
+			var rect = new Rectangle(0, 0, 1, reverse?--height:height);
+			var brush = new LinearGradientBrush(rect, color1, color2, LinearGradientMode.Vertical);
+			return new Pen(brush);
+		}
+
 		private void DrawCursor(Graphics g)
 		{
 			using (Pen p = new Pen(Color.Blue, 1))
@@ -292,127 +307,11 @@ namespace Common.Controls.Timeline
 				g.DrawLine(p, curPos, 0, curPos, Height);
 			}
 		}
+	}
 
-		private int ClampValue(int value)
-		{
-			if (value == Int32.MinValue)
-			{
-				return value+1; //We will later use this in some abs calcs and abs value of min value will overflow in an integer field VIX-1859
-			}
-			return value;
-		}
-
-		private class SampleAggregator : IList<SampleAggregator.Sample>
-		{
-			private readonly List<Sample> samples = new List<Sample>();
-
-			public struct Sample
-			{
-				public int Low;
-
-				public int High;
-			}
-
-			public int Low { get; set; }
-
-			public int High { get; set; }
-
-			public void Add(Sample sample)
-			{
-				samples.Add(sample);
-				if (sample.Low < Low) {
-					Low = sample.Low;
-				}
-				if (sample.High > High) {
-					High = sample.High;
-				}
-			}
-
-			public void Clear()
-			{
-				samples.Clear();
-				High = 0;
-				Low = 0;
-			}
-
-			public bool Contains(Sample item)
-			{
-				return samples.Contains(item);
-			}
-
-			public void CopyTo(Sample[] array, int arrayIndex)
-			{
-				throw new NotImplementedException();
-			}
-
-			public bool Remove(Sample item)
-			{
-				throw new NotImplementedException();
-			}
-
-			public int Count
-			{
-				get { return samples.Count; }
-			}
-
-			public bool IsReadOnly
-			{
-				get { return false; }
-			}
-
-			public IEnumerator<Sample> GetEnumerator()
-			{
-				return samples.GetEnumerator();
-			}
-
-			public int IndexOf(Sample item)
-			{
-				return samples.IndexOf(item);
-			}
-
-			public void Insert(int index, Sample item)
-			{
-				throw new NotImplementedException();
-			}
-
-			public void RemoveAt(int index)
-			{
-				throw new NotImplementedException();
-			}
-
-			public Sample this[int index]
-			{
-				get { return samples[index]; }
-				set { throw new NotImplementedException(); }
-			}
-
-			IEnumerator IEnumerable.GetEnumerator()
-			{
-				return GetEnumerator();
-			}
-		}
-		protected override void Dispose(bool disposing)
-		{
-			//Only delete the Audio if Dispose call is explicit.
-			if ((audio != null) && (disposing == true)) 
-			{
-				audio.Dispose();
-				audio= null;
-			}
-
-			if (samples != null) {
-				samples.Clear();
-				samples	 = null;
-				//samples = new SampleAggregator();
-			}
-
-			if (disposing)
-			{
-				_timeLineGlobalEventManager.AlignmentActivity -= WaveFormSelectedTimeLineGlobalMove;
-			}
-
-			base.Dispose(disposing);
-		}
-
+	public enum WaveformStyle
+	{
+		Half,
+		Full
 	}
 }

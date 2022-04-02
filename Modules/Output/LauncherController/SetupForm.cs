@@ -16,6 +16,7 @@ namespace VixenModules.Output.LauncherController
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
+			LauncherData = data;
 			chkHideLaunchedWindows.Checked= data.HideLaunchedWindows;
 		}
 
