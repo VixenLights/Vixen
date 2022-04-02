@@ -25,7 +25,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			_audio = audio;
-			_audio.FrequencyDetected += _audio_FrequencyDetected;
+			//_audio.FrequencyDetected += _audio_FrequencyDetected;
 			freqTimer = new Timer();
 			freqTimer.Interval = 10;
 			freqTimer.Tick += freqTimer_Tick;
@@ -69,15 +69,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_indexes.Remove(Tag);
 		}
 
-		private void _audio_FrequencyDetected(object sender, FrequencyEventArgs e)
-		{
-			if (e.Frequency > 0) {
-				var box = FindCheckBox(e.Index.ToString());
-				TimeSpan t = TimeSpan.MinValue;
-				freqs.TryRemove(e.Index, out t);
-				freqs.TryAdd(e.Index, e.Time);
-			}
-		}
+		//private void _audio_FrequencyDetected(object sender, FrequencyEventArgs e)
+		//{
+		//	if (e.Frequency > 0) {
+		//		var box = FindCheckBox(e.Index.ToString());
+		//		TimeSpan t = TimeSpan.MinValue;
+		//		freqs.TryRemove(e.Index, out t);
+		//		freqs.TryAdd(e.Index, e.Time);
+		//	}
+		//}
 
 		private Timer freqTimer;
 

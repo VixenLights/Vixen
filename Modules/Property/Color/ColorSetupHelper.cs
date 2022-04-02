@@ -24,6 +24,7 @@ namespace VixenModules.Property.Color
 		private const string Red = "Red";
 		private const string Green = "Green";
 		private const string Blue = "Blue";
+		private const string White = "White";
 
 		public ColorSetupHelper()
 		{
@@ -213,6 +214,12 @@ namespace VixenModules.Property.Color
 										cbi = new ColorBreakdownItem();
 										cbi.Color = System.Drawing.Color.Blue;
 										cbi.Name = Blue;
+										newBreakdownItems.Add(cbi);
+										break;
+									case 'W':
+										cbi = new ColorBreakdownItem();
+										cbi.Color = System.Drawing.Color.White;
+										cbi.Name = White;
 										newBreakdownItems.Add(cbi);
 										break;
 								}
