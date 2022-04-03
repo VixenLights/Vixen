@@ -395,7 +395,7 @@
     <PackageReference Include="DockPanelSuite.ThemeVS2015" Version="3.1.0">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="gong-wpf-dragdrop" Version="2.4.0">
+    <PackageReference Include="gong-wpf-dragdrop" Version="3.1.1">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
