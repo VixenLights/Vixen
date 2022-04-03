@@ -2,10 +2,10 @@
 
 namespace Vixen.Sys.Dispatch
 {
-	internal interface IAnyIntentSegmentHandler : IHandler<IIntentSegment<PositionValue>>,
+	internal interface IAnyIntentSegmentHandler : IHandler<IIntentSegment<RangeValue<FunctionIdentity>>>,
 	                                              IHandler<IIntentSegment<RGBValue>>,
 	                                              IHandler<IIntentSegment<CommandValue>>,
-	                                              IHandler<IIntentSegment<LightingValue>>
+	                                              IHandler<IIntentSegment<LightingValue>>		                                         
 	{
 	}
 }

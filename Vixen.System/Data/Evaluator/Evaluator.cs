@@ -23,8 +23,8 @@ namespace Vixen.Data.Evaluator
 		public virtual void Handle(IIntentState<LightingValue> obj)
 		{
 		}
-
-		public virtual void Handle(IIntentState<PositionValue> obj)
+		
+		public virtual void Handle(IIntentState<RangeValue<FunctionIdentity>> obj)
 		{
 		}
 
