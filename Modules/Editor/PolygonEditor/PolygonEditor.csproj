@@ -53,8 +53,8 @@
 	  <PackageReference Include="Catel.Core" Version="5.12.22">
 	    <ExcludeAssets>runtime</ExcludeAssets>
 	  </PackageReference>
-	  <PackageReference Include="Catel.MVVM" Version="5.12.2">
-                 <ExcludeAssets>runtime</ExcludeAssets
+	  <PackageReference Include="Catel.MVVM" Version="5.12.22">
+		  <ExcludeAssets>runtime</ExcludeAssets>
 	  </PackageReference>
 	  <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39">
 		<ExcludeAssets>runtime</ExcludeAssets>
