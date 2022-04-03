@@ -318,7 +318,7 @@
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="DockPanelSuite.ThemeVS2015" Version="3.0.6">
+    <PackageReference Include="DockPanelSuite.ThemeVS2015" Version="3.1.0">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
     <PackageReference Include="NLog" Version="4.7.11">
