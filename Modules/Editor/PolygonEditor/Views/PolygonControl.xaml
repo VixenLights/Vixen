@@ -6,26 +6,27 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"              
 			 xmlns:ikriv="clr-namespace:IKriv.Wpf"
 			 xmlns:polygonConverters="clr-namespace:VixenModules.Editor.PolygonEditor.Converters"			 			 
-		     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+		     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
 			 xmlns:views="clr-namespace:VixenModules.Editor.PolygonEditor.Views"
 			 xmlns:viewmodels="clr-namespace:VixenModules.Editor.PolygonEditor.ViewModels"
 			 xmlns:common="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
+             xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
 			 mc:Ignorable="d" 
              d:DesignHeight="420" d:DesignWidth="800"
 			 x:Name="PolygonUserControl"
              Cursor="{Binding CanvasCursor}">
 
-	<i:Interaction.Triggers>
-		<i:EventTrigger EventName="MouseMove">
+    <behaviors:Interaction.Triggers>
+        <behaviors:EventTrigger EventName="MouseMove">
 			<catel:EventToCommand Command="{Binding CanvasMouseMoveCommand}" PassEventArgsToCommand="True" />
-		</i:EventTrigger>
-		<i:EventTrigger EventName="MouseLeftButtonDown">
+        </behaviors:EventTrigger>
+        <behaviors:EventTrigger EventName="MouseLeftButtonDown">
 			<catel:EventToCommand Command="{Binding CanvasMouseLeftButtonDownCommand}" PassEventArgsToCommand="True" />
-		</i:EventTrigger>
-		<i:EventTrigger EventName="MouseLeftButtonUp">
+        </behaviors:EventTrigger>
+        <behaviors:EventTrigger EventName="MouseLeftButtonUp">
 			<catel:EventToCommand Command="{Binding CanvasMouseLeftButtonUpCommand}" PassEventArgsToCommand="True" />
-		</i:EventTrigger>
-	</i:Interaction.Triggers>
+        </behaviors:EventTrigger>
+    </behaviors:Interaction.Triggers>
 
 	<UserControl.Resources>
 		<ResourceDictionary>
@@ -510,14 +511,14 @@
 				<DataGrid Name="pointDataGrid" AutoGenerateColumns="False" DataContext="Binding Path=SelectedPoints" Margin="10,0,0,0" 
 				          RowHeaderWidth="0" DockPanel.Dock="Right" Grid.Column="1" 
 				          IsReadOnly="{Binding Data.SelectedPointsReadOnly, Source={StaticResource proxy}}">
-					<i:Interaction.Triggers>
-						<i:EventTrigger EventName="CurrentCellChanged">
-							<i:InvokeCommandAction Command="{Binding Data.CurrentCellChangedCommand, Source={StaticResource proxy}}"/>
-						</i:EventTrigger>
-						<i:EventTrigger EventName="CellEditEnding">
-							<i:InvokeCommandAction Command="{Binding Data.CellEditEndingCommand, Source={StaticResource proxy}}"/>
-						</i:EventTrigger>
-					</i:Interaction.Triggers>
+                    <behaviors:Interaction.Triggers>
+                        <behaviors:EventTrigger EventName="CurrentCellChanged">
+                            <behaviors:InvokeCommandAction Command="{Binding Data.CurrentCellChangedCommand, Source={StaticResource proxy}}"/>
+                        </behaviors:EventTrigger>
+                        <behaviors:EventTrigger EventName="CellEditEnding">
+                            <behaviors:InvokeCommandAction Command="{Binding Data.CellEditEndingCommand, Source={StaticResource proxy}}"/>
+                        </behaviors:EventTrigger>
+                    </behaviors:Interaction.Triggers>
 
 					<DataGrid.Columns>
 					<DataGridTextColumn Header="#" Width="*" IsReadOnly="True">

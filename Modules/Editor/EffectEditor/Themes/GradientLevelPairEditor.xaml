@@ -3,7 +3,7 @@
                     xmlns:controls="clr-namespace:VixenModules.Editor.EffectEditor.Controls"
                     xmlns:editors="clr-namespace:VixenModules.Editor.EffectEditor.Editors"
                     xmlns:input="clr-namespace:VixenModules.Editor.EffectEditor.Input"
-                    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+                    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                     xmlns:behaviors="clr-namespace:Common.WPFCommon.Behaviors;assembly=WPFCommon">
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="Converters.xaml" />

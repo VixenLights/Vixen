@@ -6,9 +6,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Interactivity;
 using Catel.Linq;
 using Common.WPFCommon.Utils;
+using Microsoft.Xaml.Behaviors;
 
 namespace VixenModules.App.CustomPropEditor.Behaviors
 {
