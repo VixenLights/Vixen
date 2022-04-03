@@ -122,7 +122,7 @@
     <PackageReference Include="gong-wpf-dragdrop" Version="3.1.1" />
     <PackageReference Include="ICSharpCode.SharpZipLib.dll" Version="0.85.4.369" />
     <PackageReference Include="LiteDB" Version="4.1.4" />
-    <PackageReference Include="Microsoft.AspNet.SignalR.Core" Version="2.4.2" />
+    <PackageReference Include="Microsoft.AspNet.SignalR.Core" Version="2.4.3" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Owin" Version="5.2.7" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Owin.Hosting" Version="4.2.0" />
