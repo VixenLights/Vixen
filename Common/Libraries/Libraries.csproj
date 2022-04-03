@@ -131,7 +131,7 @@
     <PackageReference Include="Mono.Security" Version="5.4.0.201" />
     <PackageReference Include="NCalc2" Version="2.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NLog" Version="4.7.11" />
+    <PackageReference Include="NLog" Version="4.7.15" />
     <PackageReference Include="Nowin" Version="0.26.0" />
     <PackageReference Include="Svg" Version="3.2.3" />
     <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
