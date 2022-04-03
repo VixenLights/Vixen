@@ -5,8 +5,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Interactivity;
 using Common.WPFCommon.Utils;
+using Microsoft.Xaml.Behaviors;
 
 namespace Common.WPFCommon.Behaviors
 {
