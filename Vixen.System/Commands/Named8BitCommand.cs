@@ -55,10 +55,10 @@
 		public string Tag { get; set; }
 
 		/// <summary>
-		/// Preview representation of the type.
+		/// Label associated with the command.
 		/// </summary>
-		/// <remarks>For intelligent fixtures this is helps form a string to indicate what functions are active.</remarks>
-		public string Preview { get; set; }
+		/// <remarks>For intelligent fixtures this label helps create a preview string to indicate which functions are active.</remarks>
+		public string Label { get; set; }
 
 		#endregion
 	}
