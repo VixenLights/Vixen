@@ -614,6 +614,12 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		#region Implementation of IDropTarget
 
 		/// <inheritdoc />
+		public void DragEnter(IDropInfo dropInfo)
+		{
+			
+		}
+
+		/// <inheritdoc />
 		public void DragOver(IDropInfo dropInfo)
 		{
 			var data = ExtractData(dropInfo.Data).OfType<object>().ToList();
@@ -639,6 +645,12 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 			{
 				dropInfo.Effects = DragDropEffects.None;
 			}
+		}
+
+		/// <inheritdoc />
+		public void DragLeave(IDropInfo dropInfo)
+		{
+			
 		}
 
 		/// <inheritdoc />

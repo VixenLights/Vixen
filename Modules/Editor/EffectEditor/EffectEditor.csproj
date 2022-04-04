@@ -107,7 +107,7 @@
     <PackageReference Include="Expression.Blend.Sdk.WPF" Version="1.0.1">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="NLog" Version="4.7.11">
+    <PackageReference Include="NLog" Version="4.7.15">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
