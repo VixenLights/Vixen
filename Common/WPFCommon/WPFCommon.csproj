@@ -58,7 +58,11 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+<<<<<<< Updated upstream
     <PackageReference Include="Catel.MVVM" Version="5.12.22">
+=======
+    <PackageReference Include="Catel.MVVM" Version="5.12.10">
+>>>>>>> Stashed changes
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

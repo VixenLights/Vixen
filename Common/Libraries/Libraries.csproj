@@ -113,8 +113,13 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+<<<<<<< Updated upstream
     <PackageReference Include="Catel.Core" Version="5.12.22" />
     <PackageReference Include="Catel.MVVM" Version="5.12.22" />
+=======
+    <PackageReference Include="Catel.Core" Version="5.12.10" />
+    <PackageReference Include="Catel.MVVM" Version="5.12.10" />
+>>>>>>> Stashed changes
     <PackageReference Include="Catel.Serialization.Json" Version="5.12.2" />
     <PackageReference Include="CSCore" Version="1.2.1.2" />
     <PackageReference Include="DockPanelSuite" Version="3.0.6" />
