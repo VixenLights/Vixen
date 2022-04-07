@@ -44,20 +44,18 @@
         #region Public Properties
 
 		/// <summary>
-		/// Type of index command value.  This property allows the preview to recognize commands.
+		/// Type of index command value.  This property allows the system to recognize certain commands.
 		/// </summary>
         public T IndexType { get; set; }
 
 		/// <summary>
 		/// Tag associated with the command.
-		/// </summary>
-		/// <remarks>For intelligent fixtures this is the function name.</remarks>
+		/// </summary>		
 		public string Tag { get; set; }
 
 		/// <summary>
-		/// Label associated with the command.
-		/// </summary>
-		/// <remarks>For intelligent fixtures this label helps create a preview string to indicate which functions are active.</remarks>
+		/// Provides a customizable descriptive string field that labels or describes the intent of the command.
+		/// </summary>		
 		public string Label { get; set; }
 
 		#endregion
