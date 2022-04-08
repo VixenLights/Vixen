@@ -5,7 +5,9 @@ namespace Vixen.Data.Value
 	/// <summary>
 	/// Maintains a tagged ranged value.
 	/// </summary>
-	public struct RangeValue : IIntentDataType
+	/// <typeparam name="T">Enumeration type to use for the tag</typeparam>
+	public struct RangeValue<T> : IIntentDataType
+		where T : System.Enum
 	{
 		#region Constructor 
 
@@ -15,7 +17,7 @@ namespace Vixen.Data.Value
 		/// <param name="tagType">Type of the tag</param>
 		/// <param name="tag">Name of the tag</param>
 		/// <param name="rangeValue">Initial value</param>
-		public RangeValue(int tagType, string tag, double rangeValue)
+		public RangeValue(T tagType, string tag, double rangeValue)
 		{
 			// If the value is outside the normalized range then...
 			if (rangeValue < 0 || rangeValue > 1)
@@ -46,13 +48,12 @@ namespace Vixen.Data.Value
 		/// <summary>
 		/// Type of the tag.  This property is often an enumerated value.
 		/// </summary>
-		/// <remarks>This property allows the preview to recognize certain ranged values</remarks>
-		public int TagType { get; private set; }
+		/// <remarks>This property allows the preview and Vixen filtering to recognize certain ranged values</remarks>
+		public T TagType { get; private set; }
 
 		/// <summary>
 		/// Tag value.
-		/// </summary>
-		/// <remarks>Often this represents a function of a display element.</remarks>
+		/// </summary>		
 		public string Tag { get; private set; }
 
 		#endregion
