@@ -217,6 +217,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.grid.EnableSnapTo = toolStripMenuItem_SnapTo.Checked;
 		}
 
+		private void fullWaveformToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+		{
+			TimelineControl.waveform.WaveformStyle =
+				fullWaveformToolStripMenuItem.Checked ? WaveformStyle.Full : WaveformStyle.Half;
+			TimelineControl.waveform.Invalidate();
+		}
+
 		// this seems to break the keyboard shortcuts; the key shortcuts don't get enabled again
 		// until the menu is dropped down, which is annoying. These really should be enabled/disabled
 		// on select of elements, but that's too annoying for now...
@@ -325,6 +332,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Tools Menu
 
+		private void speedTempoToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (TimelineControl.Audio != null)
+			{
+				TimelineControl.Audio.UseTempo = speedTempoToolStripMenuItem.Checked;
+			}
+		}
+
 		private void toolStripMenuItem_removeAudio_Click(object sender, EventArgs e)
 		{
 			RemoveAudioAssociation();
@@ -333,11 +348,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void toolStripMenuItem_associateAudio_Click(object sender, EventArgs e)
 		{
 			AddAudioAssociation();
-		}
-
-		private void toolStripMenuItem_MarkManager_Click(object sender, EventArgs e)
-		{
-			ShowMarkManager();
 		}
 
 		private void modifySequenceLengthToolStripMenuItem_Click(object sender, EventArgs e)

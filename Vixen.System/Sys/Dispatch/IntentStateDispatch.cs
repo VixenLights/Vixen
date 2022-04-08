@@ -11,17 +11,19 @@ namespace Vixen.Sys.Dispatch
 		public virtual void Handle(IIntentState<LightingValue> obj)
 		{
 		}
-
-		public virtual void Handle(IIntentState<PositionValue> obj)
+	
+		public virtual void Handle(IIntentState<RangeValue<FunctionIdentity>> obj)
 		{
 		}
 
 		public virtual void Handle(IIntentState<CommandValue> obj)
 		{
 		}
+
 		public virtual void Handle(IIntentState<DiscreteValue> obj)
 		{
 		}
+
 		public virtual void Handle(IIntentState<IntensityValue> obj)
 		{
 		}

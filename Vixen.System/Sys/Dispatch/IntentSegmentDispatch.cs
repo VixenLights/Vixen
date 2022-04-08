@@ -7,8 +7,8 @@ namespace Vixen.Sys.Dispatch
 		public virtual void Handle(IIntentSegment<LightingValue> obj)
 		{
 		}
-
-		public virtual void Handle(IIntentSegment<PositionValue> obj)
+		
+		public virtual void Handle(IIntentSegment<RangeValue<FunctionIdentity>> obj)
 		{
 		}
 
@@ -19,6 +19,5 @@ namespace Vixen.Sys.Dispatch
 		public virtual void Handle(IIntentSegment<CommandValue> obj)
 		{
 		}
-
 	}
 }

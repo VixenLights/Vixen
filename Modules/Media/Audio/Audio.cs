@@ -2,47 +2,43 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Threading;
+using Common.AudioPlayer;
 using Vixen.Module;
 using Vixen.Module.Media;
 using Vixen.Module.Timing;
-using FMOD;
-using System.Timers;
+using Vixen.Sys;
+using VixenModules.Media.Audio.SampleProviders;
 
 namespace VixenModules.Media.Audio
 {
 	public class Audio : MediaModuleInstanceBase, ITiming
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		private FmodInstance _audioSystem;
+		private IPlayer _audioSystem;
 		private AudioData _data;
-
+		private CachedAudioData _cachedAudioData;
+		
+		[Obsolete("Based on old libraries and not currently implemented.")]
 		public string[] DetectionNotes
 		{
 			get
 			{
-				if (_audioSystem == null) return null;
-				return _audioSystem.NOTE;
+				return Array.Empty<string>();
+				//if (_audioSystem == null) return null;
+				//return _audioSystem.NOTE;
 			}
 		}
-		public override int CurrentPlaybackDeviceIndex
-		{
-			get
-			{
-				return Vixen.Sys.State.Variables.SelectedAudioDeviceIndex;
-			}
-			set
-			{
-				Vixen.Sys.State.Variables.SelectedAudioDeviceIndex= value;
-			}
-		}
-
+		
+		[Obsolete("Based on old libraries and not currently implemented.")]
 		public float[] DetectionNoteFreq
 		{
 			get
 			{
-				if (_audioSystem == null) return null;
-				return _audioSystem.NOTE_FREQ;
+				return Array.Empty<float>();
+			//	if (_audioSystem == null) return null;
+			//	return _audioSystem.NOTE_FREQ;
+			//
 			}
 		}
 
@@ -51,65 +47,75 @@ namespace VixenModules.Media.Audio
 			get { return _audioSystem != null; }
 		}
 
+		[Obsolete("Based on old libraries and not currently implemented.")]
 		public bool DetectFrequeniesEnabled
 		{
 			get
 			{
-				if (_audioSystem == null) return false;
-				else return _audioSystem.DetectFrequeniesEnabled;
+				return false;
+				//if (_audioSystem == null) return false;
+				//else return _audioSystem.DetectFrequeniesEnabled;
 			}
 			set
 			{
-				if (_audioSystem != null)
-					_audioSystem.DetectFrequeniesEnabled = value;
+				//if (_audioSystem != null)
+				//	_audioSystem.DetectFrequeniesEnabled = value;
 			}
 		}
 
+		[Obsolete("Based on old libraries and not currently implemented.")]
 		public bool LowPassFilterEnabled
 		{
 			get
 			{
-				if (_audioSystem == null) return false;
-				else return _audioSystem.LowPassFilterEnabled;
+				return false;
+				//if (_audioSystem == null) return false;
+				//else return _audioSystem.LowPassFilterEnabled;
 			}
 			set
 			{
-				if (_audioSystem != null)
-					_audioSystem.LowPassFilterEnabled = value;
+				//if (_audioSystem != null)
+				//	_audioSystem.LowPassFilterEnabled = value;
 			}
 		}
 
+		[Obsolete("Based on old libraries and not currently implemented.")]
 		public float LowPassFilterValue
 		{
 			get
 			{
-				if (_audioSystem == null) return -1;
-				else return _audioSystem.LowPassFilterValue;
+				return -1;
+				//if (_audioSystem == null) return -1;
+				//else return _audioSystem.LowPassFilterValue;
 			}
-			set { _audioSystem.LowPassFilterValue = value; }
+			set { /*_audioSystem.LowPassFilterValue = value;*/ }
 		}
 
+		[Obsolete("Based on old libraries and not currently implemented.")]
 		public float HighPassFilterValue
 		{
 			get
 			{
-				if (_audioSystem == null) return -1;
-				else return _audioSystem.HighPassFilterValue;
+				return -1;
+				//if (_audioSystem == null) return -1;
+				//else return _audioSystem.HighPassFilterValue;
 			}
-			set { _audioSystem.HighPassFilterValue = value; }
+			set { /*_audioSystem.HighPassFilterValue = value;*/ }
 		}
 
+		[Obsolete("Based on old libraries and not currently implemented.")]
 		public bool HighPassFilterEnabled
 		{
 			get
 			{
-				if (_audioSystem == null) return false;
-				else return _audioSystem.HighPassFilterEnabled;
+				return false;
+				//if (_audioSystem == null) return false;
+				//else return _audioSystem.HighPassFilterEnabled;
 			}
 			set
 			{
-				if (_audioSystem != null)
-					_audioSystem.HighPassFilterEnabled = value;
+				//if (_audioSystem != null)
+				//	_audioSystem.HighPassFilterEnabled = value;
 			}
 		}
 
@@ -144,21 +150,6 @@ namespace VixenModules.Media.Audio
 		}
 
 		/// <summary>
-		/// Number of samples the audio track has.
-		/// </summary>
-		public long NumberSamples
-		{
-			get
-			{
-				if (_audioSystem != null) {
-					return _audioSystem.NumberSamples;
-				}
-
-				return 0;
-			}
-		}
-
-		/// <summary>
 		/// Number of channels the audio track has.
 		/// </summary>
 		public int Channels
@@ -173,27 +164,81 @@ namespace VixenModules.Media.Audio
 			}
 		}
 
+		public long NumberSamples {
+			get
+			{
+				if (_audioSystem != null) {
+					return _audioSystem.NumberSamples;
+				}
+				return 0;
+			}
+		}
+
+		private void InitSampleProvider()
+		{
+			_cachedAudioData = new CachedAudioData(MediaFilePath);
+		}
+
 		/// <summary>
-		/// Get the number samples as a byte array from the starting sample. 
+		/// Provides raw -1 to 1 averaged samples for by taking the max value over the number of samples to create a max sample.
+		/// </summary>
+		/// <param name="samplesPerInterval"></param>
+		/// <returns></returns>
+		public List<Sample> GetSamples(int numSamples, CancellationToken ct)
+		{
+			List<Sample> pi = new List<Sample>(numSamples);
+            if (_cachedAudioData == null && MediaLoaded)
+            {
+                InitSampleProvider();
+            }
+			var provider = new MaxPeakProvider();
+			CachedSoundSampleProvider cad = new CachedSoundSampleProvider(_cachedAudioData);
+			var samplesPerInterval = cad.Length / (double)numSamples;
+			provider.Init(cad, (int)samplesPerInterval);
+			while (pi.Count < numSamples && cad.Position < cad.Length)
+			{
+				// Were we canceled?
+				ct.ThrowIfCancellationRequested();
+				cad.Position = (int)(samplesPerInterval * pi.Count);
+				pi.Add(provider.GetNextPeak());
+			}
+			return pi;
+		}
+
+		/// <summary>
+		/// Get the range of samples as a byte array from the starting sample. Converts -1 to 1 to byte values
 		/// </summary>
 		/// <param name="startSample">0 based starting sample</param>
 		/// <param name="numSamples">Number of samples to include in the byte array</param>
 		/// <returns></returns>
 		public byte[] GetSamples(int startSample, int numSamples)
 		{
-			if (_audioSystem != null) {
-				return _audioSystem.GetSamples(startSample, numSamples);
-			}
-			else {
-				return null;
-			}
+			float[] buffer = new float[numSamples];
+			Array.Copy(_cachedAudioData.AudioData, startSample ,buffer,0,buffer.Length);
+			return buffer.Select(x => (byte)(x*255)).ToArray();
+		}
+
+		/// <summary>
+		/// Gets the range of samples converted to a mono channel
+		/// </summary>
+		/// <param name="startSample"></param>
+		/// <param name="numSamples"></param>
+		/// <returns></returns>
+		public double[] GetMonoSamples(int startSample, int numSamples)
+		{	
+			if (_cachedAudioData == null) return new double[0];
+			CachedSoundSampleProvider cad = new CachedSoundSampleProvider(_cachedAudioData);
+			var provider = new MonoSampleProvider(cad);
+			cad.Position = startSample;
+			var buffer = new double[numSamples];
+			provider.Read(buffer, 0, numSamples);
+			return buffer;
 		}
 
 		public override void Start()
 		{
 			if (_audioSystem != null && !_audioSystem.IsPlaying) {
-				_audioSystem.AudioDeviceIndex = CurrentPlaybackDeviceIndex;
-				_audioSystem.Play();
+				_audioSystem.Play(); 
 			}
 		}
 
@@ -232,7 +277,7 @@ namespace VixenModules.Media.Audio
 			if (_audioSystem != null)
 			{
 				_audioSystem.Stop();
-				_audioSystem.FrequencyDetected -= _audioSystem_FrequencyDetected;
+				//_audioSystem.FrequencyDetected -= _audioSystem_FrequencyDetected;
 				_audioSystem.Dispose();
 				_audioSystem = null;
 			}
@@ -242,7 +287,7 @@ namespace VixenModules.Media.Audio
 		{
 			get
 			{
-				if (_audioSystem != null && _audioSystem.AudioDevices.Any())
+				if (_audioSystem != null && _audioSystem.AudioOutputManager.AudioOutputList.Any())
 				{
 					return this;
 				}
@@ -266,13 +311,7 @@ namespace VixenModules.Media.Audio
 		{
 			get { return File.Exists(MediaFilePath); } 
 		}
-		public List<Tuple<int, string>> AudioDevices
-		{
-			get
-			{
-				return _audioSystem.AudioDevices;
-			}
-		}
+		
 		// If a media file is used as the timing source, it's also being
 		// executed as media for the sequence.
 		// That means we're either media or media and timing, so only
@@ -281,17 +320,18 @@ namespace VixenModules.Media.Audio
 		{
 			if (MediaLoaded)
 			{
-				_audioSystem.SetStartTime(startTime);
+				_audioSystem.Position = startTime;
 			}
 			else
 			{
 				_DisposeAudio();
 				if (File.Exists(MediaFilePath))
 				{
-					_audioSystem = new FmodInstance(MediaFilePath);
-					_audioSystem.FrequencyDetected += _audioSystem_FrequencyDetected;
-					_audioSystem.SetStartTime(startTime);
-				} else
+					_audioSystem = PlayerFactory.CreateNew(MediaFilePath);
+					_audioSystem.Position = startTime;
+					InitSampleProvider();
+				} 
+				else
 				{
 					Logging.Error("Media file does not exist: " + MediaFilePath);
 				}	
@@ -299,23 +339,29 @@ namespace VixenModules.Media.Audio
 			
 		}
 
-		public delegate void FrequencyDetectedHandler(object sender, FrequencyEventArgs e);
+		public AudioOutputManager AudioOutputManager => _audioSystem.AudioOutputManager;
 
-		public event FrequencyDetectedHandler FrequencyDetected;
+		/// <inheritdoc />
+		[Obsolete("No longer populated and will be zero. Use CurrentPlaybackDeviceId")]
+		public override int CurrentPlaybackDeviceIndex { get; set; }
 
-		private void _audioSystem_FrequencyDetected(object sender, FrequencyEventArgs e)
-		{
-			if (FrequencyDetected != null) {
-				FrequencyDetected(this, e);
-			}
-		}
+		//public delegate void FrequencyDetectedHandler(object sender, FrequencyEventArgs e);
+
+		//public event FrequencyDetectedHandler FrequencyDetected;
+
+		//private void _audioSystem_FrequencyDetected(object sender, FrequencyEventArgs e)
+		//{
+		//	if (FrequencyDetected != null) {
+		//		FrequencyDetected(this, e);
+		//	}
+		//}
 
 		public TimeSpan Position
 		{
 			get
 			{
 				if (_audioSystem != null) {
-					return TimeSpan.FromMilliseconds(_audioSystem.Position);
+					return _audioSystem.Position;
 				}
 				return TimeSpan.Zero;
 			}
@@ -323,7 +369,7 @@ namespace VixenModules.Media.Audio
 			{
 				if (_audioSystem != null)
 				{
-					_audioSystem.Position = (long)value.TotalMilliseconds;
+					_audioSystem.Position = value;
 				}
 			}
 		}
@@ -346,8 +392,14 @@ namespace VixenModules.Media.Audio
 
 		public float Speed
 		{
-			get { return _audioSystem.Speed; }
-			set { _audioSystem.Speed = value; }
+			get => _audioSystem.PlaybackRate;
+			set => _audioSystem.PlaybackRate = value;
+		}
+
+		public bool UseTempo
+		{
+			get => _audioSystem.UseTempo;
+			set => _audioSystem.UseTempo = value;
 		}
 	}
 }

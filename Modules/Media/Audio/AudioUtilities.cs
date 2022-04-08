@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using NLog;
 
@@ -51,10 +53,8 @@ namespace VixenModules.Media.Audio
         public bool Normalize { get; set; }
 
         /// <summary>
-        /// The raw audio data from the file
+        /// The raw audio data from the file with a range of -1 to +1
         /// </summary>
-        //designed to have a range of +/- 1. The loading routine should determine the bitdepth
-        //and do the appropriate scaling
         private double[] _audioChannel;
 
         /// <summary>
@@ -136,60 +136,17 @@ namespace VixenModules.Media.Audio
             return true;
         }
 
-        private static int Bytes2Int(byte b1, byte b2, byte b3)
-        {
-            int r = 0;
-            byte b0 = 0xff;
-
-            if ((b1 & 0x80) != 0) r |= b0 << 24;
-            r |= b1 << 16;
-            r |= b2 << 8;
-            r |= b3;
-            return r;
-        }
-
+        
         /// <summary>
         /// Load the audio file into memory and sum the channels to mono
         /// </summary>
-
         private void LoadAudioIntoMemory()
         {
-            int startSample = (int)(_audioSampleRate * StartTime.TotalSeconds);
-            int totalSamples = (int)(_audioSampleRate * TimeSpan.TotalSeconds);
+            int startSample = (int)(_audioSampleRate * StartTime.TotalSeconds * _audioModule.Channels);
+            int totalSamples = (int)(_audioSampleRate * TimeSpan.TotalSeconds * _audioModule.Channels);
 
-            byte[] _audioRawData = _audioModule.GetSamples(startSample, totalSamples);
-            _audioChannel = new double[_audioRawData.Length / _audioModule.BytesPerSample];
-
-            int maxSize=1;
-
-            //Support 8, 16 & 24 bit audio
-            switch (_audioModule.BytesPerSample / _audioModule.Channels)
-            {
-                case 1: maxSize = 127; break;
-                case 2: maxSize = 32767; break;
-                case 3: maxSize = 8388607; break;
-            }
-
-            Parallel.For(0, _audioRawData.Length / _audioModule.BytesPerSample, x =>
-                {
-                    double audioSum = 0;
-                    for (int i = 0; i < _audioModule.Channels; i++)
-                    {
-                        int pos = x * _audioModule.BytesPerSample + i * (_audioModule.BytesPerSample / _audioModule.Channels);
-                        switch (_audioModule.BytesPerSample / _audioModule.Channels)
-                        {
-                            case 1: audioSum += (sbyte)_audioRawData[pos];
-                                break;
-                            case 2: audioSum += BitConverter.ToInt16(_audioRawData, pos );
-                                break;
-                            case 3: audioSum += Bytes2Int(_audioRawData[pos+2],_audioRawData[pos+1],_audioRawData[pos]);
-                                break;
-                        }
-                    }
-                    _audioChannel[x] = (double)(audioSum / _audioModule.Channels) / maxSize;
-                    if (_audioChannel[x] == 0) _audioChannel[x] = .0001;
-                });
-
+            _audioChannel = _audioModule.GetMonoSamples(startSample, totalSamples);
+           
             if (LowPass)
                 _audioChannel = AudioFilters.LowPass(LowPassFreq, (int) _audioModule.Frequency, _audioChannel);
             if (HighPass)
@@ -283,7 +240,12 @@ namespace VixenModules.Media.Audio
         {
             if (!_audioLoaded)
                 throw new AudioNotLoadedException();
-            return _volume[ClosestSample(time)];
+            var sample = ClosestSample(time);
+            if (sample < 0 || sample >= _volume.Length)
+            {
+	            return 0;
+            }
+            return _volume[sample];
         }
 
         /// <summary>

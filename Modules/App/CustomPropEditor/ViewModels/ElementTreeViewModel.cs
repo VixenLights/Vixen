@@ -906,7 +906,13 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	        return copyData;
 	    }
 
-        /// <inheritdoc />
+	    /// <inheritdoc />
+	    public void DragEnter(IDropInfo dropInfo)
+	    {
+		    
+	    }
+
+	    /// <inheritdoc />
         public void DragOver(IDropInfo dropInfo)
 		{
 		    if (CanAcceptData(dropInfo))
@@ -928,7 +934,13 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		    }
         }
 
-		/// <inheritdoc />
+	    /// <inheritdoc />
+	    public void DragLeave(IDropInfo dropInfo)
+	    {
+		    
+	    }
+
+	    /// <inheritdoc />
 		public void Drop(IDropInfo dropInfo)
 		{
 			var models = dropInfo.Data as IList<ElementModelViewModel>;
