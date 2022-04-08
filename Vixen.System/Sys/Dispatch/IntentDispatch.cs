@@ -7,11 +7,11 @@ namespace Vixen.Sys.Dispatch
 		public virtual void Handle(IIntent<LightingValue> obj)
 		{
 		}
-
-		public virtual void Handle(IIntent<PositionValue> obj)
+		
+		public virtual void Handle(IIntent<RangeValue<FunctionIdentity>> obj)
 		{
 		}
-
+		
 		public virtual void Handle(IIntent<CommandValue> obj)
 		{
 		}

@@ -7,9 +7,9 @@ namespace VixenModules.Controller.PSC
 {
 	internal class PositionEvaluator : Evaluator
 	{
-		public override void Handle(IIntentState<PositionValue> obj)
+		public override void Handle(IIntentState<RangeValue<FunctionIdentity>> obj)
 		{
-			EvaluatorValue = new _16BitCommand(PSC.RangeLow + obj.GetValue().Position*PSC.RangeWidth);
+			EvaluatorValue = new _16BitCommand(PSC.RangeLow + obj.GetValue().Value * PSC.RangeWidth);
 		}
 	}
 }

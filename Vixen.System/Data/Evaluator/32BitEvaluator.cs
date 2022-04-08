@@ -16,10 +16,10 @@ namespace Vixen.Data.Evaluator
 		{
 			EvaluatorValue = new _32BitCommand((uint)(uint.MaxValue * obj.GetValue().Intensity));
 		}
-
-		public override void Handle(IIntentState<PositionValue> obj)
+		
+		public override void Handle(IIntentState<RangeValue<FunctionIdentity>> obj)
 		{
-			EvaluatorValue = new _32BitCommand((uint)(uint.MaxValue * obj.GetValue().Position));
+			EvaluatorValue = new _32BitCommand((uint)(uint.MaxValue * obj.GetValue().Value));
 		}
 
 		public override void Handle(IIntentState<DiscreteValue> obj)

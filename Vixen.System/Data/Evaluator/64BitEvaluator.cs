@@ -17,9 +17,9 @@ namespace Vixen.Data.Evaluator
 			EvaluatorValue = new _64BitCommand((ulong)(ulong.MaxValue * obj.GetValue().Intensity));
 		}
 
-		public override void Handle(IIntentState<PositionValue> obj)
+		public override void Handle(IIntentState<RangeValue<FunctionIdentity>> obj)
 		{
-			EvaluatorValue = new _64BitCommand((ulong)(ulong.MaxValue * obj.GetValue().Position));
+			EvaluatorValue = new _64BitCommand((ulong)(ulong.MaxValue * obj.GetValue().Value));
 		}
 
 		public override void Handle(IIntentState<DiscreteValue> obj)

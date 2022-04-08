@@ -301,10 +301,22 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		#region Implementation of IDropTarget
 
 		/// <inheritdoc />
+		public void DragEnter(IDropInfo dropInfo)
+		{
+			
+		}
+
+		/// <inheritdoc />
 		public void DragOver(IDropInfo dropInfo)
 		{
 			dropInfo.Effects = DragDropEffects.Move;
 			dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
+		}
+
+		/// <inheritdoc />
+		public void DragLeave(IDropInfo dropInfo)
+		{
+			
 		}
 
 		/// <inheritdoc />
