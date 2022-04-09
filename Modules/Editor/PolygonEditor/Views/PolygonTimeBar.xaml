@@ -5,29 +5,30 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VixenModules.Editor.PolygonEditor.Views"
 			 xmlns:views="clr-namespace:VixenModules.Editor.PolygonEditor.Views"
-			 xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+			 xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
 			 xmlns:ikriv="clr-namespace:IKriv.Wpf"
 			 xmlns:polygonConverters="clr-namespace:VixenModules.Editor.PolygonEditor.Converters"
 			 xmlns:common="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
 			 xmlns:catel="http://schemas.catelproject.com"
 			 xmlns:cmd="http://schemas.catelproject.com"
+             xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
 			 mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
 			 Cursor="{Binding TimeBarCusor}">
-	<i:Interaction.Triggers>
-		<i:EventTrigger EventName="MouseMove">
+    <behaviors:Interaction.Triggers>
+        <behaviors:EventTrigger EventName="MouseMove">
 			<catel:EventToCommand Command="{Binding MoveSnapshotCommand}" PassEventArgsToCommand="True" />
-		</i:EventTrigger>
-		<i:EventTrigger EventName="MouseLeftButtonDown">
+        </behaviors:EventTrigger>
+        <behaviors:EventTrigger EventName="MouseLeftButtonDown">
 			<catel:EventToCommand Command="{Binding MouseLeftButtonDownTimeBarCommand}" PassEventArgsToCommand="True"/>
-		</i:EventTrigger>
-		<i:EventTrigger EventName="MouseLeftButtonUp">
+        </behaviors:EventTrigger>
+        <behaviors:EventTrigger EventName="MouseLeftButtonUp">
 			<catel:EventToCommand Command="{Binding MouseLeftButtonUpTimeBarCommand}" PassEventArgsToCommand="True"/>
-		</i:EventTrigger>
-		<i:EventTrigger EventName="MouseLeave">
+        </behaviors:EventTrigger>
+        <behaviors:EventTrigger EventName="MouseLeave">
 			<catel:EventToCommand Command="{Binding MouseLeaveTimeBarCommand}" PassEventArgsToCommand="false"/>
-		</i:EventTrigger>
-	</i:Interaction.Triggers>
+		</behaviors:EventTrigger>
+    </behaviors:Interaction.Triggers>
 
 	<UserControl.Resources>
 		<ResourceDictionary>

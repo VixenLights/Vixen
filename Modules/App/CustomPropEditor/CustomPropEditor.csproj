@@ -155,7 +155,7 @@
     <Resource Include="Images\buttonBulbSmaller.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Catel.MVVM" Version="5.12.2">
+    <PackageReference Include="Catel.MVVM" Version="5.12.10">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

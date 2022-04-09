@@ -7,7 +7,7 @@
 	xmlns:input="clr-namespace:VixenModules.Editor.EffectEditor.Input"
 	xmlns:internal="clr-namespace:VixenModules.Editor.EffectEditor.Internal"
 	xmlns:behaviors="clr-namespace:Common.WPFCommon.Behaviors;assembly=WPFCommon"
-	xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
+	xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
 
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>

@@ -50,10 +50,10 @@
 	  <None Remove="ViewModels\PolygonEditorViewModel.cs_BeforeGettingRidOfTemporaryVariables" />
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="Catel.Core" Version="5.12.2">
+	  <PackageReference Include="Catel.Core" Version="5.12.10">
 	    <ExcludeAssets>runtime</ExcludeAssets>
 	  </PackageReference>
-	  <PackageReference Include="Catel.MVVM" Version="5.12.2">
+	  <PackageReference Include="Catel.MVVM" Version="5.12.10">
 	    <ExcludeAssets>runtime</ExcludeAssets>
 	  </PackageReference>
 	</ItemGroup>

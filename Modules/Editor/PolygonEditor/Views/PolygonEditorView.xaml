@@ -4,10 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
         xmlns:catel="http://schemas.catelproject.com"
-	    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+	    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
 	    xmlns:views="clr-namespace:VixenModules.Editor.PolygonEditor.Views"
 	    xmlns:converters="clr-namespace:VixenModules.Editor.PolygonEditor.Converters"
 	    xmlns:common="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
+        xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Title="Polygon Editor"
         WindowStartupLocation="CenterScreen">
@@ -22,9 +23,9 @@
 		</ResourceDictionary>
 	</Window.Resources>
 
-	<i:Interaction.Behaviors>
+    <behaviors:Interaction.Behaviors>
 		<catel:KeyPressToCommand Command="{Binding DeleteShapeOrPointsCommand}" Key="Delete" />
-	</i:Interaction.Behaviors>
+    </behaviors:Interaction.Behaviors>
 
 	<DockPanel LastChildFill="true" Background="{DynamicResource BackColorBrush}">
 		<WrapPanel DockPanel.Dock="Bottom" Style="{StaticResource RowButtonRightContainerStyle}">
