@@ -472,6 +472,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wave", "Modules\Effect\Wave
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoarseFineBreakdown", "Modules\PostFilter\CoarseFineFilter\CoarseFineBreakdown.csproj", "{D4332E31-A064-476E-8AA1-1E034AD0454D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaggedFilter", "Modules\PostFilter\TaggedFilter\TaggedFilter.csproj", "{D83DBA43-74E4-4512-BB5B-D143B0CEBB4A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -1541,6 +1543,14 @@ Global
 		{D4332E31-A064-476E-8AA1-1E034AD0454D}.Release|x64.Build.0 = Release|x64
 		{D4332E31-A064-476E-8AA1-1E034AD0454D}.Release|x86.ActiveCfg = Release|x86
 		{D4332E31-A064-476E-8AA1-1E034AD0454D}.Release|x86.Build.0 = Release|x86
+		{D83DBA43-74E4-4512-BB5B-D143B0CEBB4A}.Debug|x64.ActiveCfg = Debug|x64
+		{D83DBA43-74E4-4512-BB5B-D143B0CEBB4A}.Debug|x64.Build.0 = Debug|x64
+		{D83DBA43-74E4-4512-BB5B-D143B0CEBB4A}.Debug|x86.ActiveCfg = Debug|x86
+		{D83DBA43-74E4-4512-BB5B-D143B0CEBB4A}.Debug|x86.Build.0 = Debug|x86
+		{D83DBA43-74E4-4512-BB5B-D143B0CEBB4A}.Release|x64.ActiveCfg = Release|x64
+		{D83DBA43-74E4-4512-BB5B-D143B0CEBB4A}.Release|x64.Build.0 = Release|x64
+		{D83DBA43-74E4-4512-BB5B-D143B0CEBB4A}.Release|x86.ActiveCfg = Release|x86
+		{D83DBA43-74E4-4512-BB5B-D143B0CEBB4A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1707,6 +1717,7 @@ Global
 		{FF5A8D11-1118-4B39-AAD3-66C093C150A7} = {25A1ED22-180F-4B61-84FC-55790AA11254}
 		{B062C216-5C48-47AF-930F-495FAE6CF156} = {A716022B-C182-4127-BE26-BA88C57C0471}
 		{D4332E31-A064-476E-8AA1-1E034AD0454D} = {EC3DEE21-95FE-46E0-B34D-86D86361517D}
+		{D83DBA43-74E4-4512-BB5B-D143B0CEBB4A} = {EC3DEE21-95FE-46E0-B34D-86D86361517D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {09F55EB1-2643-454B-A1C2-8A326FFA78E6}
