@@ -15,7 +15,12 @@ namespace VixenModules.OutputFilter.ShutterFilter.Output
 	public class ShutterFilterOutput : TaggedFilterOutputBase<Filter.ShutterFilter>
 	{
 		#region Fields
-		
+
+		/// <summary>
+		/// Flag determines if the output converts color intents into open shutter intents.
+		/// </summary>
+		private bool _convertColorIntoShutterIntents;
+
 		/// <summary>
 		/// Open Shutter Index command value.
 		/// </summary>
@@ -28,12 +33,17 @@ namespace VixenModules.OutputFilter.ShutterFilter.Output
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		/// <param name="tag">Tag (name) of shutter function</param>		
+		/// <param name="tag">Tag (name) of shutter function</param>
+		/// <param name="convertColorIntoShutterIntents">Flag indicating whether to convert color into shutter intents</param>
 		/// <param name="openShutterIndexValue">Index value for shutter open command</param>
 		public ShutterFilterOutput(
-			string tag, 			
+			string tag, 
+			bool convertColorIntoShutterIntents,
 			byte openShutterIndexValue) : base(tag)			
-		{			
+		{
+			// Store off whether to convert color into shutter intents
+			_convertColorIntoShutterIntents = convertColorIntoShutterIntents;
+
 			// Store off the open shutter index value
 			_openShutterIndexValue = openShutterIndexValue;
 		}
@@ -68,19 +78,23 @@ namespace VixenModules.OutputFilter.ShutterFilter.Output
 		/// </summary>
 		/// <param name="layer">Layer associated with the color intent</param>
 		private void CreateOpenShutterCommand(ILayer layer)
-		{		
-			// Retrieve the command for the specified value
-			ICommand command = CommandLookup8BitEvaluator.CommandLookup[_openShutterIndexValue];
+		{
+			// If automatically opening the shutter then...
+			if (_convertColorIntoShutterIntents)
+			{
+				// Retrieve the command for the specified value
+				ICommand command = CommandLookup8BitEvaluator.CommandLookup[_openShutterIndexValue];
 
-			// Create a command value, wrapping the 8 bit command
-			CommandValue commandValue = new CommandValue(command);
+				// Create a command value, wrapping the 8 bit command
+				CommandValue commandValue = new CommandValue(command);
 
-			// Create a new intent wrapping the command
-			IIntentState<CommandValue> commandIntentState =
-				new StaticIntentState<CommandValue>(commandValue, layer);
+				// Create a new intent wrapping the command
+				IIntentState<CommandValue> commandIntentState =
+					new StaticIntentState<CommandValue>(commandValue, layer);
 
-			// Add the command intent to the States associated with the output 
-			IntentData.Value.Add(commandIntentState);		
+				// Add the command intent to the States associated with the output 
+				IntentData.Value.Add(commandIntentState);
+			}
 		}
 
 		#endregion
