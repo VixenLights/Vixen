@@ -464,11 +464,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDP", "Modules\Output\DDP\D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimingTrackBrowser", "Modules\App\TimingTrackBrowser\TimingTrackBrowser.csproj", "{3A751FC1-C30D-4262-8223-45F99D9FBF51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioPlayer", "Common\AudioPlayer\AudioPlayer.csproj", "{396F97C4-887A-42D5-8DC6-9A38065ACB5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AudioPlayer", "Common\AudioPlayer\AudioPlayer.csproj", "{396F97C4-887A-42D5-8DC6-9A38065ACB5C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Preferences", "Common\Preferences\Preferences.csproj", "{FF5A8D11-1118-4B39-AAD3-66C093C150A7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wave", "Modules\Effect\Wave\Wave\Wave.csproj", "{B062C216-5C48-47AF-930F-495FAE6CF156}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoarseFineBreakdown", "Modules\PostFilter\CoarseFineFilter\CoarseFineBreakdown.csproj", "{D4332E31-A064-476E-8AA1-1E034AD0454D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1531,6 +1533,14 @@ Global
 		{B062C216-5C48-47AF-930F-495FAE6CF156}.Release|x64.Build.0 = Release|x64
 		{B062C216-5C48-47AF-930F-495FAE6CF156}.Release|x86.ActiveCfg = Release|x86
 		{B062C216-5C48-47AF-930F-495FAE6CF156}.Release|x86.Build.0 = Release|x86
+		{D4332E31-A064-476E-8AA1-1E034AD0454D}.Debug|x64.ActiveCfg = Debug|x64
+		{D4332E31-A064-476E-8AA1-1E034AD0454D}.Debug|x64.Build.0 = Debug|x64
+		{D4332E31-A064-476E-8AA1-1E034AD0454D}.Debug|x86.ActiveCfg = Debug|x86
+		{D4332E31-A064-476E-8AA1-1E034AD0454D}.Debug|x86.Build.0 = Debug|x86
+		{D4332E31-A064-476E-8AA1-1E034AD0454D}.Release|x64.ActiveCfg = Release|x64
+		{D4332E31-A064-476E-8AA1-1E034AD0454D}.Release|x64.Build.0 = Release|x64
+		{D4332E31-A064-476E-8AA1-1E034AD0454D}.Release|x86.ActiveCfg = Release|x86
+		{D4332E31-A064-476E-8AA1-1E034AD0454D}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1696,6 +1706,7 @@ Global
 		{396F97C4-887A-42D5-8DC6-9A38065ACB5C} = {25A1ED22-180F-4B61-84FC-55790AA11254}
 		{FF5A8D11-1118-4B39-AAD3-66C093C150A7} = {25A1ED22-180F-4B61-84FC-55790AA11254}
 		{B062C216-5C48-47AF-930F-495FAE6CF156} = {A716022B-C182-4127-BE26-BA88C57C0471}
+		{D4332E31-A064-476E-8AA1-1E034AD0454D} = {EC3DEE21-95FE-46E0-B34D-86D86361517D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {09F55EB1-2643-454B-A1C2-8A326FFA78E6}
