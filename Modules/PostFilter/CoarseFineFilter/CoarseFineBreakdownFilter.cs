@@ -41,7 +41,7 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 		/// Method called as a result of dispatching.
 		/// </summary>
 		/// <param name="intent">Intent to handle</param>
-		public override void Handle(IIntentState<RangeValue> intent)
+		public override void Handle(IIntentState<RangeValue<FunctionIdentity>> intent)
 		{			
 			// Indicate that position intents are supported
 			_intentValue = intent;			

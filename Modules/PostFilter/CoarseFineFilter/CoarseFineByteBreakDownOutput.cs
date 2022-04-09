@@ -80,7 +80,7 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 				if (state != null)
 				{
 					// Handle the intent
-					Handle((IIntentState<RangeValue>)state);
+					Handle((IIntentState<RangeValue<FunctionIdentity>>)state);
 				}
 			}
 		}
@@ -93,7 +93,7 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 		/// Handles a <c>PositionValue</c> intent.
 		/// </summary>
 		/// <param name="intent">Range intent to handle</param>
-		private void Handle(IIntentState<RangeValue> intent)
+		private void Handle(IIntentState<RangeValue<FunctionIdentity>> intent)
 		{
 			// Get the position value from the intent
 			double positionValue = intent.GetValue().Value;

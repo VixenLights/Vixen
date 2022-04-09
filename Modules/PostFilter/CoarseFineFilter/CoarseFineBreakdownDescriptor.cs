@@ -4,7 +4,7 @@ using Vixen.Module.OutputFilter;
 namespace VixenModules.OutputFilter.CoarseFineBreakdown
 {
 	/// <summary>
-	/// Descriptor for the module.
+	/// Descriptor for the course fine breakdown module.
 	/// </summary>
 	public class CoarseFineBreakdownDescriptor : OutputFilterModuleDescriptorBase
 	{
