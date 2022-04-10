@@ -42,11 +42,7 @@
 		<ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
 			<Private>false</Private>
 			<IncludeAssets>None</IncludeAssets>
-		</ProjectReference>		
-		<ProjectReference Include="..\..\App\Fixture\Fixture.csproj">
-		  <Private>false</Private>
-		  <IncludeAssets>None</IncludeAssets>
-		</ProjectReference>
+		</ProjectReference>				
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="NLog" Version="4.7.15">
