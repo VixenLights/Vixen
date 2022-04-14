@@ -47,9 +47,9 @@ namespace VixenModules.OutputFilter.DimmingFilter
 		#region Public Properties
 		
 		/// <summary>
-		/// Flag which determines if RGB colors are converted into dimming intents.
+		/// Determines if colors are converted into dimming intents.
 		/// </summary>
-		public bool ConvertRGBIntoDimmingIntents
+		public bool ConvertColorIntoDimmingIntents
 		{
 			get { return Data.ConvertRGBIntoDimmingIntents; }
 			set { Data.ConvertRGBIntoDimmingIntents = value; }
@@ -65,7 +65,13 @@ namespace VixenModules.OutputFilter.DimmingFilter
 		protected override DimmingFilterOutput CreateOutputInternal()
 		{
 			// Create the dimming filter output
-			return new DimmingFilterOutput(Data.Tag, Data.ConvertRGBIntoDimmingIntents);
+			DimmingFilterOutput dimmingfFilterOutput = new DimmingFilterOutput(Data.Tag, Data.ConvertRGBIntoDimmingIntents);
+
+			// Configure the output
+			dimmingfFilterOutput.ConfigureFilter();
+
+			// Return the filter output
+			return dimmingfFilterOutput;
 		}
 
 		#endregion
