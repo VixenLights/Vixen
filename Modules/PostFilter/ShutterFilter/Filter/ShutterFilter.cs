@@ -10,7 +10,7 @@ namespace VixenModules.OutputFilter.ShutterFilter.Filter
     /// <summary>
     /// Filter that converts color intents into open shutter commands.
     /// </summary>
-    public class ShutterFilter : TaggedColorFilterBase
+    public class ShutterFilter : TaggedFilter.Filters.TaggedFilter
 	{
 		#region Public Properties
 
