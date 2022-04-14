@@ -24,10 +24,13 @@ namespace VixenModules.OutputFilter.ShutterFilter
 			newInstance.Tag = Tag;
 
 			// Copy whether to convert RGB colors into shutter open intents
-			newInstance.ConvertRGBIntoShutterIntents = ConvertRGBIntoShutterIntents;
+			newInstance.ConvertColorIntoShutterIntents = ConvertColorIntoShutterIntents;
 
 			// Copy the open shutter index command value
 			newInstance.OpenShutterIndexValue = OpenShutterIndexValue;
+
+			// Copy the close shutter index command value
+			newInstance.CloseShutterIndexValue = CloseShutterIndexValue;
 
 			// Return the new shutter filter data instance
 			return newInstance;
@@ -41,13 +44,19 @@ namespace VixenModules.OutputFilter.ShutterFilter
 		/// Flag which determines if RGB colors are converted into shutter commands.
 		/// </summary>
 		[DataMember]
-		public bool ConvertRGBIntoShutterIntents { get; set; }
+		public bool ConvertColorIntoShutterIntents { get; set; }
 
 		/// <summary>
 		/// Open Shutter index command value.
 		/// </summary>
 		[DataMember]
 		public byte OpenShutterIndexValue { get; set; }
+
+		/// <summary>
+		/// Open Shutter index command value.
+		/// </summary>
+		[DataMember]
+		public byte CloseShutterIndexValue { get; set; }
 
 		#endregion
 	}

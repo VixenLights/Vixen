@@ -11,6 +11,9 @@ namespace VixenModules.OutputFilter.ShutterFilter
 	{
 		#region IHasSetup
 
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
 		public override bool HasSetup => true;
 
 		/// <summary>
@@ -44,12 +47,12 @@ namespace VixenModules.OutputFilter.ShutterFilter
 		#region Public Properties
 		
 		/// <summary>
-		/// Flag which determines if RGB colors are converted into shutter intents.
+		/// Flag which determines if color intents are converted into shutter intents.
 		/// </summary>
-		public bool ConvertRGBIntoShutterIntents
+		public bool ConvertColorIntoShutterIntents
 		{
-			get { return Data.ConvertRGBIntoShutterIntents; }
-			set { Data.ConvertRGBIntoShutterIntents = value; }
+			get { return Data.ConvertColorIntoShutterIntents; }
+			set { Data.ConvertColorIntoShutterIntents = value; }
 		}
 
 		/// <summary>
@@ -59,6 +62,15 @@ namespace VixenModules.OutputFilter.ShutterFilter
 		{
 			get { return Data.OpenShutterIndexValue; }
 			set { Data.OpenShutterIndexValue = value; }
+		}
+
+		/// <summary>
+		/// Close Shutter index command value.
+		/// </summary>
+		public byte CloseShutterIndexValue
+		{
+			get { return Data.CloseShutterIndexValue; }
+			set { Data.CloseShutterIndexValue = value; }
 		}
 
 		#endregion
@@ -71,7 +83,13 @@ namespace VixenModules.OutputFilter.ShutterFilter
 		protected override ShutterFilterOutput CreateOutputInternal()
 		{
 			// Create the shutter filter output
-			return new ShutterFilterOutput(Data.Tag, Data.ConvertRGBIntoShutterIntents, Data.OpenShutterIndexValue);
+			ShutterFilterOutput output = new ShutterFilterOutput(Data.Tag, Data.ConvertColorIntoShutterIntents, Data.OpenShutterIndexValue, Data.CloseShutterIndexValue);
+
+			// Configure the filter
+			output.ConfigureFilter();
+
+			// Return the filter's output
+			return output;
 		}
 
 		#endregion

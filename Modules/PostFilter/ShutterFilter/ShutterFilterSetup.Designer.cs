@@ -37,6 +37,8 @@ namespace VixenModules.OutputFilter.ShutterFilter
             this.checkBoxConvert = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.textOpenShutter = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.textCloseShutter = new System.Windows.Forms.TextBox();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -46,7 +48,7 @@ namespace VixenModules.OutputFilter.ShutterFilter
             this.flowLayoutPanel1.Controls.Add(this.buttonOk);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 106);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 145);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(383, 35);
@@ -111,7 +113,7 @@ namespace VixenModules.OutputFilter.ShutterFilter
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 78);
+            this.label2.Location = new System.Drawing.Point(16, 79);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(111, 15);
@@ -123,9 +125,28 @@ namespace VixenModules.OutputFilter.ShutterFilter
             this.textOpenShutter.Location = new System.Drawing.Point(131, 77);
             this.textOpenShutter.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textOpenShutter.Name = "textOpenShutter";
-            this.textOpenShutter.Size = new System.Drawing.Size(116, 23);
+            this.textOpenShutter.Size = new System.Drawing.Size(59, 23);
             this.textOpenShutter.TabIndex = 7;
             this.textOpenShutter.TextChanged += new System.EventHandler(this.textOpenShutter_TextChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(16, 112);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(111, 15);
+            this.label3.TabIndex = 8;
+            this.label3.Text = "Close Shutter Value:";
+            // 
+            // textCloseShutter
+            // 
+            this.textCloseShutter.Location = new System.Drawing.Point(131, 109);
+            this.textCloseShutter.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.textCloseShutter.Name = "textCloseShutter";
+            this.textCloseShutter.Size = new System.Drawing.Size(59, 23);
+            this.textCloseShutter.TabIndex = 9;
+            this.textCloseShutter.TextChanged += new System.EventHandler(this.textCloseShutter_TextChanged);
             // 
             // ShutterFilterSetup
             // 
@@ -133,7 +154,9 @@ namespace VixenModules.OutputFilter.ShutterFilter
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(383, 141);
+            this.ClientSize = new System.Drawing.Size(383, 180);
+            this.Controls.Add(this.textCloseShutter);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.textOpenShutter);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.checkBoxConvert);
@@ -159,5 +182,7 @@ namespace VixenModules.OutputFilter.ShutterFilter
 		private System.Windows.Forms.CheckBox checkBoxConvert;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textOpenShutter;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox textCloseShutter;
     }
 }
