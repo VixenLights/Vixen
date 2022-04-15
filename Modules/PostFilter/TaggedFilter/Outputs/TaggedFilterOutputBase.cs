@@ -23,7 +23,7 @@ namespace VixenModules.OutputFilter.TaggedFilter.Outputs
 		{
 			// Create the filter associated with the output
 			Filter = new TFilter();
-
+			
 			// Give the filter the function tag
 			Filter.Tag = tag;
 
@@ -45,20 +45,33 @@ namespace VixenModules.OutputFilter.TaggedFilter.Outputs
 		/// Filter associated with the output.
 		/// </summary>
 		protected ITaggedFilter Filter { get; set; }
-
+		
 		/// <summary>
 		/// Output intent data associated with the output.
 		/// </summary>
-		protected  IntentsDataFlowData IntentData { get; private set; }
+		protected virtual IntentsDataFlowData IntentData 
+		{
+			get;
+			set;            
+		}
 		
 		#endregion
 				
 		#region IDataFlowOutput
 
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
 		public string Name { get; private set; }
 
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
 		IDataFlowData IDataFlowOutput.Data => Data;
 
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
 		public IntentsDataFlowData Data => IntentData;
 
 		#endregion
@@ -69,11 +82,17 @@ namespace VixenModules.OutputFilter.TaggedFilter.Outputs
 		/// Returns true when the specified intent is applicable to the output.
 		/// </summary>
 		/// <param name="intentState">Intent state to analyze</param>
+		/// <param name="handledIntent">The intent may change type when processed.  This second return value is the handled intent 
+		/// that should be exposed on the output</param>
 		/// <returns>True when the specified intent is applicable to the output</returns>
-		protected bool IsIntentApplicable(IIntentState intentState)
+		protected bool IsIntentApplicable(IIntentState intentState, out IIntentState handledIntent)
 		{
-			// Send the intent to the filter and see if it comes back non null
-			return Filter.Filter(intentState) != null;
+			// Dispatch the intent to determine if it is supported
+			// If the return value is non null the intent is applicable
+			handledIntent = Filter.Filter(intentState);
+
+			// If the intent is not null then it is applicable
+			return handledIntent != null;
 		}
 
 		/// <summary>
@@ -91,6 +110,14 @@ namespace VixenModules.OutputFilter.TaggedFilter.Outputs
 		#region Public Methods
 
 		/// <summary>
+		/// Configures the filter.  Allows the derived outputs the opportunity to configure the filter.
+		/// </summary>
+		public virtual void ConfigureFilter()
+		{
+			// By default no configuring is required			
+		}
+
+		/// <summary>
 		/// Processes input intent data.
 		/// </summary>
 		/// <param name="data">Intent data to process</param>
@@ -98,17 +125,19 @@ namespace VixenModules.OutputFilter.TaggedFilter.Outputs
 		{
 			// Clear the outputs
 			IntentData.Value.Clear();
-
+			
 			// Loop over the intents in the collection
 			foreach (IIntentState intentState in data.Value)
 			{
+				IIntentState handledIntent;
+
 				// If the intent is applicable to the output then...
-				if (IsIntentApplicable(intentState))
+				if (IsIntentApplicable(intentState, out handledIntent))
 				{
 					// Process the intent (add to the output)
-					ProcessInputDataInternal(intentState);
+					ProcessInputDataInternal(handledIntent);
 				}
-			}
+			}					
 		}
 
 		#endregion
