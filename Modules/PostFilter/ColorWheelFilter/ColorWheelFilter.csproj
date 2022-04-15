@@ -49,6 +49,7 @@
 		<ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
 			<Private>false</Private>
 			<IncludeAssets>None</IncludeAssets>
+			<CopyLocal>False</CopyLocal>
 		</ProjectReference>
 		<ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
 			<Private>false</Private>
@@ -64,10 +65,12 @@
 		  <CopyLocal>False</CopyLocal>
 		  <IncludeAssets>None</IncludeAssets>
 		</ProjectReference>
-		<ProjectReference Include="..\TaggedFilter\TaggedFilter.csproj" />
+		<ProjectReference Include="..\TaggedFilter\TaggedFilter.csproj">
+		  <CopyLocal>False</CopyLocal>
+		</ProjectReference>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="NLog" Version="4.7.11">
+		<PackageReference Include="NLog" Version="4.7.15">
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 	</ItemGroup>
