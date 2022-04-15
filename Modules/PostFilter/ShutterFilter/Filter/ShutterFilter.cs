@@ -34,7 +34,7 @@ namespace VixenModules.OutputFilter.ShutterFilter.Filter
 		public override void Handle(IIntentState<DiscreteValue> obj)
 		{
 			// Handle the discrete color value
-			IntentValue = HandleIntent(obj);
+			IntentValue = HandleIntent();
 		}
 
 		/// <summary>
@@ -43,7 +43,7 @@ namespace VixenModules.OutputFilter.ShutterFilter.Filter
 		public override void Handle(IIntentState<RGBValue> obj)
 		{
 			// Handle the RGB color value
-			IntentValue = HandleIntent(obj);
+			IntentValue = HandleIntent();
 		}
 
 		/// <summary>
@@ -52,7 +52,7 @@ namespace VixenModules.OutputFilter.ShutterFilter.Filter
 		public override void Handle(IIntentState<LightingValue> obj)
 		{
 			// Handle the lighting color value
-			IntentValue = HandleIntent(obj);
+			IntentValue = HandleIntent();
 		}
 
 		#endregion
@@ -61,13 +61,11 @@ namespace VixenModules.OutputFilter.ShutterFilter.Filter
 
 		/// <summary>
 		/// Handles color intents by creating a shutter open command.
-		/// </summary>
-		/// <param name="intent">Intent to handle</param>
-		/// <returns>Handled intent or null if shutter conversion is configured OFF</returns>
-		private IIntentState HandleIntent(IIntentState intent)
+		/// </summary>				
+		private IIntentState HandleIntent()
 		{
 			// By default the intent is NOT handled
-			intent = null;
+			IIntentState intent = null;
 
 			// If automatically opening the shutter then...
 			if (ConvertColorIntoShutterIntents)
@@ -82,7 +80,7 @@ namespace VixenModules.OutputFilter.ShutterFilter.Filter
 				IIntentState<CommandValue> commandIntentState =
 					new StaticIntentState<CommandValue>(commandValue);
 
-				// Add the command intent to the States associated with the output 
+				// Return the open shutter command
 				intent = commandIntentState;
 			}
 
