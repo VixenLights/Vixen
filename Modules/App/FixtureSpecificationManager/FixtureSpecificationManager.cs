@@ -100,16 +100,20 @@ namespace VixenModules.App.FixtureSpecificationManager
 				}
 			}
 
-			// TODO: Remove development code!
-			if (!FixtureSpecifications.Any(fixture => fixture.Name == ADJHydroBeamX1Data.GetFixture().Name))
-			{
-				FixtureSpecifications.Add(ADJHydroBeamX1Data.GetFixture());
-			}
-
-			if (!FixtureSpecifications.Any(fixture => fixture.Name == ADJHydroWashX7_17FixtureData.GetFixture().Name))
-			{
-				FixtureSpecifications.Add(ADJHydroWashX7_17FixtureData.GetFixture());
-			}			
+			//
+			// This commented out code is used to support development and testing of the intelligent fixtures.
+			// The classes below create fixture specifications to avoid having to perform manual data entry
+			// or XML surgery after a schema change.
+			//
+			//if (!FixtureSpecifications.Any(fixture => fixture.Name == ADJHydroBeamX1Data.GetFixture().Name))
+			//{
+			//	FixtureSpecifications.Add(ADJHydroBeamX1Data.GetFixture());
+			//}
+			//
+			//if (!FixtureSpecifications.Any(fixture => fixture.Name == ADJHydroWashX7_17FixtureData.GetFixture().Name))
+			//{
+			//	FixtureSpecifications.Add(ADJHydroWashX7_17FixtureData.GetFixture());
+			//}			
 		}
 
 		#endregion
