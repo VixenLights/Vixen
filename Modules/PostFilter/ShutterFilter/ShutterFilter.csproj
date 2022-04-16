@@ -53,13 +53,7 @@
 		<ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
 			<Private>false</Private>
 			<IncludeAssets>None</IncludeAssets>
-		</ProjectReference>
-		<ProjectReference Include="..\..\App\FixtureSpecificationManager\FixtureSpecificationManager.csproj">
-		  <Private>false</Private>
-		</ProjectReference>
-		<ProjectReference Include="..\..\App\Fixture\Fixture.csproj">
-		  <Private>false</Private>
-		</ProjectReference>
+		</ProjectReference>				
 		<ProjectReference Include="..\TaggedFilter\TaggedFilter.csproj" />
 	</ItemGroup>
 	<ItemGroup>

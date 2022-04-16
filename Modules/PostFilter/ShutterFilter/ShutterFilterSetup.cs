@@ -39,14 +39,17 @@ namespace VixenModules.OutputFilter.ShutterFilter
 			_data = data;
 
 			// If converting color into shutter intents then...
-			if (_data.ConvertRGBIntoShutterIntents)
+			if (_data.ConvertColorIntoShutterIntents)
 			{
 				// Initialize the check box state
-				checkBoxConvert.CheckState = CheckState.Checked;
-
-				// Initialize the Open Shutter value
-				textOpenShutter.Text = _data.OpenShutterIndexValue.ToString();	
+				checkBoxConvert.CheckState = CheckState.Checked;				
 			}
+
+			// Initialize the Open Shutter value
+			textOpenShutter.Text = _data.OpenShutterIndexValue.ToString();
+
+			// Initialize the Close Shutter value
+			textCloseShutter.Text = _data.CloseShutterIndexValue.ToString();
 
 			// Initialize the tag text box
 			textBoxTag.Text = _data.Tag;
@@ -76,13 +79,29 @@ namespace VixenModules.OutputFilter.ShutterFilter
 		private void buttonOk_Click(object sender, EventArgs e)
 		{
 			// Store off whether to convert color into dimming 
-			_data.ConvertRGBIntoShutterIntents = (checkBoxConvert.CheckState == CheckState.Checked);
+			_data.ConvertColorIntoShutterIntents = (checkBoxConvert.CheckState == CheckState.Checked);
 
 			// Store off the tag
 			_data.Tag = textBoxTag.Text;
 
 			// Store off the open shutter idex value
 			_data.OpenShutterIndexValue = byte.Parse(textOpenShutter.Text);
+
+			// Store off the close shutter idex value
+			_data.CloseShutterIndexValue = byte.Parse(textCloseShutter.Text);
+		}
+
+		/// <summary>
+		/// Returns true if all the required fields are populated.
+		/// </summary>
+		/// <returns>True if all the required fields are populated</returns>
+		private bool AllRequiredFieldsArePopulated()
+        {
+			// Return true if all required fields are populated
+			return
+				!string.IsNullOrEmpty(textBoxTag.Text) &&
+				!string.IsNullOrEmpty(textOpenShutter.Text) &&
+				!string.IsNullOrEmpty(textCloseShutter.Text);
 		}
 
 		/// <summary>
@@ -92,39 +111,30 @@ namespace VixenModules.OutputFilter.ShutterFilter
 		/// <param name="e">Event arguments</param>
         private void textBoxTag_TextChanged(object sender, EventArgs e)
         {
-			// If the tag is empty then...
-			if (string.IsNullOrEmpty(textBoxTag.Text))
-            {
-				// Disable the OK button
-				buttonOk.Enabled = false;
-            }
-			// Otherwise the tag is populated
-			else if (!string.IsNullOrEmpty(textOpenShutter.Text))
-            {
-				// Enable the OK button
-				buttonOk.Enabled = true;
-			}
-        }
+			// Enable/Disable the OK button
+			buttonOk.Enabled = AllRequiredFieldsArePopulated();
+		}
         
 		/// <summary>
-		/// Event handler for when the Open Shutter Value changes.
+		/// Event handler for when the open shutter value changes.
 		/// </summary>
 		/// <param name="sender">Event sender</param>
 		/// <param name="e">Event arguments</param>
         private void textOpenShutter_TextChanged(object sender, EventArgs e)
-        {
-			// If the tag is empty then...
-			if (string.IsNullOrEmpty(textOpenShutter.Text))
-			{
-				// Disable the OK button
-				buttonOk.Enabled = false;
-			}
-			// Otherwise if the tag is populated
-			else if (!string.IsNullOrEmpty(textBoxTag.Text))
-			{
-				// Enable the OK button
-				buttonOk.Enabled = true;
-			}
+        {			
+			// Enable/Disable the OK button
+			buttonOk.Enabled = AllRequiredFieldsArePopulated();						
+		}
+
+		/// <summary>
+		/// Event handler for when the close shutter value changes.
+		/// </summary>
+		/// <param name="sender">Event sender</param>
+		/// <param name="e">Event arguments</param>
+		private void textCloseShutter_TextChanged(object sender, EventArgs e)
+		{
+			// Enable/Disable the OK button
+			buttonOk.Enabled = AllRequiredFieldsArePopulated();
 		}
 
 		/// <summary>
@@ -139,15 +149,21 @@ namespace VixenModules.OutputFilter.ShutterFilter
 			{
 				// Enable the Open Shutter text box
 				textOpenShutter.Enabled = true;
+
+				// Enable the Close Shutter text box
+				textCloseShutter.Enabled = true;
 			}
 			// Otherwise shutter is NOT being automated
 			else
 			{
 				// Disable the Open Shutter text box
 				textOpenShutter.Enabled = false;
+
+				// Disable the Close Shutter text box
+				textCloseShutter.Enabled = false;
 			}
 		}
 
-		#endregion
-	}
+        #endregion        
+    }
 }
