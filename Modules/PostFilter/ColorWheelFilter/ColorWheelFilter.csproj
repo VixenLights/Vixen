@@ -49,7 +49,6 @@
 		<ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
 			<Private>false</Private>
 			<IncludeAssets>None</IncludeAssets>
-			<CopyLocal>False</CopyLocal>
 		</ProjectReference>
 		<ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
 			<Private>false</Private>
@@ -58,15 +57,15 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
-			<Private>false</Private>
+		
 			<IncludeAssets>None</IncludeAssets>
 		</ProjectReference>
 		<ProjectReference Include="..\..\App\Fixture\Fixture.csproj">
-		  <CopyLocal>False</CopyLocal>
-		  <IncludeAssets>None</IncludeAssets>
+	
+		  <IncludeAssets>None</IncludeAssets>		  
 		</ProjectReference>
 		<ProjectReference Include="..\TaggedFilter\TaggedFilter.csproj">
-		  <CopyLocal>False</CopyLocal>
+		  <IncludeAssets>None</IncludeAssets>
 		</ProjectReference>
 	</ItemGroup>
 	<ItemGroup>
