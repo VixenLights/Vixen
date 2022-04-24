@@ -57,14 +57,15 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
-		
-			<IncludeAssets>None</IncludeAssets>
+			<Private>false</Private>
+			<IncludeAssets>None</IncludeAssets>							
 		</ProjectReference>
 		<ProjectReference Include="..\..\App\Fixture\Fixture.csproj">
-	
-		  <IncludeAssets>None</IncludeAssets>		  
+			<Private>false</Private>
+		  <IncludeAssets>None</IncludeAssets>				  		  
 		</ProjectReference>
 		<ProjectReference Include="..\TaggedFilter\TaggedFilter.csproj">
+			<Private>false</Private>
 		  <IncludeAssets>None</IncludeAssets>
 		</ProjectReference>
 	</ItemGroup>
