@@ -1,0 +1,79 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+	  <RootNamespace>VixenModules.Editor.FixturePropertyEditor.ViewModels</RootNamespace>
+	  <TargetFramework>net48</TargetFramework>
+	  <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+	  <AssemblyTitle>FixturePropertyEditor</AssemblyTitle>
+	  <Product>FixturePropertyEditor</Product>
+	  <Copyright>Copyright ©  2021</Copyright>
+	  <UseWPF>true</UseWPF>
+	  <Platforms>x64;x86</Platforms>
+	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+		<OutputPath>..\..\..\Release64\Modules\Editor\</OutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+		<OutputPath>..\..\..\$(Configuration)\Modules\Editor\</OutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+		<OutputPath>..\..\..\Debug64\Modules\Editor\</OutputPath>
+		<DefineConstants>TRACE</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+		<OutputPath>..\..\..\$(Configuration)\Modules\Editor\</OutputPath>
+		<DefineConstants>TRACE</DefineConstants>
+	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="Behaviors\**" />
+	  <EmbeddedResource Remove="Behaviors\**" />
+	  <None Remove="Behaviors\**" />
+	  <Page Remove="Behaviors\**" />
+	</ItemGroup>	
+	<ItemGroup>
+	  <Page Remove="UserControl1.xaml" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <PackageReference Include="Catel.Core" Version="5.12.10">
+	    <ExcludeAssets>runtime</ExcludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="Catel.MVVM" Version="5.12.10">
+	    <ExcludeAssets>runtime</ExcludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="DataGridThemes" Version="1.0.0">
+	    <ExcludeAssets>runtime</ExcludeAssets>
+	  </PackageReference>
+	</ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
+	    <IncludeAssets>None</IncludeAssets>
+	    <Private>false</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
+	    <IncludeAssets>None</IncludeAssets>
+	    <Private>false</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\WPFCommon\WPFCommon.csproj">
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\App\FixtureSpecificationManager\FixtureSpecificationManager.csproj">
+      <Private>false</Private>
+	    <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\App\Fixture\Fixture.csproj">
+      <Private>false</Private>
+	    <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+</Project>
