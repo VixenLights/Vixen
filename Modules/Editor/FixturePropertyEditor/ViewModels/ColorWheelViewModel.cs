@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using VixenModules.App.Fixture;
 
 namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
@@ -18,29 +17,16 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		{
 		}
 
-		#endregion
-
-		#region Private Constants
-
-		/// <summary>
-		/// Numerical value to represent an unpopulated color wheel end value.
-		/// </summary>
-		private const int UnusedEndValue = -1;
-
-		#endregion
+		#endregion		
 
 		#region Public Methods
-
+				
 		/// <summary>
 		/// Creates the color wheel item view model items from the model data.
 		/// </summary>
 		/// <param name="colorWheelData">Color wheel item data</param>
-		/// <param name="raiseCanExecuteChanged">Delegate to refresh the command status</param>
-		public void InitializeChildViewModels(List<FixtureColorWheel> colorWheelData, Action raiseCanExecuteChanged)
+		public void InitializeChildViewModels(List<FixtureColorWheel> colorWheelData)
 		{
-			// Store of the delegate to refresh the command status
-			RaiseCanExecuteChanged = raiseCanExecuteChanged;
-
 			// Clear any existing color wheel items
 			Items.Clear();
 
@@ -55,12 +41,6 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 
 				// Assign the start value
 				colorSlot.StartValue = colorWheel.StartValue.ToString();
-
-				// Assign the end value
-				colorSlot.EndValue = colorWheel.EndValue.ToString();
-
-				// Assign whether a curve is applicable
-				colorSlot.UseCurve = colorWheel.UseCurve;
 								
 				// Assign whether the entry is a half step
 				colorSlot.HalfStep = colorWheel.HalfStep;
@@ -94,22 +74,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 
 				// Assign the start value 
 				colorSlot.StartValue = int.Parse(item.StartValue);
-
-				// If the end value has been defined then...
-				if (!string.IsNullOrEmpty(item.EndValue))
-				{
-					// Assign the end value
-					colorSlot.EndValue = int.Parse(item.EndValue);
-				}
-				else
-				{
-					// Otherwise mark the end value as unused
-					colorSlot.EndValue = UnusedEndValue;
-				}
-
-				// Assign whether the curve is applicable
-				colorSlot.UseCurve = item.UseCurve;
-
+				
 				// Assign whether this entry is a half step
 				colorSlot.HalfStep = item.HalfStep;
 				
@@ -156,8 +121,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		{
 			item.Name = "Delete Me";
 			item.StartValue = "0";
-			item.CloseViewModelAsync(null);
-		}
+	  	}
 
 		#endregion
 
