@@ -102,28 +102,29 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			{
 				// Concatenate the error messages
 				CanSaveValidationResults += result.Message + "\n";
-
-				// Indicate the fixture cannot be saved
-				canSave = false;
 			}
-			
-			// Validate the business
-			List<IBusinessRuleValidationResult> validationResults = new List<IBusinessRuleValidationResult>();
-			ValidateBusinessRules(validationResults);
 
-			// Loop over the business rule validation results
-			for (int index = 0; index < validationResults.Count; index++)
+			// If there are any errors so far then...
+			if (fieldValidationResults.Any())
 			{
-				// Get the specified validation result
-				IBusinessRuleValidationResult validationResult = validationResults[index];
-
-				// Concatenate the error messages
-				CanSaveValidationResults += validationResult.Message + "\n";
-
 				// Indicate the fixture cannot be saved
 				canSave = false;
+
+				// Validate the business
+				List<IBusinessRuleValidationResult> validationResults = new List<IBusinessRuleValidationResult>();
+				ValidateBusinessRules(validationResults);
+
+				// Loop over the business rule validation results
+				for (int index = 0; index < validationResults.Count; index++)
+				{
+					// Get the specified validation result
+					IBusinessRuleValidationResult validationResult = validationResults[index];
+
+					// Concatenate the error messages
+					CanSaveValidationResults += validationResult.Message + "\n";						
+				}
 			}
-			
+
 			return canSave;
 		}
 
