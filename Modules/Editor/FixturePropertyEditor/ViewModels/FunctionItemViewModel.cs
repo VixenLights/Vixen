@@ -1,7 +1,6 @@
 ﻿using Catel.Data;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Vixen.Data.Value;
 using VixenModules.App.Fixture;
 
@@ -29,28 +28,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			IndexData = new List<FixtureIndex>();
 
 			// Initialize the color wheel data
-			ColorWheelData = new List<FixtureColorWheel>();
-
-			// Create the list of valid function identities for range functions
-			_rangeFunctionIndentities = new List<FunctionIdentity>();
-			_rangeFunctionIndentities.Add(FunctionIdentity.Pan);
-			_rangeFunctionIndentities.Add(FunctionIdentity.Tilt);
-			_rangeFunctionIndentities.Add(FunctionIdentity.Zoom);
-			_rangeFunctionIndentities.Add(FunctionIdentity.Dim);
-			_rangeFunctionIndentities.Add(FunctionIdentity.Frost);
-			_rangeFunctionIndentities.Add(FunctionIdentity.Custom);
-
-			// Create the list of valid function identities for index functions
-			_indexFunctionIndentities = new List<FunctionIdentity>();
-			_indexFunctionIndentities.Add(FunctionIdentity.Shutter);
-			_indexFunctionIndentities.Add(FunctionIdentity.Gobo);			
-			_indexFunctionIndentities.Add(FunctionIdentity.Prism);
-			_indexFunctionIndentities.Add(FunctionIdentity.OpenClosePrism);			
-			_indexFunctionIndentities.Add(FunctionIdentity.Custom);
-
-			// Create the list of valid function identities for color wheel functions
-			_colorWheelIdentities = new List<FunctionIdentity>();
-			_colorWheelIdentities.Add(FunctionIdentity.SpinColorWheel);
+			ColorWheelData = new List<FixtureColorWheel>();			
 		}
 
 		/// <summary>
@@ -59,12 +37,10 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <param name="indexData">Index data associated with the function</param>
 		/// <param name="colorWheelData">Color wheel data associated with the function</param>
 		/// <param name="rotationLimits">Rotation limits associated with the function</param>
-		/// <param name="zoomNarrowToWide">Indicates whether the fixture zooms from narrow to wide</param>
 		public FunctionItemViewModel(
 			List<FixtureIndex> indexData,
 			List<FixtureColorWheel> colorWheelData,
-			FixtureRotationLimits rotationLimits,
-			bool zoomNarrowToWide) : this()
+			FixtureRotationLimits rotationLimits) : this()
 		{
 			// Store off the index data
 			IndexData = indexData;
@@ -74,32 +50,10 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 
 			// Store off the rotation limit data
 			RotationLimits = rotationLimits;
-
-			// Store off whether this fixture zooms narrow to wide
-			ZoomNarrowToWide = zoomNarrowToWide;
 		}
 
 		#endregion
-
-		#region Fields
-
-		/// <summary>
-		/// Collection of function identities applicable to range functions.
-		/// </summary>
-		private List<FunctionIdentity> _rangeFunctionIndentities;
-
-		/// <summary>
-		/// Collection of function identities applicable to index functions.
-		/// </summary>
-		private List<FunctionIdentity> _indexFunctionIndentities;
-
-		/// <summary>
-		/// Collection of function identities applicable to color wheel functions.
-		/// </summary>
-		private List<FunctionIdentity> _colorWheelIdentities;
-
-		#endregion
-
+		
 		#region Public Properties 
 
 		/// <summary>
@@ -116,47 +70,6 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// Rotation limits associated with the function.
 		/// </summary>
 		public FixtureRotationLimits RotationLimits { get; set; }
-
-		/// <summary>
-		/// Whether the fixtures zooms narrow to wide.
-		/// </summary>
-		public bool ZoomNarrowToWide { get; set; }
-
-		/// <summary>
-		/// List of avalailable tags (function identities) for the function item.
-		/// </summary>
-		public IList<FunctionIdentity> FunctionIdentities
-		{
-			get
-			{
-				// Create the return value
-				List<FunctionIdentity> types = new List<FunctionIdentity>();
-
-				// Determine the function identities based on function type
-				switch(FunctionTypeEnum)
-				{					
-					case FixtureFunctionType.Range:
-						types = _rangeFunctionIndentities;
-						break;					
-					case FixtureFunctionType.Indexed:
-						types = _indexFunctionIndentities;
-						break;
-					case FixtureFunctionType.ColorWheel:
-						types = _colorWheelIdentities;
-						break;
-					case FixtureFunctionType.RGBColor:
-					case FixtureFunctionType.RGBWColor:
-					case FixtureFunctionType.None:
-						break;
-						default:
-						Debug.Assert(false, "Unsupported function type!");
-						break;
-				}
-
-				// Return the applicable function identities
-				return types;
-			}
-		}
 
 		#endregion
 
@@ -198,16 +111,6 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			set
 			{
 				SetValue(FunctionIdentityProperty, value);
-
-				// Force Catel to re-validate
-				Validate(true);
-
-				// Refresh the command button enabled status
-				RefreshCanExecuteChanged();
-
-				// Fire the Function Type Changed event to ensure the correct details control is displayed
-				EventHandler handler = FunctionTypeChanged;
-				handler?.Invoke(this, EventArgs.Empty);
 			}
 		}
 
@@ -276,7 +179,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			// Ensure the validation bar is displayed
 			DisplayValidationBar(validationResults);
 		}
-		
-		#endregion
+
+		#endregion		
 	}
 }
