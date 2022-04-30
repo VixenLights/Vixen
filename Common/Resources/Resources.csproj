@@ -105,7 +105,7 @@
     <None Include="cog_delete.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="cog_edit.png" />
+    <Resource Include="cog_edit.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cog_error.png" />
@@ -156,6 +156,7 @@
     <None Include="control_stop_blue.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="cog_error_red.png" />
     <Resource Include="delete.png" />
   </ItemGroup>
   <ItemGroup>
@@ -211,7 +212,7 @@
     <None Include="Vixen3.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="add.png" />
+    <Resource Include="add.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="colors.png" />
@@ -521,6 +522,7 @@
     <Content Include="folder_error.png" />
     <Content Include="folder_explore.png" />
     <Resource Include="folder_go.png" />
+    <Resource Include="TriangleExclamation.png" />
     <None Include="plus.png" />
     <None Include="minus.png" />
     <None Include="arrow_undo.png" />
@@ -530,6 +532,10 @@
     <Compile Remove="LipSync\Tools.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="cog_error_red.png" />
     <None Remove="Resources\clock_go.png" />
+    <None Remove="Resources\add.png" />
+    <None Remove="Resources\delete.png" />
+    <None Remove="TriangleExclamation.png" />
   </ItemGroup>
 </Project>
