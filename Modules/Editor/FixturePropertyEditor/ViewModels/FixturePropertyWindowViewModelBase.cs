@@ -116,7 +116,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
                 if (!canOK)
                 {
                     // Update the OK tooltip
-                    OKTooltip = childViewModel.GetValidationResults().TrimEnd('\n');
+                    OKTooltip = childViewModel.GetValidationResults();
                     
                     // Show the Error triangle
                     ShowError = Visibility.Visible;
