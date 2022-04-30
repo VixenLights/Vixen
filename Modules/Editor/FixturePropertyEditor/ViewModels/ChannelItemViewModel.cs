@@ -162,8 +162,27 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			if (string.IsNullOrEmpty(Function))
 			{
 				validationResults.Add(FieldValidationResult.CreateError(FunctionProperty, "Function is empty.  Function is a required field."));
-			}	
-			
+			}		
+            else
+            {
+				// Retrieve the function associated with the channel
+				FixtureFunction fixtureFunction = FunctionObjects.Single(fnc => fnc.Name == Function);
+				
+				// If the function is indexed but there are no index entries then...
+				if (fixtureFunction.FunctionType == FixtureFunctionType.Indexed &&
+					fixtureFunction.IndexData.Count == 0)
+                {
+					validationResults.Add(FieldValidationResult.CreateError(FunctionProperty, "Function index data is incomplete.  Select the settings button to enter in the index data."));
+				}
+
+				// If the function is a color wheel but there are no color wheel entries then...
+				if (fixtureFunction.FunctionType == FixtureFunctionType.ColorWheel &&
+					fixtureFunction.ColorWheelData.Count == 0)
+				{
+					validationResults.Add(FieldValidationResult.CreateError(FunctionProperty, "Function color wheel data is incomplete.  Select the settings button to enter in the index data."));
+				}
+			}
+
 			// Display the validation bar
 			DisplayValidationBar(validationResults);			
 		}

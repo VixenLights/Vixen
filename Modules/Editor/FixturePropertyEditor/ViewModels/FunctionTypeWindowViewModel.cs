@@ -83,20 +83,43 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
             // Default to disabling the OK command
             bool canOK = false;
 
-            // Force Catel to validate
-            Validate(true);
-
             // Attempt to get the child view model
             FunctionTypeViewModel functionTypeViewModel = GetChildViewModel();
 
             // If the child view model has been created then...
             if (functionTypeViewModel != null)
-            {                
+            { 
                 // Delegate to the child view model
                 canOK = functionTypeViewModel.CanSave();
+               
+                // If NOT already updating the OK button tooltip then...
+                if (!UpdatingOKTooltip)
+                {
+                    // Set a flag to avoid recursion
+                    UpdatingOKTooltip = true;
 
-                // Update the OK button tooltip
-                UpdateOKTooltip(canOK, functionTypeViewModel);                
+                    // If the OK button is disabled then...
+                    if (!canOK)
+                    {                    
+                        // Update the OK button tooltip with the validation results
+                        OKTooltip = functionTypeViewModel.GetValidationResults();
+
+                        // Display the error triangle
+                        ShowError = Visibility.Visible;   
+                    }
+                    // Otherwise the function data is valid
+                    else
+                    {
+                        // Clear the OK button tooltip
+                        OKTooltip = String.Empty;
+
+                        // Hide the error triangle
+                        ShowError = Visibility.Hidden;
+                    }
+
+                    // Clear the flag indicating that we are done updating the OK button tooltip
+                    UpdatingOKTooltip = false;
+                }
             }
 
             // Return whether the OK command can be executed
