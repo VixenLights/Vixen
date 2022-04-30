@@ -281,7 +281,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			// If the name is empty then...
 			if (string.IsNullOrEmpty(Name))
             {
-				validationResults.Add(FieldValidationResult.CreateError(NameProperty, "Profile name is empty.  Profile is a required field."));
+				validationResults.Add(FieldValidationResult.CreateError(NameProperty, "Name is empty.  Name is a required field."));
 			}
 
 			// Display the validation bar
@@ -354,7 +354,6 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		{
 			item.Name = "Zombie";
 			item.Function = "None";
-			item.CloseViewModelAsync(null);			
 		}
 
 		#endregion
