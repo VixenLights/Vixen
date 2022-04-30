@@ -1,6 +1,5 @@
 ﻿using Catel.Data;
 using Catel.MVVM;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -31,28 +30,16 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 
 			// Configure Catel to validate immediately
 			DeferValidationUntilFirstSaveCall = false;
-
-			// Initialize the validation lock
-			_validationLock = new object();
 		}
 
-		#endregion
+        #endregion
 
-		#region Fields
-
-		/// <summary>
-		/// Lock to prevent the Catel validation from producing duplicate validation messages.
-		/// </summary>
-		private object _validationLock;
-
-		#endregion
-
-		#region Public Properties
+        #region Public Properties
 
 		/// <summary>
 		/// Command for adding a new item.
 		/// </summary>
-		public ICommand AddCommand { get; private set; }
+        public ICommand AddCommand { get; private set; }
 		
 		/// <summary>
 		/// Command for deleting an item.
@@ -111,12 +98,12 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 				
 				// Remove the item
 				Items.Remove(SelectedItem);
-				
+
 				// Clear out the selected item
 				SelectedItem = null;
 
 				// Validate the view model
-				Validate(true);								
+				Validate(true);				
 			}
 		}
 
@@ -191,8 +178,8 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// </summary>
 		public static readonly PropertyData SelectedItemProperty = RegisterProperty(nameof(SelectedItem), typeof(TItemType), null);
 
-		#endregion
-
+        #endregion
+        		
 		#region IFixtureSaveable
 
 		/// <summary>
@@ -201,7 +188,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		public override string GetValidationResults()
 		{
 			// Default the validation result to an empty string
-			string validationResults = base.GetValidationResults();	
+			string validationResults = string.Empty;
 
 			// Loop over the items
 			foreach (TItemType item in Items)
@@ -221,53 +208,11 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			// Default to being able to save
 			bool canSave = true;
 
-			// Force Catel to validate
-			Validate(true);
-
-			// To prevent duplicate validation messaages do not allow more than one thread 
-			// in this portion of the method.
-			lock (_validationLock)
+			// Loop over the index items
+			foreach (TItemType item in Items)
 			{
-				// Clear out the previous save validation results
-				CanSaveValidationResults = string.Empty;
-				
-				// Loop over the index items
-				foreach (TItemType item in Items)
-				{
-					// And in the item CanSave status
-					canSave &= item.CanSave();
-				}
-
-				// Validate the top level fields
-				List<IFieldValidationResult> fieldValidationResults = new List<IFieldValidationResult>();
-				ValidateFields(fieldValidationResults);
-
-				// Loop over the field validation results
-				foreach (IFieldValidationResult result in fieldValidationResults)
-				{
-					// Concatenate the error messages
-					CanSaveValidationResults += result.Message + "\n";
-
-					// Indicate the fixture cannot be saved
-					canSave = false;
-				}
-
-				// Validate the business
-				List<IBusinessRuleValidationResult> validationResults = new List<IBusinessRuleValidationResult>();
-				ValidateBusinessRules(validationResults);
-
-				// Loop over the business rule validation results
-				for (int index = 0; index < validationResults.Count; index++)
-				{
-					// Get the specified validation result
-					IBusinessRuleValidationResult validationResult = validationResults[index];
-
-					// Concatenate the error messages
-					CanSaveValidationResults += validationResult.Message + "\n";
-
-					// Indicate the fixture cannot be saved
-					canSave = false;
-				}
+				// And in the item CanSave status
+				canSave &= item.CanSave();
 			}
 
 			// Return whether the items can be saved

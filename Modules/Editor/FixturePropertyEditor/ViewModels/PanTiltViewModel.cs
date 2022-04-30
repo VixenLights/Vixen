@@ -73,7 +73,25 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 
 			return limits;
 		}
-		
+
+		/// <summary>
+		/// Gets the rotation limits associated with the pan or tilt function.
+		/// </summary>
+		/// <returns>Rotation limits of the function</returns>
+		public FixtureRotationLimits GetRotationLimits()
+		{
+			// Create a new rotation limits model object
+			FixtureRotationLimits rotationLimits = new FixtureRotationLimits();
+						
+			// Retrieve the start angle from the view model
+			rotationLimits.StartPosition = int.Parse(StartPosition);
+
+			// Retrieve teh stop angle from the view model
+			rotationLimits.StopPosition = int.Parse(StopPosition);
+			
+			return rotationLimits;
+		}
+
 		#endregion
 
 		#region Public Catel Properties

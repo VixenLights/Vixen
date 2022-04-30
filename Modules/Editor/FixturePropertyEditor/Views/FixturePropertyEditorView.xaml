@@ -75,15 +75,16 @@
 
                 <DataGrid.Columns>
 
-                    <DataGridTemplateColumn  Header="Channel #" Width="70">
+                    <DataGridTemplateColumn  Header="Channel #" Width="70" >
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox Text="{Binding ChannelNumber}"  IsReadOnly="True"/>
+                                <ComboBox ItemsSource="{Binding ChannelNumbers}" 
+							          SelectedItem="{Binding Path=ChannelNumber, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <DataGridTemplateColumn Header="Name" Width="2*">
+                    <DataGridTemplateColumn Header="Name" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}">
@@ -97,7 +98,7 @@
                         </DataGridTemplateColumn.CellEditingTemplate>
                     </DataGridTemplateColumn>
 
-                    <DataGridTemplateColumn  Header="Function" Width="*" >
+                    <DataGridTemplateColumn  Header="Type" Width="180" >
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <ComboBox ItemsSource="{Binding Functions}"                                   
