@@ -14,7 +14,7 @@ using Point = System.Drawing.Point;
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	[DataContract]
-	public class PreviewLine : PreviewBaseShape
+	public class PreviewLine : PreviewLightBaseShape
 	{
 		[DataMember] private List<PreviewPoint> _points = new List<PreviewPoint>();
 

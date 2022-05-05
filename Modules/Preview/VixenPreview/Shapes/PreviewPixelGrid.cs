@@ -17,7 +17,7 @@ using Orientation = VixenModules.Property.Orientation.Orientation;
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	[DataContract]
-	public class PreviewPixelGrid : PreviewBaseShape, ICloneable
+	public class PreviewPixelGrid : PreviewLightBaseShape, ICloneable
 	{
 		[DataMember] private PreviewPoint _topLeft, _topRight;
 		[DataMember] private PreviewPoint _bottomLeft, _bottomRight;
@@ -373,7 +373,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				if (_strings != null && _strings.Count > 0) {
 					List<PreviewPixel> outPixels = new List<PreviewPixel>();
 					for (int i = 0; i < Strings.Count; i++) {
-						foreach (PreviewPixel pixel in _strings[i].Pixels) {
+						foreach (PreviewPixel pixel in LightStrings[i].Pixels) {
 							outPixels.Add(pixel);
 						}
 					}
@@ -521,17 +521,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		public override void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected,
-		                          bool forceDraw)
+		                          bool forceDraw, double zoomLevel)
 		{
 			if (_strings != null) {
 				for (int i = 0; i < _strings.Count; i++) {
-					foreach (PreviewPixel pixel in _strings[i]._pixels) {
+					foreach (PreviewPixel pixel in LightStrings[i]._pixels) {
 						DrawPixel(pixel, fp, editMode, highlightedElements, selected, forceDraw);
 					}
 				}
 			}
 
-			base.Draw(fp, editMode, highlightedElements, selected, forceDraw);
+			base.Draw(fp, editMode, highlightedElements, selected, forceDraw, zoomLevel);
 		}
 
 		public override object Clone()
@@ -539,8 +539,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			PreviewPixelGrid newGrid = (PreviewPixelGrid) this.MemberwiseClone();
 
 			newGrid._strings = new List<PreviewBaseShape>();
-			foreach (PreviewBaseShape line in _strings) {
-				PreviewBaseShape newLine = (PreviewLine) line.Clone();
+			foreach (PreviewLightBaseShape line in _strings) {
+				PreviewLightBaseShape newLine = (PreviewLine) line.Clone();
 				newGrid._strings.Add(newLine);
 			}
 			newGrid._topLeft = _topLeft.Copy();
