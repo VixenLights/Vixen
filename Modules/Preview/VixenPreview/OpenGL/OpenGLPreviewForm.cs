@@ -654,8 +654,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 			// Calculate the reference height
 			int referenceHeight = _background.HasBackground ? _background.Height : Height;
+			int referenceWidth = _background.HasBackground ? _background.Width : Width;
 
-			float sizeScale = ((float)_width / _background.Width + (float)_height / _background.Height) / 2f;
+			float sizeScale = ((float)_width / referenceWidth + (float)_height / referenceHeight) / 2f;
 
 			// The beam does not seem to cover the background so adding multiplier
 			int maxBeamLength = (int)Math.Round(Math.Max(_width, _height) / sizeScale, MidpointRounding.AwayFromZero);
