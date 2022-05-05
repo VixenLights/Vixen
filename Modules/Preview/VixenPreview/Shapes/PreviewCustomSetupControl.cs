@@ -7,28 +7,32 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	public partial class PreviewCustomSetupControl : DisplayItemBaseControl
 	{
-		public PreviewCustomSetupControl(PreviewBaseShape shape) : base(shape)
+		public PreviewCustomSetupControl(PreviewLightBaseShape shape) : base(shape)
 		{
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			comboBoxStringToEdit.ForeColor = ThemeColorTable.ForeColor;
-			foreach (PreviewBaseShape stringShape in Shape._strings) {
+
+			foreach (PreviewLightBaseShape stringShape in ((PreviewLightBaseShape)Shape)._strings)
+			{
 				stringShape.OnPropertiesChanged += OnPropertiesChanged;
 			}
+		
 		}
 
 		~PreviewCustomSetupControl()
 		{
-			foreach (PreviewBaseShape stringShape in Shape._strings) {
+			foreach (PreviewLightBaseShape stringShape in ((PreviewLightBaseShape)Shape)._strings)
+			{
 				stringShape.OnPropertiesChanged -= OnPropertiesChanged;
-			}
+			}		
 		}
 
 		private void OnPropertiesChanged(object sender, PreviewBaseShape shape)
 		{
-			PopulatePropList((comboBoxStringToEdit.SelectedItem as Common.Controls.ComboBoxItem).Value as PreviewBaseShape);
+			PopulatePropList((comboBoxStringToEdit.SelectedItem as Common.Controls.ComboBoxItem).Value as PreviewLightBaseShape);
 		}
 
 		private void buttonHelp_Click(object sender, EventArgs e)
@@ -41,10 +45,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			PopulatePropList();
 		}
 
-		private void PopulatePropList(PreviewBaseShape selectedShape = null)
+		private void PopulatePropList(PreviewLightBaseShape selectedShape = null)
 		{
 			comboBoxStringToEdit.Items.Clear();
-			foreach (PreviewBaseShape shape in Shape._strings) {
+
+			foreach (PreviewLightBaseShape shape in ((PreviewLightBaseShape)Shape)._strings) 
+			{
 				Common.Controls.ComboBoxItem item = new Common.Controls.ComboBoxItem(shape.Name, shape);
 				if (item.Text == null) {
 					item.Text = shape.GetType().ToString();
@@ -54,13 +60,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					item.Text = "Unnamed String";
 				comboBoxStringToEdit.Items.Add(item);
 			}
+
 			if (comboBoxStringToEdit.Items.Count > 0) {
 				if (selectedShape != null) {
 					foreach (Common.Controls.ComboBoxItem item in comboBoxStringToEdit.Items)
 					{
 						if (item.Text == "")
 							item.Text = "Unnamed String";
-						if ((item.Value as PreviewBaseShape) == selectedShape) {
+						if ((item.Value as PreviewLightBaseShape) == selectedShape) {
 							comboBoxStringToEdit.SelectedItem = item;
 							return;
 						}
@@ -73,7 +80,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			comboBoxStringToEdit.ForeColor = ThemeColorTable.ForeColor;
 		}
 
-		public void ShowSetupControl(PreviewBaseShape shape)
+		public void ShowSetupControl(PreviewLightBaseShape shape)
 		{
 			panelProperties.Controls.Clear();
 			DisplayItemBaseControl setupControl = shape.GetSetupControl();
@@ -91,7 +98,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				if (item.Text == "")
 					item.Text = "Unnamed String";
-				PreviewBaseShape shape = item.Value as PreviewBaseShape;
+				PreviewLightBaseShape shape = item.Value as PreviewLightBaseShape;
 				if (shape != null) {
 					ShowSetupControl(shape);
 				}
@@ -120,11 +127,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Common.Controls.ComboBoxItem item = comboBoxStringToEdit.SelectedItem as Common.Controls.ComboBoxItem;
 			if (item != null)
 			{
-				PreviewBaseShape shape = item.Value as PreviewBaseShape;
+				PreviewLightBaseShape shape = item.Value as PreviewLightBaseShape;
 				if (shape != null)
 				{
 					var size = shape.PixelSize;
-					foreach (PreviewBaseShape s in Shape._strings)
+					foreach (PreviewLightBaseShape s in ((PreviewLightBaseShape)Shape)._strings)
 					{
 						s.PixelSize = size;
 					}
