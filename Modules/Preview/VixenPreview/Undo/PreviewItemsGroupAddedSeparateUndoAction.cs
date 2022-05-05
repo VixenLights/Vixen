@@ -20,8 +20,13 @@ namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 		protected void removeEffects()
 		{
 			m_form.SelectedDisplayItems.Clear();
-				PreviewPoint translatedPoint = new PreviewPoint(m_newDisplay.Shape.Pixels[0].X, m_newDisplay.Shape.Pixels[0].Y);
+
+			if (m_newDisplay.IsLightShape())
+			{
+				PreviewPoint translatedPoint = new PreviewPoint(m_newDisplay.LightShape.Pixels[0].X, m_newDisplay.LightShape.Pixels[0].Y);
 				m_form.SelectItemUnderPoint(translatedPoint, false);
+			}
+			
 			m_form.SeparateTemplateItems(m_newDisplay);
 		}
 
@@ -30,11 +35,16 @@ namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 			DisplayItem selectDisplayItem;
 			var nextShape = false;
 			m_form.SelectedDisplayItems.Clear();
-			foreach (var shape in m_newDisplay.Shape.Strings)
+
+			if (m_newDisplay.IsLightShape())
 			{
-				PreviewPoint translatedPoint = new PreviewPoint(shape.Pixels[0].X, shape.Pixels[0].Y);
-				m_form.SelectItemUnderPoint(translatedPoint, nextShape);
-				nextShape = true;
+				foreach (var shape in m_newDisplay.LightShape.Strings)
+				{
+					PreviewPoint translatedPoint = new PreviewPoint(shape.Pixels[0].X, shape.Pixels[0].Y);
+					m_form.SelectItemUnderPoint(translatedPoint, nextShape);
+
+					nextShape = true;
+				}
 			}
 			m_form.AddNewGroup(out selectDisplayItem, m_form.SelectedDisplayItems);
 		}
