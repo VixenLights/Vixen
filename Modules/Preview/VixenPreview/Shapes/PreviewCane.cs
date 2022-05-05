@@ -15,7 +15,7 @@ using System.Windows.Forms.Design;
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	[DataContract]
-	public class PreviewCane : PreviewBaseShape
+	public class PreviewCane : PreviewLightBaseShape
 	{
 		[DataMember] private PreviewPoint _topLeftPoint;
 		[DataMember] private PreviewPoint _bottomRightPoint;
