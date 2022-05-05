@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Scaling;
@@ -115,14 +116,14 @@ namespace VixenModules.Preview.VixenPreview
 			treeElements.SelectElementNode(node);
 		}
 
-		private void ButtonAddTemplate_Click(object sender, EventArgs e)
+		private async void ButtonAddTemplate_Click(object sender, EventArgs e)
 		{
 			ComboBoxItem item = (comboBoxNewItemType.SelectedItem as ComboBoxItem);
 
 			if (item != null)
 			{
 				IElementTemplate template = item.Value as IElementTemplate;
-				SetupTemplate(template);
+				await SetupTemplate(template);
 			}
 		}
 
@@ -132,12 +133,12 @@ namespace VixenModules.Preview.VixenPreview
 			TreeViewNodesDeselected();
 		}
 
-		internal bool SetupTemplate(IElementTemplate template)
+		internal async Task<bool> SetupTemplate(IElementTemplate template)
 		{
 			bool success = template.SetupTemplate(treeElements.SelectedElementNodes);
 			if (success)
 			{
-				IEnumerable<ElementNode> createdElements = template.GenerateElements(treeElements.SelectedElementNodes);
+				IEnumerable<ElementNode> createdElements = await template.GenerateElements(treeElements.SelectedElementNodes);
 				if (createdElements == null || !createdElements.Any())
 				{
 					var messageBox =
