@@ -621,14 +621,17 @@ namespace VixenModules.Preview.VixenPreview
 				Cursor = Cursors.WaitCursor;
 				foreach (var d in _data.DisplayItems)
 				{
-					foreach (var p in d.Shape.Pixels.Where(pi => pi != null && pi.Node != null))
+					if (d.IsLightShape())
 					{
-						if (!p.Node.Properties.Contains(LocationDescriptor._typeId))
-							p.Node.Properties.Add(LocationDescriptor._typeId);
+						foreach (var p in d.LightShape.Pixels.Where(pi => pi != null && pi.Node != null))
+						{
+							if (!p.Node.Properties.Contains(LocationDescriptor._typeId))
+								p.Node.Properties.Add(LocationDescriptor._typeId);
 
-						var prop = p.Node.Properties.Get(LocationDescriptor._typeId);
-					    ((LocationData) prop.ModuleData).X = p.IsHighPrecision ? (int)(p.Location.X + Data.LocationOffset.X): p.X + Convert.ToInt32(Data.LocationOffset.X);
-						((LocationData) prop.ModuleData).Y = p.IsHighPrecision ? (int)(p.Location.Y + Data.LocationOffset.Y): p.Y + Convert.ToInt32(Data.LocationOffset.Y);
+							var prop = p.Node.Properties.Get(LocationDescriptor._typeId);
+							((LocationData)prop.ModuleData).X = p.IsHighPrecision ? (int)(p.Location.X + Data.LocationOffset.X) : p.X + Convert.ToInt32(Data.LocationOffset.X);
+							((LocationData)prop.ModuleData).Y = p.IsHighPrecision ? (int)(p.Location.Y + Data.LocationOffset.Y) : p.Y + Convert.ToInt32(Data.LocationOffset.Y);
+						}
 					}
 				}
 				Cursor = Cursors.Default;

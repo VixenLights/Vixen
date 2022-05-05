@@ -9,7 +9,7 @@ using System.ComponentModel;
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	[DataContract]
-	public class PreviewStar : PreviewBaseShape
+	public class PreviewStar : PreviewLightBaseShape
 	{
 		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 

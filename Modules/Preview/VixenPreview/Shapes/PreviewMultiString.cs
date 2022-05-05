@@ -12,7 +12,7 @@ using System.Xml.Serialization;
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
     [DataContract]
-    public class PreviewMultiString: PreviewBaseShape
+    public class PreviewMultiString: PreviewLightBaseShape
     {
         [DataMember] private int _stringCount;
         [DataMember] private List<PreviewPoint> _points = new List<PreviewPoint>();
@@ -65,7 +65,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         [Editor(typeof(PreviewSetElementsUIEditor), typeof(UITypeEditor)),
          CategoryAttribute("Settings"),
          DisplayName("Linked Elements")]
-        public override List<PreviewBaseShape> Strings
+        public override List<PreviewLightBaseShape> Strings
         {
             get
             {
@@ -95,7 +95,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 {
                     line.Parent = this;
                 }
-                return stringsResult;
+                return stringsResult.Cast<PreviewLightBaseShape>().ToList();
             }
             set { }
         }
