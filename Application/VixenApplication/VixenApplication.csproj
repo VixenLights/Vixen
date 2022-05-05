@@ -225,9 +225,7 @@
     <Compile Update="Setup\ElementTemplates\StarBurst.Designer.cs">
       <DependentUpon>StarBurst.cs</DependentUpon>
     </Compile>
-    <Compile Update="Setup\ElementTemplates\Megatree.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Setup\ElementTemplates\Megatree.cs" />
     <Compile Update="Setup\ElementTemplates\Megatree.Designer.cs">
       <DependentUpon>Megatree.cs</DependentUpon>
     </Compile>
@@ -237,9 +235,7 @@
     <Compile Update="Setup\ElementTemplates\NumberedGroup.Designer.cs">
       <DependentUpon>NumberedGroup.cs</DependentUpon>
     </Compile>
-    <Compile Update="Setup\ElementTemplates\PixelGrid.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Setup\ElementTemplates\PixelGrid.cs" />
     <Compile Update="Setup\ElementTemplates\PixelGrid.Designer.cs">
       <DependentUpon>PixelGrid.cs</DependentUpon>
     </Compile>
