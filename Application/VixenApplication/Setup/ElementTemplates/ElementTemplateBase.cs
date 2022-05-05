@@ -9,7 +9,7 @@ namespace VixenApplication.Setup.ElementTemplates
 	/// </summary>
 	public abstract class ElementTemplateBase : BaseForm
 	{
-		#region IElementTamplate
+		#region IElementTemplate
 
 		/// <summary>
 		/// Refer to interface documentation.
