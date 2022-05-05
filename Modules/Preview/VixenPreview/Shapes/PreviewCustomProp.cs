@@ -20,7 +20,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	[DataContract]
 	[TypeConverter(typeof(PropertySorter))]
-	public class PreviewCustomProp : PreviewBaseShape
+	public class PreviewCustomProp : PreviewLightBaseShape
 	{
 		private List<PreviewDoublePoint> _dragPoints = new List<PreviewDoublePoint>();
 		private PreviewPoint _p1Start;
@@ -188,7 +188,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		/// <inheritdoc />
-		public override void MatchPixelSize(PreviewBaseShape shape)
+		public override void MatchPixelSize(PreviewLightBaseShape shape)
 		{
 			if (!shape.Pixels.Any()) return;
 

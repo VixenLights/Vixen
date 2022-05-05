@@ -18,6 +18,7 @@ using Vixen;
 using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
+using VixenModules.Preview.VixenPreview.Shapes;
 
 namespace VixenModules.Preview.VixenPreview.OpenGL
 {
@@ -341,7 +342,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			foreach (var dataDisplayItem in Data.DisplayItems)
 			{
 				dataDisplayItem.Shape.Layout();
-				pixelCount += dataDisplayItem.Shape.UpdatePixelCache();
+
+				if (dataDisplayItem.IsLightShape())
+				{					
+					pixelCount += dataDisplayItem.LightShape.UpdatePixelCache();				
+				}
 			}
 			toolStripStatusPixels.Text = pixelCount.ToString();
 		}
@@ -360,6 +365,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				if (_needsUpdate)
 				{
 					OnRenderFrame();
+					
 					_needsUpdate = false;
 				}
 				toolStripStatusFPS.Text = @"0";
@@ -423,6 +429,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			{
 				SaveWindowState();
 			}
+
 			glControl.Invalidate();
 		}
 
@@ -634,9 +641,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				_program["mvp"].SetValue(mvp);
 				_program["pointScale"].SetValue(_pointScaleFactor);
 
-				foreach (var dataDisplayItem in Data.DisplayItems)
+				foreach (var dataDisplayItem in Data.DisplayItems.Where(item => item.IsLightShape()))
 				{
-					dataDisplayItem.Shape.Draw(_program);
+					dataDisplayItem.LightShape.Draw(_program);
 				}
 			}
 			catch (Exception e)
@@ -677,7 +684,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			//Prepare the points
 			//Logging.Debug("Begin Update Shape Points.");
 			int height = _background.HasBackground ? _background.Height : Height;
-			Parallel.ForEach(Data.DisplayItems, _parallelOptions, d => d.Shape.UpdateDrawPoints(height));
+			Parallel.ForEach(Data.DisplayItems.Where(item => item.IsLightShape()), _parallelOptions, d => ((PreviewLightBaseShape)d.Shape).UpdateDrawPoints(height)); 
 		}
 
 		private double ConvertToRadians(double angle)

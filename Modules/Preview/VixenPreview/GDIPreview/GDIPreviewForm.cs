@@ -418,32 +418,36 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 				foreach (DisplayItem item in DisplayItems)
 				{
 					item.Shape.Layout();
-					if (item.Shape.Pixels == null)
-						throw new System.ArgumentException("item.Shape.Pixels == null");
+					
+					if (item.IsLightShape())
+					{ 
+						if (item.LightShape.Pixels == null)
+							throw new System.ArgumentException("item.Shape.Pixels == null");
 
-					foreach (PreviewPixel pixel in item.Shape.Pixels)
-					{
-						if (pixel.Node != null)
+						foreach (PreviewPixel pixel in item.LightShape.Pixels)
 						{
-							if (pixel.Node.Element == null)
+							if (pixel.Node != null)
 							{
-								Logging.Warn("Null element for Node {0}", pixel.Node.Name);
-								continue;
-							}
-							pixelCount++;
-							List<PreviewPixel> pixels;
-							if (NodeToPixel.TryGetValue(pixel.Node.Element.Id, out pixels))
-							{
-								if (!pixels.Contains(pixel))
+								if (pixel.Node.Element == null)
 								{
-									pixels.Add(pixel);
+									Logging.Warn("Null element for Node {0}", pixel.Node.Name);
+									continue;
 								}
-							}
-							else
-							{
-								pixels = new List<PreviewPixel>();
-								pixels.Add(pixel);
-								NodeToPixel.TryAdd(pixel.Node.Element.Id, pixels);
+								pixelCount++;
+								List<PreviewPixel> pixels;
+								if (NodeToPixel.TryGetValue(pixel.Node.Element.Id, out pixels))
+								{
+									if (!pixels.Contains(pixel))
+									{
+										pixels.Add(pixel);
+									}
+								}
+								else
+								{
+									pixels = new List<PreviewPixel>();
+									pixels.Add(pixel);
+									NodeToPixel.TryAdd(pixel.Node.Element.Id, pixels);
+								}
 							}
 						}
 					}
