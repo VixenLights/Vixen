@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Theme;
@@ -13,7 +14,7 @@ using Vixen.Utility;
 
 namespace VixenApplication.Setup.ElementTemplates
 {
-	public partial class NumberedGroup : BaseForm, IElementTemplate
+	public partial class NumberedGroup : ElementTemplateBase, IElementTemplate
 	{
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
@@ -54,23 +55,23 @@ namespace VixenApplication.Setup.ElementTemplates
 			return false;
 		}
 
-		public IEnumerable<ElementNode> GenerateElements(IEnumerable<ElementNode> selectedNodes = null)
+		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode> selectedNodes = null)
 		{
 			List<ElementNode> result = new List<ElementNode>();
 
 			if (GroupName.Length == 0) {
 				Logging.Error("groupname is null");
-				return result;
+				return await Task.FromResult(result);
 			}
 
 			if (Prefix.Length == 0) {
 				Logging.Error("prefix is null");
-				return result;
+				return await Task.FromResult(result);
 			}
 
 			if (Count < 0) {
 				Logging.Error("negative count");
-				return result;
+				return await Task.FromResult(result);
 			}
 
 			//Optimize the name check for performance. We know we are going to create a bunch of them and we can handle it ourselves more efficiently
@@ -85,7 +86,7 @@ namespace VixenApplication.Setup.ElementTemplates
 				result.Add(newnode);
 			}
 
-			return result;
+			return await Task.FromResult(result);
 		}
 
 		private void NumberedGroup_Load(object sender, EventArgs e)
