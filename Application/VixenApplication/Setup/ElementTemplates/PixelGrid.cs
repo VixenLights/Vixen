@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Theme;
@@ -20,7 +21,7 @@ using Orientation = VixenModules.Property.Orientation.Orientation;
 
 namespace VixenApplication.Setup.ElementTemplates
 {
-	public partial class PixelGrid : BaseForm, IElementTemplate
+	public partial class PixelGrid : ElementTemplateBase, IElementTemplate
 	{
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
@@ -66,23 +67,23 @@ namespace VixenApplication.Setup.ElementTemplates
 			return false;
 		}
 
-		public IEnumerable<ElementNode> GenerateElements(IEnumerable<ElementNode> selectedNodes = null)
+		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode> selectedNodes = null)
 		{
 			List<ElementNode> result = new List<ElementNode>();
 
 			if (gridname.Length == 0) {
 				Logging.Error("gridname is null");
-				return result;
+				return await Task.FromResult(result);
 			}
 
 			if (rows < 0) {
 				Logging.Error("negative rows");
-				return result;
+				return await Task.FromResult(result);
 			}
 
 			if (columns < 0) {
 				Logging.Error("negative columns");
-				return result;
+				return await Task.FromResult(result);
 			}
 
 			//Optimize the name check for performance. We know we are going to create a bunch of them and we can handle it ourselves more efficiently
@@ -167,7 +168,7 @@ namespace VixenApplication.Setup.ElementTemplates
 				OrderModule.AddPatchingOrder(leafNodes);
 			}
 
-			return result;
+			return await Task.FromResult(result);
 		}
 
 		
