@@ -15,7 +15,7 @@ using System.Windows.Forms.Design;
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	[DataContract]
-	public class PreviewCustom : PreviewBaseShape
+	public class PreviewCustom : PreviewLightBaseShape
 	{
 		[DataMember] private PreviewPoint _topLeft;
 		private PreviewPoint topLeftStart;
@@ -23,7 +23,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override string TypeName => @"Custom Template";
 
-		public PreviewCustom(PreviewPoint point, List<PreviewBaseShape> shapes)
+		public PreviewCustom(PreviewPoint point, List<PreviewLightBaseShape> shapes)
 		{
 			_topLeft = point;
 			if (shapes != null)
@@ -40,13 +40,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		// We don't want the parent to do any processing, so override here
 		[Browsable(false)]
-		public override List<PreviewBaseShape> Strings
+		public override List<PreviewLightBaseShape> Strings
 		{
 			get
 			{
 				if (_strings == null)
 					_strings = new List<PreviewBaseShape>();
-				return _strings;
+				return _strings.Cast<PreviewLightBaseShape>().ToList();
 			}
 		}
 
@@ -96,7 +96,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get
 			{
 				int y = int.MaxValue;
-				foreach (PreviewBaseShape shape in Strings) {
+				foreach (PreviewLightBaseShape shape in Strings) {
 					y = Math.Min(y, shape.Top);
 				}
 				return y;
@@ -104,7 +104,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set
 			{
 				int delta = Top - value;
-				foreach (PreviewBaseShape shape in Strings) {
+				foreach (PreviewLightBaseShape shape in Strings) {
 					shape.Top -= delta;
 				}
 				Layout();
@@ -117,7 +117,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get
 			{
 				int x = int.MaxValue;
-				foreach (PreviewBaseShape shape in Strings) {
+				foreach (PreviewLightBaseShape shape in Strings) {
 					x = Math.Min(x, shape.Left);
 				}
 				return x;
@@ -125,7 +125,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set
 			{
 				int delta = Left - value;
-				foreach (PreviewBaseShape shape in Strings) {
+				foreach (PreviewLightBaseShape shape in Strings) {
 					shape.Left -= delta;
 				}
 				Layout();
@@ -137,7 +137,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
 	            int x = 0;
-                foreach (PreviewBaseShape shape in Strings)
+                foreach (PreviewLightBaseShape shape in Strings)
                 {
                     x = Math.Max(x, shape.Right);
                 }
@@ -150,7 +150,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 int x = 0;
-                foreach (PreviewBaseShape shape in Strings)
+                foreach (PreviewLightBaseShape shape in Strings)
                 {
                     x = Math.Max(x, shape.Bottom);
                 }
@@ -168,7 +168,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void Layout()
 		{
-			foreach (PreviewBaseShape shape in Strings) {
+			foreach (PreviewLightBaseShape shape in Strings) {
 				shape.Layout();
 			}
 
@@ -176,10 +176,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		public override void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected,
-		                          bool forceDraw)
+		                          bool forceDraw, double zoomLevel)
 		{
-			foreach (PreviewBaseShape shape in Strings) {
-				shape.Draw(fp, editMode, highlightedElements, selected, forceDraw);
+			foreach (PreviewLightBaseShape shape in Strings) {
+				shape.Draw(fp, editMode, highlightedElements, selected, forceDraw, zoomLevel);
 			}
 			DrawSelectPoints(fp);
 		}
@@ -192,7 +192,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				double aspect = ((double) startWidth + (double) changeX)/(double) startWidth;
 				//Resize(aspect);
-                foreach (PreviewBaseShape shape in Strings)
+                foreach (PreviewLightBaseShape shape in Strings)
                 {
                     shape.ResizeFromOriginal(aspect);
                 }
@@ -207,7 +207,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				_topLeft.X = topLeftStart.X + changeX;
 				_topLeft.Y = topLeftStart.Y + changeY;
 				SelectDragPoints();
-				foreach (PreviewBaseShape shape in Strings) {
+				foreach (PreviewLightBaseShape shape in Strings) {
 					shape.MouseMove(x, y, changeX, changeY);
 				}
 			}
@@ -221,7 +221,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void SetSelectPoint(PreviewPoint point)
 		{
-			foreach (PreviewBaseShape shape in Strings) {
+			foreach (PreviewLightBaseShape shape in Strings) {
 				shape.SetSelectPoint(null);
 			}
 			topLeftStart = new PreviewPoint(_topLeft.X, _topLeft.Y);
@@ -263,7 +263,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			int deltaX = x - Left;
 			int deltaY = y - Top;
-			foreach (PreviewBaseShape shape in Strings) {
+			foreach (PreviewLightBaseShape shape in Strings) {
 				shape.MoveTo(shape.Left + deltaX, shape.Top + deltaY);
 			}
 			_topLeft.X = x;
@@ -273,7 +273,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void Resize(double aspect)
 		{
-			foreach (PreviewBaseShape shape in Strings) {
+			foreach (PreviewLightBaseShape shape in Strings) {
 				shape.Resize(aspect);
 			}
 			Layout();
@@ -291,13 +291,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			var newCustom = (PreviewCustom) MemberwiseClone();
 
-			newCustom.Strings = new List<PreviewBaseShape>(Strings.Count);
+			newCustom.Strings = new List<PreviewLightBaseShape>(Strings.Count);
 
 			newCustom._topLeft = _topLeft.Copy();
 
 			foreach (var previewBaseShape in Strings)
 			{
-				newCustom.Strings.Add((PreviewBaseShape)previewBaseShape.Clone());
+				newCustom.Strings.Add((PreviewLightBaseShape)previewBaseShape.Clone());
 			}
 
 

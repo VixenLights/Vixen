@@ -15,7 +15,7 @@ using System.Windows.Forms.Design;
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	[DataContract]
-	public class PreviewFlood : PreviewBaseShape
+	public class PreviewFlood : PreviewLightBaseShape
 	{
 		[DataMember] private PreviewPoint _p1;
 		private PreviewPoint p1Start;
@@ -177,7 +177,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		public override void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected,
-		                          bool forceDraw)
+		                          bool forceDraw, double zoomLevel)
 		{
 			foreach (PreviewPixel pixel in Pixels) {
 				//if (highlightedElements != null && highlightedElements.Contains(pixel.Node))
