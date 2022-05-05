@@ -4,7 +4,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	public class PreviewArchSetupControl : PreviewShapeBaseSetupControl
 	{
-		public PreviewArchSetupControl(PreviewBaseShape shape) : base(shape)
+		public PreviewArchSetupControl(PreviewLightBaseShape shape) : base(shape)
 		{
 		}
 

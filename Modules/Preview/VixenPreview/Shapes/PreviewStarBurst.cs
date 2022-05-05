@@ -11,7 +11,7 @@ using Vixen.Sys;
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	[DataContract]
-	public class PreviewStarBurst : PreviewBaseShape
+	public class PreviewStarBurst : PreviewLightBaseShape
 	{
 		[DataMember] private PreviewPoint _topLeft;
 		[DataMember] private PreviewPoint _topRight;
@@ -104,7 +104,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				List<PreviewPixel> pixels = new List<PreviewPixel>();
 				if (_strings != null) {
 					for (int i = 0; i < Strings.Count; i++) {
-						foreach (PreviewPixel pixel in _strings[i]._pixels) {
+						foreach (PreviewPixel pixel in LightStrings[i]._pixels) {
 							pixels.Add(pixel);
 						}
 					}
@@ -231,7 +231,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             set
             {
-                int _lightsPerString = _strings[0]._pixels.Count;
+                int _lightsPerString = LightStrings[0]._pixels.Count;
 
                 while (_strings.Count > value)
                 {

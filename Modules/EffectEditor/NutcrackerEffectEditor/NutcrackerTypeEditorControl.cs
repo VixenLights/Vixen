@@ -71,7 +71,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 				if (displayItem.Shape is PreviewMegaTree) {
 					PreviewMegaTree tree = displayItem.Shape as PreviewMegaTree;
 					for (int stringNum = 0; stringNum < stringCount; stringNum++) {
-						PreviewBaseShape treeString = tree._strings[stringNum];
+						PreviewLightBaseShape treeString = (PreviewLightBaseShape)tree._strings[stringNum];
 						for (int pixelNum = 0; pixelNum < treeString.Pixels.Count; pixelNum++)
 						{
 							treeString.Pixels[pixelNum].PixelColor = Data.StringOrienation == NutcrackerEffects.StringOrientations.Horizontal ? effect.Pixels[pixelNum][stringNum] : effect.Pixels[stringNum][pixelNum];
@@ -81,7 +81,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 				if (displayItem.Shape is PreviewPixelGrid) {
 					PreviewPixelGrid grid = displayItem.Shape as PreviewPixelGrid;
 					for (int stringNum = 0; stringNum < stringCount; stringNum++) {
-						PreviewBaseShape gridString = grid._strings[stringNum];
+						PreviewLightBaseShape gridString = (PreviewLightBaseShape)grid._strings[stringNum];
 						for (int pixelNum = 0; pixelNum < gridString.Pixels.Count; pixelNum++)
 						{
 							gridString.Pixels[pixelNum].PixelColor = grid.StringOrientation == PreviewPixelGrid.StringOrientations.Horizontal ? effect.Pixels[pixelNum][stringNum] : effect.Pixels[stringNum][pixelNum];
@@ -332,7 +332,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			tree.BaseHeight = 25;
 			tree.TopHeight = 1;
 			tree.TopWidth = 1;
-			tree.StringType = PreviewBaseShape.StringTypes.Pixel;
+			tree.StringType = PreviewLightBaseShape.StringTypes.Pixel;
 			tree.Degrees = degrees;
 
 			tree.StringCount = stringCount;
@@ -403,7 +403,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
 			PreviewPixelGrid grid = new PreviewPixelGrid(new PreviewPoint(10, 10), null, 1);
 			
-			grid.StringType = PreviewBaseShape.StringTypes.Pixel;
+			grid.StringType = PreviewLightBaseShape.StringTypes.Pixel;
 			grid.StringCount = StringCount;
 			grid.LightsPerString = PixelsPerString();
 			grid.PixelSize = Data.PixelSize;
@@ -437,7 +437,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			displayItem = new DisplayItem();
 
 			PreviewCane cane = new PreviewCane(new PreviewPoint(10, 10), null, 1);
-			cane.StringType = PreviewBaseShape.StringTypes.Pixel;
+			cane.StringType = PreviewLightBaseShape.StringTypes.Pixel;
 
 			cane.LinePixelCount = PixelsPerString() / 2;
 			cane.ArchPixelCount = PixelsPerString() / 2;
