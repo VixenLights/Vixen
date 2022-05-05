@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Theme;
@@ -17,7 +18,7 @@ using Vixen.Utility;
 
 namespace VixenApplication.Setup.ElementTemplates
 {
-	public partial class Megatree : BaseForm, IElementTemplate
+	public partial class Megatree : ElementTemplateBase, IElementTemplate
 	{
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
@@ -55,23 +56,23 @@ namespace VixenApplication.Setup.ElementTemplates
 			return false;
 		}
 
-		public IEnumerable<ElementNode> GenerateElements(IEnumerable<ElementNode> selectedNodes = null)
+		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode> selectedNodes = null)
 		{
 			List<ElementNode> result = new List<ElementNode>();
 
 			if (treename.Length == 0) {
 				Logging.Error("treename is null");
-				return result;
+				return await Task.FromResult(result);
 			}
 
 			if (stringcount < 0) {
 				Logging.Error("negative count");
-				return result;
+				return await Task.FromResult(result);
 			}
 
 			if (pixeltree && pixelsperstring < 0) {
 				Logging.Error("negative pixelsperstring");
-				return result;
+				return await Task.FromResult(result);
 			}
 
 			//Optimize the name check for performance. We know we are going to create a bunch of them and we can handle it ourselves more efficiently
@@ -95,7 +96,7 @@ namespace VixenApplication.Setup.ElementTemplates
 				}
 			}
 
-			return result;
+			return await Task.FromResult(result);
 		}
 
 		private void checkBoxPixelTree_CheckedChanged(object sender, EventArgs e)
@@ -130,7 +131,6 @@ namespace VixenApplication.Setup.ElementTemplates
 		{
 			var btn = (Button)sender;
 			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 	}
 }
