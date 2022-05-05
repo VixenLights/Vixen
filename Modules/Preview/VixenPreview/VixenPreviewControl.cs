@@ -1124,7 +1124,7 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		protected override void OnKeyDown(KeyEventArgs e)
+		protected override async void OnKeyDown(KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Delete)
 			{
@@ -1239,7 +1239,7 @@ namespace VixenModules.Preview.VixenPreview
 						if (elementsForm.SelectedNode == null && modifyType.Equals("AddNew"))
 						{
 							//Intercept and populate the element tree
-							if (ShowElementCreateTemplateForCurrentTool() && elementsForm.SelectedNode != null)
+							if (await ShowElementCreateTemplateForCurrentTool() && elementsForm.SelectedNode != null)
 							{
 								_selectedDisplayItem.Shape.Reconfigure(elementsForm.SelectedNode);
 							}
@@ -1290,7 +1290,7 @@ namespace VixenModules.Preview.VixenPreview
 			base.OnKeyDown(e);
 		}
 
-		public void VixenPreviewControl_MouseUp(object sender, MouseEventArgs e)
+		public async void VixenPreviewControl_MouseUp(object sender, MouseEventArgs e)
 		{
 			if (_mouseCaptured)
 			{
@@ -1312,7 +1312,7 @@ namespace VixenModules.Preview.VixenPreview
 					if (_elementSelected == null && modifyType.Equals("AddNew"))
 					{
 						//Intercept and populate the element tree
-						if (ShowElementCreateTemplateForCurrentTool() && elementsForm.SelectedNode != null)
+						if (await ShowElementCreateTemplateForCurrentTool() && elementsForm.SelectedNode != null)
 						{
 							_selectedDisplayItem.Shape.Reconfigure(elementsForm.SelectedNode);
 						}
@@ -1363,7 +1363,7 @@ namespace VixenModules.Preview.VixenPreview
 			EndUpdate();
 		}
 
-		private bool ShowElementCreateTemplateForCurrentTool()
+		private async Task<bool> ShowElementCreateTemplateForCurrentTool()
 		{
 
 			IElementTemplate template = null;
@@ -1402,7 +1402,7 @@ namespace VixenModules.Preview.VixenPreview
 
 			if (template != null)
 			{
-				success = elementsForm.SetupTemplate(template);
+				success = await elementsForm.SetupTemplate(template);
 			}
 
 			return success;
