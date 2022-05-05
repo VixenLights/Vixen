@@ -21,7 +21,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			IWindowsFormsEditorService svc = (IWindowsFormsEditorService)
 			                                 provider.GetService(typeof (IWindowsFormsEditorService));
 			if (svc != null) {
-				List<PreviewBaseShape> shapes = value as List<PreviewBaseShape>;
+				List<PreviewLightBaseShape> shapes = value as List<PreviewLightBaseShape>;
 				if (shapes.Count < 1)
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
