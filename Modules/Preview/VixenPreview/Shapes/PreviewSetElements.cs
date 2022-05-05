@@ -16,11 +16,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	public partial class PreviewSetElements : BaseForm
     {
         private List<PreviewSetElementString> _strings = new List<PreviewSetElementString>();
-        private List<PreviewBaseShape> _shapes;
+        private List<PreviewLightBaseShape> _shapes;
         private bool connectStandardStrings;
         private const string VirtualNodeName = @"VIRT";
 
-        public PreviewSetElements(List<PreviewBaseShape> shapes)
+        public PreviewSetElements(List<PreviewLightBaseShape> shapes)
         {
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
@@ -32,13 +32,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_shapes = shapes;
             connectStandardStrings = shapes[0].connectStandardStrings;
             int i = 1;
-            foreach (PreviewBaseShape shape in _shapes)
+            foreach (PreviewLightBaseShape shape in _shapes)
             {
                 if (shape.Pixels.Count == 0)
                     continue;
                 var newString = new PreviewSetElementString();
                 // If this is a Standard string, only set the first pixel of the string
-                if (shape.StringType == PreviewBaseShape.StringTypes.Standard)
+                if (shape.StringType == PreviewLightBaseShape.StringTypes.Standard)
                 {
                     //Console.WriteLine("Standard String");
                     PreviewPixel pixel = shape.Pixels[0];
@@ -46,13 +46,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     newString.Pixels.Add(pixel.Clone());
                 }
                 // If this is a pixel string, let them set every pixel
-                else if (shape.StringType == PreviewBaseShape.StringTypes.Pixel)
+                else if (shape.StringType == PreviewLightBaseShape.StringTypes.Pixel)
                 {
                     foreach (PreviewPixel pixel in shape.Pixels)
                     {
                         newString.Pixels.Add(pixel.Clone());
                     }
-                }else if (shape.StringType == PreviewBaseShape.StringTypes.Custom)
+                }else if (shape.StringType == PreviewLightBaseShape.StringTypes.Custom)
                 {
 	                foreach (var pixel in shape.Pixels)
 	                {
@@ -68,7 +68,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             if (_shapes[0].Parent != null)
             {
 	            var shapeType = _shapes[0].Parent.GetType().ToString();
-	            if ((shapeType.Contains("Icicle") && _shapes[0].StringType != PreviewBaseShape.StringTypes.Standard) || shapeType.Contains("MultiString") )
+	            if ((shapeType.Contains("Icicle") && _shapes[0].StringType != PreviewLightBaseShape.StringTypes.Standard) || shapeType.Contains("MultiString") )
                 {
                     tblLightCountControls.Visible = true;
                 }
@@ -134,7 +134,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         private void PopulateStringList()
         {
-            if (connectStandardStrings && _shapes[0].StringType == PreviewBaseShape.StringTypes.Standard)
+            if (connectStandardStrings && _shapes[0].StringType == PreviewLightBaseShape.StringTypes.Standard)
             {
                 comboStrings.Items.Add(new Common.Controls.ComboBoxItem(_strings[0].StringName, _strings[0]));
             }
@@ -354,7 +354,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            if ((connectStandardStrings || _shapes.Count() == 1) && _shapes[0].StringType == PreviewBaseShape.StringTypes.Standard)
+            if ((connectStandardStrings || _shapes.Count() == 1) && _shapes[0].StringType == PreviewLightBaseShape.StringTypes.Standard)
             {
                 //var shape = _shapes[0];
                 for (int i = 0; i < _shapes.Count; i++)
@@ -379,7 +379,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     var lightString = item.Value as PreviewSetElementString;
                     var shape = _shapes[i];
 
-                    if (shape.StringType == PreviewBaseShape.StringTypes.Pixel) { 
+                    if (shape.StringType == PreviewLightBaseShape.StringTypes.Pixel) { 
                         while (shape.Pixels.Count > lightString.Pixels.Count)
                         {
                             shape.Pixels.RemoveAt(shape.Pixels.Count - 1);
@@ -395,7 +395,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     {
                         //Console.WriteLine("   pixelNum=" + pixelNum.ToString());
                         // If this is a standard light string, assing ALL pixels to the first node
-                        if (shape.StringType == PreviewBaseShape.StringTypes.Standard)
+                        if (shape.StringType == PreviewLightBaseShape.StringTypes.Standard)
                         {
                             foreach (var pixel in shape._pixels)
                             {
