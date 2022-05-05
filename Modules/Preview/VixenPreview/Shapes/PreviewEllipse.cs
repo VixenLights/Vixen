@@ -10,7 +10,7 @@ using Vixen.Sys;
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	[DataContract]
-	public class PreviewEllipse : PreviewBaseShape
+	public class PreviewEllipse : PreviewLightBaseShape
 	{
 		[DataMember] private PreviewPoint _topLeft;
 		[DataMember] private PreviewPoint _bottomRight;

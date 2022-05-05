@@ -11,7 +11,7 @@ using System.Drawing.Design;
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	[DataContract]
-	public class PreviewPolyLine : PreviewBaseShape
+	public class PreviewPolyLine : PreviewLightBaseShape
 	{
         [DataMember] private List<PreviewPoint> _points = new List<PreviewPoint>();
         //[DataMember] private int _verticalSpacing;
