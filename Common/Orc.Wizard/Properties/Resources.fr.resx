@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Wizard_AreYouSureYouWantToCancelWizard" xml:space="preserve">
+    <value>Êtes-vous sûrs de vouloir arrêter l'assistant?</value>
+  </data>
+  <data name="Wizard_Back" xml:space="preserve">
+    <value>&lt; Précédent</value>
+  </data>
+  <data name="Wizard_Cancel" xml:space="preserve">
+    <value>Abandonner</value>
+  </data>
+  <data name="Wizard_Finish" xml:space="preserve">
+    <value>Quitter</value>
+  </data>
+  <data name="Wizard_Help" xml:space="preserve">
+    <value>Aide</value>
+  </data>
+  <data name="Wizard_Next" xml:space="preserve">
+    <value>Suivant &gt;</value>
+  </data>
+  <data name="Wizard_OptionalWizardStep" xml:space="preserve">
+    <value>Cette étape est facultative, vous pouvez la sauter pour passer à la page suivante</value>
+  </data>
+  <data name="Wizard_SummaryDescription" xml:space="preserve">
+    <value>Vous trouverez ci-dessous un résumé de l'assistant.</value>
+  </data>
+  <data name="Wizard_SummaryTitle" xml:space="preserve">
+    <value>Résumé</value>
+  </data>
+  <data name="Wizard_XofY" xml:space="preserve">
+    <value>{0} de {1}</value>
+  </data>
+</root>

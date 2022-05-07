@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Wizard_AreYouSureYouWantToCancelWizard" xml:space="preserve">
+    <value>Weet je zeker dat je de wizard wilt annuleren?</value>
+  </data>
+  <data name="Wizard_Back" xml:space="preserve">
+    <value>&lt; Vorige</value>
+  </data>
+  <data name="Wizard_Cancel" xml:space="preserve">
+    <value>Annuleren</value>
+  </data>
+  <data name="Wizard_Finish" xml:space="preserve">
+    <value>Voltooien</value>
+  </data>
+  <data name="Wizard_Help" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="Wizard_Next" xml:space="preserve">
+    <value>Volgende &gt;</value>
+  </data>
+  <data name="Wizard_OptionalWizardStep" xml:space="preserve">
+    <value>Deze stap is optioneel, sla hem over door naar de volgende te gaan</value>
+  </data>
+  <data name="Wizard_SummaryDescription" xml:space="preserve">
+    <value>Onderstaand een samenvatting van de wizard.</value>
+  </data>
+  <data name="Wizard_SummaryTitle" xml:space="preserve">
+    <value>Samenvatting</value>
+  </data>
+  <data name="Wizard_XofY" xml:space="preserve">
+    <value>{0} van de {1}</value>
+  </data>
+</root>

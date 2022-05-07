@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Wizard_AreYouSureYouWantToCancelWizard" xml:space="preserve">
+    <value>Sind Sie sicher, dass Sie den Assistenten abbrechen möchten?</value>
+  </data>
+  <data name="Wizard_Back" xml:space="preserve">
+    <value>&lt; Zurück</value>
+  </data>
+  <data name="Wizard_Cancel" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="Wizard_Finish" xml:space="preserve">
+    <value>Beenden</value>
+  </data>
+  <data name="Wizard_Help" xml:space="preserve">
+    <value>Hilfe</value>
+  </data>
+  <data name="Wizard_Next" xml:space="preserve">
+    <value>Weiter &gt;</value>
+  </data>
+  <data name="Wizard_OptionalWizardStep" xml:space="preserve">
+    <value>Dieser Schritt ist optional, Sie können ihn überspringen, indem Sie zur nächsten Seite gehen</value>
+  </data>
+  <data name="Wizard_SummaryDescription" xml:space="preserve">
+    <value>Unten sehen Sie eine Zusammenfassung des Assistenten.</value>
+  </data>
+  <data name="Wizard_SummaryTitle" xml:space="preserve">
+    <value>Zusammenfassung</value>
+  </data>
+  <data name="Wizard_XofY" xml:space="preserve">
+    <value>{0} von {1}</value>
+  </data>
+</root>
