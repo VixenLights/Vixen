@@ -48,12 +48,12 @@ namespace Orc.Wizard
         private static void OnWizardChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var behavior = d as WizardPageSelectionBehavior;
-            if (behavior is not null)
+            if (behavior != null)
             {
                 behavior.UpdatePage();
 
                 var oldWizard = e.OldValue as IWizard;
-                if (oldWizard is not null)
+                if (oldWizard != null)
                 {
                     oldWizard.CurrentPageChanged -= behavior.OnCurrentPageChanged;
                     oldWizard.MovedBack -= behavior.OnMovedBack;
@@ -61,7 +61,7 @@ namespace Orc.Wizard
                 }
 
                 var wizard = e.NewValue as IWizard;
-                if (wizard is not null)
+                if (wizard != null)
                 {
                     wizard.CurrentPageChanged += behavior.OnCurrentPageChanged;
                     wizard.MovedBack += behavior.OnMovedBack;
@@ -125,7 +125,7 @@ namespace Orc.Wizard
             }
 
             var lastPage = _lastPage;
-            if (lastPage is not null)
+            if (lastPage != null)
             {
                 if (ReferenceEquals(lastPage, wizard.CurrentPage))
                 {
@@ -133,7 +133,7 @@ namespace Orc.Wizard
                     return;
                 }
 
-                _scrollPositions.AddOrUpdate(lastPage, new ScrollInfo
+                _scrollPositions.Add(lastPage, new ScrollInfo
                 {
                     VerticalOffset = _scrollViewer.VerticalOffset,
                     HorizontalOffset = _scrollViewer.HorizontalOffset
@@ -144,7 +144,7 @@ namespace Orc.Wizard
 
                 if (CacheViews)
                 {
-                    _cachedViews.AddOrUpdate(lastPage, new CachedView
+                    _cachedViews.Add(lastPage, new CachedView
                     {
                         View = AssociatedObject.Content as IView
                     });
@@ -155,61 +155,68 @@ namespace Orc.Wizard
 
             _lastPage = wizard.CurrentPage;
 
-            var serviceLocator = this.GetServiceLocator();
-            var viewModelLocator = serviceLocator.ResolveType<IWizardPageViewModelLocator>();
-            var pageViewModelType = viewModelLocator.ResolveViewModel(_lastPage.GetType());
-
-            var viewLocator = serviceLocator.ResolveType<IViewLocator>();
-            var viewType = viewLocator.ResolveView(pageViewModelType);
-
-            var typeFactory = serviceLocator.ResolveType<ITypeFactory>();
-
-            IView view = null;
-
-            if (_cachedViews.TryGetValue(_lastPage, out var cachedView))
+#pragma warning disable IDE0007 // Use implicit type
+#pragma warning disable IDISP001 // Dispose created
+            IServiceLocator serviceLocator = this.GetServiceLocator();
+#pragma warning restore IDISP001 // Dispose created
+#pragma warning restore IDE0007 // Use implicit type
             {
-                view = cachedView.View;
-            }
+                var viewModelLocator = serviceLocator.ResolveType<IWizardPageViewModelLocator>();
+                var pageViewModelType = viewModelLocator.ResolveViewModel(_lastPage.GetType());
 
-            if (view is null)
-            {
-                view = typeFactory.CreateInstance(viewType) as IView;
+                var viewLocator = serviceLocator.ResolveType<IViewLocator>();
+                var viewType = viewLocator.ResolveView(pageViewModelType);
+
+                var typeFactory = serviceLocator.ResolveType<ITypeFactory>();
+
+
+                IView view = null;
+
+                if (_cachedViews.TryGetValue(_lastPage, out var cachedView))
+                {
+                    view = cachedView.View;
+                }
+
                 if (view is null)
                 {
-                    return;
+                    view = typeFactory.CreateInstance(viewType) as IView;
+                    if (view is null)
+                    {
+                        return;
+                    }
                 }
-            }
 
-            // For now always recreate a vm since it could be closed (and we really don't want to mess with the lifetime of a view)
-            //var viewModel = view.DataContext as IViewModel;
-            IViewModel viewModel = null;
-            if (viewModel is null)
-            {
-                var viewModelFactory = serviceLocator.ResolveType<IViewModelFactory>();
-                viewModel = viewModelFactory.CreateViewModel(pageViewModelType, wizard.CurrentPage, null);
+                // For now always recreate a vm since it could be closed (and we really don't want to mess with the lifetime of a view)
+                //var viewModel = view.DataContext as IViewModel;
+                IViewModel viewModel = null;
+                if (viewModel is null)
+                {
+                    var viewModelFactory = serviceLocator.ResolveType<IViewModelFactory>();
+                    viewModel = viewModelFactory.CreateViewModel(pageViewModelType, wizard.CurrentPage, null);
 
-                view.DataContext = viewModel;
-            }
+                    view.DataContext = viewModel;
+                }
 
-            _lastPage.ViewModel = viewModel;
+                _lastPage.ViewModel = viewModel;
 
-            AssociatedObject.SetCurrentValue(ContentControl.ContentProperty, view);
+                AssociatedObject.SetCurrentValue(ContentControl.ContentProperty, view);
 
-            var verticalScrollViewerOffset = 0d;
-            var horizontalScrollViewerOffset = 0d;
+                var verticalScrollViewerOffset = 0d;
+                var horizontalScrollViewerOffset = 0d;
 
-            if (_scrollPositions.TryGetValue(_lastPage, out var scrollInfo))
-            {
-                verticalScrollViewerOffset = scrollInfo.VerticalOffset;
-                horizontalScrollViewerOffset = scrollInfo.HorizontalOffset;
-            }
+                if (_scrollPositions.TryGetValue(_lastPage, out var scrollInfo))
+                {
+                    verticalScrollViewerOffset = scrollInfo.VerticalOffset;
+                    horizontalScrollViewerOffset = scrollInfo.HorizontalOffset;
+                }
 
-            var scrollViewer = _scrollViewer;
-            if (scrollViewer is not null &&
-                (Wizard?.RestoreScrollPositionPerPage ?? true))
-            {
-                scrollViewer.ScrollToVerticalOffset(verticalScrollViewerOffset);
-                scrollViewer.ScrollToHorizontalOffset(horizontalScrollViewerOffset);
+                var scrollViewer = _scrollViewer;
+                if (scrollViewer != null &&
+                    (Wizard?.RestoreScrollPositionPerPage ?? true))
+                {
+                    scrollViewer.ScrollToVerticalOffset(verticalScrollViewerOffset);
+                    scrollViewer.ScrollToHorizontalOffset(horizontalScrollViewerOffset);
+                }
             }
         }
 
