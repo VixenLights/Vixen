@@ -12,13 +12,16 @@
                   MinWidth="{Binding MinSize.Width, Mode=OneWay}"
                   MinHeight="{Binding MinSize.Height, Mode=OneWay}"
                   MaxWidth="{Binding MaxSize.Width, Mode=OneWay}"
-                  MaxHeight="{Binding MaxSize.Height, Mode=OneWay}"
+                  MaxHeight="{Binding MaxSize.Height, Mode=OneWay}"                  
+                  Height="600"
                   ShowInTaskbar="{Binding ElementName=layoutRoot, Path=DataContext.ShowInTaskbar, Mode=OneWay}"
                   x:Name="wizardWindow"
                   CanCloseUsingEscape="False"
                   Background="{DynamicResource Orc.Brushes.GrayBrush10}">
 
-    <Grid x:Name="layoutRoot" >
+
+    <catel:InfoBarMessageControl  Style="{DynamicResource yourCustomStyleKey}">
+        <Grid x:Name="layoutRoot" >
         <!-- Wizard content -->
         <Grid Background="{DynamicResource White}">
             <Grid.RowDefinitions>
@@ -194,12 +197,13 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <WrapPanel Grid.Column="0" 
-	                       Style="{DynamicResource DataWindowButtonContainerStyle}">
+                    <WrapPanel Grid.Column="0">
+                        <!--Style="{DynamicResource DataWindowButtonContainerStyle}" -->                           
                     <Button x:Name="PART_HelpButton"
                             Command="{Binding ShowHelp}" 
-                            Content="{catel:LanguageBinding Wizard_Help}"
-                            Style="{DynamicResource WizardNavigationButtonStyle}" 
+                            Content="{catel:LanguageBinding Wizard_Help}"         
+                            Margin="10, 0, 0, 0"
+                            MinWidth="100"
                             Visibility="{Binding IsHelpVisible, Converter={catel:BooleanToCollapsingVisibilityConverter}}" />
                 </WrapPanel>
 
@@ -217,8 +221,9 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Button Command="{Binding Command}" 
-                                Content="{Binding Content}" 
-                                Style="{Binding Style}" 
+                                 Width="100"
+                                Margin="10,10,10,10"
+                                Content="{Binding Content}"                                 
                                 Visibility="{Binding IsVisible, Converter={catel:BooleanToCollapsingVisibilityConverter}}" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -228,4 +233,5 @@
 
         <Grid x:Name="FullScreenContent" Margin="-8" />
     </Grid>
+    </catel:InfoBarMessageControl>
 </catel:DataWindow>

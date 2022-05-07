@@ -133,17 +133,30 @@ namespace Orc.Wizard
                     return;
                 }
 
+                ScrollInfo dontCare = null;
+                if (_scrollPositions.TryGetValue(lastPage, out dontCare))
+                {
+                    _scrollPositions.Remove(lastPage);
+                }
+                
                 _scrollPositions.Add(lastPage, new ScrollInfo
                 {
                     VerticalOffset = _scrollViewer.VerticalOffset,
                     HorizontalOffset = _scrollViewer.HorizontalOffset
                 });
+                
 
                 // Even though we cache views, we need to re-use the vm's since the view models will be closed when moving next
                 //_lastPage.ViewModel = null;
 
                 if (CacheViews)
                 {
+                    CachedView dontCareView = null;
+                    if (_cachedViews.TryGetValue(lastPage, out dontCareView))
+                    { 
+                        _cachedViews.Remove(lastPage);
+                    }
+
                     _cachedViews.Add(lastPage, new CachedView
                     {
                         View = AssociatedObject.Content as IView

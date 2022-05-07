@@ -13,7 +13,7 @@
             var application = System.Windows.Application.Current;
             if (application != null)
             {
-                Style = application.TryFindResource("WizardNavigationButtonStyle") as Style;
+                //Style = application.TryFindResource("WizardNavigationButtonStyle") as Style;
             }
         }
 
@@ -53,7 +53,7 @@
             var styleEvaluator = StyleEvaluator;
             if (styleEvaluator != null)
             {
-                Style = styleEvaluator(this);
+                //Style = styleEvaluator(this);
             }
         }
     }

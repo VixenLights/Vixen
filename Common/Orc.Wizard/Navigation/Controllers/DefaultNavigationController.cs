@@ -163,10 +163,10 @@
                 IsVisible = true,
                 Command = new TaskCommand(async () =>
                 {
-                    if (await _messageService.ShowAsync(_languageService.GetString("Wizard_AreYouSureYouWantToCancelWizard"), button: MessageButton.YesNo) == MessageResult.No)
-                    {
-                        return;
-                    }
+                    //if (await _messageService.ShowAsync(_languageService.GetString("Wizard_AreYouSureYouWantToCancelWizard"), button: MessageButton.YesNo) == MessageResult.No)
+                    //{
+                    //    return;
+                    //}
 
                     await Wizard.CancelAsync();
                 },

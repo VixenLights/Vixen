@@ -1,37 +1,62 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <TargetFrameworks>net46;net47</TargetFrameworks>
-    <AssemblyName>Orc.Wizard</AssemblyName>
-    <RootNamespace>Orc.Wizard</RootNamespace>
-    <DefaultLanguage>en-US</DefaultLanguage>
-    <PackageId>Orc.Wizard</PackageId>
-    <PackageVersion>1.0.0-alpha0001</PackageVersion>
-    <Description>Wizard library.</Description>
-    <PackageTags>orc;wizard</PackageTags>
+	  <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+	  <TargetFramework>net48</TargetFramework>
+	  <AssemblyName>Orc.Wizard</AssemblyName>
+	  <RootNamespace>Orc.Wizard</RootNamespace>
+	  <DefaultLanguage>en-US</DefaultLanguage>
+	  <PackageId>Orc.Wizard</PackageId>
+	  <PackageVersion>1.0.0-alpha0001</PackageVersion>
+	  <Description>Wizard library.</Description>
+	  <PackageTags>orc;wizard</PackageTags>
+	  <UseWPF>true</UseWPF>
+	  <UseWindowsForms>true</UseWindowsForms>
+	  <Platforms>x64;x86</Platforms>
+	  <ExtrasEnableImplicitWpfReferences>true</ExtrasEnableImplicitWpfReferences>
+	  <ExtrasEnableImplicitWinFormsReferences>true</ExtrasEnableImplicitWinFormsReferences>
+	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+		<OutputPath>$(SolutionDir)\$(Configuration)\Common\</OutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+		<OutputPath>$(SolutionDir)\Release64\Common\</OutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+		<OutputPath>..\..\$(Configuration)\Common\</OutputPath>
+		<DefineConstants>TRACE</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+		<OutputPath>..\..\Debug64\Common\</OutputPath>
+		<DefineConstants>TRACE</DefineConstants>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <UseWpf>true</UseWpf>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ExtrasEnableImplicitWpfReferences>true</ExtrasEnableImplicitWpfReferences>
-    <ExtrasEnableImplicitWinFormsReferences>true</ExtrasEnableImplicitWinFormsReferences>
-  </PropertyGroup>
-
-  <PropertyGroup>
+	<PropertyGroup>
     <!-- SonarQube requires a project guid -->
-    <ProjectGuid>B5BF9F67-3CA7-4728-AB3E-08A54BDB33DC</ProjectGuid>
+    <ProjectGuid>{D2C063FF-10CA-4CEE-A750-0E59A65D406B}</ProjectGuid>
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Catel.MVVM" Version="5.12.10" />
-    <PackageReference Include="Catel.Fody" Version="4.5.0" PrivateAssets="all" />
-    <PackageReference Include="Fody" Version="6.3.0" PrivateAssets="all">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    <PackageReference Include="Catel.Fody" Version="4.5.0" PrivateAssets="all">
+      <IncludeAssets></IncludeAssets>
+      <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="MethodTimer.Fody" Version="3.1.2" PrivateAssets="all" />
-    <PackageReference Include="ModuleInit.Fody" Version="2.1.1" PrivateAssets="all" />
-    <PackageReference Include="Obsolete.Fody" Version="5.2.1" PrivateAssets="all" />
-    <PackageReference Include="Orc.Theming" Version="4.1.0" />
+    <PackageReference Include="Fody" Version="6.3.0" PrivateAssets="all">
+      <IncludeAssets></IncludeAssets>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="MethodTimer.Fody" Version="3.1.2" PrivateAssets="all">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="ModuleInit.Fody" Version="2.1.1" PrivateAssets="all">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Obsolete.Fody" Version="5.2.1" PrivateAssets="all">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Orc.Theming" Version="4.1.0">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <!-- Theming -->
@@ -41,6 +66,9 @@
 
     <None Remove="**/GeneratorParameters.json" />
     <EmbeddedResource Include="**/GeneratorParameters.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Properties\AssemblyInfo.cs" />
   </ItemGroup>
 
   <ItemGroup>
