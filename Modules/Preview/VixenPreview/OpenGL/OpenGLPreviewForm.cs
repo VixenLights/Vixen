@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -18,6 +19,7 @@ using Vixen;
 using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
+using VixenModules.Preview.VixenPreview.Shapes;
 
 namespace VixenModules.Preview.VixenPreview.OpenGL
 {
@@ -64,6 +66,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		internal static readonly Object ContextLock = new Object();
 
+		private List<DisplayItem> _lightBasedDisplayItems;
 		private readonly ParallelOptions _parallelOptions = new ParallelOptions()
 		{
 			MaxDegreeOfParallelism = Environment.ProcessorCount
@@ -89,6 +92,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			VixenSystem.Instrumentation.AddValue(_pointsDraw);
 			VixenSystem.Instrumentation.AddValue(_previewUpdate);
 			glControl.MouseWheel += GlControl_MouseWheel;
+
+			// Separate out the light based shapes
+			_lightBasedDisplayItems = Data.DisplayItems.Where(item => item.IsLightShape()).ToList();
 		}
 
 		private const int CP_NOCLOSE_BUTTON = 0x200;
@@ -341,7 +347,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			foreach (var dataDisplayItem in Data.DisplayItems)
 			{
 				dataDisplayItem.Shape.Layout();
-				pixelCount += dataDisplayItem.Shape.UpdatePixelCache();
+
+				if (dataDisplayItem.IsLightShape())
+				{					
+					pixelCount += dataDisplayItem.LightShape.UpdatePixelCache();				
+				}
 			}
 			toolStripStatusPixels.Text = pixelCount.ToString();
 		}
@@ -360,6 +370,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				if (_needsUpdate)
 				{
 					OnRenderFrame();
+					
 					_needsUpdate = false;
 				}
 				toolStripStatusFPS.Text = @"0";
@@ -423,6 +434,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			{
 				SaveWindowState();
 			}
+
 			glControl.Invalidate();
 		}
 
@@ -634,9 +646,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				_program["mvp"].SetValue(mvp);
 				_program["pointScale"].SetValue(_pointScaleFactor);
 
-				foreach (var dataDisplayItem in Data.DisplayItems)
+				foreach (DisplayItem dataDisplayItem in _lightBasedDisplayItems)
 				{
-					dataDisplayItem.Shape.Draw(_program);
+					dataDisplayItem.LightShape.Draw(_program);
 				}
 			}
 			catch (Exception e)
@@ -677,7 +689,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			//Prepare the points
 			//Logging.Debug("Begin Update Shape Points.");
 			int height = _background.HasBackground ? _background.Height : Height;
-			Parallel.ForEach(Data.DisplayItems, _parallelOptions, d => d.Shape.UpdateDrawPoints(height));
+			Parallel.ForEach(_lightBasedDisplayItems, _parallelOptions, d => ((PreviewLightBaseShape)d.Shape).UpdateDrawPoints(height)); 
 		}
 
 		private double ConvertToRadians(double angle)
