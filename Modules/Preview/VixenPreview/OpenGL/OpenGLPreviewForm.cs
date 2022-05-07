@@ -65,6 +65,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		internal static readonly Object ContextLock = new Object();
 
+		private List<DisplayItem> _lightBasedDisplayItems;
 		private readonly ParallelOptions _parallelOptions = new ParallelOptions()
 		{
 			MaxDegreeOfParallelism = Environment.ProcessorCount
@@ -90,6 +91,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			VixenSystem.Instrumentation.AddValue(_pointsDraw);
 			VixenSystem.Instrumentation.AddValue(_previewUpdate);
 			glControl.MouseWheel += GlControl_MouseWheel;
+
+			// Separate out the light based shapes
+			_lightBasedDisplayItems = Data.DisplayItems.Where(item => item.IsLightShape()).ToList();
 		}
 
 		private const int CP_NOCLOSE_BUTTON = 0x200;
@@ -641,7 +645,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				_program["mvp"].SetValue(mvp);
 				_program["pointScale"].SetValue(_pointScaleFactor);
 
-				foreach (var dataDisplayItem in Data.DisplayItems.Where(item => item.IsLightShape()))
+				foreach (DisplayItem dataDisplayItem in _lightBasedDisplayItems)
 				{
 					dataDisplayItem.LightShape.Draw(_program);
 				}
@@ -684,7 +688,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			//Prepare the points
 			//Logging.Debug("Begin Update Shape Points.");
 			int height = _background.HasBackground ? _background.Height : Height;
-			Parallel.ForEach(Data.DisplayItems.Where(item => item.IsLightShape()), _parallelOptions, d => ((PreviewLightBaseShape)d.Shape).UpdateDrawPoints(height)); 
+			Parallel.ForEach(_lightBasedDisplayItems, _parallelOptions, d => ((PreviewLightBaseShape)d.Shape).UpdateDrawPoints(height)); 
 		}
 
 		private double ConvertToRadians(double angle)
