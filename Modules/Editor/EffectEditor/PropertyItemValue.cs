@@ -30,6 +30,7 @@ using VixenModules.App.Curves;
 using VixenModules.Editor.EffectEditor.Input;
 using VixenModules.Editor.EffectEditor.Internal;
 using VixenModules.Editor.EffectEditor.PropertyEditing;
+using VixenModules.Effect.Effect;
 using VixenModules.Property.Color;
 using Point = System.Windows.Point;
 
@@ -45,6 +46,7 @@ namespace VixenModules.Editor.EffectEditor
 		private readonly GridEntryCollection<PropertyItem> _subProperties = new GridEntryCollection<PropertyItem>();
 		private readonly ObservableCollection<CollectionItemValue> _collectionItemValues = new ObservableCollection<CollectionItemValue>();
 		private IList _collectionValues;
+		private Type _collectionItemType = null;
 
 		#region ctor
 
@@ -85,13 +87,21 @@ namespace VixenModules.Editor.EffectEditor
 			_property.PropertyChanged += ParentPropertyChanged;
 		}
 
-		
+
 
 		#endregion
 
 		private void LoadCollectionValues()
 		{
 			_collectionValues = _property.GetValue() as IList;
+
+			// If the collection implements the IDiscoverCollectionItemType interface then...
+			if (_collectionValues is IDiscoverCollectionItemType)
+			{
+				// Retrieve the concrete type of the objects contained in the collection
+				_collectionItemType = ((IDiscoverCollectionItemType)_collectionValues).GetItemType();	
+			}
+
 			CleanUpCollectionValues();
 			_collectionItemValues.Clear();
 			if (_collectionValues != null)
@@ -141,17 +151,34 @@ namespace VixenModules.Editor.EffectEditor
 			{
 				object item;
 				var oType = _collectionItemValues[0].ItemType;
-				if (oType == typeof (string))
+				if (oType == typeof(string))
 				{
 					item = String.Empty;
 				}
 				else
 				{
-					item = Activator.CreateInstance(_collectionItemValues[0].ItemType);	
+					item = Activator.CreateInstance(_collectionItemValues[0].ItemType);
 				}
-				
+
 				_property.AddCollectionValue(item);
 			}
+			// If the type of object in the collection is known then...
+			else if (_collectionItemType != null)
+			{
+				// Create a new item
+				object item = Activator.CreateInstance(_collectionItemType);
+
+				// Add the item to the collection
+				_property.AddCollectionValue(item);
+			}
+		}
+
+		public bool CanRemove()
+		{
+			// Only allow deletes if there is more than one item in the collection or
+			// the collection knows the type of items in the collection
+			return _collectionItemValues.Count > 1 || 
+				_collectionItemType != null;
 		}
 
 		public void RemoveItemFromCollection(int index)
