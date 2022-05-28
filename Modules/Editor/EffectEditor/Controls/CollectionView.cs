@@ -25,7 +25,8 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			{
 				if (canExecuteRoutedEventArgs.Parameter.Equals(PropertyValue))
 				{
-					canExecuteRoutedEventArgs.CanExecute = Items.Count > 1 && SelectedItems.Count > 0;
+					var value = canExecuteRoutedEventArgs.Parameter as PropertyItemValue;
+					canExecuteRoutedEventArgs.CanExecute = value.CanRemove() && SelectedItems.Count > 0;
 					canExecuteRoutedEventArgs.Handled = true;
 				}
 			}
@@ -50,12 +51,11 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			var value = e.Parameter as PropertyItemValue;
 			if (value != null && SelectedIndex >=0)
 			{
-				if (Items.Count > 1)
+				if (value.CanRemove())
 				{
 					value.RemoveItemFromCollection(SelectedIndex);
 				}
-			}
-			
+			}			
 		}
 
 		#region PropertyValue property
