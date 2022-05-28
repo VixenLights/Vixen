@@ -540,7 +540,7 @@ namespace VixenApplication.Setup
 		private FilterShape _MakeFilterShape(IOutputFilterModuleInstance filter)
 		{
 			FilterShape filterShape = (FilterShape)project.ShapeTypes["FilterShape"].CreateInstance();
-			filterShape.Title = filter.Descriptor.TypeName;
+			filterShape.Title = filter.Name;
 			filterShape.SecurityDomainName = SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS;
 			filterShape.FillStyle = project.Design.FillStyles["Filter"];
 			filterShape.SetFilterInstance(filter);
