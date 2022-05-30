@@ -60,6 +60,18 @@
 
 	<Color x:Key="GreenColor">#00FF00</Color>
 
+<!--
+  *******************************************************************
+  List Box Colors and Brush
+  *******************************************************************
+-->
+	<Color x:Key="HighlightColor">#808080</Color>
+	<Color x:Key="ControlColor">#FF333333</Color>
+	<Color x:Key="InactiveSelectionHighlightColor">#FF333333</Color>
+	<SolidColorBrush x:Key="BackgroundControlBrush" Color="{StaticResource ControlColor}"/>
+	
+	
+	
 	<SolidColorBrush x:Key="ForeColorBrush" Color="{StaticResource ForeColor}"/>
 	<SolidColorBrush x:Key="ForeColorDisabledBrush" Color="{StaticResource ForeColorDisabled}"/>
 	<SolidColorBrush x:Key="DisabledForeground" Color="#777" />
