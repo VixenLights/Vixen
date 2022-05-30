@@ -70,6 +70,13 @@ namespace VixenModules.App.FixtureSpecificationManager
 				Directory.CreateDirectory(GetFixtureDirectory());
 			}
 
+			// If the fixture gobo image directory does NOT exist then...
+			if (!Directory.Exists(GetGoboImageDirectory()))
+			{
+				// Create the fixture gobo image directory
+				Directory.CreateDirectory(GetGoboImageDirectory());
+			}
+
 			// Create a directory info object pointing at the fixture directory
 			DirectoryInfo directoryInfo = new DirectoryInfo(GetFixtureDirectory());
 
@@ -184,6 +191,37 @@ namespace VixenModules.App.FixtureSpecificationManager
 
 			// Load the fixtures from the fixture directory
 			LoadFixtureSpecifications();
+		}
+
+		/// <summary>
+		/// Refer to <see cref="IFixtureSpecificationManager"/> documentation.
+		/// </summary>		
+		public IList<string> GetGoboImages()
+		{
+			// Create the collection of gobo images
+			List<string> goboImages = new List<string>();
+
+			// Get the list of files in the gobo image directory
+			string[] images = Directory.GetFiles(GetGoboImageDirectory());
+
+			// Loop over the image files
+			foreach(string imagePath in images)
+			{
+				// Extract just the filename from the image path
+				goboImages.Add(Path.GetFileName(imagePath));
+			}
+
+			// Return the collection of gobo images
+			return goboImages;
+		}
+
+		/// <summary>
+		/// Refer to <see cref="IFixtureSpecificationManager"/> documentation.
+		/// </summary>		
+		public string GetGoboImageDirectory()
+		{
+			// Construct the path to the gobo images
+			return GetFixtureDirectory() + @"\Images\";
 		}
 
 		#endregion
