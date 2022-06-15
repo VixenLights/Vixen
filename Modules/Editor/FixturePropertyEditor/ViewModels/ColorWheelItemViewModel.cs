@@ -87,6 +87,21 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		public static readonly PropertyData EndValueProperty = RegisterProperty(nameof(EndValue), typeof(string), null);
 
 		/// <summary>
+		/// Indicates if the color wheel entry uses a curve beteween the start and stop values.
+		/// </summary>
+		public bool UseCurve
+		{
+			get { return GetValue<bool>(UseCurveProperty); }
+			set { SetValue(UseCurveProperty, value); }
+		}
+
+		/// <summary>
+		/// Use Curve value property data.
+		/// </summary>
+		public static readonly PropertyData UseCurveProperty = RegisterProperty(nameof(UseCurve), typeof(bool), null);
+
+
+		/// <summary>
 		/// First color associated with the color wheel item.
 		/// </summary>
 		public System.Drawing.Color Color1
@@ -211,7 +226,14 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			ValidateName(validationResults);	
 
 			// Validate the StartValue property
-			ValidateDMXNumber(validationResults, StartValueProperty, "Value", StartValue);
+			ValidateDMXNumber(validationResults, StartValueProperty, "Start Value", StartValue);
+
+			// If the color wheel item uses a curve then...
+			if (UseCurve)
+			{
+				// Validate the EndValue property
+				ValidateDMXNumber(validationResults, StartValueProperty, "End Value", StartValue);
+			}			
 
 			// Display the validation bar
 			DisplayValidationBar(validationResults);			
