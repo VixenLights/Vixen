@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Vixen.Data.Value;
 using VixenModules.App.Fixture;
 
 namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
@@ -25,7 +26,19 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 
 			// Store off the delegate to refresh the command enable / disable status
 			RaiseCanExecuteChanged = functions.Item3;
+
+			// Initialize validation thread lock
+			_validationLock = new object();
 		}
+
+		#endregion
+
+		#region Fields
+
+		/// <summary>
+		/// Lock to prevent the Catel validation from producing duplicate validation messages.
+		/// </summary>
+		private object _validationLock; 
 
 		#endregion
 
@@ -97,9 +110,29 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			}
 		}
 		/// <summary>
-		/// Indexed visible property data.
+		/// Pan tilt visible property data.
 		/// </summary>
 		public static readonly PropertyData PanAndTiltVisibleProperty = RegisterProperty(nameof(PanTiltVisible), typeof(bool), null);
+
+		/// <summary>
+		/// Controls whether the zoom user control is visible.
+		/// This control is only visible when the selected function is a zoom function.
+		/// </summary>
+		public bool ZoomVisible
+		{
+			get
+			{
+				return GetValue<bool>(ZoomVisibleProperty);
+			}
+			set
+			{
+				SetValue(ZoomVisibleProperty, value);
+			}
+		}
+		/// <summary>
+		/// Zoom visible property data.
+		/// </summary>
+		public static readonly PropertyData ZoomVisibleProperty = RegisterProperty(nameof(ZoomVisible), typeof(bool), null);
 
 		/// <summary>
 		/// Maintains the previously selected function from the list of fixture functions.
@@ -195,6 +228,18 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		}
 
 		/// <summary>
+		/// Zoom child view model.
+		/// </summary>
+		public ZoomViewModel ZoomVM
+		{
+			get
+			{
+				// Find the zoom child view model
+				return FindChildViewModel<ZoomViewModel>();
+			}
+		}
+
+		/// <summary>
 		/// The function to initially select on view initialization.
 		/// </summary>
 		public FunctionItemViewModel InitialSelectedFunction
@@ -223,7 +268,11 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			foreach (FixtureFunction functionType in functions)
 			{
 				// Create a function view model object passing it the index and color data from the model
-				FunctionItemViewModel functionVM = new FunctionItemViewModel(functionType.IndexData, functionType.ColorWheelData, functionType.RotationLimits);
+				FunctionItemViewModel functionVM = new FunctionItemViewModel(
+					functionType.IndexData, 
+					functionType.ColorWheelData, 
+					functionType.RotationLimits, 
+					functionType.ZoomType == FixtureZoomType.NarrowToWide);
 
 				// Set the function name on the view model object
 				functionVM.Name = functionType.Name;
@@ -291,6 +340,9 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 				// Set the function rotation limits
 				function.RotationLimits = item.RotationLimits;
 
+				// Set the function zoom type
+				function.ZoomType = item.ZoomNarrowToWide ? FixtureZoomType.NarrowToWide : FixtureZoomType.WideToNarrow;
+
 				// Add the model function to the return collection
 				returnCollection.Add(function);
 			}
@@ -308,6 +360,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			ColorWheelVisible = false;
 			IndexedVisible = false;
 			PanTiltVisible = false;
+			ZoomVisible = false;
 		}
 	
 		/// <summary>
@@ -368,6 +421,12 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 				// Attempt to save the pan/tilt data
 				allowSelectionToChange = CanSaveData(PanTiltVM, SavePanTiltData, PanTiltVisible);
 			}
+			// If the zoom data is displayed then...
+			else if (ZoomVisible)
+			{
+				// Attempt to save the zoom data
+				allowSelectionToChange = CanSaveData(ZoomVM, SaveZoomData, ZoomVisible);
+			}
 						
 			return allowSelectionToChange;
 		}
@@ -375,58 +434,76 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		#endregion
 
 		#region IFixtureSaveable
-
+	
 		/// <summary>
 		/// Returns true if all required function data has been populated.
 		/// </summary>
 		/// <returns>True if all required function data has been populated</returns>
 		public override bool CanSave()
 		{
-			// Call the base class implementation
-			bool canSave = base.CanSave();	
-			
-			// Loop over the function view model items
-			foreach (FunctionItemViewModel function in Items)
-			{				
-				// If the function has errors then...
-				if (!function.CanSave())
-                {
+			// Default to being able to save
+			bool canSave = true;
+
+			// If the color wheel VM exists then...
+			if (ColorWheelVM != null)
+			{
+				// Validate the color wheel data
+				ColorWheelVM.Validate(true);
+			}
+
+			// If the indexed VM exists then...
+			if (IndexedVM != null)
+			{
+				// Validate the index data
+				IndexedVM.Validate(true);
+			}
+
+			// If the pan/tilt VM exists then...
+			if (PanTiltVM != null)
+			{
+				// Validate the pan/tilt data
+				PanTiltVM.Validate(true);
+			}
+
+			// To prevent duplicate validation messaages do not allow more than one thread 
+			// in this portion of the method.
+			lock (_validationLock)
+			{
+				// Clear out the previous save validation results
+				CanSaveValidationResults = string.Empty;
+
+				// Call the base class implementation
+				canSave = base.CanSave();
+											
+				// If the color wheel VM exists then check to see if all color wheel data is complete
+				if (ColorWheelVM != null && !ColorWheelVM.CanSave())
+				{
 					// Indicate the function types cannot be saved
 					canSave = false;
 
-					// Retrieve the erros from the function
-					CanSaveValidationResults += function.GetValidationResults();
-				}			
-			}
+					// Retrieve the errors from the color wheel VM
+					CanSaveValidationResults += ColorWheelVM.GetValidationResults();
+				}
 
-			// If the color wheel VM exists then check to see if all color wheel data is complete
-			if (ColorWheelVM != null && !ColorWheelVM.CanSave())
-			{
-				// Indicate the function types cannot be saved
-				canSave = false;
+				// If the indexed VM exists then check to see if all indexed data is complete
+				if (IndexedVM != null && !IndexedVM.CanSave())
+				{
+					// Indicate the function types cannot be saved
+					canSave = false;
 
-				// Retrieve the errors from the color wheel VM
-				CanSaveValidationResults += ColorWheelVM.GetValidationResults();
-			}
+					// Retrieve the errors from the indexed VM
+					CanSaveValidationResults += IndexedVM.GetValidationResults();
+				}
 
-			// If the indexed VM exists then check to see if all indexed data is complete
-			if (IndexedVM != null && !IndexedVM.CanSave())
-			{
-				// Indicate the function types cannot be saved
-				canSave = false;
+				// If the pan/tilt VM exists then check to see if all pan/tilt data is complete
+				if (PanTiltVM != null && !PanTiltVM.CanSave())
+				{
+					// Indicate the function types cannot be saved
+					canSave = false;
 
-				// Retrieve the errors from the indexed VM
-				CanSaveValidationResults += IndexedVM.GetValidationResults();
-			}
-
-			// If the pan/tilt VM exists then check to see if all pan/tilt data is complete
-			if (PanTiltVM != null && !PanTiltVM.CanSave())
-			{
-				// Indicate the function types cannot be saved
-				canSave = false;
-
-				// Retrieve the errors from teh pan/tilt VM
-				CanSaveValidationResults += PanTiltVM.GetValidationResults();
+					// Retrieve the errors from teh pan/tilt VM
+					CanSaveValidationResults += PanTiltVM.GetValidationResults();
+				}
 			}
 
 			return canSave;
@@ -457,6 +534,16 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			}
 
 			return valid;
+		}
+
+		/// <summary>
+		/// Returns true if there is more than one of the specified function identity.
+		/// </summary>
+		/// <returns>True if there is more than one of the specified function identity</returns>
+		private bool AreMoreThanOneFunction(FunctionIdentity functionIdentity)
+		{
+			// Return whether there are more than one of the specified function identity
+			return Items.Count(item => item.FunctionIdentity == functionIdentity) > 1;			
 		}
 
 		/// <summary>
@@ -526,11 +613,8 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		private void DisplayColorWheel(List<FixtureColorWheel> colorWheelData)
 		{
 			// Give the  model data to the color wheel view model
-			ColorWheelVM.InitializeChildViewModels(colorWheelData);
-
-			// Give the color wheel VM the ability to refresh the command enable / disable status
-			ColorWheelVM.RaiseCanExecuteChanged = RaiseCanExecuteChanged;
-
+			ColorWheelVM.InitializeChildViewModels(colorWheelData, RaiseCanExecuteChanged);
+			
 			// Make the color wheel user control visible
 			ColorWheelVisible = true;
 
@@ -539,6 +623,12 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 
 			// Hide the pan / tilt user control
 			PanTiltVisible = false;
+
+			// Hide the zoom user control
+			PanTiltVisible = false;
+
+			// Hide the zoom user control
+			ZoomVisible = false;
 		}
 
 		/// <summary>
@@ -553,25 +643,48 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			// Make the pan tilt user control visible
 			PanTiltVisible = true;
 
-			// Make the color wheel user control visible
+			// Hide the color wheel user control visible
 			ColorWheelVisible = false;
 
 			// Hide the index user control
 			IndexedVisible = false;
+
+			// Hide the zoom user control
+			ZoomVisible = false;
+		}
+
+		/// <summary>
+		/// Display the zoom data in the details area.
+		/// </summary>
+		/// <param name="narrowToWide">Whether the zoom expands from narrow to wide</param>		
+		private void DisplayZoom(bool narrowToWide, Action raiseCanExecuteChanged)
+		{
+			// Give the rotation limits model data to the pan tilt view model
+			ZoomVM.InitializeViewModel(narrowToWide, RaiseCanExecuteChanged);
+
+			// Make the zoom user control visible
+			ZoomVisible = true;
+
+			// Hide the pan tilt user control visible
+			PanTiltVisible = false;
+
+			// Hide the color wheel user control visible
+			ColorWheelVisible = false;
+
+			// Hide the index user control
+			IndexedVisible = false;			
 		}
 
 		/// <summary>
 		/// Display the index enumerations in the details area.
 		/// </summary>
 		/// <param name="indexData">Index data associated with the function</param>
-		private void DisplayIndex(List<FixtureIndex> indexData)
+		/// <param name="displayImage">Determine if the image columns are displayed</param>
+		private void DisplayIndex(List<FixtureIndex> indexData, bool displayImage)
 		{
 			// Give the index model data to the indexed view model
-			IndexedVM.InitializeChildViewModels(indexData);
-
-			// Give the index VM the ability to refresh the command enable / disable status
-			IndexedVM.RaiseCanExecuteChanged = RaiseCanExecuteChanged;
-
+			IndexedVM.InitializeChildViewModels(indexData, displayImage, RaiseCanExecuteChanged);
+			
 			// Make the index user control visible
 			IndexedVisible = true;
 
@@ -580,6 +693,9 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 
 			// Hide the pan / tilt user control
 			PanTiltVisible = false;
+
+			// Hide the zoom user control
+			ZoomVisible = false;
 		}
 
 		/// <summary>
@@ -593,7 +709,9 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			{
 				case FixtureFunctionType.Indexed:
 					// Display the index user control
-					DisplayIndex(PreviouslySelectedItem.IndexData);
+					DisplayIndex(
+						PreviouslySelectedItem.IndexData, 
+						PreviouslySelectedItem.FunctionIdentity == Vixen.Data.Value.FunctionIdentity.Gobo); // Display Image Column for Gobo functions
 					break;
 				case FixtureFunctionType.ColorWheel:
 					// Display the color wheel user control
@@ -607,6 +725,12 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 					{
 						// Display the pan/tilt rotation limits
 						DisplayTiltPan(PreviouslySelectedItem.RotationLimits, RaiseCanExecuteChanged);
+					}
+					// If the function is Zoom then...
+					else if (PreviouslySelectedItem.FunctionIdentity == Vixen.Data.Value.FunctionIdentity.Zoom)
+					{
+						// Display the zoom data
+						DisplayZoom(PreviouslySelectedItem.ZoomNarrowToWide, RaiseCanExecuteChanged);
 					}
 					else
 					{
@@ -629,39 +753,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		private void PreviouslySelectedItem_FunctionTypeChanged(object sender, EventArgs e)
 		{
 			// Update the details area with the selected function
-			UpdatesFunctionDetails(PreviouslySelectedItem);
-
-			// Determine which details user control to display
-			switch (PreviouslySelectedItem.FunctionTypeEnum)
-			{
-				case FixtureFunctionType.Indexed:
-					// Display the index user control
-					DisplayIndex(PreviouslySelectedItem.IndexData);
-					break;
-				case FixtureFunctionType.ColorWheel:
-					// Display the color wheel user control
-					DisplayColorWheel(PreviouslySelectedItem.ColorWheelData);
-					break;
-				case FixtureFunctionType.Range:
-
-					// If the function is the Pan or Tilt then...
-					if (PreviouslySelectedItem.FunctionIdentity == Vixen.Data.Value.FunctionIdentity.Pan ||
-						PreviouslySelectedItem.FunctionIdentity == Vixen.Data.Value.FunctionIdentity.Tilt)
-					{
-						// Display the pan/tilt rotation limits
-						DisplayTiltPan(PreviouslySelectedItem.RotationLimits, RaiseCanExecuteChanged);
-					}
-					else
-					{
-						// Hide all the user controls
-						HideDetails();
-					}
-					break;
-				default:
-					// Hide all the user controls
-					HideDetails();
-					break;
-			}
+			UpdatesFunctionDetails(PreviouslySelectedItem);		
 		}
 
 		/// <summary>
@@ -718,7 +810,16 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		private void SavePanTiltData()
 		{
 			// Retrieve the rotation limit from the user control
-			PreviouslySelectedItem.RotationLimits = PanTiltVM.GetRotationLimits();
+			PreviouslySelectedItem.RotationLimits = PanTiltVM.GetRotationLimitsData();
+		}
+
+		/// <summary>
+		/// Saves the current zoom data.
+		/// </summary>
+		private void SaveZoomData()
+		{
+			// Retrieve the zoom data from the user control
+			PreviouslySelectedItem.ZoomNarrowToWide = ZoomVM.NarrowToWide;
 		}
 
 		#endregion
@@ -752,8 +853,9 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <param name="item">Item to make valid</param>
 		protected override void MakeObjectValidBeforeDeleting(FunctionItemViewModel item)
 		{
-			item.Name = "Zombie";
-			item.FunctionTypeEnum = FixtureFunctionType.None;
+			item.Name = "Zombie";			
+			item.FunctionTypeEnum = FixtureFunctionType.None;						
+			item.CloseViewModelAsync(null);
 		}
 
 		/// <summary>
@@ -768,6 +870,27 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 				// Add an error that there are duplicate function names
 				validationResults.Add(BusinessRuleValidationResult.CreateError("Cannot have duplicate function names."));				
 			}
+
+			// If there is more than one Pan function then...
+			if (AreMoreThanOneFunction(FunctionIdentity.Pan))
+			{
+				// Add an error that there are duplicate Pan functions
+				validationResults.Add(BusinessRuleValidationResult.CreateError("Cannot have more than one Pan function."));
+			}
+
+			// If there is more than one Tilt function then...
+			if (AreMoreThanOneFunction(FunctionIdentity.Tilt))
+			{
+				// Add an error that there are duplicate Tilt functions
+				validationResults.Add(BusinessRuleValidationResult.CreateError("Cannot have more than one Tilt function."));
+			}
+
+			// If there is more than one Zoom function then...
+			if (AreMoreThanOneFunction(FunctionIdentity.Zoom))
+			{
+				// Add an error that there are duplicate Zoom functions
+				validationResults.Add(BusinessRuleValidationResult.CreateError("Cannot have more than one Zoom function."));
+			}			
 		}
 
 		#endregion

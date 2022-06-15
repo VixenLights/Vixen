@@ -1,13 +1,9 @@
-﻿using System;
-using VixenModules.App.Fixture;
-using VixenModules.Editor.FixturePropertyEditor.ViewModels;
-
-namespace VixenModules.Editor.FixturePropertyEditor.Views
+﻿namespace VixenModules.Editor.FixturePropertyEditor.Views
 {
-    /// <summary>
-    /// Maintains fixture index data view.
-    /// </summary>
-    public partial class PanTiltView
+	/// <summary>
+	/// Maintains fixture pan / tilt data view.
+	/// </summary>
+	public partial class PanTiltView
 	{
 		#region Constructor
 		
