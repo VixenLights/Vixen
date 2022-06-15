@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Vixen.Commands;
+using VixenModules.App.FixtureSpecificationManager;
 
 namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 {
@@ -17,17 +18,32 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// Constructor
 		/// </summary>
         public IndexedItemViewModel()
-		{			
+		{
+			// Update the available gobo images
+			UpdateAvailableImages();
 		}
 
-        #endregion
+		#endregion
 
-        #region Public Catel Properties
+		#region Public Methods
+
+		/// <summary>
+		/// Refreshes the available gobo images.
+		/// </summary>
+		public void UpdateAvailableImages()
+		{
+			// Refresh the available gobo images
+			AvailableImages = FixtureSpecificationManager.Instance().GetGoboImages();
+		}
+
+		#endregion
+
+		#region Public Catel Properties
 
 		/// <summary>
 		/// Start value of the index.
 		/// </summary>
-        public string StartValue
+		public string StartValue
 		{
 			get { return GetValue<string>(StartValueProperty); }
 			set 
@@ -103,6 +119,43 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// Index type property data.
 		/// </summary>
 		public static readonly PropertyData IndexTypeProperty = RegisterProperty(nameof(IndexType), typeof(FixtureIndexType), null);
+
+		/// <summary>
+		/// Image associated with the index.
+		/// </summary>
+		public string Image
+		{
+			get { return GetValue<string>(ImageProperty); }
+			set
+			{
+				SetValue(ImageProperty, value);
+
+				// Refresh command status
+				RaiseCanExecuteChangedInternal();
+			}
+		}
+
+		/// <summary>
+		/// Image property data.
+		/// </summary>
+		public static readonly PropertyData ImageProperty = RegisterProperty(nameof(Image), typeof(string), null);
+
+		/// <summary>
+		/// Collection of available images.
+		/// </summary>
+		public IList<string> AvailableImages
+		{
+			get { return GetValue<IList<string>>(AvailableImagesProperty); }
+			set
+			{
+				SetValue(AvailableImagesProperty, value);				
+			}
+		}
+
+		/// <summary>
+		/// Available Image property data.
+		/// </summary>
+		public static readonly PropertyData AvailableImagesProperty = RegisterProperty(nameof(AvailableImages), typeof(IList<string>), null);
 
 		#endregion
 
