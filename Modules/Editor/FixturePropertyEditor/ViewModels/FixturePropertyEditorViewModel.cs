@@ -354,6 +354,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		{
 			item.Name = "Zombie";
 			item.Function = "None";
+			item.CloseViewModelAsync(null);			
 		}
 
 		#endregion
