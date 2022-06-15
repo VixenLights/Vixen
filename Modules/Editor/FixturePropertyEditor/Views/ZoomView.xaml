@@ -1,0 +1,28 @@
+﻿<catel:UserControl x:Class="VixenModules.Editor.FixturePropertyEditor.Views.ZoomView"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:catel="http://schemas.catelproject.com"
+                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                   mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+    </UserControl.Resources>
+
+	<StackPanel>
+		<RadioButton Grid.Row="0" 
+                    Margin="10,10,10,10" 
+                    IsChecked="{Binding Path=NarrowToWide}"
+                    GroupName="FixtureSelection">Narrow To Wide</RadioButton>
+
+		<RadioButton Grid.Row="0" 
+                     Margin="10,10,10,10" 
+                     IsChecked="{Binding Path=WideToNarrow}"
+                     GroupName="FixtureSelection">Wide To Narrow</RadioButton>
+	</StackPanel>
+
+</catel:UserControl>

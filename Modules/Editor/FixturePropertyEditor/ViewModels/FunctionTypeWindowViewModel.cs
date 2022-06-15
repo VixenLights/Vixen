@@ -83,12 +83,15 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
             // Default to disabling the OK command
             bool canOK = false;
 
+            // Force Catel to validate
+            Validate(true);
+
             // Attempt to get the child view model
             FunctionTypeViewModel functionTypeViewModel = GetChildViewModel();
 
             // If the child view model has been created then...
             if (functionTypeViewModel != null)
-            { 
+            {                
                 // Delegate to the child view model
                 canOK = functionTypeViewModel.CanSave();
                
