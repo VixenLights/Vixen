@@ -102,36 +102,35 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			{
 				// Concatenate the error messages
 				CanSaveValidationResults += result.Message + "\n";
-			}
 
-			// If there are any errors so far then...
-			if (fieldValidationResults.Any())
-			{
 				// Indicate the fixture cannot be saved
 				canSave = false;
-
-				// Validate the business
-				List<IBusinessRuleValidationResult> validationResults = new List<IBusinessRuleValidationResult>();
-				ValidateBusinessRules(validationResults);
-
-				// Loop over the business rule validation results
-				for (int index = 0; index < validationResults.Count; index++)
-				{
-					// Get the specified validation result
-					IBusinessRuleValidationResult validationResult = validationResults[index];
-
-					// Concatenate the error messages
-					CanSaveValidationResults += validationResult.Message + "\n";						
-				}
 			}
+			
+			// Validate the business
+			List<IBusinessRuleValidationResult> validationResults = new List<IBusinessRuleValidationResult>();
+			ValidateBusinessRules(validationResults);
 
+			// Loop over the business rule validation results
+			for (int index = 0; index < validationResults.Count; index++)
+			{
+				// Get the specified validation result
+				IBusinessRuleValidationResult validationResult = validationResults[index];
+
+				// Concatenate the error messages
+				CanSaveValidationResults += validationResult.Message + "\n";
+
+				// Indicate the fixture cannot be saved
+				canSave = false;
+			}
+			
 			return canSave;
 		}
 
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>		
-		public virtual string GetValidationResults()
+		public string GetValidationResults()
 		{
 			// Return the validation results
 			return CanSaveValidationResults;
