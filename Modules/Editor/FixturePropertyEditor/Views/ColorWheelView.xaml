@@ -56,7 +56,7 @@
                 </DataGridTemplateColumn>
 
 
-                <DataGridTemplateColumn Header="Value" Width="63">
+                <DataGridTemplateColumn Header="Start Value" Width="63">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding StartValue,  ValidatesOnDataErrors=True, NotifyOnValidationError=true}">
@@ -75,6 +75,35 @@
                             </TextBox>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+
+               <DataGridTemplateColumn Header="End Value" Width="63">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding EndValue,  ValidatesOnDataErrors=True, NotifyOnValidationError=true}">
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox MinWidth="30">
+                                <TextBox.Text>
+                                    <Binding Path="StartValue" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" NotifyOnValidationError="true">
+                                        <Binding.ValidationRules>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+
+		        <DataGridTemplateColumn Header="Use Curve" Width="60">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding Path=UseCurve, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
                 <DataGridTemplateColumn Header="Half Stop" Width="60">
@@ -97,7 +126,7 @@
                                         </Style>
                                     </Button.Style>
                                 </Button>
-                                <Button Width="25" Height="20" Content="{ Binding ButtonText }" Command="{Binding EditColor2Command}" 
+                                <Button Width="25" Height="20" Content="{ Binding ButtonText }" 
 										Visibility="{Binding HalfStep, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <Button.Style>
                                         <Style TargetType="Button">
