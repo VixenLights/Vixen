@@ -1329,6 +1329,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					case EffectGroups.Device:
 						AddEffect(effectDescriptor, deviceToolStripMenuItem);
 						break;
+					case EffectGroups.IntelligentFixture:
+						AddEffect(effectDescriptor, intelligentFixtureToolStripMenuItem);
+						break;
 				}
 			}
 
@@ -1996,6 +1999,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				pixelToolStripMenuItem.Checked);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/DeviceEffectToolStrip", Name),
 				deviceToolStripMenuItem.Checked);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/IntelligentFixtureEffectToolStrip", Name),
+				intelligentFixtureToolStripMenuItem.Checked);
 
 			foreach (ToolStripMenuItem dropDownItem in effectGroupsToolStripMenuItem.DropDownItems)
 			{
