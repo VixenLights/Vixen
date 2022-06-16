@@ -161,6 +161,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.basicToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pixelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deviceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.intelligentFixtureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItemLabelPosition = new System.Windows.Forms.ToolStripMenuItem();
 			this.noLabelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.aboveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -2591,5 +2592,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripMenuItem speedTempoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem fullWaveformToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem intelligentFixtureToolStripMenuItem;
 	}
 }
