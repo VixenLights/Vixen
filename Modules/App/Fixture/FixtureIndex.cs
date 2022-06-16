@@ -7,53 +7,25 @@ namespace VixenModules.App.Fixture
 	/// Maintains a fixture index (enumeration) entry.
 	/// </summary>
     [DataContract]
-	public class FixtureIndex : FixtureItem
-	{
-        #region Constructor 
-
-		public FixtureIndex()
-        {
-			// Default to custom index type
-			IndexType = FixtureIndexType.Custom;
-		}
-
-        #endregion
-
+	public class FixtureIndex : FixtureIndexBase
+	{        
         #region Public Properties
-
+				
 		/// <summary>
-		/// DMX start value of the entry.
+		/// Images associated with index.
 		/// </summary>
 		[DataMember]
-		public int StartValue { get; set; }
+		public string Image { get; set; }
 
-		/// <summary>
-		/// DMX end value of the entry.
-		/// </summary>
-		[DataMember]
-		public int EndValue { get; set; }
+		#endregion
 
-		/// <summary>
-		/// Indicates that this index entry selection needs to be represented by a curve.
-		/// </summary>
-		[DataMember]
-		public bool UseCurve { get; set; }
-
-		/// <summary>
-		/// Type of index.  This property supports the preview.
-		/// </summary>
-		[DataMember]
-		public FixtureIndexType IndexType { get; set; }
-
-        #endregion
-
-        #region Public Methods
+		#region Public Methods
 
 		/// <summary>
 		/// Creates a clone of the index entry.
 		/// </summary>
 		/// <returns>Clone of the index entry</returns>
-        public FixtureIndex CreateInstanceForClone()
+		public FixtureIndex CreateInstanceForClone()
 		{
 			// Clone the index entry
 			FixtureIndex indexEntry = new FixtureIndex
@@ -63,6 +35,7 @@ namespace VixenModules.App.Fixture
 				EndValue = EndValue,
 				UseCurve = UseCurve,
 				IndexType = IndexType,
+				Image = Image,
 			};
 
 			return indexEntry;
