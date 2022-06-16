@@ -44,5 +44,29 @@ namespace Vixen.Commands
 		/// </summary>
 		[Description("Color Wheel")]
 		ColorWheel,
+
+		/// <summary>
+		/// Index command that represents a prism index item.
+		/// </summary>
+		[Description("Prism")]
+		Prism,
+
+		/// <summary>
+		/// Index command that represents prism open.
+		/// </summary>
+		[Description("Prism Open")]
+		PrismOpen,
+
+		/// <summary>
+		/// Index command that represents prism close.
+		/// </summary>
+		[Description("Prism Close")]
+		PrismClose,
+
+		/// <summary>
+		/// Index command that represents a strobe.
+		/// </summary>
+		[Description("Strobe")]
+		Strobe,
 	}
 }

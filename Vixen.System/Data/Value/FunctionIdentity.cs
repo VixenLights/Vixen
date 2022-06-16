@@ -11,20 +11,35 @@ namespace Vixen.Data.Value
 	public enum FunctionIdentity
 	{
 		[Description("Pan")]
-		Pan,
+		Pan, // Range
 
 		[Description("Tilt")]
-		Tilt,
+		Tilt, // Range
 
 		[Description("Zoom")]
-		Zoom,
+		Zoom, // Range
 
 		[Description("Dim")]
-		Dim,
+		Dim, // Range
 
 		[Description("Shutter")]
-		Shutter,
+		Shutter, // Index
 
+		[Description("Gobo")]
+		Gobo, // Index
+
+		[Description("Frost")]
+		Frost, // Range
+
+		[Description("Prism")]
+		Prism, // Index
+
+		[Description("Open Close Prism")]
+		OpenClosePrism, // Index
+
+		[Description("Spin Color Wheel")]
+		SpinColorWheel, // Index
+		
 		[Description(" ")]
 		Custom,
 	}
