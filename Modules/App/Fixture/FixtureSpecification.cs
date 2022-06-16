@@ -27,6 +27,9 @@ namespace VixenModules.App.Fixture
 
 			// Initialize who created the fixture specification
 			CreatedBy = Environment.UserName;
+
+			// Default the revision to 1.0
+			Revision = "1.0";
 		}
 
 		#endregion
@@ -158,8 +161,80 @@ namespace VixenModules.App.Fixture
 		/// <returns>True if the function is supported</returns>
 		public bool SupportsFunction(string functionName)
 		{
+			// Return whether the function is defined and
+			// referenced on at least one channel
+			return FunctionDefinitions.Any(item => item.Name == functionName) &&
+				   ChannelDefinitions.Any(channel => channel.Function == functionName);
+		}
+		
+		/// <summary>
+		/// Returns the fixture function with the specified name and identity.
+		/// </summary>
+		/// <param name="functionName">Function name to find</param>
+		/// <param name="functionIdentity">Function identity to find</param>
+		/// <returns>Fixture function with the specified name and identity</returns>
+		public FixtureFunction GetInUseFunction(string functionName, FunctionIdentity functionIdentity)
+		{
+			// Default the function to null indicating it was not found
+			FixtureFunction function = null;
+
+			// If the function is referenced on one of the fixture's channels then...
+			if (IsFunctionUsed(functionName, functionIdentity))
+			{
+				// Find the fixture function with the specified name and identity
+				function = GetFunction(functionName, functionIdentity);
+			}
+
+			return function;
+		}
+
+		/// <summary>
+		/// Returns true if the specified function name and identity is used on the fixture.
+		/// </summary>
+		/// <param name="functionName">Name of the function</param>
+		/// <param name="functionIdentity">Identity of the function</param>
+		/// <returns></returns>
+		public bool IsFunctionUsed(string functionName, FunctionIdentity functionIdentity)
+		{
+			// Default to the function not being used
+			bool isUsed = false;
+
+			// Find the function associated with the effect
+			FixtureFunction func = GetFunction(functionName, functionIdentity);
+
+			// If the function was found then...
+			if (func != null)
+			{
+				// If the function is mapped to a channel then...
+				isUsed = ChannelDefinitions.Any(channel => channel.Function == functionName);
+			}
+
+			// Returns whether the function is referenced on one of the fixture's channels
+			return isUsed;
+		}
+		
+		/// <summary>
+		/// Returns true if the specified function identity is supported by the fixture.
+		/// </summary>
+		/// <param name="functionName">Name of the function to check</param>
+		/// <returns>True if the function is supported</returns>
+		public bool SupportsFunction(FunctionIdentity functionIdentity)
+		{
+			// Default to not supporting the function
+			bool supported = false;
+
+			// Retrieve the first function that matches the identity
+			FixtureFunction function = FunctionDefinitions.FirstOrDefault(item => item.FunctionIdentity == functionIdentity);
+			
+			// If the function was found then...
+			if (function != null)
+			{
+				// Check to make sure the function is used on at least one channel
+				supported = ChannelDefinitions.Any(channel => channel.Function == function.Name);
+			}
+
 			// Return whether the function is supported
-			return FunctionDefinitions.Any(item => item.Name == functionName);
+			return supported;
 		}
 
 		/// <summary>
@@ -212,7 +287,7 @@ namespace VixenModules.App.Fixture
 				"Tilt",
 				FixtureFunctionType.Range,
 				FunctionIdentity.Tilt);
-			tilt.RotationLimits = new FixtureRotationLimits();
+				tilt.RotationLimits = new FixtureRotationLimits();
 			
 			// Add an empty color wheel function
 			AddFunctionType(
@@ -243,6 +318,30 @@ namespace VixenModules.App.Fixture
 				"Shutter",
 				FixtureFunctionType.Indexed,
 				FunctionIdentity.Shutter);
+
+			// Add gobo wheel function
+			AddFunctionType(
+				"Gobo Wheel",
+				FixtureFunctionType.Indexed,
+				FunctionIdentity.Gobo);
+
+			// Add prism function
+			AddFunctionType(
+				"Open Close Prism",
+				FixtureFunctionType.Indexed,
+				FunctionIdentity.OpenClosePrism);
+
+			// Add (rotating) prism function
+			AddFunctionType(
+				"Prism",
+				FixtureFunctionType.Indexed,
+				FunctionIdentity.Prism);
+
+			// Add frost function
+			AddFunctionType(
+				"Frost",
+				FixtureFunctionType.Range,
+				FunctionIdentity.Frost);
 
 			// Add a None function so that channels can be included in the specification but generally ignored
 			AddFunctionType(
@@ -332,7 +431,25 @@ namespace VixenModules.App.Fixture
 
 			return isRGBW;
 		}
-		
-		#endregion		
+
+		#endregion
+
+		#region Private Methods
+
+		/// <summary>
+		/// Returns the function with the specified name and identity.
+		/// </summary>
+		/// <param name="functionName">Function name to search for</param>
+		/// <param name="functionIdentity">Function identity to search for</param>
+		/// <returns></returns>
+		private FixtureFunction GetFunction(string functionName, FunctionIdentity functionIdentity)
+		{
+			// Find the fixture function with the specified name and identity
+			return FunctionDefinitions.SingleOrDefault(
+				function => (function.FunctionIdentity == functionIdentity &&
+				function.Name == functionName));
+		}
+
+		#endregion
 	}
 }
