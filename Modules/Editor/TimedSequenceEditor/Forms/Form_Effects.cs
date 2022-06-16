@@ -68,6 +68,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					case EffectGroups.Device:
 						parentNode = treeEffects.Nodes["treeDevice"];
 						break;
+					case EffectGroups.IntelligentFixture:
+						parentNode = treeEffects.Nodes["intelligentFixture"];
+						break;
 				}
 				TreeNode node = new TreeNode(effectDesriptor.EffectName) {Tag = effectDesriptor.TypeId};
 				
