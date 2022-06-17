@@ -194,7 +194,25 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		#endregion
 
 		#region IFixtureSaveable
-						
+
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>		
+		public override string GetValidationResults()
+		{
+			// Default the validation result to an empty string
+			string validationResults = base.GetValidationResults();	
+
+			// Loop over the items
+			foreach (TItemType item in Items)
+			{
+				// Concatenate the validation results from the color wheel entry
+				validationResults += item.GetValidationResults();
+			}
+
+			return validationResults;
+		}
+
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>		
