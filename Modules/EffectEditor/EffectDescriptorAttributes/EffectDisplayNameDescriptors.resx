@@ -1110,4 +1110,10 @@
   <data name="PictureCenterStop" xml:space="preserve">
     <value>Center Stop</value>
   </data>
+  <data name="Pan" xml:space="preserve">
+    <value>Pan</value>
+  </data>
+  <data name="Tilt" xml:space="preserve">
+    <value>Tilt</value>
+  </data>
 </root>
