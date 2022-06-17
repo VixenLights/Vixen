@@ -1149,7 +1149,13 @@
   <data name="HighlightPercentage" xml:space="preserve">
     <value>Controls the percentage of the bar that is highlighted.</value>
   </data>
-   <data name="PictureCenterStop" xml:space="preserve">
+  <data name="PictureCenterStop" xml:space="preserve">
     <value>Moves the image into view and stops it in the center.</value>
+  </data>
+  <data name="Pan" xml:space="preserve">
+    <value>Controls the horizontal rotation of the intelligent fixture.</value>
+  </data>
+  <data name="Tilt" xml:space="preserve">
+    <value>Controls the vertical rotation of the intelligent fixture.</value>
   </data>
 </root>
