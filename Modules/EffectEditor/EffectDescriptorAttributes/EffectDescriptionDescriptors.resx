@@ -1158,4 +1158,7 @@
   <data name="Tilt" xml:space="preserve">
     <value>Controls the vertical rotation of the intelligent fixture.</value>
   </data>
+  <data name="Zoom" xml:space="preserve">
+    <value>Controls the zoom angle of the intelligent fixture beam.</value>
+  </data>
 </root>
