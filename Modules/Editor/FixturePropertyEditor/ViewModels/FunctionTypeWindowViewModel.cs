@@ -94,35 +94,9 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
             {                
                 // Delegate to the child view model
                 canOK = functionTypeViewModel.CanSave();
-               
-                // If NOT already updating the OK button tooltip then...
-                if (!UpdatingOKTooltip)
-                {
-                    // Set a flag to avoid recursion
-                    UpdatingOKTooltip = true;
 
-                    // If the OK button is disabled then...
-                    if (!canOK)
-                    {                    
-                        // Update the OK button tooltip with the validation results
-                        OKTooltip = functionTypeViewModel.GetValidationResults();
-
-                        // Display the error triangle
-                        ShowError = Visibility.Visible;   
-                    }
-                    // Otherwise the function data is valid
-                    else
-                    {
-                        // Clear the OK button tooltip
-                        OKTooltip = String.Empty;
-
-                        // Hide the error triangle
-                        ShowError = Visibility.Hidden;
-                    }
-
-                    // Clear the flag indicating that we are done updating the OK button tooltip
-                    UpdatingOKTooltip = false;
-                }
+                // Update the OK button tooltip
+                UpdateOKTooltip(canOK, functionTypeViewModel);                
             }
 
             // Return whether the OK command can be executed
