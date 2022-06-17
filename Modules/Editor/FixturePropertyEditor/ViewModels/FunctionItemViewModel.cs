@@ -1,6 +1,7 @@
 ﻿using Catel.Data;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Vixen.Data.Value;
 using VixenModules.App.Fixture;
 
