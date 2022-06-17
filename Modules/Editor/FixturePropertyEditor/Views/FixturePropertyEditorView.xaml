@@ -97,7 +97,7 @@
                         </DataGridTemplateColumn.CellEditingTemplate>
                     </DataGridTemplateColumn>
 
-                    <DataGridTemplateColumn  Header="Type" Width="*" >
+                    <DataGridTemplateColumn  Header="Function" Width="*" >
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <ComboBox ItemsSource="{Binding Functions}"                                   
