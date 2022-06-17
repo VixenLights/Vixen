@@ -861,7 +861,11 @@ namespace VixenModules.Editor.EffectEditor
 
 		internal void ComponentChanged()
 		{
-			foreach (var propertyItem in Properties)
+			// Moving effects between elements was causing 'Collection was modified; enumeration may not execute' exception
+			// Making a copy of the properties to avoid this exception.
+			List<PropertyItem> properties = Properties.ToList();
+
+			foreach (var propertyItem in properties)
 			{
 				propertyItem.OnComponentChanged();
 			}
