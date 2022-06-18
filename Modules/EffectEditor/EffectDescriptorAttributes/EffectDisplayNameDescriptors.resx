@@ -1128,4 +1128,10 @@
   <data name="RotationSpeed" xml:space="preserve">
     <value>Rotation Speed</value>
   </data>
+  <data name="PrismRotationSpeed" xml:space="preserve">
+    <value>Rotation Speed</value>
+  </data>
+  <data name="PrismSetting" xml:space="preserve">
+    <value>Setting</value>
+  </data>
 </root>
