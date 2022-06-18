@@ -1173,4 +1173,10 @@
   <data name="RotationSpeed" xml:space="preserve">
     <value>Selects the rotation speed of the gobo wheel.</value>
   </data>
+  <data name="PrismRotationSpeed" xml:space="preserve">
+    <value>Selects the rotation speed of the prism.</value>
+  </data>
+  <data name="PrismSetting" xml:space="preserve">
+    <value>Selects the position (angle) of the prism or an option to rotate the prism.</value>
+  </data>
 </root>
