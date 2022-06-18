@@ -1167,4 +1167,10 @@
   <data name="Function" xml:space="preserve">
     <value>Name of the intelligent fixture function associated with the effect.</value>
   </data>
+  <data name="Gobo" xml:space="preserve">
+    <value>Selects a gobo on the wheel or an option to rotate the gobo wheel.</value>
+  </data>
+  <data name="RotationSpeed" xml:space="preserve">
+    <value>Selects the rotation speed of the gobo wheel.</value>
+  </data>
 </root>
