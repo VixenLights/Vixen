@@ -1161,4 +1161,10 @@
   <data name="Zoom" xml:space="preserve">
     <value>Controls the zoom angle of the intelligent fixture beam.</value>
   </data>
+  <data name="FrostPercentage" xml:space="preserve">
+    <value>Configures the amount of softening (frosting) of the light beam.</value>
+  </data>
+  <data name="Function" xml:space="preserve">
+    <value>Name of the intelligent fixture function associated with the effect.</value>
+  </data>
 </root>
