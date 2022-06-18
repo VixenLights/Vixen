@@ -1116,4 +1116,10 @@
   <data name="Tilt" xml:space="preserve">
     <value>Tilt</value>
   </data>
+  <data name="FrostPercentage" xml:space="preserve">
+    <value>Frost Percentage</value>
+  </data>
+  <data name="Function" xml:space="preserve">
+    <value>Function</value>
+  </data>
 </root>
