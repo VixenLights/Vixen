@@ -1179,4 +1179,13 @@
   <data name="PrismSetting" xml:space="preserve">
     <value>Selects the position (angle) of the prism or an option to rotate the prism.</value>
   </data>
+  <data name="SpinColorWheelIntensity" xml:space="preserve">
+    <value>Intensity of the light beam.</value>
+  </data>
+  <data name="SpinColorWheelRotationSpeed" xml:space="preserve">
+    <value>Selects the rotation speed of the color wheel.</value>
+  </data>
+  <data name="SpinColorWheelSetting" xml:space="preserve">
+    <value>Selects the direction and rotation speed of the spinning color wheel.</value>
+  </data>
 </root>
