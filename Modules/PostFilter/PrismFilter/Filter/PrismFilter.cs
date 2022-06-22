@@ -3,14 +3,13 @@ using Vixen.Data.Evaluator;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Sys;
-using VixenModules.OutputFilter.TaggedFilter.Filters;
 
 namespace VixenModules.OutputFilter.PrismFilter.Filter
 {
-    /// <summary>
-    /// Filter that converts prism intents into open prism commands.
-    /// </summary>
-    public class PrismFilter : TaggedFilter.Filters.TaggedFilter
+	/// <summary>
+	/// Filter that converts prism intents into open prism commands.
+	/// </summary>
+	public class PrismFilter : TaggedFilter.Filters.TaggedFilter
 	{
 		#region Public Properties
 
