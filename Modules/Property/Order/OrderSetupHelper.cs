@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Theme;
@@ -26,6 +27,21 @@ namespace VixenModules.Property.Order
 			_contextMenu.Renderer = new ThemeToolStripRenderer();
 			elementList.ItemDragDropCompleted += ElementList_ItemDragDropCompleted;
 			elementList.MouseClick += ElementListOnMouseClick;
+			elementList.KeyDown += OnKeyDown;
+		}
+
+		protected void OnKeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.A | e.Control)
+			{
+				elementList.BeginUpdate();
+				foreach (ListViewItem item in elementList.Items)
+				{
+					item.Selected = true;
+				}
+				e.SuppressKeyPress = true;
+				elementList.EndUpdate();
+			}
 		}
 
 		private void ElementListOnMouseClick(object sender, MouseEventArgs e)
@@ -72,65 +88,58 @@ namespace VixenModules.Property.Order
 
 		private void ZigZagItems_Click(object sender, EventArgs e)
 		{
-			var selectedindexes = elementList.SelectedIndices;
-			var indexMap = new Dictionary<int, ListViewItem>();
-			int IterationCounter = 0;
-
-			NumberDialog numberDialog = new NumberDialog("ZigZag Length", "How many pixels to ZigZag?", 2, 2, selectedindexes.Count);
-			DialogResult Answer;
-			do
+			NumberDialog numberDialog = new NumberDialog("ZigZag Length", "How many pixels to ZigZag?", 50, 2, elementList.SelectedIndices.Count);
+			var answer = numberDialog.ShowDialog();
+			if (answer == DialogResult.OK)
 			{
-				Answer = numberDialog.ShowDialog();
-				if (Answer == DialogResult.OK)
-				{
-					if (selectedindexes.Count % numberDialog.Value == 0) // Selected pixels must be evenly divisable by zigzag length.
-					{
-						int ZigZagLength = numberDialog.Value;
-						for (int i = 1; i < (selectedindexes.Count / (ZigZagLength * 2) + .5); i++)
-						{
-							for (int Zig = 1; Zig <= ZigZagLength; Zig++)
-							{
-								IterationCounter++;
-								indexMap.Add(selectedindexes[IterationCounter - 1], elementList.Items[selectedindexes[IterationCounter - 1]]);
-							}
+				btnOk.Enabled = false;
+				btnCancel.Enabled = false;
+				PerformZigZag(numberDialog.Value);
+				btnOk.Enabled = true;
+				btnCancel.Enabled = true;
+			}
+			
+		}
 
-							if (IterationCounter >= selectedindexes.Count)
-							{
-								break;
-							}
-							int LastZig = IterationCounter;
+		private void PerformZigZag(int every){
 
-							for (int Zag = ZigZagLength; Zag >= 1; Zag--)
-							{
-								IterationCounter++;
-								indexMap.Add(selectedindexes[LastZig + Zag - 1], elementList.Items[selectedindexes[IterationCounter - 1]]);
-							}
-
-							if (IterationCounter >= selectedindexes.Count)
-							{
-								break;
-							}
-						}
-
-						foreach (var item in indexMap)
-						{
-							elementList.Items.RemoveAt(item.Key);
-							elementList.Items.Insert(item.Key, (ListViewItem)item.Value.Clone());
-							elementList.Items[item.Key].Selected = true;
-						}
-
-						ReIndexElementNodes();
-						return;
-					}
-					else
-					{
-						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-						var messageBox = new MessageBoxForm("The total selected pixels must be evenly divisable by the zigzag length", "Zigzag Error", false, false);
-						MessageBoxForm.msgIcon = System.Drawing.SystemIcons.Exclamation; //this is used if you want to add a system icon to the message form.
-						messageBox.ShowDialog();
+			int[] selectedIndexes = new int[elementList.SelectedIndices.Count];
+			elementList.SelectedIndices.CopyTo(selectedIndexes,0);
+			
+			if (selectedIndexes.Length % every == 0) // Selected pixels must be evenly divisable by zigzag length.
+			{
+				Cursor = Cursors.WaitCursor;
+				elementList.BeginUpdate();
+				for(int i = every; i< selectedIndexes.Length;i+=2*every){
+					int start = i;
+					int end = i + every - 1;
+					while (start<end){
+						//Swap places
+						var i1 = elementList.Items[start];
+						var i2 = elementList.Items[end];
+						elementList.Items[start] = (ListViewItem)i2.Clone();
+						elementList.Items[end] = i1;
+						elementList.Items[start].Selected = true;
+						elementList.Items[end].Selected = true;
+						start++;
+						end--;
 					}
 				}
-			} while (Answer == DialogResult.OK);
+				
+				ReIndexElementNodes();
+				elementList.EndUpdate();
+				Cursor = Cursors.Default;
+				return;
+			}
+			else
+			{
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				var messageBox = new MessageBoxForm("The total selected pixels must be evenly divisable by the zigzag length", "Zigzag Error", false, false);
+				MessageBoxForm.msgIcon = System.Drawing.SystemIcons.Exclamation; //this is used if you want to add a system icon to the message form.
+				messageBox.ShowDialog();
+			}
+				
+			
 		}
 
 		#region Implementation of IElementSetupHelper
