@@ -31,12 +31,18 @@ namespace VixenModules.Effect.SpinColorWheel
 		{			
 			// Create the dictionary of function tags
 			_dimmerTags = new Dictionary<IElementNode, string>();
+
+			// Prime the effect with which attributes are applicable
+			UpdateAttributes();
 		}
 
 		#endregion
 
 		#region Private Fields
 
+		/// <summary>
+		/// Flag indicates if the fixture supports dimming.
+		/// </summary>
 		private bool _canDim;
 
 		/// <summary>
