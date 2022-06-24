@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Collections.Generic;
+using System.Windows.Forms;
 using Vixen.Module.Property;
 using Vixen.Sys;
 
@@ -49,6 +50,49 @@ namespace VixenModules.Property.Order {
 			}
 			
 			return p;
+		}
+
+		public static void AddPatchingOrder(IEnumerable<ElementNode> nodes)
+		{
+			int count = 1;
+			foreach (ElementNode node in nodes)
+			{
+				var order = node.Properties.Add(OrderDescriptor.ModuleId) as OrderModule;
+				if (order != null)
+				{
+					order.Order = count;
+				}
+
+				count++;
+			}
+		}
+
+		public static void AddPatchingOrder(IEnumerable<ElementNode> nodes, int zigZagEvery)
+		{
+			int totalCtr = 1;
+			int groupCtr = 0;
+			bool fwdIndicator = true;
+			int grpStart = 1;
+			foreach (ElementNode node in nodes)
+			{
+				var order = node.Properties.Add(OrderDescriptor.ModuleId) as OrderModule;
+				if (order != null)
+				{
+					order.Order = fwdIndicator ? totalCtr : grpStart - groupCtr;
+				}
+				groupCtr++;
+
+				if (groupCtr >= zigZagEvery)
+				{
+					fwdIndicator = !fwdIndicator;
+					groupCtr = 0;
+					if (!fwdIndicator)
+					{
+						grpStart = totalCtr + zigZagEvery;
+					}
+				}
+				totalCtr++;
+			}
 		}
 
 		/// <inheritdoc />
