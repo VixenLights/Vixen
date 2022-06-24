@@ -29,6 +29,9 @@ namespace VixenModules.Effect.FixtureStrobe
 		{
 			// Initialize the list of available index values
 			IndexValues = new List<string>();
+
+			// Prime the effect with which attributes are applicable
+			UpdateAttributes();
 		}
 
 		#endregion
