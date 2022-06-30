@@ -23,6 +23,7 @@ using Vixen.Sys.Output;
 using VixenModules.App.Modeling;
 using VixenModules.OutputFilter.DimmingCurve;
 using VixenModules.Property.Color;
+using VixenModules.App.ElementTemplateHelper;
 
 namespace VixenApplication.Setup
 {
@@ -238,74 +239,32 @@ namespace VixenApplication.Setup
 
 		private async void buttonAddTemplate_Click(object sender, EventArgs e)
 		{
+			// Retrieve the selected combo box item
 			ComboBoxItem item = (comboBoxNewItemType.SelectedItem as ComboBoxItem);
 
-			if (item != null) {
+			// If a combo box item was selected then...
+			if (item != null) 
+			{
+				// Retrieve the element template
 				IElementTemplate template = item.Value as IElementTemplate;
-				bool act = template.SetupTemplate(elementTree.SelectedElementNodes);
-				if (act) {
-					IEnumerable<ElementNode> createdElements = await template.GenerateElements(elementTree.SelectedElementNodes);
 
-					// If the user has not cancelled the template then...
-					if (!template.Cancelled)
-					{
-						if (createdElements == null || !createdElements.Any())
+				// Create the element template helper
+				ElementTemplateHelper elementTemplateHelper = new ElementTemplateHelper();
+
+				// Process the template for the selected node(s)
+				await elementTemplateHelper.ProcessElementTemplate(
+					elementTree.SelectedElementNodes, 
+					template, 
+					this,
+					(node) =>
 						{
-							//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-							MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-							var messageBox = new MessageBoxForm("Could not create elements.  Ensure you use a valid name and try again.", "", false, false);
-							messageBox.ShowDialog();
-							return;
-						}
-
-						// If the elements created by the template require configuration of dimming curves then...
-						if (template.ConfigureDimming)
-						{
-							var question = new MessageBoxForm("Would you like to configure a dimming curve for this Prop?",
-								"Dimming Curve Setup", MessageBoxButtons.YesNo, SystemIcons.Question);
-							var response = question.ShowDialog(this);
-							if (response == DialogResult.OK)
-							{
-								DimmingCurveHelper dimmingHelper = new DimmingCurveHelper(true);
-								dimmingHelper.Perform(createdElements);
-							}
-						}
-
-						// If the elements created by the template require further configuration of a color property then...
-						if (template.ConfigureColor)
-						{
-							ColorSetupHelper helper = new ColorSetupHelper();
-							helper.SetColorType(ElementColorType.FullColor);
-							helper.Perform(createdElements);
-						}
-
-						elementTree.AddNodePathToTree(new[] { createdElements.First() });
-						OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Add));
-						UpdateFormWithNode();
-						UpdateScrollPosition();
-						
-						// Refresh the tree so that the delete logic below will be successful
-						elementTree.PopulateNodeTree();
-
-						// Loop over the nodes created by the template that are also
-						// part of a group.  Since the nodes are part of a group they
-						// don't need to exist as stand alone nodes and should be removed.
-						foreach (ElementNode node in template.GetElementsToDelete())
-						{
-							// Select the node
-							elementTree.SelectElementNode(node);
-
-							// Delete the tree node
-							foreach (TreeNode tn in elementTree.SelectedTreeNodes)
-							{
-								elementTree.DeleteNode(tn);
-							}							
-						}
-
-						// Refresh the tree
-						elementTree.PopulateNodeTree();
-					}
-				}
+							// Add the node to the tree
+							elementTree.AddNodePathToTree(new[] { node });
+							OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Add));
+							UpdateFormWithNode();
+							UpdateScrollPosition();
+						},
+					elementTree);				
 			}
 		}
 
