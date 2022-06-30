@@ -22,6 +22,7 @@ using Vixen.Sys.Output;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.OutputFilter.DimmingCurve;
 using VixenModules.Property.Color;
+using VixenModules.App.ElementTemplateHelper;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -135,36 +136,19 @@ namespace VixenModules.Preview.VixenPreview
 
 		internal async Task<bool> SetupTemplate(IElementTemplate template)
 		{
-			bool success = template.SetupTemplate(treeElements.SelectedElementNodes);
-			if (success)
-			{
-				IEnumerable<ElementNode> createdElements = await template.GenerateElements(treeElements.SelectedElementNodes);
-				if (createdElements == null || !createdElements.Any())
-				{
-					var messageBox =
-						new MessageBoxForm("Could not create elements.  Ensure you use a valid name and try again.", "",
-							MessageBoxButtons.OKCancel, SystemIcons.Error);
-					messageBox.ShowDialog();
-					return false;
-				}
+			// Create the element template helper
+			ElementTemplateHelper elementTemplateHelper = new ElementTemplateHelper();
 
-				var question = new MessageBoxForm("Would you like to configure a dimming curve for this Prop?", "Dimming Curve Setup", MessageBoxButtons.YesNo, SystemIcons.Question);
-				var response = question.ShowDialog(this);
-				if (response == DialogResult.OK)
-				{
-					DimmingCurveHelper dimmingHelper = new DimmingCurveHelper(true);
-					dimmingHelper.Perform(createdElements);
-				}
-				
-				ColorSetupHelper helper = new ColorSetupHelper();
-				helper.SetColorType(ElementColorType.FullColor);
-				helper.Perform(createdElements);
-
-				AddNodeToTree(createdElements.First());
-
-			}
-
-			return success;
+			// Process the template for the selected node(s)
+			IEnumerable<ElementNode> createdElements = await elementTemplateHelper.ProcessElementTemplate(
+				treeElements.SelectedElementNodes,
+				template,
+				this,
+				(node) => AddNodeToTree(node),
+				treeElements);
+			
+			// Return whether nodes were created
+			return (createdElements != null);
 		}
 
 		internal void AddNodeToTree(ElementNode node)
