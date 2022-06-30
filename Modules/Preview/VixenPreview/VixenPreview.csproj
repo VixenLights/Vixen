@@ -47,6 +47,10 @@
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
+    <ProjectReference Include="..\..\App\ElementTemplateHelper\ElementTemplateHelper.csproj">
+		<Private>false</Private>
+		<IncludeAssets>None</IncludeAssets>
+	</ProjectReference>
     <ProjectReference Include="..\..\PostFilter\DimmingCurve\DimmingCurve.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
