@@ -1,0 +1,139 @@
+﻿<catel:UserControl x:Class="VixenModules.Editor.FixturePropertyEditor.Views.FixturePropertyEditorView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
+        xmlns:catel="http://schemas.catelproject.com"
+	    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+	    xmlns:views="clr-namespace:VixenModules.Editor.FixturePropertyEditor.Views"	    
+	    xmlns:common="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
+        xmlns:local="clr-namespace:VixenModules.Editor.FixturePropertyEditor.Views"	
+        mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+                <ResourceDictionary Source="/DataGridThemes;component/ExpressionDark.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <common:InverseBooleanConverter x:Key="InverseBoolConverter" />
+            <common:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Background="#444444">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height = "Auto" />
+            <RowDefinition Height = "*" />
+            <RowDefinition Height = "50" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="10, 1, 5, 0">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height = "27" />
+                <RowDefinition Height = "25" />
+                <RowDefinition Height = "25" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="220"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="220"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Label Content="Profile:" Grid.Row="0" Grid.Column="0"></Label>
+            <TextBox x:Name="txtName" HorizontalAlignment="Stretch" Text="{Binding Path=Name, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" Margin="0,2,0,2">
+            </TextBox>
+
+            <Button Content="Load Fixture Profile"  
+                    HorizontalAlignment="Left"
+                    Command="{Binding Path=LoadSpecificationCommand}" 
+                    Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type views:FixturePropertyEditorView}}, Path=DisplayLoadButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                IsDefault="True" Style="{StaticResource RowButtonStyle}" Width="150" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" />
+
+            <Label Content="Manufacturer:" Grid.Row="1"></Label>
+            <TextBox HorizontalAlignment="Stretch" Text="{Binding Path=Manufacturer, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Margin="0,2,0,2"/>
+
+            <Label Content="Created By:" Grid.Row="2"></Label>
+            <TextBox HorizontalAlignment="Stretch" Text="{Binding Path=CreatedBy, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" Margin="0,2,0,2"/>
+
+            <Label Content="Revision:" Grid.Row="1" Grid.Column="2"></Label>
+            <TextBox HorizontalAlignment="Stretch" Text="{Binding Path=Revision, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="3" Margin="0,2,0,2"/>
+        </Grid>
+
+
+        <DockPanel Grid.Row="1">
+
+            <DataGrid Name="pointDataGrid" AutoGenerateColumns="False" ItemsSource="{Binding Items}" Margin="10,10,10,0" 
+				          RowHeaderWidth="0"   Background="#444444" CanUserAddRows="False"
+                 SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}" 
+                 EnableRowVirtualization="False" DockPanel.Dock = "Top" VerticalAlignment='Top'
+                  SelectionChanged="SelectionChanged"
+                   DataGridCell.GotFocus="DataGrid_CellGotFocus">
+
+                <DataGrid.Columns>
+
+                    <DataGridTemplateColumn  Header="Channel #" Width="70">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding ChannelNumber}"  IsReadOnly="True"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Name" Width="2*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}">
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn  Header="Function" Width="*" >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox ItemsSource="{Binding Functions}"                                   
+									SelectedItem="{Binding Path=Function, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=true}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <ComboBox ItemsSource="{Binding Functions}"                                     
+									SelectedItem="{Binding Path=Function, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=true}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="32">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Command="{Binding Path=EditFunctionsCommand}">
+                                    <Image Source="{Binding Path=EditFunctionsImageSource}"/>
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                </DataGrid.Columns>
+            </DataGrid>
+
+        </DockPanel>
+
+        <WrapPanel Margin="10,5,5,0" Grid.Row="2">
+            <Button Name="Add" Width="40" Height="40" Margin="0,2,2,0" Command="{Binding AddCommand}">
+                <Image Source="/Resources;component/Add.png"/>
+            </Button>
+            <Button Name="Remove" Width="40" Height="40" Margin="2,2,2,0" Command="{Binding DeleteCommand}">
+                <Image Source="/Resources;component/Delete.png"></Image>
+            </Button>
+        </WrapPanel>
+    </Grid>
+</catel:UserControl>
