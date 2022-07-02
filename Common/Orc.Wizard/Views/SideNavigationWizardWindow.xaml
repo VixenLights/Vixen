@@ -13,7 +13,6 @@
                   MinHeight="{Binding MinSize.Height, Mode=OneWay}"
                   MaxWidth="{Binding MaxSize.Width, Mode=OneWay}"
                   MaxHeight="{Binding MaxSize.Height, Mode=OneWay}"                  
-                  Height="600"
                   ShowInTaskbar="{Binding ElementName=layoutRoot, Path=DataContext.ShowInTaskbar, Mode=OneWay}"
                   x:Name="wizardWindow"
                   CanCloseUsingEscape="False"
