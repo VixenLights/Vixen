@@ -1,0 +1,83 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <RootNamespace>VixenModules.Property.Zoom</RootNamespace>
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyTitle>Zoom</AssemblyTitle>
+    <Product>Position</Product>
+	  <UseWindowsForms>true</UseWindowsForms>
+    <Copyright>Copyright ©  2021</Copyright>
+    <Platforms>x64;x86</Platforms>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>$(SolutionDir)\$(Configuration)\Modules\Property\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>$(SolutionDir)\Release64\Modules\Property\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <OutputPath>..\..\..\$(Configuration)\Modules\Property\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <OutputPath>..\..\..\Debug64\Modules\Property\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="IntelligentFixtureData - Copy.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\..\App\FixtureSpecificationManager\FixtureSpecificationManager.csproj">
+	  <Private>false</Private>	
+	  <IncludeAssets>None</IncludeAssets>
+	</ProjectReference>
+    <ProjectReference Include="..\..\App\Fixture\Fixture.csproj">
+      <Private>false</Private>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Editor\FixturePropertyEditor\FixturePropertyEditor.csproj">
+      <Private>false</Private>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Catel.MVVM" Version="5.12.10">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="NLog" Version="4.7.15">
+      <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="ZoomSetup.Designer.cs">
+      <DependentUpon>ZoomSetup.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+</Project>
