@@ -1,17 +1,17 @@
-﻿using Vixen.Commands;
+﻿using System.Collections.Generic;
+using Vixen.Commands;
 using Vixen.Data.Evaluator;
 using Vixen.Data.Flow;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Sys;
-using Vixen.Sys.LayerMixing;
 using VixenModules.OutputFilter.TaggedFilter.Outputs;
 
 namespace VixenModules.OutputFilter.ShutterFilter.Output
 {
 	/// <summary>
 	/// Shutter filter output.  This output contains special conversion logic for fixtures.
-	/// This output extract the intensity from color intents and creates open shutter commands.
+	/// This output detects color intents or color wheel intents and creates open shutter commands.
 	/// </summary>
 	public class ShutterFilterOutput : TaggedFilterOutputBase<Filter.ShutterFilter>
 	{
