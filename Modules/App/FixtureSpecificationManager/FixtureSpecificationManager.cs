@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
+using Vixen.Services;
 using VixenModules.App.Fixture;
 
 namespace VixenModules.App.FixtureSpecificationManager
@@ -85,26 +86,22 @@ namespace VixenModules.App.FixtureSpecificationManager
 
 			// Loop over all the fixture specification in the folder
 			foreach (FileInfo fileInfo in specificationFiles)
-			{
-				// Create an XML serializer for a fixture specification
-				XmlSerializer serializer = new XmlSerializer(typeof(FixtureSpecification));
-
-				// Create a file reader for the fixture specification
-				using (Stream reader = new FileStream(fileInfo.FullName, FileMode.Open))
+			{								
+				try
 				{
-					try
-					{
-						// Call the Deserialize method to load the fixture specification
-						FixtureSpecification fixture = (FixtureSpecification)serializer.Deserialize(reader);
-						FixtureSpecifications.Add(fixture);
-					}
-					catch (Exception e)
-					{
-						// If we encounter a malformed XML file just ignore it and log an error
-						Logger logging = LogManager.GetCurrentClassLogger();
-						logging.Error(e, fileInfo.FullName + "is malformed!");						
-					}				
+					// Call the Deserialize method to load the fixture specification
+					FixtureSpecification fixture = FixtureSpecificationService.Load<FixtureSpecification>(fileInfo.FullName);
+
+					//(FixtureSpecification)serializer.Deserialize(reader);
+					FixtureSpecifications.Add(fixture);
 				}
+				catch (Exception e)
+				{
+					// If we encounter a malformed XML file just ignore it and log an error
+					Logger logging = LogManager.GetCurrentClassLogger();
+					logging.Error(e, fileInfo.FullName + "is malformed!");						
+				}							
+			}
 			}
 
 			//
