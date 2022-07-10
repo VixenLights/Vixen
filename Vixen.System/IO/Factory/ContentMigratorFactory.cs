@@ -58,5 +58,10 @@ namespace Vixen.IO.Factory
 			}
 			return sequenceTypeModule.CreateMigrator();
 		}
+
+		public IContentMigrator CreateFixtureSpecificationContentMigrator()
+		{
+			return new FixtureSpecificationXElementMigrator();
+		}
 	}
 }
