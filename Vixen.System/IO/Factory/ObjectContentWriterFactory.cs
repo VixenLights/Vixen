@@ -55,5 +55,10 @@ namespace Vixen.IO.Factory
 		{
 			return new SequenceCacheBinaryWriter();
 		}
+
+		public IObjectContentWriter CreateFixtureSpecificationContentWriter<T>(string filePath)
+		{
+			return new FixtureSpecificationXElementWriter<T>(filePath);
+		}		
 	}
 }
