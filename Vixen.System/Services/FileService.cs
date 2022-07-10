@@ -147,5 +147,12 @@ namespace Vixen.Services
 
 			return filePath;
 		}
+
+		public T LoadFixtureSpecification<T>(string filePath) where T : class, new()
+		{
+			IObjectLoader<T> loader = LoaderFactory.Instance.CreateFixtureSpecificationLoader<T>();
+
+			return loader.LoadFromFile(filePath);
+		}
 	}
 }
