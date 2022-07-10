@@ -102,7 +102,7 @@ namespace VixenModules.App.FixtureSpecificationManager
 					logging.Error(e, fileInfo.FullName + "is malformed!");						
 				}							
 			}
-			}
+		
 
 			//
 			// This commented out code is used to support development and testing of the intelligent fixtures.
