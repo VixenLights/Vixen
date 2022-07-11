@@ -3,14 +3,13 @@ using Vixen.Data.Evaluator;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Sys;
-using VixenModules.OutputFilter.TaggedFilter.Filters;
 
 namespace VixenModules.OutputFilter.ShutterFilter.Filter
 {
-    /// <summary>
-    /// Filter that converts color intents into open shutter commands.
-    /// </summary>
-    public class ShutterFilter : TaggedFilter.Filters.TaggedFilter
+	/// <summary>
+	/// Filter that converts color intents into open shutter commands.
+	/// </summary>
+	public class ShutterFilter : TaggedFilter.Filters.TaggedFilter
 	{
 		#region Public Properties
 
@@ -53,6 +52,31 @@ namespace VixenModules.OutputFilter.ShutterFilter.Filter
 		{
 			// Handle the lighting color value
 			IntentValue = HandleIntent();
+		}
+
+		/// <summary>
+		/// Refer to base class documentation.
+		/// </summary>
+		/// <param name="intent">Intent to handle</param>
+		public override void Handle(IIntentState<CommandValue> intent)
+		{			
+			// Test to see if the intent is a tagged intent
+			Named8BitCommand<FixtureIndexType> taggedCommand = intent.GetValue().Command as Named8BitCommand<FixtureIndexType>;
+
+			// If the intent is a tagged command and
+			// the tag is a color wheel then...
+			if (taggedCommand != null &&
+				taggedCommand.IndexType == FixtureIndexType.ColorWheel)
+			{
+				// Save off the intent which indicates to the caller that the output associated with this filter handles this type of intent.
+				// When spinning the color wheel the shutter is automatically opened
+				IntentValue = HandleIntent();
+			}
+			else
+			{
+				// Otherwise call the base class
+				base.Handle(intent);
+			}
 		}
 
 		#endregion
