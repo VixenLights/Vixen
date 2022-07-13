@@ -56,7 +56,7 @@ namespace VixenModules.App.ElementTemplateHelper
 						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)						
 						var messageBox = new MessageBoxForm("Could not create elements.  Ensure you use a valid name and try again.", "",
 							MessageBoxButtons.OKCancel, SystemIcons.Error);
-						messageBox.ShowDialog();
+						messageBox.ShowDialog(owner);
 						
 						// Indicate to the caller that nodes were NOT created
 						return null;
@@ -92,7 +92,8 @@ namespace VixenModules.App.ElementTemplateHelper
 				// Indicate to the caller that no nodes were created
 				createdElements = null;
 			}
-			else
+			// createdElements being null is another indicator that the element template was cancelled
+			else if (createdElements != null)
 			{
 				// Call the delegate to add the node to the tree
 				addToTree(createdElements.First());
