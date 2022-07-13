@@ -5,7 +5,7 @@ namespace VixenModules.Effect.Wave
 	/// <summary>
 	/// Maintains a collection of IWaveform objects.
 	/// </summary>
-	public class WaveFormCollection : ExpandoObjectObservableCollection<IWaveform>
+	public class WaveFormCollection : MarkCollectionExpandoObjectCollection<IWaveform, Waveform>
 	{
 		#region Constructor
 
