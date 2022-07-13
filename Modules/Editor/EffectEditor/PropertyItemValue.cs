@@ -47,6 +47,9 @@ namespace VixenModules.Editor.EffectEditor
 		private readonly ObservableCollection<CollectionItemValue> _collectionItemValues = new ObservableCollection<CollectionItemValue>();
 		private IList _collectionValues;
 		private Type _collectionItemType = null;
+		
+		// Default to the collection always requiring at least one item
+		private int _minimumNumberOfItems = 1;
 
 		#region ctor
 
@@ -95,11 +98,14 @@ namespace VixenModules.Editor.EffectEditor
 		{
 			_collectionValues = _property.GetValue() as IList;
 
-			// If the collection implements the IDiscoverCollectionItemType interface then...
-			if (_collectionValues is IDiscoverCollectionItemType)
+			// If the collection implements the IExpandoObjectCollection interface then...
+			if (_collectionValues is IExpandoObjectCollection)
 			{
 				// Retrieve the concrete type of the objects contained in the collection
-				_collectionItemType = ((IDiscoverCollectionItemType)_collectionValues).GetItemType();	
+				_collectionItemType = ((IExpandoObjectCollection)_collectionValues).GetItemType();
+
+				// Retrieve the minimum number of items allowed in the collection
+				_minimumNumberOfItems = ((IExpandoObjectCollection)_collectionValues).GetMinimumItemCount();
 			}
 
 			CleanUpCollectionValues();
@@ -175,10 +181,8 @@ namespace VixenModules.Editor.EffectEditor
 
 		public bool CanRemove()
 		{
-			// Only allow deletes if there is more than one item in the collection or
-			// the collection knows the type of items in the collection
-			return _collectionItemValues.Count > 1 || 
-				_collectionItemType != null;
+			// Prevent the remove operation if the collection already has the minimum number of items
+			return _collectionItemValues.Count > _minimumNumberOfItems;								
 		}
 
 		public void RemoveItemFromCollection(int index)
