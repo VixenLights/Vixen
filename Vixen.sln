@@ -1823,5 +1823,5 @@ Global
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Everything.vsmdi
-	EndGlobalSection
+	EndGlobalSection 
 EndGlobal
