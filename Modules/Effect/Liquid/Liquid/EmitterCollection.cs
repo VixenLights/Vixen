@@ -10,7 +10,7 @@ namespace Liquid
     /// <summary>
     /// Maintains the collection of emitters.
     /// </summary>	
-	public class EmitterCollection : NotifyPropertyObservableCollection<IEmitter>
+	public class EmitterCollection : MarkCollectionExpandoObjectCollection<IEmitter, Emitter>
 	{
 		#region Constructor 
 
@@ -24,30 +24,7 @@ namespace Liquid
 		#endregion
 
 		#region Public Properties
-
-		private BaseEffect _parent;
-
-        /// <summary>
-        /// Parent Liquid effect.
-        /// </summary>
-		public BaseEffect Parent
-		{
-			get
-			{
-				return _parent;
-			}
-			set
-			{
-				_parent = value;
-
-				// Give each of the emitters a reference to the parent effect
-				foreach (IEmitter emitter in this)
-				{					
-					emitter.Parent = Parent;
-				}
-			}
-		}
-
+	
 		private ObservableCollection<string> _markNameCollection;
 		
         /// <summary>
@@ -71,48 +48,13 @@ namespace Liquid
 			}
 		}
 
-		private ObservableCollection<IMarkCollection> _markCollections;
-
-        /// <summary>
-        /// IMarkCollection collection.
-        /// </summary>
-		public ObservableCollection<IMarkCollection> MarkCollections
-		{
-			get
-			{
-				return _markCollections;
-			}
-			set
-			{
-				_markCollections = value;
-
-                // Give each emitter the IMarkCollection collection
-				foreach (IEmitter emitter in this)
-				{
-					emitter.MarkCollections = value;
-				}
-			}
-		}
-
 		#endregion
-
-		#region Public Methods
-
-	    /// <summary>
-        /// Updates the selected mark collection names on the emitters.
-        /// This method helps handle when a IMarkCollection name is changed.
-        /// </summary>
-		public void UpdateSelectedMarkCollectionNames()
-		{
-			foreach (IEmitter emitter in this)
-			{
-				emitter.UpdateSelectedMarkCollectionName();
-			}           
-		}
-
-		#endregion
-
+		
 		#region Protected Methods
+
+		/// <summary>
+		/// Refer to base class documentation.
+		/// </summary>		
 		protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e) 
 		{
 			// Call the base class implementation
