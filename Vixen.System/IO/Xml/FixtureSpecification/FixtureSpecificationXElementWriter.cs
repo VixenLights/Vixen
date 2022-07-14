@@ -11,6 +11,7 @@ namespace Vixen.IO.Xml.Sequence
 	/// </summary>
 	/// <typeparam name="T">Type of the FixtureSpecification</typeparam>
 	internal class FixtureSpecificationXElementWriter<T> : IObjectContentWriter
+		where T : IDataModel
 	{			
 		#region Constructor
 
@@ -41,7 +42,7 @@ namespace Vixen.IO.Xml.Sequence
 		{
 			// Cast the arguments to their strong typed equivalents
 			XElement xmlContent = content as XElement;
-			IDeepCopy fixtureSpecification = obj as IDeepCopy;
+			IDataModel fixtureSpecification = obj as IDataModel;
 
 			// Type check / error check the input arguments
 			if (xmlContent == null)
@@ -50,11 +51,11 @@ namespace Vixen.IO.Xml.Sequence
 			}
 			if (fixtureSpecification == null)
 			{
-				throw new InvalidOperationException("Object must be an IDeepCopy.");
+				throw new InvalidOperationException("Object must be an IDataModel.");
 			}
 
 			// Copy the XML contents into the fixture specification
-			fixtureSpecification.Copy(ConvertXElementToFixtureSpecification(xmlContent));			
+			fixtureSpecification.CopyInto(ConvertXElementToFixtureSpecification(xmlContent));			
 		}
 
 		/// <summary>
