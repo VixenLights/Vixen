@@ -21,6 +21,6 @@ namespace Vixen.Services
 		ISequenceCache LoadSequenceCacheFile(string filePath);
 		void SaveSequenceFile(ISequence sequence, string filePath);
 		void SaveSequenceCacheFile(ISequenceCache sequence, string filePath);
-		T LoadFixtureSpecification<T>(string filePath) where T : class, new();
+		T LoadFixtureSpecification<T>(string filePath) where T : class, IDataModel, new();
 	}
 }
