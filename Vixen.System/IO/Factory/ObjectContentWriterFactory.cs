@@ -5,6 +5,7 @@ using Vixen.IO.Xml.Program;
 using Vixen.IO.Xml.Sequence;
 using Vixen.IO.Xml.SystemConfig;
 using Vixen.IO.Xml.SystemContext;
+using Vixen.Sys;
 
 namespace Vixen.IO.Factory
 {
@@ -56,7 +57,7 @@ namespace Vixen.IO.Factory
 			return new SequenceCacheBinaryWriter();
 		}
 
-		public IObjectContentWriter CreateFixtureSpecificationContentWriter<T>(string filePath)
+		public IObjectContentWriter CreateFixtureSpecificationContentWriter<T>(string filePath) where T : IDataModel
 		{
 			return new FixtureSpecificationXElementWriter<T>(filePath);
 		}		
