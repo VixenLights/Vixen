@@ -12,7 +12,7 @@ namespace VixenModules.App.Fixture
 	/// Maintains meta-data (channels and functions) of an intelligent fixture.
 	/// </summary>
     [DataContract]
-	public class FixtureSpecification : IDeepCopy 
+	public class FixtureSpecification : IDataModel 
 	{
         #region Constructor
 
@@ -137,32 +137,10 @@ namespace VixenModules.App.Fixture
 			// Create a new fixture specification
 			FixtureSpecification clone = new FixtureSpecification();
 
-			// Clone the name of the fixture
-			clone.Name = Name;
+			// Copy this object's state into the clone
+			clone.CopyInto(this);
 
-			// Copy the manufacturer
-			clone.Manufacturer = Manufacturer;
-
-			// Copy the name of the user that created the fixture profile
-			clone.CreatedBy = CreatedBy;
-
-			// Copy the revision information 
-			clone.Revision = Revision;
-			
-			// Loop over the channel definitions
-			foreach (FixtureChannel channel in ChannelDefinitions)
-			{
-				// Clone the channel definition
-				clone.ChannelDefinitions.Add(channel.CreateInstanceForClone());
-			}
-
-			// Loop over the function definitions
-			foreach (FixtureFunction function in FunctionDefinitions)
-			{
-				// Clone the function definition
-				clone.FunctionDefinitions.Add(function.CreateInstanceForClone());
-			}
-
+			// Return the cloned object
 			return clone;
 		}
 
@@ -464,12 +442,12 @@ namespace VixenModules.App.Fixture
 
 		#endregion
 
-		#region IDeepCopy
+		#region IDataModel
 
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>		
-		public void Copy(object source)
+		public void CopyInto(IDataModel source)
 		{
 			// Get FixtureSpecification reference to the source object
 			FixtureSpecification src = (FixtureSpecification)source;
