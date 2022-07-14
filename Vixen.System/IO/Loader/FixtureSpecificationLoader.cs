@@ -1,4 +1,5 @@
 ﻿using Vixen.IO.Factory;
+using Vixen.Sys;
 
 namespace Vixen.IO.Loader
 {
@@ -6,7 +7,7 @@ namespace Vixen.IO.Loader
 	/// Maintains a Fixture Specification loader.
 	/// </summary>
 	/// <typeparam name="T">Type of the FixtureSpecification</typeparam>
-	public class FixtureSpecificationLoader<T> : IObjectLoader<T> where T : class, new()
+	public class FixtureSpecificationLoader<T> : IObjectLoader<T> where T : class, IDataModel, new()
 	{
 		#region IObjectLoader<T>
 
