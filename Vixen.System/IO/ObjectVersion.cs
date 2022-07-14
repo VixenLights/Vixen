@@ -7,5 +7,6 @@
 		public static int SystemContext = 1;
 		public static int Program = 1;
 		public static int ElementNodeTemplate = 1;
+		public static int FixtureSpecification = 1;
 	}
 }

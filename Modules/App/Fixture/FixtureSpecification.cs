@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 using Vixen.Data.Value;
+using Vixen.Sys;
 
 namespace VixenModules.App.Fixture
 {
@@ -10,7 +12,7 @@ namespace VixenModules.App.Fixture
 	/// Maintains meta-data (channels and functions) of an intelligent fixture.
 	/// </summary>
     [DataContract]
-	public class FixtureSpecification 
+	public class FixtureSpecification : IDataModel 
 	{
         #region Constructor
 
@@ -30,11 +32,21 @@ namespace VixenModules.App.Fixture
 
 			// Default the revision to 1.0
 			Revision = "1.0";
+
+			// Set the schema version
+			// This version value is also located in <c>ObjectVersion</c> class
+			version = "1";
 		}
 
 		#endregion
 
 		#region Public Properties
+
+		/// <summary>
+		/// Version of the FixtureSpecification schema.
+		/// </summary>		
+		[DataMember, XmlAttribute]
+		public string version { get; set; } 
 
 		/// <summary>
 		/// Name of the fixture.
@@ -125,32 +137,10 @@ namespace VixenModules.App.Fixture
 			// Create a new fixture specification
 			FixtureSpecification clone = new FixtureSpecification();
 
-			// Clone the name of the fixture
-			clone.Name = Name;
+			// Copy this object's state into the clone
+			clone.CopyInto(this);
 
-			// Copy the manufacturer
-			clone.Manufacturer = Manufacturer;
-
-			// Copy the name of the user that created the fixture profile
-			clone.CreatedBy = CreatedBy;
-
-			// Copy the revision information 
-			clone.Revision = Revision;
-			
-			// Loop over the channel definitions
-			foreach (FixtureChannel channel in ChannelDefinitions)
-			{
-				// Clone the channel definition
-				clone.ChannelDefinitions.Add(channel.CreateInstanceForClone());
-			}
-
-			// Loop over the function definitions
-			foreach (FixtureFunction function in FunctionDefinitions)
-			{
-				// Clone the function definition
-				clone.FunctionDefinitions.Add(function.CreateInstanceForClone());
-			}
-
+			// Return the cloned object
 			return clone;
 		}
 
@@ -448,6 +438,45 @@ namespace VixenModules.App.Fixture
 			return FunctionDefinitions.SingleOrDefault(
 				function => (function.FunctionIdentity == functionIdentity &&
 				function.Name == functionName));
+		}
+
+		#endregion
+
+		#region IDataModel
+
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>		
+		public void CopyInto(IDataModel source)
+		{
+			// Get FixtureSpecification reference to the source object
+			FixtureSpecification src = (FixtureSpecification)source;
+			
+			// Copy the name of the fixture
+			Name = src.Name;
+
+			// Copy the manufacturer
+			Manufacturer = src.Manufacturer;
+
+			// Copy the name of the user that created the fixture profile
+			CreatedBy = src.CreatedBy;
+
+			// Copy the revision information 
+			Revision = src.Revision;
+
+			// Loop over the channel definitions
+			foreach (FixtureChannel channel in src.ChannelDefinitions)
+			{
+				// Clone the channel definition
+				ChannelDefinitions.Add(channel.CreateInstanceForClone());
+			}
+
+			// Loop over the function definitions
+			foreach (FixtureFunction function in src.FunctionDefinitions)
+			{
+				// Clone the function definition
+				FunctionDefinitions.Add(function.CreateInstanceForClone());
+			}		
 		}
 
 		#endregion
