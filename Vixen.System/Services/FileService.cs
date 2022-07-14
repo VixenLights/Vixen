@@ -148,7 +148,7 @@ namespace Vixen.Services
 			return filePath;
 		}
 
-		public T LoadFixtureSpecification<T>(string filePath) where T : class, new()
+		public T LoadFixtureSpecification<T>(string filePath) where T : class, IDataModel, new()
 		{
 			IObjectLoader<T> loader = LoaderFactory.Instance.CreateFixtureSpecificationLoader<T>();
 
