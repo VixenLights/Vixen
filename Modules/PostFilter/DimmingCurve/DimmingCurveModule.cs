@@ -283,6 +283,29 @@ namespace VixenModules.OutputFilter.DimmingCurve
 				_intentValue = new StaticIntentState<IntensityValue>(new IntensityValue(newIntensity));
 			}
 		}
+
+		public override void Handle(IIntentState<RangeValue<FunctionIdentity>> obj)
+		{
+			// If the tagged intent is a dimming intent then...
+			if (obj.GetValue().TagType == FunctionIdentity.Dim)
+			{
+				// Retrieve the intensity value (0 - 1)
+				double intensity = obj.GetValue().Value;		
+				
+				// Use the intensity to sample the curve to get a new intensity
+				// Converting the (0-1) to (0-100) first
+				double newIntensity = _curve.GetValue(intensity * 100.0) / 100.0;
+				
+				// Create a new Dim intent with value from the curve
+				_intentValue = new StaticIntentState<RangeValue<FunctionIdentity>>(
+					new RangeValue<FunctionIdentity>(FunctionIdentity.Dim, obj.GetValue().Tag, newIntensity));
+			}
+			else
+			{
+				// Indicate the tagged function is NOT supported
+				_intentValue = null;
+			}
+		}
 	}
 
 
