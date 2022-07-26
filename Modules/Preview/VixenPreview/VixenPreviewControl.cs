@@ -1388,7 +1388,7 @@ namespace VixenModules.Preview.VixenPreview
 					template = ApplicationServices.GetElementTemplate("Megatree");
 					break;
 				case Tools.PixelGrid:
-					template = ApplicationServices.GetElementTemplate("Pixel Grid");
+					template = ApplicationServices.GetElementTemplate("Pixel Grid / Matrix");
 					break;
 				case Tools.Icicle:
 					template = ApplicationServices.GetElementTemplate("Icicles");
