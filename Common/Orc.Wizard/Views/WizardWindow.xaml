@@ -185,6 +185,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Button 
+				Style="{Binding Style}"
                                 Width="100"
                                 Margin="10,10,10,10"
                                 Command="{Binding Command}" 
