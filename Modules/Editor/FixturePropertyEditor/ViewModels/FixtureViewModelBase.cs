@@ -130,7 +130,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>		
-		public string GetValidationResults()
+		public virtual string GetValidationResults()
 		{
 			// Return the validation results
 			return CanSaveValidationResults;
