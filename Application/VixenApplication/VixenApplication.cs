@@ -1,36 +1,29 @@
-﻿using System;
+﻿using Catel.IoC;
+using Common.Controls;
+using Common.Controls.Scaling;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
+using Newtonsoft.Json.Linq;
+using NLog;
+using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Text;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Windows.Forms;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
-using System.Net;
+using System.Linq;
 using System.Net.Http;
-using System.Xml;
-using System.Xml.Serialization;
 using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Documents;
-using Catel.IoC;
+using System.Windows.Forms;
 using Vixen.Module.Editor;
 using Vixen.Module.SequenceType;
 using Vixen.Services;
 using Vixen.Sys;
-using NLog;
-using Common.Resources.Properties;
-using Common.Controls;
-using Common.Controls.Scaling;
-using Common.Controls.Theme;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using NLog.Targets;
-using Vixen.Module.App;
 using Application = System.Windows.Forms.Application;
+using Color = System.Drawing.Color;
+using Pen = System.Drawing.Pen;
 using Point = System.Drawing.Point;
 using SystemFonts = System.Drawing.SystemFonts;
 using Timer = System.Windows.Forms.Timer;
@@ -80,9 +73,16 @@ namespace VixenApplication
             //Load up the common WPF them file for our WPF application parts.
             ResourceDictionary dict = new ResourceDictionary
 		    {
-		        Source = new Uri("/WPFCommon;component/Theme/Theme.xaml", UriKind.Relative)
+		        Source = new Uri("/WPFCommon;component/Theme/Theme.xaml", UriKind.Relative),
 		    };
 
+			// This resource dictionary is required by the Orc Wizard library
+            ResourceDictionary dictOrc = new ResourceDictionary
+            {
+	            Source = new Uri("/Orc.Wizard;component/themes/generic.xaml", UriKind.Relative)
+            };
+
+			WPFApplication.Current.Resources.MergedDictionaries.Add(dictOrc);
 			WPFApplication.Current.Resources.MergedDictionaries.Add(dict);
 
             //End WPF init

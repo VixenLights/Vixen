@@ -5,21 +5,18 @@
         <ResourceDictionary Source="/Orc.Theming;component/themes/generic.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-
-    <!--
     <Style x:Key="WizardNavigationButtonStyle"
            TargetType="{x:Type Button}"
            BasedOn="{StaticResource DataWindowButtonStyle}">
         
     </Style>
-    -->
 
-    <!--<Style x:Key="WizardNavigationPrimaryButtonStyle" -->
-           <!-- TargetType="{x:Type Button}" -->
-           <!-- BasedOn="{StaticResource DataWindowButtonStyle}"> -->
+    <Style x:Key="WizardNavigationPrimaryButtonStyle"
+           TargetType="{x:Type Button}"
+           BasedOn="{StaticResource DataWindowButtonStyle}">
         <!-- Keep empty since it will impact too many wizards if we make this change, only kept here to make it easy to test -->
         <!--<Setter Property="Background"
                 Value="{DynamicResource AccentColorBrush}" />-->
-    <!--</Style> -->
+    </Style>
 
 </ResourceDictionary>

@@ -19,7 +19,6 @@
                   Background="{DynamicResource Orc.Brushes.GrayBrush10}">
 
 
-    <catel:InfoBarMessageControl  Style="{DynamicResource yourCustomStyleKey}">
         <Grid x:Name="layoutRoot" >
         <!-- Wizard content -->
         <Grid Background="{DynamicResource White}">
@@ -196,13 +195,12 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                    <WrapPanel Grid.Column="0">
-                        <!--Style="{DynamicResource DataWindowButtonContainerStyle}" -->                           
+                <WrapPanel Grid.Column="0" 
+	                       Style="{DynamicResource DataWindowButtonContainerStyle}">
                     <Button x:Name="PART_HelpButton"
                             Command="{Binding ShowHelp}" 
-                            Content="{catel:LanguageBinding Wizard_Help}"         
-                            Margin="10, 0, 0, 0"
-                            MinWidth="100"
+                            Content="{catel:LanguageBinding Wizard_Help}"
+                            Style="{DynamicResource WizardNavigationButtonStyle}" 
                             Visibility="{Binding IsHelpVisible, Converter={catel:BooleanToCollapsingVisibilityConverter}}" />
                 </WrapPanel>
 
@@ -219,11 +217,9 @@
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-								<!-- Style="{Binding Style}" -->
-								<Button Command="{Binding Command}" 
-                                 Width="100"
-                                Margin="10,10,10,10"
-                                Content="{Binding Content}"                                 
+                            <Button Command="{Binding Command}" 
+                                Content="{Binding Content}" 
+                                Style="{Binding Style}" 
                                 Visibility="{Binding IsVisible, Converter={catel:BooleanToCollapsingVisibilityConverter}}" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -233,5 +229,4 @@
 
         <Grid x:Name="FullScreenContent" Margin="-8" />
     </Grid>
-    </catel:InfoBarMessageControl>
 </catel:DataWindow>
