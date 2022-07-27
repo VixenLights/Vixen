@@ -17,6 +17,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using Orchestra;
 using Vixen.Module.Editor;
 using Vixen.Module.SequenceType;
 using Vixen.Services;
@@ -85,7 +86,10 @@ namespace VixenApplication
 			WPFApplication.Current.Resources.MergedDictionaries.Add(dictOrc);
 			WPFApplication.Current.Resources.MergedDictionaries.Add(dict);
 
-            //End WPF init
+			// Applies Orc Theme; This call makes the InfoBarMessageControl header bar readable in a dark theme
+			WPFApplication.Current.ApplyTheme();
+
+			//End WPF init
 
 			listViewRecentSequences.Items.Clear();
             labelVersion.Font = new Font("Segoe UI", 14);
