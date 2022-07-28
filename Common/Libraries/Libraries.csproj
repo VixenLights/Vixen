@@ -128,7 +128,6 @@
     <PackageReference Include="CSCore" Version="1.2.1.2" />
     <PackageReference Include="DockPanelSuite" Version="3.1.0" />
     <PackageReference Include="DockPanelSuite.ThemeVS2015" Version="3.1.0" />
-    <PackageReference Include="Fody" Version="6.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets></IncludeAssets>
     </PackageReference>
@@ -146,7 +145,6 @@
     <PackageReference Include="Microsoft.Owin.Hosting" Version="4.2.0" />
     <PackageReference Include="Microsoft.Owin.Security" Version="4.2.0" />
     <PackageReference Include="Microsoft.Owin.StaticFiles" Version="4.2.0" />
-    <PackageReference Include="ModuleInit.Fody" Version="2.1.1" />
     <PackageReference Include="Mono.Security" Version="5.4.0.201" />
     <PackageReference Include="NCalc2" Version="2.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
