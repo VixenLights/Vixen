@@ -55,6 +55,12 @@
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
+    <ProjectReference Include="..\..\Common\Orc.Wizard\Orc.Wizard.csproj">
+	    <Private>false</Private>
+	    <IncludeAssets>None</IncludeAssets>
+	    <CopyLocal>False</CopyLocal>
+	    <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
     <ProjectReference Include="..\..\Common\Resources\Resources.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
