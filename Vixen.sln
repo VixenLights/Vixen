@@ -494,6 +494,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntelligentFixture", "Modul
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElementTemplateHelper", "Modules\App\ElementTemplateHelper\ElementTemplateHelper.csproj", "{C85276A7-06A9-41A1-8587-1B9FD49CF659}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orc.Wizard", "Common\Orc.Wizard\Orc.Wizard.csproj", "{D2C063FF-10CA-4CEE-A750-0E59A65D406B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -1651,6 +1653,14 @@ Global
 		{C85276A7-06A9-41A1-8587-1B9FD49CF659}.Release|x64.Build.0 = Release|x64
 		{C85276A7-06A9-41A1-8587-1B9FD49CF659}.Release|x86.ActiveCfg = Release|x86
 		{C85276A7-06A9-41A1-8587-1B9FD49CF659}.Release|x86.Build.0 = Release|x86
+		{D2C063FF-10CA-4CEE-A750-0E59A65D406B}.Debug|x64.ActiveCfg = Debug|x64
+		{D2C063FF-10CA-4CEE-A750-0E59A65D406B}.Debug|x64.Build.0 = Debug|x64
+		{D2C063FF-10CA-4CEE-A750-0E59A65D406B}.Debug|x86.ActiveCfg = Debug|x86
+		{D2C063FF-10CA-4CEE-A750-0E59A65D406B}.Debug|x86.Build.0 = Debug|x86
+		{D2C063FF-10CA-4CEE-A750-0E59A65D406B}.Release|x64.ActiveCfg = Release|x64
+		{D2C063FF-10CA-4CEE-A750-0E59A65D406B}.Release|x64.Build.0 = Release|x64
+		{D2C063FF-10CA-4CEE-A750-0E59A65D406B}.Release|x86.ActiveCfg = Release|x86
+		{D2C063FF-10CA-4CEE-A750-0E59A65D406B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1828,6 +1838,7 @@ Global
 		{92D232E6-AECD-4D17-955D-B920E4112082} = {E28B32DB-012C-4B34-A515-0D4D4E8FD7F9}
 		{DF5FAA81-D702-4A97-AEB7-0229598F40D4} = {30A09AE0-71AC-4A08-B17A-8D82319068A7}
 		{C85276A7-06A9-41A1-8587-1B9FD49CF659} = {E301917B-FF08-4275-A4E0-830E2BEC0635}
+		{D2C063FF-10CA-4CEE-A750-0E59A65D406B} = {25A1ED22-180F-4B61-84FC-55790AA11254}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {09F55EB1-2643-454B-A1C2-8A326FFA78E6}
