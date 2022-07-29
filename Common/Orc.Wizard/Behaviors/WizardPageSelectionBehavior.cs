@@ -48,12 +48,12 @@ namespace Orc.Wizard
         private static void OnWizardChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var behavior = d as WizardPageSelectionBehavior;
-            if (behavior is not null)
+            if (behavior != null)
             {
                 behavior.UpdatePage();
 
                 var oldWizard = e.OldValue as IWizard;
-                if (oldWizard is not null)
+                if (oldWizard != null)
                 {
                     oldWizard.CurrentPageChanged -= behavior.OnCurrentPageChanged;
                     oldWizard.MovedBack -= behavior.OnMovedBack;
@@ -61,7 +61,7 @@ namespace Orc.Wizard
                 }
 
                 var wizard = e.NewValue as IWizard;
-                if (wizard is not null)
+                if (wizard != null)
                 {
                     wizard.CurrentPageChanged += behavior.OnCurrentPageChanged;
                     wizard.MovedBack += behavior.OnMovedBack;
@@ -125,7 +125,7 @@ namespace Orc.Wizard
             }
 
             var lastPage = _lastPage;
-            if (lastPage is not null)
+            if (lastPage != null)
             {
                 if (ReferenceEquals(lastPage, wizard.CurrentPage))
                 {
@@ -217,7 +217,7 @@ namespace Orc.Wizard
             }
 
             var scrollViewer = _scrollViewer;
-            if (scrollViewer is not null &&
+                if (scrollViewer != null &&
                 (Wizard?.RestoreScrollPositionPerPage ?? true))
             {
                 scrollViewer.ScrollToVerticalOffset(verticalScrollViewerOffset);
