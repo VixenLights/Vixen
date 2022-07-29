@@ -19,7 +19,7 @@ namespace Orc.Wizard.Converters
         static IsSelectedToBrushConverter()
         {
             var application = System.Windows.Application.Current;
-            if (application is not null)
+            if (application != null)
             {
                 SelectedBrush = application.FindResource(ThemingKeys.AccentColorBrush) as Brush;
                 NotSelectedBrush = application.FindResource(ThemingKeys.AccentColorBrush40) as Brush;

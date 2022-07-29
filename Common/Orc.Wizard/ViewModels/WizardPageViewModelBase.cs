@@ -73,7 +73,7 @@
         public async Task QuickNavigateToPageExecuteAsync(IWizardPage parameter)
         {
             var page = parameter;
-            if (page is not null && page.IsVisited && Wizard.Pages is System.Collections.Generic.List<IWizardPage>)
+            if (page != null && page.IsVisited && Wizard.Pages is System.Collections.Generic.List<IWizardPage>)
             {
                 var list = Wizard.Pages.ToList();
                 var index = list.IndexOf(page);
