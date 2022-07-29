@@ -30,7 +30,7 @@ namespace Orc.Wizard
         private static void OnSmoothProgressChanged(DependencyObject target, DependencyPropertyChangedEventArgs e)
         {
             var progressBar = target as ProgressBar;
-            if (progressBar is not null)
+            if (progressBar != null)
             {
                 progressBar.SetCurrentValue(RangeBase.ValueProperty, (double) e.NewValue);
             }

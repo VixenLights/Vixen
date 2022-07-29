@@ -19,7 +19,7 @@ namespace Orc.Wizard.Converters
         static IsSelectedToForegroundBrushConverter()
         {
             var application = System.Windows.Application.Current;
-            if (application is not null)
+            if (application != null)
             {
                 SelectedBrush = Brushes.Black;
                 NotSelectedBrush = Brushes.DimGray;
