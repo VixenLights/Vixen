@@ -26,7 +26,7 @@ namespace Orc.Wizard
 
             IWizard wizard = null;
 
-            if (model is not null)
+            if (model != null)
             {
                 Log.Debug("Creating wizard '{0}' with model '{1}'", typeof(TWizard).GetSafeFullName(false), ObjectToStringHelper.ToFullTypeString(model));
 

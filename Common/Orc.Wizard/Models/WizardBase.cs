@@ -220,10 +220,10 @@ namespace Orc.Wizard
 
         public virtual IValidationContext GetValidationContext(IWizardPage wizardPage, bool validate = true)
         {
-            if (wizardPage is not null)
+            if (wizardPage != null)
             {
                 var vm = wizardPage.ViewModel;
-                if (vm is not null)
+                if (vm != null)
                 {
                     if (validate)
                     {
@@ -265,10 +265,10 @@ namespace Orc.Wizard
             // Note: keep *after* the RaiseMovingForward. This allows any vm to handle events and 
             // correctly unsubscribe in the CloseAsync method
             var currentPage = _currentPage;
-            if (currentPage is not null)
+            if (currentPage != null)
             {
                 var viewModel = currentPage.ViewModel;
-                if (viewModel is not null)
+                if (viewModel != null)
                 {
                     var result = await viewModel.SaveAndCloseViewModelAsync();
                     if (!result)
@@ -363,10 +363,10 @@ namespace Orc.Wizard
             }
 
             var currentPage = _currentPage;
-            if (currentPage is not null)
+            if (currentPage != null)
             {
                 var vm = currentPage.ViewModel;
-                if (vm is not null)
+                if (vm != null)
                 {
                     var result = await vm.SaveAndCloseViewModelAsync();
                     if (!result)
@@ -449,24 +449,24 @@ namespace Orc.Wizard
             Log.Debug("Setting current page index to '{0}'", newIndex);
 
             var currentPage = _currentPage;
-            if (currentPage is not null)
+            if (currentPage != null)
             {
                 currentPage.ViewModelChanged -= OnPageViewModelChanged;
 
                 var vm = currentPage.ViewModel;
-                if (vm is not null)
+                if (vm != null)
                 {
                     vm.PropertyChanged -= OnPageViewModelPropertyChanged;
                 }
             }
 
             var newPage = _pages[newIndex];
-            if (newPage is not null)
+            if (newPage != null)
             {
                 newPage.ViewModelChanged += OnPageViewModelChanged;
 
                 var vm = newPage.ViewModel;
-                if (vm is not null)
+                if (vm != null)
                 {
                     vm.PropertyChanged += OnPageViewModelPropertyChanged;
                 }
@@ -480,7 +480,7 @@ namespace Orc.Wizard
 
             NavigationController.EvaluateNavigationCommands();
 
-            if (newPage is not null)
+            if (newPage != null)
             {
                 newPage.IsVisited = true;
             }
@@ -491,13 +491,13 @@ namespace Orc.Wizard
         private void OnPageViewModelChanged(object sender, ViewModelChangedEventArgs e)
         {
             var oldVm = e.OldViewModel;
-            if (oldVm is not null)
+            if (oldVm != null)
             {
                 oldVm.PropertyChanged -= OnPageViewModelPropertyChanged;
             }
 
             var newVm = e.NewViewModel;
-            if (newVm is not null)
+            if (newVm != null)
             {
                 newVm.PropertyChanged += OnPageViewModelPropertyChanged;
             }
