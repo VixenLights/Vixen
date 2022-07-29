@@ -11,7 +11,7 @@
         public WizardNavigationButton()
         {
             var application = System.Windows.Application.Current;
-            if (application is not null)
+            if (application != null)
             {
                 Style = application.TryFindResource("WizardNavigationButtonStyle") as Style;
             }
@@ -39,19 +39,19 @@
             }
 
             var contentEvaluator = ContentEvaluator;
-            if (contentEvaluator is not null)
+            if (contentEvaluator != null)
             {
                 Content = contentEvaluator();
             }
 
             var isVisibleEvaluator = IsVisibleEvaluator;
-            if (isVisibleEvaluator is not null)
+            if (isVisibleEvaluator != null)
             {
                 IsVisible = isVisibleEvaluator();
             }
 
             var styleEvaluator = StyleEvaluator;
-            if (styleEvaluator is not null)
+            if (styleEvaluator != null)
             {
                 Style = styleEvaluator(this);
             }
