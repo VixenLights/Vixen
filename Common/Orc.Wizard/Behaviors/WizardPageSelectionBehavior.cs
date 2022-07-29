@@ -133,7 +133,13 @@ namespace Orc.Wizard
                     return;
                 }
 
-                _scrollPositions.AddOrUpdate(lastPage, new ScrollInfo
+                ScrollInfo dontCare = null;
+                if (_scrollPositions.TryGetValue(lastPage, out dontCare))
+                {
+                    _scrollPositions.Remove(lastPage);
+                }
+                
+                _scrollPositions.Add(lastPage, new ScrollInfo
                 {
                     VerticalOffset = _scrollViewer.VerticalOffset,
                     HorizontalOffset = _scrollViewer.HorizontalOffset
@@ -144,7 +150,13 @@ namespace Orc.Wizard
 
                 if (CacheViews)
                 {
-                    _cachedViews.AddOrUpdate(lastPage, new CachedView
+                    CachedView dontCareView = null;
+                    if (_cachedViews.TryGetValue(lastPage, out dontCareView))
+                    { 
+                        _cachedViews.Remove(lastPage);
+                    }
+
+                    _cachedViews.Add(lastPage, new CachedView
                     {
                         View = AssociatedObject.Content as IView
                     });
