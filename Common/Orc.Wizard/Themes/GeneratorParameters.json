@@ -1,0 +1,55 @@
+﻿{
+  "DefaultValues": {
+    "Orc.Colors.IdealForegroundColor": "White",
+    "Orc.Colors.DarkIdealForegroundDisabledColor": "#ADADAD",
+    "Orc.Colors.ExtremeHighlightColor": "#FFFFD232",
+    "Orc.Colors.DarkExtremeHighlightColor": "#FFF29536",
+    "Theme.IsHighContrast": "false"
+  },
+  "BaseColorSchemes": [
+    {
+      "Name": "Dark",
+      "Values": {
+        "BlackColor": "#FFFFFFFF",
+        "BlackColor20": "#51FFFFFF",
+        "WhiteColor": "#FF252525",
+        "WhiteColor20": "#51252525",
+        "BackgroundColor": "#363636",
+        "ForegroundColor": "#FFFFFFFF",
+        "Gray1": "#FFF9F9F9",
+        "Gray2": "#FF7F7F7F",
+        "Gray3": "#FF9D9D9D",
+        "Gray4": "#FFA59F93",
+        "Gray5": "#FFB9B9B9",
+        "Gray6": "#FFCCCCCC",
+        "Gray7": "#FF7E7E7E",
+        "Gray8": "#FF454545",
+        "Gray9": "#5EC9C9C9",
+        "Gray10": "#FF2F2F2F",
+        "Orc.Colors.Text": "#FFFFFFFF"
+      }
+    },
+    {
+      "Name": "Light",
+      "Values": {
+        "BlackColor": "#FF000000",
+        "BlackColor20": "#51000000",
+        "WhiteColor": "#FFFFFFFF",
+        "WhiteColor20": "#51FFFFFF",
+        "BackgroundColor": "#FFFFFFFF",
+        "ForegroundColor": "#FF000000",
+        "Gray1": "#FF333333",
+        "Gray2": "#FF7F7F7F",
+        "Gray3": "#FF9D9D9D",
+        "Gray4": "#FFA59F93",
+        "Gray5": "#FFB9B9B9",
+        "Gray6": "#FFCCCCCC",
+        "Gray7": "#FFD8D8D9",
+        "Gray8": "#FFE0E0E0",
+        "Gray9": "#5EC9C9C9",
+        "Gray10": "#FFF7F7F7",
+        "Orc.Colors.Text": "#FF000000"
+      }
+    }
+  ]
+}
