@@ -82,6 +82,9 @@
     <Content Include="TabControlEX.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Catel.MVVM.dll">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FTD2XX_NET">
@@ -114,26 +117,47 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Catel.Core" Version="5.12.10" />
-    <PackageReference Include="Catel.MVVM" Version="5.12.10" />
+     <PackageReference Include="Catel.Fody" Version="4.5.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets></IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Catel.MVVM" Version="5.12.10">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
     <PackageReference Include="Catel.Serialization.Json" Version="5.12.10" />
     <PackageReference Include="CSCore" Version="1.2.1.2" />
     <PackageReference Include="DockPanelSuite" Version="3.1.0" />
     <PackageReference Include="DockPanelSuite.ThemeVS2015" Version="3.1.0" />
+    <PackageReference Include="Fody" Version="6.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets></IncludeAssets>
+    </PackageReference>
     <PackageReference Include="gong-wpf-dragdrop" Version="3.1.1" />
     <PackageReference Include="ICSharpCode.SharpZipLib.dll" Version="0.85.4.369" />
     <PackageReference Include="LiteDB" Version="4.1.4" />
+    <PackageReference Include="LoadAssembliesOnStartup.Fody" Version="4.5.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets></IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="MethodTimer.Fody" Version="3.1.2" />
     <PackageReference Include="Microsoft.AspNet.SignalR.Core" Version="2.4.3" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Owin" Version="5.2.7" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Owin.Hosting" Version="4.2.0" />
     <PackageReference Include="Microsoft.Owin.Security" Version="4.2.0" />
     <PackageReference Include="Microsoft.Owin.StaticFiles" Version="4.2.0" />
+    <PackageReference Include="ModuleInit.Fody" Version="2.1.1" />
     <PackageReference Include="Mono.Security" Version="5.4.0.201" />
     <PackageReference Include="NCalc2" Version="2.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NLog" Version="4.7.15" />
     <PackageReference Include="Nowin" Version="0.26.0" />
-    <PackageReference Include="Svg" Version="3.4.1" />
+    <PackageReference Include="Obsolete.Fody" Version="5.2.1" />
+    <PackageReference Include="Orc.Controls" Version="4.1.1" />
+    <PackageReference Include="Orc.SystemInfo" Version="4.0.0" />
+    <PackageReference Include="Orc.Theming" Version="4.1.0" />
+    <PackageReference Include="Orchestra.Core" Version="6.1.1" />
+    <PackageReference Include="Svg" Version="3.2.3" />
     <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
     <PackageReference Include="System.Reactive" Version="4.3.2" />
     <PackageReference Include="System.Reflection" Version="4.3.0" />
