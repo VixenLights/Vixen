@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en-US" target-language="fr" original="ORC.WIZARD/PROPERTIES/RESOURCES.RESX" tool-id="MultilingualAppToolkit" product-name="n/a" product-version="n/a" build-num="n/a">
+    <header>
+      <tool tool-id="MultilingualAppToolkit" tool-name="Multilingual App Toolkit" tool-version="4.0.6900.0" tool-company="Microsoft" />
+    </header>
+    <body>
+      <group id="ORC.WIZARD/PROPERTIES/RESOURCES.RESX" datatype="resx">
+        <trans-unit id="Wizard_AreYouSureYouWantToCancelWizard" translate="yes" xml:space="preserve">
+          <source>Are you sure you want to cancel the wizard?</source>
+          <target state="translated">Êtes-vous sûrs de vouloir arrêter l'assistant?</target>
+        </trans-unit>
+        <trans-unit id="Wizard_Back" translate="yes" xml:space="preserve">
+          <source>&lt; Back</source>
+          <target state="translated">&lt; Précédent</target>
+        </trans-unit>
+        <trans-unit id="Wizard_Cancel" translate="yes" xml:space="preserve">
+          <source>Cancel</source>
+          <target state="translated">Abandonner</target>
+        </trans-unit>
+        <trans-unit id="Wizard_Finish" translate="yes" xml:space="preserve">
+          <source>Finish</source>
+          <target state="translated">Quitter</target>
+        </trans-unit>
+        <trans-unit id="Wizard_Help" translate="yes" xml:space="preserve">
+          <source>Help</source>
+          <target state="translated">Aide</target>
+        </trans-unit>
+        <trans-unit id="Wizard_Next" translate="yes" xml:space="preserve">
+          <source>Next &gt;</source>
+          <target state="translated">Suivant &gt;</target>
+        </trans-unit>
+        <trans-unit id="Wizard_OptionalWizardStep" translate="yes" xml:space="preserve">
+          <source>This step is optional, feel free to skip this page by going to the next page</source>
+          <target state="translated">Cette étape est facultative, vous pouvez la sauter pour passer à la page suivante</target>
+        </trans-unit>
+        <trans-unit id="Wizard_SummaryDescription" translate="yes" xml:space="preserve">
+          <source>Below is a summary of the wizard.</source>
+          <target state="translated">Vous trouverez ci-dessous un résumé de l'assistant.</target>
+        </trans-unit>
+        <trans-unit id="Wizard_SummaryTitle" translate="yes" xml:space="preserve">
+          <source>Summary</source>
+          <target state="translated">Résumé</target>
+        </trans-unit>
+        <trans-unit id="Wizard_XofY" translate="yes" xml:space="preserve">
+          <source>{0} of {1}</source>
+          <target state="translated">{0} de {1}</target>
+        </trans-unit>
+        <trans-unit id="Wizard_NavigateToPage" translate="yes" xml:space="preserve">
+          <source>Navigate to page</source>
+          <target state="new">Navigate to page</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>
