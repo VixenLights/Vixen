@@ -6,7 +6,6 @@
     using System.Windows.Media;
     using System.Windows.Media.Animation;
     using System.Windows.Shapes;
-    using Automation;
     using Catel.Collections;
     using Orc.Wizard;
 
@@ -128,9 +127,9 @@
             storyboard.Begin(shape);
         }
 
-        protected override AutomationPeer OnCreateAutomationPeer()
-        {
-            return new BreadcrumbItemPeer(this);
-        }
+        //protected override AutomationPeer OnCreateAutomationPeer()
+        //{
+        //    return new BreadcrumbItemPeer(this);
+        //}
     }
 }

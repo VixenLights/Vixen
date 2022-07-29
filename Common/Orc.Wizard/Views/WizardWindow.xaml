@@ -5,7 +5,6 @@
                   xmlns:xamlbehaviors="http://schemas.microsoft.com/xaml/behaviors"
                   xmlns:wizard="clr-namespace:Orc.Wizard"
                   xmlns:controls="clr-namespace:Orc.Wizard.Controls"
-                  xmlns:controls1="clr-namespace:Orc.Automation.Controls;assembly=Orc.Automation"
                   SizeToContent="Manual"
                   ResizeMode="{Binding ResizeMode, Mode=OneWay}"
                   MinWidth="{Binding MinSize.Width, Mode=OneWay}"
