@@ -33,7 +33,7 @@
                 }
 
                 var summary = page.GetSummary();
-                if (summary is not null)
+                if (summary != null)
                 {
                     if (summary.Page is null)
                     {
