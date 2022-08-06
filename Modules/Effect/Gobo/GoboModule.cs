@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using Vixen.Attributes;
 using Vixen.Data.Value;
-using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.App.Curves;
 using VixenModules.App.Fixture;
 using VixenModules.App.FixtureSpecificationManager;
 using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
-using VixenModules.Property.IntelligentFixture;
 
 namespace VixenModules.Effect.Gobo
 {
@@ -31,7 +27,9 @@ namespace VixenModules.Effect.Gobo
 		public GoboModule() :
 			// Give the base class the online help URL
 			base("http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/intelligent-fixture/gobo/")
-		{						
+		{
+			// Prime the effect with which attributes are applicable
+			UpdateAttributes();
 		}
 
 		#endregion
