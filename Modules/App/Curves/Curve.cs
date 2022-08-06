@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -209,9 +210,14 @@ namespace VixenModules.App.Curves
 			LibraryReferencedCurve = null;
 		}
 
-		public Bitmap GenerateGenericCurveImage(Size size, bool inactive=false, bool drawPoints=false, bool editable=false)
+		public Bitmap GenerateGenericCurveImage(Size size, bool inactive=false, bool drawPoints=false, bool editable=false, Color? lineColor = null)
 		{
 			var adjust = editable ? 2 : 0;
+			var penColor = editable ? Color.FromArgb(0, 128, 255) : Color.FromArgb(255, 136, 136, 136);
+			if(lineColor.HasValue)
+			{
+				penColor = lineColor.Value;
+			}
 
 			Bitmap result = new Bitmap(size.Width+adjust, size.Height+adjust);
 
@@ -219,7 +225,7 @@ namespace VixenModules.App.Curves
 			{
 				using (Brush b = new SolidBrush(inactive?Color.DimGray:Color.Black))
 				{
-					using (Pen p = new Pen(editable?Color.FromArgb(0,128,255) : Color.FromArgb(255,136,136,136), 2))
+					using (Pen p = new Pen(penColor, 2))
 					{
 						using (Brush pointBrush = new SolidBrush(Color.FromArgb(255, 136, 136, 136)))
 						{
@@ -252,6 +258,72 @@ namespace VixenModules.App.Curves
 
 			return result;
 		}
+
+		public Bitmap GenerateGenericCurveImage(
+			Size size, 
+			bool inactive,
+			bool drawPoints,
+			bool editable,
+			Color? lineColor,
+			List<Color> backgroundColors)
+		{
+			var adjust = editable ? 2 : 0;
+			var penColor = editable ? Color.FromArgb(0, 128, 255) : Color.FromArgb(255, 136, 136, 136);
+			if (lineColor.HasValue)
+			{
+				penColor = lineColor.Value;
+			}
+
+			Bitmap result = new Bitmap(size.Width + adjust, size.Height + adjust);
+
+			using (Graphics g = Graphics.FromImage(result))
+			{
+				using (Brush b = new SolidBrush(inactive ? Color.DimGray : Color.Black))
+				{					
+					using (Pen p = new Pen(penColor, 2))
+					{
+						using (Brush pointBrush = new SolidBrush(Color.FromArgb(255, 136, 136, 136)))
+						{
+							int x = 0;
+							int width = (size.Width + adjust) / backgroundColors.Count;
+
+							foreach (Color color in backgroundColors)
+							{								
+								using (Brush background = new SolidBrush(color))
+								{
+									g.FillRectangle(background, new Rectangle(x, 0, width, size.Height + adjust));
+									x += width;
+								}
+							}
+
+							PointPair lastPoint = null;
+							foreach (var point in Points.ToArray()) //get an array so if the points are modified we can still enumerate.
+							{
+								if (lastPoint == null)
+								{
+									lastPoint = point;
+									continue;
+								}
+
+								var tPoint = TransformPoint(point, size);
+								var tLastPoint = TransformPoint(lastPoint, size);
+								g.DrawLine(p, tLastPoint, tPoint);
+								if (drawPoints)
+								{
+									g.FillEllipse(pointBrush, tPoint.X - 3, tPoint.Y - 3, 6, 6);
+									g.FillEllipse(pointBrush, tLastPoint.X - 3, tLastPoint.Y - 3, 6, 6);
+								}
+								lastPoint = point;
+							}
+						}
+					}
+				}
+
+			}
+
+			return result;
+		}
+
 
 		private Point TransformPoint(PointPair points, Size bounds)
 		{
