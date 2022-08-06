@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>1.0</ProductVersion>
+    <RootNamespace>VixenModules.Effect.SetZoom</RootNamespace>
+    <TargetFramework>net48</TargetFramework>
+    <Platforms>x64;x86</Platforms>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>$(SolutionDir)\$(Configuration)\Modules\Effect\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>$(SolutionDir)\Release64\Modules\Effect\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <OutputPath>..\..\..\$(Configuration)\Modules\Effect\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <OutputPath>..\..\..\Debug64\Modules\Effect\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
+      <Private>false</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\App\Curves\Curves.csproj">
+      <Private>false</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\App\Fixture\Fixture.csproj">
+	  <Private>false</Private>	
+    </ProjectReference>
+    <ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj">
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Property\IntelligentFixture\IntelligentFixture.csproj">
+		<Private>false</Private>
+		<IncludeAssets>None</IncludeAssets>
+	</ProjectReference>
+    <ProjectReference Include="..\Effect\Effect.csproj">
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\EffectImage.png" />
+  </ItemGroup>
+</Project>
