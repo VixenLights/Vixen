@@ -39,7 +39,7 @@
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
-    <ProjectReference Include="..\..\Property\Fixture\IntelligentFixture.csproj">
+    <ProjectReference Include="..\..\Property\IntelligentFixture\IntelligentFixture.csproj">
 		<Private>false</Private>
 		<IncludeAssets>None</IncludeAssets>
 	</ProjectReference>
