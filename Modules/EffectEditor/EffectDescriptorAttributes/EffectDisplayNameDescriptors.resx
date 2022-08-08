@@ -1134,4 +1134,13 @@
   <data name="PrismSetting" xml:space="preserve">
     <value>Setting</value>
   </data>
+  <data name="SpinColorWheelIntensity" xml:space="preserve">
+    <value>Intensity</value>
+  </data>
+  <data name="SpinColorWheelRotationSpeed" xml:space="preserve">
+    <value>Rotation Speed</value>
+  </data>
+  <data name="SpinColorWheelSetting" xml:space="preserve">
+    <value>Setting</value>
+  </data>
 </root>
