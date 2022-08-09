@@ -508,6 +508,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prism", "Modules\Effect\Pri
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpinColorWheel", "Modules\Effect\SpinColorWheel\SpinColorWheel.csproj", "{52A2BACE-F6AD-4147-BAA6-E717E00DC807}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FixtureStrobe", "Modules\Effect\FixtureStrobe\FixtureStrobe.csproj", "{3FB353F1-DCED-477D-A158-2B79FC8FA4DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -1721,6 +1723,14 @@ Global
 		{52A2BACE-F6AD-4147-BAA6-E717E00DC807}.Release|x64.Build.0 = Release|x64
 		{52A2BACE-F6AD-4147-BAA6-E717E00DC807}.Release|x86.ActiveCfg = Release|x86
 		{52A2BACE-F6AD-4147-BAA6-E717E00DC807}.Release|x86.Build.0 = Release|x86
+		{3FB353F1-DCED-477D-A158-2B79FC8FA4DE}.Debug|x64.ActiveCfg = Debug|x64
+		{3FB353F1-DCED-477D-A158-2B79FC8FA4DE}.Debug|x64.Build.0 = Debug|x64
+		{3FB353F1-DCED-477D-A158-2B79FC8FA4DE}.Debug|x86.ActiveCfg = Debug|x86
+		{3FB353F1-DCED-477D-A158-2B79FC8FA4DE}.Debug|x86.Build.0 = Debug|x86
+		{3FB353F1-DCED-477D-A158-2B79FC8FA4DE}.Release|x64.ActiveCfg = Release|x64
+		{3FB353F1-DCED-477D-A158-2B79FC8FA4DE}.Release|x64.Build.0 = Release|x64
+		{3FB353F1-DCED-477D-A158-2B79FC8FA4DE}.Release|x86.ActiveCfg = Release|x86
+		{3FB353F1-DCED-477D-A158-2B79FC8FA4DE}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1905,6 +1915,7 @@ Global
 		{9F135CB5-6B0B-47FE-B57D-B6AAE590029E} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
 		{C7C03B4D-B4DD-44E0-B28E-F4B3929BA686} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
 		{52A2BACE-F6AD-4147-BAA6-E717E00DC807} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
+		{3FB353F1-DCED-477D-A158-2B79FC8FA4DE} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {09F55EB1-2643-454B-A1C2-8A326FFA78E6}
