@@ -1188,4 +1188,10 @@
   <data name="SpinColorWheelSetting" xml:space="preserve">
     <value>Selects the direction and rotation speed of the spinning color wheel.</value>
   </data>
+  <data name="FixtureStrobeSetting" xml:space="preserve">
+    <value>Controls how the strobe speed is interpreted.</value>
+  </data>
+  <data name="FixtureStrobeSpeed" xml:space="preserve">
+    <value>Controls the speed of the shutter's strobe.</value>
+  </data>
 </root>
