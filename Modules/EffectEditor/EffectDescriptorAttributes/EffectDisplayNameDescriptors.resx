@@ -1143,4 +1143,10 @@
   <data name="SpinColorWheelSetting" xml:space="preserve">
     <value>Setting</value>
   </data>
+  <data name="FixtureStrobeSetting" xml:space="preserve">
+    <value>Setting</value>
+  </data>
+  <data name="FixtureStrobeSpeed" xml:space="preserve">
+    <value>Strobe Speed</value>
+  </data>
 </root>
