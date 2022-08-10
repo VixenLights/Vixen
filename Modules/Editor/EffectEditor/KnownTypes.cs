@@ -9,6 +9,7 @@ using Vixen.Attributes;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.App.Polygon;
+using VixenModules.Effect.Fixture;
 using VixenModules.Effect.Liquid;
 using VixenModules.Effect.Morph;
 using VixenModules.Effect.Wave;
@@ -47,6 +48,7 @@ namespace VixenModules.Editor.EffectEditor
 			public static readonly Type Waveform = typeof(IWaveform);
 			public static readonly Type PolygonContainer = typeof(PolygonContainer);
 			public static readonly Type MorphPolygon = typeof(IMorphPolygon);
+			public static readonly Type FixtureFunction = typeof(IFixtureFunctionExpando);
 		}
 
 		public static class Wpf
