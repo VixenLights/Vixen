@@ -1149,4 +1149,19 @@
   <data name="FixtureStrobeSpeed" xml:space="preserve">
     <value>Strobe Speed</value>
   </data>
+  <data name="FixtureColor" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="FixtureColorIndex" xml:space="preserve">
+    <value>Color Wheel Value</value>
+  </data>
+  <data name="FixtureIndexValue" xml:space="preserve">
+    <value>Index Value</value>
+  </data>
+  <data name="FixtureRange" xml:space="preserve">
+    <value>Range</value>
+  </data>
+  <data name="Functions" xml:space="preserve">
+    <value>Functions</value>
+  </data>
 </root>

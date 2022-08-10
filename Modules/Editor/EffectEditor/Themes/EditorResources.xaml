@@ -7,7 +7,8 @@
 	xmlns:input="clr-namespace:VixenModules.Editor.EffectEditor.Input"
 	xmlns:internal="clr-namespace:VixenModules.Editor.EffectEditor.Internal"
 	xmlns:behaviors="clr-namespace:Common.WPFCommon.Behaviors;assembly=WPFCommon"
-	xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
+	xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+	xmlns:fixtureExpando="clr-namespace:VixenModules.Effect.Fixture;assembly=IFixtureFunctionExpando">
 
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
@@ -143,6 +144,72 @@
 		</StackPanel>
 	</DataTemplate>
 
+	<DataTemplate x:Key="{x:Static editors:EditorKeys.IFixtureFunctionEditorKey}">
+		<StackPanel>
+			<WrapPanel Orientation="Horizontal">
+
+				<Button Margin="5" Content="Add" HorizontalAlignment="Left" Padding="5,2"
+					  Command="input:PropertyEditorCommands.AddCollectionItem"
+					  CommandParameter="{Binding}"
+					  Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+				<Button Margin="5" Content="Remove" HorizontalAlignment="Left" Padding="5,2" FocusManager.IsFocusScope="True"
+					  Command="input:PropertyEditorCommands.RemoveCollectionItem"
+					  CommandParameter="{Binding}" Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+			</WrapPanel>
+			<controls:CollectionView
+				x:Name="PART_editor"
+				Style="{DynamicResource {x:Type ListView}}"
+				PropertyValue="{Binding }"
+				IsEnabled="{Binding IsEditable}"
+				KeyboardNavigation.TabNavigation="Continue"
+				ItemContainerStyle="{StaticResource ListViewItemOutlineHover}">
+				<i:Interaction.Behaviors>
+					<behaviors:IgnoreMouseWheelBehavior/>
+				</i:Interaction.Behaviors>
+				<ListView.Resources>
+					<Style TargetType="ListViewItem">
+						<Setter Property="HorizontalContentAlignment" Value="Left" />
+						<Setter Property="VerticalContentAlignment" Value="Top" />
+					</Style>
+				</ListView.Resources>
+				<ListView.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel Orientation="Vertical" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}, 
+							Path=ActualWidth, Converter={StaticResource AdditionConverter}, ConverterParameter='-10'}"></WrapPanel>
+					</ItemsPanelTemplate>
+				</ListView.ItemsPanel>
+				<ListView.ItemTemplate>
+					<DataTemplate DataType="{x:Type internal:CollectionItemValue}">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+							<Grid Grid.Row="0" Grid.ColumnSpan="2" Margin="0,3">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="Auto"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<Rectangle Grid.Column="0"
+									HorizontalAlignment="Stretch" 
+										   Fill="{ Binding Path=Value.(fixtureExpando:IFixtureFunctionExpando.TimelineColor), Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}" 
+										   Height="2"/>
+								<TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,0" FontWeight="Bold" Text="{Binding Path=Value}">
+								</TextBlock>
+								<Rectangle Grid.Column="2"
+									HorizontalAlignment="Stretch" 
+										   Fill="{ Binding Path=Value.(fixtureExpando:IFixtureFunctionExpando.TimelineColor), Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}" 
+										   Height="2"/>
+							</Grid>
+							<design:PropertyItemsLayout Grid.Row="1" ItemsSource="{Binding SubProperties}" />
+						</Grid>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</controls:CollectionView>
+		</StackPanel>
+	</DataTemplate>
 	
 	<DataTemplate x:Key="{x:Static editors:EditorKeys.IWaveformEditorKey}">
 		<StackPanel>
