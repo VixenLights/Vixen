@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 using Vixen.Data.Value;
 using Vixen.TypeConverters;
 
@@ -68,12 +71,18 @@ namespace VixenModules.App.Fixture
 
 			// Default the function identity to custom
 			FunctionIdentity = FunctionIdentity.Custom;
+
+			// Default the timeline color to a random color
+			Random rnd = new Random();
+			KnownColor[] colors = (KnownColor[])Enum.GetValues(typeof(KnownColor));			
+			int colorIndex = rnd.Next(colors.Length - 1);				
+			TimelineColor = Color.FromKnownColor(colors[colorIndex]);							
 		}
 
 		#endregion
 
 		#region Public Properties
-		
+
 		/// <summary>
 		/// Type of the function.
 		/// </summary>
@@ -116,48 +125,32 @@ namespace VixenModules.App.Fixture
 		[DataMember]
 		public FixtureZoomType ZoomType { get; set; }
 
-		#endregion
-
-		#region Public Properties
+		private Color _timelineColor;
 
 		/// <summary>
-		/// Creates a clone of the fixture function.
+		/// Color to use on timeline for effect graphical representation.
 		/// </summary>
-		/// <returns>Clone of the fixture function</returns>
-		public FixtureFunction CreateInstanceForClone()
+		[XmlIgnoreAttribute]
+		public Color TimelineColor
+		{	
+			get
+			{
+				return _timelineColor;	
+			}
+			set
+			{
+				_timelineColor = value;	
+			}
+		}
+
+		/// <summary>
+		/// Persists the Color1 in HTML format.
+		/// </summary>
+		[DataMember]
+		public string TimelineColor1Html
 		{
-			// Create a clone of the fixture function
-			FixtureFunction result = new FixtureFunction
-			{
-				Name = Name,
-				FunctionType = FunctionType,
-				Label = Label,
-				FunctionIdentity = FunctionIdentity,				
-				ZoomType = ZoomType,	
-			};
-
-			// If rotation limits are defined then...
-			if (RotationLimits != null)
-            {
-				// Clone the rotation limits
-				result.RotationLimits = RotationLimits.CreateInstanceForClone();
-            }
-
-			// Loop over the fixture index data
-			foreach(FixtureIndex fixtureIndex in IndexData)
-			{
-				// Clone the index entry
-				result.IndexData.Add(fixtureIndex.CreateInstanceForClone());
-			}
-
-			// Loop over the color wheel data
-			foreach (FixtureColorWheel colorWheel in ColorWheelData)
-			{
-				// Clone the color wheel entry
-				result.ColorWheelData.Add(colorWheel.CreateInstanceForClone());
-			}
-
-			return result;
+			get { return ColorTranslator.ToHtml(TimelineColor); }
+			set { TimelineColor = ColorTranslator.FromHtml(value); }
 		}
 
 		#endregion
@@ -188,6 +181,47 @@ namespace VixenModules.App.Fixture
 			}
 
 			return indexData;
+		}
+
+		/// <summary>
+		/// Creates a clone of the fixture function.
+		/// </summary>
+		/// <returns>Clone of the fixture function</returns>
+		public FixtureFunction CreateInstanceForClone()
+		{
+			// Create a clone of the fixture function
+			FixtureFunction result = new FixtureFunction
+			{
+				Name = Name,
+				FunctionType = FunctionType,
+				Label = Label,
+				FunctionIdentity = FunctionIdentity,
+				ZoomType = ZoomType,
+				TimelineColor = TimelineColor,	
+			};
+
+			// If rotation limits are defined then...
+			if (RotationLimits != null)
+			{
+				// Clone the rotation limits
+				result.RotationLimits = RotationLimits.CreateInstanceForClone();
+			}
+
+			// Loop over the fixture index data
+			foreach (FixtureIndex fixtureIndex in IndexData)
+			{
+				// Clone the index entry
+				result.IndexData.Add(fixtureIndex.CreateInstanceForClone());
+			}
+
+			// Loop over the color wheel data
+			foreach (FixtureColorWheel colorWheel in ColorWheelData)
+			{
+				// Clone the color wheel entry
+				result.ColorWheelData.Add(colorWheel.CreateInstanceForClone());
+			}
+
+			return result;
 		}
 
 		#endregion

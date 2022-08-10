@@ -66,7 +66,7 @@
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>      
-    <ProjectReference Include="..\IFixtureRange\IFixtureFunctionExpando.csproj">
+    <ProjectReference Include="..\IFixtureFunctionExpando\IFixtureFunctionExpando.csproj">
       <Private>false</Private>
       <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
       <IncludeAssets>None</IncludeAssets>
