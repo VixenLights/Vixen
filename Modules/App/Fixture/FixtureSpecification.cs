@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
@@ -232,12 +233,14 @@ namespace VixenModules.App.Fixture
 		/// </summary>
 		/// <param name="name">Name of the function</param>
 		/// <param name="functionType">Type of the function</param>
-		/// <param name="identity">Preview identity of the function</param>
-		/// <returns></returns>
+		/// <param name="identity">Preview identity of the function</param>		
+		/// <param name="timelineColor">Color to use on the timeline for some effects</param>
+		/// <returns>New fixture function</returns>
 		public FixtureFunction AddFunctionType(
 			string name,
 			FixtureFunctionType functionType,
-			FunctionIdentity identity)
+			FunctionIdentity identity,
+			Color timelineColor)
 		{
 			// Create the new function
 			FixtureFunction function = new FixtureFunction();
@@ -250,6 +253,9 @@ namespace VixenModules.App.Fixture
 
 			// Configure the function identity
 			function.FunctionIdentity = identity;
+
+			// Configure the timeline color
+			function.TimelineColor = timelineColor;
 
 			// Add the function to the fixture specification
 			FunctionDefinitions.Add(function);
@@ -269,75 +275,87 @@ namespace VixenModules.App.Fixture
 			FixtureFunction pan = AddFunctionType(
 				"Pan",
 				FixtureFunctionType.Range,
-				FunctionIdentity.Pan);
+				FunctionIdentity.Pan,
+				Color.Red);
 			pan.RotationLimits = new FixtureRotationLimits();
 			
 			// Add the tilt function 
 			FixtureFunction tilt = AddFunctionType(
 				"Tilt",
 				FixtureFunctionType.Range,
-				FunctionIdentity.Tilt);
+				FunctionIdentity.Tilt,
+				Color.Green);
 				tilt.RotationLimits = new FixtureRotationLimits();
 			
 			// Add an empty color wheel function
 			AddFunctionType(
 				"Color Wheel",
 				FixtureFunctionType.ColorWheel,
-				FunctionIdentity.Custom);
+				FunctionIdentity.Custom,
+				Color.White);
 
 			// Add a dimmer function
 			AddFunctionType(
 				"Dimmer",
 				FixtureFunctionType.Range,
-				FunctionIdentity.Dim);
+				FunctionIdentity.Dim,
+				Color.Purple);
 
 			// Add a color mixing function
 			AddFunctionType(
 				"Color",
 				FixtureFunctionType.RGBWColor,
-				FunctionIdentity.Custom);
+				FunctionIdentity.Custom,
+				Color.DarkGray);
 
 			// Add zoom function
 			AddFunctionType(
 				"Zoom",
 				FixtureFunctionType.Range,
-				FunctionIdentity.Zoom);
+				FunctionIdentity.Zoom,
+				Color.Blue);
 
 			// Add shutter function
 			AddFunctionType(
 				"Shutter",
 				FixtureFunctionType.Indexed,
-				FunctionIdentity.Shutter);
+				FunctionIdentity.Shutter,
+				Color.Black);
 
 			// Add gobo wheel function
 			AddFunctionType(
 				"Gobo Wheel",
 				FixtureFunctionType.Indexed,
-				FunctionIdentity.Gobo);
+				FunctionIdentity.Gobo,
+				Color.Pink);
 
 			// Add prism function
 			AddFunctionType(
 				"Open Close Prism",
 				FixtureFunctionType.Indexed,
-				FunctionIdentity.OpenClosePrism);
+				FunctionIdentity.OpenClosePrism,
+				Color.Orange);
 
 			// Add (rotating) prism function
 			AddFunctionType(
 				"Prism",
 				FixtureFunctionType.Indexed,
-				FunctionIdentity.Prism);
+				FunctionIdentity.Prism,
+				Color.Yellow);
 
 			// Add frost function
 			AddFunctionType(
 				"Frost",
 				FixtureFunctionType.Range,
-				FunctionIdentity.Frost);
+				FunctionIdentity.Frost,
+				Color.LightBlue);
 
 			// Add a None function so that channels can be included in the specification but generally ignored
 			AddFunctionType(
 				"None",
 				FixtureFunctionType.None,
-				FunctionIdentity.Custom);
+				FunctionIdentity.Custom,
+				Color.Transparent);
 		}
 		
 		/// <summary>

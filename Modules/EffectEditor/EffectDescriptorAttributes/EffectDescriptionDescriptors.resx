@@ -1194,4 +1194,19 @@
   <data name="FixtureStrobeSpeed" xml:space="preserve">
     <value>Controls the speed of the shutter's strobe.</value>
   </data>
+  <data name="FixtureColor" xml:space="preserve">
+    <value>Selects a color for the intelligent fixture.</value>
+  </data>
+  <data name="FixtureColorIndex" xml:space="preserve">
+    <value>Selects a color wheel color for the intelligent fixture.</value>
+  </data>
+  <data name="FixtureIndexValue" xml:space="preserve">
+    <value>Selects an index value for the intelligent fixture.</value>
+  </data>
+  <data name="FixtureRange" xml:space="preserve">
+    <value>Configures a range on the intelligent fixture.</value>
+  </data>
+  <data name="Functions" xml:space="preserve">
+    <value>Selects the fixture function to add to the effect.</value>
+  </data>
 </root>

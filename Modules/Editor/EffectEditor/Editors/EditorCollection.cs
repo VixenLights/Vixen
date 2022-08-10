@@ -22,6 +22,7 @@ using System.Drawing;
 using System.Linq;
 using Vixen.Attributes;
 using VixenModules.App.ColorGradients;
+using VixenModules.Effect.Fixture;
 using VixenModules.Effect.Liquid;
 using VixenModules.Effect.Morph;
 using VixenModules.Effect.Wave;
@@ -52,7 +53,9 @@ namespace VixenModules.Editor.EffectEditor.Editors
 			{typeof(IList<IEmitter>), new TypeEditor(typeof(IList<IEmitter>), EditorKeys.IEmitterEditorKey)},
 			{KnownTypes.Vixen.Emitter, new TypeEditor()},
 			{typeof(IList<IWaveform>), new TypeEditor(typeof(IList<IWaveform>), EditorKeys.IWaveformEditorKey)},
+			{typeof(IList<IFixtureFunctionExpando>), new TypeEditor(typeof(IList<IFixtureFunctionExpando>), EditorKeys.IFixtureFunctionEditorKey)},
 			{KnownTypes.Vixen.Waveform, new TypeEditor()},
+			{KnownTypes.Vixen.FixtureFunction, new TypeEditor()},
 			{typeof(IList<IMorphPolygon>), new TypeEditor(typeof(IList<IMorphPolygon>), EditorKeys.IMorphPolygonEditorKey)},
 			{KnownTypes.Vixen.MorphPolygon, new TypeEditor()},
 			{KnownTypes.Vixen.PolygonContainer, new PolygonContainerTypeEditor()},			
