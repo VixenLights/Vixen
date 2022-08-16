@@ -68,6 +68,10 @@
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
+	  <ProjectReference Include="..\..\Effect\Fixture\IFixtureFunctionExpando\IFixtureFunctionExpando.csproj">
+		<Private>false</Private>
+		<IncludeAssets>None</IncludeAssets>
+	</ProjectReference>		
     <ProjectReference Include="..\..\Effect\Liquid\Emitter\Emitter.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
