@@ -353,8 +353,21 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		protected override void MakeObjectValidBeforeDeleting(ChannelItemViewModel item)
 		{
 			item.Name = "Zombie";
-			item.Function = "None";
+			item.Function = FixtureFunctionType.None.GetEnumDescription();
 			item.CloseViewModelAsync(null);			
+		/// <summary>
+		/// Refer to base class documentation.
+		/// </summary>
+		protected override void AddItem()
+		{
+			// Call the base class implementation
+			base.AddItem();
+
+			// Default the Function to the None function
+			SelectedItem.Function = FixtureFunctionType.None.GetEnumDescription();
+
+			// Set the channel name to "Ignore"
+			SelectedItem.Name = ChannelItemViewModel.IgnoreFunctionName;
 		}
 
 		#endregion
