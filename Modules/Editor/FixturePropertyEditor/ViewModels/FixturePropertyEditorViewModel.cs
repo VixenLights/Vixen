@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using Vixen.Extensions;
 using VixenModules.App.Fixture;
 using VixenModules.App.FixtureSpecificationManager;
 using VixenModules.Editor.FixturePropertyEditor.Views;
@@ -281,6 +282,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			// If the name is empty then...
 			if (string.IsNullOrEmpty(Name))
             {
+				// Add an error
 				validationResults.Add(FieldValidationResult.CreateError(NameProperty, "Profile name is empty.  Profile is a required field."));
 			}
 
@@ -442,7 +444,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 					if (Functions.SingleOrDefault(x => x == channel.Function) == null)
 					{
 						// Set the channel function to 'None'
-						channel.Function = "None";
+						channel.Function = FixtureFunctionType.None.GetEnumDescription();
 					}
 				}
 
