@@ -179,10 +179,24 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// </summary>
 		public static readonly PropertyData ButtonTextProperty = RegisterProperty(nameof(ButtonText), typeof(string), null);
 
+		/// <summary>
+		/// Indicates if the color wheel entry should be excluded from the color property of the element.
+		/// </summary>
+		public bool ExcludeColorProperty
+		{
+			get { return GetValue<bool>(ExcludeColorPropertyProperty); }
+			set { SetValue(ExcludeColorPropertyProperty, value); }
+		}
+
+		/// <summary>
+		/// ExcludeColor value property data.
+		/// </summary>
+		public static readonly PropertyData ExcludeColorPropertyProperty = RegisterProperty(nameof(ExcludeColorProperty), typeof(bool), null);
+
 		#endregion
 
 		#region Private Methods
-		
+
 		/// <summary>
 		/// Displays a dialog to edit the item's color.
 		/// </summary>
