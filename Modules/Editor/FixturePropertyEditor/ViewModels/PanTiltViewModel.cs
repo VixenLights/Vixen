@@ -1,6 +1,7 @@
 ﻿using Catel.Data;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using VixenModules.App.Fixture;
 
 namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
@@ -16,7 +17,9 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
         /// Constructor
         /// </summary>
         public PanTiltViewModel()
-		{			
+		{
+			// Create the animation event and initialize to the signaled state
+			Animate = new ManualResetEvent(true);
 		}
 
 		#endregion
@@ -29,7 +32,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		private FixtureRotationLimits _rotationLimits;
 
 		#endregion
-		
+
 		#region Public Methods
 
 		/// <summary>
@@ -37,10 +40,17 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// </summary>		
 		/// <param name="rotationLimits">Rotation limits to edit</param>
 		/// <param name="raiseCanExecuteChanged">Action to refresh the command status of the parent</param>
-		public void InitializeViewModel(FixtureRotationLimits rotationLimits, Action raiseCanExecuteChanged)
+		/// <param name="isPan">True when the active function is the Pan function</param>
+		public void InitializeViewModel(FixtureRotationLimits rotationLimits, Action raiseCanExecuteChanged, bool isPan)
 		{
+			// Resume the animation in the view
+			Animate.Set();
+			
 			// Store off the rotation limits
 			_rotationLimits = rotationLimits;
+
+			// Store off whether the pan rotation limits are being configured
+			IsPan = isPan;
 
 			// If the rotation limits are not null then...
 			if (rotationLimits != null)
@@ -118,9 +128,40 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// </summary>
 		public static readonly PropertyData StopPositionProperty = RegisterProperty(nameof(StopPosition), typeof(string), null);
 
-        #endregion
+		
+		/// <summary>
+		/// Indicates if the Pan function (true)  being editor vs the Tilt function (false).
+		/// </summary>
+		public bool IsPan
+		{
+			get { return GetValue<bool>(IsPanProperty); }
+			set
+			{
+				SetValue(IsPanProperty, value);
 
-        #region Private Methods
+				// Refresh command status
+				RaiseCanExecuteChangedInternal();
+			}
+		}
+
+		/// <summary>
+		/// IsPan property data.
+		/// </summary>
+		public static readonly PropertyData IsPanProperty = RegisterProperty(nameof(IsPan), typeof(bool), null);
+
+		#endregion
+
+		#region Public Properties
+
+		/// <summary>
+		/// Event that determines when the fixture graphic needs to be animated.
+		/// Fixture is animated when the Pan or Tilt function are being edited.
+		/// </summary>
+		public ManualResetEvent Animate { get; set; }
+
+		#endregion
+
+		#region Private Methods
 
 		/// <summary>
 		/// Validates a rotation angle.
@@ -129,7 +170,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <param name="propertyData">Property data associated with the field</param>
 		/// <param name="fieldName">Name of the field</param>
 		/// <param name="value">Value to validate</param>
-        private void ValidatesAngle(
+		private void ValidatesAngle(
 			List<IFieldValidationResult> validationResults,
 			PropertyData propertyData,
 			string fieldName,
