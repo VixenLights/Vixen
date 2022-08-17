@@ -293,6 +293,9 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 				// Set the function legend so that it can be displayed in the preview
 				functionVM.Legend = functionType.Label;
 
+				// Set the function timeline color
+				functionVM.TimelineColor = functionType.TimelineColor;	
+
 				// Add the function view model to the collection
 				Items.Add(functionVM);
 			}
@@ -342,6 +345,9 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 
 				// Set the function zoom type
 				function.ZoomType = item.ZoomNarrowToWide ? FixtureZoomType.NarrowToWide : FixtureZoomType.WideToNarrow;
+
+				// Set the timeline color
+				function.TimelineColor = item.TimelineColor;
 
 				// Add the model function to the return collection
 				returnCollection.Add(function);
