@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using Vixen.Data.Value;
 using VixenModules.App.Fixture;
 
@@ -121,6 +122,11 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// Whether the fixtures zooms narrow to wide.
 		/// </summary>
 		public bool ZoomNarrowToWide { get; set; }
+
+		/// <summary>
+		/// Color of the function on the timeline for certain effects.
+		/// </summary>
+		public Color TimelineColor { get; set; }
 
 		/// <summary>
 		/// List of avalailable tags (function identities) for the function item.
