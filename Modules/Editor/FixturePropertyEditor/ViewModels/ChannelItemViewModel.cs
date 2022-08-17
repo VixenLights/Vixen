@@ -1,6 +1,7 @@
 using Catel.Data;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Linq;
 using System.Windows.Input;
 using VixenModules.App.Fixture;
@@ -39,7 +40,16 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		}
 
 		#endregion
-						
+
+		#region Public
+
+		/// <summary>
+		/// Special function name for the 'None' function.
+		/// </summary>
+		public const string IgnoreFunctionName = "Ignore";
+
+		#endregion
+
 		#region Public Properties
 
 		/// <summary>
@@ -115,6 +125,15 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			{ 
 				SetValue(FunctionProperty, value);
 
+				// If the function name is still the special 'Ignore' function name and
+				// the function is being set to a function other than 'None' then...
+				if (Name == ChannelItemViewModel.IgnoreFunctionName &&
+					value != "None")
+				{
+					// Make the function name match the selected function
+					Name = value;
+				}
+
 				// Force Catel to re-validate
 				Validate(true);
 								
@@ -167,7 +186,11 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			// Display the validation bar
 			DisplayValidationBar(validationResults);			
 		}
-		
+
+		#endregion
+
+		#region Public Methods
+
 		/// <summary>
 		/// Validates the business rules of the view model.
 		/// </summary>
