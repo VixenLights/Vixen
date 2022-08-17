@@ -71,6 +71,10 @@
       <Private>false</Private>
 	    <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
+    <ProjectReference Include="..\FixtureGraphics\FixtureGraphics.csproj" >
+	  <Private>false</Private>
+	  <IncludeAssets>None</IncludeAssets>
+	  </ProjectReference>
   </ItemGroup>
   
   <ItemGroup>
