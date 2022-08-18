@@ -7,8 +7,8 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
     /// <summary>
     /// Maintains fixture index data view.
     /// </summary>
-    public partial class IndexedView
-    {
+    public partial class IndexedView : IRefreshGrid
+	{
 		#region Constructor
 		
 		/// <summary>
@@ -92,6 +92,21 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 					return castedProp;
 			}
 			return null;
+		}
+
+		#endregion
+
+		#region IRefrsehGrid
+
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
+		public void Refresh()
+		{
+			// Refresh the items in the DataGrid.
+			// This method exists because deleting invalid rows in grid was basically leaving the grid in
+			// a read-only state because it seemed to hang onto the invalid row.
+			grid.Items.Refresh();
 		}
 
 		#endregion
