@@ -38,9 +38,7 @@
 
     </Window.Resources>
 
-    <catel:InfoBarMessageControl  Style="{DynamicResource yourCustomStyleKey}">
-
-        <Grid Background="#444444">
+    <Grid Background="#444444">
             <Grid.RowDefinitions>
                 <RowDefinition Height = "*" />
                 <RowDefinition Height = "60" />
@@ -69,5 +67,4 @@
                 <Button Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True" Style="{StaticResource RowButtonStyle}"/>
             </WrapPanel>
         </Grid>
-    </catel:InfoBarMessageControl>
 </catel:Window>
