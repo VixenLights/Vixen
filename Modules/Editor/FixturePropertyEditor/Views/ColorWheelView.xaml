@@ -1,4 +1,4 @@
-﻿<catel:UserControl x:Class="VixenModules.Editor.FixturePropertyEditor.Views.ColorWheelView"			                                                           
+<catel:UserControl x:Class="VixenModules.Editor.FixturePropertyEditor.Views.ColorWheelView"			                                                           
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -91,7 +91,9 @@
                         <DataTemplate>
 							<TextBox MinWidth="30" ToolTip="DMX stop value for the color.">
                                 <TextBox.Text>
-                                    <Binding Path="StartValue" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" NotifyOnValidationError="true">
+				                            <Binding Path="EndValue" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" NotifyOnValidationError="true">
+                                        <Binding.ValidationRules>
+                                        </Binding.ValidationRules>
                                     </Binding>
                                 </TextBox.Text>
                             </TextBox>
