@@ -32,7 +32,7 @@
 			<RowDefinition Height = "60" />
 		</Grid.RowDefinitions>
 
-		<DataGrid Name="pointDataGrid" AutoGenerateColumns="False" 
+		<DataGrid Name="grid" AutoGenerateColumns="False" 
 				  ItemsSource="{Binding Items}" 
 				  SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}"
 				  SelectionChanged="SelectionChanged"
