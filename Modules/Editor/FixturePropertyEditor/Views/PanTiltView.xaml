@@ -25,24 +25,29 @@
 
     <StackPanel>
         <WrapPanel>
-            <Label Content="Start Position (Degrees):" Margin="10, 10, 5, 0"></Label>
+            <Label Content="Start Position (Degrees):" Margin="10, 10, 5, 0"
+				   ToolTip="Defines the resting position of the fixture."></Label>
             <TextBox  
                 x:Name="txtStartPosition"
                 MinWidth="40"
                 HorizontalAlignment="Left"                   
                  VerticalAlignment = "Center" Padding="1"
                       Text="{Binding Path=StartPosition, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}"                    
-                      >
+                      ToolTip="Defines the resting position of the fixture.">
             </TextBox>
         </WrapPanel>
         <WrapPanel>
-            <Label Content="Stop Position (Degrees):" Margin="10, 10, 5, 0"></Label>
+            <Label Content="Stop Position (Degrees):" Margin="10, 10, 5, 0"
+				   ToolTip="Defines the maximum range of movement."
+				   ></Label>
             <TextBox  
                 x:Name="txtStopPosition"
                 MinWidth="40"
                 HorizontalAlignment="Left"                   
                  VerticalAlignment = "Center" Padding="1"
-                          Text="{Binding Path=StopPosition, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}">
+                          Text="{Binding Path=StopPosition, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}"
+				ToolTip="Defines the maximum range of movement."
+				>
             </TextBox>
         </WrapPanel>
     </StackPanel>

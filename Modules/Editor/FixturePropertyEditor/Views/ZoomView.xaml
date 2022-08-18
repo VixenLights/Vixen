@@ -5,24 +5,28 @@
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                    mc:Ignorable="d">
-    <UserControl.Resources>
-        <ResourceDictionary>
+	<UserControl.Resources>
+		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
-    </UserControl.Resources>
+	</UserControl.Resources>
 
 	<StackPanel>
 		<RadioButton Grid.Row="0" 
                     Margin="10,10,10,10" 
                     IsChecked="{Binding Path=NarrowToWide}"
-                    GroupName="FixtureSelection">Narrow To Wide</RadioButton>
+                    GroupName="FixtureSelection"
+					 ToolTip="Fixture zooms from a narrow beam to a wide beam."
+					 >Narrow To Wide</RadioButton>
 
 		<RadioButton Grid.Row="0" 
                      Margin="10,10,10,10" 
-                     IsChecked="{Binding Path=WideToNarrow}"
-                     GroupName="FixtureSelection">Wide To Narrow</RadioButton>
+                     IsChecked="{Binding Path=WideToNarrow}" 
+                     GroupName="FixtureSelection"
+					 ToolTip="Fixture zooms from a wide beam to a narrow beam."
+					 >Wide To Narrow</RadioButton>
 	</StackPanel>
 
 </catel:UserControl>
