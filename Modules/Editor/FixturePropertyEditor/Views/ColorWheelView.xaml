@@ -146,6 +146,16 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Exclude&#x0a;Color&#x0a;Property" Width="65">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding Path=ExcludeColorProperty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+									  ToolTip="Excludes the color entry from the color property associated with the fixture element.  This option should be selected for colors like CTB (Color Temperature Blue) and UV (Ultraviolet)."
+									  />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
 
