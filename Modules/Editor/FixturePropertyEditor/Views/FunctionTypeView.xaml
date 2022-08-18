@@ -66,7 +66,8 @@
 						<DataGridTemplateColumn Header="Name" Width="*">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<TextBlock Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}">
+									<TextBlock Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}"
+											   ToolTip="Enter a unique name for the function.  This name appears in effects.">
 									</TextBlock>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
@@ -84,7 +85,9 @@
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
 									<ComboBox ItemsSource="{Binding Source={StaticResource myEnum}}" 
-                                        SelectedItem="{Binding Path=FunctionTypeEnum, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                                        SelectedItem="{Binding Path=FunctionTypeEnum, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+											  ToolTip="Select the type of function."
+											  />
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
@@ -93,19 +96,17 @@
 						<DataGridTemplateColumn Header="Preview Legend" Width="95">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<TextBlock Text="{Binding Legend}">
-										<TextBlock.Style>
-											<Style>
-												<Setter Property="TextBlock.Foreground" Value="{StaticResource ForeColorBrush}"/>
-												<Setter Property="TextBlock.Background" Value="{StaticResource BackColorBrush}"/>
-											</Style>
-										</TextBlock.Style>
+									<TextBlock Text="{Binding Legend}"
+											   ToolTip="Character to display to represent the function in a legend below the fixture graphic on the preview.">
+
 									</TextBlock>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 							<DataGridTemplateColumn.CellEditingTemplate>
 								<DataTemplate>
-									<TextBox Text="{Binding Legend, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+									<TextBox Text="{Binding Legend, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+											 ToolTip="Character to display to represent the function in a legend below the fixture graphic on the preview."
+											 />
 								</DataTemplate>
 							</DataGridTemplateColumn.CellEditingTemplate>
 						</DataGridTemplateColumn>
@@ -114,7 +115,9 @@
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
 									<ComboBox ItemsSource="{Binding FunctionIdentities}" 
-                         SelectedItem="{Binding Path=FunctionIdentity, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay }" />
+                         SelectedItem="{Binding Path=FunctionIdentity, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay }" 
+											  ToolTip="Select a Tag for functions when Vixen needs to be aware of the function for the Preview or automation.  Click the Help button for additional information."
+											  />
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
@@ -123,10 +126,12 @@
 
 
 				<WrapPanel Margin="5,0,0,0" Grid.Row="1">
-					<Button Name="Add" Width="40" Height="40" Command="{Binding AddCommand}" Margin="0,2,2,2">
+					<Button Name="Add" Width="40" Height="40" Command="{Binding AddCommand}" Margin="0,2,2,2"
+							ToolTip="Select to Add a new function.">
 						<Image Source="/Resources;component/Add.png"/>
 					</Button>
-					<Button Name="Remove" Width="40" Height="40" Command="{Binding DeleteCommand}" Margin="0,2,2,2">
+					<Button Name="Remove" Width="40" Height="40" Command="{Binding DeleteCommand}" Margin="0,2,2,2"
+							ToolTip="Select to Remove the selected function.">
 						<Image Source="/Resources;component/Delete.png"></Image>
 					</Button>
 				</WrapPanel>

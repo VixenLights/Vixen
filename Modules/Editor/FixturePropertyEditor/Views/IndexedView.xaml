@@ -53,13 +53,15 @@
 				<DataGridTemplateColumn Header="Name" Width="*">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<TextBlock Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}">
+							<TextBlock Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}"
+									   ToolTip="Unique name for the index entry.  This name is used to select the option in effects.">
 							</TextBlock>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 					<DataGridTemplateColumn.CellEditingTemplate>
 						<DataTemplate>
-							<TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}" MinWidth="30" />
+							<TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}" MinWidth="30" 
+									 ToolTip="Unique name for the index entry.  This name is used to select the option in effects."/>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellEditingTemplate>
 				</DataGridTemplateColumn>
@@ -68,7 +70,9 @@
 				<DataGridTemplateColumn Header="Use Curve" Width="60">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding Path=UseCurve, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}" />
+							<CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding Path=UseCurve, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}" 
+									  ToolTip="Select for entries that define a range where the user neeeds to pick a specific value within that range.  This entry will be edited using a curve in effects."
+									  />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
@@ -77,13 +81,15 @@
 				<DataGridTemplateColumn Header="Start Value" Width="65">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<TextBlock Text="{Binding StartValue, ValidatesOnDataErrors=true, NotifyOnValidationError=true}">
+							<TextBlock Text="{Binding StartValue, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"
+									   ToolTip="DMX start value for the index.">
 							</TextBlock>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 					<DataGridTemplateColumn.CellEditingTemplate>
 						<DataTemplate>
-							<TextBox MinWidth="30">
+							<TextBox MinWidth="30"
+									 ToolTip="DMX start value for the index.">
 								<TextBox.Text>
 									<Binding Path="StartValue" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" NotifyOnValidationError="true" >
 										<Binding.ValidationRules>
@@ -98,13 +104,15 @@
 				<DataGridTemplateColumn Header="End Value" Width="65">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<TextBlock Text="{Binding EndValue, ValidatesOnDataErrors=True, NotifyOnValidationError=true}">
+							<TextBlock Text="{Binding EndValue, ValidatesOnDataErrors=True, NotifyOnValidationError=true}"
+									   ToolTip="DMX stop value for the index.">
 							</TextBlock>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 					<DataGridTemplateColumn.CellEditingTemplate>
 						<DataTemplate>
-							<TextBox MinWidth="30">
+							<TextBox MinWidth="30"
+									 ToolTip="DMX stop value for the index.">
 								<TextBox.Text>
 									<Binding Path="EndValue" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" NotifyOnValidationError="true">
 									</Binding>
@@ -121,7 +129,9 @@
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
 							<ComboBox ItemsSource="{Binding IndexTypes}" 
-                         SelectedItem="{Binding Path=IndexType, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay }" />
+                         SelectedItem="{Binding Path=IndexType, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay }" 
+					     ToolTip="Select a Tag for index items when Vixen needs to be aware of the index value for the Preview or automation.  Click the Help button for additional information."
+									  />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
@@ -133,7 +143,8 @@
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
 							<ComboBox ItemsSource="{Binding AvailableImages}" 
-							          SelectedItem="{Binding Path=Image, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+							          SelectedItem="{Binding Path=Image, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+									  ToolTip="Select an image to associate with the Gobo item.  The image appears on the timeline when using the Gobo effect."/>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
@@ -143,14 +154,17 @@
 
 
 		<WrapPanel Margin="5,0,0,0" Grid.Row="1" >
-			<Button Name="Add" Width="40" Height="40" Command="{Binding AddCommand}"  Margin="0,2,2,2">
+			<Button Name="Add" Width="40" Height="40" Command="{Binding AddCommand}"  Margin="0,2,2,2"
+					ToolTip="Select to Add a new index item.">
 				<Image Source="/Resources;component/Add.png"></Image>
 			</Button>
-			<Button Name="Remove" Width="40" Height="40" Command="{Binding DeleteCommand}"  Margin="2,2,2,2">
+			<Button Name="Remove" Width="40" Height="40" Command="{Binding DeleteCommand}"  Margin="2,2,2,2"
+					ToolTip="Select to Remove the selected index item.">
 				<Image Source="/Resources;component/Delete.png"></Image>
 			</Button>
 			<Button Width="150" Height="40" Command="{Binding ImportGoboImagesCommand}"  Margin="2,2,2,2" Content="Import Gobo Images"
-				Visibility="{Binding DisplayImage, Converter={StaticResource BooleanToVisibilityConverter}}">
+				Visibility="{Binding DisplayImage, Converter={StaticResource BooleanToVisibilityConverter}}"
+					ToolTip="Select to Import png images for the Gobo items.">
 			</Button>
 		</WrapPanel>
 
