@@ -88,7 +88,7 @@
                         <DataTemplate>
                             <TextBox MinWidth="30">
                                 <TextBox.Text>
-                                    <Binding Path="StartValue" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" NotifyOnValidationError="true">
+				<Binding Path="EndValue" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" NotifyOnValidationError="true">
                                         <Binding.ValidationRules>
                                         </Binding.ValidationRules>
                                     </Binding>
