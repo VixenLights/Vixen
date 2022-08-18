@@ -56,8 +56,8 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 			
 			// Give the view model the fixture being edited
 			(ViewModel as FixturePropertyEditorWindowViewModel).FixtureSpecification =
-				new Tuple<FixtureSpecification, Action>(_fixtureSpecification,
-					((Command)vm.OkCommand).RaiseCanExecuteChanged);
+				new Tuple<FixtureSpecification, Action, bool>(_fixtureSpecification,
+					((Command)vm.OkCommand).RaiseCanExecuteChanged, true);
 		}
 
 		/// <summary>
