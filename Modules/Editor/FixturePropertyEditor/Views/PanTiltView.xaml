@@ -11,8 +11,10 @@
 		xmlns:local="clr-namespace:VixenModules.Editor.FixturePropertyEditor.Views"			  
 		xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:viewModel="clr-namespace:VixenModules.Editor.FixturePropertyEditor.ViewModels"		           
-        mc:Ignorable="d">
-    <UserControl.Resources>
+        mc:Ignorable="d"
+	    Loaded="UserControl_Loaded"
+		Unloaded="UserControl_Unloaded">
+	<UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
@@ -50,6 +52,7 @@
 				>
             </TextBox>
         </WrapPanel>
-    </StackPanel>
+		<Viewport3D Name="MainViewport"/>
+	</StackPanel>
 
 </catel:UserControl>
