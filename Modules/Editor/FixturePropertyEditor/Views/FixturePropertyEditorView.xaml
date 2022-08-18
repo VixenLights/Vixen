@@ -43,24 +43,40 @@
                 <ColumnDefinition Width="220"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <Label Content="Profile:" Grid.Row="0" Grid.Column="0"></Label>
-            <TextBox x:Name="txtName" HorizontalAlignment="Stretch" Text="{Binding Path=Name, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" Margin="0,2,0,2">
+            <Label Content="Profile:" Grid.Row="0" Grid.Column="0"
+				   ToolTip="Enter a unique name for the fixture profile."></Label>
+            <TextBox x:Name="txtName" HorizontalAlignment="Stretch" Text="{Binding Path=Name, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" Margin="0,2,0,2"
+					 ToolTip="Enter a unique name for the fixture profile."
+					 >
             </TextBox>
 
             <Button Content="Load Fixture Profile"  
                     HorizontalAlignment="Left"
                     Command="{Binding Path=LoadSpecificationCommand}" 
                     Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type views:FixturePropertyEditorView}}, Path=DisplayLoadButton, Converter={StaticResource BooleanToVisibilityConverter}}"
-                IsDefault="True" Style="{StaticResource RowButtonStyle}" Width="150" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" />
+                    IsDefault="True" Style="{StaticResource RowButtonStyle}" Width="150" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" 
+					ToolTip="Select to load an existing fixture profile."
+					/>
 
-            <Label Content="Manufacturer:" Grid.Row="1"></Label>
-            <TextBox HorizontalAlignment="Stretch" Text="{Binding Path=Manufacturer, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Margin="0,2,0,2"/>
+            <Label Content="Manufacturer:" Grid.Row="1"
+				   ToolTip="Enter the manufacturer of the fixture."
+				   ></Label>
+            <TextBox HorizontalAlignment="Stretch" Text="{Binding Path=Manufacturer, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Margin="0,2,0,2"
+				   ToolTip="Enter the manufacturer of the fixture."
+					 />
 
-            <Label Content="Created By:" Grid.Row="2"></Label>
-            <TextBox HorizontalAlignment="Stretch" Text="{Binding Path=CreatedBy, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" Margin="0,2,0,2"/>
+            <Label Content="Created By:" Grid.Row="2"
+				   ToolTip="User that created the fixture profile."
+				   ></Label>
+            <TextBox HorizontalAlignment="Stretch" Text="{Binding Path=CreatedBy, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" Margin="0,2,0,2"
+					 ToolTip="User that created the fixture profile."
+					 />
 
-            <Label Content="Revision:" Grid.Row="1" Grid.Column="2"></Label>
-            <TextBox HorizontalAlignment="Stretch" Text="{Binding Path=Revision, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="3" Margin="0,2,0,2"/>
+            <Label Content="Revision:" Grid.Row="1" Grid.Column="2"
+				   ToolTip="Revision of the fixture profile."
+				   ></Label>
+            <TextBox HorizontalAlignment="Stretch" Text="{Binding Path=Revision, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="3" Margin="0,2,0,2"
+					 ToolTip="Revision of the fixture profile."/>
         </Grid>
 
 
@@ -86,13 +102,16 @@
                     <DataGridTemplateColumn Header="Name" Width="2*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}">
+                                <TextBlock Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}"
+										   ToolTip="Unique name for the channel.">
                                 </TextBlock>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                         <DataGridTemplateColumn.CellEditingTemplate>
                             <DataTemplate>
-                                <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}" />
+                                <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}" 
+										 ToolTip="Unique name for the channel."
+										 />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellEditingTemplate>
                     </DataGridTemplateColumn>
@@ -101,13 +120,15 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <ComboBox ItemsSource="{Binding Functions}"                                   
-									SelectedItem="{Binding Path=Function, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=true}" />
+									SelectedItem="{Binding Path=Function, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=true}" 
+										  ToolTip="Fixture function associated with the channel.  Note functions may span more than one channel."/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                         <DataGridTemplateColumn.CellEditingTemplate>
                             <DataTemplate>
                                 <ComboBox ItemsSource="{Binding Functions}"                                     
-									SelectedItem="{Binding Path=Function, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=true}" />
+									SelectedItem="{Binding Path=Function, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=true}" 
+										  ToolTip="Fixture function associated with the channel.  Note functions may span more than one channel."/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellEditingTemplate>
                     </DataGridTemplateColumn>
@@ -115,7 +136,9 @@
                     <DataGridTemplateColumn Width="32">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Command="{Binding Path=EditFunctionsCommand}">
+                                <Button Command="{Binding Path=EditFunctionsCommand}"
+										ToolTip="Select to Edit the function associated with the channel."
+										>
                                     <Image Source="{Binding Path=EditFunctionsImageSource}"/>
                                 </Button>
                             </DataTemplate>
@@ -129,10 +152,12 @@
 
         <WrapPanel Margin="10,5,5,0" Grid.Row="2">
             <Button Name="Add" Width="40" Height="40" Margin="0,2,2,0" Command="{Binding AddCommand}">
-                <Image Source="/Resources;component/Add.png"/>
+                <Image Source="/Resources;component/Add.png"
+			     ToolTip="Select to Add a new channel."/>
             </Button>
             <Button Name="Remove" Width="40" Height="40" Margin="2,2,2,0" Command="{Binding DeleteCommand}">
-                <Image Source="/Resources;component/Delete.png"></Image>
+                <Image Source="/Resources;component/Delete.png"
+					   ToolTip="Select to Remove the selected channel."></Image>
             </Button>
         </WrapPanel>
     </Grid>
