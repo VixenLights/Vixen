@@ -9,7 +9,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
     /// <summary>
     /// Maintains a fixture function editor view.
     /// </summary>
-    public partial class FunctionTypeView
+    public partial class FunctionTypeView : IRefreshGrid
 	{
 		#region Constructor
 
@@ -228,5 +228,20 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 		}
 
 		#endregion
-	}	
+
+		#region IRefrsehGrid
+
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
+		public void Refresh()
+		{
+			// Refresh the items in the DataGrid.
+			// This method exists because deleting invalid rows in grid was basically leaving the grid in
+			// a read-only state because it seemed to hang onto the invalid row.
+			functionGrid.Items.Refresh();
+		}
+
+		#endregion
+	}
 }
