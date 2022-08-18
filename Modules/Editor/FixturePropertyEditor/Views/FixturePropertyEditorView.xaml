@@ -82,7 +82,7 @@
 
         <DockPanel Grid.Row="1">
 
-            <DataGrid Name="pointDataGrid" AutoGenerateColumns="False" ItemsSource="{Binding Items}" Margin="10,10,10,0" 
+            <DataGrid Name="grid" AutoGenerateColumns="False" ItemsSource="{Binding Items}" Margin="10,10,10,0" 
 				          RowHeaderWidth="0"   Background="#444444" CanUserAddRows="False"
                  SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}" 
                  EnableRowVirtualization="False" DockPanel.Dock = "Top" VerticalAlignment='Top'
