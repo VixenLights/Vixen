@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using Vixen.Extensions;
 using VixenModules.App.Fixture;
 using VixenModules.App.FixtureSpecificationManager;
 using VixenModules.Editor.FixturePropertyEditor.Views;
@@ -22,7 +23,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// Constructor
 		/// </summary>
 		/// <param name="fixtureSpecification">Fixture specification being edited</param>
-        public FixturePropertyEditorViewModel(Tuple<FixtureSpecification, Action> fixtureTuple)
+        public FixturePropertyEditorViewModel(Tuple<FixtureSpecification, Action, bool> fixtureTuple)
 		{			
 			// Create the collection of function names
 			Functions = new ObservableCollection<string>();
@@ -36,6 +37,10 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 
 			// Save off the action that refreshes commands
 			RaiseCanExecuteChanged = fixtureTuple.Item2;
+
+			// Store off whether to display the profile properties
+			// Profile properties are not displayed when the view is used inside the wizard
+			ShowProfileProperties = fixtureTuple.Item3;
 
 			// Initialize the channel view models	
 			InitializeChildViewModels(fixtureTuple.Item1);
@@ -161,6 +166,26 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// Revision property data.
 		/// </summary>
 		public static readonly PropertyData RevisionProperty = RegisterProperty(nameof(Revision), typeof(string), null);
+
+		/// <summary>
+		/// Determines if the profile properties are displayed.
+		/// </summary>
+		public bool ShowProfileProperties
+		{
+			get
+			{
+				return GetValue<bool>(ShowProfilePropertiesProperty);
+			}
+			set
+			{
+				SetValue(ShowProfilePropertiesProperty, value);
+			}
+		}
+
+		/// <summary>
+		/// ShowProfileProperties property data.
+		/// </summary>
+		public static readonly PropertyData ShowProfilePropertiesProperty = RegisterProperty(nameof(ShowProfileProperties), typeof(bool), null);
 
 		#endregion
 
