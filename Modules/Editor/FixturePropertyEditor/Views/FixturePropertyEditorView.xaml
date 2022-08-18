@@ -28,7 +28,7 @@
             <RowDefinition Height = "50" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Margin="10, 1, 5, 0">
+        <Grid Grid.Row="0" Margin="10, 1, 5, 0" Visibility="{Binding Path=ShowProfileProperties, Converter={StaticResource BooleanToVisibilityConverter}}">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height = "27" />
@@ -89,6 +89,11 @@
                   SelectionChanged="SelectionChanged"
                    DataGridCell.GotFocus="DataGrid_CellGotFocus">
 
+                <DataGrid.Resources>
+                    <local:BindingProxy x:Key="proxy" Data="{Binding}" />
+                </DataGrid.Resources>
+
+
                 <DataGrid.Columns>
 
                     <DataGridTemplateColumn  Header="Channel #" Width="70">
@@ -133,7 +138,9 @@
                         </DataGridTemplateColumn.CellEditingTemplate>
                     </DataGridTemplateColumn>
 
-                    <DataGridTemplateColumn Width="32">
+                    <DataGridTemplateColumn Width="32"  Visibility="{Binding Data.ShowProfileProperties,
+										 Converter={StaticResource BooleanToVisibilityConverter},
+										 Source={StaticResource proxy}}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button Command="{Binding Path=EditFunctionsCommand}"
