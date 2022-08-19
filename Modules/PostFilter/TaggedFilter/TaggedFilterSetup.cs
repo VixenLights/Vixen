@@ -17,7 +17,7 @@ namespace VixenModules.OutputFilter.TaggedFilter
 		/// <summary>
 		/// Data associated with the filter.
 		/// </summary>
-        private TaggedFilterData _data;
+        private TaggedFilterDataBase _data;
 
 		#endregion
 
@@ -27,7 +27,7 @@ namespace VixenModules.OutputFilter.TaggedFilter
 		/// Constructor
 		/// </summary>
 		/// <param name="data">Data associated with the filter</param>
-		public TaggedFilterSetup(TaggedFilterData data)
+		public TaggedFilterSetup(TaggedFilterDataBase data)
 		{
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
