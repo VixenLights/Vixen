@@ -356,7 +356,9 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		{
 			item.Name = "Zombie";
 			item.Function = FixtureFunctionType.None.GetEnumDescription();
-			item.CloseViewModelAsync(null);			
+			item.CloseViewModelAsync(null);
+		}
+
 		/// <summary>
 		/// Refer to base class documentation.
 		/// </summary>
