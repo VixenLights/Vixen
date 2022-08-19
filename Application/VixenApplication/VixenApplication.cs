@@ -22,6 +22,7 @@ using Vixen.Module.Editor;
 using Vixen.Module.SequenceType;
 using Vixen.Services;
 using Vixen.Sys;
+using VixenModules.App.FixtureSpecificationManager;
 using Application = System.Windows.Forms.Application;
 using Color = System.Drawing.Color;
 using Pen = System.Drawing.Pen;
@@ -140,7 +141,10 @@ namespace VixenApplication
 				form.Dispose(); 
 				Environment.Exit(0);
 			}
-			
+
+			// Give the fixture specification manager the root profile data directory
+			FixtureSpecificationManager.Instance().InitializeProfilePath(_rootDataDirectory);
+
 			stopping = false;
 			toolStripStatusUpdates.Text = "";
 			PopulateVersionStrings();
