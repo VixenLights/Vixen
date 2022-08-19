@@ -4,7 +4,7 @@
 		<Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
 		<Platform Condition=" '$(Platform)' == '' ">x86</Platform>
 		<ProductVersion>1.0</ProductVersion>
-		<RootNamespace>VixenModules.OutputFilter.ShutterFilter</RootNamespace>
+		<RootNamespace>VixenModules.OutputFilter.PrismFilter</RootNamespace>
 		<TargetFramework>net48</TargetFramework>
 		<AssemblyTitle>ShutterFilter</AssemblyTitle>
 		<AssemblyName>ShutterFilter</AssemblyName>
