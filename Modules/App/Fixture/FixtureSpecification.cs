@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
 using Vixen.Data.Value;
+using Vixen.Extensions;
 using Vixen.Sys;
 
 namespace VixenModules.App.Fixture
@@ -352,7 +353,7 @@ namespace VixenModules.App.Fixture
 
 			// Add a None function so that channels can be included in the specification but generally ignored
 			AddFunctionType(
-				"None",
+				FixtureFunctionType.None.GetEnumDescription(),
 				FixtureFunctionType.None,
 				FunctionIdentity.Custom,
 				Color.Transparent);
