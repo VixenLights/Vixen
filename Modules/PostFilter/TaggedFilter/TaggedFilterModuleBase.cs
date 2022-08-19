@@ -1,4 +1,5 @@
-﻿using Vixen.Data.Flow;
+﻿using System.Windows.Forms;
+using Vixen.Data.Flow;
 using Vixen.Module;
 using Vixen.Module.OutputFilter;
 using VixenModules.OutputFilter.TaggedFilter.Outputs;
@@ -12,7 +13,7 @@ namespace VixenModules.OutputFilter.TaggedFilter
     /// <typeparam name="TOutput">Type of the filter output</typeparam>
     /// <typeparam name="TDescriptor">Type of the filter descriptor</typeparam>
     public abstract class TaggedFilterModuleBase<TFilterData, TOutput, TDescriptor> : OutputFilterModuleInstanceBase
-		where TFilterData : IModuleDataModel, ITaggedFilterData
+		where TFilterData : TaggedFilterDataBase, IModuleDataModel, ITaggedFilterData
 		where TOutput : class, ITaggedFilterOutput, IDataFlowOutput<IntentsDataFlowData>, IDataFlowOutput
 		where TDescriptor : IModuleDescriptor
 	{
@@ -103,9 +104,44 @@ namespace VixenModules.OutputFilter.TaggedFilter
 		/// </summary>
 		public override string Name
 		{
+			// Adding Tag to the Name makes the Filter unique in the graphical view
 			get { return Descriptor.TypeName + ": " + Tag; }
 		}
 		
+		#endregion
+
+		#region IHasSetup
+
+		/// <summary>
+		/// Refer interface documentation.
+		/// </summary>
+		public override bool HasSetup => true;
+
+		/// <summary>
+		/// Refer interface documentation.
+		/// </summary>
+		public override bool Setup()
+		{
+			// Default to the OK button not being selected
+			bool okSelected = false;
+
+			// Display the Tagger filter setup dialog
+			using (TaggedFilterSetup setup = new TaggedFilterSetup(Data))
+			{
+				// If the user selected OK then...
+				if (setup.ShowDialog() == DialogResult.OK)
+				{
+					// Re-create the filter's output
+					CreateOutput();
+
+					// Indicate that setup completed successfully
+					okSelected = true;
+				}
+			}
+
+			return okSelected;
+		}
+
 		#endregion
 
 		#region Protected Methods
