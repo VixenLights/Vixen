@@ -60,7 +60,7 @@ namespace VixenModules.OutputFilter.ShutterFilter.Output
 		}
 
 		#endregion
-
+		
 		#region Public Methods
 
 		/// <summary>
@@ -86,6 +86,44 @@ namespace VixenModules.OutputFilter.ShutterFilter.Output
 				// Get the base class intent data
 				IntentsDataFlowData intentData = base.IntentData;
 
+				// If there is more than one shutter intent then...
+				if (intentData.Value.Count > 1)
+				{
+					// Declare a collection of intents to remove
+					List<IIntentState> intentsToRemove = new List<IIntentState>();
+
+					// Create a flag to keep track if a strobe intent was found
+					bool foundStrobe = false;
+
+					// Loop over the intents
+					foreach (IIntentState intentState in intentData.Value)
+					{
+						// If the intent is a strobe intent then...
+						if (((CommandValue)intentState.GetValue()).Command is Named8BitCommand<FixtureIndexType> &&
+							(((CommandValue)intentState.GetValue()).Command as Named8BitCommand<FixtureIndexType>).IndexType == FixtureIndexType.Strobe)
+						{
+							// Remember that a strobe intent was found
+							foundStrobe = true;
+						}
+						else
+						{
+							// Keep track of the other shutter intents to remove
+							intentsToRemove.Add(intentState);
+						}
+					}
+
+					// If a strobe shutter intent was found then...
+					if (foundStrobe)
+					{
+						// Loop over the shutter intents to remove
+						foreach (IIntentState intentState in intentsToRemove)
+						{
+							// Remove the open shutter intents
+							intentData.Value.Remove(intentState);
+						}
+					}										
+				}
+				
 				// If the intent data collection is empty then...
 				if (intentData.Value.Count == 0)
                 {
