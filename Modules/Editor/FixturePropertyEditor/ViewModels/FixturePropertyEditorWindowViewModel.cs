@@ -28,11 +28,11 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
         /// <summary>
         /// Fixture specification associated with the property.
         /// </summary>
-        public Tuple<FixtureSpecification, Action> FixtureSpecification
+        public Tuple<FixtureSpecification, Action, bool> FixtureSpecification
         {
             get
             {
-                return GetValue<Tuple<FixtureSpecification, Action>>(FixtureSpecificationProperty);
+                return GetValue<Tuple<FixtureSpecification, Action, bool>>(FixtureSpecificationProperty);
             }
             set
             {
@@ -43,7 +43,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
         /// <summary>
         /// Fixture specification property data.
         /// </summary>
-        public static readonly PropertyData FixtureSpecificationProperty = RegisterProperty(nameof(FixtureSpecification), typeof(Tuple<FixtureSpecification, Action>), null);
+        public static readonly PropertyData FixtureSpecificationProperty = RegisterProperty(nameof(FixtureSpecification), typeof(Tuple<FixtureSpecification, Action, bool>), null);
 
         #endregion
 
@@ -82,7 +82,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
         protected override void OK()
         {                        
             // Get the updated fixture specification from the child view model
-            FixtureSpecification = new Tuple<FixtureSpecification, Action>(GetChildViewModel().GetFixtureSpecification(), FixtureSpecification.Item2);
+            FixtureSpecification = new Tuple<FixtureSpecification, Action, bool>(GetChildViewModel().GetFixtureSpecification(), FixtureSpecification.Item2, true);
 
             // Save the fixture to the local fixture repository
             GetChildViewModel().SaveSpecification();
