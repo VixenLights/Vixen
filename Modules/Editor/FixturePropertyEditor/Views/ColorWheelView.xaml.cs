@@ -4,10 +4,10 @@ using System.Windows.Media;
 
 namespace VixenModules.Editor.FixturePropertyEditor.Views
 {
-    /// <summary>
-    /// Maintains a color wheel view.
-    /// </summary>
-    public partial class ColorWheelView 
+	/// <summary>
+	/// Maintains a color wheel view.
+	/// </summary>
+	public partial class ColorWheelView : IRefreshGrid
 	{
 		#region Constructor
 
@@ -16,7 +16,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 		/// </summary>
 		public ColorWheelView()
 		{
-			InitializeComponent();			
+			InitializeComponent();
 		}
 
 		#endregion
@@ -42,7 +42,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 		}
 
 		#endregion
-		
+
 		#region Private EditCellInOneClick Methods
 
 		/// <summary>
@@ -90,9 +90,25 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 				if (castedProp != null)
 					return castedProp;
 			}
+
 			return null;
 		}
-		
+
+		#endregion
+
+		#region IRefrsehGrid
+
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
+		public void Refresh()
+		{
+			// Refresh the items in the DataGrid.
+			// This method exists because deleting invalid rows in grid was basically leaving the grid in
+			// a read-only state because it seemed to hang onto the invalid row.
+			grid.Items.Refresh();
+		}
+
 		#endregion
 	}
 }

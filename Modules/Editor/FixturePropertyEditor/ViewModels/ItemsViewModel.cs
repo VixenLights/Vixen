@@ -1,8 +1,14 @@
 ﻿using Catel.Data;
 using Catel.MVVM;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
+using Catel.IoC;
+using Catel.MVVM.Views;
+using VixenModules.Editor.FixturePropertyEditor.Views;
 
 namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 {
@@ -84,8 +90,9 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <returns>True if an item can be added</returns>
 		protected virtual bool CanAddItem()
 		{
-			// By default items can be added
-			return true;
+			// Allowing adding new items if all the existing items are valid or
+			// the collection is empty
+			return string.IsNullOrEmpty(GetValidationResults()) || Items.Count == 0;	
 		}
 
 		/// <summary>
@@ -98,7 +105,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Deletes the currently selected item.
 		/// </summary>
-		protected void DeleteItem()
+		protected virtual void DeleteItem()
 		{
 			// If an item is selected then...
 			if (SelectedItem != null)
@@ -117,6 +124,22 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 
 				// Validate the view model
 				Validate(true);								
+			}
+
+			// Refresh command enable/disable status
+			RaiseCanExecuteChanged();
+
+			// Get the Catel IViewManager
+			IViewManager viewManager = ServiceLocator.Default.ResolveType<IViewManager>();
+
+			// Get the views associated with this view model
+			IView[] views = viewManager.GetViewsOfViewModel(this);
+
+			// If the view implements IRefreshGrid
+			if (views[0] is IRefreshGrid)
+			{
+				// Refresh the grid items in the view
+				((IRefreshGrid)views[0]).Refresh();
 			}
 		}
 
