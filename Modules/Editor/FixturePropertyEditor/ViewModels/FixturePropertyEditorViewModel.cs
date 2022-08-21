@@ -306,6 +306,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			// If the name is empty then...
 			if (string.IsNullOrEmpty(Name))
             {
+				// Add an error
 				validationResults.Add(FieldValidationResult.CreateError(NameProperty, "Profile name is empty.  Profile is a required field."));
 			}
 
@@ -378,8 +379,10 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		protected override void MakeObjectValidBeforeDeleting(ChannelItemViewModel item)
 		{
 			item.Name = "Zombie";
-			item.Function = "None";
+			item.Function = FixtureFunctionType.None.GetEnumDescription();
 			item.CloseViewModelAsync(null);			
+		}
+
 		/// <summary>
 		/// Refer to base class documentation.
 		/// </summary>
@@ -398,6 +401,20 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 				channel.ChannelNumber = (index + 1).ToString();	
 			}
 		}
+
+		/// <summary>
+		/// Refer to base class documentation.
+		/// </summary>
+		protected override void AddItem()
+		{
+			// Call the base class implementation
+			base.AddItem();
+
+			// Default the Function to the None function
+			SelectedItem.Function = FixtureFunctionType.None.GetEnumDescription();
+
+			// Set the channel name to "Ignore"
+			SelectedItem.Name = ChannelItemViewModel.IgnoreFunctionName;
 		}
 
 		#endregion
@@ -472,7 +489,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 					if (Functions.SingleOrDefault(x => x == channel.Function) == null)
 					{
 						// Set the channel function to 'None'
-						channel.Function = "None";
+						channel.Function = FixtureFunctionType.None.GetEnumDescription();
 					}
 				}
 
