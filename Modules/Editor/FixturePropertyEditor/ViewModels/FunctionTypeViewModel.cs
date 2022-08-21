@@ -870,7 +870,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <param name="validationResults">Results of the validation</param>
 		protected override void ValidateBusinessRules(List<IBusinessRuleValidationResult> validationResults)
 		{			
-			// If the function names are NOT unique then...
+			// If the function names are unique then...
 			if (!AreFunctionNamesUnique())
 			{
 				// Add an error that there are duplicate function names
