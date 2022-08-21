@@ -8,7 +8,8 @@
 	xmlns:internal="clr-namespace:VixenModules.Editor.EffectEditor.Internal"
 	xmlns:behaviors="clr-namespace:Common.WPFCommon.Behaviors;assembly=WPFCommon"
 	xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-	xmlns:fixtureExpando="clr-namespace:VixenModules.Effect.Fixture;assembly=IFixtureFunctionExpando">
+	xmlns:fixtureExpando="clr-namespace:VixenModules.Effect.Fixture;assembly=IFixtureFunctionExpando"
+	xmlns:common="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon">
 
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
@@ -144,6 +145,7 @@
 		</StackPanel>
 	</DataTemplate>
 
+	<common:ColorToSolidBrushConverter x:Key="ColorToSolidColorBrush_ValueConverter"/>
 	<DataTemplate x:Key="{x:Static editors:EditorKeys.IFixtureFunctionEditorKey}">
 		<StackPanel>
 			<WrapPanel Orientation="Horizontal">
