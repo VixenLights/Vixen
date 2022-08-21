@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Common.AudioPlayer;
+using CSCore;
+using CSCore.Streams;
 using Vixen.Module;
 using Vixen.Module.Media;
 using Vixen.Module.Timing;
@@ -211,11 +213,21 @@ namespace VixenModules.Media.Audio
 		/// <param name="startSample">0 based starting sample</param>
 		/// <param name="numSamples">Number of samples to include in the byte array</param>
 		/// <returns></returns>
-		public byte[] GetSamples(int startSample, int numSamples)
+		public byte[] GetRawAudioSamples()
 		{
-			float[] buffer = new float[numSamples];
-			Array.Copy(_cachedAudioData.AudioData, startSample ,buffer,0,buffer.Length);
-			return buffer.Select(x => (byte)(x*255)).ToArray();
+			using (var audioFileReader = CSCore.Codecs.CodecFactory.Instance.GetCodec(_audioSystem.Filename))
+			{
+				
+				var wholeFile = new List<byte>((int)(audioFileReader.Length / 4));
+				var readBuffer = new byte[(int)(audioFileReader.WaveFormat.SampleRate * audioFileReader.WaveFormat.Channels)];
+				int samplesRead;
+				while ((samplesRead = audioFileReader.Read(readBuffer, 0, readBuffer.Length)) > 0)
+				{
+					wholeFile.AddRange(readBuffer.Take(samplesRead));
+				}
+				
+				return wholeFile.ToArray();
+			}
 		}
 
 		/// <summary>
