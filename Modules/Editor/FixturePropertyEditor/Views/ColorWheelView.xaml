@@ -28,7 +28,7 @@
             <RowDefinition Height = "60" />
         </Grid.RowDefinitions>
 
-        <DataGrid Name="pointDataGrid" AutoGenerateColumns="False" 
+        <DataGrid Name="grid" AutoGenerateColumns="False" 
 			Margin="5,5,5,5" 
 			RowHeaderWidth="0" Grid.Row="0" 
 			Grid.Column="1" 
