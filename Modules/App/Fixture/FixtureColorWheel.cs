@@ -96,6 +96,27 @@ namespace VixenModules.App.Fixture
 			}
 		}
 
+		/// <summary>
+		/// Backing field for the ExcludeColorProperty property.
+		/// </summary>
+		private bool _excludeColorProperty;
+
+		/// <summary>
+		/// Indicates if the color entry should be included in the color property for the fixture.
+		/// </summary>
+		[DataMember]
+		public bool ExcludeColorProperty
+		{
+			get
+			{
+				return _excludeColorProperty;
+			}
+			set
+			{
+				_excludeColorProperty = value;				
+			}
+		}
+
 		#endregion
 
 		#region Public Methods
@@ -116,6 +137,7 @@ namespace VixenModules.App.Fixture
 				Color1 = Color1,
 				Color2 = Color2,
 				UseCurve = UseCurve,
+				ExcludeColorProperty = ExcludeColorProperty,
 			};
 
 			return colorWheelEntry;
