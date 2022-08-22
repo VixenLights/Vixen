@@ -73,7 +73,7 @@
 							</DataGridTemplateColumn.CellTemplate>
 							<DataGridTemplateColumn.CellEditingTemplate>
 								<DataTemplate>
-									<TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}" />
+									<TextBox MinWidth="10" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}" />
 								</DataTemplate>
 							</DataGridTemplateColumn.CellEditingTemplate>
 						</DataGridTemplateColumn>
@@ -93,7 +93,7 @@
 						</DataGridTemplateColumn>
 
 
-						<DataGridTemplateColumn Header="Preview Legend" Width="95">
+						<DataGridTemplateColumn Header="Preview&#x0a;Legend" Width="55">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
 									<TextBlock Text="{Binding Legend}"
