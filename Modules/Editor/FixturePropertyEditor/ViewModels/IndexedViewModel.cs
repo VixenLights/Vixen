@@ -229,6 +229,16 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 				// Add an error message to the validation results
 				validationResults.Add(BusinessRuleValidationResult.CreateError("Index ranges cannot overlap."));
 			}
+
+			// If the index item names are NOT unique then...
+			if (!AreIndexNamesUnique())
+			{
+				// Add an error that there are duplicate index names
+				validationResults.Add(BusinessRuleValidationResult.CreateError("Cannot have duplicate index names."));
+			}
+
+			// Display the validation bar
+			DisplayValidationBar(validationResults);
 		}
 
 		#endregion
@@ -282,7 +292,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <param name="left">Left range to analyze</param>
 		/// <param name="right">Right range to analyze</param>
 		/// <returns></returns>
-		bool Overlaps(IndexedItemViewModel left, IndexedItemViewModel right)
+		private bool Overlaps(IndexedItemViewModel left, IndexedItemViewModel right)
 		{
 			// Default to NOT overlapped
 			bool overlaps = false;
@@ -357,6 +367,29 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 
 			// Return whether the ranges overlap
 			return overlaps;
+		}
+
+		/// <summary>
+		/// Returns true if all index names are unique.
+		/// </summary>
+		/// <returns>True if all index names are unique</returns>
+		private bool AreIndexNamesUnique()
+		{
+			// Default to index names being valid
+			bool valid = true;
+
+			// Loop over all the index item VM's
+			foreach (IndexedItemViewModel index in Items)
+			{
+				// If more than one index item view model has the same name then...
+				if (Items.Count(item => item.Name == index.Name) > 1)
+				{
+					// Indicate a duplicate index was found!
+					valid = false;
+				}
+			}
+
+			return valid;
 		}
 
 		#endregion
