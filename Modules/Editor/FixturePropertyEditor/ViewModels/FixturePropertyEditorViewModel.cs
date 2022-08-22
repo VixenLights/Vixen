@@ -380,7 +380,26 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		{
 			item.Name = "Zombie";
 			item.Function = FixtureFunctionType.None.GetEnumDescription();
-			item.CloseViewModelAsync(null);
+			item.CloseViewModelAsync(null);			
+		}
+
+		/// <summary>
+		/// Refer to base class documentation.
+		/// </summary>
+		protected override void DeleteItem()
+		{
+			// Call the base class implementation
+			base.DeleteItem();
+
+			// Loop over the remaining channel items
+			for(int index = 0; index < Items.Count; index++)
+			{
+				// Retrieve the specified channel
+				ChannelItemViewModel channel = Items[index];	
+
+				// Update the channel number to remove any gaps
+				channel.ChannelNumber = (index + 1).ToString();	
+			}
 		}
 
 		/// <summary>
