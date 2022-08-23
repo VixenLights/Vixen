@@ -40,8 +40,8 @@ namespace VixenModules.OutputFilter.ColorWheelFilter.Filters
 			// Get the discrete value from the intent
 			DiscreteValue discreteValue = discreteIntent.GetValue();
 
-			// Get the Full color from the discrete value
-			Color color = discreteValue.FullColor;
+			// Get the color from the discrete value
+			Color color = discreteValue.Color;
 
 			// Convert the color into a color wheel index command intent
 			return ConvertColorToIndexCommand(color);
@@ -107,7 +107,7 @@ namespace VixenModules.OutputFilter.ColorWheelFilter.Filters
 			LightingValue lightingValue = intent.GetValue();
 
 			// Get the full color from the lighting value
-			Color color = lightingValue.FullColor;
+			Color color = lightingValue.Color;
 
 			// Convert the color into a color wheel index command intent
 			return ConvertColorToIndexCommand(color);
