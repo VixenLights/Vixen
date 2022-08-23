@@ -344,6 +344,7 @@ namespace VixenModules.Effect.Fixture
 				fixtureFunctionExpando.FunctionType = fixtureFunctionData.FunctionType;
 				fixtureFunctionExpando.IndexValue = fixtureFunctionData.IndexValue;
 				fixtureFunctionExpando.ColorIndexValue = fixtureFunctionData.ColorIndexValue;
+				fixtureFunctionExpando.TimelineColor = fixtureFunctionData.TimelineColor;
 
 				// Add the fixture function to the collection
 				functionItemCollection.Add(fixtureFunctionExpando);
@@ -377,6 +378,7 @@ namespace VixenModules.Effect.Fixture
 				functionModel.IndexValue = functionViewModel.IndexValue;
 				functionModel.ColorIndexValue = functionViewModel.ColorIndexValue;
 				functionModel.FunctionType = functionViewModel.FunctionType;
+				functionModel.TimelineColor = functionViewModel.TimelineColor;	
 
 				// Add the fixture function model to the collection
 				Data.FunctionData.Add(functionModel);
