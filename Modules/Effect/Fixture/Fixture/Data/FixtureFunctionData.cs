@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Runtime.Serialization;
 using Vixen.Data.Value;
 using VixenModules.App.Curves;
@@ -23,6 +24,7 @@ namespace VixenModules.Effect.Fixture
 			FunctionIdentity = FunctionIdentity.Custom;
 			FunctionName = String.Empty;
 			Range = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+			TimelineColor = Color.White;	
 		}
 
 		#endregion
@@ -43,6 +45,7 @@ namespace VixenModules.Effect.Fixture
 				Range = new Curve(Range),				
 				IndexValue = IndexValue,
 				ColorIndexValue = ColorIndexValue,				
+				TimelineColor = TimelineColor,
 			};
 
 			return clone;
@@ -87,7 +90,13 @@ namespace VixenModules.Effect.Fixture
 		/// </summary>
 		[DataMember]
 		public string ColorIndexValue { get; set; }
-				
+
+		/// <summary>
+		/// Timeline color associated with the function.
+		/// </summary>
+		[DataMember]
+		public Color TimelineColor { get; set; }
+
 		#endregion
 	}
 }
