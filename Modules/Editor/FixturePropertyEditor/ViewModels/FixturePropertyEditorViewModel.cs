@@ -230,9 +230,18 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 				// Set the channel name
 				channelItem.Name = fixtureChannel.Name;
 
-				// Set the function associated with the channel
-				channelItem.Function = fixtureChannel.Function;
-		
+				// If the function is a valid function then...
+				if (Functions.Contains(fixtureChannel.Function))
+				{
+					// Set the function associated with the channel
+					channelItem.Function = fixtureChannel.Function;
+				}
+				else
+				{
+					// Otherwise set the function to None
+					channelItem.Function = FixtureFunctionType.None.GetEnumDescription();
+				}
+
 				// Add the view model item to the Items collection
 				Items.Add(channelItem);
 			}
