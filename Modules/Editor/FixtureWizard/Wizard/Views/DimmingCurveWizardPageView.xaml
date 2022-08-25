@@ -1,0 +1,63 @@
+﻿<views:WizardUserControlBase x:Class="VixenModules.Editor.FixtureWizard.Wizard.Views.DimmingCurveWizardPageView"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                   xmlns:catel="http://schemas.catelproject.com"
+				   xmlns:views="clr-namespace:VixenModules.Editor.FixtureWizard.Wizard.Views"
+                   xmlns:orccontrols="http://schemas.wildgums.com/orc/controls"
+                   mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+				   Loaded="UserControl_Loaded">
+	<StackPanel Orientation="Horizontal">
+		<Viewport3D Name="LeftMainViewport"/>
+		<Grid>
+
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+
+			<StackPanel Grid.Row="0">
+			<GroupBox Margin="0, 20, 0, 0">
+				<GroupBox.Header>Dimming Options</GroupBox.Header>
+
+				<StackPanel Grid.Row="0">
+				<RadioButton 
+            ToolTip="Select when dimming curves are not desired."
+            Margin="10,10,10,10"
+            IsChecked="{Binding Path=NoDimmingCurve}">Do Not Include a Dimming Curve</RadioButton>
+
+				<RadioButton
+            ToolTip="This option adds a single dimming curve for all color channels."
+            Margin="10,10,10,10"
+            IsChecked="{Binding Path=OneDimmingCurvePerFixture}">Add Dimming Curve For Fixture</RadioButton>
+
+
+				<RadioButton 
+            ToolTip="This option configures a separate dimming curve for each color channel.  With this option all the dimming curves are initially identical.  The curves can be further adjusted via the Patching Graphical View."
+            Margin="10,10,10,10"
+            IsChecked="{Binding Path=OneDimmingCurvePerColor}"
+                IsEnabled="{Binding EnableDimmingCurvePerColor}">Add Dimming Curve For Each Color Channel</RadioButton>
+
+					</StackPanel>
+			</GroupBox>
+			
+				
+			<Button  Command="{Binding EditDimmingCurveCommand}" Margin="0,20,0,0">Setup Dimming Curve</Button>
+
+			</StackPanel>
+				
+			<!--
+		<Image Source="/Resources;component/MovingHead.png" Grid.Row="1" Height="290"/>
+		-->
+		</Grid>
+		<Viewport3D Name="RightMainViewport"/>
+	</StackPanel>
+</views:WizardUserControlBase>
+
