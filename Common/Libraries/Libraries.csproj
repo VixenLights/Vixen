@@ -117,7 +117,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Catel.Core" Version="5.12.10" />
-     <PackageReference Include="Catel.Fody" Version="4.5.0">
+    <PackageReference Include="Catel.Fody" Version="4.5.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets></IncludeAssets>
     </PackageReference>
@@ -125,6 +125,7 @@
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
     <PackageReference Include="Catel.Serialization.Json" Version="5.12.10" />
+   <PackageReference Include="DataGridThemes" Version="1.0.0" />
     <PackageReference Include="CSCore" Version="1.2.1.2" />
     <PackageReference Include="DockPanelSuite" Version="3.1.0" />
     <PackageReference Include="DockPanelSuite.ThemeVS2015" Version="3.1.0" />

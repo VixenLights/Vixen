@@ -1,0 +1,67 @@
+﻿<views:WizardUserControlBase x:Class="VixenModules.Editor.FixtureWizard.Wizard.Views.AutomationWizardPageView"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                   xmlns:catel="http://schemas.catelproject.com"
+				   xmlns:views="clr-namespace:VixenModules.Editor.FixtureWizard.Wizard.Views"
+                   xmlns:orccontrols="http://schemas.wildgums.com/orc/controls"
+                   mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+				   Loaded="UserControl_Loaded">
+
+	<StackPanel Orientation="Horizontal">
+	<Viewport3D Name="LeftMainViewport"/>
+    <Grid>
+
+        <Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+
+
+			<StackPanel Grid.Row="0" Grid.Column="0">
+				<GroupBox>
+					<GroupBox.Header>Automation Options</GroupBox.Header>
+					<StackPanel>
+						<CheckBox 
+            ToolTip="This option will automatically control the shutter channel based on the color channels.  Whenever an effect is generating color, the shutter will open.  Whenever there is no effect, or the effect is dark, the shutter will be closed."
+            Margin="10,10,10,10"
+            IsChecked="{Binding Path=AutomaticallyOpenAndCloseShutter}"
+            IsEnabled="{Binding Path=EnableShutter}"
+            >Automatically Open and Close Shutter</CheckBox>
+						<CheckBox 
+            ToolTip="This option will automatically control the color wheel by matching colors generated in the effects to colors supported on the color wheel."
+            Margin="10,10,10,10"
+            IsChecked="{Binding Path=AutomaticallyControlColorWheel}"
+            IsEnabled="{Binding Path=EnableColorWheel}"
+            >Automatically Control Color Wheel</CheckBox>
+						<CheckBox 
+            ToolTip="This option is usually selected for fixtures with a color wheel and fixed white light source.  It will automatically control the fixture's dimmer channel based on the intensity of the colors in the effects."
+            Margin="10,10,10,10"
+            IsEnabled="{Binding Path=EnableDimmer}"
+            IsChecked="{Binding Path=AutomaticallyControlDimmer}"
+            >Automatically Control Dimmer</CheckBox>
+						<CheckBox 
+            ToolTip="This option is usually selected for fixtures that both a channel for enabling the prism and another channel for selecting the position or movement of the prism."
+            Margin="10,10,10,10"
+            IsEnabled="{Binding Path=EnablePrism}"
+            IsChecked="{Binding Path=AutomaticallyOpenAndClosePrism}"
+            >Automatically Open and Close Prism</CheckBox>
+					</StackPanel>
+				</GroupBox>
+			</StackPanel>
+		</Grid>
+
+	    
+	    <Viewport3D Name="RightMainViewport"/>
+	</StackPanel>
+
+</views:WizardUserControlBase>
+
