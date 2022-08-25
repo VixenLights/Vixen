@@ -516,6 +516,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fixture", "Fixture", "{850F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IFixtureFunctionExpando", "Modules\Effect\Fixture\IFixtureFunctionExpando\IFixtureFunctionExpando.csproj", "{8D68EAF6-8EA5-45D1-BC12-B0E7F916CDBE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FixtureWizard", "Modules\Editor\FixtureWizard\FixtureWizard.csproj", "{3326DE71-C994-4251-9646-97E67EFE42F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -1753,6 +1755,14 @@ Global
 		{8D68EAF6-8EA5-45D1-BC12-B0E7F916CDBE}.Release|x64.Build.0 = Release|x64
 		{8D68EAF6-8EA5-45D1-BC12-B0E7F916CDBE}.Release|x86.ActiveCfg = Release|x86
 		{8D68EAF6-8EA5-45D1-BC12-B0E7F916CDBE}.Release|x86.Build.0 = Release|x86
+		{3326DE71-C994-4251-9646-97E67EFE42F5}.Debug|x64.ActiveCfg = Debug|x64
+		{3326DE71-C994-4251-9646-97E67EFE42F5}.Debug|x64.Build.0 = Debug|x64
+		{3326DE71-C994-4251-9646-97E67EFE42F5}.Debug|x86.ActiveCfg = Debug|x86
+		{3326DE71-C994-4251-9646-97E67EFE42F5}.Debug|x86.Build.0 = Debug|x86
+		{3326DE71-C994-4251-9646-97E67EFE42F5}.Release|x64.ActiveCfg = Release|x64
+		{3326DE71-C994-4251-9646-97E67EFE42F5}.Release|x64.Build.0 = Release|x64
+		{3326DE71-C994-4251-9646-97E67EFE42F5}.Release|x86.ActiveCfg = Release|x86
+		{3326DE71-C994-4251-9646-97E67EFE42F5}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1941,6 +1951,7 @@ Global
 		{78A233E1-4603-4113-909C-B313485BEC3B} = {850FA4A0-3CEB-4E94-8A6C-F5815A75D551}
 		{850FA4A0-3CEB-4E94-8A6C-F5815A75D551} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
 		{8D68EAF6-8EA5-45D1-BC12-B0E7F916CDBE} = {850FA4A0-3CEB-4E94-8A6C-F5815A75D551}
+		{3326DE71-C994-4251-9646-97E67EFE42F5} = {E28B32DB-012C-4B34-A515-0D4D4E8FD7F9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {09F55EB1-2643-454B-A1C2-8A326FFA78E6}
