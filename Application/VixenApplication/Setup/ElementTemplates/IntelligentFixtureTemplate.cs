@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Vixen.Commands;
 using Vixen.Data.Flow;
 using Vixen.Data.Value;
+using Vixen.Extensions;
 using Vixen.Module.OutputFilter;
 using Vixen.Rule;
 using Vixen.Services;
@@ -977,7 +978,8 @@ namespace VixenApplication.Setup.ElementTemplates
 				FixtureFunction function = fixture.FunctionDefinitions.Single(fn => fn.Name == channel.Function);
 
 				// If the channel's function is different from the last function processed then...
-				if (channel.Function != lastFunction)
+				if (channel.Function != lastFunction ||
+				    channel.Function == FixtureFunctionType.None.GetEnumDescription())
 				{
 					// Update the last function processed
 					lastFunction = channel.Function;
