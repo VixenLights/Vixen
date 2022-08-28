@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
+using Vixen.Extensions;
 using Vixen.Services;
 using VixenModules.App.Fixture;
 
@@ -117,7 +118,24 @@ namespace VixenModules.App.FixtureSpecificationManager
 			//if (!FixtureSpecifications.Any(fixture => fixture.Name == ADJHydroWashX7_17FixtureData.GetFixture().Name))
 			//{
 			//	FixtureSpecifications.Add(ADJHydroWashX7_17FixtureData.GetFixture());
-			//}			
+
+			// Sort the fixtures by name
+			Sort();
+		}
+
+		/// <summary>
+		/// Sorts the fixture collection by name.
+		/// </summary>
+		private void Sort()
+		{
+			// Sort the fixture by name
+			IList<FixtureSpecification> sortedCollection = FixtureSpecifications.OrderBy(item => item.Name).ToList();
+
+			// Clear the collection
+			FixtureSpecifications.Clear();
+
+			// Add back the sorted items
+			FixtureSpecifications = sortedCollection;
 		}
 
 		#endregion
@@ -175,7 +193,23 @@ namespace VixenModules.App.FixtureSpecificationManager
 
 				// Save the fixture to the XML file
 				serializer.Serialize(xmlWriter, fixture);
-			}			
+			}
+
+			// Attempt to find the fixture in the collection
+			FixtureSpecification cachedItem = FixtureSpecifications.SingleOrDefault(item => item.Name == fixture.Name);
+
+			// If the fixture was found then...
+			if (cachedItem != null)
+			{
+				// Remove the old copy from the collection
+				FixtureSpecifications.Remove(cachedItem);
+			}
+
+			// Add the new fixture to the collection
+			FixtureSpecifications.Add(fixture);
+
+			// Sort the fixtures by name
+			Sort();
 		}
 
 		/// <summary>
