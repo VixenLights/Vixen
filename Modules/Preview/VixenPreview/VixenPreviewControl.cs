@@ -1389,7 +1389,6 @@ namespace VixenModules.Preview.VixenPreview
 
 		private async Task<bool> ShowElementCreateTemplateForCurrentTool()
 		{
-
 			IElementTemplate template = null;
 			switch (_currentTool)
 			{
@@ -1420,8 +1419,8 @@ namespace VixenModules.Preview.VixenPreview
 				case Tools.String:
 					template = ApplicationServices.GetElementTemplate("Generic Numbered Group");
 					break;
-				case Tools.MovingHead:
-					// No need to show a dialog for the moving head fixtures
+				case Tools.MovingHead:					
+					template = ApplicationServices.GetElementTemplate("Intelligent Fixture");
 					break;
 			}
 
