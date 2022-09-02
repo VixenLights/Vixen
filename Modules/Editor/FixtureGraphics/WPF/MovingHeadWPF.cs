@@ -41,10 +41,7 @@ namespace VixenModules.Editor.FixtureGraphics.WPF
 
 			// Default the beam to max beam area
 			MovingHead.Focus = 100;
-
-			// Default the legend for testing purposes
-			MovingHead.Legend = "G:0 P:O";
-
+			
 			// Include the legend by default
 			MovingHead.IncludeLegend = true;
 
