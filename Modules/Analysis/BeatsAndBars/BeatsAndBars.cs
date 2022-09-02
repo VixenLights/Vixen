@@ -355,8 +355,8 @@ namespace VixenModules.Analysis.BeatsAndBars
 			{
 				m_plugin = new QMBarBeatTrack(m_audioModule.Frequency);
 
-				m_bSamples = m_audioModule.GetSamples(0, (int)m_audioModule.NumberSamples);
-				m_fSamplesAll = new float[m_audioModule.NumberSamples];
+				m_bSamples = m_audioModule.GetRawAudioSamples();
+				m_fSamplesAll = new float[m_bSamples.Length / m_audioModule.BytesPerSample];
 				m_fSamplesPreview = new float[(int)(m_audioModule.Frequency * PREVIEW_TIME)];
 
 				int dataStep = m_audioModule.BytesPerSample;

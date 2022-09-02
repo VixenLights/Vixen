@@ -23,6 +23,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 			m_info = new TimeInfo();
 			m_info.TotalTime = new TimeSpan(0, 0, 0, 1);
 			m_waveform = new Waveform(m_info);
+			m_waveform.WaveformStyle = WaveformStyle.Full;
 			m_waveform.BorderStyle = BorderStyle.FixedSingle;
 			m_waveform.Audio = audio;
 			m_waveform.BackColor = Color.LightGray;
