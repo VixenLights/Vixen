@@ -3,11 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.Serialization;
+using Vixen.Data.Flow;
 using Vixen.Sys;
-using VixenModules.Preview.VixenPreview.Fixtures;
-using VixenModules.Preview.VixenPreview.Fixtures.OpenGL;
-using VixenModules.Preview.VixenPreview.Fixtures.WPF;
+using VixenModules.App.Fixture;
+using VixenModules.Editor.FixtureGraphics;
+using VixenModules.Editor.FixtureGraphics.OpenGL;
+using VixenModules.Editor.FixtureGraphics.WPF;
+using VixenModules.OutputFilter.DimmingFilter;
+using VixenModules.OutputFilter.ShutterFilter;
+using VixenModules.Property.IntelligentFixture;
 using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
 
@@ -44,7 +50,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			// Default to partially transparent
 			BeamTransparency = 40;
-		}
+
+			// Default the top beam width to 8 times larger than the base width
+			BeamWidthMultiplier = 8;
+
+			// Default the legend to being on
+			ShowLegend = true;
+		}		
 
 		#endregion
 
@@ -126,7 +138,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public void InitializeGDI()
 		{
 			// Create the WPF moving head grpahics
-			CreateWPFMovingHead();
+			CreateWPFMovingHead(Color.Yellow);
 			
 			// Initialize the meta-data on the cached image to ensure
 			// the bitmap is rendered on the first frame.			
@@ -159,16 +171,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// </remarks>
 		public void DrawOpenGL(float zLength, int width, int height, Matrix4 projectionMatrix, Matrix4 viewMatrix, double scaleFactor, int referenceHeight, Vector3 camera)
 		{
-			// Calculate the width and height of the fixture
-			int fixtureHeight = Bottom - Top;
-			int fixtureWidth = Right - Left;
+			// If the legned is to be shown then...
+			if (ShowLegend)
+			{
+				// Calculate the width and height of the fixture
+				int fixtureHeight = Bottom - Top;
+				int fixtureWidth = Right - Left;
 
-			// Draw the legend under the moving head			
-			_movingHeadOpenGL.DrawLegend(
-				(int)(Left + fixtureWidth / 2.0),
-				(int)(referenceHeight - (Top + fixtureHeight / 2.0)),
-				projectionMatrix,
-				viewMatrix);
+				// Draw the legend under the moving head			
+				_movingHeadOpenGL.DrawLegend(
+					(int)(Left + fixtureWidth / 2.0),
+					(int)(referenceHeight - (Top + fixtureHeight / 2.0)),
+					projectionMatrix,
+					viewMatrix);
+			}
 		}
 
 		/// <summary>
@@ -354,6 +370,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// Calculate the scale factor
 			double scaleFactor = ((double)width) / (double)widthOrg;
 
+			// Default the beam color to match the pixels in the display setup
+			Color beamColor = Color.Turquoise;
+			
+			// If the moving head is selected in the elements tree then...
+			if (highlightedElements != null &&
+				highlightedElements.Contains(NodeId))
+			{
+				// Make the beam color pink
+				beamColor = Color.HotPink;							
+			}
+
+			// If the moving head has been created then...
+			if (_movingHead != null)
+			{
+				// Set the beam color, otherwise the bitmap won't be updated				
+				_movingHead.MovingHead.BeamColor = beamColor;
+			}
+
 			// If the fixture graphic is stale and needs to be redrawn then...			
 			if (NeedToRenderBitmap(width, height))
 			{
@@ -373,7 +407,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					if (_movingHead == null)
 					{
 						// Create the WPF moving head graphics
-						CreateWPFMovingHead();						
+						CreateWPFMovingHead(beamColor);						
 					}
 					else
 					{
@@ -381,13 +415,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						if (!_movingHead.CheckAccess())
 						{
 							// Create a new moving head associated with this thread
-							CreateWPFMovingHead();							
+							CreateWPFMovingHead(beamColor);							
 						}
 					}
 					
 					// Draw the fixture using WPF
 					// The X offset and Y offset were previously used when using the WPF graphics in the GDI Preview					
-					_movingHead.DrawFixture(width, height, scaleFactor, 0, 0);
+					_movingHead.DrawFixture(width, height, scaleFactor, 0, 0, null);
 
 					// Update the settings associated with the bitmap.
 					_prevousMovingHeadSettings = _movingHeadCurrentSettings.Clone();						
@@ -430,20 +464,56 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_intentHandler.TiltStartPosition = TiltStartPosition;
 			_intentHandler.TiltStopPosition = TiltStopPosition;
 
+			// Configure how the fixture zooms
+			_intentHandler.ZoomNarrowToWide = ZoomNarrowToWide;	
+
 			// Give the intent handler the beam length scale factor
 			_intentHandler.BeamLength = BeamLength;
 
 			// Give the intent handler the current moving head settings
 			_intentHandler.MovingHead = _movingHeadCurrentSettings;
+
+			// If the node for the preview item has been deleted the Node will be null
+			if (Node != null && Node.Element != null)
+			{
+				// Retrieve the data flow for the fixture node
+				IDataFlowComponent dataFlow = VixenSystem.DataFlow.GetComponent(Node.Element.Id);
+
+				// Loop over all the children of the node
+				for (int i = 0; i < dataFlow.Outputs.Length; i++)
+				{
+					// Get the specified output
+					IEnumerable<IDataFlowComponent> children =
+						VixenSystem.DataFlow.GetDestinationsOfComponentOutput(dataFlow, i);
+					
+					// Look for children that are shutter filters
+					foreach (IDataFlowComponent shutterFilter in children.Where(filter => filter is ShutterFilterModule))
+					{
+						// Copy the automation setting from the output filter to the preview intent handler
+						_intentHandler.ConvertColorIntentsIntoShutter = ((ShutterFilterModule)shutterFilter).ConvertColorIntoShutterIntents;
+					}
+
+					// Look for children that are dimming filters
+					foreach (IDataFlowComponent dimmingFilter in children.Where(filter => filter is DimmingFilterModule))
+					{
+						// Copy the automation setting from the output filter to the preview intent handler
+						_intentHandler.ConvertColorIntentsIntoDimmer = ((DimmingFilterModule)dimmingFilter).ConvertColorIntoDimmingIntents;
+					}
+				}
+			}
 		}
 
 		/// <summary>
 		/// Creates the WPF moving head graphics.
 		/// </summary>
-		private void CreateWPFMovingHead()
+		/// <param name="beamColor">Default beam color of the moving head</param>
+		private void CreateWPFMovingHead(Color beamColor)
 		{
 			// Create the WPF moving head
 			_movingHead = new MovingHeadWPF();
+
+			// Assign the beam color
+			_movingHead.MovingHead.BeamColor = beamColor;	
 
 			// Assign the settings to the generic member variable that can switch between WPF and OpenGL
 			_movingHeadCurrentSettings = _movingHead.MovingHead;
@@ -573,6 +643,68 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			return length;
 		}
 
+		/// <summary>
+		/// Initializes the moving constraints (pan/tilt) of the moving head shape.
+		/// </summary>
+		/// <param name="selectedNode">Node associated with the moving head shape</param>
+		private void InitializeMovingHeadMovementConstraints(ElementNode selectedNode)
+		{
+			// Default the movement constraints of the moving head
+			PanStartPosition = DefaultPanStartPosition;
+			PanStopPosition = DefaultPanStopPosition;
+			TiltStartPosition = DefaultTiltStartPosition;
+			TiltStopPosition = DefaultTiltStopPosition;
+
+			if (selectedNode != null)
+			{
+				// Retrieve the intelligent fixture property from the node
+				IntelligentFixtureModule fixtureProperty = (IntelligentFixtureModule)selectedNode.Properties.SingleOrDefault(prp => prp is IntelligentFixtureModule);
+
+				// If the property was found then...
+				if (fixtureProperty != null)
+				{
+					// Default the pan start position
+					PanStartPosition = DefaultPanStartPosition;
+
+					// Retrieve the fan function from the fixture
+					FixtureFunction panFunction = fixtureProperty.FixtureSpecification.FunctionDefinitions.FirstOrDefault(fn => fn.FunctionIdentity == Vixen.Data.Value.FunctionIdentity.Pan);
+
+					// If the pan function was found then...
+					if (panFunction != null)
+					{
+						PanStartPosition = panFunction.RotationLimits.StartPosition;
+						PanStopPosition = panFunction.RotationLimits.StopPosition;
+					}
+
+					// Default the tilt start position
+					TiltStartPosition = DefaultTiltStartPosition;
+
+					// Retrieve the tilt function from the fixture
+					FixtureFunction tiltFunction = fixtureProperty.FixtureSpecification.FunctionDefinitions.FirstOrDefault(fn => fn.FunctionIdentity == Vixen.Data.Value.FunctionIdentity.Tilt);
+
+					// If the tilt function was found then...
+					if (tiltFunction != null)
+					{
+						TiltStartPosition = tiltFunction.RotationLimits.StartPosition;
+						TiltStopPosition = tiltFunction.RotationLimits.StopPosition;
+					}
+
+					// Retrieve the zoom function from the fixture
+					FixtureFunction zoomFunction = fixtureProperty.FixtureSpecification.FunctionDefinitions.FirstOrDefault(fn => fn.FunctionIdentity == Vixen.Data.Value.FunctionIdentity.Zoom);
+
+					// If a zoom function was found then...
+					if (zoomFunction != null)
+					{
+						// Initialize the how the fixture zooms
+						ZoomNarrowToWide = (zoomFunction.ZoomType == FixtureZoomType.NarrowToWide);
+					}
+				}			
+			}
+
+			// Default the beam length percentage
+			BeamLength = DefaultBeamLength;
+		}
+
 		#endregion
 
 		#region IDrawMovingHeadVolumes
@@ -598,19 +730,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			CreateIntentHandler();
 			
 			// Initialize the moving head
-			_movingHeadOpenGL.Initialize(CalculateDrawingLength(), referenceHeight, BeamTransparency / 100.0);
+			_movingHeadOpenGL.Initialize(CalculateDrawingLength(), referenceHeight, (100.0 - BeamTransparency) / 100.0, BeamWidthMultiplier);
 
 			// Expose the moving head as a property
 			MovingHead = _movingHeadOpenGL;			
 		}
-
+		
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>		
 		public void UpdateVolumes(int maxBeamLength, int referenceHeight)
-		{
-			// Turn off the moving head 
-			_movingHeadOpenGL.MovingHead.OnOff = false;
+		{			
+			// Reset the handler for the next frame
+			_intentHandler.Reset();
 
 			// If the associated element contains intents then...
 			if (Node != null && 
@@ -619,7 +751,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				// Retrieve the intents from the element 
 				IIntentStates states = Node.Element.State;
-				
+
+				// Give the intent handler a reference to the associated node
+				_intentHandler.Node = Node;
+			
 				// Dispatch the current intents
 				_intentHandler.Dispatch(states);
 			}
@@ -691,7 +826,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					NodeId = Guid.Empty;
 				else
 					NodeId = value.Id;
-				_node = value;				
+				_node = value;
 			}
 		}
 		
@@ -766,9 +901,48 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
 		 Category("Settings"),
-		 Description("Beam transparency"),
+		 Description("Beam Transparency"),
 		 DisplayName("Beam Transparency (%)")]
 		public int BeamTransparency
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Beam width multiplier.  Determines the width at the top of the beam.
+		/// </summary>
+		[DataMember(EmitDefaultValue = false),
+		 Category("Settings"),
+		 Description("Beam Width Multiplier"),
+		 DisplayName("Beam Width Multiplier")]
+		public int BeamWidthMultiplier
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Flag that indicates if zoom increases from narrow to wide.
+		/// </summary>
+		[DataMember(EmitDefaultValue = false),
+		 Category("Settings"),
+		 Description("Zoom Narrow To Wide"),
+		 DisplayName("Zoom Narrow To Wide")]
+		public bool ZoomNarrowToWide
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Flag that controls whether the function index legend is displayed.
+		/// </summary>
+		[DataMember(EmitDefaultValue = false),
+		 Category("Settings"),
+		 Description("Show Legend"),
+		 DisplayName("Show Legend")]
+		public bool ShowLegend
 		{
 			get;
 			set;
@@ -787,11 +961,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			set
 			{
-				// Forward the background alpha as the intensity of the fixture
-				_movingHead.MovingHead.FixtureIntensity = value;
-				
-				// Invalidate the moving head so that it is redrawn
-				_movingHead.InvalidateGeometry();
+				// Need to guard against moving heads that are not associated with a node
+				if (_movingHead != null)
+				{
+					// Forward the background alpha as the intensity of the fixture
+					_movingHead.MovingHead.FixtureIntensity = value;
+
+					// Invalidate the moving head so that it is redrawn
+					_movingHead.InvalidateGeometry();
+				}
 				
 				// Let the base class store off the new background alpha
 				base.BackgroundAlpha = value;
