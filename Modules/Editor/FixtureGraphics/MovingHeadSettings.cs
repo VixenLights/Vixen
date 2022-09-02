@@ -20,7 +20,7 @@ namespace VixenModules.Editor.FixtureGraphics
 			BeamColor = Color.Yellow;
 			Intensity = 100;
 			Focus = 100;
-			Legend = "G:0 P:O";
+			Legend = string.Empty;
 			IncludeLegend = true;
 			OptimizeOpenGLVertexData = true;
 			FixtureIntensity = 255;
