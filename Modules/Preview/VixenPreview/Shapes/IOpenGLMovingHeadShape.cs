@@ -1,4 +1,4 @@
-﻿using VixenModules.Preview.VixenPreview.Fixtures.OpenGL;
+﻿using VixenModules.Editor.FixtureGraphics.OpenGL;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
