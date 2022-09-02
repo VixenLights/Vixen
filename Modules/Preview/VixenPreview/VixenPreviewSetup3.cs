@@ -443,7 +443,7 @@ namespace VixenModules.Preview.VixenPreview
 			}
 			else if (button == buttonMovingHead)
 			{
-				DrawShape = "Moving Head";
+				DrawShape = "Intelligent Fixture";
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MovingHead;
 			}
         }
