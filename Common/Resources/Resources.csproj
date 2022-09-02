@@ -78,7 +78,7 @@
     <None Include="bullet_blue.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="bullet_green.png" />
+    <Resource Include="bullet_green.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bullet_orange.png" />
