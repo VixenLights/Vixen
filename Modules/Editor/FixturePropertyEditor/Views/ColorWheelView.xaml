@@ -91,10 +91,8 @@
                         <DataTemplate>
 							<TextBox MinWidth="30" ToolTip="DMX stop value for the color.">
                                 <TextBox.Text>
-				                            <Binding Path="EndValue" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" NotifyOnValidationError="true">
-                                        <Binding.ValidationRules>
-                                        </Binding.ValidationRules>
-                                    </Binding>
+									<Binding Path="EndValue" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" NotifyOnValidationError="true">
+									</Binding>
                                 </TextBox.Text>
                             </TextBox>
                         </DataTemplate>
