@@ -4,7 +4,9 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using Vixen.Sys;
 using Point = System.Drawing.Point;
-
+using System.Linq;
+using VixenModules.Property.IntelligentFixture;
+using VixenModules.App.Fixture;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -19,7 +21,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[DataMember] private PreviewPoint _bottomLeft;
 		[DataMember] private PreviewPoint _bottomRight;
 
-		public override string TypeName => @"Moving Head";
+		public override string TypeName => @"Intelligent Fixture";
 
 		public enum Directions
 		{
@@ -29,7 +31,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private bool lockXY = false;
 		private PreviewPoint topLeftStart, topRightStart, bottomLeftStart, bottomRightStart;
-				
+			
+		/// <summary>
+		/// Constructor
+		/// </summary>		
 		public PreviewMovingHead(PreviewPoint point1, ElementNode selectedNode, double zoomLevel)
 		{
 			ZoomLevel = zoomLevel;
@@ -37,15 +42,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_topRight = new PreviewPoint(_topLeft);
 			_bottomLeft = new PreviewPoint(_topLeft);
 			_bottomRight = new PreviewPoint(_topLeft);
+			
+			// Default to partially transparent
+			BeamTransparency = 40;
 
-			// Default the movement constraints of the moving head
-			PanStartPosition = DefaultPanStartPosition;
-			PanStopPosition = DefaultPanStopPosition;
-			TiltStartPosition = DefaultTiltStartPosition;
-			TiltStartPosition = DefaultTiltStopPosition;
+			// Default the top beam width to 8 times larger than the base width
+			BeamWidthMultiplier = 8;
 
-			// Default the beam length percentage
-			BeamLength = DefaultBeamLength;
+			// Default to showing the legend
+			ShowLegend = true;
+
+			// Initialize the pan/tilt movement constraints
+			InitializeMovingHeadMovementConstraints(selectedNode);
 
 			Reconfigure(selectedNode);
 		}
