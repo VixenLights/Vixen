@@ -47,8 +47,34 @@
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
+    <ProjectReference Include="..\..\App\ElementTemplateHelper\ElementTemplateHelper.csproj">
+		<Private>false</Private>
+		<IncludeAssets>None</IncludeAssets>
+	</ProjectReference>
+    <ProjectReference Include="..\..\App\Fixture\Fixture.csproj">
+		<Private>false</Private>
+		<IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Editor\FixtureGraphics\FixtureGraphics.csproj">
+		<Private>false</Private>
+		<IncludeAssets>None</IncludeAssets>
+	</ProjectReference>		
+    <ProjectReference Include="..\..\PostFilter\ColorWheelFilter\ColorWheelFilter.csproj">
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>      
+    </ProjectReference>
     <ProjectReference Include="..\..\PostFilter\DimmingCurve\DimmingCurve.csproj">
       <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PostFilter\DimmingFilter\DimmingFilter.csproj">
+      <Private>false</Private>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PostFilter\ShutterFilter\ShutterFilter.csproj">
+      <Private>false</Private>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Property\Color\Color.csproj">
@@ -61,6 +87,11 @@
     </ProjectReference>
     <ProjectReference Include="..\..\Property\Face\Face.csproj">
       <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Property\IntelligentFixture\IntelligentFixture.csproj">
+      <Private>false</Private>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Property\Location\Location.csproj">
@@ -310,11 +341,11 @@
     <None Include="Resources\Lips.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Catel.MVVM" Version="5.12.2">
+    <PackageReference Include="Catel.MVVM" Version="5.12.10">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="DockPanelSuite.ThemeVS2015" Version="3.0.6">
+    <PackageReference Include="DockPanelSuite.ThemeVS2015" Version="3.1.0">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
     <PackageReference Include="NLog" Version="4.7.15">
