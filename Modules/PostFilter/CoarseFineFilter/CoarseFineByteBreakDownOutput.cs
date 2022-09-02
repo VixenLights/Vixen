@@ -70,17 +70,20 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 			// Clear the output commands
 			_outputCommands.Clear();
 
-			// Loop over the intent states
-			foreach (IIntentState intentState in intents.Value)
+			if (intents.Value != null)
 			{
-				// Determine if the intent state is supported by this breakdown filter
-				IIntentState state = _filter.Filter(intentState);
-				
-				// If the state is supported (not null) then...
-				if (state != null)
+				// Loop over the intent states
+				foreach (IIntentState intentState in intents.Value)
 				{
-					// Handle the intent
-					Handle((IIntentState<RangeValue<FunctionIdentity>>)state);
+					// Determine if the intent state is supported by this breakdown filter
+					IIntentState state = _filter.Filter(intentState);
+
+					// If the state is supported (not null) then...
+					if (state != null)
+					{
+						// Handle the intent
+						Handle((IIntentState<RangeValue<FunctionIdentity>>)state);
+					}
 				}
 			}
 		}
