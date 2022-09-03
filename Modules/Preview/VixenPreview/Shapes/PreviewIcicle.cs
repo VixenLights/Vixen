@@ -192,8 +192,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 }
                 else
                 {
-                    stringsResult = _strings;
-                    if (stringsResult == null)
+					stringsResult = _strings;
+					if (stringsResult == null)
                     {
                         stringsResult = new List<PreviewBaseShape>();
                         stringsResult.Add(this);

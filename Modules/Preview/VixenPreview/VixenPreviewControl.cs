@@ -87,7 +87,8 @@ namespace VixenModules.Preview.VixenPreview
 			StarBurst,
 			Icicle,
 			PolyLine,
-			MultiString
+			MultiString,
+			MovingHead,
 		}
 
 		private Point dragStart;
@@ -762,7 +763,13 @@ namespace VixenModules.Preview.VixenPreview
 							newDisplayItem.Shape = new PreviewMultiString(translatedPoint, translatedPoint,
 								elementsForm.SelectedNode, ZoomLevel);
 						}
-						// Now add the newely created display item to the screen.
+						else if (_currentTool == Tools.MovingHead)
+						{
+							newDisplayItem = new DisplayItem();
+							newDisplayItem.Shape = new PreviewMovingHead(translatedPoint, elementsForm.SelectedNode, ZoomLevel);
+						}
+
+						// Now add the newly created display item to the screen.
 						if (newDisplayItem != null)
 						{
 							AddDisplayItem(newDisplayItem);
@@ -1319,6 +1326,9 @@ namespace VixenModules.Preview.VixenPreview
 						{
 							_selectedDisplayItem.Shape.Reconfigure(elementsForm.SelectedNode);
 						}
+
+						// Give the shape the opportunity to adjust the shape coordinates 
+						_selectedDisplayItem.Shape.EndAddNew();
 					}
 
 					_selectedDisplayItem.Shape.MouseUp(sender, e);
@@ -1329,6 +1339,9 @@ namespace VixenModules.Preview.VixenPreview
 						{
 							case "Resize":
 								PreviewItemsResizingNew(this, new PreviewItemResizingEventArgs(m_previewItemResizeMoveInfo));
+
+								// Give the shape the opportunity to adjust the shape coordinates
+								_selectedDisplayItem.Shape.OnMovePoint();
 								break;
 							case "Move":
 								PreviewItemsMovedNew(this, new PreviewItemMoveEventArgs(m_previewItemResizeMoveInfo));
@@ -1368,7 +1381,6 @@ namespace VixenModules.Preview.VixenPreview
 
 		private async Task<bool> ShowElementCreateTemplateForCurrentTool()
 		{
-
 			IElementTemplate template = null;
 			switch (_currentTool)
 			{
@@ -1398,6 +1410,9 @@ namespace VixenModules.Preview.VixenPreview
 				case Tools.Ellipse:
 				case Tools.String:
 					template = ApplicationServices.GetElementTemplate("Generic Numbered Group");
+					break;
+				case Tools.MovingHead:					
+					template = ApplicationServices.GetElementTemplate("Intelligent Fixture");
 					break;
 			}
 

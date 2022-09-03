@@ -1,18 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
+using VixenModules.Preview.VixenPreview.Shapes;
 
 namespace VixenModules.Preview.VixenPreview.GDIPreview
 {
 	public partial class GDIControl : UserControl
-	{
+	{		
 		private Image _background;
 		private Bitmap _backgroundAlphaImage;
 		private int _backgroundAlpha;
 		private readonly Stopwatch _renderTimer = new Stopwatch();
 		private readonly Stopwatch _frameRateTimer = new Stopwatch();
+						
 		private FastPixel.FastPixel _fastPixel;
 		private long _frameCount;
         private bool _defaultBackground = true;
@@ -28,6 +33,25 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			_frameRateTimer.Start();
 		}
 
+		/// <summary>
+		/// Static Constructor
+		/// </summary>
+		static GDIControl()
+		{
+			// Create a lock to prevent threading issues with the FastPixel frame buffer
+			FastPixelLock = new object();
+		}
+
+		/// <summary>
+		/// Display items that make up the preview.
+		/// </summary>
+		public List<DisplayItem> DisplayItems { get; set; }
+
+		/// <summary>
+		/// Lock to prevent threading issues with the FastPixel frame buffer.
+		/// </summary>
+		public static object FastPixelLock { get;  set; }
+		
 		public Image Background
 		{
 			get
@@ -135,9 +159,15 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 				gfx.Clear(Color.Black);
 				gfx.Dispose();
 			}
-			_fastPixel = new FastPixel.FastPixel(_backgroundAlphaImage.Width, _backgroundAlphaImage.Height);
-			BeginUpdate();
-			EndUpdate();
+			{
+				lock (FastPixelLock)
+				{
+					_fastPixel = new FastPixel.FastPixel(_backgroundAlphaImage.Width, _backgroundAlphaImage.Height);
+					BeginUpdate();
+					EndUpdate();				
+				}
+			}
+
 			Invalidate();
 		}
 
@@ -146,8 +176,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			_renderTimer.Restart();
 			_fastPixel.CloneToBuffer(_backgroundAlphaImage);
 		}
-
-		
+				
 		public void EndUpdate()
 		{
 			// Calculate our actual frame rate
@@ -167,15 +196,57 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 		{
 			_fastPixel.SetPixel(new Point(x, y), color);
 		}
-
+				
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			Graphics g = e.Graphics;
 			if (g.VisibleClipBounds.Width > 0 && g.VisibleClipBounds.Height > 0)
 			{
+				// Rendering of the WPF moving heads in the GDI was not performant.
+				// This capability exists in debug for experimentation purposes and to keep the WPF moving head implementations complete.				
+				#if DEBUG
+					// Draw the moving head fixtures
+					DrawMovingHeads();
+				#endif
+
 				g.DrawImageUnscaled(_fastPixel.Bitmap, 0, 0);
 			}
 			_renderTimer.Stop();
+		}
+
+		/// <summary>
+		/// Draws the moving head fixtures.
+		/// </summary>
+		private void DrawMovingHeads()
+		{
+			// If the moving head GDI support is enabled then...
+			if (false)
+			{
+				// Wait for the frame buffer to be available
+				lock (FastPixelLock)
+				{
+					// If the frame buffer is not already locked then...
+					bool locking = false;
+					if (!_fastPixel.locked)
+					{
+						// Lock the frame buffer
+						_fastPixel.Lock();
+
+						// Remember that this method locked the frame buffer
+						locking = true;
+					}
+
+					// Draw the shapes that support IDrawStaticPreviewShape 
+					UpdateMovingHeads();
+
+					// If this method locked the frame buffer then...
+					if (locking)
+					{
+						// Unlock the frame buffer
+						_fastPixel.Unlock(true);
+					}			
+				}
+			}
 		}
 
         private void GDIControl_Resize(object sender, EventArgs e)
@@ -190,10 +261,43 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
                 {
                     CreateAlphaBackground();
                 }
-                //_fastPixel.CloneToBuffer(_backgroundAlphaImage);
-                BeginUpdate();
-                EndUpdate();
-            }
+				//_fastPixel.CloneToBuffer(_backgroundAlphaImage);
+			
+				lock (FastPixelLock)
+				{
+					BeginUpdate();
+					EndUpdate();
+				}				
+			}
         }
+
+		/// <summary>
+		/// Reeturns the display item shapes that implement <c>IDrawMovingHeadVolumes</c>.
+		/// </summary>
+		/// <returns></returns>
+		private IEnumerable<IDrawStaticPreviewShape> GetIDrawStaticPreviewShapes()
+		{
+			// Get the display item shapes that implement IDrawMovingHeadVolumes
+			return DisplayItems.Where(displayItem => displayItem.Shape is IDrawStaticPreviewShape)
+				.Select(displayItem => displayItem.Shape)
+					.Cast<IDrawStaticPreviewShape>().ToList();
+		}
+
+		/// <summary>
+		/// Updates the moving heads.
+		/// </summary>
+		private void UpdateMovingHeads()
+		{			
+			// If the display items have been set on the control then...
+			if (DisplayItems != null)
+			{
+				// Loop over all the shapes that implement IDrawStaticPreviewShape
+				foreach (IDrawStaticPreviewShape shape in GetIDrawStaticPreviewShapes())
+				{
+					// Draw the shape using the GDI
+					shape.DrawGDI(_fastPixel, false, false, ZoomLevel);
+				}
+			}
+		}
 	}
 }

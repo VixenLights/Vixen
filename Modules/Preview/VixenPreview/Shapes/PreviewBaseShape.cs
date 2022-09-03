@@ -322,7 +322,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				setupControl = new PreviewShapeBaseSetupControl(this);
 			}
-			
+			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewMovingHead")
+			{
+				setupControl = new PreviewShapeBaseSetupControl(this);
+			}
+
 			return setupControl;
 		}
 		/// <summary>

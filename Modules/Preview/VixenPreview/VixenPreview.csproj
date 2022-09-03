@@ -51,8 +51,30 @@
 		<Private>false</Private>
 		<IncludeAssets>None</IncludeAssets>
 	</ProjectReference>
+    <ProjectReference Include="..\..\App\Fixture\Fixture.csproj">
+		<Private>false</Private>
+		<IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Editor\FixtureGraphics\FixtureGraphics.csproj">
+		<Private>false</Private>
+		<IncludeAssets>None</IncludeAssets>
+	</ProjectReference>		
+    <ProjectReference Include="..\..\PostFilter\ColorWheelFilter\ColorWheelFilter.csproj">
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>      
+    </ProjectReference>
     <ProjectReference Include="..\..\PostFilter\DimmingCurve\DimmingCurve.csproj">
       <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PostFilter\DimmingFilter\DimmingFilter.csproj">
+      <Private>false</Private>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PostFilter\ShutterFilter\ShutterFilter.csproj">
+      <Private>false</Private>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Property\Color\Color.csproj">
@@ -65,6 +87,11 @@
     </ProjectReference>
     <ProjectReference Include="..\..\Property\Face\Face.csproj">
       <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Property\IntelligentFixture\IntelligentFixture.csproj">
+      <Private>false</Private>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Property\Location\Location.csproj">
@@ -81,16 +108,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="OpenTK">
-      <HintPath>..\..\..\Common\Libraries\OpenTK.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="OpenTK.GLControl">
-      <HintPath>..\..\..\Common\Libraries\OpenTK.GLControl.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="QuickFont">
+      <HintPath>..\..\..\Common\Libraries\QuickFont.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Windows.Forms" />
@@ -331,9 +354,16 @@
     </PackageReference>
     <PackageReference Include="OpenTK" Version="3.2.0">
       <ExcludeAssets>runtime</ExcludeAssets>
-      <IncludeAssets>compile</IncludeAssets>
     </PackageReference>
     <PackageReference Include="OpenTK.GLControl" Version="3.1.0">
+      <ExcludeAssets>runtime</ExcludeAssets>
+       <IncludeAssets>compile</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="SharpFont" Version="4.0.1">
+      <ExcludeAssets>runtime, all</ExcludeAssets>
+      <IncludeAssets>compile</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="SharpFont.Dependencies" Version="2.6.0">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile</IncludeAssets>
     </PackageReference>
