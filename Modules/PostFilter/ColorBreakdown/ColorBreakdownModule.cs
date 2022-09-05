@@ -12,11 +12,11 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 	public class ColorBreakdownModule : OutputFilterModuleInstanceBase
 	{
 		private ColorBreakdownData _data;
-		private ColorBreakdownOutput[] _outputs;
+		private IDataFlowOutput[] _outputs;
 
 		public override void Handle(IntentsDataFlowData obj)
 		{
-			foreach (ColorBreakdownOutput output in Outputs) {
+			foreach (ColorBreakdownOutputBase output in Outputs) {
 				output.ProcessInputData(obj);
 			}
 		}
@@ -66,6 +66,16 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			}
 		}
 
+		public bool _16Bit
+		{
+			get { return _data._16Bit; }
+			set
+			{
+				_data._16Bit = value;
+				_CreateOutputs();
+			}
+		}
+
 		public override bool HasSetup
 		{
 			get { return true; }
@@ -103,9 +113,22 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 				// Create the RGB to RGBW converter
 				rgbToRGBWConverter = new RGBToRGBWConverter();
 			}
-			
-			// Create the outputs for the specified break down items
-			_outputs = _data.BreakdownItems.Select(x => new ColorBreakdownOutput(x, _data.MixColors, rgbToRGBWConverter)).ToArray();
+
+			// If 16 bit color support is needed then...
+			if (_data._16Bit)
+			{
+				// Create the outputs for the specified break down items 
+				// This output is going to produce 16 bit command values in the range (0-65535)
+				_outputs = _data.BreakdownItems
+					.Select(x => new _16BitColorBreakDownOutput(x, _data.MixColors, rgbToRGBWConverter)).ToArray();
+			}
+			else
+			{
+				// Create the outputs for the specified break down items
+				// This output is going to produce 8 bit command values in the range (0-255)
+				_outputs = _data.BreakdownItems
+					.Select(x => new _8BitColorBreakdownOutput(x, _data.MixColors, rgbToRGBWConverter)).ToArray();
+			}
 		}
 	}
 }
