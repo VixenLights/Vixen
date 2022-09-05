@@ -8,12 +8,12 @@ namespace Vixen.Data.Evaluator
 	/// </summary>
 	public class CommandLookup16BitEvaluator
 	{
-		#region Public Properties
+		#region Private Properties
 
 		/// <summary>
 		/// Dictionary of 16-bit commands indexed by the command ushort value.
 		/// </summary>
-		public static Dictionary<ushort, _16BitCommand> CommandLookup { get; private set; }
+		private static Dictionary<ushort, _16BitCommand> CommandLookup { get; set; }
 
 		#endregion
 
@@ -26,13 +26,28 @@ namespace Vixen.Data.Evaluator
 		{
 			// Create the dictionary
 			CommandLookup = new Dictionary<ushort, _16BitCommand>();
+		}
 
-			// Loop over all possible ushort values
-			for (int i = 0; i <= ushort.MaxValue; i++)
+		#endregion
+
+		#region Public Methods
+
+		/// <summary>
+		/// Gets a cached command for the specified value.
+		/// </summary>
+		/// <param name="value">Value to retrieve the command for</param>
+		/// <returns>16 Bit command wrapping the specified value</returns>
+		public static _16BitCommand GetCommand(ushort value)
+		{
+			// If the dictionary does NOT contain the specified value then...
+			if (!CommandLookup.ContainsKey(value))
 			{
-				// Add the specified value to the dictionary
-				CommandLookup.Add((ushort)i, new _16BitCommand((ushort)i));
+				// Add the command to the dictionary
+				CommandLookup.Add((ushort)value, new _16BitCommand(value));
 			}
+			
+			// Return the cached command
+			return CommandLookup[value];
 		}
 
 		#endregion
