@@ -205,11 +205,36 @@ namespace VixenModules.OutputFilter.DimmingCurve
 				double newIntensity = _curve.GetValue(cmd.CommandValue / 255d * 100d) / 100d * Byte.MaxValue;
 				return CommandLookup8BitEvaluator.CommandLookup[(byte) newIntensity];
 			}
+			else if (command is _16BitCommand cmd16)
+			{
+				// convert command to 0 - 100 value for lookup in the curve.
+				// convert 0 - 100 return value from the curve to a percent
+				// and then mult by the max byte value to get new command value
+				double newIntensity = _curve.GetValue(cmd16.CommandValue / 65535d * 100d) / 100d * ushort.MaxValue;
+
+				return new _16BitCommand((short)newIntensity);
+			}
 
 			return command;
 		}
 
-		
+		public override void Handle(IIntentState<CommandValue> obj)
+		{
+			CommandValue command = obj.GetValue();
+
+			if (command.Command is _16BitCommand cmd)
+			{
+				// convert command to 0 - 100 value for lookup in the curve.
+				// convert 0 - 100 return value from the curve to a percent
+				// and then mult by the max byte value to get new command value
+				double newIntensity = _curve.GetValue(cmd.CommandValue / 255d * 100d) / 100d * ushort.MaxValue;
+
+				command.Command = new _16BitCommand((short)newIntensity);
+
+				_intentValue =
+					new StaticIntentState<CommandValue>(command);
+			}
+		}
 
 		public override void Handle(IIntentState<LightingValue> obj)
 		{
