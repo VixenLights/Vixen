@@ -89,6 +89,24 @@ namespace VixenApplication.Setup.ElementTemplates
 		#region Private Methods
 
 		/// <summary>
+		/// Creates a coarse fine breakdown module.
+		/// </summary>
+		/// <returns>Coarse fine breakdown module</returns>
+		private CoarseFineBreakdownModule CreateCoarseFindBreakDownModule()
+		{
+			// Create course / fine breakdown module
+			CoarseFineBreakdownModule courseFineBreakdown =
+				ApplicationServices.Get<IOutputFilterModuleInstance>(CoarseFineBreakdownDescriptor.ModuleId) as
+					CoarseFineBreakdownModule;
+
+			// Add the coarse / fine breakdown module to Vixen collection of filters
+			VixenSystem.Filters.AddFilter(courseFineBreakdown);
+
+			// Return the course fine breakdown module
+			return courseFineBreakdown;
+		}
+
+		/// <summary>
 		/// Creates a color property on the specified element node.
 		/// </summary>
 		/// <param name="node">Element node to associate the color property with</param>
@@ -320,12 +338,44 @@ namespace VixenApplication.Setup.ElementTemplates
 		}
 
 		/// <summary>
+		/// Scans the specified fixture specification and returns the number of color channels found.
+		/// </summary>
+		/// <param name="fixture">Fixture specification to analyze</param>
+		/// <returns>Number of color channels found</returns>
+		private int GetNumberOfColorChannels(FixtureSpecification fixture)
+		{
+			// Initialize to zero color channels found
+			int colorChannels = 0;
+
+			// Loop over the channels on the fixture
+			foreach (FixtureChannel channel in fixture.ChannelDefinitions)
+			{
+				// Find the function associated with the channel
+				FixtureFunction function = fixture.FunctionDefinitions.SingleOrDefault(fnc => fnc.Name == channel.Function);
+
+				// If the function was found then...
+				if (function != null)	
+				{
+					// If the function is a color function then...
+					if (function.FunctionType == FixtureFunctionType.RGBColor ||
+					    function.FunctionType == FixtureFunctionType.RGBWColor)
+					{
+						// Increment the color channel counter
+						colorChannels++;
+					}
+				}
+			}
+
+			return colorChannels;
+		}
+
+		/// <summary>
 		/// Processes a color mixing fixture function (RGB, RGBW).
 		/// </summary>
 		/// <param name="foundColorMixingChannel">Flag indicating if a color mixing channel was already found</param>
 		/// <param name="colorMixingChannelCount">The number of color mixing channels found so far</param>
 		/// <param name="node">Fixture node</param>
-		/// <param name="numberOfColorMixingChannelsNeeded">Number of color mixing channels (Normally 3 or 4)</param>
+		/// <param name="numberOfColorChannelsFoundOnFixture">Number of color mixing channels found on the fixture (3,4,6,8)</param>
 		/// <param name="dimmingCurveSelection">Dimming curve filter selection</param>
 		/// <param name="dimmingCurve">Dimming curve to insert</param>
 		private void ProcessColorMixingFunction(
@@ -333,9 +383,10 @@ namespace VixenApplication.Setup.ElementTemplates
 			ref int colorMixingChannelCount,
 			ElementNode node,
 			Func<List<ColorBreakdownItem>> getBreakDownItems,
-			int numberOfColorMixingChannelsNeeded,
+			int numberOfColorChannelsFoundOnFixture,
 			DimmingCurveSelection dimmingCurveSelection,
-			Curve dimmingCurve)			
+			Curve dimmingCurve,
+			int numberOfExpectedColors)			
 		{
 			// If this is the first color mixing channel encountered then...
 			if (!foundColorMixingChannel)
@@ -369,6 +420,14 @@ namespace VixenApplication.Setup.ElementTemplates
 				// Indicate the colors mix to create the desired color
 				filter.MixColors = true;
 
+				// If the number of color channels on the fixture is greater than 4 then
+				// we are most likely dealing with 16 bit color
+				if (numberOfColorChannelsFoundOnFixture > 4)
+				{
+					// Configure the color breakdown filter to use 16-bit outputs
+					filter._16Bit = true;
+				}
+
 				// If a dimming curve is in place then...
 				if (dimmingCurveSelection == DimmingCurveSelection.OneDimmingCurvePerFixture)
 				{
@@ -391,7 +450,7 @@ namespace VixenApplication.Setup.ElementTemplates
 					IDataFlowComponentReference flow = dataFlowNodes[dataFlowNodes.Count - 1];
 
 					// Loop over the color breakdown filter outputs
-					for (int index = 0; index < numberOfColorMixingChannelsNeeded; index++)
+					for (int index = 0; index < numberOfExpectedColors; index++)
                     {	
 						// Create a dimming curve module
 						DimmingCurveModule dimmingCurveFilter = CreateDimmingCurve(dimmingCurve);
@@ -401,17 +460,60 @@ namespace VixenApplication.Setup.ElementTemplates
 
 						// Add the dimming curve module to the color breakdown output
 						VixenSystem.DataFlow.SetComponentSource(dimmingCurveFilter, flow.Component, index);
-					}										
+                    }
+
+					// If the fixture is using 16 bit color then...
+					if (filter._16Bit)
+					{
+						// Find the leafs of the node
+						IList<IDataFlowComponentReference> updatedDataFlowNodes =
+							FindLeafOutputsOrBreakdownFilters(VixenSystem.DataFlow.GetComponent(node.Element.Id))
+								.ToList();
+
+						// Loop over the colors on the breakdown filter
+						for (int index = 0; index < numberOfExpectedColors; index++)
+						{
+							// Get the output on specified dimming curve
+							IDataFlowComponentReference dimmingFlow =
+								updatedDataFlowNodes[updatedDataFlowNodes.Count - index - 1];
+
+							// Create course / fine breakdown module
+							CoarseFineBreakdownModule courseFineBreakdown = CreateCoarseFindBreakDownModule();
+
+							// Add the coarse / fine breakdown module 
+							VixenSystem.DataFlow.SetComponentSource(courseFineBreakdown, dimmingFlow.Component, 0);
+						}
+					}
+
+				}
+				// Otherwise if the filter needs to produce 16-bit outputs then...
+				else if (filter._16Bit)
+				{
+					// Find the leafs of the node
+					IList<IDataFlowComponentReference> dataFlowNodes = FindLeafOutputsOrBreakdownFilters(VixenSystem.DataFlow.GetComponent(node.Element.Id)).ToList();
+
+					// Get the last filter (Color Breakdown Filter)
+					IDataFlowComponentReference flow = dataFlowNodes[dataFlowNodes.Count - 1];
+
+					// Loop over the color breakdown filter outputs
+					for (int index = 0; index < numberOfExpectedColors; index++)
+					{
+						// Create course / fine breakdown module
+						CoarseFineBreakdownModule courseFineBreakdown = CreateCoarseFindBreakDownModule();
+						
+						// Add the coarse / fine breakdown module 
+						VixenSystem.DataFlow.SetComponentSource(courseFineBreakdown, flow.Component, index);
+					}
 				}
 			}
-			// Otherwise this is the 2nd, 3rd or 4th RGBW channel
+			// Otherwise this is the 2nd, 3rd, 4th...8th RGBW channel
 			else
 			{
 				// Increment the number of color mixing channels encountered
 				colorMixingChannelCount++;
 
 				// If the 4th RGBW channel was processed then...
-				if (colorMixingChannelCount == numberOfColorMixingChannelsNeeded)
+				if (colorMixingChannelCount == numberOfColorChannelsFoundOnFixture)
 				{
 					// Reset the color mixing channel flags
 					colorMixingChannelCount = 0;
@@ -460,12 +562,14 @@ namespace VixenApplication.Setup.ElementTemplates
 		/// <param name="node">Fixture node</param>
 		/// <param name="dimmingCurveSelection">Dimming curve filter selection</param>
 		/// <param name="dimmingCurve">Dimming curve to insert</param>
+		/// <param name="numberOfColorChannels">Number of color channels found on the fixture</param>
 		private void ProcessRGBFunction(
 			ref bool foundRGBChannel,
 			ref int rgbChannelCount,
 			ElementNode node,
 			DimmingCurveSelection dimmingCurveSelection,
-			Curve dimmingCurve)
+			Curve dimmingCurve,
+			int numberOfColorChannels)
 		{
 			// Process the color mixing function
 			ProcessColorMixingFunction(
@@ -473,25 +577,28 @@ namespace VixenApplication.Setup.ElementTemplates
 				ref rgbChannelCount,
 				node,
 				GetRGBColorBreakdownItems,
-				3,
+				numberOfColorChannels,
 				dimmingCurveSelection,
-				dimmingCurve); 				
+				dimmingCurve,
+				3); 				
 		}
 
 		/// <summary>
-		/// Processes an RGB fixture function.
+		/// Processes an RGBW fixture function.
 		/// </summary>
 		/// <param name="foundRGBWChannel">Flag indicating if an RGBW channel was already found</param>
 		/// <param name="rgbwChannelCount">The number of color mixing channels found so far</param>
 		/// <param name="node">Fixture node</param>
 		/// <param name="dimmingCurveSelection">Dimming curve filter selection</param>
 		/// <param name="dimmingCurve">Dimming curve to insert</param>
+		/// <param name="numberOfColorChannels">Number of color channels found on the fixture</param>
 		private void ProcessRGBWFunction(
 			ref bool foundRGBWChannel,
 			ref int rgbwChannelCount,
 			ElementNode node,
 			DimmingCurveSelection dimmingCurveSelection,
-			Curve dimmingCurve)
+			Curve dimmingCurve,
+			int numberOfColorChannels)
 		{
 			// Process the color mixing function
 			ProcessColorMixingFunction(
@@ -499,9 +606,10 @@ namespace VixenApplication.Setup.ElementTemplates
 				ref rgbwChannelCount,
 				node,
 				GetRGBWColorBreakdownItems,
-				4,
+				numberOfColorChannels,
 				dimmingCurveSelection,
-				dimmingCurve);
+				dimmingCurve,
+				4);
 		}
 
 		/// <summary>
@@ -732,19 +840,14 @@ namespace VixenApplication.Setup.ElementTemplates
 		private void AddCourseFineBreakdown(ElementNode node)
 		{
 			// Create course / fine breakdown module
-			CoarseFineBreakdownModule courseFineBreakdown =
-				ApplicationServices.Get<IOutputFilterModuleInstance>(CoarseFineBreakdownDescriptor.ModuleId) as
-					CoarseFineBreakdownModule;
-
+			CoarseFineBreakdownModule courseFineBreakdown = CreateCoarseFindBreakDownModule();
+			
 			// Find the leafs of the node
 			IList<IDataFlowComponentReference> nodes = FindLeafOutputsOrBreakdownFilters(VixenSystem.DataFlow.GetComponent(node.Element.Id)).ToList();
 
 			// Add the break down module to the last node
 			// (This node is usually a tagged filter)
 			VixenSystem.DataFlow.SetComponentSource(courseFineBreakdown, nodes[nodes.Count - 1]);
-
-			// Add the course fine break down to the node
-			VixenSystem.Filters.AddFilter(courseFineBreakdown);
 		}
 		
 		/// <summary>
@@ -870,10 +973,10 @@ namespace VixenApplication.Setup.ElementTemplates
 					}
 					break;
 				case FixtureFunctionType.RGBWColor:
-					ProcessRGBWFunction(ref foundColorMixingChannel, ref colorMixingChannelCount, node, dimmingCurveSelection, dimmingCurve);
+					ProcessRGBWFunction(ref foundColorMixingChannel, ref colorMixingChannelCount, node, dimmingCurveSelection, dimmingCurve, GetNumberOfColorChannels(fixture));
 					break;
 				case FixtureFunctionType.RGBColor:
-					ProcessRGBFunction(ref foundColorMixingChannel, ref colorMixingChannelCount, node, dimmingCurveSelection, dimmingCurve);
+					ProcessRGBFunction(ref foundColorMixingChannel, ref colorMixingChannelCount, node, dimmingCurveSelection, dimmingCurve, GetNumberOfColorChannels(fixture));
 					break;
 				case FixtureFunctionType.Indexed:
 					ProcessIndexedFunction(function, node, colorMixing, automaticallyOpenAndCloseShutter, automaticallyOpenAndClosePrism);
