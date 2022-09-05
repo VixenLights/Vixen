@@ -21,7 +21,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			base(breakdownItem, mixColors, rgbToRGBWConverter)
 		{
 			// Default the output
-			Data = new CommandDataFlowData(CommandLookup16BitEvaluator.CommandLookup[0]);
+			Data = new CommandDataFlowData(CommandLookup16BitEvaluator.GetCommand(0));
 		}
 
 		#endregion
@@ -32,7 +32,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		protected override void ProcessInputDataInternal(double intensity)
 		{
 			// Convert the intensity into a 16-bit command
-			Data.Value = CommandLookup16BitEvaluator.CommandLookup[(ushort)(intensity * ushort.MaxValue)];
+			Data.Value = CommandLookup16BitEvaluator.GetCommand((ushort)(intensity * ushort.MaxValue));
 		}
 
 		#endregion
