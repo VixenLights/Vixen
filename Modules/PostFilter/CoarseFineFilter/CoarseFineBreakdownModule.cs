@@ -26,7 +26,7 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 		#region Public Overrides
 
 		/// <summary>
-		/// Breakdowns the intents and routes them to the correct output.
+		/// Breaks down the intents and routes them to the correct output.
 		/// </summary>
 		/// <param name="intents">Intents to process</param>
 		public override void Handle(IntentsDataFlowData intents)
@@ -38,7 +38,21 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 				output.ProcessInputData(intents);
 			}
 		}
-		
+
+		/// <summary>
+		/// Breaks down the commands and routes them to the correct output.
+		/// </summary>
+		/// <param name="obj"></param>
+		public override void Handle(CommandDataFlowData commandDataFlow)
+		{
+			// Loop over the outputs
+			foreach (CoarseFineBreakdownOutput output in _outputs)
+			{
+				//  Process the command for the output
+				output.ProcessInputData(commandDataFlow);
+			}
+		}
+
 		/// <summary>
 		/// Takes as input multiple intents.
 		/// </summary>
