@@ -7,6 +7,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Vixen.Extensions;
 using Vixen.Services;
+using Vixen.Sys;
 using VixenModules.App.Fixture;
 
 namespace VixenModules.App.FixtureSpecificationManager
@@ -25,7 +26,13 @@ namespace VixenModules.App.FixtureSpecificationManager
         private FixtureSpecificationManager()
 		{			
 			// Create the collection of fixture specifications
-			FixtureSpecifications = new List<FixtureSpecification>();			
+			FixtureSpecifications = new List<FixtureSpecification>();	
+			
+			// Initialize the profile path
+			_profilePath = Paths.DataRootPath;
+
+			// Load the fixtures from the fixture directory
+			LoadFixtureSpecifications();
 		}
 
         #endregion
@@ -210,18 +217,6 @@ namespace VixenModules.App.FixtureSpecificationManager
 
 			// Sort the fixtures by name
 			Sort();
-		}
-
-		/// <summary>
-		/// Refer to <see cref="IFixtureSpecificationManager"/> documentation.
-		/// </summary>
-		public void InitializeProfilePath(string profilePath)
-        {
-			// Save off the active profile path
-			_profilePath = profilePath;
-
-			// Load the fixtures from the fixture directory
-			LoadFixtureSpecifications();
 		}
 
 		/// <summary>
