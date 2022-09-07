@@ -142,9 +142,6 @@ namespace VixenApplication
 				Environment.Exit(0);
 			}
 
-			// Give the fixture specification manager the root profile data directory
-			FixtureSpecificationManager.Instance().InitializeProfilePath(_rootDataDirectory);
-
 			stopping = false;
 			toolStripStatusUpdates.Text = "";
 			PopulateVersionStrings();
