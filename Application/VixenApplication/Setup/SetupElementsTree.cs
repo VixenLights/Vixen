@@ -236,9 +236,11 @@ namespace VixenApplication.Setup
 			return result;
 		}
 
-
 		private async void buttonAddTemplate_Click(object sender, EventArgs e)
 		{
+			// Disable the button so that the user cannot accidentally double click
+			buttonAddTemplate.Enabled = false;
+
 			// Retrieve the selected combo box item
 			ComboBoxItem item = (comboBoxNewItemType.SelectedItem as ComboBoxItem);
 
@@ -264,8 +266,11 @@ namespace VixenApplication.Setup
 							UpdateFormWithNode();
 							UpdateScrollPosition();
 						},
-					elementTree);				
+					elementTree);
 			}
+
+			// Re-enable the plus add button
+			buttonAddTemplate.Enabled = true;
 		}
 
 		private void UpdateFormWithNode()
