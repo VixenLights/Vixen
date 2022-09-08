@@ -3,8 +3,7 @@
 namespace VixenModules.Effect.Effect
 {
 	/// <summary>
-	/// Maintains a collection of ExpandoObjects and provides properties and methods
-	/// for sharing mark collections with these objects.
+	/// Maintains a collection of ExpandoObjects.
 	/// </summary>
 	/// <typeparam name="TInterface">Collection Item Type</typeparam>
 	public abstract class ExpandoObjectObservableCollection<TInterface, TImpl> : NotifyPropertyObservableCollection<TInterface>, IExpandoObjectCollection		
