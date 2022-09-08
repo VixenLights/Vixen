@@ -115,6 +115,9 @@ namespace VixenModules.Preview.VixenPreview
 
 		private async void ButtonAddTemplate_Click(object sender, EventArgs e)
 		{
+			// Disable the button so that the user cannot accidentally double click
+			buttonAddTemplate.Enabled = false;
+
 			ComboBoxItem item = (comboBoxNewItemType.SelectedItem as ComboBoxItem);
 
 			if (item != null)
@@ -122,6 +125,9 @@ namespace VixenModules.Preview.VixenPreview
 				IElementTemplate template = item.Value as IElementTemplate;
 				await SetupTemplate(template);
 			}
+
+			// Re-enable the plus add button
+			buttonAddTemplate.Enabled = true;
 		}
 
 		internal void ClearSelectedNodes()
