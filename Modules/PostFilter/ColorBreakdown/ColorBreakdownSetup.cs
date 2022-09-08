@@ -46,6 +46,8 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 
 			checkBoxMixColors.Checked = _data.MixColors;
 
+			checkBox16Bit.Checked = _data._16Bit;
+
 			// let's just make up some hardcoded templates. Can expand on this later; probably don't need to,
 			// people can request new ones and stuff if they want.
 			comboBoxTemplates.Items.Clear();
@@ -139,6 +141,11 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		private void checkBoxMixColors_CheckedChanged(object sender, EventArgs e)
 		{
 			_data.MixColors = checkBoxMixColors.Checked;
+		}
+
+		private void checkBox16Bit_CheckedChanged(object sender, EventArgs e)
+		{
+			_data._16Bit = checkBox16Bit.Checked;
 		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
