@@ -92,7 +92,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		/// Creates a coarse fine breakdown module.
 		/// </summary>
 		/// <returns>Coarse fine breakdown module</returns>
-		private CoarseFineBreakdownModule CreateCoarseFindBreakDownModule()
+		private CoarseFineBreakdownModule CreateCoarseFineBreakDownModule()
 		{
 			// Create course / fine breakdown module
 			CoarseFineBreakdownModule courseFineBreakdown =
@@ -478,7 +478,7 @@ namespace VixenApplication.Setup.ElementTemplates
 								updatedDataFlowNodes[updatedDataFlowNodes.Count - index - 1];
 
 							// Create course / fine breakdown module
-							CoarseFineBreakdownModule courseFineBreakdown = CreateCoarseFindBreakDownModule();
+							CoarseFineBreakdownModule courseFineBreakdown = CreateCoarseFineBreakDownModule();
 
 							// Add the coarse / fine breakdown module 
 							VixenSystem.DataFlow.SetComponentSource(courseFineBreakdown, dimmingFlow.Component, 0);
@@ -499,7 +499,7 @@ namespace VixenApplication.Setup.ElementTemplates
 					for (int index = 0; index < numberOfExpectedColors; index++)
 					{
 						// Create course / fine breakdown module
-						CoarseFineBreakdownModule courseFineBreakdown = CreateCoarseFindBreakDownModule();
+						CoarseFineBreakdownModule courseFineBreakdown = CreateCoarseFineBreakDownModule();
 						
 						// Add the coarse / fine breakdown module 
 						VixenSystem.DataFlow.SetComponentSource(courseFineBreakdown, flow.Component, index);
@@ -840,7 +840,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		private void AddCourseFineBreakdown(ElementNode node)
 		{
 			// Create course / fine breakdown module
-			CoarseFineBreakdownModule courseFineBreakdown = CreateCoarseFindBreakDownModule();
+			CoarseFineBreakdownModule courseFineBreakdown = CreateCoarseFineBreakDownModule();
 			
 			// Find the leafs of the node
 			IList<IDataFlowComponentReference> nodes = FindLeafOutputsOrBreakdownFilters(VixenSystem.DataFlow.GetComponent(node.Element.Id)).ToList();
