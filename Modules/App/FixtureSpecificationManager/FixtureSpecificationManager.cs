@@ -230,6 +230,9 @@ namespace VixenModules.App.FixtureSpecificationManager
 			// Get the list of files in the gobo image directory
 			string[] images = Directory.GetFiles(GetGoboImageDirectory());
 
+			// Add a blank entry so that an image can be cleared out
+			goboImages.Add(" ");
+
 			// Loop over the image files
 			foreach(string imagePath in images)
 			{
