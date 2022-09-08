@@ -1229,7 +1229,7 @@ namespace VixenApplication.Setup.ElementTemplates
 				if (groupingPage.CreateGroup)
 				{
 					// Create the group with the specified name
-					ElementNode groupNode = ElementNodeService.Instance.CreateSingle(null, groupingPage.GroupName, true);
+					ElementNode groupNode = ElementNodeService.Instance.CreateSingle(null, groupingPage.GroupName, false);
 
 					// Loop over the fixtures
 					foreach (ElementNode node in nodes)
