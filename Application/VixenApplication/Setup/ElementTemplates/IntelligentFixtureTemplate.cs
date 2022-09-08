@@ -378,6 +378,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		/// <param name="numberOfColorChannelsFoundOnFixture">Number of color mixing channels found on the fixture (3,4,6,8)</param>
 		/// <param name="dimmingCurveSelection">Dimming curve filter selection</param>
 		/// <param name="dimmingCurve">Dimming curve to insert</param>
+		/// <param name="numberOfExpectedColors">Number of expected colors</param>
 		private void ProcessColorMixingFunction(
 			ref bool foundColorMixingChannel,
 			ref int colorMixingChannelCount,
