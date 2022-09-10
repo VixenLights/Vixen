@@ -647,11 +647,19 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <param name="isPan">True when the active function is the Pan function</param>
 		private void DisplayTiltPan(FixtureRotationLimits rotationLimits, Action raiseCanExecuteChanged, bool isPan)
 		{
-			// Give the rotation limits model data to the pan tilt view model
-			PanTiltVM.InitializeViewModel(rotationLimits, RaiseCanExecuteChanged, isPan);
+			// VIX-3248
+			// This null check exists because during testing it seemed like after
+			// creating new build (branch) of the source code that Catel child view model
+			// collection was empty.  This defensive coding avoids a crash but
+			// will require the user to select or re-select the function they want to edit.
+			if (PanTiltVM != null)
+			{
+				// Give the rotation limits model data to the pan tilt view model
+				PanTiltVM.InitializeViewModel(rotationLimits, RaiseCanExecuteChanged, isPan);
 
-			// Make the pan tilt user control visible
-			PanTiltVisible = true;
+				// Make the pan tilt user control visible
+				PanTiltVisible = true;
+			}
 
 			// Hide the color wheel user control visible
 			ColorWheelVisible = false;
