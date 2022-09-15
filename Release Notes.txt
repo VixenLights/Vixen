@@ -1,5 +1,63 @@
 Release Notes - Vixen 3
 
+Release Notes - Vixen 3 - 3.9u0 Build 
+
+** New Feature
+   * [VIX-988] - Remember Last Loaded Profile
+   * [VIX-3070] - Create Range Intent to support Moving Heads
+   * [VIX-3133] - Create DDP output controller
+   * [VIX-3135] - Add a browser for the Singing Faces Project
+   * [VIX-3139] - Add Universe export support to DDP module
+   * [VIX-3147] - Add Fixture Specification Manager to maintain fixture library
+
+** Bug
+   * [VIX-2586] - Vixen crashes updating Launcher controller to Hide Windows
+   * [VIX-2962] - Vixen is shutting down every few hours.
+   * [VIX-3035] - Import Sequence Package Crash
+   * [VIX-3037] - Extra context menu divider on mark bar
+   * [VIX-3084] - Picture going up cut disappear before getting all the way to the top
+   * [VIX-3086] - Lip-sync effect minor bugs and supporting logic need code clean up.
+   * [VIX-3089] - Add icon to color picker form
+   * [VIX-3090] - Add icon to color breakdown form
+   * [VIX-3091] - Resize quick pick color choices on color picker form
+   * [VIX-3092] - Add icon to color configuration form.
+   * [VIX-3093] - Add icon to profiles form.
+   * [VIX-3094] - Add icon to profile name form.
+   * [VIX-3095] - Specify exact profile you are about to delete.
+   * [VIX-3098] - Editing Face Mapping colors can cause crash.
+   * [VIX-3099] - The FastPicture logic in the LipSync effect does not honor the default update interval.
+   * [VIX-3105] - Import of XModel can produce unexpected results when multiple ranges are specified in the model file.
+   * [VIX-3107] - Hard crash after importing custom prop and closing the preview with the prop selected.
+   * [VIX-3108] - XModel import does not properly handle ranges that are reversed.
+   * [VIX-3109] - Bars Effect rotation default issue
+   * [VIX-3113] - Bars effect rendering error
+   * [VIX-3122] - Dimming curve provide incorrect values when placed after the color breakdown filter.
+   * [VIX-3142] - Unhandled exception when adding new profile
+   * [VIX-3143] - Liquid effect ctrl copy crashes Vixen
+   * [VIX-3144] - VIX-3143 Wave Effect could crash Vixen when Ctrl dragging the effect
+   * [VIX-3151] - Paste as new in Display Setup can crash Vixen.
+   * [VIX-3164] - Remove extraneous info logging from the sequence grid class. 
+   * [VIX-3172] - Cannot Upgrade tim file using build 1087
+
+** Improvement
+   * [VIX-3082] - Create HighLowByteFilter to support moving heads with 16 bit control channels
+   * [VIX-3083] - Add RGBW color support 
+   * [VIX-3100] - Allow Color Property to support more than 8 Discrete Colors
+   * [VIX-3119] - Message when no elements found when using find selected controllers
+   * [VIX-3129] - Add a simple function to set an effect to be the entire length of the sequence.
+   * [VIX-3130] - Ability to adjust all beat bars at the same time
+   * [VIX-3140] - Extend universe export support to support additional universe types
+   * [VIX-3148] - Remove redundant Module Type Id and Module Type Instance Id from ModuleStore file.
+   * [VIX-3155] - Separate the classes in ColorBrekdownModule.cs into separate cs files
+   * [VIX-3157] - Create Color Wheel Filter
+   * [VIX-3158] - Create Tagged Filter
+   * [VIX-3159] - Create Dimmer Filter
+   * [VIX-3160] - Create Shutter Filter
+   * [VIX-3163] - Remove version control feature.
+   * [VIX-3165] - Upgrade Catel to 5.12.10
+   * [VIX-3178] - Create Named8BitCommand to support Intelligent Fixtures
+   * [VIX-3182] - Update dependent libraries to the most recent versions.
+
 Release Notes - Vixen 3 - 3.8u0 Build 
 
 ** Improvement
