@@ -32,7 +32,11 @@
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
+    <ProjectReference Include="..\..\..\Common\DiscreteColorPicker\DiscreteColorPicker.csproj">
+	    <Private>false</Private>
+	    <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+	  <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
@@ -42,7 +46,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="ColorGradientEditor.cs">
@@ -67,6 +74,16 @@
       <DependentUpon>GradientEditPanel.cs</DependentUpon>
     </Compile>
   </ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Catel.Core" Version="5.12.10">
+			<ExcludeAssets>runtime</ExcludeAssets>
+		</PackageReference>
+		<PackageReference Include="Catel.MVVM" Version="5.12.10">
+			<ExcludeAssets>runtime</ExcludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
   <ItemGroup>
     <EmbeddedResource Update="ColorGradientEditor.resx">
       <DependentUpon>ColorGradientEditor.cs</DependentUpon>

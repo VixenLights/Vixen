@@ -15,7 +15,7 @@ using Vixen.Rule;
 using Vixen.Sys;
 using ColorProperty = VixenModules.Property.Color;
 using Color = System.Drawing.Color;
-
+using Common.DiscreteColorPicker.Views;
 
 namespace VixenModules.Property.Face {
 	public partial class FaceSetupHelper : BaseForm, IElementSetupHelper
@@ -525,23 +525,21 @@ namespace VixenModules.Property.Face {
 			DialogResult result = DialogResult.Abort;
 			if (colors.Any())
 			{
-				using (DiscreteColorPicker dcp = new DiscreteColorPicker())
+				// Create the discrete single color picker view
+				SingleDiscreteColorPickerView colorPickerView = new SingleDiscreteColorPickerView(colors, color);
+
+				// Show the single color picker window
+				bool? colorResult = colorPickerView.ShowDialog();
+
+				// If the user selected the OK button then...
+				if (colorResult.HasValue &&
+				    colorResult.Value)
 				{
-					dcp.ValidColors = colors;
-					dcp.SingleColorOnly = true;
-					dcp.SelectedColors = new List<System.Drawing.Color> { color };
-					result = dcp.ShowDialog();
-					if (result == DialogResult.OK)
-					{
-						if (!dcp.SelectedColors.Any())
-						{
-							returnColor = System.Drawing.Color.White;
-						}
-						else
-						{
-							returnColor = dcp.SelectedColors.First();
-						}
-					}
+					// Remember that the user selected the OK button
+					result = DialogResult.OK;
+
+					// Get the selected color
+					returnColor = colorPickerView.GetSelectedColor();
 				}
 			}
 			else

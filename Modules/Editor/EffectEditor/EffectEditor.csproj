@@ -48,7 +48,11 @@
     <Resource Include="License.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Common\WPFCommon\WPFCommon.csproj">
+    <ProjectReference Include="..\..\..\Common\DiscreteColorPicker\DiscreteColorPicker.csproj">
+	    <Private>false</Private>
+	    <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+	  <ProjectReference Include="..\..\..\Common\WPFCommon\WPFCommon.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
