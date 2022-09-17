@@ -81,10 +81,6 @@
     <Compile Update="ConfigureElements\AddPixelGrid.designer.cs">
       <DependentUpon>AddPixelGrid.cs</DependentUpon>
     </Compile>
-    <Compile Update="DiscreteColorPicker.cs" />
-    <Compile Update="DiscreteColorPicker.Designer.cs">
-      <DependentUpon>DiscreteColorPicker.cs</DependentUpon>
-    </Compile>
     <Compile Update="DiscreteColorPickerItem.cs" />
     <Compile Update="DiscreteColorPickerItem.Designer.cs">
       <DependentUpon>DiscreteColorPickerItem.cs</DependentUpon>
@@ -201,9 +197,6 @@
     </EmbeddedResource>
     <EmbeddedResource Update="ConfigureElements\AddPixelGrid.resx">
       <DependentUpon>AddPixelGrid.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="DiscreteColorPicker.resx">
-      <DependentUpon>DiscreteColorPicker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="DiscreteColorPickerItem.resx">
       <DependentUpon>DiscreteColorPickerItem.cs</DependentUpon>

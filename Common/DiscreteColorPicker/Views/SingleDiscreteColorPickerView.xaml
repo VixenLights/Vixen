@@ -1,0 +1,58 @@
+﻿<views:DiscreteColorPickerViewBase x:Class="Common.DiscreteColorPicker.Views.SingleDiscreteColorPickerView"
+                                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
+                                   xmlns:catel="http://schemas.catelproject.com"
+                                   xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+                                   xmlns:common="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
+                                   xmlns:views="clr-namespace:Common.DiscreteColorPicker.Views"
+                                   mc:Ignorable="d"
+                                   Title="Select Color"
+                                   WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+	        <common:ColorToSolidBrushConverter x:Key="ColorToSolidBrushConverter"/>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Background="#444444">
+        <Grid.RowDefinitions>
+            <RowDefinition Height = "*" />
+            <RowDefinition Height = "40" />
+        </Grid.RowDefinitions>
+
+        <ListBox Grid.Row="0"  ItemsSource="{Binding Colors}" 
+                 SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}" 
+                 Style="{StaticResource ListBoxStyle}"
+                 Background="#444444"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+	        <ListBox.ItemsPanel>
+		        <ItemsPanelTemplate>
+			        <WrapPanel Orientation="Horizontal" />
+		        </ItemsPanelTemplate>
+	        </ListBox.ItemsPanel>
+			<ListBox.ItemContainerStyle>
+				<Style TargetType="{x:Type ListBoxItem}">
+					<Setter Property="IsSelected" Value="{Binding IsSelected}"/>
+				</Style>
+			</ListBox.ItemContainerStyle>
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<StackPanel Orientation="Horizontal" Margin="5,5,5,5">
+						<Rectangle Width="50" Height="50"  Fill="{Binding ItemColor, Converter={StaticResource ColorToSolidBrushConverter}}"/>
+					</StackPanel>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+        </ListBox>
+		
+
+        <WrapPanel Orientation="Horizontal" Style="{StaticResource RowButtonRightContainerStyle}" Grid.Row="1">
+            <Button Content="Ok" Command="{Binding OkCommand}" IsDefault="True" Style="{StaticResource RowButtonStyle}"/>
+            <Button Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True" Style="{StaticResource RowButtonStyle}"/>
+        </WrapPanel>
+    </Grid>
+</views:DiscreteColorPickerViewBase>
