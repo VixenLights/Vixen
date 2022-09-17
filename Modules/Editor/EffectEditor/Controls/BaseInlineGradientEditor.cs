@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Common.Controls;
 using Common.Controls.ColorManagement.ColorPicker;
+using Common.DiscreteColorPicker.Views;
 using NLog;
 using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
@@ -411,31 +412,36 @@ namespace VixenModules.Editor.EffectEditor.Controls
 					selectedColors.Add(pt.Color.ToRGB().ToArgb());
 				}
 
-				using (DiscreteColorPicker picker = new DiscreteColorPicker())
-				{
-					picker.ValidColors = ValidColors;
-					picker.SelectedColors = selectedColors;
-					if (picker.ShowDialog() == DialogResult.OK)
-					{
-						if (!picker.SelectedColors.Any())
-						{
-							DeletePoint();
-						}
-						else
-						{
-							double position = colorPoints.First().Position;
-							foreach (var colorPoint in colorPoints)
-							{
-								holdValue.Colors.Remove(colorPoint);
-							}
+				// Initialize the initially selected colors
+				HashSet<Color> initiallySelectedColors = new HashSet<Color>(selectedColors);
 
-							foreach (Color selectedColor in picker.SelectedColors)
-							{
-								ColorPoint newPoint = new ColorPoint(selectedColor, position);
-								holdValue.Colors.Add(newPoint);
-							}
-							SetColorGradientValue(holdValue);
+				// Create the multiple discrete color picker view
+				MultipleDiscreteColorPickerView discreteColorPickerView = new MultipleDiscreteColorPickerView(ValidColors, initiallySelectedColors);
+
+				// Show the color picker window
+				bool? result = discreteColorPickerView.ShowDialog();
+
+				// If the user selected the OK button then...					
+				if (result.HasValue && result.Value)
+				{
+					if (discreteColorPickerView.GetSelectedColors().Count() == 0) 
+					{
+						DeletePoint();
+					}
+					else
+					{
+						double position = colorPoints.First().Position;
+						foreach (var colorPoint in colorPoints)
+						{
+							holdValue.Colors.Remove(colorPoint);
 						}
+
+						foreach (Color selectedColor in discreteColorPickerView.GetSelectedColors())
+						{
+							ColorPoint newPoint = new ColorPoint(selectedColor, position);
+							holdValue.Colors.Add(newPoint);
+						}
+						SetColorGradientValue(holdValue);
 					}
 				}
 			}
