@@ -1,0 +1,62 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+	  <RootNamespace>Common.DiscreteColorPicker</RootNamespace>
+	  <TargetFramework>net48</TargetFramework>
+	  <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+	  <AssemblyTitle>DiscreteColorPicker</AssemblyTitle>
+	  <Product>Vixen</Product>
+	  <Copyright>Copyright ©  2021</Copyright>
+	  <UseWPF>true</UseWPF>
+	  <Platforms>x64;x86</Platforms>
+	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+		<OutputPath>$(SolutionDir)\Release64\Common\</OutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+		<OutputPath>..\..\..\$(Configuration)\Common\</OutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+		<OutputPath>$(SolutionDir)\Debug64\Common\</OutputPath>
+		<DefineConstants>TRACE</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+		<OutputPath>..\..\..\$(Configuration)\Common\</OutputPath>
+		<DefineConstants>TRACE</DefineConstants>
+	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="Behaviors\**" />
+	  <EmbeddedResource Remove="Behaviors\**" />
+	  <None Remove="Behaviors\**" />
+	  <Page Remove="Behaviors\**" />
+	</ItemGroup>	
+	<ItemGroup>
+	  <Page Remove="UserControl1.xaml" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <PackageReference Include="Catel.Core" Version="5.12.10">
+	    <ExcludeAssets>runtime</ExcludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="Catel.MVVM" Version="5.12.10">
+	    <ExcludeAssets>runtime</ExcludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="DataGridThemes" Version="1.0.0">
+	    <ExcludeAssets>runtime</ExcludeAssets>
+	  </PackageReference>
+	</ItemGroup>
+  
+  <ItemGroup>
+    
+	  <ProjectReference Include="..\Resources\Resources.csproj">
+	    <IncludeAssets>None</IncludeAssets>
+	    <Private>false</Private>
+    </ProjectReference>
+    
+	  <ProjectReference Include="..\WPFCommon\WPFCommon.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+</Project>

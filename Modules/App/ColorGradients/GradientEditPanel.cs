@@ -11,6 +11,7 @@ using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
+using Common.DiscreteColorPicker.Views;
 
 namespace VixenModules.App.ColorGradients
 {
@@ -112,31 +113,43 @@ namespace VixenModules.App.ColorGradients
 					selectedColors.Add(pt.Color.ToRGB().ToArgb());
 				}
 
-				using (DiscreteColorPicker picker = new DiscreteColorPicker()) {
-					picker.ValidColors = ValidDiscreteColors;
-					picker.SelectedColors = selectedColors;
-					if (picker.ShowDialog() == DialogResult.OK) {
-						if (picker.SelectedColors.Count() == 0) {
-							DeleteColor();
+				// Initialize the colors to select from
+				HashSet<Color> discreteColors = new HashSet<Color>(ValidDiscreteColors);
+
+				// Initialize the initially selected colors
+				HashSet<Color> initiallySelectedColors = new HashSet<Color>(selectedColors);
+
+				// Create the multiple discrete color picker view
+				MultipleDiscreteColorPickerView discreteColorPickerView = new MultipleDiscreteColorPickerView(discreteColors, initiallySelectedColors);
+
+				// Show the color picker window
+				bool? result = discreteColorPickerView.ShowDialog();
+
+				// If the user selected the OK button then...					
+				if (result.HasValue && result.Value)
+				{
+					if (discreteColorPickerView.GetSelectedColors().Count() == 0)
+					{
+						DeleteColor();
+					}
+					//else if (picker.SelectedColors.Count() == selectedColors.Count) {
+					//	int i = 0;
+					//	foreach (Color selectedColor in picker.SelectedColors) {
+					//		ColorPoint pt = edit.Selection[i] as ColorPoint;
+					//		pt.Color = XYZ.FromRGB(selectedColor);
+					//	}
+					//}
+					else {
+						double position = edit.Selection.First().Position;
+
+						foreach (ColorGradient.Point point in edit.Selection) {
+							edit.Gradient.Colors.Remove(point as ColorPoint);
 						}
-						//else if (picker.SelectedColors.Count() == selectedColors.Count) {
-						//	int i = 0;
-						//	foreach (Color selectedColor in picker.SelectedColors) {
-						//		ColorPoint pt = edit.Selection[i] as ColorPoint;
-						//		pt.Color = XYZ.FromRGB(selectedColor);
-						//	}
-						//}
-						else {
-							double position = edit.Selection.First().Position;
 
-							foreach (ColorGradient.Point point in edit.Selection) {
-								edit.Gradient.Colors.Remove(point as ColorPoint);
-							}
-
-							foreach (Color selectedColor in picker.SelectedColors) {
-								ColorPoint newPoint = new ColorPoint(selectedColor, position);
-								edit.Gradient.Colors.Add(newPoint);
-							}
+						foreach (Color selectedColor in discreteColorPickerView.GetSelectedColors()) 
+						{
+							ColorPoint newPoint = new ColorPoint(selectedColor, position);
+							edit.Gradient.Colors.Add(newPoint);
 						}
 					}
 				}
