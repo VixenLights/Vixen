@@ -13,6 +13,7 @@ using Common.Controls.Theme;
 using Vixen.Module.Effect;
 using VixenModules.Property.Color;
 using Vixen.Sys;
+using Common.DiscreteColorPicker.Views;
 
 namespace VixenModules.App.LipSyncApp
 {
@@ -139,23 +140,18 @@ namespace VixenModules.App.LipSyncApp
 		{
 			if (_discreteColors)
 			{
-				using (DiscreteColorPicker dcp = new DiscreteColorPicker())
+				// Create the discrete single color picker view
+				SingleDiscreteColorPickerView colorPickerView = new SingleDiscreteColorPickerView(new HashSet<Color>(_validDiscreteColors), Color);
+
+				// Show the single color picker window
+				bool? colorResult = colorPickerView.ShowDialog();
+
+				// If the user selected the OK button then...
+				if (colorResult.HasValue &&
+				    colorResult.Value)
 				{
-					dcp.ValidColors = _validDiscreteColors;
-					dcp.SingleColorOnly = true;
-					dcp.SelectedColors = new List<Color> { Color };
-					DialogResult result = dcp.ShowDialog();
-					if (result == DialogResult.OK)
-					{
-						if (dcp.SelectedColors.Count() == 0)
-						{
-							Color = Color.White;
-						}
-						else
-						{
-							RGBColor = dcp.SelectedColors.First();
-						}
-					}
+					// Get the selected color
+					RGBColor= colorPickerView.GetSelectedColor();
 				}
 			}
 			else
