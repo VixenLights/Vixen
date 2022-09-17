@@ -7,6 +7,8 @@ using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
+using Common.DiscreteColorPicker;
+using Common.DiscreteColorPicker.Views;
 
 namespace VixenModules.Editor.EffectEditor.Editors
 {
@@ -30,20 +32,21 @@ namespace VixenModules.Editor.EffectEditor.Editors
 			{
 				colorValue = discreteColors.Any() ? discreteColors.First() : Color.White;
 			}
-			DialogResult result;
+			
 			if (discreteColors.Any())
 			{
-				using (DiscreteColorPicker dcp = new DiscreteColorPicker())
+				// Create the discrete single color picker view
+				SingleDiscreteColorPickerView discreteColorPickerView = new SingleDiscreteColorPickerView(discreteColors, colorValue);
+				
+				// Show the single color picker window
+				bool? result = discreteColorPickerView.ShowDialog();
+
+				// If the user selected the OK button then...
+				if (result.HasValue &&
+				    result.Value)
 				{
-					dcp.ValidColors = discreteColors;
-					dcp.SingleColorOnly = true;
-					dcp.SelectedColors = new List<Color> {colorValue};
-					dcp.Text = propertyItem.DisplayName;
-					result = dcp.ShowDialog();
-					if (result == DialogResult.OK)
-					{
-						propertyValue = !dcp.SelectedColors.Any() ? discreteColors.First() : dcp.SelectedColors.First();
-					}
+					// Retrieve the selected color
+					propertyValue = discreteColorPickerView.GetSelectedColor();
 				}
 			}
 			else
@@ -53,7 +56,7 @@ namespace VixenModules.Editor.EffectEditor.Editors
 					cp.LockValue_V = false;
 					cp.Color = XYZ.FromRGB(colorValue);
 					cp.Text = propertyItem.DisplayName;
-					result = cp.ShowDialog();
+					DialogResult result = cp.ShowDialog();
 					if (result == DialogResult.OK)
 					{
 						propertyValue = cp.Color.ToRGB().ToArgb();
