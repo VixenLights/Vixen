@@ -25,12 +25,15 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="TabControlEX">
       <HintPath>..\..\..\Common\Libraries\TabControlEX.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="FaceSetupHelper.cs">
@@ -44,6 +47,10 @@
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\DiscreteColorPicker\DiscreteColorPicker.csproj">
+	    <Private>false</Private>
+	    <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
       <Private>false</Private>
@@ -64,6 +71,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Catel.MVVM" Version="5.12.10">
+	    <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
     <PackageReference Include="NLog" Version="4.7.15">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
