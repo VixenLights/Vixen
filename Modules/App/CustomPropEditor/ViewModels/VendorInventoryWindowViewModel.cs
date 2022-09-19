@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Catel.Data;
+using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
 using VixenModules.App.CustomPropEditor.Model.InternalVendorInventory;
@@ -11,6 +12,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	public class VendorInventoryWindowViewModel : ViewModelBase
 	{
 		private readonly IProcessService _processService;
+		private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 		public VendorInventoryWindowViewModel(List<ModelInventory> vendorInventories, IProcessService processService)
 		{
 			_processService = processService;
@@ -216,9 +218,24 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Method to invoke when the ShowProductPage command is executed.
 		/// </summary>
-		private void NavigateToUrl(Uri url)
+		private async void NavigateToUrl(Uri url)
 		{
-			_processService.StartProcess(url.AbsoluteUri);
+			try
+			{
+				await _processService.RunAsync(new ProcessContext { FileName = url.AbsoluteUri, UseShellExecute = true });
+			}
+			catch (System.ComponentModel.Win32Exception noBrowser)
+			{
+
+				if (noBrowser.ErrorCode == -2147467259)
+				{
+					Log.Error(noBrowser, noBrowser.Message);
+				}
+			}
+			catch (System.Exception e)
+			{
+				Log.Error(e, "Error opening link");
+			}
 		}
 
 		#endregion
@@ -238,13 +255,13 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Method to invoke when the SendEmail command is executed.
 		/// </summary>
-		private void SendEmail(string address)
+		private async void SendEmail(string address)
 		{
 			if (!address.StartsWith("mailto:"))
 			{
 				address = $"mailto:{address}";
 			}
-			_processService.StartProcess(address);
+			await _processService.RunAsync(new ProcessContext { FileName = address, UseShellExecute = true });
 		}
 
 		#endregion

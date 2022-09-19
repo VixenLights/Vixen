@@ -242,7 +242,7 @@ namespace VixenModules.App.TimingTrackBrowser.ViewModels
 		/// <summary>
 		/// Method to invoke when the ShowProductPage command is executed.
 		/// </summary>
-		private void NavigateToUrl(Uri url)
+		private async void NavigateToUrl(Uri url)
 		{
 			if(url==null)
             {
@@ -251,10 +251,8 @@ namespace VixenModules.App.TimingTrackBrowser.ViewModels
             }
             try
             {
-                _processService.StartProcess(url.AbsoluteUri);
-				// The above logic will be deprecated in later versions of Catel. The following is the replacement logic.
-				// _processService.RunAsync(new ProcessContext { FileName = url.AbsoluteUri, UseShellExecute = true });
-			}
+	            await _processService.RunAsync(new ProcessContext { FileName = url.AbsoluteUri, UseShellExecute = true });
+            }
             catch (System.ComponentModel.Win32Exception noBrowser)
             {
 
