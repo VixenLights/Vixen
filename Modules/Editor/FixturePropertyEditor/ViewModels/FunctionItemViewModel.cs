@@ -19,13 +19,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// Constructor
 		/// </summary>
 		public FunctionItemViewModel()
-		{						
-			// Default the function type to Range
-			FunctionTypeEnum = FixtureFunctionType.Range;
-
-			// Default the preview identity to Custom
-			FunctionIdentity = FunctionIdentity.Custom;
-			
+		{
 			// Initialize the index data
 			IndexData = new List<FixtureIndex>();
 
@@ -48,6 +42,12 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			_indexFunctionIndentities.Add(FunctionIdentity.Prism);
 			_indexFunctionIndentities.Add(FunctionIdentity.OpenClosePrism);			
 			_indexFunctionIndentities.Add(FunctionIdentity.Custom);
+
+			// Default the function type to Range
+			FunctionTypeEnum = FixtureFunctionType.Range;
+
+			// Default the preview identity to Custom
+			FunctionIdentity = FunctionIdentity.Custom;
 
 			// Create the list of valid function identities for color wheel functions
 			_colorWheelIdentities = new List<FunctionIdentity>();
@@ -128,45 +128,29 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// </summary>
 		public Color TimelineColor { get; set; }
 
+		#endregion
+
+		#region Public Catel Properties
+
 		/// <summary>
-		/// List of avalailable tags (function identities) for the function item.
+		/// Available Function identities.
 		/// </summary>
 		public IList<FunctionIdentity> FunctionIdentities
 		{
 			get
 			{
-				// Create the return value
-				List<FunctionIdentity> types = new List<FunctionIdentity>();
-
-				// Determine the function identities based on function type
-				switch(FunctionTypeEnum)
-				{					
-					case FixtureFunctionType.Range:
-						types = _rangeFunctionIndentities;
-						break;					
-					case FixtureFunctionType.Indexed:
-						types = _indexFunctionIndentities;
-						break;
-					case FixtureFunctionType.ColorWheel:
-						types = _colorWheelIdentities;
-						break;
-					case FixtureFunctionType.RGBColor:
-					case FixtureFunctionType.RGBWColor:
-					case FixtureFunctionType.None:
-						break;
-						default:
-						Debug.Assert(false, "Unsupported function type!");
-						break;
-				}
-
-				// Return the applicable function identities
-				return types;
+				return GetValue<IList<FunctionIdentity>>(FunctionIdentitiesProperty);
+			}
+			set
+			{
+				SetValue(FunctionIdentitiesProperty, value);
 			}
 		}
 
-		#endregion
-
-		#region Public Catel Properties
+		/// <summary>
+		/// Function Identities property data.
+		/// </summary>
+		public static readonly PropertyData FunctionIdentitiesProperty = RegisterProperty(nameof(FunctionIdentities), typeof(IList<FunctionIdentity>), null);
 
 		/// <summary>
 		/// Type of function (Ranged, Indexed, Color Wheel etc).
@@ -184,6 +168,33 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 				// Fire the Function Type Changed event
 				EventHandler handler = FunctionTypeChanged;
 				handler?.Invoke(this, EventArgs.Empty);
+
+				// Create the return value
+				List<FunctionIdentity> types = new List<FunctionIdentity>();
+
+				// Determine the function identities based on function type
+				switch (value)
+				{
+					case FixtureFunctionType.Range:
+						types = _rangeFunctionIndentities;
+						break;
+					case FixtureFunctionType.Indexed:
+						types = _indexFunctionIndentities;
+						break;
+					case FixtureFunctionType.ColorWheel:
+						types = _colorWheelIdentities;
+						break;
+					case FixtureFunctionType.RGBColor:
+					case FixtureFunctionType.RGBWColor:
+					case FixtureFunctionType.None:
+						break;
+					default:
+						Debug.Assert(false, "Unsupported function type!");
+						break;
+				}
+
+				// Update the available function identities
+				FunctionIdentities = types;
 			}
 		}
 
