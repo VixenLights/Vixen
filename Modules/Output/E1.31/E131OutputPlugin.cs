@@ -608,7 +608,9 @@ namespace VixenModules.Controller.E131
 			if (_data.Multicast == null)
 			{
 				config.TransmissionMethod = TransmissionMethods.Unicast;
-				config.IpAddress = DetermineIp().Address;
+				var ip = DetermineIp();
+				config.IpAddress = ip != null ? ip.Address : IPAddress.Loopback;
+				
 			}
 			else
 				config.TransmissionMethod = TransmissionMethods.Multicast;
