@@ -836,7 +836,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				}
 				catch (Exception e)
 				{
-					Logging.Error(e, $"An error occurred retrieveing the inventory from: {vendorLink}");
+					Logging.Error(e, $"An error occurred retrieving the inventory from: {vendorLink.Name}, {vendorLink.Url}");
 					var mbs = dependencyResolver.Resolve<IMessageBoxService>();
 					mbs.ShowError($"Unable to retrieve inventory from {vendorLink.Name}\nEnsure you have an active internet connection.", "Error Retrieving Inventory");
 				}

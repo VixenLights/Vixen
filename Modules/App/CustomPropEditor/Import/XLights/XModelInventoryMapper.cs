@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Catel.Logging;
 using NLog;
 using VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory;
 using VixenModules.App.CustomPropEditor.Model.InternalVendorInventory;
 using Category = VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory.Category;
+using LogManager = NLog.LogManager;
 using Vendor = VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory.Vendor;
 
 namespace VixenModules.App.CustomPropEditor.Import.XLights
@@ -107,7 +109,19 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				
 				if (!string.IsNullOrEmpty(model.Weblink))
 				{
-					p.Url = new Uri(model.Weblink);
+					if (!model.Weblink.TrimStart().StartsWith("http", StringComparison.InvariantCultureIgnoreCase))
+					{
+						model.Weblink = "http://" + model.Weblink.TrimStart();
+					}
+					try
+					{
+						p.Url = new Uri(model.Weblink);
+					}
+					catch (Exception e)
+					{
+						Logging.Error(e, $"An error occured parsing the weblink url: {model.Weblink}");
+					}
+					
 				}
 
 				foreach (var categoryId in p.CategoryIds)
