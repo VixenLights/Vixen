@@ -294,7 +294,11 @@ Section "Application" SEC01
   ; only overwrite these if this installer has a newer version
   SetOverwrite ifnewer
   SetOutPath "$INSTDIR"
+!ifdef DEVBUILD
+  File /r /x *.res /x *.obj /x *.pch "${BUILD_DIR}\*.*"
+!else
   File /r /x *.res /x *.obj /x *.pch /x *.pdb "${BUILD_DIR}\*.*"
+!endif
 
   ; Shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
