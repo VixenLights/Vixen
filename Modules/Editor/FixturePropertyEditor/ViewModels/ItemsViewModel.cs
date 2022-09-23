@@ -51,6 +51,13 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// </summary>
 		private object _validationLock;
 
+		/// <summary>
+		/// The data grid for reasons unknown seems to unselect the current row.  This seems to occur more
+		/// frequently on a brand new row.  This field is used to save off the selected row so that
+		/// delete can be supported 100% of the time. 
+		/// </summary>
+		private TItemType _backupSelectedItem;
+
 		#endregion
 
 		#region Public Properties
@@ -107,6 +114,14 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// </summary>
 		protected virtual void DeleteItem()
 		{
+			// If the selected row is null but the backup selected item is populated then... 
+			// This case is expected when only a cell on the current row is selected.
+			if (SelectedItem == null && _backupSelectedItem != null)
+			{
+				// Reset the selected item to the backup
+				SelectedItem = _backupSelectedItem;
+			}
+
 			// If an item is selected then...
 			if (SelectedItem != null)
 			{				
@@ -122,24 +137,27 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 				// Clear out the selected item
 				SelectedItem = null;
 
+				// Clear out the backup selected item
+				_backupSelectedItem = null;
+
 				// Validate the view model
 				Validate(true);								
-			}
+				
+				// Get the Catel IViewManager
+				IViewManager viewManager = ServiceLocator.Default.ResolveType<IViewManager>();
 
-			// Refresh command enable/disable status
-			RaiseCanExecuteChanged();
+				// Get the views associated with this view model
+				IView[] views = viewManager.GetViewsOfViewModel(this);
 
-			// Get the Catel IViewManager
-			IViewManager viewManager = ServiceLocator.Default.ResolveType<IViewManager>();
+				// If the view implements IRefreshGrid
+				if (views[0] is IRefreshGrid)
+				{
+					// Refresh the grid items in the view
+					((IRefreshGrid)views[0]).Refresh();
+				}
 
-			// Get the views associated with this view model
-			IView[] views = viewManager.GetViewsOfViewModel(this);
-
-			// If the view implements IRefreshGrid
-			if (views[0] is IRefreshGrid)
-			{
-				// Refresh the grid items in the view
-				((IRefreshGrid)views[0]).Refresh();
+				// Refresh command enable/disable status
+				RaiseCanExecuteChanged();
 			}
 		}
 
@@ -196,8 +214,16 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		public TItemType SelectedItem
 		{
 			get { return GetValue<TItemType>(SelectedItemProperty); }
-			set 
-			{ 
+			set
+			{
+				// If the newly selected item is NOT null then...
+				if (value != null)
+				{
+					// Update backup of the selected item
+					// When selecting a cell sometimes the datagrid is deselecting the item
+					_backupSelectedItem = value;
+				}
+
 				SetValue(SelectedItemProperty, value);
 				
 				// If an item was selected then...
