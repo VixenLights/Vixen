@@ -48,6 +48,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Theme\DefaultHiddenStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Theme\Menu.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -69,5 +72,8 @@
   <ItemGroup>
     <Compile Remove="obj\x64\Release\GeneratedInternalTypeHelper.g.cs" />
     <Compile Remove="obj\x64\Release\GeneratedInternalTypeHelper.g.i.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Theme\DefaultHiddenStyle.xaml" />
   </ItemGroup>
 </Project>
