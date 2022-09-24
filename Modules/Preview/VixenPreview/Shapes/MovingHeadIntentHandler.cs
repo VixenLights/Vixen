@@ -18,6 +18,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	public class MovingHeadIntentHandler : IntentStateDispatch,
 		IHandler<IIntentState<RangeValue<FunctionIdentity>>>
 	{
+		#region Constructor
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		public MovingHeadIntentHandler()
+		{
+			// Default the beam to Off
+			DefaultBeamColor = Color.Transparent;
+		}
+
+		#endregion
+
 		#region Fields
 
 		/// <summary>
@@ -59,6 +72,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		#endregion
 
 		#region Public Properties
+
+		/// <summary>
+		/// Default beam color of the light beam when color intents are not being applied.
+		/// </summary>
+		public Color DefaultBeamColor { get; set; }
 
 		/// <summary>
 		/// Fixture node associated with the moving head preview shape. 
@@ -155,6 +173,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			// Turn off the moving head beam
 			MovingHead.OnOff = false;
+
+			// Set the beam color of the moving head back to the default
+			MovingHead.BeamColor = DefaultBeamColor;
 
 			// Reset the head to the start position
 			MovingHead.PanAngle = PanStartPosition;
