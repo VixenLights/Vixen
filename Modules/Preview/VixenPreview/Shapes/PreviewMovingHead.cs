@@ -128,6 +128,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// </summary>
 		private MovingHeadIntentHandler _intentHandler;
 
+		/// <summary>
+		/// Default beam color of the light beam when color intents are not being applied.
+		/// </summary>
+		private Color _defaultBeamColor;
+
 		#endregion
 
 		#region IDrawStaticPreviewShape
@@ -500,6 +505,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						_intentHandler.ConvertColorIntentsIntoDimmer = ((DimmingFilterModule)dimmingFilter).ConvertColorIntoDimmingIntents;
 					}
 				}
+				// Give the intent handler the default beam color
+				_intentHandler.DefaultBeamColor = _defaultBeamColor;
 			}
 		}
 
@@ -816,7 +823,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				if (_node == null)
 				{
-					_node = VixenSystem.Nodes.GetElementNode(NodeId);					
+					_node = VixenSystem.Nodes.GetElementNode(NodeId);
+					
+					// Determine the default beam color from the node
+					UpdateDefaultBeamColor();
 				}
 				return _node;
 			}
@@ -827,6 +837,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				else
 					NodeId = value.Id;
 				_node = value;
+
+				// Determine the default beam color from the node
+				UpdateDefaultBeamColor();
 			}
 		}
 		

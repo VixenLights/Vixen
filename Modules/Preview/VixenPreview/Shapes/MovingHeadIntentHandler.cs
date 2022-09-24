@@ -61,6 +61,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		#region Public Properties
 
 		/// <summary>
+		/// Default beam color of the light beam when color intents are not being applied.
+		/// </summary>
+		public Color DefaultBeamColor { get; set; }
+
+		/// <summary>
 		/// Fixture node associated with the moving head preview shape. 
 		/// </summary>
 		public IElementNode Node { get; set; }
@@ -155,6 +160,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			// Turn off the moving head beam
 			MovingHead.OnOff = false;
+
+			// Set the beam color of the moving head back to the default
+			MovingHead.BeamColor = DefaultBeamColor;
 
 			// Reset the head to the start position
 			MovingHead.PanAngle = PanStartPosition;

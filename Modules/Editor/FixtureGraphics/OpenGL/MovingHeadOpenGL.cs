@@ -192,7 +192,9 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 			else
 			{
 				// Determine if the light beam should be visible
-				_beamVolumes[0].Visible = MovingHead.OnOff;
+				// (Transparent is used for the default beam color for color mixing fixtures)
+				_beamVolumes[0].Visible = MovingHead.OnOff &&
+				                          MovingHead.BeamColor != Color.Transparent;
 
 				// Set the light beam color
 				((ISpecifyVolumeColor)_beamVolumes[0]).Color = beamColor;
