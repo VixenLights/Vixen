@@ -335,7 +335,6 @@ namespace Common.AudioPlayer
 		private void PlaybackDeviceOnPlaybackStopped(object sender, StoppedEventArgs e)
 		{
 			PlaybackEnded?.Invoke();
-			CleanupSoundOut();
 		}
 
 		#region Implementation of IDisposable
