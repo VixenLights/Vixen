@@ -1,6 +1,12 @@
-﻿using System.Windows;
+﻿using System;
+using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
+using VixenModules.Editor.FixturePropertyEditor.ViewModels;
 
 namespace VixenModules.Editor.FixturePropertyEditor.Views
 {
@@ -96,13 +102,25 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 
 		#endregion
 
-		#region IRefrsehGrid
+		#region IRefreshGrid
 
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>
 		public void Refresh()
 		{
+			try
+			{
+				// Cancel any pending edits
+				IndexedViewModel vm = (IndexedViewModel)ViewModel;
+				IEditableCollectionView collectionView = (IEditableCollectionView)CollectionViewSource.GetDefaultView(vm.Items);
+				collectionView.CancelEdit();
+			}
+			catch (Exception e)
+			{
+				// Testing revealed deleting 2nd or 3rd incomplete row seemed to trigger an exception
+			}
+
 			// Refresh the items in the DataGrid.
 			// This method exists because deleting invalid rows in grid was basically leaving the grid in
 			// a read-only state because it seemed to hang onto the invalid row.
