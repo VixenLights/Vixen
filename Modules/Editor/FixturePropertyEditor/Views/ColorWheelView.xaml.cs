@@ -40,8 +40,27 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 			// If there is a selected item then...
 			if (obj != null && obj.SelectedItem != null)
 			{
+				// Retrieve the view model from Catel base class
+				ColorWheelViewModel vm = (ColorWheelViewModel)ViewModel;
+
+				// If a new row being added then...
+				if (vm.AddItemInProgress)
+				{
+					// Give the grid the focus
+					obj.Focus();
+				}
+
 				// Scroll the selected into view
 				obj.ScrollIntoView(obj.SelectedItem);
+
+				// If a new row being added then...
+				if (vm.AddItemInProgress)
+				{
+					// Put the first cell into edit
+					DataGridCellInfo cellInfo = new DataGridCellInfo(obj.SelectedItem, grid.Columns[0]);
+					obj.CurrentCell = cellInfo;
+					obj.BeginEdit();
+				}
 			}
 		}
 
