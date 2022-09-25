@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -163,6 +164,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			// Clear out the legend values
 			_legendValues.Clear();
+			MovingHead.Legend = String.Empty;
 
 			// Turn off strobing
 			_strobbing = false;
