@@ -12,7 +12,7 @@ namespace Common.AudioPlayer.SampleProvider
         private readonly float[] _sourceReadBuffer;
         private readonly float[] _soundTouchReadBuffer;
         private readonly object lockObject;
-        private float _tempo = 0f;
+        private float _tempo = 1f;
         private float _rate = 1f;
 
         private bool _seekRequested;
