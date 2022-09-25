@@ -54,7 +54,8 @@ namespace VixenModules.App.ElementTemplateHelper
 					if (createdElements == null || !createdElements.Any())
 					{
 						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)						
-						var messageBox = new MessageBoxForm("Could not create elements.  Ensure you use a valid name and try again.", "",
+						var messageBox = new MessageBoxForm("Could not create elements.\nPlease close all dialogs and try again.\n\n" +
+						                                    "Please send error logs to Vixen Team.", "Error",
 							MessageBoxButtons.OKCancel, SystemIcons.Error);
 						messageBox.ShowDialog(owner);
 						
