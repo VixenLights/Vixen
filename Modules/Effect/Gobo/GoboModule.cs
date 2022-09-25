@@ -177,7 +177,7 @@ namespace VixenModules.Effect.Gobo
 			bool useGoboImage = false;
 
 			// If a gobo value has been selected then...
-			if (!string.IsNullOrEmpty(GoboIndexValue))
+			if (!string.IsNullOrEmpty(GoboFunctionName) && !string.IsNullOrEmpty(GoboIndexValue))
 			{
 				// Get the first function associated with the gobo index
 				FixtureIndex fixtureIndex = (FixtureIndex)GetFunctionIndex(GoboIndexValue, GoboFunctionName, FunctionIdentity.Gobo);

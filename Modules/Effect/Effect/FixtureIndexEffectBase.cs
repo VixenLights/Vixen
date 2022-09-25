@@ -217,8 +217,8 @@ namespace VixenModules.Effect.Effect
 				// If an applicable function is associated with at least one node then...
 				if (SupportsIndexFunction)
 				{
-					// Default the index value to the first index value
-					if (string.IsNullOrEmpty(indexValue))
+					// Default the index value to the first compatible index value
+					if (string.IsNullOrEmpty(indexValue) && IndexValues.Count > 0)
 					{
 						// Set the index value to the first index value
 						indexValue = IndexValues[0];
@@ -227,8 +227,17 @@ namespace VixenModules.Effect.Effect
 					// If the index value no longer exists in the collection then...
 					if (!IndexValues.Contains(indexValue))
 					{
-						// Set the index value to the first index value from the collection
-						indexValue = IndexValues[0];
+						// If compatible IndexValues were found then...
+						if (IndexValues.Count > 0)
+						{
+							// Set the index value to the first index value from the collection
+							indexValue = IndexValues[0];
+						}
+						else
+						{
+							// Otherwise clear out the index value
+							indexValue = string.Empty;
+						}
 					}
 				}				
 			}				
