@@ -77,6 +77,11 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// </summary>
 		public ObservableCollection<TItemType> Items { get; set; }
 
+		/// <summary>
+		/// Flag that indicates a new item (row) is being added.
+		/// </summary>
+		public bool AddItemInProgress { get; set; }
+
 		#endregion
 
 		#region Protected Methods
@@ -165,6 +170,9 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// </summary>
 		protected virtual void AddItem()
 		{
+			// Indicate that a new item is being added
+			AddItemInProgress = true;
+
 			// Create the new item
 			TItemType item = CreateNewItem();
 
@@ -173,6 +181,9 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 
 			// Select the item
 			SelectedItem = item;
+
+			// Indicate that we are done adding the new item
+			AddItemInProgress = false;
 
 			// Refresh command enable/disable status
 			RaiseCanExecuteChanged();
