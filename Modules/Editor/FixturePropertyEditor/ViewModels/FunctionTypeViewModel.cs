@@ -1,8 +1,10 @@
 ﻿using Catel.Data;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Vixen.Data.Value;
+using Vixen.Extensions;
 using VixenModules.App.Fixture;
 
 namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
@@ -352,6 +354,22 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 				// Add the model function to the return collection
 				returnCollection.Add(function);
 			}
+
+			// Attempt to find the None function
+			FixtureFunction noneFunction = returnCollection.SingleOrDefault(item => item.FunctionType == FixtureFunctionType.None);
+
+			// If the None function has been removed then...
+			if (noneFunction == null)
+			{
+				// Add the None function back
+				returnCollection.Add(
+					CreateFunctionType(
+						FixtureFunctionType.None.GetEnumDescription(),
+							FixtureFunctionType.None,
+							FunctionIdentity.Custom,
+							Color.Transparent));
+			}
+
 
 			// Return the collection of model functions
 			return returnCollection;
@@ -840,6 +858,38 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		{
 			// Retrieve the zoom data from the user control
 			PreviouslySelectedItem.ZoomNarrowToWide = ZoomVM.NarrowToWide;
+		}
+
+		/// <summary>
+		/// Create a fixture function.
+		/// </summary>
+		/// <param name="name">Name of the function</param>
+		/// <param name="functionType">Type of the function</param>
+		/// <param name="identity">Preview identity of the function</param>		
+		/// <param name="timelineColor">Color to use on the timeline for some effects</param>
+		/// <returns>New fixture function</returns>
+		private FixtureFunction CreateFunctionType(
+			string name,
+			FixtureFunctionType functionType,
+			FunctionIdentity identity,
+			Color timelineColor)
+		{
+			// Create the new function
+			FixtureFunction function = new FixtureFunction();
+
+			// Configure the name on the function
+			function.Name = name;
+
+			// Configure the function type
+			function.FunctionType = functionType;
+
+			// Configure the function identity
+			function.FunctionIdentity = identity;
+
+			// Configure the timeline color
+			function.TimelineColor = timelineColor;
+
+			return function;
 		}
 
 		#endregion
