@@ -28,7 +28,7 @@
             <RowDefinition Height = "60" />
         </Grid.RowDefinitions>
 
-        <DataGrid Name="grid" AutoGenerateColumns="False" 
+        <local:VixenDataGrid x:Name="grid" AutoGenerateColumns="False" 
 			Margin="5,5,5,5" 
 			RowHeaderWidth="0" Grid.Row="0" 
 			Grid.Column="1" 
@@ -155,7 +155,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
-        </DataGrid>
+        </local:VixenDataGrid>
 
         <WrapPanel Margin="5,0,0,0" Grid.Row="1">
             <Button Name="Add" Width="40" Height="40"  Command="{Binding AddCommand}" Margin="0,2,2,2">
