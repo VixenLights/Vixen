@@ -1,7 +1,11 @@
-﻿using Catel.MVVM.Views;
+﻿using System;
+using System.ComponentModel;
+using Catel.MVVM.Views;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
+using VixenModules.Editor.FixturePropertyEditor.ViewModels;
 
 namespace VixenModules.Editor.FixturePropertyEditor.Views
 {
@@ -129,6 +133,18 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 		/// </summary>
 		public void Refresh()
 		{
+			try
+			{
+				// Cancel any pending edits
+				FixturePropertyEditorViewModel vm = (FixturePropertyEditorViewModel)ViewModel;
+				IEditableCollectionView collectionView = (IEditableCollectionView)CollectionViewSource.GetDefaultView(vm.Items);
+				collectionView.CancelEdit();
+			}
+			catch (Exception e)
+			{
+				// Testing revealed deleting 2nd or 3rd incomplete row seemed to trigger an exception
+			}
+
 			// Refresh the items in the DataGrid.
 			// This method exists because deleting invalid rows in grid was basically leaving the grid in
 			// a read-only state because it seemed to hang onto the invalid row.
