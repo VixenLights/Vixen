@@ -53,7 +53,7 @@
 					<RowDefinition Height = "45" />
 				</Grid.RowDefinitions>
 
-				<DataGrid x:Name="functionGrid" AutoGenerateColumns="False" Margin="5,5,5,5" 
+				<local:VixenDataGrid x:Name="functionGrid" AutoGenerateColumns="False" Margin="5,5,5,5" 
 				    RowHeaderWidth="0" Grid.Row="0" 
 				    Grid.Column="0" 
 				    CanUserAddRows="False"
@@ -122,7 +122,7 @@
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 					</DataGrid.Columns>
-				</DataGrid>
+				</local:VixenDataGrid>
 
 
 				<WrapPanel Margin="5,0,0,0" Grid.Row="1">
