@@ -74,11 +74,33 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 						obj.SelectedItem != null &&
 						vm.SelectedItem != null)
 					{
-						// Scroll the selected item into view
-						obj.ScrollIntoView(obj.SelectedItem);
-
 						// Select the specified function and display the details
-						vm.SelectFunctionItem((FunctionItemViewModel)obj.SelectedItem);						
+						vm.SelectFunctionItem((FunctionItemViewModel)obj.SelectedItem);
+
+						// If a new row being added then...
+						if (vm.AddItemInProgress)
+						{
+							// Need to defer this logic otherwise the grid loses focus
+							Dispatcher.InvokeAsync(() =>
+							{
+								// Give the grid focus
+								obj.Focus();
+
+								// Scroll the selected into view
+								obj.ScrollIntoView(obj.SelectedItem);
+
+								// Put the first cell into edit
+								DataGridCellInfo cellInfo = new DataGridCellInfo(obj.SelectedItem, obj.Columns[0]);
+								obj.CurrentCell = cellInfo;
+								obj.BeginEdit();
+							});
+
+						}
+						else
+						{
+							// Scroll the selected into view
+							obj.ScrollIntoView(obj.SelectedItem);
+						}
 					}
 				}
 				// Not allowing the user to change rows because of incomplete data
