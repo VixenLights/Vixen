@@ -97,9 +97,8 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <returns>True if an item can be added</returns>
 		protected virtual bool CanAddItem()
 		{
-			// Allowing adding new items if all the existing items are valid or
-			// the collection is empty
-			return string.IsNullOrEmpty(GetValidationResults()) || Items.Count == 0;	
+			// Always allowing the user to create new items
+			return true; 
 		}
 
 		/// <summary>
