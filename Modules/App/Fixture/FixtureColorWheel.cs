@@ -21,7 +21,8 @@ namespace VixenModules.App.Fixture
 			// Initialize the colors to white
 			Color1 = Color.White;
 			Color2 = Color.White;
-		}
+			IndexType = FixtureIndexType.ColorWheel;
+        }
 
 		#endregion
 
