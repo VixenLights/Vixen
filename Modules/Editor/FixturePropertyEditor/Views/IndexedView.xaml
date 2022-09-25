@@ -32,7 +32,7 @@
 			<RowDefinition Height = "60" />
 		</Grid.RowDefinitions>
 
-		<DataGrid Name="grid" AutoGenerateColumns="False" 
+		<local:VixenDataGrid x:Name="grid" AutoGenerateColumns="False" 
 				  ItemsSource="{Binding Items}" 
 				  SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}"
 				  SelectionChanged="SelectionChanged"
@@ -150,7 +150,7 @@
 				</DataGridTemplateColumn>
 
 			</DataGrid.Columns>
-		</DataGrid>
+		</local:VixenDataGrid>
 
 
 		<WrapPanel Margin="5,0,0,0" Grid.Row="1" >
