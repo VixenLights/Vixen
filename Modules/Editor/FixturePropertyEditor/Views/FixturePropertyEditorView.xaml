@@ -5,8 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
         xmlns:catel="http://schemas.catelproject.com"
 	    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-	    xmlns:views="clr-namespace:VixenModules.Editor.FixturePropertyEditor.Views"	    
-	    xmlns:common="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
+        xmlns:common="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
         xmlns:local="clr-namespace:VixenModules.Editor.FixturePropertyEditor.Views"	
         mc:Ignorable="d">
     <UserControl.Resources>
@@ -53,7 +52,7 @@
             <Button Content="Load Fixture Profile"  
                     HorizontalAlignment="Left"
                     Command="{Binding Path=LoadSpecificationCommand}" 
-                    Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type views:FixturePropertyEditorView}}, Path=DisplayLoadButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:FixturePropertyEditorView}}, Path=DisplayLoadButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                     IsDefault="True" Style="{StaticResource RowButtonStyle}" Width="150" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" 
 					ToolTip="Select to load an existing fixture profile."
 					/>
@@ -82,7 +81,7 @@
 
         <DockPanel Grid.Row="1">
 
-            <DataGrid Name="grid" AutoGenerateColumns="False" ItemsSource="{Binding Items}" Margin="10,10,10,0" 
+            <local:VixenDataGrid x:Name="grid" AutoGenerateColumns="False" ItemsSource="{Binding Items}" Margin="10,10,10,0" 
 				          RowHeaderWidth="0"   Background="#444444" CanUserAddRows="False"
                  SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}" 
                  EnableRowVirtualization="False" DockPanel.Dock = "Top" VerticalAlignment='Top'
@@ -153,7 +152,7 @@
                     </DataGridTemplateColumn>
 
                 </DataGrid.Columns>
-            </DataGrid>
+            </local:VixenDataGrid>
 
         </DockPanel>
 
