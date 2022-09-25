@@ -699,7 +699,6 @@ namespace VixenModules.Effect.Effect
 			set
 			{
 				Data = (T_Data)value;
-				UpdateFixtureCapabilities();
 				UpdateAttributes();
 			}
 		}
