@@ -3,10 +3,24 @@
 namespace VixenModules.Editor.FixtureGraphics
 {
 	/// <summary>
+	/// Defines the supported mounting positions of fixtures.
+	/// </summary>
+	public enum MountingPositionType
+	{
+		Bottom,
+		Top,
+	}
+
+	/// <summary>
 	/// Maintains properties of a DMX moving head intelligent fixture.
 	/// </summary>
 	public interface IMovingHead
 	{
+		/// <summary>
+		/// Mounting position of the moving head.
+		/// </summary>
+		MountingPositionType MountingPosition { get; set; }
+
 		/// <summary>
 		/// Horizontal angle (in degrees) of the base the moving head.
 		/// </summary>
@@ -76,5 +90,11 @@ namespace VixenModules.Editor.FixtureGraphics
 		/// </summary>
 		/// <remarks>This property allows the fixture to match the intensity of the background as it is dimmed.</remarks>
 		int FixtureIntensity { get; set; }
+
+		/// <summary>
+		/// Returns either +1 or -1 based on the orientation of the fixture.
+		/// </summary>
+		/// <returns>+1 or -1 based on the orientation of the fixture</returns>
+		double GetOrientationSign();
 	}
 }

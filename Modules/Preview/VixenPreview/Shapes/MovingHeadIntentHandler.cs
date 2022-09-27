@@ -137,6 +137,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get;
 			set;
 		}
+
+		/// <summary>
+		/// Reverses the pan movement direction.
+		/// </summary>
+		public bool InvertPanDirection { get; set; }
+
+		/// <summary>
+		/// Reverses the tilt movement direction.
+		/// </summary>
+		public bool InvertTiltDirection { get; set; }
 		
 		/// <summary>
 		/// Moving head settings associated with the preview shape.
@@ -179,9 +189,29 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// Set the beam color of the moving head back to the default
 			MovingHead.BeamColor = DefaultBeamColor;
 
-			// Reset the head to the start position
-			MovingHead.PanAngle = PanStartPosition;
-			MovingHead.TiltAngle = TiltStartPosition;						
+			// If the tilt movement direction is inverted then...
+			if (InvertTiltDirection)
+			{
+				// Reset the head to the stop position
+				MovingHead.TiltAngle = -TiltStopPosition;
+			}
+			else
+			{
+				// Reset the head to the start position
+				MovingHead.TiltAngle = TiltStartPosition;
+			}
+
+			// If the pan movement direction is inverted then...
+			if (InvertPanDirection)
+			{
+				// Reset the head to the stop position
+				MovingHead.PanAngle = PanStopPosition;
+			}
+			else
+			{
+				// Reset the head to the start position
+				MovingHead.PanAngle = PanStartPosition;
+			}
 		}
 
 		/// <summary>
@@ -215,28 +245,59 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			switch ((FunctionIdentity)rangeIntent.GetValue().TagType)
 			{
 				case FunctionIdentity.Pan:
-					
-					// Calculate the pan angle
-					double pan = rangeIntent.GetValue().Value * (PanStopPosition - PanStartPosition) + PanStartPosition;
 
-					// Limit the angle to +/- 360 degrees
-					pan = LimitAngle(pan);
-					
-					// Set the moving head pan angle
-					MovingHead.PanAngle = pan;
-					
+					// If the pan movement direction is inverted then...
+					if (InvertPanDirection)
+					{
+						// Calculate the pan angle
+						double pan = PanStopPosition - rangeIntent.GetValue().Value * (PanStopPosition - PanStartPosition);
+
+						// Limit the angle to +/- 360 degrees
+						pan = LimitAngle(pan);
+
+						// Set the moving head pan angle
+						MovingHead.PanAngle = pan;
+					}
+					else
+					{
+						// Calculate the pan angle
+						double pan = rangeIntent.GetValue().Value * (PanStopPosition - PanStartPosition) + PanStartPosition;
+
+						// Limit the angle to +/- 360 degrees
+						pan = LimitAngle(pan);
+
+						// Set the moving head pan angle
+						MovingHead.PanAngle = pan;
+					}
 					break;
 				case FunctionIdentity.Tilt:
 
-					// Calculate the tilt angle
-					double tilt = rangeIntent.GetValue().Value * (TiltStopPosition - TiltStartPosition) + TiltStartPosition;
+					// If the tilt movement direction is inverted then...
+					if (InvertTiltDirection)
+					{
+						// Calculate the tilt angle
+						double tilt = TiltStopPosition - rangeIntent.GetValue().Value * (TiltStopPosition - TiltStartPosition);
 
-					// Limit the angle to +/- 360 degrees
-					tilt = LimitAngle(tilt);
-					
-					// Set the moving head tilt angle converting to degrees
-					MovingHead.TiltAngle = tilt;
-					
+						// Limit the angle to +/- 360 degrees
+						tilt = LimitAngle(tilt);
+
+						// Negative the tilt angle
+						tilt = -tilt;
+
+						// Set the moving head tilt angle converting to degrees
+						MovingHead.TiltAngle = tilt;
+					}
+					else
+					{
+						// Calculate the tilt angle
+						double tilt = rangeIntent.GetValue().Value * (TiltStopPosition - TiltStartPosition) + TiltStartPosition;
+
+						// Limit the angle to +/- 360 degrees
+						tilt = LimitAngle(tilt);
+
+						// Set the moving head tilt angle converting to degrees
+						MovingHead.TiltAngle = tilt;
+					}
 					break;
 				case FunctionIdentity.Zoom:
 
