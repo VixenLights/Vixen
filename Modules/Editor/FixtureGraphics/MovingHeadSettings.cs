@@ -27,6 +27,9 @@ namespace VixenModules.Editor.FixtureGraphics
 
 			// Default the legend color to red
 			LegendColor = Color.Red;
+
+			// Default to mounting on the bottom
+			MountingPosition = MountingPositionType.Bottom;
 		}
 
 		#endregion
@@ -119,7 +122,31 @@ namespace VixenModules.Editor.FixtureGraphics
 				LegendColor = LegendColor,
 				EnableGDI = EnableGDI,
 				FixtureIntensity = FixtureIntensity,
+				MountingPosition = MountingPosition,
 			};
+		}
+
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
+		public MountingPositionType MountingPosition { get; set; }
+
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
+		public double GetOrientationSign()
+		{
+			// Default to a positive sign
+			double orientationSign = 1.0;
+
+			// If the fixture is mounted on the top (upside down) then...
+			if (MountingPosition == MountingPositionType.Top)
+			{
+				// Use a negative sign
+				orientationSign = -1;
+			}
+
+			return orientationSign;	
 		}
 
 		#endregion
@@ -145,7 +172,8 @@ namespace VixenModules.Editor.FixtureGraphics
 				   movingHead.Legend == Legend &&
 				   movingHead.IncludeLegend == IncludeLegend &&
 				   movingHead.LegendColor == LegendColor &&
-				   movingHead.FixtureIntensity == FixtureIntensity);
+				   movingHead.FixtureIntensity == FixtureIntensity &&
+				   movingHead.MountingPosition == MountingPosition);
 		}
 
 		#endregion
