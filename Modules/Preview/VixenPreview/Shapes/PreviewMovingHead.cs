@@ -20,6 +20,15 @@ using Point = System.Drawing.Point;
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	/// <summary>
+	/// Enumeration to use in the shape property grid.
+	/// </summary>
+	public enum YesNoType
+	{
+		No,
+		Yes,
+	}
+
+	/// <summary>
 	/// Maintains a moving head preview graphic.
 	/// </summary>
 	/// <remarks>
@@ -55,7 +64,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			BeamWidthMultiplier = 8;
 
 			// Default the legend to being on
-			ShowLegend = true;
+			ShowLegend = true; 
 		}		
 
 		#endregion
@@ -116,7 +125,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <summary>
 		/// Moving head settings associated with the cached bitmap.
 		/// </summary>
-		private IMovingHead _prevousMovingHeadSettings;
+		private IMovingHead _previousMovingHeadSettings;
 
 		/// <summary>
 		/// Current moving head settings.  This property aids with determining if the graphics are stale.
@@ -381,6 +390,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				beamColor = Color.HotPink;							
 			}
 
+			// If the mounting position has changed then...
+			if (_previousMovingHeadSettings != null &&
+				_previousMovingHeadSettings.MountingPosition != _movingHeadCurrentSettings.MountingPosition)
+			{
+				// Clear out the moving head so that it is re-created
+				_movingHead = null;
+			}
+
 			// If the moving head has been created then...
 			if (_movingHead != null)
 			{
@@ -424,7 +441,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					_movingHead.DrawFixture(width, height, scaleFactor, 0, 0, null);
 
 					// Update the settings associated with the bitmap.
-					_prevousMovingHeadSettings = _movingHeadCurrentSettings.Clone();						
+					_previousMovingHeadSettings = _movingHeadCurrentSettings.Clone();						
 				}
 			}
 
@@ -463,6 +480,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_intentHandler.PanStopPosition = PanStopPosition;
 			_intentHandler.TiltStartPosition = TiltStartPosition;
 			_intentHandler.TiltStopPosition = TiltStopPosition;
+			_intentHandler.InvertPanDirection = InvertPanDirection == YesNoType.Yes;
+			_intentHandler.InvertTiltDirection = InvertTiltDirection == YesNoType.Yes;
 
 			// Configure how the fixture zooms
 			_intentHandler.ZoomNarrowToWide = ZoomNarrowToWide;	
@@ -515,6 +534,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// Assign the beam color
 			_movingHead.MovingHead.BeamColor = beamColor;	
 
+			// Configure the moving head settings with the mounting position
+			_movingHead.MovingHead.MountingPosition = MountingPosition; 
+
 			// Assign the settings to the generic member variable that can switch between WPF and OpenGL
 			_movingHeadCurrentSettings = _movingHead.MovingHead;
 
@@ -562,9 +584,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				(_fixtureWidth != width ||
 				 _fixtureHeight != height ||
 				 _fixtureZoom != _zoomLevel ||
-				 _prevousMovingHeadSettings == null ||
+				 _previousMovingHeadSettings == null ||
 				 _movingHeadCurrentSettings == null ||
-				 !_prevousMovingHeadSettings.Equals(_movingHeadCurrentSettings));
+				 !_previousMovingHeadSettings.Equals(_movingHeadCurrentSettings));
 		}
 
 		/// <summary>
@@ -730,7 +752,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			CreateIntentHandler();
 			
 			// Initialize the moving head
-			_movingHeadOpenGL.Initialize(CalculateDrawingLength(), referenceHeight, (100.0 - BeamTransparency) / 100.0, BeamWidthMultiplier);
+			_movingHeadOpenGL.Initialize(CalculateDrawingLength(), referenceHeight, (100.0 - BeamTransparency) / 100.0, BeamWidthMultiplier, MountingPosition);
 
 			// Expose the moving head as a property
 			MovingHead = _movingHeadOpenGL;			
@@ -816,7 +838,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				if (_node == null)
 				{
-					_node = VixenSystem.Nodes.GetElementNode(NodeId);					
+					_node = VixenSystem.Nodes.GetElementNode(NodeId);
 				}
 				return _node;
 			}
@@ -946,6 +968,78 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			get;
 			set;
+		}
+
+		private YesNoType _invertPanDirection;
+
+		[DataMember(EmitDefaultValue = false),
+		 Category("Settings"),
+		 Description("Invert Pan Direction"),
+		 DisplayName("Invert Pan Direction")]
+		public YesNoType InvertPanDirection
+		{
+			get
+			{
+				return _invertPanDirection;
+			}
+			set
+			{
+				_invertPanDirection = value;
+
+				if (_intentHandler != null)
+				{
+					// Give the intent handler the pan direction modifier
+					_intentHandler.InvertPanDirection = (value == YesNoType.Yes);
+				}
+			}
+		}
+
+		private YesNoType _invertTiltDirection;
+
+		[DataMember(EmitDefaultValue = false),
+		 Category("Settings"),
+		 Description("Invert Tilt Direction"),
+		 DisplayName("Invert Tilt Direction")]
+		public YesNoType InvertTiltDirection
+		{
+			get
+			{
+				return _invertTiltDirection;
+			}
+			set
+			{
+				_invertTiltDirection = value;
+
+				if (_intentHandler != null)
+				{
+					// Give the intent handler the tilt direction modifier
+					_intentHandler.InvertTiltDirection = (value == YesNoType.Yes);
+				}
+			}
+		}
+
+
+		private MountingPositionType _mountingPosition;
+
+		[DataMember(EmitDefaultValue = false),
+		 Category("Settings"),
+		 Description("Mounting Position"),
+		 DisplayName("Mounting Position")]		
+		public MountingPositionType MountingPosition
+		{
+			get
+			{
+				return _mountingPosition;
+			}
+			set
+			{
+				if (_movingHeadCurrentSettings != null)
+				{
+					// Give the moving head settings the mounting position
+					_movingHeadCurrentSettings.MountingPosition = value;
+				}
+				_mountingPosition = value;
+			}
 		}
 
 		/// <summary>

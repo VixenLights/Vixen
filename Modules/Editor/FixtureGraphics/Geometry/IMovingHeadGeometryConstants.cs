@@ -71,14 +71,16 @@
 		/// <summary>
 		/// Gets the Y position of the vertical supports.
 		/// </summary>		
+	    /// <param name="orientationSign">Orientation sign based on mounting orientation</param>
 		/// <returns>Y position of vertical supports</returns>
-		double GetSupportYPosition();
+		double GetSupportYPosition(double orientataionSign);
 
 		/// <summary>
 		/// Gets the light housing Y position.
-		/// </summary>		
+		/// </summary>
+		/// <param name="orientationSign">Orientation sign based on mounting orientation</param>
 		/// <returns>Y position of light housing</returns>
-		double GetLightHousingYPosition();
+		double GetLightHousingYPosition(double orientationSign);
 
 		/// <summary>
 		/// Gets the light housing radius.
@@ -112,9 +114,10 @@
 
 		/// <summary>
 		/// Gets the horizontal support Y position.
-		/// </summary>		
+		/// </summary>
+		/// <param name="orientationSign">Orientation sign based on mounting orientation</param>
 		/// <returns>Horizontal support Y position</returns>
-		double GetHorizontalCylinderYPosition();
+		double GetHorizontalCylinderYPosition(double orientationSign);
 
 		/// <summary>
 		/// Gets the light beam bottom radius.
