@@ -188,7 +188,7 @@ namespace VixenModules.Editor.FixtureGraphics.WPF
 		/// <summary>
 		/// Flag that indicates the cached bitmap is stale and needs to be regenerated.
 		/// </summary>
-		bool _refresh = false;
+		private bool _refresh = false;
 
 		#endregion
 
@@ -337,8 +337,8 @@ namespace VixenModules.Editor.FixtureGraphics.WPF
 			// Add the light housing cylinder
 			AddCylinder(
 				mesh,
-				new Point3D(0, geometry.GetLightHousingYPosition(), 0),
-				new Vector3D(0, geometry.GetLightHousingLength(), 0),
+				new Point3D(0, geometry.GetLightHousingYPosition(MovingHead.GetOrientationSign()), 0),
+				new Vector3D(0, MovingHead.GetOrientationSign() * geometry.GetLightHousingLength(), 0),
 				geometry.GetLightHousingRadius(),
 				geometry.GetLightHousingRadius(),
 				numberOfCylinderSides);
@@ -381,8 +381,8 @@ namespace VixenModules.Editor.FixtureGraphics.WPF
 			// Add the light beam
 			AddCylinder(
 				lightBeamMesh,
-				new Point3D(0, geometry.GetLightHousingYPosition() + geometry.GetLightHousingLength(), 0),
-				new Vector3D(0, maxBeamLength  * MovingHead.BeamLength / 100.0, 0),
+				new Point3D(0, geometry.GetLightHousingYPosition(MovingHead.GetOrientationSign()) + MovingHead.GetOrientationSign() * geometry.GetLightHousingLength(), 0),
+				new Vector3D(0, MovingHead.GetOrientationSign() * maxBeamLength  * MovingHead.BeamLength / 100.0, 0),
 				geometry.GetLightBeamBottomRadius(),
 				lightTopRadius,
 				numberOfCylinderSides);
@@ -422,7 +422,7 @@ namespace VixenModules.Editor.FixtureGraphics.WPF
 			// Make a cylinder along the X axis.
 			MeshGeometry3D mesh2 = new MeshGeometry3D();
 			AddCylinder(mesh2,
-				new Point3D(-geometry.GetSupportXOffset(), geometry.GetHorizontalCylinderYPosition(), 0),
+				new Point3D(-geometry.GetSupportXOffset(), geometry.GetHorizontalCylinderYPosition(MovingHead.GetOrientationSign()), 0),
 				new Vector3D(2 * geometry.GetSupportXOffset(), 0, 0),
 				geometry.GetHorizontalCylinderRadius(),
 				geometry.GetHorizontalCylinderRadius(),
@@ -469,25 +469,51 @@ namespace VixenModules.Editor.FixtureGraphics.WPF
 			// Create model group for the sides of the fixture
 			Model3DGroup sidesModelGroup = new Model3DGroup();
 
-			// Create the left support
-			sidesModelGroup.Children.Add(
-				CreateVerticalSupport(
-					-geometry.GetSupportXOffset(),
-					geometry.GetSupportYPosition(),
-					geometry.GetSupportWidth(),
-					geometry.GetSupportHeight(),
-					geometry.GetSupportBaseDepth(),
-					geometry.GetSupportTopDepth()));
+			if (MovingHead.MountingPosition == MountingPositionType.Bottom)
+			{
+				// Create the left support
+				sidesModelGroup.Children.Add(
+					CreateVerticalSupport(
+						-geometry.GetSupportXOffset(),
+						geometry.GetSupportYPosition(MovingHead.GetOrientationSign()),
+						geometry.GetSupportWidth(),
+						geometry.GetSupportHeight(),
+						geometry.GetSupportBaseDepth(),
+						geometry.GetSupportTopDepth()));
 
-			// Create the right support
-			sidesModelGroup.Children.Add(
-				CreateVerticalSupport(
-					geometry.GetSupportXOffset(),
-					geometry.GetSupportYPosition(),
-					geometry.GetSupportWidth(),
-					geometry.GetSupportHeight(),
-					geometry.GetSupportBaseDepth(),
-					geometry.GetSupportTopDepth()));
+				// Create the right support
+				sidesModelGroup.Children.Add(
+					CreateVerticalSupport(
+						geometry.GetSupportXOffset(),
+						geometry.GetSupportYPosition(MovingHead.GetOrientationSign()),
+						geometry.GetSupportWidth(),
+						geometry.GetSupportHeight(),
+						geometry.GetSupportBaseDepth(),
+						geometry.GetSupportTopDepth()));
+			}
+			else
+			{
+				// Create the left support
+				sidesModelGroup.Children.Add(
+					CreateVerticalSupport(
+						-geometry.GetSupportXOffset(),
+						geometry.GetSupportYPosition(MovingHead.GetOrientationSign()),
+						geometry.GetSupportWidth(),
+						geometry.GetSupportHeight(),
+						geometry.GetSupportTopDepth(),
+						geometry.GetSupportBaseDepth()));
+
+				// Create the right support
+				sidesModelGroup.Children.Add(
+					CreateVerticalSupport(
+						geometry.GetSupportXOffset(),
+						geometry.GetSupportYPosition(MovingHead.GetOrientationSign()),
+						geometry.GetSupportWidth(),
+						geometry.GetSupportHeight(),
+						geometry.GetSupportTopDepth(),
+						geometry.GetSupportBaseDepth()));
+
+			}
 
 			return sidesModelGroup;
 		}
@@ -884,7 +910,7 @@ namespace VixenModules.Editor.FixtureGraphics.WPF
 				geometry.GetBaseWidth(),
 				geometry.GetBaseHeight(),
 				geometry.GetBaseDepth(),
-				geometry.GetBaseYPosition());
+				MovingHead.GetOrientationSign() * -1 * geometry.GetBaseYPosition());
 
 			// Create the base of the label
 			_baseLegendGeometry = CreateBaseLabel(
@@ -940,7 +966,7 @@ namespace VixenModules.Editor.FixtureGraphics.WPF
 			_baseTransformsGroup.Children.Add(_baseTranslateTransform);
 
 			// Set the center of rotation for the light housing
-			_centerOfLightHousingRotation = new Point3D(0, 0 + geometry.GetHorizontalCylinderYPosition(), 0);
+			_centerOfLightHousingRotation = new Point3D(0, 0 + geometry.GetHorizontalCylinderYPosition(MovingHead.GetOrientationSign()), 0);
 
 			// Create a model group of the light housing
 			// There is only geometry in this group but it gives us a target to apply the tilt rotation

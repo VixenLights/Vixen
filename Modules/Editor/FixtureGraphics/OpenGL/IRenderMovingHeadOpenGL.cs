@@ -16,8 +16,9 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 		/// <param name="length">Width and height of the drawing area</param>
 		/// <param name="maxBeamLength">Maximum length of the light beam</param>
 		/// <param name="beamTransparency">Transparency of the light beam</param>
-		/// /// <param name="beamWidthMultiplier">Beam width as a multiplier of the base beam width</param>
-		void Initialize(double length, double maxBeamLength, double beamTransparency, int beamWidthMultiplier);
+		/// <param name="beamWidthMultiplier">Beam width as a multiplier of the base beam width</param>
+		/// <param name="mountingPosition">Mounting position of the fixture</param>
+		void Initialize(double length, double maxBeamLength, double beamTransparency, int beamWidthMultiplier, MountingPositionType mountingPosition);
 
 		/// <summary>
 		/// Gets the graphical volumes associated with the moving head.
