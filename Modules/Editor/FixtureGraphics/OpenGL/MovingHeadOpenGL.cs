@@ -212,10 +212,14 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 		/// Initialize the static volumes making up the moving head fixture.
 		/// </summary>
 		/// <param name="length">Width and height of the drawing area</param>
-		private void InitializeStaticVolumes(double length)
+		/// <param name="mountingPosition">Mounting position of the fixture</param>
+		private void InitializeStaticVolumes(double length, MountingPositionType mountingPosition)
 		{
 			// Store off the width and height of the drawing area
 			_length = length;
+
+			// Store off the mounting position
+			MovingHead.MountingPosition = mountingPosition;
 
 			// Create the base of the fixture
 			_grayVolumes.Add(new Rectangle(
@@ -224,21 +228,43 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 				(float)_geometry.GetBaseDepth(),
 				false));
 
-			// Create the left support of the fixture
-			_grayVolumes.Add(new TaperedRectangle(
-				(float)_geometry.GetSupportWidth(),
-				(float)_geometry.GetSupportHeight(),
-				(float)_geometry.GetSupportBaseDepth(),
-				(float)_geometry.GetSupportTopDepth(),
-				false));
+			// If the mounting position is at the bottom then...
+			if (mountingPosition == MountingPositionType.Bottom)
+			{
+				// Create the left support of the fixture
+				_grayVolumes.Add(new TaperedRectangle(
+					(float)_geometry.GetSupportWidth(),
+					(float)_geometry.GetSupportHeight(),
+					(float)_geometry.GetSupportBaseDepth(),
+					(float)_geometry.GetSupportTopDepth(),
+					false));
 
-			// Create the right support of the fixture
-			_grayVolumes.Add(new TaperedRectangle(
-				(float)_geometry.GetSupportWidth(),
-				(float)_geometry.GetSupportHeight(),
-				(float)_geometry.GetSupportBaseDepth(),
-				(float)_geometry.GetSupportTopDepth(),
-				false));
+				// Create the right support of the fixture
+				_grayVolumes.Add(new TaperedRectangle(
+					(float)_geometry.GetSupportWidth(),
+					(float)_geometry.GetSupportHeight(),
+					(float)_geometry.GetSupportBaseDepth(),
+					(float)_geometry.GetSupportTopDepth(),
+					false));
+			}
+			else
+			{
+				// Create the left support of the fixture
+				_grayVolumes.Add(new TaperedRectangle(
+					(float)_geometry.GetSupportWidth(),
+					(float)_geometry.GetSupportHeight(),
+					(float)_geometry.GetSupportTopDepth(),
+					(float)_geometry.GetSupportBaseDepth(),
+					false));
+
+				// Create the right support of the fixture
+				_grayVolumes.Add(new TaperedRectangle(
+					(float)_geometry.GetSupportWidth(),
+					(float)_geometry.GetSupportHeight(),
+					(float)_geometry.GetSupportTopDepth(),
+					(float)_geometry.GetSupportBaseDepth(),
+					false));
+			}
 
 			// Create the horizontal support the holds the light housing
 			_grayVolumes.Add(new Cylinder(
@@ -291,11 +317,11 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 			// Convert the tilt angle rotation into radians
 			float tiltAngleRadians = (float)(verticalRotation * Math.PI / 180.0f);
 			
-			// Position the moving heads behind the X-Y plan so that they don't obscure the pixel props
+			// Position the moving heads behind the X-Y plane so that they don't obscure the pixel props
 			float zPosition = (float)(-2.0 * _geometry.GetBaseDepth());
 
 			// Configure the position of the base
-			_grayVolumes[0].Position = new Vector3((float)xPosition, (float)(-_geometry.GetBottomOfViewport() + yPosition), zPosition);
+			_grayVolumes[0].Position = new Vector3((float)xPosition, (float)(-1.0 * MovingHead.GetOrientationSign() * _geometry.GetBaseYPosition() + yPosition), zPosition);
 
 			// Configure the left support
 			UpdateFrameLeftSupport(xPosition, yPosition, horizontalRotationRadians, zPosition);
@@ -336,11 +362,11 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 			// Position the left support
 			((TaperedRectangle)_grayVolumes[1]).GroupTranslation = new Vector3(
 				(float)xPosition,
-				(float)(-_geometry.GetBottomOfViewport() + _geometry.GetBaseHeight() + yPosition),
+				(float)(-1.0 * MovingHead.GetOrientationSign() *_geometry.GetBottomOfViewport() + MovingHead.GetOrientationSign() * 2 * _geometry.GetBaseHeight() + yPosition),
 				zPosition);
 			_grayVolumes[1].Position = new Vector3(
 				(float)(-_geometry.GetSupportXOffset()),
-				(float)(_geometry.GetSupportHeight()),
+				(float)(MovingHead.GetOrientationSign() * _geometry.GetSupportHeight()),
 				0);
 		}
 
@@ -359,11 +385,11 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 			// Position the right support
 			((TaperedRectangle)_grayVolumes[2]).GroupTranslation = new Vector3(
 				(float)xPosition,
-				(float)(-_geometry.GetBottomOfViewport() + _geometry.GetBaseHeight() + yPosition),
+				(float)(-1.0 * MovingHead.GetOrientationSign() *_geometry.GetBottomOfViewport() + MovingHead.GetOrientationSign() * 2 * _geometry.GetBaseHeight() + yPosition),
 				zPosition);
 			_grayVolumes[2].Position = new Vector3(
 				(float)(_geometry.GetSupportXOffset()),
-				(float)(_geometry.GetSupportHeight()),
+				(float)(MovingHead.GetOrientationSign() * _geometry.GetSupportHeight()),
 				0);
 		}
 
@@ -381,12 +407,12 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 			
 			// Position the horizontal support
 			((CylinderBase)_grayVolumes[3]).GroupTranslation = new Vector3(
-				(float)xPosition,
-				(float)(-_geometry.GetBottomOfViewport() + _geometry.GetBaseHeight() + yPosition),
+				(float)xPosition,			
+				(float)(-1.0 * MovingHead.GetOrientationSign() * _geometry.GetBottomOfViewport() + MovingHead.GetOrientationSign() * 2.0 * _geometry.GetBaseHeight() + yPosition),
 				zPosition);
 			_grayVolumes[3].Position = new Vector3(
 				0,
-				(float)(_geometry.GetLightHousingLength() * _geometry.GetLightHousingPercentageAboveHorizontalSupport()),
+				(float)(MovingHead.GetOrientationSign() * _geometry.GetLightHousingLength() * 0.75),
 				0);
 		}
 
@@ -411,7 +437,7 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 			// Position the light housing
 			((CylinderWithEndCaps)_grayVolumes[4]).GroupTranslation = new Vector3(
 				(float)xPosition,
-				(float)(-_geometry.GetBottomOfViewport() + _geometry.GetBaseHeight() + yPosition),
+				(float)(-1.0 * MovingHead.GetOrientationSign() * _geometry.GetBottomOfViewport() + MovingHead.GetOrientationSign() * 2.0 *_geometry.GetBaseHeight() + yPosition),
 				zPosition);
 
 			_grayVolumes[4].Position = new Vector3(
@@ -423,7 +449,7 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 			((IRotatableCylinder)_grayVolumes[4]).TiltRotation = new Vector3(tiltAngleRadians, 0, 0);
 			((IRotatableCylinder)_grayVolumes[4]).TiltTranslation = new Vector3(
 				0,
-				(float)(_geometry.GetLightHousingLength() * _geometry.GetLightHousingPercentageAboveHorizontalSupport()),
+				(float)(MovingHead.GetOrientationSign() * _geometry.GetLightHousingLength() * 0.75),
 				0);			
 		}
 
@@ -452,7 +478,7 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 			
 			((CylinderWithEndCaps)_beamVolumes[0]).GroupTranslation = new Vector3(
 				(float)xPosition,
-				(float)(-_geometry.GetBottomOfViewport() + _geometry.GetBaseHeight() + yPosition),
+				(float)(-1.0 * MovingHead.GetOrientationSign() * _geometry.GetBottomOfViewport() + MovingHead.GetOrientationSign() * 2 * _geometry.GetBaseHeight() + yPosition),
 				zPosition);
 
 			_beamVolumes[0].Position = new Vector3(
@@ -464,7 +490,7 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 			((IRotatableCylinder)_beamVolumes[0]).TiltRotation = new Vector3(tiltAngleRadians, 0, 0);
 			((IRotatableCylinder)_beamVolumes[0]).TiltTranslation = new Vector3(
 				0,
-				(float)(_geometry.GetLightHousingLength() * _geometry.GetLightHousingPercentageAboveHorizontalSupport()),
+				(float)(MovingHead.GetOrientationSign() * _geometry.GetLightHousingLength() * 0.75),
 				0);			
 		}
 
@@ -475,13 +501,13 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>		
-		public void Initialize(double length, double maxBeamLength, double beamTransparency, int beamWidthMultiplier)
+		public void Initialize(double length, double maxBeamLength, double beamTransparency, int beamWidthMultiplier, MountingPositionType mountingPosition)
 		{
 			// Create the geometry constants object
 			_geometry = new MovingHeadGeometryConstants(length);
 
 			// Create the static volumes
-			InitializeStaticVolumes(length);
+			InitializeStaticVolumes(length, mountingPosition);
 
 			// Save off the beam transparency setting
 			_beamTransparency = beamTransparency;
@@ -518,8 +544,17 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 			// If the static volumes are dirty then...
 			if (AreStaticVolumesDirty(MovingHead.PanAngle, MovingHead.TiltAngle, translateX, translateY))
 			{
-				// Update the position and rotation of the static volumes
-				UpdateFrame(MovingHead.PanAngle, MovingHead.TiltAngle + 180.0, translateX, translateY);
+				// If the fixture is mounted towards the bottom then...
+				if (MovingHead.MountingPosition == MountingPositionType.Bottom)
+				{
+					// Update the position and rotation of the static volumes
+					UpdateFrame(MovingHead.PanAngle, MovingHead.TiltAngle + 180.0, translateX, translateY);
+				}
+				else
+				{
+					// Update the position and rotation of the static volumes
+					UpdateFrame(MovingHead.PanAngle, MovingHead.TiltAngle , translateX, translateY);
+				}
 			}
 
 			// If the dynamic volumes are dirty then...
@@ -543,14 +578,14 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 			if (MovingHead.IncludeLegend)
 			{
 				// Clear the font drawing primitives
-				_qFontDrawing.DrawingPrimitives.Clear();
-
+				_qFontDrawing.DrawingPrimitives.Clear();	
+						
 				// Determine the position of the legend text
 				Vector3 positionOfText = new Vector3(
 					(float)(translateX + _geometry.GetBaseLegendXPosition()),
-					(float)(translateY + _geometry.GetBaseLegendYPosition() + _geometry.GetBaseHeight()),
+					(float)(translateY -1.0 * _geometry.GetBottomOfViewport()),  
 					(float)-_geometry.GetBaseDepth());
-														
+				
 				// Draw the text
 				_qFontDrawing.Print(_qFont, MovingHead.Legend, positionOfText, QFontAlignment.Left, MovingHead.LegendColor);
 				_qFontDrawing.RefreshBuffers();
