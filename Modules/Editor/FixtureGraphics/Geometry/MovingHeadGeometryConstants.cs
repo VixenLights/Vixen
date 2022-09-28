@@ -1,9 +1,9 @@
 ﻿namespace VixenModules.Preview.VixenPreview.Fixtures.Geometry
 {
-    /// <summary>
-    /// Maintains geometry constants for drawing moving head fixtures.
-    /// </summary>
-    class MovingHeadGeometryConstants : IMovingHeadGeometryConstants
+	/// <summary>
+	/// Maintains geometry constants for drawing moving head fixtures.
+	/// </summary>
+	class MovingHeadGeometryConstants : IMovingHeadGeometryConstants
 	{
 		#region Constructor
 
@@ -41,9 +41,9 @@
         private double BaseHeightPercentage = 0.07;
 
         /// <summary>
-        /// Defines the bottom of the drawing area, leaving room for the legend.
+        /// Defines the bottom of the drawing area.
         /// </summary>
-        private double BottomOfViewPort = 0.6;
+        private double BottomOfViewPort = 0.5;
 
         /// <summary>
         /// Defines the width of the side supports as a percentage of the drawing area.
@@ -87,8 +87,8 @@
         /// </summary>        
         public double GetBaseYPosition()
         {
-            // Bottom of drawing area, backing off for the height of the base
-	        return -1 * (GetBottomOfViewport() - GetBaseHeight());
+            // Bottom of drawing area, backing off to leave space for the legend
+	        return GetBottomOfViewport() - GetBaseHeight();
         }
 
         /// <summary>
@@ -150,13 +150,13 @@
         /// <summary>
         /// Refer to interface documentation.
         /// </summary>        
-        public double GetSupportYPosition()
+        public double GetSupportYPosition(double orientationSign)
         {
-            double supportYOffset = GetBottomOfViewport();
+	        double supportYOffset = GetBottomOfViewport();
             supportYOffset -= 2 * GetBaseHeight();
             supportYOffset -= GetSupportHeight();
 
-            return -supportYOffset;
+            return -orientationSign * supportYOffset;
         }
 
         /// <summary>
@@ -180,18 +180,19 @@
         /// </summary>        
         public double GetLightHousingLength()
         {
-            return 2.0 * GetSupportHeight();
+	        return 2.0 * _length * 0.3;	    
         }
 
+        
         /// <summary>
         /// Refer to interface documentation.
         /// </summary>        
-        public double GetLightHousingYPosition()
+        public double GetLightHousingYPosition(double orientationSign)
         {
-	        return GetHorizontalCylinderYPosition() -
-	               GetLightHousingLength() * GetLightHousingPercentageBelowHorizontalSupport();
+	        return GetHorizontalCylinderYPosition(orientationSign) -
+	               orientationSign * GetLightHousingLength() * GetLightHousingPercentageBelowHorizontalSupport();
         }
-
+        
         /// <summary>
         /// Refer to interface documentation.
         /// </summary>        
@@ -243,13 +244,13 @@
         /// <summary>
         /// Refer to interface documentation.
         /// </summary>        
-        public double GetHorizontalCylinderYPosition()
+        public double GetHorizontalCylinderYPosition(double orientationSign)
         {
-            double supportHorizontalCylinderYOffset = GetBottomOfViewport();
-            supportHorizontalCylinderYOffset -= 2.0 * GetBaseHeight();
-            supportHorizontalCylinderYOffset -= GetLightHousingLength() * 0.75;  
+	        double supportHorizontalCylinderYOffset =  GetBottomOfViewport();
+	        supportHorizontalCylinderYOffset -=  2.0 * GetBaseHeight();
+	        supportHorizontalCylinderYOffset -= GetLightHousingLength() * 0.75;
 
-            return -supportHorizontalCylinderYOffset;
+	        return -orientationSign * supportHorizontalCylinderYOffset;
         }
 
         /// <summary>
