@@ -1,17 +1,20 @@
 using Catel.Data;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using VixenModules.App.Fixture;
+using Application = System.Windows.Application;
+using MessageBox = System.Windows.MessageBox;
 
 namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 {
 	/// <summary>
 	/// Maintains a channel (view model) of the fixture.
 	/// </summary>
-    public class ChannelItemViewModel : ItemViewModel
+	public class ChannelItemViewModel : ItemViewModel
 	{
 		#region Constructors
 
@@ -122,7 +125,26 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		{
 			get { return GetValue<string>(FunctionProperty); }
 			set 
-			{ 
+			{
+				// If the incoming function is NOT the special "None" function and
+				// the incoming function is not empty then...
+				if (value != "None" &&
+				    !string.IsNullOrEmpty(value))
+				{
+					// If the selected function is NOT valid then...
+					if (!IsFunctionValid(value))
+					{
+						// Display an error to the user
+						MessageBox.Show(
+							$"Function '{value}' is incomplete.  Please populate the function before assigning it to a channel.", 
+							"Incomplete Function", MessageBoxButton.OK,
+							MessageBoxImage.Error);
+
+						// Revert the function selection to 'None'
+						Application.Current.Dispatcher.InvokeAsync(() => { Function = "None"; }, DispatcherPriority.ApplicationIdle);
+					}
+				}
+
 				SetValue(FunctionProperty, value);
 
 				// If the function name is still the special 'Ignore' function name and
@@ -210,7 +232,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 					if (fixtureFunction.FunctionType == FixtureFunctionType.Indexed &&
 						fixtureFunction.IndexData.Count == 0)
 					{						
-						validationResults.Add(BusinessRuleValidationResult.CreateError("Function index data is incomplete.  Select the settings button to enter in the index data."));
+						validationResults.Add(BusinessRuleValidationResult.CreateError("Function index data is incomplete."));
 					
 						// Display the error settings cog on the button
 						EditFunctionsImageSource = @"/Resources;component/cog_error_red.png";
@@ -219,7 +241,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 					else if (fixtureFunction.FunctionType == FixtureFunctionType.ColorWheel &&
 						fixtureFunction.ColorWheelData.Count == 0)
 					{
-						validationResults.Add(BusinessRuleValidationResult.CreateError("Function color wheel data is incomplete.  Select the settings button to enter in the index data."));
+						validationResults.Add(BusinessRuleValidationResult.CreateError("Function color wheel data is incomplete."));
 
 						// Display the error settings cog on the button
 						EditFunctionsImageSource = @"/Resources;component/cog_error_red.png";
@@ -237,6 +259,49 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			}
 		}
 
-		#endregion		
+		#endregion
+
+		#region Private Methods
+		
+		/// <summary>
+		/// Returns true if the specified fixture function is valid.
+		/// </summary>
+		/// <param name="functionName">Name of the fixture function to inspect</param>
+		/// <returns>True if the specified fixture function is valid</returns>
+		private bool IsFunctionValid(string functionName)
+		{
+			// Default the function to NOT valid
+			bool valid = false;
+
+			// Retrieve the function asssociated with the channel
+			FixtureFunction fixtureFunction = FunctionObjects.SingleOrDefault(fnc => fnc.Name == functionName);
+
+			// If the function was found then...
+			if (fixtureFunction != null)
+			{
+				// Indicate the function is valid
+				valid = true;
+
+				// If the function is indexed but there are no index entries then...
+				if (fixtureFunction.FunctionType == FixtureFunctionType.Indexed &&
+				    fixtureFunction.IndexData.Count == 0)
+				{
+					// Indicate the function is NOT valid
+					valid = false;
+				}
+				// If the function is a color wheel but there are no color wheel entries then...
+				else if (fixtureFunction.FunctionType == FixtureFunctionType.ColorWheel &&
+				         fixtureFunction.ColorWheelData.Count == 0)
+				{
+					// Indicate the function is NOT valid
+					valid = false;
+				}
+			}
+
+			// Return whether 
+			return valid;
+		}
+
+		#endregion
 	}
 }
