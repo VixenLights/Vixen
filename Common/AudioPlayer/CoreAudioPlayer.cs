@@ -2,6 +2,7 @@
 using Common.AudioPlayer.SampleProvider;
 using CSCore;
 using CSCore.SoundOut;
+using CSCore.Streams;
 using NLog;
 
 namespace Common.AudioPlayer
@@ -52,12 +53,8 @@ namespace Common.AudioPlayer
 			{
 				_speedControl?.Dispose();
 				_waveSource?.Dispose();
-				_waveSource =
-					CSCore.Codecs.CodecFactory.Instance.GetCodec(fileName)
-						.ToSampleSource()
-						.AppendSource(x => new SoundTouchSource(x, 20), out _speedControl)
-						.ToWaveSource();
-				status = true;
+				_waveSource = GetCodec(Filename);
+					status = true;
 			}
 			catch (Exception e)
 			{
@@ -66,6 +63,17 @@ namespace Common.AudioPlayer
 			}
 
 			return status;
+		}
+
+		private IWaveSource GetCodec(string filename)
+		{
+			IWaveSource waveSource = CSCore.Codecs.CodecFactory.Instance.GetCodec(filename);
+			CachedSoundSource css = new CachedSoundSource(waveSource);
+			waveSource.Dispose();
+			return css.ToSampleSource()
+				.AppendSource(x => new SoundTouchSource(x, 20), out _speedControl)
+				.ToWaveSource();
+
 		}
 
 		public AudioOutputManager AudioOutputManager { get; }
@@ -114,9 +122,18 @@ namespace Common.AudioPlayer
 		{
 			if ((IsPaused || IsStopped) && EnsureDeviceCreated())
 			{
-				Volume = 0;
+				try
+				{
+					_soundOut.Initialize(_waveSource);
+					_soundOut.Volume = Volume;
+				}
+				catch (Exception e)
+				{
+					Logging.Error(e, "An exception occured trying to initialize the audio player.");
+					return;
+				}
+
 				_soundOut?.Play();
-				Volume = 1.0f;
 				PlaybackResumed?.Invoke();
 			}
 		}
@@ -316,17 +333,6 @@ namespace Common.AudioPlayer
 				_soundOut = AudioOutputManager.GetAudioOutput();
 				if (_soundOut == null) return false;
 				_soundOut.Stopped += PlaybackDeviceOnPlaybackStopped;
-			}
-
-			try
-			{
-				_soundOut.Initialize(_waveSource);
-				_soundOut.Volume = Volume;
-			}
-			catch (Exception e)
-			{
-				Logging.Error(e,"An exception occured trying to initialize the audio player.");
-				return false;
 			}
 			
 			return true;
