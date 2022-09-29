@@ -121,8 +121,7 @@
                         <Button Grid.Column="1" Grid.Row="0" Content="Remove Layer" Margin="5" Command="{x:Static commands:LayerEditorCommands.RemoveLayer}"
                                 CommandParameter="{Binding ElementName=_lbLayers, Path=SelectedItem}"></Button>
                         <ListBox Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Name="_lbLayers" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" 
-                                 ItemsSource="{Binding Layers}" input:DragDropManager.DropTargetAdvisor="{Binding}"
-                                 input:DragDropManager.DragSourceAdvisor="{Binding}" Style="{StaticResource ListBoxStyle}">
+                                 ItemsSource="{Binding Layers}" Style="{StaticResource ListBoxStyle}">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Margin="5">

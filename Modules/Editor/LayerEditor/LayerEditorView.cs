@@ -15,7 +15,7 @@ using VixenModules.Editor.LayerEditor.Input;
 
 namespace VixenModules.Editor.LayerEditor
 {
-	public class LayerEditorView : Control, IDragSourceAdvisor, IDropTargetAdvisor, INotifyCollectionChanged
+	public class LayerEditorView : UserControl, IDragSourceAdvisor, IDropTargetAdvisor, INotifyCollectionChanged
 	{
 		private readonly SequenceLayers _layers;
 		private List<ILayerMixingFilterInstance> _standardFilters = new List<ILayerMixingFilterInstance>();
@@ -33,7 +33,20 @@ namespace VixenModules.Editor.LayerEditor
 			_layers = layers;
 			InitializeLayers();
 			DataContext = this;
+			
+			Loaded += LayerEditorView_Initialized;
 			Layers.CollectionChanged += Layers_CollectionChanged;
+		}
+
+		private void LayerEditorView_Initialized(object sender, EventArgs e)
+		{
+			// I am not sure why the dependency property is not registering correctly so we are doing it manually. 
+			var listBox = FindChild(this as UIElement, "_lbLayers", typeof(ListBox));
+			if (listBox != null)
+			{
+				DragDropManager.SetDragSourceAdvisor(listBox, this);
+				DragDropManager.SetDropTargetAdvisor(listBox, this);
+			}
 		}
 
 		private void Layers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -224,6 +237,44 @@ namespace VixenModules.Editor.LayerEditor
 			}
 			while (c != null);
 			return null;
+		}
+
+		private static DependencyObject FindChild(DependencyObject reference, string childName, Type childType)
+		{
+			DependencyObject foundChild = null;
+			if (reference != null)
+			{
+				int childrenCount = VisualTreeHelper.GetChildrenCount(reference);
+				for (int i = 0; i < childrenCount; i++)
+				{
+					var child = VisualTreeHelper.GetChild(reference, i);
+					// If the child is not of the request child type child
+					if (child.GetType() != childType)
+					{
+						// recursively drill down the tree
+						foundChild = FindChild(child, childName, childType);
+						if (foundChild != null) break;
+					}
+					else if (!string.IsNullOrEmpty(childName))
+					{
+						var frameworkElement = child as FrameworkElement;
+						// If the child's name is set for search
+						if (frameworkElement != null && frameworkElement.Name == childName)
+						{
+							// if the child's name is of the request name
+							foundChild = child;
+							break;
+						}
+					}
+					else
+					{
+						// child element found.
+						foundChild = child;
+						break;
+					}
+				}
+			}
+			return foundChild;
 		}
 
 		#endregion
