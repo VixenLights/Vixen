@@ -1,28 +1,25 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
 using Vixen.Data.Value;
 using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.SpinColorWheel
 {
 	/// <summary>
-	/// Provides the Spin Color Wheel function names associated with a target node.
+	/// Provides the Spin Color Wheel function names associated with the target node(s).
 	/// </summary>
-	public class SpinColorWheelFunctionNameConverter : EffectListTypeConverterBase
+	public class SpinColorWheelFunctionNameConverter : EffectListTypeConverterBase<SpinColorWheelModule>
 	{
-		#region Public Methods
+		#region Protected Methods
 
 		/// <summary>
 		/// Retrieves the collection of available color wheel function names.
 		/// </summary>
 		/// <param name="context">Spin Color wheel effect instance</param>
 		/// <returns>Collection of available spin color wheel function names</returns>		
-		public override TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
+		protected override List<string> GetStandardValuesInternal(SpinColorWheelModule effect)
 		{
-			// Convert the context to a Spin Color Wheel effect module
-			SpinColorWheelModule effect = (SpinColorWheelModule)context.Instance;
-
 			// Return the Spin Color Wheel function names associated with effect 
-			return new TypeConverter.StandardValuesCollection(effect.GetMatchingFunctionNames(FunctionIdentity.SpinColorWheel).ToArray());
+			return effect.GetMatchingFunctionNames(FunctionIdentity.SpinColorWheel);
 		}
 
 		#endregion

@@ -1,34 +1,25 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.Fixture
 {
 	/// <summary>
-	/// Provides the fixture function index names associated with a target node.
+	/// Provides the fixture function index names associated with the target node(s).
 	/// </summary>
-	public class FixtureIndexCollectionNameConverter : EffectListTypeConverterBase
+	public class FixtureIndexCollectionNameConverter : EffectListTypeConverterBase<FixtureFunctionExpando>
 	{
-		#region Public Methods
+		#region Protected Methods
 
 		/// <summary>
-		/// Gets a collection of fixture functions associated with the node(s).
+		/// Gets a collection of index names associated with the specified fixture function expando object.
 		/// </summary>
-		/// <param name="context">Effects associated with the request</param>
-		/// <returns>Collection of fixture function names</returns>
-		public override TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
+		/// <param name="fixtureFunction">Fixture function to retrieve index names from</param>
+		/// <returns>Collection of fixture function index names</returns>
+		protected override List<string> GetStandardValuesInternal(FixtureFunctionExpando fixtureFunction)
 		{
-			// Create the return collection
-			List<string> values = new List<string>();
-
-			// Cast the context to a fixture function expando object
-			FixtureFunctionExpando fixtureFunction = (FixtureFunctionExpando)context.Instance;
-
 			// Add the index names to the return collection
-			values.AddRange(fixtureFunction.IndexData.Select(idx => idx.Name));
-									
-			return new TypeConverter.StandardValuesCollection(values.ToArray());
+			return fixtureFunction.IndexData.Select(idx => idx.Name).ToList();
 		}
 
 		#endregion
