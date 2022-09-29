@@ -1,28 +1,25 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
 using Vixen.Data.Value;
 using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.FixtureStrobe
 {
 	/// <summary>
-	/// Provides the prism function names associated with a target node.
+	/// Provides the prism function names associated with the target node(s).
 	/// </summary>
-	public class FixtureStrobeFunctionNameConverter : EffectListTypeConverterBase
+	public class FixtureStrobeFunctionNameConverter : EffectListTypeConverterBase<FixtureStrobeModule>
 	{
-		#region Public Methods
+		#region Protected Methods
 
 		/// <summary>
 		/// Retrieves the collection of available prism function names.
 		/// </summary>
 		/// <param name="context">Prism effect instance</param>
 		/// <returns>Collection of available prism function names</returns>		
-		public override TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
+		protected override List<string> GetStandardValuesInternal(FixtureStrobeModule effect)
 		{
-			// Convert the context to a fixture strobe effect module
-			FixtureStrobeModule fixtureStrobeEffect = (FixtureStrobeModule)context.Instance;
-
 			// Return the fixture strobe function names associated with effect 
-			return new TypeConverter.StandardValuesCollection(fixtureStrobeEffect.GetMatchingFunctionNames(FunctionIdentity.Shutter).ToArray());
+			return effect.GetMatchingFunctionNames(FunctionIdentity.Shutter);
 		}
 
 		#endregion
