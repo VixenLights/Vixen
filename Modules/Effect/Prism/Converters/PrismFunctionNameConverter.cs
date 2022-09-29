@@ -1,28 +1,25 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
 using Vixen.Data.Value;
 using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.Prism
 {
 	/// <summary>
-	/// Provides the prism function names associated with a target node.
+	/// Provides the prism function names associated with the target node(s).
 	/// </summary>
-	public class PrismFunctionNameConverter : EffectListTypeConverterBase
+	public class PrismFunctionNameConverter : EffectListTypeConverterBase<PrismModule>
 	{
-		#region Public Methods
+		#region Protected Methods
 
 		/// <summary>
 		/// Retrieves the collection of available prism function names.
 		/// </summary>
 		/// <param name="context">Prism effect instance</param>
 		/// <returns>Collection of available prism function names</returns>		
-		public override TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
+		protected override List<string> GetStandardValuesInternal(PrismModule effect)
 		{
-			// Convert the context to a Prism effect module
-			PrismModule prismEffect = (PrismModule)context.Instance;
-
 			// Return the prism function names associated with effect 
-			return new TypeConverter.StandardValuesCollection(prismEffect.GetMatchingFunctionNames(FunctionIdentity.Prism).ToArray());
+			return effect.GetMatchingFunctionNames(FunctionIdentity.Prism);
 		}
 
 		#endregion
