@@ -52,6 +52,11 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			// Create the list of valid function identities for color wheel functions
 			_colorWheelIdentities = new List<FunctionIdentity>();
 			_colorWheelIdentities.Add(FunctionIdentity.SpinColorWheel);
+
+			// Create the default list of valid function identities
+			// This list applies to None, RGB, and RGBW function types
+			_defaultIdentities = new List<FunctionIdentity>();
+			_defaultIdentities.Add(FunctionIdentity.Custom);
 		}
 
 		/// <summary>
@@ -98,6 +103,11 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// Collection of function identities applicable to color wheel functions.
 		/// </summary>
 		private List<FunctionIdentity> _colorWheelIdentities;
+
+		/// <summary>
+		/// Default list of function identities.
+		/// </summary>
+		private List<FunctionIdentity> _defaultIdentities;
 
 		#endregion
 
@@ -187,6 +197,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 					case FixtureFunctionType.RGBColor:
 					case FixtureFunctionType.RGBWColor:
 					case FixtureFunctionType.None:
+						types = _defaultIdentities;
 						break;
 					default:
 						Debug.Assert(false, "Unsupported function type!");
