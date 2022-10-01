@@ -269,37 +269,41 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			// Loop over the fixture function model objects
 			foreach (FixtureFunction functionType in functions)
 			{
-				// Create a function view model object passing it the index and color data from the model
-				FunctionItemViewModel functionVM = new FunctionItemViewModel(
-					functionType.IndexData, 
-					functionType.ColorWheelData, 
-					functionType.RotationLimits, 
-					functionType.ZoomType == FixtureZoomType.NarrowToWide);
-
-				// Set the function name on the view model object
-				functionVM.Name = functionType.Name;
-
-				// If the function is the function to be selected initially then...
-				if (functionVM.Name == functionToSelect)
+				// Exclude the None function from the editor
+				if (functionType.FunctionType != FixtureFunctionType.None)
 				{
-					// Save off this function view model object
-					itemToSelect = functionVM;
+					// Create a function view model object passing it the index and color data from the model
+					FunctionItemViewModel functionVM = new FunctionItemViewModel(
+						functionType.IndexData,
+						functionType.ColorWheelData,
+						functionType.RotationLimits,
+						functionType.ZoomType == FixtureZoomType.NarrowToWide);
+
+					// Set the function name on the view model object
+					functionVM.Name = functionType.Name;
+
+					// If the function is the function to be selected initially then...
+					if (functionVM.Name == functionToSelect)
+					{
+						// Save off this function view model object
+						itemToSelect = functionVM;
+					}
+
+					// Set the function type ( Ranged, Indexed, Color Wheel etc)
+					functionVM.FunctionTypeEnum = functionType.FunctionType;
+
+					// Set the function identity so that it can be utilized by the preview
+					functionVM.FunctionIdentity = functionType.FunctionIdentity;
+
+					// Set the function legend so that it can be displayed in the preview
+					functionVM.Legend = functionType.Label;
+
+					// Set the function timeline color
+					functionVM.TimelineColor = functionType.TimelineColor;
+
+					// Add the function view model to the collection
+					Items.Add(functionVM);
 				}
-
-				// Set the function type ( Ranged, Indexed, Color Wheel etc)
-				functionVM.FunctionTypeEnum = functionType.FunctionType;
-
-				// Set the function identity so that it can be utilized by the preview
-				functionVM.FunctionIdentity = functionType.FunctionIdentity;
-
-				// Set the function legend so that it can be displayed in the preview
-				functionVM.Legend = functionType.Label;
-
-				// Set the function timeline color
-				functionVM.TimelineColor = functionType.TimelineColor;	
-
-				// Add the function view model to the collection
-				Items.Add(functionVM);
 			}
 
 			// Return the function view model object to select initially
@@ -960,7 +964,10 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			{
 				// Add an error that there are duplicate Zoom functions
 				validationResults.Add(BusinessRuleValidationResult.CreateError("Cannot have more than one Zoom function."));
-			}			
+			}
+
+			// Display the validation bar
+			DisplayValidationBar(validationResults);
 		}
 
 		#endregion
