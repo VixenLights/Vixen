@@ -193,7 +193,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			if (InvertTiltDirection)
 			{
 				// Reset the head to the stop position
-				MovingHead.TiltAngle = -TiltStopPosition;
+				MovingHead.TiltAngle = TiltStopPosition;
 			}
 			else
 			{
@@ -201,17 +201,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				MovingHead.TiltAngle = TiltStartPosition;
 			}
 
-			// If the pan movement direction is inverted then...
-			if (InvertPanDirection)
-			{
-				// Reset the head to the stop position
-				MovingHead.PanAngle = PanStopPosition;
-			}
-			else
-			{
-				// Reset the head to the start position
-				MovingHead.PanAngle = PanStartPosition;
-			}
+			// Reset the head to the start position
+			MovingHead.PanAngle = PanStartPosition;
 		}
 
 		/// <summary>
@@ -250,7 +241,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					if (InvertPanDirection)
 					{
 						// Calculate the pan angle
-						double pan = PanStopPosition - rangeIntent.GetValue().Value * (PanStopPosition - PanStartPosition);
+						double pan = PanStartPosition - rangeIntent.GetValue().Value * (PanStopPosition - PanStartPosition);
 
 						// Limit the angle to +/- 360 degrees
 						pan = LimitAngle(pan);
@@ -280,9 +271,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 						// Limit the angle to +/- 360 degrees
 						tilt = LimitAngle(tilt);
-
-						// Negative the tilt angle
-						tilt = -tilt;
 
 						// Set the moving head tilt angle converting to degrees
 						MovingHead.TiltAngle = tilt;
