@@ -118,7 +118,7 @@ namespace VixenModules.Effect.Fixture
 				if (_functionName != null)
 				{
 					// Find the fixture function by name
-					FixtureFunction fixtureFunction = FixtureFunctions.SingleOrDefault(fn => fn.Name == FunctionName);
+					FixtureFunction fixtureFunction = FixtureFunctions.FirstOrDefault(fn => fn.Name == FunctionName);
 
 					if (fixtureFunction != null)
 					{
