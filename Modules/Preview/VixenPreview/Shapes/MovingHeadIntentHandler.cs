@@ -520,6 +520,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					// Spin the color wheel
 					SpinColorWheel(colorWheelFunction);
 				}
+				else
+				{
+					// Preview does not support half steps currently so the workaround is just to show white
+					MovingHead.BeamColor = Color.White;
+				}
 			}
 		}
 
