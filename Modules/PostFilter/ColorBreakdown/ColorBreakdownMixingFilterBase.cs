@@ -39,6 +39,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		/// <returns>Intensity for the color component</returns>
 		public double GetIntensityForState(IIntentState intentValue)
 		{
+			_intensityValue = 0;
 			intentValue.Dispatch(this);
 			return _intensityValue;
 		}
