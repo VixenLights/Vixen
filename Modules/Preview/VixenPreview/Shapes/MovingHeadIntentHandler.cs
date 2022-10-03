@@ -176,6 +176,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_legendValues.Clear();
 			MovingHead.Legend = String.Empty;
 
+			// Clear out the fixture intensity
+			MovingHead.Intensity = 0;
+
 			// Turn off strobing
 			_strobbing = false;
 
@@ -525,6 +528,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					// Preview does not support half steps currently so the workaround is just to show white
 					MovingHead.BeamColor = Color.White;
 				}
+			}
+
+			// If color is present then...
+			if (_colorPresent)
+			{
+				// Open the fixture's shutter
+				OpenShutter();
 			}
 		}
 
