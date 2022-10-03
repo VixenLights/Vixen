@@ -528,6 +528,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					// Preview does not support half steps currently so the workaround is just to show white
 					MovingHead.BeamColor = Color.White;
 				}
+			}
+
 			// If color is present then...
 			if (_colorPresent)
 			{
