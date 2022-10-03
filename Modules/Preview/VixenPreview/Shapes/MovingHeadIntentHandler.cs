@@ -511,6 +511,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				// Set the beam color to the color wheel color
 				MovingHead.BeamColor = wheelEntry.Color1;
+
+				// Remember that we have color intents
+				_colorPresent = true;
 			}
 			else
 			{
@@ -527,6 +530,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				{
 					// Preview does not support half steps currently so the workaround is just to show white
 					MovingHead.BeamColor = Color.White;
+
+					// Remember that we have color intents
+					_colorPresent = true;
 				}
 			}
 
