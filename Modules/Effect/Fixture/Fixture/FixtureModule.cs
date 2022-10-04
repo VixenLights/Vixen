@@ -93,7 +93,7 @@ namespace VixenModules.Effect.Fixture
 				_selectedFunction = value;
 
 				// Retrieve the fixture function object corresponding to the selection
-				ActiveFunction = _fixtureFunctions.SingleOrDefault(func => func.Name == _selectedFunction);
+				ActiveFunction = _fixtureFunctions.FirstOrDefault(func => func.Name == _selectedFunction);
 				
 				// Expose the fixture functions
 				FixtureFunctions = _fixtureFunctions;
@@ -408,7 +408,7 @@ namespace VixenModules.Effect.Fixture
 		private FixtureFunction GetFunction(string functionName)
 		{
 			// Return the first fixture function that matches the name
-			return _fixtureFunctions.Single(fn => fn.Name == functionName);
+			return _fixtureFunctions.First(fn => fn.Name == functionName);
 		}
 
 		/// <summary>
