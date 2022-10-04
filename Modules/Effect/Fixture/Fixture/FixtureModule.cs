@@ -234,25 +234,32 @@ namespace VixenModules.Effect.Fixture
 				// The function name is blank if the effect is placed on a non-fixture
 				if (!string.IsNullOrEmpty(function.FunctionName))
 				{
-					// Render based on the fixture function type
-					switch (function.FunctionType)
+					// Retrieve the fixture function from the fixture specification
+					FixtureFunction fixtureFunction = GetFunction(function.FunctionName);
+
+					// If the fixture function was found then...
+					if (fixtureFunction != null)
 					{
-						case FixtureFunctionType.Range:
-							RenderCurve(function.Range, GetFunction(function.FunctionName), cancellationToken);
-							break;
-						case FixtureFunctionType.Indexed:
-							RenderIndexed(function.IndexValue, function.Range, GetFunction(function.FunctionName), cancellationToken);
-							break;
-						case FixtureFunctionType.ColorWheel:
-							RenderIndexed(function.ColorIndexValue, function.Range, GetFunction(function.FunctionName), cancellationToken);
-							break;
-						case FixtureFunctionType.RGBWColor:
-						case FixtureFunctionType.RGBColor:
-							RenderRGB(function.Color, function.Range, GetFunction(function.FunctionName), cancellationToken);
-							break;
-						default:
-							Debug.Assert(false, "Unsupported Function Type");
-							break;
+						// Render based on the fixture function type
+						switch (function.FunctionType)
+						{
+							case FixtureFunctionType.Range:
+								RenderCurve(function.Range, fixtureFunction, cancellationToken);
+								break;
+							case FixtureFunctionType.Indexed:
+								RenderIndexed(function.IndexValue, function.Range, fixtureFunction, cancellationToken);
+								break;
+							case FixtureFunctionType.ColorWheel:
+								RenderIndexed(function.ColorIndexValue, function.Range, fixtureFunction, cancellationToken);
+								break;
+							case FixtureFunctionType.RGBWColor:
+							case FixtureFunctionType.RGBColor:
+								RenderRGB(function.Color, function.Range, fixtureFunction, cancellationToken);
+								break;
+							default:
+								Debug.Assert(false, "Unsupported Function Type");
+								break;
+						}
 					}
 				}
 			}
@@ -408,7 +415,7 @@ namespace VixenModules.Effect.Fixture
 		private FixtureFunction GetFunction(string functionName)
 		{
 			// Return the first fixture function that matches the name
-			return _fixtureFunctions.First(fn => fn.Name == functionName);
+			return _fixtureFunctions.FirstOrDefault(fn => fn.Name == functionName);
 		}
 
 		/// <summary>
