@@ -495,7 +495,7 @@ namespace VixenModules.Effect.Effect
 							FixtureFunction func = fixtureSpecification.FunctionDefinitions.Single(function => function.Name == channel.Function);
 
 							// If the function has not already been added then...
-							if (!fixtureFunctions.Contains(func))
+							if (func.FunctionType != FixtureFunctionType.None && !fixtureFunctions.Contains(func))
 							{
 								// Add the function to the collection of supported functions
 								fixtureFunctions.Add(func);
