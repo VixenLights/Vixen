@@ -9,6 +9,7 @@
 				   xmlns:value="clr-namespace:Vixen.Data.Value;assembly=Vixen"
 				   xmlns:fixture="clr-namespace:VixenModules.App.Fixture;assembly=Fixture"
 				   xmlns:local="clr-namespace:VixenModules.Editor.FixturePropertyEditor.Views"
+				   xmlns:viewModels="clr-namespace:VixenModules.Editor.FixturePropertyEditor.ViewModels"
 				   mc:Ignorable="d">
 	<UserControl.Resources>
 		<ResourceDictionary>
@@ -20,7 +21,7 @@
 			<common:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 			<ObjectDataProvider x:Key="myEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
 				<ObjectDataProvider.MethodParameters>
-					<x:Type Type="fixture:FixtureFunctionType"/>
+					<x:Type Type="viewModels:FixtureFunctionTypeVM"/>
 				</ObjectDataProvider.MethodParameters>
 			</ObjectDataProvider>
 			<ObjectDataProvider x:Key="identityEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">

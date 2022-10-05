@@ -1,6 +1,7 @@
 ﻿using Catel.Data;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using Vixen.Data.Value;
@@ -290,7 +291,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 					}
 
 					// Set the function type ( Ranged, Indexed, Color Wheel etc)
-					functionVM.FunctionTypeEnum = functionType.FunctionType;
+					functionVM.FunctionTypeEnum = functionVM.ConvertFixtureFunctionType(functionType.FunctionType);
 
 					// Set the function identity so that it can be utilized by the preview
 					functionVM.FunctionIdentity = functionType.FunctionIdentity;
@@ -341,7 +342,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 				function.Label = item.Legend;
 
 				// Set the function type
-				function.FunctionType = item.FunctionTypeEnum;
+				function.FunctionType = ConvertFixtureFunctionType(item.FunctionTypeEnum);
 
 				// Set the function identity for use by the preview
 				function.FunctionIdentity = item.FunctionIdentity;
@@ -541,6 +542,43 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		#endregion
 
 		#region Private Methods
+
+		/// <summary>
+		/// Converts from the view model function type to the model function type.
+		/// The view model flavor does not include the None enumeration.
+		/// </summary>
+		/// <param name="functionTypeVM">View model function type to convert to the model enumeration</param>
+		/// <returns></returns>
+		private FixtureFunctionType ConvertFixtureFunctionType(FixtureFunctionTypeVM functionTypeVM)
+		{
+			// Default to the range function type
+			FixtureFunctionType functionType = FixtureFunctionType.Range;
+
+			switch (functionTypeVM)
+			{
+				case FixtureFunctionTypeVM.Range:
+					functionType = FixtureFunctionType.Range;
+					break;
+				case FixtureFunctionTypeVM.Indexed:
+					functionType = FixtureFunctionType.Indexed;
+					break;
+				case FixtureFunctionTypeVM.ColorWheel:
+					functionType = FixtureFunctionType.ColorWheel;
+					break;
+				case FixtureFunctionTypeVM.RGBColor:
+					functionType = FixtureFunctionType.RGBColor;
+					break;
+				case FixtureFunctionTypeVM.RGBWColor:
+					functionType = FixtureFunctionType.RGBWColor;
+					break;
+				default:
+					Debug.Assert(false, "Unsupported FixtureFunctionType");
+					break;
+			}
+
+			return functionType;
+		}
+
 
 		/// <summary>
 		/// Returns true if all function names are unique.
@@ -747,7 +785,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		private void UpdatesFunctionDetails(FunctionItemViewModel selectedItem)
 		{
 			// Determine which details user control to display
-			switch (PreviouslySelectedItem.FunctionTypeEnum)
+			switch (ConvertFixtureFunctionType(PreviouslySelectedItem.FunctionTypeEnum))
 			{
 				case FixtureFunctionType.Indexed:
 					// Display the index user control
@@ -928,7 +966,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		protected override void MakeObjectValidBeforeDeleting(FunctionItemViewModel item)
 		{
 			item.Name = "Zombie";			
-			item.FunctionTypeEnum = FixtureFunctionType.None;						
+			item.FunctionTypeEnum = FixtureFunctionTypeVM.Range;						
 			item.CloseViewModelAsync(null);
 		}
 
