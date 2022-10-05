@@ -1,14 +1,30 @@
 ﻿using Catel.Data;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using Vixen.Data.Value;
+using Vixen.TypeConverters;
 using VixenModules.App.Fixture;
 
 namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 {
     /// <summary>
+	[TypeConverter(typeof(EnumDescriptionTypeConverter))]
+	public enum FixtureFunctionTypeVM
+	{
+		[Description("Range")]
+		Range,
+		[Description("Indexed")]
+		Indexed,
+		[Description("Color Wheel")]
+		ColorWheel,
+		[Description("RGB Color")]
+		RGBColor,
+		[Description("RGBW Color")]
+		RGBWColor,
+	}
     /// Maintains a fixture function item view model.
     /// </summary>
     public class FunctionItemViewModel : ItemViewModel, IFixtureSaveable
@@ -44,7 +60,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			_indexFunctionIndentities.Add(FunctionIdentity.Custom);
 
 			// Default the function type to Range
-			FunctionTypeEnum = FixtureFunctionType.Range;
+			FunctionTypeEnum = FixtureFunctionTypeVM.Range;
 
 			// Default the preview identity to Custom
 			FunctionIdentity = FunctionIdentity.Custom;
@@ -165,11 +181,11 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Type of function (Ranged, Indexed, Color Wheel etc).
 		/// </summary>
-		public FixtureFunctionType FunctionTypeEnum
+		public FixtureFunctionTypeVM FunctionTypeEnum
 		{
 			get 
 			{ 
-				return GetValue<FixtureFunctionType>(FunctionTypeEnumProperty); 
+				return GetValue<FixtureFunctionTypeVM>(FunctionTypeEnumProperty); 
 			}
 			set 
 			{ 
@@ -185,18 +201,17 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 				// Determine the function identities based on function type
 				switch (value)
 				{
-					case FixtureFunctionType.Range:
+					case FixtureFunctionTypeVM.Range:
 						types = _rangeFunctionIndentities;
 						break;
-					case FixtureFunctionType.Indexed:
+					case FixtureFunctionTypeVM.Indexed:
 						types = _indexFunctionIndentities;
 						break;
-					case FixtureFunctionType.ColorWheel:
+					case FixtureFunctionTypeVM.ColorWheel:
 						types = _colorWheelIdentities;
 						break;
-					case FixtureFunctionType.RGBColor:
-					case FixtureFunctionType.RGBWColor:
-					case FixtureFunctionType.None:
+					case FixtureFunctionTypeVM.RGBColor:
+					case FixtureFunctionTypeVM.RGBWColor:
 						types = _defaultIdentities;
 						break;
 					default:
@@ -212,7 +227,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Function type property data.
 		/// </summary>
-		public static readonly PropertyData FunctionTypeEnumProperty = RegisterProperty(nameof(FunctionTypeEnum), typeof(FixtureFunctionType), null);
+		public static readonly PropertyData FunctionTypeEnumProperty = RegisterProperty(nameof(FunctionTypeEnum), typeof(FixtureFunctionTypeVM), null);
 
 		/// <summary>
 		/// Function identity.
@@ -290,6 +305,37 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 
 		#endregion
 
+		#region Public Methods
+		public FixtureFunctionTypeVM ConvertFixtureFunctionType(FixtureFunctionType functionType)
+		{
+			FixtureFunctionTypeVM functionTypeVM = FixtureFunctionTypeVM.Range;
+			switch (functionType)
+			{
+				case FixtureFunctionType.Range:
+					functionTypeVM = FixtureFunctionTypeVM.Range;
+					break;
+				case FixtureFunctionType.Indexed:
+					functionTypeVM = FixtureFunctionTypeVM.Indexed;
+					break;
+				case FixtureFunctionType.ColorWheel:
+					functionTypeVM = FixtureFunctionTypeVM.ColorWheel;
+					break;
+				case FixtureFunctionType.RGBColor:
+					functionTypeVM = FixtureFunctionTypeVM.RGBColor;
+					break;
+				case FixtureFunctionType.RGBWColor:
+					functionTypeVM = FixtureFunctionTypeVM.RGBWColor;
+					break;
+				case FixtureFunctionType.None:
+					Debug.Assert(false, "Should not get here!");
+					break;
+				default:
+					Debug.Assert(false, "Unsupported FixtureFunctionType");
+					break;
+			}
+			return functionTypeVM;
+		}
+		#endregion
 		#region Protected Methods
 
 		/// <summary>
