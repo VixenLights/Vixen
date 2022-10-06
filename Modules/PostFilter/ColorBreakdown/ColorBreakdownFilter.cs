@@ -45,8 +45,6 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 				var i = HSV.VFromRgb(value.FullColor);
 				//the value types are structs, so modify our copy and then set it back
 				_intensityValue = i;
-			} else {
-				_intensityValue = 0;
 			}
 			
 		}
@@ -62,9 +60,6 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 				Math.Abs(lightingValue.Color.B - _breakdownItem.Color.B) < Tolerance) {
 				_intensityValue = lightingValue.Intensity;
 			}
-			else {
-				_intensityValue = 0;
-			}
 		}
 
 		public override void Handle(IIntentState<DiscreteValue> obj)
@@ -76,10 +71,6 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			if (discreteValue.Color.ToArgb() == _breakdownItem.Color.ToArgb())
 			{
 				_intensityValue = discreteValue.Intensity;
-			}
-			else
-			{
-				_intensityValue = 0;
 			}
 		}
 	}
