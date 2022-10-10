@@ -122,18 +122,25 @@ namespace Common.AudioPlayer
 		{
 			if ((IsPaused || IsStopped) && EnsureDeviceCreated())
 			{
-				try
+				if (IsPaused)
 				{
-					_soundOut.Initialize(_waveSource);
-					_soundOut.Volume = Volume;
+					_soundOut?.Resume();
 				}
-				catch (Exception e)
+				else
 				{
-					Logging.Error(e, "An exception occured trying to initialize the audio player.");
-					return;
+					try
+					{
+						_soundOut.Initialize(_waveSource);
+						_soundOut.Volume = Volume;
+					}
+					catch (Exception e)
+					{
+						Logging.Error(e, "An exception occured trying to initialize the audio player.");
+						return;
+					}
+					_soundOut?.Play();
 				}
-
-				_soundOut?.Play();
+				
 				PlaybackResumed?.Invoke();
 			}
 		}
