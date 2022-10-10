@@ -1,5 +1,19 @@
 Release Notes - Vixen 3
 
+Release Notes - Vixen 3 - 3.9u1 Build 
+
+** Bug
+    * [VIX-3215] - WPF Context Menu's are all white
+    * [VIX-3254] - Vixen Crashes when trying to Export
+    * [VIX-3255] - Unable to load Gilbert prop models in the vendor browser.
+    * [VIX-3268] - New audio library crashes playback from scheduler
+    * [VIX-3270] - Audio glitch on resuming playback
+    * [VIX-3284] - Unable to drag and order layers in the layer manager. 
+    * [VIX-3294] - ColorBreakdownFilter has a memory
+
+** Improvement
+    * [VIX-3256] - Dev builds should contain the pdb debugging files. 
+
 Release Notes - Vixen 3 - 3.9u0 Build 
 
 ** New Feature
