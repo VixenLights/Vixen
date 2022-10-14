@@ -1,0 +1,43 @@
+﻿   
+<catel:Window x:Class="VixenModules.Preview.VixenPreview.SelectionDialog.SelectFixtureNodeView"                         
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
+        xmlns:catel="http://schemas.catelproject.com"
+	    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"	      
+	    xmlns:common="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
+        mc:Ignorable="d"
+        Title="Link Element"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <common:InverseBooleanConverter x:Key="InverseBoolConverter" />
+            <common:BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+		</ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Background="#444444">
+        <Grid.RowDefinitions>
+            <RowDefinition Height = "*" />
+            <RowDefinition Height = "40" />
+        </Grid.RowDefinitions>
+
+		<ListBox Grid.Row="0"  ItemsSource="{Binding Nodes}" SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}" Style="{StaticResource ListBoxStyle}" Margin="10,10,10,10">
+			<ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+		</ListBox>
+
+        <WrapPanel Orientation="Horizontal" Style="{StaticResource RowButtonRightContainerStyle}" Grid.Row="1">
+            <Button Content="Ok" Command="{Binding OkCommand}" IsDefault="True" Style="{StaticResource RowButtonStyle}"/>
+            <Button Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True" Style="{StaticResource RowButtonStyle}"/>
+        </WrapPanel>
+    </Grid>
+</catel:Window>
