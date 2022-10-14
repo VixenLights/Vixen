@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Linq;
 using System.Runtime.Serialization;
 using Vixen.Data.Flow;
@@ -831,7 +832,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <summary>
 		/// Display element Node associated with the preview shape.
 		/// </summary>
-		[Browsable(false)]
+		[Editor(typeof(PreviewSetFixtureElementUIEditor), typeof(UITypeEditor)),
+		 Category("Settings"),
+		 DisplayName("Linked Element")]
 		public ElementNode Node
 		{
 			get
@@ -1070,6 +1073,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		#endregion
+		#endregion	
 	}
 }
