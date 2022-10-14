@@ -371,4 +371,9 @@
   <ItemGroup>
     <Compile Remove="VixenPreviewDisplay.Designer.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Page Include="SelectionDialog\SelectFixtureNodeView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
 </Project>
