@@ -51,5 +51,11 @@ namespace Vixen.Rule
 		/// </summary>
 		/// <returns>Element nodes to delete</returns>
 		IEnumerable<ElementNode> GetElementsToDelete();
+
+		/// <summary>
+		/// Returns the collection of leaf nodes created by the template.
+		/// </summary>
+		/// <returns>Leaf nodes created by the template</returns>
+		IEnumerable<ElementNode> GetLeafNodes();
 	}
 }
