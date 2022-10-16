@@ -35,6 +35,15 @@ namespace VixenApplication.Setup.ElementTemplates
 			return new List<ElementNode>();
 		}
 
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
+		public virtual IEnumerable<ElementNode> GetLeafNodes()
+		{
+			// By default return an empty collection
+			return new List<ElementNode>();
+		}
+
 		#endregion
 	}
 }
