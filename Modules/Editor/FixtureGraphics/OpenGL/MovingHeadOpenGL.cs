@@ -191,20 +191,40 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 			// Otherwise the light beam volume has been created
 			else
 			{
+				// Beam is always visible because when a true beam is not displayed
+				// we are displaying a black disc
+				_beamVolumes[0].Visible = true;
+
 				// Determine if the light beam should be visible
 				// (Transparent is used for the default beam color for color mixing fixtures)
-				_beamVolumes[0].Visible = MovingHead.OnOff &&
-				                          MovingHead.BeamColor != Color.Transparent;
+				if (MovingHead.OnOff &&
+				    MovingHead.BeamColor != Color.Transparent)
+				{
+					// Set the light beam color
+					((ISpecifyVolumeColor)_beamVolumes[0]).Color = beamColor;
 
-				// Set the light beam color
-				((ISpecifyVolumeColor)_beamVolumes[0]).Color = beamColor;
+					// Update the geometry on the light beam
+					((IUpdateCylinder)_beamVolumes[0]).Update(
+						0.0f,
+						(float)lightSimulationLength,
+						(float)lightBottomRadius,
+						(float)lightTopRadius);
+				}
+				else
+				{
+					// Turn the beam black
+					((ISpecifyVolumeColor)_beamVolumes[0]).Color = Color.Black;
 
-				// Update the geometry on the light beam
-				((IUpdateCylinder)_beamVolumes[0]).Update(
-					0.0f,
-					(float)lightSimulationLength,
-					(float)lightBottomRadius,
-					(float)lightTopRadius);					
+					// Set the beam transparency to 100% opaque
+					((ISpecifyVolumeTransparency)_beamVolumes[0]).Transparency = 1.0;
+
+					// Update the geometry on the light beam
+					((IUpdateCylinder)_beamVolumes[0]).Update(
+						0.0f,
+						(float)0.5, // Going smaller displayed artifacts
+						(float)lightBottomRadius,
+						(float)lightBottomRadius);
+				}
 			}
 		}
 
@@ -491,7 +511,7 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 			((IRotatableCylinder)_beamVolumes[0]).TiltTranslation = new Vector3(
 				0,
 				(float)(MovingHead.GetOrientationSign() * _geometry.GetLightHousingLength() * 0.75),
-				0);			
+				0);
 		}
 
 		#endregion
