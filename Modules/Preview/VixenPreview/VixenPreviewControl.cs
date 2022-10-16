@@ -58,6 +58,10 @@ namespace VixenModules.Preview.VixenPreview
 
 		private bool _holdRender;
 
+		/// <summary>
+		/// Last used smart object template used.
+		/// </summary>
+		private IElementTemplate _lastUsedTemplate;
 
 		public DisplayMoveType Type { get; private set; }
 
@@ -1329,6 +1333,9 @@ namespace VixenModules.Preview.VixenPreview
 
 						// Give the shape the opportunity to adjust the shape coordinates 
 						_selectedDisplayItem.Shape.EndAddNew();
+
+						// Create additional shapes if requested by the template
+						CreateAdditionalShapes();
 					}
 
 					_selectedDisplayItem.Shape.MouseUp(sender, e);
@@ -1379,9 +1386,73 @@ namespace VixenModules.Preview.VixenPreview
 			EndUpdate();
 		}
 
+		/// <summary>
+		/// Creates additional shapes 
+		/// </summary>
+		private void CreateAdditionalShapes()
+		{
+			// If a smart template was used and more than one smart object was requested then...
+			if (_lastUsedTemplate != null && _lastUsedTemplate.GetLeafNodes().Count() > 1)
+			{
+				// Gets the leaf nodes created by the template
+				IEnumerable<ElementNode> nodes = _lastUsedTemplate.GetLeafNodes();
+
+				// Initialize the position of the additional shape to the top left corner of the preview
+				int left = 0;
+				int top = 0;
+
+				// Calculate the width and height of the shape
+				int width = Math.Abs(_selectedDisplayItem.Shape.Right - _selectedDisplayItem.Shape.Left);
+				int height = Math.Abs(_selectedDisplayItem.Shape.Bottom - _selectedDisplayItem.Shape.Top);
+
+				// Convert the existing shape to XML
+				string xml = PreviewTools.SerializeToString(_selectedDisplayItem);
+
+				// Loop over the additional nodes skipping the first node
+				foreach (ElementNode node in nodes.Skip(1))
+				{
+					// Create a cloned shape by re-hydrating the XML
+					DisplayItem clonedDisplayItem = PreviewTools.DeSerializeToDisplayItem(xml, typeof(DisplayItem));
+
+					// Update the position of the cloned shape
+					clonedDisplayItem.Shape.Top = top;
+					clonedDisplayItem.Shape.Left = left;
+
+					// Increment the position of the next shape
+					left += width;
+
+					// If the next shape would extend past the edge of the preview then...
+					if ((left + width) > Width)
+					{
+						// Move to the next row
+						top += height;
+
+						// Start back at the left hand side of the preview
+						left = 0;
+					}
+					
+					// If the shape being cloned is a moving head then...
+					if (clonedDisplayItem.Shape is PreviewMovingHead)
+					{
+						// Get an PreviewMovingHead reference to the shape
+						PreviewMovingHead movingHead = (PreviewMovingHead)clonedDisplayItem.Shape;
+
+						// Update the node associated with the shape
+						movingHead.Node = node;
+					}
+
+					// Add the cloned display item to the preview
+					AddDisplayItem(clonedDisplayItem);
+				}
+			}
+		}
+
+
 		private async Task<bool> ShowElementCreateTemplateForCurrentTool()
 		{
 			IElementTemplate template = null;
+			_lastUsedTemplate = null;
+
 			switch (_currentTool)
 			{
 				case Tools.Arch:
@@ -1420,6 +1491,9 @@ namespace VixenModules.Preview.VixenPreview
 
 			if (template != null)
 			{
+				// Store off the last used template
+				_lastUsedTemplate = template;
+
 				success = await elementsForm.SetupTemplate(template);
 			}
 
