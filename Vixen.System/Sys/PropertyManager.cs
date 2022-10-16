@@ -35,6 +35,21 @@ namespace Vixen.Sys
 			return instance;
 		}
 
+		public IPropertyModuleInstance AddNoDefaulting(IPropertyModuleInstance instance)
+		{
+			if (!_items.ContainsKey(instance.TypeId))
+			{
+				if (instance != null)
+				{
+					instance.Owner = _owner;
+					_items[instance.TypeId] = instance;
+					PropertyData.AssignModuleInstanceData(instance);
+				}
+			}
+
+			return instance;
+		}
+
 		public IPropertyModuleInstance Add(Guid id)
 		{
 			IPropertyModuleInstance instance = null;
