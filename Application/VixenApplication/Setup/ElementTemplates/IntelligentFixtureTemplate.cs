@@ -84,6 +84,11 @@ namespace VixenApplication.Setup.ElementTemplates
 		/// </summary>
 		private List<ElementNode> _nodesToDelete;
 
+		/// <summary>
+		/// Fixture leaf nodes created by this template.
+		/// </summary>
+		private List<ElementNode> _leafNodes;
+
 		#endregion
 
 		#region Private Methods
@@ -1241,8 +1246,16 @@ namespace VixenApplication.Setup.ElementTemplates
 					// Save off the individual fixture nodes so they can be removed from the tree
 					_nodesToDelete = nodes;
 
+					// Store off the fixture nodes
+					_leafNodes = nodes;
+
 					// Return the group node
 					nodes = new List<ElementNode>() { groupNode };
+				}
+				else
+				{
+					// Store off the fixture nodes
+					_leafNodes = nodes;
 				}
 			}
 			
@@ -1296,7 +1309,17 @@ namespace VixenApplication.Setup.ElementTemplates
 		/// </summary>
 		public IEnumerable<ElementNode> GetElementsToDelete()
 		{
+			// Return the leaf nodes that need to be removed from the tree because they exist under the group
 			return _nodesToDelete;
+		}
+
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
+		public IEnumerable<ElementNode> GetLeafNodes()
+		{
+			// Return the leaf nodes created by the template
+			return _leafNodes ?? new List<ElementNode>();	
 		}
 
 		#endregion
