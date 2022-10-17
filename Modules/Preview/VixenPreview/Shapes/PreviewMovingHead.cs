@@ -380,8 +380,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// Calculate the scale factor
 			double scaleFactor = ((double)width) / (double)widthOrg;
 
-			// Default the beam color to match the pixels in the display setup
-			Color beamColor = Color.Turquoise;
+			// Default the beam color to unlinked (white)
+			Color beamColor = Color.White;
 			
 			// If the moving head is selected in the elements tree then...
 			if (highlightedElements != null &&
@@ -389,6 +389,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				// Make the beam color pink
 				beamColor = Color.HotPink;							
+			}
+			// If the fixture is linked to a node then...
+			else if (Node != null)
+			{
+				// Make the beam color Turquoise
+				beamColor = Color.Turquoise;
 			}
 
 			// If the mounting position has changed then...
@@ -404,6 +410,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				// Set the beam color, otherwise the bitmap won't be updated				
 				_movingHead.MovingHead.BeamColor = beamColor;
+				_movingHeadCurrentSettings.BeamColor = beamColor;
 			}
 
 			// If the fixture graphic is stale and needs to be redrawn then...			
