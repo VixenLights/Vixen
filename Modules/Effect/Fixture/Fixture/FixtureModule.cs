@@ -460,7 +460,7 @@ namespace VixenModules.Effect.Fixture
 								// Add the leaf to the collection of nodes to return
 								leavesThatSupportFunction.Add(new Tuple<IElementNode, string>(
 									leafNode,
-									fixtureFunction.Label);
+									fixtureFunction.Label));
 							}
 						}
 					}
