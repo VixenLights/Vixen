@@ -326,6 +326,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					Debug.Assert(false, "Unsupported Function Type");
 					break;
 			}
+
+			// Update the legend if applicable
+			UpdateLegend(rangeIntent);
 		}
 
 		/// <summary>
@@ -408,10 +411,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// Attempt to cast the command intent to a named fixture index command
 			Named8BitCommand<FixtureIndexType> taggedCommand = commandIntent.GetValue().Command as Named8BitCommand<FixtureIndexType>;
 
-			// If the intent is a named commmand and
-			// it has a populated label then...
-			if (taggedCommand != null &&
-				!string.IsNullOrEmpty(taggedCommand.Label))
+			// If the intent is a named commmand then...
+			if (taggedCommand != null)
 			{
 				// Update the legend on the moving head shape
 				UpdateLegend(taggedCommand);				
@@ -666,37 +667,62 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		/// <summary>
-		/// Updates the legend with the specified function.
+		/// Updates the legend for the specified range intent.
+		/// </summary>
+		/// <param name="rangeIntent">Range intent to extract the label from</param>
+		private void UpdateLegend(IIntentState<RangeValue<FunctionIdentity>> rangeIntent)
+		{
+			// Call the common method to update the legend
+			UpdateLegend(rangeIntent.GetValue().Label, ((int)(rangeIntent.GetValue().Value * 255)).ToString());
+		}
+
+		/// <summary>
+		/// Updates the legend with the specified index command.
 		/// </summary>
 		/// <param name="taggedCommand">Named fixture command</param>
 		private void UpdateLegend(Named8BitCommand<FixtureIndexType> taggedCommand)
 		{
-			// If the legend dictionary does NOT contain the function label 
-			if (!_legendValues.ContainsKey(taggedCommand.Label))
-			{
-				// Add the function label and value to the dictionary
-				_legendValues.Add(taggedCommand.Label, taggedCommand.CommandValue.ToString());
-			}
-			else
-			{
-				// Otherwise update the function value in the dictionary
-				_legendValues[taggedCommand.Label] = taggedCommand.CommandValue.ToString();
-			}
+			// Call the common method to update the legend
+			UpdateLegend(taggedCommand.Label, taggedCommand.CommandValue.ToString());
+		}
 
-			List<string> legendItems = new List<string>();
-
-			// Loop over legend values in dictionary
-			foreach (KeyValuePair<string, string> legendPair in _legendValues)
+		/// <summary>
+		/// Updates the legend for the specified label and associated value.
+		/// </summary>
+		/// <param name="label">Label or function prefix</param>
+		/// <param name="value">DMX value of the function</param>
+		private void UpdateLegend(string label, string value)
+		{
+			// If the label is populated then...
+			if (!string.IsNullOrEmpty(label))
 			{
-				// Convert the legend name value pairs into a string
-				legendItems.Add(legendPair.Key + legendPair.Value);
-			}
-			
-			// Sort the legend items
-			legendItems.Sort();
+				// If the legend dictionary does NOT contain the function label 
+				if (!_legendValues.ContainsKey(label))
+				{
+					// Add the function label and value to the dictionary
+					_legendValues.Add(label, value);
+				}
+				else
+				{
+					// Otherwise update the function value in the dictionary
+					_legendValues[label] = value;
+				}
 
-			// Assign the legend to the moving head shape
-			MovingHead.Legend = string.Join(", ", legendItems);
+				List<string> legendItems = new List<string>();
+
+				// Loop over legend values in dictionary
+				foreach (KeyValuePair<string, string> legendPair in _legendValues)
+				{
+					// Convert the legend name value pairs into a string
+					legendItems.Add(legendPair.Key + legendPair.Value);
+				}
+
+				// Sort the legend items
+				legendItems.Sort();
+
+				// Assign the legend to the moving head shape
+				MovingHead.Legend = string.Join(", ", legendItems);
+			}
 		}
 
 		#endregion		
