@@ -17,7 +17,9 @@ namespace Vixen.Data.Value
 		/// <param name="tagType">Type of the tag</param>
 		/// <param name="tag">Name of the tag</param>
 		/// <param name="rangeValue">Initial value</param>
-		public RangeValue(T tagType, string tag, double rangeValue)
+		/// <param name="label">Label associated with the range value</param>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		public RangeValue(T tagType, string tag, double rangeValue, string label)
 		{
 			// If the value is outside the normalized range then...
 			if (rangeValue < 0 || rangeValue > 1)
@@ -34,6 +36,9 @@ namespace Vixen.Data.Value
 
 			// Store off the tag name
 			Tag = tag;
+
+			// Store off the label associated with the range value
+			Label = label;
 		}
 
 		#endregion
@@ -55,6 +60,11 @@ namespace Vixen.Data.Value
 		/// Tag value.
 		/// </summary>		
 		public string Tag { get; private set; }
+
+		/// <summary>
+		/// Provides a customizable descriptive string field that labels or describes the intent.
+		/// </summary>		
+		public string Label { get; private set; }
 
 		#endregion
 	}
