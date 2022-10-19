@@ -999,7 +999,7 @@ namespace Common.Controls
 				IPropertyModuleInstance clonedProperty = (IPropertyModuleInstance)nodeProperty.Clone();
 
 				// Add the cloned property to the new destination node
-				newNode.Properties.AddNoDefaulting(clonedProperty);
+				newNode.Properties.AddWithoutDefaults(clonedProperty);
 			}
 		}
 
