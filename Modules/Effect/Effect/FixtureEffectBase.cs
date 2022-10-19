@@ -105,11 +105,11 @@ namespace VixenModules.Effect.Effect
 		/// </summary>
 		/// <param name="type">Function identity type to search for</param>
 		/// <param name="tags">Dictionary of function tags to populate</param>
-		/// <returns>Nodes that contain the specified function identity type</returns>
-		protected IEnumerable<IElementNode> GetRenderNodesForFunctionIdentity(FunctionIdentity type, Dictionary<IElementNode, string> tags)
+		/// <returns>Nodes that contain the specified function identity type along with the optional label associated with the function</returns>
+		protected IEnumerable<Tuple<IElementNode,string>> GetRenderNodesForFunctionIdentity(FunctionIdentity type, Dictionary<IElementNode, string> tags)
 		{
 			// Create the return collection
-			List<IElementNode> leavesThatSupportFunction = new List<IElementNode>();
+			List<Tuple<IElementNode, string>> leavesThatSupportFunction = new List<Tuple<IElementNode, string>>();
 
 			// Retrieve the first node
 			IElementNode node = TargetNodes.FirstOrDefault();
@@ -139,7 +139,7 @@ namespace VixenModules.Effect.Effect
 						tags.Add(leafNode, func.Name);
 
 						// Add the leaf to the collection of nodes to return
-						leavesThatSupportFunction.Add(leafNode);
+						leavesThatSupportFunction.Add(new Tuple<IElementNode, string>(leafNode, func.Label));
 					}
 				}
 			}
@@ -153,11 +153,11 @@ namespace VixenModules.Effect.Effect
 		/// <param name="functionName">Name of the function search for</param>
 		/// <param name="functionIdentity">Function identity type to search for</param>
 		/// <param name="tags">Dictionary of function tags to populate</param>
-		/// <returns>Nodes that contain the specified function identity type</returns>
-		protected IEnumerable<IElementNode> GetRenderNodesForFunctionName(string functionName, FunctionIdentity functionIdentity)
+		/// <returns>Nodes that contain the specified function identity type  along with the optional label associated with the function</returns>
+		protected IEnumerable<Tuple<IElementNode, string>> GetRenderNodesForFunctionName(string functionName, FunctionIdentity functionIdentity)
 		{
 			// Create the return collection
-			List<IElementNode> leavesThatSupportFunction = new List<IElementNode>();
+			List<Tuple<IElementNode, string>> leavesThatSupportFunction = new List<Tuple<IElementNode, string>>();
 
 			// Retrieve the first node
 			IElementNode node = TargetNodes.FirstOrDefault();
@@ -181,7 +181,7 @@ namespace VixenModules.Effect.Effect
 						FixtureFunction func = fixtureProperty.FixtureSpecification.GetInUseFunction(functionName, functionIdentity);
 																				
 						// Add the leaf to the collection of nodes to return
-						leavesThatSupportFunction.Add(leafNode);
+						leavesThatSupportFunction.Add(new Tuple<IElementNode, string>(leafNode, func.Label));
 					}
 				}
 			}
@@ -200,7 +200,7 @@ namespace VixenModules.Effect.Effect
 		protected void RenderCurve(Curve curve, FunctionIdentity functionType, Dictionary<IElementNode, string> tags, CancellationTokenSource cancellationToken = null)
 		{
 			// Get the leaf nodes that support the specified fixture function type
-			IEnumerable<IElementNode> nodes = GetRenderNodesForFunctionIdentity(functionType, tags);
+			IEnumerable<Tuple<IElementNode, string>> nodes = GetRenderNodesForFunctionIdentity(functionType, tags);
 
 			// Render the curve associated with the function
 			RenderCurve(nodes, curve, functionType, string.Empty, tags, cancellationToken);
@@ -217,7 +217,7 @@ namespace VixenModules.Effect.Effect
 		protected void RenderCurve(Curve curve, FunctionIdentity functionIdentity, string tag, CancellationTokenSource cancellationToken = null)
 		{
 			// Get the leaf nodes that support the specified fixture function type
-			IEnumerable<IElementNode> nodes = GetRenderNodesForFunctionName(tag, functionIdentity);
+			IEnumerable<Tuple<IElementNode, string>> nodes = GetRenderNodesForFunctionName(tag, functionIdentity);
 
 			// Render the curve associated with the function
 			RenderCurve(nodes, curve, functionIdentity, tag, null, cancellationToken);
@@ -227,13 +227,14 @@ namespace VixenModules.Effect.Effect
 		/// Creates fixture intents from the specified curve.
 		/// This method also populates a dictionary of tags so that the intents are properly tagged.
 		/// </summary>
+		/// <param name="nodes">Nodes associated with the curve</param>
 		/// <param name="curve">Curve to create intents from</param>
 		/// <param name="functionType">Function associated with the intents</param>
 		/// <param name="tag">Default tag to use when a dictionary of node tags is not provided</param>
 		/// <param name="tags">Named tags associated with the function</param>
 		/// <param name="cancellationToken">Whether or not the rendering has been cancelled</param>
 		protected void RenderCurve(
-			IEnumerable<IElementNode> nodes,
+			IEnumerable<Tuple<IElementNode, string>> nodes,
 			Curve curve, FunctionIdentity functionType,
 			string tag,
 			Dictionary<IElementNode, string> tags,
@@ -268,7 +269,7 @@ namespace VixenModules.Effect.Effect
 					TimeSpan timeSpan = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * ((pointList[i] - pointList[i - 1]) / 100));
 
 					// Loop over the leaf nodes associated with the effect
-					foreach (IElementNode node in nodes)
+					foreach (Tuple<IElementNode, string> node in nodes)
 					{
 						// Default the node tag 
 						string nodeTag = tag;
@@ -277,14 +278,14 @@ namespace VixenModules.Effect.Effect
 						if (tags != null)
 						{
 							// Retrieve the function tag from the dictionary based on the node being processed
-							nodeTag = tags[node];
+							nodeTag = tags[node.Item1];
 						}
 
 						// Get the previous point
-						RangeValue<FunctionIdentity> startValue = new RangeValue<FunctionIdentity>(functionType, nodeTag, curve.GetValue(pointList[i - 1]) / 100d);
+						RangeValue<FunctionIdentity> startValue = new RangeValue<FunctionIdentity>(functionType, nodeTag, curve.GetValue(pointList[i - 1]) / 100d, node.Item2);
 
 						// Get the current point
-						RangeValue<FunctionIdentity> endValue = new RangeValue<FunctionIdentity>(functionType, nodeTag, curve.GetValue(pointList[i]) / 100d);
+						RangeValue<FunctionIdentity> endValue = new RangeValue<FunctionIdentity>(functionType, nodeTag, curve.GetValue(pointList[i]) / 100d, node.Item2);
 
 						// Extrapolate an intent from the two points
 						RangeIntent intent = new RangeIntent(startValue, endValue, timeSpan);
@@ -297,7 +298,7 @@ namespace VixenModules.Effect.Effect
 						}
 
 						// Add the intent to the output collection
-						EffectIntentCollection.AddIntentForElement(node.Element.Id, intent, startTime);
+						EffectIntentCollection.AddIntentForElement(node.Item1.Element.Id, intent, startTime);
 					}
 
 					// Move on to the next point

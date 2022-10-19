@@ -1,4 +1,5 @@
-﻿using Vixen.Data.Value;
+﻿using System;
+using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Sys;
 
@@ -86,12 +87,12 @@ namespace VixenModules.OutputFilter.DimmingFilter.Filters
 			if (ConvertColorIntensityIntoDimIntents)
 			{
 				// Convert the intensity from 0-1 to 0-255
-				dimRangeValue = new RangeValue<FunctionIdentity>(FunctionIdentity.Dim, Tag, intensity);
+				dimRangeValue = new RangeValue<FunctionIdentity>(FunctionIdentity.Dim, Tag, intensity, String.Empty);
 			}
 			else
 			{
 				// Otherwise we want to activate the dimmer channel at 100%
-				dimRangeValue = new RangeValue<FunctionIdentity>(FunctionIdentity.Dim, Tag, 1.0);
+				dimRangeValue = new RangeValue<FunctionIdentity>(FunctionIdentity.Dim, Tag, 1.0, String.Empty);
 			}
 
 			// Wrap the dim range value in an intent

@@ -323,7 +323,7 @@ namespace VixenModules.OutputFilter.DimmingCurve
 				
 				// Create a new Dim intent with value from the curve
 				_intentValue = new StaticIntentState<RangeValue<FunctionIdentity>>(
-					new RangeValue<FunctionIdentity>(FunctionIdentity.Dim, obj.GetValue().Tag, newIntensity));
+					new RangeValue<FunctionIdentity>(FunctionIdentity.Dim, obj.GetValue().Tag, newIntensity, String.Empty));
 			}
 			else
 			{
