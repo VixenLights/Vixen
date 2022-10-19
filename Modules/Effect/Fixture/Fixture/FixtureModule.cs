@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -15,6 +16,7 @@ using VixenModules.Effect.Effect;
 using VixenModules.Effect.Pulse;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.IntelligentFixture;
+using IElementNode = Vixen.Sys.IElementNode;
 
 
 namespace VixenModules.Effect.Fixture
@@ -401,7 +403,7 @@ namespace VixenModules.Effect.Fixture
 		private void RenderCurve(Curve curve, FixtureFunction function, CancellationTokenSource cancellationToken)
 		{
 			// Get the element nodes associated with the specified named function
-			IEnumerable<IElementNode> nodes = GetRenderNodesForFunctionType(function.Name);
+			IEnumerable<Tuple<IElementNode, string>> nodes = GetRenderNodesForRangeFunctionType(function.Name);
 
 			// Render the curve for the specified nodes and fixture function
 			RenderCurve(nodes, curve, function.FunctionIdentity, function.Name, null, cancellationToken);
@@ -422,11 +424,11 @@ namespace VixenModules.Effect.Fixture
 		/// Retrieves the leaf nodes that support the specified function name.
 		/// </summary>
 		/// <param name="functionName">Function name to search for</param>
-		/// <returns></returns>
-		private IEnumerable<IElementNode> GetRenderNodesForFunctionType(string functionName)
+		/// <returns>Nodes that support the specified funciton name along with the optional label for the function</returns>
+		private IEnumerable<Tuple<IElementNode, string>> GetRenderNodesForRangeFunctionType(string functionName)
 		{
 			// Create the return collection
-			List<IElementNode> leavesThatSupportFunction = new List<IElementNode>();
+			List<Tuple<IElementNode, string>> leavesThatSupportFunction = new List<Tuple<IElementNode, string>>();
 
 			// Retrieve the first taret node
 			IElementNode node = TargetNodes.FirstOrDefault();
@@ -446,8 +448,20 @@ namespace VixenModules.Effect.Fixture
 						// If the fixture supports the function then...
 						if (fixtureProperty.FixtureSpecification.SupportsFunction(functionName))
 						{
-							// Add the leaf to the collection of nodes to return
-							leavesThatSupportFunction.Add(leafNode);
+							// Retrieve the specific fixture function
+							FixtureFunction fixtureFunction =
+								fixtureProperty.FixtureSpecification.FunctionDefinitions.SingleOrDefault(
+									item => item.Name == functionName &&
+									item.FunctionType == FixtureFunctionType.Range);
+
+							// If a range function was found then...
+							if (fixtureFunction != null)
+							{
+								// Add the leaf to the collection of nodes to return
+								leavesThatSupportFunction.Add(new Tuple<IElementNode, string>(
+									leafNode,
+									fixtureFunction.Label);
+							}
 						}
 					}
 				}
@@ -466,7 +480,7 @@ namespace VixenModules.Effect.Fixture
 		private void RenderRGB(ColorGradient colorGradient, Curve intensity, FixtureFunction function, CancellationTokenSource cancellationToken = null)
 		{
 			// Retrieve the nodes associated with the function
-			IEnumerable<IElementNode> nodes = GetRenderNodesForFunctionType(function.Name);
+			IEnumerable<Tuple<IElementNode, string>> nodes = GetRenderNodesForRangeFunctionType(function.Name);
 
 			// If there are any nodes associated with the function then...
 			if (nodes.Any())
@@ -475,10 +489,10 @@ namespace VixenModules.Effect.Fixture
 				for (int frameNum = 0; frameNum < GetNumberFrames(); frameNum++)
 				{
 					// For each node being rendered then...
-					foreach (IElementNode node in nodes)
+					foreach (Tuple<IElementNode, string> node in nodes)
 					{
 						// Add the color intents to the output of the effect
-						EffectIntentCollection.Add(RenderColorPulse(node, intensity, colorGradient));
+						EffectIntentCollection.Add(RenderColorPulse(node.Item1, intensity, colorGradient));
 					}
 				}
 			}
