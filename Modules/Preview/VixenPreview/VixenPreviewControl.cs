@@ -131,8 +131,8 @@ namespace VixenModules.Preview.VixenPreview
 
 		public event ChangeZoomLevelEventHandler OnChangeZoomLevel;
 
-		public ConcurrentDictionary<ElementNode, List<PreviewPixel>> NodeToPixel =
-			new ConcurrentDictionary<ElementNode, List<PreviewPixel>>();
+		public ConcurrentDictionary<IElementNode, List<PreviewPixel>> NodeToPixel =
+			new ConcurrentDictionary<IElementNode, List<PreviewPixel>>();
 
 		public ISequenceContext vixenContext = null;
 
@@ -1332,7 +1332,15 @@ namespace VixenModules.Preview.VixenPreview
 								break;
 							case "AddNew":
 								PreviewItemAddAction(); //starts Undo_Redo Action
-								DeSelectSelectedDisplayItem();
+								AddNodeToPixelMapping(_selectedDisplayItem);
+								if (elementsForm.SelectedNode != null)
+								{
+									HighlightNode(elementsForm.SelectedNode);
+								}
+								else
+								{
+									DeSelectSelectedDisplayItem();
+								}
 								break;
 						}
 						modifyType = "None";
@@ -1509,6 +1517,38 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
+		internal void HighlightNode(ElementNode node)
+		{
+			// Is this a group?
+			if (!node.IsLeaf)
+			{
+				// If so, iterate through children and highlight them
+				foreach (var childNode in node.Children)
+				{
+					HighlightNode(childNode);
+				}
+			}
+
+			// Finally, highlight the node passed to us
+			HighlightedElements.Add(node.Id);
+			DeSelectSelectedDisplayItem();
+		}
+
+		internal void UnlinkNodesFromPixels(IElementNode node)
+		{
+			if (NodeToPixel.TryRemove(node, out var pixels))
+			{
+				foreach (var previewPixel in pixels)
+				{
+					previewPixel.Node = null;
+				}
+			}
+			foreach (var nodeChild in node.Children)
+			{
+				UnlinkNodesFromPixels(nodeChild);
+			}
+		}
+
 		internal void BeginUpdate()
 		{
 			_holdRender = true;
@@ -1522,7 +1562,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void AddNodeToPixelMapping(DisplayItem item)
 		{
-			if(NodeToPixel == null) NodeToPixel = new ConcurrentDictionary<ElementNode, List<PreviewPixel>>();
+			if(NodeToPixel == null) NodeToPixel = new ConcurrentDictionary<IElementNode, List<PreviewPixel>>();
 			foreach (PreviewPixel pixel in item.Shape.Pixels)
 			{
 				if (pixel.Node != null)
@@ -1547,7 +1587,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void RemoveNodeToPixelMapping(DisplayItem item)
 		{
-			if (NodeToPixel == null) NodeToPixel = new ConcurrentDictionary<ElementNode, List<PreviewPixel>>();
+			if (NodeToPixel == null) NodeToPixel = new ConcurrentDictionary<IElementNode, List<PreviewPixel>>();
 			foreach (PreviewPixel pixel in item.Shape.Pixels)
 			{
 				if (pixel.Node != null)
@@ -1563,7 +1603,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void Reload()
 		{
-			if (NodeToPixel == null) NodeToPixel = new ConcurrentDictionary<ElementNode, List<PreviewPixel>>();
+			if (NodeToPixel == null) NodeToPixel = new ConcurrentDictionary<IElementNode, List<PreviewPixel>>();
 			NodeToPixel.Clear();
 			
 			if (DisplayItems == null)
