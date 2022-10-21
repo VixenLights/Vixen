@@ -417,6 +417,7 @@ namespace Common.Controls
 
 		public event EventHandler DragFinished;
 		public event EventHandler ElementsChanged;
+		public event EventHandler BeforeElementsChanged;
 
 
 		public void OnDragFinished(EventArgs e = null)
@@ -432,6 +433,14 @@ namespace Common.Controls
 			if (e == null)
 				e = EventArgs.Empty;
 			EventHandler handler = ElementsChanged;
+			if (handler != null) handler(this, e);
+		}
+
+		public void OnBeforeElementsChanged(EventArgs e = null)
+		{
+			if (e == null)
+				e = EventArgs.Empty;
+			EventHandler handler = BeforeElementsChanged;
 			if (handler != null) handler(this, e);
 		}
 
@@ -592,7 +601,10 @@ namespace Common.Controls
 		{
 			ElementNode cn = tn.Tag as ElementNode;
 			ElementNode parent = (tn.Parent != null) ? tn.Parent.Tag as ElementNode : null;
+			var nodesToDelete = cn.GetNodeEnumerator().ToList();
+			OnBeforeElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Remove, new List<ElementNode>{cn}));
 			VixenSystem.Nodes.RemoveNode(cn, parent, true);
+			OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Remove, new List<ElementNode> { cn }));
 		}
 
 		public IEnumerable<ElementNode> AddMultipleNodesWithPrompt(ElementNode parent = null)
@@ -701,6 +713,7 @@ namespace Common.Controls
 			
 			treeview.EndUpdate();
 			resultNode?.EnsureVisible();
+			OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Add, elementNodes.ToList()));
 		}
 
 		public bool CreateGroupFromSelectedNodes()
@@ -1235,6 +1248,29 @@ namespace Common.Controls
 			//	CutNodesToClipboard();
 			//	e.SuppressKeyPress = true;
 			//}
+		}
+
+		public class ElementsChangedEventArgs : EventArgs
+		{
+			public ElementsChangedEventArgs(ElementsChangedAction action, List<ElementNode> affectedNodes)
+			{
+				Action = action;
+				AffectedNodes = affectedNodes ?? throw new ArgumentNullException(nameof(affectedNodes));
+			}
+
+			public ElementsChangedAction Action { get; }
+
+			public List<ElementNode> AffectedNodes { get; }
+
+			public enum ElementsChangedAction
+			{
+				Add,
+				Edit,
+				Remove,
+				Rename
+			}
+
+
 		}
 
 	}

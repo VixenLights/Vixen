@@ -55,51 +55,55 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			treeElements.treeviewAfterSelect += treeElements_AfterSelect;
 			treeElements.treeviewDeselected += TreeElementsOnTreeviewDeselected;
+			treeElements.ElementsChanged += TreeElements_ElementsChanged;
+			treeElements.BeforeElementsChanged += TreeElements_BeforeElementsChanged;
 		}
 
-		private void HighlightNode(ElementNode node)
+		private void TreeElements_BeforeElementsChanged(object sender, EventArgs e)
 		{
-			// Is this a group?
-			if (!node.IsLeaf)
+			if (e is ElementTree.ElementsChangedEventArgs ev)
 			{
-				// If so, iterate through children and highlight them
-				foreach (var childNode in node.Children)
+				if (ev.Action == ElementTree.ElementsChangedEventArgs.ElementsChangedAction.Remove)
 				{
-					HighlightNode(childNode);
+					foreach (var evAffectedNode in ev.AffectedNodes)
+					{
+						_preview.UnlinkNodesFromPixels(evAffectedNode);
+					}
 				}
 			}
+		}
 
-			// Finally, highlight the node passed to us
-			_preview.HighlightedElements.Add(node.Id);
-			_preview.DeSelectSelectedDisplayItem();
+		private void TreeElements_ElementsChanged(object sender, EventArgs e)
+		{
+			if (e is ElementTree.ElementsChangedEventArgs ev)
+			{
+				if (ev.Action == ElementTree.ElementsChangedEventArgs.ElementsChangedAction.Remove)
+				{
+					UpdateSelectedDisplayItems();
+				}
+			}
 		}
 
 		private void treeElements_AfterSelect(object sender, TreeViewEventArgs e)
 		{
-			_preview.BeginUpdate();
-			_preview.HighlightedElements.Clear();
-
-			foreach (var node in treeElements.SelectedElementNodes) {
-				HighlightNode(node);
-			}
-
-			if (!_preview.SelectedDisplayItems.Any())
-			{
-				_preview.propertiesForm.ClearSetupControl();
-			}
-
-			_preview.EndUpdate();
+			UpdateSelectedDisplayItems();
 		}
 
 		private void TreeElementsOnTreeviewDeselected(object sender, EventArgs e)
 		{
-			TreeViewNodesDeselected();
+			UpdateSelectedDisplayItems();
 		}
 
-		private void TreeViewNodesDeselected()
+		private void UpdateSelectedDisplayItems()
 		{
 			_preview.BeginUpdate();
 			_preview.HighlightedElements.Clear();
+
+			foreach (var node in treeElements.SelectedElementNodes)
+			{
+				_preview.HighlightNode(node);
+			}
+
 			if (!_preview.SelectedDisplayItems.Any())
 			{
 				_preview.propertiesForm.ClearSetupControl();
@@ -129,7 +133,7 @@ namespace VixenModules.Preview.VixenPreview
 		internal void ClearSelectedNodes()
 		{
 			treeElements.ClearSelectedNodes();
-			TreeViewNodesDeselected();
+			UpdateSelectedDisplayItems();
 		}
 
 		internal bool SetupTemplate(IElementTemplate template)
