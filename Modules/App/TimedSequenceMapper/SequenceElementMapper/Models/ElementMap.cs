@@ -133,7 +133,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Models
 
 		public void AddRange(IEnumerable<ElementMapping> maps)
 		{
-			var mapsToAdd = maps.Where(x => !_sourceIds.ContainsKey(x.SourceId));
+			var mapsToAdd = maps.Where(x => !_sourceIds.ContainsKey(x.SourceId)).ToList();
 			_sourceIds.AddRange(mapsToAdd.Select(x => new KeyValuePair<Guid, ElementMapping>(x.SourceId, x)));
 			ElementMappings.AddItems(mapsToAdd);
 			SortByName();
