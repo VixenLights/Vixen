@@ -1619,6 +1619,12 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					if (pixel.Node != null)
 					{
+						//Validate the linked node still exists.
+						if (!VixenSystem.Nodes.ElementNodeExists(pixel.NodeId))
+						{
+							pixel.Node = null;
+							continue;
+						}
 						List<PreviewPixel> pixels;
 						if (NodeToPixel.TryGetValue(pixel.Node, out pixels))
 						{
