@@ -841,6 +841,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// </summary>
 		[Editor(typeof(PreviewSetFixtureElementUIEditor), typeof(UITypeEditor)),
 		 Category("Settings"),
+		 Description("Determines the Intelligent Fixture element the graphic is linked to.  Selecting the ‘…‘ button allows you to pick an Intelligent Fixture element."),
 		 DisplayName("Linked Element")]
 		public ElementNode Node
 		{
@@ -920,7 +921,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
 		 Category("Settings"),
-		 Description("Length of the beam."),
+		 Description("Length of the beam as a percentage of the background height."),
 		 DisplayName("Beam Length")]
 		public int BeamLength
 		{
@@ -933,7 +934,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
 		 Category("Settings"),
-		 Description("Beam Transparency"),
+		 Description("Determines the transparency of the light beam. 0% is completely opaque.  100% is completely transparent.  Note at 100% transparency the beam is not visible."),
 		 DisplayName("Beam Transparency (%)")]
 		public int BeamTransparency
 		{
@@ -959,7 +960,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
 		 Category("Settings"),
-		 Description("Zoom Narrow To Wide"),
+		 Description("Indicates whether the fixture zooms from a narrow beam to a wide beam or vice-versa"),
 		 DisplayName("Zoom Narrow To Wide")]
 		public bool ZoomNarrowToWide
 		{
@@ -972,7 +973,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
 		 Category("Settings"),
-		 Description("Show Legend"),
+		 Description("When true enables a legend that will show a function label and the corresponding channel value.  The legend is only applicable to index and range functions that were populated with a Preview Legend character."),
 		 DisplayName("Show Legend")]
 		public bool ShowLegend
 		{
@@ -984,7 +985,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		[DataMember(EmitDefaultValue = false),
 		 Category("Settings"),
-		 Description("Invert Pan Direction"),
+		 Description("Changes the start point of the pan by 180 degrees and inverts the direction of movement.  This setting is often used with 'Top' (upside down) mounting position."),
 		 DisplayName("Invert Pan Direction")]
 		public YesNoType InvertPanDirection
 		{
@@ -1008,7 +1009,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		[DataMember(EmitDefaultValue = false),
 		 Category("Settings"),
-		 Description("Invert Tilt Direction"),
+		 Description("Swaps the start position with the stop position and inverts the direction of movement.  This setting is often used with 'Top' (upside down) mounting position."),
 		 DisplayName("Invert Tilt Direction")]
 		public YesNoType InvertTiltDirection
 		{
@@ -1033,7 +1034,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		[DataMember(EmitDefaultValue = false),
 		 Category("Settings"),
-		 Description("Mounting Position"),
+		 Description("Selects the mounting position of the fixture.  This property allows for simulating the fixture being mounted upside down."),
 		 DisplayName("Mounting Position")]		
 		public MountingPositionType MountingPosition
 		{
