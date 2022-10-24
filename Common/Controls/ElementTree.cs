@@ -417,7 +417,6 @@ namespace Common.Controls
 
 		public event EventHandler DragFinished;
 		public event EventHandler ElementsChanged;
-		public event EventHandler BeforeElementsChanged;
 
 
 		public void OnDragFinished(EventArgs e = null)
@@ -433,14 +432,6 @@ namespace Common.Controls
 			if (e == null)
 				e = EventArgs.Empty;
 			EventHandler handler = ElementsChanged;
-			if (handler != null) handler(this, e);
-		}
-
-		public void OnBeforeElementsChanged(EventArgs e = null)
-		{
-			if (e == null)
-				e = EventArgs.Empty;
-			EventHandler handler = BeforeElementsChanged;
 			if (handler != null) handler(this, e);
 		}
 
@@ -602,9 +593,8 @@ namespace Common.Controls
 			ElementNode cn = tn.Tag as ElementNode;
 			ElementNode parent = (tn.Parent != null) ? tn.Parent.Tag as ElementNode : null;
 			var nodesToDelete = cn.GetNodeEnumerator().ToList();
-			OnBeforeElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Remove, new List<ElementNode>{cn}));
 			VixenSystem.Nodes.RemoveNode(cn, parent, true);
-			OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Remove, new List<ElementNode> { cn }));
+			OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Remove, nodesToDelete));
 		}
 
 		public IEnumerable<ElementNode> AddMultipleNodesWithPrompt(ElementNode parent = null)
@@ -1105,7 +1095,7 @@ namespace Common.Controls
 			}
 
 			PopulateNodeTree();
-			OnElementsChanged();
+			OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Remove, new List<ElementNode>()));
 		}
 
 		private void createGroupWithNodesToolStripMenuItem_Click(object sender, EventArgs e)

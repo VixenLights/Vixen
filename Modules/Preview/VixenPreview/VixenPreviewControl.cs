@@ -1617,7 +1617,7 @@ namespace VixenModules.Preview.VixenPreview
 
 				foreach (PreviewPixel pixel in item.Shape.Pixels)
 				{
-					if (pixel.Node != null)
+					if (pixel.Node != null || pixel.NodeId != Guid.Empty)
 					{
 						//Validate the linked node still exists.
 						if (!VixenSystem.Nodes.ElementNodeExists(pixel.NodeId))
@@ -2073,7 +2073,14 @@ namespace VixenModules.Preview.VixenPreview
 			}
 			newDisplayItem.Shape.MoveTo(location.X, location.Y);
 			DisplayItems.Add(newDisplayItem);
+			AddNodeToPixelMapping(newDisplayItem);
 			SelectedDisplayItems.Clear();
+
+			if (elementsForm.SelectedNode != null)
+			{
+				HighlightNode(elementsForm.SelectedNode);
+			}
+			
 			OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 			EndUpdate();
 		}
