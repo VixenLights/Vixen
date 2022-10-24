@@ -1,5 +1,12 @@
 Release Notes - Vixen 3
 
+Release Notes - Vixen 3 - 3.9u2 Build 
+
+** Bug
+    * [VIX-3289] - Display Setup and Vixen Preview does not refresh properly
+    * [VIX-3304] - Play/Pause button crashes Vixen
+    * [VIX-3309] - Remapping sequences using mapping config file
+
 Release Notes - Vixen 3 - 3.9u1 Build 
 
 ** Bug
