@@ -56,21 +56,6 @@ namespace VixenModules.Preview.VixenPreview
 			treeElements.treeviewAfterSelect += treeElements_AfterSelect;
 			treeElements.treeviewDeselected += TreeElementsOnTreeviewDeselected;
 			treeElements.ElementsChanged += TreeElements_ElementsChanged;
-			treeElements.BeforeElementsChanged += TreeElements_BeforeElementsChanged;
-		}
-
-		private void TreeElements_BeforeElementsChanged(object sender, EventArgs e)
-		{
-			if (e is ElementTree.ElementsChangedEventArgs ev)
-			{
-				if (ev.Action == ElementTree.ElementsChangedEventArgs.ElementsChangedAction.Remove)
-				{
-					foreach (var evAffectedNode in ev.AffectedNodes)
-					{
-						_preview.UnlinkNodesFromPixels(evAffectedNode);
-					}
-				}
-			}
 		}
 
 		private void TreeElements_ElementsChanged(object sender, EventArgs e)
@@ -79,6 +64,13 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				if (ev.Action == ElementTree.ElementsChangedEventArgs.ElementsChangedAction.Remove)
 				{
+					foreach (var evAffectedNode in ev.AffectedNodes)
+					{
+						if (!VixenSystem.Nodes.ElementNodeExists(evAffectedNode.Id))
+						{
+							_preview.UnlinkNodesFromPixels(evAffectedNode);
+						}
+					}
 					UpdateSelectedDisplayItems();
 				}
 			}
