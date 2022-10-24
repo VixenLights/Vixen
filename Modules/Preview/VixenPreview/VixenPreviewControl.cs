@@ -1325,9 +1325,18 @@ namespace VixenModules.Preview.VixenPreview
 					Console.Out.WriteLineAsync($"Element Selected is null {_elementSelected == null}");
 					if (_elementSelected == null && modifyType.Equals("AddNew"))
 					{
+						// Store off the currently selected item
+						// This is needed because certain smart objects delete nodes that are part of a group
+						// so that they do not appear in the tree more than once.  The delete logic clears
+						// the selected display item.
+						DisplayItem selectedDisplayItem = _selectedDisplayItem;
+
 						//Intercept and populate the element tree
 						if (await ShowElementCreateTemplateForCurrentTool() && elementsForm.SelectedNode != null)
 						{
+							// Restore the selected display item
+							_selectedDisplayItem = selectedDisplayItem;
+
 							_selectedDisplayItem.Shape.Reconfigure(elementsForm.SelectedNode);
 						}
 
@@ -1335,7 +1344,7 @@ namespace VixenModules.Preview.VixenPreview
 						_selectedDisplayItem.Shape.EndAddNew();
 
 						// Create additional shapes if requested by the template
-						CreateAdditionalShapes();
+						CreateAdditionalShapes(_selectedDisplayItem);
 					}
 
 					_selectedDisplayItem.Shape.MouseUp(sender, e);
@@ -1395,9 +1404,10 @@ namespace VixenModules.Preview.VixenPreview
 		}
 
 		/// <summary>
-		/// Creates additional shapes 
+		/// Creates additional shapes.
 		/// </summary>
-		private void CreateAdditionalShapes()
+		/// <param name="selectedDisplayItem">Currently selected display item</param>
+		private void CreateAdditionalShapes(DisplayItem selectedDisplayItem)
 		{
 			// If a smart template was used and more than one smart object was requested then...
 			if (_lastUsedTemplate != null && _lastUsedTemplate.GetLeafNodes().Count() > 1)
@@ -1410,11 +1420,11 @@ namespace VixenModules.Preview.VixenPreview
 				int top = 0;
 
 				// Calculate the width and height of the shape
-				int width = Math.Abs(_selectedDisplayItem.Shape.Right - _selectedDisplayItem.Shape.Left);
-				int height = Math.Abs(_selectedDisplayItem.Shape.Bottom - _selectedDisplayItem.Shape.Top);
+				int width = Math.Abs(selectedDisplayItem.Shape.Right - selectedDisplayItem.Shape.Left);
+				int height = Math.Abs(selectedDisplayItem.Shape.Bottom - selectedDisplayItem.Shape.Top);
 
 				// Convert the existing shape to XML
-				string xml = PreviewTools.SerializeToString(_selectedDisplayItem);
+				string xml = PreviewTools.SerializeToString(selectedDisplayItem);
 
 				// Loop over the additional nodes skipping the first node
 				foreach (ElementNode node in nodes.Skip(1))
