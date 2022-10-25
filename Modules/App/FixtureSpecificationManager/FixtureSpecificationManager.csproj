@@ -25,15 +25,28 @@
 		<DefineConstants>TRACE</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj" />
+	  <PackageReference Include="NLog" Version="4.7.15">
+	  <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
+		  <Private>false</Private>
+		  <IncludeAssets>None</IncludeAssets>
+	  </ProjectReference>
+	  <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
+		  <Private>false</Private>
+		  <IncludeAssets>None</IncludeAssets>
+	  </ProjectReference>
 	  <ProjectReference Include="..\Fixture\Fixture.csproj">
-	    <Private>false</Private>
-	    <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+		  <Private>false</Private>
+		  <IncludeAssets>None</IncludeAssets>
 	  </ProjectReference>
 	</ItemGroup>
 	<ItemGroup>
 	  <Reference Include="PresentationCore" />
 	  <Reference Include="System.Windows" />
+	  <Reference Include="System.Windows.Forms" />
 	  <Reference Include="WindowsBase" />
 	</ItemGroup>
 </Project>
