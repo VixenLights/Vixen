@@ -22,9 +22,14 @@ namespace VixenModules.Editor.FixtureWizard.Wizard.Models
             SelectExistingProfile = true;
         }
 
-		#endregion
+        #endregion
 
-		#region Public Properties
+        #region Public Properties
+
+        /// <summary>
+        /// Indicates whether selecting existing profiles should be enabled.
+        /// </summary>
+        public bool SelectExistingProfileEnabled { get; set; }
 
         /// <summary>
         /// Indicates the fixture is being created from an existing profile.
