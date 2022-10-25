@@ -1,8 +1,11 @@
-﻿using NLog;
+﻿using Common.Controls;
+using NLog;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 using Vixen.Extensions;
@@ -94,21 +97,33 @@ namespace VixenModules.App.FixtureSpecificationManager
 
 			// Loop over all the fixture specification in the folder
 			foreach (FileInfo fileInfo in specificationFiles)
-			{								
+			{
 				try
 				{
 					// Call the Deserialize method to load the fixture specification
-					FixtureSpecification fixture = FixtureSpecificationService.Load<FixtureSpecification>(fileInfo.FullName);
+					FixtureSpecification fixture =
+						FixtureSpecificationService.Load<FixtureSpecification>(fileInfo.FullName);
 
-					//(FixtureSpecification)serializer.Deserialize(reader);
-					FixtureSpecifications.Add(fixture);
+					// If the fixture is NOT already in the collection then...
+					if (!FixtureSpecifications.Any(item => item.Name == fixture.Name))
+					{
+						FixtureSpecifications.Add(fixture);
+					}
+					else
+					{
+						// Otherwise tell the user that we are ignoring this file
+						string msg = "A Intelligent Fixture with a name of '" + fixture.Name + "' already exists.  ";
+						msg += "The file: '" + fileInfo.Name + "' was ignored.";
+						var messageBox = new MessageBoxForm(msg, "Invalid Fixture Profile", MessageBoxButtons.OK, SystemIcons.Warning);
+						messageBox.ShowDialog();
+					}
 				}
 				catch (Exception e)
 				{
 					// If we encounter a malformed XML file just ignore it and log an error
 					Logger logging = LogManager.GetCurrentClassLogger();
-					logging.Error(e, fileInfo.FullName + "is malformed!");						
-				}							
+					logging.Error(e, fileInfo.FullName + "is malformed!");
+				}
 			}
 		
 
