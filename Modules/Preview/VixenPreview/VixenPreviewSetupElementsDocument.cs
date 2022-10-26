@@ -70,7 +70,7 @@ namespace VixenModules.Preview.VixenPreview
 					{
 						if (!VixenSystem.Nodes.ElementNodeExists(evAffectedNode.Id))
 						{
-							_preview.UnlinkNodesFromPixels(evAffectedNode);
+							_preview.UnlinkNodesFromDisplayItem(evAffectedNode);
 						}
 					}
 					UpdateSelectedDisplayItems();
