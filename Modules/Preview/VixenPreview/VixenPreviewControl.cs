@@ -1782,6 +1782,17 @@ namespace VixenModules.Preview.VixenPreview
 						}
 					}
 				}
+				// If the display item is a moving head then...
+				else if (item.Shape is PreviewMovingHead)
+				{
+					PreviewMovingHead movingHead = (PreviewMovingHead)item.Shape;	
+
+					// Validate the linked node still exists.
+					if (!VixenSystem.Nodes.ElementNodeExists(movingHead.NodeId))
+					{
+						movingHead.Node = null;
+					}
+				}
 			}
 			LoadBackground();
 			EndUpdate();
