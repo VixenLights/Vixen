@@ -382,9 +382,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			// Default the beam color to unlinked (white)
 			Color beamColor = Color.White;
-			
+
+			// If the moving head is selected then...
+			if (selected)
+			{
+				// Use the selected color
+				beamColor = Color.Green;
+			}
 			// If the moving head is selected in the elements tree then...
-			if (highlightedElements != null &&
+			else if (highlightedElements != null &&
 				highlightedElements.Contains(NodeId))
 			{
 				// Make the beam color pink
