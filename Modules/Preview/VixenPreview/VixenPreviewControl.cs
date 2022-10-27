@@ -1341,16 +1341,26 @@ namespace VixenModules.Preview.VixenPreview
 							_selectedDisplayItem = selectedDisplayItem;
 
 							_selectedDisplayItem.Shape.Reconfigure(elementsForm.SelectedNode);
+
+							// Restore the selected display item
+							_selectedDisplayItem = selectedDisplayItem;
+
+							// Give the shape the opportunity to adjust the shape coordinates 
+							_selectedDisplayItem.Shape.EndAddNew();
+
+							// Create additional shapes if requested by the template
+							CreateAdditionalShapes(_selectedDisplayItem);
 						}
-
-						// Restore the selected display item
-						_selectedDisplayItem = selectedDisplayItem;
-
+						else
+						{
+							// Give the shape the opportunity to adjust the shape coordinates 
+							_selectedDisplayItem.Shape.EndAddNew();
+						}
+					}
+					else if (modifyType.Equals("AddNew"))
+					{
 						// Give the shape the opportunity to adjust the shape coordinates 
 						_selectedDisplayItem.Shape.EndAddNew();
-
-						// Create additional shapes if requested by the template
-						CreateAdditionalShapes(_selectedDisplayItem);
 					}
 
 					_selectedDisplayItem.Shape.MouseUp(sender, e);

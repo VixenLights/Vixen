@@ -579,8 +579,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			else
 			{
 				// Adjust the width to match the smaller height
-				_bottomRight.X = Left + w;
-				_topRight.X = Left + w;
+				_bottomRight.X = Left + h;
+				_topRight.X = Left + h;
 			}
 		}
 		
