@@ -180,18 +180,41 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 						var mc = CreateNewCollection(Color.Yellow, "Audacity Marks");
 						foreach (string line in lines)
 						{
-							string mark;
+							string endTimeMark = "0";
+							string text = string.Empty;
+							string[] lineParts;
 							if (line.IndexOf("\t") > 0)
 							{
-								mark = line.Split('\t')[0].Trim();
+								lineParts = line.Split('\t');
 							}
 							else
 							{
-								mark = line.Trim().Split(' ')[0].Trim();
+								lineParts = line.Trim().Split(' ');
 							}
 
-							TimeSpan time = TimeSpan.FromSeconds(Convert.ToDouble(mark));
-							mc.AddMark(new Mark(time));
+							var startTimeMark = lineParts[0].Trim();
+							if (lineParts.Length > 1)
+							{
+								endTimeMark = lineParts[1].Trim();
+							}
+
+							if (lineParts.Length > 2)
+							{
+								text = lineParts[2].Trim();
+							}
+
+							TimeSpan startTime = TimeSpan.FromSeconds(Convert.ToDouble(startTimeMark)); 
+							TimeSpan endTime = TimeSpan.FromSeconds(Convert.ToDouble(endTimeMark));
+							TimeSpan duration = TimeSpan.Zero;
+							if (endTime > TimeSpan.Zero)
+							{
+								duration = endTime - startTime;
+							}
+							mc.AddMark(new Mark(startTime)
+							{
+								Duration = duration,
+								Text = text
+							});
 						}
 
 						collections.Add(mc);
