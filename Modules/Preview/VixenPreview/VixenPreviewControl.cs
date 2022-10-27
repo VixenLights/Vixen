@@ -1,32 +1,35 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Windows.Forms;
-using Common.Controls;
-using Common.Controls.Theme;
-using Vixen.Execution.Context;
-using Vixen.Sys;
-using VixenModules.Editor.VixenPreviewSetup3.Undo;
-using VixenModules.Preview.VixenPreview.Shapes;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Concurrent;
+using System.Windows.Forms;
+
 using Catel.IoC;
 using Catel.Services;
+
+using Common.Controls;
 using Common.Controls.Scaling;
+using Common.Controls.Theme;
 using Common.WPFCommon.Services;
+
 using Vixen;
+using Vixen.Execution.Context;
 using Vixen.Rule;
 using Vixen.Services;
+using Vixen.Sys;
+
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
+using VixenModules.Editor.VixenPreviewSetup3.Undo;
+using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Preview.VixenPreview.Undo;
 using VixenModules.Property.Location;
+
 using DisplayItem = VixenModules.Preview.VixenPreview.Shapes.DisplayItem;
 using Size = System.Drawing.Size;
 
@@ -1325,17 +1328,29 @@ namespace VixenModules.Preview.VixenPreview
 					Console.Out.WriteLineAsync($"Element Selected is null {_elementSelected == null}");
 					if (_elementSelected == null && modifyType.Equals("AddNew"))
 					{
+						// Store off the currently selected item
+						// This is needed because certain smart objects delete nodes that are part of a group
+						// so that they do not appear in the tree more than once.  The delete logic clears
+						// the selected display item.
+						DisplayItem selectedDisplayItem = _selectedDisplayItem;
+
 						//Intercept and populate the element tree
 						if (await ShowElementCreateTemplateForCurrentTool() && elementsForm.SelectedNode != null)
 						{
+							// Restore the selected display item
+							_selectedDisplayItem = selectedDisplayItem;
+
 							_selectedDisplayItem.Shape.Reconfigure(elementsForm.SelectedNode);
 						}
+
+						// Restore the selected display item
+						_selectedDisplayItem = selectedDisplayItem;
 
 						// Give the shape the opportunity to adjust the shape coordinates 
 						_selectedDisplayItem.Shape.EndAddNew();
 
 						// Create additional shapes if requested by the template
-						CreateAdditionalShapes();
+						CreateAdditionalShapes(_selectedDisplayItem);
 					}
 
 					_selectedDisplayItem.Shape.MouseUp(sender, e);
@@ -1395,9 +1410,10 @@ namespace VixenModules.Preview.VixenPreview
 		}
 
 		/// <summary>
-		/// Creates additional shapes 
+		/// Creates additional shapes.
 		/// </summary>
-		private void CreateAdditionalShapes()
+		/// <param name="selectedDisplayItem">Currently selected display item</param>
+		private void CreateAdditionalShapes(DisplayItem selectedDisplayItem)
 		{
 			// If a smart template was used and more than one smart object was requested then...
 			if (_lastUsedTemplate != null && _lastUsedTemplate.GetLeafNodes().Count() > 1)
@@ -1410,17 +1426,20 @@ namespace VixenModules.Preview.VixenPreview
 				int top = 0;
 
 				// Calculate the width and height of the shape
-				int width = Math.Abs(_selectedDisplayItem.Shape.Right - _selectedDisplayItem.Shape.Left);
-				int height = Math.Abs(_selectedDisplayItem.Shape.Bottom - _selectedDisplayItem.Shape.Top);
+				int width = Math.Abs(selectedDisplayItem.Shape.Right - selectedDisplayItem.Shape.Left);
+				int height = Math.Abs(selectedDisplayItem.Shape.Bottom - selectedDisplayItem.Shape.Top);
 
 				// Convert the existing shape to XML
-				string xml = PreviewTools.SerializeToString(_selectedDisplayItem);
+				string xml = PreviewTools.SerializeToString(selectedDisplayItem);
 
 				// Loop over the additional nodes skipping the first node
 				foreach (ElementNode node in nodes.Skip(1))
 				{
 					// Create a cloned shape by re-hydrating the XML
 					DisplayItem clonedDisplayItem = PreviewTools.DeSerializeToDisplayItem(xml, typeof(DisplayItem));
+
+					// Configure the zoom (otherwise the border does not render)
+					clonedDisplayItem.ZoomLevel = 1.0;
 
 					// Update the position of the cloned shape
 					clonedDisplayItem.Shape.Top = top;
@@ -1626,8 +1645,9 @@ namespace VixenModules.Preview.VixenPreview
 			DeSelectSelectedDisplayItem();
 		}
 
-		internal void UnlinkNodesFromPixels(IElementNode node)
+		internal void UnlinkNodesFromDisplayItem(IElementNode node)
 		{
+			// If the node is associated with a pixel then...
 			if (NodeToPixel.TryRemove(node, out var pixels))
 			{
 				foreach (var previewPixel in pixels)
@@ -1635,9 +1655,27 @@ namespace VixenModules.Preview.VixenPreview
 					previewPixel.Node = null;
 				}
 			}
+			// Otherwise the node is associated with a moving head
+			else
+			{
+				// Loop over the display items that are moving heads
+				foreach (DisplayItem item in _data.DisplayItems.Where(item => item.Shape is PreviewMovingHead))
+				{
+					// Retrieve the moving head graphic
+					PreviewMovingHead movingHead = (PreviewMovingHead)item.Shape;
+
+					// If the moving head graphic is associated with the node then...
+					if (movingHead.Node == node)
+					{
+						// Remove the association
+						movingHead.Node = null;
+					}
+				}
+			}
+
 			foreach (var nodeChild in node.Children)
 			{
-				UnlinkNodesFromPixels(nodeChild);
+				UnlinkNodesFromDisplayItem(nodeChild);
 			}
 		}
 
@@ -1742,6 +1780,17 @@ namespace VixenModules.Preview.VixenPreview
 								NodeToPixel.TryAdd(pixel.Node, pixels);
 							}
 						}
+					}
+				}
+				// If the display item is a moving head then...
+				else if (item.Shape is PreviewMovingHead)
+				{
+					PreviewMovingHead movingHead = (PreviewMovingHead)item.Shape;	
+
+					// Validate the linked node still exists.
+					if (!VixenSystem.Nodes.ElementNodeExists(movingHead.NodeId))
+					{
+						movingHead.Node = null;
 					}
 				}
 			}
