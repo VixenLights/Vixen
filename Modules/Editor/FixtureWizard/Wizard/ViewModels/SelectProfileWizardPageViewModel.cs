@@ -4,8 +4,8 @@
 	using Catel.Fody;
 	using Catel.MVVM;
 	using Orc.Wizard;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
+	using System.Collections.Generic;
+	using System.Collections.ObjectModel;
 	using System.Linq;
 	using VixenModules.App.Fixture;
 	using VixenModules.App.FixtureSpecificationManager;
@@ -34,7 +34,10 @@
             {
                 // Add the name of the fixture to the collection
                 Fixtures.Add(fixture.Name);
-            }            
+            }
+
+            // Default the 'Select Existing Profile' radio button to disabled
+            SelectExistingProfileEnabled = false;
 
             // If the wizard page is configured to selet an existing fixture and
             // there is at least one fixture then...
@@ -42,6 +45,9 @@
             {
                 // Default the radio button to select an existing fixture profile
                 SelectExistingProfile = true;
+
+                // Enable the 'Select Existing Profile' radio button
+                SelectExistingProfileEnabled = true;
             }            
             // Otherwise if the profile has not already been named then...
             else if (string.IsNullOrEmpty(wizardPage.ProfileName) &&
@@ -281,10 +287,32 @@
         /// </summary>
         public static readonly PropertyData RevisionProperty = RegisterProperty(nameof(Revision), typeof(string));
 
+
+        /// <summary>
+        /// Whether the 'Select Existing Profile' radio button is enabled.
+        /// </summary>
+        [ViewModelToModel]
+        public bool SelectExistingProfileEnabled
+        {
+	        get
+	        {
+		        return GetValue<bool>(SelectExistingProfileEnabledProperty);
+	        }
+	        set
+	        {
+		        SetValue(SelectExistingProfileEnabledProperty, value);
+	        }
+        }
+
+        /// <summary>
+        /// SelectExistingProfile property data.
+        /// </summary>
+        public static readonly PropertyData SelectExistingProfileEnabledProperty = RegisterProperty(nameof(SelectExistingProfileEnabled), typeof(bool));
+
         #endregion
 
         #region Protected Methods
-        
+
         /// <summary>
         /// Displays the validation bar if there are messages in the validation results.
         /// </summary>
