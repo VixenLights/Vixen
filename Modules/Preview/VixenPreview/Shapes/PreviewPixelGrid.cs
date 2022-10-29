@@ -372,8 +372,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				if (_strings != null && _strings.Count > 0) {
 					List<PreviewPixel> outPixels = new List<PreviewPixel>();
-					for (int i = 0; i < Strings.Count; i++) {
-						foreach (PreviewPixel pixel in LightStrings[i].Pixels) {
+					
+					foreach(PreviewLightBaseShape lightString in LightStrings)
+					{
+						foreach (PreviewPixel pixel in lightString.Pixels) 
+						{
 							outPixels.Add(pixel);
 						}
 					}
@@ -523,9 +526,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public override void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected,
 		                          bool forceDraw, double zoomLevel)
 		{
-			if (_strings != null) {
-				for (int i = 0; i < _strings.Count; i++) {
-					foreach (PreviewPixel pixel in LightStrings[i]._pixels) {
+			if (_strings != null) 
+			{
+				foreach (PreviewLightBaseShape lightString in LightStrings)
+				{
+					foreach (PreviewPixel pixel in lightString._pixels) 
+					{
 						DrawPixel(pixel, fp, editMode, highlightedElements, selected, forceDraw);
 					}
 				}
