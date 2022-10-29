@@ -57,11 +57,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[DataMember(EmitDefaultValue = false)]
 		public List<PreviewBaseShape> _strings;
 
-		protected ReadOnlyCollection<PreviewLightBaseShape> LightStrings
+		protected IEnumerable<PreviewLightBaseShape> LightStrings
 		{
 			get
 			{
-				return new ReadOnlyCollection<PreviewLightBaseShape>(_strings.Cast<PreviewLightBaseShape>().ToList());
+				return _strings.Cast<PreviewLightBaseShape>();
 			}
 		}
 										
@@ -337,9 +337,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private bool IsPixelOne(PreviewPixel pixel)
 		{
-			if (_pixels.Count > 0 && pixel == _pixels[0] ||
-				 _strings != null && _strings.Count > 0 && LightStrings[0].Pixels != null &&
-				 LightStrings[0].Pixels.Count > 0 && LightStrings[0].Pixels[0] == pixel)
+			if (_pixels.Count > 0 && 
+			pixel == _pixels[0] || _strings != null && 
+			    _strings.Count > 0 && 
+				_strings[0] is PreviewLightBaseShape &&
+			    ((PreviewLightBaseShape)_strings[0]).Pixels != null &&
+			    ((PreviewLightBaseShape)_strings[0]).Pixels.Count > 0 && 
+				((PreviewLightBaseShape)_strings[0]).Pixels[0] == pixel)
 			{
 				return true;
 			}

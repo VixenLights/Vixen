@@ -152,13 +152,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                         {
                             if (creating)
                             {
-                                LightStrings[0].Pixels[0].Node = initialNode;
+                                LightStrings.First().Pixels[0].Node = initialNode;
                             }
                             standardString.connectStandardStrings = true;
                             standardString.StringType = StringTypes.Standard;
                             foreach (PreviewPixel pixel in standardString.Pixels)
                             {
-                                pixel.Node = LightStrings[0].Pixels[0].Node;
+                                pixel.Node = LightStrings.First().Pixels[0].Node;
                             }
                         }
                     }

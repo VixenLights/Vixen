@@ -276,7 +276,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), _lightsPerString, null, ZoomLevel);
 					if (_strings.Count > 0)
 					{
-						line.StringType = LightStrings[0].StringType;
+						line.StringType = LightStrings.First().StringType;
 					}
 					_strings.Add(line);
 				}
@@ -413,9 +413,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				if (_strings != null && _strings.Count > 0)
 				{
 					var outPixels = new List<PreviewPixel>();
-					for (int i = 0; i < StringCount; i++)
+
+					foreach (PreviewLightBaseShape lightString in LightStrings)
 					{
-						foreach (PreviewPixel pixel in LightStrings[i].Pixels)
+						foreach (PreviewPixel pixel in lightString.Pixels)
 						{
 							outPixels.Add(pixel);
 						}
@@ -567,9 +568,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			if (_strings != null)
 			{
-				for (int i = 0; i < StringCount; i++)
+				foreach (PreviewLightBaseShape lightString in LightStrings)
 				{
-					foreach (PreviewPixel pixel in LightStrings[i]._pixels)
+					foreach (PreviewPixel pixel in lightString._pixels)
 					{
 						DrawPixel(pixel, fp, editMode, highlightedElements, selected, forceDraw);
 					}
