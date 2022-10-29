@@ -163,8 +163,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				List<PreviewPixel> pixels = new List<PreviewPixel>();
 				if (_strings != null) {
-					for (int i = 0; i < 3; i++) {
-						foreach (PreviewPixel pixel in LightStrings[i]._pixels) {
+					foreach (PreviewLightBaseShape lightString in LightStrings)
+					{
+						foreach (PreviewPixel pixel in lightString._pixels) 
+						{
 							pixels.Add(pixel);
 						}
 					}
