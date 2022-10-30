@@ -39,6 +39,12 @@ namespace VixenModules.Effect.Chase
 			{
 				CheckForInvalidColorData();
 
+				var depth = DetermineDepth();
+				if (depth <= 2)
+				{
+					TargetNodeHandling = TargetNodeSelection.Group;
+				}
+
 				if (TargetNodes.Length > 1)
 				{
 					DepthOfEffect = 0;
