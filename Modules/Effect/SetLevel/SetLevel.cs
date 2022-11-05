@@ -149,7 +149,7 @@ namespace VixenModules.Effect.SetLevel
 						continue;
 					}
 				}
-				var intent = CreateIntent(leafs.First(), Color, IntensityLevel, TimeSpan);
+				var intent = CreateIntent(elementNode, Color, IntensityLevel, TimeSpan);
 				effectIntents.AddIntentForElement(elementNode.Element.Id, intent, TimeSpan.Zero);
 			}
 
