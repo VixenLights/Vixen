@@ -74,9 +74,13 @@ namespace VixenModules.App.Fixture
 
 			// Default the timeline color to a random color
 			Random rnd = new Random();
-			KnownColor[] colors = (KnownColor[])Enum.GetValues(typeof(KnownColor));			
-			int colorIndex = rnd.Next(colors.Length - 1);				
-			TimelineColor = Color.FromKnownColor(colors[colorIndex]);							
+			KnownColor[] colors = (KnownColor[])Enum.GetValues(typeof(KnownColor));
+
+			do
+			{
+				int colorIndex = rnd.Next(colors.Length - 1);
+				TimelineColor = Color.FromKnownColor(colors[colorIndex]);
+			} while (TimelineColor == Color.Transparent);
 		}
 
 		#endregion
