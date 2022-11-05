@@ -471,6 +471,57 @@ namespace VixenModules.Effect.Fixture
 		}
 
 		/// <summary>
+		/// Retrieves the leaf nodes that support the specified color function name.
+		/// </summary>
+		/// <param name="functionName">Function name to search for</param>
+		/// <returns>Nodes that support the specified function name along with the optional label for the function</returns>
+		private IEnumerable<Tuple<IElementNode, string>> GetRenderNodesForRGBFunctionType(string functionName)
+		{
+			// Create the return collection
+			List<Tuple<IElementNode, string>> leavesThatSupportFunction = new List<Tuple<IElementNode, string>>();
+
+			// Retrieve the first taret node
+			IElementNode node = TargetNodes.FirstOrDefault();
+
+			// If the node is NOT null then...
+			if (node != null)
+			{
+				// Loop over the leaves
+				foreach (IElementNode leafNode in node.GetLeafEnumerator())
+				{
+					// Attempt to get the Intelligent Fixture property
+					IntelligentFixtureModule fixtureProperty = (IntelligentFixtureModule)leafNode.Properties.FirstOrDefault(item => item is IntelligentFixtureModule);
+
+					// If a fixture property was found then...
+					if (fixtureProperty != null)
+					{
+						// If the fixture supports the function then...
+						if (fixtureProperty.FixtureSpecification.SupportsFunction(functionName))
+						{
+							// Retrieve the specific fixture function
+							FixtureFunction fixtureFunction =
+								fixtureProperty.FixtureSpecification.FunctionDefinitions.SingleOrDefault(
+									item => item.Name == functionName &&
+									       (item.FunctionType == FixtureFunctionType.RGBColor ||
+									        item.FunctionType == FixtureFunctionType.RGBWColor));
+
+							// If a range function was found then...
+							if (fixtureFunction != null)
+							{
+								// Add the leaf to the collection of nodes to return
+								leavesThatSupportFunction.Add(new Tuple<IElementNode, string>(
+									leafNode,
+									fixtureFunction.Label));
+							}
+						}
+					}
+				}
+			}
+
+			return leavesThatSupportFunction;
+		}
+
+		/// <summary>
 		/// Render the color function.
 		/// </summary>
 		/// <param name="colorGradient">Color gradient to render</param>
@@ -480,7 +531,7 @@ namespace VixenModules.Effect.Fixture
 		private void RenderRGB(ColorGradient colorGradient, Curve intensity, FixtureFunction function, CancellationTokenSource cancellationToken = null)
 		{
 			// Retrieve the nodes associated with the function
-			IEnumerable<Tuple<IElementNode, string>> nodes = GetRenderNodesForRangeFunctionType(function.Name);
+			IEnumerable<Tuple<IElementNode, string>> nodes = GetRenderNodesForRGBFunctionType(function.Name);
 
 			// If there are any nodes associated with the function then...
 			if (nodes.Any())
