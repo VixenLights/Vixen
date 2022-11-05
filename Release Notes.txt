@@ -1,5 +1,14 @@
 Release Notes - Vixen 3
 
+Release Notes - Vixen 3 - 3.9u3 Build 
+
+** Bug
+    * [VIX-3316] - Deleting an element from the preview can lead to the preview shape being unlinked if the same element exists in other groups.
+    * [VIX-3327] - Chase effect does not switch behavior from Each / Element Group when copied to a group with only leaf elements.
+
+** Improvement
+    * [VIX-3319] - The Audacity bar import should support duration and text now that Marks have that support.
+
 Release Notes - Vixen 3 - 3.9u2 Build 
 
 ** Bug
