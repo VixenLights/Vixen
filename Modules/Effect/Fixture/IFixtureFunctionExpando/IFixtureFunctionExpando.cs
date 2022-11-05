@@ -48,6 +48,11 @@ namespace VixenModules.Effect.Fixture
 		Curve Range { get; set; }
 
 		/// <summary>
+		/// Intensity of the color associated with the function.
+		/// </summary>
+		Curve Intensity { get; set; }
+
+		/// <summary>
 		/// Selected color wheel index value.
 		/// This property is applicable to color wheel functions.
 		/// </summary>
