@@ -72,15 +72,8 @@ namespace VixenModules.App.Fixture
 			// Default the function identity to custom
 			FunctionIdentity = FunctionIdentity.Custom;
 
-			// Default the timeline color to a random color
-			Random rnd = new Random();
-			KnownColor[] colors = (KnownColor[])Enum.GetValues(typeof(KnownColor));
-
-			do
-			{
-				int colorIndex = rnd.Next(colors.Length - 1);
-				TimelineColor = Color.FromKnownColor(colors[colorIndex]);
-			} while (TimelineColor == Color.Transparent);
+			// Default the timeline color to white
+			TimelineColor = Color.White;
 		}
 
 		#endregion
@@ -154,7 +147,16 @@ namespace VixenModules.App.Fixture
 		public string TimelineColor1Html
 		{
 			get { return ColorTranslator.ToHtml(TimelineColor); }
-			set { TimelineColor = ColorTranslator.FromHtml(value); }
+			set
+			{
+				// There was a bug where the timeline color was not getting properly set.
+				// This check will ensure the color is set to a valid color correcting any bad files in the wild.
+				if (string.IsNullOrEmpty(value))
+				{
+					value = "White";
+				}
+				TimelineColor = ColorTranslator.FromHtml(value);
+			}
 		}
 
 		#endregion

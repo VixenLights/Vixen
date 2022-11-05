@@ -34,6 +34,154 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			_validationLock = new object();
 		}
 
+		/// <summary>
+		/// Static Constructor
+		/// </summary>
+		static FunctionTypeViewModel()
+		{
+			_timelineColors = new List<Color>();
+			_timelineColors.Add(Color.AliceBlue); 
+			_timelineColors.Add(Color.AntiqueWhite);
+			_timelineColors.Add(Color.Aqua );
+			_timelineColors.Add(Color.Aquamarine);
+			_timelineColors.Add(Color.Azure);
+			_timelineColors.Add(Color.Beige);
+			_timelineColors.Add(Color.Bisque);
+			_timelineColors.Add(Color.Black);
+			_timelineColors.Add(Color.BlanchedAlmond);
+			_timelineColors.Add(Color.Blue);
+			_timelineColors.Add(Color.BlueViolet);
+			_timelineColors.Add(Color.Brown);
+			_timelineColors.Add(Color.BurlyWood);
+			_timelineColors.Add(Color.CadetBlue);
+			_timelineColors.Add(Color.Chartreuse);
+			_timelineColors.Add(Color.Chocolate);
+			_timelineColors.Add(Color.Coral);
+			_timelineColors.Add(Color.CornflowerBlue);
+			_timelineColors.Add(Color.Cornsilk);
+			_timelineColors.Add(Color.Crimson);
+			_timelineColors.Add(Color.Cyan);
+			_timelineColors.Add(Color.DarkBlue);
+			_timelineColors.Add(Color.DarkCyan);
+			_timelineColors.Add(Color.DarkGoldenrod);
+			_timelineColors.Add(Color.DarkGray);
+			_timelineColors.Add(Color.DarkGreen);
+			_timelineColors.Add(Color.DarkKhaki);
+			_timelineColors.Add(Color.DarkMagenta);
+			_timelineColors.Add(Color.DarkOliveGreen);
+			_timelineColors.Add(Color.DarkOrange);
+			_timelineColors.Add(Color.DarkOrchid);
+			_timelineColors.Add(Color.DarkRed);
+			_timelineColors.Add(Color.DarkSalmon);
+			_timelineColors.Add(Color.DarkSeaGreen);
+			_timelineColors.Add(Color.DarkSlateBlue);
+			_timelineColors.Add(Color.DarkSlateGray);
+			_timelineColors.Add(Color.DarkTurquoise);
+			_timelineColors.Add(Color.DarkViolet);
+			_timelineColors.Add(Color.DeepPink);
+			_timelineColors.Add(Color.DeepSkyBlue);
+			_timelineColors.Add(Color.DimGray);
+			_timelineColors.Add(Color.DodgerBlue);
+			_timelineColors.Add(Color.Firebrick);
+			_timelineColors.Add(Color.FloralWhite);
+			_timelineColors.Add(Color.ForestGreen);
+			_timelineColors.Add(Color.Fuchsia);
+			_timelineColors.Add(Color.Gainsboro);
+			_timelineColors.Add(Color.GhostWhite);
+			_timelineColors.Add(Color.Gold);
+			_timelineColors.Add(Color.Goldenrod);
+			_timelineColors.Add(Color.Gray);
+			_timelineColors.Add(Color.Green);
+			_timelineColors.Add(Color.GreenYellow);
+			_timelineColors.Add(Color.Honeydew);
+			_timelineColors.Add(Color.HotPink);
+			_timelineColors.Add(Color.IndianRed);
+			_timelineColors.Add(Color.Indigo);
+			_timelineColors.Add(Color.Ivory);
+			_timelineColors.Add(Color.Khaki);
+			_timelineColors.Add(Color.Lavender);
+			_timelineColors.Add(Color.LavenderBlush);
+			_timelineColors.Add(Color.LawnGreen);
+			_timelineColors.Add(Color.LemonChiffon);
+			_timelineColors.Add(Color.LightBlue);
+			_timelineColors.Add(Color.LightCoral);
+			_timelineColors.Add(Color.LightCyan);
+			_timelineColors.Add(Color.LightGoldenrodYellow);
+			_timelineColors.Add(Color.LightGreen);
+			_timelineColors.Add(Color.LightGray);
+			_timelineColors.Add(Color.LightPink);
+			_timelineColors.Add(Color.LightSalmon);
+			_timelineColors.Add(Color.LightSeaGreen);
+			_timelineColors.Add(Color.LightSkyBlue);
+			_timelineColors.Add(Color.LightSlateGray);
+			_timelineColors.Add(Color.LightSteelBlue);
+			_timelineColors.Add(Color.LightYellow);
+			_timelineColors.Add(Color.Lime);
+			_timelineColors.Add(Color.LimeGreen);
+			_timelineColors.Add(Color.Linen);
+			_timelineColors.Add(Color.Magenta);
+			_timelineColors.Add(Color.Maroon);
+			_timelineColors.Add(Color.MediumAquamarine);
+			_timelineColors.Add(Color.MediumBlue);
+			_timelineColors.Add(Color.MediumOrchid);
+			_timelineColors.Add(Color.MediumPurple);
+			_timelineColors.Add(Color.MediumSeaGreen);
+			_timelineColors.Add(Color.MediumSlateBlue);
+			_timelineColors.Add(Color.MediumSpringGreen);
+			_timelineColors.Add(Color.MediumTurquoise);
+			_timelineColors.Add(Color.MediumVioletRed);
+			_timelineColors.Add(Color.MidnightBlue);
+			_timelineColors.Add(Color.MintCream);
+			_timelineColors.Add(Color.MistyRose);
+			_timelineColors.Add(Color.Moccasin);
+			_timelineColors.Add(Color.NavajoWhite);
+			_timelineColors.Add(Color.Navy);
+			_timelineColors.Add(Color.OldLace);
+			_timelineColors.Add(Color.Olive);
+			_timelineColors.Add(Color.OliveDrab);
+			_timelineColors.Add(Color.Orange);
+			_timelineColors.Add(Color.OrangeRed);
+			_timelineColors.Add(Color.Orchid);
+			_timelineColors.Add(Color.PaleGoldenrod);
+			_timelineColors.Add(Color.PaleGreen);
+			_timelineColors.Add(Color.PaleTurquoise);
+			_timelineColors.Add(Color.PaleVioletRed);
+			_timelineColors.Add(Color.PapayaWhip);
+			_timelineColors.Add(Color.PeachPuff);
+			_timelineColors.Add(Color.Peru);
+			_timelineColors.Add(Color.Pink);
+			_timelineColors.Add(Color.Plum);
+			_timelineColors.Add(Color.PowderBlue);
+			_timelineColors.Add(Color.Purple);
+			_timelineColors.Add(Color.Red);
+			_timelineColors.Add(Color.RosyBrown);
+			_timelineColors.Add(Color.RoyalBlue);
+			_timelineColors.Add(Color.SaddleBrown);
+			_timelineColors.Add(Color.Salmon);
+			_timelineColors.Add(Color.SandyBrown);
+			_timelineColors.Add(Color.SeaGreen);
+			_timelineColors.Add(Color.SeaShell);
+			_timelineColors.Add(Color.Sienna);
+			_timelineColors.Add(Color.Silver);
+			_timelineColors.Add(Color.SkyBlue);
+			_timelineColors.Add(Color.SlateBlue);
+			_timelineColors.Add(Color.SlateGray);
+			_timelineColors.Add(Color.Snow);
+			_timelineColors.Add(Color.SpringGreen);
+			_timelineColors.Add(Color.SteelBlue);
+			_timelineColors.Add(Color.Tan);
+			_timelineColors.Add(Color.Teal);
+			_timelineColors.Add(Color.Thistle);
+			_timelineColors.Add(Color.Tomato);
+			_timelineColors.Add(Color.Turquoise);
+			_timelineColors.Add(Color.Violet);
+			_timelineColors.Add(Color.Wheat);
+			_timelineColors.Add(Color.White);
+			_timelineColors.Add(Color.WhiteSmoke);
+			_timelineColors.Add(Color.Yellow);
+			_timelineColors.Add(Color.YellowGreen);
+		}
+
 		#endregion
 
 		#region Fields
@@ -41,7 +189,12 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Lock to prevent the Catel validation from producing duplicate validation messages.
 		/// </summary>
-		private object _validationLock; 
+		private object _validationLock;
+
+		/// <summary>
+		/// Collection of available timeline colors.
+		/// </summary>
+		private static List<Color> _timelineColors;
 
 		#endregion
 
@@ -937,6 +1090,38 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		#endregion
 
 		#region Protected Methods
+
+		/// <summary>
+		/// <Inheritdoc/>
+		protected override FunctionItemViewModel CreateNewItem()
+		{
+			// Call the base class implementation
+			FunctionItemViewModel item = base.CreateNewItem();
+
+			// Create the random number generator
+			Random rnd = new Random();
+			
+			// Start searching for an available color starting randomly in the available colors
+			int colorIndex = rnd.Next(_timelineColors.Count - 1);
+
+			// Loop until we find a color that is not in use
+			while (Items.Any(fnc => fnc.TimelineColor.ToArgb() == _timelineColors[colorIndex].ToArgb()) && 
+			       colorIndex < _timelineColors.Count &&
+				   Items.Count <= _timelineColors.Count)
+			{
+				// If we are at the end of the available colors then...
+				if (colorIndex == _timelineColors.Count)
+				{
+					// Go back to the beginning of the list
+					colorIndex = 0;
+				}
+			}
+
+			// Assign the timeline color
+			item.TimelineColor = _timelineColors[colorIndex];	
+
+			return item;
+		}
 
 		/// <summary>
 		/// Selects the specified function view model item.
