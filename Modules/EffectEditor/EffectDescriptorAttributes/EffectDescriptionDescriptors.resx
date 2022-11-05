@@ -1209,4 +1209,7 @@
   <data name="Functions" xml:space="preserve">
     <value>Selects the fixture function to add to the effect.</value>
   </data>
+  <data name="FixtureColorIntensity" xml:space="preserve">
+    <value>Determines the intensity (brightness) of the color.</value>
+  </data>
 </root>
