@@ -1164,4 +1164,7 @@
   <data name="Functions" xml:space="preserve">
     <value>Functions</value>
   </data>
+  <data name="FixtureColorIntensity" xml:space="preserve">
+    <value>Intensity</value>
+  </data>
 </root>
