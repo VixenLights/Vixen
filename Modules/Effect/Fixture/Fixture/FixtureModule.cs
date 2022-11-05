@@ -256,7 +256,7 @@ namespace VixenModules.Effect.Fixture
 								break;
 							case FixtureFunctionType.RGBWColor:
 							case FixtureFunctionType.RGBColor:
-								RenderRGB(function.Color, function.Range, fixtureFunction, cancellationToken);
+								RenderRGB(function.Color, function.Intensity, fixtureFunction, cancellationToken);
 								break;
 							default:
 								Debug.Assert(false, "Unsupported Function Type");
@@ -348,6 +348,7 @@ namespace VixenModules.Effect.Fixture
 
 				// Transfer the properties from the serialized effect data to the fixture function model
 				fixtureFunctionExpando.Range = new Curve(fixtureFunctionData.Range);
+				fixtureFunctionExpando.Intensity = new Curve(fixtureFunctionData.Range);
 				fixtureFunctionExpando.FunctionIdentity = fixtureFunctionData.FunctionIdentity;
 				fixtureFunctionExpando.FunctionName = fixtureFunctionData.FunctionName;
 				fixtureFunctionExpando.FunctionType = fixtureFunctionData.FunctionType;
@@ -382,7 +383,20 @@ namespace VixenModules.Effect.Fixture
 				
 				// Copy the settings from the view model to the model
 				functionModel.FunctionName = functionViewModel.FunctionName;
-				functionModel.Range = new Curve(functionViewModel.Range);
+
+				// If the function expando object is RGB or RGBW then...
+				if (functionViewModel.FunctionType == FixtureFunctionType.RGBWColor ||
+				    functionViewModel.FunctionType == FixtureFunctionType.RGBColor)
+				{
+					// Save off the intensity as the range
+					functionModel.Range = new Curve(functionViewModel.Intensity);
+				}
+				else
+				{
+					// Otherwise it is straight forward mapping
+					functionModel.Range = new Curve(functionViewModel.Range);
+				}
+				
 				functionModel.FunctionIdentity = functionViewModel.FunctionIdentity;
 				functionModel.IndexValue = functionViewModel.IndexValue;
 				functionModel.ColorIndexValue = functionViewModel.ColorIndexValue;

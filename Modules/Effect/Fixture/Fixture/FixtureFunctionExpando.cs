@@ -44,6 +44,9 @@ namespace VixenModules.Effect.Fixture
 				// Initialize the range to zero
 				Range = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
 
+				// Initialize the intensity to maximum intensity
+				Intensity = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
+
 				// Set the index data to the index data from the parent active function
 				IndexData = FixtureModule.ActiveFunction.IndexData;
 				
@@ -279,9 +282,17 @@ namespace VixenModules.Effect.Fixture
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>
+		[ProviderDisplayName(@"FixtureColorIntensity")]
+		[ProviderDescription(@"FixtureColorIntensity")]
+		[PropertyOrder(4)]
+		public Curve Intensity { get; set; }
+
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
 		[ProviderDisplayName(@"FixtureColor")]
 		[ProviderDescription(@"FixtureColor")]
-		[PropertyOrder(15)]
+		[PropertyOrder(5)]
 		public ColorGradient Color { get; set; }
 
 		/// <summary>
@@ -330,6 +341,7 @@ namespace VixenModules.Effect.Fixture
 				ColorWheelIndexData = ColorWheelIndexData,
 				FunctionIdentity = FunctionIdentity,
 				Range = new Curve(Range),
+				Intensity = new Curve(Intensity),	
 				FunctionName = FunctionName,
 				FunctionType = FunctionType,
 				IndexValue = IndexValue,
@@ -364,9 +376,9 @@ namespace VixenModules.Effect.Fixture
 			{
 				{ nameof(IndexValue), FunctionType == FixtureFunctionType.Indexed },
 				{ nameof(Range), FunctionType == FixtureFunctionType.Range || 
-				                 IndexMapsToRange || 								 
-								 FunctionType == FixtureFunctionType.RGBWColor
+				                 IndexMapsToRange
 				},
+				{ nameof(Intensity), FunctionType == FixtureFunctionType.RGBWColor || FunctionType == FixtureFunctionType.RGBColor },
 				{ nameof(ColorIndexValue), FunctionType == FixtureFunctionType.ColorWheel },				
 				{ nameof(Color), (FunctionType == FixtureFunctionType.RGBColor || FunctionType == FixtureFunctionType.RGBWColor) },
 			};
