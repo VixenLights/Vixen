@@ -74,15 +74,8 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			_defaultIdentities = new List<FunctionIdentity>();
 			_defaultIdentities.Add(FunctionIdentity.Custom);
 
-			// Default the timeline color to a random color
-			Random rnd = new Random();
-			KnownColor[] colors = (KnownColor[])Enum.GetValues(typeof(KnownColor));
-
-			do
-			{
-				int colorIndex = rnd.Next(colors.Length - 1);
-				TimelineColor = Color.FromKnownColor(colors[colorIndex]);
-			} while (TimelineColor == Color.Transparent);
+			// Default the timeline color to white
+			TimelineColor = Color.White;
 		}
 
 		/// <summary>
