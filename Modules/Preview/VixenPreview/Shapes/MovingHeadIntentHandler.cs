@@ -343,8 +343,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// Get the discrete value from the intent
 			DiscreteValue discreteValue = discreteIntent.GetValue();
 
-			// Extract the full color from the discrete value
-			Color color = discreteValue.FullColor;
+			// Extract the color from the discrete value
+			Color color = discreteValue.Color;
 
 			// Set the beam color of the moving head
 			MovingHead.BeamColor = color;
@@ -392,7 +392,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			OpenShutter();
 
 			// Set the beam color of the moving head
-			MovingHead.BeamColor = lightingIntent.GetValue().FullColor;
+			MovingHead.BeamColor = lightingIntent.GetValue().Color;
 				
 			// Set the intensity of the beam color
 			MovingHead.Intensity = (int)(lightingIntent.GetValue().Intensity * 100);
