@@ -27,6 +27,9 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 	        trkHueTolerance.Value = Convert.ToInt32(data.HueTolerance);
 	        SaturationTolerance = data.SaturationTolerance;
 	        trkSaturationTolerance.Value = Convert.ToInt32(data.SaturationTolerance*100);
+			TransparentOnZeroBrightness = data.TransparentOnZeroBrightness;
+			chkTransparentOnZeroBrightness.Checked = data.TransparentOnZeroBrightness;
+			toolTip.SetToolTip(chkTransparentOnZeroBrightness, "Determines if the layer should pass the underlying color when the Chroma Key layer's effect(s) have a zero brightness color.");
 	    }
 
         public double LowerLimit { get { return _lowerLimit / 100d; } }
@@ -36,6 +39,8 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 		public float KeyHue { get { return KeyColor.GetHue(); } }
 		public float HueTolerance { get; private set; }
         public float SaturationTolerance { get; private set; }
+
+		public bool TransparentOnZeroBrightness { get; private set; }
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
@@ -118,5 +123,10 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 	        SaturationTolerance = trkHueTolerance.Value / 100;
 	        toolTip.SetToolTip(trkSaturationTolerance, trkSaturationTolerance.Value.ToString());
 	    }
-    }
+
+		private void chkTransparentOnZeroBrightness_CheckedChanged(object sender, EventArgs e)
+		{
+			TransparentOnZeroBrightness = chkTransparentOnZeroBrightness.Checked;
+		}
+	}
 }
