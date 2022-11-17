@@ -46,6 +46,7 @@
 			this.label6 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+			this.chkTransparentOnZeroBrightness = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.trkLowerLimit)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trkUpperLimit)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trkHueTolerance)).BeginInit();
@@ -56,7 +57,7 @@
 			// 
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnOk.Location = new System.Drawing.Point(172, 228);
+			this.btnOk.Location = new System.Drawing.Point(172, 274);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 5;
@@ -69,7 +70,7 @@
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(253, 228);
+			this.btnCancel.Location = new System.Drawing.Point(253, 274);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 6;
@@ -177,7 +178,7 @@
 			this.colorPanel1.BackColor = System.Drawing.Color.Black;
 			this.colorPanel1.Color = System.Drawing.Color.Black;
 			this.colorPanel1.Location = new System.Drawing.Point(31, 36);
-			this.colorPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.colorPanel1.Margin = new System.Windows.Forms.Padding(4);
 			this.colorPanel1.Name = "colorPanel1";
 			this.colorPanel1.Size = new System.Drawing.Size(64, 64);
 			this.colorPanel1.TabIndex = 11;
@@ -188,7 +189,7 @@
 			this.label5.AutoSize = true;
 			this.label5.Location = new System.Drawing.Point(192, 13);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(58, 15);
+			this.label5.Size = new System.Drawing.Size(57, 15);
 			this.label5.TabIndex = 12;
 			this.label5.Text = "Tolerance";
 			// 
@@ -236,6 +237,17 @@
 			// 
 			this.toolTip.AutomaticDelay = 250;
 			// 
+			// chkTransparentOnZeroBrightness
+			// 
+			this.chkTransparentOnZeroBrightness.AutoSize = true;
+			this.chkTransparentOnZeroBrightness.Location = new System.Drawing.Point(16, 232);
+			this.chkTransparentOnZeroBrightness.Name = "chkTransparentOnZeroBrightness";
+			this.chkTransparentOnZeroBrightness.Size = new System.Drawing.Size(217, 19);
+			this.chkTransparentOnZeroBrightness.TabIndex = 17;
+			this.chkTransparentOnZeroBrightness.Text = "Treat Zero Brightness as Transparent.";
+			this.chkTransparentOnZeroBrightness.UseVisualStyleBackColor = true;
+			this.chkTransparentOnZeroBrightness.CheckedChanged += new System.EventHandler(this.chkTransparentOnZeroBrightness_CheckedChanged);
+			// 
 			// ChromaKeySetup
 			// 
 			this.AcceptButton = this.btnOk;
@@ -243,7 +255,8 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(340, 265);
+			this.ClientSize = new System.Drawing.Size(340, 311);
+			this.Controls.Add(this.chkTransparentOnZeroBrightness);
 			this.Controls.Add(this.label7);
 			this.Controls.Add(this.label6);
 			this.Controls.Add(this.trkSaturationTolerance);
@@ -292,5 +305,6 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ToolTip toolTip;
-    }
+		private System.Windows.Forms.CheckBox chkTransparentOnZeroBrightness;
+	}
 }

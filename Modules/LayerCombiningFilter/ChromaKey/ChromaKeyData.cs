@@ -49,5 +49,11 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 
 	    [DataMember]
 	    public float SaturationTolerance { get; set; }
+
+		/// <summary>
+		/// If the replacement color has zero brightness, pass the underlying color.
+		/// </summary>
+		[DataMember]
+		public bool TransparentOnZeroBrightness { get; set; }
     }
 }

@@ -25,6 +25,11 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 
 		public override Color CombineFullColor(Color highLayerColor, Color lowLayerColor)
 		{
+			if (_data.TransparentOnZeroBrightness && highLayerColor.GetBrightness() == 0)
+			{
+				return lowLayerColor;
+			}
+
 			//Brightness Matching.  Checks first because it's easy math.
 			var lowLayerV = Math.Round(HSV.VFromRgb(lowLayerColor), 2);
 			if ( !(lowLayerV >= _data.LowerLimit && lowLayerV <= _data.UpperLimit) )
@@ -77,6 +82,7 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 			    _data.KeyHue = setup.KeyHue;
                 _data.HueTolerance = setup.HueTolerance;
                 _data.SaturationTolerance = setup.SaturationTolerance;
+                _data.TransparentOnZeroBrightness = setup.TransparentOnZeroBrightness;
                 return true;
             }			
 		}
