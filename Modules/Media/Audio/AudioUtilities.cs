@@ -163,7 +163,7 @@ namespace VixenModules.Media.Audio
         public void RecalculateVolume()
         {
             _volume = new double[_audioChannel.Length];
-            _volume[0] = 20.0 * (double)Math.Log10((double)Math.Abs(_audioChannel[0]));
+            _volume[0] = 20.0 * (double)Math.Log10((double)Math.Abs(_audioChannel[0] == 0 ? .0001 : _audioChannel[0]));
             double maxAttack = 30.0 / ((double)AttackTime/1000 * _audioSampleRate);
             double maxDecay = 30.0 / ((double)DecayTime / 1000 * _audioSampleRate);
             double fastDecay = 30.0 / (10.0 / 1000 * _audioSampleRate);
@@ -173,7 +173,7 @@ namespace VixenModules.Media.Audio
 	        for (int i = 1; i < _volume.Length; i++)
             {
                 //Rectify the signal and convert to db
-                var newSample = 20.0 * (double)Math.Log10((double)Math.Abs(_audioChannel[i]));
+                var newSample = 20.0 * (double)Math.Log10((double)Math.Abs(_audioChannel[i] == 0 ? .0001 : _audioChannel[i]));
 
                 //fastDecay converts the AC signal into a DC representation of the volume
                 if (_volume[i - 1] > newSample)
