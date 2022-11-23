@@ -1,10 +1,16 @@
-﻿using NLog;
+﻿using Common.Controls;
+using NLog;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
+using Vixen.Extensions;
+using Vixen.Services;
+using Vixen.Sys;
 using VixenModules.App.Fixture;
 
 namespace VixenModules.App.FixtureSpecificationManager
@@ -23,7 +29,13 @@ namespace VixenModules.App.FixtureSpecificationManager
         private FixtureSpecificationManager()
 		{			
 			// Create the collection of fixture specifications
-			FixtureSpecifications = new List<FixtureSpecification>();			
+			FixtureSpecifications = new List<FixtureSpecification>();	
+			
+			// Initialize the profile path
+			_profilePath = Paths.DataRootPath;
+
+			// Load the fixtures from the fixture directory
+			LoadFixtureSpecifications();
 		}
 
         #endregion
@@ -70,6 +82,13 @@ namespace VixenModules.App.FixtureSpecificationManager
 				Directory.CreateDirectory(GetFixtureDirectory());
 			}
 
+			// If the fixture gobo image directory does NOT exist then...
+			if (!Directory.Exists(GetGoboImageDirectory()))
+			{
+				// Create the fixture gobo image directory
+				Directory.CreateDirectory(GetGoboImageDirectory());
+			}
+
 			// Create a directory info object pointing at the fixture directory
 			DirectoryInfo directoryInfo = new DirectoryInfo(GetFixtureDirectory());
 
@@ -79,26 +98,34 @@ namespace VixenModules.App.FixtureSpecificationManager
 			// Loop over all the fixture specification in the folder
 			foreach (FileInfo fileInfo in specificationFiles)
 			{
-				// Create an XML serializer for a fixture specification
-				XmlSerializer serializer = new XmlSerializer(typeof(FixtureSpecification));
-
-				// Create a file reader for the fixture specification
-				using (Stream reader = new FileStream(fileInfo.FullName, FileMode.Open))
+				try
 				{
-					try
+					// Call the Deserialize method to load the fixture specification
+					FixtureSpecification fixture =
+						FixtureSpecificationService.Load<FixtureSpecification>(fileInfo.FullName);
+
+					// If the fixture is NOT already in the collection then...
+					if (!FixtureSpecifications.Any(item => item.Name == fixture.Name))
 					{
-						// Call the Deserialize method to load the fixture specification
-						FixtureSpecification fixture = (FixtureSpecification)serializer.Deserialize(reader);
 						FixtureSpecifications.Add(fixture);
 					}
-					catch (Exception e)
+					else
 					{
-						// If we encounter a malformed XML file just ignore it and log an error
-						Logger logging = LogManager.GetCurrentClassLogger();
-						logging.Error(e, fileInfo.FullName + "is malformed!");						
-					}				
+						// Otherwise tell the user that we are ignoring this file
+						string msg = "A Intelligent Fixture with a name of '" + fixture.Name + "' already exists.  ";
+						msg += "The file: '" + fileInfo.Name + "' was ignored.";
+						var messageBox = new MessageBoxForm(msg, "Invalid Fixture Profile", MessageBoxButtons.OK, SystemIcons.Warning);
+						messageBox.ShowDialog();
+					}
+				}
+				catch (Exception e)
+				{
+					// If we encounter a malformed XML file just ignore it and log an error
+					Logger logging = LogManager.GetCurrentClassLogger();
+					logging.Error(e, fileInfo.FullName + "is malformed!");
 				}
 			}
+		
 
 			//
 			// This commented out code is used to support development and testing of the intelligent fixtures.
@@ -113,7 +140,24 @@ namespace VixenModules.App.FixtureSpecificationManager
 			//if (!FixtureSpecifications.Any(fixture => fixture.Name == ADJHydroWashX7_17FixtureData.GetFixture().Name))
 			//{
 			//	FixtureSpecifications.Add(ADJHydroWashX7_17FixtureData.GetFixture());
-			//}			
+
+			// Sort the fixtures by name
+			Sort();
+		}
+
+		/// <summary>
+		/// Sorts the fixture collection by name.
+		/// </summary>
+		private void Sort()
+		{
+			// Sort the fixture by name
+			IList<FixtureSpecification> sortedCollection = FixtureSpecifications.OrderBy(item => item.Name).ToList();
+
+			// Clear the collection
+			FixtureSpecifications.Clear();
+
+			// Add back the sorted items
+			FixtureSpecifications = sortedCollection;
 		}
 
 		#endregion
@@ -171,19 +215,57 @@ namespace VixenModules.App.FixtureSpecificationManager
 
 				// Save the fixture to the XML file
 				serializer.Serialize(xmlWriter, fixture);
-			}			
+			}
+
+			// Attempt to find the fixture in the collection
+			FixtureSpecification cachedItem = FixtureSpecifications.SingleOrDefault(item => item.Name == fixture.Name);
+
+			// If the fixture was found then...
+			if (cachedItem != null)
+			{
+				// Remove the old copy from the collection
+				FixtureSpecifications.Remove(cachedItem);
+			}
+
+			// Add the new fixture to the collection
+			FixtureSpecifications.Add(fixture);
+
+			// Sort the fixtures by name
+			Sort();
 		}
 
 		/// <summary>
 		/// Refer to <see cref="IFixtureSpecificationManager"/> documentation.
-		/// </summary>
-		public void InitializeProfilePath(string profilePath)
-        {
-			// Save off the active profile path
-			_profilePath = profilePath;
+		/// </summary>		
+		public IList<string> GetGoboImages()
+		{
+			// Create the collection of gobo images
+			List<string> goboImages = new List<string>();
 
-			// Load the fixtures from the fixture directory
-			LoadFixtureSpecifications();
+			// Get the list of files in the gobo image directory
+			string[] images = Directory.GetFiles(GetGoboImageDirectory());
+
+			// Add a blank entry so that an image can be cleared out
+			goboImages.Add(" ");
+
+			// Loop over the image files
+			foreach(string imagePath in images)
+			{
+				// Extract just the filename from the image path
+				goboImages.Add(Path.GetFileName(imagePath));
+			}
+
+			// Return the collection of gobo images
+			return goboImages;
+		}
+
+		/// <summary>
+		/// Refer to <see cref="IFixtureSpecificationManager"/> documentation.
+		/// </summary>		
+		public string GetGoboImageDirectory()
+		{
+			// Construct the path to the gobo images
+			return GetFixtureDirectory() + @"\Images\";
 		}
 
 		#endregion

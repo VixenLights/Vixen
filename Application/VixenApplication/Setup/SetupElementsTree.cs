@@ -23,6 +23,7 @@ using Vixen.Sys.Output;
 using VixenModules.App.Modeling;
 using VixenModules.OutputFilter.DimmingCurve;
 using VixenModules.Property.Color;
+using VixenModules.App.ElementTemplateHelper;
 
 namespace VixenApplication.Setup
 {
@@ -235,42 +236,41 @@ namespace VixenApplication.Setup
 			return result;
 		}
 
-
-		private void buttonAddTemplate_Click(object sender, EventArgs e)
+		private async void buttonAddTemplate_Click(object sender, EventArgs e)
 		{
+			// Disable the button so that the user cannot accidentally double click
+			buttonAddTemplate.Enabled = false;
+
+			// Retrieve the selected combo box item
 			ComboBoxItem item = (comboBoxNewItemType.SelectedItem as ComboBoxItem);
 
-			if (item != null) {
+			// If a combo box item was selected then...
+			if (item != null) 
+			{
+				// Retrieve the element template
 				IElementTemplate template = item.Value as IElementTemplate;
-				bool act = template.SetupTemplate(elementTree.SelectedElementNodes);
-				if (act) {
-					IEnumerable<ElementNode> createdElements = template.GenerateElements(elementTree.SelectedElementNodes);
-					if (createdElements == null || !createdElements.Any()) {
-						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-						var messageBox = new MessageBoxForm("Could not create elements.  Ensure you use a valid name and try again.", "", false, false);
-						messageBox.ShowDialog();
-						return;
-					}
 
-					var question = new MessageBoxForm("Would you like to configure a dimming curve for this Prop?", "Dimming Curve Setup", MessageBoxButtons.YesNo, SystemIcons.Question);
-					var response = question.ShowDialog(this);
-					if (response == DialogResult.OK)
-					{
-						DimmingCurveHelper dimmingHelper = new DimmingCurveHelper(true);
-						dimmingHelper.Perform(createdElements);
-					}
+				// Create the element template helper
+				ElementTemplateHelper elementTemplateHelper = new ElementTemplateHelper();
 
-					ColorSetupHelper helper = new ColorSetupHelper();
-					helper.SetColorType(ElementColorType.FullColor);
-					helper.Perform(createdElements);
-
-					elementTree.AddNodePathToTree(new []{createdElements.First()});
-					OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Add));
-					UpdateFormWithNode();
-					UpdateScrollPosition();
-				}
+				// Process the template for the selected node(s)
+				await elementTemplateHelper.ProcessElementTemplate(
+					elementTree.SelectedElementNodes, 
+					template, 
+					this,
+					(node) =>
+						{
+							// Add the node to the tree
+							elementTree.AddNodePathToTree(new[] { node });
+							OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Add));
+							UpdateFormWithNode();
+							UpdateScrollPosition();
+						},
+					elementTree);
 			}
+
+			// Re-enable the plus add button
+			buttonAddTemplate.Enabled = true;
 		}
 
 		private void UpdateFormWithNode()

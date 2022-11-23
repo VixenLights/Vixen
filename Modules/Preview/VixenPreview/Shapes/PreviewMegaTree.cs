@@ -15,7 +15,7 @@ using System.Windows.Forms.Design;
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	[DataContract]
-	public class PreviewMegaTree : PreviewBaseShape, ICloneable
+	public class PreviewMegaTree : PreviewLightBaseShape, ICloneable
 	{
 		[DataMember] private PreviewPoint _topLeft;
 		[DataMember] private PreviewPoint _bottomRight;
@@ -276,7 +276,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), _lightsPerString, null, ZoomLevel);
 					if (_strings.Count > 0)
 					{
-						line.StringType = _strings[0].StringType;
+						line.StringType = LightStrings.First().StringType;
 					}
 					_strings.Add(line);
 				}
@@ -382,11 +382,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		#endregion
 
-		public void SetStrings(List<PreviewBaseShape> strings)
+		public void SetStrings(List<PreviewLightBaseShape> strings)
 		{
 			_strings = new List<PreviewBaseShape>();
-			foreach (PreviewBaseShape line in strings) {
-				PreviewBaseShape newLine = (PreviewLine) line.Clone();
+			foreach (PreviewLightBaseShape line in strings) {
+				PreviewLightBaseShape newLine = (PreviewLine) line.Clone();
 				_strings.Add(newLine);
 			}
 			_stringCount = _strings.Count();
@@ -413,9 +413,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				if (_strings != null && _strings.Count > 0)
 				{
 					var outPixels = new List<PreviewPixel>();
-					for (int i = 0; i < StringCount; i++)
+
+					foreach (PreviewLightBaseShape lightString in LightStrings)
 					{
-						foreach (PreviewPixel pixel in _strings[i].Pixels)
+						foreach (PreviewPixel pixel in lightString.Pixels)
 						{
 							outPixels.Add(pixel);
 						}
@@ -563,20 +564,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		public override void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected,
-		                          bool forceDraw)
+		                          bool forceDraw, double zoomLevel)
 		{
 			if (_strings != null)
 			{
-				for (int i = 0; i < StringCount; i++)
+				foreach (PreviewLightBaseShape lightString in LightStrings)
 				{
-					foreach (PreviewPixel pixel in _strings[i]._pixels)
+					foreach (PreviewPixel pixel in lightString._pixels)
 					{
 						DrawPixel(pixel, fp, editMode, highlightedElements, selected, forceDraw);
 					}
 				}
 			}
 
-			base.Draw(fp, editMode, highlightedElements, selected, forceDraw);
+			base.Draw(fp, editMode, highlightedElements, selected, forceDraw, zoomLevel);
 		}
 
 		public override object Clone()
@@ -584,8 +585,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			PreviewMegaTree newTree = (PreviewMegaTree) this.MemberwiseClone();
 
 			newTree._strings = new List<PreviewBaseShape>();
-			foreach (PreviewBaseShape line in _strings) {
-				PreviewBaseShape newLine = (PreviewLine) line.Clone();
+			foreach (PreviewLightBaseShape line in _strings) {
+				PreviewLightBaseShape newLine = (PreviewLine) line.Clone();
 				newTree._strings.Add(newLine);
 			}
 			newTree._topLeft = _topLeft.Copy();
@@ -597,7 +598,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[Editor(typeof (PreviewSetElementsUIEditor), typeof (UITypeEditor)),
 		 CategoryAttribute("Settings"),
 		 DisplayName("Linked Elements")]
-		public override List<PreviewBaseShape> Strings
+		public override List<PreviewLightBaseShape> Strings
 		{
 			get
 			{
@@ -613,14 +614,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				}
 				else
 				{
-					stringsResult = _strings;
+					stringsResult = _strings; 
 					if (stringsResult == null)
 					{
 						stringsResult = new List<PreviewBaseShape>();
 						stringsResult.Add(this);
 					}
 				}
-				return stringsResult;
+				return stringsResult.Cast<PreviewLightBaseShape>().ToList();
 			}
 			set { }
 		}

@@ -33,6 +33,10 @@
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
+    <ProjectReference Include="..\..\App\Fixture\Fixture.csproj" >
+		<Private>false</Private>
+		<IncludeAssets>None</IncludeAssets>
+	</ProjectReference>		
     <ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
@@ -41,6 +45,10 @@
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
+    <ProjectReference Include="..\..\Property\IntelligentFixture\IntelligentFixture.csproj">
+		<Private>false</Private>
+		<IncludeAssets>None</IncludeAssets>
+	</ProjectReference>		
     <ProjectReference Include="..\..\Property\Location\Location.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>

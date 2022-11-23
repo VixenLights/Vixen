@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls;
 using Vixen.Rule;
@@ -39,10 +40,47 @@ namespace VixenApplication.Setup.ElementTemplates
 			return false;
 		}
 
-		public IEnumerable<ElementNode> GenerateElements(IEnumerable<ElementNode> selectedNodes = null)
+		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode> selectedNodes = null)
 		{
 			ElementNode newNode = ElementNodeService.Instance.CreateSingle(null, itemName);
-			return new[] {newNode};
+			return await Task.FromResult(new[] {newNode});
 		}
+
+		#region IElementTemplate
+
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
+		public bool ConfigureColor => true;
+
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
+		public bool ConfigureDimming => true;
+
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
+		public bool Cancelled => false;
+
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
+		public IEnumerable<ElementNode> GetElementsToDelete()
+		{
+			// By default there are no elements to delete
+			return new List<ElementNode>();
+		}
+
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
+		public virtual IEnumerable<ElementNode> GetLeafNodes()
+		{
+			// By default return an empty collection
+			return new List<ElementNode>();
+		}
+
+		#endregion
 	}
 }

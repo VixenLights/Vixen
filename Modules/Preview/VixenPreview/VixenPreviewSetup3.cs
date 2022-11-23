@@ -441,6 +441,11 @@ namespace VixenModules.Preview.VixenPreview
 				DrawShape = "Multi String";
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MultiString;
 			}
+			else if (button == buttonMovingHead)
+			{
+				DrawShape = "Intelligent Fixture";
+				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MovingHead;
+			}
         }
 
         private void toolbarAlignButton_Click(object sender, EventArgs e)
@@ -496,8 +501,17 @@ namespace VixenModules.Preview.VixenPreview
 		}
 
 
-        private void trackBarBackgroundAlpha_ValueChanged(object sender, EventArgs e) {
-			previewForm.Preview.BackgroundAlpha = trackBarBackgroundAlpha.Value;
+        private void trackBarBackgroundAlpha_ValueChanged(object sender, EventArgs e) 
+		{
+			// Loop over the display items
+			foreach (DisplayItem displayItem in previewForm.Preview.DisplayItems)
+			{
+				// Give each shape associated with the display item the background alpha
+				displayItem.Shape.BackgroundAlpha = trackBarBackgroundAlpha.Value;
+			}
+
+			// Give the preview the background alpha
+			previewForm.Preview.BackgroundAlpha = trackBarBackgroundAlpha.Value;			
 		}
 
 		public void Setup()
@@ -621,14 +635,17 @@ namespace VixenModules.Preview.VixenPreview
 				Cursor = Cursors.WaitCursor;
 				foreach (var d in _data.DisplayItems)
 				{
-					foreach (var p in d.Shape.Pixels.Where(pi => pi != null && pi.Node != null))
+					if (d.IsLightShape())
 					{
-						if (!p.Node.Properties.Contains(LocationDescriptor._typeId))
-							p.Node.Properties.Add(LocationDescriptor._typeId);
+						foreach (var p in d.LightShape.Pixels.Where(pi => pi != null && pi.Node != null))
+						{
+							if (!p.Node.Properties.Contains(LocationDescriptor._typeId))
+								p.Node.Properties.Add(LocationDescriptor._typeId);
 
-						var prop = p.Node.Properties.Get(LocationDescriptor._typeId);
-					    ((LocationData) prop.ModuleData).X = p.IsHighPrecision ? (int)(p.Location.X + Data.LocationOffset.X): p.X + Convert.ToInt32(Data.LocationOffset.X);
-						((LocationData) prop.ModuleData).Y = p.IsHighPrecision ? (int)(p.Location.Y + Data.LocationOffset.Y): p.Y + Convert.ToInt32(Data.LocationOffset.Y);
+							var prop = p.Node.Properties.Get(LocationDescriptor._typeId);
+							((LocationData)prop.ModuleData).X = p.IsHighPrecision ? (int)(p.Location.X + Data.LocationOffset.X) : p.X + Convert.ToInt32(Data.LocationOffset.X);
+							((LocationData)prop.ModuleData).Y = p.IsHighPrecision ? (int)(p.Location.Y + Data.LocationOffset.Y) : p.Y + Convert.ToInt32(Data.LocationOffset.Y);
+						}
 					}
 				}
 				Cursor = Cursors.Default;

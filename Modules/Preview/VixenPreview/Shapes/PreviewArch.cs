@@ -11,7 +11,7 @@ using VixenModules.Preview.VixenPreview;
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	[DataContract]
-	public class PreviewArch : PreviewBaseShape
+	public class PreviewArch : PreviewLightBaseShape
 	{
 		[DataMember] private PreviewPoint _topLeft;
 		[DataMember] private PreviewPoint _bottomRight;

@@ -1,4 +1,9 @@
-﻿using System;
+﻿using Common.Controls;
+using Common.Controls.Scaling;
+using Common.Controls.Theme;
+using Common.Resources;
+using Common.Resources.Properties;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,12 +12,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
-using Common.Controls;
-using Common.Controls.Scaling;
-using Common.Controls.Theme;
-using Common.Resources;
-using Common.Resources.Properties;
 using Vixen;
 using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
@@ -55,6 +54,9 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			UpdateDisplayName();
 			_previewSetPixelsTime = new MillisecondsValue("Preview pixel set time");
 			VixenSystem.Instrumentation.AddValue(_previewSetPixelsTime);
+
+			// Give the GDI control access to the display items
+			gdiControl.DisplayItems = DisplayItems;
 		}
 
 		private void ConfigureAlwaysOnTop()
@@ -329,9 +331,9 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 		}
 
 		public VixenPreviewData Data { get; set; }
-
+						
 		public void UpdatePreview(/*Vixen.Preview.PreviewElementIntentStates elementStates*/)
-		{
+		{			
 			if (!gdiControl.IsUpdating)
 			{
 				if (!VixenSystem.Elements.ElementsHaveState)
@@ -339,8 +341,13 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 					if (_needsUpdate)
 					{
 						_needsUpdate = false;
-						gdiControl.BeginUpdate();
-						gdiControl.EndUpdate();
+
+						lock (GDIControl.FastPixelLock)
+						{
+							gdiControl.BeginUpdate();
+							gdiControl.EndUpdate();
+						}						
+
 						gdiControl.Invalidate();
 					}
 
@@ -350,25 +357,28 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 
 				_needsUpdate = true;
 
-				try
+				lock (GDIControl.FastPixelLock)
 				{
-					gdiControl.BeginUpdate();
+					try
+					{
+						_sw.Restart();
+						gdiControl.BeginUpdate();
+						Parallel.ForEach(VixenSystem.Elements, UpdateElementPixels);
 
-					_sw.Restart();
-					Parallel.ForEach(VixenSystem.Elements, UpdateElementPixels);
-					
-					_previewSetPixelsTime.Set(_sw.ElapsedMilliseconds);
-				}
-				catch (Exception e)
-				{
-					Logging.Error(e, e.Message);
-				}
+						_previewSetPixelsTime.Set(_sw.ElapsedMilliseconds);
+					}
+					catch (Exception e)
+					{
+						Logging.Error(e, e.Message);
+					}
 
-				gdiControl.EndUpdate();
+					gdiControl.EndUpdate();
+				}
+								
 				gdiControl.Invalidate();
 
 				toolStripStatusFPS.Text = string.Format("{0} fps", gdiControl.FrameRate.ToString());
-			}
+			}		
 		}
 
 		private void UpdateElementPixels(Element element)
@@ -418,32 +428,36 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 				foreach (DisplayItem item in DisplayItems)
 				{
 					item.Shape.Layout();
-					if (item.Shape.Pixels == null)
-						throw new System.ArgumentException("item.Shape.Pixels == null");
+					
+					if (item.IsLightShape())
+					{ 
+						if (item.LightShape.Pixels == null)
+							throw new System.ArgumentException("item.Shape.Pixels == null");
 
-					foreach (PreviewPixel pixel in item.Shape.Pixels)
-					{
-						if (pixel.Node != null)
+						foreach (PreviewPixel pixel in item.LightShape.Pixels)
 						{
-							if (pixel.Node.Element == null)
+							if (pixel.Node != null)
 							{
-								Logging.Warn("Null element for Node {0}", pixel.Node.Name);
-								continue;
-							}
-							pixelCount++;
-							List<PreviewPixel> pixels;
-							if (NodeToPixel.TryGetValue(pixel.Node.Element.Id, out pixels))
-							{
-								if (!pixels.Contains(pixel))
+								if (pixel.Node.Element == null)
 								{
-									pixels.Add(pixel);
+									Logging.Warn("Null element for Node {0}", pixel.Node.Name);
+									continue;
 								}
-							}
-							else
-							{
-								pixels = new List<PreviewPixel>();
-								pixels.Add(pixel);
-								NodeToPixel.TryAdd(pixel.Node.Element.Id, pixels);
+								pixelCount++;
+								List<PreviewPixel> pixels;
+								if (NodeToPixel.TryGetValue(pixel.Node.Element.Id, out pixels))
+								{
+									if (!pixels.Contains(pixel))
+									{
+										pixels.Add(pixel);
+									}
+								}
+								else
+								{
+									pixels = new List<PreviewPixel>();
+									pixels.Add(pixel);
+									NodeToPixel.TryAdd(pixel.Node.Element.Id, pixels);
+								}
 							}
 						}
 					}

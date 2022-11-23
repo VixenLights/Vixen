@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 using Vixen.Data.Value;
+using Vixen.Extensions;
+using Vixen.Sys;
 
 namespace VixenModules.App.Fixture
 {
@@ -10,7 +14,7 @@ namespace VixenModules.App.Fixture
 	/// Maintains meta-data (channels and functions) of an intelligent fixture.
 	/// </summary>
     [DataContract]
-	public class FixtureSpecification 
+	public class FixtureSpecification : IDataModel 
 	{
         #region Constructor
 
@@ -27,11 +31,24 @@ namespace VixenModules.App.Fixture
 
 			// Initialize who created the fixture specification
 			CreatedBy = Environment.UserName;
+
+			// Default the revision to 1.0
+			Revision = "1.0";
+
+			// Set the schema version
+			// This version value is also located in <c>ObjectVersion</c> class
+			version = "1";
 		}
 
 		#endregion
 
 		#region Public Properties
+
+		/// <summary>
+		/// Version of the FixtureSpecification schema.
+		/// </summary>		
+		[DataMember, XmlAttribute]
+		public string version { get; set; } 
 
 		/// <summary>
 		/// Name of the fixture.
@@ -122,32 +139,10 @@ namespace VixenModules.App.Fixture
 			// Create a new fixture specification
 			FixtureSpecification clone = new FixtureSpecification();
 
-			// Clone the name of the fixture
-			clone.Name = Name;
+			// Copy this object's state into the clone
+			clone.CopyInto(this);
 
-			// Copy the manufacturer
-			clone.Manufacturer = Manufacturer;
-
-			// Copy the name of the user that created the fixture profile
-			clone.CreatedBy = CreatedBy;
-
-			// Copy the revision information 
-			clone.Revision = Revision;
-			
-			// Loop over the channel definitions
-			foreach (FixtureChannel channel in ChannelDefinitions)
-			{
-				// Clone the channel definition
-				clone.ChannelDefinitions.Add(channel.CreateInstanceForClone());
-			}
-
-			// Loop over the function definitions
-			foreach (FixtureFunction function in FunctionDefinitions)
-			{
-				// Clone the function definition
-				clone.FunctionDefinitions.Add(function.CreateInstanceForClone());
-			}
-
+			// Return the cloned object
 			return clone;
 		}
 
@@ -158,8 +153,80 @@ namespace VixenModules.App.Fixture
 		/// <returns>True if the function is supported</returns>
 		public bool SupportsFunction(string functionName)
 		{
+			// Return whether the function is defined and
+			// referenced on at least one channel
+			return FunctionDefinitions.Any(item => item.Name == functionName) &&
+				   ChannelDefinitions.Any(channel => channel.Function == functionName);
+		}
+		
+		/// <summary>
+		/// Returns the fixture function with the specified name and identity.
+		/// </summary>
+		/// <param name="functionName">Function name to find</param>
+		/// <param name="functionIdentity">Function identity to find</param>
+		/// <returns>Fixture function with the specified name and identity</returns>
+		public FixtureFunction GetInUseFunction(string functionName, FunctionIdentity functionIdentity)
+		{
+			// Default the function to null indicating it was not found
+			FixtureFunction function = null;
+
+			// If the function is referenced on one of the fixture's channels then...
+			if (IsFunctionUsed(functionName, functionIdentity))
+			{
+				// Find the fixture function with the specified name and identity
+				function = GetFunction(functionName, functionIdentity);
+			}
+
+			return function;
+		}
+
+		/// <summary>
+		/// Returns true if the specified function name and identity is used on the fixture.
+		/// </summary>
+		/// <param name="functionName">Name of the function</param>
+		/// <param name="functionIdentity">Identity of the function</param>
+		/// <returns></returns>
+		public bool IsFunctionUsed(string functionName, FunctionIdentity functionIdentity)
+		{
+			// Default to the function not being used
+			bool isUsed = false;
+
+			// Find the function associated with the effect
+			FixtureFunction func = GetFunction(functionName, functionIdentity);
+
+			// If the function was found then...
+			if (func != null)
+			{
+				// If the function is mapped to a channel then...
+				isUsed = ChannelDefinitions.Any(channel => channel.Function == functionName);
+			}
+
+			// Returns whether the function is referenced on one of the fixture's channels
+			return isUsed;
+		}
+		
+		/// <summary>
+		/// Returns true if the specified function identity is supported by the fixture.
+		/// </summary>
+		/// <param name="functionName">Name of the function to check</param>
+		/// <returns>True if the function is supported</returns>
+		public bool SupportsFunction(FunctionIdentity functionIdentity)
+		{
+			// Default to not supporting the function
+			bool supported = false;
+
+			// Retrieve the first function that matches the identity
+			FixtureFunction function = FunctionDefinitions.FirstOrDefault(item => item.FunctionIdentity == functionIdentity);
+			
+			// If the function was found then...
+			if (function != null)
+			{
+				// Check to make sure the function is used on at least one channel
+				supported = ChannelDefinitions.Any(channel => channel.Function == function.Name);
+			}
+
 			// Return whether the function is supported
-			return FunctionDefinitions.Any(item => item.Name == functionName);
+			return supported;
 		}
 
 		/// <summary>
@@ -167,12 +234,14 @@ namespace VixenModules.App.Fixture
 		/// </summary>
 		/// <param name="name">Name of the function</param>
 		/// <param name="functionType">Type of the function</param>
-		/// <param name="identity">Preview identity of the function</param>
-		/// <returns></returns>
+		/// <param name="identity">Preview identity of the function</param>		
+		/// <param name="timelineColor">Color to use on the timeline for some effects</param>
+		/// <returns>New fixture function</returns>
 		public FixtureFunction AddFunctionType(
 			string name,
 			FixtureFunctionType functionType,
-			FunctionIdentity identity)
+			FunctionIdentity identity,
+			Color timelineColor)
 		{
 			// Create the new function
 			FixtureFunction function = new FixtureFunction();
@@ -185,6 +254,9 @@ namespace VixenModules.App.Fixture
 
 			// Configure the function identity
 			function.FunctionIdentity = identity;
+
+			// Configure the timeline color
+			function.TimelineColor = timelineColor;
 
 			// Add the function to the fixture specification
 			FunctionDefinitions.Add(function);
@@ -204,51 +276,87 @@ namespace VixenModules.App.Fixture
 			FixtureFunction pan = AddFunctionType(
 				"Pan",
 				FixtureFunctionType.Range,
-				FunctionIdentity.Pan);
+				FunctionIdentity.Pan,
+				Color.Red);
 			pan.RotationLimits = new FixtureRotationLimits();
 			
 			// Add the tilt function 
 			FixtureFunction tilt = AddFunctionType(
 				"Tilt",
 				FixtureFunctionType.Range,
-				FunctionIdentity.Tilt);
-			tilt.RotationLimits = new FixtureRotationLimits();
+				FunctionIdentity.Tilt,
+				Color.Green);
+				tilt.RotationLimits = new FixtureRotationLimits();
 			
 			// Add an empty color wheel function
 			AddFunctionType(
 				"Color Wheel",
 				FixtureFunctionType.ColorWheel,
-				FunctionIdentity.Custom);
+				FunctionIdentity.Custom,
+				Color.White);
 
 			// Add a dimmer function
 			AddFunctionType(
 				"Dimmer",
 				FixtureFunctionType.Range,
-				FunctionIdentity.Dim);
+				FunctionIdentity.Dim,
+				Color.Purple);
 
 			// Add a color mixing function
 			AddFunctionType(
 				"Color",
 				FixtureFunctionType.RGBWColor,
-				FunctionIdentity.Custom);
+				FunctionIdentity.Custom,
+				Color.DarkGray);
 
 			// Add zoom function
 			AddFunctionType(
 				"Zoom",
 				FixtureFunctionType.Range,
-				FunctionIdentity.Zoom);
+				FunctionIdentity.Zoom,
+				Color.Blue);
 
 			// Add shutter function
 			AddFunctionType(
 				"Shutter",
 				FixtureFunctionType.Indexed,
-				FunctionIdentity.Shutter);
+				FunctionIdentity.Shutter,
+				Color.Black);
+
+			// Add gobo wheel function
+			AddFunctionType(
+				"Gobo Wheel",
+				FixtureFunctionType.Indexed,
+				FunctionIdentity.Gobo,
+				Color.Pink);
+
+			// Add prism function
+			AddFunctionType(
+				"Open Close Prism",
+				FixtureFunctionType.Indexed,
+				FunctionIdentity.OpenClosePrism,
+				Color.Orange);
+
+			// Add (rotating) prism function
+			AddFunctionType(
+				"Prism",
+				FixtureFunctionType.Indexed,
+				FunctionIdentity.Prism,
+				Color.Yellow);
+
+			// Add frost function
+			AddFunctionType(
+				"Frost",
+				FixtureFunctionType.Range,
+				FunctionIdentity.Frost,
+				Color.LightBlue);
 
 			// Add a None function so that channels can be included in the specification but generally ignored
 			AddFunctionType(
-				"None",
+				FixtureFunctionType.None.GetEnumDescription(),
 				FixtureFunctionType.None,
-				FunctionIdentity.Custom);
+				FunctionIdentity.Custom,
+				Color.Transparent);
 		}
 		
 		/// <summary>
@@ -332,7 +440,64 @@ namespace VixenModules.App.Fixture
 
 			return isRGBW;
 		}
-		
-		#endregion		
+
+		#endregion
+
+		#region Private Methods
+
+		/// <summary>
+		/// Returns the function with the specified name and identity.
+		/// </summary>
+		/// <param name="functionName">Function name to search for</param>
+		/// <param name="functionIdentity">Function identity to search for</param>
+		/// <returns></returns>
+		private FixtureFunction GetFunction(string functionName, FunctionIdentity functionIdentity)
+		{
+			// Find the fixture function with the specified name and identity
+			return FunctionDefinitions.SingleOrDefault(
+				function => (function.FunctionIdentity == functionIdentity &&
+				function.Name == functionName));
+		}
+
+		#endregion
+
+		#region IDataModel
+
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>		
+		public void CopyInto(IDataModel source)
+		{
+			// Get FixtureSpecification reference to the source object
+			FixtureSpecification src = (FixtureSpecification)source;
+			
+			// Copy the name of the fixture
+			Name = src.Name;
+
+			// Copy the manufacturer
+			Manufacturer = src.Manufacturer;
+
+			// Copy the name of the user that created the fixture profile
+			CreatedBy = src.CreatedBy;
+
+			// Copy the revision information 
+			Revision = src.Revision;
+
+			// Loop over the channel definitions
+			foreach (FixtureChannel channel in src.ChannelDefinitions)
+			{
+				// Clone the channel definition
+				ChannelDefinitions.Add(channel.CreateInstanceForClone());
+			}
+
+			// Loop over the function definitions
+			foreach (FixtureFunction function in src.FunctionDefinitions)
+			{
+				// Clone the function definition
+				FunctionDefinitions.Add(function.CreateInstanceForClone());
+			}		
+		}
+
+		#endregion
 	}
 }

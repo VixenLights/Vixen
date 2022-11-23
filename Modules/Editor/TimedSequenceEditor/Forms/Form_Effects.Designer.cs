@@ -32,6 +32,7 @@
 			System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Basic Lighting");
 			System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Pixel Lighting");
 			System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Device Action");
+			System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Intelligent Fixture");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form_Effects));
 			this.treeEffects = new System.Windows.Forms.TreeView();
 			this.effectTreeImages = new System.Windows.Forms.ImageList(this.components);
@@ -61,10 +62,13 @@
 			treeNode3.SelectedImageIndex = 1;
 			treeNode3.StateImageKey = "(none)";
 			treeNode3.Text = "Device Action";
+			treeNode4.Name = "intelligentFixture";
+			treeNode4.Text = "Intelligent Fixture";
 			this.treeEffects.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode1,
             treeNode2,
-            treeNode3});
+            treeNode3,
+            treeNode4});
 			this.treeEffects.SelectedImageIndex = 0;
 			this.treeEffects.ShowLines = false;
 			this.treeEffects.ShowPlusMinus = false;

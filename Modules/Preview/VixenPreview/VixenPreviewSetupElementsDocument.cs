@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Scaling;
@@ -21,6 +22,7 @@ using Vixen.Sys.Output;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.OutputFilter.DimmingCurve;
 using VixenModules.Property.Color;
+using VixenModules.App.ElementTemplateHelper;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -68,7 +70,7 @@ namespace VixenModules.Preview.VixenPreview
 					{
 						if (!VixenSystem.Nodes.ElementNodeExists(evAffectedNode.Id))
 						{
-							_preview.UnlinkNodesFromPixels(evAffectedNode);
+							_preview.UnlinkNodesFromDisplayItem(evAffectedNode);
 						}
 					}
 					UpdateSelectedDisplayItems();
@@ -111,15 +113,21 @@ namespace VixenModules.Preview.VixenPreview
 			treeElements.SelectElementNode(node);
 		}
 
-		private void ButtonAddTemplate_Click(object sender, EventArgs e)
+		private async void ButtonAddTemplate_Click(object sender, EventArgs e)
 		{
+			// Disable the button so that the user cannot accidentally double click
+			buttonAddTemplate.Enabled = false;
+
 			ComboBoxItem item = (comboBoxNewItemType.SelectedItem as ComboBoxItem);
 
 			if (item != null)
 			{
 				IElementTemplate template = item.Value as IElementTemplate;
-				SetupTemplate(template);
+				await SetupTemplate(template);
 			}
+
+			// Re-enable the plus add button
+			buttonAddTemplate.Enabled = true;
 		}
 
 		internal void ClearSelectedNodes()
@@ -128,38 +136,21 @@ namespace VixenModules.Preview.VixenPreview
 			UpdateSelectedDisplayItems();
 		}
 
-		internal bool SetupTemplate(IElementTemplate template)
+		internal async Task<bool> SetupTemplate(IElementTemplate template)
 		{
-			bool success = template.SetupTemplate(treeElements.SelectedElementNodes);
-			if (success)
-			{
-				IEnumerable<ElementNode> createdElements = template.GenerateElements(treeElements.SelectedElementNodes);
-				if (createdElements == null || !createdElements.Any())
-				{
-					var messageBox =
-						new MessageBoxForm("Could not create elements.  Ensure you use a valid name and try again.", "",
-							MessageBoxButtons.OKCancel, SystemIcons.Error);
-					messageBox.ShowDialog();
-					return false;
-				}
+			// Create the element template helper
+			ElementTemplateHelper elementTemplateHelper = new ElementTemplateHelper();
 
-				var question = new MessageBoxForm("Would you like to configure a dimming curve for this Prop?", "Dimming Curve Setup", MessageBoxButtons.YesNo, SystemIcons.Question);
-				var response = question.ShowDialog(this);
-				if (response == DialogResult.OK)
-				{
-					DimmingCurveHelper dimmingHelper = new DimmingCurveHelper(true);
-					dimmingHelper.Perform(createdElements);
-				}
-				
-				ColorSetupHelper helper = new ColorSetupHelper();
-				helper.SetColorType(ElementColorType.FullColor);
-				helper.Perform(createdElements);
-
-				AddNodeToTree(createdElements.First());
-
-			}
-
-			return success;
+			// Process the template for the selected node(s)
+			IEnumerable<ElementNode> createdElements = await elementTemplateHelper.ProcessElementTemplate(
+				treeElements.SelectedElementNodes,
+				template,
+				this,
+				(node) => AddNodeToTree(node),
+				treeElements);
+			
+			// Return whether nodes were created
+			return (createdElements != null);
 		}
 
 		internal void AddNodeToTree(ElementNode node)

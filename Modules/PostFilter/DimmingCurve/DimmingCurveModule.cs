@@ -205,11 +205,36 @@ namespace VixenModules.OutputFilter.DimmingCurve
 				double newIntensity = _curve.GetValue(cmd.CommandValue / 255d * 100d) / 100d * Byte.MaxValue;
 				return CommandLookup8BitEvaluator.CommandLookup[(byte) newIntensity];
 			}
+			else if (command is _16BitCommand cmd16)
+			{
+				// convert command to 0 - 100 value for lookup in the curve.
+				// convert 0 - 100 return value from the curve to a percent
+				// and then mult by the max byte value to get new command value
+				double newIntensity = _curve.GetValue(cmd16.CommandValue / 65535d * 100d) / 100d * ushort.MaxValue;
+
+				return new _16BitCommand((short)newIntensity);
+			}
 
 			return command;
 		}
 
-		
+		public override void Handle(IIntentState<CommandValue> obj)
+		{
+			CommandValue command = obj.GetValue();
+
+			if (command.Command is _16BitCommand cmd)
+			{
+				// convert command to 0 - 100 value for lookup in the curve.
+				// convert 0 - 100 return value from the curve to a percent
+				// and then mult by the max byte value to get new command value
+				double newIntensity = _curve.GetValue(cmd.CommandValue / 255d * 100d) / 100d * ushort.MaxValue;
+
+				command.Command = new _16BitCommand((short)newIntensity);
+
+				_intentValue =
+					new StaticIntentState<CommandValue>(command);
+			}
+		}
 
 		public override void Handle(IIntentState<LightingValue> obj)
 		{
@@ -281,6 +306,29 @@ namespace VixenModules.OutputFilter.DimmingCurve
 			else
 			{
 				_intentValue = new StaticIntentState<IntensityValue>(new IntensityValue(newIntensity));
+			}
+		}
+
+		public override void Handle(IIntentState<RangeValue<FunctionIdentity>> obj)
+		{
+			// If the tagged intent is a dimming intent then...
+			if (obj.GetValue().TagType == FunctionIdentity.Dim)
+			{
+				// Retrieve the intensity value (0 - 1)
+				double intensity = obj.GetValue().Value;		
+				
+				// Use the intensity to sample the curve to get a new intensity
+				// Converting the (0-1) to (0-100) first
+				double newIntensity = _curve.GetValue(intensity * 100.0) / 100.0;
+				
+				// Create a new Dim intent with value from the curve
+				_intentValue = new StaticIntentState<RangeValue<FunctionIdentity>>(
+					new RangeValue<FunctionIdentity>(FunctionIdentity.Dim, obj.GetValue().Tag, newIntensity, String.Empty));
+			}
+			else
+			{
+				// Indicate the tagged function is NOT supported
+				_intentValue = null;
 			}
 		}
 	}

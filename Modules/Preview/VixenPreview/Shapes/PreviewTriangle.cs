@@ -10,7 +10,7 @@ using Vixen.Sys;
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	[DataContract]
-	public class PreviewTriangle : PreviewBaseShape
+	public class PreviewTriangle : PreviewLightBaseShape
 	{
 		[DataMember] private PreviewPoint _point1 = new PreviewPoint(10, 10);
 		[DataMember] private PreviewPoint _point2 = new PreviewPoint(10, 10);
@@ -163,8 +163,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				List<PreviewPixel> pixels = new List<PreviewPixel>();
 				if (_strings != null) {
-					for (int i = 0; i < 3; i++) {
-						foreach (PreviewPixel pixel in _strings[i]._pixels) {
+					foreach (PreviewLightBaseShape lightString in LightStrings)
+					{
+						foreach (PreviewPixel pixel in lightString._pixels) 
+						{
 							pixels.Add(pixel);
 						}
 					}

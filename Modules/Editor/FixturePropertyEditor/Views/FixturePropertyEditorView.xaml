@@ -1,0 +1,170 @@
+﻿<catel:UserControl x:Class="VixenModules.Editor.FixturePropertyEditor.Views.FixturePropertyEditorView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
+        xmlns:catel="http://schemas.catelproject.com"
+	    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:common="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
+        xmlns:local="clr-namespace:VixenModules.Editor.FixturePropertyEditor.Views"	
+        mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+                <ResourceDictionary Source="/DataGridThemes;component/ExpressionDark.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <common:InverseBooleanConverter x:Key="InverseBoolConverter" />
+            <common:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Background="#444444">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height = "Auto" />
+            <RowDefinition Height = "*" />
+            <RowDefinition Height = "50" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="10, 1, 5, 0" Visibility="{Binding Path=ShowProfileProperties, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height = "27" />
+                <RowDefinition Height = "25" />
+                <RowDefinition Height = "25" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="220"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="220"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Label Content="Profile:" Grid.Row="0" Grid.Column="0"
+				   ToolTip="Enter a unique name for the fixture profile."></Label>
+            <TextBox x:Name="txtName" HorizontalAlignment="Stretch" Text="{Binding Path=Name, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" Margin="0,2,0,2"
+					 ToolTip="Enter a unique name for the fixture profile."
+					 >
+            </TextBox>
+
+            <Button Content="Load Fixture Profile"  
+                    HorizontalAlignment="Left"
+                    Command="{Binding Path=LoadSpecificationCommand}" 
+                    Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:FixturePropertyEditorView}}, Path=DisplayLoadButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    IsDefault="True" Style="{StaticResource RowButtonStyle}" Width="150" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" 
+					ToolTip="Select to load an existing fixture profile."
+					/>
+
+            <Label Content="Manufacturer:" Grid.Row="1"
+				   ToolTip="Enter the manufacturer of the fixture."
+				   ></Label>
+            <TextBox HorizontalAlignment="Stretch" Text="{Binding Path=Manufacturer, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Margin="0,2,0,2"
+				   ToolTip="Enter the manufacturer of the fixture."
+					 />
+
+            <Label Content="Created By:" Grid.Row="2"
+				   ToolTip="User that created the fixture profile."
+				   ></Label>
+            <TextBox HorizontalAlignment="Stretch" Text="{Binding Path=CreatedBy, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" Margin="0,2,0,2"
+					 ToolTip="User that created the fixture profile."
+					 />
+
+            <Label Content="Revision:" Grid.Row="1" Grid.Column="2"
+				   ToolTip="Revision of the fixture profile."
+				   ></Label>
+            <TextBox HorizontalAlignment="Stretch" Text="{Binding Path=Revision, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="3" Margin="0,2,0,2"
+					 ToolTip="Revision of the fixture profile."/>
+        </Grid>
+
+
+        <DockPanel Grid.Row="1">
+
+            <local:VixenDataGrid x:Name="grid" AutoGenerateColumns="False" ItemsSource="{Binding Items}" Margin="10,10,10,0" 
+				          RowHeaderWidth="0"   Background="#444444" CanUserAddRows="False"
+                 SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}" 
+                 EnableRowVirtualization="False" DockPanel.Dock = "Top" VerticalAlignment='Top'
+                  SelectionChanged="SelectionChanged"
+                   DataGridCell.GotFocus="DataGrid_CellGotFocus">
+
+                <DataGrid.Resources>
+                    <local:BindingProxy x:Key="proxy" Data="{Binding}" />
+                </DataGrid.Resources>
+
+
+                <DataGrid.Columns>
+
+                    <DataGridTemplateColumn  Header="Channel #" Width="70">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding ChannelNumber}"  IsReadOnly="True"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Name" Width="2*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}"
+										   ToolTip="Unique name for the channel.">
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=true}" 
+										 ToolTip="Unique name for the channel."
+										 />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn  Header="Function" Width="*" >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox ItemsSource="{Binding Functions}"                                   
+									SelectedItem="{Binding Path=Function, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=true}" 
+										  ToolTip="Fixture function associated with the channel.  Note functions may span more than one channel."/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <ComboBox ItemsSource="{Binding Functions}"                                     
+									SelectedItem="{Binding Path=Function, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=true}" 
+										  ToolTip="Fixture function associated with the channel.  Note functions may span more than one channel."/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Width="32"  Visibility="{Binding Data.ShowProfileProperties,
+										 Converter={StaticResource BooleanToVisibilityConverter},
+										 Source={StaticResource proxy}}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Command="{Binding Path=EditFunctionsCommand}"
+										ToolTip="Select to Edit the function associated with the channel."
+										>
+                                    <Image Source="{Binding Path=EditFunctionsImageSource}"/>
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                </DataGrid.Columns>
+            </local:VixenDataGrid>
+
+        </DockPanel>
+
+        <WrapPanel Margin="10,5,5,0" Grid.Row="2">
+            <Button Name="Add" Width="40" Height="40" Margin="0,2,2,0" Command="{Binding AddCommand}">
+                <Image Source="/Resources;component/Add.png"
+			     ToolTip="Select to Add a new channel."/>
+            </Button>
+            <Button Name="Remove" Width="40" Height="40" Margin="2,2,2,0" Command="{Binding DeleteCommand}">
+                <Image Source="/Resources;component/Delete.png"
+					   ToolTip="Select to Remove the selected channel."></Image>
+            </Button>
+        </WrapPanel>
+    </Grid>
+</catel:UserControl>

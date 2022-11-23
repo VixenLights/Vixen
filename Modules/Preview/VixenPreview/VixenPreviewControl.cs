@@ -1,32 +1,35 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Windows.Forms;
-using Common.Controls;
-using Common.Controls.Theme;
-using Vixen.Execution.Context;
-using Vixen.Sys;
-using VixenModules.Editor.VixenPreviewSetup3.Undo;
-using VixenModules.Preview.VixenPreview.Shapes;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Concurrent;
+using System.Windows.Forms;
+
 using Catel.IoC;
 using Catel.Services;
+
+using Common.Controls;
 using Common.Controls.Scaling;
+using Common.Controls.Theme;
 using Common.WPFCommon.Services;
+
 using Vixen;
+using Vixen.Execution.Context;
 using Vixen.Rule;
 using Vixen.Services;
+using Vixen.Sys;
+
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
+using VixenModules.Editor.VixenPreviewSetup3.Undo;
+using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Preview.VixenPreview.Undo;
 using VixenModules.Property.Location;
+
 using DisplayItem = VixenModules.Preview.VixenPreview.Shapes.DisplayItem;
 using Size = System.Drawing.Size;
 
@@ -58,6 +61,10 @@ namespace VixenModules.Preview.VixenPreview
 
 		private bool _holdRender;
 
+		/// <summary>
+		/// Last used smart object template used.
+		/// </summary>
+		private IElementTemplate _lastUsedTemplate;
 
 		public DisplayMoveType Type { get; private set; }
 
@@ -87,7 +94,8 @@ namespace VixenModules.Preview.VixenPreview
 			StarBurst,
 			Icicle,
 			PolyLine,
-			MultiString
+			MultiString,
+			MovingHead,
 		}
 
 		private Point dragStart;
@@ -307,9 +315,9 @@ namespace VixenModules.Preview.VixenPreview
 			get
 			{
 				int count = 0;
-				foreach (DisplayItem displayItem in DisplayItems)
-				{
-					count += displayItem.Shape.Pixels.Count;
+				foreach (DisplayItem displayItem in DisplayItems.Where(item => item.IsLightShape()))
+				{					
+					count += displayItem.LightShape.Pixels.Count;				
 				}
 				return count;
 			}
@@ -587,7 +595,7 @@ namespace VixenModules.Preview.VixenPreview
 							return;
 						}
 
-						// Is there a single dislay item selected?
+						// Is there a single display item selected?
 						if (_selectedDisplayItem != null && !controlPressed)
 						{
 							// Lets see if we've got a drag point.
@@ -696,7 +704,7 @@ namespace VixenModules.Preview.VixenPreview
 							if (ItemName != String.Empty)
 							{
 								newDisplayItem.Shape.Name = ItemName + ItemIndex++;
-								newDisplayItem.Shape.PixelSize = ItemBulbSize;
+								newDisplayItem.LightShape.PixelSize = ItemBulbSize;
 							}
 						}
 						else if (_currentTool == Tools.Ellipse)
@@ -762,7 +770,13 @@ namespace VixenModules.Preview.VixenPreview
 							newDisplayItem.Shape = new PreviewMultiString(translatedPoint, translatedPoint,
 								elementsForm.SelectedNode, ZoomLevel);
 						}
-						// Now add the newely created display item to the screen.
+						else if (_currentTool == Tools.MovingHead)
+						{
+							newDisplayItem = new DisplayItem();
+							newDisplayItem.Shape = new PreviewMovingHead(translatedPoint, elementsForm.SelectedNode, ZoomLevel);
+						}
+
+						// Now add the newly created display item to the screen.
 						if (newDisplayItem != null)
 						{
 							AddDisplayItem(newDisplayItem);
@@ -1004,9 +1018,12 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void SetDisplayItemZ(DisplayItem displayItem, int pos)
 		{
-			foreach (PreviewPixel p in displayItem.Shape.Pixels)
+			if (displayItem.IsLightShape())
 			{
-				p.Z = pos;
+				foreach (PreviewPixel p in displayItem.LightShape.Pixels)
+				{
+					p.Z = pos;
+				}
 			}
 		}
 
@@ -1124,7 +1141,7 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		protected override void OnKeyDown(KeyEventArgs e)
+		protected override async void OnKeyDown(KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Delete)
 			{
@@ -1239,7 +1256,7 @@ namespace VixenModules.Preview.VixenPreview
 						if (elementsForm.SelectedNode == null && modifyType.Equals("AddNew"))
 						{
 							//Intercept and populate the element tree
-							if (ShowElementCreateTemplateForCurrentTool() && elementsForm.SelectedNode != null)
+							if (await ShowElementCreateTemplateForCurrentTool() && elementsForm.SelectedNode != null)
 							{
 								_selectedDisplayItem.Shape.Reconfigure(elementsForm.SelectedNode);
 							}
@@ -1290,7 +1307,7 @@ namespace VixenModules.Preview.VixenPreview
 			base.OnKeyDown(e);
 		}
 
-		public void VixenPreviewControl_MouseUp(object sender, MouseEventArgs e)
+		public async void VixenPreviewControl_MouseUp(object sender, MouseEventArgs e)
 		{
 			if (_mouseCaptured)
 			{
@@ -1311,11 +1328,39 @@ namespace VixenModules.Preview.VixenPreview
 					Console.Out.WriteLineAsync($"Element Selected is null {_elementSelected == null}");
 					if (_elementSelected == null && modifyType.Equals("AddNew"))
 					{
+						// Store off the currently selected item
+						// This is needed because certain smart objects delete nodes that are part of a group
+						// so that they do not appear in the tree more than once.  The delete logic clears
+						// the selected display item.
+						DisplayItem selectedDisplayItem = _selectedDisplayItem;
+
 						//Intercept and populate the element tree
-						if (ShowElementCreateTemplateForCurrentTool() && elementsForm.SelectedNode != null)
+						if (await ShowElementCreateTemplateForCurrentTool() && elementsForm.SelectedNode != null)
 						{
+							// Restore the selected display item
+							_selectedDisplayItem = selectedDisplayItem;
+
 							_selectedDisplayItem.Shape.Reconfigure(elementsForm.SelectedNode);
+
+							// Restore the selected display item
+							_selectedDisplayItem = selectedDisplayItem;
+
+							// Give the shape the opportunity to adjust the shape coordinates 
+							_selectedDisplayItem.Shape.EndAddNew();
+
+							// Create additional shapes if requested by the template
+							CreateAdditionalShapes(_selectedDisplayItem);
 						}
+						else
+						{
+							// Give the shape the opportunity to adjust the shape coordinates 
+							_selectedDisplayItem.Shape.EndAddNew();
+						}
+					}
+					else if (modifyType.Equals("AddNew"))
+					{
+						// Give the shape the opportunity to adjust the shape coordinates 
+						_selectedDisplayItem.Shape.EndAddNew();
 					}
 
 					_selectedDisplayItem.Shape.MouseUp(sender, e);
@@ -1326,6 +1371,9 @@ namespace VixenModules.Preview.VixenPreview
 						{
 							case "Resize":
 								PreviewItemsResizingNew(this, new PreviewItemResizingEventArgs(m_previewItemResizeMoveInfo));
+
+								// Give the shape the opportunity to adjust the shape coordinates
+								_selectedDisplayItem.Shape.OnMovePoint();
 								break;
 							case "Move":
 								PreviewItemsMovedNew(this, new PreviewItemMoveEventArgs(m_previewItemResizeMoveInfo));
@@ -1371,10 +1419,77 @@ namespace VixenModules.Preview.VixenPreview
 			EndUpdate();
 		}
 
-		private bool ShowElementCreateTemplateForCurrentTool()
+		/// <summary>
+		/// Creates additional shapes.
+		/// </summary>
+		/// <param name="selectedDisplayItem">Currently selected display item</param>
+		private void CreateAdditionalShapes(DisplayItem selectedDisplayItem)
 		{
+			// If a smart template was used and more than one smart object was requested then...
+			if (_lastUsedTemplate != null && _lastUsedTemplate.GetLeafNodes().Count() > 1)
+			{
+				// Gets the leaf nodes created by the template
+				IEnumerable<ElementNode> nodes = _lastUsedTemplate.GetLeafNodes();
 
+				// Initialize the position of the additional shape to the top left corner of the preview
+				int left = 0;
+				int top = 0;
+
+				// Calculate the width and height of the shape
+				int width = Math.Abs(selectedDisplayItem.Shape.Right - selectedDisplayItem.Shape.Left);
+				int height = Math.Abs(selectedDisplayItem.Shape.Bottom - selectedDisplayItem.Shape.Top);
+
+				// Convert the existing shape to XML
+				string xml = PreviewTools.SerializeToString(selectedDisplayItem);
+
+				// Loop over the additional nodes skipping the first node
+				foreach (ElementNode node in nodes.Skip(1))
+				{
+					// Create a cloned shape by re-hydrating the XML
+					DisplayItem clonedDisplayItem = PreviewTools.DeSerializeToDisplayItem(xml, typeof(DisplayItem));
+
+					// Configure the zoom (otherwise the border does not render)
+					clonedDisplayItem.ZoomLevel = 1.0;
+
+					// Update the position of the cloned shape
+					clonedDisplayItem.Shape.Top = top;
+					clonedDisplayItem.Shape.Left = left;
+
+					// Increment the position of the next shape
+					left += width;
+
+					// If the next shape would extend past the edge of the preview then...
+					if ((left + width) > Width)
+					{
+						// Move to the next row
+						top += height;
+
+						// Start back at the left hand side of the preview
+						left = 0;
+					}
+					
+					// If the shape being cloned is a moving head then...
+					if (clonedDisplayItem.Shape is PreviewMovingHead)
+					{
+						// Get an PreviewMovingHead reference to the shape
+						PreviewMovingHead movingHead = (PreviewMovingHead)clonedDisplayItem.Shape;
+
+						// Update the node associated with the shape
+						movingHead.Node = node;
+					}
+
+					// Add the cloned display item to the preview
+					AddDisplayItem(clonedDisplayItem);
+				}
+			}
+		}
+
+
+		private async Task<bool> ShowElementCreateTemplateForCurrentTool()
+		{
 			IElementTemplate template = null;
+			_lastUsedTemplate = null;
+
 			switch (_currentTool)
 			{
 				case Tools.Arch:
@@ -1404,13 +1519,19 @@ namespace VixenModules.Preview.VixenPreview
 				case Tools.String:
 					template = ApplicationServices.GetElementTemplate("Generic Numbered Group");
 					break;
+				case Tools.MovingHead:					
+					template = ApplicationServices.GetElementTemplate("Intelligent Fixture");
+					break;
 			}
 
 			var success = false;
 
 			if (template != null)
 			{
-				success = elementsForm.SetupTemplate(template);
+				// Store off the last used template
+				_lastUsedTemplate = template;
+
+				success = await elementsForm.SetupTemplate(template);
 			}
 
 			return success;
@@ -1534,8 +1655,9 @@ namespace VixenModules.Preview.VixenPreview
 			DeSelectSelectedDisplayItem();
 		}
 
-		internal void UnlinkNodesFromPixels(IElementNode node)
+		internal void UnlinkNodesFromDisplayItem(IElementNode node)
 		{
+			// If the node is associated with a pixel then...
 			if (NodeToPixel.TryRemove(node, out var pixels))
 			{
 				foreach (var previewPixel in pixels)
@@ -1543,9 +1665,27 @@ namespace VixenModules.Preview.VixenPreview
 					previewPixel.Node = null;
 				}
 			}
+			// Otherwise the node is associated with a moving head
+			else
+			{
+				// Loop over the display items that are moving heads
+				foreach (DisplayItem item in _data.DisplayItems.Where(item => item.Shape is PreviewMovingHead))
+				{
+					// Retrieve the moving head graphic
+					PreviewMovingHead movingHead = (PreviewMovingHead)item.Shape;
+
+					// If the moving head graphic is associated with the node then...
+					if (movingHead.Node == node)
+					{
+						// Remove the association
+						movingHead.Node = null;
+					}
+				}
+			}
+
 			foreach (var nodeChild in node.Children)
 			{
-				UnlinkNodesFromPixels(nodeChild);
+				UnlinkNodesFromDisplayItem(nodeChild);
 			}
 		}
 
@@ -1563,23 +1703,27 @@ namespace VixenModules.Preview.VixenPreview
 		public void AddNodeToPixelMapping(DisplayItem item)
 		{
 			if(NodeToPixel == null) NodeToPixel = new ConcurrentDictionary<IElementNode, List<PreviewPixel>>();
-			foreach (PreviewPixel pixel in item.Shape.Pixels)
+
+			if (item.IsLightShape())
 			{
-				if (pixel.Node != null)
+				foreach (PreviewPixel pixel in item.LightShape.Pixels)
 				{
-					List<PreviewPixel> pixels;
-					if (NodeToPixel.TryGetValue(pixel.Node, out pixels))
+					if (pixel.Node != null)
 					{
-						if (!pixels.Contains(pixel))
+						List<PreviewPixel> pixels;
+						if (NodeToPixel.TryGetValue(pixel.Node, out pixels))
 						{
-							pixels.Add(pixel);
+							if (!pixels.Contains(pixel))
+							{
+								pixels.Add(pixel);
+							}
 						}
-					}
-					else
-					{
-						pixels = new List<PreviewPixel>();
-						pixels.Add(pixel);
-						NodeToPixel.TryAdd(pixel.Node, pixels);
+						else
+						{
+							pixels = new List<PreviewPixel>();
+							pixels.Add(pixel);
+							NodeToPixel.TryAdd(pixel.Node, pixels);
+						}
 					}
 				}
 			}
@@ -1588,14 +1732,18 @@ namespace VixenModules.Preview.VixenPreview
 		public void RemoveNodeToPixelMapping(DisplayItem item)
 		{
 			if (NodeToPixel == null) NodeToPixel = new ConcurrentDictionary<IElementNode, List<PreviewPixel>>();
-			foreach (PreviewPixel pixel in item.Shape.Pixels)
+
+			if (item.IsLightShape())
 			{
-				if (pixel.Node != null)
+				foreach (PreviewPixel pixel in item.LightShape.Pixels)
 				{
-					List<PreviewPixel> pixels;
-					if (NodeToPixel.TryGetValue(pixel.Node, out pixels))
+					if (pixel.Node != null)
 					{
-						pixels.Remove(pixel);
+						List<PreviewPixel> pixels;
+						if (NodeToPixel.TryGetValue(pixel.Node, out pixels))
+						{
+							pixels.Remove(pixel);
+						}
 					}
 				}
 			}
@@ -1611,34 +1759,48 @@ namespace VixenModules.Preview.VixenPreview
 
 			foreach (DisplayItem item in DisplayItems)
 			{
-				if (item.Shape.Pixels == null)
+				if (item.IsLightShape() &&
+					item.LightShape.Pixels == null)
 					throw new System.ArgumentException("item.Shape.Pixels == null");
 
-
-				foreach (PreviewPixel pixel in item.Shape.Pixels)
+				if (item.IsLightShape())
 				{
-					if (pixel.Node != null || pixel.NodeId != Guid.Empty)
+					foreach (PreviewPixel pixel in item.LightShape.Pixels)
 					{
-						//Validate the linked node still exists.
-						if (!VixenSystem.Nodes.ElementNodeExists(pixel.NodeId))
+						if (pixel.Node != null || pixel.NodeId != Guid.Empty)
 						{
-							pixel.Node = null;
-							continue;
-						}
-						List<PreviewPixel> pixels;
-						if (NodeToPixel.TryGetValue(pixel.Node, out pixels))
-						{
-							if (!pixels.Contains(pixel))
+							//Validate the linked node still exists.
+							if (!VixenSystem.Nodes.ElementNodeExists(pixel.NodeId))
 							{
+								pixel.Node = null;
+								continue;
+							}
+							List<PreviewPixel> pixels;
+							if (NodeToPixel.TryGetValue(pixel.Node, out pixels))
+							{
+								if (!pixels.Contains(pixel))
+								{
+									pixels.Add(pixel);
+								}
+							}
+							else
+							{
+								pixels = new List<PreviewPixel>();
 								pixels.Add(pixel);
+								NodeToPixel.TryAdd(pixel.Node, pixels);
 							}
 						}
-						else
-						{
-							pixels = new List<PreviewPixel>();
-							pixels.Add(pixel);
-							NodeToPixel.TryAdd(pixel.Node, pixels);
-						}
+					}
+				}
+				// If the display item is a moving head then...
+				else if (item.Shape is PreviewMovingHead)
+				{
+					PreviewMovingHead movingHead = (PreviewMovingHead)item.Shape;	
+
+					// Validate the linked node still exists.
+					if (!VixenSystem.Nodes.ElementNodeExists(movingHead.NodeId))
+					{
+						movingHead.Node = null;
 					}
 				}
 			}
@@ -1815,8 +1977,11 @@ namespace VixenModules.Preview.VixenPreview
 			var reverseChange = -info.ChangeAmount;
 			foreach (DisplayItem e in changedPreviewItems)
 			{
-				e.Shape.ResizePixelsBy(reverseChange);
-				info.ChangeAmount = reverseChange;
+				if (e.IsLightShape())
+				{
+					e.LightShape.ResizePixelsBy(reverseChange);
+					info.ChangeAmount = reverseChange;
+				}
 			}
 			EndUpdate();
 		}
@@ -1851,6 +2016,11 @@ namespace VixenModules.Preview.VixenPreview
 				shapes.Add(item.Shape);
 			}
 			return shapes;
+		}
+
+		public List<PreviewLightBaseShape> SelectedLightShapes()
+		{
+			return SelectedShapes().OfType<PreviewLightBaseShape>().ToList();
 		}
 
 		public DisplayItem CreateGroup()
@@ -1894,7 +2064,7 @@ namespace VixenModules.Preview.VixenPreview
 				leftPoint.Add(shape.Shape.Left);
 			}
 			newDisplayItem = new DisplayItem();
-			newDisplayItem.Shape = new PreviewCustom(new PreviewPoint(leftPoint.Min(), topPoint.Min()), SelectedShapes());
+			newDisplayItem.Shape = new PreviewCustom(new PreviewPoint(leftPoint.Min(), topPoint.Min()), SelectedLightShapes());
 			AddDisplayItem(newDisplayItem);
 
 			foreach (DisplayItem item in SelectedDisplayItems)
@@ -1932,7 +2102,7 @@ namespace VixenModules.Preview.VixenPreview
 				
 				if (newDisplayItem != null)
 				{
-					foreach (var previewPixel in newDisplayItem.Shape.Pixels)
+					foreach (var previewPixel in newDisplayItem.LightShape.Pixels)
 					{
 						//Remove any node associations from the template that may have been saved in old versions
 						previewPixel.Node = null;
@@ -1946,7 +2116,7 @@ namespace VixenModules.Preview.VixenPreview
 						//try to associate the template to the nodes by suffix for Previewsingle types
 
 						var children = elementsForm.SelectedNode.GetLeafEnumerator().GroupBy(l => l.Name).Select(x => x.FirstOrDefault()).ToDictionary(x => x.Name);
-						foreach (var previewBaseShape in newDisplayItem.Shape.Strings)
+						foreach (var previewBaseShape in newDisplayItem.LightShape.Strings)
 						{
 							if (previewBaseShape is PreviewSingle)
 							{
@@ -2105,29 +2275,32 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void SeparateTemplateItems(DisplayItem displayItem)
 		{
-			foreach (PreviewBaseShape shape in displayItem.Shape._strings)
+			if (displayItem.IsLightShape())
 			{
-				DisplayItem newDisplayItem;
-				newDisplayItem = new DisplayItem();
-				newDisplayItem.Shape = shape;
-				DisplayItems.Add(newDisplayItem);
-			}
-			if (_selectedDisplayItem != null)
-			{
-				DisplayItems.Remove(_selectedDisplayItem);
-				DeSelectSelectedDisplayItem();
-			}
-			else if (SelectedDisplayItems != null && SelectedDisplayItems.Count > 0)
-			{
-				foreach (DisplayItem item in SelectedDisplayItems)
+				foreach (PreviewLightBaseShape shape in (displayItem.LightShape)._strings)
 				{
-					DisplayItems.Remove(item);
+					DisplayItem newDisplayItem;
+					newDisplayItem = new DisplayItem();
+					newDisplayItem.Shape = shape;
+					DisplayItems.Add(newDisplayItem);
+				}
+				if (_selectedDisplayItem != null)
+				{
+					DisplayItems.Remove(_selectedDisplayItem);
 					DeSelectSelectedDisplayItem();
 				}
-				SelectedDisplayItems.Clear();
-				OnSelectionChanged?.Invoke(this, EventArgs.Empty);
+				else if (SelectedDisplayItems != null && SelectedDisplayItems.Count > 0)
+				{
+					foreach (DisplayItem item in SelectedDisplayItems)
+					{
+						DisplayItems.Remove(item);
+						DeSelectSelectedDisplayItem();
+					}
+					SelectedDisplayItems.Clear();
+					OnSelectionChanged?.Invoke(this, EventArgs.Empty);
+				}
+				EndUpdate();
 			}
-			EndUpdate();
 		}
 
 		#endregion
@@ -2136,14 +2309,16 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void IncreaseBulbSize()
 		{
-			if (_selectedDisplayItem != null && !SelectedShapes().Any())
+			if (_selectedDisplayItem != null &&
+				_selectedDisplayItem.IsLightShape() &&
+				 !SelectedLightShapes().Any())
 			{
-				_selectedDisplayItem.Shape.ResizePixelsBy(1);
+				_selectedDisplayItem.LightShape.ResizePixelsBy(1);
 				PixelResize(1, new List<DisplayItem>( new [] {_selectedDisplayItem}));
 			}
 			else
 			{
-				foreach (PreviewBaseShape shape in SelectedShapes())
+				foreach (PreviewLightBaseShape shape in SelectedLightShapes())
 				{
 					shape.ResizePixelsBy(1);
 				}
@@ -2154,14 +2329,16 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void DecreaseBulbSize()
 		{
-			if (_selectedDisplayItem != null && !SelectedShapes().Any())
+			if (_selectedDisplayItem != null && 
+				_selectedDisplayItem.IsLightShape() &&
+				!SelectedShapes().Any())
 			{
-				_selectedDisplayItem.Shape.ResizePixelsBy(-1);
+				_selectedDisplayItem.LightShape.ResizePixelsBy(-1);
 				PixelResize(1, new List<DisplayItem>(new[] { _selectedDisplayItem }));
 			}
 			else
 			{
-				foreach (PreviewBaseShape shape in SelectedShapes())
+				foreach (PreviewLightBaseShape shape in SelectedLightShapes())
 				{
 					shape.ResizePixelsBy(-1);
 				}
@@ -2173,14 +2350,17 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void MatchBulbSize()
 		{
-			foreach (PreviewBaseShape shape in SelectedShapes())
+			if (SelectedShapes()[0] is PreviewLightBaseShape)
 			{
-				if (shape != SelectedShapes()[0])
+				foreach (PreviewLightBaseShape shape in SelectedLightShapes())
 				{
-					shape.MatchPixelSize(SelectedShapes()[0]);
+					if (shape != SelectedShapes()[0])
+					{
+						shape.MatchPixelSize((PreviewLightBaseShape)SelectedShapes()[0]);
+					}
 				}
+				EndUpdate();
 			}
-			EndUpdate();
 		}
 
 		#endregion
@@ -2436,14 +2616,17 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			foreach (DisplayItem displayItem in displayItems)
 			{
-				foreach (var p in displayItem.Shape.Pixels.Where(pi => pi != null && pi.Node != null))
+				if (displayItem.IsLightShape())
 				{
-					if (!p.Node.Properties.Contains(LocationDescriptor._typeId))
-						p.Node.Properties.Add(LocationDescriptor._typeId);
-					var prop = p.Node.Properties.Get(LocationDescriptor._typeId);
-					((LocationData) prop.ModuleData).X = p.IsHighPrecision ? (int)p.Location.X:p.X + Convert.ToInt32(Data.LocationOffset.X);
-					((LocationData) prop.ModuleData).Y = p.IsHighPrecision ? (int)p.Location.Y:p.Y + Convert.ToInt32(Data.LocationOffset.Y);
-					((LocationData) prop.ModuleData).Y = p.Z;
+					foreach (var p in displayItem.LightShape.Pixels.Where(pi => pi != null && pi.Node != null))
+					{
+						if (!p.Node.Properties.Contains(LocationDescriptor._typeId))
+							p.Node.Properties.Add(LocationDescriptor._typeId);
+						var prop = p.Node.Properties.Get(LocationDescriptor._typeId);
+						((LocationData)prop.ModuleData).X = p.IsHighPrecision ? (int)p.Location.X : p.X + Convert.ToInt32(Data.LocationOffset.X);
+						((LocationData)prop.ModuleData).Y = p.IsHighPrecision ? (int)p.Location.Y : p.Y + Convert.ToInt32(Data.LocationOffset.Y);
+						((LocationData)prop.ModuleData).Y = p.Z;
+					}
 				}
 			}
 		}

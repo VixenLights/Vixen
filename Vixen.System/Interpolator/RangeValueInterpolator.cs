@@ -9,7 +9,7 @@ namespace Vixen.Interpolator
 		{
 			double position = (startValue.Value + (endValue.Value - startValue.Value) * percent);
 
-			return new RangeValue<FunctionIdentity>(startValue.TagType, startValue.Tag, position);
+			return new RangeValue<FunctionIdentity>(startValue.TagType, startValue.Tag, position, startValue.Label);
 		}
 	}
 }

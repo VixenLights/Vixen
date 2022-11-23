@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
+using Vixen.Commands;
 
 namespace VixenModules.App.Fixture
 {
@@ -8,7 +9,7 @@ namespace VixenModules.App.Fixture
 	/// Maintains a color wheel entry.
 	/// </summary>
     [DataContract]
-	public class FixtureColorWheel : FixtureItem
+	public class FixtureColorWheel : FixtureIndexBase
 	{
 		#region Constructor
 
@@ -20,18 +21,13 @@ namespace VixenModules.App.Fixture
 			// Initialize the colors to white
 			Color1 = Color.White;
 			Color2 = Color.White;
-		}
+			IndexType = FixtureIndexType.ColorWheel;
+        }
 
 		#endregion
 
 		#region Public Properties
-		
-		/// <summary>
-		/// DMX start value of the color entry.
-		/// </summary>
-		[DataMember]
-		public int StartValue { get; set; }
-		
+						
 		/// <summary>
 		/// Indicates the color wheel entry represents a half stop in between two colors.
 		/// </summary>
@@ -73,10 +69,54 @@ namespace VixenModules.App.Fixture
 		public Color Color2 { get; set; }
 
 		/// <summary>
-		/// Indicates that this color wheel selection needs to be represented by a curve.
+		/// Backing field for the UseCurve property.
+		/// </summary>
+		private bool _useCurve;
+
+		/// <summary>
+		/// Indicates that this index entry selection needs to be represented by a curve.
 		/// </summary>
 		[DataMember]
-		public bool UseCurve { get; set; }
+		public override bool UseCurve 
+		{ 
+			get
+			{
+				return _useCurve;
+			}
+			set
+			{
+				_useCurve = value;
+
+				// If the index uses a curve then...
+				if (_useCurve)
+				{
+					// Indicate the index is color wheel type
+					// Note this tag helps with opening the shutter when spinning the color wheel is active.
+					IndexType = FixtureIndexType.ColorWheel;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Backing field for the ExcludeColorProperty property.
+		/// </summary>
+		private bool _excludeColorProperty;
+
+		/// <summary>
+		/// Indicates if the color entry should be included in the color property for the fixture.
+		/// </summary>
+		[DataMember]
+		public bool ExcludeColorProperty
+		{
+			get
+			{
+				return _excludeColorProperty;
+			}
+			set
+			{
+				_excludeColorProperty = value;				
+			}
+		}
 
 		#endregion
 
@@ -93,10 +133,12 @@ namespace VixenModules.App.Fixture
 			{
 				Name = Name,
 				StartValue = StartValue,				
+				EndValue = EndValue,
 				HalfStep = HalfStep,
 				Color1 = Color1,
 				Color2 = Color2,
 				UseCurve = UseCurve,
+				ExcludeColorProperty = ExcludeColorProperty,
 			};
 
 			return colorWheelEntry;

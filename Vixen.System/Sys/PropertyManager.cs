@@ -35,6 +35,27 @@ namespace Vixen.Sys
 			return instance;
 		}
 
+		/// <summary>
+		/// Adds the specified property to the node.  This method assumes that the property has already been configured values,
+		/// so default values are not applied.
+		/// </summary>
+		/// <param name="instance">Property module to add</param>
+		/// <returns>Returns the property</returns>
+		public IPropertyModuleInstance AddWithoutDefaults(IPropertyModuleInstance instance)
+		{
+			if (!_items.ContainsKey(instance.TypeId))
+			{
+				if (instance != null)
+				{
+					instance.Owner = _owner;
+					_items[instance.TypeId] = instance;
+					PropertyData.AssignModuleInstanceData(instance);
+				}
+			}
+
+			return instance;
+		}
+
 		public IPropertyModuleInstance Add(Guid id)
 		{
 			IPropertyModuleInstance instance = null;

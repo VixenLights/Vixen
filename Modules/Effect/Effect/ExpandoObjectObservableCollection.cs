@@ -1,16 +1,13 @@
-﻿using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using Vixen.Marks;
+﻿using System;
 
 namespace VixenModules.Effect.Effect
 {
 	/// <summary>
-	/// Maintains a collection of ExpandoObjects and provides properties and methods
-	/// for sharing mark collections with these objects.
+	/// Maintains a collection of ExpandoObjects.
 	/// </summary>
-	/// <typeparam name="T">Collection Item Type</typeparam>
-	public abstract class ExpandoObjectObservableCollection<T> : NotifyPropertyObservableCollection<T>
-		where T : IMarkCollectionExpandoObject
+	/// <typeparam name="TInterface">Collection Item Type</typeparam>
+	public abstract class ExpandoObjectObservableCollection<TInterface, TImpl> : NotifyPropertyObservableCollection<TInterface>, IExpandoObjectCollection		
+		where TImpl : class, new()
 	{
 		#region Constructor
 
@@ -23,101 +20,25 @@ namespace VixenModules.Effect.Effect
 		}
 
 		#endregion
-
-		#region Public Properties
-
-		private BaseEffect _parent;
+		
+		#region IExpandoObjectCollection
 
 		/// <summary>
-		/// Parent effect.
-		/// </summary>
-		public BaseEffect Parent
-		{
-			get
-			{
-				return _parent;
-			}
-			set
-			{
-				_parent = value;
-
-				// 
-				foreach (IMarkCollectionExpandoObject expandoObject in this)
-				{
-					// Give each Expando object a reference to the parent effect
-					expandoObject.Parent = Parent;
-				}
-			}
-		}
-
-		private ObservableCollection<IMarkCollection> _markCollections;
-
-		/// <summary>
-		/// IMarkCollection collection.
-		/// </summary>
-		public ObservableCollection<IMarkCollection> MarkCollections
-		{
-			get
-			{
-				return _markCollections;
-			}
-			set
-			{
-				_markCollections = value;
-
-				
-				foreach (IMarkCollectionExpandoObject expandoObject in this)
-				{
-					// Give each Expando object the IMarkCollection collection
-					expandoObject.MarkCollections = value;
-				}
-			}
-		}
-
-		#endregion
-
-		#region Public Methods
-
-		/// <summary>
-		/// Updates the selected mark collection on the Expando objects when it no longer exists.		
-		/// </summary>
-		public void UpdateSelectedMarkCollectionNames()
-		{
-			// Loop over the Expando objects
-			foreach (IMarkCollectionExpandoObject expandoObject in this)
-			{
-				// Update the selected mark collection on the Expando object
-				expandoObject.UpdateSelectedMarkCollectionName();
-			}
-		}
-
-		#endregion
-
-		#region Protected Methods
-
-		/// <summary>
-		/// Refer to base class documentation.
+		/// Refer to interface documentation.
 		/// </summary>		
-		protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+		public Type GetItemType()
 		{
-			// Call the base class implementation
-			base.OnCollectionChanged(e);
+			// Return the type of the item being maintained by the collection
+			return typeof(TImpl);
+		}
 
-			// Loop over the expando objects
-			foreach (IMarkCollectionExpandoObject expandoObject in this)
-			{
-				if (Parent != null)
-				{
-					// Give the Expando object a reference to the parent effect
-					expandoObject.Parent = Parent;
-				}
-
-				if (MarkCollections != null)
-				{
-					// Give the expando object the mark collection for the effect
-					expandoObject.MarkCollections = MarkCollections;
-				}
-			}
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>		
+		public virtual int GetMinimumItemCount()
+		{
+			// The default is to always keep one item in the collection
+			return 1;
 		}
 
 		#endregion

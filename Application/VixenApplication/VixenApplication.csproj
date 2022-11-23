@@ -55,21 +55,81 @@
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
+    <ProjectReference Include="..\..\Common\Orc.Wizard\Orc.Wizard.csproj">
+	    <Private>false</Private>
+	    <IncludeAssets>None</IncludeAssets>
+	    <CopyLocal>False</CopyLocal>
+	    <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
     <ProjectReference Include="..\..\Common\Resources\Resources.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
+    <ProjectReference Include="..\..\Modules\App\Curves\Curves.csproj">
+      <IncludeAssets>None</IncludeAssets>
+      <Private>false</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Modules\App\ElementTemplateHelper\ElementTemplateHelper.csproj">
+		<Private>false</Private>
+		<IncludeAssets>None</IncludeAssets>
+	</ProjectReference>
+    <ProjectReference Include="..\..\Modules\App\FixtureSpecificationManager\FixtureSpecificationManager.csproj">
+	    <Private>false</Private>
+	    <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Modules\App\Fixture\Fixture.csproj">
+	    <Private>false</Private>
+	    <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
     <ProjectReference Include="..\..\Modules\App\Modeling\Modeling.csproj">
       <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Modules\Editor\FixtureWizard\FixtureWizard.csproj">
+	    <Private>false</Private>
+	    <IncludeAssets>None</IncludeAssets>
+	    <CopyLocal>False</CopyLocal>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Modules\PostFilter\CoarseFineFilter\CoarseFineBreakdown.csproj">
+	<Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
+      <CopyLocal>False</CopyLocal>      
+    </ProjectReference>
+    <ProjectReference Include="..\..\Modules\PostFilter\ColorBreakdown\ColorBreakdown.csproj">
+      <Private>false</Private>
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Modules\PostFilter\ColorWheelFilter\ColorWheelFilter.csproj">
+      <Private>false</Private>      
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\Modules\PostFilter\DimmingCurve\DimmingCurve.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
     </ProjectReference>
+    <ProjectReference Include="..\..\Modules\PostFilter\DimmingFilter\DimmingFilter.csproj">
+      <Private>false</Private>      
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Modules\PostFilter\PrismFilter\PrismFilter.csproj">
+		<Private>false</Private>		
+		<IncludeAssets>None</IncludeAssets>
+	</ProjectReference>		
+    <ProjectReference Include="..\..\Modules\PostFilter\ShutterFilter\ShutterFilter.csproj">
+      <Private>false</Private>      
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Modules\PostFilter\TaggedFilter\TaggedFilter.csproj">
+      <Private>false</Private>      
+      <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
     <ProjectReference Include="..\..\Modules\Property\Color\Color.csproj">
       <Private>false</Private>
       <IncludeAssets>None</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Modules\Property\IntelligentFixture\IntelligentFixture.csproj">
+      <IncludeAssets>None</IncludeAssets>
+      <Private>false</Private>      
     </ProjectReference>
     <ProjectReference Include="..\..\Modules\Property\Order\Order.csproj">
       <Private>false</Private>
@@ -225,9 +285,7 @@
     <Compile Update="Setup\ElementTemplates\StarBurst.Designer.cs">
       <DependentUpon>StarBurst.cs</DependentUpon>
     </Compile>
-    <Compile Update="Setup\ElementTemplates\Megatree.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Setup\ElementTemplates\Megatree.cs" />
     <Compile Update="Setup\ElementTemplates\Megatree.Designer.cs">
       <DependentUpon>Megatree.cs</DependentUpon>
     </Compile>
@@ -237,9 +295,7 @@
     <Compile Update="Setup\ElementTemplates\NumberedGroup.Designer.cs">
       <DependentUpon>NumberedGroup.cs</DependentUpon>
     </Compile>
-    <Compile Update="Setup\ElementTemplates\PixelGrid.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Setup\ElementTemplates\PixelGrid.cs" />
     <Compile Update="Setup\ElementTemplates\PixelGrid.Designer.cs">
       <DependentUpon>PixelGrid.cs</DependentUpon>
     </Compile>
@@ -434,11 +490,18 @@
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="DataGridThemes" Version="1.0.0">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="NLog.Config" Version="4.7.15">
+      <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Orchestra.Core" Version="6.1.1">
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

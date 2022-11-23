@@ -1149,7 +1149,67 @@
   <data name="HighlightPercentage" xml:space="preserve">
     <value>Controls the percentage of the bar that is highlighted.</value>
   </data>
-   <data name="PictureCenterStop" xml:space="preserve">
+  <data name="PictureCenterStop" xml:space="preserve">
     <value>Moves the image into view and stops it in the center.</value>
+  </data>
+  <data name="Pan" xml:space="preserve">
+    <value>Controls the horizontal rotation of the intelligent fixture.</value>
+  </data>
+  <data name="Tilt" xml:space="preserve">
+    <value>Controls the vertical rotation of the intelligent fixture.</value>
+  </data>
+  <data name="Zoom" xml:space="preserve">
+    <value>Controls the zoom angle of the intelligent fixture beam.</value>
+  </data>
+  <data name="FrostPercentage" xml:space="preserve">
+    <value>Configures the amount of softening (frosting) of the light beam.</value>
+  </data>
+  <data name="Function" xml:space="preserve">
+    <value>Name of the intelligent fixture function associated with the effect.</value>
+  </data>
+  <data name="Gobo" xml:space="preserve">
+    <value>Selects a gobo on the wheel or an option to rotate the gobo wheel.</value>
+  </data>
+  <data name="RotationSpeed" xml:space="preserve">
+    <value>Selects the rotation speed of the gobo wheel.</value>
+  </data>
+  <data name="PrismRotationSpeed" xml:space="preserve">
+    <value>Selects the rotation speed of the prism.</value>
+  </data>
+  <data name="PrismSetting" xml:space="preserve">
+    <value>Selects the position (angle) of the prism or an option to rotate the prism.</value>
+  </data>
+  <data name="SpinColorWheelIntensity" xml:space="preserve">
+    <value>Intensity of the light beam.</value>
+  </data>
+  <data name="SpinColorWheelRotationSpeed" xml:space="preserve">
+    <value>Selects the rotation speed of the color wheel.</value>
+  </data>
+  <data name="SpinColorWheelSetting" xml:space="preserve">
+    <value>Selects the direction and rotation speed of the spinning color wheel.</value>
+  </data>
+  <data name="FixtureStrobeSetting" xml:space="preserve">
+    <value>Controls how the strobe speed is interpreted.</value>
+  </data>
+  <data name="FixtureStrobeSpeed" xml:space="preserve">
+    <value>Controls the speed of the shutter's strobe.</value>
+  </data>
+  <data name="FixtureColor" xml:space="preserve">
+    <value>Selects a color for the intelligent fixture.</value>
+  </data>
+  <data name="FixtureColorIndex" xml:space="preserve">
+    <value>Selects a color wheel color for the intelligent fixture.</value>
+  </data>
+  <data name="FixtureIndexValue" xml:space="preserve">
+    <value>Selects an index value for the intelligent fixture.</value>
+  </data>
+  <data name="FixtureRange" xml:space="preserve">
+    <value>Configures a range on the intelligent fixture.</value>
+  </data>
+  <data name="Functions" xml:space="preserve">
+    <value>Selects the fixture function to add to the effect.</value>
+  </data>
+  <data name="FixtureColorIntensity" xml:space="preserve">
+    <value>Determines the intensity (brightness) of the color.</value>
   </data>
 </root>

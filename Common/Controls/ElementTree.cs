@@ -986,7 +986,24 @@ namespace Common.Controls
 		private void pasteNodesAsNewToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			PasteNodes(true);
+		}
 
+		/// <summary>
+		/// Duplicates properties associated with and original node onto a cloned node.
+		/// </summary>
+		/// <param name="newNode">New destination node</param>
+		/// <param name="originalNode">Original source node</param>
+		private void DuplicateNodeProperties(ElementNode newNode, ElementNode originalNode)
+		{
+			// Loop over the properties associated with the node
+			foreach (IPropertyModuleInstance nodeProperty in originalNode.Properties)
+			{
+				// Cone the specified property from the source node
+				IPropertyModuleInstance clonedProperty = (IPropertyModuleInstance)nodeProperty.Clone();
+
+				// Add the cloned property to the new destination node
+				newNode.Properties.AddWithoutDefaults(clonedProperty);
+			}
 		}
 
 		public void DuplicateNodes(ElementNode node, ElementNode parent = null)
@@ -996,11 +1013,14 @@ namespace Common.Controls
 
 			//Create a new top level node
 			ElementNode newNode = ElementNodeService.Instance.CreateSingle(parent, node.Name,node.IsLeaf);
+
+			// Duplicate the properties associated with the node
+			DuplicateNodeProperties(newNode, node);
+
 			if (!node.IsLeaf)
 			{
 				DuplicateChildNodes(node, newNode, leafNodeMap);
 			}
-
 		}
 
 		private void DuplicateChildNodes(ElementNode node, ElementNode newNode, Dictionary<Guid, ElementNode> leafNodeMap)
@@ -1016,6 +1036,10 @@ namespace Common.Controls
 					else
 					{
 						ElementNode newChild = ElementNodeService.Instance.CreateSingle(newNode, childNode.Name);
+
+						// Duplicate the properties associated the child node
+						DuplicateNodeProperties(newChild, childNode);
+
 						leafNodeMap.Add(childNode.Id, newChild);
 					}
 				}

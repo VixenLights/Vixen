@@ -9,7 +9,8 @@ namespace Vixen.Module.Effect {
 	{
 		Basic,
 		Pixel,
-		Device
+		Device,
+		IntelligentFixture,
 	}
 
 	[Serializable]

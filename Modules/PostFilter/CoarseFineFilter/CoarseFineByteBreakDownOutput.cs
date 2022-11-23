@@ -62,6 +62,29 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 		#region Public Methods
 
 		/// <summary>
+		/// Processes the specified command data flow.
+		/// </summary>
+		/// <param name="data">Command data flow to process</param>
+		public void ProcessInputData(CommandDataFlowData data)
+		{
+			/// Test to see if the intent is a tagged intent
+			_16BitCommand command = data.Value as _16BitCommand;
+
+			// If the command is an 16 bit command then...
+			if (command != null)
+			{
+				// Get the 16 bit value
+				ushort value = command.CommandValue;
+
+				// Normalize the value to (0 - 1)
+				double dblValue = (double)value / (double)ushort.MaxValue;
+
+				// Split the value into a high and low byte
+				Handle(dblValue);
+			}
+		}
+
+		/// <summary>
 		/// Processes input intent data.
 		/// </summary>
 		/// <param name="intents">Intents to process</param>
@@ -70,17 +93,20 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 			// Clear the output commands
 			_outputCommands.Clear();
 
-			// Loop over the intent states
-			foreach (IIntentState intentState in intents.Value)
+			if (intents.Value != null)
 			{
-				// Determine if the intent state is supported by this breakdown filter
-				IIntentState state = _filter.Filter(intentState);
-				
-				// If the state is supported (not null) then...
-				if (state != null)
+				// Loop over the intent states
+				foreach (IIntentState intentState in intents.Value)
 				{
-					// Handle the intent
-					Handle((IIntentState<RangeValue<FunctionIdentity>>)state);
+					// Determine if the intent state is supported by this breakdown filter
+					IIntentState state = _filter.Filter(intentState);
+
+					// If the state is supported (not null) then...
+					if (state != null)
+					{
+						// Handle the intent
+						Handle((IIntentState<RangeValue<FunctionIdentity>>)state);
+					}
 				}
 			}
 		}
@@ -96,11 +122,24 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 		private void Handle(IIntentState<RangeValue<FunctionIdentity>> intent)
 		{
 			// Get the position value from the intent
-			double positionValue = intent.GetValue().Value;
+			double rangeValue = intent.GetValue().Value;
+
+			// Handle the range value
+			Handle(rangeValue);
+		}
+
+		/// <summary>
+		/// Handles a double range value.
+		/// </summary>
+		/// <param name="intent">Double range value to handle</param>
+		private void Handle(double value)
+		{
+			// Get the range value from the intent
+			double rangeValue = value;
 
 			// Convert the double into a 16-bit integer			
-			UInt16 positionInteger = (UInt16)(positionValue * UInt16.MaxValue);
-			
+			UInt16 rangeInteger = (UInt16)(rangeValue * UInt16.MaxValue);
+
 			// Declare the return value
 			byte commandValue;
 
@@ -108,13 +147,13 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 			if (_highByte)
 			{
 				// Shift the value to only be the high byte
-				commandValue = (byte)(positionInteger >> 8);				
+				commandValue = (byte)(rangeInteger >> 8);
 			}
 			// Otherise the output is responsible for the low byte
 			else
 			{
 				// Mask the input to only include the low byte
-				commandValue = (byte)(positionInteger & 0xff);
+				commandValue = (byte)(rangeInteger & 0xff);
 			}
 
 			// Create a new 8-bit command with the return value

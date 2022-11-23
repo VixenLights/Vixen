@@ -1,0 +1,70 @@
+﻿<catel:Window x:Class="VixenModules.Editor.FixturePropertyEditor.Views.FunctionTypeWindowView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
+        xmlns:catel="http://schemas.catelproject.com"
+	    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+	    xmlns:views="clr-namespace:VixenModules.Editor.FixturePropertyEditor.Views"	    
+	    xmlns:common="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
+		xmlns:viewModel="clr-namespace:VixenModules.Editor.FixturePropertyEditor.ViewModels"			  
+		xmlns:fixture="clr-namespace:VixenModules.App.Fixture;assembly=Fixture"			  
+		xmlns:local="clr-namespace:VixenModules.Editor.FixturePropertyEditor.Views"	
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:value="clr-namespace:Vixen.Data.Value;assembly=Vixen"
+        mc:Ignorable="d"
+        Title="Edit Functions"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+                <ResourceDictionary Source="/DataGridThemes;component/ExpressionDark.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <common:InverseBooleanConverter x:Key="InverseBoolConverter" />
+            <common:BooleanToVisibilityConverter x:Key="BoolToVis"/>
+            <ObjectDataProvider x:Key="myEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type Type="fixture:FixtureFunctionType"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+            <ObjectDataProvider x:Key="identityEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type Type="value:FunctionIdentity"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+
+        </ResourceDictionary>
+
+    </Window.Resources>
+
+    <Grid Background="#444444">
+            <Grid.RowDefinitions>
+                <RowDefinition Height = "*" />
+                <RowDefinition Height = "60" />
+            </Grid.RowDefinitions>
+
+            <catel:WarningAndErrorValidator Source="{Binding}" />
+
+            <local:FunctionTypeView Grid.Row="0" x:Name="FunctionTypeControl" 
+                                DataContext="{Binding Functions}">
+            </local:FunctionTypeView>
+
+            <TextBlock  Grid.Row="1" Margin="30,10,10,10">
+			<Hyperlink NavigateUri="http://www.vixenlights.com" RequestNavigate="Hyperlink_RequestNavigate">
+				Learn More About Fixture Functions
+			</Hyperlink>
+            </TextBlock>
+
+            <WrapPanel Orientation="Horizontal" Style="{StaticResource RowButtonRightContainerStyle}" Grid.Row="1">
+                <Image Source="/Resources;component/TriangleExclamation.png" Width="24" Height="24"
+                   ToolTip="{Binding Path=OKTooltip}"
+                   Visibility="{Binding Path=ShowError}"
+                   ToolTipService.ShowOnDisabled="True"></Image>
+                <Button Content="Ok" Command="{Binding OkCommand}" IsDefault="True" Style="{StaticResource RowButtonStyle}"
+                   ToolTip="{Binding Path=OKTooltip}"
+                   ToolTipService.ShowOnDisabled="True"/>
+                <Button Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True" Style="{StaticResource RowButtonStyle}"/>
+            </WrapPanel>
+        </Grid>
+</catel:Window>

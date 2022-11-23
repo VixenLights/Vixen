@@ -50,5 +50,10 @@ namespace Vixen.IO.Factory
 		{
 			return new SequenceCacheLoader();
 		}
+
+		public IObjectLoader<T> CreateFixtureSpecificationLoader<T>() where T : class, IDataModel, new()
+		{
+			return new FixtureSpecificationLoader<T>();	
+		}
 	}
 }
