@@ -204,9 +204,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			PixelSize = newSize > 0 ? newSize : 1;
 		}
 
-		private double _zoomLevel = 1;
-		
-
 		[Browsable(false)]
 		public override double ZoomLevel
 		{
@@ -216,7 +213,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			set
 			{
-				_zoomLevel = value;
+				base.ZoomLevel = value;
 				if (_strings != null)
 				{
 					foreach (PreviewLightBaseShape shape in _strings)
