@@ -737,8 +737,8 @@ namespace VixenModules.Effect.Balls
 
 				//Sets Radius size and Ball location
 				int radius = RandomRadius ? Rand(1, _radius + 1) : _radius;
-				m.LocationX = Rand(radius, _bufferWi - radius);
-				m.LocationY = Rand(radius, _bufferHt - radius);
+				m.LocationX = _bufferWi - radius >= radius? Rand(radius, _bufferWi - radius) : Rand(1, _bufferWi);
+				m.LocationY = _bufferHt - radius >= radius ? Rand(radius, _bufferHt - radius) : Rand(1, _bufferHt);
 
 				if (Collide)
 				{
