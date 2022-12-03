@@ -24,8 +24,11 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 		public MovingHeadRenderStrategy()
 		{			
 			// Create the shaders for the DMX fixtures
-			_grayShader = new GrayVolumeShader();			
-			_beamShader = new ColorVolumeShader();
+			_grayShader = new GrayVolumeShader();	
+			
+			// The beam can be made up of two colors so we need two color volume shaders.
+			_beamShader1 = new ColorVolumeShader();
+			_beamShader2 = new ColorVolumeShader();
 
 			// Create the collection of shapes to render
 			Shapes = new List<IRenderMovingHeadOpenGL>();
@@ -43,8 +46,13 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 		/// <summary>
 		/// Colored shader for the fixture beam.
 		/// </summary>
-		private VolumeShader _beamShader;
-		
+		private VolumeShader _beamShader1;
+
+		/// <summary>
+		/// Colored shader for the fixture beam.
+		/// </summary>
+		private VolumeShader _beamShader2;
+
 		/// <summary>
 		/// Grouping of static volumes by shader.
 		/// </summary>
@@ -138,11 +146,17 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 			// Default to the gray shader
 			VolumeShader shader = _grayShader;
 
-			// Check to see if the colored shader was requested
-			if (shaderID == ColorVolumeShader.ShaderID)			
+			// Check to see if the first colored shader was requested
+			if (shaderID == ColorVolumeShader1.ShaderID)			
 			{
-				// Return the colored shader
-				shader = _beamShader;
+				// Return the first colored shader
+				shader = _beamShader1;
+			}
+			// Check to see if the second colored shader was requested
+			else if (shaderID == ColorVolumeShader2.ShaderID)
+			{
+				// Return the second colored shader
+				shader = _beamShader2;
 			}
 
 			return shader;
@@ -350,12 +364,20 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 				_grayShader = null;
 			}
 
-			// If the colored beam shader was created then...
-			if (_beamShader != null)
+			// If the first colored beam shader was created then...
+			if (_beamShader1 != null)
 			{
 				// Dispose of the beam shader
-				_beamShader.Dispose();
-				_beamShader = null;
+				_beamShader1.Dispose();
+				_beamShader1= null;
+			}
+
+			// If the second colored beam shader was created then...
+			if (_beamShader2 != null)
+			{
+				// Dispose of the beam shader
+				_beamShader2.Dispose();
+				_beamShader2 = null;
 			}
 		}
 

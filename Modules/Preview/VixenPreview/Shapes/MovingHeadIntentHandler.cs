@@ -190,7 +190,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			MovingHead.OnOff = false;
 
 			// Set the beam color of the moving head back to the default
-			MovingHead.BeamColor = DefaultBeamColor;
+			MovingHead.BeamColorLeft = DefaultBeamColor;
+			MovingHead.BeamColorRight = DefaultBeamColor;
 
 			// If the tilt movement direction is inverted then...
 			if (InvertTiltDirection)
@@ -347,7 +348,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Color color = discreteValue.Color;
 
 			// Set the beam color of the moving head
-			MovingHead.BeamColor = color;
+			MovingHead.BeamColorLeft = color;
+			MovingHead.BeamColorRight = color;
 
 			// If converting color into dimmer intents then...
 			if (ConvertColorIntentsIntoDimmer)
@@ -372,7 +374,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			OpenShutter();
 
 			// Set the beam color of the moving head
-			MovingHead.BeamColor = lightingIntent.GetValue().Color;
+			MovingHead.BeamColorLeft = lightingIntent.GetValue().Color;
+			MovingHead.BeamColorRight = lightingIntent.GetValue().Color;
 
 			// Set the intensity of the beam color
 			MovingHead.Intensity = (int)(lightingIntent.GetValue().Intensity * 100);
@@ -392,8 +395,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			OpenShutter();
 
 			// Set the beam color of the moving head
-			MovingHead.BeamColor = lightingIntent.GetValue().FullColor;
-				
+			MovingHead.BeamColorLeft = lightingIntent.GetValue().FullColor;
+			MovingHead.BeamColorRight = lightingIntent.GetValue().FullColor;
+
 			// Set the intensity of the beam color
 			MovingHead.Intensity = (int)(lightingIntent.GetValue().Intensity * 100);
 
@@ -505,36 +509,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// Find the color wheel entry for the command value
 			// Ignore color wheel entries that are half step or curves
 			FixtureColorWheel wheelEntry = colorWheelFunction.ColorWheelData.SingleOrDefault(clr => clr.StartValue == taggedCommand.CommandValue &&
-																							 !clr.UseCurve && !clr.HalfStep);
+																							 !clr.UseCurve);
 
 			// If NOT null display the color wheel color
 			if (wheelEntry != null)
 			{
 				// Set the beam color to the color wheel color
-				MovingHead.BeamColor = wheelEntry.Color1;
+				MovingHead.BeamColorLeft = wheelEntry.Color1;
+				MovingHead.BeamColorRight = wheelEntry.Color2;
 
 				// Remember that we have color intents
 				_colorPresent = true;
 			}
 			else
 			{
-				// Check to see if the color wheel entry is a half step
-				wheelEntry = colorWheelFunction.ColorWheelData.SingleOrDefault(clr => clr.StartValue == taggedCommand.CommandValue && !clr.UseCurve);
-
-				// If the entry is not found then it must be a spin color wheel index
-				if (wheelEntry == null)
-				{
-					// Spin the color wheel
-					SpinColorWheel(colorWheelFunction);
-				}
-				else
-				{
-					// Preview does not support half steps currently so the workaround is just to show white
-					MovingHead.BeamColor = Color.White;
-
-					// Remember that we have color intents
-					_colorPresent = true;
-				}
+				// Spin the color wheel
+				SpinColorWheel(colorWheelFunction);
 			}
 
 			// If color is present then...
@@ -581,9 +571,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					// Get the current color wheel entry
 					FixtureColorWheel entry = colorWheelFunction.ColorWheelData[_colorWheelSlot];
 
-					// If the entry is NOT a half step AND
-					// does not use a curve then...
-					if (!entry.HalfStep && !entry.UseCurve)
+					// If the entry does not use a curve then...
+					if (!entry.UseCurve)
 					{
 						// Indicate a valid color wheel entry was found
 						foundValidColor = true;
@@ -609,7 +598,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 
 			// Set the beam color to match the color wheel entry
-			MovingHead.BeamColor = _colorWheelEntry.Color1;
+			MovingHead.BeamColorLeft = _colorWheelEntry.Color1;
+			MovingHead.BeamColorRight = _colorWheelEntry.Color2;
 
 			// Turn on the beam
 			MovingHead.OnOff = true;

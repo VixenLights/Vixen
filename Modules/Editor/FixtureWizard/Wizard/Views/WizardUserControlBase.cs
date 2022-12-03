@@ -42,7 +42,8 @@ namespace VixenModules.Editor.FixtureWizard.Wizard.Views
             _leftMovingHead.MovingHead.IncludeLegend = false;
             _leftMovingHead.MovingHead.TiltAngle = 45.0;
             _leftMovingHead.MovingHead.PanAngle = 35.0;
-            _leftMovingHead.MovingHead.BeamColor = color;
+            _leftMovingHead.MovingHead.BeamColorLeft = color;
+            _leftMovingHead.MovingHead.BeamColorRight = color;
             _leftMovingHead.MovingHead.BeamLength = 20;
             _leftMovingHead.MovingHead.Focus = 20;
             
@@ -53,7 +54,8 @@ namespace VixenModules.Editor.FixtureWizard.Wizard.Views
             _rightMovingHead.MovingHead.IncludeLegend = false;
             _rightMovingHead.MovingHead.TiltAngle = 45.0;
             _rightMovingHead.MovingHead.PanAngle = 315.0;
-            _rightMovingHead.MovingHead.BeamColor = color;
+            _rightMovingHead.MovingHead.BeamColorLeft = color;
+            _rightMovingHead.MovingHead.BeamColorRight = color;
             _rightMovingHead.MovingHead.BeamLength = 20;
             _rightMovingHead.MovingHead.Focus = 20;
 

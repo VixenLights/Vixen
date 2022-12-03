@@ -27,7 +27,8 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 
 			// Configure the moving head
 			_movingHead.MovingHead.IncludeLegend = false;
-			_movingHead.MovingHead.BeamColor = Color.Cyan;
+			_movingHead.MovingHead.BeamColorLeft = Color.Cyan;
+			_movingHead.MovingHead.BeamColorRight = Color.Cyan;
 			_movingHead.MovingHead.BeamLength = 20;
 			_movingHead.MovingHead.Focus = 20;
 		}

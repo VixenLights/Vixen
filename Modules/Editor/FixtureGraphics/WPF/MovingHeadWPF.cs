@@ -36,7 +36,8 @@ namespace VixenModules.Editor.FixtureGraphics.WPF
 
 			// Default the beam to On, yellow and full intensity				
 			MovingHead.OnOff = true;
-			MovingHead.BeamColor = Color.Yellow;
+			MovingHead.BeamColorLeft = Color.Yellow;
+			MovingHead.BeamColorRight = Color.Yellow;
 			MovingHead.Intensity = 100;
 
 			// Default the beam to max beam area
@@ -388,7 +389,7 @@ namespace VixenModules.Editor.FixtureGraphics.WPF
 				numberOfCylinderSides);
 
 			// Convert the RGB color to HSV format
-			HSV hsv = HSV.FromRGB(MovingHead.BeamColor);
+			HSV hsv = HSV.FromRGB(MovingHead.BeamColorLeft);
 
 			// Update the beam color for the fixture intensity 
 			hsv.V *= MovingHead.Intensity / 100.0;
@@ -1078,7 +1079,7 @@ namespace VixenModules.Editor.FixtureGraphics.WPF
 			if (_beamLength != MovingHead.BeamLength ||
 				_beamFocus != MovingHead.Focus ||
 				_beamIntensity != MovingHead.Intensity ||
-				_beamColor != MovingHead.BeamColor)
+				_beamColor != MovingHead.BeamColorLeft)
 			{
 				// Store off the new beam length
 				_beamLength = MovingHead.BeamLength;
@@ -1087,7 +1088,7 @@ namespace VixenModules.Editor.FixtureGraphics.WPF
 				_beamFocus = MovingHead.Focus;
 
 				// Store off the new beam color
-				_beamColor = MovingHead.BeamColor;
+				_beamColor = MovingHead.BeamColorLeft;
 
 				// Store off the new beam intensity
 				_beamIntensity = MovingHead.Intensity;

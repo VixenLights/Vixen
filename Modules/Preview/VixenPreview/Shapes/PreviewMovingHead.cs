@@ -415,8 +415,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			if (_movingHead != null)
 			{
 				// Set the beam color, otherwise the bitmap won't be updated				
-				_movingHead.MovingHead.BeamColor = beamColor;
-				_movingHeadCurrentSettings.BeamColor = beamColor;
+				_movingHead.MovingHead.BeamColorLeft = beamColor;
+				_movingHead.MovingHead.BeamColorRight = beamColor;
+				_movingHeadCurrentSettings.BeamColorLeft = beamColor;
+				_movingHeadCurrentSettings.BeamColorRight = beamColor;
 			}
 
 			// If the fixture graphic is stale and needs to be redrawn then...			
@@ -546,7 +548,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_movingHead = new MovingHeadWPF();
 
 			// Assign the beam color
-			_movingHead.MovingHead.BeamColor = beamColor;	
+			_movingHead.MovingHead.BeamColorLeft = beamColor;
+			_movingHead.MovingHead.BeamColorRight = beamColor;
 
 			// Configure the moving head settings with the mounting position
 			_movingHead.MovingHead.MountingPosition = MountingPosition; 

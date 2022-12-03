@@ -201,7 +201,8 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL.Volumes
 			float offset,
 			bool negateNormals,
 			List<Vector3> normals,
-			List<Vector3> triangleVertices)
+			List<Vector3> triangleVertices,
+			List<int> panelIndices)
 		{
 			// Create a collection to hold all the cylinder vertices
 			List<Vector3> allVertices = new List<Vector3>();
@@ -210,7 +211,7 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL.Volumes
 			int segments = 20; 
 						
 			// Loop over the segments 
-			for (double x = 0; x < segments; x++)
+			foreach (int x in panelIndices) 
 			{
 				// Determine an angle for the panel by dividing 360 degrees into panels
 				double theta = (((double) x) / (segments - 1)) * 2 * Math.PI;

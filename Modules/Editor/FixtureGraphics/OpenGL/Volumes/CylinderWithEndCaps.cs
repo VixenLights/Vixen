@@ -1,6 +1,7 @@
-﻿using OpenTK;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Numerics;
+using Vector3 = OpenTK.Vector3;
 
 namespace VixenModules.Editor.FixtureGraphics.OpenGL.Volumes
 {
@@ -19,10 +20,18 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL.Volumes
 		/// <param name="bottomRadius">Radius of the bottom of the cylinder</param>
 		/// <param name="topRadius">Radius at the top of the cylinder</param>
 		/// <param name="isDynamic">Whether the cylinder changes shape during execution</param>
-		public CylinderWithEndCaps(float yOffset, float length, float bottomRadius, float topRadius, bool isDynamic) : base(isDynamic)
+		/// <param name="panelIndices">Panel indices to draw</param>		
+		public CylinderWithEndCaps(
+			float yOffset, 
+			float length, 
+			float bottomRadius, 
+			float topRadius, 
+			bool isDynamic,
+			List<int> panelIndices) : 
+			base(isDynamic)
 		{						
 			// Create the cylinder with end caps
-			CreateCylinderWithEndCaps(yOffset, length, bottomRadius, topRadius, Normals, Vertices);
+			CreateCylinderWithEndCaps(yOffset, length, bottomRadius, topRadius, Normals, Vertices, panelIndices);
 		}
 
 		#endregion
@@ -45,9 +54,9 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL.Volumes
 		/// <summary>
 		/// The following fields determine if the cyclinder geometry is stale and needs to transfered to the GPU.		
 		/// </summary>
-		float _previousBottomRadius = -1;
-		float _previousTopRadius = -1;
-		float _previousLength = -1;
+		private float _previousBottomRadius = -1;
+		private float _previousTopRadius = -1;
+		private float _previousLength = -1;
 
 		#endregion
 
@@ -60,7 +69,8 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL.Volumes
 			float yOffset,
 			float length,
 			float bottomRadius,
-			float topRadius)		
+			float topRadius,
+			List<int> panelIndices)
 		{
 			// If any of the parameters that make up the cylinder have changed then...
 			if (length != _previousLength ||
@@ -72,7 +82,7 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL.Volumes
 				Normals.Clear();
 
 				// Re-create the cylinder
-				CreateCylinderWithEndCaps(yOffset, length, bottomRadius, topRadius, Normals, Vertices);
+				CreateCylinderWithEndCaps(yOffset, length, bottomRadius, topRadius, Normals, Vertices, panelIndices);
 
 				// Save off the cylinder settings
 				_previousLength = length;
@@ -96,14 +106,16 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL.Volumes
 		/// <param name="bottomRadius">Radius as the bottom of the cylinder</param>
 		/// <param name="topRadius">Radius at the top of the cylinder</param>						
 		/// <param name="normals">Collection of normal</param>
-		/// <param name="triangleVertices">Collection of vertices</param>		
+		/// <param name="triangleVertices">Collection of vertices</param>
+		/// <param name="panelIndices">Panel indices to draw</param>		
 		private void CreateCylinderWithEndCaps(
 			float yOffset, 
 			float length, 
 			float bottomRadius, 
 			float topRadius,
 			List<Vector3> normals,
-			List<Vector3> triangleVertices)
+			List<Vector3> triangleVertices,
+			List<int> panelIndices)
 		{
 			// Create the circular shell of the cylinder
 			List<Vector3> panelVertices = CreateCylinder(
@@ -114,40 +126,47 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL.Volumes
 				yOffset,
 				true,
 				normals,
-				triangleVertices);
-
+				triangleVertices,
+				panelIndices);
+			
 			// Create the end caps
-			for (int index = 0; index < panelVertices.Count / 2; index += 4)
+			for (int index = 0; index < panelVertices.Count; index += 4)
 			{
-				normals.Add(new Vector3(0, -1, 0)); // 1
-				normals.Add(new Vector3(0, -1, 0)); // 2
-				normals.Add(new Vector3(0, -1, 0)); // 3
-				normals.Add(new Vector3(0, -1, 0)); // 4
-				normals.Add(new Vector3(0, -1, 0)); // 5
-				normals.Add(new Vector3(0, -1, 0)); // 6
+				// Normals for the bottom triangle
+				normals.Add(new Vector3(0, -1, 0)); 
+				normals.Add(new Vector3(0, -1, 0)); 
+				normals.Add(new Vector3(0, -1, 0)); 
+				
+				// Get the three points to define a pie wedge on the bottom
+				Vector3 v1 = panelVertices[index];      // 0 
+				Vector3 v2 = panelVertices[index + 3];  // 1
+				Vector3 centerBottom = new Vector3();
+				centerBottom.X = 0; 
+				centerBottom.Y = -yOffset; 
+				centerBottom.Z = 0; 
 
-				triangleVertices.Add(panelVertices[index]);                           // 0 
-				triangleVertices.Add(panelVertices[index + 3]);                       // 1
-				triangleVertices.Add(panelVertices[index + panelVertices.Count / 2]); // 2
+				// Add the bottom pie wedge points to the vertex collection
+				triangleVertices.Add(v1);    
+				triangleVertices.Add(v2);    
+				triangleVertices.Add(centerBottom);
 
-				triangleVertices.Add(panelVertices[index]);                               // 0
-				triangleVertices.Add(panelVertices[index + panelVertices.Count / 2]);     // 2
-				triangleVertices.Add(panelVertices[index + 3 + panelVertices.Count / 2]); // 3
+				// Get the three points to define a pie wedge on the top
+				Vector3 vTopPlus1 = panelVertices[index + 1];  // 0 
+				Vector3 vTopPlus2 = panelVertices[index + 2];  // 1
+				Vector3 centerTop = new Vector3();
+				centerTop.X = 0; 
+				centerTop.Y = yOffset; 
+				centerTop.Z = 0;
 
-				normals.Add(new Vector3(0, 1, 0)); // 1
-				normals.Add(new Vector3(0, 1, 0)); // 2
-				normals.Add(new Vector3(0, 1, 0)); // 3
-				normals.Add(new Vector3(0, 1, 0)); // 4
-				normals.Add(new Vector3(0, 1, 0)); // 5
-				normals.Add(new Vector3(0, 1, 0)); // 6
-		
-				triangleVertices.Add(panelVertices[index + 1]);                           // 0
-				triangleVertices.Add(panelVertices[index + 2]);                           // 1
-				triangleVertices.Add(panelVertices[index + 1 + panelVertices.Count / 2]); // 2
+				// Add the top pie wedge points to the vertex collection
+				triangleVertices.Add(vTopPlus1);
+				triangleVertices.Add(vTopPlus2);
+				triangleVertices.Add(centerTop);
 
-				triangleVertices.Add(panelVertices[index + 1]);                           // 0
-				triangleVertices.Add(panelVertices[index + 1 + panelVertices.Count / 2]); // 2
-				triangleVertices.Add(panelVertices[index + 2 + panelVertices.Count / 2]); // 3
+				// Add the normals for the top triangle
+				normals.Add(new Vector3(0, 1, 0)); 
+				normals.Add(new Vector3(0, 1, 0)); 
+				normals.Add(new Vector3(0, 1, 0)); 
 			}			
 		}
 		
