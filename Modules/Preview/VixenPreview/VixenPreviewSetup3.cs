@@ -168,6 +168,44 @@ namespace VixenModules.Preview.VixenPreview
 			InitUndo();
 
 			VerifyPreviewShapeLocations();
+
+			// Ensure the background image is large enough to contain all the shapes
+			VerifyPreviewBackgroundSize();
+		}
+
+		/// <summary>
+		/// Verifies the background image is large enough to contain all the shapes.
+		/// If the background image is NOT large enough it is expanded.
+		/// </summary>
+		private void VerifyPreviewBackgroundSize()
+		{
+			// Keep track of the right, bottom most position of the shapes
+			int maxX = 0;
+			int maxY = 0;
+
+			// Loop over the display items in the preview
+			foreach (var previewDisplayItem in previewForm.Preview.DisplayItems)
+			{
+				// Check to see if this shape is the furthest shape to the right
+				if (previewDisplayItem.Shape.Right > maxX)
+				{
+					maxX = previewDisplayItem.Shape.Right;
+				}
+
+				// Check to see if this shape is the furthest to the bottom
+				if (previewDisplayItem.Shape.Bottom > maxY)
+				{
+					maxY = previewDisplayItem.Shape.Bottom;
+				}
+			}
+
+			// If any shape is beyond the background width and height then...
+			if (previewForm.Preview.Background.Width < maxX ||
+			    previewForm.Preview.Background.Height < maxY)
+			{
+				// Adjust the background size (don't scale the shapes)
+				previewForm.Preview.ResizeBackground(maxX + 1, maxY + 1, false);
+			}
 		}
 
 		private static void VerifyPreviewShapeLocations()
@@ -587,11 +625,12 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void backgroundPropertiesToolStripMenuItem_Click(object sender, EventArgs e) {
 			ResizePreviewForm resizeForm = new ResizePreviewForm(previewForm.Preview.Background.Width,
-																 previewForm.Preview.Background.Height);
+																 previewForm.Preview.Background.Height,
+																 true);
 			if (resizeForm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 if (resizeForm.Height > 10 && resizeForm.Width > 10)
                 {
-                    previewForm.Preview.ResizeBackground(resizeForm.Width, resizeForm.Height);
+                    previewForm.Preview.ResizeBackground(resizeForm.Width, resizeForm.Height, resizeForm.ScaleShapes);
                     previewForm.Refresh();
                 }
                 else

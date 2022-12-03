@@ -1988,7 +1988,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		#endregion
 
-		public void ResizeBackground(int width, int height)
+		public void ResizeBackground(int width, int height, bool scaleShapes)
 		{
 			double aspect = width/(double) _background.Width;
 			Bitmap newBackground = PreviewTools.ResizeBitmap(new Bitmap(_background), new Size(width, height));
@@ -1999,10 +1999,14 @@ namespace VixenModules.Preview.VixenPreview
 			Data.BackgroundFileName = imageFileName;
 			LoadBackground();
 
-			foreach (DisplayItem item in DisplayItems)
+			if (scaleShapes)
 			{
-				item.Shape.Resize(aspect);
+				foreach (DisplayItem item in DisplayItems)
+				{
+					item.Shape.Resize(aspect);
+				}
 			}
+
 			EraseScreen();
 		}
 
