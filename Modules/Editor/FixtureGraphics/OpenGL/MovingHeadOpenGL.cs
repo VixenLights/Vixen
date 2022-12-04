@@ -103,21 +103,22 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 		/// <summary>
 		/// The following fields determine if the static volumes are dirty.
 		/// </summary>
-		double _previousHorizontalRotation = -1;
-		double _previousVerticalRotation = -1;
-		double _previousXPosition = -1;
-		double _previousYPosition = -1;
+		private double _previousHorizontalRotation = -1;
+		private double _previousVerticalRotation = -1;
+		private double _previousXPosition = -1;
+		private double _previousYPosition = -1;
 
 		/// <summary>
 		/// The following fields determine if the dynamic volumes are dirty.
 		/// </summary>
-		double _previousLength = -1;
-		double _previousMaxBeamLength = -1;
-		int _previousFocus = -1;
-		double _previousBeamLength = -1;
-		Color _previousBeamColor = Color.Transparent;
-		bool _previousOnOff = false;
-		int _previousIntensity = -1;
+		private double _previousLength = -1;
+		private double _previousMaxBeamLength = -1;
+		private int _previousFocus = -1;
+		private double _previousBeamLength = -1;
+		private Color _previousBeamColor1 = Color.Transparent;
+		private Color _previousBeamColor2 = Color.Transparent;
+		private bool _previousOnOff = false;
+		private int _previousIntensity = -1;
 
 		#endregion
 
@@ -136,7 +137,8 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 					 _previousMaxBeamLength == maxBeamLength &&
 					 _previousFocus == MovingHead.Focus &&
 					 _previousBeamLength == MovingHead.BeamLength &&
-					 _previousBeamColor == MovingHead.BeamColor &&
+					 _previousBeamColor1 == MovingHead.BeamColorLeft &&
+					 _previousBeamColor2 == MovingHead.BeamColorRight &&
 					 _previousOnOff == MovingHead.OnOff &&
 					 _previousIntensity == MovingHead.Intensity);
 		}
@@ -163,30 +165,51 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 			lightTopRadius = lightTopRadius * (MovingHead.Focus / 100.0);
 
 			// Convert the RGB color to HSV format
-			HSV hsv = HSV.FromRGB(MovingHead.BeamColor);
+			HSV hsvLeft = HSV.FromRGB(MovingHead.BeamColorLeft);
 
 			// Set the brightness value
-			hsv.V *= MovingHead.Intensity / 100.0;
+			hsvLeft.V *= MovingHead.Intensity / 100.0;
 
 			// Convert the HSV color back to RGB
-			Color beamColor = hsv.ToRGB();
-			
+			Color beamColorLeft = hsvLeft.ToRGB();
+
+			// Convert the RGB color to HSV format
+			HSV hsvRight = HSV.FromRGB(MovingHead.BeamColorRight);
+
+			// Set the brightness value
+			hsvRight.V *= MovingHead.Intensity / 100.0;
+
+			// Convert the HSV color back to RGB
+			Color beamColorRight = hsvRight.ToRGB();
+
 			// If the beam has not been created then...
 			if (_beamVolumes.Count == 0)
 			{
-				// Create the light beam with the specified color
+				// Create the light beam with the specified left color
 				_beamVolumes.Add(new BeamRotatingCylinderWithEndCaps(
 					0.0f,
-					(float) lightSimulationLength,
-					(float) lightBottomRadius,
-					(float) lightTopRadius,					
-					true));
+					(float)lightSimulationLength,
+					(float)lightBottomRadius,
+					(float)lightTopRadius,
+					true,
+					BeamRotatingCylinderWithEndCaps.LeftHalfPanelIndices));
+
+				// Create the light beam with the specified right color
+				_beamVolumes.Add(new BeamRotatingCylinderWithEndCaps(
+					0.0f,
+					(float)lightSimulationLength,
+					(float)lightBottomRadius,
+					(float)lightTopRadius,
+					true,
+					BeamRotatingCylinderWithEndCaps.RightHalfPanelIndices));
 
 				// Set the beam transparency
 				((ISpecifyVolumeTransparency)_beamVolumes[0]).Transparency = beamTransparency;
+				((ISpecifyVolumeTransparency)_beamVolumes[1]).Transparency = beamTransparency;
 
 				// Set the light beam color
-				((ISpecifyVolumeColor)_beamVolumes[0]).Color = beamColor;
+				((ISpecifyVolumeColor)_beamVolumes[0]).Color = beamColorLeft;
+				((ISpecifyVolumeColor)_beamVolumes[1]).Color = beamColorRight;
 			}
 			// Otherwise the light beam volume has been created
 			else
@@ -194,36 +217,58 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 				// Beam is always visible because when a true beam is not displayed
 				// we are displaying a black disc
 				_beamVolumes[0].Visible = true;
+				_beamVolumes[1].Visible = true;	
 
 				// Determine if the light beam should be visible
 				// (Transparent is used for the default beam color for color mixing fixtures)
 				if (MovingHead.OnOff &&
-				    MovingHead.BeamColor != Color.Transparent)
+				    MovingHead.BeamColorLeft != Color.Transparent)
 				{
 					// Set the light beam color
-					((ISpecifyVolumeColor)_beamVolumes[0]).Color = beamColor;
+					((ISpecifyVolumeColor)_beamVolumes[0]).Color = beamColorLeft;
+					((ISpecifyVolumeColor)_beamVolumes[1]).Color = beamColorRight;
 
-					// Update the geometry on the light beam
+					// Update the geometry on the light beam left side
 					((IUpdateCylinder)_beamVolumes[0]).Update(
 						0.0f,
 						(float)lightSimulationLength,
 						(float)lightBottomRadius,
-						(float)lightTopRadius);
+						(float)lightTopRadius,
+						BeamRotatingCylinderWithEndCaps.LeftHalfPanelIndices);
+
+					// Update the geometry on the light beam right side
+					((IUpdateCylinder)_beamVolumes[1]).Update(
+						0.0f,
+						(float)lightSimulationLength,
+						(float)lightBottomRadius,
+						(float)lightTopRadius,
+						BeamRotatingCylinderWithEndCaps.RightHalfPanelIndices);
 				}
 				else
 				{
 					// Turn the beam black
 					((ISpecifyVolumeColor)_beamVolumes[0]).Color = Color.Black;
+					((ISpecifyVolumeColor)_beamVolumes[1]).Color = Color.Black;
 
 					// Set the beam transparency to 100% opaque
 					((ISpecifyVolumeTransparency)_beamVolumes[0]).Transparency = 1.0;
+					((ISpecifyVolumeTransparency)_beamVolumes[1]).Transparency = 1.0;
 
-					// Update the geometry on the light beam
+					// Update the geometry on the light beam left side
 					((IUpdateCylinder)_beamVolumes[0]).Update(
 						0.0f,
 						(float)0.5, // Going smaller displayed artifacts
 						(float)lightBottomRadius,
-						(float)lightBottomRadius);
+						(float)lightBottomRadius,
+						BeamRotatingCylinderWithEndCaps.LeftHalfPanelIndices);
+					
+					// Update the geometry on the light beam right side
+					((IUpdateCylinder)_beamVolumes[1]).Update(
+						0.0f,
+						(float)0.5, // Going smaller displayed artifacts
+						(float)lightBottomRadius,
+						(float)lightBottomRadius,
+						BeamRotatingCylinderWithEndCaps.RightHalfPanelIndices);
 				}
 			}
 		}
@@ -301,8 +346,9 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 				(float)lightHousingYOffset,
 				(float)_geometry.GetLightHousingLength(),
 				(float)_geometry.GetLightHousingRadius(),
-				(float)_geometry.GetLightHousingRadius(),				
-				false));
+				(float)_geometry.GetLightHousingRadius(),
+				false,
+				Cylinder.AllPanelsIndices));
 		}
 
 		/// <summary>
@@ -490,6 +536,7 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 		{
 			// Rotate the light beam
 			((CylinderWithEndCaps)_beamVolumes[0]).GroupRotation = new Vector3(0, horizontalRotationRadians, 0);
+			((CylinderWithEndCaps)_beamVolumes[1]).GroupRotation = new Vector3(0, horizontalRotationRadians, 0);
 
 			// Position the light beam
 			double lightHousingYOffset = _geometry.GetLightHousingLength() *
@@ -501,14 +548,33 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 				(float)(-1.0 * MovingHead.GetOrientationSign() * _geometry.GetBottomOfViewport() + MovingHead.GetOrientationSign() * 2 * _geometry.GetBaseHeight() + yPosition),
 				zPosition);
 
+			((CylinderWithEndCaps)_beamVolumes[1]).GroupTranslation = new Vector3(
+				(float)xPosition,
+				(float)(-1.0 * MovingHead.GetOrientationSign() * _geometry.GetBottomOfViewport() + MovingHead.GetOrientationSign() * 2 * _geometry.GetBaseHeight() + yPosition),
+				zPosition);
+
+			// Position the left side of the light beam
 			_beamVolumes[0].Position = new Vector3(
 				0,
 				(float)endOfLightHousing,
 				0);
 
-			// Tilt the light beam
+			// Position the right side of the light beam
+			_beamVolumes[1].Position = new Vector3(
+				0,
+				(float)endOfLightHousing,
+				0);
+
+			// Tilt the light beam left side
 			((IRotatableCylinder)_beamVolumes[0]).TiltRotation = new Vector3(tiltAngleRadians, 0, 0);
 			((IRotatableCylinder)_beamVolumes[0]).TiltTranslation = new Vector3(
+				0,
+				(float)(MovingHead.GetOrientationSign() * _geometry.GetLightHousingLength() * 0.75),
+				0);
+
+			// Tilt the light beam right side
+			((IRotatableCylinder)_beamVolumes[1]).TiltRotation = new Vector3(tiltAngleRadians, 0, 0);
+			((IRotatableCylinder)_beamVolumes[1]).TiltTranslation = new Vector3(
 				0,
 				(float)(MovingHead.GetOrientationSign() * _geometry.GetLightHousingLength() * 0.75),
 				0);
@@ -548,8 +614,9 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 			List<Tuple<IVolume, Guid>> volumes = _grayVolumes.Select(volume => new Tuple<IVolume, Guid>(volume, GrayVolumeShader.ShaderID)).ToList();
 			
 			// Add the colored volumes
-			volumes.AddRange(_beamVolumes.Select(volume => new Tuple<IVolume, Guid>(volume, ColorVolumeShader.ShaderID)));
-			
+			volumes.AddRange(_beamVolumes.Select(volume => new Tuple<IVolume, Guid>(volume, ColorVolumeShader1.ShaderID)));
+			volumes.AddRange(_beamVolumes.Select(volume => new Tuple<IVolume, Guid>(volume, ColorVolumeShader2.ShaderID)));
+
 			return volumes;
 		}
 

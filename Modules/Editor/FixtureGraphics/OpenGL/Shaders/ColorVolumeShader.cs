@@ -23,28 +23,6 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL.Shaders
 
 		#endregion
 
-		#region Static Constructor
-
-		/// <summary>
-		/// Static Constructor
-		/// </summary>
-		static ColorVolumeShader()
-		{
-			// Initialize the unique ID
-			ShaderID = Guid.NewGuid();
-		}
-
-		#endregion
-
-		#region Static Public Properties
-
-		/// <summary>
-		/// Unique identifier for the shader.
-		/// </summary>
-		static public Guid ShaderID { get; set; }
-
-		#endregion
-
 		#region Protected Methods
 
 		/// <summary>

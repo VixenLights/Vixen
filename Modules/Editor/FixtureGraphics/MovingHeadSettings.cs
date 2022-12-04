@@ -17,7 +17,8 @@ namespace VixenModules.Editor.FixtureGraphics
 		{
 			BeamLength = 1;
 			OnOff = true;
-			BeamColor = Color.Yellow;
+			BeamColorLeft = Color.Yellow;
+			BeamColorRight = Color.Yellow;
 			Intensity = 100;
 			Focus = 100;
 			Legend = string.Empty;
@@ -59,7 +60,12 @@ namespace VixenModules.Editor.FixtureGraphics
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>
-		public Color BeamColor { get; set; }
+		public Color BeamColorLeft { get; set; }
+
+		/// <summary>
+		/// Refer to interface documentation.
+		/// </summary>
+		public Color BeamColorRight { get; set; }
 
 		/// <summary>
 		/// Refer to interface documentation.
@@ -114,7 +120,8 @@ namespace VixenModules.Editor.FixtureGraphics
 				TiltAngle = TiltAngle,
 				BeamLength = BeamLength,
 				OnOff = OnOff,
-				BeamColor = BeamColor,
+				BeamColorLeft = BeamColorLeft,
+				BeamColorRight = BeamColorRight,
 				Intensity = Intensity,
 				Focus = Focus,
 				Legend = Legend,
@@ -166,7 +173,8 @@ namespace VixenModules.Editor.FixtureGraphics
 				   movingHead.TiltAngle == TiltAngle &&
 				   movingHead.BeamLength == BeamLength &&
 				   movingHead.OnOff == OnOff &&
-				   movingHead.BeamColor == BeamColor &&
+				   movingHead.BeamColorLeft == BeamColorLeft &&
+				   movingHead.BeamColorRight == BeamColorRight &&
 				   movingHead.Intensity == Intensity &&
 				   movingHead.Focus == Focus &&
 				   movingHead.Legend == Legend &&

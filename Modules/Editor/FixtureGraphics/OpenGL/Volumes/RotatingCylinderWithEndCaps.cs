@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using System.Collections.Generic;
+using OpenTK;
 
 namespace VixenModules.Editor.FixtureGraphics.OpenGL.Volumes
 {
@@ -17,8 +18,15 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL.Volumes
 		/// <param name="bottomRadius">Radius of the bottom of the cylinder</param>
 		/// <param name="topRadius">Radius at the top of the cylinder</param>
 		/// <param name="isDynamic">Whether the cylinder changes shape during execution</param>
-		public RotatingCylinderWithEndCaps(float yOffset, float length, float bottomRadius, float topRadius, bool isDynamic) :
-			base(yOffset, length, bottomRadius, topRadius, isDynamic)
+		/// <param name="panelIndices">Panel indices to draw</param>		
+		public RotatingCylinderWithEndCaps(
+			float yOffset, 
+			float length, 
+			float bottomRadius, 
+			float topRadius, 
+			bool isDynamic,
+			List<int> panelIndices) :
+			base(yOffset, length, bottomRadius, topRadius, isDynamic, panelIndices)
 		{
 		}
 

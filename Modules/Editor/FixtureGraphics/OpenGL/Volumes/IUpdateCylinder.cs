@@ -1,4 +1,6 @@
-﻿namespace VixenModules.Editor.FixtureGraphics.OpenGL.Volumes
+﻿using System.Collections.Generic;
+
+namespace VixenModules.Editor.FixtureGraphics.OpenGL.Volumes
 {
 	/// <summary>
 	/// Updates the geometry of a cylinder.
@@ -12,10 +14,12 @@
 		/// <param name="length">Length of the cylinder</param>
 		/// <param name="bottomRadius">Bottom radius of the cylinder</param>
 		/// <param name="topRadius">Top radius of the cylinder</param>
+		/// <param name="panelIndices">Panel indices to draw</param>		
 		void Update(
 			float yOffset,
 			float length,
 			float bottomRadius,
-			float topRadius);			
+			float topRadius,
+			List<int> panelIndices);
 	}
 }

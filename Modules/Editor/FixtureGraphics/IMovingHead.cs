@@ -44,9 +44,16 @@ namespace VixenModules.Editor.FixtureGraphics
 		bool OnOff { get; set; }
 
 		/// <summary>
-		/// Color of the light beam.
+		/// Color of the left side of the light beam.
 		/// </summary>
-		Color BeamColor { get; set; }
+		/// <remarks>Some color wheel fixtures support displaying a half step of two colors</remarks>
+		Color BeamColorLeft { get; set; }
+
+		/// <summary>
+		/// Color of the right side of the light beam.
+		/// </summary>
+		/// <remarks>Some color wheel fixtures support displaying a half step of two colors</remarks>
+		Color BeamColorRight { get; set; }
 
 		/// <summary>
 		/// Intensity of the light beam (1-100).
