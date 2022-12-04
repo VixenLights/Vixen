@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Common.AudioPlayer.SampleProvider;
+using CSCore;
 using CSCore.Codecs;
 using CSCore.CoreAudioAPI;
 using CSCore.DirectSound;
@@ -26,6 +28,11 @@ namespace Common.AudioPlayer
         private AudioPreferences _preferences;
         private readonly MMDeviceEnumerator _mmDeviceEnumerator;
         private readonly MMNotificationClient _mmNotificationClient;
+
+        static AudioOutputManager()
+        {
+	        CodecFactory.Instance.Register("ogg-vorbis", new CodecFactoryEntry(s => new NVorbisSource(s).ToWaveSource(), ".ogg"));
+        }
 
         protected AudioOutputManager()
         {

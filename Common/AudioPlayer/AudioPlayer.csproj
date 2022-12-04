@@ -33,6 +33,9 @@
 		  <ExcludeAssets>runtime</ExcludeAssets>
 		  <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
+	  <PackageReference Include="NVorbis" Version="0.10.5">
+	    <ExcludeAssets>runtime</ExcludeAssets>
+	  </PackageReference>
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\Preferences\Preferences.csproj">
