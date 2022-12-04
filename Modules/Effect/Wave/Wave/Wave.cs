@@ -686,23 +686,23 @@ namespace VixenModules.Effect.Wave
 		/// <summary>
 		/// Calculates the bottom of the wave based on a radius and wave thickness.
 		/// </summary>		
-		private int CalculateBottomOfWave(int ystart, double r, int thicknessWave)
+		private int CalculateBottomOfWave(double ystart, double r, int thicknessWave)
 		{
-			return (int)(ystart - (r * (thicknessWave / 100.0)));
+			return (int)Math.Floor(ystart - (r * (thicknessWave / 100.0)));
 		}
 
 		/// <summary>
 		/// Calculates the top of the wave based on a radius and wave thickness.
 		/// </summary>		
-		private int CalculateTopOfWave(int ystart, double r, int thicknessWave)
+		private int CalculateTopOfWave(double ystart, double r, int thicknessWave)
 		{
-			return (int)(ystart + (r * (thicknessWave / 100.0)));
+			return (int)Math.Ceiling((ystart + (r * (thicknessWave / 100.0))));
 		}
 
 		/// <summary>
 		/// Calculates the top and bottom of the wave based on a radius and wave thickness.
 		/// </summary>		
-		private void CalculateTopAndBottomOfWave(int yStart, double r, int waveThickness, ref int y1, ref int y2)
+		private void CalculateTopAndBottomOfWave(double yStart, double r, int waveThickness, ref int y1, ref int y2)
 		{
 			// Calculate the bottom of the wave
 			y1 = CalculateBottomOfWave(yStart, r, waveThickness);
@@ -766,7 +766,7 @@ namespace VixenModules.Effect.Wave
 			// Populate the Y positions of the wave
 			PopulateYPositions(y1, y2, roundedWaveYOffset, pixelsColumn, wave, fillColor);
 			
-			// If the waveform is being mirroed then...
+			// If the waveform is being mirrored then...
 			if (mirrorWave)
 			{
 				// Mirror the two Y coordinates around the center
@@ -950,7 +950,7 @@ namespace VixenModules.Effect.Wave
 			// Frame buffer is null when priming waves in the SetupRender method
 			if (frameBuffer != null)
 			{
-				// If in sname mode then...
+				// If in snake mode then...
 				if (wave.MovementType == WaveMovementType.Snake)
 				{
 					// If the specified pixel is within the window then...
@@ -1688,7 +1688,7 @@ namespace VixenModules.Effect.Wave
 		private void RenderColumnSine(double sinrad, int waveHeight, int waveThickness, int yOffset, bool mirrorWave, IWaveform wave, double r, Color fillColor)
 		{			
 			// Determine the center Y position of this column
-			int ystart = (int)(r * (waveHeight / 100.0) * sinrad + wave.YC);
+			double ystart = r * (waveHeight / 100.0) * sinrad + wave.YC;
 
 			// Determine the starting and ending y coordinate for this column	
 			int y1 = 0;
