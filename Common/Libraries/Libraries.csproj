@@ -158,7 +158,8 @@
     <PackageReference Include="Orc.SystemInfo" Version="4.0.0" />
     <PackageReference Include="Orc.Theming" Version="4.1.0" />
     <PackageReference Include="Orchestra.Core" Version="6.1.1" />
-    <PackageReference Include="Svg" Version="3.2.3" />
+    <PackageReference Include="NVorbis" Version="0.10.5" />
+    <PackageReference Include="Svg" Version="3.4.1" />
     <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
     <PackageReference Include="System.Reactive" Version="4.3.2" />
     <PackageReference Include="System.Reflection" Version="4.3.0" />
