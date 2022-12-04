@@ -51,38 +51,57 @@ $jql += " ORDER BY Key"
 
 $jql = $jql.Trim() -replace ' ', '%20'
 
-# Invoke the Rest API for the constructed JQL
-$jiraSearchUri = ("{0}?jql=$jql&startAt=0&maxResult=1000" -f $jiraRestApi)
+$startAt=0
 
-Write-Host $jiraSearchUri
-
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$result = Invoke-RestMethod -Method Get -Uri $jiraSearchUri -ContentType 'application/json'
-
-if (!$?)
-{
-    Write-Error 'The call to the JIRA REST API was not successful.'
-    return
-}
-
-# Gather up all of the issues
-$issues = $result.issues
+[bool] $moreRecords = 1
 
 $issueMap = New-Object System.Collections.Specialized.OrderedDictionary
-foreach ($issue in $issues)
+$issueCount = 0
+
+while($moreRecords)
 {
-    $code = $issue.key
-    $type = $issue.fields.issueType.name
-    $summary = $issue.fields.summary
+	# Invoke the Rest API for the constructed JQL
+	$jiraSearchUri = ("{0}?jql=$jql&maxResults=100&startAt={1}" -f $jiraRestApi, $startAt)
 
-    if (!$issueMap.Contains($type))
-    {
-		$list = New-Object System.Collections.Specialized.OrderedDictionary
-        $issueMap.Add($type, $list)
-    }
+	Write-Host $jiraSearchUri
 
-    $issueMap[$type].Add($code, $summary)
+	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+	$result = Invoke-RestMethod -Method Get -Uri $jiraSearchUri -ContentType 'application/json'
+
+	if (!$?)
+	{
+		Write-Error 'The call to the JIRA REST API was not successful.'
+		return
+	}
+	
+	# Gather up all of the issues
+	$issues = $result.issues
+	
+	foreach ($issue in $issues)
+	{
+		$code = $issue.key
+		$type = $issue.fields.issueType.name
+		$summary = $issue.fields.summary
+
+		if (!$issueMap.Contains($type))
+		{
+			$list = New-Object System.Collections.Specialized.OrderedDictionary
+			$issueMap.Add($type, $list)
+		}
+
+		$issueMap[$type].Add($code, $summary)
+		$issueCount += 1
+	}
+
+	if ($issueCount -lt $result.total)
+	{
+		$startAt = $StartAt + 100
+	}else{
+		$moreRecords = 0
+	}
+	
 }
+
 
 # Generate the output
 $output = [string]::Empty
