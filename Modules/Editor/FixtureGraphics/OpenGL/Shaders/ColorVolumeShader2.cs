@@ -19,5 +19,14 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL.Shaders
 		}
 
 		#endregion
+
+		#region Static Public Properties
+
+		/// <summary>
+		/// Unique identifier for the shader.
+		/// </summary>
+		static public Guid ShaderID { get; set; }
+
+		#endregion
 	}
 }
