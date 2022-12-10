@@ -168,6 +168,22 @@ namespace VixenModules.Preview.VixenPreview
 			InitUndo();
 
 			VerifyPreviewShapeLocations();
+
+			// If the background is blank then...
+			if (IsBackgroundBlank())
+			{
+				// Ensure the background image is large enough to contain all the shapes
+				previewForm.Preview.VerifyPreviewBackgroundSize();
+			}
+		}
+
+		/// <summary>
+		/// Returns true when the preview is using a blank background.
+		/// </summary>
+		/// <returns>True when the preview is using a blank background</returns>
+		private bool IsBackgroundBlank()
+		{
+			return string.IsNullOrEmpty(Data.BackgroundFileName);
 		}
 
 		private static void VerifyPreviewShapeLocations()
@@ -587,13 +603,25 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void backgroundPropertiesToolStripMenuItem_Click(object sender, EventArgs e) {
 			ResizePreviewForm resizeForm = new ResizePreviewForm(previewForm.Preview.Background.Width,
-																 previewForm.Preview.Background.Height);
+																 previewForm.Preview.Background.Height,
+																 true);
 			if (resizeForm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 if (resizeForm.Height > 10 && resizeForm.Width > 10)
                 {
-                    previewForm.Preview.ResizeBackground(resizeForm.Width, resizeForm.Height);
-                    previewForm.Refresh();
-                }
+					// If the background is NOT blank then...
+	                if (!IsBackgroundBlank())
+	                {
+						// Resize the image background
+		                previewForm.Preview.ResizeImageBackground(resizeForm.Width, resizeForm.Height, resizeForm.ScaleShapes);
+	                }
+	                else
+	                {
+						// Resize the blank black background
+		                previewForm.Preview.ResizeBlankBackground(resizeForm.Width, resizeForm.Height, resizeForm.ScaleShapes);
+	                }
+
+	                previewForm.Refresh();
+				}
                 else
                 {
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)

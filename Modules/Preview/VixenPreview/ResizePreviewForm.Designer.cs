@@ -45,6 +45,7 @@
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonHelp = new System.Windows.Forms.Button();
 			this.imageListLocks = new System.Windows.Forms.ImageList(this.components);
+			this._scaleShapes = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxLock)).BeginInit();
@@ -183,7 +184,7 @@
 			// buttonCancel
 			// 
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(176, 138);
+			this.buttonCancel.Location = new System.Drawing.Point(176, 156);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
 			this.buttonCancel.TabIndex = 4;
@@ -194,7 +195,7 @@
 			// 
 			// buttonOK
 			// 
-			this.buttonOK.Location = new System.Drawing.Point(95, 138);
+			this.buttonOK.Location = new System.Drawing.Point(95, 156);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(75, 23);
 			this.buttonOK.TabIndex = 3;
@@ -209,7 +210,7 @@
 			this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
 			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.buttonHelp.Location = new System.Drawing.Point(12, 138);
+			this.buttonHelp.Location = new System.Drawing.Point(12, 156);
 			this.buttonHelp.Name = "buttonHelp";
 			this.buttonHelp.Size = new System.Drawing.Size(60, 23);
 			this.buttonHelp.TabIndex = 59;
@@ -230,13 +231,24 @@
 			this.imageListLocks.Images.SetKeyName(3, "unlink");
 			this.imageListLocks.Images.SetKeyName(4, "link_break");
 			// 
+			// _scaleShapes
+			// 
+			this._scaleShapes.AutoSize = true;
+			this._scaleShapes.Location = new System.Drawing.Point(12, 133);
+			this._scaleShapes.Name = "_scaleShapes";
+			this._scaleShapes.Size = new System.Drawing.Size(92, 17);
+			this._scaleShapes.TabIndex = 60;
+			this._scaleShapes.Text = "Scale Shapes";
+			this._scaleShapes.UseVisualStyleBackColor = true;
+			// 
 			// ResizePreviewForm
 			// 
 			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(263, 170);
+			this.ClientSize = new System.Drawing.Size(263, 194);
+			this.Controls.Add(this._scaleShapes);
 			this.Controls.Add(this.buttonHelp);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.buttonCancel);
@@ -257,6 +269,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.numericHeight)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericWidth)).EndInit();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
         }
 
@@ -277,5 +290,6 @@
         private System.Windows.Forms.Button buttonHelp;
         private System.Windows.Forms.PictureBox pictureBoxLock;
         private System.Windows.Forms.ImageList imageListLocks;
-    }
+		private System.Windows.Forms.CheckBox _scaleShapes;
+	}
 }

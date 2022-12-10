@@ -8,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
 using Catel.IoC;
 using Catel.Services;
 
@@ -396,9 +395,7 @@ namespace VixenModules.Preview.VixenPreview
 						Width = Height = 1;
 					_background = new Bitmap(Width, Height, PixelFormat.Format32bppPArgb);
 
-					Graphics gfx = Graphics.FromImage(_background);
-					gfx.Clear(Color.Black);
-					gfx.Dispose();
+					ClearToBlackBitmap(_background);
 				}
 				else
 				{
@@ -449,11 +446,60 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void LoadBackground()
 		{
-			if (Data.BackgroundFileName != null)
+			// If a background image exists then...
+			if (!string.IsNullOrEmpty(Data.BackgroundFileName))
 			{
 				LoadBackground(Data.BackgroundFileName);
+
+				// If the background is all black then most likely Vixen created this background file
+				// because of a bug.  The preview will render slightly faster without a background bitmap.
+				if (IsBackgroundAllBlack())
+				{
+					// Clear out the background bitmap so that it is reconstructed based on the shapes in the preview.
+					Background = null;
+
+					// Clear the background file name
+					// An empty file name indicates to the software that there is not a true background image
+					Data.BackgroundFileName = null;	
+				}
 			}
 		}
+
+		/// <summary>
+		/// Returns true if the background bitmap is all black.
+		/// </summary>
+		/// <returns>True if the background bitmap is all black</returns>
+		private bool IsBackgroundAllBlack()
+		{
+			FastPixel.FastPixel fp = new FastPixel.FastPixel(Background);
+			fp.Lock();
+
+			bool allBack = true;
+
+			for (int x = 0; x < fp.Width; x++)
+			{
+				for (int y = 0; y < fp.Height; y++)
+				{
+					Color pixel = fp.GetPixel(x, y);
+
+					if (pixel.ToArgb() != Color.Black.ToArgb())
+					{
+						allBack = false;
+						break;
+					}
+				}
+
+				if (!allBack)
+				{
+					break;
+				}
+			}
+
+			fp.Unlock(false);
+
+			return allBack;
+		}
+		
 
 		private void SetupBackgroundAlphaImage()
 		{
@@ -1577,9 +1623,59 @@ namespace VixenModules.Preview.VixenPreview
 			if (DefaultBackground)
 			{
 				Background = null;
+
+				// Resizing the control can increase or decrease the preview size.
+				// This method prevents the background bitmap from being made too small
+				// and turns on scroll bars to keep all the shapes visible.
+				VerifyPreviewBackgroundSize();
 			}
 			SetupScrollBars();
 			EndUpdate();
+		}
+
+		/// <summary>
+		/// Verifies the background image is large enough to contain all the shapes.
+		/// If the background image is NOT large enough it is expanded.
+		/// </summary>
+		public void VerifyPreviewBackgroundSize()
+		{
+			// If the display items have been populated then...
+			if (DisplayItems != null)
+			{
+				// Keep track of the right, bottom most position of the shapes
+				int maxX = 0;
+				int maxY = 0;
+
+				// Loop over the display items in the preview
+				foreach (var previewDisplayItem in DisplayItems)
+				{
+					// Check to see if this shape is the furthest shape to the right
+					if (previewDisplayItem.Shape.Right > maxX)
+					{
+						maxX = previewDisplayItem.Shape.Right;
+					}
+
+					// Check to see if this shape is the furthest to the bottom
+					if (previewDisplayItem.Shape.Bottom > maxY)
+					{
+						maxY = previewDisplayItem.Shape.Bottom;
+					}
+				}
+
+				// If any shape is beyond the background width and height then...
+				if ((Background.Width < maxX ||
+				     Background.Height < maxY))
+				{
+					// Adjust the background size 
+					ResizeBlankBackground(
+						maxX + 1 + SystemInformation.VerticalScrollBarWidth, 
+						maxY + 1 + SystemInformation.HorizontalScrollBarHeight,
+						false);
+
+					// This is needed so that scrollbars behave
+					SetupBackgroundAlphaImage();
+				}
+			}
 		}
 
 		private void SetupScrollBars()
@@ -1988,7 +2084,13 @@ namespace VixenModules.Preview.VixenPreview
 
 		#endregion
 
-		public void ResizeBackground(int width, int height)
+		/// <summary>
+		/// Resizes the specified image background to the specified width and height.  Optionally scaling the display item shapes.
+		/// </summary>
+		/// <param name="width">New width of the background</param>
+		/// <param name="height">New height of the background</param>
+		/// <param name="scaleShapes">True when scaling the display item shapes</param>
+		public void ResizeImageBackground(int width, int height, bool scaleShapes)
 		{
 			double aspect = width/(double) _background.Width;
 			Bitmap newBackground = PreviewTools.ResizeBitmap(new Bitmap(_background), new Size(width, height));
@@ -1999,11 +2101,67 @@ namespace VixenModules.Preview.VixenPreview
 			Data.BackgroundFileName = imageFileName;
 			LoadBackground();
 
+			if (scaleShapes)
+			{
+				ScaleDisplayItemShapes(aspect);
+			}
+
+			EraseScreen();
+		}
+
+		/// <summary>
+		/// Resizes the blank black background to the specified width and height.  Optionally scaling the display item shapes.
+		/// </summary>
+		/// <param name="width">New width of the background</param>
+		/// <param name="height">New height of the background</param>
+		/// <param name="scaleShapes">True when scaling the display item shapes</param>
+		public void ResizeBlankBackground(int width, int height, bool scaleShapes)
+		{
+			// Calculate the scale factor of the original width to the new width
+			double scaleFactor = width / (double)_background.Width;
+
+			// Resize the background to the desired size
+			_background = new Bitmap(width, height, PixelFormat.Format32bppPArgb);
+
+			// Initialize the background to black
+			ClearToBlackBitmap(_background);
+
+			// If scaling the display item shapes then...
+			if (scaleShapes)
+			{
+				// Scale the display item shapes 
+				ScaleDisplayItemShapes(scaleFactor);
+			}
+
+			// This is needed so that scrollbars behave
+			SetupBackgroundAlphaImage();
+
+			// Refresh the screen
+			EraseScreen();
+		}
+
+		/// <summary>
+		/// Scales the display item shapes using the specified scale factor.
+		/// </summary>
+		/// <param name="scaleFactor">Scale Factor to resize the shapes</param>
+		private void ScaleDisplayItemShapes(double scaleFactor)
+		{
 			foreach (DisplayItem item in DisplayItems)
 			{
-				item.Shape.Resize(aspect);
+				item.Shape.Resize(scaleFactor);
 			}
-			EraseScreen();
+		}
+
+		/// <summary>
+		/// Initializes the specified bitmap to blaock.
+		/// </summary>
+		/// <param name="bitmap">Bitmap to clear to black</param>
+		private void ClearToBlackBitmap(Bitmap bitmap)
+		{
+			using (Graphics gfx = Graphics.FromImage(bitmap))
+			{
+				gfx.Clear(Color.Black);
+			}
 		}
 
 		#region Templates
