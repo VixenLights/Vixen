@@ -19,7 +19,6 @@ namespace VixenModules.Effect.Candle
 	{
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private EffectIntents _effectIntents;
-		private Random _r;
 		private CandleData _data;
 
 		public override IModuleDataModel ModuleData
@@ -200,8 +199,7 @@ namespace VixenModules.Effect.Candle
 		protected override void _PreRender(CancellationTokenSource cancellationToken = null)
 		{
 			_effectIntents = new EffectIntents();
-			_r = new Random();
-		
+
 			var nodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator());
 
 			var elementGroup = nodes.Select((x, index) => new { x, index })
@@ -291,7 +289,7 @@ namespace VixenModules.Effect.Candle
 
 		private float _GenerateStartingLevel()
 		{
-			return (float) _r.NextDouble();
+			return (float)RandDouble();
 		}
 
 		private float _GenerateStateLength()
@@ -299,7 +297,7 @@ namespace VixenModules.Effect.Candle
 			float stateLength = 1000f/_data.FlickerFrequency;
 
 			int deviationCap = (int) (_data.FlickerFrequencyDeviationCap*100);
-			float deviation = _r.Next(-deviationCap, deviationCap)*0.01f;
+			float deviation = Rand(-deviationCap, deviationCap)*0.01f;
 
 			return stateLength + stateLength*deviation;
 		}
@@ -309,9 +307,9 @@ namespace VixenModules.Effect.Candle
 			float change = _data.ChangePercentage;
 
 			int deviationCap = (int) (_data.ChangePercentageDeviationCap*100);
-			float deviation = _r.Next(-deviationCap, deviationCap)*0.01f;
+			float deviation = Rand(-deviationCap, deviationCap)*0.01f;
 
-			int changeDirection = _r.Next(-1, 2);
+			int changeDirection = Rand(-1, 2);
 
 			return (change + change*deviation)*changeDirection;
 		}
