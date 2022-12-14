@@ -37,7 +37,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Set BUILD_NUMBER
-        uses: einaregilsson/build-number@v3
+        uses: VixenLights/build-number@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
