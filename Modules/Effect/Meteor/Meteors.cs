@@ -187,9 +187,25 @@ namespace VixenModules.Effect.Meteors
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"TailTaper")]
+		[ProviderDescription(@"TailTaper")]
+		[PropertyOrder(9)]
+		public Curve TailTaperCurve
+		{
+			get { return _data.TailTaperCurve; }
+			set
+			{
+				_data.TailTaperCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"StartPosition")]
 		[ProviderDescription(@"StartPosition")]
-		[PropertyOrder(9)]
+		[PropertyOrder(10)]
 		public MeteorStartPosition MeteorStartPosition
 		{
 			get { return _data.MeteorStartPosition; }
@@ -205,7 +221,7 @@ namespace VixenModules.Effect.Meteors
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Movement")]
 		[ProviderDescription(@"MovementMode")]
-		[PropertyOrder(10)]
+		[PropertyOrder(11)]
 		public MeteorMovement MeteorMovement
 		{
 			get { return _data.MeteorMovement; }
@@ -222,7 +238,7 @@ namespace VixenModules.Effect.Meteors
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"EnableGroundLevel")]
 		[ProviderDescription(@"EnableGroundLevel")]
-		[PropertyOrder(11)]
+		[PropertyOrder(12)]
 		public bool EnableGroundLevel
 		{
 			get { return _data.EnableGroundLevel; }
@@ -239,7 +255,7 @@ namespace VixenModules.Effect.Meteors
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"GroundLevel")]
 		[ProviderDescription(@"GroundLevel")]
-		[PropertyOrder(12)]
+		[PropertyOrder(13)]
 		public Curve GroundLevelCurve
 		{
 			get { return _data.GroundLevelCurve; }
@@ -255,7 +271,7 @@ namespace VixenModules.Effect.Meteors
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"MeteorPerString")]
 		[ProviderDescription(@"MeteorPerString")]
-		[PropertyOrder(13)]
+		[PropertyOrder(14)]
 		public bool MeteorPerString
 		{
 			get { return _data.MeteorPerString; }
@@ -272,7 +288,7 @@ namespace VixenModules.Effect.Meteors
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"FlipDirection")]
 		[ProviderDescription(@"FlipDirection")]
-		[PropertyOrder(14)]
+		[PropertyOrder(15)]
 		public bool FlipDirection
 		{
 			get { return _data.FlipDirection; }
@@ -289,7 +305,7 @@ namespace VixenModules.Effect.Meteors
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"CountPerString")]
 		[ProviderDescription(@"CountPerString")]
-		[PropertyOrder(15)]
+		[PropertyOrder(16)]
 		public bool CountPerString
 		{
 			get { return _data.CountPerString; }
@@ -983,6 +999,10 @@ namespace VixenModules.Effect.Meteors
 							break;
 					}
 					hsv = meteor.Hsv;
+					//
+					//Curve taper = new Curve();
+					double pxBrightness = TailTaperCurve.GetValue(ph / tailLength);
+					//
 					hsv.V *= meteor.HsvBrightness * (float) (1.0 - (double) ph/tailLength) * level;
 					//var decPlaces = (int) (((decimal) (meteor.TailX*ph)%1)*100);
 					var decPlaces = (int)(meteor.TailX * ph % 1d * 100);

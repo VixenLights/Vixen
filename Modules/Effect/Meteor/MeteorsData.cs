@@ -29,6 +29,7 @@ namespace VixenModules.Effect.Meteors
 			MeteorEffect = MeteorsEffect.None;
 			ColorType = MeteorsColorType.Palette;
 			LengthCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 5.0, 5.0 }));
+			TailTaperCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 0.0 }));
 			GroundLevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
 			LevelCurve = new Curve(CurveType.Flat100);
 			Orientation=StringOrientation.Vertical;
@@ -87,6 +88,9 @@ namespace VixenModules.Effect.Meteors
 
 		[DataMember]
 		public Curve LengthCurve { get; set; }
+
+		[DataMember]
+		public Curve TailTaperCurve { get; set; }
 
 		[DataMember]
 		public Curve LevelCurve { get; set; }
@@ -190,6 +194,11 @@ namespace VixenModules.Effect.Meteors
 					LengthCurve = new Curve(new PointPairList(new[] {0.0, 100.0}, new[] {value, value}));
 					Length = 0;
 				}
+				
+				if (TailTaperCurve == null)
+                {
+					TailTaperCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 0.0 }));
+                }
 			}
 
 			if (XCenterSpeedCurve == null)
@@ -232,6 +241,7 @@ namespace VixenModules.Effect.Meteors
 				Colors = Colors.ToList(),
 				ColorType = ColorType,
 				LengthCurve = new Curve(LengthCurve),
+				TailTaperCurve = new Curve(TailTaperCurve),
 				SpeedVariationCurve = new Curve(SpeedVariationCurve),
 				CenterSpeedCurve = new Curve(CenterSpeedCurve),
 				RandomBrightness = RandomBrightness,
