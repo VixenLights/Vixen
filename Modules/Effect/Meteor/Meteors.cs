@@ -999,10 +999,10 @@ namespace VixenModules.Effect.Meteors
 							break;
 					}
 					hsv = meteor.Hsv;
-					//
+					//**
 					hsv.V *= meteor.HsvBrightness * (TailTaperCurve.GetValue((double)ph / (double)tailLength *100 ) / 100) * level;
 					//hsv.V *= meteor.HsvBrightness * (float) (1.0 - (double) ph/tailLength) * level;
-					//
+					//**
 					var decPlaces = (int)(meteor.TailX * ph % 1d * 100);
 					if (decPlaces <= 40 || decPlaces >= 60)
 					{
