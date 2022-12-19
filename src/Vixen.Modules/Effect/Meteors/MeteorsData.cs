@@ -189,11 +189,10 @@ namespace VixenModules.Effect.Meteors
 					LengthCurve = new Curve(new PointPairList(new[] {0.0, 100.0}, new[] {value, value}));
 					Length = 0;
 				}
-				
-				if (TailTaperCurve == null)
-                {
-					TailTaperCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 0.0 }));
-                }
+			}
+			if (TailTaperCurve == null)
+			{
+				TailTaperCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 0.0 }));
 			}
 
 			if (XCenterSpeedCurve == null)

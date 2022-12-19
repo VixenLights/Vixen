@@ -994,11 +994,9 @@ namespace VixenModules.Effect.Meteors
 					}
 					hsv = meteor.Hsv;
 					//
-					//Curve taper = new Curve();
-					double pxBrightness = TailTaperCurve.GetValue(ph / tailLength);
+					hsv.V *= meteor.HsvBrightness * (TailTaperCurve.GetValue((double)ph / (double)tailLength *100 ) / 100) * level;
+					//hsv.V *= meteor.HsvBrightness * (float) (1.0 - (double) ph/tailLength) * level;
 					//
-					hsv.V *= meteor.HsvBrightness * (float) (1.0 - (double) ph/tailLength) * level;
-					//var decPlaces = (int) (((decimal) (meteor.TailX*ph)%1)*100);
 					var decPlaces = (int)(meteor.TailX * ph % 1d * 100);
 					if (decPlaces <= 40 || decPlaces >= 60)
 					{
