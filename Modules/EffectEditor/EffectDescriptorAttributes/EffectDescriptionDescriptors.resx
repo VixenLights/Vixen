@@ -424,7 +424,7 @@
     <value>Enables Random Speed settings.</value>
   </data>
   <data name="TailLength" xml:space="preserve">
-    <value>Controls the amount of TailLength.</value>
+    <value>Controls the length of the meteor's tail.</value>
   </data>
   <data name="SpeedVariation" xml:space="preserve">
     <value>Randomly adjust the Speed around the Speed level by the amount of variation.</value>
@@ -1211,5 +1211,8 @@
   </data>
   <data name="FixtureColorIntensity" xml:space="preserve">
     <value>Determines the intensity (brightness) of the color.</value>
+  </data>
+  <data name="TailTaper" xml:space="preserve">
+    <value>Controls the brightness taper of the meteor's tail.</value>
   </data>
 </root>

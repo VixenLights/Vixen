@@ -1167,4 +1167,7 @@
   <data name="FixtureColorIntensity" xml:space="preserve">
     <value>Intensity</value>
   </data>
+  <data name="TailTaper" xml:space="preserve">
+    <value>Tail Taper</value>
+  </data>
 </root>
