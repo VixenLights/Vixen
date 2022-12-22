@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+				<AssemblyName>Module.App.$(MSBuildProjectName)</AssemblyName>
+				<UseWindowsForms>true</UseWindowsForms>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\DiscreteColorPicker\DiscreteColorPicker.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\Curves\Curves.csproj" />
+		</ItemGroup>
+
+</Project>

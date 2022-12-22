@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+				<AssemblyName>Module.App.$(MSBuildProjectName)</AssemblyName>
+				<UseWindowsForms>true</UseWindowsForms>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<PackageReference Include="Catel.MVVM" Version="5.12.22" />
+				<PackageReference Include="NLog" Version="5.1.0" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\DiscreteColorPicker\DiscreteColorPicker.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\..\Property\Color\Color.csproj" />
+				<ProjectReference Include="..\..\Property\Face\Face.csproj" />
+				<ProjectReference Include="..\Marks\Marks.csproj" />
+		</ItemGroup>
+
+</Project>

@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+			<UseWindowsForms>true</UseWindowsForms>
+			<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<PackageReference Include="NLog" Version="5.1.0" />
+				<PackageReference Include="System.IO.Ports" Version="7.0.0" />
+				<PackageReference Include="System.Reactive" Version="5.0.0" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\Vixen.Common\Resources\Resources.csproj" />
+				<ProjectReference Include="..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\..\Vixen.Modules\App\Marks\Marks.csproj" />
+				<ProjectReference Include="..\..\Vixen.Modules\Media\Audio\Audio.csproj" />
+		</ItemGroup>
+
+</Project>

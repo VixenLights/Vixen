@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+			<UseWindowsForms>true</UseWindowsForms>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Common\AudioPlayer\AudioPlayer.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+		</ItemGroup>
+
+</Project>

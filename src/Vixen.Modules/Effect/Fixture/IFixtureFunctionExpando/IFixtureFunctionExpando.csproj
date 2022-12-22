@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+			<AssemblyName>IFixtureFunctionExpando</AssemblyName>
+			<UseWindowsForms>true</UseWindowsForms>
+		</PropertyGroup>
+
+		<ItemGroup>
+		  <ProjectReference Include="..\..\..\..\Vixen.Core\Vixen.Core.csproj" />
+		  <ProjectReference Include="..\..\..\App\ColorGradients\ColorGradients.csproj" />
+		  <ProjectReference Include="..\..\..\App\Curves\Curves.csproj" />
+		  <ProjectReference Include="..\..\..\App\Fixture\Fixture.csproj" />
+		  <ProjectReference Include="..\..\Effect\Effect.csproj" />
+		</ItemGroup>
+
+</Project>

@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+				<UseWindowsForms>true</UseWindowsForms>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<EmbeddedResource Include="Images\EffectImage.png" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj" />
+				<ProjectReference Include="..\..\App\Curves\Curves.csproj" />
+				<ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj" />
+				<ProjectReference Include="..\Effect\Effect.csproj" />
+		</ItemGroup>
+
+</Project>

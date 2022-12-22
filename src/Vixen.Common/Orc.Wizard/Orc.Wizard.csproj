@@ -1,0 +1,66 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <UseWPF>true</UseWPF>
+	   <UseWindowsForms>true</UseWindowsForms>
+	   <ExtrasEnableImplicitWpfReferences>true</ExtrasEnableImplicitWpfReferences>
+	   <ExtrasEnableImplicitWinFormsReferences>true</ExtrasEnableImplicitWinFormsReferences>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Catel.Fody" Version="4.7.0">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Catel.MVVM" Version="5.12.22" />
+    <PackageReference Include="Fody" Version="6.6.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="MethodTimer.Fody" Version="3.2.0" />
+    <PackageReference Include="ModuleInit.Fody" Version="2.1.1" />
+    <PackageReference Include="Obsolete.Fody" Version="5.3.0" />
+    <PackageReference Include="Orc.Theming" Version="4.6.0" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<Page Remove="**/*.Template.xaml" />
+		<EmbeddedResource Include="**/*.Template.xaml" />
+
+		<None Remove="**/GeneratorParameters.json" />
+		<EmbeddedResource Include="**/GeneratorParameters.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Properties\Resources.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>Resources.resx</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Update="Properties\Resources.de.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Properties\Resources.es.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Properties\Resources.fr.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Properties\Resources.nl.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Properties\Resources.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	    <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Properties\Resources.ru.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Properties\Resources.zh-Hans.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+</Project>
