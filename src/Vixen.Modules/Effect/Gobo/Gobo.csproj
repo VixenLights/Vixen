@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+				<UseWindowsForms>true</UseWindowsForms>
+		</PropertyGroup>
+
+		<ItemGroup>
+		  <None Remove="Images\EffectImage.png" />
+		</ItemGroup>
+
+		<ItemGroup>
+		  <EmbeddedResource Include="Images\EffectImage.png" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\..\App\Curves\Curves.csproj" />
+				<ProjectReference Include="..\..\App\FixtureSpecificationManager\FixtureSpecificationManager.csproj" />
+				<ProjectReference Include="..\..\App\Fixture\Fixture.csproj" />
+				<ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj" />
+				<ProjectReference Include="..\..\Property\IntellegentFixture\IntellegentFixture.csproj" />
+				<ProjectReference Include="..\Effect\Effect.csproj" />
+		</ItemGroup>
+
+</Project>

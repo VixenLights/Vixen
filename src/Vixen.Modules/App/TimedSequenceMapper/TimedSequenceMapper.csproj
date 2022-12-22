@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <AssemblyName>Module.App.TimedSequenceMapper</AssemblyName>
+	  <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Catel.MVVM" Version="5.12.22" />
+    <PackageReference Include="gong-wpf-dragdrop" Version="3.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="NLog" Version="5.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
+    <ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
+    <ProjectReference Include="..\..\..\Vixen.Common\WPFCommon\WPFCommon.csproj" />
+    <ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+    <ProjectReference Include="..\..\Sequence\Timed\Timed.csproj" />
+  </ItemGroup>
+
+</Project>

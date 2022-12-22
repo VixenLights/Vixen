@@ -6,7 +6,6 @@ _ReSharper*
 /*.exe.*
 *.user
 *.suo
-/Output
 /Release
 /Release64
 Vixen 3*
@@ -18,8 +17,8 @@ Vixen.opensdf
 Debug64
 Debug
 /.vs
-/Common/Box2D/x64
-/Common/Box2D/Win32
-/Modules/Effect/Liquid/LiquidFunWrapper/x64
+src/Vixen.Common/Box2D/x64
+src/Vixen.Common/Box2D/Win32
+src/Vixen.Modules/Effect/Liquid/LiquidFunWrapper/x64
 /x64
 FodyWeavers.xsd

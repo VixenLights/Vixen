@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Vixen.Core\Vixen.Core.csproj" />
+    <ProjectReference Include="..\..\Vixen.Modules\OutputFilter\DimmingCurve\DimmingCurve.csproj" />
+    <ProjectReference Include="..\..\Vixen.Modules\Property\Color\Color.csproj" />
+    <ProjectReference Include="..\Controls\Controls.csproj" />
+  </ItemGroup>
+
+</Project>

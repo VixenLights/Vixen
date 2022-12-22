@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+				<TargetFramework>net6.0-windows</TargetFramework>
+				<UseWindowsForms>true</UseWindowsForms>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<PackageReference Include="NLog" Version="5.1.0" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\TaggedFilter\TaggedFilter.csproj" />
+		</ItemGroup>
+
+</Project>

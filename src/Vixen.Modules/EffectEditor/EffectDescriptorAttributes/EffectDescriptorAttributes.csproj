@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+				<RootNamespace>VixenModules.EffectEditor.EffectDescriptorAttributes</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="EffectCategoryDescriptors.Designer.cs">
+			<DependentUpon>EffectCategoryDescriptors.resx</DependentUpon>
+			<AutoGen>True</AutoGen>
+			<DesignTime>True</DesignTime>
+		</Compile>
+		<Compile Update="EffectDescriptionDescriptors.Designer.cs">
+			<AutoGen>True</AutoGen>
+			<DesignTime>True</DesignTime>
+			<DependentUpon>EffectDescriptionDescriptors.resx</DependentUpon>
+		</Compile>
+		<Compile Update="EffectDisplayNameDescriptors.Designer.cs">
+			<DependentUpon>EffectDisplayNameDescriptors.resx</DependentUpon>
+			<AutoGen>True</AutoGen>
+			<DesignTime>True</DesignTime>
+		</Compile>
+	</ItemGroup>
+
+</Project>

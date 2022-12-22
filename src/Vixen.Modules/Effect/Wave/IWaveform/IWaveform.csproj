@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+				<AssemblyName>IWaveform</AssemblyName>
+				<UseWindowsForms>true</UseWindowsForms>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\App\ColorGradients\ColorGradients.csproj" />
+				<ProjectReference Include="..\..\..\App\Curves\Curves.csproj" />
+				<ProjectReference Include="..\..\Effect\Effect.csproj" />
+		</ItemGroup>
+
+</Project>
