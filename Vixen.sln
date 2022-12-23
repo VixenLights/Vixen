@@ -379,63 +379,65 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utilities", "src\Vixen.Comm
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LayerMixingFilter", "LayerMixingFilter", "{76B2D9D3-92DF-40F8-A2C3-2FFD75E7D868}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChromaKey", "src\Vixen.Modules\LayerMixingFilter\ChromaKey\ChromaKey.csproj", "{2561A3AA-B6E5-4658-BFEE-9F71251A5F98}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChromaKey", "src\Vixen.Modules\LayerMixingFilter\ChromaKey\ChromaKey.csproj", "{2561A3AA-B6E5-4658-BFEE-9F71251A5F98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorChange", "src\Vixen.Modules\LayerMixingFilter\ColorChange\ColorChange.csproj", "{47AF78E7-464F-49F9-904E-EAC3A1E2DD68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColorChange", "src\Vixen.Modules\LayerMixingFilter\ColorChange\ColorChange.csproj", "{47AF78E7-464F-49F9-904E-EAC3A1E2DD68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HighestValue", "src\Vixen.Modules\LayerMixingFilter\HighestValue\HighestValue.csproj", "{6BD84D54-AAD3-4A92-829C-08A4064CD846}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HighestValue", "src\Vixen.Modules\LayerMixingFilter\HighestValue\HighestValue.csproj", "{6BD84D54-AAD3-4A92-829C-08A4064CD846}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntensityOverlay", "src\Vixen.Modules\LayerMixingFilter\IntensityOverlay\IntensityOverlay.csproj", "{9A4B24BE-CDBB-48FE-A2D9-6AB7BB2D5A61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntensityOverlay", "src\Vixen.Modules\LayerMixingFilter\IntensityOverlay\IntensityOverlay.csproj", "{9A4B24BE-CDBB-48FE-A2D9-6AB7BB2D5A61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LumaKey", "src\Vixen.Modules\LayerMixingFilter\LumaKey\LumaKey.csproj", "{8CC4C473-36B5-4984-A9FA-855C63B0F386}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LumaKey", "src\Vixen.Modules\LayerMixingFilter\LumaKey\LumaKey.csproj", "{8CC4C473-36B5-4984-A9FA-855C63B0F386}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mask", "src\Vixen.Modules\LayerMixingFilter\Mask\Mask.csproj", "{EAEFAB0F-0770-4D58-95F7-0985E578EFB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mask", "src\Vixen.Modules\LayerMixingFilter\Mask\Mask.csproj", "{EAEFAB0F-0770-4D58-95F7-0985E578EFB2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaskFill", "src\Vixen.Modules\LayerMixingFilter\MaskFill\MaskFill.csproj", "{D012B53B-15E3-43F4-B9CF-627CC8E6DED5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaskFill", "src\Vixen.Modules\LayerMixingFilter\MaskFill\MaskFill.csproj", "{D012B53B-15E3-43F4-B9CF-627CC8E6DED5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiplyColor", "src\Vixen.Modules\LayerMixingFilter\MultiplyColor\MultiplyColor.csproj", "{4ADBC94A-143C-4875-9907-59DAAADA0263}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultiplyColor", "src\Vixen.Modules\LayerMixingFilter\MultiplyColor\MultiplyColor.csproj", "{4ADBC94A-143C-4875-9907-59DAAADA0263}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProportionalMix", "src\Vixen.Modules\LayerMixingFilter\ProportionalMix\ProportionalMix.csproj", "{64230CEB-57CC-410F-B194-1158ED377B17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProportionalMix", "src\Vixen.Modules\LayerMixingFilter\ProportionalMix\ProportionalMix.csproj", "{64230CEB-57CC-410F-B194-1158ED377B17}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Timing", "Timing", "{194BE315-09B5-4943-9953-66F5688A07FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Generic", "src\Vixen.Modules\Timing\Generic\Generic.csproj", "{AB936539-87DB-43B5-9D32-8B1BE9BCA377}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Generic", "src\Vixen.Modules\Timing\Generic\Generic.csproj", "{AB936539-87DB-43B5-9D32-8B1BE9BCA377}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValueTypes", "src\Vixen.Common\ValueTypes\ValueTypes.csproj", "{697F0E46-7256-4661-AD11-14C8EE213091}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ValueTypes", "src\Vixen.Common\ValueTypes\ValueTypes.csproj", "{697F0E46-7256-4661-AD11-14C8EE213091}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polygon", "src\Vixen.Modules\App\Polygon\Polygon.csproj", "{CE104EBC-6EB8-484D-B8A1-77EE6E9EC2AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polygon", "src\Vixen.Modules\App\Polygon\Polygon.csproj", "{CE104EBC-6EB8-484D-B8A1-77EE6E9EC2AB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Morph", "Morph", "{AD1F0847-FFFC-42D0-A3AA-5E51531E4C45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMorphPolygon", "src\Vixen.Modules\Effect\Morph\IMorphPolygon\IMorphPolygon.csproj", "{CAF992C3-7CFE-4B41-89AB-1C340FE595A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IMorphPolygon", "src\Vixen.Modules\Effect\Morph\IMorphPolygon\IMorphPolygon.csproj", "{CAF992C3-7CFE-4B41-89AB-1C340FE595A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Morph", "src\Vixen.Modules\Effect\Morph\Morph\Morph.csproj", "{65DB1C1B-4877-4F3D-8831-C4DCD574B7DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Morph", "src\Vixen.Modules\Effect\Morph\Morph\Morph.csproj", "{65DB1C1B-4877-4F3D-8831-C4DCD574B7DD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IFixtureFunctionExpando", "src\Vixen.Modules\Effect\Fixture\IFixtureFunctionExpando\IFixtureFunctionExpando.csproj", "{9F2D27A4-512F-498E-9103-5C1BA41B5BE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimedSequenceMapper", "src\Vixen.Modules\App\TimedSequenceMapper\TimedSequenceMapper.csproj", "{8F476178-6C32-4C34-9E1E-36194867B706}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimedSequenceMapper", "src\Vixen.Modules\App\TimedSequenceMapper\TimedSequenceMapper.csproj", "{8F476178-6C32-4C34-9E1E-36194867B706}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimingTrackBrowser", "src\Vixen.Modules\App\TimingTrackBrowser\TimingTrackBrowser.csproj", "{F891502B-46C1-4C5D-BB0A-70810BDBC6A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimingTrackBrowser", "src\Vixen.Modules\App\TimingTrackBrowser\TimingTrackBrowser.csproj", "{F891502B-46C1-4C5D-BB0A-70810BDBC6A7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Analysis", "Analysis", "{7C6AF9E2-E85B-41F7-8728-B8D0721C1F91}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatsAndBars", "src\Vixen.Modules\Analysis\BeatsAndBars\BeatsAndBars.csproj", "{393AD5A7-0238-46BD-AA6C-1D94524E8315}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatsAndBars", "src\Vixen.Modules\Analysis\BeatsAndBars\BeatsAndBars.csproj", "{393AD5A7-0238-46BD-AA6C-1D94524E8315}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QMLibrary", "src\Vixen.Modules\Analysis\QMLibrary\QMLibrary.vcxproj", "{4004A720-E4D2-4AAF-B5F6-2288FFDC156A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glediator", "src\Vixen.Modules\Effect\Glediator\Glediator.csproj", "{BF7B3B1B-4CF6-49BC-9979-9532950A1FE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glediator", "src\Vixen.Modules\Effect\Glediator\Glediator.csproj", "{BF7B3B1B-4CF6-49BC-9979-9532950A1FE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tree", "src\Vixen.Modules\Effect\Tree\Tree.csproj", "{C2955BA2-7689-4921-854B-367189B360EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tree", "src\Vixen.Modules\Effect\Tree\Tree.csproj", "{C2955BA2-7689-4921-854B-367189B360EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenDMX", "src\Vixen.Modules\Controller\OpenDMX\OpenDMX.csproj", "{637EC69C-AFAF-4F53-ADE6-CF5D20A4ABBB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenDMX", "src\Vixen.Modules\Controller\OpenDMX\OpenDMX.csproj", "{637EC69C-AFAF-4F53-ADE6-CF5D20A4ABBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LauncherController", "src\Vixen.Modules\Controller\LauncherController\LauncherController.csproj", "{2C88FA44-FF4F-48DE-AB8D-55F9549D6DDD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LauncherController", "src\Vixen.Modules\Controller\LauncherController\LauncherController.csproj", "{2C88FA44-FF4F-48DE-AB8D-55F9549D6DDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DummyLighting", "src\Vixen.Modules\Controller\DummyLighting\DummyLighting.csproj", "{6173E7F4-A8DE-418C-B785-8A8BAF2E1ACC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DummyLighting", "src\Vixen.Modules\Controller\DummyLighting\DummyLighting.csproj", "{6173E7F4-A8DE-418C-B785-8A8BAF2E1ACC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DMXUsbPro", "src\Vixen.Modules\Controller\DMXUsbPro\DMXUsbPro.csproj", "{B28D1A05-629A-44F9-B492-5A9AB31BF242}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DMXUsbPro", "src\Vixen.Modules\Controller\DMXUsbPro\DMXUsbPro.csproj", "{B28D1A05-629A-44F9-B492-5A9AB31BF242}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RDSController", "src\Vixen.Modules\Controller\RDSController\RDSController.csproj", "{E24546C5-D361-479F-8F75-8A1F3465D48C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperScheduler", "src\Vixen.Modules\App\SuperScheduler\SuperScheduler.csproj", "{2601B30E-8EC7-4E89-93B2-C510C5FEE38C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -2151,6 +2153,18 @@ Global
 		{E24546C5-D361-479F-8F75-8A1F3465D48C}.Release|x64.Build.0 = Release|Any CPU
 		{E24546C5-D361-479F-8F75-8A1F3465D48C}.Release|x86.ActiveCfg = Release|Any CPU
 		{E24546C5-D361-479F-8F75-8A1F3465D48C}.Release|x86.Build.0 = Release|Any CPU
+		{2601B30E-8EC7-4E89-93B2-C510C5FEE38C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2601B30E-8EC7-4E89-93B2-C510C5FEE38C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2601B30E-8EC7-4E89-93B2-C510C5FEE38C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2601B30E-8EC7-4E89-93B2-C510C5FEE38C}.Debug|x64.Build.0 = Debug|Any CPU
+		{2601B30E-8EC7-4E89-93B2-C510C5FEE38C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2601B30E-8EC7-4E89-93B2-C510C5FEE38C}.Debug|x86.Build.0 = Debug|Any CPU
+		{2601B30E-8EC7-4E89-93B2-C510C5FEE38C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2601B30E-8EC7-4E89-93B2-C510C5FEE38C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2601B30E-8EC7-4E89-93B2-C510C5FEE38C}.Release|x64.ActiveCfg = Release|Any CPU
+		{2601B30E-8EC7-4E89-93B2-C510C5FEE38C}.Release|x64.Build.0 = Release|Any CPU
+		{2601B30E-8EC7-4E89-93B2-C510C5FEE38C}.Release|x86.ActiveCfg = Release|Any CPU
+		{2601B30E-8EC7-4E89-93B2-C510C5FEE38C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -2313,6 +2327,7 @@ Global
 		{6173E7F4-A8DE-418C-B785-8A8BAF2E1ACC} = {66FEF88A-D6D6-4AD6-A0C5-36FF712738F2}
 		{B28D1A05-629A-44F9-B492-5A9AB31BF242} = {66FEF88A-D6D6-4AD6-A0C5-36FF712738F2}
 		{E24546C5-D361-479F-8F75-8A1F3465D48C} = {66FEF88A-D6D6-4AD6-A0C5-36FF712738F2}
+		{2601B30E-8EC7-4E89-93B2-C510C5FEE38C} = {18C30343-DC00-48B0-B712-93CC89D20643}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5957242E-E882-44E4-83E0-A1C2F73705BF}
