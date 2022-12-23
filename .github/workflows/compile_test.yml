@@ -44,29 +44,7 @@ jobs:
         run: nuget restore Vixen.sln
         
       - name: Build x86
-        run: msbuild Vixen.sln -m -t:Rebuild -p:Configuration=Release -p:Platform=x86
-  
-      - run: dir
-        shell: cmd
-
-
-  compile_x64:
-  
-    runs-on: windows-2019
-
-    steps:
-    
-      - uses: actions/checkout@v3
-      
-      - uses: nuget/setup-nuget@v1
-        
-      - uses: microsoft/setup-msbuild@v1.1
-      
-      - name: NuGet Restore
-        run: nuget restore Vixen.sln
-        
-      - name: Build x64
-        run: msbuild Vixen.sln -m -t:Rebuild -p:Configuration=Release -p:Platform=x64
+        run: msbuild Vixen.sln -m -t:Rebuild -p:Configuration=Release
   
       - run: dir
         shell: cmd
