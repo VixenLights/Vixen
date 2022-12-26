@@ -2,6 +2,7 @@
 
 		<PropertyGroup>
 				<AssemblyName>Module.App.$(MSBuildProjectName)</AssemblyName>
+				<RootNamespace>VixenModules.App.ColorGradients</RootNamespace>
 				<UseWindowsForms>true</UseWindowsForms>
 		</PropertyGroup>
 

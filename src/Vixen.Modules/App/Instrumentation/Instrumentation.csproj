@@ -1,8 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
-				<UseWindowsForms>true</UseWindowsForms>
 				<AssemblyName>Module.App.$(MSBuildProjectName)</AssemblyName>
+				<RootNamespace>VixenModules.App.Instrumentation</RootNamespace>
+				<UseWindowsForms>true</UseWindowsForms>
+
 		</PropertyGroup>
 
 		<ItemGroup>

@@ -2,6 +2,7 @@
 
 		<PropertyGroup>
 				<AssemblyName>Module.App.$(MSBuildProjectName)</AssemblyName>
+				<RootNamespace>VixenModules.App.ExportWizard</RootNamespace>
 				<UseWindowsForms>true</UseWindowsForms>
 		</PropertyGroup>
 

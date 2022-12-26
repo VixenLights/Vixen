@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
+			<RootNamespace>VixenModules.App.FixtureSpecificationManager</RootNamespace>
 			<UseWindowsForms>true</UseWindowsForms>
 		</PropertyGroup>
 
