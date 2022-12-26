@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-   
-  </PropertyGroup>
+		<PropertyGroup>
+				<RootNamespace>VixenModules.Timing.Generic</RootNamespace>
+		</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
-  </ItemGroup>
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+		</ItemGroup>
 
 </Project>

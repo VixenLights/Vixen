@@ -1,25 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <PackageReference Include="NLog" Version="5.1.0" />
-  </ItemGroup>
+		<PropertyGroup>
+				<RootNamespace>VixenModules.Seqence.Timed</RootNamespace>
+		</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Vixen.Common\BaseSequence\BaseSequence.csproj" />
-    <ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
-    <ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj" />
-    <ProjectReference Include="..\..\App\Curves\Curves.csproj" />
-    <ProjectReference Include="..\..\App\LipSyncApp\LipSyncApp.csproj" />
-    <ProjectReference Include="..\..\App\Marks\Marks.csproj" />
-    <ProjectReference Include="..\..\Effect\Alternating\Alternating.csproj" />
-    <ProjectReference Include="..\..\Effect\Chase\Chase.csproj" />
-    <ProjectReference Include="..\..\Effect\Effect\Effect.csproj" />
-    <ProjectReference Include="..\..\Effect\Fireworks\Fireworks.csproj" />
-    <ProjectReference Include="..\..\Effect\LipSync\LipSync.csproj" />
-    <ProjectReference Include="..\..\Effect\Liquid\Liquid\Liquid.csproj" />
-    <ProjectReference Include="..\..\Effect\Snowflakes\Snowflakes.csproj" />
-    <ProjectReference Include="..\..\Effect\Spin\Spin.csproj" />
-    <ProjectReference Include="..\..\Effect\Wipe\Wipe.csproj" />
-  </ItemGroup>
+		<ItemGroup>
+				<PackageReference Include="NLog" Version="5.1.0" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Common\BaseSequence\BaseSequence.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj" />
+				<ProjectReference Include="..\..\App\Curves\Curves.csproj" />
+				<ProjectReference Include="..\..\App\LipSyncApp\LipSyncApp.csproj" />
+				<ProjectReference Include="..\..\App\Marks\Marks.csproj" />
+				<ProjectReference Include="..\..\Effect\Alternating\Alternating.csproj" />
+				<ProjectReference Include="..\..\Effect\Chase\Chase.csproj" />
+				<ProjectReference Include="..\..\Effect\Effect\Effect.csproj" />
+				<ProjectReference Include="..\..\Effect\Fireworks\Fireworks.csproj" />
+				<ProjectReference Include="..\..\Effect\LipSync\LipSync.csproj" />
+				<ProjectReference Include="..\..\Effect\Liquid\Liquid\Liquid.csproj" />
+				<ProjectReference Include="..\..\Effect\Snowflakes\Snowflakes.csproj" />
+				<ProjectReference Include="..\..\Effect\Spin\Spin.csproj" />
+				<ProjectReference Include="..\..\Effect\Wipe\Wipe.csproj" />
+		</ItemGroup>
 
 </Project>
