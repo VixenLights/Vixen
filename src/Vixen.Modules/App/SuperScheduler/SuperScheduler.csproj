@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
-				<AssemblyName>Module.App.$(MSBuildProjectName)</AssemblyName>
+			<RootNamespace>VixenModules.App.SuperScheduler</RootNamespace>
+			<AssemblyName>Module.App.$(MSBuildProjectName)</AssemblyName>
 				<UseWindowsForms>true</UseWindowsForms>
 		</PropertyGroup>
 

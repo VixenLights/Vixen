@@ -2,6 +2,7 @@
 
 		<PropertyGroup>
 				<AssemblyName>Module.App.$(MSBuildProjectName)</AssemblyName>
+			<RootNamespace>VixenModules.App.Curves</RootNamespace>
 				<UseWindowsForms>true</UseWindowsForms>
 		</PropertyGroup>
 
