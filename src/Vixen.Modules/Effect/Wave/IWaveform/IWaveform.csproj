@@ -2,6 +2,7 @@
 
 		<PropertyGroup>
 				<AssemblyName>IWaveform</AssemblyName>
+				<RootNamespace>VixenModules.Effect.Wave</RootNamespace>
 				<UseWindowsForms>true</UseWindowsForms>
 		</PropertyGroup>
 

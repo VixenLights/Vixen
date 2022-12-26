@@ -2,6 +2,7 @@
 
 		<PropertyGroup>
 				<AssemblyName>Emitter</AssemblyName>
+				<RootNamespace>VixenModules.Effect.Emitter</RootNamespace>
 				<UseWindowsForms>true</UseWindowsForms>
 		</PropertyGroup>
 

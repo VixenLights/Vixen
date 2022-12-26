@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
-				<UseWindowsForms>true</UseWindowsForms>
+			<RootNamespace>VixenModules.Effect.Tree</RootNamespace>
+			<UseWindowsForms>true</UseWindowsForms>
 		</PropertyGroup>
 
 		<ItemGroup>
