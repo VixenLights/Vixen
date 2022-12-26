@@ -8,6 +8,12 @@
 				<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		</PropertyGroup>
 
+		<!--Required to allow the webserver module to work.-->
+		<ItemGroup>
+				<FrameworkReference Include="Microsoft.AspNetCore.App" />
+		</ItemGroup>
+
+
 		<ItemGroup>
 				<None Remove="NLog.config" />
 		</ItemGroup>
