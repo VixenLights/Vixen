@@ -1,14 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-	  <AssemblyName>IMorphPolygon</AssemblyName>
-  </PropertyGroup>
+		<PropertyGroup>
+				<RootNamespace>VixenModules.Effect.Morph</RootNamespace>
+				<AssemblyName>IMorphPolygon</AssemblyName>
+		</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\App\ColorGradients\ColorGradients.csproj" />
-    <ProjectReference Include="..\..\..\App\Curves\Curves.csproj" />
-    <ProjectReference Include="..\..\..\App\Polygon\Polygon.csproj" />
-    <ProjectReference Include="..\..\Effect\Effect.csproj" />
-  </ItemGroup>
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\App\ColorGradients\ColorGradients.csproj" />
+				<ProjectReference Include="..\..\..\App\Curves\Curves.csproj" />
+				<ProjectReference Include="..\..\..\App\Polygon\Polygon.csproj" />
+				<ProjectReference Include="..\..\Effect\Effect.csproj" />
+		</ItemGroup>
 
 </Project>

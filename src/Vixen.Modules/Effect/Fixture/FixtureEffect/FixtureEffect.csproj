@@ -3,14 +3,15 @@
 		<PropertyGroup>
 				<UseWindowsForms>true</UseWindowsForms>
 				<AssemblyName>Module.Effect.FixtureEffect</AssemblyName>
+				<RootNamespace>VixenModules.Effect.Fixture</RootNamespace>
 		</PropertyGroup>
 
 		<ItemGroup>
-		  <None Remove="Images\EffectImage.png" />
+				<None Remove="Images\EffectImage.png" />
 		</ItemGroup>
 
 		<ItemGroup>
-		  <EmbeddedResource Include="Images\EffectImage.png" />
+				<EmbeddedResource Include="Images\EffectImage.png" />
 		</ItemGroup>
 
 		<ItemGroup>

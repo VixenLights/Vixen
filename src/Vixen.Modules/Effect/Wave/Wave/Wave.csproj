@@ -2,15 +2,16 @@
 
 		<PropertyGroup>
 				<AssemblyName>Module.Effect.Wave</AssemblyName>
+				<RootNamespace>VixenModules.Effect.Wave</RootNamespace>
 				<UseWindowsForms>true</UseWindowsForms>
 		</PropertyGroup>
 
 		<ItemGroup>
-		  <None Remove="EffectImage.png" />
+				<None Remove="EffectImage.png" />
 		</ItemGroup>
 
 		<ItemGroup>
-		  <EmbeddedResource Include="EffectImage.png" />
+				<EmbeddedResource Include="EffectImage.png" />
 		</ItemGroup>
 
 		<ItemGroup>
