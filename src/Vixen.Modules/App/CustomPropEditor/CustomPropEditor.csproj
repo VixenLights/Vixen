@@ -3,6 +3,7 @@
 		<PropertyGroup>
 				<AssemblyName>Module.App.CustomPropEditor</AssemblyName>
 				<RootNamespace>VixenModules.App.CustomPropEditor</RootNamespace>
+			 	<EnableDynamicLoading>true</EnableDynamicLoading>
 				<UseWPF>true</UseWPF>
 		</PropertyGroup>
 
@@ -41,18 +42,9 @@
 				<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Common\WPFCommon\WPFCommon.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\WpfPropertyGrid.Themes\WpfPropertyGrid.Themes.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\WpfPropertyGrid\WpfPropertyGrid.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
-		</ItemGroup>
-
-		<ItemGroup>
-				<Reference Include="System.Windows.Controls.WpfPropertyGrid">
-						<HintPath>..\..\..\Vixen.Common\Libraries\System.Windows.Controls.WpfPropertyGrid.dll</HintPath>
-						<Private>True</Private>
-				</Reference>
-				<Reference Include="System.Windows.Controls.WpfPropertyGrid.Themes">
-						<HintPath>..\..\..\Vixen.Common\Libraries\System.Windows.Controls.WpfPropertyGrid.Themes.dll</HintPath>
-						<Private>True</Private>
-				</Reference>
 		</ItemGroup>
 
 		<ItemGroup>

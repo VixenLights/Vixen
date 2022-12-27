@@ -14,21 +14,12 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
     <ProjectReference Include="..\..\..\Vixen.Common\WPFCommon\WPFCommon.csproj" />
+    <ProjectReference Include="..\..\..\Vixen.Common\WpfPropertyGrid.Themes\WpfPropertyGrid.Themes.csproj" />
+    <ProjectReference Include="..\..\..\Vixen.Common\WpfPropertyGrid\WpfPropertyGrid.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Themes\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="System.Windows.Controls.WpfPropertyGrid">
-      <HintPath>..\..\..\Vixen.Common\Libraries\System.Windows.Controls.WpfPropertyGrid.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Windows.Controls.WpfPropertyGrid.Themes">
-      <HintPath>..\..\..\Vixen.Common\Libraries\System.Windows.Controls.WpfPropertyGrid.Themes.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
 
 </Project>

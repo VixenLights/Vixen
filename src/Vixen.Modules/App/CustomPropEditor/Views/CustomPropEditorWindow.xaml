@@ -215,12 +215,12 @@
 						<ToolBar>
 							<RadioButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing}" ToolTip="Draw mode" GroupName="SelectDraw"
 							             Width="30" Style="{StaticResource RadioButtonStyle}">
-								<Image Source="/CustomPropEditor;component/Images/buttonDrawPixel.png" Height="20" Width="20"/>
+								<Image Source="/Module.App.CustomPropEditor;component/Images/buttonDrawPixel.png" Height="20" Width="20"/>
 							</RadioButton>
 							<RadioButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing, Converter={StaticResource InverseBooleanConverter}}" 
 							             ToolTip="Selection mode" GroupName="SelectDraw"
 							             Width="30" Style="{StaticResource RadioButtonStyle}">
-								<Image Source="/CustomPropEditor;component/Images/buttonSelect.png" Height="20" Width="20"/>
+																<Image Source="/Module.App.CustomPropEditor;component/Images/buttonSelect.png" Height="20" Width="20"/>
 							</RadioButton>
 							<!--<Separator />
 							<Button Command="Copy" ToolTip="Cut">
@@ -241,7 +241,7 @@
 								<Image Source="/Module.App.CustomPropEditor;component/Images/buttonAlignLeft.png" Height="20"/>
 							</Button>
 							<Button Command="{Binding DrawingPanelViewModel.AlignRightCommand}" ToolTip="Align Right">
-								Image Source="/Module.App.CustomPropEditor;component/Images/buttonAlignRight.png" Height="20"/>
+								<Image Source="/Module.App.CustomPropEditor;component/Images/buttonAlignRight.png" Height="20"/>
 							</Button>
 							<Button Command="{Binding DrawingPanelViewModel.AlignTopsCommand}" ToolTip="Align Top" >
 								<Image Source="/Module.App.CustomPropEditor;component/Images/buttonAlignTop.png" Height="20"/>

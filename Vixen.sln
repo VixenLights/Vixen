@@ -465,9 +465,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DMXUsbPro", "src\Vixen.Modu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RDSController", "src\Vixen.Modules\Controller\RDSController\RDSController.csproj", "{E24546C5-D361-479F-8F75-8A1F3465D48C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperScheduler", "src\Vixen.Modules\App\SuperScheduler\SuperScheduler.csproj", "{2601B30E-8EC7-4E89-93B2-C510C5FEE38C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperScheduler", "src\Vixen.Modules\App\SuperScheduler\SuperScheduler.csproj", "{2601B30E-8EC7-4E89-93B2-C510C5FEE38C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebServer", "src\Vixen.Modules\App\WebServer\WebServer.csproj", "{640B2B0A-ECA1-436C-9AA7-7C23034BE62E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebServer", "src\Vixen.Modules\App\WebServer\WebServer.csproj", "{640B2B0A-ECA1-436C-9AA7-7C23034BE62E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfPropertyGrid", "src\Vixen.Common\WpfPropertyGrid\WpfPropertyGrid.csproj", "{237337DE-5F59-457B-B18F-44CA05280AD6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfPropertyGrid.Themes", "src\Vixen.Common\WpfPropertyGrid.Themes\WpfPropertyGrid.Themes.csproj", "{B083141A-CA04-4E12-87C5-1E75D44E930D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -2207,6 +2211,30 @@ Global
 		{640B2B0A-ECA1-436C-9AA7-7C23034BE62E}.Release|x64.Build.0 = Release|Any CPU
 		{640B2B0A-ECA1-436C-9AA7-7C23034BE62E}.Release|x86.ActiveCfg = Release|Any CPU
 		{640B2B0A-ECA1-436C-9AA7-7C23034BE62E}.Release|x86.Build.0 = Release|Any CPU
+		{237337DE-5F59-457B-B18F-44CA05280AD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{237337DE-5F59-457B-B18F-44CA05280AD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{237337DE-5F59-457B-B18F-44CA05280AD6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{237337DE-5F59-457B-B18F-44CA05280AD6}.Debug|x64.Build.0 = Debug|Any CPU
+		{237337DE-5F59-457B-B18F-44CA05280AD6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{237337DE-5F59-457B-B18F-44CA05280AD6}.Debug|x86.Build.0 = Debug|Any CPU
+		{237337DE-5F59-457B-B18F-44CA05280AD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{237337DE-5F59-457B-B18F-44CA05280AD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{237337DE-5F59-457B-B18F-44CA05280AD6}.Release|x64.ActiveCfg = Release|Any CPU
+		{237337DE-5F59-457B-B18F-44CA05280AD6}.Release|x64.Build.0 = Release|Any CPU
+		{237337DE-5F59-457B-B18F-44CA05280AD6}.Release|x86.ActiveCfg = Release|Any CPU
+		{237337DE-5F59-457B-B18F-44CA05280AD6}.Release|x86.Build.0 = Release|Any CPU
+		{B083141A-CA04-4E12-87C5-1E75D44E930D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B083141A-CA04-4E12-87C5-1E75D44E930D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B083141A-CA04-4E12-87C5-1E75D44E930D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B083141A-CA04-4E12-87C5-1E75D44E930D}.Debug|x64.Build.0 = Debug|Any CPU
+		{B083141A-CA04-4E12-87C5-1E75D44E930D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B083141A-CA04-4E12-87C5-1E75D44E930D}.Debug|x86.Build.0 = Debug|Any CPU
+		{B083141A-CA04-4E12-87C5-1E75D44E930D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B083141A-CA04-4E12-87C5-1E75D44E930D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B083141A-CA04-4E12-87C5-1E75D44E930D}.Release|x64.ActiveCfg = Release|Any CPU
+		{B083141A-CA04-4E12-87C5-1E75D44E930D}.Release|x64.Build.0 = Release|Any CPU
+		{B083141A-CA04-4E12-87C5-1E75D44E930D}.Release|x86.ActiveCfg = Release|Any CPU
+		{B083141A-CA04-4E12-87C5-1E75D44E930D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -2371,6 +2399,8 @@ Global
 		{E24546C5-D361-479F-8F75-8A1F3465D48C} = {66FEF88A-D6D6-4AD6-A0C5-36FF712738F2}
 		{2601B30E-8EC7-4E89-93B2-C510C5FEE38C} = {18C30343-DC00-48B0-B712-93CC89D20643}
 		{640B2B0A-ECA1-436C-9AA7-7C23034BE62E} = {18C30343-DC00-48B0-B712-93CC89D20643}
+		{237337DE-5F59-457B-B18F-44CA05280AD6} = {783CEFCF-DBF1-4ED1-B6D3-886B6583097D}
+		{B083141A-CA04-4E12-87C5-1E75D44E930D} = {783CEFCF-DBF1-4ED1-B6D3-886B6583097D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5957242E-E882-44E4-83E0-A1C2F73705BF}
