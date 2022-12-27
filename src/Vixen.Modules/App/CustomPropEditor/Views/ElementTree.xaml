@@ -62,7 +62,7 @@
 																		<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
 																</MultiTrigger>
 																<Trigger Property="IsEnabled" Value="False">
-																		<Setter Property="TextElement.Foreground" TargetName="Bd" Value="{StaticResource ForeColorDisabled}"/>
+																		<Setter Property="TextElement.Foreground" TargetName="Bd" Value="{StaticResource ForeColorDisabledBrush}"/>
 																</Trigger>
 														</ControlTemplate.Triggers>
 												</ControlTemplate>
@@ -147,7 +147,7 @@
 																		<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
 																</MultiTrigger>
 																<Trigger Property="IsEnabled" Value="false">
-																		<Setter Property="Foreground" Value="{StaticResource ForeColorDisabled}"/>
+																		<Setter Property="Foreground" Value="{StaticResource ForeColorDisabledBrush}"/>
 																</Trigger>
 														</ControlTemplate.Triggers>
 												</ControlTemplate>
