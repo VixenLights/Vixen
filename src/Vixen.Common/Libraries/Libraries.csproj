@@ -9,8 +9,6 @@
   <ItemGroup>
     <None Remove="SoundTouch.dll" />
     <None Remove="SoundTouch_x64.dll" />
-    <None Remove="System.Windows.Controls.WpfPropertyGrid.dll" />
-    <None Remove="System.Windows.Controls.WpfPropertyGrid.Themes.dll" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,12 +16,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="SoundTouch_x64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="System.Windows.Controls.WpfPropertyGrid.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="System.Windows.Controls.WpfPropertyGrid.Themes.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <OutputType>Library</OutputType>
+    <RootNamespace>System.Windows.Controls.WpfPropertyGrid.Themes</RootNamespace>
+    <AssemblyName>System.Windows.Controls.WpfPropertyGrid.Themes</AssemblyName>
+	   <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWPF>true</UseWPF>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+  </PropertyGroup>
+	<ItemGroup>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+	<ItemGroup>
+    <ProjectReference Include="..\WpfPropertyGrid\WpfPropertyGrid.csproj" />
+  </ItemGroup>
+</Project>
