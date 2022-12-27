@@ -4,20 +4,20 @@
                    xmlns:catel="http://schemas.catelproject.com"
                    xmlns:wpg="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid">
 
-	<wpg:PropertyGrid Background="{StaticResource DisabledShadow}"
+		<wpg:PropertyGrid Background="{StaticResource DisabledShadow}"
 	                              ItemSource="{Binding}"
 	                              ShowAttachedProperties="False"
 	                              ShowReadOnlyProperties="True"
 	                              PropertyFilterVisibility="Collapsed"
 	                              Margin="5">
-		<wpg:PropertyGrid.Resources>
-			<ResourceDictionary>
-				<ResourceDictionary.MergedDictionaries>
-					<wpg:KaxamlTheme/>
-				</ResourceDictionary.MergedDictionaries>
-			</ResourceDictionary>
-		</wpg:PropertyGrid.Resources>
-	</wpg:PropertyGrid>
+				<wpg:PropertyGrid.Resources>
+						<ResourceDictionary>
+								<ResourceDictionary.MergedDictionaries>
+										<wpg:KaxamlTheme/>
+								</ResourceDictionary.MergedDictionaries>
+						</ResourceDictionary>
+				</wpg:PropertyGrid.Resources>
+		</wpg:PropertyGrid>
 
 </catel:UserControl>
 

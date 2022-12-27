@@ -8,19 +8,19 @@
              xmlns:Model="clr-namespace:VixenModules.App.CustomPropEditor.Model.InternalVendorInventory"
              xmlns:commonConverters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon">
 
-	<UserControl.Resources>
+		<UserControl.Resources>
 
-		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
-			</ResourceDictionary.MergedDictionaries>
-		</ResourceDictionary>
+				<ResourceDictionary>
+						<ResourceDictionary.MergedDictionaries>
+								<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+						</ResourceDictionary.MergedDictionaries>
+				</ResourceDictionary>
 
-	</UserControl.Resources>
+		</UserControl.Resources>
 
-	<Grid>
+		<Grid>
 
-		<TreeView
+				<TreeView
                   ItemsSource="{Binding SelectedInventory.Inventory}" 
 				  BorderThickness="0"
                   VerticalAlignment="Stretch"
@@ -28,32 +28,32 @@
                   ScrollViewer.CanContentScroll="True"
                   FocusManager.IsFocusScope="True">
 
-			<TreeView.Resources>
-                <HierarchicalDataTemplate  DataType="{x:Type Model:Category}">
-					<HierarchicalDataTemplate.ItemsSource>
-						<MultiBinding>
-							<MultiBinding.Converter>
-								<commonConverters:CompositeCollectionConverter/>
-							</MultiBinding.Converter>
-							<Binding Path="Categories"/>
-							<Binding Path="Products"/>
-						</MultiBinding>
-					</HierarchicalDataTemplate.ItemsSource>
-					<TextBlock x:Name="CategoryName" Text="{Binding Name}" Margin="0,2,0,2"/>
-					
-				</HierarchicalDataTemplate>
+						<TreeView.Resources>
+								<HierarchicalDataTemplate  DataType="{x:Type Model:Category}">
+										<HierarchicalDataTemplate.ItemsSource>
+												<MultiBinding>
+														<MultiBinding.Converter>
+																<commonConverters:CompositeCollectionConverter/>
+														</MultiBinding.Converter>
+														<Binding Path="Categories"/>
+														<Binding Path="Products"/>
+												</MultiBinding>
+										</HierarchicalDataTemplate.ItemsSource>
+										<TextBlock x:Name="CategoryName" Text="{Binding Name}" Margin="0,2,0,2"/>
 
-				<DataTemplate DataType="{x:Type Model:Product}">
-					<TextBlock x:Name="ProductName"  Margin="0,2,0,2">
+								</HierarchicalDataTemplate>
+
+								<DataTemplate DataType="{x:Type Model:Product}">
+										<TextBlock x:Name="ProductName"  Margin="0,2,0,2">
 						<Hyperlink Command="{Binding Path=DataContext.SelectProductCommand,  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TreeView}}}" CommandParameter="{Binding}" TextDecorations="None" Foreground="Black">
 							<TextBlock Text="{Binding Name}"></TextBlock>
 						</Hyperlink>
 					</TextBlock>
-				</DataTemplate>
+								</DataTemplate>
 
-			</TreeView.Resources>
+						</TreeView.Resources>
 
-		</TreeView>
+				</TreeView>
 
-	</Grid>
+		</Grid>
 </UserControl>
