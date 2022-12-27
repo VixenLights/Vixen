@@ -1,7 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 		<PropertyGroup>
-				<TargetFramework>net6.0-windows</TargetFramework>
-				<OutputType>Library</OutputType>
 				<RootNamespace>System.Windows.Controls.WpfPropertyGrid</RootNamespace>
 				<AssemblyName>System.Windows.Controls.WpfPropertyGrid</AssemblyName>
 				<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -15,7 +13,7 @@
 				<Resource Include="Themes\Images\clear.png" />
 				<Resource Include="Themes\Images\search.png" />
 		</ItemGroup>
-	<ItemGroup>
+		<ItemGroup>
 				<Resource Include="License.txt" />
 		</ItemGroup>
 		<ItemGroup>

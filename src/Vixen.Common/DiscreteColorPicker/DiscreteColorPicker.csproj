@@ -1,30 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-	   <UseWPF>true</UseWPF>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+		<PropertyGroup>
+				<UseWPF>true</UseWPF>
+		</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Catel.Core" Version="5.12.22" />
-    <PackageReference Include="Catel.MVVM" Version="5.12.22" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
-  </ItemGroup>
+		<ItemGroup>
+				<PackageReference Include="Catel.Core" Version="5.12.22" />
+				<PackageReference Include="Catel.MVVM" Version="5.12.22" />
+				<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+		</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Resources\Resources.csproj" />
-    <ProjectReference Include="..\WPFCommon\WPFCommon.csproj" />
-  </ItemGroup>
+		<ItemGroup>
+				<ProjectReference Include="..\Resources\Resources.csproj" />
+				<ProjectReference Include="..\WPFCommon\WPFCommon.csproj" />
+		</ItemGroup>
 
-  <ItemGroup>
-    <None Update="Views\MultipleDiscreteColorPickerView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Views\SingleDiscreteColorPickerView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-  </ItemGroup>
+		<ItemGroup>
+				<None Update="Views\MultipleDiscreteColorPickerView.xaml">
+						<Generator>MSBuild:Compile</Generator>
+				</None>
+				<None Update="Views\SingleDiscreteColorPickerView.xaml">
+						<Generator>MSBuild:Compile</Generator>
+				</None>
+		</ItemGroup>
 
 </Project>
