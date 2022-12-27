@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+		<PropertyGroup>
+				<RootNamespace>System.Windows.Controls.WpfPropertyGrid</RootNamespace>
+				<AssemblyName>System.Windows.Controls.WpfPropertyGrid</AssemblyName>
+				<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+				<UseWPF>true</UseWPF>
+				<ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+		</PropertyGroup>
+		<ItemGroup>
+				<AppDesigner Include="Properties\" />
+		</ItemGroup>
+		<ItemGroup>
+				<Resource Include="Themes\Images\clear.png" />
+				<Resource Include="Themes\Images\search.png" />
+		</ItemGroup>
+		<ItemGroup>
+				<Resource Include="License.txt" />
+		</ItemGroup>
+		<ItemGroup>
+				<Page Remove="ValueEditors\EditorResources.xaml" />
+		</ItemGroup>
+</Project>

@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+			<RootNamespace>VixenModules.Effect.AudioHelp</RootNamespace>
+			<UseWindowsForms>true</UseWindowsForms>
+		</PropertyGroup>
+
+		<ItemGroup>
+		  <PackageReference Include="NLog" Version="5.1.0" />
+		</ItemGroup>
+
+		<ItemGroup>
+		  <ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+		  <ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj" />
+		  <ProjectReference Include="..\..\App\Curves\Curves.csproj" />
+		  <ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj" />
+		  <ProjectReference Include="..\..\Media\Audio\Audio.csproj" />
+		  <ProjectReference Include="..\..\Property\Color\Color.csproj" />
+		  <ProjectReference Include="..\Effect\Effect.csproj" />
+		</ItemGroup>
+
+</Project>

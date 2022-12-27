@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <RootNamespace>VixenModules.App.Polygon</RootNamespace>
+	  <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+</Project>

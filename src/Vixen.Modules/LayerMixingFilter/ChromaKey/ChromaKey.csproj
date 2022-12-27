@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+				<RootNamespace>VixenModules.LayerMixingFilter.ChromaKey</RootNamespace>
+				<UseWindowsForms>true</UseWindowsForms>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\WPFCommon\WPFCommon.csproj" />
+				<ProjectReference Include="..\..\Property\Color\Color.csproj" />
+		</ItemGroup>
+
+</Project>

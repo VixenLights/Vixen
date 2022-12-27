@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CSCore" Version="1.2.1.2" />
+    <PackageReference Include="Microsoft.Win32.SystemEvents" Version="7.0.0" />
+    <PackageReference Include="NLog" Version="5.1.0" />
+    <PackageReference Include="NVorbis" Version="0.10.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Preferences\Preferences.csproj" />
+  </ItemGroup>
+
+</Project>

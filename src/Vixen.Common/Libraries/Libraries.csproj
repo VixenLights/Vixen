@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="SoundTouch.dll" />
+    <None Remove="SoundTouch_x64.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="SoundTouch.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SoundTouch_x64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

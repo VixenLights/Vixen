@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+			<RootNamespace>VixenModules.Effect.CustomValue</RootNamespace>
+			<UseWindowsForms>true</UseWindowsForms>
+		</PropertyGroup>
+
+		<ItemGroup>
+		  <None Remove="Images\EffectImage.png" />
+		</ItemGroup>
+
+		<ItemGroup>
+		  <EmbeddedResource Include="Images\EffectImage.png" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj" />
+		</ItemGroup>
+
+</Project>

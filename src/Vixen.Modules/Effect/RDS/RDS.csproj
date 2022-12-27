@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+				<RootNamespace>VixenModules.Effect.RDS</RootNamespace>
+				<UseWindowsForms>true</UseWindowsForms>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<None Remove="Images\EffectImage.png" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<EmbeddedResource Include="Images\EffectImage.png" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+		</ItemGroup>
+
+</Project>

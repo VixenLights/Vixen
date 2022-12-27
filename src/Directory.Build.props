@@ -1,0 +1,16 @@
+<Project>
+    <PropertyGroup>
+        <Title>Vixen</Title>
+        <Authors>Vixen Team</Authors>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/VixenLights/Vixen</RepositoryUrl>
+        <TargetFramework>net6.0-windows</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<BaseOutputPath>$(SolutionDir)$(Configuration)\Output</BaseOutputPath>
+		<OutputPath>$(BaseOutputPath)</OutputPath>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </PropertyGroup>
+</Project>

@@ -1,0 +1,110 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+				<RootNamespace>VixenModules.Effect.Shapes</RootNamespace>
+				<UseWindowsForms>true</UseWindowsForms>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<None Remove="Images\EffectImage.png" />
+				<None Remove="SVGShapes\Christmas\Balloon.xml" />
+				<None Remove="SVGShapes\Christmas\Balloon2.xml" />
+				<None Remove="SVGShapes\Christmas\Bauble.xml" />
+				<None Remove="SVGShapes\Christmas\Bauble2.xml" />
+				<None Remove="SVGShapes\Christmas\Bow.xml" />
+				<None Remove="SVGShapes\Christmas\CandyCane.xml" />
+				<None Remove="SVGShapes\Christmas\GingerBreadMan.xml" />
+				<None Remove="SVGShapes\Christmas\GingerBreadMan2.xml" />
+				<None Remove="SVGShapes\Christmas\Mistletoe.xml" />
+				<None Remove="SVGShapes\Christmas\Present.xml" />
+				<None Remove="SVGShapes\Christmas\Reindeer.xml" />
+				<None Remove="SVGShapes\Christmas\SantasHat.xml" />
+				<None Remove="SVGShapes\Christmas\Sleigh.xml" />
+				<None Remove="SVGShapes\Christmas\SnowFlake.xml" />
+				<None Remove="SVGShapes\Christmas\SnowFlake2.xml" />
+				<None Remove="SVGShapes\Christmas\SnowMan.xml" />
+				<None Remove="SVGShapes\Christmas\SnowMan2.xml" />
+				<None Remove="SVGShapes\Christmas\Star.xml" />
+				<None Remove="SVGShapes\Christmas\Stocking.xml" />
+				<None Remove="SVGShapes\Christmas\Tree.xml" />
+				<None Remove="SVGShapes\Christmas\Tree2.xml" />
+				<None Remove="SVGShapes\Christmas\Wreath.xml" />
+				<None Remove="SVGShapes\Geometric\ConcaveStar.xml" />
+				<None Remove="SVGShapes\Geometric\Heart.xml" />
+				<None Remove="SVGShapes\Halloween\Coffin.xml" />
+				<None Remove="SVGShapes\Halloween\Cross.xml" />
+				<None Remove="SVGShapes\Halloween\Cross2.xml" />
+				<None Remove="SVGShapes\Halloween\Ghost.xml" />
+				<None Remove="SVGShapes\Halloween\Ghost2.xml" />
+				<None Remove="SVGShapes\Halloween\Hand.xml" />
+				<None Remove="SVGShapes\Halloween\HauntedHouse.xml" />
+				<None Remove="SVGShapes\Halloween\Knife.xml" />
+				<None Remove="SVGShapes\Halloween\Pumpkin.xml" />
+				<None Remove="SVGShapes\Halloween\Skull.xml" />
+				<None Remove="SVGShapes\Halloween\SkullandBone.xml" />
+				<None Remove="SVGShapes\Halloween\SkullandBone1.xml" />
+				<None Remove="SVGShapes\Halloween\Spider.xml" />
+				<None Remove="SVGShapes\Halloween\Tombstone.xml" />
+				<None Remove="SVGShapes\Halloween\Tombstone2.xml" />
+				<None Remove="SVGShapes\Halloween\Web.xml" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<EmbeddedResource Include="Images\EffectImage.png" />
+				<EmbeddedResource Include="SVGShapes\Christmas\Balloon.xml" />
+				<EmbeddedResource Include="SVGShapes\Christmas\Balloon2.xml" />
+				<EmbeddedResource Include="SVGShapes\Christmas\Bauble.xml" />
+				<EmbeddedResource Include="SVGShapes\Christmas\Bauble2.xml" />
+				<EmbeddedResource Include="SVGShapes\Christmas\Bow.xml" />
+				<EmbeddedResource Include="SVGShapes\Christmas\CandyCane.xml" />
+				<EmbeddedResource Include="SVGShapes\Christmas\GingerBreadMan.xml" />
+				<EmbeddedResource Include="SVGShapes\Christmas\GingerBreadMan2.xml" />
+				<EmbeddedResource Include="SVGShapes\Christmas\Mistletoe.xml" />
+				<EmbeddedResource Include="SVGShapes\Christmas\Present.xml" />
+				<EmbeddedResource Include="SVGShapes\Christmas\Reindeer.xml" />
+				<EmbeddedResource Include="SVGShapes\Christmas\SantasHat.xml" />
+				<EmbeddedResource Include="SVGShapes\Christmas\Sleigh.xml" />
+				<EmbeddedResource Include="SVGShapes\Christmas\SnowFlake.xml" />
+				<EmbeddedResource Include="SVGShapes\Christmas\SnowFlake2.xml" />
+				<EmbeddedResource Include="SVGShapes\Christmas\SnowMan.xml" />
+				<EmbeddedResource Include="SVGShapes\Christmas\SnowMan2.xml" />
+				<EmbeddedResource Include="SVGShapes\Christmas\Star.xml" />
+				<EmbeddedResource Include="SVGShapes\Christmas\Stocking.xml" />
+				<EmbeddedResource Include="SVGShapes\Christmas\Tree.xml" />
+				<EmbeddedResource Include="SVGShapes\Christmas\Tree2.xml" />
+				<EmbeddedResource Include="SVGShapes\Christmas\Wreath.xml" />
+				<EmbeddedResource Include="SVGShapes\Geometric\ConcaveStar.xml" />
+				<EmbeddedResource Include="SVGShapes\Geometric\Heart.xml" />
+				<EmbeddedResource Include="SVGShapes\Halloween\Coffin.xml" />
+				<EmbeddedResource Include="SVGShapes\Halloween\Cross.xml" />
+				<EmbeddedResource Include="SVGShapes\Halloween\Cross2.xml" />
+				<EmbeddedResource Include="SVGShapes\Halloween\Ghost.xml" />
+				<EmbeddedResource Include="SVGShapes\Halloween\Ghost2.xml" />
+				<EmbeddedResource Include="SVGShapes\Halloween\Hand.xml" />
+				<EmbeddedResource Include="SVGShapes\Halloween\HauntedHouse.xml" />
+				<EmbeddedResource Include="SVGShapes\Halloween\Knife.xml" />
+				<EmbeddedResource Include="SVGShapes\Halloween\Pumpkin.xml" />
+				<EmbeddedResource Include="SVGShapes\Halloween\Skull.xml" />
+				<EmbeddedResource Include="SVGShapes\Halloween\SkullandBone.xml" />
+				<EmbeddedResource Include="SVGShapes\Halloween\SkullandBone1.xml" />
+				<EmbeddedResource Include="SVGShapes\Halloween\Spider.xml" />
+				<EmbeddedResource Include="SVGShapes\Halloween\Tombstone.xml" />
+				<EmbeddedResource Include="SVGShapes\Halloween\Tombstone2.xml" />
+				<EmbeddedResource Include="SVGShapes\Halloween\Web.xml" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<PackageReference Include="NLog" Version="5.1.0" />
+				<PackageReference Include="Svg" Version="3.4.4" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Common\FastPixel\FastPixel.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj" />
+				<ProjectReference Include="..\..\App\Curves\Curves.csproj" />
+				<ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj" />
+				<ProjectReference Include="..\Effect\Effect.csproj" />
+		</ItemGroup>
+
+</Project>

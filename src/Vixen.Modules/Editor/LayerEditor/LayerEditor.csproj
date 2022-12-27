@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+			<RootNamespace>VixenModules.Editor.LayerEditor</RootNamespace>
+			<UseWPF>true</UseWPF>
+		</PropertyGroup>
+
+		<ItemGroup>
+		  <ProjectReference Include="..\..\..\Vixen.Common\WPFCommon\WPFCommon.csproj" />
+		  <ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+		</ItemGroup>
+
+</Project>
