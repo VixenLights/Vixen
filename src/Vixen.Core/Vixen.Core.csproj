@@ -25,6 +25,13 @@
 
 		<ItemGroup>
 				<None Remove="C:\Users\jeffu\.nuget\packages\zstandard.net\1.1.7\build\x86\libzstd.dll" />
+				<None Remove="Fonts\DigitalDream.ttf" />
+				<None Remove="Fonts\RadioLand.ttf" />
+		</ItemGroup>
+
+		<ItemGroup>
+		  <EmbeddedResource Include="Fonts\DigitalDream.ttf" />
+		  <EmbeddedResource Include="Fonts\RadioLand.ttf" />
 		</ItemGroup>
 
 		<Target Name="PostBuild" AfterTargets="PostBuildEvent">
