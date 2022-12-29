@@ -671,9 +671,9 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 					(float)-_geometry.GetBaseDepth());
 				
 				// Draw the text
-				// TODO .NET 6 commented _qFontDrawing.Print(_qFont, MovingHead.Legend, positionOfText, QFontAlignment.Left, MovingHead.LegendColor);
+				_qFontDrawing.Print(_qFont, MovingHead.Legend, positionOfText, QFontAlignment.Left, MovingHead.LegendColor);
 				_qFontDrawing.RefreshBuffers();
-				// TODO .NET 6 commented _qFontDrawing.ProjectionMatrix = viewMatrix * projectionMatrix;				
+				_qFontDrawing.ProjectionMatrix = viewMatrix * projectionMatrix;				
 				_qFontDrawing.Draw();
 			}
 		}
