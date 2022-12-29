@@ -313,9 +313,9 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// Gets or sets the Decorator value.
 		/// </summary>
 		[ViewModelToModel("MarkCollection")]
-		public MarkDecorator Decorator
+		public IMarkDecorator Decorator
 		{
-			get { return GetValue<MarkDecorator>(DecoratorProperty); }
+			get { return GetValue<IMarkDecorator>(DecoratorProperty); }
 			set { SetValue(DecoratorProperty, value); }
 		}
 
