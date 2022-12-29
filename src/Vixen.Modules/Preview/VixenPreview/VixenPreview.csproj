@@ -15,6 +15,7 @@
 				<PackageReference Include="DockPanelSuite" Version="3.1.0" />
 				<PackageReference Include="DockPanelSuite.ThemeVS2015" Version="3.1.0" />
 				<PackageReference Include="NLog" Version="5.1.0" />
+				<PackageReference Include="OpenTK" Version="4.7.5" />
 				<PackageReference Include="SharpFont" Version="4.0.1" />
 				<PackageReference Include="SharpFont.Dependencies" Version="2.6" />
 		</ItemGroup>
@@ -40,6 +41,12 @@
 				<ProjectReference Include="..\..\Property\Location\Location.csproj" />
 				<ProjectReference Include="..\..\Property\Order\Order.csproj" />
 				<ProjectReference Include="..\..\Property\Orientation\Orientation.csproj" />
+		</ItemGroup>
+
+		<ItemGroup>
+		  <Reference Include="OpenTK.WinForms">
+		    <HintPath>..\..\..\Vixen.Common\Libraries\OpenTK.WinForms.dll</HintPath>
+		  </Reference>
 		</ItemGroup>
 
 		<ItemGroup>

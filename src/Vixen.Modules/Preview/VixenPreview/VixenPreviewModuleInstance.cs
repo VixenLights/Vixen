@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Windowing.Desktop;
+using OpenTK.WinForms;
 using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
 using VixenModules.Preview.VixenPreview.GDIPreview;
@@ -61,6 +63,7 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				lock (OpenGlPreviewForm.ContextLock)
 				{
+					GLFWProvider.CheckForMainThread = false;
 					var control = new GLControl();
 					control.MakeCurrent();
 					var major = GL.GetInteger(GetPName.MajorVersion);
@@ -75,7 +78,7 @@ namespace VixenModules.Preview.VixenPreview
 						Logging.Error($"Open GL version not supported. {major}.{minor}");
 					}
 
-					control.Context.MakeCurrent(null);
+					control.Context.MakeCurrent();
 					control.Dispose();
 				}
 			}

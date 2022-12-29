@@ -1,4 +1,4 @@
-﻿using OpenTK;
+﻿using OpenTK.Mathematics;
 using VixenModules.Preview.VixenPreview.OpenGL.Extensions;
 
 namespace VixenModules.Preview.VixenPreview.OpenGL

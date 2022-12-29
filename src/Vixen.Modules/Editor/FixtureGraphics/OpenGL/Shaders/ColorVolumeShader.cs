@@ -1,7 +1,7 @@
-﻿using OpenTK;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 using System.Diagnostics;
 using System.Drawing;
+using OpenTK.Mathematics;
 using VixenModules.Editor.FixtureGraphics.OpenGL.Volumes;
 
 namespace VixenModules.Editor.FixtureGraphics.OpenGL.Shaders

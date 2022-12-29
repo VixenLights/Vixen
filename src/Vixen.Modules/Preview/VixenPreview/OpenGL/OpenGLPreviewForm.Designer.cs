@@ -16,7 +16,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.glControl = new OpenTK.GLControl();
+			this.glControl = new OpenTK.WinForms.GLControl();
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusPixelsLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusPixels = new System.Windows.Forms.ToolStripStatusLabel();
@@ -35,7 +35,6 @@
 			this.glControl.Name = "glControl";
 			this.glControl.Size = new System.Drawing.Size(284, 262);
 			this.glControl.TabIndex = 0;
-			this.glControl.VSync = false;
 			this.glControl.Paint += new System.Windows.Forms.PaintEventHandler(this.glControl_Paint);
 			this.glControl.KeyDown += new System.Windows.Forms.KeyEventHandler(this.glControl_KeyDown);
 			this.glControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.glControl_MouseDown);
@@ -115,7 +114,7 @@
 
 		#endregion
 
-		private OpenTK.GLControl glControl;
+		private OpenTK.WinForms.GLControl glControl;
 		private System.Windows.Forms.StatusStrip statusStrip;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusPixelsLabel;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusPixels;

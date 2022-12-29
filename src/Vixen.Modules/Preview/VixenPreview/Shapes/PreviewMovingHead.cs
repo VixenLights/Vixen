@@ -1,7 +1,7 @@
-﻿using OpenTK;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Drawing.Design;
 using System.Runtime.Serialization;
+using OpenTK.Mathematics;
 using Vixen.Data.Flow;
 using Vixen.Sys;
 using VixenModules.App.Fixture;

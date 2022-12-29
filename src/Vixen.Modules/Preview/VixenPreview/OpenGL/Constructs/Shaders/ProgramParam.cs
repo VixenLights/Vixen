@@ -1,5 +1,5 @@
-using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
 
 namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 {

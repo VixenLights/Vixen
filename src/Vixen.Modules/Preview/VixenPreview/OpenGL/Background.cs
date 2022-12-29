@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Runtime.InteropServices;
-using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex;
@@ -39,6 +39,10 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			//Logging.Debug("We have a background.");
 			_backgroundProgram.Use();
 			//Logging.Debug("Set background program.");
+
+			// Bind the vertex array
+			GL.BindVertexArray(_backgroundProgram.VaoID);
+
 			GL.ActiveTexture(TextureUnit.Texture0);
 			//Logging.Debug("Set active texture.");
 			GlUtility.BindTexture(_backgroundTexture);
@@ -74,6 +78,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 			GlUtility.BindBuffer(_backgroundElements);
 			GL.DrawElements(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, IntPtr.Zero);
+
+			// Clear the vertex array
+			GL.BindVertexArray(0);
 
 			//Logging.Debug("Exit background draw.");
 		}

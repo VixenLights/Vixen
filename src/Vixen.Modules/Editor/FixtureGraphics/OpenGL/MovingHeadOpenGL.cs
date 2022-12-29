@@ -1,8 +1,8 @@
 ﻿using Common.Controls.ColorManagement.ColorModels;
-using OpenTK;
 using QuickFont;
 using QuickFont.Configuration;
 using System.Drawing;
+using OpenTK.Mathematics;
 using VixenModules.Preview.VixenPreview.Fixtures.Geometry;
 using VixenModules.Editor.FixtureGraphics.OpenGL.Shaders;
 using VixenModules.Editor.FixtureGraphics.OpenGL.Volumes;
@@ -671,9 +671,9 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 					(float)-_geometry.GetBaseDepth());
 				
 				// Draw the text
-				_qFontDrawing.Print(_qFont, MovingHead.Legend, positionOfText, QFontAlignment.Left, MovingHead.LegendColor);
+				// TODO .NET 6 commented _qFontDrawing.Print(_qFont, MovingHead.Legend, positionOfText, QFontAlignment.Left, MovingHead.LegendColor);
 				_qFontDrawing.RefreshBuffers();
-				_qFontDrawing.ProjectionMatrix = viewMatrix * projectionMatrix;				
+				// TODO .NET 6 commented _qFontDrawing.ProjectionMatrix = viewMatrix * projectionMatrix;				
 				_qFontDrawing.Draw();
 			}
 		}
