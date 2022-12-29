@@ -1,7 +1,7 @@
 ﻿using Common.Controls.ColorManagement.ColorModels;
-using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System.Windows.Media;
+using OpenTK.Mathematics;
 
 namespace VixenModules.Editor.FixtureGraphics.OpenGL.Shaders
 {

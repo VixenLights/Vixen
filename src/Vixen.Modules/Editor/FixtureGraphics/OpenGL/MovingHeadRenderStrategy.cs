@@ -1,5 +1,5 @@
-﻿using OpenTK;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
 using VixenModules.Editor.FixtureGraphics.OpenGL.Shaders;
 using VixenModules.Editor.FixtureGraphics.OpenGL.Volumes;
 

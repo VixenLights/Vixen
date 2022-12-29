@@ -5,11 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="OpenTK.WinForms.deps.json" />
+    <None Remove="OpenTK.WinForms.dll" />
     <None Remove="SoundTouch.dll" />
     <None Remove="SoundTouch_x64.dll" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="OpenTK.WinForms.deps.json" />
+    <Content Include="OpenTK.WinForms.dll" />
     <Content Include="SoundTouch.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

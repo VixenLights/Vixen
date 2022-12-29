@@ -1,9 +1,8 @@
-﻿using OpenTK;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 using System.Diagnostics;
+using OpenTK.Mathematics;
 using VixenModules.Editor.FixtureGraphics.OpenGL.Primitives;
 using VixenModules.Editor.FixtureGraphics.OpenGL.Volumes;
-using Vector3 = OpenTK.Vector3;
 
 namespace VixenModules.Editor.FixtureGraphics.OpenGL.Shaders
 {

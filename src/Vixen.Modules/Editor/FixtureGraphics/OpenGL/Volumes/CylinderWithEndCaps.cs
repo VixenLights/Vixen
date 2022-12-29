@@ -1,5 +1,5 @@
 ﻿using System.Drawing;
-using Vector3 = OpenTK.Vector3;
+using OpenTK.Mathematics;
 
 namespace VixenModules.Editor.FixtureGraphics.OpenGL.Volumes
 {

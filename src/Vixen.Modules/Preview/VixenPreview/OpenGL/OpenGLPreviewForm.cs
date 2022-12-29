@@ -4,8 +4,9 @@ using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
-using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
+using OpenTK.WinForms;
 using Vixen;
 using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
@@ -259,7 +260,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 						_program.Dispose();
 						_background.Dispose();
 					}
-					glControl.Context.MakeCurrent(null);
+					glControl.Context.MakeCurrent();
 				}
 
 				glControl.Dispose();				
@@ -713,8 +714,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 					DrawPoints(mvp);
 										
 					_pointsDraw.Set(_sw2.ElapsedMilliseconds);
+
 					glControl.SwapBuffers();
-					glControl.Context.MakeCurrent(null);
+					//glControl.Context.MakeCurrent();
 				}
 			}
 			else
@@ -732,7 +734,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 					RenderStaticPreviewShapes(perspective);
 
 					glControl.SwapBuffers();
-					glControl.Context.MakeCurrent(null);
+					//glControl.Context.MakeCurrent();
 				}
 			}
 			_isRendering = false;

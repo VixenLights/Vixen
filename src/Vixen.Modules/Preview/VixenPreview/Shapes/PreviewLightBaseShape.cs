@@ -1,9 +1,9 @@
-﻿using OpenTK;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 using System.ComponentModel;
 using System.Drawing.Design;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using OpenTK.Mathematics;
 using Vixen.Sys;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;

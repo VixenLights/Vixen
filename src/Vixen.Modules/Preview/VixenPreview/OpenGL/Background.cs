@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Runtime.InteropServices;
-using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex;

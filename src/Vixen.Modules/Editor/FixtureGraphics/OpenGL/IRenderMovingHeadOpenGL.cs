@@ -1,4 +1,4 @@
-﻿using OpenTK;
+﻿using OpenTK.Mathematics;
 using VixenModules.Editor.FixtureGraphics.OpenGL.Volumes;
 
 namespace VixenModules.Editor.FixtureGraphics.OpenGL
