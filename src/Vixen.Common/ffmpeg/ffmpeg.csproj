@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+				<RootNamespace>Vixen.Common.ffmpeg</RootNamespace>
+		</PropertyGroup>
+
+		<ItemGroup>
+		  <None Remove="ffmpeg.exe" />
+		</ItemGroup>
+
+		<ItemGroup>
+		  <Content Include="ffmpeg.exe">
+		    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  </Content>
+		</ItemGroup>
+
+</Project>

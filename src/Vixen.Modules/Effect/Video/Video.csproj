@@ -1,21 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
-			<RootNamespace>VixenModules.Effect.Video</RootNamespace>
-			<UseWindowsForms>true</UseWindowsForms>
+				<RootNamespace>VixenModules.Effect.Video</RootNamespace>
+				<UseWindowsForms>true</UseWindowsForms>
 		</PropertyGroup>
 
 		<ItemGroup>
-		  <None Remove="Images\EffectImage.png" />
+				<None Remove="Images\EffectImage.png" />
 		</ItemGroup>
 
 		<ItemGroup>
-		  <EmbeddedResource Include="Images\EffectImage.png" />
+				<EmbeddedResource Include="Images\EffectImage.png" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<PackageReference Include="NLog" Version="5.1.0" />
 		</ItemGroup>
 
 		<ItemGroup>
 				<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Common\FastPixel\FastPixel.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\ffmpeg\ffmpeg.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
 				<ProjectReference Include="..\..\App\Curves\Curves.csproj" />
 				<ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj" />
