@@ -91,6 +91,13 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 			}
 
 			GetParams();
+
+			// Initialize the vertex array object ID to invalid
+			VaoID = -1;
+
+			// Create the vertex array object 
+			GL.GenVertexArrays(1, out int vao);
+			VaoID = vao;
 		}
 
 		/// <summary>
@@ -109,6 +116,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 			Dispose(false);
 		}
 		#endregion
+
+		/// <summary>
+		/// Vertex array object ID associated with this shader program.
+		/// </summary>
+		public int VaoID { get; set; }
 
 		#region GetParams
 		/// <summary>

@@ -441,6 +441,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			//Logging.Debug("Created VBO.");
 
+			// Bind the vertex array
+			GL.BindVertexArray(program.VaoID);
+
 			GlUtility.BindBuffer(points);
 
 			//Logging.Debug("Buffer Bound.");
@@ -465,6 +468,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			GL.DrawArrays(PrimitiveType.Points, 0, points.Count / 8);
 
 			//Logging.Debug("Draw completed for shape.");
+
+			// Clear the vertex array
+			GL.BindVertexArray(0);
+
 			points.Dispose();
 
 			//Logging.Debug("VBO Disposed.");

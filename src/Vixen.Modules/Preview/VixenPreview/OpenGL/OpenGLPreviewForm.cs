@@ -706,6 +706,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 					_sw2.Restart();
 					_background.Draw(perspective, _camera.ViewMatrix);
 					_backgroundDraw.Set(_sw2.ElapsedMilliseconds);
+					//Logging.Info($"GL Error: {GL.GetError()}");
 					_sw2.Restart();
 					
 					// Render static preview shapes (moving heads)
