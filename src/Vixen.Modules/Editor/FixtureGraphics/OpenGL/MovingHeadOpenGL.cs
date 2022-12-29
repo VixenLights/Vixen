@@ -700,7 +700,7 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 			{
 				// Dispose of the library
 				_qFontDrawing.Dispose();
-				//QFontDrawing.DisposeStaticState();  //TODO .NET 6 Migration: figure out if this is needed! 
+				QFontDrawing.DisposeStaticState();
 				_qFontDrawing = null;
 			}						
 		}
