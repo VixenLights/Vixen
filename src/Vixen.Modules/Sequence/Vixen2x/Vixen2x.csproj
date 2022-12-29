@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+				<RootNamespace>VixenModules.Seqence.Vixen2x</RootNamespace>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<PackageReference Include="NLog" Version="5.1.0" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Modules\Sequence\Timed\Timed.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj" />
+				<ProjectReference Include="..\..\App\Curves\Curves.csproj" />
+		</ItemGroup>
+
+</Project>
