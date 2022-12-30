@@ -53,17 +53,20 @@ namespace VixenApplication.Setup.ElementTemplates
 		{
 			List<ElementNode> result = new List<ElementNode>();
 
-			if (_treeName.Length == 0) {
+			if (_treeName.Length == 0)
+			{
 				Logging.Error("treename is null");
 				return await Task.FromResult(result);
 			}
 
-			if (_stringCount < 0) {
+			if (_stringCount < 0)
+			{
 				Logging.Error("negative count");
 				return await Task.FromResult(result);
 			}
 
-			if (_pixelTree && _pixelsPerString < 0) {
+			if (_pixelTree && _pixelsPerString < 0)
+			{
 				Logging.Error("negative pixelsperstring");
 				return await Task.FromResult(result);
 			}
@@ -74,13 +77,16 @@ namespace VixenApplication.Setup.ElementTemplates
 			ElementNode head = ElementNodeService.Instance.CreateSingle(null, NamingUtilities.Uniquify(elementNames, _treeName), true, false);
 			result.Add(head);
 
-			for (int i = 0; i < _stringCount; i++) {
+			for (int i = 0; i < _stringCount; i++)
+			{
 				string stringname = head.Name + " " + textBoxStringPrefix.Text + (i + 1);
 				ElementNode stringnode = ElementNodeService.Instance.CreateSingle(head, NamingUtilities.Uniquify(elementNames, stringname), true, false);
 				result.Add(stringnode);
 
-				if (_pixelTree) {
-					for (int j = 0; j < _pixelsPerString; j++) {
+				if (_pixelTree)
+				{
+					for (int j = 0; j < _pixelsPerString; j++)
+					{
 						string pixelname = stringnode.Name + " " + textBoxPixelPrefix.Text + (j + 1);
 
 						ElementNode pixelnode = ElementNodeService.Instance.CreateSingle(stringnode, NamingUtilities.Uniquify(elementNames, pixelname), true, false);
@@ -160,7 +166,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		{
 			_treeName = textBoxTreeName.Text;
 			_stringCount = Decimal.ToInt32(numericUpDownStrings.Value);
-			_pixelTree = checkBoxPixelTree.Checked ;
+			_pixelTree = checkBoxPixelTree.Checked;
 			_pixelsPerString = Decimal.ToInt32(numericUpDownPixelsPerString.Value);
 			_zigZag = chkZigZag.Checked;
 			_zigZagEvery = Convert.ToInt32(lblEveryValue.Text);
@@ -215,6 +221,6 @@ namespace VixenApplication.Setup.ElementTemplates
 			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 
-		
+
 	}
 }

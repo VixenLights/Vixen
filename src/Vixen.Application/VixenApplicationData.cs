@@ -52,25 +52,31 @@ namespace VixenApplication
 			FileStream? stream = null;
 
 			DataFileDirectory = rootDataDirectory;
-			if (!File.Exists(DataFilepath)) {
-				if (Directory.Exists(DataFileDirectory)) {
+			if (!File.Exists(DataFilepath))
+			{
+				if (Directory.Exists(DataFileDirectory))
+				{
 					return;
 				}
-				else {
+				else
+				{
 					DataFileDirectory = DefaultDataFileDirectory;
-					if (!File.Exists(DataFilepath)) {
+					if (!File.Exists(DataFilepath))
+					{
 						return;
 					}
 				}
 			}
 
-			try {
+			try
+			{
 				stream = new FileStream(DataFilepath, FileMode.Open);
 
 				XElement root = XElement.Load(stream);
 
 				XElement? versionElement = root.Element("DataFormatVersion");
-				if (versionElement == null) {
+				if (versionElement == null)
+				{
 					Logging.Error("VixenApplication: loading application data: couldn't find data format version");
 					return;
 				}
@@ -78,13 +84,16 @@ namespace VixenApplication
 
 				ReadData(dataFormatVersion, root);
 			}
-			catch (FileNotFoundException ex) {
+			catch (FileNotFoundException ex)
+			{
 				Logging.Warn("VixenApplication: loading application data, but couldn't find file", ex);
 			}
-			catch (Exception ex) {
+			catch (Exception ex)
+			{
 				Logging.Error(ex, "VixenApplication: error loading application data");
 			}
-			finally {
+			finally
+			{
 				if (stream != null)
 					stream.Close();
 			}
@@ -93,7 +102,8 @@ namespace VixenApplication
 		public void SaveData()
 		{
 			FileStream? stream = null;
-			try {
+			try
+			{
 				stream = new FileStream(DataFilepath, FileMode.Create);
 
 				XElement root = new XElement("VixenApplicationData");
@@ -105,12 +115,13 @@ namespace VixenApplication
 				root.Add(recentSequencesElement);
 
 				XElement filterShapePositionsElement = new XElement("FilterShapePositions");
-				foreach (KeyValuePair<Guid, FilterSetupFormShapePosition> pair in FilterSetupFormShapePositions) {
+				foreach (KeyValuePair<Guid, FilterSetupFormShapePosition> pair in FilterSetupFormShapePositions)
+				{
 					filterShapePositionsElement.Add(
 						new XElement("FilterPosition",
-						             new XAttribute("FilterId", pair.Key),
-						             new XElement("xPositionProportion", pair.Value.XPositionProportion),
-						             new XElement("yPosition", pair.Value.YPosition)
+									 new XAttribute("FilterId", pair.Key),
+									 new XElement("xPositionProportion", pair.Value.XPositionProportion),
+									 new XElement("yPosition", pair.Value.YPosition)
 							)
 						);
 				}
@@ -122,10 +133,12 @@ namespace VixenApplication
 
 				root.Save(stream);
 			}
-			catch (Exception ex) {
+			catch (Exception ex)
+			{
 				Logging.Error(ex, "VixenApplication: error saving application data");
 			}
-			finally {
+			finally
+			{
 				if (stream != null)
 					stream.Close();
 			}
@@ -133,39 +146,47 @@ namespace VixenApplication
 
 		public void ReadData(int dataVersion, XElement rootElement)
 		{
-			if (dataVersion > DataFormatVersionNumber) {
+			if (dataVersion > DataFormatVersionNumber)
+			{
 				Logging.Error("VixenApplication: error reading application data; given data version was too high: " +
-				                          dataVersion);
+										  dataVersion);
 				return;
 			}
 
 			// recent sequences: in all data formats
 			XElement? recentSequences = rootElement.Element("RecentSequences");
-			if (recentSequences != null) {
+			if (recentSequences != null)
+			{
 				RecentSequences = new List<string>();
-				foreach (XElement element in recentSequences.Elements("SequenceFile")) {
+				foreach (XElement element in recentSequences.Elements("SequenceFile"))
+				{
 					RecentSequences.Add(element.Value);
 				}
 			}
 
 			// filter shape positions: in data versions 2+
-			if (dataVersion >= 2) {
+			if (dataVersion >= 2)
+			{
 				XElement? filterShapePositionsElement = rootElement.Element("FilterShapePositions");
-				if (filterShapePositionsElement != null) {
+				if (filterShapePositionsElement != null)
+				{
 					FilterSetupFormShapePositions = new Dictionary<Guid, FilterSetupFormShapePosition>();
-					foreach (XElement element in filterShapePositionsElement.Elements("FilterPosition")) {
+					foreach (XElement element in filterShapePositionsElement.Elements("FilterPosition"))
+					{
 						FilterSetupFormShapePosition position = new FilterSetupFormShapePosition();
 						position.XPositionProportion = double.Parse(element.Element("xPositionProportion").Value);
 						position.YPosition = int.Parse(element.Element("yPosition").Value);
-						FilterSetupFormShapePositions.Add((Guid) element.Attribute("FilterId"), position);
+						FilterSetupFormShapePositions.Add((Guid)element.Attribute("FilterId"), position);
 					}
 				}
 			}
 
 			// filter setup form HQ rendering added in data v3
-			if (dataVersion >= 3) {
+			if (dataVersion >= 3)
+			{
 				XElement? element = rootElement.Element("FilterSetupFormHighQualityRendering");
-				if (element != null) {
+				if (element != null)
+				{
 					FilterSetupFormHighQualityRendering = Boolean.Parse(element.Attribute("value").Value);
 				}
 			}

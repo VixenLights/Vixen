@@ -19,23 +19,23 @@
 		}
 
 		private DateTime _dateLastLoaded = DateTime.MaxValue;
-      
-        public DateTime DateLastLoaded
+
+		public DateTime DateLastLoaded
 		{
 			get { return _dateLastLoaded; }
 			set { _dateLastLoaded = value; }
 		}
 
-        private int _profileNumber;
+		private int _profileNumber;
 
-        public int ProfileNumber
-        {
-            get { return _profileNumber; }
-            set { _profileNumber = value; }
-        }
+		public int ProfileNumber
+		{
+			get { return _profileNumber; }
+			set { _profileNumber = value; }
+		}
 
 
-        public bool IsLocked { get; set; }
+		public bool IsLocked { get; set; }
 
 		public override string ToString()
 		{

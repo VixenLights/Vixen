@@ -10,12 +10,12 @@ namespace VixenApplication
 	{
 		public static readonly string DefaultFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Vixen 3";
 		private ProfileItem? _currentItem;
-		
+
 		public DataProfileForm()
 		{
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
-			int iconSize = (int)(16*ScalingTools.GetScaleFactor());
+			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			buttonAddProfile.Image = Tools.GetIcon(Resources.add, iconSize);
 			buttonAddProfile.Text = "";
 			buttonDeleteProfile.Image = Tools.GetIcon(Resources.delete, iconSize);
@@ -45,35 +45,39 @@ namespace VixenApplication
 			if (comboBoxProfiles.Items.Count == 0)
 				return;
 
-			foreach (ProfileItem item in comboBoxProfiles.Items) {
+			foreach (ProfileItem item in comboBoxProfiles.Items)
+			{
 				comboBoxLoadThisProfile.Items.Add(item);
 			}
 
-			if (firstTime) {
-				if (radioButtonLoadThisProfile.Checked) {
+			if (firstTime)
+			{
+				if (radioButtonLoadThisProfile.Checked)
+				{
 					int loadItemNum = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "ProfileToLoad", 0);
 					if (loadItemNum < comboBoxLoadThisProfile.Items.Count)
 						comboBoxLoadThisProfile.SelectedIndex = loadItemNum;
 				}
 			}
-			else 
+			else
 				// If the combo box was already populated, we want to select the same item.
-				if (selectedItem != null && comboBoxLoadThisProfile.Items.Contains(selectedItem)) {
-					comboBoxLoadThisProfile.SelectedItem = selectedItem;
-				}
+				if (selectedItem != null && comboBoxLoadThisProfile.Items.Contains(selectedItem))
+			{
+				comboBoxLoadThisProfile.SelectedItem = selectedItem;
+			}
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e)
 		{
 			XMLProfileSettings profile = new XMLProfileSettings();
-            List<string> checkName = new List<string>();
-            List<string> checkDataFolder = new List<string>();
+			List<string> checkName = new List<string>();
+			List<string> checkDataFolder = new List<string>();
 			List<string> duplicateItems = new List<string>();
 			List<string> checkDataPath = new List<string>();
-            bool duplicateName = false;
-            bool duplicateDataFolder = false;
+			bool duplicateName = false;
+			bool duplicateDataFolder = false;
 			bool invalidDataPath = false;
-            
+
 			//Check for null values, duplicate profile name or datapath and non rooted datapath
 			foreach (ProfileItem item in comboBoxProfiles.Items)
 			{
@@ -145,7 +149,8 @@ namespace VixenApplication
 
 			SaveCurrentItem();
 			profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "ProfileCount", comboBoxProfiles.Items.Count);
-			for (int i = 0; i < comboBoxProfiles.Items.Count; i++) {
+			for (int i = 0; i < comboBoxProfiles.Items.Count; i++)
+			{
 				ProfileItem? item = comboBoxProfiles.Items[i] as ProfileItem;
 				if (item == null) throw new InvalidOperationException("Profile Item cannot be null!");
 				profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i + "/Name", item.Name);
@@ -179,14 +184,14 @@ namespace VixenApplication
 						}
 					}
 				}
-            }
+			}
 
 			profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "LoadAction",
 				radioButtonAskMe.Checked ? "Ask" : "LoadSelected");
 
 			if (comboBoxLoadThisProfile.SelectedIndex >= 0)
 				profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "ProfileToLoad", comboBoxLoadThisProfile.SelectedIndex);
-			
+
 			DialogResult = DialogResult.OK;
 			Close();
 		}
@@ -207,7 +212,7 @@ namespace VixenApplication
 			int profileCount = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "ProfileCount", 0);
 			if (profileCount == 0)
 			{
-				ProfileItem item = new ProfileItem {Name = "Default", DataFolder = DefaultFolder};
+				ProfileItem item = new ProfileItem { Name = "Default", DataFolder = DefaultFolder };
 				comboBoxProfiles.Items.Add(item);
 			}
 			else
@@ -227,7 +232,8 @@ namespace VixenApplication
 
 		private void SaveCurrentItem()
 		{
-			if (_currentItem != null) {
+			if (_currentItem != null)
+			{
 				_currentItem.Name = textBoxProfileName.Text;
 				_currentItem.DataFolder = textBoxDataFolder.Text.Trim();
 			}
@@ -259,7 +265,7 @@ namespace VixenApplication
 		{
 			SaveCurrentItem();
 
-			TextDialog dialog = new TextDialog("Enter a name for the new profile","Profile Name","New Profile");
+			TextDialog dialog = new TextDialog("Enter a name for the new profile", "Profile Name", "New Profile");
 
 			while (dialog.ShowDialog() == DialogResult.OK)
 			{
@@ -271,7 +277,7 @@ namespace VixenApplication
 						"Error", false, false);
 					messageBox.ShowDialog();
 				}
-				
+
 				if (comboBoxProfiles.Items.Cast<ProfileItem>().Any(items => items.Name == dialog.Response))
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)

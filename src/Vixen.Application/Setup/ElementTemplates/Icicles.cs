@@ -46,12 +46,14 @@ namespace VixenApplication.Setup.ElementTemplates
 		{
 			List<ElementNode> result = new List<ElementNode>();
 
-			if (_treeName.Length == 0) {
+			if (_treeName.Length == 0)
+			{
 				Logging.Error("treename is null");
 				return await Task.FromResult(result);
 			}
 
-			if (_stringCount < 0) {
+			if (_stringCount < 0)
+			{
 				Logging.Error("negative count");
 				return await Task.FromResult(result);
 			}
@@ -64,7 +66,7 @@ namespace VixenApplication.Setup.ElementTemplates
 
 			int ii = 0;
 			//Grabs the individual string sizes and removes any empty ones just in case the user entered something like 4,5,,9
-			string[] pixelsPerStringArray = _pixelsPerStringPattern.Split(new string[] {","}, StringSplitOptions.RemoveEmptyEntries);
+			string[] pixelsPerStringArray = _pixelsPerStringPattern.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
 
 			//Loops through the number of Strings to be added.
 			for (int i = 0; i < _stringCount; i++)
@@ -128,7 +130,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		private void textBoxStringPattern_KeyPress(object sender, KeyPressEventArgs e)
 		{
 			//Ensures only numbers, commas and backspace can be used in the Pattern textbox.
-			if (e.KeyChar == ','|| char.IsControl(e.KeyChar))
+			if (e.KeyChar == ',' || char.IsControl(e.KeyChar))
 				e.Handled = false;
 			else if (!int.TryParse(e.KeyChar.ToString(), out _))
 				e.Handled = true;

@@ -37,9 +37,10 @@ namespace VixenApplication.Setup
 			buttonSelectDestinationOutputs.Image = Tools.GetIcon(Resources.table_select_row, iconSize);
 			buttonSelectDestinationOutputs.Text = "";
 			ThemeUpdateControls.UpdateControls(this);
-	
+
 			comboBoxNewItemType.BeginUpdate();
-			foreach (IElementTemplate template in elementTemplates) {
+			foreach (IElementTemplate template in elementTemplates)
+			{
 				ComboBoxItem item = new ComboBoxItem(template.TemplateName, template);
 				comboBoxNewItemType.Items.Add(item);
 			}
@@ -48,7 +49,8 @@ namespace VixenApplication.Setup
 				comboBoxNewItemType.SelectedIndex = 0;
 
 			comboBoxSetupHelperType.BeginUpdate();
-			foreach (IElementSetupHelper helper in elementSetupHelpers) {
+			foreach (IElementSetupHelper helper in elementSetupHelpers)
+			{
 				ComboBoxItem item = new ComboBoxItem(helper.HelperName, helper);
 				comboBoxSetupHelperType.Items.Add(item);
 			}
@@ -114,7 +116,8 @@ namespace VixenApplication.Setup
 			if (comboBoxSetupHelperType.SelectedIndex < 0)
 				return;
 
-			if (comboBoxSetupHelperType.SelectedItem is ComboBoxItem item) {
+			if (comboBoxSetupHelperType.SelectedItem is ComboBoxItem item)
+			{
 				IElementSetupHelper? helper = item.Value as IElementSetupHelper;
 				helper?.Perform(elementTree.SelectedElementNodes);
 				elementTree.RefreshElementTreeStatus();
@@ -127,16 +130,20 @@ namespace VixenApplication.Setup
 		private void buttonAddProperty_Click(object sender, EventArgs e)
 		{
 			List<KeyValuePair<string, object>> properties = new List<KeyValuePair<string, object>>();
-			foreach (KeyValuePair<Guid, string> kvp in ApplicationServices.GetAvailableModules<IPropertyModuleInstance>()) {
+			foreach (KeyValuePair<Guid, string> kvp in ApplicationServices.GetAvailableModules<IPropertyModuleInstance>())
+			{
 				properties.Add(new KeyValuePair<string, object>(kvp.Value, kvp.Key));
 			}
-			using (ListSelectDialog addForm = new ListSelectDialog("Add Property", (properties))) {
+			using (ListSelectDialog addForm = new ListSelectDialog("Add Property", (properties)))
+			{
 				addForm.SelectionMode = SelectionMode.One;
-				if (addForm.ShowDialog() == DialogResult.OK) {
+				if (addForm.ShowDialog() == DialogResult.OK)
+				{
 
 					// TODO: something smarter about picking subelements vs. applying it to the groups. For now, will just apply it to the actual selected items.
 
-					foreach (ElementNode node in elementTree.SelectedElementNodes) {
+					foreach (ElementNode node in elementTree.SelectedElementNodes)
+					{
 						node.Properties.Add((Guid)addForm.SelectedItem);
 					}
 
@@ -148,12 +155,16 @@ namespace VixenApplication.Setup
 
 		private void buttonRemoveProperty_Click(object sender, EventArgs e)
 		{
-			if (listViewProperties.SelectedItems.Count > 0) {
+			if (listViewProperties.SelectedItems.Count > 0)
+			{
 				string message, title;
-				if (listViewProperties.SelectedItems.Count == 1) {
+				if (listViewProperties.SelectedItems.Count == 1)
+				{
 					message = "Are you sure you want to remove the selected property from the element?";
 					title = "Remove Property?";
-				} else {
+				}
+				else
+				{
 					message = "Are you sure you want to remove the selected properties from the element?";
 					title = "Remove Properties?";
 				}
@@ -163,13 +174,15 @@ namespace VixenApplication.Setup
 				messageBox.ShowDialog();
 				if (messageBox.DialogResult == DialogResult.OK)
 				{
-					foreach (ListViewItem item in listViewProperties.SelectedItems) {
-						foreach (ElementNode elementNode in SelectedElements) {
+					foreach (ListViewItem item in listViewProperties.SelectedItems)
+					{
+						foreach (ElementNode elementNode in SelectedElements)
+						{
 							if (item.Tag is IPropertyModuleInstance instance)
 							{
 								elementNode.Properties.Remove(instance.Descriptor.TypeId);
 							}
-							
+
 						}
 					}
 
@@ -189,9 +202,11 @@ namespace VixenApplication.Setup
 		{
 			bool result = false;
 
-			if (listViewProperties.SelectedItems.Count == 1) {
+			if (listViewProperties.SelectedItems.Count == 1)
+			{
 				var property = listViewProperties.SelectedItems[0].Tag as IPropertyModuleInstance;
-				if (property != null) {
+				if (property != null)
+				{
 
 					if (property.HasSetup)
 					{
@@ -232,7 +247,7 @@ namespace VixenApplication.Setup
 
 			// Retrieve the selected combo box item
 			// If a combo box item was selected then...
-			if (comboBoxNewItemType.SelectedItem is ComboBoxItem item) 
+			if (comboBoxNewItemType.SelectedItem is ComboBoxItem item)
 			{
 				// Retrieve the element template
 				IElementTemplate? template = item.Value as IElementTemplate;
@@ -243,8 +258,8 @@ namespace VixenApplication.Setup
 
 				// Process the template for the selected node(s)
 				await elementTemplateHelper.ProcessElementTemplate(
-					elementTree.SelectedElementNodes, 
-					template, 
+					elementTree.SelectedElementNodes,
+					template,
 					this,
 					(node) =>
 						{
@@ -274,8 +289,10 @@ namespace VixenApplication.Setup
 			// TODO: or even better, show normally if they ALL have them, and show in italics if SOME have the property... then don't let the partial ones be configured
 			listViewProperties.BeginUpdate();
 			listViewProperties.Items.Clear();
-			if (selectedNode != null) {
-				foreach (IPropertyModuleInstance property in selectedNode.Properties) {
+			if (selectedNode != null)
+			{
+				foreach (IPropertyModuleInstance property in selectedNode.Properties)
+				{
 					ListViewItem item = new ListViewItem();
 					item.Text = property.Descriptor.TypeName;
 					item.Tag = property;
@@ -359,8 +376,10 @@ namespace VixenApplication.Setup
 		{
 			ControllersAndOutputsSet controllersAndOutputs = new ControllersAndOutputsSet();
 
-			foreach (ElementNode selectedElement in SelectedElements) {
-				foreach (ElementNode leafElementNode in selectedElement.GetLeafEnumerator()) {
+			foreach (ElementNode selectedElement in SelectedElements)
+			{
+				foreach (ElementNode leafElementNode in selectedElement.GetLeafEnumerator())
+				{
 					if (leafElementNode == null || leafElementNode.Element == null)
 						continue;
 
@@ -368,9 +387,10 @@ namespace VixenApplication.Setup
 					if (component == null)
 						continue;
 
-					IEnumerable<IDataFlowComponent> outputComponents = _findComponentsOfTypeInTreeFromComponent(component, typeof (CommandOutputDataFlowAdapter));
+					IEnumerable<IDataFlowComponent> outputComponents = _findComponentsOfTypeInTreeFromComponent(component, typeof(CommandOutputDataFlowAdapter));
 
-					foreach (IDataFlowComponent outputComponent in outputComponents) {
+					foreach (IDataFlowComponent outputComponent in outputComponents)
+					{
 						VixenSystem.OutputControllers.getOutputDetailsForDataFlowComponent(outputComponent, out IControllerDevice? controller, out var outputIndex);
 
 						if (controller == null)
@@ -394,7 +414,7 @@ namespace VixenApplication.Setup
 			{
 				MasterForm?.SelectControllersAndOutputs(controllersAndOutputs, true);
 			}
-			
+
 		}
 
 		private IEnumerable<IDataFlowComponent> _findComponentsOfTypeInTreeFromComponent(IDataFlowComponent dataFlowComponent, Type dfctype)
@@ -419,7 +439,8 @@ namespace VixenApplication.Setup
 				return;
 
 			// can't delete by ElementNode, as one element can be in multiple places :-(
-			foreach (TreeNode tn in elementTree.SelectedTreeNodes) {
+			foreach (TreeNode tn in elementTree.SelectedTreeNodes)
+			{
 				elementTree.DeleteNode(tn);
 			}
 
@@ -429,7 +450,8 @@ namespace VixenApplication.Setup
 
 		private void buttonRenameElements_Click(object sender, EventArgs e)
 		{
-			if (elementTree.RenameSelectedElements()) {
+			if (elementTree.RenameSelectedElements())
+			{
 				OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Rename));
 			}
 		}

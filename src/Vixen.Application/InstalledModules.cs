@@ -21,18 +21,21 @@ namespace VixenApplication
 		private void InstalledModules_Load(object sender, EventArgs e)
 		{
 			Cursor = Cursors.WaitCursor;
-			try {
+			try
+			{
 				string[] moduleTypes = ApplicationServices.GetTypesOfModules().OrderBy(x => x).ToArray();
-				foreach (string moduleType in moduleTypes) {
+				foreach (string moduleType in moduleTypes)
+				{
 					ListViewGroup group = listViewModules.Groups.Add(moduleType, moduleType);
 					IModuleDescriptor[] descriptors = ApplicationServices.GetModuleDescriptors(moduleType);
-					foreach (IModuleDescriptor descriptor in descriptors) {
+					foreach (IModuleDescriptor descriptor in descriptors)
+					{
 						ListViewItem item =
 							new ListViewItem(new[]
-							                 	{
-							                 		descriptor.TypeName, _GetModuleDescription(descriptor), _GetModuleAuthor(descriptor),
-							                 		_GetModuleVersion(descriptor), descriptor.FileName
-							                 	});
+												 {
+													 descriptor.TypeName, _GetModuleDescription(descriptor), _GetModuleAuthor(descriptor),
+													 _GetModuleVersion(descriptor), descriptor.FileName
+												 });
 						item.Tag = descriptor;
 						item.Group = group;
 						listViewModules.Items.Add(item);
@@ -41,40 +44,48 @@ namespace VixenApplication
 
 				listViewModules.ColumnAutoSize();
 			}
-			catch (Exception ex) {
+			catch (Exception ex)
+			{
 				MessageBox.Show(ex.Message);
 			}
-			finally {
+			finally
+			{
 				Cursor = Cursors.Default;
 			}
 		}
 
 		private string _GetModuleDescription(IModuleDescriptor descriptor)
 		{
-			try {
+			try
+			{
 				return descriptor.Description;
 			}
-			catch {
+			catch
+			{
 				return NotProvided;
 			}
 		}
 
 		private string _GetModuleAuthor(IModuleDescriptor descriptor)
 		{
-			try {
+			try
+			{
 				return descriptor.Author;
 			}
-			catch {
+			catch
+			{
 				return NotProvided;
 			}
 		}
 
 		private string _GetModuleVersion(IModuleDescriptor descriptor)
 		{
-			try {
+			try
+			{
 				return descriptor.Version;
 			}
-			catch {
+			catch
+			{
 				return NotProvided;
 			}
 		}
@@ -91,7 +102,7 @@ namespace VixenApplication
 			{
 				Clipboard.SetText(descriptor.TypeId.ToString());
 			}
-			
+
 		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)

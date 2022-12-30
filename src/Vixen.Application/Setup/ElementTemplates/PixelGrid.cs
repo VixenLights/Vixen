@@ -21,7 +21,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		private bool _rowsFirst;
 		private bool _zigZag;
 		private int _zigZagEvery;
-		private StartLocation _startLocation; 
+		private StartLocation _startLocation;
 
 		public PixelGrid()
 		{
@@ -59,17 +59,20 @@ namespace VixenApplication.Setup.ElementTemplates
 		{
 			List<ElementNode> result = new List<ElementNode>();
 
-			if (_gridName.Length == 0) {
+			if (_gridName.Length == 0)
+			{
 				Logging.Error("gridname is null");
 				return await Task.FromResult(result);
 			}
 
-			if (_rows < 0) {
+			if (_rows < 0)
+			{
 				Logging.Error("negative rows");
 				return await Task.FromResult(result);
 			}
 
-			if (_columns < 0) {
+			if (_columns < 0)
+			{
 				Logging.Error("negative columns");
 				return await Task.FromResult(result);
 			}
@@ -77,7 +80,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			//Optimize the name check for performance. We know we are going to create a bunch of them and we can handle it ourselves more efficiently
 			HashSet<string> elementNames = new HashSet<string>(VixenSystem.Nodes.Select(x => x.Name));
 
-			ElementNode head = ElementNodeService.Instance.CreateSingle(null, NamingUtilities.Uniquify(elementNames,_gridName), true, false);
+			ElementNode head = ElementNodeService.Instance.CreateSingle(null, NamingUtilities.Uniquify(elementNames, _gridName), true, false);
 			result.Add(head);
 
 			if (radioButtonHorizontalFirst.Checked)
@@ -102,10 +105,13 @@ namespace VixenApplication.Setup.ElementTemplates
 
 			int firstlimit, secondlimit;
 
-			if (_rowsFirst) {
+			if (_rowsFirst)
+			{
 				firstlimit = _rows;
 				secondlimit = _columns;
-			} else {
+			}
+			else
+			{
 				firstlimit = _columns;
 				secondlimit = _rows;
 			}
@@ -113,12 +119,14 @@ namespace VixenApplication.Setup.ElementTemplates
 			string firstprefix = " " + textBoxFirstPrefix.Text;
 			string secondprefix = " " + textBoxSecondPrefix.Text;
 
-			for (int i = 0; i < firstlimit; i++) {
+			for (int i = 0; i < firstlimit; i++)
+			{
 				string firstname = head.Name + firstprefix + (i + 1);
-				ElementNode firstnode = ElementNodeService.Instance.CreateSingle(head, NamingUtilities.Uniquify(elementNames,firstname),true, false);
+				ElementNode firstnode = ElementNodeService.Instance.CreateSingle(head, NamingUtilities.Uniquify(elementNames, firstname), true, false);
 				result.Add(firstnode);
 
-				for (int j = 0; j < secondlimit; j++) {
+				for (int j = 0; j < secondlimit; j++)
+				{
 					string secondname = firstnode.Name + secondprefix + (j + 1);
 					ElementNode secondnode = ElementNodeService.Instance.CreateSingle(firstnode, NamingUtilities.Uniquify(elementNames, secondname), true, false);
 					result.Add(secondnode);
@@ -127,7 +135,7 @@ namespace VixenApplication.Setup.ElementTemplates
 
 			IEnumerable<ElementNode> leafNodes = Enumerable.Empty<ElementNode>();
 
-			if(_startLocation == StartLocation.BottomLeft)
+			if (_startLocation == StartLocation.BottomLeft)
 			{
 				if (_zigZag)
 				{
@@ -137,7 +145,7 @@ namespace VixenApplication.Setup.ElementTemplates
 
 				return result;
 			}
-			
+
 			if (_startLocation == StartLocation.BottomRight)
 			{
 				leafNodes = result.First().Children.SelectMany(x => x.GetLeafEnumerator().Reverse());
@@ -163,8 +171,8 @@ namespace VixenApplication.Setup.ElementTemplates
 			return await Task.FromResult(result);
 		}
 
-		
-		
+
+
 		private void PixelGrid_Load(object sender, EventArgs e)
 		{
 			textBoxName.Text = _gridName;
@@ -205,9 +213,9 @@ namespace VixenApplication.Setup.ElementTemplates
 			{
 				_startLocation = StartLocation.TopRight;
 			}
-			else if(radioTopLeft.Checked)
+			else if (radioTopLeft.Checked)
 			{
-				_startLocation= StartLocation.TopLeft;
+				_startLocation = StartLocation.TopLeft;
 			}
 			else if (radioBottomRight.Checked)
 			{

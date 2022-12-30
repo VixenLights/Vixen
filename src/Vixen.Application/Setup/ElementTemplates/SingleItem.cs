@@ -21,11 +21,14 @@ namespace VixenApplication.Setup.ElementTemplates
 
 		public bool SetupTemplate(IEnumerable<ElementNode>? selectedNodes = null)
 		{
-			using (TextDialog td = new TextDialog("New Element Name?", "Element Name", _itemName, true)) {
+			using (TextDialog td = new TextDialog("New Element Name?", "Element Name", _itemName, true))
+			{
 				DialogResult dr = td.ShowDialog();
-				if (dr == DialogResult.OK) {
+				if (dr == DialogResult.OK)
+				{
 					_itemName = td.Response;
-					if (_itemName == "") {
+					if (_itemName == "")
+					{
 						_itemName = "New Item";
 					}
 					return true;
@@ -37,7 +40,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode>? selectedNodes = null)
 		{
 			ElementNode newNode = ElementNodeService.Instance.CreateSingle(null, _itemName);
-			return await Task.FromResult(new[] {newNode});
+			return await Task.FromResult(new[] { newNode });
 		}
 
 		#region IElementTemplate

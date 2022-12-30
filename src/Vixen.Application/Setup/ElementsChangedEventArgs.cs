@@ -1,6 +1,6 @@
 ﻿namespace VixenApplication.Setup
 {
-	public class ElementsChangedEventArgs: EventArgs
+	public class ElementsChangedEventArgs : EventArgs
 	{
 		public ElementsChangedEventArgs(ElementsChangedAction action)
 		{
@@ -18,5 +18,5 @@
 		}
 	}
 
-	
+
 }

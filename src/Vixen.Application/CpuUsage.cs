@@ -36,8 +36,10 @@ namespace VixenApplication
 		public short GetUsage()
 		{
 			short cpuCopy = _cpuUsage;
-			if (Interlocked.Increment(ref _runCount) == 1) {
-				if (!EnoughTimePassed) {
+			if (Interlocked.Increment(ref _runCount) == 1)
+			{
+				if (!EnoughTimePassed)
+				{
 					Interlocked.Decrement(ref _runCount);
 					return cpuCopy;
 				}
@@ -48,12 +50,14 @@ namespace VixenApplication
 				Process process = Process.GetCurrentProcess();
 				procTime = process.TotalProcessorTime;
 
-				if (!GetSystemTimes(out sysIdle, out sysKernel, out sysUser)) {
+				if (!GetSystemTimes(out sysIdle, out sysKernel, out sysUser))
+				{
 					Interlocked.Decrement(ref _runCount);
 					return cpuCopy;
 				}
 
-				if (!IsFirstRun) {
+				if (!IsFirstRun)
+				{
 					UInt64 sysKernelDiff = SubtractTimes(sysKernel, _prevSysKernel);
 					UInt64 sysUserDiff = SubtractTimes(sysUser, _prevSysUser);
 
@@ -61,8 +65,9 @@ namespace VixenApplication
 
 					Int64 procTotal = procTime.Ticks - _prevProcTotal.Ticks;
 
-					if (sysTotal > 0) {
-						_cpuUsage = (short) ((100.0*procTotal)/sysTotal);
+					if (sysTotal > 0)
+					{
+						_cpuUsage = (short)((100.0 * procTotal) / sysTotal);
 					}
 				}
 
@@ -81,8 +86,8 @@ namespace VixenApplication
 
 		private UInt64 SubtractTimes(ComTypes.FILETIME a, ComTypes.FILETIME b)
 		{
-			UInt64 aInt = ((UInt64) (a.dwHighDateTime << 32)) | (UInt64) a.dwLowDateTime;
-			UInt64 bInt = ((UInt64) (b.dwHighDateTime << 32)) | (UInt64) b.dwLowDateTime;
+			UInt64 aInt = ((UInt64)(a.dwHighDateTime << 32)) | (UInt64)a.dwLowDateTime;
+			UInt64 bInt = ((UInt64)(b.dwHighDateTime << 32)) | (UInt64)b.dwLowDateTime;
 
 			return aInt - bInt;
 		}

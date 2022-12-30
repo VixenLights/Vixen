@@ -25,7 +25,7 @@ namespace VixenApplication
 			Icon = Resources.Icon_Vixen3;
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			buttonSetSaveFolder.Image = Tools.GetIcon(Resources.folder, iconSize);
-			_bw.WorkerReportsProgress=true;
+			_bw.WorkerReportsProgress = true;
 			_bw.WorkerSupportsCancellation = true;
 			_bw.DoWork += bw_DoWork;
 			_bw.ProgressChanged += backgroundWorker1_ProgressChanged;
@@ -49,7 +49,7 @@ namespace VixenApplication
 		{
 			if (_item == null) throw new InvalidOperationException("Profile Item cannot be null");
 			ProfileItem item = _item;
-			
+
 			string outPath = Path.Combine(textBoxSaveFolder.Text, textBoxFileName.Text + ".zip");
 
 			String appDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Vixen");
@@ -63,14 +63,14 @@ namespace VixenApplication
 			if (success && includeLogs)
 			{
 				UpdateStatus("Zipping logs please wait...");
-				success = Archive(logDataFolder, new List<string>(), Path.Combine(parentFolder, @"Core Logs"), outPath);	
+				success = Archive(logDataFolder, new List<string>(), Path.Combine(parentFolder, @"Core Logs"), outPath);
 			}
 			if (success && includeUserSettings)
 			{
 				UpdateStatus("Zipping user settings please wait...");
 				Archive(appDataFolder, new List<string>(), Path.Combine(parentFolder, @"User Settings"), outPath);
 			}
-			
+
 		}
 
 		private void CompressSelectedFiles()
@@ -104,8 +104,8 @@ namespace VixenApplication
 			}
 
 			ArchiveProfile(exclusions, checkBoxLogs.Checked, checkBoxUserSettings.Checked);
-			
-			EndCompressUIState();			
+
+			EndCompressUIState();
 		}
 
 		private void backgroundWorker1_ProgressChanged(object? sender, ProgressChangedEventArgs args)
@@ -142,13 +142,14 @@ namespace VixenApplication
 				}
 			}
 			comboBoxProfiles.SelectedIndex = 0;
-			textBoxFileName.Text=@"VixenProfile";
+			textBoxFileName.Text = @"VixenProfile";
 			textBoxSaveFolder.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 		}
 
 		private void buttonSetSaveFolder_Click(object sender, EventArgs e)
 		{
-			if (folderBrowserSaveFolder.ShowDialog() == DialogResult.OK) {
+			if (folderBrowserSaveFolder.ShowDialog() == DialogResult.OK)
+			{
 				textBoxSaveFolder.Text = folderBrowserSaveFolder.SelectedPath;
 			}
 		}
@@ -209,7 +210,7 @@ namespace VixenApplication
 			{
 				textBoxFileName.Text = Path.GetFileNameWithoutExtension(textBoxFileName.Text);
 			}
-			
+
 			string outPath = Path.Combine(textBoxSaveFolder.Text, textBoxFileName.Text + ".zip");
 
 			if (!Directory.Exists(textBoxSaveFolder.Text))
@@ -244,7 +245,7 @@ namespace VixenApplication
 			buttonStartCancel.Text = "Stop";
 			buttonClose.Enabled = false;
 			_bw.RunWorkerAsync();
-			
+
 		}
 
 		private void StartCompressUIState()
@@ -292,14 +293,14 @@ namespace VixenApplication
 
 		private void _UpdateStatus(string text)
 		{
-			toolStripStatusLabel.Text = text;	
+			toolStripStatusLabel.Text = text;
 		}
 
 		private bool Archive(string folder, IList<string> exceptions, string parentFolder, string archivePath)
 		{
 			bool success = false;
 			string folderFullPath = Path.GetFullPath(folder);
-			
+
 			IEnumerable<string> files = Directory.EnumerateFiles(folder,
 					"*.*", SearchOption.AllDirectories);
 			int fileCount = files.Count();
@@ -322,7 +323,7 @@ namespace VixenApplication
 								addFile = addFile.Substring(folderFullPath.Length);
 								archive.CreateEntryFromFile(file, parentFolder + addFile);
 								filesComplete++;
-								var value = (int)(filesComplete /(double)fileCount * 100.0);
+								var value = (int)(filesComplete / (double)fileCount * 100.0);
 								_bw.ReportProgress(value);
 							}
 						}
@@ -333,7 +334,7 @@ namespace VixenApplication
 			catch (Exception ex)
 			{
 				Logging.Error(ex, "An error occurred adding files to archive");
-				MessageBoxForm mbf = new MessageBoxForm($"An error occurred during the zip process.\n\r {ex.Message}","Error Zipping Files",MessageBoxButtons.OK, SystemIcons.Error);
+				MessageBoxForm mbf = new MessageBoxForm($"An error occurred during the zip process.\n\r {ex.Message}", "Error Zipping Files", MessageBoxButtons.OK, SystemIcons.Error);
 				mbf.ShowDialog(this);
 			}
 
