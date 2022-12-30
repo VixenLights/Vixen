@@ -5,6 +5,7 @@
 		</PropertyGroup>
 
 		<ItemGroup>
+				<PackageReference Include="FTD2XX.Net" Version="1.2.1" />
 				<PackageReference Include="NLog" Version="5.1.0" />
 		</ItemGroup>
 
@@ -14,10 +15,6 @@
 				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
 		</ItemGroup>
 
-		<ItemGroup>
-				<Reference Include="FTD2XX_NET">
-						<HintPath>FTD2XX_NET\FTD2XX_NET.dll</HintPath>
-				</Reference>
-		</ItemGroup>
+	
 
 </Project>
