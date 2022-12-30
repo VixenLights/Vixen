@@ -26,12 +26,12 @@
 				<PackageReference Include="Obsolete.Fody" Version="5.3.0" />
 				<PackageReference Include="Orc.Controls" Version="4.8.0" />
 				<PackageReference Include="Orc.SystemInfo" Version="4.3.1" />
+				<PackageReference Include="Orc.Wizard" Version="4.8.3" />
 				<PackageReference Include="Orchestra.Core" Version="6.8.1" />
 		</ItemGroup>
 
 		<ItemGroup>
 				<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
-				<ProjectReference Include="..\..\..\Vixen.Common\Orc.Wizard\Orc.Wizard.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
 				<ProjectReference Include="..\..\App\Curves\Curves.csproj" />
 				<ProjectReference Include="..\..\App\FixtureSpecificationManager\FixtureSpecificationManager.csproj" />
