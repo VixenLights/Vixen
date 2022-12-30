@@ -14,7 +14,7 @@ namespace VixenApplication
 		private readonly string _currentVersion;
 		private readonly string _latestVersion;
 		private bool _newVersionAvailable;
-		private static NLog.Logger Logging = LogManager.GetCurrentClassLogger();
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
 		public CheckForUpdates(string currentVersion, string latestVersion, string currentVersionType)
 		{
@@ -30,7 +30,7 @@ namespace VixenApplication
 			_currentVersion = currentVersion;
 			_latestVersion = latestVersion;
 			_currentVersionType = currentVersionType;
-			Text = " " + _currentVersionType + " " + currentVersion + " Installed"; //Add Installed version and type to the Form Title
+			Text = @" " + _currentVersionType + " " + currentVersion + @" Installed"; //Add Installed version and type to the Form Title
 		}
 
 		private async void CheckForUpdates_Load(object sender, EventArgs e)
@@ -51,7 +51,7 @@ namespace VixenApplication
 
 			if (_newVersionAvailable)
 			{
-				labelCurrentVersion.Text = @"Vixen " + _currentVersionType + " " + _latestVersion + " is now available for download.";
+				labelCurrentVersion.Text = @"Vixen " + _currentVersionType + " " + _latestVersion + @" is now available for download.";
 				textBoxReleaseNotes.Visible = true;
 				labelHeading.Visible = true;
 				lblChangeLog.Visible = true;
@@ -59,8 +59,8 @@ namespace VixenApplication
 			else
 			{
 				labelCurrentVersion.Text =
-					@"Vixen " + _currentVersionType + " " + _currentVersion + " is the latest " + _currentVersionType;
-				labelHeading.Text = @"You have the latest " + _currentVersionType + " installed!";
+					@"Vixen " + _currentVersionType + @" " + _currentVersion + @" is the latest " + _currentVersionType;
+				labelHeading.Text = @"You have the latest " + _currentVersionType + @" installed!";
 				textBoxReleaseNotes.Text = "";
 			}
 
@@ -91,7 +91,7 @@ namespace VixenApplication
 							{
 								if (build.fields.customfield_10112 > _currentVersion)
 								{
-									textBoxReleaseNotes.Text += "    * [" + build.key + "] -  " + build.fields.summary + "\r\n";
+									textBoxReleaseNotes.Text += @"    * [" + build.key + @"] -  " + build.fields.summary + "\r\n";
 									_newVersionAvailable = true;
 								}
 							}
@@ -119,7 +119,7 @@ namespace VixenApplication
 								if (releaseVersion.releaseDate != null)
 								{
 									currentReleaseDate = Convert.ToDateTime(releaseVersion.releaseDate.ToString());
-							}
+								}
 								else
 								{
 									currentReleaseDate = DateTime.Now;
@@ -247,16 +247,16 @@ namespace VixenApplication
 		{
 			
 			Size tS = TextRenderer.MeasureText(textBoxReleaseNotes.Text, textBoxReleaseNotes.Font);
-			bool Hsb = textBoxReleaseNotes.ClientSize.Height < tS.Height + Convert.ToInt32(textBoxReleaseNotes.Font.Size);
-			bool Vsb = textBoxReleaseNotes.ClientSize.Width < tS.Width;
+			bool hsb = textBoxReleaseNotes.ClientSize.Height < tS.Height + Convert.ToInt32(textBoxReleaseNotes.Font.Size);
+			bool vsb = textBoxReleaseNotes.ClientSize.Width < tS.Width;
 
-			if (Hsb && Vsb)
+			if (hsb && vsb)
 				textBoxReleaseNotes.ScrollBars = ScrollBars.Both;
-			else if (!Hsb && !Vsb)
+			else if (!hsb && !vsb)
 				textBoxReleaseNotes.ScrollBars = ScrollBars.None;
-			else if (Hsb && !Vsb)
+			else if (hsb && !vsb)
 				textBoxReleaseNotes.ScrollBars = ScrollBars.Vertical;
-			else if (!Hsb && Vsb)
+			else if (!hsb && vsb)
 				textBoxReleaseNotes.ScrollBars = ScrollBars.Horizontal;
 		}
 	}

@@ -9,20 +9,18 @@ namespace VixenApplication.Setup.ElementTemplates
 {
 	public partial class LipSync : ElementTemplateBase, IElementTemplate
     {
-        private static Logger Logging = LogManager.GetCurrentClassLogger();
-        private static string[] templateStrings = { "Outline", "Eyes Open", "Eyes Closed", "Mouth Top", "Mouth Middle", "Mouth Bottom", "Mouth Narrow", "Mouth O" };
+        private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
+        private static readonly string[] TemplateStrings = { "Outline", "Eyes Open", "Eyes Closed", "Mouth Top", "Mouth Middle", "Mouth Bottom", "Mouth Narrow", "Mouth O" };
 
-        private string treename;
+        private string _treeName;
 
         public LipSync()
         {
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
-            treename = "LipSync";
+            _treeName = "LipSync";
         }
 
         public string TemplateName
@@ -30,7 +28,7 @@ namespace VixenApplication.Setup.ElementTemplates
             get { return "LipSync"; }
         }
 
-        public bool SetupTemplate(IEnumerable<ElementNode> selectedNodes = null)
+        public bool SetupTemplate(IEnumerable<ElementNode>? selectedNodes = null)
         {
             DialogResult result = ShowDialog();
 
@@ -40,39 +38,36 @@ namespace VixenApplication.Setup.ElementTemplates
             return false;
         }
 
-        public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode> selectedNodes = null)
+        public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode>? selectedNodes = null)
         {
             List<ElementNode> result = new List<ElementNode>();
 
-            if (treename.Length == 0)
+            if (_treeName.Length == 0)
             {
                 Logging.Error("LipSync name is null");
-                return await Task.FromResult(result); ;
+                return await Task.FromResult(result);
             }
 
-            ElementNode head = ElementNodeService.Instance.CreateSingle(null, treename);
+            ElementNode head = ElementNodeService.Instance.CreateSingle(null, _treeName);
             result.Add(head);
 
-            List<string> stringNames = new List<string>();
-
-            foreach(string stringName in templateStrings)
+            foreach(string stringName in TemplateStrings)
             {
-                ElementNode stringnode = ElementNodeService.Instance.CreateSingle(head, treename + " " + stringName);
-                result.Add(stringnode);
-                stringNames.Add(stringName);
+                ElementNode stringNode = ElementNodeService.Instance.CreateSingle(head, _treeName + " " + stringName);
+                result.Add(stringNode);
             }
 
-            return await Task.FromResult(result); ;
+            return await Task.FromResult(result); 
         }
 
         private void LipSync_Load(object sender, EventArgs e)
         {
-            textBoxTreeName.Text = treename;
+            textBoxTreeName.Text = _treeName;
         }
 
         private void LipSync_FormClosed(object sender, FormClosedEventArgs e)
         {
-            treename = textBoxTreeName.Text;
+            _treeName = textBoxTreeName.Text;
         }
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)

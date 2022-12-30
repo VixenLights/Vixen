@@ -71,7 +71,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		/// <summary>
 		/// Fixture wizard for configuring intelligent fixtures.
 		/// </summary>
-		private IFixtureWizard _wizard;
+		private IFixtureWizard? _wizard;
 
 		/// <summary>
 		/// Fixture nodes created by this template.
@@ -82,7 +82,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		/// <summary>
 		/// Fixture leaf nodes created by this template.
 		/// </summary>
-		private List<ElementNode> _leafNodes;
+		private List<ElementNode>? _leafNodes;
 
 		#endregion
 
@@ -95,10 +95,10 @@ namespace VixenApplication.Setup.ElementTemplates
 		private CoarseFineBreakdownModule CreateCoarseFineBreakDownModule()
 		{
 			// Create course / fine breakdown module
-			CoarseFineBreakdownModule courseFineBreakdown =
+			CoarseFineBreakdownModule? courseFineBreakdown =
 				ApplicationServices.Get<IOutputFilterModuleInstance>(CoarseFineBreakdownDescriptor.ModuleId) as
 					CoarseFineBreakdownModule;
-
+			if (courseFineBreakdown == null) throw new InvalidOperationException("Cannot create CoarseBreakdown Module");
 			// Add the coarse / fine breakdown module to Vixen collection of filters
 			VixenSystem.Filters.AddFilter(courseFineBreakdown);
 
@@ -131,7 +131,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		private void AddFilterToNode(ElementNode node, OutputFilterModuleInstanceBase filter)
 		{
 			// Get the data flow component for the specified node
-			IDataFlowComponent dataFlowComponent = VixenSystem.DataFlow.GetComponent(node.Element.Id);
+			IDataFlowComponent dataFlowComponent = VixenSystem.DataFlow.GetComponent(node.Element!.Id);
 
 			// Create a data flow
 			DataFlowComponentReference dataFlowComponentReference = new DataFlowComponentReference(dataFlowComponent, 0);
@@ -253,10 +253,12 @@ namespace VixenApplication.Setup.ElementTemplates
 			FixtureSpecification fixture)
 		{
 			// Create the color wheel output filter
-			ColorWheelFilterModule filter =
+			ColorWheelFilterModule? filter =
 				ApplicationServices.Get<IOutputFilterModuleInstance>(ColorWheelFilterDescriptor.ModuleId) as
 					ColorWheelFilterModule;
-
+			if(filter == null) {
+				throw new InvalidOperationException("Cannot create ColorWheelFilter Module");
+			}
 			// Give the filter the color wheel data
 			filter.ColorWheelData = function.ColorWheelData;
 			
@@ -311,7 +313,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		private void AddFilterToNodesLastFilter(ElementNode node, OutputFilterModuleInstanceBase filter)
         {
 			// Find the leafs of the node
-			IList<IDataFlowComponentReference> dataFlowNodes = FindLeafOutputsOrBreakdownFilters(VixenSystem.DataFlow.GetComponent(node.Element.Id)).ToList();
+			IList<IDataFlowComponentReference> dataFlowNodes = FindLeafOutputsOrBreakdownFilters(VixenSystem.DataFlow.GetComponent(node.Element!.Id)).ToList();
 
 			// Add the filter to the last node				
 			VixenSystem.DataFlow.SetComponentSource(filter, dataFlowNodes[dataFlowNodes.Count - 1]);
@@ -328,7 +330,12 @@ namespace VixenApplication.Setup.ElementTemplates
 		private DimmingCurveModule CreateDimmingCurve(Curve dimmingCurve)
         {
 			// Create the dimming curve module
-			DimmingCurveModule dimmingCurveModule = ApplicationServices.Get<IOutputFilterModuleInstance>(DimmingCurveDescriptor.ModuleId) as DimmingCurveModule;
+			DimmingCurveModule? dimmingCurveModule = ApplicationServices.Get<IOutputFilterModuleInstance>(DimmingCurveDescriptor.ModuleId) as DimmingCurveModule;
+
+			if (dimmingCurveModule == null)
+			{
+				throw new InvalidOperationException("Cannot create DimmingCurve Module");
+			}
 
 			// Apply the curve to the module
 			dimmingCurveModule.DimmingCurve = new Curve(dimmingCurve);
@@ -351,7 +358,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			foreach (FixtureChannel channel in fixture.ChannelDefinitions)
 			{
 				// Find the function associated with the channel
-				FixtureFunction function = fixture.FunctionDefinitions.SingleOrDefault(fnc => fnc.Name == channel.Function);
+				FixtureFunction? function = fixture.FunctionDefinitions.SingleOrDefault(fnc => fnc.Name == channel.Function);
 
 				// If the function was found then...
 				if (function != null)	
@@ -407,10 +414,15 @@ namespace VixenApplication.Setup.ElementTemplates
 				colorMixingChannelCount++;
 
 				// Create the color breakdown module
-				ColorBreakdownModule filter =
+				ColorBreakdownModule? filter =
 					ApplicationServices.Get<IOutputFilterModuleInstance>(ColorBreakdownDescriptor.ModuleId)
 						as
 						ColorBreakdownModule;
+
+				if (filter == null)
+				{
+					throw new InvalidOperationException("Cannot create ColorBreakDown Module");
+				}
 
 				// Create the list of color breakdown items
 				List<ColorBreakdownItem> newBreakdownItems = getBreakDownItems();
@@ -445,7 +457,7 @@ namespace VixenApplication.Setup.ElementTemplates
 				if (dimmingCurveSelection == DimmingCurveSelection.OneDimmingCurvePerColor)
 				{
 					// Find the leafs of the node
-					IList<IDataFlowComponentReference> dataFlowNodes = FindLeafOutputsOrBreakdownFilters(VixenSystem.DataFlow.GetComponent(node.Element.Id)).ToList();
+					IList<IDataFlowComponentReference> dataFlowNodes = FindLeafOutputsOrBreakdownFilters(VixenSystem.DataFlow.GetComponent(node.Element!.Id)).ToList();
 
 					// Get the last filter (Color Breakdown Filter)
 					IDataFlowComponentReference flow = dataFlowNodes[dataFlowNodes.Count - 1];
@@ -491,7 +503,7 @@ namespace VixenApplication.Setup.ElementTemplates
 				else if (filter._16Bit)
 				{
 					// Find the leafs of the node
-					IList<IDataFlowComponentReference> dataFlowNodes = FindLeafOutputsOrBreakdownFilters(VixenSystem.DataFlow.GetComponent(node.Element.Id)).ToList();
+					IList<IDataFlowComponentReference> dataFlowNodes = FindLeafOutputsOrBreakdownFilters(VixenSystem.DataFlow.GetComponent(node.Element!.Id)).ToList();
 
 					// Get the last filter (Color Breakdown Filter)
 					IDataFlowComponentReference flow = dataFlowNodes[dataFlowNodes.Count - 1];
@@ -626,12 +638,17 @@ namespace VixenApplication.Setup.ElementTemplates
 			FixtureFunction function, 
 			bool isColorMixing, 			
 			DimmingCurveSelection dimmingCurveSelection,
-			Curve dimmingCurve)
+			Curve? dimmingCurve)
 		{
 			// Create the dimming filter
-			DimmingFilterModule filter =
+			DimmingFilterModule? filter =
 				ApplicationServices.Get<IOutputFilterModuleInstance>(DimmingFilterDescriptor.ModuleId) as
 					DimmingFilterModule;
+
+			if (filter == null)
+			{
+				throw new ArgumentNullException(nameof(filter));
+			}
 
 			// Assign the filter the function name as the tag
 			filter.Tag = function.Name;
@@ -651,6 +668,10 @@ namespace VixenApplication.Setup.ElementTemplates
 			if (dimmingCurveSelection != DimmingCurveSelection.NoDimmingCurve &&
 				!isColorMixing)
 			{
+				if (dimmingCurve == null)
+				{
+					throw new ArgumentNullException(nameof(dimmingCurve));
+				}
 				// Add the dimming curve to the flow
 				AddFilterToNodesLastFilter(node, CreateDimmingCurve(dimmingCurve));
 			}
@@ -664,9 +685,14 @@ namespace VixenApplication.Setup.ElementTemplates
 		private void ProcessOpenClosePrismFunction(ElementNode node, FixtureFunction function)
 		{
 			// Create the prism filter
-			PrismFilterModule filter =
+			PrismFilterModule? filter =
 				ApplicationServices.Get<IOutputFilterModuleInstance>(PrismFilterDescriptor.ModuleId) as
 					PrismFilterModule;
+
+			if (filter == null)
+			{
+				throw new InvalidOperationException("Cannot create PrismFilter Module");
+			}
 
 			// Create a variable to hold the open prism command DMX value
 			byte openPrism = 0;
@@ -722,9 +748,14 @@ namespace VixenApplication.Setup.ElementTemplates
 		private void ProcessShutterFunction(ElementNode node, FixtureFunction function)
 		{
 			// Create the shutter filter
-			ShutterFilterModule filter =
+			ShutterFilterModule? filter =
 				ApplicationServices.Get<IOutputFilterModuleInstance>(ShutterFilterDescriptor.ModuleId) as
 					ShutterFilterModule;
+
+			if (filter == null)
+			{
+				throw new InvalidOperationException("Cannot create ShutterFilter Module");
+			}
 
 			// Create a variable to hold the open shutter command DMX value
 			byte openShutter = 0;
@@ -779,9 +810,14 @@ namespace VixenApplication.Setup.ElementTemplates
 		private void ProcessNoneFunction(ElementNode node)
 		{
 			// Create the tagged filter
-			TaggedFilterModule filter =
+			TaggedFilterModule? filter =
 				ApplicationServices.Get<IOutputFilterModuleInstance>(TaggedFilterDescriptor.ModuleId) as
 					TaggedFilterModule;
+
+			if (filter == null)
+			{
+				throw new InvalidOperationException("Cannot create TaggedFilter Module");
+			}
 
 			// Assign the tag of Ignore so that no intents match
 			filter.Tag = "Ignore";
@@ -801,12 +837,13 @@ namespace VixenApplication.Setup.ElementTemplates
 		/// <param name="colorMixing">Whether the fixture supports color mixing</param>
 		/// <param name="dimmingCurveSelection">Dimming curve filter selection</param>
 		/// <param name="dimmingCurve">Dimming curve to insert</param>
+		/// <param name="automaticallyControlDimmer"></param>
 		private void ProcessTaggedFunction(
 			ElementNode node,
 			FixtureFunction function,
 			bool colorMixing,
 			DimmingCurveSelection dimmingCurveSelection,
-			Curve dimmingCurve,
+			Curve? dimmingCurve,
 			bool automaticallyControlDimmer)
 		{
 			// If the function is a dimming function then...
@@ -819,9 +856,14 @@ namespace VixenApplication.Setup.ElementTemplates
 			else
 			{
 				// Create the tagged filter
-				TaggedFilterModule filter =
+				TaggedFilterModule? filter =
 					ApplicationServices.Get<IOutputFilterModuleInstance>(TaggedFilterDescriptor.ModuleId) as
 						TaggedFilterModule;
+
+				if (filter == null)
+				{
+					throw new InvalidOperationException("Cannot create TaggedFilter Module");
+				}
 
 				// Assign the function name as the tag
 				filter.Tag = function.Name;
@@ -844,7 +886,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			CoarseFineBreakdownModule courseFineBreakdown = CreateCoarseFineBreakDownModule();
 			
 			// Find the leafs of the node
-			IList<IDataFlowComponentReference> nodes = FindLeafOutputsOrBreakdownFilters(VixenSystem.DataFlow.GetComponent(node.Element.Id)).ToList();
+			IList<IDataFlowComponentReference> nodes = FindLeafOutputsOrBreakdownFilters(VixenSystem.DataFlow.GetComponent(node.Element!.Id)).ToList();
 
 			// Add the break down module to the last node
 			// (This node is usually a tagged filter)
@@ -862,6 +904,11 @@ namespace VixenApplication.Setup.ElementTemplates
 
 			// Use the type factory to create the intelligent fixture wizard
 			_wizard = typeFactory.CreateInstance(typeof(IntelligentFixtureWizard)) as IFixtureWizard;
+
+			if (_wizard == null)
+			{
+				throw new ArgumentNullException(nameof(_wizard));
+			}
 
 			// Configure the wizard window to show up in the Windows task bar
 			_wizard.ShowInTaskbarWrapper = true;
@@ -1065,8 +1112,8 @@ namespace VixenApplication.Setup.ElementTemplates
 			foreach (FixtureChannel channel in fixture.ChannelDefinitions)
 			{
 				// Declare variables for the next 
-				FixtureChannel nextChannel = null;
-				FixtureFunction nextChannelFunction = null;
+				FixtureChannel nextChannel;
+				FixtureFunction? nextChannelFunction = null;
 
 				// If there are additional channels in the definitions then...
 				if (channelIndex + 1 < fixture.ChannelDefinitions.Count)
@@ -1117,7 +1164,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		/// </summary>
 		/// <param name="component">Data flow to find leaves from</param>
 		/// <returns>Collection of data flow leaves</returns>
-		private IEnumerable<IDataFlowComponentReference> FindLeafOutputsOrBreakdownFilters(IDataFlowComponent component)
+		private IEnumerable<IDataFlowComponentReference> FindLeafOutputsOrBreakdownFilters(IDataFlowComponent? component)
 		{
 			if (component == null)
 			{
@@ -1163,7 +1210,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>		
-		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode> selectedNodes = null)
+		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode>? selectedNodes = null)
 		{
 			// Without this call the wizard will produce the following exception:
 			// 'Theming is not yet initialized, make sure to initialize a theme via ThemeManager first'
@@ -1196,6 +1243,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			// If the wizard was NOT cancelled then...
 			if (!Cancelled)
 			{
+				if (_wizard == null) throw new InvalidOperationException("Wizard cannot be null");
 				// Retrieve the pages from the wizard so that the selected state can be extracted
 				SelectProfileWizardPage selectProfilePage = (SelectProfileWizardPage)_wizard.Pages.Single(page => page is SelectProfileWizardPage);
 				GroupingWizardPage groupingPage = (GroupingWizardPage)_wizard.Pages.Single(page => page is GroupingWizardPage);
@@ -1260,7 +1308,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>		
-		public bool SetupTemplate(IEnumerable<ElementNode> selectedNodes = null)
+		public bool SetupTemplate(IEnumerable<ElementNode>? selectedNodes = null)
 		{
 			// Nothing to setup
 			return true;

@@ -12,17 +12,15 @@ namespace VixenApplication
 	public partial class DataZipForm : BaseForm
 	{
 		private bool _working;
-		private ProfileItem _item;
+		private ProfileItem? _item;
 		private delegate void StatusDelegate(string text);
-		private static Logger Logging = LogManager.GetCurrentClassLogger();
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private readonly BackgroundWorker _bw = new BackgroundWorker();
 
 		public DataZipForm()
 		{
 			InitializeComponent();
 			statusStrip1.Renderer = new ThemeToolStripRenderer();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
@@ -40,7 +38,7 @@ namespace VixenApplication
 		}
 
 		#region Background Thread
-		private void bw_DoWork(object sender, DoWorkEventArgs e)
+		private void bw_DoWork(object? sender, DoWorkEventArgs e)
 		{
 			_working = true;
 			CompressSelectedFiles();
@@ -49,6 +47,7 @@ namespace VixenApplication
 
 		private void ArchiveProfile(List<string> profileExclusions, bool includeLogs, bool includeUserSettings)
 		{
+			if (_item == null) throw new InvalidOperationException("Profile Item cannot be null");
 			ProfileItem item = _item;
 			
 			string outPath = Path.Combine(textBoxSaveFolder.Text, textBoxFileName.Text + ".zip");
@@ -109,7 +108,7 @@ namespace VixenApplication
 			EndCompressUIState();			
 		}
 
-		private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs args)
+		private void backgroundWorker1_ProgressChanged(object? sender, ProgressChangedEventArgs args)
 		{
 			toolStripProgressBar.Value = args.ProgressPercentage;
 		}
@@ -356,7 +355,11 @@ namespace VixenApplication
 										select folder).ToList<string>();
 			if (!exceptions.Contains(Path.GetExtension(file)))
 			{
-				return folderNames.Any(folderException => Path.GetDirectoryName(file).Contains(folderException));
+				var name = Path.GetDirectoryName(file);
+				if (name != null)
+				{
+					return folderNames.Any(folderException => name.Contains(folderException));
+				}
 			}
 			return true;
 		}

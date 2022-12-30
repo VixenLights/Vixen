@@ -7,14 +7,11 @@ namespace VixenApplication
 	public partial class SelectProfile : BaseForm
 	{
 		private string _dataFolder = string.Empty;
-		private DateTime _dateLastLoaded;
 		private int _profileNumber;
 
 		public SelectProfile()
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
 			listBoxProfiles.SelectedIndexChanged += ListBoxProfiles_SelectedIndexChanged;
@@ -23,7 +20,7 @@ namespace VixenApplication
 			listBoxProfiles.MeasureItem += ListBoxProfilesOnMeasureItem;
 		}
 
-		private void ListBoxProfilesOnMeasureItem(object sender, MeasureItemEventArgs e)
+		private void ListBoxProfilesOnMeasureItem(object? sender, MeasureItemEventArgs e)
 		{
 			var profile = listBoxProfiles.Items[e.Index] as ProfileItem;
 			if (profile != null)
@@ -33,7 +30,7 @@ namespace VixenApplication
 			}
 		}
 
-		private void ListBoxProfilesOnDrawItem(object sender, DrawItemEventArgs e)
+		private void ListBoxProfilesOnDrawItem(object? sender, DrawItemEventArgs e)
 		{
 			e.DrawBackground();
 			// Define the default color of the brush as black.
@@ -59,8 +56,7 @@ namespace VixenApplication
 
 		private bool IsSelectedProfileLocked()
 		{
-			var profile = listBoxProfiles.SelectedItem as ProfileItem;
-			if (profile != null)
+			if (listBoxProfiles.SelectedItem is ProfileItem profile)
 			{
 				if (profile.IsLocked)
 				{
@@ -72,7 +68,7 @@ namespace VixenApplication
 			return false;
 		}
 
-		private void ListBoxProfiles_SelectedIndexChanged(object sender, EventArgs e)
+		private void ListBoxProfiles_SelectedIndexChanged(object? sender, EventArgs e)
 		{
 			IsSelectedProfileLocked();
 		}
@@ -83,19 +79,13 @@ namespace VixenApplication
 			set { _dataFolder = value; }
 		}
 
-		public DateTime DateLastLoaded
-		{
-			get { return _dateLastLoaded; }
-			set { _dateLastLoaded = value; }
-		}
-
 		public int ProfileNumber
 		{
 			get { return _profileNumber; }
 			set { _profileNumber = value; }
 		}
 
-		public string ProfileName { get; set; }
+		public string ProfileName { get; set; } = String.Empty;
 
 		private void SelectProfile_Load(object sender, EventArgs e)
 		{
@@ -151,15 +141,17 @@ namespace VixenApplication
 		private void LoadSelectedProfile()
 		{
 			if (listBoxProfiles.SelectedIndex >= 0) {
-				ProfileItem item = listBoxProfiles.SelectedItem as ProfileItem;
-				DataFolder = item.DataFolder;
-				ProfileName = item.Name;
-				ProfileNumber = item.ProfileNumber;
+				if (listBoxProfiles.SelectedItem is ProfileItem item)
+				{
+					DataFolder = item.DataFolder;
+					ProfileName = item.Name;
+					ProfileNumber = item.ProfileNumber;
 
-				XMLProfileSettings profile = new XMLProfileSettings();
-				profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + ProfileNumber.ToString() + "/DateLastLoaded", DateTime.Now);
-				DialogResult = System.Windows.Forms.DialogResult.OK;
-				Close();
+					XMLProfileSettings profile = new XMLProfileSettings();
+					profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + ProfileNumber.ToString() + "/DateLastLoaded", DateTime.Now);
+					DialogResult = DialogResult.OK;
+					Close();
+				}
 			}
 		}
 
@@ -174,7 +166,7 @@ namespace VixenApplication
         private void buttonEditor_Click(object sender, EventArgs e)
         {
             DataProfileForm f = new DataProfileForm();
-            if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (f.ShowDialog() == DialogResult.OK)
                 PopulateProfileList();
         }
 

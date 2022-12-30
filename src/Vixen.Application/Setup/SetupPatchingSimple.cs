@@ -1,4 +1,6 @@
-﻿using Common.Controls;
+﻿#nullable disable
+
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Data.Flow;
@@ -13,13 +15,11 @@ namespace VixenApplication.Setup
 	public partial class SetupPatchingSimple : UserControl, ISetupPatchingControl
 	{
 		//Logger Class
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public SetupPatchingSimple()
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			
 			labelPatchPointCount.Font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold);

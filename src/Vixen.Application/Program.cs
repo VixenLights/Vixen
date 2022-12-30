@@ -5,10 +5,10 @@ namespace VixenApplication
 {
 	internal static class Program
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private const string ErrorMsg = "An application error occurred. Please contact the Vixen Dev Team " +
 									"with the following information:\n\n";
-		private static VixenApplication _app;
+		private static VixenApplication? _app;
 		internal static string LockFilePath = string.Empty;
 		/// <summary>
 		/// The main entry point for the application.

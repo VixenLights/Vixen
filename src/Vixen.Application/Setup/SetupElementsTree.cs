@@ -66,7 +66,7 @@ namespace VixenApplication.Setup
 			ElementModeling.ElementsToSvg(node);
 		}
 
-		public event EventHandler<ElementNodesEventArgs> ElementSelectionChanged;
+		public event EventHandler<ElementNodesEventArgs>? ElementSelectionChanged;
 		public void OnElementSelectionChanged(ElementNodesEventArgs e)
 		{
 			if (ElementSelectionChanged == null)
@@ -75,7 +75,7 @@ namespace VixenApplication.Setup
 			ElementSelectionChanged(this, e);
 		}
 
-		public event EventHandler<ElementsChangedEventArgs> ElementsChanged;
+		public event EventHandler<ElementsChangedEventArgs>? ElementsChanged;
 		public void OnElementsChanged(ElementsChangedEventArgs e)
 		{
 			ElementsChanged?.Invoke(this, e);
@@ -96,7 +96,7 @@ namespace VixenApplication.Setup
 			get { return this; }
 		}
 
-		public DisplaySetup MasterForm { get; set; }
+		public DisplaySetup? MasterForm { get; set; }
 
 		public void UpdatePatching()
 		{
@@ -114,11 +114,9 @@ namespace VixenApplication.Setup
 			if (comboBoxSetupHelperType.SelectedIndex < 0)
 				return;
 
-			ComboBoxItem item = (comboBoxSetupHelperType.SelectedItem as ComboBoxItem);
-
-			if (item != null) {
-				IElementSetupHelper helper = item.Value as IElementSetupHelper;
-				helper.Perform(elementTree.SelectedElementNodes);
+			if (comboBoxSetupHelperType.SelectedItem is ComboBoxItem item) {
+				IElementSetupHelper? helper = item.Value as IElementSetupHelper;
+				helper?.Perform(elementTree.SelectedElementNodes);
 				elementTree.RefreshElementTreeStatus();
 
 				UpdateFormWithNode();
@@ -167,7 +165,11 @@ namespace VixenApplication.Setup
 				{
 					foreach (ListViewItem item in listViewProperties.SelectedItems) {
 						foreach (ElementNode elementNode in SelectedElements) {
-							elementNode.Properties.Remove((item.Tag as IPropertyModuleInstance).Descriptor.TypeId);
+							if (item.Tag is IPropertyModuleInstance instance)
+							{
+								elementNode.Properties.Remove(instance.Descriptor.TypeId);
+							}
+							
 						}
 					}
 
@@ -199,7 +201,7 @@ namespace VixenApplication.Setup
 							// try and 'clone' the property data to any other selected element with this property data
 							foreach (ElementNode elementNode in SelectedElements)
 							{
-								IPropertyModuleInstance p = elementNode.Properties.Get(property.TypeId);
+								IPropertyModuleInstance? p = elementNode.Properties.Get(property.TypeId);
 								if (p != null && p.ModuleData != property.ModuleData)
 								{
 									p.CloneValues(property);
@@ -229,14 +231,13 @@ namespace VixenApplication.Setup
 			buttonAddTemplate.Enabled = false;
 
 			// Retrieve the selected combo box item
-			ComboBoxItem item = (comboBoxNewItemType.SelectedItem as ComboBoxItem);
-
 			// If a combo box item was selected then...
-			if (item != null) 
+			if (comboBoxNewItemType.SelectedItem is ComboBoxItem item) 
 			{
 				// Retrieve the element template
-				IElementTemplate template = item.Value as IElementTemplate;
+				IElementTemplate? template = item.Value as IElementTemplate;
 
+				if (template == null) throw new InvalidOperationException();
 				// Create the element template helper
 				ElementTemplateHelper elementTemplateHelper = new ElementTemplateHelper();
 
@@ -266,7 +267,7 @@ namespace VixenApplication.Setup
 		}
 
 
-		private void UpdateFormWithNode(ElementNode selectedNode)
+		private void UpdateFormWithNode(ElementNode? selectedNode)
 		{
 			// Properties
 			// TODO: we should really go through the selected elements, and only show properties they all have
@@ -363,16 +364,14 @@ namespace VixenApplication.Setup
 					if (leafElementNode == null || leafElementNode.Element == null)
 						continue;
 
-					IDataFlowComponent component = VixenSystem.DataFlow.GetComponent(leafElementNode.Element.Id);
+					IDataFlowComponent? component = VixenSystem.DataFlow.GetComponent(leafElementNode.Element.Id);
 					if (component == null)
 						continue;
 
 					IEnumerable<IDataFlowComponent> outputComponents = _findComponentsOfTypeInTreeFromComponent(component, typeof (CommandOutputDataFlowAdapter));
 
 					foreach (IDataFlowComponent outputComponent in outputComponents) {
-						IControllerDevice controller;
-						int outputIndex;
-						VixenSystem.OutputControllers.getOutputDetailsForDataFlowComponent(outputComponent, out controller, out outputIndex);
+						VixenSystem.OutputControllers.getOutputDetailsForDataFlowComponent(outputComponent, out IControllerDevice? controller, out var outputIndex);
 
 						if (controller == null)
 							continue;
@@ -393,7 +392,7 @@ namespace VixenApplication.Setup
 			}
 			else
 			{
-				MasterForm.SelectControllersAndOutputs(controllersAndOutputs, true);
+				MasterForm?.SelectControllersAndOutputs(controllersAndOutputs, true);
 			}
 			
 		}

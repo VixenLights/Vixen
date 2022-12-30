@@ -59,7 +59,7 @@ namespace Vixen.Sys.Managers
 			AddChildToParent(movingNode, newParent, index);
 		}
 
-		public void AddNode(ElementNode node, ElementNode parent = null)
+		public void AddNode(ElementNode node, ElementNode? parent = null)
 		{
 			AddChildToParent(node, parent);
 		}
@@ -71,7 +71,7 @@ namespace Vixen.Sys.Managers
 			}
 		}
 
-		public ElementNode AddNode(string name, ElementNode parent = null, bool uniquifyName = true)
+		public ElementNode AddNode(string name, ElementNode? parent = null, bool uniquifyName = true)
 		{
 			if (uniquifyName) {
 				name = _Uniquify(name);
@@ -107,7 +107,7 @@ namespace Vixen.Sys.Managers
 				node.Element.Name = node.Name;
 		}
 
-		public void AddChildToParent(ElementNode child, ElementNode parent, int index = -1)
+		public void AddChildToParent(ElementNode child, ElementNode? parent, int index = -1)
 		{
 			// if no parent was specified, add to the root node.
 			if (parent == null)

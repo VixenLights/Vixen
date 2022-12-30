@@ -35,8 +35,6 @@ namespace VixenApplication.Setup
 			buttonStopController.Text = "";
 			buttonStartController.Image = Tools.GetIcon(Resources.control_play_blue, iconSize);
 			buttonStartController.Text = "";
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 
 			comboBoxNewControllerType.BeginUpdate();
@@ -55,13 +53,13 @@ namespace VixenApplication.Setup
 			UpdateForm();
 		}
 
-		void controllerTree_ControllerSelectionChanged(object sender, EventArgs e)
+		void controllerTree_ControllerSelectionChanged(object? sender, EventArgs e)
 		{
 			OnControllerSelectionChanged();
 			UpdateForm();
 		}
 
-		void controllerTree_ControllersChanged(object sender, EventArgs e)
+		void controllerTree_ControllersChanged(object? sender, EventArgs e)
 		{
 			OnControllersChanged();
 			UpdateForm();
@@ -92,7 +90,7 @@ namespace VixenApplication.Setup
 				labelControllerType.Text = ApplicationServices.GetModuleDescriptor(controllerTree.SelectedControllers.First().ModuleId).TypeName;
 				labelOutputCount.Text = controllerTree.SelectedControllers.First().OutputCount.ToString();
 			} else {
-				labelControllerType.Text = selectedControllerCount + " controllers selected";
+				labelControllerType.Text = selectedControllerCount + @" controllers selected";
 				int count = 0;
 				foreach (IControllerDevice controller in controllerTree.SelectedControllers) {
 					count += controller.OutputCount;
@@ -106,12 +104,12 @@ namespace VixenApplication.Setup
 			ControllersAndOutputsSet result = new ControllersAndOutputsSet();
 
 			foreach (TreeNode node in controllerTree.SelectedTreeNodes) {
-				IControllerDevice controller = node.Tag as IControllerDevice;
+				IControllerDevice? controller = node.Tag as IControllerDevice;
 				int outputIndex = -1;
 
 				if (controller == null) {
-					if (node.Tag is int) {
-						outputIndex = (int) node.Tag;
+					if (node.Tag is int tag) {
+						outputIndex = tag;
 						controller = node.Parent.Tag as IControllerDevice;
 						if (controller == null) {
 							Logging.Error("node parent is not a controller: " + node.Name);
@@ -120,8 +118,7 @@ namespace VixenApplication.Setup
 				}
 
 				if (controller != null) {
-					HashSet<int> selectedOutputs;
-					result.TryGetValue(controller, out selectedOutputs);
+					result.TryGetValue(controller, out var selectedOutputs);
 					if (selectedOutputs == null) {
 						selectedOutputs = new HashSet<int>();
 						result[controller] = selectedOutputs;
@@ -157,7 +154,7 @@ namespace VixenApplication.Setup
 			get { return this; }
 		}
 
-		public DisplaySetup MasterForm { get; set; }
+		public DisplaySetup? MasterForm { get; set; }
 
 		public void UpdatePatching()
 		{
@@ -169,7 +166,7 @@ namespace VixenApplication.Setup
 			controllerTree.UpdateScrollPosition();
 		}
 
-		public event EventHandler<ControllerSelectionEventArgs> ControllerSelectionChanged;
+		public event EventHandler<ControllerSelectionEventArgs>? ControllerSelectionChanged;
 		public void OnControllerSelectionChanged()
 		{
 			if (ControllerSelectionChanged == null)
@@ -179,7 +176,7 @@ namespace VixenApplication.Setup
 			ControllerSelectionChanged(this, e);
 		}
 
-		public event EventHandler ControllersChanged;
+		public event EventHandler? ControllersChanged;
 		public void OnControllersChanged()
 		{
 			if (ControllersChanged == null)
@@ -188,38 +185,36 @@ namespace VixenApplication.Setup
 			ControllersChanged(this, EventArgs.Empty);
 		}
 
-		private void buttonAddController_Click(object sender, EventArgs e)
+		private void buttonAddController_Click(object? sender, EventArgs e)
 		{
-			ComboBoxItem item = (comboBoxNewControllerType.SelectedItem as ComboBoxItem);
-
-			if (item != null) {
+			if (comboBoxNewControllerType.SelectedItem is ComboBoxItem item) {
 				controllerTree.AddNewControllerOfTypeWithPrompts((Guid) item.Value);
 				UpdateScrollPosition();
 			}
 		}
 
-		private void buttonDeleteController_Click(object sender, EventArgs e)
+		private void buttonDeleteController_Click(object? sender, EventArgs e)
 		{
 			controllerTree.DeleteControllersWithPrompt(controllerTree.SelectedControllers);
 		}
 
-		private void buttonConfigureController_Click(object sender, EventArgs e)
+		private void buttonConfigureController_Click(object? sender, EventArgs e)
 		{
-			if (controllerTree.SelectedControllers.Count() > 0) {
+			if (controllerTree.SelectedControllers.Any()) {
 				controllerTree.ConfigureController(controllerTree.SelectedControllers.First());
 			}
 		}
 
 		private void buttonNumberChannelsController_Click(object sender, EventArgs e)
 		{
-			if (controllerTree.SelectedControllers.Count() > 0) {
+			if (controllerTree.SelectedControllers.Any()) {
 				controllerTree.SetControllerOutputCount(controllerTree.SelectedControllers.First());
 			}
 		}
 
 		private void buttonRenameController_Click(object sender, EventArgs e)
 		{
-			if (controllerTree.SelectedControllers.Count() > 0) {
+			if (controllerTree.SelectedControllers.Any()) {
 				controllerTree.RenameControllerWithPrompt(controllerTree.SelectedControllers.First());
 			}
 		}
@@ -229,17 +224,17 @@ namespace VixenApplication.Setup
 			List<ElementNode> elementNodesToSelect = new List<ElementNode>();
 
 			foreach (KeyValuePair<IControllerDevice, HashSet<int>> controllerAndOutputs in SelectedControllersAndOutputs) {
-				OutputController oc = controllerAndOutputs.Key as OutputController;
+				OutputController? oc = controllerAndOutputs.Key as OutputController;
 				if (oc == null)
 					continue;
 
 				foreach (int i in controllerAndOutputs.Value) {
 					IDataFlowComponent outputComponent = oc.GetDataFlowComponentForOutput(oc.Outputs[i]);
-					IDataFlowComponent rootComponent = FindRootSourceOfDataComponent(outputComponent);
+					IDataFlowComponent? rootComponent = FindRootSourceOfDataComponent(outputComponent);
 
-					if (rootComponent is ElementDataFlowAdapter) {
-						Element element = (rootComponent as ElementDataFlowAdapter).Element;
-						ElementNode elementNode = VixenSystem.Elements.GetElementNodeForElement(element);
+					if (rootComponent is ElementDataFlowAdapter adapter) {
+						Element element = adapter.Element;
+						ElementNode? elementNode = VixenSystem.Elements.GetElementNodeForElement(element);
 						if (elementNode != null) {
 							elementNodesToSelect.Add(elementNode);
 						}
@@ -255,17 +250,18 @@ namespace VixenApplication.Setup
 			}
 			else
 			{
-				MasterForm.SelectElements(elementNodesToSelect, true);
+				MasterForm?.SelectElements(elementNodesToSelect, true);
 			}
 
 			
 		}
 
-		private IDataFlowComponent FindRootSourceOfDataComponent(IDataFlowComponent component)
+		private IDataFlowComponent? FindRootSourceOfDataComponent(IDataFlowComponent? component)
 		{
 			if (component == null)
 				return null;
 			
+			//TODO Revisit nullable part of this after Vixen Core is addressed.
 			if (component.Source == null || component.Source.Component == null)
 				return component;
 

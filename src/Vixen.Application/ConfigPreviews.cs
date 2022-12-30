@@ -12,7 +12,7 @@ namespace VixenApplication
 {
 	public partial class ConfigPreviews : BaseForm
 	{
-		private OutputPreview _displayedController;
+		private OutputPreview? _displayedController;
 		private bool _changesMade;
 
 		public ConfigPreviews()
@@ -31,7 +31,7 @@ namespace VixenApplication
 			_PopulateFormWithController(null);
 		}
 
-		private void listViewControllers_SelectedIndexChanged(object sender, EventArgs e)
+		private void listViewControllers_SelectedIndexChanged(object? sender, EventArgs e)
 		{
 			if (listViewControllers.SelectedItems.Count > 1 || listViewControllers.SelectedItems.Count == 0) {
 				_PopulateFormWithController(null);
@@ -50,7 +50,7 @@ namespace VixenApplication
 			foreach (KeyValuePair<Guid, string> kvp in availableModules) {
 				outputModules.Add(new KeyValuePair<string, object>(kvp.Value, kvp.Key));
 			}
-			Common.Controls.ListSelectDialog addForm = new Common.Controls.ListSelectDialog("Add Preview", (outputModules));
+			ListSelectDialog addForm = new ListSelectDialog("Add Preview", (outputModules));
 			if (addForm.ShowDialog() == DialogResult.OK) {
 				IModuleDescriptor moduleDescriptor = ApplicationServices.GetModuleDescriptor((Guid) addForm.SelectedItem);
 				string name = moduleDescriptor.TypeName;
@@ -93,7 +93,7 @@ namespace VixenApplication
 				if (messageBox.DialogResult == DialogResult.OK)
 				{
 					foreach (ListViewItem item in listViewControllers.SelectedItems) {
-						OutputPreview oc = item.Tag as OutputPreview;
+						OutputPreview oc = item.Tag as OutputPreview ?? throw new InvalidOperationException();
 						XMLProfileSettings xml = new XMLProfileSettings();
 						var name = $"Preview_{oc.ModuleInstanceId}";
 						xml.DeleteNode(XMLProfileSettings.SettingType.AppSettings, name);
@@ -111,7 +111,7 @@ namespace VixenApplication
 			{
 				foreach (ListViewItem item in listViewControllers.SelectedItems)
 				{
-					OutputPreview op = item.Tag as OutputPreview;
+					OutputPreview op = item.Tag as OutputPreview ?? throw new InvalidOperationException();
 
 					PreviewFactory previewFactory = new PreviewFactory();
 					OutputPreview preview = (OutputPreview) previewFactory.CreateDevice(op.ModuleId, op.Name + "-copy");
@@ -194,7 +194,7 @@ namespace VixenApplication
 			}
 		}
 
-		private void _PopulateFormWithController(OutputPreview oc)
+		private void _PopulateFormWithController(OutputPreview? oc)
 		{
 			_displayedController = oc;
 
@@ -241,14 +241,18 @@ namespace VixenApplication
 
 		private async void listViewControllers_ItemCheck(object sender, ItemCheckEventArgs e)
 		{
-			OutputPreview preview = (listViewControllers.Items[e.Index].Tag as OutputPreview);
+			OutputPreview? preview = listViewControllers.Items[e.Index].Tag as OutputPreview;
+			if (preview == null)
+			{
+				return;
+			}
 			if (e.NewValue == CheckState.Unchecked) {
-				if (preview != null && preview.IsRunning) {
+				if (preview.IsRunning) {
 					VixenSystem.Previews.Stop(preview);
 				}
 			}
 			else if (e.NewValue == CheckState.Checked) {
-				if (preview != null && !preview.IsRunning) {
+				if (!preview.IsRunning) {
 					VixenSystem.Previews.Start(preview);
 					//A bit of a kludge, but need a bit of delay to give the preview a chance to load
 					//before we force ourselves back on top.
@@ -271,11 +275,9 @@ namespace VixenApplication
 					messageBox.ShowDialog();
 					switch (messageBox.DialogResult)
 					{
-						                	case DialogResult.No:
-						                		e.Cancel = true;
-						                		break;
-						                	default:
-						                		break;
+		                case DialogResult.No:
+			                e.Cancel = true;
+			                break;
 					}
 				}
 				else if (DialogResult == DialogResult.OK) {

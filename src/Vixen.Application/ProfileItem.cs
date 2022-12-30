@@ -2,7 +2,7 @@
 {
 	public class ProfileItem
 	{
-		private string _name;
+		private string _name = String.Empty;
 
 		public string Name
 		{
@@ -10,7 +10,7 @@
 			set { _name = value; }
 		}
 
-		private string _dataFolder;
+		private string _dataFolder = String.Empty;
 
 		public string DataFolder
 		{
@@ -18,7 +18,7 @@
 			set { _dataFolder = value; }
 		}
 
-		private DateTime _dateLastLoaded;
+		private DateTime _dateLastLoaded = DateTime.MaxValue;
       
         public DateTime DateLastLoaded
 		{

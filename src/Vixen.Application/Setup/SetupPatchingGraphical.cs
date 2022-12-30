@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿#nullable disable
+
+using System.ComponentModel;
 using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
@@ -13,6 +15,7 @@ using Vixen.Module.OutputFilter;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Output;
+using VixenApplication.GraphicalPatching;
 using Timer = System.Windows.Forms.Timer;
 
 namespace VixenApplication.Setup
@@ -20,7 +23,7 @@ namespace VixenApplication.Setup
 	public partial class SetupPatchingGraphical : UserControl, ISetupPatchingControl
 	{
 		//Logger Class
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		// map of data types, to the shape(s) that represent them. There should only be (potentially) multiple
 		// shapes to represent a given element node; this is because a node can be in multiple groups, and may
@@ -53,11 +56,11 @@ namespace VixenApplication.Setup
 
 
 		// security domains for different shape types
-		internal const char SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS = 'A';
-		internal const char SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS = 'B';
-		internal const char SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS = 'C';
-		internal const char SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE = 'D';
-		internal const char SECURITY_DOMAIN_ALL_PERMISSIONS = 'E';
+		internal const char SecurityDomainFixedShapeNoConnections = 'A';
+		internal const char SecurityDomainFixedShapeWithConnections = 'B';
+		internal const char SecurityDomainMovableShapeWithConnections = 'C';
+		internal const char SecurityDomainFixedShapeNoConnectionsDeletable = 'D';
+		internal const char SecurityDomainAllPermissions = 'E';
 
 
 
@@ -77,8 +80,6 @@ namespace VixenApplication.Setup
 			buttonZoomOut.Text = "";
 			buttonZoomFit.Image = Tools.GetIcon(Resources.zoom_fit, iconSize);
 			buttonZoomFit.Text = "";
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			diagramDisplay.BackColorGradient = ThemeColorTable.TextBoxBackgroundColor;
 			diagramDisplay.BackColor = ThemeColorTable.TextBoxBackgroundColor;
@@ -126,20 +127,20 @@ namespace VixenApplication.Setup
 
 			// A: fixed shapes with no connection points: nothing (parent nested shapes: node groups, controllers)
 			((RoleBasedSecurityManager) diagramDisplay.Project.SecurityManager).SetPermissions(
-				SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS, StandardRole.Operator, Permission.Insert);
+				SecurityDomainFixedShapeNoConnections, StandardRole.Operator, Permission.Insert);
 			// B: fixed shapes with connection points: connect only (element nodes (leaf), output shapes)
 			((RoleBasedSecurityManager) diagramDisplay.Project.SecurityManager).SetPermissions(
-				SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS, StandardRole.Operator, Permission.Connect | Permission.Insert);
+				SecurityDomainFixedShapeWithConnections, StandardRole.Operator, Permission.Connect | Permission.Insert);
 			// C: movable shapes: connect, layout (movable), and deleteable (filters, patch lines)
 			((RoleBasedSecurityManager) diagramDisplay.Project.SecurityManager).SetPermissions(
-				SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS, StandardRole.Operator,
+				SecurityDomainMovableShapeWithConnections, StandardRole.Operator,
 				Permission.Connect | Permission.Insert | Permission.Layout | Permission.Delete);
 			// D: fixed shapes with no connection points, but deletable: only for established patch lines (so the user can't move them again, but an still delete them)
 			((RoleBasedSecurityManager) diagramDisplay.Project.SecurityManager).SetPermissions(
-				SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE, StandardRole.Operator, Permission.Insert | Permission.Delete);
+				SecurityDomainFixedShapeNoConnectionsDeletable, StandardRole.Operator, Permission.Insert | Permission.Delete);
 			// E: all permissions
 			((RoleBasedSecurityManager) diagramDisplay.Project.SecurityManager).SetPermissions(
-				SECURITY_DOMAIN_ALL_PERMISSIONS, StandardRole.Operator, Permission.All);
+				SecurityDomainAllPermissions, StandardRole.Operator, Permission.All);
 
 			((RoleBasedSecurityManager) diagramDisplay.Project.SecurityManager).SetPermissions(StandardRole.Operator,
 			                                                                                   Permission.All);
@@ -182,45 +183,7 @@ namespace VixenApplication.Setup
 		{
 			OnPatchingUpdated();
 		}
-
-
-
-
-		private void InitializeAllShapes(IEnumerable<ElementNode> nodes, IEnumerable<IOutputFilterModuleInstance> filters,
-		                                 IEnumerable<IOutputDevice> controllers)
-		{
-			diagramDisplay.DoSuspendUpdate();
-
-			foreach (ElementNodeShape shape in _elementShapes) {
-				_RemoveShapeFromDiagram(shape, false);
-			}
-			foreach (FilterShape shape in _filterShapes) {
-				_RemoveShapeFromDiagram(shape, false);
-			}
-			foreach (ControllerShape shape in _controllerShapes) {
-				_RemoveShapeFromDiagram(shape, false);
-			}
-
-			diagramDisplay.SelectedShapes.Clear();
-
-			_dataFlowComponentToShapes = new Dictionary<IDataFlowComponent, List<FilterSetupShapeBase>>();
-			_dataFlowComponentToChildFilterShapes = new Dictionary<IDataFlowComponent, List<FilterSetupShapeBase>>();
-			_elementDataFlowComponentsToMaxFilterDepth = new Dictionary<IDataFlowComponent, int>();
-			_filterDataFlowComponentsToSourceElementDataFlowComponents = new Dictionary<IDataFlowComponent, IDataFlowComponent>();
-
-			_InitializeShapesFromElements(nodes);
-			_InitializeFilterShapesFromFilters(filters);
-			_InitializeControllerShapesFromControllers(controllers);
-
-			_RelayoutAllShapes();
-			//_CreateConnectionsFromExistingLinks();
-			UpdateConnections();
-
-			diagramDisplay.DoResumeUpdate();
-		}
-
-
-
+		
 		private void _addShapeToDataFlowMap(FilterSetupShapeBase shape, Dictionary<IDataFlowComponent, List<FilterSetupShapeBase>> map)
 		{
 			if (shape.DataFlowComponent != null) {
@@ -237,7 +200,8 @@ namespace VixenApplication.Setup
 			IDataFlowComponent source = null;
 			if (shape.DataFlowComponent != null &&
 				shape.DataFlowComponent.Source != null &&
-				shape.DataFlowComponent.Source.Component != null) {
+				shape.DataFlowComponent.Source.Component != null) 
+			{
 					source = shape.DataFlowComponent.Source.Component;
 			}
 
@@ -250,22 +214,6 @@ namespace VixenApplication.Setup
 
 		#region Element shape creation
 
-		private void _InitializeShapesFromElements(IEnumerable<ElementNode> nodes)
-		{
-			diagramDisplay.DoSuspendUpdate();
-
-			_elementShapes = new List<ElementNodeShape>();
-			_elementNodeToElementShapes = new Dictionary<ElementNode, List<ElementNodeShape>>();
-
-			_elementDataFlowComponentsToMaxFilterDepth = new Dictionary<IDataFlowComponent, int>();
-
-			foreach (ElementNode node in nodes) {
-				_CreateShapeFromElement(node);
-			}
-
-			diagramDisplay.DoResumeUpdate();
-		}
-
 		private void _UpdateElementShapesFromElements(IEnumerable<ElementNode> nodes)
 		{
 			diagramDisplay.DoSuspendUpdate();
@@ -275,7 +223,6 @@ namespace VixenApplication.Setup
 			// 2. remove any existing element shapes that aren't in the incoming list
 
 			List<ElementNodeShape> oldElementShapes = _elementShapes;
-			Dictionary<ElementNode, List<ElementNodeShape>> oldElementNodeToElementShapes = _elementNodeToElementShapes;
 
 			_elementShapes = new List<ElementNodeShape>();
 			_elementNodeToElementShapes = new Dictionary<ElementNode, List<ElementNodeShape>>();
@@ -289,7 +236,7 @@ namespace VixenApplication.Setup
 
 				// if it's currently in the root shapes list, don't make a new shape for it
 				List<ElementNodeShape> matchingRootNodes = oldElementShapes.Where(x => x.Node == node).ToList();
-				if (matchingRootNodes.Count() == 0) {
+				if (!matchingRootNodes.Any()) {
 					_CreateShapeFromElement(node);
 				}
 				else {
@@ -344,7 +291,7 @@ namespace VixenApplication.Setup
 			ElementNodeShape shape = (ElementNodeShape) project.ShapeTypes["ElementNodeShape"].CreateInstance();
 			shape.SetElementNode(node);
 			shape.Title = node.Name;
-			shape.HeaderHeight = SHAPE_GROUP_HEADER_HEIGHT;
+			shape.HeaderHeight = ShapeGroupHeaderHeight;
 			diagramDisplay.InsertShape(shape);
 			diagramDisplay.Diagram.Shapes.SetZOrder(shape, zOrder);
 			diagramDisplay.Diagram.AddShapeToLayers(shape, _visibleLayer.Id);
@@ -357,11 +304,11 @@ namespace VixenApplication.Setup
 					FilterSetupShapeBase childSetupShapeBase = _MakeElementNodeShape(child, zOrder + 1);
 					shape.ChildFilterShapes.Add(childSetupShapeBase);
 				}
-				shape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS;
+				shape.SecurityDomainName = SecurityDomainFixedShapeNoConnections;
 				shape.FillStyle = project.Design.FillStyles["ElementGroup"];
 			}
 			else {
-				shape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS;
+				shape.SecurityDomainName = SecurityDomainFixedShapeWithConnections;
 				shape.FillStyle = project.Design.FillStyles["ElementLeaf"];
 			}
 			return shape;
@@ -379,7 +326,7 @@ namespace VixenApplication.Setup
 			// will be patched to stuff).  If you only have group element nodes, iterate to the leaf nodes first.
 			return elements
 				.Where(x => x.Element != null)
-				.SelectMany(x => _findComponentsOfTypeInTreeFromComponent(VixenSystem.DataFlow.GetComponent(x.Element.Id), typeof(IOutputFilterModuleInstance)))
+				.SelectMany(x => _findComponentsOfTypeInTreeFromComponent(VixenSystem.DataFlow.GetComponent(x.Element!.Id), typeof(IOutputFilterModuleInstance)))
 				.Cast<IOutputFilterModuleInstance>();
 		}
 
@@ -398,30 +345,12 @@ namespace VixenApplication.Setup
 
 		#region Filter shape creation
 
-		private void _InitializeFilterShapesFromFilters(IEnumerable<IOutputFilterModuleInstance> filters)
-		{
-			diagramDisplay.DoSuspendUpdate();
-
-			_filterShapes = new List<FilterShape>();
-			_filterToFilterShape = new Dictionary<IOutputFilterModuleInstance, FilterShape>();
-
-			_filterDataFlowComponentsToSourceElementDataFlowComponents = new Dictionary<IDataFlowComponent, IDataFlowComponent>();
-			_dataFlowComponentToChildFilterShapes = new Dictionary<IDataFlowComponent, List<FilterSetupShapeBase>>();
-
-			foreach (IOutputFilterModuleInstance filter in filters) {
-				_CreateShapeFromFilter(filter);
-			}
-
-			diagramDisplay.DoResumeUpdate();
-		}
-
 		private void _UpdateFilterShapesFromFilters(IEnumerable<IOutputFilterModuleInstance> filters)
 		{
 			diagramDisplay.DoSuspendUpdate();
 
 			List<FilterShape> oldFilterShapes = _filterShapes;
 			Dictionary<IOutputFilterModuleInstance, FilterShape> oldFilterToFilterShape = _filterToFilterShape;
-			Dictionary<IDataFlowComponent, List<FilterSetupShapeBase>> oldDataFlowComponentToChildFilterShapes = _dataFlowComponentToChildFilterShapes;
 
 			_filterShapes = new List<FilterShape>();
 			_filterToFilterShape = new Dictionary<IOutputFilterModuleInstance, FilterShape>();
@@ -429,8 +358,7 @@ namespace VixenApplication.Setup
 
 			foreach (IOutputFilterModuleInstance filter in filters) {
 				// if it's currently displayed -- ie. in the old shapes list -- don't make a new shape for it
-				FilterShape filterShape = null;
-				oldFilterToFilterShape.TryGetValue(filter, out filterShape);
+				oldFilterToFilterShape.TryGetValue(filter, out var filterShape);
 
 				if (filterShape == null) {
 					_CreateShapeFromFilter(filter);
@@ -489,12 +417,11 @@ namespace VixenApplication.Setup
 					break;
 				}
 
-				List<FilterSetupShapeBase> shapes;
-				_dataFlowComponentToShapes.TryGetValue(source, out shapes);
+				_dataFlowComponentToShapes.TryGetValue(source, out List<FilterSetupShapeBase> shapes);
 				if (shapes != null) {
 					FilterSetupShapeBase shape = shapes.FirstOrDefault();
-					if (shape is ElementNodeShape) {
-						elementComponent = (shape as ElementNodeShape).DataFlowComponent;
+					if (shape is ElementNodeShape nodeShape) {
+						elementComponent = nodeShape.DataFlowComponent;
 						break;
 					}
 				}
@@ -523,8 +450,7 @@ namespace VixenApplication.Setup
 		private FilterShape _CreateShapeFromFilter(IOutputFilterModuleInstance filter)
 		{
 			FilterShape filterShape = _MakeFilterShape(filter);
-			if (filterShape != null)
-				_filterShapes.Add(filterShape);
+			_filterShapes.Add(filterShape);
 			return filterShape;
 		}
 
@@ -532,7 +458,7 @@ namespace VixenApplication.Setup
 		{
 			FilterShape filterShape = (FilterShape)project.ShapeTypes["FilterShape"].CreateInstance();
 			filterShape.Title = filter.Name;
-			filterShape.SecurityDomainName = SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS;
+			filterShape.SecurityDomainName = SecurityDomainMovableShapeWithConnections;
 			filterShape.FillStyle = project.Design.FillStyles["Filter"];
 			filterShape.SetFilterInstance(filter);
 
@@ -561,36 +487,6 @@ namespace VixenApplication.Setup
 
 #region Controller shape creation
 
-		private void _InitializeControllerShapesFromControllers(IEnumerable<IOutputDevice> controllers)
-		{
-			ControllersAndOutputsSet data = new ControllersAndOutputsSet();
-
-			foreach (IControllerDevice controller in controllers) {
-				HashSet<int> outputs = new HashSet<int>();
-				for (int i = 0; i < controller.OutputCount; i++) {
-					outputs .Add(i);
-				}
-				data[controller] = outputs;
-			}
-
-			_InitializeControllerShapesFromControllers(data);
-		}
-
-		private void _InitializeControllerShapesFromControllers(ControllersAndOutputsSet controllersAndOutputs)
-		{
-			diagramDisplay.DoSuspendUpdate();
-
-			_controllerShapes = new List<ControllerShape>();
-			_controllerToControllerShape = new Dictionary<IOutputDevice, ControllerShape>();
-			_outputShapes = new List<OutputShape>();
-
-			foreach (KeyValuePair<IControllerDevice, HashSet<int>> pair in controllersAndOutputs) {
-				_CreateShapeFromController(pair.Key, pair.Value);
-			}
-
-			diagramDisplay.DoResumeUpdate();
-		}
-
 		private void _updateControllerShapesFromControllersAndOutputs(ControllersAndOutputsSet controllersAndOutputs)
 		{
 			if (controllersAndOutputs == null)
@@ -600,15 +496,13 @@ namespace VixenApplication.Setup
 
 			List<ControllerShape> oldControllerShapes = _controllerShapes;
 			Dictionary<IOutputDevice, ControllerShape> oldControllerToControllerShape = _controllerToControllerShape;
-			List<OutputShape> oldOutputShapes = _outputShapes;
 
 			_controllerShapes = new List<ControllerShape>();
 			_controllerToControllerShape = new Dictionary<IOutputDevice, ControllerShape>();
 			_outputShapes = new List<OutputShape>();
 
 			foreach (KeyValuePair<IControllerDevice, HashSet<int>> pair in controllersAndOutputs) {
-				ControllerShape controllerShape = null;
-				oldControllerToControllerShape.TryGetValue(pair.Key, out controllerShape);
+				oldControllerToControllerShape.TryGetValue(pair.Key, out var controllerShape);
 
 				if (controllerShape == null) {
 					_CreateShapeFromController(pair.Key, pair.Value);
@@ -652,11 +546,13 @@ namespace VixenApplication.Setup
 			// sort the nested shapes of the outputs in the controller shape; the list above has them in order, but the list of shapes might not
 			controllerShape.ChildFilterShapes.Sort(delegate (FilterSetupShapeBase a, FilterSetupShapeBase b)
 			                                       	{
-			                                       		OutputShape osa = a as OutputShape;
+				                                        if (a == null || b == null)
+				                                        {
+					                                        return 0;
+				                                        }
+				                                        OutputShape osa = a as OutputShape;
 			                                       		OutputShape osb = b as OutputShape;
-														if (a == null || b == null)
-															return 0;
-			                                       		return osa.OutputIndex.CompareTo(osb.OutputIndex);
+			                                            return osa.OutputIndex.CompareTo(osb.OutputIndex);
 			                                       	});
 		}
 
@@ -718,9 +614,9 @@ namespace VixenApplication.Setup
 			ControllerShape controllerShape = (ControllerShape)project.ShapeTypes["ControllerShape"].CreateInstance();
 			controllerShape.Title = controller.Name;
 			controllerShape.Controller = controller;
-			controllerShape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS;
+			controllerShape.SecurityDomainName = SecurityDomainFixedShapeNoConnections;
 			controllerShape.FillStyle = project.Design.FillStyles["Controller"];
-			controllerShape.HeaderHeight = SHAPE_GROUP_HEADER_HEIGHT;
+			controllerShape.HeaderHeight = ShapeGroupHeaderHeight;
 
 			diagramDisplay.InsertShape(controllerShape);
 			diagramDisplay.Diagram.Shapes.SetZOrder(controllerShape, 1);
@@ -750,7 +646,7 @@ namespace VixenApplication.Setup
 			OutputShape outputShape = (OutputShape) project.ShapeTypes["OutputShape"].CreateInstance();
 			outputShape.SetController(outputController);
 			outputShape.SetOutput(output, outputIndex);
-			outputShape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS;
+			outputShape.SecurityDomainName = SecurityDomainFixedShapeWithConnections;
 			outputShape.FillStyle = project.Design.FillStyles["Output"];
 
 			if (output.Name.Length <= 0)
@@ -787,35 +683,35 @@ namespace VixenApplication.Setup
 		//  75 - 95% : channels
 		//  95 - 100%: space
 
-		private int totalWidth;
-		private int elementWidth;
-		private int elementX;
-		private int elementY;
-		private int filterWidth;
-		private int filterX;
-		private int filterY;
-		private int channelWidth;
-		private int channelX;
-		private int channelY;
+		private int _totalWidth;
+		private int _elementWidth;
+		private int _elementX;
+		private int _elementY;
+		private int _filterWidth;
+		private int _filterX;
+		private int _filterY;
+		private int _channelWidth;
+		private int _channelX;
+		private int _channelY;
 
 		// the starting top of all shapes
-		internal const int SHAPE_Y_TOP = 10;
+		internal const int ShapeYTop = 10;
 
 		// the maximum and minimum widths and heights for shapes
-		internal const int SHAPE_MAX_WIDTH = 160;
-		internal const int SHAPE_MIN_WIDTH = 32;
-		internal const int SHAPE_DEFAULT_HEIGHT = 20;
-		internal const int SHAPE_MIN_HEIGHT = 10;
+		internal const int ShapeMaxWidth = 160;
+		internal const int ShapeMinWidth = 32;
+		internal const int ShapeDefaultHeight = 20;
+		internal const int ShapeMinHeight = 10;
 
 		// the vertical spacing between elements
-		internal const int SHAPE_VERTICAL_SPACING = 6;
+		internal const int ShapeVerticalSpacing = 6;
 
 		// how much the width of inner children is reduced
-		internal const int SHAPE_CHILD_WIDTH_REDUCTION = 10;
+		internal const int ShapeChildWidthReduction = 10;
 
 		// how much of a parent shape should be reserved/kept for the wrapping above/below
-		internal const int SHAPE_GROUP_HEADER_HEIGHT = 20;
-		internal const int SHAPE_GROUP_FOOTER_HEIGHT = 6;
+		internal const int ShapeGroupHeaderHeight = 20;
+		internal const int ShapeGroupFooterHeight = 6;
 
 
 
@@ -836,14 +732,14 @@ namespace VixenApplication.Setup
 		{
 			diagramDisplay.DoSuspendUpdate();
 
-			totalWidth = diagramDisplay.Width;
-			elementWidth = totalWidth * 20 / 100;
-			elementX = totalWidth * 5 / 100;
-			elementY = SHAPE_Y_TOP;
+			_totalWidth = diagramDisplay.Width;
+			_elementWidth = _totalWidth * 20 / 100;
+			_elementX = _totalWidth * 5 / 100;
+			_elementY = ShapeYTop;
 
 			foreach (ElementNodeShape elementShape in _elementShapes) {
-				_ResizeAndPositionNestingShape(elementShape, elementWidth, elementX, elementY, true);
-				elementY += elementShape.Height + SHAPE_VERTICAL_SPACING;
+				_ResizeAndPositionNestingShape(elementShape, _elementWidth, _elementX, _elementY, true);
+				_elementY += elementShape.Height + ShapeVerticalSpacing;
 			}
 
 			diagramDisplay.DoResumeUpdate();
@@ -853,14 +749,14 @@ namespace VixenApplication.Setup
 		{
 			diagramDisplay.DoSuspendUpdate();
 
-			totalWidth = diagramDisplay.Width;
-			channelWidth = totalWidth * 20 / 100;
-			channelX = totalWidth * 75 / 100;
-			channelY = SHAPE_Y_TOP;
+			_totalWidth = diagramDisplay.Width;
+			_channelWidth = _totalWidth * 20 / 100;
+			_channelX = _totalWidth * 75 / 100;
+			_channelY = ShapeYTop;
 
 			foreach (ControllerShape controllerShape in _controllerShapes) {
-				_ResizeAndPositionNestingShape(controllerShape, channelWidth, channelX, channelY, true);
-				channelY += controllerShape.Height + SHAPE_VERTICAL_SPACING;
+				_ResizeAndPositionNestingShape(controllerShape, _channelWidth, _channelX, _channelY, true);
+				_channelY += controllerShape.Height + ShapeVerticalSpacing;
 			}
 
 			diagramDisplay.DoResumeUpdate();
@@ -882,10 +778,10 @@ namespace VixenApplication.Setup
 
 			diagramDisplay.DoSuspendUpdate();
 
-			totalWidth = diagramDisplay.Width;
-			filterWidth = totalWidth * 30 / 100;
-			filterX = totalWidth * 35 / 100;
-			filterY = SHAPE_Y_TOP;
+			_totalWidth = diagramDisplay.Width;
+			_filterWidth = _totalWidth * 30 / 100;
+			_filterX = _totalWidth * 35 / 100;
+			_filterY = ShapeYTop;
 
 			// a map of data flow component to number of shapes laid out against it; so we can count what position we're up to with the drawing
 			Dictionary<IDataFlowComponent, int> shapesLaidOutPerComponent = new Dictionary<IDataFlowComponent, int>();
@@ -900,13 +796,13 @@ namespace VixenApplication.Setup
 		
 					foreach (FilterShape filterShape in sortedFilterShapes[0]) {
 
-						int shapeHeight = SHAPE_DEFAULT_HEIGHT;
-						int ypos = SHAPE_Y_TOP;
+						int shapeHeight = ShapeDefaultHeight;
+						int ypos = ShapeYTop;
 
-						int columnWidth = filterWidth / totalShapes;
-						int shapeWidth = Math.Max(Math.Min(columnWidth, SHAPE_MAX_WIDTH), SHAPE_MIN_WIDTH);
+						int columnWidth = _filterWidth / totalShapes;
+						int shapeWidth = Math.Max(Math.Min(columnWidth, ShapeMaxWidth), ShapeMinWidth);
 						int internalColumnOffset = (columnWidth - shapeWidth) / 2;
-						int xpos = filterX + (int)(shapesSoFar * columnWidth) + internalColumnOffset;
+						int xpos = _filterX + (int)(shapesSoFar * columnWidth) + internalColumnOffset;
 
 						shapesSoFar++;
 
@@ -958,8 +854,8 @@ namespace VixenApplication.Setup
 						// will default to '0' if not in dictionary; how convenient!
 
 						float verticalProportionOffset = (float) shapesSoFar/totalShapes;
-						int shapeHeight = SHAPE_DEFAULT_HEIGHT;
-						int ypos = filterY;
+						int shapeHeight = ShapeDefaultHeight;
+						int ypos = _filterY;
 						if (sourceShape != null) {
 							shapeHeight = sourceShape.Height/totalShapes;
 							ypos = sourceShape.Y + (int) (verticalProportionOffset*sourceShape.Height);
@@ -974,8 +870,8 @@ namespace VixenApplication.Setup
 						if (shapesSoFar < totalShapes - 1) {
 							shapeHeight -= 2;
 						}
-						if (shapeHeight < SHAPE_MIN_HEIGHT)
-							shapeHeight = SHAPE_MIN_HEIGHT;
+						if (shapeHeight < ShapeMinHeight)
+							shapeHeight = ShapeMinHeight;
 
 						shapesSoFar++;
 						shapesLaidOutPerComponent[source] = shapesSoFar;
@@ -992,13 +888,13 @@ namespace VixenApplication.Setup
 						int column = filterShape.LevelsFromElementSource; // 1-offset: a value of 0 would mean it's actually free-floating
 
 						float horizontalProportionOffset = (float) (column - 1)/filterColumns;
-						int columnWidth = filterWidth / filterColumns;
-						int shapeWidth = Math.Max(Math.Min(columnWidth, SHAPE_MAX_WIDTH), SHAPE_MIN_WIDTH);
-						if (shapeWidth < SHAPE_MAX_WIDTH && shapeWidth > SHAPE_MIN_WIDTH && columnWidth - shapeWidth < 20)
+						int columnWidth = _filterWidth / filterColumns;
+						int shapeWidth = Math.Max(Math.Min(columnWidth, ShapeMaxWidth), ShapeMinWidth);
+						if (shapeWidth < ShapeMaxWidth && shapeWidth > ShapeMinWidth && columnWidth - shapeWidth < 20)
 							shapeWidth = columnWidth - 20;
 
 						int internalColumnOffset = (columnWidth - shapeWidth)/2;
-						int xpos = filterX + (int)(horizontalProportionOffset * filterWidth) + internalColumnOffset;
+						int xpos = _filterX + (int)(horizontalProportionOffset * _filterWidth) + internalColumnOffset;
 
 						filterShape.X = xpos;
 						filterShape.Y = ypos;
@@ -1019,21 +915,21 @@ namespace VixenApplication.Setup
 				_HideShape(shape);
 			}
 
-			if (width < SHAPE_MIN_WIDTH)
-				width = SHAPE_MIN_WIDTH;
+			if (width < ShapeMinWidth)
+				width = ShapeMinWidth;
 
 			if (visible && (shape is NestingSetupShape) && (shape as NestingSetupShape).Expanded &&
 			    (shape as NestingSetupShape).ChildFilterShapes.Count > 0) {
-				int curY = y + SHAPE_GROUP_HEADER_HEIGHT;
+				int curY = y + ShapeGroupHeaderHeight;
 				foreach (FilterSetupShapeBase childShape in (shape as NestingSetupShape).ChildFilterShapes) {
-					_ResizeAndPositionNestingShape(childShape, width - SHAPE_CHILD_WIDTH_REDUCTION, x, curY, true);
-					curY += childShape.Height + SHAPE_VERTICAL_SPACING;
+					_ResizeAndPositionNestingShape(childShape, width - ShapeChildWidthReduction, x, curY, true);
+					curY += childShape.Height + ShapeVerticalSpacing;
 				}
 				shape.Width = width;
-				shape.Height = (curY - SHAPE_VERTICAL_SPACING + SHAPE_GROUP_FOOTER_HEIGHT) - y;
+				shape.Height = (curY - ShapeVerticalSpacing + ShapeGroupFooterHeight) - y;
 			} else {
 				shape.Width = width;
-				shape.Height = SHAPE_DEFAULT_HEIGHT;
+				shape.Height = ShapeDefaultHeight;
 				if (shape is NestingSetupShape) {
 					foreach (FilterSetupShapeBase childShape in (shape as NestingSetupShape).ChildFilterShapes) {
 						_ResizeAndPositionNestingShape(childShape, width, x, y, false);
@@ -1106,7 +1002,7 @@ namespace VixenApplication.Setup
 
 			Point newPosition = diagramDisplay.PointToClient(cursorPosition);
 			newPosition.X -= diagramDisplay.GetDiagramPosition().X;
-			newPosition.Y += diagramDisplay.GetDiagramOffset().Y - (SHAPE_DEFAULT_HEIGHT / 2);
+			newPosition.Y += diagramDisplay.GetDiagramOffset().Y - (ShapeDefaultHeight / 2);
 
 			DuplicateFilterShapes(_filterShapeClipboard, numberOfCopies, newPosition);
 		}
@@ -1138,7 +1034,7 @@ namespace VixenApplication.Setup
 				}
 			}
 
-			shape.SecurityDomainName = SECURITY_DOMAIN_ALL_PERMISSIONS;
+			shape.SecurityDomainName = SecurityDomainAllPermissions;
 			diagramDisplay.DeleteShape(shape);
 
 			if (shape is NestingSetupShape) {
@@ -1209,7 +1105,7 @@ namespace VixenApplication.Setup
 					newShape.X = pos.X;
 					newShape.Y = pos.Y;
 
-					pos.Y += newShape.Height + SHAPE_VERTICAL_SPACING;
+					pos.Y += newShape.Height + ShapeVerticalSpacing;
 
 					result.Add(newShape);
 				}
@@ -1228,8 +1124,8 @@ namespace VixenApplication.Setup
 			FilterShape shape = _CreateShapeFromFilter(moduleInstance);
 			VixenSystem.Filters.AddFilter(moduleInstance);
 
-			shape.Width = SHAPE_MAX_WIDTH;
-			shape.Height = SHAPE_DEFAULT_HEIGHT;
+			shape.Width = ShapeMaxWidth;
+			shape.Height = ShapeDefaultHeight;
 
 			if (defaultLayout) {
 				shape.X = (diagramDisplay.Width / 2) - diagramDisplay.GetDiagramPosition().X;
@@ -1502,7 +1398,7 @@ namespace VixenApplication.Setup
 			diagramDisplay.InsertShape(line);
 			diagramDisplay.Diagram.Shapes.SetZOrder(line, 100);
 			line.EndCapStyle = project.Design.CapStyles.ClosedArrow;
-			line.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE;
+			line.SecurityDomainName = SecurityDomainFixedShapeNoConnectionsDeletable;
 
 			//if (removeExistingSource) {
 			//    IEnumerable<ShapeConnectionInfo> connectionInfos =
@@ -1527,7 +1423,7 @@ namespace VixenApplication.Setup
 			DataFlowConnectionLine line = (DataFlowConnectionLine)project.ShapeTypes["DataFlowConnectionLine"].CreateInstance();
 			diagramDisplay.InsertShape(line);
 			diagramDisplay.Diagram.Shapes.SetZOrder(line, 100);
-			line.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE;
+			line.SecurityDomainName = SecurityDomainFixedShapeNoConnectionsDeletable;
 
 			line.EndCapStyle = new CapStyle("fakecapstyle", CapShape.Flat, project.Design.ColorStyles.Blue);
 			//line.LineStyle = new LineStyle("fakelinestyle", 1, project.Design.ColorStyles.Gray);
@@ -1900,8 +1796,8 @@ namespace VixenApplication.Setup
 						FilterShape shape = _CreateShapeFromFilter(moduleInstance);
 						VixenSystem.Filters.AddFilter(moduleInstance);
 
-						shape.Width = SHAPE_MAX_WIDTH;
-						shape.Height = SHAPE_DEFAULT_HEIGHT;
+						shape.Width = ShapeMaxWidth;
+						shape.Height = ShapeDefaultHeight;
 
 						shape.X = (diagramDisplay.Width/2) - diagramDisplay.GetDiagramPosition().X;
 						shape.Y = diagramDisplay.GetDiagramOffset().Y + (diagramDisplay.Height/2);

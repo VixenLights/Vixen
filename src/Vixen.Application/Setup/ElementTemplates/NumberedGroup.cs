@@ -10,7 +10,7 @@ namespace VixenApplication.Setup.ElementTemplates
 {
 	public partial class NumberedGroup : ElementTemplateBase, IElementTemplate
 	{
-		private static Logger Logging = LogManager.GetCurrentClassLogger();
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
 		public NumberedGroup():this(@"Group", @"Item", 10)
 		{
@@ -39,7 +39,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			get { return "Generic Numbered Group"; }
 		}
 
-		public bool SetupTemplate(IEnumerable<ElementNode> selectedNodes = null)
+		public bool SetupTemplate(IEnumerable<ElementNode>? selectedNodes = null)
 		{
 			DialogResult result = ShowDialog();
 
@@ -49,7 +49,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			return false;
 		}
 
-		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode> selectedNodes = null)
+		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode>? selectedNodes = null)
 		{
 			List<ElementNode> result = new List<ElementNode>();
 

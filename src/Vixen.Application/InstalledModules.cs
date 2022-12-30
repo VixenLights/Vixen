@@ -8,13 +8,11 @@ namespace VixenApplication
 {
 	public partial class InstalledModules : BaseForm
 	{
-		private const string NOT_PROVIDED = "(Not Provided)";
+		private const string NotProvided = "(Not Provided)";
 
 		public InstalledModules()
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
 			listViewModules.AllowRowReorder = false;
@@ -57,7 +55,7 @@ namespace VixenApplication
 				return descriptor.Description;
 			}
 			catch {
-				return NOT_PROVIDED;
+				return NotProvided;
 			}
 		}
 
@@ -67,7 +65,7 @@ namespace VixenApplication
 				return descriptor.Author;
 			}
 			catch {
-				return NOT_PROVIDED;
+				return NotProvided;
 			}
 		}
 
@@ -77,7 +75,7 @@ namespace VixenApplication
 				return descriptor.Version;
 			}
 			catch {
-				return NOT_PROVIDED;
+				return NotProvided;
 			}
 		}
 
@@ -88,8 +86,12 @@ namespace VixenApplication
 
 		private void buttonCopyModuleId_Click(object sender, EventArgs e)
 		{
-			IModuleDescriptor descriptor = listViewModules.SelectedItems[0].Tag as IModuleDescriptor;
-			Clipboard.SetText(descriptor.TypeId.ToString());
+			IModuleDescriptor? descriptor = listViewModules.SelectedItems[0].Tag as IModuleDescriptor;
+			if (descriptor != null)
+			{
+				Clipboard.SetText(descriptor.TypeId.ToString());
+			}
+			
 		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)

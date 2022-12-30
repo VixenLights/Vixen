@@ -9,7 +9,7 @@ namespace VixenApplication
 	/// </summary>
 	public class NLogListener : LogListenerBase
 	{
-		private static Logger Logging = LogManager.GetCurrentClassLogger();
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
 		#region Overrides of LogListenerBase
 

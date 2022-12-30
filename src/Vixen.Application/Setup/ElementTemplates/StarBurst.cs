@@ -10,25 +10,23 @@ namespace VixenApplication.Setup.ElementTemplates
 {
 	public partial class Starburst : ElementTemplateBase, IElementTemplate
 	{
-		private static Logger Logging = LogManager.GetCurrentClassLogger();
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
-		private string treename;
-		private int stringcount;
-		private bool pixeltree;
-		private int pixelsperstring;
+		private string _treeName;
+		private int _stringCount;
+		private bool _pixelTree;
+		private int _pixelsPerString;
 
 		public Starburst()
 		{
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 
-			treename = "Starburst";
-			stringcount = 8;
-			pixeltree = false;
-			pixelsperstring = 50;
+			_treeName = "Starburst";
+			_stringCount = 8;
+			_pixelTree = false;
+			_pixelsPerString = 50;
 		}
 
 		public string TemplateName
@@ -36,7 +34,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			get { return "Starburst"; }
 		}
 
-		public bool SetupTemplate(IEnumerable<ElementNode> selectedNodes = null)
+		public bool SetupTemplate(IEnumerable<ElementNode>? selectedNodes = null)
 		{
 			DialogResult result = ShowDialog();
 
@@ -46,21 +44,21 @@ namespace VixenApplication.Setup.ElementTemplates
 			return false;
 		}
 
-		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode> selectedNodes = null)
+		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode>? selectedNodes = null)
 		{
 			List<ElementNode> result = new List<ElementNode>();
 
-			if (treename.Length == 0) {
+			if (_treeName.Length == 0) {
 				Logging.Error("starburst is null");
 				return await Task.FromResult(result);
 			}
 
-			if (stringcount < 0) {
+			if (_stringCount < 0) {
 				Logging.Error("negative count");
 				return await Task.FromResult(result);
 			}
 
-			if (pixeltree && pixelsperstring < 0) {
+			if (_pixelTree && _pixelsPerString < 0) {
 				Logging.Error("negative pixelsperstring");
 				return await Task.FromResult(result);
 			}
@@ -68,16 +66,16 @@ namespace VixenApplication.Setup.ElementTemplates
 			//Optimize the name check for performance. We know we are going to create a bunch of them and we can handle it ourselves more efficiently
 			HashSet<string> elementNames = new HashSet<string>(VixenSystem.Nodes.Select(x => x.Name));
 
-			ElementNode head = ElementNodeService.Instance.CreateSingle(null, NamingUtilities.Uniquify(elementNames, treename), true, false);
+			ElementNode head = ElementNodeService.Instance.CreateSingle(null, NamingUtilities.Uniquify(elementNames, _treeName), true, false);
 			result.Add(head);
 
-			for (int i = 0; i < stringcount; i++) {
+			for (int i = 0; i < _stringCount; i++) {
 				string stringname = head.Name + " " + textBoxSpokePrefix.Text + (i + 1);
 				ElementNode stringnode = ElementNodeService.Instance.CreateSingle(head, NamingUtilities.Uniquify(elementNames, stringname), true, false);
 				result.Add(stringnode);
 
-				if (pixeltree) {
-					for (int j = 0; j < pixelsperstring; j++) {
+				if (_pixelTree) {
+					for (int j = 0; j < _pixelsPerString; j++) {
 						string pixelname = stringnode.Name + " " + textBoxPixelPrefix.Text + (j + 1);
 
 						ElementNode pixelnode = ElementNodeService.Instance.CreateSingle(stringnode, NamingUtilities.Uniquify(elementNames, pixelname), true, false);
@@ -97,18 +95,18 @@ namespace VixenApplication.Setup.ElementTemplates
 
 		private void Megatree_Load(object sender, EventArgs e)
 		{
-			textBoxTreeName.Text = treename;
-			numericUpDownStrings.Value = stringcount;
-			checkBoxPixelTree.Checked = pixeltree;
-			numericUpDownPixelsPerString.Value = pixelsperstring;
+			textBoxTreeName.Text = _treeName;
+			numericUpDownStrings.Value = _stringCount;
+			checkBoxPixelTree.Checked = _pixelTree;
+			numericUpDownPixelsPerString.Value = _pixelsPerString;
 		}
 
 		private void Megatree_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			treename = textBoxTreeName.Text;
-			stringcount = Decimal.ToInt32(numericUpDownStrings.Value);
-			pixeltree = checkBoxPixelTree.Checked ;
-			pixelsperstring = Decimal.ToInt32(numericUpDownPixelsPerString.Value);
+			_treeName = textBoxTreeName.Text;
+			_stringCount = Decimal.ToInt32(numericUpDownStrings.Value);
+			_pixelTree = checkBoxPixelTree.Checked ;
+			_pixelsPerString = Decimal.ToInt32(numericUpDownPixelsPerString.Value);
 		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)

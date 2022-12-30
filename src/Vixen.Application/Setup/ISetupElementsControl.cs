@@ -14,7 +14,7 @@ namespace VixenApplication.Setup
 		IEnumerable<ElementNode> SelectedElements { get; set; }
 
 		Control SetupElementsControl { get; }
-		DisplaySetup MasterForm { get; set; }
+		DisplaySetup? MasterForm { get; set; }
 
 		void UpdatePatching();
 

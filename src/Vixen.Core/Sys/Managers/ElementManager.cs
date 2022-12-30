@@ -101,7 +101,7 @@ namespace Vixen.Sys.Managers
 			return rv;
 		}
 
-		public ElementNode GetElementNodeForElement(Element element)
+		public ElementNode? GetElementNodeForElement(Element element)
 		{
 			if (element == null)
 				return null;

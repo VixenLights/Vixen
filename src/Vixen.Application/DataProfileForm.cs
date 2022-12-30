@@ -9,13 +9,11 @@ namespace VixenApplication
 	public partial class DataProfileForm : BaseForm
 	{
 		public static readonly string DefaultFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Vixen 3";
-		private ProfileItem _currentItem;
+		private ProfileItem? _currentItem;
 		
 		public DataProfileForm()
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			Icon = Resources.Icon_Vixen3;
 			int iconSize = (int)(16*ScalingTools.GetScaleFactor());
 			buttonAddProfile.Image = Tools.GetIcon(Resources.add, iconSize);
@@ -40,7 +38,7 @@ namespace VixenApplication
 			radioButtonAskMe.Checked = (profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "LoadAction", "LoadSelected") == "Ask");
 			radioButtonLoadThisProfile.Checked = (!radioButtonAskMe.Checked);
 
-			ProfileItem selectedItem = comboBoxLoadThisProfile.SelectedItem as ProfileItem;
+			ProfileItem? selectedItem = comboBoxLoadThisProfile.SelectedItem as ProfileItem;
 
 			comboBoxLoadThisProfile.Items.Clear();
 
@@ -79,7 +77,7 @@ namespace VixenApplication
 			//Check for null values, duplicate profile name or datapath and non rooted datapath
 			foreach (ProfileItem item in comboBoxProfiles.Items)
 			{
-				if (item.Name == null || item.DataFolder == null)
+				if (String.IsNullOrEmpty(item.Name) || String.IsNullOrEmpty(item.DataFolder))
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
@@ -148,7 +146,8 @@ namespace VixenApplication
 			SaveCurrentItem();
 			profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "ProfileCount", comboBoxProfiles.Items.Count);
 			for (int i = 0; i < comboBoxProfiles.Items.Count; i++) {
-				ProfileItem item = comboBoxProfiles.Items[i] as ProfileItem;
+				ProfileItem? item = comboBoxProfiles.Items[i] as ProfileItem;
+				if (item == null) throw new InvalidOperationException("Profile Item cannot be null!");
 				profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i + "/Name", item.Name);
 				profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i + "/DataFolder", item.DataFolder);
 				if (!Directory.Exists(item.DataFolder))
@@ -237,7 +236,7 @@ namespace VixenApplication
 		private void PopulateProfileSettings()
 		{
 			SaveCurrentItem();
-			ProfileItem item = comboBoxProfiles.SelectedItem as ProfileItem;
+			ProfileItem? item = comboBoxProfiles.SelectedItem as ProfileItem;
 			if (item != null)
 			{
 				textBoxProfileName.Text = item.Name;
@@ -299,7 +298,7 @@ namespace VixenApplication
 
 		private void buttonDeleteProfile_Click(object sender, EventArgs e)
 		{
-			ProfileItem item = comboBoxProfiles.SelectedItem as ProfileItem;
+			ProfileItem? item = comboBoxProfiles.SelectedItem as ProfileItem;
 			if (item == null)
 				return;
 			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)

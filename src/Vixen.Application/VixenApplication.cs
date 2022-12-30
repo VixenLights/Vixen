@@ -1,4 +1,6 @@
-﻿using Catel.IoC;
+﻿#nullable disable
+
+using Catel.IoC;
 using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
@@ -13,6 +15,7 @@ using Vixen.Module.Editor;
 using Vixen.Module.SequenceType;
 using Vixen.Services;
 using Vixen.Sys;
+using VixenApplication.Setup;
 using Application = System.Windows.Forms.Application;
 using Color = System.Drawing.Color;
 using Pen = System.Drawing.Pen;
@@ -25,14 +28,11 @@ namespace VixenApplication
 {
 	public partial class VixenApplication : BaseForm, IApplication
 	{
-		private static NLog.Logger Logging = LogManager.GetCurrentClassLogger();
-		private const string ErrorMsg = "An application error occurred. Please contact the Vixen Dev Team " +
-									"with the following information:\n\n";
-
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private const string LockFile = ".lock";
 
 		private Guid _guid = new Guid("7b903272-73d0-416c-94b1-6932758b1963");
-		private bool stopping;
+		private bool _stopping;
 		private bool _openExecution = true;
 		private bool _disableControllers = false;
 		private bool _devBuild = false;
@@ -132,7 +132,7 @@ namespace VixenApplication
 				Environment.Exit(0);
 			}
 
-			stopping = false;
+			_stopping = false;
 			toolStripStatusUpdates.Text = "";
 			PopulateVersionStrings();
 
@@ -364,7 +364,7 @@ namespace VixenApplication
 				Thread.Sleep(250);
 			}
 
-			stopping = true;
+			_stopping = true;
 			await VixenSystem.Stop(false);
 
 			_applicationData.SaveData();
@@ -1034,7 +1034,7 @@ namespace VixenApplication
 
 		private void executionStateChangedHandler(object sender, EventArgs e)
 		{
-			if (stopping)
+			if (_stopping)
 				return;
 
 			if (InvokeRequired)

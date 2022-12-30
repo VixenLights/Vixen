@@ -1,4 +1,4 @@
-﻿namespace VixenApplication
+﻿namespace VixenApplication.Setup
 {
 	partial class DisplaySetup
 	{

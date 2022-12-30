@@ -86,7 +86,7 @@ namespace Vixen.Sys
 			PropertyData.Clear();
 		}
 
-		public IPropertyModuleInstance Get(Guid propertyTypeId)
+		public IPropertyModuleInstance? Get(Guid propertyTypeId)
 		{
 			IPropertyModuleInstance instance;
 			_items.TryGetValue(propertyTypeId, out instance);
