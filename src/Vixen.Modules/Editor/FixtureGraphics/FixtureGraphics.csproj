@@ -10,9 +10,6 @@
 				<PackageReference Include="Catel.MVVM" Version="5.12.22" />
 				<PackageReference Include="DataGridThemes" Version="1.0.0" />
 				<PackageReference Include="OpenTK" Version="4.7.5" />
-				<PackageReference Include="QuickFont.ES20" Version="4.5.7053.25690" />
-				<PackageReference Include="SharpFont" Version="4.0.1" />
-				<PackageReference Include="SharpFont.Dependencies" Version="2.6" />
 		</ItemGroup>
 
 		<ItemGroup>
@@ -27,6 +24,9 @@
 		<ItemGroup>
 		  <Reference Include="OpenTK.WinForms">
 		    <HintPath>..\..\..\Vixen.Common\Libraries\OpenTK.WinForms.dll</HintPath>
+		  </Reference>
+		  <Reference Include="QuickFont">
+		    <HintPath>..\..\..\Vixen.Common\Libraries\QuickFont.dll</HintPath>
 		  </Reference>
 		</ItemGroup>
 

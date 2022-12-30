@@ -671,9 +671,9 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 					(float)-_geometry.GetBaseDepth());
 				
 				// Draw the text
-				// TODO .NET 6 commented _qFontDrawing.Print(_qFont, MovingHead.Legend, positionOfText, QFontAlignment.Left, MovingHead.LegendColor);
+				_qFontDrawing.Print(_qFont, MovingHead.Legend, positionOfText, QFontAlignment.Left, MovingHead.LegendColor);
 				_qFontDrawing.RefreshBuffers();
-				// TODO .NET 6 commented _qFontDrawing.ProjectionMatrix = viewMatrix * projectionMatrix;				
+				_qFontDrawing.ProjectionMatrix = viewMatrix * projectionMatrix;				
 				_qFontDrawing.Draw();
 			}
 		}
@@ -700,7 +700,7 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 			{
 				// Dispose of the library
 				_qFontDrawing.Dispose();
-				//QFontDrawing.DisposeStaticState();  //TODO .NET 6 Migration: figure out if this is needed! 
+				QFontDrawing.DisposeStaticState();
 				_qFontDrawing = null;
 			}						
 		}
