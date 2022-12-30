@@ -11,7 +11,7 @@ namespace VixenApplication.Setup
 		ControllersAndOutputsSet SelectedControllersAndOutputs { get; set; }
 
 		Control SetupControllersControl { get; }
-		DisplaySetup MasterForm { get; set; }
+		DisplaySetup? MasterForm { get; set; }
 
 		void UpdatePatching();
 

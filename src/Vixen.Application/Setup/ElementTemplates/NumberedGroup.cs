@@ -10,11 +10,11 @@ namespace VixenApplication.Setup.ElementTemplates
 {
 	public partial class NumberedGroup : ElementTemplateBase, IElementTemplate
 	{
-		private static Logger Logging = LogManager.GetCurrentClassLogger();
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
-		public NumberedGroup():this(@"Group", @"Item", 10)
+		public NumberedGroup() : this(@"Group", @"Item", 10)
 		{
-			
+
 		}
 
 		internal NumberedGroup(string groupName, string prefix, int count)
@@ -33,13 +33,13 @@ namespace VixenApplication.Setup.ElementTemplates
 		public string Prefix { get; set; }
 
 		public int Count { get; set; }
-		
+
 		public virtual string TemplateName
 		{
 			get { return "Generic Numbered Group"; }
 		}
 
-		public bool SetupTemplate(IEnumerable<ElementNode> selectedNodes = null)
+		public bool SetupTemplate(IEnumerable<ElementNode>? selectedNodes = null)
 		{
 			DialogResult result = ShowDialog();
 
@@ -49,21 +49,24 @@ namespace VixenApplication.Setup.ElementTemplates
 			return false;
 		}
 
-		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode> selectedNodes = null)
+		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode>? selectedNodes = null)
 		{
 			List<ElementNode> result = new List<ElementNode>();
 
-			if (GroupName.Length == 0) {
+			if (GroupName.Length == 0)
+			{
 				Logging.Error("groupname is null");
 				return await Task.FromResult(result);
 			}
 
-			if (Prefix.Length == 0) {
+			if (Prefix.Length == 0)
+			{
 				Logging.Error("prefix is null");
 				return await Task.FromResult(result);
 			}
 
-			if (Count < 0) {
+			if (Count < 0)
+			{
 				Logging.Error("negative count");
 				return await Task.FromResult(result);
 			}
@@ -74,7 +77,8 @@ namespace VixenApplication.Setup.ElementTemplates
 			ElementNode grouphead = ElementNodeService.Instance.CreateSingle(null, NamingUtilities.Uniquify(elementNames, GroupName), true, false);
 			result.Add(grouphead);
 
-			for (int i = 0; i < Count; i++) {
+			for (int i = 0; i < Count; i++)
+			{
 				string newname = Prefix + "-" + (i + 1);
 				ElementNode newnode = ElementNodeService.Instance.CreateSingle(grouphead, NamingUtilities.Uniquify(elementNames, newname), true, false);
 				result.Add(newnode);

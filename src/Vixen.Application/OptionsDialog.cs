@@ -23,7 +23,7 @@ namespace VixenApplication
 		private void btnOK_Click(object sender, EventArgs e)
 		{
 			Vixen.Sys.VixenSystem.DefaultUpdateInterval = (int)ctlUpdateInteral.Value;
-			AudioOutputManager.Instance().Latency = (int) wasapiLatency.Value;
+			AudioOutputManager.Instance().Latency = (int)wasapiLatency.Value;
 		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
@@ -39,6 +39,6 @@ namespace VixenApplication
 
 		}
 
-		
+
 	}
 }

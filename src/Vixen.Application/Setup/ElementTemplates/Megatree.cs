@@ -12,28 +12,26 @@ namespace VixenApplication.Setup.ElementTemplates
 {
 	public partial class Megatree : ElementTemplateBase, IElementTemplate
 	{
-		private static Logger Logging = LogManager.GetCurrentClassLogger();
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
-		private string treename;
-		private int stringcount;
-		private bool pixeltree;
-		private int pixelsperstring;
-		private StartLocation startLocation;
-		private bool zigZag;
-		private int zigZagEvery;
+		private string _treeName;
+		private int _stringCount;
+		private bool _pixelTree;
+		private int _pixelsPerString;
+		private StartLocation _startLocation;
+		private bool _zigZag;
+		private int _zigZagEvery;
 
 		public Megatree()
 		{
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 
-			treename = "Megatree";
-			stringcount = 16;
-			pixeltree = false;
-			pixelsperstring = 50;
+			_treeName = "Megatree";
+			_stringCount = 16;
+			_pixelTree = false;
+			_pixelsPerString = 50;
 		}
 
 		public string TemplateName
@@ -41,7 +39,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			get { return "Megatree"; }
 		}
 
-		public bool SetupTemplate(IEnumerable<ElementNode> selectedNodes = null)
+		public bool SetupTemplate(IEnumerable<ElementNode>? selectedNodes = null)
 		{
 			DialogResult result = ShowDialog();
 
@@ -51,21 +49,24 @@ namespace VixenApplication.Setup.ElementTemplates
 			return false;
 		}
 
-		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode> selectedNodes = null)
+		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode>? selectedNodes = null)
 		{
 			List<ElementNode> result = new List<ElementNode>();
 
-			if (treename.Length == 0) {
+			if (_treeName.Length == 0)
+			{
 				Logging.Error("treename is null");
 				return await Task.FromResult(result);
 			}
 
-			if (stringcount < 0) {
+			if (_stringCount < 0)
+			{
 				Logging.Error("negative count");
 				return await Task.FromResult(result);
 			}
 
-			if (pixeltree && pixelsperstring < 0) {
+			if (_pixelTree && _pixelsPerString < 0)
+			{
 				Logging.Error("negative pixelsperstring");
 				return await Task.FromResult(result);
 			}
@@ -73,16 +74,19 @@ namespace VixenApplication.Setup.ElementTemplates
 			//Optimize the name check for performance. We know we are going to create a bunch of them and we can handle it ourselves more efficiently
 			HashSet<string> elementNames = new HashSet<string>(VixenSystem.Nodes.Select(x => x.Name));
 
-			ElementNode head = ElementNodeService.Instance.CreateSingle(null, NamingUtilities.Uniquify(elementNames, treename), true, false);
+			ElementNode head = ElementNodeService.Instance.CreateSingle(null, NamingUtilities.Uniquify(elementNames, _treeName), true, false);
 			result.Add(head);
 
-			for (int i = 0; i < stringcount; i++) {
+			for (int i = 0; i < _stringCount; i++)
+			{
 				string stringname = head.Name + " " + textBoxStringPrefix.Text + (i + 1);
 				ElementNode stringnode = ElementNodeService.Instance.CreateSingle(head, NamingUtilities.Uniquify(elementNames, stringname), true, false);
 				result.Add(stringnode);
 
-				if (pixeltree) {
-					for (int j = 0; j < pixelsperstring; j++) {
+				if (_pixelTree)
+				{
+					for (int j = 0; j < _pixelsPerString; j++)
+					{
 						string pixelname = stringnode.Name + " " + textBoxPixelPrefix.Text + (j + 1);
 
 						ElementNode pixelnode = ElementNodeService.Instance.CreateSingle(stringnode, NamingUtilities.Uniquify(elementNames, pixelname), true, false);
@@ -93,33 +97,33 @@ namespace VixenApplication.Setup.ElementTemplates
 
 			IEnumerable<ElementNode> leafNodes = Enumerable.Empty<ElementNode>();
 
-			if (startLocation == StartLocation.BottomLeft)
+			if (_startLocation == StartLocation.BottomLeft)
 			{
-				if (zigZag)
+				if (_zigZag)
 				{
 					leafNodes = result.First().GetLeafEnumerator();
-					OrderModule.AddPatchingOrder(leafNodes, zigZagEvery);
+					OrderModule.AddPatchingOrder(leafNodes, _zigZagEvery);
 				}
 
 				return result;
 			}
 
-			if (startLocation == StartLocation.BottomRight)
+			if (_startLocation == StartLocation.BottomRight)
 			{
 				leafNodes = result.First().Children.SelectMany(x => x.GetLeafEnumerator().Reverse());
 			}
-			else if (startLocation == StartLocation.TopLeft)
+			else if (_startLocation == StartLocation.TopLeft)
 			{
 				leafNodes = result.First().Children.Reverse().SelectMany(x => x.GetLeafEnumerator());
 			}
-			else if (startLocation == StartLocation.TopRight)
+			else if (_startLocation == StartLocation.TopRight)
 			{
 				leafNodes = result.First().GetLeafEnumerator().Reverse();
 			}
 
-			if (zigZag)
+			if (_zigZag)
 			{
-				OrderModule.AddPatchingOrder(leafNodes, zigZagEvery);
+				OrderModule.AddPatchingOrder(leafNodes, _zigZagEvery);
 			}
 			else
 			{
@@ -141,13 +145,13 @@ namespace VixenApplication.Setup.ElementTemplates
 
 		private void Megatree_Load(object sender, EventArgs e)
 		{
-			textBoxTreeName.Text = treename;
-			numericUpDownStrings.Value = stringcount;
-			checkBoxPixelTree.Checked = pixeltree;
-			numericUpDownPixelsPerString.Value = pixelsperstring;
-			lblEveryValue.Text = zigZagEvery.ToString();
-			chkZigZag.Checked = zigZag;
-			switch (startLocation)
+			textBoxTreeName.Text = _treeName;
+			numericUpDownStrings.Value = _stringCount;
+			checkBoxPixelTree.Checked = _pixelTree;
+			numericUpDownPixelsPerString.Value = _pixelsPerString;
+			lblEveryValue.Text = _zigZagEvery.ToString();
+			chkZigZag.Checked = _zigZag;
+			switch (_startLocation)
 			{
 				case StartLocation.BottomLeft:
 					radioBottomLeft.Checked = true;
@@ -160,19 +164,19 @@ namespace VixenApplication.Setup.ElementTemplates
 
 		private void Megatree_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			treename = textBoxTreeName.Text;
-			stringcount = Decimal.ToInt32(numericUpDownStrings.Value);
-			pixeltree = checkBoxPixelTree.Checked ;
-			pixelsperstring = Decimal.ToInt32(numericUpDownPixelsPerString.Value);
-			zigZag = chkZigZag.Checked;
-			zigZagEvery = Convert.ToInt32(lblEveryValue.Text);
+			_treeName = textBoxTreeName.Text;
+			_stringCount = Decimal.ToInt32(numericUpDownStrings.Value);
+			_pixelTree = checkBoxPixelTree.Checked;
+			_pixelsPerString = Decimal.ToInt32(numericUpDownPixelsPerString.Value);
+			_zigZag = chkZigZag.Checked;
+			_zigZagEvery = Convert.ToInt32(lblEveryValue.Text);
 			if (radioBottomRight.Checked)
 			{
-				startLocation = StartLocation.BottomRight;
+				_startLocation = StartLocation.BottomRight;
 			}
 			else
 			{
-				startLocation = StartLocation.BottomLeft;
+				_startLocation = StartLocation.BottomLeft;
 			}
 		}
 
@@ -191,7 +195,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			}
 			else
 			{
-				lblEveryValue.Text = "0";
+				lblEveryValue.Text = @"0";
 			}
 		}
 
@@ -217,6 +221,6 @@ namespace VixenApplication.Setup.ElementTemplates
 			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 
-		
+
 	}
 }

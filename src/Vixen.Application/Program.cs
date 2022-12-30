@@ -5,10 +5,10 @@ namespace VixenApplication
 {
 	internal static class Program
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private const string ErrorMsg = "An application error occurred. Please contact the Vixen Dev Team " +
 									"with the following information:\n\n";
-		private static VixenApplication _app;
+		private static VixenApplication? _app;
 		internal static string LockFilePath = string.Empty;
 		/// <summary>
 		/// The main entry point for the application.
@@ -19,7 +19,7 @@ namespace VixenApplication
 			try
 			{
 				Logging.Info("Vixen app starting.");
-				
+
 				LogManager.AddListener(new NLogListener());
 				AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 				Application.ThreadException += Application_ThreadException;
@@ -39,11 +39,11 @@ namespace VixenApplication
 		static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
 		{
 			LogMessageAndExit(e.Exception);
-			
+
 		}
 
 		static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs args)
-		{ 
+		{
 			var e = (Exception)args.ExceptionObject;
 			LogMessageAndExit(e);
 		}
@@ -61,7 +61,7 @@ namespace VixenApplication
 			{
 				_app.RemoveLockFile();
 			}
-			else 
+			else
 			{
 				//try the failsafe to clean up the lock file.
 				VixenApplication.RemoveLockFile(LockFilePath);

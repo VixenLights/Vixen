@@ -1,4 +1,6 @@
-﻿using Catel.IoC;
+﻿#nullable disable
+
+using Catel.IoC;
 using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
@@ -13,6 +15,7 @@ using Vixen.Module.Editor;
 using Vixen.Module.SequenceType;
 using Vixen.Services;
 using Vixen.Sys;
+using VixenApplication.Setup;
 using Application = System.Windows.Forms.Application;
 using Color = System.Drawing.Color;
 using Pen = System.Drawing.Pen;
@@ -25,14 +28,11 @@ namespace VixenApplication
 {
 	public partial class VixenApplication : BaseForm, IApplication
 	{
-		private static NLog.Logger Logging = LogManager.GetCurrentClassLogger();
-		private const string ErrorMsg = "An application error occurred. Please contact the Vixen Dev Team " +
-									"with the following information:\n\n";
-
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private const string LockFile = ".lock";
 
 		private Guid _guid = new Guid("7b903272-73d0-416c-94b1-6932758b1963");
-		private bool stopping;
+		private bool _stopping;
 		private bool _openExecution = true;
 		private bool _disableControllers = false;
 		private bool _devBuild = false;
@@ -54,25 +54,25 @@ namespace VixenApplication
 			VixenSystem.UIContext = SynchronizationContext.Current;
 			_startupProgress = new Progress<Tuple<int, string>>(UpdateProgress);
 
-            //Begin WPF init
-		    if (WPFApplication.Current == null)
-		    {
-		        // create the Application object
-		        var app = new WPFApplication();
-		    }
+			//Begin WPF init
+			if (WPFApplication.Current == null)
+			{
+				// create the Application object
+				var app = new WPFApplication();
+			}
 
-		    WPFApplication.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-            //Load up the common WPF them file for our WPF application parts.
-            ResourceDictionary dict = new ResourceDictionary
-		    {
-		        Source = new Uri("/WPFCommon;component/Theme/Theme.xaml", UriKind.Relative)
-		    };
+			WPFApplication.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+			//Load up the common WPF them file for our WPF application parts.
+			ResourceDictionary dict = new ResourceDictionary
+			{
+				Source = new Uri("/WPFCommon;component/Theme/Theme.xaml", UriKind.Relative)
+			};
 
 			// This resource dictionary is required by the Orc Wizard library
-            ResourceDictionary dictOrc = new ResourceDictionary
-            {
-	            Source = new Uri("/Orc.Wizard;component/themes/generic.xaml", UriKind.Relative)
-            };
+			ResourceDictionary dictOrc = new ResourceDictionary
+			{
+				Source = new Uri("/Orc.Wizard;component/themes/generic.xaml", UriKind.Relative)
+			};
 
 			WPFApplication.Current.Resources.MergedDictionaries.Add(dictOrc);
 			WPFApplication.Current.Resources.MergedDictionaries.Add(dict);
@@ -83,7 +83,7 @@ namespace VixenApplication
 			//End WPF init
 
 			listViewRecentSequences.Items.Clear();
-            labelVersion.Font = new Font("Segoe UI", 14);
+			labelVersion.Font = new Font("Segoe UI", 14);
 			//Get rid of the ugly grip that we dont want to show anyway. 
 			//Workaround for a MS bug
 			statusStrip.Padding = new Padding(statusStrip.Padding.Left,
@@ -105,7 +105,8 @@ namespace VixenApplication
 			progressBar.ProgressColor = Color.DarkGreen;
 
 			string[] args = Environment.GetCommandLineArgs();
-			foreach (string arg in args) {
+			foreach (string arg in args)
+			{
 				_ProcessArg(arg);
 			}
 
@@ -126,19 +127,19 @@ namespace VixenApplication
 
 			if (IsProfileLocked(_rootDataDirectory) || !CreateLockFile())
 			{
-				var form = new MessageBoxForm("Profile is already in use or unable to the lock the profile.","Error",MessageBoxButtons.OK, SystemIcons.Error);
+				var form = new MessageBoxForm("Profile is already in use or unable to the lock the profile.", "Error", MessageBoxButtons.OK, SystemIcons.Error);
 				form.ShowDialog(this);
-				form.Dispose(); 
+				form.Dispose();
 				Environment.Exit(0);
 			}
 
-			stopping = false;
+			_stopping = false;
 			toolStripStatusUpdates.Text = "";
 			PopulateVersionStrings();
 
 			Execution.ExecutionStateChanged += executionStateChangedHandler;
 			updateExecutionState();
-			
+
 			// other modules look for and create it this way...
 			AppCommand toolsMenu = AppCommands.Find("Tools");
 			if (toolsMenu == null)
@@ -151,10 +152,10 @@ namespace VixenApplication
 			toolsMenu.Add(myMenu);
 
 			//Disables the Check for updates menu item as there is no need to have it enabled for Test Builds.
-		//	if (labelDebugVersion.Text == "Test Build") updatesMenu.Enabled = false;
+			//	if (labelDebugVersion.Text == "Test Build") updatesMenu.Enabled = false;
 
 			toolStripItemClearSequences.Click += (mySender, myE) => ClearRecentSequencesList();
-			
+
 		}
 
 		private void CreateHelpMenu()
@@ -205,7 +206,7 @@ namespace VixenApplication
 
 			return _uniqueProcessId;
 		}
-		
+
 		private bool CreateLockFile()
 		{
 			bool success = false;
@@ -307,7 +308,7 @@ namespace VixenApplication
 							//The machine name is not us, so we have to assume it is locked on some other device.
 							locked = true;
 						}
-						
+
 					}
 				}
 			}
@@ -324,7 +325,7 @@ namespace VixenApplication
 		{
 			try
 			{
-				string perfDataPath = 
+				string perfDataPath =
 					System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), "Vixen");
 				if (!System.IO.Directory.Exists(perfDataPath))
 					System.IO.Directory.CreateDirectory(perfDataPath);
@@ -342,7 +343,7 @@ namespace VixenApplication
 		{
 			if (_openEditors.Any(x => x.IsModified))
 			{
-				MessageBoxForm mbf = new MessageBoxForm("You have open editor(s) with unsaved changes, are you sure you want to close Vixen?\n\n If you choose yes, you will be prompted to save those editors as they are closed.", 
+				MessageBoxForm mbf = new MessageBoxForm("You have open editor(s) with unsaved changes, are you sure you want to close Vixen?\n\n If you choose yes, you will be prompted to save those editors as they are closed.",
 					"Close Vixen?", MessageBoxButtons.YesNo, SystemIcons.Warning);
 				var result = mbf.ShowDialog(this);
 				if (result == DialogResult.No)
@@ -354,7 +355,8 @@ namespace VixenApplication
 
 			_closing = true;
 			// close all open editors
-			foreach (IEditorUserInterface editor in _openEditors.ToArray()) {
+			foreach (IEditorUserInterface editor in _openEditors.ToArray())
+			{
 				editor.CloseEditor();
 			}
 
@@ -364,12 +366,12 @@ namespace VixenApplication
 				Thread.Sleep(250);
 			}
 
-			stopping = true;
+			_stopping = true;
 			await VixenSystem.Stop(false);
 
 			_applicationData.SaveData();
 			RemoveLockFile(LockFilePath);
-			
+
 			Application.Exit();
 		}
 
@@ -378,11 +380,11 @@ namespace VixenApplication
 			EnableButtons(false);
 			Cursor = Cursors.WaitCursor;
 			_startupProgress?.Report(Tuple.Create(10, "Starting up"));
-			
 
-			if(! await VixenSystem.Start(this, _disableControllers, _rootDataDirectory, _openExecution, _startupProgress))
+
+			if (!await VixenSystem.Start(this, _disableControllers, _rootDataDirectory, _openExecution, _startupProgress))
 			{
-				var messageBox = new MessageBoxForm("An error occurred starting the system and the application will be halted.", "Error",MessageBoxButtons.OK, SystemIcons.Error);
+				var messageBox = new MessageBoxForm("An error occurred starting the system and the application will be halted.", "Error", MessageBoxButtons.OK, SystemIcons.Error);
 				messageBox.ShowDialog(this);
 				Application.Exit();
 			}
@@ -393,7 +395,7 @@ namespace VixenApplication
 			RegisterIOC();
 			initializeEditorTypes();
 			menuStripMain.Renderer = new ThemeToolStripRenderer();
-			
+
 			openFileDialog.InitialDirectory = SequenceService.SequenceDirectory;
 
 			// Add menu items for the logs.
@@ -405,10 +407,11 @@ namespace VixenApplication
 
 			CreateHelpMenu();
 
-			foreach (string logName in di.GetFiles().Select(x => x.Name)) {
+			foreach (string logName in di.GetFiles().Select(x => x.Name))
+			{
 				logsToolStripMenuItem.DropDownItems.Add(logName, null,
-				                                        (menuSender, menuArgs) => _ViewLog(((ToolStripMenuItem) menuSender).Text));
-			//	logsToolStripMenuItem.DropDownItems.ForeColor = Color.FromArgb(90, 90, 90);
+														(menuSender, menuArgs) => _ViewLog(((ToolStripMenuItem)menuSender).Text));
+				//	logsToolStripMenuItem.DropDownItems.ForeColor = Color.FromArgb(90, 90, 90);
 			}
 
 			_startupProgress.Report(Tuple.Create(100, "Ready"));
@@ -446,7 +449,7 @@ namespace VixenApplication
 				await Task.Delay(1000);
 				Invoke(new MethodInvoker(SetTopMost));
 			});
-			
+
 		}
 
 		private void SetTopMost()
@@ -467,7 +470,7 @@ namespace VixenApplication
 				if (version.Build > 0)
 				{
 					labelVersion.Text = @"Development Build";
-					labelDebugVersion.Text = $@"Build #{version.Build}" ;
+					labelDebugVersion.Text = $@"Build #{version.Build}";
 					_currentBuildVersion = version.Build;
 					labelDebugVersion.ForeColor = labelVersion.ForeColor = Color.Yellow;
 					Logging.Info($"{labelVersion.Text} - {labelDebugVersion.Text}");
@@ -483,7 +486,7 @@ namespace VixenApplication
 					_testBuild = true;
 				}
 
-				
+
 			}
 			else
 			{
@@ -503,13 +506,13 @@ namespace VixenApplication
 			labelDebugVersion.Visible = true;
 
 			//Log the runtime versions 
-			var runtimeVersion = FileVersionInfo.GetVersionInfo(typeof (int).Assembly.Location).ProductVersion;
+			var runtimeVersion = FileVersionInfo.GetVersionInfo(typeof(int).Assembly.Location).ProductVersion;
 			Logging.Info(".NET Runtime is: {0}", runtimeVersion);
 		}
 
 		private async void CheckForReleaseUpdates()
 		{
-			var version =await CheckLatestReleaseVersionAsync();
+			var version = await CheckLatestReleaseVersionAsync();
 			if (!string.IsNullOrEmpty(version))
 			{
 				toolStripStatusUpdates.Text = $@" Release version {version} available.";
@@ -555,7 +558,7 @@ namespace VixenApplication
 								}
 							}
 						}
-						
+
 					}
 				}
 			}
@@ -615,7 +618,8 @@ namespace VixenApplication
 		private void _ProcessArg(string arg)
 		{
 			string[] argParts = arg.Split('=');
-			switch (argParts[0]) {
+			switch (argParts[0])
+			{
 				case "no_controllers":
 					_disableControllers = true;
 					break;
@@ -623,10 +627,12 @@ namespace VixenApplication
 					_openExecution = false;
 					break;
 				case "data_dir":
-					if (argParts.Length > 1) {
+					if (argParts.Length > 1)
+					{
 						_rootDataDirectory = argParts[1];
 					}
-					else {
+					else
+					{
 						_rootDataDirectory = null;
 					}
 					break;
@@ -689,7 +695,7 @@ namespace VixenApplication
 				{
 					var messageBox = new MessageBoxForm(Application.ProductName + " cannot continue without a valid profile." + Environment.NewLine + Environment.NewLine +
 						"Are you sure you want to exit " + Application.ProductName + "?",
-						Application.ProductName,MessageBoxButtons.YesNo, SystemIcons.Warning);
+						Application.ProductName, MessageBoxButtons.YesNo, SystemIcons.Warning);
 					messageBox.ShowDialog(this);
 					if (messageBox.DialogResult == DialogResult.OK)
 					{
@@ -726,14 +732,18 @@ namespace VixenApplication
 		/// <summary>
 		/// Sets the log file paths to the appropriate profile log directory
 		/// </summary>
-		private void SetLogFilePaths() {
+		private void SetLogFilePaths()
+		{
 			//string logDirectory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Vixen 3");
 			string logDirectory = _rootDataDirectory;
-			if (System.IO.Directory.Exists(logDirectory)) {
+			if (System.IO.Directory.Exists(logDirectory))
+			{
 				NLog.Config.LoggingConfiguration config = NLog.LogManager.Configuration;
-				config.AllTargets.ToList().ForEach(t => {
+				config.AllTargets.ToList().ForEach(t =>
+				{
 					var target = t as NLog.Targets.FileTarget;
-					if (target != null) {
+					if (target != null)
+					{
 
 						var strFileName = target.FileName.ToString().Replace("[VIXENPROFILEDIR]", logDirectory).Replace('/', '\\').Replace("'", "");
 						var strArchiveFileName = target.ArchiveFileName.ToString().Replace("[VIXENPROFILEDIR]", logDirectory).Replace('/', '\\').Replace("'", "");
@@ -759,7 +769,7 @@ namespace VixenApplication
 
 			//});
 
-			}
+		}
 
 		#region IApplication implemetation
 
@@ -778,7 +788,8 @@ namespace VixenApplication
 			{
 				// Don't want to clear our reference on Deactivate because
 				// it may be deactivated due to the client getting focus.
-				if (_activeEditor.IsDisposed) {
+				if (_activeEditor.IsDisposed)
+				{
 					_activeEditor = null;
 				}
 				return _activeEditor;
@@ -801,12 +812,14 @@ namespace VixenApplication
 			ToolStripMenuItem item;
 			foreach (
 				KeyValuePair<Guid, string> typeId_FileTypeName in
-					ApplicationServices.GetAvailableModules<ISequenceTypeModuleInstance>()) {
+					ApplicationServices.GetAvailableModules<ISequenceTypeModuleInstance>())
+			{
 				item = new ToolStripMenuItem(typeId_FileTypeName.Value);
 				ISequenceTypeModuleDescriptor descriptor =
 					ApplicationServices.GetModuleDescriptor(typeId_FileTypeName.Key) as ISequenceTypeModuleDescriptor;
 
-				if (descriptor.CanCreateNew) {
+				if (descriptor.CanCreateNew)
+				{
 					item.Tag = descriptor.FileExtension;
 					item.Click += (sender, e) =>
 					{
@@ -814,7 +827,8 @@ namespace VixenApplication
 						ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
 						string fileType = (string)menuItem.Tag;
 						IEditorUserInterface editor = EditorService.Instance.CreateEditor(fileType);
-						if (editor == null) {
+						if (editor == null)
+						{
 							Logging.Error("Can't find an appropriate editor to open file of type " + fileType);
 							//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 							MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
@@ -822,12 +836,13 @@ namespace VixenApplication
 											"Error opening file", false, false);
 							messageBox.ShowDialog(this);
 						}
-						else {
+						else
+						{
 							Cursor = Cursors.WaitCursor;
 							_OpenEditor(editor);
 						}
 
-						Cursor= Cursors.Default;
+						Cursor = Cursors.Default;
 					};
 					contextMenuStripNewSequence.Items.Add(item);
 				}
@@ -837,16 +852,16 @@ namespace VixenApplication
 		private void _OpenEditor(IEditorUserInterface editorUI)
 		{
 			_openEditors.Add(editorUI);
-			editorUI.Closing +=editorUI_Closing;
-			editorUI.Activated +=editorUI_Activated;
+			editorUI.Closing += editorUI_Closing;
+			editorUI.Activated += editorUI_Activated;
 
 			editorUI.StartEditor();
 		}
 
 		void editorUI_Activated(object sender, EventArgs e)
-			                    	{
-			_activeEditor = sender as IEditorUserInterface; 
-			                    		}
+		{
+			_activeEditor = sender as IEditorUserInterface;
+		}
 
 		void editorUI_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
@@ -863,8 +878,9 @@ namespace VixenApplication
 
 		private bool _CloseEditor(IEditorUserInterface editor)
 		{
-			if (editor.IsModified) {
-				var messageBox = new MessageBoxForm($"Save changes to the sequence {editor.Sequence?.Name}?", "Save Changes?",_closing?MessageBoxButtons.YesNo:MessageBoxButtons.YesNoCancel, SystemIcons.Question);
+			if (editor.IsModified)
+			{
+				var messageBox = new MessageBoxForm($"Save changes to the sequence {editor.Sequence?.Name}?", "Save Changes?", _closing ? MessageBoxButtons.YesNo : MessageBoxButtons.YesNoCancel, SystemIcons.Question);
 				messageBox.StartPosition = FormStartPosition.CenterScreen;
 				messageBox.ShowDialog();
 				if (messageBox.DialogResult == DialogResult.Cancel)
@@ -878,14 +894,15 @@ namespace VixenApplication
 				editor.Save();
 			}
 
-			if (_openEditors.Contains(editor)) {
+			if (_openEditors.Contains(editor))
+			{
 				_openEditors.Remove(editor);
 			}
 
-			_activeEditor= null;
-			
+			_activeEditor = null;
+
 			AddSequenceToRecentList(editor.Sequence.FilePath);
-			editor.Activated-= editorUI_Activated;
+			editor.Activated -= editorUI_Activated;
 			editor.Closing -= editorUI_Closing;
 			//editor.Dispose();
 			//editor = null;
@@ -905,7 +922,7 @@ namespace VixenApplication
 			{
 				contextMenuStripNewSequence.Show(buttonNewSequence, new Point(0, buttonNewSequence.Height));
 			}
-			
+
 		}
 
 		private void buttonOpenSequence_Click(object sender, EventArgs e)
@@ -915,7 +932,8 @@ namespace VixenApplication
 			string allTypes = "";
 			IEnumerable<ISequenceTypeModuleDescriptor> sequenceDescriptors =
 				ApplicationServices.GetModuleDescriptors<ISequenceTypeModuleInstance>().Cast<ISequenceTypeModuleDescriptor>();
-			foreach (ISequenceTypeModuleDescriptor descriptor in sequenceDescriptors) {
+			foreach (ISequenceTypeModuleDescriptor descriptor in sequenceDescriptors)
+			{
 				filter += descriptor.TypeName + " (*" + descriptor.FileExtension + ")|*" + descriptor.FileExtension + "|";
 				allTypes += "*" + descriptor.FileExtension + ";";
 			}
@@ -925,8 +943,10 @@ namespace VixenApplication
 			openFileDialog.Filter = filter;
 
 			// if the user hit 'ok' on the dialog, try opening the selected file(s) in an approriate editor
-			if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-				foreach (string file in openFileDialog.FileNames) {
+			if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				foreach (string file in openFileDialog.FileNames)
+				{
 					OpenSequenceFromFile(file);
 				}
 			}
@@ -935,10 +955,12 @@ namespace VixenApplication
 		private void OpenSequenceFromFile(string filename)
 		{
 			Cursor = Cursors.WaitCursor;
-			try {
+			try
+			{
 				IEditorUserInterface editor = EditorService.Instance.CreateEditor(filename);
 
-				if (editor == null) {
+				if (editor == null)
+				{
 					Logging.Error("Can't find an appropriate editor to open file " + filename);
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
@@ -946,12 +968,14 @@ namespace VixenApplication
 									"Error opening file", false, false);
 					messageBox.ShowDialog(this);
 				}
-				else {
+				else
+				{
 					_OpenEditor(editor);
 					Cursor = Cursors.Default;
 				}
 			}
-			catch (Exception ex) {
+			catch (Exception ex)
+			{
 				Logging.Error(ex, "Error trying to open file '" + filename + "': ");
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
@@ -962,23 +986,26 @@ namespace VixenApplication
 
 		private async void SetupPreviews()
 		{
-			using (ConfigPreviews form = new ConfigPreviews()) {
+			using (ConfigPreviews form = new ConfigPreviews())
+			{
 				DialogResult result = form.ShowDialog();
-				if (result == DialogResult.OK) {
+				if (result == DialogResult.OK)
+				{
 					Cursor = Cursors.WaitCursor;
 					EnableButtons(false);
 					progressBar.Visible = true;
-					UpdateProgress(Tuple.Create(0,"Saving Configuration"));
+					UpdateProgress(Tuple.Create(0, "Saving Configuration"));
 					await VixenSystem.SaveSystemAndModuleConfigAsync();
 					progressBar.Visible = false;
 					EnableButtons();
 					Cursor = Cursors.Default;
 				}
-				else {
+				else
+				{
 					Cursor = Cursors.WaitCursor;
 					EnableButtons(false);
 					progressBar.Visible = true;
-					UpdateProgress(Tuple.Create(0,"Reloading Configuration"));
+					UpdateProgress(Tuple.Create(0, "Reloading Configuration"));
 					VixenSystem.ReloadSystemConfig();
 					progressBar.Visible = false;
 					EnableButtons();
@@ -990,24 +1017,27 @@ namespace VixenApplication
 
 		private async void SetupDisplay()
 		{
-			using (DisplaySetup form = new DisplaySetup()) {
+			using (DisplaySetup form = new DisplaySetup())
+			{
 				DialogResult dr = form.ShowDialog();
 
-				if (dr == DialogResult.OK) {
+				if (dr == DialogResult.OK)
+				{
 					Cursor = Cursors.WaitCursor;
 					EnableButtons(false);
 					progressBar.Visible = true;
-					UpdateProgress(Tuple.Create(0,"Saving Configuration"));
+					UpdateProgress(Tuple.Create(0, "Saving Configuration"));
 					await VixenSystem.SaveSystemAndModuleConfigAsync();
 					progressBar.Visible = false;
 					EnableButtons();
 					Cursor = Cursors.Default;
 				}
-				else {
+				else
+				{
 					Cursor = Cursors.WaitCursor;
 					EnableButtons(false);
 					progressBar.Visible = true;
-					UpdateProgress(Tuple.Create(0,"Reloading Configuration"));
+					UpdateProgress(Tuple.Create(0, "Reloading Configuration"));
 					VixenSystem.ReloadSystemConfig();
 					progressBar.Visible = false;
 					EnableButtons();
@@ -1034,7 +1064,7 @@ namespace VixenApplication
 
 		private void executionStateChangedHandler(object sender, EventArgs e)
 		{
-			if (stopping)
+			if (_stopping)
 				return;
 
 			if (InvokeRequired)
@@ -1060,16 +1090,20 @@ namespace VixenApplication
 		{
 			toolStripStatusLabelExecutionState.Text = "Execution: " + Vixen.Sys.Execution.State;
 
-			if (Execution.IsOpen) {
+			if (Execution.IsOpen)
+			{
 				toolStripStatusLabelExecutionLight.BackColor = Color.ForestGreen;
 			}
-			else if (Execution.IsClosed) {
+			else if (Execution.IsClosed)
+			{
 				toolStripStatusLabelExecutionLight.BackColor = Color.Firebrick;
 			}
-			else if (Execution.IsInTest) {
+			else if (Execution.IsInTest)
+			{
 				toolStripStatusLabelExecutionLight.BackColor = Color.DodgerBlue;
 			}
-			else {
+			else
+			{
 				toolStripStatusLabelExecutionLight.BackColor = Color.Gold;
 			}
 
@@ -1081,8 +1115,9 @@ namespace VixenApplication
 		{
 			string logDirectory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Vixen 3", "Logs");
 
-			using (Process process = new Process()) {
-				process.StartInfo = new ProcessStartInfo("notepad.exe", Path.Combine(logDirectory,logName));
+			using (Process process = new Process())
+			{
+				process.StartInfo = new ProcessStartInfo("notepad.exe", Path.Combine(logDirectory, logName));
 				process.Start();
 
 			}
@@ -1099,10 +1134,12 @@ namespace VixenApplication
 
 			string file = listViewRecentSequences.SelectedItems[0].Tag as string;
 
-			if (File.Exists(file)) {
+			if (File.Exists(file))
+			{
 				OpenSequenceFromFile(file);
 			}
-			else {
+			else
+			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Can't find selected sequence.", "Error", false, false);
@@ -1113,8 +1150,10 @@ namespace VixenApplication
 		private void AddSequenceToRecentList(string filename)
 		{
 			// remove the item from the list if it exists, then insert it in the front
-			foreach (string filepath in _applicationData.RecentSequences.ToArray()) {
-				if (filepath == filename) {
+			foreach (string filepath in _applicationData.RecentSequences.ToArray())
+			{
+				if (filepath == filename)
+				{
 					_applicationData.RecentSequences.Remove(filepath);
 				}
 			}
@@ -1123,7 +1162,7 @@ namespace VixenApplication
 
 			if (_applicationData.RecentSequences.Count > _maxRecentSequences)
 				_applicationData.RecentSequences.RemoveRange(_maxRecentSequences,
-				                                             _applicationData.RecentSequences.Count - _maxRecentSequences);
+															 _applicationData.RecentSequences.Count - _maxRecentSequences);
 
 			_applicationData.SaveData();
 			PopulateRecentSequencesList();
@@ -1134,7 +1173,8 @@ namespace VixenApplication
 			listViewRecentSequences.BeginUpdate();
 			listViewRecentSequences.Items.Clear();
 
-			foreach (string filepath in _applicationData.RecentSequences) {
+			foreach (string filepath in _applicationData.RecentSequences)
+			{
 				if (!File.Exists(filepath))
 					continue;
 
@@ -1153,7 +1193,7 @@ namespace VixenApplication
 			ListView.ColumnHeaderCollection cc = listViewRecentSequences.Columns;
 			for (int i = 0; i < cc.Count; i++)
 			{
-				cc[i].Width = listViewRecentSequences.Width - (int)(listViewRecentSequences.Width *.18d);
+				cc[i].Width = listViewRecentSequences.Width - (int)(listViewRecentSequences.Width * .18d);
 			}
 		}
 
@@ -1161,7 +1201,8 @@ namespace VixenApplication
 
 		private void viewInstalledModulesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			using (InstalledModules installedModules = new InstalledModules()) {
+			using (InstalledModules installedModules = new InstalledModules())
+			{
 				installedModules.ShowDialog();
 			}
 		}
@@ -1170,8 +1211,8 @@ namespace VixenApplication
 
 		private const int StatsUpdateInterval = 1000; // ms
 		private Timer _statsTimer;
-		
-		
+
+
 		private void InitStats()
 		{
 			_cpuUsage = new CpuUsage();
@@ -1200,10 +1241,10 @@ namespace VixenApplication
 			//	reservedMemUsage = _thisProc.VirtualMemorySize64 / 1024 / 1024;
 			//}
 
-			
-			
 
-			toolStripStatusLabel_memory.Text = String.Format("CPU: {0}%",_cpuUsage.GetUsage());
+
+
+			toolStripStatusLabel_memory.Text = String.Format("CPU: {0}%", _cpuUsage.GetUsage());
 		}
 
 		#endregion
@@ -1211,7 +1252,8 @@ namespace VixenApplication
 		private void profilesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			DataProfileForm f = new DataProfileForm();
-			if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+			if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
 				// Do something...
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
@@ -1258,7 +1300,7 @@ namespace VixenApplication
 
 			Cursor = Cursors.WaitCursor;
 
-			if (! await CheckForConnectionToWebsite())
+			if (!await CheckForConnectionToWebsite())
 			{
 				var messageBox = new MessageBoxForm("Unable to reach http://bugs.vixenlights.com. Please check your internet connection and verify you can reach the site and try again.", "Error", MessageBoxButtons.OK, SystemIcons.Error);
 				messageBox.ShowDialogThreadSafe(this);
@@ -1308,7 +1350,7 @@ namespace VixenApplication
 		{
 			var releaseNotes = new ReleaseNotes();
 			releaseNotes.ShowDialog();
-			releaseNotes.Dispose(); 
+			releaseNotes.Dispose();
 		}
 
 		private void AboutMenu_Click(object sender, EventArgs e)
@@ -1330,8 +1372,8 @@ namespace VixenApplication
 			Pen borderColor = new Pen(ThemeColorTable.GroupBoxBorderColor, 1);
 			if (ActiveForm != null)
 			{
-				int extraSpace1 = (int) (30*ScalingTools.GetScaleFactor());
-				int extraSpace2 = (int) (40 * ScalingTools.GetScaleFactor());
+				int extraSpace1 = (int)(30 * ScalingTools.GetScaleFactor());
+				int extraSpace2 = (int)(40 * ScalingTools.GetScaleFactor());
 				e.Graphics.DrawLine(borderColor, 0, pictureBox1.Size.Height + extraSpace1, ActiveForm.Width, pictureBox1.Size.Height + extraSpace1);
 				e.Graphics.DrawLine(borderColor, 0, Height - (statusStrip.Height + extraSpace2), Width, Height - (statusStrip.Height + extraSpace2));
 			}

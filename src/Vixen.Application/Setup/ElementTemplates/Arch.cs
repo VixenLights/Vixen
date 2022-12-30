@@ -2,9 +2,9 @@
 {
 	public class Arch : NumberedGroup
 	{
-		public Arch():base(@"Arch", @"Arch Px", 25)
+		public Arch() : base(@"Arch", @"Arch Px", 25)
 		{
-			
+
 		}
 
 		#region Overrides of NumberedGroup

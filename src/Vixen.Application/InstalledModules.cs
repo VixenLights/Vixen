@@ -8,13 +8,11 @@ namespace VixenApplication
 {
 	public partial class InstalledModules : BaseForm
 	{
-		private const string NOT_PROVIDED = "(Not Provided)";
+		private const string NotProvided = "(Not Provided)";
 
 		public InstalledModules()
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
 			listViewModules.AllowRowReorder = false;
@@ -23,18 +21,21 @@ namespace VixenApplication
 		private void InstalledModules_Load(object sender, EventArgs e)
 		{
 			Cursor = Cursors.WaitCursor;
-			try {
+			try
+			{
 				string[] moduleTypes = ApplicationServices.GetTypesOfModules().OrderBy(x => x).ToArray();
-				foreach (string moduleType in moduleTypes) {
+				foreach (string moduleType in moduleTypes)
+				{
 					ListViewGroup group = listViewModules.Groups.Add(moduleType, moduleType);
 					IModuleDescriptor[] descriptors = ApplicationServices.GetModuleDescriptors(moduleType);
-					foreach (IModuleDescriptor descriptor in descriptors) {
+					foreach (IModuleDescriptor descriptor in descriptors)
+					{
 						ListViewItem item =
 							new ListViewItem(new[]
-							                 	{
-							                 		descriptor.TypeName, _GetModuleDescription(descriptor), _GetModuleAuthor(descriptor),
-							                 		_GetModuleVersion(descriptor), descriptor.FileName
-							                 	});
+												 {
+													 descriptor.TypeName, _GetModuleDescription(descriptor), _GetModuleAuthor(descriptor),
+													 _GetModuleVersion(descriptor), descriptor.FileName
+												 });
 						item.Tag = descriptor;
 						item.Group = group;
 						listViewModules.Items.Add(item);
@@ -43,41 +44,49 @@ namespace VixenApplication
 
 				listViewModules.ColumnAutoSize();
 			}
-			catch (Exception ex) {
+			catch (Exception ex)
+			{
 				MessageBox.Show(ex.Message);
 			}
-			finally {
+			finally
+			{
 				Cursor = Cursors.Default;
 			}
 		}
 
 		private string _GetModuleDescription(IModuleDescriptor descriptor)
 		{
-			try {
+			try
+			{
 				return descriptor.Description;
 			}
-			catch {
-				return NOT_PROVIDED;
+			catch
+			{
+				return NotProvided;
 			}
 		}
 
 		private string _GetModuleAuthor(IModuleDescriptor descriptor)
 		{
-			try {
+			try
+			{
 				return descriptor.Author;
 			}
-			catch {
-				return NOT_PROVIDED;
+			catch
+			{
+				return NotProvided;
 			}
 		}
 
 		private string _GetModuleVersion(IModuleDescriptor descriptor)
 		{
-			try {
+			try
+			{
 				return descriptor.Version;
 			}
-			catch {
-				return NOT_PROVIDED;
+			catch
+			{
+				return NotProvided;
 			}
 		}
 
@@ -88,8 +97,12 @@ namespace VixenApplication
 
 		private void buttonCopyModuleId_Click(object sender, EventArgs e)
 		{
-			IModuleDescriptor descriptor = listViewModules.SelectedItems[0].Tag as IModuleDescriptor;
-			Clipboard.SetText(descriptor.TypeId.ToString());
+			IModuleDescriptor? descriptor = listViewModules.SelectedItems[0].Tag as IModuleDescriptor;
+			if (descriptor != null)
+			{
+				Clipboard.SetText(descriptor.TypeId.ToString());
+			}
+
 		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)

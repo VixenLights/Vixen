@@ -7,11 +7,11 @@ namespace VixenApplication
 	// also handle migration of data if data formats change, etc., but for now it's probably not an issue.
 	public class VixenApplicationData
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
-		private const string _DataFilename = "VixenApplicationData.xml";
+		private const string DataFilename = "VixenApplicationData.xml";
 
-		private const int DATA_FORMAT_VERSION_NUMBER = 3;
+		private const int DataFormatVersionNumber = 3;
 
 
 		public List<string> RecentSequences { get; set; }
@@ -25,9 +25,9 @@ namespace VixenApplication
 			get { return Vixen.Sys.Paths.DataRootPath; }
 		}
 
-		private string _dataFileDirectory;
+		private string? _dataFileDirectory;
 
-		public string DataFileDirectory
+		public string? DataFileDirectory
 		{
 			get { return _dataFileDirectory ?? DefaultDataFileDirectory; }
 			set { _dataFileDirectory = value; }
@@ -35,10 +35,10 @@ namespace VixenApplication
 
 		private string DataFilepath
 		{
-			get { return Path.Combine(DataFileDirectory, _DataFilename); }
+			get { return Path.Combine(DataFileDirectory!, DataFilename); }
 		}
 
-		public VixenApplicationData(string rootDataDirectory = null)
+		public VixenApplicationData(string? rootDataDirectory = null)
 		{
 			RecentSequences = new List<string>();
 			FilterSetupFormShapePositions = new Dictionary<Guid, FilterSetupFormShapePosition>();
@@ -47,30 +47,36 @@ namespace VixenApplication
 		}
 
 
-		public void LoadData(string rootDataDirectory)
+		public void LoadData(string? rootDataDirectory)
 		{
-			FileStream stream = null;
+			FileStream? stream = null;
 
 			DataFileDirectory = rootDataDirectory;
-			if (!File.Exists(DataFilepath)) {
-				if (Directory.Exists(DataFileDirectory)) {
+			if (!File.Exists(DataFilepath))
+			{
+				if (Directory.Exists(DataFileDirectory))
+				{
 					return;
 				}
-				else {
+				else
+				{
 					DataFileDirectory = DefaultDataFileDirectory;
-					if (!File.Exists(DataFilepath)) {
+					if (!File.Exists(DataFilepath))
+					{
 						return;
 					}
 				}
 			}
 
-			try {
+			try
+			{
 				stream = new FileStream(DataFilepath, FileMode.Open);
 
 				XElement root = XElement.Load(stream);
 
-				XElement versionElement = root.Element("DataFormatVersion");
-				if (versionElement == null) {
+				XElement? versionElement = root.Element("DataFormatVersion");
+				if (versionElement == null)
+				{
 					Logging.Error("VixenApplication: loading application data: couldn't find data format version");
 					return;
 				}
@@ -78,13 +84,16 @@ namespace VixenApplication
 
 				ReadData(dataFormatVersion, root);
 			}
-			catch (FileNotFoundException ex) {
+			catch (FileNotFoundException ex)
+			{
 				Logging.Warn("VixenApplication: loading application data, but couldn't find file", ex);
 			}
-			catch (Exception ex) {
+			catch (Exception ex)
+			{
 				Logging.Error(ex, "VixenApplication: error loading application data");
 			}
-			finally {
+			finally
+			{
 				if (stream != null)
 					stream.Close();
 			}
@@ -92,25 +101,27 @@ namespace VixenApplication
 
 		public void SaveData()
 		{
-			FileStream stream = null;
-			try {
+			FileStream? stream = null;
+			try
+			{
 				stream = new FileStream(DataFilepath, FileMode.Create);
 
 				XElement root = new XElement("VixenApplicationData");
 
-				root.Add(new XElement("DataFormatVersion", DATA_FORMAT_VERSION_NUMBER));
+				root.Add(new XElement("DataFormatVersion", DataFormatVersionNumber));
 
 				XElement recentSequencesElement = new XElement("RecentSequences");
 				RecentSequences.ForEach(s => recentSequencesElement.Add(new XElement("SequenceFile", s)));
 				root.Add(recentSequencesElement);
 
 				XElement filterShapePositionsElement = new XElement("FilterShapePositions");
-				foreach (KeyValuePair<Guid, FilterSetupFormShapePosition> pair in FilterSetupFormShapePositions) {
+				foreach (KeyValuePair<Guid, FilterSetupFormShapePosition> pair in FilterSetupFormShapePositions)
+				{
 					filterShapePositionsElement.Add(
 						new XElement("FilterPosition",
-						             new XAttribute("FilterId", pair.Key),
-						             new XElement("xPositionProportion", pair.Value.xPositionProportion),
-						             new XElement("yPosition", pair.Value.yPosition)
+									 new XAttribute("FilterId", pair.Key),
+									 new XElement("xPositionProportion", pair.Value.XPositionProportion),
+									 new XElement("yPosition", pair.Value.YPosition)
 							)
 						);
 				}
@@ -122,10 +133,12 @@ namespace VixenApplication
 
 				root.Save(stream);
 			}
-			catch (Exception ex) {
+			catch (Exception ex)
+			{
 				Logging.Error(ex, "VixenApplication: error saving application data");
 			}
-			finally {
+			finally
+			{
 				if (stream != null)
 					stream.Close();
 			}
@@ -133,40 +146,66 @@ namespace VixenApplication
 
 		public void ReadData(int dataVersion, XElement rootElement)
 		{
-			if (dataVersion > DATA_FORMAT_VERSION_NUMBER) {
+			if (dataVersion > DataFormatVersionNumber)
+			{
 				Logging.Error("VixenApplication: error reading application data; given data version was too high: " +
-				                          dataVersion);
+										  dataVersion);
 				return;
 			}
 
 			// recent sequences: in all data formats
-			XElement recentSequences = rootElement.Element("RecentSequences");
-			if (recentSequences != null) {
+			XElement? recentSequences = rootElement.Element("RecentSequences");
+			if (recentSequences != null)
+			{
 				RecentSequences = new List<string>();
-				foreach (XElement element in recentSequences.Elements("SequenceFile")) {
+				foreach (XElement element in recentSequences.Elements("SequenceFile"))
+				{
 					RecentSequences.Add(element.Value);
 				}
 			}
 
 			// filter shape positions: in data versions 2+
-			if (dataVersion >= 2) {
-				XElement filterShapePositionsElement = rootElement.Element("FilterShapePositions");
-				if (filterShapePositionsElement != null) {
+			if (dataVersion >= 2)
+			{
+				XElement? filterShapePositionsElement = rootElement.Element("FilterShapePositions");
+				if (filterShapePositionsElement != null)
+				{
 					FilterSetupFormShapePositions = new Dictionary<Guid, FilterSetupFormShapePosition>();
-					foreach (XElement element in filterShapePositionsElement.Elements("FilterPosition")) {
+					foreach (XElement element in filterShapePositionsElement.Elements("FilterPosition"))
+					{
 						FilterSetupFormShapePosition position = new FilterSetupFormShapePosition();
-						position.xPositionProportion = double.Parse(element.Element("xPositionProportion").Value);
-						position.yPosition = int.Parse(element.Element("yPosition").Value);
-						FilterSetupFormShapePositions.Add((Guid) element.Attribute("FilterId"), position);
+						var xPositionElement = element.Element("xPositionProportion");
+						var yPositionElement = element.Element("yPosition");
+						var filterIdGuid = element.Attribute("FilterId");
+						if (xPositionElement != null)
+						{
+							position.XPositionProportion = double.Parse(xPositionElement.Value);
+						}
+
+						if (yPositionElement != null)
+						{
+							position.YPosition = int.Parse(yPositionElement.Value);
+						}
+
+						if (filterIdGuid != null)
+						{
+							FilterSetupFormShapePositions.Add((Guid)filterIdGuid, position);
+						}
 					}
 				}
 			}
 
 			// filter setup form HQ rendering added in data v3
-			if (dataVersion >= 3) {
-				XElement element = rootElement.Element("FilterSetupFormHighQualityRendering");
-				if (element != null) {
-					FilterSetupFormHighQualityRendering = Boolean.Parse(element.Attribute("value").Value);
+			if (dataVersion >= 3)
+			{
+				XElement? element = rootElement.Element("FilterSetupFormHighQualityRendering");
+				if (element != null)
+				{
+					var valueAttribute = element.Attribute("value");
+					if (valueAttribute != null)
+					{
+						FilterSetupFormHighQualityRendering = Boolean.Parse(valueAttribute.Value);
+					}
 				}
 			}
 		}
@@ -174,7 +213,7 @@ namespace VixenApplication
 
 	public class FilterSetupFormShapePosition
 	{
-		public double xPositionProportion { get; set; }
-		public int yPosition { get; set; }
+		public double XPositionProportion { get; set; }
+		public int YPosition { get; set; }
 	}
 }

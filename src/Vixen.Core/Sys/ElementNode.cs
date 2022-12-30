@@ -59,9 +59,9 @@
 
 		#endregion
 
-		private Element _element;
+		private Element? _element;
 
-		public Element Element
+		public Element? Element
 		{
 			get { return _element; }
 			set

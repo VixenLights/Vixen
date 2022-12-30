@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
-			<UseWindowsForms>true</UseWindowsForms>
-			<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+				<UseWindowsForms>true</UseWindowsForms>
+				<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+				<RootNamespace>Common.Controls</RootNamespace>
 		</PropertyGroup>
 
 		<ItemGroup>

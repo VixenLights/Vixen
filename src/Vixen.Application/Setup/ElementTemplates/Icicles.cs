@@ -10,22 +10,20 @@ namespace VixenApplication.Setup.ElementTemplates
 {
 	public partial class Icicles : ElementTemplateBase, IElementTemplate
 	{
-		private static Logger Logging = LogManager.GetCurrentClassLogger();
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
-		private string _treename;
-		private int _stringcount;
+		private string _treeName;
+		private int _stringCount;
 		private string _pixelsPerStringPattern;
 
 		public Icicles()
 		{
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 
-			_treename = "Icicles";
-			_stringcount = 50;
+			_treeName = "Icicles";
+			_stringCount = 50;
 			_pixelsPerStringPattern = "7,9,5";
 		}
 
@@ -34,7 +32,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			get { return "Icicles"; }
 		}
 
-		public bool SetupTemplate(IEnumerable<ElementNode> selectedNodes = null)
+		public bool SetupTemplate(IEnumerable<ElementNode>? selectedNodes = null)
 		{
 			DialogResult result = ShowDialog();
 
@@ -44,16 +42,18 @@ namespace VixenApplication.Setup.ElementTemplates
 			return false;
 		}
 
-		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode> selectedNodes = null)
+		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode>? selectedNodes = null)
 		{
 			List<ElementNode> result = new List<ElementNode>();
 
-			if (_treename.Length == 0) {
+			if (_treeName.Length == 0)
+			{
 				Logging.Error("treename is null");
 				return await Task.FromResult(result);
 			}
 
-			if (_stringcount < 0) {
+			if (_stringCount < 0)
+			{
 				Logging.Error("negative count");
 				return await Task.FromResult(result);
 			}
@@ -61,15 +61,15 @@ namespace VixenApplication.Setup.ElementTemplates
 			//Optimize the name check for performance. We know we are going to create a bunch of them and we can handle it ourselves more efficiently
 			HashSet<string> elementNames = new HashSet<string>(VixenSystem.Nodes.Select(x => x.Name));
 
-			ElementNode head = ElementNodeService.Instance.CreateSingle(null, NamingUtilities.Uniquify(elementNames, _treename), true, false);
+			ElementNode head = ElementNodeService.Instance.CreateSingle(null, NamingUtilities.Uniquify(elementNames, _treeName), true, false);
 			result.Add(head);
 
 			int ii = 0;
 			//Grabs the individual string sizes and removes any empty ones just in case the user entered something like 4,5,,9
-			string[] pixelsPerStringArray = _pixelsPerStringPattern.Split(new string[] {","}, StringSplitOptions.RemoveEmptyEntries);
+			string[] pixelsPerStringArray = _pixelsPerStringPattern.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
 
 			//Loops through the number of Strings to be added.
-			for (int i = 0; i < _stringcount; i++)
+			for (int i = 0; i < _stringCount; i++)
 			{
 				if (i % pixelsPerStringArray.Count() == 0)
 				{
@@ -102,15 +102,15 @@ namespace VixenApplication.Setup.ElementTemplates
 
 		private void Icicles_Load(object sender, EventArgs e)
 		{
-			textBoxTreeName.Text = _treename;
-			numericUpDownStrings.Value = _stringcount;
+			textBoxTreeName.Text = _treeName;
+			numericUpDownStrings.Value = _stringCount;
 			textBoxStringPattern.Text = _pixelsPerStringPattern;
 		}
 
 		private void Icicles_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			_treename = textBoxTreeName.Text;
-			_stringcount = Decimal.ToInt32(numericUpDownStrings.Value);
+			_treeName = textBoxTreeName.Text;
+			_stringCount = Decimal.ToInt32(numericUpDownStrings.Value);
 			_pixelsPerStringPattern = textBoxStringPattern.Text;
 		}
 
@@ -129,11 +129,10 @@ namespace VixenApplication.Setup.ElementTemplates
 
 		private void textBoxStringPattern_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			int isNum = 0;
 			//Ensures only numbers, commas and backspace can be used in the Pattern textbox.
-			if (e.KeyChar == ','|| char.IsControl(e.KeyChar))
+			if (e.KeyChar == ',' || char.IsControl(e.KeyChar))
 				e.Handled = false;
-			else if (!int.TryParse(e.KeyChar.ToString(), out isNum))
+			else if (!int.TryParse(e.KeyChar.ToString(), out _))
 				e.Handled = true;
 		}
 	}

@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿#nullable disable
+
+using System.Diagnostics;
 using Dataweb.NShape;
 using Dataweb.NShape.Advanced;
 using Dataweb.NShape.Commands;
@@ -6,10 +8,16 @@ using Dataweb.NShape.Controllers;
 using Vixen.Data.Flow;
 using Vixen.Sys;
 
-namespace VixenApplication
+namespace VixenApplication.GraphicalPatching
 {
 	public class ConnectionTool : Tool
 	{
+		// security domains for different shape types
+		internal const char SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS = 'A';
+		internal const char SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS = 'B';
+		internal const char SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS = 'C';
+		internal const char SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE = 'D';
+
 		public ConnectionTool()
 			: base("Standard")
 		{
@@ -741,7 +749,7 @@ namespace VixenApplication
 				(DataFlowConnectionLine) diagramPresenter.Project.ShapeTypes["DataFlowConnectionLine"].CreateInstance();
 			diagramPresenter.InsertShape(line);
 			diagramPresenter.Diagram.Shapes.SetZOrder(line, 100);
-			line.SecurityDomainName = ConfigFiltersAndPatching.SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS;
+			line.SecurityDomainName = SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS;
 			line.EndCapStyle = diagramPresenter.Project.Design.CapStyles.ClosedArrow;
 			line.SourceDataFlowComponentReference = new DataFlowComponentReference(shape.DataFlowComponent,
 			                                                                       shape.GetOutputNumberForControlPoint(
@@ -836,7 +844,7 @@ namespace VixenApplication
 				}
 
 				currentConnectionLine.SecurityDomainName =
-					ConfigFiltersAndPatching.SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE;
+					SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE;
 
 				VixenSystem.DataFlow.SetComponentSource(currentConnectionLine.DestinationDataComponent,
 				                                        currentConnectionLine.SourceDataFlowComponentReference);

@@ -10,8 +10,6 @@ namespace VixenApplication
 		public ReleaseNotes()
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
 		}
@@ -19,11 +17,6 @@ namespace VixenApplication
 		private void ReleaseNotes_Load(object sender, EventArgs e)
 		{
 			textBoxReleaseNotes.Text = File.ReadAllText(Paths.BinaryRootPath + "//Release Notes.txt");
-		}
-
-		private void btnOK_Click(object sender, EventArgs e)
-		{
-			
 		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)

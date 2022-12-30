@@ -10,8 +10,6 @@ namespace VixenApplication
 		public AboutVixen(string currentVersion, bool devBuild)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
 			pictureBoxIcon.Image = Resources.VixenImage;
@@ -23,11 +21,6 @@ namespace VixenApplication
 		private void AboutVixen_Load(object sender, EventArgs e)
 		{
 			textBoxLicense.Text = File.ReadAllText(Paths.BinaryRootPath + "//License.txt");
-		}
-
-		private void btnOK_Click(object sender, EventArgs e)
-		{
-			
 		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)

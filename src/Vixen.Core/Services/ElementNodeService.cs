@@ -15,7 +15,7 @@ namespace Vixen.Services
 			get { return _instance ?? (_instance = new ElementNodeService()); }
 		}
 
-		public ElementNode CreateSingle(ElementNode parentNode, string name = null, bool createElement = true,
+		public ElementNode CreateSingle(ElementNode? parentNode, string name = null, bool createElement = true,
 		                                bool uniquifyName = true)
 		{
 			name = name ?? "Unnamed";
