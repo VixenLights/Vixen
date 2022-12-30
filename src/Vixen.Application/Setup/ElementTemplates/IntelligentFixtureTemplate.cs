@@ -1001,7 +1001,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			ref int colorMixingChannelCount,
 			bool automaticallyOpenAndCloseShutter,
 			bool automaticallyOpenAndClosePrism,
-			FixtureFunction nextChannelFunction,
+			FixtureFunction? nextChannelFunction,
 			DimmingCurveSelection dimmingCurveSelection,
 			Curve dimmingCurve,
 			bool automaticallyControlDimmer,

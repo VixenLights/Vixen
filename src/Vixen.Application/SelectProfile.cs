@@ -43,7 +43,7 @@ namespace VixenApplication
 				// Draw the current item text based on the current Font 
 				// and the custom brush settings.
 				e.Graphics.DrawString(profile.IsLocked ? string.Format("{0} - Locked", profile.Name) : profile.Name,
-					e.Font, profile.IsLocked ? disabledBrush : enabledBrush, e.Bounds, StringFormat.GenericTypographic);
+					e.Font??ThemeUpdateControls.StandardFont, profile.IsLocked ? disabledBrush : enabledBrush, e.Bounds, StringFormat.GenericTypographic);
 				// If the ListBox has focus, draw a focus rectangle around the selected item.
 				if (!profile.IsLocked)
 				{

@@ -174,9 +174,23 @@ namespace VixenApplication
 					foreach (XElement element in filterShapePositionsElement.Elements("FilterPosition"))
 					{
 						FilterSetupFormShapePosition position = new FilterSetupFormShapePosition();
-						position.XPositionProportion = double.Parse(element.Element("xPositionProportion").Value);
-						position.YPosition = int.Parse(element.Element("yPosition").Value);
-						FilterSetupFormShapePositions.Add((Guid)element.Attribute("FilterId"), position);
+						var xPositionElement = element.Element("xPositionProportion");
+						var yPositionElement = element.Element("yPosition");
+						var filterIdGuid = element.Attribute("FilterId");
+						if (xPositionElement != null)
+						{
+							position.XPositionProportion = double.Parse(xPositionElement.Value);
+						}
+
+						if (yPositionElement != null)
+						{
+							position.YPosition = int.Parse(yPositionElement.Value);
+						}
+
+						if (filterIdGuid != null)
+						{
+							FilterSetupFormShapePositions.Add((Guid)filterIdGuid, position);
+						}
 					}
 				}
 			}
@@ -187,7 +201,11 @@ namespace VixenApplication
 				XElement? element = rootElement.Element("FilterSetupFormHighQualityRendering");
 				if (element != null)
 				{
-					FilterSetupFormHighQualityRendering = Boolean.Parse(element.Attribute("value").Value);
+					var valueAttribute = element.Attribute("value");
+					if (valueAttribute != null)
+					{
+						FilterSetupFormHighQualityRendering = Boolean.Parse(valueAttribute.Value);
+					}
 				}
 			}
 		}
