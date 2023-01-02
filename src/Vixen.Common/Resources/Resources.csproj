@@ -10,11 +10,63 @@
 				<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
 				<PackageReference Include="System.Resources.Extensions" Version="7.0.0" />
 		</ItemGroup>
-
-		<ItemGroup>
+  <ItemGroup>
+				<None Include="accept.png" />
+				<None Include="arrow_down.png" />
+				<None Include="arrow_left.png" />
+				<None Include="arrow_refresh.png" />
+				<None Include="arrow_right.png" />
+				<None Include="arrow_up.png" />
+				<None Include="attributes_display.png" />
+				<None Include="bullet_black.png" />
+				<None Include="bullet_blue.png" />
+				<Resource Include="bullet_green.png" />
+				<None Include="bullet_orange.png" />
+				<None Include="bullet_pink.png" />
+				<None Include="bullet_purple.png" />
+				<None Include="bullet_white.png" />
+				<None Include="bullet_yellow.png" />
+				<None Include="cog.png" />
+				<None Include="cog_add.png" />
+				<None Include="cog_delete.png" />
+				<Resource Include="cog_edit.png" />
+				<None Include="cog_error.png" />
+				<None Include="cog_go.png" />
+				<None Include="control_end.png" />
+				<None Include="control_end_blue.png" />
+				<None Include="control_fastforward.png" />
+				<None Include="control_fastforward_blue.png" />
+				<None Include="control_pause.png" />
+				<None Include="control_pause_blue.png" />
+				<None Include="control_play.png" />
+				<None Include="control_play_blue.png" />
+				<None Include="control_rewind.png" />
+				<None Include="control_rewind_blue.png" />
+				<None Include="control_start.png" />
+				<None Include="control_start_blue.png" />
+				<None Include="control_stop.png" />
+				<None Include="control_stop_blue.png" />
+				<Resource Include="cog_error_red.png" />
+				<Resource Include="delete.png" />
+				<None Include="filter.png" />
+				<None Include="filter_add.png" />
+				<None Include="filter_delete.png" />
 				<EmbeddedResource Include="LipSync\standard_dictionary" />
-		</ItemGroup>
-		<ItemGroup>
+				<None Include="magnifier.png" />
+				<None Include="magnifier_zoom_in.png" />
+				<None Include="magnifier_zoom_out.png" />
+				<None Include="zoom.png" />
+				<None Include="zoom_actual.png" />
+				<None Include="zoom_actual_equal.png" />
+				<None Include="zoom_extend.png" />
+				<None Include="zoom_fit.png" />
+				<None Include="zoom_in.png" />
+				<None Include="zoom_last.png" />
+				<None Include="zoom_out.png" />
+				<None Include="zoom_refresh.png" />
+				<None Include="zoom_selection.png" />
+				<None Include="Vixen3.ico" />
+				<Resource Include="add.png" />
 				<Resource Include="colors.png" />
 				<None Include="alignBoth.png" />
 				<None Include="alignCenter.png" />
@@ -50,6 +102,7 @@
 				<None Include="randomColors.png" />
 				<None Include="Resources\ButtonBackgroundImageHover.jpg" />
 				<None Include="Resources\ButtonBackgroundImage.jpg" />
+				<None Include="Resources\check_box.bmp" />
 				<None Include="Resources\Reset.png" />
 				<Content Include="layers.png" />
 				<None Include="Resources\layers.bmp" />
@@ -60,6 +113,7 @@
 				<None Include="Resources\matchDuration.png" />
 				<None Include="Resources\alignStartEnd.png" />
 				<None Include="Resources\distribute.png" />
+				<None Include="Resources\Settings.png" />
 				<None Include="Resources\open.png" />
 				<Resource Include="Resources\boldLine.png" />
 				<None Include="Resources\openMarkManager.png" />
@@ -75,6 +129,7 @@
 				<Resource Include="NewFile_6276.png" />
 				<Resource Include="Prop_Add.png" />
 				<Resource Include="Prop_Edit.png" />
+				<Content Include="LineVisible.png" />
 				<Resource Include="MarkBarVisible.png" />
 				<Resource Include="MarkLineVisible.png" />
 				<EmbeddedResource Include="LipSync\AI.jpg" />
@@ -110,6 +165,7 @@
 				<EmbeddedResource Include="LipSync\WQ_LightGray.jpg" />
 				<EmbeddedResource Include="LipSync\WQ_Transparent.png" />
 				<None Include="Resources\check-mark.png" />
+				<None Include="Resources\Saveall.png" />
 				<None Include="Resources\Save.png" />
 				<None Include="Resources\ColorGradient.png" />
 				<None Include="Resources\Color.png" />
@@ -117,13 +173,27 @@
 				<None Include="Resources\Lipsync.png" />
 				<None Include="Resources\zoom_row_in.png" />
 				<None Include="Resources\zoom_row_out.png" />
+				<None Include="Resources\Export.png" />
+				<None Include="Resources\Close.png" />
 				<None Include="Resources\Save_6530.png" />
 				<None Include="Resources\SaveAs.png" />
 				<None Include="Resources\zoom_time_out.png" />
 				<None Include="Resources\zoom_time_in.png" />
 				<None Include="Resources\Auto_Save.png" />
+				<None Include="Resources\AudioDevices.png" />
+				<None Include="Resources\TimingSpeed_25.png" />
+				<None Include="Resources\TimingSpeed_50.png" />
+				<None Include="Resources\TimingSpeed_200.png" />
+				<None Include="Resources\TimingSpeed_175.png" />
+				<None Include="Resources\TimingSpeed_125.png" />
+				<None Include="Resources\TimingSpeed_100.png" />
+				<None Include="Resources\TimingSpeed_75.png" />
+				<None Include="Resources\TimingSpeed_150.png" />
 				<None Include="Resources\Exit.png" />
 				<None Include="Resources\Audio_Devices.png" />
+				<None Include="Resources\TimingSpeed_350.png" />
+				<None Include="Resources\TimingSpeed_250.png" />
+				<None Include="Resources\TimingSpeed.png" />
 				<None Include="Resources\paste_invert.png" />
 				<None Include="Resources\paste_special.png" />
 				<None Include="Resources\paste_marks.png" />
@@ -312,6 +382,13 @@
 		</ItemGroup>
 		<ItemGroup>
 				<Compile Remove="LipSync\Tools.cs" />
+		</ItemGroup>
+		<ItemGroup>
+			<None Remove="cog_error_red.png" />
+			<None Remove="Resources\clock_go.png" />
+			<None Remove="Resources\add.png" />
+			<None Remove="Resources\delete.png" />
+			<None Remove="TriangleExclamation.png" />
 		</ItemGroup>
 
 		<ItemGroup>
