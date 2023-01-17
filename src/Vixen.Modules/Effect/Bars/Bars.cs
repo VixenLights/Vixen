@@ -1735,6 +1735,7 @@ namespace VixenModules.Effect.Bars
         /// <param name="convertFromLocationToStringCoordinates">Delegate to convert from location coordinates to string coordinates</param>
         /// <param name="tileFrameBuffer">Tile frame buffer to retrieve colors from</param>
         /// <param name="initializeTileYPosition">Method to determine the initial Y position</param>
+		/// <param name="height">Height of the render frame buffer</param>
         private void RenderEffectLocationExpandCompress(
             int frame,
             PixelLocationFrameBuffer frameBuffer,
@@ -1747,7 +1748,8 @@ namespace VixenModules.Effect.Bars
             bool swapXY,
             ConvertFromLocationToStringCoordinates convertFromLocationToStringCoordinates, 
             IPixelFrameBuffer tileFrameBuffer,
-            InitializeTileYPosition initializeTileYPosition)
+            InitializeTileYPosition initializeTileYPosition,
+            int height)
         {
             // Calculate the position within the tile based on frame movement
             int movementY = initializeTileYPosition(true, heightOfTile, 0, frame);  
@@ -1765,11 +1767,11 @@ namespace VixenModules.Effect.Bars
                 if (angle != 0)
                 {
 	                // Rotate the point
-	                GetRotatedPosition(ref x, ref y, angle, swapXY);
+	                GetRotatedPositionLocation(ref x, ref y, angle);
                 }
 
                 // Determine if we are in the lower half of the display element
-                bool down = (y < _length / 2);
+                bool down = (y < height / 2);
 
                 // Calculate the position in the tile for the specified Y coordinate
                 int yTile = CalculateZigZagYTilePosition(
@@ -1777,7 +1779,7 @@ namespace VixenModules.Effect.Bars
                     y,
                     movementY,
                     heightOfTile,
-                    _length / 2);
+                    height / 2);
 
                 // Update the x position within the tile
                 int repeatingX = x % widthOfTile;
@@ -1786,7 +1788,7 @@ namespace VixenModules.Effect.Bars
                 if (down)
                 {
                     // Offset the coordinate and ensure we are still within the tile
-                    yTile = (_length / 2 - yTile) % heightOfTile;
+                    yTile = (height / 2 - yTile) % heightOfTile;
 
                     // Ensure the yTile position is not negative
                     if (yTile < 0)
@@ -1878,7 +1880,7 @@ namespace VixenModules.Effect.Bars
                 if (angle != 0.0)
                 {
                     // Rotate the point by the specified angle
-                    GetRotatedPosition(ref x, ref y, angle, swapXY);
+                    GetRotatedPositionLocation(ref x, ref y, angle);
                 }
 
                 // Look up the color for the point in the repeating tile
@@ -2328,6 +2330,7 @@ namespace VixenModules.Effect.Bars
         /// <param name="angle">Angle of the rotation</param>
         /// <param name="swapXY">True when the effect is using a Horizontal Direction</param>
         /// <param name="convertFromLocationToStringCoordinates">Delegate to convert from location coordinates to string coordinates</param>
+		/// <param name="height">Height of the render frame buffer</param>
         private void RenderEffectLocationZigZagExpandCompress(
             int frame,
             PixelLocationFrameBuffer frameBuffer,
@@ -2338,7 +2341,8 @@ namespace VixenModules.Effect.Bars
             double angle,
             // ReSharper disable once InconsistentNaming
             bool swapXY,
-            ConvertFromLocationToStringCoordinates convertFromLocationToStringCoordinates)
+            ConvertFromLocationToStringCoordinates convertFromLocationToStringCoordinates,
+            int height)
         {
             // Render the expanding or compressing zig zag
 	        RenderEffectLocationExpandCompress(
@@ -2352,7 +2356,8 @@ namespace VixenModules.Effect.Bars
                 swapXY,
 		        convertFromLocationToStringCoordinates,
 		        _staticZigZagTileFrameBuffer,
-		        InitializeZigZagTileYPosition);
+		        InitializeZigZagTileYPosition,
+		        height);
         }
 
         /// <summary>
@@ -2372,7 +2377,8 @@ namespace VixenModules.Effect.Bars
                 _yTileStartPosition,
                 -GetRotationAngle(frame),
                 true,
-                ConvertFromHorizontalLocationToStringCoordinatesFlip);
+                ConvertFromHorizontalLocationToStringCoordinatesFlip,
+                _bufferWi);
         }
 
         /// <summary>
@@ -2392,7 +2398,8 @@ namespace VixenModules.Effect.Bars
 		        _yTileStartPosition,
 		        -GetRotationAngle(frame),
                 true,
-		        ConvertFromHorizontalLocationToStringCoordinatesFlip);
+		        ConvertFromHorizontalLocationToStringCoordinatesFlip,
+		        _bufferWi);
         }
 
         /// <summary>
@@ -2412,7 +2419,8 @@ namespace VixenModules.Effect.Bars
 	            _yTileStartPosition,
 	            GetRotationAngle(frame),
                 false,
-	            ConvertFromVerticalLocationToStringCoordinates);
+	            ConvertFromVerticalLocationToStringCoordinates,
+	            _bufferHt);
         }
 
         /// <summary>
@@ -2449,7 +2457,8 @@ namespace VixenModules.Effect.Bars
 		        _yTileStartPosition,
 		        GetRotationAngle(frame),
                 false,
-		        ConvertFromVerticalLocationToStringCoordinates);
+		        ConvertFromVerticalLocationToStringCoordinates,
+		        _bufferHt);
         }
 
         /// <summary>
@@ -2574,7 +2583,37 @@ namespace VixenModules.Effect.Bars
 	        y = (int)Math.Round(transformedPoint.Y);
         }
 
-        #endregion
+		/// <summary>
+		/// Rotates the x and y coordinates for the specified angle.
+		/// </summary>
+		/// <param name="x">X coordinate</param>
+		/// <param name="y">Y coordinate</param>
+		/// <param name="angle">Angle to rotate</param>
+		private void GetRotatedPositionLocation(ref int x, ref int y, double angle)
+		{
+			// Calculate the center of the square virtual frame buffer
+			double center = (_length - 1) / 2.0;
+
+			// Create a rotate transform with the specified angle and center of rotation
+			RotateTransform rt = new RotateTransform(-angle, center, center);
+
+			// Create a temporary point
+			System.Windows.Point tempPoint = new System.Windows.Point();
+
+			// Initialize the temporary point with the point in actual display element (frame buffer) that
+			// we are setting
+			tempPoint.X = x; 
+			tempPoint.Y = y; 
+
+			// Transform (rotate) the point
+			System.Windows.Point transformedPoint = rt.Transform(tempPoint);
+
+			// Updated the x and y coordinates for the rotation
+			x = (int)Math.Round(transformedPoint.X);
+			y = (int)Math.Round(transformedPoint.Y);
+		}
+
+		#endregion
 
         #region Private Flat Bar Render Location Methods
 
@@ -2631,6 +2670,7 @@ namespace VixenModules.Effect.Bars
         /// <param name="swapXY">True when the X and Y coordinates are swapped due to the Direction being horizontal</param>
         /// <param name="convertFromLocationToStringCoordinates">Delegate to convert from location coordinates to string coordinates</param>
         /// <param name="angle">Angle of the bars rotation</param>
+		/// <param name="height">Height of the render frame buffer</param>
         private void RenderEffectLocationFlatExpandCompress(
             int frame,
             PixelLocationFrameBuffer frameBuffer,
@@ -2640,7 +2680,8 @@ namespace VixenModules.Effect.Bars
             double angle,
             // ReSharper disable once InconsistentNaming
             bool swapXY,
-            ConvertFromLocationToStringCoordinates convertFromLocationToStringCoordinates)
+            ConvertFromLocationToStringCoordinates convertFromLocationToStringCoordinates,
+            int height)
         {
             // Render the expanding or compressing flat bars 
 	        RenderEffectLocationExpandCompress(
@@ -2654,7 +2695,8 @@ namespace VixenModules.Effect.Bars
                 swapXY,
 		        convertFromLocationToStringCoordinates,
 		        _staticFlatFrameBuffer,
-		        InitializeFlatBarTileYPosition);
+		        InitializeFlatBarTileYPosition,
+		        height);
         }
 
         /// <summary>
@@ -2716,7 +2758,8 @@ namespace VixenModules.Effect.Bars
 		        _widthOfTile,
 		        -GetRotationAngle(frame),
                 true,
-		        ConvertFromHorizontalLocationToStringCoordinatesFlip);
+		        ConvertFromHorizontalLocationToStringCoordinatesFlip,
+		        _bufferWi);
         }
 
         /// <summary>
@@ -2735,7 +2778,8 @@ namespace VixenModules.Effect.Bars
 		        _widthOfTile,
 		        GetRotationAngle(frame),
                 false,
-		        ConvertFromVerticalLocationToStringCoordinates);
+		        ConvertFromVerticalLocationToStringCoordinates,
+		        _bufferHt);
         }
 
         /// <summary>
@@ -2754,7 +2798,8 @@ namespace VixenModules.Effect.Bars
 		        _widthOfTile,
 		        GetRotationAngle(frame),
                 false,
-		        ConvertFromVerticalLocationToStringCoordinates);
+		        ConvertFromVerticalLocationToStringCoordinates, 
+		        _bufferHt);
         }
 
         /// <summary>
@@ -2773,7 +2818,8 @@ namespace VixenModules.Effect.Bars
 		        _widthOfTile,
 		        -GetRotationAngle(frame),
                 true,
-		        ConvertFromHorizontalLocationToStringCoordinatesFlip);
+		        ConvertFromHorizontalLocationToStringCoordinatesFlip,
+		        _bufferWi);
         }
         #endregion
 
