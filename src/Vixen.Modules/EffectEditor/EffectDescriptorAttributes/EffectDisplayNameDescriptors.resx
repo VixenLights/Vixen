@@ -1170,4 +1170,34 @@
   <data name="TailTaper" xml:space="preserve">
     <value>Tail Taper</value>
   </data>
+  <data name="WeaveHorizontalColors" xml:space="preserve">
+    <value>Horizontal Gradients</value>
+  </data>
+  <data name="WeaveSpacing" xml:space="preserve">
+    <value>Spacing</value>
+  </data>
+  <data name="WeaveSpeed" xml:space="preserve">
+    <value>Speed</value>
+  </data>
+  <data name="WeaveThickness" xml:space="preserve">
+    <value>Thickness</value>
+  </data>
+  <data name="WeaveVerticalColors" xml:space="preserve">
+    <value>Vertical Gradients</value>
+  </data>
+  <data name="WeaveAdvancedSizing" xml:space="preserve">
+    <value>Advanced Sizing</value>
+  </data>
+  <data name="WeaveHorizontalSpacing" xml:space="preserve">
+    <value>Horizontal Spacing</value>
+  </data>
+  <data name="WeaveHorizontalThickness" xml:space="preserve">
+    <value>Horizontal Bar Thickness</value>
+  </data>
+  <data name="WeaveVerticalSpacing" xml:space="preserve">
+    <value>Vertical Spacing</value>
+  </data>
+  <data name="WeaveVerticalThickness" xml:space="preserve">
+    <value>Veritical Bar Thickness</value>
+  </data>
 </root>
