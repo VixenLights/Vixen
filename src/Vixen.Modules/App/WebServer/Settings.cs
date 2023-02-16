@@ -1,4 +1,5 @@
-﻿using Common.Controls;
+﻿using System.Diagnostics;
+using Common.Controls;
 using Common.Controls.Theme;
 using Resources = Common.Resources.Properties.Resources;
 
@@ -68,7 +69,12 @@ namespace VixenModules.App.WebServer
 
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			System.Diagnostics.Process.Start(linkLabel1.Text);
+			var pi = new ProcessStartInfo()
+			{
+				FileName = linkLabel1.Text,
+				UseShellExecute = true
+			};
+			Process.Start(pi);
 		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)

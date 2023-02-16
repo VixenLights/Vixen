@@ -1,4 +1,5 @@
-﻿using Svg;
+﻿using System.Diagnostics;
+using Svg;
 using Vixen.Sys;
 using VixenModules.Property.Location;
 using VixenModules.Property.Order;
@@ -71,7 +72,12 @@ namespace VixenModules.App.Modeling
 				var filePath = System.IO.Path.ChangeExtension(file, "svg");
 				//var filePath = $"{file}{System.IO.Path.PathSeparator}{nodes.First()}.svg";
 				doc.Write(filePath);
-				System.Diagnostics.Process.Start(filePath);
+				var psi = new ProcessStartInfo()
+				{
+					FileName = filePath,
+					UseShellExecute = true
+				};
+				Process.Start(psi);
 			}
 
 

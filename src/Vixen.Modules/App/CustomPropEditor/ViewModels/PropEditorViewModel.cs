@@ -1,5 +1,6 @@
 ﻿using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -1034,7 +1035,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		private void Help()
 		{
 			var url = "http://www.vixenlights.com/vixen-3-documentation/preview/custom-prop-editor/";
-			System.Diagnostics.Process.Start(url);
+			var psi = new ProcessStartInfo()
+			{
+				FileName = url,
+				UseShellExecute = true
+			};
+			Process.Start(psi);
 		}
 
 		#endregion

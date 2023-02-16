@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace Common.VixenHelp
 {
@@ -49,7 +50,13 @@ namespace Common.VixenHelp
 		
 		public static void ShowHelp(HelpStrings helpString)
 		{
-			System.Diagnostics.Process.Start(GetEnumDescription(helpString));
+			var psi = new ProcessStartInfo()
+			{
+				FileName = GetEnumDescription(helpString),
+				UseShellExecute = true
+			}; 
+			
+			Process.Start(psi);
 		}
 
 		public static string GetEnumDescription(Enum value)

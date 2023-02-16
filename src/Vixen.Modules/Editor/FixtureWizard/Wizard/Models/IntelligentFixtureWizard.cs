@@ -139,12 +139,15 @@ namespace VixenModules.Editor.FixtureWizard.Wizard
             if (CurrentPage is SummaryWizardPage)
 			{
                 // Launch a browser with the help URL
-                return Task.FromResult(Process.Start(new ProcessStartInfo("http://www.vixenlights.com/vixen-3-documentation/setup-configuration/setup-display-elements/intelligent-fixture-wizard/summary/")));
+                return Task.FromResult(Process.Start(new ProcessStartInfo("http://www.vixenlights.com/vixen-3-documentation/setup-configuration/setup-display-elements/intelligent-fixture-wizard/summary/")
+                {
+                    UseShellExecute = true
+                }));
             }
             else
             { 
                 // Otherwise launch a browser with the help URL for the current page
-                return Task.FromResult(Process.Start(new ProcessStartInfo(((FixtureWizardPageBase)CurrentPage).HelpURL)));                                       
+                return Task.FromResult(Process.Start(new ProcessStartInfo(((FixtureWizardPageBase)CurrentPage).HelpURL){UseShellExecute = true}));                                       
             }
         }
 

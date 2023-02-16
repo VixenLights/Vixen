@@ -18,6 +18,7 @@
 //=============================================================================
 
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace ZedGraph {
 	partial class ZedGraphControl {
@@ -436,8 +437,14 @@ namespace ZedGraph {
 						else
 							url = link._url;
 
-						if (url != string.Empty) {
-							System.Diagnostics.Process.Start(url);
+						if (url != string.Empty)
+						{
+							var psi = new ProcessStartInfo()
+							{
+								FileName = url,
+								UseShellExecute = true
+							};
+							Process.Start(psi);
 							// linkable objects override any other actions with mouse
 							return;
 						}

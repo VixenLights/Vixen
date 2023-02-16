@@ -67,7 +67,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 		private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
 		{
 			// Launch a browser with the URL
-			Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+			Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
 			e.Handled = true;
 		}
 

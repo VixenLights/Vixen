@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using Catel;
@@ -570,7 +571,12 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		private void Help()
 		{
 			var url = "http://www.vixenlights.com/vixen-3-documentation/sequencer/sequence-import/";
-			System.Diagnostics.Process.Start(url);
+			var psi = new ProcessStartInfo()
+			{
+				FileName = url,
+				UseShellExecute = true
+			};
+			Process.Start(psi);
 		}
 
 		#endregion

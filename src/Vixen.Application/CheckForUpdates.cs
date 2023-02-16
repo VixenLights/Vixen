@@ -240,7 +240,12 @@ namespace VixenApplication
 
 		private void linkLabelVixenDownLoadPage_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			Process.Start("www.vixenlights.com/downloads/vixen-3-downloads/");
+			var psi = new ProcessStartInfo()
+			{
+				FileName = "www.vixenlights.com/downloads/vixen-3-downloads/",
+				UseShellExecute = true
+			};
+			Process.Start(psi);
 		}
 
 		private void SetScrollbars()
