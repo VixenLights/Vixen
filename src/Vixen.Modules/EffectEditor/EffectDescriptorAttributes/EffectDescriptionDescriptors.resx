@@ -1215,4 +1215,43 @@
   <data name="TailTaper" xml:space="preserve">
     <value>Controls the brightness taper of the meteor's tail.</value>
   </data>
+  <data name="WeaveDirection" xml:space="preserve">
+    <value>Controls the direction of movement of the weave.</value>
+  </data>
+  <data name="WeaveHighlight" xml:space="preserve">
+    <value>Controls whether a white highlight is added to the weave color bars.</value>
+  </data>
+  <data name="WeaveHorizontalColors" xml:space="preserve">
+    <value>Controls the color of the horizontal weave bars.  Gradients are applied across the bar.</value>
+  </data>
+  <data name="WeaveRotation" xml:space="preserve">
+    <value>Controls the rotation of the weave. 100 = 180 degrees counter clockwise rotation.  0 =180 clockwise rotation.</value>
+  </data>
+  <data name="WeaveSpacing" xml:space="preserve">
+    <value>Controls the blank area between each weave color bars.</value>
+  </data>
+  <data name="WeaveSpeed" xml:space="preserve">
+    <value>Controls the speed of movement of the weave bars.</value>
+  </data>
+  <data name="WeaveThickness" xml:space="preserve">
+    <value>Controls the thickness of the weave bars.</value>
+  </data>
+  <data name="WeaveVerticalColors" xml:space="preserve">
+    <value>Controls the color of the vertical weave bars.  Gradients are applied across the bar.</value>
+  </data>
+  <data name="WeaveAdvancedSizing" xml:space="preserve">
+    <value>Enables curves for controling the weave bar thickness and spacing. The horizontal and vertical weave bar thickness and spacing can be configured independently when in advanced sizing mode.</value>
+  </data>
+  <data name="WeaveHorizontalSpacing" xml:space="preserve">
+    <value>Controls the blank area between each horizontal weave bar. This value is percentage of the display element.</value>
+  </data>
+  <data name="WeaveHorizontalThickness" xml:space="preserve">
+    <value>Controls the thickness of the horizontal weave bars. This value is a percentage of the display element.</value>
+  </data>
+  <data name="WeaveVerticalSpacing" xml:space="preserve">
+    <value>Controls the blank area between each vertical weave bar. This value is percentage of the display element.</value>
+  </data>
+  <data name="WeaveVerticalThickness" xml:space="preserve">
+    <value>Controls the thickness of the vertical weave bars. This value is a percentage of the display element.</value>
+  </data>
 </root>
