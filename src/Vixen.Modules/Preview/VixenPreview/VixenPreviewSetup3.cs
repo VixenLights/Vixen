@@ -1,4 +1,5 @@
-﻿using Common.Controls;
+﻿using System.Diagnostics;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources;
 using System.IO;
@@ -853,7 +854,12 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void buttonCustomPropLibrary_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+			var psi = new ProcessStartInfo()
+			{
+				FileName = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+				UseShellExecute = true
+			};
+			Process.Start(psi);
 		}
 
 		private void btnBulbDecrease_Click(object sender, EventArgs e)

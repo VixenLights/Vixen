@@ -1,4 +1,5 @@
-﻿using Common.Controls.Theme;
+﻿using System.Diagnostics;
+using Common.Controls.Theme;
 using Common.Resources.Properties;
 
 namespace VixenModules.App.Curves
@@ -28,7 +29,12 @@ namespace VixenModules.App.Curves
 
 		private void lnkHelp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			System.Diagnostics.Process.Start("http://www.vixenlights.com/vixen-3-documentation/basic-concepts-of-vixen-3/curve-editor/");
+			var psi = new ProcessStartInfo()
+			{
+				FileName = "http://www.vixenlights.com/vixen-3-documentation/basic-concepts-of-vixen-3/curve-editor/",
+				UseShellExecute = true
+			};
+			Process.Start(psi);
 		}
 	}
 }
