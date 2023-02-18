@@ -12,19 +12,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	[Serializable]
 	public class EffectModelCandidate
 	{
-		private readonly Type _moduleDataClass;
-		private readonly MemoryStream _effectData;
+		private readonly string _moduleDataClass;
+		private readonly byte[] _effectData;
 
 		public EffectModelCandidate(IEffectModuleInstance effect)
 		{
 			LayerId = Guid.Empty;
-			_moduleDataClass = effect.Descriptor.ModuleDataClass;
-			DataContractSerializer ds = new DataContractSerializer(_moduleDataClass);
+			_moduleDataClass = effect.Descriptor.ModuleDataClass.AssemblyQualifiedName;
+			DataContractSerializer ds = new DataContractSerializer(Type.GetType(_moduleDataClass));
 
 			TypeId = effect.Descriptor.TypeId;
-			_effectData = new MemoryStream();
-			using (XmlDictionaryWriter w = XmlDictionaryWriter.CreateBinaryWriter(_effectData))
+			MemoryStream memoryStream = new MemoryStream();
+			using (XmlDictionaryWriter w = XmlDictionaryWriter.CreateBinaryWriter(memoryStream))
 				ds.WriteObject(w, effect.ModuleData);
+
+			_effectData = memoryStream.ToArray();
 		}
 
 		public TimeSpan StartTime { get; set; }
@@ -36,10 +38,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public IModuleDataModel GetEffectData()
 		{
-			DataContractSerializer ds = new DataContractSerializer(_moduleDataClass);
-			MemoryStream effectDataIn = new MemoryStream(_effectData.ToArray());
-			using (XmlDictionaryReader r = XmlDictionaryReader.CreateBinaryReader(effectDataIn, XmlDictionaryReaderQuotas.Max))
+			DataContractSerializer ds = new DataContractSerializer(Type.GetType(_moduleDataClass));
+			MemoryStream effectDataIn = new MemoryStream(_effectData);
+			using (XmlDictionaryReader r =
+			       XmlDictionaryReader.CreateBinaryReader(effectDataIn, XmlDictionaryReaderQuotas.Max))
+			{
 				return (IModuleDataModel)ds.ReadObject(r);
+			}
 		}
 	}
 }
