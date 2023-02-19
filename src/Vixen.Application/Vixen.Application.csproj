@@ -36,7 +36,6 @@
 				<ProjectReference Include="..\Vixen.Common\NShapeGeneralShapes\NShapeGeneralShapes.csproj" />
 				<ProjectReference Include="..\Vixen.Common\NShapeWinFormsUI\NShapeWinFormsUI.csproj" />
 				<ProjectReference Include="..\Vixen.Common\NShape\NShape.csproj" />
-				<ProjectReference Include="..\Vixen.Common\Orc.Wizard\Orc.Wizard.csproj" />
 				<ProjectReference Include="..\Vixen.Common\Resources\Resources.csproj" />
 				<ProjectReference Include="..\Vixen.Common\Utilities\Utilities.csproj" />
 				<ProjectReference Include="..\Vixen.Common\WpfPropertyGrid.Themes\WpfPropertyGrid.Themes.csproj" />
