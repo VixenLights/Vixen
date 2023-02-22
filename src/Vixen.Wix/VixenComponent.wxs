@@ -1,0 +1,9 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Fragment>
+    <ComponentGroup Id="VixenComponent" Directory="INSTALLFOLDER">
+      <Component>
+        <File Source="Vixen.Application.exe" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

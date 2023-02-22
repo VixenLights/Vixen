@@ -1,0 +1,38 @@
+﻿<Project Sdk="WixToolset.Sdk/4.0.0-rc.2">
+  <PropertyGroup>
+    <VIX_PRE_RELEASE>true</VIX_PRE_RELEASE>
+    <Platform>x64</Platform>
+    <VIX_VERSION>0.0.0.0</VIX_VERSION>
+    <DefineConstants>Version=$(VIX_VERSION)</DefineConstants>
+    <BaseOutputPath>$(SolutionDir)$(Configuration)\Setup</BaseOutputPath>
+    <OutputPath>$(BaseOutputPath)</OutputPath>
+    <OutputType>Bundle</OutputType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(VIX_PRE_RELEASE)|$(Platform)'=='false|x64'">
+    <OutputName>Vixen-$(VIX_VERSION)-Setup-64bit</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(VIX_PRE_RELEASE)|$(Platform)'=='true|x64'">
+    <OutputName>Vixen-DevBuild-$(VIX_VERSION)-Setup-64bit</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(VIX_PRE_RELEASE)|$(Platform)'=='false|x86'">
+    <OutputName>Vixen-$(VIX_VERSION)-Setup-64bit</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(VIX_PRE_RELEASE)|$(Platform)'=='true|x86'">
+    <OutputName>Vixen-DevBuild-$(VIX_VERSION)-Setup-64bit</OutputName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Heat" Version="4.0.0-rc.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Vixen.Application\Vixen.Application.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <HarvestDirectory Include="$(SolutionDir)$(Configuration)\Output">
+      <ComponentGroupName>HarvestedComponents</ComponentGroupName>
+      <DirectoryRefId>INSTALLFOLDER</DirectoryRefId>
+      <SuppressRootDirectory>true</SuppressRootDirectory>
+    </HarvestDirectory>
+    <BindPath Include="$(SolutionDir)$(Configuration)\Output" />
+  </ItemGroup>
+		
+</Project>

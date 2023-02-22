@@ -473,7 +473,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfPropertyGrid.Themes", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vixen2x", "src\Vixen.Modules\Sequence\Vixen2x\Vixen2x.csproj", "{68E893A1-E452-48E1-992F-F3F780829BB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ffmpeg", "src\Vixen.Common\ffmpeg\ffmpeg.csproj", "{5C5A2695-3DE7-4C25-9DE1-261B8F3C0DF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ffmpeg", "src\Vixen.Common\ffmpeg\ffmpeg.csproj", "{5C5A2695-3DE7-4C25-9DE1-261B8F3C0DF7}"
+EndProject
+Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "Vixen.Wix", "src\Vixen.Wix\Vixen.Wix.wixproj", "{DB696AEC-60C3-4271-9861-35F1A1D363C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -2249,6 +2251,18 @@ Global
 		{5C5A2695-3DE7-4C25-9DE1-261B8F3C0DF7}.Release|x64.Build.0 = Release|Any CPU
 		{5C5A2695-3DE7-4C25-9DE1-261B8F3C0DF7}.Release|x86.ActiveCfg = Release|Any CPU
 		{5C5A2695-3DE7-4C25-9DE1-261B8F3C0DF7}.Release|x86.Build.0 = Release|Any CPU
+		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Debug|Any CPU.Build.0 = Debug|x64
+		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Debug|x64.ActiveCfg = Debug|x64
+		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Debug|x64.Build.0 = Debug|x64
+		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Debug|x86.ActiveCfg = Debug|x86
+		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Debug|x86.Build.0 = Debug|x86
+		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Release|Any CPU.ActiveCfg = Release|x64
+		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Release|Any CPU.Build.0 = Release|x64
+		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Release|x64.ActiveCfg = Release|x64
+		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Release|x64.Build.0 = Release|x64
+		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Release|x86.ActiveCfg = Release|x86
+		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
