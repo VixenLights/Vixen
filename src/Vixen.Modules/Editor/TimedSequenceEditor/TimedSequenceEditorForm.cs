@@ -22,6 +22,7 @@ using Vixen;
 using Vixen.Execution;
 using Vixen.Execution.Context;
 using Vixen.Marks;
+using Vixen.Module;
 using Vixen.Module.App;
 using VixenModules.App.Curves;
 using VixenModules.App.LipSyncApp;
@@ -4995,28 +4996,45 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (targetRowIndex<0 || targetRowIndex >= visibleRows.Count)
 					continue;
 
-				//Make a new effect and populate it with the detail data from the clipboard
-				var newEffect = ApplicationServices.Get<IEffectModuleInstance>(effectModelCandidate.TypeId);
-				newEffect.ModuleData = effectModelCandidate.GetEffectData();
-				var node = CreateEffectNode(newEffect, visibleRows[targetRowIndex], targetTime, effectModelCandidate.Duration);
+				IModuleDataModel moduleData = effectModelCandidate.GetEffectData();
 
-				if(LayerManager.ContainsLayer(effectModelCandidate.LayerId))
+				if (moduleData != null)
 				{
-					LayerManager.AssignEffectNodeToLayer(node, effectModelCandidate.LayerId);
+					//Make a new effect and populate it with the detail data from the clipboard
+					var newEffect = ApplicationServices.Get<IEffectModuleInstance>(effectModelCandidate.TypeId);
+
+					newEffect.ModuleData = moduleData;
+
+					var node = CreateEffectNode(newEffect, visibleRows[targetRowIndex], targetTime, effectModelCandidate.Duration);
+					
+					if (LayerManager.ContainsLayer(effectModelCandidate.LayerId))
+					{
+						LayerManager.AssignEffectNodeToLayer(node, effectModelCandidate.LayerId);
+					}
+					else
+					{
+						//Best efforts to try and find a layer of the same name and type before letting it assign default.
+						var layer = LayerManager.GetLayer(effectModelCandidate.LayerName, effectModelCandidate.LayerTypeId);
+
+						if (layer != null)
+						{
+							LayerManager.AssignEffectNodeToLayer(node, layer.Id);
+						}
+
+					}
+
+					nodesToAdd.Add(node);
+
+					result++;
 				}
 				else
 				{
-					//Best efforts to try and find a layer of the same name and type before letting it assign default.
-					var layer = LayerManager.GetLayer(effectModelCandidate.LayerName, effectModelCandidate.LayerTypeId);
-					if (layer != null)
-					{
-						LayerManager.AssignEffectNodeToLayer(node, layer.Id);
-					}
-
+					Logging.Error("GEffectModelCandidate.cs - GetEffectData returned null.");
+									
+					MessageBoxForm.msgIcon = SystemIcons.Error; 
+					var messageBox = new MessageBoxForm("Effect(s) on clipboard are incomplete.  Please close Vixen and restart it.", "Error", false, false);
+					messageBox.ShowDialog(this);
 				}
-				nodesToAdd.Add(node);
-				
-				result++;
 			}
 
 			// put it in the sequence and in the timeline display
