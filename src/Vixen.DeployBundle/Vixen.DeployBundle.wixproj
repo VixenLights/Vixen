@@ -23,7 +23,6 @@
   <ItemGroup>
     <PackageReference Include="WixToolset.Bal.wixext" Version="4.0.0-rc.2" />
     <PackageReference Include="WixToolset.Netfx.wixext" Version="4.0.0-rc.2" />
-    <PackageReference Include="WixToolset.UI.wixext" Version="4.0.0-rc.2" />
     <PackageReference Include="WixToolset.Util.wixext" Version="4.0.0-rc.2" />
   </ItemGroup>
   <ItemGroup>
