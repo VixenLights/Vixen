@@ -12,12 +12,12 @@
 				<PackageGroup Id="VCRedistPackage">
 						<ExePackage bal:PrimaryPackageType="x64"
 																		DetectCondition="VC_VER &gt;= v14.34.31938"
-																		DisplayName="Microsoft VC Redistributable"
+																		DisplayName="Microsoft Visual C++ 2015-2022 Redistributable (x64)"
 																		Compressed="no"
 																		PerMachine="yes"
 																		DownloadUrl="https://aka.ms/vs/17/release/vc_redist.x64.exe"
 																		SourceFile="..\..\Installer\Redist\VC_redist.x64.exe"
-																		InstallArguments="/install /passive /norestart"
+																		InstallArguments="/install /quiet /norestart"
 																		Permanent="true"/>
 				</PackageGroup>
 

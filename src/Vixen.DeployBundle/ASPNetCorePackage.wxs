@@ -6,7 +6,7 @@
 				<netfx:DotNetCoreSearch RuntimeType="aspnet" Platform="x64" MajorVersion="6" Variable="ASP_NET_VER" />
 				
 				<PackageGroup Id="ASPNetCore6Package">
-						<ExePackage DisplayName="Microsoft ASP.NET Core Runtime 6.0.14"
+						<ExePackage DisplayName="Microsoft ASP.NET Core 6.0.14 - Shared Framework (x64)"
 																		PerMachine="yes"
 																		InstallArguments="/norestart /quiet"
 																		DetectCondition="ASP_NET_VER &gt;= v6.0.14"

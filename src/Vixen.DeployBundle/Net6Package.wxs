@@ -6,7 +6,7 @@
 				<netfx:DotNetCoreSearch RuntimeType="desktop" Platform="x64" MajorVersion="6" Variable="DOT_NET_VER" />
 				
 				<PackageGroup Id="Net6Package">
-						<ExePackage DisplayName="Microsoft .NET 6.0 Desktop Runtime (v6.0.14)"
+						<ExePackage DisplayName="Microsoft Windows Desktop Runtime - 6.0.14 (x64)"
 																		PerMachine="yes"
 																		InstallArguments="/norestart /quiet"
 																		DetectCondition="DOT_NET_VER &gt;= v6.0.14"
