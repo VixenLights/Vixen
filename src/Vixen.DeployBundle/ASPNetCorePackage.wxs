@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+				       xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal"
+					xmlns:netfx="http://wixtoolset.org/schemas/v4/wxs/netfx">
+  <Fragment>
+				<netfx:DotNetCoreSearch RuntimeType="aspnet" Platform="x64" MajorVersion="6" Variable="ASP_NET_VER" />
+				
+				<PackageGroup Id="ASPNetCore6Package">
+						<ExePackage bal:PrimaryPackageType="x64"
+																		DisplayName="Microsoft ASP.NET Core Runtime 6.0.14"
+																		Compressed="no"
+																		PerMachine="yes"
+																		DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/95355fd2-12e2-4a03-b7ef-deff884e040b/a1070d778070557ef3a49eeaac524670/aspnetcore-runtime-6.0.14-win-x64.exe"
+																		InstallArguments="/norestart /quiet"
+																		DetectCondition="ASP_NET_VER &gt;= v6.0.14"
+																		Permanent="yes"														
+																		SourceFile="..\..\Installer\Redist\aspnetcore-runtime-6.0.14-win-x64.exe">
+								<ExitCode Value="0" Behavior="success"/>
+						</ExePackage>
+				
+				</PackageGroup>
+
+  </Fragment>
+</Wix>

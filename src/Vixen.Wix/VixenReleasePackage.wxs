@@ -1,9 +1,0 @@
-﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-  <Package Name="Vixen" Manufacturer="Vixen Team" Version="$(Version)" UpgradeCode="9f299a6c-6c3f-4602-9b6f-845ab778dd67">
-    <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
-			
-    <Feature Id="Release">
-      <ComponentGroupRef Id="HarvestedComponents" />
-    </Feature>
-  </Package>
-</Wix>

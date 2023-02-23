@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+					xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
+  
+				<Bundle Name="Vixen" Manufacturer="Vixen Lights" Version="$(Version)" UpgradeCode="9f299a6c-6c3f-4602-9b6f-845ab778dd67">
+						<BootstrapperApplication>
+								<bal:WixStandardBootstrapperApplication 
+										LicenseUrl="" 
+										Theme="hyperlinkSidebarLicense" 
+										ShowVersion="true"
+										LogoFile="../../Installer/vixen.ico"
+										LogoSideFile="../../Installer/vixen.bmp"/>
+						</BootstrapperApplication>
+						<Chain>
+								<PackageGroupRef Id="VCRedistPackage"/>
+								<PackageGroupRef Id="Net6Package"/>
+								<PackageGroupRef Id="ASPNetCore6Package"/>
+								<PackageGroupRef Id="VixenPackage"/>
+						</Chain>
+				</Bundle>
+</Wix>

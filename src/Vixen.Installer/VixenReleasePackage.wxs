@@ -1,0 +1,13 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+					xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
+  <Package Name="Vixen" Manufacturer="Vixen Lights" Version="$(Version)" UpgradeCode="463432c9-f96a-463c-909f-7528b87add87">
+    <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
+			
+    <Feature Id="Release">
+      <ComponentGroupRef Id="HarvestedComponents" />
+						<ComponentRef Id="ApplicationShortcut" />
+						<ComponentRef Id="DesktopApplicationShortcut"/>
+    </Feature>
+  </Package>
+		
+</Wix>

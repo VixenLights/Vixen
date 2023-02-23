@@ -475,7 +475,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vixen2x", "src\Vixen.Module
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ffmpeg", "src\Vixen.Common\ffmpeg\ffmpeg.csproj", "{5C5A2695-3DE7-4C25-9DE1-261B8F3C0DF7}"
 EndProject
-Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "Vixen.Wix", "src\Vixen.Wix\Vixen.Wix.wixproj", "{DB696AEC-60C3-4271-9861-35F1A1D363C8}"
+Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "Vixen.Installer", "src\Vixen.Installer\Vixen.Installer.wixproj", "{F553D2C8-3343-499D-B07B-EE4FA5611438}"
+EndProject
+Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "Vixen.DeployBundle", "src\Vixen.DeployBundle\Vixen.DeployBundle.wixproj", "{8696BB96-E975-4A6B-9033-5E2F54C87CFA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -2251,18 +2253,30 @@ Global
 		{5C5A2695-3DE7-4C25-9DE1-261B8F3C0DF7}.Release|x64.Build.0 = Release|Any CPU
 		{5C5A2695-3DE7-4C25-9DE1-261B8F3C0DF7}.Release|x86.ActiveCfg = Release|Any CPU
 		{5C5A2695-3DE7-4C25-9DE1-261B8F3C0DF7}.Release|x86.Build.0 = Release|Any CPU
-		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Debug|Any CPU.Build.0 = Debug|x64
-		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Debug|x64.ActiveCfg = Debug|x64
-		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Debug|x64.Build.0 = Debug|x64
-		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Debug|x86.ActiveCfg = Debug|x86
-		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Debug|x86.Build.0 = Debug|x86
-		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Release|Any CPU.ActiveCfg = Release|x64
-		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Release|Any CPU.Build.0 = Release|x64
-		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Release|x64.ActiveCfg = Release|x64
-		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Release|x64.Build.0 = Release|x64
-		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Release|x86.ActiveCfg = Release|x86
-		{DB696AEC-60C3-4271-9861-35F1A1D363C8}.Release|x86.Build.0 = Release|x86
+		{F553D2C8-3343-499D-B07B-EE4FA5611438}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{F553D2C8-3343-499D-B07B-EE4FA5611438}.Debug|Any CPU.Build.0 = Debug|x64
+		{F553D2C8-3343-499D-B07B-EE4FA5611438}.Debug|x64.ActiveCfg = Debug|x64
+		{F553D2C8-3343-499D-B07B-EE4FA5611438}.Debug|x64.Build.0 = Debug|x64
+		{F553D2C8-3343-499D-B07B-EE4FA5611438}.Debug|x86.ActiveCfg = Debug|x86
+		{F553D2C8-3343-499D-B07B-EE4FA5611438}.Debug|x86.Build.0 = Debug|x86
+		{F553D2C8-3343-499D-B07B-EE4FA5611438}.Release|Any CPU.ActiveCfg = Release|x64
+		{F553D2C8-3343-499D-B07B-EE4FA5611438}.Release|Any CPU.Build.0 = Release|x64
+		{F553D2C8-3343-499D-B07B-EE4FA5611438}.Release|x64.ActiveCfg = Release|x64
+		{F553D2C8-3343-499D-B07B-EE4FA5611438}.Release|x64.Build.0 = Release|x64
+		{F553D2C8-3343-499D-B07B-EE4FA5611438}.Release|x86.ActiveCfg = Release|x86
+		{F553D2C8-3343-499D-B07B-EE4FA5611438}.Release|x86.Build.0 = Release|x86
+		{8696BB96-E975-4A6B-9033-5E2F54C87CFA}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{8696BB96-E975-4A6B-9033-5E2F54C87CFA}.Debug|Any CPU.Build.0 = Debug|x64
+		{8696BB96-E975-4A6B-9033-5E2F54C87CFA}.Debug|x64.ActiveCfg = Debug|x64
+		{8696BB96-E975-4A6B-9033-5E2F54C87CFA}.Debug|x64.Build.0 = Debug|x64
+		{8696BB96-E975-4A6B-9033-5E2F54C87CFA}.Debug|x86.ActiveCfg = Debug|x86
+		{8696BB96-E975-4A6B-9033-5E2F54C87CFA}.Debug|x86.Build.0 = Debug|x86
+		{8696BB96-E975-4A6B-9033-5E2F54C87CFA}.Release|Any CPU.ActiveCfg = Release|x64
+		{8696BB96-E975-4A6B-9033-5E2F54C87CFA}.Release|Any CPU.Build.0 = Release|x64
+		{8696BB96-E975-4A6B-9033-5E2F54C87CFA}.Release|x64.ActiveCfg = Release|x64
+		{8696BB96-E975-4A6B-9033-5E2F54C87CFA}.Release|x64.Build.0 = Release|x64
+		{8696BB96-E975-4A6B-9033-5E2F54C87CFA}.Release|x86.ActiveCfg = Release|x86
+		{8696BB96-E975-4A6B-9033-5E2F54C87CFA}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

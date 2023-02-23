@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Fragment>
+				<PackageGroup Id="VixenPackage">
+
+						<MsiPackage Description="Vixen Setup MSI"
+																		SourceFile="$(Vixen.Installer.TargetPath)"
+																		Compressed="yes">
+								
+						</MsiPackage>
+
+				</PackageGroup>
+  </Fragment>
+</Wix>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+				       xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal"
+					xmlns:netfx="http://wixtoolset.org/schemas/v4/wxs/netfx">
+  <Fragment>
+				<netfx:DotNetCoreSearch RuntimeType="desktop" Platform="x64" MajorVersion="6" Variable="DOT_NET_VER" />
+				
+				<PackageGroup Id="Net6Package">
+						<ExePackage bal:PrimaryPackageType="x64"
+																		DisplayName="Microsoft .NET 6.0 Desktop Runtime (v6.0.14)"
+																		Compressed="no"
+																		PerMachine="yes"
+																		DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/035efed3-6386-4e1d-bcbc-384a20ebf47e/abfbea2303e0ce9cb15d430314e5858f/windowsdesktop-runtime-6.0.14-win-x64.exe"
+																		InstallArguments="/norestart /quiet"
+																		DetectCondition="DOT_NET_VER &gt;= v6.0.14"
+																		Permanent="yes"														
+																		SourceFile="..\..\Installer\Redist\windowsdesktop-runtime-6.0.14-win-x64.exe">
+								<ExitCode Value="0" Behavior="success"/>
+						</ExePackage>
+				
+				</PackageGroup>
+
+  </Fragment>
+</Wix>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+				       xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal"
+												xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+  <Fragment>
+				<util:ProductSearch
+								Id="ProductSearchId"
+								Variable="VC_VER"
+								ProductCode="{0AE39060-F209-4D05-ABC7-54B8F9CFA32E}"
+								Result="version" />
+				
+				<PackageGroup Id="VCRedistPackage">
+						<ExePackage bal:PrimaryPackageType="x64"
+																		DetectCondition="VC_VER &gt;= v14.34.31938"
+																		DisplayName="Microsoft VC Redistributable"
+																		Compressed="no"
+																		PerMachine="yes"
+																		DownloadUrl="https://aka.ms/vs/17/release/vc_redist.x64.exe"
+																		SourceFile="..\..\Installer\Redist\VC_redist.x64.exe"
+																		InstallArguments="/install /passive /norestart"
+																		Permanent="true"/>
+				</PackageGroup>
+
+  </Fragment>
+</Wix>
