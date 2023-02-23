@@ -2,8 +2,8 @@
   <PropertyGroup>
     <VIX_PRE_RELEASE>true</VIX_PRE_RELEASE>
     <Platform>x64</Platform>
-    <VIX_VERSION>0.0.0.0</VIX_VERSION>
-    <DefineConstants>Version=$(VIX_VERSION);OutputPath=$(BaseOutputPath);OutputName=$(OutputName)</DefineConstants>
+    <VIX_VERSION>0.0.0</VIX_VERSION>
+    <DefineConstants>Version=$(VIX_VERSION);;PreRelease=$(VIX_PRE_RELEASE);OutputPath=$(BaseOutputPath);OutputName=$(OutputName)</DefineConstants>
     <BaseOutputPath>$(SolutionDir)$(Configuration)\Setup</BaseOutputPath>
     <OutputPath>$(BaseOutputPath)</OutputPath>
     <OutputType>Bundle</OutputType>
@@ -15,10 +15,10 @@
     <OutputName>Vixen-DevBuild-$(VIX_VERSION)-Setup-64bit</OutputName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(VIX_PRE_RELEASE)|$(Platform)'=='false|x86'">
-    <OutputName>Vixen-$(VIX_VERSION)-Setup-64bit</OutputName>
+    <OutputName>Vixen-$(VIX_VERSION)-Setup-32bit</OutputName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(VIX_PRE_RELEASE)|$(Platform)'=='true|x86'">
-    <OutputName>Vixen-DevBuild-$(VIX_VERSION)-Setup-64bit</OutputName>
+    <OutputName>Vixen-DevBuild-$(VIX_VERSION)-Setup-32bit</OutputName>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="WixToolset.Bal.wixext" Version="4.0.0-rc.2" />

@@ -1,42 +1,51 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-  <Fragment>
-    <StandardDirectory Id="ProgramFiles6432Folder">
-      <Directory Id="INSTALLFOLDER" Name="!(bind.Property.Manufacturer)\!(bind.Property.ProductName)" />
-    </StandardDirectory>
+
+		<?if $(PreRelease) = "true"?>
+		<?define DesktopGuid = "59c1ae78-3c30-4db5-a080-e871d21fa7e9"?>
+		<?define MenuGuid = "abe96642-92a2-4a1c-aa37-cbc4b92c782f"?>
+		<?else?>
+		<?define DesktopGuid = "ac6825c4-0f71-4a80-9d84-146e398d9518"?>
+		<?define MenuGuid = "dacb1735-d82e-41b3-9386-e6594274ca29"?>
+		<?endif?>
+
+
+		<Fragment>
+				<StandardDirectory Id="ProgramFiles6432Folder">
+						<Directory Id="INSTALLFOLDER" Name="!(bind.Property.Manufacturer)\!(bind.Property.ProductName)" />
+				</StandardDirectory>
+
 				<StandardDirectory Id="ProgramMenuFolder">
 						<Directory Id="ApplicationProgramsFolder" Name="Vixen Lights"/>
 				</StandardDirectory>
-				
-				<Icon Id="VixenIcon" SourceFile="..\..\Installer\vixen.ico" />
-				
-				<StandardDirectory Id="DesktopFolder">
-								<Component Id="DesktopApplicationShortcut" Guid="a99710a4-bc42-4c4d-a3cc-96136c7d914e">
-										<Shortcut Id="DesktopShortcut"
-																				Name="Vixen"
-																				Description="Vixen Sequencer"
-																				Target="[INSTALLFOLDER]Vixen.Application.exe"
-																				WorkingDirectory="INSTALLFOLDER"
-																				Icon="VixenIcon">
-												
-										</Shortcut>
-										<RemoveFolder Id="CleanUpDesktopShortCut" Directory="DesktopFolder" On="uninstall"/>
-										<RegistryValue Root="HKCU" Key="Software\!(bind.Property.Manufacturer)\!(bind.Property.ProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
-								</Component>
-				</StandardDirectory>
-				
-				<DirectoryRef Id="ApplicationProgramsFolder">
-						<Component Id="ApplicationShortcut" Guid="abe96642-92a2-4a1c-aa37-cbc4b92c782f">
-								<Shortcut Id="ApplicationStartMenuShortcut"
-                  Name="Vixen"
-                  Description="Vixen Sequencer"
-                  Target="[INSTALLFOLDER]Vixen.Application.exe"
-                  WorkingDirectory="INSTALLFOLDER"
-																		Icon="VixenIcon">
-								</Shortcut>
-								<RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall"/>
-								<RegistryValue Root="HKCU" Key="Software\!(bind.Property.Manufacturer)\!(bind.Property.ProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
-						</Component>
-				</DirectoryRef>
 
-  </Fragment>
+				<Icon Id="VixenIcon" SourceFile="..\..\Installer\vixen.ico" />
+
+
+				<Component Id="DesktopApplicationShortcut" Guid="$(var.DesktopGuid)" Directory="DesktopFolder">
+						<Shortcut Id="DesktopShortcut"
+																Directory="DesktopFolder"
+																Name="!(bind.Property.ProductName)"
+																Description="Vixen Sequencer"
+																Target="[INSTALLFOLDER]Vixen.Application.exe"
+																WorkingDirectory="INSTALLFOLDER"
+																Icon="VixenIcon">
+						</Shortcut>
+						<RegistryValue Root="HKCU" Key="Software\!(bind.Property.Manufacturer)\!(bind.Property.ProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+				</Component>
+
+				<Component Id="ApplicationShortcut" Guid="$(var.MenuGuid)" Directory="ApplicationProgramsFolder">
+						<Shortcut Id="ApplicationStartMenuShortcut"
+																Directory="ApplicationProgramsFolder"
+																Name="!(bind.Property.ProductName)"
+																Description="Vixen Sequencer"
+																Target="[INSTALLFOLDER]Vixen.Application.exe"
+																WorkingDirectory="INSTALLFOLDER"
+																Icon="VixenIcon">
+						</Shortcut>
+
+						<RemoveFolder Id="CleanUpDirectory" Directory="ApplicationProgramsFolder" On="uninstall"/>
+						<RegistryValue Root="HKCU" Key="Software\!(bind.Property.Manufacturer)\!(bind.Property.ProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+				</Component>
+
+		</Fragment>
 </Wix>

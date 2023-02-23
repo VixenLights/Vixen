@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
 					xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
-  
-				<Bundle Name="Vixen" Manufacturer="Vixen Lights" Version="$(Version)" UpgradeCode="9f299a6c-6c3f-4602-9b6f-845ab778dd67">
+
+		<?if $(PreRelease) = "true"?>
+				<?define UpgradeCode = "59c1ae78-3c30-4db5-a080-e871d21fa7e9"?>
+				<?define Name = "Vixen Development"?>
+		<?else?>
+				<?define UpgradeCode = "9f299a6c-6c3f-4602-9b6f-845ab778dd67"?>
+				<?define Name = "Vixen"?>
+		<?endif?>
+		
+				<Bundle Name="$(var.Name)" Manufacturer="Vixen Lights" Version="$(Version)" UpgradeCode="$(var.UpgradeCode)">
 						<BootstrapperApplication>
 								<bal:WixStandardBootstrapperApplication 
 										LicenseUrl="" 
