@@ -6,6 +6,8 @@
     <PropertyGroup>
         <Title>Vixen</Title>
         <Authors>Vixen Team</Authors>
+		<Copyright>2023 Vixen Team</Copyright>
+		<Description>Vixen Lights Software</Description>
 		<Version>$(ASSEMBLY_VERSION)</Version>
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/VixenLights/Vixen</RepositoryUrl>
