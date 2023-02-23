@@ -1,7 +1,12 @@
 <Project>
+	<PropertyGroup>
+		<VIX_VERSION>0.0.0</VIX_VERSION>
+		<ASSEMBLY_VERSION>0.0.0.0</ASSEMBLY_VERSION>
+	</PropertyGroup>
     <PropertyGroup>
         <Title>Vixen</Title>
         <Authors>Vixen Team</Authors>
+		<Version>$(ASSEMBLY_VERSION)</Version>
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/VixenLights/Vixen</RepositoryUrl>
         <TargetFramework>net6.0-windows</TargetFramework>
