@@ -8,13 +8,14 @@
 				<PackageGroup Id="ASPNetCore6Package">
 						<ExePackage bal:PrimaryPackageType="x64"
 																		DisplayName="Microsoft ASP.NET Core Runtime 6.0.14"
-																		Compressed="no"
 																		PerMachine="yes"
-																		DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/95355fd2-12e2-4a03-b7ef-deff884e040b/a1070d778070557ef3a49eeaac524670/aspnetcore-runtime-6.0.14-win-x64.exe"
 																		InstallArguments="/norestart /quiet"
 																		DetectCondition="ASP_NET_VER &gt;= v6.0.14"
-																		Permanent="yes"														
-																		SourceFile="..\..\Installer\Redist\aspnetcore-runtime-6.0.14-win-x64.exe">
+																		Permanent="yes">
+								<ExePackagePayload DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/95355fd2-12e2-4a03-b7ef-deff884e040b/a1070d778070557ef3a49eeaac524670/aspnetcore-runtime-6.0.14-win-x64.exe"
+																											Hash="8b94e16f132299bf79b63cd688efe2b5fa56a387139a29d3a6c66a433e0ae51e1ac822e1f1e4093ad16fba7495ceceb7a6b0463da946660c66ea0ee0a2a05060"
+																											Name="aspnetcore-runtime-6.0.14-win-x64.exe"
+																											Size="8974624"/>
 								<ExitCode Value="0" Behavior="success"/>
 						</ExePackage>
 				
