@@ -1,11 +1,14 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
 
-		<?if $(PreRelease) = "true"?>
+		<?if $(ReleaseType) = "Dev"?>
 		<?define DesktopGuid = "59c1ae78-3c30-4db5-a080-e871d21fa7e9"?>
 		<?define MenuGuid = "abe96642-92a2-4a1c-aa37-cbc4b92c782f"?>
-		<?else?>
+		<?elseif $(ReleaseType) = "Prod"?>
 		<?define DesktopGuid = "ac6825c4-0f71-4a80-9d84-146e398d9518"?>
 		<?define MenuGuid = "dacb1735-d82e-41b3-9386-e6594274ca29"?>
+		<?else?>
+		<?define DesktopGuid = "40b60327-32a3-4041-820c-bdd5bc43a8e8"?>
+		<?define MenuGuid = "2ca6e849-df6c-4e06-a1ce-c35d6741b127"?>
 		<?endif?>
 
 

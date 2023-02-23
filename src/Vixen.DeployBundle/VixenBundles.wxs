@@ -2,12 +2,15 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
 					xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
 
-		<?if $(PreRelease) = "true"?>
+		<?if $(ReleaseType) = "Dev"?>
 				<?define UpgradeCode = "59c1ae78-3c30-4db5-a080-e871d21fa7e9"?>
 				<?define Name = "Vixen Development"?>
-		<?else?>
+		<?elseif $(ReleaseType) ="Prod"?>
 				<?define UpgradeCode = "9f299a6c-6c3f-4602-9b6f-845ab778dd67"?>
 				<?define Name = "Vixen"?>
+		<?else?>
+				<?define UpgradeCode = "38db4df3-d2ee-4f0b-a8ff-9e86bd84e187"?>
+				<?define Name = "Vixen Test"?>
 		<?endif?>
 		
 				<Bundle Name="$(var.Name)" Manufacturer="Vixen Lights" Version="$(Version)" UpgradeCode="$(var.UpgradeCode)">
@@ -19,6 +22,7 @@
 										LogoFile="../../Installer/vixen.ico"
 										LogoSideFile="../../Installer/vixen.bmp"/>
 						</BootstrapperApplication>
+
 						<Chain>
 								<PackageGroupRef Id="VCRedistPackage"/>
 								<PackageGroupRef Id="Net6Package"/>
