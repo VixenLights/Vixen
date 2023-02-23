@@ -3,21 +3,21 @@
 		<VIX_VERSION>0.0.0</VIX_VERSION>
 		<ASSEMBLY_VERSION>0.0.0.0</ASSEMBLY_VERSION>
 	</PropertyGroup>
-    <PropertyGroup>
-        <Title>Vixen</Title>
-        <Authors>Vixen Team</Authors>
+	<PropertyGroup>
+		<Title>Vixen</Title>
+		<Authors>Vixen Team</Authors>
 		<Copyright>2023 Vixen Team</Copyright>
 		<Description>Vixen Lights Software</Description>
 		<Version>$(ASSEMBLY_VERSION)</Version>
-        <RepositoryType>git</RepositoryType>
-        <RepositoryUrl>https://github.com/VixenLights/Vixen</RepositoryUrl>
-        <TargetFramework>net6.0-windows</TargetFramework>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/VixenLights/Vixen</RepositoryUrl>
+		<TargetFramework>net6.0-windows</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-	    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		<BaseOutputPath>$(SolutionDir)$(Configuration)\Output</BaseOutputPath>
 		<OutputPath>$(BaseOutputPath)</OutputPath>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    </PropertyGroup>
+	</PropertyGroup>
 </Project>
