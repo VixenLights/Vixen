@@ -20,9 +20,9 @@
 		<PropertyGroup Condition="'$(VIX_PRE_RELEASE)|$(Platform)'=='true|x86'">
 				<OutputName>Vixen-DevBuild-$(VIX_VERSION)-Setup-64bit</OutputName>
 		</PropertyGroup>
-		<!--<ItemGroup>
+		<ItemGroup>
     <ProjectReference Include="..\Vixen.Application\Vixen.Application.csproj" />
-  </ItemGroup>-->
+  </ItemGroup>
 		<ItemGroup>
 				<HarvestDirectory Include="$(SolutionDir)$(Configuration)\Output">
 						<ComponentGroupName>HarvestedComponents</ComponentGroupName>
