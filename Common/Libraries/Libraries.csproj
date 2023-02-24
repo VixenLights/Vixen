@@ -135,7 +135,7 @@
     </PackageReference>
     <PackageReference Include="gong-wpf-dragdrop" Version="3.1.1" />
     <PackageReference Include="ICSharpCode.SharpZipLib.dll" Version="0.85.4.369" />
-    <PackageReference Include="LiteDB" Version="4.1.4" />
+    <PackageReference Include="LiteDB" Version="5.0.13" />
     <PackageReference Include="LoadAssembliesOnStartup.Fody" Version="4.5.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets></IncludeAssets>
