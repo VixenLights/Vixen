@@ -24,7 +24,7 @@
 				<Icon Id="VixenIcon" SourceFile="..\..\Installer\vixen.ico" />
 
 
-				<Component Id="DesktopApplicationShortcut" Guid="$(var.DesktopGuid)" Directory="DesktopFolder">
+				<Component Id="DesktopApplicationShortcut" Guid="$(var.DesktopGuid)" Directory="DesktopFolder" Condition="ADDDESKTOPSHORTCUT=1">
 						<Shortcut Id="DesktopShortcut"
 																Directory="DesktopFolder"
 																Name="!(bind.Property.ProductName)"

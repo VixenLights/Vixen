@@ -1,30 +1,30 @@
 ﻿<Project Sdk="WixToolset.Sdk/4.0.0-rc.2">
   <PropertyGroup>
-				<VIX_RELEASE_TYPE>Test</VIX_RELEASE_TYPE>
+    <VIX_RELEASE_TYPE>Test</VIX_RELEASE_TYPE>
     <VIX_VERSION>0.0.0</VIX_VERSION>
     <DefineConstants>Version=$(VIX_VERSION);ReleaseType=$(VIX_RELEASE_TYPE);OutputPath=$(BaseOutputPath);OutputName=$(OutputName)</DefineConstants>
     <BaseOutputPath>$(SolutionDir)$(Configuration)\Setup\$(VIX_RELEASE_TYPE)</BaseOutputPath>
     <OutputPath>$(BaseOutputPath)</OutputPath>
     <OutputType>Bundle</OutputType>
   </PropertyGroup>
-		<PropertyGroup Condition="'$(VIX_RELEASE_TYPE)|$(Platform)'=='Test|x64'">
-				<OutputName>Vixen-Test-$(VIX_VERSION)-Setup-64bit</OutputName>
-		</PropertyGroup>
-		<PropertyGroup Condition="'$(VIX_RELEASE_TYPE)|$(Platform)'=='Dev|x64'">
-				<OutputName>Vixen-DevBuild-$(VIX_VERSION)-Setup-64bit</OutputName>
-		</PropertyGroup>
-		<PropertyGroup Condition="'$(VIX_RELEASE_TYPE)|$(Platform)'=='Prod|x64'">
-				<OutputName>Vixen-$(VIX_VERSION)-Setup-64bit</OutputName>
-		</PropertyGroup>
-		<PropertyGroup Condition="'$(VIX_RELEASE_TYPE)|$(Platform)'=='Test|x86'">
-				<OutputName>Vixen-Test-$(VIX_VERSION)-Setup-32bit</OutputName>
-		</PropertyGroup>
-		<PropertyGroup Condition="'$(VIX_RELEASE_TYPE)|$(Platform)'=='Dev|x86'">
-				<OutputName>Vixen-DevBuild-$(VIX_VERSION)-Setup-32bit</OutputName>
-		</PropertyGroup>
-		<PropertyGroup Condition="'$(VIX_RELEASE_TYPE)|$(Platform)'=='Prod|x86'">
-				<OutputName>Vixen-$(VIX_VERSION)-Setup-32bit</OutputName>
-		</PropertyGroup>
+  <PropertyGroup Condition="'$(VIX_RELEASE_TYPE)|$(Platform)'=='Test|x64'">
+    <OutputName>Vixen-Test-$(VIX_VERSION)-Setup-64bit</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(VIX_RELEASE_TYPE)|$(Platform)'=='Dev|x64'">
+    <OutputName>Vixen-DevBuild-$(VIX_VERSION)-Setup-64bit</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(VIX_RELEASE_TYPE)|$(Platform)'=='Prod|x64'">
+    <OutputName>Vixen-$(VIX_VERSION)-Setup-64bit</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(VIX_RELEASE_TYPE)|$(Platform)'=='Test|x86'">
+    <OutputName>Vixen-Test-$(VIX_VERSION)-Setup-32bit</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(VIX_RELEASE_TYPE)|$(Platform)'=='Dev|x86'">
+    <OutputName>Vixen-DevBuild-$(VIX_VERSION)-Setup-32bit</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(VIX_RELEASE_TYPE)|$(Platform)'=='Prod|x86'">
+    <OutputName>Vixen-$(VIX_VERSION)-Setup-32bit</OutputName>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="WixToolset.Bal.wixext" Version="4.0.0-rc.2" />
     <PackageReference Include="WixToolset.Netfx.wixext" Version="4.0.0-rc.2" />
@@ -32,5 +32,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Vixen.Installer\Vixen.Installer.wixproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="VixenTheme.xml" />
   </ItemGroup>
 </Project>

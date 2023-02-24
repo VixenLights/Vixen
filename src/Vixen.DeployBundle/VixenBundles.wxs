@@ -18,10 +18,15 @@
 		<?endif?>
 		
 				<Bundle Name="$(var.Name)" Manufacturer="Vixen Lights" Version="$(Version)" UpgradeCode="$(var.UpgradeCode)" IconSourceFile="$(var.Logo)">
+
+						<Variable Name="AddDesktopShortcut" bal:Overridable="yes" Value="1" />
+						
 						<BootstrapperApplication>
 								<bal:WixStandardBootstrapperApplication 
 										LicenseUrl="https://www.vixenlights.com/license" 
 										Theme="hyperlinkSidebarLicense" 
+										ThemeFile="VixenTheme.xml"
+										LocalizationFile="Package.en-us.wxl"
 										ShowVersion="true"
 										LogoFile="$(var.Logo)"
 										LogoSideFile="$(LogoSide)"/>
