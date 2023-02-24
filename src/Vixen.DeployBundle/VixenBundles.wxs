@@ -2,6 +2,10 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
 					xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
 
+		<?define Logo = "..\..\Installer\vixen.ico" ?>
+		<?define LogoSide = "..\..\Installer\vixen.bmp" ?>
+		<?define LicenseUrl = "www.vixenlights.com/download/license?>
+		
 		<?if $(ReleaseType) = "Dev"?>
 				<?define UpgradeCode = "59c1ae78-3c30-4db5-a080-e871d21fa7e9"?>
 				<?define Name = "Vixen Development"?>
@@ -13,14 +17,14 @@
 				<?define Name = "Vixen Test"?>
 		<?endif?>
 		
-				<Bundle Name="$(var.Name)" Manufacturer="Vixen Lights" Version="$(Version)" UpgradeCode="$(var.UpgradeCode)">
+				<Bundle Name="$(var.Name)" Manufacturer="Vixen Lights" Version="$(Version)" UpgradeCode="$(var.UpgradeCode)" IconSourceFile="$(var.Logo)">
 						<BootstrapperApplication>
 								<bal:WixStandardBootstrapperApplication 
-										LicenseUrl="" 
+										LicenseUrl="https://www.vixenlights.com/license" 
 										Theme="hyperlinkSidebarLicense" 
 										ShowVersion="true"
-										LogoFile="../../Installer/vixen.ico"
-										LogoSideFile="../../Installer/vixen.bmp"/>
+										LogoFile="$(var.Logo)"
+										LogoSideFile="$(LogoSide)"/>
 						</BootstrapperApplication>
 
 						<Chain>
