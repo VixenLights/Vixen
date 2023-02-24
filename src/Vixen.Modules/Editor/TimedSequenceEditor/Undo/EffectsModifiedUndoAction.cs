@@ -1,5 +1,7 @@
 ﻿using Common.Controls;
 using Common.Controls.Timeline;
+using NLog;
+
 using Vixen.Module;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Undo
@@ -10,6 +12,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Undo
 		private readonly Dictionary<Element, EffectModelCandidate> _changedElements;
 		private int _count;
 		private readonly string _labelName;
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
 		public EffectsModifiedUndoAction(Dictionary<Element, EffectModelCandidate> changedElements, string labelName="properties")
 		{
@@ -20,7 +23,6 @@ namespace VixenModules.Editor.TimedSequenceEditor.Undo
 
 		public override void Undo()
 		{
-			
 			SwapEffectData();
 			base.Undo();
 		}
@@ -49,9 +51,21 @@ namespace VixenModules.Editor.TimedSequenceEditor.Undo
 							LayerId = _changedElements[element].LayerId
 						};
 				IModuleDataModel model = _changedElements[element].GetEffectData();
-				element.EffectNode.Effect.ModuleData = model;
-				_changedElements[element] = modelCandidate;
-				element.UpdateNotifyContentChanged();
+
+				if (model != null)
+				{
+					element.EffectNode.Effect.ModuleData = model;
+					_changedElements[element] = modelCandidate;
+					element.UpdateNotifyContentChanged();
+				}
+				else
+				{
+					Logging.Error("EffectModelCandidate.cs - GetEffectData returned null.");
+
+					MessageBoxForm.msgIcon = SystemIcons.Error;
+					var messageBox = new MessageBoxForm("Incomplete effect data encountered.  Please close Vixen and restart it.", "Error", false, false);
+					messageBox.ShowDialog();
+				}
 			}
 		}
 
