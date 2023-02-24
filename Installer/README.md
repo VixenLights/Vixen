@@ -21,6 +21,14 @@ The solution will only build the installer projects when the Configuration is De
 * ASSEMBLY_VERSION - This gets mapped to the the Version property in the build projects and will become the assembly version of the output. This should be of the form 0.0.0.0 major.minor.build.revision i.e 2.9.2300.2 for Release 3.9u4 build 2300 and for dev builds it would just be 0.0.2300.0. For test builds it should just be 0.0.0.0 which is the default.
 * VIX_RELEASE_TYPE - This has one of 3 values. Test, Dev, and Prod. This allows for 3 types of builds to be supported and installed side by side. See above for usage.
 
+## Outputs
+
+Setup files will be produced in the Release\Setup\{VIX_RELEASE_TYPE} folder under the root of the project. The setup files will have naming conventions matching the patterns below. The output will also have some other files like the core msi that will be in a localized folder along with some debugging files. The main setup exe is all that is needed.
+
+* Prod - Vixen-3.9.4-Setup-64bit.exe
+* Test - Vixen-Test-0.0.0.0-Setup-64bit.exe
+* Dev - Vixen-DevBuild-0.0.2300.0-Setup-64bit.exe
+
 ## Examples
 
 Test Build
