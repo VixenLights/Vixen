@@ -25,9 +25,9 @@
 		<PropertyGroup Condition="'$(VIX_RELEASE_TYPE)|$(Platform)'=='Prod|x86'">
 				<OutputName>Vixen-$(VIX_VERSION)-Setup-32bit</OutputName>
 		</PropertyGroup>
-		<!--<ItemGroup>
+		<ItemGroup>
     <ProjectReference Include="..\Vixen.Application\Vixen.Application.csproj" />
-  </ItemGroup>-->
+  </ItemGroup>
 		<ItemGroup>
 				<HarvestDirectory Include="$(SolutionDir)$(Configuration)\Output">
 						<ComponentGroupName>HarvestedComponents</ComponentGroupName>
