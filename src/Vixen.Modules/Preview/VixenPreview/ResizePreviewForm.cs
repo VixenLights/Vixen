@@ -10,7 +10,7 @@ namespace VixenModules.Preview.VixenPreview
 		private int _newWidth, _newHeight;
         private bool _lockAspect = true;
 
-		public ResizePreviewForm(int width, int height)
+		public ResizePreviewForm(int width, int height, bool scaleShapes)
 		{
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
@@ -18,6 +18,7 @@ namespace VixenModules.Preview.VixenPreview
 			ThemeUpdateControls.UpdateControls(this);
 			_origWidth = width;
 			_origHeight = height;
+			_scaleShapes.Checked = scaleShapes; 
 		}
 
 		public new int Width
@@ -28,6 +29,14 @@ namespace VixenModules.Preview.VixenPreview
 		public new int Height
 		{
 			get { return _newHeight; }
+		}
+
+		public bool ScaleShapes
+		{
+			get
+			{
+				return _scaleShapes.Checked;
+			}
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e)
