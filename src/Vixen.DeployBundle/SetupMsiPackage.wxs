@@ -8,6 +8,7 @@
 																		SourceFile="$(Vixen.Installer.TargetPath)"
 																		Compressed="yes">
 								<MsiProperty Name="ADDDESKTOPSHORTCUT" Value="[AddDesktopShortcut]" />
+								<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]" />
 						</MsiPackage>
 
 				</PackageGroup>

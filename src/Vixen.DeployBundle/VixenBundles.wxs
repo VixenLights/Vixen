@@ -5,6 +5,7 @@
 		<?define Logo = "..\..\Installer\vixen.ico" ?>
 		<?define LogoSide = "..\..\Installer\vixen.bmp" ?>
 		<?define LicenseUrl = "www.vixenlights.com/download/license?>
+		<?define Manufacturer = "Vixen Lights"?>
 		
 		<?if $(ReleaseType) = "Dev"?>
 				<?define UpgradeCode = "59c1ae78-3c30-4db5-a080-e871d21fa7e9"?>
@@ -17,8 +18,9 @@
 				<?define Name = "Vixen Test"?>
 		<?endif?>
 		
-				<Bundle Name="$(var.Name)" Manufacturer="Vixen Lights" Version="$(Version)" UpgradeCode="$(var.UpgradeCode)" IconSourceFile="$(var.Logo)">
+				<Bundle Name="$(var.Name)" Manufacturer="$(var.Manufacturer)" Version="$(Version)" UpgradeCode="$(var.UpgradeCode)" IconSourceFile="$(var.Logo)">
 
+						<Variable Name="InstallFolder" bal:Overridable="yes" Type="formatted" Value="[ProgramFiles6432Folder]$(var.Manufacturer)\$(var.Name)"/>
 						<Variable Name="AddDesktopShortcut" bal:Overridable="yes" Value="1" />
 						
 						<BootstrapperApplication>
@@ -29,7 +31,9 @@
 										LocalizationFile="Package.en-us.wxl"
 										ShowVersion="true"
 										LogoFile="$(var.Logo)"
-										LogoSideFile="$(LogoSide)"/>
+										LogoSideFile="$(LogoSide)"
+										LaunchTarget="[InstallFolder]\Vixen.Application.exe"/>
+								
 						</BootstrapperApplication>
 
 						<Chain>

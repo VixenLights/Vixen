@@ -1,4 +1,4 @@
-﻿<Project Sdk="WixToolset.Sdk/4.0.0-rc.2">
+﻿<Project Sdk="WixToolset.Sdk/4.0.0-rc.3">
 		<PropertyGroup>
 				<VIX_RELEASE_TYPE>Test</VIX_RELEASE_TYPE>
 				<VIX_VERSION>0.0.0</VIX_VERSION>
@@ -25,9 +25,9 @@
 		<PropertyGroup Condition="'$(VIX_RELEASE_TYPE)|$(Platform)'=='Prod|x86'">
 				<OutputName>Vixen-$(VIX_VERSION)-Setup-32bit</OutputName>
 		</PropertyGroup>
-		<ItemGroup>
+		<!--<ItemGroup>
     <ProjectReference Include="..\Vixen.Application\Vixen.Application.csproj" />
-  </ItemGroup>
+  </ItemGroup>-->
 		<ItemGroup>
 				<HarvestDirectory Include="$(SolutionDir)$(Configuration)\Output">
 						<ComponentGroupName>HarvestedComponents</ComponentGroupName>
@@ -40,6 +40,6 @@
 				<BindPath Include="$(SolutionDir)$(Configuration)\Output" />
 		</ItemGroup>
 		<ItemGroup>
-				<PackageReference Include="WixToolset.Heat" Version="4.0.0-rc.2" />
+				<PackageReference Include="WixToolset.Heat" Version="4.0.0-rc.3" />
 		</ItemGroup>
 </Project>
