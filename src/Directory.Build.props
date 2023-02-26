@@ -1,14 +1,15 @@
 <Project>
 	<PropertyGroup>
-		<VIX_VERSION>0.0.0</VIX_VERSION>
-		<ASSEMBLY_VERSION>0.0.0.0</ASSEMBLY_VERSION>
+		<Environment>Test</Environment>
+		<App_Version>0.0.0</App_Version>
+		<Assembly_Version>0.0.0.0</Assembly_Version>
 	</PropertyGroup>
 	<PropertyGroup>
 		<Title>Vixen</Title>
 		<Authors>Vixen Team</Authors>
 		<Copyright>2023 Vixen Team</Copyright>
 		<Description>Vixen Lights Software</Description>
-		<Version>$(ASSEMBLY_VERSION)</Version>
+		<Version>$(Assembly_Version)</Version>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/VixenLights/Vixen</RepositoryUrl>
 		<TargetFramework>net6.0-windows</TargetFramework>

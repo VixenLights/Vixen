@@ -1,45 +1,46 @@
 ﻿<Project Sdk="WixToolset.Sdk/4.0.0-rc.3">
-		<PropertyGroup>
-				<VIX_RELEASE_TYPE>Test</VIX_RELEASE_TYPE>
-				<VIX_VERSION>0.0.0</VIX_VERSION>
-				<DefineConstants>Version=$(VIX_VERSION);ReleaseType=$(VIX_RELEASE_TYPE)</DefineConstants>
-				<BaseOutputPath>$(SolutionDir)$(Configuration)\Setup\$(VIX_RELEASE_TYPE)</BaseOutputPath>
-				<OutputPath>$(BaseOutputPath)</OutputPath>
-				<OutputType>Package</OutputType>
-		</PropertyGroup>
-		<PropertyGroup Condition="'$(VIX_RELEASE_TYPE)|$(Platform)'=='Test|x64'">
-				<OutputName>Vixen-Test-$(VIX_VERSION)-Setup-64bit</OutputName>
-		</PropertyGroup>
-		<PropertyGroup Condition="'$(VIX_RELEASE_TYPE)|$(Platform)'=='Dev|x64'">
-				<OutputName>Vixen-DevBuild-$(VIX_VERSION)-Setup-64bit</OutputName>
-		</PropertyGroup>
-		<PropertyGroup Condition="'$(VIX_RELEASE_TYPE)|$(Platform)'=='Prod|x64'">
-				<OutputName>Vixen-$(VIX_VERSION)-Setup-64bit</OutputName>
-		</PropertyGroup>
-		<PropertyGroup Condition="'$(VIX_RELEASE_TYPE)|$(Platform)'=='Test|x86'">
-				<OutputName>Vixen-Test-$(VIX_VERSION)-Setup-32bit</OutputName>
-		</PropertyGroup>
-		<PropertyGroup Condition="'$(VIX_RELEASE_TYPE)|$(Platform)'=='Dev|x86'">
-				<OutputName>Vixen-DevBuild-$(VIX_VERSION)-Setup-32bit</OutputName>
-		</PropertyGroup>
-		<PropertyGroup Condition="'$(VIX_RELEASE_TYPE)|$(Platform)'=='Prod|x86'">
-				<OutputName>Vixen-$(VIX_VERSION)-Setup-32bit</OutputName>
-		</PropertyGroup>
-		<ItemGroup>
+  <PropertyGroup>
+    <DefineConstants>Version=$(App_Version);ReleaseType=$(Environment)</DefineConstants>
+    <BaseOutputPath>$(SolutionDir)$(Configuration)\Setup\$(Environment)</BaseOutputPath>
+    <OutputPath>$(BaseOutputPath)</OutputPath>
+    <OutputType>Package</OutputType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Environment)|$(Platform)'=='Test|x64'">
+    <OutputName>Vixen-Test-$(App_Version)-Setup-64bit</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Environment)|$(Platform)'=='Staging|x64'">
+    <OutputName>Vixen-DevBuild-$(App_Version)-Setup-64bit</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Environment)|$(Platform)'=='Production|x64'">
+    <OutputName>Vixen-$(App_Version)-Setup-64bit</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Environment)|$(Platform)'=='Test|x86'">
+    <OutputName>Vixen-Test-$(App_Version)-Setup-32bit</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Environment)|$(Platform)'=='Staging|x86'">
+    <OutputName>Vixen-DevBuild-$(App_Version)-Setup-32bit</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Environment)|$(Platform)'=='Production|x86'">
+    <OutputName>Vixen-$(App_Version)-Setup-32bit</OutputName>
+  </PropertyGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Vixen.Application\Vixen.Application.csproj" />
   </ItemGroup>
-		<ItemGroup>
-				<HarvestDirectory Include="$(SolutionDir)$(Configuration)\Output">
-						<ComponentGroupName>HarvestedComponents</ComponentGroupName>
-						<DirectoryRefId>INSTALLFOLDER</DirectoryRefId>
-						<AutogenerateGuids>true</AutogenerateGuids>
-						<SuppressRegistry>true</SuppressRegistry>
-						<SuppressCom>true</SuppressCom>
-						<SuppressRootDirectory>true</SuppressRootDirectory>
-				</HarvestDirectory>
-				<BindPath Include="$(SolutionDir)$(Configuration)\Output" />
-		</ItemGroup>
-		<ItemGroup>
-				<PackageReference Include="WixToolset.Heat" Version="4.0.0-rc.3" />
-		</ItemGroup>
+  <ItemGroup>
+    <HarvestDirectory Include="$(SolutionDir)$(Configuration)\Output">
+      <ComponentGroupName>HarvestedComponents</ComponentGroupName>
+      <DirectoryRefId>INSTALLFOLDER</DirectoryRefId>
+      <AutogenerateGuids>true</AutogenerateGuids>
+      <SuppressRegistry>true</SuppressRegistry>
+      <SuppressCom>true</SuppressCom>
+      <SuppressRootDirectory>true</SuppressRootDirectory>
+    </HarvestDirectory>
+    <BindPath Include="$(SolutionDir)$(Configuration)\Output" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="EnvironmentInclude.wxi" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Heat" Version="4.0.0-rc.3" />
+  </ItemGroup>
 </Project>

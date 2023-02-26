@@ -6,17 +6,8 @@
 		<?define LogoSide = "..\..\Installer\vixen.bmp" ?>
 		<?define LicenseUrl = "www.vixenlights.com/download/license?>
 		<?define Manufacturer = "Vixen Lights"?>
-		
-		<?if $(ReleaseType) = "Dev"?>
-				<?define UpgradeCode = "59c1ae78-3c30-4db5-a080-e871d21fa7e9"?>
-				<?define Name = "Vixen Development"?>
-		<?elseif $(ReleaseType) ="Prod"?>
-				<?define UpgradeCode = "9f299a6c-6c3f-4602-9b6f-845ab778dd67"?>
-				<?define Name = "Vixen"?>
-		<?else?>
-				<?define UpgradeCode = "38db4df3-d2ee-4f0b-a8ff-9e86bd84e187"?>
-				<?define Name = "Vixen Test"?>
-		<?endif?>
+
+		<?include $(Vixen.Installer.ProjectDir)EnvironmentInclude.wxi?>
 		
 				<Bundle Name="$(var.Name)" Manufacturer="$(var.Manufacturer)" Version="$(Version)" UpgradeCode="$(var.UpgradeCode)" IconSourceFile="$(var.Logo)">
 
