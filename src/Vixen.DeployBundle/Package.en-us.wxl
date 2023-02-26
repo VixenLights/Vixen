@@ -6,11 +6,13 @@
 		<String Id="Title" Value="[WixBundleName]" />
 		<String Id="CheckingForUpdatesLabel" Value="Checking for updates" />
 		<String Id="UpdateButton" Value="&amp;Update to version [WixStdBAUpdateAvailable]" />
-		<String Id="InstallHeader" Value="Welcome" />
-		<String Id="InstallMessage" Value="Setup will install [WixBundleName] on your computer. Click Install to continue or Cancel to exit." />
-		<String Id="InstallMessageOptions" Value="Setup will install [WixBundleName] on your computer. Click Install to continue, Options to set installation options, or Cancel to exit." />
+		<String Id="InstallHeader" Value="Welcome to the Setup Wizard" />
+		<String Id="InstallMessage" Value="This wizard will guide you through installing [WixBundleName] on your computer. Click Install to continue or Cancel to exit." />
+		<String Id="InstallMessageOptions" Value="This wizard will guide you through installing [WixBundleName] on your computer. Click Install to continue, Options to set installation options, or Cancel to exit." />
 		<String Id="InstallVersion" Value="Version [WixBundleVersion]" />
+		<String Id="InstallVersionNumber" Value="[WixBundleVersion]" />
 		<String Id="InstallDesktopShortcut" Value="Create desktop shortcut"/>
+		<String Id="InstallNotes" Value="It is recommended that you close all other applications before proceeding. This will make it possible to update relevant system files without needing a reboot." />
 		<String Id="ConfirmCancelMessage" Value="Are you sure you want to cancel?" />
 		<String Id="ExecuteUpgradeRelatedBundleMessage" Value="Previous version" />
 		<String Id="HelpHeader" Value="Setup Help" />

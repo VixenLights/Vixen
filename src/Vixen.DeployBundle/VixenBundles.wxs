@@ -20,7 +20,7 @@
 										Theme="hyperlinkSidebarLicense" 
 										ThemeFile="VixenTheme.xml"
 										LocalizationFile="Package.en-us.wxl"
-										ShowVersion="true"
+										ShowVersion="false"
 										LogoFile="$(var.Logo)"
 										LogoSideFile="$(LogoSide)"
 										LaunchTarget="[InstallFolder]\Vixen.Application.exe"/>
