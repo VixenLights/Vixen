@@ -8,26 +8,36 @@
 								Variable="VC_VER"
 								ProductCode="{0AE39060-F209-4D05-ABC7-54B8F9CFA32E}"
 								Result="version" />
+
+				<!--
+				Source location for the binaries are the following urls. The content at these targets could be updated at anytime and thus 
+				the hash would not match if we tried to do like NET 6 or ASP.NET packages. So including the actual binary in the installer to
+				ensure proper function.
 				
+				DownloadUrl="https://aka.ms/vs/17/release/vc_redist.x64.exe"
+				DownloadUrl="https://aka.ms/vs/17/release/vc_redist.x86.exe"
+				-->
+
 				<PackageGroup Id="VCRedistPackage">
+						<?if $(sys.BUILDARCH) = x64 ?>
 						<ExePackage DetectCondition="VC_VER &gt;= v14.34.31938"
 																		DisplayName="Microsoft Visual C++ 2015-2022 Redistributable (x64)"
-																		Compressed="no"
-																		PerMachine="yes"
-																		DownloadUrl="https://aka.ms/vs/17/release/vc_redist.x64.exe"
+																		Compressed="yes"
+																		PerMachine="yes"															
 																		SourceFile="..\..\Installer\Redist\VC_redist.x64.exe"
 																		InstallArguments="/install /quiet /norestart"
 																		InstallCondition="VersionNT64"
 																		Permanent="true"/>
+						<?elseif $(sys.BUILDARCH) = x86 ?>
 						<ExePackage DetectCondition="VC_VER &gt;= v14.34.31938"
 																		DisplayName="Microsoft Visual C++ 2015-2022 Redistributable (x86)"
-																		Compressed="no"
-																		PerMachine="yes"
-																		DownloadUrl="https://aka.ms/vs/17/release/vc_redist.x86.exe"
+																		Compressed="yes"
+																		PerMachine="yes"																
 																		SourceFile="..\..\Installer\Redist\VC_redist.x86.exe"
 																		InstallArguments="/install /quiet /norestart"
 																		InstallCondition="NOT VersionNT64"
 																		Permanent="true"/>
+						<?endif?>
 				</PackageGroup>
 
   </Fragment>
