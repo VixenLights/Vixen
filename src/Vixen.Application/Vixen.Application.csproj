@@ -6,6 +6,7 @@
 				<RootNamespace>VixenApplication</RootNamespace>
 				<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 				<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+				<ApplicationIcon>Vixen3.ico</ApplicationIcon>
 		</PropertyGroup>
 
 		<!--Required to allow the webserver module to work.-->
@@ -22,6 +23,7 @@
 				<Content Include="NLog.config">
 						<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 				</Content>
+				<Content Include="Vixen3.ico" />
 		</ItemGroup>
 
 		<ItemGroup>

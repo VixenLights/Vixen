@@ -4,10 +4,6 @@
 				<RootNamespace>Vixen</RootNamespace>
 				<UseWindowsForms>true</UseWindowsForms>
 				<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-				<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-				<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-				<BaseOutputPath>$(SolutionDir)$(Configuration)\Output</BaseOutputPath>
-				<OutputPath>$(BaseOutputPath)</OutputPath>
 		</PropertyGroup>
 
 		<ItemGroup>

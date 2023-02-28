@@ -1,0 +1,37 @@
+﻿<Project Sdk="WixToolset.Sdk/4.0.0-rc.3">
+  <PropertyGroup>
+    <DefineConstants>Version=$(App_Version);ReleaseType=$(Environment)</DefineConstants>
+    <BaseOutputPath>$(SolutionDir)$(Configuration)\Setup\$(Environment)</BaseOutputPath>
+    <OutputPath>$(BaseOutputPath)</OutputPath>
+    <OutputType>Bundle</OutputType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Environment)|$(Platform)'=='Test|x64'">
+    <OutputName>Vixen-Test-$(App_Version)-Setup-64bit</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Environment)|$(Platform)'=='Development|x64'">
+    <OutputName>Vixen-DevBuild-$(App_Version)-Setup-64bit</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Environment)|$(Platform)'=='Production|x64'">
+    <OutputName>Vixen-$(App_Version)-Setup-64bit</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Environment)|$(Platform)'=='Test|x86'">
+    <OutputName>Vixen-Test-$(App_Version)-Setup-32bit</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Environment)|$(Platform)'=='Development|x86'">
+    <OutputName>Vixen-DevBuild-$(App_Version)-Setup-32bit</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Environment)|$(Platform)'=='Production|x86'">
+    <OutputName>Vixen-$(App_Version)-Setup-32bit</OutputName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Bal.wixext" Version="4.0.0-rc.3" />
+    <PackageReference Include="WixToolset.Netfx.wixext" Version="4.0.0-rc.3" />
+    <PackageReference Include="WixToolset.Util.wixext" Version="4.0.0-rc.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Vixen.Installer\Vixen.Installer.wixproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="VixenTheme.xml" />
+  </ItemGroup>
+</Project>
