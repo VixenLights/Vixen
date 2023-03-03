@@ -1,18 +1,20 @@
-﻿using Common.AudioPlayer.SampleProvider;
-using CSCore;
-using CSCore.SoundOut;
-using CSCore.Streams;
+﻿#nullable enable
+using Common.AudioPlayer.FileReader;
+using Common.AudioPlayer.SampleProvider;
+using Common.AudioPlayer.Source;
+using NAudio.Wave;
 using NLog;
 
 namespace Common.AudioPlayer
 {
 	public class CoreAudioPlayer:IPlayer
 	{
-		private static Logger Logging = LogManager.GetCurrentClassLogger();
-		private ISoundOut _soundOut;
-		private IWaveSource _waveSource;
-		private SoundTouchSource _speedControl;
-		
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
+		private IWavePlayer? _soundOut;
+		private IWaveProvider? _waveSource;
+		private SoundTouchSource? _speedControl;
+		private CachedSoundSource? _cachedSoundSource;
+
 		internal CoreAudioPlayer(string fileName)
 		{
 			if (string.IsNullOrEmpty(fileName))
@@ -36,7 +38,7 @@ namespace Common.AudioPlayer
 		{
 			try
 			{
-				_waveSource?.Dispose();
+				//_waveSource?.Dispose();
 				_waveSource = null;
 			}
 			catch (Exception e)
@@ -50,8 +52,8 @@ namespace Common.AudioPlayer
 			var status = false;
 			try
 			{
-				_speedControl?.Dispose();
-				_waveSource?.Dispose();
+				//_speedControl?.Dispose();
+				//_waveSource?.Dispose();
 				_waveSource = GetCodec(Filename);
 					status = true;
 			}
@@ -64,15 +66,12 @@ namespace Common.AudioPlayer
 			return status;
 		}
 
-		private IWaveSource GetCodec(string filename)
+		private IWaveProvider GetCodec(string filename)
 		{
-			IWaveSource waveSource = CSCore.Codecs.CodecFactory.Instance.GetCodec(filename);
-			CachedSoundSource css = new CachedSoundSource(waveSource);
-			waveSource.Dispose();
-			return css.ToSampleSource()
-				.AppendSource(x => new SoundTouchSource(x, 20), out _speedControl)
-				.ToWaveSource();
-
+			AudioFileReader reader = new AudioFileReader(filename);
+			_cachedSoundSource = new CachedSoundSource(reader);
+			_speedControl = new SoundTouchSource(_cachedSoundSource.ToSampleProvider(), 20);
+			return _speedControl.ToWaveSourceProvider(_cachedSoundSource.WaveFormat.BitsPerSample);
 		}
 
 		public AudioOutputManager AudioOutputManager { get; }
@@ -104,8 +103,8 @@ namespace Common.AudioPlayer
 		/// <inheritdoc />
 		public TimeSpan Duration { get
 		{
-			if (_waveSource != null)
-				return _waveSource.GetLength();
+			if (_cachedSoundSource != null)
+				return _cachedSoundSource.TotalTime;
 			return TimeSpan.Zero;
 		} }
 
@@ -114,6 +113,8 @@ namespace Common.AudioPlayer
 		{
 			_soundOut?.Stop();
 			PlaybackStopped?.Invoke();
+			_soundOut?.Dispose();
+			_soundOut = null;
 		}
 
 		/// <inheritdoc />
@@ -121,15 +122,16 @@ namespace Common.AudioPlayer
 		{
 			if ((IsPaused || IsStopped) && EnsureDeviceCreated())
 			{
+				if (_soundOut == null) return;
 				if (IsPaused)
 				{
-					_soundOut?.Resume();
+					_soundOut?.Play();
 				}
 				else
 				{
 					try
 					{
-						_soundOut.Initialize(_waveSource);
+						_soundOut.Init(_waveSource);
 						_soundOut.Volume = Volume;
 					}
 					catch (Exception e)
@@ -177,9 +179,9 @@ namespace Common.AudioPlayer
 						return TimeSpan.Zero;
 					}
 
-					if (_waveSource != null)
+					if (_cachedSoundSource != null)
 					{
-						return _waveSource.GetPosition();
+						return _cachedSoundSource.CurrentTime;
 					}
 
 				}
@@ -196,7 +198,11 @@ namespace Common.AudioPlayer
 			{
 				try
 				{
-					_waveSource?.SetPosition(value);
+					if(_cachedSoundSource != null)
+					{
+						_cachedSoundSource.CurrentTime = value;
+					}
+					
 				}
 				catch (Exception e)
 				{
@@ -206,16 +212,16 @@ namespace Common.AudioPlayer
 		}
 
 		/// <inheritdoc />
-		public int BytesPerSample => _waveSource.WaveFormat.BitsPerSample / 8;
+		public int BytesPerSample => _waveSource==null?0:_waveSource.WaveFormat.BitsPerSample / 8;
 
 		/// <inheritdoc />
-		public long NumberSamples => _waveSource.Length / BytesPerSample;
+		public long NumberSamples => _cachedSoundSource == null ? 0 : _cachedSoundSource.Length / BytesPerSample;
 
 		/// <inheritdoc />
-		public int Channels => _waveSource.WaveFormat.Channels;
+		public int Channels => _waveSource == null ? 0 : _waveSource.WaveFormat.Channels;
 
 		/// <inheritdoc />
-		public float Frequency  => _waveSource.WaveFormat.SampleRate;
+		public float Frequency  => _waveSource == null ? 0 : _waveSource.WaveFormat.SampleRate;
 
 		/// <inheritdoc />
 		public float PlaybackRate
@@ -253,7 +259,7 @@ namespace Common.AudioPlayer
 				else
 				{
 					if (_speedControl != null)
-					{ 
+					{
 						_speedControl.Tempo = 1.0f;
 						_speedControl.Rate = value;
 					}
@@ -283,10 +289,10 @@ namespace Common.AudioPlayer
 		}
 
 		/// <inheritdoc />
-		public event Action PlaybackEnded;
-		public event Action PlaybackResumed;
-		public event Action PlaybackStopped;
-		public event Action PlaybackPaused;
+		public event Action? PlaybackEnded;
+		public event Action? PlaybackResumed;
+		public event Action? PlaybackStopped;
+		public event Action? PlaybackPaused;
 
 		#endregion
 
@@ -298,8 +304,8 @@ namespace Common.AudioPlayer
 
 		private void CleanUpWaveSource()
 		{
-			_speedControl?.Dispose();
-			_waveSource?.Dispose();
+			//_speedControl?.Dispose();
+			
 			_waveSource = null;
 		}
 
@@ -307,7 +313,7 @@ namespace Common.AudioPlayer
 		{
 			if (_soundOut != null)
 			{
-				_soundOut.Stopped -= PlaybackDeviceOnPlaybackStopped;
+				_soundOut.PlaybackStopped -= PlaybackDeviceOnPlaybackStopped;
 				if (dispose)
 				{
 					_soundOut.Dispose();
@@ -338,13 +344,13 @@ namespace Common.AudioPlayer
 			{
 				_soundOut = AudioOutputManager.GetAudioOutput();
 				if (_soundOut == null) return false;
-				_soundOut.Stopped += PlaybackDeviceOnPlaybackStopped;
+				_soundOut.PlaybackStopped += PlaybackDeviceOnPlaybackStopped;
 			}
 			
 			return true;
 		}
 
-		private void PlaybackDeviceOnPlaybackStopped(object sender, StoppedEventArgs e)
+		private void PlaybackDeviceOnPlaybackStopped(object? sender, StoppedEventArgs e)
 		{
 			PlaybackEnded?.Invoke();
 		}

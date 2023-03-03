@@ -1,43 +1,44 @@
-﻿using CSCore;
+﻿//using Common.AudioPlayer.SampleProvider;
+//using NAudio.Wave;
 
-namespace VixenModules.Media.Audio.SampleProviders
-{
-	public sealed class CachedSoundSampleProvider : ISampleSource
-	{
-		private readonly CachedAudioData _cachedAudioData;
-		
-		public CachedSoundSampleProvider(CachedAudioData cachedAudioData)
-		{
-			_cachedAudioData = cachedAudioData;
-			Position = 0;
-			Length = _cachedAudioData.AudioData.Length;
-		}
+//namespace VixenModules.Media.Audio.SampleProviders
+//{
+//	public sealed class CachedSoundSampleProvider : ISampleProvider
+//	{
+//		private readonly CachedSoundSource _cachedAudioData;
 
-		public int Read(float[] buffer, int offset, int count)
-		{
-			var availableSamples = Length - Position;
-			var samplesToCopy = Math.Min(availableSamples, count);
-			Array.Copy(_cachedAudioData.AudioData, Position, buffer, offset, samplesToCopy);
-			Position += samplesToCopy;
-			return (int)samplesToCopy;
-		}
+//		public CachedSoundSampleProvider(CachedSoundSource cachedAudioData)
+//		{
+//			_cachedAudioData = cachedAudioData;
+//			Position = 0;
+//			Length = _cachedAudioData.AudioData.Length;
+//		}
 
-		public long Position { get; set; }
+//		public int Read(float[] buffer, int offset, int count)
+//		{
+//			var availableSamples = Length - Position;
+//			var samplesToCopy = Math.Min(availableSamples, count);
+//			Array.Copy(_cachedAudioData.AudioData, Position, buffer, offset, samplesToCopy);
+//			Position += samplesToCopy;
+//			return (int)samplesToCopy;
+//		}
 
-		public long Length { get; }
+//		public long Position { get; set; }
 
-		/// <inheritdoc />
-		public bool CanSeek { get; }
-		public WaveFormat WaveFormat => _cachedAudioData.WaveFormat;
+//		public long Length { get; }
 
-		#region Implementation of IDisposable
+//		/// <inheritdoc />
+//		public bool CanSeek { get; }
+//		public WaveFormat WaveFormat => _cachedAudioData.WaveFormat;
 
-		/// <inheritdoc />
-		public void Dispose()
-		{
-			
-		}
+//		#region Implementation of IDisposable
 
-		#endregion
-	}
-}
+//		/// <inheritdoc />
+//		public void Dispose()
+//		{
+
+//		}
+
+//		#endregion
+//	}
+//}

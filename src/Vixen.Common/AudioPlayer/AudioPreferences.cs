@@ -1,7 +1,6 @@
 ﻿using System.Xml.Serialization;
 using Common.Preferences;
-using CSCore.CoreAudioAPI;
-using CSCore.SoundOut;
+using NAudio.CoreAudioApi;
 
 namespace Common.AudioPlayer
 {
@@ -16,7 +15,7 @@ namespace Common.AudioPlayer
 		public override void SetStandardValues()
 		{
 			SoundOutDeviceId = AudioOutputManager.DefaultDevicePlaceholder;
-			AudioOutputMode = WasapiOut.IsSupportedOnCurrentPlatform ? AudioOutputMode.WASAPI : AudioOutputMode.DirectSound;
+			AudioOutputMode = AudioOutputManager.IsWasapiSupportedOnCurrentPlatform ? AudioOutputMode.WASAPI : AudioOutputMode.DirectSound;
 			AudioClientShareMode = AudioClientShareMode.Shared;
 			Latency = 25;
 		}

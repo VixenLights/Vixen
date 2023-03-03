@@ -1,4 +1,6 @@
 ﻿using Common.AudioPlayer;
+using Common.AudioPlayer.FileReader;
+using Common.AudioPlayer.SampleProvider;
 using Vixen.Module;
 using Vixen.Module.Media;
 using Vixen.Module.Timing;
@@ -8,109 +10,17 @@ namespace VixenModules.Media.Audio
 {
 	public class Audio : MediaModuleInstanceBase, ITiming
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private IPlayer _audioSystem;
 		private AudioData _data;
-		private CachedAudioData _cachedAudioData;
-		
+		private CachedSampleSource _cachedAudioData;
+
 		[Obsolete("Based on old libraries and not currently implemented.")]
-		public string[] DetectionNotes
-		{
-			get
-			{
-				return Array.Empty<string>();
-				//if (_audioSystem == null) return null;
-				//return _audioSystem.NOTE;
-			}
-		}
-		
-		[Obsolete("Based on old libraries and not currently implemented.")]
-		public float[] DetectionNoteFreq
-		{
-			get
-			{
-				return Array.Empty<float>();
-			//	if (_audioSystem == null) return null;
-			//	return _audioSystem.NOTE_FREQ;
-			//
-			}
-		}
+		public string[] DetectionNotes => Array.Empty<string>();
 
 		public bool MediaLoaded
 		{
 			get { return _audioSystem != null; }
-		}
-
-		[Obsolete("Based on old libraries and not currently implemented.")]
-		public bool DetectFrequeniesEnabled
-		{
-			get
-			{
-				return false;
-				//if (_audioSystem == null) return false;
-				//else return _audioSystem.DetectFrequeniesEnabled;
-			}
-			set
-			{
-				//if (_audioSystem != null)
-				//	_audioSystem.DetectFrequeniesEnabled = value;
-			}
-		}
-
-		[Obsolete("Based on old libraries and not currently implemented.")]
-		public bool LowPassFilterEnabled
-		{
-			get
-			{
-				return false;
-				//if (_audioSystem == null) return false;
-				//else return _audioSystem.LowPassFilterEnabled;
-			}
-			set
-			{
-				//if (_audioSystem != null)
-				//	_audioSystem.LowPassFilterEnabled = value;
-			}
-		}
-
-		[Obsolete("Based on old libraries and not currently implemented.")]
-		public float LowPassFilterValue
-		{
-			get
-			{
-				return -1;
-				//if (_audioSystem == null) return -1;
-				//else return _audioSystem.LowPassFilterValue;
-			}
-			set { /*_audioSystem.LowPassFilterValue = value;*/ }
-		}
-
-		[Obsolete("Based on old libraries and not currently implemented.")]
-		public float HighPassFilterValue
-		{
-			get
-			{
-				return -1;
-				//if (_audioSystem == null) return -1;
-				//else return _audioSystem.HighPassFilterValue;
-			}
-			set { /*_audioSystem.HighPassFilterValue = value;*/ }
-		}
-
-		[Obsolete("Based on old libraries and not currently implemented.")]
-		public bool HighPassFilterEnabled
-		{
-			get
-			{
-				return false;
-				//if (_audioSystem == null) return false;
-				//else return _audioSystem.HighPassFilterEnabled;
-			}
-			set
-			{
-				//if (_audioSystem != null)
-				//	_audioSystem.HighPassFilterEnabled = value;
-			}
 		}
 
 		/// <summary>
@@ -170,13 +80,13 @@ namespace VixenModules.Media.Audio
 
 		private void InitSampleProvider()
 		{
-			_cachedAudioData = new CachedAudioData(MediaFilePath);
+			_cachedAudioData = new CachedSampleSource(MediaFilePath);
 		}
 
 		/// <summary>
 		/// Provides raw -1 to 1 averaged samples for by taking the max value over the number of samples to create a max sample.
 		/// </summary>
-		/// <param name="samplesPerInterval"></param>
+		/// <param name="numSamples"></param>
 		/// <returns></returns>
 		public List<Sample> GetSamples(int numSamples, CancellationToken ct)
 		{
@@ -189,11 +99,11 @@ namespace VixenModules.Media.Audio
 			CachedSoundSampleProvider cad = new CachedSoundSampleProvider(_cachedAudioData);
 			var samplesPerInterval = cad.Length / (double)numSamples;
 			provider.Init(cad, (int)samplesPerInterval);
-			while (pi.Count < numSamples && cad.Position < cad.Length)
+			while (pi.Count < numSamples && cad.SamplePosition < cad.Length)
 			{
 				// Were we canceled?
 				ct.ThrowIfCancellationRequested();
-				cad.Position = (int)(samplesPerInterval * pi.Count);
+				cad.SamplePosition = (int)(samplesPerInterval * pi.Count);
 				pi.Add(provider.GetNextPeak());
 			}
 			return pi;
@@ -202,12 +112,10 @@ namespace VixenModules.Media.Audio
 		/// <summary>
 		/// Get the range of samples as a byte array from the starting sample. Converts -1 to 1 to byte values
 		/// </summary>
-		/// <param name="startSample">0 based starting sample</param>
-		/// <param name="numSamples">Number of samples to include in the byte array</param>
 		/// <returns></returns>
 		public byte[] GetRawAudioSamples()
 		{
-			using (var audioFileReader = CSCore.Codecs.CodecFactory.Instance.GetCodec(_audioSystem.Filename))
+			using (var audioFileReader = new AudioFileReader(_audioSystem.Filename))
 			{
 				
 				var wholeFile = new List<byte>((int)(audioFileReader.Length / 4));
@@ -230,10 +138,10 @@ namespace VixenModules.Media.Audio
 		/// <returns></returns>
 		public double[] GetMonoSamples(int startSample, int numSamples)
 		{	
-			if (_cachedAudioData == null) return new double[0];
+			if (_cachedAudioData == null) return Array.Empty<double>();
 			CachedSoundSampleProvider cad = new CachedSoundSampleProvider(_cachedAudioData);
 			var provider = new MonoSampleProvider(cad);
-			cad.Position = startSample;
+			cad.SamplePosition = startSample;
 			var buffer = new double[numSamples];
 			provider.Read(buffer, 0, numSamples);
 			return buffer;
@@ -349,17 +257,6 @@ namespace VixenModules.Media.Audio
 		[Obsolete("No longer populated and will be zero. Use CurrentPlaybackDeviceId")]
 		public override int CurrentPlaybackDeviceIndex { get; set; }
 
-		//public delegate void FrequencyDetectedHandler(object sender, FrequencyEventArgs e);
-
-		//public event FrequencyDetectedHandler FrequencyDetected;
-
-		//private void _audioSystem_FrequencyDetected(object sender, FrequencyEventArgs e)
-		//{
-		//	if (FrequencyDetected != null) {
-		//		FrequencyDetected(this, e);
-		//	}
-		//}
-
 		public TimeSpan Position
 		{
 			get
@@ -389,10 +286,7 @@ namespace VixenModules.Media.Audio
 			}
 		}
 
-		public bool SupportsVariableSpeeds
-		{
-			get { return true; }
-		}
+		public bool SupportsVariableSpeeds => true;
 
 		public float Speed
 		{

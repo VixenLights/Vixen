@@ -1,13 +1,14 @@
-﻿using CSCore;
+﻿using Common.AudioPlayer.SampleProvider;
+using NAudio.Wave;
 
 namespace VixenModules.Media.Audio.SampleProviders
 {
-	public class MonoSampleProvider:ISampleSource
+	public class MonoSampleProvider:ISampleProvider
 	{
-		private readonly ISampleSource _sourceProvider;
+		private readonly ISampleProvider _sourceProvider;
 		private float[] _sourceBuffer;
 		
-		public MonoSampleProvider(ISampleSource sourceProvider)
+		public MonoSampleProvider(CachedSoundSampleProvider sourceProvider)
 		{
 			_sourceProvider = sourceProvider.ToMono();
 			WaveFormat = _sourceProvider.WaveFormat; //.CreateIeeeFloatWaveFormat(sourceProvider.WaveFormat.SampleRate, 1);

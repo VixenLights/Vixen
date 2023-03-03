@@ -1,14 +1,15 @@
-﻿using CSCore;
+﻿using Common.AudioPlayer.SampleProvider;
+using NAudio.Wave;
 
 namespace VixenModules.Media.Audio.SampleProviders
 {
     public abstract class PeakProvider : IPeakProvider
     {
-        protected ISampleSource Provider { get; private set; }
+        protected CachedSoundSampleProvider Provider { get; private set; }
         protected int SamplesPerPeak { get; private set; }
         protected float[] ReadBuffer { get; private set; }
 
-        public void Init(ISampleSource provider, int samplesPerPeak)
+        public void Init(CachedSoundSampleProvider provider, int samplesPerPeak)
         {
             Provider = provider;
             SamplesPerPeak = samplesPerPeak;

@@ -1,51 +1,48 @@
-﻿using CSCore;
+﻿
+
+using System.Diagnostics.CodeAnalysis;
+using NAudio.Wave;
 
 namespace Common.AudioPlayer.SampleProvider
 {
-    internal sealed class SoundTouchSource : SampleAggregatorBase
+    internal sealed class SoundTouchSource : ISampleProvider
     {
-        private bool _isDisposed;
-
-        private readonly int _latency;
-        private readonly float[] _sourceReadBuffer;
+	    private readonly float[] _sourceReadBuffer;
         private readonly float[] _soundTouchReadBuffer;
-        private readonly object lockObject;
+        private readonly object _lockObject;
         private float _tempo = 1f;
         private float _rate = 1f;
 
         private bool _seekRequested;
 
-        private ISampleSource _sampleSource;
+        private ISampleProvider _sampleSource;
         private SoundTouch.SoundTouch _soundTouch;
 
-        public SoundTouchSource(ISampleSource sampleSource, int latency)
-            : base(sampleSource)
+        public SoundTouchSource(ISampleProvider sampleSource, int latency)
         {
-
 	        _soundTouch = new SoundTouch.SoundTouch();
-	        // explore what the default values are before we change them:
-	        //Debug.WriteLine(String.Format("SoundTouch Version {0}", soundTouch.VersionString));
-	        //Debug.WriteLine("Use QuickSeek: {0}", soundTouch.GetUseQuickSeek());
-	        //Debug.WriteLine("Use AntiAliasing: {0}", soundTouch.GetUseAntiAliasing());
+            // explore what the default values are before we change them:
+            //Debug.WriteLine(String.Format("SoundTouch Version {0}", soundTouch.VersionString));
+            //Debug.WriteLine("Use QuickSeek: {0}", soundTouch.GetUseQuickSeek());
+            //Debug.WriteLine("Use AntiAliasing: {0}", soundTouch.GetUseAntiAliasing());
 
-	        _sampleSource = sampleSource;
-            _latency = latency;
-            
+            _sampleSource = sampleSource;
+
             _soundTouch.SetChannels(_sampleSource.WaveFormat.Channels);
             _soundTouch.SetSampleRate(_sampleSource.WaveFormat.SampleRate);
             _soundTouch.SetUseAntiAliasing(false);
             _soundTouch.SetUseQuickSeek(false);
             _soundTouch.SetTempo(1.0f);
 
-            _sourceReadBuffer = new float[(_sampleSource.WaveFormat.SampleRate * _sampleSource.WaveFormat.Channels * (long)_latency) / 1000];
+            _sourceReadBuffer = new float[(_sampleSource.WaveFormat.SampleRate * _sampleSource.WaveFormat.Channels * (long)latency) / 1000];
             _soundTouchReadBuffer = new float[_sourceReadBuffer.Length * 10];
 
-            lockObject = new object();
+            _lockObject = new object();
         }
 
         public void SetPitch(float pitch)
         {
-            if(pitch > 6.0f || pitch < -6.0f)
+            if (pitch > 6.0f || pitch < -6.0f)
             {
                 pitch = 0.0f;
             }
@@ -55,24 +52,24 @@ namespace Common.AudioPlayer.SampleProvider
 
         public float Tempo
         {
-	        get => _tempo;
+            get => _tempo;
 
-	        set
-	        {
-		        _tempo = value == 0.0f ? 1f : value;
-		        _soundTouch.SetTempo(_tempo);
-	        }
+            set
+            {
+                _tempo = value == 0.0f ? 1f : value;
+                _soundTouch.SetTempo(_tempo);
+            }
         }
 
         public float Rate
         {
-	        get => _rate;
+            get => _rate;
 
-	        set
-	        {
-		        _rate = value == 0.0f ? 1f : value;
-		        _soundTouch.SetRate(_rate);
-	        }
+            set
+            {
+                _rate = value == 0.0f ? 1f : value;
+                _soundTouch.SetRate(_rate);
+            }
         }
 
         public void Seek()
@@ -80,16 +77,17 @@ namespace Common.AudioPlayer.SampleProvider
             _seekRequested = true;
         }
 
-        public override int Read(float[] buffer, int offset, int count)
+        [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
+        public int Read(float[] buffer, int offset, int count)
         {
 	        if (_rate == 1.0f && _tempo == 1.0f)
-	        {
-		        return PassThroughRead(buffer, offset, count);
-	        }
-
-            lock(lockObject)
             {
-                if(_seekRequested)
+                return PassThroughRead(buffer, offset, count);
+            }
+
+            lock (_lockObject)
+            {
+                if (_seekRequested)
                 {
                     _soundTouch.Clear();
                     _seekRequested = false;
@@ -98,12 +96,12 @@ namespace Common.AudioPlayer.SampleProvider
                 var samplesRead = 0;
                 var endOfSource = false;
 
-                while(samplesRead < count)
+                while (samplesRead < count)
                 {
-                    if(_soundTouch.NumberOfSamplesAvailable == 0)
+                    if (_soundTouch.NumberOfSamplesAvailable == 0)
                     {
                         var readFromSource = _sampleSource.Read(_sourceReadBuffer, 0, _sourceReadBuffer.Length);
-                        if(readFromSource == 0)
+                        if (readFromSource == 0)
                         {
                             endOfSource = true;
                             _soundTouch.Flush();
@@ -115,12 +113,12 @@ namespace Common.AudioPlayer.SampleProvider
                     var desiredSampleFrames = (count - samplesRead) / _sampleSource.WaveFormat.Channels;
                     var received = _soundTouch.ReceiveSamples(_soundTouchReadBuffer, desiredSampleFrames) * _sampleSource.WaveFormat.Channels;
 
-                    for(int n = 0; n < received; n++)
+                    for (int n = 0; n < received; n++)
                     {
                         buffer[offset + samplesRead++] = _soundTouchReadBuffer[n];
                     }
 
-                    if(received == 0 && endOfSource)
+                    if (received == 0 && endOfSource)
                     {
                         break;
                     }
@@ -130,44 +128,13 @@ namespace Common.AudioPlayer.SampleProvider
             }
         }
 
+        /// <inheritdoc />
+        public WaveFormat WaveFormat => _sampleSource.WaveFormat;
+
         public int PassThroughRead(float[] buffer, int offset, int count)
         {
-	        return _sampleSource.Read(buffer, offset, count);
+            return _sampleSource.Read(buffer, offset, count);
         }
 
-        public new void Dispose()
-        {
-            base.Dispose();
-
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected override void Dispose(bool isDisposing)
-        {
-            base.Dispose(isDisposing);
-
-            if(_isDisposed)
-            {
-                return;
-            }
-
-            if(isDisposing)
-            {
-                if(_sampleSource != null)
-                {
-                    _sampleSource.Dispose();
-                    _sampleSource = null;
-                }
-
-                if(_soundTouch != null)
-                {
-                    _soundTouch.Dispose();
-                    _soundTouch = null;
-                }
-            }
-
-            _isDisposed = true;
-        }
     }
 }
