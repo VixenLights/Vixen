@@ -1,6 +1,5 @@
 
 #include <msclr\marshal_cppstd.h>
-#include <cliext\map>
 #include <ManagedPlugin.h>
 
 using namespace System;
@@ -92,11 +91,11 @@ namespace QMLibrary
 	ManagedParameterList^ ManagedPlugin::GetParameterDescriptors()
 	{
 		ManagedParameterDescriptor^ paramDescr = nullptr;
-		ManagedParameterListPriv^ retVal = nullptr;
+		ManagedParameterList^ retVal = nullptr;
 		Vamp::Plugin::ParameterList paramList = m_plugin->getParameterDescriptors();
 		if (!paramList.empty())
 		{
-			retVal = gcnew ManagedParameterListPriv(paramList.size());
+			retVal = gcnew List<ManagedParameterDescriptor^>(paramList.size());
 			for (int j = 0; j < paramList.size(); j++)
 			{
 				paramDescr = gcnew ManagedParameterDescriptor();
@@ -111,13 +110,14 @@ namespace QMLibrary
 				paramDescr->unit = gcnew String(paramList[j].unit.c_str());
 
 				int valNameSize = paramList[j].valueNames.size();
-				cliext::vector<String^>^ valueNames = gcnew cliext::vector<String^>(valNameSize);
+				List<String^>^ valueNames = gcnew List<String^>(valNameSize);
+
 				for (int k = 0; k < valNameSize; k++)
 				{
-					valueNames[k] = gcnew String(paramList[j].valueNames[k].c_str());
+					valueNames->Add(gcnew String(paramList[j].valueNames[k].c_str()));
 				}
 				paramDescr->valueNames = valueNames;
-				retVal[j] = paramDescr;
+				retVal->Add(paramDescr);
 			}
 
 		}
@@ -128,18 +128,18 @@ namespace QMLibrary
 	ManagedOutputList^ ManagedPlugin::GetOutputDescriptors()
 	{
 		ManagedOutputDescriptor^ outDescr = nullptr;
-		ManagedOutputListPriv^ retVal = nullptr;
+		ManagedOutputList^ retVal = nullptr;
 		Vamp::Plugin::OutputList outList = m_plugin->getOutputDescriptors();
 		if (!outList.empty())
 		{
-			retVal = gcnew ManagedOutputListPriv(outList.size());
+			retVal = gcnew List<ManagedOutputDescriptor^>(outList.size());
 			for (int j = 0; j < outList.size(); j++)
 			{
 				outDescr = gcnew ManagedOutputDescriptor();
 				outDescr->binCount = outList[j].binCount;
 
 				int binNameSize = outList[j].binNames.size();
-				cliext::vector<String^>^ binNames = gcnew cliext::vector<String^>(binNameSize);
+				List<String^>^ binNames = gcnew List<String^>(binNameSize);
 				for (int k = 0; k < binNameSize; k++)
 				{
 					binNames[k] = gcnew String(outList[j].binNames[k].c_str());
@@ -203,13 +203,14 @@ namespace QMLibrary
 
 	ManagedFeatureSet^ ManagedPlugin::convertToManagedFeatureSet(Vamp::Plugin::FeatureSet unManagedFS)
 	{
-		ManagedFeatureSetPriv^ retVal = gcnew ManagedFeatureSetPriv();
+		ManagedFeatureSet^ retVal = gcnew Dictionary< int, ManagedFeatureList^>();
+		
 
 		Vamp::Plugin::FeatureSet::iterator fsIterator;
 		Vamp::Plugin::FeatureList::iterator flIterator;
 		for (fsIterator = unManagedFS.begin(); fsIterator != unManagedFS.end(); ++fsIterator)
 		{
-			ManagedFeatureListPriv^ featureList = gcnew ManagedFeatureListPriv();
+			ManagedFeatureList^ featureList = gcnew List<ManagedFeature^>();
 			for (flIterator = fsIterator->second.begin(); flIterator != fsIterator->second.end(); ++flIterator)
 			{
 				ManagedFeature^ feature = gcnew ManagedFeature();
@@ -227,14 +228,16 @@ namespace QMLibrary
 				}
 
 				feature->label = gcnew String(flIterator->label.c_str());
-				cliext::vector<float>^ newVals = gcnew cliext::vector<float>();
+
+				List<float>^ newVals = gcnew List<float>();
+
 				std::vector<float>::iterator valueIter;
 				for (valueIter = flIterator->values.begin(); valueIter != flIterator->values.end(); ++valueIter)
 				{
-					newVals->push_back(*valueIter);
+					newVals->Add(*valueIter);
 				}
 				feature->values = newVals;
-				featureList->push_back(feature);
+				featureList->Add(feature);
 			}
 			retVal[fsIterator->first] = featureList;
 		}
@@ -248,7 +251,7 @@ namespace QMLibrary
 		pin_ptr<float> pinnedData = &inputBuffer[0];
 		float* bufData = pinnedData;
 
-		Vamp::Plugin::FeatureSet features = m_plugin->process(&bufData, timestamp);
+		Vamp::Plugin::FeatureSet features = m_plugin->process(&bufData, (Vamp::RealTime)timestamp);
 		return convertToManagedFeatureSet(features);
 
 	}

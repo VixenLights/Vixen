@@ -1,7 +1,6 @@
 #ifndef MANAGEDPARAMETERLIST_H
 #define MANAGEDPARAMETERLIST_H
 
-#include <cliext\vector>
 using namespace System::Collections::Generic;
 namespace QMLibrary
 {
@@ -23,7 +22,6 @@ namespace QMLibrary
 			minValue(0), maxValue(0), defaultValue(0), isQuantized(false) { }
 	};
 
-	typedef cliext::vector<ManagedParameterDescriptor^> ManagedParameterListPriv;
 	typedef ICollection<ManagedParameterDescriptor^> ManagedParameterList;
 
 }

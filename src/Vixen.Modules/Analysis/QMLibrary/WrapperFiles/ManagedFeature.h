@@ -2,8 +2,6 @@
 #define MANAGEDFEATURE_H
 
 #include <ManagedRealtime.h>
-#include <cliext\vector>
-#include <cliext\map>
 
 using namespace System::Collections::Generic;
 
@@ -23,10 +21,8 @@ public:
 		hasTimestamp(false), hasDuration(false) { }
 };
 
-typedef cliext::vector<ManagedFeature^> ManagedFeatureListPriv;
 typedef ICollection<ManagedFeature^> ManagedFeatureList;
 
-typedef cliext::map<int, ManagedFeatureList^> ManagedFeatureSetPriv; // key is output no
 typedef IDictionary<int, ManagedFeatureList^> ManagedFeatureSet; // key is output no
 
 #endif //MANAGEDFEATURE_H
