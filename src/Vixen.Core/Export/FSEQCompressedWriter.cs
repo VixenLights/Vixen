@@ -1,6 +1,4 @@
-﻿using System.IO.Compression;
-using System.Text;
-using NLog;
+﻿using NLog;
 using Vixen.Export.FPP;
 using Zstandard.Net;
 
@@ -22,7 +20,7 @@ namespace Vixen.Export
 		private uint _numberFrames = 0;
 		private uint _framesPerBlock = 0;
 		private byte _numberCompressionBlocks;
-		private byte _numberSparseRanges = 0;
+		private readonly byte _numberSparseRanges = 0;
 		private uint _currentFrame = 0;
 		private ushort _currentFrameInBlock = 0;
 		private ushort _currentBlock = 0;
@@ -181,7 +179,7 @@ namespace Vixen.Export
 			Reset();
 			SeqPeriodTime = data.PeriodMS;
 			_numberFrames = (uint)data.NumPeriods;
-			_channelsPerFrame = (uint)data.ChannelNames.Count();
+			_channelsPerFrame = (uint)data.ChannelNames.Count;
 			if (!string.IsNullOrEmpty(data.OutputAudioFileName))
 			{
 				_variableHeaders.Add(new VariableHeader(data.OutputAudioFileName));
@@ -202,7 +200,7 @@ namespace Vixen.Export
 			Logging.Info($"Offset to channel data {_offsetToChannelData}");
 #endif
 			
-			OpenSession(data.OutFileName, _offsetToChannelData, data.ChannelNames.Count());
+			OpenSession(data.OutFileName, _offsetToChannelData, data.ChannelNames.Count);
 		}
 
 		private void OpenSession(string fileName, uint headerLength, Int32 numChannels)
@@ -219,7 +217,7 @@ namespace Vixen.Export
 				_outfs = null;
 				_dataOut = null;
 				Logging.Error(e, "An error occurred opening the filestreams for export.");
-				throw e;
+				throw;
 			}
 		}
 
@@ -329,34 +327,9 @@ namespace Vixen.Export
 				_dataOut = null;
 				_outfs = null;
 				Logging.Error(e, "An error occuring closing the export session.");
-				throw e;
+				throw;
 			}
 
-		}
-
-		private void Decompress(byte[] data)
-		{
-			try
-			{
-				using (var memoryStream = new MemoryStream(data))
-				using (var compressionStream = new ZstandardStream(memoryStream, CompressionMode.Decompress))
-				using (var temp = new MemoryStream())
-				{
-					compressionStream.CopyTo(temp);
-					var output = temp.ToArray();
-					StringBuilder sb = new StringBuilder(output.Length);
-					foreach (var b in output)
-					{
-						sb.Append($"{b} ");
-					}
-
-					Logging.Info($"Frame data: {sb}");
-				}
-			}
-			catch (Exception e)
-			{
-				Logging.Error(e, "An error occurred decompressing block.");
-			}
 		}
 
 		private uint ComputeMaxBlockCount()

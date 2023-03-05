@@ -3,7 +3,6 @@
     public sealed class CSVWriter : ExportWriterBase
     {
         private Int32 _seqNumChannels = 0;
-        private Int32 _seqNumPeriods = 0;
 
         private FileStream _outfs = null;
         private BinaryWriter _dataOut = null;
@@ -17,23 +16,22 @@
 
         public override void OpenSession(SequenceSessionData data)
         {
-            OpenSession(data.OutFileName, data.NumPeriods, data.ChannelNames.Count());
+            OpenSession(data.OutFileName, data.ChannelNames.Count);
         }
 
-        private void OpenSession(string fileName, Int32 numPeriods, Int32 numChannels)
+        private void OpenSession(string fileName, Int32 numChannels)
         {
             _seqNumChannels = numChannels;
-            _seqNumPeriods = numPeriods;
 
             try
             {
                 _outfs = File.Create(fileName, numChannels * 2, FileOptions.None);
                 _dataOut = new BinaryWriter(_outfs);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 _dataOut = null;
-                throw e;
+                throw;
             }
         }
 
@@ -56,10 +54,10 @@
                     }
                     _dataOut.Write(System.Environment.NewLine.ToCharArray());
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     _dataOut = null;
-                    throw e;
+                    throw;
                 }
             }
         }
@@ -79,11 +77,11 @@
                     _outfs = null;
 
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     _dataOut = null;
                     _outfs = null;
-                    throw e;
+                    throw;
                 }
             }
         }
