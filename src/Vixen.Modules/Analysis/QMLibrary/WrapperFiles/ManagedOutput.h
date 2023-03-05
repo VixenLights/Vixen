@@ -1,8 +1,6 @@
 #ifndef MANAGEDOUTPUT_H
 #define MANAGEDOUTPUT_H
 
-#include <cliext\vector>
-
 using namespace System;
 using namespace System::Collections::Generic;
 
@@ -38,7 +36,6 @@ public:
 		sampleType(SampleType::OneSamplePerStep), sampleRate(0), hasDuration(false) { }
 };
 
-typedef cliext::vector<ManagedOutputDescriptor^> ManagedOutputListPriv;
-typedef ICollection<ManagedOutputDescriptor^> ManagedOutputList;
+typedef IList<ManagedOutputDescriptor^> ManagedOutputList;
 
 #endif //MANAGEDOUTPUT_H
