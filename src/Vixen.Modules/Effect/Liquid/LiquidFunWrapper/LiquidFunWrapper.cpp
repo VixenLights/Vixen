@@ -24,11 +24,11 @@ void VixenModules::Effect::Liquid::LiquidFunWrapper::Initialize(
 
 	if (bottom)
 	{
-		CreateBarrier(_world, (float)_width / 2.0, -1.0f, (float)_width, 0.001f); 
+		CreateBarrier(_world, (float)_width / 2.0f, -1.0f, (float)_width, 0.001f); 
 	}
 	if (top)
 	{
-		CreateBarrier(_world, (float)_width / 2.0, _height + 1.0f, (float)_width, 0.001f);
+		CreateBarrier(_world, (float)_width / 2.0f, _height + 1.0f, (float)_width, 0.001f);
 	}
 	if (left)
 	{
@@ -60,8 +60,8 @@ array < System::Tuple<int, int, System::Drawing::Color>^ >^ VixenModules::Effect
 		for (int i = 0; i < p->GetParticleCount(); ++i)
 		{
 			// Get the position of the particle
-			int x = Math::Round(positionBuffer[i].x, 0);
-			int y = Math::Round(positionBuffer[i].y, 0);
+			int x = (int)Math::Round(positionBuffer[i].x, 0);
+			int y = (int)Math::Round(positionBuffer[i].y, 0);
 
 			// Get the color of the particle
 			auto c = colorBuffer[i].GetColor();
@@ -70,7 +70,7 @@ array < System::Tuple<int, int, System::Drawing::Color>^ >^ VixenModules::Effect
 			particles[i] = gcnew Tuple<int, int, System::Drawing::Color>(
 				x, 
 				y, 
-				System::Drawing::Color::FromArgb((c.r * MaxColorIntensity), (c.g * MaxColorIntensity), (c.b * MaxColorIntensity)));
+				System::Drawing::Color::FromArgb((int)(c.r * MaxColorIntensity), (int)(c.g * MaxColorIntensity), (int)(c.b * MaxColorIntensity)));
 		}
 	}
 
@@ -129,8 +129,8 @@ void VixenModules::Effect::Liquid::LiquidFunWrapper::LiquidFunWrapper::StepWorld
 	for (int i = 0; i < particleCount; ++i)
 	{
 		// Get the position of the particle
-		int x = positionBuffer[i].x;
-		int y = positionBuffer[i].y;
+		int x = (int)positionBuffer[i].x;
+		int y = (int)positionBuffer[i].y;
 
 		// If the particle is outside the viewable area then...
 		if (y < -1 || x < -1 || x > _width + 1)
@@ -226,18 +226,18 @@ void VixenModules::Effect::Liquid::LiquidFunWrapper::CreateParticles(
 	float positionX = (float)x; 
 	float positionY = (float)y; 
 
-	static const float TWO_PI = 2 * Math::PI;
+	static const float TWO_PI = (float)(2.0 * Math::PI);
 
-	float velocityX = (float)velocity * 10.0 * cos(TWO_PI * (float)direction / 360.0);
-	float velocityY = (float)velocity * 10.0 * sin(TWO_PI * (float)direction / 360.0);
+	float velocityX = (float)(velocity * 10.0 * cos(TWO_PI * direction / 360.0));
+	float velocityY = (float)(velocity * 10.0 * sin(TWO_PI * direction / 360.0));
 
-	float velocityVariation = rand01() * 0.1;
-	velocityVariation -= velocityVariation / 2.0;
+	float velocityVariation = (float)(rand01() * 0.1);
+	velocityVariation -= velocityVariation / 2.0f;
 
 	velocityX -= velocityX * velocityVariation;
 	velocityY -= velocityY * velocityVariation;
 
-	float particleLifetime = lifetime / 100.0;
+	float particleLifetime = lifetime / 100.0f;
 	
 	// Create particles based on emitter flow
 	for (int i = 0; i < flow; i++)
@@ -255,27 +255,27 @@ void VixenModules::Effect::Liquid::LiquidFunWrapper::CreateParticles(
 		if (sourceSize == 0)
 		{
 			// Randomly pick a position within the emitter's radius.
-			const float32 angle = rand01() * 2.0f * b2_pi;
+			const float32 angle = (float)(rand01() * 2.0 * b2_pi);
 
 			// Distance from the center of the circle.
-			const float32 distance = rand01();
-			b2Vec2 positionOnUnitCircle(sin(angle), cos(angle));
+			const float32 distance = (float)rand01();
+			b2Vec2 positionOnUnitCircle((float)sin(angle), (float)cos(angle));
 
 			// Initial position.
 			pd.position.Set(
-				positionX + positionOnUnitCircle.x * distance * 0.5,
-				positionY + positionOnUnitCircle.y * distance * 0.5);
+				(float)(positionX + positionOnUnitCircle.x * distance * 0.5),
+				(float)(positionY + positionOnUnitCircle.y * distance * 0.5));
 		}
 		else
 		{
 			// Distance from the center of the circle.
-			const float32 distance = rand01() * ((float)sourceSize - (float)sourceSize / 2.0);
+			const float32 distance = (float)(rand01() * ((float)sourceSize - (float)sourceSize / 2.0));
 
-			float offsetX = distance * cos(TWO_PI * ((float)direction + 90.0) / 360.0);
-			float offsetY = distance * sin(TWO_PI * ((float)direction + 90.0) / 360.0);
+			float offsetX = (float)(distance * cos(TWO_PI * ((float)direction + 90.0) / 360.0));
+			float offsetY = (float)(distance * sin(TWO_PI * ((float)direction + 90.0) / 360.0));
 
 			// Initial position.
-			pd.position.Set(positionX + (offsetX * (float)width / 200.0), positionY + (offsetY * (float)height / 200.0));
+			pd.position.Set(positionX + (offsetX * (float)width / 200.0f), positionY + (offsetY * (float)height / 200.0f));
 		}
 
 		// Send particle flying
@@ -285,14 +285,14 @@ void VixenModules::Effect::Liquid::LiquidFunWrapper::CreateParticles(
 		// Give particle a lifetime
 		if (lifetime > 0)
 		{
-			float randomlifeTime = particleLifetime + (particleLifetime * 0.2 * rand01()) - (particleLifetime *.01);			
+			float randomlifeTime = (float)(particleLifetime + (particleLifetime * 0.2 * rand01()) - (particleLifetime *.01));			
 			pd.lifetime = randomlifeTime;
 		}
 		
 		// If the lifetime is too small the Liquid Fun API seems to revert to a very large lifetime.
 		if (pd.lifetime < 0.02)
 		{
-			pd.lifetime = 0.02;
+			pd.lifetime = 0.02f;
 		}
 
 		ps->CreateParticle(pd);

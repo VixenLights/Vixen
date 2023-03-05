@@ -21,7 +21,6 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{179D72C2-55CD-4DF1-8BE7-8BADA053E390}</ProjectGuid>
-   
     <Keyword>ManagedCProj</Keyword>
     <RootNamespace>ClassLibrary1</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
@@ -165,12 +164,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
