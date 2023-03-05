@@ -515,11 +515,6 @@ namespace Vixen.Export
 
 		                _output.CloseSession();
 	                }
-	                catch (Exception ex)
-	                {
-		                //MessageBox.Show(ex.Message, @"Save Error!");
-		                throw ex;
-	                }
 	                finally
 	                {
 		                _generator.EndGeneration();
