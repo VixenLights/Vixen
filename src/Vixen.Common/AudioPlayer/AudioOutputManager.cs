@@ -1,17 +1,15 @@
 ﻿using System.Collections.ObjectModel;
-using Common.AudioPlayer.SampleProvider;
-using CSCore;
-using CSCore.Codecs;
-using CSCore.CoreAudioAPI;
-using CSCore.SoundOut;
+using System.Text;
 using Microsoft.Win32;
+using NAudio.CoreAudioApi;
+using NAudio.Wave;
 using NLog;
 
 namespace Common.AudioPlayer
 {
 	public class AudioOutputManager : IDisposable
     {
-	    private static Logger Logging = LogManager.GetCurrentClassLogger();
+	    private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 	    private static AudioOutputManager _instance;
         public const string DefaultDevicePlaceholder = "-0";
         
@@ -26,7 +24,7 @@ namespace Common.AudioPlayer
 
         static AudioOutputManager()
         {
-	        CodecFactory.Instance.Register("ogg-vorbis", new CodecFactoryEntry(s => new NVorbisSource(s).ToWaveSource(), ".ogg"));
+	        //CodecFactory.Instance.Register("ogg-vorbis", new CodecFactoryEntry(s => new NVorbisSource(s).ToWaveSource(), ".ogg"));
         }
 
         protected AudioOutputManager()
@@ -122,17 +120,23 @@ namespace Common.AudioPlayer
         }
 
         public static string GetSupportedFilesFilter()
-        {   
-	        return CodecFactory.SupportedFilesFilterEn;
+        {
+			var stringBuilder = new StringBuilder();
+			stringBuilder.Append("Supported Files|");
+			stringBuilder.Append(String.Concat(GetSupportedFileExtensions().Select(x => "*" + x + ";").ToArray()));
+			stringBuilder.Remove(stringBuilder.Length - 1, 1);
+			return stringBuilder.ToString();
         }
 
         public static string[] GetSupportedFileExtensions()
         {
-	        var ext =  CodecFactory.Instance.GetSupportedFileExtensions();
+            List<string> ext = new List<string>() { "mp3", "mpeg3", "wav", "wave", "flac", "fla", "aiff", "aif", "aifc", "aac", "adt",
+                "adts", "m2ts", "mp2", "3g2", "3gp2", "3gp", "3gpp", "m4a", "m4v", "mp4v", "mp4", "mov",  "asf", "wm", "wmv", "wma", "mp1", "avi", "ac3", "ec3", "ogg"};
+	       
 	        return ext.Select(x => "." + x).ToArray();
         }
 
-        public ISoundOut GetAudioOutput()
+        public IWavePlayer GetAudioOutput()
         {
             MMDevice defaultDevice;
             
@@ -140,43 +144,44 @@ namespace Common.AudioPlayer
             {
                 defaultDevice = _mmDeviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
             }
-            catch (CoreAudioAPIException)
+            catch (Exception)
             {
                 defaultDevice = null;
             }
+           
+            var devices = _mmDeviceEnumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active);
             
-            using (var devices = _mmDeviceEnumerator.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active))
+            if (defaultDevice == null || devices.Count == 0)
             {
-                if (defaultDevice == null || devices.Count == 0)
-                {
-	                return null;
-                }
-
-                MMDevice device;
-                if (_preferences.SoundOutDeviceId == DefaultDevicePlaceholder)
-                {
-                    device = defaultDevice;
-                }
-                else
-                {
-                    device = devices.FirstOrDefault(x => x.DeviceID == _preferences.SoundOutDeviceId);
-
-                    if (device == null)
-                    {
-                        _preferences.SoundOutDeviceId = DefaultDevicePlaceholder;
-                        return GetAudioOutput();
-                    }
-                }
-                _currentDeviceId = device.DeviceID;
-                if(device.DeviceState == DeviceState.Active)
-                {
-	                return new WasapiOut(true, _preferences.AudioClientShareMode, _preferences.Latency) { Device = device, StreamRoutingOptions = StreamRoutingOptions.OnDeviceDisconnect | StreamRoutingOptions.OnFormatChange };
-                }
-
-                Logging.Error("Specified audio device is not active.");
-
-                return null;
+	            return null;
             }
+
+            MMDevice device;
+            if (_preferences.SoundOutDeviceId == DefaultDevicePlaceholder)
+            {
+                device = defaultDevice;
+            }
+            else
+            {
+                device = devices.FirstOrDefault(x => x.ID == _preferences.SoundOutDeviceId);
+
+                if (device == null)
+                {
+                    _preferences.SoundOutDeviceId = DefaultDevicePlaceholder;
+                    return GetAudioOutput();
+                }
+            }
+            _currentDeviceId = device.ID;
+            if(device.State == DeviceState.Active)
+            {
+                //return new NAudio.Wave.WasapiOut(true, _preferences.AudioClientShareMode, _preferences.Latency) { Device = device, StreamRoutingOptions = StreamRoutingOptions.OnDeviceDisconnect | StreamRoutingOptions.OnFormatChange };
+                return new WasapiOut(device, _preferences.AudioClientShareMode, true , _preferences.Latency);
+            }
+
+            Logging.Error("Specified audio device is not active.");
+
+            return null;
+            
             
         }
 
@@ -189,26 +194,25 @@ namespace Common.AudioPlayer
             {
                 standardDevice = _mmDeviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
             }
-            catch (CoreAudioAPIException)
+            catch (Exception)
             {
                 standardDevice = null;
             }
 
-            if (WasapiOut.IsSupportedOnCurrentPlatform)
+            if (IsWasapiSupportedOnCurrentPlatform)
             {
-                using (var devices = _mmDeviceEnumerator.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active))
+                var devices = _mmDeviceEnumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active);
+                
+                foreach (
+                    var device in
+                        devices.Select(
+                            device =>
+                                new AudioDevice(device.FriendlyName, device.ID, 
+                                    standardDevice != null && standardDevice.ID == device.ID)))
                 {
-                    foreach (
-                        var device in
-                            devices.Select(
-                                device =>
-                                    new AudioDevice(device.FriendlyName, device.DeviceID, 
-                                        standardDevice != null && standardDevice.DeviceID == device.DeviceID)))
-                    {
-                        result.Add(device);
-                    }
+                    result.Add(device);
                 }
-
+                
                 CheckDefaultAudioDevice(result);
 
             }
@@ -216,7 +220,17 @@ namespace Common.AudioPlayer
             AudioOutputList = result;
         }
 
-        private static void CheckDefaultAudioDevice(ObservableCollection<AudioDevice> devices)
+		/// <summary>
+		///     Gets a value which indicates whether Wasapi is supported on the current Platform. True means that the current
+		///     platform supports <see cref="WasapiOut" />; False means that the current platform does not support
+		///     <see cref="WasapiOut" />.
+		/// </summary>
+		public static bool IsWasapiSupportedOnCurrentPlatform
+		{
+			get { return Environment.OSVersion.Version.Major >= 6; }
+		}
+
+		private static void CheckDefaultAudioDevice(ObservableCollection<AudioDevice> devices)
         {
             if (devices.All(x => x.Id == DefaultDevicePlaceholder))
             {
@@ -235,7 +249,7 @@ namespace Common.AudioPlayer
             defaultAudioEndpoint = _mmDeviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
             
             AudioOutputList.ToList().ForEach(x => x.IsDefault = false);
-	        var targetDevice = AudioOutputList.FirstOrDefault(x => x.Id == defaultAudioEndpoint.DeviceID);
+	        var targetDevice = AudioOutputList.FirstOrDefault(x => x.Id == defaultAudioEndpoint.ID);
 	        if (targetDevice != null) targetDevice.IsDefault = true;
         }
 
