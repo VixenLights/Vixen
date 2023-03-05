@@ -118,14 +118,14 @@ namespace VixenModules.Media.Audio
 			using (var audioFileReader = new AudioFileReader(_audioSystem.Filename))
 			{
 				
-				var wholeFile = new List<byte>((int)(audioFileReader.Length / 4));
-				var readBuffer = new byte[(int)(audioFileReader.WaveFormat.SampleRate * audioFileReader.WaveFormat.Channels)];
+				var wholeFile = new List<byte>((int)(audioFileReader.StreamLength));
+				var readBuffer = new byte[audioFileReader.WaveFormat.SampleRate * audioFileReader.WaveFormat.Channels];
 				int samplesRead;
-				while ((samplesRead = audioFileReader.Read(readBuffer, 0, readBuffer.Length)) > 0)
+				while ((samplesRead = audioFileReader.ReadRaw(readBuffer, 0, readBuffer.Length)) > 0)
 				{
 					wholeFile.AddRange(readBuffer.Take(samplesRead));
 				}
-				
+
 				return wholeFile.ToArray();
 			}
 		}

@@ -86,6 +86,8 @@ namespace Common.AudioPlayer.FileReader
         /// </summary>
         public override long Length => _length;
 
+        public long StreamLength => _readerStream.Length;
+
         /// <summary>
         /// Position of this stream (in bytes)
         /// </summary>
@@ -102,7 +104,19 @@ namespace Common.AudioPlayer.FileReader
         /// <param name="offset">Offset into buffer</param>
         /// <param name="count">Number of bytes required</param>
         /// <returns>Number of bytes read</returns>
-        public override int Read(byte[] buffer, int offset, int count)
+        public int ReadRaw(byte[] buffer, int offset, int count)
+        {
+	        return _readerStream.Read(buffer, offset / 4, count);
+        }
+
+		/// <summary>
+		/// Reads from this wave stream
+		/// </summary>
+		/// <param name="buffer">Audio buffer</param>
+		/// <param name="offset">Offset into buffer</param>
+		/// <param name="count">Number of bytes required</param>
+		/// <returns>Number of bytes read</returns>
+		public override int Read(byte[] buffer, int offset, int count)
         {
             var waveBuffer = new WaveBuffer(buffer);
             int samplesRequired = count / 4;
