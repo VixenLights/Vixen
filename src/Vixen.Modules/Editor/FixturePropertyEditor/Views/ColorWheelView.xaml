@@ -14,7 +14,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
-                <ResourceDictionary Source="/DataGridThemes;component/ExpressionDark.xaml" />
+								<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/ExpressionDark.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <common:InverseBooleanConverter x:Key="InverseBoolConverter" />
             <common:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
