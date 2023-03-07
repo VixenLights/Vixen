@@ -150,11 +150,18 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 			if (ElementMapFilePath == String.Empty || !File.Exists(ElementMapFilePath))
 			{
 				var saveFileService = dependencyResolver.Resolve<ISaveFileService>();
-				saveFileService.Filter = $"Element Map|*.{Constants.MapExtension}";
-				saveFileService.Title = @"Save Element Map";
-				if (await saveFileService.DetermineFileAsync())
+
+				var determineFileContext = new DetermineSaveFileContext()
 				{
-					ElementMapFilePath = saveFileService.FileName;
+					Filter = $"Element Map|*.{Constants.MapExtension}",
+					Title = @"Save Element Map"
+				};
+
+				var result = await saveFileService.DetermineFileAsync(determineFileContext);
+
+				if (result.Result)
+				{
+					ElementMapFilePath = result.FileName;
 					_elementMapService.ElementMap.Name = Path.GetFileNameWithoutExtension(ElementMapFilePath);
 				}
 				else
@@ -399,23 +406,26 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 			var dependencyResolver = this.GetDependencyResolver();
 			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
 
-			openFileService.IsMultiSelect = false;
-			//_openFileService.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			openFileService.CheckFileExists = true;
-			openFileService.Title = @"Open Element Mapping";
-			openFileService.Filter = $"Element Map (*.{Constants.MapExtension}) | *.{Constants.MapExtension}";
-			if (await openFileService.DetermineFileAsync())
+			var determineFileContext = new DetermineOpenFileContext()
 			{
+				IsMultiSelect = false,
+				CheckFileExists = true,
+				Title = @"Open Element Mapping",
+				Filter = $"Element Map (*.{Constants.MapExtension}) | *.{Constants.MapExtension}"
+			};
 
+			var ofResult = await openFileService.DetermineFileAsync(determineFileContext);
+			if (ofResult.Result)
+			{
 				var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
 				//var modelPersistenceService = dependencyResolver.Resolve<IModelPersistenceService<ElementMap>>();
 
 				pleaseWaitService.Show();
-				var success = await _elementMapService.LoadMapAsync(openFileService.FileName);
+				var success = await _elementMapService.LoadMapAsync(ofResult.FileName);
 
 				if (success)
 				{
-					ElementMapFilePath = openFileService.FileName;
+					ElementMapFilePath = ofResult.FileName;
 					_elementMapService.ElementMap.Name = Path.GetFileNameWithoutExtension(ElementMapFilePath);
 					MapModified = false;
 
@@ -518,14 +528,19 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 			var dependencyResolver = this.GetDependencyResolver();
 			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
 
-			openFileService.IsMultiSelect = false;
-			//_openFileService.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			openFileService.CheckFileExists = true;
-			openFileService.Title = @"Load Element Tree";
-			openFileService.Filter = $"Element Tree (*.{Constants.ElementTreeExtension}) | *.{Constants.ElementTreeExtension}";
-			if (await openFileService.DetermineFileAsync())
+			var determineFileContext = new DetermineOpenFileContext()
 			{
-				await LoadElementTree(openFileService.FileName);
+				IsMultiSelect = false,
+				CheckFileExists = true,
+				Title = @"Load Element Tree",
+				Filter = $"Element Tree (*.{Constants.ElementTreeExtension}) | *.{Constants.ElementTreeExtension}"
+			};
+
+			var result = await openFileService.DetermineFileAsync(determineFileContext);
+
+			if (result.Result)
+			{
+				await LoadElementTree(result.FileName);
 			}
 		}
 		public async Task LoadElementTree(string fileName)

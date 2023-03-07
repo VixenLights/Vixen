@@ -2311,16 +2311,21 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			var dependencyResolver = this.GetDependencyResolver();
 			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
-			openFileService.IsMultiSelect = false;
-			if (openFileService.InitialDirectory == null)
+
+			var determineFileContext = new DetermineOpenFileContext()
 			{
-				openFileService.InitialDirectory = Paths.DataRootPath;
-			}
-			openFileService.Filter = "Prop Files(*.prp)|*.prp";
-			if (await openFileService.DetermineFileAsync())
+				IsMultiSelect = false,
+				Filter = "Prop Files(*.prp)|*.prp",
+				Title = @"Import Custom Prop",
+				InitialDirectory = Paths.DataRootPath
+
+			};
+
+			var result = await openFileService.DetermineFileAsync(determineFileContext);
+
+			if (result.Result)
 			{
-				openFileService.InitialDirectory = Path.GetDirectoryName(openFileService.FileName);
-				string path = openFileService.FileName;
+				string path = result.FileName;
 				await ImportCustomPropFromFile(path);
 			}
 			EndUpdate();
