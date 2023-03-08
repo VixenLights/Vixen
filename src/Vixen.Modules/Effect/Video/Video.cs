@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿#nullable enable
+
+using System.ComponentModel;
 using Common.Controls;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;

@@ -539,12 +539,6 @@ namespace VixenModules.Effect.Effect
 			return ConvertRange(minimum, maximum, 0, 100, value);
 		}
 
-		private static double ConvertRange(double originalStart, double originalEnd, double newStart, double newEnd, double value) // value to convert
-		{
-			double scale = (newEnd - newStart) / (originalEnd - originalStart);
-			return newStart + (value - originalStart) * scale;
-		}
-
 		protected static bool IsAngleBetween(double a, double b, double n)
 		{
 			n = (360 + (n % 360)) % 360;

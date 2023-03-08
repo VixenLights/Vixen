@@ -91,7 +91,7 @@ namespace Dataweb.NShape.WinFormsUI
 		private string GetAssemblyFilePath(Assembly assembly)
 		{
 			// Get assembly file path
-			UriBuilder uriBuilder = new UriBuilder(assembly.CodeBase);
+			UriBuilder uriBuilder = new UriBuilder(assembly.Location);
 			return Uri.UnescapeDataString(uriBuilder.Path);
 		}
 

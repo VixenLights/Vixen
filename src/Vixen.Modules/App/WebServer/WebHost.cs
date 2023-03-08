@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿#nullable enable
+
+using Microsoft.AspNetCore.Hosting;
 using NLog.Extensions.Logging;
 
 namespace VixenModules.App.WebServer
@@ -8,7 +10,7 @@ namespace VixenModules.App.WebServer
 	{ 
 		private IWebHost? _host;
 		private readonly Data _data;
-		private bool _isRunning = false;
+		private bool _isRunning;
 		private static CancellationTokenSource _cancelTokenSource = new CancellationTokenSource();
 
 		public WebHost(Data data)
@@ -20,7 +22,7 @@ namespace VixenModules.App.WebServer
 		{
 			var host = new WebHostBuilder()
 				.UseKestrel()
-				.ConfigureLogging((hostingContext, logging) => {
+				.ConfigureLogging((_, logging) => {
 					logging.AddNLog();
 				})
 				.CaptureStartupErrors(true)

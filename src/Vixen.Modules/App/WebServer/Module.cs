@@ -1,4 +1,6 @@
-﻿using NLog;
+﻿#nullable enable
+
+using NLog;
 using Vixen.Execution.Context;
 using Vixen.Module;
 using Vixen.Module.App;
@@ -13,9 +15,14 @@ namespace VixenModules.App.WebServer
 		
 		internal static LiveContext? LiveContext { get; set; }
 
-		private Data? _data;
+		private Data _data;
 		private IApplication? _application;
 		private WebHost? _webHost;
+
+		public Module()
+		{
+			_data = new Data();
+		}
 		
 		public override IModuleDataModel StaticModuleData
 		{

@@ -128,7 +128,7 @@ namespace Common.Controls.Timeline
 						BeginInvoke((Action) FinishedSamples);
 					}
 				}
-				catch (OperationCanceledException e)
+				catch (OperationCanceledException)
 				{
 					Logging.Info("Waveform create samples canceled.");
 				}

@@ -138,7 +138,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 				IEditableCollectionView collectionView = (IEditableCollectionView)CollectionViewSource.GetDefaultView(vm.Items);
 				collectionView.CancelEdit();
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				// Testing revealed deleting 2nd or 3rd incomplete row seemed to trigger an exception
 			}

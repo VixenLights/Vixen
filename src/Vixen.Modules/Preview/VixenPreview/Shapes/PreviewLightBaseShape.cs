@@ -17,12 +17,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	[DataContract]
 	public abstract class PreviewLightBaseShape : PreviewBaseShape, ICloneable, IDisposable
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private List<float> _points = new List<float>();
-		public string _name;
-		public static int SevenFloatDataSize = 7 * Marshal.SizeOf(typeof(float));
 		public static int EightFloatDataSize = 8 * Marshal.SizeOf(typeof(float));
-		public static int FloatDataSize = Marshal.SizeOf(typeof(float));
 		public bool connectStandardStrings = false;
 		public StringTypes _stringType = StringTypes.Standard;
 		private bool _isHighPrecision;

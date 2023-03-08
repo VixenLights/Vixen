@@ -19,7 +19,6 @@ namespace VixenModules.App.CustomPropEditor.Model.InternalVendorInventory
 		private string _pixelSpacing;
 		private string _notes;
 		private List<ModelLink> _modelLinks;
-		private Uri _vixenPropLink;
 
 		/// <summary>
 		/// Unique Id within the Vendor for the product.

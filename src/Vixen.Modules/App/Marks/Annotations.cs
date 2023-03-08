@@ -1,4 +1,6 @@
-﻿namespace Marks
+﻿#nullable enable
+
+namespace VixenModules.App.Marks
 {
 	internal class Annotations
 	{

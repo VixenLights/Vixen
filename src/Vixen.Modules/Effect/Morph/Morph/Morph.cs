@@ -1783,7 +1783,7 @@ namespace VixenModules.Effect.Morph
 
 			// Flip me over so and offset my coordinates I can act like the string version
 			y = Math.Abs((BufferHtOffset - _marginOffsetY) + bufferHt - y - 1);
-			y = y;
+			
 			x = x - (BufferWiOffset - _marginOffsetX);
 
 			// Retrieve the color from the bitmap

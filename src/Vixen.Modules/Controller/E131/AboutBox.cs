@@ -84,7 +84,7 @@ namespace VixenModules.Controller.E131
 					}
 				}
 
-				return Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
+				return Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location);
 			}
 		}
 
