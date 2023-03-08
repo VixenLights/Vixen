@@ -23,6 +23,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Vixen.Module.Effect;
 using Vixen.TypeConverters;
+#pragma warning disable SYSLIB0011
 
 namespace VixenModules.Editor.EffectEditor.Internal
 {

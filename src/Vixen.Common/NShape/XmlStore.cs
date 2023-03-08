@@ -448,9 +448,9 @@ namespace Dataweb.NShape
 					// in OpenComplete.
 					ReadProjectSettings(cache, xmlReader);
 				}
-				catch (Exception exc) {
+				catch (Exception) {
 					CloseFile();
-					throw exc;
+					throw;
 				}
 			}
 			isOpen = true;

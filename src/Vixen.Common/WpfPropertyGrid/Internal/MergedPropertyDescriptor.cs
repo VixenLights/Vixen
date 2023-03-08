@@ -22,6 +22,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
+#pragma warning disable SYSLIB0011
 
 namespace System.Windows.Controls.WpfPropertyGrid.Internal
 {

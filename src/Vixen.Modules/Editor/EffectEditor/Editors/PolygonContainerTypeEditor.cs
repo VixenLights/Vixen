@@ -67,7 +67,7 @@ namespace VixenModules.Editor.EffectEditor.Editors
 					value = polygonContainerUpdated;
 				}					
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				var messageBox = new MessageBoxForm("An error occurred loading the polygon editor.", "Polygon Error", MessageBoxButtons.OK, SystemIcons.Error);
 				messageBox.ShowDialog();				

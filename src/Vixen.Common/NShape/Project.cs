@@ -950,9 +950,9 @@ namespace Dataweb.NShape
 			try {
 				InitializeLibrary(library);
 			}
-			catch (Exception exc) {
+			catch (Exception) {
 				DoRemoveLibrary(library);
-				throw exc;
+				throw;
 			}
 			finally {
 				addingLibrary = false;

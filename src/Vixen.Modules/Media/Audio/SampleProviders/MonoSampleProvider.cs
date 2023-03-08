@@ -6,8 +6,7 @@ namespace VixenModules.Media.Audio.SampleProviders
 	public class MonoSampleProvider:ISampleProvider
 	{
 		private readonly ISampleProvider _sourceProvider;
-		private float[] _sourceBuffer;
-		
+
 		public MonoSampleProvider(CachedSoundSampleProvider sourceProvider)
 		{
 			_sourceProvider = sourceProvider.ToMono();

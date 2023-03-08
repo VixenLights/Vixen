@@ -35,7 +35,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private ToolStripButton _selectedButton;
 		private bool _toolStripButtonAlreadyChecked;
 		private ToolStrip _contextToolStrip;
-		private string _lastFolder;
 		private bool _itemMove;
 		private bool _dragValid;
 

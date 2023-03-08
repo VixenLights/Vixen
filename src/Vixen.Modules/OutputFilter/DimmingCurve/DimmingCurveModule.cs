@@ -336,7 +336,6 @@ namespace VixenModules.OutputFilter.DimmingCurve
 		private readonly List<IIntentState> _states = new List<IIntentState>();
 		private readonly CommandDataFlowData _commandState;
 		private IntentsDataFlowData _intentData;
-		private CommandDataFlowData _data;
 
 		public DimmingCurveOutput(Curve curve)
 		{

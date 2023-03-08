@@ -10,8 +10,6 @@ namespace VixenModules.App.Marks
 		private bool _isBold;
 		private bool _isSolidLine;
 		private Color _color;
-		private bool _showLabels;
-		private bool _showLines;
 
 		public MarkDecorator()
 		{
