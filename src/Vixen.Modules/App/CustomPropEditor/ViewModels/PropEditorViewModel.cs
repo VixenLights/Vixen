@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls.WpfPropertyGrid;
@@ -577,15 +578,20 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		{
 			var dependencyResolver = this.GetDependencyResolver();
 			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
-			openFileService.IsMultiSelect = false;
-			openFileService.Filter = "Prop Files(*.prp)|*.prp";
-			openFileService.FileName = string.Empty;
-			if (await openFileService.DetermineFileAsync())
+			var determineFileContext = new DetermineOpenFileContext()
 			{
-				string path = openFileService.FileNames.First();
+				IsMultiSelect = false,
+				Filter = "Prop Files(*.prp)|*.prp",
+				FileName = String.Empty
+			};
+
+			var result = await openFileService.DetermineFileAsync(determineFileContext);
+
+			if (result.Result)
+			{
+				string path = result.FileNames.First();
 				if (!string.IsNullOrEmpty(path))
 				{
-					openFileService.InitialDirectory = Path.GetDirectoryName(path);
 					LoadPropFromPath(path);
 				}
 			}
@@ -646,16 +652,23 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			ModifiedDate = DateTime.Now;
 			var dependencyResolver = this.GetDependencyResolver();
 			var saveFileService = dependencyResolver.Resolve<ISaveFileService>();
-			saveFileService.Filter = "Prop Files(*.prp)|*.prp";
-			saveFileService.CheckPathExists = true;
-			saveFileService.FileName = CleanseNameString(Prop.Name);
-			if (await saveFileService.DetermineFileAsync())
+
+			var determineFileContext = new DetermineSaveFileContext()
 			{
-				saveFileService.InitialDirectory = Path.GetDirectoryName(saveFileService.FileName);
+				Filter = "Prop Files(*.prp)|*.prp",
+				FileName = CleanseNameString(Prop.Name),
+				CheckPathExists = true,
+				InitialDirectory = Paths.DataRootPath
+			};
+
+			var result = await saveFileService.DetermineFileAsync(determineFileContext);
+
+			if (result.Result)
+			{
 				// User selected a file
-				if (PropModelPersistenceService.SaveModel(Prop, saveFileService.FileName))
+				if (PropModelPersistenceService.SaveModel(Prop, result.FileName))
 				{
-					FilePath = saveFileService.FileName;
+					FilePath = result.FileName;
 					ClearDirtyFlag();
 				}
 			}
@@ -745,16 +758,20 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		{
 			var dependencyResolver = this.GetDependencyResolver();
 			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
-			openFileService.IsMultiSelect = false;
-			if (openFileService.InitialDirectory == null)
+
+			var determineFileContext = new DetermineOpenFileContext()
 			{
-				openFileService.InitialDirectory = Paths.DataRootPath;
-			}
-			openFileService.Filter = "xModel (*.xmodel)|*.xmodel";
-			if (await openFileService.DetermineFileAsync())
+				IsMultiSelect = false,
+				Filter = "xModel (*.xmodel)|*.xmodel",
+				FileName = String.Empty,
+				InitialDirectory = Paths.DataRootPath
+			};
+
+			var result = await openFileService.DetermineFileAsync(determineFileContext);
+
+			if (result.Result)
 			{
-				string path = openFileService.FileName;
-				openFileService.InitialDirectory = Path.GetDirectoryName(path);
+				string path = result.FileName;
 				if (!string.IsNullOrEmpty(path))
 				{
 					await ImportProp(path);
@@ -1001,12 +1018,19 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		{
 			var dependencyResolver = this.GetDependencyResolver();
 			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
-			openFileService.IsMultiSelect = false;
-			openFileService.InitialDirectory = Environment.SpecialFolder.MyPictures.ToString();
-			openFileService.Filter = "Image Files(*.JPG;*.GIF;*.PNG)|*.JPG;*.GIF;*.PNG|All files (*.*)|*.*";
-			if (await openFileService.DetermineFileAsync())
+
+			var determineFileContext = new DetermineOpenFileContext()
 			{
-				string path = openFileService.FileNames.First();
+				IsMultiSelect = false,
+				Filter = "Image Files(*.JPG;*.GIF;*.PNG)|*.JPG;*.GIF;*.PNG|All files (*.*)|*.*",
+				InitialDirectory = Environment.SpecialFolder.MyPictures.ToString()
+			};
+
+			var result = await openFileService.DetermineFileAsync(determineFileContext);
+
+			if (result.Result)
+			{
+				string path = result.FileNames.First();
 				if (!string.IsNullOrEmpty(path))
 				{
 					PropModelServices.Instance().SetImage(path);

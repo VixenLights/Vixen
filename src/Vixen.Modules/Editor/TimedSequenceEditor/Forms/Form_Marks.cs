@@ -23,7 +23,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			
 			_mdvm = new MarkDockerViewModel(sequence.LabeledMarkCollections);
 			_markDockerView = new MarkDockerView(_mdvm);
-			_markDockerView.CloseViewModelOnUnloaded = true;
 			host.Child = _markDockerView;
 
 			Controls.Add(host);
