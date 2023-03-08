@@ -20,5 +20,6 @@
 		<BaseOutputPath>$(SolutionDir)$(Configuration)\Output</BaseOutputPath>
 		<OutputPath>$(BaseOutputPath)</OutputPath>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<Platforms>x86;x64</Platforms>
 	</PropertyGroup>
 </Project>
