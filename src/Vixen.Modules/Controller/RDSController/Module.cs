@@ -27,6 +27,8 @@ namespace VixenModules.Output.CommandController
 			
 			lastRdsText=rdsText;
 
+			Logging.Info("RDS Value to Send: " + rdsText);
+
 			switch (RdsData.HardwareID) {
 				case Hardware.MRDS192:
 				case Hardware.MRDS1322:
@@ -39,17 +41,32 @@ namespace VixenModules.Output.CommandController
 					return false;
 				case Hardware.VFMT212R:
 				case Hardware.HTTP:
-					Task.Factory.StartNew(() => {
+					Task.Factory.StartNew(async () => {
 						try {
 							//string url = RdsData.HttpUrl.ToLower().Replace("{text}",HttpUtility.UrlEncode(rdsText)).Replace("{time}", HttpUtility.UrlEncode(DateTime.Now.ToLocalTime().ToShortTimeString()));
 							//JC 11/27/16- replaced with line below to remove lowercase force
 							string url = RdsData.HttpUrl.Replace("{text}", HttpUtility.UrlEncode(rdsText)).Replace("{time}", HttpUtility.UrlEncode(DateTime.Now.ToLocalTime().ToShortTimeString()));
 							Logging.Info("Sending web request to url:{0} at time:{1}", url, DateTime.Now);
-							WebRequest request = WebRequest.Create(url);
-							if (RdsData.RequireHTTPAuthentication) {
-								request.Credentials= new NetworkCredential(RdsData.HttpUsername, RdsData.HttpPassword);
+
+							HttpClientHandler handler = new HttpClientHandler();
+							if (RdsData.RequireHTTPAuthentication)
+							{
+								handler.Credentials = new NetworkCredential(RdsData.HttpUsername, RdsData.HttpPassword);
 							}
-							request.GetResponse();
+
+							HttpClient client = new HttpClient(handler);
+
+							var response = await client.GetAsync(url);
+
+							if (!response.IsSuccessStatusCode)
+							{
+								Logging.Error($"Web request to {url} failed with status {response.StatusCode} : {response.ReasonPhrase}");
+								lastRdsText = string.Empty;
+							}
+							else
+							{
+								Logging.Info($"Sent web request to url:{url} Response: {response.StatusCode} : {response.ReasonPhrase} ");
+							}
 
 						} catch (Exception e) {
 							Logging.Error(e, e.Message);
@@ -122,7 +139,7 @@ namespace VixenModules.Output.CommandController
 							 
 						break;
 				}
-				Logging.Info("RDS Value Sent: " + cmd.CommandValue);
+				
 			}
 		}
 
