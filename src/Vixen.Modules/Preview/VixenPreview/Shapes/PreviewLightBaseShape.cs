@@ -228,20 +228,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[Browsable(false)]
-		public bool Selected
-		{
-			get { return _selected; }
-			set { _selected = value; }
-		}
-
-		public virtual void Select(bool selectDragPoints)
-		{
-			Selected = true;
-			if (selectDragPoints)
-				SelectDragPoints();
-		}
-		
 		// Add a pixel at a specific location
 		public PreviewPixel AddPixel(int x, int y)
 		{
@@ -634,12 +620,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					_strings.ForEach(s => s.Dispose());
 				_strings = null;
 			}
-		}
-
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
 		}
 
 		protected void AddPixels(ElementNode node, int lightCount)
