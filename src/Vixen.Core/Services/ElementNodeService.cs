@@ -1,10 +1,12 @@
-﻿using Vixen.Sys;
+﻿#nullable enable
+
+using Vixen.Sys;
 
 namespace Vixen.Services
 {
 	public class ElementNodeService
 	{
-		private static ElementNodeService _instance;
+		private static ElementNodeService? _instance;
 
 		private ElementNodeService()
 		{
@@ -12,19 +14,22 @@ namespace Vixen.Services
 
 		public static ElementNodeService Instance
 		{
-			get { return _instance ?? (_instance = new ElementNodeService()); }
+			get { return _instance ??= new ElementNodeService(); }
 		}
 
-		public ElementNode CreateSingle(ElementNode? parentNode, string name = null, bool createElement = true,
+		public ElementNode CreateSingle(ElementNode? parentNode, string? name = null, bool createElement = true,
 		                                bool uniquifyName = true)
 		{
 			name = name ?? "Unnamed";
 
 			ElementNode elementNode = VixenSystem.Nodes.AddNode(name, parentNode, uniquifyName);
 
-			Element element = createElement ? _CreateElement(elementNode.Name) : null;
+			Element? element = createElement ? _CreateElement(elementNode.Name) : null;
 			elementNode.Element = element;
-			VixenSystem.Elements.AddElement(element);
+			if (element != null)
+			{
+				VixenSystem.Elements.AddElement(element);
+			}
 
 			return elementNode;
 		}
@@ -38,8 +43,7 @@ namespace Vixen.Services
 		public ElementNode ImportTemplateOnce(string templateFileName, ElementNode parentNode)
 		{
 			ElementNodeTemplate elementNodeTemplate = FileService.Instance.LoadElementNodeTemplateFile(templateFileName);
-			if (elementNodeTemplate == null) return null;
-
+			
 			VixenSystem.Nodes.AddChildToParent(elementNodeTemplate.ElementNode, parentNode);
 
 			return elementNodeTemplate.ElementNode;

@@ -1176,7 +1176,7 @@ namespace Dataweb.NShape
 			/// <override></override>
 			public override bool Equals(object obj)
 			{
-				return (obj is MouseState && object.ReferenceEquals(this, obj));
+				return (obj is MouseState ms && ms==this);
 			}
 
 			/// <override></override>
@@ -1262,7 +1262,7 @@ namespace Dataweb.NShape
 			/// <override></override>
 			public override bool Equals(object obj)
 			{
-				return (obj is ShapeAtCursorInfo && object.ReferenceEquals(this, obj));
+				return (obj is ShapeAtCursorInfo info && info == this);
 			}
 
 			/// <ToBeCompleted></ToBeCompleted>
@@ -1695,7 +1695,7 @@ namespace Dataweb.NShape
 					diagramPresenter.DrawShapes(Previews.Values);
 
 					// Then draw snap-lines and -points
-					if (selectedShapeAtCursorInfo != null && (snapPtId > 0 || snapDeltaX != 0 || snapDeltaY != 0)) {
+					if (snapPtId > 0 || snapDeltaX != 0 || snapDeltaY != 0) {
 						Shape previewAtCursor = FindPreviewOfShape(selectedShapeAtCursorInfo.Shape);
 						diagramPresenter.DrawSnapIndicators(previewAtCursor);
 					}

@@ -268,22 +268,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void Layout()
 		{
-            if (BottomRight != null && TopLeft != null)
+			int width = BottomRight.X - TopLeft.X;
+			int height = BottomRight.Y - TopLeft.Y;
+			var points = PreviewTools.GetArcPoints(width, height, PixelCount);
+			int pointNum = 0;
+			foreach (PreviewPixel pixel in _pixels)
 			{
-				int width = BottomRight.X - TopLeft.X;
-				int height = BottomRight.Y - TopLeft.Y;
-				List<Point> points;
-				points = PreviewTools.GetArcPoints(width, height, PixelCount);
-				int pointNum = 0;
-				foreach (PreviewPixel pixel in _pixels)
-				{
-					pixel.X = points[pointNum].X + TopLeft.X;
-					pixel.Y = points[pointNum].Y + TopLeft.Y;
-					pointNum++;
-				}
-
-				SetPixelZoom();
+				pixel.X = points[pointNum].X + TopLeft.X;
+				pixel.Y = points[pointNum].Y + TopLeft.Y;
+				pointNum++;
 			}
+
+			SetPixelZoom();
 		}
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)

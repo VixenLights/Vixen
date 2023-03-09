@@ -181,7 +181,8 @@
 					// if we've gone back up the tree (eg. new branch), draw the dotted
 					// line for that last depth that we saw
 					for (int i = depth + 1; i <= lastDepth; i++) {
-						if (dottedLineLevelNeedsDrawing[i] && dottedLineBottoms[i] != null) {
+						if (dottedLineLevelNeedsDrawing[i]) {
+
 							Point p = dottedLineBottoms[i];
 							e.Graphics.DrawLine(line, p, new Point(p.X, dottedLineTops[i - 1]));
 							dottedLineLevelNeedsDrawing[i] = false;
@@ -206,7 +207,7 @@
 
 			// draw any connecting lines needed if the last rows were offset
 			for (int i = 1; i < dottedLineLevelNeedsDrawing.Length; i++) {
-				if (dottedLineLevelNeedsDrawing[i] && dottedLineBottoms[i] != null) {
+				if (dottedLineLevelNeedsDrawing[i]) {
 					Point p = dottedLineBottoms[i];
 					e.Graphics.DrawLine(line, p, new Point(p.X, dottedLineTops[i - 1]));
 				}

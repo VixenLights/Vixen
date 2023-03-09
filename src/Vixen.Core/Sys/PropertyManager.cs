@@ -1,4 +1,6 @@
-﻿using Vixen.Module;
+﻿#nullable enable
+
+using Vixen.Module;
 using Vixen.Module.Property;
 
 namespace Vixen.Sys
@@ -17,16 +19,11 @@ namespace Vixen.Sys
 
 		public IPropertyModuleInstance Add(IPropertyModuleInstance instance)
 		{
-			//IPropertyModuleInstance instance = null;
-
 			if (!_items.ContainsKey(instance.TypeId)) {
-				//instance = Modules.ModuleManagement.GetProperty(id);
-				if (instance != null) {
-					instance.Owner = _owner;
-					instance.SetDefaultValues();
-					_items[instance.TypeId] = instance;
-					PropertyData.AssignModuleInstanceData(instance);
-				}
+				instance.Owner = _owner;
+				instance.SetDefaultValues();
+				_items[instance.TypeId] = instance;
+				PropertyData.AssignModuleInstanceData(instance);
 			}
 
 			return instance;
@@ -42,20 +39,17 @@ namespace Vixen.Sys
 		{
 			if (!_items.ContainsKey(instance.TypeId))
 			{
-				if (instance != null)
-				{
-					instance.Owner = _owner;
-					_items[instance.TypeId] = instance;
-					PropertyData.AssignModuleInstanceData(instance);
-				}
+				instance.Owner = _owner;
+				_items[instance.TypeId] = instance;
+				PropertyData.AssignModuleInstanceData(instance);
 			}
 
 			return instance;
 		}
 
-		public IPropertyModuleInstance Add(Guid id)
+		public IPropertyModuleInstance? Add(Guid id)
 		{
-			IPropertyModuleInstance instance = null;
+			IPropertyModuleInstance? instance = null;
 
 			if (!_items.ContainsKey(id)) {
 				instance = Modules.ModuleManagement.GetProperty(id);
@@ -72,8 +66,7 @@ namespace Vixen.Sys
 
 		public void Remove(Guid id)
 		{
-			IPropertyModuleInstance instance;
-			if (_items.TryGetValue(id, out instance)) {
+			if (_items.TryGetValue(id, out var instance)) {
 				instance.Owner = null;
 				_items.Remove(id);
 				PropertyData.RemoveModuleInstanceData(instance);
@@ -88,8 +81,7 @@ namespace Vixen.Sys
 
 		public IPropertyModuleInstance? Get(Guid propertyTypeId)
 		{
-			IPropertyModuleInstance instance;
-			_items.TryGetValue(propertyTypeId, out instance);
+			_items.TryGetValue(propertyTypeId, out var instance);
 			return instance;
 		}
 

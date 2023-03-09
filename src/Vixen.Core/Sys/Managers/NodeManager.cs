@@ -1,17 +1,18 @@
-﻿using Vixen.IO.JSON;
+﻿#nullable enable
+
+using Vixen.IO.JSON;
 
 namespace Vixen.Sys.Managers
 {
 	public class NodeManager : IEnumerable<ElementNode>
 	{
-		private ElementNode _rootNode;
-
 		// a mapping of element node GUIDs to element node instances. Used for initial creation, to easily find nodes we have already created.
 		// once they've been created, they're in the dictionary. The only way to 'delete' elementNodes is to make a new NodeManager,
 		// which reinitializes this mapping and we can start fresh.
-		private Dictionary<Guid, ElementNode> _instances;
+		private readonly Dictionary<Guid, ElementNode> _instances;
 
-		public static event EventHandler NodesChanged;
+		public static event EventHandler? NodesChanged;
+		private ElementNode? _rootNode;
 
 		public NodeManager()
 		{
@@ -25,21 +26,12 @@ namespace Vixen.Sys.Managers
 			AddNodes(nodes);
 		}
 
-		private void ElementNode_Changed(object sender, EventArgs e)
+		private void ElementNode_Changed(object? sender, EventArgs e)
 		{
 			OnNodesChanged();
 		}
 
-		public ElementNode RootNode
-		{
-			get
-			{
-				if (_rootNode == null)
-					_rootNode = new ElementNode("Root");
-
-				return _rootNode;
-			}
-		}
+		public ElementNode RootNode => _rootNode??= new ElementNode("Root");
 
 		public void MoveNode(ElementNode movingNode, ElementNode newParent, ElementNode oldParent, int index = -1)
 		{
@@ -64,7 +56,7 @@ namespace Vixen.Sys.Managers
 			AddChildToParent(node, parent);
 		}
 
-		public void AddNodes(IEnumerable<ElementNode> nodes, ElementNode parent = null)
+		public void AddNodes(IEnumerable<ElementNode> nodes, ElementNode? parent = null)
 		{
 			foreach (ElementNode node in nodes) {
 				AddNode(node, parent);
@@ -81,7 +73,7 @@ namespace Vixen.Sys.Managers
 			return newNode;
 		}
 
-		public void RemoveNode(ElementNode node, ElementNode parent, bool cleanup)
+		public void RemoveNode(ElementNode node, ElementNode? parent, bool cleanup)
 		{
 			// if the given parent is null, it's most likely a root node (ie. with
 			// a parent of our private RootNode). Try to remove it from that instead.
@@ -159,7 +151,7 @@ namespace Vixen.Sys.Managers
 			return _instances.Remove(id);
 		}
 
-		public ElementNode GetElementNode(Guid id)
+		public ElementNode? GetElementNode(Guid id)
 		{
 			if (_instances.ContainsKey(id)) {
 				return _instances[id];

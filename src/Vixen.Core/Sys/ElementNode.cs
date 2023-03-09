@@ -1,4 +1,6 @@
-﻿namespace Vixen.Sys
+﻿#nullable enable
+
+namespace Vixen.Sys
 {
 	/// <summary>
 	/// A logical node that encapsulates a single Element or a branch/group of other ElementNodes.
@@ -8,12 +10,12 @@
 	{
 		// Making this static so there doesn't have to be potentially thousands of
 		// subscriptions from the node manager.
-		public static event EventHandler Changed;
+		public static event EventHandler? Changed;
 		//Logger Class
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		#region Constructors
 
-		internal ElementNode(Guid id, string name, Element element, IEnumerable<ElementNode> content)
+		internal ElementNode(Guid id, string name, Element? element, IEnumerable<ElementNode> content)
 			: base(name, content)
 		{
 			if (VixenSystem.Nodes.ElementNodeExists(id)) {
@@ -32,7 +34,7 @@
 			Properties = new PropertyManager(this);
 		}
 
-		internal ElementNode(string name, Element element, IEnumerable<ElementNode> content)
+		internal ElementNode(string name, Element? element, IEnumerable<ElementNode> content)
 			: this(Guid.NewGuid(), name, element, content)
 		{
 		}
@@ -42,12 +44,12 @@
 		{
 		}
 
-		private ElementNode(Guid id, string name, Element element, params ElementNode[] content)
+		private ElementNode(Guid id, string name, Element? element, params ElementNode[] content)
 			: this(id, name, element, content as IEnumerable<ElementNode>)
 		{
 		}
 
-		internal ElementNode(string name, Element element, params ElementNode[] content)
+		internal ElementNode(string name, Element? element, params ElementNode[] content)
 			: this(name, element, content as IEnumerable<ElementNode>)
 		{
 		}
@@ -75,8 +77,8 @@
 				if (_element != null) {
 					// this Element should be unique to this ElementNode. If it already exists in the element -> ElementNode
 					// mapping in the Element Manager, something Very Bad (tm) has happened.
-					if (VixenSystem.Elements.GetElementNodeForElement(value) != null) {
-						Logging.Error(string.Format("ElementNode: assigning element (id: {0}) to this ElementNode (id: {1}), but it already exists in another ElementNode! (id: {2})", value.Id, Id, VixenSystem.Elements.GetElementNodeForElement(value).Id));
+					if (VixenSystem.Elements.GetElementNodeForElement(_element) != null) {
+						Logging.Error(string.Format("ElementNode: assigning element (id: {0}) to this ElementNode (id: {1}), but it already exists in another ElementNode! (id: {2})", _element.Id, Id, VixenSystem.Elements.GetElementNodeForElement(_element)?.Id));
 
 					}
 
@@ -99,7 +101,7 @@
 			}
 		}
 
-		public new ElementNode Find(string childName)
+		public new ElementNode? Find(string childName)
 		{
 			return base.Find(childName) as ElementNode;
 		}
@@ -220,6 +222,10 @@
 
 		public IEnumerable<Element> GetElementEnumerator()
 		{
+			if (Element == null)
+			{
+				return Enumerable.Empty<Element>();
+			}
 			if (IsLeaf) {
 				// Element is already an enumerable, so AsEnumerable<> won't work.
 				return (new[] {Element});
@@ -308,8 +314,10 @@
 
 		#endregion
 
-		public bool Equals(ElementNode x, ElementNode y)
+		public bool Equals(ElementNode? x, ElementNode? y)
 		{
+			if(x == y) return true;
+			if(x == null || y == null) return false;
 			return x.Id == y.Id;
 		}
 
