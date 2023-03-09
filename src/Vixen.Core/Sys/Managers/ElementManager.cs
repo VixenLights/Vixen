@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#nullable enable
+
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using Vixen.Data.Flow;
@@ -51,16 +53,14 @@ namespace Vixen.Sys.Managers
 
 		public void AddElement(Element element)
 		{
-			if (element != null) {
-				if (_instances.ContainsKey(element.Id))
-					Logging.Error("ElementManager: Adding a element, but it's already in the instance map!");
+			if (_instances.ContainsKey(element.Id))
+				Logging.Error("ElementManager: Adding a element, but it's already in the instance map!");
 
-				lock (_instances) {
-					_instances[element.Id] = element;
-					_enumeratorInvalid = true;
-				}
-				_AddDataFlowParticipant(element);
+			lock (_instances) {
+				_instances[element.Id] = element;
+				_enumeratorInvalid = true;
 			}
+			_AddDataFlowParticipant(element);
 		}
 
 		public void AddElements(IEnumerable<Element> elements)
@@ -72,7 +72,6 @@ namespace Vixen.Sys.Managers
 
 		public void RemoveElement(Element element)
 		{
-			ElementNode en;
 			lock (_instances)
 			{
 				_instances.Remove(element.Id);
@@ -80,21 +79,17 @@ namespace Vixen.Sys.Managers
 			}
 			
 			_RemoveDataFlowParticipant(element);
-			_elementToElementNode.TryRemove(element, out en);
+			_elementToElementNode.TryRemove(element, out _);
 		}
 
-		public Element GetElement(Guid id)
+		public Element? GetElement(Guid id)
 		{
-			Element element;
-			_instances.TryGetValue(id, out element);
+			_instances.TryGetValue(id, out var element);
 			return element;
 		}
 
 		public bool SetElementNodeForElement(Element element, ElementNode node)
 		{
-			if (element == null)
-				return false;
-
 			bool rv = _elementToElementNode.ContainsKey(element);
 
 			_elementToElementNode[element] = node;
@@ -103,11 +98,7 @@ namespace Vixen.Sys.Managers
 
 		public ElementNode? GetElementNodeForElement(Element element)
 		{
-			if (element == null)
-				return null;
-
-			ElementNode node;
-			_elementToElementNode.TryGetValue(element, out node);
+			_elementToElementNode.TryGetValue(element, out var node);
 			return node;
 		}
 
@@ -226,7 +217,13 @@ namespace Vixen.Sys.Managers
 			{
 				get
 				{
-					return (Current);
+					var c = Current;
+					if (c != null)
+					{
+						return c;
+					}
+
+					return Enumerable.Empty<TElement>();
 				}
 			}
 
