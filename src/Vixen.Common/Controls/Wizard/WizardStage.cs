@@ -40,6 +40,7 @@ namespace Common.Controls.Wizard
 
 		public virtual async Task StageEnd()
 		{
+			await Task.CompletedTask;
 		}
 
 		public virtual void StageCancelled()

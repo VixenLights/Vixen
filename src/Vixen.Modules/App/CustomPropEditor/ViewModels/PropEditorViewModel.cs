@@ -615,7 +615,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Method to invoke when the SaveModel command is executed.
 		/// </summary>
-		private async void SaveModel()
+		private void SaveModel()
 		{
 			ModifiedDate = DateTime.Now;
 			if (string.IsNullOrEmpty(FilePath))

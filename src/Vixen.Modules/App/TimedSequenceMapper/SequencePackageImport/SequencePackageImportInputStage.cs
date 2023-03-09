@@ -179,7 +179,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 
-		private async void btnCreateMap_Click(object sender, EventArgs e)
+		private void btnCreateMap_Click(object sender, EventArgs e)
 		{
 			var fileName = ExtractElementTree(_data.InputFile);
 			ElementMapperViewModel vm = new ElementMapperViewModel(new Dictionary<Guid, string>(), String.Empty, fileName, String.Empty);
@@ -198,7 +198,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 			
 		}
 
-		private async void btnEditMap_Click(object sender, EventArgs e)
+		private void btnEditMap_Click(object sender, EventArgs e)
 		{
 			var fileName = ExtractElementTree(_data.InputFile);
 			ElementMapperViewModel vm = new ElementMapperViewModel(new Dictionary<Guid, string>(), String.Empty, fileName, _data.MapFile);

@@ -1370,7 +1370,7 @@ namespace VixenModules.Preview.VixenPreview
 
 				if (_selectedDisplayItem != null)
 				{
-					Console.Out.WriteLineAsync($"Element Selected is null {_elementSelected == null}");
+					//Console.Out.WriteLineAsync($"Element Selected is null {_elementSelected == null}");
 					if (_elementSelected == null && modifyType.Equals("AddNew"))
 					{
 						// Store off the currently selected item

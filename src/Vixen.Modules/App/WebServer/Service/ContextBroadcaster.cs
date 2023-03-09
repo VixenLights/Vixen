@@ -6,7 +6,7 @@ namespace VixenModules.App.WebServer.Service
 {
 	public class ContextBroadcaster
 	{
-		private IHubContext<ContextHub> _hubContext;
+		private readonly IHubContext<ContextHub> _hubContext;
 		private readonly Timer _timer;
 		private readonly TimeSpan _updateInterval = TimeSpan.FromMilliseconds(1000);
 
@@ -22,10 +22,10 @@ namespace VixenModules.App.WebServer.Service
 			await _hubContext.Clients.All.SendAsync("updatePlayingContextStates", ContextsHelper.GetAllStates());
 		}
 
-		private void BroadcastContextStates(Object state)
+		private async void BroadcastContextStates(Object state)
 		{
 			//Call Update
-			Update();
+			await Update();
 		}
 	}
 }

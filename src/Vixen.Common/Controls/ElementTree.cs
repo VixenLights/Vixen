@@ -1172,7 +1172,7 @@ namespace Common.Controls
 				var result = saveFileDialog.ShowDialog(Parent);
 				if (result == DialogResult.OK)
 				{
-					VixenSystem.Nodes.ExportElementNodeProxy(saveFileDialog.FileName);
+					await VixenSystem.Nodes.ExportElementNodeProxy(saveFileDialog.FileName);
 				}
 			}
 		}
