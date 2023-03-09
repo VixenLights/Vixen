@@ -166,7 +166,7 @@ namespace VixenModules.App.SuperScheduler
 			}
 		}
 
-		private async void EditCurrentItem()
+		private void EditCurrentItem()
 		{
 			if (listViewItems.SelectedItems.Count == 1)
 			{
@@ -183,7 +183,7 @@ namespace VixenModules.App.SuperScheduler
 			}
 		}
 
-		private async void DeleteCurrentItem()
+		private void DeleteCurrentItem()
 		{
 			if (listViewItems.SelectedItems.Count == 1)
 			{
