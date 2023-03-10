@@ -144,11 +144,11 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL.Shaders
 
 			// Gets the number of attributes associated with the shader program
 			int attributeCount;
-			GL.GetProgram(ProgramID, ProgramParameter.ActiveAttributes, out attributeCount);
+			GL.GetProgram(ProgramID, GetProgramParameterName.ActiveAttributes, out attributeCount);
 			
 			// Gets the number of uniforms associated with the shader program 
 			int uniformCount;
-			GL.GetProgram(ProgramID, ProgramParameter.ActiveUniforms, out uniformCount);
+			GL.GetProgram(ProgramID, GetProgramParameterName.ActiveUniforms, out uniformCount);
 						
 			// Loop over the discovered attributes
 			for (int i = 0; i < attributeCount; i++)
@@ -337,7 +337,7 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL.Shaders
 					TransferUniforms(volume);
 
 					// Draw the graphical volume
-					GL.DrawArrays(BeginMode.Triangles, index, volume.GetVertices().Length);
+					GL.DrawArrays(PrimitiveType.Triangles, index, volume.GetVertices().Length);
 				}
 
 				// Move the index to the next volume
