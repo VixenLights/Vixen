@@ -122,6 +122,7 @@ jobs:
         shell: cmd
         
       - name: Set installer name in environment
+        working-directory: Release\Setup\${{ needs.setup.outputs.environment }}
         shell: bash
         run: |
           echo "SETUP_32=$(echo Vixen*Setup-32bit.exe)" >> $GITHUB_ENV
@@ -171,6 +172,7 @@ jobs:
         shell: cmd
         
       - name: Set installer name in environment
+        working-directory: Release\Setup\${{ needs.setup.outputs.environment }}
         shell: bash
         run: |
           echo "SETUP_64=$(echo Vixen*Setup-64bit.exe)" >> $GITHUB_ENV
@@ -210,6 +212,9 @@ jobs:
           
       - run: dir
         shell: cmd
+        
+      - name: show github env
+        run: echo "${GITHUB_ENV}"
           
       - name: Create release
         id: create_release
