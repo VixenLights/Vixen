@@ -165,12 +165,6 @@ jobs:
       - name: Build x64
         run: msbuild Vixen.sln -m -t:Rebuild -p:Configuration=Deploy -p:Platform=x64 -p:PlatformTarget=x64 -p:Environment=${{ needs.setup.outputs.environment }} -p:App_Version=${{ needs.setup.outputs.app_version }} -p:Assembly_Version=${{ needs.setup.outputs.version }}
   
-      - run: dir
-        shell: cmd
-        
-      - run: dir Release\Setup\${{ needs.setup.outputs.environment }}
-        shell: cmd
-        
       - name: Set installer name in environment
         working-directory: Release\Setup\${{ needs.setup.outputs.environment }}
         shell: bash
@@ -229,7 +223,7 @@ jobs:
           prerelease: ${{ needs.setup.outputs.pre_release }}
       
       - name: Upload x86 release asset
-        uses: actions/upload-release-asset@v1
+        uses: VixenLights/upload-release-asset@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -239,7 +233,7 @@ jobs:
           asset_content_type: application/vnd.microsoft.portable-executable
         
       - name: Upload x64 release asset
-        uses: actions/upload-release-asset@v1
+        uses: VixenLights/upload-release-asset@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
