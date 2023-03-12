@@ -222,11 +222,11 @@ namespace Vixen.Sys
 
 		public IEnumerable<Element> GetElementEnumerator()
 		{
-			if (Element == null)
-			{
-				return Enumerable.Empty<Element>();
-			}
 			if (IsLeaf) {
+				if (Element == null)
+				{
+					return Enumerable.Empty<Element>();
+				}
 				// Element is already an enumerable, so AsEnumerable<> won't work.
 				return (new[] {Element});
 			}
