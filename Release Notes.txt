@@ -1,4 +1,121 @@
-Release Notes - Vixen 3
+Release Notes - Vixen 3 - Development Build 
+
+Release Notes - Vixen 3 - 3.9u5 Build 
+
+** New Feature
+    * [VIX-942] - Moving Heads Control
+    * [VIX-3063] - Create DMX Moving Head Preview Graphics
+    * [VIX-3074] - Create an initial simple effect to make it easier to command simple Pan and Tilt movements.
+    * [VIX-3188] - Create Intelligent Fixture Zoom Effect
+    * [VIX-3189] - Create Intelligent Fixture Catch All Effect
+    * [VIX-3193] - Create Intelligent Fixture Frost Effect
+    * [VIX-3194] - Create Intelligent Fixture Spin Color Wheel Effect
+    * [VIX-3196] - Create Open Prism Filter
+    * [VIX-3199] - Create Intelligent Fixture Strobe Effect
+    * [VIX-3204] - Create Intelligent Fixture Gobo Effect
+    * [VIX-3205] - Create Intelligent Fixture Prism Effect
+    * [VIX-3212] - Add WPF and OpenGL Fixture Graphics 
+
+** Improvement
+    * [VIX-1875] - Filter output null vs 0
+    * [VIX-3076] -  Remove Pixel Specific Properties and Methods from PreviewBaseShape.cs
+    * [VIX-3176] - Add Orc.Wizard to solution to support Intelligent Fixture Wizard
+    * [VIX-3179] - Create Fixture Property Editor 
+    * [VIX-3180] - Create Intelligent Fixture Wizard
+    * [VIX-3181] - Create Intelligent Fixture Property
+    * [VIX-3186] - Add flags to the Wizard Item Templates interface to control parent behavior also add Cancel support
+    * [VIX-3195] - Update the Display Setup Graphical View to display the Name of the filter instead of the type name
+    * [VIX-3197] - Select Color(s) dialog only displays 9 discrete colors
+    * [VIX-3198] - Add Gobo Images to the Fixture Specification Manager
+    * [VIX-3200] - Update Fixture Specification to support spinning color wheels and gobo images
+    * [VIX-3202] - Add 'Intelligent Fixture' group in the Effects tree
+    * [VIX-3206] - Update Color Wheel Filter to better follow the dispatch pattern
+    * [VIX-3207] - Update Shutter filter to handle spinning color wheels and driving the color wheel directly
+    * [VIX-3210] - Consolidate duplicate IElementTemplate code between Preview and Display Setup
+    * [VIX-3214] - Consider adding checkbox to Fixture color wheel definition to exclude colors like UV and CTB from color property
+    * [VIX-3216] - Add XML schema version tag or property to fixture specification
+    * [VIX-3217] - DimmingCurve Output Filter needs to handle Tagged RangeValue representing intensity
+    * [VIX-3219] - Default new Fixture Channels to the None function
+    * [VIX-3221] - Add color to fixture function to use on timeline for fixture catch all effect
+    * [VIX-3222] - Add fixture animation to the pan and tilt detailed settings
+    * [VIX-3223] - Add Fixture Index Item validation to ensure each index name is unique
+    * [VIX-3225] - Add tooltips to the Fixture Property Editor
+    * [VIX-3226] - Remove Catel InfoBar from Fixture Property Editor views
+    * [VIX-3227] - Add logic to show/hide the profile meta-data in the Fixture Property Editor
+    * [VIX-3229] - Fixture Property Editor - Adjust column widths in Functions grid
+    * [VIX-3230] - DimmingFilter.csproj - Project reference missing sub-tags
+    * [VIX-3231] - Update Shutter Filter to support Fixture Strobe Effect
+    * [VIX-3232] - Move Tagged Filter Setup dialog to base class
+    * [VIX-3233] - Initialize FixtureSpecificationManager with Vixen profile path
+    * [VIX-3242] - Add Intelligent Fixture support for 16 bit color channels
+    * [VIX-3246] - Intelligent Fixture Wizard - Add the ability to clear out a gobo image
+    * [VIX-3249] - Add the ability to mount intelligent fixture upside down
+    * [VIX-3253] - Intelligent Fixture Editors add logic to move focus to the first editable field on the Add Plus button
+    * [VIX-3266] - Add Intelligent Fixture Legend Support for Color Wheel and Range functions
+    * [VIX-3281] - Intelligent Fixture Wizard - Users cannot easily fix incomplete functions after selecting one on the Edit Channel page
+    * [VIX-3282] - Intelligent Fixture Wizard and Editors - Do not show 'None' function on the Edit Functions grid
+    * [VIX-3283] - Intelligent Fixture - Display color wheel half steps as white
+    * [VIX-3291] - Intelligent Fixture Graphics - Add black disc to the end that contains the light beam when the beam is off
+    * [VIX-3295] - Update 'Paste As New' to copy properties associated with the source node(s)
+    * [VIX-3297] - Intelligent Fixture Preview can only create one fixture graphic at a time
+    * [VIX-3298] - Intelligent Fixture Preview - Provide better support for linking and unlinking the graphics from an element node
+    * [VIX-3299] - Fixture Effect - 'None' is showing up a function the user can pick and add to the effect
+    * [VIX-3302] - Intelligent Fixture Editors - Remove 'None' from the type drop down
+    * [VIX-3310] - Cleanup Intelligent Fixture Preview Descriptions
+    * [VIX-3318] - Add Enable/Disable logic to Intelligent Fixture Select Profile Wizard Page
+    * [VIX-3320] - Intelligent Fixture should color the beam green when the fixture is selected in the Preview Setup
+    * [VIX-3335] - Fixture Effect - Color Selection has a range curve for the Intensity but the label is just "Range"
+    * [VIX-3357] - Add support for color wheel half step in the Vixen Preview
+    * [VIX-3361] - Upgrade Newtonsoft JSON to rectify security vulnerability
+    * [VIX-3363] - Introduce better entropy into Candle Flicker effect
+    * [VIX-3368] - Add curve to adjust meteor effect tail taper
+
+** Bug
+    * [VIX-3190] - Effect Editor does not support empty collections
+    * [VIX-3220] - Fixture Channel numbers do not compress when deleting channels
+    * [VIX-3224] - Fixture Profile Editor - Need to prevent adding new items when the current item is invalid
+    * [VIX-3228] - Fixture Property Editor - Color Wheel Grid contains binding copy/paste error
+    * [VIX-3234] - Fixture Effect - Missing XAML converter ColorToSolidColorBrush_ValueConverter
+    * [VIX-3236] - Fixture Effect is not saving the color associated with the functions
+    * [VIX-3237] - ColorWheelFilter discrete handler using FullColor vs Color
+    * [VIX-3238] - Deleting a Fixture Function through the wizard leaves Function blank on channel page and can cause a crash
+    * [VIX-3239] - Saving Intelligent Fixture is not updating in memory cache of fixtures
+    * [VIX-3240] - Add null check to CoarseFineByteBreakDownOutput
+    * [VIX-3241] - ColorWheelView.xaml has extra binding validation rule tags
+    * [VIX-3244] - Intelligent Fixture Group was associated with an element node
+    * [VIX-3245] - Possible to display two Intelligent Fixture Wizards simultaneously
+    * [VIX-3247] - Comment Cleanup
+    * [VIX-3248] - Possible Null Exception displaying Fixture Function Editor
+    * [VIX-3250] - Fixture Function Tag drop down is not consistently populating
+    * [VIX-3257] - Intelligent Fixture Editors - Deleting incomplete rows may crash
+    * [VIX-3258] - Intelligent Fixture Editors - Allow the user to create multiple incomplete rows
+    * [VIX-3259] - Intelligent Fixture Wizard - If an exception occurs Wizard is left in unknown zombie state
+    * [VIX-3260] - Intelligent Fixture Effects cause exception when pasting to another display element
+    * [VIX-3261] - Intelligent Fixture Preview - Is remembering what beam color was last displayed 
+    * [VIX-3262] - Intelligent Fixture Preview is not properly clearing the legend
+    * [VIX-3263] - Intelligent Fixture Color Wheel Function not working properly with Fixture Effect and Preview
+    * [VIX-3267] - Intelligent Fixture Editors does not prevent the user from deleting the None Function
+    * [VIX-3280] - Update Intelligent Fixture Effects converters to handle when more than one effect instance is selected
+    * [VIX-3287] - Intelligent Fixture Wizard - Function Tag drop down is entirely empty for the None Function
+    * [VIX-3288] - Intelligent Fixture Preview - Add the ability to strobe when color wheel color is generated directly from Fixture Effect
+    * [VIX-3293] - Fixture Effect has some linq queries that prevent it from working at the group level
+    * [VIX-3296] - Intelligent Fixture Preview - Need to update color based on whether the graphic is connected to a node
+    * [VIX-3300] - Fixture Effect direct drive of the color wheel is not opening the shutter
+    * [VIX-3313] - Creating multiple Intelligent Fixtures results in a null reference
+    * [VIX-3314] - Display Setup and Vixen Preview does not refresh fixtures properly
+    * [VIX-3315] - Deleting an intelligent fixture node does not refresh the linked element associated with the fixture graphic
+    * [VIX-3317] - Add logic Fixture Specification Manager to handle duplicate fixture names
+    * [VIX-3321] - Intelligent Fixture Preview is not making the Intelligent Fixture drawing area a perfect square
+    * [VIX-3322] - Setup Preview is slow for large displays
+    * [VIX-3326] - Wave effect does not use the last string in a group.
+    * [VIX-3330] - Fixture Effect is not outputing color intents
+    * [VIX-3332] - Timeline Color is not getting initialized properly for user created fixture functions and could result in duplicate colors
+    * [VIX-3338] - Fixture Preview Not Dimming Correctly 
+    * [VIX-3350] - Vixen Display Preview cutting off rightmost ~20% of display
+    * [VIX-3351] - Setup Preview Zoom broken
+    * [VIX-3354] - The Balls effect with encounter an error if it is placed on a Arch or similar that is only one string wide.
+    * [VIX-3358] - Add support for Ogg audio files to the new audio library.
+    * [VIX-3359] - Error When Migrating File
 
 Release Notes - Vixen 3 - 3.9u4 Build 
 
