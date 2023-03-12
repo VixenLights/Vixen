@@ -35,6 +35,7 @@ namespace Common.WPFCommon.Services
 			{
 				using (HttpClient wc = new HttpClient())
 				{
+					wc.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (compatible; Vixen/1.0)");
 					wc.DefaultRequestHeaders.IfModifiedSince = modifiedTime;
 					wc.Timeout = TimeSpan.FromMilliseconds(5000);
 					//Get Latest inventory from the url.
@@ -60,6 +61,7 @@ namespace Common.WPFCommon.Services
 		{
 			using (HttpClient wc = new HttpClient())
 			{
+				wc.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (compatible; Vixen/1.0)");
 				wc.Timeout = TimeSpan.FromMilliseconds(5000);
 				return await wc.GetStringAsync(url);
 			}
