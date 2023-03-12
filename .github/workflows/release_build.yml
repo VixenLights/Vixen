@@ -39,7 +39,7 @@ jobs:
     
       - uses: actions/checkout@v3
 
-      - name: create a custom version using run number offset by BUILD_NUMBER_OFFSET 
+      - name: create a custom version using run number offset by 968 
         shell: bash
         working-directory: ${{env.GITHUB_WORKSPACE}}
         run: |
@@ -58,7 +58,7 @@ jobs:
             echo "VIX_RELEASE_TAG=${VIX_RELEASE_TAG}" >> $GITHUB_ENV
             echo "VIX_VERSION=${1}.${2}.${BUILD_NUMBER}.${3:-0}" >> $GITHUB_ENV
             echo "VIX_APP_VERSION=${1}.${2}.${3:-0}" >> $GITHUB_ENV
-          else-
+          else
             echo "VIX_NOTES_FIX_VERSION=DevBuild" >> $GITHUB_ENV
             echo "VIX_NOTES_BUILD_TYPE=Development" >> $GITHUB_ENV
             echo "VIX_ENVIRONMENT=Development" >> $GITHUB_ENV
