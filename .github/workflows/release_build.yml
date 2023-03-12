@@ -58,6 +58,7 @@ jobs:
             echo "VIX_RELEASE_TAG=${VIX_RELEASE_TAG}" >> $GITHUB_ENV
             echo "VIX_VERSION=${1}.${2}.${BUILD_NUMBER}.${3:-0}" >> $GITHUB_ENV
             echo "VIX_APP_VERSION=${1}.${2}.${3:-0}" >> $GITHUB_ENV
+            echo "VIX_PRE_RELEASE=false" >> $GITHUB_ENV
           else
             echo "VIX_NOTES_FIX_VERSION=DevBuild" >> $GITHUB_ENV
             echo "VIX_NOTES_BUILD_TYPE=Development" >> $GITHUB_ENV
@@ -65,6 +66,7 @@ jobs:
             echo "VIX_RELEASE_TAG=DevBuild-${BUILD_NUMBER}" >> $GITHUB_ENV
             echo "VIX_VERSION=0.0.${BUILD_NUMBER}.0" >> $GITHUB_ENV
             echo "VIX_APP_VERSION=0.0.${BUILD_NUMBER}" >> $GITHUB_ENV
+            echo "VIX_PRE_RELEASE=true" >> $GITHUB_ENV
           fi
           
       - name: show github env
