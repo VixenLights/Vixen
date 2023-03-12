@@ -2,9 +2,10 @@
 # Script to generate Jira Release Notes.
 #
 # Example:
-#   .\jira-release-notes.ps1 -jiraUrl 'http://jira.some.com' -project 'Potatoes'
-#   .\jira-release-notes.ps1 -jiraUrl 'http://jira.some.com' -fixVersion '1.2.0'
-#   .\jira-release-notes.ps1 -jiraUrl 'http://jira.some.com' -statuses @('Done')
+#   .\Build\CreateReleaseNotes.ps1 -jiraUrl 'https://bugs.vixenlights.com' -project 'Vixen 3' -fixVersion 'DevBuild' -buildType 'Development'
+#   .\Build\CreateReleaseNotes.ps1 -jiraUrl 'https://bugs.vixenlights.com' -project 'Vixen 3' -fixVersion 'DevBuild' -buildType '3.10u0'
+#
+#   Release Notes.txt must be in the folder this script is run from.
 #
 ####################################################################
 param (
