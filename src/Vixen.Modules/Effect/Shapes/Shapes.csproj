@@ -94,7 +94,7 @@
 		</ItemGroup>
 
 		<ItemGroup>
-				<PackageReference Include="NLog" Version="5.1.0" />
+				<PackageReference Include="NLog" Version="5.1.2" />
 				<PackageReference Include="Svg" Version="3.4.4" />
 		</ItemGroup>
 
