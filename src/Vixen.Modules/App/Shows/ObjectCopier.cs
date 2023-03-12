@@ -20,7 +20,7 @@ namespace VixenModules.App.Shows
 		{
 			if (!typeof(T).IsSerializable)
 			{
-				throw new ArgumentException("The type must be serializable.", "source");
+				throw new ArgumentException(@"The type must be serializable.", nameof(source));
 			}
 
 			// Don't serialize a null object, simply return the default for that object
@@ -29,13 +29,13 @@ namespace VixenModules.App.Shows
 				return default(T);
 			}
 
-			IFormatter formatter = new BinaryFormatter();
 			Stream stream = new MemoryStream();
+			DataContractSerializer serializer = new DataContractSerializer(typeof(T));
 			using (stream)
 			{
-				formatter.Serialize(stream, source);
+				serializer.WriteObject(stream, source);
 				stream.Seek(0, SeekOrigin.Begin);
-				return (T)formatter.Deserialize(stream);
+				return (T) serializer.ReadObject(stream);
 			}
 		}
 	}

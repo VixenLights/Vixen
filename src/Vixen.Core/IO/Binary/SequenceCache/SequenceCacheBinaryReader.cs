@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization.Formatters.Binary;
+﻿using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using NLog;
 using Vixen.Cache.Sequence;
 
@@ -18,12 +19,12 @@ namespace Vixen.IO.Binary.SequenceCache
 		private byte[] _GenerateSequenceCacheDataContent(ISequenceCache sequenceCache)
 		{
 			byte[] cacheData;
-			var writer = new BinaryFormatter();
+			var writer = new DataContractSerializer(typeof(ISequenceCache));
 			using (var stream = new MemoryStream())
 			{
 				try
 				{
-					writer.Serialize(stream,sequenceCache);
+					writer.WriteObject(stream,sequenceCache);
 				}
 				catch (Exception e)
 				{
