@@ -13,7 +13,8 @@
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing && (components != null)) {
+			if (disposing && (components != null))
+			{
 				components.Dispose();
 			}
 			base.Dispose(disposing);
@@ -28,80 +29,83 @@
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NumberDialog));
-			this.button2 = new System.Windows.Forms.Button();
-			this.button1 = new System.Windows.Forms.Button();
-			this.labelPrompt = new System.Windows.Forms.Label();
-			this.numericUpDownChooser = new System.Windows.Forms.NumericUpDown();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDownChooser)).BeginInit();
-			this.SuspendLayout();
+			button2 = new Button();
+			button1 = new Button();
+			labelPrompt = new Label();
+			numericUpDownChooser = new NumericUpDown();
+			((System.ComponentModel.ISupportInitialize)numericUpDownChooser).BeginInit();
+			SuspendLayout();
 			// 
 			// button2
 			// 
-			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.button2.Location = new System.Drawing.Point(222, 71);
-			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(80, 25);
-			this.button2.TabIndex = 3;
-			this.button2.Text = "Cancel";
-			this.button2.UseVisualStyleBackColor = true;
-			this.button2.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.button2.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			button2.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+			button2.DialogResult = DialogResult.Cancel;
+			button2.Location = new Point(258, 82);
+			button2.Margin = new Padding(4, 3, 4, 3);
+			button2.Name = "button2";
+			button2.Size = new Size(93, 29);
+			button2.TabIndex = 3;
+			button2.Text = "Cancel";
+			button2.UseVisualStyleBackColor = true;
+			button2.MouseLeave += buttonBackground_MouseLeave;
+			button2.MouseHover += buttonBackground_MouseHover;
 			// 
 			// button1
 			// 
-			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.button1.Location = new System.Drawing.Point(136, 71);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(80, 25);
-			this.button1.TabIndex = 2;
-			this.button1.Text = "OK";
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.button1.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			button1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+			button1.DialogResult = DialogResult.OK;
+			button1.Location = new Point(158, 82);
+			button1.Margin = new Padding(4, 3, 4, 3);
+			button1.Name = "button1";
+			button1.Size = new Size(93, 29);
+			button1.TabIndex = 2;
+			button1.Text = "OK";
+			button1.UseVisualStyleBackColor = true;
+			button1.MouseLeave += buttonBackground_MouseLeave;
+			button1.MouseHover += buttonBackground_MouseHover;
 			// 
 			// labelPrompt
 			// 
-			this.labelPrompt.AutoSize = true;
-			this.labelPrompt.Location = new System.Drawing.Point(12, 27);
-			this.labelPrompt.Name = "labelPrompt";
-			this.labelPrompt.Size = new System.Drawing.Size(13, 13);
-			this.labelPrompt.TabIndex = 4;
-			this.labelPrompt.Text = "[]";
+			labelPrompt.AutoSize = true;
+			labelPrompt.Location = new Point(14, 31);
+			labelPrompt.Margin = new Padding(4, 0, 4, 0);
+			labelPrompt.Name = "labelPrompt";
+			labelPrompt.Size = new Size(15, 15);
+			labelPrompt.TabIndex = 4;
+			labelPrompt.Text = "[]";
 			// 
 			// numericUpDownChooser
 			// 
-			this.numericUpDownChooser.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.numericUpDownChooser.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.numericUpDownChooser.Location = new System.Drawing.Point(218, 25);
-			this.numericUpDownChooser.Name = "numericUpDownChooser";
-			this.numericUpDownChooser.Size = new System.Drawing.Size(84, 20);
-			this.numericUpDownChooser.TabIndex = 1;
-			this.numericUpDownChooser.KeyDown += new System.Windows.Forms.KeyEventHandler(this.numericUpDownChooser_KeyDown);
+			numericUpDownChooser.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+			numericUpDownChooser.BorderStyle = BorderStyle.FixedSingle;
+			numericUpDownChooser.Location = new Point(253, 29);
+			numericUpDownChooser.Margin = new Padding(4, 3, 4, 3);
+			numericUpDownChooser.Name = "numericUpDownChooser";
+			numericUpDownChooser.Size = new Size(98, 23);
+			numericUpDownChooser.TabIndex = 1;
+			numericUpDownChooser.KeyDown += numericUpDownChooser_KeyDown;
 			// 
 			// NumberDialog
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(314, 108);
-			this.Controls.Add(this.numericUpDownChooser);
-			this.Controls.Add(this.button2);
-			this.Controls.Add(this.button1);
-			this.Controls.Add(this.labelPrompt);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.KeyPreview = true;
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.Name = "NumberDialog";
-			this.ShowIcon = false;
-			this.ShowInTaskbar = false;
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDownChooser)).EndInit();
-			this.ResumeLayout(false);
-			this.PerformLayout();
-
+			AutoScaleDimensions = new SizeF(7F, 15F);
+			AutoScaleMode = AutoScaleMode.Font;
+			ClientSize = new Size(365, 125);
+			Controls.Add(numericUpDownChooser);
+			Controls.Add(button2);
+			Controls.Add(button1);
+			Controls.Add(labelPrompt);
+			FormBorderStyle = FormBorderStyle.FixedDialog;
+			Icon = (Icon)resources.GetObject("$this.Icon");
+			KeyPreview = true;
+			Margin = new Padding(4, 3, 4, 3);
+			MaximizeBox = false;
+			MinimizeBox = false;
+			Name = "NumberDialog";
+			ShowInTaskbar = false;
+			StartPosition = FormStartPosition.CenterParent;
+			((System.ComponentModel.ISupportInitialize)numericUpDownChooser).EndInit();
+			ResumeLayout(false);
+			PerformLayout();
 		}
 
 		#endregion
