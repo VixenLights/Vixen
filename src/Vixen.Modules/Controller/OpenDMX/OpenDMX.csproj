@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+				<RootNamespace>VixenModules.Controller.OpenDMX</RootNamespace>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<PackageReference Include="FTD2XX.Net" Version="1.2.1" />
+				<PackageReference Include="NLog" Version="5.1.2" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+		</ItemGroup>
+
+	
+
+</Project>

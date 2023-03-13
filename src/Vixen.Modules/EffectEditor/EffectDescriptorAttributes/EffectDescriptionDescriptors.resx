@@ -1,0 +1,1257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BackgroundChunks" xml:space="preserve">
+    <value>Controls the amount of background chunks.</value>
+  </data>
+  <data name="BackgroundSkips" xml:space="preserve">
+    <value>Controls the amount of background skips.</value>
+  </data>
+  <data name="BaseBrightness" xml:space="preserve">
+    <value>Controls the brightness of the base color of the effect.</value>
+  </data>
+  <data name="BaseColor" xml:space="preserve">
+    <value>Controls the base color that will be used for the background of the effect.</value>
+  </data>
+  <data name="Blend" xml:space="preserve">
+    <value>Applies the gradient blend vertically.</value>
+  </data>
+  <data name="Brightness" xml:space="preserve">
+    <value>Controls the brightness of the effect.</value>
+  </data>
+  <data name="ButterflyType" xml:space="preserve">
+    <value>Controls the type of pattern.</value>
+  </data>
+  <data name="CenterStop" xml:space="preserve">
+    <value>Moves the text into view and stops it in the center.</value>
+  </data>
+  <data name="CenterText" xml:space="preserve">
+    <value>Center each line of text instead of left justified.</value>
+  </data>
+  <data name="ChangePercent" xml:space="preserve">
+    <value>Sets percentage of change.</value>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>Controls the color of the effect.</value>
+  </data>
+  <data name="ColorHandling" xml:space="preserve">
+    <value>Controls how the color is handled.</value>
+  </data>
+  <data name="ColorScheme" xml:space="preserve">
+    <value>Controls the color scheme.</value>
+  </data>
+  <data name="MinimumBrightness" xml:space="preserve">
+    <value>Controls the default brightness of the background in the effect. Sometimes a zero value may be necesary to get certain behaviors in layer mixing.</value>
+  </data>
+  <data name="Depth" xml:space="preserve">
+    <value>Indicates how many levels deep the effect should be grouped.</value>
+  </data>
+  <data name="DeviationPercent" xml:space="preserve">
+    <value>Sets percent of deviation.</value>
+  </data>
+  <data name="Direction" xml:space="preserve">
+    <value>Controls the direction of the effect.</value>
+  </data>
+  <data name="EffectType" xml:space="preserve">
+    <value>Controls the type of movement.</value>
+  </data>
+  <data name="Explosions" xml:space="preserve">
+    <value>Controls how many explosions occur.</value>
+  </data>
+  <data name="ExtendPulseEnd" xml:space="preserve">
+    <value>Extends the pulse to the end of the effect from beyond it's normal ending position. The extension will be at the ending color and ending value of the brightness intensity. If the intensity ends in zero, this will have no effect.</value>
+  </data>
+  <data name="ExtendPulseStart" xml:space="preserve">
+    <value>Extends the pulse back to the start of the effect from it's normal starting position. The extension will be at the starting color and starting brightness intensity. If the intensity starts at zero, which is the default, this will have no effect.</value>
+  </data>
+  <data name="Filename" xml:space="preserve">
+    <value>The selected file name.</value>
+  </data>
+  <data name="FitTime" xml:space="preserve">
+    <value>Times the effect so that it will fit in the allotted time span.</value>
+  </data>
+  <data name="FlakeCount" xml:space="preserve">
+    <value>Controls the amount of flakes.</value>
+  </data>
+  <data name="FlickerFrequency" xml:space="preserve">
+    <value>Sets flicker frequency in changes per second.</value>
+  </data>
+  <data name="FlickerPercent" xml:space="preserve">
+    <value>Sets percentage of flicker.</value>
+  </data>
+  <data name="Font" xml:space="preserve">
+    <value>The text font.</value>
+  </data>
+  <data name="GifSpeed" xml:space="preserve">
+    <value>Controls the speed at which a gif animates if the image is a animated gif.</value>
+  </data>
+  <data name="GradientLevelPair" xml:space="preserve">
+    <value>Controls the color gradient and brightness curve that are associated together to provide the color(s) for the effect.</value>
+  </data>
+  <data name="GradientMode" xml:space="preserve">
+    <value>Controls how the gradient is applied to the effect.</value>
+  </data>
+  <data name="GroupLevel" xml:space="preserve">
+    <value>Controls the grouping together of elements that will be in the same state.</value>
+  </data>
+  <data name="Grow" xml:space="preserve">
+    <value>Grow the legs of the spiral.</value>
+  </data>
+  <data name="Height" xml:space="preserve">
+    <value>Controls the height of the fire.</value>
+  </data>
+  <data name="Highlight" xml:space="preserve">
+    <value>Controls whether there are highlights added.</value>
+  </data>
+  <data name="HueShift" xml:space="preserve">
+    <value>Controls the color of the fire.</value>
+  </data>
+  <data name="Interval" xml:space="preserve">
+    <value>Specifies how often the effect should switch in milliseconds.</value>
+  </data>
+  <data name="IntervalSkip" xml:space="preserve">
+    <value>Controls the offset into the color list for the alternate state in the effect. One is the default and would shift the colors back and forth by one.</value>
+  </data>
+  <data name="Iterations" xml:space="preserve">
+    <value>Controls the number of times the pattern repeats over the timespan.</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Controls the location.</value>
+  </data>
+  <data name="MaxBrightness" xml:space="preserve">
+    <value>Controls the maximum brightness of a pulse.</value>
+  </data>
+  <data name="MinBrightness" xml:space="preserve">
+    <value>Controls the minimum brightness of a pulse.</value>
+  </data>
+  <data name="Orientation" xml:space="preserve">
+    <value>Defines the direction of the strings and controls how the effect is oriented on the element.</value>
+  </data>
+  <data name="ParticleFade" xml:space="preserve">
+    <value>Controls how fast the particles fade.</value>
+  </data>
+  <data name="Particles" xml:space="preserve">
+    <value>Controls how many particles will be created.</value>
+  </data>
+  <data name="PixelsPerString" xml:space="preserve">
+    <value>The count of pixels on each string.</value>
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value>Controls the centering of the text on the element.</value>
+  </data>
+  <data name="PulseDuration" xml:space="preserve">
+    <value>Controls how long each pulse is in milliseconds.</value>
+  </data>
+  <data name="PulseOverlap" xml:space="preserve">
+    <value>Controls how many milliseconds the individual pulses overlap.</value>
+  </data>
+  <data name="PulseShape" xml:space="preserve">
+    <value>Controls the individual pulse shape.</value>
+  </data>
+  <data name="PulseSpinPercent" xml:space="preserve">
+    <value>Controls how long each pulse is as a percentage of the spin.</value>
+  </data>
+  <data name="PulseType" xml:space="preserve">
+    <value>Controls how individual pulses are applied across the effect.</value>
+  </data>
+  <data name="Repeat" xml:space="preserve">
+    <value>Controls the number of times the color pattern repeats within the pattern.</value>
+  </data>
+  <data name="RevolutionCount" xml:space="preserve">
+    <value>Controls how many revolutions of the spin will occur.</value>
+  </data>
+  <data name="RevolutionFrequency" xml:space="preserve">
+    <value>Controls the frequency in Hz at which the spin occurs.</value>
+  </data>
+  <data name="RevolutionTime" xml:space="preserve">
+    <value>Controls the duration in milliseconds at which the spin occurs.</value>
+  </data>
+  <data name="Rotation" xml:space="preserve">
+    <value>The amount of twist in the spiral.</value>
+  </data>
+  <data name="ScalePercent" xml:space="preserve">
+    <value>Controls the percent of the scaling to reduce the size of large images to fit.</value>
+  </data>
+  <data name="ScaleToGrid" xml:space="preserve">
+    <value>Automatically sets the scaling to match the grid size.</value>
+  </data>
+  <data name="Setup" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Show3D" xml:space="preserve">
+    <value>Adds a 3D effect.</value>
+  </data>
+  <data name="Shrink" xml:space="preserve">
+    <value>Shrink the legs of the spiral.</value>
+  </data>
+  <data name="SpinSpeedFormat" xml:space="preserve">
+    <value>Controls how the individual spins occur.</value>
+  </data>
+  <data name="StaticColorIndicator" xml:space="preserve">
+    <value>Indicates the color is a static color.</value>
+  </data>
+  <data name="StaticEffect" xml:space="preserve">
+    <value>Indicates that the effect should be the same on all elements.</value>
+  </data>
+  <data name="StringCount" xml:space="preserve">
+    <value>The count of strings the effect will use.</value>
+  </data>
+  <data name="TargetPositioning" xml:space="preserve">
+    <value>Determines how the target elements are treated. Either as individual strings or by their actual location.</value>
+  </data>
+  <data name="TextBrightness" xml:space="preserve">
+    <value>Controls the brightness of the text in the effect.</value>
+  </data>
+  <data name="TextLines" xml:space="preserve">
+    <value>The text to be displayed.</value>
+  </data>
+  <data name="TextMode" xml:space="preserve">
+    <value>Controls the orientation of the text lines.</value>
+  </data>
+  <data name="Thickness" xml:space="preserve">
+    <value>Controls how thick the spiral leg is.</value>
+  </data>
+  <data name="TwinkleAvgPulseTime" xml:space="preserve">
+    <value>Controls how long the averge pulse time is in the twinkle.</value>
+  </data>
+  <data name="TwinkleCoverage" xml:space="preserve">
+    <value>Controls how much of the effect by percent is covered in twinkles.</value>
+  </data>
+  <data name="TwinkleDepth" xml:space="preserve">
+    <value>Controls whether each individual element is twinkled independantly or controled by the depth of the effect.</value>
+  </data>
+  <data name="TwinkleLevelVariation" xml:space="preserve">
+    <value>Controls how much percent variation in the brightness level of each pulse in the twinkle.</value>
+  </data>
+  <data name="TwinklePulseTimeVariation" xml:space="preserve">
+    <value>Controls how much percent variation in the time of each pulse in the twinkle.</value>
+  </data>
+  <data name="UseBaseColor" xml:space="preserve">
+    <value>Indicates if a underlying base color should be used.</value>
+  </data>
+  <data name="Velocity" xml:space="preserve">
+    <value>Controls the velocity of the particles.</value>
+  </data>
+  <data name="VerticalBlend" xml:space="preserve">
+    <value>Changes the orientation of the gradient.</value>
+  </data>
+  <data name="WipeCount" xml:space="preserve">
+    <value>Controls the number of passes the wipe makes.</value>
+  </data>
+  <data name="WipePulsePercent" xml:space="preserve">
+    <value>Controls the length of the pulse as a percentage of the effect time.</value>
+  </data>
+  <data name="WipeType" xml:space="preserve">
+    <value>Controls how the wipe behaves. Either by a count of passes, or by time related to pulse length.</value>
+  </data>
+  <data name="XOffset" xml:space="preserve">
+    <value>Can help to adjust the position of the effect. May not work in all cases.</value>
+  </data>
+  <data name="YOffset" xml:space="preserve">
+    <value>Can help to adjust the position of the effect. May not work in all cases.</value>
+  </data>
+  <data name="MeteorType" xml:space="preserve">
+    <value>Colors are not used when Rainbow is selected.</value>
+  </data>
+  <data name="GradientPosition" xml:space="preserve">
+    <value>Controls the stop point for the color in the gradient.</value>
+  </data>
+  <data name="FramesPerSecond" xml:space="preserve">
+    <value>Controls the frames per second rate.</value>
+  </data>
+  <data name="EnableMinimumBrightness" xml:space="preserve">
+    <value>Enables a default brightness for the background in the effect. The background will be based on the foreground color selections.</value>
+  </data>
+  <data name="BladeType" xml:space="preserve">
+    <value>Determines the look of the blade.</value>
+  </data>
+  <data name="AlternatingDepth" xml:space="preserve">
+    <value>Controls whether each individual element is alternated independantly or controlled by the depth of the effect.</value>
+  </data>
+  <data name="CenterHub" xml:space="preserve">
+    <value>Configures the size of the hub or hole in the center of the Pinwheel.</value>
+  </data>
+  <data name="Twist" xml:space="preserve">
+    <value>Configures the amount of rotation or twist the Pinwheel arm has.</value>
+  </data>
+  <data name="CenterX" xml:space="preserve">
+    <value>Controls the center positioning of the effect in the horizontal plane.</value>
+  </data>
+  <data name="CenterY" xml:space="preserve">
+    <value>Controls the center positioning of the effect in the vertical plane.</value>
+  </data>
+  <data name="RadiusCurve" xml:space="preserve">
+    <value>The radius of the circle over the time of the effect.</value>
+  </data>
+  <data name="WaveAcceleration" xml:space="preserve">
+    <value>Controls how the wave accelerates out from the center over time. </value>
+  </data>
+  <data name="WidthCurve" xml:space="preserve">
+    <value>The width over time of the effect.</value>
+  </data>
+  <data name="ColorType" xml:space="preserve">
+    <value>Controls the Type of Color.</value>
+  </data>
+  <data name="MaxMeteorAngle" xml:space="preserve">
+    <value>Max angle the Meteor moves.</value>
+  </data>
+  <data name="MinMeteorAngle" xml:space="preserve">
+    <value>Min angle the Meteor moves.</value>
+  </data>
+  <data name="MovementType" xml:space="preserve">
+    <value>Controls how the effect progresses across time between speed or iterations.</value>
+  </data>
+  <data name="RandomPosition" xml:space="preserve">
+    <value>Creates new Meteors at a Random Position</value>
+  </data>
+  <data name="RandomSpeed" xml:space="preserve">
+    <value>Enables Random Speed settings.</value>
+  </data>
+  <data name="TailLength" xml:space="preserve">
+    <value>Controls the length of the meteor's tail.</value>
+  </data>
+  <data name="SpeedVariation" xml:space="preserve">
+    <value>Randomly adjust the Speed around the Speed level by the amount of variation.</value>
+  </data>
+  <data name="FlakeType" xml:space="preserve">
+    <value>Controls the type of snowflake.</value>
+  </data>
+  <data name="Include45Pt" xml:space="preserve">
+    <value>Include 45 Point Flakes.</value>
+  </data>
+  <data name="MaxAngle" xml:space="preserve">
+    <value>Max angle the Snowflake moves.</value>
+  </data>
+  <data name="MaxDirection" xml:space="preserve">
+    <value>Max Direction in Degrees.</value>
+  </data>
+  <data name="MinAngle" xml:space="preserve">
+    <value>Min angle the Snowflake moves.</value>
+  </data>
+  <data name="MinDirection" xml:space="preserve">
+    <value>Min Direction in Degrees.</value>
+  </data>
+  <data name="RandomIntensity" xml:space="preserve">
+    <value>Changes the Intensity for each element of the effect.</value>
+  </data>
+  <data name="GarlandType" xml:space="preserve">
+    <value>Changes the garland type.</value>
+  </data>
+  <data name="Spacing" xml:space="preserve">
+    <value>Adjusts the space between garlands.</value>
+  </data>
+  <data name="ReverseDirection" xml:space="preserve">
+    <value>Changes direction of effect.</value>
+  </data>
+  <data name="Movement" xml:space="preserve">
+    <value>Controls variance of the motion over time.</value>
+  </data>
+  <data name="BorderType" xml:space="preserve">
+    <value>Enable Single or Independent Border width control.</value>
+  </data>
+  <data name="BorderMode" xml:space="preserve">
+    <value>Enables Simple or Advanced border width control.</value>
+  </data>
+  <data name="BorderWidth" xml:space="preserve">
+    <value>Adjusts the Border width.</value>
+  </data>
+  <data name="BottomBorderWidth" xml:space="preserve">
+    <value>Adjust the Bottom Border Width.</value>
+  </data>
+  <data name="LeftBorderWidth" xml:space="preserve">
+    <value>Adjust the Left Border Width.</value>
+  </data>
+  <data name="OuterBorderStarts" xml:space="preserve">
+    <value>Adjusts the Outer border start location.</value>
+  </data>
+  <data name="RightBorderWidth" xml:space="preserve">
+    <value>Adjust the Right Border Width.</value>
+  </data>
+  <data name="RoundEdges" xml:space="preserve">
+    <value>Adds a pixel to the inner corners of the border.</value>
+  </data>
+  <data name="TopBorderWidth" xml:space="preserve">
+    <value>Adjust the Top Border Width.</value>
+  </data>
+  <data name="BorderSize" xml:space="preserve">
+    <value>Adjusts the overall size of the border.</value>
+  </data>
+  <data name="BackGroundColor" xml:space="preserve">
+    <value>Changes Background color.</value>
+  </data>
+  <data name="BallCount" xml:space="preserve">
+    <value>Controls the number of Balls displayed.</value>
+  </data>
+  <data name="BallEdgeWidth" xml:space="preserve">
+    <value>Width of the individual empty balls.</value>
+  </data>
+  <data name="BallFill" xml:space="preserve">
+    <value>Selects the type of fill for the balls.</value>
+  </data>
+  <data name="BallType" xml:space="preserve">
+    <value>Selects between Bounce and Wrap.</value>
+  </data>
+  <data name="ChangeCollideColor" xml:space="preserve">
+    <value>Change ball color when balls collide.</value>
+  </data>
+  <data name="Collide" xml:space="preserve">
+    <value>Change the ball direction when balls collide.</value>
+  </data>
+  <data name="RandomRadius" xml:space="preserve">
+    <value>Creates random size balls up to the Radius value..</value>
+  </data>
+  <data name="BallSize" xml:space="preserve">
+    <value>Size of the Ball.</value>
+  </data>
+  <data name="CircleCount" xml:space="preserve">
+    <value>Adjust the number of Circles or radial patterns in the effect.</value>
+  </data>
+  <data name="CircleEdgeWidth" xml:space="preserve">
+    <value>Width of the individual circles, may need to increase when using Loaction.</value>
+  </data>
+  <data name="HorizontalOffset" xml:space="preserve">
+    <value>Controls the center positioning of the effect in the horizontal plane.</value>
+  </data>
+  <data name="RadialSpeed" xml:space="preserve">
+    <value>Speed of the radial pattern.</value>
+  </data>
+  <data name="Size" xml:space="preserve">
+    <value>Size of the radial effect.</value>
+  </data>
+  <data name="VerticalOffset" xml:space="preserve">
+    <value>Controls the center positioning of the effect in the vertical plane.</value>
+  </data>
+  <data name="CircleFill" xml:space="preserve">
+    <value>Changes the way the circle is filled.</value>
+  </data>
+  <data name="RadialDirection" xml:space="preserve">
+    <value>Changes the direction of the effect to In or out.</value>
+  </data>
+  <data name="SnowBuildUp" xml:space="preserve">
+    <value>Allows the Snowflakes to build-up at the bottom of the Element.</value>
+  </data>
+  <data name="InitialBuildUp" xml:space="preserve">
+    <value>Sets the height level of the Initial Snow build-up at the bottom of the element.</value>
+  </data>
+  <data name="BuildUpSpeed" xml:space="preserve">
+    <value>Adjusts how fast the build-up of Snow is.</value>
+  </data>
+  <data name="EnableGroundLevel" xml:space="preserve">
+    <value>Adds a Ground level for the Meteors to hit.</value>
+  </data>
+  <data name="Angle" xml:space="preserve">
+    <value>Controls the rotation angle.</value>
+  </data>
+  <data name="FontScale" xml:space="preserve">
+    <value>Adjusts the Font size.</value>
+  </data>
+  <data name="EyeMode" xml:space="preserve">
+    <value>Determines how the eyes are handled.</value>
+  </data>
+  <data name="LipSyncMode" xml:space="preserve">
+    <value>Use a single Phoneme or collection of Marks with Phoneme labels.</value>
+  </data>
+  <data name="LyricData" xml:space="preserve">
+    <value>The lyric verbiage this Phoneme is associated with.</value>
+  </data>
+  <data name="MappingType" xml:space="preserve">
+    <value>The mapping type. Face Mapping or Image Map.</value>
+  </data>
+  <data name="MarkCollection" xml:space="preserve">
+    <value>The Mark Collection to align the phoneme movements with. This collection should have the phoneme names for labels.</value>
+  </data>
+  <data name="PhonemeMapping" xml:space="preserve">
+    <value>The map to use to associate phonemes with images.</value>
+  </data>
+  <data name="ShowOutline" xml:space="preserve">
+    <value>Detemines if the outline of the element is lit.</value>
+  </data>
+  <data name="StaticPhoneme" xml:space="preserve">
+    <value>The Phoneme mouth affiliation.</value>
+  </data>
+  <data name="FireworksSource" xml:space="preserve">
+    <value>Selects what source is used to determine explosions.</value>
+  </data>
+  <data name="AutoFit" xml:space="preserve">
+    <value>Adjusts the time the word is displayed to auto fit between words either side.</value>
+  </data>
+  <data name="DirectionPerWord" xml:space="preserve">
+    <value>When enabled will move the text basd on direction over the duration of each displayed word.</value>
+  </data>
+  <data name="MarkLabels" xml:space="preserve">
+    <value>Use Mark Labels as text to be displayed.</value>
+  </data>
+  <data name="RepeatText" xml:space="preserve">
+    <value>When enabled will repeat the individual words if there are more Marks in the collection then number of total words.</value>
+  </data>
+  <data name="TextFade" xml:space="preserve">
+    <value>Will fade the displayed text as per setting.</value>
+  </data>
+  <data name="TextTrigger" xml:space="preserve">
+    <value>Use standard Text with no external trigger, Marks to trigger when words are shown or Marks to trigger and use Mark Labels to display.</value>
+  </data>
+  <data name="TextDuration" xml:space="preserve">
+    <value>Adjusts the way the text duration is used.</value>
+  </data>
+  <data name="TimeVisibleLength" xml:space="preserve">
+    <value>Length of time in milliseconds the countdown is shown at each mark.</value>
+  </data>
+  <data name="CountDownFade" xml:space="preserve">
+    <value>Will fade each displayed count down time.</value>
+  </data>
+  <data name="CountDownType" xml:space="preserve">
+    <value>Sets the type as count down the time to the end of the effect, or count up/down from user specified start time.</value>
+  </data>
+  <data name="TimeFormat" xml:space="preserve">
+    <value>Displays the count down in Minutes (over 60sec) or second.</value>
+  </data>
+  <data name="MarkTimeFreeze" xml:space="preserve">
+    <value>Freezes on the tiem left when triggered.</value>
+  </data>
+  <data name="CountDownTime" xml:space="preserve">
+    <value>Sets the starting time in seconds for the count to begin.</value>
+  </data>
+  <data name="AngleSpeed" xml:space="preserve">
+    <value>Adjusts the angle speed of the shape.</value>
+  </data>
+  <data name="AngleSpeedVariation" xml:space="preserve">
+    <value>Randomly adjust the angle speed around the angle speed level by the amount of variation.</value>
+  </data>
+  <data name="BorderShapes" xml:space="preserve">
+    <value>Select from a list of Border shapes.</value>
+  </data>
+  <data name="ChristmasShapes" xml:space="preserve">
+    <value>Select from a list of Christmas shapes.</value>
+  </data>
+  <data name="ColorFill" xml:space="preserve">
+    <value>Fills the shape with the fill color.</value>
+  </data>
+  <data name="CrossSizeRatio" xml:space="preserve">
+    <value>Adjuts the cross Height to Width ratio.</value>
+  </data>
+  <data name="FirstFillColors" xml:space="preserve">
+    <value>Fills the shape.</value>
+  </data>
+  <data name="GeometricShapes" xml:space="preserve">
+    <value>Select from a list of Geometric shapes.</value>
+  </data>
+  <data name="HalloweenShapes" xml:space="preserve">
+    <value>Select from a list of Halloween shapes.</value>
+  </data>
+  <data name="MaxShapeSize" xml:space="preserve">
+    <value>Maximum Shape Size.</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Controls shape movement.</value>
+  </data>
+  <data name="OutlineColors" xml:space="preserve">
+    <value>Adjusts the outline color.</value>
+  </data>
+  <data name="PolygonSides" xml:space="preserve">
+    <value>Adjusts number of Polygon sides.</value>
+  </data>
+  <data name="RandomAngle" xml:space="preserve">
+    <value>Randomly sets initial shape angle.</value>
+  </data>
+  <data name="RandomShapeSize" xml:space="preserve">
+    <value>Randomly sets initial shape size.</value>
+  </data>
+  <data name="RoundedCorners" xml:space="preserve">
+    <value>Add rounded corners to the Geometric shapes.</value>
+  </data>
+  <data name="SecondFillColors" xml:space="preserve">
+    <value>Fills the shape.</value>
+  </data>
+  <data name="ShapeCount" xml:space="preserve">
+    <value>Adjusts the number of shapes to be created.</value>
+  </data>
+  <data name="ShapeOutLine" xml:space="preserve">
+    <value>Adjusts the outline dash length of the shape, used with the line spacing.</value>
+  </data>
+  <data name="ShapeOutLineSpace" xml:space="preserve">
+    <value>Adjusts the outline space length between dashes of the shape, used with the dash length.</value>
+  </data>
+  <data name="ShapeSize" xml:space="preserve">
+    <value>Size of the shape.</value>
+  </data>
+  <data name="ShapeSizeRatio" xml:space="preserve">
+    <value>Adjust the Height to Width ratio.</value>
+  </data>
+  <data name="ShapeType" xml:space="preserve">
+    <value>Selects Shape catagory.</value>
+  </data>
+  <data name="SizeSpeed" xml:space="preserve">
+    <value>Adjusts the size speed of the shape.</value>
+  </data>
+  <data name="SizeSpeedVariation" xml:space="preserve">
+    <value>Randomly adjust the size speed around the size speed level by the amount of variation.</value>
+  </data>
+  <data name="SkipPoints" xml:space="preserve">
+    <value>Adjusts the skip point for star.</value>
+  </data>
+  <data name="StarInsideSize" xml:space="preserve">
+    <value>Adjusts inside radius of Star.</value>
+  </data>
+  <data name="StarPoints" xml:space="preserve">
+    <value>Adjusts the number of points on the star.</value>
+  </data>
+  <data name="StrokeFill" xml:space="preserve">
+    <value>Shows the shape outline.</value>
+  </data>
+  <data name="StrokeWidth" xml:space="preserve">
+    <value>Adjusts the thickness of the shape outline.</value>
+  </data>
+  <data name="CenterSize" xml:space="preserve">
+    <value>Randomly adjust the Shape size around the Size level by the amount of variation.</value>
+  </data>
+  <data name="SizeChange" xml:space="preserve">
+    <value>Enable increase/decrease of shape size based on size variation.</value>
+  </data>
+  <data name="SizeVariation" xml:space="preserve">
+    <value>Randomly adjust the shape size around the size level by the amount of variation.</value>
+  </data>
+  <data name="RandomSize" xml:space="preserve">
+    <value>Randomly adjust the shape size.</value>
+  </data>
+  <data name="AllowMarkGaps" xml:space="preserve">
+    <value>When selected, the effect does not fill gaps in the marks with a REST.</value>
+  </data>
+  <data name="SizeMode" xml:space="preserve">
+    <value>Determines how the shapes size changes.</value>
+  </data>
+  <data name="StretchToGrid" xml:space="preserve">
+    <value>Adjusts image dimensions to fit the grid size.</value>
+  </data>
+  <data name="CycleColor" xml:space="preserve">
+    <value>Will cycle through gradient colors for each word.</value>
+  </data>
+  <data name="PerIteration" xml:space="preserve">
+    <value>Enabled will adjust movement per number where as disabled adjusts movement over effect length.</value>
+  </data>
+  <data name="CountDownSizeMode" xml:space="preserve">
+    <value>Vary the size of the Count down value.</value>
+  </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Higher the value will result in higher quality but slower render time.</value>
+  </data>
+  <data name="Density" xml:space="preserve">
+    <value>Adjust the density of the elements.</value>
+  </data>
+  <data name="DissolveFlip" xml:space="preserve">
+    <value>Flips the direction of the sequential dissolve.</value>
+  </data>
+  <data name="DissolveMarkCollection" xml:space="preserve">
+    <value>The Mark Collection to align changes to the Dissolve pattern.</value>
+  </data>
+  <data name="GroupColors" xml:space="preserve">
+    <value>Each element will have all colors generated in parallel.</value>
+  </data>
+  <data name="MarkType" xml:space="preserve">
+    <value>Can use the Marks to determine how the effect is rendered.</value>
+  </data>
+  <data name="RandomColorOrder" xml:space="preserve">
+    <value>Generates colors in a random order from teh Color collection.</value>
+  </data>
+  <data name="RandomDissolve" xml:space="preserve">
+    <value>Generates a random or sequential Dissolve.</value>
+  </data>
+  <data name="StartingElement" xml:space="preserve">
+    <value>Starting location were the Dissolve or Fill will commence from.</value>
+  </data>
+  <data name="TimingSource" xml:space="preserve">
+    <value>Selects what source is used to determine change.</value>
+  </data>
+  <data name="BothDirections" xml:space="preserve">
+    <value>Dissolves or fills the element in both directions one after another.</value>
+  </data>
+  <data name="DirectionsTogether" xml:space="preserve">
+    <value>Dissolves or fills the element in both directions at the same time.</value>
+  </data>
+  <data name="CountPerString" xml:space="preserve">
+    <value>Generates Meteors for each string.</value>
+  </data>
+  <data name="FlipDirection" xml:space="preserve">
+    <value>Will Flip the direction the Meteor moves.</value>
+  </data>
+  <data name="MeteorPerString" xml:space="preserve">
+    <value>Generates Meteors per string.</value>
+  </data>
+  <data name="StartPosition" xml:space="preserve">
+    <value>Determines where the Meteors will start from.</value>
+  </data>
+  <data name="OffsetPercentage" xml:space="preserve">
+    <value>When enabled will convert the Offsets to percentage of Buffer size. Once enabled the option will be hidden as this is the updated method.</value>
+  </data>
+  <data name="CycleTime" xml:space="preserve">
+    <value>The amount of time in milliseconds for one complete on and off cycle.</value>
+  </data>
+  <data name="CycleVariation" xml:space="preserve">
+    <value>Alters the cycle time as a percentage of the Cycle Time parameter above. Used to vary the strobe speed over time.</value>
+  </data>
+  <data name="OnTime" xml:space="preserve">
+    <value>The percentage of each on/off cycle that the effect is on.</value>
+  </data>
+  <data name="StrobeMarkCollection" xml:space="preserve">
+    <value>The Mark Collection to adjust the strobe cycle time based on Mark label value or label duration. When Mark collection label value is selected the label must have a value or a default of 150ms will be used.</value>
+  </data>
+  <data name="StrobeMode" xml:space="preserve">
+    <value>Enables Simple or Advanced Strobe control.</value>
+  </data>
+  <data name="StrobeSource" xml:space="preserve">
+    <value>Selects what source is used to determine change.</value>
+  </data>
+  <data name="XSpeed" xml:space="preserve">
+    <value>Horizontal Center Speed.</value>
+  </data>
+  <data name="XSpeedVariation" xml:space="preserve">
+    <value>Randomly adjust the Speed around the center Speed by the amount of variation.</value>
+  </data>
+  <data name="YSpeed" xml:space="preserve">
+    <value>Horizontal Center Speed.</value>
+  </data>
+  <data name="YSpeedVariation" xml:space="preserve">
+    <value>Randomly adjust the Speed around the center Speed by the amount of variation.</value>
+  </data>
+  <data name="MovementSpeed" xml:space="preserve">
+    <value>Adjusts the Meteor direction based on X and Y Speed curves.</value>
+  </data>
+  <data name="Wobble" xml:space="preserve">
+    <value>Moves the Meteors from side to side.</value>
+  </data>
+  <data name="WobbleVariation" xml:space="preserve">
+    <value>Randomly adjust the Wobble around the Wobble level by the amount of variation.</value>
+  </data>
+  <data name="MovementMode" xml:space="preserve">
+    <value>Adjusts the type of movement.</value>
+  </data>
+  <data name="BorderHeight" xml:space="preserve">
+    <value>Adjust the Border height.</value>
+  </data>
+  <data name="BorderThickness" xml:space="preserve">
+    <value>Adjust the Thickness of the border.</value>
+  </data>
+  <data name="FilmSpinner" xml:space="preserve">
+    <value>Adds a film spinner around the number.</value>
+  </data>
+  <data name="FilmSpinnerColors" xml:space="preserve">
+    <value>Controls the swipe color of the film spinner.</value>
+  </data>
+  <data name="FilmSpinnerGradientMode" xml:space="preserve">
+    <value>Controls how the gradient is applied to the swipe color of the film spinner.</value>
+  </data>
+  <data name="IntensityPerIteration" xml:space="preserve">
+    <value>Adjusts the Intensity over each iteration.</value>
+  </data>
+  <data name="ColorPerStep" xml:space="preserve">
+    <value>When enabled the color will change for each Step variation.</value>
+  </data>
+  <data name="ColorPerCount" xml:space="preserve">
+    <value>Spreads the Color across each count or entire length of the effect.</value>
+  </data>
+  <data name="ReverseColorCurve" xml:space="preserve">
+    <value>Reverses the Color and Curve depending on direction of Movement curve.</value>
+  </data>
+  <data name="RandomMaxCurve" xml:space="preserve">
+    <value>Changes the Max time used to determine when the Ball direction is change.</value>
+  </data>
+  <data name="RandomMovement" xml:space="preserve">
+    <value>Randomly changes the ball direction at random times.</value>
+  </data>
+  <data name="CycleCharacterColor" xml:space="preserve">
+    <value>Cycles through colors for each character.</value>
+  </data>
+  <data name="ExplodePosition" xml:space="preserve">
+    <value>Adjust the Charater position from center point.</value>
+  </data>
+  <data name="FallSpeed" xml:space="preserve">
+    <value>Adjusts the speed of the falling characters.</value>
+  </data>
+  <data name="Animate" xml:space="preserve">
+    <value>This option animates the position of the emitter within the display area.</value>
+  </data>
+  <data name="BottomBarrier" xml:space="preserve">
+    <value>Creates a barrier at the bottom of the display area.  This barrier prevents liquid particles the falling out of the display area.</value>
+  </data>
+  <data name="ColorList" xml:space="preserve">
+    <value>Defines the list of colors that are cycled through for an emitter when the Use Color List option is selected for an emitter.</value>
+  </data>
+  <data name="EdgeHandling" xml:space="preserve">
+    <value>This option controls how the emitters behave when they reach the edge of the display area.  Bounce setting causes the emitter to bounce off the edge of the display area.  Wrap setting causes the emitter to wrap around from the other side of the display area.</value>
+  </data>
+  <data name="NozzleAngle" xml:space="preserve">
+    <value>Controls the angle of the emitter's nozzle.  The angle is more discernible at lower flow rates.</value>
+  </data>
+  <data name="EmitterBrightness" xml:space="preserve">
+    <value>Determines the brightness of the emitter's liquid particles.</value>
+  </data>
+  <data name="EmitterMarkCollection" xml:space="preserve">
+    <value>Selects the Mark Collection to use to determine when the emitter is emitting (On).</value>
+  </data>
+  <data name="EmitterOffTime" xml:space="preserve">
+    <value>Controls the number of milliseconds the emitter is off in 50ms increments.</value>
+  </data>
+  <data name="EmitterOnTime" xml:space="preserve">
+    <value>Controls the number of milliseconds the emitter is emitting in 50 ms increments.</value>
+  </data>
+  <data name="Emitters" xml:space="preserve">
+    <value>This list defines the emitters in the effect.  Emitters can be added or removed via buttons at the bottom of the list.</value>
+  </data>
+  <data name="Flow" xml:space="preserve">
+    <value>Controls the rate of particles emitted by the emitter.</value>
+  </data>
+  <data name="FlowControl" xml:space="preserve">
+    <value>Determines the continuity of the liquid flow (Continuous, Pulsating, Use Marks, Musical).</value>
+  </data>
+  <data name="FramesPerColor" xml:space="preserve">
+    <value>Determines how many frames of particles are created for each color in the list.</value>
+  </data>
+  <data name="LeftBarrier" xml:space="preserve">
+    <value>Creates a barrier at the left side of the display area.  This barrier prevents liquid particles from leaving the left side of the display area.</value>
+  </data>
+  <data name="MixColors" xml:space="preserve">
+    <value>When selected liquid particles of different colors will combine colors when the particles collide or come into contact with each other.</value>
+  </data>
+  <data name="NozzleMovement" xml:space="preserve">
+    <value>Controls the movement of the emitter's nozzle (Fixed Angle, Oscillate, Spin Clockwise, Spin Counter Clockwise)</value>
+  </data>
+  <data name="NozzleSpeed" xml:space="preserve">
+    <value>Determines the emitter's nozzle rotation speed.</value>
+  </data>
+  <data name="Oscillate" xml:space="preserve">
+    <value>This option repeatedly oscillates the emitter's nozzle from a start angle to an end angle and then back to the starting position.</value>
+  </data>
+  <data name="OscillateEndAngle" xml:space="preserve">
+    <value>Defines the end angle of the oscillation. This is the point where the nozzle will reverse the direction of rotation.</value>
+  </data>
+  <data name="OscillateStartAngle" xml:space="preserve">
+    <value>Defines the starting angle of the oscillation.</value>
+  </data>
+  <data name="ParticleColor" xml:space="preserve">
+    <value>Determines the color of the emitter's liquid particles.</value>
+  </data>
+  <data name="ParticleLifetime" xml:space="preserve">
+    <value>Determines how long the emitter's particles exist.</value>
+  </data>
+  <data name="ParticleSize" xml:space="preserve">
+    <value>Defines the radius of all particles in the effect.</value>
+  </data>
+  <data name="ParticleType" xml:space="preserve">
+    <value>Determines the type of particle created by the emitter.  The differences between the types is subtle.  Powder is one type that produces a different behavior that is visually discernible.</value>
+  </data>
+  <data name="ParticleVelocity" xml:space="preserve">
+    <value>Determines the speed of the particles emitting from the emitter.</value>
+  </data>
+  <data name="RenderScaleFactor" xml:space="preserve">
+    <value>Determines the factor used to scale the liquid matrix to the sparse matrix formed by the selected elements.</value>
+  </data>
+  <data name="RightBarrier" xml:space="preserve">
+    <value>Creates a barrier at the right side of the display area.  This barrier prevents liquid particles from leaving the right side of the display area.</value>
+  </data>
+  <data name="TopBarrier" xml:space="preserve">
+    <value>Creates a barrier at the top of the display area.  This barrier prevents the liquid particles from leaving the top of the display area.</value>
+  </data>
+  <data name="UseColorList" xml:space="preserve">
+    <value>When selected this option controls the color of the particles created by the emitter.  The particles will cycle through the colors in the list for a configurable number of frames.</value>
+  </data>
+  <data name="VelocityX" xml:space="preserve">
+    <value>Controls the speed of the emitter in the X axis when animated.</value>
+  </data>
+  <data name="VelocityY" xml:space="preserve">
+    <value>Controls the speed of the emitter in the Y axis when animated.</value>
+  </data>
+  <data name="XPosition" xml:space="preserve">
+    <value>Controls the position of the emitter on the display area in the X axis.</value>
+  </data>
+  <data name="YPosition" xml:space="preserve">
+    <value>Controls the position of the emitter on the display area in the Y axis.</value>
+  </data>
+  <data name="NozzleSize" xml:space="preserve">
+    <value>Controls the size of the area the particles are released from the emitter.</value>
+  </data>
+  <data name="DespeckleThreshold" xml:space="preserve">
+    <value>This setting helps fill in empty (speck) pixels in the effect by filling them in with the average color of the surrounding pixels if the number of surrounding empty (black) pixels is less than the threshold.</value>
+  </data>
+  <data name="WarmUpFrames" xml:space="preserve">
+    <value>Runs the Liquid engine for the specified number of frames before rendering the effect.  This setting is useful if you want a large number of particles in the display area at the beginning of the effect.</value>
+  </data>
+  <data name="ChaseTargetNodeSelection" xml:space="preserve">
+    <value>Determines how the Chase is applied across the target elements that are presented to the effect.</value>
+  </data>
+  <data name="SpinTargetNodeSelection" xml:space="preserve">
+    <value>Determines how the Spin is applied across the target elements that are presented to the effect.</value>
+  </data>
+  <data name="Amplitude" xml:space="preserve">
+    <value>Determines the height of the waveform.</value>
+  </data>
+  <data name="Frequency" xml:space="preserve">
+    <value>Determines how many times the waveform repeats on the display element.</value>
+  </data>
+  <data name="Mirror" xml:space="preserve">
+    <value>Mirrors the waveform across an imaginary y-axis.</value>
+  </data>
+  <data name="PhaseShift" xml:space="preserve">
+    <value>Determines how far the waveform is shifted horizontally from the usual position.  The phase shift is adjustable from zero to 180 degrees.</value>
+  </data>
+  <data name="PrimeWave" xml:space="preserve">
+    <value>By default the wave grows across the display element.  This setting primes the waveform such that it fills the entire display element at the start of the effect.</value>
+  </data>
+  <data name="SnakeLength" xml:space="preserve">
+    <value>Determines the length of the snake. </value>
+  </data>
+  <data name="UseMarks" xml:space="preserve">
+    <value>Enables the Mark Collection Name drop down to select a mark collection to determine when the Decaying Sine will bounce back to the normal amplitude.</value>
+  </data>
+  <data name="WaveColor" xml:space="preserve">
+    <value>Determines the color of the wave over the duration of the effect.</value>
+  </data>
+  <data name="WaveDirection" xml:space="preserve">
+    <value>Determines the direction of the waveform.  This setting allows for multiple waveforms to move in opposing directions.</value>
+  </data>
+  <data name="WaveMarkCollection" xml:space="preserve">
+    <value>Mark collection used to determine when the amplitude bounces back.</value>
+  </data>
+  <data name="WaveMovementType" xml:space="preserve">
+    <value>Determines the movement of the waveform.</value>
+  </data>
+  <data name="WaveSpeed" xml:space="preserve">
+    <value>Determines how fast the waveform moves.  The speed determines how many columns of the waveform are rendered each frame.  This setting is in columns (or pixels) where each 10 units in the curve editor equals 1 column.</value>
+  </data>
+  <data name="WaveThickness" xml:space="preserve">
+    <value>Determines the vertical thickness of the waveform.</value>
+  </data>
+  <data name="WaveType" xml:space="preserve">
+    <value>Determines the type of of waveform.</value>
+  </data>
+  <data name="WaveYOffset" xml:space="preserve">
+    <value>Moves the waveform up or down in the display element.</value>
+  </data>
+  <data name="WaveColorHandling" xml:space="preserve">
+    <value>Controls how the color gradient is applied to the wave.</value>
+  </data>
+  <data name="AnimateXStart" xml:space="preserve">
+    <value>Controls the X starting position of the animated emitter.</value>
+  </data>
+  <data name="AnimateYStart" xml:space="preserve">
+    <value>Controls the Y starting position of the animated emitter.</value>
+  </data>
+  <data name="RandomStartingPosition" xml:space="preserve">
+    <value>Controls whether the animated emitter start position is random.</value>
+  </data>
+  <data name="Fade" xml:space="preserve">
+    <value>Type of Fade applied to each Snowflake.</value>
+  </data>
+  <data name="FadeSpeed" xml:space="preserve">
+    <value>Adjusts the Fade speed of each Snowflake over the length o fthe effect.</value>
+  </data>
+  <data name="HFlakeCount" xml:space="preserve">
+    <value>Adjust the number of Horizontal Snowflakes.</value>
+  </data>
+  <data name="VFlakeCount" xml:space="preserve">
+    <value>Adjust the number of Vertical Snowflakes.</value>
+  </data>
+  <data name="ScaledRadius" xml:space="preserve">
+    <value>Scale the radius setting to the size of the element.</value>
+  </data>
+  <data name="Acceleration" xml:space="preserve">
+    <value>Determines the acceleration of the shape's (polygon/ellipse/line) wipe.  The acceleration can be either increasing or decreasing (deceleration).</value>
+  </data>
+  <data name="EditPolygons" xml:space="preserve">
+    <value>Click to edit the polygons and lines.</value>
+  </data>
+  <data name="FillPolygon" xml:space="preserve">
+    <value>Determines if the polygon is solid or outlined with the Polygon Color.</value>
+  </data>
+  <data name="FillType" xml:space="preserve">
+    <value>Determines how the shape (polygon/ellipse/line) is filled (Wipe, Solid or Outline).</value>
+  </data>
+  <data name="HeadColor" xml:space="preserve">
+    <value>Determines the wipe head color over the duration of the effect.</value>
+  </data>
+  <data name="HeadDuration" xml:space="preserve">
+    <value>Determines the percentage of the effect duration it takes the wipe head to travel across the shape (polygon/ellipse/line).</value>
+  </data>
+  <data name="HeadLength" xml:space="preserve">
+    <value>Determines the length of the wipe head in pixels.</value>
+  </data>
+  <data name="PolygonColor" xml:space="preserve">
+    <value>Determines the color of the shape (polygon/ellipse/line) for the duration of the effect.</value>
+  </data>
+  <data name="PolygonType" xml:space="preserve">
+    <value>Determines the mode of the morph effect.</value>
+  </data>
+  <data name="RepeatCount" xml:space="preserve">
+    <value>Determines how many times to repeat the shape (polygon/ellipse/line).</value>
+  </data>
+  <data name="RepeatDirection" xml:space="preserve">
+    <value>Determines the direction of the repeating pattern of shapes (polygons/ellipses/lines).</value>
+  </data>
+  <data name="RepeatSkip" xml:space="preserve">
+    <value>Determines the spacing in-between the repeating shapes (polygons/ellipses/lines).</value>
+  </data>
+  <data name="Stagger" xml:space="preserve">
+    <value>Determines if the start of the wipe is staggered for the repeating shapes (polygons/ellipses/lines).</value>
+  </data>
+  <data name="TailColor" xml:space="preserve">
+    <value>Determines the wipe tail color over the duration of the effect.</value>
+  </data>
+  <data name="Label" xml:space="preserve">
+    <value>Label of the polygon or line.  Helps with identifying the shape when in Free Form mode.</value>
+  </data>
+  <data name="StartOffset" xml:space="preserve">
+    <value>Determines when the wipe starts.  This offset is the percentage of the effect's total duration to wait before starting the wipe.</value>
+  </data>
+  <data name="FillBrightness" xml:space="preserve">
+    <value>Controls the brightness of the shape over the duration of the effect.</value>
+  </data>
+  <data name="HeadBrightness" xml:space="preserve">
+    <value>Controls the brightness of the wipe head.</value>
+  </data>
+  <data name="TailBrightness" xml:space="preserve">
+    <value>Controls the brightness of the wipe tail.</value>
+  </data>
+  <data name="ZigZagAmplitude" xml:space="preserve">
+    <value>Controls the height of the zig zag's crest.</value>
+  </data>
+  <data name="ZigZagPeriod" xml:space="preserve">
+    <value>Controls the width or wave length of the zig zag.</value>
+  </data>
+  <data name="ZigZagSpacing" xml:space="preserve">
+    <value>Controls the blank area between each zig zag color.</value>
+  </data>
+  <data name="ZigZagThickness" xml:space="preserve">
+    <value>Controls the thickness of the zig zag.</value>
+  </data>
+  <data name="BarType" xml:space="preserve">
+    <value>Selects either a flat or an angled zig zag styled bar.</value>
+  </data>
+  <data name="Margin" xml:space="preserve">
+    <value>Percentage of the display element to use as a margin for drawing shapes outside (or partially outside) the display element.</value>
+  </data>
+  <data name="BarsRotation" xml:space="preserve">
+    <value>Controls the rotation of the bars. 100 = 180 degrees counter clockwise rotation.  0 =180 clockwise rotation.</value>
+  </data>
+  <data name="HighlightPercentage" xml:space="preserve">
+    <value>Controls the percentage of the bar that is highlighted.</value>
+  </data>
+  <data name="PictureCenterStop" xml:space="preserve">
+    <value>Moves the image into view and stops it in the center.</value>
+  </data>
+  <data name="Pan" xml:space="preserve">
+    <value>Controls the horizontal rotation of the intelligent fixture.</value>
+  </data>
+  <data name="Tilt" xml:space="preserve">
+    <value>Controls the vertical rotation of the intelligent fixture.</value>
+  </data>
+  <data name="Zoom" xml:space="preserve">
+    <value>Controls the zoom angle of the intelligent fixture beam.</value>
+  </data>
+  <data name="FrostPercentage" xml:space="preserve">
+    <value>Configures the amount of softening (frosting) of the light beam.</value>
+  </data>
+  <data name="Function" xml:space="preserve">
+    <value>Name of the intelligent fixture function associated with the effect.</value>
+  </data>
+  <data name="Gobo" xml:space="preserve">
+    <value>Selects a gobo on the wheel or an option to rotate the gobo wheel.</value>
+  </data>
+  <data name="RotationSpeed" xml:space="preserve">
+    <value>Selects the rotation speed of the gobo wheel.</value>
+  </data>
+  <data name="PrismRotationSpeed" xml:space="preserve">
+    <value>Selects the rotation speed of the prism.</value>
+  </data>
+  <data name="PrismSetting" xml:space="preserve">
+    <value>Selects the position (angle) of the prism or an option to rotate the prism.</value>
+  </data>
+  <data name="SpinColorWheelIntensity" xml:space="preserve">
+    <value>Intensity of the light beam.</value>
+  </data>
+  <data name="SpinColorWheelRotationSpeed" xml:space="preserve">
+    <value>Selects the rotation speed of the color wheel.</value>
+  </data>
+  <data name="SpinColorWheelSetting" xml:space="preserve">
+    <value>Selects the direction and rotation speed of the spinning color wheel.</value>
+  </data>
+  <data name="FixtureStrobeSetting" xml:space="preserve">
+    <value>Controls how the strobe speed is interpreted.</value>
+  </data>
+  <data name="FixtureStrobeSpeed" xml:space="preserve">
+    <value>Controls the speed of the shutter's strobe.</value>
+  </data>
+  <data name="FixtureColor" xml:space="preserve">
+    <value>Selects a color for the intelligent fixture.</value>
+  </data>
+  <data name="FixtureColorIndex" xml:space="preserve">
+    <value>Selects a color wheel color for the intelligent fixture.</value>
+  </data>
+  <data name="FixtureIndexValue" xml:space="preserve">
+    <value>Selects an index value for the intelligent fixture.</value>
+  </data>
+  <data name="FixtureRange" xml:space="preserve">
+    <value>Configures a range on the intelligent fixture.</value>
+  </data>
+  <data name="Functions" xml:space="preserve">
+    <value>Selects the fixture function to add to the effect.</value>
+  </data>
+  <data name="FixtureColorIntensity" xml:space="preserve">
+    <value>Determines the intensity (brightness) of the color.</value>
+  </data>
+  <data name="TailTaper" xml:space="preserve">
+    <value>Controls the brightness taper of the meteor's tail.</value>
+  </data>
+  <data name="WeaveDirection" xml:space="preserve">
+    <value>Controls the direction of movement of the weave.</value>
+  </data>
+  <data name="WeaveHighlight" xml:space="preserve">
+    <value>Controls whether a white highlight is added to the weave color bars.</value>
+  </data>
+  <data name="WeaveHorizontalColors" xml:space="preserve">
+    <value>Controls the color of the horizontal weave bars.  Gradients are applied across the bar.</value>
+  </data>
+  <data name="WeaveRotation" xml:space="preserve">
+    <value>Controls the rotation of the weave. 100 = 180 degrees counter clockwise rotation.  0 =180 clockwise rotation.</value>
+  </data>
+  <data name="WeaveSpacing" xml:space="preserve">
+    <value>Controls the blank area between each weave color bars.</value>
+  </data>
+  <data name="WeaveSpeed" xml:space="preserve">
+    <value>Controls the speed of movement of the weave bars.</value>
+  </data>
+  <data name="WeaveThickness" xml:space="preserve">
+    <value>Controls the thickness of the weave bars.</value>
+  </data>
+  <data name="WeaveVerticalColors" xml:space="preserve">
+    <value>Controls the color of the vertical weave bars.  Gradients are applied across the bar.</value>
+  </data>
+  <data name="WeaveAdvancedSizing" xml:space="preserve">
+    <value>Enables curves for controling the weave bar thickness and spacing. The horizontal and vertical weave bar thickness and spacing can be configured independently when in advanced sizing mode.</value>
+  </data>
+  <data name="WeaveHorizontalSpacing" xml:space="preserve">
+    <value>Controls the blank area between each horizontal weave bar. This value is percentage of the display element.</value>
+  </data>
+  <data name="WeaveHorizontalThickness" xml:space="preserve">
+    <value>Controls the thickness of the horizontal weave bars. This value is a percentage of the display element.</value>
+  </data>
+  <data name="WeaveVerticalSpacing" xml:space="preserve">
+    <value>Controls the blank area between each vertical weave bar. This value is percentage of the display element.</value>
+  </data>
+  <data name="WeaveVerticalThickness" xml:space="preserve">
+    <value>Controls the thickness of the vertical weave bars. This value is a percentage of the display element.</value>
+  </data>
+</root>

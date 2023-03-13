@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+			<RootNamespace>VixenModules.Editor.PolygonEditor</RootNamespace>
+			<UseWPF>true</UseWPF>
+		</PropertyGroup>
+
+		<ItemGroup>
+		  <None Remove="Images\AddPoint.png" />
+		  <None Remove="Images\arrow_left.png" />
+		  <None Remove="Images\arrow_right.png" />
+		  <None Remove="Images\buttonDrawEllipse.png" />
+		  <None Remove="Images\buttonDrawLine.png" />
+		  <None Remove="Images\buttonDrawPolygon.png" />
+		  <None Remove="Images\buttonSelect.png" />
+		  <None Remove="Images\ConvertToEllipse.png" />
+		  <None Remove="Images\copy.png" />
+		  <None Remove="Images\cut.png" />
+		  <None Remove="Images\delete_32.png" />
+		  <None Remove="Images\Label.png" />
+		  <None Remove="Images\LineToPolygon.png" />
+		  <None Remove="Images\paste.png" />
+		  <None Remove="Images\PolygonToLine.png" />
+		  <None Remove="Images\SnapToGrid.png" />
+		  <None Remove="Images\ToggleStartPoint.png" />
+		  <None Remove="Images\ToggleStartSide.png" />
+		</ItemGroup>
+
+		<ItemGroup>
+		  <Resource Include="Images\AddPoint.png" />
+		  <Resource Include="Images\arrow_left.png" />
+		  <Resource Include="Images\arrow_right.png" />
+		  <Resource Include="Images\buttonDrawEllipse.png" />
+		  <Resource Include="Images\buttonDrawLine.png" />
+		  <Resource Include="Images\buttonDrawPolygon.png" />
+		  <Resource Include="Images\buttonSelect.png" />
+		  <Resource Include="Images\ConvertToEllipse.png" />
+		  <Resource Include="Images\copy.png" />
+		  <Resource Include="Images\cut.png" />
+		  <Resource Include="Images\delete_32.png" />
+		  <Resource Include="Images\Label.png" />
+		  <Resource Include="Images\LineToPolygon.png" />
+		  <Resource Include="Images\paste.png" />
+		  <Resource Include="Images\PolygonToLine.png" />
+		  <Resource Include="Images\SnapToGrid.png" />
+		  <Resource Include="Images\ToggleStartPoint.png" />
+		  <Resource Include="Images\ToggleStartSide.png" />
+		</ItemGroup>
+
+		<ItemGroup>
+		  <PackageReference Include="Catel.MVVM" Version="5.12.22" />
+		</ItemGroup>
+
+		<ItemGroup>
+		  <ProjectReference Include="..\..\..\Vixen.Common\WPFCommon\WPFCommon.csproj" />
+		  <ProjectReference Include="..\..\App\Polygon\Polygon.csproj" />
+		</ItemGroup>
+
+</Project>

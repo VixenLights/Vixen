@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+				<RootNamespace>Vixen</RootNamespace>
+				<UseWindowsForms>true</UseWindowsForms>
+				<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+				<PackageReference Include="NLog" Version="5.1.2">
+						<ExcludeAssets>runtime</ExcludeAssets>
+				</PackageReference>
+				<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+				<PackageReference Include="Zstandard.Net" Version="1.1.7" />
+		</ItemGroup>
+	<ItemGroup>
+			<None Remove="Directory.Build.props" />
+			<None Remove="Fonts\DigitalDream.ttf" />
+				<None Remove="Fonts\RadioLand.ttf" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<EmbeddedResource Include="Fonts\DigitalDream.ttf" />
+				<EmbeddedResource Include="Fonts\RadioLand.ttf" />
+		</ItemGroup>
+
+		<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+				<Exec Command="copy &quot;$(SolutionDir)\Release Notes.txt&quot; &quot;$(OutputPath)&quot;&#xD;&#xA;copy &quot;$(SolutionDir)\License.txt&quot; &quot;$(OutputPath)&quot;" />
+		</Target>
+</Project>

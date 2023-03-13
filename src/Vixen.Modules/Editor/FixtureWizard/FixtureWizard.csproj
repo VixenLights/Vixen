@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+			<RootNamespace>VixenModules.Editor.FixtureWizard</RootNamespace>
+			<UseWPF>true</UseWPF>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<Folder Include="Wizard\Theme\" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<PackageReference Include="Catel.Fody" Version="4.9.0">
+						<PrivateAssets>all</PrivateAssets>
+				</PackageReference>
+				<PackageReference Include="Catel.MVVM" Version="5.12.22" />
+				<PackageReference Include="Fody" Version="6.6.4">
+				</PackageReference>
+				<PackageReference Include="LoadAssembliesOnStartup.Fody" Version="4.6.0" PrivateAssets="all" />				
+				<PackageReference Include="ModuleInit.Fody" Version="2.1.1" PrivateAssets="all" />
+				<PackageReference Include="Obsolete.Fody" Version="5.3.0" PrivateAssets="all" />
+				<PackageReference Include="Orc.Controls" Version="4.8.0" />
+				<PackageReference Include="Orc.SystemInfo" Version="4.3.1" />
+				<PackageReference Include="Orc.Wizard" Version="4.8.3" />
+				<PackageReference Include="Orchestra.Core" Version="6.8.1" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\..\App\Curves\Curves.csproj" />
+				<ProjectReference Include="..\..\App\FixtureSpecificationManager\FixtureSpecificationManager.csproj" />
+				<ProjectReference Include="..\..\App\Fixture\Fixture.csproj" />
+				<ProjectReference Include="..\FixtureGraphics\FixtureGraphics.csproj" />
+				<ProjectReference Include="..\FixturePropertyEditor\FixturePropertyEditor.csproj" />
+		</ItemGroup>
+
+</Project>

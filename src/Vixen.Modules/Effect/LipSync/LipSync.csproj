@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+			<RootNamespace>VixenModules.Effect.LipSync</RootNamespace>
+				<UseWindowsForms>true</UseWindowsForms>
+		</PropertyGroup>
+
+		<ItemGroup>
+		  <None Remove="Images\EffectImage.png" />
+		</ItemGroup>
+
+		<ItemGroup>
+		  <EmbeddedResource Include="Images\EffectImage.png" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<PackageReference Include="NLog" Version="5.1.2" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Common\FastPixel\FastPixel.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\..\App\Curves\Curves.csproj" />
+				<ProjectReference Include="..\..\App\LipSyncApp\LipSyncApp.csproj" />
+				<ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj" />
+				<ProjectReference Include="..\..\Property\Face\Face.csproj" />
+				<ProjectReference Include="..\Effect\Effect.csproj" />
+				<ProjectReference Include="..\Picture\Picture.csproj" />
+		</ItemGroup>
+
+</Project>

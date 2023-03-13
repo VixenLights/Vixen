@@ -1,0 +1,76 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+				<RootNamespace>VixenModules.Preview.VixenPreview</RootNamespace>
+				<UseWindowsForms>true</UseWindowsForms>
+				<UseWPF>true</UseWPF>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<PackageReference Include="Catel.MVVM" Version="5.12.22" />
+				<PackageReference Include="DockPanelSuite" Version="3.1.0" />
+				<PackageReference Include="DockPanelSuite.ThemeVS2015" Version="3.1.0" />
+				<PackageReference Include="NLog" Version="5.1.2" />
+				<PackageReference Include="OpenTK" Version="4.7.7" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\FastPixel\FastPixel.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\Help\Help.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\Utilities\Utilities.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\WPFCommon\WPFCommon.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\..\App\CustomPropEditor\CustomPropEditor.csproj" />
+				<ProjectReference Include="..\..\App\Fixture\Fixture.csproj" />
+				<ProjectReference Include="..\..\Editor\FixtureGraphics\FixtureGraphics.csproj" />
+				<ProjectReference Include="..\..\OutputFilter\ColorWheelFilter\ColorWheelFilter.csproj" />
+				<ProjectReference Include="..\..\OutputFilter\DimmingCurve\DimmingCurve.csproj" />
+				<ProjectReference Include="..\..\OutputFilter\DimmingFilter\DimmingFilter.csproj" />
+				<ProjectReference Include="..\..\OutputFilter\ShutterFilter\ShutterFilter.csproj" />
+				<ProjectReference Include="..\..\Property\Color\Color.csproj" />
+				<ProjectReference Include="..\..\Property\Face\Face.csproj" />
+				<ProjectReference Include="..\..\Property\IntellegentFixture\IntellegentFixture.csproj" />
+				<ProjectReference Include="..\..\Property\Location\Location.csproj" />
+				<ProjectReference Include="..\..\Property\Order\Order.csproj" />
+				<ProjectReference Include="..\..\Property\Orientation\Orientation.csproj" />
+		</ItemGroup>
+
+		<ItemGroup>
+		  <Reference Include="OpenTK.WinForms">
+		    <HintPath>..\..\..\Vixen.Common\Libraries\OpenTK.WinForms.dll</HintPath>
+		  </Reference>
+		</ItemGroup>
+
+		<ItemGroup>
+				<Compile Update="Properties\Resources.Designer.cs">
+						<DesignTime>True</DesignTime>
+						<AutoGen>True</AutoGen>
+						<DependentUpon>Resources.resx</DependentUpon>
+				</Compile>
+				<Compile Update="Properties\Settings.Designer.cs">
+						<DesignTimeSharedInput>True</DesignTimeSharedInput>
+						<AutoGen>True</AutoGen>
+						<DependentUpon>Settings.settings</DependentUpon>
+				</Compile>
+		</ItemGroup>
+
+		<ItemGroup>
+				<EmbeddedResource Update="Properties\Resources.resx">
+						<Generator>ResXFileCodeGenerator</Generator>
+						<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+				</EmbeddedResource>
+		</ItemGroup>
+
+		<ItemGroup>
+				<None Update="Properties\Settings.settings">
+						<Generator>SettingsSingleFileGenerator</Generator>
+						<LastGenOutput>Settings.Designer.cs</LastGenOutput>
+				</None>
+				<None Update="SelectionDialog\SelectFixtureNodeView.xaml">
+						<Generator>MSBuild:Compile</Generator>
+				</None>
+		</ItemGroup>
+
+</Project>

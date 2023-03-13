@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+			<RootNamespace>VixenModules.Editor.FixturePropertyEditor</RootNamespace>
+			<UseWPF>true</UseWPF>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<PackageReference Include="Catel.Core" Version="5.12.22" />
+				<PackageReference Include="Catel.MVVM" Version="5.12.22" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\WPFCommon\WPFCommon.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\..\App\FixtureSpecificationManager\FixtureSpecificationManager.csproj" />
+				<ProjectReference Include="..\..\App\Fixture\Fixture.csproj" />
+				<ProjectReference Include="..\FixtureGraphics\FixtureGraphics.csproj" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<Page Update="Views\ColorWheelView.xaml">
+						<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+				</Page>
+				<Page Update="Views\FixturePropertyEditorView.xaml">
+						<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+				</Page>
+				<Page Update="Views\FixturePropertyEditorWindowView.xaml">
+						<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+				</Page>
+				<Page Update="Views\FunctionTypeView.xaml">
+						<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+				</Page>
+				<Page Update="Views\FunctionTypeWindowView.xaml">
+						<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+				</Page>
+				<Page Update="Views\IndexedView.xaml">
+						<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+				</Page>
+				<Page Update="Views\PanTiltView.xaml">
+						<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+				</Page>
+				<Page Update="Views\SelectFixtureSpecificationView.xaml">
+						<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+				</Page>
+				<Page Update="Views\ZoomView.xaml">
+						<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+				</Page>
+		</ItemGroup>
+
+</Project>

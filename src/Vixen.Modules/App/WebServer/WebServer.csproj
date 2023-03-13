@@ -1,0 +1,171 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+				<AssemblyName>Module.App.$(MSBuildProjectName)</AssemblyName>
+				<RootNameSpace>VixenModules.App.WebServer</RootNameSpace>
+				<EnableDynamicLoading>true</EnableDynamicLoading>
+				<UseWindowsForms>true</UseWindowsForms>
+		</PropertyGroup>
+
+		<ItemGroup>
+		  <None Remove="wwwroot\fonts\glyphicons-halflings-regular.eot" />
+		  <None Remove="wwwroot\fonts\glyphicons-halflings-regular.ttf" />
+		  <None Remove="wwwroot\fonts\glyphicons-halflings-regular.woff" />
+		  <None Remove="wwwroot\fonts\glyphicons-halflings-regular.woff2" />
+		  <None Remove="wwwroot\index.htm" />
+		  <None Remove="wwwroot\js\jquery-1.11.2.min.map" />
+		  <None Remove="wwwroot\js\signalr.js" />
+		  <None Remove="wwwroot\style\bootstrap-theme.css.map" />
+		  <None Remove="wwwroot\style\bootstrap.css.map" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<Content Include="wwwroot\fonts\glyphicons-halflings-regular.eot">
+				  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\fonts\glyphicons-halflings-regular.svg">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\fonts\glyphicons-halflings-regular.ttf">
+				  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\fonts\glyphicons-halflings-regular.woff">
+				  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\fonts\glyphicons-halflings-regular.woff2">
+				  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\images\ajax-loader.gif">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\images\V3Logo.png">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\js\amplify.min.js">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\js\bootstrap-slider.min.js">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\js\bootstrap.min.js">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\js\jquery-1.11.2.min.map">
+				  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\js\jquery.easing.min.js">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\js\jquery.signalr-2.1.0.min.js">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\js\knockout.mapping.min.js">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\js\moment-duration-format.js">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\js\npm.js">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\js\signalr.js">
+				  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\js\spectrum.js">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\style\bootstrap-slider.css">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\style\bootstrap-slider.min.css">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\style\bootstrap-theme.css">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\style\bootstrap-theme.css.map">
+				  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\style\bootstrap-theme.min.css">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\style\bootstrap.css">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\style\bootstrap.css.map">
+				  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\style\bootstrap.min.css">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\style\images\ajax-loader.gif">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\style\jqm-icon-pack-fa.css">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\style\spectrum.css">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\js\vixen.js">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\index.htm">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\style\vixen.css">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\js\knockout-3.2.0.js">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\style\jquery.mobile.theme-1.4.5.min.css">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\style\jquery.mobile.structure-1.4.5.min.css">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\style\jquery.mobile.inline-svg-1.4.5.min.css">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\style\jquery.mobile.inline-png-1.4.5.min.css">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\style\jquery.mobile.icons-1.4.5.min.css">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\style\jquery.mobile.external-png-1.4.5.min.css">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\style\jquery.mobile-1.4.5.min.css">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\js\jquery-1.11.2.min.js">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+				<Content Include="wwwroot\js\moment.min.js">
+						<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				</Content>
+		</ItemGroup>
+		<ItemGroup>
+				<FrameworkReference Include="Microsoft.AspNetCore.App" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<PackageReference Include="NLog" Version="5.1.2" />
+				<PackageReference Include="NLog.Web.AspNetCore" Version="5.2.2" />
+		</ItemGroup>
+
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\..\Effect\Effect\Effect.csproj" />
+				<ProjectReference Include="..\..\Effect\SetLevel\SetLevel.csproj" />
+				<ProjectReference Include="..\..\Property\Color\Color.csproj" />
+				<ProjectReference Include="..\ColorGradients\ColorGradients.csproj" />
+				<ProjectReference Include="..\Curves\Curves.csproj" />
+		</ItemGroup>
+
+</Project>

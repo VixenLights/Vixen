@@ -1,0 +1,80 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+				<OutputType>WinExe</OutputType>
+				<UseWindowsForms>true</UseWindowsForms>
+				<RootNamespace>VixenApplication</RootNamespace>
+				<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+				<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+				<ApplicationIcon>Vixen3.ico</ApplicationIcon>
+		</PropertyGroup>
+
+		<!--Required to allow the webserver module to work.-->
+		<ItemGroup>
+				<FrameworkReference Include="Microsoft.AspNetCore.App" />
+		</ItemGroup>
+
+
+		<ItemGroup>
+				<None Remove="NLog.config" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<Content Include="NLog.config">
+						<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+				</Content>
+				<Content Include="Vixen3.ico" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<PackageReference Include="Catel.Core" Version="5.12.22" />
+				<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+				<PackageReference Include="NLog" Version="5.1.2" />
+				<PackageReference Include="Orchestra.Core" Version="6.8.1" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\Vixen.Common\Controls\Controls.csproj" />
+				<ProjectReference Include="..\Vixen.Common\NShapeGeneralShapes\NShapeGeneralShapes.csproj" />
+				<ProjectReference Include="..\Vixen.Common\NShapeWinFormsUI\NShapeWinFormsUI.csproj" />
+				<ProjectReference Include="..\Vixen.Common\NShape\NShape.csproj" />
+				<ProjectReference Include="..\Vixen.Common\Resources\Resources.csproj" />
+				<ProjectReference Include="..\Vixen.Common\Utilities\Utilities.csproj" />
+				<ProjectReference Include="..\Vixen.Common\WpfPropertyGrid.Themes\WpfPropertyGrid.Themes.csproj" />
+				<ProjectReference Include="..\Vixen.Common\WpfPropertyGrid\WpfPropertyGrid.csproj" />
+				<ProjectReference Include="..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\Vixen.Modules\App\Curves\Curves.csproj" />
+				<ProjectReference Include="..\Vixen.Modules\App\FixtureSpecificationManager\FixtureSpecificationManager.csproj" />
+				<ProjectReference Include="..\Vixen.Modules\App\Fixture\Fixture.csproj" />
+				<ProjectReference Include="..\Vixen.Modules\App\Modeling\Modeling.csproj" />
+				<ProjectReference Include="..\Vixen.Modules\Editor\FixtureWizard\FixtureWizard.csproj" />
+				<ProjectReference Include="..\Vixen.Modules\OutputFilter\CoarseFineBreakdown\CoarseFineBreakdown.csproj" />
+				<ProjectReference Include="..\Vixen.Modules\OutputFilter\ColorBreakdown\ColorBreakdown.csproj" />
+				<ProjectReference Include="..\Vixen.Modules\OutputFilter\ColorWheelFilter\ColorWheelFilter.csproj" />
+				<ProjectReference Include="..\Vixen.Modules\OutputFilter\DimmingCurve\DimmingCurve.csproj" />
+				<ProjectReference Include="..\Vixen.Modules\OutputFilter\DimmingFilter\DimmingFilter.csproj" />
+				<ProjectReference Include="..\Vixen.Modules\OutputFilter\PrismFilter\PrismFilter.csproj" />
+				<ProjectReference Include="..\Vixen.Modules\OutputFilter\ShutterFilter\ShutterFilter.csproj" />
+				<ProjectReference Include="..\Vixen.Modules\OutputFilter\TaggedFilter\TaggedFilter.csproj" />
+				<ProjectReference Include="..\Vixen.Modules\Property\Color\Color.csproj" />
+				<ProjectReference Include="..\Vixen.Modules\Property\IntellegentFixture\IntellegentFixture.csproj" />
+				<ProjectReference Include="..\Vixen.Modules\Property\Order\Order.csproj" />
+				<ProjectReference Include="..\Vixen.Modules\Property\Orientation\Orientation.csproj" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<Compile Update="Properties\Resources.Designer.cs">
+						<DesignTime>True</DesignTime>
+						<AutoGen>True</AutoGen>
+						<DependentUpon>Resources.resx</DependentUpon>
+				</Compile>
+		</ItemGroup>
+
+		<ItemGroup>
+				<EmbeddedResource Update="Properties\Resources.resx">
+						<Generator>ResXFileCodeGenerator</Generator>
+						<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+				</EmbeddedResource>
+		</ItemGroup>
+
+</Project>

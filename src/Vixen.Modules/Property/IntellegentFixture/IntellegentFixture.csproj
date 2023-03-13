@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+				<RootNamespace>VixenModules.Property.IntellegentFixture</RootNamespace>
+				<UseWindowsForms>true</UseWindowsForms>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<PackageReference Include="NLog" Version="5.1.2" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\..\App\FixtureSpecificationManager\FixtureSpecificationManager.csproj" />
+				<ProjectReference Include="..\..\App\Fixture\Fixture.csproj" />
+				<ProjectReference Include="..\..\Editor\FixturePropertyEditor\FixturePropertyEditor.csproj" />
+		</ItemGroup>
+
+</Project>

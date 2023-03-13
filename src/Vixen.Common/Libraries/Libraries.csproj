@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="OpenTK.WinForms.deps.json" />
+    <None Remove="OpenTK.WinForms.dll" />
+    <None Remove="SoundTouch.dll" />
+    <None Remove="SoundTouch_x64.dll" />
+    <None Remove="QuickFont.dll" />
+    <None Remove="SharpFont.dll" />
+    <None Remove="freetype6.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="OpenTK.WinForms.deps.json" />
+    <Content Include="OpenTK.WinForms.dll" />
+    <Content Include="SoundTouch.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+     <Content Include="SoundTouch_x64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="QuickFont.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SharpFont.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="freetype6.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

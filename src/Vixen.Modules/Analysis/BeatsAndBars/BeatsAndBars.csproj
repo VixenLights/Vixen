@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+				<AssemblyName>Module.Analysis.BeatsAndBars</AssemblyName>
+	  <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
+    <ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+    <ProjectReference Include="..\..\LayerMixingFilter\Mask\Mask.csproj" />
+    <ProjectReference Include="..\..\Media\Audio\Audio.csproj" />
+    <ProjectReference Include="..\QMLibrary\QMLibrary.vcxproj" />
+  </ItemGroup>
+
+		<ItemGroup>
+			<Compile Update="Properties\Resources.Designer.cs">
+				<AutoGen>True</AutoGen>
+				<DesignTime>True</DesignTime>
+				<DependentUpon>Resources.resx</DependentUpon>
+			</Compile>
+		</ItemGroup>
+
+		<ItemGroup>
+		  <EmbeddedResource Update="Properties\Resources.resx">
+		    <Generator>ResXFileCodeGenerator</Generator>
+		    <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		    <CustomToolNamespace>VixenModules.Analysis.BeatsAndBars.Properties</CustomToolNamespace>
+		  </EmbeddedResource>
+		</ItemGroup>
+
+</Project>

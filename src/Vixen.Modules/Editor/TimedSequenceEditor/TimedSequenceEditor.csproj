@@ -1,0 +1,60 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+				<AssemblyName>Module.Editor.TimedSequenceEditor</AssemblyName>
+			 <UseWindowsForms>true</UseWindowsForms>
+				<UseWPF>true</UseWPF>
+		</PropertyGroup>
+
+		<ItemGroup>
+		  <PackageReference Include="Catel.MVVM" Version="5.12.22" />
+		  <PackageReference Include="Catel.Serialization.Json" Version="5.12.22" />
+		  <PackageReference Include="DockPanelSuite" Version="3.1.0" />
+		  <PackageReference Include="DockPanelSuite.ThemeVS2015" Version="3.1.0" />
+		  <PackageReference Include="gong-wpf-dragdrop" Version="3.2.1" />
+		  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		  <PackageReference Include="NLog" Version="5.1.2" />
+		</ItemGroup>
+
+		<ItemGroup>
+		  <ProjectReference Include="..\..\..\Vixen.Common\AudioPlayer\AudioPlayer.csproj" />
+		  <ProjectReference Include="..\..\..\Vixen.Common\BaseSequence\BaseSequence.csproj" />
+		  <ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
+		  <ProjectReference Include="..\..\..\Vixen.Common\Help\Help.csproj" />
+		  <ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
+		  <ProjectReference Include="..\..\..\Vixen.Common\WPFCommon\WPFCommon.csproj" />
+		  <ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+		  <ProjectReference Include="..\..\Analysis\BeatsAndBars\BeatsAndBars.csproj" />
+		  <ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj" />
+		  <ProjectReference Include="..\..\App\Curves\Curves.csproj" />
+		  <ProjectReference Include="..\..\App\LipSyncApp\LipSyncApp.csproj" />
+		  <ProjectReference Include="..\..\App\Marks\Marks.csproj" />
+		  <ProjectReference Include="..\..\App\TimedSequenceMapper\TimedSequenceMapper.csproj" />
+		  <ProjectReference Include="..\..\App\TimingTrackBrowser\TimingTrackBrowser.csproj" />
+		  <ProjectReference Include="..\..\Effect\Effect\Effect.csproj" />
+		  <ProjectReference Include="..\..\Effect\LipSync\LipSync.csproj" />
+		  <ProjectReference Include="..\..\Effect\Picture\Picture.csproj" />
+		  <ProjectReference Include="..\..\Effect\Shapes\Shapes.csproj" />
+		  <ProjectReference Include="..\..\Media\Audio\Audio.csproj" />
+		  <ProjectReference Include="..\..\Property\Color\Color.csproj" />
+		  <ProjectReference Include="..\..\Property\Face\Face.csproj" />
+		  <ProjectReference Include="..\..\Sequence\Timed\Timed.csproj" />
+		  <ProjectReference Include="..\EffectEditor\EffectEditor.csproj" />
+		  <ProjectReference Include="..\LayerEditor\LayerEditor.csproj" />
+		</ItemGroup>
+
+		<ItemGroup>
+		  <None Update="Forms\WPF\MarksDocker\Views\MarkCollectionView.xaml">
+		    <Generator>MSBuild:Compile</Generator>
+		  </None>
+		  <None Update="Forms\WPF\MarksDocker\Views\MarkDockerView.xaml">
+		    <Generator>MSBuild:Compile</Generator>
+		  </None>
+			<Compile Update="Properties\Settings.Designer.cs">
+				<AutoGen>True</AutoGen>
+				<DesignTimeSharedInput>True</DesignTimeSharedInput>
+				<DependentUpon>Settings.settings</DependentUpon>
+			</Compile>
+		</ItemGroup>
+
+</Project>

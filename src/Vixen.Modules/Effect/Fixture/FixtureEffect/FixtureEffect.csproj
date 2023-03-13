@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+				<UseWindowsForms>true</UseWindowsForms>
+				<AssemblyName>Module.Effect.FixtureEffect</AssemblyName>
+				<RootNamespace>VixenModules.Effect.Fixture</RootNamespace>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<None Remove="Images\EffectImage.png" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<EmbeddedResource Include="Images\EffectImage.png" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<PackageReference Include="Catel.MVVM" Version="5.12.22" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\..\..\App\ColorGradients\ColorGradients.csproj" />
+				<ProjectReference Include="..\..\..\App\Curves\Curves.csproj" />
+				<ProjectReference Include="..\..\..\App\Fixture\Fixture.csproj" />
+				<ProjectReference Include="..\..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj" />
+				<ProjectReference Include="..\..\..\Property\Color\Color.csproj" />
+				<ProjectReference Include="..\..\..\Property\IntellegentFixture\IntellegentFixture.csproj" />
+				<ProjectReference Include="..\..\Effect\Effect.csproj" />
+				<ProjectReference Include="..\..\Pulse\Pulse.csproj" />
+				<ProjectReference Include="..\IFixtureFunctionExpando\IFixtureFunctionExpando.csproj" />
+		</ItemGroup>
+
+</Project>
