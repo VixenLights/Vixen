@@ -16,7 +16,7 @@
 						
 						<BootstrapperApplication>
 								<bal:WixStandardBootstrapperApplication 
-										LicenseUrl="https://www.vixenlights.com/license" 
+										LicenseUrl="https://www.vixenlights.com/download/license/" 
 										Theme="hyperlinkSidebarLicense" 
 										ThemeFile="VixenTheme.xml"
 										LocalizationFile="Package.en-us.wxl"
