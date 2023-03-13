@@ -1140,29 +1140,15 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 			else
 			{
-				//The vendors provide a link to the xModel, but may have a Vixen prop of the same name alongside it.
-				//If it exists we will prefer it.
-				string propUrl = modelLink.Link.AbsoluteUri.Replace(@".xmodel", @".prp");
-
-				bool success = await ds.GetFileAsync(new Uri(propUrl), targetPath);
-				
+				bool success = await ds.GetFileAsync(modelLink.Link, targetPath);
 				if (success)
 				{
-					LoadPropFromPath(targetPath);
-					status = new Tuple<bool, ModelType>(true, ModelType.Prop); ;
+					await ImportProp(targetPath);
+					status = new Tuple<bool, ModelType>(true, ModelType.XModel);
 				}
 				else
 				{
-					success = await ds.GetFileAsync(modelLink.Link, targetPath);
-					if (success)
-					{
-						await ImportProp(targetPath);
-						status = new Tuple<bool, ModelType>(true, ModelType.XModel);
-					}
-					else
-					{
-						mbs.ShowError("Unable to download the model from the vendor.\nEnsure you have an active internet connection.", "Error Downloading Model.");
-					}
+					mbs.ShowError("Unable to download the model from the vendor.\nEnsure you have an active internet connection.", "Error Downloading Model.");
 				}
 			}
 
