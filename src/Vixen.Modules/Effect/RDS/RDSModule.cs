@@ -109,5 +109,19 @@ namespace VixenModules.Effect.RDS
 				IsDirty = true;
 			}
 		}
+
+		#region Information
+
+		public override string Information
+		{
+			get { return "Visit the Vixen Lights website for more information on this effect."; }
+		}
+
+		public override string InformationLink
+		{
+			get { return "https://www.vixenlights.com/docs/usage/sequencer/effects/device-action/rds/"; }
+		}
+
+		#endregion
 	}
 }
