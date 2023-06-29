@@ -1107,6 +1107,13 @@ namespace Common.Controls
 			if (SelectedTreeNodes.Count == 0)
 				return;
 
+			var messageBox = new MessageBoxForm("Are you sure you want to delete these element(s)?", "Delete Elements?",
+				MessageBoxButtons.YesNo, SystemIcons.Question);
+			messageBox.ShowDialog();
+
+			if (messageBox.DialogResult != DialogResult.OK)
+				return;
+
 			foreach (TreeNode tn in SelectedTreeNodes) {
 				DeleteNode(tn);
 			}
@@ -1216,12 +1223,10 @@ namespace Common.Controls
 			{
 				if (SelectedTreeNodes.Count > 0)
 				{
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					MessageBoxForm.msgIcon = SystemIcons.Exclamation;
-						//this is used if you want to add a system icon to the message form.
-					var messageBox = new MessageBoxForm("Delete selected items?",
-						"Delete items", true, false);
+					var messageBox = new MessageBoxForm("Are you sure you want to delete these element(s)?", "Delete Elements?",
+						MessageBoxButtons.YesNo, SystemIcons.Question);
 					messageBox.ShowDialog();
+
 					if (messageBox.DialogResult == DialogResult.OK)
 					{
 						foreach (TreeNode tn in SelectedTreeNodes)
