@@ -1254,4 +1254,31 @@
   <data name="WeaveVerticalThickness" xml:space="preserve">
     <value>Controls the thickness of the vertical weave bars. This value is a percentage of the display element.</value>
   </data>
+  <data name="TreeBlend" xml:space="preserve">
+    <value>Controls the amount of blending or tapering of each branch level.</value>
+  </data>
+  <data name="TreeBranchDirection" xml:space="preserve">
+    <value>Selects the direction in which branches are drawn.</value>
+  </data>
+  <data name="TreeBranches" xml:space="preserve">
+    <value>Controls the number of branches to divide the tree into.  Determines the number of garland rings to apply to the tree.</value>
+  </data>
+  <data name="TreeColorType" xml:space="preserve">
+    <value>Controls how color is applied to the garlands.</value>
+  </data>
+  <data name="TreeBackgroundIntensity" xml:space="preserve">
+    <value>Controls the intensity of the tree background over the duration of the effect.</value>
+  </data>
+  <data name="TreeSpeed" xml:space="preserve">
+    <value>Controls how fast the garlands are drawn around the tree.</value>
+  </data>
+  <data name="TreeBackgroundColor" xml:space="preserve">
+    <value>Controls the intensity of the tree background color over the duration of the effect.</value>
+  </data>
+  <data name="TreeBlendDirection" xml:space="preserve">
+    <value>Toggles the direction of the blend (Up vs Down).</value>
+  </data>
+  <data name="TreeIntensity" xml:space="preserve">
+    <value>Controls the overall intensity envelope of the entire effect over the duration of the effect.</value>
+  </data>
 </root>
