@@ -60,7 +60,7 @@ namespace VixenModules.Effect.Tree
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Speed")]
-		[ProviderDescription(@"Speed")]
+		[ProviderDescription(@"TreeSpeed")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 30, 1)]
 		[PropertyOrder(0)]
@@ -78,7 +78,7 @@ namespace VixenModules.Effect.Tree
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Overall Intensity")]
-		[ProviderDescription(@"Overall Intensity")]
+		[ProviderDescription(@"TreeIntensity")]
 		[PropertyOrder(1)]
 		public Curve LevelCurve
 		{
@@ -98,7 +98,7 @@ namespace VixenModules.Effect.Tree
 		[Value]
 		[ProviderCategory(@"Tree", 2)]
 		[ProviderDisplayName(@"Color")]
-		[ProviderDescription(@"Color")]
+		[ProviderDescription(@"TreeBackgroundColor")]
 		[PropertyOrder(0)]
 		public ColorGradient BackgroundColor
 		{
@@ -114,7 +114,7 @@ namespace VixenModules.Effect.Tree
 		[Value]
 		[ProviderCategory(@"Tree", 2)]
 		[ProviderDisplayName(@"Brightness")]
-		[ProviderDescription(@"Brightness")]
+		[ProviderDescription(@"TreeBackgroundIntensity")]
 		[PropertyOrder(1)]
 		public Curve BackgroundLevelCurve
 		{
@@ -130,7 +130,7 @@ namespace VixenModules.Effect.Tree
 		[Value]
 		[ProviderCategory(@"Branches", 3)]
 		[ProviderDisplayName(@"Branch Direction")]
-		[ProviderDescription(@"Branch Direction")]
+		[ProviderDescription(@"TreeBranchDirection")]
 		[PropertyOrder(0)]
 		public TreeBranchDirection BranchDirection
 		{
@@ -146,7 +146,7 @@ namespace VixenModules.Effect.Tree
 		[Value]
 		[ProviderCategory(@"Branches", 3)]
 		[ProviderDisplayName(@"Branches")]
-		[ProviderDescription(@"Branches")]
+		[ProviderDescription(@"TreeBranches")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 20, 1)]
 		[PropertyOrder(1)]
@@ -164,7 +164,7 @@ namespace VixenModules.Effect.Tree
 		[Value]
 		[ProviderCategory(@"Branches", 3)]
 		[ProviderDisplayName(@"Color Type")]
-		[ProviderDescription(@"Color Type")]
+		[ProviderDescription(@"TreeColorType")]
 		[PropertyOrder(2)]
 		public TreeColorType ColorType
 		{
@@ -200,7 +200,7 @@ namespace VixenModules.Effect.Tree
 		[Value]
 		[ProviderCategory(@"Blending", 4)]
 		[ProviderDisplayName(@"Blend")]
-		[ProviderDescription(@"Blends between Branches")]
+		[ProviderDescription(@"TreeBlend")]
 		[PropertyOrder(0)]
 		public Curve BlendCurve
 		{
@@ -215,7 +215,7 @@ namespace VixenModules.Effect.Tree
 
 		[Value]
 		[ProviderCategory(@"Blending", 4)]
-		[ProviderDisplayName(@"Blend Direction")]
+		[ProviderDisplayName(@"TreeBlendDirection")]
 		[ProviderDescription(@"Toggles Blend Direction Up/Down")]
 		[PropertyOrder(1)]
 		public bool ToggleBlend
