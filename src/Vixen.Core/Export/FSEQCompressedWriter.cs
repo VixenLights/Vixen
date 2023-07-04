@@ -1,10 +1,12 @@
-﻿using NLog;
+﻿using System.IO.Compression;
+using System.Text;
+using NLog;
 using Vixen.Export.FPP;
 using Zstandard.Net;
 
 namespace Vixen.Export
 {
-	public sealed class FSEQCompressedWriter : ExportWriterBase
+	public class FSEQCompressedWriter : ExportWriterBase
 	{
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
@@ -25,8 +27,7 @@ namespace Vixen.Export
 		private ushort _currentFrameInBlock = 0;
 		private ushort _currentBlock = 0;
 		private uint _blockStartFrame = 0;
-		private readonly List<VariableHeader> _variableHeaders;
-
+		
 		private FileStream _outfs = null;
 		private MemoryStream _memoryStream;
 		private ZstandardStream _zStdStream;
@@ -34,6 +35,8 @@ namespace Vixen.Export
 
 		private readonly Dictionary<uint, uint> _compressBlockMap;
 		private readonly Dictionary<uint, uint> _sparseRangeBlocks;
+
+		protected List<VariableHeaderBase> VariableHeaders { get; set; }
 
 		public FSEQCompressedWriter()
 		{
@@ -45,7 +48,7 @@ namespace Vixen.Export
 			EnableCompression = true;
 			_compressBlockMap = new Dictionary<uint, uint>();
 			_sparseRangeBlocks = new Dictionary<uint, uint>();
-			_variableHeaders = new List<VariableHeader>();
+			VariableHeaders = new List<VariableHeaderBase>();
 		}
 
 		private void Reset()
@@ -57,10 +60,10 @@ namespace Vixen.Export
 			_blockStartFrame = 0;
 			_compressBlockMap.Clear();
 			_sparseRangeBlocks.Clear();
-			_variableHeaders.Clear();
+			VariableHeaders.Clear();
 		}
 
-		public void WriteFileHeader(BinaryWriter writer)
+		public void WriteFileHeader(BinaryWriter writer, long bufferSize)
 		{
 
 			//Reference to file spec.
@@ -165,11 +168,22 @@ namespace Vixen.Export
 				
 			}
 
-			foreach (var variableHeader in _variableHeaders)
+			// Loop over the variable headers
+			foreach (var variableHeader in VariableHeaders)
 			{
+				// If the header is an extended data header then...
+				if (variableHeader is ExtendedDataVariableHeaderBase extendedDataHeader)
+				{
+					// Initialize the offset to the extended data
+					extendedDataHeader.OffsetToVariableHeader = (ulong)bufferSize;
+					
+					// Increase the size of the buffer based on the extended data size
+					bufferSize += extendedDataHeader.GetExtendedData().Length;
+				}
+
+				// Write the header
 				writer.Write(variableHeader.GetHeaderBytes());
 			}
-			
 		}
 
 		
@@ -182,16 +196,18 @@ namespace Vixen.Export
 			_channelsPerFrame = (uint)data.ChannelNames.Count;
 			if (!string.IsNullOrEmpty(data.OutputAudioFileName))
 			{
-				_variableHeaders.Add(new VariableHeader(data.OutputAudioFileName));
+				VariableHeaders.Add(new VariableHeader(data.OutputAudioFileName));
 			}
 
-			_variableHeaders.Add(new VariableHeader(HeaderType.SequenceProducer));
+			VariableHeaders.Add(new VariableHeader(HeaderType.SequenceProducer));
+
+			AddOptionalVariableHeaders();
 			
 			var blockCount = ComputeMaxBlockCount();
 			_numberCompressionBlocks = (byte) blockCount;
 
 			_offsetToChannelData = FixedHeaderLength + blockCount * 8; //need to add for sparse if we do that
-			_offsetToChannelData += (uint)_variableHeaders.Sum(x => x.HeaderLength); //Account for variable header length
+			_offsetToChannelData += (uint)VariableHeaders.Sum(x => x.HeaderLength); //Account for variable header length
 
 #if DEBUG
 			Logging.Info($"Total frames count {_numberFrames}");
@@ -219,6 +235,11 @@ namespace Vixen.Export
 				Logging.Error(e, "An error occurred opening the filestreams for export.");
 				throw;
 			}
+		}
+
+		protected virtual void AddOptionalVariableHeaders()
+		{
+			// By default there are not any optional variable headers
 		}
 
 		private void InitStream()
@@ -312,8 +333,24 @@ namespace Vixen.Export
 			ChangeBlock();
 			try
 			{
+				_dataOut.Seek(0, SeekOrigin.End);
+
+				// Determine the size of the buffer
+				Stream stream = _dataOut.BaseStream;
+				long bufferSize = stream.Position;
+
 				_dataOut.Seek(0, SeekOrigin.Begin);
-				WriteFileHeader(_dataOut);
+				WriteFileHeader(_dataOut, bufferSize);
+
+				// Seek back to the end of the buffer
+				_dataOut.Seek(0, SeekOrigin.End);
+
+				// Write out the extended data headers
+				foreach (ExtendedDataVariableHeaderBase variableHeader in VariableHeaders.Where(hdr => hdr is ExtendedDataVariableHeaderBase))
+				{
+					_dataOut.Write(variableHeader.GetExtendedData());
+				}
+				
 				_dataOut.Flush();
 				_dataOut.Close();
 				_dataOut = null;

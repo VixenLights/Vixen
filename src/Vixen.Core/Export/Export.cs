@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 using System.Xml;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -6,6 +7,7 @@ using Vixen.Cache.Sequence;
 using Vixen.Commands;
 using Vixen.Data.Flow;
 using Vixen.Export.FPP;
+using Vixen.Extensions;
 using Vixen.Module.Controller;
 using Vixen.Sys;
 using Vixen.Sys.Output;
@@ -44,6 +46,7 @@ namespace Vixen.Export
         {
             _exportFileTypes = new Dictionary<string, string>();
             _writers = new Dictionary<string, IExportWriter>();
+            
             var interfaceType = typeof(IExportWriter);
             var types = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(s => s.GetTypes())
@@ -335,7 +338,7 @@ namespace Vixen.Export
 
         }
 
-        public async Task DoExport(ISequence sequence, string outFormat, bool enableCompression, IProgress<ExportProgressStatus> progress = null, bool matchAudioName = false)
+        public async Task DoExport(ISequence sequence, string outFormat, bool enableCompression, IProgress<ExportProgressStatus> progress = null, bool matchAudioName = false, DateTime? sequenceTimeStamp = null)
         {
             string fileType;
 
@@ -352,7 +355,7 @@ namespace Vixen.Export
 	                }
 					_generator = new SequenceIntervalGenerator(UpdateInterval, sequence);
                     //WriteControllerInfo(sequence);
-	                await Task.Factory.StartNew(() => ProcessExport(progress, matchAudioName));
+	                await Task.Factory.StartNew(() => ProcessExport(progress, sequenceTimeStamp, matchAudioName));
                 }
             }
         }
@@ -449,7 +452,7 @@ namespace Vixen.Export
             return retVal;
         }
 
-        private void ProcessExport(IProgress<ExportProgressStatus> progress, bool matchAudioName = false)
+        private void ProcessExport(IProgress<ExportProgressStatus> progress, DateTime? sequenceTimeStamp, bool matchAudioName = false)
         {
             SequenceSessionData sessionData = new SequenceSessionData();
 			
@@ -466,6 +469,14 @@ namespace Vixen.Export
 
 				//Get a list of controller ids by index order
 				IEnumerable<Guid> controllerIds = ControllerExportInfo.Where(x => x.IsActive).OrderBy(x => x.Index).Select(i => i.Id);
+                
+				// Get the number of channels each controller supports
+				IEnumerable<int> controllerChannels = ControllerExportInfo.Where(x => x.IsActive).OrderBy(x => x.Index).Select(i => i.Channels);
+
+                // Give the export writer controller information
+				_output.ControllerIDs.AddRange(controllerIds);
+				_output.ControllerChannels.AddRange(controllerChannels);
+				_output.SequenceTimeStamp = sequenceTimeStamp.Value;
 
 	            var controllers = controllerIds.Select(controller => VixenSystem.OutputControllers.GetController(controller));
 

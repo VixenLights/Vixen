@@ -1,7 +1,22 @@
 ﻿namespace Vixen.Export
 {
-	public abstract class ExportWriterBase:IExportWriter
+	public abstract class ExportWriterBase : IExportWriter
 	{
+		#region Constructor
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		public ExportWriterBase()
+		{
+			ControllerIDs = new List<Guid>();
+			ControllerChannels = new List<int>();
+		}
+
+		#endregion
+
+		#region IExporterWriter
+
 		/// <inheritdoc />
 		public int SeqPeriodTime { get; set; }
 
@@ -31,5 +46,16 @@
 
 		/// <inheritdoc />
 		public string Version { get; protected set; } = "1.0";
+
+		/// <inheritdoc />
+		public IList<Guid> ControllerIDs { get; private set; }
+
+		/// <inheritdoc />
+		public IList<int> ControllerChannels { get; private set; }
+
+		/// <inheritdoc />
+		public DateTime SequenceTimeStamp { get; set; }
+
+		#endregion
 	}
 }

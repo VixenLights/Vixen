@@ -2,7 +2,7 @@
 
 namespace Vixen.Export.FPP
 {
-	public class VariableHeader
+	public class VariableHeader : VariableHeaderBase
 	{
 		public VariableHeader(HeaderType type)
 		{
@@ -35,9 +35,9 @@ namespace Vixen.Export.FPP
 
 		private byte LengthHighByte => AsHighByte(Value.Length + 5);
 
-		public int HeaderLength => Value.Length + 5;
+		public override int HeaderLength => Value.Length + 5;
 
-		public byte[] GetHeaderBytes()
+		public override byte[] GetHeaderBytes()
 		{
 			var bytes = new byte[Value.Length + 5];
 			bytes[0] = LengthLowByte;
@@ -66,6 +66,7 @@ namespace Vixen.Export.FPP
 	public enum HeaderType
 	{
 		MediaFile,
-		SequenceProducer
+		SequenceProducer,
+		VixenPlayer
 	}
 }
