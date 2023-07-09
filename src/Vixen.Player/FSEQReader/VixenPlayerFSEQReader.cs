@@ -79,7 +79,7 @@ namespace VixenPlayer.FSeqReader
 		public string VixenPlayerHeaderVersion { get; private set; }
 
 		/// <inheritdoc/>
-		public void ReadFileHeader(BinaryReader reader, bool onlyReadHeader = false, bool readFrameData = true)
+		public void ReadFileHeader(BinaryReader reader, bool onlyReadFixedSizeHeader = false, bool readFrameData = true)
 		{
 			// Header Information
 			
@@ -150,15 +150,10 @@ namespace VixenPlayer.FSeqReader
 			long id = reader.ReadInt64();
 
 			// If NOT only reading the fixed size header then...
-			if (!onlyReadHeader)
+			if (!onlyReadFixedSizeHeader)
 			{
 				// Read the block information
 				ReadBlockInformation(compressionBlocks, reader);
-
-				// Skip to the variable length headers
-				//var stream = reader.BaseStream;
-				//long bytesToSkip = offsetToVariableHeader - stream.Position;
-				//SkipBytes((uint)bytesToSkip, reader);
 
 				// Read variable length headers
 				ReadVariableHeaders(reader, offsetToChannelData);
@@ -177,16 +172,16 @@ namespace VixenPlayer.FSeqReader
 						// Read the uncompressed frame data
 						ReadUncompressedFrameData(reader);
 					}
+				}
 
-					// If the Vixen Player extended data variable header was found then...
-					if (_vixenPlayerExtendedDataFound)
-					{
-						// Seek to the Vixen Player extended frame data
-						reader.BaseStream.Seek((long)_offsetToExtendedDataHeader, SeekOrigin.Begin);
+				// If the Vixen Player extended data variable header was found then...
+				if (_vixenPlayerExtendedDataFound)
+				{
+					// Seek to the Vixen Player extended frame data
+					reader.BaseStream.Seek((long)_offsetToExtendedDataHeader, SeekOrigin.Begin);
 
-						// Read the Vixen Player extended data variable header
-						ReadVixenPlayerExtendedDataVariableHeader(reader);
-					}
+					// Read the Vixen Player extended data variable header
+					ReadVixenPlayerExtendedDataVariableHeader(reader, readFrameData);
 				}
 			}
 		}
@@ -199,7 +194,8 @@ namespace VixenPlayer.FSeqReader
 		/// Reads the Vixen Player extended data header.
 		/// </summary>
 		/// <param name="reader">Binary reader to read from</param>
-		private void ReadVixenPlayerExtendedDataVariableHeader(BinaryReader reader)
+		/// <param name="readFrameData">Flag indicates if frame data is being processed</param>
+		private void ReadVixenPlayerExtendedDataVariableHeader(BinaryReader reader, bool readFrameData)
 		{
 			// Read the Header Version
 			VixenPlayerHeaderVersion = reader.ReadString();
@@ -227,21 +223,25 @@ namespace VixenPlayer.FSeqReader
 				ControllerInfo.Add(controller);
 			}
 
-			// Loop over the frames
-			for (int frame = 0; frame < NumberOfFrames; frame++)
+			// If processing frame data then...
+			if (readFrameData)
 			{
-				// Keep track of where we are in the frame
-				int indexIntoFrame = 0;
-
-				// Loop over the controllers
-				foreach (ControllerInfo controller in ControllerInfo)
+				// Loop over the frames
+				for (int frame = 0; frame < NumberOfFrames; frame++)
 				{
-					// Retrieve the controller's slice of frame data
-					controller.FrameData.Add(
-						FrameData[frame].Skip(indexIntoFrame).Take(controller.NumberOfChannels).ToArray());
+					// Keep track of where we are in the frame
+					int indexIntoFrame = 0;
 
-					// Update the index into the frame data
-					indexIntoFrame += controller.NumberOfChannels;
+					// Loop over the controllers
+					foreach (ControllerInfo controller in ControllerInfo)
+					{
+						// Retrieve the controller's slice of frame data
+						controller.FrameData.Add(
+							FrameData[frame].Skip(indexIntoFrame).Take(controller.NumberOfChannels).ToArray());
+
+						// Update the index into the frame data
+						indexIntoFrame += controller.NumberOfChannels;
+					}
 				}
 			}
 			

@@ -11,9 +11,9 @@ namespace VixenPlayer.FSeqReader
 		/// Reads a Vixen Player fseq file.
 		/// </summary>
 		/// <param name="reader">Binary file reader</param>
-		/// <param name="onlyReadHeader">Flag to only read the header information</param>
-		/// <param name="skipReadingData">Flag to skip reading the frame data</param>
-		void ReadFileHeader(BinaryReader reader, bool onlyReadHeader = false, bool skipReadingData = false);
+		/// <param name="onlyReadFixedSizeHeader">Flag to only read the header information</param>
+		/// <param name="readFrameData">Flag determines if frame data is read</param>
+		void ReadFileHeader(BinaryReader reader, bool onlyReadFixedSizeHeader = false, bool readFrameData = true);
 
 		/// <summary>
 		/// File identifier (usually 'PSEQ').
