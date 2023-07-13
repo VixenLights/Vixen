@@ -63,7 +63,7 @@ namespace VixenModules.Controller.E131
 	// 
 	// -----------------------------------------------------------------
 
-	public class E131OutputPlugin : ControllerModuleInstanceBase
+	public class E131OutputPlugin : ControllerModuleInstanceBase, ISimpleController
 	{
 		internal static List<E131OutputPlugin> PluginInstances = new List<E131OutputPlugin>();
 		internal static SortedList<string, int> unicasts = new SortedList<string, int>();
@@ -903,5 +903,102 @@ namespace VixenModules.Controller.E131
 				}
 			}
 		}
+
+		#region ISimpleController
+		
+		/// <inheritdoc/>
+		public void UpdateState(byte[] outputStates)
+		{
+			_updateStateStopWatch.Start();
+
+			//Make sure the setup form is closed & the plugin has started
+			if (isSetupOpen || !running)
+			{
+				return;
+			}
+
+			if (_data.Universes == null || _data.Universes.Count == 0)
+			{
+				return;
+			}
+
+			if (channelValues == null || channelValues.Length != outputStates.Length)
+			{
+				channelValues = new byte[outputStates.Length];
+			}
+
+			for (int index = 0; index < outputStates.Length; index++)
+			{
+				channelValues[index] = outputStates[index];
+			}
+
+			_eventCnt++;
+
+			foreach (var uE in _data.Universes)
+			{
+				//Not sure why phybuf can be null, but the plugin will crash after being reconfigured otherwise.
+				if (uE.PhyBuffer == null)
+					continue;
+
+				//Check if the universe is active and inside a valid channel range
+				if (!uE.Active || uE.Start >= OutputCount || !running)
+					continue;
+
+				//Check the universe size boundary.
+				int universeSize;
+				if ((uE.Start + uE.Size) > OutputCount)
+				{
+					universeSize = OutputCount - uE.Start;
+				}
+				else
+				{
+					universeSize = uE.Size;
+				}
+
+				// Reduce duplicate packets... 
+				// -the data. counts are the targets
+				// -the uE. counts are how many have happened
+
+				// do we want to suppress this one?  compare to last frame sent
+				bool sendit = true;
+				bool issame = _data.EventRepeatCount > 0 &&
+							  E131Packet.CompareSlots(uE.PhyBuffer, channelValues, uE.Start, universeSize);
+				if (issame)
+				{
+					// we allow the first event repeat count dups
+					if (_data.EventRepeatCount > 0 && ++uE.EventRepeatCount >= _data.EventRepeatCount)
+					{
+						sendit = false;
+						// we want to suppress, but should we force it anyway?
+						if (_data.EventSuppressCount > 0 && ++uE.EventSuppressCount >= _data.EventSuppressCount)
+						{
+							sendit = true;
+							uE.EventSuppressCount = 0;
+						}
+					}
+				}
+				else
+				{
+					// it's different so will go... clear counters
+					// hopefully this happens within the 7.7 months it will take them to overflow :-)
+					uE.EventRepeatCount = 0;
+					uE.EventSuppressCount = 0;
+				}
+
+				if (sendit)
+				{
+					//SeqNumbers are per universe so that they can run independently
+					E131Packet.CopySeqNumSlots(uE.PhyBuffer, channelValues, uE.Start, universeSize, uE.seqNum++);
+					uE.Socket.SendTo(uE.PhyBuffer, uE.DestIpEndPoint);
+					uE.PktCount++;
+					uE.SlotCount += uE.Size;
+				}
+			}
+			_updateStateStopWatch.Stop();
+
+			this._totalTicks += _updateStateStopWatch.ElapsedTicks;
+		}
+
+		#endregion
 	}
 }

@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace VixenModules.Output.DDP
 {
-	internal class DDP : ControllerModuleInstanceBase
+	internal class DDP : ControllerModuleInstanceBase, ISimpleController
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private DDPData _data;
@@ -268,5 +268,40 @@ namespace VixenModules.Output.DDP
 			config.Universes = universes;
 			return config;
 		}
+
+		#region ISimpleController
+
+		public void UpdateState(byte[] outputStates)
+		{
+			if (!_isRunning)
+				return;
+
+			if ((outputStates is null) || (_outputCount == 0))  //added to prevent exceptions while loading profile
+				return;
+
+			if (outputStates.Length != _outputCount)
+			{
+				SetupPackets();
+			}
+
+			int dataStart = 0;
+			int packet = 0;
+			int channel = 0;
+			foreach (int packetSize in _packetSize)
+			{
+				//copy bytes from state buffer to packet
+				for (int i = 0; i < packetSize; i++)
+				{
+					_ddpPacket[i + 10] = outputStates[channel];
+					channel++;
+				}
+				SendPacket(packet);
+
+				dataStart += packetSize;
+				packet++;
+			}
+		}
+
+		#endregion
 	}
 }

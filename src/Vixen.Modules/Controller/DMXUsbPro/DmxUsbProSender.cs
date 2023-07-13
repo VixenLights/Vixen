@@ -29,6 +29,34 @@ namespace VixenModules.Output.DmxUsbPro
 			this.Dispose();
 		}
 
+		public void SendDmxPacket(byte[] outputStates)
+		{
+			if (outputStates == null || this._statePacket == null || _serialPort == null)
+			{
+				return;
+			}
+
+			var channelValues = new byte[outputStates.Length];
+			for (int index = 0; index < outputStates.Length; index++)
+			{
+				channelValues[index] = outputStates[index];
+			}
+
+			if (!this._serialPort.IsOpen)
+			{
+				//this._serialPort.Open();
+				return;
+			}
+
+			this._statePacket[0] = 0; // Start code
+			Array.Copy(channelValues, 0, this._statePacket, 1, Math.Min(512, channelValues.Length));
+			byte[] packet = this._dmxPacketMessage.Packet;
+			if (packet != null)
+			{
+				this._serialPort.Write(packet, 0, packet.Length);
+			}
+		}
+
 		public void SendDmxPacket(ICommand[] outputStates)
 		{
 			if (outputStates == null || this._statePacket == null || _serialPort == null) {

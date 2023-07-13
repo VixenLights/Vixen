@@ -8,7 +8,7 @@ using Vixen.Module.Controller;
 
 namespace VixenModules.Output.GenericSerial
 {
-	public class Module : ControllerModuleInstanceBase
+	public class Module : ControllerModuleInstanceBase, ISimpleController
 	{
 		private Data _data;
 		private SerialPort _serialPort;
@@ -225,5 +225,39 @@ namespace VixenModules.Output.GenericSerial
 			Logging.Info("Attempting to start serial controller.");
 			Start();
 		}
+
+		#region ISimpleController
+		
+		/// <inheritdoc/>
+		public void UpdateState(byte[] outputStates)
+		{
+			if (SerialPortIsValid && _serialPort.IsOpen)
+			{
+				_packet = new byte[_headerLen + OutputCount + _footerLen];
+				var packetLen = _packet.Length;
+
+				_header.CopyTo(_packet, 0);
+				_footer.CopyTo(_packet, packetLen - _footerLen);
+
+				for (int i = 0; i < outputStates.Length && IsRunning; i++)
+				{
+					_packet[i + _headerLen] = outputStates[i];
+				}
+
+				if (packetLen > 0)
+				{
+					try
+					{
+						_serialPort.Write(_packet, 0, packetLen);
+					}
+					catch (Exception ex)
+					{
+						Logging.Error(ex, "An error occurred writing to the serial port.");
+					}
+				}
+			}
+		}
+
+		#endregion
 	}
 }

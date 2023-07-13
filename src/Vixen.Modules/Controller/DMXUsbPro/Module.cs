@@ -7,7 +7,7 @@ namespace VixenModules.Output.DmxUsbPro
 	using Vixen.Commands;
 	using Vixen.Module.Controller;
 
-	public class Module : ControllerModuleInstanceBase
+	public class Module : ControllerModuleInstanceBase, ISimpleController
 	{
 		private SerialPort _serialPort;
 
@@ -118,5 +118,15 @@ namespace VixenModules.Output.DmxUsbPro
 				                   	};
 			}
 		}
+
+		#region ISimpleController
+		
+		/// <inheritdoc/>
+		public void UpdateState(byte[] outputStates)
+		{
+			_dmxUsbProSender.SendDmxPacket(outputStates);
+		}
+
+		#endregion
 	}
 }

@@ -8,7 +8,7 @@ using System.Timers;
 
 namespace VixenModules.Output.Renard
 {
-	public class Module : ControllerModuleInstanceBase
+	public class Module : ControllerModuleInstanceBase, ISimpleController
 	{
 		private Data _moduleData;
 		private SerialPort _port;
@@ -203,5 +203,26 @@ namespace VixenModules.Output.Renard
 			Logging.Info("Attempting to start controller.");
 			Start();
 		}
+
+		#region ISimpleController
+
+		/// <inheritdoc/>
+		public void UpdateState(byte[] outputStates)
+		{
+			if (_port != null && _port.IsOpen)
+			{
+				_protocolFormatter.StartPacket(OutputCount, 0);
+
+				for (int i = 0; i < outputStates.Length && IsRunning; i++)
+				{
+					_protocolFormatter.Add(outputStates[i]);
+				}
+				_WaitForBufferRoom(_PacketSize);
+				byte[] packet = _GetPacket();
+				_port.Write(packet, 0, _PacketSize);
+			}
+		}
+
+		#endregion
 	}
 }

@@ -5,7 +5,7 @@ using Vixen.Module;
 
 namespace VixenModules.Controller.OpenDMX
 {
-	public class VixenOpenDMXInstance : ControllerModuleInstanceBase
+	public class VixenOpenDMXInstance : ControllerModuleInstanceBase, ISimpleController
 	{
 		private OpenDmx _dmxPort;
 		private int _outputCount;

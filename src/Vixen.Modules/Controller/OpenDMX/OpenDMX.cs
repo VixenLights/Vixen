@@ -117,8 +117,22 @@ namespace VixenModules.Controller.OpenDMX
 	            }
 	        }
 	    }
-        
-        private void SetDmxValue(int channel, byte value)
+
+	    public void UpdateData(byte[] outputStates)
+	    {
+		    // Make sure that editing the output buffer is thread safe
+		    lock (_buffer)
+		    {
+			    // Copy the lighting byte values to the DMX Buffer
+			    for (var i = 0; i < outputStates.Length; i++)
+			    { 
+				    // Copy the new intensity value to the output buffer
+				    _buffer[i + 1] = outputStates[i];
+			    }
+		    }
+	    }
+
+		private void SetDmxValue(int channel, byte value)
 		{
 			//Lock the buffer for thread safing
 			lock (_buffer) {
