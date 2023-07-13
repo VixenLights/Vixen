@@ -77,5 +77,16 @@ namespace VixenModules.Controller.OpenDMX
 			//Close FTDI interface
 			_dmxPort.Stop();
 		}
+
+		#region ISimpleController
+
+		/// <inheritdoc/>
+		public void UpdateState(byte[] outputStates)
+		{
+			// Pass the lighting channel data onto the hardware controller class
+			_dmxPort.UpdateData(outputStates);
+		}
+
+		#endregion
 	}
 }
