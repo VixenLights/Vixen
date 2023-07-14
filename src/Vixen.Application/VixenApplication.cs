@@ -803,6 +803,15 @@ namespace VixenApplication
 			get { return _openEditors.ToArray(); }
 		}
 
+		public bool UseFlatFileEngine
+		{
+			get
+			{
+				// By default use the real-time rendering engine
+				return false;
+			}
+		}
+
 		#endregion
 
 		#region Sequence Editor Type population & management

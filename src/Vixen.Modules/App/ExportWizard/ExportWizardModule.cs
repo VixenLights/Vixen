@@ -45,8 +45,11 @@ namespace VixenModules.App.ExportWizard
 
 		private void _AddMenu()
 		{
-			if (_application != null
-			    && _application.AppCommands != null) {
+			// Export Wizard menu item is not applicable when using the flat file engine with the Vixen Player
+			if (_application != null &&
+			    _application.AppCommands != null &&
+			    !_application.UseFlatFileEngine) 
+			{
 				AppCommand toolsMenu = _application.AppCommands.Find("Tools");
 				if (toolsMenu == null)
 				{

@@ -193,21 +193,25 @@
 
 		public void Add(AppCommand appCommand)
 		{
-			if (MainWindow.InvokeRequired)
+			// MainWindow is null when running in the context of the Vixen Player
+			if (MainWindow != null)
 			{
-				var d = new SafeCallDelegate<AppCommand>(Add);
-				MainWindow.Invoke(d, appCommand);
-			}
-			else
-			{
-				appCommand.Parent = this;
-				_items.Add(appCommand);
-				(_toolStripItem as ToolStripMenuItem).DropDownItems.Add(appCommand.Item);
-				if (_rootControl != null) {
-					_AddToRoot(appCommand);
+				if (MainWindow.InvokeRequired)
+				{
+					var d = new SafeCallDelegate<AppCommand>(Add);
+					MainWindow.Invoke(d, appCommand);
+				}
+				else
+				{
+					appCommand.Parent = this;
+					_items.Add(appCommand);
+					(_toolStripItem as ToolStripMenuItem).DropDownItems.Add(appCommand.Item);
+					if (_rootControl != null)
+					{
+						_AddToRoot(appCommand);
+					}
 				}
 			}
-			
 		}
 
 		public void Remove(string appCommandName)

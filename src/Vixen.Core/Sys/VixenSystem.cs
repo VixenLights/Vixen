@@ -8,6 +8,19 @@ namespace Vixen.Sys
 {
 	public class VixenSystem
 	{
+		#region Constructors
+
+		/// <summary>
+		/// Static Constructor
+		/// </summary>
+		static VixenSystem()
+		{
+			// By default the controllers should be started
+			StartControllers = true;
+		}
+
+		#endregion
+
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public enum RunState
@@ -353,7 +366,7 @@ namespace Vixen.Sys
 		}
 
 		internal static ModuleStore ModuleStore { get; private set; }
-		internal static SystemConfig SystemConfig { get; private set; }
+		public static SystemConfig SystemConfig { get; private set; }
 
 		private static ModuleStore _LoadModuleStore(string systemDataPath)
 		{
@@ -395,5 +408,12 @@ namespace Vixen.Sys
 		}
 
 		public static string ProfileName { get; set; }
+
+		/// <summary>
+		/// Flag to determine if the controllers should be started.
+		/// </summary>
+		/// <remarks>Vixen Player sends channel data directly to the controllers so when the Vixen system is running
+		/// in the context of the Vixen Player they don't need to be started</remarks>
+		public static bool StartControllers { get; set; }
 	}
 }

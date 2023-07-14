@@ -6,7 +6,7 @@ using Vixen.Sys.Output;
 
 namespace Vixen.Sys
 {
-	internal class SystemConfig
+	public class SystemConfig
 	{
 		public static int DEFAULT_UPDATE_INTERVAL = 50;
 

@@ -16,7 +16,12 @@ namespace Vixen.Sys.State.Execution.Behavior
 				// so that new devices don't need to be added to it in order to be enabled.
 				IEnumerable<IOutputDevice> enabledDevices =
 					VixenSystem.OutputDeviceManagement.Devices.Except(VixenSystem.SystemConfig.DisabledDevices);
-				VixenSystem.OutputDeviceManagement.StartOnly(enabledDevices);
+
+				// If the Vixen System is configured to start the controller threads then...
+				if (VixenSystem.StartControllers)
+				{
+					VixenSystem.OutputDeviceManagement.StartOnly(enabledDevices);
+				}
 			}
 			
 
