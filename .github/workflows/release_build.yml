@@ -87,55 +87,6 @@ jobs:
           name: _releaseNotesMd
           path: "Release Notes.md"
 
-
-  build_x86:
-  
-    needs:
-      - setup
-    
-    outputs:
-      setup_32: ${{ env.SETUP_32 }}
-
-    runs-on: windows-2022
-
-    steps:
-    
-      - uses: actions/checkout@v3
-      
-      - name: Download Release Notes artifact
-        uses: actions/download-artifact@v3.0.2
-        with:
-          name: _releaseNotes
-        
-      - uses: nuget/setup-nuget@v1
-        
-      - uses: microsoft/setup-msbuild@v1.3.1
-      
-      - name: NuGet Restore
-        run: nuget restore Vixen.sln
-        
-      - name: Build x86
-        run: msbuild Vixen.sln -m -t:Rebuild -p:Configuration=Deploy -p:Platform=x86 -p:PlatformTarget=x86 -p:Environment=${{ needs.setup.outputs.environment }} -p:App_Version=${{ needs.setup.outputs.app_version }} -p:Assembly_Version=${{ needs.setup.outputs.version }}
-  
-      - run: dir
-        shell: cmd
-        
-      - run: dir Release\Setup\${{ needs.setup.outputs.environment }}
-        shell: cmd
-        
-      - name: Set installer name in environment
-        working-directory: Release\Setup\${{ needs.setup.outputs.environment }}
-        shell: bash
-        run: |
-          echo "SETUP_32=$(echo Vixen*Setup-32bit.exe)" >> $GITHUB_ENV
-        
-      - name: Upload _setup32 artifact
-        uses: actions/upload-artifact@v3.1.2
-        with:
-          name: _setup32
-          path: Release\Setup\${{ needs.setup.outputs.environment }}\${{ env.SETUP_32 }}
-
-
   build_x64:
   
     needs:
@@ -184,18 +135,12 @@ jobs:
   
     needs:
       - setup
-      - build_x86
       - build_x64
 
     runs-on: windows-2022
 
     steps:
 
-      - name: Download _setup32 artifact
-        uses: actions/download-artifact@v3.0.2
-        with:
-          name: _setup32
-      
       - name: Download _setup64 artifact
         uses: actions/download-artifact@v3.0.2
         with:
@@ -223,16 +168,6 @@ jobs:
           body_path: Release Notes.md
           draft: false
           prerelease: ${{ needs.setup.outputs.pre_release }}
-      
-      - name: Upload x86 release asset
-        uses: VixenLights/upload-release-asset@main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ needs.build_x86.outputs.setup_32 }}
-          asset_name: ${{ needs.build_x86.outputs.setup_32 }}
-          asset_content_type: application/vnd.microsoft.portable-executable
         
       - name: Upload x64 release asset
         uses: VixenLights/upload-release-asset@main
