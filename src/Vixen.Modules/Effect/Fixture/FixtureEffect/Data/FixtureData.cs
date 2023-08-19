@@ -48,12 +48,15 @@ namespace VixenModules.Effect.Fixture
 		{
 			// Create a fixture data instance
 			FixtureData clone = new FixtureData();
+
+			// Give the clone the collection of fixture functions
+			clone.FixtureFunctions = FixtureFunctions;
 						
 			// Loop over the fixture function data items
 			for (int index = 0; index < FunctionData.Count; index++)
 			{
 				// Make a clone of the specified fixture function
-				clone.FunctionData[index] = FunctionData[index].CreateInstanceForClone();
+				clone.FunctionData.Add(FunctionData[index].CreateInstanceForClone());
 			}
 
 			return clone;
