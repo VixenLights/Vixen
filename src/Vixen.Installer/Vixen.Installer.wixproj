@@ -1,4 +1,4 @@
-﻿<Project Sdk="WixToolset.Sdk/4.0.0-rc.3">
+﻿<Project Sdk="WixToolset.Sdk/4.0.1">
   <PropertyGroup>
     <DefineConstants>Version=$(App_Version);ReleaseType=$(Environment)</DefineConstants>
     <BaseOutputPath>$(SolutionDir)$(Configuration)\Setup\$(Environment)</BaseOutputPath>
@@ -34,6 +34,7 @@
       <SuppressRegistry>true</SuppressRegistry>
       <SuppressCom>true</SuppressCom>
       <SuppressRootDirectory>true</SuppressRootDirectory>
+      <Transforms>ExcludeVixenExeFile.xslt</Transforms>
     </HarvestDirectory>
     <BindPath Include="$(SolutionDir)$(Configuration)\Output" />
   </ItemGroup>
@@ -41,6 +42,6 @@
     <Content Include="EnvironmentInclude.wxi" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="WixToolset.Heat" Version="4.0.0-rc.3" />
+    <PackageReference Include="WixToolset.Heat" Version="4.0.1" />
   </ItemGroup>
 </Project>
