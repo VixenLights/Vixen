@@ -8,8 +8,9 @@
 			
     <Feature Id="Release">
       <ComponentGroupRef Id="HarvestedComponents" />
-						<ComponentRef Id="ApplicationShortcut" />
+						<ComponentRef Id="RegistryInstallValue" />
 						<ComponentRef Id="DesktopApplicationShortcut"/>
+            <ComponentRef Id="ApplicationShortcut"/>
     </Feature>
   </Package>
 		
