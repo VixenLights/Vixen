@@ -479,6 +479,8 @@ Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "Vixen.Installer", "src\Vixe
 EndProject
 Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "Vixen.DeployBundle", "src\Vixen.DeployBundle\Vixen.DeployBundle.wixproj", "{8696BB96-E975-4A6B-9033-5E2F54C87CFA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Weave", "src\Vixen.Modules\Effect\Weave\Weave.csproj", "{36A1EEC5-146A-488C-BD9F-0BA7DFFD1527}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -2269,6 +2271,18 @@ Global
 		{8696BB96-E975-4A6B-9033-5E2F54C87CFA}.Deploy|x86.Build.0 = Release|x86
 		{8696BB96-E975-4A6B-9033-5E2F54C87CFA}.Release|x64.ActiveCfg = Release|x64
 		{8696BB96-E975-4A6B-9033-5E2F54C87CFA}.Release|x86.ActiveCfg = Release|x86
+		{36A1EEC5-146A-488C-BD9F-0BA7DFFD1527}.Debug|x64.ActiveCfg = Debug|x64
+		{36A1EEC5-146A-488C-BD9F-0BA7DFFD1527}.Debug|x64.Build.0 = Debug|x64
+		{36A1EEC5-146A-488C-BD9F-0BA7DFFD1527}.Debug|x86.ActiveCfg = Debug|x86
+		{36A1EEC5-146A-488C-BD9F-0BA7DFFD1527}.Debug|x86.Build.0 = Debug|x86
+		{36A1EEC5-146A-488C-BD9F-0BA7DFFD1527}.Deploy|x64.ActiveCfg = Debug|x64
+		{36A1EEC5-146A-488C-BD9F-0BA7DFFD1527}.Deploy|x64.Build.0 = Debug|x64
+		{36A1EEC5-146A-488C-BD9F-0BA7DFFD1527}.Deploy|x86.ActiveCfg = Debug|x86
+		{36A1EEC5-146A-488C-BD9F-0BA7DFFD1527}.Deploy|x86.Build.0 = Debug|x86
+		{36A1EEC5-146A-488C-BD9F-0BA7DFFD1527}.Release|x64.ActiveCfg = Release|x64
+		{36A1EEC5-146A-488C-BD9F-0BA7DFFD1527}.Release|x64.Build.0 = Release|x64
+		{36A1EEC5-146A-488C-BD9F-0BA7DFFD1527}.Release|x86.ActiveCfg = Release|x86
+		{36A1EEC5-146A-488C-BD9F-0BA7DFFD1527}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -2436,6 +2450,7 @@ Global
 		{B083141A-CA04-4E12-87C5-1E75D44E930D} = {783CEFCF-DBF1-4ED1-B6D3-886B6583097D}
 		{68E893A1-E452-48E1-992F-F3F780829BB8} = {791B683A-4B1A-4667-9FCC-7C61683C1448}
 		{5C5A2695-3DE7-4C25-9DE1-261B8F3C0DF7} = {783CEFCF-DBF1-4ED1-B6D3-886B6583097D}
+		{36A1EEC5-146A-488C-BD9F-0BA7DFFD1527} = {07CF2AA8-5427-4912-8A68-E8E7A4CDC6D4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5957242E-E882-44E4-83E0-A1C2F73705BF}
