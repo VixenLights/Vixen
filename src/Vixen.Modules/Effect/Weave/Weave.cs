@@ -2391,7 +2391,7 @@ namespace VixenModules.Effect.Weave
 		private int GetWeaveYValue(int frame)
 		{
 			// The Y value for the weave is a function of the speed and how far the weave travels in a 50 ms frame
-			int yValue = (int)(frame * (FrameTime / 50.0) * CalculateWeaveSpeed(GetEffectTimeIntervalPosition(frame)));
+			int yValue = (int)(frame * (FrameTime / 50.0) * CalculateWeaveSpeed(GetEffectTimeIntervalPosition(frame) * 100));
 
 			// Return the Y value for the weave
 			return yValue;
