@@ -280,6 +280,17 @@ namespace VixenModules.Effect.Weave
 			set
 			{
 				_data.AdvancedSizing = value;
+
+				// If Advanced sizing is being enabled then...
+				if (value)
+				{
+					// Transfer the current spacing and thickness values to the individual sliders
+					WeaveVerticalSpacing = WeaveSpacing;
+					WeaveVerticalThickness = WeaveThickness;
+					WeaveHorizontalSpacing = WeaveSpacing;
+					WeaveHorizontalThickness = WeaveThickness;
+				}
+
 				IsDirty = true;
 				OnPropertyChanged();
 
@@ -323,12 +334,13 @@ namespace VixenModules.Effect.Weave
 		}
 
 
-		[Value]
 		[ProviderCategory(@"Config", 4)]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 100, 1)]
 		[ProviderDisplayName(@"WeaveHorizontalThickness")]
 		[ProviderDescription(@"WeaveHorizontalThickness")]
 		[PropertyOrder(10)]
-		public Curve WeaveHorizontalThickness
+		public int WeaveHorizontalThickness
 		{
 			get { return _data.WeaveHorizontalThickness; }
 			set
@@ -339,12 +351,14 @@ namespace VixenModules.Effect.Weave
 			}
 		}
 
-		[Value]
+		
 		[ProviderCategory(@"Config", 4)]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 100, 1)]
 		[ProviderDisplayName(@"WeaveHorizontalSpacing")]
 		[ProviderDescription(@"WeaveHorizontalSpacing")]
 		[PropertyOrder(11)]
-		public Curve WeaveHorizontalSpacing
+		public int WeaveHorizontalSpacing
 		{
 			get { return _data.WeaveHorizontalSpacing; }
 			set
@@ -354,13 +368,14 @@ namespace VixenModules.Effect.Weave
 				OnPropertyChanged();
 			}
 		}
-
-		[Value]
+		
 		[ProviderCategory(@"Config", 4)]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 100, 1)]
 		[ProviderDisplayName(@"WeaveVerticalThickness")]
 		[ProviderDescription(@"WeaveVerticalThickness")]
 		[PropertyOrder(12)]
-		public Curve WeaveVerticalThickness
+		public int WeaveVerticalThickness
 		{
 			get { return _data.WeaveVerticalThickness; }
 			set
@@ -371,12 +386,13 @@ namespace VixenModules.Effect.Weave
 			}
 		}
 
-		[Value]
 		[ProviderCategory(@"Config", 4)]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 100, 1)]
 		[ProviderDisplayName(@"WeaveVerticalSpacing")]
 		[ProviderDescription(@"WeaveVerticalSpacing")]
 		[PropertyOrder(13)]
-		public Curve WeaveVerticalSpacing
+		public int WeaveVerticalSpacing
 		{
 			get { return _data.WeaveVerticalSpacing; }
 			set
@@ -629,16 +645,16 @@ namespace VixenModules.Effect.Weave
 			if (AdvancedSizing)
 			{
 				// Calculate the weave bar spacing
-				_weaveHorizontalSpacing = GetWeaveHorizontalSpacing(_scaleValue, intervalPosFactor);
+				_weaveHorizontalSpacing = GetHorizontalWeaveSpacing(_scaleValue);
 
 				// Calculate the weave bar spacing
-				_weaveVerticalSpacing = GetWeaveVerticalSpacing(_scaleValue, intervalPosFactor);
+				_weaveVerticalSpacing = GetVerticalWeaveSpacing(_scaleValue);
 
 				// Calculate the weave bar thickness
-				_weaveHorizontalThickness = GetWeaveHorizontalThickness(_scaleValue, intervalPosFactor);
+				_weaveHorizontalThickness = GetHorizontalWeaveThickness(_scaleValue);
 
 				// Calculate the weave bar thickness
-				_weaveVerticalThickness = GetWeaveVerticalThickness(_scaleValue, intervalPosFactor);
+				_weaveVerticalThickness = GetVerticalWeaveThickness(_scaleValue);
 			}
 			// Otherwise both the vertical and horizontal bars will be sized the same
 			else
@@ -666,28 +682,6 @@ namespace VixenModules.Effect.Weave
 		}
 
 		/// <summary>
-		/// Gets the horizontal spacing in between the weave bars.
-		/// </summary>    
-		/// <param name="scaleValue">Value used to scale the spacing</param>
-		/// <returns>Returns the spacing between the weave bars</returns>
-		private int GetWeaveHorizontalSpacing(int scaleValue, double intervalPos)
-		{
-			// Calculate the spacing between the weave bars
-			return (int)(CalculateHorizontalSpacing(intervalPos) / 100.0 * scaleValue);
-		}
-
-		/// <summary>
-		/// Gets the vertical spacing in between the weave bars.
-		/// </summary>    
-		/// <param name="scaleValue">Value used to scale the spacing</param>
-		/// <returns>Returns the spacing between the weave bars</returns>
-		private int GetWeaveVerticalSpacing(int scaleValue, double intervalPos)
-		{
-			// Calculate the spacing between the weave bars
-			return (int)(CalculatVerticalSpacing(intervalPos) / 100.0 * scaleValue);
-		}
-
-		/// <summary>
 		/// Gets the spacing in between the weave bars.
 		/// </summary>    
 		/// <param name="scaleValue">Value used to scale the spacing</param>
@@ -698,6 +692,11 @@ namespace VixenModules.Effect.Weave
 			return (int)(WeaveSpacing / 100.0 * scaleValue);
 		}
 
+		/// <summary>
+		/// Gets the thickness of the weave bars.
+		/// </summary>
+		/// <param name="scaleValue">Value used to scale the thickness</param>
+		/// <returns></returns>
 		private int GetWeaveThickness(int scaleValue)
 		{
 			// Calculate the spacing between the weave bars
@@ -710,6 +709,66 @@ namespace VixenModules.Effect.Weave
 			}
 
 			return thickness;	
+		}
+
+		/// <summary>
+		/// Gets the horizontal spacing in between the weave bars.
+		/// </summary>    
+		/// <param name="scaleValue">Value used to scale the spacing</param>
+		/// <returns>Returns the spacing between the weave bars</returns>
+		private int GetHorizontalWeaveSpacing(int scaleValue)
+		{
+			// Calculate the spacing between the weave bars
+			return (int)(WeaveHorizontalSpacing / 100.0 * scaleValue);
+		}
+
+		/// <summary>
+		/// Gets the horizontal thickness of the weave bars.
+		/// </summary>
+		/// <param name="scaleValue">Value used to scale the thickness</param>
+		/// <returns></returns>
+		private int GetHorizontalWeaveThickness(int scaleValue)
+		{
+			// Calculate the spacing between the weave bars
+			int thickness = (int)(WeaveHorizontalThickness / 100.0 * scaleValue);
+
+			// Ensure the thickness is always at least one pixel
+			if (thickness == 0)
+			{
+				thickness = 1;
+			}
+
+			return thickness;
+		}
+
+		/// <summary>
+		/// Gets the vertical spacing in between the weave bars.
+		/// </summary>    
+		/// <param name="scaleValue">Value used to scale the spacing</param>
+		/// <returns>Returns the spacing between the weave bars</returns>
+		private int GetVerticalWeaveSpacing(int scaleValue)
+		{
+			// Calculate the spacing between the weave bars
+			return (int)(WeaveVerticalSpacing / 100.0 * scaleValue);
+		}
+
+		/// <summary>
+		/// Gets the vertical thickness of the weave bars.
+		/// </summary>
+		/// <param name="scaleValue">Value used to scale the thickness</param>
+		/// <returns></returns>
+		private int GetVerticalWeaveThickness(int scaleValue)
+		{
+			// Calculate the spacing between the weave bars
+			int thickness = (int)(WeaveVerticalThickness / 100.0 * scaleValue);
+
+			// Ensure the thickness is always at least one pixel
+			if (thickness == 0)
+			{
+				thickness = 1;
+			}
+
+			return thickness;
 		}
 
 		/// <summary>
@@ -759,43 +818,7 @@ namespace VixenModules.Effect.Weave
 			}
 		}
 
-		/// <summary>
-		/// Gets the vertical weave thickness as a percentage of the display element.
-		/// </summary>        
-		/// <param name="scaleValue">Value used to scale the thickness</param>
-		/// <returns>Thickness of the weave</returns>
-		private int GetWeaveVerticalThickness(int scaleValue, double intervalPos)
-		{
-			// Get the thickness of the weave bar as a percentage of the width or height
-			int thickness = (int)(CalculateVerticalThickness(scaleValue) / 100.0 * scaleValue);
-
-			// Ensure the thickness is always at least one pixel
-			if (thickness == 0)
-			{
-				thickness = 1;
-			}
-
-			return thickness;
-		}
-
-		/// <summary>
-		/// Gets the horizontal weave thickness as a percentage of the display element.
-		/// </summary>        
-		/// <param name="scaleValue">Value used to scale the thickness</param>
-		/// <returns>Thickness of the weave</returns>
-		private int GetWeaveHorizontalThickness(int scaleValue, double intervalPos)
-		{
-			// Get the thickness of the weave bar as a percentage of the width or height
-			int thickness = (int)(CalculateHorizontalThickness(intervalPos) / 100.0 * scaleValue);
-
-			// Ensure the thickness is always at least one pixel
-			if (thickness == 0)
-			{
-				thickness = 1;
-			}
-
-			return thickness;
-		}
+		
 
 		/// <summary>
 		/// Gets the highlight color for the weave color index.
@@ -2409,50 +2432,6 @@ namespace VixenModules.Effect.Weave
 
 			// Scale the speed based on the calculated scale factor
 			return ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), newScaleValue, 0);
-		}
-
-		/// <summary>
-		/// Calculates the horizontal spacing between the weave bars.
-		/// </summary>
-		/// <param name="intervalPos">Interval position within the effect duration</param>            
-		/// <returns>Horizontal spacing of the weave bars</returns>
-		private double CalculateHorizontalSpacing(double intervalPos)
-		{
-			// Scale the speed based on the calculated scale factor
-			return ScaleCurveToValue(WeaveHorizontalSpacing.GetValue(intervalPos), 100, 0);
-		}
-
-		/// <summary>
-		/// Calculates the vertical spacing between the weave bars.
-		/// </summary>
-		/// <param name="intervalPos">Interval position within the effect duration</param>            
-		/// <returns>Vertical spacing of the weave bars</returns>
-		private double CalculatVerticalSpacing(double intervalPos)
-		{
-			// Scale the speed based on the calculated scale factor
-			return ScaleCurveToValue(WeaveVerticalSpacing.GetValue(intervalPos), 100, 0);
-		}
-
-		/// <summary>
-		/// Calculates the horizontal weave bar thickness.
-		/// </summary>
-		/// <param name="intervalPos">Interval position within the effect duration</param>            
-		/// <returns>Horizontal weave bar thickness</returns>
-		private double CalculateHorizontalThickness(double intervalPos)
-		{
-			// Scale the speed based on the calculated scale factor
-			return ScaleCurveToValue(WeaveHorizontalThickness.GetValue(intervalPos), 100, 0);
-		}
-
-		/// <summary>
-		/// Calculates the vertical weave bar thickness.
-		/// </summary>
-		/// <param name="intervalPos">Interval position within the effect duration</param>            
-		/// <returns>Vertical weave bar thickness</returns>
-		private double CalculateVerticalThickness(double intervalPos)
-		{
-			// Scale the speed based on the calculated scale factor
-			return ScaleCurveToValue(WeaveVerticalThickness.GetValue(intervalPos), 100, 0);
 		}
 
 		/// <summary>

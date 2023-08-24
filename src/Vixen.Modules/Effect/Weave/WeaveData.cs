@@ -29,12 +29,12 @@ namespace VixenModules.Effect.Weave
 
 			WeaveThickness = 5;
 			WeaveSpacing = 5;
-			
-			WeaveHorizontalThickness = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 5.0, 5.0 }));
-			WeaveVerticalThickness = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 5.0, 5.0 }));
 
-			WeaveVerticalSpacing = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 5.0, 5.0 }));
-			WeaveHorizontalSpacing = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 5.0, 5.0 }));
+			WeaveHorizontalThickness = 5;
+			WeaveVerticalThickness = 5;
+
+			WeaveVerticalSpacing = 5;
+			WeaveHorizontalSpacing = 5;
 
 			RotationAngle = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			HighlightPercentage = 5;
@@ -78,16 +78,16 @@ namespace VixenModules.Effect.Weave
 		public int WeaveSpacing { get; set; }
 
 		[DataMember]
-		public Curve WeaveHorizontalThickness { get; set; }
+		public int WeaveHorizontalThickness { get; set; }
 
 		[DataMember]
-		public Curve WeaveVerticalThickness { get; set; }
+		public int WeaveVerticalThickness { get; set; }
 
 		[DataMember]
-		public Curve WeaveHorizontalSpacing { get; set; }
+		public int WeaveHorizontalSpacing { get; set; }
 
 		[DataMember]
-		public Curve WeaveVerticalSpacing { get; set; }
+		public int WeaveVerticalSpacing { get; set; }
 
 		[DataMember]
 		public Curve RotationAngle { get; set; }
@@ -118,10 +118,10 @@ namespace VixenModules.Effect.Weave
 				AdvancedSizing = AdvancedSizing,
 				WeaveSpacing = WeaveSpacing,
 				WeaveThickness = WeaveThickness,
-				WeaveHorizontalThickness = new Curve(WeaveHorizontalThickness),
-				WeaveVerticalThickness = new Curve(WeaveVerticalThickness),
-				WeaveVerticalSpacing = new Curve(WeaveVerticalSpacing),
-				WeaveHorizontalSpacing = new Curve(WeaveHorizontalSpacing),
+				WeaveHorizontalThickness = WeaveHorizontalThickness,
+				WeaveVerticalThickness = WeaveVerticalThickness,
+				WeaveVerticalSpacing = WeaveVerticalSpacing,
+				WeaveHorizontalSpacing = WeaveHorizontalSpacing,
 				RotationAngle = RotationAngle,
 				HighlightPercentage = HighlightPercentage,
 			};
