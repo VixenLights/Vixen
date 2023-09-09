@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Drawing.Text;
 using System.Drawing.Drawing2D;
 using Common.Controls.Scaling;
@@ -501,6 +502,7 @@ namespace Common.Controls.Timeline
 						m_mouseState = MouseState.Dragging;
 						OnBeginDragTimeRange();
 						PlaybackStartTime = pixelsToTime(e.X) + VisibleTimeStart;
+						ClampPlaybackTime();
 						PlaybackEndTime = null;
 						goto case MouseState.Dragging;
 
@@ -521,6 +523,8 @@ namespace Common.Controls.Timeline
 
 						PlaybackStartTime = pixelsToTime(start) + VisibleTimeStart;
 						PlaybackEndTime = pixelsToTime(end) + VisibleTimeStart;
+						ClampPlaybackTime();
+						
 						return;
 					case MouseState.DraggingMark:
 
@@ -580,6 +584,21 @@ namespace Common.Controls.Timeline
 					Cursor = Cursors.Hand;
 					_timeLineGlobalEventManager.OnAlignmentActivity(new AlignmentEventArgs(false, null));
 				}
+			}
+		}
+
+		private void ClampPlaybackTime()
+		{
+			if (PlaybackStartTime == null) return;
+			if (PlaybackStartTime < TimeSpan.Zero)
+			{
+				PlaybackStartTime = TimeSpan.Zero;
+			}
+
+			if (PlaybackEndTime == null) return;
+			if (PlaybackEndTime > TotalTime)
+			{
+				PlaybackEndTime = TotalTime;
 			}
 		}
 
