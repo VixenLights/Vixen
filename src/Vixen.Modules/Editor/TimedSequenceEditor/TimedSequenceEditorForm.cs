@@ -224,8 +224,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_autoSaveTimer.Tick += AutoSaveEventProcessor;
 
 			//So we can be aware of mark changes.
-			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager;
-			_timeLineGlobalStateManager = TimeLineGlobalStateManager.Manager;
+			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager(InstanceId);
+			_timeLineGlobalStateManager = TimeLineGlobalStateManager.Manager(InstanceId);
 		}
 
 		private IDockContent DockingPanels_GetContentFromPersistString(string persistString)
@@ -804,6 +804,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_sequence = null;
 			}
 
+			TimeLineGlobalEventManager.CloseManager(InstanceId);
+			TimeLineGlobalStateManager.CloseManager(InstanceId);
+
 			dockPanel.Dispose();
 
 			base.Dispose(disposing);
@@ -1100,7 +1103,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private Form_Grid GridForm
 		{
-			get { return _gridForm ?? (_gridForm = new Form_Grid()); }
+			get { return _gridForm ?? (_gridForm = new Form_Grid(InstanceId)); }
 		}
 
 		internal TimelineControl TimelineControl
@@ -4789,6 +4792,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#region Overridden form functions (On___)
 
 		public bool IgnoreKeyDownEvents { get; set; }
+
+		public Guid InstanceId { get; set; } = Guid.NewGuid();
 
 		protected override void OnFormClosed(FormClosedEventArgs e)
 		{

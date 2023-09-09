@@ -28,7 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.timelineControl = new Common.Controls.Timeline.TimelineControl();
+			this.timelineControl = new Common.Controls.Timeline.TimelineControl(InstanceId);
 			this.SuspendLayout();
 			// 
 			// timelineControl

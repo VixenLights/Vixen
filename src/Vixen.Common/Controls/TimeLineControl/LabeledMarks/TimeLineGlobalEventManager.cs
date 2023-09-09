@@ -1,10 +1,11 @@
-﻿using Common.Controls.Timeline;
+﻿using System.Diagnostics;
+using Common.Controls.Timeline;
 
 namespace Common.Controls.TimelineControl.LabeledMarks
 {
 	public class TimeLineGlobalEventManager
 	{
-		private static TimeLineGlobalEventManager _manager;
+		private static readonly Dictionary<Guid, TimeLineGlobalEventManager> Instances = new();
 
 		public event EventHandler<MarksTextChangedEventArgs> MarksTextChanged;
 		public event EventHandler<MarksMovedEventArgs> MarksMoved;
@@ -16,12 +17,34 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 		public event EventHandler<PlayRangeEventArgs> PlayRangeAction;
 		public event EventHandler<TimeSpanEventArgs> CursorMoved;
 
-		private TimeLineGlobalEventManager()
+
+
+		private TimeLineGlobalEventManager(Guid id)
 		{
-			
+			InstanceId = id;
 		}
 
-		public static TimeLineGlobalEventManager Manager => _manager ?? (_manager = new TimeLineGlobalEventManager());
+		public static TimeLineGlobalEventManager Manager(Guid id)
+		{
+			if (Instances.TryGetValue(id, out var instance))
+			{
+				return instance;
+			}
+			else
+			{
+				instance = new TimeLineGlobalEventManager(id);
+				Instances.Add(id, instance);
+			}
+
+			return instance;
+		}
+
+		public static bool CloseManager(Guid id)
+		{
+			return Instances.Remove(id);
+		}
+
+		public Guid InstanceId { get; init; }
 
 		public void OnAlignmentActivity(AlignmentEventArgs e)
 		{

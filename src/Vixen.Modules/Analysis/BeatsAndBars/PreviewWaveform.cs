@@ -1,4 +1,6 @@
 ﻿using Common.Controls.Timeline;
+using Common.Controls.TimelineControl;
+using Common.Controls.TimelineControl.LabeledMarks;
 using VixenModules.Media.Audio;
 
 namespace VixenModules.Analysis.BeatsAndBars
@@ -7,6 +9,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 	{
 		private Waveform m_waveform;
 		private TimeInfo m_info;
+		private Guid _instanceId = Guid.NewGuid();
 		
 		public PreviewWaveform(Audio audio)
 		{
@@ -14,7 +17,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 			m_info = new TimeInfo();
 			m_info.TotalTime = new TimeSpan(0, 0, 0, 1);
-			m_waveform = new Waveform(m_info);
+			m_waveform = new Waveform(m_info, _instanceId);
 			m_waveform.WaveformStyle = WaveformStyle.Full;
 			m_waveform.BorderStyle = BorderStyle.FixedSingle;
 			m_waveform.Audio = audio;
@@ -113,6 +116,8 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 		private void _DisposePreviewWaveform()
 		{
+			TimeLineGlobalEventManager.CloseManager(_instanceId);
+			TimeLineGlobalStateManager.CloseManager(_instanceId);
 			if (m_waveform != null)
 			{
 				m_waveform.Paint += PreviewWaveform_Paint;

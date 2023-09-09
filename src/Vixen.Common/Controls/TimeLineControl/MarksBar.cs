@@ -30,12 +30,12 @@ namespace Common.Controls.TimelineControl
 		private List<IMark> _clipboard = new List<IMark>();
 
 		/// <inheritdoc />
-		public MarksBar(TimeInfo timeinfo) : base(timeinfo)
+		public MarksBar(TimeInfo timeinfo, Guid instanceId) : base(timeinfo)
 		{
 			BackColor = Color.Gray;
 			_textFont = Font;
 			_marksSelectionManager = MarksSelectionManager.Manager();
-			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager;
+			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager(instanceId);
 			_timeLineGlobalEventManager.MarksMoving += TimeLineGlobalEventManagerTimeLineGlobalMoving;
 			_timeLineGlobalEventManager.MarksMoved += TimeLineGlobalEventManager_MarksMoved;
 			_timeLineGlobalEventManager.DeleteMark += TimeLineGlobalEventManagerDeleteTimeLineGlobal;
@@ -852,7 +852,7 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 					changedMarks.Add(mti);
 					mark.Text = menuItem.Text;
 				}
-				TimeLineGlobalEventManager.Manager.OnMarksTextChanged(new MarksTextChangedEventArgs(changedMarks));
+				_timeLineGlobalEventManager.OnMarksTextChanged(new MarksTextChangedEventArgs(changedMarks));
 			}
 			
 		}
@@ -871,7 +871,7 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 					changedMarks.Add(mti);
 					mark.Text = td.Response;
 				}
-				TimeLineGlobalEventManager.Manager.OnMarksTextChanged(new MarksTextChangedEventArgs(changedMarks));
+				_timeLineGlobalEventManager.OnMarksTextChanged(new MarksTextChangedEventArgs(changedMarks));
 			}
 		}
 

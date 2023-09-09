@@ -29,12 +29,13 @@ namespace Common.Controls.Timeline
 		private CancellationTokenSource _updateCancellationTokenSource;
 
 		private readonly TimeLineGlobalEventManager _timeLineGlobalEventManager;
+		private readonly TimeLineGlobalStateManager _timeLineGlobalStateManager;
 
 		/// <summary>
 		/// Creates a waveform view of the <code>Audio</code> that is associated scaled to the timeinfo.
 		/// </summary>
 		/// <param name="timeinfo"></param>
-		public Waveform(TimeInfo timeinfo)
+		public Waveform(TimeInfo timeinfo, Guid instanceId)
 			: base(timeinfo)
 		{
 			samples = new List<Sample>();
@@ -42,7 +43,8 @@ namespace Common.Controls.Timeline
 			Visible = false;
 			_timePerPixelChangeSubject = new Subject<TimeSpan>();
 			_timePerPixelChangeSubject.Throttle(TimeSpan.FromMilliseconds(125)).Subscribe(x => CreateSamples());
-			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager;
+			_timeLineGlobalStateManager = TimeLineGlobalStateManager.Manager(instanceId);
+			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager(instanceId);
 			_timeLineGlobalEventManager.AlignmentActivity += WaveFormSelectedTimeLineGlobalMove;
 			_timeLineGlobalEventManager.CursorMoved += CursorMoved;
 		}
@@ -296,7 +298,7 @@ namespace Common.Controls.Timeline
 		{
 			using (Pen p = new Pen(Color.Blue, 1))
 			{
-				var curPos = timeToPixels(TimeLineGlobalStateManager.Manager.CursorPosition);
+				var curPos = timeToPixels(_timeLineGlobalStateManager.CursorPosition);
 				g.DrawLine(p, curPos, 0, curPos, Height);
 			}
 		}
