@@ -140,7 +140,8 @@ namespace VixenModules.Effect.Shockwave
 				CenterXCurve = new Curve(CenterXCurve),
 				CenterYCurve = new Curve(CenterYCurve),
 				AccelerationCurve = new Curve(AccelerationCurve),
-				BlendEdges = BlendEdges
+				BlendEdges = BlendEdges,
+				ScaledRadius = ScaledRadius,
 			};
 			return result;
 		}
