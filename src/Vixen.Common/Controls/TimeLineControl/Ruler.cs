@@ -24,16 +24,18 @@ namespace Common.Controls.Timeline
 		private ObservableCollection<IMarkCollection> _markCollections;
 		private readonly MarksSelectionManager _marksSelectionManager;
 		private readonly TimeLineGlobalEventManager _timeLineGlobalEventManager;
+		private readonly TimeLineGlobalStateManager _timeLineGlobalStateManager;
 
 		private MarksMoveResizeInfo _marksMoveResizeInfo;
 
-		public Ruler(TimeInfo timeinfo)
+		public Ruler(TimeInfo timeinfo, Guid instanceId)
 			: base(timeinfo)
 		{
 			AutoScaleMode = AutoScaleMode.Font;
 			BackColor = Color.Gray;
 			_marksSelectionManager = MarksSelectionManager.Manager();
-			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager;
+			_timeLineGlobalStateManager = TimeLineGlobalStateManager.Manager(instanceId);
+			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager(instanceId);
 			_timeLineGlobalEventManager.MarksMoving += TimeLineGlobalEventManagerTimeLineGlobalMoving;
 			_timeLineGlobalEventManager.DeleteMark += TimeLineGlobalEventManagerDeleteTimeLineGlobal;
 			_timeLineGlobalEventManager.CursorMoved += OnCursorMoved;
@@ -221,7 +223,7 @@ namespace Common.Controls.Timeline
 		{
 			using (Pen p = new Pen(Color.Blue, 1))
 			{
-				var curPos = timeToPixels(TimeLineGlobalStateManager.Manager.CursorPosition);
+				var curPos = timeToPixels(_timeLineGlobalStateManager.CursorPosition);
 				g.DrawLine(p, curPos, 0, curPos, Height);
 			}
 		}

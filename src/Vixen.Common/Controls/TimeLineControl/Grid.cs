@@ -52,12 +52,16 @@ namespace Common.Controls.Timeline
 
 		//We turn these into snap points for effects.
 		private ObservableCollection<IMarkCollection> _markCollections;
+		private readonly TimeLineGlobalEventManager _timelineGlobalEventManager;
+		private readonly TimeLineGlobalStateManager _timelineGlobalStateManager;
 
 		#region Initialization
 
-		public Grid(TimeInfo timeinfo)
+		public Grid(TimeInfo timeinfo, Guid instanceId)
 			: base(timeinfo)
 		{
+			_timelineGlobalStateManager = TimeLineGlobalStateManager.Manager(instanceId);
+			_timelineGlobalEventManager = TimeLineGlobalEventManager.Manager(instanceId);
 			AutoScroll = true;
 			AllowGridResize = true;
 			AutoScrollMargin = new Size(24, 24);
@@ -78,6 +82,7 @@ namespace Common.Controls.Timeline
 			StaticSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>();
 			SnapPriorityForElements = 5;
 			ClickingGridSetsCursor = true;
+			
 
 			m_rows = new List<Row>();
 
@@ -90,7 +95,8 @@ namespace Common.Controls.Timeline
 			Row.RowToggled += RowToggledHandler;
             Row.RowHeightChanged += RowHeightChangedHandler;
 			Row.RowVisibilityChanged += RowVisibilityChangedHandler;
-			TimeLineGlobalEventManager.Manager.AlignmentActivity += TimeLineAlignmentHandler;
+			
+			_timelineGlobalEventManager.AlignmentActivity += TimeLineAlignmentHandler;
 
 			// Drag & Drop
 			AllowDrop = true;
@@ -133,7 +139,7 @@ namespace Common.Controls.Timeline
 			Row.RowSelectedChanged -= RowSelectedChangedHandler;
 			Row.RowToggled -= RowToggledHandler;
 			Row.RowHeightChanged -= RowHeightChangedHandler;
-			TimeLineGlobalEventManager.Manager.AlignmentActivity -= TimeLineAlignmentHandler;
+			_timelineGlobalEventManager.AlignmentActivity -= TimeLineAlignmentHandler;
 
 			TimeInfo= null;
 
@@ -329,10 +335,10 @@ namespace Common.Controls.Timeline
 
 		private TimeSpan CursorPosition
 		{
-			get => TimeLineGlobalStateManager.Manager.CursorPosition;
+			get => _timelineGlobalStateManager.CursorPosition;
 			set
 			{
-				TimeLineGlobalStateManager.Manager.CursorPosition = value;
+				_timelineGlobalStateManager.CursorPosition = value;
 				Invalidate();
 			}
 		}
@@ -2610,7 +2616,7 @@ namespace Common.Controls.Timeline
 
 			if (m_dragState == DragState.HResizing) //Draw line at start or end of effect, depending which end the user grabbed
 			{
-				TimeLineGlobalEventManager.Manager.OnAlignmentActivity(new AlignmentEventArgs(true, new []{ _workingElement.EndTime }));
+				_timelineGlobalEventManager.OnAlignmentActivity(new AlignmentEventArgs(true, new []{ _workingElement.EndTime }));
 				using (Pen p = new Pen(Color.FromName(ResizeIndicator_Color), 1))
 				{
 					var X = (m_mouseResizeZone == ResizeZone.Front ? timeToPixels(_workingElement.StartTime) : timeToPixels(_workingElement.EndTime) - 1);
@@ -2620,7 +2626,7 @@ namespace Common.Controls.Timeline
 
 			if (m_dragState == DragState.Waiting || m_dragState == DragState.Moving) //Draw line at both ends, the user is dragging the entire effect
 			{
-				TimeLineGlobalEventManager.Manager.OnAlignmentActivity(new AlignmentEventArgs(true, new[] { _workingElement. StartTime, _workingElement.EndTime }));
+				_timelineGlobalEventManager.OnAlignmentActivity(new AlignmentEventArgs(true, new[] { _workingElement. StartTime, _workingElement.EndTime }));
 				using (Pen p = new Pen(Color.FromName(ResizeIndicator_Color), 1))
 				{
 					g.DrawLine(p, timeToPixels(_workingElement.StartTime), 0, timeToPixels(_workingElement.StartTime), AutoScrollMinSize.Height);

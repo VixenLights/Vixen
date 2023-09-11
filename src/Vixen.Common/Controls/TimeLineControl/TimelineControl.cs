@@ -47,9 +47,12 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-		public TimelineControl()
+		protected Guid InstanceId { get; init; }
+
+		public TimelineControl(Guid id)
 			: base(new TimeInfo()) // This is THE TimeInfo object for the whole control (and all sub-controls).
 		{
+			InstanceId = id;
 			rowHeight = (int)(DefaultRowHeight*ScalingTools.GetScaleFactor());
 			TimeInfo.TimePerPixel = TimeSpan.FromTicks(100000);
 			TimeInfo.VisibleTimeStart = TimeSpan.Zero;
@@ -181,7 +184,7 @@ namespace Common.Controls.Timeline
 			splitContainer.Panel2.SuspendLayout();
 
 			// Grid
-			grid = new Grid(TimeInfo)
+			grid = new Grid(TimeInfo, InstanceId)
 			       	{
 			       		Dock = DockStyle.Fill,
 			       	};
@@ -191,7 +194,7 @@ namespace Common.Controls.Timeline
 
 
 			//Marks
-			MarksBar = new MarksBar(TimeInfo)
+			MarksBar = new MarksBar(TimeInfo, InstanceId)
 			{
 				Dock = DockStyle.Top,
 				Height = 50
@@ -200,7 +203,7 @@ namespace Common.Controls.Timeline
 			splitContainer.Panel2.Controls.Add(MarksBar);
 
 			// Ruler
-			ruler = new Ruler(TimeInfo)
+			ruler = new Ruler(TimeInfo, InstanceId)
 			        	{
 			        		Dock = DockStyle.Top,
 			        		Height = 50,
@@ -210,7 +213,7 @@ namespace Common.Controls.Timeline
 			//WaveForm
 			//TODO deal with positioning, can we dock two controls to the top
 			//Looks like the last one wins.
-			waveform = new Waveform(TimeInfo)
+			waveform = new Waveform(TimeInfo, InstanceId)
 			           	{
 			           		Dock = DockStyle.Top,
 			           		Height = 50

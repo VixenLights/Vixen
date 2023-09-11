@@ -181,7 +181,7 @@ namespace Common.Controls.Timeline
 		{
 			base.OnMouseUp(e);
 
-			TimeLineGlobalEventManager.Manager.OnAlignmentActivity(new AlignmentEventArgs(false, null));
+			_timelineGlobalEventManager.OnAlignmentActivity(new AlignmentEventArgs(false, null));
 
 			Point gridLocation = mouseUpGridLocation = TranslateLocation(e.Location);
 
