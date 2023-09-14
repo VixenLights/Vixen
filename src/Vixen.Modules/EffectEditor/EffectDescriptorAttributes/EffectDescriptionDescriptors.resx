@@ -460,7 +460,7 @@
     <value>Changes direction of effect.</value>
   </data>
   <data name="Movement" xml:space="preserve">
-    <value>Controls variance of the motion over time.</value>
+    <value>Controls motion over time.</value>
   </data>
   <data name="BorderType" xml:space="preserve">
     <value>Enable Single or Independent Border width control.</value>
@@ -718,7 +718,7 @@
     <value>Adjusts the thickness of the shape outline.</value>
   </data>
   <data name="CenterSize" xml:space="preserve">
-    <value>Randomly adjust the Shape size around the Size level by the amount of variation.</value>
+    <value>Core size of the shapes.</value>
   </data>
   <data name="SizeChange" xml:space="preserve">
     <value>Enable increase/decrease of shape size based on size variation.</value>
@@ -1280,5 +1280,11 @@
   </data>
   <data name="TreeIntensity" xml:space="preserve">
     <value>Controls the overall intensity envelope of the entire effect over the duration of the effect.</value>
+  </data>
+  <data name="MarkCollectionMarks" xml:space="preserve">
+    <value>Mark Collection that has the marks to align to.</value>
+  </data>
+  <data name="ShapeFade" xml:space="preserve">
+    <value>Type of Fade applied to each Shape.</value>
   </data>
 </root>
