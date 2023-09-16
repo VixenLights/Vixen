@@ -87,6 +87,7 @@ namespace Vixen.Sys.Managers
 
 		public void ReleaseContext(IContext context)
 		{
+			if (context == null) return;
 			if (_instances.ContainsKey(context.Id)) {
 				_ReleaseContext(context);
 			}
