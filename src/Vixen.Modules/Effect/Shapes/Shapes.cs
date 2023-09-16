@@ -107,8 +107,8 @@ namespace VixenModules.Effect.Shapes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Mark Collection")]
-		[ProviderDescription(@"Mark Collection that has the phonemes to align to.")]
+		[ProviderDisplayName(@"MarkCollection")]
+		[ProviderDescription(@"MarkCollectionMarks")]
 		[TypeConverter(typeof(IMarkCollectionNameConverter))]
 		[PropertyEditor("SelectionEditor")]
 		[PropertyOrder(1)]
