@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Drawing;
+using System.IO;
 using System.Windows.Media.Imaging;
 using Catel.Collections;
 using LiteDB;
@@ -10,6 +11,28 @@ namespace VixenModules.App.CustomPropEditor.Services
 	{
 		private const string ImageFileName = "background.jpg";
 		private const string LegacyImageFileName = "background.png"; //Bug workaround. There were two flavors of the image filename. This is the legacy one.
+
+		static PropModelPersistenceService()
+		{
+			BsonMapper.Global.RegisterType<Color>
+			(
+				serialize: (c) => $"{c.A},{c.R},{c.G},{c.B}",
+				deserialize:(DeserializeColor)
+			);
+		}
+
+		private static Color DeserializeColor(BsonValue arg)
+		{
+			var cString = arg.AsString.Split(',');
+			if (cString.Length == 4)
+			{
+				return Color.FromArgb(Convert.ToInt32(cString[0]), Convert.ToInt32(cString[1]), Convert.ToInt32(cString[2]), Convert.ToInt32(cString[3]));
+			}
+
+			return Color.White;
+
+		}
+
 
 		public static bool SaveModel(Prop prop, string path)
 		{

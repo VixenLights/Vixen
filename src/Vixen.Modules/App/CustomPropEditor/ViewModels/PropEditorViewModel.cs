@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls.WpfPropertyGrid;
@@ -19,6 +18,7 @@ using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory;
 using VixenModules.App.CustomPropEditor.Model.InternalVendorInventory;
 using VixenModules.App.CustomPropEditor.Services;
+using ModelType = VixenModules.App.CustomPropEditor.Model.InternalVendorInventory.ModelType;
 using PropertyData = Catel.Data.PropertyData;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels

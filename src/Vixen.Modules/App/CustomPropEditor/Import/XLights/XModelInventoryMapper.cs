@@ -2,7 +2,6 @@
 using VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory;
 using VixenModules.App.CustomPropEditor.Model.InternalVendorInventory;
 using Category = VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory.Category;
-using LogManager = NLog.LogManager;
 using Vendor = VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory.Vendor;
 
 namespace VixenModules.App.CustomPropEditor.Import.XLights
@@ -94,7 +93,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				if (model.Wiring != null && model.Wiring.Any())
 				{
 					int index = 1;
-					p.ModelLinks = model.Wiring.Where(l=> l.IsValid).Select(x => new ModelLink(ModelType.XModel, string.IsNullOrEmpty(x.Name)?$"Model {index++}":x.Name, x.Description, x.XModelLink != null?new Uri(x.XModelLink):null))
+					p.ModelLinks = model.Wiring.Where(l=> l.IsValid).Select(x => new ModelLink(Model.InternalVendorInventory.ModelType.XModel, string.IsNullOrEmpty(x.Name)?$"Model {index++}":x.Name, x.Description, x.XModelLink != null?new Uri(x.XModelLink):null))
 						.ToList();
 				}
 				else

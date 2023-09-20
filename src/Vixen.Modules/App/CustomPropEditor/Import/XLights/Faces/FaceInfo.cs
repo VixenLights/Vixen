@@ -1,14 +1,19 @@
 ﻿using VixenModules.App.CustomPropEditor.Model;
 
-namespace VixenModules.App.CustomPropEditor.Import.XLights
+namespace VixenModules.App.CustomPropEditor.Import.XLights.Faces
 {
-	public class FaceInfo
+	internal class FaceInfo
 	{
 		public static Dictionary<string,FaceComponent> Attributes = new Dictionary<string, FaceComponent>()
 		{
 			{ "Eyes-Closed", Model.FaceComponent.EyesClosed},
 			{ "Eyes-Open", Model.FaceComponent.EyesOpen},
+			{ "Eyes-Closed2", Model.FaceComponent.EyesClosed2},
+			{ "Eyes-Open2", Model.FaceComponent.EyesOpen2},
+			{ "Eyes-Closed3", Model.FaceComponent.EyesClosed3},
+			{ "Eyes-Open3", Model.FaceComponent.EyesOpen3},
 			{ "FaceOutline", Model.FaceComponent.Outlines },
+			{ "FaceOutline2", Model.FaceComponent.Outlines },
 			{ "Mouth-AI", Model.FaceComponent.AI},
 			{ "Mouth-FV", Model.FaceComponent.FV},
 			{ "Mouth-MBP",Model.FaceComponent.MBP},
@@ -21,17 +26,20 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			{ "Mouth-rest", Model.FaceComponent.REST}
 		};
 
-		public FaceInfo()
+		public FaceInfo(string name)
 		{
-			FaceComponent = Model.FaceComponent.None;
+			Name = name;
+			FaceDefinitions = new List<FaceItem>();
+			ModelType = ModelType.NodeRanges;
 		}
 
-		public FaceInfo(FaceComponent faceComponent)
-		{
-			FaceComponent = faceComponent;
-		}
+		public string Name { get; }
 
-		public FaceComponent FaceComponent { get;}
+		public bool CustomColors { get; set; }
+
+		public ModelType ModelType { get; set; }
+
+		public List<FaceItem> FaceDefinitions { get;}
 
 	}
 }

@@ -225,7 +225,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 			}
 		}
 		
-		public ElementModel AddLightNode(ElementModel target, Point p, int? order = null, int? size = null)
+		public ElementModel AddLightNode(ElementModel target, Point p, int? order = null, int? size = null, string nodeName = null)
 		{
 			if (target == null || target.IsRootNode)
 			{
@@ -241,7 +241,8 @@ namespace VixenModules.App.CustomPropEditor.Services
 				order = GetNextOrder();
 			}
 
-			ElementModel em = new ElementModel(Uniquify($"{target.Name}", 1), order.Value, target);
+			var modelName = String.IsNullOrEmpty(nodeName) ? target.Name : nodeName;
+			ElementModel em = new ElementModel(Uniquify($"{modelName}", 1), order.Value, target);
 			target.AddChild(em);
 			_models.Add(em.Id, em);
 			if (size == null)

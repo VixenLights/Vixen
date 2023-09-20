@@ -206,13 +206,39 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		[Description("Face component associated with this element for Lip-Sync.")]
 		public FaceComponent FaceComponent
 		{
-			get { return ElementModel.FaceComponent; }
+			get => ElementModel.FaceDefinition.FaceComponent;
 			set {
-				object oldValue = ElementModel.FaceComponent;
-				ElementModel.FaceComponent = value;
+				
+				object oldValue = ElementModel.FaceDefinition.FaceComponent;
+				ElementModel.FaceDefinition.FaceComponent = value;
 				IsDirty = true;
 				RaisePropertyChanged(nameof(FaceComponent), oldValue, value);
 			}
+		}
+
+		#endregion
+
+		#region FaceComponent property
+
+		/// <summary>
+		/// Gets or sets the FaceComponent value.
+		/// </summary>
+		[PropertyOrder(2)]
+		[DisplayName("Face Color")]
+		[Description("Face color in Hex associated with this element for Lip-Sync.")]
+		public String FaceColor
+		{
+			get => ElementModel.FaceDefinition.FaceComponent != FaceComponent.None?
+				$"RGB ({ElementModel.FaceDefinition.DefaultColor.R},{ElementModel.FaceDefinition.DefaultColor.G},{ElementModel.FaceDefinition.DefaultColor.B})":
+				String.Empty;
+			//set
+			//{
+
+			//	object oldValue = ElementModel.FaceDefinition.DefaultColor;
+			//	ElementModel.FaceDefinition.DefaultColor = value;
+			//	IsDirty = true;
+			//	RaisePropertyChanged(nameof(FaceColor), oldValue, value);
+			//}
 		}
 
 		#endregion
