@@ -1887,7 +1887,7 @@ namespace VixenModules.Effect.Bars
                 if (angle != 0.0)
                 {
                     // Rotate the point by the specified angle
-                    GetRotatedPositionLocation(ref x, ref y, angle);
+                    GetRotatedPosition(ref x, ref y, angle, swapXY);
                 }
 
                 // Look up the color for the point in the repeating tile
