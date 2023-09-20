@@ -16,5 +16,24 @@ namespace VixenModules.Property.Location {
 
 		[DataMember]
 		public int Z { get; set; }
+
+		[OnDeserialized]
+		public void OnDeserialized(StreamingContext c)
+		{
+			if (X < 0)
+			{
+				X = 0;
+			}
+
+			if (Y < 0)
+			{
+				Y = 0;
+			}
+
+			if (Z < 0)
+			{
+				Z = 0;
+			}
+		}
 	}
 }
