@@ -6,7 +6,7 @@ namespace VixenModules.App.Shows
 	public partial class PauseTypeEditor : TypeEditorBase
 	{
 		private readonly ShowItem _showItem;
-		
+
 		public PauseTypeEditor(ShowItem showItem)
 		{
 			InitializeComponent();

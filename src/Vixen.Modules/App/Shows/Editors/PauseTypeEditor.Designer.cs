@@ -28,49 +28,54 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
-			this.label1 = new System.Windows.Forms.Label();
-			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.numericUpDownPauseSeconds = new System.Windows.Forms.NumericUpDown();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPauseSeconds)).BeginInit();
-			this.SuspendLayout();
+			components = new System.ComponentModel.Container();
+			label1 = new Label();
+			openFileDialog = new OpenFileDialog();
+			toolTip1 = new ToolTip(components);
+			numericUpDownPauseSeconds = new NumericUpDown();
+			((System.ComponentModel.ISupportInitialize)numericUpDownPauseSeconds).BeginInit();
+			SuspendLayout();
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(1, 6);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(89, 13);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "Pause (seconds):";
+			label1.AutoSize = true;
+			label1.Location = new Point(1, 7);
+			label1.Margin = new Padding(4, 0, 4, 0);
+			label1.Name = "label1";
+			label1.Size = new Size(95, 15);
+			label1.TabIndex = 0;
+			label1.Text = "Pause (seconds):";
 			// 
 			// openFileDialog
 			// 
-			this.openFileDialog.FileName = "openFileDialog";
-			this.openFileDialog.Multiselect = true;
+			openFileDialog.FileName = "openFileDialog";
+			openFileDialog.Multiselect = true;
 			// 
 			// numericUpDownPauseSeconds
 			// 
-			this.numericUpDownPauseSeconds.Location = new System.Drawing.Point(96, 4);
-			this.numericUpDownPauseSeconds.Name = "numericUpDownPauseSeconds";
-			this.numericUpDownPauseSeconds.Size = new System.Drawing.Size(47, 20);
-			this.numericUpDownPauseSeconds.TabIndex = 1;
-			this.numericUpDownPauseSeconds.ValueChanged += new System.EventHandler(this.numericUpDownPauseSeconds_ValueChanged);
+			numericUpDownPauseSeconds.Location = new Point(112, 5);
+			numericUpDownPauseSeconds.Margin = new Padding(4, 3, 4, 3);
+			numericUpDownPauseSeconds.Maximum = new decimal(new int[] { 900, 0, 0, 0 });
+			numericUpDownPauseSeconds.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+			numericUpDownPauseSeconds.Name = "numericUpDownPauseSeconds";
+			numericUpDownPauseSeconds.Size = new Size(55, 23);
+			numericUpDownPauseSeconds.TabIndex = 1;
+			numericUpDownPauseSeconds.Value = new decimal(new int[] { 1, 0, 0, 0 });
+			numericUpDownPauseSeconds.ValueChanged += numericUpDownPauseSeconds_ValueChanged;
 			// 
 			// PauseTypeEditor
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.numericUpDownPauseSeconds);
-			this.Controls.Add(this.label1);
-			this.Name = "PauseTypeEditor";
-			this.Size = new System.Drawing.Size(285, 79);
-			this.Load += new System.EventHandler(this.SequenceTypeEditor_Load);
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPauseSeconds)).EndInit();
-			this.ResumeLayout(false);
-			this.PerformLayout();
-
+			AutoScaleDimensions = new SizeF(7F, 15F);
+			AutoScaleMode = AutoScaleMode.Font;
+			Controls.Add(numericUpDownPauseSeconds);
+			Controls.Add(label1);
+			Margin = new Padding(4, 3, 4, 3);
+			Name = "PauseTypeEditor";
+			Size = new Size(332, 91);
+			Load += SequenceTypeEditor_Load;
+			((System.ComponentModel.ISupportInitialize)numericUpDownPauseSeconds).EndInit();
+			ResumeLayout(false);
+			PerformLayout();
 		}
 
 		#endregion

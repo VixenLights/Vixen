@@ -84,8 +84,8 @@ namespace VixenModules.App.Shows
 		public string Website_URL { get; set; }
 
 		// Pause
-		[DataMember(EmitDefaultValue = false)]
-		public int Pause_Seconds { get; set; }
+		[DataMember] 
+		public int Pause_Seconds { get; set; } = 1;
 
 		// Show
 		[DataMember(EmitDefaultValue = false)]
