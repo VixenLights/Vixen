@@ -551,7 +551,9 @@ namespace VixenModules.Effect.Bars
         protected override void SetupRender()
         {
 	        // Calculate the diagonal length of the display element
-            _length = (int)Math.Round(Math.Sqrt((BufferHt * BufferHt) + (BufferWi * BufferWi)), MidpointRounding.AwayFromZero);
+            // Plus 2 is an extra margin to prevent a pixel location from going negative during a rotation due to rounding.
+	        _length = (int)Math.Round(Math.Sqrt((BufferHt * BufferHt) + (BufferWi * BufferWi)),
+		        MidpointRounding.AwayFromZero) + 2;
 
             // If the effect is in string mode then...
             if (TargetPositioning == TargetPositioningType.Strings)
@@ -1766,8 +1768,13 @@ namespace VixenModules.Effect.Bars
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (angle != 0)
                 {
-	                // Rotate the point
-	                GetRotatedPositionLocation(ref x, ref y, angle);
+					// Rotate the point
+					GetRotatedPosition(ref x, ref y, angle, swapXY);
+
+                    // When a rotation is being performed the (logical) frame buffer is enlarged 
+					// to be a square frame buffer large enough to allow the original string frame buffer to
+                    // be rotated within the enlarged frame buffer.
+	                height = _length;
                 }
 
                 // Determine if we are in the lower half of the display element
@@ -2583,37 +2590,7 @@ namespace VixenModules.Effect.Bars
 	        y = (int)Math.Round(transformedPoint.Y);
         }
 
-		/// <summary>
-		/// Rotates the x and y coordinates for the specified angle.
-		/// </summary>
-		/// <param name="x">X coordinate</param>
-		/// <param name="y">Y coordinate</param>
-		/// <param name="angle">Angle to rotate</param>
-		private void GetRotatedPositionLocation(ref int x, ref int y, double angle)
-		{
-			// Calculate the center of the square virtual frame buffer
-			double center = (_length - 1) / 2.0;
-
-			// Create a rotate transform with the specified angle and center of rotation
-			RotateTransform rt = new RotateTransform(-angle, center, center);
-
-			// Create a temporary point
-			System.Windows.Point tempPoint = new System.Windows.Point();
-
-			// Initialize the temporary point with the point in actual display element (frame buffer) that
-			// we are setting
-			tempPoint.X = x; 
-			tempPoint.Y = y; 
-
-			// Transform (rotate) the point
-			System.Windows.Point transformedPoint = rt.Transform(tempPoint);
-
-			// Updated the x and y coordinates for the rotation
-			x = (int)Math.Round(transformedPoint.X);
-			y = (int)Math.Round(transformedPoint.Y);
-		}
-
-		#endregion
+        #endregion
 
         #region Private Flat Bar Render Location Methods
 
