@@ -18,6 +18,8 @@ namespace VixenModules.App.CustomPropEditor.Model
 		private string _name;
 		private int _lightSize;
 		private FaceComponent _faceComponent;
+		private FaceDefinition _faceDefinition;
+		private StateDefinition _stateDefinition;
 
 		#region Constructors
 
@@ -28,7 +30,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 			Parents = new ObservableCollection<Guid>();
 			Id = Guid.NewGuid();
 			LightSize = DefaultLightSize;
-			FaceComponent = FaceComponent.None;
+			FaceDefinition = new FaceDefinition();
 		}
 
 		public ElementModel(string name) : this()
@@ -151,15 +153,48 @@ namespace VixenModules.App.CustomPropEditor.Model
 
 		#endregion
 
-		#region Face Component
+		#region FaceDefinition
 
-		public FaceComponent FaceComponent
+		public FaceDefinition FaceDefinition
 		{
-			get => _faceComponent;
+			get => _faceDefinition;
 			set
 			{
-				if (Equals(value, _faceComponent)) return;
-				_faceComponent = value;
+				if (value == null) throw new ArgumentNullException(nameof(FaceDefinition));
+				if (Equals(value, _faceDefinition)) return;
+				_faceDefinition = value;
+				OnPropertyChanged(nameof(FaceDefinition));
+			}
+		}
+
+		#endregion
+
+		#region StateDefinition
+
+		public StateDefinition StateDefinition
+		{
+			get => _stateDefinition;
+			set
+			{
+				if (Equals(value, _stateDefinition)) return;
+				_stateDefinition = value;
+				OnPropertyChanged(nameof(StateDefinition));
+			}
+		}
+
+		#endregion
+
+		#region Face Component
+
+		[Obsolete("Use FaceDefinition. This is now just a wrapper around FaceDefinition.", false)]
+		public FaceComponent FaceComponent
+		{
+			get => _faceDefinition.FaceComponent;
+			set
+			{
+				if (Equals(value, _faceDefinition.FaceComponent)) return;
+				_faceDefinition.FaceComponent = value;
+				OnPropertyChanged(nameof(FaceDefinition));
 				OnPropertyChanged(nameof(FaceComponent));
 			}
 		}
