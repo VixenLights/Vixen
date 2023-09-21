@@ -47,6 +47,8 @@ namespace Vixen.Module.Controller
 
 		public virtual int OutputCount { get; set; }
 
+		public virtual int OutputLimit { get; } = Int32.MaxValue;
+
 		#region Equality
 
 		public bool Equals(IControllerModuleInstance x, IControllerModuleInstance y)

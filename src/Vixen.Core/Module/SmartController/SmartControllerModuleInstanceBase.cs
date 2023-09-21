@@ -13,6 +13,13 @@ namespace Vixen.Module.SmartController
 
 		public abstract int OutputCount { get; set; }
 
+		#region Implementation of IUpdatableOutputCount
+
+		/// <inheritdoc />
+		public abstract int OutputLimit { get; }
+
+		#endregion
+
 		#region Equality
 
 		public bool Equals(ISmartControllerModuleInstance x, ISmartControllerModuleInstance y)

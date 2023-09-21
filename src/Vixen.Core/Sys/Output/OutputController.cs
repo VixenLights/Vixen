@@ -222,6 +222,13 @@ namespace Vixen.Sys.Output
 			return _outputModuleConsumer.Setup();
 		}
 
+		#region Implementation of IHasOutputs
+
+		/// <inheritdoc />
+		public virtual int OutputLimit => ControllerModule.OutputLimit;
+
+		#endregion
+
 		public int OutputCount
 		{
 			get { return _outputMediator.OutputCount; }

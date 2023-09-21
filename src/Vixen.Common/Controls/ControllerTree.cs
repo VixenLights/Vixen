@@ -461,16 +461,17 @@ namespace Common.Controls
 					name = defaultName;
 			}
 
+			ControllerFactory controllerFactory = new ControllerFactory();
+			OutputController oc = (OutputController)controllerFactory.CreateDevice(controllerTypeId, name);
+
 			int outputCount;
-			using (NumberDialog nd = new NumberDialog("Controller Output Count", "Outputs on this controller?", 0)) {
+			using (NumberDialog nd = new NumberDialog("Controller Output Count", "Outputs on this controller?", 1, 1,  oc.OutputLimit)) {
 				if (nd.ShowDialog() != DialogResult.OK)
 					return false;
 
 				outputCount = nd.Value;
 			}
 
-			ControllerFactory controllerFactory = new ControllerFactory();
-			OutputController oc = (OutputController)controllerFactory.CreateDevice(controllerTypeId, name);
 			oc.OutputCount = outputCount;
 			VixenSystem.OutputControllers.Add(oc);
 

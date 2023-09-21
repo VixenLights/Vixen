@@ -17,6 +17,13 @@ namespace VixenModules.Controller.OpenDMX
 			DataPolicyFactory = new DataPolicyFactory();
 		}
 
+		#region Overrides of ControllerModuleInstanceBase
+
+		/// <inheritdoc />
+		public override int OutputLimit => 512;
+
+		#endregion
+
 		public override int OutputCount
 		{
 			get { return _outputCount; }
