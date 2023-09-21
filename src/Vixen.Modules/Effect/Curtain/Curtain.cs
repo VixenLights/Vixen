@@ -47,7 +47,7 @@ namespace VixenModules.Effect.Curtain
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Direction")]
 		[ProviderDescription(@"Direction")]
-		[PropertyOrder(0)]
+		[PropertyOrder(1)]
 		public CurtainDirection Direction
 		{
 			get { return _data.Direction; }
@@ -63,7 +63,7 @@ namespace VixenModules.Effect.Curtain
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"MovementType")]
 		[ProviderDescription(@"MovementType")]
-		[PropertyOrder(1)]
+		[PropertyOrder(0)]
 		public MovementType MovementType
 		{
 			get { return _data.MovementType; }
