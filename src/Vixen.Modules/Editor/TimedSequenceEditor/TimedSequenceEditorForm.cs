@@ -2470,7 +2470,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				var newEffects = new List<EffectNode>();
 				if (eDialog.AlignToBeatMarks)
 				{
-					newEffects = AddEffectsToBeatMarks(eDialog.CheckedMarks, eDialog.EffectCount, effectId, eDialog.StartTime, eDialog.Duration, row, eDialog.FillDuration, eDialog.SkipEOBeat);
+					newEffects = AddEffectsToBeatMarks(eDialog.CheckedMarks, eDialog.EffectCount, effectId, eDialog.StartTime, 
+						eDialog.Duration, row, eDialog.FillDuration, eDialog.SkipEOBeat, eDialog.AlignToMarkStartEnd);
 				}
 				else
 				{
@@ -2507,7 +2508,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 		
-		private List<EffectNode> AddEffectsToBeatMarks(ListView.CheckedListViewItemCollection checkedMarks, int effectCount, Guid effectGuid, TimeSpan startTime, TimeSpan duration, Row row, Boolean fillDuration, Boolean skipEoBeat)
+		private List<EffectNode> AddEffectsToBeatMarks(ListView.CheckedListViewItemCollection checkedMarks, int effectCount, Guid effectGuid, TimeSpan startTime, TimeSpan duration, Row row, Boolean fillDuration, Boolean skipEoBeat, bool alignToMarkDuration)
 		{
 			bool skipThisBeat = false;
 			List<IMark> times = (from ListViewItem listItem in checkedMarks from mcItem in _sequence.LabeledMarkCollections where mcItem.Name == listItem.Text from mark in mcItem.Marks where mark.StartTime >= startTime select mark).ToList();
@@ -2530,6 +2531,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 										break; //We're done -- There are no more marks to fill, don't create it
 									duration = times[times.IndexOf(mark) + 1].StartTime - mark.StartTime;
 									if (duration < TimeSpan.FromSeconds(.01)) duration = TimeSpan.FromSeconds(.01);
+								}else if (alignToMarkDuration)
+								{
+									duration = mark.Duration;
 								}
 								newEffects.Add(CreateEffectNode(newEffect, row, mark.StartTime, duration));
 							}
