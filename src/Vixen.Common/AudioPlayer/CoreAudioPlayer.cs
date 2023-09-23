@@ -113,8 +113,7 @@ namespace Common.AudioPlayer
 		{
 			_soundOut?.Stop();
 			PlaybackStopped?.Invoke();
-			_soundOut?.Dispose();
-			_soundOut = null;
+			CleanupSoundOut();
 		}
 
 		/// <inheritdoc />
@@ -353,6 +352,7 @@ namespace Common.AudioPlayer
 		private void PlaybackDeviceOnPlaybackStopped(object? sender, StoppedEventArgs e)
 		{
 			PlaybackEnded?.Invoke();
+			CleanupSoundOut();
 		}
 
 		#region Implementation of IDisposable
