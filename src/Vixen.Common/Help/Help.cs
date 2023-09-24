@@ -8,43 +8,58 @@ namespace Common.VixenHelp
 	{
 		public enum HelpStrings
         {
-            [Description("http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/icicles/")]
+            [Description("https://www.vixenlights.com/docs/usage/preview/smart-objects/preview-icicles/")]
             Preview_Icicle,
-			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/mega-tree/")]
+
+			[Description("https://www.vixenlights.com/docs/usage/preview/smart-objects/preview-mega-tree/")]
 			Preview_MegaTree,
-			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/star/")]
+
+			[Description("https://www.vixenlights.com/docs/usage/preview/smart-objects/preview-star/")]
 			Preview_Star,
-			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/how-to/linking-elements/")]
+
+			[Description("https://www.vixenlights.com/docs/usage/preview/preview-linking-elements/")]
 			Preview_LinkElements,
-			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/background-image/")]
+
+			[Description("https://www.vixenlights.com/docs/usage/preview/preview-main-screen/#background")]
 			Preview_Background,
-			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/main-preview-screen/")]
+
+			[Description("http://www.vixenlights.com/docs/usage/preview/preview-main-screen/")]
 			Preview_Main,
-			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/basic-shapes/")]
+
+			[Description("https://www.vixenlights.com/docs/usage/preview/preview-basic-shapes/")]
 			Preview_BasicShapes,
-			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/net/")]
+
+			[Description("https://www.vixenlights.com/docs/usage/preview/smart-objects/preview-net/")]
 			Preview_Net,
-			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/arch/")]
+
+			[Description("https://www.vixenlights.com/docs/usage/preview/smart-objects/preview-arch/")]
 			Preview_Arch,
-			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/candy-cane/")]
+
+			[Description("https://www.vixenlights.com/docs/usage/preview/smart-objects/preview-candy-cane/")]
 			Preview_Cane,
-			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/how-to/resize-the-preview-image/")]
+
+			[Description("https://www.vixenlights.com/docs/usage/preview/preview-main-screen/#resizing-the-background-image")]
 			Preview_ResizeBackground,
-			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/custom-props/")]
+
+			[Description("https://www.vixenlights.com/docs/usage/preview/custom-prop-editor/")]
 			Preview_CustomShape,
-			[Description("http://www.vixenlights.com/vixen-3-documentation/scheduling-a-show/show-scheduler/")]
+
+			[Description("https://www.vixenlights.com/docs/usage/scheduler/scheduling-show/")]
 			Scheduler_Main,
-			[Description("http://www.vixenlights.com/vixen-3-documentation/scheduling-a-show/show-editor/")]
+
+			[Description("https://www.vixenlights.com/docs/usage/scheduler/schedule-show-editor/")]
 			Show_Editor,
-			[Description("http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/nutcracker-effects/")]
-			Effect_Nutcracker,
-			[Description("http://www.vixenlights.com/vixen-3-documentation/setup-configuration/")]
+
+			[Description("https://www.vixenlights.com/docs/usage/display-setup/")]
 			Setup_Main,
-	        [Description("http://www.vixenlights.com/vixen-3-documentation/setup-configuration/link-elements-to-controllers/")]
+
+	        [Description("https://www.vixenlights.com/docs/usage/display-setup/display-patching/patching-controllers/")]
 	        Patching,
+
 			[Description("https://www.youtube.com/user/VixenLightsSoftware")]
 	        YouTubeChannel,
-	        [Description("http://www.vixenlights.com/vixen-3-documentation/sequencer/")]
+
+	        [Description("https://www.vixenlights.com/docs/usage/sequencer/")]
 	        Sequencer
 		}
 		
