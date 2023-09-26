@@ -221,6 +221,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 		{
 			foreach (var subModel in cm.SubModels)
 			{
+				if(subModel.Type == ModelType.Ranges && !subModel.Ranges.Any()) continue; //Skip sub models with empty ranges
 				var subModelGroup = PropModelServices.Instance().CreateNode($"{cm.Name} {{1}} - {subModel.Name}");
 
                 bool addRangeGroup = subModel.Ranges.Count > 1;
@@ -359,9 +360,9 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
 				foreach (var stateItem in stateInfo.StateItems)
 				{
-					var stateItemGroup = PropModelServices.Instance().CreateNode($"{cm.Name} {{1}} - {stateInfo.Name} - {stateItem.Name}", stateGroup);
+					var stateItemGroup = PropModelServices.Instance().CreateNode($"{cm.Name} {{1}} - {stateInfo.Name} - S{stateItem.Index} - {stateItem.Name}", stateGroup);
 
-					stateItemGroup.StateDefinition = new StateDefinition{DefaultColor = stateItem.Color, Index = stateItem.Index};
+					stateItemGroup.StateDefinition = new StateDefinition{DefaultColor = stateItem.Color, Name = stateItem.Name, Index = stateItem.Index};
 					
 					var subModelRangeGroup = stateItemGroup;
 
