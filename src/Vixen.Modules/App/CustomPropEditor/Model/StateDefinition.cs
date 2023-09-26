@@ -8,6 +8,18 @@ namespace VixenModules.App.CustomPropEditor.Model
 	{
 		private Color _defaultColor;
 		private int _index;
+		private string _name;
+
+		public string Name
+		{
+			get => _name;
+			set
+			{
+				if (value == _name) return;
+				_name = value;
+				OnPropertyChanged(nameof(Name));
+			}
+		}
 
 		public Color DefaultColor
 		{

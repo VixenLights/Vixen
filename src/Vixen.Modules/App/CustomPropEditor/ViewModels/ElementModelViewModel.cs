@@ -218,10 +218,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
-		#region FaceComponent property
+		#region FaceColor property
 
 		/// <summary>
-		/// Gets or sets the FaceComponent value.
+		/// Gets or sets the FaceColor value.
 		/// </summary>
 		[PropertyOrder(2)]
 		[DisplayName("Face Color")]
@@ -243,6 +243,56 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region StateName property
+
+		/// <summary>
+		/// Gets or sets the FaceComponent value.
+		/// </summary>
+		[PropertyOrder(3)]
+		[DisplayName("State Name")]
+		[Description("State name associated with this element for State.")]
+		public String StateName
+		{
+			get => ElementModel.StateDefinition != null ? ElementModel.StateDefinition.Name:String.Empty;
+			set
+			{
+
+				object oldValue = ElementModel.StateDefinition.Name;
+				ElementModel.StateDefinition.Name = value;
+				IsDirty = true;
+				RaisePropertyChanged(nameof(StateName), oldValue, value);
+			}
+		}
+
+		#endregion
+
+		#region StateColor property
+
+		/// <summary>
+		/// Gets or sets the StateColor value.
+		/// </summary>
+		[PropertyOrder(4)]
+		[DisplayName("State Color")]
+		[Description("State color in Hex associated with this element for State.")]
+		public String StateColor
+		{
+			get => ElementModel.StateDefinition != null ?
+				$"RGB ({ElementModel.StateDefinition.DefaultColor.R},{ElementModel.StateDefinition.DefaultColor.G},{ElementModel.StateDefinition.DefaultColor.B})" :
+				String.Empty;
+			//set
+			//{
+
+			//	object oldValue = ElementModel.StateDefinition.DefaultColor;
+			//	ElementModel.StateDefinition.DefaultColor = value;
+			//	IsDirty = true;
+			//	RaisePropertyChanged(nameof(FaceColor), oldValue, value);
+			//}
+		}
+
+		#endregion
+
+
+
 		#region ChildCount property
 
 		/// <summary>
@@ -250,7 +300,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		[DisplayName("Child Elements")]
 		[Description("Number of child elements associated with this element.")]
-		[PropertyOrder(3)]
+		[PropertyOrder(5)]
 		public int ChildCount => ElementModel.Children.Count;
 
 		#endregion
