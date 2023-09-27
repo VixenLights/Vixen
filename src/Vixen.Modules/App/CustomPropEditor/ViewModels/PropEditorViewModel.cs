@@ -589,10 +589,14 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 			if (result.Result)
 			{
+				
 				string path = result.FileNames.First();
 				if (!string.IsNullOrEmpty(path))
 				{
+					var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
+					pleaseWaitService.Show();
 					LoadPropFromPath(path);
+					pleaseWaitService.Hide();
 				}
 			}
 		}
@@ -774,16 +778,16 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				string path = result.FileName;
 				if (!string.IsNullOrEmpty(path))
 				{
+					var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
+					pleaseWaitService.Show();
 					await ImportProp(path);
+					pleaseWaitService.Hide();
 				}
 			}
 		}
 
 		private async Task<bool> ImportProp(string path)
 		{
-			var dependencyResolver = this.GetDependencyResolver();
-			var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
-			pleaseWaitService.Show();
 			try
 			{
 				IModelImport import = new XModelImport();
@@ -798,14 +802,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 			catch (Exception e)
 			{
-				pleaseWaitService.Hide();
+				
 				Logging.Error(e, "An error occuring importing the xModel.");
 				var mbs = new MessageBoxService();
 				mbs.ShowError($"An error occurred importing the xModel. Please notify the Vixen Team.", "Error Importing xModel");
 				return false;
 			}
-
-			pleaseWaitService.Hide();
 
 			return true;
 		}
