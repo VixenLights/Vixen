@@ -119,6 +119,13 @@ namespace Common.AudioPlayer
 		/// <inheritdoc />
 		public void Play()
 		{
+			// If the play back state is stopped then
+			// make sure the sound out wave player has been properly disposed.
+			if (PlaybackState == PlaybackState.Stopped)
+			{
+				CleanupSoundOut();
+			}
+
 			if ((IsPaused || IsStopped) && EnsureDeviceCreated())
 			{
 				if (_soundOut == null) return;
