@@ -4,10 +4,16 @@
 												xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
   <Fragment>
 				<util:ProductSearch
-								Id="ProductSearchId"
-								Variable="VC_VER"
-								ProductCode="{0AE39060-F209-4D05-ABC7-54B8F9CFA32E}"
+								Id="VCREDIST_x64"
+								Variable="VC_VER_x64"
+								UpgradeCode="36F68A90-239C-34DF-B58C-64B30153CE35"
 								Result="version" />
+
+				<util:ProductSearch
+							Id="VCREDIST_x86"
+							Variable="VC_VER_x86"
+							UpgradeCode="65E5BD06-6392-3027-8C26-853107D3CF1A"
+							Result="version" />
 
 				<!--
 				Source location for the binaries are the following urls. The content at these targets could be updated at anytime and thus 
@@ -20,7 +26,7 @@
 
 				<PackageGroup Id="VCRedistPackage">
 						<?if $(sys.BUILDARCH) = x64 ?>
-						<ExePackage DetectCondition="VC_VER &gt;= v14.34.31938"
+						<ExePackage DetectCondition="(VC_VER_x64 &gt;= v14.34.31938)"
 																		DisplayName="Microsoft Visual C++ 2015-2022 Redistributable (x64)"
 																		Compressed="yes"
 																		PerMachine="yes"															
@@ -29,7 +35,7 @@
 																		InstallCondition="VersionNT64"
 																		Permanent="true"/>
 						<?elseif $(sys.BUILDARCH) = x86 ?>
-						<ExePackage DetectCondition="VC_VER &gt;= v14.34.31938"
+						<ExePackage DetectCondition="(VC_VER_x86 &gt;= v14.34.31938)"
 																		DisplayName="Microsoft Visual C++ 2015-2022 Redistributable (x86)"
 																		Compressed="yes"
 																		PerMachine="yes"																
