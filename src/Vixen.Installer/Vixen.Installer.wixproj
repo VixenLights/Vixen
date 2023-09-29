@@ -1,4 +1,4 @@
-﻿<Project Sdk="WixToolset.Sdk/4.0.1">
+﻿<Project Sdk="WixToolset.Sdk/4.0.2">
   <PropertyGroup>
     <DefineConstants>Version=$(App_Version);ReleaseType=$(Environment)</DefineConstants>
     <BaseOutputPath>$(SolutionDir)$(Configuration)\Setup\$(Environment)</BaseOutputPath>
@@ -42,6 +42,6 @@
     <Content Include="EnvironmentInclude.wxi" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="WixToolset.Heat" Version="4.0.1" />
+    <PackageReference Include="WixToolset.Heat" Version="4.0.2" />
   </ItemGroup>
 </Project>
