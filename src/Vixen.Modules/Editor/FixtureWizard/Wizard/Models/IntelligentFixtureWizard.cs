@@ -50,8 +50,8 @@ namespace VixenModules.Editor.FixtureWizard.Wizard
             Pages.Single(pg => pg is SummaryWizardPage).Description = "Below is a summary of the fixture selections.";
 
             // Configure the size of the wizard
-            MinSize = new System.Windows.Size(1100, 600);
-            MaxSize = new System.Windows.Size(1400, 600);
+            MinSize = new System.Windows.Size(1100, 605);
+            MaxSize = new System.Windows.Size(1400, 605);
             ResizeMode = System.Windows.ResizeMode.CanResize;
 
             // Have the wizard determine the space between the page ellipses
