@@ -48,7 +48,22 @@
         /// <returns>Summary string for the page</returns>
         protected override string GetSummaryString()
         {
-            return ColorMixing ? "Color Mixing" : "Color Wheel";
+	        string summaryString = string.Empty;
+
+	        if (NoColorSupport)
+	        {
+		        summaryString = "No Color Support";
+	        }
+	        else if (ColorMixing)
+	        {
+		        summaryString = "Color Mixing";
+	        }
+	        else
+	        {
+		        summaryString = "Color Wheel";
+	        }
+
+	        return summaryString;
         }
 
         #endregion
