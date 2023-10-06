@@ -140,6 +140,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		
 		private readonly TimeLineGlobalEventManager _timeLineGlobalEventManager;
 		private readonly TimeLineGlobalStateManager _timeLineGlobalStateManager;
+		private readonly MarksSelectionManager _marksSelectionManager;
 
 		//List to hold removed nodes so we can clean them up later. Due to how the undo works, nodes are sticky and 
 		//live on past removal so they can can be added back
@@ -226,6 +227,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//So we can be aware of mark changes.
 			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager(InstanceId);
 			_timeLineGlobalStateManager = TimeLineGlobalStateManager.Manager(InstanceId);
+			_marksSelectionManager = MarksSelectionManager.Manager(InstanceId);
 		}
 
 		private IDockContent DockingPanels_GetContentFromPersistString(string persistString)
@@ -806,6 +808,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			TimeLineGlobalEventManager.CloseManager(InstanceId);
 			TimeLineGlobalStateManager.CloseManager(InstanceId);
+			MarksSelectionManager.CloseManager(InstanceId);
 
 			dockPanel.Dispose();
 
@@ -2140,7 +2143,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//TimelineControl.ruler.ClearSelectedMarks();
 			if (e.Button != MouseButtons.Right)
 			{
-				MarksSelectionManager.Manager().ClearSelected();
+				_marksSelectionManager.ClearSelected();
 				Invalidate(true);
 			}
 		}

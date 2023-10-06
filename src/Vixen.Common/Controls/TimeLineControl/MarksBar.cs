@@ -34,7 +34,7 @@ namespace Common.Controls.TimelineControl
 		{
 			BackColor = Color.Gray;
 			_textFont = Font;
-			_marksSelectionManager = MarksSelectionManager.Manager();
+			_marksSelectionManager = MarksSelectionManager.Manager(instanceId);
 			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager(instanceId);
 			_timeLineGlobalEventManager.MarksMoving += TimeLineGlobalEventManagerTimeLineGlobalMoving;
 			_timeLineGlobalEventManager.MarksMoved += TimeLineGlobalEventManager_MarksMoved;

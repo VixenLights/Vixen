@@ -5,20 +5,38 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 {
 	public class MarksSelectionManager
 	{
-		private static MarksSelectionManager _manager;
-		private static List<IMark> _selectedMarks;
+		private static readonly Dictionary<Guid, MarksSelectionManager> Instances = new();
+		private readonly List<IMark> _selectedMarks;
 		public event EventHandler SelectionChanged ;
 
-		private MarksSelectionManager()
+		private MarksSelectionManager(Guid id)
 		{
+			InstanceId = id;
 			_selectedMarks = new List<IMark>();
 			SelectedMarks = _selectedMarks.AsReadOnly();
 		}
 
-		public static MarksSelectionManager Manager()
+		public static MarksSelectionManager Manager(Guid id)
 		{
-			return _manager ?? (_manager = new MarksSelectionManager());
+			if (Instances.TryGetValue(id, out var instance))
+			{
+				return instance;
+			}
+			else
+			{
+				instance = new MarksSelectionManager(id);
+				Instances.Add(id, instance);
+			}
+
+			return instance;
 		}
+
+		public static bool CloseManager(Guid id)
+		{
+			return Instances.Remove(id);
+		}
+
+		public Guid InstanceId { get; init; }
 
 		public ReadOnlyCollection<IMark> SelectedMarks { get; }
 
