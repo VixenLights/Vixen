@@ -33,7 +33,7 @@ namespace Common.Controls.Timeline
 		{
 			AutoScaleMode = AutoScaleMode.Font;
 			BackColor = Color.Gray;
-			_marksSelectionManager = MarksSelectionManager.Manager();
+			_marksSelectionManager = MarksSelectionManager.Manager(instanceId);
 			_timeLineGlobalStateManager = TimeLineGlobalStateManager.Manager(instanceId);
 			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager(instanceId);
 			_timeLineGlobalEventManager.MarksMoving += TimeLineGlobalEventManagerTimeLineGlobalMoving;
