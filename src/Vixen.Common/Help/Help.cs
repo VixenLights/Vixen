@@ -38,9 +38,6 @@ namespace Common.VixenHelp
 			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/candy-cane/")]
 			Preview_Cane,
 
-			[Description("https://www.vixenlights.com/docs/usage/preview/preview-main-screen/#resizing-the-background-image")]
-			Preview_ResizeBackground,
-
 			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/custom-props/")] // TODO: Broken Link
 			Preview_CustomShape,
 
