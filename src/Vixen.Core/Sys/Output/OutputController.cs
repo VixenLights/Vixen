@@ -4,6 +4,7 @@ using Vixen.Data.Flow;
 using Vixen.Module.Controller;
 using Vixen.Commands;
 using Vixen.Sys.Instrumentation;
+using Newtonsoft.Json.Linq;
 
 namespace Vixen.Sys.Output
 {
@@ -244,6 +245,43 @@ namespace Vixen.Sys.Output
 				{
 					RemoveOutput(Outputs[OutputCount - 1]);
 				}
+			}
+		}
+
+		public void ReIndexOutputs()
+		{
+			int index = 0;
+			foreach (var commandOutput in Outputs)
+			{
+				commandOutput.Index = index;
+				index++;
+			}
+		}
+
+		public void InsertOutputsAt(int index, int count)
+		{
+			CommandOutput[] tempOutputs = Outputs.ToArray();
+			CommandOutputFactory outputFactory = new CommandOutputFactory();
+			
+			while (OutputCount > index)
+			{
+				_outputMediator.RemoveOutput(Outputs[OutputCount - 1]);
+			}
+
+			while (OutputCount < count + index)
+			{
+				AddOutput(outputFactory.CreateOutput(string.Format("Output {0}", (OutputCount + 1).ToString()), OutputCount));
+			}
+
+			int offset = index;
+			int total = tempOutputs.Length + count;
+			while (OutputCount < total)
+			{
+				var output = tempOutputs[offset];
+				output.Index = OutputCount;
+
+				AddOutput(output);
+				offset++;
 			}
 		}
 
