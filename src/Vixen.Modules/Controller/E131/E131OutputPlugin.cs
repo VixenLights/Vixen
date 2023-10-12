@@ -107,6 +107,37 @@ namespace VixenModules.Controller.E131
 			set { _data = (E131ModuleDataModel) value; }
 		}
 
+		#region Overrides of ControllerModuleInstanceBase
+
+		/// <inheritdoc />
+		public override bool SupportsNamedOutputs => true;
+
+		/// <inheritdoc />
+		public override void NameOutputs()
+		{
+			if (_data.Universes == null) return;
+			OutputController thisController =
+				VixenSystem.OutputControllers.Single(controller => controller.ModuleInstanceId == _data.ModuleInstanceId);
+
+			for (int x = 0; x < thisController.Outputs.Length; x++)
+				thisController.Outputs[x].Name = "Output #" + (x + 1);
+
+			foreach (var universeEntry in _data.Universes)
+			{
+				for (int x = universeEntry.Start; x < universeEntry.Start + universeEntry.Size; x++){
+					if (x < thisController.Outputs.Length)
+						if (string.IsNullOrEmpty(_data.Unicast))
+							thisController.Outputs[x].Name = "#" + (x + 1) + " " + universeEntry.Universe + "-" +
+															 (x - universeEntry.Start + 2) + ": Multicast";
+						else
+							thisController.Outputs[x].Name = "#" + (x + 1) + " " + universeEntry.Universe + "-" +
+															 (x - universeEntry.Start + 2) + ": " + _data.Unicast;
+				}
+			}
+		}
+
+		#endregion
+
 
 		public override bool HasSetup
 		{

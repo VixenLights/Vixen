@@ -557,7 +557,7 @@ namespace Common.Controls
 			return false;
 		}
 
-		public bool InsertOutputs()
+		public async Task<bool> InsertOutputs()
 		{
 			if (treeview.SelectedNode != null)
 			{
@@ -566,20 +566,32 @@ namespace Common.Controls
 					using NumberDialog nd = new NumberDialog("Insert Outputs", "Number of outputs to insert.", 10);
 					if (nd.ShowDialog() == DialogResult.OK)
 					{
-						var restartController = outputController.IsRunning;
-						if (outputController.IsRunning)
-						{
-							VixenSystem.OutputControllers.Pause(outputController);
-						}
-						outputController.InsertOutputsAt(treeview.SelectedNode.Index, nd.Value);
-						
-						if (restartController)
-						{
-							VixenSystem.OutputControllers.Resume(outputController);
-						}
 
+						if (TopLevelControl != null)
+						{
+							TopLevelControl.UseWaitCursor = true;
+						}
+						await Task.Factory.StartNew(() =>
+						{
+							var restartController = outputController.IsRunning;
+							if (outputController.IsRunning)
+							{
+								VixenSystem.OutputControllers.Pause(outputController);
+							}
+							outputController.InsertOutputsAt(treeview.SelectedNode.Index, nd.Value);
+
+							if (restartController)
+							{
+								VixenSystem.OutputControllers.Resume(outputController);
+							}
+						});
+						
 						OnControllersChanged();
 						PopulateControllerTree();
+						if (TopLevelControl != null)
+						{
+							TopLevelControl.UseWaitCursor = false;
+						}
 						return true;
 					}
 				}
@@ -591,6 +603,11 @@ namespace Common.Controls
 		public bool RemoveSelectedOutputs()
 		{
 			if (SelectedControllers.Any()) return false;
+
+			if (TopLevelControl != null)
+			{
+				TopLevelControl.UseWaitCursor = true;
+			}
 
 			var outputsToRemove = new Dictionary<OutputController, List<CommandOutput>>();
 
@@ -622,14 +639,7 @@ namespace Common.Controls
 						VixenSystem.OutputControllers.Pause(controllerOutputs.Key);
 					}
 
-					controllerOutputs.Value.Reverse();
-					foreach (var commandOutput in controllerOutputs.Value)
-					{
-						controllerOutputs.Key.RemoveOutput(commandOutput);
-					}
-
-					//renumber all the indexes in the remaining outputs.
-					controllerOutputs.Key.ReIndexOutputs();
+					controllerOutputs.Key.RemoveOutputs(controllerOutputs.Value);
 
 					if (restartController)
 					{
@@ -639,7 +649,16 @@ namespace Common.Controls
 
 				OnControllersChanged();
 				PopulateControllerTree();
+				if (TopLevelControl != null)
+				{
+					TopLevelControl.UseWaitCursor = false;
+				}
 				return true;
+			}
+
+			if (TopLevelControl != null)
+			{
+				TopLevelControl.UseWaitCursor = false;
 			}
 
 			return false;
@@ -714,14 +733,16 @@ namespace Common.Controls
 			SetControllerOutputCount(SelectedControllers.First());
 		}
 
-		private void insertChannelsToolStripMenuItem_Click(object sender, EventArgs e)
+		private async void insertChannelsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			InsertOutputs();
+			await InsertOutputs();
 		}
 
 		private void deleteChannelsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			Cursor = Cursors.WaitCursor;
 			RemoveSelectedOutputs();
+			Cursor = Cursors.Arrow;
 		}
 
 		private void startControllerToolStripMenuItem_Click(object sender, EventArgs e)

@@ -85,5 +85,15 @@ namespace Vixen.Sys.Output
 				return null;
 			}
 		}
+
+		/// <inheritdoc />
+		public bool SupportsNamedOutputs => _outputModule?.SupportsNamedOutputs ?? false;
+
+
+		/// <inheritdoc />
+		public void NameOutputs()
+		{
+			if(_outputModule != null ) { _outputModule.NameOutputs();}
+		}
 	}
 }

@@ -283,6 +283,25 @@ namespace Vixen.Sys.Output
 				AddOutput(output);
 				offset++;
 			}
+
+			UpdateOutputNames();
+
+			OnOutputCountChanged();
+		}
+
+		public void UpdateOutputNames()
+		{
+			if (_outputModuleConsumer.SupportsNamedOutputs)
+			{
+				_outputModuleConsumer.NameOutputs();
+			}
+			else
+			{
+				for (int i = 0; i < OutputCount; i++)
+				{
+					Outputs[i].Name = $"Output {i + 1}";
+				}
+			}
 		}
 
 		public void AddOutput(CommandOutput output)
@@ -306,6 +325,21 @@ namespace Vixen.Sys.Output
 			VixenSystem.DataFlow.RemoveComponent(component);
 			VixenSystem.OutputControllers.RemoveControllerOutputForDataFlowComponent(component);
 			commands = null;
+		}
+
+		public void RemoveOutputs(IEnumerable<CommandOutput> outputs)
+		{
+			foreach (var commandOutput in outputs)
+			{
+				RemoveOutput(commandOutput);
+			}
+
+			//renumber all the indexes in the remaining outputs.
+			ReIndexOutputs();
+
+			UpdateOutputNames();
+
+			OnOutputCountChanged();
 		}
 
 		public void RemoveOutput(Output output)
@@ -342,5 +376,16 @@ namespace Vixen.Sys.Output
 			get { return _outputModuleConsumer.Module; }
 		}
 
+		#region Implementation of IControllerDevice
+
+		/// <inheritdoc />
+		public event EventHandler OutputCountChanged;
+
+		protected virtual void OnOutputCountChanged()
+		{
+			OutputCountChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		#endregion
 	}
 }
