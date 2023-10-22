@@ -671,8 +671,19 @@ namespace VixenModules.Preview.VixenPreview
 								p.Node.Properties.Add(LocationDescriptor._typeId);
 
 							var prop = p.Node.Properties.Get(LocationDescriptor._typeId);
-							((LocationData)prop.ModuleData).X = p.IsHighPrecision ? (int)(p.Location.X + Data.LocationOffset.X) : p.X + Convert.ToInt32(Data.LocationOffset.X);
-							((LocationData)prop.ModuleData).Y = p.IsHighPrecision ? (int)(p.Location.Y + Data.LocationOffset.Y) : p.Y + Convert.ToInt32(Data.LocationOffset.Y);
+							if (d.Shape.UseCommonLocation)
+							{
+								var c = d.Shape.Center;
+								((LocationData)prop.ModuleData).X = c.X + Convert.ToInt32(Data.LocationOffset.X);
+								((LocationData)prop.ModuleData).Y = c.Y + Convert.ToInt32(Data.LocationOffset.Y);
+							}
+							else
+							{
+								((LocationData)prop.ModuleData).X = p.IsHighPrecision ? (int)(p.Location.X + Data.LocationOffset.X)
+									: p.X + Convert.ToInt32(Data.LocationOffset.X);
+								((LocationData)prop.ModuleData).Y = p.IsHighPrecision ? (int)(p.Location.Y + Data.LocationOffset.Y)
+									: p.Y + Convert.ToInt32(Data.LocationOffset.Y);
+							}
 						}
 					}
 				}
