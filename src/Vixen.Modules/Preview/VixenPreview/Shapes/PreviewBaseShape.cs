@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 using System.Windows;
 using System.Xml.Serialization;
 using Vixen.Sys;
+using Point = System.Drawing.Point;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -43,6 +44,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				FireOnPropertiesChanged(this, this);
 			}
 		}
+
+		[DataMember(EmitDefaultValue = false),
+		Category("Location"),
+		Description("Uses a common location for all lights based on the center of the prop."),
+		DisplayName("Common Location")]
+		public bool UseCommonLocation { get; set; }
 		
 		/// <summary>
 		/// Display name for the type of shape.
@@ -73,6 +80,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// </summary>
         [Browsable(false)]
         public abstract int Right { get; }
+
+		/// <summary>
+		/// Center most pixel location
+		/// </summary>
+		[Browsable(false)]
+		public Point Center {
+			get
+			{
+				var x = Left + (Right - Left) / 2;
+				var y = Top + (Bottom - Top) / 2;
+				return new Point(x, y);
+			}
+		}
 
 		public abstract void Match(PreviewBaseShape matchShape);
 
