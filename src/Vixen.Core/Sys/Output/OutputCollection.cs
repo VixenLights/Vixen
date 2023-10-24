@@ -3,7 +3,7 @@
 	internal class OutputCollection<T> : IHasOutputs<T>, IEnumerable<T>
 		where T : Output
 	{
-		private readonly HashSet<T> _outputs;
+		private readonly SortedSet<T> _outputs;
 		private T[] _outputArray;
 
 		public event EventHandler<OutputCollectionEventArgs<T>> OutputAdded;
@@ -11,7 +11,7 @@
 
 		public OutputCollection()
 		{
-			_outputs = new HashSet<T>();
+			_outputs = new SortedSet<T>(new ByIndex());
 		}
 
 		public int OutputCount
@@ -106,6 +106,21 @@
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
+		}
+
+		private class ByIndex : IComparer<Output>
+		{
+			#region Implementation of IComparer<in Output>
+
+			/// <inheritdoc />
+			public int Compare(Output x, Output y)
+			{
+				if(x.Index == y.Index) return 0;
+				if (x.Index < y.Index) return -1;
+				return 1;
+			}
+
+			#endregion
 		}
 	}
 }

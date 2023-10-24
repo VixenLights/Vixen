@@ -1,6 +1,8 @@
 using System.ComponentModel;
+using System.Diagnostics;
 using Common.Controls.Theme;
 using Vixen.Data.Flow;
+using Vixen.Export;
 using Vixen.Factory;
 using Vixen.Module;
 using Vixen.Services;
@@ -555,6 +557,113 @@ namespace Common.Controls
 			return false;
 		}
 
+		public async Task<bool> InsertOutputs()
+		{
+			if (treeview.SelectedNode != null)
+			{
+				if (treeview.SelectedNode.Parent.Tag is OutputController outputController)
+				{
+					using NumberDialog nd = new NumberDialog("Insert Outputs", "Number of outputs to insert.", 10);
+					if (nd.ShowDialog() == DialogResult.OK)
+					{
+
+						if (TopLevelControl != null)
+						{
+							TopLevelControl.UseWaitCursor = true;
+						}
+						await Task.Factory.StartNew(() =>
+						{
+							var restartController = outputController.IsRunning;
+							if (outputController.IsRunning)
+							{
+								VixenSystem.OutputControllers.Pause(outputController);
+							}
+							outputController.InsertOutputsAt(treeview.SelectedNode.Index, nd.Value);
+
+							if (restartController)
+							{
+								VixenSystem.OutputControllers.Resume(outputController);
+							}
+						});
+						
+						OnControllersChanged();
+						PopulateControllerTree();
+						if (TopLevelControl != null)
+						{
+							TopLevelControl.UseWaitCursor = false;
+						}
+						return true;
+					}
+				}
+			}
+				
+			return false;
+		}
+
+		public bool RemoveSelectedOutputs()
+		{
+			if (SelectedControllers.Any()) return false;
+
+			if (TopLevelControl != null)
+			{
+				TopLevelControl.UseWaitCursor = true;
+			}
+
+			var outputsToRemove = new Dictionary<OutputController, List<CommandOutput>>();
+
+			foreach (var node in treeview.SelectedNodes)
+			{
+				if (node.Parent.Tag is OutputController controller)
+				{
+					if (node.Tag is int index)
+					{
+						if (outputsToRemove.TryGetValue(controller, out var outputs))
+						{
+							outputs.Add(controller.Outputs[index]);
+						}
+						else
+						{
+							outputsToRemove.Add(controller, new List<CommandOutput>() { controller.Outputs[index] });
+						}
+					}
+				}
+			}
+
+			if (outputsToRemove.Any())
+			{
+				foreach (var controllerOutputs in outputsToRemove)
+				{
+					var restartController = controllerOutputs.Key.IsRunning;
+					if (controllerOutputs.Key.IsRunning)
+					{
+						VixenSystem.OutputControllers.Pause(controllerOutputs.Key);
+					}
+
+					controllerOutputs.Key.RemoveOutputs(controllerOutputs.Value);
+
+					if (restartController)
+					{
+						VixenSystem.OutputControllers.Resume(controllerOutputs.Key);
+					}
+				}
+
+				OnControllersChanged();
+				PopulateControllerTree();
+				if (TopLevelControl != null)
+				{
+					TopLevelControl.UseWaitCursor = false;
+				}
+				return true;
+			}
+
+			if (TopLevelControl != null)
+			{
+				TopLevelControl.UseWaitCursor = false;
+			}
+
+			return false;
+		}
+
 		public void ClearSelectedNodes()
 		{
 			treeview.ClearSelectedNodes();
@@ -569,13 +678,39 @@ namespace Common.Controls
 
 		private void contextMenuStripTreeView_Opening(object sender, CancelEventArgs e)
 		{
-			e.Cancel = (SelectedControllers.Count() == 0);
+			//e.Cancel = (!SelectedControllers.Any());
+			if (SelectedControllers.Any())
+			{
+				insertChannelsToolStripMenuItem.Visible = false;
+				removeChannelsToolStripMenuItem.Visible = false;
+				configureToolStripMenuItem.Visible = true;
+				channelCountToolStripMenuItem.Visible = true;
+				renameToolStripMenuItem.Visible = true;
+				deleteToolStripMenuItem.Visible = true;
+				startControllerToolStripMenuItem.Visible = true;
+				stopControllerToolStripMenuItem.Visible = true;
+				configureToolStripMenuItem.Enabled = (SelectedControllers.Count() == 1);
+				channelCountToolStripMenuItem.Enabled = (SelectedControllers.Count() == 1);
+				renameToolStripMenuItem.Enabled = (SelectedControllers.Count() == 1);
+				deleteToolStripMenuItem.Enabled = (SelectedControllers.Any());
+				CheckIfSelectedControllersRunning();
+				return;
+			} 
+			
+			if (treeview.SelectedNodes.Any())
+			{
+				insertChannelsToolStripMenuItem.Visible = treeview.SelectedNodes.Count == 1;
+				removeChannelsToolStripMenuItem.Visible = true;
+				configureToolStripMenuItem.Visible = false;
+				channelCountToolStripMenuItem.Visible = false;
+				renameToolStripMenuItem.Visible = false;
+				deleteToolStripMenuItem.Visible = false;
+				startControllerToolStripMenuItem.Visible = false;
+				stopControllerToolStripMenuItem.Visible = false;
+				return;
+			}
 
-			configureToolStripMenuItem.Enabled = (SelectedControllers.Count() == 1);
-			channelCountToolStripMenuItem.Enabled = (SelectedControllers.Count() == 1);
-			renameToolStripMenuItem.Enabled = (SelectedControllers.Count() == 1);
-			deleteToolStripMenuItem.Enabled = (SelectedControllers.Count() > 0);
-			CheckIfSelectedControllersRunning();
+			e.Cancel = true;
 		}
 
 		private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
@@ -596,6 +731,18 @@ namespace Common.Controls
 		private void channelCountToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SetControllerOutputCount(SelectedControllers.First());
+		}
+
+		private async void insertChannelsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			await InsertOutputs();
+		}
+
+		private void deleteChannelsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Cursor = Cursors.WaitCursor;
+			RemoveSelectedOutputs();
+			Cursor = Cursors.Arrow;
 		}
 
 		private void startControllerToolStripMenuItem_Click(object sender, EventArgs e)

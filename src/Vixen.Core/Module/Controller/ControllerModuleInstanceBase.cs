@@ -1,4 +1,5 @@
-﻿using Vixen.Commands;
+﻿using System.DirectoryServices.ActiveDirectory;
+using Vixen.Commands;
 using Vixen.Sys;
 using Vixen.Sys.Output;
 
@@ -21,6 +22,16 @@ namespace Vixen.Module.Controller
 		public virtual ControllerNetworkConfiguration GetNetworkConfiguration()
 		{
 			throw new NotImplementedException();
+		}
+
+
+		/// <inheritdoc />
+		public virtual bool SupportsNamedOutputs { get; set; } = false;
+
+		/// <inheritdoc />
+		public virtual void NameOutputs()
+		{
+			
 		}
 
 

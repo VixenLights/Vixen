@@ -16,7 +16,7 @@ namespace Vixen.Sys.Output
 
 		public Guid Id { get; private set; }
 
-		public int Index { get; private set; }
+		public int Index { get; internal set; }
 
 		public IDataFlowComponentReference Source { get; set; }
 

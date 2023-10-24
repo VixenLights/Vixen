@@ -65,5 +65,14 @@ namespace Vixen.Sys.Output
 		{
 			get { return null; }
 		}
+
+		/// <inheritdoc />
+		public virtual bool SupportsNamedOutputs { get; } = false;
+
+		/// <inheritdoc />
+		public void NameOutputs()
+		{
+			
+		}
 	}
 }

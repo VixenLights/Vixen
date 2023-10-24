@@ -4,6 +4,7 @@
 				<UseWindowsForms>true</UseWindowsForms>
 				<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 				<RootNamespace>Common.Controls</RootNamespace>
+				<UseWindowsForms>true</UseWindowsForms>
 		</PropertyGroup>
 
 		<ItemGroup>

@@ -33,6 +33,8 @@
 			this.contextMenuStripTreeView = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.configureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.channelCountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.insertChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.removeChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.startControllerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,6 +61,8 @@
 			this.contextMenuStripTreeView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 				this.configureToolStripMenuItem,
 				this.channelCountToolStripMenuItem,
+				this.insertChannelsToolStripMenuItem,
+				this.removeChannelsToolStripMenuItem,
 				this.renameToolStripMenuItem,
 				this.deleteToolStripMenuItem,
 				this.startControllerToolStripMenuItem,
@@ -82,8 +86,23 @@
 			this.channelCountToolStripMenuItem.Text = "C&hannel Count";
 			this.channelCountToolStripMenuItem.Click += new System.EventHandler(this.channelCountToolStripMenuItem_Click);
 			// 
+			// insertChannelsToolStripMenuItem
+			// 
+			this.insertChannelsToolStripMenuItem.Name = "insertChannelToolStripMenuItem";
+			this.insertChannelsToolStripMenuItem.Size = new System.Drawing.Size(200, 30);
+			this.insertChannelsToolStripMenuItem.Text = "I&nsert Channels";
+			this.insertChannelsToolStripMenuItem.Click += new System.EventHandler(this.insertChannelsToolStripMenuItem_Click);
+			// 
+			// removeChannelsToolStripMenuItem
+			// 
+			this.removeChannelsToolStripMenuItem.Name = "removeChannelToolStripMenuItem";
+			this.removeChannelsToolStripMenuItem.Size = new System.Drawing.Size(200, 30);
+			this.removeChannelsToolStripMenuItem.Text = "R&emove Channels";
+			this.removeChannelsToolStripMenuItem.Click += new System.EventHandler(this.deleteChannelsToolStripMenuItem_Click);// 
 			// renameToolStripMenuItem
 			// 
+			// renameToolStripMenuItem
+			// 																												  // 
 			this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
 			this.renameToolStripMenuItem.Size = new System.Drawing.Size(200, 30);
 			this.renameToolStripMenuItem.Text = "Re&name";
@@ -166,6 +185,8 @@
 		private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem configureToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem channelCountToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem insertChannelsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem removeChannelsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem startControllerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem stopControllerToolStripMenuItem;
 	}

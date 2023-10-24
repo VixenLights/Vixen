@@ -4,6 +4,7 @@ using Vixen.Data.Flow;
 using Vixen.Module.Controller;
 using Vixen.Commands;
 using Vixen.Sys.Instrumentation;
+using Newtonsoft.Json.Linq;
 
 namespace Vixen.Sys.Output
 {
@@ -247,6 +248,62 @@ namespace Vixen.Sys.Output
 			}
 		}
 
+		public void ReIndexOutputs()
+		{
+			int index = 0;
+			foreach (var commandOutput in Outputs)
+			{
+				commandOutput.Index = index;
+				index++;
+			}
+		}
+
+		public void InsertOutputsAt(int index, int count)
+		{
+			CommandOutput[] tempOutputs = Outputs.ToArray();
+			CommandOutputFactory outputFactory = new CommandOutputFactory();
+			
+			while (OutputCount > index)
+			{
+				_outputMediator.RemoveOutput(Outputs[OutputCount - 1]);
+			}
+
+			while (OutputCount < count + index)
+			{
+				AddOutput(outputFactory.CreateOutput(string.Format("Output {0}", (OutputCount + 1).ToString()), OutputCount));
+			}
+
+			int offset = index;
+			int total = tempOutputs.Length + count;
+			while (OutputCount < total)
+			{
+				var output = tempOutputs[offset];
+				output.Index = OutputCount;
+
+				AddOutput(output);
+				offset++;
+			}
+
+			UpdateOutputNames();
+
+			OnOutputCountChanged();
+		}
+
+		public void UpdateOutputNames()
+		{
+			if (_outputModuleConsumer.SupportsNamedOutputs)
+			{
+				_outputModuleConsumer.NameOutputs();
+			}
+			else
+			{
+				for (int i = 0; i < OutputCount; i++)
+				{
+					Outputs[i].Name = $"Output {i + 1}";
+				}
+			}
+		}
+
 		public void AddOutput(CommandOutput output)
 		{
 			_outputMediator.AddOutput(output);
@@ -268,6 +325,21 @@ namespace Vixen.Sys.Output
 			VixenSystem.DataFlow.RemoveComponent(component);
 			VixenSystem.OutputControllers.RemoveControllerOutputForDataFlowComponent(component);
 			commands = null;
+		}
+
+		public void RemoveOutputs(IEnumerable<CommandOutput> outputs)
+		{
+			foreach (var commandOutput in outputs)
+			{
+				RemoveOutput(commandOutput);
+			}
+
+			//renumber all the indexes in the remaining outputs.
+			ReIndexOutputs();
+
+			UpdateOutputNames();
+
+			OnOutputCountChanged();
 		}
 
 		public void RemoveOutput(Output output)
@@ -304,5 +376,16 @@ namespace Vixen.Sys.Output
 			get { return _outputModuleConsumer.Module; }
 		}
 
+		#region Implementation of IControllerDevice
+
+		/// <inheritdoc />
+		public event EventHandler OutputCountChanged;
+
+		protected virtual void OnOutputCountChanged()
+		{
+			OutputCountChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		#endregion
 	}
 }
