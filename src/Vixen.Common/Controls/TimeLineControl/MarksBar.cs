@@ -186,9 +186,9 @@ namespace Common.Controls.TimelineControl
 				{
 					if (AltPressed)
 					{
-						BeginMoveResizeMarks(location);
+						var marksMoveResizeInfo = new MarksMoveResizeInfo(_marksSelectionManager.SelectedMarks.ToArray());
 						_mouseDownMark.Parent.FillGapTimes(_mouseDownMark);
-						FinishedResizeMoveMarks(ElementMoveType.Resize);
+						_timeLineGlobalEventManager.OnMarkMoved(new MarksMovedEventArgs(marksMoveResizeInfo, ElementMoveType.Resize));
 						return;
 					}
 					
@@ -523,8 +523,6 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 
 			_timeLineGlobalEventManager.OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
 			_timeLineGlobalEventManager.OnAlignmentActivity(new AlignmentEventArgs(true, new[] {_mouseDownMark.StartTime, _mouseDownMark.EndTime }));
-
-			//Invalidate();
 		}
 
 		private void WaitForDragMove(Point gridLocation)
@@ -555,7 +553,6 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 			_dragState = DragState.Normal;
 			Cursor = Cursors.Default;
 			_mouseDownMark = null;
-			//Invalidate();
 		}
 
 		#endregion
@@ -565,15 +562,15 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 		private void MouseMove_HResizing(Point location)
 		{
 			if (_mouseDownMark == null) return;
-			var moveInfo = _marksMoveResizeInfo; //Make a reference copy so it won't get changed out from under us.
-			if(!moveInfo.OriginalMarks.Values.Any()) return;
+			
+			if(!_marksMoveResizeInfo.OriginalMarks.Values.Any()) return;
 			TimeSpan dt = pixelsToTime(location.X - _moveResizeStartLocation.X);
 
 			if (dt == TimeSpan.Zero)
 				return;
 
 			// Ensure minimum size
-			TimeSpan shortest = moveInfo.OriginalMarks.Values.Min(x => x.Duration);
+			TimeSpan shortest = _marksMoveResizeInfo.OriginalMarks.Values.Min(x => x.Duration);
 			IMark gluedMark = null;
 			var handleGluedMark = AltPressed && _marksSelectionManager.SelectedMarks.Count == 1;
 			
@@ -593,7 +590,7 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 					}
 
 					// Clip earliest element StartTime at zero
-					TimeSpan earliest = moveInfo.OriginalMarks.Values.Min(x => x.StartTime);
+					TimeSpan earliest = _marksMoveResizeInfo.OriginalMarks.Values.Min(x => x.StartTime);
 					if (earliest + dt < TimeSpan.Zero)
 					{
 						dt = -earliest;
@@ -619,7 +616,7 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 						}
 					}
 					// Clip latest mark EndTime at TotalTime
-					TimeSpan latest = moveInfo.OriginalMarks.Values.Max(x => x.EndTime);
+					TimeSpan latest = _marksMoveResizeInfo.OriginalMarks.Values.Max(x => x.EndTime);
 					if (latest + dt > TimeInfo.TotalTime)
 					{
 						dt = TimeInfo.TotalTime - latest;
@@ -636,7 +633,7 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 
 
 			// Apply dt to all selected elements.
-			foreach (var originalMarkInfo in moveInfo.OriginalMarks)
+			foreach (var originalMarkInfo in _marksMoveResizeInfo.OriginalMarks)
 			{
 				switch (_markResizeZone)
 				{
@@ -650,7 +647,7 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 						break;
 				}
 			}
-			var movedMarks = moveInfo.OriginalMarks.Keys.ToList();
+			var movedMarks = _marksMoveResizeInfo.OriginalMarks.Keys.ToList();
 
 			if (handleGluedMark && gluedMark != null)
 			{
@@ -676,14 +673,15 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 
 		private void BeginHResize(Point location)
 		{
+			if (_dragState != DragState.Normal) return; //Don't start a resize if something else is going on.
 			_dragState = DragState.HResizing;
 			BeginMoveResizeMarks(location);
 		}
 
 		private void MouseUp_HResizing()
 		{
-			EndAllDrag();
 			FinishedResizeMoveMarks(ElementMoveType.Resize);
+			EndAllDrag();
 		}
 
 		#endregion
