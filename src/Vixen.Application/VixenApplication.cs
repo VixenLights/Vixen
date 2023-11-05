@@ -156,7 +156,15 @@ namespace VixenApplication
 
 			toolStripItemClearSequences.Click += (mySender, myE) => ClearRecentSequencesList();
 
+			// Save off the sequences group box offset from the bottom of dialog
+			_sequenceGroupBoxOffsetFromBottom = ClientSize.Height - groupBoxSequences.Bottom;
 		}
+
+		/// <summary>
+		/// This field stores off how far the sequences group box is from the bottom of the dialog.
+		/// This field helps with resizing the dialog.
+		/// </summary>
+		private int _sequenceGroupBoxOffsetFromBottom;
 
 		private void CreateHelpMenu()
 		{
@@ -1395,6 +1403,29 @@ namespace VixenApplication
 		{
 			_applicationData.RecentSequences.Clear();
 			listViewRecentSequences.Items.Clear();
+		}
+
+		/// <summary>
+		/// Occurs when the Size property value changes.
+		/// </summary>
+		/// <param name="sender">Event sender</param>
+		/// <param name="e">Event arguments.</param>
+		private void VixenApplication_SizeChanged(object sender, EventArgs e)
+		{
+			// Save off the current group box current height
+			int originalHeight = groupBoxSequences.Height;
+
+			// Calculate the new height of the group box
+			int newHeight = ClientSize.Height - groupBoxSequences.Top - _sequenceGroupBoxOffsetFromBottom;
+			
+			// Adjust the list view first otherwise the group box won't size properly
+			listViewRecentSequences.Height += newHeight - originalHeight;
+
+			// Resize the group box
+			groupBoxSequences.Height = newHeight;
+
+			// Refresh the dialog 
+			Refresh();
 		}
 	}
 }

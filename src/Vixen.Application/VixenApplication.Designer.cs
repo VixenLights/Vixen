@@ -527,13 +527,14 @@ namespace VixenApplication
 			this.MainMenuStrip = this.menuStripMain;
 			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.MaximizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(472, 524);
+			this.MinimumSize = new System.Drawing.Size(472, 578);
 			this.Name = "VixenApplication";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Vixen Administration";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.VixenApp_FormClosing);
 			this.Load += new System.EventHandler(this.VixenApplication_Load);
 			this.Shown += new System.EventHandler(this.VixenApplication_Shown);
+			this.SizeChanged += new System.EventHandler(this.VixenApplication_SizeChanged);
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.VixenApplication_Paint);
 			this.menuStripMain.ResumeLayout(false);
 			this.menuStripMain.PerformLayout();
