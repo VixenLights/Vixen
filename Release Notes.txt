@@ -1,5 +1,87 @@
 Release Notes - Vixen 3
 
+Release Notes - Vixen 3 - 3.10u0 Build 
+
+** Improvement
+    * [VIX-2859] - Add warning while delete element on Preview Configuration
+    * [VIX-3112] - Add icon to controller output count form
+    * [VIX-3367] - Libraries that do not support .NET Core, .NET 6, .NET 7
+    * [VIX-3371] - Migrate OpenTK to 4.7.5 which is .NET 6 compatible. 
+    * [VIX-3372] - Migrate QuickFont, SharpFont to .NET 6 and OpenTK 4.7.5
+    * [VIX-3373] - Update C++ Projects to .NET 6.0 and Visual Studio 2022
+    * [VIX-3375] - Replace Orc Wizard Source Code in Vixen solution with nuget package
+    * [VIX-3377] - Code clean up in the Vixen Application project. 
+    * [VIX-3378] - Replace FTD2XX_NET with nuget package
+    * [VIX-3380] - Create Basket Weave Pattern Effect
+    * [VIX-3398] - Change the order of drop downs on the Curtain Effect
+    * [VIX-3404] - Tree Effect missing tooltips
+    * [VIX-3408] - Rework the installer to work with the new solution layout and .NET 6.
+    * [VIX-3409] - The device effects do not have specific help links to the now existing content for them on the website.
+    * [VIX-3412] - Include style pages from DataGridTheme to resolve .NET 6 compatibility
+    * [VIX-3413] - Replace CSCore with NAudio for .NET 6 compatibility
+    * [VIX-3415] - LiquidFunWrapper emits many warnings at build time. 
+    * [VIX-3416] - The Curve library uses Security attributes that are now deprecated in .NET Core.
+    * [VIX-3417] - Custom Prop Editor uses several constructs that are deprecated in the Catel libraries.
+    * [VIX-3418] - Vixen.Core export features re throw exceptions that can alter the stack trace.
+    * [VIX-3419] - Refactor the CICD actions on Github to work with the .NET 6 file structure and setup changes.
+    * [VIX-3420] - Configure solution to build x64 or x86 specific targets to comply with the target specific C++ dependencies.
+    * [VIX-3421] - Clean up variety of warning issues in the solution. 
+    * [VIX-3422] - Refactor deprecated WebRequest used in the RDSController
+    * [VIX-3423] - Correct warnings for hidden members / methods in PreviewLightBaseShape
+    * [VIX-3424] - Fix Fody Warnings in FixtureWizard Project
+    * [VIX-3425] - Clean up async await warnings in the codebase
+    * [VIX-3426] - Resolve obsolete GL calls in the FixtureGraphics project.
+    * [VIX-3427] - Resolve nullable and null reference warnings in the code. 
+    * [VIX-3429] - Bump all dependencies to current version
+    * [VIX-3432] - Resolve deprecated usages of BinaryFormatter serializer. 
+    * [VIX-3443] - Remove 32 Bit Support
+    * [VIX-3445] - Add self-repair (self heal) to the Vixen Install
+    * [VIX-3472] - Enable an override to set the locations for a prop to a common value in the center of the prop.
+
+** New Feature
+    * [VIX-3339] - Add multiple effects using timing mark durations as delimiters
+    * [VIX-3346] - xmodel that uses states instead of submodels
+    * [VIX-3470] - Add ability to insert / remove channels to a controller in the middle of the existing range.
+
+** Bug
+    * [VIX-3366] - Scheduler configuration allows pause of 0 seconds
+    * [VIX-3376] - Resource Project lost the build action of 'Resource' on a lot of images
+    * [VIX-3381] - Display properties layout is broke in .NET 6 tree.
+    * [VIX-3382] - Process.Start to open a browser window with a url no longer works in .NET 6.
+    * [VIX-3383] - Icicles setup dialog has entry box out of place in .NET 6.
+    * [VIX-3384] - Math/Sizing Error in Bars Effect with Zig Zag Bars in location mode
+    * [VIX-3385] - Copy / Paste of Effects does not work in .NET 6.0
+    * [VIX-3401] - Toolbar Button Images missing from Morph Polygon Editor
+    * [VIX-3405] - Shapes Effect Tooltip and Misc Issues
+    * [VIX-3407] - Disable nullable to restore older behavior prior to .NET Core
+    * [VIX-3410] - Vixen.Application.csproj has left over reference to Orc.Wizard
+    * [VIX-3411] - Incorporate VIX-3350 in .NET 6.0 Feature Branch
+    * [VIX-3414] - Beats and Bars functionality is broken in .NET 6
+    * [VIX-3428] - Nullable refactoring broke effect rendering in the editor.
+    * [VIX-3430] - Add user agent header to outbound calls in the download service used to retrieve vendor models.
+    * [VIX-3431] - Model vendors may not have direct links to the model files which can cause a hard crash.
+    * [VIX-3433] - Installer license url links to not found page.
+    * [VIX-3435] - Intelligent Fixture Graphics cause the preview to throw exceptions
+    * [VIX-3437] - Crash when playback finish on Sequence Editor
+    * [VIX-3444] - Vixen Crash when maniplutating divide at cursor on Fixture effect
+    * [VIX-3446] - Weave Effect Missing from build and fixing curve sampling error
+    * [VIX-3447] - Replace Weave Effect Advanced Sizing Curves with Sliders
+    * [VIX-3448] - DMX Open has incorrect channel amount
+    * [VIX-3453] - Dragging start point on timeline beyond the left of the Zero mark causes playback failure.
+    * [VIX-3454] - Double Clicking a Phrase causes all open sequences to playback that time range not just the sequence that has focus.
+    * [VIX-3456] - ShockwaveData CreateInstanceForClone is not copying ScaledRadius flag
+    * [VIX-3459] - Bars with rotation change from existing sequence not rendering
+    * [VIX-3460] - Location X, Y can be set to the largest negative number
+    * [VIX-3461] - Vixen crashes after a sequence is played
+    * [VIX-3463] - Fix broken help links in Setup Previews
+    * [VIX-3465] - Vixen hanging when looping sequence
+    * [VIX-3466] - Intelligent Fixture Wizard Summary can show the wrong Color Support for non lighting fixtures
+    * [VIX-3467] - Intelligent Fixture Wizard - Edit Functions Page is slightly clipped on the right side
+    * [VIX-3468] - The Visual C++ redistributable is not properly detected during install.
+    * [VIX-3469] - Program crashes during lip synching. 
+
+
+
 Release Notes - Vixen 3 - 3.9u5 Build 
 
 ** New Feature
