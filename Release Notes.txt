@@ -1,5 +1,14 @@
 Release Notes - Vixen 3
 
+Release Notes - Vixen 3 - 3.10u1 Build 
+
+** Improvement
+    * [VIX-2991] - window resize dont resize the inner field with the list of sequences
+
+** Bug
+    * [VIX-3480] - Weave effect is not included in the formal builds
+	
+
 Release Notes - Vixen 3 - 3.10u0 Build 
 
 ** Improvement
