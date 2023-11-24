@@ -28,166 +28,155 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
-			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-			this.comboBoxAvailableEffect = new System.Windows.Forms.ComboBox();
-			this.toolTipFindEffects = new System.Windows.Forms.ToolTip(this.components);
-			this.checkBoxCollapseAllGroups = new System.Windows.Forms.CheckBox();
-			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.findAllSelectedEffectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.comboBoxFind = new System.Windows.Forms.ComboBox();
-			this.listViewEffectStartTime = new Common.Controls.ListViewEx();
-			this.elementHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.startTimeHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.LayerEffectHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.contextMenuStrip1.SuspendLayout();
-			this.SuspendLayout();
+			components = new System.ComponentModel.Container();
+			linkLabel1 = new LinkLabel();
+			comboBoxAvailableEffect = new ComboBox();
+			toolTipFindEffects = new ToolTip(components);
+			checkBoxCollapseAllGroups = new CheckBox();
+			contextMenuStrip1 = new ContextMenuStrip(components);
+			findAllSelectedEffectsToolStripMenuItem = new ToolStripMenuItem();
+			comboBoxFind = new ComboBox();
+			listViewEffectStartTime = new Common.Controls.ListViewEx();
+			elementHeader = new ColumnHeader();
+			startTimeHeader = new ColumnHeader();
+			LayerEffectHeader = new ColumnHeader();
+			contextMenuStrip1.SuspendLayout();
+			SuspendLayout();
 			// 
 			// linkLabel1
 			// 
-			this.linkLabel1.AutoSize = true;
-			this.linkLabel1.Location = new System.Drawing.Point(55, 358);
-			this.linkLabel1.Name = "linkLabel1";
-			this.linkLabel1.Size = new System.Drawing.Size(0, 17);
-			this.linkLabel1.TabIndex = 4;
+			linkLabel1.AutoSize = true;
+			linkLabel1.Location = new Point(48, 336);
+			linkLabel1.Name = "linkLabel1";
+			linkLabel1.Size = new Size(0, 15);
+			linkLabel1.TabIndex = 4;
 			// 
 			// comboBoxAvailableEffect
 			// 
-			this.comboBoxAvailableEffect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.comboBoxAvailableEffect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxAvailableEffect.FormattingEnabled = true;
-			this.comboBoxAvailableEffect.Location = new System.Drawing.Point(14, 49);
-			this.comboBoxAvailableEffect.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-			this.comboBoxAvailableEffect.MaxDropDownItems = 20;
-			this.comboBoxAvailableEffect.Name = "comboBoxAvailableEffect";
-			this.comboBoxAvailableEffect.Size = new System.Drawing.Size(329, 24);
-			this.comboBoxAvailableEffect.TabIndex = 12;
-			this.comboBoxAvailableEffect.SelectedIndexChanged += new System.EventHandler(this.comboBoxAvailableEffect_SelectedIndexChanged);
-			this.comboBoxAvailableEffect.Click += new System.EventHandler(this.comboBoxAvailableEffect_Click);
+			comboBoxAvailableEffect.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+			comboBoxAvailableEffect.DropDownStyle = ComboBoxStyle.DropDownList;
+			comboBoxAvailableEffect.FormattingEnabled = true;
+			comboBoxAvailableEffect.Location = new Point(12, 46);
+			comboBoxAvailableEffect.Margin = new Padding(3, 2, 3, 2);
+			comboBoxAvailableEffect.MaxDropDownItems = 20;
+			comboBoxAvailableEffect.Name = "comboBoxAvailableEffect";
+			comboBoxAvailableEffect.Size = new Size(288, 23);
+			comboBoxAvailableEffect.TabIndex = 12;
+			comboBoxAvailableEffect.SelectedIndexChanged += comboBoxAvailableEffect_SelectedIndexChanged;
+			comboBoxAvailableEffect.Click += comboBoxAvailableEffect_Click;
 			// 
 			// checkBoxCollapseAllGroups
 			// 
-			this.checkBoxCollapseAllGroups.AutoSize = true;
-			this.checkBoxCollapseAllGroups.Checked = true;
-			this.checkBoxCollapseAllGroups.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkBoxCollapseAllGroups.Location = new System.Drawing.Point(188, 11);
-			this.checkBoxCollapseAllGroups.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-			this.checkBoxCollapseAllGroups.Name = "checkBoxCollapseAllGroups";
-			this.checkBoxCollapseAllGroups.Size = new System.Drawing.Size(153, 21);
-			this.checkBoxCollapseAllGroups.TabIndex = 20;
-			this.checkBoxCollapseAllGroups.Text = "Collapse all Groups";
-			this.toolTipFindEffects.SetToolTip(this.checkBoxCollapseAllGroups, "When enabled will collapse all groups prior to finding selected Effects.");
-			this.checkBoxCollapseAllGroups.UseVisualStyleBackColor = true;
+			checkBoxCollapseAllGroups.AutoSize = true;
+			checkBoxCollapseAllGroups.Checked = true;
+			checkBoxCollapseAllGroups.CheckState = CheckState.Checked;
+			checkBoxCollapseAllGroups.Location = new Point(164, 10);
+			checkBoxCollapseAllGroups.Margin = new Padding(3, 2, 3, 2);
+			checkBoxCollapseAllGroups.Name = "checkBoxCollapseAllGroups";
+			checkBoxCollapseAllGroups.Size = new Size(127, 19);
+			checkBoxCollapseAllGroups.TabIndex = 20;
+			checkBoxCollapseAllGroups.Text = "Collapse all Groups";
+			toolTipFindEffects.SetToolTip(checkBoxCollapseAllGroups, "When enabled will collapse all groups prior to finding selected Effects.");
+			checkBoxCollapseAllGroups.UseVisualStyleBackColor = true;
 			// 
 			// contextMenuStrip1
 			// 
-			this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
-			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.findAllSelectedEffectsToolStripMenuItem});
-			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(234, 28);
+			contextMenuStrip1.ImageScalingSize = new Size(20, 20);
+			contextMenuStrip1.Items.AddRange(new ToolStripItem[] { findAllSelectedEffectsToolStripMenuItem });
+			contextMenuStrip1.Name = "contextMenuStrip1";
+			contextMenuStrip1.Size = new Size(197, 26);
 			// 
 			// findAllSelectedEffectsToolStripMenuItem
 			// 
-			this.findAllSelectedEffectsToolStripMenuItem.Name = "findAllSelectedEffectsToolStripMenuItem";
-			this.findAllSelectedEffectsToolStripMenuItem.Size = new System.Drawing.Size(233, 24);
-			this.findAllSelectedEffectsToolStripMenuItem.Text = "Find all selected effects";
-			this.findAllSelectedEffectsToolStripMenuItem.Click += new System.EventHandler(this.findAllSelectedEffectsToolStripMenuItem_Click);
+			findAllSelectedEffectsToolStripMenuItem.Name = "findAllSelectedEffectsToolStripMenuItem";
+			findAllSelectedEffectsToolStripMenuItem.Size = new Size(196, 22);
+			findAllSelectedEffectsToolStripMenuItem.Text = "Find all selected effects";
+			findAllSelectedEffectsToolStripMenuItem.Click += findAllSelectedEffectsToolStripMenuItem_Click;
 			// 
 			// comboBoxFind
 			// 
-			this.comboBoxFind.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxFind.FormattingEnabled = true;
-			this.comboBoxFind.Items.AddRange(new object[] {
-            "Effects",
-            "Layers"});
-			this.comboBoxFind.Location = new System.Drawing.Point(15, 10);
-			this.comboBoxFind.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-			this.comboBoxFind.MaxDropDownItems = 20;
-			this.comboBoxFind.Name = "comboBoxFind";
-			this.comboBoxFind.Size = new System.Drawing.Size(140, 24);
-			this.comboBoxFind.TabIndex = 21;
-			this.comboBoxFind.SelectedIndexChanged += new System.EventHandler(this.comboBoxFind_SelectedIndexChanged);
+			comboBoxFind.DropDownStyle = ComboBoxStyle.DropDownList;
+			comboBoxFind.FormattingEnabled = true;
+			comboBoxFind.Items.AddRange(new object[] { "Effects", "Layers" });
+			comboBoxFind.Location = new Point(13, 9);
+			comboBoxFind.Margin = new Padding(3, 2, 3, 2);
+			comboBoxFind.MaxDropDownItems = 20;
+			comboBoxFind.Name = "comboBoxFind";
+			comboBoxFind.Size = new Size(123, 23);
+			comboBoxFind.TabIndex = 21;
+			comboBoxFind.SelectedIndexChanged += comboBoxFind_SelectedIndexChanged;
 			// 
 			// listViewEffectStartTime
 			// 
-			this.listViewEffectStartTime.AllowDrop = true;
-			this.listViewEffectStartTime.AllowRowReorder = false;
-			this.listViewEffectStartTime.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.listViewEffectStartTime.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.elementHeader,
-            this.startTimeHeader,
-            this.LayerEffectHeader});
-			this.listViewEffectStartTime.ContextMenuStrip = this.contextMenuStrip1;
-			this.listViewEffectStartTime.FullRowSelect = true;
-			this.listViewEffectStartTime.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-			this.listViewEffectStartTime.Location = new System.Drawing.Point(0, 89);
-			this.listViewEffectStartTime.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-			this.listViewEffectStartTime.Name = "listViewEffectStartTime";
-			this.listViewEffectStartTime.OwnerDraw = true;
-			this.listViewEffectStartTime.Size = new System.Drawing.Size(352, 352);
-			this.listViewEffectStartTime.TabIndex = 14;
-			this.listViewEffectStartTime.UseCompatibleStateImageBehavior = false;
-			this.listViewEffectStartTime.View = System.Windows.Forms.View.Details;
-			this.listViewEffectStartTime.DoubleClick += new System.EventHandler(this.listViewEffectStartTime_DoubleClick);
-			this.listViewEffectStartTime.MouseEnter += new System.EventHandler(this.listViewEffectStartTime_UpdateListView);
-			this.listViewEffectStartTime.MouseUp += new System.Windows.Forms.MouseEventHandler(this.listViewEffectStartTime_MouseUp);
+			listViewEffectStartTime.AllowDrop = true;
+			listViewEffectStartTime.AllowRowReorder = false;
+			listViewEffectStartTime.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+			listViewEffectStartTime.Columns.AddRange(new ColumnHeader[] { elementHeader, startTimeHeader, LayerEffectHeader });
+			listViewEffectStartTime.ContextMenuStrip = contextMenuStrip1;
+			listViewEffectStartTime.FullRowSelect = true;
+			listViewEffectStartTime.HeaderStyle = ColumnHeaderStyle.Nonclickable;
+			listViewEffectStartTime.Location = new Point(0, 83);
+			listViewEffectStartTime.Margin = new Padding(3, 2, 3, 2);
+			listViewEffectStartTime.Name = "listViewEffectStartTime";
+			listViewEffectStartTime.OwnerDraw = true;
+			listViewEffectStartTime.Size = new Size(308, 330);
+			listViewEffectStartTime.TabIndex = 14;
+			listViewEffectStartTime.UseCompatibleStateImageBehavior = false;
+			listViewEffectStartTime.View = View.Details;
+			listViewEffectStartTime.DoubleClick += listViewEffectStartTime_DoubleClick;
+			listViewEffectStartTime.MouseUp += listViewEffectStartTime_MouseUp;
 			// 
 			// elementHeader
 			// 
-			this.elementHeader.Text = "Element";
-			this.elementHeader.Width = 104;
+			elementHeader.Text = "Element";
+			elementHeader.Width = 104;
 			// 
 			// startTimeHeader
 			// 
-			this.startTimeHeader.Text = "Effect Start Time";
-			this.startTimeHeader.Width = 160;
+			startTimeHeader.Text = "Effect Start Time";
+			startTimeHeader.Width = 160;
 			// 
 			// LayerEffectHeader
 			// 
-			this.LayerEffectHeader.Text = "Layer";
-			this.LayerEffectHeader.Width = 84;
+			LayerEffectHeader.Text = "Layer";
+			LayerEffectHeader.Width = 40;
 			// 
 			// FindEffectForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.ClientSize = new System.Drawing.Size(355, 442);
-			this.ControlBox = false;
-			this.Controls.Add(this.comboBoxFind);
-			this.Controls.Add(this.checkBoxCollapseAllGroups);
-			this.Controls.Add(this.listViewEffectStartTime);
-			this.Controls.Add(this.comboBoxAvailableEffect);
-			this.Controls.Add(this.linkLabel1);
-			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-			this.Name = "FindEffectForm";
-			this.Text = "Find Effects/Layers";
-			this.Resize += new System.EventHandler(this.FindEffectForm_Resize);
-			this.contextMenuStrip1.ResumeLayout(false);
-			this.ResumeLayout(false);
-			this.PerformLayout();
-
+			AutoScaleDimensions = new SizeF(7F, 15F);
+			AutoScaleMode = AutoScaleMode.Font;
+			AutoSizeMode = AutoSizeMode.GrowAndShrink;
+			BackColor = Color.FromArgb(68, 68, 68);
+			ClientSize = new Size(311, 414);
+			ControlBox = false;
+			Controls.Add(comboBoxFind);
+			Controls.Add(checkBoxCollapseAllGroups);
+			Controls.Add(listViewEffectStartTime);
+			Controls.Add(comboBoxAvailableEffect);
+			Controls.Add(linkLabel1);
+			ForeColor = Color.FromArgb(221, 221, 221);
+			Margin = new Padding(3, 2, 3, 2);
+			Name = "FindEffectForm";
+			Text = "Find Effects/Layers";
+			Resize += FindEffectForm_Resize;
+			contextMenuStrip1.ResumeLayout(false);
+			ResumeLayout(false);
+			PerformLayout();
 		}
 
 		#endregion
 
-		private System.Windows.Forms.LinkLabel linkLabel1;
-		private System.Windows.Forms.ComboBox comboBoxAvailableEffect;
+		private LinkLabel linkLabel1;
+		private ComboBox comboBoxAvailableEffect;
 		private Common.Controls.ListViewEx listViewEffectStartTime;
-		private System.Windows.Forms.ColumnHeader elementHeader;
-		private System.Windows.Forms.ColumnHeader startTimeHeader;
-		private System.Windows.Forms.ToolTip toolTipFindEffects;
-		private System.Windows.Forms.CheckBox checkBoxCollapseAllGroups;
-		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-		private System.Windows.Forms.ToolStripMenuItem findAllSelectedEffectsToolStripMenuItem;
-		private System.Windows.Forms.ColumnHeader LayerEffectHeader;
-		private System.Windows.Forms.ComboBox comboBoxFind;
+		private ColumnHeader elementHeader;
+		private ColumnHeader startTimeHeader;
+		private ToolTip toolTipFindEffects;
+		private CheckBox checkBoxCollapseAllGroups;
+		private ContextMenuStrip contextMenuStrip1;
+		private ToolStripMenuItem findAllSelectedEffectsToolStripMenuItem;
+		private ColumnHeader LayerEffectHeader;
+		private ComboBox comboBoxFind;
 
 	}
 }

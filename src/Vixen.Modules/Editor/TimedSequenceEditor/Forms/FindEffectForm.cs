@@ -12,6 +12,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public TimelineControl TimelineControl { get; set; }
 
 		private readonly SequenceLayers _layerManager;
+		private bool _rowEventsAdded;
+		private string _searchString = string.Empty;
+		private bool _findEffects = true;
 
 		public FindEffectForm(TimelineControl timelineControl, SequenceLayers layerManager)
 		{
@@ -20,6 +23,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			contextMenuStrip1.Renderer = new ThemeToolStripRenderer();
 			Icon = Resources.Icon_Vixen3;
 			TimelineControl = timelineControl;
+			timelineControl.ElementsFinishedMoving += TimelineControlOnElementsFinishedMoving;
 
 			comboBoxFind.SelectedIndex = 0;
 
@@ -28,42 +32,102 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewEffectStartTime.SetLastColumnWidth();
 			listViewEffectStartTime.EndUpdate();
 			ThemeUpdateControls.UpdateControls(this);
+
+			Closing += FindEffectForm_Closing;
+		}
+
+		private void FindEffectForm_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			if (TimelineControl != null)
+			{
+				foreach (Row row in TimelineControl.Rows)
+				{
+					row.ElementRemoved -= RowElementAddedRemoved;
+					row.ElementAdded -= RowElementAddedRemoved;
+				}
+
+				TimelineControl.ElementsFinishedMoving += TimelineControlOnElementsFinishedMoving;
+			}
+
+		}
+
+		private void AddRowEvents()
+		{
+			foreach (Row row in TimelineControl.Rows)
+			{
+				row.ElementRemoved += RowElementAddedRemoved;
+				row.ElementAdded += RowElementAddedRemoved;
+			}
+
+			_rowEventsAdded = true;
+		}
+
+		private async void RowElementAddedRemoved(object sender, ElementEventArgs e)
+		{
+			if (_findEffects && e.Element.EffectNode.Effect.EffectName ==
+				_searchString)
+			{
+				if (InvokeRequired)
+				{
+					BeginInvoke(UpdateListView);
+				}
+				else
+				{
+					await UpdateListView();
+				}
+			}
+		}
+
+		private async void TimelineControlOnElementsFinishedMoving(object sender, MultiElementEventArgs e)
+		{
+			if (InvokeRequired)
+			{
+				BeginInvoke(UpdateListView);
+			}
+			else
+			{
+				await UpdateListView();
+			}
 		}
 
 		#region Methods
 
-		private void UpdateListView()
+		private async Task UpdateListView()
 		{
 			if (comboBoxAvailableEffect.SelectedItem != null)
 			{
+
 				//gets the Effect data of all Effects in the sequence of the same type as per combobox selection
 				var elements = new List<Element>();
 
-				HashSet<string> uniqueStrings = new HashSet<string>();
-				foreach (Row row in TimelineControl.Rows)
+				await Task.Factory.StartNew(() =>
 				{
-					foreach (Element element in row)
+					HashSet<string> uniqueStrings = new HashSet<string>();
+					foreach (Row row in TimelineControl.Rows)
 					{
-						if (comboBoxFind.SelectedIndex == 0) //0 is to find effects and 1 will find layers
+						foreach (Element element in row)
 						{
-							//only unique effects will be added as there is no point adding the same effect just becasue it's in a different Element group
-							if ((uniqueStrings.Contains(element.EffectNode.Effect.InstanceId.ToString()) ||
-							     element.EffectNode.Effect.EffectName != comboBoxAvailableEffect.SelectedItem.ToString())) continue;
-							uniqueStrings.Add(element.EffectNode.Effect.InstanceId.ToString());
-							elements.Add(element);
-						}
-						else
-						{
-							if ((uniqueStrings.Contains(element.EffectNode.Effect.InstanceId.ToString()) ||
-							     _layerManager.GetLayer(element.EffectNode).LayerName != comboBoxAvailableEffect.SelectedItem.ToString()))
-								continue;
-							uniqueStrings.Add(element.EffectNode.Effect.InstanceId.ToString());
-							elements.Add(element);
+							if (_findEffects) //0 is to find effects and 1 will find layers
+							{
+								//only unique effects will be added as there is no point adding the same effect just becasue it's in a different Element group
+								if ((uniqueStrings.Contains(element.EffectNode.Effect.InstanceId.ToString()) ||
+									 element.EffectNode.Effect.EffectName != _searchString)) continue;
+								uniqueStrings.Add(element.EffectNode.Effect.InstanceId.ToString());
+								elements.Add(element);
+							}
+							else
+							{
+								if ((uniqueStrings.Contains(element.EffectNode.Effect.InstanceId.ToString()) ||
+									 _layerManager.GetLayer(element.EffectNode).LayerName != _searchString))
+									continue;
+								uniqueStrings.Add(element.EffectNode.Effect.InstanceId.ToString());
+								elements.Add(element);
+							}
 						}
 					}
-				}
 
-				elements.Sort(); //Puts the effects into Start Time order
+					elements.Sort(); //Puts the effects into Start Time order
+				});
 
 				//Add Effect data to listview.
 				listViewEffectStartTime.BeginUpdate();
@@ -76,6 +140,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				listViewEffectStartTime.SetLastColumnWidth();
 				listViewEffectStartTime.EndUpdate();
+
+				if (!_rowEventsAdded)
+				{
+					AddRowEvents();
+				}
 			}
 		}
 
@@ -87,7 +156,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			item.SubItems.Add(comboBoxFind.SelectedIndex == 0
 				? _layerManager.GetLayer(element.EffectNode).LayerName
 				: element.EffectNode.Effect.EffectName);
-			item.Tag = element; 
+			item.Tag = element;
 			listViewEffectStartTime.Items.Add(item);
 		}
 
@@ -97,7 +166,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			comboBoxAvailableEffect.Items.Clear();
 			comboBoxAvailableEffect.BeginUpdate();
 			HashSet<string> uniqueStrings = new HashSet<string>();
-			
+
 			foreach (Row row in TimelineControl.Rows)
 				foreach (Element effect in row)
 				{
@@ -161,9 +230,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			comboBoxAvailableEffect.Refresh(); //Ensure the combobox is redrawn to display correctly.
 		}
 
-		private void comboBoxAvailableEffect_SelectedIndexChanged(object sender, EventArgs e)
+		private async void comboBoxAvailableEffect_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			UpdateListView();
+			_findEffects = comboBoxFind.SelectedIndex == 0;
+			_searchString = comboBoxAvailableEffect.SelectedItem.ToString();
+			await UpdateListView();
 			listViewEffectStartTime.ColumnAutoSize();
 			listViewEffectStartTime.Refresh();
 		}
@@ -171,11 +242,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void comboBoxAvailableEffect_Click(object sender, EventArgs e)
 		{
 			GetAllElements();
-		}
-
-		private void listViewEffectStartTime_UpdateListView(object sender, EventArgs e)
-		{
-			UpdateListView();
 		}
 		#endregion
 
