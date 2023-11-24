@@ -1,6 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using Common.Controls;
 using Common.Controls.Wizard;
 using NLog;
+using Vixen;
 using Vixen.Export;
 using Vixen.Module.Media;
 using Vixen.Services;
@@ -158,8 +161,32 @@ namespace VixenModules.App.ExportWizard
 					exportProgressStatus.TaskProgressMessage = string.Format("Loading {0}", Path.GetFileNameWithoutExtension(sequenceFile)); ;
 					progress.Report(exportProgressStatus);
 
-					//Load our sequence
-					var sequence = SequenceService.Instance.Load(sequenceFile);
+					ISequence sequence = null;
+					try
+					{
+						//Load our sequence
+						sequence = SequenceService.Instance.Load(sequenceFile);
+					}
+					catch (Exception ex)
+					{
+						Logging.Error(ex, $"An error occured loading the sequence {sequenceFile}");
+					}
+
+					if (sequence == null)
+					{
+						var result = ShowSequenceLoadError(sequenceFile);
+						if (result)
+						{
+							overallProgressStep = overallProgressStep + 2;
+							exportProgressStatus.OverallProgressValue = (int)(overallProgressStep / overallProgressSteps * 100);
+							progress.Report(exportProgressStatus);
+							continue;
+						}
+
+						_cancelled = true;
+						break;
+					}
+					
 					exportProgressStatus.TaskProgressMessage = string.Format("Loading any media for {0}", sequence.Name);
 					progress.Report(exportProgressStatus);
 					//Load it's media
@@ -200,6 +227,28 @@ namespace VixenModules.App.ExportWizard
 
 			VixenSystem.DefaultUpdateInterval = updateIntervalHold;
 			return true;
+		}
+
+		private bool ShowSequenceLoadError(string sequenceFile)
+		{
+			if (InvokeRequired)
+			{
+				return (bool)Invoke(new Delegates.GenericBoolString(ShowSequenceLoadError), sequenceFile);
+			}
+			else
+			{
+				var msgBox = new MessageBoxForm(
+					$"An error occurred opening the sequence {sequenceFile}. \nDo you wish to continue with the export of the remaining ones?",
+					"Error Loading Sequence", MessageBoxButtons.YesNo, SystemIcons.Error);
+				var result = msgBox.ShowDialog(this);
+				if (result == DialogResult.OK)
+				{
+					return true;
+				}
+
+				return false;
+			}
+			
 		}
 
 		private async Task CreateUniverseFile()
