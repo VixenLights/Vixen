@@ -13,5 +13,7 @@
 		public delegate void GenericVoidString(string s);
 
 		public delegate string GenericStringValue();
+
+		public delegate bool GenericBoolString(string value);
 	}
 }
