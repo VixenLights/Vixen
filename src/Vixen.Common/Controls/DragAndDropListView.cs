@@ -216,7 +216,7 @@ namespace Common.Controls
 		private void List_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
 		{
 			var backgroundColor = ThemeColorTable.TextBoxBackgroundColor;
-			if ((e.ItemState & ListViewItemStates.Selected) != 0)
+			if (e.Item.Selected)
 			{
 				// Draw the background and focus rectangle for a selected item.
 				backgroundColor = ThemeColorTable.BackgroundColor;
@@ -225,6 +225,11 @@ namespace Common.Controls
 			else
 			{
 				e.Graphics.FillRectangle(new SolidBrush(backgroundColor), e.Bounds);
+			}
+
+			if (e.Item.Focused)
+			{
+				ControlPaint.DrawFocusRectangle(e.Graphics, e.Item.Bounds, ThemeColorTable.ForeColor, backgroundColor);
 			}
 
 			var textBounds = e.Bounds;
@@ -253,16 +258,20 @@ namespace Common.Controls
 			if (View != View.Details)
 			{
 				var backgroundColor = ThemeColorTable.TextBoxBackgroundColor;
-				if ((e.State & ListViewItemStates.Selected) != 0)
+				if (e.Item.Selected)
 				{
 					// Draw the background and focus rectangle for a selected item.
 					backgroundColor = ThemeColorTable.BackgroundColor;
 					e.Graphics.FillRectangle(new SolidBrush(backgroundColor), e.Bounds);
-					e.DrawFocusRectangle();
 				}
 				else
 				{
 					e.Graphics.FillRectangle(new SolidBrush(backgroundColor), e.Bounds);
+				}
+
+				if (e.Item.Focused)
+				{
+					e.DrawFocusRectangle();
 				}
 
 				TextRenderer.DrawText(e.Graphics, e.Item.Text, e.Item.Font, e.Bounds, ThemeColorTable.ForeColor, backgroundColor, TextFormatFlags.VerticalCenter);

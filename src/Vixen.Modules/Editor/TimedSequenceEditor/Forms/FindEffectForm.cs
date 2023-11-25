@@ -22,19 +22,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_layerManager = layerManager;
 			contextMenuStrip1.Renderer = new ThemeToolStripRenderer();
 			Icon = Resources.Icon_Vixen3;
+			ThemeUpdateControls.UpdateControls(this);
 			TimelineControl = timelineControl;
 			timelineControl.ElementsFinishedMoving += TimelineControlOnElementsFinishedMoving;
 
 			comboBoxFind.SelectedIndex = 0;
-
-			listViewEffectStartTime.BeginUpdate();
-			listViewEffectStartTime.ColumnAutoSize();
-			listViewEffectStartTime.SetLastColumnWidth();
-			listViewEffectStartTime.EndUpdate();
-			ThemeUpdateControls.UpdateControls(this);
-
+			
 			Closing += FindEffectForm_Closing;
+			Resize += FindEffectForm_Resize;
 		}
+
+		
+
+		private void FindEffectForm_Load(object sender, EventArgs e)
+		{
+			ResizeColumns();
+		}
+
 
 		private void FindEffectForm_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
@@ -92,6 +96,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Methods
 
+		private void ResizeColumns()
+		{
+			listViewEffectStartTime.ColumnAutoSize();
+			listViewEffectStartTime.SetLastColumnWidth();
+		}
+
 		private async Task UpdateListView()
 		{
 			if (comboBoxAvailableEffect.SelectedItem != null)
@@ -137,9 +147,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					AddElementToListView(element);
 				}
-
-				listViewEffectStartTime.SetLastColumnWidth();
+				ResizeColumns();
 				listViewEffectStartTime.EndUpdate();
+
 
 				if (!_rowEventsAdded)
 				{
@@ -228,6 +238,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void FindEffectForm_Resize(object sender, EventArgs e)
 		{
 			comboBoxAvailableEffect.Refresh(); //Ensure the combobox is redrawn to display correctly.
+			listViewEffectStartTime.SetLastColumnWidth();
 		}
 
 		private async void comboBoxAvailableEffect_SelectedIndexChanged(object sender, EventArgs e)
@@ -235,8 +246,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_findEffects = comboBoxFind.SelectedIndex == 0;
 			_searchString = comboBoxAvailableEffect.SelectedItem.ToString();
 			await UpdateListView();
-			listViewEffectStartTime.ColumnAutoSize();
-			listViewEffectStartTime.Refresh();
 		}
 
 		private void comboBoxAvailableEffect_Click(object sender, EventArgs e)
@@ -251,5 +260,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			GetAllElements();
 			listViewEffectStartTime.Items.Clear();
 		}
+
 	}
 }

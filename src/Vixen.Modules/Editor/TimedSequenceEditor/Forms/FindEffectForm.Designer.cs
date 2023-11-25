@@ -158,6 +158,7 @@
 			Margin = new Padding(3, 2, 3, 2);
 			Name = "FindEffectForm";
 			Text = "Find Effects/Layers";
+			Load += FindEffectForm_Load;
 			Resize += FindEffectForm_Resize;
 			contextMenuStrip1.ResumeLayout(false);
 			ResumeLayout(false);
