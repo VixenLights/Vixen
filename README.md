@@ -1,5 +1,5 @@
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/Vixenlights/Vixen)
-![GitHub release (with filter)](https://img.shields.io/github/v/release/Vixenlights/Vixen?filter=DevBuild*&logo=GitHub&label=Pre-release)
+![GitHub release (with filter)](https://img.shields.io/github/v/release/Vixenlights/Vixen?logo=GitHub)
+![GitHub release (with filter)](https://img.shields.io/github/v/release/Vixenlights/Vixen?filter=DevBuild*&logo=GitHub&label=pre-release)
 [![download](https://img.shields.io/badge/download-release-blue.svg)](https://www.vixenlights.com/download/release-build/)
 [![download](https://img.shields.io/badge/download-development-green.svg)](https://www.vixenlights.com/download/develop-build/)
 [![download](https://img.shields.io/badge/bugs-tracker-blue.svg)](http://bugs.vixenlights.com)
