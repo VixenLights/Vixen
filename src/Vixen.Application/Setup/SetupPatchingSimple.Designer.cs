@@ -15,7 +15,8 @@ namespace VixenApplication.Setup
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing && (components != null)) {
+			if (disposing && (components != null))
+			{
 				components.Dispose();
 			}
 			base.Dispose(disposing);
@@ -29,637 +30,721 @@ namespace VixenApplication.Setup
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
-			this.groupBoxElements = new System.Windows.Forms.GroupBox();
-			this.panel2 = new System.Windows.Forms.Panel();
-			this.labelFilterCount = new System.Windows.Forms.Label();
-			this.labelElementCount = new System.Windows.Forms.Label();
-			this.labelGroupCount = new System.Windows.Forms.Label();
-			this.labelItemCount = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
-			this.labelUnconnectedPatchPointCount = new System.Windows.Forms.Label();
-			this.labelConnectedPatchPointCount = new System.Windows.Forms.Label();
-			this.labelPatchPointCount = new System.Windows.Forms.Label();
-			this.label7 = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.buttonUnpatchElements = new System.Windows.Forms.Button();
-			this.checkBoxReverseElementOrder = new System.Windows.Forms.CheckBox();
-			this.groupBoxControllers = new System.Windows.Forms.GroupBox();
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.labelLastOutput = new System.Windows.Forms.Label();
-			this.labelFirstOutput = new System.Windows.Forms.Label();
-			this.label9 = new System.Windows.Forms.Label();
-			this.label8 = new System.Windows.Forms.Label();
-			this.labelUnpatchedOutputCount = new System.Windows.Forms.Label();
-			this.labelPatchedOutputCount = new System.Windows.Forms.Label();
-			this.labelOutputCount = new System.Windows.Forms.Label();
-			this.labelControllerCount = new System.Windows.Forms.Label();
-			this.label15 = new System.Windows.Forms.Label();
-			this.label16 = new System.Windows.Forms.Label();
-			this.label20 = new System.Windows.Forms.Label();
-			this.label21 = new System.Windows.Forms.Label();
-			this.buttonUnpatchControllers = new System.Windows.Forms.Button();
-			this.checkBoxReverseOutputOrder = new System.Windows.Forms.CheckBox();
-			this.groupBoxPatching = new System.Windows.Forms.GroupBox();
-			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-			this.groupBoxElementOptions = new System.Windows.Forms.GroupBox();
-			this.radioButtonAllAvailablePatchPoints = new System.Windows.Forms.RadioButton();
-			this.radioButtonUnconnectedPatchPointsOnly = new System.Windows.Forms.RadioButton();
-			this.groupBoxOutputOptions = new System.Windows.Forms.GroupBox();
-			this.radioButtonAllOutputs = new System.Windows.Forms.RadioButton();
-			this.radioButtonUnpatchedOutputsOnly = new System.Windows.Forms.RadioButton();
-			this.labelPatchWarning = new System.Windows.Forms.Label();
-			this.labelPatchSummary = new System.Windows.Forms.Label();
-			this.buttonDoPatching = new System.Windows.Forms.Button();
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.groupBoxElements.SuspendLayout();
-			this.panel2.SuspendLayout();
-			this.groupBoxControllers.SuspendLayout();
-			this.panel1.SuspendLayout();
-			this.groupBoxPatching.SuspendLayout();
-			this.tableLayoutPanel2.SuspendLayout();
-			this.groupBoxElementOptions.SuspendLayout();
-			this.groupBoxOutputOptions.SuspendLayout();
-			this.tableLayoutPanel1.SuspendLayout();
-			this.SuspendLayout();
+			components = new System.ComponentModel.Container();
+			groupBoxElements = new GroupBox();
+			tableLayoutPanel4 = new TableLayoutPanel();
+			labelFilterCount = new Label();
+			label5 = new Label();
+			buttonUnpatchElements = new Button();
+			labelElementCount = new Label();
+			labelPatchPointCount = new Label();
+			labelGroupCount = new Label();
+			label3 = new Label();
+			label6 = new Label();
+			labelItemCount = new Label();
+			labelConnectedPatchPointCount = new Label();
+			label2 = new Label();
+			label7 = new Label();
+			labelUnconnectedPatchPointCount = new Label();
+			label1 = new Label();
+			label4 = new Label();
+			checkBoxReverseElementOrder = new CheckBox();
+			groupBoxControllers = new GroupBox();
+			tableLayoutPanel3 = new TableLayoutPanel();
+			labelLastOutput = new Label();
+			buttonUnpatchControllers = new Button();
+			label20 = new Label();
+			label9 = new Label();
+			labelFirstOutput = new Label();
+			labelOutputCount = new Label();
+			label16 = new Label();
+			label8 = new Label();
+			labelPatchedOutputCount = new Label();
+			labelControllerCount = new Label();
+			labelUnpatchedOutputCount = new Label();
+			label21 = new Label();
+			label15 = new Label();
+			checkBoxReverseOutputOrder = new CheckBox();
+			groupBoxPatching = new GroupBox();
+			tableLayoutPanelPatchingOptions = new TableLayoutPanel();
+			groupBoxElementOptions = new GroupBox();
+			radioButtonAllAvailablePatchPoints = new RadioButton();
+			radioButtonUnconnectedPatchPointsOnly = new RadioButton();
+			buttonDoPatching = new Button();
+			labelPatchWarning = new Label();
+			groupBoxOutputOptions = new GroupBox();
+			radioButtonAllOutputs = new RadioButton();
+			radioButtonUnpatchedOutputsOnly = new RadioButton();
+			labelPatchSummary = new Label();
+			toolTip1 = new ToolTip(components);
+			tableLayoutPanelContainer = new TableLayoutPanel();
+			groupBoxElements.SuspendLayout();
+			tableLayoutPanel4.SuspendLayout();
+			groupBoxControllers.SuspendLayout();
+			tableLayoutPanel3.SuspendLayout();
+			groupBoxPatching.SuspendLayout();
+			tableLayoutPanelPatchingOptions.SuspendLayout();
+			groupBoxElementOptions.SuspendLayout();
+			groupBoxOutputOptions.SuspendLayout();
+			tableLayoutPanelContainer.SuspendLayout();
+			SuspendLayout();
 			// 
 			// groupBoxElements
 			// 
-			this.groupBoxElements.AutoSize = true;
-			this.groupBoxElements.Controls.Add(this.panel2);
-			this.groupBoxElements.Controls.Add(this.buttonUnpatchElements);
-			this.groupBoxElements.Location = new System.Drawing.Point(3, 3);
-			this.groupBoxElements.Name = "groupBoxElements";
-			this.groupBoxElements.Size = new System.Drawing.Size(220, 257);
-			this.groupBoxElements.TabIndex = 0;
-			this.groupBoxElements.TabStop = false;
-			this.groupBoxElements.Text = "Selected Elements";
-			this.groupBoxElements.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			groupBoxElements.AutoSize = true;
+			groupBoxElements.Controls.Add(tableLayoutPanel4);
+			groupBoxElements.Dock = DockStyle.Fill;
+			groupBoxElements.Location = new Point(4, 3);
+			groupBoxElements.Margin = new Padding(4, 3, 4, 3);
+			groupBoxElements.Name = "groupBoxElements";
+			groupBoxElements.Padding = new Padding(4, 3, 4, 3);
+			groupBoxElements.Size = new Size(258, 234);
+			groupBoxElements.TabIndex = 0;
+			groupBoxElements.TabStop = false;
+			groupBoxElements.Text = "Selected Elements";
+			groupBoxElements.Paint += groupBoxes_Paint;
 			// 
-			// panel2
+			// tableLayoutPanel4
 			// 
-			this.panel2.AutoSize = true;
-			this.panel2.Controls.Add(this.labelFilterCount);
-			this.panel2.Controls.Add(this.labelElementCount);
-			this.panel2.Controls.Add(this.labelGroupCount);
-			this.panel2.Controls.Add(this.labelItemCount);
-			this.panel2.Controls.Add(this.label4);
-			this.panel2.Controls.Add(this.label3);
-			this.panel2.Controls.Add(this.label2);
-			this.panel2.Controls.Add(this.label1);
-			this.panel2.Controls.Add(this.labelUnconnectedPatchPointCount);
-			this.panel2.Controls.Add(this.labelConnectedPatchPointCount);
-			this.panel2.Controls.Add(this.labelPatchPointCount);
-			this.panel2.Controls.Add(this.label7);
-			this.panel2.Controls.Add(this.label6);
-			this.panel2.Controls.Add(this.label5);
-			this.panel2.Location = new System.Drawing.Point(6, 18);
-			this.panel2.Name = "panel2";
-			this.panel2.Size = new System.Drawing.Size(208, 189);
-			this.panel2.TabIndex = 23;
+			tableLayoutPanel4.AutoSize = true;
+			tableLayoutPanel4.ColumnCount = 2;
+			tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle());
+			tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+			tableLayoutPanel4.Controls.Add(labelFilterCount, 1, 7);
+			tableLayoutPanel4.Controls.Add(label5, 0, 0);
+			tableLayoutPanel4.Controls.Add(buttonUnpatchElements, 0, 8);
+			tableLayoutPanel4.Controls.Add(labelElementCount, 1, 6);
+			tableLayoutPanel4.Controls.Add(labelPatchPointCount, 1, 0);
+			tableLayoutPanel4.Controls.Add(labelGroupCount, 1, 5);
+			tableLayoutPanel4.Controls.Add(label3, 0, 6);
+			tableLayoutPanel4.Controls.Add(label6, 0, 1);
+			tableLayoutPanel4.Controls.Add(labelItemCount, 1, 4);
+			tableLayoutPanel4.Controls.Add(labelConnectedPatchPointCount, 1, 1);
+			tableLayoutPanel4.Controls.Add(label2, 0, 5);
+			tableLayoutPanel4.Controls.Add(label7, 0, 2);
+			tableLayoutPanel4.Controls.Add(labelUnconnectedPatchPointCount, 1, 2);
+			tableLayoutPanel4.Controls.Add(label1, 0, 4);
+			tableLayoutPanel4.Controls.Add(label4, 0, 7);
+			tableLayoutPanel4.Dock = DockStyle.Fill;
+			tableLayoutPanel4.Location = new Point(4, 19);
+			tableLayoutPanel4.Name = "tableLayoutPanel4";
+			tableLayoutPanel4.RowCount = 9;
+			tableLayoutPanel4.RowStyles.Add(new RowStyle());
+			tableLayoutPanel4.RowStyles.Add(new RowStyle());
+			tableLayoutPanel4.RowStyles.Add(new RowStyle());
+			tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+			tableLayoutPanel4.RowStyles.Add(new RowStyle());
+			tableLayoutPanel4.RowStyles.Add(new RowStyle());
+			tableLayoutPanel4.RowStyles.Add(new RowStyle());
+			tableLayoutPanel4.RowStyles.Add(new RowStyle());
+			tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+			tableLayoutPanel4.Size = new Size(250, 212);
+			tableLayoutPanel4.TabIndex = 24;
 			// 
 			// labelFilterCount
 			// 
-			this.labelFilterCount.AutoSize = true;
-			this.labelFilterCount.Location = new System.Drawing.Point(87, 161);
-			this.labelFilterCount.Name = "labelFilterCount";
-			this.labelFilterCount.Size = new System.Drawing.Size(13, 13);
-			this.labelFilterCount.TabIndex = 21;
-			this.labelFilterCount.Text = "0";
-			// 
-			// labelElementCount
-			// 
-			this.labelElementCount.AutoSize = true;
-			this.labelElementCount.Location = new System.Drawing.Point(87, 139);
-			this.labelElementCount.Name = "labelElementCount";
-			this.labelElementCount.Size = new System.Drawing.Size(13, 13);
-			this.labelElementCount.TabIndex = 20;
-			this.labelElementCount.Text = "0";
-			// 
-			// labelGroupCount
-			// 
-			this.labelGroupCount.AutoSize = true;
-			this.labelGroupCount.Location = new System.Drawing.Point(87, 117);
-			this.labelGroupCount.Name = "labelGroupCount";
-			this.labelGroupCount.Size = new System.Drawing.Size(13, 13);
-			this.labelGroupCount.TabIndex = 19;
-			this.labelGroupCount.Text = "0";
-			// 
-			// labelItemCount
-			// 
-			this.labelItemCount.AutoSize = true;
-			this.labelItemCount.Location = new System.Drawing.Point(87, 95);
-			this.labelItemCount.Name = "labelItemCount";
-			this.labelItemCount.Size = new System.Drawing.Size(13, 13);
-			this.labelItemCount.TabIndex = 18;
-			this.labelItemCount.Text = "0";
-			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(8, 161);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(37, 13);
-			this.label4.TabIndex = 17;
-			this.label4.Text = "Filters:";
-			this.toolTip1.SetToolTip(this.label4, "The number of filters found in the patching connections from the selected element" +
-        "s.");
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(8, 139);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(53, 13);
-			this.label3.TabIndex = 16;
-			this.label3.Text = "Elements:";
-			this.toolTip1.SetToolTip(this.label3, "The number of elements found in (or descending from) the selected elements.");
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(8, 117);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(44, 13);
-			this.label2.TabIndex = 15;
-			this.label2.Text = "Groups:";
-			this.toolTip1.SetToolTip(this.label2, "The number of groups found from the selected elements.");
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(8, 95);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(35, 13);
-			this.label1.TabIndex = 14;
-			this.label1.Text = "Items:";
-			this.toolTip1.SetToolTip(this.label1, "The number of items selected in the element view.");
-			// 
-			// labelUnconnectedPatchPointCount
-			// 
-			this.labelUnconnectedPatchPointCount.AutoSize = true;
-			this.labelUnconnectedPatchPointCount.Location = new System.Drawing.Point(131, 57);
-			this.labelUnconnectedPatchPointCount.Name = "labelUnconnectedPatchPointCount";
-			this.labelUnconnectedPatchPointCount.Size = new System.Drawing.Size(13, 13);
-			this.labelUnconnectedPatchPointCount.TabIndex = 13;
-			this.labelUnconnectedPatchPointCount.Text = "0";
-			// 
-			// labelConnectedPatchPointCount
-			// 
-			this.labelConnectedPatchPointCount.AutoSize = true;
-			this.labelConnectedPatchPointCount.Location = new System.Drawing.Point(131, 37);
-			this.labelConnectedPatchPointCount.Name = "labelConnectedPatchPointCount";
-			this.labelConnectedPatchPointCount.Size = new System.Drawing.Size(13, 13);
-			this.labelConnectedPatchPointCount.TabIndex = 12;
-			this.labelConnectedPatchPointCount.Text = "0";
-			// 
-			// labelPatchPointCount
-			// 
-			this.labelPatchPointCount.AutoSize = true;
-			this.labelPatchPointCount.Location = new System.Drawing.Point(131, 17);
-			this.labelPatchPointCount.Name = "labelPatchPointCount";
-			this.labelPatchPointCount.Size = new System.Drawing.Size(13, 13);
-			this.labelPatchPointCount.TabIndex = 11;
-			this.labelPatchPointCount.Text = "0";
-			// 
-			// label7
-			// 
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(8, 57);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(75, 13);
-			this.label7.TabIndex = 6;
-			this.label7.Text = "Unconnected:";
-			this.toolTip1.SetToolTip(this.label7, "The number of Patch Points connected to the selected elements that have nothing e" +
-        "lse connected.");
-			// 
-			// label6
-			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(8, 37);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(62, 13);
-			this.label6.TabIndex = 5;
-			this.label6.Text = "Connected:";
-			this.toolTip1.SetToolTip(this.label6, "The number of Patch Points connected to the selected elements that are being patc" +
-        "hed to controller outputs.");
+			labelFilterCount.AutoSize = true;
+			labelFilterCount.Location = new Point(116, 162);
+			labelFilterCount.Margin = new Padding(4);
+			labelFilterCount.Name = "labelFilterCount";
+			labelFilterCount.Size = new Size(13, 15);
+			labelFilterCount.TabIndex = 21;
+			labelFilterCount.Text = "0";
 			// 
 			// label5
 			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(8, 17);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(97, 13);
-			this.label5.TabIndex = 4;
-			this.label5.Text = "Total Patch Points:";
-			this.toolTip1.SetToolTip(this.label5, "The total number of Patch Points connected to the selected elements.  Patch Point" +
-        "s are the outputs from any element or filter, but before it gets to the controll" +
-        "ers.");
+			label5.AutoSize = true;
+			label5.Location = new Point(4, 4);
+			label5.Margin = new Padding(4);
+			label5.Name = "label5";
+			label5.Size = new Size(104, 15);
+			label5.TabIndex = 4;
+			label5.Text = "Total Patch Points:";
+			toolTip1.SetToolTip(label5, "The total number of Patch Points connected to the selected elements.  Patch Points are the outputs from any element or filter, but before it gets to the controllers.");
 			// 
 			// buttonUnpatchElements
 			// 
-			this.buttonUnpatchElements.AutoSize = true;
-			this.buttonUnpatchElements.Location = new System.Drawing.Point(49, 213);
-			this.buttonUnpatchElements.Name = "buttonUnpatchElements";
-			this.buttonUnpatchElements.Size = new System.Drawing.Size(120, 25);
-			this.buttonUnpatchElements.TabIndex = 22;
-			this.buttonUnpatchElements.Text = "Unpatch Elements";
-			this.buttonUnpatchElements.UseVisualStyleBackColor = true;
-			this.buttonUnpatchElements.Click += new System.EventHandler(this.buttonUnpatchElements_Click);
-			this.buttonUnpatchElements.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonUnpatchElements.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			buttonUnpatchElements.Anchor = AnchorStyles.None;
+			buttonUnpatchElements.AutoSize = true;
+			tableLayoutPanel4.SetColumnSpan(buttonUnpatchElements, 2);
+			buttonUnpatchElements.Location = new Point(68, 184);
+			buttonUnpatchElements.Margin = new Padding(4, 3, 4, 3);
+			buttonUnpatchElements.Name = "buttonUnpatchElements";
+			buttonUnpatchElements.Size = new Size(113, 25);
+			buttonUnpatchElements.TabIndex = 22;
+			buttonUnpatchElements.Text = "Unpatch Elements";
+			buttonUnpatchElements.UseVisualStyleBackColor = true;
+			buttonUnpatchElements.Click += buttonUnpatchElements_Click;
+			buttonUnpatchElements.MouseLeave += buttonBackground_MouseLeave;
+			buttonUnpatchElements.MouseHover += buttonBackground_MouseHover;
+			// 
+			// labelElementCount
+			// 
+			labelElementCount.AutoSize = true;
+			labelElementCount.Location = new Point(116, 139);
+			labelElementCount.Margin = new Padding(4);
+			labelElementCount.Name = "labelElementCount";
+			labelElementCount.Size = new Size(13, 15);
+			labelElementCount.TabIndex = 20;
+			labelElementCount.Text = "0";
+			// 
+			// labelPatchPointCount
+			// 
+			labelPatchPointCount.AutoSize = true;
+			labelPatchPointCount.Location = new Point(116, 4);
+			labelPatchPointCount.Margin = new Padding(4);
+			labelPatchPointCount.Name = "labelPatchPointCount";
+			labelPatchPointCount.Size = new Size(13, 15);
+			labelPatchPointCount.TabIndex = 11;
+			labelPatchPointCount.Text = "0";
+			// 
+			// labelGroupCount
+			// 
+			labelGroupCount.AutoSize = true;
+			labelGroupCount.Location = new Point(116, 116);
+			labelGroupCount.Margin = new Padding(4);
+			labelGroupCount.Name = "labelGroupCount";
+			labelGroupCount.Size = new Size(13, 15);
+			labelGroupCount.TabIndex = 19;
+			labelGroupCount.Text = "0";
+			// 
+			// label3
+			// 
+			label3.AutoSize = true;
+			label3.Location = new Point(4, 139);
+			label3.Margin = new Padding(4);
+			label3.Name = "label3";
+			label3.Size = new Size(58, 15);
+			label3.TabIndex = 16;
+			label3.Text = "Elements:";
+			toolTip1.SetToolTip(label3, "The number of elements found in (or descending from) the selected elements.");
+			// 
+			// label6
+			// 
+			label6.AutoSize = true;
+			label6.Location = new Point(4, 27);
+			label6.Margin = new Padding(4);
+			label6.Name = "label6";
+			label6.Size = new Size(68, 15);
+			label6.TabIndex = 5;
+			label6.Text = "Connected:";
+			toolTip1.SetToolTip(label6, "The number of Patch Points connected to the selected elements that are being patched to controller outputs.");
+			// 
+			// labelItemCount
+			// 
+			labelItemCount.AutoSize = true;
+			labelItemCount.Location = new Point(116, 93);
+			labelItemCount.Margin = new Padding(4);
+			labelItemCount.Name = "labelItemCount";
+			labelItemCount.Size = new Size(13, 15);
+			labelItemCount.TabIndex = 18;
+			labelItemCount.Text = "0";
+			// 
+			// labelConnectedPatchPointCount
+			// 
+			labelConnectedPatchPointCount.AutoSize = true;
+			labelConnectedPatchPointCount.Location = new Point(116, 27);
+			labelConnectedPatchPointCount.Margin = new Padding(4);
+			labelConnectedPatchPointCount.Name = "labelConnectedPatchPointCount";
+			labelConnectedPatchPointCount.Size = new Size(13, 15);
+			labelConnectedPatchPointCount.TabIndex = 12;
+			labelConnectedPatchPointCount.Text = "0";
+			// 
+			// label2
+			// 
+			label2.AutoSize = true;
+			label2.Location = new Point(4, 116);
+			label2.Margin = new Padding(4);
+			label2.Name = "label2";
+			label2.Size = new Size(48, 15);
+			label2.TabIndex = 15;
+			label2.Text = "Groups:";
+			toolTip1.SetToolTip(label2, "The number of groups found from the selected elements.");
+			// 
+			// label7
+			// 
+			label7.AutoSize = true;
+			label7.Location = new Point(4, 50);
+			label7.Margin = new Padding(4);
+			label7.Name = "label7";
+			label7.Size = new Size(81, 15);
+			label7.TabIndex = 6;
+			label7.Text = "Unconnected:";
+			toolTip1.SetToolTip(label7, "The number of Patch Points connected to the selected elements that have nothing else connected.");
+			// 
+			// labelUnconnectedPatchPointCount
+			// 
+			labelUnconnectedPatchPointCount.AutoSize = true;
+			labelUnconnectedPatchPointCount.Location = new Point(116, 50);
+			labelUnconnectedPatchPointCount.Margin = new Padding(4);
+			labelUnconnectedPatchPointCount.Name = "labelUnconnectedPatchPointCount";
+			labelUnconnectedPatchPointCount.Size = new Size(13, 15);
+			labelUnconnectedPatchPointCount.TabIndex = 13;
+			labelUnconnectedPatchPointCount.Text = "0";
+			// 
+			// label1
+			// 
+			label1.AutoSize = true;
+			label1.Location = new Point(4, 93);
+			label1.Margin = new Padding(4);
+			label1.Name = "label1";
+			label1.Size = new Size(39, 15);
+			label1.TabIndex = 14;
+			label1.Text = "Items:";
+			toolTip1.SetToolTip(label1, "The number of items selected in the element view.");
+			// 
+			// label4
+			// 
+			label4.AutoSize = true;
+			label4.Location = new Point(4, 162);
+			label4.Margin = new Padding(4);
+			label4.Name = "label4";
+			label4.Size = new Size(41, 15);
+			label4.TabIndex = 17;
+			label4.Text = "Filters:";
+			toolTip1.SetToolTip(label4, "The number of filters found in the patching connections from the selected elements.");
 			// 
 			// checkBoxReverseElementOrder
 			// 
-			this.checkBoxReverseElementOrder.AutoSize = true;
-			this.checkBoxReverseElementOrder.Location = new System.Drawing.Point(9, 65);
-			this.checkBoxReverseElementOrder.Name = "checkBoxReverseElementOrder";
-			this.checkBoxReverseElementOrder.Size = new System.Drawing.Size(136, 17);
-			this.checkBoxReverseElementOrder.TabIndex = 23;
-			this.checkBoxReverseElementOrder.Text = "Reverse Element Order";
-			this.toolTip1.SetToolTip(this.checkBoxReverseElementOrder, "The order in which Elements will be patched to controller outputs. This does not " +
-        "effect the order in which color channels are patched to controller outputs.");
-			this.checkBoxReverseElementOrder.UseVisualStyleBackColor = true;
-			this.checkBoxReverseElementOrder.CheckedChanged += new System.EventHandler(this.checkBoxReverseElementOrder_CheckedChanged);
+			checkBoxReverseElementOrder.AutoSize = true;
+			checkBoxReverseElementOrder.Location = new Point(10, 75);
+			checkBoxReverseElementOrder.Margin = new Padding(4, 3, 4, 3);
+			checkBoxReverseElementOrder.Name = "checkBoxReverseElementOrder";
+			checkBoxReverseElementOrder.Size = new Size(145, 19);
+			checkBoxReverseElementOrder.TabIndex = 23;
+			checkBoxReverseElementOrder.Text = "Reverse Element Order";
+			toolTip1.SetToolTip(checkBoxReverseElementOrder, "The order in which Elements will be patched to controller outputs. This does not effect the order in which color channels are patched to controller outputs.");
+			checkBoxReverseElementOrder.UseVisualStyleBackColor = true;
+			checkBoxReverseElementOrder.CheckedChanged += checkBoxReverseElementOrder_CheckedChanged;
 			// 
 			// groupBoxControllers
 			// 
-			this.groupBoxControllers.AutoSize = true;
-			this.groupBoxControllers.Controls.Add(this.panel1);
-			this.groupBoxControllers.Controls.Add(this.buttonUnpatchControllers);
-			this.groupBoxControllers.Location = new System.Drawing.Point(229, 3);
-			this.groupBoxControllers.Name = "groupBoxControllers";
-			this.groupBoxControllers.Size = new System.Drawing.Size(214, 257);
-			this.groupBoxControllers.TabIndex = 1;
-			this.groupBoxControllers.TabStop = false;
-			this.groupBoxControllers.Text = "Selected Controllers";
-			this.groupBoxControllers.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			groupBoxControllers.AutoSize = true;
+			groupBoxControllers.Controls.Add(tableLayoutPanel3);
+			groupBoxControllers.Dock = DockStyle.Fill;
+			groupBoxControllers.Location = new Point(270, 3);
+			groupBoxControllers.Margin = new Padding(4, 3, 4, 3);
+			groupBoxControllers.Name = "groupBoxControllers";
+			groupBoxControllers.Padding = new Padding(4, 3, 4, 3);
+			groupBoxControllers.Size = new Size(259, 234);
+			groupBoxControllers.TabIndex = 1;
+			groupBoxControllers.TabStop = false;
+			groupBoxControllers.Text = "Selected Controllers";
+			groupBoxControllers.Paint += groupBoxes_Paint;
 			// 
-			// panel1
+			// tableLayoutPanel3
 			// 
-			this.panel1.AutoSize = true;
-			this.panel1.Controls.Add(this.labelLastOutput);
-			this.panel1.Controls.Add(this.labelFirstOutput);
-			this.panel1.Controls.Add(this.label9);
-			this.panel1.Controls.Add(this.label8);
-			this.panel1.Controls.Add(this.labelUnpatchedOutputCount);
-			this.panel1.Controls.Add(this.labelPatchedOutputCount);
-			this.panel1.Controls.Add(this.labelOutputCount);
-			this.panel1.Controls.Add(this.labelControllerCount);
-			this.panel1.Controls.Add(this.label15);
-			this.panel1.Controls.Add(this.label16);
-			this.panel1.Controls.Add(this.label20);
-			this.panel1.Controls.Add(this.label21);
-			this.panel1.Location = new System.Drawing.Point(7, 18);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(201, 189);
-			this.panel1.TabIndex = 34;
+			tableLayoutPanel3.AutoSize = true;
+			tableLayoutPanel3.ColumnCount = 2;
+			tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle());
+			tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+			tableLayoutPanel3.Controls.Add(labelLastOutput, 1, 7);
+			tableLayoutPanel3.Controls.Add(buttonUnpatchControllers, 0, 8);
+			tableLayoutPanel3.Controls.Add(label20, 0, 0);
+			tableLayoutPanel3.Controls.Add(label9, 0, 7);
+			tableLayoutPanel3.Controls.Add(labelFirstOutput, 1, 6);
+			tableLayoutPanel3.Controls.Add(labelOutputCount, 1, 0);
+			tableLayoutPanel3.Controls.Add(label16, 0, 1);
+			tableLayoutPanel3.Controls.Add(label8, 0, 6);
+			tableLayoutPanel3.Controls.Add(labelPatchedOutputCount, 1, 1);
+			tableLayoutPanel3.Controls.Add(labelControllerCount, 1, 4);
+			tableLayoutPanel3.Controls.Add(labelUnpatchedOutputCount, 1, 2);
+			tableLayoutPanel3.Controls.Add(label21, 0, 4);
+			tableLayoutPanel3.Controls.Add(label15, 0, 2);
+			tableLayoutPanel3.Dock = DockStyle.Fill;
+			tableLayoutPanel3.Location = new Point(4, 19);
+			tableLayoutPanel3.Name = "tableLayoutPanel3";
+			tableLayoutPanel3.RowCount = 9;
+			tableLayoutPanel3.RowStyles.Add(new RowStyle());
+			tableLayoutPanel3.RowStyles.Add(new RowStyle());
+			tableLayoutPanel3.RowStyles.Add(new RowStyle());
+			tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+			tableLayoutPanel3.RowStyles.Add(new RowStyle());
+			tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+			tableLayoutPanel3.RowStyles.Add(new RowStyle());
+			tableLayoutPanel3.RowStyles.Add(new RowStyle());
+			tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+			tableLayoutPanel3.Size = new Size(251, 212);
+			tableLayoutPanel3.TabIndex = 35;
 			// 
 			// labelLastOutput
 			// 
-			this.labelLastOutput.AutoSize = true;
-			this.labelLastOutput.Location = new System.Drawing.Point(73, 161);
-			this.labelLastOutput.Name = "labelLastOutput";
-			this.labelLastOutput.Size = new System.Drawing.Size(67, 13);
-			this.labelLastOutput.TabIndex = 33;
-			this.labelLastOutput.Text = "Controller #0";
-			// 
-			// labelFirstOutput
-			// 
-			this.labelFirstOutput.AutoSize = true;
-			this.labelFirstOutput.Location = new System.Drawing.Point(73, 139);
-			this.labelFirstOutput.Name = "labelFirstOutput";
-			this.labelFirstOutput.Size = new System.Drawing.Size(67, 13);
-			this.labelFirstOutput.TabIndex = 32;
-			this.labelFirstOutput.Text = "Controller #0";
-			// 
-			// label9
-			// 
-			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(8, 161);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(63, 13);
-			this.label9.TabIndex = 31;
-			this.label9.Text = "Last output:";
-			this.toolTip1.SetToolTip(this.label9, "The last output in the list of selected outputs (as will be used for patching).");
-			// 
-			// label8
-			// 
-			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(8, 139);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(62, 13);
-			this.label8.TabIndex = 30;
-			this.label8.Text = "First output:";
-			this.toolTip1.SetToolTip(this.label8, "The first output in the list of selected outputs (as will be used for patching).");
-			// 
-			// labelUnpatchedOutputCount
-			// 
-			this.labelUnpatchedOutputCount.AutoSize = true;
-			this.labelUnpatchedOutputCount.Location = new System.Drawing.Point(87, 57);
-			this.labelUnpatchedOutputCount.Name = "labelUnpatchedOutputCount";
-			this.labelUnpatchedOutputCount.Size = new System.Drawing.Size(13, 13);
-			this.labelUnpatchedOutputCount.TabIndex = 27;
-			this.labelUnpatchedOutputCount.Text = "0";
-			// 
-			// labelPatchedOutputCount
-			// 
-			this.labelPatchedOutputCount.AutoSize = true;
-			this.labelPatchedOutputCount.Location = new System.Drawing.Point(87, 37);
-			this.labelPatchedOutputCount.Name = "labelPatchedOutputCount";
-			this.labelPatchedOutputCount.Size = new System.Drawing.Size(13, 13);
-			this.labelPatchedOutputCount.TabIndex = 26;
-			this.labelPatchedOutputCount.Text = "0";
-			// 
-			// labelOutputCount
-			// 
-			this.labelOutputCount.AutoSize = true;
-			this.labelOutputCount.Location = new System.Drawing.Point(87, 17);
-			this.labelOutputCount.Name = "labelOutputCount";
-			this.labelOutputCount.Size = new System.Drawing.Size(13, 13);
-			this.labelOutputCount.TabIndex = 22;
-			this.labelOutputCount.Text = "0";
-			// 
-			// labelControllerCount
-			// 
-			this.labelControllerCount.AutoSize = true;
-			this.labelControllerCount.Location = new System.Drawing.Point(87, 95);
-			this.labelControllerCount.Name = "labelControllerCount";
-			this.labelControllerCount.Size = new System.Drawing.Size(13, 13);
-			this.labelControllerCount.TabIndex = 21;
-			this.labelControllerCount.Text = "0";
-			// 
-			// label15
-			// 
-			this.label15.AutoSize = true;
-			this.label15.Location = new System.Drawing.Point(8, 57);
-			this.label15.Name = "label15";
-			this.label15.Size = new System.Drawing.Size(63, 13);
-			this.label15.TabIndex = 20;
-			this.label15.Text = "Unpatched:";
-			this.toolTip1.SetToolTip(this.label15, "The number of controller outputs selected that are not connected to anything.");
-			// 
-			// label16
-			// 
-			this.label16.AutoSize = true;
-			this.label16.Location = new System.Drawing.Point(8, 37);
-			this.label16.Name = "label16";
-			this.label16.Size = new System.Drawing.Size(50, 13);
-			this.label16.TabIndex = 19;
-			this.label16.Text = "Patched:";
-			this.toolTip1.SetToolTip(this.label16, "The number of controller outputs selected that are already connected to something" +
-        ".");
-			// 
-			// label20
-			// 
-			this.label20.AutoSize = true;
-			this.label20.Location = new System.Drawing.Point(8, 17);
-			this.label20.Name = "label20";
-			this.label20.Size = new System.Drawing.Size(47, 13);
-			this.label20.TabIndex = 15;
-			this.label20.Text = "Outputs:";
-			this.toolTip1.SetToolTip(this.label20, "The total number of controller outputs selected.");
-			// 
-			// label21
-			// 
-			this.label21.AutoSize = true;
-			this.label21.Location = new System.Drawing.Point(8, 95);
-			this.label21.Name = "label21";
-			this.label21.Size = new System.Drawing.Size(59, 13);
-			this.label21.TabIndex = 14;
-			this.label21.Text = "Controllers:";
-			this.toolTip1.SetToolTip(this.label21, "The number of controllers (or part thereof) selected.");
+			labelLastOutput.AutoSize = true;
+			labelLastOutput.Location = new Point(83, 159);
+			labelLastOutput.Margin = new Padding(4);
+			labelLastOutput.Name = "labelLastOutput";
+			labelLastOutput.Size = new Size(76, 15);
+			labelLastOutput.TabIndex = 33;
+			labelLastOutput.Text = "Controller #0";
 			// 
 			// buttonUnpatchControllers
 			// 
-			this.buttonUnpatchControllers.AutoSize = true;
-			this.buttonUnpatchControllers.Location = new System.Drawing.Point(54, 213);
-			this.buttonUnpatchControllers.Name = "buttonUnpatchControllers";
-			this.buttonUnpatchControllers.Size = new System.Drawing.Size(120, 25);
-			this.buttonUnpatchControllers.TabIndex = 28;
-			this.buttonUnpatchControllers.Text = "Unpatch Controllers";
-			this.buttonUnpatchControllers.UseVisualStyleBackColor = true;
-			this.buttonUnpatchControllers.Click += new System.EventHandler(this.buttonUnpatchControllers_Click);
-			this.buttonUnpatchControllers.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonUnpatchControllers.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			buttonUnpatchControllers.Anchor = AnchorStyles.None;
+			buttonUnpatchControllers.AutoSize = true;
+			tableLayoutPanel3.SetColumnSpan(buttonUnpatchControllers, 2);
+			buttonUnpatchControllers.Location = new Point(60, 182);
+			buttonUnpatchControllers.Margin = new Padding(4, 3, 4, 3);
+			buttonUnpatchControllers.Name = "buttonUnpatchControllers";
+			buttonUnpatchControllers.Size = new Size(130, 25);
+			buttonUnpatchControllers.TabIndex = 28;
+			buttonUnpatchControllers.Text = "Unpatch Controllers";
+			buttonUnpatchControllers.UseVisualStyleBackColor = true;
+			buttonUnpatchControllers.Click += buttonUnpatchControllers_Click;
+			buttonUnpatchControllers.MouseLeave += buttonBackground_MouseLeave;
+			buttonUnpatchControllers.MouseHover += buttonBackground_MouseHover;
+			// 
+			// label20
+			// 
+			label20.AutoSize = true;
+			label20.Location = new Point(4, 4);
+			label20.Margin = new Padding(4);
+			label20.Name = "label20";
+			label20.Size = new Size(53, 15);
+			label20.TabIndex = 15;
+			label20.Text = "Outputs:";
+			toolTip1.SetToolTip(label20, "The total number of controller outputs selected.");
+			// 
+			// label9
+			// 
+			label9.AutoSize = true;
+			label9.Location = new Point(4, 159);
+			label9.Margin = new Padding(4);
+			label9.Name = "label9";
+			label9.Size = new Size(70, 15);
+			label9.TabIndex = 31;
+			label9.Text = "Last output:";
+			toolTip1.SetToolTip(label9, "The last output in the list of selected outputs (as will be used for patching).");
+			// 
+			// labelFirstOutput
+			// 
+			labelFirstOutput.AutoSize = true;
+			labelFirstOutput.Location = new Point(83, 136);
+			labelFirstOutput.Margin = new Padding(4);
+			labelFirstOutput.Name = "labelFirstOutput";
+			labelFirstOutput.Size = new Size(76, 15);
+			labelFirstOutput.TabIndex = 32;
+			labelFirstOutput.Text = "Controller #0";
+			// 
+			// labelOutputCount
+			// 
+			labelOutputCount.AutoSize = true;
+			labelOutputCount.Location = new Point(83, 4);
+			labelOutputCount.Margin = new Padding(4);
+			labelOutputCount.Name = "labelOutputCount";
+			labelOutputCount.Size = new Size(13, 15);
+			labelOutputCount.TabIndex = 22;
+			labelOutputCount.Text = "0";
+			// 
+			// label16
+			// 
+			label16.AutoSize = true;
+			label16.Location = new Point(4, 27);
+			label16.Margin = new Padding(4);
+			label16.Name = "label16";
+			label16.Size = new Size(53, 15);
+			label16.TabIndex = 19;
+			label16.Text = "Patched:";
+			toolTip1.SetToolTip(label16, "The number of controller outputs selected that are already connected to something.");
+			// 
+			// label8
+			// 
+			label8.AutoSize = true;
+			label8.Location = new Point(4, 136);
+			label8.Margin = new Padding(4);
+			label8.Name = "label8";
+			label8.Size = new Size(71, 15);
+			label8.TabIndex = 30;
+			label8.Text = "First output:";
+			toolTip1.SetToolTip(label8, "The first output in the list of selected outputs (as will be used for patching).");
+			// 
+			// labelPatchedOutputCount
+			// 
+			labelPatchedOutputCount.AutoSize = true;
+			labelPatchedOutputCount.Location = new Point(83, 27);
+			labelPatchedOutputCount.Margin = new Padding(4);
+			labelPatchedOutputCount.Name = "labelPatchedOutputCount";
+			labelPatchedOutputCount.Size = new Size(13, 15);
+			labelPatchedOutputCount.TabIndex = 26;
+			labelPatchedOutputCount.Text = "0";
+			// 
+			// labelControllerCount
+			// 
+			labelControllerCount.AutoSize = true;
+			labelControllerCount.Location = new Point(83, 93);
+			labelControllerCount.Margin = new Padding(4);
+			labelControllerCount.Name = "labelControllerCount";
+			labelControllerCount.Size = new Size(13, 15);
+			labelControllerCount.TabIndex = 21;
+			labelControllerCount.Text = "0";
+			// 
+			// labelUnpatchedOutputCount
+			// 
+			labelUnpatchedOutputCount.AutoSize = true;
+			labelUnpatchedOutputCount.Location = new Point(83, 50);
+			labelUnpatchedOutputCount.Margin = new Padding(4);
+			labelUnpatchedOutputCount.Name = "labelUnpatchedOutputCount";
+			labelUnpatchedOutputCount.Size = new Size(13, 15);
+			labelUnpatchedOutputCount.TabIndex = 27;
+			labelUnpatchedOutputCount.Text = "0";
+			// 
+			// label21
+			// 
+			label21.AutoSize = true;
+			label21.Location = new Point(4, 93);
+			label21.Margin = new Padding(4);
+			label21.Name = "label21";
+			label21.Size = new Size(68, 15);
+			label21.TabIndex = 14;
+			label21.Text = "Controllers:";
+			toolTip1.SetToolTip(label21, "The number of controllers (or part thereof) selected.");
+			// 
+			// label15
+			// 
+			label15.AutoSize = true;
+			label15.Location = new Point(4, 50);
+			label15.Margin = new Padding(4);
+			label15.Name = "label15";
+			label15.Size = new Size(68, 15);
+			label15.TabIndex = 20;
+			label15.Text = "Unpatched:";
+			toolTip1.SetToolTip(label15, "The number of controller outputs selected that are not connected to anything.");
 			// 
 			// checkBoxReverseOutputOrder
 			// 
-			this.checkBoxReverseOutputOrder.AutoSize = true;
-			this.checkBoxReverseOutputOrder.Location = new System.Drawing.Point(12, 65);
-			this.checkBoxReverseOutputOrder.Name = "checkBoxReverseOutputOrder";
-			this.checkBoxReverseOutputOrder.Size = new System.Drawing.Size(186, 17);
-			this.checkBoxReverseOutputOrder.TabIndex = 29;
-			this.checkBoxReverseOutputOrder.Text = "Reverse order of selected outputs";
-			this.checkBoxReverseOutputOrder.UseVisualStyleBackColor = true;
-			this.checkBoxReverseOutputOrder.CheckedChanged += new System.EventHandler(this.checkBoxReverseOutputOrder_CheckedChanged);
+			checkBoxReverseOutputOrder.AutoSize = true;
+			checkBoxReverseOutputOrder.Location = new Point(14, 75);
+			checkBoxReverseOutputOrder.Margin = new Padding(4, 3, 4, 3);
+			checkBoxReverseOutputOrder.Name = "checkBoxReverseOutputOrder";
+			checkBoxReverseOutputOrder.Size = new Size(201, 19);
+			checkBoxReverseOutputOrder.TabIndex = 29;
+			checkBoxReverseOutputOrder.Text = "Reverse order of selected outputs";
+			checkBoxReverseOutputOrder.UseVisualStyleBackColor = true;
+			checkBoxReverseOutputOrder.CheckedChanged += checkBoxReverseOutputOrder_CheckedChanged;
 			// 
 			// groupBoxPatching
 			// 
-			this.groupBoxPatching.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBoxPatching.AutoSize = true;
-			this.tableLayoutPanel1.SetColumnSpan(this.groupBoxPatching, 2);
-			this.groupBoxPatching.Controls.Add(this.tableLayoutPanel2);
-			this.groupBoxPatching.Controls.Add(this.labelPatchWarning);
-			this.groupBoxPatching.Controls.Add(this.labelPatchSummary);
-			this.groupBoxPatching.Controls.Add(this.buttonDoPatching);
-			this.groupBoxPatching.Location = new System.Drawing.Point(3, 266);
-			this.groupBoxPatching.Name = "groupBoxPatching";
-			this.groupBoxPatching.Size = new System.Drawing.Size(445, 231);
-			this.groupBoxPatching.TabIndex = 2;
-			this.groupBoxPatching.TabStop = false;
-			this.groupBoxPatching.Text = "Patching Options";
-			this.groupBoxPatching.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			groupBoxPatching.AutoSize = true;
+			tableLayoutPanelContainer.SetColumnSpan(groupBoxPatching, 2);
+			groupBoxPatching.Controls.Add(tableLayoutPanelPatchingOptions);
+			groupBoxPatching.Dock = DockStyle.Fill;
+			groupBoxPatching.Location = new Point(4, 243);
+			groupBoxPatching.Margin = new Padding(4, 3, 4, 3);
+			groupBoxPatching.Name = "groupBoxPatching";
+			groupBoxPatching.Padding = new Padding(4, 3, 4, 3);
+			groupBoxPatching.Size = new Size(525, 223);
+			groupBoxPatching.TabIndex = 2;
+			groupBoxPatching.TabStop = false;
+			groupBoxPatching.Text = "Patching Options";
+			groupBoxPatching.Paint += groupBoxes_Paint;
 			// 
-			// tableLayoutPanel2
+			// tableLayoutPanelPatchingOptions
 			// 
-			this.tableLayoutPanel2.AutoSize = true;
-			this.tableLayoutPanel2.ColumnCount = 2;
-			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel2.Controls.Add(this.groupBoxElementOptions, 0, 0);
-			this.tableLayoutPanel2.Controls.Add(this.groupBoxOutputOptions, 1, 0);
-			this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Top;
-			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 16);
-			this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
-			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-			this.tableLayoutPanel2.RowCount = 1;
-			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(439, 107);
-			this.tableLayoutPanel2.TabIndex = 5;
+			tableLayoutPanelPatchingOptions.AutoSize = true;
+			tableLayoutPanelPatchingOptions.ColumnCount = 2;
+			tableLayoutPanelPatchingOptions.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+			tableLayoutPanelPatchingOptions.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+			tableLayoutPanelPatchingOptions.Controls.Add(groupBoxElementOptions, 0, 0);
+			tableLayoutPanelPatchingOptions.Controls.Add(buttonDoPatching, 0, 3);
+			tableLayoutPanelPatchingOptions.Controls.Add(labelPatchWarning, 0, 2);
+			tableLayoutPanelPatchingOptions.Controls.Add(groupBoxOutputOptions, 1, 0);
+			tableLayoutPanelPatchingOptions.Controls.Add(labelPatchSummary, 0, 1);
+			tableLayoutPanelPatchingOptions.Dock = DockStyle.Top;
+			tableLayoutPanelPatchingOptions.Location = new Point(4, 19);
+			tableLayoutPanelPatchingOptions.Margin = new Padding(0);
+			tableLayoutPanelPatchingOptions.Name = "tableLayoutPanelPatchingOptions";
+			tableLayoutPanelPatchingOptions.RowCount = 5;
+			tableLayoutPanelPatchingOptions.RowStyles.Add(new RowStyle());
+			tableLayoutPanelPatchingOptions.RowStyles.Add(new RowStyle());
+			tableLayoutPanelPatchingOptions.RowStyles.Add(new RowStyle());
+			tableLayoutPanelPatchingOptions.RowStyles.Add(new RowStyle());
+			tableLayoutPanelPatchingOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+			tableLayoutPanelPatchingOptions.Size = new Size(517, 201);
+			tableLayoutPanelPatchingOptions.TabIndex = 5;
 			// 
 			// groupBoxElementOptions
 			// 
-			this.groupBoxElementOptions.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.groupBoxElementOptions.AutoSize = true;
-			this.groupBoxElementOptions.Controls.Add(this.checkBoxReverseElementOrder);
-			this.groupBoxElementOptions.Controls.Add(this.radioButtonAllAvailablePatchPoints);
-			this.groupBoxElementOptions.Controls.Add(this.radioButtonUnconnectedPatchPointsOnly);
-			this.groupBoxElementOptions.Location = new System.Drawing.Point(6, 3);
-			this.groupBoxElementOptions.Name = "groupBoxElementOptions";
-			this.groupBoxElementOptions.Size = new System.Drawing.Size(207, 101);
-			this.groupBoxElementOptions.TabIndex = 1;
-			this.groupBoxElementOptions.TabStop = false;
-			this.groupBoxElementOptions.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			groupBoxElementOptions.AutoSize = true;
+			groupBoxElementOptions.Controls.Add(checkBoxReverseElementOrder);
+			groupBoxElementOptions.Controls.Add(radioButtonAllAvailablePatchPoints);
+			groupBoxElementOptions.Controls.Add(radioButtonUnconnectedPatchPointsOnly);
+			groupBoxElementOptions.Dock = DockStyle.Fill;
+			groupBoxElementOptions.Location = new Point(4, 3);
+			groupBoxElementOptions.Margin = new Padding(4, 3, 4, 3);
+			groupBoxElementOptions.Name = "groupBoxElementOptions";
+			groupBoxElementOptions.Padding = new Padding(4, 3, 4, 3);
+			groupBoxElementOptions.Size = new Size(250, 116);
+			groupBoxElementOptions.TabIndex = 1;
+			groupBoxElementOptions.TabStop = false;
+			groupBoxElementOptions.Paint += groupBoxes_Paint;
 			// 
 			// radioButtonAllAvailablePatchPoints
 			// 
-			this.radioButtonAllAvailablePatchPoints.AutoSize = true;
-			this.radioButtonAllAvailablePatchPoints.Location = new System.Drawing.Point(8, 42);
-			this.radioButtonAllAvailablePatchPoints.Name = "radioButtonAllAvailablePatchPoints";
-			this.radioButtonAllAvailablePatchPoints.Size = new System.Drawing.Size(163, 17);
-			this.radioButtonAllAvailablePatchPoints.TabIndex = 1;
-			this.radioButtonAllAvailablePatchPoints.Text = "Use all available patch points";
-			this.radioButtonAllAvailablePatchPoints.UseVisualStyleBackColor = true;
-			this.radioButtonAllAvailablePatchPoints.CheckedChanged += new System.EventHandler(this.radioButtonPatching_CheckedChanged);
+			radioButtonAllAvailablePatchPoints.AutoSize = true;
+			radioButtonAllAvailablePatchPoints.Location = new Point(9, 48);
+			radioButtonAllAvailablePatchPoints.Margin = new Padding(4, 3, 4, 3);
+			radioButtonAllAvailablePatchPoints.Name = "radioButtonAllAvailablePatchPoints";
+			radioButtonAllAvailablePatchPoints.Size = new Size(177, 19);
+			radioButtonAllAvailablePatchPoints.TabIndex = 1;
+			radioButtonAllAvailablePatchPoints.Text = "Use all available patch points";
+			radioButtonAllAvailablePatchPoints.UseVisualStyleBackColor = true;
+			radioButtonAllAvailablePatchPoints.CheckedChanged += radioButtonPatching_CheckedChanged;
 			// 
 			// radioButtonUnconnectedPatchPointsOnly
 			// 
-			this.radioButtonUnconnectedPatchPointsOnly.AutoSize = true;
-			this.radioButtonUnconnectedPatchPointsOnly.Checked = true;
-			this.radioButtonUnconnectedPatchPointsOnly.Location = new System.Drawing.Point(8, 19);
-			this.radioButtonUnconnectedPatchPointsOnly.Name = "radioButtonUnconnectedPatchPointsOnly";
-			this.radioButtonUnconnectedPatchPointsOnly.Size = new System.Drawing.Size(193, 17);
-			this.radioButtonUnconnectedPatchPointsOnly.TabIndex = 0;
-			this.radioButtonUnconnectedPatchPointsOnly.TabStop = true;
-			this.radioButtonUnconnectedPatchPointsOnly.Text = "Use unconnected patch points only";
-			this.radioButtonUnconnectedPatchPointsOnly.UseVisualStyleBackColor = true;
-			this.radioButtonUnconnectedPatchPointsOnly.CheckedChanged += new System.EventHandler(this.radioButtonPatching_CheckedChanged);
-			// 
-			// groupBoxOutputOptions
-			// 
-			this.groupBoxOutputOptions.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.groupBoxOutputOptions.AutoSize = true;
-			this.groupBoxOutputOptions.Controls.Add(this.radioButtonAllOutputs);
-			this.groupBoxOutputOptions.Controls.Add(this.radioButtonUnpatchedOutputsOnly);
-			this.groupBoxOutputOptions.Controls.Add(this.checkBoxReverseOutputOrder);
-			this.groupBoxOutputOptions.Location = new System.Drawing.Point(227, 3);
-			this.groupBoxOutputOptions.Name = "groupBoxOutputOptions";
-			this.groupBoxOutputOptions.Size = new System.Drawing.Size(204, 101);
-			this.groupBoxOutputOptions.TabIndex = 2;
-			this.groupBoxOutputOptions.TabStop = false;
-			this.groupBoxOutputOptions.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
-			// 
-			// radioButtonAllOutputs
-			// 
-			this.radioButtonAllOutputs.AutoSize = true;
-			this.radioButtonAllOutputs.Location = new System.Drawing.Point(12, 42);
-			this.radioButtonAllOutputs.Name = "radioButtonAllOutputs";
-			this.radioButtonAllOutputs.Size = new System.Drawing.Size(184, 17);
-			this.radioButtonAllOutputs.TabIndex = 3;
-			this.radioButtonAllOutputs.Text = "Use all selected controller outputs";
-			this.radioButtonAllOutputs.UseVisualStyleBackColor = true;
-			this.radioButtonAllOutputs.CheckedChanged += new System.EventHandler(this.radioButtonPatching_CheckedChanged);
-			// 
-			// radioButtonUnpatchedOutputsOnly
-			// 
-			this.radioButtonUnpatchedOutputsOnly.AutoSize = true;
-			this.radioButtonUnpatchedOutputsOnly.Checked = true;
-			this.radioButtonUnpatchedOutputsOnly.Location = new System.Drawing.Point(12, 19);
-			this.radioButtonUnpatchedOutputsOnly.Name = "radioButtonUnpatchedOutputsOnly";
-			this.radioButtonUnpatchedOutputsOnly.Size = new System.Drawing.Size(158, 17);
-			this.radioButtonUnpatchedOutputsOnly.TabIndex = 2;
-			this.radioButtonUnpatchedOutputsOnly.TabStop = true;
-			this.radioButtonUnpatchedOutputsOnly.Text = "Only use unpatched outputs";
-			this.radioButtonUnpatchedOutputsOnly.UseVisualStyleBackColor = true;
-			this.radioButtonUnpatchedOutputsOnly.CheckedChanged += new System.EventHandler(this.radioButtonPatching_CheckedChanged);
-			// 
-			// labelPatchWarning
-			// 
-			this.labelPatchWarning.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-			this.labelPatchWarning.AutoSize = true;
-			this.labelPatchWarning.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(255)))));
-			this.labelPatchWarning.Location = new System.Drawing.Point(86, 149);
-			this.labelPatchWarning.Name = "labelPatchWarning";
-			this.labelPatchWarning.Size = new System.Drawing.Size(277, 13);
-			this.labelPatchWarning.TabIndex = 4;
-			this.labelPatchWarning.Text = "WARNING: too many elements, some will not be patched";
-			// 
-			// labelPatchSummary
-			// 
-			this.labelPatchSummary.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-			this.labelPatchSummary.AutoSize = true;
-			this.labelPatchSummary.Location = new System.Drawing.Point(76, 129);
-			this.labelPatchSummary.Name = "labelPatchSummary";
-			this.labelPatchSummary.Size = new System.Drawing.Size(298, 13);
-			this.labelPatchSummary.TabIndex = 3;
-			this.labelPatchSummary.Text = "This will patch 9999 element points to 9999 controller outputs.";
+			radioButtonUnconnectedPatchPointsOnly.AutoSize = true;
+			radioButtonUnconnectedPatchPointsOnly.Checked = true;
+			radioButtonUnconnectedPatchPointsOnly.Location = new Point(9, 22);
+			radioButtonUnconnectedPatchPointsOnly.Margin = new Padding(4, 3, 4, 3);
+			radioButtonUnconnectedPatchPointsOnly.Name = "radioButtonUnconnectedPatchPointsOnly";
+			radioButtonUnconnectedPatchPointsOnly.Size = new Size(212, 19);
+			radioButtonUnconnectedPatchPointsOnly.TabIndex = 0;
+			radioButtonUnconnectedPatchPointsOnly.TabStop = true;
+			radioButtonUnconnectedPatchPointsOnly.Text = "Use unconnected patch points only";
+			radioButtonUnconnectedPatchPointsOnly.UseVisualStyleBackColor = true;
+			radioButtonUnconnectedPatchPointsOnly.CheckedChanged += radioButtonPatching_CheckedChanged;
 			// 
 			// buttonDoPatching
 			// 
-			this.buttonDoPatching.AutoSize = true;
-			this.buttonDoPatching.Location = new System.Drawing.Point(150, 180);
-			this.buttonDoPatching.Name = "buttonDoPatching";
-			this.buttonDoPatching.Size = new System.Drawing.Size(143, 32);
-			this.buttonDoPatching.TabIndex = 0;
-			this.buttonDoPatching.Text = "Patch Elements";
-			this.buttonDoPatching.UseVisualStyleBackColor = true;
-			this.buttonDoPatching.Click += new System.EventHandler(this.buttonDoPatching_Click);
-			this.buttonDoPatching.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonDoPatching.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			buttonDoPatching.Anchor = AnchorStyles.None;
+			buttonDoPatching.AutoSize = true;
+			tableLayoutPanelPatchingOptions.SetColumnSpan(buttonDoPatching, 2);
+			buttonDoPatching.Location = new Point(175, 172);
+			buttonDoPatching.Margin = new Padding(4);
+			buttonDoPatching.Name = "buttonDoPatching";
+			buttonDoPatching.Size = new Size(167, 25);
+			buttonDoPatching.TabIndex = 0;
+			buttonDoPatching.Text = "Patch Elements";
+			buttonDoPatching.UseVisualStyleBackColor = true;
+			buttonDoPatching.Click += buttonDoPatching_Click;
+			buttonDoPatching.MouseLeave += buttonBackground_MouseLeave;
+			buttonDoPatching.MouseHover += buttonBackground_MouseHover;
+			// 
+			// labelPatchWarning
+			// 
+			labelPatchWarning.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
+			labelPatchWarning.AutoSize = true;
+			tableLayoutPanelPatchingOptions.SetColumnSpan(labelPatchWarning, 2);
+			labelPatchWarning.ForeColor = Color.FromArgb(80, 80, 255);
+			labelPatchWarning.Location = new Point(104, 149);
+			labelPatchWarning.Margin = new Padding(4);
+			labelPatchWarning.Name = "labelPatchWarning";
+			labelPatchWarning.Size = new Size(309, 15);
+			labelPatchWarning.TabIndex = 4;
+			labelPatchWarning.Text = "WARNING: too many elements, some will not be patched";
+			// 
+			// groupBoxOutputOptions
+			// 
+			groupBoxOutputOptions.AutoSize = true;
+			groupBoxOutputOptions.Controls.Add(radioButtonAllOutputs);
+			groupBoxOutputOptions.Controls.Add(radioButtonUnpatchedOutputsOnly);
+			groupBoxOutputOptions.Controls.Add(checkBoxReverseOutputOrder);
+			groupBoxOutputOptions.Dock = DockStyle.Fill;
+			groupBoxOutputOptions.Location = new Point(262, 3);
+			groupBoxOutputOptions.Margin = new Padding(4, 3, 4, 3);
+			groupBoxOutputOptions.Name = "groupBoxOutputOptions";
+			groupBoxOutputOptions.Padding = new Padding(4, 3, 4, 3);
+			groupBoxOutputOptions.Size = new Size(251, 116);
+			groupBoxOutputOptions.TabIndex = 2;
+			groupBoxOutputOptions.TabStop = false;
+			groupBoxOutputOptions.Paint += groupBoxes_Paint;
+			// 
+			// radioButtonAllOutputs
+			// 
+			radioButtonAllOutputs.AutoSize = true;
+			radioButtonAllOutputs.Location = new Point(14, 48);
+			radioButtonAllOutputs.Margin = new Padding(4, 3, 4, 3);
+			radioButtonAllOutputs.Name = "radioButtonAllOutputs";
+			radioButtonAllOutputs.Size = new Size(203, 19);
+			radioButtonAllOutputs.TabIndex = 3;
+			radioButtonAllOutputs.Text = "Use all selected controller outputs";
+			radioButtonAllOutputs.UseVisualStyleBackColor = true;
+			radioButtonAllOutputs.CheckedChanged += radioButtonPatching_CheckedChanged;
+			// 
+			// radioButtonUnpatchedOutputsOnly
+			// 
+			radioButtonUnpatchedOutputsOnly.AutoSize = true;
+			radioButtonUnpatchedOutputsOnly.Checked = true;
+			radioButtonUnpatchedOutputsOnly.Location = new Point(14, 22);
+			radioButtonUnpatchedOutputsOnly.Margin = new Padding(4, 3, 4, 3);
+			radioButtonUnpatchedOutputsOnly.Name = "radioButtonUnpatchedOutputsOnly";
+			radioButtonUnpatchedOutputsOnly.Size = new Size(175, 19);
+			radioButtonUnpatchedOutputsOnly.TabIndex = 2;
+			radioButtonUnpatchedOutputsOnly.TabStop = true;
+			radioButtonUnpatchedOutputsOnly.Text = "Only use unpatched outputs";
+			radioButtonUnpatchedOutputsOnly.UseVisualStyleBackColor = true;
+			radioButtonUnpatchedOutputsOnly.CheckedChanged += radioButtonPatching_CheckedChanged;
+			// 
+			// labelPatchSummary
+			// 
+			labelPatchSummary.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
+			labelPatchSummary.AutoSize = true;
+			tableLayoutPanelPatchingOptions.SetColumnSpan(labelPatchSummary, 2);
+			labelPatchSummary.Location = new Point(92, 126);
+			labelPatchSummary.Margin = new Padding(4);
+			labelPatchSummary.Name = "labelPatchSummary";
+			labelPatchSummary.Size = new Size(333, 15);
+			labelPatchSummary.TabIndex = 3;
+			labelPatchSummary.Text = "This will patch 9999 element points to 9999 controller outputs.";
 			// 
 			// toolTip1
 			// 
-			this.toolTip1.AutomaticDelay = 200;
-			this.toolTip1.AutoPopDelay = 5000;
-			this.toolTip1.InitialDelay = 200;
-			this.toolTip1.ReshowDelay = 40;
+			toolTip1.AutomaticDelay = 200;
+			toolTip1.AutoPopDelay = 5000;
+			toolTip1.InitialDelay = 200;
+			toolTip1.ReshowDelay = 40;
 			// 
-			// tableLayoutPanel1
+			// tableLayoutPanelContainer
 			// 
-			this.tableLayoutPanel1.AutoSize = true;
-			this.tableLayoutPanel1.ColumnCount = 2;
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel1.Controls.Add(this.groupBoxElements, 0, 0);
-			this.tableLayoutPanel1.Controls.Add(this.groupBoxControllers, 1, 0);
-			this.tableLayoutPanel1.Controls.Add(this.groupBoxPatching, 0, 1);
-			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 2;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(451, 500);
-			this.tableLayoutPanel1.TabIndex = 34;
+			tableLayoutPanelContainer.AutoSize = true;
+			tableLayoutPanelContainer.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+			tableLayoutPanelContainer.ColumnCount = 2;
+			tableLayoutPanelContainer.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+			tableLayoutPanelContainer.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+			tableLayoutPanelContainer.Controls.Add(groupBoxElements, 0, 0);
+			tableLayoutPanelContainer.Controls.Add(groupBoxControllers, 1, 0);
+			tableLayoutPanelContainer.Controls.Add(groupBoxPatching, 0, 1);
+			tableLayoutPanelContainer.Dock = DockStyle.Top;
+			tableLayoutPanelContainer.Location = new Point(0, 0);
+			tableLayoutPanelContainer.Margin = new Padding(4, 3, 4, 3);
+			tableLayoutPanelContainer.Name = "tableLayoutPanelContainer";
+			tableLayoutPanelContainer.RowCount = 2;
+			tableLayoutPanelContainer.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+			tableLayoutPanelContainer.RowStyles.Add(new RowStyle());
+			tableLayoutPanelContainer.Size = new Size(533, 469);
+			tableLayoutPanelContainer.TabIndex = 34;
 			// 
 			// SetupPatchingSimple
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.AutoScroll = true;
-			this.Controls.Add(this.tableLayoutPanel1);
-			this.DoubleBuffered = true;
-			this.Name = "SetupPatchingSimple";
-			this.Size = new System.Drawing.Size(451, 507);
-			this.Load += new System.EventHandler(this.SetupPatchingSimple_Load);
-			this.groupBoxElements.ResumeLayout(false);
-			this.groupBoxElements.PerformLayout();
-			this.panel2.ResumeLayout(false);
-			this.panel2.PerformLayout();
-			this.groupBoxControllers.ResumeLayout(false);
-			this.groupBoxControllers.PerformLayout();
-			this.panel1.ResumeLayout(false);
-			this.panel1.PerformLayout();
-			this.groupBoxPatching.ResumeLayout(false);
-			this.groupBoxPatching.PerformLayout();
-			this.tableLayoutPanel2.ResumeLayout(false);
-			this.tableLayoutPanel2.PerformLayout();
-			this.groupBoxElementOptions.ResumeLayout(false);
-			this.groupBoxElementOptions.PerformLayout();
-			this.groupBoxOutputOptions.ResumeLayout(false);
-			this.groupBoxOutputOptions.PerformLayout();
-			this.tableLayoutPanel1.ResumeLayout(false);
-			this.tableLayoutPanel1.PerformLayout();
-			this.ResumeLayout(false);
-			this.PerformLayout();
-
+			AutoScaleDimensions = new SizeF(7F, 15F);
+			AutoScaleMode = AutoScaleMode.Font;
+			AutoScroll = true;
+			AutoSize = true;
+			Controls.Add(tableLayoutPanelContainer);
+			DoubleBuffered = true;
+			Margin = new Padding(4, 3, 4, 3);
+			Name = "SetupPatchingSimple";
+			Size = new Size(533, 493);
+			Load += SetupPatchingSimple_Load;
+			groupBoxElements.ResumeLayout(false);
+			groupBoxElements.PerformLayout();
+			tableLayoutPanel4.ResumeLayout(false);
+			tableLayoutPanel4.PerformLayout();
+			groupBoxControllers.ResumeLayout(false);
+			groupBoxControllers.PerformLayout();
+			tableLayoutPanel3.ResumeLayout(false);
+			tableLayoutPanel3.PerformLayout();
+			groupBoxPatching.ResumeLayout(false);
+			groupBoxPatching.PerformLayout();
+			tableLayoutPanelPatchingOptions.ResumeLayout(false);
+			tableLayoutPanelPatchingOptions.PerformLayout();
+			groupBoxElementOptions.ResumeLayout(false);
+			groupBoxElementOptions.PerformLayout();
+			groupBoxOutputOptions.ResumeLayout(false);
+			groupBoxOutputOptions.PerformLayout();
+			tableLayoutPanelContainer.ResumeLayout(false);
+			tableLayoutPanelContainer.PerformLayout();
+			ResumeLayout(false);
+			PerformLayout();
 		}
 
 		#endregion
@@ -706,10 +791,10 @@ namespace VixenApplication.Setup
 		private Label labelFirstOutput;
 		private Label label9;
 		private Label label8;
-		private TableLayoutPanel tableLayoutPanel1;
-		private TableLayoutPanel tableLayoutPanel2;
+		private TableLayoutPanel tableLayoutPanelContainer;
+		private TableLayoutPanel tableLayoutPanelPatchingOptions;
 		private CheckBox checkBoxReverseElementOrder;
-		private Panel panel1;
-		private Panel panel2;
+		private TableLayoutPanel tableLayoutPanel4;
+		private TableLayoutPanel tableLayoutPanel3;
 	}
 }

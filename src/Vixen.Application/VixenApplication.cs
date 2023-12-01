@@ -23,6 +23,8 @@ using Point = System.Drawing.Point;
 using SystemFonts = System.Drawing.SystemFonts;
 using Timer = System.Windows.Forms.Timer;
 using WPFApplication = System.Windows.Application;
+using System.ComponentModel;
+using System.Drawing;
 
 namespace VixenApplication
 {
@@ -45,6 +47,8 @@ namespace VixenApplication
 		private readonly IProgress<Tuple<int, string>> _startupProgress;
 
 		private readonly VixenApplicationData _applicationData;
+		private string _releaseVersion = String.Empty;
+		private string _buildVersion = String.Empty;
 
 		public VixenApplication()
 		{
@@ -83,7 +87,7 @@ namespace VixenApplication
 			//End WPF init
 
 			listViewRecentSequences.Items.Clear();
-			labelVersion.Font = new Font("Segoe UI", 14);
+			//labelVersion.Font = new Font("Segoe UI", 14);
 			//Get rid of the ugly grip that we dont want to show anyway. 
 			//Workaround for a MS bug
 			statusStrip.Padding = new Padding(statusStrip.Padding.Left,
@@ -91,8 +95,6 @@ namespace VixenApplication
 			statusStrip.Font = SystemFonts.StatusFont;
 
 			Icon = Resources.Icon_Vixen3;
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			statusStrip.BackColor = ThemeColorTable.BackgroundColor;
 			statusStrip.ForeColor = ThemeColorTable.ForeColor;
@@ -477,20 +479,20 @@ namespace VixenApplication
 			{
 				if (version.Build > 0)
 				{
-					labelVersion.Text = @"Development Build";
-					labelDebugVersion.Text = $@"Build #{version.Build}";
+					_releaseVersion = @"Development Build";
+					_buildVersion = $@"Build #{version.Build}";
 					_currentBuildVersion = version.Build;
-					labelDebugVersion.ForeColor = labelVersion.ForeColor = Color.Yellow;
-					Logging.Info($"{labelVersion.Text} - {labelDebugVersion.Text}");
+					//labelDebugVersion.ForeColor = labelVersion.ForeColor = Color.Yellow;
+					Logging.Info($"{_releaseVersion} - {_buildVersion}");
 					CheckForDevBuildUpdates();
 				}
 				else
 				{
-					labelVersion.Text = @"Test Build";
-					labelDebugVersion.Text = $@"Build #";
-					labelDebugVersion.ForeColor = labelVersion.ForeColor = Color.Red;
+					_releaseVersion = @"Test Build";
+					_buildVersion = $@"Build #";
+					//labelDebugVersion.ForeColor = labelVersion.ForeColor = Color.Red;
 					toolStripStatusUpdates.Text = String.Empty;
-					Logging.Info($"{labelVersion.Text}");
+					Logging.Info($"{_releaseVersion}");
 					_testBuild = true;
 				}
 
@@ -503,19 +505,39 @@ namespace VixenApplication
 				{
 					_currentReleaseVersion += $@"u{version.Revision}";
 				}
-				labelVersion.Text = $@"Release {_currentReleaseVersion}";
-				labelDebugVersion.Text = $@"Build #{version.Build}";
+				_releaseVersion = $@"Release {_currentReleaseVersion}";
+				_buildVersion = $@"Build #{version.Build}";
 				_currentBuildVersion = version.Build;
-				Logging.Info($"{labelVersion.Text} - {labelDebugVersion.Text}");
+				Logging.Info($"{_releaseVersion} - {_buildVersion}");
 
 				CheckForReleaseUpdates();
 			}
 
-			labelDebugVersion.Visible = true;
+			DrawVersionInfo();
+			//labelDebugVersion.Visible = true;
 
 			//Log the runtime versions 
 			var runtimeVersion = FileVersionInfo.GetVersionInfo(typeof(int).Assembly.Location).ProductVersion;
 			Logging.Info(".NET Runtime is: {0}", runtimeVersion);
+		}
+
+		private void DrawVersionInfo()
+		{
+			//Bitmap img = Properties.Resources.V3Logo;
+			Graphics g = Graphics.FromImage(pictureBox1.Image);
+
+			SolidBrush brush = new SolidBrush(ThemeColorTable.ForeColor);
+
+			if (_devBuild)
+			{
+				brush = _testBuild ? new SolidBrush(Color.Red) : new SolidBrush(Color.Yellow);
+			}
+
+			Font f = new Font(Font.FontFamily, 14);
+
+			g.DrawString(_releaseVersion, f, brush, pictureBox1.Image.Width * .73f, pictureBox1.Image.Height * .73f);
+			g.DrawString(_buildVersion, f, brush, pictureBox1.Image.Width * .73f, pictureBox1.Image.Height * .73f + g.MeasureString(_releaseVersion, Font).Height + 10);
+
 		}
 
 		private async void CheckForReleaseUpdates()
@@ -1417,7 +1439,7 @@ namespace VixenApplication
 
 			// Calculate the new height of the group box
 			int newHeight = ClientSize.Height - groupBoxSequences.Top - _sequenceGroupBoxOffsetFromBottom;
-			
+
 			// Adjust the list view first otherwise the group box won't size properly
 			listViewRecentSequences.Height += newHeight - originalHeight;
 

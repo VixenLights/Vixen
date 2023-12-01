@@ -42,6 +42,7 @@ namespace VixenApplication.Setup
 			_elementSetupHelpers = Vixen.Services.ApplicationServices.GetAllElementSetupHelpers();
 		}
 
+
 		private void DisplaySetup_Load(object sender, EventArgs e)
 		{
 			_setupElementsTree = new SetupElementsTree(_elementTemplates, _elementSetupHelpers);
@@ -49,22 +50,22 @@ namespace VixenApplication.Setup
 			_setupElementsTree.MasterForm = this;
 
 			_setupPatchingSimple = new SetupPatchingSimple();
-			//_setupPatchingSimple.Dock = DockStyle.Fill;
+			_setupPatchingSimple.Dock = DockStyle.Fill;
 			_setupPatchingSimple.MasterForm = this;
 			_setupPatchingGraphical = new SetupPatchingGraphical();
-			//_setupPatchingGraphical.Dock = DockStyle.Fill;
+			_setupPatchingGraphical.Dock = DockStyle.Fill;
 			_setupPatchingGraphical.MasterForm = this;
 
 			_setupControllersSimple = new SetupControllersSimple();
-			//_setupControllersSimple.Dock = DockStyle.Fill;
+			_setupControllersSimple.Dock = DockStyle.Fill;
 			_setupControllersSimple.MasterForm = this;
 
 			ActivateControllersControl(_setupControllersSimple);
 			ActivateElementControl(_setupElementsTree);
 
 			radioButtonPatchingSimple.Checked = true;
-			splitContainer1.SplitterDistance = tableLayoutPanelElementSetup.Width + 6;
-			splitContainer2.SplitterDistance = (int)(tableLayoutPanelPatchingSetup.Width + (10 * ScalingTools.GetScaleFactor()));
+			//splitContainer1.SplitterDistance = tableLayoutPanelElementSetup.Width + 6;
+			//splitContainer2.SplitterDistance = (int)(patchingPaneTableLayoutPanel.Width + (10 * ScalingTools.GetScaleFactor()));
 
 		}
 
@@ -122,6 +123,7 @@ namespace VixenApplication.Setup
 			{
 				_currentPatchingControl.FiltersAdded -= control_FiltersAdded;
 				_currentPatchingControl.PatchingUpdated -= control_PatchingUpdated;
+				patchingPaneTableLayoutPanel.Controls.Remove(_currentPatchingControl.SetupPatchingControl);
 			}
 
 			_currentPatchingControl = control;
@@ -133,8 +135,12 @@ namespace VixenApplication.Setup
 			control.FiltersAdded += control_FiltersAdded;
 			control.PatchingUpdated += control_PatchingUpdated;
 
-			tableLayoutPanelPatchingSetup.Controls.Clear();
-			tableLayoutPanelPatchingSetup.Controls.Add(control.SetupPatchingControl);
+			control.SetupPatchingControl.Dock = DockStyle.Fill;
+
+			patchingPaneTableLayoutPanel.Controls.Add(control.SetupPatchingControl, 0, 3);
+			patchingPaneTableLayoutPanel.SetColumnSpan(control.SetupPatchingControl, 2);
+
+
 
 
 			if (_currentControllersControl == null)

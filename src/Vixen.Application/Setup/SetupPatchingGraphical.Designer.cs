@@ -13,7 +13,8 @@
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing && (components != null)) {
+			if (disposing && (components != null))
+			{
 				components.Dispose();
 			}
 			base.Dispose(disposing);
@@ -27,226 +28,264 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+			components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetupPatchingGraphical));
-			Dataweb.NShape.RoleBasedSecurityManager roleBasedSecurityManager4 = new Dataweb.NShape.RoleBasedSecurityManager();
-			this.diagramDisplay = new Dataweb.NShape.WinFormsUI.Display();
-			this.diagramSetController = new Dataweb.NShape.Controllers.DiagramSetController();
-			this.project = new Dataweb.NShape.Project(this.components);
-			this.cachedRepository = new Dataweb.NShape.Advanced.CachedRepository();
-			this.copyFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.pasteFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.pasteFilterMultipleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.diagramContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.buttonDeleteFilter = new System.Windows.Forms.Button();
-			this.buttonAddFilter = new System.Windows.Forms.Button();
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.buttonZoomIn = new System.Windows.Forms.Button();
-			this.buttonZoomOut = new System.Windows.Forms.Button();
-			this.buttonZoomFit = new System.Windows.Forms.Button();
-			this.diagramContextMenuStrip.SuspendLayout();
-			this.SuspendLayout();
+			Dataweb.NShape.RoleBasedSecurityManager roleBasedSecurityManager1 = new Dataweb.NShape.RoleBasedSecurityManager();
+			diagramDisplay = new Dataweb.NShape.WinFormsUI.Display();
+			diagramSetController = new Dataweb.NShape.Controllers.DiagramSetController();
+			project = new Dataweb.NShape.Project(components);
+			cachedRepository = new Dataweb.NShape.Advanced.CachedRepository();
+			copyFilterToolStripMenuItem = new ToolStripMenuItem();
+			pasteFilterToolStripMenuItem = new ToolStripMenuItem();
+			pasteFilterMultipleToolStripMenuItem = new ToolStripMenuItem();
+			diagramContextMenuStrip = new ContextMenuStrip(components);
+			buttonDeleteFilter = new Button();
+			buttonAddFilter = new Button();
+			toolTip1 = new ToolTip(components);
+			buttonZoomIn = new Button();
+			buttonZoomOut = new Button();
+			buttonZoomFit = new Button();
+			tableLayoutPanel1 = new TableLayoutPanel();
+			flowLayoutPanelButton = new FlowLayoutPanel();
+			diagramContextMenuStrip.SuspendLayout();
+			tableLayoutPanel1.SuspendLayout();
+			flowLayoutPanelButton.SuspendLayout();
+			SuspendLayout();
 			// 
 			// diagramDisplay
 			// 
-			this.diagramDisplay.AllowDrop = true;
-			this.diagramDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.diagramDisplay.BackColor = System.Drawing.Color.Transparent;
-			this.diagramDisplay.BackColorGradient = System.Drawing.SystemColors.Control;
-			this.diagramDisplay.BackgroundGradientAngle = 90;
-			this.diagramDisplay.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.diagramDisplay.DiagramSetController = this.diagramSetController;
-			this.diagramDisplay.GridColor = System.Drawing.Color.Gainsboro;
-			this.diagramDisplay.GridSize = 19;
-			this.diagramDisplay.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-			this.diagramDisplay.Location = new System.Drawing.Point(2, 2);
-			this.diagramDisplay.Name = "diagramDisplay";
-			this.diagramDisplay.PropertyController = null;
-			this.diagramDisplay.RenderingQualityLowQuality = Dataweb.NShape.Advanced.RenderingQuality.LowQuality;
-			this.diagramDisplay.SelectionHilightColor = System.Drawing.Color.Firebrick;
-			this.diagramDisplay.SelectionInactiveColor = System.Drawing.Color.Gray;
-			this.diagramDisplay.SelectionInteriorColor = System.Drawing.Color.WhiteSmoke;
-			this.diagramDisplay.SelectionNormalColor = System.Drawing.Color.DarkGreen;
-			this.diagramDisplay.ShowDefaultContextMenu = false;
-			this.diagramDisplay.Size = new System.Drawing.Size(446, 511);
-			this.diagramDisplay.SnapToGrid = false;
-			this.diagramDisplay.TabIndex = 1;
-			this.diagramDisplay.ToolPreviewBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(119)))), ((int)(((byte)(136)))), ((int)(((byte)(153)))));
-			this.diagramDisplay.ToolPreviewColor = System.Drawing.Color.FromArgb(((int)(((byte)(96)))), ((int)(((byte)(70)))), ((int)(((byte)(130)))), ((int)(((byte)(180)))));
-			this.diagramDisplay.ShapesSelected += new System.EventHandler(this.diagramDisplay_ShapesSelected);
-			this.diagramDisplay.ShapeDoubleClick += new System.EventHandler<Dataweb.NShape.Controllers.DiagramPresenterShapeClickEventArgs>(this.displayDiagram_ShapeDoubleClick);
-			this.diagramDisplay.KeyDown += new System.Windows.Forms.KeyEventHandler(this.diagramDisplay_KeyDown);
+			diagramDisplay.AllowDrop = true;
+			diagramDisplay.AutoSize = true;
+			diagramDisplay.BackColor = Color.Transparent;
+			diagramDisplay.BackColorGradient = SystemColors.Control;
+			diagramDisplay.BackgroundGradientAngle = 90;
+			diagramDisplay.BorderStyle = BorderStyle.Fixed3D;
+			diagramDisplay.DiagramSetController = diagramSetController;
+			diagramDisplay.Dock = DockStyle.Fill;
+			diagramDisplay.GridColor = Color.Gainsboro;
+			diagramDisplay.GridSize = 19;
+			diagramDisplay.ImeMode = ImeMode.NoControl;
+			diagramDisplay.Location = new Point(4, 3);
+			diagramDisplay.Margin = new Padding(4, 3, 4, 3);
+			diagramDisplay.Name = "diagramDisplay";
+			diagramDisplay.PropertyController = null;
+			diagramDisplay.RenderingQualityLowQuality = Dataweb.NShape.Advanced.RenderingQuality.LowQuality;
+			diagramDisplay.SelectionHilightColor = Color.Firebrick;
+			diagramDisplay.SelectionInactiveColor = Color.Gray;
+			diagramDisplay.SelectionInteriorColor = Color.WhiteSmoke;
+			diagramDisplay.SelectionNormalColor = Color.DarkGreen;
+			diagramDisplay.ShowDefaultContextMenu = false;
+			diagramDisplay.Size = new Size(517, 589);
+			diagramDisplay.SnapToGrid = false;
+			diagramDisplay.TabIndex = 1;
+			diagramDisplay.ToolPreviewBackColor = Color.FromArgb(64, 119, 136, 153);
+			diagramDisplay.ToolPreviewColor = Color.FromArgb(96, 70, 130, 180);
+			diagramDisplay.ShapesSelected += diagramDisplay_ShapesSelected;
+			diagramDisplay.ShapeDoubleClick += displayDiagram_ShapeDoubleClick;
+			diagramDisplay.KeyDown += diagramDisplay_KeyDown;
 			// 
 			// diagramSetController
 			// 
-			this.diagramSetController.ActiveTool = null;
-			this.diagramSetController.Project = this.project;
+			diagramSetController.ActiveTool = null;
+			diagramSetController.Project = project;
 			// 
 			// project
 			// 
-			this.project.LibrarySearchPaths = ((System.Collections.Generic.IList<string>)(resources.GetObject("project.LibrarySearchPaths")));
-			this.project.Name = null;
-			this.project.Repository = this.cachedRepository;
-			roleBasedSecurityManager4.CurrentRole = Dataweb.NShape.StandardRole.Administrator;
-			roleBasedSecurityManager4.CurrentRoleName = "Administrator";
-			this.project.SecurityManager = roleBasedSecurityManager4;
+			project.LibrarySearchPaths = (IList<string>)resources.GetObject("project.LibrarySearchPaths");
+			project.Name = null;
+			project.Repository = cachedRepository;
+			roleBasedSecurityManager1.CurrentRole = Dataweb.NShape.StandardRole.Administrator;
+			roleBasedSecurityManager1.CurrentRoleName = "Administrator";
+			project.SecurityManager = roleBasedSecurityManager1;
 			// 
 			// cachedRepository
 			// 
-			this.cachedRepository.ProjectName = null;
-			this.cachedRepository.Store = null;
-			this.cachedRepository.Version = 0;
+			cachedRepository.ProjectName = null;
+			cachedRepository.Store = null;
+			cachedRepository.Version = 0;
 			// 
 			// copyFilterToolStripMenuItem
 			// 
-			this.copyFilterToolStripMenuItem.Name = "copyFilterToolStripMenuItem";
-			this.copyFilterToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-			this.copyFilterToolStripMenuItem.Text = "Copy Filter";
-			this.copyFilterToolStripMenuItem.Click += new System.EventHandler(this.copyFilterToolStripMenuItem_Click);
+			copyFilterToolStripMenuItem.Name = "copyFilterToolStripMenuItem";
+			copyFilterToolStripMenuItem.Size = new Size(186, 22);
+			copyFilterToolStripMenuItem.Text = "Copy Filter";
+			copyFilterToolStripMenuItem.Click += copyFilterToolStripMenuItem_Click;
 			// 
 			// pasteFilterToolStripMenuItem
 			// 
-			this.pasteFilterToolStripMenuItem.Name = "pasteFilterToolStripMenuItem";
-			this.pasteFilterToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-			this.pasteFilterToolStripMenuItem.Text = "Paste Filter";
-			this.pasteFilterToolStripMenuItem.Click += new System.EventHandler(this.pasteFilterToolStripMenuItem_Click);
+			pasteFilterToolStripMenuItem.Name = "pasteFilterToolStripMenuItem";
+			pasteFilterToolStripMenuItem.Size = new Size(186, 22);
+			pasteFilterToolStripMenuItem.Text = "Paste Filter";
+			pasteFilterToolStripMenuItem.Click += pasteFilterToolStripMenuItem_Click;
 			// 
 			// pasteFilterMultipleToolStripMenuItem
 			// 
-			this.pasteFilterMultipleToolStripMenuItem.Name = "pasteFilterMultipleToolStripMenuItem";
-			this.pasteFilterMultipleToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-			this.pasteFilterMultipleToolStripMenuItem.Text = "Paste Filter (Multiple)";
-			this.pasteFilterMultipleToolStripMenuItem.Click += new System.EventHandler(this.pasteFilterMultipleToolStripMenuItem_Click);
+			pasteFilterMultipleToolStripMenuItem.Name = "pasteFilterMultipleToolStripMenuItem";
+			pasteFilterMultipleToolStripMenuItem.Size = new Size(186, 22);
+			pasteFilterMultipleToolStripMenuItem.Text = "Paste Filter (Multiple)";
+			pasteFilterMultipleToolStripMenuItem.Click += pasteFilterMultipleToolStripMenuItem_Click;
 			// 
 			// diagramContextMenuStrip
 			// 
-			this.diagramContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.copyFilterToolStripMenuItem,
-            this.pasteFilterToolStripMenuItem,
-            this.pasteFilterMultipleToolStripMenuItem});
-			this.diagramContextMenuStrip.Name = "diagramContextMenuStrip";
-			this.diagramContextMenuStrip.Size = new System.Drawing.Size(187, 70);
-			this.diagramContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.diagramContextMenuStrip_Opening);
+			diagramContextMenuStrip.Items.AddRange(new ToolStripItem[] { copyFilterToolStripMenuItem, pasteFilterToolStripMenuItem, pasteFilterMultipleToolStripMenuItem });
+			diagramContextMenuStrip.Name = "diagramContextMenuStrip";
+			diagramContextMenuStrip.Size = new Size(187, 70);
+			diagramContextMenuStrip.Opening += diagramContextMenuStrip_Opening;
 			// 
 			// buttonDeleteFilter
 			// 
-			this.buttonDeleteFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonDeleteFilter.BackColor = System.Drawing.Color.Transparent;
-			this.buttonDeleteFilter.FlatAppearance.BorderSize = 0;
-			this.buttonDeleteFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonDeleteFilter.Location = new System.Drawing.Point(33, 519);
-			this.buttonDeleteFilter.Name = "buttonDeleteFilter";
-			this.buttonDeleteFilter.Size = new System.Drawing.Size(24, 24);
-			this.buttonDeleteFilter.TabIndex = 43;
-			this.buttonDeleteFilter.Text = "-";
-			this.toolTip1.SetToolTip(this.buttonDeleteFilter, "Delete Filter");
-			this.buttonDeleteFilter.UseVisualStyleBackColor = false;
-			this.buttonDeleteFilter.Click += new System.EventHandler(this.buttonDeleteFilter_Click);
+			buttonDeleteFilter.AutoSize = true;
+			buttonDeleteFilter.BackColor = Color.Transparent;
+			buttonDeleteFilter.FlatAppearance.BorderSize = 0;
+			buttonDeleteFilter.FlatStyle = FlatStyle.Flat;
+			buttonDeleteFilter.Location = new Point(40, 3);
+			buttonDeleteFilter.Margin = new Padding(4, 3, 10, 3);
+			buttonDeleteFilter.Name = "buttonDeleteFilter";
+			buttonDeleteFilter.Size = new Size(28, 28);
+			buttonDeleteFilter.TabIndex = 43;
+			buttonDeleteFilter.Text = "-";
+			toolTip1.SetToolTip(buttonDeleteFilter, "Delete Filter");
+			buttonDeleteFilter.UseVisualStyleBackColor = false;
+			buttonDeleteFilter.Click += buttonDeleteFilter_Click;
 			// 
 			// buttonAddFilter
 			// 
-			this.buttonAddFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonAddFilter.BackColor = System.Drawing.Color.Transparent;
-			this.buttonAddFilter.FlatAppearance.BorderSize = 0;
-			this.buttonAddFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonAddFilter.Location = new System.Drawing.Point(3, 519);
-			this.buttonAddFilter.Name = "buttonAddFilter";
-			this.buttonAddFilter.Size = new System.Drawing.Size(24, 24);
-			this.buttonAddFilter.TabIndex = 44;
-			this.buttonAddFilter.Text = "+";
-			this.toolTip1.SetToolTip(this.buttonAddFilter, "Add Filter");
-			this.buttonAddFilter.UseVisualStyleBackColor = false;
-			this.buttonAddFilter.Click += new System.EventHandler(this.buttonAddFilter_Click);
+			buttonAddFilter.AutoSize = true;
+			buttonAddFilter.BackColor = Color.Transparent;
+			buttonAddFilter.FlatAppearance.BorderSize = 0;
+			buttonAddFilter.FlatStyle = FlatStyle.Flat;
+			buttonAddFilter.Location = new Point(4, 3);
+			buttonAddFilter.Margin = new Padding(4, 3, 4, 3);
+			buttonAddFilter.Name = "buttonAddFilter";
+			buttonAddFilter.Size = new Size(28, 28);
+			buttonAddFilter.TabIndex = 44;
+			buttonAddFilter.Text = "+";
+			toolTip1.SetToolTip(buttonAddFilter, "Add Filter");
+			buttonAddFilter.UseVisualStyleBackColor = false;
+			buttonAddFilter.Click += buttonAddFilter_Click;
 			// 
 			// toolTip1
 			// 
-			this.toolTip1.AutomaticDelay = 200;
-			this.toolTip1.AutoPopDelay = 5000;
-			this.toolTip1.InitialDelay = 200;
-			this.toolTip1.ReshowDelay = 40;
+			toolTip1.AutomaticDelay = 200;
+			toolTip1.AutoPopDelay = 5000;
+			toolTip1.InitialDelay = 200;
+			toolTip1.ReshowDelay = 40;
 			// 
 			// buttonZoomIn
 			// 
-			this.buttonZoomIn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonZoomIn.BackColor = System.Drawing.Color.Transparent;
-			this.buttonZoomIn.FlatAppearance.BorderSize = 0;
-			this.buttonZoomIn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonZoomIn.Location = new System.Drawing.Point(87, 519);
-			this.buttonZoomIn.Name = "buttonZoomIn";
-			this.buttonZoomIn.Size = new System.Drawing.Size(24, 24);
-			this.buttonZoomIn.TabIndex = 45;
-			this.buttonZoomIn.Text = "Z";
-			this.toolTip1.SetToolTip(this.buttonZoomIn, "Zoom In");
-			this.buttonZoomIn.UseVisualStyleBackColor = false;
-			this.buttonZoomIn.Click += new System.EventHandler(this.buttonZoomIn_Click);
+			buttonZoomIn.AutoSize = true;
+			buttonZoomIn.BackColor = Color.Transparent;
+			buttonZoomIn.FlatAppearance.BorderSize = 0;
+			buttonZoomIn.FlatStyle = FlatStyle.Flat;
+			buttonZoomIn.Location = new Point(82, 3);
+			buttonZoomIn.Margin = new Padding(4, 3, 4, 3);
+			buttonZoomIn.Name = "buttonZoomIn";
+			buttonZoomIn.Size = new Size(28, 28);
+			buttonZoomIn.TabIndex = 45;
+			buttonZoomIn.Text = "Z";
+			toolTip1.SetToolTip(buttonZoomIn, "Zoom In");
+			buttonZoomIn.UseVisualStyleBackColor = false;
+			buttonZoomIn.Click += buttonZoomIn_Click;
 			// 
 			// buttonZoomOut
 			// 
-			this.buttonZoomOut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonZoomOut.BackColor = System.Drawing.Color.Transparent;
-			this.buttonZoomOut.FlatAppearance.BorderSize = 0;
-			this.buttonZoomOut.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonZoomOut.Location = new System.Drawing.Point(117, 519);
-			this.buttonZoomOut.Name = "buttonZoomOut";
-			this.buttonZoomOut.Size = new System.Drawing.Size(24, 24);
-			this.buttonZoomOut.TabIndex = 46;
-			this.buttonZoomOut.Text = "Z";
-			this.toolTip1.SetToolTip(this.buttonZoomOut, "Zoom Out");
-			this.buttonZoomOut.UseVisualStyleBackColor = false;
-			this.buttonZoomOut.Click += new System.EventHandler(this.buttonZoomOut_Click);
+			buttonZoomOut.AutoSize = true;
+			buttonZoomOut.BackColor = Color.Transparent;
+			buttonZoomOut.FlatAppearance.BorderSize = 0;
+			buttonZoomOut.FlatStyle = FlatStyle.Flat;
+			buttonZoomOut.Location = new Point(118, 3);
+			buttonZoomOut.Margin = new Padding(4, 3, 4, 3);
+			buttonZoomOut.Name = "buttonZoomOut";
+			buttonZoomOut.Size = new Size(28, 28);
+			buttonZoomOut.TabIndex = 46;
+			buttonZoomOut.Text = "Z";
+			toolTip1.SetToolTip(buttonZoomOut, "Zoom Out");
+			buttonZoomOut.UseVisualStyleBackColor = false;
+			buttonZoomOut.Click += buttonZoomOut_Click;
 			// 
 			// buttonZoomFit
 			// 
-			this.buttonZoomFit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonZoomFit.BackColor = System.Drawing.Color.Transparent;
-			this.buttonZoomFit.FlatAppearance.BorderSize = 0;
-			this.buttonZoomFit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonZoomFit.Location = new System.Drawing.Point(147, 519);
-			this.buttonZoomFit.Name = "buttonZoomFit";
-			this.buttonZoomFit.Size = new System.Drawing.Size(24, 24);
-			this.buttonZoomFit.TabIndex = 47;
-			this.buttonZoomFit.Text = "Z";
-			this.toolTip1.SetToolTip(this.buttonZoomFit, "Zoom to Fit");
-			this.buttonZoomFit.UseVisualStyleBackColor = false;
-			this.buttonZoomFit.Click += new System.EventHandler(this.buttonZoomFit_Click);
+			buttonZoomFit.AutoSize = true;
+			buttonZoomFit.BackColor = Color.Transparent;
+			buttonZoomFit.FlatAppearance.BorderSize = 0;
+			buttonZoomFit.FlatStyle = FlatStyle.Flat;
+			buttonZoomFit.Location = new Point(154, 3);
+			buttonZoomFit.Margin = new Padding(4, 3, 4, 3);
+			buttonZoomFit.Name = "buttonZoomFit";
+			buttonZoomFit.Size = new Size(28, 28);
+			buttonZoomFit.TabIndex = 47;
+			buttonZoomFit.Text = "Z";
+			toolTip1.SetToolTip(buttonZoomFit, "Zoom to Fit");
+			buttonZoomFit.UseVisualStyleBackColor = false;
+			buttonZoomFit.Click += buttonZoomFit_Click;
+			// 
+			// tableLayoutPanel1
+			// 
+			tableLayoutPanel1.AutoSize = true;
+			tableLayoutPanel1.ColumnCount = 1;
+			tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+			tableLayoutPanel1.Controls.Add(diagramDisplay, 0, 0);
+			tableLayoutPanel1.Controls.Add(flowLayoutPanelButton, 0, 1);
+			tableLayoutPanel1.Dock = DockStyle.Fill;
+			tableLayoutPanel1.Location = new Point(0, 0);
+			tableLayoutPanel1.Name = "tableLayoutPanel1";
+			tableLayoutPanel1.RowCount = 2;
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle());
+			tableLayoutPanel1.Size = new Size(525, 635);
+			tableLayoutPanel1.TabIndex = 48;
+			// 
+			// flowLayoutPanelButton
+			// 
+			flowLayoutPanelButton.AutoSize = true;
+			flowLayoutPanelButton.Controls.Add(buttonAddFilter);
+			flowLayoutPanelButton.Controls.Add(buttonDeleteFilter);
+			flowLayoutPanelButton.Controls.Add(buttonZoomIn);
+			flowLayoutPanelButton.Controls.Add(buttonZoomOut);
+			flowLayoutPanelButton.Controls.Add(buttonZoomFit);
+			flowLayoutPanelButton.Dock = DockStyle.Fill;
+			flowLayoutPanelButton.Location = new Point(3, 598);
+			flowLayoutPanelButton.Name = "flowLayoutPanelButton";
+			flowLayoutPanelButton.Size = new Size(519, 34);
+			flowLayoutPanelButton.TabIndex = 2;
 			// 
 			// SetupPatchingGraphical
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.buttonZoomFit);
-			this.Controls.Add(this.buttonZoomOut);
-			this.Controls.Add(this.buttonZoomIn);
-			this.Controls.Add(this.buttonAddFilter);
-			this.Controls.Add(this.buttonDeleteFilter);
-			this.Controls.Add(this.diagramDisplay);
-			this.DoubleBuffered = true;
-			this.Name = "SetupPatchingGraphical";
-			this.Size = new System.Drawing.Size(450, 550);
-			this.Load += new System.EventHandler(this.SetupPatchingGraphical_Load);
-			this.Resize += new System.EventHandler(this.SetupPatchingGraphical_Resize);
-			this.diagramContextMenuStrip.ResumeLayout(false);
-			this.ResumeLayout(false);
-
+			AutoScaleDimensions = new SizeF(7F, 15F);
+			AutoScaleMode = AutoScaleMode.Font;
+			Controls.Add(tableLayoutPanel1);
+			DoubleBuffered = true;
+			Margin = new Padding(4, 3, 4, 3);
+			Name = "SetupPatchingGraphical";
+			Size = new Size(525, 635);
+			Load += SetupPatchingGraphical_Load;
+			Resize += SetupPatchingGraphical_Resize;
+			diagramContextMenuStrip.ResumeLayout(false);
+			tableLayoutPanel1.ResumeLayout(false);
+			tableLayoutPanel1.PerformLayout();
+			flowLayoutPanelButton.ResumeLayout(false);
+			flowLayoutPanelButton.PerformLayout();
+			ResumeLayout(false);
+			PerformLayout();
 		}
 
 		#endregion
 
 		private Dataweb.NShape.WinFormsUI.Display diagramDisplay;
-		private System.Windows.Forms.ContextMenuStrip diagramContextMenuStrip;
-		private System.Windows.Forms.ToolStripMenuItem copyFilterToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem pasteFilterToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem pasteFilterMultipleToolStripMenuItem;
+		private ContextMenuStrip diagramContextMenuStrip;
+		private ToolStripMenuItem copyFilterToolStripMenuItem;
+		private ToolStripMenuItem pasteFilterToolStripMenuItem;
+		private ToolStripMenuItem pasteFilterMultipleToolStripMenuItem;
 		private Dataweb.NShape.Project project;
 		private Dataweb.NShape.Advanced.CachedRepository cachedRepository;
 		private Dataweb.NShape.Controllers.DiagramSetController diagramSetController;
-		private System.Windows.Forms.Button buttonDeleteFilter;
-		private System.Windows.Forms.Button buttonAddFilter;
-		private System.Windows.Forms.ToolTip toolTip1;
-		private System.Windows.Forms.Button buttonZoomIn;
-		private System.Windows.Forms.Button buttonZoomOut;
-		private System.Windows.Forms.Button buttonZoomFit;
+		private Button buttonDeleteFilter;
+		private Button buttonAddFilter;
+		private ToolTip toolTip1;
+		private Button buttonZoomIn;
+		private Button buttonZoomOut;
+		private Button buttonZoomFit;
+		private TableLayoutPanel tableLayoutPanel1;
+		private FlowLayoutPanel flowLayoutPanelButton;
 	}
 }
