@@ -1645,18 +1645,40 @@ namespace VixenModules.Preview.VixenPreview
 				int maxX = 0;
 				int maxY = 0;
 
+				//8K resolution measures at 7680 x 4320 pixels
+				//4K resolution measures at 3840 x 2160 pixels
 				// Loop over the display items in the preview
 				foreach (var previewDisplayItem in DisplayItems)
 				{
 					// Check to see if this shape is the furthest shape to the right
 					if (previewDisplayItem.Shape.Right > maxX)
 					{
+						//if the item is out further than an 8K resolution, then it is likely 
+						// a rouge value that needs to be moved back into something more normal
+						if (previewDisplayItem.Shape.Right > 7680)
+						{
+							previewDisplayItem.Shape.Left = 5;
+							previewDisplayItem.Shape.Top = 5;
+							continue;
+						}
+						
 						maxX = previewDisplayItem.Shape.Right;
+						
+						
 					}
 
 					// Check to see if this shape is the furthest to the bottom
 					if (previewDisplayItem.Shape.Bottom > maxY)
 					{
+						//if the item is out further than an 8K resolution, then it is likely 
+						// a rouge value that needs to be moved back into something more normal
+						if (previewDisplayItem.Shape.Bottom > 4320)
+						{
+							previewDisplayItem.Shape.Left = 5;
+							previewDisplayItem.Shape.Top = 5;
+							continue;
+						}
+						
 						maxY = previewDisplayItem.Shape.Bottom;
 					}
 				}
@@ -1665,6 +1687,7 @@ namespace VixenModules.Preview.VixenPreview
 				if ((Background.Width < maxX ||
 				     Background.Height < maxY))
 				{
+
 					// Adjust the background size 
 					ResizeBlankBackground(
 						maxX + 1 + SystemInformation.VerticalScrollBarWidth, 
