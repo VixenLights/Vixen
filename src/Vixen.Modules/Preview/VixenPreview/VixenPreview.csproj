@@ -24,6 +24,7 @@
 				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
 				<ProjectReference Include="..\..\App\CustomPropEditor\CustomPropEditor.csproj" />
 				<ProjectReference Include="..\..\App\Fixture\Fixture.csproj" />
+				<ProjectReference Include="..\..\App\Modeling\Modeling.csproj" />
 				<ProjectReference Include="..\..\Editor\FixtureGraphics\FixtureGraphics.csproj" />
 				<ProjectReference Include="..\..\OutputFilter\ColorWheelFilter\ColorWheelFilter.csproj" />
 				<ProjectReference Include="..\..\OutputFilter\DimmingCurve\DimmingCurve.csproj" />
