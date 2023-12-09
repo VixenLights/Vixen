@@ -148,11 +148,25 @@ namespace VixenApplication.Setup.ElementTemplates
 
 			if (_startLocation == StartLocation.BottomRight)
 			{
-				leafNodes = result.First().Children.SelectMany(x => x.GetLeafEnumerator().Reverse());
+				if (radioButtonHorizontalFirst.Checked)
+				{
+					leafNodes = result.First().Children.SelectMany(x => x.GetLeafEnumerator()).Reverse();
+				}
+				else
+				{
+					leafNodes = result.First().Children.Reverse().SelectMany(x => x.GetLeafEnumerator());
+				}
 			}
 			else if (_startLocation == StartLocation.TopLeft)
 			{
-				leafNodes = result.First().Children.Reverse().SelectMany(x => x.GetLeafEnumerator());
+				if (radioButtonHorizontalFirst.Checked)
+				{
+					leafNodes = result.First().Children.Reverse().SelectMany(x => x.GetLeafEnumerator());
+				}
+				else
+				{
+					leafNodes = result.First().Children.SelectMany(x => x.GetLeafEnumerator().Reverse());
+				}
 			}
 			else if (_startLocation == StartLocation.TopRight)
 			{
