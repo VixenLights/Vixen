@@ -8,6 +8,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using Vixen.Rule;
 using Vixen.Services;
 using Vixen.Sys;
+using VixenModules.App.Modeling;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -35,7 +36,13 @@ namespace VixenModules.Preview.VixenPreview
 			ThemeUpdateControls.UpdateControls(this);
 			_preview = preview;
 			treeElements.AllowPropertyEdit = false;
-			treeElements.AllowWireExport = false;
+			treeElements.AllowWireExport = true;
+			treeElements.ExportDiagram = ExportWireDiagram;
+		}
+
+		private void ExportWireDiagram(ElementNode node)
+		{
+			ElementModeling.ElementsToSvg(node);
 		}
 
 		private void VixenPreviewSetupElementsDocument_Load(object sender, EventArgs e)
