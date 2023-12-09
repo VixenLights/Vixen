@@ -859,18 +859,6 @@ namespace VixenModules.Effect.Weave
 				_weaveVerticalThickness,
 				_weaveHorizontalSpacing,
 			_weaveVerticalSpacing);
-
-			Bitmap test = new Bitmap(_widthOfTile, _heightOfTile, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-
-			for (int y = 0; y < _heightOfTile; y++)
-			{
-				for (int x = 0; x < _widthOfTile; x++)
-				{
-				test.SetPixel(x, y, _tileFrameBuffer.GetColorAt(x, y));
-				}
-			}
-
-			test.Save("c:\\Temp\\Tile.bmp");
 		}
 
 		/// <summary>
