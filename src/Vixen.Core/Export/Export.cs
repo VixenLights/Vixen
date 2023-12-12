@@ -219,27 +219,12 @@ namespace Vixen.Export
                                     u.UniverseType = isMulticast ? UniverseTypes.E131_Multicast : UniverseTypes.E131_Unicast;
                                     u.Address = ip;
                                     u.Monitor = !isMulticast;
-                                    u.DeDuplicate = true; //maybe check sACN advanced config settings to set this by vixen settings
+                                    u.DeDuplicate = controller.ControllerNetworkConfiguration.SupportsDeDuplication; //maybe check sACN advanced config settings to set this by vixen settings
                                     
                                     channelOutputs.Universes.Add(u);
                                     fppStartChannel = fppStartChannel + uc.Size;
                                 }
                             }
-                            /* OLD CODE*/
-                            /*foreach (var uc in universes)
-                            {
-                                Universe u = new Universe();
-                                u.Address = ip;
-                                u.Description = controller.Name;
-                                u.UniverseType = isMulticast ? UniverseTypes. E131_Multicast:UniverseTypes.E131_Unicast;
-                                u.Active = uc.Active;
-                                u.ChannelCount = uc.Size;
-                                u.StartChannel = fppStartChannel;
-                                u.UniverseId = uc.UniverseNumber;
-                                channelOutputs.Universes.Add(u);
-                                fppStartChannel = fppStartChannel + uc.Size;
-                            }*/
-                            /* END OLD CODE*/
                             break;
 
                         case ProtocolTypes.DDP:

@@ -13,6 +13,8 @@ namespace Vixen.Module.Controller
 		//public string HostName { get; set; }
 		public bool SupportsUniverses { get; set; }
 
+		public bool SupportsDeDuplication { get; set; }
+
 		public List<UniverseConfiguration> Universes { get; set; }
 	}
 
