@@ -127,18 +127,24 @@ namespace Common.Controls.Timeline
 						Application.DoEvents();
 					}
 				}
+
+				renderWorker.Dispose();
 			}
 
 			if (m_rows != null) {
-				m_rows.Clear();
-				m_rows=null;
-				m_rows=new List<Row>();
+				foreach (var mRow in m_rows)
+				{
+					mRow.Dispose();
+				}
 			}
 
+			m_autoScrollTimer.Enabled = false;
+			m_autoScrollTimer.Tick -= m_autoScrollTimer_Tick;
 			Row.RowChanged -= RowChangedHandler;
 			Row.RowSelectedChanged -= RowSelectedChangedHandler;
 			Row.RowToggled -= RowToggledHandler;
 			Row.RowHeightChanged -= RowHeightChangedHandler;
+			Row.RowVisibilityChanged -= RowVisibilityChangedHandler;
 			_timelineGlobalEventManager.AlignmentActivity -= TimeLineAlignmentHandler;
 
 			TimeInfo= null;

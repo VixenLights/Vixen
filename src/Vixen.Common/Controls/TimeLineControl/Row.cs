@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Security.Cryptography;
+using System.Security.Policy;
 using System.Text;
 
 namespace Common.Controls.Timeline
@@ -7,7 +8,7 @@ namespace Common.Controls.Timeline
 	/// <summary>
 	/// Represents a row in a TimelineControl, which contains TimelineElements.
 	/// </summary>
-	public class Row : IEnumerable<Element>
+	public class Row : IEnumerable<Element>, IDisposable
 	{
 		// the elements contained in this row. Must be kept sorted; however, we can't use a SortedList
 		// or similar, as the elements within the list may have their times updated by the grid, which
@@ -109,6 +110,8 @@ namespace Common.Controls.Timeline
 					m_rowLabel.LabelClicked -= LabelClickedHandler;
 					m_rowLabel.HeightResized -= HeightResizedHandler;
 					m_rowLabel.RowContextMenuSelect -= RowContextMenuSelectHandler;
+					m_rowLabel.ChildActiveIndicator = () => false;
+					m_rowLabel.ActiveIndicator = () => false;
 				}
 
 				m_rowLabel = value;
@@ -118,6 +121,8 @@ namespace Common.Controls.Timeline
 				m_rowLabel.LabelClicked += LabelClickedHandler;
 				m_rowLabel.HeightResized += HeightResizedHandler;
 				m_rowLabel.RowContextMenuSelect += RowContextMenuSelectHandler;
+				m_rowLabel.ActiveIndicator = () => !IsEmpty;
+				m_rowLabel.ChildActiveIndicator = IsTreeActive;
 
 				_RowChanged();
 			}
@@ -617,6 +622,28 @@ namespace Common.Controls.Timeline
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return m_elements.GetEnumerator();
+		}
+
+		#endregion
+
+		#region Implementation of IDisposable
+
+		/// <inheritdoc />
+		public void Dispose()
+		{
+			if (m_rowLabel != null)
+			{
+				m_rowLabel.ParentRow = null;
+				m_rowLabel.TreeToggled -= TreeToggledHandler;
+				m_rowLabel.HeightChanged -= HeightChangedHandler;
+				m_rowLabel.LabelClicked -= LabelClickedHandler;
+				m_rowLabel.HeightResized -= HeightResizedHandler;
+				m_rowLabel.RowContextMenuSelect -= RowContextMenuSelectHandler;
+				m_rowLabel.ChildActiveIndicator = () => false;
+				m_rowLabel.ActiveIndicator = () => false;
+			}
+
+			m_rowLabel = null;
 		}
 
 		#endregion
