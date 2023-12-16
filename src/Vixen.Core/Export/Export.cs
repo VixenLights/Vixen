@@ -199,7 +199,7 @@ namespace Vixen.Export
                             
                             for (var uIndex = 0; uIndex < universes.Count(); uIndex++)
                             {
-                                if (uIndex > 0 && (universes[uIndex].Size == channelOutputs.Universes.Last().ChannelCount) )
+                                if (uIndex>0 && channelOutputs.Universes.Any() && (universes[uIndex].Size == channelOutputs.Universes.Last().ChannelCount) )
                                 {
                                     channelOutputs.Universes.Last().UniverseCount++;
                                     fppStartChannel = fppStartChannel + universes[uIndex].Size;
@@ -219,7 +219,7 @@ namespace Vixen.Export
                                     u.UniverseType = isMulticast ? UniverseTypes.E131_Multicast : UniverseTypes.E131_Unicast;
                                     u.Address = ip;
                                     u.Monitor = !isMulticast;
-                                    u.DeDuplicate = controller.ControllerNetworkConfiguration.SupportsDeDuplication; //maybe check sACN advanced config settings to set this by vixen settings
+                                    u.DeDuplicate = controller.ControllerNetworkConfiguration.ThrottlingEnabled;
                                     
                                     channelOutputs.Universes.Add(u);
                                     fppStartChannel = fppStartChannel + uc.Size;
