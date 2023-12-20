@@ -196,33 +196,53 @@ namespace Vixen.Export
                     {
                         case ProtocolTypes.sACN:
                             var isMulticast = controller.ControllerNetworkConfiguration.TransmissionMethod == TransmissionMethods.Multicast;
-                            foreach (var uc in universes)
+                            
+                            for (var uIndex = 0; uIndex < universes.Count(); uIndex++)
                             {
-                                Universe u = new Universe();
-                                u.Address = ip;
-                                u.Description = controller.Name;
-                                u.UniverseType = isMulticast ? UniverseTypes. E131_Multicast:UniverseTypes.E131_Unicast;
-                                u.Active = uc.Active;
-                                u.ChannelCount = uc.Size;
-                                u.StartChannel = fppStartChannel;
-                                u.UniverseId = uc.UniverseNumber;
-                                channelOutputs.Universes.Add(u);
-                                fppStartChannel = fppStartChannel + uc.Size;
+                                if (uIndex>0 && channelOutputs.Universes.Any() && (universes[uIndex].Size == channelOutputs.Universes.Last().ChannelCount) )
+                                {
+                                    channelOutputs.Universes.Last().UniverseCount++;
+                                    fppStartChannel = fppStartChannel + universes[uIndex].Size;
+                                }
+                                else //write a new universe line
+                                {
+                                    var uc = universes[uIndex];
+                                    Universe u = new Universe();
+                                    
+                                    //Reordered fields to match order of FPP generated config file 12/11/2023
+                                    u.Active = uc.Active; 
+                                    u.Description = controller.Name;
+                                    u.UniverseId = uc.UniverseNumber;
+                                    u.StartChannel = fppStartChannel;
+                                    u.UniverseCount = 1;
+                                    u.ChannelCount = uc.Size;
+                                    u.UniverseType = isMulticast ? UniverseTypes.E131_Multicast : UniverseTypes.E131_Unicast;
+                                    u.Address = ip;
+                                    u.Monitor = !isMulticast;
+                                    u.DeDuplicate = controller.ControllerNetworkConfiguration.ThrottlingEnabled;
+                                    
+                                    channelOutputs.Universes.Add(u);
+                                    fppStartChannel = fppStartChannel + uc.Size;
+                                }
                             }
                             break;
 
                         case ProtocolTypes.DDP:
                             {
-                            var uc = universes[0];
-                            Universe u = new Universe();
-                            u.Address = ip;
-                            u.Description = controller.Name;
-                            u.UniverseType = UniverseTypes.DDP_1_Based;
-                            u.Active = true;
-                            u.ChannelCount = uc.Size;
-                            u.StartChannel = fppStartChannel;
-                            u.UniverseId = 0;
-                            channelOutputs.Universes.Add(u);
+                                var uc = universes[0];
+                                Universe u = new Universe();
+                                u.Active = true;
+                                u.Description = controller.Name;
+                                u.UniverseId = 0;
+                                u.StartChannel = fppStartChannel;
+                                u.UniverseCount = 1;
+                                u.ChannelCount = uc.Size; 
+                                u.UniverseType = UniverseTypes.DDP_1_Based;
+                                u.Address = ip;
+                                u.Monitor = true;
+                                u.DeDuplicate = true;
+
+                                channelOutputs.Universes.Add(u);
                             fppStartChannel = fppStartChannel + uc.Size;
                             }
                             break;

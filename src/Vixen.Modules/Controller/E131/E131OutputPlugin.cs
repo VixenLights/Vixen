@@ -640,6 +640,9 @@ namespace VixenModules.Controller.E131
 			else
 				config.TransmissionMethod = TransmissionMethods.Multicast;
 
+
+			config.ThrottlingEnabled = _data.EventRepeatCount>0;
+			
 			List<UniverseConfiguration> universes = new List<UniverseConfiguration>(_data.Universes.Count);
 			foreach (var universeEntry in _data.Universes)
 			{

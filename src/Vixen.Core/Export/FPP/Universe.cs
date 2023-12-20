@@ -40,6 +40,8 @@ namespace Vixen.Export.FPP
 
 		public int StartChannel { get; set; }
 
+		public int UniverseCount { get; set; }
+
 		public int ChannelCount { get; set; }
 
 		public UniverseTypes UniverseType { get; set; }
@@ -49,5 +51,11 @@ namespace Vixen.Export.FPP
 		public string Address { get; set; }
 
 		public int Priority { get; set; }
+
+        [JsonConverter(typeof(BoolConverter))]
+        public bool Monitor {  get; set; }
+
+        [JsonConverter(typeof(BoolConverter))]
+        public bool DeDuplicate {  get; set; }
 	}
 }
