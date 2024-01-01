@@ -6,7 +6,13 @@ using ZedGraph;
 
 namespace VixenModules.Effect.Shockwave
 {
-	[DataContract]
+    public enum ShockWaveType
+    {
+        Circle,
+        Diamond,
+    }
+
+    [DataContract]
 	public class ShockwaveData: EffectTypeModuleData
 	{
 
@@ -25,7 +31,9 @@ namespace VixenModules.Effect.Shockwave
 			BlendEdges = true;
 			Orientation=StringOrientation.Vertical;
 			ScaledRadius = true;
-		}
+			ShockWaveType = ShockWaveType.Circle;
+
+        }
 
 		[DataMember]
 		public ColorGradient Gradient { get; set; }
@@ -74,6 +82,9 @@ namespace VixenModules.Effect.Shockwave
 
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
+
+		[DataMember]
+		public ShockWaveType ShockWaveType { get; set; }	
 
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
@@ -141,7 +152,7 @@ namespace VixenModules.Effect.Shockwave
 				CenterYCurve = new Curve(CenterYCurve),
 				AccelerationCurve = new Curve(AccelerationCurve),
 				BlendEdges = BlendEdges,
-				ScaledRadius = ScaledRadius,
+				ShockWaveType = ShockWaveType,				
 			};
 			return result;
 		}
