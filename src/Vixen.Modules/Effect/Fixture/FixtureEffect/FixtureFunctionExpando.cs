@@ -245,7 +245,7 @@ namespace VixenModules.Effect.Fixture
 				if (!string.IsNullOrEmpty(_colorIndexValue))
 				{
 					// Find the color wheel index object
-					FixtureColorWheel fixtureColorWheel = ColorWheelIndexData.SingleOrDefault(item => item.Name == _colorIndexValue);
+					FixtureColorWheel fixtureColorWheel = ColorWheelIndexData.FirstOrDefault(item => item.Name == _colorIndexValue);
 
 					// If the color wheel entry is NOT found then...
 					if (fixtureColorWheel == null)
