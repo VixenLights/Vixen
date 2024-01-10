@@ -315,16 +315,21 @@ namespace Common.AudioPlayer
 			_waveSource = null;
 		}
 
+		private object _soundOutLock = new();
+
 		private void CleanupSoundOut(bool dispose=true)
 		{
-			if (_soundOut != null)
+			lock (_soundOutLock)
 			{
-				_soundOut.PlaybackStopped -= PlaybackDeviceOnPlaybackStopped;
-				if (dispose)
+				if (_soundOut != null)
 				{
-					_soundOut.Dispose();
+					_soundOut.PlaybackStopped -= PlaybackDeviceOnPlaybackStopped;
+					if (dispose)
+					{
+						_soundOut.Dispose();
+					}
+					_soundOut = null;
 				}
-				_soundOut = null;
 			}
 		}
 
