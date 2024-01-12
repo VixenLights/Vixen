@@ -1368,6 +1368,14 @@ namespace VixenModules.Preview.VixenPreview
 					}
 				}
 
+				// If an intelligenet fixture (moving head) is being created then...
+				if (_currentTool == Tools.MovingHead)
+				{
+					// Tell the Moving Head preview shape to ignore any mouse movements since the
+					// mouse up was released
+					((PreviewMovingHead)_selectedDisplayItem.Shape).IgnoreMouseMove = true;
+				}
+
 				if (_selectedDisplayItem != null)
 				{
 					//Console.Out.WriteLineAsync($"Element Selected is null {_elementSelected == null}");
