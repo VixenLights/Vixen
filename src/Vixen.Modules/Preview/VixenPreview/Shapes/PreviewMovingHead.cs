@@ -361,9 +361,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_zoomLevel = zoomLevel;
 
 			// Calculate the width and height of the fixture graphic before scaling
-			int widthOrg = _bottomRight.X - _topLeft.X;
-			int heightOrg = _bottomRight.Y - _topLeft.Y;
-
+			int widthOrg = Math.Abs(_bottomRight.X - _topLeft.X);
+			int heightOrg = Math.Abs(_bottomRight.Y - _topLeft.Y);
+						
 			// Initialize the width and height
 			int width = widthOrg;
 			int height = heightOrg;
