@@ -263,6 +263,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			// Adjust the shape to form a square
 			AdjustShapeToSquare();
+
+			// Turn on mouse move events
+			IgnoreMouseMove = false;
 		}
 
 		/// <summary>

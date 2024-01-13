@@ -250,47 +250,68 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{			
 		}
 
+		
+		/// <summary>
+		/// This flag determines if mouse move events are honored.
+		/// </summary>
+		/// <remarks>
+		/// Since the Intelligent Fixture Wizard is asynchronous there is a delay between when the mouse is released vs when the
+		/// Wizard dialog is displayed.  If the mouse move events are not suppressed it causes the preview shape to continue to be sized
+		/// based on where the user moves the mouse in the interim.
+		/// </remarks>
+		public bool IgnoreMouseMove { get; set; } = false;
+
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
-			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
-			if (_selectedPoint != null)
+			// If mouse move events are being honored then...
+			if (!IgnoreMouseMove)
 			{
-				_selectedPoint.X = point.X;
-				_selectedPoint.Y = point.Y;
-				if (lockXY ||
-				    (_selectedPoint == _bottomRight &&
-				     System.Windows.Forms.Control.ModifierKeys == System.Windows.Forms.Keys.Control)) {
-					_topRight.X = point.X;
-					_bottomLeft.Y = point.Y;
+
+				PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
+				if (_selectedPoint != null)
+				{
+					_selectedPoint.X = point.X;
+					_selectedPoint.Y = point.Y;
+					if (lockXY ||
+					    (_selectedPoint == _bottomRight &&
+					     System.Windows.Forms.Control.ModifierKeys == System.Windows.Forms.Keys.Control))
+					{
+
+						_topRight.X = point.X;
+						_bottomLeft.Y = point.Y;
+
+					}
+
+					Layout();
 				}
-				Layout();
-			}
 				// If we get here, we're moving
-			else {
-				//_topLeft.X = topLeftStart.X + changeX;
-				//_topLeft.Y = topLeftStart.Y + changeY;
-				//_topRight.X = topRightStart.X + changeX;
-				//_topRight.Y = topRightStart.Y + changeY;
-				//_bottomLeft.X = bottomLeftStart.X + changeX;
-				//_bottomLeft.Y = bottomLeftStart.Y + changeY;
-				//_bottomRight.X = bottomRightStart.X + changeX;
-				//_bottomRight.Y = bottomRightStart.Y + changeY;
+				else
+				{
+					//_topLeft.X = topLeftStart.X + changeX;
+					//_topLeft.Y = topLeftStart.Y + changeY;
+					//_topRight.X = topRightStart.X + changeX;
+					//_topRight.Y = topRightStart.Y + changeY;
+					//_bottomLeft.X = bottomLeftStart.X + changeX;
+					//_bottomLeft.Y = bottomLeftStart.Y + changeY;
+					//_bottomRight.X = bottomRightStart.X + changeX;
+					//_bottomRight.Y = bottomRightStart.Y + changeY;
 
-				_topLeft.X = Convert.ToInt32(topLeftStart.X * ZoomLevel) + changeX;
-				_topLeft.Y = Convert.ToInt32(topLeftStart.Y * ZoomLevel) + changeY;
-				_topRight.X = Convert.ToInt32(topRightStart.X * ZoomLevel) + changeX;
-				_topRight.Y = Convert.ToInt32(topRightStart.Y * ZoomLevel) + changeY;
-				_bottomLeft.X = Convert.ToInt32(bottomLeftStart.X * ZoomLevel) + changeX;
-				_bottomLeft.Y = Convert.ToInt32(bottomLeftStart.Y * ZoomLevel) + changeY;
-				_bottomRight.X = Convert.ToInt32(bottomRightStart.X * ZoomLevel) + changeX;
-				_bottomRight.Y = Convert.ToInt32(bottomRightStart.Y * ZoomLevel) + changeY;
+					_topLeft.X = Convert.ToInt32(topLeftStart.X * ZoomLevel) + changeX;
+					_topLeft.Y = Convert.ToInt32(topLeftStart.Y * ZoomLevel) + changeY;
+					_topRight.X = Convert.ToInt32(topRightStart.X * ZoomLevel) + changeX;
+					_topRight.Y = Convert.ToInt32(topRightStart.Y * ZoomLevel) + changeY;
+					_bottomLeft.X = Convert.ToInt32(bottomLeftStart.X * ZoomLevel) + changeX;
+					_bottomLeft.Y = Convert.ToInt32(bottomLeftStart.Y * ZoomLevel) + changeY;
+					_bottomRight.X = Convert.ToInt32(bottomRightStart.X * ZoomLevel) + changeX;
+					_bottomRight.Y = Convert.ToInt32(bottomRightStart.Y * ZoomLevel) + changeY;
 
-				PointToZoomPointRef(_topLeft);
-				PointToZoomPointRef(_topRight);
-				PointToZoomPointRef(_bottomLeft);
-				PointToZoomPointRef(_bottomRight);
+					PointToZoomPointRef(_topLeft);
+					PointToZoomPointRef(_topRight);
+					PointToZoomPointRef(_bottomLeft);
+					PointToZoomPointRef(_bottomRight);
 
-				Layout();
+					Layout();
+				}
 			}
 		}
 
