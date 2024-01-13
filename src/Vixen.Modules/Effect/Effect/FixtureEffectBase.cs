@@ -610,7 +610,7 @@ namespace VixenModules.Effect.Effect
 						fixtureProperty.FixtureSpecification.ChannelDefinitions.Any(channel => channel.Function == func.Name))
 					{
 						// Find the selected fixture index by name
-						FixtureIndexBase fixtureIndex = func.GetIndexDataBase().SingleOrDefault(index => index.Name == fixtureIndexValue);
+						FixtureIndexBase fixtureIndex = func.GetIndexDataBase().FirstOrDefault(index => index.Name == fixtureIndexValue);
 
 						// If the fixture index was found then...
 						if (fixtureIndex != null)
@@ -645,7 +645,7 @@ namespace VixenModules.Effect.Effect
 			foreach (IElementNode node in nodes)
 			{								
 				// Find the index value
-				FixtureIndexBase fixtureIndex = function.GetIndexDataBase().Single(index => index.Name == indexValue);				
+				FixtureIndexBase fixtureIndex = function.GetIndexDataBase().First(index => index.Name == indexValue);				
 
 				// Render the index command
 				RenderIndex(
