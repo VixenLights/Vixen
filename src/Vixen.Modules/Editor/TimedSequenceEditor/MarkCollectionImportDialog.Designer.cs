@@ -43,7 +43,7 @@
             // 
             this.radioVixen3Beats.AutoSize = true;
             this.radioVixen3Beats.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-            this.radioVixen3Beats.Location = new System.Drawing.Point(36, 108);
+			radioVixen3Beats.Location = new Point(12, 93);
             this.radioVixen3Beats.Name = "radioVixen3Beats";
             this.radioVixen3Beats.Size = new System.Drawing.Size(63, 19);
             this.radioVixen3Beats.TabIndex = 3;
@@ -54,7 +54,7 @@
             // 
             this.radioAudacityBeats.AutoSize = true;
             this.radioAudacityBeats.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-            this.radioAudacityBeats.Location = new System.Drawing.Point(36, 82);
+			radioAudacityBeats.Location = new Point(12, 67);
             this.radioAudacityBeats.Name = "radioAudacityBeats";
             this.radioAudacityBeats.Size = new System.Drawing.Size(103, 19);
             this.radioAudacityBeats.TabIndex = 2;
@@ -65,7 +65,7 @@
             // 
             this.radioBeats.AutoSize = true;
             this.radioBeats.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-            this.radioBeats.Location = new System.Drawing.Point(36, 55);
+			radioBeats.Location = new Point(12, 40);
             this.radioBeats.Name = "radioBeats";
             this.radioBeats.Size = new System.Drawing.Size(155, 19);
             this.radioBeats.TabIndex = 1;
@@ -77,7 +77,7 @@
             this.radioBars.AutoSize = true;
             this.radioBars.Checked = true;
             this.radioBars.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-            this.radioBars.Location = new System.Drawing.Point(36, 29);
+			radioBars.Location = new Point(12, 14);
             this.radioBars.Name = "radioBars";
             this.radioBars.Size = new System.Drawing.Size(149, 19);
             this.radioBars.TabIndex = 0;
@@ -92,7 +92,7 @@
             this.btnCancel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-            this.btnCancel.Location = new System.Drawing.Point(141, 230);
+			btnCancel.Location = new Point(105, 205);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(87, 27);
             this.btnCancel.TabIndex = 1;
@@ -108,7 +108,7 @@
             this.btnOk.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.btnOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnOk.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-            this.btnOk.Location = new System.Drawing.Point(26, 230);
+			btnOk.Location = new Point(12, 205);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(87, 27);
             this.btnOk.TabIndex = 2;
@@ -121,7 +121,7 @@
             // 
             this.radioXTiming.AutoSize = true;
             this.radioXTiming.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-            this.radioXTiming.Location = new System.Drawing.Point(36, 133);
+			radioXTiming.Location = new Point(12, 118);
             this.radioXTiming.Name = "radioXTiming";
             this.radioXTiming.Size = new System.Drawing.Size(68, 19);
             this.radioXTiming.TabIndex = 4;
@@ -132,7 +132,7 @@
             // 
             this.radioPapagayo.AutoSize = true;
             this.radioPapagayo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-            this.radioPapagayo.Location = new System.Drawing.Point(36, 158);
+			radioPapagayo.Location = new Point(12, 143);
             this.radioPapagayo.Name = "radioPapagayo";
             this.radioPapagayo.Size = new System.Drawing.Size(143, 19);
             this.radioPapagayo.TabIndex = 5;
@@ -143,7 +143,7 @@
             // 
             this.radioTimingTrackBrowser.AutoSize = true;
             this.radioTimingTrackBrowser.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-            this.radioTimingTrackBrowser.Location = new System.Drawing.Point(36, 183);
+			radioTimingTrackBrowser.Location = new Point(12, 168);
             this.radioTimingTrackBrowser.Name = "radioTimingTrackBrowser";
             this.radioTimingTrackBrowser.Size = new System.Drawing.Size(169, 19);
             this.radioTimingTrackBrowser.TabIndex = 6;
@@ -157,7 +157,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(262, 300);
+			ClientSize = new Size(207, 244);
             this.Controls.Add(this.radioTimingTrackBrowser);
             this.Controls.Add(this.radioPapagayo);
             this.Controls.Add(this.radioXTiming);
@@ -170,7 +170,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(268, 254);
+			MinimumSize = new Size(150, 283);
             this.Name = "MarkCollectionImportDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Import Type Selection";
