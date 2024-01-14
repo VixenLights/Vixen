@@ -1118,7 +1118,7 @@ namespace VixenModules.Preview.VixenPreview
 						_selectedDisplayItem.Shape.MouseMove(dragCurrent.X, dragCurrent.Y, changeX, changeY);
 						EndUpdate();
 					}
-						// If we get here, we're drwing a rubber band
+						// If we get here, we're drawing a rubber band
 					else if (_banding)
 					{
 						int X1 = Math.Min(dragStart.X, dragStart.X + changeX);
@@ -1130,10 +1130,8 @@ namespace VixenModules.Preview.VixenPreview
 
 						foreach (DisplayItem item in DisplayItems)
 						{
-							if (
-								(changeX < 0 && item.Shape.ShapeInRect(_bandRect)) ||
-								(changeX > 0 && item.Shape.ShapeAllInRect(_bandRect))
-								)
+							if (item.Shape.ShapeInRect(_bandRect) ||
+								item.Shape.ShapeAllInRect(_bandRect))
 							{
 								if (!SelectedDisplayItems.Contains(item))
 								{

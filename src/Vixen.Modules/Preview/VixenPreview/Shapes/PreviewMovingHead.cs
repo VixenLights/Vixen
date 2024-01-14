@@ -333,20 +333,46 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Returns true if any corner of the specified rect is inside the moving head rectangle.
 		/// </summary>
 		/// <param name="rect">Rectangle to evaluate</param>
-		/// <returns>True if the rectangle is inside the shape</returns>
+		/// <returns>True if the rectangle is overlaps the shape</returns>
 		public override bool ShapeInRect(Rectangle rect)
 		{
-			// Create preview points for the rectangle
-			PreviewPoint topLeft = new PreviewPoint(rect.X, rect.Y);
-			PreviewPoint topRight = new PreviewPoint(rect.X + rect.Width, rect.Y);
-			PreviewPoint bottomLeft = new PreviewPoint(rect.X, rect.Y + rect.Height);
-			PreviewPoint bottomRight = new PreviewPoint(rect.X +  rect.Width, rect.Y + rect.Height);
+			bool overlaps = false;
 
-			// Check to see if any of the points are inside the shape
-			return PointInShape(topLeft) ||
-				PointInShape(topRight) ||
-				PointInShape(bottomLeft) ||
-				PointInShape(bottomRight);
+			int X1 = Math.Min(rect.X, rect.X + rect.Width);
+			int X2 = Math.Max(rect.X, rect.X + rect.Width);
+			int Y1 = Math.Min(rect.Y, rect.Y + rect.Height);
+			int Y2 = Math.Max(rect.Y, rect.Y + rect.Height);
+			
+			if (_bottomLeft.X >= X1 &&
+			    _bottomLeft.X <= X2 &&
+			    _bottomLeft.Y >= Y1 &&
+			    _bottomLeft.Y <= Y2)
+			{
+				overlaps = true;
+			}
+			else if (_bottomRight.X >= X1 &&
+			         _bottomRight.X <= X2 &&
+			         _bottomRight.Y >= Y1 &&
+			         _bottomRight.Y <= Y2)
+			{
+				overlaps = true;
+			}
+			else if (_topLeft.X >= X1 &&
+			         _topLeft.X <= X2 &&
+			         _topLeft.Y >= Y1 &&
+			         _topLeft.Y <= Y2)
+			{
+				overlaps = true;
+			}
+			else if (_topRight.X >= X1 &&
+			         _topRight.X <= X2 &&
+			         _topRight.Y >= Y1 &&
+			         _topRight.Y <= Y2)
+			{
+				overlaps = true;
+			}
+
+			return overlaps;
 		}
 
 		/// <summary>
