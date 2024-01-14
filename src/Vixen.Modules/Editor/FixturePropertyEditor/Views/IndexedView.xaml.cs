@@ -28,7 +28,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 		#region Private Methods
 
 		/// <summary>
-		/// Scrolls the selected color item into view.
+		/// Scrolls the selected item into view.
 		/// </summary>
 		/// <param name="sender">Event sender</param>
 		/// <param name="e">Event arguments</param>

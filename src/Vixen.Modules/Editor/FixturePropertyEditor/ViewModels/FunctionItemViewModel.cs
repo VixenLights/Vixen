@@ -155,6 +155,12 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// </summary>
 		public Color TimelineColor { get; set; }
 
+		/// <summary>
+		/// Name of the associated function.
+		/// </summary>
+		/// <remarks>This property is used to establish a relationship between two functions</remarks>
+		public string AssociatedFunctionName { get; set; }
+
 		#endregion
 
 		#region Public Catel Properties

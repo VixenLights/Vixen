@@ -72,6 +72,15 @@ namespace VixenModules.OutputFilter.PrismFilter
 			set { Data.ClosePrismIndexValue = value; }
 		}
 
+		/// <summary>
+		/// Prism Function Name associated with the filter.
+		/// </summary>
+		public string AssociatedFunctionName
+		{
+			get { return Data.AssociatedFunctionName; }
+			set { Data.AssociatedFunctionName = value; }
+		}
+
 		#endregion
 
 		#region Protected Methods
@@ -82,7 +91,12 @@ namespace VixenModules.OutputFilter.PrismFilter
 		protected override PrismFilterOutput CreateOutputInternal()
 		{
 			// Create the prism filter output
-			PrismFilterOutput output = new PrismFilterOutput(Data.Tag, Data.ConvertPrismIntentsIntoOpenPrismIntents, Data.OpenPrismIndexValue, Data.ClosePrismIndexValue);
+			PrismFilterOutput output = new PrismFilterOutput(
+				Data.Tag, 
+				Data.ConvertPrismIntentsIntoOpenPrismIntents, 
+				Data.OpenPrismIndexValue, 
+				Data.ClosePrismIndexValue,
+				Data.AssociatedFunctionName);
 
 			// Configure the filter
 			output.ConfigureFilter();

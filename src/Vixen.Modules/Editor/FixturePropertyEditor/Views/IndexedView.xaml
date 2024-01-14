@@ -152,7 +152,6 @@
 			</DataGrid.Columns>
 		</local:VixenDataGrid>
 
-
 		<WrapPanel Margin="5,0,0,0" Grid.Row="1" >
 			<Button Name="Add" Width="40" Height="40" Command="{Binding AddCommand}"  Margin="0,2,2,2"
 					ToolTip="Select to Add a new index item.">
@@ -166,6 +165,20 @@
 				Visibility="{Binding DisplayImage, Converter={StaticResource BooleanToVisibilityConverter}}"
 					ToolTip="Select to Import png images for the Gobo items.">
 			</Button>
+			<Label VerticalContentAlignment="Center"
+			       ToolTip="Select the Prism function that is opened and closed by this function."
+			       Visibility="{Binding DisplayAssociatedFunctions, Converter={StaticResource BooleanToVisibilityConverter}}">
+				Associated Prism Function:
+			</Label>
+
+			<ComboBox  
+				Width="200"
+				Height="20"
+				ItemsSource="{Binding Path=Functions}"
+				Visibility="{Binding DisplayAssociatedFunctions, Converter={StaticResource BooleanToVisibilityConverter}}"
+				SelectedItem="{Binding AssociatedFunctionName, Mode=TwoWay}"
+				ToolTip="Select the Prism function that is opened and closed by this function.">
+			</ComboBox>
 		</WrapPanel>
 
 	</Grid>

@@ -23,6 +23,11 @@ namespace VixenModules.OutputFilter.PrismFilter.Filter
 		/// </summary>
 		public byte OpenPrismIndexValue { get; set; }
 
+		/// <summary>
+		/// Prism Function name associated with this filter.
+		/// </summary>
+		public string AssociatedFunctionName { get; set; }
+
 		#endregion
 
 		#region Protected Methods
@@ -39,7 +44,8 @@ namespace VixenModules.OutputFilter.PrismFilter.Filter
 			// If the intent is a tagged command and
 			// the tag matches then...
 			if (taggedCommand != null &&
-				taggedCommand.IndexType == FixtureIndexType.Prism)
+				taggedCommand.IndexType == FixtureIndexType.Prism &&
+				taggedCommand.Tag == AssociatedFunctionName || string.IsNullOrEmpty(AssociatedFunctionName))
 			{
 				// Save off the intent which indicates to the caller that the output associated with this filter handles this type of intent.
 				IntentValue = HandleIntent();
@@ -58,7 +64,8 @@ namespace VixenModules.OutputFilter.PrismFilter.Filter
 		public override void Handle(IIntentState<RangeValue<FunctionIdentity>> intent)
 		{
 			// If the intent is a Prism range then...
-			if (intent.GetValue().TagType == FunctionIdentity.Prism)
+			if (intent.GetValue().TagType == FunctionIdentity.Prism &&
+			    intent.GetValue().Tag == AssociatedFunctionName || string.IsNullOrEmpty(AssociatedFunctionName))
 			{
 				// Save off the intent which indicates to the caller that the output associated with this filter handles this type of intent.
 				IntentValue = HandleIntent();
