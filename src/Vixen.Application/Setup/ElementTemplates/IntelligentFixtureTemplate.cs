@@ -733,6 +733,9 @@ namespace VixenApplication.Setup.ElementTemplates
 			// Assign the close prism index value
 			filter.ClosePrismIndexValue = closePrism;
 
+			// Assign the associated prism function name
+			filter.AssociatedFunctionName = function.AssociatedFunctionName;
+
 			// Create the output associated with the filter
 			filter.CreateOutput();
 
