@@ -1118,7 +1118,7 @@ namespace VixenModules.Preview.VixenPreview
 						_selectedDisplayItem.Shape.MouseMove(dragCurrent.X, dragCurrent.Y, changeX, changeY);
 						EndUpdate();
 					}
-						// If we get here, we're drwing a rubber band
+					// If we get here, we're drwing a rubber band
 					else if (_banding)
 					{
 						int X1 = Math.Min(dragStart.X, dragStart.X + changeX);
