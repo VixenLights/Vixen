@@ -19,118 +19,116 @@ namespace VixenModules.Controller.E131
 
         private Button okButton;
 
-        private void InitializeComponent()
-        {
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UnicastForm));
-			this.okButton = new System.Windows.Forms.Button();
-			this.cancelButton = new System.Windows.Forms.Button();
-			this.ipRadio = new System.Windows.Forms.RadioButton();
-			this.networkNameRadio = new System.Windows.Forms.RadioButton();
-			this.networkNameTextBox = new System.Windows.Forms.TextBox();
-			this.ipTextBox = new VixenModules.Controller.E131.Controls.IpTextBox();
-			this.SuspendLayout();
+		private void InitializeComponent()
+		{
+			ComponentResourceManager resources = new ComponentResourceManager(typeof(UnicastForm));
+			okButton = new Button();
+			cancelButton = new Button();
+			ipRadio = new RadioButton();
+			networkNameRadio = new RadioButton();
+			networkNameTextBox = new TextBox();
+			ipTextBox = new IpTextBox();
+			SuspendLayout();
 			// 
 			// okButton
 			// 
-			this.okButton.AutoSize = true;
-			this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.okButton.Location = new System.Drawing.Point(28, 80);
-			this.okButton.Name = "okButton";
-			this.okButton.Size = new System.Drawing.Size(75, 25);
-			this.okButton.TabIndex = 101;
-			this.okButton.Text = "&OK";
-			this.okButton.Click += new System.EventHandler(this.okButton_Click);
-			this.okButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.okButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			okButton.AutoSize = true;
+			okButton.DialogResult = DialogResult.OK;
+			okButton.Location = new Point(28, 80);
+			okButton.Name = "okButton";
+			okButton.Size = new Size(75, 25);
+			okButton.TabIndex = 101;
+			okButton.Text = "&OK";
+			okButton.Click += okButton_Click;
+			okButton.MouseLeave += buttonBackground_MouseLeave;
+			okButton.MouseHover += buttonBackground_MouseHover;
 			// 
 			// cancelButton
 			// 
-			this.cancelButton.AutoSize = true;
-			this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancelButton.Location = new System.Drawing.Point(117, 80);
-			this.cancelButton.Name = "cancelButton";
-			this.cancelButton.Size = new System.Drawing.Size(75, 25);
-			this.cancelButton.TabIndex = 102;
-			this.cancelButton.Text = "&Cancel";
-			this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
-			this.cancelButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.cancelButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			cancelButton.AutoSize = true;
+			cancelButton.DialogResult = DialogResult.Cancel;
+			cancelButton.Location = new Point(117, 80);
+			cancelButton.Name = "cancelButton";
+			cancelButton.Size = new Size(75, 25);
+			cancelButton.TabIndex = 102;
+			cancelButton.Text = "&Cancel";
+			cancelButton.Click += cancelButton_Click;
+			cancelButton.MouseLeave += buttonBackground_MouseLeave;
+			cancelButton.MouseHover += buttonBackground_MouseHover;
 			// 
 			// ipRadio
 			// 
-			this.ipRadio.AutoSize = true;
-			this.ipRadio.Checked = true;
-			this.ipRadio.Location = new System.Drawing.Point(26, 49);
-			this.ipRadio.Name = "ipRadio";
-			this.ipRadio.Size = new System.Drawing.Size(80, 19);
-			this.ipRadio.TabIndex = 104;
-			this.ipRadio.TabStop = true;
-			this.ipRadio.Text = "IP Address";
-			this.ipRadio.UseVisualStyleBackColor = true;
-			this.ipRadio.CheckedChanged += new System.EventHandler(this.Radio_CheckedChanged);
+			ipRadio.AutoSize = true;
+			ipRadio.Checked = true;
+			ipRadio.Location = new Point(26, 49);
+			ipRadio.Name = "ipRadio";
+			ipRadio.Size = new Size(80, 19);
+			ipRadio.TabIndex = 104;
+			ipRadio.TabStop = true;
+			ipRadio.Text = "IP Address";
+			ipRadio.UseVisualStyleBackColor = true;
+			ipRadio.CheckedChanged += Radio_CheckedChanged;
 			// 
 			// networkNameRadio
 			// 
-			this.networkNameRadio.AutoSize = true;
-			this.networkNameRadio.Location = new System.Drawing.Point(103, 49);
-			this.networkNameRadio.Name = "networkNameRadio";
-			this.networkNameRadio.Size = new System.Drawing.Size(105, 19);
-			this.networkNameRadio.TabIndex = 105;
-			this.networkNameRadio.Text = "Network Name";
-			this.networkNameRadio.UseVisualStyleBackColor = true;
-			this.networkNameRadio.CheckedChanged += new System.EventHandler(this.Radio_CheckedChanged);
+			networkNameRadio.AutoSize = true;
+			networkNameRadio.Location = new Point(103, 49);
+			networkNameRadio.Name = "networkNameRadio";
+			networkNameRadio.Size = new Size(105, 19);
+			networkNameRadio.TabIndex = 105;
+			networkNameRadio.Text = "Network Name";
+			networkNameRadio.UseVisualStyleBackColor = true;
+			networkNameRadio.CheckedChanged += Radio_CheckedChanged;
 			// 
 			// networkNameTextBox
 			// 
-			this.networkNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.networkNameTextBox.Enabled = false;
-			this.networkNameTextBox.Location = new System.Drawing.Point(45, 18);
-			this.networkNameTextBox.Name = "networkNameTextBox";
-			this.networkNameTextBox.Size = new System.Drawing.Size(139, 23);
-			this.networkNameTextBox.TabIndex = 106;
-			this.networkNameTextBox.Text = "myComputer";
+			networkNameTextBox.BorderStyle = BorderStyle.FixedSingle;
+			networkNameTextBox.Enabled = false;
+			networkNameTextBox.Location = new Point(45, 18);
+			networkNameTextBox.Name = "networkNameTextBox";
+			networkNameTextBox.Size = new Size(139, 23);
+			networkNameTextBox.TabIndex = 106;
+			networkNameTextBox.Text = "myComputer";
 			// 
 			// ipTextBox
 			// 
-			this.ipTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.ipTextBox.Location = new System.Drawing.Point(45, 18);
-			this.ipTextBox.Name = "ipTextBox";
-			this.ipTextBox.Size = new System.Drawing.Size(139, 20);
-			this.ipTextBox.TabIndex = 103;
-			this.ipTextBox.Text = "127.0.0.1";
-			this.ipTextBox.TextChanged += new System.EventHandler(this.ipTextBox_TextChanged);
+			ipTextBox.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+			ipTextBox.Location = new Point(45, 18);
+			ipTextBox.Name = "ipTextBox";
+			ipTextBox.Size = new Size(139, 20);
+			ipTextBox.TabIndex = 103;
+			ipTextBox.Text = "127.0.0.1";
+			ipTextBox.TextChanged += ipTextBox_TextChanged;
 			// 
 			// UnicastForm
 			// 
-			this.AcceptButton = this.okButton;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.AutoSize = true;
-			this.CancelButton = this.cancelButton;
-			this.ClientSize = new System.Drawing.Size(227, 110);
-			this.ControlBox = false;
-			this.Controls.Add(this.networkNameTextBox);
-			this.Controls.Add(this.networkNameRadio);
-			this.Controls.Add(this.ipRadio);
-			this.Controls.Add(this.okButton);
-			this.Controls.Add(this.cancelButton);
-			this.Controls.Add(this.ipTextBox);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.Name = "UnicastForm";
-			this.ShowIcon = false;
-			this.ShowInTaskbar = false;
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "New Unicast Destination";
-			this.TopMost = true;
-			this.Load += new System.EventHandler(this.UnicastForm_Load);
-			this.ResumeLayout(false);
-			this.PerformLayout();
+			AcceptButton = okButton;
+			AutoScaleDimensions = new SizeF(7F, 15F);
+			AutoScaleMode = AutoScaleMode.Font;
+			AutoSize = true;
+			CancelButton = cancelButton;
+			ClientSize = new Size(227, 110);
+			Controls.Add(networkNameTextBox);
+			Controls.Add(networkNameRadio);
+			Controls.Add(ipRadio);
+			Controls.Add(okButton);
+			Controls.Add(cancelButton);
+			Controls.Add(ipTextBox);
+			FormBorderStyle = FormBorderStyle.FixedDialog;
+			Icon = (Icon)resources.GetObject("$this.Icon");
+			MaximizeBox = false;
+			MinimizeBox = false;
+			Name = "UnicastForm";
+			ShowInTaskbar = false;
+			StartPosition = FormStartPosition.CenterParent;
+			Text = "New Unicast Destination";
+			TopMost = true;
+			Load += UnicastForm_Load;
+			ResumeLayout(false);
+			PerformLayout();
+		}
 
-        }
-
-        private RadioButton ipRadio;
+		private RadioButton ipRadio;
         private RadioButton networkNameRadio;
         private TextBox networkNameTextBox;
 
