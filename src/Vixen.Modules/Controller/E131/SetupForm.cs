@@ -105,6 +105,7 @@ namespace VixenModules.Output.E131
             btnAddUnicast.Image = Tools.GetIcon(Resources.add, iconSize);
             btnDeleteUnicast.Text = "";
             btnDeleteUnicast.Image = Tools.GetIcon(Resources.delete, iconSize);
+            btnDeleteAllUniverses.Image = Tools.GetIcon(Resources.table_delete, iconSize);
 			SetDestinations();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
@@ -1113,6 +1114,23 @@ namespace VixenModules.Output.E131
                 univDGVN.Rows.Remove(r);
             updateDgvnStartValues();
         }
+
+        private void btnDeleteAllUniverses_Click(object sender, EventArgs e)
+        {
+			MessageBoxForm.msgIcon = SystemIcons.Information;
+			var messageBox =
+				new MessageBoxForm(
+					"Are you sure you want to delete all universes?",
+					@"Delete All Universes?",true, false);
+			messageBox.ShowDialog();
+			
+			if (messageBox.DialogResult == DialogResult.OK)
+			{
+				univDGVN.Rows.Clear();
+                updateDgvnStartValues();
+                btnAddUniverse.PerformClick();
+			}
+		}
 
         private void UnivDgvnInsertRow(object sender, DataGridViewRowEventArgs e)
         {
