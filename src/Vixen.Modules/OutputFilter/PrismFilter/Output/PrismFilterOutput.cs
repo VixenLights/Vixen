@@ -31,6 +31,11 @@ namespace VixenModules.OutputFilter.PrismFilter.Output
 		/// </summary>
 		private byte _closePrismIndexValue;
 
+		/// <summary>
+		/// Name of the prism function associated with this filter.
+		/// </summary>
+		private string _associatedFunctionName;
+
 		#endregion
 
 		#region Constructor
@@ -42,11 +47,13 @@ namespace VixenModules.OutputFilter.PrismFilter.Output
 		/// <param name="convertPrismIntentsIntoOpenPrismIntents">Flag indicating whether to convert prism into open prism intents</param>
 		/// <param name="openPrismIndexValue">Index value for prism open command</param>
 		/// <param name="closePrismIndexValue">Index value for prism close command</param>
+		/// <param name="associatedFunctionName">Optional prism function name associated with this filter</param>
 		public PrismFilterOutput(
 			string tag, 
 			bool convertPrismIntentsIntoOpenPrismIntents,
 			byte openPrismIndexValue,
-			byte closePrismIndexValue) : base(tag)			
+			byte closePrismIndexValue,
+			string associatedFunctionName) : base(tag)			
 		{
 			// Store off whether to convert prism intents into open prism intents
 			_convertPrismIntentsIntoOpenPrismIntents = convertPrismIntentsIntoOpenPrismIntents;
@@ -56,6 +63,9 @@ namespace VixenModules.OutputFilter.PrismFilter.Output
 
 			// Store off the close prism index value
 			_closePrismIndexValue = closePrismIndexValue;			
+
+			// Store off the associated prism function name
+			_associatedFunctionName = associatedFunctionName;	
 		}
 
 		#endregion
@@ -72,7 +82,10 @@ namespace VixenModules.OutputFilter.PrismFilter.Output
 
 			// Configure the prism open index DMX value
 			((Filter.PrismFilter)Filter).OpenPrismIndexValue = _openPrismIndexValue;
-		}
+
+			// Configure the name of the associated prism function
+			((Filter.PrismFilter)Filter).AssociatedFunctionName = _associatedFunctionName;
+        }
 						
 		/// <summary>
 		/// Refer to base class documentation.

@@ -51,6 +51,9 @@ namespace VixenModules.OutputFilter.PrismFilter
 
 			// Initialize the tag text box
 			textBoxTag.Text = _data.Tag;
+
+			// Initialize the associated function name
+			textBoxAssociatedFunctionName.Text = _data.AssociatedFunctionName;
 		}
 
         #endregion
@@ -87,6 +90,9 @@ namespace VixenModules.OutputFilter.PrismFilter
 
 			// Store off the close prism index value
 			_data.ClosePrismIndexValue = byte.Parse(textClosePrism.Text);
+
+			// Store off the associated prism function name
+			_data.AssociatedFunctionName = textBoxAssociatedFunctionName.Text;
 		}
 
 		/// <summary>

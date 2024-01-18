@@ -39,6 +39,8 @@ namespace VixenModules.OutputFilter.PrismFilter
 			this.textOpenPrism = new System.Windows.Forms.TextBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.textClosePrism = new System.Windows.Forms.TextBox();
+			this.label4 = new System.Windows.Forms.Label();
+			this.textBoxAssociatedFunctionName = new System.Windows.Forms.TextBox();
 			this.flowLayoutPanel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -48,7 +50,7 @@ namespace VixenModules.OutputFilter.PrismFilter
 			this.flowLayoutPanel1.Controls.Add(this.buttonOk);
 			this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-			this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 145);
+			this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 191);
 			this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
 			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
 			this.flowLayoutPanel1.Size = new System.Drawing.Size(383, 35);
@@ -148,13 +150,33 @@ namespace VixenModules.OutputFilter.PrismFilter
 			this.textClosePrism.TabIndex = 9;
 			this.textClosePrism.TextChanged += new System.EventHandler(this.textClosePrism_TextChanged);
 			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(19, 148);
+			this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(185, 15);
+			this.label4.TabIndex = 10;
+			this.label4.Text = "Associated Prism Function Name:";
+			// 
+			// textBoxAssociatedFunctionName
+			// 
+			this.textBoxAssociatedFunctionName.Location = new System.Drawing.Point(212, 145);
+			this.textBoxAssociatedFunctionName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+			this.textBoxAssociatedFunctionName.Name = "textBox1";
+			this.textBoxAssociatedFunctionName.Size = new System.Drawing.Size(116, 23);
+			this.textBoxAssociatedFunctionName.TabIndex = 11;
+			// 
 			// PrismFilterSetup
 			// 
 			this.AcceptButton = this.buttonOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(383, 180);
+			this.ClientSize = new System.Drawing.Size(383, 226);
+			this.Controls.Add(this.textBoxAssociatedFunctionName);
+			this.Controls.Add(this.label4);
 			this.Controls.Add(this.textClosePrism);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.textOpenPrism);
@@ -184,5 +206,7 @@ namespace VixenModules.OutputFilter.PrismFilter
 		private System.Windows.Forms.TextBox textOpenPrism;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.TextBox textClosePrism;
+		private Label label4;
+		private TextBox textBoxAssociatedFunctionName;
 	}
 }

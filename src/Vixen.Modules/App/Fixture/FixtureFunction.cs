@@ -155,6 +155,17 @@ namespace VixenModules.App.Fixture
 			}
 		}
 
+		/// <summary>
+		/// Optional fixture function associated with this function.
+		/// </summary>
+		/// <remarks>This property is used to establish a relationship between two fixture functions</remarks>
+		[DataMember]
+		public string AssociatedFunctionName
+		{
+			get;
+			set;
+		}
+
 		#endregion
 
 		#region Public Methods
@@ -200,6 +211,7 @@ namespace VixenModules.App.Fixture
 				FunctionIdentity = FunctionIdentity,
 				ZoomType = ZoomType,
 				TimelineColor = TimelineColor,	
+				AssociatedFunctionName = AssociatedFunctionName,
 			};
 
 			// If rotation limits are defined then...

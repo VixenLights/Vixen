@@ -316,6 +316,9 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 					// Set the function timeline color
 					functionVM.TimelineColor = functionType.TimelineColor;
 
+					// Set the optional associated function name
+					functionVM.AssociatedFunctionName = functionType.AssociatedFunctionName;
+
 					// Add the function view model to the collection
 					Items.Add(functionVM);
 				}
@@ -369,6 +372,9 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 
 				// Set the timeline color
 				function.TimelineColor = item.TimelineColor;
+
+				// Set the optional associated function name
+				function.AssociatedFunctionName = item.AssociatedFunctionName;	
 
 				// Add the model function to the return collection
 				returnCollection.Add(function);
@@ -678,6 +684,9 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			{
 				// Save off the index data
 				PreviouslySelectedItem.IndexData = IndexedVM.GetIndexData();
+
+				// Save off the associated function name
+				PreviouslySelectedItem.AssociatedFunctionName = IndexedVM.AssociatedFunctionName;	
 			}
 			// Otherwise if the pan/tilt user control is visble then... 
 			else if (PanTiltVisible)
@@ -772,11 +781,25 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// Display the index enumerations in the details area.
 		/// </summary>
 		/// <param name="indexData">Index data associated with the function</param>
-		/// <param name="displayImage">Determine if the image columns are displayed</param>
-		private void DisplayIndex(List<FixtureIndex> indexData, bool displayImage)
+		/// <param name="displayImage">Determines if the image columns are displayed</param>
+		/// <param name="displayFunctions">Determines if the Associated FunctionName drop down is displayed</param>
+		/// <param name="functions">List of prism functions</param>
+		/// <param name="associatedFunctionName">Selected associated prism function name</param>
+		private void DisplayIndex(
+			List<FixtureIndex> indexData, 
+			bool displayImage,
+			bool displayFunctions,
+			List<string> functions,
+			string associatedFunctionName)
 		{
 			// Give the index model data to the indexed view model
-			IndexedVM.InitializeChildViewModels(indexData, displayImage, RaiseCanExecuteChanged);
+			IndexedVM.InitializeChildViewModels(
+				indexData, 
+				displayImage, 
+				RaiseCanExecuteChanged, 
+				displayFunctions,
+				functions,
+				associatedFunctionName);
 			
 			// Make the index user control visible
 			IndexedVisible = true;
@@ -805,7 +828,10 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 					// Display the index user control
 					DisplayIndex(
 						PreviouslySelectedItem.IndexData, 
-						PreviouslySelectedItem.FunctionIdentity == Vixen.Data.Value.FunctionIdentity.Gobo); // Display Image Column for Gobo functions
+						PreviouslySelectedItem.FunctionIdentity == Vixen.Data.Value.FunctionIdentity.Gobo, // Display Image Column for Gobo functions
+						PreviouslySelectedItem.FunctionIdentity == Vixen.Data.Value.FunctionIdentity.OpenClosePrism,
+						Items.Where(itm => itm.FunctionIdentity == FunctionIdentity.Prism).Select(itm => itm.Name).ToList(),
+						selectedItem.AssociatedFunctionName); 
 					break;
 				case FixtureFunctionType.ColorWheel:
 					// Display the color wheel user control
@@ -887,6 +913,9 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		{
 			// Retrieve the index data from the user control
 			PreviouslySelectedItem.IndexData = IndexedVM.GetIndexData();
+
+			// Retrieve the associated function name
+			PreviouslySelectedItem.AssociatedFunctionName = IndexedVM.AssociatedFunctionName;
 		}
 
 		/// <summary>

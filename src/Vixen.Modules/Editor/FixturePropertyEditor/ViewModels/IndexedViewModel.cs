@@ -22,6 +22,9 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		{
 			// Create the import Gobo images command
 			ImportGoboImagesCommand = new Command(ImportGoboImages);
+
+			// Initialize the Function name collection
+			Functions = new List<string>();
 		}
 
 		#endregion
@@ -71,6 +74,58 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// </summary>
 		public static readonly PropertyData DisplayTagProperty = RegisterProperty(nameof(DisplayTag), typeof(bool), null);
 
+		/// <summary>
+		/// Gets or sets the Associated Function name.
+		/// This property creates an association between two fixture functions.
+		/// </summary>
+		public string AssociatedFunctionName
+		{
+			get { return GetValue<string>(AssociatedFunctionNameProperty); }
+			set
+			{
+				SetValue(AssociatedFunctionNameProperty, value);
+			}
+		}
+
+		/// <summary>
+		/// Associated Function Name property data.
+		/// </summary>
+		public static readonly PropertyData AssociatedFunctionNameProperty = RegisterProperty(nameof(AssociatedFunctionName), typeof(string), null);
+
+		/// <summary>
+		/// Collection of function names defined on the Intelligent Fixture.
+		/// </summary>
+		public List<string> Functions
+		{
+			get { return GetValue<List<string>>(FunctionsProperty); }
+			set
+			{
+				SetValue(FunctionsProperty, value);
+			}
+		}
+
+		/// <summary>
+		/// Fixture functions property data.
+		/// </summary>
+		public static readonly PropertyData FunctionsProperty = RegisterProperty(nameof(Functions), typeof(List<string>), null);
+
+		/// <summary>
+		/// Determines whether the Associated Functions ComboBox is displayed.
+		/// </summary>
+		public bool DisplayAssociatedFunctions
+		{
+			get { return GetValue<bool>(DisplayAssociationedFunctionsProperty); }
+			set
+			{
+				SetValue(DisplayAssociationedFunctionsProperty, value);
+			}
+		}
+
+		/// <summary>
+		/// Display Associated Functions property data.
+		/// </summary>
+		public static readonly PropertyData DisplayAssociationedFunctionsProperty = RegisterProperty(nameof(DisplayAssociatedFunctions), typeof(bool), null);
+
 		#endregion
 
 		#region Public Methods
@@ -79,9 +134,18 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// Initialize the index view model items from the model data.
 		/// </summary>
 		/// <param name="indexData">Fixture index model data</param>
-		/// <param name="displayImage">Flag determinees if the image columns are displayed</param>
+		/// <param name="displayImage">Flag determines if the image columns are displayed</param>
 		/// <param name="raiseCanExecuteChanged">Delegate to refresh the command status</param>
-		public void InitializeChildViewModels(List<FixtureIndex> indexData, bool displayImage, Action raiseCanExecuteChanged)
+		/// <param name="displayFunctions">Flag determines if the Associated Function ComboBox is displayed</param>
+		/// <param name="functions">Prism functions present on the fixture</param>
+		/// <param name="associatedFunctionName">Currently selected prism function name</param>
+		public void InitializeChildViewModels(
+			List<FixtureIndex> indexData, 
+			bool displayImage, 
+			Action raiseCanExecuteChanged,
+			bool displayFunctions,
+			List<string> functions,
+			string associatedFunctionName)
 		{
 			// Store of the delegate to refresh the command status
 			RaiseCanExecuteChanged = raiseCanExecuteChanged;
@@ -91,6 +155,15 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 
 			// Store off if the tag column should be displayed
 			DisplayTag = !displayImage;
+
+			// Store off if the Associated Functions ComboBox should be displayed
+			DisplayAssociatedFunctions = displayFunctions;
+
+			// Store off the function names that make up the fixture
+			Functions = functions;
+
+			// Store off the associated function name
+			AssociatedFunctionName = associatedFunctionName;
 
 			// Clear any existing items
 			Items.Clear();

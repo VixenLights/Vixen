@@ -32,6 +32,9 @@ namespace VixenModules.OutputFilter.PrismFilter
 			// Copy the close prism index command value
 			newInstance.ClosePrismIndexValue = ClosePrismIndexValue;
 
+			// Copy the Associated (Prism) Function Name
+			newInstance.AssociatedFunctionName = AssociatedFunctionName;
+
 			// Return the new prism filter data instance
 			return newInstance;
 		}
@@ -57,6 +60,12 @@ namespace VixenModules.OutputFilter.PrismFilter
 		/// </summary>
 		[DataMember]
 		public byte ClosePrismIndexValue { get; set; }
+
+		/// <summary>
+		/// Function name of the associated prism function.
+		/// </summary>
+		[DataMember]
+		public string AssociatedFunctionName { get; set; }
 
 		#endregion
 	}
