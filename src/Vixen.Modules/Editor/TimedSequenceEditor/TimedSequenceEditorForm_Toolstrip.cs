@@ -1617,7 +1617,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				using (Font arialFont = new Font("Arial", 10, FontStyle.Bold))
 				{
 					int speedValueXLocation = _timingSpeed >= 0.97f ? 3 : 6; // Adjust the start location of the Speed text if over 100 as the text is longer then values under 100.
-					graphics.DrawString(((float)Math.Round(_timingSpeed, 1) * 100).ToString(), arialFont, brush,
+					graphics.DrawString((Math.Round(_timingSpeed, 1) * 100).ToString("F0"), arialFont, brush,
 						new PointF(speedValueXLocation, 0));
 				}
 
