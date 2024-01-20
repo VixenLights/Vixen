@@ -25,14 +25,6 @@ namespace VixenModules.Output.E131.Controls
 			// store a string representation of the row number in 'strRowNumber'
 			string strRowNumber = (e.RowIndex + 1).ToString();
 
-			// prepend leading zeros to the string if necessary to improve
-			// appearance. For example, if there are ten rows in the grid,
-			// row seven will be numbered as "07" instead of "7". Similarly, if 
-			// there are 100 rows in the grid, row seven will be numbered as "007".
-			while (strRowNumber.Length < this.RowCount.ToString().Length) {
-				strRowNumber = "0" + strRowNumber;
-			}
-
 			// determine the display size of the row number string using
 			// the DataGridView's current font.
 			SizeF size = e.Graphics.MeasureString(strRowNumber, this.Font);
