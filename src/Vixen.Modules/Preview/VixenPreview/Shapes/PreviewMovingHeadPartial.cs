@@ -50,12 +50,32 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// Initialize the pan/tilt movement constraints
 			InitializeMovingHeadMovementConstraints(selectedNode);
 
+			// Default the fixture strobe minimum and maximum
+			StrobeRateMinimum = DefaultStrobeRateMinimum;
+			StrobeRateMaximum = DefaultStrobeRateMaximum;
+
 			Reconfigure(selectedNode);
 		}
 				
 		[OnDeserialized]
 		private void OnDeserialized(StreamingContext context)
-		{			
+		{
+			// If the strobe rate minimum is zero this must be
+			// an existing fixture
+			if (StrobeRateMinimum == 0)
+			{
+				// Default the strobe rate minimum
+				StrobeRateMinimum = DefaultStrobeRateMinimum;
+			}
+
+			// If the strobe rate maximum is zero this must be
+			// an existing fixture
+			if (StrobeRateMaximum == 0) 
+			{
+				// Default the strobe rate maximum
+				StrobeRateMaximum = DefaultStrobeRateMaximum;
+			}
+
 			Layout();						
 		}
 	

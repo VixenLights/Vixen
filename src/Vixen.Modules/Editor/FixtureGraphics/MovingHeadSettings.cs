@@ -108,6 +108,11 @@ namespace VixenModules.Editor.FixtureGraphics
 		public int FixtureIntensity { get; set; }
 
 		/// <summary>
+		/// <inheritdoc/>
+		/// </summary>
+		public int StrobeRate { get; set; }
+
+		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>
 		/// <returns>Clone of the moving head settings.</returns>

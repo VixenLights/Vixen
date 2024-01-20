@@ -51,6 +51,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			TiltStartPosition = DefaultTiltStartPosition;
 			TiltStartPosition = DefaultTiltStopPosition;
 
+			// Default the strobe min and max rates
+			StrobeRateMinimum = DefaultStrobeRateMinimum;
+			StrobeRateMaximum = DefaultStrobeRateMaximum;
+
 			// Default the beam length percentage
 			BeamLength = DefaultBeamLength;
 
@@ -92,6 +96,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Default beam length factor (100%).
 		/// </summary>
 		const int DefaultBeamLength = 100;
+
+		/// <summary>
+		/// Default minimum strobe rate in Hz.
+		/// </summary>
+		private const int DefaultStrobeRateMinimum = 1;
+
+		/// <summary>
+		/// Default maximum strobe rate in Hz.
+		/// </summary>
+		private const int DefaultStrobeRateMaximum = 25;
 
 		#endregion
 
@@ -511,10 +525,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <summary>
 		/// Creates the intent handler for the moving head position.
 		/// </summary>
-		private void CreateIntentHandler()
+		/// <param name="redraw">Delegate to redraw the preview</param>
+		private void CreateIntentHandler(Action redraw)
 		{
 			// Create the intent handler
-			_intentHandler = new MovingHeadIntentHandler();
+			_intentHandler = new MovingHeadIntentHandler(redraw);
 
 			// Give the intent handler the current movement constraints
 			_intentHandler.PanStartPosition = PanStartPosition;
@@ -523,6 +538,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_intentHandler.TiltStopPosition = TiltStopPosition;
 			_intentHandler.InvertPanDirection = InvertPanDirection == YesNoType.Yes;
 			_intentHandler.InvertTiltDirection = InvertTiltDirection == YesNoType.Yes;
+			
+			// Give the intent handler the strobe constraints
+			_intentHandler.StrobeRateMinimum = StrobeRateMinimum;
+			_intentHandler.StrobeRateMaximum = StrobeRateMaximum;
 
 			// Configure how the fixture zooms
 			_intentHandler.ZoomNarrowToWide = ZoomNarrowToWide;	
@@ -583,7 +602,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_movingHeadCurrentSettings = _movingHead.MovingHead;
 
 			// Create the intent handler
-			CreateIntentHandler();
+			CreateIntentHandler(null);
 		}
 
 		/// <summary>
@@ -782,7 +801,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>		
-		public void Initialize(int referenceHeight)
+		public void Initialize(int referenceHeight, Action redraw)
 		{
 			// Create the moving head OpenGL implementation
 			_movingHeadOpenGL = new MovingHeadOpenGL();
@@ -791,7 +810,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_movingHeadCurrentSettings = _movingHeadOpenGL.MovingHead;
 
 			// Create the intent handler
-			CreateIntentHandler();
+			CreateIntentHandler(redraw);
 			
 			// Initialize the moving head
 			_movingHeadOpenGL.Initialize(CalculateDrawingLength(), referenceHeight, (100.0 - BeamTransparency) / 100.0, BeamWidthMultiplier, MountingPosition);
@@ -822,6 +841,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				// Dispatch the current intents
 				_intentHandler.Dispatch(states);
 			}
+
+			// After processing all the intents allow the intent handler
+			// to configure fixture strobe state
+			_intentHandler.FinalizeStrobeState();
 
 			// Calculate the height of the drawing area
 			int fixtureHeight = Bottom - Top;
@@ -913,6 +936,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				_node = VixenSystem.Nodes.GetElementNode(NodeId);				
 			}
 		}
+
+		/// <summary>
+		/// Strobe rate minimum in Hz.
+		/// </summary>
+		[DataMember(EmitDefaultValue = false),
+		Category("Settings"),
+		Description("The strobe rate minimum (in Hz)."),
+		DisplayName("Strobe Rate Minimum (Hz)")]
+		public int StrobeRateMinimum { get; set; }
+
+		/// <summary>
+		/// Strobe rate maximum in Hz.
+		/// </summary>
+		[DataMember(EmitDefaultValue = false),
+		Category("Settings"),
+		Description("The strobe rate maximum (in Hz)."),
+		DisplayName("Strobe Rate Maximum (Hz)")]
+		public int StrobeRateMaximum { get; set; }
 
 		/// <summary>
 		/// Pan start position in degrees.

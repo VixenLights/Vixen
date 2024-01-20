@@ -531,6 +531,10 @@ namespace VixenModules.Effect.Effect
 				// Declare the index value to use for the command
 				int indexValue;
 
+				// Default the index range
+				int minValue = 0;
+				int maxValue = 0;
+
 				// If the index uses a curve then...
 				if (fixtureIndex.UseCurve)
 				{
@@ -542,6 +546,10 @@ namespace VixenModules.Effect.Effect
 
 					// Scale the value based on the start and stop values of the index
 					indexValue = (int)Math.Round(ScaleCurveToValue(curve.GetValue(intervalPosFactor), fixtureIndex.EndValue, fixtureIndex.StartValue));
+
+					// Save off the index range 
+					minValue = fixtureIndex.StartValue;
+					maxValue = fixtureIndex.EndValue;
 				}
 				else
 				{
@@ -560,6 +568,10 @@ namespace VixenModules.Effect.Effect
 
 				// Assign the label to the command
 				namedCommand.Label = function.Label;
+
+				// Assign the index range to the command
+				namedCommand.RangeMinimum = (byte)minValue;
+				namedCommand.RangeMaximum = (byte)maxValue;
 
 				// Create the command value from the tagged command
 				CommandValue commandValue = new CommandValue(namedCommand);

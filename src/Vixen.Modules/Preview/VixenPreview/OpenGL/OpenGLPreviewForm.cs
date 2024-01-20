@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using System.Timers;
+
 using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
@@ -44,6 +46,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private Camera _camera;
 		private bool _needsUpdate = true;
 		private bool _isRendering;
+		private bool _renderingInProcess;
 		private bool _formLoading;
 		private string _displayName = "Vixen Preview";
 
@@ -592,7 +595,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		/// <summary>
 		/// Initializes the moving head render strategy with shapes that are made up of graphical volumes.
 		/// </summary>
-		private void InitializeMovingHeadRenderStrategy()
+		/// <param name="redraw">Method to redraw the preview</param>
+		private void InitializeMovingHeadRenderStrategy(Action redraw)
 		{
 			// If the moving head render strategy has not been created then...
 			if (_movingHeadRenderStrategy == null)
@@ -603,9 +607,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				// Loop over the moving heads
 				foreach (IOpenGLMovingHeadShape movingHeadVolumes in GetMovingHeadShapes())
 				{
-					// Initialize the moving head with the reference height
+					// Initialize the moving head with the reference height and redraw delegate
 					int referenceHeight = _background.HasBackground ? _background.Height : Height;
-					movingHeadVolumes.Initialize(referenceHeight);
+					movingHeadVolumes.Initialize(referenceHeight, redraw);
 
 					// Give the shape to the render strategy
 					_movingHeadRenderStrategy.Shapes.Add(movingHeadVolumes.MovingHead);					
@@ -679,13 +683,37 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			}			
 		}
 
+		/// <summary>
+		/// Renders the preview on the GUI thread.
+		/// </summary>
+		private void OnRenderFrameOnGUIThread()
+		{
+			// If rendering is NOT already in progress then...
+			if (!_renderingInProcess)
+			{
+				// Set the flag that rendering is in progress as we
+				// don't want to post more than one render call
+				_renderingInProcess = true;
+
+				// Render the preview on the GUI thread
+				BeginInvoke(() =>
+				{
+					OnRenderFrame();
+				});
+			}
+		}
+		
 		private void OnRenderFrame()
-		{			
-			// Initialize the moving head render strategy with the applicable display item shapes
-			InitializeMovingHeadRenderStrategy();
+		{
+			// Set flag indicating that rendering is in progress
+			_renderingInProcess = true;
 
 			//Logging.Debug("Entering RenderFrame");
-			if (_isRendering || _formLoading || WindowState==FormWindowState.Minimized) return;
+			if (_isRendering || _formLoading || WindowState == FormWindowState.Minimized) return;
+
+			// Initialize the moving head render strategy with the applicable display item shapes
+			InitializeMovingHeadRenderStrategy(OnRenderFrameOnGUIThread);
+
 			UpdateStatusDistance(_camera.Position.Z);
 			_isRendering = true;
 			_sw.Restart();
@@ -702,18 +730,18 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				{
 					glControl.MakeCurrent();
 					ClearScreen();
-										
+
 					_sw2.Restart();
 					_background.Draw(perspective, _camera.ViewMatrix);
 					_backgroundDraw.Set(_sw2.ElapsedMilliseconds);
 					//Logging.Info($"GL Error: {GL.GetError()}");
 					_sw2.Restart();
-					
+
 					// Render static preview shapes (moving heads)
 					RenderStaticPreviewShapes(perspective);
-					
+
 					DrawPoints(mvp);
-										
+
 					_pointsDraw.Set(_sw2.ElapsedMilliseconds);
 
 					glControl.SwapBuffers();
@@ -726,11 +754,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				{
 					glControl.MakeCurrent();
 					ClearScreen();
-					
+
 					_sw2.Restart();
 					_background.Draw(perspective, _camera.ViewMatrix);
 					_backgroundDraw.Set(_sw2.ElapsedMilliseconds);
-					
+
 					// Render static preview shapes (moving heads)
 					RenderStaticPreviewShapes(perspective);
 
@@ -738,9 +766,14 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 					//glControl.Context.MakeCurrent();
 				}
 			}
+
 			_isRendering = false;
 			_previewUpdate.Set(_sw.ElapsedMilliseconds);
 			UpdateFrameRate();
+			
+			// Set flag indicating that rendering is complete
+			_renderingInProcess = false;
+
 			//Logging.Debug("Exiting RenderFrame");
 		}
 

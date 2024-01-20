@@ -58,6 +58,18 @@
 		/// </summary>		
 		public string Label { get; set; }
 
+		/// <summary>
+		/// Minimum value of the index type range.
+		/// </summary>
+		/// <remarks>This property only applies if the index type is part of a range</remarks>
+		public byte RangeMinimum { get; set; }
+
+		/// <summary>
+		/// Maximum value of the index type range.
+		/// </summary>
+		/// <remarks>This property only applies if the index type is part of a range</remarks>
+		public byte RangeMaximum { get; set; }
+
 		#endregion
 	}
 }

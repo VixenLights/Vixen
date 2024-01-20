@@ -103,5 +103,10 @@ namespace VixenModules.Editor.FixtureGraphics
 		/// </summary>
 		/// <returns>+1 or -1 based on the orientation of the fixture</returns>
 		double GetOrientationSign();
+
+		/// <summary>
+		/// Strobe rate represented in milliseconds between pulses.
+		/// </summary>
+		int StrobeRate { get; set; }
 	}
 }
