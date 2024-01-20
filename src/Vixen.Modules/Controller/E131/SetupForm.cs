@@ -137,8 +137,9 @@ namespace VixenModules.Output.E131
 			univDGVN.RowHeadersDefaultCellStyle.SelectionBackColor = Color.Empty;
 			univDGVN.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			autoPopulateStateUpdate();
+			btnDeleteUniverse.Enabled = univDGVN.RowCount > 1;
 
-        }
+		}
 
 		
         public int EventRepeatCount
@@ -225,7 +226,8 @@ namespace VixenModules.Output.E131
                 new object[]
 					{start.ToString(), active, universe.ToString(), size.ToString()});
             updateDgvnStartValues();
-            return true;
+			btnDeleteUniverse.Enabled = univDGVN.RowCount > 1;
+			return true;
         }
 
         public void SetDestination(string multicast, string unicast)
@@ -1091,7 +1093,8 @@ namespace VixenModules.Output.E131
                 r.Selected = false;
             univDGVN.Rows[univDGVN.Rows.Count-1].Selected = true;
 			univDGVN.FirstDisplayedScrollingRowIndex = univDGVN.RowCount -1;
-        }
+			btnDeleteUniverse.Enabled = true;
+		}
 
         private void UnivDgvnDeletedRow(object sender, DataGridViewRowEventArgs e)
         {
@@ -1111,6 +1114,7 @@ namespace VixenModules.Output.E131
 
             foreach (DataGridViewRow r in toDelete)
                 univDGVN.Rows.Remove(r);
+            btnDeleteUniverse.Enabled = univDGVN.RowCount > 1;
             updateDgvnStartValues();
         }
 
