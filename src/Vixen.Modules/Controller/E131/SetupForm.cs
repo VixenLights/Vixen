@@ -642,6 +642,7 @@ namespace VixenModules.Output.E131
             {
                 comboDestination.Items.Add("Unicast " + ipAddr);
             }
+            btnDeleteUnicast.Enabled = comboDestination.SelectedIndex>-1;
         }
 
         // -------------------------------------------------------------
