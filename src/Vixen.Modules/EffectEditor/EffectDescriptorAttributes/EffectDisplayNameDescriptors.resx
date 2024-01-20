@@ -652,7 +652,7 @@
     <value>Cross Size Ratio</value>
   </data>
   <data name="FirstFillColors" xml:space="preserve">
-    <value>Fill Colors</value>
+    <value>Fill Colors 1</value>
   </data>
   <data name="GeometricShapes" xml:space="preserve">
     <value>Geometric Shapes</value>
@@ -1199,5 +1199,8 @@
   </data>
   <data name="WeaveVerticalThickness" xml:space="preserve">
     <value>Veritical Bar Thickness</value>
+  </data>
+  <data name="ShockwaveType" xml:space="preserve">
+    <value>Shape</value>
   </data>
 </root>

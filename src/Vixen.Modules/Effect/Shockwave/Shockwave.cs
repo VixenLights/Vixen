@@ -1,4 +1,5 @@
 ﻿using Common.Controls.ColorManagement.ColorModels;
+//using System.Windows;
 using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
@@ -10,7 +11,7 @@ using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Shockwave
 {
-	public class Shockwave:PixelEffectBase
+	public partial class Shockwave : PixelEffectBase
 	{
 		private ShockwaveData _data;
 		
@@ -35,16 +36,32 @@ namespace VixenModules.Effect.Shockwave
 			}
 		}
 
-		#endregion
+        #endregion
 
-		#region Config properties
+        #region Config properties
 
-		[Value]
+        [Value]
+        [ProviderCategory(@"Config", 1)]
+        [ProviderDisplayName(@"ShockwaveType")]
+        [ProviderDescription(@"ShockwaveType")]       
+        [PropertyOrder(3)]
+        public ShockWaveType ShockWaveType
+        {
+            get { return _data.ShockWaveType; }
+            set
+            {
+                _data.ShockWaveType = value;
+                IsDirty = true;
+                OnPropertyChanged();
+            }
+        }
+
+        [Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Center X")]
 		[ProviderDescription(@"CenterX")]
 		//[NumberRange(0, 100, 1)]
-		[PropertyOrder(3)]
+		[PropertyOrder(4)]
 		public Curve CenterXCurve
 		{
 			get { return _data.CenterXCurve; }
@@ -61,7 +78,7 @@ namespace VixenModules.Effect.Shockwave
 		[ProviderDisplayName(@"Center Y")]
 		[ProviderDescription(@"CenterY")]
 		//[NumberRange(0, 100, 1)]
-		[PropertyOrder(4)]
+		[PropertyOrder(5)]
 		public Curve CenterYCurve
 		{
 			get { return _data.CenterYCurve; }
@@ -78,7 +95,7 @@ namespace VixenModules.Effect.Shockwave
 		[ProviderDisplayName(@"Radius")]
 		[ProviderDescription(@"RadiusCurve")]
 		//[NumberRange(0, 750, 1)]
-		[PropertyOrder(5)]
+		[PropertyOrder(6)]
 		public Curve RadiusCurve
 		{
 			get { return _data.RadiusCurve; }
@@ -94,7 +111,7 @@ namespace VixenModules.Effect.Shockwave
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"ScaledRadius")]
 		[ProviderDescription(@"ScaledRadius")]
-		[PropertyOrder(6)]
+		[PropertyOrder(7)]
 		public bool ScaledRadius
 		{
 			get { return _data.ScaledRadius; }
@@ -111,7 +128,7 @@ namespace VixenModules.Effect.Shockwave
 		[ProviderDisplayName(@"Width")]
 		[ProviderDescription(@"WidthCurve")]
 		//[NumberRange(0, 255, 1)]
-		[PropertyOrder(7)]
+		[PropertyOrder(8)]
 		public Curve WidthCurve
 		{
 			get { return _data.WidthCurve; }
@@ -139,8 +156,6 @@ namespace VixenModules.Effect.Shockwave
 				OnPropertyChanged();
 			}
 		}
-
-		
 
 		#endregion
 
@@ -225,13 +240,22 @@ namespace VixenModules.Effect.Shockwave
 			//Not required
 		}
 
+		/// <inheritdoc/>
 		protected override void RenderEffect(int effectFrame, IPixelFrameBuffer frameBuffer)
 		{
-			var intervalPos = GetEffectTimeIntervalPosition(effectFrame);
-			var intervalPosFactor = intervalPos * 100;
-			double effectPositionAdjust = CalculateAcceleration(intervalPos, CalculateAcceleration(intervalPosFactor))*100.0;
-			Color c = Color.GetColorAt(intervalPos);
+			// Get the position within the effect timeline
+			double intervalPos = GetEffectTimeIntervalPosition(effectFrame);
 
+			// Convert to a number between (0-100)
+			double intervalPosFactor = intervalPos * 100;
+			
+			// Calculate the acceleration of the shock-wave
+			double effectPositionAdjust = CalculateAcceleration(intervalPos, CalculateAcceleration(intervalPosFactor)) * 100.0;
+			
+			// Retrieve the color of the shock-wave for the current frame
+			Color color = Color.GetColorAt(intervalPos);
+
+			// Determine the center of the shock-wave
 			double posX;
 			double posY;
 
@@ -246,9 +270,36 @@ namespace VixenModules.Effect.Shockwave
 				posY = BufferHt * CalculateCenterY(intervalPosFactor) / 100.0;
 			}
 
+			// Calculate the inside radius of the shock-wave
+			double centerRadius = CalculateRadius(effectPositionAdjust, ScaledRadius ? Math.Max(BufferHt, BufferWi) : 750);
+			
+			// Calculate the width of the shock-wave
+			double width = CalculateWidth(effectPositionAdjust);
+
+			// If the shock wave type is Circular then...
+			if (ShockWaveType == ShockWaveType.Circle)
+			{
+				DrawCircularShockwave(posX, posY, frameBuffer, effectPositionAdjust, color, width, centerRadius);
+            }
+			else
+			{
+				DrawDiamondShockwave(effectPositionAdjust, frameBuffer, posX, posY, color, width, centerRadius);
+			}
+		}
+
+		private void DrawCircularShockwave(
+			double posX, 
+			double posY, 
+			IPixelFrameBuffer frameBuffer, 
+			double effectPositionAdjust, 
+			Color c,
+			double width,
+			double centerRadius)
+		{
+			double halfWidth = width / 2.0;
+
 			Point centerPoint = new Point((int)posX, (int)posY);
-			double centerRadius = CalculateRadius(effectPositionAdjust, ScaledRadius?Math.Max(BufferHt, BufferWi):750);
-			double halfWidth = CalculateWidth(effectPositionAdjust) / 2.0;
+			
 			var radius1 = Math.Max(0.0, centerRadius - halfWidth);
 			var radius2 = centerRadius + halfWidth;
 			
@@ -313,27 +364,40 @@ namespace VixenModules.Effect.Shockwave
 						currentPoint.X = elementLocation.X;
 						currentPoint.Y = elementLocation.Y;
 						var distance = DistanceFromCenter(centerPoint, currentPoint);
-						if (ContainsPoint(distance, radius1, radius2))
-						{
+						double diamondIntensity = 1.0;
+
+
+                        if (ShockWaveType == ShockWaveType.Diamond && ContainsPoint(currentPoint.X, currentPoint.Y, radius2 * 2.0, (int)posX, (int)posY, (int)(halfWidth * 2.0), out diamondIntensity) ||
+							ShockWaveType == ShockWaveType.Circle && ContainsPoint(distance, radius1, radius2))
+                        {						
 							if (BlendEdges)
 							{
-								double colorPct = 1.0 - Math.Abs(distance - centerRadius)/halfWidth;
-								if (colorPct > 0.0)
+								if (ShockWaveType == ShockWaveType.Circle)
 								{
-									HSV hsv = HSV.FromRGB(c);
-									hsv.V = hsv.V*colorPct;
-									frameBuffer.SetPixel(currentPoint.X, currentPoint.Y, hsv);
+									double colorPct = 1.0 - Math.Abs(distance - centerRadius) / halfWidth;
+									if (colorPct > 0.0)
+									{
+										HSV hsv = HSV.FromRGB(c);																		
+										hsv.V = hsv.V * colorPct;
+										
+										frameBuffer.SetPixel(currentPoint.X, currentPoint.Y, hsv);
+									}
+									else
+									{
+										frameBuffer.SetPixel(currentPoint.X, currentPoint.Y, System.Drawing.Color.Transparent);
+									}
 								}
-								else
+								else 
 								{
-									frameBuffer.SetPixel(currentPoint.X, currentPoint.Y, System.Drawing.Color.Transparent);
-								}
+                                    HSV hsv = HSV.FromRGB(c);
+                                    hsv.V = hsv.V * diamondIntensity;
+									
+                                    frameBuffer.SetPixel(currentPoint.X, currentPoint.Y, hsv);
+                                }
 							}
-							else
-							{
-
+							else					
+							{								
 								frameBuffer.SetPixel(currentPoint.X, currentPoint.Y, c);
-
 							}
 						}
 						else
