@@ -14,6 +14,7 @@ namespace VixenModules.LayerMixingFilter.MaskFill
 			ThemeUpdateControls.UpdateControls(this);
 			ExcludeZeroValuesValues = chkExcludeZero.Checked= excludeZeroValues;
 			RequireMixingPartner = chkRequireMixingPartner.Checked = requireMixingPartner;
+			Icon = Resources.Icon_Vixen3;
 			
 		}
 
