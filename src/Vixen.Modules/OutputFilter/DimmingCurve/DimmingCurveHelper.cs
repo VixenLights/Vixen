@@ -21,6 +21,7 @@ namespace VixenModules.OutputFilter.DimmingCurve
 			ThemeUpdateControls.UpdateControls(this);
 			SimpleMode = simpleMode;
 			_curve = new Curve();
+			Icon = Resources.Icon_Vixen3;
 		}
 
 		public DimmingCurveHelper():this(false)

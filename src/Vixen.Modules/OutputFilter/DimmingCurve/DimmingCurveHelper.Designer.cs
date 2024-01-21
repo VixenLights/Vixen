@@ -27,172 +27,170 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.buttonSetupCurve = new System.Windows.Forms.Button();
-			this.radioButtonExistingDoNothing = new System.Windows.Forms.RadioButton();
-			this.lblQuestion = new System.Windows.Forms.Label();
-			this.radioButtonExistingUpdate = new System.Windows.Forms.RadioButton();
-			this.radioButtonExistingAddNew = new System.Windows.Forms.RadioButton();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonOk = new System.Windows.Forms.Button();
-			this.label4 = new System.Windows.Forms.Label();
-			this.radioButtonInsertAfter = new System.Windows.Forms.RadioButton();
-			this.SuspendLayout();
+			label1 = new Label();
+			label2 = new Label();
+			buttonSetupCurve = new Button();
+			radioButtonExistingDoNothing = new RadioButton();
+			lblQuestion = new Label();
+			radioButtonExistingUpdate = new RadioButton();
+			radioButtonExistingAddNew = new RadioButton();
+			buttonCancel = new Button();
+			buttonOk = new Button();
+			label4 = new Label();
+			radioButtonInsertAfter = new RadioButton();
+			SuspendLayout();
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(28, 35);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(319, 15);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "This will set up a dimming curve for each selected element.";
+			label1.AutoSize = true;
+			label1.Location = new Point(28, 35);
+			label1.Name = "label1";
+			label1.Size = new Size(318, 15);
+			label1.TabIndex = 0;
+			label1.Text = "This will set up a dimming curve for each selected element.";
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(28, 67);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(430, 15);
-			this.label2.TabIndex = 1;
-			this.label2.Text = "Use the button below to configure the dimming curve for the selected elements.";
+			label2.AutoSize = true;
+			label2.Location = new Point(28, 67);
+			label2.Name = "label2";
+			label2.Size = new Size(430, 15);
+			label2.TabIndex = 1;
+			label2.Text = "Use the button below to configure the dimming curve for the selected elements.";
 			// 
 			// buttonSetupCurve
 			// 
-			this.buttonSetupCurve.Location = new System.Drawing.Point(189, 110);
-			this.buttonSetupCurve.Name = "buttonSetupCurve";
-			this.buttonSetupCurve.Size = new System.Drawing.Size(152, 35);
-			this.buttonSetupCurve.TabIndex = 2;
-			this.buttonSetupCurve.Text = "Setup Dimming Curve";
-			this.buttonSetupCurve.UseVisualStyleBackColor = true;
-			this.buttonSetupCurve.Click += new System.EventHandler(this.buttonSetupCurve_Click);
-			this.buttonSetupCurve.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonSetupCurve.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			buttonSetupCurve.Location = new Point(189, 110);
+			buttonSetupCurve.Name = "buttonSetupCurve";
+			buttonSetupCurve.Size = new Size(152, 35);
+			buttonSetupCurve.TabIndex = 2;
+			buttonSetupCurve.Text = "Setup Dimming Curve";
+			buttonSetupCurve.UseVisualStyleBackColor = true;
+			buttonSetupCurve.Click += buttonSetupCurve_Click;
+			buttonSetupCurve.MouseLeave += buttonBackground_MouseLeave;
+			buttonSetupCurve.MouseHover += buttonBackground_MouseHover;
 			// 
 			// radioButtonExistingDoNothing
 			// 
-			this.radioButtonExistingDoNothing.AutoSize = true;
-			this.radioButtonExistingDoNothing.Checked = true;
-			this.radioButtonExistingDoNothing.Location = new System.Drawing.Point(31, 188);
-			this.radioButtonExistingDoNothing.Name = "radioButtonExistingDoNothing";
-			this.radioButtonExistingDoNothing.Size = new System.Drawing.Size(237, 19);
-			this.radioButtonExistingDoNothing.TabIndex = 3;
-			this.radioButtonExistingDoNothing.TabStop = true;
-			this.radioButtonExistingDoNothing.Text = "Leave the existing dimming curve alone.";
-			this.radioButtonExistingDoNothing.UseVisualStyleBackColor = true;
+			radioButtonExistingDoNothing.AutoSize = true;
+			radioButtonExistingDoNothing.Checked = true;
+			radioButtonExistingDoNothing.Location = new Point(31, 188);
+			radioButtonExistingDoNothing.Name = "radioButtonExistingDoNothing";
+			radioButtonExistingDoNothing.Size = new Size(237, 19);
+			radioButtonExistingDoNothing.TabIndex = 3;
+			radioButtonExistingDoNothing.TabStop = true;
+			radioButtonExistingDoNothing.Text = "Leave the existing dimming curve alone.";
+			radioButtonExistingDoNothing.UseVisualStyleBackColor = true;
 			// 
 			// lblQuestion
 			// 
-			this.lblQuestion.AutoSize = true;
-			this.lblQuestion.Location = new System.Drawing.Point(28, 159);
-			this.lblQuestion.Name = "lblQuestion";
-			this.lblQuestion.Size = new System.Drawing.Size(447, 15);
-			this.lblQuestion.TabIndex = 4;
-			this.lblQuestion.Text = "If some elements are already patched to a dimming curve, what do you want to do?";
+			lblQuestion.AutoSize = true;
+			lblQuestion.Location = new Point(28, 159);
+			lblQuestion.Name = "lblQuestion";
+			lblQuestion.Size = new Size(447, 15);
+			lblQuestion.TabIndex = 4;
+			lblQuestion.Text = "If some elements are already patched to a dimming curve, what do you want to do?";
 			// 
 			// radioButtonExistingUpdate
 			// 
-			this.radioButtonExistingUpdate.AutoSize = true;
-			this.radioButtonExistingUpdate.Location = new System.Drawing.Point(31, 215);
-			this.radioButtonExistingUpdate.Name = "radioButtonExistingUpdate";
-			this.radioButtonExistingUpdate.Size = new System.Drawing.Size(310, 19);
-			this.radioButtonExistingUpdate.TabIndex = 5;
-			this.radioButtonExistingUpdate.TabStop = true;
-			this.radioButtonExistingUpdate.Text = "Update the existing dimming curve with the new data.";
-			this.radioButtonExistingUpdate.UseVisualStyleBackColor = true;
+			radioButtonExistingUpdate.AutoSize = true;
+			radioButtonExistingUpdate.Location = new Point(31, 215);
+			radioButtonExistingUpdate.Name = "radioButtonExistingUpdate";
+			radioButtonExistingUpdate.Size = new Size(311, 19);
+			radioButtonExistingUpdate.TabIndex = 5;
+			radioButtonExistingUpdate.TabStop = true;
+			radioButtonExistingUpdate.Text = "Update the existing dimming curve with the new data.";
+			radioButtonExistingUpdate.UseVisualStyleBackColor = true;
 			// 
 			// radioButtonExistingAddNew
 			// 
-			this.radioButtonExistingAddNew.AutoSize = true;
-			this.radioButtonExistingAddNew.Location = new System.Drawing.Point(31, 265);
-			this.radioButtonExistingAddNew.Name = "radioButtonExistingAddNew";
-			this.radioButtonExistingAddNew.Size = new System.Drawing.Size(321, 19);
-			this.radioButtonExistingAddNew.TabIndex = 6;
-			this.radioButtonExistingAddNew.TabStop = true;
-			this.radioButtonExistingAddNew.Text = "Add a new dimming curve anyway (not recommended).";
-			this.radioButtonExistingAddNew.UseVisualStyleBackColor = true;
+			radioButtonExistingAddNew.AutoSize = true;
+			radioButtonExistingAddNew.Location = new Point(31, 265);
+			radioButtonExistingAddNew.Name = "radioButtonExistingAddNew";
+			radioButtonExistingAddNew.Size = new Size(321, 19);
+			radioButtonExistingAddNew.TabIndex = 6;
+			radioButtonExistingAddNew.TabStop = true;
+			radioButtonExistingAddNew.Text = "Add a new dimming curve anyway (not recommended).";
+			radioButtonExistingAddNew.UseVisualStyleBackColor = true;
 			// 
 			// buttonCancel
 			// 
-			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(399, 319);
-			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(105, 29);
-			this.buttonCancel.TabIndex = 24;
-			this.buttonCancel.Text = "Cancel";
-			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+			buttonCancel.DialogResult = DialogResult.Cancel;
+			buttonCancel.Location = new Point(399, 319);
+			buttonCancel.Name = "buttonCancel";
+			buttonCancel.Size = new Size(105, 29);
+			buttonCancel.TabIndex = 24;
+			buttonCancel.Text = "Cancel";
+			buttonCancel.UseVisualStyleBackColor = true;
+			buttonCancel.MouseLeave += buttonBackground_MouseLeave;
+			buttonCancel.MouseHover += buttonBackground_MouseHover;
 			// 
 			// buttonOk
 			// 
-			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Enabled = false;
-			this.buttonOk.Location = new System.Drawing.Point(287, 319);
-			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.Size = new System.Drawing.Size(105, 29);
-			this.buttonOk.TabIndex = 23;
-			this.buttonOk.Text = "OK";
-			this.buttonOk.UseVisualStyleBackColor = true;
-			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+			buttonOk.DialogResult = DialogResult.OK;
+			buttonOk.Enabled = false;
+			buttonOk.Location = new Point(287, 319);
+			buttonOk.Name = "buttonOk";
+			buttonOk.Size = new Size(105, 29);
+			buttonOk.TabIndex = 23;
+			buttonOk.Text = "OK";
+			buttonOk.UseVisualStyleBackColor = true;
+			buttonOk.MouseLeave += buttonBackground_MouseLeave;
+			buttonOk.MouseHover += buttonBackground_MouseHover;
 			// 
 			// label4
 			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(138, 92);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(254, 15);
-			this.label4.TabIndex = 25;
-			this.label4.Text = "Hint: Use a library curve to make editing easier.";
+			label4.AutoSize = true;
+			label4.Location = new Point(138, 92);
+			label4.Name = "label4";
+			label4.Size = new Size(254, 15);
+			label4.TabIndex = 25;
+			label4.Text = "Hint: Use a library curve to make editing easier.";
 			// 
 			// radioButtonInsertAfter
 			// 
-			this.radioButtonInsertAfter.AutoSize = true;
-			this.radioButtonInsertAfter.Location = new System.Drawing.Point(31, 240);
-			this.radioButtonInsertAfter.Name = "radioButtonInsertAfter";
-			this.radioButtonInsertAfter.Size = new System.Drawing.Size(268, 19);
-			this.radioButtonInsertAfter.TabIndex = 26;
-			this.radioButtonInsertAfter.TabStop = true;
-			this.radioButtonInsertAfter.Text = "Insert a new dimming curve after the element.";
-			this.radioButtonInsertAfter.UseVisualStyleBackColor = true;
+			radioButtonInsertAfter.AutoSize = true;
+			radioButtonInsertAfter.Location = new Point(31, 240);
+			radioButtonInsertAfter.Name = "radioButtonInsertAfter";
+			radioButtonInsertAfter.Size = new Size(268, 19);
+			radioButtonInsertAfter.TabIndex = 26;
+			radioButtonInsertAfter.TabStop = true;
+			radioButtonInsertAfter.Text = "Insert a new dimming curve after the element.";
+			radioButtonInsertAfter.UseVisualStyleBackColor = true;
 			// 
 			// DimmingCurveHelper
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.AutoSize = true;
-			this.ClientSize = new System.Drawing.Size(518, 363);
-			this.Controls.Add(this.radioButtonInsertAfter);
-			this.Controls.Add(this.label4);
-			this.Controls.Add(this.buttonCancel);
-			this.Controls.Add(this.buttonOk);
-			this.Controls.Add(this.radioButtonExistingAddNew);
-			this.Controls.Add(this.radioButtonExistingUpdate);
-			this.Controls.Add(this.lblQuestion);
-			this.Controls.Add(this.radioButtonExistingDoNothing);
-			this.Controls.Add(this.buttonSetupCurve);
-			this.Controls.Add(this.label2);
-			this.Controls.Add(this.label1);
-			this.DoubleBuffered = true;
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.HelpButton = true;
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(534, 376);
-			this.Name = "DimmingCurveHelper";
-			this.ShowIcon = false;
-			this.ShowInTaskbar = false;
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Dimming Curve Configuration";
-			this.HelpButtonClicked += new System.ComponentModel.CancelEventHandler(this.DimmingCurveHelper_HelpButtonClicked);
-			this.Load += new System.EventHandler(this.DimmingCurveHelper_Load);
-			this.ResumeLayout(false);
-			this.PerformLayout();
-
+			AutoScaleDimensions = new SizeF(7F, 15F);
+			AutoScaleMode = AutoScaleMode.Font;
+			AutoSize = true;
+			ClientSize = new Size(518, 363);
+			Controls.Add(radioButtonInsertAfter);
+			Controls.Add(label4);
+			Controls.Add(buttonCancel);
+			Controls.Add(buttonOk);
+			Controls.Add(radioButtonExistingAddNew);
+			Controls.Add(radioButtonExistingUpdate);
+			Controls.Add(lblQuestion);
+			Controls.Add(radioButtonExistingDoNothing);
+			Controls.Add(buttonSetupCurve);
+			Controls.Add(label2);
+			Controls.Add(label1);
+			DoubleBuffered = true;
+			FormBorderStyle = FormBorderStyle.FixedDialog;
+			HelpButton = true;
+			MaximizeBox = false;
+			MinimizeBox = false;
+			MinimumSize = new Size(534, 376);
+			Name = "DimmingCurveHelper";
+			ShowInTaskbar = false;
+			StartPosition = FormStartPosition.CenterParent;
+			Text = "Dimming Curve Configuration";
+			HelpButtonClicked += DimmingCurveHelper_HelpButtonClicked;
+			Load += DimmingCurveHelper_Load;
+			ResumeLayout(false);
+			PerformLayout();
 		}
 
 		#endregion
