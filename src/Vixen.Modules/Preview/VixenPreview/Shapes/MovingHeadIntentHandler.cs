@@ -1,17 +1,14 @@
-﻿using System.Diagnostics;
-using System.Timers;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics;
 
 using Vixen.Commands;
 using Vixen.Data.Value;
 using Vixen.Sys;
 using Vixen.Sys.Dispatch;
+
 using VixenModules.App.Fixture;
 using VixenModules.Editor.FixtureGraphics;
-using VixenModules.Editor.FixtureGraphics.OpenGL;
-using VixenModules.Preview.VixenPreview.OpenGL;
 using VixenModules.Property.IntelligentFixture;
-
-using Timer = System.Timers.Timer;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -21,7 +18,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	public class MovingHeadIntentHandler : IntentStateDispatch,
 		IHandler<IIntentState<RangeValue<FunctionIdentity>>>
 	{
-		#region Constructor
+		#region Constructors
 
 		/// <summary>
 		/// Constructor
@@ -34,13 +31,32 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			// Store off the preview redraw delegate
 			_redrawPreview = redrawPreviewPreview;
-
-			// Create the fixture strobe timer
-			_strobeTimer = new System.Timers.Timer();
-			_strobeTimer.Elapsed += OnStrobeTimerEvent;
-			_strobeTimer.AutoReset = true;
-			_strobeTimer.Enabled = false;
 		}
+
+		#endregion
+
+		#region Public Static Methods
+
+		/// <summary>
+		/// Clears all strobe timers.
+		/// <remarks>This method should be called after editing the preview</remarks>
+		/// </summary>
+		static public void ResetStrobeTimers()
+		{
+			// Create a new timer dictionary
+			_timerDictionary = new ConcurrentDictionary<int, ConcurrentDictionary<int, MovingHeadTimer>>();
+		}
+
+		#endregion
+
+		#region Private Static Fields
+
+		/// <summary>
+		/// Dictionary of moving head strobe timers.
+		/// The first key is the strobe duration in ms.
+		/// The second or inner dictionary key is the timer interval in ms.
+		/// </summary>
+		private static ConcurrentDictionary<int, ConcurrentDictionary<int, MovingHeadTimer>> _timerDictionary;
 
 		#endregion
 
@@ -88,14 +104,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private FixtureColorWheel _colorWheelEntry = null;
 
 		/// <summary>
-		/// Fixture strobe timer.
-		/// </summary>
-		private Timer _strobeTimer;
-		
-		/// <summary>
 		/// The interval in ms between strobe pulses.
 		/// </summary>
 		private int _strobeInterval;
+
+		/// <summary>
+		/// Reference to the active moving head strobe timer.
+		/// </summary>
+		private MovingHeadTimer _movingHeadStrobeTimer;
 
 		#endregion
 
@@ -133,6 +149,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Strobe Rate Maximum in Hz.
 		/// </summary>
 		public int StrobeRateMaximum
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Maximum strobe duration in ms.
+		/// </summary>
+		public int MaximumStrobeDuration
 		{
 			get;
 			set;
@@ -267,6 +292,31 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		/// <summary>
+		/// Determines the appropriate strobe timer for the moving head based on strobe rate.
+		/// </summary>
+		public void DetermineStrobeTimer()
+		{
+			// If there is not a timer associated with the moving head then...
+			if (_movingHeadStrobeTimer == null)
+			{
+				// Create or register with an existing timer
+				CreateOrRegisterWithTimer();
+			}
+			else
+			{
+				// Otherwise if existing timer's interval does NOT match the fixture's strobe rate then...
+				if (_movingHeadStrobeTimer.Interval != _strobeInterval)
+				{
+					// Remove the moving head from the previous timer
+					_movingHeadStrobeTimer.RemoveMovingHead(new Tuple<IMovingHead, Action>(MovingHead, DetermineStrobeTimer));
+
+					// Create or register with an existing timer based on the strobe interval
+					CreateOrRegisterWithTimer();
+				}
+			}
+		}
+
+		/// <summary>
 		/// Allows the moving head intent handler to examine all of the intents
 		/// received this frame to determine if the fixture should strobe.
 		/// </summary>
@@ -281,14 +331,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				// Configure the strobe rate in ms
 				_strobeInterval = MovingHead.StrobeRate;
 
-				// If the strobe timer is NOT running then...
-				if (!_strobeTimer.Enabled)
+				// If this moving head does NOT have a strobe timer then...
+				if (_movingHeadStrobeTimer == null)
 				{
-					// Give the strobe timer the firing interval
-					_strobeTimer.Interval = _strobeInterval;
-
-					// Start the strobe timer
-					_strobeTimer.Start();
+					// Create or register with a moving head strobe timer 
+					DetermineStrobeTimer();
 				}
 			}
 			// If a strobe intent or color intent is NOT present then...
@@ -297,8 +344,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				// Disable strobe mode
 				_strobeModeEnabled = false;
 
-				// Stop the strobe timer
-				_strobeTimer.Stop();
+				// If the fixture was previously in strobe mode then...
+				if (_movingHeadStrobeTimer != null)
+				{
+					// Disassociate the moving head with the timer 
+					_movingHeadStrobeTimer.RemoveMovingHead(new Tuple<IMovingHead, Action>(MovingHead, DetermineStrobeTimer));
+
+					// Clear out the reference to the timer
+					_movingHeadStrobeTimer = null;
+				}
 			}
 		}
 
@@ -584,46 +638,67 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		#region Private Methods
 
 		/// <summary>
-		/// Event handler for when it is time to strobe the fixture.
+		/// Creates or re-uses an existing moving head strobe timer.
 		/// </summary>
-		/// <param name="source">Event source</param>
-		/// <param name="e">Event arguments</param>
-		private void OnStrobeTimerEvent(Object source, ElapsedEventArgs e)
+		/// <param name="strobeRate">Interval of the strobe rate in ms</param>
+		/// <param name="maxStrobeDuration">Maximum strobe duration in ms</param>
+		private void CreateMovingHeadTimer(int strobeRate, int maxStrobeDuration)
 		{
-			if (_redrawPreview != null)
+			// Create a new moving head timer
+			MovingHeadTimer timer = new MovingHeadTimer(_strobeInterval, maxStrobeDuration, _redrawPreview);
+
+			// If successful adding the timer to the dictionary then...
+			if (_timerDictionary[MaximumStrobeDuration].TryAdd(_strobeInterval, timer))
 			{
-				// Turn on the moving head beam
-				MovingHead.OnOff = true;
+				// Associate the moving head with the timer
+				timer.AddMovingHead(new Tuple<IMovingHead, Action>(MovingHead, DetermineStrobeTimer));
+			}
+			// Otherwise retrieve the existing timer based on the strobe interval
+			else
+			{
+				// Associate the moving head with the timer
+				_timerDictionary[MaximumStrobeDuration][_strobeInterval].AddMovingHead(new Tuple<IMovingHead, Action>(MovingHead, DetermineStrobeTimer));
+			}
 
-				// If the strobe interval has changed then...
-				if (_strobeTimer.Interval != _strobeInterval)
-				{
-					// Update the interval on the timer
-					_strobeTimer.Interval = _strobeInterval;
-				}
+			// Store off the reference to the timer
+			_movingHeadStrobeTimer = _timerDictionary[MaximumStrobeDuration][_strobeInterval];
+		}
 
-				// Redraw the preview graphics
-				_redrawPreview();
+		/// <summary>
+		/// Registers a moving head with a shared strobe timer.
+		/// </summary>
+		private void RegisterWithExistingTimer()
+		{
+			// Associate the moving head with the strobe timer
+			_timerDictionary[MaximumStrobeDuration][_strobeInterval].AddMovingHead(new Tuple<IMovingHead, Action>(MovingHead, DetermineStrobeTimer));
 
-				// Calculate the strobe duration based on the strobe interval
-				// Trying to only have the beam on <= 25%
-				int strobeDuration = _strobeInterval / 4;
-				
-				// Do not allow the strobe duration to exceed 50ms
-				if (strobeDuration > MaxStrobeDuration)
-				{
-					// Set the strobe duration to the maximum allowed
-					strobeDuration = MaxStrobeDuration;
-				}
+			// Store off the reference to the timer
+			_movingHeadStrobeTimer = _timerDictionary[MaximumStrobeDuration][_strobeInterval];
+		}
 
-				// Sleep for the duration the moving head beam should be displayed
-				Thread.Sleep(strobeDuration);
+		/// <summary>
+		/// Creates or registers a moving head with an existing strobe timer.
+		/// </summary>
+		private void CreateOrRegisterWithTimer()
+		{
+			// If a dictionary does not exist for the specified strobe duration then...
+			if (!_timerDictionary.ContainsKey(MaximumStrobeDuration))
+			{
+				// Create the internal dictionary for the specified strobe duration
+				_timerDictionary.TryAdd(MaximumStrobeDuration, new ConcurrentDictionary<int, MovingHeadTimer>());
+			}
 
-				// Turn off the moving head beam
-				MovingHead.OnOff = false;
-
-				// Redraw the preview graphics
-				_redrawPreview();
+			// If an existing strobe rate timer exists then...
+			if (_timerDictionary.ContainsKey(_strobeInterval))
+			{
+				// Register the moving head with an existing strobe rate timer
+				RegisterWithExistingTimer();
+			}
+			// Otherwise a strobe rate timer does NOT exist for the specified strobe interval
+			else
+			{
+				// Create a new strobe timer for the specified interval
+				CreateMovingHeadTimer(_strobeInterval, MaximumStrobeDuration);
 			}
 		}
 

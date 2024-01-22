@@ -46,7 +46,6 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private Camera _camera;
 		private bool _needsUpdate = true;
 		private bool _isRendering;
-		private bool _renderingInProcess;
 		private bool _formLoading;
 		private string _displayName = "Vixen Preview";
 
@@ -601,6 +600,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			// If the moving head render strategy has not been created then...
 			if (_movingHeadRenderStrategy == null)
 			{
+				// Reset all strobe timers
+				MovingHeadIntentHandler.ResetStrobeTimers();
+
 				// Create the moving head render strategy
 				_movingHeadRenderStrategy = new MovingHeadRenderStrategy();
 
@@ -688,26 +690,15 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		/// </summary>
 		private void OnRenderFrameOnGUIThread()
 		{
-			// If rendering is NOT already in progress then...
-			if (!_renderingInProcess)
+			// Render the preview on the GUI thread
+			BeginInvoke(() =>
 			{
-				// Set the flag that rendering is in progress as we
-				// don't want to post more than one render call
-				_renderingInProcess = true;
-
-				// Render the preview on the GUI thread
-				BeginInvoke(() =>
-				{
-					OnRenderFrame();
-				});
-			}
+				OnRenderFrame();
+			});
 		}
 		
 		private void OnRenderFrame()
 		{
-			// Set flag indicating that rendering is in progress
-			_renderingInProcess = true;
-
 			//Logging.Debug("Entering RenderFrame");
 			if (_isRendering || _formLoading || WindowState == FormWindowState.Minimized) return;
 
@@ -771,9 +762,6 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			_previewUpdate.Set(_sw.ElapsedMilliseconds);
 			UpdateFrameRate();
 			
-			// Set flag indicating that rendering is complete
-			_renderingInProcess = false;
-
 			//Logging.Debug("Exiting RenderFrame");
 		}
 

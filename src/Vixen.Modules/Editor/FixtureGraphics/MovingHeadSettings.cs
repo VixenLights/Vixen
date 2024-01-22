@@ -107,11 +107,9 @@ namespace VixenModules.Editor.FixtureGraphics
 		/// </summary>
 		public int FixtureIntensity { get; set; }
 
-		/// <summary>
 		/// <inheritdoc/>
-		/// </summary>
 		public int StrobeRate { get; set; }
-
+		
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>
@@ -135,6 +133,7 @@ namespace VixenModules.Editor.FixtureGraphics
 				EnableGDI = EnableGDI,
 				FixtureIntensity = FixtureIntensity,
 				MountingPosition = MountingPosition,
+				StrobeRate = StrobeRate,
 			};
 		}
 
@@ -186,7 +185,8 @@ namespace VixenModules.Editor.FixtureGraphics
 				   movingHead.IncludeLegend == IncludeLegend &&
 				   movingHead.LegendColor == LegendColor &&
 				   movingHead.FixtureIntensity == FixtureIntensity &&
-				   movingHead.MountingPosition == MountingPosition);
+				   movingHead.MountingPosition == MountingPosition &&
+				   movingHead.StrobeRate == StrobeRate);
 		}
 
 		#endregion

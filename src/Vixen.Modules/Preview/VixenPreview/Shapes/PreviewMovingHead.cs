@@ -107,6 +107,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// </summary>
 		private const int DefaultStrobeRateMaximum = 25;
 
+		/// <summary>
+		/// Default the strobe flash duration to 50ms.
+		/// </summary>
+		private const int MaxStrobeDuration = 50;
+
 		#endregion
 
 		#region Fields
@@ -543,6 +548,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_intentHandler.StrobeRateMinimum = StrobeRateMinimum;
 			_intentHandler.StrobeRateMaximum = StrobeRateMaximum;
 
+			// Give the intent handler the maximum strobe duration
+			_intentHandler.MaximumStrobeDuration = MaximumStrobeDuration;
+
 			// Configure how the fixture zooms
 			_intentHandler.ZoomNarrowToWide = ZoomNarrowToWide;	
 
@@ -950,10 +958,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Strobe rate maximum in Hz.
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
-		Category("Settings"),
-		Description("The strobe rate maximum (in Hz)."),
-		DisplayName("Strobe Rate Maximum (Hz)")]
+		 Category("Settings"),
+		 Description("The strobe rate maximum (in Hz)."),
+		 DisplayName("Strobe Rate Maximum (Hz)")]
 		public int StrobeRateMaximum { get; set; }
+
+		/// <summary>
+		/// Strobe duration in ms.
+		/// </summary>
+		[DataMember(EmitDefaultValue = false),
+		 Category("Settings"),
+		 Description("The maximum strobe duration in ms."),
+		 DisplayName("Maximum Strobe Duration (ms)")]
+		public int MaximumStrobeDuration { get; set; }
 
 		/// <summary>
 		/// Pan start position in degrees.

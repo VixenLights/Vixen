@@ -76,6 +76,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				StrobeRateMaximum = DefaultStrobeRateMaximum;
 			}
 
+			// If the maximum strobe duration is zero this must be an
+			// existing fixture
+			if (MaximumStrobeDuration == 0)
+			{
+				// Default the maximum strobe duration
+				MaximumStrobeDuration = MaxStrobeDuration;
+			}
+
 			Layout();						
 		}
 	

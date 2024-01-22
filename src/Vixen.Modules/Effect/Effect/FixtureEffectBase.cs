@@ -577,7 +577,7 @@ namespace VixenModules.Effect.Effect
 				CommandValue commandValue = new CommandValue(namedCommand);
 
 				// Create the command intent from the command value and the time span
-				CommandIntent commandIntent = new CommandIntent(commandValue, TimeSpan);
+				CommandIntent commandIntent = new CommandIntent(commandValue, frameTs);
 
 				// Add the command to the effect intents
 				EffectIntentCollection.AddIntentForElement(node.Element.Id, commandIntent, startTime);
