@@ -892,6 +892,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				// Save off the node ID associated with the shape
 				_nodeId = node.Id;
+
+				// Transfer movement constraints from the Intelligent Fixture property associated with the node
+				InitializeMovingHeadMovementConstraints(node);
 			}
 		}
 
