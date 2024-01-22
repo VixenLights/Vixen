@@ -254,18 +254,31 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void VixenPreviewSetup3_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			previewForm.Preview.ZoomLevel = 1;
-			PreviewItemsAlignNew -= vixenpreviewControl_PreviewItemsAlignNew;
-			previewForm.Preview.OnSelectDisplayItem -= OnSelectDisplayItem;
-			previewForm.Preview.OnDeSelectDisplayItem -= OnDeSelectDisplayItem;
-			previewForm.Preview.OnSelectionChanged -= Preview_OnSelectionChanged;
-			VixenPreviewControl.PreviewItemsResizingNew -= previewForm.Preview.vixenpreviewControl_PreviewItemsResizingNew;
-			VixenPreviewControl.PreviewItemsMovedNew -= previewForm.Preview.vixenpreviewControl_PreviewItemsMovedNew;
-			_undoMgr.UndoItemsChanged -= _undoMgr_UndoItemsChanged;
-			_undoMgr.RedoItemsChanged -= _undoMgr_RedoItemsChanged;
-			undoButton.ItemChosen -= undoButton_ItemChosen;
-			redoButton.ItemChosen -= redoButton_ItemChosen;
-			CloseSetup();
+			// If the preview contains Intelligent Fixtures and
+			// the 'Use OpenGL Preview' option is NOT selected then prompt the 
+			// user if they still want to exit
+			if (CheckForIntelligentFixturesAndOpenGL())
+			{
+				previewForm.Preview.ZoomLevel = 1;
+				PreviewItemsAlignNew -= vixenpreviewControl_PreviewItemsAlignNew;
+				previewForm.Preview.OnSelectDisplayItem -= OnSelectDisplayItem;
+				previewForm.Preview.OnDeSelectDisplayItem -= OnDeSelectDisplayItem;
+				previewForm.Preview.OnSelectionChanged -= Preview_OnSelectionChanged;
+				VixenPreviewControl.PreviewItemsResizingNew -=
+					previewForm.Preview.vixenpreviewControl_PreviewItemsResizingNew;
+				VixenPreviewControl.PreviewItemsMovedNew -=
+					previewForm.Preview.vixenpreviewControl_PreviewItemsMovedNew;
+				_undoMgr.UndoItemsChanged -= _undoMgr_UndoItemsChanged;
+				_undoMgr.RedoItemsChanged -= _undoMgr_RedoItemsChanged;
+				undoButton.ItemChosen -= undoButton_ItemChosen;
+				redoButton.ItemChosen -= redoButton_ItemChosen;
+				CloseSetup();
+			}
+			else
+			{
+				// Leave the Setup Preview open so that the user can select the 'Use OpenGL Preview' option
+				e.Cancel = true;
+			}
 		}
 
 		private void buttonSetBackground_Click(object sender, EventArgs e) {
@@ -552,12 +565,40 @@ namespace VixenModules.Preview.VixenPreview
 			//Size = new Size(Data.SetupWidth, Data.SetupHeight);
 		}
 
+		/// <summary>
+		/// Provides a warning to the user if Intelligent Fixtures are found in the preview
+		/// but OpenGL is NOT selected.
+		/// </summary>
+		/// <returns>Returns true if the Preview Setup should continue to close</returns>
+		private bool CheckForIntelligentFixturesAndOpenGL()
+		{
+			bool continueToExit = true;
+
+			// If the OpenGL preview is NOT selected and
+			// there are Intelligent Fixtures then...
+			if (!Data.UseOpenGL &&
+			    previewForm.Preview.DisplayItems.Any( dspItem => dspItem.Shape is PreviewMovingHead))
+			{
+				// Display a warning / recommendation to the user to select the OpenGL preview
+				MessageBoxForm messageBox = new MessageBoxForm(
+					"This preview contains Intelligent Fixtures and the 'Use OpenGL Preview' option is not selected. " +
+					"Intelligent Fixtures are not supported on the GDI preview. " +
+					"Recommend selecting the 'Use OpenGL Preview' option from the Preview Configuration->Settings menu.\n\n" +
+					"Continue to exit?",
+					"Change Preview Viewer", MessageBoxButtons.YesNo, SystemIcons.Warning);
+				
+				continueToExit = messageBox.ShowDialog() == DialogResult.OK;
+			}
+
+			return continueToExit;
+		}
+
 		private void CloseSetup()
-	    {
-		    SaveLocationDataForElements();
-		    DialogResult = DialogResult.OK;
-		    previewForm.Close();
-	    }
+		{
+			SaveLocationDataForElements();
+			DialogResult = DialogResult.OK;
+			previewForm.Close();
+		}
 
 	    private void VixenPreviewSetup3_Move(object sender, EventArgs e) {
 			if (Data == null) {
