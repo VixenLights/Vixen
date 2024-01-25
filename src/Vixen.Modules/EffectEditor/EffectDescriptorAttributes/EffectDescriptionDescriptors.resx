@@ -1284,4 +1284,10 @@
   <data name="ShockwaveType" xml:space="preserve">
     <value>Selects between 'Circle' or 'Diamond' shaped shockwave.</value>
   </data>
+  <data name="SetPositionEnablePan" xml:space="preserve">
+    <value>Enables controlling the pan of the intelligent fixture.</value>
+  </data>
+  <data name="SetPositionEnableTilt" xml:space="preserve">
+    <value>Enables controlling the tilt of the intelligent fixture.</value>
+  </data>
 </root>

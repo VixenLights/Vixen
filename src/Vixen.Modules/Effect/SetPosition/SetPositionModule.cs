@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Vixen.Attributes;
 using Vixen.Data.Value;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
@@ -58,12 +59,33 @@ namespace VixenModules.Effect.SetPosition
 		#region Public Effect Properties
 
 		/// <summary>
+		/// Gets or sets whether this effect controls the pan of the fixture.
+		/// </summary>
+		[Value]
+		[ProviderCategory(@"Config", 2)]
+		[ProviderDisplayName(@"SetPositionEnablePan")]
+		[ProviderDescription(@"SetPositionEnablePan")]
+		[PropertyOrder(1)]
+		public bool EnablePan
+		{
+			get => Data.EnablePan;
+			set
+			{
+				Data.EnablePan = value;
+				IsDirty = true;
+
+				UpdateAttributes(true);
+			}
+		}
+
+		/// <summary>
 		/// Gets or sets the pan of the fixture.
 		/// </summary>
 		[Value]
 		[ProviderCategory(@"Config", 2)]
 		[ProviderDisplayName(@"Pan")]
 		[ProviderDescription(@"Pan")]
+		[PropertyOrder(2)]
 		public Curve Pan
 		{
 			get => Data.Pan;
@@ -75,12 +97,33 @@ namespace VixenModules.Effect.SetPosition
 		}
 
 		/// <summary>
+		/// Gets or sets whether this effect controls the tilt of the fixture.
+		/// </summary>
+		[Value]
+		[ProviderCategory(@"Config", 2)]
+		[ProviderDisplayName(@"SetPositionEnableTilt")]
+		[ProviderDescription(@"SetPositionEnableTilt")]
+		[PropertyOrder(3)]
+		public bool EnableTilt
+		{
+			get => Data.EnableTilt;
+			set
+			{
+				Data.EnableTilt = value;
+				IsDirty = true;
+
+				UpdateAttributes(true);
+			}
+		}
+
+		/// <summary>
 		/// Gets or sets the tilt of the fixture. 
 		/// </summary>
 		[Value]
 		[ProviderCategory(@"Config", 2)]
 		[ProviderDisplayName(@"Tilt")]
 		[ProviderDescription(@"Tilt")]
+		[PropertyOrder(4)]
 		public Curve Tilt
 		{
 			get => Data.Tilt;
@@ -102,8 +145,8 @@ namespace VixenModules.Effect.SetPosition
 		{
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
 			{
-				{ nameof(Pan), _canPan},
-				{ nameof(Tilt), _canTilt},
+				{ nameof(Pan), _canPan && EnablePan},
+				{ nameof(Tilt), _canTilt && EnableTilt},
 			};
 			SetBrowsable(propertyStates);
 			if (refresh)
@@ -116,16 +159,18 @@ namespace VixenModules.Effect.SetPosition
 		/// Refer to base class documentation.
 		/// </summary>	
 		protected override void PreRenderInternal(CancellationTokenSource cancellationToken = null)
-        {	
-			// If any of the nodes can pan then...
-			if (_canPan)
+        {
+			// If any of the nodes can pan and
+			// the user has enabled Pan control then...
+			if (_canPan && EnablePan)
 			{
 				// Render the pan intents
 				RenderCurve(Pan, FunctionIdentity.Pan, _panTags, cancellationToken);
 			}
 
-			// If any of the nodex can tilt then...
-			if (_canTilt)
+			// If any of the nodes can tilt and
+			// the user has enabled Tilt control then...
+			if (_canTilt && EnableTilt)
 			{
 				// Render the tilt intents
 				RenderCurve(Tilt, FunctionIdentity.Tilt, _tiltTags, cancellationToken);
@@ -156,21 +201,24 @@ namespace VixenModules.Effect.SetPosition
 		public override void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle)
 		{
 			// Set a flag that indicates if both the pan and tilt are supported by the element nodes
-			bool showBoth = _canPan && _canTilt;
+			// and enabled by the user for control
+			bool showBoth = _canPan && EnablePan && _canTilt && EnableTilt;
 			
 			// Create the drawing rectangle for the curves
 			// If both curves are displayed the drawing area is halved.  Top half for one curve and bottom half for the other curve.
 			Rectangle rect = new Rectangle(clipRectangle.X, clipRectangle.Y, clipRectangle.Width, showBoth ? (clipRectangle.Height-4) / 2 : clipRectangle.Height-4);
 			
-			// If the node supports panning then...
-			if (_canPan)
+			// If the node supports panning and
+			// the user selected to control the Pan then...
+			if (_canPan && EnablePan)
 			{
 				// Draw the pan curve on the timeline
 				DrawVisualRepresentation(g, rect, Color.Green, "Pan", 2, showBoth ? -2 : 1, Pan, 0 );
 			}
 
-			// If the node supports tilting then...
-			if (_canTilt)
+			// If the node supports tilting and
+			// the user selected to control the Tilt then...
+			if (_canTilt && EnableTilt)
 			{
 				// Defint the tilt color
 				Color tiltColor = Color.FromArgb(0, 128, 255);

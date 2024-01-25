@@ -19,6 +19,10 @@ namespace VixenModules.Effect.SetPosition
 		{
 			Pan = new Curve(CurveType.RampUp);
 			Tilt = new Curve(CurveType.RampDown);
+
+			// Default both Pan and Tilt control to enabled
+			EnablePan = true;
+			EnableTilt = true;
 		}
 
 		#endregion
@@ -37,6 +41,18 @@ namespace VixenModules.Effect.SetPosition
 		[DataMember]
 		public Curve Tilt { get; set; }
 
+		/// <summary>
+		/// Gets or sets whether the effect is controlling the fixture's pan position.
+		/// </summary>
+		[DataMember]
+		public bool EnablePan { get; set; }
+
+		/// <summary>
+		/// Gets or sets whether the effect is controlling the fixture's tilt position.
+		/// </summary>
+		[DataMember]
+		public bool EnableTilt { get; set; }
+
 		#endregion
 
 		#region Protected Methods
@@ -52,7 +68,9 @@ namespace VixenModules.Effect.SetPosition
 			{
 				// Copy the curve data
 				Pan = new Curve(Pan),
-				Tilt = new Curve(Tilt)
+				Tilt = new Curve(Tilt),
+				EnablePan = EnablePan,
+				EnableTilt = EnableTilt,
 			};
 			return result;
 		}
