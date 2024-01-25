@@ -21,6 +21,7 @@
 				<ProjectReference Include="..\..\Effect\Fireworks\Fireworks.csproj" />
 				<ProjectReference Include="..\..\Effect\LipSync\LipSync.csproj" />
 				<ProjectReference Include="..\..\Effect\Liquid\Liquid\Liquid.csproj" />
+				<ProjectReference Include="..\..\Effect\SetPosition\SetPosition.csproj" />
 				<ProjectReference Include="..\..\Effect\Snowflakes\Snowflakes.csproj" />
 				<ProjectReference Include="..\..\Effect\Spin\Spin.csproj" />
 				<ProjectReference Include="..\..\Effect\Wipe\Wipe.csproj" />
