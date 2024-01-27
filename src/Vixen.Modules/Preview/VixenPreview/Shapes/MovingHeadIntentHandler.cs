@@ -1,7 +1,5 @@
 ﻿using System.Collections.Concurrent;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.Serialization;
 
 using Vixen.Commands;
 using Vixen.Data.Value;
@@ -96,9 +94,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private int _colorWheelSlot = -1;
 		
 		/// <summary>
-		/// Frame counter to use for spinning the color wheel or strobing.
+		/// Frame counter to use for spinning the color wheel.
 		/// </summary>
 		private int _frameCounter = 0;
+
+		/// <summary>
+		/// Counter that keeps track how many frames to display a particular color wheel color.
+		/// </summary>
+		private int _spinColorWheelDurationInFrames;
 
 		/// <summary>
 		/// Current color wheel entry being displayed when spinning the color wheel.
@@ -165,6 +168,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Maximum tilt travel time in seconds.
 		/// </summary>
 		public double MaxTiltTravelTime { get; set; }
+
+		/// <summary>
+		/// Minimum color wheel rotation speed in seconds.
+		/// </summary>
+		public double MinColorWheelRotationSpeed { get; set; }
+
+		/// <summary>
+		/// Maximum color wheel rotation speed in seconds.
+		/// </summary>
+		public double MaxColorWheelRotationSpeed { get; set; }
+
 
 		/// <summary>
 		/// Maximum strobe duration in ms.
@@ -811,12 +825,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				  func.Name == taggedCommand.Tag));
 
 			// Find the color wheel entry for the command value
-			// Ignore color wheel entries that are half step or curves
-			FixtureColorWheel wheelEntry = colorWheelFunction.ColorWheelData.SingleOrDefault(clr => clr.StartValue == taggedCommand.CommandValue &&
-																							 !clr.UseCurve);
-
-			// If NOT null display the color wheel color
-			if (wheelEntry != null)
+			FixtureColorWheel wheelEntry = colorWheelFunction.ColorWheelData.SingleOrDefault(clr => clr.StartValue == taggedCommand.CommandValue);
+			
+			// If wheel entry was found and it is not a curve range then...
+			if (wheelEntry != null && !wheelEntry.UseCurve)
 			{
 				// Set the beam color to the color wheel color
 				MovingHead.BeamColorLeft = wheelEntry.Color1;
@@ -827,8 +839,36 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			else
 			{
+				// Retrieve the spin rotation range minimum and maximum
+				int minSpeed = taggedCommand.RangeMinimum;
+				int maxSpeed = taggedCommand.RangeMaximum;
+
+				// Determine how far away from the minimum the rate is
+				double distanceFromMinimum = taggedCommand.CommandValue - minSpeed;
+
+				// Determine penetration into the range as percent (0-1)
+				double penetrationRatio = distanceFromMinimum / (maxSpeed - minSpeed);
+
+				// Flip the penetration ratio
+				penetrationRatio = 1.0 - penetrationRatio;
+
+				// Apply the ratio to spin range
+				double spinSpeedInSeconds = penetrationRatio * (MinColorWheelRotationSpeed - MaxColorWheelRotationSpeed) + MaxColorWheelRotationSpeed;
+
+				// Convert the spin speed to milliseconds
+				double spinSpeedInMS = spinSpeedInSeconds * 1000;
+
+				// Get all the color wheel entries that are not ranges
+				List<FixtureColorWheel> colorWheelEntries =
+					colorWheelFunction.ColorWheelData.Where(item => !item.UseCurve).ToList();
+
+				// Calculate the number of frames to display a given color by dividing
+				// the spin speed by the number of color wheel entries
+				_spinColorWheelDurationInFrames =
+					(int)(spinSpeedInMS / colorWheelEntries.Count / VixenSystem.DefaultUpdateInterval);
+
 				// Spin the color wheel
-				SpinColorWheel(colorWheelFunction);
+				SpinColorWheel(colorWheelEntries);
 			}
 
 			// If color is present then...
@@ -842,16 +882,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <summary>
 		/// Spin the color wheel using the specified color wheel function.
 		/// </summary>
-		/// <param name="colorWheelFunction">Color wheel function to spin</param>
-		private void SpinColorWheel(FixtureFunction colorWheelFunction)
+		/// <param name="colorEntries">Color wheel entries to cycle through</param>
+		private void SpinColorWheel(List<FixtureColorWheel> colorEntries)
 		{
-			// Figure out how many frames to display each color
-			// Attempting to display each color for a half second
-			int framesPerColor = 500 / Vixen.Sys.VixenSystem.DefaultUpdateInterval;
-
 			// If this is the first color wheel entry to spin OR
 			// it is time to switch colors then...
-			if (_colorWheelEntry == null || _frameCounter > framesPerColor)
+			if (_colorWheelEntry == null || _frameCounter > _spinColorWheelDurationInFrames)
 			{
 				// Reset the frame counter
 				_frameCounter = 0;
@@ -860,7 +896,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				_colorWheelSlot++;
 
 				// If there are no more color wheel entries then...
-				if (_colorWheelSlot > colorWheelFunction.ColorWheelData.Count - 1)
+				if (_colorWheelSlot > colorEntries.Count - 1)
 				{
 					// Wrap around back to the first color wheel entry
 					_colorWheelSlot = 0;
@@ -873,7 +909,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				do
 				{
 					// Get the current color wheel entry
-					FixtureColorWheel entry = colorWheelFunction.ColorWheelData[_colorWheelSlot];
+					FixtureColorWheel entry = colorEntries[_colorWheelSlot];
 
 					// If the entry does not use a curve then...
 					if (!entry.UseCurve)
@@ -891,7 +927,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						_colorWheelSlot++;
 
 						// If there are no more color wheel entries then...
-						if (_colorWheelSlot > colorWheelFunction.ColorWheelData.Count - 1)
+						if (_colorWheelSlot > colorEntries.Count - 1)
 						{
 							// Wrap around back to the first color wheel entry
 							_colorWheelSlot = 0;

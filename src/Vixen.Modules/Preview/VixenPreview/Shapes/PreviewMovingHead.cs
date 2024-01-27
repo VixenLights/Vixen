@@ -125,7 +125,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Default time it takes to tilt from starting position to max tilt position.
 		/// </summary>
 		private const double DefaultMaxTiltTravelTime = 1.7;
-			
+
+		/// <summary>
+		/// Default minimum color wheel rotation speed in seconds.
+		/// </summary>
+		private const double DefaultMinColorWheelRotationSpeed = 158.0;
+
+		/// <summary>
+		/// Default maximum color wheel rotation speed in seconds.
+		/// </summary>
+		private const double DefaultMaxColorWheelRotationSpeed = 1.0;
+
 		#endregion
 
 		#region Fields
@@ -566,6 +576,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_intentHandler.MaxPanTravelTime = MaxPanTravelTime;	
 			_intentHandler.MaxTiltTravelTime = MaxTiltTravelTime;
 
+			// Give the intent handler the min and max color wheel rotation speeds
+			_intentHandler.MinColorWheelRotationSpeed = MinColorWheelRotationSpeed;
+			_intentHandler.MaxColorWheelRotationSpeed = MaxColorWheelRotationSpeed;
+
 			// Give the intent handler the maximum strobe duration
 			_intentHandler.MaximumStrobeDuration = MaximumStrobeDuration;
 
@@ -965,6 +979,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				_node = VixenSystem.Nodes.GetElementNode(NodeId);				
 			}
 		}
+
+		/// <summary>
+		/// Minimum color wheel rotation speed in seconds.
+		/// </summary>
+		[DataMember(EmitDefaultValue = false),
+		 Category("Settings"),
+		 Description("The time it takes the color wheel to make a complete rotation in seconds."),
+		 DisplayName("Color Wheel Rotation Speed Minimum (s)")]
+		public double MinColorWheelRotationSpeed { get; set; }
+
+		/// <summary>
+		/// Maximum color wheel rotation speed in seconds.
+		/// </summary>
+		[DataMember(EmitDefaultValue = false),
+		 Category("Settings"),
+		 Description("The time it takes the color wheel to make a complete rotation in seconds."),
+		 DisplayName("Color Wheel Rotation Speed Maximum (s)")]
+		public double MaxColorWheelRotationSpeed { get; set; }
 
 		/// <summary>
 		/// Maximum pan travel time in seconds.
