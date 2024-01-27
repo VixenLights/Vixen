@@ -706,18 +706,28 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			RenderPreview(true);
 		}
 
+		/// <summary>
+		/// Returns true if a moving head is (still) moving.
+		/// </summary>
+		/// <returns>True if a moving head is (still) moving</returns>
 		private bool MovingHeadsMoving()
 		{
+			// Default to NOT moving
 			bool movingHeadsMoving = false;
+
+			// Loop over the moving heads
 			foreach (IOpenGLMovingHeadShape movingHead in GetMovingHeadShapes())
 			{
+				// If the moving head settings have been initialized then...
 				if (movingHead.MovingHead != null)
 				{
+					// If the command position does NOT match the current unlimited position then...
 					if (((MovingHeadOpenGL)movingHead.MovingHead).MovingHead.CommandedPanAngle !=
 					    ((MovingHeadOpenGL)movingHead.MovingHead).MovingHead.UnlimitedPanAngle ||
 					    ((MovingHeadOpenGL)movingHead.MovingHead).MovingHead.CommandedTiltAngle !=
 					    ((MovingHeadOpenGL)movingHead.MovingHead).MovingHead.UnlimitedTiltAngle)
 					{
+						// At least one moving head is still moving
 						movingHeadsMoving = true;
 
 						break;
