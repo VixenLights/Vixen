@@ -55,6 +55,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			StrobeRateMinimum = DefaultStrobeRateMinimum;
 			StrobeRateMaximum = DefaultStrobeRateMaximum;
 
+			// Default the pan and tilt maximum travel times
+			MaxPanTravelTime = DefaultMaxPanTravelTime;
+			MaxTiltTravelTime = DefaultMaxTiltTravelTime;
+
 			// Default the beam length percentage
 			BeamLength = DefaultBeamLength;
 
@@ -110,8 +114,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <summary>
 		/// Default the strobe flash duration to 50ms.
 		/// </summary>
-		private const int MaxStrobeDuration = 50;
+		private const int DefaultMaxStrobeDuration = 50;
 
+		/// <summary>
+		/// Default time it takes to pan from starting position to max pan position.
+		/// </summary>
+		private const double DefaultMaxPanTravelTime = 4.6;
+
+		/// <summary>
+		/// Default time it takes to tilt from starting position to max tilt position.
+		/// </summary>
+		private const double DefaultMaxTiltTravelTime = 1.7;
+			
 		#endregion
 
 		#region Fields
@@ -548,6 +562,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_intentHandler.StrobeRateMinimum = StrobeRateMinimum;
 			_intentHandler.StrobeRateMaximum = StrobeRateMaximum;
 
+			// Give the intent handler the maximum pan and tilt travel times
+			_intentHandler.MaxPanTravelTime = MaxPanTravelTime;	
+			_intentHandler.MaxTiltTravelTime = MaxTiltTravelTime;
+
 			// Give the intent handler the maximum strobe duration
 			_intentHandler.MaximumStrobeDuration = MaximumStrobeDuration;
 
@@ -830,7 +848,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>		
-		public void UpdateVolumes(int maxBeamLength, int referenceHeight)
+		public void UpdateVolumes(int maxBeamLength, int referenceHeight, bool standardFrame)
 		{			
 			// Reset the handler for the next frame
 			_intentHandler.Reset();
@@ -845,14 +863,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 				// Give the intent handler a reference to the associated node
 				_intentHandler.Node = Node;
-			
+
 				// Dispatch the current intents
 				_intentHandler.Dispatch(states);
 			}
 
 			// After processing all the intents allow the intent handler
-			// to configure fixture strobe state
-			_intentHandler.FinalizeStrobeState();
+			// to configure fixture state
+			_intentHandler.FinalizeFixtureState(standardFrame);
 
 			// Calculate the height of the drawing area
 			int fixtureHeight = Bottom - Top;
@@ -947,6 +965,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				_node = VixenSystem.Nodes.GetElementNode(NodeId);				
 			}
 		}
+
+		/// <summary>
+		/// Maximum pan travel time in seconds.
+		/// </summary>
+		[DataMember(EmitDefaultValue = false),
+		 Category("Settings"),
+		 Description("The time it takes of the intelligent fixture to pan from the starting position to the maximum stop position."),
+		 DisplayName("Maximum Pan Travel Time (s)")]
+		public double MaxPanTravelTime { get; set; }
+
+		/// <summary>
+		/// Maximum tilt travel time in seconds.
+		/// </summary>
+		[DataMember(EmitDefaultValue = false),
+		 Category("Settings"),
+		 Description("The time it takes of the intelligent fixture to tilt from the starting position to the maximum stop position."),
+		 DisplayName("Maximum Tilt Travel Time (s)")]
+		public double MaxTiltTravelTime { get; set; }
 
 		/// <summary>
 		/// Strobe rate minimum in Hz.

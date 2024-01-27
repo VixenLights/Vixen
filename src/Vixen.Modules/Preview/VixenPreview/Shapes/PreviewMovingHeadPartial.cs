@@ -81,7 +81,23 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			if (MaximumStrobeDuration == 0)
 			{
 				// Default the maximum strobe duration
-				MaximumStrobeDuration = MaxStrobeDuration;
+				MaximumStrobeDuration = DefaultMaxStrobeDuration;
+			}
+
+			// If the max pan travel time is zero this must be an
+			// existing fixture
+			if (MaxPanTravelTime == 0.0)
+			{
+				// Default the maximum pan travel time
+				MaxPanTravelTime = DefaultMaxPanTravelTime;	
+			}
+
+			// If the max tilt travel time is zero this must be an
+			// existing fixture
+			if (MaxTiltTravelTime == 0.0)
+			{
+				// Default the maximum tilt travel time
+				MaxTiltTravelTime = DefaultMaxTiltTravelTime;	
 			}
 
 			Layout();						
