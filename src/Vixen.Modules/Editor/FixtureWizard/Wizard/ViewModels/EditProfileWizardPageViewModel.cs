@@ -71,7 +71,7 @@
             // Get the child view models
             IEnumerable<IViewModel> childViewModels = this.GetChildViewModels();
 
-            // Retreive the fixture property editor view model
+            // Retrieve the fixture property editor view model
             FixturePropertyEditorViewModel fixtureEditor = (FixturePropertyEditorViewModel)childViewModels.Single(vm => vm is FixturePropertyEditorViewModel);
 
             // Retrieve the fixture profile from the view model
