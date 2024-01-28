@@ -28,80 +28,80 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.chkExcludeZero = new System.Windows.Forms.CheckBox();
-			this.btnOk = new System.Windows.Forms.Button();
-			this.btnCancel = new System.Windows.Forms.Button();
-			this.chkRequireMixingPartner = new System.Windows.Forms.CheckBox();
-			this.SuspendLayout();
+			chkExcludeZero = new CheckBox();
+			btnOk = new Button();
+			btnCancel = new Button();
+			chkRequireMixingPartner = new CheckBox();
+			SuspendLayout();
 			// 
 			// chkExcludeZero
 			// 
-			this.chkExcludeZero.AutoSize = true;
-			this.chkExcludeZero.Location = new System.Drawing.Point(33, 28);
-			this.chkExcludeZero.Name = "chkExcludeZero";
-			this.chkExcludeZero.Size = new System.Drawing.Size(127, 19);
-			this.chkExcludeZero.TabIndex = 0;
-			this.chkExcludeZero.Text = "Exclude zero values";
-			this.chkExcludeZero.UseVisualStyleBackColor = true;
-			this.chkExcludeZero.CheckedChanged += new System.EventHandler(this.chkExcludeZero_CheckedChanged);
+			chkExcludeZero.AutoSize = true;
+			chkExcludeZero.Location = new Point(33, 28);
+			chkExcludeZero.Name = "chkExcludeZero";
+			chkExcludeZero.Size = new Size(128, 19);
+			chkExcludeZero.TabIndex = 0;
+			chkExcludeZero.Text = "Exclude zero values";
+			chkExcludeZero.UseVisualStyleBackColor = true;
+			chkExcludeZero.CheckedChanged += chkExcludeZero_CheckedChanged;
 			// 
 			// btnOk
 			// 
-			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnOk.Location = new System.Drawing.Point(116, 88);
-			this.btnOk.Name = "btnOk";
-			this.btnOk.Size = new System.Drawing.Size(75, 23);
-			this.btnOk.TabIndex = 1;
-			this.btnOk.Text = "OK";
-			this.btnOk.UseVisualStyleBackColor = true;
-			this.btnOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			btnOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+			btnOk.DialogResult = DialogResult.OK;
+			btnOk.Location = new Point(116, 88);
+			btnOk.Name = "btnOk";
+			btnOk.Size = new Size(75, 23);
+			btnOk.TabIndex = 1;
+			btnOk.Text = "OK";
+			btnOk.UseVisualStyleBackColor = true;
+			btnOk.MouseLeave += buttonBackground_MouseLeave;
+			btnOk.MouseHover += buttonBackground_MouseHover;
 			// 
 			// btnCancel
 			// 
-			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(197, 88);
-			this.btnCancel.Name = "btnCancel";
-			this.btnCancel.Size = new System.Drawing.Size(75, 23);
-			this.btnCancel.TabIndex = 2;
-			this.btnCancel.Text = "Cancel";
-			this.btnCancel.UseVisualStyleBackColor = true;
-			this.btnCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			btnCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+			btnCancel.DialogResult = DialogResult.Cancel;
+			btnCancel.Location = new Point(197, 88);
+			btnCancel.Name = "btnCancel";
+			btnCancel.Size = new Size(75, 23);
+			btnCancel.TabIndex = 2;
+			btnCancel.Text = "Cancel";
+			btnCancel.UseVisualStyleBackColor = true;
+			btnCancel.MouseLeave += buttonBackground_MouseLeave;
+			btnCancel.MouseHover += buttonBackground_MouseHover;
 			// 
 			// chkRequireMixingPartner
 			// 
-			this.chkRequireMixingPartner.AutoSize = true;
-			this.chkRequireMixingPartner.Location = new System.Drawing.Point(33, 53);
-			this.chkRequireMixingPartner.Name = "chkRequireMixingPartner";
-			this.chkRequireMixingPartner.Size = new System.Drawing.Size(146, 19);
-			this.chkRequireMixingPartner.TabIndex = 3;
-			this.chkRequireMixingPartner.Text = "Require Mixing Partner";
-			this.chkRequireMixingPartner.UseVisualStyleBackColor = true;
-			this.chkRequireMixingPartner.CheckedChanged += new System.EventHandler(this.chkRequireMixingPartner_CheckedChanged);
+			chkRequireMixingPartner.AutoSize = true;
+			chkRequireMixingPartner.Location = new Point(33, 53);
+			chkRequireMixingPartner.Name = "chkRequireMixingPartner";
+			chkRequireMixingPartner.Size = new Size(147, 19);
+			chkRequireMixingPartner.TabIndex = 3;
+			chkRequireMixingPartner.Text = "Require Mixing Partner";
+			chkRequireMixingPartner.UseVisualStyleBackColor = true;
+			chkRequireMixingPartner.CheckedChanged += chkRequireMixingPartner_CheckedChanged;
 			// 
 			// MaskAndFillSetup
 			// 
-			this.AcceptButton = this.btnOk;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.AutoSize = true;
-			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(284, 123);
-			this.Controls.Add(this.chkRequireMixingPartner);
-			this.Controls.Add(this.btnCancel);
-			this.Controls.Add(this.btnOk);
-			this.Controls.Add(this.chkExcludeZero);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.HelpButton = true;
-			this.Name = "MaskAndFillSetup";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Mask And Fill Configuration";
-			this.ResumeLayout(false);
-			this.PerformLayout();
-
+			AcceptButton = btnOk;
+			AutoScaleDimensions = new SizeF(7F, 15F);
+			AutoScaleMode = AutoScaleMode.Font;
+			AutoSize = true;
+			CancelButton = btnCancel;
+			ClientSize = new Size(284, 123);
+			Controls.Add(chkRequireMixingPartner);
+			Controls.Add(btnCancel);
+			Controls.Add(btnOk);
+			Controls.Add(chkExcludeZero);
+			FormBorderStyle = FormBorderStyle.FixedDialog;
+			MaximizeBox = false;
+			MinimizeBox = false;
+			Name = "MaskAndFillSetup";
+			StartPosition = FormStartPosition.CenterParent;
+			Text = "Mask And Fill Configuration";
+			ResumeLayout(false);
+			PerformLayout();
 		}
 
 		#endregion
