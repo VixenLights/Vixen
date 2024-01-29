@@ -12,7 +12,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// </summary>
 		/// <remarks>The reference height is used to determine the maximum beam length</remarks>
 		/// <param name="referenceHeight">Height of the drawing area / background image</param>
-		void Initialize(int referenceHeight);
+		/// <param name="redraw">Delegate that redraws the preview</param>
+		void Initialize(int referenceHeight, Action redraw);
 
 		/// <summary>
 		/// Gets the OpenGL moving head associated with the shape.

@@ -1,8 +1,11 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics;
+
 using Vixen.Commands;
 using Vixen.Data.Value;
 using Vixen.Sys;
 using Vixen.Sys.Dispatch;
+
 using VixenModules.App.Fixture;
 using VixenModules.Editor.FixtureGraphics;
 using VixenModules.Property.IntelligentFixture;
@@ -15,20 +18,54 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	public class MovingHeadIntentHandler : IntentStateDispatch,
 		IHandler<IIntentState<RangeValue<FunctionIdentity>>>
 	{
-		#region Constructor
+		#region Constructors
 
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		public MovingHeadIntentHandler()
+		/// <param name="redraw">Delegate to redraw the preview</param>
+		public MovingHeadIntentHandler(Action redrawPreviewPreview)
 		{
 			// Default the beam to Off
 			DefaultBeamColor = Color.Transparent;
+
+			// Store off the preview redraw delegate
+			_redrawPreview = redrawPreviewPreview;
 		}
 
 		#endregion
 
+		#region Public Static Methods
+
+		/// <summary>
+		/// Clears all strobe timers.
+		/// <remarks>This method should be called after editing the preview</remarks>
+		/// </summary>
+		static public void ResetStrobeTimers()
+		{
+			// Create a new timer dictionary
+			_timerDictionary = new ConcurrentDictionary<int, ConcurrentDictionary<int, MovingHeadTimer>>();
+		}
+
+		#endregion
+
+		#region Private Static Fields
+
+		/// <summary>
+		/// Dictionary of moving head strobe timers.
+		/// The first key is the strobe duration in ms.
+		/// The second or inner dictionary key is the timer interval in ms.
+		/// </summary>
+		private static ConcurrentDictionary<int, ConcurrentDictionary<int, MovingHeadTimer>> _timerDictionary;
+
+		#endregion
+
 		#region Fields
+
+		/// <summary>
+		/// Delegate to redraw the preview.
+		/// </summary>
+		private Action _redrawPreview;
 
 		/// <summary>
 		/// Dictionary of command legend name value pairs.
@@ -36,20 +73,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private Dictionary<string, string> _legendValues = new Dictionary<string, string>();
 
 		/// <summary>
-		/// Flag indicates that a strobbing shutter index option was selected.
+		/// Flag indicates that a strobe shutter index option was selected.
 		/// This flag prevents automation from opening the shutter.
 		/// </summary>
-		private bool _strobbing;
+		private bool _strobeModeEnabled;
+
+		/// <summary>
+		/// This flag indicates that strobe shutter intents have been detected this frame.
+		/// </summary>
+		private bool _strobeIntentDetected;
 
 		/// <summary>
 		/// Flag indicates if color intents have been processed this frame.
 		/// </summary>
 		private bool _colorPresent;
-
-		/// <summary>
-		/// Flag that indicates the beam should be turned on because of strobing as long as color intents are present.
-		/// </summary>
-		private bool _strobingOn;
 
 		/// <summary>
 		/// Keeps track of the current color wheel slot when spinning the color wheel.
@@ -66,6 +103,25 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// </summary>
 		private FixtureColorWheel _colorWheelEntry = null;
 
+		/// <summary>
+		/// The interval in ms between strobe pulses.
+		/// </summary>
+		private int _strobeInterval;
+
+		/// <summary>
+		/// Reference to the active moving head strobe timer.
+		/// </summary>
+		private MovingHeadTimer _movingHeadStrobeTimer;
+
+		#endregion
+
+		#region Private Constants
+
+		/// <summary>
+		/// Max time in ms that the strobe should be illuminated.
+		/// </summary>
+		private const int MaxStrobeDuration = 50;
+
 		#endregion
 
 		#region Public Properties
@@ -79,6 +135,33 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Fixture node associated with the moving head preview shape. 
 		/// </summary>
 		public IElementNode Node { get; set; }
+
+		/// <summary>
+		/// Strobe Rate Minimum in Hz.
+		/// </summary>
+		public int StrobeRateMinimum
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Strobe Rate Maximum in Hz.
+		/// </summary>
+		public int StrobeRateMaximum
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Maximum strobe duration in ms.
+		/// </summary>
+		public int MaximumStrobeDuration
+		{
+			get;
+			set;
+		}
 
 		/// <summary>
 		/// Pan start angle in degrees.
@@ -175,15 +258,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// Clear out the fixture intensity
 			MovingHead.Intensity = 0;
 
-			// Turn off strobing
-			_strobbing = false;
-
 			// Reset whether color was detected
 			_colorPresent = false;
-			_strobingOn = false;
 
-			// Turn off the moving head beam
-			MovingHead.OnOff = false;
+			// Reset the flag indicating a strobe intent was detected
+			_strobeIntentDetected = false;
+
+			// If we are not in strobe mode then...
+			if (!_strobeModeEnabled)
+			{
+				// Turn off the moving head beam
+				MovingHead.OnOff = false;
+			}
 
 			// Set the beam color of the moving head back to the default
 			MovingHead.BeamColorLeft = DefaultBeamColor;
@@ -206,6 +292,71 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		/// <summary>
+		/// Determines the appropriate strobe timer for the moving head based on strobe rate.
+		/// </summary>
+		public void DetermineStrobeTimer()
+		{
+			// If there is not a timer associated with the moving head then...
+			if (_movingHeadStrobeTimer == null)
+			{
+				// Create or register with an existing timer
+				CreateOrRegisterWithTimer();
+			}
+			else
+			{
+				// Otherwise if existing timer's interval does NOT match the fixture's strobe rate then...
+				if (_movingHeadStrobeTimer.Interval != _strobeInterval)
+				{
+					// Remove the moving head from the previous timer
+					_movingHeadStrobeTimer.RemoveMovingHead(new Tuple<IMovingHead, Action>(MovingHead, DetermineStrobeTimer));
+
+					// Create or register with an existing timer based on the strobe interval
+					CreateOrRegisterWithTimer();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Allows the moving head intent handler to examine all of the intents
+		/// received this frame to determine if the fixture should strobe.
+		/// </summary>
+		public void FinalizeStrobeState()
+		{
+			// If strobe intents and color has been detected then...
+			if (_strobeIntentDetected && _colorPresent)
+			{
+				// Enable strobe mode
+				_strobeModeEnabled = true;
+
+				// Configure the strobe rate in ms
+				_strobeInterval = MovingHead.StrobeRate;
+
+				// If this moving head does NOT have a strobe timer then...
+				if (_movingHeadStrobeTimer == null)
+				{
+					// Create or register with a moving head strobe timer 
+					DetermineStrobeTimer();
+				}
+			}
+			// If a strobe intent or color intent is NOT present then...
+			else if (!_strobeIntentDetected || !_colorPresent)
+			{
+				// Disable strobe mode
+				_strobeModeEnabled = false;
+
+				// If the fixture was previously in strobe mode then...
+				if (_movingHeadStrobeTimer != null)
+				{
+					// Disassociate the moving head with the timer 
+					_movingHeadStrobeTimer.RemoveMovingHead(new Tuple<IMovingHead, Action>(MovingHead, DetermineStrobeTimer));
+
+					// Clear out the reference to the timer
+					_movingHeadStrobeTimer = null;
+				}
+			}
+		}
+
+		/// <summary>
 		/// Dispatches intents to a specific handler method.
 		/// </summary>
 		/// <param name="states">Collection of IIntentState to dispatch</param>
@@ -221,7 +372,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					state.Dispatch(this);				
 				}
 
-				// Increemnt the frame counter
+				// Increment the frame counter
 				IncrementFrameCounter();
 			}
 		}
@@ -431,8 +582,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			else if (((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.LampOn ||
 					 ((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.ShutterOpen)
 			{
-				// Turn on the moving head beam
-				MovingHead.OnOff = true;
+				// If not in strobe mode then...
+				if (!_strobeModeEnabled)
+				{
+					// Turn on the moving head beam
+					MovingHead.OnOff = true;
+				}
 			}
 			// If the command is a color wheel index command then...
 			else if (((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.ColorWheel)
@@ -442,35 +597,38 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			// Otherwise if the command is to strobe then...
 			else if (((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.Strobe)
-			{				
-				// Store off a flag that the fixture is strobing so that the shutter
+			{
+				// Store off a flag that the fixture is in strobe mode so that the shutter
 				// doesn't get automatically opened
-				_strobbing = true;
+				_strobeModeEnabled = true;
 
-				// If this is an even frame then...
-				if (_frameCounter % 2 == 0)
-				{
-					// If color intents were detected then...
-					if (_colorPresent)
-					{
-						// Turn on the beam
-						MovingHead.OnOff = true;
-					}
-					// Otherwise a color intent has not been detected so
-					else
-					{
-						// Set a flag so that if a color intent is detected the beam is turned on
-						_strobingOn = true;
-					}
-				}
-				// Otherwise if this is an odd frame then...
-				else
-				{
-					// Turn off the beam
-					MovingHead.OnOff = false;
-				}
+				// Store off the a strobe intent was received
+				_strobeIntentDetected = true;
+
+				// Retrieve the min and max strobe range constraints
+				int min = taggedCommand.RangeMinimum;
+				int max = taggedCommand.RangeMaximum;
+
+				// Convert fixture strobe constraints from Hz to ms
+				double fixtureMinimumInMs = 1.0 / StrobeRateMinimum * 1000;
+				double fixtureMaximumInMs = 1.0 / StrobeRateMaximum * 1000;
+
+				// Retrieve the strobe rate from the intent command
+				double sRate = (double)taggedCommand.CommandValue;
+			
+				// Determine how far away from the minimum the rate is
+				double distanceFromMinimum = sRate - min;
+
+				// Determine penetration into the range as percent (0-1)
+				double penetrationRatio =  distanceFromMinimum / (max - min);
+
+				// Apply the ratio to strobe rate range
+				double strobeRateMs = penetrationRatio * (fixtureMinimumInMs - fixtureMaximumInMs) + fixtureMaximumInMs;
+
+				// Flip things around since the maximum strobe rate is really the smaller number
+				MovingHead.StrobeRate = (int)(fixtureMinimumInMs + fixtureMaximumInMs) - (int)strobeRateMs;
 			}
-
+			
 			//TODO: Better place to put this code?
 			MovingHead.BeamLength = (int)BeamLength;
 		}
@@ -478,6 +636,71 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		#endregion
 
 		#region Private Methods
+
+		/// <summary>
+		/// Creates or re-uses an existing moving head strobe timer.
+		/// </summary>
+		/// <param name="strobeRate">Interval of the strobe rate in ms</param>
+		/// <param name="maxStrobeDuration">Maximum strobe duration in ms</param>
+		private void CreateMovingHeadTimer(int strobeRate, int maxStrobeDuration)
+		{
+			// Create a new moving head timer
+			MovingHeadTimer timer = new MovingHeadTimer(_strobeInterval, maxStrobeDuration, _redrawPreview);
+
+			// If successful adding the timer to the dictionary then...
+			if (_timerDictionary[MaximumStrobeDuration].TryAdd(_strobeInterval, timer))
+			{
+				// Associate the moving head with the timer
+				timer.AddMovingHead(new Tuple<IMovingHead, Action>(MovingHead, DetermineStrobeTimer));
+			}
+			// Otherwise retrieve the existing timer based on the strobe interval
+			else
+			{
+				// Associate the moving head with the timer
+				_timerDictionary[MaximumStrobeDuration][_strobeInterval].AddMovingHead(new Tuple<IMovingHead, Action>(MovingHead, DetermineStrobeTimer));
+			}
+
+			// Store off the reference to the timer
+			_movingHeadStrobeTimer = _timerDictionary[MaximumStrobeDuration][_strobeInterval];
+		}
+
+		/// <summary>
+		/// Registers a moving head with a shared strobe timer.
+		/// </summary>
+		private void RegisterWithExistingTimer()
+		{
+			// Associate the moving head with the strobe timer
+			_timerDictionary[MaximumStrobeDuration][_strobeInterval].AddMovingHead(new Tuple<IMovingHead, Action>(MovingHead, DetermineStrobeTimer));
+
+			// Store off the reference to the timer
+			_movingHeadStrobeTimer = _timerDictionary[MaximumStrobeDuration][_strobeInterval];
+		}
+
+		/// <summary>
+		/// Creates or registers a moving head with an existing strobe timer.
+		/// </summary>
+		private void CreateOrRegisterWithTimer()
+		{
+			// If a dictionary does not exist for the specified strobe duration then...
+			if (!_timerDictionary.ContainsKey(MaximumStrobeDuration))
+			{
+				// Create the internal dictionary for the specified strobe duration
+				_timerDictionary.TryAdd(MaximumStrobeDuration, new ConcurrentDictionary<int, MovingHeadTimer>());
+			}
+
+			// If an existing strobe rate timer exists then...
+			if (_timerDictionary.ContainsKey(_strobeInterval))
+			{
+				// Register the moving head with an existing strobe rate timer
+				RegisterWithExistingTimer();
+			}
+			// Otherwise a strobe rate timer does NOT exist for the specified strobe interval
+			else
+			{
+				// Create a new strobe timer for the specified interval
+				CreateMovingHeadTimer(_strobeInterval, MaximumStrobeDuration);
+			}
+		}
 
 		/// <summary>
 		/// Increments the internal frame counter.
@@ -609,16 +832,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// Remember that color was detected
 			_colorPresent = true;
 
-			// If the fixture was configured to conver color intents into shutter intents then...
-			if (ConvertColorIntentsIntoShutter && !_strobbing)
-			{
-				// Turn on the beam
-				MovingHead.OnOff = true;
-			}
-
-			// Since the strobe intent could come before the color intent;
-			// If we are strobing and this frame is the On frame then...
-			if (_strobbing && _strobingOn)
+			// If the fixture was configured to convert color intents into shutter intents then...
+			if (ConvertColorIntentsIntoShutter && !_strobeModeEnabled)
 			{
 				// Turn on the beam
 				MovingHead.OnOff = true;
