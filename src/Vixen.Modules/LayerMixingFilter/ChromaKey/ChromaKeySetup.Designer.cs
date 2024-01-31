@@ -28,263 +28,263 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
-			this.btnOk = new System.Windows.Forms.Button();
-			this.btnCancel = new System.Windows.Forms.Button();
-			this.numLowerLimit = new Common.Controls.NumericTextBox();
-			this.numUpperLimit = new Common.Controls.NumericTextBox();
-			this.trkLowerLimit = new System.Windows.Forms.TrackBar();
-			this.trkUpperLimit = new System.Windows.Forms.TrackBar();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
-			this.colorPanel1 = new VixenModules.Property.Color.ColorPanel();
-			this.label5 = new System.Windows.Forms.Label();
-			this.trkHueTolerance = new System.Windows.Forms.TrackBar();
-			this.trkSaturationTolerance = new System.Windows.Forms.TrackBar();
-			this.label6 = new System.Windows.Forms.Label();
-			this.label7 = new System.Windows.Forms.Label();
-			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-			this.chkTransparentOnZeroBrightness = new System.Windows.Forms.CheckBox();
-			((System.ComponentModel.ISupportInitialize)(this.trkLowerLimit)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.trkUpperLimit)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.trkHueTolerance)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.trkSaturationTolerance)).BeginInit();
-			this.SuspendLayout();
+			components = new System.ComponentModel.Container();
+			btnOk = new Button();
+			btnCancel = new Button();
+			numLowerLimit = new Common.Controls.NumericTextBox();
+			numUpperLimit = new Common.Controls.NumericTextBox();
+			trkLowerLimit = new TrackBar();
+			trkUpperLimit = new TrackBar();
+			label1 = new Label();
+			label2 = new Label();
+			label3 = new Label();
+			label4 = new Label();
+			colorPanel1 = new Property.Color.ColorPanel();
+			label5 = new Label();
+			trkHueTolerance = new TrackBar();
+			trkSaturationTolerance = new TrackBar();
+			label6 = new Label();
+			label7 = new Label();
+			toolTip = new ToolTip(components);
+			chkTransparentOnZeroBrightness = new CheckBox();
+			((System.ComponentModel.ISupportInitialize)trkLowerLimit).BeginInit();
+			((System.ComponentModel.ISupportInitialize)trkUpperLimit).BeginInit();
+			((System.ComponentModel.ISupportInitialize)trkHueTolerance).BeginInit();
+			((System.ComponentModel.ISupportInitialize)trkSaturationTolerance).BeginInit();
+			SuspendLayout();
 			// 
 			// btnOk
 			// 
-			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnOk.Location = new System.Drawing.Point(172, 274);
-			this.btnOk.Name = "btnOk";
-			this.btnOk.Size = new System.Drawing.Size(75, 23);
-			this.btnOk.TabIndex = 5;
-			this.btnOk.Text = "OK";
-			this.btnOk.UseVisualStyleBackColor = true;
-			this.btnOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			btnOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+			btnOk.DialogResult = DialogResult.OK;
+			btnOk.Location = new Point(172, 274);
+			btnOk.Name = "btnOk";
+			btnOk.Size = new Size(75, 23);
+			btnOk.TabIndex = 5;
+			btnOk.Text = "OK";
+			btnOk.UseVisualStyleBackColor = true;
+			btnOk.MouseLeave += buttonBackground_MouseLeave;
+			btnOk.MouseHover += buttonBackground_MouseHover;
 			// 
 			// btnCancel
 			// 
-			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(253, 274);
-			this.btnCancel.Name = "btnCancel";
-			this.btnCancel.Size = new System.Drawing.Size(75, 23);
-			this.btnCancel.TabIndex = 6;
-			this.btnCancel.Text = "Cancel";
-			this.btnCancel.UseVisualStyleBackColor = true;
-			this.btnCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			btnCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+			btnCancel.DialogResult = DialogResult.Cancel;
+			btnCancel.Location = new Point(253, 274);
+			btnCancel.Name = "btnCancel";
+			btnCancel.Size = new Size(75, 23);
+			btnCancel.TabIndex = 6;
+			btnCancel.Text = "Cancel";
+			btnCancel.UseVisualStyleBackColor = true;
+			btnCancel.MouseLeave += buttonBackground_MouseLeave;
+			btnCancel.MouseHover += buttonBackground_MouseHover;
 			// 
 			// numLowerLimit
 			// 
-			this.numLowerLimit.DecimalNumber = 0;
-			this.numLowerLimit.Groupsep = ',';
-			this.numLowerLimit.Location = new System.Drawing.Point(300, 142);
-			this.numLowerLimit.MaxCheck = true;
-			this.numLowerLimit.MaxValue = 100D;
-			this.numLowerLimit.MinCheck = true;
-			this.numLowerLimit.MinValue = 0D;
-			this.numLowerLimit.Name = "numLowerLimit";
-			this.numLowerLimit.NumberFormat = NumberFormat.UnsignedInteger;
-			this.numLowerLimit.Size = new System.Drawing.Size(26, 23);
-			this.numLowerLimit.TabIndex = 2;
-			this.numLowerLimit.Text = "0";
-			this.numLowerLimit.Usegroupseparator = false;
-			this.numLowerLimit.TextChanged += new System.EventHandler(this.numLowerLimit_TextChanged);
-			this.numLowerLimit.LostFocus += new System.EventHandler(this.numLowerLimit_LostFocus);
+			numLowerLimit.DecimalNumber = 0;
+			numLowerLimit.Groupsep = ',';
+			numLowerLimit.Location = new Point(300, 142);
+			numLowerLimit.MaxCheck = true;
+			numLowerLimit.MaxValue = 100D;
+			numLowerLimit.MinCheck = true;
+			numLowerLimit.MinValue = 0D;
+			numLowerLimit.Name = "numLowerLimit";
+			numLowerLimit.NumberFormat = NumberFormat.UnsignedInteger;
+			numLowerLimit.Size = new Size(26, 23);
+			numLowerLimit.TabIndex = 2;
+			numLowerLimit.Text = "0";
+			numLowerLimit.Usegroupseparator = false;
+			numLowerLimit.TextChanged += numLowerLimit_TextChanged;
+			numLowerLimit.LostFocus += numLowerLimit_LostFocus;
 			// 
 			// numUpperLimit
 			// 
-			this.numUpperLimit.DecimalNumber = 0;
-			this.numUpperLimit.Groupsep = ',';
-			this.numUpperLimit.Location = new System.Drawing.Point(300, 184);
-			this.numUpperLimit.MaxCheck = true;
-			this.numUpperLimit.MaxValue = 100D;
-			this.numUpperLimit.MinCheck = true;
-			this.numUpperLimit.MinValue = 0D;
-			this.numUpperLimit.Name = "numUpperLimit";
-			this.numUpperLimit.NumberFormat = NumberFormat.UnsignedInteger;
-			this.numUpperLimit.Size = new System.Drawing.Size(26, 23);
-			this.numUpperLimit.TabIndex = 4;
-			this.numUpperLimit.Text = "0";
-			this.numUpperLimit.Usegroupseparator = false;
-			this.numUpperLimit.TextChanged += new System.EventHandler(this.numUpperLimit_TextChanged);
-			this.numUpperLimit.LostFocus += new System.EventHandler(this.numUpperLimit_LostFocus);
+			numUpperLimit.DecimalNumber = 0;
+			numUpperLimit.Groupsep = ',';
+			numUpperLimit.Location = new Point(300, 184);
+			numUpperLimit.MaxCheck = true;
+			numUpperLimit.MaxValue = 100D;
+			numUpperLimit.MinCheck = true;
+			numUpperLimit.MinValue = 0D;
+			numUpperLimit.Name = "numUpperLimit";
+			numUpperLimit.NumberFormat = NumberFormat.UnsignedInteger;
+			numUpperLimit.Size = new Size(26, 23);
+			numUpperLimit.TabIndex = 4;
+			numUpperLimit.Text = "0";
+			numUpperLimit.Usegroupseparator = false;
+			numUpperLimit.TextChanged += numUpperLimit_TextChanged;
+			numUpperLimit.LostFocus += numUpperLimit_LostFocus;
 			// 
 			// trkLowerLimit
 			// 
-			this.trkLowerLimit.Location = new System.Drawing.Point(58, 142);
-			this.trkLowerLimit.Maximum = 99;
-			this.trkLowerLimit.Name = "trkLowerLimit";
-			this.trkLowerLimit.Size = new System.Drawing.Size(236, 45);
-			this.trkLowerLimit.TabIndex = 1;
-			this.trkLowerLimit.TickFrequency = 5;
-			this.trkLowerLimit.Scroll += new System.EventHandler(this.trkLowerLimit_Scroll);
+			trkLowerLimit.Location = new Point(58, 142);
+			trkLowerLimit.Maximum = 99;
+			trkLowerLimit.Name = "trkLowerLimit";
+			trkLowerLimit.Size = new Size(236, 45);
+			trkLowerLimit.TabIndex = 1;
+			trkLowerLimit.TickFrequency = 5;
+			trkLowerLimit.Scroll += trkLowerLimit_Scroll;
 			// 
 			// trkUpperLimit
 			// 
-			this.trkUpperLimit.Location = new System.Drawing.Point(58, 184);
-			this.trkUpperLimit.Maximum = 100;
-			this.trkUpperLimit.Minimum = 1;
-			this.trkUpperLimit.Name = "trkUpperLimit";
-			this.trkUpperLimit.Size = new System.Drawing.Size(236, 45);
-			this.trkUpperLimit.TabIndex = 3;
-			this.trkUpperLimit.TickFrequency = 5;
-			this.trkUpperLimit.Value = 100;
-			this.trkUpperLimit.Scroll += new System.EventHandler(this.trkUpperLimit_Scroll);
+			trkUpperLimit.Location = new Point(58, 184);
+			trkUpperLimit.Maximum = 100;
+			trkUpperLimit.Minimum = 1;
+			trkUpperLimit.Name = "trkUpperLimit";
+			trkUpperLimit.Size = new Size(236, 45);
+			trkUpperLimit.TabIndex = 3;
+			trkUpperLimit.TickFrequency = 5;
+			trkUpperLimit.Value = 100;
+			trkUpperLimit.Scroll += trkUpperLimit_Scroll;
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(13, 146);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(39, 15);
-			this.label1.TabIndex = 6;
-			this.label1.Text = "Lower";
+			label1.AutoSize = true;
+			label1.Location = new Point(13, 146);
+			label1.Name = "label1";
+			label1.Size = new Size(39, 15);
+			label1.TabIndex = 6;
+			label1.Text = "Lower";
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(13, 187);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(39, 15);
-			this.label2.TabIndex = 7;
-			this.label2.Text = "Upper";
+			label2.AutoSize = true;
+			label2.Location = new Point(13, 187);
+			label2.Name = "label2";
+			label2.Size = new Size(39, 15);
+			label2.TabIndex = 7;
+			label2.Text = "Upper";
 			// 
 			// label3
 			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(120, 118);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(98, 15);
-			this.label3.TabIndex = 8;
-			this.label3.Text = "Brightness Range";
+			label3.AutoSize = true;
+			label3.Location = new Point(120, 118);
+			label3.Name = "label3";
+			label3.Size = new Size(98, 15);
+			label3.TabIndex = 8;
+			label3.Text = "Brightness Range";
 			// 
 			// label4
 			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(46, 13);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(36, 15);
-			this.label4.TabIndex = 9;
-			this.label4.Text = "Color";
+			label4.AutoSize = true;
+			label4.Location = new Point(46, 13);
+			label4.Name = "label4";
+			label4.Size = new Size(36, 15);
+			label4.TabIndex = 9;
+			label4.Text = "Color";
 			// 
 			// colorPanel1
 			// 
-			this.colorPanel1.BackColor = System.Drawing.Color.Black;
-			this.colorPanel1.Color = System.Drawing.Color.Black;
-			this.colorPanel1.Location = new System.Drawing.Point(31, 36);
-			this.colorPanel1.Margin = new System.Windows.Forms.Padding(4);
-			this.colorPanel1.Name = "colorPanel1";
-			this.colorPanel1.Size = new System.Drawing.Size(64, 64);
-			this.colorPanel1.TabIndex = 11;
-			this.colorPanel1.ColorChanged += new System.EventHandler<VixenModules.Property.Color.ColorPanelEventArgs>(this.colorPanel1_ColorChanged);
+			colorPanel1.BackColor = Color.Black;
+			colorPanel1.Color = Color.Black;
+			colorPanel1.Location = new Point(31, 36);
+			colorPanel1.Margin = new Padding(4);
+			colorPanel1.Name = "colorPanel1";
+			colorPanel1.Size = new Size(64, 64);
+			colorPanel1.TabIndex = 11;
+			colorPanel1.ColorChanged += colorPanel1_ColorChanged;
 			// 
 			// label5
 			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(192, 13);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(57, 15);
-			this.label5.TabIndex = 12;
-			this.label5.Text = "Tolerance";
+			label5.AutoSize = true;
+			label5.Location = new Point(192, 13);
+			label5.Name = "label5";
+			label5.Size = new Size(57, 15);
+			label5.TabIndex = 12;
+			label5.Text = "Tolerance";
 			// 
 			// trkHueTolerance
 			// 
-			this.trkHueTolerance.Location = new System.Drawing.Point(193, 36);
-			this.trkHueTolerance.Maximum = 180;
-			this.trkHueTolerance.Name = "trkHueTolerance";
-			this.trkHueTolerance.Size = new System.Drawing.Size(132, 45);
-			this.trkHueTolerance.TabIndex = 13;
-			this.trkHueTolerance.TickFrequency = 20;
-			this.trkHueTolerance.Value = 5;
-			this.trkHueTolerance.Scroll += new System.EventHandler(this.trkHueTolerance_Scroll);
+			trkHueTolerance.Location = new Point(193, 36);
+			trkHueTolerance.Maximum = 180;
+			trkHueTolerance.Name = "trkHueTolerance";
+			trkHueTolerance.Size = new Size(132, 45);
+			trkHueTolerance.TabIndex = 13;
+			trkHueTolerance.TickFrequency = 20;
+			trkHueTolerance.Value = 5;
+			trkHueTolerance.Scroll += trkHueTolerance_Scroll;
 			// 
 			// trkSaturationTolerance
 			// 
-			this.trkSaturationTolerance.Location = new System.Drawing.Point(193, 76);
-			this.trkSaturationTolerance.Maximum = 99;
-			this.trkSaturationTolerance.Name = "trkSaturationTolerance";
-			this.trkSaturationTolerance.Size = new System.Drawing.Size(132, 45);
-			this.trkSaturationTolerance.TabIndex = 14;
-			this.trkSaturationTolerance.TickFrequency = 10;
-			this.trkSaturationTolerance.Value = 5;
-			this.trkSaturationTolerance.Scroll += new System.EventHandler(this.trkSaturationTolerance_Scroll);
+			trkSaturationTolerance.Location = new Point(193, 76);
+			trkSaturationTolerance.Maximum = 99;
+			trkSaturationTolerance.Name = "trkSaturationTolerance";
+			trkSaturationTolerance.Size = new Size(132, 45);
+			trkSaturationTolerance.TabIndex = 14;
+			trkSaturationTolerance.TickFrequency = 10;
+			trkSaturationTolerance.Value = 5;
+			trkSaturationTolerance.Scroll += trkSaturationTolerance_Scroll;
 			// 
 			// label6
 			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(157, 36);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(29, 15);
-			this.label6.TabIndex = 15;
-			this.label6.Text = "Hue";
+			label6.AutoSize = true;
+			label6.Location = new Point(157, 36);
+			label6.Name = "label6";
+			label6.Size = new Size(29, 15);
+			label6.TabIndex = 15;
+			label6.Text = "Hue";
 			// 
 			// label7
 			// 
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(121, 76);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(61, 15);
-			this.label7.TabIndex = 16;
-			this.label7.Text = "Saturation";
+			label7.AutoSize = true;
+			label7.Location = new Point(121, 76);
+			label7.Name = "label7";
+			label7.Size = new Size(61, 15);
+			label7.TabIndex = 16;
+			label7.Text = "Saturation";
 			// 
 			// toolTip
 			// 
-			this.toolTip.AutomaticDelay = 250;
+			toolTip.AutomaticDelay = 250;
 			// 
 			// chkTransparentOnZeroBrightness
 			// 
-			this.chkTransparentOnZeroBrightness.AutoSize = true;
-			this.chkTransparentOnZeroBrightness.Location = new System.Drawing.Point(16, 232);
-			this.chkTransparentOnZeroBrightness.Name = "chkTransparentOnZeroBrightness";
-			this.chkTransparentOnZeroBrightness.Size = new System.Drawing.Size(217, 19);
-			this.chkTransparentOnZeroBrightness.TabIndex = 17;
-			this.chkTransparentOnZeroBrightness.Text = "Treat Zero Brightness as Transparent.";
-			this.chkTransparentOnZeroBrightness.UseVisualStyleBackColor = true;
-			this.chkTransparentOnZeroBrightness.CheckedChanged += new System.EventHandler(this.chkTransparentOnZeroBrightness_CheckedChanged);
+			chkTransparentOnZeroBrightness.AutoSize = true;
+			chkTransparentOnZeroBrightness.Location = new Point(16, 232);
+			chkTransparentOnZeroBrightness.Name = "chkTransparentOnZeroBrightness";
+			chkTransparentOnZeroBrightness.Size = new Size(217, 19);
+			chkTransparentOnZeroBrightness.TabIndex = 17;
+			chkTransparentOnZeroBrightness.Text = "Treat Zero Brightness as Transparent.";
+			chkTransparentOnZeroBrightness.UseVisualStyleBackColor = true;
+			chkTransparentOnZeroBrightness.CheckedChanged += chkTransparentOnZeroBrightness_CheckedChanged;
 			// 
 			// ChromaKeySetup
 			// 
-			this.AcceptButton = this.btnOk;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.AutoSize = true;
-			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(340, 311);
-			this.Controls.Add(this.chkTransparentOnZeroBrightness);
-			this.Controls.Add(this.label7);
-			this.Controls.Add(this.label6);
-			this.Controls.Add(this.trkSaturationTolerance);
-			this.Controls.Add(this.trkHueTolerance);
-			this.Controls.Add(this.label5);
-			this.Controls.Add(this.colorPanel1);
-			this.Controls.Add(this.label4);
-			this.Controls.Add(this.label3);
-			this.Controls.Add(this.label2);
-			this.Controls.Add(this.label1);
-			this.Controls.Add(this.trkUpperLimit);
-			this.Controls.Add(this.trkLowerLimit);
-			this.Controls.Add(this.numUpperLimit);
-			this.Controls.Add(this.numLowerLimit);
-			this.Controls.Add(this.btnCancel);
-			this.Controls.Add(this.btnOk);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.HelpButton = true;
-			this.Name = "ChromaKeySetup";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Chroma Key Configuration";
-			((System.ComponentModel.ISupportInitialize)(this.trkLowerLimit)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.trkUpperLimit)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.trkHueTolerance)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.trkSaturationTolerance)).EndInit();
-			this.ResumeLayout(false);
-			this.PerformLayout();
-
+			AcceptButton = btnOk;
+			AutoScaleDimensions = new SizeF(7F, 15F);
+			AutoScaleMode = AutoScaleMode.Font;
+			AutoSize = true;
+			CancelButton = btnCancel;
+			ClientSize = new Size(340, 311);
+			Controls.Add(chkTransparentOnZeroBrightness);
+			Controls.Add(label7);
+			Controls.Add(label6);
+			Controls.Add(trkSaturationTolerance);
+			Controls.Add(trkHueTolerance);
+			Controls.Add(label5);
+			Controls.Add(colorPanel1);
+			Controls.Add(label4);
+			Controls.Add(label3);
+			Controls.Add(label2);
+			Controls.Add(label1);
+			Controls.Add(trkUpperLimit);
+			Controls.Add(trkLowerLimit);
+			Controls.Add(numUpperLimit);
+			Controls.Add(numLowerLimit);
+			Controls.Add(btnCancel);
+			Controls.Add(btnOk);
+			FormBorderStyle = FormBorderStyle.FixedDialog;
+			MaximizeBox = false;
+			MinimizeBox = false;
+			Name = "ChromaKeySetup";
+			StartPosition = FormStartPosition.CenterParent;
+			Text = "Chroma Key Configuration";
+			((System.ComponentModel.ISupportInitialize)trkLowerLimit).EndInit();
+			((System.ComponentModel.ISupportInitialize)trkUpperLimit).EndInit();
+			((System.ComponentModel.ISupportInitialize)trkHueTolerance).EndInit();
+			((System.ComponentModel.ISupportInitialize)trkSaturationTolerance).EndInit();
+			ResumeLayout(false);
+			PerformLayout();
 		}
 
 		#endregion
