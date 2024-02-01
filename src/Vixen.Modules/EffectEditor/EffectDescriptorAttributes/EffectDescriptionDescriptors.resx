@@ -1282,6 +1282,6 @@
     <value>Controls the overall intensity envelope of the entire effect over the duration of the effect.</value>
   </data>
   <data name="ShockwaveType" xml:space="preserve">
-    <value>Selects between 'Circular' or 'Diamond' shaped shockwave.</value>
+    <value>Selects between 'Circle' or 'Diamond' shaped shockwave.</value>
   </data>
 </root>
