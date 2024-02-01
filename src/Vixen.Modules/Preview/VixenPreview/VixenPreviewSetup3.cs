@@ -259,14 +259,16 @@ namespace VixenModules.Preview.VixenPreview
 			previewForm.Preview.OnSelectDisplayItem -= OnSelectDisplayItem;
 			previewForm.Preview.OnDeSelectDisplayItem -= OnDeSelectDisplayItem;
 			previewForm.Preview.OnSelectionChanged -= Preview_OnSelectionChanged;
-			VixenPreviewControl.PreviewItemsResizingNew -= previewForm.Preview.vixenpreviewControl_PreviewItemsResizingNew;
-			VixenPreviewControl.PreviewItemsMovedNew -= previewForm.Preview.vixenpreviewControl_PreviewItemsMovedNew;
+			VixenPreviewControl.PreviewItemsResizingNew -=
+				previewForm.Preview.vixenpreviewControl_PreviewItemsResizingNew;
+			VixenPreviewControl.PreviewItemsMovedNew -=
+				previewForm.Preview.vixenpreviewControl_PreviewItemsMovedNew;
 			_undoMgr.UndoItemsChanged -= _undoMgr_UndoItemsChanged;
 			_undoMgr.RedoItemsChanged -= _undoMgr_RedoItemsChanged;
 			undoButton.ItemChosen -= undoButton_ItemChosen;
 			redoButton.ItemChosen -= redoButton_ItemChosen;
 			CloseSetup();
-		}
+	    }
 
 		private void buttonSetBackground_Click(object sender, EventArgs e) {
 			if (dialogSelectBackground.ShowDialog() == DialogResult.OK) {
@@ -552,12 +554,60 @@ namespace VixenModules.Preview.VixenPreview
 			//Size = new Size(Data.SetupWidth, Data.SetupHeight);
 		}
 
+		/// <summary>
+		/// Provides a warning to the user if Intelligent Fixtures are found in the preview
+		/// but OpenGL is NOT selected.
+		/// </summary>
+		private void CheckForIntelligentFixturesAndOpenGL()
+		{
+			bool continueToExit = true;
+
+			// If the OpenGL preview is NOT selected and
+			// there are Intelligent Fixtures then...
+			if (!Data.UseOpenGL &&
+			    previewForm.Preview.DisplayItems.Any(dspItem => dspItem.Shape is PreviewMovingHead))
+			{
+				// If the hardware supports OpenGL then...
+				if (VixenPreviewModuleInstance.SupportsOpenGLPreview())
+				{
+					// Prompt the user to switch to the OpenGL Preview
+					MessageBoxForm messageBox = new MessageBoxForm(
+						"This preview contains Intelligent Fixtures and the 'Use OpenGL Preview' option is not selected. " +
+						"Intelligent Fixtures are not supported on the GDI preview.\n\n" +
+						"Switch to the OpenGL Preview?",
+						"Change Preview Viewer",
+						MessageBoxButtons.YesNo,
+						SystemIcons.Warning);
+
+					// If the user selects to use the OpenGL Preview then...
+					if (messageBox.ShowDialog() == DialogResult.OK)
+					{
+						Data.UseOpenGL = true;
+					}
+				}
+				else
+				{
+					// Otherwise warn them that Intelligent Fixtures are not support and to possibly upgrade hardware
+					MessageBoxForm messageBox = new MessageBoxForm(
+						"Intelligent Fixtures are not supported on the GDI preview. " +
+					    "Intelligent Fixtures are only supported on the OpenGL Preview.  " +
+						"Unfortunately the detected video hardware does not support OpenGL. " +  
+						"Recommend upgrading the video hardware to include Intelligent Fixtures in the preview.",
+						"Preview Viewer Issue",
+						MessageBoxButtons.OK,
+						SystemIcons.Warning);
+					messageBox.ShowDialog();
+				}
+			}
+		}
+
 		private void CloseSetup()
-	    {
-		    SaveLocationDataForElements();
-		    DialogResult = DialogResult.OK;
-		    previewForm.Close();
-	    }
+		{
+			CheckForIntelligentFixturesAndOpenGL();
+			SaveLocationDataForElements();
+			DialogResult = DialogResult.OK;
+			previewForm.Close();
+		}
 
 	    private void VixenPreviewSetup3_Move(object sender, EventArgs e) {
 			if (Data == null) {
