@@ -174,6 +174,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						TimelineControl.grid.SplitSelectedElementsAtMouseLocation();
 					}
+					else
+					{
+						DistributeSelectedEffectsEqually();
+					}
 					break;
 			}
 			// Prevents sending keystrokes to child controls. 
