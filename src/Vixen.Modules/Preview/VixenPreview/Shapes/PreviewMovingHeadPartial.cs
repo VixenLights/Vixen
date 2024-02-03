@@ -310,7 +310,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{			
 		}
 
-		
 		/// <summary>
 		/// This flag determines if mouse move events are honored.
 		/// </summary>
@@ -319,6 +318,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Wizard dialog is displayed.  If the mouse move events are not suppressed it causes the preview shape to continue to be sized
 		/// based on where the user moves the mouse in the interim.
 		/// </remarks>
+		[Browsable(false)]
 		public bool IgnoreMouseMove { get; set; } = false;
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
