@@ -100,6 +100,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				MaxTiltTravelTime = DefaultMaxTiltTravelTime;	
 			}
 
+			// If the min color wheel rotation speed is zero this must be an
+			// existing fixture
+			if (MinColorWheelRotationSpeed == 0.0)
+			{
+				// Default the min color wheel rotation speed
+				MinColorWheelRotationSpeed = DefaultMinColorWheelRotationSpeed;	
+			}
+
+			// If the max color wheel rotation speed is zero this must be an
+			// existing fixture
+			if (MaxColorWheelRotationSpeed == 0.0)
+			{
+				// Default the max color wheel rotation speed
+				MaxColorWheelRotationSpeed = DefaultMaxColorWheelRotationSpeed;
+			}
+
 			Layout();						
 		}
 	
