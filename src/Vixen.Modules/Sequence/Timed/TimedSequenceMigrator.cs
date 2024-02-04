@@ -25,6 +25,7 @@ using VixenModules.Effect.Wipe;
 using ZedGraph;
 using Liquid;
 using Vixen.Sys;
+using VixenModules.Effect.SetPosition;
 
 namespace VixenModules.Sequence.Timed
 {
@@ -48,6 +49,7 @@ namespace VixenModules.Sequence.Timed
 									new MigrationSegment<XElement>(5, 6, _Version_5_to_6),
 									new MigrationSegment<XElement>(6, 7, _Version_6_to_7),
 									new MigrationSegment<XElement>(7, 8, _Version_7_to_8),
+									new MigrationSegment<XElement>(8, 9, _Version_8_to_9)
 				};
 		}
 
@@ -568,6 +570,23 @@ namespace VixenModules.Sequence.Timed
 			return content;
 		}
 
+		private XElement _Version_8_to_9(XElement content)
+		{
+			if (CanShowMessage())
+			{
+				var messageBox = new MessageBoxForm(string.Format(
+						"Migrating sequence from version 8 to version 9. This may take a few minutes if the sequence is large.{0}{0}Changes include the following:{0}" +
+						"Minor changes to the SetPosition Effect, adding the ability to control pan and tilt individually.{0}" +
+						"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade",
+					MessageBoxButtons.OK, SystemIcons.Information);
+				messageBox.StartPosition = FormStartPosition.CenterScreen;
+				messageBox.ShowDialog();
+			}
+
+			MigrateSetPositionFrom8To9(content);
+			return content;
+		}
+
 		private void MigrateChaseFrom3To4(XElement content)
 		{
 			//This migration deals with changing the Fireworks effect to accomodate multiple gradients instead of miltiple colors
@@ -910,6 +929,46 @@ namespace VixenModules.Sequence.Timed
 
 				// Serialize the object into a xelement
 				XElement glp = Serializer(dc, new[] { typeof(LiquidData), typeof(IModuleDataModel[]), typeof(DataContainer) });
+
+				// Extract the new data model that we want and insert it in the tree
+				datamodel.Add(glp.XPathSelectElement("//*[local-name()='anyType']", namespaces));
+			}
+		}
+
+		private void MigrateSetPositionFrom8To9(XElement content)
+		{
+			// This migration deals with changing the SetPosition effect to accomodate allowing the user to control
+			// whether pan, tilt or both controlled by the effect
+			var namespaces = GetStandardNamespaces();
+			//Add in the ones for this effect
+			XNamespace d2p1 = "http://schemas.datacontract.org/2004/07/VixenModules.Effect.SetPosition";
+			namespaces.AddNamespace("d2p1", d2p1.NamespaceName);
+
+			// Find the Set Position effects
+			IEnumerable<XElement> setPositionElements =
+				content.XPathSelectElements(
+					"_dataModels/d1p1:anyType[@i:type = 'd2p1:SetPositionData']",
+					namespaces);
+
+			var datamodel = content.XPathSelectElement("_dataModels", namespaces);
+
+			foreach (var setPositionElement in setPositionElements.ToList())
+			{
+				var setPositionData = DeSerializer<SetPositionData>(setPositionElement);
+
+				setPositionData.EnablePan = true;
+				setPositionData.EnableTilt = true;
+
+				// Remove the old version
+				setPositionElement.Remove();
+
+				// Build up a temporary container similar to the way sequences are stored to
+				// make all the namespace prefixes line up.
+				IModuleDataModel[] dm = { setPositionData };
+				DataContainer dc = new DataContainer { _dataModels = dm };
+
+				// Serialize the object into a xelement
+				XElement glp = Serializer(dc, new[] { typeof(SetPositionData), typeof(IModuleDataModel[]), typeof(DataContainer) });
 
 				// Extract the new data model that we want and insert it in the tree
 				datamodel.Add(glp.XPathSelectElement("//*[local-name()='anyType']", namespaces));

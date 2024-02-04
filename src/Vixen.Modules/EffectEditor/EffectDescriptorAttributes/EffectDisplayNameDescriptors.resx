@@ -1203,4 +1203,10 @@
   <data name="ShockwaveType" xml:space="preserve">
     <value>Shape</value>
   </data>
+  <data name="SetPositionEnablePan" xml:space="preserve">
+    <value>Control Pan</value>
+  </data>
+  <data name="SetPositionEnableTilt" xml:space="preserve">
+    <value>Control Tilt</value>
+  </data>
 </root>
