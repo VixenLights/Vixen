@@ -1,5 +1,7 @@
 ﻿using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 
 using Vixen.Commands;
 using Vixen.Data.Value;
@@ -155,6 +157,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		/// <summary>
+		/// Maximum pan travel time in seconds.
+		/// </summary>
+		public double MaxPanTravelTime { get; set; }
+
+		/// <summary>
+		/// Maximum tilt travel time in seconds.
+		/// </summary>
+		public double MaxTiltTravelTime { get; set; }
+
+		/// <summary>
 		/// Maximum strobe duration in ms.
 		/// </summary>
 		public int MaximumStrobeDuration
@@ -279,16 +291,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			if (InvertTiltDirection)
 			{
 				// Reset the head to the stop position
-				MovingHead.TiltAngle = TiltStopPosition;
+				MovingHead.CommandedTiltAngle = TiltStopPosition;
 			}
 			else
 			{
 				// Reset the head to the start position
-				MovingHead.TiltAngle = TiltStartPosition;
+				MovingHead.CommandedTiltAngle = TiltStartPosition;
 			}
 
 			// Reset the head to the start position
-			MovingHead.PanAngle = PanStartPosition;
+			MovingHead.CommandedPanAngle = PanStartPosition;
 		}
 
 		/// <summary>
@@ -318,9 +330,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		/// <summary>
 		/// Allows the moving head intent handler to examine all of the intents
-		/// received this frame to determine if the fixture should strobe.
+		/// received this frame to determine derived state (strobe).
+		/// Also allows for pan and tilt movement to be calculated.
 		/// </summary>
-		public void FinalizeStrobeState()
+		/// <param name="standardFrame">True when processing a standard frame update</param>
+		public void FinalizeFixtureState(bool standardFrame)
 		{
 			// If strobe intents and color has been detected then...
 			if (_strobeIntentDetected && _colorPresent)
@@ -353,6 +367,89 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					// Clear out the reference to the timer
 					_movingHeadStrobeTimer = null;
 				}
+			}
+
+			// If this is a standard frame update (NOT strobe event update)
+			if (standardFrame)
+			{
+				// Determine the update interval in ms
+				double updateInterval = 1000 / VixenSystem.DefaultUpdateInterval;
+				
+				// Calculate the pan rate per second
+				double panRatePerSecond = (PanStopPosition - PanStartPosition) / MaxPanTravelTime;
+
+				// Calculate the pan rate per frame
+				double panRate = panRatePerSecond / updateInterval;
+
+				// Calcualte the tilt rate per second
+				double tiltRatePerSecond = (TiltStopPosition - TiltStartPosition) / MaxTiltTravelTime;
+				
+				// Calculate the tilt rate per frame
+				double tiltRate = tiltRatePerSecond / updateInterval;
+
+				// If the current pan angle is greater than the command pan angle then...
+				if (MovingHead.UnlimitedPanAngle > MovingHead.CommandedPanAngle)
+				{
+					// If the difference between the commanded pan and current pan is less than the pan rate then...
+					if ((MovingHead.UnlimitedPanAngle - MovingHead.CommandedPanAngle) < panRate)
+					{
+						// Just update the pan angle to commanded pan angle
+						MovingHead.UnlimitedPanAngle = MovingHead.CommandedPanAngle;
+					}
+					else
+					{
+						// Otherwise update the pan angle by the pan rate for one frame
+						MovingHead.UnlimitedPanAngle -= panRate;
+					}
+				}
+				else
+				{
+					// If the current pan angle is less than the command pan angle then...
+					if ((MovingHead.CommandedPanAngle - MovingHead.UnlimitedPanAngle) < panRate)
+					{
+						// Just update the pan angle to commanded pan angle
+						MovingHead.UnlimitedPanAngle = MovingHead.CommandedPanAngle;
+					}
+					else
+					{
+						// Otherwise update the pan angle by the pan rate for one frame
+						MovingHead.UnlimitedPanAngle += panRate;
+					}
+				}
+
+				// If the current tilt angle is greater than the command tilt angle then...
+				if (MovingHead.UnlimitedTiltAngle > MovingHead.CommandedTiltAngle)
+				{
+					// If the current tilt angle is less than the command tilt angle then...
+					if ((MovingHead.UnlimitedTiltAngle - MovingHead.CommandedTiltAngle) < tiltRate)
+					{
+						// Just update the tilt angle to commanded tilt angle
+						MovingHead.UnlimitedTiltAngle = MovingHead.CommandedTiltAngle;
+					}
+					else
+					{
+						// Otherwise update the pan angle by the pan rate for one frame
+						MovingHead.UnlimitedTiltAngle -= tiltRate;
+					}
+				}
+				else
+				{
+					// If the current tilt angle is less than the command tilt angle then...
+					if ((MovingHead.CommandedTiltAngle - MovingHead.UnlimitedTiltAngle) < tiltRate)
+					{
+						// Just update the tilt angle to commanded tilt angle
+						MovingHead.UnlimitedTiltAngle = MovingHead.CommandedTiltAngle;
+					}
+					else
+					{
+						// Otherwise update the pan angle by the pan rate for one frame
+						MovingHead.UnlimitedTiltAngle += tiltRate;
+					}
+				}
+
+				// Limit the pan and tilt angles
+				MovingHead.TiltAngle = LimitAngle(MovingHead.UnlimitedTiltAngle);
+				MovingHead.PanAngle = LimitAngle(MovingHead.UnlimitedPanAngle);
 			}
 		}
 
@@ -394,22 +491,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						// Calculate the pan angle
 						double pan = PanStartPosition - rangeIntent.GetValue().Value * (PanStopPosition - PanStartPosition);
 
-						// Limit the angle to +/- 360 degrees
-						pan = LimitAngle(pan);
-
-						// Set the moving head pan angle
-						MovingHead.PanAngle = pan;
+						// Set the moving head commanded pan angle
+						MovingHead.CommandedPanAngle = pan;
 					}
 					else
 					{
 						// Calculate the pan angle
 						double pan = rangeIntent.GetValue().Value * (PanStopPosition - PanStartPosition) + PanStartPosition;
 
-						// Limit the angle to +/- 360 degrees
-						pan = LimitAngle(pan);
-
-						// Set the moving head pan angle
-						MovingHead.PanAngle = pan;
+						// Set the moving head commanded pan angle
+						MovingHead.CommandedPanAngle = pan;
 					}
 					break;
 				case FunctionIdentity.Tilt:
@@ -420,22 +511,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						// Calculate the tilt angle
 						double tilt = TiltStopPosition - rangeIntent.GetValue().Value * (TiltStopPosition - TiltStartPosition);
 
-						// Limit the angle to +/- 360 degrees
-						tilt = LimitAngle(tilt);
-
-						// Set the moving head tilt angle converting to degrees
-						MovingHead.TiltAngle = tilt;
+						// Set the moving head commanded tilt angle 
+						MovingHead.CommandedTiltAngle = tilt;
 					}
 					else
 					{
 						// Calculate the tilt angle
 						double tilt = rangeIntent.GetValue().Value * (TiltStopPosition - TiltStartPosition) + TiltStartPosition;
 
-						// Limit the angle to +/- 360 degrees
-						tilt = LimitAngle(tilt);
-
-						// Set the moving head tilt angle converting to degrees
-						MovingHead.TiltAngle = tilt;
+						// Set the moving head commanded tilt angle
+						MovingHead.CommandedTiltAngle = tilt;
 					}
 					break;
 				case FunctionIdentity.Zoom:

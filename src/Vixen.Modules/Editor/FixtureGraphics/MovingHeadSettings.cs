@@ -134,6 +134,10 @@ namespace VixenModules.Editor.FixtureGraphics
 				FixtureIntensity = FixtureIntensity,
 				MountingPosition = MountingPosition,
 				StrobeRate = StrobeRate,
+				CommandedPanAngle = CommandedPanAngle,
+				CommandedTiltAngle = CommandedTiltAngle,
+				UnlimitedPanAngle = UnlimitedPanAngle,
+				UnlimitedTiltAngle = UnlimitedTiltAngle,
 			};
 		}
 
@@ -141,6 +145,18 @@ namespace VixenModules.Editor.FixtureGraphics
 		/// Refer to interface documentation.
 		/// </summary>
 		public MountingPositionType MountingPosition { get; set; }
+		
+		/// <inheritdoc/>
+		public double CommandedPanAngle { get; set; }
+		
+		/// <inheritdoc/>
+		public double CommandedTiltAngle { get; set; }
+
+		/// <inheritdoc/>
+		public double UnlimitedPanAngle { get; set; }
+
+		/// <inheritdoc/>
+		public double UnlimitedTiltAngle { get; set; }
 
 		/// <summary>
 		/// Refer to interface documentation.
@@ -186,7 +202,11 @@ namespace VixenModules.Editor.FixtureGraphics
 				   movingHead.LegendColor == LegendColor &&
 				   movingHead.FixtureIntensity == FixtureIntensity &&
 				   movingHead.MountingPosition == MountingPosition &&
-				   movingHead.StrobeRate == StrobeRate);
+				   movingHead.StrobeRate == StrobeRate &&
+				   movingHead.CommandedPanAngle == CommandedPanAngle &&
+				   movingHead.CommandedTiltAngle == CommandedTiltAngle &&
+				   movingHead.UnlimitedPanAngle == UnlimitedPanAngle &&
+				   movingHead.UnlimitedTiltAngle == UnlimitedTiltAngle);
 		}
 
 		#endregion

@@ -108,5 +108,25 @@ namespace VixenModules.Editor.FixtureGraphics
 		/// Strobe rate represented in milliseconds between pulses.
 		/// </summary>
 		int StrobeRate { get; set; }
+
+		/// <summary>
+		/// Unlimited horizontal pan angle (in degrees) of the beam housing.
+		/// </summary>
+		double UnlimitedPanAngle { get; set; }
+
+		/// <summary>
+		/// Unlimited vertical tilt angle (in degrees) of the beam housing.
+		/// </summary>
+		double UnlimitedTiltAngle { get; set; }
+		
+		/// <summary>
+		/// Commanded horizontal angle (in degrees) of the base the moving head.
+		/// </summary>
+		double CommandedPanAngle { get; set; }
+
+		/// <summary>
+		/// Commanded vertical tilt angle (in degrees) of the beam housing.
+		/// </summary>
+		double CommandedTiltAngle { get; set; }
 	}
 }

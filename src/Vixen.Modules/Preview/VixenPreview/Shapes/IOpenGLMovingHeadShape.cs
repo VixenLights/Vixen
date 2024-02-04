@@ -26,6 +26,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// </summary>
 		/// <param name="maxBeamLength">Maximum beam length</param>		
 		/// <param name="referenceHeight">Height of the background</param>
-		void UpdateVolumes(int maxBeamLength, int referenceHeight);
+		/// <param name="standardFrame">True when the volumes are being updated for standard frame update</param>
+		void UpdateVolumes(int maxBeamLength, int referenceHeight, bool standardFrame);
 	}
 }
