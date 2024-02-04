@@ -59,8 +59,11 @@
             // Default to only creating one fixture
             NumberOfFixtures = 1;
 
-            // Default the fixture prefix to 'Fixture_'
-            ElementPrefix = "Fixture_";
+            // Retrieve the select profile page model
+            SelectProfileWizardPage selectProfilePage = (SelectProfileWizardPage)Wizard.Pages.Single(page => page is SelectProfileWizardPage);
+
+			// Default the fixture prefix to the name of the profile
+			ElementPrefix = selectProfilePage.ProfileName;
 
             // Default to creating a group for the fixtures
             CreateGroup = true;
