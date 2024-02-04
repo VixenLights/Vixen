@@ -1393,6 +1393,7 @@ namespace VixenModules.Preview.VixenPreview
 							// Restore the selected display item
 							_selectedDisplayItem = selectedDisplayItem;
 
+							// Associate the node with the shape and transfer any constraints from the node to the shape
 							_selectedDisplayItem.Shape.Reconfigure(elementsForm.SelectedNode);
 
 							// Restore the selected display item
@@ -1528,7 +1529,7 @@ namespace VixenModules.Preview.VixenPreview
 						PreviewMovingHead movingHead = (PreviewMovingHead)clonedDisplayItem.Shape;
 
 						// Update the node associated with the shape
-						movingHead.Node = node;
+						clonedDisplayItem.Shape.Reconfigure(node);
 					}
 
 					// Add the cloned display item to the preview
