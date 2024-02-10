@@ -199,10 +199,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ToolStripMenuItem contextMenuItemDistributeEqually = new ToolStripMenuItem("Distribute Equally")
 			{
 				ToolTipText =
-					@"This will stair step the selected elements, starting with the element that has the earlier start mouseLocation on the time line.",
+					@"Distribute selected effects equally over the total time span of effects.",
 				Image = Resources.distribute
 			};
 			contextMenuItemDistributeEqually.Click += (mySender, myE) => DistributeSelectedEffectsEqually();
+			contextMenuItemDistributeEqually.ShortcutKeyDisplayString = @"D";
 
 			ToolStripMenuItem contextMenuItemAlignStartToMark = new ToolStripMenuItem("Align Start to nearest mark")
 			{
