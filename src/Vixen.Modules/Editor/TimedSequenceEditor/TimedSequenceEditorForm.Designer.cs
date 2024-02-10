@@ -1560,7 +1560,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.effectGroupsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.basicToolStripMenuItem,
             this.pixelToolStripMenuItem,
-            this.deviceToolStripMenuItem});
+            this.deviceToolStripMenuItem,
+			this.intelligentFixtureToolStripMenuItem});
 			this.effectGroupsToolStripMenuItem.Name = "effectGroupsToolStripMenuItem";
 			this.effectGroupsToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
 			this.effectGroupsToolStripMenuItem.Text = "Show/Hide Effects";
@@ -1600,6 +1601,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.deviceToolStripMenuItem.Tag = "Device";
 			this.deviceToolStripMenuItem.Text = "Device";
 			this.deviceToolStripMenuItem.Click += new System.EventHandler(this.toolStripMenuItemEffectGroup_Click);
+			// 
+			// intelligentFixtureToolStripMenuItem
+			// 
+			this.intelligentFixtureToolStripMenuItem.Checked = true;
+			this.intelligentFixtureToolStripMenuItem.CheckOnClick = true;
+			this.intelligentFixtureToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.intelligentFixtureToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.intelligentFixtureToolStripMenuItem.Name = "intelligentFixtureToolStripMenuItem";
+			this.intelligentFixtureToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
+			this.intelligentFixtureToolStripMenuItem.Tag = "Fixture";
+			this.intelligentFixtureToolStripMenuItem.Text = "Fixture";
+			this.intelligentFixtureToolStripMenuItem.Click += new System.EventHandler(this.toolStripMenuItemEffectGroup_Click);
 			// 
 			// toolStripMenuItemLabelPosition
 			// 
@@ -2495,6 +2508,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem basicToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pixelToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem deviceToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem intelligentFixtureToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemLabelPosition;
 		private System.Windows.Forms.ToolStripMenuItem noLabelToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem aboveImageToolStripMenuItem;
@@ -2592,6 +2606,5 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripMenuItem speedTempoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem fullWaveformToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem intelligentFixtureToolStripMenuItem;
 	}
 }

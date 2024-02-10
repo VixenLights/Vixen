@@ -213,6 +213,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			basicToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
 			pixelToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
 			deviceToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
+			intelligentFixtureToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
 			add_RemoveContextToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
 			add_RemoveLibraryToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
 			toolbarsToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
