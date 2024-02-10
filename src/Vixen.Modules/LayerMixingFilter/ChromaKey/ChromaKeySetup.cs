@@ -16,6 +16,7 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 	        ForeColor = ThemeColorTable.ForeColor;
 	        BackColor = ThemeColorTable.BackgroundColor;
 	        ThemeUpdateControls.UpdateControls(this);
+			Icon = Resources.Icon_Vixen3;
 		    _lowerLimit = (int)(data.LowerLimit * 100);
 		    _upperLimit = (int)(data.UpperLimit * 100);
 			UpdateLimitControls();
