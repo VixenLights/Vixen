@@ -7,6 +7,8 @@ namespace VixenModules.Effect.Borders
 		[Description("Simple")]
 		Simple,
 		[Description("Advanced")]
-		Advanced
+		Advanced,
+		[Description("Marquee")]
+		Marquee
 	}
 }
