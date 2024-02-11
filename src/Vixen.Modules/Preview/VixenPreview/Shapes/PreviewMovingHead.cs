@@ -984,7 +984,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Minimum color wheel rotation speed in seconds.
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
-		 Category("Settings"),
+		 Category("Color Wheel"),
 		 Description("The time it takes the color wheel to make a complete rotation in seconds."),
 		 DisplayName("Color Wheel Rotation Speed Minimum (s)")]
 		public double MinColorWheelRotationSpeed { get; set; }
@@ -993,7 +993,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Maximum color wheel rotation speed in seconds.
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
-		 Category("Settings"),
+		 Category("Color Wheel"),
 		 Description("The time it takes the color wheel to make a complete rotation in seconds."),
 		 DisplayName("Color Wheel Rotation Speed Maximum (s)")]
 		public double MaxColorWheelRotationSpeed { get; set; }
@@ -1002,7 +1002,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Maximum pan travel time in seconds.
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
-		 Category("Settings"),
+		 Category("Pan"),
 		 Description("The time it takes of the intelligent fixture to pan from the starting position to the maximum stop position."),
 		 DisplayName("Maximum Pan Travel Time (s)")]
 		public double MaxPanTravelTime { get; set; }
@@ -1011,7 +1011,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Maximum tilt travel time in seconds.
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
-		 Category("Settings"),
+		 Category("Tilt"),
 		 Description("The time it takes of the intelligent fixture to tilt from the starting position to the maximum stop position."),
 		 DisplayName("Maximum Tilt Travel Time (s)")]
 		public double MaxTiltTravelTime { get; set; }
@@ -1020,7 +1020,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Strobe rate minimum in Hz.
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
-		Category("Settings"),
+		Category("Strobe"),
 		Description("The strobe rate minimum (in Hz)."),
 		DisplayName("Strobe Rate Minimum (Hz)")]
 		public int StrobeRateMinimum { get; set; }
@@ -1029,7 +1029,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Strobe rate maximum in Hz.
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
-		 Category("Settings"),
+		 Category("Strobe"),
 		 Description("The strobe rate maximum (in Hz)."),
 		 DisplayName("Strobe Rate Maximum (Hz)")]
 		public int StrobeRateMaximum { get; set; }
@@ -1038,7 +1038,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Strobe duration in ms.
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
-		 Category("Settings"),
+		 Category("Strobe"),
 		 Description("The maximum strobe duration in ms."),
 		 DisplayName("Maximum Strobe Duration (ms)")]
 		public int MaximumStrobeDuration { get; set; }
@@ -1047,7 +1047,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Pan start position in degrees.
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
-		 Category("Settings"),
+		 Category("Pan"),
 		 Description("The pan starting point angle (in degrees)."),
 		 DisplayName("Pan Start Position (Degrees)")]
 		public int PanStartPosition { get; set; }
@@ -1056,7 +1056,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Pan stop position in degrees.
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
-		 Category("Settings"),
+		 Category("Pan"),
 		 Description("The pan stopping point angle (in degrees)."),
 		 DisplayName("Pan Stop Position (Degrees)")]
 		public int PanStopPosition { get; set; }
@@ -1065,7 +1065,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Tilt start position in degrees.
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
-		 Category("Settings"),
+		 Category("Tilt"),
 		 Description("The tilt starting point angle (in degrees)."),
 		 DisplayName("Tilt Start Position (Degrees)")]
 		public int TiltStartPosition { get; set; }
@@ -1074,7 +1074,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Tilt stop position in degrees.
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
-		 Category("Settings"),
+		 Category("Tilt"),
 		 Description("The tilt stopping point angle (in degrees)."),
 		 DisplayName("Tilt Stop Position (Degrees)")]
 		public int TiltStopPosition { get; set; }
@@ -1083,7 +1083,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Beam length scale factor (1-100%).
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
-		 Category("Settings"),
+		 Category("Beam"),
 		 Description("Length of the beam as a percentage of the background height."),
 		 DisplayName("Beam Length")]
 		public int BeamLength
@@ -1096,7 +1096,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Beam transparecny (1-100%).
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
-		 Category("Settings"),
+		 Category("Beam"),
 		 Description("Determines the transparency of the light beam. 0% is completely opaque.  100% is completely transparent.  Note at 100% transparency the beam is not visible."),
 		 DisplayName("Beam Transparency (%)")]
 		public int BeamTransparency
@@ -1109,7 +1109,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Beam width multiplier.  Determines the width at the top of the beam.
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
-		 Category("Settings"),
+		 Category("Beam"),
 		 Description("Beam Width Multiplier"),
 		 DisplayName("Beam Width Multiplier")]
 		public int BeamWidthMultiplier
@@ -1147,7 +1147,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private YesNoType _invertPanDirection;
 
 		[DataMember(EmitDefaultValue = false),
-		 Category("Settings"),
+		 Category("Pan"),
 		 Description("Changes the start point of the pan by 180 degrees and inverts the direction of movement.  This setting is often used with 'Top' (upside down) mounting position."),
 		 DisplayName("Invert Pan Direction")]
 		public YesNoType InvertPanDirection
@@ -1171,7 +1171,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private YesNoType _invertTiltDirection;
 
 		[DataMember(EmitDefaultValue = false),
-		 Category("Settings"),
+		 Category("Tilt"),
 		 Description("Swaps the start position with the stop position and inverts the direction of movement.  This setting is often used with 'Top' (upside down) mounting position."),
 		 DisplayName("Invert Tilt Direction")]
 		public YesNoType InvertTiltDirection
