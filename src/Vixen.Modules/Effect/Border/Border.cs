@@ -1345,6 +1345,16 @@ namespace VixenModules.Effect.Borders
 		}
 
 		/// <summary>
+		/// Gets the marquee movement speed.
+		/// </summary>
+		/// <param name="intervalPosFactor">Position within the effect duration</param>
+		/// <returns>Marquee movement speed</returns>
+		private double GetMarqueeSpeed(double intervalPosFactor)
+		{
+			return ScaleCurveToValue(Speed.GetValue(intervalPosFactor), 25.0, 0);
+		}
+
+		/// <summary>
 		/// Renders the Marquee border effect in string mode.
 		/// </summary>
 		/// <param name="effectFrame">Frame number to render</param>
@@ -1363,7 +1373,7 @@ namespace VixenModules.Effect.Borders
 			int skipSize = GetMarqueeSkipLength();
 			int thickness = GetMarqueeThickness();
 			int stagger = GetMarqueeStagger();
-			double mSpeed = ScaleCurveToValue(Speed.GetValue(intervalPosFactor), 20.0, 0);
+			double mSpeed = GetMarqueeSpeed(intervalPosFactor);
 
 			int mStart = 0; 
 
