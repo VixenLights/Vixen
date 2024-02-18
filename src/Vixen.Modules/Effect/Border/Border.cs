@@ -4,6 +4,7 @@ using Common.Controls.ColorManagement.ColorModels;
 
 using Vixen.Attributes;
 using Vixen.Module;
+using Vixen.Sys;
 using Vixen.Sys.Attribute;
 
 using VixenModules.App.ColorGradients;
@@ -1351,7 +1352,8 @@ namespace VixenModules.Effect.Borders
 		/// <returns>Marquee movement speed</returns>
 		private double GetMarqueeSpeed(double intervalPosFactor)
 		{
-			return ScaleCurveToValue(Speed.GetValue(intervalPosFactor), 25.0, 0);
+			// Using multiplier to ensure effect movement speed remains constant with different Vixen update intervals
+			return ScaleCurveToValue(Speed.GetValue(intervalPosFactor), 25.0, 0) * VixenSystem.DefaultUpdateInterval / 50.0;
 		}
 
 		/// <summary>
