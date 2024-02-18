@@ -54,6 +54,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			StrobeRateMinimum = DefaultStrobeRateMinimum;
 			StrobeRateMaximum = DefaultStrobeRateMaximum;
 
+			// Default the color wheel rotation speed minimum and maximum
+			MinColorWheelRotationSpeed = DefaultMinColorWheelRotationSpeed;
+			MaxColorWheelRotationSpeed = DefaultMaxColorWheelRotationSpeed;
+
+			// Default the maximum strobe duration
+			MaximumStrobeDuration = DefaultMaxStrobeDuration;
+
+			// Default the maximum pan travel time
+			MaxPanTravelTime = DefaultMaxPanTravelTime;
+
+			// Default the maximum tilt travel time
+			MaxTiltTravelTime = DefaultMaxTiltTravelTime;
+
 			Reconfigure(selectedNode);
 		}
 				
