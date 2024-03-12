@@ -1,7 +1,10 @@
 ﻿using System.Runtime.Serialization;
+
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using VixenModules.Effect.Border;
 using VixenModules.Effect.Effect;
+
 using ZedGraph;
 
 namespace VixenModules.Effect.Borders
@@ -31,6 +34,9 @@ namespace VixenModules.Effect.Borders
 			BorderHeightCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+
+			// Marquee Specific Data Member Defaults 
+			DefaultMarqueeDataMembers();
 		}
 
 		[DataMember]
@@ -81,6 +87,49 @@ namespace VixenModules.Effect.Borders
 		[DataMember]
 		public Curve YOffsetCurve { get; set; }
 
+		// Marquee Specific Data Members
+		[DataMember]
+		public RenderLevel RenderLevel { get; set; }
+
+		[DataMember]
+		public int BandSize { get; set; }
+
+		[DataMember]
+		public int SkipSize { get; set; }
+		
+		[DataMember]
+		public int Thickness { get; set; }
+
+		[DataMember]
+		public int Stagger { get; set; }
+
+		[DataMember]
+		public Curve Speed { get; set; }
+
+		[DataMember]
+		public List<ColorGradient> Colors { get; set; }
+
+		[DataMember]
+		public int XScale { get; set; }
+
+		[DataMember]
+		public int YScale { get; set; }
+
+		[DataMember]
+		public bool Reverse { get; set; }
+
+		[DataMember]
+		public bool WrapX { get; set; }
+
+		[DataMember]
+		public bool WrapY { get; set; }
+
+		[DataMember]
+		public int RenderScaleFactor { get; set; }
+
+		[DataMember]
+		public bool UsePercent { get; set; }
+
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
@@ -99,6 +148,12 @@ namespace VixenModules.Effect.Borders
 				{
 					YOffsetCurve = new Curve(new PointPairList(new[] {0.0, 100.0}, new[] {50.0, 50.0}));
 				}
+			}
+
+			// If the speed is null this effect was created prior to introducing in the Marquee mode
+			if (Speed == null)
+			{
+				DefaultMarqueeDataMembers();
 			}
 		}
 
@@ -121,9 +176,51 @@ namespace VixenModules.Effect.Borders
 				Gradient = Gradient,
 				BorderHeightCurve = new Curve(BorderHeightCurve),
 				YOffsetCurve = new Curve(YOffsetCurve),
-				XOffsetCurve = new Curve(XOffsetCurve)
+				XOffsetCurve = new Curve(XOffsetCurve),
+
+				// Marquee Specific Properties
+				RenderLevel = RenderLevel,
+				BandSize = BandSize,
+				SkipSize = SkipSize,
+				Thickness = Thickness,
+				Stagger = Stagger,
+				Speed = new Curve(Speed),
+				Colors = Colors.ToList(),
+				XScale = XScale,
+				YScale = YScale,
+				Reverse = Reverse,
+				WrapX = WrapX,
+				WrapY = WrapY,
+				RenderScaleFactor = RenderScaleFactor,
+				UsePercent = UsePercent,
 			};
+
 			return result;
+		}
+
+		/// <summary>
+		/// Defaults the marquee border data members.
+		/// </summary>
+		private void DefaultMarqueeDataMembers()
+		{
+			RenderLevel = RenderLevel.Level0;
+			BandSize = 3;
+			SkipSize = 0;
+			Thickness = 1;
+			Stagger = 0;
+			Speed = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
+			XScale = 100;
+			YScale = 100;
+			Reverse = false;
+			WrapX = false;
+			WrapY = false;
+			UsePercent = false;
+
+			// Initialize the scale factor to 1/4
+			RenderScaleFactor = 4;
+
+			// Default Color Bands for Marquee Border
+			Colors = new List<ColorGradient> { new ColorGradient(Color.Red), new ColorGradient(Color.Lime), new ColorGradient(Color.White) };
 		}
 	}
 }

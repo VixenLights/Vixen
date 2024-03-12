@@ -1209,4 +1209,46 @@
   <data name="SetPositionEnableTilt" xml:space="preserve">
     <value>Control Tilt</value>
   </data>
+  <data name="BorderBandLength" xml:space="preserve">
+    <value>Band Length</value>
+  </data>
+  <data name="BorderColorGradients" xml:space="preserve">
+    <value>Color Gradients</value>
+  </data>
+  <data name="BorderEffectThickness" xml:space="preserve">
+    <value>Thickness</value>
+  </data>
+  <data name="BorderRenderLevel" xml:space="preserve">
+    <value>Render Level</value>
+  </data>
+  <data name="BorderRenderScaleFactor" xml:space="preserve">
+    <value>Render Scale Factor</value>
+  </data>
+  <data name="BorderReverse" xml:space="preserve">
+    <value>Reverse</value>
+  </data>
+  <data name="BorderSkipLength" xml:space="preserve">
+    <value>Skip Length</value>
+  </data>
+  <data name="BorderSpeed" xml:space="preserve">
+    <value>Speed</value>
+  </data>
+  <data name="BorderStagger" xml:space="preserve">
+    <value>Stagger</value>
+  </data>
+  <data name="BorderUsePercent" xml:space="preserve">
+    <value>Use Percentage</value>
+  </data>
+  <data name="BorderWrapX" xml:space="preserve">
+    <value>Wrap X Axis</value>
+  </data>
+  <data name="BorderWrapY" xml:space="preserve">
+    <value>Wrap Y Axis</value>
+  </data>
+  <data name="BorderXSize" xml:space="preserve">
+    <value>X-Size</value>
+  </data>
+  <data name="BorderYSize" xml:space="preserve">
+    <value>Y-Size</value>
+  </data>
 </root>
