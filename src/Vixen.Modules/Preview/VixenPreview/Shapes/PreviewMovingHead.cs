@@ -536,7 +536,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				_movingHead.BitmapColors.Length == width * height)
 			{
 				// Copy the cached fixture bitmap into the preview
-				CopyFixturePixelsIntoPreview(fp, width, height, scaleFactor);
+				CopyFixturePixelsIntoPreview(fp, width, height, _zoomLevel);
 			}
 
 			// If the fixture has been selected then..
