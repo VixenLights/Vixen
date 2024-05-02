@@ -1291,13 +1291,13 @@
     <value>Enables controlling the tilt of the intelligent fixture.</value>
   </data>
   <data name="BorderBandLength" xml:space="preserve">
-    <value>Controls the size of the marquee color bands.</value>
+    <value>Controls the size of the marquee color bands as a percentage of the display element.</value>
   </data>
   <data name="BorderColorGradients" xml:space="preserve">
     <value>Controls the colors that make up the bands of the marquee.</value>
   </data>
   <data name="BorderEffectThickness" xml:space="preserve">
-    <value>Controls the width of the marquee border.</value>
+    <value>Controls the width of the marquee border as a percentage of the display element.</value>
   </data>
   <data name="BorderRenderLevel" xml:space="preserve">
     <value>Controls how the Marquee is rendered (Level 0 Level1, or Level 2)</value>
@@ -1309,16 +1309,13 @@
     <value>Toggles the direction of the marquee movement.</value>
   </data>
   <data name="BorderSkipLength" xml:space="preserve">
-    <value>Controls the size of the blank area between marquee color bands.</value>
+    <value>Controls the size of the blank area between marquee color bands as a percentage of the display element.</value>
   </data>
   <data name="BorderSpeed" xml:space="preserve">
     <value>Controls how fast the marquee color bands move.</value>
   </data>
   <data name="BorderStagger" xml:space="preserve">
-    <value>Controls the offset between each band of pixels in the marquee border.</value>
-  </data>
-  <data name="BorderUsePercent" xml:space="preserve">
-    <value>Controls whether Band Length, Skip Length, Thickness, and Stagger settings are measured in pixels or a percentage of the display element.</value>
+    <value>Controls the offset between each band of pixels in the marquee border as a percentage of the display element.</value>
   </data>
   <data name="BorderWrapX" xml:space="preserve">
     <value>Allows the marquee to wrap around the display element in the x axis.</value>
