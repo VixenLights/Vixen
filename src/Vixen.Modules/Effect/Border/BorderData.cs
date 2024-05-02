@@ -127,9 +127,6 @@ namespace VixenModules.Effect.Borders
 		[DataMember]
 		public int RenderScaleFactor { get; set; }
 
-		[DataMember]
-		public bool UsePercent { get; set; }
-
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
@@ -192,7 +189,6 @@ namespace VixenModules.Effect.Borders
 				WrapX = WrapX,
 				WrapY = WrapY,
 				RenderScaleFactor = RenderScaleFactor,
-				UsePercent = UsePercent,
 			};
 
 			return result;
@@ -214,7 +210,6 @@ namespace VixenModules.Effect.Borders
 			Reverse = false;
 			WrapX = false;
 			WrapY = false;
-			UsePercent = false;
 
 			// Initialize the scale factor to 1/4
 			RenderScaleFactor = 4;

@@ -128,24 +128,6 @@ namespace VixenModules.Effect.Borders
 		}
 
 		/// <summary>
-		/// Whether several of the Marquee border properties are measured in pixels
-		/// or a percentage of the display element.
-		/// </summary>
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"BorderUsePercent")]
-		[ProviderDescription(@"BorderUsePercent")]
-		[PropertyOrder(3)]
-		public bool UsePercent
-		{
-			get { return _data.UsePercent; }
-			set
-			{
-				_data.UsePercent = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-		/// <summary>
 		/// Thickness of the Marquee border.
 		/// </summary>
 		[PropertyEditor("SliderEditor")]
@@ -794,7 +776,6 @@ namespace VixenModules.Effect.Borders
 
 					{ nameof(Colors), false },
 					{ nameof(RenderLevel), false },
-					{ nameof(UsePercent), false },
 					{ nameof(Thickness), false },
 					{ nameof(Stagger), false },
 					{ nameof(BandLength), false },
@@ -831,7 +812,6 @@ namespace VixenModules.Effect.Borders
 					
 					{ nameof(Colors), false },
 					{ nameof(RenderLevel), false },
-					{ nameof(UsePercent), false },
 					{ nameof(Thickness), false },
 					{ nameof(Stagger), false },
 					{ nameof(BandLength), false },
@@ -868,7 +848,6 @@ namespace VixenModules.Effect.Borders
 					
 					{ nameof(Colors), true },
 					{ nameof(RenderLevel), true },
-					{ nameof(UsePercent), true },
 					{ nameof(Thickness), RenderLevel == RenderLevel.Level0 },
 					{ nameof(Stagger), RenderLevel == RenderLevel.Level0 && Thickness > 1 },
 					{ nameof(BandLength), true },
@@ -1195,14 +1174,14 @@ namespace VixenModules.Effect.Borders
 				// by going back and forth (Zig Zag)
 				int index = 0;
 
-				// Loop over the width of the display element
-				for (int x = 0; x < _bufferWi; x++)
+				// Loop over the height of the display element
+				for (int y = 0; y < _bufferHt; y++)
 				{
-					// Loop over the height of the display element
-					for (int y = 0; y < _bufferHt; y++)
+					// Loop over the width of the display element
+					for (int x = 0; x < _bufferWi; x++)
 					{
 						// If this is an even row then transfer pixel information left to right
-						if (x % 2 == 0)
+						if (y % 2 == 0)
 						{
 							frameBuffer.SetPixel(x, y, singleStrandFrameBuffer.GetColorAt(index, 0));
 						}
@@ -1245,21 +1224,13 @@ namespace VixenModules.Effect.Borders
 		/// <returns>Length of the marquee bands in pixels</returns>
 		private int GetMarqueeBandLength()
 		{
-			int bandSize;
-
-			if (UsePercent)
+			int	bandSize = (int)((_maxBufferSize * BandLength) / 100.0);
+		
+			if (bandSize == 0)
 			{
-				bandSize = (int)((_maxBufferSize * BandLength) / 100.0);
-				if (bandSize == 0)
-				{
-					bandSize = 1;
-				}
+				bandSize = 1;
 			}
-			else
-			{
-				bandSize = BandLength;
-			}
-
+			
 			return bandSize;
 		}
 
@@ -1269,18 +1240,7 @@ namespace VixenModules.Effect.Borders
 		/// <returns>Skip length of the marquee in pixels</returns>
 		private int GetMarqueeSkipLength()
 		{
-			int skipSize;
-
-			if (UsePercent)
-			{
-				skipSize = (int)(_maxBufferSize * SkipLength / 100.0);
-			}
-			else
-			{
-				skipSize = SkipLength;
-			}
-
-			return skipSize;
+			return (int)(_maxBufferSize * SkipLength / 100.0);
 		}
 
 		/// <summary>
@@ -1289,21 +1249,13 @@ namespace VixenModules.Effect.Borders
 		/// <returns>Marquee border thickness in pixels</returns>
 		private int GetMarqueeThickness()
 		{
-			int thickness;
-
-			if (UsePercent)
+			int	thickness = (int)(_maxBufferSize * Thickness / 100.0);
+			
+			if (thickness == 0)
 			{
-				thickness = (int)(_maxBufferSize * Thickness / 100.0);
-				if (thickness == 0)
-				{
-					thickness = 1;
-				}
+				thickness = 1;
 			}
-			else
-			{
-				thickness = Thickness;
-			}
-
+			
 			return thickness;	
 		}
 		
@@ -1313,17 +1265,8 @@ namespace VixenModules.Effect.Borders
 		/// <returns>Marquee stagger offset in pixels</returns>
 		private int GetMarqueeStagger()
 		{
-			int stagger;
-
-			if (UsePercent)
-			{
-				stagger = (int)(_maxBufferSize * Stagger / 100.0);
-			}
-			else
-			{
-				stagger = Stagger;
-			}
-
+			int stagger = (int)(_maxBufferSize * Stagger / 100.0);
+			
 			return stagger;
 		}
 		
