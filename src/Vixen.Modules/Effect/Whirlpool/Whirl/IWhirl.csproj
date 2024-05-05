@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+  <RootNamespace>VixenModules.Effect.Whirlpool.Whirl</RootNamespace>
+  </PropertyGroup>
+  
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\App\ColorGradients\ColorGradients.csproj"> 
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\App\Curves\Curves.csproj">
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj">
+    </ProjectReference>
+    <ProjectReference Include="..\..\Effect\Effect.csproj">
+    </ProjectReference>
+  </ItemGroup>  
+</Project>

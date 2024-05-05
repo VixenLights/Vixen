@@ -1251,4 +1251,91 @@
   <data name="BorderYSize" xml:space="preserve">
     <value>Y-Size</value>
   </data>
+  <data name="WhirlpoolBandLength" xml:space="preserve">
+    <value>Band Length</value>
+  </data>
+  <data name="WhirlpoolBottomColor" xml:space="preserve">
+    <value>Bottom Color</value>
+  </data>
+  <data name="WhirlpoolBrightness" xml:space="preserve">
+    <value>Brightness</value>
+  </data>
+  <data name="WhirlpoolColor" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="WhirlpoolColorMode" xml:space="preserve">
+    <value>Color Mode</value>
+  </data>
+  <data name="WhirlpoolColors" xml:space="preserve">
+    <value>Colors</value>
+  </data>
+  <data name="WhirlpoolDirection" xml:space="preserve">
+    <value>Direction</value>
+  </data>
+  <data name="WhirlpoolEnabled" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="WhirlpoolHorizontalOffset" xml:space="preserve">
+    <value>Horizontal Offset</value>
+  </data>
+  <data name="WhirlpoolInverted" xml:space="preserve">
+    <value>Reverse Draw</value>
+  </data>
+  <data name="WhirlpoolIterations" xml:space="preserve">
+    <value>Iterations</value>
+  </data>
+  <data name="WhirlpoolLeftColor" xml:space="preserve">
+    <value>Left Color</value>
+  </data>
+  <data name="WhirlpoolPanelColumns" xml:space="preserve">
+    <value>Columns</value>
+  </data>
+  <data name="WhirlpoolPanelIndividualConfiguration" xml:space="preserve">
+    <value>Individual Configuration</value>
+  </data>
+  <data name="WhirlpoolPanelRows" xml:space="preserve">
+    <value>Rows</value>
+  </data>
+  <data name="WhirlpoolPanelSpacing" xml:space="preserve">
+    <value>Panel Spacing</value>
+  </data>
+  <data name="WhirlpoolPauseAtEnd" xml:space="preserve">
+    <value>Pause At End</value>
+  </data>
+  <data name="WhirlpoolRightColor" xml:space="preserve">
+    <value>Right Color</value>
+  </data>
+  <data name="WhirlpoolRotation" xml:space="preserve">
+    <value>Rotation</value>
+  </data>
+  <data name="WhirlpoolSpacing" xml:space="preserve">
+    <value>Spacing</value>
+  </data>
+  <data name="WhirlpoolStartLocation" xml:space="preserve">
+    <value>Start Location</value>
+  </data>
+  <data name="WhirlpoolThickness" xml:space="preserve">
+    <value>Thickness</value>
+  </data>
+  <data name="WhirlpoolTopColor" xml:space="preserve">
+    <value>Top Color</value>
+  </data>
+  <data name="WhirlpoolVerticalOffset" xml:space="preserve">
+    <value>Vertical Offset</value>
+  </data>
+  <data name="WhirlpoolXScale" xml:space="preserve">
+    <value>X-Scale</value>
+  </data>
+  <data name="WhirlpoolYScale" xml:space="preserve">
+    <value>Y-Scale</value>
+  </data>
+  <data name="WhirlpoolShow3D" xml:space="preserve">
+    <value>3D</value>
+  </data>
+  <data name="WhirlpoolWhirlMode" xml:space="preserve">
+    <value>Whirl Mode</value>
+  </data>
+  <data name="WhirlpoolTailLength" xml:space="preserve">
+    <value>Tail Length</value>
+  </data>
 </root>

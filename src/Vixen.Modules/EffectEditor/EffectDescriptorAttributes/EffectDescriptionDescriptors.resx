@@ -1329,4 +1329,91 @@
   <data name="BorderYSize" xml:space="preserve">
     <value>Determines the size of the marquee along the y-axis.</value>
   </data>
+  <data name="WhirlpoolBandLength" xml:space="preserve">
+    <value>Controls the length of the whirlpool color bands as a percentage of the display element.</value>
+  </data>
+  <data name="WhirlpoolBottomColor" xml:space="preserve">
+    <value>Controls the color of the bottom portion of the whirls.</value>
+  </data>
+  <data name="WhirlpoolBrightness" xml:space="preserve">
+    <value>Controls the brightness of the effect.</value>
+  </data>
+  <data name="WhirlpoolColor" xml:space="preserve">
+    <value>Controls the color of the whirl.</value>
+  </data>
+  <data name="WhirlpoolColorMode" xml:space="preserve">
+    <value>Controls how color is applied to the whirlpool.</value>
+  </data>
+  <data name="WhirlpoolColors" xml:space="preserve">
+    <value>Controls the color of the whirls.</value>
+  </data>
+  <data name="WhirlpoolDirection" xml:space="preserve">
+    <value>Controls whether the whirls are drawn moving In, Out, or In and Out.</value>
+  </data>
+  <data name="WhirlpoolEnabled" xml:space="preserve">
+    <value>Determines if the whirl is displayed.  This setting is helpful in determining which whirl is being configured.</value>
+  </data>
+  <data name="WhirlpoolHorizontalOffset" xml:space="preserve">
+    <value>Controls the position of the whirlpool on the display element in the X axis.</value>
+  </data>
+  <data name="WhirlpoolInverted" xml:space="preserve">
+    <value>Reverses the drawing of the whirl.</value>
+  </data>
+  <data name="WhirlpoolIterations" xml:space="preserve">
+    <value>Determines how many times the whirls are drawn during the effect duration.</value>
+  </data>
+  <data name="WhirlpoolLeftColor" xml:space="preserve">
+    <value>Controls the color of the left portion of the whirls.</value>
+  </data>
+  <data name="WhirlpoolPanelColumns" xml:space="preserve">
+    <value>Controls the number of columns of whirlpools on the prop.</value>
+  </data>
+  <data name="WhirlpoolPanelIndividualConfiguration" xml:space="preserve">
+    <value>Enables each individual whirlpool to be configured separately.</value>
+  </data>
+  <data name="WhirlpoolPanelRows" xml:space="preserve">
+    <value>Controls the number of rows of whirlpools on the prop.</value>
+  </data>
+  <data name="WhirlpoolPanelSpacing" xml:space="preserve">
+    <value>Controls the spacing between the whirlpool panels on the display element as a percentage of the display element.</value>
+  </data>
+  <data name="WhirlpoolPauseAtEnd" xml:space="preserve">
+    <value>Determines the percentage of the effect's duration that the completed whirls will be displayed.</value>
+  </data>
+  <data name="WhirlpoolRightColor" xml:space="preserve">
+    <value>Controls the color of the right portion of the whirls.</value>
+  </data>
+  <data name="WhirlpoolRotation" xml:space="preserve">
+    <value>Configures the direction of rotation (Clockwise vs Counter Clockwise) that the whirls are drawn.</value>
+  </data>
+  <data name="WhirlpoolSpacing" xml:space="preserve">
+    <value>Controls the amount of blank area between each whirl as a percentage of the display element.</value>
+  </data>
+  <data name="WhirlpoolStartLocation" xml:space="preserve">
+    <value>Controls  the corner of the matrix where the whirls start from.</value>
+  </data>
+  <data name="WhirlpoolWhirlMode" xml:space="preserve">
+    <value>Determines if the whirls are drawn as continous rings, concentric rings, or as a meteor travelling the whirlpool path.</value>
+  </data>
+  <data name="WhirlpoolThickness" xml:space="preserve">
+    <value>Controls the thickness of the whirl as a percentage of the display element.</value>
+  </data>
+  <data name="WhirlpoolTopColor" xml:space="preserve">
+    <value>Controls the color of the top portion of the whirls.</value>
+  </data>
+  <data name="WhirlpoolVerticalOffset" xml:space="preserve">
+    <value>Controls the position of the whirlpool on the display element in the Y axis.</value>
+  </data>
+  <data name="WhirlpoolXScale" xml:space="preserve">
+    <value>Determines the size of the whirlpool along the x-axis.</value>
+  </data>
+  <data name="WhirlpoolYScale" xml:space="preserve">
+    <value>Determines the size of the whirlpool along the y-axis.</value>
+  </data>
+  <data name="WhirlpoolShow3D" xml:space="preserve">
+    <value>Adds a 3D effect to whirls.</value>
+  </data>
+  <data name="WhirlpoolTailLength" xml:space="preserve">
+    <value>Determines the length of the meteor as percentage of the display element.</value>
+  </data>
 </root>

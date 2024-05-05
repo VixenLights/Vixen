@@ -183,6 +183,12 @@
   <data name="Type" xml:space="preserve">
     <value>Type</value>
   </data>
+  <data name="WhirlpoolConfiguration" xml:space="preserve">
+    <value>Whirl Configuration</value>
+  </data>
+  <data name="WhirlpoolGridPanels" xml:space="preserve">
+    <value>Grid Panels</value>
+  </data>
   <data name="WipeConfiguration" xml:space="preserve">
     <value>Wipe Configuration</value>
   </data>

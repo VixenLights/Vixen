@@ -23,6 +23,7 @@ using VixenModules.Effect.Fixture;
 using VixenModules.Effect.Liquid;
 using VixenModules.Effect.Morph;
 using VixenModules.Effect.Wave;
+using VixenModules.Effect.Whirlpool;
 
 namespace VixenModules.Editor.EffectEditor.Editors
 {
@@ -51,6 +52,8 @@ namespace VixenModules.Editor.EffectEditor.Editors
 			{KnownTypes.Vixen.Emitter, new TypeEditor()},
 			{typeof(IList<IWaveform>), new TypeEditor(typeof(IList<IWaveform>), EditorKeys.IWaveformEditorKey)},
 			{typeof(IList<IFixtureFunctionExpando>), new TypeEditor(typeof(IList<IFixtureFunctionExpando>), EditorKeys.IFixtureFunctionEditorKey)},
+			{typeof(IList<IWhirl>), new TypeEditor(typeof(IList<IWhirl>), EditorKeys.IWhirlEditorKey)},
+			{KnownTypes.Vixen.Whirl, new TypeEditor()},
 			{KnownTypes.Vixen.Waveform, new TypeEditor()},
 			{KnownTypes.Vixen.FixtureFunction, new TypeEditor()},
 			{typeof(IList<IMorphPolygon>), new TypeEditor(typeof(IList<IMorphPolygon>), EditorKeys.IMorphPolygonEditorKey)},

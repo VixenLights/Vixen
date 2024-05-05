@@ -52,7 +52,8 @@ namespace VixenModules.Editor.EffectEditor.Editors
 		private static readonly ComponentResourceKey _IFixtureFunctionEditorKey = new ComponentResourceKey(ThisType, "IFixtureFunctionEditorCollectionEditor");
 		private static readonly ComponentResourceKey _PolygonContainerEditorKey = new ComponentResourceKey(ThisType, "PolygonContainerEditor");
 		private static readonly ComponentResourceKey _IMorphPolygonEditorEditorKey = new ComponentResourceKey(ThisType, "IMorphPolygonCollectionEditor");
-		
+		private static readonly ComponentResourceKey _IWhirlEditorKey = new ComponentResourceKey(ThisType, "IWhirlCollectionEditor");
+
 		/// <summary>
 		///     Gets the File editor key.
 		/// </summary>
@@ -255,6 +256,11 @@ namespace VixenModules.Editor.EffectEditor.Editors
 		public static ComponentResourceKey IFixtureFunctionEditorKey
 		{
 			get { return _IFixtureFunctionEditorKey; }
+		}
+
+		public static ComponentResourceKey IWhirlEditorKey
+		{
+			get { return _IWhirlEditorKey; }
 		}
 
 		public static ComponentResourceKey PolygonContainerEditorKey

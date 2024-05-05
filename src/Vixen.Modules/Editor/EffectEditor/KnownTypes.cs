@@ -12,6 +12,8 @@ using VixenModules.Effect.Fixture;
 using VixenModules.Effect.Liquid;
 using VixenModules.Effect.Morph;
 using VixenModules.Effect.Wave;
+using VixenModules.Effect.Whirlpool;
+
 using Brush = System.Windows.Media.Brush;
 using FontFamily = System.Windows.Media.FontFamily;
 using FontStyle = System.Windows.FontStyle;
@@ -48,6 +50,7 @@ namespace VixenModules.Editor.EffectEditor
 			public static readonly Type PolygonContainer = typeof(PolygonContainer);
 			public static readonly Type MorphPolygon = typeof(IMorphPolygon);
 			public static readonly Type FixtureFunction = typeof(IFixtureFunctionExpando);
+			public static readonly Type Whirl = typeof(IWhirl);
 		}
 
 		public static class Wpf
