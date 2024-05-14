@@ -732,7 +732,10 @@ namespace VixenModules.Effect.Whirlpool
 		/// </inheritdoc>
 		public override string InformationLink
 		{
-			get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/whirlpool/"; }
+			get
+			{
+				return "https://www.vixenlights.com/docs/usage/sequencer/effects/pixel/whirlpool/";
+			}
 		}
 
 		#endregion
