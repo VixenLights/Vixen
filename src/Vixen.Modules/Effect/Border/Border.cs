@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 
 using Common.Controls.ColorManagement.ColorModels;
+using Common.Controls.Timeline;
 
 using Vixen.Attributes;
 using Vixen.Module;
@@ -13,6 +14,8 @@ using VixenModules.Effect.Border;
 using VixenModules.Effect.Effect;
 using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
+
+using ZedGraph;
 
 namespace VixenModules.Effect.Borders
 {
@@ -121,6 +124,7 @@ namespace VixenModules.Effect.Borders
 			set
 			{
 				_data.RenderLevel = value;
+
 				IsDirty = true;
 				OnPropertyChanged();
 				UpdateMarqueeModeControlAttributes();
@@ -854,10 +858,10 @@ namespace VixenModules.Effect.Borders
 					{ nameof(SkipLength), true },
 					{ nameof(Speed), true },
 					{ nameof(Reverse), true },
-					{ nameof(XScale),RenderLevel == RenderLevel.Level0 },
-					{ nameof(YScale), RenderLevel == RenderLevel.Level0 },
-					{ nameof(WrapX), RenderLevel == RenderLevel.Level0},
-					{ nameof(WrapY), RenderLevel == RenderLevel.Level0 },
+					{ nameof(XScale), true },
+					{ nameof(YScale), true },
+					{ nameof(WrapX), true },
+					{ nameof(WrapY), true },
 					{ nameof(RenderScaleFactor),  TargetPositioning == TargetPositioningType.Locations},
 				};
 				SetBrowsable(propertyStates);
@@ -888,7 +892,6 @@ namespace VixenModules.Effect.Borders
 				TypeDescriptor.Refresh(this);
 			}
 		}
-
 
 		/// <summary>
 		/// Renders the effect when the border mode is simple or advanced.
@@ -1158,14 +1161,24 @@ namespace VixenModules.Effect.Borders
 		/// <param name="frameBuffer">Frame buffer to render into</param>
 		private void RenderEffectMarqueeSingleString(int effectFrame, IPixelFrameBuffer frameBuffer)
 		{
+			int bufferWi = (int)Math.Round(((double)(_bufferWi * XScale) / 100.0));
+			int bufferHt = (int)Math.Round(((double)(_bufferHt * YScale) / 100.0));
+
 			// Calculate the length of the single string of pixels
-			int length = _bufferWi * _bufferHt;
+			int length = bufferWi * bufferHt;
 
 			// Create a virtual frame buffer that is really long by one pixel high
 			IPixelFrameBuffer singleStrandFrameBuffer = new PixelFrameBuffer(length, 1);
 
 			// Render the effect using the virtual string frame buffer
 			RenderEffectMarquee(effectFrame, singleStrandFrameBuffer, length, 1);
+
+			// Get the position within the effect
+			double intervalPos = GetEffectTimeIntervalPosition(effectFrame);
+			double intervalPosFactor = intervalPos * 100;
+
+			int xOffsetAdj = CalculateXOffset(intervalPosFactor) * _bufferWi / 100;
+			int yOffsetAdj = CalculateYOffset(intervalPosFactor) * _bufferHt / 100;
 
 			// If the render level is Level 1 (Zig Zag) then...
 			if (RenderLevel == RenderLevel.Level1)
@@ -1175,20 +1188,20 @@ namespace VixenModules.Effect.Borders
 				int index = 0;
 
 				// Loop over the height of the display element
-				for (int y = 0; y < _bufferHt; y++)
+				for (int y = 0; y < bufferHt; y++)
 				{
 					// Loop over the width of the display element
-					for (int x = 0; x < _bufferWi; x++)
+					for (int x = 0; x < bufferWi; x++)
 					{
 						// If this is an even row then transfer pixel information left to right
 						if (y % 2 == 0)
 						{
-							frameBuffer.SetPixel(x, y, singleStrandFrameBuffer.GetColorAt(index, 0));
+							ProcessPixel(frameBuffer, x + xOffsetAdj, y + yOffsetAdj, singleStrandFrameBuffer.GetColorAt(index, 0), WrapX, WrapY);
 						}
 						// Otherwise if this an odd row transfer pixel information right to left
 						else
 						{
-							frameBuffer.SetPixel(_bufferWi - x - 1, y, singleStrandFrameBuffer.GetColorAt(index, 0));
+							ProcessPixel(frameBuffer, bufferWi - x - 1 + xOffsetAdj, y + yOffsetAdj, singleStrandFrameBuffer.GetColorAt(index, 0), WrapX, WrapY);
 						}
 
 						// Increment the position in the single strand frame buffer
@@ -1204,12 +1217,13 @@ namespace VixenModules.Effect.Borders
 				int index = 0;
 
 				// Loop over the width of the display element
-				for (int x = 0; x < _bufferWi; x++)
+				for (int x = 0; x < bufferWi; x++)
 				{
 					// Loop over the height of the display element
-					for (int y = 0; y < _bufferHt; y++)
+					for (int y = 0; y < bufferHt; y++)
 					{
-						frameBuffer.SetPixel(x, y, singleStrandFrameBuffer.GetColorAt(index, 0));
+
+						ProcessPixel(frameBuffer, x + xOffsetAdj, y + yOffsetAdj, singleStrandFrameBuffer.GetColorAt(index, 0), WrapX, WrapY);
 
 						// Increment the position in the single strand frame buffer
 						index++;
@@ -1323,7 +1337,7 @@ namespace VixenModules.Effect.Borders
 			int mStart = 0; 
 
 			int x_scale = XScale; 
-			int y_scale = YScale; 
+			int y_scale = YScale;
 
 			int xc_adj = (int)Math.Round(ScaleCurveToValue(XOffsetCurve.GetValue(intervalPosFactor), 100, -100));
 			int yc_adj = (int)Math.Round(ScaleCurveToValue(YOffsetCurve.GetValue(intervalPosFactor), 100, -100));
@@ -1331,7 +1345,17 @@ namespace VixenModules.Effect.Borders
 			bool reverse_dir = Reverse; 
 			bool pixelOffsets = false; 
 			bool wrap_x = WrapX; 
-			bool wrap_y = WrapY; 
+			bool wrap_y = WrapY;
+
+			if (RenderLevel != RenderLevel.Level0)
+			{
+				xc_adj = 0;
+				yc_adj = 0;
+				x_scale = 100;
+				y_scale = 100;
+				wrap_x = false;
+				wrap_y = false;
+			}
 
 			int colorcnt = Colors.Count; 
 			int color_size = bandSize + skipSize;
