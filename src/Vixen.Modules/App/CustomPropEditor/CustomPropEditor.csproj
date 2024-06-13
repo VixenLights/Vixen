@@ -35,7 +35,7 @@
 				<PackageReference Include="LiteDB" Version="4.1.4" />
 				<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
 				<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-				<PackageReference Include="NLog" Version="5.1.2" />
+				<PackageReference Include="NLog" Version="5.3.2" />
 		</ItemGroup>
 
 		<ItemGroup>
