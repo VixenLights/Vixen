@@ -37,7 +37,7 @@ jobs:
       
     steps:
     
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: create a custom version using run number offset by 968 
         shell: bash
@@ -76,13 +76,13 @@ jobs:
         run: ./Build/CreateReleaseNotes.ps1 -jiraUrl "http://bugs.vixenlights.com" -project "Vixen 3" -fixVersion "${env:VIX_NOTES_FIX_VERSION}" -buildType "${env:VIX_NOTES_BUILD_TYPE}"
       
       - name: Upload Release Notes artifact
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4
         with:
           name: _releaseNotes
           path: "Release Notes.txt"
           
       - name: Upload Build Release Notes Markdown artifact
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4
         with:
           name: _releaseNotesMd
           path: "Release Notes.md"
@@ -99,16 +99,16 @@ jobs:
 
     steps:
     
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Download Release Notes artifact
-        uses: actions/download-artifact@v3.0.2
+        uses: actions/download-artifact@v4
         with:
           name: _releaseNotes
        
-      - uses: nuget/setup-nuget@v1
+      - uses: nuget/setup-nuget@v2
         
-      - uses: microsoft/setup-msbuild@v1.3.1
+      - uses: microsoft/setup-msbuild@v2
         with:
           msbuild-architecture: x64
       
@@ -125,7 +125,7 @@ jobs:
           echo "SETUP_64=$(echo Vixen*Setup-64bit.exe)" >> $GITHUB_ENV
 
       - name: Upload _setup64 artifact
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4
         with:
           name: _setup64
           path: Release\Setup\${{ needs.setup.outputs.environment }}\${{ env.SETUP_64 }}
@@ -142,12 +142,12 @@ jobs:
     steps:
 
       - name: Download _setup64 artifact
-        uses: actions/download-artifact@v3.0.2
+        uses: actions/download-artifact@v4
         with:
           name: _setup64
           
       - name: Download Build Release Notes Markdown artifact
-        uses: actions/download-artifact@v3.0.2
+        uses: actions/download-artifact@v4
         with:
           name: _releaseNotesMd
           
