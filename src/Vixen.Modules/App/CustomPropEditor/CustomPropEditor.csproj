@@ -33,7 +33,7 @@
 				<PackageReference Include="Catel.MVVM" Version="5.12.22" />
 				<PackageReference Include="gong-wpf-dragdrop" Version="3.2.1" />
 				<PackageReference Include="LiteDB" Version="4.1.4" />
-				<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+				<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.122" />
 				<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 				<PackageReference Include="NLog" Version="5.3.2" />
 		</ItemGroup>
