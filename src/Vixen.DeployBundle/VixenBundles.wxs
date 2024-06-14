@@ -29,8 +29,8 @@
 
 						<Chain>
 								<PackageGroupRef Id="VCRedistPackage"/>
-								<PackageGroupRef Id="Net6Package"/>
-								<PackageGroupRef Id="ASPNetCore6Package"/>
+								<PackageGroupRef Id="NetCorePackage"/>
+								<PackageGroupRef Id="ASPNetCorePackage"/>
 								<PackageGroupRef Id="VixenPackage"/>
 						</Chain>
 				</Bundle>

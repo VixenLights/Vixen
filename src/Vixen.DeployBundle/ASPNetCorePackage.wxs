@@ -5,29 +5,29 @@
   <Fragment>
 				<netfx:DotNetCoreSearch RuntimeType="aspnet" Platform="x64" MajorVersion="6" Variable="ASP_NET_VER" />
 				
-				<PackageGroup Id="ASPNetCore6Package">
-						<ExePackage DisplayName="Microsoft ASP.NET Core 6.0.14 - Shared Framework (x64)"
+				<PackageGroup Id="ASPNetCorePackage">
+						<ExePackage DisplayName="Microsoft ASP.NET Core 8.0.6 - Shared Framework (x64)"
 																		PerMachine="yes"
 																		InstallArguments="/norestart /quiet"
-																		DetectCondition="ASP_NET_VER &gt;= v6.0.14"
+																		DetectCondition="ASP_NET_VER &gt;= v8.0.6"
 																		InstallCondition="VersionNT64"
 																		Permanent="yes">
-								<ExePackagePayload DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/95355fd2-12e2-4a03-b7ef-deff884e040b/a1070d778070557ef3a49eeaac524670/aspnetcore-runtime-6.0.14-win-x64.exe"
-																											Hash="8b94e16f132299bf79b63cd688efe2b5fa56a387139a29d3a6c66a433e0ae51e1ac822e1f1e4093ad16fba7495ceceb7a6b0463da946660c66ea0ee0a2a05060"
-																											Name="aspnetcore-runtime-6.0.14-win-x64.exe"
-																											Size="8974624"/>
+								<ExePackagePayload DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/38b32fc8-8070-4f14-bd52-65505fddc5ff/50e6cf3b7505eee02c3b3db8ea46ffe3/aspnetcore-runtime-8.0.6-win-x64.exe"
+																											Hash="7bdd420d03e92d8e05a8467649f5a0e64910341e945f3ae6f0ce26dc513b121ce00d4bd8889b043fddd4c6eadffd52a69cd12edb62a661b2b23a886174e4dfc1"
+																											Name="aspnetcore-runtime-8.0.6-win-x64.exe"
+																											Size="10496800"/>
 								<ExitCode Value="0" Behavior="success"/>
 						</ExePackage>
-						<ExePackage DisplayName="Microsoft ASP.NET Core 6.0.14 - Shared Framework (x86)"
+						<ExePackage DisplayName="Microsoft ASP.NET Core 8.0.6 - Shared Framework (x86)"
 																		PerMachine="yes"
 																		InstallArguments="/norestart /quiet"
-																		DetectCondition="ASP_NET_VER &gt;= v6.0.14"
+																		DetectCondition="ASP_NET_VER &gt;= v8.0.6"
 																		InstallCondition="NOT VersionNT64"
 																		Permanent="yes">
-								<ExePackagePayload DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/f7e263ac-64e0-41a6-b6b3-eca6a8ff193b/e8ca4e4568fccaf82d8081ddb9a3e18f/aspnetcore-runtime-6.0.14-win-x86.exe"
-																											Hash="b1c29ab498af9e9c430f9dee12f87c8db91c2bdfcd6772841f8cef979d598c3bd1530d011575dd460648a79f0a418ce9a785e045098e543bce88e7a5d129d68e"
-																											Name="aspnetcore-runtime-6.0.14-win-x86.exe"
-																											Size="8201584"/>
+								<ExePackagePayload DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/88a7d3f3-615e-4771-8709-1e16873645b3/a36f311385df553e54201137f53d041e/aspnetcore-runtime-8.0.6-win-x86.exe"
+																											Hash="b311bd4ae0a87fbce391005edb1c6b55d4e630e59fa15a7ed510947aaa6bf3ffc2970e833d3a9f9063f5f8af3ffa4cdd5c2da3e0d808990977c0ce6e262f15fa"
+																											Name="aspnetcore-runtime-8.0.6-win-x86.exe"
+																											Size="9696928"/>
 								<ExitCode Value="0" Behavior="success"/>
 						</ExePackage>
 				
