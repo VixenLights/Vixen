@@ -63,7 +63,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>		
 		/// PointCollection property data.
 		/// </summary>
-		public static readonly PropertyData TimeProperty = RegisterProperty(nameof(Time), typeof(double));
+		public static readonly IPropertyData TimeProperty = RegisterProperty<double>(nameof(Time));
 
 		/// <summary>
 		/// Collection of polygon points.
@@ -77,7 +77,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>		
 		/// PointCollection property data.
 		/// </summary>
-		public static readonly PropertyData PointCollectionProperty = RegisterProperty(nameof(PointCollection), typeof(ObservableCollection<PolygonPointViewModel>));
+		public static readonly IPropertyData PointCollectionProperty = RegisterProperty<ObservableCollection<PolygonPointViewModel>>(nameof(PointCollection));
 
 		/// <summary>
 		/// Color of the center point hash.
@@ -91,7 +91,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Color property data.
 		/// </summary>
-		public static readonly PropertyData ColorProperty = RegisterProperty(nameof(Color), typeof(Color), null);
+		public static readonly IPropertyData ColorProperty = RegisterProperty<Color>(nameof(Color));
 
 		/// <summary>
 		/// Whether the polygon snapshot is selected.
@@ -121,7 +121,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Selected property data.
 		/// </summary>
-		public static readonly PropertyData SelectedProperty = RegisterProperty(nameof(Selected), typeof(bool), null);
+		public static readonly IPropertyData SelectedProperty = RegisterProperty<bool>(nameof(Selected));
 
 		#endregion
 

@@ -937,7 +937,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			IWizardService wizardService = (IWizardService)dependencyResolver.Resolve(typeof(IWizardService));
 
 			// Display the intelligent fixture wizard
-			bool? result = await wizardService.ShowWizardAsync(_wizard);
+			bool? result = (await wizardService.ShowWizardAsync(_wizard)).DialogResult;
 
 			// Return whether the wizard was completed or cancelled
 			return result;

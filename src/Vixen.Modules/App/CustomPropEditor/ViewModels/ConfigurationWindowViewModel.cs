@@ -41,7 +41,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Config property data.
 		/// </summary>
-		public static readonly PropertyData ConfigProperty = RegisterProperty("Config", typeof(Configuration));
+		public static readonly IPropertyData ConfigProperty = RegisterProperty<Configuration>(nameof(Config));
 
 		#endregion
 
@@ -59,7 +59,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// LightColor property data.
 		/// </summary>
-		public static readonly PropertyData LightColorProperty = RegisterProperty("LightColor", typeof(Color));
+		public static readonly IPropertyData LightColorProperty = RegisterProperty<Color>(nameof(LightColor));
 
 		#endregion
 
@@ -77,7 +77,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// SelectedLightColor property data.
 		/// </summary>
-		public static readonly PropertyData SelectedLightColorProperty = RegisterProperty("SelectedLightColor", typeof(Color), null);
+		public static readonly IPropertyData SelectedLightColorProperty = RegisterProperty<Color>(nameof(SelectedLightColor));
 
 		#endregion
 

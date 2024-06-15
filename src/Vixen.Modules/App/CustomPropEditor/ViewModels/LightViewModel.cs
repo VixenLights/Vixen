@@ -37,7 +37,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// LightNode property data.
 		/// </summary>
-		public static readonly PropertyData LightProperty = RegisterProperty("Light", typeof(Light));
+		public static readonly IPropertyData LightProperty = RegisterProperty<Light>(nameof(Light));
 
 		#endregion
 
@@ -56,7 +56,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Id property data.
 		/// </summary>
-		public static readonly PropertyData IdProperty = RegisterProperty("Id", typeof(Guid), null);
+		public static readonly IPropertyData IdProperty = RegisterProperty<Guid>(nameof(Id));
 
 		#endregion
 
@@ -75,7 +75,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// X property data.
 		/// </summary>
-		public static readonly PropertyData XProperty = RegisterProperty("X", typeof(double), null);
+		public static readonly IPropertyData XProperty = RegisterProperty<double>(nameof(X));
 
 		#endregion
 
@@ -94,7 +94,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Y property data.
 		/// </summary>
-		public static readonly PropertyData YProperty = RegisterProperty("Y", typeof(double), null);
+		public static readonly IPropertyData YProperty = RegisterProperty<double>(nameof(Y));
 
 		#endregion
 
@@ -113,7 +113,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Size property data.
 		/// </summary>
-		public static readonly PropertyData SizeProperty = RegisterProperty("Size", typeof(double), null);
+		public static readonly IPropertyData SizeProperty = RegisterProperty<double>(nameof(Size));
 
 		#endregion
 
@@ -132,7 +132,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Center property data.
 		/// </summary>
-		public static readonly PropertyData CenterProperty = RegisterProperty("Center", typeof(Point), null);
+		public static readonly IPropertyData CenterProperty = RegisterProperty<Point>(nameof(Center));
 
 		#endregion
 
@@ -155,7 +155,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// IsSelected property data.
 		/// </summary>
-		public static readonly PropertyData IsSelectedProperty = RegisterProperty("IsSelected", typeof(bool));
+		public static readonly IPropertyData IsSelectedProperty = RegisterProperty<bool>(nameof(IsSelected));
 
 		#endregion
 

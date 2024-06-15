@@ -1,5 +1,6 @@
 ﻿using System.Windows.Forms.Integration;
 using Catel.IoC;
+using Common.WPFCommon.Services;
 using Vixen.Module.App;
 using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Model;
@@ -16,7 +17,9 @@ namespace VixenModules.App.CustomPropEditor
 		public override void Loading()
 		{
 			var serviceLocator = ServiceLocator.Default;
-			serviceLocator.AutoRegisterTypesViaAttributes = true;
+			serviceLocator.RegisterType<IDownloadService, DownloadService>();
+			serviceLocator.RegisterType<IMessageBoxService, MessageBoxService>();
+			
 			AddApplicationMenu();
 			Configuration config = new Configuration((CustomPropEditorData)StaticModuleData);
 			ConfigurationService service = ConfigurationService.Instance();

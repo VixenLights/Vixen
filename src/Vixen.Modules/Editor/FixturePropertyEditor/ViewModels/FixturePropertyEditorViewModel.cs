@@ -78,7 +78,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Function names property data.
 		/// </summary>
-		public static readonly PropertyData FunctionsProperty = RegisterProperty(nameof(Functions), typeof(ObservableCollection<string>), null);
+		public static readonly IPropertyData FunctionsProperty = RegisterProperty<ObservableCollection<string>>(nameof(Functions));
 
 		/// <summary>
 		/// Name of the fixture.
@@ -102,7 +102,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Name property data.
 		/// </summary>
-		public static readonly PropertyData NameProperty = RegisterProperty(nameof(Name), typeof(string), null);
+		public static readonly IPropertyData NameProperty = RegisterProperty<string>(nameof(Name));
 
 		/// <summary>
 		/// Manufacturer of the fixture.
@@ -122,7 +122,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Manufacturer property data.
 		/// </summary>
-		public static readonly PropertyData ManufacturerProperty = RegisterProperty(nameof(Manufacturer), typeof(string), null);
+		public static readonly IPropertyData ManufacturerProperty = RegisterProperty<string>(nameof(Manufacturer));
 
 		/// <summary>
 		/// Name of the user that created the fixture profile.
@@ -142,7 +142,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Created By property data.
 		/// </summary>
-		public static readonly PropertyData CreatedByProperty = RegisterProperty(nameof(CreatedBy), typeof(string), null);
+		public static readonly IPropertyData CreatedByProperty = RegisterProperty<string>(nameof(CreatedBy));
 
 		/// <summary>
 		/// Revision information about the fixture profile.
@@ -162,7 +162,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Revision property data.
 		/// </summary>
-		public static readonly PropertyData RevisionProperty = RegisterProperty(nameof(Revision), typeof(string), null);
+		public static readonly IPropertyData RevisionProperty = RegisterProperty<string>(nameof(Revision));
 
 		/// <summary>
 		/// Determines if the profile properties are displayed.
@@ -182,7 +182,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// ShowProfileProperties property data.
 		/// </summary>
-		public static readonly PropertyData ShowProfilePropertiesProperty = RegisterProperty(nameof(ShowProfileProperties), typeof(bool), null);
+		public static readonly IPropertyData ShowProfilePropertiesProperty = RegisterProperty<bool>(nameof(ShowProfileProperties));
 
 		#endregion
 

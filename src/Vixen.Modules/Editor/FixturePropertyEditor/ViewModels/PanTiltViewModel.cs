@@ -103,7 +103,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Maximum rotation property data.
 		/// </summary>
-		public static readonly PropertyData StartPositionProperty = RegisterProperty(nameof(StartPosition), typeof(string), null);
+		public static readonly IPropertyData StartPositionProperty = RegisterProperty<string>(nameof(StartPosition));
 
 		/// <summary>
 		/// Maximum rotation of the function (pan or tilt) in degrees.
@@ -123,9 +123,8 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Maximum rotation property data.
 		/// </summary>
-		public static readonly PropertyData StopPositionProperty = RegisterProperty(nameof(StopPosition), typeof(string), null);
+		public static readonly IPropertyData StopPositionProperty = RegisterProperty<string>(nameof(StopPosition));
 
-		
 		/// <summary>
 		/// Indicates if the Pan function (true)  being editor vs the Tilt function (false).
 		/// </summary>
@@ -144,7 +143,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// IsPan property data.
 		/// </summary>
-		public static readonly PropertyData IsPanProperty = RegisterProperty(nameof(IsPan), typeof(bool), null);
+		public static readonly IPropertyData IsPanProperty = RegisterProperty<bool>(nameof(IsPan));
 
 		#endregion
 
@@ -169,7 +168,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <param name="value">Value to validate</param>
 		private void ValidatesAngle(
 			List<IFieldValidationResult> validationResults,
-			PropertyData propertyData,
+			IPropertyData propertyData,
 			string fieldName,
 			string value)
 		{

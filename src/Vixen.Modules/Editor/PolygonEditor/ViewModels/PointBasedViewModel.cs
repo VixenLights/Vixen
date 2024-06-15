@@ -41,7 +41,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// SegmentsVisible property data.
 		/// </summary>
-		public static readonly PropertyData SegmentsVisibleProperty = RegisterProperty(nameof(SegmentsVisible), typeof(bool), null);
+		public static readonly IPropertyData SegmentsVisibleProperty = RegisterProperty<bool>(nameof(SegmentsVisible));
 
 		/// <summary>
 		/// Maintains a collection of line segments.  The line segments help define the polygon until the polygon has been closed.
@@ -55,8 +55,8 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// SegmentsVisible property data.
 		/// </summary>
-		public static readonly PropertyData SegmentsProperty =
-			RegisterProperty(nameof(Segments), typeof(ObservableCollection<LineSegmentViewModel>), null);
+		public static readonly IPropertyData SegmentsProperty =
+			RegisterProperty<ObservableCollection<LineSegmentViewModel>>(nameof(Segments));
 
 		#endregion
 

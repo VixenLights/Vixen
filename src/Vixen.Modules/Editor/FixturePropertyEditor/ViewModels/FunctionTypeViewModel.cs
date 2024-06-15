@@ -89,7 +89,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Color Wheel Visible property data.
 		/// </summary>
-		public static readonly PropertyData ColorWheelVisibleProperty = RegisterProperty(nameof(ColorWheelVisible), typeof(bool), null);
+		public static readonly IPropertyData ColorWheelVisibleProperty = RegisterProperty<bool>(nameof(ColorWheelVisible));
 
 		/// <summary>
 		/// Controls whether the Indexed or Enumerated values user control is visible.
@@ -109,7 +109,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Indexed visible property data.
 		/// </summary>
-		public static readonly PropertyData IndexedVisibleProperty = RegisterProperty(nameof(IndexedVisible), typeof(bool), null);
+		public static readonly IPropertyData IndexedVisibleProperty = RegisterProperty<bool>(nameof(IndexedVisible));
 
 		/// <summary>
 		/// Controls whether the Pan/Tilt user control is visible.
@@ -129,7 +129,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Pan tilt visible property data.
 		/// </summary>
-		public static readonly PropertyData PanAndTiltVisibleProperty = RegisterProperty(nameof(PanTiltVisible), typeof(bool), null);
+		public static IPropertyData PanAndTiltVisibleProperty = RegisterProperty<bool>(nameof(PanTiltVisible));
 
 		/// <summary>
 		/// Controls whether the zoom user control is visible.
@@ -149,7 +149,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Zoom visible property data.
 		/// </summary>
-		public static readonly PropertyData ZoomVisibleProperty = RegisterProperty(nameof(ZoomVisible), typeof(bool), null);
+		public static readonly IPropertyData ZoomVisibleProperty = RegisterProperty<bool>(nameof(ZoomVisible));
 
 		/// <summary>
 		/// Maintains the previously selected function from the list of fixture functions.
@@ -182,7 +182,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Selected function property data.
 		/// </summary>
-		public static readonly PropertyData PrevoiuslySelectedItemProperty = RegisterProperty(nameof(PreviouslySelectedItem), typeof(FunctionItemViewModel), null);
+		public static readonly IPropertyData PrevoiuslySelectedItemProperty = RegisterProperty<FunctionItemViewModel>(nameof(PreviouslySelectedItem));
 
 		/// <summary>
 		/// Title for the detailed function group box.  The title on this group box changes as the user selects different functions.
@@ -202,7 +202,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Group box title property data.
 		/// </summary>
-		public static readonly PropertyData GroupBoxTitleProperty = RegisterProperty(nameof(GroupBoxTitle), typeof(string), null);
+		public static readonly IPropertyData GroupBoxTitleProperty = RegisterProperty<string>(nameof(GroupBoxTitle));
 
 		#endregion
 

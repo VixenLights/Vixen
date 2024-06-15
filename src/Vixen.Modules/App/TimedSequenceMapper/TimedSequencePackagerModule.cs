@@ -1,5 +1,7 @@
 ﻿using System.Windows.Forms;
 using Catel.IoC;
+using Common.WPFCommon.Services;
+
 using Vixen.Module;
 using Vixen.Module.App;
 using Vixen.Sys;
@@ -23,7 +25,9 @@ namespace VixenModules.App.TimedSequenceMapper
 		public override void Loading()
 		{
 			var serviceLocator = ServiceLocator.Default;
-			serviceLocator.AutoRegisterTypesViaAttributes = true;
+			serviceLocator.RegisterType<IDownloadService, DownloadService>();
+			serviceLocator.RegisterType<IMessageBoxService, MessageBoxService>();
+
 			AddApplicationMenu();
 		}
 

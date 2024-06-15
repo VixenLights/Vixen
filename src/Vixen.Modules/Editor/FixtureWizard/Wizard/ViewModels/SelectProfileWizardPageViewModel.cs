@@ -109,7 +109,7 @@
         /// <summary>
         /// Selected fixture property data.
         /// </summary>
-        public static readonly PropertyData SelectedFixtureProperty = RegisterProperty(nameof(SelectedFixture), typeof(string));
+        public static readonly IPropertyData SelectedFixtureProperty = RegisterProperty<string>(nameof(SelectedFixture));
 
         /// <summary>
         /// Fixture profile being modified by the Wizard.
@@ -140,7 +140,7 @@
         /// <summary>
         /// Fixture property data.
         /// </summary>
-        public static readonly PropertyData FixtureProperty = RegisterProperty(nameof(Fixture), typeof(FixtureSpecification));
+        public static readonly IPropertyData FixtureProperty = RegisterProperty<FixtureSpecification>(nameof(Fixture));
 
         /// <summary>
         /// Indicates an existing fixture profile is selected.
@@ -176,7 +176,7 @@
         /// <summary>
         /// Select existig profile property data.
         /// </summary>
-        public static readonly PropertyData SelectExistingProfileProperty = RegisterProperty(nameof(SelectExistingProfile), typeof(bool));
+        public static readonly IPropertyData SelectExistingProfileProperty = RegisterProperty<bool>(nameof(SelectExistingProfile));
 
         /// <summary>
         /// Flag indicating if the wizard is creating a new fixture profile.
@@ -201,7 +201,7 @@
             }
         }
        
-        public static readonly PropertyData CreateNewProfileProperty = RegisterProperty(nameof(CreateNewProfile), typeof(bool));
+        public static readonly IPropertyData CreateNewProfileProperty = RegisterProperty<bool>(nameof(CreateNewProfile));
 
         /// <summary>
         /// Name of the fixture profile.
@@ -222,7 +222,7 @@
         /// <summary>
         /// Profile name property data.
         /// </summary>
-        public static readonly PropertyData ProfileNameProperty = RegisterProperty(nameof(ProfileName), typeof(string));
+        public static readonly IPropertyData ProfileNameProperty = RegisterProperty<string>(nameof(ProfileName));
 
         /// <summary>
         /// Name of the company that makes the fixture.
@@ -243,7 +243,7 @@
         /// <summary>
         /// Manufacturer property data.
         /// </summary>
-        public static readonly PropertyData ManufacturerProperty = RegisterProperty(nameof(Manufacturer), typeof(string));
+        public static readonly IPropertyData ManufacturerProperty = RegisterProperty<string>(nameof(Manufacturer));
 
         /// <summary>
         /// Name of the user that created the profile.
@@ -264,7 +264,7 @@
         /// <summary>
         /// CreatedBy property data.
         /// </summary>
-        public static readonly PropertyData CreatedByProperty = RegisterProperty(nameof(CreatedBy), typeof(string));
+        public static readonly IPropertyData CreatedByProperty = RegisterProperty<string>(nameof(CreatedBy));
 
         /// <summary>
         /// Revision number of the fixture profile.
@@ -285,7 +285,7 @@
         /// <summary>
         /// CreatedBy property data.
         /// </summary>
-        public static readonly PropertyData RevisionProperty = RegisterProperty(nameof(Revision), typeof(string));
+        public static readonly IPropertyData RevisionProperty = RegisterProperty<string>(nameof(Revision));
 
 
         /// <summary>
@@ -307,7 +307,7 @@
         /// <summary>
         /// SelectExistingProfile property data.
         /// </summary>
-        public static readonly PropertyData SelectExistingProfileEnabledProperty = RegisterProperty(nameof(SelectExistingProfileEnabled), typeof(bool));
+        public static readonly IPropertyData SelectExistingProfileEnabledProperty = RegisterProperty<bool>(nameof(SelectExistingProfileEnabled));
 
         #endregion
 

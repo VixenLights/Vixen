@@ -33,7 +33,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Models
 		/// <summary>
 		/// Id property data.
 		/// </summary>
-		public static readonly PropertyData IdProperty = RegisterProperty("Id", typeof(Guid));
+		public static readonly IPropertyData IdProperty = RegisterProperty<Guid>(nameof(Id));
 
 		#endregion
 
@@ -51,7 +51,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Models
 		/// <summary>
 		/// Name property data.
 		/// </summary>
-		public static readonly PropertyData NameProperty = RegisterProperty("Name", typeof(string));
+		public static readonly IPropertyData NameProperty = RegisterProperty<string>(nameof(Name));
 
 		#endregion
 
@@ -73,7 +73,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Models
 		/// <summary>
 		/// ElementMappings property data.
 		/// </summary>
-		public static readonly PropertyData ElementMappingsProperty = RegisterProperty("ElementMappings", typeof(FastObservableCollection<ElementMapping>));
+		public static readonly IPropertyData ElementMappingsProperty = RegisterProperty<FastObservableCollection<ElementMapping>>(nameof(ElementMappings));
 
 		#endregion
 
@@ -91,7 +91,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Models
 		/// <summary>
 		/// SourceTree property data.
 		/// </summary>
-		public static readonly PropertyData SourceTreeProperty = RegisterProperty("SourceTree", typeof(ElementNodeProxy));
+		public static readonly IPropertyData SourceTreeProperty = RegisterProperty<ElementNodeProxy>(nameof(SourceTree));
 
 		#endregion
 

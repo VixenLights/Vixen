@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows.Controls.WpfPropertyGrid;
+using Catel.Data;
 using Catel.MVVM;
 using VixenModules.App.TimingTrackBrowser.Model;
 using PropertyData = Catel.Data.PropertyData;
@@ -29,7 +30,7 @@ namespace VixenModules.App.TimingTrackBrowser.ViewModels
 	    /// <summary>
 	    /// VendorMetadata property data.
 	    /// </summary>
-	    public static readonly PropertyData VendorMetadataProperty = RegisterProperty("VendorMetadata", typeof(VendorMetadata));
+	    public static readonly IPropertyData VendorMetadataProperty = RegisterProperty<VendorMetadata>(nameof(VendorMetadata));
 
 		#endregion
 
@@ -50,7 +51,7 @@ namespace VixenModules.App.TimingTrackBrowser.ViewModels
 		/// <summary>
 		/// Vendor property data.
 		/// </summary>
-		public static readonly PropertyData VendorProperty = RegisterProperty("Name", typeof(string), null);
+		public static readonly IPropertyData VendorProperty = RegisterProperty<string>(nameof(Name));
 
 		#endregion
 
@@ -71,7 +72,7 @@ namespace VixenModules.App.TimingTrackBrowser.ViewModels
 	    /// <summary>
 	    /// Contact property data.
 	    /// </summary>
-	    public static readonly PropertyData ContactProperty = RegisterProperty("Contact", typeof(string), null);
+	    public static readonly IPropertyData ContactProperty = RegisterProperty<string>(nameof(Contact));
 
 	    #endregion
 
@@ -93,7 +94,7 @@ namespace VixenModules.App.TimingTrackBrowser.ViewModels
 		/// <summary>
 		/// VendorUrl property data.
 		/// </summary>
-		public static readonly PropertyData VendorUrlProperty = RegisterProperty("Website", typeof(string), null);
+		public static readonly IPropertyData VendorUrlProperty = RegisterProperty<string>(nameof(Website));
 
 		#endregion
 
@@ -115,7 +116,7 @@ namespace VixenModules.App.TimingTrackBrowser.ViewModels
 		/// <summary>
 		/// VendorEmail property data.
 		/// </summary>
-		public static readonly PropertyData VendorEmailProperty = RegisterProperty("Email", typeof(string), null);
+		public static readonly IPropertyData VendorEmailProperty = RegisterProperty<string>(nameof(Email));
 
 		#endregion
 
@@ -136,7 +137,7 @@ namespace VixenModules.App.TimingTrackBrowser.ViewModels
 	    /// <summary>
 	    /// Phone property data.
 	    /// </summary>
-	    public static readonly PropertyData PhoneProperty = RegisterProperty("Phone", typeof(string), null);
+	    public static readonly IPropertyData PhoneProperty = RegisterProperty<string>(nameof(Phone));
 
 		#endregion
 

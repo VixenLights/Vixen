@@ -244,7 +244,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Selected item property data.
 		/// </summary>
-		public static readonly PropertyData SelectedItemProperty = RegisterProperty(nameof(SelectedItem), typeof(TItemType), null);
+		public static readonly IPropertyData SelectedItemProperty = RegisterProperty<TItemType>(nameof(SelectedItem));
 
 		#endregion
 

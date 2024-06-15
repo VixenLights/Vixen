@@ -31,7 +31,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Models
 		/// <summary>
 		/// SourceName property data.
 		/// </summary>
-		public static readonly PropertyData SourceNameProperty = RegisterProperty("SourceName", typeof(string));
+		public static readonly IPropertyData SourceNameProperty = RegisterProperty<string>(nameof(SourceName));
 
 		#endregion
 
@@ -49,7 +49,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Models
 		/// <summary>
 		/// SourceId property data.
 		/// </summary>
-		public static readonly PropertyData SourceIdProperty = RegisterProperty("SourceId", typeof(Guid));
+		public static readonly IPropertyData SourceIdProperty = RegisterProperty<Guid>(nameof(SourceId));
 
 		#endregion
 
@@ -67,7 +67,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Models
 		/// <summary>
 		/// TargetName property data.
 		/// </summary>
-		public static readonly PropertyData TargetNameProperty = RegisterProperty("TargetName", typeof(string));
+		public static readonly IPropertyData TargetNameProperty = RegisterProperty<string>(nameof(TargetName));
 
 		#endregion
 
@@ -85,7 +85,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Models
 		/// <summary>
 		/// TargetId property data.
 		/// </summary>
-		public static readonly PropertyData TargetIdProperty = RegisterProperty("TargetId", typeof(Guid));
+		public static readonly IPropertyData TargetIdProperty = RegisterProperty<Guid>(nameof(TargetId));
 
 		#endregion
 

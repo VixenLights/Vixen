@@ -56,7 +56,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Shape model property data.
 		/// </summary>
-		public static readonly PropertyData ShapeProperty = RegisterProperty(nameof(Shape), typeof(App.Polygon.Shape));
+		public static readonly IPropertyData ShapeProperty = RegisterProperty<App.Polygon.Shape>(nameof(Shape));
 
 		/// <summary>
 		/// Label of the shape.
@@ -71,7 +71,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Label property data.
 		/// </summary>
-		public static readonly PropertyData LabelProperty = RegisterProperty(nameof(Label), typeof(string), null);
+		public static readonly IPropertyData LabelProperty = RegisterProperty<string>(nameof(Label));
 
 		/// <summary>
 		/// Controls whether the shape's label is visible.
@@ -85,7 +85,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// LabelVisible property data.
 		/// </summary>
-		public static readonly PropertyData LabelVisibleProperty = RegisterProperty(nameof(LabelVisible), typeof(bool), null);
+		public static readonly IPropertyData LabelVisibleProperty = RegisterProperty<bool>(nameof(LabelVisible));
 
 		/// <summary>
 		/// Color of the center point hash.
@@ -99,7 +99,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// CenterPointColor property data.
 		/// </summary>
-		public static readonly PropertyData CenterPointColorProperty = RegisterProperty(nameof(CenterPointColor), typeof(Color), null);
+		public static readonly IPropertyData CenterPointColorProperty = RegisterProperty<Color>(nameof(CenterPointColor));
 
 		/// <summary>
 		/// Position of the center point hash mark of the shape.
@@ -113,7 +113,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// CenterPoint property data.
 		/// </summary>
-		public static readonly PropertyData CenterPointProperty = RegisterProperty(nameof(CenterPoint), typeof(PolygonPointViewModel), null);
+		public static readonly IPropertyData CenterPointProperty = RegisterProperty<PolygonPointViewModel>(nameof(CenterPoint));
 
 		/// <summary>
 		/// True when the underlying shape is visible.		
@@ -127,7 +127,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Visibility property data.
 		/// </summary>
-		public static readonly PropertyData VisibilityProperty = RegisterProperty(nameof(Visibility), typeof(bool), null);
+		public static readonly IPropertyData VisibilityProperty = RegisterProperty<bool>(nameof(Visibility));
 
 		/// <summary>
 		/// Selected vertex of the polygon.
@@ -141,7 +141,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// SelectedVertex property data.
 		/// </summary>
-		public static readonly PropertyData SelectedVertextProperty = RegisterProperty(nameof(SelectedVertex), typeof(PolygonPointViewModel), null);
+		public static readonly IPropertyData SelectedVertextProperty = RegisterProperty<PolygonPointViewModel>(nameof(SelectedVertex));
 
 		/// <summary>
 		/// Collection of polygon points.
@@ -155,7 +155,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>		
 		/// PointCollection property data.
 		/// </summary>
-		public static readonly PropertyData PointCollectionProperty = RegisterProperty(nameof(PointCollection), typeof(ObservableCollection<PolygonPointViewModel>));
+		public static readonly IPropertyData PointCollectionProperty = RegisterProperty<ObservableCollection<PolygonPointViewModel>>(nameof(PointCollection));
 
 		#endregion
 

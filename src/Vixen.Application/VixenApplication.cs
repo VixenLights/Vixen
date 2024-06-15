@@ -25,6 +25,7 @@ using Timer = System.Windows.Forms.Timer;
 using WPFApplication = System.Windows.Application;
 using System.ComponentModel;
 using System.Drawing;
+using Common.WPFCommon.Services;
 
 namespace VixenApplication
 {
@@ -443,7 +444,8 @@ namespace VixenApplication
 		private void RegisterIOC()
 		{
 			var serviceLocator = ServiceLocator.Default;
-			serviceLocator.AutoRegisterTypesViaAttributes = true;
+			serviceLocator.RegisterType<IDownloadService, DownloadService>(); 
+			serviceLocator.RegisterType<IMessageBoxService, MessageBoxService>(); 
 		}
 
 		private void VixenApplication_Shown(object sender, EventArgs e)

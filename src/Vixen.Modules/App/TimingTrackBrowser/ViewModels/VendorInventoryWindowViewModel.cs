@@ -78,7 +78,7 @@ namespace VixenModules.App.TimingTrackBrowser.ViewModels
 		/// <summary>
 		/// SelectedInventory property data.
 		/// </summary>
-		public static readonly PropertyData SelectedInventoryProperty = RegisterProperty("SelectedInventory", typeof(SongInventory));
+		public static readonly IPropertyData SelectedInventoryProperty = RegisterProperty<SongInventory>(nameof(SelectedInventory));
 
 		#endregion
 
@@ -97,7 +97,7 @@ namespace VixenModules.App.TimingTrackBrowser.ViewModels
 		/// <summary>
 		/// Inventory property data.
 		/// </summary>
-		public static readonly PropertyData InventoryProperty = RegisterProperty("SongInventories", typeof(ObservableCollection<SongInventory>));
+		public static readonly IPropertyData InventoryProperty = RegisterProperty<ObservableCollection<SongInventory>>(nameof(SongInventories));
 
 		#endregion
 
@@ -115,7 +115,7 @@ namespace VixenModules.App.TimingTrackBrowser.ViewModels
 		/// <summary>
 		/// SelectedProduct property data.
 		/// </summary>
-		public static readonly PropertyData SelectedSongProperty = RegisterProperty("SelectedSong", typeof(Song));
+		public static readonly IPropertyData SelectedSongProperty = RegisterProperty<Song>(nameof(SelectedSong));
 
 		#endregion
 
@@ -133,7 +133,7 @@ namespace VixenModules.App.TimingTrackBrowser.ViewModels
 		/// <summary>
 		/// ShowModelTab property data.
 		/// </summary>
-		public static readonly PropertyData IsSongValidProperty = RegisterProperty("IsSongValid", typeof(bool));
+		public static readonly IPropertyData IsSongValidProperty = RegisterProperty<bool>(nameof(IsSongValid));
 
 		#endregion
 
@@ -153,7 +153,7 @@ namespace VixenModules.App.TimingTrackBrowser.ViewModels
 		/// <summary>
 		/// IsProductVisible property data.
 		/// </summary>
-		public static readonly PropertyData IsSongVisibleProperty = RegisterProperty("IsSongVisible", typeof(bool));
+		public static readonly IPropertyData IsSongVisibleProperty = RegisterProperty<bool>(nameof(IsSongVisible));
 
 		#endregion
 
@@ -173,7 +173,7 @@ namespace VixenModules.App.TimingTrackBrowser.ViewModels
 		/// <summary>
 		/// ProductTabSelected property data.
 		/// </summary>
-		public static readonly PropertyData IsSongViewSelectedProperty = RegisterProperty("IsSongViewSelected", typeof(bool));
+		public static readonly IPropertyData IsSongViewSelectedProperty = RegisterProperty<bool>(nameof(IsSongViewSelected));
 
 		#endregion
 
@@ -217,7 +217,7 @@ namespace VixenModules.App.TimingTrackBrowser.ViewModels
 		/// <summary>
 		/// DialogResult property data.
 		/// </summary>
-		public static readonly PropertyData DialogResultProperty = RegisterProperty("DialogResult", typeof(bool));
+		public static readonly IPropertyData DialogResultProperty = RegisterProperty<bool>(nameof(DialogResult));
 
 		#endregion
 

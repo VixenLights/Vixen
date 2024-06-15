@@ -70,7 +70,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		/// <summary>
 		/// ElementMapping property data.
 		/// </summary>
-		public static readonly PropertyData ElementMappingProperty = RegisterProperty("ElementMapping", typeof(ElementMapping));
+		public static readonly IPropertyData ElementMappingProperty = RegisterProperty<ElementMapping>(nameof(ElementMapping));
 
 		#endregion
 
@@ -89,7 +89,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		/// <summary>
 		/// ElementNodeProxy property data.
 		/// </summary>
-		public static readonly PropertyData ElementNodeProxyProperty = RegisterProperty("ElementNodeProxy", typeof(ElementNodeProxy), null);
+		public static readonly IPropertyData ElementNodeProxyProperty = RegisterProperty<ElementNodeProxy>(nameof(ElementNodeProxy));
 
 		#endregion
 
@@ -108,7 +108,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		/// <summary>
 		/// Name property data.
 		/// </summary>
-		public static readonly PropertyData NameProperty = RegisterProperty("Name", typeof(string), null);
+		public static readonly IPropertyData NameProperty = RegisterProperty<string>(nameof(Name));
 
 		#endregion
 
@@ -127,7 +127,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		/// <summary>
 		/// Children property data.
 		/// </summary>
-		public static readonly PropertyData ChildrenProperty = RegisterProperty("Children", typeof(List<ElementNodeProxy>), null);
+		public static readonly IPropertyData ChildrenProperty = RegisterProperty<List<ElementNodeProxy>>(nameof(Children));
 
 		#endregion
 
@@ -146,7 +146,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		/// <summary>
 		/// TargetName property data.
 		/// </summary>
-		public static readonly PropertyData TargetNameProperty = RegisterProperty("TargetName", typeof(string), null, (sender, e) => ((ElementNodeProxyViewModel)sender).OnTargetNameChanged());
+		public static readonly IPropertyData TargetNameProperty = RegisterProperty<string>(nameof(TargetName),  default(string), (sender, e) => ((ElementNodeProxyViewModel)sender).OnTargetNameChanged());
 
 		#endregion
 

@@ -18,7 +18,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// <summary>
 		/// Text property data.
 		/// </summary>
-		public static readonly PropertyData TextProperty = RegisterProperty("Text", typeof(string));
+		public static readonly IPropertyData TextProperty = RegisterProperty<string>(nameof(Text));
 
 
 		#endregion
@@ -37,7 +37,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// <summary>
 		/// Value property data.
 		/// </summary>
-		public static readonly PropertyData ValueProperty = RegisterProperty("Value", typeof(bool));
+		public static readonly IPropertyData ValueProperty = RegisterProperty<bool>(nameof(Value));
 		
 		#endregion
 	}

@@ -7,7 +7,6 @@ using Common.Controls;
 
 namespace Common.WPFCommon.Services
 {
-	[ServiceLocatorRegistration(typeof(IMessageBoxService))]
 	public class MessageBoxService : IMessageBoxService
 	{
 		public MessageBoxResponse GetUserInput(string question, string title, string defaultText, Form parent=null)

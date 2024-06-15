@@ -1,4 +1,5 @@
-﻿using Catel.Data;
+﻿using System.Drawing;
+using Catel.Data;
 using Catel.MVVM;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
@@ -62,7 +63,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Start value property data.
 		/// </summary>
-		public static readonly PropertyData StartValueProperty = RegisterProperty(nameof(StartValue), typeof(string), null);
+		public static readonly IPropertyData StartValueProperty = RegisterProperty<string>(nameof(StartValue));
 
 		/// <summary>
 		/// End DMX value of the color item.
@@ -82,7 +83,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// End value property data.
 		/// </summary>
-		public static readonly PropertyData EndValueProperty = RegisterProperty(nameof(EndValue), typeof(string), null);
+		public static readonly IPropertyData EndValueProperty = RegisterProperty<string>(nameof(EndValue));
 
 		/// <summary>
 		/// Indicates if the color wheel entry uses a curve beteween the start and stop values.
@@ -96,7 +97,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Use Curve value property data.
 		/// </summary>
-		public static readonly PropertyData UseCurveProperty = RegisterProperty(nameof(UseCurve), typeof(bool), null);
+		public static readonly IPropertyData UseCurveProperty = RegisterProperty<bool>(nameof(UseCurve));
 
 
 		/// <summary>
@@ -111,7 +112,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Color 1 property data.
 		/// </summary>
-		public static readonly PropertyData Color1Property = RegisterProperty(nameof(Color1), typeof(System.Drawing.Color), null);
+		public static readonly IPropertyData Color1Property = RegisterProperty<Color>(nameof(Color1));
 
 		/// <summary>
 		/// Second color associated with the color wheel item.
@@ -125,7 +126,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Color 2 property data.
 		/// </summary>
-		public static readonly PropertyData Color2Property = RegisterProperty(nameof(Color2), typeof(System.Drawing.Color), null);
+		public static readonly IPropertyData Color2Property = RegisterProperty<System.Drawing.Color>(nameof(Color2));
 		
 		/// <summary>
 		/// Color item represents a half step and contains two colors.
@@ -161,7 +162,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Half step property data.
 		/// </summary>
-		public static readonly PropertyData HalfStepProperty = RegisterProperty(nameof(HalfStep), typeof(bool), null);
+		public static readonly IPropertyData HalfStepProperty = RegisterProperty<bool>(nameof(HalfStep));
 
 		/// <summary>
 		/// Button text on the color panel.
@@ -175,7 +176,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Button text property data.
 		/// </summary>
-		public static readonly PropertyData ButtonTextProperty = RegisterProperty(nameof(ButtonText), typeof(string), null);
+		public static readonly IPropertyData ButtonTextProperty = RegisterProperty<string>(nameof(ButtonText));
 
 		/// <summary>
 		/// Indicates if the color wheel entry should be excluded from the color property of the element.
@@ -189,7 +190,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// ExcludeColor value property data.
 		/// </summary>
-		public static readonly PropertyData ExcludeColorPropertyProperty = RegisterProperty(nameof(ExcludeColorProperty), typeof(bool), null);
+		public static readonly IPropertyData ExcludeColorPropertyProperty = RegisterProperty<bool>(nameof(ExcludeColorProperty));
 
 		#endregion
 

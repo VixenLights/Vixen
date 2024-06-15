@@ -20,6 +20,7 @@ using VixenModules.App.CustomPropEditor.Model.InternalVendorInventory;
 using VixenModules.App.CustomPropEditor.Services;
 using ModelType = VixenModules.App.CustomPropEditor.Model.InternalVendorInventory.ModelType;
 using PropertyData = Catel.Data.PropertyData;
+using Catel.Data;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels
 {
@@ -59,7 +60,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Prop property data.
 		/// </summary>
-		public static readonly PropertyData PropProperty = RegisterProperty("Prop", typeof(Prop));
+		public static readonly IPropertyData PropProperty = RegisterProperty<Prop>(nameof(Prop));
 
 		#endregion
 
@@ -78,7 +79,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Name property data.
 		/// </summary>
-		public static readonly PropertyData NameProperty = RegisterProperty("Name", typeof(string), null);
+		public static readonly IPropertyData NameProperty = RegisterProperty<string>(nameof(Name));
 
 		#endregion
 
@@ -100,7 +101,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Category property data.
 		/// </summary>
-		public static readonly PropertyData CategoryProperty = RegisterProperty("Type", typeof(string), null);
+		public static readonly IPropertyData CategoryProperty = RegisterProperty<string>(nameof(Type));
 
 		#endregion
 
@@ -122,7 +123,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// CreatedBy property data.
 		/// </summary>
-		public static readonly PropertyData CreatedByProperty = RegisterProperty("CreatedBy", typeof(string), null);
+		public static readonly IPropertyData CreatedByProperty = RegisterProperty<string>(nameof(CreatedBy));
 
 		#endregion
 
@@ -144,7 +145,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// CreationDate property data.
 		/// </summary>
-		public static readonly PropertyData CreationDateProperty = RegisterProperty("CreationDate", typeof(DateTime), null);
+		public static readonly IPropertyData CreationDateProperty = RegisterProperty<DateTime>(nameof(CreationDate));
 
 		#endregion
 
@@ -167,7 +168,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// ModifiedDate property data.
 		/// </summary>
-		public static readonly PropertyData ModifiedDateProperty = RegisterProperty("ModifiedDate", typeof(DateTime), null);
+		public static readonly IPropertyData ModifiedDateProperty = RegisterProperty<DateTime>(nameof(ModifiedDate));
 
 		#endregion
 
@@ -187,7 +188,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// VendorMetadata property data.
 		/// </summary>
-		public static readonly PropertyData VendorMetadataProperty = RegisterProperty("VendorMetadata", typeof(VendorMetadata), null);
+		public static readonly IPropertyData VendorMetadataProperty = RegisterProperty<VendorMetadata>(nameof(VendorMetadata));
 
 		#endregion
 
@@ -207,7 +208,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// PhysicalMetadata property data.
 		/// </summary>
-		public static readonly PropertyData PhysicalMetadataProperty = RegisterProperty("PhysicalMetadata", typeof(PhysicalMetadata), null);
+		public static readonly IPropertyData PhysicalMetadataProperty = RegisterProperty<PhysicalMetadata>(nameof(PhysicalMetadata));
 
 		#endregion
 
@@ -227,7 +228,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// InformationMetadata property data.
 		/// </summary>
-		public static readonly PropertyData InformationMetadataProperty = RegisterProperty("InformationMetadata", typeof(InformationMetadata), null);
+		public static readonly IPropertyData InformationMetadataProperty = RegisterProperty<InformationMetadata>(nameof(InformationMetadata));
 
 		#endregion
 
@@ -273,7 +274,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// DrawingPanelViewModel property data.
 		/// </summary>
-		public static readonly PropertyData DrawingPanelViewModelProperty = RegisterProperty("DrawingPanelViewModel", typeof(DrawingPanelViewModel));
+		public static readonly IPropertyData DrawingPanelViewModelProperty = RegisterProperty<DrawingPanelViewModel>(nameof(DrawingPanelViewModel));
 
 		#endregion
 
@@ -292,7 +293,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// ElementTreeViewModel property data.
 		/// </summary>
-		public static readonly PropertyData ElementTreeViewModelProperty = RegisterProperty("ElementTreeViewModel", typeof(ElementTreeViewModel));
+		public static readonly IPropertyData ElementTreeViewModelProperty = RegisterProperty<ElementTreeViewModel>(nameof(ElementTreeViewModel));
 
 		#endregion
 
@@ -311,7 +312,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// ElementOrderViewModel property data.
 		/// </summary>
-		public static readonly PropertyData ElementOrderViewModelProperty = RegisterProperty("ElementOrderViewModel", typeof(ElementOrderViewModel));
+		public static readonly IPropertyData ElementOrderViewModelProperty = RegisterProperty<ElementOrderViewModel>(nameof(ElementOrderViewModel));
 
 		#endregion
 
@@ -330,7 +331,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// FilePath property data.
 		/// </summary>
-		public static readonly PropertyData FilePathProperty = RegisterProperty("FilePath", typeof(string));
+		public static readonly IPropertyData FilePathProperty = RegisterProperty<string>(nameof(FilePath));
 
 		#endregion
 
@@ -349,8 +350,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// SelectedTabIndex property data.
 		/// </summary>
-		public static readonly PropertyData SelectedTabIndexProperty =
-			RegisterProperty("SelectedTabIndex", typeof(int), null, (sender, e) => ((PropEditorViewModel) sender).OnSelectedTabIndexChanged());
+		public static readonly IPropertyData SelectedTabIndexProperty =
+			RegisterProperty<int>(nameof(SelectedTabIndex), null, (sender, e) => ((PropEditorViewModel) sender).OnSelectedTabIndexChanged());
 
 		/// <summary>
 		/// Called when the SelectedTabIndex property has changed.
@@ -593,7 +594,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				string path = result.FileNames.First();
 				if (!string.IsNullOrEmpty(path))
 				{
-					var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
+					var pleaseWaitService = dependencyResolver.Resolve<IBusyIndicatorService>();
 					pleaseWaitService.Show();
 					LoadPropFromPath(path);
 					pleaseWaitService.Hide();
@@ -778,7 +779,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				string path = result.FileName;
 				if (!string.IsNullOrEmpty(path))
 				{
-					var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
+					var pleaseWaitService = dependencyResolver.Resolve<IBusyIndicatorService>();
 					pleaseWaitService.Show();
 					await ImportProp(path);
 					pleaseWaitService.Hide();
@@ -861,7 +862,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			if (!vendorInventories.Any()) { return; }
 			var uiVisualizerService = dependencyResolver.Resolve<IUIVisualizerService>();
 			var vm = new VendorInventoryWindowViewModel(vendorInventories, dependencyResolver.Resolve<IProcessService>());
-			bool? result = await uiVisualizerService.ShowDialogAsync(vm);
+			bool? result = (await uiVisualizerService.ShowDialogAsync(vm)).DialogResult;
 
 			if (result.HasValue && result.Value)
 			{
@@ -1120,7 +1121,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			var targetPath = Path.Combine(Path.GetTempPath() + Guid.NewGuid());
 			var dependencyResolver = this.GetDependencyResolver();
 			var ds = dependencyResolver.Resolve<IDownloadService>();
-			var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
+			var pleaseWaitService = dependencyResolver.Resolve<IBusyIndicatorService>();
 			var mbs = dependencyResolver.Resolve<IMessageBoxService>();
 
 			var status = new Tuple<bool, ModelType>(false, ModelType.XModel);
