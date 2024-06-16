@@ -36,7 +36,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 
 		public static bool SaveModel(Prop prop, string path)
 		{
-			using (var db = new LiteDatabase($"Filename={path};Upgrade=true"))
+			using (var db = new LiteDatabase(path))
 			{
 				var col = db.GetCollection<Prop>("props");
 				if (col.Count() > 0)
@@ -54,12 +54,14 @@ namespace VixenModules.App.CustomPropEditor.Services
 
 		public static bool UpdateModel(Prop prop, string path)
 		{
-			using (var db = new LiteDatabase($"Filename={path};Upgrade=true"))
+			using (var db = new LiteDatabase(path))
 			{
 				var col = db.GetCollection<Prop>("props");
 				col.Update(prop);
 				CleanUpLegacyImages(db);
 				db.FileStorage.Upload($"$/image/{ImageFileName}", ImageFileName, StreamFromBitmapSource(prop.Image));
+
+				db.Shrink();
 			}
 
 			return true;
@@ -68,7 +70,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 		public static Prop GetModel(string path)
 		{
 			Prop p;
-			using (var db = new LiteDatabase($"Filename={path};Upgrade=true"))
+			using (var db = new LiteDatabase(path))
 			{
 				var col = db.GetCollection<Prop>("props");
 
@@ -96,7 +98,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 			Task<Prop> t = Task<Prop>.Factory.StartNew(() =>
 			{
 				Prop p;
-				using (var db = new LiteDatabase($"Filename={path};Upgrade=true"))
+				using (var db = new LiteDatabase(path))
 				{
 					var col = db.GetCollection<Prop>("props");
 
