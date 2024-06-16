@@ -40,7 +40,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
         /// <summary>
         /// Functions property data.
         /// </summary>
-        public static readonly PropertyData FunctionsProperty = RegisterProperty(nameof(Functions), typeof(Tuple<List<FixtureFunction>, string, Action>), null);
+        public static readonly IPropertyData FunctionsProperty = RegisterProperty<Tuple<List<FixtureFunction>, string, Action>>(nameof(Functions));
 
         #endregion
 

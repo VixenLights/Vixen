@@ -46,7 +46,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Polygon Point model property data.
 		/// </summary>
-		public static readonly PropertyData PolygonPointProperty = RegisterProperty("PolygonPoint", typeof(PolygonPoint));
+		public static readonly IPropertyData PolygonPointProperty = RegisterProperty<PolygonPoint>(nameof(PolygonPoint));
 
 		#endregion
 
@@ -75,7 +75,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// X property data.
 		/// </summary>
-		public static readonly PropertyData XProperty = RegisterProperty(nameof(X), typeof(double), null);
+		public static readonly IPropertyData XProperty = RegisterProperty<double>(nameof(X));
 		
 		/// <summary>
 		/// Gets or sets the Y position of the point.
@@ -100,7 +100,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Y property data.
 		/// </summary>
-		public static readonly PropertyData YProperty = RegisterProperty(nameof(Y), typeof(double), null);
+		public static readonly IPropertyData YProperty = RegisterProperty<double>(nameof(Y));
 		
 		/// <summary>
 		/// Gets or sets the label of the point.
@@ -117,7 +117,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Label property data.
 		/// </summary>
-		public static readonly PropertyData LabelProperty = RegisterProperty(nameof(Label), typeof(string), null);
+		public static readonly IPropertyData LabelProperty = RegisterProperty<string>(nameof(Label));
 
 		/// <summary>
 		/// True when the point has been selected.
@@ -147,7 +147,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Selected property data.
 		/// </summary>
-		public static readonly PropertyData SelectedProperty = RegisterProperty(nameof(Selected), typeof(bool), null);
+		public static readonly IPropertyData SelectedProperty = RegisterProperty<bool>(nameof(Selected));
 
 		/// <summary>
 		/// Color of the center point hash.
@@ -161,7 +161,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// CenterPointColor property data.
 		/// </summary>
-		public static readonly PropertyData ColorProperty = RegisterProperty(nameof(Color), typeof(Color), null);
+		public static readonly IPropertyData ColorProperty = RegisterProperty<Color>(nameof(Color));
 
 		#endregion
 

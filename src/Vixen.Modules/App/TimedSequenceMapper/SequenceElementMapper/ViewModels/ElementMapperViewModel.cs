@@ -79,7 +79,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		/// <summary>
 		/// Title property data.
 		/// </summary>
-		public static readonly PropertyData TitleProperty = RegisterProperty("Title", typeof(string));
+		public static readonly IPropertyData TitleProperty = RegisterProperty<string>(nameof(Title)); 
 
 		#endregion
 		// TODO: Register models with the vmpropmodel codesnippet
@@ -170,7 +170,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 				}
 			}
 			
-			var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
+			var pleaseWaitService = dependencyResolver.Resolve<IBusyIndicatorService>();
 			pleaseWaitService.Show();
 			if(await _elementMapService.SaveMapAsync(ElementMapFilePath))
 			{
@@ -202,7 +202,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		/// <summary>
 		/// SourceTreeView property data.
 		/// </summary>
-		public static readonly PropertyData SourceTreeViewProperty = RegisterProperty("SourceTreeView", typeof(Visibility));
+		public static readonly IPropertyData SourceTreeViewProperty = RegisterProperty<Visibility>(nameof(SourceTreeView));
 
 		#endregion
 
@@ -220,7 +220,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		/// <summary>
 		/// BasicView property data.
 		/// </summary>
-		public static readonly PropertyData BasicViewProperty = RegisterProperty("BasicView", typeof(Visibility));
+		public static readonly IPropertyData BasicViewProperty = RegisterProperty<Visibility>(nameof(BasicView));
 
 		#endregion
 
@@ -238,7 +238,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		/// <summary>
 		/// Elements property data.
 		/// </summary>
-		public static readonly PropertyData ElementsProperty = RegisterProperty("Elements", typeof(List<ElementNode>));
+		public static readonly IPropertyData ElementsProperty = RegisterProperty<List<ElementNode>>(nameof(Elements));
 
 		#endregion
 
@@ -256,7 +256,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		/// <summary>
 		/// SourceElementTree property data.
 		/// </summary>
-		public static readonly PropertyData SourceElementTreeProperty = RegisterProperty("SourceElementTree", typeof(FastObservableCollection<ElementNodeProxy>));
+		public static readonly IPropertyData SourceElementTreeProperty = RegisterProperty<FastObservableCollection<ElementNodeProxy>>(nameof(SourceElementTree));
 
 		#endregion
 
@@ -278,7 +278,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		/// <summary>
 		/// SelectedMapping property data.
 		/// </summary>
-		public static readonly PropertyData SelectedMappingProperty = RegisterProperty("SelectedMapping", typeof(ElementMapping));
+		public static readonly IPropertyData SelectedMappingProperty = RegisterProperty<ElementMapping>(nameof(SelectedMapping));
 
 		#endregion
 
@@ -297,7 +297,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		/// <summary>
 		/// ElementMap property data.
 		/// </summary>
-		public static readonly PropertyData ElementMapProperty = RegisterProperty("ElementMap", typeof(ElementMap));
+		public static readonly IPropertyData ElementMapProperty = RegisterProperty<ElementMap>(nameof(ElementMap));
 
 		#endregion
 
@@ -417,7 +417,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 			var ofResult = await openFileService.DetermineFileAsync(determineFileContext);
 			if (ofResult.Result)
 			{
-				var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
+				var pleaseWaitService = dependencyResolver.Resolve<IBusyIndicatorService>();
 				//var modelPersistenceService = dependencyResolver.Resolve<IModelPersistenceService<ElementMap>>();
 
 				pleaseWaitService.Show();
@@ -552,7 +552,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 			}
 			var dependencyResolver = this.GetDependencyResolver();
 			var modelPersistenceService = dependencyResolver.Resolve<IModelPersistenceService<ElementMap>>();
-			var pleaseWaitService = dependencyResolver.Resolve<IPleaseWaitService>();
+			var pleaseWaitService = dependencyResolver.Resolve<IBusyIndicatorService>();
 
 			pleaseWaitService.Show();
 

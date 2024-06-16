@@ -171,7 +171,7 @@
         /// <summary>
         /// Preview tree property data.
         /// </summary>
-        public static readonly PropertyData PreviewTreeProperty = RegisterProperty(nameof(PreviewTree), typeof(ObservableCollection<FixtureWizardTreeItem>));
+        public static readonly IPropertyData PreviewTreeProperty = RegisterProperty<ObservableCollection<FixtureWizardTreeItem>>(nameof(PreviewTree));
 
         /// <summary>
         /// Number of fixtures to create.
@@ -192,7 +192,7 @@
         /// <summary>
         /// Number of fixtures property data.
         /// </summary>
-        public static readonly PropertyData NumberOfFixturesProperty = RegisterProperty(nameof(NumberOfFixtures), typeof(int));
+        public static readonly IPropertyData NumberOfFixturesProperty = RegisterProperty<int>(nameof(NumberOfFixtures));
 
         /// <summary>
         /// Element prefix of the fixtures.
@@ -220,7 +220,7 @@
         /// <summary>
         /// Element prefix property data.
         /// </summary>
-        public static readonly PropertyData ElementPrefixProperty = RegisterProperty(nameof(ElementPrefix), typeof(string));
+        public static readonly IPropertyData ElementPrefixProperty = RegisterProperty<string>(nameof(ElementPrefix));
 
         /// <summary>
         /// Indicates is a group is created to contain the fixtures.
@@ -253,7 +253,7 @@
         /// <summary>
         /// Create group property data.
         /// </summary>
-        public static readonly PropertyData CreateGroupProperty = RegisterProperty(nameof(CreateGroup), typeof(bool));
+        public static readonly IPropertyData CreateGroupProperty = RegisterProperty<bool>(nameof(CreateGroup));
 
         /// <summary>
         /// Name of the fixture group.  This name is used as the root of the preview tree.
@@ -275,7 +275,7 @@
         /// <summary>
         /// Group name property data.
         /// </summary>
-        public static readonly PropertyData GroupNameProperty = RegisterProperty(nameof(GroupName), typeof(string));
+        public static readonly IPropertyData GroupNameProperty = RegisterProperty<string>(nameof(GroupName));
 
 		#endregion
 

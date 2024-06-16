@@ -55,7 +55,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Display image property data.
 		/// </summary>
-		public static readonly PropertyData DisplayImageProperty = RegisterProperty(nameof(DisplayImage), typeof(bool), null);
+		public static readonly IPropertyData DisplayImageProperty = RegisterProperty<bool>(nameof(DisplayImage));
 
 		/// <summary>
 		/// Determines whether the tag column is displayed.
@@ -72,7 +72,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Display tag property data.
 		/// </summary>
-		public static readonly PropertyData DisplayTagProperty = RegisterProperty(nameof(DisplayTag), typeof(bool), null);
+		public static readonly IPropertyData DisplayTagProperty = RegisterProperty<bool>(nameof(DisplayTag));
 
 		/// <summary>
 		/// Gets or sets the Associated Function name.
@@ -90,7 +90,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Associated Function Name property data.
 		/// </summary>
-		public static readonly PropertyData AssociatedFunctionNameProperty = RegisterProperty(nameof(AssociatedFunctionName), typeof(string), null);
+		public static readonly IPropertyData AssociatedFunctionNameProperty = RegisterProperty<string>(nameof(AssociatedFunctionName));
 
 		/// <summary>
 		/// Collection of function names defined on the Intelligent Fixture.
@@ -107,7 +107,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Fixture functions property data.
 		/// </summary>
-		public static readonly PropertyData FunctionsProperty = RegisterProperty(nameof(Functions), typeof(List<string>), null);
+		public static readonly IPropertyData FunctionsProperty = RegisterProperty<List<string>>(nameof(Functions));
 
 		/// <summary>
 		/// Determines whether the Associated Functions ComboBox is displayed.
@@ -124,7 +124,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Display Associated Functions property data.
 		/// </summary>
-		public static readonly PropertyData DisplayAssociationedFunctionsProperty = RegisterProperty(nameof(DisplayAssociatedFunctions), typeof(bool), null);
+		public static readonly IPropertyData DisplayAssociationedFunctionsProperty = RegisterProperty<bool>(nameof(DisplayAssociatedFunctions));
 
 		#endregion
 

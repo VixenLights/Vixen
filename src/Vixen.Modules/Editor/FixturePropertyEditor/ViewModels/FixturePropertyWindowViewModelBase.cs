@@ -49,7 +49,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
         /// <summary>
         /// Ok tooltip property data.
         /// </summary>
-        public static readonly PropertyData OKTooltipProperty = RegisterProperty(nameof(OKTooltip), typeof(string), null);
+        public static readonly IPropertyData OKTooltipProperty = RegisterProperty<string>(nameof(OKTooltip));
 
         /// <summary>
         /// Determines if the Error triangle is displayed.
@@ -69,7 +69,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
         /// <summary>
         /// Show Error property data.
         /// </summary>
-        public static readonly PropertyData ShowErrorProperty = RegisterProperty(nameof(ShowError), typeof(Visibility), null);
+        public static readonly IPropertyData ShowErrorProperty = RegisterProperty<Visibility>(nameof(ShowError));
 
         #endregion
 

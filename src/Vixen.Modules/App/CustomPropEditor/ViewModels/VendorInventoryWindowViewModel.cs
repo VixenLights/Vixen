@@ -38,7 +38,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// SelectedInventory property data.
 		/// </summary>
-		public static readonly PropertyData SelectedInventoryProperty = RegisterProperty("SelectedInventory", typeof(ModelInventory));
+		public static readonly IPropertyData SelectedInventoryProperty = RegisterProperty<ModelInventory>(nameof(SelectedInventory));
 
 		#endregion
 
@@ -57,7 +57,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Inventory property data.
 		/// </summary>
-		public static readonly PropertyData InventoryProperty = RegisterProperty("VendorInventories", typeof(List<ModelInventory>));
+		public static readonly IPropertyData InventoryProperty = RegisterProperty<List<ModelInventory>>(nameof(VendorInventories));
 
 		#endregion
 
@@ -75,7 +75,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// SelectedProduct property data.
 		/// </summary>
-		public static readonly PropertyData SelectedProductProperty = RegisterProperty("SelectedProduct", typeof(Product));
+		public static readonly IPropertyData SelectedProductProperty = RegisterProperty<Product>(nameof(SelectedProduct));
 
 		#endregion
 
@@ -93,7 +93,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// SelectedModelLink property data.
 		/// </summary>
-		public static readonly PropertyData SelectedModelLinkProperty = RegisterProperty("SelectedModelLink", typeof(ModelLink));
+		public static readonly IPropertyData SelectedModelLinkProperty = RegisterProperty<ModelLink>(nameof(SelectedModelLink));
 
 		#endregion
 
@@ -111,7 +111,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// ShowModelTab property data.
 		/// </summary>
-		public static readonly PropertyData IsModelValidProperty = RegisterProperty("IsModelValid", typeof(bool));
+		public static readonly IPropertyData IsModelValidProperty = RegisterProperty<bool>(nameof(IsModelValid));
 
 		#endregion
 
@@ -131,7 +131,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// IsProductVisible property data.
 		/// </summary>
-		public static readonly PropertyData IsProductVisibleProperty = RegisterProperty("IsProductVisible", typeof(bool));
+		public static readonly IPropertyData IsProductVisibleProperty = RegisterProperty<bool>(nameof(IsProductVisible));
 
 		#endregion
 
@@ -151,7 +151,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// ProductTabSelected property data.
 		/// </summary>
-		public static readonly PropertyData IsProductViewSelectedProperty = RegisterProperty("IsProductViewSelected", typeof(bool));
+		public static readonly IPropertyData IsProductViewSelectedProperty = RegisterProperty<bool>(nameof(IsProductViewSelected));
 
 		#endregion
 
@@ -196,7 +196,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// DialogResult property data.
 		/// </summary>
-		public static readonly PropertyData DialogResultProperty = RegisterProperty("DialogResult", typeof(bool));
+		public static readonly IPropertyData DialogResultProperty = RegisterProperty<bool>(nameof(DialogResult));
 
 		#endregion
 

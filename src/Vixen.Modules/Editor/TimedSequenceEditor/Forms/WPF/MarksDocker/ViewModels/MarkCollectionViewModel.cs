@@ -75,7 +75,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// <summary>
 		/// MarkCollection property data.
 		/// </summary>
-		public static readonly PropertyData MarkCollectionProperty = RegisterProperty("MarkCollection", typeof(MarkCollection));
+		public static readonly IPropertyData MarkCollectionProperty = RegisterProperty<MarkCollection>(nameof(MarkCollection));
 
 		#endregion
 
@@ -94,7 +94,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// <summary>
 		/// Name property data.
 		/// </summary>
-		public static readonly PropertyData NameProperty = RegisterProperty("Name", typeof(string), null);
+		public static readonly IPropertyData NameProperty = RegisterProperty<string>(nameof(Name));
 
 		#endregion
 
@@ -113,7 +113,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// <summary>
 		/// IsEnabled property data.
 		/// </summary>
-		public static readonly PropertyData ShowGridLinesProperty = RegisterProperty("ShowGridLines", typeof(bool), null);
+		public static readonly IPropertyData ShowGridLinesProperty = RegisterProperty<bool>(nameof(ShowGridLines));
 
 		#endregion
 
@@ -132,7 +132,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// <summary>
 		/// ShowMarkBar property data.
 		/// </summary>
-		public static readonly PropertyData ShowMarkBarProperty = RegisterProperty("ShowMarkBar", typeof(bool), null);
+		public static readonly IPropertyData ShowMarkBarProperty = RegisterProperty<bool>(nameof(ShowMarkBar));
 
 		#endregion
 
@@ -151,7 +151,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// <summary>
 		/// IsDefault property data.
 		/// </summary>
-		public static readonly PropertyData IsDefaultProperty = RegisterProperty("IsDefault", typeof(bool), null);
+		public static readonly IPropertyData IsDefaultProperty = RegisterProperty<bool>(nameof(IsDefault));
 
 		#endregion
 
@@ -170,7 +170,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// <summary>
 		/// SnapLevel property data.
 		/// </summary>
-		public static readonly PropertyData LevelProperty = RegisterProperty("Level", typeof(int), null);
+		public static readonly IPropertyData LevelProperty = RegisterProperty<int>(nameof(Level));
 
 		#endregion
 
@@ -189,7 +189,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// <summary>
 		/// CollectionType property data.
 		/// </summary>
-		public static readonly PropertyData CollectionTypeProperty = RegisterProperty("CollectionType", typeof(MarkCollectionType), null);
+		public static readonly IPropertyData CollectionTypeProperty = RegisterProperty<MarkCollectionType>(nameof(CollectionType));
 
 		#endregion
 		
@@ -252,7 +252,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// <summary>
 		/// IsEditing property data.
 		/// </summary>
-		public static readonly PropertyData IsEditingProperty = RegisterProperty("IsEditing", typeof(bool));
+		public static readonly IPropertyData IsEditingProperty = RegisterProperty<bool>(nameof(IsEditing));
 
 		#endregion
 
@@ -322,7 +322,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// <summary>
 		/// Decorator property data.
 		/// </summary>
-		public static readonly PropertyData DecoratorProperty = RegisterProperty("Decorator", typeof(IMarkDecorator), null);
+		public static readonly IPropertyData DecoratorProperty = RegisterProperty<IMarkDecorator>(nameof(Decorator));
 
 		#endregion
 
@@ -420,7 +420,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// <summary>
 		/// CheckBoxStates property data.
 		/// </summary>
-		public static readonly PropertyData CheckBoxStatesProperty = RegisterProperty("CollectionTypeCheckBoxStates", typeof(ObservableCollection<CollectionTypeCheckBoxState>));
+		public static readonly IPropertyData CheckBoxStatesProperty = RegisterProperty<ObservableCollection<CollectionTypeCheckBoxState>>(nameof(CollectionTypeCheckBoxStates));
 
 		#endregion
 
@@ -438,7 +438,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// <summary>
 		/// LinkedToCheckBoxState property data.
 		/// </summary>
-		public static readonly PropertyData LinkedToCheckBoxStatesProperty = RegisterProperty("LinkedToCheckBoxStates", typeof(ObservableCollection<LinkedToCheckBoxState>));
+		public static readonly IPropertyData LinkedToCheckBoxStatesProperty = RegisterProperty<ObservableCollection<LinkedToCheckBoxState>>(nameof(LinkedToCheckBoxStates));
 
 		#endregion
 
@@ -456,7 +456,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// <summary>
 		/// LevelCheckBoxStates property data.
 		/// </summary>
-		public static readonly PropertyData LevelCheckBoxStatesProperty = RegisterProperty("LevelCheckBoxStates", typeof(ObservableCollection<LevelCheckBoxState>));
+		public static readonly IPropertyData LevelCheckBoxStatesProperty = RegisterProperty<ObservableCollection<LevelCheckBoxState>>(nameof(LevelCheckBoxStates));
 
 		#endregion
 
@@ -474,7 +474,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// <summary>
 		/// IsPhonemeType property data.
 		/// </summary>
-		public static readonly PropertyData IsLinkableTypeProperty = RegisterProperty("IsLinkableType", typeof(bool));
+		public static readonly IPropertyData IsLinkableTypeProperty = RegisterProperty<bool>(nameof(IsLinkableType));
 
 		#endregion
 		

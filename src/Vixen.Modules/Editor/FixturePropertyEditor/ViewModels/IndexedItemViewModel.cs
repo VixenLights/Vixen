@@ -55,7 +55,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Start value property data.
 		/// </summary>
-		public static readonly PropertyData StartValueProperty = RegisterProperty(nameof(StartValue), typeof(string), null);
+		public static readonly IPropertyData StartValueProperty = RegisterProperty<string>(nameof(StartValue));
 
 		/// <summary>
 		/// End value of the index.
@@ -75,7 +75,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// End value property data.
 		/// </summary>
-		public static readonly PropertyData EndValueProperty = RegisterProperty(nameof(EndValue), typeof(string), null);
+		public static readonly IPropertyData EndValueProperty = RegisterProperty<string>(nameof(EndValue));
 
 		/// <summary>
 		/// Indicator if the index is a ranage and should be represented by a curve.
@@ -95,7 +95,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Use curve property data.
 		/// </summary>
-		public static readonly PropertyData UseCurveProperty = RegisterProperty(nameof(UseCurve), typeof(bool), null);
+		public static readonly IPropertyData UseCurveProperty = RegisterProperty<bool>(nameof(UseCurve));
 
 		/// <summary>
 		/// Type of the index for use by the preview.
@@ -115,7 +115,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Index type property data.
 		/// </summary>
-		public static readonly PropertyData IndexTypeProperty = RegisterProperty(nameof(IndexType), typeof(FixtureIndexType), null);
+		public static readonly IPropertyData IndexTypeProperty = RegisterProperty<FixtureIndexType>(nameof(IndexType));
 
 		/// <summary>
 		/// Image associated with the index.
@@ -135,7 +135,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Image property data.
 		/// </summary>
-		public static readonly PropertyData ImageProperty = RegisterProperty(nameof(Image), typeof(string), null);
+		public static readonly IPropertyData ImageProperty = RegisterProperty<string>(nameof(Image));
 
 		/// <summary>
 		/// Collection of available images.
@@ -152,7 +152,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Available Image property data.
 		/// </summary>
-		public static readonly PropertyData AvailableImagesProperty = RegisterProperty(nameof(AvailableImages), typeof(IList<string>), null);
+		public static readonly IPropertyData AvailableImagesProperty = RegisterProperty<IList<string>>(nameof(AvailableImages));
 
 		#endregion
 

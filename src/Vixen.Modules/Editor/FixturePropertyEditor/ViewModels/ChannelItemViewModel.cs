@@ -85,7 +85,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Function names property data.
 		/// </summary>
-		public static readonly PropertyData FunctionsProperty = RegisterProperty(nameof(Functions), typeof(ObservableCollection<string>), null);
+		public static readonly IPropertyData FunctionsProperty = RegisterProperty<ObservableCollection<string>>(nameof(Functions));
 
 		/// <summary>
 		/// Gets or sets the allowable channel numbers.
@@ -99,7 +99,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Channel numbers property data.
 		/// </summary>
-		public static readonly PropertyData ChannelNumbersProperty = RegisterProperty(nameof(ChannelNumbers), typeof(ObservableCollection<string>), null);
+		public static readonly IPropertyData ChannelNumbersProperty = RegisterProperty<ObservableCollection<string>>(nameof(ChannelNumbers));
 
 
 		/// <summary>
@@ -114,7 +114,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Channel number property data.
 		/// </summary>
-		public static readonly PropertyData ChannelNumberProperty = RegisterProperty(nameof(ChannelNumber), typeof(string), null);
+		public static readonly IPropertyData ChannelNumberProperty = RegisterProperty<string>(nameof(ChannelNumber));
 
 		/// <summary>
 		/// Function associated with the channel.
@@ -165,7 +165,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Function property data.
 		/// </summary>
-		public static readonly PropertyData FunctionProperty = RegisterProperty(nameof(Function), typeof(string), null);
+		public static readonly IPropertyData FunctionProperty = RegisterProperty<string>(nameof(Function));
 
 		/// <summary>
 		/// Icon associated with the button to edit the function associated with the channel.
@@ -182,7 +182,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Function property data.
 		/// </summary>
-		public static readonly PropertyData EditFunctionsImageSourceProperty = RegisterProperty(nameof(EditFunctionsImageSource), typeof(string), null);
+		public static readonly IPropertyData EditFunctionsImageSourceProperty = RegisterProperty<string>(nameof(EditFunctionsImageSource));
 
 		#endregion
 		

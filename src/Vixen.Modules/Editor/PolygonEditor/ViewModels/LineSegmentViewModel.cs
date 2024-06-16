@@ -58,7 +58,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// CenterPointColor property data.
 		/// </summary>
-		public static readonly PropertyData CenterPointColorProperty = RegisterProperty(nameof(Color), typeof(Color), null);
+		public static readonly IPropertyData CenterPointColorProperty = RegisterProperty<Color>(nameof(Color));
 
 		#endregion
 	}

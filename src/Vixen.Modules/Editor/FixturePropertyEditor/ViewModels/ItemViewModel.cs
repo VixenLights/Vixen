@@ -56,7 +56,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Name property data.
 		/// </summary>
-		public static readonly PropertyData NameProperty = RegisterProperty(nameof(Name), typeof(string), null);
+		public static readonly IPropertyData NameProperty = RegisterProperty<string>(nameof(Name));
 
 		#endregion
 				
@@ -97,7 +97,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <param name="value">Value of the field</param>
 		protected void ValidateDMXNumber(
 			List<IFieldValidationResult> validationResults,
-			PropertyData propertyData,
+			IPropertyData propertyData,
 			string fieldName,
 			string value)
 		{

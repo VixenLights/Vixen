@@ -59,7 +59,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Narrow to Wide zoom property data.
 		/// </summary>
-		public static readonly PropertyData NarrowToWideProperty = RegisterProperty(nameof(NarrowToWide), typeof(bool), null);
+		public static readonly IPropertyData NarrowToWideProperty = RegisterProperty<bool>(nameof(NarrowToWide));
 
 		/// <summary>
 		/// True when the fixture zooms from wide to narrow.
@@ -79,7 +79,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Wide to Narrow zoom property data.
 		/// </summary>
-		public static readonly PropertyData WideToNarrowProperty = RegisterProperty(nameof(WideToNarrow), typeof(bool), null);
+		public static readonly IPropertyData WideToNarrowProperty = RegisterProperty<bool>(nameof(WideToNarrow));
 		
 		#endregion		
 	}

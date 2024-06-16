@@ -41,7 +41,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// <summary>
 		/// MarkCollections property data.
 		/// </summary>
-		public static readonly PropertyData MarkCollectionsProperty = RegisterProperty("MarkCollections", typeof(ObservableCollection<IMarkCollection>));
+		public static readonly IPropertyData MarkCollectionsProperty = RegisterProperty<ObservableCollection<IMarkCollection>>(nameof(MarkCollections));
 
 		#endregion
 

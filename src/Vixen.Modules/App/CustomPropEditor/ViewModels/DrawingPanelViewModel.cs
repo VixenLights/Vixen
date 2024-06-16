@@ -90,7 +90,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Prop property data.
 		/// </summary>
-		public static readonly PropertyData PropProperty = RegisterProperty("Prop", typeof(Prop));
+		public static readonly IPropertyData PropProperty = RegisterProperty<Prop>(nameof(Prop));
 
 		#endregion
 
@@ -110,7 +110,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// LightNodes property data.
 		/// </summary>
-		public static readonly PropertyData LightNodesProperty = RegisterProperty("LightNodes", typeof(ObservableCollection<LightViewModel>));
+		public static readonly IPropertyData LightNodesProperty = RegisterProperty<ObservableCollection<LightViewModel>>(nameof(LightNodes));
 
 		#endregion
 
@@ -129,7 +129,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Width property data.
 		/// </summary>
-		public static readonly PropertyData WidthProperty = RegisterProperty("Width", typeof(double), null);
+		public static readonly IPropertyData WidthProperty = RegisterProperty<double>(nameof(Width));
 
 		#endregion
 
@@ -148,7 +148,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Height property data.
 		/// </summary>
-		public static readonly PropertyData HeightProperty = RegisterProperty("Height", typeof(double), null);
+		public static readonly IPropertyData HeightProperty = RegisterProperty<double>(nameof(Height));
 
 		#endregion
 
@@ -167,7 +167,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Image property data.
 		/// </summary>
-		public static readonly PropertyData ImageProperty = RegisterProperty("Image", typeof(BitmapSource), null);
+		public static readonly IPropertyData ImageProperty = RegisterProperty<BitmapSource>(nameof(Image));
 
 		#endregion
 
@@ -186,7 +186,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Opacity property data.
 		/// </summary>
-		public static readonly PropertyData OpacityProperty = RegisterProperty("Opacity", typeof(double), null);
+		public static readonly IPropertyData OpacityProperty = RegisterProperty<double>(nameof(Opacity));
 
 		#endregion
 
@@ -204,7 +204,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// IsDrawing property data.
 		/// </summary>
-		public static readonly PropertyData IsDrawingProperty = RegisterProperty("IsDrawing", typeof(bool));
+		public static readonly IPropertyData IsDrawingProperty = RegisterProperty<bool>(nameof(IsDrawing));
 
 		#endregion
 
@@ -223,7 +223,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Confguration property data.
 		/// </summary>
-		public static readonly PropertyData ConfgurationProperty = RegisterProperty("Configuration", typeof(Configuration));
+		public static readonly IPropertyData ConfgurationProperty = RegisterProperty<Configuration>(nameof(Configuration));
 
 		#endregion
 
@@ -242,7 +242,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// LightColor property data.
 		/// </summary>
-		public static readonly PropertyData LightColorProperty = RegisterProperty("LightColor", typeof(Color), null);
+		public static readonly IPropertyData LightColorProperty = RegisterProperty<Color>(nameof(LightColor));
 
 		#endregion
 
@@ -261,7 +261,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// SelectedLightColor property data.
 		/// </summary>
-		public static readonly PropertyData SelectedLightColorProperty = RegisterProperty("SelectedLightColor", typeof(Color), null);
+		public static readonly IPropertyData SelectedLightColorProperty = RegisterProperty<Color>(nameof(SelectedLightColor));
 
 		#endregion
 

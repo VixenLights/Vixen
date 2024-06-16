@@ -23,7 +23,7 @@ namespace Common.DiscreteColorPicker.ViewModels
 		/// <summary>
 		/// Item Color property data.
 		/// </summary>
-		public static readonly PropertyData ItemColorPropertyData = RegisterProperty(nameof(ItemColor), typeof(Color));
+		public static readonly IPropertyData ItemColorPropertyData = RegisterProperty<Color>(nameof(ItemColor));
 
 		/// <summary>
 		/// True when the Item is selected in the ListBox.
@@ -37,7 +37,7 @@ namespace Common.DiscreteColorPicker.ViewModels
 		/// <summary>
 		/// IsSelected property data.
 		/// </summary>
-		public static readonly PropertyData IsSelectedPropertyData = RegisterProperty(nameof(IsSelected), typeof(bool));
+		public static readonly IPropertyData IsSelectedPropertyData = RegisterProperty<bool>(nameof(IsSelected));
 
 		#endregion
 	}

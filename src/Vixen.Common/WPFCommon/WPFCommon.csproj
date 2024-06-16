@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Catel.MVVM" Version="5.12.22" />
+    <PackageReference Include="Catel.Core" Version="6.0.3" />
+    <PackageReference Include="Catel.MVVM" Version="6.0.3" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.122" />
     <PackageReference Include="NLog" Version="5.3.2" />
   </ItemGroup>

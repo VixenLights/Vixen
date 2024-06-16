@@ -72,7 +72,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>		
 		/// PointCollection property data.
 		/// </summary>
-		public static readonly PropertyData StartPointProperty = RegisterProperty(nameof(StartPoint), typeof(PolygonPointViewModel));
+		public static readonly IPropertyData StartPointProperty = RegisterProperty<PolygonPointViewModel>(nameof(StartPoint));
 
 		public PolygonPointViewModel EndPoint
 		{
@@ -83,7 +83,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>		
 		/// PointCollection property data.
 		/// </summary>
-		public static readonly PropertyData EndPointProperty = RegisterProperty(nameof(EndPoint), typeof(PolygonPointViewModel));
+		public static readonly IPropertyData EndPointProperty = RegisterProperty<PolygonPointViewModel>(nameof(EndPoint));
 
 		#endregion
 

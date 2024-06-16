@@ -183,7 +183,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Function Identities property data.
 		/// </summary>
-		public static readonly PropertyData FunctionIdentitiesProperty = RegisterProperty(nameof(FunctionIdentities), typeof(IList<FunctionIdentity>), null);
+		public static readonly IPropertyData FunctionIdentitiesProperty = RegisterProperty<IList<FunctionIdentity>>(nameof(FunctionIdentities));
 
 		/// <summary>
 		/// Type of function (Ranged, Indexed, Color Wheel etc).
@@ -234,7 +234,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Function type property data.
 		/// </summary>
-		public static readonly PropertyData FunctionTypeEnumProperty = RegisterProperty(nameof(FunctionTypeEnum), typeof(FixtureFunctionTypeVM), null);
+		public static readonly IPropertyData FunctionTypeEnumProperty = RegisterProperty<FixtureFunctionTypeVM>(nameof(FunctionTypeEnum));
 
 		/// <summary>
 		/// Function identity.
@@ -264,7 +264,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Function property data.
 		/// </summary>
-		public static readonly PropertyData FunctionIdentityProperty = RegisterProperty(nameof(FunctionIdentity), typeof(FunctionIdentity), null);
+		public static readonly IPropertyData FunctionIdentityProperty = RegisterProperty<FunctionIdentity>(nameof(FunctionIdentity));
 		
 		/// <summary>
 		/// Preview legend associated with the function.
@@ -281,7 +281,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Legend property data.
 		/// </summary>
-		public static readonly PropertyData LegendProperty = RegisterProperty(nameof(Legend), typeof(string), null);
+		public static readonly IPropertyData LegendProperty = RegisterProperty<string>(nameof(Legend));
 
 		/// <summary>
 		/// Maximum rotation associated with the function.  Only applies to Pan and tilt functions.
@@ -298,7 +298,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Maximum rotation property data.
 		/// </summary>
-		public static readonly PropertyData MaximumRotationProperty = RegisterProperty(nameof(MaximumRotation), typeof(string), null);
+		public static readonly IPropertyData MaximumRotationProperty = RegisterProperty<string>(nameof(MaximumRotation));
 
 		#endregion
 

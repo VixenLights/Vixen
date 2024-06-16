@@ -42,7 +42,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// ElementModel property data.
 		/// </summary>
-		public static readonly PropertyData ElementModelProperty = RegisterProperty("ElementModel", typeof(ElementModel));
+		public static readonly IPropertyData ElementModelProperty = RegisterProperty<ElementModel>(nameof(ElementModel));
 
 		#endregion
 
@@ -62,7 +62,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Children property data.
 		/// </summary>
-		public static readonly PropertyData ChildrenProperty = RegisterProperty("Children", typeof(ObservableCollection<ElementModel>), null);
+		public static readonly IPropertyData ChildrenProperty = RegisterProperty<ObservableCollection<ElementModel>>(nameof(Children));
 
 		#endregion
 
@@ -81,7 +81,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// ChildrenViewModels property data.
 		/// </summary>
-		public static readonly PropertyData ChildrenViewModelsProperty = RegisterProperty("ChildrenViewModels", typeof(ElementViewModelCollection));
+		public static readonly IPropertyData ChildrenViewModelsProperty = RegisterProperty<ElementViewModelCollection>(nameof(ChildrenViewModels));
 
 		#endregion
 
@@ -109,7 +109,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// IsSelected property data.
 		/// </summary>
-		public static readonly PropertyData IsSelectedProperty = RegisterProperty("IsSelected", typeof(bool));
+		public static readonly IPropertyData IsSelectedProperty = RegisterProperty<bool>(nameof(IsSelected));
 
 		#endregion
 
@@ -136,7 +136,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// IsExpanded property data.
 		/// </summary>
-		public static readonly PropertyData IsExpandedProperty = RegisterProperty("IsExpanded", typeof(bool));
+		public static readonly IPropertyData IsExpandedProperty = RegisterProperty<bool>(nameof(IsExpanded));
 
 		#endregion
 
@@ -155,7 +155,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// IsEditing property data.
 		/// </summary>
-		public static readonly PropertyData IsEditingProperty = RegisterProperty("IsEditing", typeof(bool));
+		public static readonly IPropertyData IsEditingProperty = RegisterProperty<bool>(nameof(IsEditing));
 
 		#endregion
 
@@ -190,7 +190,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				object oldValue = ElementModel.Name;
 				ElementModel.Name = value;
 				IsDirty = true;
-				RaisePropertyChanged(nameof(Name), oldValue , value);
+				RaisePropertyChanged(nameof(Name));
 			}
 		}
 
@@ -212,7 +212,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				object oldValue = ElementModel.FaceDefinition.FaceComponent;
 				ElementModel.FaceDefinition.FaceComponent = value;
 				IsDirty = true;
-				RaisePropertyChanged(nameof(FaceComponent), oldValue, value);
+				RaisePropertyChanged(nameof(FaceComponent)); 
 			}
 		}
 
@@ -260,7 +260,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				object oldValue = ElementModel.StateDefinition.Name;
 				ElementModel.StateDefinition.Name = value;
 				IsDirty = true;
-				RaisePropertyChanged(nameof(StateName), oldValue, value);
+				RaisePropertyChanged(nameof(StateName)); 
 			}
 		}
 

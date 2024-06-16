@@ -56,7 +56,8 @@
         /// <summary>
         /// Fixture specification property data.
         /// </summary>
-        public static readonly PropertyData FixtureSpecificationProperty = RegisterProperty(nameof(FixtureSpecification), typeof(Tuple<FixtureSpecification, Action, bool>), null);
+        public static readonly IPropertyData FixtureSpecificationProperty =
+	        RegisterProperty<Tuple<FixtureSpecification, Action, bool>>(nameof(FixtureSpecification));
 
 		#endregion
 

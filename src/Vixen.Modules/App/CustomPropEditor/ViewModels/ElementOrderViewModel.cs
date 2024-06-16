@@ -52,7 +52,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Prop property data.
 		/// </summary>
-		public static readonly PropertyData PropProperty = RegisterProperty("Prop", typeof(Prop));
+		public static readonly IPropertyData PropProperty = RegisterProperty<Prop>(nameof(Prop));
 
 		#endregion
 
@@ -70,7 +70,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// LeafNodes property data.
 		/// </summary>
-		public static readonly PropertyData LeafNodesProperty = RegisterProperty("LeafNodes", typeof(ObservableCollection<ElementModelViewModel>));
+		public static readonly IPropertyData LeafNodesProperty = RegisterProperty<ObservableCollection<ElementModelViewModel>>(nameof(LeafNodes));
 
 		#endregion
 
@@ -88,7 +88,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// SelectedItems property data.
 		/// </summary>
-		public static readonly PropertyData SelectedItemsProperty = RegisterProperty("SelectedItems", typeof(ObservableCollection<ElementModelViewModel>));
+		public static readonly IPropertyData SelectedItemsProperty = RegisterProperty<ObservableCollection<ElementModelViewModel>>(nameof(SelectedItems));
 
 		#endregion
 

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows.Controls.WpfPropertyGrid;
+using Catel.Data;
 using Catel.MVVM;
 using VixenModules.App.CustomPropEditor.Converters;
 using VixenModules.App.CustomPropEditor.Model;
@@ -30,7 +31,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// PropertyName property data.
 		/// </summary>
-		public static readonly PropertyData PhysicalMetadataProperty = RegisterProperty("PhysicalMetadata", typeof(PhysicalMetadata));
+		public static readonly IPropertyData PhysicalMetadataProperty = RegisterProperty<PhysicalMetadata>(nameof(PhysicalMetadata));
 
 		#endregion
 
@@ -51,7 +52,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Height property data.
 		/// </summary>
-		public static readonly PropertyData HeightProperty = RegisterProperty("Height", typeof(string), null);
+		public static readonly IPropertyData HeightProperty = RegisterProperty<string>(nameof(Height));
 
 		#endregion
 
@@ -72,7 +73,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Width property data.
 		/// </summary>
-		public static readonly PropertyData WidthProperty = RegisterProperty("Width", typeof(string), null);
+		public static readonly IPropertyData WidthProperty = RegisterProperty<string>(nameof(Width));
 
 		#endregion
 
@@ -93,7 +94,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Material property data.
 		/// </summary>
-		public static readonly PropertyData MaterialProperty = RegisterProperty("Material", typeof(string), null);
+		public static readonly IPropertyData MaterialProperty = RegisterProperty<string>(nameof(Material));
 
 		#endregion
 
@@ -114,7 +115,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Depth property data.
 		/// </summary>
-		public static readonly PropertyData DepthProperty = RegisterProperty("Depth", typeof(string), null);
+		public static readonly IPropertyData DepthProperty = RegisterProperty<string>(nameof(Depth));
 
 		#endregion
 
@@ -135,7 +136,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// NodeCount property data.
 		/// </summary>
-		public static readonly PropertyData NodeCountProperty = RegisterProperty("NodeCount", typeof(string));
+		public static readonly IPropertyData NodeCountProperty = RegisterProperty<string>(nameof(NodeCount));
 
 		#endregion
 
@@ -158,7 +159,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// BulbType property data.
 		/// </summary>
-		public static readonly PropertyData BulbTypeProperty = RegisterProperty("BulbType", typeof(string), null);
+		public static readonly IPropertyData BulbTypeProperty = RegisterProperty<string>(nameof(BulbType));
 
 		#endregion
 
@@ -182,7 +183,7 @@ This maps to color handling in the Display Setup.")]
 		/// <summary>
 		/// ColorMode property data.
 		/// </summary>
-		public static readonly PropertyData ColorModeProperty = RegisterProperty("ColorMode", typeof(ColorMode), null);
+		public static readonly IPropertyData ColorModeProperty = RegisterProperty<ColorMode>(nameof(ColorMode));
 
 		#endregion
 

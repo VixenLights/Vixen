@@ -133,7 +133,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// SelectedPointsReadOnly property data.
 		/// </summary>
-		public static readonly PropertyData SelectedPointsReadOnlyProperty = RegisterProperty(nameof(SelectedPointsReadOnly), typeof(bool));
+		public static readonly IPropertyData SelectedPointsReadOnlyProperty = RegisterProperty<bool>(nameof(SelectedPointsReadOnly));
 
 		/// <summary>
 		/// Cursor applicable to the time bar.
@@ -147,7 +147,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// TimeBar property data.
 		/// </summary>
-		public static readonly PropertyData TimeBarCursorProperty = RegisterProperty(nameof(TimeBarCusor), typeof(Cursor));
+		public static readonly IPropertyData TimeBarCursorProperty = RegisterProperty<Cursor>(nameof(TimeBarCusor));
 
 		/// <summary>
 		/// Cursor for the polygon/line drawing canvas.
@@ -161,7 +161,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// TimeBar property data.
 		/// </summary>
-		public static readonly PropertyData CanvasCursorProperty = RegisterProperty(nameof(CanvasCursor), typeof(Cursor));
+		public static readonly IPropertyData CanvasCursorProperty = RegisterProperty<Cursor>(nameof(CanvasCursor));
 
 		/// <summary>
 		/// Desired width of control.
@@ -175,7 +175,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// ControlWidth property data.
 		/// </summary>
-		public static readonly PropertyData ControlWidthProperty = RegisterProperty(nameof(ControlWidth), typeof(int));
+		public static readonly IPropertyData ControlWidthProperty = RegisterProperty<int>(nameof(ControlWidth));
 
 		/// <summary>
 		/// Desired height of control.
@@ -189,7 +189,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// WindowHeight property data.
 		/// </summary>
-		public static readonly PropertyData ControlHeightProperty = RegisterProperty(nameof(ControlHeight), typeof(int));
+		public static readonly IPropertyData ControlHeightProperty = RegisterProperty<int>(nameof(ControlHeight));
 
 		/// <summary>
 		/// Desired width of window.
@@ -203,7 +203,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// WindowWidth property data.
 		/// </summary>
-		public static readonly PropertyData WindowWidthProperty = RegisterProperty(nameof(WindowWidth), typeof(int));
+		public static readonly IPropertyData WindowWidthProperty = RegisterProperty<int>(nameof(WindowWidth));
 
 		/// <summary>
 		/// Desired height of window.
@@ -217,7 +217,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// WindowHeight property data.
 		/// </summary>
-		public static readonly PropertyData WindowHeightProperty = RegisterProperty(nameof(WindowHeight), typeof(int));
+		public static readonly IPropertyData WindowHeightProperty = RegisterProperty<int>(nameof(WindowHeight));
 
 		/// <summary>
 		/// Desired width of canvas.
@@ -231,7 +231,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// CanvasWidth property data.
 		/// </summary>
-		public static readonly PropertyData CanvasWidthProperty = RegisterProperty(nameof(CanvasWidth), typeof(int));
+		public static readonly IPropertyData CanvasWidthProperty = RegisterProperty<int>(nameof(CanvasWidth));
 
 		/// <summary>
 		/// Desired height of canvas.
@@ -245,7 +245,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// CanvaswHeight property data.
 		/// </summary>
-		public static readonly PropertyData CanvasHeightProperty = RegisterProperty(nameof(CanvasHeight), typeof(int));
+		public static readonly IPropertyData CanvasHeightProperty = RegisterProperty<int>(nameof(CanvasHeight));
 
 		/// <summary>
 		/// Display element width excluding any margin.
@@ -259,7 +259,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// DisplayElementWidth property data.
 		/// </summary>
-		public static readonly PropertyData DisplayElementWidthProperty = RegisterProperty(nameof(DisplayElementWidth), typeof(double));
+		public static readonly IPropertyData DisplayElementWidthProperty = RegisterProperty<double>(nameof(DisplayElementWidth));
 
 		/// <summary>
 		/// Display element height excluding any margin.
@@ -273,7 +273,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// DisplayElementHeight property data.
 		/// </summary>
-		public static readonly PropertyData DisplayElementHeightProperty = RegisterProperty(nameof(DisplayElementHeight), typeof(double));
+		public static readonly IPropertyData DisplayElementHeightProperty = RegisterProperty<double>(nameof(DisplayElementHeight));
 
 		/// <summary>
 		/// Display element X axis origin.  This is an offset into the virtual display element.
@@ -287,7 +287,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Display element X axis origin.  
 		/// </summary>
-		public static readonly PropertyData DisplayElementXOriginProperty = RegisterProperty(nameof(DisplayElementXOrigin), typeof(double));
+		public static readonly IPropertyData DisplayElementXOriginProperty = RegisterProperty<double>(nameof(DisplayElementXOrigin));
 
 		/// <summary>
 		/// Display element Y axis origin.  This is an offset into the virtual display element.
@@ -301,7 +301,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// DisplayElementYOrigin property data.
 		/// </summary>
-		public static readonly PropertyData DisplayElementYOriginProperty = RegisterProperty(nameof(DisplayElementYOrigin), typeof(double));
+		public static readonly IPropertyData DisplayElementYOriginProperty = RegisterProperty<double>(nameof(DisplayElementYOrigin));
 
 		/// <summary>
 		/// Controls whether the display element outline should be displayed.
@@ -315,7 +315,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// ShowDisplayElement property data.
 		/// </summary>
-		public static readonly PropertyData ShowDisplayElementProperty = RegisterProperty(nameof(ShowDisplayElement), typeof(bool));
+		public static readonly IPropertyData ShowDisplayElementProperty = RegisterProperty<bool>(nameof(ShowDisplayElement));
 
 		/// <summary>
 		/// Gets or sets the view model's selected polygon.
@@ -333,7 +333,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// SelectedPolygon property data.
 		/// </summary>
-		public static readonly PropertyData SelectedPolygonProperty = RegisterProperty(nameof(SelectedPolygon), typeof(PolygonViewModel));
+		public static readonly IPropertyData SelectedPolygonProperty = RegisterProperty<PolygonViewModel>(nameof(SelectedPolygon));
 
 		/// <summary>
 		/// Gets or sets the view model's selected line.
@@ -351,7 +351,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// SelectedLine property data.
 		/// </summary>
-		public static readonly PropertyData SelectedLineProperty = RegisterProperty(nameof(SelectedLine), typeof(LineViewModel));
+		public static readonly IPropertyData SelectedLineProperty = RegisterProperty<LineViewModel>(nameof(SelectedLine));
 
 		/// <summary>
 		/// Gets or sets the view model's selected ellipse.
@@ -369,7 +369,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// SelectedLine property data.
 		/// </summary>
-		public static readonly PropertyData SelectedEllipseProperty = RegisterProperty(nameof(SelectedEllipse), typeof(EllipseViewModel));
+		public static readonly IPropertyData SelectedEllipseProperty = RegisterProperty<EllipseViewModel>(nameof(SelectedEllipse));
 
 		/// <summary>
 		/// Currently selected shape.
@@ -389,7 +389,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// SelectedLine property data.
 		/// </summary>
-		public static readonly PropertyData SelectedShapeProperty = RegisterProperty(nameof(SelectedShape), typeof(ShapeViewModel));
+		public static readonly IPropertyData SelectedShapeProperty = RegisterProperty<ShapeViewModel>(nameof(SelectedShape));
 
 		/// <summary>
 		/// Gets or sets the previous point during a point move operation.
@@ -403,7 +403,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// PreviousPointMoving property data.
 		/// </summary>
-		public static readonly PropertyData PreviousPointMovingProperty = RegisterProperty(nameof(PreviousPointMoving), typeof(PolygonPointViewModel));
+		public static readonly IPropertyData PreviousPointMovingProperty = RegisterProperty<PolygonPointViewModel>(nameof(PreviousPointMoving));
 
 		/// <summary>
 		/// Gets or sets the point being moved.
@@ -417,7 +417,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// PointMoving property data.
 		/// </summary>
-		public static readonly PropertyData PointMovingProperty = RegisterProperty(nameof(PointMoving), typeof(PolygonPointViewModel));
+		public static readonly IPropertyData PointMovingProperty = RegisterProperty<PolygonPointViewModel>(nameof(PointMoving));
 
 		/// <summary>
 		/// Gets or sets the next point during a move operation.
@@ -431,7 +431,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// NextPointMoving property data.
 		/// </summary>
-		public static readonly PropertyData NextPointMovingProperty = RegisterProperty(nameof(NextPointMoving), typeof(PolygonPointViewModel));
+		public static readonly IPropertyData NextPointMovingProperty = RegisterProperty<PolygonPointViewModel>(nameof(NextPointMoving));
 
 		/// <summary>
 		/// True when the moving ghost point is visible.
@@ -445,7 +445,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// MovingPointVisibilityPrevious property data.
 		/// </summary>
-		public static readonly PropertyData MovingPointVisibilityPreviousProperty = RegisterProperty(nameof(MovingPointVisibilityPrevious), typeof(bool));
+		public static readonly IPropertyData MovingPointVisibilityPreviousProperty = RegisterProperty<bool>(nameof(MovingPointVisibilityPrevious));
 
 		/// <summary>
 		/// True when the moving ghost point is visible.
@@ -459,7 +459,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// MovingPointVisibilityNext property data.
 		/// </summary>
-		public static readonly PropertyData MovingPointVisibilityNextProperty = RegisterProperty(nameof(MovingPointVisibilityNext), typeof(bool));
+		public static readonly IPropertyData MovingPointVisibilityNextProperty = RegisterProperty<bool>(nameof(MovingPointVisibilityNext));
 
 		/// <summary>
 		/// Collection of polygon snapshots.
@@ -473,7 +473,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>		
 		/// PolygonSnapshots property data.
 		/// </summary>
-		public static readonly PropertyData PolygonSnapshotsProperty = RegisterProperty(nameof(PolygonSnapshots), typeof(ObservableCollection<PolygonSnapshotViewModel>));
+		public static readonly IPropertyData PolygonSnapshotsProperty = RegisterProperty<ObservableCollection<PolygonSnapshotViewModel>>(nameof(PolygonSnapshots));
 		
 		/// <summary>
 		/// Draw polygon mode flag.
@@ -518,7 +518,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// DrawPolygon property data.
 		/// </summary>
-		public static readonly PropertyData DrawPolygonProperty = RegisterProperty(nameof(DrawPolygon), typeof(bool));
+		public static readonly IPropertyData DrawPolygonProperty = RegisterProperty<bool>(nameof(DrawPolygon));
 
 		/// <summary>
 		/// Draw Ellipse mode flag.
@@ -551,7 +551,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// DrawEllipse property data.
 		/// </summary>
-		public static readonly PropertyData DrawEllipseProperty = RegisterProperty(nameof(DrawEllipse), typeof(bool));
+		public static readonly IPropertyData DrawEllipseProperty = RegisterProperty<bool>(nameof(DrawEllipse));
 
 		/// <summary>
 		/// Draw line mode flag.
@@ -591,7 +591,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// DrawLine property data.
 		/// </summary>
-		public static readonly PropertyData DrawLineProperty = RegisterProperty(nameof(DrawLine), typeof(bool));
+		public static readonly IPropertyData DrawLineProperty = RegisterProperty<bool>(nameof(DrawLine));
 		
 		/// <summary>
 		/// Add polygon point mode flag.
@@ -616,7 +616,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// AddPoint property data.
 		/// </summary>
-		public static readonly PropertyData AddPointProperty = RegisterProperty(nameof(AddPoint), typeof(bool));
+		public static readonly IPropertyData AddPointProperty = RegisterProperty<bool>(nameof(AddPoint));
 
 		/// <summary>
 		/// Selection mode flag.
@@ -644,7 +644,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// IsSelecting property data.
 		/// </summary>
-		public static readonly PropertyData IsSelectingProperty = RegisterProperty(nameof(IsSelecting), typeof(bool));
+		public static readonly IPropertyData IsSelectingProperty = RegisterProperty<bool>(nameof(IsSelecting));
 
 		/// <summary>
 		/// 
@@ -664,7 +664,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// TimeBarVisible property data.
 		/// </summary>
-		public static readonly PropertyData TimeBarVisibleProperty = RegisterProperty(nameof(TimeBarVisible), typeof(bool));
+		public static readonly IPropertyData TimeBarVisibleProperty = RegisterProperty<bool>(nameof(TimeBarVisible));
 
 		/// <summary>
 		/// Width of time bar.
@@ -682,7 +682,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// TimeBarActualWidth property data.
 		/// </summary>
-		public static readonly PropertyData TimeBarActualWidthProperty = RegisterProperty(nameof(TimeBarActualWidth), typeof(double));
+		public static readonly IPropertyData TimeBarActualWidthProperty = RegisterProperty<double>(nameof(TimeBarActualWidth));
 
 		/// <summary>
 		/// Width of the canvas.
@@ -704,7 +704,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// CanvasActualWidth property data.
 		/// </summary>
-		public static readonly PropertyData CanvasActualWidthProperty = RegisterProperty(nameof(CanvasActualWidth), typeof(double));
+		public static readonly IPropertyData CanvasActualWidthProperty = RegisterProperty<double>(nameof(CanvasActualWidth));
 
 		/// <summary>
 		/// Height of the canvas.
@@ -726,7 +726,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// CanvasActualHeight property data.
 		/// </summary>
-		public static readonly PropertyData CanvasActualHeightProperty = RegisterProperty(nameof(CanvasActualHeight), typeof(double));
+		public static readonly IPropertyData CanvasActualHeightProperty = RegisterProperty<double>(nameof(CanvasActualHeight));
 
 		/// <summary>
 		/// Gets or sets whether the polygon/line labels should be shown.
@@ -740,7 +740,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// ShowLabels property data.
 		/// </summary>
-		public static readonly PropertyData ShowLabelsProperty = RegisterProperty(nameof(ShowLabels), typeof(bool));
+		public static readonly IPropertyData ShowLabelsProperty = RegisterProperty<bool>(nameof(ShowLabels));
 
 		#endregion
 

@@ -133,7 +133,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			}
 		}
 
-		public static readonly PropertyData EllipseModelProperty = RegisterProperty(nameof(Ellipse), typeof(App.Polygon.Ellipse), null);
+		public static readonly IPropertyData EllipseModelProperty = RegisterProperty<Ellipse>(nameof(Ellipse));
 
 		#endregion
 
@@ -152,7 +152,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Width property data.
 		/// </summary>
-		public static readonly PropertyData WidthProperty = RegisterProperty(nameof(Width), typeof(double), null);
+		public static readonly IPropertyData WidthProperty = RegisterProperty<double>(nameof(Width));
 
 		/// <summary>
 		/// Gets or sets the height of the ellipse.
@@ -167,7 +167,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Height property data.
 		/// </summary>
-		public static readonly PropertyData HeightProperty = RegisterProperty(nameof(Height), typeof(double), null);
+		public static readonly IPropertyData HeightProperty = RegisterProperty<double>(nameof(Height));
 
 		/// <summary>
 		/// Gets or sets the left point of the ellipse rectangle.
@@ -182,7 +182,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Left property data.
 		/// </summary>
-		public static readonly PropertyData LeftProperty = RegisterProperty(nameof(Left), typeof(double), null);
+		public static readonly IPropertyData LeftProperty = RegisterProperty<double>(nameof(Left));
 
 		/// <summary>
 		/// Gets or sets the top point of the ellipse rectangle.
@@ -197,7 +197,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Top property data.
 		/// </summary>
-		public static readonly PropertyData TopProperty = RegisterProperty(nameof(Top), typeof(double), null);
+		public static readonly IPropertyData TopProperty = RegisterProperty<double>(nameof(Top));
 
 		/// <summary>
 		/// Gets or sets the angle of the ellipse.
@@ -212,7 +212,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// <summary>
 		/// Top property data.
 		/// </summary>
-		public static readonly PropertyData AngleProperty = RegisterProperty(nameof(Angle), typeof(double), null);
+		public static readonly IPropertyData AngleProperty = RegisterProperty<double>(nameof(Angle));
 
 		#endregion
 

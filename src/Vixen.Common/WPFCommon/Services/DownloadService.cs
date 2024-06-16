@@ -4,7 +4,6 @@ using Catel.IoC;
 
 namespace Common.WPFCommon.Services
 {
-	[ServiceLocatorRegistration(typeof(IDownloadService))]
 	public class DownloadService:IDownloadService
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();

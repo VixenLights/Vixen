@@ -35,7 +35,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		/// <summary>
 		/// SourceTreeNodes property data.
 		/// </summary>
-		public static readonly PropertyData SourceTreeNodesProperty = RegisterProperty("SourceTreeNodes", typeof(ObservableCollection<ElementNodeProxy>));
+		public static readonly IPropertyData SourceTreeNodesProperty = RegisterProperty<ObservableCollection<ElementNodeProxy>>(nameof(SourceTreeNodes));
 
 		#endregion
 
@@ -53,7 +53,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 		/// <summary>
 		/// SourceTreeSelectedItem property data.
 		/// </summary>
-		public static readonly PropertyData SourceTreeSelectedItemProperty = RegisterProperty("SourceTreeSelectedItem", typeof(ElementNodeProxy));
+		public static readonly IPropertyData SourceTreeSelectedItemProperty = RegisterProperty<ElementNodeProxy>(nameof(SourceTreeSelectedItem));
 
 		#endregion
 

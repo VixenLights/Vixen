@@ -22,7 +22,7 @@ namespace Common.DiscreteColorPicker.ViewModels
 		/// <summary>
 		/// Check box selected property data.
 		/// </summary>
-		public static readonly PropertyData CheckBoxSelectedPropertyData = RegisterProperty(nameof(CheckBoxSelected), typeof(bool));
+		public static readonly IPropertyData CheckBoxSelectedPropertyData = RegisterProperty<bool>(nameof(CheckBoxSelected));
 
 		#endregion
 	}

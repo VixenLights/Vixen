@@ -57,7 +57,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Prop property data.
 		/// </summary>
-		public static readonly PropertyData PropProperty = RegisterProperty("Prop", typeof(Prop));
+		public static readonly IPropertyData PropProperty = RegisterProperty<Prop>(nameof(Prop));
 
 		#endregion
 
@@ -76,7 +76,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// RootNodes property data.
 		/// </summary>
-		public static readonly PropertyData RootNodesProperty = RegisterProperty("RootNodes", typeof(ObservableCollection<ElementModel>), null);
+		public static readonly IPropertyData RootNodesProperty = RegisterProperty<ObservableCollection<ElementModel>>(nameof(RootNodes));
 
 		#endregion
 
@@ -94,7 +94,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// RootNodesViewModels property data.
 		/// </summary>
-		public static readonly PropertyData RootNodesViewModelsProperty = RegisterProperty("RootNodesViewModels", typeof(ObservableCollection<ElementModelViewModel>));
+		public static readonly IPropertyData RootNodesViewModelsProperty = RegisterProperty<ObservableCollection<ElementModelViewModel>>(nameof(RootNodesViewModels));
 
 		#endregion
 
@@ -112,8 +112,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// SelectedItems property data.
 		/// </summary>
-		public static readonly PropertyData SelectedItemsProperty =
-			RegisterProperty("SelectedItems", typeof(ObservableCollection<ElementModelViewModel>), null);
+		public static readonly IPropertyData SelectedItemsProperty =
+			RegisterProperty<ObservableCollection<ElementModelViewModel>>(nameof(SelectedItems));
 
 
 		private void SelectedItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -152,7 +152,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// SelectedItem property data.
 		/// </summary>
-		public static readonly PropertyData SelectedItemProperty = RegisterProperty("SelectedItem", typeof(ElementModelViewModel));
+		public static readonly IPropertyData SelectedItemProperty = RegisterProperty<ElementModelViewModel>(nameof(SelectedItem));
 
 		#endregion
 
