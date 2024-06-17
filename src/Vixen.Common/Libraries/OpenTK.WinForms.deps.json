@@ -8,14 +8,48 @@
     ".NETCoreApp,Version=v3.1": {
       "OpenTK.WinForms/1.0.0": {
         "dependencies": {
-          "OpenTK.Graphics": "4.7.4",
-          "OpenTK.Windowing.Desktop": "4.7.4"
+          "OpenTK": "4.8.2",
+          "OpenTK.Graphics": "4.8.2",
+          "OpenTK.Windowing.Desktop": "4.8.2"
         },
         "runtime": {
           "OpenTK.WinForms.dll": {}
         }
       },
-      "OpenTK.Core/4.7.4": {
+      "OpenTK/4.8.2": {
+        "dependencies": {
+          "OpenTK.Audio.OpenAL": "4.8.2",
+          "OpenTK.Compute": "4.8.2",
+          "OpenTK.Core": "4.8.2",
+          "OpenTK.Graphics": "4.8.2",
+          "OpenTK.Input": "4.8.2",
+          "OpenTK.Mathematics": "4.8.2",
+          "OpenTK.Windowing.Common": "4.8.2",
+          "OpenTK.Windowing.Desktop": "4.8.2",
+          "OpenTK.Windowing.GraphicsLibraryFramework": "4.8.2"
+        }
+      },
+      "OpenTK.Audio.OpenAL/4.8.2": {
+        "dependencies": {
+          "OpenTK.Core": "4.8.2",
+          "OpenTK.Mathematics": "4.8.2"
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/OpenTK.Audio.OpenAL.dll": {
+            "assemblyVersion": "4.0.0.0",
+            "fileVersion": "4.0.0.0"
+          }
+        }
+      },
+      "OpenTK.Compute/4.8.2": {
+        "runtime": {
+          "lib/netcoreapp3.1/OpenTK.Compute.dll": {
+            "assemblyVersion": "4.0.0.0",
+            "fileVersion": "4.0.0.0"
+          }
+        }
+      },
+      "OpenTK.Core/4.8.2": {
         "runtime": {
           "lib/netstandard2.1/OpenTK.Core.dll": {
             "assemblyVersion": "4.0.0.0",
@@ -23,10 +57,10 @@
           }
         }
       },
-      "OpenTK.Graphics/4.7.4": {
+      "OpenTK.Graphics/4.8.2": {
         "dependencies": {
-          "OpenTK.Core": "4.7.4",
-          "OpenTK.Mathematics": "4.7.4"
+          "OpenTK.Core": "4.8.2",
+          "OpenTK.Mathematics": "4.8.2"
         },
         "runtime": {
           "lib/netcoreapp3.1/OpenTK.Graphics.dll": {
@@ -35,7 +69,15 @@
           }
         }
       },
-      "OpenTK.Mathematics/4.7.4": {
+      "OpenTK.Input/4.8.2": {
+        "runtime": {
+          "lib/netstandard2.0/OpenTK.Input.dll": {
+            "assemblyVersion": "4.0.0.0",
+            "fileVersion": "4.0.0.0"
+          }
+        }
+      },
+      "OpenTK.Mathematics/4.8.2": {
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "5.0.0"
         },
@@ -46,8 +88,13 @@
           }
         }
       },
-      "OpenTK.redist.glfw/3.3.7.27": {
+      "OpenTK.redist.glfw/3.3.8.39": {
         "runtimeTargets": {
+          "runtimes/linux-x64/native/libglfw-wayland.so.3.3": {
+            "rid": "linux-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
           "runtimes/linux-x64/native/libglfw.so.3.3": {
             "rid": "linux-x64",
             "assetType": "native",
@@ -75,10 +122,10 @@
           }
         }
       },
-      "OpenTK.Windowing.Common/4.7.4": {
+      "OpenTK.Windowing.Common/4.8.2": {
         "dependencies": {
-          "OpenTK.Core": "4.7.4",
-          "OpenTK.Mathematics": "4.7.4"
+          "OpenTK.Core": "4.8.2",
+          "OpenTK.Mathematics": "4.8.2"
         },
         "runtime": {
           "lib/netcoreapp3.1/OpenTK.Windowing.Common.dll": {
@@ -87,12 +134,12 @@
           }
         }
       },
-      "OpenTK.Windowing.Desktop/4.7.4": {
+      "OpenTK.Windowing.Desktop/4.8.2": {
         "dependencies": {
-          "OpenTK.Core": "4.7.4",
-          "OpenTK.Mathematics": "4.7.4",
-          "OpenTK.Windowing.Common": "4.7.4",
-          "OpenTK.Windowing.GraphicsLibraryFramework": "4.7.4"
+          "OpenTK.Core": "4.8.2",
+          "OpenTK.Mathematics": "4.8.2",
+          "OpenTK.Windowing.Common": "4.8.2",
+          "OpenTK.Windowing.GraphicsLibraryFramework": "4.8.2"
         },
         "runtime": {
           "lib/netcoreapp3.1/OpenTK.Windowing.Desktop.dll": {
@@ -101,10 +148,10 @@
           }
         }
       },
-      "OpenTK.Windowing.GraphicsLibraryFramework/4.7.4": {
+      "OpenTK.Windowing.GraphicsLibraryFramework/4.8.2": {
         "dependencies": {
-          "OpenTK.Core": "4.7.4",
-          "OpenTK.redist.glfw": "3.3.7.27"
+          "OpenTK.Core": "4.8.2",
+          "OpenTK.redist.glfw": "3.3.8.39"
         },
         "runtime": {
           "lib/netcoreapp3.1/OpenTK.Windowing.GraphicsLibraryFramework.dll": {
@@ -129,54 +176,82 @@
       "serviceable": false,
       "sha512": ""
     },
-    "OpenTK.Core/4.7.4": {
+    "OpenTK/4.8.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Q9EtTAHXoZVwGHgG8RrnrXyeYX1vwsEjHTq4ljKe+epmiyiIha3mn2AO1Bf+rTbN/8H/kJJIYBi/x0l3wdSe9g==",
-      "path": "opentk.core/4.7.4",
-      "hashPath": "opentk.core.4.7.4.nupkg.sha512"
+      "sha512": "sha512-s2bqkD0glaX5Zbrv0Nj91zcefGrwq+nAp7SnXw14Z22Wj1nVE9CWkEyKX8tha1EdxqSRwKdP6gi+xzZXs4nK4Q==",
+      "path": "opentk/4.8.2",
+      "hashPath": "opentk.4.8.2.nupkg.sha512"
     },
-    "OpenTK.Graphics/4.7.4": {
+    "OpenTK.Audio.OpenAL/4.8.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-CjbKFBIyhlD9H6xA+e2CDO1TL62ISDnJD4fK6HoY1CRgpeXOzssHV6RO/cpDxezH6aOsM5rIlqMQM6Buwn+kHQ==",
-      "path": "opentk.graphics/4.7.4",
-      "hashPath": "opentk.graphics.4.7.4.nupkg.sha512"
+      "sha512": "sha512-/Xe0luzJiVOvJ8YXGMY/YLZsGsb0/7Ms09isb/WxkKWjLyuiB2OIflZ49VHmumZpQDz2PUgwqOt2fucviLOmuw==",
+      "path": "opentk.audio.openal/4.8.2",
+      "hashPath": "opentk.audio.openal.4.8.2.nupkg.sha512"
     },
-    "OpenTK.Mathematics/4.7.4": {
+    "OpenTK.Compute/4.8.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Gukzr+ilTpl7mzT8BocTH5IPOjf4UCKQ7+15XF4Pd8J/Sb/2ZeYCVNnSYYhsqB08gSTsMLfZYv5f7DOxsRSTSQ==",
-      "path": "opentk.mathematics/4.7.4",
-      "hashPath": "opentk.mathematics.4.7.4.nupkg.sha512"
+      "sha512": "sha512-n3gBbXOTCkvkNjSOKkVpoxfF/QXzo+cPWKtzObm4f/J+5mOE8odHKXgPn1765Tnu2Ou2ImvdXi/bUFQt/V5Qiw==",
+      "path": "opentk.compute/4.8.2",
+      "hashPath": "opentk.compute.4.8.2.nupkg.sha512"
     },
-    "OpenTK.redist.glfw/3.3.7.27": {
+    "OpenTK.Core/4.8.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-q2cVXtVB3yp4YZ0LWnDgb/fkYolka/xf9ePtw20q6nzJj2DoI1uoBj7LD05htO9iw0k7ntgpdwvk+1DjPI4ytg==",
-      "path": "opentk.redist.glfw/3.3.7.27",
-      "hashPath": "opentk.redist.glfw.3.3.7.27.nupkg.sha512"
+      "sha512": "sha512-BS5IM1W/BK9BtmsEnYT/RGv+KDK0Zrnw8nDDGvK45ywBjMLv+qBRB+Vkx5sQ4Jjy7btLxxqrPHmT3wt5N/PcxA==",
+      "path": "opentk.core/4.8.2",
+      "hashPath": "opentk.core.4.8.2.nupkg.sha512"
     },
-    "OpenTK.Windowing.Common/4.7.4": {
+    "OpenTK.Graphics/4.8.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Pexj69hQ6in4SIEiFf/Pht4TxdIDEWCfMJp3mm9zsAQ8ErptzU6x85gpoTb8TmPSbQhocf5isYAh0GlJxu4Dbw==",
-      "path": "opentk.windowing.common/4.7.4",
-      "hashPath": "opentk.windowing.common.4.7.4.nupkg.sha512"
+      "sha512": "sha512-qpbyWqdO+yEFVFinKwEWKgi1Jgd0fVSgHbB7d5I8ozI9RL/SKZSNmJDxLjTMSQImJtFixmATcLEWwvEceJ/JsQ==",
+      "path": "opentk.graphics/4.8.2",
+      "hashPath": "opentk.graphics.4.8.2.nupkg.sha512"
     },
-    "OpenTK.Windowing.Desktop/4.7.4": {
+    "OpenTK.Input/4.8.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-kx1JCGhqMxmcEsxvHRUaQ9kbm2Gg1wNal2GGte6Fy6tfDCH7kaBlCP9vkgsnH8ttH3A+F5Lu/R4LcVYcPb772g==",
-      "path": "opentk.windowing.desktop/4.7.4",
-      "hashPath": "opentk.windowing.desktop.4.7.4.nupkg.sha512"
+      "sha512": "sha512-BGs7STF0/o4kNJ1pWXko4I3IwEhieOHVgJFzXzo5m1tI4zMKjBqmzuc4GGfCu+Gtiv33vRYx3dt9f659nr5J8w==",
+      "path": "opentk.input/4.8.2",
+      "hashPath": "opentk.input.4.8.2.nupkg.sha512"
     },
-    "OpenTK.Windowing.GraphicsLibraryFramework/4.7.4": {
+    "OpenTK.Mathematics/4.8.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Sy9+UI0IZeD7/g4G/ZN3rvQUMw2uWw7mKJsqZlXpzBXnlqKwW+epYuFmyZUfttDoxA1X0dn0IBrnErdjQO8ZYA==",
-      "path": "opentk.windowing.graphicslibraryframework/4.7.4",
-      "hashPath": "opentk.windowing.graphicslibraryframework.4.7.4.nupkg.sha512"
+      "sha512": "sha512-A8D3eBWi/LKndvTQQ9o9uwyQJUjGORfWCn/gOvX0jIwmTctkLGnOdw5kw4JbRnzfrhZoSIaqZ7MYWWhIkasORw==",
+      "path": "opentk.mathematics/4.8.2",
+      "hashPath": "opentk.mathematics.4.8.2.nupkg.sha512"
+    },
+    "OpenTK.redist.glfw/3.3.8.39": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-JzjaBzHTyKenUk9CXOYIqA/v7VMnjFnqmd3SKR3I1YpuOTu/H3ohyy3o+ZfMCQ6IRKs7CLfSPXMarKLvwD0WgQ==",
+      "path": "opentk.redist.glfw/3.3.8.39",
+      "hashPath": "opentk.redist.glfw.3.3.8.39.nupkg.sha512"
+    },
+    "OpenTK.Windowing.Common/4.8.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-cE7w2AboX/cxtOl7UWa1rTnH4uUoCEg9rtppN6d1/8GOfKUW8LjO6bjEePrRk9LzRZL+5dky3nfw6ZONn5ItyA==",
+      "path": "opentk.windowing.common/4.8.2",
+      "hashPath": "opentk.windowing.common.4.8.2.nupkg.sha512"
+    },
+    "OpenTK.Windowing.Desktop/4.8.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-SlEuiAllLgE03/jJbloCOD1iNtBpnhMuVb510ccA/ILp//mzXHeRKsz7zFJ1ct7yIxe5U2WExXx52Tan++p11Q==",
+      "path": "opentk.windowing.desktop/4.8.2",
+      "hashPath": "opentk.windowing.desktop.4.8.2.nupkg.sha512"
+    },
+    "OpenTK.Windowing.GraphicsLibraryFramework/4.8.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-o50PgKL8G0Pqs7Lo7hu1ru+5X5l03aht5jaeik7McXFgVaBJzMLhMhZkiferx4bbcC9Rq597BOknDwqE/bsLOw==",
+      "path": "opentk.windowing.graphicslibraryframework/4.8.2",
+      "hashPath": "opentk.windowing.graphicslibraryframework.4.8.2.nupkg.sha512"
     },
     "System.Runtime.CompilerServices.Unsafe/5.0.0": {
       "type": "package",
