@@ -13,8 +13,8 @@ namespace VixenModules.Output.DDP
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
-			Address = data.Address;
+			ThemeUpdateControls.UpdateControls(this);			
+			Address = IPAddress.Parse(data.Address);
 		}
 
 		public IPAddress Address

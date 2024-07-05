@@ -8,17 +8,17 @@ namespace VixenModules.Output.DDP
 	public class DDPData : ModuleDataModelBase
 	{
 		[DataMember]
-		public IPAddress Address { get; set; }
+		public string Address { get; set; }
 
 		public DDPData()
 		{
-			Address = new IPAddress(new byte[] {127, 0, 0, 1});
+			Address = "127, 0, 0, 1";
 		}
 
 		public override IModuleDataModel Clone()
 		{
 			DDPData result = new DDPData();
-			result.Address = new IPAddress(Address.GetAddressBytes());
+			result.Address = Address;
 			return result;
 		}
 	}
