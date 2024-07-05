@@ -3,6 +3,7 @@ using Vixen.Module.Controller;
 using Vixen.Commands;
 using System.Net.Sockets;
 using System.Windows.Forms;
+using System.Net;
 
 namespace VixenModules.Output.DDP
 {
@@ -75,7 +76,7 @@ namespace VixenModules.Output.DDP
 			DDPSetup setup = new DDPSetup(_data);
 			if (setup.ShowDialog() == DialogResult.OK) {
 				if (setup.Address != null)
-					_data.Address = setup.Address;
+					_data.Address = setup.Address.ToString();
 				OpenConnection();
 				return true;
 			}
@@ -253,7 +254,7 @@ namespace VixenModules.Output.DDP
 		{
 			var config = new ControllerNetworkConfiguration();
 			config.SupportsUniverses = true;
-			config.IpAddress = _data.Address;
+			config.IpAddress = IPAddress.Parse(_data.Address);
 			config.ProtocolType = ProtocolTypes.DDP;
 			config.TransmissionMethod = TransmissionMethods.Unicast;
 			var universes = new List<UniverseConfiguration>(1);
