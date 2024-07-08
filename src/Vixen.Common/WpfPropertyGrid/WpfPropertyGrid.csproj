@@ -19,4 +19,7 @@
 		<ItemGroup>
 				<Page Remove="ValueEditors\EditorResources.xaml" />
 		</ItemGroup>
+		<ItemGroup>
+		  <PackageReference Include="MessagePack" Version="2.5.171" />
+		</ItemGroup>
 </Project>

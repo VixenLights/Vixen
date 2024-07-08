@@ -24,17 +24,6 @@ namespace Vixen.Module.Controller
 			throw new NotImplementedException();
 		}
 
-
-		/// <inheritdoc />
-		public virtual bool SupportsNamedOutputs { get; set; } = false;
-
-		/// <inheritdoc />
-		public virtual void NameOutputs()
-		{
-			
-		}
-
-
 		public IDataPolicyFactory DataPolicyFactory
 		{
 			get { return _dataPolicyFactory; }

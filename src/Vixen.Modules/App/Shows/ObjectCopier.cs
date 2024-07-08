@@ -18,24 +18,26 @@ namespace VixenModules.App.Shows
 		/// <returns>The copied object.</returns>
 		public static T Clone<T>(T source)
 		{
-			if (!typeof(T).IsSerializable)
-			{
-				throw new ArgumentException(@"The type must be serializable.", nameof(source));
-			}
-
 			// Don't serialize a null object, simply return the default for that object
 			if (Object.ReferenceEquals(source, null))
 			{
 				return default(T);
 			}
 
-			Stream stream = new MemoryStream();
-			DataContractSerializer serializer = new DataContractSerializer(typeof(T));
-			using (stream)
+			try
 			{
-				serializer.WriteObject(stream, source);
-				stream.Seek(0, SeekOrigin.Begin);
-				return (T) serializer.ReadObject(stream);
+				Stream stream = new MemoryStream();
+				DataContractSerializer serializer = new DataContractSerializer(typeof(T));
+				using (stream)
+				{
+					serializer.WriteObject(stream, source);
+					stream.Seek(0, SeekOrigin.Begin);
+					return (T)serializer.ReadObject(stream);
+				}
+			}
+			catch (InvalidDataContractException)
+			{
+				throw new ArgumentException(@"The type must be serializable.", nameof(source));
 			}
 		}
 	}

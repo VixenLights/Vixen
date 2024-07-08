@@ -22,7 +22,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
-#pragma warning disable SYSLIB0011
+using MessagePack;
 
 namespace System.Windows.Controls.WpfPropertyGrid.Internal
 {
@@ -155,13 +155,18 @@ namespace System.Windows.Controls.WpfPropertyGrid.Internal
             obj2 = converter.ConvertFromInvariantString((string)obj3);
           }
         }
-        if ((obj2 == null) && type.IsSerializable)
+        if (obj2 == null)
         {
-          BinaryFormatter formatter = new BinaryFormatter();
-          MemoryStream serializationStream = new MemoryStream();
-          formatter.Serialize(serializationStream, value);
-          serializationStream.Position = 0L;
-          obj2 = formatter.Deserialize(serializationStream);
+	        var options = MessagePack.Resolvers.ContractlessStandardResolver.Options;
+	        var ms = new MemoryStream();
+
+	        MessagePackSerializer.Serialize(ms, value, options);
+
+	        ms.Position = 0;
+
+	        obj2 = MessagePackSerializer.Deserialize<object>(ms, options);
+
+	        ms.Close();
         }
         if (obj2 != null)
         {

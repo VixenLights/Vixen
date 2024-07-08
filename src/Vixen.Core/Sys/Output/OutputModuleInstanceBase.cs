@@ -67,10 +67,10 @@ namespace Vixen.Sys.Output
 		}
 
 		/// <inheritdoc />
-		public virtual bool SupportsNamedOutputs { get; } = false;
+		public virtual bool SupportsNamedOutputs { get; set; } = false;
 
 		/// <inheritdoc />
-		public void NameOutputs()
+		public virtual void NameOutputs()
 		{
 			
 		}
