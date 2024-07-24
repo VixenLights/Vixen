@@ -1244,6 +1244,48 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		#endregion	
+		#endregion
+
+		#region Public Methods
+		
+		/// <inheritdoc/>				
+		public override void Validate(PropertyValueChangedEventArgs e)
+		{
+			// If the property being changed is Pan Start or Stop then...
+			if (e.ChangedItem.Label == "Pan Start Position (Degrees)" ||
+				e.ChangedItem.Label == "Pan Stop Position (Degrees)")
+			{
+				// If the Pan Start is greater than the Pan Stop then...
+				if (PanStartPosition > PanStopPosition)
+				{
+					MessageBox.Show("The 'Pan Start Position' should be less than the 'Pan Stop Position'.  " + 
+									"Please correct the values.", "Data Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+			}
+			// If the property being changed is Tilt Start or Stop then...
+			else if (e.ChangedItem.Label == "Tilt Start Position (Degrees)" ||
+					 e.ChangedItem.Label == "Tilt Stop Position (Degrees)")
+			{
+				// If the Tilt Start is greater than the Tilt Stop then...
+				if (TiltStartPosition > TiltStopPosition)
+				{
+					MessageBox.Show("The 'Tilt Start Position' should be less than the 'Tilt Stop Position'.  " + 
+									"Please correct the values.", "Data Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+			}
+			// If the property being changed is Strobe Rate then...
+			else if (e.ChangedItem.Label == "Strobe Rate Minimum (Hz)" ||
+					 e.ChangedItem.Label == "Strobe Rate Maximum (Hz)")
+			{
+				// If the Strobe Minimum is greater than the Strobe Maximum then...
+				if (StrobeRateMinimum > StrobeRateMaximum)
+				{
+					MessageBox.Show("The 'Strobe Rate Minimum' should be less than the 'Strobe Rate Maximum'.  " +
+									"Please correct the values.", "Data Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+			}
+		}
+
+		#endregion
 	}
 }

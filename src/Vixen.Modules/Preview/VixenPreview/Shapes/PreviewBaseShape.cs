@@ -369,5 +369,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Dispose(true);
 			GC.SuppressFinalize(this);
 		}				
+
+		/// <summary>
+		/// Gives the derived shape the opportunity to validate PropertyGrid edits.
+		/// </summary>
+		/// <param name="e">Property value changed event arguments</param>
+		public virtual void Validate(PropertyValueChangedEventArgs e)
+		{			
+		}
 	}
 }
