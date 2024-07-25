@@ -27,7 +27,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private void PropertyGrid_PropertyValueChanged(object s, System.Windows.Forms.PropertyValueChangedEventArgs e)
 		{
 			// Have the shape validate the edit
-			Shape.Validate(e);
+			Shape.Validate(e.ChangedItem.Label);
 
 			OnPropertyEdited();
 		}

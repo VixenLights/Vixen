@@ -1,4 +1,6 @@
-﻿using Catel.Data;
+﻿using System.Collections.Generic;
+
+using Catel.Data;
 using VixenModules.App.Fixture;
 
 namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
@@ -198,6 +200,30 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			}
 		}
 
+		/// <summary>
+		/// Validates that the minimum value is less than or equal to the maximum.
+		/// </summary>
+		/// <param name="validationResults">Results of the validation</param>
+		private void ValidateMinimumLessThanMaximum(List<IFieldValidationResult> validationResults)
+		{
+			// Attempt to parse the angles into an integers
+			int startPositionValue = 0;
+			int stopPositionValue = 0;
+			bool validStartPosition = int.TryParse(StartPosition, out startPositionValue);
+			bool validStopPosition = int.TryParse(StopPosition, out stopPositionValue);
+
+			// If both values are valid then...
+			if (validStartPosition && validStopPosition)
+			{
+				// If the minimum is greater than the maximum then...
+				if (startPositionValue > stopPositionValue)
+				{
+					// Add an error to the validation results
+					validationResults.Add(FieldValidationResult.CreateError(StartPositionProperty, $"Start Position must be less than or equal to the Stop Position."));
+				}
+			}
+		}
+
         #endregion
 
         #region Protected Methods
@@ -217,6 +243,9 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 				
 				// Validate the end position
 				ValidatesAngle(validationResults, StopPositionProperty, "Stop Position", StopPosition);
+
+				// Validate that the minimum is less or equal to the maximum
+				ValidateMinimumLessThanMaximum(validationResults);
 
 				// Display the validation bar
 				DisplayValidationBar(validationResults);				

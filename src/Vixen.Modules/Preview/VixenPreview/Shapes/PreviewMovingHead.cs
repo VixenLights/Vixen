@@ -1249,11 +1249,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		#region Public Methods
 		
 		/// <inheritdoc/>				
-		public override void Validate(PropertyValueChangedEventArgs e)
+		public override void Validate(string propertyLabel)
 		{
 			// If the property being changed is Pan Start or Stop then...
-			if (e.ChangedItem.Label == "Pan Start Position (Degrees)" ||
-				e.ChangedItem.Label == "Pan Stop Position (Degrees)")
+			if (propertyLabel == "Pan Start Position (Degrees)" ||
+				propertyLabel == "Pan Stop Position (Degrees)")
 			{
 				// If the Pan Start is greater than the Pan Stop then...
 				if (PanStartPosition > PanStopPosition)
@@ -1263,8 +1263,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				}
 			}
 			// If the property being changed is Tilt Start or Stop then...
-			else if (e.ChangedItem.Label == "Tilt Start Position (Degrees)" ||
-					 e.ChangedItem.Label == "Tilt Stop Position (Degrees)")
+			else if (propertyLabel == "Tilt Start Position (Degrees)" ||
+					 propertyLabel == "Tilt Stop Position (Degrees)")
 			{
 				// If the Tilt Start is greater than the Tilt Stop then...
 				if (TiltStartPosition > TiltStopPosition)
@@ -1274,8 +1274,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				}
 			}
 			// If the property being changed is Strobe Rate then...
-			else if (e.ChangedItem.Label == "Strobe Rate Minimum (Hz)" ||
-					 e.ChangedItem.Label == "Strobe Rate Maximum (Hz)")
+			else if (propertyLabel == "Strobe Rate Minimum (Hz)" ||
+					 propertyLabel == "Strobe Rate Maximum (Hz)")
 			{
 				// If the Strobe Minimum is greater than the Strobe Maximum then...
 				if (StrobeRateMinimum > StrobeRateMaximum)
