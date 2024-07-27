@@ -136,6 +136,36 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// </summary>
 		private const double DefaultMaxColorWheelRotationSpeed = 1.0;
 
+		/// <summary>
+		/// Minimum Strobe Rate display name.
+		/// </summary>
+		private const string MinimumStrobeRateDisplayName = "Minimum Strobe Rate (ms)";
+
+		/// <summary>
+		/// Maximum Strobe Rate display name.
+		/// </summary>
+		private const string MaximumStrobeRateDisplayName = "Maximum Strobe Rate (Hz)";
+
+		/// <summary>
+		/// Pan Start Position display name.
+		/// </summary>
+		private const string PanStartDisplayName = "Pan Start Position (Degrees)";
+
+		/// <summary>
+		/// Pan Stop Position display name.
+		/// </summary>
+		private const string PanStopDisplayName = "Pan Stop Position (Degrees)";
+
+		/// <summary>
+		/// Tilt Start display name.
+		/// </summary>
+		private const string TiltStartDisplayName = "Tilt Start Position (Degrees)";
+
+		/// <summary>
+		/// Tilt Stop display name.
+		/// </summary>
+		private const string TiltStopDisplayName = "Tilt Stop Position (Degrees)";
+
 		#endregion
 
 		#region Fields
@@ -1015,25 +1045,25 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		 Description("The time it takes of the intelligent fixture to tilt from the starting position to the maximum stop position."),
 		 DisplayName("Maximum Tilt Travel Time (s)")]
 		public double MaxTiltTravelTime { get; set; }
-
+		
 		/// <summary>
 		/// Strobe rate minimum in Hz.
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
 		Category("Strobe"),
 		Description("The strobe rate minimum (in Hz)."),
-		DisplayName("Strobe Rate Minimum (Hz)")]
+		DisplayName(MinimumStrobeRateDisplayName)]
 		public int StrobeRateMinimum { get; set; }
-
+		
 		/// <summary>
 		/// Strobe rate maximum in Hz.
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
 		 Category("Strobe"),
 		 Description("The strobe rate maximum (in Hz)."),
-		 DisplayName("Strobe Rate Maximum (Hz)")]
+		 DisplayName(MaximumStrobeRateDisplayName)]
 		public int StrobeRateMaximum { get; set; }
-
+		
 		/// <summary>
 		/// Strobe duration in ms.
 		/// </summary>
@@ -1042,16 +1072,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		 Description("The maximum strobe duration in ms."),
 		 DisplayName("Maximum Strobe Duration (ms)")]
 		public int MaximumStrobeDuration { get; set; }
-
+		
 		/// <summary>
 		/// Pan start position in degrees.
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
 		 Category("Pan"),
 		 Description("The pan starting point angle (in degrees)."),
-		 DisplayName("Pan Start Position (Degrees)")]
+		 DisplayName(PanStartDisplayName)]
 		public int PanStartPosition { get; set; }
-
+		
 		/// <summary>
 		/// Pan stop position in degrees.
 		/// </summary>
@@ -1067,16 +1097,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[DataMember(EmitDefaultValue = false),
 		 Category("Tilt"),
 		 Description("The tilt starting point angle (in degrees)."),
-		 DisplayName("Tilt Start Position (Degrees)")]
+		 DisplayName(TiltStartDisplayName)]
 		public int TiltStartPosition { get; set; }
-
+		
 		/// <summary>
 		/// Tilt stop position in degrees.
 		/// </summary>
 		[DataMember(EmitDefaultValue = false),
 		 Category("Tilt"),
 		 Description("The tilt stopping point angle (in degrees)."),
-		 DisplayName("Tilt Stop Position (Degrees)")]
+		 DisplayName(TiltStopDisplayName)]
 		public int TiltStopPosition { get; set; }
 
 		/// <summary>
@@ -1249,11 +1279,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		#region Public Methods
 		
 		/// <inheritdoc/>				
-		public override void Validate(string propertyLabel)
+		public void Validate(string propertyLabel)
 		{
 			// If the property being changed is Pan Start or Stop then...
-			if (propertyLabel == "Pan Start Position (Degrees)" ||
-				propertyLabel == "Pan Stop Position (Degrees)")
+			if (propertyLabel == PanStartDisplayName ||
+				propertyLabel == PanStopDisplayName)
 			{
 				// If the Pan Start is greater than the Pan Stop then...
 				if (PanStartPosition > PanStopPosition)
@@ -1263,8 +1293,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				}
 			}
 			// If the property being changed is Tilt Start or Stop then...
-			else if (propertyLabel == "Tilt Start Position (Degrees)" ||
-					 propertyLabel == "Tilt Stop Position (Degrees)")
+			else if (propertyLabel == TiltStartDisplayName ||
+					 propertyLabel == TiltStopDisplayName)
 			{
 				// If the Tilt Start is greater than the Tilt Stop then...
 				if (TiltStartPosition > TiltStopPosition)
@@ -1274,8 +1304,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				}
 			}
 			// If the property being changed is Strobe Rate then...
-			else if (propertyLabel == "Strobe Rate Minimum (Hz)" ||
-					 propertyLabel == "Strobe Rate Maximum (Hz)")
+			else if (propertyLabel == MinimumStrobeRateDisplayName ||
+					 propertyLabel == MaximumStrobeRateDisplayName)
 			{
 				// If the Strobe Minimum is greater than the Strobe Maximum then...
 				if (StrobeRateMinimum > StrobeRateMaximum)

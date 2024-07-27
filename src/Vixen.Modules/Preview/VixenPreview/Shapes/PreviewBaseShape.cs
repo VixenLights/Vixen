@@ -336,7 +336,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewMovingHead")
 			{
-				setupControl = new PreviewShapeBaseSetupControl(this);
+				setupControl = new PreviewMovingHeadSetupControl(this);
 			}
 
 			return setupControl;
@@ -369,13 +369,5 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Dispose(true);
 			GC.SuppressFinalize(this);
 		}				
-
-		/// <summary>
-		/// Gives the derived shape the opportunity to validate PropertyGrid edits.
-		/// </summary>
-		/// <param name="propertyLabel">Label of the property that has changed</param>
-		public virtual void Validate(string propertyLabel)
-		{			
-		}
 	}
 }
