@@ -225,6 +225,10 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 					((ISpecifyVolumeColor)_beamVolumes[0]).Color = beamColorLeft;
 					((ISpecifyVolumeColor)_beamVolumes[1]).Color = beamColorRight;
 
+					// Set the beam transparency
+					((ISpecifyVolumeTransparency)_beamVolumes[0]).Transparency = beamTransparency;
+					((ISpecifyVolumeTransparency)_beamVolumes[1]).Transparency = beamTransparency;
+
 					// Update the geometry on the light beam left side
 					((IUpdateCylinder)_beamVolumes[0]).Update(
 						0.0f,
