@@ -213,6 +213,22 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 			_contextMenuStrip.Items.Add(item);
 
+			item = new ToolStripMenuItem("Center Preview");
+			item.ToolTipText = @"Repositions the viewpoint to the center of the preview.";
+			item.Enabled = true; 
+			item.Click += (sender, args) =>
+			{				
+				// Reposition the camera in the center of the preview				
+				ClientSize = new Size(_width, _height);				
+				_camera.Position = new Vector3(_width / 2f, _height / 2f, _camera.Position.Z); 
+				_camera.SetDirection(new Vector3(0, 0, -1));
+				CalculatePointScaleFactor();
+				glControl.Invalidate();
+				SaveWindowState();
+			};
+
+			_contextMenuStrip.Items.Add(item);
+
 			item = new ToolStripMenuItem("Enable Light Scaling");
 			item.ToolTipText = @"Scales the light size as the camera is zoomed in or out.";
 			item.Checked = _enableLightScaling;
