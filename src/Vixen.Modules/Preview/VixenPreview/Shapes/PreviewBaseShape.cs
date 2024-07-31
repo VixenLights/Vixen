@@ -336,7 +336,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewMovingHead")
 			{
-				setupControl = new PreviewShapeBaseSetupControl(this);
+				setupControl = new PreviewMovingHeadSetupControl(this);
 			}
 
 			return setupControl;

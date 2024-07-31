@@ -24,8 +24,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		private void PropertyGrid_PropertyValueChanged(object s, System.Windows.Forms.PropertyValueChangedEventArgs e)
-		{
+		protected virtual void PropertyGrid_PropertyValueChanged(object s, System.Windows.Forms.PropertyValueChangedEventArgs e)
+		{			
 			OnPropertyEdited();
 		}
 
