@@ -213,6 +213,14 @@ namespace Common.Controls
 			return result;
 		}
 
+		/// <summary>
+		/// Generates a path to the element using the element guids. This logic is flawed in that if there are multiple paths to the element
+		/// because it exists multiple times in the tree, it will return the first and easiest path to that element, which may not be what is
+		/// expected. TODO Refactor this and the usages to account for multiple paths to the same element. This issue was discovered with VIX-3573.
+		/// </summary>
+		/// <param name="element"></param>
+		/// <param name="separator"></param>
+		/// <returns></returns>
 		private string GenerateEquivalentTreeNodeFullPathFromElement(ElementNode element, string separator)
 		{
 			string result = element.Id.ToString();
@@ -633,8 +641,10 @@ namespace Common.Controls
 						newName = "New Element";
 					else
 						newName = textDialog.Response;
-
-					ElementNode en = AddNewNode(newName, false, parent);
+					//Changed this to use parent !=null to determine if the tree should be rebuilt due to the way the generate path 
+					//logic works, if our parent is in the tree multiple times adding this node may not show up. Need to look at that 
+					//path logic to implement a better solution. This will serve as a simpler workaround for the solution to VIX-3573
+					ElementNode en = AddNewNode(newName, parent!=null, parent);
 					AddNodePathToTree(new []{en});
 					return en;
 				}
