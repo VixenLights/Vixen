@@ -12,6 +12,7 @@ namespace VixenModules.Effect.Effect
 	/// </summary>
 	/// <typeparam name="T_Data">Type of effect module data</typeparam>
 	public abstract class FixtureIndexEffectBase<T_Data> : FixtureEffectBase<T_Data>
+		where T_Data : EffectTypeModuleData
 	{
 		#region Constructor
 

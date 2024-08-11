@@ -4,16 +4,16 @@ using Vixen.Sys;
 namespace VixenModules.Effect.Fan
 {
 	/// <summary>
-	/// Descriptor for the Fan effect.
+	/// Descriptor for the Line Dance effect.
 	/// </summary>
-	public class FanDescriptor : EffectModuleDescriptorBase
+	public class LineDanceDescriptor : EffectModuleDescriptorBase
 	{
 		#region Fields
 
 		/// <summary>
 		/// Type ID for the effect.
 		/// </summary>
-		private static readonly Guid _typeId = new Guid("E3DA54E8-4267-4E03-B010-5F2F0FE5B66B");
+		private static readonly Guid _typeId = new Guid("9840765E-32B4-477E-8C10-5CFCD78DE8EF");
 
 		#endregion
 
@@ -26,16 +26,16 @@ namespace VixenModules.Effect.Fan
 		public override Guid TypeId => _typeId;
 
 		/// <inheritdoc />
-		public override Type ModuleClass => typeof(FanModule);
+		public override Type ModuleClass => typeof(LineDanceModule);
 
 		/// <inheritdoc />
-		public override Type ModuleDataClass => typeof(FanData);
+		public override Type ModuleDataClass => typeof(LineDanceData);
 
 		/// <inheritdoc />
 		public override string Author => "Vixen Team";
 
 		/// <inheritdoc />
-		public override string Description => "Applies a Fan effect to a group of Intelligent Fixtures";
+		public override string Description => "Applies variaious dance like movements to a group of Intelligent Fixtures";
 
 		/// <inheritdoc />
 		public override string Version => "1.0";
@@ -47,7 +47,7 @@ namespace VixenModules.Effect.Fan
 		/// <summary>
 		/// Gets the effect name.
 		/// </summary>
-		public override string EffectName => "Fan";
+		public override string EffectName => "Line Dance";
 
 		/// <inheritdoc />
 		public override ParameterSignature Parameters { get; }

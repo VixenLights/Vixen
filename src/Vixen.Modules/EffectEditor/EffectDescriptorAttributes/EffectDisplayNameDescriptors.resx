@@ -1338,4 +1338,19 @@
   <data name="WhirlpoolTailLength" xml:space="preserve">
     <value>Tail Length</value>
   </data>
+  <data name="LineDanceFanAdvancedOverrides" xml:space="preserve">
+    <value>Advanced Overrides</value>
+  </data>
+  <data name="LineDanceFanCenterHandling" xml:space="preserve">
+    <value>Center Handling</value>
+  </data>
+  <data name="LineDanceFanPanIncrement" xml:space="preserve">
+    <value>Pan Increment</value>
+  </data>
+  <data name="LineDanceFanPanStart" xml:space="preserve">
+    <value>Pan Start</value>
+  </data>
+  <data name="LineDanceMode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
 </root>

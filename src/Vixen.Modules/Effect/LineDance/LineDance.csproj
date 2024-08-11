@@ -2,16 +2,9 @@
   <PropertyGroup>
 
 
-    <RootNamespace>VixenModules.Effect.Fan</RootNamespace>
+    <RootNamespace>VixenModules.Effect.LineDance</RootNamespace>
 
-
-
-
-
-
-  </PropertyGroup>
-  
-  
+  </PropertyGroup>     
   <ItemGroup>
     <ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj"> 
     </ProjectReference>
