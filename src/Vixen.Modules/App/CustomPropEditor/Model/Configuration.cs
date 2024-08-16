@@ -32,5 +32,16 @@ namespace VixenModules.App.CustomPropEditor.Model
 			}
 		}
 
+		public uint DefaultLightSize
+		{
+			get => _data.DefaultLightSize; 
+			set 
+			{
+				if(value < 1) value = ElementModel.DefaultLightSize;
+				_data.DefaultLightSize = value;
+				OnPropertyChanged(nameof(DefaultLightSize));
+			}
+		}
+
 	}
 }

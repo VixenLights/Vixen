@@ -973,7 +973,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		{
 			var target = ElementTreeViewModel.SelectedItem;
 
-			var model = PropModelServices.Instance().AddLight(target?.ElementModel, p);
+			var model = PropModelServices.Instance().AddLight(target?.ElementModel, p, DrawingPanelViewModel.Configuration.DefaultLightSize);
 
 			if (model == null) return;
 

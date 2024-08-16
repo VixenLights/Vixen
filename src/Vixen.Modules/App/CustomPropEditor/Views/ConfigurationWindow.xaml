@@ -23,12 +23,13 @@
 								<Grid.RowDefinitions>
 										<RowDefinition Height="Auto" />
 										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto"/>
 								</Grid.RowDefinitions>
 								<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="Auto"></ColumnDefinition>
 										<ColumnDefinition Width="Auto"></ColumnDefinition>
 								</Grid.ColumnDefinitions>
-								<TextBlock Grid.Row="0" Grid.Column="0" Text="Light Color" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Light Color"  VerticalAlignment="Center" Margin="5,5"/>
 
 								<Rectangle Grid.Row="0" Grid.Column="1" x:Name="LightColorButton" 
 			           MinWidth="50" Height="25" Fill="{Binding LightColor ,Converter={StaticResource ColorToSolidBrushConverter}}" 
@@ -38,7 +39,7 @@
 										</Rectangle.InputBindings>
 								</Rectangle>
 
-								<TextBlock Grid.Row="1" Grid.Column="0" Text="Selected Color" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Selected Color"  VerticalAlignment="Center" Margin="5,5"/>
 								<Rectangle Grid.Row="1" Grid.Column="1" x:Name="SelectedColorButton" 
 	                   MinWidth="50" Height="25" Fill="{Binding SelectedLightColor,Converter={StaticResource ColorToSolidBrushConverter}}" 
 	                    Margin="6,2,2,2">
@@ -46,7 +47,9 @@
 												<MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditSelectedLightColorCommand}"></MouseBinding>
 										</Rectangle.InputBindings>
 								</Rectangle>
-						</Grid>
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Default Light Size"  VerticalAlignment="Center" Margin="5,5"/>
+                                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding DefaultLightSize}" Margin="6,2,2,2"/>
+            </Grid>
 						<WrapPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
 								<Button HorizontalAlignment="Right" Width="75" Margin="6" Command="{Binding RestoreDefaultsCommand}">Defaults</Button>
 								<Button HorizontalAlignment="Right" Width="75" Margin="6" IsDefault="True" Command="{Binding OkCommand}">Ok</Button>
