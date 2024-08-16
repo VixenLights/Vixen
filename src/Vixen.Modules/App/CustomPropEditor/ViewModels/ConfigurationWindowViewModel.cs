@@ -15,14 +15,15 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		{
 			
 			Config = ConfigurationService.Instance().Config;
-			UpdateColors();
+			UpdateConfigValues();
 			Title = "Preferences";
 		}
 
-		private void UpdateColors()
+		private void UpdateConfigValues()
 		{
 			LightColor = Config.LightColor;
 			SelectedLightColor = Config.SelectedLightColor;
+			DefaultLightSize = Config.DefaultLightSize;
 		}
 
 
@@ -45,7 +46,25 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
-		#region LightColor property
+		#region DefaultLightSize property
+
+		/// <summary>
+		/// Gets or sets the DefaultLightSize value.
+		/// </summary>
+		public uint DefaultLightSize
+		{
+			get => GetValue<uint>(DefaultLightSizeProperty);
+			set => SetValue(DefaultLightSizeProperty, value);
+		}
+
+		/// <summary>
+		/// DefaultLightSize property data.
+		/// </summary>
+		public static readonly IPropertyData DefaultLightSizeProperty = RegisterProperty<uint>(nameof(DefaultLightSize));
+
+		#endregion
+
+		#region DefaultLightSize property
 
 		/// <summary>
 		/// Gets or sets the LightColor value.
@@ -142,7 +161,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private void RestoreDefaults()
 		{
-			RestoreColorDefaults();
+			LightColor = Color.White;
+			SelectedLightColor = Color.HotPink;
+			DefaultLightSize = ElementModel.DefaultLightSize;
 		}
 
 		#endregion
@@ -192,13 +213,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
-		private void RestoreColorDefaults()
-		{
-			LightColor = Color.White;
-			SelectedLightColor = Color.HotPink;
-		}
-
-
 		#region Overrides of ViewModelBase
 
 		/// <inheritdoc />
@@ -206,6 +220,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		{
 			Config.LightColor = LightColor;
 			Config.SelectedLightColor = SelectedLightColor;
+			Config.DefaultLightSize = DefaultLightSize;
 		
 			return Task.FromResult(true);
 		}

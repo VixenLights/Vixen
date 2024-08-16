@@ -10,7 +10,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 	[Serializable]
 	public class ElementModel : BindableBase, IEqualityComparer<ElementModel>, IEquatable<ElementModel>
 	{
-		private const int DefaultLightSize = 3;
+		public const int DefaultLightSize = 3;
 		private ObservableCollection<Light> _lights;
 		private ObservableCollection<ElementModel> _children;
 		private ObservableCollection<Guid> _parents;

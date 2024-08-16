@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Runtime.Serialization;
 using Vixen.Module;
+using VixenModules.App.CustomPropEditor.Model;
 
 namespace VixenModules.App.CustomPropEditor
 {
@@ -31,6 +32,9 @@ namespace VixenModules.App.CustomPropEditor
 		[DataMember]
 		public Color SelectedLightColor { get; set; } = Color.HotPink;
 
+		[DataMember]
+		public uint DefaultLightSize { get; set; } = ElementModel.DefaultLightSize;
+
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
@@ -42,6 +46,11 @@ namespace VixenModules.App.CustomPropEditor
 			if (SelectedLightColor == Color.Empty)
 			{
 				SelectedLightColor = Color.HotPink;
+			}
+
+			if (DefaultLightSize == 0)
+			{
+				DefaultLightSize = ElementModel.DefaultLightSize;
 			}
 		}
 	}

@@ -261,7 +261,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 
 		}
 
-		public ElementModel AddLight(ElementModel target, Point p)
+		public ElementModel AddLight(ElementModel target, Point p, uint size)
 		{
 			if (target != null && !target.IsGroupNode && target.Parents.Any())
 			{
@@ -269,7 +269,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 				return target;
 			}
 
-			return AddLightNode(target, p);
+			return AddLightNode(target, p, null, (int)size);
 		}
 
 		private ElementModel FindOrCreateTargetGroupForLight()
