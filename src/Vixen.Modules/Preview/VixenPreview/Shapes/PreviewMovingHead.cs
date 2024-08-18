@@ -819,7 +819,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					// Default the pan start position
 					PanStartPosition = DefaultPanStartPosition;
 
-					// Retrieve the fan function from the fixture
+					// Retrieve the pan function from the fixture
 					FixtureFunction panFunction = fixtureProperty.FixtureSpecification.FunctionDefinitions.FirstOrDefault(fn => fn.FunctionIdentity == Vixen.Data.Value.FunctionIdentity.Pan);
 
 					// If the pan function was found then...

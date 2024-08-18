@@ -1,17 +1,13 @@
 ﻿using System.ComponentModel;
 
-namespace VixenModules.Effect.Fan
+namespace VixenModules.Effect.LineDance
 {
 	/// <summary>
-	/// Defines the center options for when there is an odd number of Intelligent Fixtures involved in the Fan effect.
+	/// Defines the different type of dancing movements supported by the effect.
 	/// </summary>
-	public enum FanCenterOptions
-	{		
-		[Description("Centered")]
-		Centered,
-		[Description("Left")]
-		Left,
-		[Description("Right")]
-		Right,		
+	public enum LineDanceModes
+	{
+		[Description("Fan")]
+		Fan,
 	}
 }

@@ -1,7 +1,7 @@
 ﻿using Vixen.Module.Effect;
 using Vixen.Sys;
 
-namespace VixenModules.Effect.Fan
+namespace VixenModules.Effect.LineDance
 {
 	/// <summary>
 	/// Descriptor for the Line Dance effect.
@@ -13,7 +13,7 @@ namespace VixenModules.Effect.Fan
 		/// <summary>
 		/// Type ID for the effect.
 		/// </summary>
-		private static readonly Guid _typeId = new Guid("9840765E-32B4-477E-8C10-5CFCD78DE8EF");
+		private static readonly Guid _typeId = new Guid("04C245D6-E8F8-4F45-AC17-2358280B135D");
 
 		#endregion
 

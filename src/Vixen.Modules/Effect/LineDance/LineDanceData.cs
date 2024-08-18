@@ -1,13 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.Serialization;
-using VixenModules.App.ColorGradients;
+﻿using System.Runtime.Serialization;
+
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
+
 using ZedGraph;
 
-namespace VixenModules.Effect.Fan
+namespace VixenModules.Effect.LineDance
 {
 	/// <summary>	
 	/// Maintains the Line Dance effect data.
@@ -29,7 +27,10 @@ namespace VixenModules.Effect.Fan
 			IncrementAngle = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 20.0, 80.0 }));
 			
 			// Set the Pan Start Angle to -1 to cause the effect to calculate a default value
-			PanStartAngle = -1;			
+			PanStartAngle = -1;
+		
+			// Default the pan increment to 80%
+			PanIncrement = 80;
 		}
 
 		#endregion
@@ -40,6 +41,12 @@ namespace VixenModules.Effect.Fan
 		public LineDanceModes Mode { get; set; }
 
 		[DataMember]
+		public FanModes FanMode { get; set; }
+
+		[DataMember]
+		public bool InvertPan { get; set; }
+
+		[DataMember]
 		public bool AdvancedOverrides { get; set; }
 
 		[DataMember]
@@ -48,6 +55,9 @@ namespace VixenModules.Effect.Fan
 		[DataMember]
 		public int PanStartAngle { get; set; }
 		
+		[DataMember]
+		public int PanIncrement { get; set; }
+
 		[DataMember]
 		public FanCenterOptions CenterHandling { get; set; }
 		
@@ -64,11 +74,13 @@ namespace VixenModules.Effect.Fan
 			LineDanceData result = new LineDanceData
 			{
 				Mode = Mode,
+				FanMode = FanMode,	
 				IncrementAngle = new Curve(IncrementAngle),
 				PanStartAngle = PanStartAngle,
 				CenterHandling = CenterHandling,
 				AdvancedOverrides = AdvancedOverrides,	
-
+				PanIncrement = PanIncrement,
+				InvertPan = InvertPan,	
 			};
 			return result;
 		}

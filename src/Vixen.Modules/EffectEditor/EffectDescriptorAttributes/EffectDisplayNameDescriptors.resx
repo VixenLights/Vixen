@@ -1351,6 +1351,12 @@
     <value>Pan Start</value>
   </data>
   <data name="LineDanceMode" xml:space="preserve">
-    <value>Mode</value>
+    <value>Dance Mode</value>
+  </data>
+  <data name="LineDanceFanMode" xml:space="preserve">
+    <value>Fan Mode</value>
+  </data>
+  <data name="LineDanceFanInvertPan" xml:space="preserve">
+    <value>Invert Pan</value>
   </data>
 </root>
