@@ -46,6 +46,7 @@
 				<ProjectReference Include="..\..\..\Vixen.Common\WpfPropertyGrid.Themes\WpfPropertyGrid.Themes.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Common\WpfPropertyGrid\WpfPropertyGrid.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\Modeling\Modeling.csproj" />
 		</ItemGroup>
 
 		<ItemGroup>

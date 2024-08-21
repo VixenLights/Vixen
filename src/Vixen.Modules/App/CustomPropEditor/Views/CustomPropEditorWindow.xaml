@@ -100,6 +100,7 @@
 						</MenuItem>
 						<MenuItem Header="Tools">
 								<MenuItem Header="Vendor Browser" Command="{Binding OpenVendorBrowserCommand}"/>
+								<MenuItem Header="Export Wire Diagram" Command="{Binding CreateWireDiagramCommand}"/>
 						</MenuItem>
 						<MenuItem Header="Options">
 								<MenuItem Header="Preferences" Command="{Binding ColorOptionsCommand}"/>
