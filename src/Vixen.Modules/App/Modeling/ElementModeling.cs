@@ -8,6 +8,50 @@ namespace VixenModules.App.Modeling
 {
 	public class ElementModeling
 	{
+		private const int ExtraHeight = 50;
+		private const int ExtraWidth = 50;
+
+		public static void OrderedPointsToSvg(IEnumerable<Tuple<Point, int>> nodes)
+		{
+			var points = nodes.Select(x => x.Item1);
+			var rect = CalculateModelRectangle(points);
+			var scale = 1f;
+			if (rect.Width < 800)
+			{
+				scale = 800f / rect.Width;
+			}
+			SvgDocument doc = new SvgDocument { Width = rect.Width * scale, Height = rect.Height * scale };
+			doc.ViewBox = new SvgViewBox(-20, -20, doc.Width + ExtraWidth, doc.Height + ExtraHeight);
+
+			var group = new SvgGroup();
+			doc.Children.Add(group);
+
+			var lastPoint = new PointF();
+			var first = true;
+			var radius = 6;
+			
+			foreach (var p in nodes)
+			{
+				var point = ScalePoint(p.Item1, scale, rect.Location);
+
+				var lightNode = CreateLightNode(point, radius);
+				group.Children.Add(lightNode);
+				
+				var label = CreateLabel(p.Item2, point, radius);
+				group.Children.Add(label);
+
+				if (!first)
+				{
+					var line = CreateLine(lastPoint, point, radius);
+					group.Children.Add(line);
+				}
+				first = false;
+				lastPoint = point;
+			}
+
+			OpenDoc(doc);
+		}
+
 		public static void ElementsToSvg(ElementNode elementNode)
 		{
 			if(elementNode == null) return;
@@ -22,7 +66,7 @@ namespace VixenModules.App.Modeling
 					scale = 800f / rect.Width;
 				}
 				SvgDocument doc = new SvgDocument { Width = rect.Width*scale, Height = rect.Height*scale };
-				doc.ViewBox = new SvgViewBox(-20, -20, doc.Width+40, doc.Height+40);
+				doc.ViewBox = new SvgViewBox(-20, -20, doc.Width+ExtraWidth, doc.Height+ExtraHeight);
 
 				var group = new SvgGroup();
 				doc.Children.Add(group);
@@ -67,20 +111,23 @@ namespace VixenModules.App.Modeling
 
 				}
 				
-				//var stream = new FileStream(@"C:\Test\circle.svg", FileMode.Create);
-				var file = System.IO.Path.GetTempFileName();
-				var filePath = System.IO.Path.ChangeExtension(file, "svg");
-				//var filePath = $"{file}{System.IO.Path.PathSeparator}{nodes.First()}.svg";
-				doc.Write(filePath);
-				var psi = new ProcessStartInfo()
-				{
-					FileName = filePath,
-					UseShellExecute = true
-				};
-				Process.Start(psi);
+				OpenDoc(doc);
 			}
 
 
+		}
+
+		private static void OpenDoc(SvgDocument doc)
+		{
+			var file = System.IO.Path.GetTempFileName();
+			var filePath = System.IO.Path.ChangeExtension(file, "svg");
+			doc.Write(filePath);
+			var psi = new ProcessStartInfo()
+			{
+				FileName = filePath,
+				UseShellExecute = true
+			};
+			Process.Start(psi);
 		}
 
 		private static PointF ScalePoint(Point p, float scale, Point offset)
