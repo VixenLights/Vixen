@@ -32,7 +32,7 @@
 				<ProjectReference Include="..\..\OutputFilter\ShutterFilter\ShutterFilter.csproj" />
 				<ProjectReference Include="..\..\Property\Color\Color.csproj" />
 				<ProjectReference Include="..\..\Property\Face\Face.csproj" />
-				<ProjectReference Include="..\..\Property\IntellegentFixture\IntellegentFixture.csproj" />
+				<ProjectReference Include="..\..\Property\IntelligentFixture\IntelligentFixture.csproj" />
 				<ProjectReference Include="..\..\Property\Location\Location.csproj" />
 				<ProjectReference Include="..\..\Property\Order\Order.csproj" />
 				<ProjectReference Include="..\..\Property\Orientation\Orientation.csproj" />

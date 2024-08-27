@@ -202,7 +202,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Face", "src\Vixen.Modules\P
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grid", "src\Vixen.Modules\Property\Grid\Grid.csproj", "{38713719-9F98-466F-96B6-2D85EC7CD0F3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntellegentFixture", "src\Vixen.Modules\Property\IntellegentFixture\IntellegentFixture.csproj", "{395296F8-6912-45F0-A3DA-D9A9B4B78D5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntelligentFixture", "src\Vixen.Modules\Property\IntelligentFixture\IntelligentFixture.csproj", "{395296F8-6912-45F0-A3DA-D9A9B4B78D5B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Location", "src\Vixen.Modules\Property\Location\Location.csproj", "{AFADF3E9-3694-4C63-8D49-7DA5E805B54F}"
 EndProject
