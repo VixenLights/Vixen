@@ -120,8 +120,20 @@ namespace Vixen.IO.Xml.Serializer
 				Type dataModelType = Type.GetType(dataModelTypeString);
 				if (dataModelType == null)
 				{
-					Logging.Warn($"Could not find type for {dataModelTypeString}");
-					return null;
+					// VIX-3580 - A typo was introduced when the code base was converted from .NET Framework to .NET Core.
+					// This barnacle detects and corrects the typo so that Intelligent Fixture Property type is found.		
+					// The typo was introduced between releases 3.9 and 3.10.			
+					if (dataModelTypeString == "VixenModules.Property.IntelligentFixture.IntelligentFixtureData, Module.Property.IntellegentFixture")
+					{
+						dataModelTypeString = "VixenModules.Property.IntelligentFixture.IntelligentFixtureData, Module.Property.IntelligentFixture";
+						dataModelType = Type.GetType(dataModelTypeString);
+					}
+					
+					if (dataModelType == null)
+					{
+						Logging.Warn($"Could not find type for {dataModelTypeString}");
+						return null;
+					}
 				}
 
 				Guid? moduleTypeId = XmlHelper.GetGuidAttribute(element, ATTR_MODULE_TYPE);

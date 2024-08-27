@@ -57,7 +57,7 @@
 				<ProjectReference Include="..\Vixen.Modules\OutputFilter\ShutterFilter\ShutterFilter.csproj" />
 				<ProjectReference Include="..\Vixen.Modules\OutputFilter\TaggedFilter\TaggedFilter.csproj" />
 				<ProjectReference Include="..\Vixen.Modules\Property\Color\Color.csproj" />
-				<ProjectReference Include="..\Vixen.Modules\Property\IntellegentFixture\IntellegentFixture.csproj" />
+				<ProjectReference Include="..\Vixen.Modules\Property\IntelligentFixture\IntelligentFixture.csproj" />
 				<ProjectReference Include="..\Vixen.Modules\Property\Order\Order.csproj" />
 				<ProjectReference Include="..\Vixen.Modules\Property\Orientation\Orientation.csproj" />
 		</ItemGroup>

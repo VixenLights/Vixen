@@ -18,7 +18,7 @@
 				<ProjectReference Include="..\..\App\Curves\Curves.csproj" />
 				<ProjectReference Include="..\..\App\Fixture\Fixture.csproj" />
 				<ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj" />
-				<ProjectReference Include="..\..\Property\IntellegentFixture\IntellegentFixture.csproj" />
+				<ProjectReference Include="..\..\Property\IntelligentFixture\IntelligentFixture.csproj" />
 				<ProjectReference Include="..\Effect\Effect.csproj" />
 		</ItemGroup>
 
