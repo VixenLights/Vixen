@@ -649,6 +649,13 @@ namespace ZedGraph
 					throw new Exception("Error: Infinite loop in interpolation");
 			}
 
+			// If the point Y values are identical there is no need to interpolate
+			//.This avoids returning NaN
+			if (this[hi].Y == this[lo].Y)
+			{
+				return this[hi].Y;
+			}
+
 			return (xTarget - this[lo].X)/(this[hi].X - this[lo].X)*
 			       (this[hi].Y - this[lo].Y) + this[lo].Y;
 		}
