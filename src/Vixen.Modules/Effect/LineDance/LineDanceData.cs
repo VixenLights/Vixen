@@ -31,6 +31,12 @@ namespace VixenModules.Effect.LineDance
 		
 			// Default the pan increment to 80%
 			PanIncrement = 80;
+
+			// Default the speed to 40%
+			PanSpeed = 40;
+
+			// Default the hold time to 10%
+			HoldTime = 10;
 		}
 
 		#endregion
@@ -42,6 +48,9 @@ namespace VixenModules.Effect.LineDance
 
 		[DataMember]
 		public FanModes FanMode { get; set; }
+
+		[DataMember]
+		public FanDirections FanDirection { get; set; }
 
 		[DataMember]
 		public bool InvertPan { get; set; }
@@ -59,8 +68,14 @@ namespace VixenModules.Effect.LineDance
 		public int PanIncrement { get; set; }
 
 		[DataMember]
+		public int PanSpeed { get; set; }
+
+		[DataMember]
 		public FanCenterOptions CenterHandling { get; set; }
-		
+
+		[DataMember]
+		public int HoldTime { get; set; }
+
 		#endregion
 
 		#region Protected Methods
@@ -75,12 +90,15 @@ namespace VixenModules.Effect.LineDance
 			{
 				Mode = Mode,
 				FanMode = FanMode,	
+				FanDirection = FanDirection,
 				IncrementAngle = new Curve(IncrementAngle),
 				PanStartAngle = PanStartAngle,
 				CenterHandling = CenterHandling,
 				AdvancedOverrides = AdvancedOverrides,	
 				PanIncrement = PanIncrement,
+				PanSpeed = PanSpeed,
 				InvertPan = InvertPan,	
+				HoldTime = HoldTime,
 			};
 			return result;
 		}

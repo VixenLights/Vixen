@@ -164,11 +164,15 @@ namespace VixenModules.Effect.Effect
 						// Find the function associated with the effect based on function identity enumeration
 						FixtureFunction func = fixtureProperty.FixtureSpecification.FunctionDefinitions.SingleOrDefault(function => function.FunctionIdentity == type);
 
-						// Add the node and function information to the dictionary 
-						nodeToFunction.Add(leafNode, new (func.Label, func.Name));
+						// If we have not already processed this node then...
+						if (!nodeToFunction.ContainsKey(leafNode))
+						{
+							// Add the node and function information to the dictionary 
+							nodeToFunction.Add(leafNode, new(func.Label, func.Name));
 
-						// Add the node to collection of render nodes
-						renderNodes.Add(leafNode);
+							// Add the node to collection of render nodes
+							renderNodes.Add(leafNode);
+						}
 					}
 				}
 			}
@@ -232,11 +236,15 @@ namespace VixenModules.Effect.Effect
 						// Find the function associated with the effect based on function identity enumeration
 						FixtureFunction func = fixtureProperty.FixtureSpecification.FunctionDefinitions.SingleOrDefault(function => function.FunctionIdentity == type);
 
-						// Add the function name to the collection of tags
-						tags.Add(leafNode, func.Name);
+						// If we have not already processed this node then...
+						if (!tags.ContainsKey(leafNode))
+						{
+							// Add the function name to the collection of tags
+							tags.Add(leafNode, func.Name);
 
-						// Add the leaf to the collection of nodes to return
-						leavesThatSupportFunction.Add(new Tuple<IElementNode, string>(leafNode, func.Label));
+							// Add the leaf to the collection of nodes to return
+							leavesThatSupportFunction.Add(new Tuple<IElementNode, string>(leafNode, func.Label));
+						}
 					}
 				}
 			}
@@ -589,14 +597,18 @@ namespace VixenModules.Effect.Effect
 						// Loop over the channels of the fixture
 						foreach (FixtureChannel channel in fixtureSpecification.ChannelDefinitions)
 						{
-							// Get the function associated with the channel
-							FixtureFunction func = fixtureSpecification.FunctionDefinitions.Single(function => function.Name == channel.Function);
-
-							// If the function has not already been added then...
-							if (func.FunctionType != FixtureFunctionType.None && !fixtureFunctions.Contains(func))
+						    // Guarding against a corrupted profile
+							if (!string.IsNullOrEmpty(channel.Function))
 							{
-								// Add the function to the collection of supported functions
-								fixtureFunctions.Add(func);
+								// Get the function associated with the channel
+								FixtureFunction func = fixtureSpecification.FunctionDefinitions.Single(function => function.Name == channel.Function);
+
+								// If the function has not already been added then...
+								if (func.FunctionType != FixtureFunctionType.None && !fixtureFunctions.Contains(func))
+								{
+									// Add the function to the collection of supported functions
+									fixtureFunctions.Add(func);
+								}
 							}
 						}
 					}

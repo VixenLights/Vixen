@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Windows.Interop;
 
 using Vixen.Attributes;
 using Vixen.Data.Value;
@@ -17,6 +18,7 @@ using VixenModules.Property.IntelligentFixture;
 using ZedGraph;
 
 using Color = System.Drawing.Color;
+
 
 namespace VixenModules.Effect.LineDance
 {
@@ -93,12 +95,30 @@ namespace VixenModules.Effect.LineDance
 				UpdateAttributes();	
 			}
 		}
-		
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"LineDanceFanDirection")]
+		[ProviderDescription(@"LineDanceFanDirection")]
+		[PropertyOrder(3)]
+		public FanDirections FanDirection
+		{
+			get { return Data.FanDirection; }
+			set
+			{
+				Data.FanDirection = value;
+				IsDirty = true;
+				OnPropertyChanged();
+
+				UpdateAttributes();
+			}
+		}
+
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"LineDanceFanPanIncrement")]
 		[ProviderDescription(@"LineDanceFanPanIncrement")]
-		[PropertyOrder(3)]
+		[PropertyOrder(4)]
 		public Curve IncrementAngle
 		{
 			get { return Data.IncrementAngle; }
@@ -115,8 +135,8 @@ namespace VixenModules.Effect.LineDance
 		[ProviderDisplayName(@"LineDanceFanPanIncrement")]
 		[ProviderDescription(@"LineDanceFanPanIncrement")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(0, 100, 1)]
-		[PropertyOrder(4)]
+		[NumberRange(1, 100, 1)]
+		[PropertyOrder(5)]
 		public int PanIncrement
 		{
 			get { return Data.PanIncrement; }
@@ -130,9 +150,28 @@ namespace VixenModules.Effect.LineDance
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"LineDanceFanPanSpeed")]
+		[ProviderDescription(@"LineDanceFanPanSpeed")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(0, 100, 1)]
+		[PropertyOrder(5)]
+		public int PanSpeed
+		{
+			get { return Data.PanSpeed; }
+			set
+			{
+				Data.PanSpeed = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"LineDanceFanInvertPan")]
 		[ProviderDescription(@"LineDanceFanInvertPan")]
-		[PropertyOrder(5)]
+		[PropertyOrder(6)]
 		public bool InvertPan
 		{
 			get { return Data.InvertPan; }
@@ -149,7 +188,7 @@ namespace VixenModules.Effect.LineDance
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"LineDanceFanCenterHandling")]
 		[ProviderDescription(@"LineDanceFanCenterHandling")]
-		[PropertyOrder(6)]
+		[PropertyOrder(7)]
 		public FanCenterOptions CenterHandling
 		{
 			get { return Data.CenterHandling; }
@@ -160,12 +199,30 @@ namespace VixenModules.Effect.LineDance
 				OnPropertyChanged();
 			}
 		}
-		
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"LineDanceFanHoldTime")]
+		[ProviderDescription(@"LineDanceFanHoldTime")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(0, 100, 1)]
+		[PropertyOrder(8)]
+		public int HoldTime
+		{
+			get { return Data.HoldTime; }
+			set
+			{
+				Data.HoldTime = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"LineDanceFanAdvancedOverrides")]
 		[ProviderDescription(@"LineDanceFanAdvancedOverrides")]
-		[PropertyOrder(7)]
+		[PropertyOrder(9)]
 		public bool AdvancedOverrides
 		{
 			get { return Data.AdvancedOverrides; }
@@ -184,7 +241,7 @@ namespace VixenModules.Effect.LineDance
 		[ProviderDescription(@"LineDanceFanPanStart")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 100, 1)]
-		[PropertyOrder(8)]
+		[PropertyOrder(10)]
 		public int PanStartAngle
 		{
 			get { return Data.PanStartAngle; }
@@ -310,14 +367,14 @@ namespace VixenModules.Effect.LineDance
 		}
 
 		/// <summary>
-		/// Render the left nodes for a staggered fan.
+		/// Render the left nodes for a staggered fan moving from the middle of the fan out.
 		/// </summary>
 		/// <param name="leftMiddleIndex">Start index of the left side of the fan</param>
 		/// <param name="renderNodes">All the render nodes of the fan</param>
 		/// <param name="maxIncrementPan">Maximum increment pan angle (0-1) to scale the curve</param>
 		/// <param name="panStart">Pan start angle (0-1)</param>
 		/// <param name="tokenSource">Cancellation token</param>
-		private void RenderStaggerLeftNodes(
+		private void RenderInnerStaggerLeftNodes(
 			int leftMiddleIndex, 
 			List<IElementNode> renderNodes, 
 			double maxIncrementPan,
@@ -331,11 +388,13 @@ namespace VixenModules.Effect.LineDance
 			for (int leftIndex = leftMiddleIndex; leftIndex >= 0; leftIndex--)
 			{
 				// Calculate the distance between stagger points
-				// Only using 95% of the effect's duration so that there is slight pause at the end of the effect
-				int width = 95 / (renderNodes.Count / 2);
+				// Taking into a hold time at the end of the effect				
+				int width = CalculateStaggerWidth();
 
 				// Create a curve for the node
-				Curve c = CreateStaggerCurve(PanIncrement, width * offset, width, leftIndex == 0);
+				// The first argument is taking the PanIncrement slider value and applying it to a max value of 50
+				// since this is being applied to Mid value of 50
+				Curve c = CreateStaggerCurve(CalculatePanIncrement(), width * offset, width, leftIndex == 0);
 				
 				// Render the node
 				RenderFanCurve(
@@ -351,6 +410,56 @@ namespace VixenModules.Effect.LineDance
 				
 				// Increment the pan offset
 				offset += 1;				
+			}
+		}
+
+		/// <summary>
+		/// Render the left nodes for a staggered fan moving from the outside of the fan to the center.
+		/// </summary>
+		/// <param name="leftMiddleIndex">Start index of the left side of the fan</param>
+		/// <param name="renderNodes">All the render nodes of the fan</param>
+		/// <param name="maxIncrementPan">Maximum increment pan angle (0-1) to scale the curve</param>
+		/// <param name="panStart">Pan start angle (0-1)</param>
+		/// <param name="tokenSource">Cancellation token</param>
+		private void RenderOuterStaggerLeftNodes(
+			int leftMiddleIndex,
+			List<IElementNode> renderNodes,
+			double maxIncrementPan,
+			double panStart,
+			CancellationTokenSource tokenSource = null)
+		{
+			// Initialize the pan offset
+			int offset = 1;
+
+			// Loop over the left fan nodes			
+			for (int leftIndex = 0; leftIndex <= leftMiddleIndex; leftIndex++)
+			{
+				// Calculate the distance between stagger points	
+				// Taking into a hold time at the end of the effect				
+				int width = CalculateStaggerWidth();
+
+				// Create a curve for the node
+				// The first argument is taking the PanIncrement slider value and applying it to a max value of 50
+				// since this is being applied to Mid value of 50
+				Curve c = CreateStaggerCurve(CalculatePanIncrement(), width * offset, width, leftIndex == leftMiddleIndex);
+
+				// Need to calculate a moving head offset since we are moving from outside to inside
+				int renderOffset = 1 + (leftMiddleIndex + 1) - offset;
+
+				// Render the node
+				RenderFanCurve(
+					renderNodes[leftIndex],
+					c,
+					FunctionIdentity.Pan,
+					_panFunctions[renderNodes[leftIndex]].tag,
+					_panFunctions[renderNodes[leftIndex]].label,
+					tokenSource,
+					maxIncrementPan,
+					panStart,
+					InvertPan ? -renderOffset : renderOffset);
+
+				// Decrement the pan offset
+				offset += 1;
 			}
 		}
 
@@ -376,7 +485,9 @@ namespace VixenModules.Effect.LineDance
 			for (int leftIndex = leftMiddleIndex; leftIndex >= 0; leftIndex--)
 			{
 				// Create a flat curve at the pan increment
-				Curve c = CreateConcurrentFlatCurve(PanIncrement);
+				// The first argument is taking the PanIncrement slider value and applying it to a max value of 50
+				// since this is being applied to Mid value of 50
+				Curve c = CreateConcurrentCurve(CalculatePanIncrement(), 1 + leftMiddleIndex, offset);
 
 				// Render the node
 				RenderFanCurve(
@@ -458,8 +569,17 @@ namespace VixenModules.Effect.LineDance
 			// Otherwise if this is last node in the stagger fan then...
 			else if (last)
 			{
-				// Define 4 point curve allowing for small (5%) pause at end of effect
-				return new Curve(new PointPairList(new[] { 0.0, xPosition - width, 95, 100.0 }, new[] { Middle, Middle, Top, Top }));
+				// If the hold time is zero we only need a three point curve
+				if (HoldTime == 0.0)
+				{
+					// Define 3 point curve 
+					return new Curve(new PointPairList(new[] { 0.0, xPosition - width, 100.0 }, new[] { Middle, Middle, Top }));
+				}
+				else
+				{
+					// Define 4 point curve allowing for hold time pause at end of effect
+					return new Curve(new PointPairList(new[] { 0.0, xPosition - width, (100.0 - HoldTime), 100.0 }, new[] { Middle, Middle, Top, Top }));
+				}
 			}
 			else
 			{
@@ -469,19 +589,33 @@ namespace VixenModules.Effect.LineDance
 		}
 
 		/// <summary>
-		/// Creates a flat curve for concurrent fan.
+		/// Concurrent mode starts all the moving heads making up the fan simultaneously but their finish
+		/// times are staggered based on their position.
 		/// </summary>
-		/// <param name="panIncrement">Pan angle increment</param>
-		/// <returns>Flat curve</returns>
-		private Curve CreateConcurrentFlatCurve(int panIncrement)
+		/// <param name="panIncrement">Pan angle increment</param>				
+		/// <param name="maxOffset">Max moving head offset</param>
+		/// <param name="offset">Offset of the moving head associated with the curve</param>
+		/// <returns>Ramp curve based on the offset of the moving head</returns>
+		private Curve CreateConcurrentCurve(int panIncrement, double maxOffset, double offset)
 		{
 			// Define the middle of the curve (zero)
 			const double Middle = 50.0;
 
 			// Define the top full pan
 			double Top = Middle + panIncrement;
+			
+			// Calculate the pand speed based on moving head offset
+			double panSpeedOffset = (100 - PanSpeed) * (offset * panIncrement) / (maxOffset * panIncrement);
+						
+			// If the pan speed is maxed out then...
+			if (PanSpeed == 100.0)
+			{
+				// Create a flat curve
+				return new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { Top, Top }));
+			}
 
-			return new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { Top, Top }));			
+			// Create a ramp based on the position of the moving head
+			return new Curve(new PointPairList(new[] { 0.0, panSpeedOffset, 100.0 }, new[] { Middle, Top, Top }));			
 		}
 
 		/// <summary>
@@ -523,14 +657,14 @@ namespace VixenModules.Effect.LineDance
 		}
 
 		/// <summary>
-		/// Render the right nodes of the stagger fan.
+		/// Render the right nodes of the stagger fan  moving from the middle of the fan out.
 		/// </summary>
 		/// <param name="rightMiddleIndex">Start index of the right side of the fan</param>		
 		/// <param name="renderNodes">All the render nodes of the fan</param>
 		/// <param name="maxIncrementPan">Maximum increment pan angle (0-1) to scale the curve</param>
 		/// <param name="panStart">Pan start angle (0-1)</param>
 		/// <param name="tokenSource">Cancellation token</param>
-		private void RenderStaggerRightNodes(
+		private void RenderInnerStaggerRightNodes(
 			int rightMiddleIndex,
 			List<IElementNode> renderNodes,
 			double maxIncrementPan,
@@ -543,12 +677,14 @@ namespace VixenModules.Effect.LineDance
 			// Loop over the right fan nodes
 			for (int rightIndex = rightMiddleIndex; rightIndex < renderNodes.Count; rightIndex++)
 			{
-				// Calculate the distance between stagger points
-				// Only using 95% of the effect's duration so that there is slight pause at the end of the effect
-				int width = 95 / (renderNodes.Count / 2);
+				// Calculate the distance between stagger points				
+				// Taking into a hold time at the end of the effect				
+				int width = CalculateStaggerWidth();
 
 				// Create a curve for the node
-				Curve c = CreateStaggerCurve(PanIncrement, width * (int)(Math.Abs(offset)), width, rightIndex == renderNodes.Count - 1);
+				// The first argument is taking the PanIncrement slider value and applying it to a max value of 50
+				// since this is being applied to Mid value of 50
+				Curve c = CreateStaggerCurve(CalculatePanIncrement(), width * (int)(Math.Abs(offset)), width, rightIndex == renderNodes.Count - 1);
 
 				// Render the node
 				RenderFanCurve(
@@ -564,6 +700,56 @@ namespace VixenModules.Effect.LineDance
 
 				// Increment the pan offset
 				offset -= 1;				
+			}
+		}
+
+		/// <summary>
+		/// Render the right nodes of the stagger fan  moving from the outside of the fan to the center.
+		/// </summary>
+		/// <param name="rightMiddleIndex">Start index of the right side of the fan</param>		
+		/// <param name="renderNodes">All the render nodes of the fan</param>
+		/// <param name="maxIncrementPan">Maximum increment pan angle (0-1) to scale the curve</param>
+		/// <param name="panStart">Pan start angle (0-1)</param>
+		/// <param name="tokenSource">Cancellation token</param>
+		private void RenderOuterStaggerRightNodes(
+			int rightMiddleIndex,
+			List<IElementNode> renderNodes,
+			double maxIncrementPan,
+			double panStart,
+			CancellationTokenSource tokenSource = null)
+		{
+			// Initialize the pan offset
+			double offset = -1;
+			
+			// Loop over the right fan nodes			
+			for (int rightIndex = renderNodes.Count - 1; rightIndex >= rightMiddleIndex; rightIndex--)
+			{
+				// Calculate the distance between stagger points
+				// Taking into a hold time at the end of the effect		
+				int width = CalculateStaggerWidth();
+
+				// Create a curve for the node
+				// The first argument is taking the PanIncrement slider value and applying it to a max value of 50
+				// since this is being applied to Mid value of 50
+				Curve c = CreateStaggerCurve(CalculatePanIncrement(), width * (int)(Math.Abs(offset)), width, rightIndex == rightMiddleIndex);
+
+				// Need to calculate a moving head offset since we are moving from outside to inside
+				int renderIndex = (int)(-rightMiddleIndex - offset - 1);
+
+				// Render the node
+				RenderFanCurve(
+					renderNodes[rightIndex],
+					c,
+					FunctionIdentity.Pan,
+					_panFunctions[renderNodes[rightIndex]].tag,
+					_panFunctions[renderNodes[rightIndex]].label,
+					tokenSource,
+					maxIncrementPan,
+					panStart,
+					InvertPan ? -renderIndex : renderIndex);
+
+				// Increment the pan offset
+				offset -= 1;
 			}
 		}
 
@@ -589,7 +775,9 @@ namespace VixenModules.Effect.LineDance
 			for (int rightIndex = rightMiddleIndex; rightIndex < renderNodes.Count; rightIndex++)
 			{
 				// Create a flat curve at the pan increment
-				Curve c = CreateConcurrentFlatCurve(PanIncrement);
+				// The first argument is taking the PanIncrement slider value and applying it to a max value of 50
+				// since this is being applied to Mid value of 50
+				Curve c = CreateConcurrentCurve(CalculatePanIncrement(), renderNodes.Count - rightMiddleIndex, Math.Abs(offset));
 
 				// Render the node
 				RenderFanCurve(
@@ -733,7 +921,7 @@ namespace VixenModules.Effect.LineDance
 		}
 
 		/// <summary>
-		/// Renders the stagger fan on the specified nodes.
+		/// Renders the stagger fan on the specified nodes moving from the middle out.
 		/// </summary>
 		/// <param name="displayCenter">True when a center node is displayed</param>
 		/// <param name="leftMiddleIndex">Index of the left middle node</param>
@@ -742,7 +930,7 @@ namespace VixenModules.Effect.LineDance
 		/// <param name="renderNodes">Nodes to render on</param>
 		/// <param name="maxIncrementPan">Maximum increment pan angle (0-1) to scale the curve</param>
 		/// <param name="panStart">Pan start angle (0-1)</param>
-		private void RenderStaggerFan(
+		private void RenderInnerStaggerFan(
 			bool displayCenter, 
 			int leftMiddleIndex, 
 			int centerIndex, 
@@ -752,7 +940,7 @@ namespace VixenModules.Effect.LineDance
 			double panStart)
 		{
 			// Render the left nodes
-			RenderStaggerLeftNodes(leftMiddleIndex, renderNodes, maxIncrementPan, panStart);
+			RenderInnerStaggerLeftNodes(leftMiddleIndex, renderNodes, maxIncrementPan, panStart);
 
 			// If displaying a center beam then...
 			if (displayCenter)
@@ -762,7 +950,40 @@ namespace VixenModules.Effect.LineDance
 			}
 
 			// Render the right nodes
-			RenderStaggerRightNodes(rightMiddleIndex, renderNodes, maxIncrementPan, panStart);
+			RenderInnerStaggerRightNodes(rightMiddleIndex, renderNodes, maxIncrementPan, panStart);
+		}
+
+		/// <summary>
+		/// Renders the stagger fan on the specified nodes moving from the edges to the center.
+		/// </summary>
+		/// <param name="displayCenter">True when a center node is displayed</param>
+		/// <param name="leftMiddleIndex">Index of the left middle node</param>
+		/// <param name="centerIndex">Index of the center node</param>
+		/// <param name="rightMiddleIndex">Index of the right middle node</param>
+		/// <param name="renderNodes">Nodes to render on</param>
+		/// <param name="maxIncrementPan">Maximum increment pan angle (0-1) to scale the curve</param>
+		/// <param name="panStart">Pan start angle (0-1)</param>
+		private void RenderOuterStaggerFan(
+			bool displayCenter,
+			int leftMiddleIndex,
+			int centerIndex,
+			int rightMiddleIndex,
+			List<IElementNode> renderNodes,
+			double maxIncrementPan,
+			double panStart)
+		{
+			// Render the left nodes
+			RenderOuterStaggerLeftNodes(leftMiddleIndex, renderNodes, maxIncrementPan, panStart);
+
+			// If displaying a center beam then...
+			if (displayCenter)
+			{
+				// Render the center node
+				RenderCenterNode(centerIndex, renderNodes, maxIncrementPan, panStart);
+			}
+
+			// Render the right nodes
+			RenderOuterStaggerRightNodes(rightMiddleIndex, renderNodes, maxIncrementPan, panStart);
 		}
 
 		/// <summary>
@@ -840,6 +1061,28 @@ namespace VixenModules.Effect.LineDance
 			return (1.0 - PanStartAngle / 100.0) / (_renderNodes.Count / 2);			
 		}
 
+		/// <summary>
+		/// Calculates the pan increment given that the middle of the curve represents a pan angle of zero.
+		/// </summary>
+		/// <returns>Pan increment value</returns>
+		private int CalculatePanIncrement()
+		{
+			// Taking the PanIncrement slider value and applying it to a max value of 50
+			// since this will be applied to Mid value of 50
+			return (int)((PanIncrement / 100.0) * 50);
+		}
+
+		/// <summary>
+		/// Calculates the X curve distance between stagger points.
+		/// </summary>
+		/// <returns>X curve distance between stagger points</returns>
+		private int CalculateStaggerWidth()
+		{
+			// Calculate the distance between stagger points
+			// Taking into a hold time at the end of the effect				
+			return (100 - HoldTime) / (_renderNodes.Count / 2);
+		}
+
 		#endregion
 
 		#region Protected Methods
@@ -864,6 +1107,15 @@ namespace VixenModules.Effect.LineDance
 				// Only display Pan Start Angle if the user selected to see Advanced Overrides
 				propertyStates.Add(nameof(PanStartAngle), AdvancedOverrides);
 
+				// Only display the Fan Direction if the fan mode is in Stagger mode
+				propertyStates.Add(nameof(FanDirection), FanMode == FanModes.Stagger);
+
+				// Only display the Pan Speed for Concurrent fan mode
+				propertyStates.Add(nameof(PanSpeed), FanMode == FanModes.Concurrent);
+
+				// Only display the Hold Time for the Stagger fan mode
+				propertyStates.Add(nameof(HoldTime), FanMode == FanModes.Stagger);	
+				
 				SetBrowsable(propertyStates);
 				if (refresh)
 				{
@@ -881,8 +1133,8 @@ namespace VixenModules.Effect.LineDance
 			// Determine if any of the nodes can pan
 			_renderNodes = GetRenderNodesForFunctionIdentity(FunctionIdentity.Pan, _panFunctions);
 
-			// If there are any nodes that support the pan function
-			_canPan = _renderNodes.Any();
+			// If there are at least two nodes that support the pan function
+			_canPan = _renderNodes.Count > 1;
 		}
 
 		/// <inheritdoc/>		
@@ -899,7 +1151,15 @@ namespace VixenModules.Effect.LineDance
 						DoRendering(_renderNodes, CalculateMaxPanIncrement(), PanStartAngle / 100.0, RenderSynchronizedFan, tokenSource);
 						break;
 					case FanModes.Stagger:
-						DoRendering(_renderNodes, CalculateMaxPanIncrement(), PanStartAngle / 100.0, RenderStaggerFan, tokenSource);
+						// Determine if fan-ing from the outside in or from the middle out
+						if (FanDirection == FanDirections.FanFromEdges)
+						{
+							DoRendering(_renderNodes, CalculateMaxPanIncrement(), PanStartAngle / 100.0, RenderOuterStaggerFan, tokenSource);
+						}
+						else
+						{
+							DoRendering(_renderNodes, CalculateMaxPanIncrement(), PanStartAngle / 100.0, RenderInnerStaggerFan, tokenSource);
+						}
 						break;
 					case FanModes.Concurrent:
 						DoRendering(_renderNodes, CalculateMaxPanIncrement(), PanStartAngle / 100.0, RenderConcurrentFan, tokenSource);
@@ -946,8 +1206,42 @@ namespace VixenModules.Effect.LineDance
 			// If the associated nodes support pan then...
 			if (_canPan)
 			{
-				// Draw the visual on the timeline
-				DrawVisualRepresentation(graphics, clipRectangle, Color.Green, "Fan", 2, 1, IncrementAngle, 0);
+				// Determine which visual representation based on fan mode
+				switch (FanMode)
+				{
+					case FanModes.Stagger:
+						int nodes = _renderNodes.Count / 2;
+						if (nodes == 0)
+						{
+							nodes = 1;
+						}
+
+						// Calculate the distance between stagger points				
+						int width = CalculateStaggerWidth();
+
+						// Create a curve for the node
+						Curve staggerCurve = CreateStaggerCurve(CalculatePanIncrement(), width * nodes, width, false);
+
+						// Draw the visual on the timeline
+						DrawVisualRepresentation(graphics, clipRectangle, Color.Green, "Fan - Stagger", 2, 1, staggerCurve, 0);
+						break;
+					case FanModes.Concurrent:
+						int leftMiddleIndex = _renderNodes.Count / 2 - 1;
+
+						if (leftMiddleIndex < 1)
+						{
+							leftMiddleIndex = 1;
+						}
+
+						// Draw the visual on the timeline
+						DrawVisualRepresentation(graphics, clipRectangle, Color.Red, "Fan - Concurrent", 2, 1,
+							CreateConcurrentCurve(CalculatePanIncrement(), leftMiddleIndex, 1), 0);
+						break;
+					case FanModes.Synchronized:
+						// Draw the visual on the timeline
+						DrawVisualRepresentation(graphics, clipRectangle, Color.White, "Fan - Sync", 2, 1, IncrementAngle, 0);
+						break;
+				}			
 			}
 		}
 
