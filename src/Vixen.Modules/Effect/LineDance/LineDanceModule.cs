@@ -1069,7 +1069,15 @@ namespace VixenModules.Effect.LineDance
 		{
 			// Taking the PanIncrement slider value and applying it to a max value of 50
 			// since this will be applied to Mid value of 50
-			return (int)((PanIncrement / 100.0) * 50);
+			int panIncrement = (int)((PanIncrement / 100.0) * 50);
+
+			// Don't allow the pan increment to be zero
+			if (panIncrement == 0)
+			{
+				panIncrement = 1;
+			}
+
+			return panIncrement;
 		}
 
 		/// <summary>

@@ -29,14 +29,14 @@ namespace VixenModules.Effect.LineDance
 			// Set the Pan Start Angle to -1 to cause the effect to calculate a default value
 			PanStartAngle = -1;
 		
-			// Default the pan increment to 80%
-			PanIncrement = 80;
+			// Default the pan increment to 20%
+			PanIncrement = 20;
 
-			// Default the speed to 40%
-			PanSpeed = 40;
+			// Default the speed to 30%
+			PanSpeed = 30;
 
-			// Default the hold time to 10%
-			HoldTime = 10;
+			// Default the hold time to zero
+			HoldTime = 0;
 		}
 
 		#endregion
