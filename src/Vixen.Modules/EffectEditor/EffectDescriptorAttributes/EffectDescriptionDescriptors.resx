@@ -1416,4 +1416,25 @@
   <data name="WhirlpoolTailLength" xml:space="preserve">
     <value>Determines the length of the meteor as percentage of the display element.</value>
   </data>
+  <data name="LineDanceFanAdvancedOverrides" xml:space="preserve">
+    <value>Displays and hides advanced override settings.</value>
+  </data>
+  <data name="LineDanceFanCenterHandling" xml:space="preserve">
+    <value>Controls the Pan of the center fixture when the effect is targeting an odd number of fixtures.</value>
+  </data>
+  <data name="LineDanceFanPanIncrement" xml:space="preserve">
+    <value>Controls the Pan angle increment between each fixture.</value>
+  </data>
+  <data name="LineDanceFanPanStart" xml:space="preserve">
+    <value>Controls the initial pan of all the fixtures participating in the fan.  The default is a pan of 360 degrees.</value>
+  </data>
+  <data name="LineDanceFanInvertPan" xml:space="preserve">
+    <value>Inverts the pan movement for intelligent fixtures that are mounted upside down (inverted).</value>
+  </data>
+  <data name="LineDanceFanMode" xml:space="preserve">
+    <value>Selects the type of fan (Synchronized, Staggered, Concurrent).</value>
+  </data>
+  <data name="LineDanceMode" xml:space="preserve">
+    <value>Selects between the intelligent fixture line dance effects.</value>
+  </data>
 </root>

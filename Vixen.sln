@@ -489,6 +489,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Whirlpool", "src\Vixen.Modu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElexolEtherIO", "src\Vixen.Modules\Controller\ElexolEtherIO\ElexolEtherIO.csproj", "{F246924F-3A0C-4E70-9969-C20FED06A0E3}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LineDance", "src\Vixen.Modules\Effect\LineDance\LineDance.csproj", "{AA713CD2-BBC9-456E-9D27-135F3E0321E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -2327,6 +2329,18 @@ Global
 		{F246924F-3A0C-4E70-9969-C20FED06A0E3}.Release|x64.Build.0 = Release|x64
 		{F246924F-3A0C-4E70-9969-C20FED06A0E3}.Release|x86.ActiveCfg = Release|x86
 		{F246924F-3A0C-4E70-9969-C20FED06A0E3}.Release|x86.Build.0 = Release|x86
+		{AA713CD2-BBC9-456E-9D27-135F3E0321E5}.Debug|x64.ActiveCfg = Debug|x64
+		{AA713CD2-BBC9-456E-9D27-135F3E0321E5}.Debug|x64.Build.0 = Debug|x64
+		{AA713CD2-BBC9-456E-9D27-135F3E0321E5}.Debug|x86.ActiveCfg = Debug|x86
+		{AA713CD2-BBC9-456E-9D27-135F3E0321E5}.Debug|x86.Build.0 = Debug|x86
+		{AA713CD2-BBC9-456E-9D27-135F3E0321E5}.Deploy|x64.ActiveCfg = Debug|x64
+		{AA713CD2-BBC9-456E-9D27-135F3E0321E5}.Deploy|x64.Build.0 = Debug|x64
+		{AA713CD2-BBC9-456E-9D27-135F3E0321E5}.Deploy|x86.ActiveCfg = Debug|x86
+		{AA713CD2-BBC9-456E-9D27-135F3E0321E5}.Deploy|x86.Build.0 = Debug|x86
+		{AA713CD2-BBC9-456E-9D27-135F3E0321E5}.Release|x64.ActiveCfg = Release|x64
+		{AA713CD2-BBC9-456E-9D27-135F3E0321E5}.Release|x64.Build.0 = Release|x64
+		{AA713CD2-BBC9-456E-9D27-135F3E0321E5}.Release|x86.ActiveCfg = Release|x86
+		{AA713CD2-BBC9-456E-9D27-135F3E0321E5}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -2499,6 +2513,7 @@ Global
 		{A571094A-3FC7-4CD2-908F-3AF17E6B7647} = {0C4DD6AB-D571-4DEA-92D1-3DFF63D7F332}
 		{82D80094-F012-4248-ABA7-D55FB22807CD} = {0C4DD6AB-D571-4DEA-92D1-3DFF63D7F332}
 		{F246924F-3A0C-4E70-9969-C20FED06A0E3} = {66FEF88A-D6D6-4AD6-A0C5-36FF712738F2}
+		{AA713CD2-BBC9-456E-9D27-135F3E0321E5} = {07CF2AA8-5427-4912-8A68-E8E7A4CDC6D4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5957242E-E882-44E4-83E0-A1C2F73705BF}
