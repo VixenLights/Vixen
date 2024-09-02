@@ -394,7 +394,7 @@ namespace VixenModules.Effect.LineDance
 				// Create a curve for the node
 				// The first argument is taking the PanIncrement slider value and applying it to a max value of 50
 				// since this is being applied to Mid value of 50
-				Curve c = CreateStaggerCurve(CalculatePanIncrement(), width * offset, width, leftIndex == 0);
+				Curve c = CreateStaggerCurve(CalculatePanIncrement(), width * offset, width, leftIndex == 0 && !ExtraNodeOnRight());
 				
 				// Render the node
 				RenderFanCurve(
@@ -441,7 +441,7 @@ namespace VixenModules.Effect.LineDance
 				// Create a curve for the node
 				// The first argument is taking the PanIncrement slider value and applying it to a max value of 50
 				// since this is being applied to Mid value of 50
-				Curve c = CreateStaggerCurve(CalculatePanIncrement(), width * offset, width, leftIndex == leftMiddleIndex);
+				Curve c = CreateStaggerCurve(CalculatePanIncrement(), width * offset, width, leftIndex == leftMiddleIndex && !ExtraNodeOnRight());
 
 				// Need to calculate a moving head offset since we are moving from outside to inside
 				int renderOffset = 1 + (leftMiddleIndex + 1) - offset;
@@ -684,7 +684,7 @@ namespace VixenModules.Effect.LineDance
 				// Create a curve for the node
 				// The first argument is taking the PanIncrement slider value and applying it to a max value of 50
 				// since this is being applied to Mid value of 50
-				Curve c = CreateStaggerCurve(CalculatePanIncrement(), width * (int)(Math.Abs(offset)), width, rightIndex == renderNodes.Count - 1);
+				Curve c = CreateStaggerCurve(CalculatePanIncrement(), width * (int)(Math.Abs(offset)), width, rightIndex == renderNodes.Count - 1 && !ExtraNodeOnLeft());
 
 				// Render the node
 				RenderFanCurve(
@@ -731,7 +731,7 @@ namespace VixenModules.Effect.LineDance
 				// Create a curve for the node
 				// The first argument is taking the PanIncrement slider value and applying it to a max value of 50
 				// since this is being applied to Mid value of 50
-				Curve c = CreateStaggerCurve(CalculatePanIncrement(), width * (int)(Math.Abs(offset)), width, rightIndex == rightMiddleIndex);
+				Curve c = CreateStaggerCurve(CalculatePanIncrement(), width * (int)(Math.Abs(offset)), width, rightIndex == rightMiddleIndex && !ExtraNodeOnLeft());
 
 				// Need to calculate a moving head offset since we are moving from outside to inside
 				int renderIndex = (int)(-rightMiddleIndex - offset - 1);
@@ -1051,14 +1051,59 @@ namespace VixenModules.Effect.LineDance
 		}
 
 		/// <summary>
+		/// Returns true when there is an extra node on the left side.
+		/// </summary>
+		/// <returns>True when there is an extra node on the left side</returns>
+		private bool ExtraNodeOnLeft()
+		{
+			// If there is odd number of nodes and
+			// the node is being included on the left
+			return (_renderNodes.Count % 2 == 1 &&
+			        CenterHandling == FanCenterOptions.Left);
+		}
+
+		/// <summary>
+		/// Returns true when there is an extra node on the right side.
+		/// </summary>
+		/// <returns>True when there is an extra node on the right side</returns>
+		private bool ExtraNodeOnRight()
+		{
+			// If there is odd number of nodes and
+			// the node is being included on the right
+			return (_renderNodes.Count % 2 == 1 &&
+					CenterHandling == FanCenterOptions.Right);
+		}
+			
+
+		/// <summary>
+		/// Returns 1 when an odd beam is involved with the fan otherwise zero.
+		/// </summary>
+		/// <returns>1 when an odd beam is involved with the fan otherwise zero</returns>
+		private int GetOddBeam()
+		{
+			int oddBeam = 0;
+
+			// If the center beam is part of the left or right fan then...
+			if (_renderNodes.Count % 2 == 1 &&
+				(CenterHandling == FanCenterOptions.Left ||
+				 CenterHandling == FanCenterOptions.Right))
+			{
+				// Increase the number of beams to handle
+				oddBeam = 1;
+			}
+
+			return oddBeam;
+		}
+
+		/// <summary>
 		/// Calculates the maximum pan increment angle (0-1).  This value is used to scale the Pan Increment angle.
 		/// The calculation results in the last moving head in the fan to be at the maximum pan of the fixture.
 		/// </summary>
 		/// <returns>Maximum pan increment (0-1)</returns>
 		private double CalculateMaxPanIncrement()
-		{
+		{			
 			// Calculate the maximum pan increment with the goal of the last moving head to be at the maximum pan angle
-			return (1.0 - PanStartAngle / 100.0) / (_renderNodes.Count / 2);			
+			return (1.0 - PanStartAngle / 100.0) / (_renderNodes.Count / 2 + GetOddBeam());			
 		}
 
 		/// <summary>
@@ -1066,7 +1111,7 @@ namespace VixenModules.Effect.LineDance
 		/// </summary>
 		/// <returns>Pan increment value</returns>
 		private int CalculatePanIncrement()
-		{
+		{			
 			// Taking the PanIncrement slider value and applying it to a max value of 50
 			// since this will be applied to Mid value of 50
 			int panIncrement = (int)((PanIncrement / 100.0) * 50);
@@ -1088,7 +1133,7 @@ namespace VixenModules.Effect.LineDance
 		{
 			// Calculate the distance between stagger points
 			// Taking into a hold time at the end of the effect				
-			return (100 - HoldTime) / (_renderNodes.Count / 2);
+			return (100 - HoldTime) / (_renderNodes.Count / 2 + GetOddBeam());
 		}
 
 		#endregion
