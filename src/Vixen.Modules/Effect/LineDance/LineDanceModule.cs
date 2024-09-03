@@ -52,7 +52,7 @@ namespace VixenModules.Effect.LineDance
 		/// Constructor
 		/// </summary>
 		public LineDanceModule() : 
-			base("https://www.vixenlights.com/vixen-3-documentation/docs/usage/sequencer/effects/intelligent-fixture/line-dance/")
+			base("https://www.vixenlights.com/docs/usage/sequencer/effects/intelligent-fixture/line-dance/")
 		{			
 			// Create the dictionary of node to function information
 			_panFunctions = new Dictionary<IElementNode, (string label, string tag)>();		
