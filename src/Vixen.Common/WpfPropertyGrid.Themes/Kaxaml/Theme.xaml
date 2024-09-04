@@ -3,8 +3,8 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:aero="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
   xmlns:pg="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
-  xmlns:theme="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Themes.Kaxaml"  
-  >
+  xmlns:theme="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Themes.Kaxaml"
+  xmlns:utils="clr-namespace:Common.WPFCommon.Utils;assembly=WPFCommon">
 
     <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
 
@@ -166,7 +166,7 @@
         <Setter Property="MinWidth" Value="100"/>
         <Setter Property="MinHeight" Value="18"/>
         <Setter Property="AllowDrop" Value="true"/>
-        <Setter Property="pg:TextBoxExtender.SelectAllOnFocus" Value="True"/>
+        <Setter Property="utils:TextBoxExtender.SelectAllOnFocus" Value="True"/>
 		<Setter Property="CaretBrush" Value="#EBEBEB"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -188,7 +188,7 @@
                                         Path=(Validation.Errors)[0].ErrorContent}"/>
                         </Trigger>
                         <Trigger Property="IsReadOnly" Value="True">
-                            <Setter Property="pg:TextBoxExtender.SelectAllOnFocus" Value="False"/>
+                            <Setter Property="utils:TextBoxExtender.SelectAllOnFocus" Value="False"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

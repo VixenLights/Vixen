@@ -3,7 +3,8 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:local="clr-namespace:System.Windows.Controls.WpfPropertyGrid"
   xmlns:design="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Design"
-  xmlns:controls="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Controls">
+  xmlns:controls="clr-namespace:System.Windows.Controls.WpfPropertyGrid.Controls"
+  xmlns:utils="clr-namespace:Common.WPFCommon.Utils;assembly=WPFCommon">
 
     <local:NamedColorList x:Key="NamedColorList"/>
     <local:NullValueConverter x:Key="NullValueConverter"/>
@@ -29,11 +30,11 @@
     <DataTemplate x:Key="{x:Static local:EditorKeys.DefaultEditorKey}">
         <TextBox
 			x:Name="PART_editor"
-			Text="{Binding StringValue, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"
+			Text="{Binding StringValue, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
 			IsReadOnly="{Binding IsReadOnly}"
-			local:TextBoxExtender.CommitOnEnter="true"
-			local:TextBoxExtender.RollbackOnEscape="true"
-			local:TextBoxExtender.CommitOnTyping="false">
+			utils:TextBoxExtender.CommitOnEnter="true"
+			utils:TextBoxExtender.RollbackOnEscape="true"
+			utils:TextBoxExtender.CommitOnTyping="false">
         </TextBox>
     </DataTemplate>
 
