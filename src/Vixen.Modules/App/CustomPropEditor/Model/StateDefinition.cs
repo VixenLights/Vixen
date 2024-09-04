@@ -10,6 +10,12 @@ namespace VixenModules.App.CustomPropEditor.Model
 		private int _index;
 		private string _name;
 
+		public StateDefinition()
+		{
+			Name = "Change Me!";
+			DefaultColor = Color.White;
+		}
+
 		public string Name
 		{
 			get => _name;

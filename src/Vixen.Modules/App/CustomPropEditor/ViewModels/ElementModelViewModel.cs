@@ -1,8 +1,13 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Text.RegularExpressions;
 using System.Windows.Controls.WpfPropertyGrid;
+using System.Windows.Media;
 using Catel.Data;
+using Catel.Logging;
 using Catel.MVVM;
+using Newtonsoft.Json.Linq;
+using VixenModules.App.CustomPropEditor.Extensions;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
 using PropertyData = Catel.Data.PropertyData;
@@ -14,6 +19,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	{
 		private DateTime _selectedTime = DateTime.MaxValue;
 		private string _textHoldValue = String.Empty;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public ElementModelViewModel(ElementModel model, ElementModelViewModel parent)
 		{
@@ -229,16 +235,21 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		public String FaceColor
 		{
 			get => ElementModel.FaceDefinition.FaceComponent != FaceComponent.None?
-				$"RGB ({ElementModel.FaceDefinition.DefaultColor.R},{ElementModel.FaceDefinition.DefaultColor.G},{ElementModel.FaceDefinition.DefaultColor.B})":
+				ElementModel.FaceDefinition.DefaultColor.ToHex():
 				String.Empty;
-			//set
-			//{
+			set
+			{
 
-			//	object oldValue = ElementModel.FaceDefinition.DefaultColor;
-			//	ElementModel.FaceDefinition.DefaultColor = value;
-			//	IsDirty = true;
-			//	RaisePropertyChanged(nameof(FaceColor), oldValue, value);
-			//}
+				if (ElementModel.FaceDefinition != null)
+				{
+					var color = HexToColor(value);
+
+					ElementModel.FaceDefinition.DefaultColor = color;
+
+					IsDirty = true;
+					RaisePropertyChanged(nameof(FaceColor));
+				}
+			}
 		}
 
 		#endregion
@@ -246,21 +257,45 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		#region StateName property
 
 		/// <summary>
-		/// Gets or sets the FaceComponent value.
+		/// Gets or sets the StateDefinition Name value.
 		/// </summary>
 		[PropertyOrder(3)]
 		[DisplayName("State Name")]
-		[Description("State name associated with this element for State.")]
+		[Description("Name of the State for this element.")]
 		public String StateName
 		{
 			get => ElementModel.StateDefinition != null ? ElementModel.StateDefinition.Name:String.Empty;
 			set
 			{
-
-				object oldValue = ElementModel.StateDefinition.Name;
-				ElementModel.StateDefinition.Name = value;
-				IsDirty = true;
-				RaisePropertyChanged(nameof(StateName)); 
+				if (ElementModel.StateDefinition != null)
+				{
+					if (!string.IsNullOrEmpty(value))
+					{
+						ElementModel.StateDefinition.Name = value;
+						IsDirty = true;
+						RaisePropertyChanged(nameof(StateName));
+					}
+					else
+					{
+						ElementModel.StateDefinition = null;
+						IsDirty = true;
+						RaisePropertyChanged(nameof(StateColor));
+						RaisePropertyChanged(nameof(StateIndex));
+						RaisePropertyChanged(nameof(StateName));
+					}
+				}
+				else
+				{
+					ElementModel.StateDefinition = new StateDefinition()
+					{
+						Name = value
+					};
+					IsDirty = true;
+					RaisePropertyChanged(nameof(StateColor));
+					RaisePropertyChanged(nameof(StateIndex));
+					RaisePropertyChanged(nameof(StateName));
+				}
+				
 			}
 		}
 
@@ -269,28 +304,71 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		#region StateColor property
 
 		/// <summary>
-		/// Gets or sets the StateColor value.
+		/// Gets or sets the StateDefinition Color value.
 		/// </summary>
 		[PropertyOrder(4)]
 		[DisplayName("State Color")]
-		[Description("State color in Hex associated with this element for State.")]
+		[Description("Color in Hex (#FFFFFF) associated with the State of this element.")]
 		public String StateColor
 		{
 			get => ElementModel.StateDefinition != null ?
-				$"RGB ({ElementModel.StateDefinition.DefaultColor.R},{ElementModel.StateDefinition.DefaultColor.G},{ElementModel.StateDefinition.DefaultColor.B})" :
+				ElementModel.StateDefinition.DefaultColor.ToHex() :
 				String.Empty;
-			//set
-			//{
+			set
+			{
+				var color = HexToColor(value);
+				if (ElementModel.StateDefinition != null)
+				{
+					ElementModel.StateDefinition.DefaultColor = color;
+					IsDirty = true;
+					RaisePropertyChanged(nameof(StateColor));
+				}
+				else
+				{
+					ElementModel.StateDefinition = new StateDefinition()
+					{
+						DefaultColor = color
+					};
+					IsDirty = true;
+					RaisePropertyChanged(nameof(StateName));
+					RaisePropertyChanged(nameof(StateColor));
+					RaisePropertyChanged(nameof(StateIndex));
+				}
 
-			//	object oldValue = ElementModel.StateDefinition.DefaultColor;
-			//	ElementModel.StateDefinition.DefaultColor = value;
-			//	IsDirty = true;
-			//	RaisePropertyChanged(nameof(FaceColor), oldValue, value);
-			//}
+			}
 		}
 
 		#endregion
 
+		#region StateIndex property
+
+		/// <summary>
+		/// Gets or sets the StateDefinition Index value.
+		/// </summary>
+		[PropertyOrder(5)]
+		[DisplayName("State Index")]
+		[Description("Index associated with the State of this element.")]
+		public string StateIndex
+		{
+			get => ElementModel.StateDefinition != null ?
+				ElementModel.StateDefinition.Index.ToString() :
+				String.Empty;
+			set
+			{
+				if (value.IsNumeric())
+				{
+					if (ElementModel.StateDefinition != null)
+					{
+						ElementModel.StateDefinition.Index = Convert.ToInt32(value);
+						IsDirty = true;
+						RaisePropertyChanged(nameof(StateIndex));
+					}
+				}
+				
+			}
+		}
+
+		#endregion
 
 
 		#region ChildCount property
@@ -298,10 +376,22 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets or sets the ChildCount value.
 		/// </summary>
-		[DisplayName("Child Elements")]
+		[DisplayName("Children")]
 		[Description("Number of child elements associated with this element.")]
-		[PropertyOrder(5)]
-		public int ChildCount => ElementModel.Children.Count;
+		[PropertyOrder(6)]
+		public int ChildCount => ElementModel.Children.Count();
+
+		#endregion
+
+		#region Light Count property
+
+		/// <summary>
+		/// Gets the Light Count value.
+		/// </summary>
+		[DisplayName("Lights")]
+		[Description("Number of light elements under this element.")]
+		[PropertyOrder(7)]
+		public int LightCount => ElementModel.GetLeafEnumerator().Count(x => x.IsLightNode);
 
 		#endregion
 
@@ -447,6 +537,33 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			{
 				validationResults.Add(FieldValidationResult.CreateError(nameof(ElementModel.LightSize), "Light size must be > 0"));
 			}
+		}
+
+		private static bool IsValidHexColor(string hexColor)
+		{
+			return Regex.IsMatch(hexColor, "^#(?:[0-9a-fA-F]{3}){1,2}$");
+		}
+
+		private static System.Drawing.Color HexToColor(string hexColor)
+		{
+			if (!IsValidHexColor(hexColor)) return System.Drawing.Color.Empty;
+
+			try
+			{
+				var mediaColor = ColorConverter.ConvertFromString(hexColor);
+				if (mediaColor != null)
+				{
+					var color = (Color)mediaColor;
+					return color.ToDrawingColor();
+				}
+
+			}
+			catch (NullReferenceException e)
+			{
+				Logging.Error(e, $"Could not parse Hex code for Color {hexColor}. Defaulting to nothing");
+			}
+
+			return System.Drawing.Color.Empty;
 		}
 
 		public void Dispose()
