@@ -357,7 +357,7 @@ namespace VixenApplication.Setup
 
 				foreach (int outputIndex in controllersAndOutput.Value)
 				{
-					if (outputIndex > controller.Outputs.Length)
+					if (outputIndex >= controller.Outputs.Length)
 					{
 						Logging.Warn("passed an output index greater than the controller output length: " + controller.Name + ", " + outputIndex);
 						continue;
