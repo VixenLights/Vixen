@@ -646,7 +646,7 @@ namespace Common.Controls
 						VixenSystem.OutputControllers.Resume(controllerOutputs.Key);
 					}
 				}
-
+				treeview.ClearSelectedNodes();
 				OnControllersChanged();
 				PopulateControllerTree();
 				if (TopLevelControl != null)
