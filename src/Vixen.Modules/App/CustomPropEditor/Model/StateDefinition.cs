@@ -9,13 +9,36 @@ namespace VixenModules.App.CustomPropEditor.Model
 		private Color _defaultColor;
 		private int _index;
 		private string _name;
+		private string _stateDefinitionName;
 
+		/// <summary>
+		/// State Definition defines a particular state of a group of nodes. They are grouped together by the StateDefinitionName property.
+		/// Each state can have a color and index assigned to it. Thus, a prop can have several parts grouped together and each part can have its own color and index.
+		/// </summary>
 		public StateDefinition()
 		{
-			Name = "Change Me!";
+			StateDefinitionName = "State Name 1";
+			Name = "Item 1";
 			DefaultColor = Color.White;
 		}
 
+		/// <summary>
+		/// The overall StateDefinitionName Key that this definition is grouped with. 
+		/// </summary>
+		public string StateDefinitionName
+		{
+			get => _stateDefinitionName;
+			set
+			{
+				if (value == _stateDefinitionName) return;
+				_stateDefinitionName = value;
+				OnPropertyChanged(nameof(StateDefinitionName));
+			}
+		}
+
+		/// <summary>
+		/// The individual state definition item
+		/// </summary>
 		public string Name
 		{
 			get => _name;
@@ -27,6 +50,9 @@ namespace VixenModules.App.CustomPropEditor.Model
 			}
 		}
 
+		/// <summary>
+		/// The defined color of this state item
+		/// </summary>
 		public Color DefaultColor
 		{
 			get => _defaultColor;
@@ -38,6 +64,9 @@ namespace VixenModules.App.CustomPropEditor.Model
 			}
 		}
 
+		/// <summary>
+		/// This is basically the row number when imported from an xModel. This is not used at this time.
+		/// </summary>
 		public int Index
 		{
 			get => _index;

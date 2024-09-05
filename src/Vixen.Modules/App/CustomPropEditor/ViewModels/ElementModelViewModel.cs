@@ -254,15 +254,62 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
-		#region StateName property
+		#region StateDefinitionName property
 
 		/// <summary>
-		/// Gets or sets the StateDefinition Name value.
+		/// Gets or sets the StateDefinitionName value.
 		/// </summary>
 		[PropertyOrder(3)]
 		[DisplayName("State Name")]
-		[Description("Name of the State for this element.")]
-		public String StateName
+		[Description("State name for grouping state items together. This should be the same for any state items that are intended to work together.")]
+		public String StateDefinitionName
+		{
+			get => ElementModel.StateDefinition != null ? ElementModel.StateDefinition.StateDefinitionName : String.Empty;
+			set
+			{
+				if (ElementModel.StateDefinition != null)
+				{
+					if (!string.IsNullOrEmpty(value))
+					{
+						ElementModel.StateDefinition.StateDefinitionName = value;
+						IsDirty = true;
+						RaisePropertyChanged(nameof(StateDefinitionName));
+					}
+					else
+					{
+						ElementModel.StateDefinition = null;
+						IsDirty = true;
+						RaisePropertyChanged(nameof(StateItemColor));
+						RaisePropertyChanged(nameof(StateItemName));
+						RaisePropertyChanged(nameof(StateDefinitionName));
+					}
+				}
+				else
+				{
+					ElementModel.StateDefinition = new StateDefinition()
+					{
+						Name = value
+					};
+					IsDirty = true;
+					RaisePropertyChanged(nameof(StateItemColor));
+					RaisePropertyChanged(nameof(StateItemName));
+					RaisePropertyChanged(nameof(StateDefinitionName));
+				}
+
+			}
+		}
+
+		#endregion
+
+		#region StateDefinitionName property
+
+		/// <summary>
+		/// Gets or sets the State Item name value.
+		/// </summary>
+		[PropertyOrder(4)]
+		[DisplayName("State Item")]
+		[Description("Name of the item state for this element/group. All associated state items should have the same State name.")]
+		public String StateItemName
 		{
 			get => ElementModel.StateDefinition != null ? ElementModel.StateDefinition.Name:String.Empty;
 			set
@@ -273,15 +320,15 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 					{
 						ElementModel.StateDefinition.Name = value;
 						IsDirty = true;
-						RaisePropertyChanged(nameof(StateName));
+						RaisePropertyChanged(nameof(StateItemName));
 					}
 					else
 					{
 						ElementModel.StateDefinition = null;
 						IsDirty = true;
-						RaisePropertyChanged(nameof(StateColor));
-						RaisePropertyChanged(nameof(StateIndex));
-						RaisePropertyChanged(nameof(StateName));
+						RaisePropertyChanged(nameof(StateItemColor));
+						RaisePropertyChanged(nameof(StateItemName));
+						RaisePropertyChanged(nameof(StateDefinitionName));
 					}
 				}
 				else
@@ -291,9 +338,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 						Name = value
 					};
 					IsDirty = true;
-					RaisePropertyChanged(nameof(StateColor));
-					RaisePropertyChanged(nameof(StateIndex));
-					RaisePropertyChanged(nameof(StateName));
+					RaisePropertyChanged(nameof(StateItemColor));
+					RaisePropertyChanged(nameof(StateItemName));
+					RaisePropertyChanged(nameof(StateDefinitionName));
 				}
 				
 			}
@@ -301,15 +348,15 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
-		#region StateColor property
+		#region StateItemColor property
 
 		/// <summary>
 		/// Gets or sets the StateDefinition Color value.
 		/// </summary>
-		[PropertyOrder(4)]
-		[DisplayName("State Color")]
-		[Description("Color in Hex (#FFFFFF) associated with the State of this element.")]
-		public String StateColor
+		[PropertyOrder(5)]
+		[DisplayName("State Item Color")]
+		[Description("Color in Hex (#FFFFFF) for this state item.")]
+		public String StateItemColor
 		{
 			get => ElementModel.StateDefinition != null ?
 				ElementModel.StateDefinition.DefaultColor.ToHex() :
@@ -321,7 +368,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				{
 					ElementModel.StateDefinition.DefaultColor = color;
 					IsDirty = true;
-					RaisePropertyChanged(nameof(StateColor));
+					RaisePropertyChanged(nameof(StateItemColor));
 				}
 				else
 				{
@@ -330,9 +377,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 						DefaultColor = color
 					};
 					IsDirty = true;
-					RaisePropertyChanged(nameof(StateName));
-					RaisePropertyChanged(nameof(StateColor));
-					RaisePropertyChanged(nameof(StateIndex));
+					RaisePropertyChanged(nameof(StateItemName));
+					RaisePropertyChanged(nameof(StateItemColor));
+					RaisePropertyChanged(nameof(StateDefinitionName));
 				}
 
 			}
@@ -340,37 +387,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
-		#region StateIndex property
-
-		/// <summary>
-		/// Gets or sets the StateDefinition Index value.
-		/// </summary>
-		[PropertyOrder(5)]
-		[DisplayName("State Index")]
-		[Description("Index associated with the State of this element.")]
-		public string StateIndex
-		{
-			get => ElementModel.StateDefinition != null ?
-				ElementModel.StateDefinition.Index.ToString() :
-				String.Empty;
-			set
-			{
-				if (value.IsNumeric())
-				{
-					if (ElementModel.StateDefinition != null)
-					{
-						ElementModel.StateDefinition.Index = Convert.ToInt32(value);
-						IsDirty = true;
-						RaisePropertyChanged(nameof(StateIndex));
-					}
-				}
-				
-			}
-		}
-
-		#endregion
-
-
+		
 		#region ChildCount property
 
 		/// <summary>
@@ -378,7 +395,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		[DisplayName("Children")]
 		[Description("Number of child elements associated with this element.")]
-		[PropertyOrder(6)]
+		[PropertyOrder(7)]
 		public int ChildCount => ElementModel.Children.Count();
 
 		#endregion
@@ -390,7 +407,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		[DisplayName("Lights")]
 		[Description("Number of light elements under this element.")]
-		[PropertyOrder(7)]
+		[PropertyOrder(8)]
 		public int LightCount => ElementModel.GetLeafEnumerator().Count(x => x.IsLightNode);
 
 		#endregion
