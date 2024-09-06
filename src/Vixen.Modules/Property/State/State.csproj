@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<RootNamespace>VixenModules.Property.State</RootNamespace>
+		<UseWindowsForms>true</UseWindowsForms>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="NLog" Version="5.3.2" />
+		<PackageReference Include="Catel.MVVM" Version="6.0.3" />
+		<PackageReference Include="gong-wpf-dragdrop" Version="3.2.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
+		<ProjectReference Include="..\..\..\Vixen.Common\DiscreteColorPicker\DiscreteColorPicker.csproj" />
+		<ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
+		<ProjectReference Include="..\..\..\Vixen.Common\WPFCommon\WPFCommon.csproj" />
+		<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+		<ProjectReference Include="..\Color\Color.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Setup\Services\" />
+	</ItemGroup>
+
+</Project>

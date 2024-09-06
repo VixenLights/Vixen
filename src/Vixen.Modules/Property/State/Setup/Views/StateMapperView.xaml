@@ -1,0 +1,190 @@
+﻿<catel:Window x:Class="VixenModules.Property.State.Setup.Views.StateMapperView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VixenModules.Property.State.Setup.Views"
+        xmlns:catel="http://schemas.catelproject.com"
+        xmlns:dd="urn:gong-wpf-dragdrop"
+        xmlns:sys="clr-namespace:Vixen.Sys;assembly=Vixen.Core"
+        xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:behaviors="clr-namespace:Common.WPFCommon.Behaviors;assembly=WPFCommon"
+        xmlns:models="clr-namespace:VixenModules.Property.State.Setup.Models"
+        mc:Ignorable="d"
+        Title="StateMapperView" Height="450" Width="800">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <converters:ElementNodeToStringNameConverter x:Key="ElementNodeToStringName"/>
+            <converters:ColorToSolidBrushConverter x:Key="ColorToSolidBrush" />
+            <converters:ColorToHexStringConverter x:Key="ColorToHexString"/>
+            <converters:BackgroundColorToTextBrushConverter x:Key="BackgroundColorToTextColor"/>
+            <converters:PercentageConverter x:Key="PercentageConverter"/>
+        </ResourceDictionary>
+    </Window.Resources>
+    <DockPanel Background="{DynamicResource BackColorBrush}">
+        <WrapPanel DockPanel.Dock="Bottom" Margin="5" Style="{StaticResource RowButtonRightContainerStyle}">
+            <Button Content="Ok" Command="{Binding OkCommand}" IsDefault="True" Style="{StaticResource RowButtonStyle}"/>
+            <Button Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True" Style="{StaticResource RowButtonStyle}"/>
+        </WrapPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width=".5*"/>
+                <ColumnDefinition Width="1"/>
+                <ColumnDefinition Width=".5*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="State Definitions" HorizontalAlignment="Center"/>
+                <DataGrid Grid.Row="1" 
+                          ItemsSource="{Binding Path=StateDefinitions, UpdateSourceTrigger=PropertyChanged}" 
+                          AutoGenerateColumns="False"
+                          dd:DragDrop.IsDropTarget="True"
+                          dd:DragDrop.DropHandler="{Binding}"
+                          ScrollViewer.CanContentScroll="True" 
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                          SelectionUnit="Cell"
+                          SelectionMode="Single"
+                          CanUserAddRows="False">
+                    <DataGrid.Resources>
+                        <DataTemplate x:Key="ColorCellTemplate">
+                            
+                            <TextBlock Foreground="{Binding StateColor, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BackgroundColorToTextColor}}"
+                                       Background="{Binding StateColor, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ColorToSolidBrush}}" 
+                                       HorizontalAlignment="Stretch" TextAlignment="Center">
+                                    <TextBlock.Text>
+                                    <Binding Path="StateColor" UpdateSourceTrigger="PropertyChanged" Converter="{StaticResource ColorToHexString}"/>
+                                    </TextBlock.Text>
+                                    <TextBlock.InputBindings>
+                                        <MouseBinding Gesture="LeftDoubleClick" Command="{Binding DataContext.EditColorCommand, RelativeSource={RelativeSource AncestorType=DataGrid, Mode=FindAncestor}}" CommandParameter="{Binding}"></MouseBinding>
+                                    </TextBlock.InputBindings>
+                                </TextBlock>
+                           
+                        </DataTemplate>
+                    </DataGrid.Resources>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="State Name" Binding="{Binding StateName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                            Width="1*"/>
+                        <DataGridTextColumn Header="Item Name" Binding="{Binding StateItemName,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                            Width="1*"/>
+                        <DataGridTemplateColumn Header="State Color" CellTemplate="{StaticResource ColorCellTemplate}" Width="1*"/>
+                        <!--<DataGridTemplateColumn Header="Color">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <xctk:ColorPicker SelectedColor="{Binding StateColor, UpdateSourceTrigger=PropertyChanged}"
+                                                      DisplayColorAndName="True" UsingAlphaChannel="False"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>-->
+
+                        <DataGridTextColumn Header="Element Name" Binding="{Binding Element,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            Width="1*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <!--<ListView Grid.Row="1"  
+                          ItemsSource="{Binding Path=StateDefinitions}"
+                          ItemContainerStyle="{StaticResource GridViewContainerStyle}"
+                          FocusManager.IsFocusScope="True"
+                          dd:DragDrop.IsDropTarget="True"
+                          dd:DragDrop.DropHandler="{Binding}"
+                          ScrollViewer.CanContentScroll="True" 
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                   <ListView.Resources>
+                        <DataTemplate x:Key="ColorCellTemplate">
+                           <DockPanel>
+                               <TextBlock Foreground="{Binding StateColor, Converter={StaticResource BackgroundColorToTextColor}}" Background="{Binding Path=StateColor, Converter={StaticResource ColorToSolidBrush}}" HorizontalAlignment="Stretch" TextAlignment="Center">
+                                   <TextBlock.Text>
+                                       <Binding Path="StateColor" Converter="{StaticResource ColorToHexString}"/>
+                                   </TextBlock.Text>
+                               </TextBlock>
+                           </DockPanel>
+                       </DataTemplate>
+                    </ListView.Resources>
+                   <ListView.View>
+                       <GridView AllowsColumnReorder="False" ColumnHeaderToolTip="State Definitions">
+                           <GridViewColumn Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView},Path=ActualWidth, Converter={StaticResource PercentageConverter}, ConverterParameter=.25}">
+                               <GridViewColumn.Header>
+                                   <GridViewColumnHeader>State Name</GridViewColumnHeader>
+                               </GridViewColumn.Header>
+                               <GridViewColumn.CellTemplate>
+                                   <DataTemplate>
+                                      
+                                            
+                                            <TextBox Text="{Binding StateName}" TextAlignment="Left" HorizontalAlignment="Stretch" Margin="0" x:Name="EditText" Focusable="True"/>
+                                    
+                                       
+                                   </DataTemplate>
+                               </GridViewColumn.CellTemplate>
+                           </GridViewColumn>
+                           <GridViewColumn Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView},Path=ActualWidth, Converter={StaticResource PercentageConverter}, ConverterParameter=.25}">
+                               <GridViewColumn.Header>
+                                   <GridViewColumnHeader>Item Name</GridViewColumnHeader>
+                               </GridViewColumn.Header>
+                               <GridViewColumn.CellTemplate>
+                                   <DataTemplate>
+                                       <TextBlock Text="{Binding StateItemName}" TextAlignment="Left" HorizontalAlignment="Stretch" Margin="0"/>
+                                   </DataTemplate>
+                               </GridViewColumn.CellTemplate>
+                           </GridViewColumn>
+
+
+                            <GridViewColumn CellTemplate="{StaticResource ColorCellTemplate}" Header="Color" 
+                                            Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView},Path=ActualWidth, Converter={StaticResource PercentageConverter}, ConverterParameter=.25}"/>
+                           
+                           
+                           <GridViewColumn Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView},Path=ActualWidth, Converter={StaticResource PercentageConverter}, ConverterParameter=.25}">
+                               <GridViewColumn.Header>
+                                    <GridViewColumnHeader>Element Name</GridViewColumnHeader>
+                               </GridViewColumn.Header>
+                               <GridViewColumn.CellTemplate>
+                                   <DataTemplate>
+                                        <TextBlock Text="{Binding Element, Converter={StaticResource ElementNodeToStringName}}" TextAlignment="Left" HorizontalAlignment="Stretch" Margin="0"/>
+                                   </DataTemplate>
+                               </GridViewColumn.CellTemplate>
+                           </GridViewColumn>
+                           
+                        </GridView>
+                   </ListView.View>
+
+               </ListView>-->
+                <WrapPanel Grid.Row="2" Style="{StaticResource RowButtonRightContainerStyle}">
+                    <Button Command="{Binding Path=AddDefinitionCommand}" Style="{StaticResource RowButtonStyle}">Add Row</Button>
+                </WrapPanel>
+            </Grid>
+            <GridSplitter Grid.Column="1" Width="1" HorizontalAlignment="Stretch" Background="Black"/>
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Elements" HorizontalAlignment="Center"/>
+                <TreeView Grid.Row="1" x:Name="ElementModelTreeView"
+                          ItemsSource="{Binding Elements}" 
+                          BorderThickness="0"
+                          VerticalAlignment="Stretch"
+                          HorizontalAlignment="Stretch"
+                          ScrollViewer.CanContentScroll="True"
+                          FocusManager.IsFocusScope="True"
+                          dd:DragDrop.IsDragSource="True">
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type sys:ElementNode}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Name}" Margin="0,2,0,2" Focusable="True">
+                                </TextBlock>
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+            </Grid>
+        </Grid>
+    </DockPanel>
+</catel:Window>
