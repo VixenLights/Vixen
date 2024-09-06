@@ -362,7 +362,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				{
 					var stateItemGroup = PropModelServices.Instance().CreateNode($"{cm.Name} {{1}} - {stateInfo.Name} - S{stateItem.Index} - {stateItem.Name}", stateGroup);
 
-					stateItemGroup.StateDefinition = new StateDefinition{DefaultColor = stateItem.Color, Name = stateItem.Name, Index = stateItem.Index};
+					stateItemGroup.StateDefinition = new StateDefinition{StateDefinitionName = stateInfo.Name, DefaultColor = stateItem.Color, Name = stateItem.Name, Index = stateItem.Index};
 					
 					var subModelRangeGroup = stateItemGroup;
 
