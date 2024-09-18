@@ -9,6 +9,7 @@
         xmlns:catel="http://schemas.catelproject.com"
         xmlns:viewModels="clr-namespace:VixenModules.App.CustomPropEditor.ViewModels"
         xmlns:views1="clr-namespace:VixenModules.App.CustomPropEditor.Views"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
         Title="Custom Prop Editor" Height="700" Width="900" WindowStartupLocation="CenterScreen">
 
 		<Window.Resources>
@@ -20,8 +21,10 @@
 						<commonConverters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
 						<commonConverters:AdditionConverter x:Key="AdditionConverter"/>
 						<commonConverters:ColorToSolidBrushConverter x:Key="ColorToSolidBrushConverter"/>
-				</ResourceDictionary>
-		</Window.Resources>
+                        <system:Boolean x:Key="BoolTrue">True</system:Boolean>
+                        <system:Boolean x:Key="BoolFalse">False</system:Boolean>
+        </ResourceDictionary>
+    </Window.Resources>
 
 		<i:Interaction.Behaviors>
 				<catel:KeyPressToCommand Command="{Binding NewPropCommand}" Key="N" Modifiers="Control"/>
@@ -100,7 +103,10 @@
 						</MenuItem>
 						<MenuItem Header="Tools">
 								<MenuItem Header="Vendor Browser" Command="{Binding OpenVendorBrowserCommand}"/>
-								<MenuItem Header="Export Wire Diagram" Command="{Binding CreateWireDiagramCommand}"/>
+								<MenuItem Header="Export Wire Diagram">
+                                    <MenuItem Header="Front Wire Diagram" Command="{Binding CreateWireDiagramCommand}" CommandParameter="{StaticResource BoolFalse}"/>
+                                    <MenuItem Header="Back Wire Diagram" Command="{Binding CreateWireDiagramCommand}"  CommandParameter="{StaticResource BoolTrue}"/>
+                                </MenuItem>
 						</MenuItem>
 						<MenuItem Header="Options">
 								<MenuItem Header="Preferences" Command="{Binding ColorOptionsCommand}"/>
