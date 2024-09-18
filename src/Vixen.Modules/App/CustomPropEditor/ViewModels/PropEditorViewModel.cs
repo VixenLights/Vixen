@@ -929,7 +929,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		[Browsable(false)]
 		public Command<bool> CreateWireDiagramCommand
 		{
-			get { return _createWireDiagramCommand ??= new Command<bool>(CreateWireDiagram); }
+			get { return _createWireDiagramCommand ??= new Command<bool>(CreateWireDiagram, CanCreateWireDiagram); }
 		}
 
 		/// <summary>
@@ -950,6 +950,15 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 
 			ElementModeling.OrderedPointsToSvg(nodes, flip);
+		}
+
+		/// <summary>
+		/// Method to check whether the CreateWireDiagram command can be executed.
+		/// </summary>
+		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+		private bool CanCreateWireDiagram(bool flip)
+		{
+			return ElementTreeViewModel.Prop.RootNode.GetLeafEnumerator().Any(x => x.IsLightNode);
 		}
 
 		#endregion
@@ -1034,6 +1043,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 
 			}
+
+			ViewModelCommandManager.InvalidateCommands(true);
 		}
 
 		#endregion
