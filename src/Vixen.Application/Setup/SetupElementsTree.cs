@@ -63,9 +63,9 @@ namespace VixenApplication.Setup
 			elementTree.ExportDiagram = ExportWireDiagram;
 		}
 
-		private void ExportWireDiagram(ElementNode node)
+		private void ExportWireDiagram(ElementNode node, bool flip = false)
 		{
-			ElementModeling.ElementsToSvg(node);
+			ElementModeling.ElementsToSvg(node, flip);
 		}
 
 		public event EventHandler<ElementNodesEventArgs>? ElementSelectionChanged;

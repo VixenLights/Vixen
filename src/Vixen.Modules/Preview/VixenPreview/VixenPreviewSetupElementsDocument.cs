@@ -40,9 +40,9 @@ namespace VixenModules.Preview.VixenPreview
 			treeElements.ExportDiagram = ExportWireDiagram;
 		}
 
-		private void ExportWireDiagram(ElementNode node)
+		private void ExportWireDiagram(ElementNode node, bool flip = false)
 		{
-			ElementModeling.ElementsToSvg(node);
+			ElementModeling.ElementsToSvg(node, flip);
 		}
 
 		private void VixenPreviewSetupElementsDocument_Load(object sender, EventArgs e)

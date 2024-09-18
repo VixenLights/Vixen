@@ -15,7 +15,7 @@ namespace Common.Controls
 		private readonly HashSet<string> _expandedNodes = new HashSet<string>(); // TreeNode paths that are expanded
 		private HashSet<string> _selectedNodes; // TreeNode paths that are selected
 		private List<string> _topDisplayedNodes; // TreeNode paths that are at the top of the view. Should only
-		// need one, but will have multiple in case the top node is deleted.
+												 // need one, but will have multiple in case the top node is deleted.
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private const string VirtualNodeName = @"VIRT";
 
@@ -56,7 +56,8 @@ namespace Common.Controls
 
 		private void ElementTree_Load(object sender, EventArgs e)
 		{
-			if (!(DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime)) {
+			if (!(DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime))
+			{
 				PopulateNodeTree();
 			}
 		}
@@ -86,9 +87,10 @@ namespace Common.Controls
 		public void PopulateNodeTree(IEnumerable<ElementNode> elementsToSelect)
 		{
 			List<string> treeNodes = new List<string>();
-			foreach (ElementNode elementNode in elementsToSelect) {
+			foreach (ElementNode elementNode in elementsToSelect)
+			{
 				treeNodes.Add(GenerateEquivalentTreeNodeFullPathFromElement(elementNode, treeview.PathSeparator));
-			}			
+			}
 			_PopulateNodeTree(treeNodes);
 		}
 
@@ -140,7 +142,8 @@ namespace Common.Controls
 			}
 
 			// if a new element has been passed in to select, select it instead.
-			if (elementTreeNodesToSelect != null) {
+			if (elementTreeNodesToSelect != null)
+			{
 				_selectedNodes = new HashSet<string>(elementTreeNodesToSelect);
 			}
 			foreach (string node in _selectedNodes)
@@ -152,14 +155,19 @@ namespace Common.Controls
 
 			// see stackoverflow.com/questions/626315/winforms-listview-remembering-scrolled-location-on-reload .
 			// we can only set the topNode after EndUpdate(). Also, it might throw an exception -- weird?
-			foreach (string node in _topDisplayedNodes) {
+			foreach (string node in _topDisplayedNodes)
+			{
 				TreeNode resultNode = FindNodeInTreeAtPath(treeview, node);
 
-				if (resultNode != null) {
-					try {
+				if (resultNode != null)
+				{
+					try
+					{
 						treeview.TopNode = resultNode;
-					} catch (Exception) {
-						 Logging.Warn("ConfigElements: exception caught trying to set TopNode.");
+					}
+					catch (Exception)
+					{
+						Logging.Warn("ConfigElements: exception caught trying to set TopNode.");
 					}
 					break;
 				}
@@ -205,7 +213,8 @@ namespace Common.Controls
 		{
 			string result = node.Name;
 			TreeNode parent = node.Parent;
-			while (parent != null) {
+			while (parent != null)
+			{
 				result = parent.Name + separator + result;
 				parent = parent.Parent;
 			}
@@ -225,7 +234,8 @@ namespace Common.Controls
 		{
 			string result = element.Id.ToString();
 			ElementNode parent = element.Parents.FirstOrDefault();
-			while (parent != null && parent != VixenSystem.Nodes.RootNode) {
+			while (parent != null && parent != VixenSystem.Nodes.RootNode)
+			{
 				result = parent.Id.ToString() + separator + result;
 				parent = parent.Parents.FirstOrDefault();
 			}
@@ -239,17 +249,21 @@ namespace Common.Controls
 			string[] subnodes = path.Split(new string[] { tree.PathSeparator }, StringSplitOptions.None);
 			TreeNodeCollection searchNodes = tree.Nodes;
 			TreeNode currentNode = null;
-			foreach (string search in subnodes) {
+			foreach (string search in subnodes)
+			{
 				bool found = false;
-				foreach (TreeNode tn in searchNodes) {
-					if (tn.Name == search) {
+				foreach (TreeNode tn in searchNodes)
+				{
+					if (tn.Name == search)
+					{
 						found = true;
 						currentNode = tn;
 						searchNodes = tn.Nodes;
 						break;
 					}
 				}
-				if (!found) {
+				if (!found)
+				{
 					currentNode = null;
 					break;
 				}
@@ -260,8 +274,10 @@ namespace Common.Controls
 
 		private void SaveTreeNodeState(TreeNodeCollection collection)
 		{
-			foreach (TreeNode tn in collection) {
-				if (treeview.SelectedNodes.Contains(tn)) {
+			foreach (TreeNode tn in collection)
+			{
+				if (treeview.SelectedNodes.Contains(tn))
+				{
 					_selectedNodes.Add(GenerateTreeNodeFullPath(tn, treeview.PathSeparator));
 				}
 
@@ -276,9 +292,11 @@ namespace Common.Controls
 			// we can try them in order to place at the top of the display. We should only
 			// need a single node, but in case the top node gets deleted (or the top few),
 			// we keep a list of 'preferred' nodes.
-			if (treeview.Nodes.Count > 0) {
+			if (treeview.Nodes.Count > 0)
+			{
 				TreeNode current = treeview.TopNode;
-				while (current != null) {
+				while (current != null)
+				{
 					_topDisplayedNodes.Add(GenerateTreeNodeFullPath(current, treeview.PathSeparator));
 					current = current.NextNode;
 				}
@@ -291,19 +309,19 @@ namespace Common.Controls
 			addedNode.Name = elementNode.Id.ToString();
 			addedNode.Text = elementNode.Name;
 			addedNode.Tag = elementNode;
-			
+
 			UpdateTreeNodeImage(addedNode, elementNode);
 
 			collection.Add(addedNode);
 
-			if(addChildren)
+			if (addChildren)
 			{
 				foreach (ElementNode childNode in elementNode.Children)
 				{
 					AddNodeToTree(addedNode.Nodes, childNode);
 				}
 			}
-			else if(elementNode.Children.Any())
+			else if (elementNode.Children.Any())
 			{
 				TreeNode virtNode = new TreeNode();
 				virtNode.Name = VirtualNodeName;
@@ -358,9 +376,9 @@ namespace Common.Controls
 			if (!elementNode.Children.Any())
 			{
 				if (elementNode.Element != null &&
-				    VixenSystem.DataFlow
-					    .GetDestinationsOfComponent(VixenSystem.Elements.GetDataFlowComponentForElement(elementNode.Element))
-					    .Any())
+					VixenSystem.DataFlow
+						.GetDestinationsOfComponent(VixenSystem.Elements.GetDataFlowComponentForElement(elementNode.Element))
+						.Any())
 				{
 					if (elementNode.Element.Masked)
 						node.ImageKey = node.SelectedImageKey = @"RedBall";
@@ -460,23 +478,34 @@ namespace Common.Controls
 			TreeNode expandNode = null; // if we need to expand a node once we've moved everything
 			int index = -1;
 
-			if (e.DragBetweenNodes == DragBetweenNodes.DragOnTargetNode) {
+			if (e.DragBetweenNodes == DragBetweenNodes.DragOnTargetNode)
+			{
 				newParentNode = e.TargetNode.Tag as ElementNode;
 				expandNode = e.TargetNode;
-			} else if (e.DragBetweenNodes == DragBetweenNodes.DragBelowTargetNode && e.TargetNode.IsExpanded) {
+			}
+			else if (e.DragBetweenNodes == DragBetweenNodes.DragBelowTargetNode && e.TargetNode.IsExpanded)
+			{
 				newParentNode = e.TargetNode.Tag as ElementNode;
 				expandNode = e.TargetNode;
 				index = 0;
-			} else {
-				if (e.TargetNode.Parent == null) {
+			}
+			else
+			{
+				if (e.TargetNode.Parent == null)
+				{
 					newParentNode = null; // needs to go at the root level
-				} else {
+				}
+				else
+				{
 					newParentNode = e.TargetNode.Parent.Tag as ElementNode;
 				}
 
-				if (e.DragBetweenNodes == DragBetweenNodes.DragAboveTargetNode) {
+				if (e.DragBetweenNodes == DragBetweenNodes.DragAboveTargetNode)
+				{
 					index = e.TargetNode.Index;
-				} else {
+				}
+				else
+				{
 					index = e.TargetNode.Index + 1;
 				}
 			}
@@ -489,12 +518,15 @@ namespace Common.Controls
 			// If moving element nodes, we need to iterate through all selected treenodes, and remove them from
 			// the parent in which they are selected (which we can determine from the treenode parent), and add them
 			// to the target node. If copying, we need to just add them to the new parent node.
-			foreach (TreeNode treeNode in e.SourceNodes) {
+			foreach (TreeNode treeNode in e.SourceNodes)
+			{
 				ElementNode sourceNode = treeNode.Tag as ElementNode;
 				ElementNode oldParentNode = (treeNode.Parent != null) ? treeNode.Parent.Tag as ElementNode : null;
 				int currentIndex = treeNode.Index;
-				if (e.DragMode == DragDropEffects.Move) {
-					if (index >= 0) {
+				if (e.DragMode == DragDropEffects.Move)
+				{
+					if (index >= 0)
+					{
 						VixenSystem.Nodes.MoveNode(sourceNode, newParentNode, oldParentNode, index);
 
 						// if we're moving nodes within the same group, but earlier in the group, then increment the target position each time.
@@ -503,17 +535,26 @@ namespace Common.Controls
 						if ((newParentNode != oldParentNode) ||
 							(newParentNode == oldParentNode && index < currentIndex))
 							index++;
-					} else {
+					}
+					else
+					{
 						VixenSystem.Nodes.MoveNode(sourceNode, newParentNode, oldParentNode);
 					}
-				} else if (e.DragMode == DragDropEffects.Copy) {
-					if (index >= 0) {
+				}
+				else if (e.DragMode == DragDropEffects.Copy)
+				{
+					if (index >= 0)
+					{
 						// increment the index after every move, so the items are inserted in the correct order (if not, they would be reversed)
 						VixenSystem.Nodes.AddChildToParent(sourceNode, newParentNode, index++);
-					} else {
+					}
+					else
+					{
 						VixenSystem.Nodes.AddChildToParent(sourceNode, newParentNode);
 					}
-				} else {
+				}
+				else
+				{
 					Logging.Warn("ConfigElements: Trying to deal with a drag that is an unknown type!");
 				}
 			}
@@ -546,35 +587,46 @@ namespace Common.Controls
 			IEnumerable<ElementNode> permittedNodesForTarget = null;
 
 			if (e.DragBetweenNodes == DragBetweenNodes.DragOnTargetNode ||
-				e.DragBetweenNodes == DragBetweenNodes.DragBelowTargetNode && e.TargetNode.IsExpanded) {
+				e.DragBetweenNodes == DragBetweenNodes.DragBelowTargetNode && e.TargetNode.IsExpanded)
+			{
 				invalidNodesForTarget = (e.TargetNode.Tag as ElementNode).InvalidChildren();
 				permittedNodesForTarget = new HashSet<ElementNode>();
-			} else {
-				if (e.TargetNode.Parent == null) {
+			}
+			else
+			{
+				if (e.TargetNode.Parent == null)
+				{
 					invalidNodesForTarget = VixenSystem.Nodes.InvalidRootNodes;
 					permittedNodesForTarget = VixenSystem.Nodes.GetRootNodes();
-				} else {
+				}
+				else
+				{
 					invalidNodesForTarget = (e.TargetNode.Parent.Tag as ElementNode).InvalidChildren();
 					permittedNodesForTarget = (e.TargetNode.Parent.Tag as ElementNode).Children;
 				}
 			}
 
-			if ((e.KeyState & 8) != 0) {
+			if ((e.KeyState & 8) != 0)
+			{
 				// the CTRL key
 				e.DragMode = DragDropEffects.Copy;
 				permittedNodesForTarget = new HashSet<ElementNode>();
-			} else {
+			}
+			else
+			{
 				e.DragMode = DragDropEffects.Move;
 			}
 
 			IEnumerable<ElementNode> invalidSourceNodes = invalidNodesForTarget.Intersect(nodes);
-            if (invalidSourceNodes.Any())
-            {
+			if (invalidSourceNodes.Any())
+			{
 				if (invalidSourceNodes.Intersect(permittedNodesForTarget).Count() == invalidSourceNodes.Count())
 					e.ValidDragTarget = true;
 				else
 					e.ValidDragTarget = false;
-			} else {
+			}
+			else
+			{
 				e.ValidDragTarget = true;
 			}
 		}
@@ -585,7 +637,7 @@ namespace Common.Controls
 
 		#region Helper functions
 
-		public delegate void ExportDiagramDelegate(ElementNode node);
+		public delegate void ExportDiagramDelegate(ElementNode node, bool flip = false);
 
 		public ExportDiagramDelegate ExportDiagram { get; set; }
 
@@ -607,26 +659,26 @@ namespace Common.Controls
 			string newMultiName = "NewName";
 			if (treeview.SelectedNode != null)
 				newMultiName = treeview.SelectedNode.Text;
-			
-				using (NameGenerator nameGenerator = new NameGenerator(newMultiName))
+
+			using (NameGenerator nameGenerator = new NameGenerator(newMultiName))
+			{
+				if (nameGenerator.ShowDialog() == DialogResult.OK)
 				{
-					if (nameGenerator.ShowDialog() == DialogResult.OK)
+					result.AddRange(
+						nameGenerator.Names.Where(name => !string.IsNullOrEmpty(name)).Select(
+							name => AddNewNode(name, false, parent, true)));
+					if (!result.Any())
 					{
-						result.AddRange(
-							nameGenerator.Names.Where(name => !string.IsNullOrEmpty(name)).Select(
-								name => AddNewNode(name, false, parent, true)));
-						if (!result.Any())
-						{
-							//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-							MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-							var messageBox = new MessageBoxForm("Could not create elements.  Ensure you use a valid name and try again.", "",
-								false, false);
-							messageBox.ShowDialog();
-							return result;
-						}
-						AddNodePathToTree(result);
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+						var messageBox = new MessageBoxForm("Could not create elements.  Ensure you use a valid name and try again.", "",
+							false, false);
+						messageBox.ShowDialog();
+						return result;
 					}
+					AddNodePathToTree(result);
 				}
+			}
 
 			return result;
 		}
@@ -634,8 +686,10 @@ namespace Common.Controls
 		public ElementNode AddSingleNodeWithPrompt(ElementNode parent = null)
 		{
 			// since we're only adding a single node, prompt with a single text dialog.
-			using (TextDialog textDialog = new TextDialog("Element Name?")) {
-				if (textDialog.ShowDialog() == DialogResult.OK) {
+			using (TextDialog textDialog = new TextDialog("Element Name?"))
+			{
+				if (textDialog.ShowDialog() == DialogResult.OK)
+				{
 					string newName;
 					if (textDialog.Response == string.Empty)
 						newName = "New Element";
@@ -644,8 +698,8 @@ namespace Common.Controls
 					//Changed this to use parent !=null to determine if the tree should be rebuilt due to the way the generate path 
 					//logic works, if our parent is in the tree multiple times adding this node may not show up. Need to look at that 
 					//path logic to implement a better solution. This will serve as a simpler workaround for the solution to VIX-3573
-					ElementNode en = AddNewNode(newName, parent!=null, parent);
-					AddNodePathToTree(new []{en});
+					ElementNode en = AddNewNode(newName, parent != null, parent);
+					AddNodePathToTree(new[] { en });
 					return en;
 				}
 			}
@@ -655,7 +709,7 @@ namespace Common.Controls
 
 
 		public ElementNode AddNewNode(string nodeName, bool repopulateNodeTree = true, ElementNode parent = null,
-		                               bool skipPatchCheck = false)
+									   bool skipPatchCheck = false)
 		{
 			// prompt the user if it's going to make a patched leaf a group; if they abandon it, return null
 			if (!skipPatchCheck && CheckAndPromptIfNodeWillLosePatches(parent))
@@ -670,13 +724,13 @@ namespace Common.Controls
 		public void AddNodePathToTree(IEnumerable<ElementNode> elementNodes)
 		{
 			_selectedNodes.Clear();
-			
+
 			treeview.BeginUpdate();
 			ClearSelectedNodes();
 			TreeNode resultNode = null;
 			foreach (var elementNode in elementNodes)
 			{
-				if (elementNode.Parents.Any(x => x.Name!=@"Root"))
+				if (elementNode.Parents.Any(x => x.Name != @"Root"))
 				{
 					foreach (var nodeParent in elementNode.Parents)
 					{
@@ -697,13 +751,13 @@ namespace Common.Controls
 					resultNode = AddNodeToTree(treeview.Nodes, elementNode, false);
 					_selectedNodes.Add(GenerateEquivalentTreeNodeFullPathFromElement(elementNode, treeview.PathSeparator));
 				}
-				
+
 				if (resultNode != null)
 				{
 					treeview.AddSelectedNode(resultNode);
 				}
 			}
-			
+
 			treeview.EndUpdate();
 			resultNode?.EnsureVisible();
 			OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Add, elementNodes.ToList()));
@@ -718,7 +772,8 @@ namespace Common.Controls
 			if (newGroup == null)
 				return false;
 
-			foreach (ElementNode en in originalSelection) {
+			foreach (ElementNode en in originalSelection)
+			{
 				VixenSystem.Nodes.AddChildToParent(en, newGroup);
 			}
 
@@ -728,10 +783,12 @@ namespace Common.Controls
 
 		public bool CheckAndPromptIfNodeWillLosePatches(ElementNode node)
 		{
-			if (node != null && node.Element != null) {
-				if (VixenSystem.DataFlow.GetDestinationsOfComponent(VixenSystem.Elements.GetDataFlowComponentForElement(node.Element)).Any()) {
+			if (node != null && node.Element != null)
+			{
+				if (VixenSystem.DataFlow.GetDestinationsOfComponent(VixenSystem.Elements.GetDataFlowComponentForElement(node.Element)).Any())
+				{
 					string message = "Adding items to this element will convert it into a Group, which will remove any " +
-					                 "patches it may have. Are you sure you want to continue?";
+									 "patches it may have. Are you sure you want to continue?";
 					string title = "Convert Element to Group?";
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
@@ -779,10 +836,14 @@ namespace Common.Controls
 			if (SelectedTreeNodes.Count == 0)
 				return false;
 
-			if (SelectedTreeNodes.Count == 1) {
-				using (TextDialog dialog = new TextDialog("Item name?", "Rename item", (SelectedNode).Name, true)) {
-					if (dialog.ShowDialog() == DialogResult.OK) {
-						if (dialog.Response != string.Empty && dialog.Response != SelectedNode.Name) {
+			if (SelectedTreeNodes.Count == 1)
+			{
+				using (TextDialog dialog = new TextDialog("Item name?", "Rename item", (SelectedNode).Name, true))
+				{
+					if (dialog.ShowDialog() == DialogResult.OK)
+					{
+						if (dialog.Response != string.Empty && dialog.Response != SelectedNode.Name)
+						{
 							VixenSystem.Nodes.RenameNode(SelectedNode, dialog.Response);
 							PopulateNodeTree();
 
@@ -790,12 +851,17 @@ namespace Common.Controls
 						}
 					}
 				}
-			} else if (SelectedTreeNodes.Count > 1) {
+			}
+			else if (SelectedTreeNodes.Count > 1)
+			{
 				List<string> oldNames = new List<string>(treeview.SelectedNodes.Select(x => x.Tag as ElementNode).Select(x => x.Name).ToArray());
 				NameGenerator renamer = new NameGenerator(oldNames.ToArray());
-				if (renamer.ShowDialog() == DialogResult.OK) {
-					for (int i = 0; i < treeview.SelectedNodes.Count; i++) {
-						if (i >= renamer.Names.Count) {
+				if (renamer.ShowDialog() == DialogResult.OK)
+				{
+					for (int i = 0; i < treeview.SelectedNodes.Count; i++)
+					{
+						if (i >= renamer.Names.Count)
+						{
 							Logging.Warn("ConfigElements: bulk renaming elements, and ran out of new names!");
 							break;
 						}
@@ -846,7 +912,7 @@ namespace Common.Controls
 			exportWireDiagramToolStripMenuItem.Visible = AllowWireExport;
 			exportWireDiagramToolStripMenuItem.Enabled = CanExportDiagram();
 			exportElementTreeToolStripMenuItem.Enabled = treeview.Nodes.Count > 0;
-			
+
 		}
 
 		private bool CanExportDiagram()
@@ -862,7 +928,7 @@ namespace Common.Controls
 					}
 				}
 			}
-			
+
 			return canExport;
 		}
 
@@ -915,7 +981,7 @@ namespace Common.Controls
 			PasteNodes();
 		}
 
-		private bool CanPaste(bool asNew=false)
+		private bool CanPaste(bool asNew = false)
 		{
 			if (_clipboardNodes == null)
 				return false;
@@ -931,7 +997,7 @@ namespace Common.Controls
 			{
 				invalidNodesForTarget = VixenSystem.Nodes.InvalidRootNodes;
 			}
-			else if(destinationNode!=null)
+			else if (destinationNode != null)
 			{
 				invalidNodesForTarget = destinationNode.InvalidChildren();
 			}
@@ -954,13 +1020,13 @@ namespace Common.Controls
 
 			if (selectedTreeNode != null)
 				destinationNode = selectedTreeNode.Tag as ElementNode;
-				
+
 			if (!CanPaste(pasteAsNew))
 			{
 				SystemSounds.Hand.Play();
 				return;
 			}
-			
+
 			// Check to see if the new parent node would be 'losing' the Element (ie. becoming a
 			// group instead of a leaf node with a element/patches). Prompt the user first.
 			if (CheckAndPromptIfNodeWillLosePatches(destinationNode))
@@ -983,7 +1049,7 @@ namespace Common.Controls
 
 			PopulateNodeTree();
 			OnElementsChanged();
-			
+
 		}
 
 		private void pasteNodesAsNewToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1015,7 +1081,7 @@ namespace Common.Controls
 			Dictionary<Guid, ElementNode> leafNodeMap = new Dictionary<Guid, ElementNode>();
 
 			//Create a new top level node
-			ElementNode newNode = ElementNodeService.Instance.CreateSingle(parent, node.Name,node.IsLeaf);
+			ElementNode newNode = ElementNodeService.Instance.CreateSingle(parent, node.Name, node.IsLeaf);
 
 			// Duplicate the properties associated with the node
 			DuplicateNodeProperties(newNode, node);
@@ -1034,7 +1100,7 @@ namespace Common.Controls
 				{
 					if (leafNodeMap.ContainsKey(childNode.Id))
 					{
-						VixenSystem.Nodes.AddChildToParent(leafNodeMap[childNode.Id],newNode);
+						VixenSystem.Nodes.AddChildToParent(leafNodeMap[childNode.Id], newNode);
 					}
 					else
 					{
@@ -1064,7 +1130,8 @@ namespace Common.Controls
 
 			ElementNode sourceNode = SelectedNode;
 			_clipboardProperties = new List<IPropertyModuleInstance>();
-			foreach (IPropertyModuleInstance property in sourceNode.Properties) {
+			foreach (IPropertyModuleInstance property in sourceNode.Properties)
+			{
 				_clipboardProperties.Add(property);
 			}
 		}
@@ -1074,18 +1141,23 @@ namespace Common.Controls
 			if (_clipboardProperties == null)
 				return;
 
-			foreach (ElementNode en in SelectedElementNodes) {
-				foreach (IPropertyModuleInstance sourceProperty in _clipboardProperties) {
+			foreach (ElementNode en in SelectedElementNodes)
+			{
+				foreach (IPropertyModuleInstance sourceProperty in _clipboardProperties)
+				{
 					IPropertyModuleInstance destinationProperty;
 
-					if (en.Properties.Contains(sourceProperty.Descriptor.TypeId)) {
+					if (en.Properties.Contains(sourceProperty.Descriptor.TypeId))
+					{
 						destinationProperty = en.Properties.Get(sourceProperty.Descriptor.TypeId);
 					}
-					else {
+					else
+					{
 						destinationProperty = en.Properties.Add(sourceProperty.Descriptor.TypeId);
 					}
 
-					if (destinationProperty == null) {
+					if (destinationProperty == null)
+					{
 						Logging.Error("ConfigElements: pasting a property to a element, but can't make or find the instance!");
 						continue;
 					}
@@ -1101,14 +1173,14 @@ namespace Common.Controls
 		private void addNewNodeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			var added = AddSingleNodeWithPrompt(SelectedNode);
-			if( added != null)
+			if (added != null)
 				OnElementsChanged();
 		}
 
 		private void addMultipleNewNodesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			var added = AddMultipleNodesWithPrompt(SelectedNode);
-			if( added != null)
+			if (added != null)
 				OnElementsChanged();
 		}
 
@@ -1124,7 +1196,8 @@ namespace Common.Controls
 			if (messageBox.DialogResult != DialogResult.OK)
 				return;
 
-			foreach (TreeNode tn in SelectedTreeNodes) {
+			foreach (TreeNode tn in SelectedTreeNodes)
+			{
 				DeleteNode(tn);
 			}
 
@@ -1135,13 +1208,14 @@ namespace Common.Controls
 		private void createGroupWithNodesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			bool bChanged = CreateGroupFromSelectedNodes();
-			if( bChanged)
+			if (bChanged)
 				OnElementsChanged();
 		}
 
 		private void renameNodesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (RenameSelectedElements()) {
+			if (RenameSelectedElements())
+			{
 				OnElementsChanged();
 			}
 		}
@@ -1158,14 +1232,14 @@ namespace Common.Controls
 
 		private void reverseElementsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			
+
 			for (int i = 1; i < SelectedTreeNodes.Count; i++)
 			{
 				ElementNode sourceNode = SelectedTreeNodes[i].Tag as ElementNode;
 				ElementNode parentNode = (SelectedTreeNodes[i].Parent != null) ? SelectedTreeNodes[i].Parent.Tag as ElementNode : null;
 				VixenSystem.Nodes.MoveNode(sourceNode, parentNode, parentNode, SelectedTreeNodes[0].Index);
 			}
-						
+
 			PopulateNodeTree();
 		}
 
@@ -1173,11 +1247,7 @@ namespace Common.Controls
 		{
 			SortNodes();
 		}
-		private void exportWireDiagramToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			ExportDiagram?.Invoke(SelectedElementNodes.FirstOrDefault());
-		}
-
+		
 		private async void ExportElementTreeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			using (var saveFileDialog = new SaveFileDialog())
@@ -1249,7 +1319,7 @@ namespace Common.Controls
 					}
 				}
 			}
-			else if(e.KeyCode == Keys.C && e.Control)
+			else if (e.KeyCode == Keys.C && e.Control)
 			{
 				CopyNodesToClipboard();
 				e.SuppressKeyPress = true;
@@ -1295,5 +1365,14 @@ namespace Common.Controls
 
 		}
 
+		private void frontWireDiagramToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ExportDiagram?.Invoke(SelectedElementNodes.FirstOrDefault());
+		}
+
+		private void backWireDiagramToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ExportDiagram?.Invoke(SelectedElementNodes.FirstOrDefault(), true);
+		}
 	}
 }

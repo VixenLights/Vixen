@@ -28,281 +28,273 @@ namespace Common.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+			components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ElementTree));
-			this.treeIconsImageList = new System.Windows.Forms.ImageList(this.components);
-			this.contextMenuStripTreeView = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.cutNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.copyNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.pasteNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.pasteAsNewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.nodePropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.copyPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.pastePropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-			this.addNewNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.addMultipleNewNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.deleteNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.createGroupWithNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.renameNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.patternRenameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.collapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.reverseElementsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.sortToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.exportWireDiagramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.contextMenuStripDragging = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.moveHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.copyHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.treeview = new Common.Controls.MultiSelectTreeview();
-			this.exportElementTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.contextMenuStripTreeView.SuspendLayout();
-			this.contextMenuStripDragging.SuspendLayout();
-			this.SuspendLayout();
+			treeIconsImageList = new ImageList(components);
+			contextMenuStripTreeView = new ContextMenuStrip(components);
+			cutNodesToolStripMenuItem = new ToolStripMenuItem();
+			copyNodesToolStripMenuItem = new ToolStripMenuItem();
+			pasteNodesToolStripMenuItem = new ToolStripMenuItem();
+			pasteAsNewToolStripMenuItem = new ToolStripMenuItem();
+			toolStripSeparator1 = new ToolStripSeparator();
+			nodePropertiesToolStripMenuItem = new ToolStripMenuItem();
+			copyPropertiesToolStripMenuItem = new ToolStripMenuItem();
+			pastePropertiesToolStripMenuItem = new ToolStripMenuItem();
+			toolStripSeparator2 = new ToolStripSeparator();
+			addNewNodeToolStripMenuItem = new ToolStripMenuItem();
+			addMultipleNewNodesToolStripMenuItem = new ToolStripMenuItem();
+			deleteNodesToolStripMenuItem = new ToolStripMenuItem();
+			createGroupWithNodesToolStripMenuItem = new ToolStripMenuItem();
+			renameNodesToolStripMenuItem = new ToolStripMenuItem();
+			patternRenameToolStripMenuItem = new ToolStripMenuItem();
+			collapseAllToolStripMenuItem = new ToolStripMenuItem();
+			reverseElementsToolStripMenuItem = new ToolStripMenuItem();
+			sortToolStripMenuItem = new ToolStripMenuItem();
+			exportWireDiagramToolStripMenuItem = new ToolStripMenuItem();
+			exportElementTreeToolStripMenuItem = new ToolStripMenuItem();
+			contextMenuStripDragging = new ContextMenuStrip(components);
+			moveHereToolStripMenuItem = new ToolStripMenuItem();
+			copyHereToolStripMenuItem = new ToolStripMenuItem();
+			treeview = new MultiSelectTreeview();
+			frontWireDiagramToolStripMenuItem = new ToolStripMenuItem();
+			backWireDiagramToolStripMenuItem = new ToolStripMenuItem();
+			contextMenuStripTreeView.SuspendLayout();
+			contextMenuStripDragging.SuspendLayout();
+			SuspendLayout();
 			// 
 			// treeIconsImageList
 			// 
-			this.treeIconsImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("treeIconsImageList.ImageStream")));
-			this.treeIconsImageList.TransparentColor = System.Drawing.Color.Transparent;
-			this.treeIconsImageList.Images.SetKeyName(0, "Group");
-			this.treeIconsImageList.Images.SetKeyName(1, "GreyBall");
-			this.treeIconsImageList.Images.SetKeyName(2, "RedBall");
-			this.treeIconsImageList.Images.SetKeyName(3, "GreenBall");
-			this.treeIconsImageList.Images.SetKeyName(4, "YellowBall");
-			this.treeIconsImageList.Images.SetKeyName(5, "BlueBall");
-			this.treeIconsImageList.Images.SetKeyName(6, "WhiteBall");
+			treeIconsImageList.ColorDepth = ColorDepth.Depth32Bit;
+			treeIconsImageList.ImageStream = (ImageListStreamer)resources.GetObject("treeIconsImageList.ImageStream");
+			treeIconsImageList.TransparentColor = Color.Transparent;
+			treeIconsImageList.Images.SetKeyName(0, "Group");
+			treeIconsImageList.Images.SetKeyName(1, "GreyBall");
+			treeIconsImageList.Images.SetKeyName(2, "RedBall");
+			treeIconsImageList.Images.SetKeyName(3, "GreenBall");
+			treeIconsImageList.Images.SetKeyName(4, "YellowBall");
+			treeIconsImageList.Images.SetKeyName(5, "BlueBall");
+			treeIconsImageList.Images.SetKeyName(6, "WhiteBall");
 			// 
 			// contextMenuStripTreeView
 			// 
-			this.contextMenuStripTreeView.ImageScalingSize = new System.Drawing.Size(24, 24);
-			this.contextMenuStripTreeView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.cutNodesToolStripMenuItem,
-            this.copyNodesToolStripMenuItem,
-            this.pasteNodesToolStripMenuItem,
-            this.pasteAsNewToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.nodePropertiesToolStripMenuItem,
-            this.toolStripSeparator2,
-            this.addNewNodeToolStripMenuItem,
-            this.addMultipleNewNodesToolStripMenuItem,
-            this.deleteNodesToolStripMenuItem,
-            this.createGroupWithNodesToolStripMenuItem,
-            this.renameNodesToolStripMenuItem,
-            this.patternRenameToolStripMenuItem,
-            this.collapseAllToolStripMenuItem,
-            this.reverseElementsToolStripMenuItem,
-            this.sortToolStripMenuItem,
-            this.exportWireDiagramToolStripMenuItem,
-            this.exportElementTreeToolStripMenuItem});
-			this.contextMenuStripTreeView.Name = "contextMenuStripTreeView";
-			this.contextMenuStripTreeView.Size = new System.Drawing.Size(217, 390);
-			this.contextMenuStripTreeView.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTreeView_Opening);
+			contextMenuStripTreeView.ImageScalingSize = new Size(24, 24);
+			contextMenuStripTreeView.Items.AddRange(new ToolStripItem[] { cutNodesToolStripMenuItem, copyNodesToolStripMenuItem, pasteNodesToolStripMenuItem, pasteAsNewToolStripMenuItem, toolStripSeparator1, nodePropertiesToolStripMenuItem, toolStripSeparator2, addNewNodeToolStripMenuItem, addMultipleNewNodesToolStripMenuItem, deleteNodesToolStripMenuItem, createGroupWithNodesToolStripMenuItem, renameNodesToolStripMenuItem, patternRenameToolStripMenuItem, collapseAllToolStripMenuItem, reverseElementsToolStripMenuItem, sortToolStripMenuItem, exportWireDiagramToolStripMenuItem, exportElementTreeToolStripMenuItem });
+			contextMenuStripTreeView.Name = "contextMenuStripTreeView";
+			contextMenuStripTreeView.Size = new Size(217, 390);
+			contextMenuStripTreeView.Opening += contextMenuStripTreeView_Opening;
 			// 
 			// cutNodesToolStripMenuItem
 			// 
-			this.cutNodesToolStripMenuItem.Name = "cutNodesToolStripMenuItem";
-			this.cutNodesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-			this.cutNodesToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-			this.cutNodesToolStripMenuItem.Text = "Cut";
-			this.cutNodesToolStripMenuItem.Click += new System.EventHandler(this.cutNodesToolStripMenuItem_Click);
+			cutNodesToolStripMenuItem.Name = "cutNodesToolStripMenuItem";
+			cutNodesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.X;
+			cutNodesToolStripMenuItem.Size = new Size(216, 22);
+			cutNodesToolStripMenuItem.Text = "Cut";
+			cutNodesToolStripMenuItem.Click += cutNodesToolStripMenuItem_Click;
 			// 
 			// copyNodesToolStripMenuItem
 			// 
-			this.copyNodesToolStripMenuItem.Name = "copyNodesToolStripMenuItem";
-			this.copyNodesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.copyNodesToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-			this.copyNodesToolStripMenuItem.Text = "Copy";
-			this.copyNodesToolStripMenuItem.Click += new System.EventHandler(this.copyNodesToolStripMenuItem_Click);
+			copyNodesToolStripMenuItem.Name = "copyNodesToolStripMenuItem";
+			copyNodesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.C;
+			copyNodesToolStripMenuItem.Size = new Size(216, 22);
+			copyNodesToolStripMenuItem.Text = "Copy";
+			copyNodesToolStripMenuItem.Click += copyNodesToolStripMenuItem_Click;
 			// 
 			// pasteNodesToolStripMenuItem
 			// 
-			this.pasteNodesToolStripMenuItem.Name = "pasteNodesToolStripMenuItem";
-			this.pasteNodesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-			this.pasteNodesToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-			this.pasteNodesToolStripMenuItem.Text = "Paste";
-			this.pasteNodesToolStripMenuItem.Click += new System.EventHandler(this.pasteNodesToolStripMenuItem_Click);
+			pasteNodesToolStripMenuItem.Name = "pasteNodesToolStripMenuItem";
+			pasteNodesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.V;
+			pasteNodesToolStripMenuItem.Size = new Size(216, 22);
+			pasteNodesToolStripMenuItem.Text = "Paste";
+			pasteNodesToolStripMenuItem.Click += pasteNodesToolStripMenuItem_Click;
 			// 
 			// pasteAsNewToolStripMenuItem
 			// 
-			this.pasteAsNewToolStripMenuItem.Enabled = false;
-			this.pasteAsNewToolStripMenuItem.Name = "pasteAsNewToolStripMenuItem";
-			this.pasteAsNewToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.V)));
-			this.pasteAsNewToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-			this.pasteAsNewToolStripMenuItem.Text = "Paste as New";
-			this.pasteAsNewToolStripMenuItem.Click += new System.EventHandler(this.pasteNodesAsNewToolStripMenuItem_Click);
+			pasteAsNewToolStripMenuItem.Enabled = false;
+			pasteAsNewToolStripMenuItem.Name = "pasteAsNewToolStripMenuItem";
+			pasteAsNewToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.Shift | Keys.V;
+			pasteAsNewToolStripMenuItem.Size = new Size(216, 22);
+			pasteAsNewToolStripMenuItem.Text = "Paste as New";
+			pasteAsNewToolStripMenuItem.Click += pasteNodesAsNewToolStripMenuItem_Click;
 			// 
 			// toolStripSeparator1
 			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(213, 6);
+			toolStripSeparator1.Name = "toolStripSeparator1";
+			toolStripSeparator1.Size = new Size(213, 6);
 			// 
 			// nodePropertiesToolStripMenuItem
 			// 
-			this.nodePropertiesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.copyPropertiesToolStripMenuItem,
-            this.pastePropertiesToolStripMenuItem});
-			this.nodePropertiesToolStripMenuItem.Name = "nodePropertiesToolStripMenuItem";
-			this.nodePropertiesToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-			this.nodePropertiesToolStripMenuItem.Text = "Item properties";
+			nodePropertiesToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { copyPropertiesToolStripMenuItem, pastePropertiesToolStripMenuItem });
+			nodePropertiesToolStripMenuItem.Name = "nodePropertiesToolStripMenuItem";
+			nodePropertiesToolStripMenuItem.Size = new Size(216, 22);
+			nodePropertiesToolStripMenuItem.Text = "Item properties";
 			// 
 			// copyPropertiesToolStripMenuItem
 			// 
-			this.copyPropertiesToolStripMenuItem.Name = "copyPropertiesToolStripMenuItem";
-			this.copyPropertiesToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
-			this.copyPropertiesToolStripMenuItem.Text = "Copy properties";
-			this.copyPropertiesToolStripMenuItem.Click += new System.EventHandler(this.copyPropertiesToolStripMenuItem_Click);
+			copyPropertiesToolStripMenuItem.Name = "copyPropertiesToolStripMenuItem";
+			copyPropertiesToolStripMenuItem.Size = new Size(158, 22);
+			copyPropertiesToolStripMenuItem.Text = "Copy properties";
+			copyPropertiesToolStripMenuItem.Click += copyPropertiesToolStripMenuItem_Click;
 			// 
 			// pastePropertiesToolStripMenuItem
 			// 
-			this.pastePropertiesToolStripMenuItem.Name = "pastePropertiesToolStripMenuItem";
-			this.pastePropertiesToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
-			this.pastePropertiesToolStripMenuItem.Text = "Paste properties";
-			this.pastePropertiesToolStripMenuItem.Click += new System.EventHandler(this.pastePropertiesToolStripMenuItem_Click);
+			pastePropertiesToolStripMenuItem.Name = "pastePropertiesToolStripMenuItem";
+			pastePropertiesToolStripMenuItem.Size = new Size(158, 22);
+			pastePropertiesToolStripMenuItem.Text = "Paste properties";
+			pastePropertiesToolStripMenuItem.Click += pastePropertiesToolStripMenuItem_Click;
 			// 
 			// toolStripSeparator2
 			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(213, 6);
+			toolStripSeparator2.Name = "toolStripSeparator2";
+			toolStripSeparator2.Size = new Size(213, 6);
 			// 
 			// addNewNodeToolStripMenuItem
 			// 
-			this.addNewNodeToolStripMenuItem.Name = "addNewNodeToolStripMenuItem";
-			this.addNewNodeToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-			this.addNewNodeToolStripMenuItem.Text = "&Add";
-			this.addNewNodeToolStripMenuItem.Click += new System.EventHandler(this.addNewNodeToolStripMenuItem_Click);
+			addNewNodeToolStripMenuItem.Name = "addNewNodeToolStripMenuItem";
+			addNewNodeToolStripMenuItem.Size = new Size(216, 22);
+			addNewNodeToolStripMenuItem.Text = "&Add";
+			addNewNodeToolStripMenuItem.Click += addNewNodeToolStripMenuItem_Click;
 			// 
 			// addMultipleNewNodesToolStripMenuItem
 			// 
-			this.addMultipleNewNodesToolStripMenuItem.Name = "addMultipleNewNodesToolStripMenuItem";
-			this.addMultipleNewNodesToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-			this.addMultipleNewNodesToolStripMenuItem.Text = "Add &Multiple";
-			this.addMultipleNewNodesToolStripMenuItem.Click += new System.EventHandler(this.addMultipleNewNodesToolStripMenuItem_Click);
+			addMultipleNewNodesToolStripMenuItem.Name = "addMultipleNewNodesToolStripMenuItem";
+			addMultipleNewNodesToolStripMenuItem.Size = new Size(216, 22);
+			addMultipleNewNodesToolStripMenuItem.Text = "Add &Multiple";
+			addMultipleNewNodesToolStripMenuItem.Click += addMultipleNewNodesToolStripMenuItem_Click;
 			// 
 			// deleteNodesToolStripMenuItem
 			// 
-			this.deleteNodesToolStripMenuItem.Name = "deleteNodesToolStripMenuItem";
-			this.deleteNodesToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-			this.deleteNodesToolStripMenuItem.Text = "&Delete";
-			this.deleteNodesToolStripMenuItem.Click += new System.EventHandler(this.deleteNodesToolStripMenuItem_Click);
+			deleteNodesToolStripMenuItem.Name = "deleteNodesToolStripMenuItem";
+			deleteNodesToolStripMenuItem.Size = new Size(216, 22);
+			deleteNodesToolStripMenuItem.Text = "&Delete";
+			deleteNodesToolStripMenuItem.Click += deleteNodesToolStripMenuItem_Click;
 			// 
 			// createGroupWithNodesToolStripMenuItem
 			// 
-			this.createGroupWithNodesToolStripMenuItem.Name = "createGroupWithNodesToolStripMenuItem";
-			this.createGroupWithNodesToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-			this.createGroupWithNodesToolStripMenuItem.Text = "Create &Group";
-			this.createGroupWithNodesToolStripMenuItem.Click += new System.EventHandler(this.createGroupWithNodesToolStripMenuItem_Click);
+			createGroupWithNodesToolStripMenuItem.Name = "createGroupWithNodesToolStripMenuItem";
+			createGroupWithNodesToolStripMenuItem.Size = new Size(216, 22);
+			createGroupWithNodesToolStripMenuItem.Text = "Create &Group";
+			createGroupWithNodesToolStripMenuItem.Click += createGroupWithNodesToolStripMenuItem_Click;
 			// 
 			// renameNodesToolStripMenuItem
 			// 
-			this.renameNodesToolStripMenuItem.Name = "renameNodesToolStripMenuItem";
-			this.renameNodesToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-			this.renameNodesToolStripMenuItem.Text = "Re&name";
-			this.renameNodesToolStripMenuItem.Click += new System.EventHandler(this.renameNodesToolStripMenuItem_Click);
+			renameNodesToolStripMenuItem.Name = "renameNodesToolStripMenuItem";
+			renameNodesToolStripMenuItem.Size = new Size(216, 22);
+			renameNodesToolStripMenuItem.Text = "Re&name";
+			renameNodesToolStripMenuItem.Click += renameNodesToolStripMenuItem_Click;
 			// 
 			// patternRenameToolStripMenuItem
 			// 
-			this.patternRenameToolStripMenuItem.Name = "patternRenameToolStripMenuItem";
-			this.patternRenameToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-			this.patternRenameToolStripMenuItem.Text = "Find/Replace";
-			this.patternRenameToolStripMenuItem.Click += new System.EventHandler(this.patternRenameToolStripMenuItem_Click);
+			patternRenameToolStripMenuItem.Name = "patternRenameToolStripMenuItem";
+			patternRenameToolStripMenuItem.Size = new Size(216, 22);
+			patternRenameToolStripMenuItem.Text = "Find/Replace";
+			patternRenameToolStripMenuItem.Click += patternRenameToolStripMenuItem_Click;
 			// 
 			// collapseAllToolStripMenuItem
 			// 
-			this.collapseAllToolStripMenuItem.Name = "collapseAllToolStripMenuItem";
-			this.collapseAllToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-			this.collapseAllToolStripMenuItem.Text = "&Collapse All";
-			this.collapseAllToolStripMenuItem.Click += new System.EventHandler(this.collapseAllToolStripMenuItem_Click);
+			collapseAllToolStripMenuItem.Name = "collapseAllToolStripMenuItem";
+			collapseAllToolStripMenuItem.Size = new Size(216, 22);
+			collapseAllToolStripMenuItem.Text = "&Collapse All";
+			collapseAllToolStripMenuItem.Click += collapseAllToolStripMenuItem_Click;
 			// 
 			// reverseElementsToolStripMenuItem
 			// 
-			this.reverseElementsToolStripMenuItem.Name = "reverseElementsToolStripMenuItem";
-			this.reverseElementsToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-			this.reverseElementsToolStripMenuItem.Text = "Reverse Elements";
-			this.reverseElementsToolStripMenuItem.Click += new System.EventHandler(this.reverseElementsToolStripMenuItem_Click);
+			reverseElementsToolStripMenuItem.Name = "reverseElementsToolStripMenuItem";
+			reverseElementsToolStripMenuItem.Size = new Size(216, 22);
+			reverseElementsToolStripMenuItem.Text = "Reverse Elements";
+			reverseElementsToolStripMenuItem.Click += reverseElementsToolStripMenuItem_Click;
 			// 
 			// sortToolStripMenuItem
 			// 
-			this.sortToolStripMenuItem.Name = "sortToolStripMenuItem";
-			this.sortToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-			this.sortToolStripMenuItem.Text = "&Sort";
-			this.sortToolStripMenuItem.Click += new System.EventHandler(this.sortToolStripMenuItem_Click);
+			sortToolStripMenuItem.Name = "sortToolStripMenuItem";
+			sortToolStripMenuItem.Size = new Size(216, 22);
+			sortToolStripMenuItem.Text = "&Sort";
+			sortToolStripMenuItem.Click += sortToolStripMenuItem_Click;
 			// 
 			// exportWireDiagramToolStripMenuItem
 			// 
-			this.exportWireDiagramToolStripMenuItem.Name = "exportWireDiagramToolStripMenuItem";
-			this.exportWireDiagramToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-			this.exportWireDiagramToolStripMenuItem.Text = "Export Wire Diagram";
-			this.exportWireDiagramToolStripMenuItem.Click += new System.EventHandler(this.exportWireDiagramToolStripMenuItem_Click);
-			// 
-			// contextMenuStripDragging
-			// 
-			this.contextMenuStripDragging.ImageScalingSize = new System.Drawing.Size(24, 24);
-			this.contextMenuStripDragging.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.moveHereToolStripMenuItem,
-            this.copyHereToolStripMenuItem});
-			this.contextMenuStripDragging.Name = "contextMenuStripProperties";
-			this.contextMenuStripDragging.Size = new System.Drawing.Size(133, 48);
-			// 
-			// moveHereToolStripMenuItem
-			// 
-			this.moveHereToolStripMenuItem.Name = "moveHereToolStripMenuItem";
-			this.moveHereToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
-			this.moveHereToolStripMenuItem.Text = "Move Here";
-			// 
-			// copyHereToolStripMenuItem
-			// 
-			this.copyHereToolStripMenuItem.Name = "copyHereToolStripMenuItem";
-			this.copyHereToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
-			this.copyHereToolStripMenuItem.Text = "Copy Here";
-			// 
-			// treeview
-			// 
-			this.treeview.AllowDrop = true;
-			this.treeview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.treeview.ContextMenuStrip = this.contextMenuStripTreeView;
-			this.treeview.Cursor = System.Windows.Forms.Cursors.Default;
-			this.treeview.CustomDragCursor = null;
-			this.treeview.DragDefaultMode = System.Windows.Forms.DragDropEffects.Move;
-			this.treeview.DragDestinationNodeBackColor = System.Drawing.SystemColors.Highlight;
-			this.treeview.DragDestinationNodeForeColor = System.Drawing.SystemColors.HighlightText;
-			this.treeview.DragSourceNodeBackColor = System.Drawing.SystemColors.ControlLight;
-			this.treeview.DragSourceNodeForeColor = System.Drawing.SystemColors.ControlText;
-			this.treeview.HideSelection = false;
-			this.treeview.ImageIndex = 0;
-			this.treeview.ImageList = this.treeIconsImageList;
-			this.treeview.Location = new System.Drawing.Point(0, 0);
-			this.treeview.Name = "treeview";
-			this.treeview.SelectedImageIndex = 0;
-			this.treeview.SelectedNodes = ((System.Collections.Generic.List<System.Windows.Forms.TreeNode>)(resources.GetObject("treeview.SelectedNodes")));
-			this.treeview.Size = new System.Drawing.Size(200, 400);
-			this.treeview.TabIndex = 13;
-			this.treeview.UsingCustomDragCursor = false;
-			this.treeview.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeview_KeyDown);
+			exportWireDiagramToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { frontWireDiagramToolStripMenuItem, backWireDiagramToolStripMenuItem });
+			exportWireDiagramToolStripMenuItem.Name = "exportWireDiagramToolStripMenuItem";
+			exportWireDiagramToolStripMenuItem.Size = new Size(216, 22);
+			exportWireDiagramToolStripMenuItem.Text = "Export Wire Diagram";
 			// 
 			// exportElementTreeToolStripMenuItem
 			// 
-			this.exportElementTreeToolStripMenuItem.Name = "exportElementTreeToolStripMenuItem";
-			this.exportElementTreeToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-			this.exportElementTreeToolStripMenuItem.Text = "Export Element Tree";
-			this.exportElementTreeToolStripMenuItem.ToolTipText = "Export the element tree for importing into other profiles.";
-			this.exportElementTreeToolStripMenuItem.Click += new System.EventHandler(this.ExportElementTreeToolStripMenuItem_Click);
+			exportElementTreeToolStripMenuItem.Name = "exportElementTreeToolStripMenuItem";
+			exportElementTreeToolStripMenuItem.Size = new Size(216, 22);
+			exportElementTreeToolStripMenuItem.Text = "Export Element Tree";
+			exportElementTreeToolStripMenuItem.ToolTipText = "Export the element tree for importing into other profiles.";
+			exportElementTreeToolStripMenuItem.Click += ExportElementTreeToolStripMenuItem_Click;
+			// 
+			// contextMenuStripDragging
+			// 
+			contextMenuStripDragging.ImageScalingSize = new Size(24, 24);
+			contextMenuStripDragging.Items.AddRange(new ToolStripItem[] { moveHereToolStripMenuItem, copyHereToolStripMenuItem });
+			contextMenuStripDragging.Name = "contextMenuStripProperties";
+			contextMenuStripDragging.Size = new Size(133, 48);
+			// 
+			// moveHereToolStripMenuItem
+			// 
+			moveHereToolStripMenuItem.Name = "moveHereToolStripMenuItem";
+			moveHereToolStripMenuItem.Size = new Size(132, 22);
+			moveHereToolStripMenuItem.Text = "Move Here";
+			// 
+			// copyHereToolStripMenuItem
+			// 
+			copyHereToolStripMenuItem.Name = "copyHereToolStripMenuItem";
+			copyHereToolStripMenuItem.Size = new Size(132, 22);
+			copyHereToolStripMenuItem.Text = "Copy Here";
+			// 
+			// treeview
+			// 
+			treeview.AllowDrop = true;
+			treeview.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+			treeview.ContextMenuStrip = contextMenuStripTreeView;
+			treeview.CustomDragCursor = null;
+			treeview.DragDefaultMode = DragDropEffects.Move;
+			treeview.DragDestinationNodeBackColor = SystemColors.Highlight;
+			treeview.DragDestinationNodeForeColor = SystemColors.HighlightText;
+			treeview.DragSourceNodeBackColor = SystemColors.ControlLight;
+			treeview.DragSourceNodeForeColor = SystemColors.ControlText;
+			treeview.HideSelection = false;
+			treeview.ImageIndex = 0;
+			treeview.ImageList = treeIconsImageList;
+			treeview.Location = new Point(0, 0);
+			treeview.Margin = new Padding(4, 3, 4, 3);
+			treeview.Name = "treeview";
+			treeview.SelectedImageIndex = 0;
+			treeview.SelectedNodes = (List<TreeNode>)resources.GetObject("treeview.SelectedNodes");
+			treeview.Size = new Size(233, 461);
+			treeview.TabIndex = 13;
+			treeview.UsingCustomDragCursor = false;
+			treeview.KeyDown += treeview_KeyDown;
+			// 
+			// frontWireDiagramToolStripMenuItem
+			// 
+			frontWireDiagramToolStripMenuItem.Name = "frontWireDiagramToolStripMenuItem";
+			frontWireDiagramToolStripMenuItem.Size = new Size(180, 22);
+			frontWireDiagramToolStripMenuItem.Text = "Front Wire Diagram";
+			frontWireDiagramToolStripMenuItem.Click += frontWireDiagramToolStripMenuItem_Click;
+			// 
+			// backWireDiagramToolStripMenuItem
+			// 
+			backWireDiagramToolStripMenuItem.Name = "backWireDiagramToolStripMenuItem";
+			backWireDiagramToolStripMenuItem.Size = new Size(180, 22);
+			backWireDiagramToolStripMenuItem.Text = "Back Wire Diagram";
+			backWireDiagramToolStripMenuItem.Click += backWireDiagramToolStripMenuItem_Click;
 			// 
 			// ElementTree
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.treeview);
-			this.Name = "ElementTree";
-			this.Size = new System.Drawing.Size(200, 400);
-			this.Load += new System.EventHandler(this.ElementTree_Load);
-			this.contextMenuStripTreeView.ResumeLayout(false);
-			this.contextMenuStripDragging.ResumeLayout(false);
-			this.ResumeLayout(false);
-			this.PerformLayout();
-
+			AutoScaleDimensions = new SizeF(7F, 15F);
+			AutoScaleMode = AutoScaleMode.Font;
+			Controls.Add(treeview);
+			Margin = new Padding(4, 3, 4, 3);
+			Name = "ElementTree";
+			Size = new Size(233, 462);
+			Load += ElementTree_Load;
+			contextMenuStripTreeView.ResumeLayout(false);
+			contextMenuStripDragging.ResumeLayout(false);
+			ResumeLayout(false);
+			PerformLayout();
 		}
 
 		#endregion
@@ -333,5 +325,7 @@ namespace Common.Controls
 		private ToolStripMenuItem sortToolStripMenuItem;
 		private ToolStripMenuItem exportWireDiagramToolStripMenuItem;
 		private ToolStripMenuItem exportElementTreeToolStripMenuItem;
+		private ToolStripMenuItem frontWireDiagramToolStripMenuItem;
+		private ToolStripMenuItem backWireDiagramToolStripMenuItem;
 	}
 }

@@ -921,26 +921,26 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#region CreateWireDiagramCommand
 
-		private Command _createWireDiagramCommand;
+		private Command<bool> _createWireDiagramCommand;
 
 		/// <summary>
 		/// Gets the CreateWireDiagram command.
 		/// </summary>
 		[Browsable(false)]
-		public Command CreateWireDiagramCommand
+		public Command<bool> CreateWireDiagramCommand
 		{
-			get { return _createWireDiagramCommand ??= new Command(CreateWireDiagram); }
+			get { return _createWireDiagramCommand ??= new Command<bool>(CreateWireDiagram); }
 		}
 
 		/// <summary>
 		/// Method to invoke when the CreateWireDiagram command is executed.
 		/// </summary>
-		private void CreateWireDiagram()
+		private void CreateWireDiagram(bool flip)
 		{
 			var nodes = new List<Tuple<System.Drawing.Point, int>>();
 			var leafNodes = ElementModelLookUpService.Instance.GetAllModels().Where(x => x.IsLightNode)
 				.DistinctBy(x => x.ElementModel.Id).OrderBy(x => x.ElementModel.Order);
-			//var leafNodes = PropModelServices.Instance().Prop.RootNode.GetLeafEnumerator().Distinct();
+			
 			foreach (var elementModel in leafNodes)
 			{
 				foreach (var light in elementModel.ElementModel.Lights)
@@ -949,7 +949,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				}
 			}
 
-			ElementModeling.OrderedPointsToSvg(nodes);
+			ElementModeling.OrderedPointsToSvg(nodes, flip);
 		}
 
 		#endregion

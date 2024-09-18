@@ -11,8 +11,9 @@ namespace VixenModules.App.Modeling
 		private const int ExtraHeight = 50;
 		private const int ExtraWidth = 50;
 
-		public static void OrderedPointsToSvg(IEnumerable<Tuple<Point, int>> nodes)
+		public static void OrderedPointsToSvg(IEnumerable<Tuple<Point, int>> nodes, bool flip = false)
 		{
+			if(!nodes.Any()) return;
 			var points = nodes.Select(x => x.Item1);
 			var rect = CalculateModelRectangle(points);
 			var scale = 1f;
@@ -20,6 +21,7 @@ namespace VixenModules.App.Modeling
 			{
 				scale = 800f / rect.Width;
 			}
+
 			SvgDocument doc = new SvgDocument { Width = rect.Width * scale, Height = rect.Height * scale };
 			doc.ViewBox = new SvgViewBox(-20, -20, doc.Width + ExtraWidth, doc.Height + ExtraHeight);
 
@@ -32,7 +34,13 @@ namespace VixenModules.App.Modeling
 			
 			foreach (var p in nodes)
 			{
+				
 				var point = ScalePoint(p.Item1, scale, rect.Location);
+
+				if (flip)
+				{
+					point = new PointF(doc.ViewBox.Width - point.X - ExtraWidth, point.Y);
+				}
 
 				var lightNode = CreateLightNode(point, radius);
 				group.Children.Add(lightNode);
@@ -52,7 +60,7 @@ namespace VixenModules.App.Modeling
 			OpenDoc(doc);
 		}
 
-		public static void ElementsToSvg(ElementNode elementNode)
+		public static void ElementsToSvg(ElementNode elementNode, bool flip = false)
 		{
 			if(elementNode == null) return;
 			var leafNodes = elementNode.GetLeafEnumerator().Distinct();
@@ -83,6 +91,11 @@ namespace VixenModules.App.Modeling
 				foreach (var node in leafNodes)
 				{
 					var point = ScalePoint(LocationModule.GetPositionForElement(node),scale, rect.Location);
+
+					if (flip)
+					{
+						point = new PointF(doc.ViewBox.Width - point.X - ExtraWidth, point.Y);
+					}
 
 					var lightNode = CreateLightNode(point, radius);
 					group.Children.Add(lightNode);
