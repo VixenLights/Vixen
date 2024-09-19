@@ -12,7 +12,7 @@ namespace VixenModules.Output.DDP
 
 		public DDPData()
 		{
-			Address = "127, 0, 0, 1";
+			Address = IPAddress.Loopback.ToString();
 		}
 
 		public override IModuleDataModel Clone()

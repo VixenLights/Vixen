@@ -13,8 +13,15 @@ namespace VixenModules.Output.DDP
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);			
-			Address = IPAddress.Parse(data.Address);
+			ThemeUpdateControls.UpdateControls(this);
+			if (IPAddress.TryParse(data.Address, out var result))
+			{
+				Address = result;
+			}
+			else
+			{
+				Address = IPAddress.Loopback;
+			}
 		}
 
 		public IPAddress Address
@@ -25,12 +32,12 @@ namespace VixenModules.Output.DDP
 				if (IPAddress.TryParse(textBoxIPAddress.Text, out result)) {
 					return result;
 				}
-				return null;
+				return IPAddress.Loopback;
 			}
 			set
 			{
 				if (value == null)
-					textBoxIPAddress.Text = string.Empty;
+					textBoxIPAddress.Text = IPAddress.Loopback.ToString();
 				else
 					textBoxIPAddress.Text = value.ToString();
 			}
