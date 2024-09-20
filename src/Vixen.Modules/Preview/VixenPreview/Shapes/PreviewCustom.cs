@@ -280,15 +280,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			var newCustom = (PreviewCustom) MemberwiseClone();
 
-			newCustom.Strings = new List<PreviewLightBaseShape>(Strings.Count);
+			var newStrings = new List<PreviewLightBaseShape>(Strings.Count);
 
 			newCustom._topLeft = _topLeft.Copy();
 
 			foreach (var previewBaseShape in Strings)
 			{
-				newCustom.Strings.Add((PreviewLightBaseShape)previewBaseShape.Clone());
+				newStrings.Add((PreviewLightBaseShape)previewBaseShape.Clone());
 			}
 
+			newCustom.Strings = newStrings;
 
 			return newCustom;
 		}
