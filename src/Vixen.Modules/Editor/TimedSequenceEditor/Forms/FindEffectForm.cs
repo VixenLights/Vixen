@@ -50,8 +50,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					row.ElementAdded -= RowElementAddedRemoved;
 				}
 
-				TimelineControl.ElementsFinishedMoving += TimelineControlOnElementsFinishedMoving;
+				TimelineControl.ElementsFinishedMoving -= TimelineControlOnElementsFinishedMoving;
 			}
+
+			Resize -= FindEffectForm_Resize;
 
 		}
 
