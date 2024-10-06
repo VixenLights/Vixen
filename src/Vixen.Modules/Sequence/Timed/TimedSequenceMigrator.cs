@@ -26,6 +26,8 @@ using ZedGraph;
 using Liquid;
 using Vixen.Sys;
 using VixenModules.Effect.SetPosition;
+using System.Diagnostics;
+
 
 namespace VixenModules.Sequence.Timed
 {
@@ -584,6 +586,21 @@ namespace VixenModules.Sequence.Timed
 			}
 
 			MigrateSetPositionFrom8To9(content);
+
+			var nutcrackerRemoved = RemoveNutcrackerEffects(content);
+
+			if (nutcrackerRemoved > 0 && CanShowMessage())
+			{
+				var messageBox = new MessageBoxForm(
+						$"WARNING!!!! During the migration, {nutcrackerRemoved} deprecated Nutcracker effects were REMOVED!. These have been deprecated for many years and the effect was removed in the 3.10 release." +
+						$"{Environment.NewLine}{Environment.NewLine}If you wish to convert these to their newer versions, you will need to open them "+ 
+						"in Vixen version 3.9u5 and convert them prior to saving them in this version." +
+						$"{Environment.NewLine}{Environment.NewLine}You can close this sequence without saving and go back to the older version to migrate. Otherwise those effects will be lost!", "Sequence Upgrade",
+					MessageBoxButtons.OK, SystemIcons.Information);
+				messageBox.StartPosition = FormStartPosition.CenterScreen;
+				messageBox.ShowDialog();
+			}
+
 			return content;
 		}
 
@@ -973,6 +990,54 @@ namespace VixenModules.Sequence.Timed
 				// Extract the new data model that we want and insert it in the tree
 				datamodel.Add(glp.XPathSelectElement("//*[local-name()='anyType']", namespaces));
 			}
+
+		}
+
+		private int RemoveNutcrackerEffects(XElement content)
+		{
+
+			int removedCount = 0;
+
+			// This migration deals with detecting and removing old Nutcracker effects from the sequence.
+			var namespaces = GetStandardNamespaces();
+			//Add in the ones for this effect
+			XNamespace d2p1 = "http://schemas.datacontract.org/2004/07/VixenModules.Effect.Nutcracker";
+			namespaces.AddNamespace("d2p1", d2p1.NamespaceName);
+
+			// Find the Nutcracker effect data
+			IEnumerable<XElement> nutcrackerElements =
+				content.XPathSelectElements(
+					"_dataModels/d1p1:anyType[@i:type = 'd2p1:NutcrackerModuleData']",
+					namespaces);
+
+			var nutcackerDatamodel = content.XPathSelectElement("_dataModels", namespaces);
+
+			foreach (var nutcrackerElement in nutcrackerElements.ToList())
+			{
+				nutcrackerElement.Remove();
+				removedCount++;
+			}
+
+			// Find the Nutcracker surrogates
+			IEnumerable<XElement> effectSurrogates =
+				content.XPathSelectElements(
+					"_effectNodeSurrogates/EffectNodeSurrogate",
+					namespaces);
+
+			//var nutcackerEffectNodes = content.XPathSelectElement("_effectNodeSurrogates", namespaces);
+			var nutcrackerTypeId = "82334cb3-9472-42fe-a221-8482f5c731db";
+
+			foreach(var effectSurrogate in effectSurrogates.ToList())
+			{
+				var typeIdElement = effectSurrogate.Element("TypeId");
+				if(typeIdElement != null && typeIdElement.Value == nutcrackerTypeId)
+				{
+					effectSurrogate.Remove();
+				}
+			}
+
+
+			return removedCount;
 		}
 
 		private static XmlNamespaceManager GetStandardNamespaces()
@@ -1058,4 +1123,13 @@ namespace VixenModules.Sequence.Timed
 		[DataMember]
 		internal IModuleDataModel[] _dataModels;
 	}
+
+	[DataContract(Namespace = "")]
+	class EffectNodeSurrogate
+	{
+		[DataMember]
+		public Guid TypeId { get; protected set; }
+
+	}
+
 }
