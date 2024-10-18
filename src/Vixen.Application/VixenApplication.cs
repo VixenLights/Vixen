@@ -532,18 +532,16 @@ namespace VixenApplication
 
 				if (_devBuild)
 				{
+					brush.Dispose();
 					brush = _testBuild ? System.Drawing.Brushes.Red : System.Drawing.Brushes.Yellow;
 				}
 
-				Font f = new Font(Font.FontFamily, 14);
+				using Font f = new Font(Font.FontFamily, 14);
 
 				g.DrawString(_releaseVersion, f, brush, pictureBox1.Image.Width * .65f, pictureBox1.Image.Height * .73f);
 				g.DrawString(_buildVersion, f, brush, pictureBox1.Image.Width * .65f, pictureBox1.Image.Height * .73f + g.MeasureString(_releaseVersion, Font).Height + 10);
+				brush.Dispose();
 			}
-			
-
-			
-
 		}
 
 		private async void CheckForReleaseUpdates()
