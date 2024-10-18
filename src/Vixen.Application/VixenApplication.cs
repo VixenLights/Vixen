@@ -26,6 +26,7 @@ using WPFApplication = System.Windows.Application;
 using System.ComponentModel;
 using System.Drawing;
 using Common.WPFCommon.Services;
+using System.Windows.Media;
 
 namespace VixenApplication
 {
@@ -525,20 +526,23 @@ namespace VixenApplication
 
 		private void DrawVersionInfo()
 		{
-			//Bitmap img = Properties.Resources.V3Logo;
-			Graphics g = Graphics.FromImage(pictureBox1.Image);
-
-			SolidBrush brush = new SolidBrush(ThemeColorTable.ForeColor);
-
-			if (_devBuild)
+			using (Graphics g = Graphics.FromImage(pictureBox1.Image))
 			{
-				brush = _testBuild ? new SolidBrush(Color.Red) : new SolidBrush(Color.Yellow);
+				System.Drawing.Brush brush = new SolidBrush(ThemeColorTable.ForeColor);
+
+				if (_devBuild)
+				{
+					brush = _testBuild ? System.Drawing.Brushes.Red : System.Drawing.Brushes.Yellow;
+				}
+
+				Font f = new Font(Font.FontFamily, 14);
+
+				g.DrawString(_releaseVersion, f, brush, pictureBox1.Image.Width * .65f, pictureBox1.Image.Height * .73f);
+				g.DrawString(_buildVersion, f, brush, pictureBox1.Image.Width * .65f, pictureBox1.Image.Height * .73f + g.MeasureString(_releaseVersion, Font).Height + 10);
 			}
+			
 
-			Font f = new Font(Font.FontFamily, 14);
-
-			g.DrawString(_releaseVersion, f, brush, pictureBox1.Image.Width * .73f, pictureBox1.Image.Height * .73f);
-			g.DrawString(_buildVersion, f, brush, pictureBox1.Image.Width * .73f, pictureBox1.Image.Height * .73f + g.MeasureString(_releaseVersion, Font).Height + 10);
+			
 
 		}
 
