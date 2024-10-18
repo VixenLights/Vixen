@@ -26,6 +26,7 @@ using WPFApplication = System.Windows.Application;
 using System.ComponentModel;
 using System.Drawing;
 using Common.WPFCommon.Services;
+using System.Windows.Media;
 
 namespace VixenApplication
 {
