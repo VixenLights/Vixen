@@ -540,7 +540,11 @@ namespace VixenApplication
 
 				g.DrawString(_releaseVersion, f, brush, pictureBox1.Image.Width * .65f, pictureBox1.Image.Height * .73f);
 				g.DrawString(_buildVersion, f, brush, pictureBox1.Image.Width * .65f, pictureBox1.Image.Height * .73f + g.MeasureString(_releaseVersion, Font).Height + 10);
-				brush.Dispose();
+				if (!_devBuild)
+				{
+					//Don't dispose static system brushes.
+					brush.Dispose();
+				}
 			}
 		}
 
