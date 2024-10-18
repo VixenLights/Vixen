@@ -1,0 +1,18 @@
+<Configuration>
+    <MappedFolders>
+        <MappedFolder>
+            <HostFolder>c:\Dev\Vixen\Release\Setup</HostFolder>
+            <SandboxFolder>c:\Vixen\Release\Setup</SandboxFolder>
+            <ReadOnly>true</ReadOnly>
+        </MappedFolder>
+        <MappedFolder>
+            <HostFolder>c:\Dev\Vixen\sandbox\scripts</HostFolder>
+            <SandboxFolder>c:\Vixen\scripts</SandboxFolder>
+            <ReadOnly>true</ReadOnly>
+        </MappedFolder>
+    </MappedFolders>
+    <Networking>true</Networking>
+    <LogonCommand>
+        <Command>explorer "c:\Vixen\scripts\startup.bat"</Command>
+    </LogonCommand>
+</Configuration>
