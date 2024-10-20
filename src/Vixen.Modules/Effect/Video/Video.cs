@@ -619,7 +619,7 @@ namespace VixenModules.Effect.Video
 					if (_renderHeight % 2 != 0) _renderHeight++;
 					if (_renderWidth % 2 != 0) _renderWidth++;
 					Ffmpeg.MakeScaledThumbNails(videoFilename, _tempFilePath, StartTimeSeconds, ((TimeSpan.TotalSeconds * ((double)PlayBackSpeed / 100 + 1))),
-						_renderWidth, _renderHeight, MaintainAspect, RotateVideo, cropVideo, 1000 / FrameTime);
+						_renderWidth, _renderHeight, MaintainAspect, RotateVideo, cropVideo, 1000.0 / FrameTime);
 					_moviePicturesFileList = Directory.GetFiles(_tempFilePath).OrderBy(f => f).ToList();
 
 					_videoFileDetected = true;
