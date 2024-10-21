@@ -38,7 +38,7 @@ namespace Vixen.Common.ffmpeg
 		}
 
 		//Native Video Effect
-		public static void MakeScaledThumbNails(string movieFile, string outputPath, double startPosition, double duration, int width, int height, bool maintainAspect, int rotateVideo, string cropVideo, int fps=20)
+		public static void MakeScaledThumbNails(string movieFile, string outputPath, double startPosition, double duration, int width, int height, bool maintainAspect, int rotateVideo, string cropVideo, double fps=20)
 		{
 			int maintainAspectValue = maintainAspect ? -1 : height;
 			//make arguments string
