@@ -1032,8 +1032,10 @@ namespace VixenApplication
 					Cursor = Cursors.WaitCursor;
 					EnableButtons(false);
 					progressBar.Visible = true;
-					UpdateProgress(Tuple.Create(0, "Saving Configuration"));
-					await VixenSystem.SaveSystemAndModuleConfigAsync();
+					UpdateProgress(Tuple.Create(0, "Saving System Configuration"));
+					await VixenSystem.SaveSystemConfigAsync();
+					UpdateProgress(Tuple.Create(50, "Saving Module Configuration"));
+					await VixenSystem.SaveModuleConfigAsync();
 					progressBar.Visible = false;
 					EnableButtons();
 					Cursor = Cursors.Default;
@@ -1064,8 +1066,10 @@ namespace VixenApplication
 					Cursor = Cursors.WaitCursor;
 					EnableButtons(false);
 					progressBar.Visible = true;
-					UpdateProgress(Tuple.Create(0, "Saving Configuration"));
-					await VixenSystem.SaveSystemAndModuleConfigAsync();
+					UpdateProgress(Tuple.Create(0, "Saving System Configuration"));
+					await VixenSystem.SaveSystemConfigAsync();
+					UpdateProgress(Tuple.Create(50, "Saving Module Configuration"));
+					await VixenSystem.SaveModuleConfigAsync();
 					progressBar.Visible = false;
 					EnableButtons();
 					Cursor = Cursors.Default;
