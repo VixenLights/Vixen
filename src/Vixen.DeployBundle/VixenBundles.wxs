@@ -23,7 +23,8 @@
 										ShowVersion="false"
 										LogoFile="$(var.Logo)"
 										LogoSideFile="$(LogoSide)"
-										LaunchTarget="[InstallFolder]\Vixen.Application.exe"/>
+										LaunchTarget="[InstallFolder]\Vixen.Application.exe"
+										LaunchWorkingFolder="[InstallFolder]"/>
 								
 						</BootstrapperApplication>
 
