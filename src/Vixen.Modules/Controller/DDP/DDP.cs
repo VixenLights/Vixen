@@ -254,7 +254,17 @@ namespace VixenModules.Output.DDP
 		{
 			var config = new ControllerNetworkConfiguration();
 			config.SupportsUniverses = true;
-			config.IpAddress = IPAddress.Parse(_data.Address);
+
+			if (IPAddress.TryParse(_data.Address, out var result))
+			{
+				config.IpAddress = result;
+			}
+			else
+			{
+				Logging.Error("Unable to parse the specified IP Address. Defaulting to Loopback");
+				config.IpAddress = IPAddress.Loopback;
+			}
+
 			config.ProtocolType = ProtocolTypes.DDP;
 			config.TransmissionMethod = TransmissionMethods.Unicast;
 			var universes = new List<UniverseConfiguration>(1);
