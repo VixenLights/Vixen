@@ -7,6 +7,8 @@ namespace Vixen.IO.Xml
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private const int BackupsToKeep = 3;
+		private const int DaysToKeep = 3;
+		private const string BackupFolder = "auto_backup";
 
 		public void WriteFile(string filePath, XElement content)
 		{
@@ -30,7 +32,7 @@ namespace Vixen.IO.Xml
 		void IFileWriter.WriteFile(string filePath, object content)
 		{
 			if (!(content is XElement)) throw new InvalidOperationException("Content mst be an XElement.");
-			
+
 			var success = BackupFile(filePath);
 			if (!success)
 			{
@@ -70,17 +72,25 @@ namespace Vixen.IO.Xml
 				Logging.Warn("Filepath {0} is locked! Sleeping for 250ms to wait for it to free up.", filePath);
 				System.Threading.Thread.Sleep(250);
 			}
-
 			try
 			{
 				if (File.Exists(filePath))
 				{
-					var backupFile = $"{filePath}_backup.{DateTime.Now:dd-MM-yyyy_h_m_s}";
+					var backupDirectory = Path.Combine(Path.GetDirectoryName(filePath), BackupFolder);
+					var fileName = Path.GetFileNameWithoutExtension(filePath);
+					var extension = Path.GetExtension(filePath);
+					var timeStamp = File.GetLastWriteTime(filePath);
+					var backupFile = Path.Combine(backupDirectory, $"{fileName}_{timeStamp:MMddyyyy_hhmmss}{extension}");
+					if (!Directory.Exists(backupDirectory))
+					{
+						Directory.CreateDirectory(backupDirectory);
+					}
 					if (File.Exists(backupFile))
 					{
+						Logging.Warn("Backup file exists for some reason and is being deleted.");
 						//This should never happen being as we are using the date time as part of the file name
 						File.Delete(backupFile);
-					}
+											}
 					//Under the covers move does a rename which should be safer and faster than a copy
 					File.Move(filePath, backupFile);
 					success = PurgeOldBackups(filePath);
@@ -100,28 +110,65 @@ namespace Vixen.IO.Xml
 		{
 			var folderPath = Path.GetDirectoryName(filePath);
 			var fileName = Path.GetFileName(filePath);
+			var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
 			if (!string.IsNullOrEmpty(fileName) && !string.IsNullOrEmpty(folderPath))
 			{
 				var folderContent = new DirectoryInfo(folderPath).GetFileSystemInfos();
-				var backups = folderContent.Where(x => x.Name.StartsWith($"{fileName}_backup"));
+
+				//Check for old backups and move them to the backup folder
+				var oldBackups = folderContent.Where(x => x.Name.StartsWith($"{fileName}_backup"));
+				if (oldBackups.Any())
+				{
+					var directory = Path.Combine(Path.GetDirectoryName(filePath), BackupFolder);
+					foreach (var backup in oldBackups)
+					{
+						File.Move(backup.FullName, Path.Combine(directory, backup.Name));
+					}
+				}
+
+				//Check the backup folder to purge.
+				folderPath = Path.Combine(folderPath, BackupFolder);
+				folderContent = new DirectoryInfo(folderPath).GetFileSystemInfos();
+				var backups = folderContent.Where(x => x.Name.StartsWith($"{fileNameWithoutExtension}_") || x.Name.StartsWith($"{fileName}_backup"));
 				if (backups.Count() > BackupsToKeep)
 				{
-					var orderedBackups = backups.OrderBy(x => x.LastWriteTime);
-					int numToDelete = backups.Count() - BackupsToKeep;
-
-					try
+					var orderedBackups = backups.OrderByDescending(x => x.LastWriteTime).GroupBy(g => g.LastWriteTime.Date).ToList();
+					if(orderedBackups.Any())
 					{
-						foreach (var fileSystemInfo in orderedBackups)
+						int dayNum = 0;
+						int skipNum = 0;
+						try
 						{
-							fileSystemInfo.Delete();
-							if (--numToDelete <= 0) break;
+							foreach (var dateGroup in orderedBackups)
+							{
+								switch (dayNum)
+								{
+									case 0:
+										skipNum = BackupsToKeep; //Keep the specified number for most recent day.
+										break;
+									case < DaysToKeep:  // Keep one for the remaining days to keep
+										skipNum = 1;
+										break;
+									default:
+										skipNum = 0;  // Delete all the rest
+										break;
+							
+								}
+								foreach(var fileSystemInfo in dateGroup.Skip(skipNum))
+								{
+									fileSystemInfo.Delete();
+								}
+								dayNum++;
+							}
+						}
+						catch (Exception e)
+						{
+							Logging.Error(e, "Error while pruning the backup files.");
+							return false;
 						}
 					}
-					catch (Exception e)
-					{
-						Logging.Error(e, "Error while pruning the backup files.");
-						return false;
-					}
+					
+					
 				}
 			}
 
