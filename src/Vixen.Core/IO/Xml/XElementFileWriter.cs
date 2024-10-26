@@ -7,6 +7,8 @@ namespace Vixen.IO.Xml
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private const int BackupsToKeep = 3;
+		private const int DaysToKeep = 3;
+		private const string BackupFolder = "auto_backup";
 
 		public void WriteFile(string filePath, XElement content)
 		{
@@ -74,10 +76,15 @@ namespace Vixen.IO.Xml
 			{
 				if (File.Exists(filePath))
 				{
-					var directory = Path.GetDirectoryName(filePath);
+					var backupDirectory = Path.Combine(Path.GetDirectoryName(filePath), BackupFolder);
 					var fileName = Path.GetFileNameWithoutExtension(filePath);
 					var extension = Path.GetExtension(filePath);
-					var backupFile = Path.Combine(directory, $"{fileName}_{DateTime.Now:MMddyyyy_hhmmss}{extension}");
+					var timeStamp = File.GetLastWriteTime(filePath);
+					var backupFile = Path.Combine(backupDirectory, $"{fileName}_{timeStamp:MMddyyyy_hhmmss}{extension}");
+					if (!Directory.Exists(backupDirectory))
+					{
+						Directory.CreateDirectory(backupDirectory);
+					}
 					if (File.Exists(backupFile))
 					{
 						Logging.Warn("Backup file exists for some reason and is being deleted.");
@@ -107,25 +114,61 @@ namespace Vixen.IO.Xml
 			if (!string.IsNullOrEmpty(fileName) && !string.IsNullOrEmpty(folderPath))
 			{
 				var folderContent = new DirectoryInfo(folderPath).GetFileSystemInfos();
+
+				//Check for old backups and move them to the backup folder
+				var oldBackups = folderContent.Where(x => x.Name.StartsWith($"{fileName}_backup"));
+				if (oldBackups.Any())
+				{
+					var directory = Path.Combine(Path.GetDirectoryName(filePath), BackupFolder);
+					foreach (var backup in oldBackups)
+					{
+						File.Move(backup.FullName, Path.Combine(directory, backup.Name));
+					}
+				}
+
+				//Check the backup folder to purge.
+				folderPath = Path.Combine(folderPath, BackupFolder);
+				folderContent = new DirectoryInfo(folderPath).GetFileSystemInfos();
 				var backups = folderContent.Where(x => x.Name.StartsWith($"{fileNameWithoutExtension}_") || x.Name.StartsWith($"{fileName}_backup"));
 				if (backups.Count() > BackupsToKeep)
 				{
-					var orderedBackups = backups.OrderBy(x => x.LastWriteTime);
-					int numToDelete = backups.Count() - BackupsToKeep;
-
-					try
+					var orderedBackups = backups.OrderByDescending(x => x.LastWriteTime).GroupBy(g => g.LastWriteTime.Date).ToList();
+					if(orderedBackups.Any())
 					{
-						foreach (var fileSystemInfo in orderedBackups)
+						int dayNum = 0;
+						int skipNum = 0;
+						try
 						{
-							fileSystemInfo.Delete();
-							if (--numToDelete <= 0) break;
+							foreach (var dateGroup in orderedBackups)
+							{
+								switch (dayNum)
+								{
+									case 0:
+										skipNum = BackupsToKeep; //Keep the specified number for most recent day.
+										break;
+									case < DaysToKeep:  // Keep one for the remaining days to keep
+										skipNum = 1;
+										break;
+									default:
+										skipNum = 0;  // Delete all the rest
+										break;
+							
+								}
+								foreach(var fileSystemInfo in dateGroup.Skip(skipNum))
+								{
+									fileSystemInfo.Delete();
+								}
+								dayNum++;
+							}
+						}
+						catch (Exception e)
+						{
+							Logging.Error(e, "Error while pruning the backup files.");
+							return false;
 						}
 					}
-					catch (Exception e)
-					{
-						Logging.Error(e, "Error while pruning the backup files.");
-						return false;
-					}
+					
+					
 				}
 			}
 
