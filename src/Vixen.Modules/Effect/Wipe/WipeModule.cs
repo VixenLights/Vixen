@@ -562,7 +562,7 @@ namespace VixenModules.Effect.Wipe
 					Color color = _data.ColorGradient.GetColorAt(position);
 					double curveValue = _data.Curve.GetValue(position * 100) / 100;
 
-					if (wipeNode.ElementIndex - i > 0 && wipeNode.ElementIndex - i + burst < renderNodes.Count)
+					if (wipeNode.ElementIndex - i >= 0 && wipeNode.ElementIndex - i + burst < renderNodes.Count)
 					{
 						IElementNode[] elementGroup = renderNodes[wipeNode.ElementIndex - i + burst];
 						if (tokenSource != null && tokenSource.IsCancellationRequested) return;
