@@ -179,6 +179,70 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						DistributeSelectedEffectsEqually();
 					}
 					break;
+
+				case Keys.C:
+					if (TimelineControl.grid.IsResizeDragInProgress)
+					{
+						break;
+					}
+					element = TimelineControl.grid.ElementAtPosition(MousePosition);
+					if (element != null && TimelineControl.SelectedElements.Count() > 1 && TimelineControl.SelectedElements.Contains(element))
+					{
+						TimelineControl.grid.AlignElementCenters(TimelineControl.SelectedElements, element);
+					}
+
+					break;
+
+				case Keys.U:
+					if (TimelineControl.grid.IsResizeDragInProgress)
+					{
+						break;
+					}
+					element = TimelineControl.grid.ElementAtPosition(MousePosition);
+					if (element != null && TimelineControl.SelectedElements.Count() > 1 && TimelineControl.SelectedElements.Contains(element))
+					{
+						TimelineControl.grid.AlignElementDurations(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift );
+					}
+
+					break;
+
+				case Keys.R:
+					if (TimelineControl.grid.IsResizeDragInProgress)
+					{
+						break;
+					}
+					element = TimelineControl.grid.ElementAtPosition(MousePosition);
+					if (element != null && TimelineControl.SelectedElements.Count() > 1 && TimelineControl.SelectedElements.Contains(element))
+					{
+						TimelineControl.grid.AlignElementStartToEndTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
+					}
+
+					break;
+
+				case Keys.N:
+					if (TimelineControl.grid.IsResizeDragInProgress)
+					{
+						break;
+					}
+					element = TimelineControl.grid.ElementAtPosition(MousePosition);
+					if (element != null && TimelineControl.SelectedElements.Count() > 1 && TimelineControl.SelectedElements.Contains(element))
+					{
+						TimelineControl.grid.AlignElementEndToStartTime(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
+					}
+
+					break;
+
+				case Keys.I:
+					if (TimelineControl.grid.IsResizeDragInProgress)
+					{
+						break;
+					}
+					element = TimelineControl.grid.ElementAtPosition(MousePosition);
+					if (element != null && TimelineControl.SelectedElements.Count() > 1 && TimelineControl.SelectedElements.Contains(element))
+					{
+						DistributeSelectedEffects();
+					}
+					break;
 			}
 			// Prevents sending keystrokes to child controls. 
 			// This was causing serious slowdowns if random keys were pressed.
