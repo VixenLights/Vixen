@@ -125,81 +125,86 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			ToolStripMenuItem contextMenuItemAlignStart = new ToolStripMenuItem("Align Start Times")
 			{
-				ToolTipText = @"Holding shift will align the start times, while holding duration.",
+				ToolTipText = "S - Move start time only\nShift+S - Move start time and hold duration",
 				Image = Resources.alignStart
 			};
 			contextMenuItemAlignStart.Click +=
 				(mySender, myE) =>
 					TimelineControl.grid.AlignElementStartTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
-			contextMenuItemAlignStart.ShortcutKeyDisplayString = @"(Shift)+S";
+			contextMenuItemAlignStart.ShortcutKeyDisplayString = @"S, Shift+S";
 
 			ToolStripMenuItem contextMenuItemAlignEnd = new ToolStripMenuItem("Align End Times")
 			{
-				ToolTipText = @"Holding shift will align the end times, while holding duration.",
+				ToolTipText = "E - Move end time only\nShift+E - Move end time and hold duration",
 				Image = Resources.alignEnd
 			};
 			contextMenuItemAlignEnd.Click +=
 				(mySender, myE) =>
 					TimelineControl.grid.AlignElementEndTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
-			contextMenuItemAlignEnd.ShortcutKeyDisplayString = @"(Shift)+E";
+			contextMenuItemAlignEnd.ShortcutKeyDisplayString = @"E, Shift+E";
 
-			ToolStripMenuItem contextMenuItemAlignBoth = new ToolStripMenuItem("Align Both Times") {Image = Resources.alignBoth};
+			ToolStripMenuItem contextMenuItemAlignBoth = new ToolStripMenuItem("Align Both Times")
+			{
+				ToolTipText = "Move both start and end times to match duration",
+				Image = Resources.alignBoth
+			};
 			contextMenuItemAlignBoth.Click +=
 				(mySender, myE) => TimelineControl.grid.AlignElementStartEndTimes(TimelineControl.SelectedElements, element);
 			contextMenuItemAlignBoth.ShortcutKeyDisplayString = @"B";
 
 			ToolStripMenuItem contextMenuItemMatchDuration = new ToolStripMenuItem("Match Duration")
 			{
-				ToolTipText =
-					@"Holding shift will hold the effects end time and adjust the start time, by default the end time is adjusted.",
+				ToolTipText = "U - Make durations the same by adjusting the end time\nShift+U - Make durations the same by ajusting the start time",
 				Image = Resources.matchDuration
 			};
 			contextMenuItemMatchDuration.Click +=
 				(mySender, myE) =>
 					TimelineControl.grid.AlignElementDurations(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
-			contextMenuItemMatchDuration.ShortcutKeyDisplayString = @"(Shift)";
+			contextMenuItemMatchDuration.ShortcutKeyDisplayString = @"U, Shift+U";
 
 			ToolStripMenuItem contextMenuItemAlignStartToEnd = new ToolStripMenuItem("Align Start to End")
 			{
-				ToolTipText =
-					@"Holding shift will hold the effects end time and only adjust the start time, by default the entire effect is moved.",
+				ToolTipText = "R - Move start time, holding the duration constant\nShift+R - Move start time only",
 				Image = Resources.alignStartEnd
 			};
 			contextMenuItemAlignStartToEnd.Click +=
 				(mySender, myE) =>
 					TimelineControl.grid.AlignElementStartToEndTimes(TimelineControl.SelectedElements, element,
 						ModifierKeys == Keys.Shift);
-			contextMenuItemAlignStartToEnd.ShortcutKeyDisplayString = @"(Shift)";
+			contextMenuItemAlignStartToEnd.ShortcutKeyDisplayString = @"R, Shift+R";
 
 			ToolStripMenuItem contextMenuItemAlignEndToStart = new ToolStripMenuItem("Align End to Start")
 			{
-				ToolTipText =
-					@"Holding shift will hold the effects start time and only adjust the end time, by default the entire effect is moved.",
+				ToolTipText = "N - Move end time, holding the duration constant\nShift+N - Move end time only",
 				Image = Resources.alignStartEnd
 			};
 			contextMenuItemAlignEndToStart.Click +=
 				(mySender, myE) =>
 					TimelineControl.grid.AlignElementEndToStartTime(TimelineControl.SelectedElements, element,
 						ModifierKeys == Keys.Shift);
-			contextMenuItemAlignEndToStart.ShortcutKeyDisplayString = @"(Shift)";			
+			contextMenuItemAlignEndToStart.ShortcutKeyDisplayString = @"N, Shift+N";			
 
 			ToolStripMenuItem contextMenuItemDistDialog = new ToolStripMenuItem("Distribute Effects")
 			{
+				ToolTipText = "Customize start and end times",
 				Image = Resources.distribute
 			};
 			contextMenuItemDistDialog.Click += (mySender, myE) => DistributeSelectedEffects();
+			contextMenuItemDistDialog.ShortcutKeyDisplayString = @"I";
 
 			ToolStripMenuItem contextMenuItemAlignCenter = new ToolStripMenuItem("Align Centerpoints")
 			{
+				ToolTipText = "Move both start and end times, keeping durations constant",
 				Image = Resources.alignCenter
 			};
 			contextMenuItemAlignCenter.Click +=
 				(mySender, myE) => TimelineControl.grid.AlignElementCenters(TimelineControl.SelectedElements, element);
+			contextMenuItemAlignCenter.ShortcutKeyDisplayString = @"C";
 
 			ToolStripMenuItem contextMenuItemDistributeEqually = new ToolStripMenuItem("Distribute Equally")
 			{
 				ToolTipText =
-					@"Distribute selected effects equally over the total time span of effects.",
+					@"Distribute selected effects equally over the total time span of effects",
 				Image = Resources.distribute
 			};
 			contextMenuItemDistributeEqually.Click += (mySender, myE) => DistributeSelectedEffectsEqually();
