@@ -3,6 +3,7 @@
 using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
+using System.Diagnostics;
 using Vixen.Data.Flow;
 using Vixen.Module.OutputFilter;
 using Vixen.Rule;
@@ -33,6 +34,12 @@ namespace VixenApplication.Setup
 
 		private void SetupPatchingSimple_Load(object sender, EventArgs e)
 		{
+			selectedControllersLayout.Resize += SelectedControllersLayout_Resize;
+		}
+
+		private void SelectedControllersLayout_Resize(object sender, EventArgs e)
+		{
+			labelLastOutput.MaximumSize = labelFirstOutput.MaximumSize = new Size(selectedControllersLayout.GetColumnWidths()[1], 0);
 		}
 
 		private List<ElementNode> _cachedElementNodes;

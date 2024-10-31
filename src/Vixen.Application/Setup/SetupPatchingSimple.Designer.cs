@@ -50,7 +50,7 @@ namespace VixenApplication.Setup
 			label4 = new Label();
 			checkBoxReverseElementOrder = new CheckBox();
 			groupBoxControllers = new GroupBox();
-			tableLayoutPanel3 = new TableLayoutPanel();
+			selectedControllersLayout = new TableLayoutPanel();
 			labelLastOutput = new Label();
 			buttonUnpatchControllers = new Button();
 			label20 = new Label();
@@ -81,7 +81,7 @@ namespace VixenApplication.Setup
 			groupBoxElements.SuspendLayout();
 			tableLayoutPanel4.SuspendLayout();
 			groupBoxControllers.SuspendLayout();
-			tableLayoutPanel3.SuspendLayout();
+			selectedControllersLayout.SuspendLayout();
 			groupBoxPatching.SuspendLayout();
 			tableLayoutPanelPatchingOptions.SuspendLayout();
 			groupBoxElementOptions.SuspendLayout();
@@ -98,7 +98,7 @@ namespace VixenApplication.Setup
 			groupBoxElements.Margin = new Padding(4, 3, 4, 3);
 			groupBoxElements.Name = "groupBoxElements";
 			groupBoxElements.Padding = new Padding(4, 3, 4, 3);
-			groupBoxElements.Size = new Size(258, 234);
+			groupBoxElements.Size = new Size(258, 301);
 			groupBoxElements.TabIndex = 0;
 			groupBoxElements.TabStop = false;
 			groupBoxElements.Text = "Selected Elements";
@@ -137,8 +137,8 @@ namespace VixenApplication.Setup
 			tableLayoutPanel4.RowStyles.Add(new RowStyle());
 			tableLayoutPanel4.RowStyles.Add(new RowStyle());
 			tableLayoutPanel4.RowStyles.Add(new RowStyle());
-			tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-			tableLayoutPanel4.Size = new Size(250, 212);
+			tableLayoutPanel4.RowStyles.Add(new RowStyle());
+			tableLayoutPanel4.Size = new Size(250, 279);
 			tableLayoutPanel4.TabIndex = 24;
 			// 
 			// labelFilterCount
@@ -167,8 +167,8 @@ namespace VixenApplication.Setup
 			buttonUnpatchElements.Anchor = AnchorStyles.None;
 			buttonUnpatchElements.AutoSize = true;
 			tableLayoutPanel4.SetColumnSpan(buttonUnpatchElements, 2);
-			buttonUnpatchElements.Location = new Point(68, 184);
-			buttonUnpatchElements.Margin = new Padding(4, 3, 4, 3);
+			buttonUnpatchElements.Location = new Point(68, 217);
+			buttonUnpatchElements.Margin = new Padding(4, 8, 4, 8);
 			buttonUnpatchElements.Name = "buttonUnpatchElements";
 			buttonUnpatchElements.Size = new Size(113, 25);
 			buttonUnpatchElements.TabIndex = 22;
@@ -320,70 +320,72 @@ namespace VixenApplication.Setup
 			// groupBoxControllers
 			// 
 			groupBoxControllers.AutoSize = true;
-			groupBoxControllers.Controls.Add(tableLayoutPanel3);
+			groupBoxControllers.Controls.Add(selectedControllersLayout);
 			groupBoxControllers.Dock = DockStyle.Fill;
 			groupBoxControllers.Location = new Point(270, 3);
 			groupBoxControllers.Margin = new Padding(4, 3, 4, 3);
 			groupBoxControllers.Name = "groupBoxControllers";
 			groupBoxControllers.Padding = new Padding(4, 3, 4, 3);
-			groupBoxControllers.Size = new Size(259, 234);
+			groupBoxControllers.Size = new Size(259, 301);
 			groupBoxControllers.TabIndex = 1;
 			groupBoxControllers.TabStop = false;
 			groupBoxControllers.Text = "Selected Controllers";
 			groupBoxControllers.Paint += groupBoxes_Paint;
 			// 
-			// tableLayoutPanel3
+			// selectedControllersLayout
 			// 
-			tableLayoutPanel3.AutoSize = true;
-			tableLayoutPanel3.ColumnCount = 2;
-			tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle());
-			tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-			tableLayoutPanel3.Controls.Add(labelLastOutput, 1, 7);
-			tableLayoutPanel3.Controls.Add(buttonUnpatchControllers, 0, 8);
-			tableLayoutPanel3.Controls.Add(label20, 0, 0);
-			tableLayoutPanel3.Controls.Add(label9, 0, 7);
-			tableLayoutPanel3.Controls.Add(labelFirstOutput, 1, 6);
-			tableLayoutPanel3.Controls.Add(labelOutputCount, 1, 0);
-			tableLayoutPanel3.Controls.Add(label16, 0, 1);
-			tableLayoutPanel3.Controls.Add(label8, 0, 6);
-			tableLayoutPanel3.Controls.Add(labelPatchedOutputCount, 1, 1);
-			tableLayoutPanel3.Controls.Add(labelControllerCount, 1, 4);
-			tableLayoutPanel3.Controls.Add(labelUnpatchedOutputCount, 1, 2);
-			tableLayoutPanel3.Controls.Add(label21, 0, 4);
-			tableLayoutPanel3.Controls.Add(label15, 0, 2);
-			tableLayoutPanel3.Dock = DockStyle.Fill;
-			tableLayoutPanel3.Location = new Point(4, 19);
-			tableLayoutPanel3.Name = "tableLayoutPanel3";
-			tableLayoutPanel3.RowCount = 9;
-			tableLayoutPanel3.RowStyles.Add(new RowStyle());
-			tableLayoutPanel3.RowStyles.Add(new RowStyle());
-			tableLayoutPanel3.RowStyles.Add(new RowStyle());
-			tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-			tableLayoutPanel3.RowStyles.Add(new RowStyle());
-			tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-			tableLayoutPanel3.RowStyles.Add(new RowStyle());
-			tableLayoutPanel3.RowStyles.Add(new RowStyle());
-			tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-			tableLayoutPanel3.Size = new Size(251, 212);
-			tableLayoutPanel3.TabIndex = 35;
+			selectedControllersLayout.AutoSize = true;
+			selectedControllersLayout.ColumnCount = 2;
+			selectedControllersLayout.ColumnStyles.Add(new ColumnStyle());
+			selectedControllersLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+			selectedControllersLayout.Controls.Add(labelLastOutput, 1, 7);
+			selectedControllersLayout.Controls.Add(buttonUnpatchControllers, 0, 8);
+			selectedControllersLayout.Controls.Add(label20, 0, 0);
+			selectedControllersLayout.Controls.Add(label9, 0, 7);
+			selectedControllersLayout.Controls.Add(labelFirstOutput, 1, 6);
+			selectedControllersLayout.Controls.Add(labelOutputCount, 1, 0);
+			selectedControllersLayout.Controls.Add(label16, 0, 1);
+			selectedControllersLayout.Controls.Add(label8, 0, 6);
+			selectedControllersLayout.Controls.Add(labelPatchedOutputCount, 1, 1);
+			selectedControllersLayout.Controls.Add(labelControllerCount, 1, 4);
+			selectedControllersLayout.Controls.Add(labelUnpatchedOutputCount, 1, 2);
+			selectedControllersLayout.Controls.Add(label21, 0, 4);
+			selectedControllersLayout.Controls.Add(label15, 0, 2);
+			selectedControllersLayout.Dock = DockStyle.Fill;
+			selectedControllersLayout.Location = new Point(4, 19);
+			selectedControllersLayout.Name = "selectedControllersLayout";
+			selectedControllersLayout.RowCount = 9;
+			selectedControllersLayout.RowStyles.Add(new RowStyle());
+			selectedControllersLayout.RowStyles.Add(new RowStyle());
+			selectedControllersLayout.RowStyles.Add(new RowStyle());
+			selectedControllersLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+			selectedControllersLayout.RowStyles.Add(new RowStyle());
+			selectedControllersLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+			selectedControllersLayout.RowStyles.Add(new RowStyle());
+			selectedControllersLayout.RowStyles.Add(new RowStyle());
+			selectedControllersLayout.RowStyles.Add(new RowStyle());
+			selectedControllersLayout.Size = new Size(251, 279);
+			selectedControllersLayout.TabIndex = 35;
 			// 
 			// labelLastOutput
 			// 
+			labelLastOutput.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 			labelLastOutput.AutoSize = true;
-			labelLastOutput.Location = new Point(83, 159);
+			labelLastOutput.Location = new Point(83, 189);
 			labelLastOutput.Margin = new Padding(4);
+			labelLastOutput.MaximumSize = new Size(160, 0);
 			labelLastOutput.Name = "labelLastOutput";
-			labelLastOutput.Size = new Size(76, 15);
+			labelLastOutput.Size = new Size(160, 45);
 			labelLastOutput.TabIndex = 33;
-			labelLastOutput.Text = "Controller #0";
+			labelLastOutput.Text = "Controller XXXXXXXXXXXXXXXXXXXX #0";
 			// 
 			// buttonUnpatchControllers
 			// 
 			buttonUnpatchControllers.Anchor = AnchorStyles.None;
 			buttonUnpatchControllers.AutoSize = true;
-			tableLayoutPanel3.SetColumnSpan(buttonUnpatchControllers, 2);
-			buttonUnpatchControllers.Location = new Point(60, 182);
-			buttonUnpatchControllers.Margin = new Padding(4, 3, 4, 3);
+			selectedControllersLayout.SetColumnSpan(buttonUnpatchControllers, 2);
+			buttonUnpatchControllers.Location = new Point(60, 246);
+			buttonUnpatchControllers.Margin = new Padding(4, 8, 4, 8);
 			buttonUnpatchControllers.Name = "buttonUnpatchControllers";
 			buttonUnpatchControllers.Size = new Size(130, 25);
 			buttonUnpatchControllers.TabIndex = 28;
@@ -407,7 +409,7 @@ namespace VixenApplication.Setup
 			// label9
 			// 
 			label9.AutoSize = true;
-			label9.Location = new Point(4, 159);
+			label9.Location = new Point(4, 189);
 			label9.Margin = new Padding(4);
 			label9.Name = "label9";
 			label9.Size = new Size(70, 15);
@@ -417,13 +419,15 @@ namespace VixenApplication.Setup
 			// 
 			// labelFirstOutput
 			// 
+			labelFirstOutput.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 			labelFirstOutput.AutoSize = true;
 			labelFirstOutput.Location = new Point(83, 136);
 			labelFirstOutput.Margin = new Padding(4);
+			labelFirstOutput.MaximumSize = new Size(160, 0);
 			labelFirstOutput.Name = "labelFirstOutput";
-			labelFirstOutput.Size = new Size(76, 15);
+			labelFirstOutput.Size = new Size(160, 45);
 			labelFirstOutput.TabIndex = 32;
-			labelFirstOutput.Text = "Controller #0";
+			labelFirstOutput.Text = "Controller XXXXXXXXXXXXXXXXXXXX #0";
 			// 
 			// labelOutputCount
 			// 
@@ -527,7 +531,7 @@ namespace VixenApplication.Setup
 			tableLayoutPanelContainer.SetColumnSpan(groupBoxPatching, 2);
 			groupBoxPatching.Controls.Add(tableLayoutPanelPatchingOptions);
 			groupBoxPatching.Dock = DockStyle.Fill;
-			groupBoxPatching.Location = new Point(4, 243);
+			groupBoxPatching.Location = new Point(4, 310);
 			groupBoxPatching.Margin = new Padding(4, 3, 4, 3);
 			groupBoxPatching.Name = "groupBoxPatching";
 			groupBoxPatching.Padding = new Padding(4, 3, 4, 3);
@@ -710,7 +714,7 @@ namespace VixenApplication.Setup
 			tableLayoutPanelContainer.RowCount = 2;
 			tableLayoutPanelContainer.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
 			tableLayoutPanelContainer.RowStyles.Add(new RowStyle());
-			tableLayoutPanelContainer.Size = new Size(533, 469);
+			tableLayoutPanelContainer.Size = new Size(533, 536);
 			tableLayoutPanelContainer.TabIndex = 34;
 			// 
 			// SetupPatchingSimple
@@ -723,7 +727,7 @@ namespace VixenApplication.Setup
 			DoubleBuffered = true;
 			Margin = new Padding(4, 3, 4, 3);
 			Name = "SetupPatchingSimple";
-			Size = new Size(533, 493);
+			Size = new Size(533, 536);
 			Load += SetupPatchingSimple_Load;
 			groupBoxElements.ResumeLayout(false);
 			groupBoxElements.PerformLayout();
@@ -731,8 +735,8 @@ namespace VixenApplication.Setup
 			tableLayoutPanel4.PerformLayout();
 			groupBoxControllers.ResumeLayout(false);
 			groupBoxControllers.PerformLayout();
-			tableLayoutPanel3.ResumeLayout(false);
-			tableLayoutPanel3.PerformLayout();
+			selectedControllersLayout.ResumeLayout(false);
+			selectedControllersLayout.PerformLayout();
 			groupBoxPatching.ResumeLayout(false);
 			groupBoxPatching.PerformLayout();
 			tableLayoutPanelPatchingOptions.ResumeLayout(false);
@@ -795,6 +799,6 @@ namespace VixenApplication.Setup
 		private TableLayoutPanel tableLayoutPanelPatchingOptions;
 		private CheckBox checkBoxReverseElementOrder;
 		private TableLayoutPanel tableLayoutPanel4;
-		private TableLayoutPanel tableLayoutPanel3;
+		private TableLayoutPanel selectedControllersLayout;
 	}
 }
