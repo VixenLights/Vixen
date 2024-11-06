@@ -21,7 +21,7 @@ namespace Common.Controls.Timeline
 		private Size _cachedImageSize= new Size(0,0);
 		private TimeSpan _elementVisibleStartTime;
 		private TimeSpan _elementVisibleEndTime;
-		
+		private bool _inAdjoiningUpdate = false;
 		public Element()
 		{
 			
@@ -37,6 +37,7 @@ namespace Common.Controls.Timeline
 			_duration = other._duration;
 			_selected = other._selected;
 			_targetNodes = other._targetNodes;
+			_inAdjoiningUpdate = other._inAdjoiningUpdate;
 		}
 
 		#region Begin/End update
@@ -48,9 +49,13 @@ namespace Common.Controls.Timeline
 		public void BeginUpdate()
 		{
 			SuspendEvents = true;
-			_origStartTime = StartTime;
-			_origDuration = Duration;
-			_origTargetNodes = _targetNodes;
+			if (_inAdjoiningUpdate == false)
+			{
+				_origStartTime = StartTime;
+				_origDuration = Duration;
+				_origTargetNodes = _targetNodes;
+				_inAdjoiningUpdate = true;
+			}
 		}
 
 		public void EndUpdate()
@@ -63,6 +68,7 @@ namespace Common.Controls.Timeline
 			{
 				EffectNode.Effect.TargetNodes = _targetNodes;
 			}
+			_inAdjoiningUpdate = false;
 		}
 
 		/// <summary>
@@ -80,6 +86,8 @@ namespace Common.Controls.Timeline
 			}
 				
 		}
+
+		public bool InAdjoiningChange() { return _inAdjoiningUpdate; }
 
 		public void  UpdateNotifyContentChanged()
 		{
