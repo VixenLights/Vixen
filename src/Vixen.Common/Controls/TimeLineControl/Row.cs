@@ -509,7 +509,7 @@ namespace Common.Controls.Timeline
 			List<Element> elements = new List<Element>();
 			int startingIndex = IndexOfElement(elementMaster, SearchBy.EndTime);
 			TimeSpan startTime = elementMaster.StartTime;
-			for (int i = startingIndex - 1, maxCtr = maximum-1; i >= 0 && maxCtr >= 0; i--, maxCtr--)
+			for (int i = startingIndex, maxCtr = maximum-1; i >= 0 && maxCtr >= 0; i--, maxCtr--)
 			{
 				Element element = GetElementAtIndex(i);
 				if (element.EndTime <= startTime)

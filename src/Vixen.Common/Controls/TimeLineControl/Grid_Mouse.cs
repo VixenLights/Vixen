@@ -960,7 +960,7 @@ namespace Common.Controls.Timeline
 					if (shortest - dt < pixelsToTime(MinElemWidthPx))
 						dt = shortest - pixelsToTime(MinElemWidthPx);
 
-					if (AltPressed)
+					if (AltPressed && adjoiningElements.Count() == 0)
 					{
 						// Get the Elements that are preceding the Selected Element
 						List<Element> priorElements = Rows.First().GetPriorsOfElement(SelectedElements.First());
@@ -1008,7 +1008,8 @@ namespace Common.Controls.Timeline
 					if (shortest + dt < pixelsToTime(MinElemWidthPx))
 						dt = -(shortest - pixelsToTime(MinElemWidthPx));
 
-					if (AltPressed)
+					// If the Alt key is pressed and we have not already created as Adjoining List
+					if (AltPressed && adjoiningElements.Count() == 0)
 					{
 						// Get the Elements that are following the Selected Element
 						List<Element> followElements = Rows.First().GetFollowersOfElement(SelectedElements.First());
@@ -1062,7 +1063,7 @@ namespace Common.Controls.Timeline
 				}
 			}
 
-			// Apply dt to the Start Times of all adjoining elements, if any
+`			// Apply dt to all adjoining elements, if any
 			if (AltPressed && adjoiningElements is not null)
 			{
 				foreach (var element in adjoiningElements)
@@ -1073,27 +1074,32 @@ namespace Common.Controls.Timeline
 							// Move the starting time(s)
 							element.EndTime = SelectedElements.First().StartTime;
 
-							// If the resultant duration is less than the minimum, reset to the minimum
+							// If the resultant duration is less than the minimum,then stop all further resizing
 							if (timeToPixels(element.Duration) <= MinElemWidthPx)
+							{ 
 								element.EndTime = element.StartTime + PixelsToTime(MinElemWidthPx);
+								SelectedElements.First().StartTime = element.EndTime;
+								SelectedElements.First().EndTime = m_elemMoveInfo.OriginalElements[SelectedElements.First()].EndTime;
+							}
 
 							//Control when the time changed event happens.
 							element.UpdateNotifyTimeChanged();
 							break;
 
 						case ResizeZone.Back:
-							// Move the ending time(s)
+							// Move the time(s)
 							TimeSpan saveEndTime = element.EndTime;
 							element.StartTime = SelectedElements.First().EndTime;
 							
 							// Keep the end time unchanged
 							element.EndTime = saveEndTime;
 
-							// If the resultant duration is less than the minimum, reset to the minimum
+							// If the resultant duration is less than the minimum,then stop all further resizing
 							if (timeToPixels(element.Duration) <= MinElemWidthPx)
 							{
 								element.StartTime = saveEndTime - PixelsToTime(MinElemWidthPx);
 								element.Duration = PixelsToTime(MinElemWidthPx);
+								SelectedElements.First().EndTime = element.StartTime;
 							}
 
 							//Control when the time changed event happens.
