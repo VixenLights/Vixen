@@ -3715,9 +3715,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				//Debug.WriteLine("{0}   addEffectInstance(InstanceId={1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, effectInstance.InstanceId);
 
-				if ((startTime + timeSpan) > SequenceLength)
+				// If the Effect is already at the minimum duration and will still spill over the total sequence length,
+				// then adjust the start time
+				if ((timeSpan <= TimeSpan.FromMilliseconds(250)) && (startTime + timeSpan) > SequenceLength)
 				{
-					timeSpan = SequenceLength - startTime;
+					startTime = SequenceLength - TimeSpan.FromMilliseconds(250);
+					// Very special case where the Sequence length is smaller than even the Minimum
+					if (startTime < TimeSpan.Zero)
+					{
+						startTime = TimeSpan.Zero;
+						timeSpan = SequenceLength;
+					}
 				}
 
 				effectNode = CreateEffectNode(effectInstance, row, startTime, timeSpan);
@@ -5966,9 +5974,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return result;
 		}
 		/// <summary>
-		/// Returns the default new effect duration.
-		/// If visibileDuration is true it will scale so that the whole effect is visible while zoomed in.
+		/// Validate the Effect duration is within acceptable boundaries
 		/// </summary>
+		/// <param name="startTime">Start time of the Effect</param>
+		/// <param name="visibleDuration">If visibleDuration is true it will scale so that the whole effect is visible while zoomed in</param>
+		/// <returns>Returns the default new effect duration</returns>
 		public TimeSpan GetDefaultEffectDuration(TimeSpan startTime,bool visibleDuration = true)
 		{
 			// The default length of a newly created effect is 2 seconds
@@ -5976,7 +5986,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (visibleDuration)
 			{
 				// Adjust the timeSpan to 80% to keep the new effects end visible when zoomed in a lot
-				if ((TimelineControl.VisibleTimeEnd.Seconds - startTime.Seconds) <= defaultEffectDuration.Seconds)
+				if ((TimelineControl.VisibleTimeEnd.TotalSeconds - startTime.TotalSeconds) <= defaultEffectDuration.Seconds)
 				{
 					defaultEffectDuration = (TimelineControl.VisibleTimeEnd - startTime).Scale(0.8);
 				}
