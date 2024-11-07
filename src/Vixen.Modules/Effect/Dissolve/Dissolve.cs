@@ -54,9 +54,13 @@ namespace VixenModules.Effect.Dissolve
 					    DissolveMarkType == DissolveMarkType.PerMarkDissolve) && ColorPerStep)
 					{
 						int nodeCount = renderNodes.Count();
+
+						// Marks Per Count can never be less than 1
+						int marksPerCount = _marks == null || _marks.Count() <= 1 ? 1 : _marks.Count() - 1;
+
 						int nodesPerGroup = DirectionsTogether && BothDirections
-							? nodeCount / (_marks.Count() - 1) / 2
-							: nodeCount / (_marks.Count() - 1);
+							? nodeCount / marksPerCount / 2
+							: nodeCount / marksPerCount;
 						elements = renderNodes.Select((x, index) => new { x, index })
 							.GroupBy(x => x.index / nodesPerGroup, y => y.x);
 					}
