@@ -1063,7 +1063,7 @@ namespace Common.Controls.Timeline
 				}
 			}
 
-`			// Apply dt to all adjoining elements, if any
+			// Apply dt to all adjoining elements, if any
 			if (AltPressed && adjoiningElements is not null)
 			{
 				foreach (var element in adjoiningElements)
