@@ -1651,6 +1651,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						speedTempoToolStripMenuItem.Enabled = true;
 						toolStripButton_AssociateAudio.ToolTipText = string.Format("Associated Audio: {0}",
 							Path.GetFileName(audio.MediaFilePath));
+						TimelineControl.Parent.Text = $"Timeline - {Path.GetFileName(audio.MediaFilePath)}";
 					}
 					else
 					{
@@ -1753,6 +1754,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			beatBarDetectionToolStripMenuItem.Enabled = false;
 			toolStripButton_AssociateAudio.ToolTipText = @"Associate Audio";
 			speedTempoToolStripMenuItem.Enabled = false;
+			TimelineControl.Parent.Text = "Timeline";
 
 			SequenceModified();
 		}
@@ -1763,7 +1765,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="showWarning">pass as false to prevent MessageBox warning when audio association already exists</param>
 		private void AddAudioAssociation(bool showWarning = true)
 		{
-			// for now, only allow a single Audio type media to be assocated. If they want to add another, confirm and remove it.
+			// for now, only allow a single Audio type media to be associated. If they want to add another, confirm and remove it.
 			HashSet<IMediaModuleInstance> modulesToRemove = new HashSet<IMediaModuleInstance>();
 			foreach (IMediaModuleInstance module in _sequence.GetAllMedia())
 			{
@@ -1777,7 +1779,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-				var messageBox = new MessageBoxForm("Only one audio file can be associated with a sequence at a time. If you choose another, " +
+				var messageBox = new MessageBoxForm(
+									$"Current audio file: {Path.GetFileName(modulesToRemove.First().MediaFilePath)}\n\n" +
+									"Only one audio file can be associated with a sequence at a time. If you choose another, " +
 									@"the first will be removed. Continue?", @"Remove existing audio?", true, false);
 				messageBox.ShowDialog(this);
 				if (messageBox.DialogResult != DialogResult.OK)
@@ -1853,6 +1857,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				toolStripMenuItem_removeAudio.Enabled = true;
 				beatBarDetectionToolStripMenuItem.Enabled = true;
 				toolStripButton_AssociateAudio.ToolTipText = string.Format("Associated Audio: {0}", Path.GetFileName(openFileDialog.FileName));
+				TimelineControl.Parent.Text = $"Timeline - {Path.GetFileName(openFileDialog.FileName)}";
 
 				SequenceModified();
 			}
