@@ -1,5 +1,6 @@
 ﻿using Common.Controls.TimelineControl;
 using Common.Controls.TimelineControl.LabeledMarks;
+using Vixen.Sys.LayerMixing;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Common.Controls.Timeline
@@ -920,6 +921,8 @@ namespace Common.Controls.Timeline
 		/// <remarks>If the Ctrl key is active, then the adjoining elements are also resized</remarks>
 		private void MouseMove_HResizing(Point gridLocation, Point delta)
 		{
+			int selectedLayer = 0;
+
 			TimeSpan dt = pixelsToTime(gridLocation.X - m_elemMoveInfo.InitialGridLocation.X);
 
 			// Check to see if the time (resizing) moved
@@ -940,6 +943,7 @@ namespace Common.Controls.Timeline
 				ElementTimeInfo ei = m_elemMoveInfo.GetElementMoveInfo(element);
 				if (ei.Duration < shortest)
 					shortest = ei.Duration;
+				selectedLayer = SequenceLayers.GetLayer(element.EffectNode).LayerLevel;
 			}
 
 			// Check boundary conditions
@@ -971,6 +975,8 @@ namespace Common.Controls.Timeline
 						{
 							if (element.EndTime > latestTime)
 							{
+								if (ShiftPressed && (SequenceLayers.GetLayer(element.EffectNode).LayerLevel != selectedLayer))
+									continue;
 								latestTime = element.EndTime;
 							}
 						}
@@ -981,10 +987,10 @@ namespace Common.Controls.Timeline
 						{
 							if (element.EndTime == latestTime)
 							{
+								if (ShiftPressed && (SequenceLayers.GetLayer(element.EffectNode).LayerLevel != selectedLayer))
+									continue;
 								if (!element.InAdjoiningChange())
-								{
 									adjoiningElements.Add(element);
-								}
 							}
 						}
 
@@ -1020,6 +1026,8 @@ namespace Common.Controls.Timeline
 						{
 							if (element.StartTime < earliestTime)
 							{
+								if (ShiftPressed && (SequenceLayers.GetLayer(element.EffectNode).LayerLevel != selectedLayer))
+									continue;
 								earliestTime = element.StartTime;
 							}
 						}
@@ -1031,7 +1039,10 @@ namespace Common.Controls.Timeline
 						{
 							if (element.StartTime == earliestTime)
 							{
-								adjoiningElements.Add(element);
+								if (ShiftPressed && (SequenceLayers.GetLayer(element.EffectNode).LayerLevel != selectedLayer))
+									continue;
+								if (!element.InAdjoiningChange())
+									adjoiningElements.Add(element);
 							}
 						}
 
