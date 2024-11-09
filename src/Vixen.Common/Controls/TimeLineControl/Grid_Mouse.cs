@@ -1,5 +1,6 @@
 ﻿using Common.Controls.TimelineControl;
 using Common.Controls.TimelineControl.LabeledMarks;
+using Vixen.Sys.LayerMixing;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Common.Controls.Timeline
@@ -7,6 +8,7 @@ namespace Common.Controls.Timeline
 	public partial class Grid
 	{
 		List<Element> capturedElements = new List<Element>();
+		List<Element> adjoiningElements = null;
 		public bool EnableDrawMode = false;
 		public Guid SelectedEffect { get; set; }
 		public bool _beginEffectDraw;
@@ -168,6 +170,14 @@ namespace Common.Controls.Timeline
 						}
 						else if (!CtrlPressed)
 						{
+							if (AltPressed && SelectedElements.Count() > 1)
+							{
+								MessageBoxForm.msgIcon = SystemIcons.Warning;
+								var messageBox = new MessageBoxForm("Too many effects selected.\nMaximum selected effects for this action is 1",
+									"Warning", false, false);
+								messageBox.ShowDialog();
+								return;
+							}
 							beginHResize(gridLocation); // begin a resize.
 						}
 					}
@@ -486,11 +496,48 @@ namespace Common.Controls.Timeline
 				elem.BeginUpdate();
 		}
 
+		/// <summary>
+		/// Saves the pre-move information and begins update on all selected elements.<br/>
+		/// Called when any operation moves element times.
+		/// </summary>
+		/// <param name="elements">List of Elements that are moving</param>
+		/// <exception cref="m_elemMoveInfo">Thrown if elementsBeginMove not called prior</exception>
+		private void appendElementsBeginMove(List<Element> elements)
+		{
+			if (m_elemMoveInfo == null)
+				throw new Exception("Calling appendMove prior to a beginMove.");
+
+			if (elements is null)
+				return;
+
+
+			foreach (var elem in elements)
+			{
+				if (!elem.InAdjoiningChange())
+				{
+					m_elemMoveInfo.AppendElementMoveInfo(elem);
+					elem.BeginUpdate();
+				}
+			}
+			return;
+		}
+
 		private void elementsFinishedMoving(ElementMoveType type)
 		{
 			foreach (var elem in SelectedElements) {
 				elem.EndUpdate();
 				RenderElement(elem);
+			}
+
+			// If there were any adjoining elements, then finish processing those
+			if (adjoiningElements is not null)
+			{
+				foreach (var elem in adjoiningElements)
+				{
+					elem.EndUpdate();
+					RenderElement(elem);
+				}
+				adjoiningElements = null;
 			}
 
 			MultiElementEventArgs evargs = new MultiElementEventArgs {Elements = SelectedElements};
@@ -814,7 +861,7 @@ namespace Common.Controls.Timeline
 			dt = FindSnapTimeForElements(SelectedElements, dt, ResizeZone.None);
 
 			foreach (var elem in SelectedElements) {
-				// Get this elemenent's original times (before resize started)
+				// Get this element's original times (before resize started)
 				ElementTimeInfo orig = m_elemMoveInfo.OriginalElements[elem];
 				elem.StartTime = orig.StartTime + dt;
 				//Control when the time changed event happens.
@@ -853,52 +900,162 @@ namespace Common.Controls.Timeline
 			CurrentRowIndexUnderMouse = Rows.IndexOf(rowAt(gridLocation));
 			calculateSnapPoints();
 			elementsBeginMove(gridLocation);
+			adjoiningElements = new List<Element>();
 		}
 
+		/// <summary>
+		/// Adds to the process of beginHResize
+		/// </summary>
+		/// <param name="elements">List of elements that are about to change</param>
+		/// <remarks>Must call beginHResize prior to calling this method</remarks>
+		private void beginAppendHResize(List<Element> elements)
+		{
+			appendElementsBeginMove(elements);
+		}
+
+		/// <summary>
+		/// Resize the starting or ending times of elements
+		/// </summary>
+		/// <param name="gridLocation">Current mouse position</param>
+		/// <param name="delta">Size and direction of mouse movement</param>
+		/// <remarks>If the Ctrl key is active, then the adjoining elements are also resized</remarks>
 		private void MouseMove_HResizing(Point gridLocation, Point delta)
 		{
+			int selectedLayer = 0;
+
 			TimeSpan dt = pixelsToTime(gridLocation.X - m_elemMoveInfo.InitialGridLocation.X);
 
+			// Check to see if the time (resizing) moved
 			if (dt == TimeSpan.Zero)
 				return;
 
-			// Modifidy our dt, if necessary.
+			// Verify that only one primary Element is selected, if we are moving adjoining Elements
+			else if (AltPressed && SelectedElements.Count() > 1)
+				return;
 
-			// modify the dt time based on snap points (ie. marks, and borders of other elements)
+			// Modify the dt time based on snap points (ie. marks, and borders of other elements)
 			dt = FindSnapTimeForElements(SelectedElements, dt, m_mouseResizeZone);
 
-			// Ensure minimum size
-			TimeSpan shortest = m_elemMoveInfo.OriginalElements.Values.Min(x => x.Duration);
+			// Find the shortest duration of all those elements selected
+			TimeSpan shortest = TimeSpan.MaxValue;
+			foreach (var element in SelectedElements)
+			{
+				ElementTimeInfo ei = m_elemMoveInfo.GetElementMoveInfo(element);
+				if (ei.Duration < shortest)
+					shortest = ei.Duration;
+				selectedLayer = SequenceLayers.GetLayer(element.EffectNode).LayerLevel;
+			}
 
 			// Check boundary conditions
 			switch (m_mouseResizeZone) {
 				case ResizeZone.Front:
 					// Clip earliest element StartTime at zero
-					TimeSpan earliest = m_elemMoveInfo.OriginalElements.Values.Min(x => x.StartTime);
+					TimeSpan earliest = TimeInfo.TotalTime;
+					foreach (var element in SelectedElements)
+					{
+						TimeSpan checkTime = m_elemMoveInfo.GetElementMoveInfo(element).StartTime;
+						if (checkTime < earliest)
+							earliest = checkTime;
+					}
 					if ((earliest + dt) < TimeSpan.Zero)
 						dt = -earliest;
 
-					// Ensure the shortest meets minimum width (in px)
-					if (timeToPixels(shortest - dt) < MinElemWidthPx)
+					// Ensure the proposed shortest duration meets minimum width (in px)
+					if (shortest - dt < pixelsToTime(MinElemWidthPx))
 						dt = shortest - pixelsToTime(MinElemWidthPx);
+
+					if (AltPressed && adjoiningElements.Count() == 0)
+					{
+						// Get the Elements that are preceding the Selected Element
+						List<Element> priorElements = Rows.First().GetPriorsOfElement(SelectedElements.First());
+
+						// In those preceding Elements, find what the latest ending time is
+						TimeSpan latestTime = TimeSpan.Zero;
+						foreach (var element in priorElements)
+						{
+							if (element.EndTime > latestTime)
+							{
+								if (ShiftPressed && (SequenceLayers.GetLayer(element.EffectNode).LayerLevel != selectedLayer))
+									continue;
+								latestTime = element.EndTime;
+							}
+						}
+
+						// Reiterate through the list of preceding elements, creating a new list of all
+						// those Elements that have that latest ending time
+						foreach (var element in priorElements)
+						{
+							if (element.EndTime == latestTime)
+							{
+								if (ShiftPressed && (SequenceLayers.GetLayer(element.EffectNode).LayerLevel != selectedLayer))
+									continue;
+								if (!element.InAdjoiningChange())
+									adjoiningElements.Add(element);
+							}
+						}
+
+						// Save the current state information of these Target Elements
+						beginAppendHResize(adjoiningElements);
+					}
 					break;
 
 				case ResizeZone.Back:
-					// Clip latest element EndTime at TotalTime
-					TimeSpan latest = m_elemMoveInfo.OriginalElements.Values.Max(x => x.EndTime);
+					TimeSpan latest = TimeSpan.Zero;
+					foreach (var element in SelectedElements)
+					{
+						TimeSpan checkTime = m_elemMoveInfo.GetElementMoveInfo(element).EndTime;
+						if (checkTime > latest)
+							latest = checkTime;
+					}
 					if ((latest + dt) > TimeInfo.TotalTime)
 						dt = TimeInfo.TotalTime - latest;
 
-					// Ensure the shortest meets minimum width (in px)
-					if (timeToPixels(shortest + dt) < MinElemWidthPx)
-						dt = pixelsToTime(MinElemWidthPx) - shortest;
+					// Ensure the proposed shortest duration meets minimum width (in px)
+					if (shortest + dt < pixelsToTime(MinElemWidthPx))
+						dt = -(shortest - pixelsToTime(MinElemWidthPx));
+
+					// If the Alt key is pressed and we have not already created as Adjoining List
+					if (AltPressed && adjoiningElements.Count() == 0)
+					{
+						// Get the Elements that are following the Selected Element
+						List<Element> followElements = Rows.First().GetFollowersOfElement(SelectedElements.First());
+
+						// In those following Elements, find what the earliest starting time is
+						TimeSpan earliestTime = TimeSpan.MaxValue;
+						foreach (var element in followElements)
+						{
+							if (element.StartTime < earliestTime)
+							{
+								if (ShiftPressed && (SequenceLayers.GetLayer(element.EffectNode).LayerLevel != selectedLayer))
+									continue;
+								earliestTime = element.StartTime;
+							}
+						}
+
+						// Reiterate through the list of following elements, creating a new list of all
+						// those Elements that have that earliest starting time
+						adjoiningElements = new List<Element>();
+						foreach (var element in followElements)
+						{
+							if (element.StartTime == earliestTime)
+							{
+								if (ShiftPressed && (SequenceLayers.GetLayer(element.EffectNode).LayerLevel != selectedLayer))
+									continue;
+								if (!element.InAdjoiningChange())
+									adjoiningElements.Add(element);
+							}
+						}
+
+						// Save the current state information of these Target Elements
+						beginAppendHResize(adjoiningElements);
+					}
 					break;
 			}
 
 
 			// Apply dt to all selected elements.
 			foreach (var elem in SelectedElements) {
-				// Get this elemenent's original times (before resize started)
+				// Get this element's original times (before resize started)
 				ElementTimeInfo orig = m_elemMoveInfo.OriginalElements[elem];
 
 				switch (m_mouseResizeZone) {
@@ -917,6 +1074,55 @@ namespace Common.Controls.Timeline
 				}
 			}
 
+			// Apply dt to all adjoining elements, if any
+			if (AltPressed && adjoiningElements is not null)
+			{
+				foreach (var element in adjoiningElements)
+				{
+					switch (m_mouseResizeZone)
+					{
+						case ResizeZone.Front:
+							// Move the starting time(s)
+							element.EndTime = SelectedElements.First().StartTime;
+
+							// If the resultant duration is less than the minimum,then stop all further resizing
+							if (timeToPixels(element.Duration) <= MinElemWidthPx)
+							{ 
+								element.EndTime = element.StartTime + PixelsToTime(MinElemWidthPx);
+								SelectedElements.First().StartTime = element.EndTime;
+								SelectedElements.First().EndTime = m_elemMoveInfo.OriginalElements[SelectedElements.First()].EndTime;
+							}
+
+							//Control when the time changed event happens.
+							element.UpdateNotifyTimeChanged();
+							break;
+
+						case ResizeZone.Back:
+							// Move the time(s)
+							TimeSpan saveEndTime = element.EndTime;
+							element.StartTime = SelectedElements.First().EndTime;
+							
+							// Keep the end time unchanged
+							element.EndTime = saveEndTime;
+
+							// If the resultant duration is less than the minimum,then stop all further resizing
+							if (timeToPixels(element.Duration) <= MinElemWidthPx)
+							{
+								element.StartTime = saveEndTime - PixelsToTime(MinElemWidthPx);
+								element.Duration = PixelsToTime(MinElemWidthPx);
+								SelectedElements.First().EndTime = element.StartTime;
+							}
+
+							//Control when the time changed event happens.
+							element.UpdateNotifyTimeChanged();
+							break;
+					}
+
+					// Render the Adjoining elements as they change
+					RenderElement(element);
+				}
+			}
+
 			Invalidate();
 		}
 
@@ -925,6 +1131,7 @@ namespace Common.Controls.Timeline
 			elementsFinishedMoving(ElementMoveType.Resize);
 			endAllDrag();
 			CurrentDragSnapPoints.Clear();
+			adjoiningElements = null;
 		}
 
 		#endregion

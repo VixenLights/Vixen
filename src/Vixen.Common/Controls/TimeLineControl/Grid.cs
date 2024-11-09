@@ -44,7 +44,7 @@ namespace Common.Controls.Timeline
 		public ISequenceContext Context = null;
 		public bool SequenceLoading { get; set; }
 		public Element _workingElement; //This is the element that was left clicked, is set to null on mouse up
-		public string alignmentHelperWarning = @"Too many effects selected on the same row for this action.\nMax selected effects per row for this action is 4";
+		public string alignmentHelperWarning = "Too many effects selected on the same row for this action.\nMax selected effects per row for this action is 4";
 		public bool aCadStyleSelectionBox { get; set; }
 
 		private List<Row> _visibleRows = new List<Row>();
@@ -2721,6 +2721,53 @@ namespace Common.Controls.Timeline
 			VisibleTimeStart = visibleTimeStart;
 		}
 
+		/// <summary>
+		/// Append a set of Elements parameters to Original buffer for an Undo operation
+		/// </summary>
+		/// <param name="modifyingElements">List of Elements</param>
+		/// <exception cref="OriginalElements">Thrown if ElementMoveInfo not called prior</exception>
+		public void AppendElementMoveInfo(IEnumerable<Element> modifyingElements)
+		{
+			if (OriginalElements == null)
+				throw new Exception("Appending moving elements without initializing moving.");
+
+			// Save the original parameters of each element
+			foreach (var elem in modifyingElements)
+			{
+				OriginalElements.Add(elem, new ElementTimeInfo(elem));
+			}
+		}
+
+		/// <summary>
+		/// Append a set of Elements parameters to Original buffer for an Undo operation
+		/// </summary>
+		/// <param name="modifyingElements">List of Elements</param>
+		/// <exception cref="OriginalElements">Thrown if ElementMoveInfo not called prior</exception>
+		public void AppendElementMoveInfo(Element modifyingElement)
+		{
+			if (OriginalElements == null)
+				throw new Exception("Appending a moving element without initializing moving.");
+
+			// Save the original parameters of an element
+			OriginalElements.Add(modifyingElement, new ElementTimeInfo(modifyingElement));
+		}
+
+		/// <summary>
+		/// Get the original time information for a specific element
+		/// </summary>
+		/// <param name="searchElement">List of Elements</param>
+		/// <exception cref="OriginalElements">Thrown if ElementMoveInfo not called prior</exception>
+		/// <returns>Time information</returns>
+		public ElementTimeInfo GetElementMoveInfo(Element searchElement)
+		{
+			if (OriginalElements == null)
+				throw new Exception("Getting move information without initializing moving.");
+
+			ElementTimeInfo modifyingElement;
+			OriginalElements.TryGetValue(searchElement, out modifyingElement);
+
+			return modifyingElement;
+		}
 
 		///<summary>The point on the grid where the mouse first went down.</summary>
 		public Point InitialGridLocation { get; private set; }

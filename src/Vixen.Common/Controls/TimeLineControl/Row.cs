@@ -499,6 +499,54 @@ namespace Common.Controls.Timeline
 		}
 
 		/// <summary>
+		/// Gets the elements that precede the selected element
+		/// </summary>
+		/// <param name="elementMaster">Element to start search</param>
+		/// <param name="maximum">Maximum number of elements to return. Defaults to 20</param>
+		/// <returns>List of all elements discovered</returns>
+		public List<Element> GetPriorsOfElement(Element elementMaster, int maximum = 20)
+		{
+			List<Element> elements = new List<Element>();
+			int startingIndex = IndexOfElement(elementMaster, SearchBy.EndTime);
+			TimeSpan startTime = elementMaster.StartTime;
+			for (int i = startingIndex, maxCtr = maximum-1; i >= 0 && maxCtr >= 0; i--, maxCtr--)
+			{
+				Element element = GetElementAtIndex(i);
+				if (element.EndTime <= startTime)
+				{
+					elements.Add(element);
+				}
+			}
+
+			return elements;
+		}
+
+		/// <summary>
+		/// Gets the elements that follow the selected element
+		/// </summary>
+		/// <param name="elementMaster">Element to start search</param>
+		/// <param name="maximum">Maximum number of elements to return. Defaults to 20</param>
+		/// <returns>List of all elements discovered</returns>
+		public List<Element> GetFollowersOfElement(Element elementMaster, int maximum = 20)
+		{
+			List<Element> elements = new List<Element>();
+			int startingIndex = IndexOfElement(elementMaster);
+			TimeSpan endTime = elementMaster.EndTime;
+
+			// Start at elementMaster and look forward to very last element or "maximum" number of elements
+			for (int i = startingIndex + 1, maxCtr = maximum - 1 ; (maxCtr >= 0) && (i < m_elements.Count); i++, maxCtr--)
+			{
+				Element element = GetElementAtIndex(i);
+				if (element.StartTime >= endTime)
+				{
+					elements.Add(element);
+				}
+			}
+
+			return elements;
+		}
+
+		/// <summary>
 		/// For adding elements in bulk. Sorting is delayed until all elements are added.
 		/// </summary>
 		/// <param name="elements"></param>
@@ -567,9 +615,30 @@ namespace Common.Controls.Timeline
 			return m_elements.Contains(element);
 		}
 
-		public int IndexOfElement(Element element)
+		public enum SearchBy { StartTime, EndTime};
+		/// <summary>
+		/// Searches for the Element and returns the zero-based index of the occurrence with Row
+		/// </summary>
+		/// <param name="element">Element to search</param>
+		/// <param name="searchBy">
+		/// Search if the search is by the start time or end time<br />
+		/// - StartTime<br />
+		/// - EndTime
+		/// </param>
+		/// <returns>The zero-based index of the occurrence of the Element</returns>
+		public int IndexOfElement(Element element, SearchBy searchBy = SearchBy.StartTime)
 		{
-			return m_elements.IndexOf(element);
+			int index = m_elements.IndexOf(element);
+
+			if (searchBy == SearchBy.EndTime)
+			{
+				for (index++; index < m_elements.Count; index++)
+					if (m_elements[index].EndTime > element.EndTime)
+						break;
+				index--;
+			}
+
+			return index;
 		}
 
 		public Element GetElementAtIndex(int index)
@@ -623,7 +692,7 @@ namespace Common.Controls.Timeline
 		{
 			return m_elements.GetEnumerator();
 		}
-
+		
 		#endregion
 
 		#region Implementation of IDisposable
