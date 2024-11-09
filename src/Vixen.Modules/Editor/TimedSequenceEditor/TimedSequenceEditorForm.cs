@@ -1780,7 +1780,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm(
-									$"Current audio file: {Path.GetFileName(modulesToRemove.First().MediaFilePath)}\n\n" +
+									$"Current audio file: {modulesToRemove.First().MediaFilePath}\n\n" +
 									"Only one audio file can be associated with a sequence at a time. If you choose another, " +
 									@"the first will be removed. Continue?", @"Remove existing audio?", true, false);
 				messageBox.ShowDialog(this);
