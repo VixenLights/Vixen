@@ -8,6 +8,8 @@
 			WriteIdentity();
 			WriteFilterEvaluationAllowance();
 			WriteDefaultUpdateInterval();
+			WriteClearEffectCacheOnExit();
+			WriteVideoEffectOptions();
 			WriteElements();
 			WriteNodes();
 			WriteControllers();
@@ -22,6 +24,8 @@
 		protected abstract void WriteIdentity();
 		protected abstract void WriteFilterEvaluationAllowance();
 		protected abstract void WriteDefaultUpdateInterval();
+		protected abstract void WriteClearEffectCacheOnExit();
+		protected abstract void WriteVideoEffectOptions();
 		protected abstract void WriteElements();
 		protected abstract void WriteNodes();
 		protected abstract void WriteControllers();
@@ -37,6 +41,8 @@
 			ReadIdentity();
 			ReadFilterEvaluationAllowance();
 			ReadDefaultUpdateInterval();
+			ReadClearEffectCacheOnExit();
+			ReadVideoEffectOptions();
 			ReadElements();
 			ReadNodes();
 			ReadControllers();
@@ -51,6 +57,8 @@
 		protected abstract void ReadIdentity();
 		protected abstract void ReadFilterEvaluationAllowance();
 		protected abstract void ReadDefaultUpdateInterval();
+		protected abstract void ReadClearEffectCacheOnExit();
+		protected abstract void ReadVideoEffectOptions();
 		protected abstract void ReadElements();
 		protected abstract void ReadNodes();
 		protected abstract void ReadControllers();
