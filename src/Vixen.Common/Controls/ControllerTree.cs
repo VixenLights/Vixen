@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Windows.Forms;
 using Common.Controls.Theme;
 using Vixen.Data.Flow;
 using Vixen.Export;
@@ -683,12 +684,16 @@ namespace Common.Controls
 			{
 				insertChannelsToolStripMenuItem.Visible = false;
 				removeChannelsToolStripMenuItem.Visible = false;
+				unpatchChannelsToolStripMenuItem.Visible = false;
+				findPatchedChannelsToolStripMenuItem.Visible = false;
+				toolStripSeparator.Visible = true;
 				configureToolStripMenuItem.Visible = true;
 				channelCountToolStripMenuItem.Visible = true;
 				renameToolStripMenuItem.Visible = true;
 				deleteToolStripMenuItem.Visible = true;
 				startControllerToolStripMenuItem.Visible = true;
 				stopControllerToolStripMenuItem.Visible = true;
+				unpatchControllerToolStripMenuItem.Visible = true;
 				configureToolStripMenuItem.Enabled = (SelectedControllers.Count() == 1);
 				channelCountToolStripMenuItem.Enabled = (SelectedControllers.Count() == 1);
 				renameToolStripMenuItem.Enabled = (SelectedControllers.Count() == 1);
@@ -699,14 +704,38 @@ namespace Common.Controls
 			
 			if (treeview.SelectedNodes.Any())
 			{
-				insertChannelsToolStripMenuItem.Visible = treeview.SelectedNodes.Count == 1;
+				int countPatched = 0;
+				foreach (var node in treeview.SelectedNodes)
+				{
+					if (node.ImageKey == "GreenBall")
+						countPatched++;
+				}
+
+				unpatchChannelsToolStripMenuItem.Enabled = countPatched > 0;
+				findPatchedChannelsToolStripMenuItem.Enabled = countPatched > 0;
+				if (treeview.SelectedNodes.Count == 1)
+				{
+					insertChannelsToolStripMenuItem.Visible = true;
+					unpatchChannelsToolStripMenuItem.Text = "Unpatch Channel";
+					findPatchedChannelsToolStripMenuItem.Text = "Find Patched Element";
+				}
+				else
+				{
+					insertChannelsToolStripMenuItem.Visible = false;
+					unpatchChannelsToolStripMenuItem.Text = "Unpatch Channels";
+					findPatchedChannelsToolStripMenuItem.Text = "Find Patched Elements";
+				}
 				removeChannelsToolStripMenuItem.Visible = true;
+				unpatchChannelsToolStripMenuItem.Visible = true;
+				findPatchedChannelsToolStripMenuItem.Visible = true;
+				toolStripSeparator.Visible = false;
 				configureToolStripMenuItem.Visible = false;
 				channelCountToolStripMenuItem.Visible = false;
 				renameToolStripMenuItem.Visible = false;
 				deleteToolStripMenuItem.Visible = false;
 				startControllerToolStripMenuItem.Visible = false;
 				stopControllerToolStripMenuItem.Visible = false;
+				unpatchControllerToolStripMenuItem.Visible = false;
 				return;
 			}
 
@@ -807,14 +836,30 @@ namespace Common.Controls
 		{
 			int runningCount = 0;
 			int notRunningCount = 0;
+			int patchCount = 0;
 
-			foreach (IControllerDevice controller in SelectedControllers) {
-				if (controller.IsRunning) {
+			foreach (IControllerDevice controller in SelectedControllers)
+			{
+				if (controller.IsRunning)
+				{
 					runningCount++;
-				}else {
+				}
+				else
+				{
 					notRunningCount++;
 				}
+
+				if (controller.Outputs[0].Source != null && controller.Outputs[0].Source.Component != null)
+					patchCount++;
 			}
+
+			if (SelectedControllers.Count() > 1)
+				this.unpatchControllerToolStripMenuItem.Text = "Unpatch Controllers";
+			else
+				this.unpatchControllerToolStripMenuItem.Text = "Unpatch Controller";
+
+			this.unpatchControllerToolStripMenuItem.Enabled = patchCount > 0 ? true : false;
+
 			_someSelectedControllersRunning = runningCount > 0;
 			_someSelectedControllersNotRunning = notRunningCount > 0;
 			startControllerToolStripMenuItem.Enabled = _someSelectedControllersNotRunning;
