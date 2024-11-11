@@ -97,7 +97,7 @@ namespace VixenModules.Effect.Video
 		public Curve LevelCurve { get; set; }
 
 		[DataMember]
-		public int VideoLength { get; set; }
+		public double VideoLength { get; set; }
 
 		[DataMember] 
 		public int MovementRate { get; set; }
