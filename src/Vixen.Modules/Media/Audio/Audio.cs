@@ -240,6 +240,8 @@ namespace VixenModules.Media.Audio
 				if (File.Exists(MediaFilePath))
 				{
 					_audioSystem = PlayerFactory.CreateNew(MediaFilePath);
+					if (_audioSystem == null)
+						return;
 					_audioSystem.Position = startTime;
 					InitSampleProvider();
 				} 
@@ -281,6 +283,9 @@ namespace VixenModules.Media.Audio
 			{
 				if (_audioSystem == null)
 					LoadMedia(TimeSpan.Zero);
+
+				if (_audioSystem == null)
+					return TimeSpan.Zero;
 
 				return _audioSystem.Duration;
 			}

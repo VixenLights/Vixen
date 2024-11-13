@@ -26,7 +26,8 @@ namespace Common.AudioPlayer
 			
 			Filename = fileName;
 			Volume = 1.0f;
-			Load();
+			if (Load() == false)
+				throw new InvalidOperationException($"Cannot load {fileName}");
 		}
 
 		private bool Load()
@@ -68,10 +69,17 @@ namespace Common.AudioPlayer
 
 		private IWaveProvider GetCodec(string filename)
 		{
-			AudioFileReader reader = new AudioFileReader(filename);
-			_cachedSoundSource = new CachedSoundSource(reader);
-			_speedControl = new SoundTouchSource(_cachedSoundSource.ToSampleProvider(), 20);
-			return _speedControl.ToWaveSourceProvider(_cachedSoundSource.WaveFormat.BitsPerSample);
+			try
+			{
+				AudioFileReader reader = new AudioFileReader(filename);
+				_cachedSoundSource = new CachedSoundSource(reader);
+				_speedControl = new SoundTouchSource(_cachedSoundSource.ToSampleProvider(), 20);
+				return _speedControl.ToWaveSourceProvider(_cachedSoundSource.WaveFormat.BitsPerSample);
+			}
+			catch (Exception e)
+			{
+				throw new InvalidOperationException(e.Message, e);
+			}
 		}
 
 		public AudioOutputManager AudioOutputManager { get; }
