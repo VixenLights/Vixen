@@ -1818,8 +1818,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (newInstance is Audio)
 				{
 					length = (newInstance as Audio).MediaDuration;
+					if (length == TimeSpan.Zero)
+					{
+						Logging.Error(string.Format($"Unprocessable audio file {openFileDialog.FileName}"));
+						MessageBoxForm.msgIcon = SystemIcons.Error;
+						var messageBox = new MessageBoxForm($"The selected audio file cannot be processed.\n\nFile: {openFileDialog.FileName}", @"Error", false, false);
+						messageBox.ShowDialog(this);
+						if (modulesToRemove.Count() > 0)
+							_sequence.RemoveMedia(modulesToRemove.First());
+						_sequence.ClearMedia();
+						return;
+					}
 					TimelineControl.Audio = newInstance as Audio;
-					if(TimelineControl.Audio != null)
+					if (TimelineControl.Audio != null)
 					{
 						TimelineControl.Audio.UseTempo = speedTempoToolStripMenuItem.Checked;
 					}

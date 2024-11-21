@@ -1,5 +1,6 @@
 ﻿using NAudio.Wave.SampleProviders;
 using NAudio.Wave;
+using NLog;
 
 namespace Common.AudioPlayer.FileReader
 {
@@ -20,6 +21,7 @@ namespace Common.AudioPlayer.FileReader
         private readonly int _sourceBytesPerSample;
         private readonly long _length;
         private readonly object _lockObject;
+        private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Initializes a new instance of AudioFileReader
@@ -49,10 +51,18 @@ namespace Common.AudioPlayer.FileReader
                 _readerStream = new WaveFileReader(fileName);
                 if (_readerStream.WaveFormat.Encoding != WaveFormatEncoding.Pcm && _readerStream.WaveFormat.Encoding != WaveFormatEncoding.IeeeFloat)
                 {
-                    _readerStream = WaveFormatConversionStream.CreatePcmStream(_readerStream);
-                    _readerStream = new BlockAlignReductionStream(_readerStream);
-                }
-            }
+					try
+					{
+						_readerStream = WaveFormatConversionStream.CreatePcmStream(_readerStream);
+						_readerStream = new BlockAlignReductionStream(_readerStream);
+					}
+					catch (Exception e)
+					{
+						Logging.Error($"Unable to process {fileName}. Reason: {e}");
+						throw new InvalidOperationException(e.Message, e);
+					}
+				}
+			}
             else if (fileName.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase))
             {
                 _readerStream = new MediaFoundationReader(fileName);
