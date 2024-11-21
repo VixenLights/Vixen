@@ -21,28 +21,21 @@ namespace Common.AudioPlayer.FileReader
         private readonly int _sourceBytesPerSample;
         private readonly long _length;
         private readonly object _lockObject;
-		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
-		/// <summary>
-		/// Initializes a new instance of AudioFileReader
-		/// </summary>
-		/// <param name="fileName">The file to open</param>
-		public AudioFileReader(string fileName)
+        /// <summary>
+        /// Initializes a new instance of AudioFileReader
+        /// </summary>
+        /// <param name="fileName">The file to open</param>
+        public AudioFileReader(string fileName)
         {
-            try
-            {
-                _lockObject = new object();
-                FileName = fileName;
-                CreateReaderStream(fileName);
-                _sourceBytesPerSample = _readerStream.WaveFormat.BitsPerSample / 8 * _readerStream.WaveFormat.Channels;
-                _sampleChannel = new SampleChannel(_readerStream, false);
-                _destBytesPerSample = 4 * _sampleChannel.WaveFormat.Channels;
-                _length = SourceToDest(_readerStream.Length);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message,ex);
-            }
+            _lockObject = new object();
+            FileName = fileName;
+            CreateReaderStream(fileName);
+            _sourceBytesPerSample = _readerStream.WaveFormat.BitsPerSample / 8 * _readerStream.WaveFormat.Channels;
+            _sampleChannel = new SampleChannel(_readerStream, false);
+            _destBytesPerSample = 4 * _sampleChannel.WaveFormat.Channels;
+            _length = SourceToDest(_readerStream.Length);
         }
 
         /// <summary>
