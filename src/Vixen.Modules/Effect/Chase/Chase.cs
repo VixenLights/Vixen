@@ -378,6 +378,10 @@ namespace VixenModules.Effect.Chase
 		{
 			var depth = DetermineDepth();
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2);
+			if (depth < 3 && TargetNodeHandling == TargetNodeSelection.Individual)
+			{
+				TargetNodeHandling = TargetNodeSelection.Group;
+			}
 			propertyStates.Add(nameof(TargetNodeHandling), TargetNodes.Length > 1 || depth > 2);
 			propertyStates.Add(nameof(DepthOfEffect), depth > 2);
 			SetBrowsable(propertyStates);

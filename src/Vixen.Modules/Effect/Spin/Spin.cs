@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using NLog;
 using Vixen.Attributes;
 using Vixen.Module;
@@ -457,6 +458,11 @@ namespace VixenModules.Effect.Spin
 		private void UpdateTargetingAttributes()
 		{
 			var depth = DetermineDepth();
+			Debug.WriteLine($"Depth = {depth}, Selection = {TargetNodeHandling}, Length = {TargetNodes.Length}");
+			if(depth < 3 && TargetNodeHandling == TargetNodeSelection.Individual)
+			{
+				TargetNodeHandling = TargetNodeSelection.Group;
+			}
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2);
 			propertyStates.Add(nameof(TargetNodeHandling), TargetNodes.Length > 1 || depth > 2);
 			propertyStates.Add(nameof(DepthOfEffect), depth > 2);
