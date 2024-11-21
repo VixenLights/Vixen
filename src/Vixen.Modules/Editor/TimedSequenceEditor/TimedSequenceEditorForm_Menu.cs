@@ -42,7 +42,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Close();
 		}
 
-		private void playToolStripMenuItem_Click(object sender, EventArgs e)
+		private void playToolStripMenuItem_Click(object sender = null, EventArgs e = null)
 		{
 			PlayPauseToggle();
 		}
@@ -52,12 +52,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			PlayPauseToggle();
 		}
 
-		private void stopToolStripMenuItem_Click(object sender, EventArgs e)
+		private void stopToolStripMenuItem_Click(object sender = null, EventArgs e = null)
 		{
 			StopSequence();
 		}
 
-		private void toolStripMenuItem_Loop_CheckedChanged(object sender, EventArgs e)
+		private void toolStripMenuItem_Loop_CheckedChanged(object sender = null, EventArgs e = null)
 		{
 			playBackToolStripButton_Loop.Checked = toolStripMenuItem_Loop.Checked;
 			if (playBackToolStripButton_Loop.Checked && delayOffToolStripMenuItem.Checked != true)
