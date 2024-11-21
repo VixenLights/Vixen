@@ -967,7 +967,7 @@ namespace Common.Controls.Timeline
 					if (AltPressed && adjoiningElements.Count() == 0)
 					{
 						// Get the Elements that are preceding the Selected Element
-						List<Element> priorElements = Rows.First().GetPriorsOfElement(SelectedElements.First());
+						List<Element> priorElements = SelectedElements.First().Row.GetPriorsOfElement(SelectedElements.First());
 
 						// In those preceding Elements, find what the latest ending time is
 						TimeSpan latestTime = TimeSpan.Zero;
@@ -1018,7 +1018,7 @@ namespace Common.Controls.Timeline
 					if (AltPressed && adjoiningElements.Count() == 0)
 					{
 						// Get the Elements that are following the Selected Element
-						List<Element> followElements = Rows.First().GetFollowersOfElement(SelectedElements.First());
+						List<Element> followElements = SelectedElements.First().Row.GetFollowersOfElement(SelectedElements.First());
 
 						// In those following Elements, find what the earliest starting time is
 						TimeSpan earliestTime = TimeSpan.MaxValue;
