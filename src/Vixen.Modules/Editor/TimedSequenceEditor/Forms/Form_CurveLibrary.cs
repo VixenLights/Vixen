@@ -64,14 +64,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private int _dragX;
 		private int _dragY;
 		private bool _scaleText;
+		private readonly TimedSequenceEditorForm _sequenceEditorForm;
 
 		#endregion
 
 		#region Initialization
 
-		public Form_CurveLibrary(TimelineControl timelineControl)
+		public Form_CurveLibrary(TimedSequenceEditorForm sequenceEditorForm, TimelineControl timelineControl)
 		{
 			InitializeComponent();
+
+			_sequenceEditorForm = sequenceEditorForm;
 			TimelineControl = timelineControl;
 			Icon = Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
@@ -108,6 +111,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//Over-ride the auto theme listview back color
 			listViewCurves.BackColor = ThemeColorTable.BackgroundColor;
 
+			// Establish automation to intercept quick keys meant for the Timeline window
+			panel1.Controls[0].KeyDown += Form_CurveKeyDown;
+			panel1.Controls[0].Enter += Form_CurveEnter;
+			checkBoxLinkCurves.Enter += Form_CurveEnter;
+			toolStripCurves.Enter += Form_CurveEnter;
+
 			listViewCurves.Alignment = ListViewAlignment.Top;
 			_curveLibrary = ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary;
 		}
@@ -140,6 +149,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#endregion
 
 		#region Private Methods
+		/// <summary>
+		/// Intercept when the control is activated
+		/// </summary>
+		/// <param name="sender">The source of the event</param>
+		/// <param name="e">Contains the event data</param>
+		private void Form_CurveEnter(object sender, EventArgs e)
+		{
+			panel1.Controls[0].Focus();
+		}
+
+		/// <summary>
+		/// Intercept KeyDown event
+		/// </summary>
+		/// <param name="sender">The source of the event</param>
+		/// <param name="e">Contains the event data</param>
+		private void Form_CurveKeyDown(object sender, KeyEventArgs e)
+		{
+			_sequenceEditorForm.HandleQuickKey(e);
+		}
+
 		private void Populate_Curves()
 		{
 			listViewCurves.BeginUpdate();

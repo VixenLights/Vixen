@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Vixen.Module;
+using Vixen.Module.Editor;
 using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
 using Vixen.Rule;
@@ -178,6 +179,15 @@ namespace Vixen.Services
 		public static IModuleDataModel GetModuleStaticData(Guid id)
 		{
 			return Modules.GetModuleStaticData(id);
+		}
+
+		/// <summary>
+		/// Identifies the active Timed Sequence Editor
+		/// </summary>
+		/// <returns>Active editor</returns>
+		public static IEditorUserInterface GetActiveEditor()
+		{
+			return ClientApplication.ActiveEditor;
 		}
 
 	}

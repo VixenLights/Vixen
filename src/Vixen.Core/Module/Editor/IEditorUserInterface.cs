@@ -25,6 +25,8 @@ namespace Vixen.Module.Editor
 		/// </summary>
 		void EditorClosing();
 
+		void HandleQuickKey(KeyEventArgs swiKey);
+
 		ISequence Sequence { get; set; }
 		ISelection Selection { get; }
 		void Save(string filePath = null);
