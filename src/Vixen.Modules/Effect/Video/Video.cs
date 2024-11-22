@@ -13,6 +13,7 @@ using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using System.Security.Cryptography;
 using System.Text;
+using Vixen.Extensions;
 
 namespace VixenModules.Effect.Video
 {
@@ -412,6 +413,23 @@ namespace VixenModules.Effect.Video
 			}
 		}
 
+		[Value]
+		[ProviderCategory(@"Advanced Settings", 3)]
+		[ProviderDisplayName(@"Cache Image Type")]
+		[ProviderDescription(@"bmp - Fastest/Bigger, png - Fast/Smaller")]
+		[PropertyOrder(8)]
+		public EffectCacheImageType CacheFileType
+		{
+			get { return _data.CacheFileType; }
+			set
+			{
+				_data.CacheFileType = value;
+				_processVideo = true;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
 		#endregion
 
 		#region String Setup properties
@@ -573,6 +591,7 @@ namespace VixenModules.Effect.Video
 			settingsToHash.Append(FrameTime);
 			settingsToHash.Append(StretchToGrid);
 			settingsToHash.Append(ScaleToGrid);
+			settingsToHash.Append(CacheFileType);
 			_settingsHash = Convert.ToHexString(MD5.HashData(Encoding.UTF8.GetBytes(settingsToHash.ToString())));
 		}
 
@@ -632,6 +651,8 @@ namespace VixenModules.Effect.Video
 					GetNewImageSize(out _renderWidth, out _renderHeight, 50, (int) (50 * ((double)_renderWidth / _renderHeight)));
 				}
 
+				string cacheFileExt = ((EffectCacheImageType)_data.CacheFileType).GetEnumDescription();
+
 				// Gets selected video if Video length is longer then the entered start time.
 				if (VideoLength > StartTimeSeconds + (TimeSpan.TotalSeconds * ((double)PlayBackSpeed / 100 + 1)))
 				{
@@ -653,7 +674,7 @@ namespace VixenModules.Effect.Video
 							StartTimeSeconds, ((TimeSpan.TotalSeconds * ((double)PlayBackSpeed / 100 + 1))),
 							_renderWidth, _renderHeight,
 							MaintainAspect, RotateVideo,
-							cropVideo, 1000.0 / FrameTime);
+							cropVideo, 1000.0 / FrameTime, cacheFileExt);
 					}
 					int filesFound = 0;
 					foreach (string f in Directory.EnumerateFiles(TempPath, $"{InstanceId}.*", SearchOption.TopDirectoryOnly))
@@ -675,7 +696,7 @@ namespace VixenModules.Effect.Video
 						File.Create(Path.Combine(TempPath, $"{InstanceId}.{_settingsHash}")).Close();
 					}
 					
-					_moviePicturesFileList = [.. Directory.GetFiles(_tempFilePath, "*.bmp", SearchOption.TopDirectoryOnly).OrderBy(f => f)];
+					_moviePicturesFileList = [.. Directory.GetFiles(_tempFilePath, $"*.{cacheFileExt}", SearchOption.TopDirectoryOnly).OrderBy(f => f)];
 					_videoFileDetected = true;
 				}
 				else
