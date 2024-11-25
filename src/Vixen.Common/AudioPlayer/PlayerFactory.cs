@@ -5,7 +5,15 @@
 		
 		public static IPlayer CreateNew(string fileName)
 		{
-			return new CoreAudioPlayer(fileName);
+			try
+			{
+				IPlayer player = new CoreAudioPlayer(fileName);
+				return player;
+			} catch
+			{
+				return null;
+			}
+
 		}
 	}
 }
