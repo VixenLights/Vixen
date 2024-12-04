@@ -130,7 +130,7 @@ namespace VixenModules.Effect.SetLevel
 		private EffectIntents RenderNode(IElementNode node)
 		{
 			EffectIntents effectIntents = new EffectIntents();
-			var leafs = node.GetLeafEnumerator();
+			var leafs = node.GetLeafEnumerator().Distinct();
 			foreach (IElementNode elementNode in leafs)
 			{
 				if (HasDiscreteColors && IsElementDiscrete(elementNode))
