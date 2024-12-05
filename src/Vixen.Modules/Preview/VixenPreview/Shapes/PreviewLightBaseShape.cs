@@ -24,6 +24,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private bool _isHighPrecision;
 
 		private List<PreviewPixel> _pixelCache = new List<PreviewPixel>();
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public enum StringTypes
 		{
@@ -382,9 +383,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		        				
 		public int UpdatePixelCache()
 		{
-			_pixelCache = Pixels.Where(x => x.Node != null).ToList();
+			_pixelCache = Pixels.Where(x => x.Node != null && x.Node.Element != null).ToList();
 			_points = new List<float>(_pixelCache.Count * 8);
 			return _pixelCache.Count;
+		}
+
+		public bool HasInValidElementMapping()
+		{
+			var badLinks = Pixels.FirstOrDefault(x => x.Node != null && x.Node.Element == null);
+			if (badLinks != null)
+			{
+				Logging.Error($"Preview shape mapped to Node {badLinks.Node.Name} without Element");
+			}
+
+			return badLinks != null;
 		}
 
 		public void UpdateDrawPoints(int referenceHeight)

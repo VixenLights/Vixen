@@ -7,6 +7,7 @@ using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources;
 using System.IO;
+using System.Text;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
 using Common.Controls.Scaling;
@@ -131,6 +132,7 @@ namespace VixenModules.Preview.VixenPreview
 			previewForm = new VixenPreviewSetupDocument();
 			if (!DesignMode && previewForm != null)
 				previewForm.Preview.Data = _data;
+			
 			previewForm.Preview.OnSelectDisplayItem += OnSelectDisplayItem;
 			previewForm.Preview.OnDeSelectDisplayItem += OnDeSelectDisplayItem;
 
@@ -254,6 +256,11 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void VixenPreviewSetup3_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			if (CheckForInValidElementLinks())
+			{
+				e.Cancel = true;
+				return;
+			}
 			previewForm.Preview.ZoomLevel = 1;
 			PreviewItemsAlignNew -= vixenpreviewControl_PreviewItemsAlignNew;
 			previewForm.Preview.OnSelectDisplayItem -= OnSelectDisplayItem;
@@ -552,6 +559,32 @@ namespace VixenModules.Preview.VixenPreview
 
 			//SetDesktopLocation(Data.SetupLeft, Data.SetupTop);
 			//Size = new Size(Data.SetupWidth, Data.SetupHeight);
+		}
+
+		/// <summary>
+		/// Provides a warning to the user if any of the preview items have a linked node without an element.
+		/// <returns>true if the user wants to cancel</returns>
+		/// </summary>
+		private bool CheckForInValidElementLinks()
+		{
+			var invalidElements = previewForm.Preview.DisplayItems.Where(x =>
+				x.Shape is PreviewLightBaseShape shape && shape.HasInValidElementMapping());
+			if (invalidElements.Any())
+			{
+				previewForm.Preview.SelectItems(invalidElements);
+
+				// Prompt the user check the links
+				MessageBoxForm messageBox = new MessageBoxForm(
+					"This preview contains display item(s) that have invalid Linked Elements. They have been selected in the preview.\n\n" +
+					"Please update the Linked Elements in the Properties pane to ensure they are correct, or those items will not display in the preview.",
+					"Invalid Element Links",
+					MessageBoxButtons.OKCancel,
+					SystemIcons.Warning);
+
+				return messageBox.ShowDialog() == DialogResult.Cancel;
+			}
+
+			return false;
 		}
 
 		/// <summary>
