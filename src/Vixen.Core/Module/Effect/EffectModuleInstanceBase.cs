@@ -442,6 +442,12 @@ namespace Vixen.Module.Effect
 			get { return false; }
 		}
 
+		public virtual void Removing()
+		{
+			// Intended for removing cache folders and other external resources if an Effect was deleted.
+			// Used by the Video Effect to remove cache folders
+		}
+
 		#endregion
 
 		#region INotifyPropertyChanged
