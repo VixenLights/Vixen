@@ -29,16 +29,20 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControllerTree));
+			toolStripSeparator = new ToolStripSeparator();
 			this.treeIconsImageList = new System.Windows.Forms.ImageList(this.components);
 			this.contextMenuStripTreeView = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.configureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.channelCountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.insertChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.removeChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.unpatchChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.findPatchedChannelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.startControllerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.stopControllerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.unpatchControllerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.treeview = new Common.Controls.MultiSelectTreeview();
 			this.contextMenuStripTreeView.SuspendLayout();
 			this.SuspendLayout();
@@ -63,10 +67,14 @@
 				this.channelCountToolStripMenuItem,
 				this.insertChannelsToolStripMenuItem,
 				this.removeChannelsToolStripMenuItem,
+				this.unpatchChannelsToolStripMenuItem,
+				this.findPatchedChannelsToolStripMenuItem,
 				this.renameToolStripMenuItem,
 				this.deleteToolStripMenuItem,
 				this.startControllerToolStripMenuItem,
-				this.stopControllerToolStripMenuItem
+				this.stopControllerToolStripMenuItem,
+				this.toolStripSeparator,
+				this.unpatchControllerToolStripMenuItem
 				});
 			this.contextMenuStripTreeView.Name = "contextMenuStripTreeView";
 			this.contextMenuStripTreeView.Size = new System.Drawing.Size(201, 124);
@@ -98,11 +106,22 @@
 			this.removeChannelsToolStripMenuItem.Name = "removeChannelToolStripMenuItem";
 			this.removeChannelsToolStripMenuItem.Size = new System.Drawing.Size(200, 30);
 			this.removeChannelsToolStripMenuItem.Text = "R&emove Channels";
-			this.removeChannelsToolStripMenuItem.Click += new System.EventHandler(this.deleteChannelsToolStripMenuItem_Click);// 
-			// renameToolStripMenuItem
+			this.removeChannelsToolStripMenuItem.Click += new System.EventHandler(this.deleteChannelsToolStripMenuItem_Click);
+			// 
+			// unpatchChannelsToolStripMenuItem
+			// 
+			this.unpatchChannelsToolStripMenuItem.Name = "unpatchChannelsToolStripMenuItem";
+			this.unpatchChannelsToolStripMenuItem.Size = new System.Drawing.Size(200, 30);
+			this.unpatchChannelsToolStripMenuItem.Text = "Unpatch Channels";
+			// 
+			// findPatchedChannelsToolStripMenuItem
+			// 
+			this.findPatchedChannelsToolStripMenuItem.Name = "findPatchedChannelsToolStripMenuItem";
+			this.findPatchedChannelsToolStripMenuItem.Size = new System.Drawing.Size(200, 30);
+			this.findPatchedChannelsToolStripMenuItem.Text = "Find Patched Elements";
 			// 
 			// renameToolStripMenuItem
-			// 																												  // 
+			//
 			this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
 			this.renameToolStripMenuItem.Size = new System.Drawing.Size(200, 30);
 			this.renameToolStripMenuItem.Text = "Re&name";
@@ -129,12 +148,23 @@
 			this.stopControllerToolStripMenuItem.Text = "&Stop / Disable";
 			this.stopControllerToolStripMenuItem.Click += new System.EventHandler(this.stopControllerToolStripMenuItem_Click);
 			// 
+			// toolStripSeparator1
+			// 
+			toolStripSeparator.Name = "toolStripSeparator";
+			toolStripSeparator.Size = new Size(213, 6);
+			// 
+			// unpatchControllerToolStripMenuItem
+			// 
+			this.unpatchControllerToolStripMenuItem.Name = "unpatchControllerToolStripMenuItem";
+			this.unpatchControllerToolStripMenuItem.Size = new System.Drawing.Size(200, 30);
+			this.unpatchControllerToolStripMenuItem.Text = "Unpatch Controllers";
+			// 
 			// treeview
 			// 
 			this.treeview.AllowDrop = true;
-			this.treeview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.treeview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.treeview.ContextMenuStrip = this.contextMenuStripTreeView;
 			this.treeview.Cursor = System.Windows.Forms.Cursors.Default;
 			this.treeview.CustomDragCursor = null;
@@ -187,7 +217,11 @@
 		private System.Windows.Forms.ToolStripMenuItem channelCountToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem insertChannelsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem removeChannelsToolStripMenuItem;
+		public System.Windows.Forms.ToolStripMenuItem unpatchChannelsToolStripMenuItem;
+		public System.Windows.Forms.ToolStripMenuItem findPatchedChannelsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem startControllerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem stopControllerToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
+		public System.Windows.Forms.ToolStripMenuItem unpatchControllerToolStripMenuItem;
 	}
 }

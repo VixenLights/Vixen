@@ -602,6 +602,10 @@ namespace VixenApplication.Setup
 			_UpdateEverything(_cachedElementNodes, _cachedControllersAndOutputs);
 		}
 
+		public void UnpatchControllers()
+		{
+			buttonUnpatchControllers.PerformClick();
+		}
 
 		private void buttonUnpatchControllers_Click(object sender, EventArgs e)
 		{
