@@ -2,7 +2,7 @@
 using System.Timers;
 using System.Windows;
 using System.Windows.Forms.Integration;
-using System.Windows.Input;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using System.Windows.Threading;
 using Vixen.Execution.Context;
 using Vixen.Sys;
@@ -40,12 +40,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ShowReadOnlyProperties = true,
 				PropertyFilterVisibility = Visibility.Hidden
 			};
-
-			_effectPropertyEditorGridEffectEffectPropertiesEditor.KeyDown += Editor_OnKeyDown;
-
+			
 			host.Child = _effectPropertyEditorGridEffectEffectPropertiesEditor;
 
 			Controls.Add(host);
+
+			// Establish automation to intercept quick keys meant for the Timeline window
+			host.Child.KeyDown += Form_EffectEditorKeyDown;
+			host.Enter += Form_EffectEditorEnter;
 
 			_selectionChangeBuffer = new DispatcherTimer
 			{
@@ -97,7 +99,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				_effectPropertyEditorGridEffectEffectPropertiesEditor.PropertyValueChanged -= EffectPropertyEditorValueChanged;
 				_effectPropertyEditorGridEffectEffectPropertiesEditor.PreviewChanged -= EditorPreviewStateChanged;
-				_effectPropertyEditorGridEffectEffectPropertiesEditor.KeyDown -= Editor_OnKeyDown;
 			}
 			
 			_previewLoopTimer.Elapsed -= PreviewLoopTimerOnElapsed;
@@ -144,13 +145,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_sequenceEditorForm.AddEffectsModifiedToUndo(undo);
 		}
 
-		
-		private void Editor_OnKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		/// <summary>
+		/// Intercept when the control is activated
+		/// </summary>
+		/// <param name="sender">The source of the event</param>
+		/// <param name="e">Contains the event data</param>
+		private void Form_EffectEditorEnter(object sender, EventArgs e)
 		{
-			if (e.Key == Key.Space)
-			{
-				_sequenceEditorForm.HandleSpacebarAction(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl));
-			}
+			host.Child.Focus();
+		}
+
+		/// <summary>
+		/// Intercept KeyDown event
+		/// </summary>
+		/// <param name="sender">The source of the event</param>
+		/// <param name="e">Contains the event data</param>
+		private void Form_EffectEditorKeyDown(object sender, KeyEventArgs e)
+		{
+			_sequenceEditorForm.HandleQuickKey(e);
 		}
 
 		#endregion

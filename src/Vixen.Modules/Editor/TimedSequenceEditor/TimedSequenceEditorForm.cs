@@ -953,7 +953,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		
+
 		private Form_Marks _marksForm;
 
 		private Form_Marks MarksForm
@@ -965,7 +965,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return _marksForm;
 				}
 
-				_marksForm = new Form_Marks(_sequence);
+				_marksForm = new Form_Marks(this, _sequence);
 				//_marksForm.PopulateMarkCollectionsList(null);
 				//_marksForm.MarkCollectionChecked += MarkCollection_Checked;
 				//_marksForm.EditMarkCollection += MarkCollection_Edit;
@@ -987,7 +987,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return _layerEditor;
 				}
 
-				_layerEditor = new LayerEditor(_sequence.SequenceLayers);
+				_layerEditor = new LayerEditor(this, _sequence.SequenceLayers);
 				_layerEditor.LayersChanged += LayerEditorLayersChanged;
 				_layerEditor.Closing +=LayerEditorOnClosing;
 
@@ -1006,7 +1006,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return _colorLibraryForm;
 				}
 
-				_colorLibraryForm = new Form_ColorLibrary(TimelineControl);
+				_colorLibraryForm = new Form_ColorLibrary(this, TimelineControl);
 				ColorLibraryForm.ColorsChanged += Populate_Colors;
 				return _colorLibraryForm;
 			}
@@ -1023,7 +1023,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return _curveLibraryForm;
 				}
 
-				_curveLibraryForm = new Form_CurveLibrary(TimelineControl);
+				_curveLibraryForm = new Form_CurveLibrary(this, TimelineControl);
 				CurveLibraryForm.CurveLibraryChanged += Populate_Curves;
 				return _curveLibraryForm;
 			}
@@ -1040,7 +1040,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return _gradientLibraryForm;
 				}
 
-				_gradientLibraryForm = new Form_GradientLibrary(TimelineControl);
+				_gradientLibraryForm = new Form_GradientLibrary(this, TimelineControl);
 				GradientLibraryForm.GradientLibraryChanged += Populate_Gradients;
 				return _gradientLibraryForm;
 			}
@@ -1073,7 +1073,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return _findEffects;
 				}
 
-				_findEffects = new FindEffectForm(TimelineControl, Sequence.GetSequenceLayerManager());
+				_findEffects = new FindEffectForm(this, TimelineControl, Sequence.GetSequenceLayerManager());
 
 				return _findEffects;
 			}

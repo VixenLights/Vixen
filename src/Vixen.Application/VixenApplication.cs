@@ -826,7 +826,7 @@ namespace VixenApplication
 			{
 				// Don't want to clear our reference on Deactivate because
 				// it may be deactivated due to the client getting focus.
-				if (_activeEditor.IsDisposed)
+				if (_activeEditor == null || _activeEditor.IsDisposed)
 				{
 					_activeEditor = null;
 				}

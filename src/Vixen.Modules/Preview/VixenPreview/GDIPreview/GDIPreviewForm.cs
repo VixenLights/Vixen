@@ -7,6 +7,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using Vixen;
+using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
 using VixenModules.Preview.VixenPreview.Shapes;
@@ -175,7 +176,34 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 				ZoomLevel = ZoomLevel + delta * factor;
 
 			}
+			else
+			{
+				// Convert some quick keys (that ultimately trigger a longer process) to special keys that
+				// will be intercepted in the quick key handler of the Timed Sequence Editor.
+				if (e.KeyCode == Keys.Space)
+					SendQuickKey(new KeyEventArgs(Keys.MediaPlayPause));
+				else if (e.KeyCode == Keys.F5)
+					SendQuickKey(new KeyEventArgs(Keys.MediaNextTrack));
+				else if (e.KeyCode == Keys.F8)
+					SendQuickKey(new KeyEventArgs(Keys.MediaStop));
+				
+				// Else, just send the regular key directly to the Timed Sequence Editor
+				else
+					SendQuickKey(e);
+			}
+		}
 
+		/// <summary>
+		/// Send a keyboard event to the "active" Timed Sequence Editor
+		/// </summary>
+		/// <param name="e">Contains the keystroke data</param>
+		private void SendQuickKey(KeyEventArgs e)
+		{
+			var activeEditor = ApplicationServices.GetActiveEditor();
+			if (activeEditor != null)
+			{
+				Invoke(new Action(delegate { activeEditor.HandleQuickKey(e); }));
+			}
 		}
 
 		private void HandleContextMenu()

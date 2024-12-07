@@ -10,6 +10,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	{
 		private readonly Editor.LayerEditor.LayerEditorView _layerEditorView;
 		private ElementHost host;
+		private readonly TimedSequenceEditorForm _sequenceEditorForm;
 
 		static LayerEditor()
 		{
@@ -21,12 +22,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Application.Current.Resources.MergedDictionaries.Add(dict);
 		}
 
-		public LayerEditor(SequenceLayers layers)
+		public LayerEditor(TimedSequenceEditorForm sequenceEditorForm, SequenceLayers layers)
 		{
-		
-			InitializeComponent();
-			
 
+			InitializeComponent();
+
+			_sequenceEditorForm = sequenceEditorForm;
 			host = new ElementHost { Dock = DockStyle.Fill };
 
 			BackColor = Color.Black;
@@ -35,9 +36,36 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			_layerEditorView.CollectionChanged += LayerEditorViewCollectionChanged;
 			_layerEditorView.LayerChanged += LayerEditorViewOnLayerChanged;
-
+			
 			host.Child = _layerEditorView;
 			Controls.Add(host);
+
+			// Establish automation to intercept quick keys meant for the Timeline window
+			host.Child.KeyDown += Form_LayerKeyDown;
+			host.Enter += Form_ColorEnter; ;
+		}
+
+		/// <summary>
+		/// Intercept when the control is activated
+		/// </summary>
+		/// <param name="sender">The source of the event</param>
+		/// <param name="e">Contains the event data</param>
+		private void Form_ColorEnter(object sender, EventArgs e)
+		{
+			// For some reason, setting the first child as the focus doesn't always work
+			// so we'll send a shift+tab in to set the focus to the last control.
+			//host.Child.Focus();
+			SendKeys.Send("+{TAB}");
+		}
+
+		/// <summary>
+		/// Intercept KeyDown event
+		/// </summary>
+		/// <param name="sender">The source of the event</param>
+		/// <param name="e">Contains the event data</param>
+		private void Form_LayerKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			_sequenceEditorForm.HandleQuickKey(e);
 		}
 
 		private void LayerEditorViewOnLayerChanged(object sender, EventArgs eventArgs)

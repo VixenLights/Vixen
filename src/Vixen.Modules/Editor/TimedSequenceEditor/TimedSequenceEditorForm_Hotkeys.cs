@@ -1,5 +1,6 @@
 ﻿using Common.Controls.Timeline;
 using Element = Common.Controls.Timeline.Element;
+using Common.Controls.ControlsEx;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -23,6 +24,43 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					StopSequence();
 				}
 			}
+		}
+
+		/// <summary>
+		/// Preprocess Quick Keys before handing the key to OnKeyDown
+		/// </summary>
+		/// <param name="e">Contains the key data (for System.Windows.Forms)</param>
+		public void HandleQuickKey(KeyEventArgs e)
+		{
+			// Convert some special quick keys (sent from GDIPreviewForms) to regular keys then post to
+			// the Windows Message queue.  Posting allows thread-isolation from an outside process.
+			if (e.KeyCode == Keys.MediaPlayPause)
+				Win32.PostMessage(this.Handle, Win32.WM_KEYDOWN, (int)Keys.Space, 0);
+			else if (e.KeyCode == Keys.MediaNextTrack)
+				Win32.PostMessage(this.Handle, Win32.WM_KEYDOWN, (int)Keys.F5, 0);
+			else if (e.KeyCode == Keys.MediaStop)
+				Win32.PostMessage(this.Handle, Win32.WM_KEYDOWN, (int)Keys.F8, 0);
+			else
+				OnKeyDown(e);
+		}
+
+		/// <summary>
+		/// Preprocess Quick Keys before handing the key to OnKeyDown
+		/// </summary>
+		/// <param name="e">Contains the key data (for System.Windows.Input)</param>
+		public void HandleQuickKey(System.Windows.Input.KeyEventArgs swiKey)
+		{
+			var wpfKey = swiKey.Key == System.Windows.Input.Key.System ? swiKey.SystemKey : swiKey.Key;
+			var swfKeys = (System.Windows.Forms.Keys)System.Windows.Input.KeyInterop.VirtualKeyFromKey(wpfKey);
+
+			System.Windows.Forms.Keys swfModifiers;
+			swfModifiers = swiKey.KeyboardDevice.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Alt) ? System.Windows.Forms.Keys.Alt : System.Windows.Forms.Keys.None;
+			swfModifiers |= swiKey.KeyboardDevice.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Control) ? System.Windows.Forms.Keys.Control : System.Windows.Forms.Keys.None;
+			swfModifiers |= swiKey.KeyboardDevice.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Shift) ? System.Windows.Forms.Keys.Shift : System.Windows.Forms.Keys.None;
+
+			var swfkey = new System.Windows.Forms.KeyEventArgs(swfKeys | swfModifiers);
+			HandleQuickKey(swfkey);
+			swiKey.Handled = swfkey.Handled;
 		}
 
 		protected override void OnKeyDown(KeyEventArgs e)
@@ -65,6 +103,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						TimelineControl.VerticalOffset += (TimelineControl.VisibleHeight / 2);
 					break;
 
+				case Keys.MediaPlayPause:
 				case Keys.Space:
 					if (e.Shift)
 					{
@@ -243,11 +282,28 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						DistributeSelectedEffects();
 					}
 					break;
+
+				case Keys.MediaNextTrack:
+				case Keys.F5:
+					playToolStripMenuItem_Click();
+					e.Handled = true;
+					break;
+
+				case Keys.MediaStop:
+				case Keys.F8:
+					stopToolStripMenuItem_Click();
+					e.Handled = true;
+					break;
+
+				case Keys.F9:
+					playBackToolStripButton_Loop.PerformClick();
+					e.Handled = true;
+					break;
 			}
 			// Prevents sending keystrokes to child controls. 
 			// This was causing serious slowdowns if random keys were pressed.
 			//e.SuppressKeyPress = true;
-			base.OnKeyDown(e);
+//			base.OnKeyDown(e);
 		}
 
 	}

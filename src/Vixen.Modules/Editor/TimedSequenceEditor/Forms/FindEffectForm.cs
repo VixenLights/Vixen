@@ -12,13 +12,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public TimelineControl TimelineControl { get; set; }
 
 		private readonly SequenceLayers _layerManager;
+		private readonly TimedSequenceEditorForm _sequenceEditorForm;
 		private bool _rowEventsAdded;
 		private string _searchString = string.Empty;
 		private bool _findEffects = true;
 
-		public FindEffectForm(TimelineControl timelineControl, SequenceLayers layerManager)
+		public FindEffectForm(TimedSequenceEditorForm sequenceEditorForm, TimelineControl timelineControl, SequenceLayers layerManager)
 		{
 			InitializeComponent();
+
+			_sequenceEditorForm = sequenceEditorForm;
 			_layerManager = layerManager;
 			contextMenuStrip1.Renderer = new ThemeToolStripRenderer();
 			Icon = Resources.Icon_Vixen3;
@@ -27,12 +30,28 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			timelineControl.ElementsFinishedMoving += TimelineControlOnElementsFinishedMoving;
 
 			comboBoxFind.SelectedIndex = 0;
-			
+
 			Closing += FindEffectForm_Closing;
 			Resize += FindEffectForm_Resize;
+
+			// Establish automation to intercept quick keys meant for the Timeline window
+			comboBoxAvailableEffect.KeyDown += Form_FindKeyDown;
+			comboBoxFind.KeyDown += Form_FindKeyDown;
+			listViewEffectStartTime.KeyDown += Form_FindKeyDown;
+			checkBoxCollapseAllGroups.KeyDown += Form_FindKeyDown;
 		}
 
-		
+		#region Private
+		/// <summary>
+		/// Intercept KeyDown event
+		/// </summary>
+		/// <param name="sender">The source of the event</param>
+		/// <param name="e">Contains the event data</param>
+		private void Form_FindKeyDown(object sender, KeyEventArgs e)
+		{
+			_sequenceEditorForm.HandleQuickKey(e);
+		}
+
 
 		private void FindEffectForm_Load(object sender, EventArgs e)
 		{
@@ -95,6 +114,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				await UpdateListView();
 			}
 		}
+		#endregion
 
 		#region Methods
 
