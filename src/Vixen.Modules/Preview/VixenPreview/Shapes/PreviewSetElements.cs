@@ -406,6 +406,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 }
             }
 
+            _shapes.ForEach(x => x.Layout());
+
             DialogResult = System.Windows.Forms.DialogResult.OK;
             Close();
         }
