@@ -34,4 +34,12 @@ namespace VixenModules.Effect.Video
 		RenderPictureWiggle
 
 	}
+
+	public enum EffectCacheImageType
+	{
+		[Description("bmp")]
+		CacheImagebmp,
+		[Description("png")]
+		CacheImagepng
+	}
 }
