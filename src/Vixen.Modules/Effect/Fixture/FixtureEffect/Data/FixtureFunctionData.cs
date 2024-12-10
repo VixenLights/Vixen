@@ -22,7 +22,7 @@ namespace VixenModules.Effect.Fixture
 			FunctionIdentity = FunctionIdentity.Custom;
 			FunctionName = String.Empty;
 			Range = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
-			TimelineColor = Color.White;	
+			TimelineColor = System.Drawing.Color.White;	
 		}
 
 		#endregion
@@ -94,6 +94,23 @@ namespace VixenModules.Effect.Fixture
 		/// </summary>
 		[DataMember]
 		public Color TimelineColor { get; set; }
+
+		/// <summary>
+		/// Color associated with the function.
+		/// </summary>
+		[DataMember]
+		public App.ColorGradients.ColorGradient Color { get; set; }
+
+		#endregion
+
+		#region Deserialization
+
+		[OnDeserialized]
+		public void OnDeserialized(StreamingContext c)
+		{
+			//Ensure Color is populated
+			Color ??= new App.ColorGradients.ColorGradient();
+		}
 
 		#endregion
 	}
