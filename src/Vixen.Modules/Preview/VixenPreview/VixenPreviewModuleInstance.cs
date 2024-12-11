@@ -56,21 +56,36 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
+
 		internal static bool SupportsOpenGLPreview()
 		{
+			Logging.Info("Checking for OpenGL 3.3 Support" );
+			
 			bool supported = false;
-			try
+
+			lock (OpenGlPreviewForm.ContextLock)
 			{
-				lock (OpenGlPreviewForm.ContextLock)
+
+				try
 				{
+
 					GLFWProvider.CheckForMainThread = false;
-					var control = new GLControl();
-					control.MakeCurrent();
+					GLFWProvider.EnsureInitialized();
+					
+					using OpenTK.Windowing.Desktop.NativeWindow window = new OpenTK.Windowing.Desktop.NativeWindow(new NativeWindowSettings()
+					{
+						APIVersion = new Version(3, 3, 0),
+						StartVisible = false,
+						AutoLoadBindings = true
+					});
+					
+					window.Context.MakeCurrent();
+				
 					var major = GL.GetInteger(GetPName.MajorVersion);
 					var minor = GL.GetInteger(GetPName.MinorVersion);
-					if (major > 3 || (major == 3 && minor >=3))
+					if (major > 3 || (major == 3 && minor >= 3))
 					{
-						Logging.Info($"Open GL version supported!. {major}.{minor}");
+						Logging.Info($"Open GL version supported: {major}.{minor}");
 						supported = true;
 					}
 					else
@@ -78,15 +93,15 @@ namespace VixenModules.Preview.VixenPreview
 						Logging.Error($"Open GL version not supported. {major}.{minor}");
 					}
 
-					control.Context.MakeCurrent();
-					control.Dispose();
 				}
-			}
-			catch (Exception e)
-			{
-				Logging.Error(e, "An error occurred testing for OpenGL support.");
-			}
+				catch (Exception e)
+				{
+					Logging.Error(e, "An error occurred testing for OpenGL support.");
+				}
 
+			}
+			
+			Logging.Info($"OpenGL supported: {supported}");
 			return supported;
 
 		}
