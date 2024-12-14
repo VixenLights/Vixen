@@ -350,6 +350,7 @@ namespace VixenModules.Effect.Fixture
 				fixtureFunctionExpando.IndexValue = fixtureFunctionData.IndexValue;
 				fixtureFunctionExpando.ColorIndexValue = fixtureFunctionData.ColorIndexValue;
 				fixtureFunctionExpando.TimelineColor = fixtureFunctionData.TimelineColor;
+				fixtureFunctionExpando.Color = fixtureFunctionData.Color;
 
 				// Add the fixture function to the collection
 				functionItemCollection.Add(fixtureFunctionExpando);
@@ -385,6 +386,7 @@ namespace VixenModules.Effect.Fixture
 				{
 					// Save off the intensity as the range
 					functionModel.Range = new Curve(functionViewModel.Intensity);
+					functionModel.Color = functionViewModel.Color;
 				}
 				else
 				{

@@ -576,6 +576,15 @@ namespace VixenModules.Preview.VixenPreview
 			return false;
 		}
 
+		public void SelectItems(IEnumerable<DisplayItem> displayItems)
+		{
+			// First, deselect any currently selected item
+			DeSelectSelectedDisplayItem();
+			SelectedDisplayItems.AddRange(displayItems);
+			OnSelectionChanged?.Invoke(this, EventArgs.Empty);
+			EndUpdate();
+		}
+
 		public void SelectItemUnderPoint(PreviewPoint point, bool addToSelection)
 		{
 			if (!_mouseCaptured)

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using NLog;
+using System.ComponentModel;
 using Vixen.Attributes;
 using Vixen.Marks;
 using Vixen.Module;
@@ -52,20 +53,20 @@ namespace VixenModules.Effect.Alternating
 
 			if (!EnableDepth)
 			{
-				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator());
+				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator().Distinct());
 			}
 			else
 			{
 				for (int i = 0; i < DepthOfEffect; i++)
 				{
-					renderNodes = renderNodes.SelectMany(x => x.Children);
+					renderNodes = renderNodes.SelectMany(x => x.Children).Distinct();
 				}
 			}
 			
 			// If the given DepthOfEffect results in no nodes (because it goes "too deep" and misses all nodes), 
 			// then we'll default to the LeafElements, which will at least return 1 element (the TargetNode)
 			if (!renderNodes.Any())
-				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator());
+				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator().Distinct());
 
 			return renderNodes;
 		}

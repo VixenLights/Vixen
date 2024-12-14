@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using NLog;
+using System.ComponentModel;
 using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Sys;
@@ -57,6 +58,7 @@ namespace VixenModules.Effect.Wipe
 					return new Tuple<IElementNode, int, int, int>(null, -1, -1, -1);
 				})
 				.Where(s => s.Item2 > 0)
+				.Distinct()
 				.ToList();
 
 			if (!renderedNodes.Any()) return;
