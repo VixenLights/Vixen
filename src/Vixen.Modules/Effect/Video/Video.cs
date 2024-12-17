@@ -11,6 +11,7 @@ using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
 using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
+using System.Collections.Concurrent;
 using System.Security.Cryptography;
 using System.Text;
 using Vixen.Extensions;
@@ -27,6 +28,7 @@ namespace VixenModules.Effect.Video
 		private double _currentMovieImageNum;
 		private static readonly string VideoPath = VideoDescriptor.ModulePath;
 		private static readonly string TempPath = Path.Combine(Path.GetTempPath(), "Vixen", "VideoEffect");
+		private static readonly ConcurrentDictionary<string, SemaphoreSlim> _VideoCacheKeyedSemaphore = new();
 		private bool _processVideo;
 		private double _position;
 		private int _xOffsetAdj;
@@ -430,6 +432,24 @@ namespace VixenModules.Effect.Video
 			}
 		}
 
+		[ReadOnly(true)]
+		[ProviderCategory(@"Advanced Settings", 3)]
+		[ProviderDisplayName(@"Cache Size")]
+		[ProviderDescription(@"Size of cache folder on disk")]
+		[PropertyEditor("Label")]
+		[PropertyOrder(9)]
+		public string CacheSize
+		{
+			get { return _data.CacheSize; }
+			private set
+			{
+				_data.CacheSize = value;
+				IsDirty = true;
+				_processVideo = false;
+				OnPropertyChanged();
+			}
+		}
+
 		#endregion
 
 		#region String Setup properties
@@ -651,12 +671,12 @@ namespace VixenModules.Effect.Video
 					GetNewImageSize(out _renderWidth, out _renderHeight, 50, (int) (50 * ((double)_renderWidth / _renderHeight)));
 				}
 
-				string cacheFileExt = ((EffectCacheImageType)_data.CacheFileType).GetEnumDescription();
-
 				// Gets selected video if Video length is longer then the entered start time.
 				if (VideoLength > StartTimeSeconds + (TimeSpan.TotalSeconds * ((double)PlayBackSpeed / 100 + 1)))
 				{
 					_currentMovieImageNum = 0;
+					string cacheFileExt = ((EffectCacheImageType)_data.CacheFileType).GetEnumDescription();
+
 					// Height and Width needs to be evenly divisible to work or ffmpeg complains.
 					if (_renderHeight % 2 != 0) _renderHeight++;
 					if (_renderWidth % 2 != 0) _renderWidth++;
@@ -666,15 +686,29 @@ namespace VixenModules.Effect.Video
 					CalculateSettingsHash();
 					PopulateTempPath();
 
-					// If the hash folder doesn't exist, build it
-					if (!Directory.Exists(_tempFilePath))
+					// If multiple Video Effects are selected and being changed at once, we want to ensure only one of them builds the cache folder while the others wait
+					SemaphoreSlim semaphore = _VideoCacheKeyedSemaphore.GetOrAdd(_tempFilePath, _ => new SemaphoreSlim(1, 1));
+					semaphore.Wait();
+					try
 					{
-						Directory.CreateDirectory(_tempFilePath);
-						Ffmpeg.MakeScaledThumbNails(_videoPathAndFilename, _tempFilePath,
-							StartTimeSeconds, ((TimeSpan.TotalSeconds * ((double)PlayBackSpeed / 100 + 1))),
-							_renderWidth, _renderHeight,
-							MaintainAspect, RotateVideo,
-							cropVideo, 1000.0 / FrameTime, cacheFileExt);
+						// If the hash folder doesn't exist, build it
+						if (!Directory.Exists(_tempFilePath))
+						{
+							Directory.CreateDirectory(_tempFilePath);
+							Ffmpeg.MakeScaledThumbNails(_videoPathAndFilename, _tempFilePath,
+								StartTimeSeconds, ((TimeSpan.TotalSeconds * ((double)PlayBackSpeed / 100 + 1))),
+								_renderWidth, _renderHeight,
+								MaintainAspect, RotateVideo,
+								cropVideo, 1000.0 / FrameTime, cacheFileExt);
+						}
+					}
+					finally
+					{
+						semaphore.Release();
+						if (semaphore.CurrentCount <= 1)
+						{
+							_VideoCacheKeyedSemaphore.TryRemove(_tempFilePath, out _);
+						}
 					}
 					int filesFound = 0;
 					foreach (string f in Directory.EnumerateFiles(TempPath, $"{InstanceId}.*", SearchOption.TopDirectoryOnly))
@@ -697,6 +731,7 @@ namespace VixenModules.Effect.Video
 					}
 					
 					_moviePicturesFileList = [.. Directory.GetFiles(_tempFilePath, $"*.{cacheFileExt}", SearchOption.TopDirectoryOnly).OrderBy(f => f)];
+					CacheSize = $"{_moviePicturesFileList.Select(file => new FileInfo(file).Length).Sum() / 1048576.0,0:0.00} MB";
 					_videoFileDetected = true;
 				}
 				else
@@ -1129,7 +1164,7 @@ namespace VixenModules.Effect.Video
 			}
 			catch (Exception ex)
 			{
-				var messageBox = new MessageBoxForm("There was a problem getting video information for " + _videoPathAndFilename + ": " + ex.Message,
+				var messageBox = new MessageBoxForm($"There was a problem getting video information for {_videoPathAndFilename}: {ex.Message}",
 					"Error Getting Video Information", MessageBoxButtons.OK, SystemIcons.Error);
 				messageBox.ShowDialog();
 				_videoFileDetected = false;

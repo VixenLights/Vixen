@@ -19,6 +19,7 @@ namespace VixenModules.Effect.Video
 			AdvancedSettings = false;
 			Speed = 1;
 			CacheFileType = EffectCacheImageType.CacheImagebmp;
+			CacheSize = "0.00 MB";
 			IncreaseBrightnessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
 			PlayBackSpeed = 0;
 			StartTime = 0;
@@ -42,6 +43,9 @@ namespace VixenModules.Effect.Video
 
 		[DataMember]
 		public EffectCacheImageType CacheFileType { get; set; }
+
+		[DataMember]
+		public string CacheSize { get; set; }
 
 		[DataMember]
 		public Curve IncreaseBrightnessCurve { get; set; }
@@ -150,6 +154,7 @@ namespace VixenModules.Effect.Video
 				XOffsetCurve = new Curve(XOffsetCurve),
 				Speed = Speed,
 				CacheFileType = CacheFileType,
+				CacheSize = CacheSize,
 				IncreaseBrightnessCurve = new Curve(IncreaseBrightnessCurve),
 				VideoLength = VideoLength,
 				RotateVideo =RotateVideo,
