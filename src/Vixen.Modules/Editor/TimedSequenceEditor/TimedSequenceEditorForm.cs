@@ -649,9 +649,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			foreach (var node in _removedNodes)
 			{
-				//Dispose any nodes that where removed
+				//Dispose any nodes that where removed, except if an undo happened
 				if (!_effectNodeToElement.ContainsKey(node))
 				{
+					node.Effect.Removing(); // Notify Effect it has been deleted and to clean up external resources, like cache folders
 					node.Effect.Dispose();
 				}
 			}
