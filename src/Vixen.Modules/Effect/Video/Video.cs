@@ -328,7 +328,6 @@ namespace VixenModules.Effect.Video
 		[ProviderCategory(@"Advanced Settings", 3)]
 		[ProviderDisplayName(@"Video Length (sec)")]
 		[ProviderDescription(@"Video Length")]
-		[PropertyEditor("Label")]
 		[PropertyOrder(1)]
 		public double VideoLength
 		{
@@ -432,12 +431,28 @@ namespace VixenModules.Effect.Video
 			}
 		}
 
+		[Value]
+		[ProviderCategory(@"Advanced Settings", 3)]
+		[ProviderDisplayName(@"Clear Cache on Exit")]
+		[ProviderDescription(@"Cache folder will be removed for this Video effect when Vixen exits")]
+		[PropertyOrder(9)]
+		public bool RemoveCacheOnExit
+		{
+			get { return _data.RemoveCacheOnExit; }
+			set
+			{
+				_data.RemoveCacheOnExit = value;
+				IsDirty = false;
+				_processVideo = false;
+				OnPropertyChanged();
+			}
+		}
+
 		[ReadOnly(true)]
 		[ProviderCategory(@"Advanced Settings", 3)]
 		[ProviderDisplayName(@"Cache Size")]
 		[ProviderDescription(@"Size of cache folder on disk")]
-		[PropertyEditor("Label")]
-		[PropertyOrder(9)]
+		[PropertyOrder(10)]
 		public string CacheSize
 		{
 			get { return _data.CacheSize; }
@@ -1197,6 +1212,19 @@ namespace VixenModules.Effect.Video
 
 		protected override void Dispose(bool disposing)
 		{
+			if (_data.RemoveCacheOnExit)
+			{
+				Removing();
+				try
+				{
+					Directory.Delete(_tempFilePath, true);
+				}
+				catch (Exception e)
+				{
+					Logging.Error(e, $"Unable to delete {_tempFilePath} on exit");
+				}
+			}
+
 			// Check the Video Effect cache for unneeded folders
 			List<string> dirsToDelete = [.. Directory.EnumerateDirectories(TempPath, "*", SearchOption.TopDirectoryOnly)];
 

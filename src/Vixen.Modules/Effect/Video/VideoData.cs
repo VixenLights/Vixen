@@ -20,6 +20,7 @@ namespace VixenModules.Effect.Video
 			Speed = 1;
 			CacheFileType = EffectCacheImageType.CacheImagebmp;
 			CacheSize = "0.00 MB";
+			RemoveCacheOnExit = false;
 			IncreaseBrightnessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
 			PlayBackSpeed = 0;
 			StartTime = 0;
@@ -46,6 +47,9 @@ namespace VixenModules.Effect.Video
 
 		[DataMember]
 		public string CacheSize { get; set; }
+
+		[DataMember]
+		public bool RemoveCacheOnExit { get; set; }
 
 		[DataMember]
 		public Curve IncreaseBrightnessCurve { get; set; }
