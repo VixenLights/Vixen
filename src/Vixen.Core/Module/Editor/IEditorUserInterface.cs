@@ -25,6 +25,16 @@ namespace Vixen.Module.Editor
 		/// </summary>
 		void EditorClosing();
 
+		/// <summary>
+		/// Specific instance of Editor was activated.
+		/// </summary>
+		void EditorGotActivation();
+
+		/// <summary>
+		/// Specific instance of Editor was deactivated.
+		/// </summary>
+		void EditorLostActivation();
+
 		ISequence Sequence { get; set; }
 		ISelection Selection { get; }
 		void Save(string filePath = null);

@@ -34,6 +34,7 @@
 		</ItemGroup>
 
 		<ItemGroup>
+				<ProjectReference Include="..\Vixen.Common\Broadcast\Broadcast.csproj" />
 				<ProjectReference Include="..\Vixen.Common\Controls\Controls.csproj" />
 				<ProjectReference Include="..\Vixen.Common\NShapeGeneralShapes\NShapeGeneralShapes.csproj" />
 				<ProjectReference Include="..\Vixen.Common\NShapeWinFormsUI\NShapeWinFormsUI.csproj" />
