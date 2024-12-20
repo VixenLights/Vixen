@@ -57,6 +57,7 @@ using Cursors = System.Windows.Forms.Cursors;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 using PropertyDescriptor = System.ComponentModel.PropertyDescriptor;
 using Size = System.Drawing.Size;
+using Common.Broadcast;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -229,6 +230,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager(InstanceId);
 			_timeLineGlobalStateManager = TimeLineGlobalStateManager.Manager(InstanceId);
 			_marksSelectionManager = MarksSelectionManager.Manager(InstanceId);
+		}
+
+		/// <summary>
+		/// Specific instance of Editor was activated.
+		/// </summary>
+		public void EditorGotActivation()
+		{
+			// Add receivers for this specific instance
+			Broadcast.AddReceiver<KeyEventArgs>("KeydownSWF", HandleQuickKeySWF);
+			Broadcast.AddReceiver<System.Windows.Input.KeyEventArgs>("KeydownSWI", HandleQuickKeySWI);
+		}
+
+		/// <summary>
+		/// Specific instance of Editor was deactivated.
+		/// </summary>
+		public void EditorLostActivation()
+		{
+			// Remove receivers for this specific instance so another instance get the attention
+			Broadcast.RemoveReceiver<KeyEventArgs>("KeydownSWF", HandleQuickKeySWF);
+			Broadcast.RemoveReceiver<System.Windows.Input.KeyEventArgs>("KeydownSWI", HandleQuickKeySWI);
 		}
 
 		private IDockContent DockingPanels_GetContentFromPersistString(string persistString)
@@ -965,7 +986,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return _marksForm;
 				}
 
-				_marksForm = new Form_Marks(this, _sequence);
+				_marksForm = new Form_Marks(_sequence);
 				//_marksForm.PopulateMarkCollectionsList(null);
 				//_marksForm.MarkCollectionChecked += MarkCollection_Checked;
 				//_marksForm.EditMarkCollection += MarkCollection_Edit;
@@ -987,7 +1008,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return _layerEditor;
 				}
 
-				_layerEditor = new LayerEditor(this, _sequence.SequenceLayers);
+				_layerEditor = new LayerEditor(_sequence.SequenceLayers);
 				_layerEditor.LayersChanged += LayerEditorLayersChanged;
 				_layerEditor.Closing +=LayerEditorOnClosing;
 
@@ -1006,7 +1027,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return _colorLibraryForm;
 				}
 
-				_colorLibraryForm = new Form_ColorLibrary(this, TimelineControl);
+				_colorLibraryForm = new Form_ColorLibrary(TimelineControl);
 				ColorLibraryForm.ColorsChanged += Populate_Colors;
 				return _colorLibraryForm;
 			}
@@ -1023,7 +1044,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return _curveLibraryForm;
 				}
 
-				_curveLibraryForm = new Form_CurveLibrary(this, TimelineControl);
+				_curveLibraryForm = new Form_CurveLibrary(TimelineControl);
 				CurveLibraryForm.CurveLibraryChanged += Populate_Curves;
 				return _curveLibraryForm;
 			}
@@ -1040,7 +1061,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return _gradientLibraryForm;
 				}
 
-				_gradientLibraryForm = new Form_GradientLibrary(this, TimelineControl);
+				_gradientLibraryForm = new Form_GradientLibrary(TimelineControl);
 				GradientLibraryForm.GradientLibraryChanged += Populate_Gradients;
 				return _gradientLibraryForm;
 			}
@@ -1073,7 +1094,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return _findEffects;
 				}
 
-				_findEffects = new FindEffectForm(this, TimelineControl, Sequence.GetSequenceLayerManager());
+				_findEffects = new FindEffectForm(TimelineControl, Sequence.GetSequenceLayerManager());
 
 				return _findEffects;
 			}
@@ -5453,6 +5474,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			EffectsForm.Close();
 			LayerEditor.Close();
 			FindEffects.Close();
+
+			Broadcast.RemoveReceiver<KeyEventArgs>("KeydownSWF", HandleQuickKeySWF);
+			Broadcast.RemoveReceiver<System.Windows.Input.KeyEventArgs>("KeydownSWI", HandleQuickKeySWI);
 
 			var xml = new XMLProfileSettings();
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockLeftPortion", Name), (int)dockPanel.DockLeftPortion);

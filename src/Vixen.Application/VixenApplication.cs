@@ -826,7 +826,7 @@ namespace VixenApplication
 			{
 				// Don't want to clear our reference on Deactivate because
 				// it may be deactivated due to the client getting focus.
-				if (_activeEditor == null || _activeEditor.IsDisposed)
+				if (_activeEditor.IsDisposed)
 				{
 					_activeEditor = null;
 				}
@@ -898,7 +898,9 @@ namespace VixenApplication
 
 		void editorUI_Activated(object sender, EventArgs e)
 		{
+			_activeEditor?.EditorLostActivation();
 			_activeEditor = sender as IEditorUserInterface;
+			_activeEditor.EditorGotActivation();
 		}
 
 		void editorUI_Closing(object sender, System.ComponentModel.CancelEventArgs e)

@@ -1,4 +1,5 @@
-﻿using Common.Controls.Theme;
+﻿using Common.Broadcast;
+using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Common.Resources.Properties;
 using Vixen.Sys.LayerMixing;
@@ -12,16 +13,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public TimelineControl TimelineControl { get; set; }
 
 		private readonly SequenceLayers _layerManager;
-		private readonly TimedSequenceEditorForm _sequenceEditorForm;
 		private bool _rowEventsAdded;
 		private string _searchString = string.Empty;
 		private bool _findEffects = true;
 
-		public FindEffectForm(TimedSequenceEditorForm sequenceEditorForm, TimelineControl timelineControl, SequenceLayers layerManager)
+		public FindEffectForm(TimelineControl timelineControl, SequenceLayers layerManager)
 		{
 			InitializeComponent();
 
-			_sequenceEditorForm = sequenceEditorForm;
 			_layerManager = layerManager;
 			contextMenuStrip1.Renderer = new ThemeToolStripRenderer();
 			Icon = Resources.Icon_Vixen3;
@@ -49,15 +48,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="e">Contains the event data</param>
 		private void Form_FindKeyDown(object sender, KeyEventArgs e)
 		{
-			_sequenceEditorForm.HandleQuickKey(e);
+			Broadcast.Transmit<KeyEventArgs>("KeydownSWF", e);
 		}
-
 
 		private void FindEffectForm_Load(object sender, EventArgs e)
 		{
 			ResizeColumns();
 		}
-
 
 		private void FindEffectForm_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{

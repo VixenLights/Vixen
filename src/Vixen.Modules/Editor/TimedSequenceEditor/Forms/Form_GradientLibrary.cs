@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
+using Common.Broadcast;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -63,17 +64,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private int _dragX;
 		private int _dragY;
 		private bool _scaleText;
-		private readonly TimedSequenceEditorForm _sequenceEditorForm;
 
 		#endregion
 
 		#region Initialization
 
-		public Form_GradientLibrary(TimedSequenceEditorForm sequenceEditorForm, TimelineControl timelineControl)
+		public Form_GradientLibrary(TimelineControl timelineControl)
 		{
 			InitializeComponent();
 
-			_sequenceEditorForm = sequenceEditorForm;
 			TimelineControl = timelineControl;
 			Icon = Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
@@ -197,7 +196,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="e">Contains the event data</param>
 		private void Form_GradientKeyDown(object sender, KeyEventArgs e)
 		{
-			_sequenceEditorForm.HandleQuickKey(e);
+			Broadcast.Transmit<KeyEventArgs>("KeydownSWF", e);
 		}
 
 		#endregion

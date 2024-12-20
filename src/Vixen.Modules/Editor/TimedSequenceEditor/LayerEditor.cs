@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Common.Broadcast;
+using System.Windows;
 using System.Windows.Forms.Integration;
 using Vixen.Sys.LayerMixing;
 using WeifenLuo.WinFormsUI.Docking;
@@ -10,7 +11,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	{
 		private readonly Editor.LayerEditor.LayerEditorView _layerEditorView;
 		private ElementHost host;
-		private readonly TimedSequenceEditorForm _sequenceEditorForm;
 
 		static LayerEditor()
 		{
@@ -22,12 +22,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Application.Current.Resources.MergedDictionaries.Add(dict);
 		}
 
-		public LayerEditor(TimedSequenceEditorForm sequenceEditorForm, SequenceLayers layers)
+		public LayerEditor(SequenceLayers layers)
 		{
 
 			InitializeComponent();
 
-			_sequenceEditorForm = sequenceEditorForm;
 			host = new ElementHost { Dock = DockStyle.Fill };
 
 			BackColor = Color.Black;
@@ -65,10 +64,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="e">Contains the event data</param>
 		private void Form_LayerKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
 		{
-			_sequenceEditorForm.HandleQuickKey(e);
+			Broadcast.Transmit<System.Windows.Input.KeyEventArgs>("KeydownSWI", e);
 		}
 
-		private void LayerEditorViewOnLayerChanged(object sender, EventArgs eventArgs)
+			private void LayerEditorViewOnLayerChanged(object sender, EventArgs eventArgs)
 		{
 			if (LayersChanged != null)
 				LayersChanged(this, eventArgs);

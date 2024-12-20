@@ -3,6 +3,7 @@ using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewModels;
 using WeifenLuo.WinFormsUI.Docking;
 using VixenModules.Sequence.Timed;
 using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Views;
+using Common.Broadcast;
 
 
 namespace VixenModules.Editor.TimedSequenceEditor
@@ -13,13 +14,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private ElementHost host;
 		private readonly MarkDockerView _markDockerView;
 		private MarkDockerViewModel _mdvm;
-		private readonly TimedSequenceEditorForm _sequenceEditorForm;
 
-		public Form_Marks(TimedSequenceEditorForm sequenceEditorForm, TimedSequence sequence)
+		public Form_Marks(TimedSequence sequence)
 		{
 			InitializeComponent();
 
-			_sequenceEditorForm = sequenceEditorForm;
 			host = new ElementHost { Dock = DockStyle.Fill };
 
 			Catel.Windows.Controls.UserControl.DefaultSkipSearchingForInfoBarMessageControlValue = true;
@@ -42,7 +41,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="e">Contains the event data</param>
 		private void Form_MarksKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
 		{
-			_sequenceEditorForm.HandleQuickKey(e);
+			Broadcast.Transmit<System.Windows.Input.KeyEventArgs>("KeydownSWI", e);
 		}
 
 		/// <summary>

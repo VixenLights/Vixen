@@ -19,6 +19,7 @@
 		<ItemGroup>
 		  <ProjectReference Include="..\..\..\Vixen.Common\AudioPlayer\AudioPlayer.csproj" />
 		  <ProjectReference Include="..\..\..\Vixen.Common\BaseSequence\BaseSequence.csproj" />
+		  <ProjectReference Include="..\..\..\Vixen.Common\Broadcast\Broadcast.csproj" />
 		  <ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
 		  <ProjectReference Include="..\..\..\Vixen.Common\Help\Help.csproj" />
 		  <ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />

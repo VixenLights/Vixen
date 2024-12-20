@@ -25,7 +25,15 @@ namespace Vixen.Module.Editor
 		/// </summary>
 		void EditorClosing();
 
-		void HandleQuickKey(KeyEventArgs swiKey);
+		/// <summary>
+		/// Specific instance of Editor was activated.
+		/// </summary>
+		void EditorGotActivation();
+
+		/// <summary>
+		/// Specific instance of Editor was deactivated.
+		/// </summary>
+		void EditorLostActivation();
 
 		ISequence Sequence { get; set; }
 		ISelection Selection { get; }
