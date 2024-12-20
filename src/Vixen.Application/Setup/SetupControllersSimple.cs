@@ -15,7 +15,7 @@ namespace VixenApplication.Setup
 	{
 		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
-		public SetupControllersSimple()
+		public SetupControllersSimple(DisplaySetup _displaySetup)
 		{
 			InitializeComponent();
 			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
@@ -50,6 +50,9 @@ namespace VixenApplication.Setup
 
 			controllerTree.ControllerSelectionChanged += controllerTree_ControllerSelectionChanged;
 			controllerTree.ControllersChanged += controllerTree_ControllersChanged;
+			controllerTree.unpatchControllerToolStripMenuItem.Click += _displaySetup.control_UnpatchControllers;
+			controllerTree.unpatchChannelsToolStripMenuItem.Click += _displaySetup.control_UnpatchControllers;
+			controllerTree.findPatchedChannelsToolStripMenuItem.Click += new System.EventHandler(buttonSelectSourceElements_Click);
 
 			UpdateForm();
 		}

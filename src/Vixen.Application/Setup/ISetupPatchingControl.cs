@@ -12,6 +12,7 @@ namespace VixenApplication.Setup
 		void UpdateElementDetails(IEnumerable<ElementNode> nodes);
 		void UpdateControllerSelection(ControllersAndOutputsSet controllersAndOutputs);
 		void UpdateControllerDetails(ControllersAndOutputsSet controllersAndOutputs);
+		void UnpatchControllers();
 
 		Control SetupPatchingControl { get; }
 		DisplaySetup MasterForm { get; set; }

@@ -1418,6 +1418,12 @@ namespace VixenApplication.Setup
 			}
 		}
 
+		public void UnpatchControllers()
+		{
+			KeyEventArgs e = new KeyEventArgs(Keys.Delete);
+			diagramDisplay_KeyDown(null, e);
+		}
+
 		private void _RemoveDataFlowLinksFromShapePoint(FilterSetupShapeBase shape, ControlPointId controlPoint, bool removePatching)
 		{
 			foreach (ShapeConnectionInfo ci in shape.GetConnectionInfos(controlPoint, null))
@@ -1625,7 +1631,7 @@ namespace VixenApplication.Setup
 			}
 		}
 
-		private void UpdateConnectionsForControllers()
+		public void UpdateConnectionsForControllers()
 		{
 			// patch from their respective sources. If a source is not displayed, it should do something to show that it's patched but non-existant.
 			foreach (OutputShape shape in _outputShapes)
