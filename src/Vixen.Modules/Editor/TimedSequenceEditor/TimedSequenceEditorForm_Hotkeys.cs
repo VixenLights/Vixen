@@ -27,28 +27,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		/// <summary>
-		/// Preprocess Quick Keys before handing the key to OnKeyDown
+		/// Front-end quick keys
 		/// </summary>
-		/// <param name="e">Contains the key data (for System.Windows.Forms)</param>
-		public void HandleQuickKey(KeyEventArgs e)
+		/// <param name="e">Contains the key data</param>
+		public void HandleQuickKeySWF(KeyEventArgs e)
 		{
-			// Convert some special quick keys (sent from GDIPreviewForms) to regular keys then post to
-			// the Windows Message queue.  Posting allows thread-isolation from an outside process.
-			if (e.KeyCode == Keys.MediaPlayPause)
-				Win32.PostMessage(this.Handle, Win32.WM_KEYDOWN, (int)Keys.Space, 0);
-			else if (e.KeyCode == Keys.MediaNextTrack)
-				Win32.PostMessage(this.Handle, Win32.WM_KEYDOWN, (int)Keys.F5, 0);
-			else if (e.KeyCode == Keys.MediaStop)
-				Win32.PostMessage(this.Handle, Win32.WM_KEYDOWN, (int)Keys.F8, 0);
-			else
-				OnKeyDown(e);
+			OnKeyDown(e);
 		}
 
 		/// <summary>
-		/// Preprocess Quick Keys before handing the key to OnKeyDown
+		/// Convert quick key from System.Windows.Input to System.Windows.Form
 		/// </summary>
-		/// <param name="e">Contains the key data (for System.Windows.Input)</param>
-		public void HandleQuickKey(System.Windows.Input.KeyEventArgs swiKey)
+		/// <param name="swiKey">Contains the key data (for System.Windows.Input)</param>
+		public void HandleQuickKeySWI(System.Windows.Input.KeyEventArgs swiKey)
 		{
 			var wpfKey = swiKey.Key == System.Windows.Input.Key.System ? swiKey.SystemKey : swiKey.Key;
 			var swfKeys = (System.Windows.Forms.Keys)System.Windows.Input.KeyInterop.VirtualKeyFromKey(wpfKey);
@@ -59,7 +50,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			swfModifiers |= swiKey.KeyboardDevice.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Shift) ? System.Windows.Forms.Keys.Shift : System.Windows.Forms.Keys.None;
 
 			var swfkey = new System.Windows.Forms.KeyEventArgs(swfKeys | swfModifiers);
-			HandleQuickKey(swfkey);
+			HandleQuickKeySWF(swfkey);
 			swiKey.Handled = swfkey.Handled;
 		}
 
@@ -103,7 +94,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						TimelineControl.VerticalOffset += (TimelineControl.VisibleHeight / 2);
 					break;
 
-				case Keys.MediaPlayPause:
 				case Keys.Space:
 					if (e.Shift)
 					{
@@ -283,13 +273,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					break;
 
-				case Keys.MediaNextTrack:
 				case Keys.F5:
 					playToolStripMenuItem_Click();
 					e.Handled = true;
 					break;
 
-				case Keys.MediaStop:
 				case Keys.F8:
 					stopToolStripMenuItem_Click();
 					e.Handled = true;

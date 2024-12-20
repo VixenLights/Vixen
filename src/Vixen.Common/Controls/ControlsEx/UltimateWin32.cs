@@ -141,7 +141,6 @@ namespace Common.Controls.ControlsEx
 		public const int WM_WINDOWPOSCHANGED = 0x47;
 		public const int WM_WINDOWPOSCHANGING = 0x46;
 		public const int WM_WININICHANGE = 0x1A;
-		public const int WM_KEYDOWN = 0x0100;
 
 		public const int WVR_HREDRAW = 0x100;
 		public const int WVR_REDRAW = (WVR_HREDRAW | WVR_VREDRAW);

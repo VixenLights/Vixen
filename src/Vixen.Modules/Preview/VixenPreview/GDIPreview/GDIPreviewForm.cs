@@ -1,4 +1,5 @@
-﻿using Common.Controls;
+﻿using Common.Broadcast;
+using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
@@ -178,18 +179,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			}
 			else
 			{
-				// Convert some quick keys (that ultimately trigger a longer process) to special keys that
-				// will be intercepted in the quick key handler of the Timed Sequence Editor.
-				if (e.KeyCode == Keys.Space)
-					SendQuickKey(new KeyEventArgs(Keys.MediaPlayPause));
-				else if (e.KeyCode == Keys.F5)
-					SendQuickKey(new KeyEventArgs(Keys.MediaNextTrack));
-				else if (e.KeyCode == Keys.F8)
-					SendQuickKey(new KeyEventArgs(Keys.MediaStop));
-				
-				// Else, just send the regular key directly to the Timed Sequence Editor
-				else
-					SendQuickKey(e);
+				SendQuickKey(e);
 			}
 		}
 
@@ -199,11 +189,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 		/// <param name="e">Contains the keystroke data</param>
 		private void SendQuickKey(KeyEventArgs e)
 		{
-			var activeEditor = ApplicationServices.GetActiveEditor();
-			if (activeEditor != null)
-			{
-				Invoke(new Action(delegate { activeEditor.HandleQuickKey(e); }));
-			}
+			Broadcast.Transmit<KeyEventArgs>("KeydownSWF", e);
 		}
 
 		private void HandleContextMenu()

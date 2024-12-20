@@ -12,6 +12,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using Element = Common.Controls.Timeline.Element;
 using PropertyValueChangedEventArgs = VixenModules.Editor.EffectEditor.PropertyValueChangedEventArgs;
 using Timer = System.Timers.Timer;
+using Common.Broadcast;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -162,7 +163,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="e">Contains the event data</param>
 		private void Form_EffectEditorKeyDown(object sender, KeyEventArgs e)
 		{
-			_sequenceEditorForm.HandleQuickKey(e);
+			Broadcast.Transmit<KeyEventArgs>("KeydownSWI", e);
 		}
 
 		#endregion
