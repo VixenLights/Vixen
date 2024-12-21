@@ -16,7 +16,7 @@ namespace VixenModules.Output.ElexolEtherIO
 		private int m_MinIntensity = 1;
 		private IPAddress m_IPAddress = null;
 		private ElexolEtherIOData _data;
-
+		private readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public SetupDialog(ElexolEtherIOData data)
 		{
@@ -100,45 +100,62 @@ namespace VixenModules.Output.ElexolEtherIO
 		{
 			using (UdpClient client = new UdpClient())
 			{
-				IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Parse(ipAddressTextBox.Text), int.Parse(portTextBox.Text));
-				client.Connect(remoteEndPoint);
+				try
+				{
+					IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Parse(ipAddressTextBox.Text),
+						int.Parse(portTextBox.Text));
+					client.Connect(remoteEndPoint);
 
-				// Use "`" command (0x60) to cause device to echo byte back.
-				byte[] sendPckt = new byte[] { 0x60, 0x69 };
-				DateTime begin = DateTime.Now;
-				client.Send(sendPckt, sendPckt.Length);
-				
-				// Wait for data to be available or a timeout to ocurr.
-				while ((client.Available == 0) && (((TimeSpan)(DateTime.Now - begin)).TotalSeconds < 1))
-				{
-					Thread.Sleep(10);
-				}
+					// Use "`" command (0x60) to cause device to echo byte back.
+					byte[] sendPckt = new byte[] { 0x60, 0x69 };
+					DateTime begin = DateTime.Now;
+					client.Send(sendPckt, sendPckt.Length);
 
-				if (client.Available == 0)
-				{
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-					var messageBox = new MessageBoxForm("No Reply.", "Error", false, false);
-					messageBox.ShowDialog();
-				}
-				else
-				{
-					IPEndPoint rcvdEP = new IPEndPoint(IPAddress.Any, 0);
-					byte[] rcvdPckt = client.Receive(ref rcvdEP);
-					if (arrayEqual(rcvdPckt, sendPckt))
+					// Wait for data to be available or a timeout to ocurr.
+					while ((client.Available == 0) && (((TimeSpan)(DateTime.Now - begin)).TotalSeconds < 1))
+					{
+						Thread.Sleep(10);
+					}
+
+					if (client.Available == 0)
 					{
 						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-						var messageBox = new MessageBoxForm("Connection Successful!", "Error", false, false);
+						MessageBoxForm.msgIcon =
+							SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+						var messageBox = new MessageBoxForm("No Reply.", "Error", false, false);
 						messageBox.ShowDialog();
 					}
 					else
 					{
-						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-						var messageBox = new MessageBoxForm("Device replied, but with incorrect data:\n" + printBytes(sendPckt), "Error", false, false);
-						messageBox.ShowDialog();
+						IPEndPoint rcvdEP = new IPEndPoint(IPAddress.Any, 0);
+						byte[] rcvdPckt = client.Receive(ref rcvdEP);
+						if (arrayEqual(rcvdPckt, sendPckt))
+						{
+							//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+							MessageBoxForm.msgIcon =
+								SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+							var messageBox = new MessageBoxForm("Connection Successful!", "Error", false, false);
+							messageBox.ShowDialog();
+						}
+						else
+						{
+							//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+							MessageBoxForm.msgIcon =
+								SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+							var messageBox = new MessageBoxForm(
+								"Device replied, but with incorrect data:\n" + printBytes(sendPckt), "Error", false,
+								false);
+							messageBox.ShowDialog();
+						}
 					}
+				}
+				catch (Exception ex)
+				{
+					Logging.Error(ex, "An error occured testing the connection.");
+
+					var messageBox = new MessageBoxForm(
+						$"An error occured testing the device\n {ex.Message}", "Error", MessageBoxButtons.OK, SystemIcons.Error);
+					messageBox.ShowDialog();
 				}
 
 			}

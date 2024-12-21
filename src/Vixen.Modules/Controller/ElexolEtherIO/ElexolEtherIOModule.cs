@@ -1,7 +1,6 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
-
 using Vixen.Commands;
 using Vixen.Module.Controller;
 
@@ -9,7 +8,7 @@ namespace VixenModules.Output.ElexolEtherIO
 {
 	public class ElexolEtherIOModule : ControllerModuleInstanceBase
 	{
-		private readonly static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private int _minIntensity = 1;
 		private int _remotePort = 2424;
 		private UdpClient _socket = new UdpClient();
@@ -31,36 +30,65 @@ namespace VixenModules.Output.ElexolEtherIO
 
 		public override void UpdateState(int chainIndex, ICommand[] outputStates)
 		{
-			if (_socket.Available == 0)
+			try
 			{
-				if (!OpenConnection())
+				if (_socket.Available == 0)
 				{
-					Logging.Warn("Elexol Ether I/O: failed to connect to device, not updating the current state.");
+					if (!OpenConnection())
+					{
+						Logging.Warn("Elexol Ether I/O: failed to connect to device, not updating the current state.");
+						return;
+					}
+				}
+				else
+				{
+					//Clear out the buffer
+					IPEndPoint rcvdBytes = new IPEndPoint(IPAddress.Any, 0);
+
+					while (_socket.Available > 0)
+					{
+						_socket.Receive(ref rcvdBytes);
+					}
+					Logging.Warn("Elexol Ether I/O: Unexpected data in the buffer was cleared. Skipping update.");
 					return;
 				}
-			}
-			int chan = 0;               // Current channel being processed.
-			int i = 0;                  // Buffer iterator
-			byte[] buf = new byte[6];   // The data buffer. ("A[byte_val]B[byte_val]C[byte_val]" = 6bytes)
 
-			for (char port = 'A'; port <= 'C'; ++port)
-			{
-				buf[i++] = (byte)port;  // Port specification
-				buf[i] = 0;             // Initialize value to zero
-				for (int bit = 0; (bit < 8 && chan < outputStates.Length); ++bit, ++chan)
+				int chan = 0; // Current channel being processed.
+				int i = 0; // Buffer iterator
+				byte[] buf = new byte[6]; // The data buffer. ("A[byte_val]B[byte_val]C[byte_val]" = 6bytes)
+
+				for (char port = 'A'; port <= 'C'; ++port)
 				{
-					_commandHandler.Reset();
-					ICommand command = outputStates[chan];
-					if (command != null)
+					buf[i++] = (byte)port; // Port specification
+					buf[i] = 0; // Initialize value to zero
+					for (int bit = 0; (bit < 8 && chan < outputStates.Length); ++bit, ++chan)
 					{
-						command.Dispatch(_commandHandler);
+						_commandHandler.Reset();
+						ICommand command = outputStates[chan];
+						if (command != null)
+						{
+							command.Dispatch(_commandHandler);
+						}
+
+						// If this channel's value is greater than minIntensity, turn on its bit for this port
+						buf[i] |= (byte)(((_commandHandler.Value > _minIntensity) ? 0x01 : 0x00) << bit);
 					}
-					// If this channel's value is greater than minIntensity, turn on its bit for this port
-					buf[i] |= (byte)(((_commandHandler.Value > _minIntensity) ? 0x01 : 0x00) << bit);
+
+					i++;
 				}
-				i++;
+
+				_socket.Send(buf, buf.Length);
 			}
-			_socket.Send(buf, buf.Length);
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "An exception occuring trying to update the state.");
+				if (ex is SocketException se)
+				{
+					Logging.Error($"Socket exception error code: {se.ErrorCode}");
+				}
+				
+
+			}
 		}
 
 		public override bool Setup()
