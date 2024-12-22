@@ -15,6 +15,11 @@ namespace VixenModules.App.WebServer.Controllers
 
 		public Controller Get(Guid id)
 		{
+			return GetController(id);
+		}
+
+		public Controller GetController(Guid id)
+		{
 			var helper = new SystemHelper();
 			return helper.GetController(id);
 		}
