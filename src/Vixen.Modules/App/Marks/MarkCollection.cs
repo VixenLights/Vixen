@@ -19,6 +19,7 @@ namespace VixenModules.App.Marks
 		private bool _isDefault;
 		private bool _showMarkBar;
 		private bool _showGridLines;
+		private bool _showTailGridLines;
 		private MarkCollectionType _collectionType = MarkCollectionType.Generic;
 
 		public MarkCollection()
@@ -30,6 +31,7 @@ namespace VixenModules.App.Marks
 			Id = Guid.NewGuid();
 			Level = 1;
 			ShowGridLines = true;
+			ShowTailGridLines = false;
 			ShowMarkBar = false;
 			CollectionType = MarkCollectionType.Generic;
 		}
@@ -70,6 +72,18 @@ namespace VixenModules.App.Marks
 				if (value == _showGridLines) return;
 				_showGridLines = value;
 				OnPropertyChanged(nameof(ShowGridLines));
+			}
+		}
+
+		[DataMember]
+		public bool ShowTailGridLines
+		{
+			get { return _showTailGridLines; }
+			set
+			{
+				if (value == _showTailGridLines) return;
+				_showTailGridLines = value;
+				OnPropertyChanged(nameof(ShowTailGridLines));
 			}
 		}
 
@@ -241,6 +255,7 @@ namespace VixenModules.App.Marks
 			{
 				ShowMarkBar = ShowMarkBar,
 				ShowGridLines = ShowGridLines,
+				ShowTailGridLines = ShowTailGridLines,
 				Level = Level,
 				Name = Name,
 				_marks = new ObservableCollection<IMark>(Marks.Select(x => (IMark)x.Clone())),
