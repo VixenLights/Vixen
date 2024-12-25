@@ -5,133 +5,149 @@
                    xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
                    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                    xmlns:utils="clr-namespace:Common.WPFCommon.Utils;assembly=WPFCommon"
-                   xmlns:viewModels="clr-namespace:VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewModels">
+                   xmlns:viewModels="clr-namespace:VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewModels"
+                   xmlns:System="clr-namespace:System;assembly=System.Runtime">
 
-	<UserControl.Resources>
-		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
-			</ResourceDictionary.MergedDictionaries>
-			<converters:ColorToSolidBrushConverter x:Key="ColorToSolidBrushConverter"/>
-			
-			<DataTemplate x:Key="MarkCollectionRowTemplate" DataType="{x:Type viewModels:MarkCollectionViewModel}">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition SharedSizeGroup="A" />
-						<ColumnDefinition SharedSizeGroup="B"/>
-						<ColumnDefinition SharedSizeGroup="C"/>
-						<ColumnDefinition Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=3}, Path=ColumnDefinitions[3].Width}"/>
-					</Grid.ColumnDefinitions>
-					<Border Background="{StaticResource BackColorBrush}" Grid.Column="0" BorderBrush="Transparent" BorderThickness="0,0,1,0" >
-						<RadioButton IsChecked="{Binding IsDefault}" GroupName="Active" Style="{StaticResource ContentLessCheckRadioButton}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2,0,2,0"/>
-					</Border>
-					<Border Background="{StaticResource BackColorBrush}" Grid.Column="1" BorderBrush="Transparent" BorderThickness="0,0,1,0" >
-						<CheckBox IsChecked="{Binding ShowGridLines}" Style="{StaticResource ContentlessCheckBox}"  VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2,0,2,0"/>
-					</Border>
-					<Border Background="{StaticResource BackColorBrush}" Grid.Column="2" BorderBrush="Transparent" BorderThickness="0,0,1,0" >
-						<CheckBox IsChecked="{Binding ShowMarkBar}" Style="{StaticResource ContentlessCheckBox}" 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <converters:ColorToSolidBrushConverter x:Key="ColorToSolidBrushConverter"/>
+
+            <DataTemplate x:Key="MarkCollectionRowTemplate" DataType="{x:Type viewModels:MarkCollectionViewModel}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition SharedSizeGroup="A" />
+                        <ColumnDefinition SharedSizeGroup="B"/>
+                        <ColumnDefinition SharedSizeGroup="C"/>
+                        <ColumnDefinition SharedSizeGroup="D"/>
+                        <ColumnDefinition Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=3}, Path=ColumnDefinitions[3].Width}"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Background="{StaticResource BackColorBrush}" Grid.Column="0" BorderBrush="Transparent" BorderThickness="0,0,1,0" >
+                        <RadioButton IsChecked="{Binding IsDefault}" GroupName="Active" Style="{StaticResource ContentLessCheckRadioButton}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2,0,2,0"/>
+                    </Border>
+                    <Border Background="{StaticResource BackColorBrush}" Grid.Column="1" BorderBrush="Transparent" BorderThickness="0,0,1,0" >
+                        <CheckBox x:Name="ShowGridLines" IsChecked="{Binding ShowGridLines}" Style="{StaticResource ContentlessCheckBox}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2,0,2,0"/>
+                    </Border>
+                    <Border Background="{StaticResource BackColorBrush}" Grid.Column="2" BorderBrush="Transparent" BorderThickness="0,0,1,0" >
+                        <CheckBox IsChecked="{Binding ShowTailGridLines}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2,0,2,0" >
+                        <CheckBox.Style >
+                            <Style TargetType="CheckBox" BasedOn="{StaticResource ContentlessCheckBox}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=ShowGridLines, Path=IsChecked}" Value="false">
+                                        <Setter Property="Foreground" Value="DarkGray"/>
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </CheckBox.Style>
+                        </CheckBox>
+                    </Border>
+                    <Border Background="{StaticResource BackColorBrush}" Grid.Column="3" BorderBrush="Transparent" BorderThickness="0,0,1,0" >
+                        <CheckBox IsChecked="{Binding ShowMarkBar}" Style="{StaticResource ContentlessCheckBox}" 
 						          VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2,0,2,0"/>
-					</Border>
-					<Border Background="{StaticResource BackColorBrush}" Grid.Column="3" BorderBrush="Transparent" BorderThickness="0,0,1,0">
-						<StackPanel Orientation="Horizontal">
-							<TextBlock x:Name="ReadOnlyText" Text="{Binding Name}" Foreground="{Binding Decorator.Color,Converter={StaticResource ColorToSolidBrushConverter}}" 
+                    </Border>
+                    <Border Background="{StaticResource BackColorBrush}" Grid.Column="4" BorderBrush="Transparent" BorderThickness="0,0,1,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="ReadOnlyText" Text="{Binding Name}" Foreground="{Binding Decorator.Color,Converter={StaticResource ColorToSolidBrushConverter}}" 
 							           Focusable="True" Margin="2,3,2,3" MinWidth="50">
-								<TextBlock.ContextMenu>
-									<ContextMenu>
-										<i:Interaction.Triggers>
-											<i:EventTrigger EventName="Opened">
-												<catel:EventToCommand Command="{Binding MenuOpenCommand}" DisableAssociatedObjectOnCannotExecute="False" PassEventArgsToCommand="False"/>
-											</i:EventTrigger>
-										</i:Interaction.Triggers>
-										<MenuItem Header="Delete" Command="{Binding DeleteCommand}">
-											<MenuItem.Icon>
-												<Image Source="/Resources;component/Resources/delete_32.png" Width="16" Height="16"/>
-											</MenuItem.Icon>
-										</MenuItem>
+                                <TextBlock.ContextMenu>
+                                    <ContextMenu>
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Opened">
+                                                <catel:EventToCommand Command="{Binding MenuOpenCommand}" DisableAssociatedObjectOnCannotExecute="False" PassEventArgsToCommand="False"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                        <MenuItem Header="Delete" Command="{Binding DeleteCommand}">
+                                            <MenuItem.Icon>
+                                                <Image Source="/Resources;component/Resources/delete_32.png" Width="16" Height="16"/>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
                                         <MenuItem Header="Offset Time" Command="{Binding OffsetTimeCommand}">
                                             <MenuItem.Icon>
                                                 <Image Source="/Resources;component/Resources/clock_go.png" Width="16" Height="16"/>
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <MenuItem Header="Solid Line" IsCheckable="True" IsChecked="{Binding Decorator.IsSolidLine}"/>
-										<MenuItem Header="Bold" IsCheckable="True" IsChecked="{Binding Decorator.IsBold}"/>
-										<MenuItem Header="Color" Command="{Binding PickColorCommand}">
-											<MenuItem.Icon>
-												<Image Source="/Resources;component/colors.png" Width="16" Height="16"/>
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="Weight" ItemsSource="{Binding LevelCheckBoxStates}">
-											<MenuItem.ItemContainerStyle>
-												<Style TargetType="MenuItem">
-													<Setter Property="Header" Value="{Binding Text}" />
-													<Setter Property="IsCheckable" Value="True" />
-													<Setter Property="IsChecked" Value="{Binding Value,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-													<Setter Property="Command" Value="{Binding DataContext.ResolveLevelCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type MenuItem}}}" />
-													<Setter Property="CommandParameter" Value="{Binding}" />
-												</Style>
-											</MenuItem.ItemContainerStyle>
-										</MenuItem>
-										<MenuItem Header="Type"  ItemsSource="{Binding CollectionTypeCheckBoxStates}">
-											<MenuItem.ItemContainerStyle>
-												<Style TargetType="MenuItem">
-													<Setter Property="Header" Value="{Binding Text}" />
-													<Setter Property="IsCheckable" Value="True" />
+                                        <MenuItem Header="Bold" IsCheckable="True" IsChecked="{Binding Decorator.IsBold}"/>
+                                        <MenuItem Header="Color" Command="{Binding PickColorCommand}">
+                                            <MenuItem.Icon>
+                                                <Image Source="/Resources;component/colors.png" Width="16" Height="16"/>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="Weight" ItemsSource="{Binding LevelCheckBoxStates}">
+                                            <MenuItem.ItemContainerStyle>
+                                                <Style TargetType="MenuItem">
+                                                    <Setter Property="Header" Value="{Binding Text}" />
+                                                    <Setter Property="IsCheckable" Value="True" />
+                                                    <Setter Property="IsChecked" Value="{Binding Value,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                    <Setter Property="Command" Value="{Binding DataContext.ResolveLevelCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type MenuItem}}}" />
+                                                    <Setter Property="CommandParameter" Value="{Binding}" />
+                                                </Style>
+                                            </MenuItem.ItemContainerStyle>
+                                        </MenuItem>
+                                        <MenuItem Header="Type"  ItemsSource="{Binding CollectionTypeCheckBoxStates}">
+                                            <MenuItem.ItemContainerStyle>
+                                                <Style TargetType="MenuItem">
+                                                    <Setter Property="Header" Value="{Binding Text}" />
+                                                    <Setter Property="IsCheckable" Value="True" />
 
-													<Setter Property="IsChecked" Value="{Binding Value,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-													<Setter Property="Command" Value="{Binding DataContext.ResolveCollectionTypeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type MenuItem}}}" />
-													<Setter Property="CommandParameter" Value="{Binding}" />
-												</Style>
-											</MenuItem.ItemContainerStyle>
-										</MenuItem>
-										<MenuItem Header="Linked To"  ItemsSource="{Binding LinkedToCheckBoxStates}" Visibility="{Binding IsLinkableType, Converter={StaticResource BooleanToVisibilityConverter}}">
-											<MenuItem.ItemContainerStyle>
-												<Style TargetType="MenuItem">
-													<Setter Property="Header" Value="{Binding Text}" />
-													<Setter Property="IsCheckable" Value="True" />
-													<Setter Property="IsChecked" Value="{Binding Value,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-													<Setter Property="Command" Value="{Binding DataContext.ResolveLinkToCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type MenuItem}}}" />
-													<Setter Property="CommandParameter" Value="{Binding}" />
-												</Style>
-											</MenuItem.ItemContainerStyle>
-										</MenuItem>
-									</ContextMenu>
-								</TextBlock.ContextMenu>
+                                                    <Setter Property="IsChecked" Value="{Binding Value,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                    <Setter Property="Command" Value="{Binding DataContext.ResolveCollectionTypeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type MenuItem}}}" />
+                                                    <Setter Property="CommandParameter" Value="{Binding}" />
+                                                </Style>
+                                            </MenuItem.ItemContainerStyle>
+                                        </MenuItem>
+                                        <MenuItem Header="Linked To"  ItemsSource="{Binding LinkedToCheckBoxStates}" Visibility="{Binding IsLinkableType, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <MenuItem.ItemContainerStyle>
+                                                <Style TargetType="MenuItem">
+                                                    <Setter Property="Header" Value="{Binding Text}" />
+                                                    <Setter Property="IsCheckable" Value="True" />
+                                                    <Setter Property="IsChecked" Value="{Binding Value,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                    <Setter Property="Command" Value="{Binding DataContext.ResolveLinkToCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type MenuItem}}}" />
+                                                    <Setter Property="CommandParameter" Value="{Binding}" />
+                                                </Style>
+                                            </MenuItem.ItemContainerStyle>
+                                        </MenuItem>
+                                    </ContextMenu>
+                                </TextBlock.ContextMenu>
 								<i:Interaction.Triggers>
 									<i:EventTrigger EventName="MouseLeftButtonUp">
 										<catel:EventToCommand Command="{Binding BeginEditCommand}" DisableAssociatedObjectOnCannotExecute="False" PassEventArgsToCommand="True"/>
 									</i:EventTrigger>
 								</i:Interaction.Triggers>
-							</TextBlock>
-							<TextBox x:Name="EditableText" Text="{Binding Name}" Tag="{Binding}" Visibility="Collapsed" Margin="2,0,2,0"
+                            </TextBlock>
+                            <TextBox x:Name="EditableText" Text="{Binding Name}" Tag="{Binding}" Visibility="Collapsed" Margin="2,0,2,0"
 				         utils:TextBoxExtender.CommitOnEnter="true"
 				         utils:TextBoxExtender.RollbackOnEscape="false"
 				         utils:TextBoxExtender.SelectAllOnFocus="True"
 				         utils:TextBoxExtender.CommitOnTyping="true">
-								<i:Interaction.Triggers>
-									<i:EventTrigger EventName="LostKeyboardFocus">
-										<catel:EventToCommand Command="{Binding DoneEditingCommand}" DisableAssociatedObjectOnCannotExecute="False" />
-									</i:EventTrigger>
-								</i:Interaction.Triggers>
-								<i:Interaction.Behaviors>
-									<catel:KeyPressToCommand Command="{Binding DoneEditingCommand}" Key="Enter"/>
-									<catel:KeyPressToCommand Command="{Binding CancelEditingCommand}" Key="Escape"/>
-								</i:Interaction.Behaviors>
-							</TextBox>
-						</StackPanel>
-					</Border>
-				</Grid>
-				<DataTemplate.Triggers>
-					<DataTrigger Binding="{Binding IsEditing}" Value="True">
-						<Setter TargetName="EditableText" Property="Visibility" Value="Visible" />
-						<Setter TargetName="ReadOnlyText" Property="Visibility" Value="Collapsed"/>
-						<Setter Property="FocusManager.FocusedElement" Value="{Binding ElementName=EditableText}" TargetName="EditableText" />
-					</DataTrigger>
-				</DataTemplate.Triggers>
-			</DataTemplate>
-		</ResourceDictionary>
-	</UserControl.Resources>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="LostKeyboardFocus">
+                                        <catel:EventToCommand Command="{Binding DoneEditingCommand}" DisableAssociatedObjectOnCannotExecute="False" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                                <i:Interaction.Behaviors>
+                                    <catel:KeyPressToCommand Command="{Binding DoneEditingCommand}" Key="Enter"/>
+                                    <catel:KeyPressToCommand Command="{Binding CancelEditingCommand}" Key="Escape"/>
+                                </i:Interaction.Behaviors>
+                            </TextBox>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                        <Setter TargetName="EditableText" Property="Visibility" Value="Visible" />
+                        <Setter TargetName="ReadOnlyText" Property="Visibility" Value="Collapsed"/>
+                        <Setter Property="FocusManager.FocusedElement" Value="{Binding ElementName=EditableText}" TargetName="EditableText" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
-	<ContentControl ContentTemplate="{StaticResource MarkCollectionRowTemplate}" Content="{Binding}">
-	</ContentControl>
+    <ContentControl ContentTemplate="{StaticResource MarkCollectionRowTemplate}" Content="{Binding}">
+    </ContentControl>
 
 </catel:UserControl>

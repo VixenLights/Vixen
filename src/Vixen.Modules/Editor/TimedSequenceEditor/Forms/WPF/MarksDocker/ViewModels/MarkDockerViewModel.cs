@@ -12,6 +12,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 	public class MarkDockerViewModel:ViewModelBase
 	{
 		private bool _lineToggleState = true;
+		private bool _lineTailToggleState = false;
 		private bool _markBarToggleState = true;
 		public MarkDockerViewModel(ObservableCollection<IMarkCollection> markCollections)
 		{
@@ -19,6 +20,10 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 			if (MarkCollections.All(x => x.ShowGridLines))
 			{
 				_lineToggleState = false;
+			}
+			if (MarkCollections.All(x => x.ShowTailGridLines))
+			{
+				_lineTailToggleState = true;
 			}
 			if (MarkCollections.All(x => x.ShowMarkBar))
 			{
@@ -191,6 +196,29 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// Method to invoke when the EnableAllLines command is executed.
 		/// </summary>
 		private void ToggleLineState()
+		{
+			MarkCollections.ForEach(x => x.ShowGridLines = _lineToggleState);
+			_lineToggleState = !_lineToggleState;
+		}
+
+		#endregion
+
+		#region EnabledTailLines command
+
+		private Command _enabledTailLinesCommand;
+
+		/// <summary>
+		/// Gets the EnableTailLines command.
+		/// </summary>
+		public Command ToggleTailLineStateCommand
+		{
+			get { return _enabledTailLinesCommand ?? (_enabledTailLinesCommand = new Command(ToggleTailLineState)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the EnableTailLines command is executed.
+		/// </summary>
+		private void ToggleTailLineState()
 		{
 			MarkCollections.ForEach(x => x.ShowGridLines = _lineToggleState);
 			_lineToggleState = !_lineToggleState;
