@@ -15,6 +15,8 @@ namespace Vixen.Marks
 
 		bool ShowGridLines { get; set; }
 
+		bool ShowTailGridLines { get; set; }
+
 		bool ShowMarkBar { get; set; }
 
 		int Level { get; set; }

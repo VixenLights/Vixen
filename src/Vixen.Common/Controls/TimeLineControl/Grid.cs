@@ -2050,6 +2050,10 @@ namespace Common.Controls.Timeline
 				foreach (var mark in mc.Marks)
 				{
 					AddSnapPoint(mark.StartTime, mc.Level, mc.Decorator.Color, mc.Decorator.IsBold, mc.Decorator.IsSolidLine);
+					if (mc.ShowTailGridLines)
+					{
+						AddSnapPoint(mark.EndTime, mc.Level, mc.Decorator.Color, mc.Decorator.IsBold, mc.Decorator.IsSolidLine);
+					}
 				}
 			}
 		}
