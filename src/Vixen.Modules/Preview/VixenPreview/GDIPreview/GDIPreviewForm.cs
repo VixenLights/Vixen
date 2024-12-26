@@ -1,4 +1,5 @@
-﻿using Common.Controls;
+﻿using Common.Broadcast;
+using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
@@ -7,6 +8,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using Vixen;
+using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
 using VixenModules.Preview.VixenPreview.Shapes;
@@ -175,7 +177,19 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 				ZoomLevel = ZoomLevel + delta * factor;
 
 			}
+			else
+			{
+				SendQuickKey(e);
+			}
+		}
 
+		/// <summary>
+		/// Send a keyboard event to the "active" Timed Sequence Editor
+		/// </summary>
+		/// <param name="e">Contains the keystroke data</param>
+		private void SendQuickKey(KeyEventArgs e)
+		{
+			Broadcast.Transmit<KeyEventArgs>("KeydownSWF", e);
 		}
 
 		private void HandleContextMenu()
