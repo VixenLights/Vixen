@@ -56,13 +56,13 @@ namespace VixenApplication.Setup
 			_setupPatchingGraphical.Dock = DockStyle.Fill;
 			_setupPatchingGraphical.MasterForm = this;
 
-			_setupControllersSimple = new SetupControllersSimple();
+			_setupControllersSimple = new SetupControllersSimple(this);
 			_setupControllersSimple.Dock = DockStyle.Fill;
 			_setupControllersSimple.MasterForm = this;
 
 			ActivateControllersControl(_setupControllersSimple);
 			ActivateElementControl(_setupElementsTree);
-
+			
 			radioButtonPatchingSimple.Checked = true;
 			//splitContainer1.SplitterDistance = tableLayoutPanelElementSetup.Width + 6;
 			//splitContainer2.SplitterDistance = (int)(patchingPaneTableLayoutPanel.Width + (10 * ScalingTools.GetScaleFactor()));
@@ -211,6 +211,18 @@ namespace VixenApplication.Setup
 			{
 				_currentElementControl.UpdatePatching();
 			}
+		}
+
+		/// <summary>
+		/// Unpatch selected controllers
+		/// </summary>
+		/// <param name="sender">The source of the event</param>
+		/// <param name="e">Contains the event data</param>
+		public void control_UnpatchControllers(object? sender, EventArgs e)
+		{
+			_setupPatchingSimple.UnpatchControllers();
+			if (_currentPatchingControl == _setupPatchingGraphical)
+				_setupPatchingGraphical.UpdateConnectionsForControllers();
 		}
 
 		void control_ControllerSelectionChanged(object? sender, ControllerSelectionEventArgs e)

@@ -18,7 +18,7 @@ namespace Common.Controls
 		private HashSet<string> _expandedNodes; // TreeNode paths that are expanded
 		private HashSet<string> _selectedNodes; // TreeNode paths that are selected
 		private List<string> _topDisplayedNodes; // TreeNode paths that are at the top of the view. Should only
-		// need one, but will have multiple in case the top node is deleted.
+												 // need one, but will have multiple in case the top node is deleted.
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private bool _someSelectedControllersRunning;
 		private bool _someSelectedControllersNotRunning;
@@ -129,7 +129,7 @@ namespace Common.Controls
 				AddControllerToTree(treeview.Nodes, controller);
 			}
 
-			
+
 			// if a new controller has been passed in to select, select it instead.
 			if (treeNodesToSelect != null) {
 				_selectedNodes = new HashSet<string>(treeNodesToSelect);
@@ -174,7 +174,7 @@ namespace Common.Controls
 					try {
 						treeview.TopNode = resultNode;
 					} catch (Exception) {
-						 Logging.Warn("exception caught trying to set TopNode.");
+						Logging.Warn("exception caught trying to set TopNode.");
 					}
 					break;
 				}
@@ -218,7 +218,7 @@ namespace Common.Controls
 
 		private TreeNode FindNodeInTreeAtPath(TreeView tree, string path)
 		{
-			
+
 			string[] subnodes = path.Split(new string[] { tree.PathSeparator }, StringSplitOptions.None);
 			TreeNodeCollection searchNodes = tree.Nodes;
 			TreeNode currentNode = null;
@@ -284,8 +284,8 @@ namespace Common.Controls
 
 			for (int i = 0; i < controller.OutputCount; i++) {
 				TreeNode channelNode = new TreeNode();
-                channelNode.Name = channelNode.Text = controller.Outputs[i].Name;
-                channelNode.Tag = i;
+				channelNode.Name = channelNode.Text = controller.Outputs[i].Name;
+				channelNode.Tag = i;
 
 				IDataFlowComponentReference source = controller.Outputs[i].Source;
 
@@ -381,7 +381,7 @@ namespace Common.Controls
 						}
 					}
 				}
-				
+
 			}
 
 			treeview.EndUpdate();
@@ -534,11 +534,11 @@ namespace Common.Controls
 			bool result = false;
 			if (controller.HasSetup) {
 				result = controller.Setup();
-                if (result)
-                {
-                    OnControllersChanged();
-                    RefreshControllerOutputNames(controller);
-                }
+				if (result)
+				{
+					OnControllersChanged();
+					RefreshControllerOutputNames(controller);
+				}
 			}
 			return result;
 		}
@@ -585,7 +585,7 @@ namespace Common.Controls
 								VixenSystem.OutputControllers.Resume(outputController);
 							}
 						});
-						
+
 						OnControllersChanged();
 						PopulateControllerTree();
 						if (TopLevelControl != null)
@@ -596,7 +596,7 @@ namespace Common.Controls
 					}
 				}
 			}
-				
+
 			return false;
 		}
 
@@ -683,30 +683,65 @@ namespace Common.Controls
 			{
 				insertChannelsToolStripMenuItem.Visible = false;
 				removeChannelsToolStripMenuItem.Visible = false;
+				unpatchChannelsToolStripMenuItem.Visible = false;
+				findPatchedChannelsToolStripMenuItem.Visible = false;
+				toolStripSeparator.Visible = true;
 				configureToolStripMenuItem.Visible = true;
 				channelCountToolStripMenuItem.Visible = true;
 				renameToolStripMenuItem.Visible = true;
 				deleteToolStripMenuItem.Visible = true;
 				startControllerToolStripMenuItem.Visible = true;
 				stopControllerToolStripMenuItem.Visible = true;
+				unpatchControllerToolStripMenuItem.Visible = true;
 				configureToolStripMenuItem.Enabled = (SelectedControllers.Count() == 1);
 				channelCountToolStripMenuItem.Enabled = (SelectedControllers.Count() == 1);
 				renameToolStripMenuItem.Enabled = (SelectedControllers.Count() == 1);
 				deleteToolStripMenuItem.Enabled = (SelectedControllers.Any());
 				CheckIfSelectedControllersRunning();
 				return;
-			} 
-			
+			}
+
 			if (treeview.SelectedNodes.Any())
 			{
-				insertChannelsToolStripMenuItem.Visible = treeview.SelectedNodes.Count == 1;
+				unpatchChannelsToolStripMenuItem.Enabled = false;
+				findPatchedChannelsToolStripMenuItem.Enabled = false;
+
+				// Search for at least one channel that is patched. If found, then
+				// we can enable the Unpatch Channel menu option.
+				foreach (var node in treeview.SelectedNodes)
+				{
+					if (node.ImageKey == "GreenBall")
+					{
+						unpatchChannelsToolStripMenuItem.Enabled = true;
+						findPatchedChannelsToolStripMenuItem.Enabled = true;
+						break;
+					}
+				}
+
+				// Show the menu items as singular or plural
+				if (treeview.SelectedNodes.Count == 1)
+				{
+					insertChannelsToolStripMenuItem.Visible = true;
+					unpatchChannelsToolStripMenuItem.Text = "Unpatch Channel";
+					findPatchedChannelsToolStripMenuItem.Text = "Find Patched Element";
+				}
+				else
+				{
+					insertChannelsToolStripMenuItem.Visible = false;
+					unpatchChannelsToolStripMenuItem.Text = "Unpatch Channels";
+					findPatchedChannelsToolStripMenuItem.Text = "Find Patched Elements";
+				}
 				removeChannelsToolStripMenuItem.Visible = true;
+				unpatchChannelsToolStripMenuItem.Visible = true;
+				findPatchedChannelsToolStripMenuItem.Visible = true;
+				toolStripSeparator.Visible = false;
 				configureToolStripMenuItem.Visible = false;
 				channelCountToolStripMenuItem.Visible = false;
 				renameToolStripMenuItem.Visible = false;
 				deleteToolStripMenuItem.Visible = false;
 				startControllerToolStripMenuItem.Visible = false;
 				stopControllerToolStripMenuItem.Visible = false;
+				unpatchControllerToolStripMenuItem.Visible = false;
 				return;
 			}
 
@@ -808,19 +843,37 @@ namespace Common.Controls
 			int runningCount = 0;
 			int notRunningCount = 0;
 
+			this.unpatchControllerToolStripMenuItem.Enabled = false;
+
 			foreach (IControllerDevice controller in SelectedControllers) {
 				if (controller.IsRunning) {
 					runningCount++;
 				}else {
 					notRunningCount++;
 				}
+
+				// Search for at least one channel that is patched. If found, then
+				// we can enable the Unpatch Controller menu option.
+				foreach (var output in controller.Outputs)
+					if (output.Source != null && output.Source.Component != null)
+					{
+						this.unpatchControllerToolStripMenuItem.Enabled = true;
+						break;
+					}
 			}
+
+			// Show the menu item as singular or plural
+			if (SelectedControllers.Count() > 1)
+				this.unpatchControllerToolStripMenuItem.Text = "Unpatch Controllers";
+			else
+				this.unpatchControllerToolStripMenuItem.Text = "Unpatch Controller";
+
 			_someSelectedControllersRunning = runningCount > 0;
 			_someSelectedControllersNotRunning = notRunningCount > 0;
 			startControllerToolStripMenuItem.Enabled = _someSelectedControllersNotRunning;
 			stopControllerToolStripMenuItem.Enabled = _someSelectedControllersRunning;
 		}
-		
+
 		private void treeView_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
 		{
 			if (isDoubleClick && e.Action == TreeViewAction.Collapse) e.Cancel = true;
