@@ -5,5 +5,6 @@
 		 bool ForceGenerateVisualRepresentation { get;   }
 
 		void MarkDirty();
+		void Removing();
 	}
 }
