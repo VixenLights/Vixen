@@ -570,7 +570,7 @@ namespace VixenModules.Effect.Pattern
 		/// <inheritdoc/>
 		public override string InformationLink
 		{
-			get { return "https://webtest.vixenlights.com/docs/usage/sequencer/effects/pixel/pattern/"; }
+			get { return "https://www.vixenlights.com/docs/usage/sequencer/effects/pixel/pattern/"; }
 		}
 
 		#endregion
