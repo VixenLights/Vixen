@@ -1170,34 +1170,34 @@
   <data name="TailTaper" xml:space="preserve">
     <value>Tail Taper</value>
   </data>
-  <data name="WeaveHorizontalColors" xml:space="preserve">
+  <data name="PatternWeaveHorizontalColors" xml:space="preserve">
     <value>Horizontal Gradients</value>
   </data>
-  <data name="WeaveSpacing" xml:space="preserve">
+  <data name="PatternWeaveSpacing" xml:space="preserve">
     <value>Spacing</value>
   </data>
-  <data name="WeaveSpeed" xml:space="preserve">
+  <data name="PatternSpeed" xml:space="preserve">
     <value>Speed</value>
   </data>
-  <data name="WeaveThickness" xml:space="preserve">
+  <data name="PatternWeaveThickness" xml:space="preserve">
     <value>Thickness</value>
   </data>
-  <data name="WeaveVerticalColors" xml:space="preserve">
+  <data name="PatternWeaveVerticalColors" xml:space="preserve">
     <value>Vertical Gradients</value>
   </data>
-  <data name="WeaveAdvancedSizing" xml:space="preserve">
+  <data name="PatternWeaveAdvancedSizing" xml:space="preserve">
     <value>Advanced Sizing</value>
   </data>
-  <data name="WeaveHorizontalSpacing" xml:space="preserve">
+  <data name="PatternWeaveHorizontalSpacing" xml:space="preserve">
     <value>Horizontal Spacing</value>
   </data>
-  <data name="WeaveHorizontalThickness" xml:space="preserve">
+  <data name="PatternWeaveHorizontalThickness" xml:space="preserve">
     <value>Horizontal Bar Thickness</value>
   </data>
-  <data name="WeaveVerticalSpacing" xml:space="preserve">
+  <data name="PatternWeaveVerticalSpacing" xml:space="preserve">
     <value>Vertical Spacing</value>
   </data>
-  <data name="WeaveVerticalThickness" xml:space="preserve">
+  <data name="PatternWeaveVerticalThickness" xml:space="preserve">
     <value>Veritical Bar Thickness</value>
   </data>
   <data name="ShockwaveType" xml:space="preserve">
@@ -1358,5 +1358,26 @@
   </data>
   <data name="LineDanceFanInvertPan" xml:space="preserve">
     <value>Invert Pan</value>
+  </data>
+  <data name="PatternBrickColors" xml:space="preserve">
+    <value>Brick Colors</value>
+  </data>
+  <data name="PatternBrickHeight" xml:space="preserve">
+    <value>Brick Height</value>
+  </data>
+  <data name="PatternBrickMortarColor" xml:space="preserve">
+    <value>Mortar Color</value>
+  </data>
+  <data name="PatternBrickMortarHeight" xml:space="preserve">
+    <value>Mortar Height</value>
+  </data>
+  <data name="PatternBrickRotateBrick" xml:space="preserve">
+    <value>Rotate Brick</value>
+  </data>
+  <data name="PatternBrickWidth" xml:space="preserve">
+    <value>Brick Width</value>
+  </data>
+  <data name="PatternPatternType" xml:space="preserve">
+    <value>Pattern Type</value>
   </data>
 </root>

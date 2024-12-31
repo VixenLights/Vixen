@@ -1,12 +1,14 @@
 ﻿using Vixen.Module.Effect;
 using Vixen.Sys;
 
-namespace VixenModules.Effect.Weave
+using VixenModules.Effect.Weave;
+
+namespace VixenModules.Effect.Pattern
 {
 	/// <summary>
-	/// Descriptor for the Weave effect.
+	/// Descriptor for the Pattern effect.
 	/// </summary>
-	public class WeaveDescriptor : EffectModuleDescriptorBase
+	public class PatternDescriptor : EffectModuleDescriptorBase
 	{
 		#region Fields
 
@@ -26,7 +28,7 @@ namespace VixenModules.Effect.Weave
 		public override Guid TypeId => _typeId;
 
 		/// <inheritdoc />
-		public override Type ModuleClass => typeof(Weave);
+		public override Type ModuleClass => typeof(Pattern);
 
 		/// <inheritdoc />
 		public override Type ModuleDataClass => typeof(WeaveData);
@@ -35,7 +37,7 @@ namespace VixenModules.Effect.Weave
 		public override string Author => "Vixen Team";
 
 		/// <inheritdoc />
-		public override string Description => "Applies a Weave effect to pixel elements";
+		public override string Description => "Applies a Pattern effect to pixel elements";
 
 		/// <inheritdoc />
 		public override string Version => "1.0";
@@ -47,7 +49,7 @@ namespace VixenModules.Effect.Weave
 		/// <summary>
 		/// Gets the effect name.
 		/// </summary>
-		public override string EffectName => "Weave";
+		public override string EffectName => "Pattern";
 
 		/// <inheritdoc />
 		public override ParameterSignature Parameters { get; }

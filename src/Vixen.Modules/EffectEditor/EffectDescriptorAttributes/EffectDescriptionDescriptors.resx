@@ -1215,43 +1215,43 @@
   <data name="TailTaper" xml:space="preserve">
     <value>Controls the brightness taper of the meteor's tail.</value>
   </data>
-  <data name="WeaveDirection" xml:space="preserve">
-    <value>Controls the direction of movement of the weave.</value>
+  <data name="PatternDirection" xml:space="preserve">
+    <value>Controls the direction of movement of the pattern.</value>
   </data>
-  <data name="WeaveHighlight" xml:space="preserve">
-    <value>Controls whether a white highlight is added to the weave color bars.</value>
+  <data name="PatternHighlight" xml:space="preserve">
+    <value>Controls whether a white highlight is added to the pattern color bars and bricks.</value>
   </data>
-  <data name="WeaveHorizontalColors" xml:space="preserve">
+  <data name="PatternWeaveHorizontalColors" xml:space="preserve">
     <value>Controls the color of the horizontal weave bars.  Gradients are applied across the bar.</value>
   </data>
-  <data name="WeaveRotation" xml:space="preserve">
-    <value>Controls the rotation of the weave. 100 = 180 degrees counter clockwise rotation.  0 =180 clockwise rotation.</value>
+  <data name="PatternRotation" xml:space="preserve">
+    <value>Controls the rotation of the pattern. 100 = 180 degrees counter clockwise rotation.  0 =180 clockwise rotation.</value>
   </data>
-  <data name="WeaveSpacing" xml:space="preserve">
+  <data name="PatternWeaveSpacing" xml:space="preserve">
     <value>Controls the blank area between each weave color bars.</value>
   </data>
-  <data name="WeaveSpeed" xml:space="preserve">
-    <value>Controls the speed of movement of the weave bars.</value>
+  <data name="PatternSpeed" xml:space="preserve">
+    <value>Controls the speed of movement of the pattern.</value>
   </data>
-  <data name="WeaveThickness" xml:space="preserve">
+  <data name="PatternWeaveThickness" xml:space="preserve">
     <value>Controls the thickness of the weave bars.</value>
   </data>
-  <data name="WeaveVerticalColors" xml:space="preserve">
+  <data name="PatternWeaveVerticalColors" xml:space="preserve">
     <value>Controls the color of the vertical weave bars.  Gradients are applied across the bar.</value>
   </data>
-  <data name="WeaveAdvancedSizing" xml:space="preserve">
+  <data name="PatternWeaveAdvancedSizing" xml:space="preserve">
     <value>Enables curves for controling the weave bar thickness and spacing. The horizontal and vertical weave bar thickness and spacing can be configured independently when in advanced sizing mode.</value>
   </data>
-  <data name="WeaveHorizontalSpacing" xml:space="preserve">
+  <data name="PatternWeaveHorizontalSpacing" xml:space="preserve">
     <value>Controls the blank area between each horizontal weave bar. This value is percentage of the display element.</value>
   </data>
-  <data name="WeaveHorizontalThickness" xml:space="preserve">
+  <data name="PatternWeaveHorizontalThickness" xml:space="preserve">
     <value>Controls the thickness of the horizontal weave bars. This value is a percentage of the display element.</value>
   </data>
-  <data name="WeaveVerticalSpacing" xml:space="preserve">
+  <data name="PatternWeaveVerticalSpacing" xml:space="preserve">
     <value>Controls the blank area between each vertical weave bar. This value is percentage of the display element.</value>
   </data>
-  <data name="WeaveVerticalThickness" xml:space="preserve">
+  <data name="PatternWeaveVerticalThickness" xml:space="preserve">
     <value>Controls the thickness of the vertical weave bars. This value is a percentage of the display element.</value>
   </data>
   <data name="TreeBlend" xml:space="preserve">
@@ -1436,5 +1436,26 @@
   </data>
   <data name="LineDanceMode" xml:space="preserve">
     <value>Selects between the intelligent fixture line dance effects.</value>
+  </data>
+  <data name="PatternBrickColors" xml:space="preserve">
+    <value>Controls the color of the bricks.  Gradients are applied across the brick.</value>
+  </data>
+  <data name="PatternBrickHeight" xml:space="preserve">
+    <value>Controls the height of the bricks.</value>
+  </data>
+  <data name="PatternBrickMortarColor" xml:space="preserve">
+    <value>Controls the color of the mortar between the bricks.  Gradient is sampled over the duration of the effect.</value>
+  </data>
+  <data name="PatternBrickMortarHeight" xml:space="preserve">
+    <value>Controls the width and height of the mortar between bricks.</value>
+  </data>
+  <data name="PatternBrickRotateBrick" xml:space="preserve">
+    <value>Rotates the bricks by 90 degrees.</value>
+  </data>
+  <data name="PatternBrickWidth" xml:space="preserve">
+    <value>Controls the width of the bricks.</value>
+  </data>
+  <data name="PatternPatternType" xml:space="preserve">
+    <value>Selects the pattern (Weave or Brick) to animate.</value>
   </data>
 </root>
