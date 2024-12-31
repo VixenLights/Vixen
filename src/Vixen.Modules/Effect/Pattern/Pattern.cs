@@ -1,26 +1,28 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
-using System.Windows;
 using System.Windows.Media;
+
 using Common.Controls.ColorManagement.ColorModels;
+
 using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
+
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
 using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
-using Color = System.Drawing.Color;
-using PixelFormat = System.Drawing.Imaging.PixelFormat;
+using VixenModules.Effect.Weave;
 
-namespace VixenModules.Effect.Weave
+using Color = System.Drawing.Color;
+
+namespace VixenModules.Effect.Pattern
 {
 	/// <summary>
-	/// Creates an effect that draws a weave pattern and animates it.
+	/// Creates an effect that draws a pattern and animates it.
 	/// </summary>
-	public partial class Weave : PixelEffectBase
+	public partial class Pattern : PixelEffectBase
 	{
 		#region Private Fields
 
@@ -67,27 +69,7 @@ namespace VixenModules.Effect.Weave
 		/// Effect data (settings) associated with the effect.
 		/// </summary>
 		private WeaveData _data;
-
-		/// <summary>
-		/// Weave horizontal thickness in pixels.
-		/// </summary>
-		private int _weaveHorizontalThickness;
-
-		/// <summary>
-		/// Weave vertical thickness in pixels.
-		/// </summary>
-		private int _weaveVerticalThickness;
-
-		/// <summary>
-		/// Horizontal spacing between the weave in pixels.
-		/// </summary>
-		private int _weaveHorizontalSpacing;
-
-		/// <summary>
-		/// Vertical spacing between the weave in pixels.
-		/// </summary>
-		private int _weaveVerticalSpacing;
-
+		
 		#endregion
 
 		#region Constructor
@@ -95,7 +77,7 @@ namespace VixenModules.Effect.Weave
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		public Weave()
+		public Pattern()
 		{
 			// Create the data (settings) associated with the effect
 			_data = new WeaveData();
@@ -172,9 +154,26 @@ namespace VixenModules.Effect.Weave
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Direction")]
-		[ProviderDescription(@"WeaveDirection")]
+		[ProviderDisplayName(@"PatternPatternType")]
+		[ProviderDescription(@"PatternPatternType")]
 		[PropertyOrder(1)]
+		public PatternTypes PatternType
+		{
+			get { return _data.PatternType; }
+			set
+			{
+				_data.PatternType = value;
+				UpdatePatternTypeAttributes();				
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Direction")]
+		[ProviderDescription(@"PatternDirection")]
+		[PropertyOrder(2)]
 		public WeaveDirection Direction
 		{
 			get { return _data.Direction; }
@@ -189,8 +188,8 @@ namespace VixenModules.Effect.Weave
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Rotation")]
-		[ProviderDescription(@"WeaveRotation")]
-		[PropertyOrder(2)]
+		[ProviderDescription(@"PatternRotation")]
+		[PropertyOrder(3)]
 		public Curve RotationAngle
 		{
 			get { return _data.RotationAngle; }
@@ -204,9 +203,9 @@ namespace VixenModules.Effect.Weave
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"WeaveSpeed")]
-		[ProviderDescription(@"WeaveSpeed")]
-		[PropertyOrder(3)]
+		[ProviderDisplayName(@"PatternSpeed")]
+		[ProviderDescription(@"PatternSpeed")]
+		[PropertyOrder(4)]
 		public Curve SpeedCurve
 		{
 			get { return _data.SpeedCurve; }
@@ -221,8 +220,8 @@ namespace VixenModules.Effect.Weave
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Highlight")]
-		[ProviderDescription(@"WeaveHighlight")]
-		[PropertyOrder(4)]
+		[ProviderDescription(@"PatternHighlight")]
+		[PropertyOrder(5)]
 		public bool Highlight
 		{
 			get { return _data.Highlight; }
@@ -241,7 +240,7 @@ namespace VixenModules.Effect.Weave
 		[ProviderDescription(@"HighlightPercentage")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 100, 1)]
-		[PropertyOrder(5)]
+		[PropertyOrder(6)]
 		public int HighlightPercentage
 		{
 			get { return _data.HighlightPercentage; }
@@ -257,7 +256,7 @@ namespace VixenModules.Effect.Weave
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Show3D")]
 		[ProviderDescription(@"Show3D")]
-		[PropertyOrder(6)]
+		[PropertyOrder(7)]
 		public bool Show3D
 		{
 			get { return _data.Show3D; }
@@ -271,9 +270,9 @@ namespace VixenModules.Effect.Weave
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"WeaveAdvancedSizing")]
-		[ProviderDescription(@"WeaveAdvancedSizing")]
-		[PropertyOrder(7)]
+		[ProviderDisplayName(@"PatternWeaveAdvancedSizing")]
+		[ProviderDescription(@"PatternWeaveAdvancedSizing")]
+		[PropertyOrder(8)]
 		public bool AdvancedSizing
 		{
 			get { return _data.AdvancedSizing; }
@@ -298,13 +297,12 @@ namespace VixenModules.Effect.Weave
 			}
 		}
 
-
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 100, 1)]
 		[ProviderCategory(@"Config", 4)]
-		[ProviderDisplayName(@"WeaveThickness")]
-		[ProviderDescription(@"WeaveThickness")]
-		[PropertyOrder(8)]
+		[ProviderDisplayName(@"PatternWeaveThickness")]
+		[ProviderDescription(@"PatternWeaveThickness")]
+		[PropertyOrder(9)]
 		public int WeaveThickness
 		{
 			get { return _data.WeaveThickness; }
@@ -319,9 +317,9 @@ namespace VixenModules.Effect.Weave
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 100, 1)]
 		[ProviderCategory(@"Config", 4)]
-		[ProviderDisplayName(@"WeaveSpacing")]
-		[ProviderDescription(@"WeaveSpacing")]
-		[PropertyOrder(9)]
+		[ProviderDisplayName(@"PatternWeaveSpacing")]
+		[ProviderDescription(@"PatternWeaveSpacing")]
+		[PropertyOrder(10)]
 		public int WeaveSpacing
 		{
 			get { return _data.WeaveSpacing; }
@@ -333,13 +331,12 @@ namespace VixenModules.Effect.Weave
 			}
 		}
 
-
 		[ProviderCategory(@"Config", 4)]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 100, 1)]
-		[ProviderDisplayName(@"WeaveHorizontalThickness")]
-		[ProviderDescription(@"WeaveHorizontalThickness")]
-		[PropertyOrder(10)]
+		[ProviderDisplayName(@"PatternWeaveHorizontalThickness")]
+		[ProviderDescription(@"PatternWeaveHorizontalThickness")]
+		[PropertyOrder(11)]
 		public int WeaveHorizontalThickness
 		{
 			get { return _data.WeaveHorizontalThickness; }
@@ -350,14 +347,13 @@ namespace VixenModules.Effect.Weave
 				OnPropertyChanged();
 			}
 		}
-
 		
 		[ProviderCategory(@"Config", 4)]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 100, 1)]
-		[ProviderDisplayName(@"WeaveHorizontalSpacing")]
-		[ProviderDescription(@"WeaveHorizontalSpacing")]
-		[PropertyOrder(11)]
+		[ProviderDisplayName(@"PatternWeaveHorizontalSpacing")]
+		[ProviderDescription(@"PatternWeaveHorizontalSpacing")]
+		[PropertyOrder(12)]
 		public int WeaveHorizontalSpacing
 		{
 			get { return _data.WeaveHorizontalSpacing; }
@@ -372,9 +368,9 @@ namespace VixenModules.Effect.Weave
 		[ProviderCategory(@"Config", 4)]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 100, 1)]
-		[ProviderDisplayName(@"WeaveVerticalThickness")]
-		[ProviderDescription(@"WeaveVerticalThickness")]
-		[PropertyOrder(12)]
+		[ProviderDisplayName(@"PatternWeaveVerticalThickness")]
+		[ProviderDescription(@"PatternWeaveVerticalThickness")]
+		[PropertyOrder(13)]
 		public int WeaveVerticalThickness
 		{
 			get { return _data.WeaveVerticalThickness; }
@@ -389,15 +385,86 @@ namespace VixenModules.Effect.Weave
 		[ProviderCategory(@"Config", 4)]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 100, 1)]
-		[ProviderDisplayName(@"WeaveVerticalSpacing")]
-		[ProviderDescription(@"WeaveVerticalSpacing")]
-		[PropertyOrder(13)]
+		[ProviderDisplayName(@"PatternWeaveVerticalSpacing")]
+		[ProviderDescription(@"PatternWeaveVerticalSpacing")]
+		[PropertyOrder(14)]
 		public int WeaveVerticalSpacing
 		{
 			get { return _data.WeaveVerticalSpacing; }
 			set
 			{
 				_data.WeaveVerticalSpacing = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+		
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 100, 1)]
+		[ProviderCategory(@"Config", 4)]
+		[ProviderDisplayName(@"PatternBrickHeight")]
+		[ProviderDescription(@"PatternBrickHeight")]
+		[PropertyOrder(15)]
+		public int BrickHeight
+		{
+			get { return _data.WeaveThickness; }
+			set
+			{
+				_data.WeaveThickness = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 100, 1)]
+		[ProviderCategory(@"Config", 4)]
+		[ProviderDisplayName(@"PatternBrickWidth")]
+		[ProviderDescription(@"PatternBrickWidth")]
+		[PropertyOrder(16)]
+		public int BrickWidth
+		{
+			get { return _data.BrickWidth; }
+			set
+			{
+				_data.BrickWidth = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 100, 1)]
+		[ProviderCategory(@"Config", 4)]
+		[ProviderDisplayName(@"PatternBrickMortarHeight")]
+		[ProviderDescription(@"PatternBrickMortarHeight")]
+		[PropertyOrder(17)]
+		public int MortarHeight
+		{
+			get { return _data.BrickHeight; }
+			set
+			{
+				_data.BrickHeight = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"PatternBrickRotateBrick")]
+		[ProviderDescription(@"PatternBrickRotateBrick")]
+		[PropertyOrder(18)]
+		public bool RotateBrick
+		{
+			get 
+			{ 
+				return _data.TransposeTile; 
+			}
+			set
+			{
+				_data.TransposeTile = value;
+				
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -409,8 +476,8 @@ namespace VixenModules.Effect.Weave
 
 		[Value]
 		[ProviderCategory(@"Color", 2)]
-		[ProviderDisplayName(@"WeaveHorizontalColors")]
-		[ProviderDescription(@"WeaveHorizontalColors")]
+		[ProviderDisplayName(@"PatternWeaveHorizontalColors")]
+		[ProviderDescription(@"PatternWeaveHorizontalColors")]
 		[PropertyOrder(1)]
 		public List<ColorGradient> HorizontalColors
 		{
@@ -425,8 +492,8 @@ namespace VixenModules.Effect.Weave
 
 		[Value]
 		[ProviderCategory(@"Color", 2)]
-		[ProviderDisplayName(@"WeaveVerticalColors")]
-		[ProviderDescription(@"WeaveVerticalColors")]
+		[ProviderDisplayName(@"PatternWeaveVerticalColors")]
+		[ProviderDescription(@"PatternWeaveVerticalColors")]
 		[PropertyOrder(2)]
 		public List<ColorGradient> VerticalColors
 		{
@@ -434,6 +501,38 @@ namespace VixenModules.Effect.Weave
 			set
 			{
 				_data.VerticalColors = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Color", 2)]
+		[ProviderDisplayName(@"PatternBrickColors")]
+		[ProviderDescription(@"PatternBrickColors")]
+		[PropertyOrder(3)]
+		public List<ColorGradient> BrickColors
+		{
+			get { return _data.HorizontalColors; }
+			set
+			{
+				_data.HorizontalColors = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Color", 2)]
+		[ProviderDisplayName(@"PatternBrickMortarColor")]
+		[ProviderDescription(@"PatternBrickMortarColor")]
+		[PropertyOrder(4)]
+		public ColorGradient MortarColor
+		{
+			get { return _data.MortarColor; }
+			set
+			{
+				_data.MortarColor = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -471,7 +570,7 @@ namespace VixenModules.Effect.Weave
 		/// <inheritdoc/>
 		public override string InformationLink
 		{
-			get { return "https://webtest.vixenlights.com/docs/usage/sequencer/effects/pixel/weave/"; }
+			get { return "https://www.vixenlights.com/docs/usage/sequencer/effects/pixel/pattern/"; }
 		}
 
 		#endregion
@@ -601,14 +700,13 @@ namespace VixenModules.Effect.Weave
 			}
 
 			// Determine the minimum between the display element height and width
-			_scaleValue = GetScaleValue(BufferHt, BufferWi);
-
-			// If the effect is not using advanced sizing then...
-			if (!AdvancedSizing)
+			_scaleValue = GetScaleValue(BufferHt, BufferWi);	
+			
+			// If the pattern type is Weave then...
+			if (PatternType == PatternTypes.Weave)
 			{
-				// Draw the repeating tile
 				InitializeTile(0);
-			}
+			}	
 		}
 
 		#endregion
@@ -622,156 +720,37 @@ namespace VixenModules.Effect.Weave
 		/// <param name="frameBuffer">Frame buffer to render in</param>
 		private void RenderEffectStringsInternal(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			// If advanced sizing is enabled then...
-			if (AdvancedSizing)
+			// If the pattern type is brick then...
+			// The Brick pattern mortar is gradient sampled each frame
+			if (PatternType == PatternTypes.Brick)
 			{
 				// Draw the repeating tile
 				InitializeTile(frame);
 			}
 
-			// Render the weave effect in string mode
+			// Render the pattern effect in string mode
 			RenderEffectStringsWeave(frame, frameBuffer);
 		}
 
 		/// <summary>
-		/// Draws the repeating tile for the specified frame.
-		/// </summary>
-		/// <param name="frame">Current frame number being rendered</param>
+		/// Initializes the pattern tile.
+		/// </summary>	
+		/// <param name="frame">Current frame within the effect duration</param>		
 		private void InitializeTile(int frame)
 		{
-			// Calculate the interval position factor
-			double intervalPosFactor = GetEffectTimeIntervalPosition(frame) * 100;
-
-			// If advanced sizing has been selected then...
-			if (AdvancedSizing)
+			// If the selected pattern is the Weave then...
+			if (PatternType == PatternTypes.Weave)
 			{
-				// Calculate the weave bar spacing
-				_weaveHorizontalSpacing = GetHorizontalWeaveSpacing(_scaleValue);
-
-				// Calculate the weave bar spacing
-				_weaveVerticalSpacing = GetVerticalWeaveSpacing(_scaleValue);
-
-				// Calculate the weave bar thickness
-				_weaveHorizontalThickness = GetHorizontalWeaveThickness(_scaleValue);
-
-				// Calculate the weave bar thickness
-				_weaveVerticalThickness = GetVerticalWeaveThickness(_scaleValue);
-			}
-			// Otherwise both the vertical and horizontal bars will be sized the same
+				// Initialize the Weave Tile 
+				InitializeWeaveTile();
+			}	
 			else
 			{
-				// Calculate the weave bar spacing
-				_weaveHorizontalSpacing = GetWeaveSpacing(_scaleValue);
-				_weaveVerticalSpacing = _weaveHorizontalSpacing;
-
-				// Calculate the weave bar thickness
-				_weaveHorizontalThickness = GetWeaveThickness(_scaleValue);
-				_weaveVerticalThickness = _weaveHorizontalThickness;
+				// Initialize the Brick Tile
+				InitializeBrickTile(frame);
 			}
-
-			// Calculate the height of the weave repeating tile
-			_heightOfTile = CalculateTileWidthHeight(_weaveHorizontalThickness, _weaveHorizontalSpacing, HorizontalColors.Count());
-
-			// Calculate the width of the weave repeating tile
-			_widthOfTile = CalculateTileWidthHeight(_weaveVerticalThickness, _weaveVerticalSpacing, VerticalColors.Count());
-
-			// Initialize the repeating tile frame buffer
-			_tileFrameBuffer = new PixelFrameBuffer(_widthOfTile, _heightOfTile);
-
-			// Draw the repeating weave tile
-			SetupRenderWeave();
 		}
-
-		/// <summary>
-		/// Gets the spacing in between the weave bars.
-		/// </summary>    
-		/// <param name="scaleValue">Value used to scale the spacing</param>
-		/// <returns>Returns the spacing between the weave bars</returns>
-		private int GetWeaveSpacing(int scaleValue)
-		{
-			// Calculate the spacing between the weave bars
-			return (int)(WeaveSpacing / 100.0 * scaleValue);
-		}
-
-		/// <summary>
-		/// Gets the thickness of the weave bars.
-		/// </summary>
-		/// <param name="scaleValue">Value used to scale the thickness</param>
-		/// <returns></returns>
-		private int GetWeaveThickness(int scaleValue)
-		{
-			// Calculate the spacing between the weave bars
-			int thickness = (int)(WeaveThickness / 100.0 * scaleValue);
-
-			// Ensure the thickness is always at least one pixel
-			if (thickness == 0)
-			{
-				thickness = 1;
-			}
-
-			return thickness;	
-		}
-
-		/// <summary>
-		/// Gets the horizontal spacing in between the weave bars.
-		/// </summary>    
-		/// <param name="scaleValue">Value used to scale the spacing</param>
-		/// <returns>Returns the spacing between the weave bars</returns>
-		private int GetHorizontalWeaveSpacing(int scaleValue)
-		{
-			// Calculate the spacing between the weave bars
-			return (int)(WeaveHorizontalSpacing / 100.0 * scaleValue);
-		}
-
-		/// <summary>
-		/// Gets the horizontal thickness of the weave bars.
-		/// </summary>
-		/// <param name="scaleValue">Value used to scale the thickness</param>
-		/// <returns></returns>
-		private int GetHorizontalWeaveThickness(int scaleValue)
-		{
-			// Calculate the spacing between the weave bars
-			int thickness = (int)(WeaveHorizontalThickness / 100.0 * scaleValue);
-
-			// Ensure the thickness is always at least one pixel
-			if (thickness == 0)
-			{
-				thickness = 1;
-			}
-
-			return thickness;
-		}
-
-		/// <summary>
-		/// Gets the vertical spacing in between the weave bars.
-		/// </summary>    
-		/// <param name="scaleValue">Value used to scale the spacing</param>
-		/// <returns>Returns the spacing between the weave bars</returns>
-		private int GetVerticalWeaveSpacing(int scaleValue)
-		{
-			// Calculate the spacing between the weave bars
-			return (int)(WeaveVerticalSpacing / 100.0 * scaleValue);
-		}
-
-		/// <summary>
-		/// Gets the vertical thickness of the weave bars.
-		/// </summary>
-		/// <param name="scaleValue">Value used to scale the thickness</param>
-		/// <returns></returns>
-		private int GetVerticalWeaveThickness(int scaleValue)
-		{
-			// Calculate the spacing between the weave bars
-			int thickness = (int)(WeaveVerticalThickness / 100.0 * scaleValue);
-
-			// Ensure the thickness is always at least one pixel
-			if (thickness == 0)
-			{
-				thickness = 1;
-			}
-
-			return thickness;
-		}
-
+				
 		/// <summary>
 		/// Initializes the visibility of the attributes.
 		/// </summary>
@@ -780,7 +759,38 @@ namespace VixenModules.Effect.Weave
 			UpdateStringOrientationAttributes(true);
 			UpdateHighlightAttributes(false);
 			UpdateSizingAttributes(false);
+			UpdatePatternTypeAttributes(false);
+
 			TypeDescriptor.Refresh(this);
+		}
+
+		/// <summary>
+		/// Updates the visibility of controls based on selected pattern type.
+		/// </summary>
+		/// <param name="refresh">Whether to refresh the view</param>
+		private void UpdatePatternTypeAttributes(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>()
+			{						
+				{ nameof(AdvancedSizing), PatternType == PatternTypes.Weave },
+				{ nameof(WeaveThickness),  PatternType == PatternTypes.Weave },
+				{ nameof(WeaveSpacing),  PatternType == PatternTypes.Weave },
+				{ nameof(HorizontalColors), PatternType == PatternTypes.Weave },
+				{ nameof(VerticalColors), PatternType == PatternTypes.Weave },
+
+				{ nameof(BrickHeight), PatternType == PatternTypes.Brick },
+				{ nameof(BrickWidth), PatternType == PatternTypes.Brick },
+				{ nameof(MortarHeight), PatternType == PatternTypes.Brick },
+				{ nameof(MortarColor), PatternType == PatternTypes.Brick },
+				{ nameof(RotateBrick), PatternType == PatternTypes.Brick },
+				{ nameof(BrickColors), PatternType == PatternTypes.Brick },
+			};
+
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
 		}
 
 		/// <summary>
@@ -800,6 +810,10 @@ namespace VixenModules.Effect.Weave
 			}
 		}
 
+		/// <summary>
+		/// Updates the visibility of Advanced Sizing attributes.
+		/// </summary>
+		/// <param name="refresh">Whether to refresh the view</param>
 		private void UpdateSizingAttributes(bool refresh = true)
 		{
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(6)
@@ -818,116 +832,7 @@ namespace VixenModules.Effect.Weave
 				TypeDescriptor.Refresh(this);
 			}
 		}
-
-		
-
-		/// <summary>
-		/// Gets the highlight color for the weave color index.
-		/// </summary>
-		/// <returns>Highlight color for the specified color index</returns>
-		private Color GetHighlightColor(int colorIndex, List<ColorGradient> colors)
-		{
-			// The color gradients run perpendicular to the bars so the highlight always
-			// impacts the beginning of the gradient
-			Color highlightColor = colors[colorIndex].GetColorAt(0);
-
-			// Convert from RGB to HSV color format 
-			HSV hsv = HSV.FromRGB(highlightColor);
-
-			// Highlight the weave bar
-			hsv.S = 0.0f;
-
-			// Convert the HSB color back to RGB
-			highlightColor = hsv.ToRGB();
-
-			return highlightColor;
-		}
-
-		/// <summary>
-		/// The design of the weave effect draws a small repeating tile of the weave bars.
-		/// This tile is then repeated across the display element.  
-		/// </summary>       
-		private void SetupRenderWeave()
-		{
-			// Draw the weave on the tile frame buffer
-			DrawWeave(_tileFrameBuffer,
-				_heightOfTile,
-				_widthOfTile,
-				HorizontalColors,
-				VerticalColors,
-				_weaveHorizontalThickness,
-				_weaveVerticalThickness,
-				_weaveHorizontalSpacing,
-			_weaveVerticalSpacing);
-		}
-
-		/// <summary>
-		/// Gets the color for the bar taking into account the specified pixel position within the bar.
-		/// </summary>
-		/// <param name="colorIndex">Index of the current color</param>       
-		/// <param name="currentThicknessCounter">Pixel position within the bar</param>
-		/// <param name="barThickness">Thickness of the bars</param>
-		/// <returns>Gets the color for the specified bar pixel</returns>
-		private Color GetBarColor(int colorIndex, int currentThicknessCounter, int barThickness, List<ColorGradient> colors)
-		{
-			Color color;
-
-			// Default the highlight to only the first row of pixels
-			int highLightRow = 0;
-
-			// If the effect is in locations mode then...
-			if (TargetPositioning == TargetPositioningType.Locations)
-			{
-				// Make the first % pixels white
-				highLightRow = (int)(barThickness * HighlightPercentage / 100.0);
-			}
-
-			// If we are at the beginning of the bar and
-			// highlight is selected then...
-			if (Highlight &&
-			    currentThicknessCounter <= highLightRow)
-			{
-				// Set the color to the highlight color
-				color = GetHighlightColor(colorIndex, colors);
-			}
-			// Otherwise if the bar is 3-D then...
-			else if (Show3D)
-			{
-				// Set the color to the 3-D color
-				color = Get3DColor(colorIndex, currentThicknessCounter, barThickness, colors);
-			}
-			else
-			{
-				// Default to the gradient position based on the position in the bar
-				color = colors[colorIndex].GetColorAt(currentThicknessCounter / (double)barThickness);
-			}
-
-			// Return the color of the bar
-			return color;
-		}
-
-		/// <summary>
-		/// Gets the 3-D color for the specified bar pixel.
-		/// </summary>
-		/// <param name="colorIndex">Index into the color array</param>
-		/// <param name="currentThicknessCounter">Current row of the bar being drawn</param>
-		/// <param name="barThickness">Thickness of the bar</param>
-		/// <returns>3-D color for the specified bar pixel</returns>
-		private Color Get3DColor(int colorIndex, int currentThicknessCounter, int barThickness, List<ColorGradient> colors)
-		{
-			// Get the specified color from the color array
-			Color color = colors[colorIndex].GetColorAt(currentThicknessCounter / (double)barThickness);
-
-			// Convert from RGB to HSV color format 
-			HSV hsv = HSV.FromRGB(color);
-
-			// Set the brightness based on the percentage of the bar thickness
-			hsv.V *= (float)(barThickness - currentThicknessCounter) / barThickness;
-
-			// Convert the color back to RGB format
-			return hsv.ToRGB();
-		}
-
+				
 		/// <summary>
 		/// Renders the weave bars in strings mode.
 		/// </summary>
@@ -980,8 +885,8 @@ namespace VixenModules.Effect.Weave
 			// Loop over all the frames
 			for (int frame = 0; frame < numFrames; frame++)
 			{
-				// If advanced sizing is enabled then...
-				if (AdvancedSizing)
+				// If the pattern type is Brick then...
+				if (PatternType == PatternTypes.Brick)
 				{
 					// Draw the repeating tile
 					InitializeTile(frame);
@@ -1028,8 +933,7 @@ namespace VixenModules.Effect.Weave
 		/// <summary>
 		/// Defines a delegate so the algorithm used to initialize the tile Y position.
 		/// </summary>
-		/// <param name="heightOfTile">Height of the repeating tile</param>
-		/// <param name="thicknessOfBar">Thickness of the bar</param>
+		/// <param name="heightOfTile">Height of the repeating tile</param>		
 		/// <param name="frame">Current frame number</param>
 		/// <returns>Initial Y position</returns>
 		private delegate int InitializeTileYPosition(
@@ -1159,8 +1063,7 @@ namespace VixenModules.Effect.Weave
 			int movementY);
 
 		/// <summary>
-		/// Calculates the color for a pixel that is part of a moving bar.
-		/// Alternating bars are not moving bars.
+		/// Calculates the color for a pixel that is part of a moving bar.		
 		/// </summary>
 		/// <param name="tileFrameBuffer">Applicable tile buffer</param>
 		/// <param name="x">X Coordinate</param>
@@ -2507,385 +2410,6 @@ namespace VixenModules.Effect.Weave
 			y = (int)Math.Round(transformedPoint.Y);
 		}
 
-		#endregion
-
-		#region Private Methods For Drawing Weave
-
-		/// <summary>
-		/// Draws the weave bars on the tile frame buffer.
-		/// </summary>
-		/// <param name="dimensionLength">The length of the dimension being looped over ( x or y)</param>
-		/// <param name="barThickness">Thickness of the weave bar</param>
-		/// <param name="otherBarThickness">Thickness of the weave bar perpendicular to the ones being drawn</param>
-		/// <param name="barSpacing">Spacing in-between the weave bars</param>
-		/// <param name="otherBarSpacing">Spacing in-between the weave bars perpendicular to the ones being drawn</param>
-		/// <param name="barLength">Length of the weave bar</param>
-		/// <param name="frameBuffer">Frame buffer to draw the weave bars on</param>
-		/// <param name="colors">Color gradients to draw the weave bars</param>
-		/// <param name="drawMethod">Delegate to draw an individual bar</param>
-		/// <param name="show3D">Flag to control whether the weave bars appear 3-D</param>
-		/// <param name="highlight">Flag to control whether the weave bars have a white highlight</param>
-		/// <param name="odd">This flag helps to initialize the method such that half the weave bars go under and the other half go over</param>
-		private void DrawBars(
-			int dimensionLength,
-			int barThickness,
-			int otherBarThickness,
-			int barSpacing,
-			int otherBarSpacing,
-			int barLength,
-			IPixelFrameBuffer frameBuffer,
-			List<ColorGradient> colors,
-			Action<int, int, int, int, IPixelFrameBuffer, List<ColorGradient>, bool, bool, int, int> drawMethod,
-			bool show3D,
-			bool highlight,
-			bool odd)
-		{
-			// Axis counter, using this counter to determine where to start drawing a bar
-			int d = 0;
-
-			// Bar counter keeps track of how many bars have been drawn.
-			// Used to determine if the bar is an even or an odd bar.
-			int barCounter = 0;
-
-			// Bar counter comparision value to help determine if the current
-			// bar is an odd or even bar.
-			int barCounterCheck = 0;
-
-			// Counter to determine which color to use
-			int colorIndex = 0;
-
-			// To get the weave pattern some bars need to go over vs under other bars
-			if (odd)
-			{
-				// This counter check variable helps determine whether to go over or under
-				barCounterCheck = 1;
-			}
-
-			// Loop over the dimension (x-axis or y-axis)
-			while (d < dimensionLength)
-			{
-				// If another complete bar fits on the axis then...
-				if ((d + barThickness) <= dimensionLength)
-				{
-					// Draw the bar
-					drawMethod(
-						d,
-						barThickness,
-						otherBarThickness,
-						barLength,
-						frameBuffer,
-						colors,
-						barCounter % 2 == barCounterCheck,
-						barCounter % 2 == barCounterCheck,
-						otherBarSpacing,
-						colorIndex);
-
-					// Keep track of the number bars drawn
-					barCounter++;
-
-					// Iterate to the next color
-					colorIndex++;
-
-					// If there are no more colors then...
-					if (colorIndex > colors.Count() - 1)
-					{
-						// Wrap back around to the first color
-						colorIndex = 0;
-					}
-				}
-
-				// Position where the next bar should be drawn
-				d = d + barThickness + barSpacing;
-			}
-		}
-
-		/// <summary>
-		/// Draws the weave pattern on the repeating tile.
-		/// </summary>
-		/// <param name="frameBuffer">Frame buffer to draw the weave onto</param>
-		/// <param name="height">Height of the repeating tile</param>
-		/// <param name="width">Width of the repeating tile</param>
-		/// <param name="horizontalColors">Horizontal gradients associated with the horizontal bars</param>
-		/// <param name="verticalColors">vertical gradients associated with the vertical bars</param>
-		/// <param name="barHorizontalThickness">Horizontal thickness of the weave bar</param>
-		/// <param name="barVerticalThickness">Vertical thickness of the weave bar</param>
-		/// <param name="barHorizontalSpacing">Horizontal spacing in-between the bars</param>
-		/// /// <param name="barVerticalSpacing">Horizontal spacing in-between the bars</param>
-		private void DrawWeave(
-			IPixelFrameBuffer frameBuffer,
-			int height,
-			int width,
-			List<ColorGradient> horizontalColors,
-			List<ColorGradient> verticalColors,
-			int barHorizontalThickness,
-			int barVerticalThickness,
-			int barHorizontalSpacing,
-			int barVerticalSpacing)
-		{
-			// Draw the vertical bars
-			DrawBars(
-				width,
-				barVerticalThickness,
-				barHorizontalThickness,
-				barVerticalSpacing,
-				barHorizontalSpacing,
-				height,
-				frameBuffer,
-				verticalColors,
-				DrawVerticalLineBottomToTop,
-				Show3D,
-				Highlight,
-				false);
-
-			// Draw the horizontal bars
-			DrawBars(
-				height,
-				barHorizontalThickness,
-				barVerticalThickness,
-				barHorizontalSpacing,
-				barVerticalSpacing,
-				width,
-				frameBuffer,
-				horizontalColors,
-				DrawHorizontalLineLeftRight,
-				Show3D,
-				Highlight,
-				true);
-		}
-
-		/// <summary>
-		/// Calculates the total width/height of the repeating tile.
-		/// </summary>
-		/// <param name="barThickness">Thickness of the weave bar</param>
-		/// <param name="barSpacing">Spacing in-between the bars</param>
-		/// <param name="colors">Collection of colors associated with the bars</param>
-		/// <returns></returns>
-		int CalculateTileWidthHeight(
-			int barThickness, 
-			int barSpacing, 
-			int colors)
-		{
-			// Need the bar thickness then the bar spacing for each of the weave color bars
-			return (2 * barThickness + 2 * barSpacing) * colors;
-		}
-
-		/// <summary>
-		/// Sets a pixel on the weave bar.
-		/// </summary>
-		/// <param name="frameBuffer">Frame buffer to draw the line on</param>
-		/// <param name="currentThicknessCounter">Number of pixels drawn for the bar so far</param>
-		/// <param name="d2">Position of dimension 2</param>
-		/// <param name="barThickness">Thickness of the bar</param>
-		/// <param name="dStart">Starting position of the line</param>
-		/// <param name="colors">Collection of applicable bar colors</param>
-		/// <param name="colorIndex">Current bar color index</param>
-		private void SetPixelX(
-			IPixelFrameBuffer frameBuffer,
-			int currentThicknessCounter,
-			int d2,
-			int barThickness,
-			int dStart,
-			List<ColorGradient> colors,
-			int colorIndex)
-		{
-			// Set the specified pixel with the specified bar color
-			frameBuffer.SetPixel(currentThicknessCounter + dStart, d2, GetBarColor(colorIndex, currentThicknessCounter, barThickness, colors));
-		}
-
-		/// <summary>
-		/// Sets a pixel on the weave bar.
-		/// </summary>
-		/// <param name="frameBuffer">Frame buffer to draw the pixel on</param>
-		/// <param name="currentThicknessCounter">Number of pixels drawn for the bar so far</param>
-		/// <param name="d2">Position of dimension 2</param>
-		/// <param name="barThickness">Thickness of the bar</param>
-		/// <param name="dStart">Starting position of the line</param>
-		/// <param name="colors">Collection of applicable bar colors</param>
-		/// <param name="colorIndex">Current bar color index</param>
-		private void SetPixelY(
-			IPixelFrameBuffer frameBuffer,
-			int currentThicknessCounter,
-			int d2,
-			int barThickness,
-			int dStart,
-			List<ColorGradient> colors,
-			int colorIndex)
-		{
-			// Set the specified pixel with the specified bar color
-			frameBuffer.SetPixel(d2, currentThicknessCounter + dStart, GetBarColor(colorIndex, currentThicknessCounter, barThickness, colors));
-		}
-
-		/// <summary>
-		/// Draws a weave line.
-		/// </summary>
-		/// <param name="dStart">Initial position in the repeating tile</param>
-		/// <param name="d2Length">Length of the second dimension</param>
-		/// <param name="frameBuffer">Frame buffer to draw the line on</param>
-		/// <param name="colors">Colors associated with the weave bars</param>
-		/// <param name="overOrUnder">Initial value of whether the line should go over or under the next perpendicular line</param>
-		/// <param name="onOff">Initial value of whether the logical pen is down</param>
-		/// <param name="barThickness">Thickness of the weave bar</param>
-		/// <param name="otherBarThickness">Thickness of the weave bars perpendicular to the ones being drawn</param>
-		/// <param name="barSpacing">Spacing in-between weave bars</param>
-		/// <param name="colorIndex">Current color index into the colors collection</param>
-		/// <param name="setPixel">Delegate that sets a pixel on the frame buffer</param>
-		private void DrawLine(
-			int dStart,
-			int d2Length,
-			IPixelFrameBuffer frameBuffer,
-			List<ColorGradient> colors,
-			bool overOrUnder,
-			bool onOff,
-			int barThickness,
-			int otherBarThickness,
-			int barSpacing,
-			int colorIndex,
-			Action<IPixelFrameBuffer, int, int, int, int, List<ColorGradient>, int> setPixel)
-		{
-			// Loop over the first dimension (bar thickness)
-			for (int d1 = 0; d1 < barThickness; d1++)
-			{
-				// Counter to keep track of how many pixels have been processed while
-				// not drawing the line
-				int offCounter = 0;
-
-				// Initialize the flag that determines if the logical pixel pen is On.
-				bool penOn = onOff;
-
-				// Initialize the flag that determines if this line will go over the
-				// next perpendicular line.
-				bool over = overOrUnder;
-
-				// Loop over the second dimension
-				for (int d2 = 0; d2 < d2Length; d2++)
-				{
-					// If drawing a pixel then...
-					if (penOn)
-					{
-						// Set the pixel the appropriate color
-						setPixel(
-							frameBuffer,
-							d1,
-							d2,
-							barThickness,
-							dStart,
-							colors,
-							colorIndex);
-					}
-					// Otherwise the pen is Off
-					else
-					{
-						// Keep track how pixels have been skipped
-						offCounter++;
-					}
-
-					// If we have skipped enough pixels to cover the thickness of a bar then...
-					if (offCounter == otherBarThickness)
-					{
-						// Toggle the logical pen to On
-						penOn = true;
-					}
-
-					// If the position within the bar is an even
-					// multiple of a bar and the spacing between bars then...
-					if ((d2 + 1) % (otherBarThickness + barSpacing) == 0)
-					{
-						// Toggle the over/under flag so that the next intersection
-						// with a perpendicular bar is handled opposite
-						over = !over;
-
-						// Reset the off counter
-						offCounter = 0;
-						
-						// If the weave bar is going under then...
-						if (!over)
-						{
-							// Turn the pen off
-							penOn = false;
-						}
-					}
-				}
-			}
-		}
-
-		/// <summary>
-		/// Draws a horizontal line that makes up the weave pattern.
-		/// </summary>
-		/// <param name="yStart"></param>
-		/// <param name="barThickness">Thickness of the bar</param>
-		/// <param name= "otherBarThickness">Thickness of the bar perpendicular to the ones being drawn</param>
-		/// <param name="width">Width of the display element</param>
-		/// <param name="frameBuffer">Frame buffer to draw on</param>
-		/// <param name="colors">Colors associated with the horizontal bars</param>
-		/// <param name="overOrUnder"></param>
-		/// <param name="onOff"></param>
-		/// <param name="barSpacing">Spacing in-between the weave bars</param>
-		/// <param name="colorIndex">Color index into the horizontal color collection</param>
-		private void DrawHorizontalLineLeftRight(
-			int yStart,
-			int barThickness,
-			int otherBarThickness,
-			int width,
-			IPixelFrameBuffer frameBuffer,
-			List<ColorGradient> colors,
-			bool overOrUnder,
-			bool onOff,
-			int barSpacing,
-			int colorIndex)
-		{
-			// Draw the horizontal line
-			DrawLine(
-				yStart,
-				width,
-				frameBuffer,
-				colors,
-				overOrUnder,
-				onOff,
-				barThickness,
-				otherBarThickness,
-				barSpacing,
-				colorIndex,
-				SetPixelY);
-		}
-
-		/// <summary>
-		/// Draws a vertical line that makes up the weave pattern.
-		/// </summary>
-		/// <param name="xStart">Initial X position in the tile</param>
-		/// <param name="barThickness">Thickness of the bar</param>
-		/// <param name="otherBarThickness">Thickness of the bar perpendicular to the ones being drawn</param>
-		/// <param name="frameBuffer">Frame buffer to draw on</param>
-		/// <param name="colors">Colors associated with the horizontal bars</param>
-		/// <param name="overOrUnder"></param>
-		/// <param name="onOff"></param>
-		/// <param name="colorIndex">Color index into the horizontal color collection</param>
-		private void DrawVerticalLineBottomToTop(
-			int xStart,
-			int barThickness,
-			int otherBarThickness,
-			int height,
-			IPixelFrameBuffer frameBuffer,
-			List<ColorGradient> colors,
-			bool overOrUnder,
-			bool onOff,
-			int blankBarHeight,
-			int colorIndex)
-		{
-			// Draw vertical line
-			DrawLine(
-				xStart,
-				height,
-				frameBuffer,
-				colors,
-				overOrUnder,
-				onOff,
-				barThickness,
-				otherBarThickness,
-				blankBarHeight,
-				colorIndex,
-				SetPixelX);
-		}
-
-		#endregion
+		#endregion		
 	}
 }
