@@ -93,7 +93,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				if (model.Wiring != null && model.Wiring.Any())
 				{
 					int index = 1;
-					p.ModelLinks = model.Wiring.Where(l=> l.IsValid).Select(x => new ModelLink(Model.InternalVendorInventory.ModelType.XModel, string.IsNullOrEmpty(x.Name)?$"Model {index++}":x.Name, x.Description, x.XModelLink != null?new Uri(x.XModelLink):null))
+					p.ModelLinks = model.Wiring.Where(l=> l.IsValid).Select(x => new ModelLink(x.XModelLink.EndsWith(".prp")?Model.InternalVendorInventory.ModelType.Prop:Model.InternalVendorInventory.ModelType.XModel, string.IsNullOrEmpty(x.Name)?$"Model {index++}":x.Name, x.Description, x.XModelLink != null?new Uri(x.XModelLink):null))
 						.ToList();
 				}
 				else
