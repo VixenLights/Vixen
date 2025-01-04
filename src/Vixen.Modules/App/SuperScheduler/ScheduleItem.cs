@@ -200,8 +200,8 @@ namespace VixenModules.App.SuperScheduler
 				// If we have looped around to the day we started on then...
 				if (nextDateTime.DayOfWeek == initialDayOfWeek)
 				{
-					// Break out of loop
-					break;
+					// Indicate the item is not scheduable
+					return false;
 				}
 			}
 
