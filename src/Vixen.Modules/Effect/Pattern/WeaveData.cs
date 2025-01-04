@@ -1,17 +1,23 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+﻿using System.Drawing;
 using System.Runtime.Serialization;
+
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
+using VixenModules.Effect.Pattern;
+
 using ZedGraph;
 
 namespace VixenModules.Effect.Weave
 {
 	/// <summary>	
-	/// Maintains the Weave effect data.
+	/// Maintains the Pattern (Weave & Brick) effect data.
 	/// </summary>	
+	/// <remarks>
+	/// This effect was originally released as the Weave effect.  When addtional patterns were added
+	/// the effect was renamed but this class kept its original name and namespace to ensure existing sequences
+	/// would continue to deserialize correctly.
+	/// </remarks>
 	[DataContract]
 	public class WeaveData: EffectTypeModuleData
 	{
@@ -38,11 +44,19 @@ namespace VixenModules.Effect.Weave
 
 			RotationAngle = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			HighlightPercentage = 5;
+
+			MortarHeight = 5;
+			MortarColor = new ColorGradient(Color.Black);
+			BrickHeight = 5;
+			BrickWidth = 15;
 		}
 
 		#endregion
 
 		#region Public Properties
+
+		[DataMember]
+		public PatternTypes PatternType { get; set; }
 
 		[DataMember]
 		public List<ColorGradient> HorizontalColors { get; set; }
@@ -95,6 +109,22 @@ namespace VixenModules.Effect.Weave
 		[DataMember]
 		public int HighlightPercentage { get; set; }
 
+		// Brick Specific Data Members
+		[DataMember]
+		public ColorGradient MortarColor { get; set; }
+
+		[DataMember]
+		public int MortarHeight { get; set; }
+
+		[DataMember]
+		public int BrickWidth { get; set; }
+
+		[DataMember]
+		public int BrickHeight { get; set; }
+
+		[DataMember]
+		public bool TransposeTile {  get; set; }	
+
 		#endregion
 
 		#region Protected Methods
@@ -124,8 +154,29 @@ namespace VixenModules.Effect.Weave
 				WeaveHorizontalSpacing = WeaveHorizontalSpacing,
 				RotationAngle = RotationAngle,
 				HighlightPercentage = HighlightPercentage,
+				MortarColor = MortarColor,
+				MortarHeight = MortarHeight,
+				BrickWidth = BrickWidth,
+				BrickHeight = BrickHeight,
+				TransposeTile = TransposeTile,
 			};
 			return result;
+		}
+
+		#endregion
+
+		#region Private Methods
+
+		[OnDeserializing]
+		private void OnDeserializing(StreamingContext streamingContext)
+		{
+			if (MortarColor == null)
+			{
+				MortarHeight = 5;
+				MortarColor = new ColorGradient(Color.Black);
+				BrickHeight = 5;
+				BrickWidth = 15;
+			}
 		}
 
 		#endregion
