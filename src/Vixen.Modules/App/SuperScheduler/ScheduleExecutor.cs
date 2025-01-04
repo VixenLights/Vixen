@@ -157,7 +157,11 @@ namespace VixenModules.App.SuperScheduler
 
 		private ScheduleItem UpNext()
 		{
-			return Data.Items.Where(x => x.State == StateType.Waiting && x.Enabled && x.NextStartDateTime > DateTime.Now).OrderBy(s => s.NextStartDateTime).FirstOrDefault();
+			return Data.Items.Where(
+				x => x.State == StateType.Waiting && 
+				x.Enabled && 
+				x.NextStartDateTime != null &&
+				x.NextStartDateTime > DateTime.Now).OrderBy(s => s.NextStartDateTime).FirstOrDefault();
 		}
 
 		private void ShowStatusForm(bool show)
