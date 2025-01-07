@@ -1,5 +1,8 @@
 ﻿using System.Runtime.Serialization;
+using System.Windows.Forms;
+
 using VixenModules.App.Shows;
+
 using Action = VixenModules.App.Shows.Action;
 
 namespace VixenModules.App.SuperScheduler
@@ -140,20 +143,114 @@ namespace VixenModules.App.SuperScheduler
 			set { _endTime = value; }
 		}
 
-		public DateTime NextStartDateTime
+		private bool DaySupported(System.DayOfWeek dayOfWeek)
+		{
+			bool daySupported = false;
+
+			switch (dayOfWeek)
+			{
+				case System.DayOfWeek.Sunday:
+					daySupported = Sunday;
+					break;
+				case System.DayOfWeek.Monday:
+					daySupported = Monday;
+					break;
+				case System.DayOfWeek.Tuesday:
+					daySupported = Tuesday;
+					break;
+				case System.DayOfWeek.Wednesday:
+					daySupported = Wednesday;
+					break;
+				case System.DayOfWeek.Thursday:
+					daySupported = Thursday;
+					break;
+				case System.DayOfWeek.Friday:
+					daySupported = Friday;
+					break;
+				case System.DayOfWeek.Saturday:
+					daySupported = Saturday;
+					break;
+			}
+
+			return daySupported;
+		}
+
+		/// <summary>
+		/// Returns true if the item is schedulable in the future.
+		/// </summary>
+		/// <param name="nextDateTime">Date and time it should run next</param>
+		/// <returns>true if the item is schedulable in the future</returns>
+		public bool IsSchedulableInFuture(out DateTime nextDateTime)
+		{
+			// Default to the item NOT running in the future
+			bool isSchedulableInFuture = false;
+
+			// Default the next time to run to the current date/time
+			nextDateTime = DateTime.Now;
+
+			// Save off the current day of week
+			DayOfWeek initialDayOfWeek = nextDateTime.DayOfWeek;
+
+			// Add days until we find one supported
+			while (!DaySupported(nextDateTime.DayOfWeek))
+			{
+				// Advance one day
+				nextDateTime = nextDateTime.AddDays(1);
+
+				// If we have looped around to the day we started on then...
+				if (nextDateTime.DayOfWeek == initialDayOfWeek)
+				{
+					// Indicate the item is not scheduable
+					return false;
+				}
+			}
+
+			// Make sure the item is still within the schedule window
+			if (_startDate < nextDateTime && _endDate > nextDateTime)
+			{
+				// Indicate the item is scheduable in the future
+				isSchedulableInFuture = true;	
+			}
+
+			// Return whether the item is schedulable in the future
+			return isSchedulableInFuture;
+		}
+
+		/// <summary>
+		/// Returns the DateTime the item should run next or null if it shouldn't run anymore.
+		/// </summary>		
+		public DateTime? NextStartDateTime
 		{
 			get
-			{
-				var now = DateTime.Now;
-				if (_startDate < now && _endDate > now)
+			{			
+				// Default the next time to run to the current date / time
+				DateTime dateTime = DateTime.Now;
+
+				// Check to see if this item is still scheduable
+				if (!IsSchedulableInFuture(out dateTime))
 				{
-					var date = _startTime.TimeOfDay > now.TimeOfDay ? now : now.AddDays(1);
-					return new DateTime(date.Year, date.Month, date.Day,
-										 _startTime.Hour, _startTime.Minute, _startTime.Second);
+					// Otherwise return null
+					return null;
 				}
 				
-				return new DateTime(_startDate.Year, _startDate.Month, _startDate.Day,
-										 _startTime.Hour, _startTime.Minute, _startTime.Second); 
+				// Verify that the start time is in the future
+				if (_startTime.TimeOfDay > dateTime.TimeOfDay)
+				{ 															
+					return new DateTime(
+						dateTime.Year, 
+						dateTime.Month, 
+						dateTime.Day,
+						_startTime.Hour, 
+						_startTime.Minute, 
+						_startTime.Second);					
+				}												
+				else
+				{
+					// Otherwise return null
+					// I don't think the code should ever get here because the show should already be running if the current
+					// time is within the item's window.  Returning null is for defensive purposes.
+					return null;
+				}
 			}
 		}
 
