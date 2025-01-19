@@ -163,7 +163,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="e">Contains the event data</param>
 		private void Form_EffectEditorKeyDown(object sender, KeyEventArgs e)
 		{
-			Broadcast.Transmit<KeyEventArgs>("KeydownSWI", e);
+			Broadcast.Publish<KeyEventArgs>("KeydownSWI", e);
 		}
 
 		#endregion

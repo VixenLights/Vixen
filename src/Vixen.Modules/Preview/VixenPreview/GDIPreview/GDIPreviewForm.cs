@@ -179,17 +179,8 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			}
 			else
 			{
-				SendQuickKey(e);
+				Broadcast.Publish<KeyEventArgs>("KeydownSWF", e);
 			}
-		}
-
-		/// <summary>
-		/// Send a keyboard event to the "active" Timed Sequence Editor
-		/// </summary>
-		/// <param name="e">Contains the keystroke data</param>
-		private void SendQuickKey(KeyEventArgs e)
-		{
-			Broadcast.Transmit<KeyEventArgs>("KeydownSWF", e);
 		}
 
 		private void HandleContextMenu()

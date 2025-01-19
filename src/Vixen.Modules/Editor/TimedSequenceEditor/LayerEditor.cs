@@ -64,7 +64,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="e">Contains the event data</param>
 		private void Form_LayerKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
 		{
-			Broadcast.Transmit<System.Windows.Input.KeyEventArgs>("KeydownSWI", e);
+			Broadcast.Publish<System.Windows.Input.KeyEventArgs>("KeydownSWI", e);
 		}
 
 			private void LayerEditorViewOnLayerChanged(object sender, EventArgs eventArgs)

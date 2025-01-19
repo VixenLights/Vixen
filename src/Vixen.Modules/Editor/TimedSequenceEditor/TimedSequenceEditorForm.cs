@@ -238,8 +238,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public void EditorGotActivation()
 		{
 			// Add receivers for this specific instance
-			Broadcast.AddReceiver<KeyEventArgs>(this, "KeydownSWF", HandleQuickKeySWF);
-			Broadcast.AddReceiver<System.Windows.Input.KeyEventArgs>(this, "KeydownSWI", HandleQuickKeySWI);
+			Broadcast.Subscribe<KeyEventArgs>(this, "KeydownSWF", HandleQuickKeySWF);
+			Broadcast.Subscribe<System.Windows.Input.KeyEventArgs>(this, "KeydownSWI", HandleQuickKeySWI);
 		}
 
 		/// <summary>
@@ -248,8 +248,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public void EditorLostActivation()
 		{
 			// Remove receivers for this specific instance so another instance get the attention
-			Broadcast.RemoveReceiver<KeyEventArgs>(this, "KeydownSWF");
-			Broadcast.RemoveReceiver<System.Windows.Input.KeyEventArgs>(this, "KeydownSWI");
+			Broadcast.Unsubscribe<KeyEventArgs>(this, "KeydownSWF");
+			Broadcast.Unsubscribe<System.Windows.Input.KeyEventArgs>(this, "KeydownSWI");
 		}
 
 		private IDockContent DockingPanels_GetContentFromPersistString(string persistString)
@@ -5475,8 +5475,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			LayerEditor.Close();
 			FindEffects.Close();
 
-			Broadcast.RemoveReceiver<KeyEventArgs>(this, "KeydownSWF");
-			Broadcast.RemoveReceiver<System.Windows.Input.KeyEventArgs>(this, "KeydownSWI");
+			Broadcast.Unsubscribe<KeyEventArgs>(this, "KeydownSWF");
+			Broadcast.Unsubscribe<System.Windows.Input.KeyEventArgs>(this, "KeydownSWI");
 
 			var xml = new XMLProfileSettings();
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockLeftPortion", Name), (int)dockPanel.DockLeftPortion);

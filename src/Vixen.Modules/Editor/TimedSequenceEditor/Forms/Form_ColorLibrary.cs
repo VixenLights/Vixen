@@ -281,7 +281,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="e">Contains the event data</param>
 		private void Form_ColorKeyDown(object sender, KeyEventArgs e)
 		{
-			Broadcast.Transmit<KeyEventArgs>("KeydownSWF", e);
+			Broadcast.Publish<KeyEventArgs>("KeydownSWF", e);
 		}
 		#endregion
 

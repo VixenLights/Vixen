@@ -165,7 +165,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="e">Contains the event data</param>
 		private void Form_CurveKeyDown(object sender, KeyEventArgs e)
 		{
-			Broadcast.Transmit<KeyEventArgs>("KeydownSWF", e);
+			Broadcast.Publish<KeyEventArgs>("KeydownSWF", e);
 		}
 
 		private void Populate_Curves()

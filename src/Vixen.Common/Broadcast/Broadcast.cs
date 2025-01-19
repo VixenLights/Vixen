@@ -8,7 +8,7 @@ using CommunityToolkit.Mvvm.Messaging;
  * How to use Broadcasting
  * 
  * To send a message:
- *   Broadcast.Transmit<'Type of variable'>("'Name of channel'", 'Variable');
+ *   Broadcast.Publish<'Type of variable'>("'Name of channel'", 'Variable');
  *     where:
  *       Broadcast is a static class
  *       'Type of variable' is any legal C# identifier that is of type 'Variable'
@@ -18,7 +18,7 @@ using CommunityToolkit.Mvvm.Messaging;
  *                  as 'Type of variable'
  * 
  * To receive a message
- *   Broadcast.AddReceiver<'Type of variable'>('Callback's class', "'Name of channel'", 'Callback');
+ *   Broadcast.Subscribe<'Type of variable'>('Callback's class', "'Name of channel'", 'Callback');
  *     where:
  *       Broadcast is a static class
  *       'Callback's class' is the class where the callback is instantiated
@@ -30,7 +30,7 @@ using CommunityToolkit.Mvvm.Messaging;
  *                  void 'Callback'('Type of Variable' variable)
  * 
  * To remove a message receiver
- *   Broadcast.RemoveReceiver<'Type of variable'>("'Name of channel'", 'Callback');
+ *   Broadcast.Unsubscribe<'Type of variable'>("'Name of channel'", 'Callback');
  *     where:
  *       Broadcast is a static class
  *       'Type of variable' is any legal C# identifier that is of type variable in the
@@ -50,12 +50,12 @@ using CommunityToolkit.Mvvm.Messaging;
  *        {
  *          Console.WriteLine($"Number received: {valueReceived}.");
  *        }
- *        Broadcast.AddReceiver<int>(this, "Number of elements", NumberReceiver);
+ *        Broadcast.Subscribe<int>(this, "Number of elements", NumberReceiver);
  *
  *        int valueSent = 123;
- *        Broadcast.Transmit<int>("Number of elements", valueSent);
+ *        Broadcast.Publish<int>("Number of elements", valueSent);
  *
- *        Broadcast.RemoveReceiver<int>(this, "Number of elements");
+ *        Broadcast.Unsubscribe<int>(this, "Number of elements");
  *
  *     This will transmit the number 123 to all receivers listening on the channel "Number of Elements".
  * 
@@ -75,7 +75,7 @@ namespace Common.Broadcast
 		/// <typeparam name="T">Specify the type of the message</typeparam>
 		/// <param name="channel">Specify the message channel</param>
 		/// <param name="message">Specify the message content</param>
-		public static void Transmit<T>(String channel, T message) where T : class
+		public static void Publish<T>(String channel, T message) where T : class
 		{
 			if (VixenSystem.UIThread == System.Threading.Thread.CurrentThread)
 				WeakReferenceMessenger.Default.Send<T, String>(message, channel);
@@ -90,7 +90,7 @@ namespace Common.Broadcast
 		/// <param name="source">Receiver's object</param>
 		/// <param name="channel">Specify the message channel</param>
 		/// <param name="callback">Specify the message receiver</param>
-		public static void AddReceiver<T>(Object source, String channel, Action<T> callback) where T:class
+		public static void Subscribe<T>(Object source, String channel, Action<T> callback) where T:class
 		{
 			if (!WeakReferenceMessenger.Default.IsRegistered<T, String>(source, channel))
 				WeakReferenceMessenger.Default.Register<T, String>(source, channel, (r, m) => { callback(m); });
@@ -102,7 +102,7 @@ namespace Common.Broadcast
 		/// <typeparam name="T">Specify the type of the message</typeparam>
 		/// <param name="source">Receiver's object</param>
 		/// <param name="channel">Specify the message channel</param>
-		public static void RemoveReceiver<T>(Object source, String channel) where T : class
+		public static void Unsubscribe<T>(Object source, String channel) where T : class
 		{
 			WeakReferenceMessenger.Default.Unregister<T, String>(source, channel);
 		}

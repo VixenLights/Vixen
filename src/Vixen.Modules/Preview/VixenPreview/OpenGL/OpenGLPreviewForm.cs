@@ -15,6 +15,7 @@ using Vixen.Sys.Instrumentation;
 using VixenModules.Editor.FixtureGraphics.OpenGL;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
 using VixenModules.Preview.VixenPreview.Shapes;
+using Common.Broadcast;
 
 namespace VixenModules.Preview.VixenPreview.OpenGL
 {
@@ -484,6 +485,10 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				int direction = -(delta * SystemInformation.MouseWheelScrollLines / factor);
 
 				Zoom(direction);
+			}
+			else
+			{
+				Broadcast.Publish<KeyEventArgs>("KeydownSWF", e);
 			}
 		}
 

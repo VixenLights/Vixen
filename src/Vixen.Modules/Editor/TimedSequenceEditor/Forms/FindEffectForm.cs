@@ -48,7 +48,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="e">Contains the event data</param>
 		private void Form_FindKeyDown(object sender, KeyEventArgs e)
 		{
-			Broadcast.Transmit<KeyEventArgs>("KeydownSWF", e);
+			Broadcast.Publish<KeyEventArgs>("KeydownSWF", e);
 		}
 
 		private void FindEffectForm_Load(object sender, EventArgs e)
