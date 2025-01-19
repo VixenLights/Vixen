@@ -57,6 +57,7 @@ using Cursors = System.Windows.Forms.Cursors;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 using PropertyDescriptor = System.ComponentModel.PropertyDescriptor;
 using Size = System.Drawing.Size;
+using Common.Broadcast;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -229,6 +230,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager(InstanceId);
 			_timeLineGlobalStateManager = TimeLineGlobalStateManager.Manager(InstanceId);
 			_marksSelectionManager = MarksSelectionManager.Manager(InstanceId);
+		}
+
+		/// <summary>
+		/// Specific instance of Editor was activated.
+		/// </summary>
+		public void EditorGotActivation()
+		{
+			// Add receivers for this specific instance
+			Broadcast.Subscribe<KeyEventArgs>(this, "KeydownSWF", HandleQuickKeySWF);
+			Broadcast.Subscribe<System.Windows.Input.KeyEventArgs>(this, "KeydownSWI", HandleQuickKeySWI);
+		}
+
+		/// <summary>
+		/// Specific instance of Editor was deactivated.
+		/// </summary>
+		public void EditorLostActivation()
+		{
+			// Remove receivers for this specific instance so another instance get the attention
+			Broadcast.Unsubscribe<KeyEventArgs>(this, "KeydownSWF");
+			Broadcast.Unsubscribe<System.Windows.Input.KeyEventArgs>(this, "KeydownSWI");
 		}
 
 		private IDockContent DockingPanels_GetContentFromPersistString(string persistString)
@@ -953,7 +974,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		
+
 		private Form_Marks _marksForm;
 
 		private Form_Marks MarksForm
@@ -5453,6 +5474,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			EffectsForm.Close();
 			LayerEditor.Close();
 			FindEffects.Close();
+
+			Broadcast.Unsubscribe<KeyEventArgs>(this, "KeydownSWF");
+			Broadcast.Unsubscribe<System.Windows.Input.KeyEventArgs>(this, "KeydownSWI");
 
 			var xml = new XMLProfileSettings();
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockLeftPortion", Name), (int)dockPanel.DockLeftPortion);

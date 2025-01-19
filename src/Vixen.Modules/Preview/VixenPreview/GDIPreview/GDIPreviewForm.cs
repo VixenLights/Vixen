@@ -1,4 +1,5 @@
-﻿using Common.Controls;
+﻿using Common.Broadcast;
+using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
@@ -7,6 +8,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using Vixen;
+using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
 using VixenModules.Preview.VixenPreview.Shapes;
@@ -175,7 +177,10 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 				ZoomLevel = ZoomLevel + delta * factor;
 
 			}
-
+			else
+			{
+				Broadcast.Publish<KeyEventArgs>("KeydownSWF", e);
+			}
 		}
 
 		private void HandleContextMenu()

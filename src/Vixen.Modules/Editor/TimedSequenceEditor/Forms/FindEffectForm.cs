@@ -1,4 +1,5 @@
-﻿using Common.Controls.Theme;
+﻿using Common.Broadcast;
+using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Common.Resources.Properties;
 using Vixen.Sys.LayerMixing;
@@ -19,6 +20,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public FindEffectForm(TimelineControl timelineControl, SequenceLayers layerManager)
 		{
 			InitializeComponent();
+
 			_layerManager = layerManager;
 			contextMenuStrip1.Renderer = new ThemeToolStripRenderer();
 			Icon = Resources.Icon_Vixen3;
@@ -27,18 +29,32 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			timelineControl.ElementsFinishedMoving += TimelineControlOnElementsFinishedMoving;
 
 			comboBoxFind.SelectedIndex = 0;
-			
+
 			Closing += FindEffectForm_Closing;
 			Resize += FindEffectForm_Resize;
+
+			// Establish automation to intercept quick keys meant for the Timeline window
+			comboBoxAvailableEffect.KeyDown += Form_FindKeyDown;
+			comboBoxFind.KeyDown += Form_FindKeyDown;
+			listViewEffectStartTime.KeyDown += Form_FindKeyDown;
+			checkBoxCollapseAllGroups.KeyDown += Form_FindKeyDown;
 		}
 
-		
+		#region Private
+		/// <summary>
+		/// Intercept KeyDown event
+		/// </summary>
+		/// <param name="sender">The source of the event</param>
+		/// <param name="e">Contains the event data</param>
+		private void Form_FindKeyDown(object sender, KeyEventArgs e)
+		{
+			Broadcast.Publish<KeyEventArgs>("KeydownSWF", e);
+		}
 
 		private void FindEffectForm_Load(object sender, EventArgs e)
 		{
 			ResizeColumns();
 		}
-
 
 		private void FindEffectForm_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
@@ -95,6 +111,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				await UpdateListView();
 			}
 		}
+		#endregion
 
 		#region Methods
 

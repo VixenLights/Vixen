@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
+using Common.Broadcast;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -71,6 +72,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public Form_GradientLibrary(TimelineControl timelineControl)
 		{
 			InitializeComponent();
+
 			TimelineControl = timelineControl;
 			Icon = Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
@@ -90,6 +92,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButtonImportGradients.Image = Tools.GetIcon(Resources.folder_open, iconSize);
 
 			listViewGradients.AllowDrop = true;
+
+			// Establish automation to intercept quick keys meant for the Timeline window
+			panel1.Controls[0].KeyDown += Form_GradientKeyDown;
+			panel1.Controls[0].Enter += Form_GradientEnter;
+			checkBoxLinkGradients.Enter += Form_GradientEnter;
+			listViewGradients.Enter += Form_GradientEnter;
 
 			var xml = new XMLProfileSettings();
 			_gradientLibraryTextScale = Convert.ToDouble(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/GradientLibraryTextScale", Name), "1"), CultureInfo.InvariantCulture);
@@ -170,6 +178,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			
 			listViewGradients.EndUpdate();
 			toolStripButtonEditGradient.Enabled = toolStripButtonDeleteGradient.Enabled = false;
+		}
+		/// <summary>
+		/// Intercept when the control is activated
+		/// </summary>
+		/// <param name="sender">The source of the event</param>
+		/// <param name="e">Contains the event data</param>
+		private void Form_GradientEnter(object sender, EventArgs e)
+		{
+			panel1.Controls[0].Focus();
+		}
+
+		/// <summary>
+		/// Intercept KeyDown event
+		/// </summary>
+		/// <param name="sender">The source of the event</param>
+		/// <param name="e">Contains the event data</param>
+		private void Form_GradientKeyDown(object sender, KeyEventArgs e)
+		{
+			Broadcast.Publish<KeyEventArgs>("KeydownSWF", e);
 		}
 
 		#endregion

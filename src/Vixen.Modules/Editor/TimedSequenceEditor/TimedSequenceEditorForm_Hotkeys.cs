@@ -1,5 +1,6 @@
 ﻿using Common.Controls.Timeline;
 using Element = Common.Controls.Timeline.Element;
+using Common.Controls.ControlsEx;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -23,6 +24,34 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					StopSequence();
 				}
 			}
+		}
+
+		/// <summary>
+		/// Front-end quick keys
+		/// </summary>
+		/// <param name="e">Contains the key data</param>
+		public void HandleQuickKeySWF(KeyEventArgs e)
+		{
+			OnKeyDown(e);
+		}
+
+		/// <summary>
+		/// Convert quick key from System.Windows.Input to System.Windows.Form
+		/// </summary>
+		/// <param name="swiKey">Contains the key data (for System.Windows.Input)</param>
+		public void HandleQuickKeySWI(System.Windows.Input.KeyEventArgs swiKey)
+		{
+			var wpfKey = swiKey.Key == System.Windows.Input.Key.System ? swiKey.SystemKey : swiKey.Key;
+			var swfKeys = (System.Windows.Forms.Keys)System.Windows.Input.KeyInterop.VirtualKeyFromKey(wpfKey);
+
+			System.Windows.Forms.Keys swfModifiers;
+			swfModifiers = swiKey.KeyboardDevice.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Alt) ? System.Windows.Forms.Keys.Alt : System.Windows.Forms.Keys.None;
+			swfModifiers |= swiKey.KeyboardDevice.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Control) ? System.Windows.Forms.Keys.Control : System.Windows.Forms.Keys.None;
+			swfModifiers |= swiKey.KeyboardDevice.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Shift) ? System.Windows.Forms.Keys.Shift : System.Windows.Forms.Keys.None;
+
+			var swfkey = new System.Windows.Forms.KeyEventArgs(swfKeys | swfModifiers);
+			HandleQuickKeySWF(swfkey);
+			swiKey.Handled = swfkey.Handled;
 		}
 
 		protected override void OnKeyDown(KeyEventArgs e)
@@ -243,11 +272,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						DistributeSelectedEffects();
 					}
 					break;
+
+				case Keys.F5:
+					playToolStripMenuItem_Click();
+					e.Handled = true;
+					break;
+
+				case Keys.F8:
+					stopToolStripMenuItem_Click();
+					e.Handled = true;
+					break;
+
+				case Keys.F9:
+					playBackToolStripButton_Loop.PerformClick();
+					e.Handled = true;
+					break;
 			}
 			// Prevents sending keystrokes to child controls. 
 			// This was causing serious slowdowns if random keys were pressed.
 			//e.SuppressKeyPress = true;
-			base.OnKeyDown(e);
+//			base.OnKeyDown(e);
 		}
 
 	}

@@ -13,6 +13,7 @@ using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
+using Common.Broadcast;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -61,7 +62,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private int _dragX;
 		private int _dragY;
 		private short _sideGap;
-		
 		#endregion
 
 		#region Initialization
@@ -69,6 +69,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public Form_ColorLibrary(TimelineControl timelineControl)
 		{
 			InitializeComponent();
+
 			TimelineControl = timelineControl;
 			Icon = Resources.Icon_Vixen3;
 			toolStripColors.Renderer = new ThemeToolStripRenderer();
@@ -87,6 +88,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButtonImportColors.Image = Tools.GetIcon(Resources.folder_open, iconSize);
 
 			listViewColors.AllowDrop = true;
+
+			// Establish automation to intercept quick keys meant for the Timeline window
+			listViewColors.KeyDown += Form_ColorKeyDown;
 
 			var xml = new XMLProfileSettings();
 			_colorLibraryScale = Convert.ToDouble(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ColorLibraryScale", Name), "1"), CultureInfo.InvariantCulture);
@@ -270,6 +274,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Save_ColorPaletteFile();
 		}
 
+		/// <summary>
+		/// Intercept KeyDown event
+		/// </summary>
+		/// <param name="sender">The source of the event</param>
+		/// <param name="e">Contains the event data</param>
+		private void Form_ColorKeyDown(object sender, KeyEventArgs e)
+		{
+			Broadcast.Publish<KeyEventArgs>("KeydownSWF", e);
+		}
 		#endregion
 
 		#region Import/Export

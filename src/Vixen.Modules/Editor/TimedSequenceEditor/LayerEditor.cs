@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Common.Broadcast;
+using System.Windows;
 using System.Windows.Forms.Integration;
 using Vixen.Sys.LayerMixing;
 using WeifenLuo.WinFormsUI.Docking;
@@ -23,9 +24,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public LayerEditor(SequenceLayers layers)
 		{
-		
+
 			InitializeComponent();
-			
 
 			host = new ElementHost { Dock = DockStyle.Fill };
 
@@ -35,12 +35,39 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			_layerEditorView.CollectionChanged += LayerEditorViewCollectionChanged;
 			_layerEditorView.LayerChanged += LayerEditorViewOnLayerChanged;
-
+			
 			host.Child = _layerEditorView;
 			Controls.Add(host);
+
+			// Establish automation to intercept quick keys meant for the Timeline window
+			host.Child.KeyDown += Form_LayerKeyDown;
+			host.Enter += Form_ColorEnter; ;
 		}
 
-		private void LayerEditorViewOnLayerChanged(object sender, EventArgs eventArgs)
+		/// <summary>
+		/// Intercept when the control is activated
+		/// </summary>
+		/// <param name="sender">The source of the event</param>
+		/// <param name="e">Contains the event data</param>
+		private void Form_ColorEnter(object sender, EventArgs e)
+		{
+			// For some reason, setting the first child as the focus doesn't always work
+			// so we'll send a shift+tab in to set the focus to the last control.
+			//host.Child.Focus();
+			SendKeys.Send("+{TAB}");
+		}
+
+		/// <summary>
+		/// Intercept KeyDown event
+		/// </summary>
+		/// <param name="sender">The source of the event</param>
+		/// <param name="e">Contains the event data</param>
+		private void Form_LayerKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			Broadcast.Publish<System.Windows.Input.KeyEventArgs>("KeydownSWI", e);
+		}
+
+			private void LayerEditorViewOnLayerChanged(object sender, EventArgs eventArgs)
 		{
 			if (LayersChanged != null)
 				LayersChanged(this, eventArgs);

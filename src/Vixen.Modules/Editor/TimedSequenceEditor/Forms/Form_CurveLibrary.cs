@@ -14,6 +14,7 @@ using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
+using Common.Broadcast;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -72,6 +73,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public Form_CurveLibrary(TimelineControl timelineControl)
 		{
 			InitializeComponent();
+
 			TimelineControl = timelineControl;
 			Icon = Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
@@ -108,6 +110,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//Over-ride the auto theme listview back color
 			listViewCurves.BackColor = ThemeColorTable.BackgroundColor;
 
+			// Establish automation to intercept quick keys meant for the Timeline window
+			panel1.Controls[0].KeyDown += Form_CurveKeyDown;
+			panel1.Controls[0].Enter += Form_CurveEnter;
+			checkBoxLinkCurves.Enter += Form_CurveEnter;
+			toolStripCurves.Enter += Form_CurveEnter;
+
 			listViewCurves.Alignment = ListViewAlignment.Top;
 			_curveLibrary = ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary;
 		}
@@ -140,6 +148,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#endregion
 
 		#region Private Methods
+		/// <summary>
+		/// Intercept when the control is activated
+		/// </summary>
+		/// <param name="sender">The source of the event</param>
+		/// <param name="e">Contains the event data</param>
+		private void Form_CurveEnter(object sender, EventArgs e)
+		{
+			panel1.Controls[0].Focus();
+		}
+
+		/// <summary>
+		/// Intercept KeyDown event
+		/// </summary>
+		/// <param name="sender">The source of the event</param>
+		/// <param name="e">Contains the event data</param>
+		private void Form_CurveKeyDown(object sender, KeyEventArgs e)
+		{
+			Broadcast.Publish<KeyEventArgs>("KeydownSWF", e);
+		}
+
 		private void Populate_Curves()
 		{
 			listViewCurves.BeginUpdate();
