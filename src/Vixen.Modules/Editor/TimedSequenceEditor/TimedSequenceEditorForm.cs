@@ -6005,7 +6005,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 				// If the origin timespan is within the the threshold time span of the end of a mark...
-				if (markTime.EndTime - threshold < referenceTimeSpan && referenceTimeSpan < markTime.EndTime + threshold)
+				if (markTime.Parent.ShowTailGridLines && markTime.EndTime - threshold < referenceTimeSpan && referenceTimeSpan < markTime.EndTime + threshold)
 				{
 					// Of all the marks, find the closest one
 					TimeSpan distance = markTime.EndTime - referenceTimeSpan;
