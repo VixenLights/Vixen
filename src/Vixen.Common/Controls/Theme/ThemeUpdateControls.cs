@@ -34,7 +34,8 @@ namespace Common.Controls.Theme
 				c.Font = StandardFont;
 				if (c is Label l)
 				{
-					l.ForeColor = ThemeColorTable.ForeColor;
+					if (c.Tag?.ToString()?.Contains("KEEP_FORECOLOR") == false)
+						l.ForeColor = ThemeColorTable.ForeColor;
 					l.BackColor = ThemeColorTable.BackgroundColor;
 					if (l is LinkLabel ll)
 					{

@@ -1,4 +1,6 @@
-﻿namespace VixenModules.Preview.VixenPreview
+﻿using Common.Controls.Theme;
+
+namespace VixenModules.Preview.VixenPreview
 {
 	partial class VixenPreviewSetup3
 	{
@@ -35,6 +37,11 @@
 			this.undoButton = new Common.Controls.UndoButton();
 			this.redoButton = new Common.Controls.UndoButton();
 			this.lblUndoRedo = new System.Windows.Forms.Label();
+			this.lblLock = new System.Windows.Forms.Label();
+			this.pnlLock = new System.Windows.Forms.Panel();
+			this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
+			this.btnLock = new System.Windows.Forms.Button();
+			this.btnUnlock = new System.Windows.Forms.Button();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
 			this.buttonDistributeVertical = new System.Windows.Forms.Button();
 			this.buttonMatchProperties = new System.Windows.Forms.Button();
@@ -81,9 +88,13 @@
 			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.lockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.unlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			this.backgroundPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.addTemplateMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveLocationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -111,6 +122,7 @@
 			this.labelZoomLevel = new System.Windows.Forms.Label();
 			this.panel9 = new System.Windows.Forms.Panel();
 			this.panel10 = new System.Windows.Forms.Panel();
+			this.label14 = new System.Windows.Forms.Label();
 			this.label13 = new System.Windows.Forms.Label();
 			this.label12 = new System.Windows.Forms.Label();
 			this.label11 = new System.Windows.Forms.Label();
@@ -151,6 +163,8 @@
 			this.customPropPanel.SuspendLayout();
 			this.pnlBulbSize.SuspendLayout();
 			this.tableLayoutPanel5.SuspendLayout();
+			this.pnlLock.SuspendLayout();
+			this.tableLayoutPanel6.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// panel11
@@ -210,6 +224,79 @@
 			this.lblUndoRedo.TabIndex = 3;
 			this.lblUndoRedo.Text = "Undo/Redo";
 			this.lblUndoRedo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// lblLock
+			// 
+			this.lblLock.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
+			this.lblLock.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
+			this.lblLock.Location = new System.Drawing.Point(606, 0);
+			this.lblLock.Name = "lblLock";
+			this.lblLock.Size = new System.Drawing.Size(64, 19);
+			this.lblLock.TabIndex = 0;
+			this.lblLock.Text = "Lock/Unlock";
+			this.lblLock.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// pnlLock
+			// 
+			this.pnlLock.AutoSize = true;
+			this.pnlLock.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.pnlLock.Controls.Add(this.tableLayoutPanel6);
+			this.pnlLock.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.pnlLock.Location = new System.Drawing.Point(606, 22);
+			this.pnlLock.Name = "pnlLock";
+			this.pnlLock.Size = new System.Drawing.Size(64, 70);
+			this.pnlLock.TabIndex = 28;
+			// 
+			// tableLayoutPanel6
+			// 
+			this.tableLayoutPanel6.AutoSize = true;
+			this.tableLayoutPanel6.ColumnCount = 2;
+			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 17F));
+			this.tableLayoutPanel6.Controls.Add(btnLock, 0, 0);
+			this.tableLayoutPanel6.Controls.Add(btnUnlock, 1, 0);
+			this.tableLayoutPanel6.Location = new System.Drawing.Point(3, 1);
+			this.tableLayoutPanel6.Name = "tableLayoutPanel6";
+			this.tableLayoutPanel6.RowCount = 1;
+			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel6.Size = new System.Drawing.Size(56, 29);
+			this.tableLayoutPanel6.TabIndex = 23;
+			// 
+			// btnLock
+			// 
+			this.btnLock.BackColor = System.Drawing.Color.Transparent;
+			this.btnLock.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.btnLock.Enabled = false;
+			this.btnLock.FlatAppearance.BorderSize = 0;
+			this.btnLock.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
+			this.btnLock.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnLock.Location = new System.Drawing.Point(3, 3);
+			this.btnLock.Name = "btnLock";
+			this.btnLock.Size = new System.Drawing.Size(22, 23);
+			this.btnLock.TabIndex = 32;
+			this.btnLock.Tag = "";
+			this.btnLock.Text = "";
+			this.btnLock.UseVisualStyleBackColor = false;
+			this.btnLock.Click += new System.EventHandler(this.lockButton_ButtonClick);
+			// 
+			// btnUnlock
+			// 
+			this.btnUnlock.BackColor = System.Drawing.Color.Transparent;
+			this.btnUnlock.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.btnUnlock.Enabled = false;
+			this.btnUnlock.FlatAppearance.BorderSize = 0;
+			this.btnUnlock.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
+			this.btnUnlock.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnUnlock.Location = new System.Drawing.Point(31, 3);
+			this.btnUnlock.Name = "btnUnlock";
+			this.btnUnlock.Size = new System.Drawing.Size(22, 23);
+			this.btnUnlock.TabIndex = 31;
+			this.btnUnlock.Tag = "";
+			this.btnUnlock.Text = "";
+			this.btnUnlock.UseVisualStyleBackColor = false;
+			this.btnUnlock.Click += new System.EventHandler(this.unlockButton_ButtonClick);
 			// 
 			// tableLayoutPanel2
 			// 
@@ -661,11 +748,15 @@
             this.copyToolStripMenuItem1,
             this.pasteToolStripMenuItem,
             this.deleteToolStripMenuItem,
-            this.undoToolStripMenuItem,
+			this.toolStripMenuItem1,
+			this.undoToolStripMenuItem,
             this.redoToolStripMenuItem,
-            this.toolStripMenuItem1,
-            this.backgroundPropertiesToolStripMenuItem,
-            this.toolStripSeparator3,
+			this.toolStripSeparator3,
+			this.lockToolStripMenuItem,
+			this.unlockToolStripMenuItem,
+			this.toolStripSeparator4,
+			this.backgroundPropertiesToolStripMenuItem,
+            this.toolStripSeparator5,
             this.addTemplateMenu});
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
@@ -725,6 +816,24 @@
 			this.redoToolStripMenuItem.Text = "&Redo";
 			this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoButton_ButtonClick);
 			// 
+			// lockToolStripMenuItem
+			// 
+			this.lockToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("lockToolStripMenuItem.Image")));
+			this.lockToolStripMenuItem.Name = "lockToolStripMenuItem";
+			this.lockToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+L";
+			this.lockToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.lockToolStripMenuItem.Text = "&Lock";
+			this.lockToolStripMenuItem.Click += new System.EventHandler(this.lockButton_ButtonClick);
+			// 
+			// unlockToolStripMenuItem
+			// 
+			this.unlockToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("unlockToolStripMenuItem.Image")));
+			this.unlockToolStripMenuItem.Name = "unlockToolStripMenuItem";
+			this.unlockToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+U";
+			this.unlockToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.unlockToolStripMenuItem.Text = "&Unlock";
+			this.unlockToolStripMenuItem.Click += new System.EventHandler(this.unlockButton_ButtonClick);
+			// 
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
@@ -737,10 +846,14 @@
 			this.backgroundPropertiesToolStripMenuItem.Text = "&Background Properties...";
 			this.backgroundPropertiesToolStripMenuItem.Click += new System.EventHandler(this.backgroundPropertiesToolStripMenuItem_Click);
 			// 
-			// toolStripSeparator3
+			// toolStripSeparators
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
 			this.toolStripSeparator3.Size = new System.Drawing.Size(200, 6);
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(200, 6);
+			this.toolStripSeparator5.Name = "toolStripSeparator5";
+			this.toolStripSeparator5.Size = new System.Drawing.Size(200, 6);
 			// 
 			// addTemplateMenu
 			// 
@@ -1022,6 +1135,7 @@
 			// 
 			this.panel10.AutoSize = true;
 			this.panel10.BackColor = System.Drawing.Color.Black;
+			this.panel10.Controls.Add(this.label14);
 			this.panel10.Controls.Add(this.label13);
 			this.panel10.Controls.Add(this.label12);
 			this.panel10.Controls.Add(this.label11);
@@ -1034,21 +1148,35 @@
 			this.panel10.Size = new System.Drawing.Size(299, 27);
 			this.panel10.TabIndex = 7;
 			// 
+			// label14
+			// 
+			this.label14.AutoSize = true;
+			this.label14.ForeColor = ThemeColorTable.Pixel1;
+			this.label14.Tag = "KEEP_FORECOLOR";
+			this.label14.Location = new System.Drawing.Point(292, 6);
+			this.label14.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+			this.label14.Name = "label14";
+			this.label14.Size = new System.Drawing.Size(45, 13);
+			this.label14.TabIndex = 12;
+			this.label14.Text = "Pixel #1";
+			// 
 			// label13
 			// 
 			this.label13.AutoSize = true;
-			this.label13.ForeColor = System.Drawing.Color.Yellow;
-			this.label13.Location = new System.Drawing.Point(252, 6);
+			this.label13.ForeColor = ThemeColorTable.Locked;
+			this.label13.Tag = "KEEP_FORECOLOR";
+			this.label13.Location = new System.Drawing.Point(248, 6);
 			this.label13.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.label13.Name = "label13";
-			this.label13.Size = new System.Drawing.Size(45, 13);
+			this.label13.Size = new System.Drawing.Size(90, 13);
 			this.label13.TabIndex = 11;
-			this.label13.Text = "Pixel #1";
+			this.label13.Text = "Locked";
 			// 
 			// label12
 			// 
 			this.label12.AutoSize = true;
-			this.label12.ForeColor = System.Drawing.Color.HotPink;
+			this.label12.ForeColor = ThemeColorTable.ElementSelected;
+			this.label12.Tag = "KEEP_FORECOLOR";
 			this.label12.Location = new System.Drawing.Point(159, 6);
 			this.label12.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.label12.Name = "label12";
@@ -1059,7 +1187,8 @@
 			// label11
 			// 
 			this.label11.AutoSize = true;
-			this.label11.ForeColor = System.Drawing.Color.White;
+			this.label11.ForeColor = ThemeColorTable.Unlinked;
+			this.label11.Tag = "KEEP_FORECOLOR";
 			this.label11.Location = new System.Drawing.Point(101, 6);
 			this.label11.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.label11.Name = "label11";
@@ -1070,7 +1199,8 @@
 			// label10
 			// 
 			this.label10.AutoSize = true;
-			this.label10.ForeColor = System.Drawing.Color.LimeGreen;
+			this.label10.ForeColor = ThemeColorTable.Selected;
+			this.label10.Tag = "KEEP_FORECOLOR";
 			this.label10.Location = new System.Drawing.Point(46, 6);
 			this.label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.label10.Name = "label10";
@@ -1081,7 +1211,8 @@
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.ForeColor = System.Drawing.Color.Turquoise;
+			this.label9.ForeColor = ThemeColorTable.Linked;
+			this.label9.Tag = "KEEP_FORECOLOR";
 			this.label9.Location = new System.Drawing.Point(6, 6);
 			this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.label9.Name = "label9";
@@ -1202,6 +1333,8 @@
 			this.tlpToolBar.Controls.Add(this.label7, 4, 0);
 			this.tlpToolBar.Controls.Add(this.lblCustomProp, 6, 0);
 			this.tlpToolBar.Controls.Add(this.lblUndoRedo, 7, 0);
+			this.tlpToolBar.Controls.Add(this.lblLock, 8, 0);
+			this.tlpToolBar.Controls.Add(this.pnlLock, 8, 1);
 			this.tlpToolBar.Controls.Add(this.lblBulbSize, 5, 0);
 			this.tlpToolBar.Controls.Add(this.pnlBulbSize, 5, 1);
 			this.tlpToolBar.Location = new System.Drawing.Point(3, 3);
@@ -1364,6 +1497,7 @@
 			this.pnlBulbSize.ResumeLayout(false);
 			this.pnlBulbSize.PerformLayout();
 			this.tableLayoutPanel5.ResumeLayout(false);
+			this.tableLayoutPanel6.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1428,6 +1562,7 @@
 		private System.Windows.Forms.Button buttonPolyLine;
 		private System.Windows.Forms.Button buttonMultiString;
 		private System.Windows.Forms.Panel panel10;
+		private System.Windows.Forms.Label label14;
 		private System.Windows.Forms.Label label13;
 		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.Label label11;
@@ -1438,9 +1573,16 @@
 		private Common.Controls.UndoButton redoButton;
 		public Common.Controls.UndoButton undoButton;
 		private System.Windows.Forms.Label lblUndoRedo;
+		private System.Windows.Forms.Label lblLock;
+		private System.Windows.Forms.Panel pnlLock;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
+		private System.Windows.Forms.Button btnLock;
+		private System.Windows.Forms.Button btnUnlock;
 		private System.Windows.Forms.Button btnAddCustomProp;
 		private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
+		public System.Windows.Forms.ToolStripMenuItem lockToolStripMenuItem;
+		public System.Windows.Forms.ToolStripMenuItem unlockToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem viewHelpToolStripMenuItem;
@@ -1461,6 +1603,8 @@
 		private System.Windows.Forms.ToolStripMenuItem templateHelpToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem customPropHelpToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripMenuItem addTemplateMenu;
 		private System.Windows.Forms.Button btnCustomPropEditor;
 		private System.Windows.Forms.Label lblBulbSize;
