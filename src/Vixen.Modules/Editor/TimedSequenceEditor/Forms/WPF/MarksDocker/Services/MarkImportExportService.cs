@@ -116,6 +116,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 				lmc.Name = markCollection.Name;
 				lmc.Level = markCollection.Level;
 				lmc.ShowGridLines = markCollection.Enabled;
+				lmc.ShowTailGridLines = false;
 				lmc.Decorator = new MarkDecorator
 				{
 					Color = markCollection.MarkColor,

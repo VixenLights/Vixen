@@ -3024,6 +3024,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						if (mc != null)
 						{
 							mc.ShowGridLines = mc.ShowMarkBar = true;
+							mc.ShowTailGridLines = false;
 						}
 					}
 				}
@@ -5917,14 +5918,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				switch (alignMethod)
 				{
 					case "Start":
-						nearestStartMark = FindNearestMark(element.StartTime, element.EndTime, alignMethod);
+						nearestStartMark = FindNearestMark(element.StartTime);
 						break;
 					case "End":
-						nearestEndMark = FindNearestMark(element.EndTime, element.StartTime, alignMethod);
+						nearestEndMark = FindNearestMark(element.EndTime);
 						break;
 					case "Both":
-						nearestStartMark = FindNearestMark(element.StartTime, element.EndTime, "Start");
-						nearestEndMark = FindNearestMark(element.EndTime, nearestStartMark, "End");
+						nearestStartMark = FindNearestMark(element.StartTime);
+						nearestEndMark = FindNearestMark(element.EndTime);
 						break;
 				}
 				if (nearestStartMark != TimeSpan.Zero && !moveElements.ContainsKey(element) && nearestEndMark != TimeSpan.Zero &&
@@ -5978,41 +5979,48 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		/// <summary>
 		/// Returns the TimeSpan location of the nearest mark to the given TimeSpan
-		/// Located within the threshhold: AlignTo_Threshold
+		/// located within the threshold: AlignTo_Threshold
 		/// </summary>
-		/// <param name="referenceTimeSpan"></param>
-		/// <param name="referenceTimeSpan1"></param>
-		/// <param name="alignMethod"></param>
-		/// <returns></returns>
-		private TimeSpan FindNearestMark(TimeSpan referenceTimeSpan, TimeSpan referenceTimeSpan1, string alignMethod)
+		/// <param name="referenceTimeSpan">Origin timespan location</param>
+		/// <returns>Closest mark's timespan</returns>
+		private TimeSpan FindNearestMark(TimeSpan referenceTimeSpan)
 		{
 			var threshold = TimeSpan.FromSeconds(Convert.ToDouble(AlignTo_Threshold, CultureInfo.InvariantCulture));
 			TimeSpan result = TimeSpan.Zero;
-			TimeSpan compareResult = TimeSpan.Zero;
+			TimeSpan shortestDistance = TimeSpan.MaxValue;
 
+			// Iterate through each Mark whose gridlines are displaying
 			foreach (var markTime in _sequence.LabeledMarkCollections.Where(markCollection => markCollection.ShowGridLines).SelectMany(markCollection => markCollection.Marks))
 			{
-				if (markTime.StartTime == referenceTimeSpan)
+				// If the origin timespan is within the the threshold time span of the start of a mark...
+				if (markTime.StartTime - threshold < referenceTimeSpan && referenceTimeSpan < markTime.StartTime + threshold)
 				{
-					return markTime.StartTime;
-				}
-
-				if (markTime.StartTime > referenceTimeSpan - threshold && markTime.StartTime < referenceTimeSpan + threshold && (alignMethod == "Start" && markTime.StartTime < referenceTimeSpan1 || alignMethod == "End" && markTime.StartTime > referenceTimeSpan1))
-				{
-					if (markTime.StartTime > referenceTimeSpan && markTime.StartTime - referenceTimeSpan < compareResult.Duration() || result == TimeSpan.Zero)
+					// Of all the marks, find the closest one
+					TimeSpan distance = markTime.StartTime - referenceTimeSpan;
+					if (distance.Duration() < shortestDistance.Duration())
 					{
-						compareResult = markTime.StartTime - referenceTimeSpan;
+						shortestDistance = distance;
 						result = markTime.StartTime;
 					}
-					else if (markTime.StartTime < referenceTimeSpan && referenceTimeSpan - markTime.StartTime < compareResult.Duration() || result == TimeSpan.Zero)
+				}
+
+				// If the origin timespan is within the the threshold time span of the end of a mark...
+				if (markTime.Parent.ShowTailGridLines && markTime.EndTime - threshold < referenceTimeSpan && referenceTimeSpan < markTime.EndTime + threshold)
+				{
+					// Of all the marks, find the closest one
+					TimeSpan distance = markTime.EndTime - referenceTimeSpan;
+					if (distance.Duration() < shortestDistance.Duration())
 					{
-						compareResult = referenceTimeSpan - markTime.StartTime;
-						result = markTime.StartTime;
+						shortestDistance = distance;
+						result = markTime.EndTime;
 					}
 				}
 			}
+
+			// Return the mark that is the closest
 			return result;
 		}
+
 		/// <summary>
 		/// Validate the Effect duration is within acceptable boundaries
 		/// </summary>
