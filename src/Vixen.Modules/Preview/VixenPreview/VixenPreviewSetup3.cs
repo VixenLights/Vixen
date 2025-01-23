@@ -74,7 +74,10 @@ namespace VixenModules.Preview.VixenPreview
 
 			btnBulbIncrease.Image = Tools.GetIcon(Resources.buttonBulbBigger, iconSize);
 			btnBulbDecrease.Image = Tools.GetIcon(Resources.buttonBulbSmaller, iconSize);
-			
+
+			btnLock.Image = Tools.GetIcon(Resources.locked, iconSize);
+			btnUnlock.Image = Tools.GetIcon(Resources.unlocked, iconSize);
+
 			btnAddCustomProp.Image = Tools.GetIcon(Resources.Prop_Add, iconSize);
 			btnCustomPropEditor.Image = Tools.GetIcon(Resources.Prop_Edit, iconSize);
 			btnCustomPropLibrary.Image = Tools.GetIcon(Resources.folder_explore, iconSize);
@@ -115,16 +118,12 @@ namespace VixenModules.Preview.VixenPreview
 			var theme = new VS2015DarkTheme();
 			dockPanel.Theme = theme;
 
-			label9.ForeColor = Color.Turquoise;
-			label10.ForeColor = Color.LimeGreen;
-			label11.ForeColor = Color.White;
-			label12.ForeColor = Color.HotPink;
-			label13.ForeColor = Color.Yellow;
-
 			this.ShowInTaskbar = false;
 
 			undoToolStripMenuItem.Enabled = false;
 			redoToolStripMenuItem.Enabled = false;
+			lockToolStripMenuItem.Enabled = false;
+			unlockToolStripMenuItem.Enabled = false;
 			trackerZoom.Maximum = Environment.Is64BitProcess ? 400 : 200;
 		}
 
@@ -321,7 +320,23 @@ namespace VixenModules.Preview.VixenPreview
 	    {
 		    btnBulbIncrease.Enabled = btnBulbDecrease.Enabled = previewForm.Preview.IsSingleItemSelected || previewForm.Preview.SelectedDisplayItems.Any();
 
-		    var multiSelect = previewForm.Preview.SelectedDisplayItems.Count > 1;
+			btnLock.Enabled = btnUnlock.Enabled = false;
+			lockToolStripMenuItem.Enabled = false;
+			if (previewForm.Preview.SingleItemSelected?.Shape.Locked == true)
+			{
+				btnUnlock.Enabled = unlockToolStripMenuItem.Enabled = true;
+			}
+			else if (previewForm.Preview.SingleItemSelected?.Shape.Locked == false)
+			{
+				btnLock.Enabled = lockToolStripMenuItem.Enabled = true;
+			}
+			else if (previewForm.Preview.SelectedDisplayItems.Any())
+			{
+				btnUnlock.Enabled = unlockToolStripMenuItem.Enabled = true;
+				btnLock.Enabled = lockToolStripMenuItem.Enabled = true;
+			}
+
+			var multiSelect = previewForm.Preview.SelectedDisplayItems.Count > 1;
 			//btnBulbMatch.Enabled = multiSelect;
 		    buttonAlignBottom.Enabled = multiSelect;
 		    buttonAlignHorizMid.Enabled = multiSelect;
@@ -855,6 +870,20 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			previewForm.Preview.BeginUpdate();
 			_undoMgr.Redo();
+			previewForm.Preview.EndUpdate();
+		}
+
+		private void lockButton_ButtonClick(object sender, EventArgs e)
+		{
+			previewForm.Preview.BeginUpdate();
+			previewForm.Preview.Lock();
+			previewForm.Preview.EndUpdate();
+		}
+
+		private void unlockButton_ButtonClick(object sender, EventArgs e)
+		{
+			previewForm.Preview.BeginUpdate();
+			previewForm.Preview.Unlock();
 			previewForm.Preview.EndUpdate();
 		}
 

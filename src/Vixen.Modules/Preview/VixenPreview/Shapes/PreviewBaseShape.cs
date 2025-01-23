@@ -50,7 +50,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		Description("Uses a common location for all lights based on the center of the prop."),
 		DisplayName("Common Location")]
 		public bool UseCommonLocation { get; set; }
-		
+
+		[DataMember(EmitDefaultValue = false),
+		Category("Control"),
+		Description("Locks out access to the Prop. Use Shift key in combination with the mouse to override."), //ToDo: add text
+		DisplayName("Locked")]
+		public bool Locked { get; set; }
+
 		/// <summary>
 		/// Display name for the type of shape.
 		/// </summary>
@@ -164,7 +170,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			throw new NotImplementedException();
 		}
 		public virtual void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected,
-		                         bool forceDraw, double zoomLevel)
+		                         bool forceDraw, bool locked, double zoomLevel)
 		{
 			
 
