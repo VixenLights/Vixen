@@ -28,170 +28,182 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.btnOK = new System.Windows.Forms.Button();
-			this.btnCancel = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.ctlUpdateInteral = new System.Windows.Forms.NumericUpDown();
-			this.label3 = new System.Windows.Forms.Label();
-			this.wasapiLatency = new System.Windows.Forms.NumericUpDown();
-			this.label4 = new System.Windows.Forms.Label();
-			this.grpAudio = new System.Windows.Forms.GroupBox();
-			((System.ComponentModel.ISupportInitialize)(this.ctlUpdateInteral)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.wasapiLatency)).BeginInit();
-			this.grpAudio.SuspendLayout();
-			this.SuspendLayout();
+			btnOK = new Button();
+			btnCancel = new Button();
+			label1 = new Label();
+			label2 = new Label();
+			ctlUpdateInteral = new NumericUpDown();
+			label3 = new Label();
+			wasapiLatency = new NumericUpDown();
+			grpAudio = new GroupBox();
+			grpVideoEffectCache = new GroupBox();
+			label4 = new Label();
+			cmbBoxCacheFileType = new ComboBox();
+			chkBoxClearCacheOnExit = new CheckBox();
+			((System.ComponentModel.ISupportInitialize)ctlUpdateInteral).BeginInit();
+			((System.ComponentModel.ISupportInitialize)wasapiLatency).BeginInit();
+			grpAudio.SuspendLayout();
+			grpVideoEffectCache.SuspendLayout();
+			SuspendLayout();
 			// 
 			// btnOK
 			// 
-			this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnOK.Location = new System.Drawing.Point(196, 207);
-			this.btnOK.Name = "btnOK";
-			this.btnOK.Size = new System.Drawing.Size(87, 27);
-			this.btnOK.TabIndex = 1;
-			this.btnOK.Text = "OK";
-			this.btnOK.UseVisualStyleBackColor = true;
-			this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-			this.btnOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			btnOK.DialogResult = DialogResult.OK;
+			btnOK.Location = new Point(196, 255);
+			btnOK.Name = "btnOK";
+			btnOK.Size = new Size(87, 27);
+			btnOK.TabIndex = 1;
+			btnOK.Text = "OK";
+			btnOK.UseVisualStyleBackColor = true;
+			btnOK.Click += btnOK_Click;
+			btnOK.MouseLeave += buttonBackground_MouseLeave;
+			btnOK.MouseHover += buttonBackground_MouseHover;
 			// 
 			// btnCancel
 			// 
-			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(290, 207);
-			this.btnCancel.Name = "btnCancel";
-			this.btnCancel.Size = new System.Drawing.Size(87, 27);
-			this.btnCancel.TabIndex = 2;
-			this.btnCancel.Text = "Cancel";
-			this.btnCancel.UseVisualStyleBackColor = true;
-			this.btnCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			btnCancel.DialogResult = DialogResult.Cancel;
+			btnCancel.Location = new Point(290, 255);
+			btnCancel.Name = "btnCancel";
+			btnCancel.Size = new Size(87, 27);
+			btnCancel.TabIndex = 2;
+			btnCancel.Text = "Cancel";
+			btnCancel.UseVisualStyleBackColor = true;
+			btnCancel.MouseLeave += buttonBackground_MouseLeave;
+			btnCancel.MouseHover += buttonBackground_MouseHover;
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(14, 10);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(346, 15);
-			this.label1.TabIndex = 2;
-			this.label1.Text = "This form lets you set various options that control V3\'s operation";
+			label1.AutoSize = true;
+			label1.Location = new Point(14, 10);
+			label1.Name = "label1";
+			label1.Size = new Size(346, 15);
+			label1.TabIndex = 2;
+			label1.Text = "This form lets you set various options that control V3's operation";
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(14, 47);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(90, 15);
-			this.label2.TabIndex = 3;
-			this.label2.Text = "Update Interval:";
+			label2.AutoSize = true;
+			label2.Location = new Point(14, 47);
+			label2.Name = "label2";
+			label2.Size = new Size(90, 15);
+			label2.TabIndex = 3;
+			label2.Text = "Update Interval:";
 			// 
 			// ctlUpdateInteral
 			// 
-			this.ctlUpdateInteral.Increment = new decimal(new int[] {
-            23,
-            0,
-            0,
-            0});
-			this.ctlUpdateInteral.Location = new System.Drawing.Point(116, 44);
-			this.ctlUpdateInteral.Maximum = new decimal(new int[] {
-            500,
-            0,
-            0,
-            0});
-			this.ctlUpdateInteral.Name = "ctlUpdateInteral";
-			this.ctlUpdateInteral.Size = new System.Drawing.Size(59, 23);
-			this.ctlUpdateInteral.TabIndex = 0;
-			this.ctlUpdateInteral.Value = new decimal(new int[] {
-            23,
-            0,
-            0,
-            0});
+			ctlUpdateInteral.Increment = new decimal(new int[] { 23, 0, 0, 0 });
+			ctlUpdateInteral.Location = new Point(116, 44);
+			ctlUpdateInteral.Maximum = new decimal(new int[] { 500, 0, 0, 0 });
+			ctlUpdateInteral.Name = "ctlUpdateInteral";
+			ctlUpdateInteral.Size = new Size(59, 23);
+			ctlUpdateInteral.TabIndex = 0;
+			ctlUpdateInteral.Value = new decimal(new int[] { 23, 0, 0, 0 });
 			// 
 			// label3
 			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(6, 31);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(51, 15);
-			this.label3.TabIndex = 4;
-			this.label3.Text = "Latency:";
+			label3.AutoSize = true;
+			label3.Location = new Point(6, 31);
+			label3.Name = "label3";
+			label3.Size = new Size(51, 15);
+			label3.TabIndex = 4;
+			label3.Text = "Latency:";
 			// 
 			// wasapiLatency
 			// 
-			this.wasapiLatency.Increment = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-			this.wasapiLatency.Location = new System.Drawing.Point(99, 29);
-			this.wasapiLatency.Maximum = new decimal(new int[] {
-            500,
-            0,
-            0,
-            0});
-			this.wasapiLatency.Minimum = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-			this.wasapiLatency.Name = "wasapiLatency";
-			this.wasapiLatency.Size = new System.Drawing.Size(59, 23);
-			this.wasapiLatency.TabIndex = 5;
-			this.wasapiLatency.Value = new decimal(new int[] {
-            25,
-            0,
-            0,
-            0});
-			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(6, 62);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(0, 15);
-			this.label4.TabIndex = 6;
+			wasapiLatency.Increment = new decimal(new int[] { 10, 0, 0, 0 });
+			wasapiLatency.Location = new Point(99, 29);
+			wasapiLatency.Maximum = new decimal(new int[] { 500, 0, 0, 0 });
+			wasapiLatency.Minimum = new decimal(new int[] { 5, 0, 0, 0 });
+			wasapiLatency.Name = "wasapiLatency";
+			wasapiLatency.Size = new Size(59, 23);
+			wasapiLatency.TabIndex = 5;
+			wasapiLatency.Value = new decimal(new int[] { 25, 0, 0, 0 });
 			// 
 			// grpAudio
 			// 
-			this.grpAudio.Controls.Add(this.label3);
-			this.grpAudio.Controls.Add(this.label4);
-			this.grpAudio.Controls.Add(this.wasapiLatency);
-			this.grpAudio.Location = new System.Drawing.Point(17, 86);
-			this.grpAudio.Name = "grpAudio";
-			this.grpAudio.Size = new System.Drawing.Size(343, 76);
-			this.grpAudio.TabIndex = 7;
-			this.grpAudio.TabStop = false;
-			this.grpAudio.Text = "Audio";
+			grpAudio.Controls.Add(label3);
+			grpAudio.Controls.Add(wasapiLatency);
+			grpAudio.Location = new Point(17, 80);
+			grpAudio.Name = "grpAudio";
+			grpAudio.Size = new Size(343, 76);
+			grpAudio.TabIndex = 7;
+			grpAudio.TabStop = false;
+			grpAudio.Text = "Audio";
+			// 
+			// grpVideoEffectCache
+			// 
+			grpVideoEffectCache.Controls.Add(label4);
+			grpVideoEffectCache.Controls.Add(cmbBoxCacheFileType);
+			grpVideoEffectCache.Controls.Add(chkBoxClearCacheOnExit);
+			grpVideoEffectCache.Location = new Point(17, 166);
+			grpVideoEffectCache.Name = "grpVideoEffectCache";
+			grpVideoEffectCache.Size = new Size(343, 76);
+			grpVideoEffectCache.TabIndex = 8;
+			grpVideoEffectCache.TabStop = false;
+			grpVideoEffectCache.Text = "Video Effect Cache";
+			// 
+			// label4
+			// 
+			label4.AutoSize = true;
+			label4.Location = new Point(203, 23);
+			label4.Name = "label4";
+			label4.Size = new Size(91, 15);
+			label4.TabIndex = 2;
+			label4.Text = "Cache File Type:";
+			// 
+			// cmbBoxCacheFileType
+			// 
+			cmbBoxCacheFileType.FormattingEnabled = true;
+			cmbBoxCacheFileType.Items.AddRange(new object[] { "bmp", "png" });
+			cmbBoxCacheFileType.Location = new Point(203, 39);
+			cmbBoxCacheFileType.Name = "cmbBoxCacheFileType";
+			cmbBoxCacheFileType.Size = new Size(121, 23);
+			cmbBoxCacheFileType.TabIndex = 1;
+			cmbBoxCacheFileType.Text = "bmp";
+			// 
+			// chkBoxClearCacheOnExit
+			// 
+			chkBoxClearCacheOnExit.AutoSize = true;
+			chkBoxClearCacheOnExit.Checked = true;
+			chkBoxClearCacheOnExit.CheckState = CheckState.Checked;
+			chkBoxClearCacheOnExit.Location = new Point(6, 34);
+			chkBoxClearCacheOnExit.Name = "chkBoxClearCacheOnExit";
+			chkBoxClearCacheOnExit.Size = new Size(128, 19);
+			chkBoxClearCacheOnExit.TabIndex = 0;
+			chkBoxClearCacheOnExit.Text = "Clear Cache on Exit";
+			chkBoxClearCacheOnExit.UseVisualStyleBackColor = true;
 			// 
 			// OptionsDialog
 			// 
-			this.AcceptButton = this.btnOK;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(392, 246);
-			this.Controls.Add(this.grpAudio);
-			this.Controls.Add(this.ctlUpdateInteral);
-			this.Controls.Add(this.label2);
-			this.Controls.Add(this.label1);
-			this.Controls.Add(this.btnCancel);
-			this.Controls.Add(this.btnOK);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(408, 39);
-			this.Name = "OptionsDialog";
-			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Options";
-			this.Load += new System.EventHandler(this.OptionsDialog_Load);
-			((System.ComponentModel.ISupportInitialize)(this.ctlUpdateInteral)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.wasapiLatency)).EndInit();
-			this.grpAudio.ResumeLayout(false);
-			this.grpAudio.PerformLayout();
-			this.ResumeLayout(false);
-			this.PerformLayout();
-
+			AcceptButton = btnOK;
+			AutoScaleDimensions = new SizeF(7F, 15F);
+			AutoScaleMode = AutoScaleMode.Font;
+			CancelButton = btnCancel;
+			ClientSize = new Size(392, 293);
+			Controls.Add(grpVideoEffectCache);
+			Controls.Add(grpAudio);
+			Controls.Add(ctlUpdateInteral);
+			Controls.Add(label2);
+			Controls.Add(label1);
+			Controls.Add(btnCancel);
+			Controls.Add(btnOK);
+			FormBorderStyle = FormBorderStyle.FixedDialog;
+			MaximizeBox = false;
+			MinimizeBox = false;
+			MinimumSize = new Size(408, 39);
+			Name = "OptionsDialog";
+			SizeGripStyle = SizeGripStyle.Hide;
+			StartPosition = FormStartPosition.CenterParent;
+			Text = "Options";
+			Load += OptionsDialog_Load;
+			((System.ComponentModel.ISupportInitialize)ctlUpdateInteral).EndInit();
+			((System.ComponentModel.ISupportInitialize)wasapiLatency).EndInit();
+			grpAudio.ResumeLayout(false);
+			grpAudio.PerformLayout();
+			grpVideoEffectCache.ResumeLayout(false);
+			grpVideoEffectCache.PerformLayout();
+			ResumeLayout(false);
+			PerformLayout();
 		}
 
 		#endregion
@@ -203,7 +215,10 @@
 		private System.Windows.Forms.NumericUpDown ctlUpdateInteral;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.NumericUpDown wasapiLatency;
-		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.GroupBox grpAudio;
+		private GroupBox grpVideoEffectCache;
+		private CheckBox chkBoxClearCacheOnExit;
+		private Label label4;
+		private ComboBox cmbBoxCacheFileType;
 	}
 }

@@ -11,6 +11,10 @@ using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
 using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
+using System.Collections.Concurrent;
+using System.Security.Cryptography;
+using System.Text;
+using Vixen.Extensions;
 
 namespace VixenModules.Effect.Video
 {
@@ -24,6 +28,7 @@ namespace VixenModules.Effect.Video
 		private double _currentMovieImageNum;
 		private static readonly string VideoPath = VideoDescriptor.ModulePath;
 		private static readonly string TempPath = Path.Combine(Path.GetTempPath(), "Vixen", "VideoEffect");
+		private static readonly ConcurrentDictionary<string, SemaphoreSlim> _VideoCacheKeyedSemaphore = new();
 		private bool _processVideo;
 		private double _position;
 		private int _xOffsetAdj;
@@ -41,6 +46,8 @@ namespace VixenModules.Effect.Video
 		private int _renderWidth;
 		private bool _getNewVideoInfo;
 		private string _tempFilePath = String.Empty;
+		private string _videoPathAndFilename = String.Empty;
+		private string _settingsHash = String.Empty;
 
 		public Video()
 		{
@@ -321,9 +328,8 @@ namespace VixenModules.Effect.Video
 		[ProviderCategory(@"Advanced Settings", 3)]
 		[ProviderDisplayName(@"Video Length (sec)")]
 		[ProviderDescription(@"Video Length")]
-		[PropertyEditor("Label")]
 		[PropertyOrder(1)]
-		public int VideoLength
+		public double VideoLength
 		{
 			get { return _data.VideoLength; }
 			private set
@@ -402,6 +408,23 @@ namespace VixenModules.Effect.Video
 			set
 			{
 				_data.IncreaseBrightnessCurve = value;
+				IsDirty = true;
+				_processVideo = false;
+				OnPropertyChanged();
+			}
+		}
+
+		[ReadOnly(true)]
+		[ProviderCategory(@"Advanced Settings", 3)]
+		[ProviderDisplayName(@"Cache Size")]
+		[ProviderDescription(@"Size of cache folder on disk")]
+		[PropertyOrder(8)]
+		public string CacheSize
+		{
+			get { return _data.CacheSize; }
+			private set
+			{
+				_data.CacheSize = value;
 				IsDirty = true;
 				_processVideo = false;
 				OnPropertyChanged();
@@ -537,7 +560,11 @@ namespace VixenModules.Effect.Video
 		{
 			UpdateQualityAttribute();
 			if ( _data.FileName == "") return;
-			
+			_videoPathAndFilename = Path.Combine(VideoPath, _data.FileName);
+
+			CalculateSettingsHash();
+			PopulateTempPath();
+
 			if (_processVideo || !Directory.Exists(_tempFilePath)) ProcessMovie(); // Check if directory exist is needed for when an effect is cloned.
 			if (_videoFileDetected)
 			{
@@ -552,11 +579,25 @@ namespace VixenModules.Effect.Video
 			_processVideo = true;
 		}
 
+		private void CalculateSettingsHash()
+		{
+			StringBuilder settingsToHash = new(_videoPathAndFilename, 200);
+			settingsToHash.Append(StartTimeSeconds);
+			settingsToHash.Append(TimeSpan.TotalSeconds);
+			settingsToHash.Append(PlayBackSpeed);
+			settingsToHash.Append(_renderWidth);
+			settingsToHash.Append(_renderHeight);
+			settingsToHash.Append(MaintainAspect);
+			settingsToHash.Append(RotateVideo);
+			settingsToHash.Append(FrameTime);
+			settingsToHash.Append(StretchToGrid);
+			settingsToHash.Append(ScaleToGrid);
+			settingsToHash.Append(Vixen.Sys.VixenSystem.VideoEffect_CacheFileType);
+			_settingsHash = Convert.ToHexString(MD5.HashData(Encoding.UTF8.GetBytes(settingsToHash.ToString())));
+		}
+
 		private void ProcessMovie()
 		{
-			EstablishTempFolder();
-			
-			string videoFilename = Path.Combine(VideoPath, _data.FileName);
 			try
 			{
 				if (VideoQuality == 0 || _getNewVideoInfo) GetVideoInformation();
@@ -615,32 +656,87 @@ namespace VixenModules.Effect.Video
 				if (VideoLength > StartTimeSeconds + (TimeSpan.TotalSeconds * ((double)PlayBackSpeed / 100 + 1)))
 				{
 					_currentMovieImageNum = 0;
+					string cacheFileExt = Vixen.Sys.VixenSystem.VideoEffect_CacheFileType;
+
 					// Height and Width needs to be evenly divisible to work or ffmpeg complains.
 					if (_renderHeight % 2 != 0) _renderHeight++;
 					if (_renderWidth % 2 != 0) _renderWidth++;
-					Ffmpeg.MakeScaledThumbNails(videoFilename, _tempFilePath, StartTimeSeconds, ((TimeSpan.TotalSeconds * ((double)PlayBackSpeed / 100 + 1))),
-						_renderWidth, _renderHeight, MaintainAspect, RotateVideo, cropVideo, 1000.0 / FrameTime);
-					_moviePicturesFileList = Directory.GetFiles(_tempFilePath).OrderBy(f => f).ToList();
 
+					// At this point, everything is determined for the settings
+					// Calculate the hash value of the combined settings and update the cache path
+					CalculateSettingsHash();
+					PopulateTempPath();
+
+					// If multiple Video Effects are selected and being changed at once, we want to ensure only one of them builds the cache folder while the others wait
+					SemaphoreSlim semaphore = _VideoCacheKeyedSemaphore.GetOrAdd(_tempFilePath, _ => new SemaphoreSlim(1, 1));
+					semaphore.Wait();
+					try
+					{
+						// If the hash folder doesn't exist, build it
+						if (!Directory.Exists(_tempFilePath))
+						{
+							Directory.CreateDirectory(_tempFilePath);
+							Ffmpeg.MakeScaledThumbNails(_videoPathAndFilename, _tempFilePath,
+								StartTimeSeconds, ((TimeSpan.TotalSeconds * ((double)PlayBackSpeed / 100 + 1))),
+								_renderWidth, _renderHeight,
+								MaintainAspect, RotateVideo,
+								cropVideo, 1000.0 / FrameTime, cacheFileExt);
+						}
+					}
+					finally
+					{
+						semaphore.Release();
+						if (semaphore.CurrentCount <= 1)
+						{
+							_VideoCacheKeyedSemaphore.TryRemove(_tempFilePath, out _);
+						}
+					}
+					int filesFound = 0;
+					foreach (string f in Directory.EnumerateFiles(TempPath, $"{InstanceId}.*", SearchOption.TopDirectoryOnly))
+					{
+						if (filesFound == 0)
+						{
+							// Update the first existing file to the new pairing, quicker than delete/create
+							File.Move(f, Path.Combine(TempPath, $"{InstanceId}.{_settingsHash}"), true);
+						}
+						else
+						{
+							// Remove any other instances since there can be only one
+							File.Delete(f);
+						}
+						filesFound++;
+					}
+					if (filesFound == 0)
+					{
+						File.Create(Path.Combine(TempPath, $"{InstanceId}.{_settingsHash}")).Close();
+					}
+					
+					_moviePicturesFileList = [.. Directory.GetFiles(_tempFilePath, $"*.{cacheFileExt}", SearchOption.TopDirectoryOnly).OrderBy(f => f)];
+					CacheSize = $"{_moviePicturesFileList.Select(file => new FileInfo(file).Length).Sum() / 1048576.0,0:0.00} MB";
 					_videoFileDetected = true;
 				}
 				else
 				{
-					var messageBox = new MessageBoxForm("Entered Start Time plus Effect length is greater than the Video Length of " + _data.FileName,
-						"Invalid Start Time. Decrease the Start Time", MessageBoxButtons.OK, SystemIcons.Error);
-					messageBox.StartPosition = FormStartPosition.CenterScreen;
-					messageBox.TopMost = true;
+					// TODO: If too long, render as much as possible? Warning about length, option to resize, option to render as much as possible, option to render last frame over and over
+					var messageBox = new MessageBoxForm($"Entered Start Time plus Effect Length exceeds the Video Length of {VideoLength} seconds for {_data.FileName}",
+						"Video Length Exceeded", MessageBoxButtons.OK, SystemIcons.Error)
+					{
+						StartPosition = FormStartPosition.CenterScreen,
+						TopMost = true
+					};
 					messageBox.ShowDialog();
 					_videoFileDetected = false;
 				}
 			}
 			catch (Exception ex)
 			{
-				Logging.Error(ex, $"There was a problem converting {videoFilename}");
-				var messageBox = new MessageBoxForm("There was a problem converting " + videoFilename + ": " + ex.Message,
-					"Error Converting Video", MessageBoxButtons.OK, SystemIcons.Error);
-				messageBox.StartPosition = FormStartPosition.CenterScreen;
-				messageBox.TopMost = true;
+				Logging.Error(ex, $"There was a problem converting {_videoPathAndFilename}");
+				var messageBox = new MessageBoxForm($"There was a problem converting {_videoPathAndFilename}: {ex.Message}",
+					"Error Converting Video", MessageBoxButtons.OK, SystemIcons.Error)
+				{
+					StartPosition = FormStartPosition.CenterScreen,
+					TopMost = true
+				};
 				messageBox.ShowDialog();
 				_videoFileDetected = false;
 			}
@@ -648,31 +744,7 @@ namespace VixenModules.Effect.Video
 
 		private void PopulateTempPath()
 		{
-			_tempFilePath = TempPath + Path.PathSeparator + InstanceId;
-		}
-
-		private void EstablishTempFolder()
-		{
-			//Delete old path and create new path for processed video
-			RemoveTempFiles();
-
-			_tempFilePath = Path.Combine(TempPath, InstanceId.ToString());
-			Directory.CreateDirectory(_tempFilePath);
-		}
-
-		private void RemoveTempFiles()
-		{
-			if (Directory.Exists(_tempFilePath))
-			{
-				try
-				{
-					Directory.Delete(_tempFilePath, true);
-				}
-				catch (Exception e)
-				{
-					Logging.Error(e, "Unable to delete all the video temp files.");
-				}
-			}
+			_tempFilePath = Path.Combine(TempPath, _settingsHash);
 		}
 
 		#region Render Video Effect
@@ -1060,41 +1132,24 @@ namespace VixenModules.Effect.Video
 			// This is only done each time a Video file is changed.
 			// No point doing this every time it needs to render.
 			// So once a user adds a video file to the effect this code will no longer be used.
-			string videoFilename = Path.Combine(VideoPath, _data.FileName);
 			try
 			{
+				Ffmpeg.GetVideoDurationAndResolution(_videoPathAndFilename, out TimeSpan videoTimeSpan, out int width, out int height);
+
 				VideoQuality = 50; // Set quality to 50% when a new file is opened.
-				// Delete old path and create new path for processed video
-				EstablishTempFolder();
-				// Gets Video length and Frame rate will continue if users start position is less then the video length.
-				string result = Ffmpeg.GetVideoInfo(videoFilename, _tempFilePath);
-				// Get Video Length
-				int durationIndex = result.IndexOf("Duration: ", StringComparison.InvariantCulture);
-				string videoInfo = result.Substring(durationIndex + 10, 8);
-				string[] words = videoInfo.Split(':');
-				TimeSpan videoTimeSpan = new TimeSpan(Int32.Parse(words[0]), Int32.Parse(words[1]), Int32.Parse(words[2]));
-				VideoLength = (int) videoTimeSpan.TotalSeconds;
+				VideoLength = videoTimeSpan.TotalSeconds;
 
-				// Saves one frame from video then grabs it to determine Video size.
-				// This was to replace the way Accord did it as it makes sense to do the Video size
-				// conversion when generating all the images. This can reduces each bitmap file size significantly.
-				Ffmpeg.GetVideoSize(videoFilename, _tempFilePath + "\\Temp.bmp");
-				var image = Image.FromFile(_tempFilePath + "\\Temp.bmp");
-				
 				// Saves the Video info to data store.
-				_data.VideoSize = new Size(image.Width, image.Height);
-
-				image.Dispose();
+				_data.VideoSize = new Size(width, height);
 				_getNewVideoInfo = false;
 			}
 			catch (Exception ex)
 			{
-				var messageBox = new MessageBoxForm("There was a problem converting " + videoFilename + ": " + ex.Message,
-					"Error Converting Video", MessageBoxButtons.OK, SystemIcons.Error);
+				var messageBox = new MessageBoxForm($"There was a problem getting video information for {_videoPathAndFilename}: {ex.Message}",
+					"Error Getting Video Information", MessageBoxButtons.OK, SystemIcons.Error);
 				messageBox.ShowDialog();
 				_videoFileDetected = false;
 			}
-
 		}
 
 		private int CalculateXOffset(double intervalPos)
@@ -1112,11 +1167,52 @@ namespace VixenModules.Effect.Video
 			return ScaleCurveToValue(IncreaseBrightnessCurve.GetValue(intervalPos), 100, 10);
 		}
 
+		public override void Removing()
+		{
+			// If the effect was deleted, remove the pairing file(s), Dispose will handle the rest
+			foreach (string f in Directory.EnumerateFiles(TempPath, $"{InstanceId}.*", SearchOption.TopDirectoryOnly))
+			{
+				File.Delete(f);
+			}
+		}
+
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing)
+			if (Vixen.Sys.VixenSystem.VideoEffect_ClearCacheOnExit)
 			{
-				RemoveTempFiles();
+				Removing();
+				try
+				{
+					Directory.Delete(_tempFilePath, true);
+				}
+				catch (Exception e)
+				{
+					Logging.Error(e, $"Unable to delete {_tempFilePath} on exit");
+				}
+			}
+
+			// Check the Video Effect cache for unneeded folders
+			List<string> dirsToDelete = [.. Directory.EnumerateDirectories(TempPath, "*", SearchOption.TopDirectoryOnly)];
+
+			foreach (string f in Directory.EnumerateFiles(TempPath, "*", SearchOption.TopDirectoryOnly))
+			{
+				string dirName = Path.Combine(TempPath, Path.GetExtension(f)[1..]);
+				if (Directory.Exists(dirName))
+				{
+					dirsToDelete.Remove(dirName);
+				}
+			}
+
+			foreach (string d in dirsToDelete)
+			{
+				try
+				{
+					Directory.Delete(d, true);
+				}
+				catch (Exception e)
+				{
+					Logging.Error(e, $"Unable to delete {d}");
+				}
 			}
 
 			base.Dispose(disposing);

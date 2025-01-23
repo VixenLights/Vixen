@@ -16,6 +16,8 @@ namespace Vixen.IO.Xml.SystemConfig
 		private const string ELEMENT_EVAL_FILTERS = "AllowFilterEvaluation";
 		private const string ATTR_IS_CONTEXT = "isContext";
 		private const string ELEMENT_DEFAULT_UPDATE_INTERVAL = "DefaultUpdateInterval";
+		private const string ELEMENT_VIDEO_EFFECT_CLEAR_CACHE_ON_EXIT = "VideoEffectClearCacheOnExit";
+		private const string ELEMENT_VIDEO_EFFECT_CACHE_FILE_TYPE = "VideoEffectCacheFileType";
 
 		public XmlSystemConfigFilePolicy(SystemConfig systemConfig, XElement content)
 		{
@@ -44,6 +46,12 @@ namespace Vixen.IO.Xml.SystemConfig
 		protected override void WriteDefaultUpdateInterval()
 		{
 			_content.Add(new XElement(ELEMENT_DEFAULT_UPDATE_INTERVAL, _systemConfig.DefaultUpdateInterval));
+		}
+
+		protected override void WriteVideoEffectOptions()
+		{
+			_content.Add(new XElement(ELEMENT_VIDEO_EFFECT_CLEAR_CACHE_ON_EXIT, _systemConfig.VideoEffect_ClearCacheOnExit));
+			_content.Add(new XElement(ELEMENT_VIDEO_EFFECT_CACHE_FILE_TYPE, _systemConfig.VideoEffect_CacheFileType));
 		}
 
 		protected override void WriteElements()
@@ -133,6 +141,14 @@ namespace Vixen.IO.Xml.SystemConfig
 			{
 				_systemConfig.DefaultUpdateInterval = Int32.Parse(identityElement.Value);
 			}
+		}
+		protected override void ReadVideoEffectOptions()
+		{
+			XElement identityElement = _content.Element(ELEMENT_VIDEO_EFFECT_CLEAR_CACHE_ON_EXIT);
+			_systemConfig.VideoEffect_ClearCacheOnExit = identityElement == null ? true : Boolean.Parse(identityElement.Value);
+
+			identityElement = _content.Element(ELEMENT_VIDEO_EFFECT_CACHE_FILE_TYPE);
+			_systemConfig.VideoEffect_CacheFileType = identityElement == null ? "bmp" : identityElement.Value;
 		}
 
 		protected override void ReadElements()

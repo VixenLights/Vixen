@@ -322,6 +322,18 @@ namespace Vixen.Sys
 			}
 		}
 
+		public static bool VideoEffect_ClearCacheOnExit
+		{
+			get { return SystemConfig.VideoEffect_ClearCacheOnExit; }
+			set { SystemConfig.VideoEffect_ClearCacheOnExit = value; }
+		}
+
+		public static string VideoEffect_CacheFileType
+		{
+			get { return SystemConfig.VideoEffect_CacheFileType; }
+			set { SystemConfig.VideoEffect_CacheFileType = value; }
+		}
+
 		public static TimeSpan DefaultUpdateTimeSpan { get; private set; }
 
 		public static ElementManager Elements { get; private set; }

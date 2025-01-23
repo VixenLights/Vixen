@@ -143,6 +143,10 @@ namespace Vixen.Sys
 
 		public int DefaultUpdateInterval { get; set; }
 
+		public bool VideoEffect_ClearCacheOnExit { get; set; }
+
+		public string VideoEffect_CacheFileType { get; set; }
+
 		public void Save()
 		{
 			FileService.Instance.SaveSystemConfigFile(this);
