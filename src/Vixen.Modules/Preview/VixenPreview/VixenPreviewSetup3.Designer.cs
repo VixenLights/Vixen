@@ -1,4 +1,6 @@
-﻿namespace VixenModules.Preview.VixenPreview
+﻿using Common.Controls.Theme;
+
+namespace VixenModules.Preview.VixenPreview
 {
 	partial class VixenPreviewSetup3
 	{
@@ -30,114 +32,126 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VixenPreviewSetup3));
-			this.panel11 = new System.Windows.Forms.Panel();
-			this.toolStripUndo = new System.Windows.Forms.ToolStrip();
+			this.panel11 = new Panel();
+			this.toolStripUndo = new ToolStrip();
 			this.undoButton = new Common.Controls.UndoButton();
 			this.redoButton = new Common.Controls.UndoButton();
-			this.lblUndoRedo = new System.Windows.Forms.Label();
-			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-			this.buttonDistributeVertical = new System.Windows.Forms.Button();
-			this.buttonMatchProperties = new System.Windows.Forms.Button();
-			this.buttonAlignBottom = new System.Windows.Forms.Button();
-			this.buttonAlignLeft = new System.Windows.Forms.Button();
-			this.buttonAlignVertMid = new System.Windows.Forms.Button();
-			this.buttonAlignRight = new System.Windows.Forms.Button();
-			this.buttonAlignHorizMid = new System.Windows.Forms.Button();
-			this.buttonDistributeHorizontal = new System.Windows.Forms.Button();
-			this.buttonAlignTop = new System.Windows.Forms.Button();
-			this.label7 = new System.Windows.Forms.Label();
-			this.pnlSelect = new System.Windows.Forms.Panel();
-			this.buttonSelect = new System.Windows.Forms.Button();
-			this.label8 = new System.Windows.Forms.Label();
-			this.lblCustomProp = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
-			this.buttonPolyLine = new System.Windows.Forms.Button();
-			this.buttonDrawPixel = new System.Windows.Forms.Button();
-			this.buttonTriangle = new System.Windows.Forms.Button();
-			this.buttonLine = new System.Windows.Forms.Button();
-			this.buttonRectangle = new System.Windows.Forms.Button();
-			this.buttonEllipse = new System.Windows.Forms.Button();
-			this.label2 = new System.Windows.Forms.Label();
-			this.panel2 = new System.Windows.Forms.Panel();
-			this.trackBarBackgroundAlpha = new System.Windows.Forms.TrackBar();
-			this.buttonSetBackground = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
-			this.dialogSelectBackground = new System.Windows.Forms.OpenFileDialog();
-			this.menuStrip = new System.Windows.Forms.MenuStrip();
-			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-			this.importPropToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.propInformationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.propEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.copyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-			this.backgroundPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-			this.addTemplateMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveLocationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.locationOffsetSetupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.useOpenGLPreviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.viewHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.vixenYouTubeChannelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.templateHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.customPropHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-			this.buttonIcicle = new System.Windows.Forms.Button();
-			this.buttonMultiString = new System.Windows.Forms.Button();
-			this.buttonPixelGrid = new System.Windows.Forms.Button();
-			this.buttonSemiCircle = new System.Windows.Forms.Button();
-			this.buttonStar = new System.Windows.Forms.Button();
-			this.buttonNet = new System.Windows.Forms.Button();
-			this.buttonCane = new System.Windows.Forms.Button();
-			this.buttonStarBurst = new System.Windows.Forms.Button();
-			this.buttonMegaTree = new System.Windows.Forms.Button();
-			this.btnAddCustomProp = new System.Windows.Forms.Button();
-			this.btnCustomPropLibrary = new System.Windows.Forms.Button();
-			this.btnCustomPropEditor = new System.Windows.Forms.Button();
-			this.buttonMovingHead = new System.Windows.Forms.Button();
-			this.labelZoomLevel = new System.Windows.Forms.Label();
-			this.panel9 = new System.Windows.Forms.Panel();
-			this.panel10 = new System.Windows.Forms.Panel();
-			this.label13 = new System.Windows.Forms.Label();
-			this.label12 = new System.Windows.Forms.Label();
-			this.label11 = new System.Windows.Forms.Label();
-			this.label10 = new System.Windows.Forms.Label();
-			this.label9 = new System.Windows.Forms.Label();
+			this.lblUndoRedo = new Label();
+			this.lblLock = new Label();
+			this.pnlLock = new Panel();
+			this.tableLayoutPanel6 = new TableLayoutPanel();
+			this.btnLock = new Button();
+			this.btnUnlock = new Button();
+			this.tableLayoutPanel2 = new TableLayoutPanel();
+			this.buttonDistributeVertical = new Button();
+			this.buttonMatchProperties = new Button();
+			this.buttonAlignBottom = new Button();
+			this.buttonAlignLeft = new Button();
+			this.buttonAlignVertMid = new Button();
+			this.buttonAlignRight = new Button();
+			this.buttonAlignHorizMid = new Button();
+			this.buttonDistributeHorizontal = new Button();
+			this.buttonAlignTop = new Button();
+			this.label7 = new Label();
+			this.pnlSelect = new Panel();
+			this.buttonSelect = new Button();
+			this.label8 = new Label();
+			this.lblCustomProp = new Label();
+			this.label3 = new Label();
+			this.tableLayoutPanel3 = new TableLayoutPanel();
+			this.buttonPolyLine = new Button();
+			this.buttonDrawPixel = new Button();
+			this.buttonTriangle = new Button();
+			this.buttonLine = new Button();
+			this.buttonRectangle = new Button();
+			this.buttonEllipse = new Button();
+			this.label2 = new Label();
+			this.panel2 = new Panel();
+			this.trackBarBackgroundAlpha = new TrackBar();
+			this.buttonSetBackground = new Button();
+			this.label1 = new Label();
+			this.dialogSelectBackground = new OpenFileDialog();
+			this.menuStrip = new MenuStrip();
+			this.fileToolStripMenuItem = new ToolStripMenuItem();
+			this.saveToolStripMenuItem = new ToolStripMenuItem();
+			this.toolStripSeparator2 = new ToolStripSeparator();
+			this.importPropToolStripMenuItem = new ToolStripMenuItem();
+			this.toolStripSeparator1 = new ToolStripSeparator();
+			this.exitToolStripMenuItem = new ToolStripMenuItem();
+			this.viewToolStripMenuItem = new ToolStripMenuItem();
+			this.propInformationToolStripMenuItem = new ToolStripMenuItem();
+			this.propEditorToolStripMenuItem = new ToolStripMenuItem();
+			this.editToolStripMenuItem = new ToolStripMenuItem();
+			this.copyToolStripMenuItem = new ToolStripMenuItem();
+			this.copyToolStripMenuItem1 = new ToolStripMenuItem();
+			this.pasteToolStripMenuItem = new ToolStripMenuItem();
+			this.deleteToolStripMenuItem = new ToolStripMenuItem();
+			this.toolStripMenuItem1 = new ToolStripSeparator();
+			this.undoToolStripMenuItem = new ToolStripMenuItem();
+			this.redoToolStripMenuItem = new ToolStripMenuItem();
+			this.toolStripSeparator3 = new ToolStripSeparator();
+			this.lockToolStripMenuItem = new ToolStripMenuItem();
+			this.unlockToolStripMenuItem = new ToolStripMenuItem();
+			this.toolStripSeparator4 = new ToolStripSeparator();
+			this.backgroundPropertiesToolStripMenuItem = new ToolStripMenuItem();
+			this.toolStripSeparator5 = new ToolStripSeparator();
+			this.addTemplateMenu = new ToolStripMenuItem();
+			this.settingsToolStripMenuItem = new ToolStripMenuItem();
+			this.saveLocationsToolStripMenuItem = new ToolStripMenuItem();
+			this.locationOffsetSetupToolStripMenuItem = new ToolStripMenuItem();
+			this.useOpenGLPreviewToolStripMenuItem = new ToolStripMenuItem();
+			this.helpToolStripMenuItem = new ToolStripMenuItem();
+			this.viewHelpToolStripMenuItem = new ToolStripMenuItem();
+			this.vixenYouTubeChannelToolStripMenuItem = new ToolStripMenuItem();
+			this.templateHelpToolStripMenuItem = new ToolStripMenuItem();
+			this.customPropHelpToolStripMenuItem = new ToolStripMenuItem();
+			this.toolTip = new ToolTip(this.components);
+			this.buttonIcicle = new Button();
+			this.buttonMultiString = new Button();
+			this.buttonPixelGrid = new Button();
+			this.buttonSemiCircle = new Button();
+			this.buttonStar = new Button();
+			this.buttonNet = new Button();
+			this.buttonCane = new Button();
+			this.buttonStarBurst = new Button();
+			this.buttonMegaTree = new Button();
+			this.btnAddCustomProp = new Button();
+			this.btnCustomPropLibrary = new Button();
+			this.btnCustomPropEditor = new Button();
+			this.buttonMovingHead = new Button();
+			this.labelZoomLevel = new Label();
+			this.panel9 = new Panel();
+			this.panel10 = new Panel();
+			this.label14 = new Label();
+			this.label13 = new Label();
+			this.label12 = new Label();
+			this.label11 = new Label();
+			this.label10 = new Label();
+			this.label9 = new Label();
 			this.trackerZoom = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
 			this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
-			this.tableLayoutMain = new System.Windows.Forms.TableLayoutPanel();
-			this.tlpToolBar = new System.Windows.Forms.TableLayoutPanel();
-			this.pnlBasicDrawing = new System.Windows.Forms.Panel();
-			this.pnlSmartObjects = new System.Windows.Forms.Panel();
-			this.panel4 = new System.Windows.Forms.Panel();
-			this.customPropPanel = new System.Windows.Forms.Panel();
-			this.lblBulbSize = new System.Windows.Forms.Label();
-			this.pnlBulbSize = new System.Windows.Forms.Panel();
-			this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
-			this.btnBulbDecrease = new System.Windows.Forms.Button();
-			this.btnBulbIncrease = new System.Windows.Forms.Button();
+			this.tableLayoutPanel1 = new TableLayoutPanel();
+			this.tableLayoutPanel4 = new TableLayoutPanel();
+			this.tableLayoutMain = new TableLayoutPanel();
+			this.tlpToolBar = new TableLayoutPanel();
+			this.pnlBasicDrawing = new Panel();
+			this.pnlSmartObjects = new Panel();
+			this.panel4 = new Panel();
+			this.customPropPanel = new Panel();
+			this.lblBulbSize = new Label();
+			this.pnlBulbSize = new Panel();
+			this.tableLayoutPanel5 = new TableLayoutPanel();
+			this.btnBulbDecrease = new Button();
+			this.btnBulbIncrease = new Button();
 			this.panel11.SuspendLayout();
 			this.toolStripUndo.SuspendLayout();
+			this.pnlLock.SuspendLayout();
+			this.tableLayoutPanel6.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.pnlSelect.SuspendLayout();
 			this.tableLayoutPanel3.SuspendLayout();
 			this.panel2.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundAlpha)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)this.trackBarBackgroundAlpha).BeginInit();
 			this.menuStrip.SuspendLayout();
 			this.panel9.SuspendLayout();
 			this.panel10.SuspendLayout();
@@ -155,70 +169,143 @@
 			// 
 			// panel11
 			// 
-			this.panel11.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel11.BorderStyle = BorderStyle.FixedSingle;
 			this.panel11.Controls.Add(this.toolStripUndo);
-			this.panel11.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel11.Location = new System.Drawing.Point(773, 21);
-			this.panel11.Margin = new System.Windows.Forms.Padding(2);
+			this.panel11.Dock = DockStyle.Fill;
+			this.panel11.Location = new Point(917, 24);
+			this.panel11.Margin = new Padding(2);
 			this.panel11.Name = "panel11";
-			this.panel11.Size = new System.Drawing.Size(107, 72);
+			this.panel11.Size = new Size(126, 83);
 			this.panel11.TabIndex = 15;
 			// 
 			// toolStripUndo
 			// 
-			this.toolStripUndo.ImageScalingSize = new System.Drawing.Size(24, 24);
-			this.toolStripUndo.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.undoButton,
-            this.redoButton});
-			this.toolStripUndo.Location = new System.Drawing.Point(0, 0);
+			this.toolStripUndo.ImageScalingSize = new Size(24, 24);
+			this.toolStripUndo.Items.AddRange(new ToolStripItem[] { this.undoButton, this.redoButton });
+			this.toolStripUndo.Location = new Point(0, 0);
 			this.toolStripUndo.Name = "toolStripUndo";
-			this.toolStripUndo.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
-			this.toolStripUndo.Size = new System.Drawing.Size(105, 25);
+			this.toolStripUndo.Padding = new Padding(0, 0, 2, 0);
+			this.toolStripUndo.Size = new Size(124, 25);
 			this.toolStripUndo.TabIndex = 2;
 			this.toolStripUndo.Text = "toolStrip1";
 			// 
 			// undoButton
 			// 
-			this.undoButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.undoButton.BackgroundImageLayout = ImageLayout.Stretch;
 			this.undoButton.ButtonType = Common.Controls.UndoButtonType.UndoButton;
-			this.undoButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.undoButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+			this.undoButton.DisplayStyle = ToolStripItemDisplayStyle.Text;
+			this.undoButton.ImageScaling = ToolStripItemImageScaling.None;
 			this.undoButton.Name = "undoButton";
-			this.undoButton.Size = new System.Drawing.Size(52, 22);
+			this.undoButton.Size = new Size(52, 22);
 			this.undoButton.Text = "Undo";
-			this.undoButton.ButtonClick += new System.EventHandler(this.undoButton_ButtonClick);
+			this.undoButton.ButtonClick += this.undoButton_ButtonClick;
 			// 
 			// redoButton
 			// 
-			this.redoButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.redoButton.BackgroundImageLayout = ImageLayout.Stretch;
 			this.redoButton.ButtonType = Common.Controls.UndoButtonType.UndoButton;
-			this.redoButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.redoButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+			this.redoButton.DisplayStyle = ToolStripItemDisplayStyle.Text;
+			this.redoButton.ImageScaling = ToolStripItemImageScaling.None;
 			this.redoButton.Name = "redoButton";
-			this.redoButton.Size = new System.Drawing.Size(50, 19);
+			this.redoButton.Size = new Size(50, 22);
 			this.redoButton.Text = "Redo";
-			this.redoButton.ButtonClick += new System.EventHandler(this.redoButton_ButtonClick);
+			this.redoButton.ButtonClick += this.redoButton_ButtonClick;
 			// 
 			// lblUndoRedo
 			// 
-			this.lblUndoRedo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.lblUndoRedo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-			this.lblUndoRedo.Location = new System.Drawing.Point(774, 0);
+			this.lblUndoRedo.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+			this.lblUndoRedo.BackColor = Color.FromArgb(250, 250, 250);
+			this.lblUndoRedo.Location = new Point(919, 0);
+			this.lblUndoRedo.Margin = new Padding(4, 0, 4, 0);
 			this.lblUndoRedo.Name = "lblUndoRedo";
-			this.lblUndoRedo.Size = new System.Drawing.Size(105, 19);
+			this.lblUndoRedo.Size = new Size(122, 22);
 			this.lblUndoRedo.TabIndex = 3;
 			this.lblUndoRedo.Text = "Undo/Redo";
-			this.lblUndoRedo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.lblUndoRedo.TextAlign = ContentAlignment.MiddleCenter;
+			// 
+			// lblLock
+			// 
+			this.lblLock.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+			this.lblLock.BackColor = Color.FromArgb(250, 250, 250);
+			this.lblLock.Location = new Point(1049, 0);
+			this.lblLock.Margin = new Padding(4, 0, 4, 0);
+			this.lblLock.Name = "lblLock";
+			this.lblLock.Size = new Size(78, 22);
+			this.lblLock.TabIndex = 0;
+			this.lblLock.Text = "Lock/Unlock";
+			this.lblLock.TextAlign = ContentAlignment.MiddleCenter;
+			// 
+			// pnlLock
+			// 
+			this.pnlLock.AutoSize = true;
+			this.pnlLock.BorderStyle = BorderStyle.FixedSingle;
+			this.pnlLock.Controls.Add(this.tableLayoutPanel6);
+			this.pnlLock.Dock = DockStyle.Fill;
+			this.pnlLock.Location = new Point(1049, 25);
+			this.pnlLock.Margin = new Padding(4, 3, 4, 3);
+			this.pnlLock.Name = "pnlLock";
+			this.pnlLock.Size = new Size(78, 81);
+			this.pnlLock.TabIndex = 28;
+			// 
+			// tableLayoutPanel6
+			// 
+			this.tableLayoutPanel6.AutoSize = true;
+			this.tableLayoutPanel6.ColumnCount = 2;
+			this.tableLayoutPanel6.ColumnStyles.Add(new ColumnStyle());
+			this.tableLayoutPanel6.ColumnStyles.Add(new ColumnStyle());
+			this.tableLayoutPanel6.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+			this.tableLayoutPanel6.Controls.Add(this.btnLock, 0, 0);
+			this.tableLayoutPanel6.Controls.Add(this.btnUnlock, 1, 0);
+			this.tableLayoutPanel6.Location = new Point(4, 1);
+			this.tableLayoutPanel6.Margin = new Padding(4, 3, 4, 3);
+			this.tableLayoutPanel6.Name = "tableLayoutPanel6";
+			this.tableLayoutPanel6.RowCount = 1;
+			this.tableLayoutPanel6.RowStyles.Add(new RowStyle());
+			this.tableLayoutPanel6.Size = new Size(65, 33);
+			this.tableLayoutPanel6.TabIndex = 23;
+			// 
+			// btnLock
+			// 
+			this.btnLock.BackColor = Color.Transparent;
+			this.btnLock.BackgroundImageLayout = ImageLayout.Stretch;
+			this.btnLock.Enabled = false;
+			this.btnLock.FlatAppearance.BorderSize = 0;
+			this.btnLock.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.btnLock.FlatStyle = FlatStyle.Flat;
+			this.btnLock.Location = new Point(4, 3);
+			this.btnLock.Margin = new Padding(4, 3, 4, 3);
+			this.btnLock.Name = "btnLock";
+			this.btnLock.Size = new Size(26, 27);
+			this.btnLock.TabIndex = 32;
+			this.btnLock.Tag = "";
+			this.btnLock.UseVisualStyleBackColor = false;
+			this.btnLock.Click += this.lockButton_ButtonClick;
+			// 
+			// btnUnlock
+			// 
+			this.btnUnlock.BackColor = Color.Transparent;
+			this.btnUnlock.BackgroundImageLayout = ImageLayout.Stretch;
+			this.btnUnlock.Enabled = false;
+			this.btnUnlock.FlatAppearance.BorderSize = 0;
+			this.btnUnlock.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.btnUnlock.FlatStyle = FlatStyle.Flat;
+			this.btnUnlock.Location = new Point(38, 3);
+			this.btnUnlock.Margin = new Padding(4, 3, 4, 3);
+			this.btnUnlock.Name = "btnUnlock";
+			this.btnUnlock.Size = new Size(26, 27);
+			this.btnUnlock.TabIndex = 31;
+			this.btnUnlock.Tag = "";
+			this.btnUnlock.UseVisualStyleBackColor = false;
+			this.btnUnlock.Click += this.unlockButton_ButtonClick;
 			// 
 			// tableLayoutPanel2
 			// 
 			this.tableLayoutPanel2.ColumnCount = 5;
-			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle());
+			this.tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle());
+			this.tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle());
+			this.tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle());
+			this.tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
 			this.tableLayoutPanel2.Controls.Add(this.buttonDistributeVertical, 3, 1);
 			this.tableLayoutPanel2.Controls.Add(this.buttonMatchProperties, 4, 0);
 			this.tableLayoutPanel2.Controls.Add(this.buttonAlignBottom, 2, 1);
@@ -228,343 +315,455 @@
 			this.tableLayoutPanel2.Controls.Add(this.buttonAlignHorizMid, 0, 1);
 			this.tableLayoutPanel2.Controls.Add(this.buttonDistributeHorizontal, 3, 0);
 			this.tableLayoutPanel2.Controls.Add(this.buttonAlignTop, 2, 0);
-			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 3);
+			this.tableLayoutPanel2.Location = new Point(4, 3);
+			this.tableLayoutPanel2.Margin = new Padding(4, 3, 4, 3);
 			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
 			this.tableLayoutPanel2.RowCount = 2;
-			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(136, 64);
+			this.tableLayoutPanel2.RowStyles.Add(new RowStyle());
+			this.tableLayoutPanel2.RowStyles.Add(new RowStyle());
+			this.tableLayoutPanel2.Size = new Size(159, 74);
 			this.tableLayoutPanel2.TabIndex = 22;
 			// 
 			// buttonDistributeVertical
 			// 
-			this.buttonDistributeVertical.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonDistributeVertical.BackgroundImageLayout = ImageLayout.Stretch;
 			this.buttonDistributeVertical.Enabled = false;
-			this.buttonDistributeVertical.Location = new System.Drawing.Point(87, 32);
+			this.buttonDistributeVertical.FlatAppearance.BorderColor = Color.White;
+			this.buttonDistributeVertical.FlatAppearance.BorderSize = 0;
+			this.buttonDistributeVertical.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonDistributeVertical.FlatStyle = FlatStyle.Flat;
+			this.buttonDistributeVertical.Location = new Point(106, 36);
+			this.buttonDistributeVertical.Margin = new Padding(4, 3, 4, 3);
 			this.buttonDistributeVertical.Name = "buttonDistributeVertical";
-			this.buttonDistributeVertical.Size = new System.Drawing.Size(22, 23);
+			this.buttonDistributeVertical.Size = new Size(26, 27);
 			this.buttonDistributeVertical.TabIndex = 24;
 			this.toolTip.SetToolTip(this.buttonDistributeVertical, "Distribute Vertically");
 			this.buttonDistributeVertical.UseVisualStyleBackColor = true;
-			this.buttonDistributeVertical.Click += new System.EventHandler(this.toolbarAlignButton_Click);
+			this.buttonDistributeVertical.Click += this.toolbarAlignButton_Click;
 			// 
 			// buttonMatchProperties
 			// 
-			this.buttonMatchProperties.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonMatchProperties.BackgroundImageLayout = ImageLayout.Stretch;
 			this.buttonMatchProperties.Enabled = false;
-			this.buttonMatchProperties.Location = new System.Drawing.Point(115, 3);
+			this.buttonMatchProperties.FlatAppearance.BorderColor = Color.White;
+			this.buttonMatchProperties.FlatAppearance.BorderSize = 0;
+			this.buttonMatchProperties.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonMatchProperties.FlatStyle = FlatStyle.Flat;
+			this.buttonMatchProperties.Location = new Point(140, 3);
+			this.buttonMatchProperties.Margin = new Padding(4, 3, 4, 3);
 			this.buttonMatchProperties.Name = "buttonMatchProperties";
-			this.buttonMatchProperties.Size = new System.Drawing.Size(18, 23);
+			this.buttonMatchProperties.Size = new Size(15, 27);
 			this.buttonMatchProperties.TabIndex = 20;
 			this.toolTip.SetToolTip(this.buttonMatchProperties, "Match Properties");
 			this.buttonMatchProperties.UseVisualStyleBackColor = true;
-			this.buttonMatchProperties.Click += new System.EventHandler(this.toolbarAlignButton_Click);
+			this.buttonMatchProperties.Click += this.toolbarAlignButton_Click;
 			// 
 			// buttonAlignBottom
 			// 
-			this.buttonAlignBottom.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonAlignBottom.BackgroundImageLayout = ImageLayout.Stretch;
 			this.buttonAlignBottom.Enabled = false;
-			this.buttonAlignBottom.Location = new System.Drawing.Point(59, 32);
+			this.buttonAlignBottom.FlatAppearance.BorderColor = Color.White;
+			this.buttonAlignBottom.FlatAppearance.BorderSize = 0;
+			this.buttonAlignBottom.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonAlignBottom.FlatStyle = FlatStyle.Flat;
+			this.buttonAlignBottom.Location = new Point(72, 36);
+			this.buttonAlignBottom.Margin = new Padding(4, 3, 4, 3);
 			this.buttonAlignBottom.Name = "buttonAlignBottom";
-			this.buttonAlignBottom.Size = new System.Drawing.Size(22, 23);
+			this.buttonAlignBottom.Size = new Size(26, 27);
 			this.buttonAlignBottom.TabIndex = 23;
 			this.toolTip.SetToolTip(this.buttonAlignBottom, "Align Bottom");
 			this.buttonAlignBottom.UseVisualStyleBackColor = true;
-			this.buttonAlignBottom.Click += new System.EventHandler(this.toolbarAlignButton_Click);
+			this.buttonAlignBottom.Click += this.toolbarAlignButton_Click;
 			// 
 			// buttonAlignLeft
 			// 
-			this.buttonAlignLeft.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+			this.buttonAlignLeft.BackgroundImageLayout = ImageLayout.Center;
 			this.buttonAlignLeft.Enabled = false;
-			this.buttonAlignLeft.Location = new System.Drawing.Point(3, 3);
+			this.buttonAlignLeft.FlatAppearance.BorderColor = Color.White;
+			this.buttonAlignLeft.FlatAppearance.BorderSize = 0;
+			this.buttonAlignLeft.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonAlignLeft.FlatStyle = FlatStyle.Flat;
+			this.buttonAlignLeft.Location = new Point(4, 3);
+			this.buttonAlignLeft.Margin = new Padding(4, 3, 4, 3);
 			this.buttonAlignLeft.Name = "buttonAlignLeft";
-			this.buttonAlignLeft.Size = new System.Drawing.Size(22, 23);
+			this.buttonAlignLeft.Size = new Size(26, 27);
 			this.buttonAlignLeft.TabIndex = 16;
 			this.toolTip.SetToolTip(this.buttonAlignLeft, "Align Left");
 			this.buttonAlignLeft.UseVisualStyleBackColor = true;
-			this.buttonAlignLeft.Click += new System.EventHandler(this.toolbarAlignButton_Click);
+			this.buttonAlignLeft.Click += this.toolbarAlignButton_Click;
 			// 
 			// buttonAlignVertMid
 			// 
-			this.buttonAlignVertMid.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonAlignVertMid.BackgroundImageLayout = ImageLayout.Stretch;
 			this.buttonAlignVertMid.Enabled = false;
-			this.buttonAlignVertMid.Location = new System.Drawing.Point(31, 32);
+			this.buttonAlignVertMid.FlatAppearance.BorderColor = Color.White;
+			this.buttonAlignVertMid.FlatAppearance.BorderSize = 0;
+			this.buttonAlignVertMid.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonAlignVertMid.FlatStyle = FlatStyle.Flat;
+			this.buttonAlignVertMid.Location = new Point(38, 36);
+			this.buttonAlignVertMid.Margin = new Padding(4, 3, 4, 3);
 			this.buttonAlignVertMid.Name = "buttonAlignVertMid";
-			this.buttonAlignVertMid.Size = new System.Drawing.Size(22, 23);
+			this.buttonAlignVertMid.Size = new Size(26, 27);
 			this.buttonAlignVertMid.TabIndex = 22;
 			this.toolTip.SetToolTip(this.buttonAlignVertMid, "Align Vertically");
 			this.buttonAlignVertMid.UseVisualStyleBackColor = true;
-			this.buttonAlignVertMid.Click += new System.EventHandler(this.toolbarAlignButton_Click);
+			this.buttonAlignVertMid.Click += this.toolbarAlignButton_Click;
 			// 
 			// buttonAlignRight
 			// 
-			this.buttonAlignRight.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonAlignRight.BackgroundImageLayout = ImageLayout.Stretch;
 			this.buttonAlignRight.Enabled = false;
-			this.buttonAlignRight.Location = new System.Drawing.Point(31, 3);
+			this.buttonAlignRight.FlatAppearance.BorderColor = Color.White;
+			this.buttonAlignRight.FlatAppearance.BorderSize = 0;
+			this.buttonAlignRight.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonAlignRight.FlatStyle = FlatStyle.Flat;
+			this.buttonAlignRight.Location = new Point(38, 3);
+			this.buttonAlignRight.Margin = new Padding(4, 3, 4, 3);
 			this.buttonAlignRight.Name = "buttonAlignRight";
-			this.buttonAlignRight.Size = new System.Drawing.Size(22, 23);
+			this.buttonAlignRight.Size = new Size(26, 27);
 			this.buttonAlignRight.TabIndex = 17;
 			this.toolTip.SetToolTip(this.buttonAlignRight, "Align Right");
 			this.buttonAlignRight.UseVisualStyleBackColor = true;
-			this.buttonAlignRight.Click += new System.EventHandler(this.toolbarAlignButton_Click);
+			this.buttonAlignRight.Click += this.toolbarAlignButton_Click;
 			// 
 			// buttonAlignHorizMid
 			// 
-			this.buttonAlignHorizMid.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonAlignHorizMid.BackgroundImageLayout = ImageLayout.Stretch;
 			this.buttonAlignHorizMid.Enabled = false;
-			this.buttonAlignHorizMid.Location = new System.Drawing.Point(3, 32);
+			this.buttonAlignHorizMid.FlatAppearance.BorderColor = Color.White;
+			this.buttonAlignHorizMid.FlatAppearance.BorderSize = 0;
+			this.buttonAlignHorizMid.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonAlignHorizMid.FlatStyle = FlatStyle.Flat;
+			this.buttonAlignHorizMid.Location = new Point(4, 36);
+			this.buttonAlignHorizMid.Margin = new Padding(4, 3, 4, 3);
 			this.buttonAlignHorizMid.Name = "buttonAlignHorizMid";
-			this.buttonAlignHorizMid.Size = new System.Drawing.Size(22, 23);
+			this.buttonAlignHorizMid.Size = new Size(26, 27);
 			this.buttonAlignHorizMid.TabIndex = 21;
 			this.toolTip.SetToolTip(this.buttonAlignHorizMid, "Align Horizontally");
 			this.buttonAlignHorizMid.UseVisualStyleBackColor = true;
-			this.buttonAlignHorizMid.Click += new System.EventHandler(this.toolbarAlignButton_Click);
+			this.buttonAlignHorizMid.Click += this.toolbarAlignButton_Click;
 			// 
 			// buttonDistributeHorizontal
 			// 
-			this.buttonDistributeHorizontal.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonDistributeHorizontal.BackgroundImageLayout = ImageLayout.Stretch;
 			this.buttonDistributeHorizontal.Enabled = false;
-			this.buttonDistributeHorizontal.Location = new System.Drawing.Point(87, 3);
+			this.buttonDistributeHorizontal.FlatAppearance.BorderColor = Color.White;
+			this.buttonDistributeHorizontal.FlatAppearance.BorderSize = 0;
+			this.buttonDistributeHorizontal.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonDistributeHorizontal.FlatStyle = FlatStyle.Flat;
+			this.buttonDistributeHorizontal.Location = new Point(106, 3);
+			this.buttonDistributeHorizontal.Margin = new Padding(4, 3, 4, 3);
 			this.buttonDistributeHorizontal.Name = "buttonDistributeHorizontal";
-			this.buttonDistributeHorizontal.Size = new System.Drawing.Size(22, 23);
+			this.buttonDistributeHorizontal.Size = new Size(26, 27);
 			this.buttonDistributeHorizontal.TabIndex = 19;
 			this.toolTip.SetToolTip(this.buttonDistributeHorizontal, "Distribute Horizontally");
 			this.buttonDistributeHorizontal.UseVisualStyleBackColor = true;
-			this.buttonDistributeHorizontal.Click += new System.EventHandler(this.toolbarAlignButton_Click);
+			this.buttonDistributeHorizontal.Click += this.toolbarAlignButton_Click;
 			// 
 			// buttonAlignTop
 			// 
-			this.buttonAlignTop.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonAlignTop.BackgroundImageLayout = ImageLayout.Stretch;
 			this.buttonAlignTop.Enabled = false;
-			this.buttonAlignTop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonAlignTop.Location = new System.Drawing.Point(59, 3);
+			this.buttonAlignTop.FlatAppearance.BorderColor = Color.White;
+			this.buttonAlignTop.FlatAppearance.BorderSize = 0;
+			this.buttonAlignTop.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonAlignTop.FlatStyle = FlatStyle.Flat;
+			this.buttonAlignTop.Location = new Point(72, 3);
+			this.buttonAlignTop.Margin = new Padding(4, 3, 4, 3);
 			this.buttonAlignTop.Name = "buttonAlignTop";
-			this.buttonAlignTop.Size = new System.Drawing.Size(22, 23);
+			this.buttonAlignTop.Size = new Size(26, 27);
 			this.buttonAlignTop.TabIndex = 18;
 			this.toolTip.SetToolTip(this.buttonAlignTop, "Align Top");
 			this.buttonAlignTop.UseVisualStyleBackColor = true;
-			this.buttonAlignTop.Click += new System.EventHandler(this.toolbarAlignButton_Click);
+			this.buttonAlignTop.Click += this.toolbarAlignButton_Click;
 			// 
 			// label7
 			// 
-			this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.label7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-			this.label7.Location = new System.Drawing.Point(457, 0);
+			this.label7.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+			this.label7.BackColor = Color.FromArgb(250, 250, 250);
+			this.label7.Location = new Point(538, 0);
+			this.label7.Margin = new Padding(4, 0, 4, 0);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(143, 19);
+			this.label7.Size = new Size(167, 22);
 			this.label7.TabIndex = 0;
 			this.label7.Text = "Align";
-			this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.label7.TextAlign = ContentAlignment.MiddleCenter;
 			// 
 			// pnlSelect
 			// 
-			this.pnlSelect.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.pnlSelect.BorderStyle = BorderStyle.FixedSingle;
 			this.pnlSelect.Controls.Add(this.buttonSelect);
-			this.pnlSelect.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.pnlSelect.Location = new System.Drawing.Point(149, 22);
+			this.pnlSelect.Dock = DockStyle.Fill;
+			this.pnlSelect.Location = new Point(175, 25);
+			this.pnlSelect.Margin = new Padding(4, 3, 4, 3);
 			this.pnlSelect.Name = "pnlSelect";
-			this.pnlSelect.Size = new System.Drawing.Size(54, 70);
+			this.pnlSelect.Size = new Size(63, 81);
 			this.pnlSelect.TabIndex = 12;
 			// 
 			// buttonSelect
 			// 
-			this.buttonSelect.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonSelect.BackgroundImage")));
-			this.buttonSelect.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonSelect.Location = new System.Drawing.Point(6, 5);
+			this.buttonSelect.BackColor = Color.Transparent;
+			this.buttonSelect.BackgroundImage = (Image)resources.GetObject("buttonSelect.BackgroundImage");
+			this.buttonSelect.BackgroundImageLayout = ImageLayout.Stretch;
+			this.buttonSelect.FlatAppearance.BorderColor = Color.White;
+			this.buttonSelect.FlatAppearance.BorderSize = 0;
+			this.buttonSelect.FlatAppearance.CheckedBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonSelect.FlatAppearance.MouseDownBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonSelect.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonSelect.FlatStyle = FlatStyle.Flat;
+			this.buttonSelect.Location = new Point(7, 6);
+			this.buttonSelect.Margin = new Padding(4, 3, 4, 3);
 			this.buttonSelect.Name = "buttonSelect";
-			this.buttonSelect.Size = new System.Drawing.Size(40, 40);
+			this.buttonSelect.Size = new Size(47, 46);
 			this.buttonSelect.TabIndex = 0;
 			this.buttonSelect.Tag = "";
 			this.buttonSelect.UseVisualStyleBackColor = false;
-			this.buttonSelect.Click += new System.EventHandler(this.toolbarButton_Click);
+			this.buttonSelect.Click += this.toolbarButton_Click;
 			// 
 			// label8
 			// 
-			this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.label8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-			this.label8.Location = new System.Drawing.Point(149, 0);
+			this.label8.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+			this.label8.BackColor = Color.FromArgb(250, 250, 250);
+			this.label8.Location = new Point(175, 0);
+			this.label8.Margin = new Padding(4, 0, 4, 0);
 			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(54, 19);
+			this.label8.Size = new Size(63, 22);
 			this.label8.TabIndex = 0;
 			this.label8.Text = "Select";
-			this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.label8.TextAlign = ContentAlignment.MiddleCenter;
 			// 
 			// lblCustomProp
 			// 
-			this.lblCustomProp.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.lblCustomProp.Location = new System.Drawing.Point(676, 0);
+			this.lblCustomProp.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+			this.lblCustomProp.BackColor = Color.FromArgb(250, 250, 250);
+			this.lblCustomProp.Location = new Point(799, 0);
+			this.lblCustomProp.Margin = new Padding(4, 0, 4, 0);
 			this.lblCustomProp.Name = "lblCustomProp";
-			this.lblCustomProp.Size = new System.Drawing.Size(92, 19);
+			this.lblCustomProp.Size = new Size(112, 22);
 			this.lblCustomProp.TabIndex = 0;
 			this.lblCustomProp.Text = "Custom Prop";
-			this.lblCustomProp.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.lblCustomProp.TextAlign = ContentAlignment.MiddleCenter;
 			// 
 			// label3
 			// 
-			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.label3.Location = new System.Drawing.Point(309, 0);
+			this.label3.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+			this.label3.BackColor = Color.FromArgb(250, 250, 250);
+			this.label3.Location = new Point(364, 0);
+			this.label3.Margin = new Padding(4, 0, 4, 0);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(142, 19);
+			this.label3.Size = new Size(166, 22);
 			this.label3.TabIndex = 0;
 			this.label3.Text = "Smart Objects";
-			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.label3.TextAlign = ContentAlignment.MiddleCenter;
 			// 
 			// tableLayoutPanel3
 			// 
 			this.tableLayoutPanel3.ColumnCount = 3;
-			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle());
+			this.tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle());
+			this.tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
 			this.tableLayoutPanel3.Controls.Add(this.buttonPolyLine, 2, 1);
 			this.tableLayoutPanel3.Controls.Add(this.buttonDrawPixel, 0, 0);
 			this.tableLayoutPanel3.Controls.Add(this.buttonTriangle, 1, 1);
 			this.tableLayoutPanel3.Controls.Add(this.buttonLine, 1, 0);
 			this.tableLayoutPanel3.Controls.Add(this.buttonRectangle, 2, 0);
 			this.tableLayoutPanel3.Controls.Add(this.buttonEllipse, 0, 1);
-			this.tableLayoutPanel3.Location = new System.Drawing.Point(5, 3);
+			this.tableLayoutPanel3.Location = new Point(6, 3);
+			this.tableLayoutPanel3.Margin = new Padding(4, 3, 4, 3);
 			this.tableLayoutPanel3.Name = "tableLayoutPanel3";
 			this.tableLayoutPanel3.RowCount = 2;
-			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel3.Size = new System.Drawing.Size(82, 63);
+			this.tableLayoutPanel3.RowStyles.Add(new RowStyle());
+			this.tableLayoutPanel3.RowStyles.Add(new RowStyle());
+			this.tableLayoutPanel3.Size = new Size(96, 73);
 			this.tableLayoutPanel3.TabIndex = 22;
 			// 
 			// buttonPolyLine
 			// 
-			this.buttonPolyLine.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonPolyLine.BackgroundImage")));
-			this.buttonPolyLine.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonPolyLine.Location = new System.Drawing.Point(59, 32);
+			this.buttonPolyLine.BackColor = Color.Transparent;
+			this.buttonPolyLine.BackgroundImage = (Image)resources.GetObject("buttonPolyLine.BackgroundImage");
+			this.buttonPolyLine.BackgroundImageLayout = ImageLayout.Stretch;
+			this.buttonPolyLine.FlatAppearance.BorderColor = Color.White;
+			this.buttonPolyLine.FlatAppearance.BorderSize = 0;
+			this.buttonPolyLine.FlatAppearance.CheckedBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonPolyLine.FlatAppearance.MouseDownBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonPolyLine.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonPolyLine.FlatStyle = FlatStyle.Flat;
+			this.buttonPolyLine.Location = new Point(72, 36);
+			this.buttonPolyLine.Margin = new Padding(4, 3, 4, 3);
 			this.buttonPolyLine.Name = "buttonPolyLine";
-			this.buttonPolyLine.Size = new System.Drawing.Size(20, 23);
+			this.buttonPolyLine.Size = new Size(20, 27);
 			this.buttonPolyLine.TabIndex = 5;
 			this.buttonPolyLine.Tag = "";
 			this.toolTip.SetToolTip(this.buttonPolyLine, "Multi-Point String");
 			this.buttonPolyLine.UseVisualStyleBackColor = false;
-			this.buttonPolyLine.Click += new System.EventHandler(this.toolbarButton_Click);
+			this.buttonPolyLine.Click += this.toolbarButton_Click;
 			// 
 			// buttonDrawPixel
 			// 
-			this.buttonDrawPixel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonDrawPixel.BackgroundImage")));
-			this.buttonDrawPixel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonDrawPixel.Location = new System.Drawing.Point(3, 3);
+			this.buttonDrawPixel.BackColor = Color.Transparent;
+			this.buttonDrawPixel.BackgroundImage = (Image)resources.GetObject("buttonDrawPixel.BackgroundImage");
+			this.buttonDrawPixel.BackgroundImageLayout = ImageLayout.Stretch;
+			this.buttonDrawPixel.FlatAppearance.BorderColor = Color.White;
+			this.buttonDrawPixel.FlatAppearance.BorderSize = 0;
+			this.buttonDrawPixel.FlatAppearance.CheckedBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonDrawPixel.FlatAppearance.MouseDownBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonDrawPixel.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonDrawPixel.FlatStyle = FlatStyle.Flat;
+			this.buttonDrawPixel.Location = new Point(4, 3);
+			this.buttonDrawPixel.Margin = new Padding(4, 3, 4, 3);
 			this.buttonDrawPixel.Name = "buttonDrawPixel";
-			this.buttonDrawPixel.Size = new System.Drawing.Size(22, 23);
+			this.buttonDrawPixel.Size = new Size(26, 27);
 			this.buttonDrawPixel.TabIndex = 0;
 			this.buttonDrawPixel.Tag = "";
 			this.toolTip.SetToolTip(this.buttonDrawPixel, "Single Light");
 			this.buttonDrawPixel.UseVisualStyleBackColor = false;
-			this.buttonDrawPixel.Click += new System.EventHandler(this.toolbarButton_Click);
+			this.buttonDrawPixel.Click += this.toolbarButton_Click;
 			// 
 			// buttonTriangle
 			// 
-			this.buttonTriangle.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonTriangle.BackgroundImage")));
-			this.buttonTriangle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonTriangle.Location = new System.Drawing.Point(31, 32);
+			this.buttonTriangle.BackColor = Color.Transparent;
+			this.buttonTriangle.BackgroundImage = (Image)resources.GetObject("buttonTriangle.BackgroundImage");
+			this.buttonTriangle.BackgroundImageLayout = ImageLayout.Stretch;
+			this.buttonTriangle.FlatAppearance.BorderColor = Color.White;
+			this.buttonTriangle.FlatAppearance.BorderSize = 0;
+			this.buttonTriangle.FlatAppearance.CheckedBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonTriangle.FlatAppearance.MouseDownBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonTriangle.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonTriangle.FlatStyle = FlatStyle.Flat;
+			this.buttonTriangle.Location = new Point(38, 36);
+			this.buttonTriangle.Margin = new Padding(4, 3, 4, 3);
 			this.buttonTriangle.Name = "buttonTriangle";
-			this.buttonTriangle.Size = new System.Drawing.Size(22, 23);
+			this.buttonTriangle.Size = new Size(26, 27);
 			this.buttonTriangle.TabIndex = 4;
 			this.buttonTriangle.Tag = "";
 			this.toolTip.SetToolTip(this.buttonTriangle, "Triangle");
 			this.buttonTriangle.UseVisualStyleBackColor = false;
-			this.buttonTriangle.Click += new System.EventHandler(this.toolbarButton_Click);
+			this.buttonTriangle.Click += this.toolbarButton_Click;
 			// 
 			// buttonLine
 			// 
-			this.buttonLine.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonLine.BackgroundImage")));
-			this.buttonLine.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonLine.Location = new System.Drawing.Point(31, 3);
+			this.buttonLine.BackColor = Color.Transparent;
+			this.buttonLine.BackgroundImage = (Image)resources.GetObject("buttonLine.BackgroundImage");
+			this.buttonLine.BackgroundImageLayout = ImageLayout.Stretch;
+			this.buttonLine.FlatAppearance.BorderColor = Color.White;
+			this.buttonLine.FlatAppearance.BorderSize = 0;
+			this.buttonLine.FlatAppearance.CheckedBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonLine.FlatAppearance.MouseDownBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonLine.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonLine.FlatStyle = FlatStyle.Flat;
+			this.buttonLine.Location = new Point(38, 3);
+			this.buttonLine.Margin = new Padding(4, 3, 4, 3);
 			this.buttonLine.Name = "buttonLine";
-			this.buttonLine.Size = new System.Drawing.Size(22, 23);
+			this.buttonLine.Size = new Size(26, 27);
 			this.buttonLine.TabIndex = 1;
 			this.buttonLine.Tag = "";
 			this.toolTip.SetToolTip(this.buttonLine, "Light String");
 			this.buttonLine.UseVisualStyleBackColor = false;
-			this.buttonLine.Click += new System.EventHandler(this.toolbarButton_Click);
+			this.buttonLine.Click += this.toolbarButton_Click;
 			// 
 			// buttonRectangle
 			// 
-			this.buttonRectangle.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonRectangle.BackgroundImage")));
-			this.buttonRectangle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonRectangle.Location = new System.Drawing.Point(59, 3);
+			this.buttonRectangle.BackColor = Color.Transparent;
+			this.buttonRectangle.BackgroundImage = (Image)resources.GetObject("buttonRectangle.BackgroundImage");
+			this.buttonRectangle.BackgroundImageLayout = ImageLayout.Stretch;
+			this.buttonRectangle.FlatAppearance.BorderColor = Color.White;
+			this.buttonRectangle.FlatAppearance.BorderSize = 0;
+			this.buttonRectangle.FlatAppearance.CheckedBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonRectangle.FlatAppearance.MouseDownBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonRectangle.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonRectangle.FlatStyle = FlatStyle.Flat;
+			this.buttonRectangle.Location = new Point(72, 3);
+			this.buttonRectangle.Margin = new Padding(4, 3, 4, 3);
 			this.buttonRectangle.Name = "buttonRectangle";
-			this.buttonRectangle.Size = new System.Drawing.Size(20, 23);
+			this.buttonRectangle.Size = new Size(20, 27);
 			this.buttonRectangle.TabIndex = 2;
 			this.buttonRectangle.Tag = "";
 			this.toolTip.SetToolTip(this.buttonRectangle, "Rectangle");
 			this.buttonRectangle.UseVisualStyleBackColor = false;
-			this.buttonRectangle.Click += new System.EventHandler(this.toolbarButton_Click);
+			this.buttonRectangle.Click += this.toolbarButton_Click;
 			// 
 			// buttonEllipse
 			// 
-			this.buttonEllipse.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonEllipse.BackgroundImage")));
-			this.buttonEllipse.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonEllipse.Location = new System.Drawing.Point(3, 32);
+			this.buttonEllipse.BackColor = Color.Transparent;
+			this.buttonEllipse.BackgroundImage = (Image)resources.GetObject("buttonEllipse.BackgroundImage");
+			this.buttonEllipse.BackgroundImageLayout = ImageLayout.Stretch;
+			this.buttonEllipse.FlatAppearance.BorderColor = Color.White;
+			this.buttonEllipse.FlatAppearance.BorderSize = 0;
+			this.buttonEllipse.FlatAppearance.CheckedBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonEllipse.FlatAppearance.MouseDownBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonEllipse.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonEllipse.FlatStyle = FlatStyle.Flat;
+			this.buttonEllipse.Location = new Point(4, 36);
+			this.buttonEllipse.Margin = new Padding(4, 3, 4, 3);
 			this.buttonEllipse.Name = "buttonEllipse";
-			this.buttonEllipse.Size = new System.Drawing.Size(22, 23);
+			this.buttonEllipse.Size = new Size(26, 27);
 			this.buttonEllipse.TabIndex = 3;
 			this.buttonEllipse.Tag = "";
 			this.toolTip.SetToolTip(this.buttonEllipse, "Ellipse");
 			this.buttonEllipse.UseVisualStyleBackColor = false;
-			this.buttonEllipse.Click += new System.EventHandler(this.toolbarButton_Click);
+			this.buttonEllipse.Click += this.toolbarButton_Click;
 			// 
 			// label2
 			// 
-			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.label2.Location = new System.Drawing.Point(209, 0);
+			this.label2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+			this.label2.BackColor = Color.FromArgb(250, 250, 250);
+			this.label2.Location = new Point(246, 0);
+			this.label2.Margin = new Padding(4, 0, 4, 0);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(94, 19);
+			this.label2.Size = new Size(110, 22);
 			this.label2.TabIndex = 0;
 			this.label2.Text = "Basic Drawing";
-			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.label2.TextAlign = ContentAlignment.MiddleCenter;
 			// 
 			// panel2
 			// 
-			this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel2.BorderStyle = BorderStyle.FixedSingle;
 			this.panel2.Controls.Add(this.trackBarBackgroundAlpha);
 			this.panel2.Controls.Add(this.buttonSetBackground);
-			this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel2.Location = new System.Drawing.Point(3, 22);
+			this.panel2.Dock = DockStyle.Fill;
+			this.panel2.Location = new Point(4, 25);
+			this.panel2.Margin = new Padding(4, 3, 4, 3);
 			this.panel2.Name = "panel2";
-			this.panel2.Size = new System.Drawing.Size(140, 70);
+			this.panel2.Size = new Size(163, 81);
 			this.panel2.TabIndex = 7;
 			// 
 			// trackBarBackgroundAlpha
 			// 
 			this.trackBarBackgroundAlpha.LargeChange = 10;
-			this.trackBarBackgroundAlpha.Location = new System.Drawing.Point(54, 5);
+			this.trackBarBackgroundAlpha.Location = new Point(63, 6);
+			this.trackBarBackgroundAlpha.Margin = new Padding(4, 3, 4, 3);
 			this.trackBarBackgroundAlpha.Maximum = 255;
 			this.trackBarBackgroundAlpha.Name = "trackBarBackgroundAlpha";
-			this.trackBarBackgroundAlpha.Size = new System.Drawing.Size(81, 45);
+			this.trackBarBackgroundAlpha.Size = new Size(94, 45);
 			this.trackBarBackgroundAlpha.TabIndex = 33;
 			this.trackBarBackgroundAlpha.TickFrequency = 25;
-			this.trackBarBackgroundAlpha.ValueChanged += new System.EventHandler(this.trackBarBackgroundAlpha_ValueChanged);
+			this.trackBarBackgroundAlpha.ValueChanged += this.trackBarBackgroundAlpha_ValueChanged;
 			// 
 			// buttonSetBackground
 			// 
-			this.buttonSetBackground.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonSetBackground.BackgroundImage")));
-			this.buttonSetBackground.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonSetBackground.Location = new System.Drawing.Point(8, 3);
+			this.buttonSetBackground.BackgroundImage = (Image)resources.GetObject("buttonSetBackground.BackgroundImage");
+			this.buttonSetBackground.BackgroundImageLayout = ImageLayout.Stretch;
+			this.buttonSetBackground.FlatAppearance.BorderSize = 0;
+			this.buttonSetBackground.FlatStyle = FlatStyle.Flat;
+			this.buttonSetBackground.Location = new Point(9, 3);
+			this.buttonSetBackground.Margin = new Padding(4, 3, 4, 3);
 			this.buttonSetBackground.Name = "buttonSetBackground";
-			this.buttonSetBackground.Size = new System.Drawing.Size(40, 40);
+			this.buttonSetBackground.Size = new Size(47, 46);
 			this.buttonSetBackground.TabIndex = 32;
 			this.buttonSetBackground.UseVisualStyleBackColor = true;
-			this.buttonSetBackground.Click += new System.EventHandler(this.buttonSetBackground_Click);
+			this.buttonSetBackground.Click += this.buttonSetBackground_Click;
 			// 
 			// label1
 			// 
-			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.label1.Location = new System.Drawing.Point(3, 0);
+			this.label1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+			this.label1.BackColor = Color.FromArgb(250, 250, 250);
+			this.label1.Location = new Point(4, 0);
+			this.label1.Margin = new Padding(4, 0, 4, 0);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(140, 19);
+			this.label1.Size = new Size(163, 22);
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Background";
-			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.label1.TextAlign = ContentAlignment.MiddleCenter;
 			// 
 			// dialogSelectBackground
 			// 
@@ -573,554 +772,665 @@
 			// 
 			// menuStrip
 			// 
-			this.menuStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
-			this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.viewToolStripMenuItem,
-            this.editToolStripMenuItem,
-            this.settingsToolStripMenuItem,
-            this.helpToolStripMenuItem});
-			this.menuStrip.Location = new System.Drawing.Point(0, 0);
+			this.menuStrip.ImageScalingSize = new Size(24, 24);
+			this.menuStrip.Items.AddRange(new ToolStripItem[] { this.fileToolStripMenuItem, this.viewToolStripMenuItem, this.editToolStripMenuItem, this.settingsToolStripMenuItem, this.helpToolStripMenuItem });
+			this.menuStrip.Location = new Point(0, 0);
 			this.menuStrip.Name = "menuStrip";
-			this.menuStrip.Size = new System.Drawing.Size(991, 24);
+			this.menuStrip.Padding = new Padding(7, 2, 0, 2);
+			this.menuStrip.Size = new Size(1155, 24);
 			this.menuStrip.TabIndex = 11;
 			this.menuStrip.Text = "menuStrip";
 			// 
 			// fileToolStripMenuItem
 			// 
-			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveToolStripMenuItem,
-            this.toolStripSeparator2,
-            this.importPropToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.exitToolStripMenuItem});
+			this.fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.saveToolStripMenuItem, this.toolStripSeparator2, this.importPropToolStripMenuItem, this.toolStripSeparator1, this.exitToolStripMenuItem });
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+			this.fileToolStripMenuItem.Size = new Size(37, 20);
 			this.fileToolStripMenuItem.Text = "&File";
 			// 
 			// saveToolStripMenuItem
 			// 
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.saveToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+			this.saveToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
+			this.saveToolStripMenuItem.Size = new Size(138, 22);
 			this.saveToolStripMenuItem.Text = "&Save";
-			this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+			this.saveToolStripMenuItem.Click += this.saveToolStripMenuItem_Click;
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(135, 6);
+			this.toolStripSeparator2.Size = new Size(135, 6);
 			// 
 			// importPropToolStripMenuItem
 			// 
 			this.importPropToolStripMenuItem.Name = "importPropToolStripMenuItem";
-			this.importPropToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+			this.importPropToolStripMenuItem.Size = new Size(138, 22);
 			this.importPropToolStripMenuItem.Text = "Import Prop";
-			this.importPropToolStripMenuItem.Click += new System.EventHandler(this.importPropToolStripMenuItem_Click);
+			this.importPropToolStripMenuItem.Click += this.importPropToolStripMenuItem_Click;
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(135, 6);
+			this.toolStripSeparator1.Size = new Size(135, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+			this.exitToolStripMenuItem.ShortcutKeys = Keys.Alt | Keys.F4;
+			this.exitToolStripMenuItem.Size = new Size(138, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
-			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+			this.exitToolStripMenuItem.Click += this.exitToolStripMenuItem_Click;
 			// 
 			// viewToolStripMenuItem
 			// 
-			this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.propInformationToolStripMenuItem,
-            this.propEditorToolStripMenuItem});
+			this.viewToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.propInformationToolStripMenuItem, this.propEditorToolStripMenuItem });
 			this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-			this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+			this.viewToolStripMenuItem.Size = new Size(44, 20);
 			this.viewToolStripMenuItem.Text = "&View";
 			// 
 			// propInformationToolStripMenuItem
 			// 
 			this.propInformationToolStripMenuItem.Name = "propInformationToolStripMenuItem";
-			this.propInformationToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.propInformationToolStripMenuItem.Size = new Size(165, 22);
 			this.propInformationToolStripMenuItem.Text = "Prop &Information";
-			this.propInformationToolStripMenuItem.Click += new System.EventHandler(this.propInformationToolStripMenuItem_Click);
+			this.propInformationToolStripMenuItem.Click += this.propInformationToolStripMenuItem_Click;
 			// 
 			// propEditorToolStripMenuItem
 			// 
 			this.propEditorToolStripMenuItem.Name = "propEditorToolStripMenuItem";
-			this.propEditorToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.propEditorToolStripMenuItem.Size = new Size(165, 22);
 			this.propEditorToolStripMenuItem.Text = "Prop Editor";
-			this.propEditorToolStripMenuItem.Click += new System.EventHandler(this.btnCustomPropEditor_Click);
+			this.propEditorToolStripMenuItem.Click += this.btnCustomPropEditor_Click;
 			// 
 			// editToolStripMenuItem
 			// 
-			this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.copyToolStripMenuItem,
-            this.copyToolStripMenuItem1,
-            this.pasteToolStripMenuItem,
-            this.deleteToolStripMenuItem,
-            this.undoToolStripMenuItem,
-            this.redoToolStripMenuItem,
-            this.toolStripMenuItem1,
-            this.backgroundPropertiesToolStripMenuItem,
-            this.toolStripSeparator3,
-            this.addTemplateMenu});
+			this.editToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.copyToolStripMenuItem, this.copyToolStripMenuItem1, this.pasteToolStripMenuItem, this.deleteToolStripMenuItem, this.toolStripMenuItem1, this.undoToolStripMenuItem, this.redoToolStripMenuItem, this.toolStripSeparator3, this.lockToolStripMenuItem, this.unlockToolStripMenuItem, this.toolStripSeparator4, this.backgroundPropertiesToolStripMenuItem, this.toolStripSeparator5, this.addTemplateMenu });
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+			this.editToolStripMenuItem.Size = new Size(39, 20);
 			this.editToolStripMenuItem.Text = "&Edit";
 			// 
 			// copyToolStripMenuItem
 			// 
-			this.copyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("copyToolStripMenuItem.Image")));
+			this.copyToolStripMenuItem.Image = (Image)resources.GetObject("copyToolStripMenuItem.Image");
 			this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
 			this.copyToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+X";
-			this.copyToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.copyToolStripMenuItem.Size = new Size(203, 22);
 			this.copyToolStripMenuItem.Text = "Cu&t";
-			this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
+			this.copyToolStripMenuItem.Click += this.copyToolStripMenuItem_Click;
 			// 
 			// copyToolStripMenuItem1
 			// 
-			this.copyToolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("copyToolStripMenuItem1.Image")));
+			this.copyToolStripMenuItem1.Image = (Image)resources.GetObject("copyToolStripMenuItem1.Image");
 			this.copyToolStripMenuItem1.Name = "copyToolStripMenuItem1";
 			this.copyToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+C";
-			this.copyToolStripMenuItem1.Size = new System.Drawing.Size(203, 22);
+			this.copyToolStripMenuItem1.Size = new Size(203, 22);
 			this.copyToolStripMenuItem1.Text = "&Copy";
-			this.copyToolStripMenuItem1.Click += new System.EventHandler(this.copyToolStripMenuItem1_Click);
+			this.copyToolStripMenuItem1.Click += this.copyToolStripMenuItem1_Click;
 			// 
 			// pasteToolStripMenuItem
 			// 
-			this.pasteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pasteToolStripMenuItem.Image")));
+			this.pasteToolStripMenuItem.Image = (Image)resources.GetObject("pasteToolStripMenuItem.Image");
 			this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
 			this.pasteToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+V";
-			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.pasteToolStripMenuItem.Size = new Size(203, 22);
 			this.pasteToolStripMenuItem.Text = "&Paste";
-			this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
+			this.pasteToolStripMenuItem.Click += this.pasteToolStripMenuItem_Click;
 			// 
 			// deleteToolStripMenuItem
 			// 
-			this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
+			this.deleteToolStripMenuItem.Image = (Image)resources.GetObject("deleteToolStripMenuItem.Image");
 			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
 			this.deleteToolStripMenuItem.ShortcutKeyDisplayString = "Del";
-			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.deleteToolStripMenuItem.Size = new Size(203, 22);
 			this.deleteToolStripMenuItem.Text = "&Delete";
-			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
-			// 
-			// undoToolStripMenuItem
-			// 
-			this.undoToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("undoToolStripMenuItem.Image")));
-			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-			this.undoToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+Z";
-			this.undoToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
-			this.undoToolStripMenuItem.Text = "&Undo";
-			this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoButton_ButtonClick);
-			// 
-			// redoToolStripMenuItem
-			// 
-			this.redoToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("redoToolStripMenuItem.Image")));
-			this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
-			this.redoToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+Y";
-			this.redoToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
-			this.redoToolStripMenuItem.Text = "&Redo";
-			this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoButton_ButtonClick);
+			this.deleteToolStripMenuItem.Click += this.deleteToolStripMenuItem_Click;
 			// 
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(200, 6);
+			this.toolStripMenuItem1.Size = new Size(200, 6);
 			// 
-			// backgroundPropertiesToolStripMenuItem
+			// undoToolStripMenuItem
 			// 
-			this.backgroundPropertiesToolStripMenuItem.Name = "backgroundPropertiesToolStripMenuItem";
-			this.backgroundPropertiesToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
-			this.backgroundPropertiesToolStripMenuItem.Text = "&Background Properties...";
-			this.backgroundPropertiesToolStripMenuItem.Click += new System.EventHandler(this.backgroundPropertiesToolStripMenuItem_Click);
+			this.undoToolStripMenuItem.Image = (Image)resources.GetObject("undoToolStripMenuItem.Image");
+			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
+			this.undoToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+Z";
+			this.undoToolStripMenuItem.Size = new Size(203, 22);
+			this.undoToolStripMenuItem.Text = "&Undo";
+			this.undoToolStripMenuItem.Click += this.undoButton_ButtonClick;
+			// 
+			// redoToolStripMenuItem
+			// 
+			this.redoToolStripMenuItem.Image = (Image)resources.GetObject("redoToolStripMenuItem.Image");
+			this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
+			this.redoToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+Y";
+			this.redoToolStripMenuItem.Size = new Size(203, 22);
+			this.redoToolStripMenuItem.Text = "&Redo";
+			this.redoToolStripMenuItem.Click += this.redoButton_ButtonClick;
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(200, 6);
+			this.toolStripSeparator3.Size = new Size(200, 6);
+			// 
+			// lockToolStripMenuItem
+			// 
+			this.lockToolStripMenuItem.Image = (Image)resources.GetObject("lockToolStripMenuItem.Image");
+			this.lockToolStripMenuItem.Name = "lockToolStripMenuItem";
+			this.lockToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+L";
+			this.lockToolStripMenuItem.Size = new Size(203, 22);
+			this.lockToolStripMenuItem.Text = "&Lock";
+			this.lockToolStripMenuItem.Click += this.lockButton_ButtonClick;
+			// 
+			// unlockToolStripMenuItem
+			// 
+			this.unlockToolStripMenuItem.Image = (Image)resources.GetObject("unlockToolStripMenuItem.Image");
+			this.unlockToolStripMenuItem.Name = "unlockToolStripMenuItem";
+			this.unlockToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+U";
+			this.unlockToolStripMenuItem.Size = new Size(203, 22);
+			this.unlockToolStripMenuItem.Text = "&Unlock";
+			this.unlockToolStripMenuItem.Click += this.unlockButton_ButtonClick;
+			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new Size(200, 6);
+			// 
+			// backgroundPropertiesToolStripMenuItem
+			// 
+			this.backgroundPropertiesToolStripMenuItem.Name = "backgroundPropertiesToolStripMenuItem";
+			this.backgroundPropertiesToolStripMenuItem.Size = new Size(203, 22);
+			this.backgroundPropertiesToolStripMenuItem.Text = "&Background Properties...";
+			this.backgroundPropertiesToolStripMenuItem.Click += this.backgroundPropertiesToolStripMenuItem_Click;
+			// 
+			// toolStripSeparator5
+			// 
+			this.toolStripSeparator5.Name = "toolStripSeparator5";
+			this.toolStripSeparator5.Size = new Size(200, 6);
 			// 
 			// addTemplateMenu
 			// 
 			this.addTemplateMenu.Name = "addTemplateMenu";
-			this.addTemplateMenu.Size = new System.Drawing.Size(203, 22);
+			this.addTemplateMenu.Size = new Size(203, 22);
 			this.addTemplateMenu.Text = "Templates (Legacy)";
-			this.addTemplateMenu.Click += new System.EventHandler(this.buttonAddToPreview_Click);
+			this.addTemplateMenu.Click += this.buttonAddToPreview_Click;
 			// 
 			// settingsToolStripMenuItem
 			// 
-			this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveLocationsToolStripMenuItem,
-            this.locationOffsetSetupToolStripMenuItem,
-            this.useOpenGLPreviewToolStripMenuItem});
+			this.settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.saveLocationsToolStripMenuItem, this.locationOffsetSetupToolStripMenuItem, this.useOpenGLPreviewToolStripMenuItem });
 			this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+			this.settingsToolStripMenuItem.Size = new Size(61, 20);
 			this.settingsToolStripMenuItem.Text = "Settings";
 			// 
 			// saveLocationsToolStripMenuItem
 			// 
 			this.saveLocationsToolStripMenuItem.Checked = true;
 			this.saveLocationsToolStripMenuItem.CheckOnClick = true;
-			this.saveLocationsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.saveLocationsToolStripMenuItem.CheckState = CheckState.Checked;
 			this.saveLocationsToolStripMenuItem.Name = "saveLocationsToolStripMenuItem";
-			this.saveLocationsToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+			this.saveLocationsToolStripMenuItem.Size = new Size(217, 22);
 			this.saveLocationsToolStripMenuItem.Text = "Update Location Properties";
 			this.saveLocationsToolStripMenuItem.ToolTipText = "Update location properties for each preview item for positioning.";
-			this.saveLocationsToolStripMenuItem.Click += new System.EventHandler(this.saveLocationsToolStripMenuItem_Click);
+			this.saveLocationsToolStripMenuItem.Click += this.saveLocationsToolStripMenuItem_Click;
 			// 
 			// locationOffsetSetupToolStripMenuItem
 			// 
 			this.locationOffsetSetupToolStripMenuItem.Name = "locationOffsetSetupToolStripMenuItem";
-			this.locationOffsetSetupToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+			this.locationOffsetSetupToolStripMenuItem.Size = new Size(217, 22);
 			this.locationOffsetSetupToolStripMenuItem.Text = "Location Offset Setup";
-			this.locationOffsetSetupToolStripMenuItem.Click += new System.EventHandler(this.locationOffsetSetupToolStripMenuItem_Click);
+			this.locationOffsetSetupToolStripMenuItem.Click += this.locationOffsetSetupToolStripMenuItem_Click;
 			// 
 			// useOpenGLPreviewToolStripMenuItem
 			// 
 			this.useOpenGLPreviewToolStripMenuItem.CheckOnClick = true;
 			this.useOpenGLPreviewToolStripMenuItem.Name = "useOpenGLPreviewToolStripMenuItem";
-			this.useOpenGLPreviewToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+			this.useOpenGLPreviewToolStripMenuItem.Size = new Size(217, 22);
 			this.useOpenGLPreviewToolStripMenuItem.Text = "Use OpenGL Preview";
-			this.useOpenGLPreviewToolStripMenuItem.CheckedChanged += new System.EventHandler(this.useOpenGLPreviewToolStripMenuItem_Click);
+			this.useOpenGLPreviewToolStripMenuItem.CheckedChanged += this.useOpenGLPreviewToolStripMenuItem_Click;
 			// 
 			// helpToolStripMenuItem
 			// 
-			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.viewHelpToolStripMenuItem,
-            this.vixenYouTubeChannelToolStripMenuItem,
-            this.templateHelpToolStripMenuItem,
-            this.customPropHelpToolStripMenuItem});
+			this.helpToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.viewHelpToolStripMenuItem, this.vixenYouTubeChannelToolStripMenuItem, this.templateHelpToolStripMenuItem, this.customPropHelpToolStripMenuItem });
 			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-			this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+			this.helpToolStripMenuItem.Size = new Size(44, 20);
 			this.helpToolStripMenuItem.Text = "Help";
 			// 
 			// viewHelpToolStripMenuItem
 			// 
-			this.viewHelpToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("viewHelpToolStripMenuItem.Image")));
+			this.viewHelpToolStripMenuItem.Image = (Image)resources.GetObject("viewHelpToolStripMenuItem.Image");
 			this.viewHelpToolStripMenuItem.Name = "viewHelpToolStripMenuItem";
-			this.viewHelpToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F1)));
-			this.viewHelpToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.viewHelpToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.F1;
+			this.viewHelpToolStripMenuItem.Size = new Size(199, 22);
 			this.viewHelpToolStripMenuItem.Text = "&View Help";
-			this.viewHelpToolStripMenuItem.Click += new System.EventHandler(this.viewHelpToolStripMenuItem_Click);
+			this.viewHelpToolStripMenuItem.Click += this.viewHelpToolStripMenuItem_Click;
 			// 
 			// vixenYouTubeChannelToolStripMenuItem
 			// 
 			this.vixenYouTubeChannelToolStripMenuItem.Name = "vixenYouTubeChannelToolStripMenuItem";
-			this.vixenYouTubeChannelToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.vixenYouTubeChannelToolStripMenuItem.Size = new Size(199, 22);
 			this.vixenYouTubeChannelToolStripMenuItem.Text = "Vixen YouTube Channel";
-			this.vixenYouTubeChannelToolStripMenuItem.Click += new System.EventHandler(this.vixenYouTubeChannelToolStripMenuItem_Click);
+			this.vixenYouTubeChannelToolStripMenuItem.Click += this.vixenYouTubeChannelToolStripMenuItem_Click;
 			// 
 			// templateHelpToolStripMenuItem
 			// 
 			this.templateHelpToolStripMenuItem.Name = "templateHelpToolStripMenuItem";
-			this.templateHelpToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.templateHelpToolStripMenuItem.Size = new Size(199, 22);
 			this.templateHelpToolStripMenuItem.Text = "Template Help";
-			this.templateHelpToolStripMenuItem.Click += new System.EventHandler(this.templateHelpToolStripMenuItem_Click);
+			this.templateHelpToolStripMenuItem.Click += this.templateHelpToolStripMenuItem_Click;
 			// 
 			// customPropHelpToolStripMenuItem
 			// 
 			this.customPropHelpToolStripMenuItem.Name = "customPropHelpToolStripMenuItem";
-			this.customPropHelpToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.customPropHelpToolStripMenuItem.Size = new Size(199, 22);
 			this.customPropHelpToolStripMenuItem.Text = "Custom Prop Help";
 			// 
 			// buttonIcicle
 			// 
-			this.buttonIcicle.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonIcicle.BackgroundImage")));
-			this.buttonIcicle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonIcicle.Location = new System.Drawing.Point(115, 32);
+			this.buttonIcicle.BackColor = Color.Transparent;
+			this.buttonIcicle.BackgroundImage = (Image)resources.GetObject("buttonIcicle.BackgroundImage");
+			this.buttonIcicle.BackgroundImageLayout = ImageLayout.Stretch;
+			this.buttonIcicle.FlatAppearance.BorderColor = Color.White;
+			this.buttonIcicle.FlatAppearance.BorderSize = 0;
+			this.buttonIcicle.FlatAppearance.CheckedBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonIcicle.FlatAppearance.MouseDownBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonIcicle.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonIcicle.FlatStyle = FlatStyle.Flat;
+			this.buttonIcicle.Location = new Point(140, 36);
+			this.buttonIcicle.Margin = new Padding(4, 3, 4, 3);
 			this.buttonIcicle.Name = "buttonIcicle";
-			this.buttonIcicle.Size = new System.Drawing.Size(18, 23);
+			this.buttonIcicle.Size = new Size(15, 27);
 			this.buttonIcicle.TabIndex = 14;
 			this.buttonIcicle.Tag = "";
 			this.toolTip.SetToolTip(this.buttonIcicle, "Icicles");
 			this.buttonIcicle.UseVisualStyleBackColor = false;
-			this.buttonIcicle.Click += new System.EventHandler(this.toolbarButton_Click);
+			this.buttonIcicle.Click += this.toolbarButton_Click;
 			// 
 			// buttonMultiString
 			// 
-			this.buttonMultiString.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonMultiString.BackgroundImage")));
-			this.buttonMultiString.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonMultiString.Location = new System.Drawing.Point(115, 3);
+			this.buttonMultiString.BackColor = Color.Transparent;
+			this.buttonMultiString.BackgroundImage = (Image)resources.GetObject("buttonMultiString.BackgroundImage");
+			this.buttonMultiString.BackgroundImageLayout = ImageLayout.Stretch;
+			this.buttonMultiString.FlatAppearance.BorderColor = Color.White;
+			this.buttonMultiString.FlatAppearance.BorderSize = 0;
+			this.buttonMultiString.FlatAppearance.CheckedBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonMultiString.FlatAppearance.MouseDownBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonMultiString.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonMultiString.FlatStyle = FlatStyle.Flat;
+			this.buttonMultiString.Location = new Point(140, 3);
+			this.buttonMultiString.Margin = new Padding(4, 3, 4, 3);
 			this.buttonMultiString.Name = "buttonMultiString";
-			this.buttonMultiString.Size = new System.Drawing.Size(10, 23);
+			this.buttonMultiString.Size = new Size(12, 27);
 			this.buttonMultiString.TabIndex = 10;
 			this.buttonMultiString.Tag = "";
 			this.toolTip.SetToolTip(this.buttonMultiString, "Multi-String");
 			this.buttonMultiString.UseVisualStyleBackColor = false;
-			this.buttonMultiString.Click += new System.EventHandler(this.toolbarButton_Click);
+			this.buttonMultiString.Click += this.toolbarButton_Click;
 			// 
 			// buttonPixelGrid
 			// 
-			this.buttonPixelGrid.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonPixelGrid.BackgroundImage")));
-			this.buttonPixelGrid.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonPixelGrid.Location = new System.Drawing.Point(87, 32);
+			this.buttonPixelGrid.BackColor = Color.Transparent;
+			this.buttonPixelGrid.BackgroundImage = (Image)resources.GetObject("buttonPixelGrid.BackgroundImage");
+			this.buttonPixelGrid.BackgroundImageLayout = ImageLayout.Stretch;
+			this.buttonPixelGrid.FlatAppearance.BorderColor = Color.White;
+			this.buttonPixelGrid.FlatAppearance.BorderSize = 0;
+			this.buttonPixelGrid.FlatAppearance.CheckedBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonPixelGrid.FlatAppearance.MouseDownBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonPixelGrid.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonPixelGrid.FlatStyle = FlatStyle.Flat;
+			this.buttonPixelGrid.Location = new Point(106, 36);
+			this.buttonPixelGrid.Margin = new Padding(4, 3, 4, 3);
 			this.buttonPixelGrid.Name = "buttonPixelGrid";
-			this.buttonPixelGrid.Size = new System.Drawing.Size(22, 23);
+			this.buttonPixelGrid.Size = new Size(26, 27);
 			this.buttonPixelGrid.TabIndex = 13;
 			this.buttonPixelGrid.Tag = "";
 			this.toolTip.SetToolTip(this.buttonPixelGrid, "Pixel Grid");
 			this.buttonPixelGrid.UseVisualStyleBackColor = false;
-			this.buttonPixelGrid.Click += new System.EventHandler(this.toolbarButton_Click);
+			this.buttonPixelGrid.Click += this.toolbarButton_Click;
 			// 
 			// buttonSemiCircle
 			// 
-			this.buttonSemiCircle.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonSemiCircle.BackgroundImage")));
-			this.buttonSemiCircle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonSemiCircle.Location = new System.Drawing.Point(3, 3);
+			this.buttonSemiCircle.BackColor = Color.Transparent;
+			this.buttonSemiCircle.BackgroundImage = (Image)resources.GetObject("buttonSemiCircle.BackgroundImage");
+			this.buttonSemiCircle.BackgroundImageLayout = ImageLayout.Stretch;
+			this.buttonSemiCircle.FlatAppearance.BorderColor = Color.White;
+			this.buttonSemiCircle.FlatAppearance.BorderSize = 0;
+			this.buttonSemiCircle.FlatAppearance.CheckedBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonSemiCircle.FlatAppearance.MouseDownBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonSemiCircle.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonSemiCircle.FlatStyle = FlatStyle.Flat;
+			this.buttonSemiCircle.Location = new Point(4, 3);
+			this.buttonSemiCircle.Margin = new Padding(4, 3, 4, 3);
 			this.buttonSemiCircle.Name = "buttonSemiCircle";
-			this.buttonSemiCircle.Size = new System.Drawing.Size(22, 23);
+			this.buttonSemiCircle.Size = new Size(26, 27);
 			this.buttonSemiCircle.TabIndex = 6;
 			this.buttonSemiCircle.Tag = "";
 			this.toolTip.SetToolTip(this.buttonSemiCircle, "Arch");
 			this.buttonSemiCircle.UseVisualStyleBackColor = false;
-			this.buttonSemiCircle.Click += new System.EventHandler(this.toolbarButton_Click);
+			this.buttonSemiCircle.Click += this.toolbarButton_Click;
 			// 
 			// buttonStar
 			// 
-			this.buttonStar.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonStar.BackgroundImage")));
-			this.buttonStar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonStar.Location = new System.Drawing.Point(59, 32);
+			this.buttonStar.BackColor = Color.Transparent;
+			this.buttonStar.BackgroundImage = (Image)resources.GetObject("buttonStar.BackgroundImage");
+			this.buttonStar.BackgroundImageLayout = ImageLayout.Stretch;
+			this.buttonStar.FlatAppearance.BorderColor = Color.White;
+			this.buttonStar.FlatAppearance.BorderSize = 0;
+			this.buttonStar.FlatAppearance.CheckedBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonStar.FlatAppearance.MouseDownBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonStar.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonStar.FlatStyle = FlatStyle.Flat;
+			this.buttonStar.Location = new Point(72, 36);
+			this.buttonStar.Margin = new Padding(4, 3, 4, 3);
 			this.buttonStar.Name = "buttonStar";
-			this.buttonStar.Size = new System.Drawing.Size(22, 23);
+			this.buttonStar.Size = new Size(26, 27);
 			this.buttonStar.TabIndex = 12;
 			this.buttonStar.Tag = "";
 			this.toolTip.SetToolTip(this.buttonStar, "Star");
 			this.buttonStar.UseVisualStyleBackColor = false;
-			this.buttonStar.Click += new System.EventHandler(this.toolbarButton_Click);
+			this.buttonStar.Click += this.toolbarButton_Click;
 			// 
 			// buttonNet
 			// 
-			this.buttonNet.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonNet.BackgroundImage")));
-			this.buttonNet.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonNet.Location = new System.Drawing.Point(31, 3);
+			this.buttonNet.BackColor = Color.Transparent;
+			this.buttonNet.BackgroundImage = (Image)resources.GetObject("buttonNet.BackgroundImage");
+			this.buttonNet.BackgroundImageLayout = ImageLayout.Stretch;
+			this.buttonNet.FlatAppearance.BorderColor = Color.White;
+			this.buttonNet.FlatAppearance.BorderSize = 0;
+			this.buttonNet.FlatAppearance.CheckedBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonNet.FlatAppearance.MouseDownBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonNet.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonNet.FlatStyle = FlatStyle.Flat;
+			this.buttonNet.Location = new Point(38, 3);
+			this.buttonNet.Margin = new Padding(4, 3, 4, 3);
 			this.buttonNet.Name = "buttonNet";
-			this.buttonNet.Size = new System.Drawing.Size(22, 23);
+			this.buttonNet.Size = new Size(26, 27);
 			this.buttonNet.TabIndex = 7;
 			this.buttonNet.Tag = "";
 			this.toolTip.SetToolTip(this.buttonNet, "Net");
 			this.buttonNet.UseVisualStyleBackColor = false;
-			this.buttonNet.Click += new System.EventHandler(this.toolbarButton_Click);
+			this.buttonNet.Click += this.toolbarButton_Click;
 			// 
 			// buttonCane
 			// 
-			this.buttonCane.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonCane.BackgroundImage")));
-			this.buttonCane.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonCane.Location = new System.Drawing.Point(3, 32);
+			this.buttonCane.BackColor = Color.Transparent;
+			this.buttonCane.BackgroundImage = (Image)resources.GetObject("buttonCane.BackgroundImage");
+			this.buttonCane.BackgroundImageLayout = ImageLayout.Stretch;
+			this.buttonCane.FlatAppearance.BorderColor = Color.White;
+			this.buttonCane.FlatAppearance.BorderSize = 0;
+			this.buttonCane.FlatAppearance.CheckedBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonCane.FlatAppearance.MouseDownBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonCane.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonCane.FlatStyle = FlatStyle.Flat;
+			this.buttonCane.Location = new Point(4, 36);
+			this.buttonCane.Margin = new Padding(4, 3, 4, 3);
 			this.buttonCane.Name = "buttonCane";
-			this.buttonCane.Size = new System.Drawing.Size(22, 23);
+			this.buttonCane.Size = new Size(26, 27);
 			this.buttonCane.TabIndex = 11;
 			this.buttonCane.Tag = "";
 			this.toolTip.SetToolTip(this.buttonCane, "Candy Cane");
 			this.buttonCane.UseVisualStyleBackColor = false;
-			this.buttonCane.Click += new System.EventHandler(this.toolbarButton_Click);
+			this.buttonCane.Click += this.toolbarButton_Click;
 			// 
 			// buttonStarBurst
 			// 
-			this.buttonStarBurst.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonStarBurst.BackgroundImage")));
-			this.buttonStarBurst.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonStarBurst.Location = new System.Drawing.Point(87, 3);
+			this.buttonStarBurst.BackColor = Color.Transparent;
+			this.buttonStarBurst.BackgroundImage = (Image)resources.GetObject("buttonStarBurst.BackgroundImage");
+			this.buttonStarBurst.BackgroundImageLayout = ImageLayout.Stretch;
+			this.buttonStarBurst.FlatAppearance.BorderColor = Color.White;
+			this.buttonStarBurst.FlatAppearance.BorderSize = 0;
+			this.buttonStarBurst.FlatAppearance.CheckedBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonStarBurst.FlatAppearance.MouseDownBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonStarBurst.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonStarBurst.FlatStyle = FlatStyle.Flat;
+			this.buttonStarBurst.Location = new Point(106, 3);
+			this.buttonStarBurst.Margin = new Padding(4, 3, 4, 3);
 			this.buttonStarBurst.Name = "buttonStarBurst";
-			this.buttonStarBurst.Size = new System.Drawing.Size(22, 23);
+			this.buttonStarBurst.Size = new Size(26, 27);
 			this.buttonStarBurst.TabIndex = 9;
 			this.buttonStarBurst.Tag = "";
 			this.toolTip.SetToolTip(this.buttonStarBurst, "Star Burst");
 			this.buttonStarBurst.UseVisualStyleBackColor = false;
-			this.buttonStarBurst.Click += new System.EventHandler(this.toolbarButton_Click);
+			this.buttonStarBurst.Click += this.toolbarButton_Click;
 			// 
 			// buttonMegaTree
 			// 
-			this.buttonMegaTree.BackColor = System.Drawing.Color.Transparent;
-			this.buttonMegaTree.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonMegaTree.BackgroundImage")));
-			this.buttonMegaTree.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonMegaTree.Location = new System.Drawing.Point(59, 3);
+			this.buttonMegaTree.BackColor = Color.Transparent;
+			this.buttonMegaTree.BackgroundImage = (Image)resources.GetObject("buttonMegaTree.BackgroundImage");
+			this.buttonMegaTree.BackgroundImageLayout = ImageLayout.Stretch;
+			this.buttonMegaTree.FlatAppearance.BorderColor = Color.White;
+			this.buttonMegaTree.FlatAppearance.BorderSize = 0;
+			this.buttonMegaTree.FlatAppearance.CheckedBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonMegaTree.FlatAppearance.MouseDownBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonMegaTree.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonMegaTree.FlatStyle = FlatStyle.Flat;
+			this.buttonMegaTree.Location = new Point(72, 3);
+			this.buttonMegaTree.Margin = new Padding(4, 3, 4, 3);
 			this.buttonMegaTree.Name = "buttonMegaTree";
-			this.buttonMegaTree.Size = new System.Drawing.Size(22, 23);
+			this.buttonMegaTree.Size = new Size(26, 27);
 			this.buttonMegaTree.TabIndex = 8;
 			this.buttonMegaTree.Tag = "";
 			this.toolTip.SetToolTip(this.buttonMegaTree, "Mega Tree");
 			this.buttonMegaTree.UseVisualStyleBackColor = false;
-			this.buttonMegaTree.Click += new System.EventHandler(this.toolbarButton_Click);
+			this.buttonMegaTree.Click += this.toolbarButton_Click;
 			// 
 			// btnAddCustomProp
 			// 
-			this.btnAddCustomProp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.btnAddCustomProp.Location = new System.Drawing.Point(31, 3);
+			this.btnAddCustomProp.BackColor = Color.Transparent;
+			this.btnAddCustomProp.BackgroundImageLayout = ImageLayout.Stretch;
+			this.btnAddCustomProp.FlatAppearance.BorderSize = 0;
+			this.btnAddCustomProp.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.btnAddCustomProp.FlatStyle = FlatStyle.Flat;
+			this.btnAddCustomProp.Location = new Point(38, 3);
+			this.btnAddCustomProp.Margin = new Padding(4, 3, 4, 3);
 			this.btnAddCustomProp.Name = "btnAddCustomProp";
-			this.btnAddCustomProp.Size = new System.Drawing.Size(22, 23);
+			this.btnAddCustomProp.Size = new Size(26, 27);
 			this.btnAddCustomProp.TabIndex = 31;
 			this.btnAddCustomProp.Tag = "";
 			this.toolTip.SetToolTip(this.btnAddCustomProp, "Add Custom Prop");
 			this.btnAddCustomProp.UseVisualStyleBackColor = false;
-			this.btnAddCustomProp.Click += new System.EventHandler(this.importPropToolStripMenuItem_Click);
+			this.btnAddCustomProp.Click += this.importPropToolStripMenuItem_Click;
 			// 
 			// btnCustomPropLibrary
 			// 
-			this.btnCustomPropLibrary.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.btnCustomPropLibrary.Location = new System.Drawing.Point(59, 3);
+			this.btnCustomPropLibrary.BackColor = Color.Transparent;
+			this.btnCustomPropLibrary.BackgroundImageLayout = ImageLayout.Stretch;
+			this.btnCustomPropLibrary.FlatAppearance.BorderSize = 0;
+			this.btnCustomPropLibrary.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.btnCustomPropLibrary.FlatStyle = FlatStyle.Flat;
+			this.btnCustomPropLibrary.Location = new Point(72, 3);
+			this.btnCustomPropLibrary.Margin = new Padding(4, 3, 4, 3);
 			this.btnCustomPropLibrary.Name = "btnCustomPropLibrary";
-			this.btnCustomPropLibrary.Size = new System.Drawing.Size(22, 23);
+			this.btnCustomPropLibrary.Size = new Size(26, 27);
 			this.btnCustomPropLibrary.TabIndex = 28;
 			this.btnCustomPropLibrary.Tag = "";
 			this.toolTip.SetToolTip(this.btnCustomPropLibrary, "Custom Prop Library");
 			this.btnCustomPropLibrary.UseVisualStyleBackColor = false;
-			this.btnCustomPropLibrary.Click += new System.EventHandler(this.buttonCustomPropLibrary_Click);
+			this.btnCustomPropLibrary.Click += this.buttonCustomPropLibrary_Click;
 			// 
 			// btnCustomPropEditor
 			// 
-			this.btnCustomPropEditor.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.btnCustomPropEditor.Location = new System.Drawing.Point(3, 3);
+			this.btnCustomPropEditor.BackColor = Color.Transparent;
+			this.btnCustomPropEditor.BackgroundImageLayout = ImageLayout.Stretch;
+			this.btnCustomPropEditor.FlatAppearance.BorderSize = 0;
+			this.btnCustomPropEditor.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.btnCustomPropEditor.FlatStyle = FlatStyle.Flat;
+			this.btnCustomPropEditor.Location = new Point(4, 3);
+			this.btnCustomPropEditor.Margin = new Padding(4, 3, 4, 3);
 			this.btnCustomPropEditor.Name = "btnCustomPropEditor";
-			this.btnCustomPropEditor.Size = new System.Drawing.Size(22, 23);
+			this.btnCustomPropEditor.Size = new Size(26, 27);
 			this.btnCustomPropEditor.TabIndex = 32;
 			this.btnCustomPropEditor.Tag = "";
 			this.toolTip.SetToolTip(this.btnCustomPropEditor, "Custom Prop Editor");
 			this.btnCustomPropEditor.UseVisualStyleBackColor = false;
-			this.btnCustomPropEditor.Click += new System.EventHandler(this.btnCustomPropEditor_Click);
+			this.btnCustomPropEditor.Click += this.btnCustomPropEditor_Click;
 			// 
 			// buttonMovingHead
 			// 
-			this.buttonMovingHead.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonMovingHead.BackgroundImage")));
-			this.buttonMovingHead.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonMovingHead.Location = new System.Drawing.Point(31, 32);
+			this.buttonMovingHead.BackColor = Color.Transparent;
+			this.buttonMovingHead.BackgroundImage = (Image)resources.GetObject("buttonMovingHead.BackgroundImage");
+			this.buttonMovingHead.BackgroundImageLayout = ImageLayout.Stretch;
+			this.buttonMovingHead.FlatAppearance.BorderColor = Color.White;
+			this.buttonMovingHead.FlatAppearance.BorderSize = 0;
+			this.buttonMovingHead.FlatAppearance.CheckedBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonMovingHead.FlatAppearance.MouseDownBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonMovingHead.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.buttonMovingHead.FlatStyle = FlatStyle.Flat;
+			this.buttonMovingHead.Location = new Point(38, 36);
+			this.buttonMovingHead.Margin = new Padding(4, 3, 4, 3);
 			this.buttonMovingHead.Name = "buttonMovingHead";
-			this.buttonMovingHead.Size = new System.Drawing.Size(22, 23);
+			this.buttonMovingHead.Size = new Size(26, 27);
 			this.buttonMovingHead.TabIndex = 15;
 			this.buttonMovingHead.Tag = "";
 			this.toolTip.SetToolTip(this.buttonMovingHead, "Intelligent Fixture");
 			this.buttonMovingHead.UseVisualStyleBackColor = false;
-			this.buttonMovingHead.Click += new System.EventHandler(this.toolbarButton_Click);
+			this.buttonMovingHead.Click += this.toolbarButton_Click;
 			// 
 			// labelZoomLevel
 			// 
-			this.labelZoomLevel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelZoomLevel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
 			this.labelZoomLevel.AutoSize = true;
-			this.labelZoomLevel.Location = new System.Drawing.Point(946, 7);
-			this.labelZoomLevel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+			this.labelZoomLevel.Location = new Point(1104, 8);
+			this.labelZoomLevel.Margin = new Padding(2, 0, 2, 0);
 			this.labelZoomLevel.Name = "labelZoomLevel";
-			this.labelZoomLevel.Size = new System.Drawing.Size(33, 13);
+			this.labelZoomLevel.Size = new Size(35, 15);
 			this.labelZoomLevel.TabIndex = 1;
 			this.labelZoomLevel.Text = "100%";
 			// 
 			// panel9
 			// 
-			this.panel9.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panel9.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 			this.panel9.AutoSize = true;
-			this.panel9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel9.BorderStyle = BorderStyle.FixedSingle;
 			this.panel9.Controls.Add(this.panel10);
 			this.panel9.Controls.Add(this.labelZoomLevel);
 			this.panel9.Controls.Add(this.trackerZoom);
-			this.panel9.Location = new System.Drawing.Point(2, 507);
-			this.panel9.Margin = new System.Windows.Forms.Padding(2);
+			this.panel9.Location = new Point(2, 558);
+			this.panel9.Margin = new Padding(2);
 			this.panel9.Name = "panel9";
-			this.panel9.Size = new System.Drawing.Size(987, 29);
+			this.panel9.Size = new Size(1151, 33);
 			this.panel9.TabIndex = 16;
 			// 
 			// panel10
 			// 
 			this.panel10.AutoSize = true;
-			this.panel10.BackColor = System.Drawing.Color.Black;
+			this.panel10.BackColor = Color.Black;
+			this.panel10.Controls.Add(this.label14);
 			this.panel10.Controls.Add(this.label13);
 			this.panel10.Controls.Add(this.label12);
 			this.panel10.Controls.Add(this.label11);
 			this.panel10.Controls.Add(this.label10);
 			this.panel10.Controls.Add(this.label9);
-			this.panel10.Dock = System.Windows.Forms.DockStyle.Left;
-			this.panel10.Location = new System.Drawing.Point(0, 0);
-			this.panel10.Margin = new System.Windows.Forms.Padding(2);
+			this.panel10.Dock = DockStyle.Left;
+			this.panel10.Location = new Point(0, 0);
+			this.panel10.Margin = new Padding(2);
 			this.panel10.Name = "panel10";
-			this.panel10.Size = new System.Drawing.Size(299, 27);
+			this.panel10.Size = new Size(391, 31);
 			this.panel10.TabIndex = 7;
+			// 
+			// label14
+			// 
+			this.label14.AutoSize = true;
+			this.label14.ForeColor = Color.Yellow;
+			this.label14.Location = new Point(341, 7);
+			this.label14.Margin = new Padding(2, 0, 2, 0);
+			this.label14.Name = "label14";
+			this.label14.Size = new Size(48, 15);
+			this.label14.TabIndex = 12;
+			this.label14.Tag = "KEEP_FORECOLOR";
+			this.label14.Text = "Pixel #1";
 			// 
 			// label13
 			// 
 			this.label13.AutoSize = true;
-			this.label13.ForeColor = System.Drawing.Color.Yellow;
-			this.label13.Location = new System.Drawing.Point(252, 6);
-			this.label13.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+			this.label13.ForeColor = Color.DarkRed;
+			this.label13.Location = new Point(289, 7);
+			this.label13.Margin = new Padding(2, 0, 2, 0);
 			this.label13.Name = "label13";
-			this.label13.Size = new System.Drawing.Size(45, 13);
+			this.label13.Size = new Size(45, 15);
 			this.label13.TabIndex = 11;
-			this.label13.Text = "Pixel #1";
+			this.label13.Tag = "KEEP_FORECOLOR";
+			this.label13.Text = "Locked";
 			// 
 			// label12
 			// 
 			this.label12.AutoSize = true;
-			this.label12.ForeColor = System.Drawing.Color.HotPink;
-			this.label12.Location = new System.Drawing.Point(159, 6);
-			this.label12.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+			this.label12.ForeColor = Color.HotPink;
+			this.label12.Location = new Point(186, 7);
+			this.label12.Margin = new Padding(2, 0, 2, 0);
 			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(90, 13);
+			this.label12.Size = new Size(97, 15);
 			this.label12.TabIndex = 10;
+			this.label12.Tag = "KEEP_FORECOLOR";
 			this.label12.Text = "Element Selected";
 			// 
 			// label11
 			// 
 			this.label11.AutoSize = true;
-			this.label11.ForeColor = System.Drawing.Color.White;
-			this.label11.Location = new System.Drawing.Point(101, 6);
-			this.label11.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+			this.label11.ForeColor = Color.White;
+			this.label11.Location = new Point(118, 7);
+			this.label11.Margin = new Padding(2, 0, 2, 0);
 			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(56, 13);
+			this.label11.Size = new Size(62, 15);
 			this.label11.TabIndex = 9;
+			this.label11.Tag = "KEEP_FORECOLOR";
 			this.label11.Text = "Un-Linked";
 			// 
 			// label10
 			// 
 			this.label10.AutoSize = true;
-			this.label10.ForeColor = System.Drawing.Color.LimeGreen;
-			this.label10.Location = new System.Drawing.Point(46, 6);
-			this.label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+			this.label10.ForeColor = Color.LimeGreen;
+			this.label10.Location = new Point(54, 7);
+			this.label10.Margin = new Padding(2, 0, 2, 0);
 			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(49, 13);
+			this.label10.Size = new Size(51, 15);
 			this.label10.TabIndex = 8;
+			this.label10.Tag = "KEEP_FORECOLOR";
 			this.label10.Text = "Selected";
 			// 
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.ForeColor = System.Drawing.Color.Turquoise;
-			this.label9.Location = new System.Drawing.Point(6, 6);
-			this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+			this.label9.ForeColor = Color.Turquoise;
+			this.label9.Location = new Point(7, 7);
+			this.label9.Margin = new Padding(2, 0, 2, 0);
 			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(39, 13);
+			this.label9.Size = new Size(42, 15);
 			this.label9.TabIndex = 7;
+			this.label9.Tag = "KEEP_FORECOLOR";
 			this.label9.Text = "Linked";
 			// 
 			// trackerZoom
 			// 
-			this.trackerZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.trackerZoom.Location = new System.Drawing.Point(727, 2);
-			this.trackerZoom.Margin = new System.Windows.Forms.Padding(2);
+			this.trackerZoom.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+			this.trackerZoom.Location = new Point(848, 2);
+			this.trackerZoom.Margin = new Padding(2);
 			this.trackerZoom.Maximum = 400;
 			this.trackerZoom.Minimum = 25;
 			this.trackerZoom.Name = "trackerZoom";
-			this.trackerZoom.Size = new System.Drawing.Size(216, 19);
+			this.trackerZoom.Size = new Size(252, 22);
 			this.trackerZoom.TabIndex = 0;
 			this.trackerZoom.Text = "hMiniTracker1";
 			this.trackerZoom.Value = 100;
-			this.trackerZoom.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackerZoom_ValueChanged);
+			this.trackerZoom.ValueChanged += this.trackerZoom_ValueChanged;
 			// 
 			// dockPanel
 			// 
 			this.dockPanel.AutoSize = true;
-			this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.dockPanel.DocumentStyle = WeifenLuo.WinFormsUI.Docking.DocumentStyle.DockingWindow;
-			this.dockPanel.Location = new System.Drawing.Point(3, 104);
+			this.dockPanel.Dock = DockStyle.Fill;
+			this.dockPanel.Location = new Point(4, 118);
+			this.dockPanel.Margin = new Padding(4, 3, 4, 3);
 			this.dockPanel.Name = "dockPanel";
-			this.dockPanel.Size = new System.Drawing.Size(985, 398);
+			this.dockPanel.Size = new Size(1147, 435);
 			this.dockPanel.TabIndex = 20;
 			// 
 			// tableLayoutPanel1
 			// 
 			this.tableLayoutPanel1.ColumnCount = 5;
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle());
+			this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle());
+			this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle());
+			this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle());
+			this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
 			this.tableLayoutPanel1.Controls.Add(this.buttonMovingHead, 0, 1);
 			this.tableLayoutPanel1.Controls.Add(this.buttonMultiString, 4, 0);
 			this.tableLayoutPanel1.Controls.Add(this.buttonPixelGrid, 2, 1);
@@ -1131,63 +1441,66 @@
 			this.tableLayoutPanel1.Controls.Add(this.buttonStarBurst, 3, 0);
 			this.tableLayoutPanel1.Controls.Add(this.buttonMegaTree, 2, 0);
 			this.tableLayoutPanel1.Controls.Add(this.buttonIcicle, 3, 1);
-			this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 3);
+			this.tableLayoutPanel1.Location = new Point(4, 3);
+			this.tableLayoutPanel1.Margin = new Padding(4, 3, 4, 3);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
 			this.tableLayoutPanel1.RowCount = 2;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(136, 63);
+			this.tableLayoutPanel1.RowStyles.Add(new RowStyle());
+			this.tableLayoutPanel1.RowStyles.Add(new RowStyle());
+			this.tableLayoutPanel1.Size = new Size(159, 73);
 			this.tableLayoutPanel1.TabIndex = 15;
 			// 
 			// tableLayoutPanel4
 			// 
 			this.tableLayoutPanel4.AutoSize = true;
 			this.tableLayoutPanel4.ColumnCount = 3;
-			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 17F));
+			this.tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle());
+			this.tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle());
+			this.tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle());
+			this.tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
 			this.tableLayoutPanel4.Controls.Add(this.btnCustomPropEditor, 0, 0);
 			this.tableLayoutPanel4.Controls.Add(this.btnAddCustomProp, 1, 0);
 			this.tableLayoutPanel4.Controls.Add(this.btnCustomPropLibrary, 2, 0);
-			this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 1);
+			this.tableLayoutPanel4.Location = new Point(4, 1);
+			this.tableLayoutPanel4.Margin = new Padding(4, 3, 4, 3);
 			this.tableLayoutPanel4.Name = "tableLayoutPanel4";
 			this.tableLayoutPanel4.RowCount = 1;
-			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel4.Size = new System.Drawing.Size(84, 29);
+			this.tableLayoutPanel4.RowStyles.Add(new RowStyle());
+			this.tableLayoutPanel4.Size = new Size(102, 33);
 			this.tableLayoutPanel4.TabIndex = 22;
 			// 
 			// tableLayoutMain
 			// 
 			this.tableLayoutMain.ColumnCount = 1;
-			this.tableLayoutMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
 			this.tableLayoutMain.Controls.Add(this.tlpToolBar, 0, 0);
 			this.tableLayoutMain.Controls.Add(this.dockPanel, 0, 1);
 			this.tableLayoutMain.Controls.Add(this.panel9, 0, 2);
-			this.tableLayoutMain.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutMain.Location = new System.Drawing.Point(0, 24);
+			this.tableLayoutMain.Dock = DockStyle.Fill;
+			this.tableLayoutMain.Location = new Point(0, 24);
+			this.tableLayoutMain.Margin = new Padding(4, 3, 4, 3);
 			this.tableLayoutMain.Name = "tableLayoutMain";
 			this.tableLayoutMain.RowCount = 3;
-			this.tableLayoutMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 17F));
-			this.tableLayoutMain.Size = new System.Drawing.Size(991, 538);
+			this.tableLayoutMain.RowStyles.Add(new RowStyle());
+			this.tableLayoutMain.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+			this.tableLayoutMain.RowStyles.Add(new RowStyle());
+			this.tableLayoutMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+			this.tableLayoutMain.Size = new Size(1155, 593);
 			this.tableLayoutMain.TabIndex = 22;
 			// 
 			// tlpToolBar
 			// 
 			this.tlpToolBar.AutoSize = true;
 			this.tlpToolBar.ColumnCount = 9;
-			this.tlpToolBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tlpToolBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tlpToolBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tlpToolBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tlpToolBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tlpToolBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tlpToolBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tlpToolBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tlpToolBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tlpToolBar.ColumnStyles.Add(new ColumnStyle());
+			this.tlpToolBar.ColumnStyles.Add(new ColumnStyle());
+			this.tlpToolBar.ColumnStyles.Add(new ColumnStyle());
+			this.tlpToolBar.ColumnStyles.Add(new ColumnStyle());
+			this.tlpToolBar.ColumnStyles.Add(new ColumnStyle());
+			this.tlpToolBar.ColumnStyles.Add(new ColumnStyle());
+			this.tlpToolBar.ColumnStyles.Add(new ColumnStyle());
+			this.tlpToolBar.ColumnStyles.Add(new ColumnStyle());
+			this.tlpToolBar.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
 			this.tlpToolBar.Controls.Add(this.panel11, 7, 1);
 			this.tlpToolBar.Controls.Add(this.panel2, 0, 1);
 			this.tlpToolBar.Controls.Add(this.pnlSelect, 1, 1);
@@ -1202,148 +1515,172 @@
 			this.tlpToolBar.Controls.Add(this.label7, 4, 0);
 			this.tlpToolBar.Controls.Add(this.lblCustomProp, 6, 0);
 			this.tlpToolBar.Controls.Add(this.lblUndoRedo, 7, 0);
+			this.tlpToolBar.Controls.Add(this.lblLock, 8, 0);
+			this.tlpToolBar.Controls.Add(this.pnlLock, 8, 1);
 			this.tlpToolBar.Controls.Add(this.lblBulbSize, 5, 0);
 			this.tlpToolBar.Controls.Add(this.pnlBulbSize, 5, 1);
-			this.tlpToolBar.Location = new System.Drawing.Point(3, 3);
+			this.tlpToolBar.Location = new Point(4, 3);
+			this.tlpToolBar.Margin = new Padding(4, 3, 4, 3);
 			this.tlpToolBar.BorderStyle = BorderStyle.FixedSingle;
 			this.tlpToolBar.Name = "tlpToolBar";
 			this.tlpToolBar.RowCount = 2;
-			this.tlpToolBar.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpToolBar.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpToolBar.Size = new System.Drawing.Size(882, 95);
+			this.tlpToolBar.RowStyles.Add(new RowStyle());
+			this.tlpToolBar.RowStyles.Add(new RowStyle());
+			this.tlpToolBar.Size = new Size(1131, 109);
 			this.tlpToolBar.TabIndex = 21;
 			// 
 			// pnlBasicDrawing
 			// 
-			this.pnlBasicDrawing.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.pnlBasicDrawing.BorderStyle = BorderStyle.FixedSingle;
 			this.pnlBasicDrawing.Controls.Add(this.tableLayoutPanel3);
-			this.pnlBasicDrawing.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.pnlBasicDrawing.Location = new System.Drawing.Point(209, 22);
+			this.pnlBasicDrawing.Dock = DockStyle.Fill;
+			this.pnlBasicDrawing.Location = new Point(246, 25);
+			this.pnlBasicDrawing.Margin = new Padding(4, 3, 4, 3);
 			this.pnlBasicDrawing.Name = "pnlBasicDrawing";
-			this.pnlBasicDrawing.Size = new System.Drawing.Size(94, 70);
+			this.pnlBasicDrawing.Size = new Size(110, 81);
 			this.pnlBasicDrawing.TabIndex = 23;
 			// 
 			// pnlSmartObjects
 			// 
-			this.pnlSmartObjects.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.pnlSmartObjects.BorderStyle = BorderStyle.FixedSingle;
 			this.pnlSmartObjects.Controls.Add(this.tableLayoutPanel1);
-			this.pnlSmartObjects.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.pnlSmartObjects.Location = new System.Drawing.Point(309, 22);
+			this.pnlSmartObjects.Dock = DockStyle.Fill;
+			this.pnlSmartObjects.Location = new Point(364, 25);
+			this.pnlSmartObjects.Margin = new Padding(4, 3, 4, 3);
 			this.pnlSmartObjects.Name = "pnlSmartObjects";
-			this.pnlSmartObjects.Size = new System.Drawing.Size(142, 70);
+			this.pnlSmartObjects.Size = new Size(166, 81);
 			this.pnlSmartObjects.TabIndex = 24;
 			// 
 			// panel4
 			// 
-			this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel4.BorderStyle = BorderStyle.FixedSingle;
 			this.panel4.Controls.Add(this.tableLayoutPanel2);
-			this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel4.Location = new System.Drawing.Point(457, 22);
+			this.panel4.Dock = DockStyle.Fill;
+			this.panel4.Location = new Point(538, 25);
+			this.panel4.Margin = new Padding(4, 3, 4, 3);
 			this.panel4.Name = "panel4";
-			this.panel4.Size = new System.Drawing.Size(143, 70);
+			this.panel4.Size = new Size(167, 81);
 			this.panel4.TabIndex = 25;
 			// 
 			// customPropPanel
 			// 
 			this.customPropPanel.AutoSize = true;
-			this.customPropPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.customPropPanel.BorderStyle = BorderStyle.FixedSingle;
 			this.customPropPanel.Controls.Add(this.tableLayoutPanel4);
-			this.customPropPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.customPropPanel.Location = new System.Drawing.Point(676, 22);
+			this.customPropPanel.Dock = DockStyle.Fill;
+			this.customPropPanel.Location = new Point(799, 25);
+			this.customPropPanel.Margin = new Padding(4, 3, 4, 3);
 			this.customPropPanel.Name = "customPropPanel";
-			this.customPropPanel.Size = new System.Drawing.Size(92, 70);
+			this.customPropPanel.Size = new Size(112, 81);
 			this.customPropPanel.TabIndex = 26;
 			// 
 			// lblBulbSize
 			// 
-			this.lblBulbSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.lblBulbSize.Location = new System.Drawing.Point(606, 0);
+			this.lblBulbSize.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+			this.lblBulbSize.BackColor = Color.FromArgb(250, 250, 250);
+			this.lblBulbSize.Location = new Point(713, 0);
+			this.lblBulbSize.Margin = new Padding(4, 0, 4, 0);
 			this.lblBulbSize.Name = "lblBulbSize";
-			this.lblBulbSize.Size = new System.Drawing.Size(64, 19);
+			this.lblBulbSize.Size = new Size(78, 22);
 			this.lblBulbSize.TabIndex = 0;
 			this.lblBulbSize.Text = "Bulb Size";
-			this.lblBulbSize.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.lblBulbSize.TextAlign = ContentAlignment.MiddleCenter;
 			// 
 			// pnlBulbSize
 			// 
 			this.pnlBulbSize.AutoSize = true;
-			this.pnlBulbSize.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.pnlBulbSize.BorderStyle = BorderStyle.FixedSingle;
 			this.pnlBulbSize.Controls.Add(this.tableLayoutPanel5);
-			this.pnlBulbSize.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.pnlBulbSize.Location = new System.Drawing.Point(606, 22);
+			this.pnlBulbSize.Dock = DockStyle.Fill;
+			this.pnlBulbSize.Location = new Point(713, 25);
+			this.pnlBulbSize.Margin = new Padding(4, 3, 4, 3);
 			this.pnlBulbSize.Name = "pnlBulbSize";
-			this.pnlBulbSize.Size = new System.Drawing.Size(64, 70);
+			this.pnlBulbSize.Size = new Size(78, 81);
 			this.pnlBulbSize.TabIndex = 27;
 			// 
 			// tableLayoutPanel5
 			// 
 			this.tableLayoutPanel5.AutoSize = true;
 			this.tableLayoutPanel5.ColumnCount = 2;
-			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 17F));
+			this.tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle());
+			this.tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle());
+			this.tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
 			this.tableLayoutPanel5.Controls.Add(this.btnBulbDecrease, 0, 0);
 			this.tableLayoutPanel5.Controls.Add(this.btnBulbIncrease, 1, 0);
-			this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 1);
+			this.tableLayoutPanel5.Location = new Point(4, 1);
+			this.tableLayoutPanel5.Margin = new Padding(4, 3, 4, 3);
 			this.tableLayoutPanel5.Name = "tableLayoutPanel5";
 			this.tableLayoutPanel5.RowCount = 1;
-			this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel5.Size = new System.Drawing.Size(56, 29);
+			this.tableLayoutPanel5.RowStyles.Add(new RowStyle());
+			this.tableLayoutPanel5.Size = new Size(68, 33);
 			this.tableLayoutPanel5.TabIndex = 22;
 			// 
 			// btnBulbDecrease
 			// 
-			this.btnBulbDecrease.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.btnBulbDecrease.BackColor = Color.Transparent;
+			this.btnBulbDecrease.BackgroundImageLayout = ImageLayout.Stretch;
 			this.btnBulbDecrease.Enabled = false;
-			this.btnBulbDecrease.Location = new System.Drawing.Point(3, 3);
+			this.btnBulbDecrease.FlatAppearance.BorderSize = 0;
+			this.btnBulbDecrease.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.btnBulbDecrease.FlatStyle = FlatStyle.Flat;
+			this.btnBulbDecrease.Location = new Point(4, 3);
+			this.btnBulbDecrease.Margin = new Padding(4, 3, 4, 3);
 			this.btnBulbDecrease.Name = "btnBulbDecrease";
-			this.btnBulbDecrease.Size = new System.Drawing.Size(22, 23);
+			this.btnBulbDecrease.Size = new Size(26, 27);
 			this.btnBulbDecrease.TabIndex = 32;
 			this.btnBulbDecrease.Tag = "";
 			this.btnBulbDecrease.UseVisualStyleBackColor = false;
-			this.btnBulbDecrease.Click += new System.EventHandler(this.btnBulbDecrease_Click);
+			this.btnBulbDecrease.Click += this.btnBulbDecrease_Click;
 			// 
 			// btnBulbIncrease
 			// 
-			this.btnBulbIncrease.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.btnBulbIncrease.BackColor = Color.Transparent;
+			this.btnBulbIncrease.BackgroundImageLayout = ImageLayout.Stretch;
 			this.btnBulbIncrease.Enabled = false;
-			this.btnBulbIncrease.Location = new System.Drawing.Point(31, 3);
+			this.btnBulbIncrease.FlatAppearance.BorderSize = 0;
+			this.btnBulbIncrease.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.btnBulbIncrease.FlatStyle = FlatStyle.Flat;
+			this.btnBulbIncrease.Location = new Point(38, 3);
+			this.btnBulbIncrease.Margin = new Padding(4, 3, 4, 3);
 			this.btnBulbIncrease.Name = "btnBulbIncrease";
-			this.btnBulbIncrease.Size = new System.Drawing.Size(22, 23);
+			this.btnBulbIncrease.Size = new Size(26, 27);
 			this.btnBulbIncrease.TabIndex = 31;
 			this.btnBulbIncrease.Tag = "";
 			this.btnBulbIncrease.UseVisualStyleBackColor = false;
-			this.btnBulbIncrease.Click += new System.EventHandler(this.btnBulbIncrease_Click);
+			this.btnBulbIncrease.Click += this.btnBulbIncrease_Click;
 			// 
 			// VixenPreviewSetup3
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleDimensions = new SizeF(7F, 15F);
+			this.AutoScaleMode = AutoScaleMode.Font;
 			this.AutoSize = true;
-			this.ClientSize = new System.Drawing.Size(991, 562);
+			this.ClientSize = new Size(1155, 617);
 			this.Controls.Add(this.tableLayoutMain);
 			this.Controls.Add(this.menuStrip);
 			this.IsMdiContainer = true;
 			this.MainMenuStrip = this.menuStrip;
-			this.MinimumSize = new System.Drawing.Size(892, 574);
+			this.Margin = new Padding(4, 3, 4, 3);
+			this.MinimumSize = new Size(1038, 656);
 			this.Name = "VixenPreviewSetup3";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+			this.StartPosition = FormStartPosition.Manual;
 			this.Text = "Preview Configuration";
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.VixenPreviewSetup3_FormClosing);
-			this.Load += new System.EventHandler(this.VixenPreviewSetup3_Load);
-			this.Move += new System.EventHandler(this.VixenPreviewSetup3_Move);
-			this.Resize += new System.EventHandler(this.VixenPreviewSetup3_Resize);
+			this.FormClosing += this.VixenPreviewSetup3_FormClosing;
+			this.Load += this.VixenPreviewSetup3_Load;
+			this.Move += this.VixenPreviewSetup3_Move;
+			this.Resize += this.VixenPreviewSetup3_Resize;
 			this.panel11.ResumeLayout(false);
 			this.panel11.PerformLayout();
 			this.toolStripUndo.ResumeLayout(false);
 			this.toolStripUndo.PerformLayout();
+			this.pnlLock.ResumeLayout(false);
+			this.pnlLock.PerformLayout();
+			this.tableLayoutPanel6.ResumeLayout(false);
 			this.tableLayoutPanel2.ResumeLayout(false);
 			this.pnlSelect.ResumeLayout(false);
 			this.tableLayoutPanel3.ResumeLayout(false);
 			this.panel2.ResumeLayout(false);
 			this.panel2.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundAlpha)).EndInit();
+			((System.ComponentModel.ISupportInitialize)this.trackBarBackgroundAlpha).EndInit();
 			this.menuStrip.ResumeLayout(false);
 			this.menuStrip.PerformLayout();
 			this.panel9.ResumeLayout(false);
@@ -1366,7 +1703,6 @@
 			this.tableLayoutPanel5.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
-
 		}
 
 		#endregion
@@ -1428,6 +1764,7 @@
 		private System.Windows.Forms.Button buttonPolyLine;
 		private System.Windows.Forms.Button buttonMultiString;
 		private System.Windows.Forms.Panel panel10;
+		private System.Windows.Forms.Label label14;
 		private System.Windows.Forms.Label label13;
 		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.Label label11;
@@ -1438,9 +1775,16 @@
 		private Common.Controls.UndoButton redoButton;
 		public Common.Controls.UndoButton undoButton;
 		private System.Windows.Forms.Label lblUndoRedo;
+		private System.Windows.Forms.Label lblLock;
+		private System.Windows.Forms.Panel pnlLock;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
+		private System.Windows.Forms.Button btnLock;
+		private System.Windows.Forms.Button btnUnlock;
 		private System.Windows.Forms.Button btnAddCustomProp;
 		private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
+		public System.Windows.Forms.ToolStripMenuItem lockToolStripMenuItem;
+		public System.Windows.Forms.ToolStripMenuItem unlockToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem viewHelpToolStripMenuItem;
@@ -1461,6 +1805,8 @@
 		private System.Windows.Forms.ToolStripMenuItem templateHelpToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem customPropHelpToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripMenuItem addTemplateMenu;
 		private System.Windows.Forms.Button btnCustomPropEditor;
 		private System.Windows.Forms.Label lblBulbSize;
