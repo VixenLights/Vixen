@@ -21,7 +21,7 @@ namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 			if (m_newDisplay.IsLightShape())
 			{
 				PreviewPoint translatedPoint = new PreviewPoint(m_newDisplay.LightShape.Pixels[0].X, m_newDisplay.LightShape.Pixels[0].Y);
-				m_form.SelectItemUnderPoint(translatedPoint, false);
+				m_form.SelectItemUnderPoint(translatedPoint, false, false);
 			}
 			
 			m_form.SeparateTemplateItems(m_newDisplay);
@@ -38,7 +38,7 @@ namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 				foreach (var shape in m_newDisplay.LightShape.Strings)
 				{
 					PreviewPoint translatedPoint = new PreviewPoint(shape.Pixels[0].X, shape.Pixels[0].Y);
-					m_form.SelectItemUnderPoint(translatedPoint, nextShape);
+					m_form.SelectItemUnderPoint(translatedPoint, nextShape, false);
 
 					nextShape = true;
 				}
