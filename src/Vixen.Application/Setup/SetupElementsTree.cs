@@ -39,14 +39,19 @@ namespace VixenApplication.Setup
 			ThemeUpdateControls.UpdateControls(this);
 
 			comboBoxNewItemType.BeginUpdate();
+			int indexCtr = 0;
 			foreach (IElementTemplate template in elementTemplates)
 			{
 				ComboBoxItem item = new ComboBoxItem(template.TemplateName, template);
+				// Find the index of "Single Item" because we want to default the ComboBox selection
+				// to that item.
+				if (item.ToString() == "Single Item")
+					indexCtr = comboBoxNewItemType.Items.Count;
 				comboBoxNewItemType.Items.Add(item);
 			}
 			comboBoxNewItemType.EndUpdate();
 			if (comboBoxNewItemType.Items.Count > 0)
-				comboBoxNewItemType.SelectedIndex = 0;
+				comboBoxNewItemType.SelectedIndex = indexCtr;
 
 			comboBoxSetupHelperType.BeginUpdate();
 			foreach (IElementSetupHelper helper in elementSetupHelpers)
