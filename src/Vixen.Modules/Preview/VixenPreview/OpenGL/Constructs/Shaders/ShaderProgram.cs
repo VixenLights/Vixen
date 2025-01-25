@@ -61,12 +61,14 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 		#endregion
 
 		#region Constructors and Destructor
+
 		/// <summary>
 		/// Links a vertex and fragment shader together to create a shader program.
 		/// </summary>
 		/// <param name="vertexShader">Specifies the vertex shader.</param>
 		/// <param name="fragmentShader">Specifies the fragment shader.</param>
-		public ShaderProgram(Shader vertexShader, Shader fragmentShader)
+		/// <param name="generateVAO">Indicates whether the shader program should generate the Vertex Array Object</param>
+		public ShaderProgram(Shader vertexShader, Shader fragmentShader, bool generateVAO)
 		{
 			this.VertexShader = vertexShader;
 			this.FragmentShader = fragmentShader;
@@ -95,9 +97,13 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 			// Initialize the vertex array object ID to invalid
 			VaoID = -1;
 
-			// Create the vertex array object 
-			GL.GenVertexArrays(1, out int vao);
-			VaoID = vao;
+			// If the shader program is responsible for generating the Vertext Array Object then...
+			if (generateVAO)
+			{
+				// Create the vertex array object 
+				GL.GenVertexArrays(1, out int vao);
+				VaoID = vao;
+			}
 		}
 
 		/// <summary>
@@ -105,8 +111,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 		/// </summary>
 		/// <param name="vertexShaderSource">Specifies the source code of the vertex shader.</param>
 		/// <param name="fragmentShaderSource">Specifies the source code of the fragment shader.</param>
-		public ShaderProgram(string vertexShaderSource, string fragmentShaderSource)
-			: this(new Shader(vertexShaderSource, ShaderType.VertexShader), new Shader(fragmentShaderSource, ShaderType.FragmentShader))
+		/// <param name="generateVAO">Indicates whether the shader program should generate the Vertex Array Object</param>
+		public ShaderProgram(string vertexShaderSource, string fragmentShaderSource, bool generateVAO = true)
+			: this(new Shader(vertexShaderSource, ShaderType.VertexShader), new Shader(fragmentShaderSource, ShaderType.FragmentShader), generateVAO)
 		{
 			DisposeChildren = true;
 		}
