@@ -847,7 +847,7 @@ namespace Common.Controls.Timeline
 		{
 			const int markDifferential = 20;
 			var marksAtTime = new List<IMark>();
-			foreach (var labeledMarkCollection in _markCollections.Where(x => x.IsVisible).OrderByDescending(x => x.Level))
+			foreach (var labeledMarkCollection in _markCollections.Where(x => x.IsVisible && !x.LockMarkBar).OrderByDescending(x => x.Level))
 			{
 				//labeledMarkCollection.EnsureOrder();
 				foreach (var labeledMark in labeledMarkCollection.Marks)
