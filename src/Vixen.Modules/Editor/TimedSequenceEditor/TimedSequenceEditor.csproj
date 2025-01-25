@@ -7,6 +7,10 @@
 		</PropertyGroup>
 
 		<ItemGroup>
+		  <None Remove="Forms\WPF\MarksDocker\Views\locked.png" />
+		</ItemGroup>
+
+		<ItemGroup>
 		  <PackageReference Include="Catel.MVVM" Version="6.0.3" />
 		  <PackageReference Include="Catel.Serialization.Json" Version="6.0.3" />
 		  <PackageReference Include="DockPanelSuite" Version="3.1.0" />
