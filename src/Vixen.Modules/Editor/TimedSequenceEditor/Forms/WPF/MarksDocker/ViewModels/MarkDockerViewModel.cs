@@ -220,8 +220,8 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// </summary>
 		private void ToggleTailLineState()
 		{
-			MarkCollections.ForEach(x => x.ShowGridLines = _lineToggleState);
-			_lineToggleState = !_lineToggleState;
+			MarkCollections.ForEach(x => x.ShowTailGridLines = _lineTailToggleState);
+			_lineTailToggleState = !_lineTailToggleState;
 		}
 
 		#endregion
