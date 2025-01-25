@@ -17,6 +17,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	[DataContract]
 	public abstract class PreviewLightBaseShape : PreviewBaseShape, ICloneable, IDisposable
 	{
+		#region Fields
+
 		private List<float> _points = new List<float>();
 		public static int EightFloatDataSize = 8 * Marshal.SizeOf(typeof(float));
 		public bool connectStandardStrings = false;
@@ -25,6 +27,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private List<PreviewPixel> _pixelCache = new List<PreviewPixel>();
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
+		/// <summary>
+		/// Vertex Buffer Object for the points that make up the light based shape.
+		/// </summary>
+		private VBO<float> _pointsVBO;
+		
+		/// <summary>
+		/// Keeps track of the point buffer size so we know when to expand the buffer.
+		/// </summary>
+		private int _pointsBufferSize;
+
+		#endregion
 
 		public enum StringTypes
 		{
@@ -42,6 +56,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						
 		private Color _pixelColor = Color.White;
 		public int _pixelSize = 3;
+		
+		/// <summary>
+		/// Vertex Array Object for OpenGL drawing of the light shape.
+		/// </summary>
+		[IgnoreDataMember]
+		public int VAO { get; set; }
 
 		[DataMember(Name = "Pixels")]
 		public List<PreviewPixel> _pixels = new List<PreviewPixel>();
@@ -398,12 +418,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			return badLinks != null;
 		}
-
+		
 		public void UpdateDrawPoints(int referenceHeight)
 		{
 			//Logging.Debug("Updating Drawing Shape {0}.", ToString());
-
 			_points.Clear();
+
 			if (_pixelCache.Count == 0) return;
 			
 			if (_pixelCache[0].IsDiscreteColored)
@@ -420,8 +440,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			//Logging.Debug("{0} Points generated.", _points.Count() / 7);
 
 		}
-
-		public void Draw(ShaderProgram program)
+		
+		/// <summary>
+		/// Draws the points that make up the light based shape.
+		/// </summary>		
+		public void Draw()
 		{
 			//Logging.Debug("Entering Draw.");
 			if (_points.Count == 0)
@@ -429,47 +452,65 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				//Logging.Debug("Exiting Draw.");
 				return;
 			}
+			
+			// If the points Vertex Buffer Object has not been created then
+			// this is the first time drawing this shape and additional configuration is required.
+			if (_pointsVBO == null)
+			{
+				// Create the Vertex Array Object 
+				GL.GenVertexArrays(1, out int vao);
+				VAO = vao;
 
-			//program["pointSize"].SetValue((float)PixelSize);
-			VBO<float> points = new VBO<float>(_points.ToArray());
+				// Bind the Vertex Array Object
+				// Any Vertex Array configuration will be associated with this VAO.
+				GL.BindVertexArray(VAO);
 
-			//Logging.Debug("Created VBO.");
+				// Create the Vertex Buffer Object passing the light points
+				_pointsVBO = new VBO<float>(_points.ToArray());
 
-			// Bind the vertex array
-			GL.BindVertexArray(program.VaoID);
+				// Tell OpenGL/OpenTK which buffer we want to work with for subsequent operations
+				GlUtility.BindBuffer(_pointsVBO);
 
-			GlUtility.BindBuffer(points);
+				// Store off the size of the buffer
+				_pointsBufferSize = _pointsVBO.Count;
 
-			//Logging.Debug("Buffer Bound.");
-			GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, VertexAttribPointerType.Float, false, EightFloatDataSize, IntPtr.Zero);
-			GL.EnableVertexAttribArray(ShaderProgram.VertexPosition);
+				// Specify the format and location of the vertex attribute data in the VBO
+				GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, VertexAttribPointerType.Float, false, EightFloatDataSize, IntPtr.Zero);
+				GL.EnableVertexAttribArray(ShaderProgram.VertexPosition);				
+				GL.VertexAttribPointer(ShaderProgram.VertexColor, 4, VertexAttribPointerType.Float, false, EightFloatDataSize, Vector3.SizeInBytes);
+				GL.EnableVertexAttribArray(ShaderProgram.VertexColor);
+				GL.VertexAttribPointer(ShaderProgram.VertexSize, 1, VertexAttribPointerType.Float, false, EightFloatDataSize, Vector3.SizeInBytes + Vector4.SizeInBytes);
+				GL.EnableVertexAttribArray(ShaderProgram.VertexSize);
+				
+				GL.DisableVertexAttribArray(ShaderProgram.TextureCoords);
+			}
+			else 
+			{
+				// Bind the Vertex Array Object
+				GL.BindVertexArray(VAO);
+								
+				// Tell OpenGL/OpenTK which buffer we want to work with for subsequent operations
+				GlUtility.BindBuffer(_pointsVBO);
 
-			//Logging.Debug("Point pointer set.");
+				// If the buffer is already of sufficient size then...
+				if (_pointsBufferSize >= _points.Count)
+				{
+					// Update the point data in the GPU
+					GL.BufferSubData<float>(BufferTarget.ArrayBuffer, 0, _points.Count * sizeof(float), _points.ToArray());
+				}
+				else
+				{
+					// Create and initialize a buffer object's data store. Allocate memory for the buffer and initialize the buffer with data
+					// This only needs to done when increasing the size of the buffer
+					GL.BufferData<float>(BufferTarget.ArrayBuffer, _points.Count * sizeof(float), _points.ToArray(), BufferUsageHint.StreamDraw);
 
-			GL.VertexAttribPointer(ShaderProgram.VertexColor, 4, VertexAttribPointerType.Float, false, EightFloatDataSize, Vector3.SizeInBytes);
-			GL.EnableVertexAttribArray(ShaderProgram.VertexColor);
-
-			GL.VertexAttribPointer(ShaderProgram.VertexSize, 1, VertexAttribPointerType.Float, false, EightFloatDataSize, Vector3.SizeInBytes + Vector4.SizeInBytes);
-			GL.EnableVertexAttribArray(ShaderProgram.VertexSize);
-
-			GL.DisableVertexAttribArray(ShaderProgram.TextureCoords);
-
-			//Logging.Debug("Color pointer set.");
-
-			//Logging.Debug("Beginning draw.");
-
-			// draw the points
-			GL.DrawArrays(PrimitiveType.Points, 0, points.Count / 8);
-
-			//Logging.Debug("Draw completed for shape.");
-
-			// Clear the vertex array
-			GL.BindVertexArray(0);
-
-			points.Dispose();
-
-			//Logging.Debug("VBO Disposed.");
-			//Logging.Debug("Exiting Draw.");
+					// Update the size of the buffer
+					_pointsBufferSize = _points.Count;
+				}							
+			}
+			
+			// Draw the points
+			GL.DrawArrays(PrimitiveType.Points, 0, _points.Count / 8);												
 		}
 
 		
@@ -631,6 +672,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				if (_strings != null)
 					_strings.ForEach(s => s.Dispose());
 				_strings = null;
+
+				// Dispose of the points Vertex Buffer Object
+				if (_pointsVBO != null)
+				{
+					_pointsVBO.Dispose();	
+					_pointsVBO = null;	
+				}
 			}
 		}
 
