@@ -18,6 +18,7 @@ namespace VixenModules.Effect.Video
 			MaintainAspect = false;
 			AdvancedSettings = false;
 			Speed = 1;
+			CacheSize = "0.00 MB";
 			IncreaseBrightnessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
 			PlayBackSpeed = 0;
 			StartTime = 0;
@@ -38,6 +39,9 @@ namespace VixenModules.Effect.Video
 
 		[DataMember(EmitDefaultValue = false)]
 		public int IncreaseBrightness { get; set; }
+
+		[DataMember]
+		public string CacheSize { get; set; }
 
 		[DataMember]
 		public Curve IncreaseBrightnessCurve { get; set; }
@@ -97,7 +101,7 @@ namespace VixenModules.Effect.Video
 		public Curve LevelCurve { get; set; }
 
 		[DataMember]
-		public int VideoLength { get; set; }
+		public double VideoLength { get; set; }
 
 		[DataMember] 
 		public int MovementRate { get; set; }
@@ -145,6 +149,7 @@ namespace VixenModules.Effect.Video
 				YOffsetCurve = new Curve(YOffsetCurve),
 				XOffsetCurve = new Curve(XOffsetCurve),
 				Speed = Speed,
+				CacheSize = CacheSize,
 				IncreaseBrightnessCurve = new Curve(IncreaseBrightnessCurve),
 				VideoLength = VideoLength,
 				RotateVideo =RotateVideo,
