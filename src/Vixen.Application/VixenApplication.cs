@@ -27,6 +27,7 @@ using System.ComponentModel;
 using System.Drawing;
 using Common.WPFCommon.Services;
 using System.Windows.Media;
+using Orc.Automation;
 
 namespace VixenApplication
 {
@@ -107,6 +108,13 @@ namespace VixenApplication
 			contextMenuStripRecent.Renderer = new ThemeToolStripRenderer();
 			progressBar.TextColor = ThemeColorTable.ForeColor;
 			progressBar.ProgressColor = Color.DarkGreen;
+			AutoResizeText(labelVixen);
+			Font releaseFont = AutoResizeText(labelRelease);
+			Font buildFont = AutoResizeText(labelBuild);
+			if (releaseFont.Size < buildFont.Size)
+				labelBuild.Font = releaseFont;
+			else if (releaseFont.Size > buildFont.Size)
+				labelRelease.Font = buildFont;
 
 			string[] args = Environment.GetCommandLineArgs();
 			foreach (string arg in args)
@@ -516,36 +524,12 @@ namespace VixenApplication
 				CheckForReleaseUpdates();
 			}
 
-			DrawVersionInfo();
-			//labelDebugVersion.Visible = true;
+			labelRelease.Text = _releaseVersion;
+			labelBuild.Text = _buildVersion;
 
 			//Log the runtime versions 
 			var runtimeVersion = FileVersionInfo.GetVersionInfo(typeof(int).Assembly.Location).ProductVersion;
 			Logging.Info(".NET Runtime is: {0}", runtimeVersion);
-		}
-
-		private void DrawVersionInfo()
-		{
-			using (Graphics g = Graphics.FromImage(pictureBox1.Image))
-			{
-				System.Drawing.Brush brush = new SolidBrush(ThemeColorTable.ForeColor);
-
-				if (_devBuild)
-				{
-					brush.Dispose();
-					brush = _testBuild ? System.Drawing.Brushes.Red : System.Drawing.Brushes.Yellow;
-				}
-
-				using Font f = new Font(Font.FontFamily, 14);
-
-				g.DrawString(_releaseVersion, f, brush, pictureBox1.Image.Width * .65f, pictureBox1.Image.Height * .73f);
-				g.DrawString(_buildVersion, f, brush, pictureBox1.Image.Width * .65f, pictureBox1.Image.Height * .73f + g.MeasureString(_releaseVersion, Font).Height + 10);
-				if (!_devBuild)
-				{
-					//Don't dispose static system brushes.
-					brush.Dispose();
-				}
-			}
 		}
 
 		private async void CheckForReleaseUpdates()
@@ -1410,19 +1394,6 @@ namespace VixenApplication
 			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 
-		private void VixenApplication_Paint(object sender, PaintEventArgs e)
-		{
-			//draws divider lines
-			Pen borderColor = new Pen(ThemeColorTable.GroupBoxBorderColor, 1);
-			if (ActiveForm != null)
-			{
-				int extraSpace1 = (int)(30 * ScalingTools.GetScaleFactor());
-				int extraSpace2 = (int)(40 * ScalingTools.GetScaleFactor());
-				e.Graphics.DrawLine(borderColor, 0, pictureBox1.Size.Height + extraSpace1, ActiveForm.Width, pictureBox1.Size.Height + extraSpace1);
-				e.Graphics.DrawLine(borderColor, 0, Height - (statusStrip.Height + extraSpace2), Width, Height - (statusStrip.Height + extraSpace2));
-			}
-		}
-
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
@@ -1460,8 +1431,52 @@ namespace VixenApplication
 			// Resize the group box
 			groupBoxSequences.Height = newHeight;
 
+			// Resize the texts in the top pane, making sure the Release and Build fonts
+			// are ultimately the same size.
+			AutoResizeText(labelVixen);
+			Font releaseFont = AutoResizeText(labelRelease);
+			Font buildFont = AutoResizeText(labelBuild);
+			if (releaseFont.Size < buildFont.Size)
+				labelBuild.Font = releaseFont;
+			else if (releaseFont.Size > buildFont.Size)
+				labelRelease.Font = buildFont;
+
 			// Refresh the dialog 
 			Refresh();
+			}
+
+		/// <summary>
+		/// Resize the text in a control so that it completely fills the available space
+		/// </summary>
+		/// <param name="control">Source control to resize text</param>
+		/// <param name="maxFontSize">Optional: Maximum font size. Defaults to 200</param>
+		/// <returns>Font - the resulting font size of the text</returns>
+		private Font AutoResizeText(Control control, int maxFontSize = 200)
+		{
+			Graphics graphics = control.CreateGraphics();
+			Font returnFont = control.Font;
+
+			// Loop through all potential font sizes, looking for one that just fits           
+			for (int AdjustedSize = maxFontSize; AdjustedSize >= 2; AdjustedSize--)
+			{
+				Font TestFont = new Font(control.Font.Name, AdjustedSize, control.Font.Style);
+
+				// Get size of the string
+				SizeF AdjustedSizeNew = graphics.MeasureString(control.Text, TestFont);
+
+				// Test to see if the new string will fit within the space. We'll use
+				// 94% to leave a little border
+				if (0.94 * control.Width > AdjustedSizeNew.Width && 0.94 * control.Height > AdjustedSizeNew.Height)
+				{
+					// Found a font that will fit.
+					control.Font = TestFont;
+					returnFont = TestFont;
+					break;
+				}
+			}
+
+			graphics.Dispose();
+			return returnFont;
 		}
 	}
 }
