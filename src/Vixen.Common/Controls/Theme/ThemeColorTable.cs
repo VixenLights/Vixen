@@ -12,8 +12,9 @@ namespace Common.Controls.Theme
 		//Buttons
 		private static Color _buttonBorderColor = Color.FromArgb(40, 40, 40);
 		private static Color _buttonBackColor = Color.FromArgb(20, 20, 20);
-		private static Color _buttonBackColorHover = Color.FromArgb(40, 40, 40);
-		
+		private static Color _buttonBackColorHover = Color.DarkGray;
+		private static Color _buttonDownBackColor = Color.Gray;
+
 		//Text
 		private static Color _foreColorDisabled = Color.FromArgb(119, 119, 119);
 
@@ -78,6 +79,11 @@ namespace Common.Controls.Theme
 		public static Color ButtonBackColorHover
 		{
 			get { return _buttonBackColorHover; }
+		}
+
+		public static Color ButtonDownBackColor
+		{
+			get { return _buttonDownBackColor; }
 		}
 
 		public static Color ButtonTextColor

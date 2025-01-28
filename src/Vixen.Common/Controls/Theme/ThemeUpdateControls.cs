@@ -1,4 +1,6 @@
-﻿using Button = System.Windows.Forms.Button;
+﻿using System.ComponentModel;
+using System.Reflection;
+using Button = System.Windows.Forms.Button;
 using CheckBox = System.Windows.Forms.CheckBox;
 using ComboBox = System.Windows.Forms.ComboBox;
 using Control = System.Windows.Forms.Control;
@@ -54,17 +56,27 @@ namespace Common.Controls.Theme
 					Button btn = c as Button;
 					btn.FlatStyle = FlatStyle.Flat;
 					btn.FlatAppearance.BorderSize = 0;
-					if (btn.BackgroundImage == null && btn.Image == null)
+
+					// If this is just a plain text button, or special case of a Help button with a '?' icon
+					if (btn.BackgroundImage == null && (btn.Image == null || btn.Text == "Help"))
 					{
 						btn.BackgroundImageLayout = ImageLayout.Stretch;
 						btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImage;
 						btn.BackColor = Color.Transparent;
 						btn.ForeColor = ThemeColorTable.ForeColor;
+
+						// Remove these existing event handlers
+						RemoveEvent(btn, "s_mouseHoverEvent");
+						RemoveEvent(btn, "s_mouseLeaveEvent");
+
+						// ...and replace with standard events.
+						btn.MouseLeave += new System.EventHandler(buttonBackground_MouseLeave);
+						btn.MouseHover += new System.EventHandler(buttonBackground_MouseHover);
 					}
 					else
 					{
-						btn.FlatAppearance.MouseOverBackColor = Color.Transparent;
-						btn.FlatAppearance.MouseDownBackColor = Color.Transparent;
+						btn.FlatAppearance.MouseOverBackColor = ThemeColorTable.ButtonBackColorHover;
+						btn.FlatAppearance.MouseDownBackColor = ThemeColorTable.ButtonDownBackColor;
 					}
 					continue;
 				}
@@ -134,6 +146,24 @@ namespace Common.Controls.Theme
 			}
 		}
 
+		/// <summary>
+		/// Removes all event handlers from specified control
+		/// </summary>
+		/// <param name="ctl">Specifies control with handlers</param>
+		/// <param name="event_name">Specifies the specific handler to remove</param>
+		private static void RemoveEvent(Control ctl, string event_name)
+		{
+			// Don't delete this line as it can be uncommented to discover other events names (event_name)
+			//var eventNames = typeof(Control).GetFields(BindingFlags.Static | BindingFlags.NonPublic);
+
+			FieldInfo field_info = typeof(Control).GetField(event_name, BindingFlags.Static | BindingFlags.NonPublic);
+			PropertyInfo property_info = ctl?.GetType().GetProperty("Events", BindingFlags.NonPublic | BindingFlags.Instance);
+			object obj = field_info?.GetValue(ctl);
+
+			EventHandlerList event_handlers = (EventHandlerList)property_info?.GetValue(ctl, null);
+			event_handlers?.RemoveHandler(obj, event_handlers[obj]);
+		}
+
 		public static void UpdateButton(Button btn)
 		{
 			btn.FlatStyle = FlatStyle.Flat;
@@ -152,5 +182,19 @@ namespace Common.Controls.Theme
 		{
 			return new Font(f.FontFamily, fontsize, style);
 		}
+
+		private static void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = sender as Button;
+			btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImageHover;
+		}
+
+		private static void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = sender as Button;
+			btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImage;
+
+		}
+
 	}
 }
