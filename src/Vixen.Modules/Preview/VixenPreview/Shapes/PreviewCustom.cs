@@ -165,10 +165,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		public override void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected,
-		                          bool forceDraw, double zoomLevel)
+		                          bool forceDraw, bool locked, double zoomLevel)
 		{
 			foreach (PreviewLightBaseShape shape in Strings) {
-				shape.Draw(fp, editMode, highlightedElements, selected, forceDraw, zoomLevel);
+				shape.Draw(fp, editMode, highlightedElements, selected, forceDraw, locked, zoomLevel);
 			}
 			DrawSelectPoints(fp);
 		}

@@ -223,6 +223,7 @@ namespace VixenModules.Preview.VixenPreview
 		}
 
 		public bool IsSingleItemSelected => _selectedDisplayItem != null;
+		public DisplayItem SingleItemSelected => _selectedDisplayItem;
 
 		public List<DisplayItem> SelectedDisplayItems
 		{
@@ -585,7 +586,7 @@ namespace VixenModules.Preview.VixenPreview
 			EndUpdate();
 		}
 
-		public void SelectItemUnderPoint(PreviewPoint point, bool addToSelection)
+		public void SelectItemUnderPoint(PreviewPoint point, bool addToSelection, bool selectOverride)
 		{
 			if (!_mouseCaptured)
 			{
@@ -594,18 +595,17 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					if (_selectedDisplayItem != null)
 						SelectedDisplayItems.Add(_selectedDisplayItem);
+					DisplayItem item = DisplayItemAtPoint(point, selectOverride);
 					DeSelectSelectedDisplayItem();
-					DisplayItem item = DisplayItemAtPoint(point);
 					if (item != null)
 						SelectedDisplayItems.Add(item);
 					OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 				}
 				else
 				{
-					// First, deselect any currently selected item
+					DisplayItem tempSelectedDisplayItem = DisplayItemAtPoint(point, selectOverride);
 					DeSelectSelectedDisplayItem();
-
-					_selectedDisplayItem = DisplayItemAtPoint(point);
+					_selectedDisplayItem = tempSelectedDisplayItem;
 					if (_selectedDisplayItem != null)
 					{
 						_selectedDisplayItem.Shape.Select(true);
@@ -627,7 +627,8 @@ namespace VixenModules.Preview.VixenPreview
 			if (_editMode)
 			{
 				_elementSelected = elementsForm.SelectedNode;
-				bool controlPressed = (Control.ModifierKeys == Keys.Control);
+				bool controlPressed = Control.ModifierKeys.HasFlag(Keys.Control);
+				bool shiftPressed =Control.ModifierKeys.HasFlag(Keys.Shift);
 				PreviewPoint translatedPoint = new PreviewPoint(e.X + hScroll.Value, e.Y + vScroll.Value);
 				if (e.Button == System.Windows.Forms.MouseButtons.Left)
 				{
@@ -635,7 +636,7 @@ namespace VixenModules.Preview.VixenPreview
 					{
 						if (controlPressed)
 						{
-							DisplayItem item = DisplayItemAtPoint(translatedPoint);
+							DisplayItem item = DisplayItemAtPoint(translatedPoint, shiftPressed);
 							if (item != null && SelectedDisplayItems.Contains(item))
 							{
 								SelectedDisplayItems.Remove(item);
@@ -643,7 +644,7 @@ namespace VixenModules.Preview.VixenPreview
 							}
 							else
 							{
-								SelectItemUnderPoint(translatedPoint, controlPressed);
+								SelectItemUnderPoint(translatedPoint, controlPressed, shiftPressed);
 							}
 							EndUpdate();
 							return;
@@ -700,7 +701,7 @@ namespace VixenModules.Preview.VixenPreview
 							}
 						}
 
-						SelectItemUnderPoint(translatedPoint, controlPressed);
+						SelectItemUnderPoint(translatedPoint, controlPressed, shiftPressed);
 
 						// If we get this far, and we've got nothing selected, we're drawing a rubber band!
 						if (_selectedDisplayItem == null && SelectedDisplayItems.Count == 0)
@@ -851,7 +852,7 @@ namespace VixenModules.Preview.VixenPreview
 				else if (e.Button == System.Windows.Forms.MouseButtons.Right)
 				{
 					contextMenuStrip1.Items.Clear();
-					SelectItemUnderPoint(translatedPoint, false);
+					SelectItemUnderPoint(translatedPoint, false, shiftPressed);
 
 					if (_selectedDisplayItem != null)
 					{
@@ -923,7 +924,8 @@ namespace VixenModules.Preview.VixenPreview
 					}
 					if (UndoManager.NumUndoable > 0)
 					{
-						contextMenuStrip1.Items.Add(new ToolStripSeparator());
+						if (contextMenuStrip1.Items.Count > 0)
+							contextMenuStrip1.Items.Add(new ToolStripSeparator());
 						contextMenuStrip1.Items.Add(new ToolStripMenuItem
 						{
 							Text = "Undo",
@@ -940,6 +942,28 @@ namespace VixenModules.Preview.VixenPreview
 							Text = "Redo",
 							Tag = "Redo",
 							Image = Common.Resources.Properties.Resources.arrow_redo
+						});
+					}
+					if (_selectedDisplayItem?.Shape.Locked == false)
+					{
+						if (contextMenuStrip1.Items.Count > 0)
+							contextMenuStrip1.Items.Add(new ToolStripSeparator());
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem
+						{
+							Text = "Lock",
+							Tag = "Lock",
+							Image = Common.Resources.Properties.Resources.locked
+						});
+					}
+					if (_selectedDisplayItem?.Shape.Locked == true)
+					{
+						if (contextMenuStrip1.Items.Count > 0)
+							contextMenuStrip1.Items.Add(new ToolStripSeparator());
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem
+						{
+							Text = "Unlock",
+							Tag = "Unlock",
+							Image = Common.Resources.Properties.Resources.unlocked
 						});
 					}
 					if (_selectedDisplayItem != null)
@@ -1034,6 +1058,12 @@ namespace VixenModules.Preview.VixenPreview
 
 					UndoManager.Redo();
 					break;
+				case "Lock":
+					Lock();
+					break;
+				case "Unlock":
+					Unlock();
+					break;
 				case "0":
 				case "1":
 				case "2":
@@ -1127,7 +1157,7 @@ namespace VixenModules.Preview.VixenPreview
 						_selectedDisplayItem.Shape.MouseMove(dragCurrent.X, dragCurrent.Y, changeX, changeY);
 						EndUpdate();
 					}
-					// If we get here, we're drwing a rubber band
+					// If we get here, we're drawing a rubber band
 					else if (_banding)
 					{
 						int X1 = Math.Min(dragStart.X, dragStart.X + changeX);
@@ -1144,13 +1174,15 @@ namespace VixenModules.Preview.VixenPreview
 								(changeX > 0 && item.Shape.ShapeAllInRect(_bandRect))
 								)
 							{
-								if (!SelectedDisplayItems.Contains(item))
+								if (!SelectedDisplayItems.Contains(item) && 
+									(Control.ModifierKeys.HasFlag(Keys.Shift) || !item.Shape.Locked))
 								{
 									SelectedDisplayItems.Add(item);
 									OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 								}
 							}
-							else if (SelectedDisplayItems.Contains(item))
+							else if (SelectedDisplayItems.Contains(item) &&
+								     (Control.ModifierKeys.HasFlag(Keys.Shift) || !item.Shape.Locked))
 							{
 								SelectedDisplayItems.Remove(item);
 								OnSelectionChanged?.Invoke(this, EventArgs.Empty);
@@ -1233,6 +1265,14 @@ namespace VixenModules.Preview.VixenPreview
 					UndoManager.Redo();
 				}
 				e.Handled = true;
+			}
+			else if (e.KeyCode == Keys.L && e.Modifiers == Keys.Control)
+			{
+				Lock();
+			}
+			else if (e.KeyCode == Keys.U && e.Modifiers == Keys.Control)
+			{
+				Unlock();
 			}
 			else if (e.KeyCode == Keys.Up)
 			{
@@ -1609,11 +1649,21 @@ namespace VixenModules.Preview.VixenPreview
 			_bandRect.Height = 0;
 		}
 
-		public DisplayItem DisplayItemAtPoint(PreviewPoint point)
+		public DisplayItem DisplayItemAtPoint(PreviewPoint point, bool selectOverride)
 		{
 			foreach (DisplayItem displayItem in DisplayItems)
 			{
-				if (displayItem.Shape.PointInShape(point))
+				bool selected = false;
+				if (_selectedDisplayItems?.Count > 0)
+				{
+					selected = _selectedDisplayItems.Find(displayItem.Equals) != null;
+				}
+				else
+				{
+					selected = displayItem.Shape.Selected;
+				}
+
+				if (displayItem.Shape.PointInShape(point) && (selected || selectOverride || !displayItem.Shape.Locked))
 				{
 					return displayItem;
 				}
@@ -2036,6 +2086,69 @@ namespace VixenModules.Preview.VixenPreview
 				OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 				EndUpdate();
 			}
+		}
+
+		public void Lock()
+		{
+			if (SelectedDisplayItems?.Count > 0)
+			{
+				var action = new PreviewItemsLockUndoAction(this, SelectedDisplayItems);//Start Undo Action.
+				UndoManager.AddUndoAction(action);
+
+				foreach (DisplayItem displayItem in SelectedDisplayItems)
+				{
+					displayItem.Shape.Locked = true;
+					DeSelectSelectedDisplayItem();
+				}
+				SelectedDisplayItems.Clear();
+				OnSelectionChanged?.Invoke(this, EventArgs.Empty);
+				EndUpdate();
+			}
+			else if (_selectedDisplayItem != null)
+			{
+				var action = new PreviewItemsLockUndoAction(this, _selectedDisplayItem);//Start Undo Action.
+				UndoManager.AddUndoAction(action);
+
+				_selectedDisplayItem.Shape.Locked = true;
+				DeSelectSelectedDisplayItem();
+				EndUpdate();
+			}
+		}
+
+		public void Unlock()
+		{
+			if (SelectedDisplayItems?.Count > 0)
+			{
+				var action = new PreviewItemsLockUndoAction(this, SelectedDisplayItems);//Start Undo Action.
+				UndoManager.AddUndoAction(action);
+
+				foreach (DisplayItem displayItem in SelectedDisplayItems)
+				{
+					displayItem.Shape.Locked = false;
+					DeSelectSelectedDisplayItem();
+				}
+				SelectedDisplayItems.Clear();
+				OnSelectionChanged?.Invoke(this, EventArgs.Empty);
+				EndUpdate();
+			}
+			else if (_selectedDisplayItem != null)
+			{
+				var action = new PreviewItemsLockUndoAction(this, _selectedDisplayItem);//Start Undo Action.
+				UndoManager.AddUndoAction(action);
+
+				_selectedDisplayItem.Shape.Locked = false;
+				DeSelectSelectedDisplayItem();
+				EndUpdate();
+			}
+		}
+
+		public void Undo_Lock(List<DisplayItem> ChangedPreviewItems, bool undo = true)
+		{
+			foreach (DisplayItem previewItem in ChangedPreviewItems)
+			{
+				DisplayItems.Find(previewItem.Equals).Shape.Locked = undo ? previewItem.Shape.Locked : !previewItem.Shape.Locked;
+			}
+			EndUpdate();
 		}
 
 		public void RemoveDisplayItem(DisplayItem _selectedDisplayItem)
@@ -2762,11 +2875,11 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					if (_editMode)
 					{
-						displayItem.Draw(fp, true, HighlightedElements, displayItem.Shape.Selected || SelectedDisplayItems.Contains(displayItem), false);
+						displayItem.Draw(fp, true, HighlightedElements, displayItem.Shape.Selected || SelectedDisplayItems.Contains(displayItem), displayItem.Shape.Locked, false);
 					}
 					else
 					{
-						displayItem.Draw(fp, false, null, false, true);
+						displayItem.Draw(fp, false, null, false, false, true);
 					}
 				}
 				fp.Unlock(true);
