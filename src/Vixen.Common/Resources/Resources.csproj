@@ -133,6 +133,7 @@
 				<Resource Include="MarkBarVisible.png" />
 				<Resource Include="MarkLineVisible.png" />
 				<Resource Include="MarkTailLineVisible.png" />
+				<Resource Include="Resources\locked.png" />
 				<EmbeddedResource Include="LipSync\AI.jpg" />
 				<EmbeddedResource Include="LipSync\AI_LightGray.jpg" />
 				<EmbeddedResource Include="LipSync\AI_Transparent.png" />

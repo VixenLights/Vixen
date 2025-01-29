@@ -14,6 +14,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		private bool _lineToggleState = true;
 		private bool _lineTailToggleState = false;
 		private bool _markBarToggleState = true;
+		private bool _markBarLockToggleState = true;
 		public MarkDockerViewModel(ObservableCollection<IMarkCollection> markCollections)
 		{
 			MarkCollections = markCollections;
@@ -28,6 +29,10 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 			if (MarkCollections.All(x => x.ShowMarkBar))
 			{
 				_markBarToggleState = false;
+			}
+			if (MarkCollections.All(x => x.LockMarkBar))
+			{
+				_markBarLockToggleState = false;
 			}
 		}
 
@@ -254,6 +259,29 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		private bool CanToggleMarkBarState()
 		{
 			return MarkCollections.Any();
+		}
+
+		#endregion
+
+		#region ToggleMarkBarLock command
+
+		private Command _toggleMarkBarLockCommand;
+
+		/// <summary>
+		/// Gets the ToggleMarkBarLock command.
+		/// </summary>
+		public Command ToggleMarkBarLockCommand
+		{
+			get { return _toggleMarkBarLockCommand ?? (_toggleMarkBarLockCommand = new Command(ToggleMarkBarLock)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the ToggleMarkBarLock command is executed.
+		/// </summary>
+		private void ToggleMarkBarLock()
+		{
+			MarkCollections.ForEach(x => x.LockMarkBar = _markBarLockToggleState);
+			_markBarLockToggleState = !_markBarLockToggleState;
 		}
 
 		#endregion
