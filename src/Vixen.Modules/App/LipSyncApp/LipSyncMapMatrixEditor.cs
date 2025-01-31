@@ -46,10 +46,7 @@ namespace VixenModules.App.LipSyncApp
 		{
 			Location = ActiveForm != null ? new Point(ActiveForm.Location.X - 150, ActiveForm.Location.Y - 100) : new Point(200, 100);
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
 			this.MapData = (LipSyncMapData)mapData.Clone();
 			renderedPicture.MinimumSize = new Size(MIN_PICTUREBOX_WIDTH, MIN_PICTUREBOX_HEIGHT);
 			renderedPicture.MaximumSize = new Size(MAX_PICTUREBOX_WIDTH, MAX_PICTUREBOX_HEIGHT);
@@ -289,36 +286,6 @@ namespace VixenModules.App.LipSyncApp
 
 		private void OnLoad(object sender, EventArgs e)
 		{
-			this.ForeColor = ThemeColorTable.ForeColor;
-			this.BackColor = ThemeColorTable.BackgroundColor;
-
-			nameLabel.ForeColor = ThemeColorTable.ForeColor;
-			nameLabel.BackColor = ThemeColorTable.BackgroundColor;
-			nameTextBox.ForeColor = ThemeColorTable.ForeColor;
-			nameTextBox.BackColor = ThemeColorTable.TextBoxBackgroundColor;
-			phonemeLabel.ForeColor = ThemeColorTable.ForeColor;
-			phonemeLabel.BackColor = ThemeColorTable.BackgroundColor;
-			prevPhonemeButton.ForeColor = ThemeColorTable.ButtonTextColor;
-			prevPhonemeButton.BackColor = ThemeColorTable.ButtonBackColor;
-			nextPhonemeButton.ForeColor = ThemeColorTable.ButtonTextColor;
-			nextPhonemeButton.BackColor = ThemeColorTable.ButtonBackColor;
-			phonemeIcon.ForeColor = ThemeColorTable.ForeColor;
-			phonemeIcon.BackColor = ThemeColorTable.BackgroundColor;
-			openButton.ForeColor = ThemeColorTable.ButtonTextColor;
-			openButton.BackColor = ThemeColorTable.ButtonBackColor;
-			editButton.ForeColor = ThemeColorTable.ButtonTextColor;
-			editButton.BackColor = ThemeColorTable.ButtonBackColor;
-			clearButton.ForeColor = ThemeColorTable.ButtonTextColor;
-			clearButton.BackColor = ThemeColorTable.ButtonBackColor;
-			buttonOK.ForeColor = ThemeColorTable.ButtonTextColor;
-			buttonOK.BackColor = ThemeColorTable.ButtonBackColor;
-			buttonCancel.ForeColor = ThemeColorTable.ButtonTextColor;
-			buttonCancel.BackColor = ThemeColorTable.ButtonBackColor;
-			notesLabel.ForeColor = ThemeColorTable.ForeColor;
-			notesLabel.BackColor = ThemeColorTable.BackgroundColor;
-			notesTextBox.ForeColor = ThemeColorTable.ForeColor;
-			notesTextBox.BackColor = ThemeColorTable.TextBoxBackgroundColor;
-
 			nameTextBox.Text = MapData.LibraryReferenceName;
 			notesTextBox.Text = MapData.Notes;
 			
@@ -389,18 +356,6 @@ namespace VixenModules.App.LipSyncApp
 		private void prevPhonemeButton_Click(object sender, EventArgs e)
 		{
 			PrevPhonemeIndex();
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Common.Resources.Properties.Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Common.Resources.Properties.Resources.ButtonBackgroundImage;
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
@@ -657,7 +612,7 @@ namespace VixenModules.App.LipSyncApp
 			}
 			
 			System.Diagnostics.ProcessStartInfo procInfo = new System.Diagnostics.ProcessStartInfo();
-			procInfo.FileName = (sysFolder + @"\mspaint.exe");
+			procInfo.FileName = (sysFolder + @"\paint.exe");
 			procInfo.Arguments = "\"" + fileName + "\""; // Full Path to an image
 			var process = System.Diagnostics.Process.Start(procInfo);
 			process.WaitForExit();

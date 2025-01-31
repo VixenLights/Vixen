@@ -66,27 +66,12 @@ namespace Common.Controls
 			Height = 0;
 			txtMessage.AutoSize = true;
 			messageIcon.AutoSize = true;
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this, new List<Control>(new []{txtMessage}));
 			txtMessage.BackColor = ThemeColorTable.BackgroundColor; //override theme as we are using this as a label.
 			txtMessage.ForeColor = ThemeColorTable.ForeColor;
 			txtMessage.Text = messageBoxData;
+			ThemeUpdateControls.UpdateControls(this, new List<Control>(new []{txtMessage}));
 			Text = messageBoxTitle;
 			AdjustHeight();
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImage;
-
 		}
 
 		private void messageIcon_Paint(object sender, PaintEventArgs e)

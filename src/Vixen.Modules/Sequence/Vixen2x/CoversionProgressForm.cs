@@ -22,8 +22,6 @@ namespace VixenModules.SequenceType.Vixen2x
 		public CoversionProgressForm()
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 		}
 

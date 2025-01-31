@@ -174,7 +174,6 @@ namespace Common.Controls.ControlsEx.ValueControls
 			this._textbox.BorderStyle = BorderStyle.FixedSingle;
 			this._textbox.Text = this.Minimum.ToString();
 			this._textbox.BackColor = ThemeColorTable.TextBoxBackgroundColor;
-			this._textbox.ForeColor = ThemeColorTable.ForeColor;
 			this._textbox.MaxLength = 5;
 			this._textbox.KeyDown += new KeyEventHandler(_textbox_KeyDown);
 			this._textbox.KeyPress += new KeyPressEventHandler(_textbox_KeyPress);

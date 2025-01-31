@@ -21,10 +21,7 @@ namespace VixenModules.Property.Color
 		public ColorSetupHelper()
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			Icon = Resources.Icon_Vixen3;
 			colorPanelSingleColor.BackColor = System.Drawing.Color.RoyalBlue;
 			colorPanelSingleColor.Color = System.Drawing.Color.RoyalBlue;
 			comboBoxColorOrder.SelectedIndex = 0;
@@ -376,18 +373,6 @@ namespace VixenModules.Property.Color
 				cssf.ShowDialog();
 				PopulateColorSetsComboBox();
 			}
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 	}
 }

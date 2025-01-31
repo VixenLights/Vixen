@@ -26,10 +26,7 @@ namespace VixenApplication.Setup
 		public DisplaySetup()
 		{
 			InitializeComponent();
-			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
-			Icon = Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
-			buttonHelp.Image = Common.Resources.Tools.GetIcon(Resources.help, iconSize);
 
 			if (SystemFonts.MessageBoxFont != null)
 			{
@@ -285,19 +282,6 @@ namespace VixenApplication.Setup
 			//Just doing it in Ok as if we cancel it reloads the system anyway.
 			VixenSystem.Filters.RemoveOrphanedFilters();
 			Vixen.Sys.PropertyManager.RemoveOrphanedProperties();
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 	}
 }

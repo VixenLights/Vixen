@@ -138,9 +138,6 @@
 			// 
 			// buttonMovePatternDown
 			// 
-			this.buttonMovePatternDown.BackColor = System.Drawing.Color.Transparent;
-			this.buttonMovePatternDown.FlatAppearance.BorderSize = 0;
-			this.buttonMovePatternDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonMovePatternDown.Location = new System.Drawing.Point(1, 53);
 			this.buttonMovePatternDown.Name = "buttonMovePatternDown";
 			this.buttonMovePatternDown.Size = new System.Drawing.Size(35, 29);
@@ -152,9 +149,6 @@
 			// 
 			// buttonMovePatternUp
 			// 
-			this.buttonMovePatternUp.BackColor = System.Drawing.Color.Transparent;
-			this.buttonMovePatternUp.FlatAppearance.BorderSize = 0;
-			this.buttonMovePatternUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonMovePatternUp.Location = new System.Drawing.Point(1, 18);
 			this.buttonMovePatternUp.Name = "buttonMovePatternUp";
 			this.buttonMovePatternUp.Size = new System.Drawing.Size(35, 29);
@@ -176,9 +170,6 @@
 			// 
 			// buttonAddNewPattern
 			// 
-			this.buttonAddNewPattern.BackColor = System.Drawing.Color.Transparent;
-			this.buttonAddNewPattern.FlatAppearance.BorderSize = 0;
-			this.buttonAddNewPattern.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAddNewPattern.Location = new System.Drawing.Point(17, 6);
 			this.buttonAddNewPattern.Name = "buttonAddNewPattern";
 			this.buttonAddNewPattern.Size = new System.Drawing.Size(28, 28);
@@ -190,9 +181,6 @@
 			// 
 			// buttonDeletePattern
 			// 
-			this.buttonDeletePattern.BackColor = System.Drawing.Color.Transparent;
-			this.buttonDeletePattern.FlatAppearance.BorderSize = 0;
-			this.buttonDeletePattern.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonDeletePattern.Location = new System.Drawing.Point(58, 6);
 			this.buttonDeletePattern.Name = "buttonDeletePattern";
 			this.buttonDeletePattern.Size = new System.Drawing.Size(28, 28);

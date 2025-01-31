@@ -48,8 +48,6 @@
 			this.buttonCancel.TabIndex = 4;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOk
 			// 
@@ -61,8 +59,6 @@
 			this.buttonOk.TabIndex = 3;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
-			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// label1
 			// 
@@ -77,7 +73,6 @@
 			// 
 			this.textBoxGroupName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxGroupName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBoxGroupName.Location = new System.Drawing.Point(114, 29);
 			this.textBoxGroupName.Name = "textBoxGroupName";
 			this.textBoxGroupName.Size = new System.Drawing.Size(215, 23);
@@ -88,7 +83,6 @@
 			// 
 			this.textBoxItemPrefix.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxItemPrefix.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBoxItemPrefix.Location = new System.Drawing.Point(114, 63);
 			this.textBoxItemPrefix.Name = "textBoxItemPrefix";
 			this.textBoxItemPrefix.Size = new System.Drawing.Size(215, 23);

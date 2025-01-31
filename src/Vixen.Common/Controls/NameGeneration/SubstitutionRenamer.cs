@@ -15,7 +15,6 @@ namespace Common.Controls.NameGeneration
 		protected SubstitutionRenamer()
 		{
 			InitializeComponent();
-			Icon = Resources.Properties.Resources.Icon_Vixen3;
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			buttonMovePatternUp.Image = Tools.GetIcon(Resources.Properties.Resources.arrow_up, iconSize);
 			buttonMovePatternUp.Text = "";

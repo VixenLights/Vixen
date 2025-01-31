@@ -11,8 +11,6 @@ namespace VixenModules.App.Shows
 		public ShowTypeEditor(ShowItem item, Guid currentShowID)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			_showItem = item;
 			_shows = ShowsData.ShowList;

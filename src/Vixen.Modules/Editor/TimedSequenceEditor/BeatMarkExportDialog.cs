@@ -9,8 +9,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public BeatMarkExportDialog()
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			radioVixen3Format.Checked = true;
 		}
@@ -34,19 +32,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			private void BeatMarkExportDialog_Load(object sender, EventArgs e)
 			{
 				radioVixen3Format.Checked = true;
-			}
-
-			private void buttonBackground_MouseHover(object sender, EventArgs e)
-			{
-				var btn = (Button)sender;
-				btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-			}
-
-			private void buttonBackground_MouseLeave(object sender, EventArgs e)
-			{
-				var btn = (Button)sender;
-				btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 			}
 	}
 }

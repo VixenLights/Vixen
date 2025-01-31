@@ -17,9 +17,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		public LipSync()
 		{
 			InitializeComponent();
-			Icon = Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
-			Icon = Resources.Icon_Vixen3;
 			_treeName = "LipSync";
 		}
 
@@ -68,18 +66,6 @@ namespace VixenApplication.Setup.ElementTemplates
 		private void LipSync_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			_treeName = textBoxTreeName.Text;
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 	}
 }

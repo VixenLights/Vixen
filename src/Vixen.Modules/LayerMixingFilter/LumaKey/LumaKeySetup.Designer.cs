@@ -53,8 +53,6 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 			this.btnOk.TabIndex = 5;
 			this.btnOk.Text = "OK";
 			this.btnOk.UseVisualStyleBackColor = true;
-			this.btnOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// btnCancel
 			// 
@@ -66,8 +64,6 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 			this.btnCancel.TabIndex = 6;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
-			this.btnCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// numLowerLimit
 			// 
@@ -172,7 +168,8 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnOk);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.HelpButton = true;
+			MaximizeBox = false;
+			MinimizeBox = false;
 			this.Name = "LumaKeySetup";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Luma Key Configuration";

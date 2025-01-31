@@ -47,13 +47,11 @@
 			// 
 			this.groupBoxSelectedController.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBoxSelectedController.BackColor = System.Drawing.SystemColors.Control;
 			this.groupBoxSelectedController.Controls.Add(this.label1);
 			this.groupBoxSelectedController.Controls.Add(this.buttonUpdate);
 			this.groupBoxSelectedController.Controls.Add(this.label2);
 			this.groupBoxSelectedController.Controls.Add(this.textBoxName);
 			this.groupBoxSelectedController.Controls.Add(this.buttonConfigureController);
-			this.groupBoxSelectedController.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.groupBoxSelectedController.Location = new System.Drawing.Point(14, 317);
 			this.groupBoxSelectedController.Name = "groupBoxSelectedController";
 			this.groupBoxSelectedController.Size = new System.Drawing.Size(455, 182);
@@ -65,8 +63,6 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.BackColor = System.Drawing.SystemColors.Control;
-			this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.label1.Location = new System.Drawing.Point(150, 76);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(221, 15);
@@ -75,12 +71,6 @@
 			// 
 			// buttonUpdate
 			// 
-			this.buttonUpdate.BackColor = System.Drawing.SystemColors.Control;
-			this.buttonUpdate.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonUpdate.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonUpdate.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonUpdate.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.buttonUpdate.Location = new System.Drawing.Point(359, 24);
 			this.buttonUpdate.Name = "buttonUpdate";
 			this.buttonUpdate.Size = new System.Drawing.Size(85, 29);
@@ -88,14 +78,10 @@
 			this.buttonUpdate.Text = "Update";
 			this.buttonUpdate.UseVisualStyleBackColor = false;
 			this.buttonUpdate.Click += new System.EventHandler(this.buttonUpdate_Click);
-			this.buttonUpdate.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonUpdate.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.BackColor = System.Drawing.SystemColors.Control;
-			this.label2.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.label2.Location = new System.Drawing.Point(16, 31);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(42, 15);
@@ -104,9 +90,7 @@
 			// 
 			// textBoxName
 			// 
-			this.textBoxName.BackColor = System.Drawing.SystemColors.Control;
 			this.textBoxName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.textBoxName.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.textBoxName.Location = new System.Drawing.Point(68, 28);
 			this.textBoxName.Name = "textBoxName";
 			this.textBoxName.Size = new System.Drawing.Size(158, 23);
@@ -114,12 +98,6 @@
 			// 
 			// buttonConfigureController
 			// 
-			this.buttonConfigureController.BackColor = System.Drawing.SystemColors.Control;
-			this.buttonConfigureController.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonConfigureController.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonConfigureController.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonConfigureController.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonConfigureController.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.buttonConfigureController.Location = new System.Drawing.Point(15, 69);
 			this.buttonConfigureController.Name = "buttonConfigureController";
 			this.buttonConfigureController.Size = new System.Drawing.Size(128, 29);
@@ -127,21 +105,17 @@
 			this.buttonConfigureController.Text = "Configure Preview";
 			this.buttonConfigureController.UseVisualStyleBackColor = false;
 			this.buttonConfigureController.Click += new System.EventHandler(this.buttonConfigureController_Click);
-			this.buttonConfigureController.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonConfigureController.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// listViewControllers
 			// 
 			this.listViewControllers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.listViewControllers.BackColor = System.Drawing.SystemColors.Window;
 			this.listViewControllers.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.listViewControllers.CheckBoxes = true;
 			this.listViewControllers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
-			this.listViewControllers.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.listViewControllers.FullRowSelect = true;
 			listViewGroup2.Header = "ListViewGroup";
 			listViewGroup2.Name = "listViewGroup1";
@@ -172,31 +146,17 @@
 			// buttonOk
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonOk.BackColor = System.Drawing.Color.Transparent;
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonOk.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonOk.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonOk.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.buttonOk.Location = new System.Drawing.Point(252, 516);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Size = new System.Drawing.Size(105, 29);
 			this.buttonOk.TabIndex = 4;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = false;
-			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonDeleteController
 			// 
 			this.buttonDeleteController.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			this.buttonDeleteController.BackColor = System.Drawing.Color.Transparent;
-			this.buttonDeleteController.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonDeleteController.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonDeleteController.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonDeleteController.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonDeleteController.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.buttonDeleteController.Location = new System.Drawing.Point(318, 272);
 			this.buttonDeleteController.Name = "buttonDeleteController";
 			this.buttonDeleteController.Size = new System.Drawing.Size(140, 29);
@@ -204,19 +164,10 @@
 			this.buttonDeleteController.Text = "Delete Selected";
 			this.buttonDeleteController.UseVisualStyleBackColor = false;
 			this.buttonDeleteController.Click += new System.EventHandler(this.buttonDeleteController_Click);
-			this.buttonDeleteController.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonDeleteController.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonAddController
 			// 
 			this.buttonAddController.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			this.buttonAddController.BackColor = System.Drawing.Color.Transparent;
-			this.buttonAddController.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-			this.buttonAddController.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonAddController.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonAddController.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonAddController.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonAddController.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.buttonAddController.Location = new System.Drawing.Point(17, 272);
 			this.buttonAddController.Name = "buttonAddController";
 			this.buttonAddController.Size = new System.Drawing.Size(140, 29);
@@ -224,32 +175,21 @@
 			this.buttonAddController.Text = "Add New Preview";
 			this.buttonAddController.UseVisualStyleBackColor = false;
 			this.buttonAddController.Click += new System.EventHandler(this.buttonAddController_Click);
-			this.buttonAddController.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonAddController.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonCancel
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonCancel.BackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonCancel.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.buttonCancel.Location = new System.Drawing.Point(364, 516);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(105, 29);
 			this.buttonCancel.TabIndex = 5;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = false;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.label3.Location = new System.Drawing.Point(14, 14);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(39, 15);
@@ -259,7 +199,6 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.label4.Location = new System.Drawing.Point(230, 14);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(31, 15);
@@ -269,13 +208,6 @@
 			// buttonDuplicateSelected
 			// 
 			this.buttonDuplicateSelected.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			this.buttonDuplicateSelected.BackColor = System.Drawing.Color.Transparent;
-			this.buttonDuplicateSelected.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-			this.buttonDuplicateSelected.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonDuplicateSelected.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonDuplicateSelected.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonDuplicateSelected.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonDuplicateSelected.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.buttonDuplicateSelected.Location = new System.Drawing.Point(167, 272);
 			this.buttonDuplicateSelected.Name = "buttonDuplicateSelected";
 			this.buttonDuplicateSelected.Size = new System.Drawing.Size(140, 29);
@@ -289,7 +221,6 @@
 			this.AcceptButton = this.buttonOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BackColor = System.Drawing.SystemColors.Control;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(482, 569);
 			this.Controls.Add(this.buttonDuplicateSelected);
@@ -302,7 +233,8 @@
 			this.Controls.Add(this.buttonAddController);
 			this.Controls.Add(this.buttonCancel);
 			this.DoubleBuffered = true;
-			this.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.FormBorderStyle = FormBorderStyle.FixedDialog;
+			this.MinimizeBox = false;
 			this.MaximizeBox = false;
 			this.MaximumSize = new System.Drawing.Size(498, 2281);
 			this.MinimizeBox = false;

@@ -9,7 +9,6 @@ namespace VixenModules.App.Curves
 		public FunctionGenerator(string function)
 		{
 			InitializeComponent();
-			Icon = Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
 			txtFunction.Text = function;
 		}

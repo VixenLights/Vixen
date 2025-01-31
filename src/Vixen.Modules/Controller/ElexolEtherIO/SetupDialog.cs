@@ -21,8 +21,6 @@ namespace VixenModules.Output.ElexolEtherIO
 		public SetupDialog(ElexolEtherIOData data)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 
 			_data = data;
@@ -177,18 +175,6 @@ namespace VixenModules.Output.ElexolEtherIO
                     return false;
             return true;
         }
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{

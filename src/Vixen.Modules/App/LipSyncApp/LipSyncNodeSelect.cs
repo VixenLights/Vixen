@@ -15,11 +15,7 @@ namespace VixenModules.App.LipSyncApp
 		{
 			Location = ActiveForm != null ? new Point(ActiveForm.Location.X + 50, ActiveForm.Location.Y + 50) : new Point(400, 200);
 			InitializeComponent();
-			FormBorderStyle = FormBorderStyle.FixedDialog;
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
 			Changed = false;
 			_userAdd = false;
 			_matrixOptsOnly = false;
@@ -249,18 +245,6 @@ namespace VixenModules.App.LipSyncApp
 					StringsAreRows = _stringAreRows;
 				}
 			}
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Common.Resources.Properties.Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Common.Resources.Properties.Resources.ButtonBackgroundImage;
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

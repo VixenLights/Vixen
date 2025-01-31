@@ -90,16 +90,12 @@
 			// buttonAddTemplate
 			// 
 			buttonAddTemplate.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-			buttonAddTemplate.BackColor = Color.Transparent;
 			buttonAddTemplate.Enabled = false;
-			buttonAddTemplate.FlatAppearance.BorderSize = 0;
-			buttonAddTemplate.FlatStyle = FlatStyle.Flat;
 			buttonAddTemplate.Location = new Point(222, 7);
 			buttonAddTemplate.Margin = new Padding(4, 7, 4, 3);
 			buttonAddTemplate.Name = "buttonAddTemplate";
 			buttonAddTemplate.Size = new Size(28, 28);
 			buttonAddTemplate.TabIndex = 31;
-			buttonAddTemplate.Text = "+";
 			toolTip1.SetToolTip(buttonAddTemplate, "Add Elements");
 			buttonAddTemplate.UseVisualStyleBackColor = false;
 			buttonAddTemplate.Click += buttonAddTemplate_Click;
@@ -138,16 +134,12 @@
 			// buttonConfigureProperty
 			// 
 			buttonConfigureProperty.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-			buttonConfigureProperty.BackColor = Color.Transparent;
 			buttonConfigureProperty.Enabled = false;
-			buttonConfigureProperty.FlatAppearance.BorderSize = 0;
-			buttonConfigureProperty.FlatStyle = FlatStyle.Flat;
 			buttonConfigureProperty.Location = new Point(154, 126);
 			buttonConfigureProperty.Margin = new Padding(4, 3, 4, 3);
 			buttonConfigureProperty.Name = "buttonConfigureProperty";
 			buttonConfigureProperty.Size = new Size(28, 28);
 			buttonConfigureProperty.TabIndex = 41;
-			buttonConfigureProperty.Text = "C";
 			toolTip1.SetToolTip(buttonConfigureProperty, "Configure Property");
 			buttonConfigureProperty.UseVisualStyleBackColor = false;
 			buttonConfigureProperty.Click += buttonConfigureProperty_Click;
@@ -155,16 +147,12 @@
 			// buttonRemoveProperty
 			// 
 			buttonRemoveProperty.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-			buttonRemoveProperty.BackColor = Color.Transparent;
 			buttonRemoveProperty.Enabled = false;
-			buttonRemoveProperty.FlatAppearance.BorderSize = 0;
-			buttonRemoveProperty.FlatStyle = FlatStyle.Flat;
 			buttonRemoveProperty.Location = new Point(119, 126);
 			buttonRemoveProperty.Margin = new Padding(4, 3, 4, 3);
 			buttonRemoveProperty.Name = "buttonRemoveProperty";
 			buttonRemoveProperty.Size = new Size(28, 28);
 			buttonRemoveProperty.TabIndex = 40;
-			buttonRemoveProperty.Text = "-";
 			toolTip1.SetToolTip(buttonRemoveProperty, "Delete Property");
 			buttonRemoveProperty.UseVisualStyleBackColor = false;
 			buttonRemoveProperty.Click += buttonRemoveProperty_Click;
@@ -172,16 +160,12 @@
 			// buttonAddProperty
 			// 
 			buttonAddProperty.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-			buttonAddProperty.BackColor = Color.Transparent;
 			buttonAddProperty.Enabled = false;
-			buttonAddProperty.FlatAppearance.BorderSize = 0;
-			buttonAddProperty.FlatStyle = FlatStyle.Flat;
 			buttonAddProperty.Location = new Point(84, 126);
 			buttonAddProperty.Margin = new Padding(4, 3, 4, 3);
 			buttonAddProperty.Name = "buttonAddProperty";
 			buttonAddProperty.Size = new Size(28, 28);
 			buttonAddProperty.TabIndex = 39;
-			buttonAddProperty.Text = "+";
 			toolTip1.SetToolTip(buttonAddProperty, "Add Property");
 			buttonAddProperty.UseVisualStyleBackColor = false;
 			buttonAddProperty.Click += buttonAddProperty_Click;
@@ -219,16 +203,12 @@
 			// buttonRunHelperSetup
 			// 
 			buttonRunHelperSetup.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-			buttonRunHelperSetup.BackColor = Color.Transparent;
 			buttonRunHelperSetup.Enabled = false;
-			buttonRunHelperSetup.FlatAppearance.BorderSize = 0;
-			buttonRunHelperSetup.FlatStyle = FlatStyle.Flat;
 			buttonRunHelperSetup.Location = new Point(243, 9);
 			buttonRunHelperSetup.Margin = new Padding(4, 3, 4, 3);
 			buttonRunHelperSetup.Name = "buttonRunHelperSetup";
 			buttonRunHelperSetup.Size = new Size(28, 28);
 			buttonRunHelperSetup.TabIndex = 36;
-			buttonRunHelperSetup.Text = "->";
 			toolTip1.SetToolTip(buttonRunHelperSetup, "Configure");
 			buttonRunHelperSetup.UseVisualStyleBackColor = false;
 			buttonRunHelperSetup.Click += buttonRunSetupHelper_Click;
@@ -237,7 +217,6 @@
 			// 
 			comboBoxSetupHelperType.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 			comboBoxSetupHelperType.DropDownStyle = ComboBoxStyle.DropDownList;
-			comboBoxSetupHelperType.FlatStyle = FlatStyle.Flat;
 			comboBoxSetupHelperType.FormattingEnabled = true;
 			comboBoxSetupHelperType.Location = new Point(74, 12);
 			comboBoxSetupHelperType.Margin = new Padding(4, 3, 4, 3);
@@ -267,15 +246,11 @@
 			// buttonSelectDestinationOutputs
 			// 
 			buttonSelectDestinationOutputs.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-			buttonSelectDestinationOutputs.BackColor = Color.Transparent;
-			buttonSelectDestinationOutputs.FlatAppearance.BorderSize = 0;
-			buttonSelectDestinationOutputs.FlatStyle = FlatStyle.Flat;
 			buttonSelectDestinationOutputs.Location = new Point(77, 3);
 			buttonSelectDestinationOutputs.Margin = new Padding(4, 3, 4, 3);
 			buttonSelectDestinationOutputs.Name = "buttonSelectDestinationOutputs";
 			buttonSelectDestinationOutputs.Size = new Size(28, 28);
 			buttonSelectDestinationOutputs.TabIndex = 41;
-			buttonSelectDestinationOutputs.Text = "S";
 			toolTip1.SetToolTip(buttonSelectDestinationOutputs, "Find outputs these elements are patched to");
 			buttonSelectDestinationOutputs.UseVisualStyleBackColor = false;
 			buttonSelectDestinationOutputs.Click += buttonSelectDestinationOutputs_Click;
@@ -283,15 +258,11 @@
 			// buttonDeleteElements
 			// 
 			buttonDeleteElements.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-			buttonDeleteElements.BackColor = Color.Transparent;
-			buttonDeleteElements.FlatAppearance.BorderSize = 0;
-			buttonDeleteElements.FlatStyle = FlatStyle.Flat;
 			buttonDeleteElements.Location = new Point(4, 3);
 			buttonDeleteElements.Margin = new Padding(4, 3, 4, 3);
 			buttonDeleteElements.Name = "buttonDeleteElements";
 			buttonDeleteElements.Size = new Size(28, 28);
 			buttonDeleteElements.TabIndex = 42;
-			buttonDeleteElements.Text = "-";
 			toolTip1.SetToolTip(buttonDeleteElements, "Delete Elements");
 			buttonDeleteElements.UseVisualStyleBackColor = false;
 			buttonDeleteElements.Click += buttonDeleteElements_Click;
@@ -299,15 +270,11 @@
 			// buttonRenameElements
 			// 
 			buttonRenameElements.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-			buttonRenameElements.BackColor = Color.Transparent;
-			buttonRenameElements.FlatAppearance.BorderSize = 0;
-			buttonRenameElements.FlatStyle = FlatStyle.Flat;
 			buttonRenameElements.Location = new Point(40, 3);
 			buttonRenameElements.Margin = new Padding(4, 3, 4, 3);
 			buttonRenameElements.Name = "buttonRenameElements";
 			buttonRenameElements.Size = new Size(29, 28);
 			buttonRenameElements.TabIndex = 43;
-			buttonRenameElements.Text = "R";
 			toolTip1.SetToolTip(buttonRenameElements, "Rename Elements");
 			buttonRenameElements.UseVisualStyleBackColor = false;
 			buttonRenameElements.Click += buttonRenameElements_Click;

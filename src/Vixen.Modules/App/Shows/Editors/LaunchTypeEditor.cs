@@ -13,8 +13,6 @@ namespace VixenModules.App.Shows
 		{
 			InitializeComponent();
 
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			buttonSelectProgram.Image = Tools.GetIcon(Resources.folder_explore, iconSize);
 			buttonSelectProgram.Text = "";

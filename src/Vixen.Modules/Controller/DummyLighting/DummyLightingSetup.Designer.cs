@@ -46,8 +46,6 @@
 			this.buttonOK.TabIndex = 4;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
-			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonCancel
 			// 
@@ -59,8 +57,6 @@
 			this.buttonCancel.TabIndex = 5;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// radioButtonMonochrome
 			// 

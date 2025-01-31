@@ -86,7 +86,6 @@
 			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Controls.Add(this.btnMapFile);
 			this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.groupBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox1.Location = new System.Drawing.Point(3, 136);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(504, 170);
@@ -104,8 +103,6 @@
 			this.btnEditMap.Text = "Edit Map";
 			this.btnEditMap.UseVisualStyleBackColor = true;
 			this.btnEditMap.Click += new System.EventHandler(this.btnEditMap_Click);
-			this.btnEditMap.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnEditMap.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// btnCreateMap
 			// 
@@ -116,8 +113,6 @@
 			this.btnCreateMap.Text = "Create Map";
 			this.btnCreateMap.UseVisualStyleBackColor = true;
 			this.btnCreateMap.Click += new System.EventHandler(this.btnCreateMap_Click);
-			this.btnCreateMap.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnCreateMap.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// txtProfileMap
 			// 
@@ -166,7 +161,6 @@
 			this.grpSequence.Controls.Add(this.label2);
 			this.grpSequence.Controls.Add(this.btnOuputFolderSelect);
 			this.grpSequence.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.grpSequence.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.grpSequence.Location = new System.Drawing.Point(3, 48);
 			this.grpSequence.Name = "grpSequence";
 			this.grpSequence.Size = new System.Drawing.Size(504, 82);

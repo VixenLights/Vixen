@@ -14,10 +14,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public EffectTimeEditor(TimeSpan start, TimeSpan duration, TimeSpan sequenceLength)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			Icon = Resources.Icon_Vixen3;
 			Start = start;
 			Duration = duration;
 			_sequenceLength = sequenceLength;
@@ -254,18 +251,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 			btnOk.Enabled = false;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 		}
 
 		private void txtEndTime_Enter(object sender, EventArgs e)

@@ -43,7 +43,6 @@
 			// buttonOk
 			// 
 			buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-			buttonOk.BackColor = SystemColors.Control;
 			buttonOk.DialogResult = DialogResult.OK;
 			buttonOk.Location = new Point(356, 188);
 			buttonOk.Name = "buttonOk";
@@ -51,8 +50,6 @@
 			buttonOk.TabIndex = 27;
 			buttonOk.Text = "OK";
 			buttonOk.UseVisualStyleBackColor = false;
-			buttonOk.MouseLeave += buttonBackground_MouseLeave;
-			buttonOk.MouseHover += buttonBackground_MouseHover;
 			// 
 			// groupBoxOptions
 			// 
@@ -81,7 +78,6 @@
 			// 
 			// colorPanelSingleColor
 			// 
-			colorPanelSingleColor.BackColor = System.Drawing.Color.Maroon;
 			colorPanelSingleColor.BorderStyle = BorderStyle.FixedSingle;
 			colorPanelSingleColor.Color = System.Drawing.Color.Maroon;
 			colorPanelSingleColor.Location = new Point(208, 9);
@@ -92,9 +88,6 @@
 			// 
 			// buttonColorSetsSetup
 			// 
-			buttonColorSetsSetup.BackColor = SystemColors.Control;
-			buttonColorSetsSetup.FlatAppearance.BorderSize = 0;
-			buttonColorSetsSetup.FlatStyle = FlatStyle.Flat;
 			buttonColorSetsSetup.Location = new Point(356, 59);
 			buttonColorSetsSetup.Margin = new Padding(0);
 			buttonColorSetsSetup.Name = "buttonColorSetsSetup";
@@ -107,7 +100,6 @@
 			// comboBoxColorSet
 			// 
 			comboBoxColorSet.DropDownStyle = ComboBoxStyle.DropDownList;
-			comboBoxColorSet.FlatStyle = FlatStyle.Flat;
 			comboBoxColorSet.FormattingEnabled = true;
 			comboBoxColorSet.Location = new Point(208, 60);
 			comboBoxColorSet.Name = "comboBoxColorSet";

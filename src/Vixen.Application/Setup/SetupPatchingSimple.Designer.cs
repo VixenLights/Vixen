@@ -175,8 +175,6 @@ namespace VixenApplication.Setup
 			buttonUnpatchElements.Text = "Unpatch Elements";
 			buttonUnpatchElements.UseVisualStyleBackColor = true;
 			buttonUnpatchElements.Click += buttonUnpatchElements_Click;
-			buttonUnpatchElements.MouseLeave += buttonBackground_MouseLeave;
-			buttonUnpatchElements.MouseHover += buttonBackground_MouseHover;
 			// 
 			// labelElementCount
 			// 
@@ -392,8 +390,6 @@ namespace VixenApplication.Setup
 			buttonUnpatchControllers.Text = "Unpatch Controllers";
 			buttonUnpatchControllers.UseVisualStyleBackColor = true;
 			buttonUnpatchControllers.Click += buttonUnpatchControllers_Click;
-			buttonUnpatchControllers.MouseLeave += buttonBackground_MouseLeave;
-			buttonUnpatchControllers.MouseHover += buttonBackground_MouseHover;
 			// 
 			// label20
 			// 
@@ -620,15 +616,12 @@ namespace VixenApplication.Setup
 			buttonDoPatching.Text = "Patch Elements";
 			buttonDoPatching.UseVisualStyleBackColor = true;
 			buttonDoPatching.Click += buttonDoPatching_Click;
-			buttonDoPatching.MouseLeave += buttonBackground_MouseLeave;
-			buttonDoPatching.MouseHover += buttonBackground_MouseHover;
 			// 
 			// labelPatchWarning
 			// 
 			labelPatchWarning.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
 			labelPatchWarning.AutoSize = true;
 			tableLayoutPanelPatchingOptions.SetColumnSpan(labelPatchWarning, 2);
-			labelPatchWarning.ForeColor = Color.FromArgb(80, 80, 255);
 			labelPatchWarning.Location = new Point(104, 149);
 			labelPatchWarning.Margin = new Padding(4);
 			labelPatchWarning.Name = "labelPatchWarning";

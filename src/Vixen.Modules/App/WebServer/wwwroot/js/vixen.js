@@ -531,7 +531,7 @@ ko.bindingHandlers.spectrumColorPicker = {
 				theme: "sp-big",
 				showInput: true,
 				preferredFormat: "hex",
-				chooseText: "Ok",
+				chooseText: "OK",
 				localStorageKey: "spectrum.color",
 				hideAfterPaletteSelect: true,
 				showPaletteOnly: true,

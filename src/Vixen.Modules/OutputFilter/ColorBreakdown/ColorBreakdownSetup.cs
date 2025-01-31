@@ -11,9 +11,6 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		public ColorBreakdownSetup(ColorBreakdownData breakdownData)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
-			Icon = Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
 			_data = breakdownData;
 		}
@@ -138,19 +135,6 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		private void checkBox16Bit_CheckedChanged(object sender, EventArgs e)
 		{
 			_data._16Bit = checkBox16Bit.Checked;
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 
 		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)

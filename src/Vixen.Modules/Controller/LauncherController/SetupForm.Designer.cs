@@ -31,8 +31,6 @@
             this.button1.TabIndex = 4;
             this.button1.Text = "Save";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-            this.button1.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
             // 
             // chkHideLaunchedWindows
             // 
@@ -53,7 +51,9 @@
             this.ClientSize = new System.Drawing.Size(437, 138);
             this.Controls.Add(this.chkHideLaunchedWindows);
             this.Controls.Add(this.button1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
+            MinimizeBox = false;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "SetupForm";
             this.Text = "Launcher Controller Configuration";

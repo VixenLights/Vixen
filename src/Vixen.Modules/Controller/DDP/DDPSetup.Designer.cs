@@ -46,8 +46,6 @@
             this.buttonCancel.TabIndex = 4;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
-            this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-            this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
             // 
             // buttonOK
             // 
@@ -60,8 +58,6 @@
             this.buttonOK.TabIndex = 3;
             this.buttonOK.Text = "OK";
             this.buttonOK.UseVisualStyleBackColor = true;
-            this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-            this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
             // 
             // groupBox1
             // 
@@ -105,6 +101,8 @@
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.buttonCancel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
+            MinimizeBox = false;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MinimumSize = new System.Drawing.Size(439, 250);
             this.Name = "DDPSetup";

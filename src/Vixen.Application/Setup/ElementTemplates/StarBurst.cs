@@ -20,7 +20,6 @@ namespace VixenApplication.Setup.ElementTemplates
 		public Starburst()
 		{
 			InitializeComponent();
-			Icon = Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
 
 			_treeName = "Starburst";
@@ -113,19 +112,6 @@ namespace VixenApplication.Setup.ElementTemplates
 			_stringCount = Decimal.ToInt32(numericUpDownStrings.Value);
 			_pixelTree = checkBoxPixelTree.Checked;
 			_pixelsPerString = Decimal.ToInt32(numericUpDownPixelsPerString.Value);
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 	}
 }

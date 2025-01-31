@@ -51,8 +51,6 @@
 			this.btnOK.TabIndex = 1;
 			this.btnOK.Text = "OK";
 			this.btnOK.UseVisualStyleBackColor = true;
-			this.btnOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// pictureBoxIcon
 			// 
@@ -128,7 +126,6 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabelVixenDownLoadPage.AutoSize = true;
-			this.linkLabelVixenDownLoadPage.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
 			this.linkLabelVixenDownLoadPage.Location = new System.Drawing.Point(181, 40);
 			this.linkLabelVixenDownLoadPage.Name = "linkLabelVixenDownLoadPage";
 			this.linkLabelVixenDownLoadPage.Size = new System.Drawing.Size(589, 136);

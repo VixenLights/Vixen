@@ -135,15 +135,11 @@
 			// buttonDeleteFilter
 			// 
 			buttonDeleteFilter.AutoSize = true;
-			buttonDeleteFilter.BackColor = Color.Transparent;
-			buttonDeleteFilter.FlatAppearance.BorderSize = 0;
-			buttonDeleteFilter.FlatStyle = FlatStyle.Flat;
 			buttonDeleteFilter.Location = new Point(40, 3);
 			buttonDeleteFilter.Margin = new Padding(4, 3, 10, 3);
 			buttonDeleteFilter.Name = "buttonDeleteFilter";
 			buttonDeleteFilter.Size = new Size(28, 28);
 			buttonDeleteFilter.TabIndex = 43;
-			buttonDeleteFilter.Text = "-";
 			toolTip1.SetToolTip(buttonDeleteFilter, "Delete Filter");
 			buttonDeleteFilter.UseVisualStyleBackColor = false;
 			buttonDeleteFilter.Click += buttonDeleteFilter_Click;
@@ -151,15 +147,11 @@
 			// buttonAddFilter
 			// 
 			buttonAddFilter.AutoSize = true;
-			buttonAddFilter.BackColor = Color.Transparent;
-			buttonAddFilter.FlatAppearance.BorderSize = 0;
-			buttonAddFilter.FlatStyle = FlatStyle.Flat;
 			buttonAddFilter.Location = new Point(4, 3);
 			buttonAddFilter.Margin = new Padding(4, 3, 4, 3);
 			buttonAddFilter.Name = "buttonAddFilter";
 			buttonAddFilter.Size = new Size(28, 28);
 			buttonAddFilter.TabIndex = 44;
-			buttonAddFilter.Text = "+";
 			toolTip1.SetToolTip(buttonAddFilter, "Add Filter");
 			buttonAddFilter.UseVisualStyleBackColor = false;
 			buttonAddFilter.Click += buttonAddFilter_Click;
@@ -174,15 +166,11 @@
 			// buttonZoomIn
 			// 
 			buttonZoomIn.AutoSize = true;
-			buttonZoomIn.BackColor = Color.Transparent;
-			buttonZoomIn.FlatAppearance.BorderSize = 0;
-			buttonZoomIn.FlatStyle = FlatStyle.Flat;
 			buttonZoomIn.Location = new Point(82, 3);
 			buttonZoomIn.Margin = new Padding(4, 3, 4, 3);
 			buttonZoomIn.Name = "buttonZoomIn";
 			buttonZoomIn.Size = new Size(28, 28);
 			buttonZoomIn.TabIndex = 45;
-			buttonZoomIn.Text = "Z";
 			toolTip1.SetToolTip(buttonZoomIn, "Zoom In");
 			buttonZoomIn.UseVisualStyleBackColor = false;
 			buttonZoomIn.Click += buttonZoomIn_Click;
@@ -190,15 +178,11 @@
 			// buttonZoomOut
 			// 
 			buttonZoomOut.AutoSize = true;
-			buttonZoomOut.BackColor = Color.Transparent;
-			buttonZoomOut.FlatAppearance.BorderSize = 0;
-			buttonZoomOut.FlatStyle = FlatStyle.Flat;
 			buttonZoomOut.Location = new Point(118, 3);
 			buttonZoomOut.Margin = new Padding(4, 3, 4, 3);
 			buttonZoomOut.Name = "buttonZoomOut";
 			buttonZoomOut.Size = new Size(28, 28);
 			buttonZoomOut.TabIndex = 46;
-			buttonZoomOut.Text = "Z";
 			toolTip1.SetToolTip(buttonZoomOut, "Zoom Out");
 			buttonZoomOut.UseVisualStyleBackColor = false;
 			buttonZoomOut.Click += buttonZoomOut_Click;
@@ -206,15 +190,11 @@
 			// buttonZoomFit
 			// 
 			buttonZoomFit.AutoSize = true;
-			buttonZoomFit.BackColor = Color.Transparent;
-			buttonZoomFit.FlatAppearance.BorderSize = 0;
-			buttonZoomFit.FlatStyle = FlatStyle.Flat;
 			buttonZoomFit.Location = new Point(154, 3);
 			buttonZoomFit.Margin = new Padding(4, 3, 4, 3);
 			buttonZoomFit.Name = "buttonZoomFit";
 			buttonZoomFit.Size = new Size(28, 28);
 			buttonZoomFit.TabIndex = 47;
-			buttonZoomFit.Text = "Z";
 			toolTip1.SetToolTip(buttonZoomFit, "Zoom to Fit");
 			buttonZoomFit.UseVisualStyleBackColor = false;
 			buttonZoomFit.Click += buttonZoomFit_Click;

@@ -53,7 +53,7 @@
 		
 
         <WrapPanel Orientation="Horizontal" Style="{StaticResource RowButtonRightContainerStyle}" Grid.Row="1">
-            <Button Content="Ok" Command="{Binding OkCommand}" IsDefault="True" Style="{StaticResource RowButtonStyle}"/>
+            <Button Content="OK" Command="{Binding OkCommand}" IsDefault="True" Style="{StaticResource RowButtonStyle}"/>
             <Button Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True" Style="{StaticResource RowButtonStyle}"/>
         </WrapPanel>
     </Grid>

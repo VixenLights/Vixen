@@ -10,8 +10,6 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		public ColorBreakdownItemControl()
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			panelColor.BackColor = Color.White;
 			textBoxName.Text = "New Color";
@@ -20,6 +18,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		public ColorBreakdownItemControl(ColorBreakdownItem breakdownItem)
 		{
 			InitializeComponent();
+			ThemeUpdateControls.UpdateControls(this);
 			panelColor.BackColor = breakdownItem.Color;
 			textBoxName.Text = breakdownItem.Name;
 		}
@@ -27,6 +26,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		public ColorBreakdownItemControl(Color color, string name)
 		{
 			InitializeComponent();
+			ThemeUpdateControls.UpdateControls(this);
 			panelColor.BackColor = color;
 			textBoxName.Text = name;
 		}
@@ -60,19 +60,6 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 					panelColor.BackColor = cp.Color.ToRGB().ToArgb();
 				}
 			}
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 	}
 }

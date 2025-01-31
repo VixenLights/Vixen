@@ -25,10 +25,7 @@ namespace VixenModules.SequenceType.Vixen2x
 		public Vixen2xSequenceImporterForm(string Vixen2File, Vixen.Module.IModuleDataModel staticModuleData)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			Icon = Resources.Icon_Vixen3;
 
 			channelMappings = new List<ChannelMapping>();
 
@@ -171,17 +168,6 @@ namespace VixenModules.SequenceType.Vixen2x
 				convertButton.Enabled = true;
 				createMapButton.Text = "Edit Selected Map";
 			}
-		}
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 	}
 }

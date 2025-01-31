@@ -57,14 +57,11 @@ namespace VixenModules.Preview.VixenPreview
 
 		public VixenPreviewSetup3() {
 			InitializeComponent();
-			Icon = Resources.Icon_Vixen3;
 			var scaleFactor = ScalingTools.GetScaleFactor();
 			menuStrip.Renderer = new ThemeToolStripRenderer();
 			int imageSize = (int)(16 * scaleFactor);
 			menuStrip.ImageScalingSize = new Size(imageSize, imageSize);
 
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			int iconSize = (int)(24 * scaleFactor);
 			undoButton.Image = Tools.GetIcon(Resources.arrow_undo, iconSize);
 			undoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -79,10 +76,6 @@ namespace VixenModules.Preview.VixenPreview
 			btnCustomPropEditor.Image = Tools.GetIcon(Resources.Prop_Edit, iconSize);
 			btnCustomPropLibrary.Image = Tools.GetIcon(Resources.folder_explore, iconSize);
 
-			btnAddCustomProp.Text = string.Empty;
-			btnCustomPropEditor.Text = string.Empty;
-			btnCustomPropLibrary.Text = string.Empty;
-			
 			buttonAlignLeft.Image = Tools.GetIcon(Resources.buttonAlignLeft_BackgroundImage, iconSize);
 			buttonAlignBottom.Image = Tools.GetIcon(Resources.buttonAlignBottom_BackgroundImage, iconSize);
 			buttonAlignHorizMid.Image = Tools.GetIcon(Resources.buttonAlignHorizMid_BackgroundImage, iconSize);
@@ -93,24 +86,12 @@ namespace VixenModules.Preview.VixenPreview
 			buttonDistributeVertical.Image = Tools.GetIcon(Resources.buttonDistributeVertical_BackgroundImage, iconSize);
 			buttonMatchProperties.Image = Tools.GetIcon(Resources.buttonMatchProperties_BackgroundImage, iconSize);
 
-			buttonAlignLeft.Text = string.Empty;
-			buttonAlignBottom.Text = string.Empty;
-			buttonAlignHorizMid.Text = string.Empty;
-			buttonAlignRight.Text = string.Empty;
-			buttonAlignTop.Text = string.Empty;
-			buttonAlignVertMid.Text = string.Empty;
-			buttonDistributeHorizontal.Text = string.Empty;
-			buttonDistributeVertical.Text = string.Empty;
-			buttonMatchProperties.Text = string.Empty;
-
-			tlpToolBar.BorderStyle = BorderStyle.FixedSingle;
 			ThemeUpdateControls.UpdateControls(this);
 			panel10.BackColor = Color.Black;
 			foreach (Control c in panel10.Controls)
 			{
 				c.BackColor = Color.Black;
 			}
-			dockPanel.BackColor = ThemeColorTable.BackgroundColor;
 
 			var theme = new VS2015DarkTheme();
 			dockPanel.Theme = theme;

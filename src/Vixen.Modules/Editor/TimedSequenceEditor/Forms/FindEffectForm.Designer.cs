@@ -154,7 +154,6 @@
 			Controls.Add(listViewEffectStartTime);
 			Controls.Add(comboBoxAvailableEffect);
 			Controls.Add(linkLabel1);
-			ForeColor = Color.FromArgb(221, 221, 221);
 			Margin = new Padding(3, 2, 3, 2);
 			Name = "FindEffectForm";
 			Text = "Find Effects/Layers";

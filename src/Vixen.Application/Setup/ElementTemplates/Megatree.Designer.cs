@@ -124,8 +124,6 @@
 			this.buttonCancel.TabIndex = 5;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOk
 			// 
@@ -137,8 +135,6 @@
 			this.buttonOk.TabIndex = 4;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
-			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// numericUpDownStrings
 			// 
@@ -315,7 +311,6 @@
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(360, 253);
 			this.Name = "Megatree";
-			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

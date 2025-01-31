@@ -13,8 +13,6 @@ namespace VixenModules.Output.CommandController
 		public SetupForm(Data data)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			cboPortName.Items.Clear();
 
@@ -177,18 +175,6 @@ namespace VixenModules.Output.CommandController
 		private void cboPortName_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			RdsData.PortNumber = int.Parse(cboPortName.SelectedItem.ToString().Replace("COM", ""));
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

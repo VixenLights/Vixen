@@ -112,7 +112,6 @@
 			// 
 			this.checkBoxLinkGradients.AutoSize = true;
 			this.checkBoxLinkGradients.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.checkBoxLinkGradients.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBoxLinkGradients.Location = new System.Drawing.Point(0, 402);
 			this.checkBoxLinkGradients.Margin = new System.Windows.Forms.Padding(6);
 			this.checkBoxLinkGradients.Name = "checkBoxLinkGradients";
@@ -124,7 +123,6 @@
 			// listViewGradients
 			// 
 			this.listViewGradients.AllowDrop = true;
-			this.listViewGradients.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.listViewGradients.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.listViewGradients.Location = new System.Drawing.Point(0, 0);
 			this.listViewGradients.Margin = new System.Windows.Forms.Padding(6);

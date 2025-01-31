@@ -9,10 +9,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public MarkCollectionImportDialog()
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			Icon = Resources.Icon_Vixen3;
 		}
 
 		public bool IsVampBeatSelection
@@ -52,18 +49,5 @@ namespace VixenModules.Editor.TimedSequenceEditor
         public bool IsPapagayoSelection => radioPapagayo.Checked;
 
 		public bool IsXTimingSelection => radioXTiming.Checked;
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
-		}
 	}
 }

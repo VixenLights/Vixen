@@ -51,8 +51,6 @@
 			this.btnClose.Text = "Close";
 			this.btnClose.UseVisualStyleBackColor = true;
 			this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
-			this.btnClose.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnClose.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// btnReset
 			// 
@@ -65,8 +63,6 @@
 			this.btnReset.Text = "Reset";
 			this.btnReset.UseVisualStyleBackColor = true;
 			this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
-			this.btnReset.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnReset.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// flowLayoutPanel1
 			// 

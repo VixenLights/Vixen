@@ -17,14 +17,7 @@ namespace VixenModules.App.LipSyncApp
 		{
 			InitializeComponent();
 
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			markCollectionLabel.ForeColor = Color.Gray;
-			markAlignmentLabel.ForeColor = Color.Gray;
-			markStartOffsetLabel.ForeColor = Color.Gray;
-			markCollectionRadio.ForeColor = Color.Gray;
-			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
 			unMarkedPhonemes = 0;
 			_lastMarkIndex = -1;
 		}
@@ -394,18 +387,6 @@ namespace VixenModules.App.LipSyncApp
 			}
 			
 			buttonConvert.Enabled = !String.IsNullOrWhiteSpace(textBox.Text);
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Common.Resources.Properties.Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Common.Resources.Properties.Resources.ButtonBackgroundImage;
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

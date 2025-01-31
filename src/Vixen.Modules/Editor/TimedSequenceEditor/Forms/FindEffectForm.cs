@@ -23,7 +23,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			_layerManager = layerManager;
 			contextMenuStrip1.Renderer = new ThemeToolStripRenderer();
-			Icon = Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
 			TimelineControl = timelineControl;
 			timelineControl.ElementsFinishedMoving += TimelineControlOnElementsFinishedMoving;

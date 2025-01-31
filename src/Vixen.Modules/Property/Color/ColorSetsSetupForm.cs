@@ -14,17 +14,11 @@ namespace VixenModules.Property.Color
 		{
 			_data = colorStaticData;
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			
-			Icon = Resources.Icon_Vixen3;
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			buttonAddColor.Image = Tools.GetIcon(Resources.add, iconSize);
-			buttonAddColor.Text = "";
 			buttonAddColorSet.Image = Tools.GetIcon(Resources.add, iconSize);
-			buttonAddColorSet.Text = "";
 			buttonRemoveColorSet.Image = Tools.GetIcon(Resources.delete, iconSize);
-			buttonRemoveColorSet.Text = "";
 			ThemeUpdateControls.UpdateControls(this);
 			
 		}
@@ -232,18 +226,6 @@ namespace VixenModules.Property.Color
 						break;
 				}
 			}
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

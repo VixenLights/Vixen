@@ -14,10 +14,7 @@ namespace VixenModules.App.ColorGradients
 		public ColorGradientEditor(ColorGradient gradient, bool discreteColors, IEnumerable<Color> validDiscreteColors)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			Icon = Resources.Icon_Vixen3;
 
 			gradientEditPanel.GradientChanged += GradientChangedHandler;
 			Gradient = gradient;
@@ -181,19 +178,6 @@ namespace VixenModules.App.ColorGradients
 				DialogResult = DialogResult.OK;
 			if (e.KeyCode == Keys.Escape)
 				DialogResult = DialogResult.Cancel;
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 
 		#region Draw lines and GroupBox borders

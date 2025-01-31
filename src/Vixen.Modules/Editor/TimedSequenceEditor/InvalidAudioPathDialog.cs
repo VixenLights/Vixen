@@ -12,9 +12,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public InvalidAudioPathDialog(string audioPath)
 		{
 			InitializeComponent();
-			Icon = Resources.Icon_Vixen3;
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			label1.Text = string.Format("The audio file {0} could not be found at the following location:",
 				Path.GetFileName(audioPath));
@@ -37,19 +34,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			InvalidAudioDialogResult = InvalidAudioDialogResult.KeepAudio;
 			Close();
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 	}
 

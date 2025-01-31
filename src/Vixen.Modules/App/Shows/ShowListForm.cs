@@ -13,15 +13,10 @@ namespace VixenModules.App.Shows
 		{
 			InitializeComponent();
 
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
 			buttonAdd.Image = Tools.GetIcon(Resources.add, iconSize);
-			buttonAdd.Text = "";
 			buttonDelete.Image = Tools.GetIcon(Resources.delete, iconSize);
-			buttonDelete.Text = "";
 			buttonEdit.Image = Tools.GetIcon(Resources.pencil, iconSize);
-			buttonEdit.Text = "";
 			buttonHelp.Image = Tools.GetIcon(Resources.help, iconSize);
 			ThemeUpdateControls.UpdateControls(this);
 
@@ -144,18 +139,6 @@ namespace VixenModules.App.Shows
 					(lvItem.Tag as Show).Name = e.Label;
 				}
 			}
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

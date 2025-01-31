@@ -53,8 +53,6 @@
 			this.networkListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.networkListView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.networkListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.networkListView.CheckBoxes = true;
 			this.networkListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.controllerColumn,

@@ -63,7 +63,6 @@ namespace VixenApplication.Setup.ElementTemplates
 			// 
 			// numericUpDownHeight
 			// 
-			this.numericUpDownHeight.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.numericUpDownHeight.Location = new System.Drawing.Point(55, 22);
 			this.numericUpDownHeight.Maximum = new decimal(new int[] {
             1000,
@@ -95,8 +94,6 @@ namespace VixenApplication.Setup.ElementTemplates
 			this.buttonCancel.TabIndex = 6;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOk
 			// 
@@ -108,8 +105,6 @@ namespace VixenApplication.Setup.ElementTemplates
 			this.buttonOk.TabIndex = 5;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
-			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// numericUpDownWidth
 			// 
@@ -157,7 +152,6 @@ namespace VixenApplication.Setup.ElementTemplates
 			// 
 			this.textBoxName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBoxName.Location = new System.Drawing.Point(62, 20);
 			this.textBoxName.Name = "textBoxName";
 			this.textBoxName.Size = new System.Drawing.Size(485, 23);
@@ -373,7 +367,6 @@ namespace VixenApplication.Setup.ElementTemplates
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "PixelGrid";
-			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

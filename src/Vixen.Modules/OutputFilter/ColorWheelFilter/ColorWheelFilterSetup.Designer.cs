@@ -69,11 +69,9 @@ namespace VixenModules.OutputFilter.ColorWheelFilter
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 1;
-            this.buttonOk.Text = "Ok";
+            this.buttonOk.Text = "OK";
             this.buttonOk.UseVisualStyleBackColor = true;
             this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
-            this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-            this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
             // 
             // label1
             // 
@@ -119,6 +117,8 @@ namespace VixenModules.OutputFilter.ColorWheelFilter
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "DimmingFilterSetup";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            MaximizeBox = false;
+            MinimizeBox = false;
             this.Text = "Color Wheel Filter Setup";
             this.flowLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);

@@ -64,7 +64,6 @@
 			this.buttonDeleteItem.Name = "buttonDeleteItem";
 			this.buttonDeleteItem.Size = new System.Drawing.Size(28, 28);
 			this.buttonDeleteItem.TabIndex = 7;
-			this.buttonDeleteItem.Text = "-";
 			this.buttonDeleteItem.UseVisualStyleBackColor = true;
 			this.buttonDeleteItem.Click += new System.EventHandler(this.buttonDeleteItem_Click);
 			// 
@@ -75,7 +74,6 @@
 			this.buttonAddItem.Name = "buttonAddItem";
 			this.buttonAddItem.Size = new System.Drawing.Size(28, 28);
 			this.buttonAddItem.TabIndex = 5;
-			this.buttonAddItem.Text = "+";
 			this.buttonAddItem.UseVisualStyleBackColor = true;
 			this.buttonAddItem.Click += new System.EventHandler(this.buttonAddItem_Click);
 			// 
@@ -132,8 +130,6 @@
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
-			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonHelp
 			// 
@@ -233,8 +229,6 @@
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// tabControlShowItems
 			// 

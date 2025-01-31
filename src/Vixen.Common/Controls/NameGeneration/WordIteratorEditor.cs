@@ -10,8 +10,6 @@ namespace Common.Controls.NameGeneration
 		public WordIteratorEditor(WordIterator counter)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			_counter = counter;
 		}

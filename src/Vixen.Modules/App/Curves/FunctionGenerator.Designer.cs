@@ -88,14 +88,12 @@
 			// lnkHelp
 			// 
 			this.lnkHelp.AutoSize = true;
-			this.lnkHelp.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(200)))));
 			this.lnkHelp.Location = new System.Drawing.Point(24, 72);
 			this.lnkHelp.Name = "lnkHelp";
 			this.lnkHelp.Size = new System.Drawing.Size(29, 13);
 			this.lnkHelp.TabIndex = 7;
 			this.lnkHelp.TabStop = true;
 			this.lnkHelp.Text = "Help";
-			this.lnkHelp.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(0)))), ((int)(((byte)(100)))));
 			this.lnkHelp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHelp_LinkClicked);
 			// 
 			// FunctionGenerator

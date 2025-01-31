@@ -11,7 +11,10 @@ namespace Common.Controls.Theme
 
 		protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
 		{
-			e.TextColor = ThemeColorTable.ForeColor;
+			if (!e.Item.Enabled)
+				e.TextColor = ThemeColorTable.ForeColorDisabled;
+			else
+				e.TextColor = ThemeColorTable.ForeColor;
 			base.OnRenderItemText(e);
 		}
 
@@ -168,9 +171,9 @@ namespace Common.Controls.Theme
 			using (PathGradientBrush pthGrBrush = new PathGradientBrush(path))
 			{
 				// Set the color at the center of the path.
-				pthGrBrush.CenterColor = ColorTable.ButtonSelectedGradientBegin;
+				pthGrBrush.CenterColor =  ThemeColorTable.ButtonBackColorHover;
 
-				Color[] colors = { ColorTable.ButtonSelectedGradientEnd };
+				Color[] colors = { ThemeColorTable.ButtonBackColorHover };
 				pthGrBrush.SurroundColors = colors;
 
 				g.FillRectangle(pthGrBrush, bounds.X, bounds.Y, bounds.Width - 1, bounds.Height - 1);

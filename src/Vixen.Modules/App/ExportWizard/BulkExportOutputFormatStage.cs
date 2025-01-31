@@ -32,7 +32,6 @@ namespace VixenModules.App.ExportWizard
 
 			ThemeUpdateControls.UpdateControls(this);
 
-			txtFalconInfo.BackColor = ThemeColorTable.BackgroundColor;
 			SizeFalconInfo();
 		}
 

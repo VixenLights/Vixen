@@ -78,7 +78,6 @@
 			// numericUpDownLightCount
 			// 
 			this.numericUpDownLightCount.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.numericUpDownLightCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.numericUpDownLightCount.Location = new System.Drawing.Point(129, 6);
 			this.numericUpDownLightCount.Margin = new System.Windows.Forms.Padding(2);
 			this.numericUpDownLightCount.Maximum = new decimal(new int[] {
@@ -111,8 +110,6 @@
 			this.buttonSetLightCount.Text = "Set";
 			this.buttonSetLightCount.UseVisualStyleBackColor = true;
 			this.buttonSetLightCount.Click += new System.EventHandler(this.buttonSetLightCount_Click);
-			this.buttonSetLightCount.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonSetLightCount.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// label11
 			// 
@@ -156,7 +153,6 @@
 			// treeElements
 			// 
 			this.treeElements.AllowDrop = true;
-			this.treeElements.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.treeElements.Cursor = System.Windows.Forms.Cursors.Default;
 			this.treeElements.CustomDragCursor = null;
 			this.treeElements.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -192,7 +188,6 @@
 			this.comboStrings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
 			this.comboStrings.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.comboStrings.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboStrings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboStrings.FormattingEnabled = true;
 			this.comboStrings.Location = new System.Drawing.Point(91, 6);
 			this.comboStrings.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
@@ -205,7 +200,6 @@
 			// listLinkedElements
 			// 
 			this.listLinkedElements.AllowDrop = true;
-			this.listLinkedElements.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.listLinkedElements.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
@@ -287,8 +281,6 @@
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
-			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonCancel
 			// 
@@ -302,8 +294,6 @@
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonHelp
 			// 
@@ -314,10 +304,11 @@
 			this.buttonHelp.Location = new System.Drawing.Point(10, 521);
 			this.buttonHelp.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
 			this.buttonHelp.Name = "buttonHelp";
-			this.buttonHelp.Size = new System.Drawing.Size(24, 27);
+			this.buttonHelp.Size = new System.Drawing.Size(70, 27);
 			this.buttonHelp.TabIndex = 22;
 			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.buttonHelp.UseVisualStyleBackColor = true;
+			this.buttonHelp.Text = "Help";
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
 			// 
 			// label2

@@ -13,10 +13,7 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 		public ChromaKeySetup(ChromaKeyData data)
 	    {
 	        InitializeComponent();
-	        ForeColor = ThemeColorTable.ForeColor;
-	        BackColor = ThemeColorTable.BackgroundColor;
 	        ThemeUpdateControls.UpdateControls(this);
-			Icon = Resources.Icon_Vixen3;
 		    _lowerLimit = (int)(data.LowerLimit * 100);
 		    _upperLimit = (int)(data.UpperLimit * 100);
 			UpdateLimitControls();
@@ -39,18 +36,6 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
         public float SaturationTolerance { get; private set; }
 
 		public bool TransparentOnZeroBrightness { get; private set; }
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-		}
 
 	    private void trkLowerLimit_Scroll(object sender, EventArgs e)
 	    {

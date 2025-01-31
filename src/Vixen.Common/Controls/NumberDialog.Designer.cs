@@ -47,8 +47,6 @@
 			button2.TabIndex = 3;
 			button2.Text = "Cancel";
 			button2.UseVisualStyleBackColor = true;
-			button2.MouseLeave += buttonBackground_MouseLeave;
-			button2.MouseHover += buttonBackground_MouseHover;
 			// 
 			// button1
 			// 
@@ -61,8 +59,6 @@
 			button1.TabIndex = 2;
 			button1.Text = "OK";
 			button1.UseVisualStyleBackColor = true;
-			button1.MouseLeave += buttonBackground_MouseLeave;
-			button1.MouseHover += buttonBackground_MouseHover;
 			// 
 			// labelPrompt
 			// 
@@ -77,7 +73,6 @@
 			// numericUpDownChooser
 			// 
 			numericUpDownChooser.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-			numericUpDownChooser.BorderStyle = BorderStyle.FixedSingle;
 			numericUpDownChooser.Location = new Point(253, 29);
 			numericUpDownChooser.Margin = new Padding(4, 3, 4, 3);
 			numericUpDownChooser.Name = "numericUpDownChooser";
@@ -95,7 +90,6 @@
 			Controls.Add(button1);
 			Controls.Add(labelPrompt);
 			FormBorderStyle = FormBorderStyle.FixedDialog;
-			Icon = (Icon)resources.GetObject("$this.Icon");
 			KeyPreview = true;
 			Margin = new Padding(4, 3, 4, 3);
 			MaximizeBox = false;

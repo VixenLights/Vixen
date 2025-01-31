@@ -9,12 +9,9 @@ namespace VixenModules.LayerMixingFilter.MaskFill
 		public MaskAndFillSetup(bool excludeZeroValues, bool requireMixingPartner)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			ExcludeZeroValuesValues = chkExcludeZero.Checked= excludeZeroValues;
 			RequireMixingPartner = chkRequireMixingPartner.Checked = requireMixingPartner;
-			Icon = Resources.Icon_Vixen3;
 			
 		}
 
@@ -30,20 +27,5 @@ namespace VixenModules.LayerMixingFilter.MaskFill
 		{
 			RequireMixingPartner = chkRequireMixingPartner.Checked;
 		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
-		}
-
-		
 	}
 }

@@ -8,8 +8,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public PreviewCustomSetupControl(PreviewLightBaseShape shape) : base(shape)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			comboBoxStringToEdit.ForeColor = ThemeColorTable.ForeColor;
 
@@ -101,18 +99,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					ShowSetupControl(shape);
 				}
 			}
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 
 		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)

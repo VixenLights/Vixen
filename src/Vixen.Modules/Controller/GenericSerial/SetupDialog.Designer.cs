@@ -53,8 +53,6 @@
 			this.btnCancel.TabIndex = 3;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
-			this.btnCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// btnOkay
 			// 
@@ -66,8 +64,6 @@
 			this.btnOkay.Text = "OK";
 			this.btnOkay.UseVisualStyleBackColor = true;
 			this.btnOkay.Click += new System.EventHandler(this.btnOkay_Click);
-			this.btnOkay.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnOkay.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// gbPacketData
 			// 
@@ -130,8 +126,6 @@
 			this.btnPortSetup.Text = "Setup/Change Serial Port";
 			this.btnPortSetup.UseVisualStyleBackColor = true;
 			this.btnPortSetup.Click += new System.EventHandler(this.btnPortSetup_Click);
-			this.btnPortSetup.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnPortSetup.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// groupBox1
 			// 

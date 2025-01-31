@@ -21,7 +21,6 @@ namespace VixenModules.OutputFilter.DimmingCurve
 			ThemeUpdateControls.UpdateControls(this);
 			SimpleMode = simpleMode;
 			_curve = new Curve();
-			Icon = Resources.Icon_Vixen3;
 		}
 
 		public DimmingCurveHelper():this(false)
@@ -197,20 +196,7 @@ namespace VixenModules.OutputFilter.DimmingCurve
 			AddInsertAfterElement
 		}
 
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
-		}
-
-		private void DimmingCurveHelper_HelpButtonClicked(object sender, CancelEventArgs e)
+		private void DimmingCurveHelper_HelpButtonClicked(object sender, EventArgs e)
 		{
 			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Patching);
 		}

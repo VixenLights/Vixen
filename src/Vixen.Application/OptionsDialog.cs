@@ -11,7 +11,6 @@ namespace VixenApplication
 		{
 			InitializeComponent();
 			ThemeUpdateControls.UpdateControls(this);
-			Icon = Resources.Icon_Vixen3;
 		}
 
 		private void OptionsDialog_Load(object sender, EventArgs e)
@@ -37,19 +36,6 @@ namespace VixenApplication
 			AudioOutputManager.Instance().Latency = (int)wasapiLatency.Value;
 			Vixen.Sys.VixenSystem.ClearEffectCacheOnExit = chkBoxClearEffectCacheOnExit.Checked;
 			Vixen.Sys.VixenSystem.VideoEffect_CacheFileType = cmbBoxVideoEffectCacheFileType.Text;
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 	}
 }

@@ -100,18 +100,5 @@ namespace VixenApplication.Setup.ElementTemplates
 			Prefix = textBoxItemPrefix.Text;
 			Count = Decimal.ToInt32(numericUpDownItemCount.Value);
 		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
-		}
 	}
 }

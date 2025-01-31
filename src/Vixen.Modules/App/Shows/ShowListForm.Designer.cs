@@ -94,7 +94,6 @@
 			this.buttonDelete.Name = "buttonDelete";
 			this.buttonDelete.Size = new System.Drawing.Size(28, 28);
 			this.buttonDelete.TabIndex = 14;
-			this.buttonDelete.Text = "-";
 			this.buttonDelete.UseVisualStyleBackColor = true;
 			this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
 			// 
@@ -104,7 +103,6 @@
 			this.buttonEdit.Name = "buttonEdit";
 			this.buttonEdit.Size = new System.Drawing.Size(28, 28);
 			this.buttonEdit.TabIndex = 13;
-			this.buttonEdit.Text = "E";
 			this.buttonEdit.UseVisualStyleBackColor = true;
 			this.buttonEdit.Click += new System.EventHandler(this.buttonEdit_Click);
 			// 
@@ -114,7 +112,6 @@
 			this.buttonAdd.Name = "buttonAdd";
 			this.buttonAdd.Size = new System.Drawing.Size(28, 28);
 			this.buttonAdd.TabIndex = 12;
-			this.buttonAdd.Text = "+";
 			this.buttonAdd.UseVisualStyleBackColor = true;
 			this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
 			// 
@@ -141,8 +138,6 @@
 			this.buttonOK.Text = "Close";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
-			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// ShowListForm
 			// 

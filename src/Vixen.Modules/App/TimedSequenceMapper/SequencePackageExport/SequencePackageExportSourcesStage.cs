@@ -21,13 +21,8 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageExport
 
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			btnAdd.Image = Tools.GetIcon(Resources.folder_open, iconSize);
-			btnAdd.Text = string.Empty;
-
 			btnAddAll.Image = Tools.GetIcon(Resources.document_copies, iconSize);
-			btnAddAll.Text = String.Empty;
-			
 			btnDelete.Image = Tools.GetIcon(Resources.delete_32, iconSize);
-			btnDelete.Text = string.Empty;
 
 			ThemeUpdateControls.UpdateControls(this);
 		}

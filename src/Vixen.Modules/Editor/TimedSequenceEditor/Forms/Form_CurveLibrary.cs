@@ -75,7 +75,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 
 			TimelineControl = timelineControl;
-			Icon = Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
 			toolStripCurves.Renderer = new ThemeToolStripRenderer();
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
@@ -104,8 +103,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_curveLibraryTextScale = 0.2;
 			ImageSetup();
 
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			//Over-ride the auto theme listview back color
 			listViewCurves.BackColor = ThemeColorTable.BackgroundColor;

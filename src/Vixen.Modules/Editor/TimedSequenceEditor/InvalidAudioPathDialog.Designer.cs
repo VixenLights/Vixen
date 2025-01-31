@@ -46,8 +46,6 @@
 			this.buttonLocateAudio.Text = "Select New Audio";
 			this.buttonLocateAudio.UseVisualStyleBackColor = true;
 			this.buttonLocateAudio.Click += new System.EventHandler(this.buttonLocateAudio_Click);
-			this.buttonLocateAudio.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonLocateAudio.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonRemoveAudio
 			// 
@@ -59,8 +57,6 @@
 			this.buttonRemoveAudio.Text = "Forget This Audio";
 			this.buttonRemoveAudio.UseVisualStyleBackColor = true;
 			this.buttonRemoveAudio.Click += new System.EventHandler(this.buttonRemoveAudio_Click);
-			this.buttonRemoveAudio.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonRemoveAudio.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonKeepAudio
 			// 
@@ -72,8 +68,6 @@
 			this.buttonKeepAudio.Text = "Proceed As Is";
 			this.buttonKeepAudio.UseVisualStyleBackColor = true;
 			this.buttonKeepAudio.Click += new System.EventHandler(this.buttonKeepAudio_Click);
-			this.buttonKeepAudio.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonKeepAudio.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// label1
 			// 
@@ -107,7 +101,6 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
 			this.ClientSize = new System.Drawing.Size(632, 172);
-			this.ControlBox = false;
 			this.Controls.Add(this.labelAudioPath);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
@@ -115,6 +108,8 @@
 			this.Controls.Add(this.buttonRemoveAudio);
 			this.Controls.Add(this.buttonLocateAudio);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			MaximizeBox = false;
+			MinimizeBox = false;
 			this.Name = "InvalidAudioPathDialog";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Missing Audio File";

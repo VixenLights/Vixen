@@ -11,8 +11,6 @@ namespace VixenModules.Property.Grid
 		public SetupForm(int width, int height, int productRequired)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			_Width = width;
 			_Height = height;
@@ -76,19 +74,6 @@ namespace VixenModules.Property.Grid
 		{
 			SelectedWidth = _Width;
 			SelectedHeight = _Height;
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 	}
 }

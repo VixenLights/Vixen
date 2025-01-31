@@ -37,7 +37,6 @@ namespace Common.Controls
 		public NameGenerator()
 		{
 			InitializeComponent();
-			Icon = Resources.Properties.Resources.Icon_Vixen3;
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			buttonMoveRuleUp.Image = Tools.GetIcon(Resources.Properties.Resources.arrow_up, iconSize);
 			buttonMoveRuleUp.Text = "";
@@ -47,8 +46,6 @@ namespace Common.Controls
 			buttonAddNewRule.Text = "";
 			buttonDeleteRule.Image = Tools.GetIcon(Resources.Properties.Resources.delete, iconSize);
 			buttonDeleteRule.Text = "";
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 
 			Generators = new List<INamingGenerator>();
@@ -427,19 +424,6 @@ namespace Common.Controls
 		private void numericUpDownItemCount_ValueChanged(object sender, EventArgs e)
 		{
 			PopulateNames();
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImage;
-
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

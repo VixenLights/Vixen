@@ -68,122 +68,122 @@ namespace VixenModules.Controller.E131
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutBox));
-			this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-			this.logoPictureBox = new System.Windows.Forms.PictureBox();
-			this.labelProductName = new System.Windows.Forms.Label();
-			this.labelVersion = new System.Windows.Forms.Label();
-			this.textBoxDescription = new System.Windows.Forms.TextBox();
-			this.okButton = new System.Windows.Forms.Button();
-			this.tableLayoutPanel.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).BeginInit();
-			this.SuspendLayout();
+			tableLayoutPanel = new TableLayoutPanel();
+			logoPictureBox = new PictureBox();
+			labelProductName = new Label();
+			labelVersion = new Label();
+			textBoxDescription = new TextBox();
+			okButton = new Button();
+			tableLayoutPanel.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)logoPictureBox).BeginInit();
+			SuspendLayout();
 			// 
 			// tableLayoutPanel
 			// 
-			this.tableLayoutPanel.ColumnCount = 2;
-			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33F));
-			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 67F));
-			this.tableLayoutPanel.Controls.Add(this.logoPictureBox, 0, 0);
-			this.tableLayoutPanel.Controls.Add(this.labelProductName, 1, 0);
-			this.tableLayoutPanel.Controls.Add(this.labelVersion, 1, 1);
-			this.tableLayoutPanel.Controls.Add(this.textBoxDescription, 1, 2);
-			this.tableLayoutPanel.Controls.Add(this.okButton, 1, 3);
-			this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel.Location = new System.Drawing.Point(9, 9);
-			this.tableLayoutPanel.Name = "tableLayoutPanel";
-			this.tableLayoutPanel.RowCount = 4;
-			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-			this.tableLayoutPanel.Size = new System.Drawing.Size(517, 365);
-			this.tableLayoutPanel.TabIndex = 0;
+			tableLayoutPanel.ColumnCount = 2;
+			tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33F));
+			tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 67F));
+			tableLayoutPanel.Controls.Add(logoPictureBox, 0, 0);
+			tableLayoutPanel.Controls.Add(labelProductName, 1, 0);
+			tableLayoutPanel.Controls.Add(labelVersion, 1, 1);
+			tableLayoutPanel.Controls.Add(textBoxDescription, 1, 2);
+			tableLayoutPanel.Controls.Add(okButton, 1, 3);
+			tableLayoutPanel.Dock = DockStyle.Fill;
+			tableLayoutPanel.Location = new Point(10, 10);
+			tableLayoutPanel.Margin = new Padding(4, 3, 4, 3);
+			tableLayoutPanel.Name = "tableLayoutPanel";
+			tableLayoutPanel.RowCount = 4;
+			tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+			tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+			tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+			tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+			tableLayoutPanel.Size = new Size(604, 422);
+			tableLayoutPanel.TabIndex = 0;
 			// 
 			// logoPictureBox
 			// 
-			this.logoPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.logoPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("logoPictureBox.Image")));
-			this.logoPictureBox.Location = new System.Drawing.Point(3, 3);
-			this.logoPictureBox.Name = "logoPictureBox";
-			this.tableLayoutPanel.SetRowSpan(this.logoPictureBox, 4);
-			this.logoPictureBox.Size = new System.Drawing.Size(164, 359);
-			this.logoPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-			this.logoPictureBox.TabIndex = 12;
-			this.logoPictureBox.TabStop = false;
+			logoPictureBox.Dock = DockStyle.Fill;
+			logoPictureBox.Image = (Image)resources.GetObject("logoPictureBox.Image");
+			logoPictureBox.Location = new Point(4, 3);
+			logoPictureBox.Margin = new Padding(4, 3, 4, 3);
+			logoPictureBox.Name = "logoPictureBox";
+			tableLayoutPanel.SetRowSpan(logoPictureBox, 4);
+			logoPictureBox.Size = new Size(191, 416);
+			logoPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+			logoPictureBox.TabIndex = 12;
+			logoPictureBox.TabStop = false;
 			// 
 			// labelProductName
 			// 
-			this.labelProductName.AutoSize = true;
-			this.labelProductName.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelProductName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.labelProductName.ForeColor = System.Drawing.SystemColors.MenuHighlight;
-			this.labelProductName.Location = new System.Drawing.Point(176, 0);
-			this.labelProductName.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
-			this.labelProductName.MaximumSize = new System.Drawing.Size(0, 30);
-			this.labelProductName.Name = "labelProductName";
-			this.labelProductName.Size = new System.Drawing.Size(338, 30);
-			this.labelProductName.TabIndex = 19;
-			this.labelProductName.Text = "Product Name";
-			this.labelProductName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			labelProductName.AutoSize = true;
+			labelProductName.Dock = DockStyle.Fill;
+			labelProductName.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+			labelProductName.Location = new Point(206, 0);
+			labelProductName.Margin = new Padding(7, 0, 4, 0);
+			labelProductName.MaximumSize = new Size(0, 35);
+			labelProductName.Name = "labelProductName";
+			labelProductName.Size = new Size(394, 35);
+			labelProductName.TabIndex = 19;
+			labelProductName.Text = "Product Name";
+			labelProductName.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// labelVersion
 			// 
-			this.labelVersion.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelVersion.Location = new System.Drawing.Point(176, 45);
-			this.labelVersion.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
-			this.labelVersion.MaximumSize = new System.Drawing.Size(0, 17);
-			this.labelVersion.Name = "labelVersion";
-			this.labelVersion.Size = new System.Drawing.Size(338, 17);
-			this.labelVersion.TabIndex = 0;
-			this.labelVersion.Text = "Version";
-			this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			labelVersion.Dock = DockStyle.Fill;
+			labelVersion.Location = new Point(206, 52);
+			labelVersion.Margin = new Padding(7, 0, 4, 0);
+			labelVersion.MaximumSize = new Size(0, 20);
+			labelVersion.Name = "labelVersion";
+			labelVersion.Size = new Size(394, 20);
+			labelVersion.TabIndex = 0;
+			labelVersion.Text = "Version";
+			labelVersion.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// textBoxDescription
 			// 
-			this.textBoxDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.textBoxDescription.Location = new System.Drawing.Point(176, 93);
-			this.textBoxDescription.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
-			this.textBoxDescription.Multiline = true;
-			this.textBoxDescription.Name = "textBoxDescription";
-			this.textBoxDescription.ReadOnly = true;
-			this.textBoxDescription.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.textBoxDescription.Size = new System.Drawing.Size(338, 222);
-			this.textBoxDescription.TabIndex = 23;
-			this.textBoxDescription.TabStop = false;
-			this.textBoxDescription.Text = "Description";
+			textBoxDescription.Dock = DockStyle.Fill;
+			textBoxDescription.Location = new Point(206, 107);
+			textBoxDescription.Margin = new Padding(7, 3, 4, 3);
+			textBoxDescription.Multiline = true;
+			textBoxDescription.Name = "textBoxDescription";
+			textBoxDescription.ReadOnly = true;
+			textBoxDescription.ScrollBars = ScrollBars.Both;
+			textBoxDescription.Size = new Size(394, 257);
+			textBoxDescription.TabIndex = 23;
+			textBoxDescription.TabStop = false;
+			textBoxDescription.Text = "Description";
 			// 
 			// okButton
 			// 
-			this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.okButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.okButton.Location = new System.Drawing.Point(439, 339);
-			this.okButton.Name = "okButton";
-			this.okButton.Size = new System.Drawing.Size(75, 23);
-			this.okButton.TabIndex = 24;
-			this.okButton.Text = "&OK";
+			okButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+			okButton.DialogResult = DialogResult.Cancel;
+			okButton.Location = new Point(512, 392);
+			okButton.Margin = new Padding(4, 3, 4, 3);
+			okButton.Name = "okButton";
+			okButton.Size = new Size(88, 27);
+			okButton.TabIndex = 24;
+			okButton.Text = "&OK";
 			// 
 			// AboutBox
 			// 
-			this.AcceptButton = this.okButton;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(535, 383);
-			this.Controls.Add(this.tableLayoutPanel);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.Name = "AboutBox";
-			this.Padding = new System.Windows.Forms.Padding(9);
-			this.ShowIcon = false;
-			this.ShowInTaskbar = false;
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "AboutBox";
-			this.tableLayoutPanel.ResumeLayout(false);
-			this.tableLayoutPanel.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).EndInit();
-			this.ResumeLayout(false);
-
+			AcceptButton = okButton;
+			AutoScaleDimensions = new SizeF(7F, 15F);
+			AutoScaleMode = AutoScaleMode.Font;
+			ClientSize = new Size(624, 442);
+			Controls.Add(tableLayoutPanel);
+			FormBorderStyle = FormBorderStyle.FixedDialog;
+			Margin = new Padding(4, 3, 4, 3);
+			MaximizeBox = false;
+			MinimizeBox = false;
+			Name = "AboutBox";
+			Padding = new Padding(10);
+			ShowInTaskbar = false;
+			StartPosition = FormStartPosition.CenterParent;
+			Text = "AboutBox";
+			tableLayoutPanel.ResumeLayout(false);
+			tableLayoutPanel.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)logoPictureBox).EndInit();
+			ResumeLayout(false);
 		}
 
 		#endregion

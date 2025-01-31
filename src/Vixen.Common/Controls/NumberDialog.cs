@@ -7,7 +7,6 @@ namespace Common.Controls
 		public NumberDialog(string title, string prompt, int value, int minimum = 0, int maximum = int.MaxValue)
 		{
 			InitializeComponent();
-			Icon = Resources.Properties.Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
 
 			numericUpDownChooser.Minimum = minimum;
@@ -32,19 +31,6 @@ namespace Common.Controls
 			{
 				DialogResult = DialogResult.Cancel;
 			}
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImage;
-
 		}
 	}
 }

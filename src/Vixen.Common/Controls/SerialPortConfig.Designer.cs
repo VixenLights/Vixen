@@ -92,7 +92,6 @@
 			// 
 			this.comboBoxStopBits.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.comboBoxStopBits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxStopBits.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxStopBits.FormattingEnabled = true;
 			this.comboBoxStopBits.Location = new System.Drawing.Point(103, 134);
 			this.comboBoxStopBits.Name = "comboBoxStopBits";
@@ -104,7 +103,6 @@
 			// 
 			this.comboBoxParity.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.comboBoxParity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxParity.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxParity.FormattingEnabled = true;
 			this.comboBoxParity.Location = new System.Drawing.Point(103, 81);
 			this.comboBoxParity.Name = "comboBoxParity";
@@ -150,7 +148,6 @@
 			// 
 			// textBoxDataBits
 			// 
-			this.textBoxDataBits.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBoxDataBits.Location = new System.Drawing.Point(103, 108);
 			this.textBoxDataBits.MaxLength = 1;
 			this.textBoxDataBits.Name = "textBoxDataBits";
@@ -170,7 +167,6 @@
 			// 
 			this.comboBoxPortName.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.comboBoxPortName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxPortName.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxPortName.FormattingEnabled = true;
 			this.comboBoxPortName.Location = new System.Drawing.Point(103, 27);
 			this.comboBoxPortName.Name = "comboBoxPortName";
@@ -189,8 +185,6 @@
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
-			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonCancel
 			// 
@@ -202,8 +196,6 @@
 			this.buttonCancel.TabIndex = 2;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// currentConfiguredPortLabel
 			// 

@@ -16,10 +16,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public BulkEffectMoveForm(TimeSpan startTime)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			Icon = Resources.Icon_Vixen3;
 			Start = startTime;
 			End = startTime;
 			Offset = TimeSpan.Zero;
@@ -201,19 +198,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				btnOk.Enabled = false;
 			}
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

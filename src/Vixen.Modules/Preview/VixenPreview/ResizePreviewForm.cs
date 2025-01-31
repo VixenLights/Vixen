@@ -13,8 +13,6 @@ namespace VixenModules.Preview.VixenPreview
 		public ResizePreviewForm(int width, int height, bool scaleShapes)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			_origWidth = width;
 			_origHeight = height;
@@ -88,18 +86,5 @@ namespace VixenModules.Preview.VixenPreview
                 numericHeight.Value = (int)((double)_origHeight * aspect);
             }
         }
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
-		}
 	}
 }

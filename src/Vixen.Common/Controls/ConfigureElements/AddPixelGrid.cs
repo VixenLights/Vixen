@@ -7,8 +7,6 @@ namespace Common.Controls.ConfigureElements
 		public AddPixelGrid()
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 		}
 
@@ -37,19 +35,6 @@ namespace Common.Controls.ConfigureElements
 		public int StringCount
 		{
 			get { return Convert.ToInt32(Strings.Value); }
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImage;
-
 		}
 	}
 }

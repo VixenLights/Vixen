@@ -38,9 +38,7 @@
 			// 
 			this.textBoxTreeName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxTreeName.BackColor = System.Drawing.SystemColors.Control;
 			this.textBoxTreeName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.textBoxTreeName.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.textBoxTreeName.Location = new System.Drawing.Point(127, 27);
 			this.textBoxTreeName.Name = "textBoxTreeName";
 			this.textBoxTreeName.Size = new System.Drawing.Size(203, 23);
@@ -50,7 +48,6 @@
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label6.Location = new System.Drawing.Point(14, 29);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(88, 15);
@@ -61,46 +58,29 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.buttonCancel.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.buttonCancel.Location = new System.Drawing.Point(225, 83);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(105, 29);
 			this.buttonCancel.TabIndex = 20;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOk
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.buttonOk.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonOk.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonOk.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonOk.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.buttonOk.Location = new System.Drawing.Point(113, 83);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Size = new System.Drawing.Size(105, 29);
 			this.buttonOk.TabIndex = 19;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
-			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// LipSync
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
-			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.ClientSize = new System.Drawing.Size(344, 127);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOk);

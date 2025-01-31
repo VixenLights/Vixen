@@ -10,10 +10,7 @@ namespace VixenModules.Property.Color
 		public ColorSetupForm()
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			Icon = Resources.Icon_Vixen3;
 		}
 
 		public ColorModule ColorModule { get; set; }
@@ -108,18 +105,6 @@ namespace VixenModules.Property.Color
 		private void colorPanelSingleColor_ColorChanged(object sender, ColorPanelEventArgs e)
 		{
 			ColorModule.SingleColor = colorPanelSingleColor.Color;
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

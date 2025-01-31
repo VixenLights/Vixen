@@ -53,9 +53,6 @@
 			// 
 			// nameTextBox
 			// 
-			this.nameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
-			this.nameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.nameTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.nameTextBox.Location = new System.Drawing.Point(59, 28);
 			this.nameTextBox.Name = "nameTextBox";
 			this.nameTextBox.Size = new System.Drawing.Size(177, 23);
@@ -64,7 +61,6 @@
 			// nameLabel
 			// 
 			this.nameLabel.AutoSize = true;
-			this.nameLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.nameLabel.Location = new System.Drawing.Point(14, 30);
 			this.nameLabel.Name = "nameLabel";
 			this.nameLabel.Size = new System.Drawing.Size(39, 15);
@@ -74,7 +70,6 @@
 			// phonemeLabel
 			// 
 			this.phonemeLabel.AutoSize = true;
-			this.phonemeLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.phonemeLabel.Location = new System.Drawing.Point(105, 62);
 			this.phonemeLabel.Name = "phonemeLabel";
 			this.phonemeLabel.Size = new System.Drawing.Size(58, 15);
@@ -84,9 +79,6 @@
 			// 
 			// nextPhonemeButton
 			// 
-			this.nextPhonemeButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.nextPhonemeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.nextPhonemeButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.nextPhonemeButton.Location = new System.Drawing.Point(167, 100);
 			this.nextPhonemeButton.Name = "nextPhonemeButton";
 			this.nextPhonemeButton.Size = new System.Drawing.Size(42, 27);
@@ -97,9 +89,6 @@
 			// 
 			// prevPhonemeButton
 			// 
-			this.prevPhonemeButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.prevPhonemeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.prevPhonemeButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.prevPhonemeButton.Location = new System.Drawing.Point(55, 100);
 			this.prevPhonemeButton.Name = "prevPhonemeButton";
 			this.prevPhonemeButton.Size = new System.Drawing.Size(42, 27);
@@ -121,12 +110,6 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.buttonCancel.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.buttonCancel.Location = new System.Drawing.Point(149, 342);
 			this.buttonCancel.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
 			this.buttonCancel.Name = "buttonCancel";
@@ -134,19 +117,11 @@
 			this.buttonCancel.TabIndex = 15;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOK
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.buttonOK.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonOK.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonOK.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonOK.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.buttonOK.Location = new System.Drawing.Point(52, 342);
 			this.buttonOK.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
 			this.buttonOK.Name = "buttonOK";
@@ -155,8 +130,6 @@
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
-			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// flowLayoutImportExportButtons
 			// 
@@ -173,9 +146,6 @@
 			// 
 			// openButton
 			// 
-			this.openButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.openButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.openButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.openButton.Location = new System.Drawing.Point(3, 3);
 			this.openButton.Name = "openButton";
 			this.openButton.Size = new System.Drawing.Size(48, 25);
@@ -186,9 +156,6 @@
 			// 
 			// editButton
 			// 
-			this.editButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.editButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.editButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.editButton.Location = new System.Drawing.Point(3, 34);
 			this.editButton.Name = "editButton";
 			this.editButton.Size = new System.Drawing.Size(48, 25);
@@ -199,9 +166,6 @@
 			// 
 			// clearButton
 			// 
-			this.clearButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.clearButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.clearButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.clearButton.Location = new System.Drawing.Point(3, 65);
 			this.clearButton.Name = "clearButton";
 			this.clearButton.Size = new System.Drawing.Size(48, 25);
@@ -227,9 +191,7 @@
 			// 
 			// renderedPicture
 			// 
-			this.renderedPicture.BackColor = System.Drawing.Color.Transparent;
 			this.renderedPicture.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("renderedPicture.BackgroundImage")));
-			this.renderedPicture.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.renderedPicture.Location = new System.Drawing.Point(3, 3);
 			this.renderedPicture.Name = "renderedPicture";
 			this.renderedPicture.Size = new System.Drawing.Size(96, 95);
@@ -240,7 +202,6 @@
 			// notesLabel
 			// 
 			this.notesLabel.AutoSize = true;
-			this.notesLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.notesLabel.Location = new System.Drawing.Point(14, 272);
 			this.notesLabel.Name = "notesLabel";
 			this.notesLabel.Size = new System.Drawing.Size(41, 15);
@@ -249,9 +210,6 @@
 			// 
 			// notesTextBox
 			// 
-			this.notesTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
-			this.notesTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.notesTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.notesTextBox.Location = new System.Drawing.Point(59, 270);
 			this.notesTextBox.Multiline = true;
 			this.notesTextBox.Name = "notesTextBox";
@@ -265,7 +223,6 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
-			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(258, 384);

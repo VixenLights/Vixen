@@ -10,8 +10,6 @@ namespace Common.Controls.NameGeneration
 		public NumericCounterEditor(NumericCounter counter)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			_counter = counter;
 			_oldStepValue = (int) numericUpDownStep.Value;

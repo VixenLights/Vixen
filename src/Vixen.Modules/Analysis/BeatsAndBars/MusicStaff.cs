@@ -1,4 +1,5 @@
 ﻿using Common.Controls.Scaling;
+using Common.Controls.Theme;
 
 namespace VixenModules.Analysis.BeatsAndBars
 {
@@ -15,6 +16,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 		public MusicStaff()
 		{
 			InitializeComponent();
+			ThemeUpdateControls.UpdateControls(this);
 			_scale = ScalingTools.GetScaleFactor();
 			_firstBarOffset = ScaleValue(TSLABEL_XOFFSET) + ScaleValue(45);
 

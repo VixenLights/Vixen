@@ -37,7 +37,6 @@
 			// 
 			this.buttonAddToPreview.AutoSize = true;
 			this.buttonAddToPreview.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonAddToPreview.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAddToPreview.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.buttonAddToPreview.Location = new System.Drawing.Point(14, 48);
 			this.buttonAddToPreview.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
@@ -46,14 +45,11 @@
 			this.buttonAddToPreview.TabIndex = 30;
 			this.buttonAddToPreview.Text = "Add to Preview";
 			this.buttonAddToPreview.UseVisualStyleBackColor = true;
-			this.buttonAddToPreview.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonAddToPreview.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// comboBoxTemplates
 			// 
 			this.comboBoxTemplates.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.comboBoxTemplates.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxTemplates.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxTemplates.FormattingEnabled = true;
 			this.comboBoxTemplates.Location = new System.Drawing.Point(14, 15);
 			this.comboBoxTemplates.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
@@ -66,7 +62,6 @@
 			// 
 			this.btnCancel.AutoSize = true;
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnCancel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.btnCancel.Location = new System.Drawing.Point(136, 48);
 			this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
@@ -75,8 +70,6 @@
 			this.btnCancel.TabIndex = 32;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
-			this.btnCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// TemplateDialog
 			// 
@@ -88,6 +81,9 @@
 			this.Controls.Add(this.buttonAddToPreview);
 			this.Name = "TemplateDialog";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.FormBorderStyle = FormBorderStyle.FixedDialog;
+			MaximizeBox = false;
+			MinimizeBox = false;
 			this.Text = "TemplateDialog";
 			this.ResumeLayout(false);
 			this.PerformLayout();

@@ -662,19 +662,6 @@ namespace VixenApplication.Setup
 			_reverseElementOrder = checkBoxReverseElementOrder.Checked;
 		} // end checkBoxReverseElementOrder_CheckedChanged
 
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
-		}
-
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
 			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);

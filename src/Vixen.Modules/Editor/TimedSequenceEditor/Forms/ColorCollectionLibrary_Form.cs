@@ -32,16 +32,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public ColorCollectionLibrary_Form(List<ColorCollection> collections)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
-			listViewColors.BackColor = ThemeColorTable.BackgroundColor;
 			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
 			buttonNewCollection.Image = Tools.GetIcon(Resources.add, iconSize);
-			buttonNewCollection.Text = "";
 			buttonDeleteCollection.Image = Tools.GetIcon(Resources.minus, iconSize);
-			buttonDeleteCollection.Text = "";
 			ThemeUpdateControls.UpdateControls(this);
-			Icon = Resources.Icon_Vixen3;
 			ColorCollections = collections;
 			PopulateCollectionList();
 			_isDirty = false;
@@ -397,19 +391,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		#endregion
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
-		}
 
 		private void buttonNewCollection_Click(object sender, EventArgs e)
 		{

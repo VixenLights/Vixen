@@ -9,8 +9,6 @@ namespace Common.Controls.Wizard
 	{
 		public WizardStage()
 		{
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 		}
 

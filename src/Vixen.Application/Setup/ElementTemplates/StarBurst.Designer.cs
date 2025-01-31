@@ -47,7 +47,6 @@
 			// 
 			// numericUpDownPixelsPerString
 			// 
-			this.numericUpDownPixelsPerString.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.numericUpDownPixelsPerString.Location = new System.Drawing.Point(130, 168);
 			this.numericUpDownPixelsPerString.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.numericUpDownPixelsPerString.Maximum = new decimal(new int[] {
@@ -91,7 +90,6 @@
 			// 
 			this.textBoxTreeName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxTreeName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBoxTreeName.Location = new System.Drawing.Point(130, 31);
 			this.textBoxTreeName.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.textBoxTreeName.Name = "textBoxTreeName";
@@ -119,8 +117,6 @@
 			this.buttonCancel.TabIndex = 5;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOk
 			// 
@@ -133,12 +129,9 @@
 			this.buttonOk.TabIndex = 4;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
-			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// numericUpDownStrings
 			// 
-			this.numericUpDownStrings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.numericUpDownStrings.Location = new System.Drawing.Point(130, 79);
 			this.numericUpDownStrings.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.numericUpDownStrings.Maximum = new decimal(new int[] {
@@ -242,7 +235,6 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "Starburst";
-			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

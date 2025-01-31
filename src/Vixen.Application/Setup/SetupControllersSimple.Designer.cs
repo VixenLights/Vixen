@@ -98,15 +98,10 @@
 			// buttonStopController
 			// 
 			this.buttonStopController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonStopController.BackColor = System.Drawing.Color.Transparent;
-			this.buttonStopController.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-			this.buttonStopController.FlatAppearance.BorderSize = 0;
-			this.buttonStopController.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonStopController.Location = new System.Drawing.Point(154, 49);
 			this.buttonStopController.Name = "buttonStopController";
 			this.buttonStopController.Size = new System.Drawing.Size(24, 24);
 			this.buttonStopController.TabIndex = 45;
-			this.buttonStopController.Text = "S";
 			this.toolTip1.SetToolTip(this.buttonStopController, "Stop / Disable");
 			this.buttonStopController.UseVisualStyleBackColor = false;
 			this.buttonStopController.Click += new System.EventHandler(this.buttonStopController_Click);
@@ -114,15 +109,10 @@
 			// buttonStartController
 			// 
 			this.buttonStartController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonStartController.BackColor = System.Drawing.Color.Transparent;
-			this.buttonStartController.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-			this.buttonStartController.FlatAppearance.BorderSize = 0;
-			this.buttonStartController.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonStartController.Location = new System.Drawing.Point(124, 49);
 			this.buttonStartController.Name = "buttonStartController";
 			this.buttonStartController.Size = new System.Drawing.Size(24, 24);
 			this.buttonStartController.TabIndex = 44;
-			this.buttonStartController.Text = "P";
 			this.toolTip1.SetToolTip(this.buttonStartController, "Start / Enable");
 			this.buttonStartController.UseVisualStyleBackColor = false;
 			this.buttonStartController.Click += new System.EventHandler(this.buttonStartController_Click);
@@ -139,15 +129,10 @@
 			// buttonNumberChannelsController
 			// 
 			this.buttonNumberChannelsController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonNumberChannelsController.BackColor = System.Drawing.Color.Transparent;
-			this.buttonNumberChannelsController.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-			this.buttonNumberChannelsController.FlatAppearance.BorderSize = 0;
-			this.buttonNumberChannelsController.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonNumberChannelsController.Location = new System.Drawing.Point(34, 49);
 			this.buttonNumberChannelsController.Name = "buttonNumberChannelsController";
 			this.buttonNumberChannelsController.Size = new System.Drawing.Size(24, 24);
 			this.buttonNumberChannelsController.TabIndex = 43;
-			this.buttonNumberChannelsController.Text = "N";
 			this.toolTip1.SetToolTip(this.buttonNumberChannelsController, "Channel Count");
 			this.buttonNumberChannelsController.UseVisualStyleBackColor = false;
 			this.buttonNumberChannelsController.Click += new System.EventHandler(this.buttonNumberChannelsController_Click);
@@ -164,15 +149,10 @@
 			// buttonConfigureController
 			// 
 			this.buttonConfigureController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonConfigureController.BackColor = System.Drawing.Color.Transparent;
-			this.buttonConfigureController.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-			this.buttonConfigureController.FlatAppearance.BorderSize = 0;
-			this.buttonConfigureController.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonConfigureController.Location = new System.Drawing.Point(4, 49);
 			this.buttonConfigureController.Name = "buttonConfigureController";
 			this.buttonConfigureController.Size = new System.Drawing.Size(24, 24);
 			this.buttonConfigureController.TabIndex = 42;
-			this.buttonConfigureController.Text = "C";
 			this.toolTip1.SetToolTip(this.buttonConfigureController, "Configure");
 			this.buttonConfigureController.UseVisualStyleBackColor = false;
 			this.buttonConfigureController.Click += new System.EventHandler(this.buttonConfigureController_Click);
@@ -189,15 +169,10 @@
 			// buttonRenameController
 			// 
 			this.buttonRenameController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonRenameController.BackColor = System.Drawing.Color.Transparent;
-			this.buttonRenameController.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-			this.buttonRenameController.FlatAppearance.BorderSize = 0;
-			this.buttonRenameController.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonRenameController.Location = new System.Drawing.Point(64, 49);
 			this.buttonRenameController.Name = "buttonRenameController";
 			this.buttonRenameController.Size = new System.Drawing.Size(24, 24);
 			this.buttonRenameController.TabIndex = 41;
-			this.buttonRenameController.Text = "R";
 			this.toolTip1.SetToolTip(this.buttonRenameController, "Rename");
 			this.buttonRenameController.UseVisualStyleBackColor = false;
 			this.buttonRenameController.Click += new System.EventHandler(this.buttonRenameController_Click);
@@ -205,15 +180,10 @@
 			// buttonDeleteController
 			// 
 			this.buttonDeleteController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonDeleteController.BackColor = System.Drawing.Color.Transparent;
-			this.buttonDeleteController.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-			this.buttonDeleteController.FlatAppearance.BorderSize = 0;
-			this.buttonDeleteController.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonDeleteController.Location = new System.Drawing.Point(94, 49);
 			this.buttonDeleteController.Name = "buttonDeleteController";
 			this.buttonDeleteController.Size = new System.Drawing.Size(24, 24);
 			this.buttonDeleteController.TabIndex = 40;
-			this.buttonDeleteController.Text = "-";
 			this.toolTip1.SetToolTip(this.buttonDeleteController, "Delete");
 			this.buttonDeleteController.UseVisualStyleBackColor = false;
 			this.buttonDeleteController.Click += new System.EventHandler(this.buttonDeleteController_Click);
@@ -221,17 +191,12 @@
 			// buttonAddController
 			// 
 			this.buttonAddController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonAddController.BackColor = System.Drawing.Color.Transparent;
-			this.buttonAddController.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
 			this.buttonAddController.Enabled = false;
-			this.buttonAddController.FlatAppearance.BorderSize = 0;
-			this.buttonAddController.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAddController.Location = new System.Drawing.Point(201, 6);
 			this.buttonAddController.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
 			this.buttonAddController.Name = "buttonAddController";
 			this.buttonAddController.Size = new System.Drawing.Size(24, 24);
 			this.buttonAddController.TabIndex = 35;
-			this.buttonAddController.Text = "+";
 			this.toolTip1.SetToolTip(this.buttonAddController, "Add");
 			this.buttonAddController.UseVisualStyleBackColor = false;
 			this.buttonAddController.Click += new System.EventHandler(this.buttonAddController_Click);
@@ -242,7 +207,6 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.comboBoxNewControllerType.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.comboBoxNewControllerType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxNewControllerType.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxNewControllerType.FormattingEnabled = true;
 			this.comboBoxNewControllerType.Location = new System.Drawing.Point(38, 8);
 			this.comboBoxNewControllerType.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
@@ -271,15 +235,10 @@
 			// buttonSelectSourceElements
 			// 
 			this.buttonSelectSourceElements.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonSelectSourceElements.BackColor = System.Drawing.Color.Transparent;
-			this.buttonSelectSourceElements.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-			this.buttonSelectSourceElements.FlatAppearance.BorderSize = 0;
-			this.buttonSelectSourceElements.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonSelectSourceElements.Location = new System.Drawing.Point(3, 3);
 			this.buttonSelectSourceElements.Name = "buttonSelectSourceElements";
 			this.buttonSelectSourceElements.Size = new System.Drawing.Size(24, 24);
 			this.buttonSelectSourceElements.TabIndex = 40;
-			this.buttonSelectSourceElements.Text = "S";
 			this.toolTip1.SetToolTip(this.buttonSelectSourceElements, "Find elements patched to these outputs");
 			this.buttonSelectSourceElements.UseVisualStyleBackColor = false;
 			this.buttonSelectSourceElements.Click += new System.EventHandler(this.buttonSelectSourceElements_Click);

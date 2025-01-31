@@ -57,10 +57,7 @@
 			// 
 			this.ai_comboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.ai_comboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.ai_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.ai_comboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.ai_comboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.ai_comboBox.FormattingEnabled = true;
 			this.ai_comboBox.Location = new System.Drawing.Point(45, 64);
 			this.ai_comboBox.MaxDropDownItems = 99;
@@ -72,10 +69,7 @@
 			// 
 			this.e_comboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.e_comboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.e_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.e_comboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.e_comboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.e_comboBox.FormattingEnabled = true;
 			this.e_comboBox.Location = new System.Drawing.Point(45, 91);
 			this.e_comboBox.MaxDropDownItems = 99;
@@ -87,10 +81,7 @@
 			// 
 			this.etc_comboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.etc_comboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.etc_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.etc_comboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.etc_comboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.etc_comboBox.FormattingEnabled = true;
 			this.etc_comboBox.Location = new System.Drawing.Point(45, 118);
 			this.etc_comboBox.MaxDropDownItems = 99;
@@ -102,10 +93,7 @@
 			// 
 			this.fv_comboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.fv_comboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.fv_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.fv_comboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.fv_comboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.fv_comboBox.FormattingEnabled = true;
 			this.fv_comboBox.Location = new System.Drawing.Point(45, 145);
 			this.fv_comboBox.MaxDropDownItems = 99;
@@ -117,10 +105,7 @@
 			// 
 			this.l_comboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.l_comboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.l_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.l_comboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.l_comboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.l_comboBox.FormattingEnabled = true;
 			this.l_comboBox.Location = new System.Drawing.Point(45, 172);
 			this.l_comboBox.MaxDropDownItems = 99;
@@ -132,10 +117,7 @@
 			// 
 			this.mbp_comboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.mbp_comboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.mbp_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.mbp_comboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.mbp_comboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.mbp_comboBox.FormattingEnabled = true;
 			this.mbp_comboBox.Location = new System.Drawing.Point(45, 199);
 			this.mbp_comboBox.MaxDropDownItems = 99;
@@ -147,10 +129,7 @@
 			// 
 			this.o_comboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.o_comboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.o_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.o_comboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.o_comboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.o_comboBox.FormattingEnabled = true;
 			this.o_comboBox.Location = new System.Drawing.Point(45, 226);
 			this.o_comboBox.MaxDropDownItems = 99;
@@ -162,10 +141,7 @@
 			// 
 			this.rest_comboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.rest_comboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.rest_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.rest_comboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.rest_comboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.rest_comboBox.FormattingEnabled = true;
 			this.rest_comboBox.Location = new System.Drawing.Point(45, 253);
 			this.rest_comboBox.MaxDropDownItems = 99;
@@ -177,10 +153,7 @@
 			// 
 			this.u_comboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.u_comboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.u_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.u_comboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.u_comboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.u_comboBox.FormattingEnabled = true;
 			this.u_comboBox.Location = new System.Drawing.Point(45, 280);
 			this.u_comboBox.MaxDropDownItems = 99;
@@ -192,10 +165,7 @@
 			// 
 			this.wq_comboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.wq_comboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.wq_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.wq_comboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.wq_comboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.wq_comboBox.FormattingEnabled = true;
 			this.wq_comboBox.Location = new System.Drawing.Point(45, 307);
 			this.wq_comboBox.MaxDropDownItems = 99;
@@ -206,7 +176,6 @@
 			// AI_Label
 			// 
 			this.AI_Label.AutoSize = true;
-			this.AI_Label.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.AI_Label.Location = new System.Drawing.Point(22, 67);
 			this.AI_Label.Name = "AI_Label";
 			this.AI_Label.Size = new System.Drawing.Size(17, 13);
@@ -216,7 +185,6 @@
 			// E_Label
 			// 
 			this.E_Label.AutoSize = true;
-			this.E_Label.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.E_Label.Location = new System.Drawing.Point(25, 94);
 			this.E_Label.Name = "E_Label";
 			this.E_Label.Size = new System.Drawing.Size(14, 13);
@@ -226,7 +194,6 @@
 			// ETC_Label
 			// 
 			this.ETC_Label.AutoSize = true;
-			this.ETC_Label.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.ETC_Label.Location = new System.Drawing.Point(11, 121);
 			this.ETC_Label.Name = "ETC_Label";
 			this.ETC_Label.Size = new System.Drawing.Size(28, 13);
@@ -236,7 +203,6 @@
 			// FV_Label
 			// 
 			this.FV_Label.AutoSize = true;
-			this.FV_Label.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.FV_Label.Location = new System.Drawing.Point(19, 148);
 			this.FV_Label.Name = "FV_Label";
 			this.FV_Label.Size = new System.Drawing.Size(20, 13);
@@ -246,7 +212,6 @@
 			// L_Label
 			// 
 			this.L_Label.AutoSize = true;
-			this.L_Label.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.L_Label.Location = new System.Drawing.Point(26, 175);
 			this.L_Label.Name = "L_Label";
 			this.L_Label.Size = new System.Drawing.Size(13, 13);
@@ -256,7 +221,6 @@
 			// MBP_Label
 			// 
 			this.MBP_Label.AutoSize = true;
-			this.MBP_Label.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.MBP_Label.Location = new System.Drawing.Point(9, 202);
 			this.MBP_Label.Name = "MBP_Label";
 			this.MBP_Label.Size = new System.Drawing.Size(30, 13);
@@ -266,7 +230,6 @@
 			// O_Label
 			// 
 			this.O_Label.AutoSize = true;
-			this.O_Label.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.O_Label.Location = new System.Drawing.Point(24, 229);
 			this.O_Label.Name = "O_Label";
 			this.O_Label.Size = new System.Drawing.Size(15, 13);
@@ -276,7 +239,6 @@
 			// REST_Label
 			// 
 			this.REST_Label.AutoSize = true;
-			this.REST_Label.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.REST_Label.Location = new System.Drawing.Point(3, 256);
 			this.REST_Label.Name = "REST_Label";
 			this.REST_Label.Size = new System.Drawing.Size(36, 13);
@@ -286,7 +248,6 @@
 			// U_Label
 			// 
 			this.U_Label.AutoSize = true;
-			this.U_Label.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.U_Label.Location = new System.Drawing.Point(24, 283);
 			this.U_Label.Name = "U_Label";
 			this.U_Label.Size = new System.Drawing.Size(15, 13);
@@ -296,7 +257,6 @@
 			// WQ_Label
 			// 
 			this.WQ_Label.AutoSize = true;
-			this.WQ_Label.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.WQ_Label.Location = new System.Drawing.Point(13, 310);
 			this.WQ_Label.Name = "WQ_Label";
 			this.WQ_Label.Size = new System.Drawing.Size(26, 13);
@@ -305,9 +265,6 @@
 			// 
 			// acceptButton
 			// 
-			this.acceptButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.acceptButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.acceptButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.acceptButton.Location = new System.Drawing.Point(45, 354);
 			this.acceptButton.Name = "acceptButton";
 			this.acceptButton.Size = new System.Drawing.Size(75, 23);
@@ -319,9 +276,6 @@
 			// cancelButton
 			// 
 			this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancelButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.cancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.cancelButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.cancelButton.Location = new System.Drawing.Point(126, 354);
 			this.cancelButton.Name = "cancelButton";
 			this.cancelButton.Size = new System.Drawing.Size(75, 23);
@@ -332,7 +286,6 @@
 			// infoLabel
 			// 
 			this.infoLabel.AutoSize = true;
-			this.infoLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.infoLabel.Location = new System.Drawing.Point(26, 24);
 			this.infoLabel.Name = "infoLabel";
 			this.infoLabel.Size = new System.Drawing.Size(19, 13);
@@ -344,7 +297,6 @@
 			this.AcceptButton = this.acceptButton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.cancelButton;
 			this.ClientSize = new System.Drawing.Size(245, 401);
 			this.Controls.Add(this.infoLabel);
@@ -371,8 +323,10 @@
 			this.Controls.Add(this.e_comboBox);
 			this.Controls.Add(this.ai_comboBox);
 			this.Name = "LipSyncMultiPicSelect";
-			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.FormBorderStyle = FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Text = "Image Mapper";
 			this.Load += new System.EventHandler(this.LipSyncMultiPicSelect_Load);
 			this.ResumeLayout(false);

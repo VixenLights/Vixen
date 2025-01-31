@@ -49,8 +49,6 @@
 			this.buttonCancel.TabIndex = 6;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOK
 			// 
@@ -62,8 +60,6 @@
 			this.buttonOK.TabIndex = 5;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
-			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// tableLayoutPanel1
 			// 
@@ -111,7 +107,6 @@
 			// 
 			// dataGridViewMouth
 			// 
-			this.dataGridViewMouth.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.dataGridViewMouth.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.dataGridViewMouth.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.dataGridViewMouth.Location = new System.Drawing.Point(0, 0);
@@ -134,7 +129,6 @@
 			// 
 			// dataGridViewOther
 			// 
-			this.dataGridViewOther.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.dataGridViewOther.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.dataGridViewOther.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.dataGridViewOther.Location = new System.Drawing.Point(0, 0);
@@ -153,6 +147,7 @@
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(864, 394);
 			this.Controls.Add(this.tableLayoutPanel1);
+			this.FormBorderStyle = FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "FaceSetupHelper";
