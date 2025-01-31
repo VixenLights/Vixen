@@ -13,7 +13,6 @@ namespace VixenApplication
 		{
 			InitializeComponent();
 			ThemeUpdateControls.UpdateControls(this);
-			Icon = Resources.Icon_Vixen3;
 			listBoxProfiles.SelectedIndexChanged += ListBoxProfiles_SelectedIndexChanged;
 			listBoxProfiles.DrawMode = DrawMode.OwnerDrawVariable;
 			listBoxProfiles.DrawItem += ListBoxProfilesOnDrawItem;
@@ -168,19 +167,6 @@ namespace VixenApplication
 			DataProfileForm f = new DataProfileForm();
 			if (f.ShowDialog() == DialogResult.OK)
 				PopulateProfileList();
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 	}
 }

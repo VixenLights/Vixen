@@ -14,8 +14,6 @@ namespace VixenModules.App.Shows
 		{
 			InitializeComponent();
 
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			
 			buttonSelectSequence.Image = Tools.GetIcon(Resources.folder_explore, iconSize);

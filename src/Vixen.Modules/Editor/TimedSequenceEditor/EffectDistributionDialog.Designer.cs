@@ -64,7 +64,6 @@
 			this.groupBox1.Controls.Add(this.txtStartTime);
 			this.groupBox1.Controls.Add(this.label3);
 			this.groupBox1.Controls.Add(this.label2);
-			this.groupBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox1.Location = new System.Drawing.Point(3, 18);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(233, 95);
@@ -75,9 +74,6 @@
 			// 
 			// txtEndTime
 			// 
-			this.txtEndTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
-			this.txtEndTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.txtEndTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.txtEndTime.Location = new System.Drawing.Point(79, 60);
 			this.txtEndTime.Name = "txtEndTime";
 			this.txtEndTime.Size = new System.Drawing.Size(147, 23);
@@ -85,9 +81,6 @@
 			// 
 			// txtStartTime
 			// 
-			this.txtStartTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
-			this.txtStartTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.txtStartTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.txtStartTime.Location = new System.Drawing.Point(79, 30);
 			this.txtStartTime.Name = "txtStartTime";
 			this.txtStartTime.Size = new System.Drawing.Size(147, 23);
@@ -128,9 +121,6 @@
 			// 
 			// txtSpecifiedEffectDuration
 			// 
-			this.txtSpecifiedEffectDuration.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
-			this.txtSpecifiedEffectDuration.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.txtSpecifiedEffectDuration.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.txtSpecifiedEffectDuration.Location = new System.Drawing.Point(146, 75);
 			this.txtSpecifiedEffectDuration.Name = "txtSpecifiedEffectDuration";
 			this.txtSpecifiedEffectDuration.Size = new System.Drawing.Size(80, 23);
@@ -187,9 +177,6 @@
 			// 
 			// txtSpacedPlacementDuration
 			// 
-			this.txtSpacedPlacementDuration.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
-			this.txtSpacedPlacementDuration.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.txtSpacedPlacementDuration.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.txtSpacedPlacementDuration.Location = new System.Drawing.Point(146, 74);
 			this.txtSpacedPlacementDuration.Name = "txtSpacedPlacementDuration";
 			this.txtSpacedPlacementDuration.Size = new System.Drawing.Size(80, 23);
@@ -197,9 +184,6 @@
 			// 
 			// txtEffectPlacementOverlap
 			// 
-			this.txtEffectPlacementOverlap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
-			this.txtEffectPlacementOverlap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.txtEffectPlacementOverlap.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.txtEffectPlacementOverlap.Location = new System.Drawing.Point(146, 47);
 			this.txtEffectPlacementOverlap.Name = "txtEffectPlacementOverlap";
 			this.txtEffectPlacementOverlap.Size = new System.Drawing.Size(80, 23);
@@ -276,40 +260,24 @@
 			// btnOK
 			// 
 			this.btnOK.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.btnOK.BackColor = System.Drawing.Color.Transparent;
 			this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnOK.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-			this.btnOK.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.btnOK.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.btnOK.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.btnOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnOK.Location = new System.Drawing.Point(14, 3);
 			this.btnOK.Name = "btnOK";
 			this.btnOK.Size = new System.Drawing.Size(87, 27);
 			this.btnOK.TabIndex = 5;
 			this.btnOK.Text = "OK";
 			this.btnOK.UseVisualStyleBackColor = false;
-			this.btnOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// btnCancel
 			// 
 			this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.btnCancel.BackColor = System.Drawing.Color.Transparent;
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-			this.btnCancel.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.btnCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.btnCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnCancel.Location = new System.Drawing.Point(131, 3);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(87, 27);
 			this.btnCancel.TabIndex = 6;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = false;
-			this.btnCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// flowLayoutPanel1
 			// 
@@ -350,13 +318,12 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
-			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.btnCancel;
 			this.ClientSize = new System.Drawing.Size(254, 450);
-			this.ControlBox = false;
 			this.Controls.Add(this.flowLayoutPanel1);
-			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			MaximizeBox = false;
+			MinimizeBox = false;
 			this.Name = "EffectDistributionDialog";
 			this.Padding = new System.Windows.Forms.Padding(5);
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

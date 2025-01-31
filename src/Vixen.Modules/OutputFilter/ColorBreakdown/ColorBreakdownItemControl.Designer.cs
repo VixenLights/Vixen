@@ -35,8 +35,6 @@
 			// 
 			// panelColor
 			// 
-			this.panelColor.BackColor = System.Drawing.Color.White;
-			this.panelColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panelColor.Location = new System.Drawing.Point(3, 3);
 			this.panelColor.Name = "panelColor";
 			this.panelColor.Size = new System.Drawing.Size(60, 40);
@@ -45,7 +43,6 @@
 			// 
 			// textBoxName
 			// 
-			this.textBoxName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBoxName.Location = new System.Drawing.Point(112, 13);
 			this.textBoxName.Name = "textBoxName";
 			this.textBoxName.Size = new System.Drawing.Size(100, 20);
@@ -70,8 +67,6 @@
 			this.buttonDelete.Text = "Delete";
 			this.buttonDelete.UseVisualStyleBackColor = true;
 			this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
-			this.buttonDelete.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonDelete.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// ColorBreakdownItemControl
 			// 

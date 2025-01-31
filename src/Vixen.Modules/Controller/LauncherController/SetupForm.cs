@@ -12,8 +12,6 @@ namespace VixenModules.Output.LauncherController
 		public SetupForm(Data data)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			LauncherData = data;
 			chkHideLaunchedWindows.Checked= data.HideLaunchedWindows;
@@ -23,18 +21,5 @@ namespace VixenModules.Output.LauncherController
 		{
 			LauncherData.HideLaunchedWindows = chkHideLaunchedWindows.Checked;
 		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-		}
-
 	}
 }

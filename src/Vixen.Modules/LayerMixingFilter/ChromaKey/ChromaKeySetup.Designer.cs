@@ -63,8 +63,6 @@
 			btnOk.TabIndex = 5;
 			btnOk.Text = "OK";
 			btnOk.UseVisualStyleBackColor = true;
-			btnOk.MouseLeave += buttonBackground_MouseLeave;
-			btnOk.MouseHover += buttonBackground_MouseHover;
 			// 
 			// btnCancel
 			// 
@@ -76,8 +74,6 @@
 			btnCancel.TabIndex = 6;
 			btnCancel.Text = "Cancel";
 			btnCancel.UseVisualStyleBackColor = true;
-			btnCancel.MouseLeave += buttonBackground_MouseLeave;
-			btnCancel.MouseHover += buttonBackground_MouseHover;
 			// 
 			// numLowerLimit
 			// 

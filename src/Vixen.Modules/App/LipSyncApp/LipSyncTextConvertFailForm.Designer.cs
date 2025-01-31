@@ -66,9 +66,6 @@
 			// 
 			// phonemeTextBox
 			// 
-			this.phonemeTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
-			this.phonemeTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.phonemeTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.phonemeTextBox.Location = new System.Drawing.Point(17, 61);
 			this.phonemeTextBox.Name = "phonemeTextBox";
 			this.phonemeTextBox.ReadOnly = true;
@@ -169,11 +166,6 @@
 			// 
 			// buttonClear
 			// 
-			this.buttonClear.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.buttonClear.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonClear.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonClear.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonClear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonClear.Location = new System.Drawing.Point(339, 61);
 			this.buttonClear.Name = "buttonClear";
 			this.buttonClear.Size = new System.Drawing.Size(87, 27);
@@ -181,17 +173,10 @@
 			this.buttonClear.Text = "Clear";
 			this.buttonClear.UseVisualStyleBackColor = true;
 			this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
-			this.buttonClear.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonClear.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOk
 			// 
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.buttonOk.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonOk.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonOk.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonOk.Location = new System.Drawing.Point(238, 257);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Size = new System.Drawing.Size(87, 27);
@@ -199,25 +184,16 @@
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
 			this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
-			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonCancel
 			// 
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.buttonCancel.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonCancel.Location = new System.Drawing.Point(339, 257);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(87, 27);
 			this.buttonCancel.TabIndex = 14;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// label1
 			// 
@@ -314,7 +290,6 @@
 			this.AcceptButton = this.buttonOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(446, 320);
 			this.Controls.Add(this.label10);
@@ -342,7 +317,6 @@
 			this.Controls.Add(this.aiButton);
 			this.Controls.Add(this.phonemeTextBox);
 			this.Controls.Add(this.errorLabel);
-			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.MaximumSize = new System.Drawing.Size(462, 358);
 			this.MinimumSize = new System.Drawing.Size(462, 358);
 			this.Name = "LipSyncTextConvertFailForm";

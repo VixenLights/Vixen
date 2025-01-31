@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using System.Reflection;
-using Button = System.Windows.Forms.Button;
+﻿using Button = System.Windows.Forms.Button;
 using CheckBox = System.Windows.Forms.CheckBox;
 using ComboBox = System.Windows.Forms.ComboBox;
 using Control = System.Windows.Forms.Control;
@@ -18,7 +16,7 @@ namespace Common.Controls.Theme
 	public sealed class ThemeUpdateControls
 	{
 		public static Font StandardFont = SystemFonts.MessageBoxFont;
-		
+
 		//used to provide color to various controls.
 		//will move through each control and sub controls and adjust each control properties as required.
 		public static void UpdateControls(Control control, List<Control> excludes = null)
@@ -26,6 +24,10 @@ namespace Common.Controls.Theme
 			control.Font = StandardFont;
 			control.ForeColor = ThemeColorTable.ForeColor;
 			control.BackColor = ThemeColorTable.BackgroundColor;
+			if (control is Form form)
+			{
+				form.Icon = Resources.Properties.Resources.Icon_Vixen3;
+			}
 			foreach (Control c in control.Controls)
 			{
 				if (excludes != null && excludes.Contains(c)) continue;
@@ -40,7 +42,7 @@ namespace Common.Controls.Theme
 					}
 					continue;
 				}
-				if (c is GroupBox | c is Panel | c is ToolStripEx | c is ToolStrip | c is RadioButton | c is CheckBox | c is TreeView | c.ToString().Contains("PropertyGrid"))
+				if (c is GroupBox | c is Panel | c is ToolStripEx |c is ToolStrip |  c is RadioButton | c is CheckBox | c is TreeView | c.ToString().Contains("PropertyGrid"))
 				{
 					c.ForeColor = ThemeColorTable.ForeColor;
 					c.BackColor = ThemeColorTable.BackgroundColor;
@@ -57,19 +59,15 @@ namespace Common.Controls.Theme
 					btn.FlatStyle = FlatStyle.Flat;
 					btn.FlatAppearance.BorderSize = 0;
 
-					// If this is just a plain text button, or special case of a Help button with a '?' icon
-					if (btn.BackgroundImage == null && (btn.Image == null || btn.Text == "Help"))
+					// If this is a button with no image  or  button with text with or without an image
+					if ((btn.BackgroundImage == null && btn.Image == null) || btn.Text?.Length > 0)
 					{
 						btn.BackgroundImageLayout = ImageLayout.Stretch;
 						btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImage;
 						btn.BackColor = Color.Transparent;
 						btn.ForeColor = ThemeColorTable.ForeColor;
 
-						// Remove these existing event handlers
-						RemoveEvent(btn, "s_mouseHoverEvent");
-						RemoveEvent(btn, "s_mouseLeaveEvent");
-
-						// ...and replace with standard events.
+						// Install mouse standard events.
 						btn.MouseLeave += new System.EventHandler(buttonBackground_MouseLeave);
 						btn.MouseHover += new System.EventHandler(buttonBackground_MouseHover);
 					}
@@ -146,43 +144,6 @@ namespace Common.Controls.Theme
 			}
 		}
 
-		/// <summary>
-		/// Removes all event handlers from specified control
-		/// </summary>
-		/// <param name="ctl">Specifies control with handlers</param>
-		/// <param name="event_name">Specifies the specific handler to remove</param>
-		private static void RemoveEvent(Control ctl, string event_name)
-		{
-			// Don't delete this line as it can be uncommented to discover other events names (event_name)
-			//var eventNames = typeof(Control).GetFields(BindingFlags.Static | BindingFlags.NonPublic);
-
-			FieldInfo field_info = typeof(Control).GetField(event_name, BindingFlags.Static | BindingFlags.NonPublic);
-			PropertyInfo property_info = ctl?.GetType().GetProperty("Events", BindingFlags.NonPublic | BindingFlags.Instance);
-			object obj = field_info?.GetValue(ctl);
-
-			EventHandlerList event_handlers = (EventHandlerList)property_info?.GetValue(ctl, null);
-			event_handlers?.RemoveHandler(obj, event_handlers[obj]);
-		}
-
-		public static void UpdateButton(Button btn)
-		{
-			btn.FlatStyle = FlatStyle.Flat;
-			btn.FlatAppearance.BorderSize = 0;
-			if (btn.BackgroundImage == null && btn.Image == null)
-			{
-				btn.BackgroundImageLayout = ImageLayout.Stretch;
-				btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImage;
-				btn.BackColor = Color.Transparent;
-				btn.ForeColor = ThemeColorTable.ForeColor;
-			}
-			
-		}
-
-		public static Font SizeAndStyleFont(Font f, float fontsize, FontStyle style)
-		{
-			return new Font(f.FontFamily, fontsize, style);
-		}
-
 		private static void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = sender as Button;
@@ -193,8 +154,6 @@ namespace Common.Controls.Theme
 		{
 			var btn = sender as Button;
 			btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImage;
-
 		}
-
 	}
 }

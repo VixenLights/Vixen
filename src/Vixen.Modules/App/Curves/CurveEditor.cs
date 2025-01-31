@@ -18,10 +18,6 @@ namespace VixenModules.App.Curves
 		public CurveEditor()
 		{
 			InitializeComponent();
-			Icon = Resources.Icon_Vixen3;
-
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 
 			textBoxThreshold.MaxLength = 2;
@@ -511,19 +507,6 @@ namespace VixenModules.App.Curves
 				zedGraphControl.DragEditingPair.Y = y;
 			}
 			zedGraphControl.Invalidate();
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

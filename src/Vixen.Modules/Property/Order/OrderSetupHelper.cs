@@ -15,9 +15,6 @@ namespace VixenModules.Property.Order
 		public OrderSetupHelper()
 		{
 			InitializeComponent();
-			Icon = Resources.Icon_Vixen3;
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			_contextMenu.Renderer = new ThemeToolStripRenderer();
 			elementList.ItemDragDropCompleted += ElementList_ItemDragDropCompleted;

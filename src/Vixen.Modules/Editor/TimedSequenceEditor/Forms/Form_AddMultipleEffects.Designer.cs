@@ -66,7 +66,6 @@
 			// label1
 			// 
 			label1.AutoSize = true;
-			label1.ForeColor = Color.FromArgb(221, 221, 221);
 			label1.Location = new Point(17, 45);
 			label1.Name = "label1";
 			label1.Size = new Size(140, 15);
@@ -76,7 +75,6 @@
 			// label2
 			// 
 			label2.AutoSize = true;
-			label2.ForeColor = Color.FromArgb(221, 221, 221);
 			label2.Location = new Point(17, 75);
 			label2.Name = "label2";
 			label2.Size = new Size(75, 15);
@@ -86,7 +84,6 @@
 			// label3
 			// 
 			label3.AutoSize = true;
-			label3.ForeColor = Color.FromArgb(221, 221, 221);
 			label3.Location = new Point(17, 135);
 			label3.Name = "label3";
 			label3.Size = new Size(53, 15);
@@ -96,7 +93,6 @@
 			// label4
 			// 
 			label4.AutoSize = true;
-			label4.ForeColor = Color.FromArgb(221, 221, 221);
 			label4.Location = new Point(17, 165);
 			label4.Name = "label4";
 			label4.Size = new Size(101, 15);
@@ -107,12 +103,6 @@
 			// 
 			btnOK.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
 			btnOK.DialogResult = DialogResult.OK;
-			btnOK.FlatAppearance.BorderColor = Color.Black;
-			btnOK.FlatAppearance.CheckedBackColor = Color.Transparent;
-			btnOK.FlatAppearance.MouseDownBackColor = Color.Transparent;
-			btnOK.FlatAppearance.MouseOverBackColor = Color.Transparent;
-			btnOK.FlatStyle = FlatStyle.Flat;
-			btnOK.ForeColor = Color.FromArgb(221, 221, 221);
 			btnOK.Location = new Point(17, 30);
 			btnOK.Name = "btnOK";
 			btnOK.Size = new Size(87, 27);
@@ -120,33 +110,20 @@
 			btnOK.Text = "OK";
 			btnOK.UseVisualStyleBackColor = true;
 			btnOK.Click += btnOK_Click;
-			btnOK.MouseLeave += buttonBackground_MouseLeave;
-			btnOK.MouseHover += buttonBackground_MouseHover;
 			// 
 			// btnCancel
 			// 
 			btnCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
 			btnCancel.DialogResult = DialogResult.Cancel;
-			btnCancel.FlatAppearance.BorderColor = Color.Black;
-			btnCancel.FlatAppearance.CheckedBackColor = Color.Transparent;
-			btnCancel.FlatAppearance.MouseDownBackColor = Color.Transparent;
-			btnCancel.FlatAppearance.MouseOverBackColor = Color.Transparent;
-			btnCancel.FlatStyle = FlatStyle.Flat;
-			btnCancel.ForeColor = Color.FromArgb(221, 221, 221);
 			btnCancel.Location = new Point(198, 30);
 			btnCancel.Name = "btnCancel";
 			btnCancel.Size = new Size(87, 27);
 			btnCancel.TabIndex = 14;
 			btnCancel.Text = "Cancel";
 			btnCancel.UseVisualStyleBackColor = true;
-			btnCancel.MouseLeave += buttonBackground_MouseLeave;
-			btnCancel.MouseHover += buttonBackground_MouseHover;
 			// 
 			// txtStartTime
 			// 
-			txtStartTime.BackColor = Color.FromArgb(90, 90, 90);
-			txtStartTime.BorderStyle = BorderStyle.FixedSingle;
-			txtStartTime.ForeColor = Color.FromArgb(221, 221, 221);
 			txtStartTime.Location = new Point(169, 72);
 			txtStartTime.Name = "txtStartTime";
 			txtStartTime.Size = new Size(116, 23);
@@ -157,9 +134,6 @@
 			// 
 			// txtDuration
 			// 
-			txtDuration.BackColor = Color.FromArgb(90, 90, 90);
-			txtDuration.BorderStyle = BorderStyle.FixedSingle;
-			txtDuration.ForeColor = Color.FromArgb(221, 221, 221);
 			txtDuration.Location = new Point(169, 132);
 			txtDuration.Name = "txtDuration";
 			txtDuration.Size = new Size(116, 23);
@@ -170,9 +144,6 @@
 			// 
 			// txtDurationBetween
 			// 
-			txtDurationBetween.BackColor = Color.FromArgb(90, 90, 90);
-			txtDurationBetween.BorderStyle = BorderStyle.FixedSingle;
-			txtDurationBetween.ForeColor = Color.FromArgb(221, 221, 221);
 			txtDurationBetween.Location = new Point(169, 162);
 			txtDurationBetween.Name = "txtDurationBetween";
 			txtDurationBetween.Size = new Size(116, 23);
@@ -183,9 +154,6 @@
 			// 
 			// txtEffectCount
 			// 
-			txtEffectCount.BackColor = Color.FromArgb(90, 90, 90);
-			txtEffectCount.BorderStyle = BorderStyle.FixedSingle;
-			txtEffectCount.ForeColor = Color.FromArgb(221, 221, 221);
 			txtEffectCount.Location = new Point(169, 42);
 			txtEffectCount.Name = "txtEffectCount";
 			txtEffectCount.Size = new Size(117, 23);
@@ -194,7 +162,6 @@
 			// lblPossibleEffects
 			// 
 			lblPossibleEffects.AutoSize = true;
-			lblPossibleEffects.ForeColor = Color.FromArgb(221, 221, 221);
 			lblPossibleEffects.Location = new Point(89, 10);
 			lblPossibleEffects.Name = "lblPossibleEffects";
 			lblPossibleEffects.Size = new Size(101, 15);
@@ -204,7 +171,6 @@
 			// 
 			// listBoxMarkCollections
 			// 
-			listBoxMarkCollections.BackColor = Color.FromArgb(68, 68, 68);
 			listBoxMarkCollections.CheckBoxes = true;
 			listBoxMarkCollections.Enabled = false;
 			listBoxMarkCollections.Location = new Point(17, 118);
@@ -219,7 +185,6 @@
 			// checkBoxAlignToBeatMarks
 			// 
 			checkBoxAlignToBeatMarks.AutoSize = true;
-			checkBoxAlignToBeatMarks.ForeColor = Color.FromArgb(221, 221, 221);
 			checkBoxAlignToBeatMarks.Location = new Point(21, 3);
 			checkBoxAlignToBeatMarks.Name = "checkBoxAlignToBeatMarks";
 			checkBoxAlignToBeatMarks.Size = new Size(129, 19);
@@ -232,7 +197,6 @@
 			// 
 			checkBoxFillDuration.AutoCheck = false;
 			checkBoxFillDuration.AutoSize = true;
-			checkBoxFillDuration.ForeColor = Color.FromArgb(221, 221, 221);
 			checkBoxFillDuration.Location = new Point(21, 57);
 			checkBoxFillDuration.Name = "checkBoxFillDuration";
 			checkBoxFillDuration.Size = new Size(172, 19);
@@ -245,7 +209,6 @@
 			// 
 			checkBoxSelectEffects.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
 			checkBoxSelectEffects.AutoSize = true;
-			checkBoxSelectEffects.ForeColor = Color.FromArgb(221, 221, 221);
 			checkBoxSelectEffects.Location = new Point(21, 4);
 			checkBoxSelectEffects.Name = "checkBoxSelectEffects";
 			checkBoxSelectEffects.Size = new Size(126, 19);
@@ -255,22 +218,16 @@
 			// 
 			// btnShowBeatMarkOptions
 			// 
-			btnShowBeatMarkOptions.FlatAppearance.BorderSize = 0;
-			btnShowBeatMarkOptions.FlatAppearance.MouseDownBackColor = Color.Transparent;
-			btnShowBeatMarkOptions.FlatAppearance.MouseOverBackColor = Color.Transparent;
-			btnShowBeatMarkOptions.FlatStyle = FlatStyle.Flat;
 			btnShowBeatMarkOptions.Location = new Point(17, 192);
 			btnShowBeatMarkOptions.Name = "btnShowBeatMarkOptions";
 			btnShowBeatMarkOptions.Size = new Size(28, 27);
 			btnShowBeatMarkOptions.TabIndex = 21;
-			btnShowBeatMarkOptions.Text = "+";
 			btnShowBeatMarkOptions.UseVisualStyleBackColor = true;
 			btnShowBeatMarkOptions.Click += btnShowBeatMarkOptions_Click;
 			// 
 			// lblShowBeatMarkOptions
 			// 
 			lblShowBeatMarkOptions.AutoSize = true;
-			lblShowBeatMarkOptions.ForeColor = Color.FromArgb(221, 221, 221);
 			lblShowBeatMarkOptions.Location = new Point(52, 197);
 			lblShowBeatMarkOptions.Name = "lblShowBeatMarkOptions";
 			lblShowBeatMarkOptions.Size = new Size(192, 15);
@@ -279,11 +236,6 @@
 			// 
 			// btnHideBeatMarkOptions
 			// 
-			btnHideBeatMarkOptions.FlatAppearance.BorderSize = 0;
-			btnHideBeatMarkOptions.FlatAppearance.MouseDownBackColor = Color.Transparent;
-			btnHideBeatMarkOptions.FlatAppearance.MouseOverBackColor = Color.Transparent;
-			btnHideBeatMarkOptions.FlatStyle = FlatStyle.Flat;
-			btnHideBeatMarkOptions.ForeColor = Color.FromArgb(221, 221, 221);
 			btnHideBeatMarkOptions.Location = new Point(17, 192);
 			btnHideBeatMarkOptions.Name = "btnHideBeatMarkOptions";
 			btnHideBeatMarkOptions.Size = new Size(28, 27);
@@ -332,7 +284,6 @@
 			// lblEndingTime
 			// 
 			lblEndingTime.AutoSize = true;
-			lblEndingTime.ForeColor = Color.FromArgb(221, 221, 221);
 			lblEndingTime.Location = new Point(17, 105);
 			lblEndingTime.Name = "lblEndingTime";
 			lblEndingTime.Size = new Size(71, 15);
@@ -341,9 +292,6 @@
 			// 
 			// txtEndTime
 			// 
-			txtEndTime.BackColor = Color.FromArgb(90, 90, 90);
-			txtEndTime.BorderStyle = BorderStyle.FixedSingle;
-			txtEndTime.ForeColor = Color.FromArgb(221, 221, 221);
 			txtEndTime.Location = new Point(169, 102);
 			txtEndTime.Name = "txtEndTime";
 			txtEndTime.Size = new Size(116, 23);
@@ -368,7 +316,6 @@
 			// 
 			chkUseMarkStartEnd.AutoCheck = false;
 			chkUseMarkStartEnd.AutoSize = true;
-			chkUseMarkStartEnd.ForeColor = Color.FromArgb(221, 221, 221);
 			chkUseMarkStartEnd.Location = new Point(21, 82);
 			chkUseMarkStartEnd.Name = "chkUseMarkStartEnd";
 			chkUseMarkStartEnd.Size = new Size(155, 19);
@@ -381,7 +328,6 @@
 			// 
 			checkBoxSkipEOBeat.AutoCheck = false;
 			checkBoxSkipEOBeat.AutoSize = true;
-			checkBoxSkipEOBeat.ForeColor = Color.FromArgb(221, 221, 221);
 			checkBoxSkipEOBeat.Location = new Point(21, 30);
 			checkBoxSkipEOBeat.Name = "checkBoxSkipEOBeat";
 			checkBoxSkipEOBeat.Size = new Size(136, 19);

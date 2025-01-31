@@ -10,10 +10,7 @@ namespace VixenModules.App.LipSyncApp
 		public LipSyncTextConvertFailForm()
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
 		}
 
 		private void LipSyncTextConvertFailForm_Load(object sender, EventArgs e)
@@ -102,18 +99,6 @@ namespace VixenModules.App.LipSyncApp
 			{
 				phonemeTextBox.Text = value;
 			}
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Common.Resources.Properties.Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Common.Resources.Properties.Resources.ButtonBackgroundImage;
 		}
 	}
 }

@@ -11,7 +11,6 @@ namespace VixenApplication
 		{
 			InitializeComponent();
 			ThemeUpdateControls.UpdateControls(this);
-			Icon = Resources.Icon_Vixen3;
 			pictureBoxIcon.Image = Resources.VixenImage;
 			labelHeading.Font = new Font(labelHeading.Font.Name, 20F);
 			string currentVersionType = devBuild ? " Build " : " Release ";
@@ -21,19 +20,6 @@ namespace VixenApplication
 		private void AboutVixen_Load(object sender, EventArgs e)
 		{
 			textBoxLicense.Text = File.ReadAllText(Paths.BinaryRootPath + "//License.txt");
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 	}
 }

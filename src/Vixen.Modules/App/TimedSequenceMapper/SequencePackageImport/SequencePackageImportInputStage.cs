@@ -167,18 +167,6 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageImport
 			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-		}
-
 		private void btnCreateMap_Click(object sender, EventArgs e)
 		{
 			var fileName = ExtractElementTree(_data.InputFile);

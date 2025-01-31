@@ -19,7 +19,6 @@ namespace VixenApplication.Setup.ElementTemplates
 		public Icicles()
 		{
 			InitializeComponent();
-			Icon = Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
 
 			_treeName = "Icicles";
@@ -112,19 +111,6 @@ namespace VixenApplication.Setup.ElementTemplates
 			_treeName = textBoxTreeName.Text;
 			_stringCount = Decimal.ToInt32(numericUpDownStrings.Value);
 			_pixelsPerStringPattern = textBoxStringPattern.Text;
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 
 		private void textBoxStringPattern_KeyPress(object sender, KeyPressEventArgs e)

@@ -22,9 +22,6 @@ namespace VixenApplication
 			InitializeComponent();
 			statusStrip1.Renderer = new ThemeToolStripRenderer();
 			ThemeUpdateControls.UpdateControls(this);
-			Icon = Resources.Icon_Vixen3;
-			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
-			buttonSetSaveFolder.Image = Tools.GetIcon(Resources.folder, iconSize);
 			_bw.WorkerReportsProgress = true;
 			_bw.WorkerSupportsCancellation = true;
 			_bw.DoWork += bw_DoWork;
@@ -363,19 +360,6 @@ namespace VixenApplication
 				}
 			}
 			return true;
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

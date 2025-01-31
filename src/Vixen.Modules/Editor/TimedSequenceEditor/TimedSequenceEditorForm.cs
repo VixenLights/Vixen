@@ -168,14 +168,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			int imageSize = (int)(16 * _scaleFactor);
 			_contextMenuStrip.ImageScalingSize = new Size(imageSize, imageSize);
 			statusStrip.Renderer = new ThemeToolStripRenderer();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 
 			var theme = new VS2015DarkTheme();
 			dockPanel.Theme = theme;
 
-			Icon = Resources.Icon_Vixen3;
 			_iconSize = (int) (28*_scaleFactor);
 			_toolStripImageSize = (int)(16 * _scaleFactor);
 			toolStripEffects.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);

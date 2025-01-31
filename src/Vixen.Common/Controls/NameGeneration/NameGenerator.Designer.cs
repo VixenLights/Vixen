@@ -100,8 +100,6 @@ namespace Common.Controls
 			this.buttonCancel.TabIndex = 3;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOk
 			// 
@@ -113,8 +111,6 @@ namespace Common.Controls
 			this.buttonOk.TabIndex = 2;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
-			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// groupBoxSelectedNamingRule
 			// 
@@ -144,9 +140,6 @@ namespace Common.Controls
 			// 
 			// buttonAddNewRule
 			// 
-			this.buttonAddNewRule.BackColor = System.Drawing.Color.Transparent;
-			this.buttonAddNewRule.FlatAppearance.BorderSize = 0;
-			this.buttonAddNewRule.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAddNewRule.Location = new System.Drawing.Point(17, 6);
 			this.buttonAddNewRule.Name = "buttonAddNewRule";
 			this.buttonAddNewRule.Size = new System.Drawing.Size(28, 28);
@@ -158,9 +151,6 @@ namespace Common.Controls
 			// 
 			// buttonDeleteRule
 			// 
-			this.buttonDeleteRule.BackColor = System.Drawing.Color.Transparent;
-			this.buttonDeleteRule.FlatAppearance.BorderSize = 0;
-			this.buttonDeleteRule.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonDeleteRule.Location = new System.Drawing.Point(58, 6);
 			this.buttonDeleteRule.Name = "buttonDeleteRule";
 			this.buttonDeleteRule.Size = new System.Drawing.Size(28, 28);
@@ -181,9 +171,6 @@ namespace Common.Controls
 			// 
 			// buttonMoveRuleDown
 			// 
-			this.buttonMoveRuleDown.BackColor = System.Drawing.Color.Transparent;
-			this.buttonMoveRuleDown.FlatAppearance.BorderSize = 0;
-			this.buttonMoveRuleDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonMoveRuleDown.Location = new System.Drawing.Point(1, 53);
 			this.buttonMoveRuleDown.Name = "buttonMoveRuleDown";
 			this.buttonMoveRuleDown.Size = new System.Drawing.Size(35, 29);
@@ -195,9 +182,6 @@ namespace Common.Controls
 			// 
 			// buttonMoveRuleUp
 			// 
-			this.buttonMoveRuleUp.BackColor = System.Drawing.Color.Transparent;
-			this.buttonMoveRuleUp.FlatAppearance.BorderSize = 0;
-			this.buttonMoveRuleUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonMoveRuleUp.Location = new System.Drawing.Point(1, 18);
 			this.buttonMoveRuleUp.Name = "buttonMoveRuleUp";
 			this.buttonMoveRuleUp.Size = new System.Drawing.Size(35, 29);
@@ -209,7 +193,6 @@ namespace Common.Controls
 			// 
 			// comboBoxRuleTypes
 			// 
-			this.comboBoxRuleTypes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxRuleTypes.FormattingEnabled = true;
 			this.comboBoxRuleTypes.Location = new System.Drawing.Point(10, 25);
 			this.comboBoxRuleTypes.Name = "comboBoxRuleTypes";
@@ -284,7 +267,6 @@ namespace Common.Controls
 			// comboBoxTemplates
 			// 
 			this.comboBoxTemplates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.comboBoxTemplates.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxTemplates.FormattingEnabled = true;
 			this.comboBoxTemplates.Location = new System.Drawing.Point(125, 607);
 			this.comboBoxTemplates.Name = "comboBoxTemplates";

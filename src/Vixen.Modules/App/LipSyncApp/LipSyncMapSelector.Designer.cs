@@ -29,51 +29,28 @@
 			// buttonCancel
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonCancel.BackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.buttonCancel.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonCancel.Location = new System.Drawing.Point(355, 310);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(93, 29);
 			this.buttonCancel.TabIndex = 5;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = false;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOK
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonOK.BackColor = System.Drawing.Color.Transparent;
-			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.buttonOK.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonOK.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonOK.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonOK.Location = new System.Drawing.Point(256, 310);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(93, 29);
 			this.buttonOK.TabIndex = 4;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = false;
-			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonEditMap
 			// 
 			this.buttonEditMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonEditMap.BackColor = System.Drawing.Color.Transparent;
 			this.buttonEditMap.Enabled = false;
-			this.buttonEditMap.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.buttonEditMap.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonEditMap.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonEditMap.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonEditMap.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonEditMap.Location = new System.Drawing.Point(380, 45);
 			this.buttonEditMap.Name = "buttonEditMap";
 			this.buttonEditMap.Size = new System.Drawing.Size(68, 27);
@@ -81,19 +58,11 @@
 			this.buttonEditMap.Text = "Edit";
 			this.buttonEditMap.UseVisualStyleBackColor = false;
 			this.buttonEditMap.Click += new System.EventHandler(this.buttonEditMap_Click);
-			this.buttonEditMap.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonEditMap.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonDeleteMap
 			// 
 			this.buttonDeleteMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonDeleteMap.BackColor = System.Drawing.Color.Transparent;
 			this.buttonDeleteMap.Enabled = false;
-			this.buttonDeleteMap.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.buttonDeleteMap.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonDeleteMap.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonDeleteMap.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonDeleteMap.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonDeleteMap.Location = new System.Drawing.Point(380, 78);
 			this.buttonDeleteMap.Name = "buttonDeleteMap";
 			this.buttonDeleteMap.Size = new System.Drawing.Size(68, 27);
@@ -101,18 +70,10 @@
 			this.buttonDeleteMap.Text = "Remove";
 			this.buttonDeleteMap.UseVisualStyleBackColor = false;
 			this.buttonDeleteMap.Click += new System.EventHandler(this.buttonDeleteMapping_Click);
-			this.buttonDeleteMap.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonDeleteMap.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonNewMap
 			// 
 			this.buttonNewMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonNewMap.BackColor = System.Drawing.Color.Transparent;
-			this.buttonNewMap.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.buttonNewMap.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonNewMap.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonNewMap.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonNewMap.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonNewMap.Location = new System.Drawing.Point(380, 12);
 			this.buttonNewMap.Name = "buttonNewMap";
 			this.buttonNewMap.Size = new System.Drawing.Size(68, 27);
@@ -120,19 +81,11 @@
 			this.buttonNewMap.Text = "New";
 			this.buttonNewMap.UseVisualStyleBackColor = false;
 			this.buttonNewMap.Click += new System.EventHandler(this.buttonNewMap_Click);
-			this.buttonNewMap.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonNewMap.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonCloneMap
 			// 
 			this.buttonCloneMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonCloneMap.BackColor = System.Drawing.Color.Transparent;
 			this.buttonCloneMap.Enabled = false;
-			this.buttonCloneMap.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.buttonCloneMap.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonCloneMap.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonCloneMap.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonCloneMap.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonCloneMap.Location = new System.Drawing.Point(380, 111);
 			this.buttonCloneMap.Name = "buttonCloneMap";
 			this.buttonCloneMap.Size = new System.Drawing.Size(68, 27);
@@ -140,8 +93,6 @@
 			this.buttonCloneMap.Text = "Clone";
 			this.buttonCloneMap.UseVisualStyleBackColor = false;
 			this.buttonCloneMap.Click += new System.EventHandler(this.buttonCloneMap_Click);
-			this.buttonCloneMap.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCloneMap.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// mappingsListView
 			// 

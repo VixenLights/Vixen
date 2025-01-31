@@ -43,11 +43,7 @@ namespace Common.Controls
 			// buttonOk
 			// 
 			this.buttonOk.AutoSize = true;
-			this.buttonOk.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-			this.buttonOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonOk.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.buttonOk.Location = new System.Drawing.Point(3, 3);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Size = new System.Drawing.Size(87, 27);
@@ -55,16 +51,11 @@ namespace Common.Controls
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = false;
 			this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
-			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonCancel
 			// 
 			this.buttonCancel.AutoSize = true;
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonCancel.ForeColor = System.Drawing.Color.WhiteSmoke;
 			this.buttonCancel.Location = new System.Drawing.Point(189, 3);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(87, 27);
@@ -72,16 +63,11 @@ namespace Common.Controls
 			this.buttonCancel.Text = "CANCEL";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			this.buttonCancel.Visible = false;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonNo
 			// 
 			this.buttonNo.AutoSize = true;
 			this.buttonNo.DialogResult = System.Windows.Forms.DialogResult.No;
-			this.buttonNo.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-			this.buttonNo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonNo.ForeColor = System.Drawing.Color.WhiteSmoke;
 			this.buttonNo.Location = new System.Drawing.Point(96, 3);
 			this.buttonNo.Name = "buttonNo";
 			this.buttonNo.Size = new System.Drawing.Size(87, 27);
@@ -89,8 +75,6 @@ namespace Common.Controls
 			this.buttonNo.Text = "NO";
 			this.buttonNo.UseVisualStyleBackColor = true;
 			this.buttonNo.Visible = false;
-			this.buttonNo.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonNo.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// messageIcon
 			// 
@@ -157,7 +141,6 @@ namespace Common.Controls
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
 			this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.ClientSize = new System.Drawing.Size(396, 143);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

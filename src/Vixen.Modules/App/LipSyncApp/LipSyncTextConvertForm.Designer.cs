@@ -49,11 +49,6 @@
 			// 
 			// buttonConvert
 			// 
-			this.buttonConvert.BackColor = System.Drawing.Color.Transparent;
-			this.buttonConvert.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.buttonConvert.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonConvert.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonConvert.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonConvert.Location = new System.Drawing.Point(195, 369);
 			this.buttonConvert.Name = "buttonConvert";
 			this.buttonConvert.Size = new System.Drawing.Size(87, 27);
@@ -61,14 +56,9 @@
 			this.buttonConvert.Text = "Convert";
 			this.buttonConvert.UseVisualStyleBackColor = false;
 			this.buttonConvert.Click += new System.EventHandler(this.convertButton_Click);
-			this.buttonConvert.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonConvert.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// textBox
 			// 
-			this.textBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
-			this.textBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.textBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.textBox.Location = new System.Drawing.Point(10, 298);
 			this.textBox.Multiline = true;
 			this.textBox.Name = "textBox";
@@ -78,11 +68,8 @@
 			// 
 			// markCollectionCombo
 			// 
-			this.markCollectionCombo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.markCollectionCombo.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.markCollectionCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.markCollectionCombo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.markCollectionCombo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.markCollectionCombo.FormattingEnabled = true;
 			this.markCollectionCombo.Location = new System.Drawing.Point(19, 27);
 			this.markCollectionCombo.Name = "markCollectionCombo";
@@ -95,11 +82,8 @@
 			// 
 			// alignCombo
 			// 
-			this.alignCombo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.alignCombo.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.alignCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.alignCombo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.alignCombo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.alignCombo.FormattingEnabled = true;
 			this.alignCombo.Location = new System.Drawing.Point(19, 95);
 			this.alignCombo.Name = "alignCombo";
@@ -118,11 +102,8 @@
 			// 
 			// startOffsetCombo
 			// 
-			this.startOffsetCombo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.startOffsetCombo.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.startOffsetCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.startOffsetCombo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.startOffsetCombo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.startOffsetCombo.FormattingEnabled = true;
 			this.startOffsetCombo.Location = new System.Drawing.Point(19, 60);
 			this.startOffsetCombo.Name = "startOffsetCombo";
@@ -137,7 +118,6 @@
 			this.groupBox1.Controls.Add(this.markCollectionRadio);
 			this.groupBox1.Controls.Add(this.cursorRadio);
 			this.groupBox1.Controls.Add(this.clipBoardRadio);
-			this.groupBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox1.Location = new System.Drawing.Point(87, 14);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(194, 102);
@@ -182,11 +162,9 @@
 			// 
 			// marksGroupBox
 			// 
-			this.marksGroupBox.BackColor = System.Drawing.Color.Transparent;
 			this.marksGroupBox.Controls.Add(this.markCollectionCombo);
 			this.marksGroupBox.Controls.Add(this.startOffsetCombo);
 			this.marksGroupBox.Controls.Add(this.alignCombo);
-			this.marksGroupBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.marksGroupBox.Location = new System.Drawing.Point(87, 128);
 			this.marksGroupBox.Name = "marksGroupBox";
 			this.marksGroupBox.Size = new System.Drawing.Size(194, 137);
@@ -198,8 +176,6 @@
 			// markAlignmentLabel
 			// 
 			this.markAlignmentLabel.AutoSize = true;
-			this.markAlignmentLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.markAlignmentLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.markAlignmentLabel.Location = new System.Drawing.Point(17, 226);
 			this.markAlignmentLabel.Name = "markAlignmentLabel";
 			this.markAlignmentLabel.Size = new System.Drawing.Size(63, 15);
@@ -219,7 +195,6 @@
 			// markStartOffsetLabel
 			// 
 			this.markStartOffsetLabel.AutoSize = true;
-			this.markStartOffsetLabel.BackColor = System.Drawing.Color.Transparent;
 			this.markStartOffsetLabel.Location = new System.Drawing.Point(17, 192);
 			this.markStartOffsetLabel.Name = "markStartOffsetLabel";
 			this.markStartOffsetLabel.Size = new System.Drawing.Size(66, 15);
@@ -241,7 +216,6 @@
 			this.AcceptButton = this.buttonConvert;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.ClientSize = new System.Drawing.Size(300, 403);
 			this.Controls.Add(this.checkBoxClearText);
 			this.Controls.Add(this.markAlignmentLabel);
@@ -252,10 +226,11 @@
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.textBox);
 			this.Controls.Add(this.buttonConvert);
-			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximumSize = new System.Drawing.Size(316, 437);
 			this.MinimumSize = new System.Drawing.Size(316, 437);
+			this.FormBorderStyle = FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "LipSyncTextConvertForm";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.Text = "LipSync Text Convert";

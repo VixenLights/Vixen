@@ -154,8 +154,6 @@
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOK
 			// 
@@ -168,8 +166,6 @@
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
-			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// multiSelectTreeview1
 			// 
@@ -202,8 +198,6 @@
 			this.destinationColorButton.Text = "Set Import Color";
 			this.destinationColorButton.UseVisualStyleBackColor = true;
 			this.destinationColorButton.Click += new System.EventHandler(this.destinationColorButton_Click);
-			this.destinationColorButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.destinationColorButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// mappingNameLabel
 			// 

@@ -96,7 +96,6 @@ namespace VixenApplication
 			statusStrip.Padding.Top, statusStrip.Padding.Left, statusStrip.Padding.Bottom);
 			statusStrip.Font = SystemFonts.StatusFont;
 
-			Icon = Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
 			statusStrip.BackColor = ThemeColorTable.BackgroundColor;
 			statusStrip.ForeColor = ThemeColorTable.ForeColor;
@@ -423,7 +422,6 @@ namespace VixenApplication
 			{
 				logsToolStripMenuItem.DropDownItems.Add(logName, null,
 														(menuSender, menuArgs) => _ViewLog(((ToolStripMenuItem)menuSender).Text));
-				//	logsToolStripMenuItem.DropDownItems.ForeColor = Color.FromArgb(90, 90, 90);
 			}
 
 			_startupProgress.Report(Tuple.Create(100, "Ready"));
@@ -485,7 +483,6 @@ namespace VixenApplication
 					_releaseVersion = @"Development Build";
 					_buildVersion = $@"Build #{version.Build}";
 					_currentBuildVersion = version.Build;
-					//labelDebugVersion.ForeColor = labelVersion.ForeColor = Color.Yellow;
 					Logging.Info($"{_releaseVersion} - {_buildVersion}");
 					CheckForDevBuildUpdates();
 				}
@@ -493,7 +490,6 @@ namespace VixenApplication
 				{
 					_releaseVersion = @"Test Build";
 					_buildVersion = $@"Build #";
-					//labelDebugVersion.ForeColor = labelVersion.ForeColor = Color.Red;
 					toolStripStatusUpdates.Text = String.Empty;
 					Logging.Info($"{_releaseVersion}");
 					_testBuild = true;
@@ -1421,18 +1417,6 @@ namespace VixenApplication
 				e.Graphics.DrawLine(borderColor, 0, pictureBox1.Size.Height + extraSpace1, ActiveForm.Width, pictureBox1.Size.Height + extraSpace1);
 				e.Graphics.DrawLine(borderColor, 0, Height - (statusStrip.Height + extraSpace2), Width, Height - (statusStrip.Height + extraSpace2));
 			}
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 
 		private void ClearRecentSequencesList()

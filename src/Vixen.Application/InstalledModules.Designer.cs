@@ -99,8 +99,6 @@
 			this.buttonCopyModuleId.Text = "Copy Module Id";
 			this.buttonCopyModuleId.UseVisualStyleBackColor = true;
 			this.buttonCopyModuleId.Click += new System.EventHandler(this.buttonCopyModuleId_Click);
-			this.buttonCopyModuleId.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCopyModuleId.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonClose
 			// 
@@ -112,8 +110,6 @@
 			this.buttonClose.TabIndex = 1;
 			this.buttonClose.Text = "Close";
 			this.buttonClose.UseVisualStyleBackColor = true;
-			this.buttonClose.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonClose.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// InstalledModules
 			// 

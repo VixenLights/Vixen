@@ -10,10 +10,7 @@ namespace VixenModules.Output.DummyLighting
 		public DummyLightingSetup(RenderStyle renderStyle, string formTitle)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			Icon = Resources.Icon_Vixen3;
 
 			RenderStyle = renderStyle;
 			FormTitle = formTitle;
@@ -50,19 +47,6 @@ namespace VixenModules.Output.DummyLighting
 				RenderStyle = RenderStyle.RGBMultiChannel;
 			if (radioButtonSingleRGB.Checked)
 				RenderStyle = RenderStyle.RGBSingleChannel;
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 	}
 }

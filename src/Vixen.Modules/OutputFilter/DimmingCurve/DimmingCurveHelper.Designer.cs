@@ -1,4 +1,9 @@
-﻿namespace VixenModules.OutputFilter.DimmingCurve
+﻿using Common.Resources.Properties;
+using Common.Resources;
+using Common.Controls.Scaling;
+using System.Resources;
+
+namespace VixenModules.OutputFilter.DimmingCurve
 {
 	partial class DimmingCurveHelper
 	{
@@ -34,6 +39,7 @@
 			lblQuestion = new Label();
 			radioButtonExistingUpdate = new RadioButton();
 			radioButtonExistingAddNew = new RadioButton();
+			buttonHelp = new Button();
 			buttonCancel = new Button();
 			buttonOk = new Button();
 			label4 = new Label();
@@ -67,8 +73,6 @@
 			buttonSetupCurve.Text = "Setup Dimming Curve";
 			buttonSetupCurve.UseVisualStyleBackColor = true;
 			buttonSetupCurve.Click += buttonSetupCurve_Click;
-			buttonSetupCurve.MouseLeave += buttonBackground_MouseLeave;
-			buttonSetupCurve.MouseHover += buttonBackground_MouseHover;
 			// 
 			// radioButtonExistingDoNothing
 			// 
@@ -113,6 +117,21 @@
 			radioButtonExistingAddNew.Text = "Add a new dimming curve anyway (not recommended).";
 			radioButtonExistingAddNew.UseVisualStyleBackColor = true;
 			// 
+			// buttonHelp
+			// 
+			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.buttonHelp.Location = new System.Drawing.Point(14, 319);
+			this.buttonHelp.Name = "buttonHelp";
+			this.buttonHelp.Size = new System.Drawing.Size(70, 27);
+			this.buttonHelp.TabIndex = 63;
+			this.buttonHelp.Tag = Common.VixenHelp.VixenHelp.HelpStrings.Patching;
+			this.buttonHelp.Text = "Help";
+			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.buttonHelp.UseVisualStyleBackColor = true;
+			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
+			this.buttonHelp.Image = Common.Resources.Tools.GetIcon(Resources.help, (int)(16 * ScalingTools.GetScaleFactor()));
+			this.buttonHelp.Click += new System.EventHandler(this.DimmingCurveHelper_HelpButtonClicked);
+			// 
 			// buttonCancel
 			// 
 			buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
@@ -123,8 +142,6 @@
 			buttonCancel.TabIndex = 24;
 			buttonCancel.Text = "Cancel";
 			buttonCancel.UseVisualStyleBackColor = true;
-			buttonCancel.MouseLeave += buttonBackground_MouseLeave;
-			buttonCancel.MouseHover += buttonBackground_MouseHover;
 			// 
 			// buttonOk
 			// 
@@ -137,8 +154,6 @@
 			buttonOk.TabIndex = 23;
 			buttonOk.Text = "OK";
 			buttonOk.UseVisualStyleBackColor = true;
-			buttonOk.MouseLeave += buttonBackground_MouseLeave;
-			buttonOk.MouseHover += buttonBackground_MouseHover;
 			// 
 			// label4
 			// 
@@ -162,6 +177,8 @@
 			// 
 			// DimmingCurveHelper
 			// 
+			AcceptButton = buttonOk;
+			CancelButton = buttonCancel;
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
 			AutoSize = true;
@@ -169,6 +186,7 @@
 			Controls.Add(radioButtonInsertAfter);
 			Controls.Add(label4);
 			Controls.Add(buttonCancel);
+			Controls.Add(buttonHelp);
 			Controls.Add(buttonOk);
 			Controls.Add(radioButtonExistingAddNew);
 			Controls.Add(radioButtonExistingUpdate);
@@ -179,7 +197,6 @@
 			Controls.Add(label1);
 			DoubleBuffered = true;
 			FormBorderStyle = FormBorderStyle.FixedDialog;
-			HelpButton = true;
 			MaximizeBox = false;
 			MinimizeBox = false;
 			MinimumSize = new Size(534, 376);
@@ -202,6 +219,7 @@
 		private System.Windows.Forms.Label lblQuestion;
 		private System.Windows.Forms.RadioButton radioButtonExistingUpdate;
 		private System.Windows.Forms.RadioButton radioButtonExistingAddNew;
+		private System.Windows.Forms.Button buttonHelp;
 		private System.Windows.Forms.Button buttonCancel;
 		private System.Windows.Forms.Button buttonOk;
 		private System.Windows.Forms.Label label4;

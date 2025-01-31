@@ -33,21 +33,13 @@
 			// 
 			// btnOk
 			// 
-			this.btnOk.BackColor = System.Drawing.Color.Transparent;
 			this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnOk.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-			this.btnOk.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.btnOk.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.btnOk.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.btnOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnOk.Location = new System.Drawing.Point(34, 197);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(87, 27);
 			this.btnOk.TabIndex = 1;
-			this.btnOk.Text = "Ok";
+			this.btnOk.Text = "OK";
 			this.btnOk.UseVisualStyleBackColor = false;
-			this.btnOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// label1
 			// 
@@ -69,27 +61,16 @@
 			// 
 			// btnCancel
 			// 
-			this.btnCancel.BackColor = System.Drawing.Color.Transparent;
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-			this.btnCancel.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.btnCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.btnCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnCancel.Location = new System.Drawing.Point(129, 197);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(87, 27);
 			this.btnCancel.TabIndex = 5;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = false;
-			this.btnCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// txtStartTime
 			// 
-			this.txtStartTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.txtStartTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.txtStartTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.txtStartTime.Location = new System.Drawing.Point(82, 42);
 			this.txtStartTime.Name = "txtStartTime";
 			this.txtStartTime.Size = new System.Drawing.Size(116, 23);
@@ -101,9 +82,6 @@
 			// 
 			// txtDuration
 			// 
-			this.txtDuration.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.txtDuration.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.txtDuration.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.txtDuration.Location = new System.Drawing.Point(82, 75);
 			this.txtDuration.Name = "txtDuration";
 			this.txtDuration.Size = new System.Drawing.Size(116, 23);
@@ -121,9 +99,6 @@
 			// 
 			// txtEndTime
 			// 
-			this.txtEndTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.txtEndTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.txtEndTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.txtEndTime.Location = new System.Drawing.Point(82, 110);
 			this.txtEndTime.Name = "txtEndTime";
 			this.txtEndTime.Size = new System.Drawing.Size(116, 23);
@@ -144,12 +119,6 @@
 			// 
 			// btnSetFullSequence
 			// 
-			this.btnSetFullSequence.BackColor = System.Drawing.Color.Transparent;
-			this.btnSetFullSequence.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-			this.btnSetFullSequence.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.btnSetFullSequence.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.btnSetFullSequence.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.btnSetFullSequence.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnSetFullSequence.Location = new System.Drawing.Point(177, 146);
 			this.btnSetFullSequence.Name = "btnSetFullSequence";
 			this.btnSetFullSequence.Size = new System.Drawing.Size(39, 27);
@@ -173,7 +142,6 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
-			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.btnCancel;
 			this.ClientSize = new System.Drawing.Size(247, 236);
 			this.Controls.Add(this.lblSetSequenceLength);
@@ -186,7 +154,7 @@
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.btnOk);
-			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.FormBorderStyle = FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MaximumSize = new System.Drawing.Size(263, 275);
 			this.MinimizeBox = false;

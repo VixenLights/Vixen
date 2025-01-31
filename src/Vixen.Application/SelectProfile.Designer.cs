@@ -69,8 +69,6 @@
 			this.buttonLoad.Text = "Load";
 			this.buttonLoad.UseVisualStyleBackColor = true;
 			this.buttonLoad.Click += new System.EventHandler(this.buttonLoad_Click);
-			this.buttonLoad.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonLoad.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonEditor
 			// 
@@ -82,8 +80,6 @@
 			this.buttonEditor.Text = "Profile Editor";
 			this.buttonEditor.UseVisualStyleBackColor = true;
 			this.buttonEditor.Click += new System.EventHandler(this.buttonEditor_Click);
-			this.buttonEditor.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonEditor.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// flowLayoutPanel1
 			// 

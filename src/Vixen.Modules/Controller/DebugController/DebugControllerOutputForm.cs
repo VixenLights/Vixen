@@ -20,8 +20,6 @@ namespace VixenModules.Output.DebugController
 		public DebugControllerOutputForm()
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			chkVerbose.Checked = Verbose = false;
 			AppendText = false;

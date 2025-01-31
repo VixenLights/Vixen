@@ -17,7 +17,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public PreviewSetElements(List<PreviewLightBaseShape> shapes)
 		{
 			InitializeComponent();
-			Icon = Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
 			contextMenuLinkedElements.Renderer = new ThemeToolStripRenderer();
 			int imageSize = (int)(16 * ScalingTools.GetScaleFactor());
@@ -507,19 +506,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				numericUpDownLightCount.Value = elementString.Pixels.Count();
 				UpdateListLinkedElements();
 			}
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 
 		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)

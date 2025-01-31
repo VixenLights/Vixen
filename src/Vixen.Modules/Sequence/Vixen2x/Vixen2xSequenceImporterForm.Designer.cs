@@ -81,8 +81,6 @@
 			this.createMapButton.Text = "Create New Map";
 			this.createMapButton.UseVisualStyleBackColor = true;
 			this.createMapButton.Click += new System.EventHandler(this.createMapButton_Click);
-			this.createMapButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.createMapButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// convertButton
 			// 
@@ -95,8 +93,6 @@
 			this.convertButton.Text = "Convert Sequence";
 			this.convertButton.UseVisualStyleBackColor = true;
 			this.convertButton.Click += new System.EventHandler(this.convertButton_Click);
-			this.convertButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.convertButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// cancelButton
 			// 
@@ -109,8 +105,6 @@
 			this.cancelButton.Text = "Cancel";
 			this.cancelButton.UseVisualStyleBackColor = true;
 			this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
-			this.cancelButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.cancelButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// label1
 			// 
@@ -181,6 +175,7 @@
 			this.DoubleBuffered = true;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MinimizeBox = false;
+			this.MaximizeBox = false;
 			this.Name = "Vixen2xSequenceImporterForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Vixen 2 to Vixen 3 Converter";

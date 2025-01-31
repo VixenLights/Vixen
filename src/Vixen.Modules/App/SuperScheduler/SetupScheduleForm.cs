@@ -14,11 +14,6 @@ namespace VixenModules.App.SuperScheduler
 		{
 			InitializeComponent();
 
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
-			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
-			buttonHelp.Image = Tools.GetIcon(Resources.help, iconSize);
-
 			ThemeUpdateControls.UpdateControls(this);
 
 			_scheduleItem = scheduleItem;
@@ -145,18 +140,6 @@ namespace VixenModules.App.SuperScheduler
 			}
 
 			labelDuration.Text = "(the show will last " + t.Hours + " hours and " + t.Minutes + " minutes)";
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

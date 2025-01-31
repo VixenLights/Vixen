@@ -14,7 +14,6 @@ namespace VixenApplication
 		public DataProfileForm()
 		{
 			InitializeComponent();
-			Icon = Resources.Icon_Vixen3;
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			buttonAddProfile.Image = Tools.GetIcon(Resources.add, iconSize);
 			buttonAddProfile.Text = "";
@@ -341,19 +340,6 @@ namespace VixenApplication
 		{
 			DataZipForm f = new DataZipForm();
 			f.ShowDialog();
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

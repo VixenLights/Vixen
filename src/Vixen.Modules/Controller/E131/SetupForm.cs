@@ -94,21 +94,15 @@ namespace VixenModules.Output.E131
 
             // finally initialize the form
             InitializeComponent();
-	        int iconSize = (int)(16*ScalingTools.GetScaleFactor());
+			int iconSize = (int)(16*ScalingTools.GetScaleFactor());
 			lblDestination.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 14.25F);
-            btnAddUniverse.Text = "";
             btnAddUniverse.Image = Tools.GetIcon(Resources.add, iconSize);
-            btnDeleteUniverse.Text = "";
             btnDeleteUniverse.Image = Tools.GetIcon(Resources.delete, iconSize);
 
-            btnAddUnicast.Text = "";
             btnAddUnicast.Image = Tools.GetIcon(Resources.add, iconSize);
-            btnDeleteUnicast.Text = "";
             btnDeleteUnicast.Image = Tools.GetIcon(Resources.delete, iconSize);
             btnDeleteAllUniverses.Image = Tools.GetIcon(Resources.table_delete, iconSize);
 			SetDestinations();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this, new List<Control>(new []{univDGVN}));
 			foreach (Control tab in tabControlEX1.TabPages)
 			{
@@ -1202,19 +1196,6 @@ namespace VixenModules.Output.E131
             else
                 btnDeleteUnicast.Enabled = true;
         }
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
-		}
 
 		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{

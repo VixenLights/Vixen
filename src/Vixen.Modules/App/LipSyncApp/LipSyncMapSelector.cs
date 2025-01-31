@@ -12,11 +12,8 @@ namespace VixenModules.App.LipSyncApp
 		public LipSyncMapSelector()
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			mappingsListView.Sorting = SortOrder.Ascending;
-			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
 			Changed = false;
 		}
 
@@ -214,18 +211,6 @@ namespace VixenModules.App.LipSyncApp
 		private void buttonDeleteMapping_Click(object sender, EventArgs e)
 		{
 			DeleteSelectedMapping();
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Common.Resources.Properties.Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Common.Resources.Properties.Resources.ButtonBackgroundImage;
 		}
 
 		private void LipSyncMapSelector_Resize(object sender, EventArgs e)

@@ -107,14 +107,10 @@
 			// 
 			// buttonAddColor
 			// 
-			this.buttonAddColor.BackColor = System.Drawing.Color.Transparent;
-			this.buttonAddColor.FlatAppearance.BorderSize = 0;
-			this.buttonAddColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAddColor.Location = new System.Drawing.Point(203, 159);
 			this.buttonAddColor.Name = "buttonAddColor";
 			this.buttonAddColor.Size = new System.Drawing.Size(28, 28);
 			this.buttonAddColor.TabIndex = 12;
-			this.buttonAddColor.Text = "+";
 			this.buttonAddColor.UseVisualStyleBackColor = false;
 			this.buttonAddColor.Click += new System.EventHandler(this.buttonAddColor_Click);
 			// 
@@ -127,8 +123,6 @@
 			this.buttonUpdate.Text = "Make New Color Set";
 			this.buttonUpdate.UseVisualStyleBackColor = true;
 			this.buttonUpdate.Click += new System.EventHandler(this.buttonUpdate_Click);
-			this.buttonUpdate.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonUpdate.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// tableLayoutPanelColors
 			// 
@@ -184,32 +178,22 @@
 			this.button1.TabIndex = 10;
 			this.button1.Text = "OK";
 			this.button1.UseVisualStyleBackColor = true;
-			this.button1.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.button1.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonRemoveColorSet
 			// 
-			this.buttonRemoveColorSet.BackColor = System.Drawing.Color.Transparent;
-			this.buttonRemoveColorSet.FlatAppearance.BorderSize = 0;
-			this.buttonRemoveColorSet.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonRemoveColorSet.Location = new System.Drawing.Point(70, 134);
 			this.buttonRemoveColorSet.Name = "buttonRemoveColorSet";
 			this.buttonRemoveColorSet.Size = new System.Drawing.Size(28, 28);
 			this.buttonRemoveColorSet.TabIndex = 3;
-			this.buttonRemoveColorSet.Text = "-";
 			this.buttonRemoveColorSet.UseVisualStyleBackColor = false;
 			this.buttonRemoveColorSet.Click += new System.EventHandler(this.buttonRemoveColorSet_Click);
 			// 
 			// buttonAddColorSet
 			// 
-			this.buttonAddColorSet.BackColor = System.Drawing.Color.Transparent;
-			this.buttonAddColorSet.FlatAppearance.BorderSize = 0;
-			this.buttonAddColorSet.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAddColorSet.Location = new System.Drawing.Point(24, 134);
 			this.buttonAddColorSet.Name = "buttonAddColorSet";
 			this.buttonAddColorSet.Size = new System.Drawing.Size(28, 28);
 			this.buttonAddColorSet.TabIndex = 2;
-			this.buttonAddColorSet.Text = "+";
 			this.buttonAddColorSet.UseVisualStyleBackColor = false;
 			this.buttonAddColorSet.Click += new System.EventHandler(this.buttonAddColorSet_Click);
 			// 
@@ -227,6 +211,8 @@
 			this.Controls.Add(this.listViewColorSets);
 			this.DoubleBuffered = true;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(459, 299);
 			this.Name = "ColorSetsSetupForm";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
