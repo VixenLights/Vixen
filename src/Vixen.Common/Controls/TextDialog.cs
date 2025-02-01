@@ -7,8 +7,6 @@ namespace Common.Controls
 		public TextDialog(string prompt)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			labelPrompt.Text = prompt;
 		}
@@ -48,19 +46,6 @@ namespace Common.Controls
 		public string Response
 		{
 			get { return textBoxResponse.Text; }
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImage;
-
 		}
 	}
 }

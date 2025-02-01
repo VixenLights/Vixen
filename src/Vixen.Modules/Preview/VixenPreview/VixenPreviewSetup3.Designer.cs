@@ -240,15 +240,10 @@
 			// 
 			this.buttonDistributeVertical.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonDistributeVertical.Enabled = false;
-			this.buttonDistributeVertical.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonDistributeVertical.FlatAppearance.BorderSize = 0;
-			this.buttonDistributeVertical.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonDistributeVertical.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonDistributeVertical.Location = new System.Drawing.Point(87, 32);
 			this.buttonDistributeVertical.Name = "buttonDistributeVertical";
 			this.buttonDistributeVertical.Size = new System.Drawing.Size(22, 23);
 			this.buttonDistributeVertical.TabIndex = 24;
-			this.buttonDistributeVertical.Text = "A";
 			this.toolTip.SetToolTip(this.buttonDistributeVertical, "Distribute Vertically");
 			this.buttonDistributeVertical.UseVisualStyleBackColor = true;
 			this.buttonDistributeVertical.Click += new System.EventHandler(this.toolbarAlignButton_Click);
@@ -257,15 +252,10 @@
 			// 
 			this.buttonMatchProperties.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonMatchProperties.Enabled = false;
-			this.buttonMatchProperties.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonMatchProperties.FlatAppearance.BorderSize = 0;
-			this.buttonMatchProperties.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonMatchProperties.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonMatchProperties.Location = new System.Drawing.Point(115, 3);
 			this.buttonMatchProperties.Name = "buttonMatchProperties";
 			this.buttonMatchProperties.Size = new System.Drawing.Size(18, 23);
 			this.buttonMatchProperties.TabIndex = 20;
-			this.buttonMatchProperties.Text = "A";
 			this.toolTip.SetToolTip(this.buttonMatchProperties, "Match Properties");
 			this.buttonMatchProperties.UseVisualStyleBackColor = true;
 			this.buttonMatchProperties.Click += new System.EventHandler(this.toolbarAlignButton_Click);
@@ -274,15 +264,10 @@
 			// 
 			this.buttonAlignBottom.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAlignBottom.Enabled = false;
-			this.buttonAlignBottom.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonAlignBottom.FlatAppearance.BorderSize = 0;
-			this.buttonAlignBottom.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonAlignBottom.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAlignBottom.Location = new System.Drawing.Point(59, 32);
 			this.buttonAlignBottom.Name = "buttonAlignBottom";
 			this.buttonAlignBottom.Size = new System.Drawing.Size(22, 23);
 			this.buttonAlignBottom.TabIndex = 23;
-			this.buttonAlignBottom.Text = "A";
 			this.toolTip.SetToolTip(this.buttonAlignBottom, "Align Bottom");
 			this.buttonAlignBottom.UseVisualStyleBackColor = true;
 			this.buttonAlignBottom.Click += new System.EventHandler(this.toolbarAlignButton_Click);
@@ -291,15 +276,10 @@
 			// 
 			this.buttonAlignLeft.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
 			this.buttonAlignLeft.Enabled = false;
-			this.buttonAlignLeft.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonAlignLeft.FlatAppearance.BorderSize = 0;
-			this.buttonAlignLeft.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonAlignLeft.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAlignLeft.Location = new System.Drawing.Point(3, 3);
 			this.buttonAlignLeft.Name = "buttonAlignLeft";
 			this.buttonAlignLeft.Size = new System.Drawing.Size(22, 23);
 			this.buttonAlignLeft.TabIndex = 16;
-			this.buttonAlignLeft.Text = "A";
 			this.toolTip.SetToolTip(this.buttonAlignLeft, "Align Left");
 			this.buttonAlignLeft.UseVisualStyleBackColor = true;
 			this.buttonAlignLeft.Click += new System.EventHandler(this.toolbarAlignButton_Click);
@@ -308,15 +288,10 @@
 			// 
 			this.buttonAlignVertMid.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAlignVertMid.Enabled = false;
-			this.buttonAlignVertMid.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonAlignVertMid.FlatAppearance.BorderSize = 0;
-			this.buttonAlignVertMid.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonAlignVertMid.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAlignVertMid.Location = new System.Drawing.Point(31, 32);
 			this.buttonAlignVertMid.Name = "buttonAlignVertMid";
 			this.buttonAlignVertMid.Size = new System.Drawing.Size(22, 23);
 			this.buttonAlignVertMid.TabIndex = 22;
-			this.buttonAlignVertMid.Text = "A";
 			this.toolTip.SetToolTip(this.buttonAlignVertMid, "Align Vertically");
 			this.buttonAlignVertMid.UseVisualStyleBackColor = true;
 			this.buttonAlignVertMid.Click += new System.EventHandler(this.toolbarAlignButton_Click);
@@ -325,15 +300,10 @@
 			// 
 			this.buttonAlignRight.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAlignRight.Enabled = false;
-			this.buttonAlignRight.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonAlignRight.FlatAppearance.BorderSize = 0;
-			this.buttonAlignRight.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonAlignRight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAlignRight.Location = new System.Drawing.Point(31, 3);
 			this.buttonAlignRight.Name = "buttonAlignRight";
 			this.buttonAlignRight.Size = new System.Drawing.Size(22, 23);
 			this.buttonAlignRight.TabIndex = 17;
-			this.buttonAlignRight.Text = "A";
 			this.toolTip.SetToolTip(this.buttonAlignRight, "Align Right");
 			this.buttonAlignRight.UseVisualStyleBackColor = true;
 			this.buttonAlignRight.Click += new System.EventHandler(this.toolbarAlignButton_Click);
@@ -342,15 +312,10 @@
 			// 
 			this.buttonAlignHorizMid.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAlignHorizMid.Enabled = false;
-			this.buttonAlignHorizMid.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonAlignHorizMid.FlatAppearance.BorderSize = 0;
-			this.buttonAlignHorizMid.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonAlignHorizMid.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAlignHorizMid.Location = new System.Drawing.Point(3, 32);
 			this.buttonAlignHorizMid.Name = "buttonAlignHorizMid";
 			this.buttonAlignHorizMid.Size = new System.Drawing.Size(22, 23);
 			this.buttonAlignHorizMid.TabIndex = 21;
-			this.buttonAlignHorizMid.Text = "A";
 			this.toolTip.SetToolTip(this.buttonAlignHorizMid, "Align Horizontally");
 			this.buttonAlignHorizMid.UseVisualStyleBackColor = true;
 			this.buttonAlignHorizMid.Click += new System.EventHandler(this.toolbarAlignButton_Click);
@@ -359,15 +324,10 @@
 			// 
 			this.buttonDistributeHorizontal.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonDistributeHorizontal.Enabled = false;
-			this.buttonDistributeHorizontal.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonDistributeHorizontal.FlatAppearance.BorderSize = 0;
-			this.buttonDistributeHorizontal.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonDistributeHorizontal.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonDistributeHorizontal.Location = new System.Drawing.Point(87, 3);
 			this.buttonDistributeHorizontal.Name = "buttonDistributeHorizontal";
 			this.buttonDistributeHorizontal.Size = new System.Drawing.Size(22, 23);
 			this.buttonDistributeHorizontal.TabIndex = 19;
-			this.buttonDistributeHorizontal.Text = "A";
 			this.toolTip.SetToolTip(this.buttonDistributeHorizontal, "Distribute Horizontally");
 			this.buttonDistributeHorizontal.UseVisualStyleBackColor = true;
 			this.buttonDistributeHorizontal.Click += new System.EventHandler(this.toolbarAlignButton_Click);
@@ -376,15 +336,11 @@
 			// 
 			this.buttonAlignTop.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonAlignTop.Enabled = false;
-			this.buttonAlignTop.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonAlignTop.FlatAppearance.BorderSize = 0;
-			this.buttonAlignTop.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
 			this.buttonAlignTop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAlignTop.Location = new System.Drawing.Point(59, 3);
 			this.buttonAlignTop.Name = "buttonAlignTop";
 			this.buttonAlignTop.Size = new System.Drawing.Size(22, 23);
 			this.buttonAlignTop.TabIndex = 18;
-			this.buttonAlignTop.Text = "A";
 			this.toolTip.SetToolTip(this.buttonAlignTop, "Align Top");
 			this.buttonAlignTop.UseVisualStyleBackColor = true;
 			this.buttonAlignTop.Click += new System.EventHandler(this.toolbarAlignButton_Click);
@@ -413,15 +369,8 @@
 			// 
 			// buttonSelect
 			// 
-			this.buttonSelect.BackColor = System.Drawing.Color.Transparent;
 			this.buttonSelect.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonSelect.BackgroundImage")));
 			this.buttonSelect.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonSelect.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonSelect.FlatAppearance.BorderSize = 0;
-			this.buttonSelect.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonSelect.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonSelect.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonSelect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonSelect.Location = new System.Drawing.Point(6, 5);
 			this.buttonSelect.Name = "buttonSelect";
 			this.buttonSelect.Size = new System.Drawing.Size(40, 40);
@@ -446,7 +395,6 @@
 			// 
 			this.lblCustomProp.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.lblCustomProp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
 			this.lblCustomProp.Location = new System.Drawing.Point(676, 0);
 			this.lblCustomProp.Name = "lblCustomProp";
 			this.lblCustomProp.Size = new System.Drawing.Size(92, 19);
@@ -458,7 +406,6 @@
 			// 
 			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.label3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
 			this.label3.Location = new System.Drawing.Point(309, 0);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(142, 19);
@@ -488,15 +435,8 @@
 			// 
 			// buttonPolyLine
 			// 
-			this.buttonPolyLine.BackColor = System.Drawing.Color.Transparent;
 			this.buttonPolyLine.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonPolyLine.BackgroundImage")));
 			this.buttonPolyLine.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonPolyLine.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonPolyLine.FlatAppearance.BorderSize = 0;
-			this.buttonPolyLine.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonPolyLine.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonPolyLine.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonPolyLine.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonPolyLine.Location = new System.Drawing.Point(59, 32);
 			this.buttonPolyLine.Name = "buttonPolyLine";
 			this.buttonPolyLine.Size = new System.Drawing.Size(20, 23);
@@ -508,15 +448,8 @@
 			// 
 			// buttonDrawPixel
 			// 
-			this.buttonDrawPixel.BackColor = System.Drawing.Color.Transparent;
 			this.buttonDrawPixel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonDrawPixel.BackgroundImage")));
 			this.buttonDrawPixel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonDrawPixel.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonDrawPixel.FlatAppearance.BorderSize = 0;
-			this.buttonDrawPixel.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonDrawPixel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonDrawPixel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonDrawPixel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonDrawPixel.Location = new System.Drawing.Point(3, 3);
 			this.buttonDrawPixel.Name = "buttonDrawPixel";
 			this.buttonDrawPixel.Size = new System.Drawing.Size(22, 23);
@@ -528,15 +461,8 @@
 			// 
 			// buttonTriangle
 			// 
-			this.buttonTriangle.BackColor = System.Drawing.Color.Transparent;
 			this.buttonTriangle.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonTriangle.BackgroundImage")));
 			this.buttonTriangle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonTriangle.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonTriangle.FlatAppearance.BorderSize = 0;
-			this.buttonTriangle.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonTriangle.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonTriangle.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonTriangle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonTriangle.Location = new System.Drawing.Point(31, 32);
 			this.buttonTriangle.Name = "buttonTriangle";
 			this.buttonTriangle.Size = new System.Drawing.Size(22, 23);
@@ -548,15 +474,8 @@
 			// 
 			// buttonLine
 			// 
-			this.buttonLine.BackColor = System.Drawing.Color.Transparent;
 			this.buttonLine.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonLine.BackgroundImage")));
 			this.buttonLine.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonLine.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonLine.FlatAppearance.BorderSize = 0;
-			this.buttonLine.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonLine.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonLine.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonLine.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonLine.Location = new System.Drawing.Point(31, 3);
 			this.buttonLine.Name = "buttonLine";
 			this.buttonLine.Size = new System.Drawing.Size(22, 23);
@@ -568,15 +487,8 @@
 			// 
 			// buttonRectangle
 			// 
-			this.buttonRectangle.BackColor = System.Drawing.Color.Transparent;
 			this.buttonRectangle.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonRectangle.BackgroundImage")));
 			this.buttonRectangle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonRectangle.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonRectangle.FlatAppearance.BorderSize = 0;
-			this.buttonRectangle.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonRectangle.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonRectangle.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonRectangle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonRectangle.Location = new System.Drawing.Point(59, 3);
 			this.buttonRectangle.Name = "buttonRectangle";
 			this.buttonRectangle.Size = new System.Drawing.Size(20, 23);
@@ -588,15 +500,8 @@
 			// 
 			// buttonEllipse
 			// 
-			this.buttonEllipse.BackColor = System.Drawing.Color.Transparent;
 			this.buttonEllipse.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonEllipse.BackgroundImage")));
 			this.buttonEllipse.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonEllipse.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonEllipse.FlatAppearance.BorderSize = 0;
-			this.buttonEllipse.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonEllipse.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonEllipse.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonEllipse.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonEllipse.Location = new System.Drawing.Point(3, 32);
 			this.buttonEllipse.Name = "buttonEllipse";
 			this.buttonEllipse.Size = new System.Drawing.Size(22, 23);
@@ -610,7 +515,6 @@
 			// 
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.label2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
 			this.label2.Location = new System.Drawing.Point(209, 0);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(94, 19);
@@ -644,8 +548,6 @@
 			// 
 			this.buttonSetBackground.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonSetBackground.BackgroundImage")));
 			this.buttonSetBackground.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonSetBackground.FlatAppearance.BorderSize = 0;
-			this.buttonSetBackground.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonSetBackground.Location = new System.Drawing.Point(8, 3);
 			this.buttonSetBackground.Name = "buttonSetBackground";
 			this.buttonSetBackground.Size = new System.Drawing.Size(40, 40);
@@ -657,7 +559,6 @@
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
 			this.label1.Location = new System.Drawing.Point(3, 0);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(140, 19);
@@ -926,15 +827,8 @@
 			// 
 			// buttonIcicle
 			// 
-			this.buttonIcicle.BackColor = System.Drawing.Color.Transparent;
 			this.buttonIcicle.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonIcicle.BackgroundImage")));
 			this.buttonIcicle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonIcicle.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonIcicle.FlatAppearance.BorderSize = 0;
-			this.buttonIcicle.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonIcicle.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonIcicle.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonIcicle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonIcicle.Location = new System.Drawing.Point(115, 32);
 			this.buttonIcicle.Name = "buttonIcicle";
 			this.buttonIcicle.Size = new System.Drawing.Size(18, 23);
@@ -946,15 +840,8 @@
 			// 
 			// buttonMultiString
 			// 
-			this.buttonMultiString.BackColor = System.Drawing.Color.Transparent;
 			this.buttonMultiString.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonMultiString.BackgroundImage")));
 			this.buttonMultiString.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonMultiString.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonMultiString.FlatAppearance.BorderSize = 0;
-			this.buttonMultiString.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonMultiString.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonMultiString.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonMultiString.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonMultiString.Location = new System.Drawing.Point(115, 3);
 			this.buttonMultiString.Name = "buttonMultiString";
 			this.buttonMultiString.Size = new System.Drawing.Size(10, 23);
@@ -966,15 +853,8 @@
 			// 
 			// buttonPixelGrid
 			// 
-			this.buttonPixelGrid.BackColor = System.Drawing.Color.Transparent;
 			this.buttonPixelGrid.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonPixelGrid.BackgroundImage")));
 			this.buttonPixelGrid.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonPixelGrid.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonPixelGrid.FlatAppearance.BorderSize = 0;
-			this.buttonPixelGrid.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonPixelGrid.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonPixelGrid.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonPixelGrid.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonPixelGrid.Location = new System.Drawing.Point(87, 32);
 			this.buttonPixelGrid.Name = "buttonPixelGrid";
 			this.buttonPixelGrid.Size = new System.Drawing.Size(22, 23);
@@ -986,15 +866,8 @@
 			// 
 			// buttonSemiCircle
 			// 
-			this.buttonSemiCircle.BackColor = System.Drawing.Color.Transparent;
 			this.buttonSemiCircle.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonSemiCircle.BackgroundImage")));
 			this.buttonSemiCircle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonSemiCircle.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonSemiCircle.FlatAppearance.BorderSize = 0;
-			this.buttonSemiCircle.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonSemiCircle.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonSemiCircle.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonSemiCircle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonSemiCircle.Location = new System.Drawing.Point(3, 3);
 			this.buttonSemiCircle.Name = "buttonSemiCircle";
 			this.buttonSemiCircle.Size = new System.Drawing.Size(22, 23);
@@ -1006,15 +879,8 @@
 			// 
 			// buttonStar
 			// 
-			this.buttonStar.BackColor = System.Drawing.Color.Transparent;
 			this.buttonStar.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonStar.BackgroundImage")));
 			this.buttonStar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonStar.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonStar.FlatAppearance.BorderSize = 0;
-			this.buttonStar.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonStar.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonStar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonStar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonStar.Location = new System.Drawing.Point(59, 32);
 			this.buttonStar.Name = "buttonStar";
 			this.buttonStar.Size = new System.Drawing.Size(22, 23);
@@ -1026,15 +892,8 @@
 			// 
 			// buttonNet
 			// 
-			this.buttonNet.BackColor = System.Drawing.Color.Transparent;
 			this.buttonNet.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonNet.BackgroundImage")));
 			this.buttonNet.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonNet.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonNet.FlatAppearance.BorderSize = 0;
-			this.buttonNet.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonNet.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonNet.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonNet.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonNet.Location = new System.Drawing.Point(31, 3);
 			this.buttonNet.Name = "buttonNet";
 			this.buttonNet.Size = new System.Drawing.Size(22, 23);
@@ -1046,15 +905,8 @@
 			// 
 			// buttonCane
 			// 
-			this.buttonCane.BackColor = System.Drawing.Color.Transparent;
 			this.buttonCane.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonCane.BackgroundImage")));
 			this.buttonCane.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonCane.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonCane.FlatAppearance.BorderSize = 0;
-			this.buttonCane.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonCane.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonCane.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonCane.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonCane.Location = new System.Drawing.Point(3, 32);
 			this.buttonCane.Name = "buttonCane";
 			this.buttonCane.Size = new System.Drawing.Size(22, 23);
@@ -1066,15 +918,8 @@
 			// 
 			// buttonStarBurst
 			// 
-			this.buttonStarBurst.BackColor = System.Drawing.Color.Transparent;
 			this.buttonStarBurst.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonStarBurst.BackgroundImage")));
 			this.buttonStarBurst.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonStarBurst.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonStarBurst.FlatAppearance.BorderSize = 0;
-			this.buttonStarBurst.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonStarBurst.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonStarBurst.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonStarBurst.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonStarBurst.Location = new System.Drawing.Point(87, 3);
 			this.buttonStarBurst.Name = "buttonStarBurst";
 			this.buttonStarBurst.Size = new System.Drawing.Size(22, 23);
@@ -1089,12 +934,6 @@
 			this.buttonMegaTree.BackColor = System.Drawing.Color.Transparent;
 			this.buttonMegaTree.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonMegaTree.BackgroundImage")));
 			this.buttonMegaTree.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonMegaTree.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonMegaTree.FlatAppearance.BorderSize = 0;
-			this.buttonMegaTree.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonMegaTree.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonMegaTree.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonMegaTree.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonMegaTree.Location = new System.Drawing.Point(59, 3);
 			this.buttonMegaTree.Name = "buttonMegaTree";
 			this.buttonMegaTree.Size = new System.Drawing.Size(22, 23);
@@ -1106,66 +945,44 @@
 			// 
 			// btnAddCustomProp
 			// 
-			this.btnAddCustomProp.BackColor = System.Drawing.Color.Transparent;
 			this.btnAddCustomProp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.btnAddCustomProp.FlatAppearance.BorderSize = 0;
-			this.btnAddCustomProp.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.btnAddCustomProp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnAddCustomProp.Location = new System.Drawing.Point(31, 3);
 			this.btnAddCustomProp.Name = "btnAddCustomProp";
 			this.btnAddCustomProp.Size = new System.Drawing.Size(22, 23);
 			this.btnAddCustomProp.TabIndex = 31;
 			this.btnAddCustomProp.Tag = "";
-			this.btnAddCustomProp.Text = "A";
 			this.toolTip.SetToolTip(this.btnAddCustomProp, "Add Custom Prop");
 			this.btnAddCustomProp.UseVisualStyleBackColor = false;
 			this.btnAddCustomProp.Click += new System.EventHandler(this.importPropToolStripMenuItem_Click);
 			// 
 			// btnCustomPropLibrary
 			// 
-			this.btnCustomPropLibrary.BackColor = System.Drawing.Color.Transparent;
 			this.btnCustomPropLibrary.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.btnCustomPropLibrary.FlatAppearance.BorderSize = 0;
-			this.btnCustomPropLibrary.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.btnCustomPropLibrary.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnCustomPropLibrary.Location = new System.Drawing.Point(59, 3);
 			this.btnCustomPropLibrary.Name = "btnCustomPropLibrary";
 			this.btnCustomPropLibrary.Size = new System.Drawing.Size(22, 23);
 			this.btnCustomPropLibrary.TabIndex = 28;
 			this.btnCustomPropLibrary.Tag = "";
-			this.btnCustomPropLibrary.Text = "L";
 			this.toolTip.SetToolTip(this.btnCustomPropLibrary, "Custom Prop Library");
 			this.btnCustomPropLibrary.UseVisualStyleBackColor = false;
 			this.btnCustomPropLibrary.Click += new System.EventHandler(this.buttonCustomPropLibrary_Click);
 			// 
 			// btnCustomPropEditor
 			// 
-			this.btnCustomPropEditor.BackColor = System.Drawing.Color.Transparent;
 			this.btnCustomPropEditor.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.btnCustomPropEditor.FlatAppearance.BorderSize = 0;
-			this.btnCustomPropEditor.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.btnCustomPropEditor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnCustomPropEditor.Location = new System.Drawing.Point(3, 3);
 			this.btnCustomPropEditor.Name = "btnCustomPropEditor";
 			this.btnCustomPropEditor.Size = new System.Drawing.Size(22, 23);
 			this.btnCustomPropEditor.TabIndex = 32;
 			this.btnCustomPropEditor.Tag = "";
-			this.btnCustomPropEditor.Text = "CP";
 			this.toolTip.SetToolTip(this.btnCustomPropEditor, "Custom Prop Editor");
 			this.btnCustomPropEditor.UseVisualStyleBackColor = false;
 			this.btnCustomPropEditor.Click += new System.EventHandler(this.btnCustomPropEditor_Click);
 			// 
 			// buttonMovingHead
 			// 
-			this.buttonMovingHead.BackColor = System.Drawing.Color.Transparent;
 			this.buttonMovingHead.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonMovingHead.BackgroundImage")));
 			this.buttonMovingHead.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonMovingHead.FlatAppearance.BorderColor = System.Drawing.Color.White;
-			this.buttonMovingHead.FlatAppearance.BorderSize = 0;
-			this.buttonMovingHead.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonMovingHead.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonMovingHead.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonMovingHead.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonMovingHead.Location = new System.Drawing.Point(31, 32);
 			this.buttonMovingHead.Name = "buttonMovingHead";
 			this.buttonMovingHead.Size = new System.Drawing.Size(22, 23);
@@ -1388,6 +1205,7 @@
 			this.tlpToolBar.Controls.Add(this.lblBulbSize, 5, 0);
 			this.tlpToolBar.Controls.Add(this.pnlBulbSize, 5, 1);
 			this.tlpToolBar.Location = new System.Drawing.Point(3, 3);
+			this.tlpToolBar.BorderStyle = BorderStyle.FixedSingle;
 			this.tlpToolBar.Name = "tlpToolBar";
 			this.tlpToolBar.RowCount = 2;
 			this.tlpToolBar.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -1440,7 +1258,6 @@
 			// 
 			this.lblBulbSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.lblBulbSize.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
 			this.lblBulbSize.Location = new System.Drawing.Point(606, 0);
 			this.lblBulbSize.Name = "lblBulbSize";
 			this.lblBulbSize.Size = new System.Drawing.Size(64, 19);
@@ -1477,35 +1294,25 @@
 			// 
 			// btnBulbDecrease
 			// 
-			this.btnBulbDecrease.BackColor = System.Drawing.Color.Transparent;
 			this.btnBulbDecrease.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.btnBulbDecrease.Enabled = false;
-			this.btnBulbDecrease.FlatAppearance.BorderSize = 0;
-			this.btnBulbDecrease.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.btnBulbDecrease.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnBulbDecrease.Location = new System.Drawing.Point(3, 3);
 			this.btnBulbDecrease.Name = "btnBulbDecrease";
 			this.btnBulbDecrease.Size = new System.Drawing.Size(22, 23);
 			this.btnBulbDecrease.TabIndex = 32;
 			this.btnBulbDecrease.Tag = "";
-			this.btnBulbDecrease.Text = "-";
 			this.btnBulbDecrease.UseVisualStyleBackColor = false;
 			this.btnBulbDecrease.Click += new System.EventHandler(this.btnBulbDecrease_Click);
 			// 
 			// btnBulbIncrease
 			// 
-			this.btnBulbIncrease.BackColor = System.Drawing.Color.Transparent;
 			this.btnBulbIncrease.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.btnBulbIncrease.Enabled = false;
-			this.btnBulbIncrease.FlatAppearance.BorderSize = 0;
-			this.btnBulbIncrease.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.btnBulbIncrease.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnBulbIncrease.Location = new System.Drawing.Point(31, 3);
 			this.btnBulbIncrease.Name = "btnBulbIncrease";
 			this.btnBulbIncrease.Size = new System.Drawing.Size(22, 23);
 			this.btnBulbIncrease.TabIndex = 31;
 			this.btnBulbIncrease.Tag = "";
-			this.btnBulbIncrease.Text = "+";
 			this.btnBulbIncrease.UseVisualStyleBackColor = false;
 			this.btnBulbIncrease.Click += new System.EventHandler(this.btnBulbIncrease_Click);
 			// 

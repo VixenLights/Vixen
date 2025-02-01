@@ -17,8 +17,6 @@ namespace VixenModules.App.ExportWizard
 
 			_data = data;
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			btnAddProfile.Image = Tools.GetIcon(Resources.add, iconSize);
 			btnAddProfile.Text = "";

@@ -71,7 +71,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 
 			TimelineControl = timelineControl;
-			Icon = Resources.Icon_Vixen3;
 			toolStripColors.Renderer = new ThemeToolStripRenderer();
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			toolStripColors.ImageScalingSize = new Size(iconSize, iconSize);

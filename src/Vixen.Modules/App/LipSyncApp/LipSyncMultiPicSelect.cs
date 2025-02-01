@@ -8,6 +8,7 @@ namespace VixenModules.App.LipSyncApp
 		public LipSyncMultiPicSelect()
 		{
 			InitializeComponent();
+			ThemeUpdateControls.UpdateControls(this);
 			comboBoxes = new Dictionary<string, ComboBox>(); 
 			comboBoxes.Add("AI", ai_comboBox);
 			comboBoxes.Add("E",e_comboBox);

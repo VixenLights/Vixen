@@ -107,7 +107,6 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.comboBoxNewItemType.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.comboBoxNewItemType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxNewItemType.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxNewItemType.FormattingEnabled = true;
 			this.comboBoxNewItemType.Location = new System.Drawing.Point(38, 8);
 			this.comboBoxNewItemType.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
@@ -122,14 +121,11 @@
 			this.buttonAddTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonAddTemplate.BackColor = System.Drawing.Color.Transparent;
 			this.buttonAddTemplate.Enabled = false;
-			this.buttonAddTemplate.FlatAppearance.BorderSize = 0;
-			this.buttonAddTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAddTemplate.Location = new System.Drawing.Point(190, 6);
 			this.buttonAddTemplate.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
 			this.buttonAddTemplate.Name = "buttonAddTemplate";
 			this.buttonAddTemplate.Size = new System.Drawing.Size(24, 24);
 			this.buttonAddTemplate.TabIndex = 31;
-			this.buttonAddTemplate.Text = "+";
 			this.buttonAddTemplate.UseVisualStyleBackColor = false;
 			this.buttonAddTemplate.Click += new System.EventHandler(this.ButtonAddTemplate_Click);
 			// 

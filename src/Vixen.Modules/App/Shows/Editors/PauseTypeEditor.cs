@@ -10,8 +10,6 @@ namespace VixenModules.App.Shows
 		public PauseTypeEditor(ShowItem showItem)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			_showItem = showItem;
 		}

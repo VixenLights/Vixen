@@ -68,11 +68,9 @@ namespace VixenModules.OutputFilter.TaggedFilter
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 1;
-            this.buttonOk.Text = "Ok";
+            this.buttonOk.Text = "OK";
             this.buttonOk.UseVisualStyleBackColor = true;
             this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
-            this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-            this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
             // 
             // label1
             // 
@@ -104,6 +102,9 @@ namespace VixenModules.OutputFilter.TaggedFilter
             this.Controls.Add(this.label1);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
+            MinimizeBox = false;
             this.Name = "DimmingFilterSetup";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Tagged Filter Setup";

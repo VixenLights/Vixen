@@ -19,7 +19,6 @@
 			}
 			base.Dispose(disposing);
 		}
-
 		#region Windows Form Designer generated code
 
 		/// <summary>
@@ -48,6 +47,8 @@
 			this.groupBoxLog = new System.Windows.Forms.GroupBox();
 			this.listBoxLog = new System.Windows.Forms.ListBox();
 			this.imageButtons = new System.Windows.Forms.ImageList(this.components);
+			this.MinimizeBox = false;
+			this.MaximizeBox = false;
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBoxLog.SuspendLayout();
@@ -83,7 +84,6 @@
 			this.buttonStartScheduler.Name = "buttonStartScheduler";
 			this.buttonStartScheduler.Size = new System.Drawing.Size(28, 28);
 			this.buttonStartScheduler.TabIndex = 8;
-			this.buttonStartScheduler.Text = "Start";
 			this.toolTip1.SetToolTip(this.buttonStartScheduler, "Start/Enable the Scheduler");
 			this.buttonStartScheduler.UseVisualStyleBackColor = true;
 			this.buttonStartScheduler.Click += new System.EventHandler(this.buttonStartScheduler_Click);
@@ -97,7 +97,6 @@
 			this.buttonViewLog.Name = "buttonViewLog";
 			this.buttonViewLog.Size = new System.Drawing.Size(28, 28);
 			this.buttonViewLog.TabIndex = 7;
-			this.buttonViewLog.Text = "Log";
 			this.toolTip1.SetToolTip(this.buttonViewLog, "View Log");
 			this.buttonViewLog.UseVisualStyleBackColor = true;
 			this.buttonViewLog.Click += new System.EventHandler(this.buttonViewLog_Click);
@@ -111,7 +110,6 @@
 			this.buttonNextSong.Name = "buttonNextSong";
 			this.buttonNextSong.Size = new System.Drawing.Size(28, 28);
 			this.buttonNextSong.TabIndex = 6;
-			this.buttonNextSong.Text = "Next";
 			this.toolTip1.SetToolTip(this.buttonNextSong, "Skip to the Next Item");
 			this.buttonNextSong.UseVisualStyleBackColor = true;
 			this.buttonNextSong.Visible = false;
@@ -125,7 +123,6 @@
 			this.buttonPauseShow.Name = "buttonPauseShow";
 			this.buttonPauseShow.Size = new System.Drawing.Size(28, 28);
 			this.buttonPauseShow.TabIndex = 5;
-			this.buttonPauseShow.Text = "Pause";
 			this.toolTip1.SetToolTip(this.buttonPauseShow, "Pause the Current Show");
 			this.buttonPauseShow.UseVisualStyleBackColor = true;
 			this.buttonPauseShow.Visible = false;
@@ -139,7 +136,6 @@
 			this.buttonStopGracefully.Name = "buttonStopGracefully";
 			this.buttonStopGracefully.Size = new System.Drawing.Size(28, 28);
 			this.buttonStopGracefully.TabIndex = 4;
-			this.buttonStopGracefully.Text = "Stop Gracefully";
 			this.toolTip1.SetToolTip(this.buttonStopGracefully, "Stop Show Gracefully");
 			this.buttonStopGracefully.UseVisualStyleBackColor = true;
 			this.buttonStopGracefully.Click += new System.EventHandler(this.buttonStopGracefully_Click);
@@ -153,7 +149,6 @@
 			this.buttonStopNow.Name = "buttonStopNow";
 			this.buttonStopNow.Size = new System.Drawing.Size(28, 28);
 			this.buttonStopNow.TabIndex = 2;
-			this.buttonStopNow.Text = "Stop";
 			this.toolTip1.SetToolTip(this.buttonStopNow, "Stop Show Immediately");
 			this.buttonStopNow.UseVisualStyleBackColor = true;
 			this.buttonStopNow.Click += new System.EventHandler(this.buttonStopNow_Click);
@@ -290,6 +285,7 @@
 			this.Name = "StatusForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Scheduler Status";
+			this.ControlBox = false;
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.StatusForm_FormClosing);
 			this.Load += new System.EventHandler(this.StatusForm_Load);
 			this.ResizeEnd += new System.EventHandler(this.StatusForm_ResizeEnd);

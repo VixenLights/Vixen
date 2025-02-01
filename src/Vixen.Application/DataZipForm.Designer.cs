@@ -1,4 +1,8 @@
-﻿namespace VixenApplication
+﻿using Common.Controls.Scaling;
+using Common.Resources;
+using Common.Resources.Properties;
+
+namespace VixenApplication
 {
 	partial class DataZipForm
 	{
@@ -206,10 +210,10 @@
 			// buttonSetSaveFolder
 			// 
 			this.buttonSetSaveFolder.Location = new System.Drawing.Point(248, 173);
+			this.buttonSetSaveFolder.Image = Tools.GetIcon(Resources.folder, (int)(16 * ScalingTools.GetScaleFactor()));
 			this.buttonSetSaveFolder.Name = "buttonSetSaveFolder";
 			this.buttonSetSaveFolder.Size = new System.Drawing.Size(23, 23);
 			this.buttonSetSaveFolder.TabIndex = 7;
-			this.buttonSetSaveFolder.Text = "F";
 			this.buttonSetSaveFolder.UseVisualStyleBackColor = true;
 			this.buttonSetSaveFolder.Click += new System.EventHandler(this.buttonSetSaveFolder_Click);
 			// 
@@ -256,8 +260,6 @@
 			this.buttonStartCancel.Text = "Start";
 			this.buttonStartCancel.UseVisualStyleBackColor = true;
 			this.buttonStartCancel.Click += new System.EventHandler(this.buttonStartCancel_Click);
-			this.buttonStartCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonStartCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonClose
 			// 
@@ -268,8 +270,6 @@
 			this.buttonClose.TabIndex = 1;
 			this.buttonClose.Text = "Close";
 			this.buttonClose.UseVisualStyleBackColor = true;
-			this.buttonClose.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonClose.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// statusStrip1
 			// 

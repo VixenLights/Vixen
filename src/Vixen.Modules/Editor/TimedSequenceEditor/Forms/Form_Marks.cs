@@ -4,6 +4,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using VixenModules.Sequence.Timed;
 using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Views;
 using Common.Broadcast;
+using Common.Controls.Theme;
 
 
 namespace VixenModules.Editor.TimedSequenceEditor
@@ -18,6 +19,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public Form_Marks(TimedSequence sequence)
 		{
 			InitializeComponent();
+			ThemeUpdateControls.UpdateControls(this);
 
 			host = new ElementHost { Dock = DockStyle.Fill };
 

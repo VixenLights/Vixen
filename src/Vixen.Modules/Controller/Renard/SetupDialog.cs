@@ -14,8 +14,6 @@ namespace VixenModules.Output.Renard
 		public SetupDialog(Data data)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			_data = data;
 			if (data.ProtocolVersion > 0) {
@@ -45,19 +43,6 @@ namespace VixenModules.Output.Renard
 			_data.Parity = _port.Parity;
 			_data.DataBits = _port.DataBits;
 			_data.StopBits = _port.StopBits;
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

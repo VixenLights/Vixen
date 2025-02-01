@@ -53,7 +53,6 @@ namespace Common.Controls
 			// 
 			// portTextBox
 			// 
-			this.portTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.portTextBox.Enabled = false;
 			this.portTextBox.Location = new System.Drawing.Point(210, 46);
 			this.portTextBox.Name = "portTextBox";
@@ -63,7 +62,6 @@ namespace Common.Controls
 			// portComboBox
 			// 
 			this.portComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-			this.portComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.portComboBox.FormattingEnabled = true;
 			this.portComboBox.Items.AddRange(new object[] {
             "Standard port 1 (0378)",
@@ -96,8 +94,6 @@ namespace Common.Controls
 			this.OkButton.Text = "OK";
 			this.OkButton.UseVisualStyleBackColor = true;
 			this.OkButton.Click += new System.EventHandler(this.OkButton_Click);
-			this.OkButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.OkButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// canceButton
 			// 
@@ -108,8 +104,6 @@ namespace Common.Controls
 			this.canceButton.TabIndex = 2;
 			this.canceButton.Text = "Cancel";
 			this.canceButton.UseVisualStyleBackColor = true;
-			this.canceButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.canceButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// ParallelPortConfig
 			// 

@@ -62,19 +62,12 @@ namespace VixenModules.App.Curves
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.buttonOK.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonOK.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonOK.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonOK.Location = new System.Drawing.Point(370, 718);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(93, 29);
 			this.buttonOK.TabIndex = 2;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
-			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonCancel
 			// 
@@ -91,8 +84,6 @@ namespace VixenModules.App.Curves
 			this.buttonCancel.TabIndex = 3;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// labelInstructions1
 			// 
@@ -123,7 +114,6 @@ namespace VixenModules.App.Curves
 			this.groupBoxLibrary.Controls.Add(this.labelCurve);
 			this.groupBoxLibrary.Controls.Add(this.buttonSaveCurveToLibrary);
 			this.groupBoxLibrary.Controls.Add(this.buttonLoadCurveFromLibrary);
-			this.groupBoxLibrary.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBoxLibrary.Location = new System.Drawing.Point(14, 602);
 			this.groupBoxLibrary.Name = "groupBoxLibrary";
 			this.groupBoxLibrary.Size = new System.Drawing.Size(549, 98);
@@ -135,12 +125,6 @@ namespace VixenModules.App.Curves
 			// buttonEditLibraryCurve
 			// 
 			this.buttonEditLibraryCurve.AutoSize = true;
-			this.buttonEditLibraryCurve.BackColor = System.Drawing.Color.Transparent;
-			this.buttonEditLibraryCurve.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.buttonEditLibraryCurve.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonEditLibraryCurve.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonEditLibraryCurve.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonEditLibraryCurve.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonEditLibraryCurve.Location = new System.Drawing.Point(296, 58);
 			this.buttonEditLibraryCurve.Name = "buttonEditLibraryCurve";
 			this.buttonEditLibraryCurve.Size = new System.Drawing.Size(140, 29);
@@ -148,18 +132,10 @@ namespace VixenModules.App.Curves
 			this.buttonEditLibraryCurve.Text = "Edit Library Curve";
 			this.buttonEditLibraryCurve.UseVisualStyleBackColor = false;
 			this.buttonEditLibraryCurve.Click += new System.EventHandler(this.buttonEditLibraryCurve_Click);
-			this.buttonEditLibraryCurve.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonEditLibraryCurve.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonUnlinkCurve
 			// 
 			this.buttonUnlinkCurve.AutoSize = true;
-			this.buttonUnlinkCurve.BackColor = System.Drawing.Color.Transparent;
-			this.buttonUnlinkCurve.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.buttonUnlinkCurve.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonUnlinkCurve.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonUnlinkCurve.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonUnlinkCurve.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonUnlinkCurve.Location = new System.Drawing.Point(149, 58);
 			this.buttonUnlinkCurve.Name = "buttonUnlinkCurve";
 			this.buttonUnlinkCurve.Size = new System.Drawing.Size(140, 29);
@@ -167,8 +143,6 @@ namespace VixenModules.App.Curves
 			this.buttonUnlinkCurve.Text = "Unlink Curve";
 			this.buttonUnlinkCurve.UseVisualStyleBackColor = false;
 			this.buttonUnlinkCurve.Click += new System.EventHandler(this.buttonUnlinkCurve_Click);
-			this.buttonUnlinkCurve.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonUnlinkCurve.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// labelCurve
 			// 
@@ -182,12 +156,6 @@ namespace VixenModules.App.Curves
 			// buttonSaveCurveToLibrary
 			// 
 			this.buttonSaveCurveToLibrary.AutoSize = true;
-			this.buttonSaveCurveToLibrary.BackColor = System.Drawing.Color.Transparent;
-			this.buttonSaveCurveToLibrary.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.buttonSaveCurveToLibrary.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonSaveCurveToLibrary.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonSaveCurveToLibrary.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonSaveCurveToLibrary.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonSaveCurveToLibrary.Location = new System.Drawing.Point(14, 58);
 			this.buttonSaveCurveToLibrary.Name = "buttonSaveCurveToLibrary";
 			this.buttonSaveCurveToLibrary.Size = new System.Drawing.Size(117, 29);
@@ -195,18 +163,10 @@ namespace VixenModules.App.Curves
 			this.buttonSaveCurveToLibrary.Text = "Save Curve";
 			this.buttonSaveCurveToLibrary.UseVisualStyleBackColor = false;
 			this.buttonSaveCurveToLibrary.Click += new System.EventHandler(this.buttonSaveCurveToLibrary_Click);
-			this.buttonSaveCurveToLibrary.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonSaveCurveToLibrary.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonLoadCurveFromLibrary
 			// 
 			this.buttonLoadCurveFromLibrary.AutoSize = true;
-			this.buttonLoadCurveFromLibrary.BackColor = System.Drawing.Color.Transparent;
-			this.buttonLoadCurveFromLibrary.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.buttonLoadCurveFromLibrary.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonLoadCurveFromLibrary.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonLoadCurveFromLibrary.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonLoadCurveFromLibrary.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonLoadCurveFromLibrary.Location = new System.Drawing.Point(14, 22);
 			this.buttonLoadCurveFromLibrary.Name = "buttonLoadCurveFromLibrary";
 			this.buttonLoadCurveFromLibrary.Size = new System.Drawing.Size(117, 29);
@@ -214,8 +174,6 @@ namespace VixenModules.App.Curves
 			this.buttonLoadCurveFromLibrary.Text = "Load Curve";
 			this.buttonLoadCurveFromLibrary.UseVisualStyleBackColor = false;
 			this.buttonLoadCurveFromLibrary.Click += new System.EventHandler(this.buttonLoadCurveFromLibrary_Click);
-			this.buttonLoadCurveFromLibrary.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonLoadCurveFromLibrary.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// yLabel
 			// 
@@ -249,7 +207,6 @@ namespace VixenModules.App.Curves
 			this.grpCurve.Controls.Add(this.btnReverse);
 			this.grpCurve.Controls.Add(this.xLabel);
 			this.grpCurve.Controls.Add(this.yLabel);
-			this.grpCurve.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.grpCurve.Location = new System.Drawing.Point(13, 497);
 			this.grpCurve.Name = "grpCurve";
 			this.grpCurve.Size = new System.Drawing.Size(549, 99);
@@ -261,12 +218,6 @@ namespace VixenModules.App.Curves
 			// btnFunctionCurve
 			// 
 			this.btnFunctionCurve.AutoSize = true;
-			this.btnFunctionCurve.BackColor = System.Drawing.Color.Transparent;
-			this.btnFunctionCurve.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.btnFunctionCurve.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.btnFunctionCurve.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.btnFunctionCurve.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.btnFunctionCurve.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnFunctionCurve.Location = new System.Drawing.Point(114, 57);
 			this.btnFunctionCurve.Name = "btnFunctionCurve";
 			this.btnFunctionCurve.Size = new System.Drawing.Size(93, 29);
@@ -300,12 +251,6 @@ namespace VixenModules.App.Curves
 			// btnDraw
 			// 
 			this.btnDraw.AutoSize = true;
-			this.btnDraw.BackColor = System.Drawing.Color.Transparent;
-			this.btnDraw.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.btnDraw.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.btnDraw.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.btnDraw.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.btnDraw.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnDraw.Location = new System.Drawing.Point(114, 20);
 			this.btnDraw.Name = "btnDraw";
 			this.btnDraw.Size = new System.Drawing.Size(93, 29);
@@ -313,19 +258,11 @@ namespace VixenModules.App.Curves
 			this.btnDraw.Text = "Draw Curve";
 			this.btnDraw.UseVisualStyleBackColor = false;
 			this.btnDraw.Click += new System.EventHandler(this.btnDraw_Click);
-			this.btnDraw.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnDraw.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// btnUpdateCoordinates
 			// 
 			this.btnUpdateCoordinates.AutoSize = true;
-			this.btnUpdateCoordinates.BackColor = System.Drawing.Color.Transparent;
 			this.btnUpdateCoordinates.Enabled = false;
-			this.btnUpdateCoordinates.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.btnUpdateCoordinates.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.btnUpdateCoordinates.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.btnUpdateCoordinates.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.btnUpdateCoordinates.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnUpdateCoordinates.Location = new System.Drawing.Point(345, 57);
 			this.btnUpdateCoordinates.Name = "btnUpdateCoordinates";
 			this.btnUpdateCoordinates.Size = new System.Drawing.Size(79, 29);
@@ -333,8 +270,6 @@ namespace VixenModules.App.Curves
 			this.btnUpdateCoordinates.Text = "Update";
 			this.btnUpdateCoordinates.UseVisualStyleBackColor = false;
 			this.btnUpdateCoordinates.Click += new System.EventHandler(this.btnUpdateCoordinates_Click);
-			this.btnUpdateCoordinates.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnUpdateCoordinates.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// lblSelectedPoint
 			// 
@@ -347,11 +282,8 @@ namespace VixenModules.App.Curves
 			// 
 			// txtYValue
 			// 
-			this.txtYValue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
-			this.txtYValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.txtYValue.DecimalNumber = 15;
 			this.txtYValue.Enabled = false;
-			this.txtYValue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.txtYValue.Groupsep = ',';
 			this.txtYValue.Location = new System.Drawing.Point(467, 62);
 			this.txtYValue.MaxCheck = true;
@@ -366,11 +298,8 @@ namespace VixenModules.App.Curves
 			// 
 			// txtXValue
 			// 
-			this.txtXValue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
-			this.txtXValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.txtXValue.DecimalNumber = 15;
 			this.txtXValue.Enabled = false;
-			this.txtXValue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.txtXValue.Groupsep = ',';
 			this.txtXValue.Location = new System.Drawing.Point(467, 25);
 			this.txtXValue.MaxCheck = true;
@@ -386,12 +315,6 @@ namespace VixenModules.App.Curves
 			// btnInvert
 			// 
 			this.btnInvert.AutoSize = true;
-			this.btnInvert.BackColor = System.Drawing.Color.Transparent;
-			this.btnInvert.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.btnInvert.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.btnInvert.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.btnInvert.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.btnInvert.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnInvert.Location = new System.Drawing.Point(15, 57);
 			this.btnInvert.Name = "btnInvert";
 			this.btnInvert.Size = new System.Drawing.Size(93, 29);
@@ -399,18 +322,10 @@ namespace VixenModules.App.Curves
 			this.btnInvert.Text = "Invert Curve";
 			this.btnInvert.UseVisualStyleBackColor = false;
 			this.btnInvert.Click += new System.EventHandler(this.btnInvert_Click);
-			this.btnInvert.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnInvert.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// btnReverse
 			// 
 			this.btnReverse.AutoSize = true;
-			this.btnReverse.BackColor = System.Drawing.Color.Transparent;
-			this.btnReverse.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.btnReverse.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.btnReverse.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.btnReverse.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.btnReverse.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnReverse.Location = new System.Drawing.Point(15, 20);
 			this.btnReverse.Name = "btnReverse";
 			this.btnReverse.Size = new System.Drawing.Size(93, 29);
@@ -418,8 +333,6 @@ namespace VixenModules.App.Curves
 			this.btnReverse.Text = "Reverse Curve";
 			this.btnReverse.UseVisualStyleBackColor = false;
 			this.btnReverse.Click += new System.EventHandler(this.btnReverse_Click);
-			this.btnReverse.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnReverse.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// zedGraphControl
 			// 
@@ -460,7 +373,6 @@ namespace VixenModules.App.Curves
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
-			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(575, 750);
 			this.Controls.Add(this.grpCurve);
@@ -471,7 +383,6 @@ namespace VixenModules.App.Curves
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.zedGraphControl);
 			this.DoubleBuffered = true;
-			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MinimumSize = new System.Drawing.Size(591, 784);
 			this.Name = "CurveEditor";

@@ -7,7 +7,6 @@ namespace VixenModules.Property.Orientation {
 	{
 		public SetupForm(Orientation defaultOrientation) {
 			InitializeComponent();
-			Icon = Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
 			foreach (var item in Enum.GetValues(typeof(Orientation)))
 			{
@@ -25,19 +24,6 @@ namespace VixenModules.Property.Orientation {
 			{
 				comboBoxOrientation.SelectedItem = value;
 			}
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 
 		private void SetupForm_Load(object sender, EventArgs e)

@@ -12,8 +12,6 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 		public LumaKeySetup(double lowerLimit, double upperLimit)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			_lowerLimit = (int)(lowerLimit * 100);
 			_upperLimit = (int)(upperLimit * 100);
@@ -22,18 +20,6 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 
 		public double LowerLimit { get { return _lowerLimit / 100d; } }
 		public double UpperLimit { get { return _upperLimit / 100d; } }
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-		}
 
 		private void trkLowerLimit_Scroll(object sender, EventArgs e)
 		{

@@ -20,7 +20,6 @@ namespace VixenApplication
 		{
 			InitializeComponent();
 			ThemeUpdateControls.UpdateControls(this);
-			Icon = Resources.Icon_Vixen3;
 			textBoxReleaseNotes.AutoSize = false;
 			textBoxReleaseNotes.Height = (int)(ScalingTools.GetScaleFactor() * 225);
 			pictureBoxIcon.Image = Resources.VixenImage;
@@ -223,19 +222,6 @@ namespace VixenApplication
 				Logging.Error(e, "Error trying to get the change log.");
 				//If we get here then more then likely there is no internet connection.
 			}
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 
 		private void linkLabelVixenDownLoadPage_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

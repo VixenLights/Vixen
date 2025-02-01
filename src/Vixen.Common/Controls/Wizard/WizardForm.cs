@@ -13,9 +13,6 @@ namespace Common.Controls.Wizard
 		public WizardForm(Wizard wizard)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
-			Icon = Resources.Properties.Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
 			_wizard = wizard;
 		}

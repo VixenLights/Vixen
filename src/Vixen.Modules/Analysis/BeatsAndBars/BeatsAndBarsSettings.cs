@@ -21,8 +21,6 @@ namespace VixenModules.Analysis.BeatsAndBars
 		{
 			InitializeComponent();
 
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			var excludes = new List<Control>();
 			excludes.Add(BarsColorPanel);
 			excludes.Add(BeatCountsColorPanel);
@@ -210,18 +208,6 @@ namespace VixenModules.Analysis.BeatsAndBars
 		{
 			AllColorPanel.Enabled = AllFeaturesCB.Checked;
 			SetBeatBarOutputSettings();
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImage;
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

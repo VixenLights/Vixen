@@ -151,8 +151,6 @@ namespace VixenModules.Output.E131
 			okButton.Size = new Size(75, 25);
 			okButton.TabIndex = 199;
 			okButton.Text = "OK";
-			okButton.MouseLeave += buttonBackground_MouseLeave;
-			okButton.MouseHover += buttonBackground_MouseHover;
 			// 
 			// cancelButton
 			// 
@@ -163,8 +161,6 @@ namespace VixenModules.Output.E131
 			cancelButton.Size = new Size(75, 25);
 			cancelButton.TabIndex = 200;
 			cancelButton.Text = "Cancel";
-			cancelButton.MouseLeave += buttonBackground_MouseLeave;
-			cancelButton.MouseHover += buttonBackground_MouseHover;
 			// 
 			// eventSuppressCountTextBox
 			// 
@@ -205,7 +201,6 @@ namespace VixenModules.Output.E131
 			btnDeleteUnicast.Name = "btnDeleteUnicast";
 			btnDeleteUnicast.Size = new Size(27, 28);
 			btnDeleteUnicast.TabIndex = 7;
-			btnDeleteUnicast.Text = "-";
 			btnDeleteUnicast.UseVisualStyleBackColor = true;
 			btnDeleteUnicast.Click += btnRemoveUnicast_Click;
 			// 
@@ -217,7 +212,6 @@ namespace VixenModules.Output.E131
 			btnAddUnicast.Name = "btnAddUnicast";
 			btnAddUnicast.Size = new Size(27, 28);
 			btnAddUnicast.TabIndex = 6;
-			btnAddUnicast.Text = "+";
 			btnAddUnicast.UseVisualStyleBackColor = true;
 			btnAddUnicast.Click += btnAddUnicast_Click_1;
 			// 
@@ -229,7 +223,6 @@ namespace VixenModules.Output.E131
 			btnDeleteUniverse.Name = "btnDeleteUniverse";
 			btnDeleteUniverse.Size = new Size(27, 28);
 			btnDeleteUniverse.TabIndex = 4;
-			btnDeleteUniverse.Text = "-";
 			btnDeleteUniverse.UseVisualStyleBackColor = true;
 			btnDeleteUniverse.Click += btnDelete_Click;
 			// 
@@ -241,7 +234,6 @@ namespace VixenModules.Output.E131
 			btnAddUniverse.Name = "btnAddUniverse";
 			btnAddUniverse.Size = new Size(27, 28);
 			btnAddUniverse.TabIndex = 3;
-			btnAddUniverse.Text = "+";
 			btnAddUniverse.UseVisualStyleBackColor = true;
 			btnAddUniverse.Click += btnAdd_Click;
 			// 
@@ -258,7 +250,6 @@ namespace VixenModules.Output.E131
 			// 
 			comboDestination.DrawMode = DrawMode.OwnerDrawFixed;
 			comboDestination.DropDownStyle = ComboBoxStyle.DropDownList;
-			comboDestination.FlatStyle = FlatStyle.Flat;
 			comboDestination.FormattingEnabled = true;
 			comboDestination.Location = new Point(19, 368);
 			comboDestination.Name = "comboDestination";
@@ -327,12 +318,10 @@ namespace VixenModules.Output.E131
 			// btnDeleteAllUniverses
 			// 
 			btnDeleteAllUniverses.FlatAppearance.BorderSize = 0;
-			btnDeleteAllUniverses.FlatStyle = FlatStyle.Flat;
 			btnDeleteAllUniverses.Location = new Point(294, 78);
 			btnDeleteAllUniverses.Name = "btnDeleteAllUniverses";
 			btnDeleteAllUniverses.Size = new Size(27, 28);
 			btnDeleteAllUniverses.TabIndex = 8;
-			btnDeleteAllUniverses.Text = "A";
 			btnDeleteAllUniverses.UseVisualStyleBackColor = true;
 			btnDeleteAllUniverses.Click += btnDeleteAllUniverses_Click;
 			// 
@@ -454,8 +443,9 @@ namespace VixenModules.Output.E131
 			Controls.Add(tabControlEX1);
 			Controls.Add(cancelButton);
 			Controls.Add(okButton);
-			FormBorderStyle = FormBorderStyle.FixedToolWindow;
-			Icon = (Icon)resources.GetObject("$this.Icon");
+			FormBorderStyle = FormBorderStyle.FixedDialog;
+			MinimizeBox = false;
+			MaximizeBox = false;
 			MainMenuStrip = mainMenu;
 			MinimumSize = new Size(397, 519);
 			Name = "SetupForm";

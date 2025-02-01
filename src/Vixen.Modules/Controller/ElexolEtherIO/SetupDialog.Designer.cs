@@ -87,8 +87,6 @@
 			testButton.Text = "Test";
 			testButton.UseVisualStyleBackColor = true;
 			testButton.Click += testButton_Click;
-			testButton.MouseLeave += buttonBackground_MouseLeave;
-			testButton.MouseHover += buttonBackground_MouseHover;
 			// 
 			// ipAddressTextBox
 			// 
@@ -159,8 +157,6 @@
 			okButton.Text = "OK";
 			okButton.UseVisualStyleBackColor = true;
 			okButton.Click += okButton_Click;
-			okButton.MouseLeave += buttonBackground_MouseLeave;
-			okButton.MouseHover += buttonBackground_MouseHover;
 			// 
 			// cancelButton
 			// 
@@ -171,8 +167,6 @@
 			cancelButton.TabIndex = 3;
 			cancelButton.Text = "Cancel";
 			cancelButton.UseVisualStyleBackColor = true;
-			cancelButton.MouseLeave += buttonBackground_MouseLeave;
-			cancelButton.MouseHover += buttonBackground_MouseHover;
 			// 
 			// SetupDialog
 			// 

@@ -61,7 +61,7 @@
                    ToolTip="{Binding Path=OKTooltip}"
                    Visibility="{Binding Path=ShowError}"
                    ToolTipService.ShowOnDisabled="True"></Image>
-                <Button Content="Ok" Command="{Binding OkCommand}" IsDefault="True" Style="{StaticResource RowButtonStyle}"
+                <Button Content="OK" Command="{Binding OkCommand}" IsDefault="True" Style="{StaticResource RowButtonStyle}"
                    ToolTip="{Binding Path=OKTooltip}"
                    ToolTipService.ShowOnDisabled="True"/>
                 <Button Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True" Style="{StaticResource RowButtonStyle}"/>

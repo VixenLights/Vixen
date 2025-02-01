@@ -67,7 +67,6 @@
 			this.groupBox1.Controls.Add(this.label4);
 			this.groupBox1.Controls.Add(this.outputFormatComboBox);
 			this.groupBox1.Controls.Add(this.label3);
-			this.groupBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox1.Location = new System.Drawing.Point(3, 23);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(498, 70);
@@ -78,10 +77,7 @@
 			// 
 			// resolutionComboBox
 			// 
-			this.resolutionComboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.resolutionComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-			this.resolutionComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.resolutionComboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.resolutionComboBox.FormattingEnabled = true;
 			this.resolutionComboBox.Items.AddRange(new object[] {
             "25",
@@ -97,7 +93,6 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label4.Location = new System.Drawing.Point(350, 27);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(74, 15);
@@ -106,11 +101,8 @@
 			// 
 			// outputFormatComboBox
 			// 
-			this.outputFormatComboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.outputFormatComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.outputFormatComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.outputFormatComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.outputFormatComboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.outputFormatComboBox.FormattingEnabled = true;
 			this.outputFormatComboBox.Location = new System.Drawing.Point(66, 24);
 			this.outputFormatComboBox.Name = "outputFormatComboBox";
@@ -122,7 +114,6 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label3.Location = new System.Drawing.Point(12, 27);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(48, 15);
@@ -154,7 +145,6 @@
 			this.grpSequence.Controls.Add(this.txtOutputFolder);
 			this.grpSequence.Controls.Add(this.label2);
 			this.grpSequence.Controls.Add(this.btnOuputFolderSelect);
-			this.grpSequence.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.grpSequence.Location = new System.Drawing.Point(3, 285);
 			this.grpSequence.Name = "grpSequence";
 			this.grpSequence.Size = new System.Drawing.Size(499, 83);
@@ -211,7 +201,6 @@
 			this.grpAudio.Controls.Add(this.btnAudioOutputFolder);
 			this.grpAudio.Controls.Add(this.chkRenameAudio);
 			this.grpAudio.Controls.Add(this.chkIncludeAudio);
-			this.grpAudio.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.grpAudio.Location = new System.Drawing.Point(3, 374);
 			this.grpAudio.Name = "grpAudio";
 			this.grpAudio.Size = new System.Drawing.Size(498, 133);
@@ -258,7 +247,6 @@
 			this.grpFalcon.Controls.Add(this.chkCreateUniverseFile);
 			this.grpFalcon.Controls.Add(this.txtFalconOutputFolder);
 			this.grpFalcon.Controls.Add(this.btnFalconUniverseFolder);
-			this.grpFalcon.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.grpFalcon.Location = new System.Drawing.Point(3, 99);
 			this.grpFalcon.Name = "grpFalcon";
 			this.grpFalcon.Size = new System.Drawing.Size(498, 180);

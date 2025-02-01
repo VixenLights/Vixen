@@ -34,22 +34,5 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			get { return txtPrefixName.Text; }
 		}
-
-		#region Theme events
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Common.Resources.Properties.Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Common.Resources.Properties.Resources.ButtonBackgroundImage;
-		}
-
-		#endregion
-
 	}
 }

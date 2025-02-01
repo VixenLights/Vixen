@@ -30,8 +30,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
         {
             InitializeComponent();
 
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this, new List<Control>(new []{textBox1}));
 	        textBox1.BackColor = ThemeColorTable.BackgroundColor;
 	        textBox1.ForeColor = ThemeColorTable.ForeColor;
@@ -417,19 +415,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
         }
 
         #endregion
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-			UseWaitCursor = _currentState == ExportNotifyType.SAVING;
-		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{

@@ -74,7 +74,6 @@
 			// 
 			this.comboBoxTemplates.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.comboBoxTemplates.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxTemplates.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxTemplates.Location = new System.Drawing.Point(112, 87);
 			this.comboBoxTemplates.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
 			this.comboBoxTemplates.Name = "comboBoxTemplates";
@@ -92,8 +91,6 @@
 			this.buttonApplyTemplate.Text = "Apply Template";
 			this.buttonApplyTemplate.UseVisualStyleBackColor = true;
 			this.buttonApplyTemplate.Click += new System.EventHandler(this.buttonApplyTemplate_Click);
-			this.buttonApplyTemplate.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonApplyTemplate.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonCancel
 			// 
@@ -106,8 +103,6 @@
 			this.buttonCancel.TabIndex = 6;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOK
 			// 
@@ -120,8 +115,6 @@
 			this.buttonOK.TabIndex = 7;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
-			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonAddColor
 			// 
@@ -134,8 +127,6 @@
 			this.buttonAddColor.Text = "Add Color";
 			this.buttonAddColor.UseVisualStyleBackColor = true;
 			this.buttonAddColor.Click += new System.EventHandler(this.buttonAddColor_Click);
-			this.buttonAddColor.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonAddColor.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// tableLayoutPanelControls
 			// 

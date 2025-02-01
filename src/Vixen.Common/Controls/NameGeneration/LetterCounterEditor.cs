@@ -10,8 +10,6 @@ namespace Common.Controls.NameGeneration
 		public LetterCounterEditor(LetterCounter counter)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			_counter = counter;
 			textBoxStartLetter.KeyPress += new KeyPressEventHandler(textBoxStartLetter_KeyPress);

@@ -136,8 +136,6 @@
 			this.button1.TabIndex = 3;
 			this.button1.Text = "OK";
 			this.button1.UseVisualStyleBackColor = true;
-			this.button1.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.button1.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// button2
 			// 
@@ -160,6 +158,8 @@
 			this.ClientSize = new System.Drawing.Size(312, 145);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "PreviewPixelSetupForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Single Bulb Configuration";

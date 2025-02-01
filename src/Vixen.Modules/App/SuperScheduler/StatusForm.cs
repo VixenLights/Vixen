@@ -15,29 +15,18 @@ namespace VixenModules.App.SuperScheduler
 		{
 			InitializeComponent();
 
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
 			buttonPauseShow.Image = Tools.GetIcon(Resources.control_pause, iconSize);
-			buttonPauseShow.Text = "";
 			buttonNextSong.Image = Tools.GetIcon(Resources.control_end, iconSize);
-			buttonNextSong.Text = "";
 			buttonStartScheduler.Image = Tools.GetIcon(Resources.control_play_blue, iconSize);
-			buttonStartScheduler.Text = "";
 			buttonStopNow.Image = Tools.GetIcon(Resources.control_stop_blue, iconSize);
-			buttonStopNow.Text = "";
 			buttonStopGracefully.Image = Tools.GetIcon(Resources.clock_stop, iconSize);
-			buttonStopGracefully.Text = "";
 			buttonViewLog.Image = Tools.GetIcon(Resources.document_notes, iconSize);
-			buttonViewLog.Text = "";
 			buttonPlayShowNow.Image = Tools.GetIcon(Resources.control_play, iconSize);
-			buttonPlayShowNow.Text = "";
 			buttonPlayShowGracefully.Image = Tools.GetIcon(Resources.clock_play, iconSize);
-			buttonPlayShowGracefully.Text = "";
 
 			ThemeUpdateControls.UpdateControls(this);
 
-			ControlBox = false;
 			SchedulerData = data;
 			Executor = executor;
 		}

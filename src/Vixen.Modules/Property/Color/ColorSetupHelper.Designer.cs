@@ -52,8 +52,6 @@
 			this.buttonCancel.TabIndex = 22;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOk
 			// 
@@ -66,8 +64,6 @@
 			this.buttonOk.TabIndex = 21;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
-			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// label1
 			// 
@@ -89,14 +85,11 @@
 			this.buttonColorSetsSetup.Text = "Edit Colors";
 			this.buttonColorSetsSetup.UseVisualStyleBackColor = true;
 			this.buttonColorSetsSetup.Click += new System.EventHandler(this.buttonColorSetsSetup_Click);
-			this.buttonColorSetsSetup.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonColorSetsSetup.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// comboBoxColorSet
 			// 
 			this.comboBoxColorSet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxColorSet.Enabled = false;
-			this.comboBoxColorSet.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxColorSet.FormattingEnabled = true;
 			this.comboBoxColorSet.Location = new System.Drawing.Point(115, 219);
 			this.comboBoxColorSet.Name = "comboBoxColorSet";
@@ -159,7 +152,6 @@
 			// 
 			// colorPanelSingleColor
 			// 
-			this.colorPanelSingleColor.BackColor = System.Drawing.Color.RoyalBlue;
 			this.colorPanelSingleColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.colorPanelSingleColor.Color = System.Drawing.Color.RoyalBlue;
 			this.colorPanelSingleColor.Enabled = false;

@@ -12,10 +12,7 @@ namespace VixenModules.App.LipSyncApp
 		{
 			Location = ActiveForm != null ? new Point(ActiveForm.Location.X + 250, ActiveForm.Location.Y + 100) : new Point(500, 200);
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
 		}
 
 
@@ -77,18 +74,6 @@ namespace VixenModules.App.LipSyncApp
 			{
 				lipSyncMapColorCtrl1.Intensity = value;
 			}
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Common.Resources.Properties.Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Common.Resources.Properties.Resources.ButtonBackgroundImage;
 		}
 	}
 }

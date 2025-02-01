@@ -99,7 +99,6 @@
 			// linkLabel1
 			// 
 			this.linkLabel1.AutoSize = true;
-			this.linkLabel1.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
 			this.linkLabel1.Location = new System.Drawing.Point(14, 252);
 			this.linkLabel1.Name = "linkLabel1";
 			this.linkLabel1.Size = new System.Drawing.Size(60, 15);
@@ -117,8 +116,6 @@
 			this.btnCancel.TabIndex = 8;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
-			this.btnCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// btnOk
 			// 
@@ -129,8 +126,6 @@
 			this.btnOk.TabIndex = 9;
 			this.btnOk.Text = "OK";
 			this.btnOk.UseVisualStyleBackColor = true;
-			this.btnOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// label3
 			// 
@@ -181,6 +176,9 @@
 			this.Controls.Add(this.pictureBox1);
 			this.Name = "Settings";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+			this.FormBorderStyle = FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Text = "Configuration";
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

@@ -67,12 +67,6 @@
 			this.buttonStart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonStart.AutoSize = true;
-			this.buttonStart.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.buttonStart.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonStart.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonStart.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonStart.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.buttonStart.Location = new System.Drawing.Point(19, 490);
 			this.buttonStart.Name = "buttonStart";
 			this.buttonStart.Size = new System.Drawing.Size(104, 27);
@@ -80,13 +74,10 @@
 			this.buttonStart.Text = "Start";
 			this.buttonStart.UseVisualStyleBackColor = true;
 			this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
-			this.buttonStart.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonStart.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label3.Location = new System.Drawing.Point(19, 28);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(48, 15);
@@ -95,11 +86,8 @@
 			// 
 			// outputFormatComboBox
 			// 
-			this.outputFormatComboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.outputFormatComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.outputFormatComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.outputFormatComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.outputFormatComboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.outputFormatComboBox.FormattingEnabled = true;
 			this.outputFormatComboBox.Location = new System.Drawing.Point(73, 23);
 			this.outputFormatComboBox.Name = "outputFormatComboBox";
@@ -120,10 +108,7 @@
 			// 
 			// resolutionComboBox
 			// 
-			this.resolutionComboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.resolutionComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-			this.resolutionComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.resolutionComboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.resolutionComboBox.FormattingEnabled = true;
 			this.resolutionComboBox.Items.AddRange(new object[] {
             "25",
@@ -154,7 +139,6 @@
 			// 
 			// statusStrip1
 			// 
-			this.statusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.progressLabel,
@@ -170,19 +154,16 @@
 			// 
 			// progressLabel
 			// 
-			this.progressLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.progressLabel.Name = "progressLabel";
 			this.progressLabel.Size = new System.Drawing.Size(0, 19);
 			// 
 			// exportProgressBar
 			// 
-			this.exportProgressBar.BackColor = System.Drawing.Color.WhiteSmoke;
 			this.exportProgressBar.Name = "exportProgressBar";
 			this.exportProgressBar.Size = new System.Drawing.Size(117, 18);
 			// 
 			// currentTimeLabel
 			// 
-			this.currentTimeLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.currentTimeLabel.Name = "currentTimeLabel";
 			this.currentTimeLabel.Size = new System.Drawing.Size(55, 19);
 			this.currentTimeLabel.Text = "00:00.000";
@@ -192,13 +173,6 @@
 			this.buttonStop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonStop.AutoSize = true;
-			this.buttonStop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.buttonStop.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.buttonStop.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.buttonStop.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.buttonStop.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.buttonStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonStop.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.buttonStop.Location = new System.Drawing.Point(129, 490);
 			this.buttonStop.Name = "buttonStop";
 			this.buttonStop.Size = new System.Drawing.Size(104, 27);
@@ -207,8 +181,6 @@
 			this.buttonStop.UseVisualStyleBackColor = false;
 			this.buttonStop.Click += new System.EventHandler(this.buttonCancel_Click);
 			this.buttonStop.MouseEnter += new System.EventHandler(this.stopButton_MouseEnter);
-			this.buttonStop.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonStop.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// groupBox2
 			// 
@@ -217,7 +189,6 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox2.AutoSize = true;
 			this.groupBox2.Controls.Add(this.networkListView);
-			this.groupBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox2.Location = new System.Drawing.Point(12, 88);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(488, 281);
@@ -233,15 +204,12 @@
 			this.networkListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.networkListView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.networkListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.networkListView.CheckBoxes = true;
 			this.networkListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.controllerColumn,
             this.channelsColumn,
             this.startColumn,
             this.endColumn});
-			this.networkListView.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.networkListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
 			this.networkListView.HideSelection = false;
 			listViewItem1.StateImageIndex = 0;
@@ -283,9 +251,7 @@
 			// 
 			// textBox1
 			// 
-			this.textBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			this.textBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.textBox1.Location = new System.Drawing.Point(12, 370);
 			this.textBox1.Multiline = true;
 			this.textBox1.Name = "textBox1";
@@ -299,21 +265,13 @@
 			this.btnUserCancel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnUserCancel.AutoSize = true;
-			this.btnUserCancel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.btnUserCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnUserCancel.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.btnUserCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.btnUserCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.btnUserCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnUserCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.btnUserCancel.Location = new System.Drawing.Point(375, 490);
 			this.btnUserCancel.Name = "btnUserCancel";
 			this.btnUserCancel.Size = new System.Drawing.Size(104, 27);
 			this.btnUserCancel.TabIndex = 18;
 			this.btnUserCancel.Text = "Close";
 			this.btnUserCancel.UseVisualStyleBackColor = false;
-			this.btnUserCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnUserCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// chkGenerateControllerInfo
 			// 
@@ -390,7 +348,6 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
-			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.btnUserCancel;
 			this.ClientSize = new System.Drawing.Size(516, 544);
 			this.Controls.Add(this.chkCompress);
@@ -403,6 +360,8 @@
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.buttonStart);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			MaximizeBox = false;
+			MinimizeBox = false;
 			this.Name = "ExportDialog";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

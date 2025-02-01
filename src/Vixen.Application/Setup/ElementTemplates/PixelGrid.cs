@@ -26,7 +26,6 @@ namespace VixenApplication.Setup.ElementTemplates
 		public PixelGrid()
 		{
 			InitializeComponent();
-			Icon = Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
 
 			_gridName = "Grid 1";
@@ -239,19 +238,6 @@ namespace VixenApplication.Setup.ElementTemplates
 			{
 				_startLocation = StartLocation.BottomLeft;
 			}
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 
 		private void radioButtonOrientation_CheckedChanged(object sender, EventArgs e)

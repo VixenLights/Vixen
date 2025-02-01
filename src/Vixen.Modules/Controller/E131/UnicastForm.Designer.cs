@@ -40,8 +40,6 @@ namespace VixenModules.Controller.E131
 			okButton.TabIndex = 101;
 			okButton.Text = "&OK";
 			okButton.Click += okButton_Click;
-			okButton.MouseLeave += buttonBackground_MouseLeave;
-			okButton.MouseHover += buttonBackground_MouseHover;
 			// 
 			// cancelButton
 			// 
@@ -53,8 +51,6 @@ namespace VixenModules.Controller.E131
 			cancelButton.TabIndex = 102;
 			cancelButton.Text = "&Cancel";
 			cancelButton.Click += cancelButton_Click;
-			cancelButton.MouseLeave += buttonBackground_MouseLeave;
-			cancelButton.MouseHover += buttonBackground_MouseHover;
 			// 
 			// ipRadio
 			// 

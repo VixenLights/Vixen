@@ -15,17 +15,11 @@ namespace VixenModules.App.SuperScheduler
 		{
 			InitializeComponent();
 
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
 			buttonAddSchedule.Image = Tools.GetIcon(Resources.add, iconSize);
-			buttonAddSchedule.Text = "";
 			buttonDeleteSchedule.Image = Tools.GetIcon(Resources.delete, iconSize);
-			buttonDeleteSchedule.Text = "";
 			buttonEditSchedule.Image = Tools.GetIcon(Resources.pencil, iconSize);
-			buttonEditSchedule.Text = "";
 			buttonEditShow.Image = Tools.GetIcon(Resources.table_edit, iconSize);
-			buttonEditShow.Text = "";
 			buttonHelp.Image = Tools.GetIcon(Resources.help, iconSize);
 
 			ThemeUpdateControls.UpdateControls(this);
@@ -258,19 +252,6 @@ namespace VixenModules.App.SuperScheduler
 		private void editTheAssociatedShowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			EditSelectedShow();
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

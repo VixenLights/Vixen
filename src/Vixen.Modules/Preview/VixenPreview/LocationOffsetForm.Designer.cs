@@ -128,6 +128,9 @@
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.Name = "LocationOffsetForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+			this.FormBorderStyle = FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Text = "Location Offset";
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel1.PerformLayout();

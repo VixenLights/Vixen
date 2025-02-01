@@ -11,10 +11,7 @@ namespace VixenModules.App.WebServer
 		public Settings()
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			Icon = Resources.Icon_Vixen3;
 			label4.MaximumSize = new Size(Width-(int)(.1*Width), 0);
 		}
 
@@ -75,18 +72,6 @@ namespace VixenModules.App.WebServer
 				UseShellExecute = true
 			};
 			Process.Start(pi);
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 	}
 }

@@ -209,8 +209,6 @@
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
-			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonCancel
 			// 
@@ -221,8 +219,6 @@
 			this.buttonCancel.TabIndex = 6;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonZipWizard
 			// 
@@ -233,8 +229,6 @@
 			this.buttonZipWizard.Text = "Zip Wizard";
 			this.buttonZipWizard.UseVisualStyleBackColor = true;
 			this.buttonZipWizard.Click += new System.EventHandler(this.buttonZipWizard_Click);
-			this.buttonZipWizard.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonZipWizard.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// DataProfileForm
 			// 

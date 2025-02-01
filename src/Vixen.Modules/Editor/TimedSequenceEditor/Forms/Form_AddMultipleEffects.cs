@@ -89,15 +89,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public Form_AddMultipleEffects()
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
-			listBoxMarkCollections.BackColor = ThemeColorTable.BackgroundColor;
-			checkBoxSkipEOBeat.ForeColor = checkBoxAlignToBeatMarks.Checked ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
-			checkBoxFillDuration.ForeColor = checkBoxAlignToBeatMarks.Checked ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 			btnShowBeatMarkOptions.Image = Resources.bullet_toggle_plus;
-			btnShowBeatMarkOptions.Text = "";
 			btnHideBeatMarkOptions.Image = Resources.bullet_toggle_minus;
-			btnHideBeatMarkOptions.Text = "";
 			listBoxMarkCollections.Visible = false;
 			ThemeUpdateControls.UpdateControls(this);
 			panelBeatAlignment.Visible = false;
@@ -550,19 +543,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		#endregion
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
-		}
 
 	}
 }

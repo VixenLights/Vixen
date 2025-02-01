@@ -125,7 +125,6 @@
 			// cboPortName
 			// 
 			this.cboPortName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboPortName.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.cboPortName.FormattingEnabled = true;
 			this.cboPortName.Location = new System.Drawing.Point(287, 44);
 			this.cboPortName.Name = "cboPortName";
@@ -167,7 +166,6 @@
 			// 
 			// txtHttpPassword
 			// 
-			this.txtHttpPassword.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.txtHttpPassword.Enabled = false;
 			this.txtHttpPassword.Location = new System.Drawing.Point(291, 173);
 			this.txtHttpPassword.MaxLength = 8;
@@ -178,7 +176,6 @@
 			// 
 			// txtHttpUsername
 			// 
-			this.txtHttpUsername.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.txtHttpUsername.Enabled = false;
 			this.txtHttpUsername.Location = new System.Drawing.Point(120, 173);
 			this.txtHttpUsername.MaxLength = 8;
@@ -290,12 +287,9 @@
 			this.btnTX.TabIndex = 1;
 			this.btnTX.Text = "Send";
 			this.btnTX.Click += new System.EventHandler(this.btnTX_Click);
-			this.btnTX.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnTX.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// txtPSInterface
 			// 
-			this.txtPSInterface.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.txtPSInterface.Location = new System.Drawing.Point(114, 24);
 			this.txtPSInterface.MaxLength = 64;
 			this.txtPSInterface.Name = "txtPSInterface";
@@ -327,7 +321,6 @@
 			// 
 			// StatusLbl1
 			// 
-			this.StatusLbl1.ForeColor = System.Drawing.Color.Crimson;
 			this.StatusLbl1.Name = "StatusLbl1";
 			this.StatusLbl1.Size = new System.Drawing.Size(33, 17);
 			this.StatusLbl1.Text = "DIYC";
@@ -342,8 +335,6 @@
 			this.button1.TabIndex = 4;
 			this.button1.Text = "Save";
 			this.button1.UseVisualStyleBackColor = true;
-			this.button1.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.button1.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// groupBox1
 			// 
@@ -389,7 +380,9 @@
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox2);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			MaximizeBox = false;
+			MinimizeBox = false;
 			this.Name = "SetupForm";
 			this.Text = "Launcher Commands and RDS Configuration";
 			this.groupBox3.ResumeLayout(false);

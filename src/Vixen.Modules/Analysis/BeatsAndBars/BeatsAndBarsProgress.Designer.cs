@@ -35,7 +35,6 @@
 			// 
 			// progressBar1
 			// 
-			this.progressBar1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
 			this.progressBar1.Location = new System.Drawing.Point(14, 43);
 			this.progressBar1.Name = "progressBar1";
 			this.progressBar1.Size = new System.Drawing.Size(218, 27);
@@ -73,7 +72,6 @@
 			this.Controls.Add(this.percentLabel);
 			this.Controls.Add(this.generateLabel);
 			this.Controls.Add(this.progressBar1);
-			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MinimizeBox = false;
 			this.Name = "BeatsAndBarsProgress";

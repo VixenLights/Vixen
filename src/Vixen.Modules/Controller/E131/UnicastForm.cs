@@ -12,8 +12,6 @@ namespace VixenModules.Controller.E131
 		public UnicastForm()
 		{
 			this.InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
             ipTextBox.BringToFront();
 		}
@@ -70,18 +68,5 @@ namespace VixenModules.Controller.E131
         {
             updateChecked();
         }
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
-		}
 	}
 }

@@ -1,4 +1,7 @@
-﻿namespace VixenApplication.Setup
+﻿using Common.Controls.Scaling;
+using Common.Resources.Properties;
+
+namespace VixenApplication.Setup
 {
 	partial class DisplaySetup
 	{
@@ -222,8 +225,6 @@
 			buttonOk.Text = "OK";
 			buttonOk.UseVisualStyleBackColor = true;
 			buttonOk.Click += buttonOk_Click;
-			buttonOk.MouseLeave += buttonBackground_MouseLeave;
-			buttonOk.MouseHover += buttonBackground_MouseHover;
 			// 
 			// buttonCancel
 			// 
@@ -236,12 +237,11 @@
 			buttonCancel.TabIndex = 12;
 			buttonCancel.Text = "Cancel";
 			buttonCancel.UseVisualStyleBackColor = true;
-			buttonCancel.MouseLeave += buttonBackground_MouseLeave;
-			buttonCancel.MouseHover += buttonBackground_MouseHover;
 			// 
 			// buttonHelp
 			// 
 			buttonHelp.Anchor = AnchorStyles.None;
+			buttonHelp.Image = Common.Resources.Tools.GetIcon(Resources.help, (int)(16 * ScalingTools.GetScaleFactor()));
 			buttonHelp.AutoSize = true;
 			buttonHelp.ImageAlign = ContentAlignment.MiddleLeft;
 			buttonHelp.Location = new Point(193, 3);
@@ -252,8 +252,6 @@
 			buttonHelp.Text = "Help";
 			buttonHelp.UseVisualStyleBackColor = true;
 			buttonHelp.Click += buttonHelp_Click;
-			buttonHelp.MouseLeave += buttonBackground_MouseLeave;
-			buttonHelp.MouseHover += buttonBackground_MouseHover;
 			// 
 			// tableLayoutPanelContainer
 			// 

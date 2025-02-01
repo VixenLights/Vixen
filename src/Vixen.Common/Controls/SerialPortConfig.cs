@@ -11,10 +11,7 @@ namespace Common.Controls
 		{
             var logging = NLog.LogManager.GetCurrentClassLogger();
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			Icon = Resources.Properties.Resources.Icon_Vixen3;
 
 			//lets try and open the serial port if it can't be opened then it
 			//must be in use so label it as in use
@@ -223,19 +220,6 @@ namespace Common.Controls
 					}
 				}
 			}
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImage;
-
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

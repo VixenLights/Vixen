@@ -38,9 +38,7 @@
 			// 
 			// intensityUpDown
 			// 
-			this.intensityUpDown.BackColor = System.Drawing.SystemColors.Control;
 			this.intensityUpDown.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.intensityUpDown.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.intensityUpDown.Location = new System.Drawing.Point(210, 12);
 			this.intensityUpDown.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.intensityUpDown.Name = "intensityUpDown";
@@ -101,7 +99,6 @@
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.panelColor);
 			this.Controls.Add(this.intensityTrackBar);
-			this.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.Name = "LipSyncMapColorCtrl";
 			this.Size = new System.Drawing.Size(284, 103);

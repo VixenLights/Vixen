@@ -25,7 +25,6 @@ namespace VixenApplication.Setup.ElementTemplates
 		public Megatree()
 		{
 			InitializeComponent();
-			Icon = Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
 
 			_treeName = "Megatree";
@@ -202,18 +201,6 @@ namespace VixenApplication.Setup.ElementTemplates
 		private void numericUpDownPixelsPerString_ValueChanged(object sender, EventArgs e)
 		{
 			UpdateZigZag();
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

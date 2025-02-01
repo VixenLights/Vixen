@@ -9,8 +9,6 @@ namespace Common.Controls
 		public UndoDropDownControl()
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			this.DoubleBuffered = true;
 			this.ButtonType = UndoButtonType.UndoButton;
