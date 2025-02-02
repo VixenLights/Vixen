@@ -106,6 +106,7 @@ namespace VixenApplication
 			contextMenuStripRecent.Renderer = new ThemeToolStripRenderer();
 			progressBar.TextColor = ThemeColorTable.ForeColor;
 			progressBar.ProgressColor = Color.DarkGreen;
+			labelVixen.Font = new Font(labelVixen.Font, System.Drawing.FontStyle.Bold);
 			AutoResizeText(labelVixen);
 			Font releaseFont = AutoResizeText(labelRelease);
 			Font buildFont = AutoResizeText(labelBuild);
@@ -490,6 +491,7 @@ namespace VixenApplication
 					_releaseVersion = @"Development Build";
 					_buildVersion = $@"Build #{version.Build}";
 					_currentBuildVersion = version.Build;
+					labelBuild.ForeColor = labelRelease.ForeColor = Color.Yellow;
 					Logging.Info($"{_releaseVersion} - {_buildVersion}");
 					CheckForDevBuildUpdates();
 				}
@@ -497,6 +499,7 @@ namespace VixenApplication
 				{
 					_releaseVersion = @"Test Build";
 					_buildVersion = $@"Build #";
+					labelBuild.ForeColor = labelRelease.ForeColor = Color.Red;
 					toolStripStatusUpdates.Text = String.Empty;
 					Logging.Info($"{_releaseVersion}");
 					_testBuild = true;
