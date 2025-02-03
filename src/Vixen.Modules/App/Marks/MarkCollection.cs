@@ -20,7 +20,7 @@ namespace VixenModules.App.Marks
 		private bool _showMarkBar;
 		private bool _showGridLines;
 		private bool _showTailGridLines;
-		private bool _lockMarkBar;
+		private bool _locked;
 		private MarkCollectionType _collectionType = MarkCollectionType.Generic;
 
 		public MarkCollection()
@@ -34,7 +34,7 @@ namespace VixenModules.App.Marks
 			ShowGridLines = true;
 			ShowTailGridLines = false;
 			ShowMarkBar = false;
-			LockMarkBar = false;
+			Locked = false;
 			CollectionType = MarkCollectionType.Generic;
 		}
 
@@ -90,14 +90,14 @@ namespace VixenModules.App.Marks
 		}
 
 		[DataMember]
-		public bool LockMarkBar
+		public bool Locked
 		{
-			get { return _lockMarkBar; }
+			get { return _locked; }
 			set
 			{
-				if (value == _lockMarkBar) return;
-				_lockMarkBar = value;
-				OnPropertyChanged(nameof(LockMarkBar));
+				if (value == _locked) return;
+				_locked = value;
+				OnPropertyChanged(nameof(Locked));
 			}
 		}
 		[DataMember]
@@ -269,7 +269,7 @@ namespace VixenModules.App.Marks
 				ShowMarkBar = ShowMarkBar,
 				ShowGridLines = ShowGridLines,
 				ShowTailGridLines = ShowTailGridLines,
-				LockMarkBar = LockMarkBar,
+				Locked = Locked,
 				Level = Level,
 				Name = Name,
 				_marks = new ObservableCollection<IMark>(Marks.Select(x => (IMark)x.Clone())),

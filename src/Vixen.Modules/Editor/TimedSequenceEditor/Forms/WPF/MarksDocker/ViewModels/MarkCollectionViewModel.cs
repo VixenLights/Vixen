@@ -155,22 +155,22 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 
 		#endregion
 
-		#region LockMarkBar property
+		#region Locked property
 
 		/// <summary>
-		/// Gets or sets the LockMarkBar value.
+		/// Gets or sets the Locked value.
 		/// </summary>
 		[ViewModelToModel("MarkCollection")]
-		public bool LockMarkBar
+		public bool Locked
 		{
-			get { return GetValue<bool>(LockMarkBarProperty); }
-			set { SetValue(LockMarkBarProperty, value); }
+			get { return GetValue<bool>(LockedProperty); }
+			set { SetValue(LockedProperty, value); }
 		}
 
 		/// <summary>
 		/// ShowMarkBar property data.
 		/// </summary>
-		public static readonly IPropertyData LockMarkBarProperty = RegisterProperty<bool>(nameof(LockMarkBar));
+		public static readonly IPropertyData LockedProperty = RegisterProperty<bool>(nameof(Locked));
 
 		#endregion
 

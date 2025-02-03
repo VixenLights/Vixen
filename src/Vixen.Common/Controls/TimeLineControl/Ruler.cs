@@ -841,13 +841,14 @@ namespace Common.Controls.Timeline
 		/// <summary>
 		/// Returns a list of marks at a time ordered by level from highest to lowest.
 		/// </summary>
-		/// <param name="ts"></param>
+		/// <param name="ts">Specifies time span</param>
+		/// <param name="locked">Optional: Include locked Marks</param>
 		/// <returns></returns>
-		private List<IMark> MarksAt(TimeSpan ts)
+		private List<IMark> MarksAt(TimeSpan ts, bool locked = false)
 		{
 			const int markDifferential = 20;
 			var marksAtTime = new List<IMark>();
-			foreach (var labeledMarkCollection in _markCollections.Where(x => x.IsVisible && !x.LockMarkBar).OrderByDescending(x => x.Level))
+			foreach (var labeledMarkCollection in _markCollections.Where(x => x.IsVisible && x.Locked == locked).OrderByDescending(x => x.Level))
 			{
 				//labeledMarkCollection.EnsureOrder();
 				foreach (var labeledMark in labeledMarkCollection.Marks)

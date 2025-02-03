@@ -19,7 +19,7 @@ namespace Vixen.Marks
 
 		bool ShowMarkBar { get; set; }
 
-		bool LockMarkBar { get; set; }
+		bool Locked { get; set; }
 
 		int Level { get; set; }
 

@@ -181,7 +181,7 @@ namespace Common.Controls.TimelineControl
 			_mouseDownMark = MarkAt(location);
 
 			// If the Mark's collection is set to Locked, then unselect the Mark we found under the cursor
-			if (_mouseDownMark?.Parent.LockMarkBar == true)
+			if (_mouseDownMark?.Parent.Locked == true)
 				_mouseDownMark = null;
 
 			if (e.Button == MouseButtons.Left || e.Button == MouseButtons.Right)
@@ -1154,7 +1154,7 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 			Point finalDrawLocation = new Point((int)Math.Floor(timeToPixels(mark.StartTime)), displayTop);
 
 			Rectangle destRect = new Rectangle(finalDrawLocation.X, finalDrawLocation.Y, size.Width, displayHeight);
-			if (mark.Parent.LockMarkBar)
+			if (mark.Parent.Locked)
 			{
 				HatchBrush b = new HatchBrush(HatchStyle.DiagonalCross, Color.LightGray, cl);
 				g.FillRectangle(b, destRect);

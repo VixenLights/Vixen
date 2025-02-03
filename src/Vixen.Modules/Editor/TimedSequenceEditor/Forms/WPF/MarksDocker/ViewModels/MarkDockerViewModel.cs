@@ -14,7 +14,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		private bool _lineToggleState = true;
 		private bool _lineTailToggleState = false;
 		private bool _markBarToggleState = true;
-		private bool _markBarLockToggleState = true;
+		private bool _lockedToggleState = true;
 		public MarkDockerViewModel(ObservableCollection<IMarkCollection> markCollections)
 		{
 			MarkCollections = markCollections;
@@ -30,9 +30,9 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 			{
 				_markBarToggleState = false;
 			}
-			if (MarkCollections.All(x => x.LockMarkBar))
+			if (MarkCollections.All(x => x.Locked))
 			{
-				_markBarLockToggleState = false;
+				_lockedToggleState = false;
 			}
 		}
 
@@ -263,25 +263,25 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 
 		#endregion
 
-		#region ToggleMarkBarLock command
+		#region ToggleLock command
 
 		private Command _toggleMarkBarLockCommand;
 
 		/// <summary>
-		/// Gets the ToggleMarkBarLock command.
+		/// Gets the ToggleLock command.
 		/// </summary>
-		public Command ToggleMarkBarLockCommand
+		public Command ToggleLockCommand
 		{
-			get { return _toggleMarkBarLockCommand ?? (_toggleMarkBarLockCommand = new Command(ToggleMarkBarLock)); }
+			get { return _toggleMarkBarLockCommand ?? (_toggleMarkBarLockCommand = new Command(ToggleLock)); }
 		}
 
 		/// <summary>
-		/// Method to invoke when the ToggleMarkBarLock command is executed.
+		/// Method to invoke when the ToggleLock command is executed.
 		/// </summary>
-		private void ToggleMarkBarLock()
+		private void ToggleLock()
 		{
-			MarkCollections.ForEach(x => x.LockMarkBar = _markBarLockToggleState);
-			_markBarLockToggleState = !_markBarLockToggleState;
+			MarkCollections.ForEach(x => x.Locked = _lockedToggleState);
+			_lockedToggleState = !_lockedToggleState;
 		}
 
 		#endregion

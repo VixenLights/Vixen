@@ -87,10 +87,10 @@
 					</Border>
                     <Border Grid.Row="0" Background="{StaticResource BackColorBrush}" Grid.Column="4" BorderBrush="{StaticResource BackColorBrush}" BorderThickness="0,0,1,1" Padding="2">
                         <!-- <TextBlock Text="Label"/> -->
-                        <Image Source="/Resources;component/Resources/locked.png" Height="16" ToolTip="Lock Mark Bar Access"/>
+                        <Image Source="/Resources;component/Resources/locked.png" Height="16" ToolTip="Lock Access"/>
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseLeftButtonUp">
-                                <catel:EventToCommand Command="{Binding ToggleMarkBarLockCommand}" DisableAssociatedObjectOnCannotExecute="False" PassEventArgsToCommand="True"/>
+                                <catel:EventToCommand Command="{Binding ToggleLockCommand}" DisableAssociatedObjectOnCannotExecute="False" PassEventArgsToCommand="True"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </Border>

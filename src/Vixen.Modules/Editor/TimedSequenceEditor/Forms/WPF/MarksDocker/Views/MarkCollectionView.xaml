@@ -50,7 +50,7 @@
 						          VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2,0,2,0"/>
                     </Border>
                     <Border Background="{StaticResource BackColorBrush}" Grid.Column="4" BorderBrush="Transparent" BorderThickness="0,0,1,0" >
-                        <CheckBox IsChecked="{Binding LockMarkBar}" Style="{StaticResource ContentlessCheckBox}" 
+                        <CheckBox IsChecked="{Binding Locked}" Style="{StaticResource ContentlessCheckBox}" 
 						          VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2,0,2,0"/>
                     </Border>
                     <Border Background="{StaticResource BackColorBrush}" Grid.Column="5" BorderBrush="Transparent" BorderThickness="0,0,1,0">
