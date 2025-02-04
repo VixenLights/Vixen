@@ -1156,7 +1156,14 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 			Rectangle destRect = new Rectangle(finalDrawLocation.X, finalDrawLocation.Y, size.Width, displayHeight);
 			if (mark.Parent.Locked)
 			{
-				HatchBrush b = new HatchBrush(HatchStyle.DiagonalCross, Color.LightGray, cl);
+				// Calculate a background hatch color that is slightly different than the background.
+				Color hatchColor;
+				int red = cl.R + 30 <= 255 ? cl.R + 30 : cl.R - 30;
+				int green = cl.G + 30 <= 255 ? cl.G + 30 : cl.G - 30;
+				int blue = cl.B + 30 <= 255 ? cl.B + 30 : cl.B - 30;
+				hatchColor = Color.FromArgb(cl.A, red, green, blue);
+
+				HatchBrush b = new HatchBrush(HatchStyle.DiagonalCross, hatchColor, cl);
 				g.FillRectangle(b, destRect);
 			}
 			else
