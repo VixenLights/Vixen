@@ -97,7 +97,6 @@ namespace VixenApplication
 			statusStrip.Padding.Top, statusStrip.Padding.Left, statusStrip.Padding.Bottom);
 			statusStrip.Font = SystemFonts.StatusFont;
 
-			Icon = Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
 			statusStrip.BackColor = ThemeColorTable.BackgroundColor;
 			statusStrip.ForeColor = ThemeColorTable.ForeColor;
@@ -432,7 +431,6 @@ namespace VixenApplication
 			{
 				logsToolStripMenuItem.DropDownItems.Add(logName, null,
 														(menuSender, menuArgs) => _ViewLog(((ToolStripMenuItem)menuSender).Text));
-				//	logsToolStripMenuItem.DropDownItems.ForeColor = Color.FromArgb(90, 90, 90);
 			}
 
 			_startupProgress.Report(Tuple.Create(100, "Ready"));
@@ -1393,18 +1391,6 @@ namespace VixenApplication
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
 			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 
 		private void ClearRecentSequencesList()

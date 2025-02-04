@@ -108,7 +108,6 @@ namespace VixenApplication
 			// 
 			// menuStripMain
 			// 
-			menuStripMain.BackColor = Color.Transparent;
 			menuStripMain.ImageScalingSize = new Size(24, 24);
 			menuStripMain.Items.AddRange(new ToolStripItem[] { vixenToolStripMenuItem });
 			menuStripMain.Location = new Point(0, 0);
@@ -122,21 +121,18 @@ namespace VixenApplication
 			// vixenToolStripMenuItem
 			// 
 			vixenToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { logsToolStripMenuItem, viewInstalledModulesToolStripMenuItem, profilesToolStripMenuItem, systemConfigurationToolStripMenuItem, executionToolStripMenuItem, toolStripSeparator1, exitToolStripMenuItem });
-			vixenToolStripMenuItem.ForeColor = Color.FromArgb(221, 221, 221);
 			vixenToolStripMenuItem.Name = "vixenToolStripMenuItem";
 			vixenToolStripMenuItem.Size = new Size(57, 19);
 			vixenToolStripMenuItem.Text = "System";
 			// 
 			// logsToolStripMenuItem
 			// 
-			logsToolStripMenuItem.ForeColor = Color.FromArgb(221, 221, 221);
 			logsToolStripMenuItem.Name = "logsToolStripMenuItem";
 			logsToolStripMenuItem.Size = new Size(195, 22);
 			logsToolStripMenuItem.Text = "Logs";
 			// 
 			// viewInstalledModulesToolStripMenuItem
 			// 
-			viewInstalledModulesToolStripMenuItem.ForeColor = Color.FromArgb(221, 221, 221);
 			viewInstalledModulesToolStripMenuItem.Name = "viewInstalledModulesToolStripMenuItem";
 			viewInstalledModulesToolStripMenuItem.Size = new Size(195, 22);
 			viewInstalledModulesToolStripMenuItem.Text = "View Installed Modules";
@@ -144,7 +140,6 @@ namespace VixenApplication
 			// 
 			// profilesToolStripMenuItem
 			// 
-			profilesToolStripMenuItem.ForeColor = Color.FromArgb(221, 221, 221);
 			profilesToolStripMenuItem.Name = "profilesToolStripMenuItem";
 			profilesToolStripMenuItem.Size = new Size(195, 22);
 			profilesToolStripMenuItem.Text = "Profiles...";
@@ -153,14 +148,12 @@ namespace VixenApplication
 			// systemConfigurationToolStripMenuItem
 			// 
 			systemConfigurationToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { setupDisplayToolStripMenuItem, setupPreviewsToolStripMenuItem });
-			systemConfigurationToolStripMenuItem.ForeColor = Color.FromArgb(221, 221, 221);
 			systemConfigurationToolStripMenuItem.Name = "systemConfigurationToolStripMenuItem";
 			systemConfigurationToolStripMenuItem.Size = new Size(195, 22);
 			systemConfigurationToolStripMenuItem.Text = "System Configuration";
 			// 
 			// setupDisplayToolStripMenuItem
 			// 
-			setupDisplayToolStripMenuItem.ForeColor = Color.FromArgb(221, 221, 221);
 			setupDisplayToolStripMenuItem.Name = "setupDisplayToolStripMenuItem";
 			setupDisplayToolStripMenuItem.Size = new Size(153, 22);
 			setupDisplayToolStripMenuItem.Text = "Setup Display";
@@ -168,7 +161,6 @@ namespace VixenApplication
 			// 
 			// setupPreviewsToolStripMenuItem
 			// 
-			setupPreviewsToolStripMenuItem.ForeColor = Color.FromArgb(221, 221, 221);
 			setupPreviewsToolStripMenuItem.Name = "setupPreviewsToolStripMenuItem";
 			setupPreviewsToolStripMenuItem.Size = new Size(153, 22);
 			setupPreviewsToolStripMenuItem.Text = "Setup Previews";
@@ -177,7 +169,6 @@ namespace VixenApplication
 			// executionToolStripMenuItem
 			// 
 			executionToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { startToolStripMenuItem, stopToolStripMenuItem });
-			executionToolStripMenuItem.ForeColor = Color.FromArgb(221, 221, 221);
 			executionToolStripMenuItem.Name = "executionToolStripMenuItem";
 			executionToolStripMenuItem.Size = new Size(195, 22);
 			executionToolStripMenuItem.Text = "Execution Engine";
@@ -198,13 +189,11 @@ namespace VixenApplication
 			// 
 			// toolStripSeparator1
 			// 
-			toolStripSeparator1.ForeColor = SystemColors.ControlText;
 			toolStripSeparator1.Name = "toolStripSeparator1";
 			toolStripSeparator1.Size = new Size(192, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
-			exitToolStripMenuItem.ForeColor = Color.FromArgb(221, 221, 221);
 			exitToolStripMenuItem.Name = "exitToolStripMenuItem";
 			exitToolStripMenuItem.Size = new Size(195, 22);
 			exitToolStripMenuItem.Text = "Shutdown and E&xit";
@@ -228,7 +217,6 @@ namespace VixenApplication
 			// toolStripStatusLabelExecutionLight
 			// 
 			toolStripStatusLabelExecutionLight.AutoSize = false;
-			toolStripStatusLabelExecutionLight.BackColor = Color.FromArgb(255, 128, 255);
 			toolStripStatusLabelExecutionLight.Margin = new Padding(0, 1, 0, 1);
 			toolStripStatusLabelExecutionLight.Name = "toolStripStatusLabelExecutionLight";
 			toolStripStatusLabelExecutionLight.Size = new Size(22, 22);
@@ -243,7 +231,6 @@ namespace VixenApplication
 			// toolStripStatusLabelExecutionState
 			// 
 			toolStripStatusLabelExecutionState.BorderSides = ToolStripStatusLabelBorderSides.Right;
-			toolStripStatusLabelExecutionState.ForeColor = Color.FromArgb(221, 221, 221);
 			toolStripStatusLabelExecutionState.Margin = new Padding(0, 1, 0, 1);
 			toolStripStatusLabelExecutionState.Name = "toolStripStatusLabelExecutionState";
 			toolStripStatusLabelExecutionState.Size = new Size(120, 22);
@@ -252,7 +239,6 @@ namespace VixenApplication
 			// toolStripStatusLabel_memory
 			// 
 			toolStripStatusLabel_memory.DisplayStyle = ToolStripItemDisplayStyle.Text;
-			toolStripStatusLabel_memory.ForeColor = Color.FromArgb(221, 221, 221);
 			toolStripStatusLabel_memory.Margin = new Padding(0, 1, 0, 1);
 			toolStripStatusLabel_memory.Name = "toolStripStatusLabel_memory";
 			toolStripStatusLabel_memory.Size = new Size(231, 22);
@@ -300,7 +286,6 @@ namespace VixenApplication
 			groupBoxSequences.AutoSizeMode = AutoSizeMode.GrowAndShrink;
 			groupBoxSequences.Controls.Add(tableLayoutPanel2);
 			groupBoxSequences.Dock = DockStyle.Fill;
-			groupBoxSequences.ForeColor = Color.FromArgb(221, 221, 221);
 			groupBoxSequences.Location = new Point(4, 5);
 			groupBoxSequences.Margin = new Padding(4, 5, 4, 5);
 			groupBoxSequences.Name = "groupBoxSequences";
@@ -332,11 +317,9 @@ namespace VixenApplication
 			// 
 			// listViewRecentSequences
 			// 
-			listViewRecentSequences.BackColor = Color.FromArgb(90, 90, 90);
 			listViewRecentSequences.Columns.AddRange(new ColumnHeader[] { columnHeader1 });
 			listViewRecentSequences.ContextMenuStrip = contextMenuStripRecent;
 			listViewRecentSequences.Dock = DockStyle.Fill;
-			listViewRecentSequences.ForeColor = Color.FromArgb(221, 221, 221);
 			listViewRecentSequences.FullRowSelect = true;
 			listViewRecentSequences.HeaderStyle = ColumnHeaderStyle.None;
 			listViewRecentSequences.Items.AddRange(new ListViewItem[] { listViewItem1, listViewItem2, listViewItem3, listViewItem4, listViewItem5, listViewItem6 });
@@ -357,7 +340,6 @@ namespace VixenApplication
 			// label2
 			// 
 			label2.AutoSize = true;
-			label2.ForeColor = Color.FromArgb(221, 221, 221);
 			label2.Location = new Point(4, 77);
 			label2.Margin = new Padding(4, 0, 4, 0);
 			label2.Name = "label2";
@@ -370,9 +352,6 @@ namespace VixenApplication
 			buttonOpenSequence.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 			buttonOpenSequence.AutoSize = true;
 			buttonOpenSequence.BackgroundImageLayout = ImageLayout.Stretch;
-			buttonOpenSequence.FlatAppearance.BorderColor = Color.FromArgb(40, 40, 40);
-			buttonOpenSequence.FlatStyle = FlatStyle.Flat;
-			buttonOpenSequence.ForeColor = Color.FromArgb(221, 221, 221);
 			buttonOpenSequence.Location = new Point(4, 42);
 			buttonOpenSequence.Margin = new Padding(4, 5, 4, 5);
 			buttonOpenSequence.Name = "buttonOpenSequence";
@@ -381,17 +360,12 @@ namespace VixenApplication
 			buttonOpenSequence.Text = "Open Sequence...";
 			buttonOpenSequence.UseVisualStyleBackColor = true;
 			buttonOpenSequence.Click += buttonOpenSequence_Click;
-			buttonOpenSequence.MouseLeave += buttonBackground_MouseLeave;
-			buttonOpenSequence.MouseHover += buttonBackground_MouseHover;
 			// 
 			// buttonNewSequence
 			// 
 			buttonNewSequence.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 			buttonNewSequence.AutoSize = true;
 			buttonNewSequence.BackgroundImageLayout = ImageLayout.Stretch;
-			buttonNewSequence.FlatAppearance.BorderColor = Color.FromArgb(40, 40, 40);
-			buttonNewSequence.FlatStyle = FlatStyle.Flat;
-			buttonNewSequence.ForeColor = Color.FromArgb(221, 221, 221);
 			buttonNewSequence.Location = new Point(4, 5);
 			buttonNewSequence.Margin = new Padding(4, 5, 4, 5);
 			buttonNewSequence.Name = "buttonNewSequence";
@@ -400,15 +374,12 @@ namespace VixenApplication
 			buttonNewSequence.Text = "New Sequence...";
 			buttonNewSequence.UseVisualStyleBackColor = true;
 			buttonNewSequence.Click += buttonNewSequence_Click;
-			buttonNewSequence.MouseLeave += buttonBackground_MouseLeave;
-			buttonNewSequence.MouseHover += buttonBackground_MouseHover;
 			// 
 			// groupBoxSystemConfig
 			// 
 			groupBoxSystemConfig.AutoSize = true;
 			groupBoxSystemConfig.Controls.Add(tableLayoutPanel4);
 			groupBoxSystemConfig.Dock = DockStyle.Top;
-			groupBoxSystemConfig.ForeColor = Color.FromArgb(221, 221, 221);
 			groupBoxSystemConfig.Location = new Point(229, 5);
 			groupBoxSystemConfig.Margin = new Padding(4, 5, 4, 5);
 			groupBoxSystemConfig.Name = "groupBoxSystemConfig";
@@ -440,9 +411,6 @@ namespace VixenApplication
 			buttonSetupOutputPreviews.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 			buttonSetupOutputPreviews.AutoSize = true;
 			buttonSetupOutputPreviews.BackgroundImageLayout = ImageLayout.Stretch;
-			buttonSetupOutputPreviews.FlatAppearance.BorderColor = Color.FromArgb(40, 40, 40);
-			buttonSetupOutputPreviews.FlatStyle = FlatStyle.Flat;
-			buttonSetupOutputPreviews.ForeColor = Color.FromArgb(221, 221, 221);
 			buttonSetupOutputPreviews.Location = new Point(4, 45);
 			buttonSetupOutputPreviews.Margin = new Padding(4, 5, 4, 5);
 			buttonSetupOutputPreviews.Name = "buttonSetupOutputPreviews";
@@ -451,17 +419,12 @@ namespace VixenApplication
 			buttonSetupOutputPreviews.Text = "Setup Previews";
 			buttonSetupOutputPreviews.UseVisualStyleBackColor = true;
 			buttonSetupOutputPreviews.Click += buttonSetupOutputPreviews_Click;
-			buttonSetupOutputPreviews.MouseLeave += buttonBackground_MouseLeave;
-			buttonSetupOutputPreviews.MouseHover += buttonBackground_MouseHover;
 			// 
 			// buttonSetupDisplay
 			// 
 			buttonSetupDisplay.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 			buttonSetupDisplay.AutoSize = true;
 			buttonSetupDisplay.BackgroundImageLayout = ImageLayout.Stretch;
-			buttonSetupDisplay.FlatAppearance.BorderColor = Color.FromArgb(40, 40, 40);
-			buttonSetupDisplay.FlatStyle = FlatStyle.Flat;
-			buttonSetupDisplay.ForeColor = Color.FromArgb(221, 221, 221);
 			buttonSetupDisplay.Location = new Point(4, 5);
 			buttonSetupDisplay.Margin = new Padding(4, 5, 4, 5);
 			buttonSetupDisplay.Name = "buttonSetupDisplay";
@@ -470,8 +433,6 @@ namespace VixenApplication
 			buttonSetupDisplay.Text = "Setup Display";
 			buttonSetupDisplay.UseVisualStyleBackColor = true;
 			buttonSetupDisplay.Click += buttonSetupDisplay_Click;
-			buttonSetupDisplay.MouseLeave += buttonBackground_MouseLeave;
-			buttonSetupDisplay.MouseHover += buttonBackground_MouseHover;
 			// 
 			// buttonPanel
 			// 
@@ -518,7 +479,6 @@ namespace VixenApplication
 			// 
 			labelRelease.AutoSize = true;
 			labelRelease.Dock = DockStyle.Fill;
-			labelRelease.ForeColor = SystemColors.HighlightText;
 			labelRelease.Location = new Point(299, 102);
 			labelRelease.Name = "labelRelease";
 			labelRelease.Size = new Size(108, 22);
@@ -530,7 +490,6 @@ namespace VixenApplication
 			// 
 			labelBuild.AutoSize = true;
 			labelBuild.Dock = DockStyle.Fill;
-			labelBuild.ForeColor = SystemColors.HighlightText;
 			labelBuild.Location = new Point(299, 124);
 			labelBuild.Name = "labelBuild";
 			labelBuild.Size = new Size(108, 23);
@@ -556,7 +515,6 @@ namespace VixenApplication
 			labelVixen.AutoSize = true;
 			titlePanel.SetColumnSpan(labelVixen, 3);
 			labelVixen.Dock = DockStyle.Fill;
-			labelVixen.ForeColor = SystemColors.HighlightText;
 			labelVixen.Location = new Point(182, 0);
 			labelVixen.Margin = new Padding(0);
 			labelVixen.Name = "labelVixen";
@@ -585,7 +543,6 @@ namespace VixenApplication
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
 			AutoSize = true;
-			BackColor = Color.FromArgb(68, 68, 68);
 			ClientSize = new Size(456, 539);
 			Controls.Add(mainLayoutPanel);
 			Controls.Add(statusStrip);
