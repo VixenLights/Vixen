@@ -178,10 +178,14 @@ namespace Common.Controls.TimelineControl
 			_mouseDownMark = null;
 			Point location = _mouseDownLocation = TranslateLocation(e.Location);
 
+			_mouseDownMark = MarkAt(location);
+
+			// If the Mark's collection is set to Locked, then unselect the Mark we found under the cursor
+			if (_mouseDownMark?.Parent.Locked == true)
+				_mouseDownMark = null;
+
 			if (e.Button == MouseButtons.Left || e.Button == MouseButtons.Right)
 			{
-				_mouseDownMark = MarkAt(location);
-
 				if (e.Clicks == 2 && _mouseDownMark != null)
 				{
 					if (AltPressed)
@@ -226,18 +230,18 @@ namespace Common.Controls.TimelineControl
 						_marksSelectionManager.Select(_mouseDownMark);
 					}
 				}
-			}
 
-			if (e.Button == MouseButtons.Left)
-			{
-				if (_markResizeZone == ResizeZone.None)
+				if (e.Button == MouseButtons.Left)
 				{
-					// begin waiting for a normal drag
-					WaitForDragMove(location);
-				}
-				else if (!CtrlPressed)
-				{
-					BeginHResize(location); // begin a resize.
+					if (_markResizeZone == ResizeZone.None)
+					{
+						// begin waiting for a normal drag
+						WaitForDragMove(location);
+					}
+					else if (!CtrlPressed)
+					{
+						BeginHResize(location); // begin a resize.
+					}
 				}
 			}
 
@@ -1114,7 +1118,8 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 							break;
 						}
 
-						DrawMark(g, row, currentElement, displaytop, b);
+//						DrawMark(g, row, currentElement, displaytop, b);
+						DrawMark(g, row, currentElement, displaytop, row.MarkDecorator.Color);
 					}
 				}
 
@@ -1126,7 +1131,8 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 		private static readonly Pen MarkBorderPen = new Pen(Color.Black);
 		private static readonly StringFormat DrawFormat = StringFormat.GenericDefault;
 		private static readonly SolidBrush TextBrush = new SolidBrush(Color.Black);
-		private void DrawMark(Graphics g, MarkRow row, IMark mark, int top, Brush b)
+//		private void DrawMark(Graphics g, MarkRow row, IMark mark, int top, Brush b)
+		private void DrawMark(Graphics g, MarkRow row, IMark mark, int top, Color cl)
 		{
 			//Sanity check - it is possible for .DisplayHeight to become zero if there are too many marks stacked.
 			//We set the DisplayHeight to the row height for the mark, and change the border to red.	
@@ -1148,7 +1154,23 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 			Point finalDrawLocation = new Point((int)Math.Floor(timeToPixels(mark.StartTime)), displayTop);
 
 			Rectangle destRect = new Rectangle(finalDrawLocation.X, finalDrawLocation.Y, size.Width, displayHeight);
-			g.FillRectangle(b,destRect);
+			if (mark.Parent.Locked)
+			{
+				// Calculate a background hatch color that is slightly different than the background.
+				Color hatchColor;
+				int red = cl.R + 30 <= 255 ? cl.R + 30 : cl.R - 30;
+				int green = cl.G + 30 <= 255 ? cl.G + 30 : cl.G - 30;
+				int blue = cl.B + 30 <= 255 ? cl.B + 30 : cl.B - 30;
+				hatchColor = Color.FromArgb(cl.A, red, green, blue);
+
+				HatchBrush b = new HatchBrush(HatchStyle.DiagonalCross, hatchColor, cl);
+				g.FillRectangle(b, destRect);
+			}
+			else
+			{
+				Brush b = new SolidBrush(cl);
+				g.FillRectangle(b, destRect);
+			}
 			
 			var isSelected = _marksSelectionManager.SelectedMarks.Contains(mark);
 

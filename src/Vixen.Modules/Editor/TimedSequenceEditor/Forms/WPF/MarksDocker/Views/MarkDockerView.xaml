@@ -43,10 +43,11 @@
 						</DataTemplate>
 					</Grid.Resources>
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" SharedSizeGroup="A"/>
-						<ColumnDefinition Width="Auto" SharedSizeGroup="B"/>
-						<ColumnDefinition Width="Auto" SharedSizeGroup="C"/>
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="D"/>
+						<ColumnDefinition SharedSizeGroup="A"/>
+						<ColumnDefinition SharedSizeGroup="B"/>
+						<ColumnDefinition SharedSizeGroup="C"/>
+                        <ColumnDefinition SharedSizeGroup="D"/>
+                        <ColumnDefinition SharedSizeGroup="E"/>
                         <ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
 					<Grid.RowDefinitions>
@@ -84,12 +85,21 @@
 							</i:EventTrigger>
 						</i:Interaction.Triggers>
 					</Border>
-					<Border Grid.Row="0" Background="{StaticResource BackColorBrush}" Grid.Column="4" BorderBrush="{StaticResource BackColorBrush}" BorderThickness="0,0,1,1" Padding="2">
+                    <Border Grid.Row="0" Background="{StaticResource BackColorBrush}" Grid.Column="4" BorderBrush="{StaticResource BackColorBrush}" BorderThickness="0,0,1,1" Padding="2">
+                        <!-- <TextBlock Text="Label"/> -->
+                        <Image Source="/Resources;component/Resources/locked.png" Height="16" ToolTip="Lock Access"/>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseLeftButtonUp">
+                                <catel:EventToCommand Command="{Binding ToggleLockCommand}" DisableAssociatedObjectOnCannotExecute="False" PassEventArgsToCommand="True"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Border>
+                    <Border Grid.Row="0" Background="{StaticResource BackColorBrush}" Grid.Column="5" BorderBrush="{StaticResource BackColorBrush}" BorderThickness="0,0,1,1" Padding="2">
 						<!-- <TextBlock Text="Name"/> -->
 						<TextBlock Text="Collection"/>
 					</Border>
 
-					<ItemsControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" ItemsSource="{Binding MarkCollections}" ItemTemplate="{StaticResource MarkCollectionRow}"/>
+					<ItemsControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" ItemsSource="{Binding MarkCollections}" ItemTemplate="{StaticResource MarkCollectionRow}"/>
 				</Grid>
 			</Border>
 		</ScrollViewer>

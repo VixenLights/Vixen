@@ -19,6 +19,8 @@ namespace Vixen.Marks
 
 		bool ShowMarkBar { get; set; }
 
+		bool Locked { get; set; }
+
 		int Level { get; set; }
 
 		ReadOnlyObservableCollection<IMark> Marks { get;  }
