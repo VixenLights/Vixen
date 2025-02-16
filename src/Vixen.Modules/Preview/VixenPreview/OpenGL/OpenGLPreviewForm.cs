@@ -28,11 +28,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private readonly MillisecondsValue _pointsUpdate;
 		private readonly MillisecondsValue _pointsDraw;
 		private readonly MillisecondsValue _previewUpdate;
-		private readonly MillisecondsValue _previewDrawPoints;
+		//private readonly MillisecondsValue _previewDrawPoints;
 		private readonly Stopwatch _sw = Stopwatch.StartNew();
 		private readonly Stopwatch _sw2 = Stopwatch.StartNew();
 		private readonly Stopwatch _frameRateTimer = Stopwatch.StartNew();
-		private readonly Stopwatch _drawPointsSW = Stopwatch.StartNew();
+		//private readonly Stopwatch _drawPointsSW = Stopwatch.StartNew();
 		
 		private int _width = 800, _height = 600;
 		private float _focalDepth = 0;
@@ -846,7 +846,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			try
 			{
-				_drawPointsSW.Restart();
+				//_drawPointsSW.Restart();
 
 				//Logging.Debug("Selecting point program.");
 				
@@ -865,8 +865,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 					dataDisplayItem.LightShape.Draw();
 				}
 
-				_drawPointsSW.Stop();
-				_previewDrawPoints.Set(_drawPointsSW.ElapsedTicks);
+				//_drawPointsSW.Stop();
+				//_previewDrawPoints.Set(_drawPointsSW.ElapsedTicks);
 			}
 			catch (Exception e)
 			{
