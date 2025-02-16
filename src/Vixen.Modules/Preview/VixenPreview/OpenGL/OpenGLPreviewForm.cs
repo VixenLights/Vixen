@@ -28,9 +28,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private readonly MillisecondsValue _pointsUpdate;
 		private readonly MillisecondsValue _pointsDraw;
 		private readonly MillisecondsValue _previewUpdate;
+		//private readonly MillisecondsValue _previewDrawPoints;
 		private readonly Stopwatch _sw = Stopwatch.StartNew();
 		private readonly Stopwatch _sw2 = Stopwatch.StartNew();
 		private readonly Stopwatch _frameRateTimer = Stopwatch.StartNew();
+		//private readonly Stopwatch _drawPointsSW = Stopwatch.StartNew();
 		
 		private int _width = 800, _height = 600;
 		private float _focalDepth = 0;
@@ -91,10 +93,12 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			_pointsUpdate = new MillisecondsValue("OpenGL preview points update");
 			_pointsDraw = new MillisecondsValue("OpenGL preview points draw");
 			_previewUpdate = new MillisecondsValue("OpenGL preview update");
+			//_previewDrawPoints = new MillisecondsValue("OpenGL preview DrawPoints");
 			VixenSystem.Instrumentation.AddValue(_backgroundDraw);
 			VixenSystem.Instrumentation.AddValue(_pointsUpdate);
 			VixenSystem.Instrumentation.AddValue(_pointsDraw);
 			VixenSystem.Instrumentation.AddValue(_previewUpdate);
+			//VixenSystem.Instrumentation.AddValue(_previewDrawPoints);
 			glControl.MouseWheel += GlControl_MouseWheel;
 
 			// Separate out the light based shapes
@@ -334,7 +338,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			EnableFeatures();
 
 			// compile the shader program
-			_program = new ShaderProgram(VertexShader, FragmentShader);
+			_program = new ShaderProgram(VertexShader, FragmentShader, false);
 
 			_background = new Background(Data);
 			
@@ -842,15 +846,30 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			try
 			{
+				//_drawPointsSW.Restart();
+
 				//Logging.Debug("Selecting point program.");
+				
+				// Active that shader program
 				_program.Use();
+				
+				// Transfer the Uniforms to the GPU
+				// This only needs to be done once after switching shader programs
 				_program["mvp"].SetValue(mvp);
 				_program["pointScale"].SetValue(_pointScaleFactor);
-
+								
+				// Loop over all the light based display items
 				foreach (DisplayItem dataDisplayItem in _lightBasedDisplayItems)
 				{
-					dataDisplayItem.LightShape.Draw(_program);
+					// Draw the color points					
+					dataDisplayItem.LightShape.Draw();
 				}
+
+				// Clear the OpenGL program
+				GL.UseProgram(0);
+
+				//_drawPointsSW.Stop();
+				//_previewDrawPoints.Set(_drawPointsSW.ElapsedTicks);
 			}
 			catch (Exception e)
 			{
