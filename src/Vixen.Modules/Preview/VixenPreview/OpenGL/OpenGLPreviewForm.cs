@@ -93,12 +93,12 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			_pointsUpdate = new MillisecondsValue("OpenGL preview points update");
 			_pointsDraw = new MillisecondsValue("OpenGL preview points draw");
 			_previewUpdate = new MillisecondsValue("OpenGL preview update");
-			_previewDrawPoints = new MillisecondsValue("OpenGL preview DrawPoints");
+			//_previewDrawPoints = new MillisecondsValue("OpenGL preview DrawPoints");
 			VixenSystem.Instrumentation.AddValue(_backgroundDraw);
 			VixenSystem.Instrumentation.AddValue(_pointsUpdate);
 			VixenSystem.Instrumentation.AddValue(_pointsDraw);
 			VixenSystem.Instrumentation.AddValue(_previewUpdate);
-			VixenSystem.Instrumentation.AddValue(_previewDrawPoints);
+			//VixenSystem.Instrumentation.AddValue(_previewDrawPoints);
 			glControl.MouseWheel += GlControl_MouseWheel;
 
 			// Separate out the light based shapes
