@@ -865,6 +865,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 					dataDisplayItem.LightShape.Draw();
 				}
 
+				// Clear the OpenGL program
+				GL.UseProgram(0);
+
 				//_drawPointsSW.Stop();
 				//_previewDrawPoints.Set(_drawPointsSW.ElapsedTicks);
 			}
