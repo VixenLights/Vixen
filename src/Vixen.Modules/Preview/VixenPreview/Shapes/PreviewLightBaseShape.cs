@@ -60,6 +60,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <summary>
 		/// Vertex Array Object for OpenGL drawing of the light shape.
 		/// </summary>
+		[Browsable(false)]
 		[IgnoreDataMember]
 		public int VAO { get; set; }
 
