@@ -18,9 +18,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private bool _showRotation = true;
 
 		[Browsable(false)]
-		public int rotationAngle = 0;
+		public int RotateAngle { get; set; } = 0;
 		[Browsable(false)]
-		public PreviewPoint rotationAxis;
+		public PreviewPoint rotationAxis { get; set; }
 
 		[XmlIgnore] public List<PreviewPoint> _selectPoints = null;
 		
@@ -130,7 +130,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		Category("Position")]
 		public int RotationAngle
 		{
-			get { return rotationAngle; }
+			get { return RotateAngle; }
 			set
 			{
 				if (value < -360 || value > 360) return;
@@ -138,7 +138,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				// Check for a special case since Custom Props do their own rotation
 				if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewCustomProp")
 				{
-					rotationAngle = value;
+					RotateAngle = value;
 					Layout();
 				}
 				else
@@ -154,7 +154,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					}
 
 					// Set the actual desired rotation angle
-					rotationAngle = value;
+					RotateAngle = value;
 
 					FireOnPropertiesChanged(this, this);
 					Layout();
@@ -167,7 +167,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public virtual void Match(PreviewBaseShape matchShape)
 		{
-			rotationAngle = matchShape.rotationAngle;
+			RotateAngle = matchShape.RotateAngle;
 		}
 
 		public abstract void Layout();

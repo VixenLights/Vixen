@@ -217,9 +217,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			System.Windows.Point swPoint;
 			int rotation;
 			if (direction == RotateTypes.Clockwise)
-				rotation = shape.rotationAngle;
+				rotation = shape.RotateAngle;
 			else if (direction == RotateTypes.Counterclockwise)
-				rotation = -shape.rotationAngle;
+				rotation = -shape.RotateAngle;
 			else
 				rotation = 0;
 
@@ -318,9 +318,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// origin to 180 degrees since all the calulations need to be rotated by 180 degrees.
 			var topleft = shape._selectPoints.Find(x => x.PointType == PreviewPoint.PointTypes.SizeTopLeft);
 			if ( topleft?.Y > shape.Center.Y)
-				shape.rotationAngle = 180;
+				shape.RotateAngle = 180;
 			else
-				shape.rotationAngle = 0;
+				shape.RotateAngle = 0;
 
 			// Reset the rotational axis to the center of the object
 			shape.rotationAxis.X = shape.Center.X;
