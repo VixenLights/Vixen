@@ -235,7 +235,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				shape._selectedPoint.PointType = PreviewPoint.PointTypes.RotateHandle;
 
 				// Check to see if any translation is needed.
-				if (newCenter.X != shape.Center.X || newCenter.Y != shape.Center.Y)
+				if (shape._selectPoints != null && (newCenter.X != shape.Center.X || newCenter.Y != shape.Center.Y))
 				{
 					// Calculate the X/Y translation
 					PreviewPoint newTopLeft = new PreviewPoint(newCenter.X - (shape.Right - shape.Left) / 2, newCenter.Y - (shape.Bottom - shape.Top) / 2);
