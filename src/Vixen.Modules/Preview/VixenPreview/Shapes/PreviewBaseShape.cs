@@ -14,10 +14,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	{
 		public string _name;
 		protected  bool _selected = false;
-		public int _rotationAngle = 0;
-		protected PreviewPoint _rotateHandle;
-		public PreviewPoint _rotationAxis;
+		protected PreviewPoint rotateHandle;
 		private bool _showRotation = true;
+
+		[Browsable(false)]
+		public int rotationAngle = 0;
+		[Browsable(false)]
+		public PreviewPoint rotationAxis;
 
 		[XmlIgnore] public List<PreviewPoint> _selectPoints = null;
 		
@@ -65,11 +68,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public virtual void OnDeserialized(StreamingContext context)
 		{
-			_rotationAxis = new PreviewPoint(Center);
-			_rotationAxis.PointType = PreviewPoint.PointTypes.RotationAxis;
+			rotationAxis = new PreviewPoint(Center);
+			rotationAxis.PointType = PreviewPoint.PointTypes.RotationAxis;
 
-			_rotateHandle = new PreviewPoint(Center.X, this.Top - 10);
-			_rotateHandle.PointType = PreviewPoint.PointTypes.RotateHandle;
+			rotateHandle = new PreviewPoint(Center.X, this.Top - 10);
+			rotateHandle.PointType = PreviewPoint.PointTypes.RotateHandle;
 
 			ShowRotation = true;
 		}
@@ -127,7 +130,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		Category("Position")]
 		public int RotationAngle
 		{
-			get { return _rotationAngle; }
+			get { return rotationAngle; }
 			set
 			{
 				if (value < -360 || value > 360) return;
@@ -135,7 +138,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				// Check for a special case since Custom Props do their own rotation
 				if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewCustomProp")
 				{
-					_rotationAngle = value;
+					rotationAngle = value;
 					Layout();
 				}
 				else
@@ -144,14 +147,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					PreviewPoint holdSelectedPoint = this._selectedPoint;
 
 					// We need to force the rotation axis to reset to the center of the object
-					if (_rotationAxis != null)
+					if (rotationAxis != null)
 					{
-						this._selectedPoint = _rotateHandle;
+						this._selectedPoint = rotateHandle;
 						PreviewTools.TransformPreviewPoint(this, new PreviewPoint(0, 0));
 					}
 
 					// Set the actual desired rotation angle
-					_rotationAngle = value;
+					rotationAngle = value;
 
 					FireOnPropertiesChanged(this, this);
 					Layout();
@@ -164,7 +167,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public virtual void Match(PreviewBaseShape matchShape)
 		{
-			_rotationAngle = matchShape._rotationAngle;
+			rotationAngle = matchShape.rotationAngle;
 		}
 
 		public abstract void Layout();
@@ -218,22 +221,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// Set all the sizing points
 			_selectPoints = selectPoints;
 
-			if (_rotateHandle == null)
+			if (rotateHandle == null)
 			{
-				_rotateHandle = new PreviewPoint(Center.X, this.Top - 10);
-				_rotateHandle.PointType = PreviewPoint.PointTypes.RotateHandle;
+				rotateHandle = new PreviewPoint(Center.X, this.Top - 10);
+				rotateHandle.PointType = PreviewPoint.PointTypes.RotateHandle;
 			}
 
-			if (_rotationAxis == null)
+			if (rotationAxis == null)
 			{
-				_rotationAxis = new PreviewPoint(Center);
-				_rotationAxis.PointType = PreviewPoint.PointTypes.RotationAxis;
+				rotationAxis = new PreviewPoint(Center);
+				rotationAxis.PointType = PreviewPoint.PointTypes.RotationAxis;
 			}
 
-			_selectPoints.Add(_rotateHandle);
+			_selectPoints.Add(rotateHandle);
 
 			// Insert the rotation point as the first item.  This makes subsequent operations more efficient
-			_selectPoints.Insert(0, _rotationAxis);
+			_selectPoints.Insert(0, rotationAxis);
 		}
 		protected static Rect GetCombinedBounds(IEnumerable<Rect> recs)
 		{
@@ -264,7 +267,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				if (ShowRotation == true)
 				{
 					// Set the X position of the Rotation Handle
-					_rotateHandle.X = Center.X;
+					rotateHandle.X = Center.X;
 					// If the Object is normally oriented, set the Y position to -10 of the top. If inverted, set to 
 					// -10 of the bottom, but it will still show at the top of the object, on the screen.
 					int _top = _selectPoints.Find(x => x.PointType == PreviewPoint.PointTypes.SizeTopLeft).Y;
@@ -273,9 +276,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					if (_bottomRight != null)
 						_bottom = _bottomRight.Y;
 					if (_top > _bottom)
-						_rotateHandle.Y = Bottom + 10;
+						rotateHandle.Y = Bottom + 10;
 					else
-						_rotateHandle.Y = Top - 10;
+						rotateHandle.Y = Top - 10;
 				}
 
 				foreach (PreviewPoint point in _selectPoints) 
@@ -323,18 +326,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			else
 			{
-				this._rotationAxis.X += changeX;
-				this._rotationAxis.Y += changeY;
+				this.rotationAxis.X += changeX;
+				this.rotationAxis.Y += changeY;
 			}
 		}
 
 		public virtual void MouseUp(object sender, MouseEventArgs e)
 		{
 			// Force all the final coordinate positioning calcuations to complete
-			if (_rotateHandle != null)
+			if (rotateHandle != null)
 			{
-				this._selectedPoint = _rotateHandle;
-				PreviewTools.TransformPreviewPoint(this, _rotateHandle, ZoomLevel);
+				this._selectedPoint = rotateHandle;
+				PreviewTools.TransformPreviewPoint(this, rotateHandle, ZoomLevel);
 			}
 
 			FireOnPropertiesChanged(this, this);
@@ -409,8 +412,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// If coordinate 0,0 is passed in, then this signifies a reset of the shape's position
 			if (point?.X == 0 && point?.Y == 0)
 			{
-				_rotationAxis.X = Center.X;
-				_rotationAxis.Y = Center.Y;
+				rotationAxis.X = Center.X;
+				rotationAxis.Y = Center.Y;
 			}
 		}
 

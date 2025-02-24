@@ -217,9 +217,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			System.Windows.Point swPoint;
 			int rotation;
 			if (direction == RotateTypes.Clockwise)
-				rotation = shape._rotationAngle;
+				rotation = shape.rotationAngle;
 			else if (direction == RotateTypes.Counterclockwise)
-				rotation = -shape._rotationAngle;
+				rotation = -shape.rotationAngle;
 			else
 				rotation = 0;
 
@@ -250,12 +250,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					}
 
 					//Move the rotation axis to the current center
-					shape._rotationAxis.X = shape.Center.X;
-					shape._rotationAxis.Y = shape.Center.Y;
+					shape.rotationAxis.X = shape.Center.X;
+					shape.rotationAxis.Y = shape.Center.Y;
 				}
 
 				// Finally, calculate the new point, by rotating around the rotation axis, which is the new center
-				var xyPlane = new RotateTransform(rotation, shape._rotationAxis.X, shape._rotationAxis.Y);
+				var xyPlane = new RotateTransform(rotation, shape.rotationAxis.X, shape.rotationAxis.Y);
 				swPoint = xyPlane.Transform(new System.Windows.Point(point.X, point.Y));
 				if (zoomToPhysical == 1)
 					returnPoint = new PreviewPoint(Math.Round(swPoint.X * zoomToRelative, 0).CastToInt32(), Math.Round(swPoint.Y * zoomToRelative, 0).CastToInt32());
@@ -273,10 +273,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 
 			// Else map the point based upon the rotation and zoom level
-			else if (shape?._rotationAxis != null)
+			else if (shape?.rotationAxis != null)
 			{
 				// Rotate around the rotation axis
-				var xyPlane = new RotateTransform(rotation, shape._rotationAxis.X, shape._rotationAxis.Y);
+				var xyPlane = new RotateTransform(rotation, shape.rotationAxis.X, shape.rotationAxis.Y);
 
 				// Convert the point's physical coordinates to it's relative coordinates within the rotated coordinate system
 				swPoint = xyPlane.Transform(new System.Windows.Point(point.X * zoomToPhysical, point.Y * zoomToPhysical));
@@ -297,10 +297,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <param name="shape">Target shape used as the basis for the rotation</param>
 		public static void TransformPreviewPoint(PreviewBaseShape shape)
 		{
-			if (shape?._rotationAxis != null)
+			if (shape?.rotationAxis != null)
 			{
-				shape._rotationAxis.X = shape.Center.X;
-				shape._rotationAxis.Y = shape.Center.Y;
+				shape.rotationAxis.X = shape.Center.X;
+				shape.rotationAxis.Y = shape.Center.Y;
 			}
 		}
 
@@ -316,19 +316,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			// Check to see if the shape is inverted (i.e. the Topleft is above the BottomRight).  If so, then set the rotational
 			// origin to 180 degrees since all the calulations need to be rotated by 180 degrees.
-			var _topleft = shape._selectPoints.Find(x => x.PointType == PreviewPoint.PointTypes.SizeTopLeft);
-			if ( _topleft?.Y > shape.Center.Y)
-				shape._rotationAngle = 180;
+			var topleft = shape._selectPoints.Find(x => x.PointType == PreviewPoint.PointTypes.SizeTopLeft);
+			if ( topleft?.Y > shape.Center.Y)
+				shape.rotationAngle = 180;
 			else
-				shape._rotationAngle = 0;
+				shape.rotationAngle = 0;
 
 			// Reset the rotational axis to the center of the object
-			shape._rotationAxis.X = shape.Center.X;
-			shape._rotationAxis.Y = shape.Center.Y;
+			shape.rotationAxis.X = shape.Center.X;
+			shape.rotationAxis.Y = shape.Center.Y;
 
 			// Calculate the rotational geometry
 			var point = PreviewTools.TransformPreviewPoint(shape, new PreviewPoint(basePoint.X, basePoint.Y), -zoomLevel);
-			double angle = PreviewTools.GetAngle(shape._rotationAxis.ToPoint(), point);
+			double angle = PreviewTools.GetAngle(shape.rotationAxis.ToPoint(), point);
 
 			// Use Detents of 0, 45, 90, 135, 180, 225, 270 and 315 when holding the Ctrl modifier key down.
 			if (useDetents)
