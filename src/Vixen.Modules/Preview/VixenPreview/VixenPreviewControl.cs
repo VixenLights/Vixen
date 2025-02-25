@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -13,6 +14,7 @@ using Catel.Services;
 using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
+using Common.Resources.Properties;
 using Common.WPFCommon.Services;
 
 using Vixen;
@@ -58,6 +60,7 @@ namespace VixenModules.Preview.VixenPreview
 		internal int ItemBulbSize = 0;
 
 		private bool _holdRender;
+		private static Cursor _rotateCursor = new Cursor(new MemoryStream(Properties.Resources.Rotate));
 
 		/// <summary>
 		/// Last used smart object template used.
@@ -652,7 +655,7 @@ namespace VixenModules.Preview.VixenPreview
 						// Is there a single display item selected?
 						if (_selectedDisplayItem != null && !controlPressed)
 						{
-							// Lets see if we've got a drag point.
+							// Lets see if we've got a drag or rotation point.
 							PreviewPoint selectedPoint = _selectedDisplayItem.Shape.PointInSelectPoint(translatedPoint);
 							if (selectedPoint != null)
 							{
@@ -1081,20 +1084,22 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		private void StartMove(int x, int y)
+		private void StartMove(int x, int y, bool paste = false)
 		{
 			dragStart.X = x;
 			dragStart.Y = y;
+
+			// If paste is true, then we'll send a point of 0,0 which indicates a full position reset.
 			if (SelectedDisplayItems.Any())
 			{
 				foreach (DisplayItem item in SelectedDisplayItems)
 				{
-					item.Shape.SetSelectPoint(null);
+					item.Shape.SetSelectPoint(paste == true ? new PreviewPoint(0,0) : null);
 				}
 			}
 			else if (_selectedDisplayItem != null)
 			{
-				_selectedDisplayItem.Shape.SetSelectPoint(null);
+				_selectedDisplayItem.Shape.SetSelectPoint(paste == true ? new PreviewPoint(0,0) : null);
 			}
 			Capture = true;
 			_mouseCaptured = true;
@@ -1127,7 +1132,7 @@ namespace VixenModules.Preview.VixenPreview
 						_selectedDisplayItem.Shape.MouseMove(dragCurrent.X, dragCurrent.Y, changeX, changeY);
 						EndUpdate();
 					}
-					// If we get here, we're drwing a rubber band
+					// If we get here, we're drawing a rubber band
 					else if (_banding)
 					{
 						int X1 = Math.Min(dragStart.X, dragStart.X + changeX);
@@ -1139,10 +1144,7 @@ namespace VixenModules.Preview.VixenPreview
 
 						foreach (DisplayItem item in DisplayItems)
 						{
-							if (
-								(changeX < 0 && item.Shape.ShapeInRect(_bandRect)) ||
-								(changeX > 0 && item.Shape.ShapeAllInRect(_bandRect))
-								)
+							if (item.Shape.ShapeInRect(_bandRect, changeX > 0))
 							{
 								if (!SelectedDisplayItems.Contains(item))
 								{
@@ -1168,12 +1170,24 @@ namespace VixenModules.Preview.VixenPreview
 						EndUpdate();
 					}
 
-					if (_selectedDisplayItem != null)
+					// If we're in the process of rotating a shape, then don't change the cursor.
+					if (Cursor.Current == _rotateCursor && e.Button == MouseButtons.Left)
+					{
+						;// Don't change cursor
+					}
+					else if (_selectedDisplayItem != null)
 					{
 						PreviewPoint selectPoint = _selectedDisplayItem.Shape.PointInSelectPoint(translatedPoint);
 						if (selectPoint != null)
 						{
-							Cursor.Current = Cursors.Cross;
+							if (selectPoint.PointType == PreviewPoint.PointTypes.RotateHandle)
+							{
+								Cursor.Current = _rotateCursor;
+							}
+							else
+							{
+								Cursor.Current = Cursors.Cross;
+							}
 						}
 						else if (_selectedDisplayItem.Shape.PointInShape(translatedPoint))
 						{
@@ -1752,7 +1766,9 @@ namespace VixenModules.Preview.VixenPreview
 				if (Width - _alphaBackground.Width == 0 || Height - _alphaBackground.Height == 0)
 				{
 					vScroll.Hide();
+					vScroll.Value = 0;
 					hScroll.Hide();
+					hScroll.Value = 0;
 				}
 				else if (!vScroll.Visible || !hScroll.Visible)
 				{
@@ -2005,7 +2021,7 @@ namespace VixenModules.Preview.VixenPreview
 					item.Shape.Left -= deltaX;
 					item.Shape.Top -= deltaY;
 				}
-				StartMove(mousePoint.X, mousePoint.Y);
+				StartMove(mousePoint.X, mousePoint.Y, true);
 				EndUpdate();
 			}
 		}

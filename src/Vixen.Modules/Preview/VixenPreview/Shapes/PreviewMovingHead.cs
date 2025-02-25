@@ -407,7 +407,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// </summary>
 		/// <param name="rect">Rectangle to evaluate</param>
 		/// <returns>True if the rectangle is overlaps the shape</returns>
-		public override bool ShapeInRect(Rectangle rect)
+		public override bool ShapeInRect(Rectangle rect, bool allIn = false)
 		{
 			bool overlaps = false;
 

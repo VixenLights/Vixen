@@ -15,7 +15,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Size,
 			SkewNS,
 			SkewWE,
-			Rotate
+			RotateHandle,
+			SizeTopLeft,
+			SizeTopRight,
+			SizeBottomLeft,
+			SizeBottomRight,
+			RotationAxis
 		}
 
 		public PreviewPoint()

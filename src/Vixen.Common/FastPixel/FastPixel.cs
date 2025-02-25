@@ -264,7 +264,53 @@ namespace FastPixel
 			}
 		}
 
+		public void DrawRectangle(int X, int Y, int width, Color color)
+		{
+
+			int startX = X - width / 2;
+			int endX = X + width / 2;
+			int startY = Y - width / 2;
+			int endY = Y + width / 2;
+
+			for (int x = startX; x <= endX; x++)
+			{
+				SetPixel(x, startY, color);
+				SetPixel(x, endY, color);
+			}
+
+			for (int y = startY; y <= endY; y++)
+			{
+				SetPixel(startX, y, color);
+				SetPixel(endX, y, color);
+			}
+		}
+
 		//public static ConcurrentDictionary<int, FastPixel> circleCache = new ConcurrentDictionary<int, FastPixel>();
+
+		public void DrawCircle(int X, int Y, int radius, Color color)
+		{
+			if (radius > 0)
+			{
+				// Default drawing tools don't draw circles that are either 1 or 2 pixels,
+				// so we do it manually
+				if (radius == 1)
+				{
+					SetPixel(X, Y, color);
+				}
+				else
+				{
+					radius /= 2;
+					for (int y = -radius; y <= radius; y++)
+					{
+						for (int x = -radius; x <= radius; x++)
+						{
+							if (x * x + y * y <= radius * radius)
+								SetPixel(X + x, Y + y, color);
+						}
+					}
+				}
+			}
+		}
 
 		public void DrawCircle(Rectangle rectangle, Color color)
 		{

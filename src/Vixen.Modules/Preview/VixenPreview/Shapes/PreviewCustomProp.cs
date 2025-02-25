@@ -19,7 +19,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private double _zoomLevel;
 		private Point _rotationCenter;
 		private PreviewDoublePoint _selectionPoint;
-		private int _rotationAngle;
+//		private int _rotationAngle;
 
 		public override string TypeName => @"Custom Prop";
 
@@ -131,20 +131,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <inheritdoc />
 		public override int Right => (int)Bounds.Right;
 
-		[DataMember]
-		[DisplayName("Rotation Angle")]
-		[PropertyOrder(5)]
-		[Category("Position")]
-		public int RotationAngle
-		{
-			get { return _rotationAngle; }
-			set
-			{
-				if (value < 0 || value > 360) return;
-				_rotationAngle = value;
-				Layout();
-			}
-		}
+		//[DataMember]
+		//[DisplayName("Rotation Angle")]
+		//[PropertyOrder(5)]
+		//[Category("Position")]
+		//public int RotationAngle
+		//{
+		//	get { return _rotationAngle; }
+		//	set
+		//	{
+		//		if (value < 0 || value > 360) return;
+		//		_rotationAngle = value;
+		//		Layout();
+		//	}
+		//}
 
 
 		private static Point Center(Rect rect)
@@ -165,7 +165,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				//match up the rotation angle and set it directly
 				//the scale below will call layout, so no need to do it twice.
-				_rotationAngle = customProp.RotationAngle;
+				RotationAngle = customProp.RotationAngle;
 			}
 
 			Scale(xAspect, yAspect, Left, Top);
@@ -271,7 +271,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_dragPoints.Add(new PreviewDoublePoint(Bounds.Right, Bounds.Bottom, PreviewPoint.PointTypes.Size));
 			_dragPoints.Add(new PreviewDoublePoint(Bounds.Left, Bounds.Bottom, PreviewPoint.PointTypes.Size));
 
-			_dragPoints.Add(new PreviewDoublePoint(Bounds.Left+(Bounds.Right-Bounds.Left)/2, Bounds.Top - 10, PreviewPoint.PointTypes.Rotate));
+			_dragPoints.Add(new PreviewDoublePoint(Bounds.Left+(Bounds.Right-Bounds.Left)/2, Bounds.Top - 10, PreviewPoint.PointTypes.RotateHandle));
 
 			if (RotationAngle != 0)
 			{
@@ -295,7 +295,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					}
 					else
 					{
-						if (point?.PointType == PreviewPoint.PointTypes.Rotate)
+						if (point?.PointType == PreviewPoint.PointTypes.RotateHandle)
 						{
 							int x = Convert.ToInt32(point.X - (double)SelectPointSize / 2);
 							int y = Convert.ToInt32(point.Y - (double)SelectPointSize / 2);
@@ -311,7 +311,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <inheritdoc />
 		public override void SetSelectPoint(PreviewPoint point = null)
 		{
-			if (point == null)
+			if (point == null || (point.X == 0 && point.Y == 0))
 			{
 
 				_p1Start = new PreviewPoint((int)Bounds.X, (int)Bounds.Y);
@@ -357,7 +357,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			var point = rt.TransformPoint(x, y);
 			
 			//See if we're resizing
-			if (_selectionPoint != null && (_selectionPoint.PointType == PreviewPoint.PointTypes.Size || _selectionPoint.PointType == PreviewPoint.PointTypes.Rotate))
+			if (_selectionPoint != null && (_selectionPoint.PointType == PreviewPoint.PointTypes.Size || _selectionPoint.PointType == PreviewPoint.PointTypes.RotateHandle))
 			{
 				//We are resizing, so figure our change and scale the points.
 				if (_selectionPoint == _dragPoints[0])
@@ -528,25 +528,28 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <inheritdoc />
 		public override void Layout()
 		{
-			if (ZoomLevel != 1 || RotationAngle != 0)
+			if (PropPixels != null)
 			{
-				Pixels = PropPixels.Select(x => x.Clone()).ToList();
-				if (ZoomLevel != 1)
+				if (ZoomLevel != 1 || RotationAngle != 0)
 				{
-					Zoom();
-				}
+					Pixels = PropPixels.Select(x => x.Clone()).ToList();
+					if (ZoomLevel != 1)
+					{
+						Zoom();
+					}
 
-				UpdateBounds();
-				
-				if (RotationAngle != 0)
-				{
-					Rotate();
+					UpdateBounds();
+
+					if (RotationAngle != 0)
+					{
+						Rotate();
+					}
 				}
-			}
-			else
-			{
-				Pixels = PropPixels;
-				UpdateBounds();
+				else
+				{
+					Pixels = PropPixels;
+					UpdateBounds();
+				}
 			}
 		}
 

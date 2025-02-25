@@ -1,7 +1,11 @@
 ﻿using System.Drawing.Imaging;
 using Vixen.Sys;
 using System.Runtime.Serialization;
-
+using System.Windows.Media;
+using Point = System.Drawing.Point;
+using Color = System.Drawing.Color;
+using PixelFormat = System.Drawing.Imaging.PixelFormat;
+using Catel.Reflection;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -163,6 +167,188 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				points.Add(new Point((int)X, (int)Y));
 			}
 			return points;
+		}
+
+		/// <summary>
+		/// Calculates the angle of the screenPoint point to the center point, relative to the Y-axis
+		/// </summary>
+		/// <param name="screenPoint">Specifies target point</param>
+		/// <param name="center">Specifies the source point on the Y-axis</param>
+		/// <returns>The angle of the point relative to the Y-axis</returns>
+		public static int GetAngle(Point screenPoint, PreviewPoint center)
+		{
+			int dx = screenPoint.X - center.X;
+			int dy = screenPoint.Y - center.Y;
+
+			double inRads = Math.Atan2(dy, dx);
+
+			// Convert from radians and adjust the angle from the 0 at 9:00 positon.
+			return (int)(inRads * (180 / Math.PI) + 270) % 360;
+		}
+
+		public enum RotateTypes
+		{
+			Clockwise,
+			Counterclockwise,
+			Base0,
+			Base180,
+			None
+		}
+
+		/// <summary>
+		/// Remap the Point, within the shape, based up the rotation and zoom levels
+		/// </summary>
+		/// <param name="shape">Target shape used as the basis for the remap</param>
+		/// <param name="point">Specific Point coordinate to remap</param>
+		/// <param name="zoomLevel">Amount of zooming. A negative zoom indicates a converse zoom impact</param>
+		/// <param name="direction">Specifies if the rotation is clockwise or counterwise</param>
+		/// <returns>Remapped Point</returns>
+		/// <exception cref="ArgumentNullException">No rotation axis was defined</exception>
+		public static PreviewPoint TransformPreviewPoint(PreviewBaseShape shape, PreviewPoint point, double zoomLevel = 1, RotateTypes direction = RotateTypes.Clockwise)
+		{
+			PreviewPoint returnPoint = null;
+			double zoomToPhysical = 1;
+			double zoomToRelative = 1;
+
+			// If zoomLevel < 0, then we really want to do the converse of the current zoom level
+			if (zoomLevel < 0)
+				zoomToPhysical = -1 / zoomLevel;
+			else
+				zoomToRelative = zoomLevel;
+
+			System.Windows.Point swPoint;
+			int rotation;
+			if (direction == RotateTypes.Clockwise)
+				rotation = shape.RotationAngle;
+			else if (direction == RotateTypes.Counterclockwise)
+				rotation = -shape.RotationAngle;
+			else if (direction == RotateTypes.Base0)
+				rotation = 0;
+			else if (direction == RotateTypes.Base180)
+				rotation = 180;
+			else
+				rotation = 0;
+
+			// Are we in the process of rotating the object
+			if (shape?._selectedPoint?.PointType == PreviewPoint.PointTypes.RotateHandle)
+			{
+				PreviewPoint delta = new(0,0);
+
+				// First we need to see if the object needs to be translated in the X-Y plane.
+				// So, find where the new center would be
+				shape._selectedPoint.PointType = PreviewPoint.PointTypes.None;
+				var newCenter = PreviewTools.TransformPreviewPoint(shape, new PreviewPoint(shape.Center), 1);
+				shape._selectedPoint.PointType = PreviewPoint.PointTypes.RotateHandle;
+
+				// Check to see if any translation is needed.
+				if (newCenter.X != shape.Center.X || newCenter.Y != shape.Center.Y)
+				{
+					// Calculate the X/Y translation
+					PreviewPoint newTopLeft = new PreviewPoint(newCenter.X - (shape.Right - shape.Left) / 2, newCenter.Y - (shape.Bottom - shape.Top) / 2);
+					delta.X = newTopLeft.X - shape.Left;
+					delta.Y = newTopLeft.Y - shape.Top;
+
+					// Adjust all points to match the new center
+					foreach (var adjustPoint in shape._selectPoints)
+					{
+						adjustPoint.X += delta.X;
+						adjustPoint.Y += delta.Y;
+					}
+
+					//Move the rotation axis to the current center
+					shape.RotationAxis.X = shape.Center.X;
+					shape.RotationAxis.Y = shape.Center.Y;
+				}
+
+				// Finally, calculate the new point, by rotating around the rotation axis, which is the new center
+				var xyPlane = new RotateTransform(rotation, shape.RotationAxis.X, shape.RotationAxis.Y);
+				swPoint = xyPlane.Transform(new System.Windows.Point(point.X, point.Y));
+				if (zoomToPhysical == 1)
+					returnPoint = new PreviewPoint(Math.Round(swPoint.X * zoomToRelative, 0).CastToInt32(), Math.Round(swPoint.Y * zoomToRelative, 0).CastToInt32());
+				else
+					returnPoint = new PreviewPoint(Math.Round(swPoint.X * zoomToPhysical, 0).CastToInt32(), Math.Round(swPoint.Y * zoomToPhysical, 0).CastToInt32());
+			}
+
+			// If there's no rotation, then just map the point soley based upon the zoom level
+			else if (rotation == 0)
+			{
+				if (zoomToPhysical == 1)
+					returnPoint = new PreviewPoint(Math.Round(point.X * zoomToRelative, 0).CastToInt32(), Math.Round(point.Y * zoomToRelative, 0).CastToInt32());
+				else
+					returnPoint = new PreviewPoint(Math.Round(point.X * zoomToPhysical, 0).CastToInt32(), Math.Round(point.Y * zoomToPhysical, 0).CastToInt32());
+			}
+
+			// Else map the point based upon the rotation and zoom level
+			else if (shape?.RotationAxis != null)
+			{
+				// Rotate around the rotation axis
+				var xyPlane = new RotateTransform(rotation, shape.RotationAxis.X, shape.RotationAxis.Y);
+
+				// Convert the point's physical coordinates to it's relative coordinates within the rotated coordinate system
+				swPoint = xyPlane.Transform(new System.Windows.Point(point.X * zoomToPhysical, point.Y * zoomToPhysical));
+				returnPoint = new PreviewPoint(Math.Round(swPoint.X * zoomToRelative, 0).CastToInt32(), Math.Round(swPoint.Y * zoomToRelative, 0).CastToInt32());
+			}
+			else
+			{
+				throw new ArgumentNullException($"No rotation axis defined.  Name: {shape?.Name}  Shape: {shape?.TypeName}  Top: {shape?.Top}  Left: {shape?.Left}");
+			}
+
+			returnPoint.PointType = point.PointType;
+			return returnPoint;
+		}
+
+		/// <summary>
+		/// Reset the Rotation Axis
+		/// </summary>
+		/// <param name="shape">Target shape used as the basis for the rotation</param>
+		public static void TransformPreviewPoint(PreviewBaseShape shape)
+		{
+			if (shape?.RotationAxis != null)
+			{
+				shape.RotationAxis.X = shape.Center.X;
+				shape.RotationAxis.Y = shape.Center.Y;
+			}
+		}
+
+		/// <summary>
+		/// Calculate the amount of rotation of the shape
+		/// </summary>
+		/// <param name="shape">Specifies the shape to rotate</param>
+		/// <param name="basePoint">Specifies the point, relative to the center of the shape, that defines the angle of rotation</param>
+		/// <param name="zoomLevel">Amount of zooming. A negative zoom indicates a converse zoom impact</param>
+		/// <param name="useDetents">Specifies if the rotation angle should be normalized to the nearest 45 degrees</param>
+		/// <returns></returns>
+		public static int CalculateRotation(PreviewBaseShape shape, Point basePoint, double zoomLevel, bool useDetents = false)
+		{
+			// Check to see if the shape is inverted (i.e. the Topleft is above the BottomRight).  If so, then set the rotational
+			// origin to 180 degrees since all the calulations need to be rotated by 180 degrees.
+			var topleft = shape._selectPoints.Find(x => x.PointType == PreviewPoint.PointTypes.SizeTopLeft);
+			RotateTypes _rotateTargetAxis = RotateTypes.Base0;
+			if ( topleft?.Y > shape.Center.Y)
+				_rotateTargetAxis = RotateTypes.Base180;
+
+			// Reset the rotational axis to the center of the object
+			shape.RotationAxis.X = shape.Center.X;
+			shape.RotationAxis.Y = shape.Center.Y;
+
+			// Calculate the rotational geometry
+			var point = PreviewTools.TransformPreviewPoint(shape, new PreviewPoint(basePoint.X, basePoint.Y), -zoomLevel, _rotateTargetAxis);
+			double angle = PreviewTools.GetAngle(shape.RotationAxis.ToPoint(), point);
+
+			// Use Detents of 0, 45, 90, 135, 180, 225, 270 and 315 when holding the Ctrl modifier key down.
+			if (useDetents)
+			{
+				if (angle >= 22.5 && angle < 67.5) angle = 45;
+				else if (angle >= 67.5 && angle < 112.5) angle = 90;
+				else if (angle >= 112.5 && angle < 157.5) angle = 135;
+				else if (angle >= 157.5 && angle < 202.5) angle = 180;
+				else if (angle >= 202.5 && angle < 247.5) angle = 225;
+				else if (angle >= 247.5 && angle < 292.5) angle = 270;
+				else if (angle >= 292.5 && angle < 337.5) angle = 315;
+				else if (angle >= 337.5 || angle < 22.5) angle = 0;
+			}
+
+			return (int)Math.Round(angle, MidpointRounding.AwayFromZero);
 		}
 
 		public static string SerializeToString(object obj)

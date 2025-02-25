@@ -20,6 +20,7 @@
 				<None Include="attributes_display.png" />
 				<None Include="bullet_black.png" />
 				<None Include="bullet_blue.png" />
+				<None Include="DoubleRotate.ico" />
 				<Resource Include="bullet_green.png" />
 				<None Include="bullet_orange.png" />
 				<None Include="bullet_pink.png" />

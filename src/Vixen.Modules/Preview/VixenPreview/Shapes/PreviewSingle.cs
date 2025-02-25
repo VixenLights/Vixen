@@ -19,6 +19,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			PreviewPixel pixel = AddPixel(10, 10);
 			pixel.PixelColor = Color.White;
 
+			ShowRotation = false;
+
 			if (selectedNode != null) {
 				if (selectedNode.IsLeaf) {
 					pixel.Node = selectedNode;
@@ -34,6 +36,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[OnDeserialized]
 		private new void OnDeserialized(StreamingContext context)
 		{
+			ShowRotation = false;
+
 			Layout();
 		}
 

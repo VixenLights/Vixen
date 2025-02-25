@@ -34,10 +34,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			ZoomLevel = zoomLevel;
 			_topLeft = PointToZoomPoint(point1);
+			_topLeft.PointType = PreviewPoint.PointTypes.SizeTopLeft;
+
 			_topRight = new PreviewPoint(_topLeft);
+			_topRight.PointType = PreviewPoint.PointTypes.SizeTopRight;
+
 			_bottomLeft = new PreviewPoint(_topLeft);
+			_bottomLeft.PointType = PreviewPoint.PointTypes.SizeBottomLeft;
+
 			_bottomRight = new PreviewPoint(_topLeft);
-			
+			_bottomRight.PointType = PreviewPoint.PointTypes.SizeBottomRight;
+
+			ShowRotation = false;
+
 			// Default to partially transparent
 			BeamTransparency = 40;
 
@@ -128,6 +137,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				// Default the max color wheel rotation speed
 				MaxColorWheelRotationSpeed = DefaultMaxColorWheelRotationSpeed;
 			}
+
+			_topLeft.PointType = PreviewPoint.PointTypes.SizeTopLeft;
+			_topRight.PointType = PreviewPoint.PointTypes.SizeTopRight;
+			_bottomLeft.PointType = PreviewPoint.PointTypes.SizeBottomLeft;
+			_bottomRight.PointType = PreviewPoint.PointTypes.SizeBottomRight;
+
+			ShowRotation = false;
 
 			Layout();						
 		}
