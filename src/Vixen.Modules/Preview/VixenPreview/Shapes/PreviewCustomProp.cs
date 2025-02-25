@@ -165,7 +165,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				//match up the rotation angle and set it directly
 				//the scale below will call layout, so no need to do it twice.
-				RotateAngle = customProp.RotationAngle;
+				RotationAngle = customProp.RotationAngle;
 			}
 
 			Scale(xAspect, yAspect, Left, Top);
