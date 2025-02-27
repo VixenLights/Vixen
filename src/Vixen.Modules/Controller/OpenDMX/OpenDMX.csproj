@@ -6,7 +6,7 @@
 
 		<ItemGroup>
 				<PackageReference Include="FTD2XX.Net" Version="1.2.1" />
-				<PackageReference Include="NLog" Version="5.3.2" />
+				<PackageReference Include="NLog" Version="5.4.0" />
 		</ItemGroup>
 
 		<ItemGroup>
