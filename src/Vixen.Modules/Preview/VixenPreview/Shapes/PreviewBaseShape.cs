@@ -129,7 +129,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set { _showRotation = value; }
 		}
 
-		[DataMember,
+		[DataMember(EmitDefaultValue = false),
 		Browsable(true),
 		PropertyOrder(99),   // 99 so it goes to the end of the list
 		DisplayName("Rotation Angle"),
