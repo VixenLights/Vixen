@@ -65,8 +65,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[Browsable(false)]
 		public virtual string TypeName => @"Shape";
 
+		/// <summary>
+		/// Initialize non-saved data members as the serializer unspools the Prop 
+		/// </summary>
+		/// <remarks>The XML Serializer does not call the standard object constructors, but does call all methods with the attribute
+		/// [OnDeserialized]. Note, that if there is more than one method with the attribute [OnDeserialized], the order they are 
+		/// called in is not deterministic. You can use the attribute [OnDeserializing] to execute work done before deserialization 
+		/// instead of after.</remarks>
+		/// <param name="context"></param>
 		[OnDeserialized]
-		private void OnDeserialized(StreamingContext context)
+		private void InitializeNonDataMembers(StreamingContext context)
 		{
 			RotationAxis = new PreviewPoint(Center);
 			RotationAxis.PointType = PreviewPoint.PointTypes.RotationAxis;
