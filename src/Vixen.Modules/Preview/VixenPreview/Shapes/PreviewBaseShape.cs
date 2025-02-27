@@ -13,7 +13,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	public abstract class PreviewBaseShape : ICloneable, IDisposable
 	{
 		public string _name;
-		protected  bool _selected = false;
+		protected bool _selected = false;
 		protected PreviewPoint rotateHandle;
 		private bool _showRotation = true;
 		private int _rotationAngle = 0;
@@ -65,7 +65,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[Browsable(false)]
 		public virtual string TypeName => @"Shape";
 
-		public virtual void OnDeserialized(StreamingContext context)
+		[OnDeserialized]
+		private void OnDeserialized(StreamingContext context)
 		{
 			RotationAxis = new PreviewPoint(Center);
 			RotationAxis.PointType = PreviewPoint.PointTypes.RotationAxis;

@@ -90,7 +90,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext context)
 		{			
-			base.OnDeserialized(context);
 			ResizePixels();
 		}
 								

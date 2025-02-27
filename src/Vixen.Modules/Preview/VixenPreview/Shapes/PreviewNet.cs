@@ -57,7 +57,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				_pixelSpacing = 8;
 			_topLeft.PointType = PreviewPoint.PointTypes.SizeTopLeft;
 			_bottomRight.PointType = PreviewPoint.PointTypes.SizeBottomRight;
-			base.OnDeserialized(context);
 		}
 
 		#region "Properties"

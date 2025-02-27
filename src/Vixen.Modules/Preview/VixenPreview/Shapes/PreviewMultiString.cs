@@ -28,7 +28,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         }
 
         [OnDeserialized]
-        private new void OnDeserialized(StreamingContext context)
+		private new void OnDeserialized(StreamingContext context)
         {
 			foreach (var points in _points)
 			{
@@ -36,7 +36,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			_points[0].PointType = PreviewPoint.PointTypes.SizeTopLeft;
 
-			base.OnDeserialized(context);
 			Layout();
         }
 

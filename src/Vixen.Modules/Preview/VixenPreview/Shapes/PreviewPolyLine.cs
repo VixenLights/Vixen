@@ -87,7 +87,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
             _points[0].PointType = PreviewPoint.PointTypes.SizeTopLeft;
 
-			base.OnDeserialized(context);
 			Layout();
 		}
 

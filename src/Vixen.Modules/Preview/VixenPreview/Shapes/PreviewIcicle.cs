@@ -72,7 +72,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			_points[0].PointType = PreviewPoint.PointTypes.SizeTopLeft;
 			_points[1].PointType = PreviewPoint.PointTypes.SizeTopRight;
-			base.OnDeserialized(context);
 			Layout();
 		}
 
