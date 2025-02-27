@@ -13,8 +13,8 @@
 		<ItemGroup>
 		  <PackageReference Include="Catel.MVVM" Version="6.0.3" />
 		  <PackageReference Include="Catel.Serialization.Json" Version="6.0.3" />
-		  <PackageReference Include="DockPanelSuite" Version="3.1.0" />
-		  <PackageReference Include="DockPanelSuite.ThemeVS2015" Version="3.1.0" />
+		  <PackageReference Include="DockPanelSuite" Version="3.1.1" />
+		  <PackageReference Include="DockPanelSuite.ThemeVS2015" Version="3.1.1" />
 		  <PackageReference Include="gong-wpf-dragdrop" Version="3.2.1" />
 		  <PackageReference Include="MessagePack" Version="2.5.192" />
 		  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
