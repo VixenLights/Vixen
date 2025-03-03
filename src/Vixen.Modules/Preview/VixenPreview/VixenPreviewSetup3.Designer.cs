@@ -42,6 +42,7 @@ namespace VixenModules.Preview.VixenPreview
 			this.tableLayoutPanel6 = new TableLayoutPanel();
 			this.btnLock = new Button();
 			this.btnUnlock = new Button();
+			this.btnUnlockAll = new Button();
 			this.tableLayoutPanel2 = new TableLayoutPanel();
 			this.buttonDistributeVertical = new Button();
 			this.buttonMatchProperties = new Button();
@@ -92,6 +93,7 @@ namespace VixenModules.Preview.VixenPreview
 			this.toolStripSeparator3 = new ToolStripSeparator();
 			this.lockToolStripMenuItem = new ToolStripMenuItem();
 			this.unlockToolStripMenuItem = new ToolStripMenuItem();
+			this.unlockAllToolStripMenuItem = new ToolStripMenuItem();
 			this.toolStripSeparator4 = new ToolStripSeparator();
 			this.backgroundPropertiesToolStripMenuItem = new ToolStripMenuItem();
 			this.toolStripSeparator5 = new ToolStripSeparator();
@@ -230,7 +232,7 @@ namespace VixenModules.Preview.VixenPreview
 			this.lblLock.Location = new Point(1049, 0);
 			this.lblLock.Margin = new Padding(4, 0, 4, 0);
 			this.lblLock.Name = "lblLock";
-			this.lblLock.Size = new Size(78, 22);
+			this.lblLock.Size = new Size(113, 22);
 			this.lblLock.TabIndex = 0;
 			this.lblLock.Text = "Lock/Unlock";
 			this.lblLock.TextAlign = ContentAlignment.MiddleCenter;
@@ -244,24 +246,26 @@ namespace VixenModules.Preview.VixenPreview
 			this.pnlLock.Location = new Point(1049, 25);
 			this.pnlLock.Margin = new Padding(4, 3, 4, 3);
 			this.pnlLock.Name = "pnlLock";
-			this.pnlLock.Size = new Size(78, 81);
+			this.pnlLock.Size = new Size(113, 81);
 			this.pnlLock.TabIndex = 28;
 			// 
 			// tableLayoutPanel6
 			// 
 			this.tableLayoutPanel6.AutoSize = true;
-			this.tableLayoutPanel6.ColumnCount = 2;
+			this.tableLayoutPanel6.ColumnCount = 3;
+			this.tableLayoutPanel6.ColumnStyles.Add(new ColumnStyle());
 			this.tableLayoutPanel6.ColumnStyles.Add(new ColumnStyle());
 			this.tableLayoutPanel6.ColumnStyles.Add(new ColumnStyle());
 			this.tableLayoutPanel6.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
 			this.tableLayoutPanel6.Controls.Add(this.btnLock, 0, 0);
 			this.tableLayoutPanel6.Controls.Add(this.btnUnlock, 1, 0);
+			this.tableLayoutPanel6.Controls.Add(this.btnUnlockAll, 2, 0);
 			this.tableLayoutPanel6.Location = new Point(4, 1);
 			this.tableLayoutPanel6.Margin = new Padding(4, 3, 4, 3);
 			this.tableLayoutPanel6.Name = "tableLayoutPanel6";
 			this.tableLayoutPanel6.RowCount = 1;
 			this.tableLayoutPanel6.RowStyles.Add(new RowStyle());
-			this.tableLayoutPanel6.Size = new Size(65, 33);
+			this.tableLayoutPanel6.Size = new Size(102, 33);
 			this.tableLayoutPanel6.TabIndex = 23;
 			// 
 			// btnLock
@@ -278,6 +282,7 @@ namespace VixenModules.Preview.VixenPreview
 			this.btnLock.Size = new Size(26, 27);
 			this.btnLock.TabIndex = 32;
 			this.btnLock.Tag = "";
+			this.toolTip.SetToolTip(this.btnLock, "Lock");
 			this.btnLock.UseVisualStyleBackColor = false;
 			this.btnLock.Click += this.lockButton_ButtonClick;
 			// 
@@ -295,8 +300,27 @@ namespace VixenModules.Preview.VixenPreview
 			this.btnUnlock.Size = new Size(26, 27);
 			this.btnUnlock.TabIndex = 31;
 			this.btnUnlock.Tag = "";
+			this.toolTip.SetToolTip(this.btnUnlock, "Unlock");
 			this.btnUnlock.UseVisualStyleBackColor = false;
 			this.btnUnlock.Click += this.unlockButton_ButtonClick;
+			// 
+			// btnUnlockAll
+			// 
+			this.btnUnlockAll.BackColor = Color.Transparent;
+			this.btnUnlockAll.BackgroundImageLayout = ImageLayout.Stretch;
+			this.btnUnlockAll.Enabled = false;
+			this.btnUnlockAll.FlatAppearance.BorderSize = 0;
+			this.btnUnlockAll.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			this.btnUnlockAll.FlatStyle = FlatStyle.Flat;
+			this.btnUnlockAll.Location = new Point(72, 3);
+			this.btnUnlockAll.Margin = new Padding(4, 3, 4, 3);
+			this.btnUnlockAll.Name = "btnUnlockAll";
+			this.btnUnlockAll.Size = new Size(26, 27);
+			this.btnUnlockAll.TabIndex = 32;
+			this.btnUnlockAll.Tag = "";
+			this.toolTip.SetToolTip(this.btnUnlockAll, "Unlock All");
+			this.btnUnlockAll.UseVisualStyleBackColor = false;
+			this.btnUnlockAll.Click += this.unlockAllButton_ButtonClick;
 			// 
 			// tableLayoutPanel2
 			// 
@@ -777,7 +801,7 @@ namespace VixenModules.Preview.VixenPreview
 			this.menuStrip.Location = new Point(0, 0);
 			this.menuStrip.Name = "menuStrip";
 			this.menuStrip.Padding = new Padding(7, 2, 0, 2);
-			this.menuStrip.Size = new Size(1155, 24);
+			this.menuStrip.Size = new Size(1194, 24);
 			this.menuStrip.TabIndex = 11;
 			this.menuStrip.Text = "menuStrip";
 			// 
@@ -844,7 +868,7 @@ namespace VixenModules.Preview.VixenPreview
 			// 
 			// editToolStripMenuItem
 			// 
-			this.editToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.copyToolStripMenuItem, this.copyToolStripMenuItem1, this.pasteToolStripMenuItem, this.deleteToolStripMenuItem, this.toolStripMenuItem1, this.undoToolStripMenuItem, this.redoToolStripMenuItem, this.toolStripSeparator3, this.lockToolStripMenuItem, this.unlockToolStripMenuItem, this.toolStripSeparator4, this.backgroundPropertiesToolStripMenuItem, this.toolStripSeparator5, this.addTemplateMenu });
+			this.editToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.copyToolStripMenuItem, this.copyToolStripMenuItem1, this.pasteToolStripMenuItem, this.deleteToolStripMenuItem, this.toolStripMenuItem1, this.undoToolStripMenuItem, this.redoToolStripMenuItem, this.toolStripSeparator3, this.lockToolStripMenuItem, this.unlockToolStripMenuItem, this.unlockAllToolStripMenuItem, this.toolStripSeparator4, this.backgroundPropertiesToolStripMenuItem, this.toolStripSeparator5, this.addTemplateMenu });
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
 			this.editToolStripMenuItem.Size = new Size(39, 20);
 			this.editToolStripMenuItem.Text = "&Edit";
@@ -930,6 +954,15 @@ namespace VixenModules.Preview.VixenPreview
 			this.unlockToolStripMenuItem.Size = new Size(203, 22);
 			this.unlockToolStripMenuItem.Text = "&Unlock";
 			this.unlockToolStripMenuItem.Click += this.unlockButton_ButtonClick;
+			// 
+			// unlockAllToolStripMenuItem
+			// 
+			this.unlockAllToolStripMenuItem.Image = (Image)resources.GetObject("unlockAllToolStripMenuItem.Image");
+			this.unlockAllToolStripMenuItem.Name = "unlockAllToolStripMenuItem";
+			this.unlockAllToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+N";
+			this.unlockAllToolStripMenuItem.Size = new Size(203, 22);
+			this.unlockAllToolStripMenuItem.Text = "&Unlock All";
+			this.unlockAllToolStripMenuItem.Click += this.unlockAllButton_ButtonClick;
 			// 
 			// toolStripSeparator4
 			// 
@@ -1289,7 +1322,7 @@ namespace VixenModules.Preview.VixenPreview
 			// 
 			this.labelZoomLevel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
 			this.labelZoomLevel.AutoSize = true;
-			this.labelZoomLevel.Location = new Point(1104, 8);
+			this.labelZoomLevel.Location = new Point(1143, 8);
 			this.labelZoomLevel.Margin = new Padding(2, 0, 2, 0);
 			this.labelZoomLevel.Name = "labelZoomLevel";
 			this.labelZoomLevel.Size = new Size(35, 15);
@@ -1304,10 +1337,10 @@ namespace VixenModules.Preview.VixenPreview
 			this.panel9.Controls.Add(this.panel10);
 			this.panel9.Controls.Add(this.labelZoomLevel);
 			this.panel9.Controls.Add(this.trackerZoom);
-			this.panel9.Location = new Point(2, 558);
+			this.panel9.Location = new Point(2, 566);
 			this.panel9.Margin = new Padding(2);
 			this.panel9.Name = "panel9";
-			this.panel9.Size = new Size(1151, 33);
+			this.panel9.Size = new Size(1190, 33);
 			this.panel9.TabIndex = 16;
 			// 
 			// panel10
@@ -1402,7 +1435,7 @@ namespace VixenModules.Preview.VixenPreview
 			// trackerZoom
 			// 
 			this.trackerZoom.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-			this.trackerZoom.Location = new Point(848, 2);
+			this.trackerZoom.Location = new Point(887, 2);
 			this.trackerZoom.Margin = new Padding(2);
 			this.trackerZoom.Maximum = 400;
 			this.trackerZoom.Minimum = 25;
@@ -1420,7 +1453,7 @@ namespace VixenModules.Preview.VixenPreview
 			this.dockPanel.Location = new Point(4, 118);
 			this.dockPanel.Margin = new Padding(4, 3, 4, 3);
 			this.dockPanel.Name = "dockPanel";
-			this.dockPanel.Size = new Size(1147, 435);
+			this.dockPanel.Size = new Size(1186, 443);
 			this.dockPanel.TabIndex = 20;
 			// 
 			// tableLayoutPanel1
@@ -1485,7 +1518,7 @@ namespace VixenModules.Preview.VixenPreview
 			this.tableLayoutMain.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
 			this.tableLayoutMain.RowStyles.Add(new RowStyle());
 			this.tableLayoutMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-			this.tableLayoutMain.Size = new Size(1155, 593);
+			this.tableLayoutMain.Size = new Size(1194, 601);
 			this.tableLayoutMain.TabIndex = 22;
 			// 
 			// tlpToolBar
@@ -1526,7 +1559,7 @@ namespace VixenModules.Preview.VixenPreview
 			this.tlpToolBar.RowCount = 2;
 			this.tlpToolBar.RowStyles.Add(new RowStyle());
 			this.tlpToolBar.RowStyles.Add(new RowStyle());
-			this.tlpToolBar.Size = new Size(1131, 109);
+			this.tlpToolBar.Size = new Size(1166, 109);
 			this.tlpToolBar.TabIndex = 21;
 			// 
 			// pnlBasicDrawing
@@ -1654,7 +1687,7 @@ namespace VixenModules.Preview.VixenPreview
 			this.AutoScaleDimensions = new SizeF(7F, 15F);
 			this.AutoScaleMode = AutoScaleMode.Font;
 			this.AutoSize = true;
-			this.ClientSize = new Size(1155, 617);
+			this.ClientSize = new Size(1194, 625);
 			this.Controls.Add(this.tableLayoutMain);
 			this.Controls.Add(this.menuStrip);
 			this.IsMdiContainer = true;
@@ -1780,11 +1813,13 @@ namespace VixenModules.Preview.VixenPreview
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
 		private System.Windows.Forms.Button btnLock;
 		private System.Windows.Forms.Button btnUnlock;
+		private System.Windows.Forms.Button btnUnlockAll;
 		private System.Windows.Forms.Button btnAddCustomProp;
 		private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
-		public System.Windows.Forms.ToolStripMenuItem lockToolStripMenuItem;
-		public System.Windows.Forms.ToolStripMenuItem unlockToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem lockToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem unlockToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem unlockAllToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem viewHelpToolStripMenuItem;
