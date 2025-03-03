@@ -77,6 +77,7 @@ namespace VixenModules.Preview.VixenPreview
 
 			btnLock.Image = Tools.GetIcon(Resources.locked, iconSize);
 			btnUnlock.Image = Tools.GetIcon(Resources.unlocked, iconSize);
+			btnUnlockAll.Image = Tools.GetIcon(Resources.unlockedAll, iconSize);
 
 			btnAddCustomProp.Image = Tools.GetIcon(Resources.Prop_Add, iconSize);
 			btnCustomPropEditor.Image = Tools.GetIcon(Resources.Prop_Edit, iconSize);
@@ -124,6 +125,8 @@ namespace VixenModules.Preview.VixenPreview
 			redoToolStripMenuItem.Enabled = false;
 			lockToolStripMenuItem.Enabled = false;
 			unlockToolStripMenuItem.Enabled = false;
+			unlockAllToolStripMenuItem.Enabled = false;
+
 			trackerZoom.Maximum = Environment.Is64BitProcess ? 400 : 200;
 		}
 
@@ -321,7 +324,11 @@ namespace VixenModules.Preview.VixenPreview
 		    btnBulbIncrease.Enabled = btnBulbDecrease.Enabled = previewForm.Preview.IsSingleItemSelected || previewForm.Preview.SelectedDisplayItems.Any();
 
 			btnLock.Enabled = btnUnlock.Enabled = false;
+			btnUnlock.Enabled = btnUnlock.Enabled = false;
+			btnUnlockAll.Enabled = btnUnlock.Enabled = false;
 			lockToolStripMenuItem.Enabled = false;
+			unlockToolStripMenuItem.Enabled = false;
+			unlockAllToolStripMenuItem.Enabled = false;
 			if (previewForm.Preview.SingleItemSelected?.Shape.Locked == true)
 			{
 				btnUnlock.Enabled = unlockToolStripMenuItem.Enabled = true;
@@ -332,9 +339,17 @@ namespace VixenModules.Preview.VixenPreview
 			}
 			else if (previewForm.Preview.SelectedDisplayItems.Any())
 			{
-				btnUnlock.Enabled = unlockToolStripMenuItem.Enabled = true;
-				btnLock.Enabled = lockToolStripMenuItem.Enabled = true;
+				// If any selected prop is locked, then show "Unlock"
+				if (previewForm.Preview.SelectedDisplayItems.FindIndex(x => x.Shape.Locked == true) >= 0)
+					btnUnlock.Enabled = unlockToolStripMenuItem.Enabled = true;
+				// If any selected prop is unlocked, then show "Lock"
+				if (previewForm.Preview.SelectedDisplayItems.FindIndex(x => x.Shape.Locked == false) >= 0)
+					btnLock.Enabled = lockToolStripMenuItem.Enabled = true;
 			}
+			
+			// If any prop is locked, then show "Unlock All"
+			if (previewForm.Preview.DisplayItems.FindIndex(x => x.Shape.Locked == true) >= 0)
+				btnUnlockAll.Enabled = unlockAllToolStripMenuItem.Enabled = true;
 
 			var multiSelect = previewForm.Preview.SelectedDisplayItems.Count > 1;
 			//btnBulbMatch.Enabled = multiSelect;
@@ -884,6 +899,14 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			previewForm.Preview.BeginUpdate();
 			previewForm.Preview.Unlock();
+			previewForm.Preview.EndUpdate();
+		}
+
+		private void unlockAllButton_ButtonClick(object sender, EventArgs e)
+		{
+			previewForm.Preview.BeginUpdate();
+			foreach (var previewDisplayItem in previewForm.Preview.DisplayItems)
+				previewDisplayItem.Shape.Locked = false;
 			previewForm.Preview.EndUpdate();
 		}
 

@@ -59,6 +59,8 @@ namespace VixenModules.Preview.VixenPreview
 
 		private bool _holdRender;
 
+		private MessageBoxForm lockWarning;
+
 		/// <summary>
 		/// Last used smart object template used.
 		/// </summary>
@@ -341,6 +343,8 @@ namespace VixenModules.Preview.VixenPreview
 			//SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			//SetStyle(ControlStyles.ResizeRedraw, true);
 			_selectedDisplayItem = null;
+			lockWarning = new MessageBoxForm("Press the shift key in combination with the mouse to reselect a locked prop.", "How to Unlock a Prop", MessageBoxButtons.OK, SystemIcons.Information);
+
 		}
 
 		private VScrollBar vScroll = new VScrollBar();
@@ -1064,6 +1068,9 @@ namespace VixenModules.Preview.VixenPreview
 				case "Unlock":
 					Unlock();
 					break;
+				case "UnlockAll":
+					Unlock(true);
+					break;
 				case "0":
 				case "1":
 				case "2":
@@ -1273,6 +1280,10 @@ namespace VixenModules.Preview.VixenPreview
 			else if (e.KeyCode == Keys.U && e.Modifiers == Keys.Control)
 			{
 				Unlock();
+			}
+			else if (e.KeyCode == Keys.N && e.Modifiers == Keys.Control)
+			{
+				Unlock(true);
 			}
 			else if (e.KeyCode == Keys.Up)
 			{
@@ -2102,7 +2113,15 @@ namespace VixenModules.Preview.VixenPreview
 				}
 				SelectedDisplayItems.Clear();
 				OnSelectionChanged?.Invoke(this, EventArgs.Empty);
+
 				EndUpdate();
+
+				// Display "How to Unlock" just once
+				if (lockWarning != null)
+				{
+					lockWarning.ShowDialog(this);
+					lockWarning = null;
+				}
 			}
 			else if (_selectedDisplayItem != null)
 			{
@@ -2112,12 +2131,31 @@ namespace VixenModules.Preview.VixenPreview
 				_selectedDisplayItem.Shape.Locked = true;
 				DeSelectSelectedDisplayItem();
 				EndUpdate();
+
+				// Display "How to Unlock" just once
+				if (lockWarning != null)
+				{
+					lockWarning.ShowDialog(this);
+					lockWarning = null;
+				}
 			}
 		}
 
-		public void Unlock()
+		public void Unlock(bool all = false)
 		{
-			if (SelectedDisplayItems?.Count > 0)
+			if (all == true)
+			{
+				var action = new PreviewItemsLockUndoAction(this, SelectedDisplayItems);//Start Undo Action.
+				UndoManager.AddUndoAction(action);
+
+				foreach (var displayItem in DisplayItems)
+				{
+					displayItem.Shape.Locked = false;
+				}
+
+				EndUpdate();
+			}
+			else if (SelectedDisplayItems?.Count > 0)
 			{
 				var action = new PreviewItemsLockUndoAction(this, SelectedDisplayItems);//Start Undo Action.
 				UndoManager.AddUndoAction(action);
