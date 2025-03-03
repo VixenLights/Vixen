@@ -8,6 +8,8 @@ using Vixen.Sys;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex;
+using Color = System.Drawing.Color;
+using System.Xml.Serialization;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -250,6 +252,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+		public void SetPixelZoomRotate()
+		{
+			foreach (PreviewPixel pixel in _pixels)
+			{
+				var point = PreviewTools.TransformPreviewPoint(this, pixel.Point, ZoomLevel);
+
+				pixel.X = point.X;
+				pixel.Y = point.Y;
+			}
+		}
+
 		// Add a pixel at a specific location
 		public PreviewPixel AddPixel(int x, int y)
 		{
@@ -358,8 +371,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			DrawSelectPoints(fp);
 		}
        				
-		public override bool ShapeInRect(Rectangle rect)
+		public override bool ShapeInRect(Rectangle rect, bool allIn = false)
 		{
+			bool result = false;
+
             foreach (PreviewPixel pixel in Pixels)
             {
                 int X1 = Math.Min(rect.X, rect.X + rect.Width);
@@ -373,8 +388,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	                    pixel.Location.Y >= Y1 &&
 	                    pixel.Location.Y <= Y2)
 	                {
-		                return true;
+						result = true;
 	                }
+					else
+						result = false;
                 }
                 else
                 {
@@ -383,12 +400,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	                    pixel.Y >= Y1 &&
 	                    pixel.Y <= Y2)
 	                {
-		                return true;
+						result = true;
 	                }
-                }
-                
+					else
+						result = false;
+				}
+
+				if (allIn && result == false)
+					break;
+				else if (!allIn && result == true)
+					break;
             }
-			return false;
+			return result;
 		}
 		
 		public override object Clone()

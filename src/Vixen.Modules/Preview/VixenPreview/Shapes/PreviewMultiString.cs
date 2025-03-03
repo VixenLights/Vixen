@@ -20,6 +20,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public PreviewMultiString(PreviewPoint point1, PreviewPoint point2, ElementNode selectedNode, double zoomLevel)
 		{ 
 			ZoomLevel = zoomLevel;
+            point1.PointType = PreviewPoint.PointTypes.SizeTopLeft;
             AddPoint(PointToZoomPoint(point1));
             _strings = new List<PreviewBaseShape>();
             Creating = true;
@@ -27,9 +28,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         }
 
         [OnDeserialized]
-        private new void OnDeserialized(StreamingContext context)
+		private new void OnDeserialized(StreamingContext context)
         {
-            Layout();
+			foreach (var points in _points)
+			{
+				points.PointType = PreviewPoint.PointTypes.Size;
+			}
+			_points[0].PointType = PreviewPoint.PointTypes.SizeTopLeft;
+
+			Layout();
         }
 
         [Browsable(false)]
@@ -131,18 +138,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                int rMax = 0;
-                foreach (PreviewLine line in Strings) {
-                    rMax = Math.Max(rMax, line.Right);
-                }
-                return rMax;
-
-                //int r = 0;
-                //foreach (PreviewPoint p in _points)
-                //{
-                //    r = Math.Min(r, p.X);
+                //int rMax = 0;
+                //foreach (PreviewLine line in Strings) {
+                //    rMax = Math.Max(rMax, line.Right);
                 //}
-                //return r;
+                //return rMax;
+
+                int r = 0;
+                foreach (PreviewPoint p in _points)
+                {
+                    r = Math.Max(r, p.X);
+                }
+                return r;
 			}
         }
 
@@ -151,18 +158,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                int bMax = 0;
-                foreach (PreviewLine line in Strings)
-                {
-                    bMax = Math.Max(bMax, line.Bottom);
-                }
-                return bMax;
-                //int b = 0;
-                //foreach (PreviewPoint p in _points)
+                //int bMax = 0;
+                //foreach (PreviewLine line in Strings)
                 //{
-                //    b = Math.Min(b, p.Y);
+                //    bMax = Math.Max(bMax, line.Bottom);
                 //}
-                //return b;
+                //return bMax;
+                int b = 0;
+                foreach (PreviewPoint p in _points)
+                {
+                    b = Math.Max(b, p.Y);
+                }
+                return b;
 			}
         }
 
@@ -170,18 +177,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                int m = int.MaxValue;
-                foreach (PreviewLine line in Strings)
-                {
-                    m = Math.Min(m, line.Top);
-                }
-                return m;
-                //int t = int.MaxValue;
-                //foreach (PreviewPoint p in _points)
+                //int m = int.MaxValue;
+                //foreach (PreviewLine line in Strings)
                 //{
-                //    t = Math.Min(t, p.Y);
+                //    m = Math.Min(m, line.);
                 //}
-                //return t;
+                //return m;
+                int t = int.MaxValue;
+                foreach (PreviewPoint p in _points)
+                {
+                    t = Math.Min(t, p.Y);
+                }
+                return t;
             }
             set
             {
@@ -199,18 +206,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                //int l = int.MaxValue;
-                //foreach (PreviewPoint p in _points)
-                //{
-                //    l = Math.Min(l, p.X);
-                //}
-                //return l;
-                int m = int.MaxValue;
-                foreach (PreviewLine line in Strings)
+                int l = int.MaxValue;
+                foreach (PreviewPoint p in _points)
                 {
-                    m = Math.Min(m, line.Left);
+                    l = Math.Min(l, p.X);
                 }
-                return m;
+                return l;
+                //int m = int.MaxValue;
+                //foreach (PreviewLine line in Strings)
+                //{
+                //    m = Math.Min(m, line.Left);
+                //}
+                //return m;
             }
             set
             {
@@ -233,6 +240,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             PreviewMultiString shape = (matchShape as PreviewMultiString);
             PixelSize = shape.PixelSize;
+			base.Match(shape);
             Layout();
         }
 
@@ -254,20 +262,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 {
                     var line = Strings[stringNum] as PreviewLine;
                     line.AddStartPadding = stringNum > 0;
-                    line.Point1 = _points[stringNum].ToPoint();
-                    line.Point2 = _points[stringNum + 1].ToPoint();
-                }
 
-                SetPixelZoom();
+					line.Point1 = PreviewTools.TransformPreviewPoint(this, _points[stringNum], ZoomLevel, PreviewTools.RotateTypes.Clockwise).ToPoint();
+                    line.Point2 = PreviewTools.TransformPreviewPoint(this, _points[stringNum + 1], ZoomLevel, PreviewTools.RotateTypes.Clockwise).ToPoint();
+                    line.ZoomLevel = 1;
+                }
             }
         }
 
         public override void MouseMove(int x, int y, int changeX, int changeY)
         {
-            PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
-            // See if we're resizing
-            if (_selectedPoint != null)
+			// See if we're resizing
+			if (_selectedPoint != null)
             {
+			    var point = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(x, y), -ZoomLevel, PreviewTools.RotateTypes.Counterclockwise);
                 _selectedPoint.X = point.X;
                 _selectedPoint.Y = point.Y;
                 Layout();
@@ -278,21 +286,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 if (pStart.Count() == _points.Count())
                 {
-                    for (int pNum = 0; pNum < _points.Count(); pNum++)
+					changeX = Convert.ToInt32(pStart[0].X + changeX / ZoomLevel) - _points[0].X;
+					changeY = Convert.ToInt32(pStart[0].Y + changeY / ZoomLevel) - _points[0].Y;
+					for (int pNum = 0; pNum < _points.Count(); pNum++)
                     {
-                        _points[pNum].X = Convert.ToInt32(pStart[pNum].X * ZoomLevel) + changeX;
-                        _points[pNum].Y = Convert.ToInt32(pStart[pNum].Y * ZoomLevel) + changeY;
-                        PointToZoomPointRef(_points[pNum]);
+                        _points[pNum].X += changeX;
+                        _points[pNum].Y += changeY;
                     }
-
-                    //PointToZoomPointRef(_points[0]);
-                    //PointToZoomPointRef(_points[1]);
-
-                    //Left = x;
 
                     Layout();
                 }
             }
+			base.MouseMove(x, y, changeX, changeY);
         }
 
         public override void MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -302,6 +307,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 if (Creating)
                 {
                     PreviewPoint newPoint = PointToZoomPoint(new PreviewPoint(e.X, e.Y));
+                    newPoint.PointType = PreviewPoint.PointTypes.Size;
                     AddPoint(newPoint);
                     CreateString();
                     _selectedPoint = newPoint;
@@ -420,7 +426,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public override void SetSelectPoint(PreviewPoint point)
         {
-            if (point == null)
+            if (point == null || (point.X == 0 && point.Y == 0))
             {
                 if (pStart == null) pStart = new List<PreviewPoint>();
                 pStart.Clear();
@@ -431,6 +437,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
 
             _selectedPoint = point;
+			base.SetSelectPoint(point);
         }
 
         public override void SelectDefaultSelectPoint()

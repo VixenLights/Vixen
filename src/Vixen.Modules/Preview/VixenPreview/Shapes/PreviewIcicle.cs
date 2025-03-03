@@ -28,7 +28,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             initialNode = selectedNode;
 
 			ZoomLevel = zoomLevel;
+			point1.PointType = PreviewPoint.PointTypes.SizeTopLeft;
 			AddPoint(PointToZoomPoint(point1));
+			point2.PointType = PreviewPoint.PointTypes.SizeTopRight;
 			AddPoint(PointToZoomPoint(point2));
 
 			Reconfigure(selectedNode);
@@ -68,6 +70,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[OnDeserialized]
 		private new void OnDeserialized(StreamingContext context)
 		{
+			_points[0].PointType = PreviewPoint.PointTypes.SizeTopLeft;
+			_points[1].PointType = PreviewPoint.PointTypes.SizeTopRight;
 			Layout();
 		}
 
@@ -102,6 +106,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				_points[0].X = value.X;
 				_points[0].Y = value.Y;
+				PreviewTools.TransformPreviewPoint(this);
 				Layout();
 			}
 		}
@@ -120,6 +125,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				_points[1].X = value.X;
 				_points[1].Y = value.Y;
+				PreviewTools.TransformPreviewPoint(this);
 				Layout();
 			}
 		}
@@ -278,6 +284,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             PixelSize = shape.PixelSize;
             _points[1].X = _points[0].X + (shape._points[1].X - shape._points[0].X);
             _points[1].Y = _points[0].Y + (shape._points[1].Y - shape._points[0].Y);
+			base.Match(shape);
             Layout();
         }
 
@@ -294,11 +301,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     int lineLength = (VerticalSpacing * line.Pixels.Count);
 					line.Point1 = new Point((int)Math.Round(x), (int)Math.Round(y));
                     line.Point2 = new Point((int)Math.Round(x), (int)Math.Round(y) + lineLength);
+
+					line.Point1 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(line.Point1), ZoomLevel, PreviewTools.RotateTypes.Clockwise).ToPoint();
+					line.Point2 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(line.Point2), ZoomLevel, PreviewTools.RotateTypes.Clockwise).ToPoint();
+					line.ZoomLevel = 1;
+
 					x -= xSpacing;
 					y -= ySpacing;
 				}
-
-				SetPixelZoom();
 			}
 		}
 
@@ -317,9 +327,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
-			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
 			// See if we're resizing
 			if (_selectedPoint != null) {
+				var point = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(x, y), -ZoomLevel, PreviewTools.RotateTypes.Counterclockwise);
 				_selectedPoint.X = point.X;
 				_selectedPoint.Y = point.Y;
                 if (creating)
@@ -331,16 +341,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 				// If we get here, we're moving
 			else {
-				_points[0].X = Convert.ToInt32(p1Start.X * ZoomLevel) + changeX;
-				_points[0].Y = Convert.ToInt32(p1Start.Y * ZoomLevel) + changeY;
-				_points[1].X = Convert.ToInt32(p2Start.X * ZoomLevel) + changeX;
-				_points[1].Y = Convert.ToInt32(p2Start.Y * ZoomLevel) + changeY;
+				changeX = Convert.ToInt32(p1Start.X + changeX / ZoomLevel) - _points[0].X;
+				changeY = Convert.ToInt32(p1Start.Y + changeY / ZoomLevel) - _points[0].Y;
 
-				PointToZoomPointRef(_points[0]);
-				PointToZoomPointRef(_points[1]);
+				_points[0].X += changeX;
+				_points[0].Y += changeY;
+				_points[1].X += changeX;
+				_points[1].Y += changeY;
 
 				Layout();
 			}
+
+			base.MouseMove(x, y, changeX, changeY);
 		}
 
         public override void MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -373,12 +385,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void SetSelectPoint(PreviewPoint point)
 		{
-			if (point == null) {
+			if (point == null || (point.X == 0 && point.Y == 0)) {
 				p1Start = new PreviewPoint(_points[0].X, _points[0].Y);
 				p2Start = new PreviewPoint(_points[1].X, _points[1].Y);
 			}
 
 			_selectedPoint = point;
+			base.SetSelectPoint(point);
 		}
 
         public override void Select(bool selectDragPoints)

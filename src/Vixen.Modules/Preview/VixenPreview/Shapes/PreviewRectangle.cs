@@ -27,9 +27,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			ZoomLevel = zoomLevel;
 			_topLeft = PointToZoomPoint(point1);
+			_topLeft.PointType = PreviewPoint.PointTypes.SizeTopLeft;
+
 			_topRight = new PreviewPoint(_topLeft);
+			_topRight.PointType = PreviewPoint.PointTypes.SizeTopRight;
+
 			_bottomLeft = new PreviewPoint(_topLeft);
+			_bottomLeft.PointType = PreviewPoint.PointTypes.SizeBottomLeft;
+
 			_bottomRight = new PreviewPoint(_topLeft);
+			_bottomRight.PointType = PreviewPoint.PointTypes.SizeBottomRight;
 
 			Reconfigure(selectedNode);
 		}
@@ -114,6 +121,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private new void OnDeserialized(StreamingContext context)
 		{
 			_pixels.Clear();
+			_topLeft.PointType = PreviewPoint.PointTypes.SizeTopLeft;
+			_bottomRight.PointType = PreviewPoint.PointTypes.SizeBottomRight;
+			_topRight.PointType = PreviewPoint.PointTypes.SizeTopRight;
+			_bottomLeft.PointType = PreviewPoint.PointTypes.SizeBottomLeft;
 			Layout();
 		}
 
@@ -144,14 +155,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get
 			{
 				if (_topLeft == null)
+				{
 					_topLeft = new PreviewPoint(10, 10);
-				Point p = new Point(_topLeft.X, _topLeft.Y);
+					_topLeft.PointType = PreviewPoint.PointTypes.SizeTopLeft;
+				}
+					Point p = new Point(_topLeft.X, _topLeft.Y);
 				return p;
 			}
 			set
 			{
 				_topLeft.X = value.X;
 				_topLeft.Y = value.Y;
+				PreviewTools.TransformPreviewPoint(this);
 				Layout();
 			}
 		}
@@ -170,6 +185,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				_topRight.X = value.X;
 				_topRight.Y = value.Y;
+				PreviewTools.TransformPreviewPoint(this);
 				Layout();
 			}
 		}
@@ -188,6 +204,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				_bottomRight.X = value.X;
 				_bottomRight.Y = value.Y;
+				PreviewTools.TransformPreviewPoint(this);
 				Layout();
 			}
 		}
@@ -200,12 +217,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get
 			{
 				Point p = new Point(_bottomLeft.X, _bottomLeft.Y);
+//				_bottomLeft.PointType = PreviewPoint.PointTypes.SizeBottomLeft;
 				return p;
 			}
 			set
 			{
 				_bottomLeft.X = value.X;
 				_bottomLeft.Y = value.Y;
+				PreviewTools.TransformPreviewPoint(this);
 				Layout();
 			}
 		}
@@ -396,6 +415,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             _bottomLeft.Y = _topLeft.Y + (shape._bottomLeft.Y - shape._topRight.Y);
             _topRight.X = _topLeft.X + (shape._topRight.X - shape._topLeft.X);
             _topRight.Y = _topLeft.Y + (shape._topRight.Y - shape._topRight.Y);
+			base.Match(shape);
             Layout();
         }
 
@@ -403,65 +423,93 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			if (_topLeft != null && _bottomRight != null)
 			{
-               
-			    if (Direction == Directions.CounterClockwise)
+				// Calculate the relative position of all vertices
+				var _bottomLeft = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(BottomLeftPoint), ZoomLevel);
+				var _bottomRight = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(BottomRightPoint), ZoomLevel);
+				var _topRight = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(TopRightPoint), ZoomLevel);
+				var _topLeft = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(TopLeftPoint), ZoomLevel);
+
+				// Paint 4 lines based upon the adjusted vertices. Set the Zoom Level to 1, since the vertices themselves have
+				// already been zoomed.
+				if (Direction == Directions.CounterClockwise)
 				{
                     // Start in the lower left corner and move counter clockwise around the rectangle.
                     PreviewLine line = Strings[0] as PreviewLine;
-                    line.Point1 = BottomLeftPoint;
-                    line.Point2 = BottomRightPoint;
+					line.ZoomLevel = 1;
+					line.AddStartPadding = false;
+					line.AddEndPadding = false;
+					line.Point1 = _bottomLeft.ToPoint();
+                    line.Point2 = _bottomRight.ToPoint();
                     line.Layout();
 
                     line = Strings[1] as PreviewLine;
-                    var ySpacing = (BottomRightPoint.Y - TopRightPoint.Y) / (line.PixelCount + 1);
-                    
-                    line.Point1 = new Point(BottomRightPoint.X, BottomRightPoint.Y - ySpacing);
-                    line.Point2 = new Point(TopRightPoint.X, TopRightPoint.Y + ySpacing);
+					line.ZoomLevel = 1;
+					line.AddStartPadding = true;
+					line.AddEndPadding = true;
+					line.Point1 = new Point(_bottomRight.X, _bottomRight.Y - 1);
+                    line.Point2 = new Point(_topRight.X, _topRight.Y + 1);
                     line.Layout();
 
                     line = Strings[2] as PreviewLine;
-                    line.Point1 = TopRightPoint;
-                    line.Point2 = TopLeftPoint;
+					line.ZoomLevel = 1;
+					line.AddStartPadding = false;
+					line.AddEndPadding = false;
+					line.Point1 = _topRight.ToPoint();
+                    line.Point2 = _topLeft.ToPoint();
                     line.Layout();
 
                     line = Strings[3] as PreviewLine;
-                    line.Point1 = new Point(TopLeftPoint.X, TopLeftPoint.Y + ySpacing);
-                    line.Point2 = new Point(BottomLeftPoint.X, BottomLeftPoint.Y - ySpacing);
+					line.ZoomLevel = 1;
+					line.AddStartPadding = true;
+					line.AddEndPadding = true;
+					line.Point1 = new Point(_topLeft.X, _topLeft.Y + 1);
+                    line.Point2 = new Point(_bottomLeft.X, _bottomLeft.Y - 1);
                     line.Layout();
 				}
 				else
 				{
-                    // Start in the lower left corner and move clockwise around the rectangle.
-                    PreviewLine line = Strings[0] as PreviewLine;
-                    line.Point1 = BottomLeftPoint;
-					line.Point2 = TopLeftPoint;
-					line.Layout();
-                    
-                    line = Strings[1] as PreviewLine;
-                    var xSpacing = (TopRightPoint.X - TopLeftPoint.X) / (line.PixelCount+1);
-                    line.Point1 = new Point(TopLeftPoint.X + xSpacing, TopLeftPoint.Y);
-					line.Point2 = new Point(TopRightPoint.X - xSpacing, TopRightPoint.Y);
+					// Start in the lower left corner and move clockwise around the rectangle.
+					PreviewLine line = Strings[0] as PreviewLine;
+					line.ZoomLevel = 1;
+					line.AddStartPadding = false;
+					line.AddEndPadding = false;
+					line.Point1 = _bottomLeft.ToPoint();
+					line.Point2 = _topLeft.ToPoint();
 					line.Layout();
 
-                    
-                    line = Strings[2] as PreviewLine;
-				    line.Point1 = TopRightPoint;
-				    line.Point2 = BottomRightPoint;
+					line = Strings[1] as PreviewLine;
+					line.ZoomLevel = 1;
+					line.AddStartPadding = true;
+					line.AddEndPadding = true;
+					line.Point1 = new Point(_topLeft.X + 1, _topLeft.Y);
+					line.Point2 = new Point(_topRight.X - 1, _topRight.Y);
 					line.Layout();
 
-                    line = Strings[3] as PreviewLine;
-                    line.Point1 = new Point(BottomRightPoint.X - xSpacing, BottomRightPoint.Y);
-                    line.Point2 = new Point(BottomLeftPoint.X + xSpacing, BottomLeftPoint.Y);
-                    line.Layout();
+
+					line = Strings[2] as PreviewLine;
+					line.ZoomLevel = 1;
+					line.AddStartPadding = false;
+					line.AddEndPadding = false;
+					line.Point1 = _topRight.ToPoint();
+					line.Point2 = _bottomRight.ToPoint();
+					line.Layout();
+
+					line = Strings[3] as PreviewLine;
+					line.ZoomLevel = 1;
+					line.AddStartPadding = true;
+					line.AddEndPadding = true;
+					line.Point1 = new Point(_bottomRight.X - 1, _bottomRight.Y);
+					line.Point2 = new Point(_bottomLeft.X + 1, _bottomLeft.Y);
+					line.Layout();
 				}
 			}
 		}
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
-			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
 			if (_selectedPoint != null)
 			{
+				var point = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(x, y), -ZoomLevel, PreviewTools.RotateTypes.Counterclockwise);
 				_selectedPoint.X = point.X;
 				_selectedPoint.Y = point.Y;
 				if (lockXY ||
@@ -470,33 +518,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					_topRight.X = point.X;
 					_bottomLeft.Y = point.Y;
 				}
+				base.MouseMove(x, y, changeX, changeY);
 				Layout();
 			}
 				// If we get here, we're moving
 			else {
-				//_topLeft.X = topLeftStart.X + changeX;
-				//_topLeft.Y = topLeftStart.Y + changeY;
-				//_topRight.X = topRightStart.X + changeX;
-				//_topRight.Y = topRightStart.Y + changeY;
-				//_bottomLeft.X = bottomLeftStart.X + changeX;
-				//_bottomLeft.Y = bottomLeftStart.Y + changeY;
-				//_bottomRight.X = bottomRightStart.X + changeX;
-				//_bottomRight.Y = bottomRightStart.Y + changeY;
+				changeX = Convert.ToInt32(topLeftStart.X + changeX / ZoomLevel) - _topLeft.X;
+				changeY = Convert.ToInt32(topLeftStart.Y + changeY / ZoomLevel) - _topLeft.Y;
 
-				_topLeft.X = Convert.ToInt32(topLeftStart.X * ZoomLevel) + changeX;
-				_topLeft.Y = Convert.ToInt32(topLeftStart.Y * ZoomLevel) + changeY;
-				_topRight.X = Convert.ToInt32(topRightStart.X * ZoomLevel) + changeX;
-				_topRight.Y = Convert.ToInt32(topRightStart.Y * ZoomLevel) + changeY;
-				_bottomLeft.X = Convert.ToInt32(bottomLeftStart.X * ZoomLevel) + changeX;
-				_bottomLeft.Y = Convert.ToInt32(bottomLeftStart.Y * ZoomLevel) + changeY;
-				_bottomRight.X = Convert.ToInt32(bottomRightStart.X * ZoomLevel) + changeX;
-				_bottomRight.Y = Convert.ToInt32(bottomRightStart.Y * ZoomLevel) + changeY;
+				_topLeft.X += changeX;
+				_topLeft.Y += changeY;
+				_topRight.X += changeX;
+				_topRight.Y += changeY;
+				_bottomLeft.X += changeX;
+				_bottomLeft.Y += changeY;
+				_bottomRight.X += changeX;
+				_bottomRight.Y += changeY;
 
-				PointToZoomPointRef(_topLeft);
-				PointToZoomPointRef(_topRight);
-				PointToZoomPointRef(_bottomLeft);
-				PointToZoomPointRef(_bottomRight);
-
+				base.MouseMove(x, y, changeX, changeY);
 				Layout();
 			}
 		}
@@ -532,7 +571,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public override void SetSelectPoint(PreviewPoint point)
 		{
 			lockXY = false;
-			if (point == null) {
+			if (point == null || (point.X == 0 && point.Y == 0)) {
 				topLeftStart = new PreviewPoint(_topLeft.X, _topLeft.Y);
 				topRightStart = new PreviewPoint(_topRight.X, _topRight.Y);
 				bottomLeftStart = new PreviewPoint(_bottomLeft.X, _bottomLeft.Y);
@@ -540,6 +579,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 
 			_selectedPoint = point;
+			base.SetSelectPoint(point);
 		}
 
 		public override void SelectDefaultSelectPoint()

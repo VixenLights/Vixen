@@ -23,7 +23,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			ZoomLevel = zoomLevel;
 			_topLeft = PointToZoomPoint(point1);
+			_topLeft.PointType = PreviewPoint.PointTypes.SizeTopLeft;
 			_bottomRight = new PreviewPoint(_topLeft.X, _topLeft.Y);
+			_bottomRight.PointType = PreviewPoint.PointTypes.SizeBottomRight;
 
 			Reconfigure(selectedNode);
 		}
@@ -67,6 +69,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[OnDeserialized]
 		private new void OnDeserialized(StreamingContext context)
 		{
+			_topLeft.PointType = PreviewPoint.PointTypes.SizeTopLeft;
+			_bottomRight.PointType = PreviewPoint.PointTypes.SizeBottomRight;
 			Layout();
 		}
 
@@ -84,6 +88,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				_topLeft.X = value.X;
 				_topLeft.Y = value.Y;
+				PreviewTools.TransformPreviewPoint(this);
 				Layout();
 			}
 		}
@@ -102,6 +107,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				_bottomRight.X = value.X;
 				_bottomRight.Y = value.Y;
+				PreviewTools.TransformPreviewPoint(this);
 				Layout();
 			}
 		}
@@ -125,23 +131,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[DataMember]
-		int _XYRotation = 0;
-		[CategoryAttribute("Settings"),
-		DescriptionAttribute("The prop can be rotated about the Z axis in the XY plane. This is the rotation angle."),
-		DisplayName("XY Rotation")]
-		public int XYRotation
-		{
-			get
-			{
-				return _XYRotation;
-			}
-			set
-			{
-				_XYRotation = value;
-				Layout();
-			}
-		}
 		public override int Top
 		{
             get
@@ -213,6 +202,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             PixelSize = shape.PixelSize;
             _bottomRight.X = TopLeft.X + (shape.BottomRight.X - shape.TopLeft.X);
             _bottomRight.Y = TopLeft.Y + (shape.BottomRight.Y - shape.TopLeft.Y);
+			base.Match(shape);
             Layout();
         }
 
@@ -222,7 +212,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				int width = _bottomRight.X - _topLeft.X;
 				int height = _bottomRight.Y - _topLeft.Y;
 				List<Point> points;
-				points = PreviewTools.GetEllipsePoints(0, 0, width, height, PixelCount, 360, XYRotation);
+				points = PreviewTools.GetEllipsePoints(0, 0, width, height, PixelCount, 360, 0);
 				int pointNum = 0;
 				foreach (PreviewPixel pixel in _pixels) {
 					pixel.X = points[pointNum].X + _topLeft.X;
@@ -230,14 +220,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					pointNum++;
 				}
 
-				SetPixelZoom();
+				SetPixelZoomRotate();
 			}
 		}
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
-			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
-			if (_selectedPoint != null && _selectedPoint.PointType == PreviewPoint.PointTypes.Size) {
+			if (_selectedPoint != null) {
+				var point = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(x, y), -ZoomLevel, PreviewTools.RotateTypes.Counterclockwise);
 				if (_selectedPoint == topRight) {
 					_topLeft.Y = point.Y;
 					_bottomRight.X = point.X;
@@ -251,13 +241,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				// If we get here, we're moving
 			}
 			else {
-				_topLeft.X = Convert.ToInt32(p1Start.X * ZoomLevel) + changeX;
-				_topLeft.Y = Convert.ToInt32(p1Start.Y * ZoomLevel) + changeY;
-				_bottomRight.X = Convert.ToInt32(p2Start.X * ZoomLevel) + changeX;
-				_bottomRight.Y = Convert.ToInt32(p2Start.Y * ZoomLevel) + changeY;
+				changeX = Convert.ToInt32(p1Start.X + changeX / ZoomLevel) - _topLeft.X;
+				changeY = Convert.ToInt32(p1Start.Y + changeY / ZoomLevel) - _topLeft.Y;
 
-				PointToZoomPointRef(_topLeft);
-				PointToZoomPointRef(_bottomRight);
+				_topLeft.X += changeX;
+				_topLeft.Y+= changeY;
+				_bottomRight.X += changeX;
+				_bottomRight.Y += changeY;
 			}
 
 			if (_selectedPoint == _bottomRight &&
@@ -273,6 +263,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				bottomLeft.Y = _bottomRight.Y;
 			}
 
+			base.MouseMove(x, y, changeX, changeY);
+
 			// Layout the standard shape
 			Layout();
 		}
@@ -285,8 +277,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			selectPoints.Add(_topLeft);
 			selectPoints.Add(_bottomRight);
 			topRight = new PreviewPoint(_bottomRight.X, _topLeft.Y);
+			topRight.PointType = PreviewPoint.PointTypes.SizeTopRight;
 			selectPoints.Add(topRight);
 			bottomLeft = new PreviewPoint(_topLeft.X, _bottomRight.Y);
+			bottomLeft.PointType = PreviewPoint.PointTypes.SizeBottomLeft;
 			selectPoints.Add(bottomLeft);
 
 			// Create the skew points
@@ -328,12 +322,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void SetSelectPoint(PreviewPoint point)
 		{
-			if (point == null) {
+			if (point == null || (point.X == 0 && point.Y == 0)) {
 				p1Start = new PreviewPoint(_topLeft.X, _topLeft.Y);
 				p2Start = new PreviewPoint(_bottomRight.X, _bottomRight.Y);
 			}
 
 			_selectedPoint = point;
+			base.SetSelectPoint(point);
 		}
 
 		public override void SelectDefaultSelectPoint()

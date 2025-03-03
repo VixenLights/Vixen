@@ -19,6 +19,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public PreviewLine(PreviewPoint point1, PreviewPoint point2, int lightCount, ElementNode selectedNode, double zoomLevel)
 		{
 			AddStartPadding = false;
+			AddEndPadding = false;
 			ZoomLevel = zoomLevel;
 			AddPoint(PointToZoomPoint(point1));
 			AddPoint(PointToZoomPoint(point2));
@@ -82,6 +83,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[OnDeserialized]
 		private new void OnDeserialized(StreamingContext context)
 		{
+			_points[0].PointType = PreviewPoint.PointTypes.SizeTopLeft;
+			_points[1].PointType = PreviewPoint.PointTypes.SizeBottomRight;
 			Layout();
 		}
 
@@ -105,12 +108,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get
 			{
 				Point p = new Point(_points[0].X, _points[0].Y);
+				_points[0].PointType = PreviewPoint.PointTypes.SizeTopLeft;
 				return p;
 			}
 			set
 			{
 				_points[0].X = value.X;
 				_points[0].Y = value.Y;
+				PreviewTools.TransformPreviewPoint(this);
 				Layout();
 			}
 		}
@@ -123,12 +128,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get
 			{
 				Point p = new Point(_points[1].X, _points[1].Y);
+				_points[1].PointType = PreviewPoint.PointTypes.SizeBottomRight;
 				return p;
 			}
 			set
 			{
 				_points[1].X = value.X;
 				_points[1].Y = value.Y;
+				PreviewTools.TransformPreviewPoint(this);
 				Layout();
 			}
 		}
@@ -227,6 +234,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             PixelSize = shape.PixelSize;
             _points[1].X = _points[0].X + (shape._points[1].X - shape._points[0].X);
             _points[1].Y = _points[0].Y + (shape._points[1].Y - shape._points[0].Y);
+			base.Match(shape);
             Layout();
         }
 
@@ -235,6 +243,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			if (_points != null && _points.Count > 0)
 			{
 			    var count = AddStartPadding ? PixelCount : PixelCount - 1;
+				count = AddEndPadding ? count + 1 : count;
 			    double xSpacing = (double)(_points[0].X - _points[1].X) / count;
 				double ySpacing = (double)(_points[0].Y - _points[1].Y) / count;
 				double x = _points[0].X;
@@ -252,40 +261,36 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					y -= ySpacing;
 				}
 
-				SetPixelZoom();
+				SetPixelZoomRotate();
 			}
 		}
 
         [Browsable(false)]
         public bool AddStartPadding { get; set; }
+		[Browsable(false)]
+		public bool AddEndPadding { get; set; }
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
-			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
 			// See if we're resizing
 			if (_selectedPoint != null) {
+				var point = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(x, y), -ZoomLevel, PreviewTools.RotateTypes.Counterclockwise);
 				_selectedPoint.X = point.X;
 				_selectedPoint.Y = point.Y;
-				Layout();
-				SelectDragPoints();
 			}
 				// If we get here, we're moving
 			else {
-				//_points[0].X = p1Start.X + changeX;
-				//_points[0].Y = p1Start.Y + changeY;
-				//_points[1].X = p2Start.X + changeX;
-				//_points[1].Y = p2Start.Y + changeY;
+				changeX = Convert.ToInt32(p1Start.X + changeX / ZoomLevel) - _points[0].X;
+				changeY = Convert.ToInt32(p1Start.Y + changeY / ZoomLevel) - _points[0].Y;
+				_points[0].X += changeX;
+				_points[0].Y += changeY;
+				_points[1].X += changeX;
+				_points[1].Y += changeY;
 
-				_points[0].X = Convert.ToInt32(p1Start.X * ZoomLevel) + changeX;
-				_points[0].Y = Convert.ToInt32(p1Start.Y * ZoomLevel) + changeY;
-				_points[1].X = Convert.ToInt32(p2Start.X * ZoomLevel) + changeX;
-				_points[1].Y = Convert.ToInt32(p2Start.Y * ZoomLevel) + changeY;
-
-				PointToZoomPointRef(_points[0]);
-				PointToZoomPointRef(_points[1]);
-
-				Layout();
 			}
+			base.MouseMove(x, y, changeX, changeY);
+
+			Layout();
 		}
 
 		public override void SelectDragPoints()
