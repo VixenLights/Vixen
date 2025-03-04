@@ -11,6 +11,7 @@ using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex;
 using Common.Controls.Theme;
 using Color = System.Drawing.Color;
 using System.Xml.Serialization;
+using Common.Controls.Theme;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -325,17 +326,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	                }
 	                else if (pixel.NodeId != Guid.Empty)
 	                {
-						if (highlightedElements.Contains(pixel.NodeId))
-						{
-							pixelColor = ThemeColorTable.ElementSelected;
-						}
-						else if (locked)
-						{
-							pixelColor = ThemeColorTable.Locked;
-						}
-						else
-						{
-							pixelColor = ThemeColorTable.Linked;
+		                if (pixel.NodeId != Guid.Empty)
+		                {
+			                if (highlightedElements.Contains(pixel.NodeId))
+			                {
+				                pixelColor = Color.HotPink;
+			                }
+			                else
+			                {
+								pixelColor = Color.Turquoise;
+							}
 						}
 	                } 
                 }
