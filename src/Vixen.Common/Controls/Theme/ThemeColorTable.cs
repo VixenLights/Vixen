@@ -51,6 +51,14 @@ namespace Common.Controls.Theme
 		private static Color _timeLineForeColor = _foreColor;
 		private static Color _timeLineLabelBackColor = _highlightColor;
 
+		//Preview
+		private static Color _pixel1 = System.Drawing.Color.Yellow;
+		private static Color _locked = System.Drawing.Color.DarkRed;
+		private static Color _element_selected = System.Drawing.Color.HotPink;
+		private static Color _unlinked = System.Drawing.Color.White;
+		private static Color _selected = System.Drawing.Color.LimeGreen;
+		private static Color _linked = System.Drawing.Color.Turquoise;
+
 		//Forms
 		public static Color BackgroundColor
 		{
@@ -168,6 +176,37 @@ namespace Common.Controls.Theme
 		{
 			get { return _timeLineLabelBackColor; }
 		}
+
+		public static Color Pixel1
+		{
+			get { return _pixel1; }
+		}
+
+		public static Color Locked
+		{
+			get { return _locked; }
+		}
+
+		public static Color ElementSelected
+		{
+			get { return _element_selected; }
+		}
+
+		public static Color Unlinked
+		{
+			get { return _unlinked; }
+		}
+
+		public static Color Selected
+		{
+			get { return _selected; }
+		}
+
+		public static Color Linked
+		{
+			get { return _linked; }
+		}
+
 
 		//MenuStrips
 

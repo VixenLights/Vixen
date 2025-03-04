@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Drawing.Design;
 using System.Runtime.Serialization;
+using Common.Controls.Theme;
 using OpenTK.Mathematics;
 using Vixen.Data.Flow;
 using Vixen.Sys;
@@ -288,7 +289,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_zoomLevel = zoomLevel;
 
 			// Called the shared Draw method
-			Draw(fp, editMode, highlightedElements, selected, false, zoomLevel);
+			Draw(fp, editMode, highlightedElements, selected, false, this.Locked, zoomLevel);
 			
 			// Restore the _zoomLevel back to 1.0 to support editing the preview
 			_zoomLevel = 1.0;
@@ -451,7 +452,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <summary>
 		/// Draws the shape for the GDI Preview and when editing the preview.
 		/// </summary>
-		public override void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected, bool forceDraw, double zoomLevel)
+		public override void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected, bool forceDraw, bool locked, double zoomLevel)
 		{			
 			// This draws the four corners of the rectangle when the fixture is selected
 			DrawSelectPoints(fp);
@@ -479,26 +480,30 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			double scaleFactor = ((double)width) / (double)widthOrg;
 
 			// Default the beam color to unlinked (white)
-			Color beamColor = Color.White;
+			Color beamColor = ThemeColorTable.Unlinked;
 
 			// If the moving head is selected then...
 			if (selected)
 			{
 				// Use the selected color
-				beamColor = Color.Green;
+				beamColor = ThemeColorTable.Selected;
 			}
 			// If the moving head is selected in the elements tree then...
 			else if (highlightedElements != null &&
 				highlightedElements.Contains(NodeId))
 			{
 				// Make the beam color pink
-				beamColor = Color.HotPink;							
+				beamColor = ThemeColorTable.ElementSelected;
+			}
+			else if (locked)
+			{
+				beamColor = ThemeColorTable.Locked;
 			}
 			// If the fixture is linked to a node then...
 			else if (Node != null)
 			{
 				// Make the beam color Turquoise
-				beamColor = Color.Turquoise;
+				beamColor = ThemeColorTable.Linked;
 			}
 
 			// If the mounting position has changed then...
