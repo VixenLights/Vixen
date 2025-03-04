@@ -64,8 +64,6 @@ namespace VixenModules.Preview.VixenPreview
 
 		private MessageBoxForm lockWarning;
 
-		private MessageBoxForm lockWarning;
-
 		/// <summary>
 		/// Last used smart object template used.
 		/// </summary>
