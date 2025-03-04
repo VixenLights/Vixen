@@ -15,7 +15,8 @@ namespace Vixen.IO.Xml.ModuleStore
 							  	{
 							  		new MigrationSegment<XElement>(1, 2, _Version_1_to_2),
 									new MigrationSegment<XElement>(2, 3, _Version_2_to_3),
-									new MigrationSegment<XElement>(3, 4, _Version_3_to_4)
+									new MigrationSegment<XElement>(3, 4, _Version_3_to_4),
+									new MigrationSegment<XElement>(4, 5, _Version_4_to_5)
 								  };
 		}
 
@@ -301,6 +302,17 @@ namespace Vixen.IO.Xml.ModuleStore
 					notesElem.SetValue("");
 				}
 			}
+			return content;
+		}
+
+		/// <summary>
+		/// Version 4 to 5 conversion
+		/// </summary>
+		/// <param name="content"></param>
+		/// <returns>Converted content</returns>
+		/// <remarks>Since there is no impact upgrading from 4 to 5, this simply returns the original content.</remarks>
+		private XElement _Version_4_to_5(XElement content)
+		{
 			return content;
 		}
 
