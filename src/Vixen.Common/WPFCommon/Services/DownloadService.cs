@@ -24,7 +24,7 @@ namespace Common.WPFCommon.Services
 				throw new ArgumentNullException(nameof(targetPath));
 			}
 
-			var modifiedTime = DateTime.MinValue;
+			var modifiedTime = DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc);
 			if (isNewer && File.Exists(targetPath))
 			{
 				modifiedTime = File.GetLastWriteTime(targetPath).ToUniversalTime();
