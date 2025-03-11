@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Vixen.Sys;
+using System.IO;
 
 namespace Vixen.IO.JSON
 {

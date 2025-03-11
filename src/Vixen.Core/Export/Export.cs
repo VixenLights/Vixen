@@ -10,6 +10,7 @@ using Vixen.Module.Controller;
 using Vixen.Sys;
 using Vixen.Sys.Output;
 using Formatting = Newtonsoft.Json.Formatting;
+using System.IO;
 
 namespace Vixen.Export
 {

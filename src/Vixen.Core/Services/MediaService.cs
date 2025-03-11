@@ -1,6 +1,7 @@
 ﻿using Vixen.Module.Media;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
+using System.IO;
 
 namespace Vixen.Services
 {

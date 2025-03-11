@@ -1,5 +1,7 @@
 ﻿using Vixen.Export.FPP;
 
+using System.IO;
+
 namespace Vixen.Export
 {
     public sealed class FSEQWriter : ExportWriterBase

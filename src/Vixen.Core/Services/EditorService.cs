@@ -1,5 +1,6 @@
 ﻿using Vixen.Module.Editor;
 using Vixen.Sys;
+using System.IO;
 
 namespace Vixen.Services
 {

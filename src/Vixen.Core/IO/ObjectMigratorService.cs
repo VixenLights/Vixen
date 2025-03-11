@@ -1,4 +1,6 @@
-﻿namespace Vixen.IO
+﻿using System.IO;
+
+namespace Vixen.IO
 {
 	internal class ObjectMigratorService : IObjectMigratorService
 	{
