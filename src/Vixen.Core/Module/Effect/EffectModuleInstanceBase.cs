@@ -8,6 +8,7 @@ using Vixen.Marks;
 using Vixen.Module.Media;
 using Vixen.Services;
 using Vixen.Sys;
+using System.IO;
 
 namespace Vixen.Module.Effect
 {

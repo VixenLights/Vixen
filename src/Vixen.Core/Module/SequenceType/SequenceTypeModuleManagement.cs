@@ -1,4 +1,5 @@
 ﻿using Vixen.Sys;
+using System.IO;
 
 namespace Vixen.Module.SequenceType
 {

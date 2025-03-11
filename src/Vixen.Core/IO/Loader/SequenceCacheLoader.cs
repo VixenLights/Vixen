@@ -1,6 +1,7 @@
 ﻿using Vixen.Cache.Sequence;
 using Vixen.IO.Factory;
 using Vixen.Services;
+using System.IO;
 
 namespace Vixen.IO.Loader
 {

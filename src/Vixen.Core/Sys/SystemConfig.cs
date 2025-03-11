@@ -3,6 +3,7 @@ using Vixen.Module.OutputFilter;
 using Vixen.Services;
 using Vixen.Sys.Attribute;
 using Vixen.Sys.Output;
+using System.IO;
 
 namespace Vixen.Sys
 {

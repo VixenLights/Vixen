@@ -2,6 +2,7 @@
 using NLog;
 using Vixen.Services;
 using Vixen.Sys;
+using System.IO;
 
 namespace Vixen.IO.Xml.Serializer
 {

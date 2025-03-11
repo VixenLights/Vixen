@@ -4,6 +4,7 @@ using NLog;
 using Vixen.Module;
 using Vixen.Services;
 using Vixen.Sys.Attribute;
+using System.IO;
 
 namespace Vixen.Sys
 {

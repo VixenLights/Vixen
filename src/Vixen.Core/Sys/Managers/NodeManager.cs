@@ -2,6 +2,7 @@
 
 using System.Collections;
 using Vixen.IO.JSON;
+using System.IO;
 
 namespace Vixen.Sys.Managers
 {

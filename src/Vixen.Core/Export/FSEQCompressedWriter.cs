@@ -1,6 +1,7 @@
 ﻿using NLog;
 using Vixen.Export.FPP;
 using Zstandard.Net;
+using System.IO;
 
 namespace Vixen.Export
 {

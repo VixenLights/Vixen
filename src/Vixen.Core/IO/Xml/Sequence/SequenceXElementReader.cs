@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using Vixen.Module.SequenceType;
 using Vixen.Services;
 using Vixen.Sys;
+using System.IO;
 
 namespace Vixen.IO.Xml.Sequence
 {

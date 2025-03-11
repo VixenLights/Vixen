@@ -4,6 +4,7 @@ using System.Xml.Linq;
 using NLog;
 using Vixen.Module;
 using Vixen.Sys;
+using System.IO;
 
 namespace Vixen.IO.Xml.Serializer
 {

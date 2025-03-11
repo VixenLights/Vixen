@@ -3,6 +3,7 @@
 		<PropertyGroup>
 				<RootNamespace>Vixen</RootNamespace>
 				<UseWindowsForms>true</UseWindowsForms>
+				<UseWPF>true</UseWPF>
 				<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		</PropertyGroup>
 
