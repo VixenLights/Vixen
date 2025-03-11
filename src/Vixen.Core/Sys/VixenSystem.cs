@@ -4,6 +4,7 @@ using Vixen.Module;
 using Vixen.Services;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Output;
+using System.IO;
 
 namespace Vixen.Sys
 {

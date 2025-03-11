@@ -1,4 +1,5 @@
 ﻿using System.IO.Compression;
+using System.IO;
 
 namespace Vixen.IO
 {

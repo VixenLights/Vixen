@@ -2,6 +2,7 @@
 using System.Runtime.Serialization.Formatters.Binary;
 using NLog;
 using Vixen.Cache.Sequence;
+using System.IO;
 
 namespace Vixen.IO.Binary.SequenceCache
 {

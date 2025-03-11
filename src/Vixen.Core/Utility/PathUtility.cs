@@ -1,4 +1,6 @@
-﻿namespace Vixen.Utility
+﻿using System.IO;
+
+namespace Vixen.Utility
 {
 	public static class PathUtility
 	{
