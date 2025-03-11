@@ -13,6 +13,7 @@
 				<PackageReference Include="MessagePack" Version="2.5.192" />
 				<PackageReference Include="NLog" Version="5.4.0" />
 				<PackageReference Include="OpenTK" Version="4.8.2" />
+				<PackageReference Include="OpenTK.GLWpfControl" Version="4.3.3" />
 		</ItemGroup>
 
 		<ItemGroup>
