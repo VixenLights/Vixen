@@ -3,6 +3,7 @@ using Vixen.Module;
 using Vixen.Module.SequenceType;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
+using System.IO;
 
 namespace Vixen.Services
 {

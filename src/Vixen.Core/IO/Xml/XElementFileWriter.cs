@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using Vixen.Services;
 using Vixen.Sys;
+using System.IO;
 
 namespace Vixen.IO.Xml
 {
@@ -93,7 +94,7 @@ namespace Vixen.IO.Xml
 						Logging.Warn("Backup file exists for some reason and is being deleted.");
 						//This should never happen being as we are using the date time as part of the file name
 						File.Delete(backupFile);
-					}
+											}
 					//Under the covers move does a rename which should be safer and faster than a copy
 					File.Move(filePath, backupFile);
 					success = PurgeOldBackups(filePath);
