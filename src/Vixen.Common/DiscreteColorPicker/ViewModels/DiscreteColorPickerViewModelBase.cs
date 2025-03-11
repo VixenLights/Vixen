@@ -27,7 +27,7 @@ namespace Common.DiscreteColorPicker.ViewModels
 
 		#endregion
 
-		#region Public Prooperties
+		#region Public Properties
 
 		/// <summary>
 		/// Gets or sets the collection of color items.
