@@ -1,0 +1,98 @@
+﻿<Window x:Class="VixenModules.Preview.VixenPreview.OpenGL.WPFOpenGLPreviewView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
+		xmlns:catel="http://schemas.catelproject.com"
+        xmlns:local="clr-namespace:VixenModules.Preview.VixenPreview.OpenGL"		                           
+		xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
+		xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="Vixen Display Preview" Height="450" Width="800"
+		Loaded="Window_Loaded"
+		SizeChanged="Window_SizeChanged"
+		LocationChanged="Window_LocationChanged"
+		Closing="Window_Closing"
+		KeyDown="Window_KeyDown">
+	<Window.Resources>
+		<converters:StringConcatConverter x:Key="StringConcatConverter"/>
+		<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+	</Window.Resources>
+    <Grid>
+		<glWpfControl:GLWpfControl 
+            x:Name="OpenTkControl" 
+            Render="OpenTkControl_OnRender"
+			SizeChanged="OpenTkControl_SizeChanged"
+			MouseWheel="OpenTkControl_MouseWheel"
+			MouseDown="OpenTkControl_MouseDown"
+			MouseMove="OpenTkControl_MouseMove"
+			MouseUp="OpenTkControl_MouseUp">
+			<glWpfControl:GLWpfControl.ContextMenu>
+				<ContextMenu>
+					<MenuItem Header="Show Status"          IsCheckable="True" ToolTip="Enable/Disable the preview status bar." IsChecked="{Binding ShowStatusChecked }"/>
+					<MenuItem Header="Always On Top"        IsCheckable="True" ToolTip="Enable/Disable the window always on top." IsChecked="{Binding AlwaysOnTop }"/>
+					<MenuItem Header="Auto On Top"          IsCheckable="True" ToolTip="Enable/Disable bringing this preview on top and back automatically." IsChecked="{Binding AutoOnTop }"/>
+					<MenuItem Header="Reset Size"                              ToolTip="Resets the viewable size to match the background size." Command="{Binding ResetSize}"/>
+					<MenuItem Header="Center Preview"                          ToolTip="Repositions the viewpoint to the center of the preview." Command="{Binding CenterPreview}"/>
+					<MenuItem Header="Enable Light Scaling" IsCheckable="True" ToolTip="Scales the light size as the camera is zoomed in or out." IsChecked="{Binding EnableLightScaling }"/>
+					<Separator/>
+					<!--<MenuItem Header="{Binding Location}"/> -->
+					<MenuItem>
+						<MenuItem.Header>
+							<MultiBinding Converter="{StaticResource StringConcatConverter}">
+								<Binding>
+									<Binding.Source>
+										<sys:String>Location</sys:String>
+									</Binding.Source>
+								</Binding>
+								<Binding Path="Left"/>
+								<Binding Path="Top"/>
+							</MultiBinding>
+						</MenuItem.Header>
+					</MenuItem>
+					<MenuItem>
+						<!--<MenuItem Header="{Binding FormattedClientSize}"/> -->
+						<MenuItem.Header>
+							<MultiBinding Converter="{StaticResource StringConcatConverter}">
+								<Binding>
+									<Binding.Source>
+										<sys:String>Size</sys:String>
+									</Binding.Source>
+								</Binding>
+								<Binding Path="Width"/>
+								<Binding Path="Height"/>
+							</MultiBinding>
+						</MenuItem.Header>
+					</MenuItem>
+				</ContextMenu>
+			</glWpfControl:GLWpfControl.ContextMenu>
+		</glWpfControl:GLWpfControl>
+		<StatusBar VerticalAlignment="Bottom" Visibility="{Binding ShowStatusChecked, Converter={StaticResource BooleanToVisibilityConverter }}">
+			<StatusBarItem>
+				<TextBlock Text="Lights:" />
+			</StatusBarItem>
+			<StatusBarItem>
+				<TextBlock Text="{Binding PixelCount}" />
+			</StatusBarItem>
+			<StatusBarItem>
+				<Separator />
+			</StatusBarItem>
+			<StatusBarItem>
+				<TextBlock Text="Distance:" />
+			</StatusBarItem>
+			<StatusBarItem>
+				<TextBlock Text="{Binding Distance, StringFormat=F1}" />
+			</StatusBarItem>
+			<StatusBarItem>
+				<Separator />
+			</StatusBarItem>
+			<StatusBarItem>
+				<TextBlock Text="FPS:" />
+			</StatusBarItem>
+			<StatusBarItem>
+				<TextBlock Text="{Binding FrameRate}" />
+			</StatusBarItem>
+		</StatusBar>
+	</Grid>
+</Window>
