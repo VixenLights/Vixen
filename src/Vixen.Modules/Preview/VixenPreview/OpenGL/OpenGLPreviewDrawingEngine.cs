@@ -2,7 +2,6 @@
 
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using OpenTK.Wpf;
 
 using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
@@ -124,7 +123,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				foreach (IOpenGLMovingHeadShape movingHeadVolumes in GetMovingHeadShapes())
 				{
 					// Initialize the moving head with the reference height and redraw delegate
-					int referenceHeight = _background.HasBackground ? _background.Height : _height;
+					int referenceHeight = GetReferenceHeight();
 					movingHeadVolumes.Initialize(referenceHeight, redraw);
 
 					// Give the shape to the render strategy
@@ -134,6 +133,24 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				// Initialize the moving head render strategy
 				_movingHeadRenderStrategy.Initialize();
 			}
+		}
+
+		/// <summary>
+		/// Calculates the reference height of the view.
+		/// </summary>
+		/// <returns>Reference height of the view</returns>
+		private int GetReferenceHeight()
+		{
+			return _background.HasBackground ? _background.Height : _height; 
+		}
+
+		/// <summary>
+		/// Calculate the reference width of the view.
+		/// </summary>
+		/// <returns>Reference width of the view</returns>
+		private int GetReferenceWidth()
+		{
+			return _background.HasBackground ? _background.Width : _width; 
 		}
 
 		/// <summary>
@@ -171,8 +188,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			GL.UseProgram(0);
 
 			// Calculate the reference height
-			int referenceHeight = _background.HasBackground ? _background.Height : _height;
-			int referenceWidth = _background.HasBackground ? _background.Width : _width;
+			int referenceHeight = GetReferenceHeight();
+			int referenceWidth = GetReferenceWidth(); 
 
 			float sizeScale = ((float)_width / referenceWidth + (float)_height / referenceHeight) / 2f;
 
@@ -297,21 +314,17 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		
 		/// <summary>
 		/// Creates the camera view point.
-		/// </summary>
-		/// <param name="clientWidth">Width of the drawing area</param>
-		/// <param name="clientHeight">Height of the drawing area</param>
+		/// </summary>		
 		/// <param name="cameraX">Camera X axis position</param>
 		/// <param name="cameraY">Camera Y axis position</param>
 		/// <param name="cameraZ">Camera Z axis position</param>
-		private void CreateCamera(
-			float clientWidth, 
-			float clientHeight,
+		private void CreateCamera(			
 			float cameraX,
 			float cameraY,
 			float cameraZ)
 		{			
 			// Create our camera
-			_camera = new Camera(new Vector3((_background.HasBackground ? _background.Width : clientWidth) / 2f, (_background.HasBackground ? _background.Height : clientHeight) / 2f, _focalDepth), Quaternion.Identity);
+			_camera = new Camera(new Vector3(GetReferenceWidth() / 2f, (GetReferenceHeight()) / 2f, _focalDepth), Quaternion.Identity);
 			_camera.SetDirection(new Vector3(0, 0, -1));
 			//_camera.Position = new Vector3(_camera.Position.X, _camera.Position.Y, xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionZ", Name),_camera.Position.Z));
 			_camera.Position = new Vector3(
@@ -381,7 +394,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			//Prepare the points
 			//Logging.Debug("Begin Update Shape Points.");
-			int height = _background.HasBackground ? _background.Height : _height;
+			int height = GetReferenceHeight();
 			Parallel.ForEach(_lightBasedDisplayItems, _parallelOptions, d => ((PreviewLightBaseShape)d.Shape).UpdateDrawPoints(height));
 		}
 
@@ -620,9 +633,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 			_focalDepth = (float)(1 / Math.Tan(ConvertDegreesToRadians(Fov / 2)) * (_height / 2.0));
 
-			CreateCamera(
-				(float)_width, 
-				(float)_height,
+			CreateCamera(				
 				cameraX,
 				cameraY,
 				cameraZ);
@@ -796,11 +807,13 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		/// Flag that forces the preview to redraw.
 		/// This flag ensures that when all lights are turned off that the preview is updated to clear all lights.
 		/// </summary>
-		public bool NeedsUpdate { get; set; }	
-				
+		public bool NeedsUpdate { get; set; }
+
 		#endregion
 
-		public static string VertexShader = @"
+		#region Private Constants
+
+		private const string VertexShader = @"
 		#version 330
 
 		in vec3 vertexPosition;
@@ -831,7 +844,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		}
 		";
 
-		public static string FragmentShader = @"
+		private const string FragmentShader = @"
 		#version 330
 
 		in vec4 color;
@@ -854,8 +867,10 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		}
 		";
 
+		#endregion
+
 		#region IDisposable
-		
+
 		/// <inheritdoc/>		
 		public void Dispose()
 		{
