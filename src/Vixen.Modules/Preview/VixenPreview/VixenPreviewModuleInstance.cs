@@ -79,7 +79,11 @@ namespace VixenModules.Preview.VixenPreview
 			
 			bool supported = false;
 
+#if OPENGL_PREVIEW_WIN_FORMS
 			lock (OpenGlPreviewForm.ContextLock)
+#else
+			lock (OpenGLPreviewDrawingEngine.ContextLock)
+#endif
 			{
 
 				try
