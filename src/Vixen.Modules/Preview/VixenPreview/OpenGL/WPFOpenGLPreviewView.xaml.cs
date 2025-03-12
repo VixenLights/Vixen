@@ -15,6 +15,20 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
+	/// 
+	/// <remarks>
+	/// The OpenGL view is refreshed by invalidating the GLWpfControl visual which fires the (GLWpfControl) OnRender event.
+	/// The OnRender event is the single method or entry point to draw the view.
+	/// 
+	/// Most of this code originated from OpenGLPreviewForm.cs.  The OpenGLPreviewForm used MakeCurrent and SwapBuffers.
+	/// 
+	/// The GLWpfControl control has similar methods hanging off the Context.  Informal testing revealed that the Preview
+	/// worked with and without these calls, so the calls have been omitted since they did not seem required.
+	/// 
+	/// The GLWpfControl has a flag named RenderContinuously.  This flag defaults to true but this resulted in refreshing
+	/// view at a periodic rate.  This flag has been set to false to allow Vixen to control the refresh rate.
+	/// 
+	/// </remarks>
 	public partial class WPFOpenGLPreviewView : Window, IDisplayForm, IDisposable
 	{
 		#region Fields
@@ -591,15 +605,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			set
 			{
 				_displayName = value;
-				
-				if (Dispatcher.CheckAccess())
-				{
-					Dispatcher.Invoke(UpdateWindowTitle);
-				}
-				else
-				{
-					UpdateWindowTitle();
-				}
+								
+				Dispatcher.Invoke(UpdateWindowTitle);				
 			}
 		}
 
