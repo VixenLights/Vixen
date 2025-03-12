@@ -80,7 +80,11 @@ namespace VixenModules.Preview.VixenPreview
 			if (_openGLSupportChecked) return _systemSupportsOpenGl;
 			Logging.Info("Checking for OpenGL 3.3 Support" );
 			
+#if OPENGL_PREVIEW_WIN_FORMS
 			lock (OpenGlPreviewForm.ContextLock)
+#else
+			lock (OpenGLPreviewDrawingEngine.ContextLock)
+#endif
 			{
 
 				try
