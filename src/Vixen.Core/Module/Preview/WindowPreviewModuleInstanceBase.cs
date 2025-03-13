@@ -22,9 +22,9 @@ namespace Vixen.Module.Preview
 					// Needs to be cast to avoid ambiguity since there are no parameters
 					// to differentiate the signature.
 					Func<Window> initMethod = Initialize;
-					_threadBehavior = //VixenSystem.SystemConfig.IsPreviewThreaded
-										  new WPFMultiThreadBehavior(initMethod);
-										  //: (IThreadBehavior)new SingleThreadBehavior(initMethod);
+					_threadBehavior = VixenSystem.SystemConfig.IsPreviewThreaded
+										? new WPFMultiThreadBehavior(initMethod)
+										: (IThreadBehavior)new WPFSingleThreadBehavior(initMethod);
 				}
 				return _threadBehavior;
 			}
