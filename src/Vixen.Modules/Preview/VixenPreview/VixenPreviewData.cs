@@ -61,6 +61,9 @@ namespace VixenModules.Preview.VixenPreview
 		public Vector3D LocationOffset { get; set; }
 
 		[DataMember]
+		public bool KeepInsertMode{ get; set; }
+
+		[DataMember]
 		public List<DisplayItem> DisplayItems
 		{
 			get { return _displayItems ?? (_displayItems = new List<DisplayItem>()); }

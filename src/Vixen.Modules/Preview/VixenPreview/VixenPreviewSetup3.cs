@@ -144,6 +144,7 @@ namespace VixenModules.Preview.VixenPreview
 			useOpenGLPreviewToolStripMenuItem.Checked = Data.UseOpenGL;
 			useOpenGLPreviewToolStripMenuItem.Enabled = VixenPreviewModuleInstance.SupportsOpenGLPreview();
 			saveLocationsToolStripMenuItem.Checked = Data.SaveLocations;
+			keepInsertModeToolStripMenuItem.Checked = Data.KeepInsertMode;
 
 			// Choose the select tool to start
 			toolbarButton_Click(buttonSelect, new EventArgs());
@@ -817,6 +818,11 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			Data.SaveLocations = saveLocationsToolStripMenuItem.Checked;
         }
+
+		private void keepInsertModeToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Data.KeepInsertMode = keepInsertModeToolStripMenuItem.Checked;
+		}
 
         private void trackerZoom_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
         {

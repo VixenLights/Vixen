@@ -101,6 +101,7 @@ namespace VixenModules.Preview.VixenPreview
 			settingsToolStripMenuItem = new ToolStripMenuItem();
 			saveLocationsToolStripMenuItem = new ToolStripMenuItem();
 			locationOffsetSetupToolStripMenuItem = new ToolStripMenuItem();
+			keepInsertModeToolStripMenuItem = new ToolStripMenuItem();
 			useOpenGLPreviewToolStripMenuItem = new ToolStripMenuItem();
 			helpToolStripMenuItem = new ToolStripMenuItem();
 			viewHelpToolStripMenuItem = new ToolStripMenuItem();
@@ -1013,6 +1014,18 @@ namespace VixenModules.Preview.VixenPreview
 			locationOffsetSetupToolStripMenuItem.Text = "Location Offset Setup";
 			locationOffsetSetupToolStripMenuItem.Click += locationOffsetSetupToolStripMenuItem_Click;
 			// 
+			// keepInsertModeToolStripMenuItem
+			// 
+			this.keepInsertModeToolStripMenuItem.Checked = false;
+			this.keepInsertModeToolStripMenuItem.CheckOnClick = true;
+			this.keepInsertModeToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.keepInsertModeToolStripMenuItem.Name = "keepInsertModeToolStripMenuItemToolStripMenuItem";
+			this.keepInsertModeToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+			this.keepInsertModeToolStripMenuItem.Text = "Keep Insert Mode Active";
+			this.keepInsertModeToolStripMenuItem.ToolTipText = "Stay in insert mode after inserting each Prop.";
+			this.keepInsertModeToolStripMenuItem.Click += new System.EventHandler(this.keepInsertModeToolStripMenuItem_Click);
+
+			// 
 			// useOpenGLPreviewToolStripMenuItem
 			// 
 			useOpenGLPreviewToolStripMenuItem.CheckOnClick = true;
@@ -1824,6 +1837,7 @@ namespace VixenModules.Preview.VixenPreview
 		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem viewHelpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem locationOffsetSetupToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem keepInsertModeToolStripMenuItem;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;

@@ -61,6 +61,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		private bool _holdRender;
 		private static Cursor _rotateCursor = new Cursor(new MemoryStream(Properties.Resources.Rotate));
+		private static Cursor _insertModeCursor = new Cursor(new MemoryStream(Properties.Resources.InsertMode));
 
 		private MessageBoxForm lockWarning;
 
@@ -1244,6 +1245,10 @@ namespace VixenModules.Preview.VixenPreview
 							Cursor.Current = Cursors.SizeAll;
 						}
 					}
+					else if (_currentTool != Tools.Select)
+					{
+						Cursor.Current = _insertModeCursor;
+					}
 				}
 			}
 		}
@@ -1484,6 +1489,11 @@ namespace VixenModules.Preview.VixenPreview
 							// Give the shape the opportunity to adjust the shape coordinates 
 							_selectedDisplayItem.Shape.EndAddNew();
 						}
+
+						// If Keep Insert mode is off, then reset the current prop state to Select which effectively
+						// stops adding new props and the cursor will ultimately reset to the default shape.
+						if (Data.KeepInsertMode != true)
+							_currentTool = Tools.Select;
 					}
 					else if (modifyType.Equals("AddNew"))
 					{
