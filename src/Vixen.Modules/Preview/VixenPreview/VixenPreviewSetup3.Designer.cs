@@ -88,6 +88,7 @@
 			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveLocationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.locationOffsetSetupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.keepInsertModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.useOpenGLPreviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.viewHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -754,6 +755,7 @@
 			this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveLocationsToolStripMenuItem,
             this.locationOffsetSetupToolStripMenuItem,
+			this.keepInsertModeToolStripMenuItem,
             this.useOpenGLPreviewToolStripMenuItem});
 			this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
 			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
@@ -776,6 +778,18 @@
 			this.locationOffsetSetupToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.locationOffsetSetupToolStripMenuItem.Text = "Location Offset Setup";
 			this.locationOffsetSetupToolStripMenuItem.Click += new System.EventHandler(this.locationOffsetSetupToolStripMenuItem_Click);
+			// 
+			// keepInsertModeToolStripMenuItem
+			// 
+			this.keepInsertModeToolStripMenuItem.Checked = false;
+			this.keepInsertModeToolStripMenuItem.CheckOnClick = true;
+			this.keepInsertModeToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.keepInsertModeToolStripMenuItem.Name = "keepInsertModeToolStripMenuItemToolStripMenuItem";
+			this.keepInsertModeToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+			this.keepInsertModeToolStripMenuItem.Text = "Keep Insert Mode Active";
+			this.keepInsertModeToolStripMenuItem.ToolTipText = "Stay in insert mode after inserting each Prop.";
+			this.keepInsertModeToolStripMenuItem.Click += new System.EventHandler(this.keepInsertModeToolStripMenuItem_Click);
+
 			// 
 			// useOpenGLPreviewToolStripMenuItem
 			// 
@@ -1445,6 +1459,7 @@
 		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem viewHelpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem locationOffsetSetupToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem keepInsertModeToolStripMenuItem;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
