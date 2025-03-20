@@ -55,6 +55,8 @@
 			this.Controls.Add(this.timelineControl);
 			this.Name = "Form_Grid";
 			this.Text = "Timeline";
+			this.KeyDown += Form_Grid_KeyDown;
+			this.DockStateChanged += Form_Grid_DockStateChanged;
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
