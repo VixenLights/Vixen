@@ -359,22 +359,27 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				_pointScaleFactor = 1;
 				return;
 			}
-			float scale = _focalDepth / _camera.Position.Z;
-			float sizeScale = 0;
-			if (_background.HasBackground)
+
+			// Camera needs to be created before calculating the point scale factor
+			if (_camera != null)
 			{
-				sizeScale = ((float)_width / _background.Width + (float)_height / _background.Height) / 2f;
+				float scale = _focalDepth / _camera.Position.Z;
+				float sizeScale = 0;
+				if (_background.HasBackground)
+				{
+					sizeScale = ((float)_width / _background.Width + (float)_height / _background.Height) / 2f;
+				}
+				else
+				{
+					sizeScale = 1;
+				}
+
+				scale *= sizeScale;
+
+				scale = scale >= .1f ? scale : .1f;
+
+				_pointScaleFactor = scale;
 			}
-			else
-			{
-				sizeScale = 1;
-			}
-
-			scale *= sizeScale;
-
-			scale = scale >= .1f ? scale : .1f;
-
-			_pointScaleFactor = scale;
 		}
 
 		/// <summary>
@@ -675,7 +680,10 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			_focalDepth = (float)(1 / Math.Tan(ConvertDegreesToRadians(Fov / 2)) * (height / 2.0));
 
 			// Calculate the aspect ratio
-			_aspectRatio = (float)_width / (float)_height;			
+			_aspectRatio = (float)_width / (float)_height;	
+			
+			// Focal depth changed to the point scale factor needs to be recalculated
+			CalculatePointScaleFactor();
 		}
 
 		/// <summary>
