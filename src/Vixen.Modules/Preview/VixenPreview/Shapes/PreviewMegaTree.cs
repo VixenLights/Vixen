@@ -565,7 +565,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		public override void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected,
-		                          bool forceDraw, double zoomLevel)
+		                          bool forceDraw, bool locked, double zoomLevel)
 		{
 			if (_strings != null)
 			{
@@ -573,12 +573,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				{
 					foreach (PreviewPixel pixel in lightString._pixels)
 					{
-						DrawPixel(pixel, fp, editMode, highlightedElements, selected, forceDraw);
+						DrawPixel(pixel, fp, editMode, highlightedElements, selected, locked, forceDraw);
 					}
 				}
 			}
 
-			base.Draw(fp, editMode, highlightedElements, selected, forceDraw, zoomLevel);
+			base.Draw(fp, editMode, highlightedElements, selected, forceDraw, locked, zoomLevel);
 		}
 
 		public override object Clone()

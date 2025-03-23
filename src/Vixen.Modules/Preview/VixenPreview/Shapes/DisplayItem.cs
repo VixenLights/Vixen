@@ -28,7 +28,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	[KnownType(typeof(PreviewCustomProp))]
 	[KnownType(typeof(PreviewMovingHead))]
 	[KnownType(typeof(PreviewLightBaseShape))]
-	public class DisplayItem : IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<CommandValue>>, IDisposable, IEnumerable<DisplayItem>, ICloneable
+	public class DisplayItem : IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<CommandValue>>, IDisposable, IEnumerable<DisplayItem>, ICloneable, IEquatable<DisplayItem>
 	{
 		private PreviewBaseShape _shape;
 
@@ -57,9 +57,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set { _shape = value; }
 		}
 
-		public void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected, bool forceDraw)
+		public void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected, bool locked, bool forceDraw)
 		{
-			_shape.Draw(fp, editMode, highlightedElements, selected, forceDraw, _zoomLevel);
+			_shape.Draw(fp, editMode, highlightedElements, selected, forceDraw, locked, _zoomLevel);
 		}
 
 		public void DrawInfo(Graphics g)
@@ -139,6 +139,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			DisplayItem item = (DisplayItem) MemberwiseClone();
 			item.Shape = Shape.Clone() as PreviewBaseShape;
 			return item;
+		}
+		public override bool Equals(object obj)
+		{
+			if (obj == null) return false;
+			DisplayItem displayItem = obj as DisplayItem;
+			if (displayItem == null) return false;
+			else return Equals(displayItem);
+		}
+
+		public bool Equals(DisplayItem obj)
+		{
+			if (obj == null) return false;
+			return obj.Shape.Left == this.Shape.Left &&
+				   obj.Shape.Right == this.Shape.Right &&
+				   obj.Shape.Top == this.Shape.Top &&
+				   obj.Shape.Bottom == this.Shape.Bottom;
 		}
 	}
 }
