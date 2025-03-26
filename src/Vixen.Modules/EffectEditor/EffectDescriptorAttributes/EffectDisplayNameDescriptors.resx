@@ -141,7 +141,10 @@
   <data name="CenterStop" xml:space="preserve">
     <value>Center Stop</value>
   </data>
-  <data name="CenterText" xml:space="preserve">
+	<data name="EndStop" xml:space="preserve">
+    <value>End Stop</value>
+  </data>
+	<data name="CenterText" xml:space="preserve">
     <value>Center Text</value>
   </data>
   <data name="Interval" xml:space="preserve">
