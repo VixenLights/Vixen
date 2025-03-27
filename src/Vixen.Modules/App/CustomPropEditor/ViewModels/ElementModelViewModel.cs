@@ -412,6 +412,18 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region Light Size property
+
+		/// <summary>
+		/// Gets the Light Size value.
+		/// </summary>
+		[DisplayName("Light Size")]
+		[Description("Size of light element(s) under this element.")]
+		[PropertyOrder(9)]
+		public String LightSize => GetLightsSizeNames(ElementModel);
+
+		#endregion
+
 		#region BeginEdit command
 
 		private Command _beginEditCommand;
@@ -589,6 +601,59 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			ElementModelLookUpService.Instance.RemoveModel(ElementModel.Id, this);
 		}
 
+		#region Private
+		private String GetLightsSizeNames(ElementModel lights)
+		{
+			String _value;
+			int _size = GetLightsSizes(lights);
+			switch (_size)
+			{
+				case -1: // multiple sizes encounterd
+					_value = "multiple sizes";
+					break;
+				case 0: // no lights encountered
+					_value = String.Empty;
+					break;
+				default: // a single light size encountered
+					_value = _size.ToString();
+					break;
+			}
 
+			return _value;
+		}
+
+		private int GetLightsSizes(ElementModel lights)
+		{
+			int _returnSize = 0;
+
+			// If a single light element...
+			if (lights.IsLeaf == true && lights.IsGroupNode != true)
+				_returnSize = lights.LightSize;
+
+			// Else if a Group of Lights....
+			else
+			{
+				foreach (var child in lights.Children)
+				{
+					int _tempSize = child.IsGroupNode == true ? GetLightsSizes(child) : child.LightSize;
+
+					// Set the initial light size
+					if (_returnSize == 0)
+						_returnSize = _tempSize;
+
+					// But if all the lights are NOT the same size, then return -1 (indicating muyltiple sizes)
+					else if (_returnSize != _tempSize)
+					{
+						_returnSize = -1;
+						break;
+					}
+				}
+			}
+
+			return _returnSize;
+		}
+
+
+		#endregion
 	}
 }
