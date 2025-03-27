@@ -3,6 +3,7 @@ using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
+using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using NLog;
 
@@ -25,7 +26,7 @@ namespace VixenApplication
 			pictureBoxIcon.Image = Resources.VixenImage;
 			labelHeading.Font = new Font(labelHeading.Font.Name, 20F);
 			labelCurrentVersion.Font = new Font(labelCurrentVersion.Font.Name, 10F);
-			linkLabelVixenDownLoadPage.Font = new Font(linkLabelVixenDownLoadPage.Font.Name, 10F);
+			buttonDownload.Font = new Font(buttonDownload.Font.Name, 20F);
 			_currentVersion = currentVersion;
 			_latestVersion = latestVersion;
 			_currentVersionType = currentVersionType;
@@ -36,7 +37,6 @@ namespace VixenApplication
 		{
 			//display a message to the user that we are doing stuff
 			labelCurrentVersion.Text = @"Checking for updates, please wait.";
-			linkLabelVixenDownLoadPage.Text = @"www.vixenlights.com/downloads/vixen-3-downloads/";
 
 			await CheckUpdates();
 		}
@@ -50,17 +50,20 @@ namespace VixenApplication
 
 			if (_newVersionAvailable)
 			{
-				labelCurrentVersion.Text = @"Vixen " + _currentVersionType + " " + _latestVersion + @" is now available for download.";
+				labelCurrentVersion.Text = String.Empty;
 				textBoxReleaseNotes.Visible = true;
 				labelHeading.Visible = true;
 				lblChangeLog.Visible = true;
+				buttonDownload.Text = $"Download {_currentVersionType} version {_latestVersion}";
+				buttonDownload.Visible = true;
 			}
 			else
 			{
-				labelCurrentVersion.Text =
+				labelCurrentVersion.Text = 
 					@"Vixen " + _currentVersionType + @" " + _currentVersion + @" is the latest " + _currentVersionType;
 				labelHeading.Text = @"You have the latest " + _currentVersionType + @" installed!";
 				textBoxReleaseNotes.Text = "";
+				buttonDownload.Visible = false;
 			}
 
 			//Set the cursor back
@@ -224,14 +227,33 @@ namespace VixenApplication
 			}
 		}
 
-		private void linkLabelVixenDownLoadPage_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		private void buttonDownload_Click(object sender, EventArgs e)
 		{
-			var psi = new ProcessStartInfo()
-			{
-				FileName = "www.vixenlights.com/downloads/vixen-3-downloads/",
-				UseShellExecute = true
-			};
-			Process.Start(psi);
+			DownloadFile();
+		}
+
+		private async void DownloadFile()
+		{
+			//Turn on the wait cursor while we do stuff
+			Cursor = Cursors.WaitCursor;
+
+			String downloadPath = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders", "{374DE290-123F-4565-9164-39C4925E467B}", String.Empty).ToString();
+			String fileToDownload = $"https://github.com/VixenLights/Vixen/releases/download/{_latestVersion}/Vixen-{ConvertVersion(_latestVersion)}-Setup-64bit.exe";
+
+			var httpClient = new HttpClient();
+			string fileName = fileToDownload.Split('/').Last();
+			byte[] fileBytes = await httpClient.GetByteArrayAsync(fileToDownload);
+			await File.WriteAllBytesAsync(downloadPath + "\\" + fileName, fileBytes);
+
+			//Turn off the wait cursor while we do stuff
+			Cursor = Cursors.Default;
+		}
+
+
+
+		private String ConvertVersion(String version)
+		{
+			return version.Replace('u', '.');
 		}
 
 		private void SetScrollbars()
