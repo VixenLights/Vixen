@@ -141,7 +141,10 @@
   <data name="CenterStop" xml:space="preserve">
     <value>Moves the text into view and stops it in the center.</value>
   </data>
-  <data name="CenterText" xml:space="preserve">
+	<data name="EndStop" xml:space="preserve">
+    <value>Moves the text into view and stops it at the end.</value>
+  </data>
+	<data name="CenterText" xml:space="preserve">
     <value>Center each line of text instead of left justified.</value>
   </data>
   <data name="ChangePercent" xml:space="preserve">

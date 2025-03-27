@@ -25,6 +25,7 @@ namespace VixenModules.Effect.Text
 			FontScaleCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			ScaleText = 0;
 			CenterStop = false;
+			EndStop = false;
 			Text = new List<string>{String.Empty};
 			GradientMode = GradientMode.AcrossElement;
 			Orientation=StringOrientation.Vertical;
@@ -69,6 +70,9 @@ namespace VixenModules.Effect.Text
 
 		[DataMember]
 		public bool CenterStop { get; set; }
+
+		[DataMember]
+		public bool EndStop { get; set; }
 
 		[DataMember]
 		public bool CenterText { get; set; }
@@ -213,6 +217,7 @@ namespace VixenModules.Effect.Text
 				Direction = Direction,
 				Speed = Speed,
 				CenterStop = CenterStop,
+				EndStop = EndStop,
 				Orientation = Orientation,
 				YOffSetCurve = new Curve(YOffSetCurve),
 				XOffsetCurve = new Curve(XOffsetCurve),
