@@ -50,7 +50,7 @@ namespace VixenApplication
 
 			if (_newVersionAvailable)
 			{
-				labelCurrentVersion.Text = null;
+				labelCurrentVersion.Text = String.Empty;
 				textBoxReleaseNotes.Visible = true;
 				labelHeading.Visible = true;
 				lblChangeLog.Visible = true;
