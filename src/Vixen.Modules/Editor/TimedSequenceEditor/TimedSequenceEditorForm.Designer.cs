@@ -108,6 +108,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_removeAudio = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.beatBarDetectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.divideMarksEvenlyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.speedTempoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.modifySequenceLengthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.curveEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -962,7 +963,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.audioToolStripMenuItem,
-            this.modifySequenceLengthToolStripMenuItem,
+			this.divideMarksEvenlyToolStripMenuItem,
+			this.modifySequenceLengthToolStripMenuItem,
             this.curveEditorToolStripMenuItem,
             this.colorGradientEditorToolStripMenuItem,
             this.ColorCollectionsToolStripMenuItem,
@@ -1011,6 +1013,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.beatBarDetectionToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
 			this.beatBarDetectionToolStripMenuItem.Text = "Beat/Bar Detection";
 			this.beatBarDetectionToolStripMenuItem.Click += new System.EventHandler(this.toolStripMenuItem_BeatBarDetection_Click);
+			//
+			// divideMarksEvenlyToolStripMenuItem
+			// 
+			this.divideMarksEvenlyToolStripMenuItem.Enabled = true;
+			this.divideMarksEvenlyToolStripMenuItem.Name = "divideMarksEvenlyToolStripMenuItem";
+			this.divideMarksEvenlyToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+			this.divideMarksEvenlyToolStripMenuItem.Text = "Create Evenly Divided Marks";
+			this.divideMarksEvenlyToolStripMenuItem.Click += new System.EventHandler(this.toolStripMenuItem_divideMarksEvenly_Click);
 			// 
 			// speedTempoToolStripMenuItem
 			// 
@@ -2386,6 +2396,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem cADStyleSelectionBoxToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem audioToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem beatBarDetectionToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem divideMarksEvenlyToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_associateAudio;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_removeAudio;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
