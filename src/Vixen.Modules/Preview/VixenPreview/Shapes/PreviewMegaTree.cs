@@ -467,8 +467,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						var line = _strings[stringNum] as PreviewLine;
 					    if (line != null)
 					    {
-							var _top = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(basePixel), ZoomLevel, PreviewTools.RotateTypes.Clockwise);
-							var _base = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(topPixel), ZoomLevel, PreviewTools.RotateTypes.Clockwise);
+							var _top = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(topPixel), ZoomLevel, PreviewTools.RotateTypes.Clockwise);
+							var _base = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(basePixel), ZoomLevel, PreviewTools.RotateTypes.Clockwise);
 
 							line.SetPoint0(_base.X, _base.Y);
 					        line.SetPoint1(_top.X, _top.Y);
