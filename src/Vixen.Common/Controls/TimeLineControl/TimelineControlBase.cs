@@ -153,7 +153,7 @@ namespace Common.Controls.Timeline
 		/// </summary>
 		/// <param name="px"></param>
 		/// <returns></returns>
-		protected TimeSpan pixelsToTime(int px)
+		public TimeSpan pixelsToTime(int px)
 		{
 			return TimeSpan.FromTicks(px*TimePerPixel.Ticks);
 		}
