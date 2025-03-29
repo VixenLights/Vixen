@@ -11,12 +11,7 @@ using Vixen.Sys;
 
 namespace VixenModules.Preview.VixenPreview
 {
-    partial class VixenPreviewModuleInstance :
-#if OPENGL_PREVIEW_WIN_FORMS
-	FormPreviewModuleInstanceBase
-#else
-	WindowPreviewModuleInstanceBase
-#endif
+    partial class VixenPreviewModuleInstance : WindowPreviewModuleInstanceBase
 	{
     }
 }
