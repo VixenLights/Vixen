@@ -52,6 +52,8 @@ namespace VixenModules.Preview.VixenPreview
 			set
 			{
 				base.ModuleData = value;
+
+				UseWPF = GetDataModel().UseOpenGL;
 			}
 		}
 
@@ -126,20 +128,17 @@ namespace VixenModules.Preview.VixenPreview
 
 		}
 
-#if OPENGL_PREVIEW_WIN_FORMS
-		protected override Form Initialize()
-		{
+		protected override Form InitializeForm()
+		{			
 			SetupPreviewForm();
-			return (Form)_displayForm;
+			return (Form)_displayForm;			
 		}
-#else
-		protected override Window Initialize()
-		{
-			SetupPreviewForm();
-			return (Window)_displayForm;			
-		}
-#endif
 
+		protected override Window InitializeWindow()
+		{			
+			SetupPreviewForm();
+			return (Window)_displayForm;						
+		}
 
 		private readonly object _formLock = new object();
 		private void SetupPreviewForm()
@@ -235,18 +234,29 @@ namespace VixenModules.Preview.VixenPreview
 		/// <inheritdoc />
 		protected override void PlayerActivatedImpl()
 		{
+			
 			if (_displayForm.IsOnTopWhenPlaying)
 			{
-				((Form) _displayForm).TopMost = true;
-			}
+				((Window)_displayForm).Topmost = true;
+			}			
 		}
 #else
 		/// <inheritdoc />
 		protected override void PlayerActivatedImpl()
 		{
-			if (_displayForm.IsOnTopWhenPlaying)
+			if (UseOpenGLRendering)
 			{
-				((Window)_displayForm).Topmost = true;
+				if (_displayForm.IsOnTopWhenPlaying)
+				{
+					((Window)_displayForm).Topmost = true;
+				}
+			}
+			else
+			{
+				if (_displayForm.IsOnTopWhenPlaying)
+				{
+					((Form)_displayForm).TopMost = true;
+				}
 			}
 		}
 #endif
@@ -254,21 +264,29 @@ namespace VixenModules.Preview.VixenPreview
 #if OPENGL_PREVIEW_WIN_FORMS
 		/// <inheritdoc />
 		protected override void PlayerDeactivatedImpl()
-		{
+		{						
 			if (_displayForm.IsOnTopWhenPlaying)
 			{
-				((Form)_displayForm).TopMost = false;
-				((Form)_displayForm).SendToBack();
-			}
+				((Window)_displayForm).Topmost = false;
+				((Window)_displayForm).Dispatcher.Invoke(SendToBack);
+			}			
 		}
 #else
 		/// <inheritdoc />
 		protected override void PlayerDeactivatedImpl()
 		{
-			if (_displayForm.IsOnTopWhenPlaying)
+			if (UseOpenGLRendering)
 			{
-				((Window)_displayForm).Topmost = false;
-				((Window)_displayForm).Dispatcher.Invoke(SendToBack);
+				if (_displayForm.IsOnTopWhenPlaying)
+				{
+					((Form)_displayForm).TopMost = false;
+					((Form)_displayForm).SendToBack();
+				}
+				else
+				{
+					((Form)_displayForm).TopMost = false;
+					((Form)_displayForm).SendToBack();
+				}
 			}
 		}
 #endif
