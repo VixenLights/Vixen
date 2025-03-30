@@ -18,12 +18,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			if (shapes != null)
 				Strings = shapes;
 
+			ShowRotation = false;
 			Layout();
 		}
 
 		[OnDeserialized]
 		private new void OnDeserialized(StreamingContext context)
 		{
+			ShowRotation = false;
 			Layout();
 		}
 
@@ -177,7 +179,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
             //PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
 			// See if we're resizing
-			if (_selectedPoint != null && _selectedPoint.PointType == PreviewPoint.PointTypes.Size)
+			if (_selectedPoint != null)
 			{
 				double aspect = ((double) startWidth + (double) changeX)/(double) startWidth;
 				//Resize(aspect);
@@ -228,7 +230,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			List<PreviewPoint> points = new List<PreviewPoint>();
 			//points.Add(new PreviewPoint(TopLeft));
-			points.Add(new PreviewPoint(BottomRight));
+			var bottomRight = new PreviewPoint(BottomRight);
+			bottomRight.PointType = PreviewPoint.PointTypes.SizeBottomRight;
+			points.Add(bottomRight);
 			SetSelectPoints(points, null);
 		}
 
