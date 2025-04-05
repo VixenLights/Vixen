@@ -1313,7 +1313,7 @@ namespace Common.Controls.Timeline
 
 		public TimeSpan TimeAtPosition(Point p)
 		{
-			return PixelsToTime(GridPoint(p).X);
+			return pixelsToTime(GridPoint(p).X);
 		}
 
 		/// <summary>

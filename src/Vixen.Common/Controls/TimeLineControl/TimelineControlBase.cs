@@ -36,11 +36,6 @@ namespace Common.Controls.Timeline
 
 		protected TimeInfo TimeInfo { get;  set; }
 
-		public TimeSpan PixelsToTime(int px)
-		{
-			return pixelsToTime(px);
-		}
-
 		#region Public Properties 
 
 		/// <summary>
