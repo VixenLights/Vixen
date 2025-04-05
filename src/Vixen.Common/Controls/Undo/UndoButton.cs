@@ -42,6 +42,13 @@
 			this.DropDownOpening += UndoButton_DropDownOpening;
 		}
 
+		protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
+		{
+			base.OnPaint(e);
+			Font font = new Font(SystemFonts.DefaultFont.FontFamily, 4F, FontStyle.Regular);
+			Brush brush = this.Enabled == true ? Brushes.White : Brushes.Gray;
+			e.Graphics.DrawString("\u25BC", font, brush, 35, this.Height/2-4);
+		}
 
 		public ListBox.ObjectCollection UndoItems
 		{
