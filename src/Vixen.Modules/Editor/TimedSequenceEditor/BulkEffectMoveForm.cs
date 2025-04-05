@@ -79,7 +79,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			get { return checkBoxVisibleRows.Checked; }
 		}
-		
+
+		public bool ClipEffects
+		{
+			get { return checkBoxClipEffects.Checked; }
+		}
+
+		public bool ProcessMarks
+		{
+			get { return checkBoxMoveMarks.Checked; }
+		}
+
 		private void txtStartTime_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
 		{
 			if (txtStartTime.MaskFull)

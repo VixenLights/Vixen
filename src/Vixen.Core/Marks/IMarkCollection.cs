@@ -39,6 +39,8 @@ namespace Vixen.Marks
 
 		void AddMarks(IEnumerable<IMark> marks);
 
+		public void SwapPlaces(IMark lhs, IMark rhs);
+
 		void EnsureOrder();
 
 		/// <summary>

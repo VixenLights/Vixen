@@ -43,6 +43,8 @@
 			this.radioButtonForward = new System.Windows.Forms.RadioButton();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.checkBoxVisibleRows = new System.Windows.Forms.CheckBox();
+			this.checkBoxClipEffects = new System.Windows.Forms.CheckBox();
+			this.checkBoxMoveMarks = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -115,7 +117,7 @@
 			// 
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnOk.Location = new System.Drawing.Point(114, 216);
+			this.btnOk.Location = new System.Drawing.Point(114, 266);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(87, 27);
 			this.btnOk.TabIndex = 7;
@@ -126,7 +128,7 @@
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(208, 216);
+			this.btnCancel.Location = new System.Drawing.Point(208, 266);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(87, 27);
 			this.btnCancel.TabIndex = 8;
@@ -177,6 +179,26 @@
 			this.checkBoxVisibleRows.Text = "Process visible rows only";
 			this.checkBoxVisibleRows.UseVisualStyleBackColor = true;
 			// 
+			// checkBoxClipEffects
+			// 
+			this.checkBoxClipEffects.AutoSize = true;
+			this.checkBoxClipEffects.Location = new System.Drawing.Point(63, 210);
+			this.checkBoxClipEffects.Name = "checkBoxClipEffects";
+			this.checkBoxClipEffects.Size = new System.Drawing.Size(156, 19);
+			this.checkBoxClipEffects.TabIndex = 10;
+			this.checkBoxClipEffects.Text = "Clip Effects";
+			this.checkBoxClipEffects.UseVisualStyleBackColor = true;
+			// 
+			// checkBoxMoveMarks
+			// 
+			this.checkBoxMoveMarks.AutoSize = true;
+			this.checkBoxMoveMarks.Location = new System.Drawing.Point(63, 232);
+			this.checkBoxMoveMarks.Name = "checkBoxMoveMarks";
+			this.checkBoxMoveMarks.Size = new System.Drawing.Size(156, 19);
+			this.checkBoxMoveMarks.TabIndex = 11;
+			this.checkBoxMoveMarks.Text = "Include Marks";
+			this.checkBoxMoveMarks.UseVisualStyleBackColor = true;
+			// 
 			// BulkEffectMoveForm
 			// 
 			this.AcceptButton = this.btnOk;
@@ -185,7 +207,9 @@
 			this.AutoSize = true;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(307, 255);
+			this.ClientSize = new System.Drawing.Size(307, 307);
+			this.Controls.Add(this.checkBoxMoveMarks);
+			this.Controls.Add(this.checkBoxClipEffects);
 			this.Controls.Add(this.checkBoxVisibleRows);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.btnCancel);
@@ -227,6 +251,7 @@
 		private System.Windows.Forms.RadioButton radioButtonForward;
 		private System.Windows.Forms.ToolTip toolTip;
 		private System.Windows.Forms.CheckBox checkBoxVisibleRows;
-
+		private System.Windows.Forms.CheckBox checkBoxClipEffects;
+		private System.Windows.Forms.CheckBox checkBoxMoveMarks;
 	}
 }
