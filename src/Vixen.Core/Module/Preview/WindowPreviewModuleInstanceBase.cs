@@ -26,17 +26,17 @@ namespace Vixen.Module.Preview
 #if OPENGL_PREVIEW_WIN_FORMS
 						// Needs to be cast to avoid ambiguity since there are no parameters
 						// to differentiate the signature.
+						Func<Form> initMethod = InitializeForm;
+						_threadBehavior = VixenSystem.SystemConfig.IsPreviewThreaded
+											  ? new MultiThreadBehavior(initMethod)
+											  : (IThreadBehavior)new SingleThreadBehavior(initMethod);						
+#else
+						// Needs to be cast to avoid ambiguity since there are no parameters
+						// to differentiate the signature.
 						Func<Window> initMethod = InitializeWindow;
 						_threadBehavior = VixenSystem.SystemConfig.IsPreviewThreaded
 											? new WPFMultiThreadBehavior(initMethod)
 											: (IThreadBehavior)new WPFSingleThreadBehavior(initMethod);
-#else
-						// Needs to be cast to avoid ambiguity since there are no parameters
-						// to differentiate the signature.
-						Func<Form> initMethod = InitializeForm;
-						_threadBehavior = VixenSystem.SystemConfig.IsPreviewThreaded
-											  ? new MultiThreadBehavior(initMethod)
-											  : (IThreadBehavior)new SingleThreadBehavior(initMethod);
 #endif
 					}
 					return _threadBehavior;
