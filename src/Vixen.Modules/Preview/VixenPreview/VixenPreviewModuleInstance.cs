@@ -196,17 +196,23 @@ namespace VixenModules.Preview.VixenPreview
 
 		public override bool Setup()
 		{
+			// Display the Preview Setup Dialog
 			_setupForm = new VixenPreviewSetup3();
 			var data = GetDataModel();
 			_setupForm.Data = data;
 			
+			// Show the Preview Setup Dialog
 			_setupForm.ShowDialog();
 
+#if OPENGL_PREVIEW_WIN_FORMS
 			if (data.UseOpenGL && _displayForm?.GetType() != typeof(OpenGlPreviewForm))
 			{
 				_displayForm?.Close();
-				SetupPreviewForm();
 			}
+#endif
+
+			// Re-create the Preview Window
+			SetupPreviewForm();
 
 			if (_displayForm != null)
 			{
@@ -222,7 +228,10 @@ namespace VixenModules.Preview.VixenPreview
 			if (disposing)
 			{
 				if (_displayForm != null)
+				{
 					_displayForm.Close();
+					_displayForm = null;	
+				}				
 			}
 			
 			base.Dispose(disposing);
