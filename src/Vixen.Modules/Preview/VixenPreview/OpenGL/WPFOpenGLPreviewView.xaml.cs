@@ -631,7 +631,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		public void UpdatePreview()
 		{
 			// If the preview is stale then...
-			if (_viewModel.DrawingEngine.IsPreviewStale() || _viewModel.DrawingEngine.NeedsUpdate)
+			if (_viewModel != null &&
+				(_viewModel.DrawingEngine.IsPreviewStale() || _viewModel.DrawingEngine.NeedsUpdate))
 			{
 				// Indicate this is a standard frame vs responding to a (moving head) update event
 				_viewModel.DrawingEngine.StandardFrame = true;
