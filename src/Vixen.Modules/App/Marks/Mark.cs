@@ -92,7 +92,8 @@ namespace VixenModules.App.Marks
 			return new Mark(StartTime)
 			{
 				Duration = Duration,
-				Text = Text
+				Text = Text,
+				Parent = Parent
 			};
 		}
 

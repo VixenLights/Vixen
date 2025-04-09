@@ -631,13 +631,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void bulkEffectMoveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
 			var dialog = new BulkEffectMoveForm(_timeLineGlobalStateManager.CursorPosition);
-			using (dialog)
+
+			if (dialog.ShowDialog() == DialogResult.OK)
 			{
-				if (dialog.ShowDialog() == DialogResult.OK)
+				TimeSpan offset = dialog.IsForward ? dialog.Offset : -dialog.Offset;
+				offset = TimelineControl.grid.MoveElementsInRangeByTime(dialog.Start, dialog.End, offset, dialog.ProcessVisibleRows, dialog.ClipEffects);
+
+				if (dialog.ProcessMarks == true && offset != TimeSpan.Zero)
 				{
-					TimelineControl.grid.MoveElementsInRangeByTime(dialog.Start, dialog.End, dialog.IsForward ? dialog.Offset : -dialog.Offset, dialog.ProcessVisibleRows);
+					MoveMarksInRangeByTime(dialog.Start, dialog.End, offset, dialog.ProcessVisibleRows);
 				}
 			}
 		}

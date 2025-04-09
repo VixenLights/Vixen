@@ -185,6 +185,20 @@ namespace VixenModules.App.Marks
 			OnPropertyChanged(nameof(Marks));
 		}
 
+		public void SwapPlaces(IMark lhs, IMark rhs)
+		{
+			TimeSpan temp = lhs.StartTime;
+			lhs.StartTime = rhs.StartTime;
+			rhs.StartTime = temp;
+
+			temp = lhs.Duration;
+			lhs.Duration = rhs.Duration;
+			rhs.Duration = temp;
+
+			EnsureOrder();
+			OnPropertyChanged(nameof(Marks));
+		}
+
 		public void RemoveAll(Func<IMark, bool> condition)
 		{
 			_marks.RemoveAll(condition);
@@ -213,6 +227,13 @@ namespace VixenModules.App.Marks
 
 		}
 
+		public MarkCollection MarksWithinRange(TimeSpan start, TimeSpan end)
+		{
+			MarkCollection marks = new MarkCollection();
+
+			return marks;
+		}
+
 		public void FillGapTimes(IMark mark)
 		{
 			EnsureOrder();
@@ -237,12 +258,93 @@ namespace VixenModules.App.Marks
 		}
 
 		public void OffsetMarksByTime(TimeSpan time)
-        {
-			foreach(var m in Marks)
-            {
+		{
+			foreach (var m in Marks)
+			{
 				m.StartTime = m.StartTime + time;
-            }
+			}
+		}
+
+		/// <summary>
+		/// Offsets the Marks in the collection by a given time.
+		/// </summary>
+		/// <param name="start">Specifies the inclusive start of the time window</param>
+		/// <param name="end">Specifies the inclusive end time of the time window</param>
+		/// <param name="offset">
+		/// Specifies the amount of time to shift the Marks that are within the time window. A positive value adds time and a negative
+		/// value decreases time.
+		/// </param>
+		/// <param name="maxTime">Spcifies the ending time of the Sequence</param>
+		/// <returns>Returns all the Marks affected</returns>
+		public Dictionary<IMark, IMark> OffsetMarksByTime(TimeSpan start, TimeSpan end, TimeSpan offset, TimeSpan maxTime)
+        {
+			IMark marksPreMove;
+			var marksChange = new Dictionary<IMark, IMark>();
+			int index = 0;
+
+			if (_marks.Count == 0)
+				return null;
+
+			do
+			{
+				// If the starting time of the Mark is within the time window, then move the mark.
+				if (start <= _marks[index].StartTime && _marks[index].StartTime <= end)
+				{
+					marksPreMove = (IMark)_marks[index].Clone();
+
+					// If after moving the Mark, the whole Mark duration is prior to zero time, then delete the Mark.
+					if (_marks[index].EndTime + offset < TimeSpan.Zero)
+					{
+						_marks[index].Parent.RemoveMark(_marks[index]);
+						// Note: do not advance 'index' since deleting the mark causes all the remaining Marks move up.
+						marksChange.Add(marksPreMove, null);
+					}
+
+					// If after moving the Mark, the whole Mark duration is after the maximum time, then delete the Mark.
+					else if (_marks[index].StartTime + offset > maxTime)
+					{
+						_marks[index].Parent.RemoveMark(_marks[index]);
+						// Note: do not advance 'index' since deleting the mark causes all the remaining Marks move up.
+						marksChange.Add(marksPreMove, null);
+					}
+
+					// else we'll simply adjust the starting time of the Mark and potentially the duration
+					else
+					{
+						_marks[index].StartTime = _marks[index].StartTime + offset;
+
+						// Don't let the Mark's start time be less than zero...
+						if (_marks[index].StartTime < TimeSpan.Zero)
+						{
+							// So clip the beginning of the Mark
+							_marks[index].Duration += _marks[index].StartTime;
+							_marks[index].StartTime = TimeSpan.Zero;
+						}
+						// Don't let the Mark's end time be greater than the end of the Sequence...
+						else if (_marks[index].EndTime > maxTime)
+						{
+							// So clip the ending of the Mark
+							_marks[index].Duration += _marks[index].EndTime;
+						}
+
+						marksChange.Add(marksPreMove, (IMark)_marks[index]);
+					
+						// Move to the next Mark.
+						index++;
+					}
+
+				}
+				else
+				{
+					// Move to the next Mark.
+					index++;
+				}
+
+			} while (index < _marks.Count);
+
 			OnPropertyChanged(nameof(Marks));
+
+			return marksChange;
 		}
 
 		[OnDeserialized]
