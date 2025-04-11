@@ -13,6 +13,9 @@ using VixenModules.App.ColorGradients;
 using VixenModules.Property.Face;
 using VixenModules.Sequence.Timed;
 using WeifenLuo.WinFormsUI.Docking;
+using VixenModules.App.Marks;
+using Catel.Reflection;
+using System.Text.RegularExpressions;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -627,6 +630,90 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				}
 			}
+		}
+
+		/// <summary>
+		///  Processes the menu command "Create Evenly Divided Marks"
+		/// </summary>
+		/// <param name="sender">Contains a reference to the control/object that raised the event</param>
+		/// <param name="e">Contains the event data</param>
+		private void toolStripMenuItem_divideMarksEvenly_Click(object sender, EventArgs e)
+		{
+			const int MinMarkWidthPx = 12;
+			TimeSpan lengthTime = TimeSpan.MinValue;
+			double lengthDivision = 0;
+
+			var marksForm = new CreateEvenMarksForm(_mPrevPlaybackStart, _mPrevPlaybackEnd);
+			DialogResult dialogReturn;
+			do
+			{
+				dialogReturn = marksForm.ShowDialog();
+				if (dialogReturn == DialogResult.Cancel)
+					return;
+
+				lengthTime = marksForm.End - marksForm.Start;
+				lengthDivision = lengthTime.TotalMilliseconds / marksForm.Divisions;
+
+				// Verify that the time span and number of divisions can sufficiently fit within the defined space
+				if (lengthDivision < TimelineControl.grid.pixelsToTime(MinMarkWidthPx).TotalMilliseconds)
+				{
+					dialogReturn = DialogResult.Retry;
+					MessageBoxForm.msgIcon = SystemIcons.Error;
+					var messageBox = new MessageBoxForm("Individual mark length is smaller than allowed.\n\nEither increase the difference in time " +
+						"between Start and End times or decrease the number of divisions.", "Mark Length Error", false, false);
+					messageBox.ShowDialog();
+				}
+			} while (dialogReturn != DialogResult.OK);
+
+			// Remove any exact match mark collection
+			var mark = _sequence.LabeledMarkCollections.Where(x => x.Marks.Count == marksForm.Divisions + 1 &&
+																   x.Marks.First().StartTime == marksForm.Start &&
+																   x.Marks.Last().StartTime == marksForm.End);
+			if (mark.Count() > 0)
+				_sequence.LabeledMarkCollections.Remove(mark.First());
+
+			// Create a new mark group
+			VixenModules.App.Marks.MarkCollection mc = new VixenModules.App.Marks.MarkCollection();
+			mc.Name = $"{marksForm.Divisions} Divisions";
+
+			// Check if an existing mark has a similar name
+			int nextSimilarMark = 1;
+			foreach(var markItem in _sequence.LabeledMarkCollections)
+			{
+				if (markItem.Name.StartsWith(mc.Name) == true)
+				{
+					Regex regex = new Regex(@"\d+");
+					var match = regex.Match(markItem.Name.Substring(mc.Name.Length));
+					int value = match.Length > 0 ? match.Value.CastToInt32() : 1;
+					if (value >= nextSimilarMark)
+					{
+						nextSimilarMark = value + 1;
+					}
+				}
+			}
+
+			// ... and if a similarly named mark exists, then alter the name
+			if (nextSimilarMark > 1)
+			{
+				mc.Name = $"{marksForm.Divisions} Divisions #{nextSimilarMark}";
+			}
+
+			// Create the collection of individual marks
+			TimeSpan nextTime = marksForm.Start;
+			for (int iteration = 0; iteration <= marksForm.Divisions; iteration++)
+			{
+				var newMark = new Mark(nextTime);
+				newMark.Duration = TimeSpan.FromMilliseconds(lengthDivision * .8);
+				mc.AddMark(newMark);
+
+				nextTime = nextTime + TimeSpan.FromMilliseconds(lengthDivision);
+			}
+
+			// Add the newly created mark group to the collection
+			_sequence.LabeledMarkCollections.Add(mc);
+
+			// Mark the sequence as changed
+			SequenceModified();
 		}
 
 		private void bulkEffectMoveToolStripMenuItem_Click(object sender, EventArgs e)

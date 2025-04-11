@@ -1088,7 +1088,7 @@ namespace Common.Controls.Timeline
 							// If the resultant duration is less than the minimum,then stop all further resizing
 							if (timeToPixels(element.Duration) <= MinElemWidthPx)
 							{ 
-								element.EndTime = element.StartTime + PixelsToTime(MinElemWidthPx);
+								element.EndTime = element.StartTime + pixelsToTime(MinElemWidthPx);
 								SelectedElements.First().StartTime = element.EndTime;
 								SelectedElements.First().EndTime = m_elemMoveInfo.OriginalElements[SelectedElements.First()].EndTime;
 							}
@@ -1108,8 +1108,8 @@ namespace Common.Controls.Timeline
 							// If the resultant duration is less than the minimum,then stop all further resizing
 							if (timeToPixels(element.Duration) <= MinElemWidthPx)
 							{
-								element.StartTime = saveEndTime - PixelsToTime(MinElemWidthPx);
-								element.Duration = PixelsToTime(MinElemWidthPx);
+								element.StartTime = saveEndTime - pixelsToTime(MinElemWidthPx);
+								element.Duration = pixelsToTime(MinElemWidthPx);
 								SelectedElements.First().EndTime = element.StartTime;
 							}
 
