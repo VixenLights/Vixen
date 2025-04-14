@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using NLog;
 using Vixen.Cache.Sequence;
 using Vixen.IO.Loader;
+using System.IO;
 
 namespace Vixen.IO.Binary.SequenceCache
 {
