@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿//#define OPENGL_PREVIEW_WIN_FORMS
+
+using System.Diagnostics;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Windowing.Desktop;
@@ -7,11 +9,25 @@ using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
 using VixenModules.Preview.VixenPreview.GDIPreview;
 using VixenModules.Preview.VixenPreview.OpenGL;
+using System.Windows;
+using Catel.MVVM;
+using System.Windows.Forms;
+using System.Runtime.InteropServices;
+using System.Windows.Threading;
 
 namespace VixenModules.Preview.VixenPreview
 {
 	public partial class VixenPreviewModuleInstance
 	{
+		[DllImport("user32.dll")]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
+											int X, int Y, int cx, int cy, uint uFlags);
+
+		private static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
+		private const uint SWP_NOSIZE = 0x0001;
+		private const uint SWP_NOMOVE = 0x0002;
+
 		private VixenPreviewSetup3 _setupForm;
 		private IDisplayForm _displayForm;
 		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
@@ -36,6 +52,8 @@ namespace VixenModules.Preview.VixenPreview
 			set
 			{
 				base.ModuleData = value;
+
+				UseWPF = GetDataModel().UseOpenGL;
 			}
 		}
 
@@ -63,7 +81,11 @@ namespace VixenModules.Preview.VixenPreview
 			
 			bool supported = false;
 
+#if OPENGL_PREVIEW_WIN_FORMS
 			lock (OpenGlPreviewForm.ContextLock)
+#else
+			lock (OpenGLPreviewDrawingEngine.ContextLock)
+#endif
 			{
 
 				try
@@ -106,10 +128,16 @@ namespace VixenModules.Preview.VixenPreview
 
 		}
 
-		protected override Form Initialize()
-		{
+		protected override Form InitializeForm()
+		{			
 			SetupPreviewForm();
-			return (Form)_displayForm;
+			return (Form)_displayForm;			
+		}
+
+		protected override Window InitializeWindow()
+		{			
+			SetupPreviewForm();
+			return (Window)_displayForm;						
 		}
 
 		private readonly object _formLock = new object();
@@ -125,7 +153,14 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					try
 					{
-						_displayForm = new OpenGlPreviewForm(GetDataModel(), InstanceId);
+#if OPENGL_PREVIEW_WIN_FORMS
+						_displayForm = new OpenGlPreviewForm(GetDataModel(), InstanceId);					
+#else
+						_displayForm = new WPFOpenGLPreviewView(
+							GetDataModel(), 
+							InstanceId, 
+							new WPFOpenGLPreviewViewModel(GetDataModel(), InstanceId, new OpenGLPreviewDrawingEngine(GetDataModel())));													
+#endif
 					}
 					catch (Exception ex)
 					{
@@ -161,17 +196,23 @@ namespace VixenModules.Preview.VixenPreview
 
 		public override bool Setup()
 		{
+			// Display the Preview Setup Dialog
 			_setupForm = new VixenPreviewSetup3();
 			var data = GetDataModel();
 			_setupForm.Data = data;
 			
+			// Show the Preview Setup Dialog
 			_setupForm.ShowDialog();
 
+#if OPENGL_PREVIEW_WIN_FORMS
 			if (data.UseOpenGL && _displayForm?.GetType() != typeof(OpenGlPreviewForm))
 			{
 				_displayForm?.Close();
-				SetupPreviewForm();
 			}
+#endif
+
+			// Re-create the Preview Window
+			SetupPreviewForm();
 
 			if (_displayForm != null)
 			{
@@ -187,29 +228,82 @@ namespace VixenModules.Preview.VixenPreview
 			if (disposing)
 			{
 				if (_displayForm != null)
+				{
 					_displayForm.Close();
+					_displayForm = null;	
+				}				
 			}
 			
 			base.Dispose(disposing);
 		}
 
+
+#if OPENGL_PREVIEW_WIN_FORMS
+
 		/// <inheritdoc />
 		protected override void PlayerActivatedImpl()
 		{
+			
 			if (_displayForm.IsOnTopWhenPlaying)
 			{
-				((Form) _displayForm).TopMost = true;
+				((Window)_displayForm).Topmost = true;
+			}			
+		}
+#else
+		/// <inheritdoc />
+		protected override void PlayerActivatedImpl()
+		{
+			if (UseOpenGLRendering)
+			{
+				if (_displayForm.IsOnTopWhenPlaying)
+				{
+					((Window)_displayForm).Topmost = true;
+				}
+			}
+			else
+			{
+				if (_displayForm.IsOnTopWhenPlaying)
+				{
+					((Form)_displayForm).TopMost = true;
+				}
 			}
 		}
+#endif
 
+#if OPENGL_PREVIEW_WIN_FORMS
+		/// <inheritdoc />
+		protected override void PlayerDeactivatedImpl()
+		{						
+			if (_displayForm.IsOnTopWhenPlaying)
+			{
+				((Window)_displayForm).Topmost = false;
+				((Window)_displayForm).Dispatcher.Invoke(SendToBack);
+			}			
+		}
+#else
 		/// <inheritdoc />
 		protected override void PlayerDeactivatedImpl()
 		{
-			if (_displayForm.IsOnTopWhenPlaying)
+			if (UseOpenGLRendering)
 			{
-				((Form)_displayForm).TopMost = false;
-				((Form)_displayForm).SendToBack();
+				if (_displayForm.IsOnTopWhenPlaying)
+				{
+					((Form)_displayForm).TopMost = false;
+					((Form)_displayForm).SendToBack();
+				}
+				else
+				{
+					((Form)_displayForm).TopMost = false;
+					((Form)_displayForm).SendToBack();
+				}
 			}
+		}
+#endif
+
+		public void SendToBack()
+		{
+			var hWnd = new System.Windows.Interop.WindowInteropHelper((Window)_displayForm).Handle;
+			SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 		}
 
 		protected override void Update()
