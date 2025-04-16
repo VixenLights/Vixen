@@ -35,9 +35,9 @@
 			label4 = new Label();
 			btnOK = new Button();
 			btnCancel = new Button();
-			txtStartTime = new MaskedTextBox();
-			txtDuration = new MaskedTextBox();
-			txtDurationBetween = new MaskedTextBox();
+			txtStartTime = new TimeControl();
+			txtDuration = new TimeControl();
+			txtDurationBetween = new TimeControl();
 			toolTip = new ToolTip(components);
 			txtEffectCount = new NumericUpDown();
 			lblPossibleEffects = new Label();
@@ -51,7 +51,7 @@
 			flowLayoutPanel1 = new FlowLayoutPanel();
 			panelMain = new Panel();
 			lblEndingTime = new Label();
-			txtEndTime = new MaskedTextBox();
+			txtEndTime = new TimeControl();
 			panelBeatAlignment = new Panel();
 			chkUseMarkStartEnd = new CheckBox();
 			checkBoxSkipEOBeat = new CheckBox();
@@ -128,9 +128,6 @@
 			txtStartTime.Name = "txtStartTime";
 			txtStartTime.Size = new Size(116, 23);
 			txtStartTime.TabIndex = 2;
-			txtStartTime.MaskInputRejected += txtStartTime_MaskInputRejected;
-			txtStartTime.KeyDown += txtStartTime_KeyDown;
-			txtStartTime.KeyUp += txtStartTime_KeyUp;
 			// 
 			// txtDuration
 			// 
@@ -138,9 +135,6 @@
 			txtDuration.Name = "txtDuration";
 			txtDuration.Size = new Size(116, 23);
 			txtDuration.TabIndex = 4;
-			txtDuration.MaskInputRejected += txtDuration_MaskInputRejected;
-			txtDuration.KeyDown += txtDuration_KeyDown;
-			txtDuration.KeyUp += txtDuration_KeyUp;
 			// 
 			// txtDurationBetween
 			// 
@@ -148,9 +142,6 @@
 			txtDurationBetween.Name = "txtDurationBetween";
 			txtDurationBetween.Size = new Size(116, 23);
 			txtDurationBetween.TabIndex = 5;
-			txtDurationBetween.MaskInputRejected += txtDurationBetween_MaskInputRejected;
-			txtDurationBetween.KeyDown += txtDurationBetween_KeyDown;
-			txtDurationBetween.KeyUp += txtDurationBetween_KeyUp;
 			// 
 			// txtEffectCount
 			// 
@@ -296,9 +287,6 @@
 			txtEndTime.Name = "txtEndTime";
 			txtEndTime.Size = new Size(116, 23);
 			txtEndTime.TabIndex = 3;
-			txtEndTime.MaskInputRejected += txtEndTime_MaskInputRejected;
-			txtEndTime.KeyDown += txtEndTime_KeyDown;
-			txtEndTime.KeyUp += txtEndTime_KeyUp;
 			// 
 			// panelBeatAlignment
 			// 
@@ -383,9 +371,9 @@
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Button btnOK;
 		private System.Windows.Forms.Button btnCancel;
-		private System.Windows.Forms.MaskedTextBox txtStartTime;
-		private System.Windows.Forms.MaskedTextBox txtDuration;
-		private System.Windows.Forms.MaskedTextBox txtDurationBetween;
+		private TimeControl txtStartTime;
+		private TimeControl txtDuration;
+		private TimeControl txtDurationBetween;
 		private System.Windows.Forms.ToolTip toolTip;
 		private System.Windows.Forms.NumericUpDown txtEffectCount;
 		private System.Windows.Forms.Label lblPossibleEffects;
@@ -401,7 +389,7 @@
 		private System.Windows.Forms.Panel panelBeatAlignment;
 		private System.Windows.Forms.Panel panelOKCancel;
 		private System.Windows.Forms.Label lblEndingTime;
-		private System.Windows.Forms.MaskedTextBox txtEndTime;
+		private TimeControl txtEndTime;
 		private System.Windows.Forms.CheckBox checkBoxSkipEOBeat;
 		private CheckBox chkUseMarkStartEnd;
 	}

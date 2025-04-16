@@ -13,6 +13,7 @@ using VixenModules.App.ColorGradients;
 using VixenModules.Property.Face;
 using VixenModules.Sequence.Timed;
 using WeifenLuo.WinFormsUI.Docking;
+using TimedSequenceEditor;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -343,30 +344,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void modifySequenceLengthToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			string oldLength = _sequence.Length.ToString("m\\:ss\\.fff");
-			TextDialog prompt = new TextDialog("Enter new sequence length:", "Sequence Length",
-																			   oldLength, true);
+			var prompt = new SetSequenceLength(SequenceLength);
 
-			do
+			if (prompt.ShowDialog() == DialogResult.OK)
 			{
-				if (prompt.ShowDialog() != DialogResult.OK)
-					break;
-
-				TimeSpan time;
-				bool success = TimeSpan.TryParseExact(prompt.Response, TimeFormats.PositiveFormats, null, out time);
-				if (success)
-				{
-					SequenceLength = time;
-					SequenceModified();
-					break;
-				}
-
-				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-				var messageBox = new MessageBoxForm("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'",
-					@"Error parsing time", false, false);
-				messageBox.ShowDialog();
-			} while (true);
+				SequenceLength = prompt.SequenceLength;
+				SequenceModified();
+			}
 		}
 
 		private void gridWindowToolStripMenuItem_Click(object sender, EventArgs e)
@@ -631,7 +615,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void bulkEffectMoveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var dialog = new BulkEffectMoveForm(_timeLineGlobalStateManager.CursorPosition);
+			var dialog = new BulkEffectMoveForm(_timeLineGlobalStateManager.CursorPosition, SequenceLength);
 
 			if (dialog.ShowDialog() == DialogResult.OK)
 			{
