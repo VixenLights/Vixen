@@ -97,19 +97,26 @@ namespace Common.Controls.Theme
 			var item = e.Item;
 			Graphics g = e.Graphics;
 			Rectangle bounds = new Rectangle(Point.Empty, item.Size);
+			Font fontArrow = new Font(SystemFonts.DefaultFont.FontFamily, 4F, FontStyle.Regular);
+			Brush brushArrow;
 
-
-			if (e.Item.Selected)
+			ToolStripSplitButton toolstripSplitbutton = (ToolStripSplitButton)e.Item;
+			if (toolstripSplitbutton.Enabled != true)
+			{
+				brushArrow = new SolidBrush(ThemeColorTable.ForeColorDisabled);
+			}
+			else if (toolstripSplitbutton.Selected)
 			{
 				RenderSelectedButtonFill(bounds, g);
+				brushArrow = new SolidBrush(ThemeColorTable.ButtonTextColor);
 			}
 			else
 			{
-				using (Brush b = new SolidBrush(item.BackColor))
-				{
-					g.FillRectangle(b, bounds);
-				}
+				g.FillRectangle(new SolidBrush(item.BackColor), bounds);
+				brushArrow = new SolidBrush(ThemeColorTable.ButtonTextColor);
 			}
+
+			e.Graphics.DrawString("\u25BC", fontArrow, brushArrow, toolstripSplitbutton.Width - toolstripSplitbutton.DropDownButtonWidth / 2 - fontArrow.Height, (toolstripSplitbutton.Height - fontArrow.Height)/ 2);
 		}
 
 		protected override void OnRenderDropDownButtonBackground(ToolStripItemRenderEventArgs e)
