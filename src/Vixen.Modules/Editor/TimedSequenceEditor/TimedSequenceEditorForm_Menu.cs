@@ -655,7 +655,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				lengthDivision = lengthTime.TotalMilliseconds / marksForm.Divisions;
 
 				// Verify that the time span and number of divisions can sufficiently fit within the defined space
-				if (lengthDivision < TimelineControl.grid.pixelsToTime(MinMarkWidthPx).TotalMilliseconds)
+				if (lengthDivision < TimelineControl.grid.PixelsToTime(MinMarkWidthPx).TotalMilliseconds)
 				{
 					dialogReturn = DialogResult.Retry;
 					MessageBoxForm.msgIcon = SystemIcons.Error;

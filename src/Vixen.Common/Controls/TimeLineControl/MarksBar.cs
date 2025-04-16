@@ -359,7 +359,7 @@ namespace Common.Controls.TimelineControl
 		{
 			var groupedMarks = _clipboard.GroupBy(m => m.Parent).OrderBy(g => _markCollections.IndexOf(g.Key));
 			if (!groupedMarks.Any()) return;
-			TimeSpan startTime = pixelsToTime(_mouseDownLocation.X);
+			TimeSpan startTime = PixelsToTime(_mouseDownLocation.X);
 
 			var startRowIndex = _rows.IndexOf(RowAt(_mouseDownLocation));
 			if (startRowIndex < 0) return;
@@ -504,7 +504,7 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 			if (!_marksSelectionManager.SelectedMarks.Any() || _mouseDownMark == null)
 				return;
 
-			TimeSpan dt = pixelsToTime(location.X - _moveResizeStartLocation.X);
+			TimeSpan dt = PixelsToTime(location.X - _moveResizeStartLocation.X);
 			
 			// If we didn't move, get outta here.
 			if (dt == TimeSpan.Zero)
@@ -568,7 +568,7 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 			if (_mouseDownMark == null) return;
 			
 			if(!_marksMoveResizeInfo.OriginalMarks.Values.Any()) return;
-			TimeSpan dt = pixelsToTime(location.X - _moveResizeStartLocation.X);
+			TimeSpan dt = PixelsToTime(location.X - _moveResizeStartLocation.X);
 
 			if (dt == TimeSpan.Zero)
 				return;
@@ -603,7 +603,7 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 					// Ensure the shortest meets minimum width (in px)
 					if (timeToPixels(shortest - dt) < MinMarkWidthPx)
 					{
-						dt = shortest - pixelsToTime(MinMarkWidthPx);
+						dt = shortest - PixelsToTime(MinMarkWidthPx);
 					}
 					_timeLineGlobalEventManager.OnAlignmentActivity(new AlignmentEventArgs(true, new[] { _mouseDownMark.StartTime }));
 					break;
@@ -629,7 +629,7 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 					// Ensure the shortest meets minimum width (in px)
 					if (timeToPixels(shortest + dt) < MinMarkWidthPx)
 					{
-						dt = pixelsToTime(MinMarkWidthPx) - shortest;
+						dt = PixelsToTime(MinMarkWidthPx) - shortest;
 					}
 					_timeLineGlobalEventManager.OnAlignmentActivity(new AlignmentEventArgs(true, new[] { _mouseDownMark.EndTime }));
 					break;
@@ -759,8 +759,8 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 			var startRow = RowAt(selectedArea.Location);
 			var endRow = RowAt(selectedArea.BottomRight());
 
-			TimeSpan selStart = pixelsToTime(selectedArea.Left);
-			TimeSpan selEnd = pixelsToTime(selectedArea.Right);
+			TimeSpan selStart = PixelsToTime(selectedArea.Left);
+			TimeSpan selEnd = PixelsToTime(selectedArea.Right);
 			
 			// Iterate all elements of only the rows within our selection.
 			bool startFound = false, endFound = false;
@@ -952,7 +952,7 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 			if (containingRow == null)
 				return null;
 
-			var pointTime = pixelsToTime(p.X);
+			var pointTime = PixelsToTime(p.X);
 			// Now figure out which element we are on
 			foreach (IMark mark in containingRow)
 			{

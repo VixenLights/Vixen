@@ -265,7 +265,7 @@ namespace Common.Controls.Timeline
 
 
 			// As a heuristic, we want at least 10 pixels between each minor tick
-			var t = pixelsToTime(10);
+			var t = PixelsToTime(10);
 
 			if (t.TotalSeconds > 0.05) {
 				if (t.TotalSeconds < 0.1) {
@@ -455,7 +455,7 @@ namespace Common.Controls.Timeline
 			//if (e.Button != MouseButtons.Left) return;
 
 			// If we're hovering over a mark when left button is clicked, then select/move the mark 
-			var marksAtTime = MarksAt(pixelsToTime(e.X) + VisibleTimeStart);
+			var marksAtTime = MarksAt(PixelsToTime(e.X) + VisibleTimeStart);
 			if (marksAtTime.Any())
 			{
 				if (ModifierKeys != Keys.Control)
@@ -503,7 +503,7 @@ namespace Common.Controls.Timeline
 							return;
 						m_mouseState = MouseState.Dragging;
 						OnBeginDragTimeRange();
-						PlaybackStartTime = pixelsToTime(e.X) + VisibleTimeStart;
+						PlaybackStartTime = PixelsToTime(e.X) + VisibleTimeStart;
 						ClampPlaybackTime();
 						PlaybackEndTime = null;
 						goto case MouseState.Dragging;
@@ -523,14 +523,14 @@ namespace Common.Controls.Timeline
 							end = m_mouseDownX;
 						}
 
-						PlaybackStartTime = pixelsToTime(start) + VisibleTimeStart;
-						PlaybackEndTime = pixelsToTime(end) + VisibleTimeStart;
+						PlaybackStartTime = PixelsToTime(start) + VisibleTimeStart;
+						PlaybackEndTime = PixelsToTime(end) + VisibleTimeStart;
 						ClampPlaybackTime();
 						
 						return;
 					case MouseState.DraggingMark:
 
-						var newTime = pixelsToTime(e.X) + VisibleTimeStart;
+						var newTime = PixelsToTime(e.X) + VisibleTimeStart;
 						var diff = newTime - _dragLastTime;
 						_marksSelectionManager.SelectedMarks.ToList().ForEach(x => x.StartTime += diff);
 						_dragLastTime = newTime;
@@ -571,7 +571,7 @@ namespace Common.Controls.Timeline
 			else
 			{
 				// We'll get to this point if there is no mouse button selected
-				var marks = MarksAt(pixelsToTime(e.X) + VisibleTimeStart);
+				var marks = MarksAt(PixelsToTime(e.X) + VisibleTimeStart);
 				if (marks.Any())
 				{
 					Cursor = Cursors.VSplit;
@@ -620,7 +620,7 @@ namespace Common.Controls.Timeline
 			if (e.Clicks == 2)
 			{
 				// Add a mark
-				OnClickedAtTime(new RulerClickedEventArgs(pixelsToTime(e.X) + VisibleTimeStart, Form.ModifierKeys, m_button));
+				OnClickedAtTime(new RulerClickedEventArgs(PixelsToTime(e.X) + VisibleTimeStart, Form.ModifierKeys, m_button));
 			}
 			else
 			{
@@ -634,7 +634,7 @@ namespace Common.Controls.Timeline
 
 						case MouseState.DragWait:
 							// Didn't move enough to be considered dragging. Just a click.
-							OnClickedAtTime(new RulerClickedEventArgs(pixelsToTime(e.X) + VisibleTimeStart, Form.ModifierKeys, m_button));
+							OnClickedAtTime(new RulerClickedEventArgs(PixelsToTime(e.X) + VisibleTimeStart, Form.ModifierKeys, m_button));
 							break;
 
 						case MouseState.Dragging:
@@ -660,7 +660,7 @@ namespace Common.Controls.Timeline
 				}
 				else if (m_button == MouseButtons.Right)
 				{
-					var marks = MarksAt(pixelsToTime(e.X) + VisibleTimeStart);
+					var marks = MarksAt(PixelsToTime(e.X) + VisibleTimeStart);
 					if (marks.Any())
 					{
 						// See if we got a right-click on top of a mark.
@@ -677,7 +677,7 @@ namespace Common.Controls.Timeline
 					else
 					{
 						//TODO this is jenky and should be fixed to be more specific.
-						OnClickedAtTime(new RulerClickedEventArgs(pixelsToTime(e.X) + VisibleTimeStart, Form.ModifierKeys, m_button));
+						OnClickedAtTime(new RulerClickedEventArgs(PixelsToTime(e.X) + VisibleTimeStart, Form.ModifierKeys, m_button));
 					}
 				}
 			}
@@ -911,7 +911,7 @@ namespace Common.Controls.Timeline
 				p.Color = Color.Yellow;
 				p.DashPattern = new float[] {2, 2};
 				p.Width = 1;
-				TimeSpan newMarkPosition = pixelsToTime(PointToClient(new Point(MousePosition.X, MousePosition.Y)).X) + VisibleTimeStart;
+				TimeSpan newMarkPosition = PixelsToTime(PointToClient(new Point(MousePosition.X, MousePosition.Y)).X) + VisibleTimeStart;
 				Single x = timeToPixels(newMarkPosition);
 				g.DrawLine(p, x, 0, x, Height);
 				p.Dispose();

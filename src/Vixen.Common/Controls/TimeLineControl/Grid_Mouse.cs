@@ -52,7 +52,7 @@ namespace Common.Controls.Timeline
 
 				_beginEffectDraw = true;
 				this.Cursor = Cursors.Cross;
-				effectDrawMouseDownTime = pixelsToTime(gridLocation.X);
+				effectDrawMouseDownTime = PixelsToTime(gridLocation.X);
 				beginDrawBox(gridLocation);
 				m_lastSingleSelectedElementLocation = Point.Empty;				
 			}
@@ -65,7 +65,7 @@ namespace Common.Controls.Timeline
 						return;
 
 					_beginEffectDraw = true;
-					effectDrawMouseDownTime = pixelsToTime(gridLocation.X);
+					effectDrawMouseDownTime = PixelsToTime(gridLocation.X);
 					beginDrawBox(gridLocation);
 					m_lastSingleSelectedElementLocation = Point.Empty;
 					return;
@@ -203,7 +203,7 @@ namespace Common.Controls.Timeline
 					case DragState.Drawing:
 						_beginEffectDraw = false;
 						this.Cursor = Cursors.Default;
-						effectDrawMouseUpTime = pixelsToTime(gridLocation.X);
+						effectDrawMouseUpTime = PixelsToTime(gridLocation.X);
 						StartDrawMode(this, new DrawElementEventArgs(SelectedEffect, GetRowsWithin(DrawingArea), effectDrawMouseDownTime, effectDrawMouseUpTime));
 						MouseUp_DrawSelect(gridLocation);
 						break;
@@ -221,7 +221,7 @@ namespace Common.Controls.Timeline
 
 					case DragState.Drawing:
 						_beginEffectDraw = false;
-						effectDrawMouseUpTime = pixelsToTime(gridLocation.X);
+						effectDrawMouseUpTime = PixelsToTime(gridLocation.X);
 						StartDrawMode(this, new DrawElementEventArgs(SelectedEffect, GetRowsWithin(DrawingArea), effectDrawMouseDownTime, effectDrawMouseUpTime));
 						MouseUp_DrawSelect(gridLocation);
 						break;
@@ -267,8 +267,8 @@ namespace Common.Controls.Timeline
 					return;
 				row.Active = true;
 				if (ClickingGridSetsCursor)
-					CursorPosition = pixelsToTime(gridLocation.X);
-				_ContextSelected(m_mouseDownElements, pixelsToTime(gridLocation.X), row);
+					CursorPosition = PixelsToTime(gridLocation.X);
+				_ContextSelected(m_mouseDownElements, PixelsToTime(gridLocation.X), row);
 			}
 
 		}
@@ -608,7 +608,7 @@ namespace Common.Controls.Timeline
 			// if we didn't move (or very far): if so, consider it just a background click.
 			if (DrawingArea.Width < 2 && DrawingArea.Height < 2)
 			{
-				OnBackgroundClick(new TimelineEventArgs(rowAt(gridLocation), pixelsToTime(gridLocation.X)));
+				OnBackgroundClick(new TimelineEventArgs(rowAt(gridLocation), PixelsToTime(gridLocation.X)));
 			}
 
 			m_drawingRectangleStart = Point.Empty;
@@ -650,7 +650,7 @@ namespace Common.Controls.Timeline
 			// we will only be Selecting if we clicked on the grid background, so on mouse up, check if
 			// we didn't move (or very far): if so, consider it just a background click.
 			if (SelectionArea.Width < 2 && SelectionArea.Height < 2) {
-				OnBackgroundClick(new TimelineEventArgs(rowAt(gridLocation), pixelsToTime(gridLocation.X)));
+				OnBackgroundClick(new TimelineEventArgs(rowAt(gridLocation), PixelsToTime(gridLocation.X)));
 			}
 
 			// done with the selection rectangle.
@@ -816,7 +816,7 @@ namespace Common.Controls.Timeline
             // only move the elements here if we aren't going to be auto-dragging while scrolling in the timer events.
             if (d.X != 0 && m_dragAutoscrollDistance.Width == 0)
             {
-                TimeSpan desiredMoveTime = DragTimeLeftOver + pixelsToTime(d.X);
+                TimeSpan desiredMoveTime = DragTimeLeftOver + PixelsToTime(d.X);
                 TimeSpan realMoveTime = OffsetElementsByTime(SelectedElements, desiredMoveTime);
                 DragTimeLeftOver = desiredMoveTime - realMoveTime;
             }
@@ -840,7 +840,7 @@ namespace Common.Controls.Timeline
 			if (!SelectedElements.Any())
 				return;
 
-			TimeSpan dt = pixelsToTime(gridLocation.X - m_elemMoveInfo.InitialGridLocation.X);
+			TimeSpan dt = PixelsToTime(gridLocation.X - m_elemMoveInfo.InitialGridLocation.X);
 			int dy = gridLocation.Y - m_elemMoveInfo.InitialGridLocation.Y;
 
 			// If we didn't move, get outta here.
@@ -923,7 +923,7 @@ namespace Common.Controls.Timeline
 		{
 			int selectedLayer = 0;
 
-			TimeSpan dt = pixelsToTime(gridLocation.X - m_elemMoveInfo.InitialGridLocation.X);
+			TimeSpan dt = PixelsToTime(gridLocation.X - m_elemMoveInfo.InitialGridLocation.X);
 
 			// Check to see if the time (resizing) moved
 			if (dt == TimeSpan.Zero)
@@ -961,8 +961,8 @@ namespace Common.Controls.Timeline
 						dt = -earliest;
 
 					// Ensure the proposed shortest duration meets minimum width (in px)
-					if (shortest - dt < pixelsToTime(MinElemWidthPx))
-						dt = shortest - pixelsToTime(MinElemWidthPx);
+					if (shortest - dt < PixelsToTime(MinElemWidthPx))
+						dt = shortest - PixelsToTime(MinElemWidthPx);
 
 					if (AltPressed && adjoiningElements.Count() == 0)
 					{
@@ -1011,8 +1011,8 @@ namespace Common.Controls.Timeline
 						dt = TimeInfo.TotalTime - latest;
 
 					// Ensure the proposed shortest duration meets minimum width (in px)
-					if (shortest + dt < pixelsToTime(MinElemWidthPx))
-						dt = -(shortest - pixelsToTime(MinElemWidthPx));
+					if (shortest + dt < PixelsToTime(MinElemWidthPx))
+						dt = -(shortest - PixelsToTime(MinElemWidthPx));
 
 					// If the Alt key is pressed and we have not already created as Adjoining List
 					if (AltPressed && adjoiningElements.Count() == 0)
