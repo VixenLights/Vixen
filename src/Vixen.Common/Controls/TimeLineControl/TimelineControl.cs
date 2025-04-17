@@ -370,8 +370,8 @@ namespace Common.Controls.Timeline
 			TimeSpan newTimeSpan = VisibleTimeSpan;
 			decimal timeSpanOffset = ((100 / gridPixelWidth) * (mousePosition.X - splitContainer.SplitterDistance) / 100);
 			VisibleTimeStart = scale > 1
-				? VisibleTimeStart - (pixelsToTime((int)(timeToPixels(newTimeSpan - originalTimeSpan) * (float)timeSpanOffset)))
-				: VisibleTimeStart + (pixelsToTime((int)(timeToPixels(originalTimeSpan - newTimeSpan) * (float)timeSpanOffset)));
+				? VisibleTimeStart - (PixelsToTime((int)(timeToPixels(newTimeSpan - originalTimeSpan) * (float)timeSpanOffset)))
+				: VisibleTimeStart + (PixelsToTime((int)(timeToPixels(originalTimeSpan - newTimeSpan) * (float)timeSpanOffset)));
 
 			grid.EndDraw();
 		}
