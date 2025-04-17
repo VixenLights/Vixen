@@ -640,7 +640,7 @@ namespace Common.Controls.Timeline
 		///via OnScroll event, or manually.</summary>
 		private void HandleHorizontalScroll()
 		{
-			VisibleTimeStart = pixelsToTime(-AutoScrollPosition.X);
+			VisibleTimeStart = PixelsToTime(-AutoScrollPosition.X);
 		}
 
 
@@ -1570,8 +1570,8 @@ namespace Common.Controls.Timeline
 		{
 			if (SelectedArea.Size.IsEmpty) return;
 			var containingRows = RowsIn(SelectedArea);
-			TimeSpan selStart = pixelsToTime(SelectedArea.Left);
-			TimeSpan selEnd = pixelsToTime(SelectedArea.Right);
+			TimeSpan selStart = PixelsToTime(SelectedArea.Left);
+			TimeSpan selEnd = PixelsToTime(SelectedArea.Right);
 			int selBottom = SelectedArea.Top + SelectedArea.Height;
 			string moveDirection = "Left";
 			if (useCAD)
