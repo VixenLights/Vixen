@@ -112,11 +112,15 @@ namespace Common.Controls.Theme
 			}
 			else
 			{
-				g.FillRectangle(new SolidBrush(item.BackColor), bounds);
+				var backColor = new SolidBrush(item.BackColor);
+				g.FillRectangle(backColor, bounds);
+				backColor.Dispose();
+
 				brushArrow = new SolidBrush(ThemeColorTable.ButtonTextColor);
 			}
 
 			e.Graphics.DrawString("\u25BC", fontArrow, brushArrow, toolstripSplitbutton.Width - toolstripSplitbutton.DropDownButtonWidth / 2 - fontArrow.Height, (toolstripSplitbutton.Height - fontArrow.Height)/ 2);
+			brushArrow.Dispose();
 		}
 
 		protected override void OnRenderDropDownButtonBackground(ToolStripItemRenderEventArgs e)
