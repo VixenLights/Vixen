@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 		<PropertyGroup>
 				<RootNamespace>System.Windows.Controls.WpfPropertyGrid.Themes</RootNamespace>
 				<AssemblyName>System.Windows.Controls.WpfPropertyGrid.Themes</AssemblyName>
@@ -10,7 +10,7 @@
 				<AppDesigner Include="Properties\" />
 		</ItemGroup>
 		<ItemGroup>
-		  <PackageReference Include="MessagePack" Version="2.5.192" />
+		  <PackageReference Include="MessagePack" />
 		</ItemGroup>
 		<ItemGroup>
 				<ProjectReference Include="..\WpfPropertyGrid\WpfPropertyGrid.csproj" />

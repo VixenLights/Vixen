@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
 				<RootNamespace>VixenModules.Effect.Picture</RootNamespace>
@@ -38,7 +38,7 @@
 		</ItemGroup>
 
 		<ItemGroup>
-				<PackageReference Include="NLog" Version="5.4.0" />
+				<PackageReference Include="NLog" />
 		</ItemGroup>
 
 		<ItemGroup>
