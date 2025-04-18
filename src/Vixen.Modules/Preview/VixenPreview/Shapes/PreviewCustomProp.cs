@@ -115,7 +115,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public System.Drawing.Point TopLeft
 		{
 			get => new System.Drawing.Point((int)Bounds.Left, (int)Bounds.Top);
-			set => MoveTo(value.X, value.Y);
+			set
+			{
+				_selectionPoint = _dragPoints[0];
+				MouseMove(value.X, value.Y, 0, 0);
+			}
 		}
 
 		[Browsable(true)]
@@ -125,7 +129,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public System.Drawing.Point BottomRight
 		{
 			get => new System.Drawing.Point((int)Bounds.Right, (int)Bounds.Bottom);
-			set => MoveTo(value.X, value.Y);
+			set
+			{
+				_selectionPoint = _dragPoints[2];
+				MouseMove(value.X, value.Y, 0, 0);
+			}
 		}
 
 		/// <inheritdoc />
