@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
 				<AssemblyName>Module.App.CustomPropEditor</AssemblyName>
@@ -30,14 +30,14 @@
 		</ItemGroup>
 
 		<ItemGroup>
-				<PackageReference Include="Catel.Core" Version="6.0.3" />
-				<PackageReference Include="Catel.MVVM" Version="6.0.3" />
-				<PackageReference Include="gong-wpf-dragdrop" Version="4.0.0" />
-				<PackageReference Include="LiteDB" Version="4.1.4" />
-				<PackageReference Include="MessagePack" Version="2.5.192" />
-				<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.122" />
-				<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-				<PackageReference Include="NLog" Version="5.4.0" />
+				<PackageReference Include="Catel.Core" />
+				<PackageReference Include="Catel.MVVM" />
+				<PackageReference Include="gong-wpf-dragdrop" />
+				<PackageReference Include="LiteDB" />
+				<PackageReference Include="MessagePack" />
+				<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
+				<PackageReference Include="Newtonsoft.Json" />
+				<PackageReference Include="NLog" />
 		</ItemGroup>
 
 		<ItemGroup>

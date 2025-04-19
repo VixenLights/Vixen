@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
 				<RootNamespace>Vixen</RootNamespace>
@@ -7,12 +7,12 @@
 		</PropertyGroup>
 
 		<ItemGroup>
-				<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-				<PackageReference Include="NLog" Version="5.4.0">
+				<PackageReference Include="Newtonsoft.Json" />
+				<PackageReference Include="NLog">
 						<ExcludeAssets>runtime</ExcludeAssets>
 				</PackageReference>
-				<PackageReference Include="System.Drawing.Common" Version="8.0.6" />
-				<PackageReference Include="Zstandard.Net" Version="1.1.7" />
+				<PackageReference Include="System.Drawing.Common" />
+				<PackageReference Include="Zstandard.Net" />
 		</ItemGroup>
 	<ItemGroup>
 			<None Remove="Directory.Build.props" />

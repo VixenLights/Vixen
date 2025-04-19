@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
 				<RootNamespace>VixenModules.Preview.VixenPreview</RootNamespace>
@@ -7,12 +7,12 @@
 		</PropertyGroup>
 
 		<ItemGroup>
-				<PackageReference Include="Catel.MVVM" Version="6.0.3" />
-				<PackageReference Include="DockPanelSuite" Version="3.1.1" />
-				<PackageReference Include="DockPanelSuite.ThemeVS2015" Version="3.1.1" />
-				<PackageReference Include="MessagePack" Version="2.5.192" />
-				<PackageReference Include="NLog" Version="5.4.0" />
-				<PackageReference Include="OpenTK" Version="4.8.2" />
+				<PackageReference Include="Catel.MVVM" />
+				<PackageReference Include="DockPanelSuite" />
+				<PackageReference Include="DockPanelSuite.ThemeVS2015" />
+				<PackageReference Include="MessagePack" />
+				<PackageReference Include="NLog" />
+				<PackageReference Include="OpenTK" />
 		</ItemGroup>
 
 		<ItemGroup>
