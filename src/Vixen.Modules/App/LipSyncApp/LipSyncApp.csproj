@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
 				<AssemblyName>Module.App.$(MSBuildProjectName)</AssemblyName>
@@ -7,8 +7,8 @@
 		</PropertyGroup>
 
 		<ItemGroup>
-				<PackageReference Include="Catel.MVVM" Version="6.0.3" />
-				<PackageReference Include="NLog" Version="5.4.0" />
+				<PackageReference Include="Catel.MVVM" />
+				<PackageReference Include="NLog" />
 		</ItemGroup>
 
 		<ItemGroup>

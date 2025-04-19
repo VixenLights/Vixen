@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
 				<OutputType>WinExe</OutputType>
@@ -27,11 +27,11 @@
 		</ItemGroup>
 
 		<ItemGroup>
-				<PackageReference Include="Catel.Core" Version="6.0.3" />
-				<PackageReference Include="MessagePack" Version="2.5.192" />
-				<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-				<PackageReference Include="NLog" Version="5.4.0" />
-				<PackageReference Include="Orchestra.Core" Version="7.0.1" />
+				<PackageReference Include="Catel.Core" />
+				<PackageReference Include="MessagePack" />
+				<PackageReference Include="Newtonsoft.Json" />
+				<PackageReference Include="NLog" />
+				<PackageReference Include="Orchestra.Core" />
 		</ItemGroup>
 
 		<ItemGroup>

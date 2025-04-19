@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 		<PropertyGroup>
 				<RootNamespace>System.Windows.Controls.WpfPropertyGrid</RootNamespace>
 				<AssemblyName>System.Windows.Controls.WpfPropertyGrid</AssemblyName>
@@ -20,7 +20,7 @@
 				<Page Remove="ValueEditors\EditorResources.xaml" />
 		</ItemGroup>
 		<ItemGroup>
-		  <PackageReference Include="MessagePack" Version="2.5.192" />
+		  <PackageReference Include="MessagePack" />
 		</ItemGroup>
 		<ItemGroup>
 		  <ProjectReference Include="..\WPFCommon\WPFCommon.csproj" />

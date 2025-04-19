@@ -1,12 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
 				<RootNamespace>VixenModules.Controller.OpenDMX</RootNamespace>
 		</PropertyGroup>
 
 		<ItemGroup>
-				<PackageReference Include="FTD2XX.Net" Version="1.2.1" />
-				<PackageReference Include="NLog" Version="5.4.0" />
+				<PackageReference Include="FTD2XX.Net" />
+				<PackageReference Include="NLog" />
 		</ItemGroup>
 
 		<ItemGroup>

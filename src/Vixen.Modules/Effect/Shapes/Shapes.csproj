@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
 				<RootNamespace>VixenModules.Effect.Shapes</RootNamespace>
@@ -94,8 +94,8 @@
 		</ItemGroup>
 
 		<ItemGroup>
-				<PackageReference Include="NLog" Version="5.4.0" />
-				<PackageReference Include="Svg" Version="3.4.7" />
+				<PackageReference Include="NLog" />
+				<PackageReference Include="Svg" />
 		</ItemGroup>
 
 		<ItemGroup>

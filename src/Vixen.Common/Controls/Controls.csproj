@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
 				<UseWindowsForms>true</UseWindowsForms>
@@ -8,9 +8,9 @@
 		</PropertyGroup>
 
 		<ItemGroup>
-				<PackageReference Include="NLog" Version="5.4.0" />
-				<PackageReference Include="System.IO.Ports" Version="8.0.0" />
-				<PackageReference Include="System.Reactive" Version="5.0.0" />
+				<PackageReference Include="NLog" />
+				<PackageReference Include="System.IO.Ports" />
+				<PackageReference Include="System.Reactive" />
 		</ItemGroup>
 
 		<ItemGroup>

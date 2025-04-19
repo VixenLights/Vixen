@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
 	  <RootNamespace>Common.WPFCommon</RootNamespace>
@@ -6,10 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Catel.Core" Version="6.0.3" />
-    <PackageReference Include="Catel.MVVM" Version="6.0.3" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.122" />
-    <PackageReference Include="NLog" Version="5.4.0" />
+    <PackageReference Include="Catel.Core" />
+    <PackageReference Include="Catel.MVVM" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
+    <PackageReference Include="NLog" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
 				<AssemblyName>Module.App.$(MSBuildProjectName)</AssemblyName>
@@ -13,7 +13,7 @@
 		</ItemGroup>
 
 		<ItemGroup>
-				<PackageReference Include="NCalc2" Version="2.1.0">
+				<PackageReference Include="NCalc2">
 				</PackageReference>
 		</ItemGroup>
 

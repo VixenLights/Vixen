@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
 				<AssemblyName>Module.App.$(MSBuildProjectName)</AssemblyName>
@@ -152,8 +152,8 @@
 		</ItemGroup>
 
 		<ItemGroup>
-				<PackageReference Include="NLog" Version="5.4.0" />
-				<PackageReference Include="NLog.Web.AspNetCore" Version="5.4.0" />
+				<PackageReference Include="NLog" />
+				<PackageReference Include="NLog.Web.AspNetCore" />
 		</ItemGroup>
 
 

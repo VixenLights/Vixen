@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
 	  <AssemblyName>Module.App.TimedSequenceMapper</AssemblyName>
@@ -6,10 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Catel.MVVM" Version="6.0.3" />
-    <PackageReference Include="gong-wpf-dragdrop" Version="4.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NLog" Version="5.4.0" />
+    <PackageReference Include="Catel.MVVM" />
+    <PackageReference Include="gong-wpf-dragdrop" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="NLog" />
   </ItemGroup>
 
   <ItemGroup>
