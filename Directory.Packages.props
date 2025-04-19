@@ -45,6 +45,5 @@
     <PackageVersion Include="WixToolset.Bal.wixext" Version="5.0.0" />
     <PackageVersion Include="WixToolset.Netfx.wixext" Version="5.0.0" />
     <PackageVersion Include="WixToolset.Util.wixext" Version="5.0.0" />
-    <ProjectVersion Include="..\Vixen.Installer\Vixen.Installer.wixproj" />
   </ItemGroup>
 </Project>
