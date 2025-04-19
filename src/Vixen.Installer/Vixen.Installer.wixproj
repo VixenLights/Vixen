@@ -41,4 +41,7 @@
   <ItemGroup>
     <Content Include="EnvironmentInclude.wxi" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Heat" />
+  </ItemGroup>
 </Project>
