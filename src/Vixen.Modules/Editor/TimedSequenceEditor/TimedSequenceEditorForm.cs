@@ -2481,7 +2481,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void AddMultipleEffects(TimeSpan startTime, String effectName, Guid effectId, Row row)
 		{
-			var eDialog = new Form_AddMultipleEffects();
+			var eDialog = new Form_AddMultipleEffects(SequenceLength);
 			if (ModifierKeys == (Keys.Shift | Keys.Control) && _amLastEffectCount > 0)
 			{
 				eDialog.EffectCount = _amLastEffectCount;
@@ -2691,7 +2691,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				startTime = TimelineControl.SelectedElements.Last().StartTime;
 				endTime = TimelineControl.SelectedElements.First().EndTime;
 			}
-			var dDialog = new EffectDistributionDialog();
+			var dDialog = new EffectDistributionDialog(SequenceLength);
 			var elementCount = TimelineControl.SelectedElements.Count();
 
 			dDialog.ElementCount = elementCount.ToString(CultureInfo.InvariantCulture);

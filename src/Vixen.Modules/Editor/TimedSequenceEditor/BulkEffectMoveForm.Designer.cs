@@ -29,9 +29,9 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.txtStartTime = new System.Windows.Forms.MaskedTextBox();
-			this.txtEndTime = new System.Windows.Forms.MaskedTextBox();
-			this.txtOffset = new System.Windows.Forms.MaskedTextBox();
+			this.txtStartTime = new TimeControl();
+			this.txtEndTime = new TimeControl();
+			this.txtOffset = new TimeControl();
 			this.label1 = new System.Windows.Forms.Label();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
 			this.label2 = new System.Windows.Forms.Label();
@@ -54,9 +54,6 @@
 			this.txtStartTime.Name = "txtStartTime";
 			this.txtStartTime.Size = new System.Drawing.Size(116, 23);
 			this.txtStartTime.TabIndex = 0;
-			this.txtStartTime.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.txtStartTime_MaskInputRejected);
-			this.txtStartTime.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtStartTime_KeyDown);
-			this.txtStartTime.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtStartTime_KeyUp);
 			// 
 			// txtEndTime
 			// 
@@ -64,9 +61,6 @@
 			this.txtEndTime.Name = "txtEndTime";
 			this.txtEndTime.Size = new System.Drawing.Size(116, 23);
 			this.txtEndTime.TabIndex = 1;
-			this.txtEndTime.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.txtEndTime_MaskInputRejected);
-			this.txtEndTime.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtEndTime_KeyDown);
-			this.txtEndTime.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtEndTime_KeyUp);
 			// 
 			// txtOffset
 			// 
@@ -74,9 +68,6 @@
 			this.txtOffset.Name = "txtOffset";
 			this.txtOffset.Size = new System.Drawing.Size(116, 23);
 			this.txtOffset.TabIndex = 2;
-			this.txtOffset.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.txtOffset_MaskInputRejected);
-			this.txtOffset.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtOffset_KeyDown);
-			this.txtOffset.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtOffset_KeyUp);
 			// 
 			// label1
 			// 
@@ -227,7 +218,6 @@
 			this.Name = "BulkEffectMoveForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Bulk Effect Move";
-			this.Load += new System.EventHandler(this.BulkEffectMoveForm_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
@@ -237,9 +227,9 @@
 
 		#endregion
 
-		private System.Windows.Forms.MaskedTextBox txtStartTime;
-		private System.Windows.Forms.MaskedTextBox txtEndTime;
-		private System.Windows.Forms.MaskedTextBox txtOffset;
+		private TimeControl txtStartTime;
+		private TimeControl txtEndTime;
+		private TimeControl txtOffset;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.LinkLabel linkLabel1;
 		private System.Windows.Forms.Label label2;
