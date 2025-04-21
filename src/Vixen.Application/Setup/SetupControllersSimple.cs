@@ -20,7 +20,8 @@ namespace VixenApplication.Setup
 			InitializeComponent();
 			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
 			buttonAddController.Image = Tools.GetIcon(Resources.add, iconSize);
-			buttonAddController.Text = "";
+			buttonRaiseControllerOrdering.Image = Tools.GetIcon(Resources.arrow_up, iconSize);
+			buttonLowerControllerOrdering.Image = Tools.GetIcon(Resources.arrow_down, iconSize);
 			buttonConfigureController.Image = Tools.GetIcon(Resources.cog, iconSize);
 			buttonConfigureController.Text = "";
 			buttonNumberChannelsController.Image = Tools.GetIcon(Resources.attributes_display, iconSize);
@@ -77,6 +78,8 @@ namespace VixenApplication.Setup
 			buttonRenameController.Enabled = selectedControllerCount == 1;
 
 			buttonDeleteController.Enabled = selectedControllerCount >= 1;
+			buttonRaiseControllerOrdering.Enabled = selectedControllerCount >= 1;
+			buttonLowerControllerOrdering.Enabled = selectedControllerCount >= 1;
 
 			controllerTree.CheckIfSelectedControllersRunning();
 			buttonStartController.Enabled = controllerTree.SomeSelectedControllersNotRunning;
@@ -122,7 +125,7 @@ namespace VixenApplication.Setup
 					if (node.Tag is int tag)
 					{
 						outputIndex = tag;
-						controller = node.Parent.Tag as IControllerDevice;
+						controller = node?.Parent?.Tag as IControllerDevice;
 						if (controller == null)
 						{
 							Logging.Error("node parent is not a controller: " + node.Name);
@@ -206,6 +209,11 @@ namespace VixenApplication.Setup
 			ControllersChanged(this, EventArgs.Empty);
 		}
 
+		public void ReorderControllers()
+		{
+			controllerTree.ReorderControllers();
+		}
+
 		private void buttonAddController_Click(object? sender, EventArgs e)
 		{
 			if (comboBoxNewControllerType.SelectedItem is ComboBoxItem item)
@@ -215,6 +223,14 @@ namespace VixenApplication.Setup
 			}
 		}
 
+		private void buttonRaiseControllerOrdering_Click(object? sender, EventArgs e)
+		{
+			controllerTree.ReorderSelectedNodes(ControllerTree.Direction.BACKWARD);
+		}
+		private void buttonLowerControllerOrdering_Click(object? sender, EventArgs e)
+		{
+			controllerTree.ReorderSelectedNodes(ControllerTree.Direction.FORWARD);
+		}
 		private void buttonDeleteController_Click(object? sender, EventArgs e)
 		{
 			controllerTree.DeleteControllersWithPrompt(controllerTree.SelectedControllers);

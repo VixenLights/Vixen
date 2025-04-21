@@ -193,5 +193,18 @@ namespace Vixen.Sys.Managers
 		{
 			return GetEnumerator();
 		}
+
+		/// <summary>
+		/// Reorder the output devices in the collection based on the specified sort order.
+		/// </summary>
+		/// <param name="SortOrder">Specifies the sorting order</param>
+		public void Reorder(List<String> SortOrder)
+		{
+			foreach (var node in _mediator.OrderBy(item => SortOrder.IndexOf(item.Name)))
+			{
+				_mediator.Remove(node);
+				_mediator.Add(node);
+			}
+		}
 	}
 }

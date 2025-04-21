@@ -882,7 +882,7 @@ namespace Common.Controls
 				node.BackColor = SystemColors.Highlight;
 			}
 			else {
-				node.BackColor = ThemeColorTable.ListBoxBackColor;
+				node.BackColor = ThemeColorTable.BackgroundColor;
 				node.ForeColor = ThemeColorTable.ForeColor;
 			}
 		}
