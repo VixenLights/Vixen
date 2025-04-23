@@ -282,6 +282,7 @@ namespace VixenApplication.Setup
 			//Just doing it in Ok as if we cancel it reloads the system anyway.
 			VixenSystem.Filters.RemoveOrphanedFilters();
 			Vixen.Sys.PropertyManager.RemoveOrphanedProperties();
+			_setupControllersSimple.ReorderControllers();
 		}
 	}
 }
