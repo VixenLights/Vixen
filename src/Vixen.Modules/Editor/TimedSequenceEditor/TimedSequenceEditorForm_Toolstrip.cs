@@ -1694,7 +1694,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				((ToolStripMenuItem) item).Checked = item == menuItem;
 			}
 
-			if (menuItem != null)
+			if (menuItem != null && TimelineControl.Audio != null)
 			{
 				TimelineControl.Audio.AudioOutputManager.AudioOutputDeviceId = (string) menuItem.Tag;
 			}
