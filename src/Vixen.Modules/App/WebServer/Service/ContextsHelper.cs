@@ -11,8 +11,9 @@ namespace VixenModules.App.WebServer.Service
 		public static IEnumerable<ContextStatus> GetAllStates()
 		{
 			UpdateContextStatus();
-			return _contextStatuses.Where(x => x.State.Equals(ContextStatus.States.Playing) ||
-			                                   x.State.Equals(ContextStatus.States.Paused));
+			return _contextStatuses.Where(x => x != null && x.Sequence != null &&
+											   (x.State.Equals(ContextStatus.States.Playing) ||
+			                                    x.State.Equals(ContextStatus.States.Paused))   );
 		}
 
 		private static void UpdateContextStatus()
@@ -28,17 +29,23 @@ namespace VixenModules.App.WebServer.Service
 
 				var status = new ContextStatus()
 				{
-					Sequence = new Sequence()
+					Sequence = new Presentation()
 					{
 						Name = context.Name
 					},
 					Position = context.GetTimeSnapshot()
 				};
 
-				var sequenceContext = context as ISequenceContext;
-				if (sequenceContext != null)
+				if (context != null)
 				{
-					status.Sequence.FileName = Path.GetFileName(sequenceContext.Sequence.FilePath);
+					if (context is ShowContext)
+					{
+						status.Sequence.Info = ((ShowContext)context)._info;
+					}
+					else
+					{
+						status.Sequence.Info = Path.GetFileName(((ISequenceContext)context).Sequence.FilePath);
+					}
 				}
 
 				if (context.IsPaused)

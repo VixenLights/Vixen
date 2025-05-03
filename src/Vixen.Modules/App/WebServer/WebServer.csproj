@@ -158,6 +158,7 @@
 
 
 		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Common\Broadcast\Broadcast.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
@@ -166,6 +167,13 @@
 				<ProjectReference Include="..\..\Property\Color\Color.csproj" />
 				<ProjectReference Include="..\ColorGradients\ColorGradients.csproj" />
 				<ProjectReference Include="..\Curves\Curves.csproj" />
+		</ItemGroup>
+
+
+		<ItemGroup>
+		  <None Update="wwwroot\style\BigRedButton.css">
+		    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  </None>
 		</ItemGroup>
 
 </Project>

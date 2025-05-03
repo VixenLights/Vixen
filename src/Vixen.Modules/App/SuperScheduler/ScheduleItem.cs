@@ -1,8 +1,8 @@
-﻿using System.Runtime.Serialization;
-using System.Windows.Forms;
+﻿using Common.Broadcast;
+using System.Runtime.Serialization;
 
 using VixenModules.App.Shows;
-
+using VixenModules.App.WebServer.Model;
 using Action = VixenModules.App.Shows.Action;
 
 namespace VixenModules.App.SuperScheduler
@@ -56,6 +56,9 @@ namespace VixenModules.App.SuperScheduler
 		//CancellationToken tokenPreProcess;
 		CancellationTokenSource tokenSourcePreProcessAll;
 		//CancellationToken tokenPreProcessAll;
+		// Specifies the number of loops of a Show to run, regardless of the time window.
+		// -1 specifies repetition managed by the time window. 
+		private int _runLoops = -1;
 
 		#endregion // Variables
 
@@ -355,8 +358,38 @@ namespace VixenModules.App.SuperScheduler
 		private bool CheckForShutdown()
 		{
 			if (State == StateType.Shutdown) return true;
+			
+			// If there runloops remaining...
+			if (_runLoops > 0)
+			{
+				// and there are still actions remaining to run...
+				if (ItemQueue.Count == 0)
+				{
+					// Decrement the run loop counter
+					_runLoops--;
 
-			if (InProcessEndTime.CompareTo(DateTime.Now) <= 0) return true;
+					// See if we're done running through the loops 
+					if (_runLoops == 0)
+					{
+						// And if so, then stop the Show
+						ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Show stopping after manual start completed");
+						var presentation = new Presentation
+						{
+							Name = Show.Name,
+							Info = Show.ID.ToString()
+						};
+						Broadcast.Publish<Presentation>("StopShow", presentation);
+
+						return true;
+					}
+				}
+			}
+
+			// Else check the date/time window
+			else if (InProcessEndTime.CompareTo(DateTime.Now) <= 0)
+			{
+				return true;
+			}
 
 			return false;
 		}
@@ -412,6 +445,12 @@ namespace VixenModules.App.SuperScheduler
 			State = StateType.Running;
 
 			InProcessEndTime = EndTime;
+
+			// If we're manually starting then we'll just do one run-through
+			if (manuallyStarted)
+			{
+				_runLoops = 1;
+			}
 
 			ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Show started");
 
@@ -486,7 +525,39 @@ namespace VixenModules.App.SuperScheduler
 				}
 			}
 		}
-		
+
+		public void Pause()
+		{
+			State = StateType.Paused;
+		}
+
+		public void Resume()
+		{
+			State = StateType.Running;
+
+			if (ItemQueue.Where(x => x.ItemType == ShowItemType.Startup).Count() > 0)
+			{
+				ExecuteNextStartupItem();
+			}
+
+			else if (ItemQueue.Where(x => x.ItemType == ShowItemType.Shutdown).Count() > 0)
+			{
+				BeginShutdown();
+			}
+
+			else
+			{
+				if (ItemQueue.Where(x => x.ItemType == ShowItemType.Sequential).Count() > 0)
+				{
+					ExecuteNextSequentialItem();
+				}
+
+				if (ItemQueue.Where(x => x.ItemType == ShowItemType.Background).Count() > 0)
+				{
+					BeginBackground();
+				}
+			}
+		}
 		#endregion // Show Control
 
 		#region Startup Items
@@ -574,7 +645,7 @@ namespace VixenModules.App.SuperScheduler
 			LogScheduleInfoEntry("ExecuteNextSequentialItem");
 			if (State == StateType.Running)
 			{
-				if (ItemQueue.Any() )
+				if (ItemQueue.Any())
 				{
 					LogScheduleInfoEntry("ExecuteNextSequentialItem: Dequeue next item");
 					_currentItem = ItemQueue.Dequeue();

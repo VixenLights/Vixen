@@ -16,6 +16,7 @@ namespace VixenModules.App.WebServer
 	public class Startup
 	{
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
+		private ShowHelperService _showHelperService = new ShowHelperService();
 
 		public void ConfigureServices(IServiceCollection services)
 		{
