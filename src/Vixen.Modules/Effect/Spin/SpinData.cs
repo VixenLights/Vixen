@@ -28,6 +28,9 @@ namespace VixenModules.Effect.Spin
 		public int RevolutionTime { get; set; }
 
 		[DataMember]
+		public int PulseOverlap { get; set; }
+
+		[DataMember]
 		public int PulseTime { get; set; }
 
 		[DataMember]
@@ -65,7 +68,7 @@ namespace VixenModules.Effect.Spin
 
 		[DataMember]
 		public int DepthOfEffect { get; set; }
-		
+
 		[DataMember]
 		public TargetNodeSelection TargetNodeSelection { get; set; }
 
@@ -87,6 +90,7 @@ namespace VixenModules.Effect.Spin
 			RevolutionCount = 3;
 			RevolutionFrequency = 2;
 			RevolutionTime = 500;
+			PulseOverlap = 0;
 			PulseTime = 100;
 			PulsePercentage = 10;
 			DefaultLevel = 0;
@@ -107,6 +111,7 @@ namespace VixenModules.Effect.Spin
 			result.RevolutionCount = RevolutionCount;
 			result.RevolutionFrequency = RevolutionFrequency;
 			result.RevolutionTime = RevolutionTime;
+			result.PulseOverlap = PulseOverlap;
 			result.PulseTime = PulseTime;
 			result.PulsePercentage = PulsePercentage;
 			result.DefaultLevel = DefaultLevel;
