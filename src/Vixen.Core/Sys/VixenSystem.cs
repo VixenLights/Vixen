@@ -259,7 +259,7 @@ namespace Vixen.Sys
 			// Load system data in order of dependency.
 			// The system data generally resides in the data branch, but it
 			// may not be in the case of an alternate context.
-			string systemDataPath = _GetSystemDataPath();
+			string systemDataPath = GetSystemDataPath();
 			// Load module data before system config.
 			// System config creates objects that use modules that have data in the store.
 			ModuleStore = _LoadModuleStore(systemDataPath) ?? new ModuleStore();
@@ -275,6 +275,10 @@ namespace Vixen.Sys
 			Filters.AddRange(SystemConfig.Filters);
 
 			DataFlow.Initialize(SystemConfig.DataFlow);
+
+			// Join all the Preview ModuleStore files into the main ModuleStore
+			ModuleStore += _LoadModuleStorePreviews(systemDataPath, SystemConfig.Previews);
+			progress?.Report(Tuple.Create(50, "Profile configs loaded"));
 		}
 
 		public static void ReloadSystemConfig()
@@ -364,13 +368,60 @@ namespace Vixen.Sys
 			get { return SystemConfig.Identity; }
 		}
 
-		internal static ModuleStore ModuleStore { get; private set; }
+		internal static ModuleStore ModuleStore { get; set; }
 		internal static SystemConfig SystemConfig { get; private set; }
 
 		private static ModuleStore _LoadModuleStore(string systemDataPath)
 		{
 			string moduleStoreFilePath = Path.Combine(systemDataPath, ModuleStore.FileName);
 			return FileService.Instance.LoadModuleStoreFile(moduleStoreFilePath);
+		}
+
+		/// <summary>
+		/// Load the individual Preview ModuleStore files.
+		/// </summary>
+		/// <param name="systemDataPath">Specifies the data path of the ModuleStore files</param>
+		/// <param name="previews">Specifies the list of Previews</param>
+		/// <returns></returns>
+		private static ModuleStore _LoadModuleStorePreviews(string systemDataPath, IEnumerable<IOutputDevice> previews)
+		{
+			bool _previewChanged = false;
+			ModuleStore moduleStore = new ModuleStore();
+
+			// Iterate through each preview and load the associated ModuleStore file.
+			for (int index = previews.Count() - 1; index >= 0; index--)
+			{
+				var preview = previews.ElementAt(index);
+
+				// Load the ModuleStore file for the Preview.
+				string moduleStoreFilePath = systemDataPath + ModuleStore.PreviewNameBase + preview.Name + ".xml";
+				ModuleStore previewModuleStore = FileService.Instance.LoadModuleStoreFile(moduleStoreFilePath);
+
+				// If the ModuleStore file does not exist, remove the Preview from the list.
+				if (previewModuleStore == null)
+				{
+					DialogResult result = MessageBox.Show($"Unable to load preview module store file:\r\n{moduleStoreFilePath}\r\n\r\nDo you want to remove this Preview?", 
+						"Preview module file not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+					if (result == DialogResult.Yes)
+					{
+						OutputPreview oc = preview as OutputPreview;
+						Previews.Remove(oc);
+						_previewChanged = true;
+					}
+				}
+				else
+				{
+					moduleStore += previewModuleStore;
+				}
+			}
+
+			// If any of the ModuleStore files were not found, save the updated ModuleStore file.
+			if (_previewChanged == true)
+			{
+				VixenSystem.SaveSystemConfigAsync();
+			}
+
+			return moduleStore;
 		}
 
 		private static SystemConfig _LoadSystemConfig(string systemDataPath)
@@ -380,7 +431,7 @@ namespace Vixen.Sys
 		}
 
 	
-		private static string _GetSystemDataPath()
+		public static string GetSystemDataPath()
 		{
 			// Look for a user data file in the binary directory.
 			string filePath = Path.Combine(Paths.BinaryRootPath, SystemConfig.FileName);

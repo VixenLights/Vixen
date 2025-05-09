@@ -20,7 +20,8 @@ namespace Vixen.IO.Xml.ModuleStore
 		protected override void WriteModuleTypeDataSet()
 		{
 			XmlModuleStaticDataSetSerializer dataSetSerializer = new XmlModuleStaticDataSetSerializer();
-			_content.Add(dataSetSerializer.WriteObject(_moduleStore.TypeData));
+			if (_moduleStore.TypeData.DataModels.Count() != 0)
+				_content.Add(dataSetSerializer.WriteObject(_moduleStore.TypeData));
 		}
 
 		protected override void WriteModuleInstanceDataSet()
