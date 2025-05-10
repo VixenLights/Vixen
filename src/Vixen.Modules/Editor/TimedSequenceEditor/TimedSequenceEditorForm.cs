@@ -82,12 +82,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private readonly Timer _autoSaveTimer = new Timer();
 
-		// Variables used by the add multiple effects dialog
-		private int _amLastEffectCount;
-		private TimeSpan _amLastStartTime;
-		private TimeSpan _amLastDuration;
-		private TimeSpan _amLastDurationBetween;
-
 		// a mapping of effects in the sequence to the element that represent them in the grid.
 		private Dictionary<EffectNode, Element> _effectNodeToElement;
 
@@ -151,6 +145,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private int _iconSize;
 		private int _toolStripImageSize;
 
+		private static class _properties
+		{
+			public static int effectCount = -1;
+			public static TimeSpan startTime;
+			public static TimeSpan endTime;
+			public static TimeSpan duration;
+			public static TimeSpan durationBetween;
+			public static bool alignToBeatMarks;
+			public static bool skipEOBeat;
+			public static bool fillDuration;
+			public static bool markStartEnd;
+			public static bool selectEffects;
+			public static bool panelBeatAlignment;
+			public static StringCollection checkedMarks;
+		};
 		#endregion
 
 		#region Constructor / Initialization
@@ -2482,30 +2491,55 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void AddMultipleEffects(TimeSpan startTime, String effectName, Guid effectId, Row row)
 		{
 			var eDialog = new Form_AddMultipleEffects(SequenceLength);
-			if (ModifierKeys == (Keys.Shift | Keys.Control) && _amLastEffectCount > 0)
+			eDialog.MarkCollections = _sequence.LabeledMarkCollections;
+			if (ModifierKeys.HasFlag(Keys.Shift) && (_properties.effectCount != -1))
 			{
-				eDialog.EffectCount = _amLastEffectCount;
-				eDialog.StartTime = _amLastStartTime;
-				eDialog.Duration = _amLastDuration;
-				eDialog.DurationBetween = _amLastDurationBetween;
+				eDialog.StartTime = _mPrevPlaybackStart == null ? _properties.startTime : (TimeSpan)_mPrevPlaybackStart;
+				eDialog.EndTime = _mPrevPlaybackEnd == null ? _properties.endTime : (TimeSpan)_mPrevPlaybackEnd;
+				eDialog.Duration = _properties.duration;
+				eDialog.DurationBetween = _properties.durationBetween;
+				eDialog.AlignToBeatMarks = _properties.alignToBeatMarks;
+				eDialog.SkipEOBeat = _properties.skipEOBeat;
+				eDialog.FillDuration = _properties.fillDuration;
+				eDialog.AlignToMarkStartEnd = _properties.markStartEnd;
+				eDialog.SelectEffects = _properties.selectEffects;
+				eDialog.ShowPanelBeatAlignment = _properties.panelBeatAlignment;
+				foreach( var checkedMark in _properties.checkedMarks)
+				{
+					eDialog.CheckMarkItem(checkedMark);
+				}
 			}
 			else
 			{
 				eDialog.EffectCount = 2;
-				eDialog.StartTime = startTime;
+				eDialog.StartTime = _mPrevPlaybackStart == null ? startTime : (TimeSpan)_mPrevPlaybackStart;
+				eDialog.EndTime = _mPrevPlaybackEnd == null ? SequenceLength : (TimeSpan)_mPrevPlaybackEnd;
 				eDialog.Duration = TimeSpan.FromSeconds(2);
 				eDialog.DurationBetween = TimeSpan.FromSeconds(2);
 			}
 			eDialog.EffectName = effectName;
-			eDialog.SequenceLength = eDialog.EndTime = SequenceLength;
-			eDialog.MarkCollections = _sequence.LabeledMarkCollections;
+			eDialog.SequenceLength = eDialog.EndTime;
 			eDialog.ShowDialog(this);
 			if (eDialog.DialogResult == DialogResult.OK)
 			{
-				_amLastEffectCount = eDialog.EffectCount;
-				_amLastStartTime = eDialog.StartTime;
-				_amLastDuration = eDialog.Duration;
-				_amLastDurationBetween = eDialog.DurationBetween;
+				// Save User configuration
+				_properties.effectCount = eDialog.EffectCount;
+				_properties.startTime = eDialog.StartTime;
+				_properties.endTime = eDialog.EndTime;
+				_properties.duration = eDialog.Duration;
+				_properties.durationBetween = eDialog.DurationBetween;
+				_properties.alignToBeatMarks = eDialog.AlignToBeatMarks;
+				_properties.skipEOBeat = eDialog.SkipEOBeat;
+				_properties.fillDuration = eDialog.FillDuration;
+				_properties.markStartEnd = eDialog.AlignToMarkStartEnd;
+				_properties.selectEffects = eDialog.SelectEffects;
+				_properties.panelBeatAlignment = eDialog.ShowPanelBeatAlignment;
+				_properties.checkedMarks = new StringCollection();
+				foreach (ListViewItem mark in eDialog.CheckedMarks)
+				{
+					_properties.checkedMarks.Add(mark.Text);
+				}
+
 				var newEffects = new List<EffectNode>();
 				if (eDialog.AlignToBeatMarks)
 				{
