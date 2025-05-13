@@ -67,12 +67,54 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			set { txtDurationBetween.TimeSpan = value; }
 		}
 
-		public bool AlignToBeatMarks { get { return checkBoxAlignToBeatMarks.Checked; } }
-		public bool FillDuration { get { return checkBoxFillDuration.Checked; } }
-		public bool SelectEffects { get { return checkBoxSelectEffects.Checked; } }
-		public bool SkipEOBeat { get { return checkBoxSkipEOBeat.Checked; } }
+		public bool AlignToBeatMarks 
+		{ 
+			get { return checkBoxAlignToBeatMarks.Checked; } 
+			set { checkBoxAlignToBeatMarks.Checked = value; }
+		}
+		public bool FillDuration 
+		{ 
+			get { return checkBoxFillDuration.Checked; }
+			set { checkBoxFillDuration.Checked = value; }
+		}
+		public bool SelectEffects 
+		{ 
+			get { return checkBoxSelectEffects.Checked; }
+			set { checkBoxSelectEffects.Checked = value; }
+		}
+		public bool SkipEOBeat
+		{
+			get { return checkBoxSkipEOBeat.Checked; }
+			set { checkBoxSkipEOBeat.Checked = value; }
+		}
 
-		public bool AlignToMarkStartEnd => chkUseMarkStartEnd.Checked;
+		//public bool AlignToMarkStartEnd => chkUseMarkStartEnd.Checked;
+		public bool AlignToMarkStartEnd
+		{
+			get { return chkUseMarkStartEnd.Checked; }
+			set { chkUseMarkStartEnd.Checked = value; }
+		}
+
+		private bool _showPanelBeatAlignment;
+		public bool ShowPanelBeatAlignment
+		{ 
+			get
+			{
+				return _showPanelBeatAlignment;
+			}
+
+			set
+			{
+				if (value == true)
+				{
+					btnShowBeatMarkOptions_Click(this, EventArgs.Empty);
+				}
+				else
+				{
+					btnHideBeatMarkOptions_Click(this, EventArgs.Empty);
+				}
+			}
+		}
 
 		#endregion
 
@@ -94,7 +136,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			txtDurationBetween.ValueChanged += TxtTime_ValueChanged;
 			txtEndTime.ValueChanged += TxtTime_ValueChanged;
 			ThemeUpdateControls.UpdateControls(this);
-			panelBeatAlignment.Visible = false;
 		}
 
 		private void TxtTime_ValueChanged(object sender, EventArgs e)
@@ -105,7 +146,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void Form_AddMultipleEffects_Load(object sender, EventArgs e)
 		{
 			SetCheckboxStates();
-			PopulateMarksList();
 			CalculatePossibleEffects();
 			//SetCheckboxStates();
 		}
@@ -162,6 +202,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			txtDurationBetween.Enabled = (checkBoxAlignToBeatMarks.Checked ? false : true);
 			listBoxMarkCollections.Visible = !listBoxMarkCollections.Visible;
 			SetCheckboxStates();
+			PopulateMarksList();
 			if (checkBoxAlignToBeatMarks.Checked)
 			{
 				CalculatePossibleEffectsByBeatMarks();
@@ -269,18 +310,31 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			btnShowBeatMarkOptions.Visible = false;
 			btnHideBeatMarkOptions.Visible = true;
-			panelBeatAlignment.Visible = true;
+			_showPanelBeatAlignment = panelBeatAlignment.Visible = true;
 		}
 
 		private void btnHideBeatMarkOptions_Click(object sender, EventArgs e)
 		{
 			btnHideBeatMarkOptions.Visible = false;
 			btnShowBeatMarkOptions.Visible = true;
-			panelBeatAlignment.Visible = false;
+			_showPanelBeatAlignment = panelBeatAlignment.Visible = false;
 		}
 
 		#endregion
 
+		#endregion
+
+		#region Public Methods
+		public void CheckMarkItem(String source)
+		{
+			foreach (ListViewItem item in listBoxMarkCollections.Items)
+			{
+				if (item.Text == source)
+				{
+					item.Checked = true;
+				}
+			}
+		}
 		#endregion
 
 		#region Private Methods
@@ -320,14 +374,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//TimeSpan WorkingTime = SequenceLength - StartTime;
 			TimeSpan WorkingTime = EndTime - StartTime;
 			TimeSpan UsesTime = (TimeSpan.FromTicks(Duration.Ticks * i) + TimeSpan.FromTicks(DurationBetween.Ticks * (i - 1))); ;
-			while (UsesTime < WorkingTime)
+			while (UsesTime > TimeSpan.Zero && UsesTime < WorkingTime)
 			{
 				i++;
 				UsesTime = (TimeSpan.FromTicks(Duration.Ticks * i) + TimeSpan.FromTicks(DurationBetween.Ticks * (i - 1)));
 			}
 			//Get rid of the straw that broke the camels back.
 			i--;
-			txtEffectCount.Maximum = i;
+			txtEffectCount.Value = txtEffectCount.Maximum = i;
 			lblPossibleEffects.Text = string.Format("{0} effects possible.", i);
 			btnOK.Enabled = (i == 0 ? false : true);
 		}
@@ -353,7 +407,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			var possibleEffects = (checkBoxFillDuration.Checked ? Times.Count() - 1 : Times.Count());
 			if (possibleEffects < 0) possibleEffects = 0;
-			txtEffectCount.Maximum = (int)(checkBoxSkipEOBeat.Checked ? Math.Ceiling(possibleEffects / 2d) : possibleEffects);
+			txtEffectCount.Value = txtEffectCount.Maximum = (int)(checkBoxSkipEOBeat.Checked ? Math.Ceiling(possibleEffects / 2d) : possibleEffects);
 			lblPossibleEffects.Text = $"{txtEffectCount.Maximum} effects possible.";
 			btnOK.Enabled = (Times.Count() == 0 ? false : true);
 		}

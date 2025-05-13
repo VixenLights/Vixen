@@ -231,7 +231,6 @@
 			btnHideBeatMarkOptions.Name = "btnHideBeatMarkOptions";
 			btnHideBeatMarkOptions.Size = new Size(28, 27);
 			btnHideBeatMarkOptions.TabIndex = 6;
-			btnHideBeatMarkOptions.Text = "+";
 			btnHideBeatMarkOptions.UseVisualStyleBackColor = true;
 			btnHideBeatMarkOptions.Visible = false;
 			btnHideBeatMarkOptions.Click += btnHideBeatMarkOptions_Click;
@@ -297,6 +296,7 @@
 			panelBeatAlignment.Controls.Add(listBoxMarkCollections);
 			panelBeatAlignment.Location = new Point(3, 231);
 			panelBeatAlignment.Name = "panelBeatAlignment";
+			panelBeatAlignment.Visible = false;
 			panelBeatAlignment.Size = new Size(303, 238);
 			panelBeatAlignment.TabIndex = 1;
 			// 
