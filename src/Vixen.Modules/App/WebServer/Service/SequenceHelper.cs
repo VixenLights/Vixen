@@ -12,14 +12,14 @@ namespace VixenModules.App.WebServer.Service
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
-		public static IEnumerable<Sequence> GetSequences()
+		public static IEnumerable<Presentation> GetSequences()
 		{
 			var sequenceNames = SequenceService.Instance.GetAllSequenceFileNames();
 
-			var sequences = sequenceNames.Select(sequenceName => new Sequence
+			var sequences = sequenceNames.Select(sequenceName => new Presentation
 			{
 				Name = Path.GetFileNameWithoutExtension(sequenceName),
-				FileName = sequenceName 
+				Info = sequenceName 
 			}).ToList();
 
 			return sequences;
@@ -30,7 +30,7 @@ namespace VixenModules.App.WebServer.Service
 		/// </summary>
 		/// <param name="sequence"></param>
 		/// <returns></returns>
-		public static ContextStatus PlaySequence(Sequence sequence){
+		public static ContextStatus PlaySequence(Presentation sequence){
 			
 			var status = new ContextStatus();
 
@@ -56,7 +56,7 @@ namespace VixenModules.App.WebServer.Service
 			}
 			else
 			{
-				string fileName = HttpUtility.UrlDecode(sequence.FileName);
+				string fileName = HttpUtility.UrlDecode(sequence.Info);
 
 				try
 				{
@@ -73,10 +73,10 @@ namespace VixenModules.App.WebServer.Service
 						context.ContextEnded += context_ContextEnded;
 						context.Play(TimeSpan.Zero, seq.Length);
 						status.State = ContextStatus.States.Playing;
-						status.Sequence = new Sequence()
+						status.Sequence = new Presentation()
 						{
 							Name = context.Sequence.Name,
-							FileName = fileName
+							Info = fileName
 						};
 
 						status.Message = string.Format("Playing sequence {0} of length {1}", sequence.Name, seq.Length);
@@ -122,7 +122,7 @@ namespace VixenModules.App.WebServer.Service
 		/// Pause the current playing sequence.
 		/// </summary>
 		/// <returns>Status</returns>
-		public static ContextStatus PauseSequence(Sequence sequence)
+		public static ContextStatus PauseSequence(Presentation sequence)
 		{
 			var status = new ContextStatus();
 			IEnumerable<IContext> contexts = VixenSystem.Contexts.Where(x => x.Name.Equals(sequence.Name) && (x.IsRunning || x.IsPaused));
@@ -150,7 +150,7 @@ namespace VixenModules.App.WebServer.Service
 		/// Stop the current playing sequnce. Does not effect scheduled sequences.
 		/// </summary>
 		/// <returns></returns>
-		public static ContextStatus StopSequence(Sequence sequence)
+		public static ContextStatus StopSequence(Presentation sequence)
 		{
 			var status = new ContextStatus()
 			{
