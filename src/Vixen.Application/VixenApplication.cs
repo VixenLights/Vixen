@@ -25,6 +25,8 @@ using Timer = System.Windows.Forms.Timer;
 using WPFApplication = System.Windows.Application;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
+using System.Net.Http;
 using Common.WPFCommon.Services;
 using System.Windows.Media;
 
@@ -1041,7 +1043,7 @@ namespace VixenApplication
 
 		private async void SetupDisplay()
 		{
-			using (DisplaySetup form = new DisplaySetup())
+			using (Setup.DisplaySetup form = new Setup.DisplaySetup())
 			{
 				DialogResult dr = form.ShowDialog();
 
