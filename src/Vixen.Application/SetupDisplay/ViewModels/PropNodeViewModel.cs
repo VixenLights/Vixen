@@ -1,19 +1,21 @@
 ﻿using System.ComponentModel;
 using Catel.Data;
 using Catel.MVVM;
+using Vixen.Sys;
 using Vixen.Sys.Props;
 
-namespace VixenApplication.DisplaySetup.ViewModels
+namespace VixenApplication.SetupDisplay.ViewModels
 {
     [DisplayName("PropNode View Model")]
-	public sealed class PropNodeViewModel : ViewModelBase, ISelectableExpander, IDisposable
+	public sealed class PropNodeViewModel : ViewModelBase, ISelectableExpander
 	{
         private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-        public event EventHandler ModelsChanged;
+		//private DateTime _selectedTime = DateTime.MaxValue;
+        //private string _textHoldValue = String.Empty;
 
-        public PropNodeViewModel(PropNode model, PropNodeViewModel parent)
+		public PropNodeViewModel(PropNode model, PropNodeViewModel? parent)
         {
-            //ElementModel = model;
+            PropNode = model;
             ChildrenViewModels = new PropNodeViewModelCollection(model.Children, this);
             //ElementModelLookUpService.Instance.AddModel(model.Id, this);
             ((IRelationalViewModel)this).SetParentViewModel(parent);
@@ -29,16 +31,16 @@ namespace VixenApplication.DisplaySetup.ViewModels
         /// </summary>
         [Browsable(false)]
         [Model]
-        public PropNode ElementModel
+        public PropNode PropNode
         {
             get { return GetValue<PropNode>(PropNodeProperty); }
             private set { SetValue(PropNodeProperty, value); }
         }
 
         /// <summary>
-        /// ElementModel property data.
+        /// PropNode property data.
         /// </summary>
-        public static readonly IPropertyData PropNodeProperty = RegisterProperty<PropNode>(nameof(ElementModel));
+        public static readonly IPropertyData PropNodeProperty = RegisterProperty<PropNode>(nameof(PropNode));
 
         #endregion
 
@@ -46,8 +48,8 @@ namespace VixenApplication.DisplaySetup.ViewModels
         public bool IsExpanded { get; set; }
         public void Dispose()
         {
-            throw new NotImplementedException();
-        }
+			((IRelationalViewModel)this).SetParentViewModel(null);
+		}
 
         #region ChildrenViewModels property
 
@@ -66,6 +68,15 @@ namespace VixenApplication.DisplaySetup.ViewModels
         /// </summary>
         public static readonly IPropertyData ChildrenViewModelsProperty = RegisterProperty<PropNodeViewModelCollection>(nameof(ChildrenViewModels));
 
-        #endregion
+		#endregion
+
+		public void RemoveFromParent()
+        {
+            if (ParentViewModel is PropNodeViewModel parentVm)
+            {
+                VixenSystem.Props.RemoveFromParent(PropNode, parentVm.PropNode);
+                IsDirty = true;
+            }
+        }
 	}
 }

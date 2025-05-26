@@ -8,7 +8,7 @@ namespace VixenApplication
 		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private const string ErrorMsg = "An application error occurred. Please contact the Vixen Dev Team " +
 									"with the following information:\n\n";
-		private static VixenApplication? _app;
+		private static VixenApp? _app;
 		internal static string LockFilePath = string.Empty;
 		/// <summary>
 		/// The main entry point for the application.
@@ -27,7 +27,7 @@ namespace VixenApplication
 				// To customize application configuration such as set high DPI settings or default font,
 				// see https://aka.ms/applicationconfiguration.
 				ApplicationConfiguration.Initialize();
-				_app = new VixenApplication();
+				_app = new VixenApp();
 				Application.Run(_app);
 			}
 			catch (Exception ex)
@@ -64,7 +64,7 @@ namespace VixenApplication
 			else
 			{
 				//try the failsafe to clean up the lock file.
-				VixenApplication.RemoveLockFile(LockFilePath);
+				VixenApp.RemoveLockFile(LockFilePath);
 			}
 			Environment.Exit(1);
 		}

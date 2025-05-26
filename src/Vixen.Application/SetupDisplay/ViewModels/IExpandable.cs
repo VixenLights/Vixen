@@ -1,4 +1,4 @@
-﻿namespace VixenApplication.DisplaySetup.ViewModels
+﻿namespace VixenApplication.SetupDisplay.ViewModels
 {
 	/// <summary>
 	/// Interface for items that can be expanded
