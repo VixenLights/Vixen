@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
 				<OutputType>WinExe</OutputType>
@@ -29,10 +29,12 @@
 
 		<ItemGroup>
 				<PackageReference Include="Catel.Core" />
+				<PackageReference Include="Catel.MVVM" />
 				<PackageReference Include="gong-wpf-dragdrop" />
 				<PackageReference Include="MessagePack" />
 				<PackageReference Include="Newtonsoft.Json" />
 				<PackageReference Include="NLog" />
+				<PackageReference Include="NLog.Web.AspNetCore" />
 				<PackageReference Include="Orchestra.Core" />
 		</ItemGroup>
 
@@ -83,9 +85,10 @@
 		</ItemGroup>
 
 		<ItemGroup>
-		  <Folder Include="DisplaySetup\Model\" />
-		  <Folder Include="DisplaySetup\Behaviors\" />
-		  <Folder Include="DisplaySetup\Services\" />
+		  <Folder Include="SetupDisplay\Behaviors\" />
+		  <Folder Include="SetupDisplay\Converter\" />
+		  <Folder Include="SetupDisplay\Model\" />
+		  <Folder Include="SetupDisplay\Services\" />
 		</ItemGroup>
 
 </Project>
