@@ -3,6 +3,7 @@
 		<PropertyGroup>
 				<OutputType>WinExe</OutputType>
 				<UseWindowsForms>true</UseWindowsForms>
+				<UseWPF>true</UseWPF>
 				<RootNamespace>VixenApplication</RootNamespace>
 				<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 				<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
@@ -28,6 +29,7 @@
 
 		<ItemGroup>
 				<PackageReference Include="Catel.Core" />
+				<PackageReference Include="gong-wpf-dragdrop" />
 				<PackageReference Include="MessagePack" />
 				<PackageReference Include="Newtonsoft.Json" />
 				<PackageReference Include="NLog" />
@@ -42,6 +44,7 @@
 				<ProjectReference Include="..\Vixen.Common\NShape\NShape.csproj" />
 				<ProjectReference Include="..\Vixen.Common\Resources\Resources.csproj" />
 				<ProjectReference Include="..\Vixen.Common\Utilities\Utilities.csproj" />
+				<ProjectReference Include="..\Vixen.Common\WPFCommon\WPFCommon.csproj" />
 				<ProjectReference Include="..\Vixen.Common\WpfPropertyGrid.Themes\WpfPropertyGrid.Themes.csproj" />
 				<ProjectReference Include="..\Vixen.Common\WpfPropertyGrid\WpfPropertyGrid.csproj" />
 				<ProjectReference Include="..\Vixen.Core\Vixen.Core.csproj" />
@@ -77,6 +80,12 @@
 						<Generator>ResXFileCodeGenerator</Generator>
 						<LastGenOutput>Resources.Designer.cs</LastGenOutput>
 				</EmbeddedResource>
+		</ItemGroup>
+
+		<ItemGroup>
+		  <Folder Include="DisplaySetup\Model\" />
+		  <Folder Include="DisplaySetup\Behaviors\" />
+		  <Folder Include="DisplaySetup\Services\" />
 		</ItemGroup>
 
 </Project>
