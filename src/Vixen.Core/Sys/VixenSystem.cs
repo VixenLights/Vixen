@@ -237,6 +237,7 @@ namespace Vixen.Sys
 			DataFlow = new DataFlowManager();
 			Elements = new ElementManager();
 			Nodes = new NodeManager();
+            Props = new PropManager();
 			OutputControllers = new OutputControllerManager(
 				new OutputDeviceCollection<OutputController>(),
 				new OutputDeviceExecution<OutputController>());
@@ -361,6 +362,7 @@ namespace Vixen.Sys
 
 		public static ElementManager Elements { get; private set; }
 		public static NodeManager Nodes { get; private set; }
+		public static PropManager Props { get; private set; }
 		public static OutputControllerManager OutputControllers { get; private set; }
 		//public static SmartOutputControllerManager SmartOutputControllers { get; private set; }
 		public static PreviewManager Previews { get; private set; }
