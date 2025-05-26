@@ -1,4 +1,4 @@
-﻿namespace VixenApplication.DisplaySetup.ViewModels
+﻿namespace VixenApplication.SetupDisplay.ViewModels
 {
 	public interface ISelectableExpander : ISelectable, IExpandable
 	{

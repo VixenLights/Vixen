@@ -21,13 +21,15 @@ using Timer = System.Windows.Forms.Timer;
 using WPFApplication = System.Windows.Application;
 using System.IO;
 using System.Net.Http;
+using System.Windows.Forms.Integration;
 using Common.WPFCommon.Services;
 using ControlzEx.Theming;
 using LogManager = NLog.LogManager;
+using VixenApplication.SetupDisplay.Views;
 
 namespace VixenApplication
 {
-	public partial class VixenApplication : BaseForm, IApplication
+	public partial class VixenApp : BaseForm, IApplication
 	{
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private const string LockFile = ".lock";
@@ -47,7 +49,7 @@ namespace VixenApplication
 		private string _releaseVersion = String.Empty;
 		private string _buildVersion = String.Empty;
 
-		public VixenApplication()
+		public VixenApp()
 		{
 			InitializeComponent();
 
@@ -990,6 +992,13 @@ namespace VixenApplication
 			}
 		}
 
+        private async void SetupDisplayNew()
+        {
+            var form = new SetupDisplayWindow();
+            ElementHost.EnableModelessKeyboardInterop(form);
+            form.ShowDialog();
+		}
+
 		private async void SetupDisplay()
 		{
 			using (Setup.DisplaySetup form = new Setup.DisplaySetup())
@@ -1256,7 +1265,15 @@ namespace VixenApplication
 
 		private void buttonSetupDisplay_Click(object sender, EventArgs e)
 		{
-			SetupDisplay();
+            if ((ModifierKeys & Keys.Control) == Keys.Control)
+            {
+				SetupDisplayNew();
+            }
+            else
+            {
+				SetupDisplay();
+			}
+				
 		}
 
 		private void OnlineHelpMenu_Click(object sender, EventArgs e)

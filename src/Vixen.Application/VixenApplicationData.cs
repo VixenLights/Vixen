@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 namespace VixenApplication
 {
-	// This is a class to handle persisting data for the VixenApplication. It does this by serializing out
+	// This is a class to handle persisting data for the VixenApp. It does this by serializing out
 	// data to the Vixen Data directory and reading it back from the same file. In future, it may need to
 	// also handle migration of data if data formats change, etc., but for now it's probably not an issue.
 	public class VixenApplicationData
@@ -78,7 +78,7 @@ namespace VixenApplication
 				XElement? versionElement = root.Element("DataFormatVersion");
 				if (versionElement == null)
 				{
-					Logging.Error("VixenApplication: loading application data: couldn't find data format version");
+					Logging.Error("VixenApp: loading application data: couldn't find data format version");
 					return;
 				}
 				int dataFormatVersion = int.Parse(versionElement.Value);
@@ -87,11 +87,11 @@ namespace VixenApplication
 			}
 			catch (FileNotFoundException ex)
 			{
-				Logging.Warn("VixenApplication: loading application data, but couldn't find file", ex);
+				Logging.Warn("VixenApp: loading application data, but couldn't find file", ex);
 			}
 			catch (Exception ex)
 			{
-				Logging.Error(ex, "VixenApplication: error loading application data");
+				Logging.Error(ex, "VixenApp: error loading application data");
 			}
 			finally
 			{
@@ -136,7 +136,7 @@ namespace VixenApplication
 			}
 			catch (Exception ex)
 			{
-				Logging.Error(ex, "VixenApplication: error saving application data");
+				Logging.Error(ex, "VixenApp: error saving application data");
 			}
 			finally
 			{
@@ -149,7 +149,7 @@ namespace VixenApplication
 		{
 			if (dataVersion > DataFormatVersionNumber)
 			{
-				Logging.Error("VixenApplication: error reading application data; given data version was too high: " +
+				Logging.Error("VixenApp: error reading application data; given data version was too high: " +
 										  dataVersion);
 				return;
 			}
