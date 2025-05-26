@@ -2,6 +2,7 @@
 using Common.Controls.Theme;
 using NLog;
 using System.ComponentModel;
+using System.IO;
 using System.IO.Compression;
 
 namespace VixenApplication
