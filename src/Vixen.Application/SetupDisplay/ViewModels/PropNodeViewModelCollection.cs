@@ -1,7 +1,7 @@
 ﻿using Common.WPFCommon.Utils;
 using Vixen.Sys.Props;
 
-namespace VixenApplication.DisplaySetup.ViewModels
+namespace VixenApplication.SetupDisplay.ViewModels
 {
 	public class PropNodeViewModelCollection : TransformedCollection<PropNode, PropNodeViewModel>
 	{

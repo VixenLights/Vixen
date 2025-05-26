@@ -1,4 +1,4 @@
-﻿namespace VixenApplication.DisplaySetup.ViewModels
+﻿namespace VixenApplication.SetupDisplay.ViewModels
 {
 	// Common interface for items that can be selected
 	public interface ISelectable
