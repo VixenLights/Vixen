@@ -19,6 +19,8 @@ using Point = System.Drawing.Point;
 using SystemFonts = System.Drawing.SystemFonts;
 using Timer = System.Windows.Forms.Timer;
 using WPFApplication = System.Windows.Application;
+using System.IO;
+using System.Net.Http;
 using Common.WPFCommon.Services;
 using ControlzEx.Theming;
 using LogManager = NLog.LogManager;
@@ -62,24 +64,24 @@ namespace VixenApplication
 
 			if (WPFApplication.Current != null)
 			{
-				WPFApplication.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-				//Load up the common WPF them file for our WPF application parts.
-				ResourceDictionary dict = new ResourceDictionary
-				{
-					Source = new Uri("/WPFCommon;component/Theme/Theme.xaml", UriKind.Relative)
-				};
+			WPFApplication.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+			//Load up the common WPF them file for our WPF application parts.
+			ResourceDictionary dict = new ResourceDictionary
+			{
+				Source = new Uri("/WPFCommon;component/Theme/Theme.xaml", UriKind.Relative)
+			};
 
-				// This resource dictionary is required by the Orc Wizard library
-				ResourceDictionary dictOrc = new ResourceDictionary
-				{
-					Source = new Uri("/Orc.Wizard;component/themes/generic.xaml", UriKind.Relative)
-				};
+			// This resource dictionary is required by the Orc Wizard library
+			ResourceDictionary dictOrc = new ResourceDictionary
+			{
+				Source = new Uri("/Orc.Wizard;component/themes/generic.xaml", UriKind.Relative)
+			};
 
-				WPFApplication.Current.Resources.MergedDictionaries.Add(dictOrc);
-				WPFApplication.Current.Resources.MergedDictionaries.Add(dict);
+			WPFApplication.Current.Resources.MergedDictionaries.Add(dictOrc);
+			WPFApplication.Current.Resources.MergedDictionaries.Add(dict);
 
-				// Applies Orc Theme; This call makes the InfoBarMessageControl header bar readable in a dark theme
-				WPFApplication.Current.ApplyTheme();
+			// Applies Orc Theme; This call makes the InfoBarMessageControl header bar readable in a dark theme
+			WPFApplication.Current.ApplyTheme();
 
 			}
 			else
@@ -468,9 +470,9 @@ namespace VixenApplication
 		{
 			try
 			{
-				CheckForTestBuild();
+			CheckForTestBuild();
 				await MakeTopMost();
-			}
+		}
 			catch (Exception ex)
 			{
 				Logging.Error(ex, "Exceptionj showing the Vixen App form");
@@ -500,18 +502,18 @@ namespace VixenApplication
 				_releaseVersion = VersionInfo.VersionName;
 				_buildVersion = VersionInfo.BuildName;
 				_currentBuildVersion = VersionInfo.BuildNumber;
-				labelBuild.ForeColor = labelRelease.ForeColor = Color.Yellow;
-				Logging.Info($"{_releaseVersion} - {_buildVersion}");
+					labelBuild.ForeColor = labelRelease.ForeColor = Color.Yellow;
+					Logging.Info($"{_releaseVersion} - {_buildVersion}");
 				await CheckForDevBuildUpdatesAsync();
-			}
+				}
 			else if(VersionInfo.IsTestBuild)
-			{
+				{
 				_releaseVersion = VersionInfo.VersionName;
 				_buildVersion = VersionInfo.BuildName;
-				labelBuild.ForeColor = labelRelease.ForeColor = Color.Red;
-				toolStripStatusUpdates.Text = String.Empty;
-				Logging.Info($"{_releaseVersion}");
-			}
+					labelBuild.ForeColor = labelRelease.ForeColor = Color.Red;
+					toolStripStatusUpdates.Text = String.Empty;
+					Logging.Info($"{_releaseVersion}");
+				}
 			else
 			{
 				_currentReleaseVersion = VersionInfo.ReleaseVersion;
@@ -557,7 +559,7 @@ namespace VixenApplication
 			if (latestDevelopmentBuild > _currentBuildVersion)
 			{
 				return latestDevelopmentBuild.ToString();
-			}
+								}
 			return string.Empty;
 		}
 
@@ -565,13 +567,13 @@ namespace VixenApplication
 		{
 			var releaseVersionName = await VersionInfo.GetLatestReleaseVersionAsync();
 
-			if (releaseVersionName != _currentReleaseVersion)
-			{
-				return releaseVersionName;
-			}
+						if (releaseVersionName != _currentReleaseVersion)
+						{
+							return releaseVersionName;
+						}
 
 			return string.Empty;
-		}
+					}
 
 		private void CheckForTestBuild()
 		{
@@ -990,7 +992,7 @@ namespace VixenApplication
 
 		private async void SetupDisplay()
 		{
-			using (DisplaySetup form = new DisplaySetup())
+			using (Setup.DisplaySetup form = new Setup.DisplaySetup())
 			{
 				DialogResult dr = await form.ShowDialogAsync();
 
