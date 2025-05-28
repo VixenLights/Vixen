@@ -22,9 +22,10 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		public PropNodeTreeViewModel()
         {
             PropManager = VixenSystem.Props;
-			//PropNodeViewModel vm = new PropNodeViewModel(propManager.RootNode, null);
-            RootNodesViewModels = new ObservableCollection<PropNodeViewModel>(RootNodes.Select(x => new PropNodeViewModel(x, null)));
-            SelectedItems = new ObservableCollection<PropNodeViewModel>();
+			PropNodeViewModel vm = new(PropManager.RootNode, null);
+            RootNodeViewModel = [vm];
+           // RootNodesViewModels = new ObservableCollection<PropNodeViewModel>(RootNodes.Select(x => new PropNodeViewModel(x, null)));
+            SelectedItems = new();
             SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
 		}
 
@@ -45,51 +46,47 @@ namespace VixenApplication.SetupDisplay.ViewModels
         /// </summary>
         public static readonly IPropertyData PropManagerProperty = RegisterProperty<PropManager>(nameof(PropManager));
 
-        #endregion
+		#endregion
 
-        #region RootNodes property
+		#region RootNodeViewModes property
 
-        /// <summary>
-        /// Gets or sets the RootNodes value.
+		/// <summary>
+		/// Gets or sets the RootNodesViewModels value.
+		/// </summary>
+		public ObservableCollection<PropNodeViewModel> RootNodeViewModel
+		{
+			get { return GetValue<ObservableCollection<PropNodeViewModel>>(RootNodeViewModelProperty); }
+			set { SetValue(RootNodeViewModelProperty, value); }
+		}
+
+		/// <summary>
+		/// RootNodesViewModels property data.
+		/// </summary>
+		public static readonly IPropertyData RootNodeViewModelProperty = RegisterProperty<ObservableCollection<PropNodeViewModel>>(nameof(RootNodeViewModel));
+
+		#endregion
+
+		#region LeafNodes property
+
+		/// <summary>
+		/// Gets or sets the LeafNodes value.
         /// </summary>
-        [ViewModelToModel("PropManager")] //, ConverterType = typeof(RootNodeToCollectionMapping))
-		public ObservableCollection<PropNode> RootNodes
-        {
-            get { return GetValue<ObservableCollection<PropNode>>(RootNodesProperty); }
-            set { SetValue(RootNodesProperty, value); }
+		public ObservableCollection<PropNodeViewModel> LeafNodes
+		{
+            get
+            {
+                return new(RootNodeViewModel.SelectMany(x => x.GetLeafEnumerator()));
+            }
         }
-
-        /// <summary>
-        /// RootNodes property data.
-        /// </summary>
-        public static readonly IPropertyData RootNodesProperty = RegisterProperty<ObservableCollection<PropNode>>(nameof(RootNodes));
-
-        #endregion
-
-        #region RootNodesViewModels property
-
-        /// <summary>
-        /// Gets or sets the RootNodesViewModels value.
-        /// </summary>
-        public ObservableCollection<PropNodeViewModel> RootNodesViewModels
-        {
-            get { return GetValue<ObservableCollection<PropNodeViewModel>>(RootNodesViewModelsProperty); }
-            set { SetValue(RootNodesViewModelsProperty, value); }
-        }
-
-        /// <summary>
-        /// RootNodesViewModels property data.
-        /// </summary>
-        public static readonly IPropertyData RootNodesViewModelsProperty = RegisterProperty<ObservableCollection<PropNodeViewModel>>(nameof(RootNodesViewModels));
 
 		#endregion
 
 		#region SelectedItems property
 
-        /// <summary>
-        /// Gets or sets the SelectedItems value.
-        /// </summary>
-        public ObservableCollection<PropNodeViewModel> SelectedItems
+		/// <summary>
+		/// Gets or sets the SelectedItems value.
+		/// </summary>
+		public ObservableCollection<PropNodeViewModel> SelectedItems
         {
             get { return GetValue<ObservableCollection<PropNodeViewModel>>(SelectedItemsProperty); }
             set { SetValue(SelectedItemsProperty, value); }
@@ -183,7 +180,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		public Command CreateGroupCommand
 		{
-			get { return _createGroupCommand ??= new Command(CreateGroup, CanCreateGroup); }
+			get { return _createGroupCommand ??= new(CreateGroup, CanCreateGroup); }
 		}
 
 		/// <summary>
@@ -226,7 +223,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		public Command MoveToGroupCommand
 		{
-			get { return _moveToGroupCommand ??= new Command(MoveToGroup, CanMoveToGroup); }
+			get { return _moveToGroupCommand ??= new(MoveToGroup, CanMoveToGroup); }
 		}
 
 		/// <summary>
@@ -292,7 +289,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		public Command SubstitutionRenameCommand
 		{
-			get { return _substitutionRenameCommand ??= new Command(SubstitutionRename, CanSubstitutionRename); }
+			get { return _substitutionRenameCommand ??= new(SubstitutionRename, CanSubstitutionRename); }
 		}
 
 		/// <summary>
@@ -350,7 +347,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		public Command RenameCommand
 		{
-			get { return _renameCommand ??= new Command(Rename); }
+			get { return _renameCommand ??= new(Rename); }
 		}
 
 		/// <summary>
@@ -413,7 +410,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		public Command CreateNodeCommand
 		{
-			get { return _createNodeCommand ??= new Command(CreateNode, CanCreateNode); }
+			get { return _createNodeCommand ??= new(CreateNode, CanCreateNode); }
 		}
 
 		/// <summary>
@@ -425,7 +422,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 			if (result.Result == MessageResult.OK)
 			{
-				PropManager.CreateNode(result.Response, SelectedItem?.PropNode);
+				PropManager.CreateNode(result.Response, SelectedItem!=null?SelectedItem.PropNode:PropManager.RootNode);
 				//Ensure parent is expanded
                 if (SelectedItem != null)
                 {
@@ -455,7 +452,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		public Command CutCommand
 		{
-			get { return _cutCommand ??= new Command(Cut, CanCut); }
+			get { return _cutCommand ??= new(Cut, CanCut); }
 		}
 
 		/// <summary>
@@ -503,7 +500,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		public Command CopyCommand
 		{
-			get { return _copyCommand ??= new Command(Copy, CanCopy); }
+			get { return _copyCommand ??= new(Copy, CanCopy); }
 		}
 
 		/// <summary>
@@ -539,7 +536,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		public Command PasteCommand
 		{
-			get { return _pasteCommand ??= new Command(Paste, CanPaste); }
+			get { return _pasteCommand ??= new(Paste, CanPaste); }
 		}
 
 		/// <summary>
@@ -617,7 +614,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		public Command PasteAsNewCommand
 		{
-			get { return _pasteAsNewCommand ??= new Command(PasteAsNew, CanPasteAsNew); }
+			get { return _pasteAsNewCommand ??= new(PasteAsNew, CanPasteAsNew); }
 		}
 
 		/// <summary>
@@ -707,7 +704,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
         [Browsable(false)]
         public Command DeleteCommand
         {
-            get { return _deleteCommand ??= new Command(Delete, CanDelete); }
+            get { return _deleteCommand ??= new(Delete, CanDelete); }
         }
 
         /// <summary>

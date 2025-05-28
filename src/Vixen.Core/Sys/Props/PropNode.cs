@@ -5,12 +5,19 @@ using Vixen.Model;
 namespace Vixen.Sys.Props
 {
     [Serializable]
-	public class PropNode: ModelBase, IEqualityComparer<PropNode>, IEquatable<PropNode>
+	public class PropNode: BindableBase, IEqualityComparer<PropNode>, IEquatable<PropNode>
     {
         private ObservableCollection<PropNode> _children;
         private ObservableCollection<Guid> _parents;
+        private IProp? _prop;
+        private readonly string _name;
 
         #region Constructors
+
+        public PropNode(IProp prop):this(string.Empty)
+        {
+            Prop = prop;
+        }
 
         public PropNode() : this("Prop 1")
         {
@@ -18,10 +25,9 @@ namespace Vixen.Sys.Props
 
         public PropNode(string name)
         {
-            Id = Guid.NewGuid();
 			Name = name;
-            _children = new ObservableCollection<PropNode>();
-            _parents = new ObservableCollection<Guid>();
+            Children = new ObservableCollection<PropNode>();
+            Parents = new ObservableCollection<Guid>();
 		}
 
         public PropNode(string name, PropNode parent) : this(name)
@@ -35,9 +41,17 @@ namespace Vixen.Sys.Props
 
         public Guid Id { get; init; } = Guid.NewGuid();
 
-        public string Name { get; init; }
+        public string Name
+        {
+            get => Prop == null?_name:Prop.Name;
+            init => _name = value;
+        }
 
-        public IProp? Prop { get; set; }
+        public IProp? Prop
+        {
+            get => _prop;
+            set => SetProperty(ref _prop, value);
+        }
 
         #endregion
 
