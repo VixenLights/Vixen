@@ -35,24 +35,31 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 			propManager.RootNode.AddChild(MockPropNodeGroup("Mini Tree"));
             
-            propManager.RootNode.AddChild(MockPropNodeGroup("Candy Cane"));
+            propManager.RootNode.AddChild(MockPropNodeGroup("Arch"));
         }
 
         private PropNode MockPropNodeGroup(string name)
         {
-            var propNode = new PropNode($"{name}s");
+            var plural = name.EndsWith('e') ? "s" : "es";
+            var propNode = new PropNode($"{name}{plural}");
 
-            var mtl = new PropNode($"{name}s Left");
+            var mtl = new PropNode($"{name}{plural} Left");
 
             for (int i = 0; i < 4; i++)
             {
-                mtl.AddChild(new PropNode($"{name} {i + 1}"));
-            }
+				var propName = $"{name} {i + 1}";
+                var prop = new Arch(propName);
 
-            var mtr = new PropNode($"{name} Right");
+                mtl.AddChild(new PropNode(prop));
+			}
+
+            var mtr = new PropNode($"{name}{plural} Right");
             for (int i = 0; i < 4; i++)
             {
-                mtr.AddChild(new PropNode($"{name} {i + 1}"));
+                var propName = $"{name} {i + 1}";
+                var prop = new Arch(propName);
+
+				mtr.AddChild(new PropNode(prop));
             }
 
             propNode.AddChild(mtl);
@@ -393,8 +400,47 @@ namespace VixenApplication.SetupDisplay.ViewModels
             Process.Start(psi);
         }
 
-        #endregion
+		#endregion
+
+		#endregion
+
+		#region SelectedTabIndex property
+
+        /// <summary>
+        /// Gets or sets the SelectedTabIndex value.
+        /// </summary>
+        [Browsable(false)]
+        public int SelectedTabIndex
+        {
+            get { return GetValue<int>(SelectedTabIndexProperty); }
+            set { SetValue(SelectedTabIndexProperty, value); }
+        }
+
+        /// <summary>
+        /// SelectedTabIndex property data.
+        /// </summary>
+        public static readonly IPropertyData SelectedTabIndexProperty =
+            RegisterProperty<int>(nameof(SelectedTabIndex), null, (sender, e) => ((SetupDisplayViewModel)sender).OnSelectedTabIndexChanged());
+
+        /// <summary>
+        /// Called when the SelectedTabIndex property has changed.
+        /// </summary>
+        private void OnSelectedTabIndexChanged()
+        {
+            if (SelectedTabIndex == 0)
+            {
+                //var selectedModelIds = ElementTreeViewModel.SelectedItems.Select(e => e.ElementModel.Id).Distinct();
+                //ElementTreeViewModel.DeselectAll();
+                //ElementOrderViewModel.Select(selectedModelIds);
+            }
+            else if (SelectedTabIndex == 1)
+            {
+                //var selectedModelIds = ElementOrderViewModel.SelectedItems.Select(e => e.ElementModel.Id).Distinct();
+                //ElementOrderViewModel.DeselectAll();
+                //ElementTreeViewModel.Select(selectedModelIds);
+            }
+        }
 
         #endregion
-    }
+	}
 }

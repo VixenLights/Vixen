@@ -32,6 +32,14 @@ namespace Vixen.Sys.Props
 		/// <summary>
 		/// Defined type of the Prop.
 		/// </summary>
-		PropType PropType { get; set; }
+		PropType PropType { get; init; }
+
+		StringTypes StringType { get; set; }
 	}
+
+    public enum StringTypes
+    {
+        Standard,
+        Pixel
+    }
 }
