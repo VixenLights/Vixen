@@ -17,7 +17,6 @@ namespace VixenApplication.SetupDisplay.ViewModels
         {
             PropNode = model;
             ChildrenViewModels = new PropNodeViewModelCollection(model.Children, this);
-            //ElementModelLookUpService.Instance.AddModel(model.Id, this);
             ((IRelationalViewModel)this).SetParentViewModel(parent);
             DeferValidationUntilFirstSaveCall = false;
             AlwaysInvokeNotifyChanged = true;
@@ -77,6 +76,16 @@ namespace VixenApplication.SetupDisplay.ViewModels
                 VixenSystem.Props.RemoveFromParent(PropNode, parentVm.PropNode);
                 IsDirty = true;
             }
+        }
+
+        public IEnumerable<PropNodeViewModel> GetLeafEnumerator()
+        {
+            if (PropNode.IsLeaf)
+            {
+                return [this];
+            }
+
+            return ChildrenViewModels.SelectMany(x => x.GetLeafEnumerator());
         }
 	}
 }

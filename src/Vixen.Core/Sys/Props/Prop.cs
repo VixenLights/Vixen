@@ -4,32 +4,61 @@ using Vixen.Model;
 namespace Vixen.Sys.Props
 {
     [Serializable]
-	public abstract class Prop: ModelBase, IProp
+	public abstract class Prop: BindableBase, IProp
 	{
-		#region Constructors
+        private readonly Guid _id;
+        private string _name;
+        private string _createdBy;
+        private DateTime _modifiedDate;
+        private StringTypes _stringType;
 
-        protected Prop() : this("Prop 1")
-        {
+        #region Constructors
 
-        }
-
-        protected Prop(string name)
+        protected Prop(string name, PropType propType)
         {   
             Id = Guid.NewGuid();
 			Name = name;
             CreationDate = ModifiedDate = DateTime.Now;
             CreatedBy = Environment.UserName;
+            PropType = propType;
+            StringType = StringTypes.Pixel;
         }
 
 		#endregion
 
+        public Guid Id
+        {
+            get => _id;
+            init => SetProperty(ref _id, value);
+        }
 
-		public Guid Id { get; init; } 
-        public string Name { get; set; }
-        public string CreatedBy { get; set; }
+        public string Name
+        {
+            get => _name;
+            set => SetProperty(ref _name, value);
+        }
+
+        public string CreatedBy
+        {
+            get => _createdBy;
+            set => SetProperty(ref _createdBy, value);
+        }
+
         public DateTime CreationDate { get; init; }
-        public DateTime ModifiedDate { get; set; }
-        public virtual PropType PropType { get; set; }
+
+        public DateTime ModifiedDate
+        {
+            get => _modifiedDate;
+            set => SetProperty(ref _modifiedDate, value);
+        }
+
+        public PropType PropType { get; init; }
+
+        public StringTypes StringType
+        {
+            get => _stringType;
+            set => SetProperty(ref _stringType, value);
+        }
 
         // Add logic to manage Element structure into the regular element tree, including supported properties
         // like patching order, orientation, etc. 
@@ -42,7 +71,7 @@ namespace Vixen.Sys.Props
         // Location will need to be handled as an offset into any previews that the Prop participates in. 
         // * Prop should have a list of associated preview ids
         // * Prop should have a lookup of the offset by preview id. 
-        
+
 
         // Custom definitions for targeted rendering will need to be handled in some form. TBD.
 

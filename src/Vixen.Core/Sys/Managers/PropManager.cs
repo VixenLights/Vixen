@@ -4,13 +4,13 @@ using Vixen.Sys.Props;
 
 namespace Vixen.Sys.Managers
 {
-	public class PropManager: ModelBase
+	public class PropManager: BindableBase
 	{
         private readonly PropNode _rootNode;
 
         public PropManager()
         {
-            RootNode = new PropNode("Root Node");
+            RootNode = new PropNode("Props");
         }
 
         public PropNode RootNode
