@@ -4,11 +4,17 @@ using Catel.Data;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
+using Common.Controls.Wizard;
 using Common.WPFCommon.Services;
 using GongSolutions.Wpf.DragDrop;
+using Orc.Theming;
+using Orc.Wizard;
 using Vixen.Sys;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Props;
+using VixenApplication.SetupDisplay.Wizards.Factory;
+using VixenApplication.SetupDisplay.Wizards.Pages;
+using VixenApplication.SetupDisplay.Wizards.Wizard;
 using DragDropEffects = System.Windows.DragDropEffects;
 using IDropTarget = GongSolutions.Wpf.DragDrop.IDropTarget;
 
@@ -188,7 +194,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		private void CreateGroup()
 		{
-			var result = RequestNewGroupName(String.Empty);
+			var result = RequestNewName(String.Empty);
 			if (result.Result == MessageResult.OK)
 			{
 				var elementsToGroup = SelectedItems.Select(x => x.PropNode).Distinct().ToList();
@@ -231,7 +237,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		private void MoveToGroup()
 		{
-			//var result = RequestNewGroupName(String.Empty);
+			//var result = RequestNewName(String.Empty);
 			//if (result.Result == MessageResult.OK)
 			//{
 			//	var pms = PropModelServices.Instance();
@@ -418,7 +424,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		private void CreateNode()
 		{
-			var result = RequestNewGroupName(string.Empty);
+			var result = RequestNewName(string.Empty);
 
 			if (result.Result == MessageResult.OK)
 			{
@@ -442,6 +448,49 @@ namespace VixenApplication.SetupDisplay.ViewModels
         }
 
 		#endregion
+
+        #region CreateProp command
+
+        private TaskCommand _createPropCommand;
+
+        /// <summary>
+        /// Gets the CreateProp command.
+        /// </summary>
+        public TaskCommand CreatePropCommand
+        {
+            get { return _createPropCommand ??= new(CreateProp, CanCreateProp); }
+        }
+
+        /// <summary>
+        /// Method to invoke when the CreateNode command is executed.
+        /// </summary>
+        private async Task CreateProp()
+        {
+            var prop = await GenerateProp();
+
+            if (prop != null)
+            { 
+                PropManager.AddProp(prop, SelectedItem != null ? SelectedItem.PropNode : PropManager.RootNode);
+			   
+                //Ensure parent is expanded
+                if (SelectedItem != null)
+                {
+                    SelectedItem.IsExpanded = true;
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Method to check whether the CreateNode command can be executed.
+        /// </summary>
+        /// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+        private bool CanCreateProp()
+        {
+            return true;
+        }
+
+        #endregion
 
 		#region Cut command
 
@@ -798,11 +847,47 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region Utility
 
-		private MessageBoxResponse RequestNewGroupName(string suggestedName)
+		private MessageBoxResponse RequestNewName(string suggestedName, bool createGroup = true)
         {
+            var nameType = createGroup ? "group" : "prop";
             var dependencyResolver = this.GetDependencyResolver();
             var mbs = dependencyResolver.Resolve<IMessageBoxService>();
-            return mbs.GetUserInput("Please enter the group name.", "Create Group", suggestedName);
+            return mbs.GetUserInput($"Please enter the {nameType} name.", $"Create {nameType}", suggestedName);
+        }
+
+        private async Task<IProp?> GenerateProp()
+        {
+			//TODO ask the user what type of Prop We are going to assume Arch for now.
+
+            var dependencyResolver = this.GetDependencyResolver();
+
+			// Get the Catel type factory
+			ITypeFactory typeFactory = this.GetTypeFactory();
+
+            // Retrieve the color scheme service
+            IBaseColorSchemeService baseColorService = (IBaseColorSchemeService)dependencyResolver.Resolve(typeof(IBaseColorSchemeService));
+
+            // Select the dark color scheme
+            baseColorService.SetBaseColorScheme("Dark");
+
+			// Use the type factory to create the prop wizard
+			
+			var wizard = PropWizardFactory.CreateInstance(PropType.Arch, typeFactory);
+			
+            var ws = dependencyResolver.Resolve<IWizardService>();
+            if (ws != null && wizard != null)
+            {
+				bool? result = (await ws.ShowWizardAsync(wizard)).DialogResult;
+                // Determine if the wizard was cancelled 
+                if (result.HasValue && result.Value)
+                {
+					//User did not cancel
+                    var page = (IPropWizardFinalPage)wizard.Pages.Single(page => page is IPropWizardFinalPage);
+                    return page.GetProp();
+                }
+            }
+
+            return null;
         }
 
 		#endregion
