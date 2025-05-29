@@ -10,8 +10,8 @@ namespace VixenApplication.SetupDisplay.ViewModels
 	public sealed class PropNodeViewModel : ViewModelBase, ISelectableExpander
 	{
         private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		//private DateTime _selectedTime = DateTime.MaxValue;
-        //private string _textHoldValue = String.Empty;
+		private DateTime _selectedTime = DateTime.MaxValue;
+        private string _textHoldValue = String.Empty;
 
 		public PropNodeViewModel(PropNode model, PropNodeViewModel? parent)
         {
@@ -41,10 +41,36 @@ namespace VixenApplication.SetupDisplay.ViewModels
         /// </summary>
         public static readonly IPropertyData PropNodeProperty = RegisterProperty<PropNode>(nameof(PropNode));
 
-        #endregion
+		#endregion
 
-		public bool IsSelected { get; set; }
-        public bool IsExpanded { get; set; }
+		#region IsSelected property
+
+        /// <summary>
+        /// Gets or sets the IsSelected value.
+        /// </summary>
+        [Browsable(false)]
+        public bool IsSelected
+        {
+            get
+            {
+                return GetValue<bool>(IsSelectedProperty);
+            }
+            set
+            {
+                bool tempDirty = IsDirty;
+                SetValue(IsSelectedProperty, value);
+                _selectedTime = DateTime.Now;
+                IsDirty = tempDirty;
+            }
+        }
+
+        /// <summary>
+        /// IsSelected property data.
+        /// </summary>
+        public static readonly IPropertyData IsSelectedProperty = RegisterProperty<bool>(nameof(IsSelected));
+
+        #endregion
+		public bool IsExpanded { get; set; }
         public void Dispose()
         {
 			((IRelationalViewModel)this).SetParentViewModel(null);
@@ -68,6 +94,104 @@ namespace VixenApplication.SetupDisplay.ViewModels
         public static readonly IPropertyData ChildrenViewModelsProperty = RegisterProperty<PropNodeViewModelCollection>(nameof(ChildrenViewModels));
 
 		#endregion
+
+
+        #region IsEditing property
+
+        /// <summary>
+        /// Gets or sets the IsEditing value.
+        /// </summary>
+        [Browsable(false)]
+        public bool IsEditing
+        {
+            get { return GetValue<bool>(IsEditingProperty); }
+            set { SetValue(IsEditingProperty, value); }
+        }
+
+        /// <summary>
+        /// IsEditing property data.
+        /// </summary>
+        public static readonly IPropertyData IsEditingProperty = RegisterProperty<bool>(nameof(IsEditing));
+
+        #endregion
+
+
+
+		#region BeginEdit command
+
+		private Command _beginEditCommand;
+
+        /// <summary>
+        /// Gets the LeftMouseUp command.
+        /// </summary>
+        [Browsable(false)]
+        public Command BeginEditCommand
+        {
+            get { return _beginEditCommand ??= new Command(BeginEdit); }
+        }
+
+        /// <summary>
+        /// Method to invoke when the LeftMouseUp command is executed.
+        /// </summary>
+        private void BeginEdit()
+        {
+            if (IsSelected && _selectedTime.AddMilliseconds(750) < DateTime.Now)
+            {
+                IsEditing = true;
+                _textHoldValue = PropNode.Name;
+            }
+        }
+
+        #endregion
+
+        #region DoneEditing command
+
+        private Command _doneEditingCommand;
+
+        /// <summary>
+        /// Gets the EditFocusLost command.
+        /// </summary>
+        [Browsable(false)]
+        public Command DoneEditingCommand
+        {
+            get { return _doneEditingCommand ??= new Command(DoneEditing); }
+        }
+
+        /// <summary>
+        /// Method to invoke when the EditFocusLost command is executed.
+        /// </summary>
+        private void DoneEditing()
+        {
+            //Check for unique name if necessary and update.
+            IsEditing = false;
+            IsDirty = true;
+        }
+
+        #endregion
+
+        #region CancelEditing command
+
+        private Command _cancelEditingCommand;
+
+        /// <summary>
+        /// Gets the CancelEditing command.
+        /// </summary>
+        [Browsable(false)]
+        public Command CancelEditingCommand
+        {
+            get { return _cancelEditingCommand ?? (_cancelEditingCommand = new Command(CancelEditing)); }
+        }
+
+        /// <summary>
+        /// Method to invoke when the CancelEditing command is executed.
+        /// </summary>
+        private void CancelEditing()
+        {
+            IsEditing = false;
+            PropNode.Name = _textHoldValue;
+        }
+
+        #endregion
 
 		public void RemoveFromParent()
         {

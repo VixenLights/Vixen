@@ -155,6 +155,7 @@
             </Style>
 
             <ContextMenu x:Key="PropNodeTreeContextMenu">
+                <MenuItem Header="Add Prop" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreatePropCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
                 <MenuItem Header="Create Group" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreateNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
             </ContextMenu>
 
@@ -349,7 +350,7 @@
                             ScrollViewer.CanContentScroll="True"
                             FocusManager.IsFocusScope="True">
                         <i:Interaction.Behaviors>
-                            <behaviors:MultiSelectionBehavior SelectedItems="{Binding PropNodeViewModel.SelectedItems}" />
+                            <behaviors:MultiSelectionBehavior SelectedItems="{Binding PropNodeTreeViewModel.SelectedItems}" />
                         </i:Interaction.Behaviors>
                         <ListView.ItemTemplate >
                             <DataTemplate DataType="{x:Type viewModels:PropNodeViewModel}">

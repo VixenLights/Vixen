@@ -29,12 +29,15 @@ namespace VixenApplication.SetupDisplay.ViewModels
             PropNodeTreeViewModel = new PropNodeTreeViewModel();
         }
 
-        private void MockPropManager()
+		#region Mock Code
+
+        //TODO remove this when the real tree can be used.
+		private void MockPropManager()
         {
             PropManager propManager = VixenSystem.Props;
 
-			propManager.RootNode.AddChild(MockPropNodeGroup("Mini Tree"));
-            
+            propManager.RootNode.AddChild(MockPropNodeGroup("Mini Tree"));
+
             propManager.RootNode.AddChild(MockPropNodeGroup("Arch"));
         }
 
@@ -47,11 +50,11 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
             for (int i = 0; i < 4; i++)
             {
-				var propName = $"{name} {i + 1}";
+                var propName = $"{name} {i + 1}";
                 var prop = new Arch(propName);
 
                 mtl.AddChild(new PropNode(prop));
-			}
+            }
 
             var mtr = new PropNode($"{name}{plural} Right");
             for (int i = 0; i < 4; i++)
@@ -59,7 +62,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
                 var propName = $"{name} {i + 1}";
                 var prop = new Arch(propName);
 
-				mtr.AddChild(new PropNode(prop));
+                mtr.AddChild(new PropNode(prop));
             }
 
             propNode.AddChild(mtl);
@@ -68,6 +71,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
             return propNode;
         }
 
+		#endregion
 
 		#region PropNodeTreeViewModel property
 

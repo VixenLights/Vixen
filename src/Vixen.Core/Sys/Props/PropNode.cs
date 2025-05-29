@@ -10,7 +10,7 @@ namespace Vixen.Sys.Props
         private ObservableCollection<PropNode> _children;
         private ObservableCollection<Guid> _parents;
         private IProp? _prop;
-        private readonly string _name;
+        private string _name;
 
         #region Constructors
 
@@ -35,29 +35,60 @@ namespace Vixen.Sys.Props
             Parents.Add(parent.Id);
         }
 
-        #endregion
-
-        #region Properties
-
-        public Guid Id { get; init; } = Guid.NewGuid();
-
-        public string Name
+        public PropNode(IProp prop, PropNode parent):this(string.Empty)
         {
-            get => Prop == null?_name:Prop.Name;
-            init => _name = value;
+            Prop = prop;
+            Parents.Add(parent.Id);
         }
 
-        public IProp? Prop
+		#endregion
+
+		#region Properties
+
+		#region Id
+
+		public Guid Id { get; init; } = Guid.NewGuid();
+
+		#endregion
+
+		#region Name
+
+		public string Name
+        {
+            get => Prop == null ? _name : Prop.Name;
+            set
+            {
+                if (Prop == null)
+                {
+                    SetProperty(ref _name, value);
+                }
+                else
+                {
+                    _name = String.Empty;
+                    Prop.Name = value;
+                    OnPropertyChanged(nameof(Name));
+                }
+
+            }
+        }
+
+		#endregion
+
+		#region Prop
+
+		public IProp? Prop
         {
             get => _prop;
             set => SetProperty(ref _prop, value);
         }
 
-        #endregion
+		#endregion
 
-        #region IsLeaf
+		#endregion
 
-        public bool IsLeaf => !Children.Any();
+		#region IsLeaf
+
+		public bool IsLeaf => !Children.Any();
 
         #endregion
 

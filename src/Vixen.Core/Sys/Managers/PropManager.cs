@@ -55,6 +55,24 @@ namespace Vixen.Sys.Managers
             return pn;
         }
 
+        public PropNode AddProp(IProp prop, PropNode parent)
+        {
+
+            PropNode propNode = null;
+            if (parent == null)
+            {
+                propNode = new PropNode(prop, RootNode);
+                RootNode.AddChild(propNode);
+            }
+            else
+            {
+                propNode = new PropNode(prop, parent);
+                parent.AddChild(propNode);
+			}
+
+            return propNode;
+        }
+
         public void RemoveFromParent(PropNode propNode, PropNode parentToLeave)
         {
             propNode.RemoveParent(parentToLeave);
