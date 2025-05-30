@@ -43,12 +43,31 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#endregion
 
-		#region IsSelected property
+		#region IsLeaf
 
         /// <summary>
-        /// Gets or sets the IsSelected value.
+        /// Gets or sets the IsLeaf of the PropNode.
         /// </summary>
-        [Browsable(false)]
+        [ViewModelToModel]
+        public bool IsLeaf
+        {
+            get { return GetValue<bool>(IsLeafProperty); }
+            set { SetValue(IsLeafProperty, value); }
+        }
+
+        /// <summary>
+        /// Register the IsLeaf property so it is known in the class.
+        /// </summary>
+        public static readonly IPropertyData IsLeafProperty = RegisterProperty<bool>(nameof(IsLeaf));
+
+		#endregion
+
+		#region IsSelected property
+
+		/// <summary>
+		/// Gets or sets the IsSelected value.
+		/// </summary>
+		[Browsable(false)]
         public bool IsSelected
         {
             get
@@ -70,6 +89,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
         public static readonly IPropertyData IsSelectedProperty = RegisterProperty<bool>(nameof(IsSelected));
 
         #endregion
+
 		public bool IsExpanded { get; set; }
         public void Dispose()
         {

@@ -298,6 +298,7 @@
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding ChildrenViewModels}" DataType="{x:Type viewModels:PropNodeViewModel}">
                                 <StackPanel Orientation="Horizontal">
+                                    <Image Source="/Resources;component/bullet_purple.png" Width="16" Height="16" Visibility="{Binding IsLeaf, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
                                     <TextBlock x:Name="ReadOnlyText" Text="{Binding PropNode.Name}" Margin="0,2,0,2" Style="{StaticResource PropNodeContextMenuStyle}" Focusable="True">
 									<i:Interaction.Triggers>
 										<i:EventTrigger EventName="MouseLeftButtonUp">
