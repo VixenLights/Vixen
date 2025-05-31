@@ -86,12 +86,14 @@
                
                 <views:PropNodeTree Grid.Row="0" />
 
-                <StackPanel Grid.Row="1" Orientation="Vertical" Margin="8">
+                <views:PropPreview Grid.Row="1"/>
+                <!--<StackPanel Grid.Row="1" Orientation="Vertical" Margin="8">
+                    
                     <Border BorderThickness="1">
                         <TextBlock Text="Selected Prop Visual Box" Margin="5,0,5,0"/>
                     </Border>
                     
-                </StackPanel>
+                </StackPanel>-->
             </Grid>
            
         </Grid>
