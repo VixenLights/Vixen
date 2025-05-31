@@ -12,6 +12,7 @@ using Orc.Wizard;
 using Vixen.Sys;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Props;
+using Vixen.Sys.Props.Model;
 using VixenApplication.SetupDisplay.Wizards.Factory;
 using VixenApplication.SetupDisplay.Wizards.Pages;
 using VixenApplication.SetupDisplay.Wizards.Wizard;
@@ -32,6 +33,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
             RootNodeViewModel = [vm];
            // RootNodesViewModels = new ObservableCollection<PropNodeViewModel>(RootNodes.Select(x => new PropNodeViewModel(x, null)));
             SelectedItems = new();
+			SelectedItemNodePoints = new();
             SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
 		}
 
@@ -110,18 +112,25 @@ namespace VixenApplication.SetupDisplay.ViewModels
             if (SelectedItems.Count == 1)
             {
                 SelectedItem = SelectedItems.First();
+                if (SelectedItem.PropNode.IsLeaf && SelectedItem.PropNode.Prop != null &&
+                    SelectedItem.PropNode.Prop.PropModel is ILightPropModel model)
+                {
+                    SelectedItemNodePoints = model.Nodes;
+                }
+				
             }
             else
             {
                 SelectedItem = null;
+				SelectedItemNodePoints.Clear();
             }
 
-            //CopyCommand.RaiseCanExecuteChanged();
-            //CutCommand.RaiseCanExecuteChanged();
-            //PasteCommand.RaiseCanExecuteChanged();
-            //CreateGroupCommand.RaiseCanExecuteChanged();
-            //MoveToGroupCommand.RaiseCanExecuteChanged();
-            //CreateNodeCommand.RaiseCanExecuteChanged();
+            CopyCommand.RaiseCanExecuteChanged();
+            CutCommand.RaiseCanExecuteChanged();
+            PasteCommand.RaiseCanExecuteChanged();
+            CreateGroupCommand.RaiseCanExecuteChanged();
+            MoveToGroupCommand.RaiseCanExecuteChanged();
+            CreateNodeCommand.RaiseCanExecuteChanged();
         }
 
 
@@ -144,6 +153,25 @@ namespace VixenApplication.SetupDisplay.ViewModels
         public static readonly IPropertyData SelectedItemProperty = RegisterProperty<PropNodeViewModel>(nameof(SelectedItem));
 
 		#endregion
+
+        #region SelectedItemNodePoints
+
+        /// <summary>
+        /// Gets or sets the SelectedItemNodePoints value.
+        /// </summary>;
+        [Model]
+        public ObservableCollection<NodePoint> SelectedItemNodePoints
+        {
+            get { return GetValue<ObservableCollection<NodePoint>>(SelectedItemNodesProperty); }
+            private set { SetValue(SelectedItemNodesProperty, value); }
+        }
+
+        /// <summary>;
+        /// SelectedItemNodePoints property data.
+        /// </summary>;
+        public static readonly IPropertyData SelectedItemNodesProperty = RegisterProperty<ObservableCollection<NodePoint>>(nameof(SelectedItemNodePoints));
+
+        #endregion
 
 		#region Selection
 
