@@ -1,6 +1,6 @@
 ﻿
 
-namespace Vixen.Sys.Props
+namespace Vixen.Sys.Props.Model.Arch
 {
     public class Arch: Prop
     {
@@ -21,12 +21,18 @@ namespace Vixen.Sys.Props
             LightCount = lightCount;
             //TODO create default element structure
             //TODO create Preview model
+            ArchModel model = new ArchModel(lightCount);
+            PropModel = model;
         }
 
 		public int LightCount
         {
             get => _lightCount;
-            set => SetProperty(ref _lightCount, value);
+            set
+            {
+                SetProperty(ref _lightCount, value);
+
+			}
         }
     }
 }
