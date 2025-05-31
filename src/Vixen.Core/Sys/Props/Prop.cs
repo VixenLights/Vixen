@@ -11,6 +11,7 @@ namespace Vixen.Sys.Props
         private string _createdBy;
         private DateTime _modifiedDate;
         private StringTypes _stringType;
+        private IPropModel _propModel;
 
         #region Constructors
 
@@ -58,6 +59,12 @@ namespace Vixen.Sys.Props
         {
             get => _stringType;
             set => SetProperty(ref _stringType, value);
+        }
+
+        public IPropModel PropModel
+        {
+            get => _propModel;
+            set => SetProperty(ref _propModel, value);
         }
 
         // Add logic to manage Element structure into the regular element tree, including supported properties

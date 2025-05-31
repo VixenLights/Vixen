@@ -34,7 +34,15 @@ namespace Vixen.Sys.Props
 		/// </summary>
 		PropType PropType { get; init; }
 
+		/// <summary>
+		/// String type of enum <see cref="StringTypes"/>
+		/// </summary>
 		StringTypes StringType { get; set; }
+
+		/// <summary>
+		/// Model for rendering the visual
+		/// </summary>
+		IPropModel PropModel { get; set; }
 	}
 
     public enum StringTypes

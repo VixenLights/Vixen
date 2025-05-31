@@ -12,6 +12,7 @@ using NLog;
 using Vixen.Sys;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Props;
+using Vixen.Sys.Props.Model.Arch;
 
 namespace VixenApplication.SetupDisplay.ViewModels
 {
