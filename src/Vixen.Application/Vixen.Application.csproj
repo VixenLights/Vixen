@@ -86,7 +86,6 @@
 
 		<ItemGroup>
 		  <Folder Include="SetupDisplay\Behaviors\" />
-		  <Folder Include="SetupDisplay\Converter\" />
 		  <Folder Include="SetupDisplay\Model\" />
 		  <Folder Include="SetupDisplay\Services\" />
 		</ItemGroup>
