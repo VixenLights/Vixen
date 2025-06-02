@@ -1,11 +1,14 @@
-﻿using System.Collections.ObjectModel;
+﻿#nullable enable
+using System.Collections.ObjectModel;
+using Vixen.Annotations;
 using Vixen.Model;
 using Vixen.Sys.Props;
 
 namespace Vixen.Sys.Managers
 {
 	public class PropManager: BindableBase
-	{
+    {
+        private readonly Dictionary<Guid, IProp> _propLocator = new Dictionary<Guid, IProp>();
         private readonly PropNode _rootNode;
 
         public PropManager()
@@ -70,13 +73,30 @@ namespace Vixen.Sys.Managers
                 parent.AddChild(propNode);
 			}
 
-            return propNode;
+			return propNode;
         }
 
         public void RemoveFromParent(PropNode propNode, PropNode parentToLeave)
         {
             propNode.RemoveParent(parentToLeave);
             parentToLeave.RemoveChild(propNode);
+        }
+
+        public T CreateProp<T>(string name) where T: IProp, new()
+		{
+            var prop = new T
+            {
+                Name = name
+            };
+
+            _propLocator.Add(prop.Id, prop);
+
+            return prop;
+		}
+
+        public IProp? FindById(Guid id)
+        {
+            return _propLocator.GetValueOrDefault(id);
         }
 	}
 }

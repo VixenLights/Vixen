@@ -1,8 +1,8 @@
 ﻿#nullable enable
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-using System.Windows;
 using Catel.Data;
 using Catel.IoC;
 using Catel.MVVM;
@@ -12,37 +12,82 @@ using NLog;
 using Vixen.Sys;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Props;
+using Vixen.Sys.Props.Model;
 using Vixen.Sys.Props.Model.Arch;
+using Window = System.Windows.Window;
 
 namespace VixenApplication.SetupDisplay.ViewModels
 {
     public class SetupDisplayViewModel : ViewModelBase
 	{
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
+        private const int LayoutViewTab = 0;
+        private const int PropViewTab = 1;
 
         public SetupDisplayViewModel()
         {
-            //Initial creation to mock. Remove once VixenSystem can load and save
-            if(!VixenSystem.Props.RootNodes.Any())
+            PropPreviewNodePoints = new();
+
+			//Initial creation to mock. Remove once VixenSystem can load and save
+			if (!VixenSystem.Props.RootNodes.Any())
             {
                 MockPropManager();
             }
-            PropNodeTreeViewModel = new PropNodeTreeViewModel();
+            else
+            {
+                VixenSystem.Props.RootNodes.Clear();
+                MockPropManager();
+			}
+
+            PropNodeTreeViewModel = new ();
+			PropNodeTreeViewModel.PropertyChanged += PropNodeTreeViewModel_PropertyChanged;
+            PropNodeTreePropViewModel = new();
+			PropNodeTreePropViewModel.PropertyChanged += PropNodeTreePropViewModel_PropertyChanged;
         }
+
+		private void PropNodeTreePropViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+            if (SelectedTabIndex == PropViewTab && nameof(PropNodeTreePropViewModel.SelectedItem).Equals(e.PropertyName))
+            {
+                if (PropNodeTreePropViewModel.SelectedItem is { IsLeaf: true, PropNode.Prop: not null })
+                {
+                    UpdatePreviewModel(PropNodeTreePropViewModel.SelectedItem.PropNode.Prop);
+                }
+                else
+                {
+                    ClearPreviewModel();
+                }
+			}
+		}
+
+		private void PropNodeTreeViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+            if (SelectedTabIndex == LayoutViewTab && nameof(PropNodeTreeViewModel.SelectedItem).Equals(e.PropertyName))
+            {
+                if (PropNodeTreeViewModel.SelectedItem is { IsLeaf: true, PropNode.Prop: not null })
+                {
+                    UpdatePreviewModel(PropNodeTreeViewModel.SelectedItem.PropNode.Prop);
+                }
+                else
+                {
+                    ClearPreviewModel();
+                }
+            }
+		}
 
 		#region Mock Code
 
-        //TODO remove this when the real tree can be used.
+		//TODO remove this when the real tree can be used.
 		private void MockPropManager()
         {
             PropManager propManager = VixenSystem.Props;
 
-            propManager.RootNode.AddChild(MockPropNodeGroup("Mini Tree"));
+            propManager.RootNode.AddChild(MockPropNodeGroup<Vixen.Sys.Props.Model.Tree.Tree>("Mini Tree"));
 
-            propManager.RootNode.AddChild(MockPropNodeGroup("Arch"));
+            propManager.RootNode.AddChild(MockPropNodeGroup<Arch>("Arch"));
         }
 
-        private PropNode MockPropNodeGroup(string name)
+        private PropNode MockPropNodeGroup<T>(string name) where T : IProp, new()
         {
             var plural = name.EndsWith('e') ? "s" : "es";
             var propNode = new PropNode($"{name}{plural}");
@@ -52,18 +97,19 @@ namespace VixenApplication.SetupDisplay.ViewModels
             for (int i = 0; i < 4; i++)
             {
                 var propName = $"{name} {i + 1}";
-                var prop = new Arch(propName);
 
-                mtl.AddChild(new PropNode(prop));
+                var prop = VixenSystem.Props.CreateProp<T>(propName);
+
+				mtl.AddChild(new PropNode(prop));
             }
 
             var mtr = new PropNode($"{name}{plural} Right");
             for (int i = 0; i < 4; i++)
             {
                 var propName = $"{name} {i + 1}";
-                var prop = new Arch(propName);
+                var prop = VixenSystem.Props.CreateProp<T>(propName);
 
-                mtr.AddChild(new PropNode(prop));
+				mtr.AddChild(new PropNode(prop));
             }
 
             propNode.AddChild(mtl);
@@ -93,11 +139,47 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#endregion
 
+		#region PropNodeTreePropViewModel property
+
+		/// <summary>
+		/// Gets or sets the PropNodeTreePropViewModel value.
+        /// </summary>;
+        public PropNodeTreePropViewModel PropNodeTreePropViewModel
+        {
+            get { return GetValue<PropNodeTreePropViewModel>(PropNodePropTreeViewModelProperty); }
+            private set { SetValue(PropNodePropTreeViewModelProperty, value); }
+        }
+
+        /// <summary>;
+        /// PropNodeTreePropViewModel property data.
+        /// </summary>;
+        public static readonly IPropertyData PropNodePropTreeViewModelProperty = RegisterProperty<PropNodeTreePropViewModel>(nameof(PropNodeTreePropViewModel));
+
+		#endregion
+
+        #region PropPreviewNodePoints
+
+        /// <summary>
+        /// Gets or sets the PropPreviewNodePoints value.
+        /// </summary>;
+        public ObservableCollection<NodePoint>? PropPreviewNodePoints
+        {
+            get { return GetValue<ObservableCollection<NodePoint>>(SelectedItemNodesProperty); }
+            private set { SetValue(SelectedItemNodesProperty, value); }
+        }
+
+        /// <summary>;
+        /// PropPreviewNodePoints property data.
+        /// </summary>;
+        public static readonly IPropertyData SelectedItemNodesProperty = RegisterProperty<ObservableCollection<NodePoint>>(nameof(PropPreviewNodePoints));
+
+        #endregion
+
 		#region Menu Commands
 
-        #region OpenProp command
+		#region OpenProp command
 
-        private Command _openPropCommand;
+		private Command _openPropCommand;
 
         /// <summary>
         /// Gets the OpenProp command.
@@ -434,18 +516,40 @@ namespace VixenApplication.SetupDisplay.ViewModels
         {
             if (SelectedTabIndex == 0)
             {
-                //var selectedModelIds = ElementTreeViewModel.SelectedItems.Select(e => e.ElementModel.Id).Distinct();
-                //ElementTreeViewModel.DeselectAll();
-                //ElementOrderViewModel.Select(selectedModelIds);
-            }
-            else if (SelectedTabIndex == 1)
+                //var selectedModelIds = PropNodeTreeViewModel.SelectedItems.Select(e => e.PropNode.Id).Distinct();
+				PropNodeTreeViewModel.DeselectAll();
+				//PropNodeTreePropViewModel.Select(selectedModelIds);
+			}
+			else if (SelectedTabIndex == 1)
             {
                 //var selectedModelIds = ElementOrderViewModel.SelectedItems.Select(e => e.ElementModel.Id).Distinct();
-                //ElementOrderViewModel.DeselectAll();
+                PropNodeTreePropViewModel.DeselectAll();
                 //ElementTreeViewModel.Select(selectedModelIds);
             }
         }
 
-        #endregion
+		#endregion
+
+		#region PropPreview Methods
+
+		internal void ClearPreviewModel()
+        {
+            PropPreviewNodePoints = null;
+
+        }
+
+        internal void UpdatePreviewModel(IProp prop)
+        {
+            //TODO update with whatever is needed to preview non-light models
+            if (prop.PropModel is ILightPropModel model)
+            {
+                if (PropPreviewNodePoints != model.Nodes)
+                {
+                    PropPreviewNodePoints = model.Nodes;
+                }
+            }
+        }
+
+		#endregion
 	}
 }

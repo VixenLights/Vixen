@@ -74,26 +74,19 @@
         </StatusBar>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2.5*"/>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="4*"/>
                     <RowDefinition Height="2*"/>
+                    <RowDefinition Height="1.5*"/>
                 </Grid.RowDefinitions>
                
                 <views:PropNodeTree Grid.Row="0" />
 
                 <views:PropPreview Grid.Row="1"/>
-                <!--<StackPanel Grid.Row="1" Orientation="Vertical" Margin="8">
-                    
-                    <Border BorderThickness="1">
-                        <TextBlock Text="Selected Prop Visual Box" Margin="5,0,5,0"/>
-                    </Border>
-                    
-                </StackPanel>-->
+               
             </Grid>
            
         </Grid>

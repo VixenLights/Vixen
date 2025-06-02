@@ -1,11 +1,11 @@
-﻿using System.Collections.ObjectModel;
-using Vixen.Model;
+﻿using System.Diagnostics;
+using Vixen.Extensions;
 
 namespace Vixen.Sys.Props.Model.Arch
 {
-	public class ArchModel: BindableBase, ILightPropModel
+	public class ArchModel: BaseLightModel
 	{
-        private ObservableCollection<NodePoint> _nodes;
+        
         private int _nodeSize;
         private int _nodeCount;
 
@@ -18,18 +18,24 @@ namespace Vixen.Sys.Props.Model.Arch
         {
             _nodeCount = nodeCount;
             _nodeSize = nodeSize;
-            _nodes = new ObservableCollection<NodePoint>(GetArcPoints(_nodeCount));
+            Nodes.AddRange(GetArchPoints(_nodeCount, RotationAngle));
+			PropertyChanged += ArchModel_PropertyChanged;
+			Nodes.CollectionChanged += Nodes_CollectionChanged;
         }
 
-		public Guid Id { get; init; } = Guid.NewGuid();
+		private void Nodes_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			Debug.WriteLine("Nodes Changed");
+		}
 
-        public ObservableCollection<NodePoint> Nodes
-        {
-            get => _nodes;
-            set => SetProperty(ref _nodes, value);
-        }
+		private void ArchModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+            //TODO make this smarter to do the minimal to add, subtract, or update node size or rotation angle.
+            Nodes.Clear();
+            Nodes.AddRange(GetArchPoints(_nodeCount, RotationAngle));
+		}
 
-        public int NodeSize
+		public int NodeSize
         {
             get => _nodeSize;
             set => SetProperty(ref _nodeSize, value);
@@ -41,7 +47,7 @@ namespace Vixen.Sys.Props.Model.Arch
             set => SetProperty(ref _nodeCount, value);
         }
 
-        public static List<NodePoint> GetArcPoints(double numPoints)
+        public static List<NodePoint> GetArchPoints(double numPoints, int rotationAngle)
         {
             List<NodePoint> vertices = new List<NodePoint>();
             double xScale = .5f;
@@ -56,6 +62,12 @@ namespace Vixen.Sys.Props.Model.Arch
                 vertices.Add(new NodePoint(x, y));
                 t += radianIncrement;
             }
+
+            if (rotationAngle != 0)
+            {
+                RotateNodePoints(vertices, rotationAngle);
+            }
+
             return vertices;
         }
 	}

@@ -22,7 +22,7 @@
         <StackPanel Name="CanvasPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Margin="5">
             <ItemsControl Width="{Binding ElementName=CanvasPanel, Path=ActualWidth}" 
                           Height="{Binding ElementName=CanvasPanel, Path=ActualHeight}" 
-                          ItemsSource="{Binding PropNodeTreeViewModel.SelectedItemNodePoints}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                          ItemsSource="{Binding PropPreviewNodePoints}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Canvas Name="PropPreviewCanvas" ClipToBounds="True"/>

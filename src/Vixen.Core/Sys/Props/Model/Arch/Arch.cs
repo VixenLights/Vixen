@@ -1,7 +1,10 @@
 ﻿
-
+#nullable enable
 namespace Vixen.Sys.Props.Model.Arch
 {
+    /// <summary>
+    /// A class that defines an Arch Prop
+    /// </summary>
     public class Arch: Prop
     {
         private int _lightCount;
@@ -19,8 +22,9 @@ namespace Vixen.Sys.Props.Model.Arch
         public Arch(string name, int lightCount = 25, StringTypes stringType = StringTypes.Pixel) : base(name, PropType.Arch)
         {
             LightCount = lightCount;
+            
             //TODO create default element structure
-            //TODO create Preview model
+
             ArchModel model = new ArchModel(lightCount);
             PropModel = model;
         }

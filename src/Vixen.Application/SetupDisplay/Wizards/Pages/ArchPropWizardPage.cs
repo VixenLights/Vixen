@@ -1,4 +1,5 @@
 ﻿using Orc.Wizard;
+using Vixen.Sys;
 using Vixen.Sys.Props;
 using Vixen.Sys.Props.Model.Arch;
 
@@ -31,7 +32,10 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 
         public IProp GetProp()
         {
-            return new Arch(Name, LightCount, StringType);
+            var arch = VixenSystem.Props.CreateProp<Arch>(Name);
+            arch.LightCount = LightCount;
+            arch.StringType = StringType;
+            return arch;
         }
     }
 }

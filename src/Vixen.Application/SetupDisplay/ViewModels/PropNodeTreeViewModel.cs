@@ -4,7 +4,6 @@ using Catel.Data;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
-using Common.Controls.Wizard;
 using Common.WPFCommon.Services;
 using GongSolutions.Wpf.DragDrop;
 using Orc.Theming;
@@ -12,16 +11,14 @@ using Orc.Wizard;
 using Vixen.Sys;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Props;
-using Vixen.Sys.Props.Model;
 using VixenApplication.SetupDisplay.Wizards.Factory;
 using VixenApplication.SetupDisplay.Wizards.Pages;
-using VixenApplication.SetupDisplay.Wizards.Wizard;
 using DragDropEffects = System.Windows.DragDropEffects;
 using IDropTarget = GongSolutions.Wpf.DragDrop.IDropTarget;
 
 namespace VixenApplication.SetupDisplay.ViewModels
 {
-    public class PropNodeTreeViewModel : ViewModelBase, IDropTarget, IDragSource, IDisposable
+    public class PropNodeTreeViewModel : ViewModelBase, IDropTarget, IDragSource
 	{
         private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		public event EventHandler ModelsChanged;
@@ -31,10 +28,8 @@ namespace VixenApplication.SetupDisplay.ViewModels
             PropManager = VixenSystem.Props;
 			PropNodeViewModel vm = new(PropManager.RootNode, null);
             RootNodeViewModel = [vm];
-           // RootNodesViewModels = new ObservableCollection<PropNodeViewModel>(RootNodes.Select(x => new PropNodeViewModel(x, null)));
             SelectedItems = new();
-			SelectedItemNodePoints = new();
-            SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
+            SelectedItems.CollectionChanged += SelectedItemsCollectionChanged;
 		}
 
         #region PropManager model property
@@ -42,7 +37,6 @@ namespace VixenApplication.SetupDisplay.ViewModels
         /// <summary>
         /// Gets or sets the PropManager value.
         /// </summary>
-        [Model]
         public PropManager PropManager
         {
             get { return GetValue<PropManager>(PropManagerProperty); }
@@ -56,7 +50,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#endregion
 
-		#region RootNodeViewModes property
+		#region RootNodeViewModels property
 
 		/// <summary>
 		/// Gets or sets the RootNodesViewModels value.
@@ -107,22 +101,15 @@ namespace VixenApplication.SetupDisplay.ViewModels
             RegisterProperty<ObservableCollection<PropNodeViewModel>>(nameof(SelectedItems));
 
 
-        private void SelectedItems_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void SelectedItemsCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (SelectedItems.Count == 1)
             {
                 SelectedItem = SelectedItems.First();
-                if (SelectedItem.PropNode.IsLeaf && SelectedItem.PropNode.Prop != null &&
-                    SelectedItem.PropNode.Prop.PropModel is ILightPropModel model)
-                {
-                    SelectedItemNodePoints = model.Nodes;
-                }
-				
             }
             else
             {
                 SelectedItem = null;
-				SelectedItemNodePoints.Clear();
             }
 
             CopyCommand.RaiseCanExecuteChanged();
@@ -132,7 +119,6 @@ namespace VixenApplication.SetupDisplay.ViewModels
             MoveToGroupCommand.RaiseCanExecuteChanged();
             CreateNodeCommand.RaiseCanExecuteChanged();
         }
-
 
         #endregion
 
@@ -153,25 +139,6 @@ namespace VixenApplication.SetupDisplay.ViewModels
         public static readonly IPropertyData SelectedItemProperty = RegisterProperty<PropNodeViewModel>(nameof(SelectedItem));
 
 		#endregion
-
-        #region SelectedItemNodePoints
-
-        /// <summary>
-        /// Gets or sets the SelectedItemNodePoints value.
-        /// </summary>;
-        [Model]
-        public ObservableCollection<NodePoint> SelectedItemNodePoints
-        {
-            get { return GetValue<ObservableCollection<NodePoint>>(SelectedItemNodesProperty); }
-            private set { SetValue(SelectedItemNodesProperty, value); }
-        }
-
-        /// <summary>;
-        /// SelectedItemNodePoints property data.
-        /// </summary>;
-        public static readonly IPropertyData SelectedItemNodesProperty = RegisterProperty<ObservableCollection<NodePoint>>(nameof(SelectedItemNodePoints));
-
-        #endregion
 
 		#region Selection
 
@@ -929,13 +896,5 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#endregion
 
-		#region Dispose
-
-		public void Dispose()
-        {
-            
-        }
-
-		#endregion
 	}
 }
