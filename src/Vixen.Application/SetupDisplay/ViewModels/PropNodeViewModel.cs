@@ -135,8 +135,6 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
         #endregion
 
-
-
 		#region BeginEdit command
 
 		private Command _beginEditCommand;
