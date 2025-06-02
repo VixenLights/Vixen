@@ -345,13 +345,13 @@
                 </TabItem>
 
                 <TabItem Header="Props">
-                    <ListView x:Name="PropView" Style="{StaticResource PropListStyle}"
-                            ItemsSource="{Binding PropNodeTreeViewModel.LeafNodes}"
+                    <ListView x:Name="PropView" DataContext="{Binding PropNodeTreePropViewModel}" Style="{StaticResource PropListStyle}"
+                            ItemsSource="{Binding LeafNodes}"
                             BorderThickness="0"
                             ScrollViewer.CanContentScroll="True"
                             FocusManager.IsFocusScope="True">
                         <i:Interaction.Behaviors>
-                            <behaviors:MultiSelectionBehavior SelectedItems="{Binding PropNodeTreeViewModel.SelectedItems}" />
+                            <behaviors:MultiSelectionBehavior SelectedItems="{Binding SelectedItems}" />
                         </i:Interaction.Behaviors>
                         <ListView.ItemTemplate >
                             <DataTemplate DataType="{x:Type viewModels:PropNodeViewModel}">
@@ -366,7 +366,7 @@
 								<interactivity:KeyPressToCommand Command="{Binding BeginEditCommand}" Key="F2"/>
 							</i:Interaction.Behaviors>
                                     </TextBlock>
-                                    <TextBox x:Name="EditableText" Text="{Binding Prop.Name}" Tag="{Binding}" Visibility="Collapsed" Margin="0,2,0,2"
+                                    <TextBox x:Name="EditableText" Text="{Binding PropNode.Name}" Tag="{Binding}" Visibility="Collapsed" Margin="0,2,0,2"
 						         commonUtils:TextBoxExtender.CommitOnEnter="true"
 						         commonUtils:TextBoxExtender.RollbackOnEscape="true"
 						         commonUtils:TextBoxExtender.SelectAllOnFocus="True"
