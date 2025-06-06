@@ -33,7 +33,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
         public IProp GetProp()
         {
             var arch = VixenSystem.Props.CreateProp<Arch>(Name);
-            arch.LightCount = LightCount;
+            arch.NodeCount = LightCount;
             arch.StringType = StringType;
             return arch;
         }

@@ -59,7 +59,7 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 
             if (LightCount <= 0)
             {
-                validationResults.Add(FieldValidationResult.CreateError("LightCount", "Light Count must be greater than 0"));
+                validationResults.Add(FieldValidationResult.CreateError("NodeCount", "Light Count must be greater than 0"));
             }
         }
 	}

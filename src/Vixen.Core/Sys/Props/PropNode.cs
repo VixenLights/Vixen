@@ -79,8 +79,30 @@ namespace Vixen.Sys.Props
 		public IProp? Prop
         {
             get => _prop;
-            set => SetProperty(ref _prop, value);
+            set
+            {
+                if (_prop != null && _prop != value)
+                {
+                    _prop.PropertyChanged -= Prop_PropertyChanged;
+				}
+                if (_prop != value && value != null)
+                {
+                    value.PropertyChanged += Prop_PropertyChanged;
+                }
+
+				SetProperty(ref _prop, value);
+            }
         }
+
+		private void Prop_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+            //Since we are swapping the name based on whether the Prop exists or not, we need to propagate the name changed event up
+            //from the Prop when it occurs.
+            if (nameof(IProp.Name).Equals(e.PropertyName))
+            {
+                OnPropertyChanged(nameof(Name));
+            }
+		}
 
 		#endregion
 

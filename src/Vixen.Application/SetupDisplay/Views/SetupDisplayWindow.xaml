@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:catel="http://schemas.catelproject.com"
         xmlns:views="clr-namespace:VixenApplication.SetupDisplay.Views"
+        xmlns:wpfPropertyGrid="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
         Title="Display Setup" Height="700" Width="900" WindowStartupLocation="CenterScreen" x:Name="DisplaySetup">
 
     <Window.Resources>
@@ -74,8 +75,9 @@
         </StatusBar>
         <Grid>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.5*"/>
                 <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="2.5*"/>
+                <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
@@ -83,10 +85,30 @@
                     <RowDefinition Height="1.5*"/>
                 </Grid.RowDefinitions>
                
-                <views:PropNodeTree Grid.Row="0" />
-
-                <views:PropPreview Grid.Row="1"/>
-               
+                <views:PropNodeTree Grid.Row="0" Margin="5"/>
+                <Border Grid.Row="1" BorderThickness="1" BorderBrush="{StaticResource BorderColorBrush}" Margin="5">
+                    <wpfPropertyGrid:PropertyGrid  Background="{StaticResource DisabledShadow}"
+                                                  ItemSource="{Binding SelectedProp}"
+                                                  ShowAttachedProperties="False"
+                                                  ShowReadOnlyProperties="True"
+                                                  PropertyFilterVisibility="Collapsed"
+                                                  Margin="5">
+                        <wpfPropertyGrid:PropertyGrid.Resources>
+                            <ResourceDictionary>
+                                <ResourceDictionary.MergedDictionaries>
+                                    <wpfPropertyGrid:KaxamlTheme/>
+                                </ResourceDictionary.MergedDictionaries>
+                            </ResourceDictionary>
+                        </wpfPropertyGrid:PropertyGrid.Resources>
+                    </wpfPropertyGrid:PropertyGrid>
+                </Border>
+            </Grid>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="2*"/>
+                </Grid.RowDefinitions>
+                <views:PropPreview Grid.Row="0" Margin="5"/>
             </Grid>
            
         </Grid>

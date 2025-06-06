@@ -1,8 +1,8 @@
-﻿using Vixen.Sys.Managers;
+﻿using System.ComponentModel;
 
 namespace Vixen.Sys.Props
 {
-    public interface IProp
+    public interface IProp: INotifyPropertyChanged
     {
 		/// <summary>
 		/// Unique id of the Prop
@@ -22,7 +22,7 @@ namespace Vixen.Sys.Props
 		/// <summary>
 		/// Creation date of the Prop
 		/// </summary>
-		DateTime CreationDate { get; init; }
+		DateTime CreationDate { get; }
 
 		/// <summary>
 		/// Last modified date of the Prop
@@ -32,7 +32,7 @@ namespace Vixen.Sys.Props
 		/// <summary>
 		/// Defined type of the Prop.
 		/// </summary>
-		PropType PropType { get; init; }
+		PropType PropType { get; }
 
 		/// <summary>
 		/// String type of enum <see cref="StringTypes"/>
@@ -42,7 +42,7 @@ namespace Vixen.Sys.Props
 		/// <summary>
 		/// Model for rendering the visual
 		/// </summary>
-		IPropModel PropModel { get; set; }
+		IPropModel PropModel { get;}
 	}
 
     public enum StringTypes

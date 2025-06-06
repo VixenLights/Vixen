@@ -9,7 +9,7 @@
 
         public int NodeCount { get; set; }
 
-        public static List<NodePoint> GetLinePoints(double numPoints, PointF start, PointF end,
+        public static List<NodePoint> GetLinePoints(double numPoints, PointF start, PointF end, int size,
             int rotationAngle = 0, bool startPadding = false, bool endPadding = false)
         {
             var nodePoints = new List<NodePoint>();
@@ -29,7 +29,7 @@
 
                 for (int i = 0; i < numPoints; i++)
                 {
-                    var nodePoint = new NodePoint(x, y);
+                    var nodePoint = new NodePoint(x, y){Size = size};
                     nodePoints.Add(nodePoint);
                     x -= xSpacing;
                     y -= ySpacing;
