@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using Catel.Data;
 using Catel.MVVM;
 using Vixen.Sys;
@@ -7,7 +8,7 @@ using Vixen.Sys.Props;
 namespace VixenApplication.SetupDisplay.ViewModels
 {
     [DisplayName("PropNode View Model")]
-	public sealed class PropNodeViewModel : ViewModelBase, ISelectableExpander
+	public sealed class PropNodeViewModel : ViewModelBase, ISelectableExpander, IEquatable<PropNodeViewModel>
 	{
         private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private DateTime _selectedTime = DateTime.MaxValue;
@@ -20,15 +21,28 @@ namespace VixenApplication.SetupDisplay.ViewModels
             ((IRelationalViewModel)this).SetParentViewModel(parent);
             DeferValidationUntilFirstSaveCall = false;
             AlwaysInvokeNotifyChanged = true;
-
+			PropertyChanged += PropNodeViewModel_PropertyChanged;
         }
 
-        #region PropNode model property
+		private void PropNodeViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+            if (nameof(IsSelected).Equals(e.PropertyName))
+            {
+                //If we become selected, ensure that our parents are marked expanded
+                if (IsSelected)
+                {
+                   ExpandTree(this);
+                }
+			}
+			
+		}
 
-        /// <summary>
-        /// Gets or sets the PropNode value.
-        /// </summary>
-        [Browsable(false)]
+		#region PropNode model property
+
+		/// <summary>
+		/// Gets or sets the PropNode value.
+		/// </summary>
+		[Browsable(false)]
         [Model]
         public PropNode PropNode
         {
@@ -42,6 +56,21 @@ namespace VixenApplication.SetupDisplay.ViewModels
         public static readonly IPropertyData PropNodeProperty = RegisterProperty<PropNode>(nameof(PropNode));
 
 		#endregion
+
+        /// <summary>
+        /// Gets or sets the Name value.
+        /// </summary>;
+        [ViewModelToModel]
+        public string Name
+        {
+            get { return GetValue<string>(NameProperty); }
+            set { SetValue(NameProperty, value); }
+        }
+
+        /// <summary>;
+        /// Name property data.
+        /// </summary>;
+        public static readonly IPropertyData NameProperty = RegisterProperty<string>(nameof(Name));
 
 		#region IsLeaf
 
@@ -90,7 +119,24 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
         #endregion
 
-		public bool IsExpanded { get; set; }
+        #region IsExpanded property
+
+        /// <summary>
+        /// Gets or sets the IsExpanded value.
+        /// </summary>
+        public bool IsExpanded
+        {
+            get { return GetValue<bool>(IsExpandedProperty); }
+            set { SetValue(IsExpandedProperty, value); }
+        }
+
+        /// <summary>
+        /// IsExpanded property data.
+        /// </summary>
+        public static readonly IPropertyData IsExpandedProperty = RegisterProperty<bool>(nameof(IsExpanded));
+
+        #endregion
+
         public void Dispose()
         {
 			((IRelationalViewModel)this).SetParentViewModel(null);
@@ -209,13 +255,28 @@ namespace VixenApplication.SetupDisplay.ViewModels
             PropNode.Name = _textHoldValue;
         }
 
-        #endregion
+		#endregion
 
-		public void RemoveFromParent()
+		private void ExpandTree(PropNodeViewModel propNodeViewModel)
+        {
+            if (propNodeViewModel.ParentViewModel is PropNodeViewModel parent)
+            {
+                if (!parent.IsExpanded)
+                {
+                    parent.IsExpanded = true;
+                    if (parent.ParentViewModel != null)
+                    {
+                        ExpandTree(parent);
+                    }
+                }
+            }
+        }
+
+		public void DeleteFromParent()
         {
             if (ParentViewModel is PropNodeViewModel parentVm)
             {
-                VixenSystem.Props.RemoveFromParent(PropNode, parentVm.PropNode);
+                VixenSystem.Props.DeleteFromParent(PropNode, parentVm.PropNode);
                 IsDirty = true;
             }
         }
@@ -229,5 +290,23 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
             return ChildrenViewModels.SelectMany(x => x.GetLeafEnumerator());
         }
+
+        public bool Equals(PropNodeViewModel? other)
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            return this.UniqueIdentifier == other.UniqueIdentifier;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return ReferenceEquals(this, obj) || obj is PropNodeViewModel other && Equals(other);
+        }
+
+        public override int GetHashCode() => UniqueIdentifier.GetHashCode();
+
 	}
 }

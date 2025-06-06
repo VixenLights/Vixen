@@ -41,7 +41,7 @@
         <TextBox  Text="{Binding Name, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
 
         <Label Content="Light Count" />
-        <TextBox Text="{Binding LightCount, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
+        <TextBox Text="{Binding NodeCount, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
             <b:Interaction.Behaviors>
                 <catel:NumericTextBox />
             </b:Interaction.Behaviors>

@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System.Diagnostics;
+using System.Reflection.Metadata.Ecma335;
 using Vixen.Extensions;
 using Vixen.Sys.Props.Model.Line;
 
@@ -27,13 +28,7 @@ namespace Vixen.Sys.Props.Model.Tree
 			_nodesPerString = nodesPerString;
 			_nodeSize = nodeSize;
 			Nodes = new(GetTreePoints());
-			Nodes.CollectionChanged += Nodes_CollectionChanged;
 			PropertyChanged += TreeModel_PropertyChanged;
-		}
-
-		private void Nodes_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-		{
-            Debug.WriteLine("Nodes Changed");
 		}
 
 		public int Strings
@@ -128,7 +123,7 @@ namespace Vixen.Sys.Props.Model.Tree
                     topPoint.Y /= 100f;
                     basePoint.X /= 100f;
                     basePoint.Y /= 100f;
-					var s = LineModel.GetLinePoints(_nodesPerString, basePoint, topPoint);
+					var s = LineModel.GetLinePoints(_nodesPerString, basePoint, topPoint, _nodeSize);
 					strings.Add(s);
 				}
 			}
@@ -170,11 +165,11 @@ namespace Vixen.Sys.Props.Model.Tree
 			// watch out for rounding on the fp adds
 			for (double t = startRadian; t < endRadian + radianIncrement / 10; t += radianIncrement)
 			{
-				double X = (centerX + (width / 2) * Math.Cos(t)) + leftOffset;
-				double Y = (centerY + (height / 2) * Math.Sin(t)) + topOffset;
-				points.Add(new PointF((float)X, (float)Y));
+				double x = (centerX + (width / 2) * Math.Cos(t)) + leftOffset;
+				double y = (centerY + (height / 2) * Math.Sin(t)) + topOffset;
+				points.Add(new PointF((float)x, (float)y));
 			}
 			return points;
 		}
-	}
+    }
 }
