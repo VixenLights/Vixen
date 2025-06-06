@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using Catel.Data;
 using Catel.MVVM;
 using Vixen.Sys;
@@ -8,11 +9,12 @@ namespace VixenApplication.SetupDisplay.ViewModels
 {
     public class PropNodeTreePropViewModel : ViewModelBase
     {
-        public PropNodeTreePropViewModel()
+        private readonly PropNodeTreeViewModel _propNodeTreeViewModel;
+
+        public PropNodeTreePropViewModel(PropNodeTreeViewModel propNodeTreeViewModel)
         {
+            _propNodeTreeViewModel = propNodeTreeViewModel;
             PropManager = VixenSystem.Props;
-			PropNodeViewModel vm = new(PropManager.RootNode, null);
-            RootNodeViewModel = [vm];
 			SelectedItems = new();
             SelectedItems.CollectionChanged += SelectedItemsCollectionChanged;
 		}
@@ -35,24 +37,6 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
         #endregion
 
-        #region RootNodeViewModels property
-
-        /// <summary>
-        /// Gets or sets the RootNodesViewModels value.
-        /// </summary>
-        public ObservableCollection<PropNodeViewModel> RootNodeViewModel
-        {
-            get { return GetValue<ObservableCollection<PropNodeViewModel>>(RootNodeViewModelProperty); }
-            set { SetValue(RootNodeViewModelProperty, value); }
-        }
-
-        /// <summary>
-        /// RootNodesViewModels property data.
-        /// </summary>
-        public static readonly IPropertyData RootNodeViewModelProperty = RegisterProperty<ObservableCollection<PropNodeViewModel>>(nameof(RootNodeViewModel));
-
-        #endregion
-
         #region LeafNodes property
 
         /// <summary>
@@ -62,7 +46,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
         {
             get
             {
-                return new(RootNodeViewModel.SelectMany(x => x.GetLeafEnumerator()));
+                return _propNodeTreeViewModel.LeafNodes;
             }
         }
 
@@ -128,24 +112,31 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
         public void SelectModels(IEnumerable<PropNodeViewModel> propNodeModels)
         {
-            foreach (var elementModelViewModel in propNodeModels)
+            foreach (var propNodeViewModel in propNodeModels)
             {
-                elementModelViewModel.IsSelected = true;
-                if (elementModelViewModel.ParentViewModel is PropNodeViewModel parent)
+                if(!propNodeViewModel.IsSelected)
                 {
-                    parent.IsExpanded = true;
+                    propNodeViewModel.IsSelected = true;
                 }
-            }
+                if (!SelectedItems.Contains(propNodeViewModel))
+                {
+                    SelectedItems.Add(propNodeViewModel);
+                }
+			}
         }
 
         public void DeselectModels(IEnumerable<PropNodeViewModel> propNodeModels)
         {
-            foreach (var elementModelViewModel in propNodeModels)
+            foreach (var propNodeViewModel in propNodeModels)
             {
-                elementModelViewModel.IsSelected = false;
+                if (propNodeViewModel.IsSelected)
+                {
+                    propNodeViewModel.IsSelected = false;
+                    SelectedItems.Remove(propNodeViewModel);
+                }
             }
         }
 
-        #endregion
+		#endregion
 	}
 }

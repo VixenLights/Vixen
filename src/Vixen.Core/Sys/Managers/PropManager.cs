@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using System.Collections.ObjectModel;
-using Vixen.Annotations;
+using System.Collections.Specialized;
 using Vixen.Model;
 using Vixen.Sys.Props;
 
@@ -10,6 +10,8 @@ namespace Vixen.Sys.Managers
     {
         private readonly Dictionary<Guid, IProp> _propLocator = new Dictionary<Guid, IProp>();
         private readonly PropNode _rootNode;
+
+        public event EventHandler PropCollectionChanged;
 
         public PropManager()
         {
@@ -46,7 +48,7 @@ namespace Vixen.Sys.Managers
             }
         }
 
-        public PropNode CreateNode(string name, PropNode parent = null, bool oneBasedNaming = false)
+        public PropNode CreateNode(string name, PropNode? parent = null, bool oneBasedNaming = false)
         {
             if (parent == null)
             {
@@ -58,10 +60,10 @@ namespace Vixen.Sys.Managers
             return pn;
         }
 
-        public PropNode AddProp(IProp prop, PropNode parent)
+        public PropNode AddProp(IProp prop, PropNode? parent)
         {
 
-            PropNode propNode = null;
+            PropNode propNode;
             if (parent == null)
             {
                 propNode = new PropNode(prop, RootNode);
@@ -73,13 +75,20 @@ namespace Vixen.Sys.Managers
                 parent.AddChild(propNode);
 			}
 
+            OnPropAdded(prop);
+
 			return propNode;
         }
 
-        public void RemoveFromParent(PropNode propNode, PropNode parentToLeave)
+        public void DeleteFromParent(PropNode propNode, PropNode parentToLeave)
         {
             propNode.RemoveParent(parentToLeave);
             parentToLeave.RemoveChild(propNode);
+            if (propNode.IsLeaf && propNode.Prop != null)
+            {
+                _propLocator.Remove(propNode.Prop.Id);
+                OnPropRemoved(propNode.Prop);
+            }
         }
 
         public T CreateProp<T>(string name) where T: IProp, new()
@@ -96,7 +105,29 @@ namespace Vixen.Sys.Managers
 
         public IProp? FindById(Guid id)
         {
-            return _propLocator.GetValueOrDefault(id);
+            if (_propLocator.TryGetValue(id, out IProp prop))
+            {
+                return prop;
+            }
+
+            return null;
+        }
+
+        private void OnPropAdded(IProp prop)
+        {
+            PropCollectionChanged.Invoke(this, new PropCollectionEventArgs(prop, NotifyCollectionChangedAction.Add));
+        }
+
+        private void OnPropRemoved(IProp prop)
+        {
+            PropCollectionChanged.Invoke(this, new PropCollectionEventArgs(prop, NotifyCollectionChangedAction.Remove));
+        }
+
+		public class PropCollectionEventArgs(IProp prop, NotifyCollectionChangedAction action) : EventArgs
+        {
+            public IProp Prop { get; init; } = prop;
+
+            public NotifyCollectionChangedAction Action { get; init; } = action;
         }
 	}
 }

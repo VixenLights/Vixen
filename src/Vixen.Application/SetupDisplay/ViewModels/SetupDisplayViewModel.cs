@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using Catel.Collections;
 using Catel.Data;
 using Catel.IoC;
 using Catel.MVVM;
@@ -41,7 +42,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
             PropNodeTreeViewModel = new ();
 			PropNodeTreeViewModel.PropertyChanged += PropNodeTreeViewModel_PropertyChanged;
-            PropNodeTreePropViewModel = new();
+            PropNodeTreePropViewModel = new(PropNodeTreeViewModel);
 			PropNodeTreePropViewModel.PropertyChanged += PropNodeTreePropViewModel_PropertyChanged;
         }
 
@@ -51,11 +52,13 @@ namespace VixenApplication.SetupDisplay.ViewModels
             {
                 if (PropNodeTreePropViewModel.SelectedItem is { IsLeaf: true, PropNode.Prop: not null })
                 {
-                    UpdatePreviewModel(PropNodeTreePropViewModel.SelectedItem.PropNode.Prop);
+                    SelectedProp = PropNodeTreePropViewModel.SelectedItem.PropNode.Prop;
+					UpdatePreviewModel(SelectedProp);
                 }
                 else
                 {
-                    ClearPreviewModel();
+                    SelectedProp = null;
+					ClearPreviewModel();
                 }
 			}
 		}
@@ -66,10 +69,12 @@ namespace VixenApplication.SetupDisplay.ViewModels
             {
                 if (PropNodeTreeViewModel.SelectedItem is { IsLeaf: true, PropNode.Prop: not null })
                 {
-                    UpdatePreviewModel(PropNodeTreeViewModel.SelectedItem.PropNode.Prop);
+                    SelectedProp = PropNodeTreeViewModel.SelectedItem.PropNode.Prop;
+                    UpdatePreviewModel(SelectedProp);
                 }
                 else
                 {
+                    SelectedProp = null;
                     ClearPreviewModel();
                 }
             }
@@ -147,7 +152,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
         public PropNodeTreePropViewModel PropNodeTreePropViewModel
         {
             get { return GetValue<PropNodeTreePropViewModel>(PropNodePropTreeViewModelProperty); }
-            private set { SetValue(PropNodePropTreeViewModelProperty, value); }
+            private init { SetValue(PropNodePropTreeViewModelProperty, value); }
         }
 
         /// <summary>;
@@ -157,20 +162,38 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#endregion
 
-        #region PropPreviewNodePoints
+        #region SelectedProp property
 
         /// <summary>
-        /// Gets or sets the PropPreviewNodePoints value.
-        /// </summary>;
-        public ObservableCollection<NodePoint>? PropPreviewNodePoints
+        /// Gets or sets the SelectedProp value.
+        /// </summary>
+        public IProp? SelectedProp
+        {
+            get { return GetValue<IProp>(SelectedPropProperty); }
+            set { SetValue(SelectedPropProperty, value); }
+        }
+
+        /// <summary>
+        /// SelectedProp property data.
+        /// </summary>
+        public static readonly IPropertyData SelectedPropProperty = RegisterProperty<IProp>(nameof(SelectedProp));
+
+        #endregion
+
+		#region PropPreviewNodePoints property
+
+		/// <summary>
+		/// Gets or sets the PropPreviewNodePoints value.
+		/// </summary>
+		public ObservableCollection<NodePoint>? PropPreviewNodePoints
         {
             get { return GetValue<ObservableCollection<NodePoint>>(SelectedItemNodesProperty); }
             private set { SetValue(SelectedItemNodesProperty, value); }
         }
 
-        /// <summary>;
+        /// <summary>
         /// PropPreviewNodePoints property data.
-        /// </summary>;
+        /// </summary>
         public static readonly IPropertyData SelectedItemNodesProperty = RegisterProperty<ObservableCollection<NodePoint>>(nameof(PropPreviewNodePoints));
 
         #endregion
@@ -514,18 +537,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
         /// </summary>
         private void OnSelectedTabIndexChanged()
         {
-            if (SelectedTabIndex == 0)
-            {
-                //var selectedModelIds = PropNodeTreeViewModel.SelectedItems.Select(e => e.PropNode.Id).Distinct();
-				PropNodeTreeViewModel.DeselectAll();
-				//PropNodeTreePropViewModel.Select(selectedModelIds);
-			}
-			else if (SelectedTabIndex == 1)
-            {
-                //var selectedModelIds = ElementOrderViewModel.SelectedItems.Select(e => e.ElementModel.Id).Distinct();
-                PropNodeTreePropViewModel.DeselectAll();
-                //ElementTreeViewModel.Select(selectedModelIds);
-            }
+            
         }
 
 		#endregion
