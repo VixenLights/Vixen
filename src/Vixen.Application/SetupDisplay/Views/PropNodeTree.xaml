@@ -299,7 +299,7 @@
                             <HierarchicalDataTemplate ItemsSource="{Binding ChildrenViewModels}" DataType="{x:Type viewModels:PropNodeViewModel}">
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="/Resources;component/bullet_purple.png" Width="16" Height="16" Visibility="{Binding IsLeaf, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
-                                    <TextBlock x:Name="ReadOnlyText" Text="{Binding PropNode.Name}" Margin="0,2,0,2" Style="{StaticResource PropNodeContextMenuStyle}" Focusable="True">
+                                    <TextBlock x:Name="ReadOnlyText" Text="{Binding Name}" Margin="0,2,0,2" Style="{StaticResource PropNodeContextMenuStyle}" Focusable="True">
 									<i:Interaction.Triggers>
 										<i:EventTrigger EventName="MouseLeftButtonUp">
 											<interactivity:EventToCommand Command="{Binding BeginEditCommand}" DisableAssociatedObjectOnCannotExecute="False" />
@@ -309,7 +309,7 @@
 										<interactivity:KeyPressToCommand Command="{Binding BeginEditCommand}" Key="F2"/>
 									</i:Interaction.Behaviors>
                                     </TextBlock>
-                                    <TextBox x:Name="EditableText" Text="{Binding PropNode.Name}" Tag="{Binding}" Visibility="Collapsed" Margin="0,2,0,2"
+                                    <TextBox x:Name="EditableText" Text="{Binding Name}" Tag="{Binding}" Visibility="Collapsed" Margin="0,2,0,2"
 						         commonUtils:TextBoxExtender.CommitOnEnter="true"
 						         commonUtils:TextBoxExtender.RollbackOnEscape="true"
 						         commonUtils:TextBoxExtender.SelectAllOnFocus="True"
