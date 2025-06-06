@@ -1,33 +1,34 @@
 ﻿#nullable enable
+using System.ComponentModel;
+using Vixen.Attributes;
 using Vixen.Model;
 
 namespace Vixen.Sys.Props
 {
     [Serializable]
-	public abstract class Prop: BindableBase, IProp
-	{
+	public abstract class BaseProp: BindableBase, IProp
+    {
         private readonly Guid _id;
         private string _name;
         private string _createdBy;
         private DateTime _modifiedDate;
         private StringTypes _stringType;
-        private IPropModel _propModel;
 
         #region Constructors
 
-        protected Prop(string name, PropType propType)
+        protected BaseProp(string name, PropType propType)
         {   
             Id = Guid.NewGuid();
-			Name = name;
-            CreationDate = ModifiedDate = DateTime.Now;
-            CreatedBy = Environment.UserName;
+			_name = name;
+            CreationDate = _modifiedDate = DateTime.Now;
+            _createdBy = Environment.UserName;
             PropType = propType;
             StringType = StringTypes.Pixel;
         }
 
 		#endregion
-
-        public Guid Id
+        [Browsable(false)]
+		public Guid Id
         {
             get => _id;
             init => SetProperty(ref _id, value);
@@ -39,33 +40,40 @@ namespace Vixen.Sys.Props
             set => SetProperty(ref _name, value);
         }
 
-        public string CreatedBy
+        [PropertyOrder(30)]
+		[DisplayName("Created By")]
+		public string CreatedBy
         {
             get => _createdBy;
             set => SetProperty(ref _createdBy, value);
         }
 
-        public DateTime CreationDate { get; init; }
+        [PropertyOrder(31)]
+		[DisplayName("Creation Date")]
+		public DateTime CreationDate { get; init; }
 
-        public DateTime ModifiedDate
+        [PropertyOrder(32)]
+        [DisplayName("Modified Date")]
+		public DateTime ModifiedDate
         {
             get => _modifiedDate;
             set => SetProperty(ref _modifiedDate, value);
         }
 
+        [PropertyOrder(0)]
+		[DisplayName("Prop Type")]
         public PropType PropType { get; init; }
 
-        public StringTypes StringType
+        [PropertyOrder(1)]
+        [DisplayName("String Type")]
+		public StringTypes StringType
         {
             get => _stringType;
             set => SetProperty(ref _stringType, value);
         }
 
-        public IPropModel PropModel
-        {
-            get => _propModel;
-            set => SetProperty(ref _propModel, value);
-        }
+        [Browsable(false)]
+		public virtual IPropModel PropModel { get; protected set; }
 
         // Add logic to manage Element structure into the regular element tree, including supported properties
         // like patching order, orientation, etc. 

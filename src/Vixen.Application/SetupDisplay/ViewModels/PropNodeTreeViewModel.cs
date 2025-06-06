@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
+using Catel.Collections;
 using Catel.Data;
 using Catel.IoC;
 using Catel.MVVM;
@@ -28,19 +30,30 @@ namespace VixenApplication.SetupDisplay.ViewModels
             PropManager = VixenSystem.Props;
 			PropNodeViewModel vm = new(PropManager.RootNode, null);
             RootNodeViewModel = [vm];
+
+            LeafNodes = new();
+            LeafNodes.AddRange(RootNodeViewModel.SelectMany(x => x.GetLeafEnumerator()));
+
+			PropManager.PropCollectionChanged += PropManager_PropCollectionChanged;
             SelectedItems = new();
             SelectedItems.CollectionChanged += SelectedItemsCollectionChanged;
 		}
 
-        #region PropManager model property
+		private void PropManager_PropCollectionChanged(object? sender, EventArgs e)
+		{
+			LeafNodes.Clear();
+			LeafNodes.AddRange(RootNodeViewModel.SelectMany(x => x.GetLeafEnumerator()));
+		}
 
-        /// <summary>
-        /// Gets or sets the PropManager value.
-        /// </summary>
-        public PropManager PropManager
+		#region PropManager model property
+
+		/// <summary>
+		/// Gets or sets the PropManager value.
+		/// </summary>
+		public PropManager PropManager
         {
             get { return GetValue<PropManager>(PropManagerProperty); }
-            private set { SetValue(PropManagerProperty, value); }
+            private init { SetValue(PropManagerProperty, value); }
         }
 
         /// <summary>
@@ -68,20 +81,23 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#endregion
 
-		#region LeafNodes property
+        #region LeafNodes property
 
-		/// <summary>
-		/// Gets or sets the LeafNodes value.
+        /// <summary>
+        /// Gets or sets the LeafNodes value.
         /// </summary>
-		public ObservableCollection<PropNodeViewModel> LeafNodes
-		{
-            get
-            {
-                return new(RootNodeViewModel.SelectMany(x => x.GetLeafEnumerator()));
-            }
+        public ObservableCollection<PropNodeViewModel> LeafNodes
+        {
+            get { return GetValue<ObservableCollection<PropNodeViewModel>>(LeafNodesProperty); }
+            private init { SetValue(LeafNodesProperty, value); }
         }
 
-		#endregion
+        /// <summary>
+        /// LeafNodes property data.
+        /// </summary>
+        public static readonly IPropertyData LeafNodesProperty = RegisterProperty<ObservableCollection<PropNodeViewModel>>(nameof(LeafNodes));
+
+        #endregion
 
 		#region SelectedItems property
 
@@ -103,7 +119,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
         private void SelectedItemsCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if (SelectedItems.Count == 1)
+			if (SelectedItems.Count == 1)
             {
                 SelectedItem = SelectedItems.First();
             }
@@ -148,27 +164,77 @@ namespace VixenApplication.SetupDisplay.ViewModels
             SelectedItems.Clear();
         }
 
+		/// <summary>
+		/// Selects the models.
+		/// </summary>
+		/// <param name="propNodeModels"></param>
         public void SelectModels(IEnumerable<PropNodeViewModel> propNodeModels)
         {
-            foreach (var elementModelViewModel in propNodeModels)
+            foreach (var propNodeViewModel in propNodeModels)
             {
-                elementModelViewModel.IsSelected = true;
-                if (elementModelViewModel.ParentViewModel is PropNodeViewModel parent)
+                if (!propNodeViewModel.IsSelected)
+                {
+                    propNodeViewModel.IsSelected = true;
+                }
+                if (!SelectedItems.Contains(propNodeViewModel))
+                {
+                    SelectedItems.Add(propNodeViewModel);
+                }
+				//ExpandTree(propNodeViewModel);
+			}
+		}
+
+        public void DeselectModels(IEnumerable<PropNodeViewModel> propNodeModels)
+        {
+            foreach (var propNodeViewModel in propNodeModels)
+            {
+                if (propNodeViewModel.IsSelected)
+                {
+                    propNodeViewModel.IsSelected = false;
+                    SelectedItems.Remove(propNodeViewModel);
+				}
+            }
+        }
+
+        public void ExpandSelectedItems()
+        {
+            foreach (var propNodeViewModel in SelectedItems)
+            {
+                ExpandTree(propNodeViewModel);
+            }
+		}
+
+        private void ExpandTree(PropNodeViewModel propNodeViewModel)
+        {
+            if (propNodeViewModel.ParentViewModel is PropNodeViewModel parent)
+            {
+				if(!parent.IsExpanded)
                 {
                     parent.IsExpanded = true;
+                    if (parent.ParentViewModel != null)
+                    {
+                        ExpandTree(parent);
+                    }
+                }
+            }
+		}
+
+		#endregion
+
+        #region Collapse
+
+        public void CollapseAll()
+        {
+            foreach (var propNodeViewModel in RootNodeViewModel)
+            {
+                if (propNodeViewModel.IsExpanded)
+                {
+                    propNodeViewModel.IsExpanded = false;
                 }
             }
         }
 
-        public void DeselectModels(IEnumerable<PropNodeViewModel> propNodeModels)
-        {
-            foreach (var elementModelViewModel in propNodeModels)
-            {
-                elementModelViewModel.IsSelected = false;
-            }
-        }
-
-		#endregion
+        #endregion
 
 		#region Commands
 
@@ -253,7 +319,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			//		if (parentToLeave != null)
 			//		{
 			//			pms.AddToParent(elementModelViewModel.ElementModel, parentToJoin);
-			//			pms.RemoveFromParent(elementModelViewModel.ElementModel, parentToLeave);
+			//			pms.DeleteFromParent(elementModelViewModel.ElementModel, parentToLeave);
 			//		}
 			//	}
 			//	OnModelsChanged();
@@ -517,7 +583,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			//	var parentToLeave = elementModelViewModel.ParentViewModel as ElementModelViewModel;
 			//	if (parentToLeave != null)
 			//	{
-			//		PropModelServices.Instance().RemoveFromParent(elementModelViewModel.ElementModel, parentToLeave.ElementModel);
+			//		PropModelServices.Instance().DeleteFromParent(elementModelViewModel.ElementModel, parentToLeave.ElementModel);
 			//	}
 			//}
 
@@ -759,7 +825,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
             
             var itemsToDelete = SelectedItems.ToList(); 
             SelectedItems.Clear();
-            itemsToDelete.ForEach(x => x.RemoveFromParent());
+            itemsToDelete.ForEach(x => x.DeleteFromParent());
         }
 
         /// <summary>

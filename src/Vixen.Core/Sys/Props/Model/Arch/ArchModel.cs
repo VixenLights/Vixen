@@ -18,24 +18,18 @@ namespace Vixen.Sys.Props.Model.Arch
         {
             _nodeCount = nodeCount;
             _nodeSize = nodeSize;
-            Nodes.AddRange(GetArchPoints(_nodeCount, RotationAngle));
+            Nodes.AddRange(GetArchPoints(_nodeCount, _nodeSize, RotationAngle));
 			PropertyChanged += ArchModel_PropertyChanged;
-			Nodes.CollectionChanged += Nodes_CollectionChanged;
         }
-
-		private void Nodes_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-		{
-			Debug.WriteLine("Nodes Changed");
-		}
 
 		private void ArchModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
             //TODO make this smarter to do the minimal to add, subtract, or update node size or rotation angle.
             Nodes.Clear();
-            Nodes.AddRange(GetArchPoints(_nodeCount, RotationAngle));
+            Nodes.AddRange(GetArchPoints(_nodeCount, _nodeSize, RotationAngle));
 		}
 
-		public int NodeSize
+        public int NodeSize
         {
             get => _nodeSize;
             set => SetProperty(ref _nodeSize, value);
@@ -47,7 +41,7 @@ namespace Vixen.Sys.Props.Model.Arch
             set => SetProperty(ref _nodeCount, value);
         }
 
-        public static List<NodePoint> GetArchPoints(double numPoints, int rotationAngle)
+        public static List<NodePoint> GetArchPoints(double numPoints, int size, int rotationAngle)
         {
             List<NodePoint> vertices = new List<NodePoint>();
             double xScale = .5f;
@@ -59,7 +53,7 @@ namespace Vixen.Sys.Props.Model.Arch
             {
                 double x = xScale + xScale * Math.Cos(t);
                 double y = yScale + yScale * Math.Sin(t);
-                vertices.Add(new NodePoint(x, y));
+                vertices.Add(new NodePoint(x, y){Size = size});
                 t += radianIncrement;
             }
 
