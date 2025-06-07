@@ -1,7 +1,7 @@
-﻿using System.Diagnostics;
-using Vixen.Extensions;
+﻿using Vixen.Extensions;
+using Vixen.Sys.Props.Model;
 
-namespace Vixen.Sys.Props.Model.Arch
+namespace VixenModules.App.Props.Models.Arch
 {
 	public class ArchModel: BaseLightModel
 	{
@@ -18,7 +18,7 @@ namespace Vixen.Sys.Props.Model.Arch
         {
             _nodeCount = nodeCount;
             _nodeSize = nodeSize;
-            Nodes.AddRange(GetArchPoints(_nodeCount, _nodeSize, RotationAngle));
+            Nodes.AddRange<NodePoint>(GetArchPoints(_nodeCount, _nodeSize, RotationAngle));
 			PropertyChanged += ArchModel_PropertyChanged;
         }
 
@@ -26,7 +26,7 @@ namespace Vixen.Sys.Props.Model.Arch
 		{
             //TODO make this smarter to do the minimal to add, subtract, or update node size or rotation angle.
             Nodes.Clear();
-            Nodes.AddRange(GetArchPoints(_nodeCount, _nodeSize, RotationAngle));
+            Nodes.AddRange<NodePoint>(GetArchPoints(_nodeCount, _nodeSize, RotationAngle));
 		}
 
         public int NodeSize

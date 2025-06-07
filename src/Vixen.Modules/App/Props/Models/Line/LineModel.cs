@@ -1,4 +1,7 @@
-﻿namespace Vixen.Sys.Props.Model.Line
+﻿using System.Drawing;
+using Vixen.Sys.Props.Model;
+
+namespace VixenModules.App.Props.Models.Line
 {
     public class LineModel:BaseLightModel
     {
