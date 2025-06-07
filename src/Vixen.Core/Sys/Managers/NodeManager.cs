@@ -88,6 +88,18 @@ namespace Vixen.Sys.Managers
 			return newNode;
 		}
 
+		/// <summary>
+		/// Removes all child nodes
+		/// </summary>
+		/// <param name="node"></param>
+        public void RemoveChildNodes(ElementNode node)
+        {
+            foreach (var nodeChild in node.Children.ToList())
+            {
+                RemoveNode(nodeChild, node, true);
+            }
+        }
+
 		public void RemoveNode(ElementNode node, ElementNode? parent, bool cleanup)
 		{
 			// if the given parent is null, it's most likely a root node (ie. with
