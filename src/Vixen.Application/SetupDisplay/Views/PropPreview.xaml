@@ -2,10 +2,11 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:model="clr-namespace:Vixen.Sys.Props.Model;assembly=Vixen.Core"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converter="clr-namespace:VixenApplication.SetupDisplay.Converter"
              xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+             xmlns:model="clr-namespace:VixenModules.App.Props;assembly=Module.App.Props"
+             xmlns:model1="clr-namespace:Vixen.Sys.Props.Model;assembly=Vixen.Core"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
@@ -49,7 +50,7 @@
                     </Style>
                 </ItemsControl.ItemContainerStyle>
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type model:NodePoint}">
+                    <DataTemplate DataType="{x:Type model1:NodePoint}">
                         <Ellipse Width="{Binding Size }" Height="{Binding Size}" Fill="White"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

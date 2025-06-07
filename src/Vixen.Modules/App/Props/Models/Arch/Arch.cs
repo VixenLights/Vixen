@@ -2,8 +2,9 @@
 #nullable enable
 using System.ComponentModel;
 using Vixen.Attributes;
+using Vixen.Sys.Props;
 
-namespace Vixen.Sys.Props.Model.Arch
+namespace VixenModules.App.Props.Models.Arch
 {
     /// <summary>
     /// A class that defines an Arch Prop

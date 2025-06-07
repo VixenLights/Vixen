@@ -1,7 +1,7 @@
 ﻿using Orc.Wizard;
 using Vixen.Sys;
 using Vixen.Sys.Props;
-using Vixen.Sys.Props.Model.Arch;
+using VixenModules.App.Props.Models.Arch;
 
 namespace VixenApplication.SetupDisplay.Wizards.Pages
 {
