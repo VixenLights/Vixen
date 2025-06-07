@@ -1,9 +1,8 @@
 ﻿#nullable enable
 using System.Collections.ObjectModel;
 using Vixen.Model;
-using Vixen.Sys.Props.Model;
 
-namespace Vixen.Sys.Props
+namespace Vixen.Sys.Props.Model
 {
 	public abstract class BaseLightModel: BindableBase, ILightPropModel
 	{
@@ -42,11 +41,11 @@ namespace Vixen.Sys.Props
 			foreach (var nodePoint in nodePoints)
             {
                 nodePoint.X =
-                    (cosTheta * (nodePoint.X - centerX) -
-                        sinTheta * (nodePoint.Y - centerY) + centerX);
+                    cosTheta * (nodePoint.X - centerX) -
+                        sinTheta * (nodePoint.Y - centerY) + centerX;
                 nodePoint.Y =
-                    (sinTheta * (nodePoint.X - centerX) +
-                     cosTheta * (nodePoint.Y - centerY) + centerY);
+                    sinTheta * (nodePoint.X - centerX) +
+                     cosTheta * (nodePoint.Y - centerY) + centerY;
 
             }
 		}

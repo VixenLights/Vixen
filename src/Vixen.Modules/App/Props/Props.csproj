@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+				<AssemblyName>Module.App.$(MSBuildProjectName)</AssemblyName>
+			<RootNamespace>VixenModules.App.Props</RootNamespace>
+				<UseWPF>true</UseWPF>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<PackageReference Include="NCalc2">
+				</PackageReference>
+		</ItemGroup>
+
+</Project>

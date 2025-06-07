@@ -2,7 +2,6 @@
 using Catel.Data;
 using Catel.MVVM;
 using NLog;
-using Vixen.Sys.Props;
 using Vixen.Sys.Props.Model;
 
 namespace VixenApplication.SetupDisplay.ViewModels

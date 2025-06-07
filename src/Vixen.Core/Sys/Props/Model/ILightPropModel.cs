@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
-using Vixen.Sys.Props.Model;
 
-namespace Vixen.Sys.Props
+namespace Vixen.Sys.Props.Model
 {
 	public interface ILightPropModel: IPropModel
 	{
