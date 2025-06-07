@@ -1,12 +1,14 @@
 ﻿#nullable enable
 
 using System.ComponentModel;
+using System.Windows.Markup;
 using NLog;
 using Vixen.Attributes;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Props;
 using Vixen.Utility;
+using VixenModules.Property.Order;
 
 namespace VixenModules.App.Props.Models.Tree
 {
@@ -18,6 +20,7 @@ namespace VixenModules.App.Props.Models.Tree
         private StartLocation _startLocation;
         private bool _zigZag;
         private int _zigZagOffset;
+        private Guid _rootElementNodeId = Guid.Empty;
 
         public Tree() : this("Tree 1", 16, 50)
         {
@@ -35,13 +38,35 @@ namespace VixenModules.App.Props.Models.Tree
             Name = name;
             StringType = stringType;
             StartLocation = StartLocation.BottomLeft;
-			//TODO create default element structure
-			//TODO create Preview model
+			
+			// Create Preview model
 			TreeModel model = new TreeModel(strings, nodesPerString);
             _propModel = model;
+			_propModel.PropertyChanged += _propModel_PropertyChanged;
+			PropertyChanged += Tree_PropertyChanged; ;
+			// Create default element structure
+			Task.Run(GenerateElementsAsync).Wait();
 		}
 
-        [Browsable(false)] 
+		private async void Tree_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+            if (nameof(Name).Equals(e.PropertyName))
+            {
+                RenamePropElement(AutoPropName);
+            }
+
+            if (nameof(StringType).Equals(e.PropertyName))
+            {
+                await GenerateElementsAsync();
+            }
+		}
+
+		private async void _propModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            await GenerateElementsAsync();
+        }
+
+		[Browsable(false)] 
         IPropModel IProp.PropModel => PropModel;
 
         [Browsable(false)]
@@ -61,6 +86,7 @@ namespace VixenModules.App.Props.Models.Tree
             get => _propModel.Strings;
             set
             {
+                if (value <= 0) return;
                 _propModel.Strings = value;
                 OnPropertyChanged(nameof(Strings));
             }
@@ -76,6 +102,7 @@ namespace VixenModules.App.Props.Models.Tree
             get => _propModel.NodesPerString;
             set
             {
+                if(value <= 0) return;
                 if (value == _propModel.NodesPerString)
                 {
                     return;
@@ -92,6 +119,7 @@ namespace VixenModules.App.Props.Models.Tree
             get => _propModel.NodeSize;
             set
             {
+                if (value <= 0) return;
                 if (value == _propModel.NodeSize)
                 {
                     return;
@@ -112,7 +140,8 @@ namespace VixenModules.App.Props.Models.Tree
             get => _propModel.DegreesCoverage;
             set
             {
-                if (value == _propModel.DegreesCoverage)
+                if (value > 360 || value <= 0) return;
+				if (value == _propModel.DegreesCoverage)
                 {
                     return;
                 }
@@ -131,6 +160,7 @@ namespace VixenModules.App.Props.Models.Tree
             get => _propModel.DegreesOffset;
             set
             {
+                if (value > 359 || value < -359) return;
                 if (value == _propModel.DegreesOffset)
                 {
                     return;
@@ -148,7 +178,7 @@ namespace VixenModules.App.Props.Models.Tree
             get => _propModel.BaseHeight;
             set
             {
-                if (value == _propModel.BaseHeight)
+                if (value <= 0 || value == _propModel.BaseHeight)
                 {
                     return;
                 }
@@ -165,7 +195,7 @@ namespace VixenModules.App.Props.Models.Tree
             get => _propModel.TopHeight;
             set
             {
-                if (value == _propModel.TopHeight)
+                if (value <= 0 || value == _propModel.TopHeight)
                 {
                     return;
                 }
@@ -182,7 +212,7 @@ namespace VixenModules.App.Props.Models.Tree
             get => _propModel.TopWidth;
             set
             {
-                if (value == _propModel.TopHeight)
+                if (value <= 0 || value == _propModel.TopHeight)
                 {
                     return;
                 }
@@ -216,66 +246,85 @@ namespace VixenModules.App.Props.Models.Tree
 		public int ZigZagOffset
         {
             get => _zigZagOffset;
-            set => SetProperty(ref _zigZagOffset, value);
+            set
+            {
+				if (value <= 0) return; 
+                SetProperty(ref _zigZagOffset, value);
+            }
         }
 
-        public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode>? selectedNodes = null)
+        private void RenamePropElement(string name)
+        {
+            var element = VixenSystem.Nodes.GetElementNode(_rootElementNodeId);
+            if (element != null)
+            {
+                VixenSystem.Nodes.RenameNode(element, name, false);
+            }
+        }
+
+        private async Task<IEnumerable<ElementNode>> GenerateElementsAsync()
 		{
+            if (_rootElementNodeId != Guid.Empty)
+            {
+                //Remove our old tree for now. Eventually we should be smarter about reconstructing the node tree.
+                var elementNodeToRemove = VixenSystem.Nodes.GetElementNode(_rootElementNodeId);
+                if (elementNodeToRemove != null)
+                {
+                    VixenSystem.Nodes.RemoveNode(elementNodeToRemove,VixenSystem.Nodes.PropRootNode,true);
+                }
+            }
 			List<ElementNode> result = new List<ElementNode>();
 
 			if (Name.Length == 0)
 			{
-				Logging.Error("treename is null");
+				Logging.Error("Tree Name is null");
 				return await Task.FromResult(result);
 			}
 
 			if (Strings < 0)
 			{
-				Logging.Error("negative count");
+				Logging.Error("Negative string count");
 				return await Task.FromResult(result);
 			}
 
 			if (StringType == StringTypes.Pixel && NodesPerString < 0)
 			{
-				Logging.Error("negative pixelsperstring");
+				Logging.Error("Negative nodes per string");
 				return await Task.FromResult(result);
 			}
 
-			//Optimize the name check for performance. We know we are going to create a bunch of them and we can handle it ourselves more efficiently
-			HashSet<string> elementNames = new HashSet<string>(VixenSystem.Nodes.Select(x => x.Name));
-
-			ElementNode head = ElementNodeService.Instance.CreateSingle(null, NamingUtilities.Uniquify(elementNames, Name), true, false);
-			result.Add(head);
+			ElementNode head = ElementNodeService.Instance.CreateSingle(VixenSystem.Nodes.PropRootNode, AutoPropStringName, true, false);
+            _rootElementNodeId = head.Id;
+            result.Add(head);
 
 			for (int i = 0; i < Strings; i++)
 			{
-				string stringname = head.Name + " " + "S" + (i + 1);
-				ElementNode stringNode = ElementNodeService.Instance.CreateSingle(head, NamingUtilities.Uniquify(elementNames, stringname), true, false);
+				string stringName = $"{AutoPropStringName} {i+1}";
+				ElementNode stringNode = ElementNodeService.Instance.CreateSingle(head, stringName, true, false);
 				result.Add(stringNode);
 
 				if (StringType == StringTypes.Pixel)
 				{
 					for (int j = 0; j < NodesPerString; j++)
 					{
-						string pixelname = stringNode.Name + " " + "Px" + (j + 1);
+						string pixelName = $"{AutoPropNodeName} {j + 1}";
 
-						ElementNode pixelnode = ElementNodeService.Instance.CreateSingle(stringNode, NamingUtilities.Uniquify(elementNames, pixelname), true, false);
-						result.Add(pixelnode);
+						ElementNode pixelNode = ElementNodeService.Instance.CreateSingle(stringNode, pixelName, true, false);
+						result.Add(pixelNode);
 					}
 				}
 			}
 
-			IEnumerable<ElementNode> leafNodes = Enumerable.Empty<ElementNode>();
+			IEnumerable<ElementNode> leafNodes = [];
 
 			if (_startLocation == StartLocation.BottomLeft)
 			{
+                leafNodes = result.First().GetLeafEnumerator();
 				if (_zigZag)
 				{
-					leafNodes = result.First().GetLeafEnumerator();
-					//OrderModule.AddPatchingOrder(leafNodes, _zigZagEvery);
+					OrderModule.AddPatchingOrder(leafNodes, ZigZagOffset);
+                    return result;
 				}
-
-				return result;
 			}
 
 			if (_startLocation == StartLocation.BottomRight)
@@ -293,11 +342,11 @@ namespace VixenModules.App.Props.Models.Tree
 
 			if (_zigZag)
 			{
-				//OrderModule.AddPatchingOrder(leafNodes, _zigZagEvery);
+				OrderModule.AddPatchingOrder(leafNodes, ZigZagOffset);
 			}
 			else
 			{
-				//OrderModule.AddPatchingOrder(leafNodes);
+				OrderModule.AddPatchingOrder(leafNodes);
 			}
 
 			return await Task.FromResult(result);
