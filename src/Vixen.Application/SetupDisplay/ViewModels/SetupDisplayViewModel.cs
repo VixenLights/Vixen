@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-using Catel.Collections;
 using Catel.Data;
 using Catel.IoC;
 using Catel.MVVM;
@@ -14,7 +13,8 @@ using Vixen.Sys;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Props;
 using Vixen.Sys.Props.Model;
-using Vixen.Sys.Props.Model.Arch;
+using VixenModules.App.Props.Models.Arch;
+using VixenModules.App.Props.Models.Tree;
 using Window = System.Windows.Window;
 
 namespace VixenApplication.SetupDisplay.ViewModels
@@ -87,7 +87,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
         {
             PropManager propManager = VixenSystem.Props;
 
-            propManager.RootNode.AddChild(MockPropNodeGroup<Vixen.Sys.Props.Model.Tree.Tree>("Mini Tree"));
+            propManager.RootNode.AddChild(MockPropNodeGroup<Tree>("Mini Tree"));
 
             propManager.RootNode.AddChild(MockPropNodeGroup<Arch>("Arch"));
         }
