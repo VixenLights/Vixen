@@ -54,6 +54,7 @@
 				<ProjectReference Include="..\Vixen.Modules\App\FixtureSpecificationManager\FixtureSpecificationManager.csproj" />
 				<ProjectReference Include="..\Vixen.Modules\App\Fixture\Fixture.csproj" />
 				<ProjectReference Include="..\Vixen.Modules\App\Modeling\Modeling.csproj" />
+				<ProjectReference Include="..\Vixen.Modules\App\Props\Props.csproj" />
 				<ProjectReference Include="..\Vixen.Modules\Editor\FixtureWizard\FixtureWizard.csproj" />
 				<ProjectReference Include="..\Vixen.Modules\OutputFilter\CoarseFineBreakdown\CoarseFineBreakdown.csproj" />
 				<ProjectReference Include="..\Vixen.Modules\OutputFilter\ColorBreakdown\ColorBreakdown.csproj" />
