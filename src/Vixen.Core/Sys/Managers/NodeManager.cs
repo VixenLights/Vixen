@@ -13,12 +13,13 @@ namespace Vixen.Sys.Managers
 
 		public static event EventHandler? NodesChanged;
 		private ElementNode? _rootNode;
+        private ElementNode? _propRootNode;
 
 		public NodeManager()
 		{
 			_instances = new Dictionary<Guid, ElementNode>();
 			ElementNode.Changed += ElementNode_Changed;
-		}
+        }
 
 		public NodeManager(IEnumerable<ElementNode> nodes)
 			: this()
@@ -33,7 +34,21 @@ namespace Vixen.Sys.Managers
 
 		public ElementNode RootNode => _rootNode??= new ElementNode("Root");
 
-		public void MoveNode(ElementNode movingNode, ElementNode newParent, ElementNode oldParent, int index = -1)
+        public ElementNode PropRootNode
+        {
+            get
+            {
+                if (_propRootNode == null)
+                {
+                    _propRootNode = new ElementNode("Props Root Node");
+                    AddNode(_propRootNode, RootNode);
+                }
+
+                return _propRootNode;
+            }
+        }
+
+        public void MoveNode(ElementNode movingNode, ElementNode newParent, ElementNode oldParent, int index = -1)
 		{
 			// if null nodes, default to the root node.
 			newParent = newParent ?? RootNode;
@@ -92,9 +107,10 @@ namespace Vixen.Sys.Managers
 
 		}
 
-		public void RenameNode(ElementNode node, string newName)
+		public void RenameNode(ElementNode node, string newName, bool uniquifyName = true)
 		{
-			node.Name = _Uniquify(newName);
+			node.Name =  uniquifyName ? _Uniquify(newName):newName;
+            
 			if (node.Element != null)
 				node.Element.Name = node.Name;
 		}
