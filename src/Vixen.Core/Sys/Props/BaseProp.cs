@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using Vixen.Attributes;
 using Vixen.Model;
+using Vixen.Services;
 
 namespace Vixen.Sys.Props
 {
@@ -24,10 +25,24 @@ namespace Vixen.Sys.Props
             _createdBy = Environment.UserName;
             PropType = propType;
             StringType = StringTypes.Pixel;
+			PropertyChanged += BaseProp_PropertyChanged;
         }
 
+		private void BaseProp_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+            if (e.PropertyName != null)
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(Name):
+                        RenamePropElement(Name);
+                        break;
+                }
+            }
+		}
+
 		#endregion
-        [Browsable(false)]
+		[Browsable(false)]
 		public Guid Id
         {
             get => _id;
@@ -72,6 +87,9 @@ namespace Vixen.Sys.Props
             set => SetProperty(ref _stringType, value);
         }
 
+        [Browsable(false)]
+		public Guid RootPropElementNodeId { get; protected set; } = Guid.Empty;
+
         protected string AutoPropName => $"Auto-Prop {Name}";
         
         protected string AutoPropStringName => "Auto-Prop String";
@@ -81,21 +99,83 @@ namespace Vixen.Sys.Props
         [Browsable(false)]
 		public virtual IPropModel PropModel { get; protected set; }
 
-        // Add logic to manage Element structure into the regular element tree, including supported properties
-        // like patching order, orientation, etc. 
+		protected ElementNode GetOrCreatePropElementNode()
+        {
+            ElementNode? propNode = null;
+            if (RootPropElementNodeId != Guid.Empty)
+            {
+                propNode = VixenSystem.Nodes.GetElementNode(RootPropElementNodeId);
 
-        // Add logic to handle the visual structure and mapping for the preview.
+            }
 
-        // Implementing Prop classes should utilize the logic in this class to interface with the core of Vixen
-        // Implementing Prop classes with auto generate the standard structure for the type of the Prop.
-        // Implementing Prop classes will define and shape the default model view. The preview will manage sizing and placing them. 
-        // Location will need to be handled as an offset into any previews that the Prop participates in. 
-        // * Prop should have a list of associated preview ids
-        // * Prop should have a lookup of the offset by preview id. 
+            if (propNode == null)
+            {
+                propNode = ElementNodeService.Instance.CreateSingle(VixenSystem.Nodes.PropRootNode, AutoPropName, true, false);
+                RootPropElementNodeId = propNode.Id;
+            }
+
+            return propNode;
+
+        }
+
+        protected void RenamePropElement(string name)
+        {
+            var propNode = GetOrCreatePropElementNode();
+            VixenSystem.Nodes.RenameNode(propNode, name, false);
+        }
+
+        protected void AddStringElements(ElementNode node, int count, int nodesPerString, int namingIndex = 0)
+        {
+            for (int i = namingIndex; i < count + namingIndex; i++)
+            {
+                string stringName = $"{AutoPropStringName} {i + 1}";
+                ElementNode stringNode = ElementNodeService.Instance.CreateSingle(node, stringName, true, false);
+
+                if (StringType == StringTypes.Pixel)
+                {
+                    AddNodeElements(stringNode, nodesPerString);
+                }
+            }
+        }
+
+		protected IEnumerable<IElementNode> AddNodeElements(ElementNode node, int count, int namingIndex = 0)
+        {
+            List<IElementNode> nodesAdded = new List<IElementNode>();
+            for (int j = namingIndex; j < count + namingIndex; j++)
+            {
+                string nodeName = $"{AutoPropNodeName} {j + 1}";
+
+                var newNode = ElementNodeService.Instance.CreateSingle(node, nodeName, true, false);
+                nodesAdded.Add(newNode);
+            }
+
+            return nodesAdded;
+        }
+
+        protected void RemoveElements(ElementNode node, int count)
+        {
+            var nodesToRemove = node.Children.Skip(node.Children.Count() - count).ToList();
+            foreach (var nodeToRemove in nodesToRemove)
+            {
+                VixenSystem.Nodes.RemoveNode(nodeToRemove, node, true);
+            }
+        }
+
+		// Add logic to manage Element structure into the regular element tree, including supported properties
+		// like patching order, orientation, etc. 
+
+		// Add logic to handle the visual structure and mapping for the preview.
+
+		// Implementing Prop classes should utilize the logic in this class to interface with the core of Vixen
+		// Implementing Prop classes with auto generate the standard structure for the type of the Prop.
+		// Implementing Prop classes will define and shape the default model view. The preview will manage sizing and placing them. 
+		// Location will need to be handled as an offset into any previews that the Prop participates in. 
+		// * Prop should have a list of associated preview ids
+		// * Prop should have a lookup of the offset by preview id. 
 
 
-        // Custom definitions for targeted rendering will need to be handled in some form. TBD.
+		// Custom definitions for targeted rendering will need to be handled in some form. TBD.
 
-        // Add other properties to manage things like controller target, 
-    }
+		// Add other properties to manage things like controller target, 
+	}
 }

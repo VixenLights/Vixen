@@ -4,6 +4,7 @@
         xmlns:catel="http://schemas.catelproject.com"
         xmlns:views="clr-namespace:VixenApplication.SetupDisplay.Views"
         xmlns:wpfPropertyGrid="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
+        xmlns:controls="clr-namespace:Common.Controls;assembly=Controls"
         Title="Display Setup" Height="700" Width="900" WindowStartupLocation="CenterScreen" x:Name="DisplaySetup">
 
     <Window.Resources>
@@ -105,10 +106,13 @@
             </Grid>
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="1*"/>
                     <RowDefinition Height="2*"/>
+                    <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
-                <views:PropPreview Grid.Row="0" Margin="5"/>
+                <WindowsFormsHost Grid.Row="0">
+                    <controls:ElementTree x:Name="ElementTree"/>
+                </WindowsFormsHost>
+                <views:PropPreview Grid.Row="1" Margin="5"/>
             </Grid>
            
         </Grid>

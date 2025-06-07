@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using Vixen.Module;
 using Vixen.Module.Property;
 
@@ -91,6 +91,11 @@ namespace Vixen.Sys
 			return _items.ContainsKey(propertyTypeId);
 		}
 
+        public bool TryGetValue(Guid propertyTypeId, [MaybeNullWhen(false)] out IPropertyModuleInstance instance)
+        {
+            return _items.TryGetValue(propertyTypeId, out instance);
+        }
+
 		public ModuleLocalDataSet PropertyData
 		{
 			get { return VixenSystem.ModuleStore.InstanceData; }
@@ -133,7 +138,7 @@ namespace Vixen.Sys
 			return _items.Values.GetEnumerator();
 		}
 
-		IEnumerator IEnumerable.GetEnumerator()
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}

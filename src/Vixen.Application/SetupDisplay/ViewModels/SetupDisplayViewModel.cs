@@ -30,15 +30,15 @@ namespace VixenApplication.SetupDisplay.ViewModels
             PropPreviewNodePoints = new();
 
 			//Initial creation to mock. Remove once VixenSystem can load and save
-			if (!VixenSystem.Props.RootNodes.Any())
-            {
-                MockPropManager();
-            }
-            else
-            {
-                VixenSystem.Props.RootNodes.Clear();
-                MockPropManager();
-			}
+			//if (!VixenSystem.Props.RootNodes.Any())
+   //         {
+   //             MockPropManager();
+   //         }
+   //         else
+   //         {
+   //             VixenSystem.Props.RootNodes.Clear();
+   //             MockPropManager();
+			//}
 
             PropNodeTreeViewModel = new ();
 			PropNodeTreeViewModel.PropertyChanged += PropNodeTreeViewModel_PropertyChanged;
