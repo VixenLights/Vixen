@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
 				<AssemblyName>Module.App.$(MSBuildProjectName)</AssemblyName>
@@ -8,6 +8,7 @@
 
 		<ItemGroup>
 				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\..\Property\Order\Order.csproj" />
 		</ItemGroup>
 
 		<ItemGroup>
