@@ -72,6 +72,12 @@ namespace Vixen.Sys.Props
             set => SetProperty(ref _stringType, value);
         }
 
+        protected string AutoPropName => $"Auto-Prop {Name}";
+        
+        protected string AutoPropStringName => "Auto-Prop String";
+
+        protected string AutoPropNodeName => "Auto-Prop Node";
+
         [Browsable(false)]
 		public virtual IPropModel PropModel { get; protected set; }
 
