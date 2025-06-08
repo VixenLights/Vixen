@@ -3,6 +3,7 @@ using System.Text;
 using System.Xml.Linq;
 using Vixen.Module;
 using Vixen.Sys;
+using System.IO;
 
 namespace Vixen.IO.Xml.Serializer
 {
