@@ -6,61 +6,83 @@ using VixenApplication.SetupDisplay.Wizards.Pages;
 
 namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 {
-    public class ArchPropWizardPageViewModel: WizardPageViewModelBase<ArchPropWizardPage>
-    {
-        public ArchPropWizardPageViewModel(ArchPropWizardPage wizardPage) : base(wizardPage)
-        {
-        }
+	public class ArchPropWizardPageViewModel : WizardPageViewModelBase<ArchPropWizardPage>
+	{
+		public ArchPropWizardPageViewModel(ArchPropWizardPage wizardPage) : base(wizardPage)
+		{
 
-        [ViewModelToModel]
-		public string Name
-        {
-            get { return GetValue<string>(NameProperty); }
-            set { SetValue(NameProperty, value); }
-        }
+		}
 
-        /// <summary>
-        /// Name property data.
-        /// </summary>
-        public static readonly IPropertyData NameProperty = RegisterProperty<string>(nameof(Name));
+		#region Name property
 
+		/// <summary>
+		/// Gets or sets the Name value.
+		/// </summary>
 		[ViewModelToModel]
-		public int LightCount
-        {
-            get { return GetValue<int>(LightCountProperty); }
-            set { SetValue(LightCountProperty, value); }
-        }
+		public string Name
+		{
+			get { return GetValue<string>(NameProperty); }
+			set { SetValue(NameProperty, value); }
+		}
 
-        /// <summary>
-        /// Name property data.
-        /// </summary>
-        public static readonly IPropertyData LightCountProperty = RegisterProperty<int>(nameof(LightCount));
+		/// <summary>
+		/// Name property data.
+		/// </summary>
+		public static readonly IPropertyData NameProperty = RegisterProperty<string>(nameof(Name));
 
+		#endregion
+
+		#region NodeCount property
+
+		/// <summary>
+		/// Gets or sets the NodeCount value.
+		/// </summary>
+		[ViewModelToModel]
+		public int NodeCount
+		{
+			get { return GetValue<int>(NodeCountProperty); }
+			set { SetValue(NodeCountProperty, value); }
+		}
+
+		/// <summary>
+		/// NodeCount property data.
+		/// </summary>
+		public static readonly IPropertyData NodeCountProperty = RegisterProperty<int>(nameof(NodeCount));
+
+		#endregion
+
+		#region StringType property
+
+		/// <summary>
+		/// Gets or sets the StringType value.
+		/// </summary>
 		[ViewModelToModel]
 		public StringTypes StringType
-        {
-            get { return GetValue<StringTypes>(StringTypeProperty); }
-            set { SetValue(StringTypeProperty, value); }
-        }
+		{
+			get { return GetValue<StringTypes>(StringTypeProperty); }
+			set { SetValue(StringTypeProperty, value); }
+		}
 
-        /// <summary>
-        /// Name property data.
-        /// </summary>
-        public static readonly IPropertyData StringTypeProperty = RegisterProperty<StringTypes>(nameof(StringType));
+		/// <summary>
+		/// StringType property data.
+		/// </summary>
+		public static readonly IPropertyData StringTypeProperty = RegisterProperty<StringTypes>(nameof(StringType));
+
+		#endregion
 
 		protected override void ValidateFields(List<IFieldValidationResult> validationResults)
-        {
-            base.ValidateFields(validationResults);
+		{
+			base.ValidateFields(validationResults);
 
-            if (string.IsNullOrWhiteSpace(Name))
-            {
-                validationResults.Add(FieldValidationResult.CreateError("Name", "Name is required"));
-            }
+			if (string.IsNullOrWhiteSpace(Name))
+			{
+				validationResults.Add(FieldValidationResult.CreateError("Name", "Name is required"));
+			}
 
-            if (LightCount <= 0)
-            {
-                validationResults.Add(FieldValidationResult.CreateError("NodeCount", "Light Count must be greater than 0"));
-            }
-        }
+			if (NodeCount <= 0)
+			{
+				validationResults.Add(FieldValidationResult.CreateError("NodeCount", "Node Count must be greater than 0"));
+			}
+		}
 	}
 }
