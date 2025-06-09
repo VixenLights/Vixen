@@ -5,7 +5,10 @@
                    xmlns:orccontrols="http://schemas.wildgums.com/orc/controls"
                    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
                    xmlns:sys="clr-namespace:System;assembly=System.Runtime"
-                   xmlns:props="clr-namespace:Vixen.Sys.Props;assembly=Vixen.Core">
+                   xmlns:props="clr-namespace:Vixen.Sys.Props;assembly=Vixen.Core"
+                   xmlns:markupExtensions="clr-namespace:Common.WPFCommon.MarkupExtensions;assembly=WPFCommon"
+                   xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
+                  >
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -13,14 +16,8 @@
                 <ResourceDictionary Source="/SetupDisplay/Themes/Theme.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-
-            <ObjectDataProvider x:Key="EnumDataSource"
-                                ObjectType="{x:Type sys:Enum}"
-                                MethodName="GetValues">
-                <ObjectDataProvider.MethodParameters>
-                    <x:Type TypeName="props:StringTypes" />
-                </ObjectDataProvider.MethodParameters>
-            </ObjectDataProvider>
+            <markupExtensions:EnumBindingSourceExtension x:Key="EnumBindingSource"/>
+            <converters:EnumValueTypeConverter x:Key="EnumValueTypeConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -48,7 +45,10 @@
         </TextBox>
 
         <Label Content="Light Type" />
-        <ComboBox HorizontalAlignment="Stretch" VerticalAlignment="Center" ItemsSource="{Binding Source={StaticResource EnumDataSource}}"/>
+        <ComboBox HorizontalAlignment="Stretch" VerticalAlignment="Center" 
+                  ItemsSource="{Binding Source={ markupExtensions:EnumBindingSource {x:Type props:StringTypes}}}"
+                 
+                  SelectedItem="{Binding StringType, Converter={StaticResource EnumValueTypeConverter}, ConverterParameter={x:Type props:StringTypes}}"/>
 
     </orccontrols:StackGrid>
 
