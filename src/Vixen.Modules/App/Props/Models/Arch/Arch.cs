@@ -13,7 +13,7 @@ namespace VixenModules.App.Props.Models.Arch
 	/// <summary>
 	/// A class that defines an Arch Prop
 	/// </summary>
-	public class Arch : BaseProp, IProp
+	public class Arch : BaseLightProp, IProp
 	{
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private ArchModel _propModel;
@@ -30,47 +30,62 @@ namespace VixenModules.App.Props.Models.Arch
 
 		public Arch(string name, int nodeCount = 25, StringTypes stringType = StringTypes.Pixel) : base(name, PropType.Arch)
 		{
-			//TODO create default element structure
-			StringType = stringType;
+            StringType = stringType;
 			ArchModel model = new ArchModel(nodeCount);
 			_propModel = model;
 			_propModel.PropertyChanged += PropModel_PropertyChanged;
 			PropertyChanged += Arch_PropertyChanged;
 			// Create default element structure
 			_ = GenerateElementsAsync();
+
+			//TODO Map element structure to model nodes
 		}
 
 		private async void Arch_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-		{
-			if (e.PropertyName != null)
-			{
-				switch (e.PropertyName)
-				{
-					case nameof(StringType):
-						await GenerateElementsAsync();
-						break;
-					case nameof(StartLocation):
-						AddOrUpdatePatchingOrder();
-						break;
-				}
+        {
+            try
+            {
+                if (e.PropertyName != null)
+                {
+                    switch (e.PropertyName)
+                    {
+                        case nameof(StringType):
+                            await GenerateElementsAsync();
+                            break;
+                        case nameof(StartLocation):
+                            AddOrUpdatePatchingOrder();
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+				Logging.Error(ex, $"An error occured handling Arch property {e.PropertyName} changed");
 			}
-		}
+        }
 
 		private async void PropModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-		{
-			if (e.PropertyName != null)
-			{
-				switch (e.PropertyName)
-				{
-					case nameof(NodeCount):
-						await UpdateNodesPerString();
-						break;
-					case nameof(StartLocation):
-						AddOrUpdatePatchingOrder();
-						break;
-				}
+        {
+            try
+            {
+                if (e.PropertyName != null)
+                {
+                    switch (e.PropertyName)
+                    {
+                        case nameof(NodeCount):
+                            await UpdateNodesPerString();
+                            break;
+                        case nameof(StartLocation):
+                            AddOrUpdatePatchingOrder();
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+				Logging.Error(ex, $"An error occured handling model property {e.PropertyName} changed");
 			}
-		}
+        }
 
 		[Browsable(false)]
 		IPropModel IProp.PropModel => PropModel;
@@ -118,7 +133,7 @@ namespace VixenModules.App.Props.Models.Arch
 
 		protected async Task<bool> GenerateElementsAsync()
 		{
-			ElementNode? head = GetOrCreatePropElementNode();
+			ElementNode head = GetOrCreatePropElementNode();
 
 			AddNodeElements(head, NodeCount);
 
@@ -135,7 +150,6 @@ namespace VixenModules.App.Props.Models.Arch
 			try
 			{
 				var propNode = node ?? GetOrCreatePropElementNode();
-				// TODO Get this info from the Tree properties at some point
 				var cf = GetColorConfiguration();
 				await PropertySetupHelper.AddOrUpdateColorHandling(propNode, cf);
 			}
