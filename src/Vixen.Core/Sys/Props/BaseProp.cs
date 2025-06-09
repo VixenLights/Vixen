@@ -13,8 +13,7 @@ namespace Vixen.Sys.Props
         private string _name;
         private string _createdBy;
         private DateTime _modifiedDate;
-        private StringTypes _stringType;
-
+        
         #region Constructors
 
         protected BaseProp(string name, PropType propType)
@@ -24,11 +23,11 @@ namespace Vixen.Sys.Props
             CreationDate = _modifiedDate = DateTime.Now;
             _createdBy = Environment.UserName;
             PropType = propType;
-            StringType = StringTypes.Pixel;
+            
 			PropertyChanged += BaseProp_PropertyChanged;
         }
 
-		private void BaseProp_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        private void BaseProp_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
             if (e.PropertyName != null)
             {
@@ -79,13 +78,7 @@ namespace Vixen.Sys.Props
 		[DisplayName("Prop Type")]
         public PropType PropType { get; init; }
 
-        [PropertyOrder(1)]
-        [DisplayName("String Type")]
-		public StringTypes StringType
-        {
-            get => _stringType;
-            set => SetProperty(ref _stringType, value);
-        }
+        
 
         [Browsable(false)]
 		public Guid RootPropElementNodeId { get; protected set; } = Guid.Empty;
@@ -97,9 +90,9 @@ namespace Vixen.Sys.Props
         protected string AutoPropNodeName => "Auto-Prop Node";
 
         [Browsable(false)]
-		public virtual IPropModel PropModel { get; protected set; }
+		public virtual IPropModel PropModel { get; protected set; } = null!;
 
-		protected ElementNode GetOrCreatePropElementNode()
+        protected ElementNode GetOrCreatePropElementNode()
         {
             ElementNode? propNode = null;
             if (RootPropElementNodeId != Guid.Empty)
@@ -122,20 +115,6 @@ namespace Vixen.Sys.Props
         {
             var propNode = GetOrCreatePropElementNode();
             VixenSystem.Nodes.RenameNode(propNode, name, false);
-        }
-
-        protected void AddStringElements(ElementNode node, int count, int nodesPerString, int namingIndex = 0)
-        {
-            for (int i = namingIndex; i < count + namingIndex; i++)
-            {
-                string stringName = $"{AutoPropStringName} {i + 1}";
-                ElementNode stringNode = ElementNodeService.Instance.CreateSingle(node, stringName, true, false);
-
-                if (StringType == StringTypes.Pixel)
-                {
-                    AddNodeElements(stringNode, nodesPerString);
-                }
-            }
         }
 
 		protected IEnumerable<IElementNode> AddNodeElements(ElementNode node, int count, int namingIndex = 0)

@@ -2,19 +2,15 @@
 
 using System.ComponentModel;
 using System.Drawing;
-using System.Windows.Markup;
 using NLog;
 using Vixen.Attributes;
-using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Props;
-using Vixen.Utility;
 using VixenModules.Property.Color;
-using VixenModules.Property.Order;
 
 namespace VixenModules.App.Props.Models.Tree
 {
-	public class Tree : BaseProp, IProp
+	public class Tree : BaseLightProp, IProp
 	{
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
@@ -48,48 +44,63 @@ namespace VixenModules.App.Props.Models.Tree
 			PropertyChanged += Tree_PropertyChanged;
 			// Create default element structure
 			_ = GenerateElementsAsync();
+
+            //TODO Map element structure to model nodes
 		}
 
 		private async void Tree_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-		{
-			// Name is handled in the base class so we need to handle our own.
-			if (e.PropertyName != null)
-			{
-				switch (e.PropertyName)
-				{
-					case nameof(StringType):
-                        await GenerateElementsAsync();
-						break;
-					case nameof(StartLocation):
-					case nameof(ZigZag):
-					case nameof(ZigZagOffset):
-						AddOrUpdatePatchingOrder();
-						break;
-				}
+        {
+            try
+            {
+                // Name is handled in the base class so we need to handle our own.
+                if (e.PropertyName != null)
+                {
+                    switch (e.PropertyName)
+                    {
+                        case nameof(StringType):
+                            await GenerateElementsAsync();
+                            break;
+                        case nameof(StartLocation):
+                        case nameof(ZigZag):
+                        case nameof(ZigZagOffset):
+                            AddOrUpdatePatchingOrder();
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+				Logging.Error(ex, $"An error occured handling Tree property {e.PropertyName} changed");
 			}
-		}
+        }
 
-		private void PropModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-		{
-			if (e.PropertyName != null)
-			{
-				switch (e.PropertyName)
-				{
-					case nameof(Strings):
-						UpdateStrings();
-						break;
-					case nameof(NodesPerString):
-						UpdateNodesPerString();
-						break;
-					case nameof(StartLocation):
-					case nameof(ZigZag):
-					case nameof(ZigZagOffset):
-						AddOrUpdatePatchingOrder();
-						break;
-				}
-			}
-
-		}
+		private async void PropModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            try
+            {
+                if (e.PropertyName != null)
+                {
+                    switch (e.PropertyName)
+                    {
+                        case nameof(Strings):
+                            UpdateStrings();
+                            break;
+                        case nameof(NodesPerString):
+                            await UpdateNodesPerString();
+                            break;
+                        case nameof(StartLocation):
+                        case nameof(ZigZag):
+                        case nameof(ZigZagOffset):
+                            AddOrUpdatePatchingOrder();
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logging.Error(ex, $"An error occured handling model property {e.PropertyName} changed");
+            }
+        }
 
 		[Browsable(false)]
 		IPropModel IProp.PropModel => PropModel;
@@ -280,7 +291,7 @@ namespace VixenModules.App.Props.Models.Tree
 
 		protected async Task<bool> GenerateElementsAsync()
 		{
-			ElementNode? head = GetOrCreatePropElementNode();
+			ElementNode head = GetOrCreatePropElementNode();
 
 			AddStringElements(head, Strings, NodesPerString);
 
