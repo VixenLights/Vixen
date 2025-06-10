@@ -19,109 +19,109 @@ using Window = System.Windows.Window;
 
 namespace VixenApplication.SetupDisplay.ViewModels
 {
-    public class SetupDisplayViewModel : ViewModelBase
+	public class SetupDisplayViewModel : ViewModelBase
 	{
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
-        private const int LayoutViewTab = 0;
-        private const int PropViewTab = 1;
+		private const int LayoutViewTab = 0;
+		private const int PropViewTab = 1;
 
-        public SetupDisplayViewModel()
-        {
-            PropPreviewNodePoints = new();
+		public SetupDisplayViewModel()
+		{
+			PropPreviewNodePoints = new();
 
 			//Initial creation to mock. Remove once VixenSystem can load and save
 			//if (!VixenSystem.Props.RootNodes.Any())
-   //         {
-   //             MockPropManager();
-   //         }
-   //         else
-   //         {
-   //             VixenSystem.Props.RootNodes.Clear();
-   //             MockPropManager();
+			//         {
+			//             MockPropManager();
+			//         }
+			//         else
+			//         {
+			//             VixenSystem.Props.RootNodes.Clear();
+			//             MockPropManager();
 			//}
 
-            PropNodeTreeViewModel = new ();
+			PropNodeTreeViewModel = new();
 			PropNodeTreeViewModel.PropertyChanged += PropNodeTreeViewModel_PropertyChanged;
-            PropNodeTreePropViewModel = new(PropNodeTreeViewModel);
+			PropNodeTreePropViewModel = new(PropNodeTreeViewModel);
 			PropNodeTreePropViewModel.PropertyChanged += PropNodeTreePropViewModel_PropertyChanged;
-        }
+		}
 
 		private void PropNodeTreePropViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
-            if (SelectedTabIndex == PropViewTab && nameof(PropNodeTreePropViewModel.SelectedItem).Equals(e.PropertyName))
-            {
-                if (PropNodeTreePropViewModel.SelectedItem is { IsLeaf: true, PropNode.Prop: not null })
-                {
-                    SelectedProp = PropNodeTreePropViewModel.SelectedItem.PropNode.Prop;
+			if (SelectedTabIndex == PropViewTab && nameof(PropNodeTreePropViewModel.SelectedItem).Equals(e.PropertyName))
+			{
+				if (PropNodeTreePropViewModel.SelectedItem is { IsLeaf: true, PropNode.Prop: not null })
+				{
+					SelectedProp = PropNodeTreePropViewModel.SelectedItem.PropNode.Prop;
 					UpdatePreviewModel(SelectedProp);
-                }
-                else
-                {
-                    SelectedProp = null;
+				}
+				else
+				{
+					SelectedProp = null;
 					ClearPreviewModel();
-                }
+				}
 			}
 		}
 
 		private void PropNodeTreeViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
-            if (SelectedTabIndex == LayoutViewTab && nameof(PropNodeTreeViewModel.SelectedItem).Equals(e.PropertyName))
-            {
-                if (PropNodeTreeViewModel.SelectedItem is { IsLeaf: true, PropNode.Prop: not null })
-                {
-                    SelectedProp = PropNodeTreeViewModel.SelectedItem.PropNode.Prop;
-                    UpdatePreviewModel(SelectedProp);
-                }
-                else
-                {
-                    SelectedProp = null;
-                    ClearPreviewModel();
-                }
-            }
+			if (SelectedTabIndex == LayoutViewTab && nameof(PropNodeTreeViewModel.SelectedItem).Equals(e.PropertyName))
+			{
+				if (PropNodeTreeViewModel.SelectedItem is { IsLeaf: true, PropNode.Prop: not null })
+				{
+					SelectedProp = PropNodeTreeViewModel.SelectedItem.PropNode.Prop;
+					UpdatePreviewModel(SelectedProp);
+				}
+				else
+				{
+					SelectedProp = null;
+					ClearPreviewModel();
+				}
+			}
 		}
 
 		#region Mock Code
 
 		//TODO remove this when the real tree can be used.
 		private void MockPropManager()
-        {
-            PropManager propManager = VixenSystem.Props;
+		{
+			PropManager propManager = VixenSystem.Props;
 
-            propManager.RootNode.AddChild(MockPropNodeGroup<Tree>("Mini Tree"));
+			propManager.RootNode.AddChild(MockPropNodeGroup<Tree>("Mini Tree"));
 
-            propManager.RootNode.AddChild(MockPropNodeGroup<Arch>("Arch"));
-        }
+			propManager.RootNode.AddChild(MockPropNodeGroup<Arch>("Arch"));
+		}
 
-        private PropNode MockPropNodeGroup<T>(string name) where T : IProp, new()
-        {
-            var plural = name.EndsWith('e') ? "s" : "es";
-            var propNode = new PropNode($"{name}{plural}");
+		private PropNode MockPropNodeGroup<T>(string name) where T : IProp, new()
+		{
+			var plural = name.EndsWith('e') ? "s" : "es";
+			var propNode = new PropNode($"{name}{plural}");
 
-            var mtl = new PropNode($"{name}{plural} Left");
+			var mtl = new PropNode($"{name}{plural} Left");
 
-            for (int i = 0; i < 4; i++)
-            {
-                var propName = $"{name} {i + 1}";
+			for (int i = 0; i < 4; i++)
+			{
+				var propName = $"{name} {i + 1}";
 
-                var prop = VixenSystem.Props.CreateProp<T>(propName);
+				var prop = VixenSystem.Props.CreateProp<T>(propName);
 
 				mtl.AddChild(new PropNode(prop));
-            }
+			}
 
-            var mtr = new PropNode($"{name}{plural} Right");
-            for (int i = 0; i < 4; i++)
-            {
-                var propName = $"{name} {i + 1}";
-                var prop = VixenSystem.Props.CreateProp<T>(propName);
+			var mtr = new PropNode($"{name}{plural} Right");
+			for (int i = 0; i < 4; i++)
+			{
+				var propName = $"{name} {i + 1}";
+				var prop = VixenSystem.Props.CreateProp<T>(propName);
 
 				mtr.AddChild(new PropNode(prop));
-            }
+			}
 
-            propNode.AddChild(mtl);
-            propNode.AddChild(mtr);
+			propNode.AddChild(mtl);
+			propNode.AddChild(mtr);
 
-            return propNode;
-        }
+			return propNode;
+		}
 
 		#endregion
 
@@ -131,16 +131,16 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// Gets or sets the ElementTreeViewModel value.
 		/// </summary>
 		[Browsable(false)]
-        public PropNodeTreeViewModel PropNodeTreeViewModel
+		public PropNodeTreeViewModel PropNodeTreeViewModel
 		{
-            get { return GetValue<PropNodeTreeViewModel>(PropTreeViewModelProperty); }
-            set { SetValue(PropTreeViewModelProperty, value); }
-        }
+			get { return GetValue<PropNodeTreeViewModel>(PropTreeViewModelProperty); }
+			set { SetValue(PropTreeViewModelProperty, value); }
+		}
 
-        /// <summary>
-        /// ElementTreeViewModel property data.
-        /// </summary>
-        public static readonly IPropertyData PropTreeViewModelProperty = RegisterProperty<PropNodeTreeViewModel>(nameof(PropNodeTreeViewModel));
+		/// <summary>
+		/// ElementTreeViewModel property data.
+		/// </summary>
+		public static readonly IPropertyData PropTreeViewModelProperty = RegisterProperty<PropNodeTreeViewModel>(nameof(PropNodeTreeViewModel));
 
 		#endregion
 
@@ -148,37 +148,37 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		/// <summary>
 		/// Gets or sets the PropNodeTreePropViewModel value.
-        /// </summary>;
-        public PropNodeTreePropViewModel PropNodeTreePropViewModel
-        {
-            get { return GetValue<PropNodeTreePropViewModel>(PropNodePropTreeViewModelProperty); }
-            private init { SetValue(PropNodePropTreeViewModelProperty, value); }
-        }
+		/// </summary>;
+		public PropNodeTreePropViewModel PropNodeTreePropViewModel
+		{
+			get { return GetValue<PropNodeTreePropViewModel>(PropNodePropTreeViewModelProperty); }
+			private init { SetValue(PropNodePropTreeViewModelProperty, value); }
+		}
 
-        /// <summary>;
-        /// PropNodeTreePropViewModel property data.
-        /// </summary>;
-        public static readonly IPropertyData PropNodePropTreeViewModelProperty = RegisterProperty<PropNodeTreePropViewModel>(nameof(PropNodeTreePropViewModel));
+		/// <summary>;
+		/// PropNodeTreePropViewModel property data.
+		/// </summary>;
+		public static readonly IPropertyData PropNodePropTreeViewModelProperty = RegisterProperty<PropNodeTreePropViewModel>(nameof(PropNodeTreePropViewModel));
 
 		#endregion
 
-        #region SelectedProp property
+		#region SelectedProp property
 
-        /// <summary>
-        /// Gets or sets the SelectedProp value.
-        /// </summary>
-        public IProp? SelectedProp
-        {
-            get { return GetValue<IProp>(SelectedPropProperty); }
-            set { SetValue(SelectedPropProperty, value); }
-        }
+		/// <summary>
+		/// Gets or sets the SelectedProp value.
+		/// </summary>
+		public IProp? SelectedProp
+		{
+			get { return GetValue<IProp>(SelectedPropProperty); }
+			set { SetValue(SelectedPropProperty, value); }
+		}
 
-        /// <summary>
-        /// SelectedProp property data.
-        /// </summary>
-        public static readonly IPropertyData SelectedPropProperty = RegisterProperty<IProp>(nameof(SelectedProp));
+		/// <summary>
+		/// SelectedProp property data.
+		/// </summary>
+		public static readonly IPropertyData SelectedPropProperty = RegisterProperty<IProp>(nameof(SelectedProp));
 
-        #endregion
+		#endregion
 
 		#region PropPreviewNodePoints property
 
@@ -186,17 +186,17 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// Gets or sets the PropPreviewNodePoints value.
 		/// </summary>
 		public ObservableCollection<NodePoint>? PropPreviewNodePoints
-        {
-            get { return GetValue<ObservableCollection<NodePoint>>(SelectedItemNodesProperty); }
-            private set { SetValue(SelectedItemNodesProperty, value); }
-        }
+		{
+			get { return GetValue<ObservableCollection<NodePoint>>(SelectedItemNodesProperty); }
+			private set { SetValue(SelectedItemNodesProperty, value); }
+		}
 
-        /// <summary>
-        /// PropPreviewNodePoints property data.
-        /// </summary>
-        public static readonly IPropertyData SelectedItemNodesProperty = RegisterProperty<ObservableCollection<NodePoint>>(nameof(PropPreviewNodePoints));
+		/// <summary>
+		/// PropPreviewNodePoints property data.
+		/// </summary>
+		public static readonly IPropertyData SelectedItemNodesProperty = RegisterProperty<ObservableCollection<NodePoint>>(nameof(PropPreviewNodePoints));
 
-        #endregion
+		#endregion
 
 		#region Menu Commands
 
@@ -204,187 +204,187 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		private Command _openPropCommand;
 
-        /// <summary>
-        /// Gets the OpenProp command.
-        /// </summary>
-        [Browsable(false)]
-        public Command OpenPropCommand
-        {
-            get { return _openPropCommand ??= new Command(OpenProp); }
-        }
+		/// <summary>
+		/// Gets the OpenProp command.
+		/// </summary>
+		[Browsable(false)]
+		public Command OpenPropCommand
+		{
+			get { return _openPropCommand ??= new Command(OpenProp); }
+		}
 
-        /// <summary>
-        /// Method to invoke when the OpenProp command is executed.
-        /// </summary>
-        private async void OpenProp()
-        {
-            var dependencyResolver = this.GetDependencyResolver();
-            var openFileService = dependencyResolver.Resolve<IOpenFileService>();
-            var determineFileContext = new DetermineOpenFileContext()
-            {
-                IsMultiSelect = false,
-                Filter = "Prop Files(*.prp)|*.prp",
-                FileName = String.Empty
-            };
+		/// <summary>
+		/// Method to invoke when the OpenProp command is executed.
+		/// </summary>
+		private async void OpenProp()
+		{
+			var dependencyResolver = this.GetDependencyResolver();
+			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
+			var determineFileContext = new DetermineOpenFileContext()
+			{
+				IsMultiSelect = false,
+				Filter = "Prop Files(*.prp)|*.prp",
+				FileName = String.Empty
+			};
 
-            var result = await openFileService.DetermineFileAsync(determineFileContext);
+			var result = await openFileService.DetermineFileAsync(determineFileContext);
 
-            if (result.Result)
-            {
+			if (result.Result)
+			{
 
-                string path = result.FileNames.First();
-                if (!string.IsNullOrEmpty(path))
-                {
-                    var pleaseWaitService = dependencyResolver.Resolve<IBusyIndicatorService>();
-                    pleaseWaitService.Show();
-                   // LoadPropFromPath(path);
-                    pleaseWaitService.Hide();
-                }
-            }
-        }
+				string path = result.FileNames.First();
+				if (!string.IsNullOrEmpty(path))
+				{
+					var pleaseWaitService = dependencyResolver.Resolve<IBusyIndicatorService>();
+					pleaseWaitService.Show();
+					// LoadPropFromPath(path);
+					pleaseWaitService.Hide();
+				}
+			}
+		}
 
-        #endregion
+		#endregion
 
 		#region SaveModel command
 
 		private Command _saveModelCommand;
 
-        /// <summary>
-        /// Gets the SaveModel command.
-        /// </summary>
-        [Browsable(false)]
-        public Command SaveModelCommand
-        {
-            get { return _saveModelCommand ??= new Command(SaveModel); }
-        }
+		/// <summary>
+		/// Gets the SaveModel command.
+		/// </summary>
+		[Browsable(false)]
+		public Command SaveModelCommand
+		{
+			get { return _saveModelCommand ??= new Command(SaveModel); }
+		}
 
-        /// <summary>
-        /// Method to invoke when the SaveModel command is executed.
-        /// </summary>
-        private void SaveModel()
-        {
-           
-        }
+		/// <summary>
+		/// Method to invoke when the SaveModel command is executed.
+		/// </summary>
+		private void SaveModel()
+		{
 
-        #endregion
+		}
 
-        #region SaveModelAs command
+		#endregion
 
-        private Command _saveModelAsCommand;
+		#region SaveModelAs command
 
-        /// <summary>
-        /// Gets the SaveModelAs command.
-        /// </summary
-        [Browsable(false)]
-        public Command SaveModelAsCommand
-        {
-            get { return _saveModelAsCommand ??= new Command(SaveModelAs); }
-        }
+		private Command _saveModelAsCommand;
 
-        /// <summary>
-        /// Method to invoke when the SaveModelAs command is executed.
-        /// </summary>
-        private async void SaveModelAs()
-        {
-           
-        }
+		/// <summary>
+		/// Gets the SaveModelAs command.
+		/// </summary
+		[Browsable(false)]
+		public Command SaveModelAsCommand
+		{
+			get { return _saveModelAsCommand ??= new Command(SaveModelAs); }
+		}
 
-        #endregion
+		/// <summary>
+		/// Method to invoke when the SaveModelAs command is executed.
+		/// </summary>
+		private async void SaveModelAs()
+		{
+
+		}
+
+		#endregion
 
 		#region Exit command
 
 		private Command<Window> _exitCommand;
 
-        /// <summary>
-        /// Gets the Exit command.
-        /// </summary>
-        [Browsable(false)]
-        public Command<Window> ExitCommand
-        {
-            get { return _exitCommand ?? (_exitCommand = new Command<Window>(Exit)); }
-        }
+		/// <summary>
+		/// Gets the Exit command.
+		/// </summary>
+		[Browsable(false)]
+		public Command<Window> ExitCommand
+		{
+			get { return _exitCommand ?? (_exitCommand = new Command<Window>(Exit)); }
+		}
 
-        /// <summary>
-        /// Method to invoke when the Exit command is executed.
-        /// </summary>
-        private void Exit(Window window)
-        {
-            window?.Close();
-        }
+		/// <summary>
+		/// Method to invoke when the Exit command is executed.
+		/// </summary>
+		private void Exit(Window window)
+		{
+			window?.Close();
+		}
 
 		#endregion
 
 		#region Closing command
 
-        private Command<CancelEventArgs> _closingCommand;
+		private Command<CancelEventArgs> _closingCommand;
 
-        /// <summary>
-        /// Gets the Closing command.
-        /// </summary>
-        [Browsable(false)]
-        public Command<CancelEventArgs> ClosingCommand
-        {
-            get { return _closingCommand ?? (_closingCommand = new Command<CancelEventArgs>(Closing)); }
-        }
+		/// <summary>
+		/// Gets the Closing command.
+		/// </summary>
+		[Browsable(false)]
+		public Command<CancelEventArgs> ClosingCommand
+		{
+			get { return _closingCommand ?? (_closingCommand = new Command<CancelEventArgs>(Closing)); }
+		}
 
-        /// <summary>
-        /// Method to invoke when the Closing command is executed.
-        /// </summary>
-        private void Closing(CancelEventArgs e)
-        {
-            //if (TestIsDirty())
-            //{
-            //    var dependencyResolver = this.GetDependencyResolver();
-            //    var mbs = dependencyResolver.Resolve<IMessageBoxService>();
-            //    var response = mbs.GetUserConfirmation($"Save Prop \"{CleanseNameString(Prop.Name)}\" ", "Save");
-            //    if (response.Result == MessageResult.OK)
-            //    {
-            //        SaveModel();
-            //    }
-            //    else if (response.Result == MessageResult.Cancel)
-            //    {
-            //        e.Cancel = true;
-            //    }
-            //}
-        }
+		/// <summary>
+		/// Method to invoke when the Closing command is executed.
+		/// </summary>
+		private void Closing(CancelEventArgs e)
+		{
+			//if (TestIsDirty())
+			//{
+			//    var dependencyResolver = this.GetDependencyResolver();
+			//    var mbs = dependencyResolver.Resolve<IMessageBoxService>();
+			//    var response = mbs.GetUserConfirmation($"Save Prop \"{CleanseNameString(Prop.Name)}\" ", "Save");
+			//    if (response.Result == MessageResult.OK)
+			//    {
+			//        SaveModel();
+			//    }
+			//    else if (response.Result == MessageResult.Cancel)
+			//    {
+			//        e.Cancel = true;
+			//    }
+			//}
+		}
 
 
-        #endregion
+		#endregion
 
 		#region NewProp command
 
 		private Command _newPropCommand;
 
-        /// <summary>
-        /// Gets the NewProp command.
-        /// </summary>
-        [Browsable(false)]
-        public Command NewPropCommand
-        {
-            get { return _newPropCommand ??= new Command(NewProp); }
-        }
+		/// <summary>
+		/// Gets the NewProp command.
+		/// </summary>
+		[Browsable(false)]
+		public Command NewPropCommand
+		{
+			get { return _newPropCommand ??= new Command(NewProp); }
+		}
 
-        private const string TokenPattern = @"{[0-9]+}";
-        /// <summary>
-        /// Method to invoke when the NewProp command is executed.
-        /// </summary>
-        private void NewProp()
-        {
-            MessageBoxService mbs = new MessageBoxService();
-            var result = mbs.GetUserInput("Please enter the Prop name.", "Create Prop", "New Prop");
-            if (result.Result == MessageResult.OK)
-            {
-                var name = result.Response;
-                if (!Regex.IsMatch(name, TokenPattern))
-                {
-                    name = $"{name} {{1}}";
-                }
+		private const string TokenPattern = @"{[0-9]+}";
+		/// <summary>
+		/// Method to invoke when the NewProp command is executed.
+		/// </summary>
+		private void NewProp()
+		{
+			MessageBoxService mbs = new MessageBoxService();
+			var result = mbs.GetUserInput("Please enter the Prop name.", "Create Prop", "New Prop");
+			if (result.Result == MessageResult.OK)
+			{
+				var name = result.Response;
+				if (!Regex.IsMatch(name, TokenPattern))
+				{
+					name = $"{name} {{1}}";
+				}
 
-                //Call Prop creation wizard
-                // Prop = PropModelServices.Instance().CreateProp(name);
-               
-            }
-        }
+				//Call Prop creation wizard
+				// Prop = PropModelServices.Instance().CreateProp(name);
+
+			}
+		}
 
 		#endregion
 
@@ -478,7 +478,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		private async Task OpenVendorBrowserAsync()
 		{
-			
+
 		}
 
 		#endregion
@@ -487,28 +487,28 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		private Command? _helpCommand;
 
-        /// <summary>
-        /// Gets the Help command.
-        /// </summary>
-        [Browsable(false)]
-        public Command HelpCommand
-        {
-            get { return _helpCommand ??= new Command(Help); }
-        }
+		/// <summary>
+		/// Gets the Help command.
+		/// </summary>
+		[Browsable(false)]
+		public Command HelpCommand
+		{
+			get { return _helpCommand ??= new Command(Help); }
+		}
 
-        /// <summary>
-        /// Method to invoke when the Help command is executed.
-        /// </summary>
-        private void Help()
-        {
-            var url = "http://www.vixenlights.com/vixen-3-documentation/preview/custom-prop-editor/";
-            var psi = new ProcessStartInfo()
-            {
-                FileName = url,
-                UseShellExecute = true
-            };
-            Process.Start(psi);
-        }
+		/// <summary>
+		/// Method to invoke when the Help command is executed.
+		/// </summary>
+		private void Help()
+		{
+			var url = "http://www.vixenlights.com/vixen-3-documentation/preview/custom-prop-editor/";
+			var psi = new ProcessStartInfo()
+			{
+				FileName = url,
+				UseShellExecute = true
+			};
+			Process.Start(psi);
+		}
 
 		#endregion
 
@@ -516,51 +516,51 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region SelectedTabIndex property
 
-        /// <summary>
-        /// Gets or sets the SelectedTabIndex value.
-        /// </summary>
-        [Browsable(false)]
-        public int SelectedTabIndex
-        {
-            get { return GetValue<int>(SelectedTabIndexProperty); }
-            set { SetValue(SelectedTabIndexProperty, value); }
-        }
+		/// <summary>
+		/// Gets or sets the SelectedTabIndex value.
+		/// </summary>
+		[Browsable(false)]
+		public int SelectedTabIndex
+		{
+			get { return GetValue<int>(SelectedTabIndexProperty); }
+			set { SetValue(SelectedTabIndexProperty, value); }
+		}
 
-        /// <summary>
-        /// SelectedTabIndex property data.
-        /// </summary>
-        public static readonly IPropertyData SelectedTabIndexProperty =
-            RegisterProperty<int>(nameof(SelectedTabIndex), null, (sender, e) => ((SetupDisplayViewModel)sender).OnSelectedTabIndexChanged());
+		/// <summary>
+		/// SelectedTabIndex property data.
+		/// </summary>
+		public static readonly IPropertyData SelectedTabIndexProperty =
+			RegisterProperty<int>(nameof(SelectedTabIndex), null, (sender, e) => ((SetupDisplayViewModel)sender).OnSelectedTabIndexChanged());
 
-        /// <summary>
-        /// Called when the SelectedTabIndex property has changed.
-        /// </summary>
-        private void OnSelectedTabIndexChanged()
-        {
-            
-        }
+		/// <summary>
+		/// Called when the SelectedTabIndex property has changed.
+		/// </summary>
+		private void OnSelectedTabIndexChanged()
+		{
+
+		}
 
 		#endregion
 
 		#region PropPreview Methods
 
 		internal void ClearPreviewModel()
-        {
-            PropPreviewNodePoints = null;
+		{
+			PropPreviewNodePoints = null;
 
-        }
+		}
 
-        internal void UpdatePreviewModel(IProp prop)
-        {
-            //TODO update with whatever is needed to preview non-light models
-            if (prop.PropModel is ILightPropModel model)
-            {
-                if (PropPreviewNodePoints != model.Nodes)
-                {
-                    PropPreviewNodePoints = model.Nodes;
-                }
-            }
-        }
+		internal void UpdatePreviewModel(IProp prop)
+		{
+			//TODO update with whatever is needed to preview non-light models
+			if (prop.PropModel is ILightPropModel model)
+			{
+				if (PropPreviewNodePoints != model.Nodes)
+				{
+					PropPreviewNodePoints = model.Nodes;
+				}
+			}
+		}
 
 		#endregion
 	}
