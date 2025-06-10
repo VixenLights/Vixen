@@ -44,10 +44,4 @@ namespace Vixen.Sys.Props
 		/// </summary>
 		void CleanUp();
 	}
-
-	public enum StringTypes
-	{
-		Standard,
-		Pixel
-	}
 }
