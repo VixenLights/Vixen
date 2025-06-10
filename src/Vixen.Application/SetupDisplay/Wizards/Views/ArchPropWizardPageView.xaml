@@ -34,18 +34,18 @@
             <RowDefinition Height="*" />
         </orccontrols:StackGrid.RowDefinitions>
 
-        <Label Content="Name" />
-        <TextBox  Text="{Binding Name, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+        <Label Grid.Column="0" Grid.Row="0" Content="Name" />
+        <TextBox Grid.Column="0" Grid.Row="1"  Text="{Binding Name, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
 
-        <Label Content="Light Count" />
-        <TextBox Text="{Binding Strings, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
+        <Label Grid.Column="0" Grid.Row="1" Content="Light Count" />
+        <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding NodeCount, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
             <b:Interaction.Behaviors>
                 <catel:NumericTextBox />
             </b:Interaction.Behaviors>
         </TextBox>
 
-        <Label Content="Light Type" />
-        <ComboBox HorizontalAlignment="Stretch" VerticalAlignment="Center" 
+        <Label Grid.Column="0" Grid.Row="2" Content="Light Type" />
+        <ComboBox Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
                   ItemsSource="{Binding Source={ markupExtensions:EnumBindingSource {x:Type props:StringTypes}}}"
                  
                   SelectedItem="{Binding StringType, Converter={StaticResource EnumValueTypeConverter}, ConverterParameter={x:Type props:StringTypes}}"/>
