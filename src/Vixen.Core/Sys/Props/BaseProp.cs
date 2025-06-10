@@ -35,7 +35,7 @@ namespace Vixen.Sys.Props
 				switch (e.PropertyName)
 				{
 					case nameof(Name):
-						RenamePropElement(Name);
+						RenamePropElement();
 						break;
 				}
 			}
@@ -126,10 +126,10 @@ namespace Vixen.Sys.Props
 
 		}
 
-		protected void RenamePropElement(string name)
+		protected void RenamePropElement()		
 		{
 			var propNode = GetOrCreatePropElementNode();
-			VixenSystem.Nodes.RenameNode(propNode, name, false);
+			VixenSystem.Nodes.RenameNode(propNode, AutoPropName, false);
 		}
 
 		protected IEnumerable<IElementNode> AddNodeElements(ElementNode node, int count, int namingIndex = 0)
