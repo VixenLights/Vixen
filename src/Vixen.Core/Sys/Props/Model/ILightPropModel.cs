@@ -2,8 +2,8 @@
 
 namespace Vixen.Sys.Props.Model
 {
-	public interface ILightPropModel: IPropModel
+	public interface ILightPropModel : IPropModel
 	{
-        public ObservableCollection<NodePoint> Nodes { get; set; }
-    }
+		public ObservableCollection<NodePoint> Nodes { get; set; }
+	}
 }
