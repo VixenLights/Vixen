@@ -10,7 +10,8 @@
              xmlns:dd="urn:gong-wpf-dragdrop"
              xmlns:commonUtils="clr-namespace:Common.WPFCommon.Utils;assembly=WPFCommon"
              xmlns:behaviors="clr-namespace:Common.WPFCommon.Behaviors;assembly=WPFCommon"
-             xmlns:viewModels="clr-namespace:VixenApplication.SetupDisplay.ViewModels">
+             xmlns:viewModels="clr-namespace:VixenApplication.SetupDisplay.ViewModels"
+             xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon">
 
     <UserControl.Resources>
 
@@ -20,7 +21,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-
+            <converters:BooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" True="Collapsed" False="Visible"/>
 
             <Style x:Key="PropNodeListViewItemContainerStyle" TargetType="{x:Type ListViewItem}">
                 <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
@@ -298,7 +299,7 @@
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding ChildrenViewModels}" DataType="{x:Type viewModels:PropNodeViewModel}">
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="/Resources;component/bullet_purple.png" Width="16" Height="16" Visibility="{Binding IsLeaf, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
+                                    <Image Source="/Resources;component/bullet_purple.png" Width="16" Height="16" Visibility="{Binding IsGroupNode, Converter={StaticResource InverseBooleanToVisibilityConverter}}"></Image>
                                     <TextBlock x:Name="ReadOnlyText" Text="{Binding Name}" Margin="0,2,0,2" Style="{StaticResource PropNodeContextMenuStyle}" Focusable="True">
 									<i:Interaction.Triggers>
 										<i:EventTrigger EventName="MouseLeftButtonUp">
