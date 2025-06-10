@@ -1,10 +1,9 @@
-﻿<catel:UserControl x:Class="VixenApplication.SetupDisplay.Wizards.Views.ArchPropWizardPageView"
+﻿<catel:UserControl x:Class="VixenApplication.SetupDisplay.Wizards.Views.TreePropWizardPageView"
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:catel="http://schemas.catelproject.com"
                    xmlns:orccontrols="http://schemas.wildgums.com/orc/controls"
                    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
-                   xmlns:sys="clr-namespace:System;assembly=System.Runtime"
                    xmlns:props="clr-namespace:Vixen.Sys.Props;assembly=Vixen.Core"
                    xmlns:markupExtensions="clr-namespace:Common.WPFCommon.MarkupExtensions;assembly=WPFCommon"
                    xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
@@ -31,21 +30,27 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </orccontrols:StackGrid.RowDefinitions>
 
-        <Label Content="Name" />
-        <TextBox  Text="{Binding Name, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+        <Label Grid.Column="0" Grid.Row="0" Content="Name" />
+        <TextBox Grid.Column="1" Grid.Row="0"  Text="{Binding Name, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
 
-        <Label Content="Light Count" />
-        <TextBox Text="{Binding Strings, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
+        <Label Grid.Column="0" Grid.Row="1" Content="String Count" />
+        <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Strings, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
             <b:Interaction.Behaviors>
                 <catel:NumericTextBox />
             </b:Interaction.Behaviors>
         </TextBox>
-
-        <Label Content="Light Type" />
-        <ComboBox HorizontalAlignment="Stretch" VerticalAlignment="Center" 
+        <Label Grid.Column="0" Grid.Row="2" Content="Nodes Per String" />
+        <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding NodesPerString, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
+            <b:Interaction.Behaviors>
+                <catel:NumericTextBox />
+            </b:Interaction.Behaviors>
+        </TextBox>
+        <Label Grid.Column="0" Grid.Row="3" Content="Light Type" />
+        <ComboBox Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
                   ItemsSource="{Binding Source={ markupExtensions:EnumBindingSource {x:Type props:StringTypes}}}"
                  
                   SelectedItem="{Binding StringType, Converter={StaticResource EnumValueTypeConverter}, ConverterParameter={x:Type props:StringTypes}}"/>
