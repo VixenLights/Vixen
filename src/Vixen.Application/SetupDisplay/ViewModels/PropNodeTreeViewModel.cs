@@ -134,6 +134,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			CreateGroupCommand.RaiseCanExecuteChanged();
 			MoveToGroupCommand.RaiseCanExecuteChanged();
 			CreateNodeCommand.RaiseCanExecuteChanged();
+			CreatePropCommand.RaiseCanExecuteChanged();
 		}
 
 		#endregion
@@ -512,12 +513,12 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region CreateProp command
 
-		private TaskCommand _createPropCommand;
+		private TaskCommand<string> _createPropCommand;
 
 		/// <summary>
 		/// Gets the CreateProp command.
 		/// </summary>
-		public TaskCommand CreatePropCommand
+		public TaskCommand<string> CreatePropCommand
 		{
 			get { return _createPropCommand ??= new(CreateProp, CanCreateProp); }
 		}
@@ -525,30 +526,37 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// <summary>
 		/// Method to invoke when the CreateNode command is executed.
 		/// </summary>
-		private async Task CreateProp()
+		private async Task CreateProp(string? propType)
 		{
-			var prop = await GenerateProp();
-
-			if (prop != null)
+			if(Enum.TryParse(propType, out PropType result))
 			{
-				PropManager.AddProp(prop, SelectedItem != null ? SelectedItem.PropNode : PropManager.RootNode);
+				var prop = await GenerateProp(result);
 
-				//Ensure parent is expanded
-				if (SelectedItem != null)
+				if (prop != null)
 				{
-					SelectedItem.IsExpanded = true;
+					PropManager.AddProp(prop, SelectedItem != null ? SelectedItem.PropNode : PropManager.RootNode);
+
+					//Ensure parent is expanded
+					if (SelectedItem != null)
+					{
+						SelectedItem.IsExpanded = true;
+					}
 				}
 			}
-
 		}
 
 		/// <summary>
 		/// Method to check whether the CreateNode command can be executed.
 		/// </summary>
 		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
-		private bool CanCreateProp()
+		private bool CanCreateProp(string? propType)
 		{
-			return true;
+			if (SelectedItems.Count == 1 && SelectedItem is { IsGroupNode: true })
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		#endregion
@@ -916,7 +924,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			return mbs.GetUserInput($"Please enter the {nameType} name.", $"Create {nameType}", suggestedName);
 		}
 
-		private async Task<IProp?> GenerateProp()
+		private async Task<IProp?> GenerateProp(PropType propType)
 		{
 			//TODO ask the user what type of Prop We are going to assume Arch for now.
 
@@ -933,7 +941,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 			// Use the type factory to create the prop wizard
 
-			var wizard = PropWizardFactory.CreateInstance(PropType.Arch, typeFactory);
+			var wizard = PropWizardFactory.CreateInstance(propType, typeFactory);
 
 			var ws = dependencyResolver.Resolve<IWizardService>();
 			if (ws != null && wizard != null)

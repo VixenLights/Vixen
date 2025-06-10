@@ -169,7 +169,10 @@
             </Style>
 
             <ContextMenu x:Key="PropNodeTreeItemContextMenu">
-                <MenuItem Header="Add Prop" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreatePropCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                <MenuItem Header="Add Prop">
+                    <MenuItem Header="Arch" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreatePropCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="Arch"/>
+                    <MenuItem Header="Tree" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreatePropCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="Tree"/>
+                </MenuItem>
                 <Separator/>
                 <MenuItem Header="Create Empty Group" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreateNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
                 <MenuItem Header="Copy to New Group" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreateGroupCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
