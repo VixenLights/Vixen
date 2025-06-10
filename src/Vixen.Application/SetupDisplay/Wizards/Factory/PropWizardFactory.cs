@@ -13,7 +13,9 @@ namespace VixenApplication.SetupDisplay.Wizards.Factory
             {
                 case PropType.Arch:
                     return typeFactory.CreateInstance(typeof(ArchPropWizard)) as IWizard;
-                default:
+                case PropType.Tree:
+	                return typeFactory.CreateInstance(typeof(TreePropWizard)) as IWizard;
+				default:
                     return null;
 			}   
 
