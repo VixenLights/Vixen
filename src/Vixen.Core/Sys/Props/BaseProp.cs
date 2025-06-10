@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Vixen.Attributes;
 using Vixen.Model;
 using Vixen.Services;
@@ -92,20 +93,34 @@ namespace Vixen.Sys.Props
         [Browsable(false)]
 		public virtual IPropModel PropModel { get; protected set; } = null!;
 
-        protected ElementNode GetOrCreatePropElementNode()
+		public virtual void CleanUp()
+		{
+			RemovePropElements();
+		}
+
+		protected bool TryGetPropElementNode([NotNullWhen(true)] out ElementNode? elementNode)
+		{
+			elementNode = null;
+			if (RootPropElementNodeId != Guid.Empty)
+			{
+				elementNode = VixenSystem.Nodes.GetElementNode(RootPropElementNodeId);
+			}
+
+			return elementNode is not null;
+		}
+
+		protected ElementNode GetOrCreatePropElementNode()
         {
             ElementNode? propNode = null;
-            if (RootPropElementNodeId != Guid.Empty)
+            if (TryGetPropElementNode(out var elementNode))
             {
-                propNode = VixenSystem.Nodes.GetElementNode(RootPropElementNodeId);
-
+	            propNode = elementNode;
             }
-
-            if (propNode == null)
+            else
             {
-                propNode = ElementNodeService.Instance.CreateSingle(VixenSystem.Nodes.PropRootNode, AutoPropName, true, false);
-                RootPropElementNodeId = propNode.Id;
-            }
+	            propNode = ElementNodeService.Instance.CreateSingle(VixenSystem.Nodes.PropRootNode, AutoPropName, true, false);
+	            RootPropElementNodeId = propNode.Id;
+			}
 
             return propNode;
 
@@ -140,6 +155,14 @@ namespace Vixen.Sys.Props
             }
         }
 
+		/// <summary>
+		/// Removes the entire Prop element tree. 
+		/// </summary>
+        protected virtual void RemovePropElements()
+        {
+	        VixenSystem.Nodes.RemoveNode(GetOrCreatePropElementNode(),VixenSystem.Nodes.PropRootNode, true);
+        }
+
 		// Add logic to manage Element structure into the regular element tree, including supported properties
 		// like patching order, orientation, etc. 
 
@@ -156,5 +179,6 @@ namespace Vixen.Sys.Props
 		// Custom definitions for targeted rendering will need to be handled in some form. TBD.
 
 		// Add other properties to manage things like controller target, 
+
 	}
 }

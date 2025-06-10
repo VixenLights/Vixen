@@ -47,7 +47,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
         public PropNode PropNode
         {
             get { return GetValue<PropNode>(PropNodeProperty); }
-            private set { SetValue(PropNodeProperty, value); }
+            init { SetValue(PropNodeProperty, value); }
         }
 
         /// <summary>
@@ -88,6 +88,25 @@ namespace VixenApplication.SetupDisplay.ViewModels
         /// Register the IsLeaf property so it is known in the class.
         /// </summary>
         public static readonly IPropertyData IsLeafProperty = RegisterProperty<bool>(nameof(IsLeaf));
+
+		#endregion
+
+		#region IsGroupNode property
+
+		/// <summary>
+		/// Gets or sets the IsGroupNode value.
+		/// </summary>
+		[ViewModelToModel()]
+		public bool IsGroupNode
+		{
+			get { return GetValue<bool>(IsGroupNodeProperty); }
+			set { SetValue(IsGroupNodeProperty, value); }
+		}
+
+		/// <summary>
+		/// IsGroupNode property data.
+		/// </summary>
+		public static readonly IPropertyData IsGroupNodeProperty = RegisterProperty<bool>(nameof(IsGroupNode));
 
 		#endregion
 
@@ -272,11 +291,14 @@ namespace VixenApplication.SetupDisplay.ViewModels
             }
         }
 
-		public void DeleteFromParent()
+        /// <summary>
+        /// Removes this node from its parent
+        /// </summary>
+		public void RemoveFromParent()
         {
             if (ParentViewModel is PropNodeViewModel parentVm)
             {
-                VixenSystem.Props.DeleteFromParent(PropNode, parentVm.PropNode);
+                VixenSystem.Props.RemoveFromParent(PropNode, parentVm.PropNode);
                 IsDirty = true;
             }
         }
