@@ -28,9 +28,15 @@ namespace Vixen.Sys.Props
 			Name = name;
             Children = new ObservableCollection<PropNode>();
             Parents = new ObservableCollection<Guid>();
+			Children.CollectionChanged += Children_CollectionChanged;
 		}
 
-        public PropNode(string name, PropNode parent) : this(name)
+		private void Children_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			OnPropertyChanged(nameof(IsLeaf));
+		}
+
+		public PropNode(string name, PropNode parent) : this(name)
         {
             Parents.Add(parent.Id);
         }
@@ -75,7 +81,7 @@ namespace Vixen.Sys.Props
 		#endregion
 
 		#region Prop
-
+		
 		public IProp? Prop
         {
             get => _prop;
@@ -102,6 +108,17 @@ namespace Vixen.Sys.Props
             {
                 OnPropertyChanged(nameof(Name));
             }
+		}
+
+		/// <summary>
+		/// Gets the Prop with a null indicator.
+		/// </summary>
+		/// <param name="prop"><see cref="PropNode.Prop"/></param>
+		/// <returns>True if not null</returns>
+		public bool TryGetProp([NotNullWhen(true)] out IProp? prop)
+		{
+			prop = _prop;
+			return prop is not null;
 		}
 
 		#endregion
@@ -160,29 +177,34 @@ namespace Vixen.Sys.Props
 
 		#region Tree Management
 
+		/// <summary>
+		/// Removes this node from the given parent
+		/// </summary>
+		/// <param name="parent"></param>
+		/// <returns></returns>
 		public bool RemoveParent(PropNode parent)
         {
             bool success = Parents.Remove(parent.Id);
             parent.RemoveChild(this);
-            if (!Parents.Any())
-            {
-                //We are now orphaned and need to clean up
-                if (IsLeaf)
-                {
-                    //We are at the bottom and just need to remove our lights
-                    Prop = null;
-                    OnPropertyChanged(nameof(Prop));
-                }
-                else
-                {
-                    foreach (var child in Children.ToList())
-                    {
-                        child.RemoveParent(this);
-                    }
-                }
-            }
+			//if (!Parents.Any())
+			//{
+			//	//We are now orphaned and need to clean up
+			//	if (IsLeaf)
+			//	{
+			//		//We are at the bottom and just need to remove our elements
+			//		Prop = null;
+			//		OnPropertyChanged(nameof(Prop));
+			//	}
+			//	else
+			//	{
+			//		foreach (var child in Children.ToList())
+			//		{
+			//			child.RemoveParent(this);
+			//		}
+			//	}
+			//}
 
-            return success;
+			return success;
         }
 
         public void AddParent(PropNode parent)
@@ -199,6 +221,15 @@ namespace Vixen.Sys.Props
         {
             var status = Children.Remove(child);
             return status;
+        }
+
+        public void RemoveChildren()
+        {
+			foreach (var child in Children.ToList())
+			{
+				child.RemoveParent(this);
+				Children.Remove(child);
+			}
         }
 
 		#endregion

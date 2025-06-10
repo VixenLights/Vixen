@@ -825,7 +825,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
             
             var itemsToDelete = SelectedItems.ToList(); 
             SelectedItems.Clear();
-            itemsToDelete.ForEach(x => x.DeleteFromParent());
+            itemsToDelete.ForEach(x => x.RemoveFromParent());
         }
 
         /// <summary>

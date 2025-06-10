@@ -80,15 +80,24 @@ namespace Vixen.Sys.Managers
 			return propNode;
         }
 
-        public void DeleteFromParent(PropNode propNode, PropNode parentToLeave)
+        public void RemoveFromParent(PropNode propNode, PropNode parentToLeave)
         {
+			//Remove us from our specified parent.
             propNode.RemoveParent(parentToLeave);
-            parentToLeave.RemoveChild(propNode);
-            if (propNode.IsLeaf && propNode.Prop != null)
+            if (!propNode.Parents.Any())
             {
-                _propLocator.Remove(propNode.Prop.Id);
-                OnPropRemoved(propNode.Prop);
-            }
+				//We no longer have any parents, so clean up the props in our tree.
+				var leafs = propNode.GetLeafEnumerator();
+				foreach (var leaf in leafs)
+				{
+					if (leaf.TryGetProp(out var prop))
+					{
+						_propLocator.Remove(prop.Id);
+						OnPropRemoved(prop);
+						prop.CleanUp();
+					}
+				}
+			}
         }
 
         public T CreateProp<T>(string name) where T: IProp, new()
