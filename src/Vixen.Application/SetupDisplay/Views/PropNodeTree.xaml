@@ -156,8 +156,8 @@
             </Style>
 
             <ContextMenu x:Key="PropNodeTreeContextMenu">
-                <MenuItem Header="Add Prop" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreatePropCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
-                <MenuItem Header="Create Group" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreateNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
+                <MenuItem Header="Add Prop" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreatePropCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                <MenuItem Header="Create Group" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreateNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
             </ContextMenu>
 
             <Style x:Key="PropNodeTreeViewStyle" TargetType="{x:Type TreeView}">
@@ -169,6 +169,8 @@
             </Style>
 
             <ContextMenu x:Key="PropNodeTreeItemContextMenu">
+                <MenuItem Header="Add Prop" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreatePropCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                <Separator/>
                 <MenuItem Header="Create Empty Group" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreateNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
                 <MenuItem Header="Copy to New Group" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreateGroupCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
                 <MenuItem Header="Move to New Group" Command="{Binding Path=DataContext.PropNodeTreeViewModel.MoveToGroupCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
