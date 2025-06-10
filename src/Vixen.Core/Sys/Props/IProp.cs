@@ -2,8 +2,8 @@
 
 namespace Vixen.Sys.Props
 {
-    public interface IProp: INotifyPropertyChanged
-    {
+	public interface IProp : INotifyPropertyChanged
+	{
 		/// <summary>
 		/// Unique id of the Prop
 		/// </summary>
@@ -37,12 +37,17 @@ namespace Vixen.Sys.Props
 		/// <summary>
 		/// Model for rendering the visual
 		/// </summary>
-		IPropModel PropModel { get;}
+		IPropModel PropModel { get; }
+
+		/// <summary>
+		/// Should be called when the IProp is being removed so it can clean up any related items
+		/// </summary>
+		void CleanUp();
 	}
 
-    public enum StringTypes
-    {
-        Standard,
-        Pixel
-    }
+	public enum StringTypes
+	{
+		Standard,
+		Pixel
+	}
 }
