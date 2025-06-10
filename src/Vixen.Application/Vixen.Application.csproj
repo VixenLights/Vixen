@@ -76,6 +76,9 @@
 						<AutoGen>True</AutoGen>
 						<DependentUpon>Resources.resx</DependentUpon>
 				</Compile>
+				<Compile Update="SetupDisplay\Wizards\Views\TreePropWizardPageView.xaml.cs">
+				  <SubType>Code</SubType>
+				</Compile>
 		</ItemGroup>
 
 		<ItemGroup>
