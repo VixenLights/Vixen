@@ -7,90 +7,90 @@ using Vixen.Services;
 
 namespace Vixen.Sys.Props
 {
-    [Serializable]
-	public abstract class BaseProp: BindableBase, IProp
-    {
-        private readonly Guid _id;
-        private string _name;
-        private string _createdBy;
-        private DateTime _modifiedDate;
-        
-        #region Constructors
+	[Serializable]
+	public abstract class BaseProp : BindableBase, IProp
+	{
+		private readonly Guid _id;
+		private string _name;
+		private string _createdBy;
+		private DateTime _modifiedDate;
 
-        protected BaseProp(string name, PropType propType)
-        {   
-            Id = Guid.NewGuid();
-			_name = name;
-            CreationDate = _modifiedDate = DateTime.Now;
-            _createdBy = Environment.UserName;
-            PropType = propType;
-            
-			PropertyChanged += BaseProp_PropertyChanged;
-        }
+		#region Constructors
 
-        private void BaseProp_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		protected BaseProp(string name, PropType propType)
 		{
-            if (e.PropertyName != null)
-            {
-                switch (e.PropertyName)
-                {
-                    case nameof(Name):
-                        RenamePropElement(Name);
-                        break;
-                }
-            }
+			Id = Guid.NewGuid();
+			_name = name;
+			CreationDate = _modifiedDate = DateTime.Now;
+			_createdBy = Environment.UserName;
+			PropType = propType;
+
+			PropertyChanged += BaseProp_PropertyChanged;
+		}
+
+		private void BaseProp_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName != null)
+			{
+				switch (e.PropertyName)
+				{
+					case nameof(Name):
+						RenamePropElement(Name);
+						break;
+				}
+			}
 		}
 
 		#endregion
 		[Browsable(false)]
 		public Guid Id
-        {
-            get => _id;
-            init => SetProperty(ref _id, value);
-        }
+		{
+			get => _id;
+			init => SetProperty(ref _id, value);
+		}
 
-        public string Name
-        {
-            get => _name;
-            set => SetProperty(ref _name, value);
-        }
+		public string Name
+		{
+			get => _name;
+			set => SetProperty(ref _name, value);
+		}
 
-        [PropertyOrder(30)]
+		[PropertyOrder(30)]
 		[DisplayName("Created By")]
 		public string CreatedBy
-        {
-            get => _createdBy;
-            set => SetProperty(ref _createdBy, value);
-        }
+		{
+			get => _createdBy;
+			set => SetProperty(ref _createdBy, value);
+		}
 
-        [PropertyOrder(31)]
+		[PropertyOrder(31)]
 		[DisplayName("Creation Date")]
 		public DateTime CreationDate { get; init; }
 
-        [PropertyOrder(32)]
-        [DisplayName("Modified Date")]
+		[PropertyOrder(32)]
+		[DisplayName("Modified Date")]
 		public DateTime ModifiedDate
-        {
-            get => _modifiedDate;
-            set => SetProperty(ref _modifiedDate, value);
-        }
+		{
+			get => _modifiedDate;
+			set => SetProperty(ref _modifiedDate, value);
+		}
 
-        [PropertyOrder(0)]
+		[PropertyOrder(0)]
 		[DisplayName("Prop Type")]
-        public PropType PropType { get; init; }
+		public PropType PropType { get; init; }
 
-        
 
-        [Browsable(false)]
+
+		[Browsable(false)]
 		public Guid RootPropElementNodeId { get; protected set; } = Guid.Empty;
 
-        protected string AutoPropName => $"Auto-Prop {Name}";
-        
-        protected string AutoPropStringName => "Auto-Prop String";
+		protected string AutoPropName => $"Auto-Prop {Name}";
 
-        protected string AutoPropNodeName => "Auto-Prop Node";
+		protected string AutoPropStringName => "Auto-Prop String";
 
-        [Browsable(false)]
+		protected string AutoPropNodeName => "Auto-Prop Node";
+
+		[Browsable(false)]
 		public virtual IPropModel PropModel { get; protected set; } = null!;
 
 		public virtual void CleanUp()
@@ -110,58 +110,58 @@ namespace Vixen.Sys.Props
 		}
 
 		protected ElementNode GetOrCreatePropElementNode()
-        {
-            ElementNode? propNode = null;
-            if (TryGetPropElementNode(out var elementNode))
-            {
-	            propNode = elementNode;
-            }
-            else
-            {
-	            propNode = ElementNodeService.Instance.CreateSingle(VixenSystem.Nodes.PropRootNode, AutoPropName, true, false);
-	            RootPropElementNodeId = propNode.Id;
+		{
+			ElementNode? propNode = null;
+			if (TryGetPropElementNode(out var elementNode))
+			{
+				propNode = elementNode;
+			}
+			else
+			{
+				propNode = ElementNodeService.Instance.CreateSingle(VixenSystem.Nodes.PropRootNode, AutoPropName, true, false);
+				RootPropElementNodeId = propNode.Id;
 			}
 
-            return propNode;
+			return propNode;
 
-        }
+		}
 
-        protected void RenamePropElement(string name)
-        {
-            var propNode = GetOrCreatePropElementNode();
-            VixenSystem.Nodes.RenameNode(propNode, name, false);
-        }
+		protected void RenamePropElement(string name)
+		{
+			var propNode = GetOrCreatePropElementNode();
+			VixenSystem.Nodes.RenameNode(propNode, name, false);
+		}
 
 		protected IEnumerable<IElementNode> AddNodeElements(ElementNode node, int count, int namingIndex = 0)
-        {
-            List<IElementNode> nodesAdded = new List<IElementNode>();
-            for (int j = namingIndex; j < count + namingIndex; j++)
-            {
-                string nodeName = $"{AutoPropNodeName} {j + 1}";
+		{
+			List<IElementNode> nodesAdded = new List<IElementNode>();
+			for (int j = namingIndex; j < count + namingIndex; j++)
+			{
+				string nodeName = $"{AutoPropNodeName} {j + 1}";
 
-                var newNode = ElementNodeService.Instance.CreateSingle(node, nodeName, true, false);
-                nodesAdded.Add(newNode);
-            }
+				var newNode = ElementNodeService.Instance.CreateSingle(node, nodeName, true, false);
+				nodesAdded.Add(newNode);
+			}
 
-            return nodesAdded;
-        }
+			return nodesAdded;
+		}
 
-        protected void RemoveElements(ElementNode node, int count)
-        {
-            var nodesToRemove = node.Children.Skip(node.Children.Count() - count).ToList();
-            foreach (var nodeToRemove in nodesToRemove)
-            {
-                VixenSystem.Nodes.RemoveNode(nodeToRemove, node, true);
-            }
-        }
+		protected void RemoveElements(ElementNode node, int count)
+		{
+			var nodesToRemove = node.Children.Skip(node.Children.Count() - count).ToList();
+			foreach (var nodeToRemove in nodesToRemove)
+			{
+				VixenSystem.Nodes.RemoveNode(nodeToRemove, node, true);
+			}
+		}
 
 		/// <summary>
 		/// Removes the entire Prop element tree. 
 		/// </summary>
-        protected virtual void RemovePropElements()
-        {
-	        VixenSystem.Nodes.RemoveNode(GetOrCreatePropElementNode(),VixenSystem.Nodes.PropRootNode, true);
-        }
+		protected virtual void RemovePropElements()
+		{
+			VixenSystem.Nodes.RemoveNode(GetOrCreatePropElementNode(), VixenSystem.Nodes.PropRootNode, true);
+		}
 
 		// Add logic to manage Element structure into the regular element tree, including supported properties
 		// like patching order, orientation, etc. 

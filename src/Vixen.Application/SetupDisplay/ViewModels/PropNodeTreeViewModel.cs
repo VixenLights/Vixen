@@ -20,23 +20,23 @@ using IDropTarget = GongSolutions.Wpf.DragDrop.IDropTarget;
 
 namespace VixenApplication.SetupDisplay.ViewModels
 {
-    public class PropNodeTreeViewModel : ViewModelBase, IDropTarget, IDragSource
+	public class PropNodeTreeViewModel : ViewModelBase, IDropTarget, IDragSource
 	{
-        private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		public event EventHandler ModelsChanged;
 
 		public PropNodeTreeViewModel()
-        {
-            PropManager = VixenSystem.Props;
+		{
+			PropManager = VixenSystem.Props;
 			PropNodeViewModel vm = new(PropManager.RootNode, null);
-            RootNodeViewModel = [vm];
+			RootNodeViewModel = [vm];
 
-            LeafNodes = new();
-            LeafNodes.AddRange(RootNodeViewModel.SelectMany(x => x.GetLeafEnumerator()));
+			LeafNodes = new();
+			LeafNodes.AddRange(RootNodeViewModel.SelectMany(x => x.GetLeafEnumerator()));
 
 			PropManager.PropCollectionChanged += PropManager_PropCollectionChanged;
-            SelectedItems = new();
-            SelectedItems.CollectionChanged += SelectedItemsCollectionChanged;
+			SelectedItems = new();
+			SelectedItems.CollectionChanged += SelectedItemsCollectionChanged;
 		}
 
 		private void PropManager_PropCollectionChanged(object? sender, EventArgs e)
@@ -51,15 +51,15 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// Gets or sets the PropManager value.
 		/// </summary>
 		public PropManager PropManager
-        {
-            get { return GetValue<PropManager>(PropManagerProperty); }
-            private init { SetValue(PropManagerProperty, value); }
-        }
+		{
+			get { return GetValue<PropManager>(PropManagerProperty); }
+			private init { SetValue(PropManagerProperty, value); }
+		}
 
-        /// <summary>
-        /// Prop property data.
-        /// </summary>
-        public static readonly IPropertyData PropManagerProperty = RegisterProperty<PropManager>(nameof(PropManager));
+		/// <summary>
+		/// Prop property data.
+		/// </summary>
+		public static readonly IPropertyData PropManagerProperty = RegisterProperty<PropManager>(nameof(PropManager));
 
 		#endregion
 
@@ -81,23 +81,23 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#endregion
 
-        #region LeafNodes property
+		#region LeafNodes property
 
-        /// <summary>
-        /// Gets or sets the LeafNodes value.
-        /// </summary>
-        public ObservableCollection<PropNodeViewModel> LeafNodes
-        {
-            get { return GetValue<ObservableCollection<PropNodeViewModel>>(LeafNodesProperty); }
-            private init { SetValue(LeafNodesProperty, value); }
-        }
+		/// <summary>
+		/// Gets or sets the LeafNodes value.
+		/// </summary>
+		public ObservableCollection<PropNodeViewModel> LeafNodes
+		{
+			get { return GetValue<ObservableCollection<PropNodeViewModel>>(LeafNodesProperty); }
+			private init { SetValue(LeafNodesProperty, value); }
+		}
 
-        /// <summary>
-        /// LeafNodes property data.
-        /// </summary>
-        public static readonly IPropertyData LeafNodesProperty = RegisterProperty<ObservableCollection<PropNodeViewModel>>(nameof(LeafNodes));
+		/// <summary>
+		/// LeafNodes property data.
+		/// </summary>
+		public static readonly IPropertyData LeafNodesProperty = RegisterProperty<ObservableCollection<PropNodeViewModel>>(nameof(LeafNodes));
 
-        #endregion
+		#endregion
 
 		#region SelectedItems property
 
@@ -105,136 +105,136 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// Gets or sets the SelectedItems value.
 		/// </summary>
 		public ObservableCollection<PropNodeViewModel> SelectedItems
-        {
-            get { return GetValue<ObservableCollection<PropNodeViewModel>>(SelectedItemsProperty); }
-            set { SetValue(SelectedItemsProperty, value); }
-        }
+		{
+			get { return GetValue<ObservableCollection<PropNodeViewModel>>(SelectedItemsProperty); }
+			set { SetValue(SelectedItemsProperty, value); }
+		}
 
-        /// <summary>
-        /// SelectedItems property data.
-        /// </summary>
-        public static readonly IPropertyData SelectedItemsProperty =
-            RegisterProperty<ObservableCollection<PropNodeViewModel>>(nameof(SelectedItems));
+		/// <summary>
+		/// SelectedItems property data.
+		/// </summary>
+		public static readonly IPropertyData SelectedItemsProperty =
+			RegisterProperty<ObservableCollection<PropNodeViewModel>>(nameof(SelectedItems));
 
 
-        private void SelectedItemsCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
+		private void SelectedItemsCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
 			if (SelectedItems.Count == 1)
-            {
-                SelectedItem = SelectedItems.First();
-            }
-            else
-            {
-                SelectedItem = null;
-            }
+			{
+				SelectedItem = SelectedItems.First();
+			}
+			else
+			{
+				SelectedItem = null;
+			}
 
-            CopyCommand.RaiseCanExecuteChanged();
-            CutCommand.RaiseCanExecuteChanged();
-            PasteCommand.RaiseCanExecuteChanged();
-            CreateGroupCommand.RaiseCanExecuteChanged();
-            MoveToGroupCommand.RaiseCanExecuteChanged();
-            CreateNodeCommand.RaiseCanExecuteChanged();
-        }
+			CopyCommand.RaiseCanExecuteChanged();
+			CutCommand.RaiseCanExecuteChanged();
+			PasteCommand.RaiseCanExecuteChanged();
+			CreateGroupCommand.RaiseCanExecuteChanged();
+			MoveToGroupCommand.RaiseCanExecuteChanged();
+			CreateNodeCommand.RaiseCanExecuteChanged();
+		}
 
-        #endregion
+		#endregion
 
-        #region SelectedItem property
+		#region SelectedItem property
 
-        /// <summary>
-        /// Gets or sets the SelectedItem value.
-        /// </summary>
-        public PropNodeViewModel? SelectedItem
-        {
-            get { return GetValue<PropNodeViewModel>(SelectedItemProperty); }
-            set { SetValue(SelectedItemProperty, value); }
-        }
+		/// <summary>
+		/// Gets or sets the SelectedItem value.
+		/// </summary>
+		public PropNodeViewModel? SelectedItem
+		{
+			get { return GetValue<PropNodeViewModel>(SelectedItemProperty); }
+			set { SetValue(SelectedItemProperty, value); }
+		}
 
-        /// <summary>
-        /// SelectedItem property data.
-        /// </summary>
-        public static readonly IPropertyData SelectedItemProperty = RegisterProperty<PropNodeViewModel>(nameof(SelectedItem));
+		/// <summary>
+		/// SelectedItem property data.
+		/// </summary>
+		public static readonly IPropertyData SelectedItemProperty = RegisterProperty<PropNodeViewModel>(nameof(SelectedItem));
 
 		#endregion
 
 		#region Selection
 
 		public void DeselectAll()
-        {
-            SelectedItems.ToList().ForEach(x => x.IsSelected = false);
-            SelectedItems.Clear();
-        }
+		{
+			SelectedItems.ToList().ForEach(x => x.IsSelected = false);
+			SelectedItems.Clear();
+		}
 
 		/// <summary>
 		/// Selects the models.
 		/// </summary>
 		/// <param name="propNodeModels"></param>
-        public void SelectModels(IEnumerable<PropNodeViewModel> propNodeModels)
-        {
-            foreach (var propNodeViewModel in propNodeModels)
-            {
-                if (!propNodeViewModel.IsSelected)
-                {
-                    propNodeViewModel.IsSelected = true;
-                }
-                if (!SelectedItems.Contains(propNodeViewModel))
-                {
-                    SelectedItems.Add(propNodeViewModel);
-                }
+		public void SelectModels(IEnumerable<PropNodeViewModel> propNodeModels)
+		{
+			foreach (var propNodeViewModel in propNodeModels)
+			{
+				if (!propNodeViewModel.IsSelected)
+				{
+					propNodeViewModel.IsSelected = true;
+				}
+				if (!SelectedItems.Contains(propNodeViewModel))
+				{
+					SelectedItems.Add(propNodeViewModel);
+				}
 				//ExpandTree(propNodeViewModel);
 			}
 		}
 
-        public void DeselectModels(IEnumerable<PropNodeViewModel> propNodeModels)
-        {
-            foreach (var propNodeViewModel in propNodeModels)
-            {
-                if (propNodeViewModel.IsSelected)
-                {
-                    propNodeViewModel.IsSelected = false;
-                    SelectedItems.Remove(propNodeViewModel);
+		public void DeselectModels(IEnumerable<PropNodeViewModel> propNodeModels)
+		{
+			foreach (var propNodeViewModel in propNodeModels)
+			{
+				if (propNodeViewModel.IsSelected)
+				{
+					propNodeViewModel.IsSelected = false;
+					SelectedItems.Remove(propNodeViewModel);
 				}
-            }
-        }
-
-        public void ExpandSelectedItems()
-        {
-            foreach (var propNodeViewModel in SelectedItems)
-            {
-                ExpandTree(propNodeViewModel);
-            }
+			}
 		}
 
-        private void ExpandTree(PropNodeViewModel propNodeViewModel)
-        {
-            if (propNodeViewModel.ParentViewModel is PropNodeViewModel parent)
-            {
-				if(!parent.IsExpanded)
-                {
-                    parent.IsExpanded = true;
-                    if (parent.ParentViewModel != null)
-                    {
-                        ExpandTree(parent);
-                    }
-                }
-            }
+		public void ExpandSelectedItems()
+		{
+			foreach (var propNodeViewModel in SelectedItems)
+			{
+				ExpandTree(propNodeViewModel);
+			}
+		}
+
+		private void ExpandTree(PropNodeViewModel propNodeViewModel)
+		{
+			if (propNodeViewModel.ParentViewModel is PropNodeViewModel parent)
+			{
+				if (!parent.IsExpanded)
+				{
+					parent.IsExpanded = true;
+					if (parent.ParentViewModel != null)
+					{
+						ExpandTree(parent);
+					}
+				}
+			}
 		}
 
 		#endregion
 
-        #region Collapse
+		#region Collapse
 
-        public void CollapseAll()
-        {
-            foreach (var propNodeViewModel in RootNodeViewModel)
-            {
-                if (propNodeViewModel.IsExpanded)
-                {
-                    propNodeViewModel.IsExpanded = false;
-                }
-            }
-        }
+		public void CollapseAll()
+		{
+			foreach (var propNodeViewModel in RootNodeViewModel)
+			{
+				if (propNodeViewModel.IsExpanded)
+				{
+					propNodeViewModel.IsExpanded = false;
+				}
+			}
+		}
 
-        #endregion
+		#endregion
 
 		#region Commands
 
@@ -274,10 +274,10 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			return CanGroup();
 		}
 
-        private bool CanGroup()
-        {
-            return SelectedItems.Any();
-        }
+		private bool CanGroup()
+		{
+			return SelectedItems.Any();
+		}
 
 		#endregion
 
@@ -489,12 +489,12 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 			if (result.Result == MessageResult.OK)
 			{
-				PropManager.CreateNode(result.Response, SelectedItem!=null?SelectedItem.PropNode:PropManager.RootNode);
+				PropManager.CreateNode(result.Response, SelectedItem != null ? SelectedItem.PropNode : PropManager.RootNode);
 				//Ensure parent is expanded
-                if (SelectedItem != null)
-                {
-                    SelectedItem.IsExpanded = true;
-                }
+				if (SelectedItem != null)
+				{
+					SelectedItem.IsExpanded = true;
+				}
 			}
 
 		}
@@ -504,54 +504,54 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
 		private bool CanCreateNode()
-        {
-            return true;
-        }
+		{
+			return true;
+		}
 
 		#endregion
 
-        #region CreateProp command
+		#region CreateProp command
 
-        private TaskCommand _createPropCommand;
+		private TaskCommand _createPropCommand;
 
-        /// <summary>
-        /// Gets the CreateProp command.
-        /// </summary>
-        public TaskCommand CreatePropCommand
-        {
-            get { return _createPropCommand ??= new(CreateProp, CanCreateProp); }
-        }
+		/// <summary>
+		/// Gets the CreateProp command.
+		/// </summary>
+		public TaskCommand CreatePropCommand
+		{
+			get { return _createPropCommand ??= new(CreateProp, CanCreateProp); }
+		}
 
-        /// <summary>
-        /// Method to invoke when the CreateNode command is executed.
-        /// </summary>
-        private async Task CreateProp()
-        {
-            var prop = await GenerateProp();
+		/// <summary>
+		/// Method to invoke when the CreateNode command is executed.
+		/// </summary>
+		private async Task CreateProp()
+		{
+			var prop = await GenerateProp();
 
-            if (prop != null)
-            { 
-                PropManager.AddProp(prop, SelectedItem != null ? SelectedItem.PropNode : PropManager.RootNode);
-			   
-                //Ensure parent is expanded
-                if (SelectedItem != null)
-                {
-                    SelectedItem.IsExpanded = true;
-                }
-            }
+			if (prop != null)
+			{
+				PropManager.AddProp(prop, SelectedItem != null ? SelectedItem.PropNode : PropManager.RootNode);
 
-        }
+				//Ensure parent is expanded
+				if (SelectedItem != null)
+				{
+					SelectedItem.IsExpanded = true;
+				}
+			}
 
-        /// <summary>
-        /// Method to check whether the CreateNode command can be executed.
-        /// </summary>
-        /// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
-        private bool CanCreateProp()
-        {
-            return true;
-        }
+		}
 
-        #endregion
+		/// <summary>
+		/// Method to check whether the CreateNode command can be executed.
+		/// </summary>
+		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+		private bool CanCreateProp()
+		{
+			return true;
+		}
+
+		#endregion
 
 		#region Cut command
 
@@ -732,41 +732,41 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		private void PasteAsNew()
 		{
-		//	System.Windows.Forms.IDataObject dataObject = System.Windows.Forms.Clipboard.GetDataObject();
+			//	System.Windows.Forms.IDataObject dataObject = System.Windows.Forms.Clipboard.GetDataObject();
 
-		//	if (dataObject != null && SelectedItems.Count == 1)
-		//	{
-		//		if (dataObject.GetDataPresent(ClipboardFormatName.Name))
-		//		{
-		//			var parent = SelectedItem;
-		//			MessageBoxService mbs = new MessageBoxService();
-		//			var result = mbs.GetUserInput("Please enter the new name.", "Paste As New", PropModelServices.Instance().Uniquify(parent.Name));
-		//			if (result.Result == MessageResult.OK)
-		//			{
-		//				DeselectAll();
-		//				var newElementModels = new List<ElementModelViewModel>();
-		//				var data = dataObject.GetData(ClipboardFormatName.Name) as List<ElementModel>;
+			//	if (dataObject != null && SelectedItems.Count == 1)
+			//	{
+			//		if (dataObject.GetDataPresent(ClipboardFormatName.Name))
+			//		{
+			//			var parent = SelectedItem;
+			//			MessageBoxService mbs = new MessageBoxService();
+			//			var result = mbs.GetUserInput("Please enter the new name.", "Paste As New", PropModelServices.Instance().Uniquify(parent.Name));
+			//			if (result.Result == MessageResult.OK)
+			//			{
+			//				DeselectAll();
+			//				var newElementModels = new List<ElementModelViewModel>();
+			//				var data = dataObject.GetData(ClipboardFormatName.Name) as List<ElementModel>;
 
-		//				if (data != null)
-		//				{
-		//					foreach (var elementModel in data)
-		//					{
-		//						var em = PropModelServices.Instance().CreateElementModelTree(elementModel, parent.ElementModel, result.Response);
-		//						var evm = ElementModelLookUpService.Instance.GetModels(em.Id);
-		//						if (evm != null)
-		//						{
-		//							newElementModels.AddRange(evm);
-		//						}
-		//					}
-		//				}
+			//				if (data != null)
+			//				{
+			//					foreach (var elementModel in data)
+			//					{
+			//						var em = PropModelServices.Instance().CreateElementModelTree(elementModel, parent.ElementModel, result.Response);
+			//						var evm = ElementModelLookUpService.Instance.GetModels(em.Id);
+			//						if (evm != null)
+			//						{
+			//							newElementModels.AddRange(evm);
+			//						}
+			//					}
+			//				}
 
-		//				OnModelsChanged();
-		//				SelectModels(newElementModels);
-		//			}
+			//				OnModelsChanged();
+			//				SelectModels(newElementModels);
+			//			}
 
 
-		//		}
-		//	}
+			//		}
+			//	}
 		}
 
 		/// <summary>
@@ -804,40 +804,40 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#endregion
 
-        #region Delete command
+		#region Delete command
 
-        private Command _deleteCommand;
+		private Command _deleteCommand;
 
-        /// <summary>
-        /// Gets the Delete command.
-        /// </summary
-        [Browsable(false)]
-        public Command DeleteCommand
-        {
-            get { return _deleteCommand ??= new(Delete, CanDelete); }
-        }
+		/// <summary>
+		/// Gets the Delete command.
+		/// </summary
+		[Browsable(false)]
+		public Command DeleteCommand
+		{
+			get { return _deleteCommand ??= new(Delete, CanDelete); }
+		}
 
-        /// <summary>
-        /// Method to invoke when the Delete command is executed.
-        /// </summary>
-        private void Delete()
-        {
-            
-            var itemsToDelete = SelectedItems.ToList(); 
-            SelectedItems.Clear();
-            itemsToDelete.ForEach(x => x.RemoveFromParent());
-        }
+		/// <summary>
+		/// Method to invoke when the Delete command is executed.
+		/// </summary>
+		private void Delete()
+		{
 
-        /// <summary>
-        /// Method to check whether the Delete command can be executed.
-        /// </summary>
-        /// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
-        private bool CanDelete()
-        {
-            return !SelectedItems.Any(x => x.PropNode.Equals(PropManager.RootNode));
-        }
+			var itemsToDelete = SelectedItems.ToList();
+			SelectedItems.Clear();
+			itemsToDelete.ForEach(x => x.RemoveFromParent());
+		}
 
-        #endregion
+		/// <summary>
+		/// Method to check whether the Delete command can be executed.
+		/// </summary>
+		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+		private bool CanDelete()
+		{
+			return !SelectedItems.Any(x => x.PropNode.Equals(PropManager.RootNode));
+		}
+
+		#endregion
 
 
 		#endregion
@@ -845,120 +845,120 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		#region Drag n Drop
 
 		public void OnDragEnter(DragEventArgs e)
-        {
-            
-        }
+		{
 
-        public void OnDragLeave(EventArgs e)
-        {
-            
-        }
+		}
 
-        public void OnDragDrop(DragEventArgs e)
-        {
-           
-        }
+		public void OnDragLeave(EventArgs e)
+		{
 
-        public void OnDragOver(DragEventArgs e)
-        {
-            
-        }
+		}
 
-        public void StartDrag(IDragInfo dragInfo)
-        {
-            
-        }
+		public void OnDragDrop(DragEventArgs e)
+		{
 
-        public bool CanStartDrag(IDragInfo dragInfo)
-        {
-            return false;
-        }
+		}
 
-        public void Dropped(IDropInfo dropInfo)
-        {
-           
-        }
+		public void OnDragOver(DragEventArgs e)
+		{
 
-        public void DragDropOperationFinished(DragDropEffects operationResult, IDragInfo dragInfo)
-        {
-            
-        }
+		}
 
-        public void DragCancelled()
-        {
-            
-        }
+		public void StartDrag(IDragInfo dragInfo)
+		{
 
-        public bool TryCatchOccurredException(Exception exception)
-        {
-            return false;
-        }
+		}
 
-        public void DragOver(IDropInfo dropInfo)
-        {
-           
-        }
+		public bool CanStartDrag(IDragInfo dragInfo)
+		{
+			return false;
+		}
 
-        public void Drop(IDropInfo dropInfo)
-        {
-            
-        }
+		public void Dropped(IDropInfo dropInfo)
+		{
+
+		}
+
+		public void DragDropOperationFinished(DragDropEffects operationResult, IDragInfo dragInfo)
+		{
+
+		}
+
+		public void DragCancelled()
+		{
+
+		}
+
+		public bool TryCatchOccurredException(Exception exception)
+		{
+			return false;
+		}
+
+		public void DragOver(IDropInfo dropInfo)
+		{
+
+		}
+
+		public void Drop(IDropInfo dropInfo)
+		{
+
+		}
 
 		#endregion
 
 		#region Utility
 
 		private MessageBoxResponse RequestNewName(string suggestedName, bool createGroup = true)
-        {
-            var nameType = createGroup ? "group" : "prop";
-            var dependencyResolver = this.GetDependencyResolver();
-            var mbs = dependencyResolver.Resolve<IMessageBoxService>();
-            return mbs.GetUserInput($"Please enter the {nameType} name.", $"Create {nameType}", suggestedName);
-        }
+		{
+			var nameType = createGroup ? "group" : "prop";
+			var dependencyResolver = this.GetDependencyResolver();
+			var mbs = dependencyResolver.Resolve<IMessageBoxService>();
+			return mbs.GetUserInput($"Please enter the {nameType} name.", $"Create {nameType}", suggestedName);
+		}
 
-        private async Task<IProp?> GenerateProp()
-        {
+		private async Task<IProp?> GenerateProp()
+		{
 			//TODO ask the user what type of Prop We are going to assume Arch for now.
 
-            var dependencyResolver = this.GetDependencyResolver();
+			var dependencyResolver = this.GetDependencyResolver();
 
 			// Get the Catel type factory
 			ITypeFactory typeFactory = this.GetTypeFactory();
 
-            // Retrieve the color scheme service
-            IBaseColorSchemeService baseColorService = (IBaseColorSchemeService)dependencyResolver.Resolve(typeof(IBaseColorSchemeService));
+			// Retrieve the color scheme service
+			IBaseColorSchemeService baseColorService = (IBaseColorSchemeService)dependencyResolver.Resolve(typeof(IBaseColorSchemeService));
 
-            // Select the dark color scheme
-            baseColorService.SetBaseColorScheme("Dark");
+			// Select the dark color scheme
+			baseColorService.SetBaseColorScheme("Dark");
 
 			// Use the type factory to create the prop wizard
-			
-			var wizard = PropWizardFactory.CreateInstance(PropType.Arch, typeFactory);
-			
-            var ws = dependencyResolver.Resolve<IWizardService>();
-            if (ws != null && wizard != null)
-            {
-				bool? result = (await ws.ShowWizardAsync(wizard)).DialogResult;
-                // Determine if the wizard was cancelled 
-                if (result.HasValue && result.Value)
-                {
-					//User did not cancel
-                    var page = (IPropWizardFinalPage)wizard.Pages.Single(page => page is IPropWizardFinalPage);
-                    return page.GetProp();
-                }
-            }
 
-            return null;
-        }
+			var wizard = PropWizardFactory.CreateInstance(PropType.Arch, typeFactory);
+
+			var ws = dependencyResolver.Resolve<IWizardService>();
+			if (ws != null && wizard != null)
+			{
+				bool? result = (await ws.ShowWizardAsync(wizard)).DialogResult;
+				// Determine if the wizard was cancelled 
+				if (result.HasValue && result.Value)
+				{
+					//User did not cancel
+					var page = (IPropWizardFinalPage)wizard.Pages.Single(page => page is IPropWizardFinalPage);
+					return page.GetProp();
+				}
+			}
+
+			return null;
+		}
 
 		#endregion
 
 		#region Event Handling
 
 		private void OnModelsChanged()
-        {
-            ModelsChanged?.Invoke(this, EventArgs.Empty);
-        }
+		{
+			ModelsChanged?.Invoke(this, EventArgs.Empty);
+		}
 
 		#endregion
 

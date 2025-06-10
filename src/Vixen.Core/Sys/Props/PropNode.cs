@@ -1,33 +1,34 @@
 ﻿#nullable enable
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using Vixen.Model;
 
 namespace Vixen.Sys.Props
 {
-    [Serializable]
-	public class PropNode: BindableBase, IEqualityComparer<PropNode>, IEquatable<PropNode>
-    {
-        private ObservableCollection<PropNode> _children;
-        private ObservableCollection<Guid> _parents;
-        private IProp? _prop;
-        private string _name;
+	[Serializable]
+	public class PropNode : BindableBase, IEqualityComparer<PropNode>, IEquatable<PropNode>
+	{
+		private ObservableCollection<PropNode> _children;
+		private ObservableCollection<Guid> _parents;
+		private IProp? _prop;
+		private string _name;
 
-        #region Constructors
+		#region Constructors
 
-        public PropNode(IProp prop):this(string.Empty)
-        {
-            Prop = prop;
-        }
+		public PropNode(IProp prop) : this(string.Empty)
+		{
+			Prop = prop;
+		}
 
-        public PropNode() : this("Prop 1")
-        {
-        }
+		public PropNode() : this("Prop 1")
+		{
+		}
 
-        public PropNode(string name)
-        {
+		public PropNode(string name)
+		{
 			Name = name;
-            Children = new ObservableCollection<PropNode>();
-            Parents = new ObservableCollection<Guid>();
+			Children = new ObservableCollection<PropNode>();
+			Parents = new ObservableCollection<Guid>();
 			Children.CollectionChanged += Children_CollectionChanged;
 		}
 
@@ -37,15 +38,15 @@ namespace Vixen.Sys.Props
 		}
 
 		public PropNode(string name, PropNode parent) : this(name)
-        {
-            Parents.Add(parent.Id);
-        }
+		{
+			Parents.Add(parent.Id);
+		}
 
-        public PropNode(IProp prop, PropNode parent):this(string.Empty)
-        {
-            Prop = prop;
-            Parents.Add(parent.Id);
-        }
+		public PropNode(IProp prop, PropNode parent) : this(string.Empty)
+		{
+			Prop = prop;
+			Parents.Add(parent.Id);
+		}
 
 		#endregion
 
@@ -60,54 +61,54 @@ namespace Vixen.Sys.Props
 		#region Name
 
 		public string Name
-        {
-            get => Prop == null ? _name : Prop.Name;
-            set
-            {
-                if (Prop == null)
-                {
-                    SetProperty(ref _name, value);
-                }
-                else
-                {
-                    _name = String.Empty;
-                    Prop.Name = value;
-                    OnPropertyChanged(nameof(Name));
-                }
+		{
+			get => Prop == null ? _name : Prop.Name;
+			set
+			{
+				if (Prop == null)
+				{
+					SetProperty(ref _name, value);
+				}
+				else
+				{
+					_name = String.Empty;
+					Prop.Name = value;
+					OnPropertyChanged(nameof(Name));
+				}
 
-            }
-        }
+			}
+		}
 
 		#endregion
 
 		#region Prop
-		
+
 		public IProp? Prop
-        {
-            get => _prop;
-            set
-            {
-                if (_prop != null && _prop != value)
-                {
-                    _prop.PropertyChanged -= Prop_PropertyChanged;
+		{
+			get => _prop;
+			set
+			{
+				if (_prop != null && _prop != value)
+				{
+					_prop.PropertyChanged -= Prop_PropertyChanged;
 				}
-                if (_prop != value && value != null)
-                {
-                    value.PropertyChanged += Prop_PropertyChanged;
-                }
+				if (_prop != value && value != null)
+				{
+					value.PropertyChanged += Prop_PropertyChanged;
+				}
 
 				SetProperty(ref _prop, value);
-            }
-        }
+			}
+		}
 
 		private void Prop_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
-            //Since we are swapping the name based on whether the Prop exists or not, we need to propagate the name changed event up
-            //from the Prop when it occurs.
-            if (nameof(IProp.Name).Equals(e.PropertyName))
-            {
-                OnPropertyChanged(nameof(Name));
-            }
+			//Since we are swapping the name based on whether the Prop exists or not, we need to propagate the name changed event up
+			//from the Prop when it occurs.
+			if (nameof(IProp.Name).Equals(e.PropertyName))
+			{
+				OnPropertyChanged(nameof(Name));
+			}
 		}
 
 		/// <summary>
@@ -129,51 +130,51 @@ namespace Vixen.Sys.Props
 
 		public bool IsLeaf => !Children.Any();
 
-        #endregion
+		#endregion
 
 		#region Parents
 
 		public ObservableCollection<Guid> Parents
-        {
-            get { return _parents; }
-            set
-            {
-                if (Equals(value, _parents)) return;
-                _parents = value;
-                OnPropertyChanged(nameof(Parents));
-            }
-        }
+		{
+			get { return _parents; }
+			set
+			{
+				if (Equals(value, _parents)) return;
+				_parents = value;
+				OnPropertyChanged(nameof(Parents));
+			}
+		}
 
 		#endregion
 
 		#region Children
 
-        public ObservableCollection<PropNode> Children
-        {
-            get { return _children; }
-            set
-            {
-                if (Equals(value, _children)) return;
-                _children = value;
-                OnPropertyChanged(nameof(Children));
-                OnPropertyChanged(nameof(IsLeaf));
-                OnPropertyChanged(nameof(IsGroupNode));
-            }
-        }
+		public ObservableCollection<PropNode> Children
+		{
+			get { return _children; }
+			set
+			{
+				if (Equals(value, _children)) return;
+				_children = value;
+				OnPropertyChanged(nameof(Children));
+				OnPropertyChanged(nameof(IsLeaf));
+				OnPropertyChanged(nameof(IsGroupNode));
+			}
+		}
 
 		#endregion
 
 		#region Node Info
 
-        public bool IsGroupNode => Prop == null;
+		public bool IsGroupNode => Prop == null;
 
-        public bool CanAddGroupNodes => IsGroupNode && (!Children.Any() || Children.Any(c => c.IsGroupNode));
+		public bool CanAddGroupNodes => IsGroupNode && (!Children.Any() || Children.Any(c => c.IsGroupNode));
 
-        public bool CanAddLeafNodes => IsGroupNode && (!Children.Any() || Children.Any(c => c.IsLeaf));
+		public bool CanAddLeafNodes => IsGroupNode && (!Children.Any() || Children.Any(c => c.IsLeaf));
 
-        public bool IsRootNode => !Parents.Any();
+		public bool IsRootNode => !Parents.Any();
 
-        #endregion
+		#endregion
 
 		#region Tree Management
 
@@ -183,9 +184,9 @@ namespace Vixen.Sys.Props
 		/// <param name="parent"></param>
 		/// <returns></returns>
 		public bool RemoveParent(PropNode parent)
-        {
-            bool success = Parents.Remove(parent.Id);
-            parent.RemoveChild(this);
+		{
+			bool success = Parents.Remove(parent.Id);
+			parent.RemoveChild(this);
 			//if (!Parents.Any())
 			//{
 			//	//We are now orphaned and need to clean up
@@ -205,32 +206,32 @@ namespace Vixen.Sys.Props
 			//}
 
 			return success;
-        }
+		}
 
-        public void AddParent(PropNode parent)
-        {
-            Parents.Add(parent.Id);
-        }
+		public void AddParent(PropNode parent)
+		{
+			Parents.Add(parent.Id);
+		}
 
-        public void AddChild(PropNode em)
-        {
-            Children.Add(em);
-        }
+		public void AddChild(PropNode em)
+		{
+			Children.Add(em);
+		}
 
-        public bool RemoveChild(PropNode child)
-        {
-            var status = Children.Remove(child);
-            return status;
-        }
+		public bool RemoveChild(PropNode child)
+		{
+			var status = Children.Remove(child);
+			return status;
+		}
 
-        public void RemoveChildren()
-        {
+		public void RemoveChildren()
+		{
 			foreach (var child in Children.ToList())
 			{
 				child.RemoveParent(this);
 				Children.Remove(child);
 			}
-        }
+		}
 
 		#endregion
 
@@ -238,53 +239,53 @@ namespace Vixen.Sys.Props
 
 
 		public IEnumerable<PropNode> GetNodeEnumerator()
-        {
-            return (new[] { this }).Concat(Children.SelectMany(x => x.GetNodeEnumerator()));
-        }
+		{
+			return (new[] { this }).Concat(Children.SelectMany(x => x.GetNodeEnumerator()));
+		}
 
-        public IEnumerable<PropNode> GetLeafEnumerator()
-        {
-            if (IsLeaf)
-            {
-                return [this];
-            }
+		public IEnumerable<PropNode> GetLeafEnumerator()
+		{
+			if (IsLeaf)
+			{
+				return [this];
+			}
 
-            return Children.SelectMany(x => x.GetLeafEnumerator());
-        }
+			return Children.SelectMany(x => x.GetLeafEnumerator());
+		}
 
-        public IEnumerable<PropNode> GetNonLeafEnumerator()
-        {
-            if (IsLeaf)
-            {
-                return [];
-            }
+		public IEnumerable<PropNode> GetNonLeafEnumerator()
+		{
+			if (IsLeaf)
+			{
+				return [];
+			}
 
-            return (new[] { this }).Concat(Children.SelectMany(x => x.GetNonLeafEnumerator()));
-        }
+			return (new[] { this }).Concat(Children.SelectMany(x => x.GetNonLeafEnumerator()));
+		}
 
 		#endregion
 
 		#region Equals
 
 		public bool Equals(PropNode? x, PropNode? y)
-        {
-            return y != null && x != null && x.Id == y.Id;
-        }
+		{
+			return y != null && x != null && x.Id == y.Id;
+		}
 
 		public int GetHashCode(PropNode obj)
-        {
-            return obj.Id.GetHashCode();
-        }
+		{
+			return obj.Id.GetHashCode();
+		}
 
-        public bool Equals(PropNode? other)
-        {
-            return other != null && Id == other.Id;
-        }
+		public bool Equals(PropNode? other)
+		{
+			return other != null && Id == other.Id;
+		}
 
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
+		public override int GetHashCode()
+		{
+			return Id.GetHashCode();
+		}
 
 		#endregion
 

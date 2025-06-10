@@ -8,7 +8,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 {
 	public class PropPreviewViewModel : ViewModelBase
 	{
-        private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
 		public PropPreviewViewModel(/* dependency injection here */)
 		{
@@ -34,40 +34,40 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			await base.CloseAsync();
 		}
 
-        
 
-        /// <summary>
-        /// Gets or sets the PropModel value.
-        /// </summary>;
-        [Model]
-        public ILightPropModel PropModel
-        {
-            get { return GetValue<ILightPropModel>(PropModelProperty); }
-            private set { SetValue(PropModelProperty, value); }
-        }
 
-        /// <summary>;
-        /// PropModel property data.
-        /// </summary>;
-        public static readonly IPropertyData PropModelProperty = RegisterProperty<ILightPropModel>(nameof(PropModel));
+		/// <summary>
+		/// Gets or sets the PropModel value.
+		/// </summary>;
+		[Model]
+		public ILightPropModel PropModel
+		{
+			get { return GetValue<ILightPropModel>(PropModelProperty); }
+			private set { SetValue(PropModelProperty, value); }
+		}
 
-        #region NodePoints property
+		/// <summary>;
+		/// PropModel property data.
+		/// </summary>;
+		public static readonly IPropertyData PropModelProperty = RegisterProperty<ILightPropModel>(nameof(PropModel));
 
-        /// <summary>
-        /// Gets or sets the NodePoints value.
-        /// </summary>
-        [ViewModelToModel("PropModel")]
-        public ObservableCollection<NodePoint> NodePoints
-        {
-            get { return GetValue<ObservableCollection<NodePoint>>(NodePointsProperty); }
-            set { SetValue(NodePointsProperty, value); }
-        }
+		#region NodePoints property
 
-        /// <summary>
-        /// NodePoints property data.
-        /// </summary>
-        public static readonly IPropertyData NodePointsProperty = RegisterProperty<ObservableCollection<NodePoint>>(nameof(NodePoints));
+		/// <summary>
+		/// Gets or sets the NodePoints value.
+		/// </summary>
+		[ViewModelToModel("PropModel")]
+		public ObservableCollection<NodePoint> NodePoints
+		{
+			get { return GetValue<ObservableCollection<NodePoint>>(NodePointsProperty); }
+			set { SetValue(NodePointsProperty, value); }
+		}
 
-        #endregion
+		/// <summary>
+		/// NodePoints property data.
+		/// </summary>
+		public static readonly IPropertyData NodePointsProperty = RegisterProperty<ObservableCollection<NodePoint>>(nameof(NodePoints));
+
+		#endregion
 	}
 }
