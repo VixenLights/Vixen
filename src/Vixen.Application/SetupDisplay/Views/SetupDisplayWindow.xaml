@@ -1,11 +1,10 @@
 ﻿<Window x:Class="VixenApplication.SetupDisplay.Views.SetupDisplayWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:catel="http://schemas.catelproject.com"
         xmlns:views="clr-namespace:VixenApplication.SetupDisplay.Views"
         xmlns:wpfPropertyGrid="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
         xmlns:controls="clr-namespace:Common.Controls;assembly=Controls"
-        Title="Display Setup" Height="700" Width="900" WindowStartupLocation="CenterScreen" x:Name="DisplaySetup">
+        Title="Display Setup" Height="850" Width="1200" WindowStartupLocation="CenterScreen" x:Name="DisplaySetup">
 
     <Window.Resources>
         <ResourceDictionary>
