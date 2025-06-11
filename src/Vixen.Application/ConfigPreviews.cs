@@ -60,6 +60,8 @@ namespace VixenApplication
 				PreviewFactory previewFactory = new PreviewFactory();
 				OutputPreview preview = (OutputPreview)previewFactory.CreateDevice((Guid)addForm.SelectedItem, name);
 				VixenSystem.Previews.Add(preview);
+				VixenSystem.SystemConfig.Updated = true;
+
 				// In the case of a controller that has a form, the form will not be shown
 				// until this event handler completes.  To make sure it's in a visible state
 				// before evaluating if it's running or not, we're calling DoEvents.
@@ -108,6 +110,7 @@ namespace VixenApplication
 					}
 					_PopulateControllerList();
 					_changesMade = true;
+					VixenSystem.SystemConfig.Updated = true;
 				}
 			}
 		}
@@ -143,6 +146,7 @@ namespace VixenApplication
 				_PopulateControllerList();
 
 				_changesMade = true;
+				VixenSystem.SystemConfig.Updated = true;
 				Refresh();
 			}
 
@@ -236,6 +240,10 @@ namespace VixenApplication
 						preview.Stop();
 					}
 					preview.Setup();
+
+					// Mark that some data within the Preview has changed.
+					preview.ContentChanged = true;
+
 					if (running)
 					{
 						preview.Start();
@@ -297,9 +305,43 @@ namespace VixenApplication
 							break;
 					}
 				}
+
+				// The User has accepted the changes, so we'll need to do some post-processing on the resultant files.
 				else if (DialogResult == DialogResult.OK)
 				{
 					e.Cancel = false;
+
+					// First, let's check that there are no duplicates
+					foreach (var preview in VixenSystem.Previews)
+					{
+						// Check for duplicate Preview names
+						if (VixenSystem.Previews.Count(x => x.Name == preview.Name) > 1)
+						{
+							var messageBox = new MessageBoxForm($"Preview names must be unique.\n\nAdjust the name \"{preview.Name}\" accordingly in order to continue.", "Duplicate Preview Name", MessageBoxButtons.OK, SystemIcons.Warning);
+							messageBox.ShowDialog();
+							e.Cancel = true;
+							return;
+						}
+					}
+
+					Vixen.Sys.SystemConfig prevSystemConfig = Vixen.Services.FileService.Instance.LoadSystemConfigFile(Path.Combine(VixenSystem.GetSystemDataPath(), Vixen.Sys.SystemConfig.FileName));
+
+					foreach (var preview in prevSystemConfig.Previews)
+					{
+						// Check if we deleted any Previews
+						if (VixenSystem.Previews.Count(x => x.Id == preview.Id) == 0)
+						{
+							VixenSystem.DeleteModuleStorePreviewFile(preview.Name);
+							VixenSystem.SystemConfig.Updated = true;
+						}
+
+						// Check if we renamed any Previews
+						else if (VixenSystem.Previews.Count(x => x.Name == preview.Name) == 0)
+						{
+							VixenSystem.RenameModuleStorePreviewFile(preview.Name, VixenSystem.Previews.First(x => x.Id == preview.Id).Name);
+							VixenSystem.SystemConfig.Updated = true;
+						}
+					}
 				}
 				else
 				{

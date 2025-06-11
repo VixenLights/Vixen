@@ -4,11 +4,11 @@ using Vixen.Sys.Output;
 
 namespace Vixen.Sys
 {
-	internal class ModuleStore
+	public class ModuleStore
 	{
 		public static readonly string Directory = SystemConfig.Directory;
 		public const string FileName = "ModuleStore.xml";
-		public const string PreviewNameBase = "\\ModuleStore_";
+		public static readonly string PreviewNameBase = "PreviewStore_";
 		public static readonly string DefaultFilePath = Path.Combine(Directory, FileName);
 
 		public ModuleStore()
@@ -24,35 +24,61 @@ namespace Vixen.Sys
 		public ModuleLocalDataSet InstanceData { get; set; }
 
 		/// <summary>
-		/// Saves the module store to the default location.
+		/// Saves the Preview and ModuleStore files to the default location.
 		/// </summary>
 		/// <param name="previews">Specifies the collection of Previews to be split out.</param>
 		public void Save(IEnumerable<IOutputDevice> previews = null)
 		{
+			// This is a SPECIAL USE-CASE only meant to help a few Users who need to recombine the preview files back into ModuleStore.xml
+			// It should probably be deleted at some future time.
+			if (Control.ModifierKeys.HasFlag(Keys.Shift) == true && Control.ModifierKeys.HasFlag(Keys.Control) == true)
+			{
+				SpecialSave();
+				return;
+			}
+
 			ModuleStore filtered = new ModuleStore();
 
-			// Split out all BUT the preview data and save this ModuleStore file.
-			filtered.InstanceData.DataModels = this.InstanceData.DataModels.Where(x => x.ToString() != "VixenModules.Preview.VixenPreview.VixenPreviewData");
-			filtered.TypeData.DataModels = this.TypeData.DataModels;
-			FileService.Instance.SaveModuleStoreFile(filtered);
-
-			// if there isn't a collection of previews passed in, use the system config previews.
+			// If there isn't a collection of previews passed in, use the System's config previews.
 			if (previews == null)
 			{
 				previews = VixenSystem.SystemConfig.Previews;
 			}
 
-			// For each preview, create a new ModuleStore file with the preview data.
-			foreach (var preview in previews)
+			// For each Preview that has been updated, create a new ModuleStore file with the Preview data.
+			int countChanged = 0;
+			foreach (var preview in previews.Where(x => x.ContentChanged == true))
 			{
-				filtered.LoadedFilePath = Directory + PreviewNameBase + preview.Name + ".xml";
+				filtered.LoadedFilePath = Directory + "\\" + PreviewNameBase + preview.Name + ".xml";
 				filtered.InstanceData.DataModels = this.InstanceData.DataModels.Where(
 						x => x.ToString() == "VixenModules.Preview.VixenPreview.VixenPreviewData" &&
-						     x.ModuleInstanceId == preview.Id);
+								x.ModuleInstanceId == preview.Id);
+				countChanged++;
 				FileService.Instance.SaveModuleStoreFile(filtered, filtered.LoadedFilePath);
+				preview.ContentChanged = false;
 			}
 
-			filtered.InstanceData.Dispose();
+			// Save the global ModuleStore file, only if needed
+			if (countChanged == 0 || countChanged == previews.Count())
+			{
+				// Split out all BUT the Preview data and save the ModuleStore file.
+				filtered.InstanceData.DataModels = this.InstanceData.DataModels.Where(x => x.ToString() != "VixenModules.Preview.VixenPreview.VixenPreviewData");
+				filtered.TypeData.DataModels = this.TypeData.DataModels;
+				FileService.Instance.SaveModuleStoreFile(filtered);
+			}
+		}
+
+		/// <summary>
+		/// This is a SPECIAL USE_CASE only meant to help a few Users who need to recombine the preview files back into ModuleStore.xml.
+		/// </summary>
+		private void SpecialSave()
+		{
+			FileService.Instance.SaveModuleStoreFile(this);
+			foreach (var preview in VixenSystem.SystemConfig.Previews)
+			{
+				VixenSystem.DeleteModuleStorePreviewFile(preview.Name);
+			}
+			MessageBox.Show("Exit Vixen, then open the ModuleStore.xml file and change the first line from:\n\n<ModuleStore version=\"6\">\n\n      to\n\n<ModuleStore version=\"5\">", "Special Save Feature", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 
 		/// <summary>

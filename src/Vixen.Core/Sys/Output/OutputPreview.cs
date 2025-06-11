@@ -21,6 +21,7 @@ namespace Vixen.Sys.Output
 			_outputModuleConsumer = outputModuleConsumer;
 			Id = id;
 			Name = name;
+			ContentChanged = false;
 		}
 
 		public void UpdateCommands()
@@ -63,6 +64,8 @@ namespace Vixen.Sys.Output
 			get { return (_updateInterval.HasValue) ? _updateInterval.Value : _outputModuleConsumer.UpdateInterval; }
 			set { _updateInterval = value; }
 		}
+
+		public bool ContentChanged { get; set; }
 
 		public IOutputDeviceUpdateSignaler UpdateSignaler
 		{
