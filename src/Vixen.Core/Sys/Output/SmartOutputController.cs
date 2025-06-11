@@ -72,6 +72,8 @@ namespace Vixen.Sys.Output
 			}
 		}
 
+		public bool ContentChanged { get; set; }
+
 		public IOutputDeviceUpdateSignaler UpdateSignaler
 		{
 			get { return _outputModuleConsumer.UpdateSignaler; }
