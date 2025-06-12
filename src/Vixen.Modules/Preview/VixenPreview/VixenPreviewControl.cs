@@ -2100,16 +2100,7 @@ namespace VixenModules.Preview.VixenPreview
 		public void Delete()
 		{
 			List<DisplayItem> selected = new List<DisplayItem>(SelectedDisplayItems.ToArray());
-			if (_selectedDisplayItem != null)
-			{
-				var action = new PreviewItemsRemovedUndoAction(this, new List<DisplayItem> { _selectedDisplayItem });//Start Undo Action.
-				UndoManager.AddUndoAction(action);
-
-				RemoveDisplayItem(_selectedDisplayItem);
-				DeSelectSelectedDisplayItem();
-				EndUpdate();
-			}
-			else if (SelectedDisplayItems != null && SelectedDisplayItems.Count > 0)
+			if (SelectedDisplayItems != null && SelectedDisplayItems.Count > 0)
 			{
 				var action = new PreviewItemsRemovedUndoAction(this, selected);//Start Undo Action.
 				UndoManager.AddUndoAction(action);
@@ -2121,6 +2112,15 @@ namespace VixenModules.Preview.VixenPreview
 				}
 				SelectedDisplayItems.Clear();
 				OnSelectionChanged?.Invoke(this, EventArgs.Empty);
+				EndUpdate();
+			}
+			else if (_selectedDisplayItem != null)
+			{
+				var action = new PreviewItemsRemovedUndoAction(this, new List<DisplayItem> { _selectedDisplayItem });//Start Undo Action.
+				UndoManager.AddUndoAction(action);
+
+				RemoveDisplayItem(_selectedDisplayItem);
+				DeSelectSelectedDisplayItem();
 				EndUpdate();
 			}
 		}
