@@ -584,7 +584,6 @@ namespace VixenModules.App.LipSyncApp
 
 		private void editButton_Click(object sender, EventArgs e)
 		{
-			string sysFolder = Environment.GetFolderPath(Environment.SpecialFolder.System);
 			string fileName = PictureDirPath + "\\" + CurrentPhonemeString + "_tmp.bmp";
 			Bitmap editBmap = null;	 
 
@@ -612,7 +611,7 @@ namespace VixenModules.App.LipSyncApp
 			}
 			
 			System.Diagnostics.ProcessStartInfo procInfo = new System.Diagnostics.ProcessStartInfo();
-			procInfo.FileName = (sysFolder + @"\paint.exe");
+			procInfo.FileName = "mspaint.exe";
 			procInfo.Arguments = "\"" + fileName + "\""; // Full Path to an image
 			var process = System.Diagnostics.Process.Start(procInfo);
 			process.WaitForExit();
