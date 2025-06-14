@@ -86,5 +86,8 @@ Conventions for development:
 
     * Exclude Assets : None
       
-- Tabs vs. Spaces, and other formatting: Tabs are preferred, and general formatting standards are followed. However, please try to review all your own changes before committing, to ensure you are not making large changes to unrelated sections of code (eg. changing formatting in a file, or whitespace, etc.). Commits like this may be rejected. If larger reformats are desired, include them in their own commits noted as such to distingush them from logic changes. 
+- Tabs vs. Spaces, and other formatting: Tabs are preferred, and general formatting standards are followed. However, please try to review all your own changes before committing, to ensure you are not making large changes to unrelated sections of code (eg. changing formatting in a file, or whitespace, etc.). Commits like this may be rejected. If larger reformats are desired, include them in their own commits noted as such to distingush them from logic changes.
+
+- ### Powered by
+[![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSource) 
 
