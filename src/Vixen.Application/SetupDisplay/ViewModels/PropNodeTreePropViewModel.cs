@@ -36,16 +36,16 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#endregion
 
-		#region LeafNodes property
+		#region PropNodes property
 
 		/// <summary>
-		/// Gets or sets the LeafNodes value.
+		/// Collection if the PropNodes that are a Prop
 		/// </summary>
-		public ObservableCollection<PropNodeViewModel> LeafNodes
+		public ObservableCollection<PropNodeViewModel> PropNodes
 		{
 			get
 			{
-				return _propNodeTreeViewModel.LeafNodes;
+				return _propNodeTreeViewModel.PropNodes;
 			}
 		}
 

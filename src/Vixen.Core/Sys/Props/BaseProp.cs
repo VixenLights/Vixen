@@ -14,6 +14,7 @@ namespace Vixen.Sys.Props
 		private string _name;
 		private string _createdBy;
 		private DateTime _modifiedDate;
+		private bool _delayUpdates;
 
 		#region Constructors
 
@@ -93,6 +94,16 @@ namespace Vixen.Sys.Props
 		[Browsable(false)]
 		public virtual IPropModel PropModel { get; protected set; } = null!;
 
+		public void BeginUpdate()
+		{
+			_delayUpdates = true;
+		}
+
+		public void EndUpdate()
+		{
+			_delayUpdates = false;
+		}
+
 		public virtual void CleanUp()
 		{
 			RemovePropElements();
@@ -134,6 +145,7 @@ namespace Vixen.Sys.Props
 
 		protected IEnumerable<IElementNode> AddNodeElements(ElementNode node, int count, int namingIndex = 0)
 		{
+			if (count == 0) return [];
 			List<IElementNode> nodesAdded = new List<IElementNode>();
 			for (int j = namingIndex; j < count + namingIndex; j++)
 			{
