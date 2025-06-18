@@ -23,8 +23,16 @@ namespace Vixen.Sys.Props
 			set => SetProperty(ref _stringType, value);
 		}
 
+		/// <summary>
+		/// Adds a number of strings to the element tree
+		/// </summary>
+		/// <param name="node"></param>
+		/// <param name="count"></param>
+		/// <param name="nodesPerString"></param>
+		/// <param name="namingIndex"></param>
 		protected void AddStringElements(ElementNode node, int count, int nodesPerString, int namingIndex = 0)
 		{
+			if (count == 0) return;
 			for (int i = namingIndex; i < count + namingIndex; i++)
 			{
 				string stringName = $"{AutoPropStringName} {i + 1}";
