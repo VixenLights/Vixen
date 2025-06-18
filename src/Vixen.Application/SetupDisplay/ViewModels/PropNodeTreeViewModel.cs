@@ -31,8 +31,8 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			PropNodeViewModel vm = new(PropManager.RootNode, null);
 			RootNodeViewModel = [vm];
 
-			LeafNodes = new();
-			LeafNodes.AddRange(RootNodeViewModel.SelectMany(x => x.GetLeafEnumerator()));
+			PropNodes = new();
+			PropNodes.AddRange(RootNodeViewModel.SelectMany(x => x.GetPropEnumerator()));
 
 			PropManager.PropCollectionChanged += PropManager_PropCollectionChanged;
 			SelectedItems = new();
@@ -41,8 +41,8 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		private void PropManager_PropCollectionChanged(object? sender, EventArgs e)
 		{
-			LeafNodes.Clear();
-			LeafNodes.AddRange(RootNodeViewModel.SelectMany(x => x.GetLeafEnumerator()));
+			PropNodes.Clear();
+			PropNodes.AddRange(RootNodeViewModel.SelectMany(x => x.GetPropEnumerator()));
 		}
 
 		#region PropManager model property
@@ -81,21 +81,21 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#endregion
 
-		#region LeafNodes property
+		#region PropNodes property
 
 		/// <summary>
-		/// Gets or sets the LeafNodes value.
+		/// Collection of the actual nodes that contain Props.
 		/// </summary>
-		public ObservableCollection<PropNodeViewModel> LeafNodes
+		public ObservableCollection<PropNodeViewModel> PropNodes
 		{
-			get { return GetValue<ObservableCollection<PropNodeViewModel>>(LeafNodesProperty); }
-			private init { SetValue(LeafNodesProperty, value); }
+			get { return GetValue<ObservableCollection<PropNodeViewModel>>(PropNodesProperty); }
+			private init { SetValue(PropNodesProperty, value); }
 		}
 
 		/// <summary>
-		/// LeafNodes property data.
+		/// PropNodes property data.
 		/// </summary>
-		public static readonly IPropertyData LeafNodesProperty = RegisterProperty<ObservableCollection<PropNodeViewModel>>(nameof(LeafNodes));
+		public static readonly IPropertyData PropNodesProperty = RegisterProperty<ObservableCollection<PropNodeViewModel>>(nameof(PropNodes));
 
 		#endregion
 

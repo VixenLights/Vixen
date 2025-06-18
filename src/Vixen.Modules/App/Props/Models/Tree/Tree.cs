@@ -18,10 +18,11 @@ namespace VixenModules.App.Props.Models.Tree
 		private StartLocation _startLocation;
 		private bool _zigZag;
 		private int _zigZagOffset;
+		private bool _updateInProgress;
 
-		public Tree() : this("Tree 1", 16, 50)
+		public Tree() : this("Tree 1", 0, 0)
 		{
-
+			//Set initial to 0 so creation does not trigger element generation.
 		}
 
 		public Tree(string name, int strings, int nodesPerString) : this(name, strings, nodesPerString, StringTypes.Pixel)
@@ -63,7 +64,7 @@ namespace VixenModules.App.Props.Models.Tree
                         case nameof(StartLocation):
                         case nameof(ZigZag):
                         case nameof(ZigZagOffset):
-                            AddOrUpdatePatchingOrder();
+                            await AddOrUpdatePatchingOrder();
                             break;
                     }
                 }
@@ -83,7 +84,7 @@ namespace VixenModules.App.Props.Models.Tree
                     switch (e.PropertyName)
                     {
                         case nameof(Strings):
-                            UpdateStrings();
+                            await UpdateStrings();
                             break;
                         case nameof(NodesPerString):
                             await UpdateNodesPerString();
@@ -91,7 +92,7 @@ namespace VixenModules.App.Props.Models.Tree
                         case nameof(StartLocation):
                         case nameof(ZigZag):
                         case nameof(ZigZagOffset):
-                            AddOrUpdatePatchingOrder();
+                            await AddOrUpdatePatchingOrder();
                             break;
                     }
                 }
@@ -291,6 +292,13 @@ namespace VixenModules.App.Props.Models.Tree
 
 		protected async Task<bool> GenerateElementsAsync()
 		{
+			while (_updateInProgress)
+			{
+				await Task.Delay(500);
+			}
+
+			_updateInProgress = true;
+
 			ElementNode head = GetOrCreatePropElementNode();
 
 			AddStringElements(head, Strings, NodesPerString);
@@ -298,29 +306,44 @@ namespace VixenModules.App.Props.Models.Tree
 			PropertySetupHelper.AddOrUpdatePatchingOrder(head, _startLocation, _zigZag, _zigZagOffset);
 
 			await AddOrUpdateColorHandling();
+			
+			_updateInProgress = false;
 
 			return true;
 
 		}
 
-		private void UpdateStrings()
+		private async Task UpdateStrings()
 		{
+			while (_updateInProgress)
+			{
+				await Task.Delay(500);
+			}
+			_updateInProgress = true;
 			var propNode = GetOrCreatePropElementNode();
 			var existingStrings = propNode.Children.Count();
 			if (existingStrings == Strings) return;
 
 			if (existingStrings < Strings)
 			{
-				AddStringElements(propNode, Strings - existingStrings, existingStrings);
+				AddStringElements(propNode, Strings - existingStrings, existingStrings, existingStrings);
 			}
 			else
 			{
 				RemoveElements(propNode, existingStrings - Strings);
 			}
+
+			_updateInProgress = false;
 		}
 
 		private async Task UpdateNodesPerString()
 		{
+			while (_updateInProgress)
+			{
+				await Task.Delay(500);
+			}
+			_updateInProgress = true;
+
 			var propNode = GetOrCreatePropElementNode();
 
 			foreach (var propString in propNode.Children.ToList())
@@ -339,6 +362,8 @@ namespace VixenModules.App.Props.Models.Tree
 				}
 			}
 
+			_updateInProgress = false;
+
 		}
 
 		private async Task AddOrUpdateColorHandling(IElementNode? node = null)
@@ -355,11 +380,17 @@ namespace VixenModules.App.Props.Models.Tree
             }
 		}
 
-        private void AddOrUpdatePatchingOrder()
+        private async Task AddOrUpdatePatchingOrder()
         {
+	        while (_updateInProgress)
+	        {
+		        await Task.Delay(500);
+	        }
+			_updateInProgress = true;
             var propNode = GetOrCreatePropElementNode();
             PropertySetupHelper.AddOrUpdatePatchingOrder(propNode, _startLocation, _zigZag, _zigZagOffset);
-		}
+            _updateInProgress = false;
+        }
 
         private ColorConfiguration GetColorConfiguration()
         {

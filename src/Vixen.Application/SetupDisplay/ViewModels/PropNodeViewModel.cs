@@ -313,6 +313,16 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			return ChildrenViewModels.SelectMany(x => x.GetLeafEnumerator());
 		}
 
+		public IEnumerable<PropNodeViewModel> GetPropEnumerator()
+		{
+			if (PropNode is { IsLeaf: true, IsGroupNode: false })
+			{
+				return [this];
+			}
+
+			return ChildrenViewModels.SelectMany(x => x.GetPropEnumerator());
+		}
+
 		public bool Equals(PropNodeViewModel? other)
 		{
 			if (other is null)
