@@ -18,7 +18,6 @@ namespace VixenModules.App.Props.Models.Tree
 		private StartLocation _startLocation;
 		private bool _zigZag;
 		private int _zigZagOffset;
-		private bool _updateInProgress;
 
 		public Tree() : this("Tree 1", 0, 0)
 		{
@@ -84,10 +83,10 @@ namespace VixenModules.App.Props.Models.Tree
                     switch (e.PropertyName)
                     {
                         case nameof(Strings):
-                            await UpdateStrings();
+                            await UpdateStrings(Strings);
                             break;
                         case nameof(NodesPerString):
-                            await UpdateNodesPerString();
+                            await UpdateNodesPerString(NodesPerString);
                             break;
                         case nameof(StartLocation):
                         case nameof(ZigZag):
@@ -292,12 +291,12 @@ namespace VixenModules.App.Props.Models.Tree
 
 		protected async Task<bool> GenerateElementsAsync()
 		{
-			while (_updateInProgress)
+			while (UpdateInProgress)
 			{
 				await Task.Delay(500);
 			}
 
-			_updateInProgress = true;
+			UpdateInProgress = true;
 
 			ElementNode head = GetOrCreatePropElementNode();
 
@@ -306,63 +305,10 @@ namespace VixenModules.App.Props.Models.Tree
 			PropertySetupHelper.AddOrUpdatePatchingOrder(head, _startLocation, _zigZag, _zigZagOffset);
 
 			await AddOrUpdateColorHandling();
-			
-			_updateInProgress = false;
+
+			UpdateInProgress = false;
 
 			return true;
-
-		}
-
-		private async Task UpdateStrings()
-		{
-			while (_updateInProgress)
-			{
-				await Task.Delay(500);
-			}
-			_updateInProgress = true;
-			var propNode = GetOrCreatePropElementNode();
-			var existingStrings = propNode.Children.Count();
-			if (existingStrings == Strings) return;
-
-			if (existingStrings < Strings)
-			{
-				AddStringElements(propNode, Strings - existingStrings, existingStrings, existingStrings);
-			}
-			else
-			{
-				RemoveElements(propNode, existingStrings - Strings);
-			}
-
-			_updateInProgress = false;
-		}
-
-		private async Task UpdateNodesPerString()
-		{
-			while (_updateInProgress)
-			{
-				await Task.Delay(500);
-			}
-			_updateInProgress = true;
-
-			var propNode = GetOrCreatePropElementNode();
-
-			foreach (var propString in propNode.Children.ToList())
-			{
-				var existingNodes = propString.Children.Count();
-				if (existingNodes == NodesPerString) continue;
-
-				if (existingNodes < NodesPerString)
-				{
-					var newNodes = AddNodeElements(propString, NodesPerString - existingNodes, existingNodes);
-                    await PropertySetupHelper.AddOrUpdateColorHandling(newNodes, GetColorConfiguration());
-				}
-				else
-				{
-					RemoveElements(propString, existingNodes - NodesPerString);
-				}
-			}
-
-			_updateInProgress = false;
 
 		}
 
@@ -382,28 +328,14 @@ namespace VixenModules.App.Props.Models.Tree
 
         private async Task AddOrUpdatePatchingOrder()
         {
-	        while (_updateInProgress)
+	        while (UpdateInProgress)
 	        {
 		        await Task.Delay(500);
 	        }
-			_updateInProgress = true;
+	        UpdateInProgress = true;
             var propNode = GetOrCreatePropElementNode();
             PropertySetupHelper.AddOrUpdatePatchingOrder(propNode, _startLocation, _zigZag, _zigZagOffset);
-            _updateInProgress = false;
-        }
-
-        private ColorConfiguration GetColorConfiguration()
-        {
-            // TODO Get this info from the Tree properties at some point
-			ColorConfiguration cf = new()
-            {
-                ColorType = StringType == StringTypes.Pixel
-                    ? ElementColorType.FullColor
-                    : ElementColorType.SingleColor,
-                FullColorOrder = StringType == StringTypes.Pixel ? "RGB" : String.Empty,
-                SingleColor = StringType == StringTypes.Standard ? Color.Red : Color.Empty
-            };
-            return cf;
+            UpdateInProgress = false;
         }
 
 	}
