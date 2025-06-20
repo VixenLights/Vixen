@@ -1,8 +1,10 @@
-﻿using System.Diagnostics;
+﻿using Orc.Theming;
+using System.Diagnostics;
 using System.Windows;
-using Orc.Theming;
+using Vixen.Sys;
 using Vixen.Sys.Managers;
 using VixenApplication.SetupDisplay.ViewModels;
+using VixenModules.App.Modeling;
 using WPFCommon.Extensions;
 using Timer = System.Threading.Timer;
 
@@ -19,8 +21,8 @@ namespace VixenApplication.SetupDisplay.Views
             DataContext = new SetupDisplayViewModel();
             _nodeRefreshTimer = new Timer(Timer_Elapsed, null, 2000, Timeout.Infinite);
             NodeManager.NodesChanged += NodeManager_NodesChanged;
-
-        }
+            ElementTree.ExportDiagram = ExportWireDiagram;
+		}
 
         private void Timer_Elapsed(object? state)
         {
@@ -34,6 +36,11 @@ namespace VixenApplication.SetupDisplay.Views
 		private void NodeManager_NodesChanged(object? sender, EventArgs e)
 		{
 			_nodeRefreshTimer.Change(2000, Timeout.Infinite);
+		}
+
+		private void ExportWireDiagram(ElementNode node, bool flip = false)
+		{
+			ElementModeling.ElementsToSvg(node, flip);
 		}
 	}
 }
