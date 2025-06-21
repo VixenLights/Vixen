@@ -1,12 +1,9 @@
 ﻿#nullable enable
 
 using System.ComponentModel;
-using System.Drawing;
 using NLog;
 using Vixen.Attributes;
-using Vixen.Sys;
 using Vixen.Sys.Props;
-using VixenModules.Property.Color;
 
 namespace VixenModules.App.Props.Models.Tree
 {
@@ -29,7 +26,7 @@ namespace VixenModules.App.Props.Models.Tree
 
 		}
 
-		public Tree(string name, int strings = 16, int nodesPerString = 50, StringTypes stringType = StringTypes.Pixel) : base(name, PropType.Arch)
+		public Tree(string name, int strings = 0, int nodesPerString = 0, StringTypes stringType = StringTypes.Pixel) : base(name, PropType.Tree)
 		{
 			PropType = PropType.Tree;
 			Name = name;
@@ -63,7 +60,7 @@ namespace VixenModules.App.Props.Models.Tree
                         case nameof(StartLocation):
                         case nameof(ZigZag):
                         case nameof(ZigZagOffset):
-                            await AddOrUpdatePatchingOrder();
+                            await AddOrUpdatePatchingOrder(_startLocation, _zigZag, _zigZagOffset);
                             break;
                     }
                 }
@@ -83,10 +80,8 @@ namespace VixenModules.App.Props.Models.Tree
                     switch (e.PropertyName)
                     {
                         case nameof(Strings):
-                            await UpdateStrings(Strings);
-                            break;
                         case nameof(NodesPerString):
-                            await UpdateNodesPerString(NodesPerString);
+	                        await GenerateElementsAsync();
                             break;
                         case nameof(StartLocation):
                         case nameof(ZigZag):
@@ -259,7 +254,7 @@ namespace VixenModules.App.Props.Models.Tree
 		}
 
 		[Category("Patching")]
-		[DisplayName("Start Location")]
+		[DisplayName("Wiring Start")]
 		[PropertyOrder(8)]
 		public StartLocation StartLocation
 		{
@@ -291,52 +286,38 @@ namespace VixenModules.App.Props.Models.Tree
 
 		protected async Task<bool> GenerateElementsAsync()
 		{
-			while (UpdateInProgress)
+			bool hasUpdated = false;
+			
+			var propNode = GetOrCreatePropElementNode();
+			if (propNode.IsLeaf && Strings > 0)
 			{
-				await Task.Delay(500);
+				AddStringElements(propNode, Strings, NodesPerString);
+				hasUpdated = true;
+			}
+			else if(propNode.Children.Count( )!= Strings)
+			{
+				await UpdateStrings(Strings);
+				hasUpdated = true;
 			}
 
-			UpdateInProgress = true;
+			if (propNode.Children.Any())
+			{
+				if (propNode.Children.First().Children.Count() != NodesPerString)
+				{
+					await UpdateNodesPerString(NodesPerString);
+					hasUpdated = true;
+				}
+			}
 
-			ElementNode head = GetOrCreatePropElementNode();
+			if (hasUpdated)
+			{
+				await AddOrUpdatePatchingOrder(_startLocation, _zigZag, _zigZagOffset);
 
-			AddStringElements(head, Strings, NodesPerString);
-
-			PropertySetupHelper.AddOrUpdatePatchingOrder(head, _startLocation, _zigZag, _zigZagOffset);
-
-			await AddOrUpdateColorHandling();
-
-			UpdateInProgress = false;
-
+				await AddOrUpdateColorHandling();
+			}
+			
 			return true;
-
 		}
-
-		private async Task AddOrUpdateColorHandling(IElementNode? node = null)
-		{
-			// Can this be raised up to the BaseProp at some point?
-            try
-            {
-                var propNode = node ?? GetOrCreatePropElementNode();
-                await PropertySetupHelper.AddOrUpdateColorHandling(propNode, GetColorConfiguration());
-            }
-            catch (Exception e)
-            {
-                Logging.Error(e, "Error occured updating the color handling");
-            }
-		}
-
-        private async Task AddOrUpdatePatchingOrder()
-        {
-	        while (UpdateInProgress)
-	        {
-		        await Task.Delay(500);
-	        }
-	        UpdateInProgress = true;
-            var propNode = GetOrCreatePropElementNode();
-            PropertySetupHelper.AddOrUpdatePatchingOrder(propNode, _startLocation, _zigZag, _zigZagOffset);
-            UpdateInProgress = false;
-        }
 
 	}
 }

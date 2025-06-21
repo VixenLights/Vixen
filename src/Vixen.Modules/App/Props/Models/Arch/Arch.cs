@@ -1,12 +1,9 @@
 ﻿
 #nullable enable
-using System.ComponentModel;
-using System.Drawing;
 using NLog;
+using System.ComponentModel;
 using Vixen.Attributes;
-using Vixen.Sys;
 using Vixen.Sys.Props;
-using VixenModules.Property.Color;
 
 namespace VixenModules.App.Props.Models.Arch
 {
@@ -17,6 +14,7 @@ namespace VixenModules.App.Props.Models.Arch
 	{
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private ArchModel _propModel;
+		private ArchStartLocation _startLocation;
 
 		public Arch() : this("Arch 1", 25)
 		{
@@ -53,8 +51,8 @@ namespace VixenModules.App.Props.Models.Arch
                             await GenerateElementsAsync();
                             break;
                         case nameof(StartLocation):
-                            AddOrUpdatePatchingOrder();
-                            break;
+                            await UpdatePatchingOrder(); //The defaults are fine for an Arch
+							break;
                     }
                 }
             }
@@ -73,11 +71,11 @@ namespace VixenModules.App.Props.Models.Arch
                     switch (e.PropertyName)
                     {
                         case nameof(NodeCount):
-                            await UpdateNodesPerString();
+	                        await GenerateElementsAsync();
                             break;
                         case nameof(StartLocation):
-                            AddOrUpdatePatchingOrder();
-                            break;
+                            await UpdatePatchingOrder(); //The defaults are fine for an Arch
+							break;
                     }
                 }
             }
@@ -131,72 +129,53 @@ namespace VixenModules.App.Props.Models.Arch
 			}
 		}
 
+		[DisplayName("Wiring Start")]
+		[PropertyOrder(2)]
+		public ArchStartLocation StartLocation
+		{
+			get => _startLocation;
+			set
+			{
+				SetProperty(ref _startLocation, value);
+			}
+		}
+
 		protected async Task<bool> GenerateElementsAsync()
 		{
-			ElementNode head = GetOrCreatePropElementNode();
+			bool hasUpdated = false;
 
-			AddNodeElements(head, NodeCount);
+			var propNode = GetOrCreatePropElementNode();
+			if (propNode.IsLeaf)
+			{
+				AddNodeElements(propNode,NodeCount);
+				hasUpdated = true;
+			}
+			else if (propNode.Children.Count() != NodeCount)
+			{
+				await UpdateStringNodeCount(NodeCount);
+				hasUpdated = true;
+			}
 
-			PropertySetupHelper.AddOrUpdatePatchingOrder(head, StartLocation.BottomLeft, false);
+			if (hasUpdated)
+			{
+				await UpdatePatchingOrder();
 
-			await AddOrUpdateColorHandling();
+				await AddOrUpdateColorHandling();
+			}
 
 			return true;
 
 		}
 
-		private async Task AddOrUpdateColorHandling(IElementNode? node = null)
+		private async Task UpdatePatchingOrder()
 		{
-			try
-			{
-				var propNode = node ?? GetOrCreatePropElementNode();
-				var cf = GetColorConfiguration();
-				await PropertySetupHelper.AddOrUpdateColorHandling(propNode, cf);
-			}
-			catch (Exception e)
-			{
-				Logging.Error(e, "Error occured updating the color handling");
-			}
+			await AddOrUpdatePatchingOrder(StartLocation == ArchStartLocation.Left ? Props.StartLocation.BottomLeft : Props.StartLocation.BottomRight);
 		}
+	}
 
-        private ColorConfiguration GetColorConfiguration()
-        {
-            // TODO Get this info from the Arch properties at some point
-			ColorConfiguration cf = new()
-            {
-                ColorType = StringType == StringTypes.Pixel
-                    ? ElementColorType.FullColor
-                    : ElementColorType.SingleColor,
-                FullColorOrder = StringType == StringTypes.Pixel ? "RGB" : String.Empty,
-                SingleColor = StringType == StringTypes.Standard ? Color.Red : Color.Empty
-            };
-            return cf;
-        }
-
-        private void AddOrUpdatePatchingOrder()
-		{
-			var propNode = GetOrCreatePropElementNode();
-			PropertySetupHelper.AddOrUpdatePatchingOrder(propNode, StartLocation.BottomLeft, false);
-		}
-
-		private async Task UpdateNodesPerString()
-		{
-			var propNode = GetOrCreatePropElementNode();
-
-			var existingNodes = propNode.Children.Count();
-			if (existingNodes == NodeCount) return;
-
-			if (existingNodes < NodeCount)
-			{
-				var newNodes = AddNodeElements(propNode, NodeCount - existingNodes, existingNodes);
-                await PropertySetupHelper.AddOrUpdateColorHandling(newNodes, GetColorConfiguration());
-            }
-			else
-			{
-				RemoveElements(propNode, existingNodes - NodeCount);
-			}
-
-            PropertySetupHelper.AddOrUpdatePatchingOrder(propNode, StartLocation.BottomLeft, false);
-		}
+	public enum ArchStartLocation
+	{
+		Left,
+		Right
 	}
 }
