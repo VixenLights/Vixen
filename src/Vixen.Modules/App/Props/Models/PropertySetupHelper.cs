@@ -221,7 +221,7 @@ namespace VixenModules.App.Props.Models
 
             if (startLocation == StartLocation.BottomRight)
             {
-                leafNodes = propNode.Children.SelectMany(x => x.GetLeafEnumerator().Reverse());
+                leafNodes = propNode.Children.SelectMany(x => x.GetLeafEnumerator()).Reverse();
             }
             else if (startLocation == StartLocation.TopLeft)
             {
