@@ -41,7 +41,7 @@ namespace VixenModules.App.Props.Models
 		/// </item>
 		/// </list>
 		/// </remarks>
-		[PropertyOrder(1)]
+		[PropertyOrder(2)]
 		[DisplayName("String Type")]
 		public StringTypes StringType
 		{
