@@ -114,7 +114,7 @@ namespace VixenModules.App.Props.Models.Tree
 		/// The number of light strings
 		/// </summary>
 		[DisplayName("String Count")]
-		[PropertyOrder(0)]
+		[PropertyOrder(10)]
 		public int Strings
 		{
 			get => _propModel.Strings;
@@ -129,7 +129,7 @@ namespace VixenModules.App.Props.Models.Tree
 		/// <summary>
 		/// The number of light nodes per string
 		/// </summary>
-		[PropertyOrder(1)]
+		[PropertyOrder(11)]
 		[DisplayName("Nodes Per String")]
 		public int NodesPerString
 		{
@@ -147,7 +147,7 @@ namespace VixenModules.App.Props.Models.Tree
 		}
 
 		[DisplayName("Nodes Size")]
-		[PropertyOrder(2)]
+		[PropertyOrder(12)]
 		public int NodeSize
 		{
 			get => _propModel.NodeSize;
@@ -167,7 +167,7 @@ namespace VixenModules.App.Props.Models.Tree
 		/// <summary>
 		/// The degrees of coverage for the Tree. ex. 180 for a half tree.
 		/// </summary>
-		[PropertyOrder(3)]
+		[PropertyOrder(13)]
 		[DisplayName("Degrees Coverage")]
 		public int DegreesCoverage
 		{
@@ -188,7 +188,7 @@ namespace VixenModules.App.Props.Models.Tree
 		/// Offset in the rotation of where string one occurs in degrees.
 		/// </summary>
 		[DisplayName("Degree Offset")]
-		[PropertyOrder(4)]
+		[PropertyOrder(14)]
 		public int DegreeOffset
 		{
 			get => _propModel.DegreesOffset;
@@ -206,7 +206,7 @@ namespace VixenModules.App.Props.Models.Tree
 		}
 
 		[DisplayName("Base Height")]
-		[PropertyOrder(5)]
+		[PropertyOrder(15)]
 		public int BaseHeight
 		{
 			get => _propModel.BaseHeight;
@@ -223,7 +223,7 @@ namespace VixenModules.App.Props.Models.Tree
 		}
 
 		[DisplayName("Top Height")]
-		[PropertyOrder(6)]
+		[PropertyOrder(16)]
 		public int TopHeight
 		{
 			get => _propModel.TopHeight;
@@ -240,7 +240,7 @@ namespace VixenModules.App.Props.Models.Tree
 		}
 
 		[DisplayName("Top Width")]
-		[PropertyOrder(7)]
+		[PropertyOrder(17)]
 		public int TopWidth
 		{
 			get => _propModel.TopWidth;
@@ -258,7 +258,7 @@ namespace VixenModules.App.Props.Models.Tree
 
 		[Category("Patching")]
 		[DisplayName("Wiring Start")]
-		[PropertyOrder(8)]
+		[PropertyOrder(18)]
 		public StartLocation StartLocation
 		{
 			get => _startLocation;
@@ -267,7 +267,7 @@ namespace VixenModules.App.Props.Models.Tree
 
 		[Category("Patching")]
 		[DisplayName("Zig Zag")]
-		[PropertyOrder(9)]
+		[PropertyOrder(19)]
 		public bool ZigZag
 		{
 			get => _zigZag;
@@ -276,7 +276,7 @@ namespace VixenModules.App.Props.Models.Tree
 
 		[Category("Patching")]
 		[DisplayName("Zig Zag Every")]
-		[PropertyOrder(10)]
+		[PropertyOrder(20)]
 		public int ZigZagOffset
 		{
 			get => _zigZagOffset;

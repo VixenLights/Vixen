@@ -47,13 +47,33 @@ namespace System.Windows.Controls.WpfPropertyGrid
 
       var attribute = x.GetAttribute<PropertyOrderAttribute>();
       if (attribute != null)
-        leftOrder = attribute.Order;
+      {
+	      leftOrder = attribute.Order;
+      }
+      else
+      {
+		  //Look to see if it is another namespace version
+	      var altAttribute = x.GetAttribute<Vixen.Attributes.PropertyOrderAttribute>();
+	      if (altAttribute != null)
+	      {
+		      leftOrder = altAttribute.Order;
+	      }
+      }
 
       int rightOrder = 0;
-
       attribute = y.GetAttribute<PropertyOrderAttribute>();
       if (attribute != null)
-        rightOrder = attribute.Order;
+      {
+	      rightOrder = attribute.Order;
+      }
+      else
+      {
+	      var altAttribute = y.GetAttribute<Vixen.Attributes.PropertyOrderAttribute>();
+	      if (altAttribute != null)
+	      {
+		      rightOrder = altAttribute.Order;
+	      }
+      }
 
       int num = (leftOrder == rightOrder) ? 0 : leftOrder.CompareTo(rightOrder);
       if (num != 0) return num;

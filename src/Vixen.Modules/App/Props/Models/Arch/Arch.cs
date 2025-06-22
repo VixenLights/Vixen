@@ -97,7 +97,7 @@ namespace VixenModules.App.Props.Models.Arch
 		}
 
 		[DisplayName("Nodes Count")]
-		[PropertyOrder(0)]
+		[PropertyOrder(10)]
 		public int NodeCount
 		{
 			get => _propModel.NodeCount;
@@ -114,7 +114,7 @@ namespace VixenModules.App.Props.Models.Arch
 		}
 
 		[DisplayName("Nodes Size")]
-		[PropertyOrder(1)]
+		[PropertyOrder(11)]
 		public int NodeSize
 		{
 			get => _propModel.NodeSize;
@@ -131,7 +131,7 @@ namespace VixenModules.App.Props.Models.Arch
 		}
 
 		[DisplayName("Wiring Start")]
-		[PropertyOrder(2)]
+		[PropertyOrder(12)]
 		public ArchStartLocation StartLocation
 		{
 			get => _startLocation;

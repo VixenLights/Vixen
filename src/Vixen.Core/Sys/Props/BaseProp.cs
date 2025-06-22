@@ -53,13 +53,14 @@ namespace Vixen.Sys.Props
 			init => SetProperty(ref _id, value);
 		}
 
+		[PropertyOrder(0)]
 		public string Name
 		{
 			get => _name;
 			set => SetProperty(ref _name, value);
 		}
 
-		[PropertyOrder(30)]
+		[PropertyOrder(100)]
 		[DisplayName("Created By")]
 		public string CreatedBy
 		{
@@ -67,11 +68,11 @@ namespace Vixen.Sys.Props
 			set => SetProperty(ref _createdBy, value);
 		}
 
-		[PropertyOrder(31)]
+		[PropertyOrder(101)]
 		[DisplayName("Creation Date")]
 		public DateTime CreationDate { get; init; }
 
-		[PropertyOrder(32)]
+		[PropertyOrder(102)]
 		[DisplayName("Modified Date")]
 		public DateTime ModifiedDate
 		{
@@ -79,8 +80,9 @@ namespace Vixen.Sys.Props
 			set => SetProperty(ref _modifiedDate, value);
 		}
 
-		[PropertyOrder(0)]
+		[PropertyOrder(1)]
 		[DisplayName("Prop Type")]
+		[ReadOnly(true)]
 		public PropType PropType { get; init; }
 
 
