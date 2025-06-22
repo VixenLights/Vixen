@@ -20,12 +20,14 @@ namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 		{
 			foreach (var items in m_elements)
 				m_form.RemoveDisplayItem(items);
+			m_form.Refresh();
 		}
 
 		protected void addEffects()
 		{
 			foreach (var items in m_elements)
 				m_form.AddDisplayItem(items);
+			m_form.Refresh();
 		}
 
 		protected int Count
