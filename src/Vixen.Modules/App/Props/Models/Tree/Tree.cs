@@ -1,9 +1,12 @@
 ﻿#nullable enable
 
-using System.ComponentModel;
 using NLog;
+using System.ComponentModel;
 using Vixen.Attributes;
+using Vixen.Services;
 using Vixen.Sys.Props;
+using Vixen.Sys.Props.Components;
+using Vixen.Sys.Props.Model;
 
 namespace VixenModules.App.Props.Models.Tree
 {
@@ -286,18 +289,19 @@ namespace VixenModules.App.Props.Models.Tree
 
 		protected async Task<bool> GenerateElementsAsync()
 		{
-			bool hasUpdated = false;
+			bool hasUpdatedStrings = false;
+			bool hasUpdatedNodes = false;
 			
 			var propNode = GetOrCreatePropElementNode();
 			if (propNode.IsLeaf && Strings > 0)
 			{
 				AddStringElements(propNode, Strings, NodesPerString);
-				hasUpdated = true;
+				hasUpdatedStrings = true;
 			}
 			else if(propNode.Children.Count( )!= Strings)
 			{
 				await UpdateStrings(Strings);
-				hasUpdated = true;
+				hasUpdatedStrings = true;
 			}
 
 			if (propNode.Children.Any())
@@ -305,18 +309,114 @@ namespace VixenModules.App.Props.Models.Tree
 				if (propNode.Children.First().Children.Count() != NodesPerString)
 				{
 					await UpdateNodesPerString(NodesPerString);
-					hasUpdated = true;
+					hasUpdatedStrings = true;
 				}
 			}
 
-			if (hasUpdated)
+			if (hasUpdatedStrings || hasUpdatedNodes)
 			{
 				await AddOrUpdatePatchingOrder(_startLocation, _zigZag, _zigZagOffset);
 
 				await AddOrUpdateColorHandling();
+
+				if (hasUpdatedStrings)
+				{
+					UpdateDefaultPropComponents();
+				}
+
 			}
 			
 			return true;
+		}
+
+		private void UpdateDefaultPropComponents()
+		{
+			
+			CreateOrUpdateStringPropComponents();
+			CreateOrUpdateTreeHalfPropComponents();
+			//TODO Validate user defined components to see if they are still valid
+		}
+
+		private void CreateOrUpdateStringPropComponents()
+		{
+			var head = GetOrCreatePropElementNode();
+			var nameIndex = AutoPropPrefix.Length;
+			if (!PropComponents.Any())
+			{
+				//Add each string as a component
+				foreach (var stringNode in head.Children)
+				{
+					var propComponent = new PropComponent($"{Name} {stringNode.Name.Substring(nameIndex)}", PropComponentType.PropDefined);
+					propComponent.TryAdd(stringNode);
+					PropComponents.Add(propComponent);
+				}
+			}
+			else
+			{
+				//Remove components that no longer exist
+				var componentsToRemove = PropComponents.Where(x => !head.Children.Any(y => x.TargetNodes.Contains(y)))
+					.ToList();
+				foreach (var component in componentsToRemove)
+				{
+					PropComponents.Remove(component);
+				}
+
+				//Add new components if any
+				foreach (var stringNode in head.Children)
+				{
+					if (!PropComponents.Any(x => x.TargetNodes.Contains(stringNode)))
+					{
+						var propComponent = new PropComponent($"{Name} {stringNode.Name.Substring(nameIndex)}", PropComponentType.PropDefined);
+						propComponent.TryAdd(stringNode);
+						PropComponents.Add(propComponent);
+					}
+				}
+			}
+		}
+
+		private void CreateOrUpdateTreeHalfPropComponents()
+		{
+			var head = GetOrCreatePropElementNode();
+
+			//Update the left and right to match the new node count
+			var propComponentLeft = PropComponents.FirstOrDefault(x => x.Name == $"{Name} Left");
+			var propComponentRight = PropComponents.FirstOrDefault(x => x.Name == $"{Name} Right");
+
+			if (propComponentLeft == null)
+			{
+				propComponentLeft = new PropComponent($"{Name} Left", PropComponentType.PropDefined);
+				PropComponents.Add(propComponentLeft);
+			}
+			else
+			{
+				propComponentLeft.Clear();
+			}
+
+			if (propComponentRight == null)
+			{
+				propComponentRight = new PropComponent($"{Name} Right", PropComponentType.PropDefined);
+				PropComponents.Add(propComponentRight);
+			}
+			else
+			{
+				propComponentRight.Clear();
+			}
+
+			int middle = (int)Math.Round(Strings / 2d, MidpointRounding.AwayFromZero);
+			int i = 0;
+			foreach (var stringNode in head.Children)
+			{
+				if (i < middle)
+				{
+					propComponentLeft.TryAdd(stringNode);
+				}
+				else
+				{
+					propComponentRight.TryAdd(stringNode);
+				}
+
+				i++;
+			}
 		}
 
 	}

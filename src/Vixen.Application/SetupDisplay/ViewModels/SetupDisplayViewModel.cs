@@ -54,11 +54,13 @@ namespace VixenApplication.SetupDisplay.ViewModels
 				{
 					SelectedProp = PropNodeTreePropViewModel.SelectedItem.PropNode.Prop;
 					UpdatePreviewModel(SelectedProp);
+					UpdatePropComponentTreeViewModel(SelectedProp);
 				}
 				else
 				{
 					SelectedProp = null;
 					ClearPreviewModel();
+					ClearPropComponentTreeViewModel();
 				}
 			}
 		}
@@ -71,11 +73,13 @@ namespace VixenApplication.SetupDisplay.ViewModels
 				{
 					SelectedProp = PropNodeTreeViewModel.SelectedItem.PropNode.Prop;
 					UpdatePreviewModel(SelectedProp);
+					UpdatePropComponentTreeViewModel(SelectedProp);
 				}
 				else
 				{
 					SelectedProp = null;
 					ClearPreviewModel();
+					ClearPropComponentTreeViewModel();
 				}
 			}
 		}
@@ -177,6 +181,24 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// SelectedProp property data.
 		/// </summary>
 		public static readonly IPropertyData SelectedPropProperty = RegisterProperty<IProp>(nameof(SelectedProp));
+
+		#endregion
+
+		#region PropComponentTreeViewModel property
+
+		/// <summary>
+		/// Gets or sets the PropComponentTreeViewModel value.
+		/// </summary>
+		public PropComponentTreeViewModel PropComponentTreeViewModel
+		{
+			get { return GetValue<PropComponentTreeViewModel>(PropComponentTreeViewModelProperty); }
+			set { SetValue(PropComponentTreeViewModelProperty, value); }
+		}
+
+		/// <summary>
+		/// PropComponentTreeViewModel property data.
+		/// </summary>
+		public static readonly IPropertyData PropComponentTreeViewModelProperty = RegisterProperty<PropComponentTreeViewModel>(nameof(PropComponentTreeViewModel));
 
 		#endregion
 
@@ -563,5 +585,20 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		}
 
 		#endregion
+
+		#region PropComponentView
+
+		private void UpdatePropComponentTreeViewModel(IProp selectedProp)
+		{
+			PropComponentTreeViewModel = new PropComponentTreeViewModel(selectedProp);
+		}
+
+		internal void ClearPropComponentTreeViewModel()
+		{
+			PropComponentTreeViewModel = null;
+
+		}
+
+		#endregion]
 	}
 }

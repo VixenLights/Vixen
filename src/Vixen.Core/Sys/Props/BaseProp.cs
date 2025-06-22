@@ -1,9 +1,12 @@
 ﻿#nullable enable
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.VisualBasic.ApplicationServices;
 using Vixen.Attributes;
 using Vixen.Model;
 using Vixen.Services;
+using Vixen.Sys.Props.Components;
 
 namespace Vixen.Sys.Props
 {
@@ -14,7 +17,6 @@ namespace Vixen.Sys.Props
 		private string _name;
 		private string _createdBy;
 		private DateTime _modifiedDate;
-		private bool _delayUpdates;
 
 		#region Constructors
 
@@ -25,6 +27,8 @@ namespace Vixen.Sys.Props
 			CreationDate = _modifiedDate = DateTime.Now;
 			_createdBy = Environment.UserName;
 			PropType = propType;
+			PropComponents = new();
+			UserDefinedPropComponents = new ();
 
 			PropertyChanged += BaseProp_PropertyChanged;
 		}
@@ -85,24 +89,19 @@ namespace Vixen.Sys.Props
 		[Browsable(false)]
 		public Guid RootPropElementNodeId { get; protected set; } = Guid.Empty;
 
-		protected string AutoPropName => $"Auto-Prop {Name}";
+		protected string AutoPropPrefix => "Auto-Prop";
 
-		protected string AutoPropStringName => "Auto-Prop String";
+		protected string AutoPropName => $"{AutoPropPrefix} {Name}";
 
-		protected string AutoPropNodeName => "Auto-Prop Node";
+		protected string AutoPropStringName => $"{AutoPropPrefix} String";
+
+		protected string AutoPropNodeName => $"{AutoPropPrefix} Node";
 
 		[Browsable(false)]
 		public virtual IPropModel PropModel { get; protected set; } = null!;
 
-		public void BeginUpdate()
-		{
-			_delayUpdates = true;
-		}
-
-		public void EndUpdate()
-		{
-			_delayUpdates = false;
-		}
+		public ObservableCollection<IPropComponent> PropComponents { get; init; }
+		public ObservableCollection<IPropComponent> UserDefinedPropComponents { get; init; }
 
 		public virtual void CleanUp()
 		{
