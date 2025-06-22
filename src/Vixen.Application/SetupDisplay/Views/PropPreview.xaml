@@ -13,13 +13,12 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="..\Themes\Theme.xaml"/>
-                <ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+                <ResourceDictionary Source="../Themes/Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <converter:TranslateTransformConverter x:Key="TranslateTransformConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border BorderThickness="2" Background="Black" BorderBrush="{StaticResource BorderColorBrush}">
+    <Border BorderThickness="2" Background="{StaticResource BackgroundControlBrush}" BorderBrush="{StaticResource BorderColorBrush}">
         <StackPanel Name="CanvasPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Margin="5">
             <ItemsControl Width="{Binding ElementName=CanvasPanel, Path=ActualWidth}" 
                           Height="{Binding ElementName=CanvasPanel, Path=ActualHeight}" 

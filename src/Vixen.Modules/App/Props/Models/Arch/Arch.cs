@@ -4,6 +4,7 @@ using NLog;
 using System.ComponentModel;
 using Vixen.Attributes;
 using Vixen.Sys.Props;
+using Vixen.Sys.Props.Components;
 
 namespace VixenModules.App.Props.Models.Arch
 {
@@ -161,6 +162,8 @@ namespace VixenModules.App.Props.Models.Arch
 				await UpdatePatchingOrder();
 
 				await AddOrUpdateColorHandling();
+				
+				UpdateDefaultPropComponents();
 			}
 
 			return true;
@@ -171,6 +174,56 @@ namespace VixenModules.App.Props.Models.Arch
 		{
 			await AddOrUpdatePatchingOrder(StartLocation == ArchStartLocation.Left ? Props.StartLocation.BottomLeft : Props.StartLocation.BottomRight);
 		}
+
+		#region PropComponents
+
+		private void UpdateDefaultPropComponents()
+		{
+			var head = GetOrCreatePropElementNode();
+			
+			//Update the left and right to match the new node count
+			var propComponentLeft = PropComponents.FirstOrDefault(x => x.Name == $"{Name} Left");
+			var propComponentRight = PropComponents.FirstOrDefault(x => x.Name == $"{Name} Right");
+
+			if (propComponentLeft == null)
+			{
+				propComponentLeft = new PropComponent($"{Name} Left", PropComponentType.PropDefined);
+				PropComponents.Add(propComponentLeft);
+			}
+			else
+			{
+				propComponentLeft.Clear();
+			}
+
+			if (propComponentRight == null)
+			{
+				propComponentRight = new PropComponent($"{Name} Right", PropComponentType.PropDefined);
+				PropComponents.Add(propComponentRight);
+			}
+			else
+			{
+				propComponentRight.Clear();
+			}
+
+			int middle =  (int)Math.Round(NodeCount / 2d, MidpointRounding.AwayFromZero);
+			int i = 0;
+			foreach (var stringNode in head.Children)
+			{
+				if (i < middle)
+				{
+					propComponentLeft.TryAdd(stringNode);
+				}
+				else
+				{
+					propComponentRight.TryAdd(stringNode);
+				}
+
+				i++;
+			}
+		}
+
+		#endregion
+
 	}
 
 	public enum ArchStartLocation
