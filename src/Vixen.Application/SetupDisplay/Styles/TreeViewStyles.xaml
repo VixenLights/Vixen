@@ -7,7 +7,7 @@
        
     </ResourceDictionary.MergedDictionaries>
 
-    <Style x:Key="TreeViewItemContainerStyle" TargetType="{x:Type TreeViewItem}">
+    <Style x:Key="MultipleSelectionTreeViewItemContainerStyle" TargetType="{x:Type TreeViewItem}">
         <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"></Setter>
         <Setter Property="behaviors:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="{Binding IsSelected, Mode=TwoWay}"></Setter>
         <Setter Property="Background" Value="Transparent"/>
@@ -88,14 +88,14 @@
     <Style x:Key="PropComponentTreeViewStyle" TargetType="{x:Type TreeView}">
         <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
         <Setter Property="Background" Value="{StaticResource BackColorBrush}" />
-        <Setter Property="ItemContainerStyle" Value="{StaticResource TreeViewItemContainerStyle}" />
+        <Setter Property="ItemContainerStyle" Value="{StaticResource MultipleSelectionTreeViewItemContainerStyle}" />
         <Setter Property="Padding" Value="0" />
     </Style>
 
     <Style x:Key="UserPropComponentTreeViewStyle" TargetType="{x:Type TreeView}">
         <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
         <Setter Property="Background" Value="{StaticResource BackColorBrush}" />
-        <Setter Property="ItemContainerStyle" Value="{StaticResource TreeViewItemContainerStyle}" />
+        <Setter Property="ItemContainerStyle" Value="{StaticResource MultipleSelectionTreeViewItemContainerStyle}" />
         <Setter Property="Padding" Value="0" />
     </Style>
 
