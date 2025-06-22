@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.VisualBasic.ApplicationServices;
 using Vixen.Attributes;
 using Vixen.Model;
 using Vixen.Services;
@@ -100,7 +99,13 @@ namespace Vixen.Sys.Props
 		[Browsable(false)]
 		public virtual IPropModel PropModel { get; protected set; } = null!;
 
+		[Browsable(false)]
+		public virtual IEnumerable<IElementNode> TargetNodes => [GetOrCreatePropElementNode()];
+
+		[Browsable(false)]
 		public ObservableCollection<IPropComponent> PropComponents { get; init; }
+		
+		[Browsable(false)]
 		public ObservableCollection<IPropComponent> UserDefinedPropComponents { get; init; }
 
 		public virtual void CleanUp()

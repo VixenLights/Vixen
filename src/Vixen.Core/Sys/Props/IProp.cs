@@ -4,7 +4,7 @@ using Vixen.Sys.Props.Components;
 
 namespace Vixen.Sys.Props
 {
-	public interface IProp : INotifyPropertyChanged
+	public interface IProp : ITargetNodeProvider, INotifyPropertyChanged
 	{
 		/// <summary>
 		/// Unique id of the Prop
@@ -17,30 +17,45 @@ namespace Vixen.Sys.Props
 		string Name { get; set; }
 
 		/// <summary>
-		/// Created by username
+		/// Gets or sets the name of the user who created the prop.
 		/// </summary>
+		/// <remarks>
+		/// This property is used to track the creator of the prop for auditing or informational purposes.
+		/// </remarks>
 		string CreatedBy { get; set; }
 
 		/// <summary>
-		/// Creation date of the Prop
+		/// Gets the date and time when the property was created.
 		/// </summary>
+		/// <remarks>
+		/// This property is initialized at the time of the property's creation and cannot be modified afterward.
+		/// </remarks>
 		DateTime CreationDate { get; }
 
 		/// <summary>
-		/// Last modified date of the Prop
+		/// Gets or sets the date and time when the property was last modified.
 		/// </summary>
+		/// <remarks>
+		/// This property is updated whenever changes are made to the property.
+		/// </remarks>
 		DateTime ModifiedDate { get; set; }
 
 		/// <summary>
-		/// Defined type of the Prop.
+		/// Gets the type of the prop, which defines its structural or visual characteristics.
 		/// </summary>
+		/// <remarks>
+		/// The <see cref="PropType"/> enumeration includes various predefined types such as 
+		/// <c>Custom</c>, <c>Single</c>, <c>Line</c>, <c>PolyLine</c>, <c>Arch</c>, <c>Circle</c>, 
+		/// <c>CandyCane</c>, <c>Star</c>, <c>Tree</c>, and <c>Grid</c>.
+		/// </remarks>
 		PropType PropType { get; }
 
 		/// <summary>
 		/// Model for rendering the visual
 		/// </summary>
 		IPropModel PropModel { get; }
-		
+
+	
 		/// <summary>
 		/// Gets the collection of components associated with the prop.
 		/// </summary>
