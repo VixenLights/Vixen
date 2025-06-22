@@ -259,11 +259,14 @@ namespace Vixen.Sys
 			// Load system data in order of dependency.
 			// The system data generally resides in the data branch, but it
 			// may not be in the case of an alternate context.
-			string systemDataPath = _GetSystemDataPath();
+			string systemDataPath = GetSystemDataPath();
 			// Load module data before system config.
 			// System config creates objects that use modules that have data in the store.
 			ModuleStore = _LoadModuleStore(systemDataPath) ?? new ModuleStore();
-			progress?.Report(Tuple.Create(50, "Module config loaded"));
+			progress?.Report(Tuple.Create(30, "Module config loaded"));
+			// Join all the Preview ModuleStore files into the main ModuleStore
+			ModuleStore += _LoadModuleStorePreviews(systemDataPath);
+			progress?.Report(Tuple.Create(50, "Profile configs loaded"));
 			SystemConfig = _LoadSystemConfig(systemDataPath) ?? new SystemConfig();
 			progress?.Report(Tuple.Create(70, "System config loaded"));
 
@@ -275,6 +278,7 @@ namespace Vixen.Sys
 			Filters.AddRange(SystemConfig.Filters);
 
 			DataFlow.Initialize(SystemConfig.DataFlow);
+
 		}
 
 		public static void ReloadSystemConfig()
@@ -364,13 +368,97 @@ namespace Vixen.Sys
 			get { return SystemConfig.Identity; }
 		}
 
-		internal static ModuleStore ModuleStore { get; private set; }
-		internal static SystemConfig SystemConfig { get; private set; }
+		internal static ModuleStore ModuleStore { get; set; }
+		public static SystemConfig SystemConfig { get; private set; }
 
 		private static ModuleStore _LoadModuleStore(string systemDataPath)
 		{
 			string moduleStoreFilePath = Path.Combine(systemDataPath, ModuleStore.FileName);
 			return FileService.Instance.LoadModuleStoreFile(moduleStoreFilePath);
+		}
+
+		/// <summary>
+		/// Load the individual Preview ModuleStore files.
+		/// </summary>
+		/// <param name="systemDataPath">Specifies the folder path of the ModuleStore files</param>
+		/// <returns></returns>
+		private static ModuleStore _LoadModuleStorePreviews(string systemDataPath)
+		{
+			ModuleStore moduleStore = new ModuleStore();
+
+			string[] directory = Directory.GetFiles(systemDataPath, ModuleStore.PreviewNameBase + "*.xml");
+			foreach (string file in directory)
+			{
+				string preview = Path.GetFileNameWithoutExtension(file).Replace(ModuleStore.PreviewNameBase, string.Empty);
+
+				// Load the ModuleStore file for the Preview.
+				string moduleStoreFilePath = systemDataPath + "\\" + ModuleStore.PreviewNameBase + preview + ".xml";
+				moduleStore += FileService.Instance.LoadModuleStoreFile(moduleStoreFilePath);
+			}
+
+			return moduleStore;
+		}
+
+		/// <summary>
+		/// Deletes the Preview ModuleStore file for the specified module store file name.
+		/// </summary>
+		/// <param name="moduleStoreFile">Specifies the name of the target file</param>
+		public static void DeleteModuleStorePreviewFile(string moduleStoreFile)
+		{
+			string moduleStoreFilePath = GetSystemDataPath() + "\\" + ModuleStore.PreviewNameBase + moduleStoreFile + ".xml";
+
+			// Delete the Preview ModuleStore file if it exists.
+			if (File.Exists(moduleStoreFilePath))
+			{
+				File.Delete(moduleStoreFilePath);
+			}
+
+			// Delete all the Preview ModuleStore files in the backup folder.
+			string[] directory = Directory.GetFiles(GetSystemDataPath() + "\\" + Vixen.IO.Xml.XElementFileWriter.BackupFolder, ModuleStore.PreviewNameBase + moduleStoreFile + "*.xml");
+			foreach (string file in directory)
+			{
+				try
+				{
+					File.Delete(file);
+				}
+				catch (Exception ex)
+				{
+					Logging.Error(ex, $"Error deleting backup file {file}");
+				}
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="oldModuleStoreFile">Specifies the old name of the Preview file</param>
+		/// <param name="newModuleStoreFile">Specifies the new name of the Preview file</param>
+		public static void RenameModuleStorePreviewFile(string oldModuleStoreFile, string newModuleStoreFile)
+		{
+			string oldModuleStoreFilePath = GetSystemDataPath() + "\\" + ModuleStore.PreviewNameBase + oldModuleStoreFile + ".xml";
+			string newModuleStoreFilePath = GetSystemDataPath() + "\\" + ModuleStore.PreviewNameBase + newModuleStoreFile + ".xml";
+
+			// Rename the Preview ModuleStore file if it exists.
+			if (File.Exists(oldModuleStoreFilePath))
+			{
+				File.Move(oldModuleStoreFilePath, newModuleStoreFilePath, true);
+			}
+
+			// Rename all the Preview ModuleStore files in the backup folder.
+			string[] directory = Directory.GetFiles(GetSystemDataPath() + "\\" + Vixen.IO.Xml.XElementFileWriter.BackupFolder, ModuleStore.PreviewNameBase + oldModuleStoreFile + "*.xml");
+			foreach (string file in directory)
+			{
+				newModuleStoreFilePath = file.Replace(oldModuleStoreFile, newModuleStoreFile);
+
+				try
+				{
+					File.Move(file, newModuleStoreFilePath, true);
+				}
+				catch (Exception ex)
+				{
+					Logging.Error(ex, $"Error renaming backup file {file}");
+				}
+			}
 		}
 
 		private static SystemConfig _LoadSystemConfig(string systemDataPath)
@@ -380,7 +468,7 @@ namespace Vixen.Sys
 		}
 
 	
-		private static string _GetSystemDataPath()
+		public static string GetSystemDataPath()
 		{
 			// Look for a user data file in the binary directory.
 			string filePath = Path.Combine(Paths.BinaryRootPath, SystemConfig.FileName);

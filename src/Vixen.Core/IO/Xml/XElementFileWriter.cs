@@ -8,7 +8,7 @@ namespace Vixen.IO.Xml
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private const int BackupsToKeep = 3;
 		private const int DaysToKeep = 3;
-		private const string BackupFolder = "auto_backup";
+		public const string BackupFolder = "auto_backup";
 
 		public void WriteFile(string filePath, XElement content)
 		{

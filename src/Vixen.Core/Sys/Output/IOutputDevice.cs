@@ -15,5 +15,6 @@
 		void UpdateCommands();
 		int UpdateInterval { get; set; }
 		IOutputDeviceUpdateSignaler UpdateSignaler { get; }
+		bool ContentChanged { get; set; }
 	}
 }

@@ -5,7 +5,7 @@ using Vixen.Sys;
 
 namespace Vixen.Services
 {
-	internal class FileService : IFileService
+	public class FileService : IFileService
 	{
 		private static FileService _instance;
 
