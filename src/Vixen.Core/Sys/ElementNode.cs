@@ -10,7 +10,7 @@ namespace Vixen.Sys
 	{
 		// Making this static so there doesn't have to be potentially thousands of
 		// subscriptions from the node manager.
-		public static event EventHandler? Changed;
+		public static event EventHandler<ElementNodeChangedEventArgs>? Changed;
 		//Logger Class
 		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		#region Constructors
@@ -309,7 +309,7 @@ namespace Vixen.Sys
 
 		protected static void OnChanged(ElementNode value)
 		{
-		    Changed?.Invoke(value, EventArgs.Empty);
+		    Changed?.Invoke(value, new ElementNodeChangedEventArgs(value));
 		}
 
 		#endregion
@@ -325,5 +325,10 @@ namespace Vixen.Sys
 		{
 			return Id.GetHashCode();
 		}
+	}
+
+	public class ElementNodeChangedEventArgs(IElementNode elementNode) : EventArgs
+	{
+		public IElementNode Node { get; set; } = elementNode;
 	}
 }
