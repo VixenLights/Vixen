@@ -70,91 +70,6 @@
                 </Setter>
             </Style>
 
-            <Style x:Key="PropNodeListStyle" TargetType="{x:Type ListView}">
-                <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
-                <Setter Property="Background" Value="{StaticResource BackColorBrush}" />
-                <Setter Property="ItemContainerStyle" Value="{StaticResource PropNodeListViewItemContainerStyle}"></Setter>
-            </Style>
-
-            <Style x:Key="PropNodeTreeViewItemContainerStyle" TargetType="{x:Type TreeViewItem}">
-                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"></Setter>
-                <Setter Property="behaviors:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="{Binding IsSelected, Mode=TwoWay}"></Setter>
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment,
-				  RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-                <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment,
-				  RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-                <Setter Property="Padding" Value="1,0,0,0"/>
-                <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
-                <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type TreeViewItem}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition MinWidth="19" Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
-                                <ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" IsChecked="{Binding Path=IsExpanded,
-								  RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press"/>
-                                <Border Name="Bd" Grid.Column="1" BorderThickness="1" >
-                                    <ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
-                                </Border>
-                                <ItemsPresenter x:Name="ItemsHost" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"/>
-                            </Grid>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsExpanded" Value="false">
-                                    <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
-                                </Trigger>
-                                <Trigger Property="HasItems" Value="false">
-                                    <Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
-                                </Trigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="HasHeader" Value="false"/>
-                                        <Condition Property="Width" Value="Auto"/>
-                                    </MultiTrigger.Conditions>
-                                    <Setter TargetName="PART_Header" Property="MinWidth" Value="75"/>
-                                </MultiTrigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="HasHeader" Value="false"/>
-                                        <Condition Property="Height" Value="Auto"/>
-                                    </MultiTrigger.Conditions>
-                                    <Setter TargetName="PART_Header" Property="MinHeight" Value="19"/>
-                                </MultiTrigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="behaviors:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="true"/>
-                                        <Condition Property="Selector.IsSelectionActive" Value="false"/>
-                                    </MultiTrigger.Conditions>
-                                    <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
-                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Border}"/>
-                                </MultiTrigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="behaviors:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="true"/>
-                                        <Condition Property="Selector.IsSelectionActive" Value="True"/>
-                                    </MultiTrigger.Conditions>
-                                    <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}" />
-                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border}"/>
-                                    <Setter Property="BorderThickness" TargetName="Bd" Value="1"></Setter>
-                                    <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
-                                </MultiTrigger>
-                                <Trigger Property="IsEnabled" Value="false">
-                                    <Setter Property="Foreground" Value="{StaticResource ForeColorDisabledBrush}"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
             <ContextMenu x:Key="PropNodeTreeContextMenu">
                 <MenuItem Header="Add Prop" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreatePropCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
                 <MenuItem Header="Create Group" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreateNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
@@ -163,7 +78,7 @@
             <Style x:Key="PropNodeTreeViewStyle" TargetType="{x:Type TreeView}">
                 <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
                 <Setter Property="Background" Value="{StaticResource BackColorBrush}" />
-                <Setter Property="ItemContainerStyle" Value="{StaticResource PropNodeTreeViewItemContainerStyle}" />
+                <Setter Property="ItemContainerStyle" Value="{StaticResource MultipleSelectionTreeViewItemContainerStyle}" />
                 <Setter Property="Padding" Value="0" />
                 <Setter Property="ContextMenu" Value="{StaticResource PropNodeTreeContextMenu}"/>
             </Style>
@@ -222,9 +137,8 @@
                 <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
                 <Setter Property="SnapsToDevicePixels" Value="True"/>
                 <Setter Property="Padding" Value="4,1"/>
-                <!--<Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-<Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>-->
-
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="BorderBrush" Value="Transparent"/>
                 <Setter Property="BorderThickness" Value="1"/>
 
@@ -295,7 +209,6 @@
 
                         <i:Interaction.Behaviors>
                             <behaviors:TreeViewMultipleSelectionBehavior SelectedItems="{Binding PropNodeTreeViewModel.SelectedItems}" />
-                            <!--<interactivity:KeyPressToCommand Command="{Binding DrawingPanelViewModel.DeleteSelectedLightsCommand}" Key="Delete" />-->
                             <interactivity:KeyPressToCommand Command="{Binding PropNodeTreeViewModel.CutCommand}" Key="X" Modifiers="Control" />
                             <interactivity:KeyPressToCommand Command="{Binding PropNodeTreeViewModel.CopyCommand}" Key="C" Modifiers="Control"/>
                             <interactivity:KeyPressToCommand Command="{Binding PropNodeTreeViewModel.PasteCommand}" Key="V" Modifiers="Control"/>
@@ -405,7 +318,6 @@
                     </ListView>
                 </TabItem>
             </TabControl>
-
         </Grid>
     </Border>
 </UserControl>
