@@ -58,6 +58,7 @@ using MarkCollection = VixenModules.App.Marks.MarkCollection;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 using Size = System.Drawing.Size;
 using Timer = System.Windows.Forms.Timer;
+using Vixen.Sys.Props;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -866,8 +867,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					if (e.Data.GetData(typeof(Guid)) is Guid g)
 					{
-						EffectDropped(g, TimelineControl.grid.TimeAtPosition(p), TimelineControl.grid.RowAtPosition(p));
-					}
+					EffectDropped(g, TimelineControl.grid.TimeAtPosition(p), TimelineControl.grid.RowAtPosition(p));
+				}
 					else
 					{
 						throw new InvalidOperationException("Guid data was present but could not be retrieved.");
@@ -882,8 +883,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						if (DragDropUtils.TryGetDragDropData(e.Data, out ColorGradient cg))
 						{
-							HandleGradientDrop(element, cg);
-						}
+						HandleGradientDrop(element, cg);
+					}
 						else
 						{
 							Debug.WriteLine("ColorGradient data found in unexpected format.");
@@ -893,19 +894,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						if (DragDropUtils.TryGetDragDropData(e.Data, out Curve curve))
 						{
-							HandleCurveDrop(element, curve);
+						HandleCurveDrop(element, curve);
 						} 
 						else
 						{
 							Debug.WriteLine("Curve data found in unexpected format.");
-						}
+					}
 					}
 					else if (e.Data.GetDataPresent(typeof (Color)))
 					{
 						if (DragDropUtils.TryGetDragDropData(e.Data, out Color color))
 						{
-							HandleColorDrop(element, color);
-						}
+						HandleColorDrop(element, color);
+					}
 						else
 						{
 							Debug.WriteLine("Color data found in unexpected format.");
@@ -978,12 +979,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						if (DragDropUtils.TryGetDragDropData(dataObject, out Color c))
 						{
-							if (!discreteColors.Contains(c))
-							{
+						if (!discreteColors.Contains(c))
+						{
 								_dragDropToElementEffect.effect = DragDropEffects.None;
-								return DragDropEffects.None;
-							}
+							return DragDropEffects.None;
 						}
+					}
 					}
 
 					_dragDropToElementEffect.effect = DragDropEffects.Copy;
@@ -996,13 +997,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						if(DragDropUtils.TryGetDragDropData(dataObject, out ColorGradient c))
 						{
-							var colors = c.Colors.Select(x => x.Color.ToRGB().ToArgb());
-							if (!discreteColors.IsSupersetOf(colors))
-							{
+						var colors = c.Colors.Select(x => x.Color.ToRGB().ToArgb());
+						if (!discreteColors.IsSupersetOf(colors))
+						{
 								_dragDropToElementEffect.effect = DragDropEffects.None;
-								return DragDropEffects.None;
-							}
+							return DragDropEffects.None;
 						}
+					}
 					}
 
 					_dragDropToElementEffect.effect = DragDropEffects.Copy;
@@ -1301,7 +1302,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//Scale our default pixel height for the rows
 			if (_sequence.DefaultRowHeight != 0)
 			{
-			TimelineControl.rowHeight = _sequence.DefaultRowHeight;
+				TimelineControl.rowHeight = _sequence.DefaultRowHeight;
 			}
 			else
 			{
@@ -1313,6 +1314,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			TimelineControl.EnableDisableHandlers(false);
 			foreach (ElementNode node in VixenSystem.Nodes.GetRootNodes())
+			{
+				AddNodeAsRow(node, null);
+			}
+
+			foreach (PropNode node in VixenSystem.Props.RootNodes)
 			{
 				AddNodeAsRow(node, null);
 			}
@@ -2190,8 +2196,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected void ElementChangedRowsHandler(object sender, ElementRowChangeEventArgs e)
 		{
-			ElementNode oldElement = e.OldRow.Tag as ElementNode;
-			ElementNode newElement = e.NewRow.Tag as ElementNode;
+			IElementNode oldElement = e.OldRow.Tag as IElementNode;
+			IElementNode newElement = e.NewRow.Tag as IElementNode;
 			TimedSequenceElement movedElement = e.Element as TimedSequenceElement;
 
 			if (movedElement != null)
@@ -2204,7 +2210,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				// all rows that represent the new element and add it to them.
 				foreach (Row row in TimelineControl)
 				{
-					ElementNode rowElement = row.Tag as ElementNode;
+					IElementNode rowElement = row.Tag as IElementNode;
 
 					if (rowElement == oldElement && row != e.OldRow)
 						row.RemoveElement(movedElement);
@@ -3735,7 +3741,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimeSpan timeSpan, object[] parameterValues = null)
 		{
 			// get the target element
-			var targetNode = (ElementNode) row.Tag;
+			var targetNode = (IElementNode) row.Tag;
 
 			// populate the given effect instance with the appropriate target node and times, and wrap it in an effectNode
 			effectInstance.TargetNodes = new[] {targetNode};
@@ -3896,14 +3902,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 									// dunno what we want to do: prompt to add new elements for them? map them to others? etc.
 									const string message = "TimedSequenceEditor: <AddElementForEffectNodeTpl> - No Timeline.Row is associated with a target ElementNode for this EffectNode. It now exists in the sequence, but not in the GUI.";
 									Logging.Error(message);
-									//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-									MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-									var messageBox = new MessageBoxForm(message, @"", false, false);
-									messageBox.ShowDialog(this);
+									if (InvokeRequired)
+									{
+										Invoke(new Delegates.GenericVoidString(ShowErrorMessage), message);
+									}
 								}
 							});
 			TimelineControl.grid.RenderElement(element);
 			return element;
+		}
+
+		private void ShowErrorMessage(string message)
+		{
+			MessageBoxForm mbf = new MessageBoxForm(message, "Error", MessageBoxButtons.OK, SystemIcons.Error);
+			mbf.ShowDialog(this);
 		}
 
 		private TimedSequenceElement SetupNewElementFromNode(EffectNode node)
@@ -4004,7 +4016,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		/// <param name="node">The node to generate a row for.</param>
 		/// <param name="parentRow">The parent node the row should belong to, if any.</param>
-		private void AddNodeAsRow(ElementNode node, Row parentRow)
+		private void AddNodeAsRow(IElementNode node, Row parentRow)
 		{
 			// made the new row from the given node and add it to the control.
 			TimedSequenceRowLabel label = new TimedSequenceRowLabel {Name = node.Name};
@@ -4032,7 +4044,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_doEventsCounter++;
 
 			// iterate through all if its children, adding them as needed
-			foreach (ElementNode child in node.Children)
+			foreach (IElementNode child in node.Children)
 			{
 				AddNodeAsRow(child, newRow);
 
@@ -4227,10 +4239,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						if (propertyMetaDataTuple.success)
 						{
 							HandleColorDropOnColor(color, elementValues, e, propertyMetaDataTuple.propertyMetaData);
-						}
-						
 					}
+						
 				}
+			}
 			}
 			else
 			{
@@ -4275,30 +4287,30 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							if (parameterPicker.PropertyInfo.PropertyType == typeof(Color))
 							{
 								HandleColorDropOnColor(color, elementValues, e, propertyInfo);
-							}
-							else if (parameterPicker.PropertyInfo.PropertyType == typeof(ColorGradient))
-							{
+						}
+						else if (parameterPicker.PropertyInfo.PropertyType == typeof(ColorGradient))
+						{
 								HandleGradientDropOnGradient(new ColorGradient(color), elementValues, e, propertyInfo);
-							}
-							else if (parameterPicker.PropertyInfo.PropertyType == typeof(List<ColorGradient>))
-							{
+						}
+						else if (parameterPicker.PropertyInfo.PropertyType == typeof(List<ColorGradient>))
+						{
 								List<ColorGradient> gradients = propertyInfo.Descriptor.GetValue(propertyInfo.Owner) as List<ColorGradient>;
-								var newGradients = gradients.ToList();
-								newGradients[parameterPicker.SelectedControl.Index] = new ColorGradient(color);
+							var newGradients = gradients.ToList();
+							newGradients[parameterPicker.SelectedControl.Index] = new ColorGradient(color);
 								elementValues.Add(element, new Tuple<object, PropertyMetaData>(parameterPicker.PropertyInfo.Descriptor.GetValue(parameterPicker.PropertyInfo.Owner), propertyInfo));
 								UpdateEffectProperty(propertyInfo, element, newGradients);
-							}
-							else if (parameterPicker.PropertyInfo.PropertyType == typeof(List<GradientLevelPair>))
-							{
+						}
+						else if (parameterPicker.PropertyInfo.PropertyType == typeof(List<GradientLevelPair>))
+						{
 								List<GradientLevelPair> gradients = propertyInfo.Descriptor.GetValue(propertyInfo.Owner) as List<GradientLevelPair>;
-								var newGradients = gradients.ToList();
-								newGradients[parameterPicker.SelectedControl.Index] = new GradientLevelPair(new ColorGradient(color), gradients[parameterPicker.SelectedControl.Index].Curve);
+							var newGradients = gradients.ToList();
+							newGradients[parameterPicker.SelectedControl.Index] = new GradientLevelPair(new ColorGradient(color), gradients[parameterPicker.SelectedControl.Index].Curve);
 								elementValues.Add(element, new Tuple<object, PropertyMetaData>(propertyInfo.Descriptor.GetValue(propertyInfo.Owner), propertyInfo));
 								UpdateEffectProperty(propertyInfo, element, newGradients);
-							}
 						}
-						
 					}
+						
+				}
 				}
 				else
 				{
@@ -4349,9 +4361,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							var propertyInfo = propertyMetaDataTuple.propertyMetaData;
 							elementValues.Add(e, new Tuple<object, PropertyMetaData>(propertyInfo.Descriptor.GetValue(propertyInfo.Owner), propertyInfo));
 							UpdateEffectProperty(propertyInfo, e, curve);
-						}
-						
 					}
+						
+				}
 				}
 				else if (property.PropertyType == typeof(List<GradientLevelPair>))
 				{
@@ -4362,8 +4374,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						{
 							var propertyInfo = propertyMetaDataTuple.propertyMetaData;
 							HandleCurveDropOnGradientLevelPairList(propertyInfo, e, elementValues, curve);
-						}
 					}
+				}
 				}
 
 			}
@@ -4401,9 +4413,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								var propertyInfo = propertyMetaDataTuple.propertyMetaData;
 								elementValues.Add(e, new Tuple<object, PropertyMetaData>(propertyInfo.Descriptor.GetValue(propertyInfo.Owner), propertyInfo));
 								UpdateEffectProperty(propertyInfo, e, curve);
-							}
-							
 						}
+							
+					}
 					}
 					else if (parameterPicker.PropertyInfo.PropertyType == typeof(List<GradientLevelPair>))
 					{
@@ -4419,15 +4431,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 									{
 										continue;
 									}
-									var newGradientLevelPairs = gradientLevelPairs.ToList();
-									newGradientLevelPairs[parameterPicker.SelectedControl.Index] =
-										new GradientLevelPair(gradientLevelPairs[parameterPicker.SelectedControl.Index].ColorGradient, curve);
+							var newGradientLevelPairs = gradientLevelPairs.ToList();
+							newGradientLevelPairs[parameterPicker.SelectedControl.Index] =
+								new GradientLevelPair(gradientLevelPairs[parameterPicker.SelectedControl.Index].ColorGradient, curve);
 									elementValues.Add(e, new Tuple<object, PropertyMetaData>(propertyInfo.Descriptor.GetValue(propertyInfo.Owner), propertyInfo));
 									UpdateEffectProperty(propertyInfo, e, newGradientLevelPairs);
-								}
-							}
-							
 						}
+					}
+					
+				}
 						
 					}
 					
@@ -4511,26 +4523,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (properties.Count == 1 && elements.Count() == 1)
 			{
 				var property = properties.First();
-				foreach (var e in elements)
-				{
+					foreach (var e in elements)
+					{
 					var propertyMetaDataTuple =  property.ToNewOwner(e.EffectNode.Effect);
 					if (propertyMetaDataTuple.success)
-					{
+				{
 						var propertyMetaData = propertyMetaDataTuple.propertyMetaData;
 						if (propertyMetaData.PropertyType == typeof(ColorGradient))
-						{
+					{
 							HandleGradientDropOnGradient(gradient, elementValues, e, propertyMetaData);
-						}
+					}
 						else if (propertyMetaData.PropertyType == typeof(List<ColorGradient>))
 						{
 							HandleGradientDropOnColorGradientList(propertyMetaData, e, elementValues, gradient);
-						}
+				}
 						else if (propertyMetaData.PropertyType == typeof(List<GradientLevelPair>))
-						{
+				{
 							HandleGradientDropOnGradientLevelPairList(propertyMetaData, e, elementValues, gradient);
-						}
 					}
 				}
+			}
 			}
 			else
 			{
@@ -4575,33 +4587,33 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							if (parameterPicker.PropertyInfo.PropertyType == typeof(ColorGradient))
 							{
 								HandleGradientDropOnGradient(gradient, elementValues, e, propertyInfo);
-							}
+						}
 							else if (parameterPicker.PropertyInfo.PropertyType == typeof(List<ColorGradient>))
-							{
+						{
 								List<ColorGradient> gradients = propertyInfo.Descriptor.GetValue(propertyInfo.Owner) as List<ColorGradient>;
 								if (gradients.Count < parameterPicker.SelectedControl.Index + 1)
 								{
 									continue;
 								}
-								var newGradients = gradients.ToList();
-								newGradients[parameterPicker.SelectedControl.Index] = gradient;
+							var newGradients = gradients.ToList();
+							newGradients[parameterPicker.SelectedControl.Index] = gradient;
 								elementValues.Add(e, new Tuple<object, PropertyMetaData>(propertyInfo.Descriptor.GetValue(propertyInfo.Owner), propertyInfo));
 								UpdateEffectProperty(propertyInfo, e, newGradients);
-							}
+						}
 							else if (parameterPicker.PropertyInfo.PropertyType == typeof(List<GradientLevelPair>))
-							{
+						{
 								List<GradientLevelPair> gradients = propertyInfo.Descriptor.GetValue(propertyInfo.Owner) as List<GradientLevelPair>;
 								if (gradients.Count < parameterPicker.SelectedControl.Index + 1)
 								{
 									continue;
 								}
-								var newGradients = gradients.ToList();
+							var newGradients = gradients.ToList();
 								newGradients[parameterPicker.SelectedControl.Index] = new GradientLevelPair(gradient, gradients[parameterPicker.SelectedControl.Index].Curve);
 								elementValues.Add(e, new Tuple<object, PropertyMetaData>(propertyInfo.Descriptor.GetValue(propertyInfo.Owner), propertyInfo));
 								UpdateEffectProperty(propertyInfo, e, newGradients);
-							}
 						}
 					}
+				}
 				}
 				else
 				{

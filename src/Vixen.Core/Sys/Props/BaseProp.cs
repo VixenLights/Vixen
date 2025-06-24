@@ -102,8 +102,8 @@ namespace Vixen.Sys.Props
 		public virtual IPropModel PropModel { get; protected set; } = null!;
 
 		[Browsable(false)]
-		public virtual IEnumerable<IElementNode> TargetNodes => [GetOrCreatePropElementNode()];
-
+		public virtual IElementNode TargetNode => GetOrCreatePropElementNode();
+		
 		[Browsable(false)]
 		public ObservableCollection<IPropComponent> PropComponents { get; init; }
 		

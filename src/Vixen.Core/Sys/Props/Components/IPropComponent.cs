@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Vixen.Sys.Props.Components
 {
-	public interface IPropComponent: ITargetNodeProvider, INotifyPropertyChanged
+	public interface IPropComponent: INotifyPropertyChanged
 	{
 		/// <summary>
 		/// Gets the unique identifier for the component.
@@ -95,6 +95,8 @@ namespace Vixen.Sys.Props.Components
 		/// <c>true</c> if the component is user-defined; otherwise, <c>false</c>.
 		/// </value>
 		bool IsUserDefined { get; }
+		
+		IEnumerable<IElementNode> TargetNodes { get; }
 
 	}
 }
