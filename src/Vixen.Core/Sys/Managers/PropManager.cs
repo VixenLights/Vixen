@@ -8,15 +8,10 @@ namespace Vixen.Sys.Managers
 {
 	public class PropManager : BindableBase
 	{
-		private readonly Dictionary<Guid, IProp> _propLocator = new Dictionary<Guid, IProp>();
-		private readonly PropNode _rootNode;
+		private readonly Dictionary<Guid, IProp> _propLocator = new();
+		private readonly PropNode _rootNode = new("Props");
 
-		public event EventHandler PropCollectionChanged;
-
-		public PropManager()
-		{
-			RootNode = new PropNode("Props");
-		}
+		public event EventHandler? PropCollectionChanged;
 
 		public PropNode RootNode
 		{
@@ -31,20 +26,15 @@ namespace Vixen.Sys.Managers
 		public ObservableCollection<PropNode> RootNodes
 		{
 			get => RootNode.Children;
-			set
-			{
-				RootNode.Children = value;
-				OnPropertyChanged(nameof(RootNodes));
-			}
 		}
 
 		public void CreateGroupForPropNodes(string name, IEnumerable<PropNode> propNodes)
 		{
-			var em = CreateNode(name);
+			var propNode = CreateNode(name);
 			foreach (var elementModel in propNodes)
 			{
-				em.Children.Add(elementModel);
-				elementModel.Parents.Add(em.Id);
+				propNode.AddChild(elementModel);
+				elementModel.AddParent(propNode);
 			}
 		}
 
@@ -87,7 +77,7 @@ namespace Vixen.Sys.Managers
 			if (!propNode.Parents.Any())
 			{
 				//We no longer have any parents, so clean up the props in our tree.
-				var leafs = propNode.GetLeafEnumerator();
+				var leafs = propNode.GetIPropNodeLeafEnumerator();
 				foreach (var leaf in leafs)
 				{
 					if (leaf.TryGetProp(out var prop))
@@ -114,22 +104,17 @@ namespace Vixen.Sys.Managers
 
 		public IProp? FindById(Guid id)
 		{
-			if (_propLocator.TryGetValue(id, out IProp prop))
-			{
-				return prop;
-			}
-
-			return null;
+			return _propLocator.GetValueOrDefault(id);
 		}
 
 		private void OnPropAdded(IProp prop)
 		{
-			PropCollectionChanged.Invoke(this, new PropCollectionEventArgs(prop, NotifyCollectionChangedAction.Add));
+			PropCollectionChanged?.Invoke(this, new PropCollectionEventArgs(prop, NotifyCollectionChangedAction.Add));
 		}
 
 		private void OnPropRemoved(IProp prop)
 		{
-			PropCollectionChanged.Invoke(this, new PropCollectionEventArgs(prop, NotifyCollectionChangedAction.Remove));
+			PropCollectionChanged?.Invoke(this, new PropCollectionEventArgs(prop, NotifyCollectionChangedAction.Remove));
 		}
 
 		public class PropCollectionEventArgs(IProp prop, NotifyCollectionChangedAction action) : EventArgs

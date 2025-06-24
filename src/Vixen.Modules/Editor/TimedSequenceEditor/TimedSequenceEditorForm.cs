@@ -58,6 +58,7 @@ using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 using PropertyDescriptor = System.ComponentModel.PropertyDescriptor;
 using Size = System.Drawing.Size;
 using Common.Broadcast;
+using Vixen.Sys.Props;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -1241,7 +1242,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//Scale our default pixel height for the rows
 			if (_sequence.DefaultRowHeight != 0)
 			{
-			TimelineControl.rowHeight = _sequence.DefaultRowHeight;
+				TimelineControl.rowHeight = _sequence.DefaultRowHeight;
 			}
 			else
 			{
@@ -1253,6 +1254,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			TimelineControl.EnableDisableHandlers(false);
 			foreach (ElementNode node in VixenSystem.Nodes.GetRootNodes())
+			{
+				AddNodeAsRow(node, null);
+			}
+
+			foreach (PropNode node in VixenSystem.Props.RootNodes)
 			{
 				AddNodeAsRow(node, null);
 			}
@@ -2223,8 +2229,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected void ElementChangedRowsHandler(object sender, ElementRowChangeEventArgs e)
 		{
-			ElementNode oldElement = e.OldRow.Tag as ElementNode;
-			ElementNode newElement = e.NewRow.Tag as ElementNode;
+			IElementNode oldElement = e.OldRow.Tag as IElementNode;
+			IElementNode newElement = e.NewRow.Tag as IElementNode;
 			TimedSequenceElement movedElement = e.Element as TimedSequenceElement;
 
 			if (movedElement != null)
@@ -2237,7 +2243,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				// all rows that represent the new element and add it to them.
 				foreach (Row row in TimelineControl)
 				{
-					ElementNode rowElement = row.Tag as ElementNode;
+					IElementNode rowElement = row.Tag as IElementNode;
 
 					if (rowElement == oldElement && row != e.OldRow)
 						row.RemoveElement(movedElement);
@@ -3814,7 +3820,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimeSpan timeSpan, object[] parameterValues = null)
 		{
 			// get the target element
-			var targetNode = (ElementNode) row.Tag;
+			var targetNode = (IElementNode) row.Tag;
 
 			// populate the given effect instance with the appropriate target node and times, and wrap it in an effectNode
 			effectInstance.TargetNodes = new[] {targetNode};
@@ -3975,14 +3981,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 									// dunno what we want to do: prompt to add new elements for them? map them to others? etc.
 									const string message = "TimedSequenceEditor: <AddElementForEffectNodeTpl> - No Timeline.Row is associated with a target ElementNode for this EffectNode. It now exists in the sequence, but not in the GUI.";
 									Logging.Error(message);
-									//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-									MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-									var messageBox = new MessageBoxForm(message, @"", false, false);
-									messageBox.ShowDialog(this);
+									if (InvokeRequired)
+									{
+										Invoke(new Delegates.GenericVoidString(ShowErrorMessage), message);
+									}
 								}
 							});
 			TimelineControl.grid.RenderElement(element);
 			return element;
+		}
+
+		private void ShowErrorMessage(string message)
+		{
+			MessageBoxForm mbf = new MessageBoxForm(message, "Error", MessageBoxButtons.OK, SystemIcons.Error);
+			mbf.ShowDialog(this);
 		}
 
 		private TimedSequenceElement SetupNewElementFromNode(EffectNode node)
@@ -4083,7 +4095,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		/// <param name="node">The node to generate a row for.</param>
 		/// <param name="parentRow">The parent node the row should belong to, if any.</param>
-		private void AddNodeAsRow(ElementNode node, Row parentRow)
+		private void AddNodeAsRow(IElementNode node, Row parentRow)
 		{
 			// made the new row from the given node and add it to the control.
 			TimedSequenceRowLabel label = new TimedSequenceRowLabel {Name = node.Name};
@@ -4111,7 +4123,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_doEventsCounter++;
 
 			// iterate through all if its children, adding them as needed
-			foreach (ElementNode child in node.Children)
+			foreach (IElementNode child in node.Children)
 			{
 				AddNodeAsRow(child, newRow);
 

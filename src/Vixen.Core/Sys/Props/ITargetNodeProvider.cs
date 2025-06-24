@@ -9,6 +9,6 @@
 		/// Target nodes represent the elements within the system that this prop is linked to.
 		/// These nodes can be used to define the relationship between the prop and its corresponding elements.
 		/// </remarks>
-		IEnumerable<IElementNode> TargetNodes { get; }
+		IElementNode TargetNode { get; }
 	}
 }
