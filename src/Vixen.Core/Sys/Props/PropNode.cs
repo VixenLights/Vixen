@@ -149,7 +149,7 @@ namespace Vixen.Sys.Props
 		{
 			if (IsProp)
 			{
-				Prop!.TargetNode.GetNonLeafEnumerator();
+				return Prop!.TargetNode.GetNonLeafEnumerator();
 			}
 
 			return (new[] { this }).Concat(_children.SelectMany(x => x.GetNonLeafEnumerator()));
@@ -440,6 +440,11 @@ namespace Vixen.Sys.Props
 		}
 
 		#endregion
+
+		public override string ToString()
+		{
+			return Name;
+		}
 
 		public bool Equals(PropNode? x, PropNode? y)
 		{
