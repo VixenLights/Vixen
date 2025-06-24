@@ -303,19 +303,9 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			}
 		}
 
-		public IEnumerable<PropNodeViewModel> GetLeafEnumerator()
-		{
-			if (PropNode.IsLeaf)
-			{
-				return [this];
-			}
-
-			return ChildrenViewModels.SelectMany(x => x.GetLeafEnumerator());
-		}
-
 		public IEnumerable<PropNodeViewModel> GetPropEnumerator()
 		{
-			if (PropNode is { IsLeaf: true, IsGroupNode: false })
+			if (PropNode.IsProp)
 			{
 				return [this];
 			}

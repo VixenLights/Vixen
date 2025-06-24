@@ -50,7 +50,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		{
 			if (SelectedTabIndex == PropViewTab && nameof(PropNodeTreePropViewModel.SelectedItem).Equals(e.PropertyName))
 			{
-				if (PropNodeTreePropViewModel.SelectedItem is { IsLeaf: true, PropNode.Prop: not null })
+				if (PropNodeTreePropViewModel.SelectedItem is { PropNode.IsProp: true, PropNode.Prop: not null })
 				{
 					SelectedProp = PropNodeTreePropViewModel.SelectedItem.PropNode.Prop;
 					UpdatePreviewModel(SelectedProp);
@@ -69,7 +69,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		{
 			if (SelectedTabIndex == LayoutViewTab && nameof(PropNodeTreeViewModel.SelectedItem).Equals(e.PropertyName))
 			{
-				if (PropNodeTreeViewModel.SelectedItem is { IsLeaf: true, PropNode.Prop: not null })
+				if (PropNodeTreeViewModel.SelectedItem is { PropNode.IsProp: true, PropNode.Prop: not null })
 				{
 					SelectedProp = PropNodeTreeViewModel.SelectedItem.PropNode.Prop;
 					UpdatePreviewModel(SelectedProp);
