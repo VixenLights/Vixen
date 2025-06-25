@@ -1258,10 +1258,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				AddNodeAsRow(node, null);
 			}
 
-			foreach (PropNode node in VixenSystem.Props.RootNodes)
-			{
-				AddNodeAsRow(node, null);
-			}
+			
+			AddNodeAsRow(VixenSystem.Props.RootNode, null);
+			
 
 			var rowSettings = _sequence.RowSettings;
 
