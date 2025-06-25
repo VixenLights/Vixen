@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using System.Diagnostics.CodeAnalysis;
 using Vixen.Model;
-using Vixen.Sys.Managers;
 
 namespace Vixen.Sys.Props.Components
 {
@@ -105,5 +104,6 @@ namespace Vixen.Sys.Props.Components
 		}
 
 		public bool IsUserDefined => ComponentType == PropComponentType.UserDefined;
+
 	}
 }
