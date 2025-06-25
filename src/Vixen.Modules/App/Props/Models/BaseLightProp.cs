@@ -2,6 +2,7 @@
 
 using NLog;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Reflection.Emit;
 using Vixen.Attributes;
@@ -103,7 +104,7 @@ namespace VixenModules.App.Props.Models
 			
 			while (UpdateInProgress)
 			{
-				await Task.Delay(500);
+				await Task.Delay(100);
 			}
 			UpdateInProgress = true;
 			
@@ -113,7 +114,7 @@ namespace VixenModules.App.Props.Models
 			if (existingNodes < nodeCount)
 			{
 				var newNodes = AddNodeElements(propNode, nodeCount - existingNodes, existingNodes);
-				await PropertySetupHelper.AddOrUpdateColorHandling(newNodes, GetColorConfiguration());
+				PropertySetupHelper.AddOrUpdateColorHandling(newNodes, GetColorConfiguration());
 			}
 			else
 			{
@@ -152,7 +153,7 @@ namespace VixenModules.App.Props.Models
 			
 			while (UpdateInProgress)
 			{
-				await Task.Delay(500);
+				await Task.Delay(100);
 			}
 			UpdateInProgress = true;
 
@@ -164,7 +165,7 @@ namespace VixenModules.App.Props.Models
 				if (existingNodes < nodesPerString)
 				{
 					var newNodes = AddNodeElements(propString, nodesPerString - existingNodes, existingNodes);
-					await PropertySetupHelper.AddOrUpdateColorHandling(newNodes, GetColorConfiguration());
+					PropertySetupHelper.AddOrUpdateColorHandling(newNodes, GetColorConfiguration());
 				}
 				else
 				{
@@ -278,9 +279,9 @@ namespace VixenModules.App.Props.Models
 		{
 			while (UpdateInProgress)
 			{
-				await Task.Delay(500);
+				await Task.Delay(100);
 			}
-
+			
 			UpdateInProgress = true;
 			var propNode = GetOrCreatePropElementNode();
 			PropertySetupHelper.AddOrUpdatePatchingOrder(propNode, startLocation, zigZag, zigZagOffset);
@@ -304,14 +305,14 @@ namespace VixenModules.App.Props.Models
 		{
 			while (UpdateInProgress)
 			{
-				await Task.Delay(500);
+				await Task.Delay(100);
 			}
 
 			UpdateInProgress = true;
 			try
 			{
 				var propNode = node ?? GetOrCreatePropElementNode();
-				await PropertySetupHelper.AddOrUpdateColorHandling(propNode, GetColorConfiguration());
+				PropertySetupHelper.AddOrUpdateColorHandling(propNode, GetColorConfiguration());
 			}
 			catch (Exception e)
 			{
