@@ -2,11 +2,12 @@
 
 using NLog;
 using System.ComponentModel;
+using System.Diagnostics;
+using AsyncAwaitBestPractices;
+using Debounce.Core;
 using Vixen.Attributes;
-using Vixen.Services;
 using Vixen.Sys.Props;
 using Vixen.Sys.Props.Components;
-using Vixen.Sys.Props.Model;
 
 namespace VixenModules.App.Props.Models.Tree
 {
@@ -18,6 +19,8 @@ namespace VixenModules.App.Props.Models.Tree
 		private StartLocation _startLocation;
 		private bool _zigZag;
 		private int _zigZagOffset;
+		private readonly Debouncer _generateDebouncer;
+		
 
 		public Tree() : this("Tree 1", 0, 0)
 		{
@@ -42,10 +45,13 @@ namespace VixenModules.App.Props.Models.Tree
 			_propModel = model;
 			_propModel.PropertyChanged += PropModel_PropertyChanged;
 			PropertyChanged += Tree_PropertyChanged;
-			// Create default element structure
-			_ = GenerateElementsAsync();
 
-            //TODO Map element structure to model nodes
+			_generateDebouncer = new Debouncer(() =>
+			{
+				GenerateElementsAsync().SafeFireAndForget();
+			}, 500);
+
+			//TODO Map element structure to model nodes
 		}
 
 		private async void Tree_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -58,7 +64,7 @@ namespace VixenModules.App.Props.Models.Tree
                     switch (e.PropertyName)
                     {
                         case nameof(StringType):
-                            await GenerateElementsAsync();
+                            _generateDebouncer.Debounce();
                             break;
                         case nameof(StartLocation):
                         case nameof(ZigZag):
@@ -84,8 +90,8 @@ namespace VixenModules.App.Props.Models.Tree
                     {
                         case nameof(Strings):
                         case nameof(NodesPerString):
-	                        await GenerateElementsAsync();
-                            break;
+							_generateDebouncer.Debounce();
+							break;
                         case nameof(StartLocation):
                         case nameof(ZigZag):
                         case nameof(ZigZagOffset):
@@ -287,46 +293,46 @@ namespace VixenModules.App.Props.Models.Tree
 			}
 		}
 
-		protected async Task<bool> GenerateElementsAsync()
+		protected async Task GenerateElementsAsync()
 		{
-			bool hasUpdatedStrings = false;
-			bool hasUpdatedNodes = false;
-			
-			var propNode = GetOrCreatePropElementNode();
-			if (propNode.IsLeaf && Strings > 0)
+			await Task.Factory.StartNew(async () =>
 			{
-				AddStringElements(propNode, Strings, NodesPerString);
-				hasUpdatedStrings = true;
-			}
-			else if(propNode.Children.Count( )!= Strings)
-			{
-				await UpdateStrings(Strings);
-				hasUpdatedStrings = true;
-			}
+				bool hasUpdatedStrings = false;
+				bool hasUpdatedNodes = false;
 
-			if (propNode.Children.Any())
-			{
-				if (propNode.Children.First().Children.Count() != NodesPerString)
+				var propNode = GetOrCreatePropElementNode();
+				if (propNode.IsLeaf && Strings > 0)
 				{
-					await UpdateNodesPerString(NodesPerString);
+					AddStringElements(propNode, Strings, NodesPerString);
 					hasUpdatedStrings = true;
 				}
-			}
-
-			if (hasUpdatedStrings || hasUpdatedNodes)
-			{
-				await AddOrUpdatePatchingOrder(_startLocation, _zigZag, _zigZagOffset);
-
-				await AddOrUpdateColorHandling();
-
-				if (hasUpdatedStrings)
+				else if (propNode.Children.Count() != Strings)
 				{
-					UpdateDefaultPropComponents();
+					await UpdateStrings(Strings).ConfigureAwait(false);
+					hasUpdatedStrings = true;
 				}
 
-			}
-			
-			return true;
+				if (propNode.Children.Any())
+				{
+					if (propNode.Children.First().Children.Count() != NodesPerString)
+					{
+						await UpdateNodesPerString(NodesPerString).ConfigureAwait(false);
+						hasUpdatedStrings = true;
+					}
+				}
+
+				if (hasUpdatedStrings || hasUpdatedNodes)
+				{
+					await AddOrUpdatePatchingOrder(_startLocation, _zigZag, _zigZagOffset).ConfigureAwait(false);
+
+					await AddOrUpdateColorHandling().ConfigureAwait(false);
+
+					if (hasUpdatedStrings)
+					{
+						UpdateDefaultPropComponents();
+					}
+				}
+			});
 		}
 
 		private void UpdateDefaultPropComponents()

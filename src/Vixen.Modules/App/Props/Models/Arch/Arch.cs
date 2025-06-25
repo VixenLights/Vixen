@@ -1,5 +1,7 @@
 ﻿
 #nullable enable
+using AsyncAwaitBestPractices;
+using Debounce.Core;
 using NLog;
 using System.ComponentModel;
 using Vixen.Attributes;
@@ -16,8 +18,9 @@ namespace VixenModules.App.Props.Models.Arch
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private ArchModel _propModel;
 		private ArchStartLocation _startLocation;
+		private readonly Debouncer _generateDebouncer;
 
-		public Arch() : this("Arch 1", 25)
+		public Arch() : this("Arch 1", 0)
 		{
 
 		}
@@ -27,17 +30,18 @@ namespace VixenModules.App.Props.Models.Arch
 
 		}
 
-		public Arch(string name, int nodeCount = 25, StringTypes stringType = StringTypes.Pixel) : base(name, PropType.Arch)
+		public Arch(string name, int nodeCount = 0, StringTypes stringType = StringTypes.Pixel) : base(name, PropType.Arch)
 		{
             StringType = stringType;
 			ArchModel model = new ArchModel(nodeCount);
 			_propModel = model;
 			_propModel.PropertyChanged += PropModel_PropertyChanged;
 			PropertyChanged += Arch_PropertyChanged;
-			// Create default element structure
-			_ = GenerateElementsAsync();
-
-			//TODO Map element structure to model nodes
+			
+			_generateDebouncer = new Debouncer(() =>
+			{
+				GenerateElementsAsync().SafeFireAndForget();
+			}, 500);
 		}
 
 		private async void Arch_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -49,10 +53,10 @@ namespace VixenModules.App.Props.Models.Arch
                     switch (e.PropertyName)
                     {
                         case nameof(StringType):
-                            await GenerateElementsAsync();
+                            _generateDebouncer.Debounce();
                             break;
                         case nameof(StartLocation):
-                            await UpdatePatchingOrder(); //The defaults are fine for an Arch
+                            await UpdatePatchingOrder();
 							break;
                     }
                 }
@@ -141,33 +145,36 @@ namespace VixenModules.App.Props.Models.Arch
 			}
 		}
 
-		protected async Task<bool> GenerateElementsAsync()
+		protected async Task GenerateElementsAsync()
 		{
-			bool hasUpdated = false;
-
-			var propNode = GetOrCreatePropElementNode();
-			if (propNode.IsLeaf)
+			await Task.Factory.StartNew(async () =>
 			{
-				AddNodeElements(propNode,NodeCount);
-				hasUpdated = true;
-			}
-			else if (propNode.Children.Count() != NodeCount)
-			{
-				await UpdateStringNodeCount(NodeCount);
-				hasUpdated = true;
-			}
+				bool hasUpdated = false;
 
-			if (hasUpdated)
-			{
-				await UpdatePatchingOrder();
+				var propNode = GetOrCreatePropElementNode();
+				if (propNode.IsLeaf)
+				{
+					AddNodeElements(propNode, NodeCount);
+					hasUpdated = true;
+				}
+				else if (propNode.Children.Count() != NodeCount)
+				{
+					await UpdateStringNodeCount(NodeCount);
+					hasUpdated = true;
+				}
 
-				await AddOrUpdateColorHandling();
-				
-				UpdateDefaultPropComponents();
-			}
+				if (hasUpdated)
+				{
+					await UpdatePatchingOrder();
 
-			return true;
+					await AddOrUpdateColorHandling();
 
+					UpdateDefaultPropComponents();
+				}
+
+				return true;
+
+			});
 		}
 
 		private async Task UpdatePatchingOrder()

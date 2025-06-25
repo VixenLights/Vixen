@@ -20,10 +20,10 @@ namespace VixenModules.App.Props.Models
 		/// <param name="node"></param>
 		/// <param name="colorConfiguration"></param>
 		/// <returns></returns>
-		public static async Task AddOrUpdateColorHandling(IElementNode node, ColorConfiguration colorConfiguration)
+		public static void AddOrUpdateColorHandling(IElementNode node, ColorConfiguration colorConfiguration)
         {
             var leafElements = node.GetLeafEnumerator().Distinct().ToList();
-            await AddOrUpdateColorHandling(leafElements, colorConfiguration);
+            AddOrUpdateColorHandling(leafElements, colorConfiguration);
         }
 
         /// <summary>
@@ -31,50 +31,46 @@ namespace VixenModules.App.Props.Models
         /// </summary>
         /// <param name="leafElementList">The leaf elements to add color handling to</param>
         /// <param name="colorConfiguration"></param>
-        public static async Task AddOrUpdateColorHandling(IEnumerable<IElementNode> leafElementList, ColorConfiguration colorConfiguration)
+        public static void AddOrUpdateColorHandling(IEnumerable<IElementNode> leafElementList, ColorConfiguration colorConfiguration)
         {
-            await Task.Factory.StartNew(() =>
+           
+            if (!colorConfiguration.IsValid())
             {
-                if (!colorConfiguration.IsValid())
+                Logging.Error("Invalid color config");
+                throw new ArgumentOutOfRangeException(nameof(colorConfiguration));
+            }
+            // PROPERTY SETUP
+            // go through all elements, making a color property for each one.
+            // (If any has one already, check with the user as to what they want to do.)
+           
+            foreach (IElementNode leafElement in leafElementList)
+            {
+                ColorModule existingProperty = null;
+
+                if (leafElement.Properties.Contains(ColorDescriptor.ModuleId))
                 {
-                    Logging.Error("Invalid color config");
-                    throw new ArgumentOutOfRangeException(nameof(colorConfiguration));
+                    existingProperty = leafElement.Properties.Get(ColorDescriptor.ModuleId) as ColorModule;
                 }
-                // PROPERTY SETUP
-                // go through all elements, making a color property for each one.
-                // (If any has one already, check with the user as to what they want to do.)
-               
-                foreach (IElementNode leafElement in leafElementList)
+                else
                 {
-                    ColorModule existingProperty = null;
-
-                    if (leafElement.Properties.Contains(ColorDescriptor.ModuleId))
-                    {
-                        existingProperty = leafElement.Properties.Get(ColorDescriptor.ModuleId) as ColorModule;
-                    }
-                    else
-                    {
-                        existingProperty = leafElement.Properties.Add(ColorDescriptor.ModuleId) as ColorModule;
-                    }
-
-
-                    if (existingProperty == null)
-                    {
-                        Logging.Error("Null color property for element " + leafElement.Name);
-                    }
-                    else
-                    {
-                        existingProperty.ColorType = colorConfiguration.ColorType;
-                        existingProperty.SingleColor = colorConfiguration.SingleColor;
-                        existingProperty.ColorSetName = colorConfiguration.ColorSetName;
-                    }
-
-                    PerformPatching(leafElementList, colorConfiguration);
-
+                    existingProperty = leafElement.Properties.Add(ColorDescriptor.ModuleId) as ColorModule;
                 }
-			});
 
-            
+
+                if (existingProperty == null)
+                {
+                    Logging.Error("Null color property for element " + leafElement.Name);
+                }
+                else
+                {
+                    existingProperty.ColorType = colorConfiguration.ColorType;
+                    existingProperty.SingleColor = colorConfiguration.SingleColor;
+                    existingProperty.ColorSetName = colorConfiguration.ColorSetName;
+                }
+            }
+
+			PerformPatching(leafElementList, colorConfiguration);
+
 		}
 
         private static void PerformPatching(IEnumerable<IElementNode> leafElementList, ColorConfiguration colorConfiguration)
