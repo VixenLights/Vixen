@@ -13,8 +13,8 @@
 		</ItemGroup>
 
 		<ItemGroup>
-				<PackageReference Include="NCalc2">
-				</PackageReference>
+				<PackageReference Include="AsyncAwaitBestPractices" />
+				<PackageReference Include="Debounce.Core" />
 		</ItemGroup>
 
 </Project>
