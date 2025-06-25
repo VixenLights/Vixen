@@ -42,16 +42,16 @@ namespace Vixen.Sys.Managers
         public ElementNode InitializePropRootNode()
         {
 	        if (_propRootNode == null)
-	        {
+            {
 		        _propRootNode = RootNode.Children.FirstOrDefault(x => x.Name.Equals(PropsRootNodeName));
-		        if (_propRootNode == null)
-		        {
+                if (_propRootNode == null)
+                {
 			        _propRootNode = AddNode(PropsRootNodeName, RootNode, false);
 		        }
 	        }
 
-	        return _propRootNode;
-        }
+                return _propRootNode;
+            }
 
         public void MoveNode(ElementNode movingNode, ElementNode newParent, ElementNode oldParent, int index = -1)
 		{
