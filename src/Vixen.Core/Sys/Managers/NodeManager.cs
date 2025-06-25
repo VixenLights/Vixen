@@ -6,6 +6,7 @@ namespace Vixen.Sys.Managers
 {
 	public class NodeManager : IEnumerable<ElementNode>
 	{
+		private const string PropsRootNodeName = "Props Root Node";
 		// a mapping of element node GUIDs to element node instances. Used for initial creation, to easily find nodes we have already created.
 		// once they've been created, they're in the dictionary. The only way to 'delete' elementNodes is to make a new NodeManager,
 		// which reinitializes this mapping and we can start fresh.
@@ -40,8 +41,13 @@ namespace Vixen.Sys.Managers
             {
                 if (_propRootNode == null)
                 {
-                    _propRootNode = new ElementNode("Props Root Node");
-                    AddNode(_propRootNode, RootNode);
+					//TODO fix a way to save of the actual Id of this node so we can restore it with using the name which could conflict with a 
+					//user created name.
+	                _propRootNode = RootNode.Children.FirstOrDefault(x => x.Name == PropsRootNodeName, new ElementNode(PropsRootNodeName));
+                    if(!_instances.ContainsKey(_propRootNode.Id))
+                    {
+	                    AddNode(_propRootNode, RootNode);
+                    }
                 }
 
                 return _propRootNode;
