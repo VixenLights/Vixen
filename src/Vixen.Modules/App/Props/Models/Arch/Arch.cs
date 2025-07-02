@@ -5,6 +5,7 @@ using Debounce.Core;
 using NLog;
 using System.ComponentModel;
 using Vixen.Attributes;
+using Vixen.Sys.Managers;
 using Vixen.Sys.Props;
 using Vixen.Sys.Props.Components;
 
@@ -194,7 +195,7 @@ namespace VixenModules.App.Props.Models.Arch
 
 			if (propComponentLeft == null)
 			{
-				propComponentLeft = new PropComponent($"{Name} Left", PropComponentType.PropDefined);
+				propComponentLeft = PropComponentManager.CreatePropComponent($"{Name} Left", Id, PropComponentType.PropDefined);
 				PropComponents.Add(propComponentLeft);
 			}
 			else
@@ -204,7 +205,7 @@ namespace VixenModules.App.Props.Models.Arch
 
 			if (propComponentRight == null)
 			{
-				propComponentRight = new PropComponent($"{Name} Right", PropComponentType.PropDefined);
+				propComponentRight = PropComponentManager.CreatePropComponent($"{Name} Right", Id, PropComponentType.PropDefined);
 				PropComponents.Add(propComponentRight);
 			}
 			else
