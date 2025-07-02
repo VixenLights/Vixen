@@ -312,7 +312,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			//		parentForGroup = firstParentViewModel?.ElementModel;
 			//	}
 
-			//	var parentToJoin = pms.CreateNode(result.Response, parentForGroup);
+			//	var parentToJoin = pms.CreatePropNode(result.Response, parentForGroup);
 			//	foreach (var elementModelViewModel in SelectedItems.ToList())
 			//	{
 			//		elementModelViewModel.IsSelected = false;
@@ -469,12 +469,12 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#endregion
 
-		#region CreateNode command
+		#region CreatePropNode command
 
 		private Command _createNodeCommand;
 
 		/// <summary>
-		/// Gets the CreateNode command.
+		/// Gets the CreatePropNode command.
 		/// </summary>
 		public Command CreateNodeCommand
 		{
@@ -482,7 +482,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		}
 
 		/// <summary>
-		/// Method to invoke when the CreateNode command is executed.
+		/// Method to invoke when the CreatePropNode command is executed.
 		/// </summary>
 		private void CreateNode()
 		{
@@ -490,7 +490,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 			if (result.Result == MessageResult.OK)
 			{
-				PropManager.CreateNode(result.Response, SelectedItem != null ? SelectedItem.PropNode : PropManager.RootNode);
+				PropManager.CreatePropNode(result.Response, SelectedItem != null ? SelectedItem.PropNode : PropManager.RootNode);
 				//Ensure parent is expanded
 				if (SelectedItem != null)
 				{
@@ -501,7 +501,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		}
 
 		/// <summary>
-		/// Method to check whether the CreateNode command can be executed.
+		/// Method to check whether the CreatePropNode command can be executed.
 		/// </summary>
 		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
 		private bool CanCreateNode()
@@ -524,7 +524,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		}
 
 		/// <summary>
-		/// Method to invoke when the CreateNode command is executed.
+		/// Method to invoke when the CreatePropNode command is executed.
 		/// </summary>
 		private async Task CreateProp(string? propType)
 		{
@@ -546,7 +546,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		}
 
 		/// <summary>
-		/// Method to check whether the CreateNode command can be executed.
+		/// Method to check whether the CreatePropNode command can be executed.
 		/// </summary>
 		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
 		private bool CanCreateProp(string? propType)

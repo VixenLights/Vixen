@@ -10,7 +10,7 @@ namespace Vixen.Sys.Managers
 	{
 		private readonly Dictionary<Guid, IProp> _propLocator = new();
 		private readonly PropNode _rootNode = new("Props");
-
+		
 		public event EventHandler? PropCollectionChanged;
 
 		public PropNode RootNode
@@ -30,7 +30,7 @@ namespace Vixen.Sys.Managers
 
 		public void CreateGroupForPropNodes(string name, IEnumerable<PropNode> propNodes)
 		{
-			var propNode = CreateNode(name);
+			var propNode = CreatePropNode(name);
 			foreach (var elementModel in propNodes)
 			{
 				propNode.AddChild(elementModel);
@@ -38,7 +38,7 @@ namespace Vixen.Sys.Managers
 			}
 		}
 
-		public PropNode CreateNode(string name, PropNode? parent = null, bool oneBasedNaming = false)
+		public PropNode CreatePropNode(string name, PropNode? parent = null, bool oneBasedNaming = false)
 		{
 			if (parent == null)
 			{
