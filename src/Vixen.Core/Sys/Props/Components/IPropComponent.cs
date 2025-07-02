@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Vixen.Sys.Props.Components
 {
-	public interface IPropComponent: INotifyPropertyChanged
+	public interface IPropComponent : INotifyPropertyChanged
 	{
 		/// <summary>
 		/// Gets the unique identifier for the component.
@@ -13,6 +13,8 @@ namespace Vixen.Sys.Props.Components
 		/// A <see cref="Guid"/> representing the unique identifier of the component.
 		/// </value>
 		Guid Id { get; }
+		
+		Guid OwnerId { get; }
 		
 		/// <summary>
 		/// Gets or sets the name of the prop component.
@@ -28,7 +30,7 @@ namespace Vixen.Sys.Props.Components
 		/// <value>
 		/// A <see cref="PropComponentType"/> value representing the type of the component.
 		/// </value>
-		PropComponentType ComponentType { get; }
+		PropComponentType ComponentType { get; internal set; }
 		
 		/// <summary>
 		/// Adds a collection of <see cref="IElementNode"/> instances to the component.
@@ -89,6 +91,16 @@ namespace Vixen.Sys.Props.Components
 		void Clear();
 		
 		/// <summary>
+		/// Gets the collection of <see cref="IElementNode"/> instances associated with this component.
+		/// </summary>
+		/// <remarks>
+		/// The <see cref="TargetNodes"/> property reflects the current set of <see cref="IElementNode"/> instances 
+		/// managed by the component. Modifications to this collection, such as adding or removing nodes, 
+		/// will raise the <see cref="INotifyPropertyChanged.PropertyChanged"/> event.
+		/// </remarks>
+		IEnumerable<IElementNode> TargetNodes { get; }
+		
+		/// <summary>
 		/// Gets a value indicating whether the component is defined by the user.
 		/// </summary>
 		/// <value>
@@ -96,7 +108,5 @@ namespace Vixen.Sys.Props.Components
 		/// </value>
 		bool IsUserDefined { get; }
 		
-		IEnumerable<IElementNode> TargetNodes { get; }
-
 	}
 }

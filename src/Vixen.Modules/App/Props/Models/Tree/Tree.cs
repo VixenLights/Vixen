@@ -6,6 +6,8 @@ using System.Diagnostics;
 using AsyncAwaitBestPractices;
 using Debounce.Core;
 using Vixen.Attributes;
+using Vixen.Sys;
+using Vixen.Sys.Managers;
 using Vixen.Sys.Props;
 using Vixen.Sys.Props.Components;
 
@@ -352,7 +354,7 @@ namespace VixenModules.App.Props.Models.Tree
 				//Add each string as a component
 				foreach (var stringNode in head.Children)
 				{
-					var propComponent = new PropComponent($"{Name} {stringNode.Name.Substring(nameIndex)}", PropComponentType.PropDefined);
+					var propComponent = PropComponentManager.CreatePropComponent($"{Name} {stringNode.Name.Substring(nameIndex)}", Id, PropComponentType.PropDefined);
 					propComponent.TryAdd(stringNode);
 					PropComponents.Add(propComponent);
 				}
@@ -372,7 +374,7 @@ namespace VixenModules.App.Props.Models.Tree
 				{
 					if (!PropComponents.Any(x => x.TargetNodes.Contains(stringNode)))
 					{
-						var propComponent = new PropComponent($"{Name} {stringNode.Name.Substring(nameIndex)}", PropComponentType.PropDefined);
+						var propComponent = PropComponentManager.CreatePropComponent($"{Name} {stringNode.Name.Substring(nameIndex)}", Id, PropComponentType.PropDefined);
 						propComponent.TryAdd(stringNode);
 						PropComponents.Add(propComponent);
 					}
@@ -390,7 +392,7 @@ namespace VixenModules.App.Props.Models.Tree
 
 			if (propComponentLeft == null)
 			{
-				propComponentLeft = new PropComponent($"{Name} Left", PropComponentType.PropDefined);
+				propComponentLeft = PropComponentManager.CreatePropComponent($"{Name} Left", Id, PropComponentType.PropDefined);
 				PropComponents.Add(propComponentLeft);
 			}
 			else
@@ -400,7 +402,7 @@ namespace VixenModules.App.Props.Models.Tree
 
 			if (propComponentRight == null)
 			{
-				propComponentRight = new PropComponent($"{Name} Right", PropComponentType.PropDefined);
+				propComponentRight = PropComponentManager.CreatePropComponent($"{Name} Right", Id,PropComponentType.PropDefined);
 				PropComponents.Add(propComponentRight);
 			}
 			else
@@ -423,6 +425,11 @@ namespace VixenModules.App.Props.Models.Tree
 
 				i++;
 			}
+			
+			//Add them to a PropComponentNode so the user can do something useful
+			var parentPropComponentNode = VixenSystem.PropComponents.CreatePropComponentNode($"{Name} Halves");
+			VixenSystem.PropComponents.AddPropComponent(propComponentLeft, parentPropComponentNode);
+			VixenSystem.PropComponents.AddPropComponent(propComponentRight, parentPropComponentNode);
 		}
 
 	}

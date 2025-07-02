@@ -4,8 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converter="clr-namespace:VixenApplication.SetupDisplay.Converter"
-             xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
-             xmlns:model="clr-namespace:VixenModules.App.Props;assembly=Module.App.Props"
              xmlns:model1="clr-namespace:Vixen.Sys.Props.Model;assembly=Vixen.Core"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">

@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Vixen.Sys.Props.Components
 {
-	internal class PropComponentNode(string name) : BasePropNode<PropComponentNode>, IElementNode,
+	public class PropComponentNode(string name) : BasePropNode<PropComponentNode>, IElementNode,
 		IPropComponentNode<PropComponentNode, IPropComponent>, IEqualityComparer<PropComponentNode>
 	{
 		private IPropComponent? _propComponent;
@@ -19,7 +19,7 @@ namespace Vixen.Sys.Props.Components
 			_propComponent = propComponent;
 		}
 
-		public PropComponentNode() : this("Prop 1")
+		public PropComponentNode() : this("Prop Component 1")
 		{
 		}
 
@@ -200,7 +200,7 @@ namespace Vixen.Sys.Props.Components
 		/// <value>
 		/// <c>true</c> if this node is a leaf; otherwise, <c>false</c>.
 		/// </value>
-		bool IElementNode.IsLeaf => false; //TODO Need to revisit this depending on if we have a placeholder node in the real element tree for this proxy
+		bool IElementNode.IsLeaf => IsPropComponent && PropComponent!.TargetNodes.Any();
 
 		#endregion
 
@@ -213,10 +213,10 @@ namespace Vixen.Sys.Props.Components
 		{
 			if (node.IsPropComponent)
 			{
-				//TODO determine if these will have multiple target nodes, or one proxy node
-				//return node.PropComponent!.TargetNode.GetMaxChildDepth();
+				var targetNodesLevels = node.PropComponent!.TargetNodes.Select(x => x.GetMaxChildDepth()).ToArray();
+				return !targetNodesLevels.Any() ? 1 : targetNodesLevels.Max() + 1;
 			}
-			var subLevel = node.Children.Select(GetDepth);
+			var subLevel = node.Children.Select(GetDepth).ToArray();
 			return !subLevel.Any() ? 1 : subLevel.Max() + 1;
 		}
 
@@ -224,8 +224,7 @@ namespace Vixen.Sys.Props.Components
 		{
 			if (IsPropComponent)
 			{
-				//TODO determine if these will have multiple target nodes, or one proxy node
-				//return PropComponent!.TargetNode.GetLeafEnumerator();
+				return PropComponent!.TargetNodes.SelectMany(x => x.GetLeafEnumerator());
 			}
 
 			return Children.SelectMany(x => (x as IElementNode).GetLeafEnumerator());
@@ -235,8 +234,7 @@ namespace Vixen.Sys.Props.Components
 		{
 			if (IsPropComponent)
 			{
-				//TODO determine if these will have multiple target nodes, or one proxy node
-				//return PropComponent!.TargetNode.GetElementEnumerator();
+				return PropComponent!.TargetNodes.SelectMany(x => x.GetElementEnumerator());
 			}
 
 			return Children.SelectMany(x => x.GetElementEnumerator());
@@ -246,22 +244,20 @@ namespace Vixen.Sys.Props.Components
 		{
 			if (IsPropComponent)
 			{
-				//TODO determine if these will have multiple target nodes, or one proxy node
-				//return PropComponent!.TargetNode.GetNodeEnumerator();
+				return new[] { this }.Concat(PropComponent!.TargetNodes.SelectMany(x => x.GetNodeEnumerator()));
 			}
 
-			return (new[] { this }).Concat(Children.SelectMany(x => x.GetNodeEnumerator()));
+			return new[] { this }.Concat(Children.SelectMany(x => x.GetNodeEnumerator()));
 		}
 
 		public IEnumerable<IElementNode> GetNonLeafEnumerator()
 		{
 			if (IsPropComponent)
 			{
-				//TODO determine if these will have multiple target nodes, or one proxy node
-				//return PropComponent!.TargetNode.GetNonLeafEnumerator();
+				return PropComponent!.TargetNodes.SelectMany(x => x.GetNonLeafEnumerator());
 			}
 
-			return (new[] { this }).Concat(Children.SelectMany(x => x.GetNonLeafEnumerator()));
+			return new[] { this }.Concat(Children.SelectMany(x => x.GetNonLeafEnumerator()));
 		}
 
 		public PropertyManager Properties
