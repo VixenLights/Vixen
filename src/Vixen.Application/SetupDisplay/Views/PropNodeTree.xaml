@@ -23,51 +23,10 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converters:BooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" True="Collapsed" False="Visible"/>
 
-            <Style x:Key="PropNodeListViewItemContainerStyle" TargetType="{x:Type ListViewItem}">
-                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="IsTabStop" Value="False"/>
-                <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
-                <Setter Property="SnapsToDevicePixels" Value="True"/>
-                <Setter Property="Padding" Value="4,1"/>
-                <!--<Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-        <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>-->
-
-                <Setter Property="BorderBrush" Value="Transparent"/>
-                <Setter Property="BorderThickness" Value="1"/>
-
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type ListViewItem}">
-                            <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
-                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsSelected" Value="True"/>
-                                        <Condition Property="Selector.IsSelectionActive" Value="False"/>
-                                    </MultiTrigger.Conditions>
-                                    <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
-                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Border}"/>
-                                </MultiTrigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsSelected" Value="True"/>
-                                        <Condition Property="Selector.IsSelectionActive" Value="True"/>
-                                    </MultiTrigger.Conditions>
-                                    <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}"/>
-                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border}"/>
-                                    <Setter Property="BorderThickness" TargetName="Bd" Value="1"></Setter>
-                                    <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
-                                </MultiTrigger>
-                                <Trigger Property="IsEnabled" Value="False">
-                                    <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{StaticResource ForeColorDisabledBrush}"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
+            <Style x:Key="PropComponentNodeTreeViewStyle" TargetType="{x:Type TreeView}">
+                <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
+                <Setter Property="Background" Value="{StaticResource BackColorBrush}" />
+                <Setter Property="Padding" Value="0" />
             </Style>
 
             <ContextMenu x:Key="PropNodeTreeContextMenu">
@@ -316,6 +275,27 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
+                </TabItem>
+                <TabItem Header="Prop Components">
+                    <TreeView x:Name="PropComponentNodeTreeView" Style="{StaticResource PropComponentNodeTreeViewStyle}"
+                            ItemsSource="{Binding PropNodeTreeViewModel.PropComponentNodeViewModels}" 
+                            BorderThickness="0"
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                            ScrollViewer.CanContentScroll="True"
+                            Width="Auto" Margin="5,5,10,5">
+
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate ItemsSource="{Binding ChildrenViewModels}" DataType="{x:Type viewModels:PropComponentNodeViewModel}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="/Resources;component/bullet_purple.png" Width="16" Height="16" 
+                                           Visibility="{Binding IsGroupNode, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                                    <TextBlock x:Name="ReadOnlyText" Text="{Binding Name}" Margin="0,2,0,2" Focusable="True">
+                                    </TextBlock>
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
                 </TabItem>
             </TabControl>
         </Grid>
