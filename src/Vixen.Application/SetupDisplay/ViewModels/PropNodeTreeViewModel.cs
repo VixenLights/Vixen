@@ -31,6 +31,9 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			PropNodeViewModel vm = new(PropManager.RootNode, null);
 			RootNodeViewModel = [vm];
 
+			PropComponentNodeViewModel pcvm = new (VixenSystem.PropComponents.RootNode, null);
+			PropComponentNodeViewModels = [pcvm];
+
 			PropNodes = new();
 			PropNodes.AddRange(RootNodeViewModel.SelectMany(x => x.GetPropEnumerator()));
 
@@ -78,6 +81,28 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// RootNodesViewModels property data.
 		/// </summary>
 		public static readonly IPropertyData RootNodeViewModelProperty = RegisterProperty<ObservableCollection<PropNodeViewModel>>(nameof(RootNodeViewModel));
+
+		#endregion
+
+		#region PropComponentNodeViewModels
+
+		#region PropComponentNodeViewModels property
+
+		/// <summary>
+		/// Gets or sets the PropComponentNodeViewModels value.
+		/// </summary>
+		public ObservableCollection<PropComponentNodeViewModel> PropComponentNodeViewModels
+		{
+			get { return GetValue<ObservableCollection<PropComponentNodeViewModel>>(PropComponentNodeViewModelsProperty); }
+			set { SetValue(PropComponentNodeViewModelsProperty, value); }
+		}
+
+		/// <summary>
+		/// PropComponentNodeViewModels property data.
+		/// </summary>
+		public static readonly IPropertyData PropComponentNodeViewModelsProperty = RegisterProperty<ObservableCollection<PropComponentNodeViewModel>>(nameof(PropComponentNodeViewModels));
+
+		#endregion
 
 		#endregion
 

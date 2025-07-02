@@ -427,6 +427,7 @@ namespace VixenModules.App.Props.Models.Tree
 			}
 			
 			//Add them to a PropComponentNode so the user can do something useful
+			//TODO add logic to clean this up if/when we are deleted.
 			var parentPropComponentNode = VixenSystem.PropComponents.CreatePropComponentNode($"{Name} Halves");
 			VixenSystem.PropComponents.AddPropComponent(propComponentLeft, parentPropComponentNode);
 			VixenSystem.PropComponents.AddPropComponent(propComponentRight, parentPropComponentNode);
