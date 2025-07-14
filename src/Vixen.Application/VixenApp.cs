@@ -24,6 +24,7 @@ using System.Net.Http;
 using System.Windows.Forms.Integration;
 using Common.WPFCommon.Services;
 using LogManager = NLog.LogManager;
+using Vixen.Sys.Output;
 using VixenApplication.SetupDisplay.Views;
 
 namespace VixenApplication
@@ -991,11 +992,31 @@ namespace VixenApplication
 			}
 		}
 
-        private async void SetupDisplayNew()
+        private async Task SetupDisplayNew()
         {
-            var form = new SetupDisplayWindow();
+	        List<OutputPreview> previewsToRestart = new();
+	        foreach (OutputPreview oc in VixenSystem.Previews)
+	        {
+		        if (oc.IsRunning)
+		        {
+					oc.Stop();
+					previewsToRestart.Add(oc);
+		        }
+	        }
+			
+	        var form = new SetupDisplayWindow();
             ElementHost.EnableModelessKeyboardInterop(form);
             form.ShowDialog();
+
+			foreach (OutputPreview oc in previewsToRestart)
+			{
+				oc.Start();
+			}
+
+			//Give a little delay and then ensure we are on top.
+			await Task.Delay(500);
+			TopMost = true;
+			TopMost = false;
 		}
 
 		private async void SetupDisplay()
