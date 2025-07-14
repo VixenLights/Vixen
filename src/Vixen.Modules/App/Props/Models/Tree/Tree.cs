@@ -22,7 +22,7 @@ namespace VixenModules.App.Props.Models.Tree
 		private bool _zigZag;
 		private int _zigZagOffset;
 		private readonly Debouncer _generateDebouncer;
-		
+
 
 		public Tree() : this("Tree 1", 0, 0)
 		{
@@ -57,56 +57,56 @@ namespace VixenModules.App.Props.Models.Tree
 		}
 
 		private async void Tree_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            try
-            {
-                // Name is handled in the base class so we need to handle our own.
-                if (e.PropertyName != null)
-                {
-                    switch (e.PropertyName)
-                    {
-                        case nameof(StringType):
-                            _generateDebouncer.Debounce();
-                            break;
-                        case nameof(StartLocation):
-                        case nameof(ZigZag):
-                        case nameof(ZigZagOffset):
-                            await AddOrUpdatePatchingOrder(_startLocation, _zigZag, _zigZagOffset);
-                            break;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-				Logging.Error(ex, $"An error occured handling Tree property {e.PropertyName} changed");
-			}
-        }
-
-		private async void PropModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            try
-            {
-                if (e.PropertyName != null)
-                {
-                    switch (e.PropertyName)
-                    {
-                        case nameof(Strings):
-                        case nameof(NodesPerString):
+		{
+			try
+			{
+				// Name is handled in the base class so we need to handle our own.
+				if (e.PropertyName != null)
+				{
+					switch (e.PropertyName)
+					{
+						case nameof(StringType):
 							_generateDebouncer.Debounce();
 							break;
-                        case nameof(StartLocation):
-                        case nameof(ZigZag):
-                        case nameof(ZigZagOffset):
-                            await AddOrUpdatePatchingOrder();
-                            break;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logging.Error(ex, $"An error occured handling model property {e.PropertyName} changed");
-            }
-        }
+						case nameof(StartLocation):
+						case nameof(ZigZag):
+						case nameof(ZigZagOffset):
+							await AddOrUpdatePatchingOrder(_startLocation, _zigZag, _zigZagOffset);
+							break;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, $"An error occured handling Tree property {e.PropertyName} changed");
+			}
+		}
+
+		private async void PropModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+			try
+			{
+				if (e.PropertyName != null)
+				{
+					switch (e.PropertyName)
+					{
+						case nameof(Strings):
+						case nameof(NodesPerString):
+							_generateDebouncer.Debounce();
+							break;
+						case nameof(StartLocation):
+						case nameof(ZigZag):
+						case nameof(ZigZagOffset):
+							await AddOrUpdatePatchingOrder();
+							break;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, $"An error occured handling model property {e.PropertyName} changed");
+			}
+		}
 
 		[Browsable(false)]
 		IPropModel IProp.PropModel => PropModel;
@@ -297,11 +297,11 @@ namespace VixenModules.App.Props.Models.Tree
 
 		protected async Task GenerateElementsAsync()
 		{
-			await Task.Factory.StartNew(async () =>
-			{
-				bool hasUpdatedStrings = false;
-				bool hasUpdatedNodes = false;
+			bool hasUpdatedStrings = false;
+			bool hasUpdatedNodes = false;
 
+			try
+			{
 				var propNode = GetOrCreatePropElementNode();
 				if (propNode.IsLeaf && Strings > 0)
 				{
@@ -325,21 +325,28 @@ namespace VixenModules.App.Props.Models.Tree
 
 				if (hasUpdatedStrings || hasUpdatedNodes)
 				{
-					await AddOrUpdatePatchingOrder(_startLocation, _zigZag, _zigZagOffset).ConfigureAwait(false);
+					await AddOrUpdatePatchingOrder(_startLocation, _zigZag, _zigZagOffset)
+						.ConfigureAwait(false);
 
 					await AddOrUpdateColorHandling().ConfigureAwait(false);
-
-					if (hasUpdatedStrings)
-					{
-						UpdateDefaultPropComponents();
-					}
 				}
-			});
+
+				if (hasUpdatedStrings)
+				{
+					UpdateDefaultPropComponents();
+				}
+
+			}
+			catch (Exception e)
+			{
+				Logging.Error(e, "An exception occured creating the prop");
+			}
+
 		}
 
 		private void UpdateDefaultPropComponents()
 		{
-			
+
 			CreateOrUpdateStringPropComponents();
 			CreateOrUpdateTreeHalfPropComponents();
 			//TODO Validate user defined components to see if they are still valid
@@ -402,7 +409,7 @@ namespace VixenModules.App.Props.Models.Tree
 
 			if (propComponentRight == null)
 			{
-				propComponentRight = PropComponentManager.CreatePropComponent($"{Name} Right", Id,PropComponentType.PropDefined);
+				propComponentRight = PropComponentManager.CreatePropComponent($"{Name} Right", Id, PropComponentType.PropDefined);
 				PropComponents.Add(propComponentRight);
 			}
 			else
@@ -425,7 +432,7 @@ namespace VixenModules.App.Props.Models.Tree
 
 				i++;
 			}
-			
+
 			//Add them to a PropComponentNode so the user can do something useful
 			//TODO add logic to clean this up if/when we are deleted.
 			var parentPropComponentNode = VixenSystem.PropComponents.CreatePropComponentNode($"{Name} Halves");
