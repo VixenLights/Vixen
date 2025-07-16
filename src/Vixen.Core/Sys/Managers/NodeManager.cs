@@ -6,6 +6,7 @@ namespace Vixen.Sys.Managers
 {
 	public class NodeManager : IEnumerable<ElementNode>
 	{
+		private const string PropsRootNodeName = "Props Root Node";
 		// a mapping of element node GUIDs to element node instances. Used for initial creation, to easily find nodes we have already created.
 		// once they've been created, they're in the dictionary. The only way to 'delete' elementNodes is to make a new NodeManager,
 		// which reinitializes this mapping and we can start fresh.
@@ -13,12 +14,13 @@ namespace Vixen.Sys.Managers
 
 		public static event EventHandler? NodesChanged;
 		private ElementNode? _rootNode;
+        private ElementNode? _propRootNode;
 
 		public NodeManager()
 		{
 			_instances = new Dictionary<Guid, ElementNode>();
 			ElementNode.Changed += ElementNode_Changed;
-		}
+        }
 
 		public NodeManager(IEnumerable<ElementNode> nodes)
 			: this()
@@ -33,7 +35,26 @@ namespace Vixen.Sys.Managers
 
 		public ElementNode RootNode => _rootNode??= new ElementNode("Root");
 
-		public void MoveNode(ElementNode movingNode, ElementNode newParent, ElementNode oldParent, int index = -1)
+        public ElementNode PropRootNode
+        {
+            get
+            {
+                if (_propRootNode == null)
+                {
+					//TODO fix a way to save of the actual Id of this node so we can restore it with using the name which could conflict with a 
+					//user created name.
+	                _propRootNode = RootNode.Children.FirstOrDefault(x => x.Name == PropsRootNodeName, new ElementNode(PropsRootNodeName));
+                    if(!_instances.ContainsKey(_propRootNode.Id))
+                    {
+	                    AddNode(_propRootNode, RootNode);
+                    }
+                }
+
+                return _propRootNode;
+            }
+        }
+
+        public void MoveNode(ElementNode movingNode, ElementNode newParent, ElementNode oldParent, int index = -1)
 		{
 			// if null nodes, default to the root node.
 			newParent = newParent ?? RootNode;
@@ -73,6 +94,18 @@ namespace Vixen.Sys.Managers
 			return newNode;
 		}
 
+		/// <summary>
+		/// Removes all child nodes
+		/// </summary>
+		/// <param name="node"></param>
+        public void RemoveChildNodes(ElementNode node)
+        {
+            foreach (var nodeChild in node.Children.ToList())
+            {
+                RemoveNode(nodeChild, node, true);
+            }
+        }
+
 		public void RemoveNode(ElementNode node, ElementNode? parent, bool cleanup)
 		{
 			// if the given parent is null, it's most likely a root node (ie. with
@@ -92,9 +125,10 @@ namespace Vixen.Sys.Managers
 
 		}
 
-		public void RenameNode(ElementNode node, string newName)
+		public void RenameNode(ElementNode node, string newName, bool uniquifyName = true)
 		{
-			node.Name = _Uniquify(newName);
+			node.Name =  uniquifyName ? _Uniquify(newName):newName;
+            
 			if (node.Element != null)
 				node.Element.Name = node.Name;
 		}
