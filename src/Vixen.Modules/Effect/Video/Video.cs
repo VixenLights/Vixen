@@ -14,7 +14,7 @@ using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using System.Collections.Concurrent;
 using System.Security.Cryptography;
 using System.Text;
-using Vixen.Extensions;
+using Vixen.Sys;
 
 namespace VixenModules.Effect.Video
 {
@@ -718,26 +718,24 @@ namespace VixenModules.Effect.Video
 				else
 				{
 					// TODO: If too long, render as much as possible? Warning about length, option to resize, option to render as much as possible, option to render last frame over and over
-					var messageBox = new MessageBoxForm($"Entered Start Time plus Effect Length exceeds the Video Length of {VideoLength} seconds for {_data.FileName}",
-						"Video Length Exceeded", MessageBoxButtons.OK, SystemIcons.Error)
+					VixenSystem.UIContext.Post(_ =>
 					{
-						StartPosition = FormStartPosition.CenterScreen,
-						TopMost = true
-					};
-					messageBox.ShowDialog();
+						new MessageBoxForm($"Entered Start Time plus Effect Length exceeds the Video Length of {VideoLength} seconds for {_data.FileName}",
+							"Video Length Exceeded", MessageBoxButtons.OK, SystemIcons.Error).ShowDialog();
+					}, null);
+
 					_videoFileDetected = false;
 				}
 			}
 			catch (Exception ex)
 			{
 				Logging.Error(ex, $"There was a problem converting {_videoPathAndFilename}");
-				var messageBox = new MessageBoxForm($"There was a problem converting {_videoPathAndFilename}: {ex.Message}",
-					"Error Converting Video", MessageBoxButtons.OK, SystemIcons.Error)
+				VixenSystem.UIContext.Post(_ =>
 				{
-					StartPosition = FormStartPosition.CenterScreen,
-					TopMost = true
-				};
-				messageBox.ShowDialog();
+					new MessageBoxForm($"There was a problem converting {_videoPathAndFilename}: {ex.Message}",
+						"Error Converting Video", MessageBoxButtons.OK, SystemIcons.Error).ShowDialog();
+				}, null);
+
 				_videoFileDetected = false;
 			}
 		}
@@ -1145,9 +1143,11 @@ namespace VixenModules.Effect.Video
 			}
 			catch (Exception ex)
 			{
-				var messageBox = new MessageBoxForm($"There was a problem getting video information for {_videoPathAndFilename}: {ex.Message}",
-					"Error Getting Video Information", MessageBoxButtons.OK, SystemIcons.Error);
-				messageBox.ShowDialog();
+				VixenSystem.UIContext.Post(_ =>
+				{
+					new MessageBoxForm($"There was a problem getting video information for {_videoPathAndFilename}: {ex.Message}",
+						"Error Getting Video Information", MessageBoxButtons.OK, SystemIcons.Error).ShowDialog();
+				}, null);
 				_videoFileDetected = false;
 			}
 		}
