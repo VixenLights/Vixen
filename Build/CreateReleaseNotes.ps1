@@ -30,8 +30,7 @@ if ($jiraUrl.EndsWith('/'))
 }
 
 # Set the main Rest API and Jira endpoints
-$jiraRestApi = "$jiraUrl/rest/api/latest/search"
-$jiraBrowse = "$jiraUrl/browse"
+$jiraRestApi = "$jiraUrl/rest/api/latest/search/jql"
 
 # Construct the JQL
 $jql = [string]::Empty
@@ -52,7 +51,7 @@ $jql += " ORDER BY Key"
 
 $jql = $jql.Trim() -replace ' ', '%20'
 
-$startAt=0
+$nextPageToken=""
 
 [bool] $moreRecords = 1
 
@@ -62,7 +61,7 @@ $issueCount = 0
 while($moreRecords)
 {
 	# Invoke the Rest API for the constructed JQL
-	$jiraSearchUri = ("{0}?jql=$jql&maxResults=100&startAt={1}" -f $jiraRestApi, $startAt)
+	$jiraSearchUri = ("{0}?jql=$jql&maxResults=100&fieldsByKeys=true&fields=summary,issuetype,key&nextPageToken={1}" -f $jiraRestApi, $nextPageToken)
 
 	Write-Host $jiraSearchUri
 
@@ -77,13 +76,14 @@ while($moreRecords)
 	
 	# Gather up all of the issues
 	$issues = $result.issues
+	$isLast = $result.isLast
+	$issueCount += $issues.Count
 	
 	foreach ($issue in $issues)
 	{
 		$code = $issue.key
-		$type = $issue.fields.issueType.name
+		$type = $issue.fields.issuetype.name
 		$summary = $issue.fields.summary
-
 		if (!$issueMap.Contains($type))
 		{
 			$list = New-Object System.Collections.Specialized.OrderedDictionary
@@ -91,18 +91,18 @@ while($moreRecords)
 		}
 
 		$issueMap[$type].Add($code, $summary)
-		$issueCount += 1
 	}
 
-	if ($issueCount -lt $result.total)
+	if ($isLast -ne "True")
 	{
-		$startAt = $StartAt + 100
-	}else{
+		$nextPageToken = $result.nextPageToken
+	}
+	else
+	{
 		$moreRecords = 0
 	}
 	
 }
-
 
 # Generate the output
 $output = [string]::Empty
@@ -110,10 +110,16 @@ $output = [string]::Empty
 $output += "Release Notes - Vixen 3 - " + $buildType + " Build "
 $output += "$nl$nl"
 
+#Append the count of issues
+$output += "** $issueCount issues resolved in this release. $nl$nl"
+
+if($buildType -eq "Development"){
+	$output += "Note: The issues listed as part of this development build are cumulative since the last full release.$nl$nl"
+}
 
 foreach ($type in $issueMap.keys)
 {
-	$output += "** $type$nl"
+	$output += "** ${type}s$nl"
 
 	foreach ($issue in $issueMap[$type].keys)
 	{
