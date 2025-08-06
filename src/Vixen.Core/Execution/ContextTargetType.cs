@@ -3,6 +3,7 @@
 	public enum ContextTargetType
 	{
 		Sequence,
-		Program
+		Program,
+		Show
 	}
 }
