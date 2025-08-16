@@ -6,15 +6,15 @@
 		{
 			State = States.Stopped;
 			Position = TimeSpan.Zero;
-			Sequence = new Sequence()
+			Sequence = new Presentation()
 			{
 				Name = String.Empty,
-				FileName = String.Empty
+				Info = String.Empty
 			};
 
 		}
 		public States State { get; set; }
-		public Sequence Sequence { get; set; }
+		public Presentation Sequence { get; set; }
 		public TimeSpan Position { get; set; }
 
 		public enum States
