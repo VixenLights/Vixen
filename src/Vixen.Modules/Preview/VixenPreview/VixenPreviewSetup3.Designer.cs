@@ -991,7 +991,7 @@ namespace VixenModules.Preview.VixenPreview
 			// 
 			// settingsToolStripMenuItem
 			// 
-			settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { saveLocationsToolStripMenuItem, locationOffsetSetupToolStripMenuItem, useOpenGLPreviewToolStripMenuItem });
+			settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { saveLocationsToolStripMenuItem, locationOffsetSetupToolStripMenuItem, useOpenGLPreviewToolStripMenuItem, keepInsertModeToolStripMenuItem });
 			settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
 			settingsToolStripMenuItem.Size = new Size(61, 20);
 			settingsToolStripMenuItem.Text = "Settings";
