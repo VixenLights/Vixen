@@ -1,4 +1,86 @@
-Release Notes - Vixen 3
+Release Notes - Vixen 3 - 3.12u0 Build 
+
+** 72 issues resolved in this release. 
+
+** Bugs
+    * [VIX-885] - Detached Timeline keyboard shortcuts do not work correctly
+    * [VIX-2879] - Divide by zero error in the Dissolve effect.
+    * [VIX-3066] - GetContoller API function not working
+    * [VIX-3271] - Some media types crash Vixen when associating audio with sequence
+    * [VIX-3308] - Keyboard Shortcuts don't work if Preview Window has focus
+    * [VIX-3541] - Show selection feedback on mouse down when clicking buttons in preview configuration.
+    * [VIX-3582] - Effect initial length not consistent.
+    * [VIX-3608] - VixenApplication.cs - DrawVersionInfo contains resource leaks
+    * [VIX-3610] - Default DDP IP Causes Crash on Export
+    * [VIX-3611] - Long Video effect drifts out of sync when (1000 / Update Interval) is not an integer
+    * [VIX-3612] - Working directory is incorrect when launched from the installer summary screen.
+    * [VIX-3615] - Wipe - Movement - Horizontal not rendering the last last elementGroup
+    * [VIX-3618] - freetype6.dll contains a dependency on the 2013 VC++ runtime
+    * [VIX-3619] - Unpatch button missing on Display Setup when controller name is long
+    * [VIX-3623] - VixenPreviewModuleInstance.cs UseOpenGLRendering can crash Vixen
+    * [VIX-3628] - The target node handling of the Chase and Spin can be left in a bad state when dragging or cloning to a new element with different depths
+    * [VIX-3631] - Out of memory issue for effects on a complex Prop with many subgroups.
+    * [VIX-3636] - Preview not working
+    * [VIX-3639] - Reversing linked elements in the Link Element dialog in the preview for Starburst does not take effect until the Preview is reloaded.
+    * [VIX-3640] - Intelligent Fixture effect is not properly saving off RGB color selections
+    * [VIX-3644] - ElexolEtherIO Controller hard crashes when the Test button is clicked. 
+    * [VIX-3648] - Prop model Vendor browser import fails on Vixen User prop import. 
+    * [VIX-3649] - Bug with scheduler and days of week. 
+    * [VIX-3651] - Deleting multi-selected props in "Preview Configuration" only deletes one prop
+    * [VIX-3652] - Broken COM reference in Broadcast Project
+    * [VIX-3653] - Mark Collection - Show Tail Marks icon doesn't select all lines
+    * [VIX-3657] - Editing a LipSync image map causes Vixen to crash
+    * [VIX-3660] - Missing module build dependencies in Vixen Solution file
+    * [VIX-3661] - Need to Hide VAO on Preview Shapes
+    * [VIX-3664] - Custom Prop Editor - Can't download vendor model "Error Downloading Model" "Unable to download... ensure you have a an active internet connection
+    * [VIX-3668] - BulkExportSummaryStage.Designer.cs - Yellow Warning Color needs to be restored
+    * [VIX-3684] - Mega/Mini Tree starting points change in new DEV version
+    * [VIX-3685] - Error Highlighting a prop from preview editor
+    * [VIX-3686] - Custom props in preview config screen - bug when altering "Bottom Right" Y position coordinate
+    * [VIX-3687] - Timed Sequence Editor - Undo/Redo buttons missing down arrows
+    * [VIX-3699] - Video effect error message boxes don't appear on top
+
+** Improvements
+    * [VIX-956] - Improve Audio Device Handling
+    * [VIX-1104] - Spin Needs pulse overlap
+    * [VIX-2235] - Controller reordering in display setup
+    * [VIX-2283] - There's no way to see the name of the associated audio file in the sequence editor
+    * [VIX-2356] - Need to add items to controller list context menu
+    * [VIX-2444] - Lip Sync phrase needs timing mark at end of phrase
+    * [VIX-2604] - Make software version update available be a link to the download
+    * [VIX-2669] - Make add multiple effects window remember its previous settings.
+    * [VIX-2788] - Add degrees of rotation label/indicator while rotating a custom prop
+    * [VIX-3067] - Investigate optimizing OpenGL data being sent to the GPU
+    * [VIX-3117] - Custom props don't show light size setting
+    * [VIX-3312] - Add option to lock mark collections
+    * [VIX-3333] - Default "Add Elements" drop down to Single Element instead of arch
+    * [VIX-3504] - Update Main Vixen Form to tableLayoutPanel with Vixen title and version as text labels.
+    * [VIX-3538] - Consider adding a property to the Preview Shapes to lock their position so that can't be accidentally moved
+    * [VIX-3553] - Add Select Preview Elements Option
+    * [VIX-3609] - Add configuration information for installing Vixen in a Windows Sandbox for development testing.
+    * [VIX-3613] - Improve the naming structure for system and module backup files
+    * [VIX-3616] - Add/update the quick keys for the Alignment tool
+    * [VIX-3617] - Update ffmpeg for the Video Effect
+    * [VIX-3625] - Video Effect Cache Improvements
+    * [VIX-3646] - Bump MessagePack from 2.5.171 to 2.5.187 in /src/Vixen.Common/WpfPropertyGrid
+    * [VIX-3656] - Clean up local control mouse hover events and foreground / background colors that are now handled by the Theme logic. 
+    * [VIX-3662] - Bump some of the libraries to the latest versions to keep in step.
+    * [VIX-3665] - Consider using Directory.Packages.props for common dependencies used in most projects
+    * [VIX-3667] - Create .editorconfig to manage coding styles in Visual Studio
+    * [VIX-3690] - Improve user experience when entering times
+    * [VIX-3700] - Update the release notes scripts to resolve JIRA API deprecation
+
+** New Features
+    * [VIX-1163] - Preview Smart Object Rotation
+    * [VIX-2615] - Adjust joining Effects together so they stay together.
+    * [VIX-2883] - Preview Editor, after using an object tool, revert to the select tool
+    * [VIX-2940] - Adding rotation support to Arch in the preview. Currently that functionality does not exist (XY rotation similar to the one for the stars)
+    * [VIX-3124] - Create check box for End Stop in Text Effect
+    * [VIX-3269] - Add feature to bulk-move marks
+    * [VIX-3272] - Function for adding equally spaced marks in a collection
+    * [VIX-3566] - Create Brick Effect
+
+
 
 Release Notes - Vixen 3 - 3.10u1 Build 
 
