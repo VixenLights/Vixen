@@ -208,26 +208,6 @@ namespace Common.Controls.Timeline
 		//http://www.philosophicalgeek.com/2007/07/27/mouse-tilt-wheel-horizontal-scrolling-in-c/
 		private const int WM_MOUSEHWHEEL = 0x020E;
 
-		private static Int16 HIWORD(IntPtr ptr)
-		{
-#if WIN64
-			Int64 val32 = ptr.ToInt64();
-#else
-			Int32 val32 = ptr.ToInt32();
-#endif
-			return (Int16) ((val32 >> 16) & 0xFFFF);
-		}
-
-		private static Int16 LOWORD(IntPtr ptr)
-		{
-#if WIN64
-			Int64 val32 = ptr.ToInt64();
-#else
-			Int32 val32 = ptr.ToInt32();
-#endif
-			return (Int16) (val32 & 0xFFFF);
-		}
-
 		protected override void WndProc(ref Message m)
 		{
 			base.WndProc(ref m);
@@ -240,10 +220,7 @@ namespace Common.Controls.Timeline
 						MouseHWheelMsg(m.WParam, m.LParam);
 						m.Result = (IntPtr) 1;
 						break;
-
-					default:
-						break;
-				}
+                }
 			}
 			catch (Exception e){
 				Logging.Error(e, "Exception in WndProc mouse handler");
