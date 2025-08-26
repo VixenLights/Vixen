@@ -246,7 +246,7 @@ namespace Common.Controls.Timeline
 				}
 			}
 			catch (Exception e){
-				Logging.Error($"Exception in WndProc mouse handler: {e.Message}");
+				Logging.Error(e, "Exception in WndProc mouse handler");
 				// This even fires when the grid is disposed and gives an error.
 				// Not entirely sure how to check for this so, try/catch
 			}
