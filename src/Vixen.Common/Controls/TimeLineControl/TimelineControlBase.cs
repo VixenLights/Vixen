@@ -210,9 +210,10 @@ namespace Common.Controls.Timeline
 
 		protected override void WndProc(ref Message m)
 		{
-			base.WndProc(ref m);
 			try {
-				if (m.HWnd != this.Handle) {
+                base.WndProc(ref m);
+				
+                if (m.HWnd != this.Handle) {
 					return;
 				}
 				switch (m.Msg) {
