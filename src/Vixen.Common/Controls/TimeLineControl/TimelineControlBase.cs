@@ -256,12 +256,11 @@ namespace Common.Controls.Timeline
 
 		private void mouseHWheelMsg(IntPtr wParam, IntPtr lParam)
 		{
-			Int32 tilt = HIWORD(wParam);
-			//Int32 keys = LOWORD(wParam);
-			Int32 x = LOWORD(lParam);
-			Int32 y = HIWORD(lParam);
+            int tilt = (short)((long)wParam >> 16); // High-order word of WParam contains the delta
+            int x = (short)lParam; // Low-order word of LParam contains the x-coordinate
+            int y = (short)((long)lParam >> 16); // High-order word of LParam contains the y-coordinate
 
-			fireMouseHWheelEvent(MouseButtons.None, 0, x, y, tilt);
+            fireMouseHWheelEvent(MouseButtons.None, 0, x, y, tilt);
 		}
 
 		private void fireMouseHWheelEvent(MouseButtons buttons, int clicks, int x, int y, int delta)
