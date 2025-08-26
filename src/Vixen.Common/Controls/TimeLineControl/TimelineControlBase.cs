@@ -237,7 +237,7 @@ namespace Common.Controls.Timeline
 				}
 				switch (m.Msg) {
 					case WM_MOUSEHWHEEL:
-						mouseHWheelMsg(m.WParam, m.LParam);
+						MouseHWheelMsg(m.WParam, m.LParam);
 						m.Result = (IntPtr) 1;
 						break;
 
@@ -254,16 +254,16 @@ namespace Common.Controls.Timeline
 
 		public event EventHandler<MouseEventArgs> MouseHWheel;
 
-		private void mouseHWheelMsg(IntPtr wParam, IntPtr lParam)
+		private void MouseHWheelMsg(IntPtr wParam, IntPtr lParam)
 		{
             int tilt = (short)((long)wParam >> 16); // High-order word of WParam contains the delta
             int x = (short)lParam; // Low-order word of LParam contains the x-coordinate
             int y = (short)((long)lParam >> 16); // High-order word of LParam contains the y-coordinate
 
-            fireMouseHWheelEvent(MouseButtons.None, 0, x, y, tilt);
+            FireMouseHWheelEvent(MouseButtons.None, 0, x, y, tilt);
 		}
 
-		private void fireMouseHWheelEvent(MouseButtons buttons, int clicks, int x, int y, int delta)
+		private void FireMouseHWheelEvent(MouseButtons buttons, int clicks, int x, int y, int delta)
 		{
 			MouseEventArgs args = new MouseEventArgs(buttons, clicks, x, y, delta);
 			OnMouseHWheel(args);
