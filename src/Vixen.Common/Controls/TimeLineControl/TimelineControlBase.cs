@@ -208,45 +208,23 @@ namespace Common.Controls.Timeline
 		//http://www.philosophicalgeek.com/2007/07/27/mouse-tilt-wheel-horizontal-scrolling-in-c/
 		private const int WM_MOUSEHWHEEL = 0x020E;
 
-		private static Int16 HIWORD(IntPtr ptr)
-		{
-#if WIN64
-			Int64 val32 = ptr.ToInt64();
-#else
-			Int32 val32 = ptr.ToInt32();
-#endif
-			return (Int16) ((val32 >> 16) & 0xFFFF);
-		}
-
-		private static Int16 LOWORD(IntPtr ptr)
-		{
-#if WIN64
-			Int64 val32 = ptr.ToInt64();
-#else
-			Int32 val32 = ptr.ToInt32();
-#endif
-			return (Int16) (val32 & 0xFFFF);
-		}
-
 		protected override void WndProc(ref Message m)
 		{
-			base.WndProc(ref m);
 			try {
-				if (m.HWnd != this.Handle) {
+                base.WndProc(ref m);
+				
+                if (m.HWnd != this.Handle) {
 					return;
 				}
 				switch (m.Msg) {
 					case WM_MOUSEHWHEEL:
-						mouseHWheelMsg(m.WParam, m.LParam);
+						MouseHWheelMsg(m.WParam, m.LParam);
 						m.Result = (IntPtr) 1;
 						break;
-
-					default:
-						break;
-				}
+                }
 			}
 			catch (Exception e){
-				Logging.Error($"Exception in WndProc mouse handler: {e.Message}");
+				Logging.Error(e, "Exception in WndProc mouse handler");
 				// This even fires when the grid is disposed and gives an error.
 				// Not entirely sure how to check for this so, try/catch
 			}
@@ -254,17 +232,16 @@ namespace Common.Controls.Timeline
 
 		public event EventHandler<MouseEventArgs> MouseHWheel;
 
-		private void mouseHWheelMsg(IntPtr wParam, IntPtr lParam)
+		private void MouseHWheelMsg(IntPtr wParam, IntPtr lParam)
 		{
-			Int32 tilt = HIWORD(wParam);
-			//Int32 keys = LOWORD(wParam);
-			Int32 x = LOWORD(lParam);
-			Int32 y = HIWORD(lParam);
+            int tilt = (short)((long)wParam >> 16); // High-order word of WParam contains the delta
+            int x = (short)lParam; // Low-order word of LParam contains the x-coordinate
+            int y = (short)((long)lParam >> 16); // High-order word of LParam contains the y-coordinate
 
-			fireMouseHWheelEvent(MouseButtons.None, 0, x, y, tilt);
+            FireMouseHWheelEvent(MouseButtons.None, 0, x, y, tilt);
 		}
 
-		private void fireMouseHWheelEvent(MouseButtons buttons, int clicks, int x, int y, int delta)
+		private void FireMouseHWheelEvent(MouseButtons buttons, int clicks, int x, int y, int delta)
 		{
 			MouseEventArgs args = new MouseEventArgs(buttons, clicks, x, y, delta);
 			OnMouseHWheel(args);
