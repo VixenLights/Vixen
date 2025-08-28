@@ -628,7 +628,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimeSpan lengthTime = TimeSpan.MinValue;
 			double lengthDivision = 0;
 
-			var marksForm = new CreateEvenMarksForm(_mPrevPlaybackStart, _mPrevPlaybackEnd);
+			var marksForm = new CreateEvenMarksForm(_mPrevPlaybackStart, _mPrevPlaybackEnd, SequenceLength);
 			DialogResult dialogReturn;
 			do
 			{
