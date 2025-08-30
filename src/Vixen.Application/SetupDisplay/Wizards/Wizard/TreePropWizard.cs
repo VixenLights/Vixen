@@ -7,7 +7,7 @@ using VixenApplication.SetupDisplay.Wizards.Pages;
 
 namespace VixenApplication.SetupDisplay.Wizards.Wizard
 {
-	public class TreePropWizard : SideNavigationWizardBase
+	public class TreePropWizard : PropWizardBase
 	{
 		private readonly IMessageService _messageService;
 
