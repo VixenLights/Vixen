@@ -1,7 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using Catel.Collections;
+﻿using Catel.Collections;
 using Catel.Data;
 using Catel.IoC;
 using Catel.MVVM;
@@ -10,11 +7,14 @@ using Common.WPFCommon.Services;
 using GongSolutions.Wpf.DragDrop;
 using Orc.Theming;
 using Orc.Wizard;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using Vixen.Sys;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Props;
 using VixenApplication.SetupDisplay.Wizards.Factory;
 using VixenApplication.SetupDisplay.Wizards.Pages;
+using VixenApplication.SetupDisplay.Wizards.Wizard;
 using DragDropEffects = System.Windows.DragDropEffects;
 using IDropTarget = GongSolutions.Wpf.DragDrop.IDropTarget;
 
@@ -965,8 +965,25 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			baseColorService.SetBaseColorScheme("Dark");
 
 			// Use the type factory to create the prop wizard
+			IPropWizard wizard = PropWizardFactory.CreateInstance(propType, typeFactory);
 
-			var wizard = PropWizardFactory.CreateInstance(propType, typeFactory);
+			// Configure the wizard window to show up in the Windows task bar
+			wizard.ShowInTaskbarWrapper = true;
+
+			// Enable the help button
+			wizard.ShowHelpWrapper = true;
+
+			// Configure the wizard to allow the user to jump between already visited pages
+			wizard.AllowQuickNavigationWrapper = true;
+
+			// Allow Catel to help determine when it is safe to transition to the next wizard page
+			wizard.HandleNavigationStatesWrapper = true;
+
+			// Configure the wizard to NOT cache views
+			wizard.CacheViewsWrapper = false;
+
+			// Configure the wizard with a navigation controller														
+			wizard.NavigationControllerWrapper = typeFactory.CreateInstanceWithParametersAndAutoCompletion<PropWizardNavigationController>(wizard);
 
 			var ws = dependencyResolver.Resolve<IWizardService>();
 			if (ws != null && wizard != null)
