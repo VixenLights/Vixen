@@ -3,6 +3,7 @@ using Catel.IoC;
 using Catel.Services;
 using Orc.Wizard;
 using VixenApplication.SetupDisplay.Wizards.Pages;
+using VixenModules.Editor.PropWizard;
 
 namespace VixenApplication.SetupDisplay.Wizards.Wizard
 {
