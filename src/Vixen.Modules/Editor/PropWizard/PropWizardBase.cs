@@ -1,7 +1,7 @@
 ﻿using Catel.IoC;
 using Orc.Wizard;
 
-namespace VixenApplication.SetupDisplay.Wizards.Wizard
+namespace VixenModules.Editor.PropWizard
 {
 	/// <summary>
 	/// Base class for prop wizard.
@@ -22,55 +22,43 @@ namespace VixenApplication.SetupDisplay.Wizards.Wizard
 		#endregion
 
 		#region IPropWizard
-
-		/// <summary>
-		/// Refer to interface documentation.
-		/// </summary>
+		
+		/// <inheritdoc/>		
 		public INavigationController NavigationControllerWrapper
 		{
 			get { return NavigationController; }
 			set { NavigationController = value; }
 		}
-
-		/// <summary>
-		/// Refer to interface documentation.
-		/// </summary>
+		
+		/// <inheritdoc/>	
 		public bool ShowInTaskbarWrapper
 		{
 			get { return ShowInTaskbar; }
 			set { ShowInTaskbar = value; }
 		}
-
-		/// <summary>
-		/// Refer to interface documentation.
-		/// </summary>
+		
+		/// <inheritdoc/>	
 		public bool ShowHelpWrapper
 		{
 			get { return IsHelpVisible; }
 			set { IsHelpVisible = value; }
 		}
 
-		/// <summary>
-		/// Refer to interface documentation.
-		/// </summary>
+		/// <inheritdoc/>	
 		public bool AllowQuickNavigationWrapper
 		{
 			get { return AllowQuickNavigation; }
 			set { AllowQuickNavigation = value; }
 		}
 
-		/// <summary>
-		/// Refer to interface documentation.
-		/// </summary>
+		/// <inheritdoc/>	
 		public bool HandleNavigationStatesWrapper
 		{
 			get { return HandleNavigationStates; }
 			set { HandleNavigationStates = value; }
 		}
 
-		/// <summary>
-		/// Refer to interface documentation.
-		/// </summary>
+		/// <inheritdoc/>	
 		public bool CacheViewsWrapper
 		{
 			get { return CacheViews; }
