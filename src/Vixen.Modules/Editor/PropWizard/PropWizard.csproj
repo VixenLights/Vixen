@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>							
+				<RootNamespace>PropWizard</RootNamespace>				
+		</PropertyGroup>
+
+		<ItemGroup>
+				<None Remove="NLog.config" />
+		</ItemGroup>
+
+		<ItemGroup>
+			<PackageReference Include="Catel.Core" />
+			<PackageReference Include="Catel.MVVM" />
+			<PackageReference Include="gong-wpf-dragdrop" />
+			<PackageReference Include="MessagePack" />
+			<PackageReference Include="Newtonsoft.Json" />
+			<PackageReference Include="NLog" />
+			<PackageReference Include="NLog.Web.AspNetCore" />
+            <PackageReference Include="Orc.Controls" />
+            <PackageReference Include="Orc.SystemInfo" />
+            <PackageReference Include="Orc.Wizard" />
+            <PackageReference Include="Orchestra.Core" />            
+		</ItemGroup>
+</Project>

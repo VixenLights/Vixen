@@ -33,6 +33,7 @@
 				<ProjectReference Include="..\..\App\Fixture\Fixture.csproj" />
 				<ProjectReference Include="..\FixtureGraphics\FixtureGraphics.csproj" />
 				<ProjectReference Include="..\FixturePropertyEditor\FixturePropertyEditor.csproj" />
+				<ProjectReference Include="..\PropWizard\PropWizard.csproj" />
 		</ItemGroup>
 
 </Project>

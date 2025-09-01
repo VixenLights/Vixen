@@ -70,6 +70,12 @@ namespace Vixen.Sys.Managers
 			return propNode;
 		}
 
+		public void AddPropNode(PropNode propNode, PropNode parent)
+		{
+			parent.AddChild(propNode);
+			OnPropAdded(propNode.Prop);
+		}
+
 		public void RemoveFromParent(PropNode propNode, PropNode parentToLeave)
 		{
 			//Remove us from our specified parent.

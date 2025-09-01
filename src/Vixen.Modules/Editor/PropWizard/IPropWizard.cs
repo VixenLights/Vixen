@@ -1,6 +1,6 @@
 ﻿using Orc.Wizard;
 
-namespace VixenApplication.SetupDisplay.Wizards.Wizard
+namespace VixenModules.Editor.PropWizard
 {
 	/// <summary>
 	/// Configures a prop wizard.
