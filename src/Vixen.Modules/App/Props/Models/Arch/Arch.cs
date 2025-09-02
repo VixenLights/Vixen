@@ -152,7 +152,7 @@ namespace VixenModules.App.Props.Models.Arch
 			{
 				bool hasUpdated = false;
 
-				var propNode = GetOrCreatePropElementNode();
+				var propNode = GetOrCreateElementNode();
 				if (propNode.IsLeaf)
 				{
 					AddNodeElements(propNode, NodeCount);
@@ -187,7 +187,7 @@ namespace VixenModules.App.Props.Models.Arch
 
 		private void UpdateDefaultPropComponents()
 		{
-			var head = GetOrCreatePropElementNode();
+			var head = GetOrCreateElementNode();
 			
 			//Update the left and right to match the new node count
 			var propComponentLeft = PropComponents.FirstOrDefault(x => x.Name == $"{Name} Left");
