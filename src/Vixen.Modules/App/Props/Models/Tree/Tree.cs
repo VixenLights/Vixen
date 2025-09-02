@@ -302,7 +302,7 @@ namespace VixenModules.App.Props.Models.Tree
 
 			try
 			{
-				var propNode = GetOrCreatePropElementNode();
+				var propNode = GetOrCreateElementNode();
 				if (propNode.IsLeaf && Strings > 0)
 				{
 					AddStringElements(propNode, Strings, NodesPerString);
@@ -354,7 +354,7 @@ namespace VixenModules.App.Props.Models.Tree
 
 		private void CreateOrUpdateStringPropComponents()
 		{
-			var head = GetOrCreatePropElementNode();
+			var head = GetOrCreateElementNode();
 			var nameIndex = AutoPropPrefix.Length;
 			if (!PropComponents.Any())
 			{
@@ -391,7 +391,7 @@ namespace VixenModules.App.Props.Models.Tree
 
 		private void CreateOrUpdateTreeHalfPropComponents()
 		{
-			var head = GetOrCreatePropElementNode();
+			var head = GetOrCreateElementNode();
 
 			//Update the left and right to match the new node count
 			var propComponentLeft = PropComponents.FirstOrDefault(x => x.Name == $"{Name} Left");
