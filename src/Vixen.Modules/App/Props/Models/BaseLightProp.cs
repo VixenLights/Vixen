@@ -95,7 +95,7 @@ namespace VixenModules.App.Props.Models
 		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 		protected async Task UpdateStringNodeCount(int nodeCount, ElementNode? propNode = null)
 		{
-			propNode ??= GetOrCreatePropElementNode();
+			propNode ??= GetOrCreateElementNode();
 			
 			if (propNode.IsLeaf || propNode.GetMaxChildDepth() > 2)
 			{
@@ -118,7 +118,7 @@ namespace VixenModules.App.Props.Models
 			}
 			else
 			{
-				RemoveElements(propNode, existingNodes - nodeCount);
+				RemoveElementNodes(propNode, existingNodes - nodeCount);
 			}
 
 			UpdateInProgress = false;
@@ -144,7 +144,7 @@ namespace VixenModules.App.Props.Models
 		/// </exception>
 		protected async Task UpdateNodesPerString(int nodesPerString, ElementNode? propNode = null)
 		{
-			propNode ??= GetOrCreatePropElementNode();
+			propNode ??= GetOrCreateElementNode();
 			
 			if (propNode.IsLeaf || propNode.GetMaxChildDepth() > 3)
 			{
@@ -169,7 +169,7 @@ namespace VixenModules.App.Props.Models
 				}
 				else
 				{
-					RemoveElements(propString, existingNodes - nodesPerString);
+					RemoveElementNodes(propString, existingNodes - nodesPerString);
 				}
 			}
 
@@ -198,7 +198,7 @@ namespace VixenModules.App.Props.Models
 		/// </returns>
 		protected async Task UpdateStrings(int strings, ElementNode? propNode = null)
 		{
-			propNode ??= GetOrCreatePropElementNode();
+			propNode ??= GetOrCreateElementNode();
 			
 			while (UpdateInProgress)
 			{
@@ -216,7 +216,7 @@ namespace VixenModules.App.Props.Models
 			}
 			else
 			{
-				RemoveElements(propNode, existingStrings - strings);
+				RemoveElementNodes(propNode, existingStrings - strings);
 			}
 
 			UpdateInProgress = false;
@@ -283,7 +283,7 @@ namespace VixenModules.App.Props.Models
 			}
 			
 			UpdateInProgress = true;
-			var propNode = GetOrCreatePropElementNode();
+			var propNode = GetOrCreateElementNode();
 			PropertySetupHelper.AddOrUpdatePatchingOrder(propNode, startLocation, zigZag, zigZagOffset);
 			
 			UpdateInProgress = false;
@@ -311,7 +311,7 @@ namespace VixenModules.App.Props.Models
 			UpdateInProgress = true;
 			try
 			{
-				var propNode = node ?? GetOrCreatePropElementNode();
+				var propNode = node ?? GetOrCreateElementNode();
 				PropertySetupHelper.AddOrUpdateColorHandling(propNode, GetColorConfiguration());
 			}
 			catch (Exception e)
