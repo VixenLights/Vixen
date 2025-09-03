@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using Vixen.IO.JSON;
+using Vixen.Services;
 
 namespace Vixen.Sys.Managers
 {
@@ -35,23 +36,20 @@ namespace Vixen.Sys.Managers
 
 		public ElementNode RootNode => _rootNode??= new ElementNode("Root");
 
-        public ElementNode PropRootNode
-        {
-            get
-            {
-                if (_propRootNode == null)
-                {
-					//TODO fix a way to save of the actual Id of this node so we can restore it with using the name which could conflict with a 
-					//user created name.
-	                _propRootNode = RootNode.Children.FirstOrDefault(x => x.Name == PropsRootNodeName, new ElementNode(PropsRootNodeName));
-                    if(!_instances.ContainsKey(_propRootNode.Id))
-                    {
-	                    AddNode(_propRootNode, RootNode);
-                    }
-                }
+        public ElementNode PropRootNode => _propRootNode!;
 
-                return _propRootNode;
-            }
+        public ElementNode InitializePropRootNode()
+        {
+	        if (_propRootNode == null)
+	        {
+		        _propRootNode = RootNode.Children.FirstOrDefault(x => x.Name.Equals(PropsRootNodeName));
+		        if (_propRootNode == null)
+		        {
+			        _propRootNode = AddNode(PropsRootNodeName, RootNode, false);
+		        }
+	        }
+
+	        return _propRootNode;
         }
 
         public void MoveNode(ElementNode movingNode, ElementNode newParent, ElementNode oldParent, int index = -1)
