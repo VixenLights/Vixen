@@ -273,6 +273,8 @@ namespace Vixen.Sys
 
 			Elements.AddElements(SystemConfig.Elements);
 			Nodes.AddNodes(SystemConfig.Nodes);
+			//TODO Fix the following line of code by ensuring the Prop Node root is established once the Prop nodes are saved. 
+			Nodes.InitializePropRootNode();
 			OutputControllers.AddRange(SystemConfig.OutputControllers.Cast<OutputController>());
 			//SmartOutputControllers.AddRange(SystemConfig.SmartOutputControllers.Cast<SmartOutputController>());
 			Previews.AddRange(SystemConfig.Previews.Cast<OutputPreview>());
