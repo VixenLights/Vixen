@@ -7,150 +7,155 @@
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
 
-		
 
-		#region Windows Form Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-			this.components = new System.ComponentModel.Container();
-			this.btnOk = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.btnCancel = new System.Windows.Forms.Button();
-			this.txtStartTime = new TimeControl();
-			this.txtDuration = new TimeControl();
-			this.txtEndTime = new TimeControl();
-			this.label3 = new System.Windows.Forms.Label();
-			this.btnSetFullSequence = new System.Windows.Forms.Button();
-			this.lblSetSequenceLength = new System.Windows.Forms.Label();
-			this.SuspendLayout();
-			// 
-			// btnOk
-			// 
-			this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnOk.Location = new System.Drawing.Point(34, 197);
-			this.btnOk.Name = "btnOk";
-			this.btnOk.Size = new System.Drawing.Size(87, 27);
-			this.btnOk.TabIndex = 8;
-			this.btnOk.Text = "OK";
-			this.btnOk.UseVisualStyleBackColor = false;
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(41, 45);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(31, 15);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "Start";
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(20, 78);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(53, 15);
-			this.label2.TabIndex = 3;
-			this.label2.Text = "Duration";
-			// 
-			// btnCancel
-			// 
-			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(129, 197);
-			this.btnCancel.Name = "btnCancel";
-			this.btnCancel.Size = new System.Drawing.Size(87, 27);
-			this.btnCancel.TabIndex = 9;
-			this.btnCancel.Text = "Cancel";
-			this.btnCancel.UseVisualStyleBackColor = false;
-			// 
-			// txtStartTime
-			// 
-			this.txtStartTime.Location = new System.Drawing.Point(82, 42);
-			this.txtStartTime.Name = "txtStartTime";
-			this.txtStartTime.Size = new System.Drawing.Size(116, 23);
-			this.txtStartTime.TabIndex = 1;
-			// 
-			// txtDuration
-			// 
-			this.txtDuration.Location = new System.Drawing.Point(82, 75);
-			this.txtDuration.Name = "txtDuration";
-			this.txtDuration.Size = new System.Drawing.Size(116, 23);
-			this.txtDuration.TabIndex = 4;
-			// 
-			// txtEndTime
-			// 
-			this.txtEndTime.Location = new System.Drawing.Point(82, 110);
-			this.txtEndTime.Name = "txtEndTime";
-			this.txtEndTime.Size = new System.Drawing.Size(116, 23);
-			this.txtEndTime.TabIndex = 6;
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(46, 112);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(27, 15);
-			this.label3.TabIndex = 5;
-			this.label3.Text = "End";
-			// 
-			// btnSetFullSequence
-			// 
-			this.btnSetFullSequence.Location = new System.Drawing.Point(177, 146);
-			this.btnSetFullSequence.Name = "btnSetFullSequence";
-			this.btnSetFullSequence.Size = new System.Drawing.Size(39, 27);
-			this.btnSetFullSequence.TabIndex = 8;
-			this.btnSetFullSequence.Text = "Set";
-			this.btnSetFullSequence.UseVisualStyleBackColor = false;
-			this.btnSetFullSequence.Click += new System.EventHandler(this.btnSetFullSequence_Click);
-			// 
-			// lblSetSequenceLength
-			// 
-			this.lblSetSequenceLength.AutoSize = true;
-			this.lblSetSequenceLength.Location = new System.Drawing.Point(20, 152);
-			this.lblSetSequenceLength.Name = "lblSetSequenceLength";
-			this.lblSetSequenceLength.Size = new System.Drawing.Size(145, 15);
-			this.lblSetSequenceLength.TabIndex = 7;
-			this.lblSetSequenceLength.Text = "Match sequence start/end";
-			// 
-			// EffectTimeEditor
-			// 
-			this.AcceptButton = this.btnOk;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.AutoSize = true;
-			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(247, 236);
-			this.Controls.Add(this.lblSetSequenceLength);
-			this.Controls.Add(this.btnSetFullSequence);
-			this.Controls.Add(this.txtEndTime);
-			this.Controls.Add(this.label3);
-			this.Controls.Add(this.txtDuration);
-			this.Controls.Add(this.txtStartTime);
-			this.Controls.Add(this.btnCancel);
-			this.Controls.Add(this.label2);
-			this.Controls.Add(this.label1);
-			this.Controls.Add(this.btnOk);
-			this.FormBorderStyle = FormBorderStyle.FixedDialog;
-			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(263, 275);
-			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(263, 275);
-			this.Name = "EffectTimeEditor";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Effect Time Editor";
-			this.ResumeLayout(false);
-			this.PerformLayout();
+        #region Windows Form Designer generated code
 
-		}
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            btnOk = new Button();
+            label1 = new Label();
+            label2 = new Label();
+            btnCancel = new Button();
+            txtStartTime = new TimeControl();
+            txtDuration = new TimeControl();
+            txtEndTime = new TimeControl();
+            label3 = new Label();
+            btnSetFullSequence = new Button();
+            lblSetSequenceLength = new Label();
+            SuspendLayout();
+            // 
+            // btnOk
+            // 
+            btnOk.DialogResult = DialogResult.OK;
+            btnOk.Location = new Point(34, 197);
+            btnOk.Name = "btnOk";
+            btnOk.Size = new Size(87, 27);
+            btnOk.TabIndex = 8;
+            btnOk.Text = "OK";
+            btnOk.UseVisualStyleBackColor = false;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(41, 45);
+            label1.Name = "label1";
+            label1.Size = new Size(31, 15);
+            label1.TabIndex = 0;
+            label1.Text = "Start";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(20, 78);
+            label2.Name = "label2";
+            label2.Size = new Size(53, 15);
+            label2.TabIndex = 3;
+            label2.Text = "Duration";
+            // 
+            // btnCancel
+            // 
+            btnCancel.DialogResult = DialogResult.Cancel;
+            btnCancel.Location = new Point(129, 197);
+            btnCancel.Name = "btnCancel";
+            btnCancel.Size = new Size(87, 27);
+            btnCancel.TabIndex = 9;
+            btnCancel.Text = "Cancel";
+            btnCancel.UseVisualStyleBackColor = false;
+            // 
+            // txtStartTime
+            // 
+            txtStartTime.Location = new Point(82, 42);
+            txtStartTime.Milliseconds = 0D;
+            txtStartTime.Name = "txtStartTime";
+            txtStartTime.Size = new Size(116, 23);
+            txtStartTime.TabIndex = 1;
+            txtStartTime.TimeSpan = TimeSpan.Parse("00:00:00");
+            // 
+            // txtDuration
+            // 
+            txtDuration.Location = new Point(82, 75);
+            txtDuration.Milliseconds = 0D;
+            txtDuration.Name = "txtDuration";
+            txtDuration.Size = new Size(116, 23);
+            txtDuration.TabIndex = 4;
+            txtDuration.TimeSpan = TimeSpan.Parse("00:00:00");
+            // 
+            // txtEndTime
+            // 
+            txtEndTime.Location = new Point(82, 110);
+            txtEndTime.Milliseconds = 0D;
+            txtEndTime.Name = "txtEndTime";
+            txtEndTime.Size = new Size(116, 23);
+            txtEndTime.TabIndex = 6;
+            txtEndTime.TimeSpan = TimeSpan.Parse("00:00:00");
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(46, 112);
+            label3.Name = "label3";
+            label3.Size = new Size(27, 15);
+            label3.TabIndex = 5;
+            label3.Text = "End";
+            // 
+            // btnSetFullSequence
+            // 
+            btnSetFullSequence.Location = new Point(177, 146);
+            btnSetFullSequence.Name = "btnSetFullSequence";
+            btnSetFullSequence.Size = new Size(39, 27);
+            btnSetFullSequence.TabIndex = 8;
+            btnSetFullSequence.Text = "Set";
+            btnSetFullSequence.UseVisualStyleBackColor = false;
+            btnSetFullSequence.Click += btnSetFullSequence_Click;
+            // 
+            // lblSetSequenceLength
+            // 
+            lblSetSequenceLength.AutoSize = true;
+            lblSetSequenceLength.Location = new Point(20, 152);
+            lblSetSequenceLength.Name = "lblSetSequenceLength";
+            lblSetSequenceLength.Size = new Size(145, 15);
+            lblSetSequenceLength.TabIndex = 7;
+            lblSetSequenceLength.Text = "Match sequence start/end";
+            // 
+            // EffectTimeEditor
+            // 
+            AcceptButton = btnOk;
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            AutoSize = true;
+            CancelButton = btnCancel;
+            ClientSize = new Size(247, 236);
+            Controls.Add(lblSetSequenceLength);
+            Controls.Add(btnSetFullSequence);
+            Controls.Add(txtEndTime);
+            Controls.Add(label3);
+            Controls.Add(txtDuration);
+            Controls.Add(txtStartTime);
+            Controls.Add(btnCancel);
+            Controls.Add(label2);
+            Controls.Add(label1);
+            Controls.Add(btnOk);
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
+            MaximumSize = new Size(263, 275);
+            MinimizeBox = false;
+            MinimumSize = new Size(263, 275);
+            Name = "EffectTimeEditor";
+            StartPosition = FormStartPosition.CenterParent;
+            Text = "Effect Time Editor";
+            ResumeLayout(false);
+            PerformLayout();
 
-		#endregion
+        }
 
-		private System.Windows.Forms.Button btnOk;
+        #endregion
+
+        private System.Windows.Forms.Button btnOk;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Button btnCancel;

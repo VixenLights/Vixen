@@ -52,19 +52,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private TimeSpan _sequenceLength;
-		private TimeSpan SequenceLength
-		{
-			get => _sequenceLength;
-			set
-			{
-				txtStartTime.Maximum = value;
-				txtEndTime.Maximum = value;
-				txtDuration.Maximum = value;
-			}
-		}
+        private TimeSpan SequenceLength { get; set; }
 
-		/// <summary>
+        /// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -83,7 +73,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Start = TimeSpan.Zero;
 			End = SequenceLength;
 			Duration = SequenceLength;
-
 		}
 	}
 }
