@@ -1,3 +1,5 @@
+Release Notes - Vixen 3
+
 Release Notes - Vixen 3 - 3.12u0 Build 
 
 ** 72 issues resolved in this release. 
@@ -2546,6 +2548,7 @@ Removed TestPreview.dll from the build.
 == 3.0.1.1 ============================
 
 Spin and twinkle effect updates so they will work with the new changes.
+
 
 
 

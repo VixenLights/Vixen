@@ -30,9 +30,9 @@
 		{
 			components = new System.ComponentModel.Container();
 			labelStart = new Label();
-			txtStartTime = new MaskedTextBox();
+			txtStartTime = new TimeControl();
 			labelEnd = new Label();
-			txtEndTime = new MaskedTextBox();
+			txtEndTime = new TimeControl();
 			labelDivide = new Label();
 			updownDivide = new NumericUpDown();
 			btnOk = new Button();
@@ -55,9 +55,6 @@
 			txtStartTime.Name = "txtStartTime";
 			txtStartTime.Size = new Size(116, 23);
 			txtStartTime.TabIndex = 1;
-			txtStartTime.MaskInputRejected += txtStartTime_MaskInputRejected;
-			txtStartTime.KeyDown += txtStartTime_KeyDown;
-			txtStartTime.KeyUp += txtStartTime_KeyUp;
 			// 
 			// labelEnd
 			// 
@@ -74,9 +71,6 @@
 			txtEndTime.Name = "txtEndTime";
 			txtEndTime.Size = new Size(116, 23);
 			txtEndTime.TabIndex = 3;
-			txtEndTime.MaskInputRejected += txtEndTime_MaskInputRejected;
-			txtEndTime.KeyDown += txtEndTime_KeyDown;
-			txtEndTime.KeyUp += txtEndTime_KeyUp;
 			// 
 			// labelDivide
 			// 
@@ -140,7 +134,6 @@
 			Name = "CreateEvenMarksForm";
 			StartPosition = FormStartPosition.CenterParent;
 			Text = "Create Evenly Divided Marks";
-			Load += CreateEvenMarksForm_Load;
 			ResumeLayout(false);
 			PerformLayout();
 		}
@@ -148,9 +141,9 @@
 		#endregion
 
 		private System.Windows.Forms.Label labelStart;
-		private System.Windows.Forms.MaskedTextBox txtStartTime;
+		private TimeControl txtStartTime;
 		private System.Windows.Forms.Label labelEnd;
-		private System.Windows.Forms.MaskedTextBox txtEndTime;
+		private TimeControl txtEndTime;
 		private System.Windows.Forms.Label labelDivide;
 		private System.Windows.Forms.NumericUpDown updownDivide;
 		private System.Windows.Forms.Button btnOk;

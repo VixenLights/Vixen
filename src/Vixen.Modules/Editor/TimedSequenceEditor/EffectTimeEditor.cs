@@ -52,6 +52,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+
 		private TimeSpan _sequenceLength;
 		private TimeSpan SequenceLength
 		{
@@ -65,7 +66,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		/// <summary>
+
+
+        /// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -84,7 +87,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Start = TimeSpan.Zero;
 			End = SequenceLength;
 			Duration = SequenceLength;
-
 		}
 	}
 }

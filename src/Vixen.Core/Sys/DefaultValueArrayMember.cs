@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections.Concurrent;
+using System.Reflection;
 using Vixen.Sys.Attribute;
 
 namespace Vixen.Sys
@@ -6,7 +7,7 @@ namespace Vixen.Sys
 	[Serializable]
 	internal class DefaultValueArrayMember
 	{
-		private static Dictionary<Type, PropertyInfo[]> mycache = new Dictionary<Type, PropertyInfo[]>();
+		private static ConcurrentDictionary<Type, PropertyInfo[]> mycache = new ConcurrentDictionary<Type, PropertyInfo[]>();
 
 		private object _owner;
 		private PropertyInfo[] _valueProperties = null;
