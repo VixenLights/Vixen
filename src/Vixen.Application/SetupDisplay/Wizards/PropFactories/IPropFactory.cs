@@ -13,7 +13,7 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 		/// Creates a collection of prop nodes from wizard data.
 		/// </summary>
 		/// <param name="wizard">Prop wizard to create prop nodes from</param>
-		/// <returns>A collection of prop nodes</returns>
-		IEnumerable<PropNode> GetProps(IPropWizard wizard);		 
+		/// <returns>A collection of props in an optional group</returns>
+		IPropGroup GetProps(IPropWizard wizard);		 
 	}
 }

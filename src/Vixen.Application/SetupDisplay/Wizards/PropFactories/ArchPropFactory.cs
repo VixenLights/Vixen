@@ -14,7 +14,7 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 		#region IPropFactory 
 		
 		/// <inheritdoc/>		
-		public IEnumerable<PropNode> GetProps(IPropWizard wizard)
+		public IPropGroup GetProps(IPropWizard wizard)
 		{
 			// Retrieve the Tree Prop wizard page
 			ArchPropWizardPage archPropPage = (ArchPropWizardPage)wizard.Pages.Single(page => page is ArchPropWizardPage);
@@ -26,14 +26,14 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 			arch.NodeCount = archPropPage.NodeCount;
 			arch.StringType = archPropPage.StringType;
 
-			// Create the collection of prop nodes to return 
-			List<PropNode> propNodes = new();
+			// Create the collection of props to return 
+			IPropGroup propGroup = new PropGroup();
 
-			// Create the arch prop node
-			propNodes.Add(new(arch));
+			// Create the arch prop 
+			propGroup.Props.Add(arch);
 
-			// Return the collection of prop nodes
-			return propNodes;
+			// Return the collection of props
+			return propGroup;
 		}
 
 		#endregion
