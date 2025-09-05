@@ -58,6 +58,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			get => _sequenceLength;
 			set
 			{
+				_sequenceLength = value;
 				txtStartTime.Maximum = value;
 				txtEndTime.Maximum = value;
 				txtDuration.Maximum = value;
