@@ -557,25 +557,42 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		{
 			if(Enum.TryParse(propType, out PropType result))
 			{
-				IEnumerable<PropNode> propNodes = await GeneratePropNodes(result);
+				IPropGroup propGroup = await GeneratePropNodes(result);
 
-				if (propNodes != null)
+				if (propGroup != null)
 				{
-					foreach (var propNode in propNodes)
+					// Determine the parent of the group or props
+					PropNode pNodeParent;
+					if (SelectedItem != null)
 					{
-						if (propNode != null)
-						{
-							PropNode pNodeParent;
-							if (SelectedItem != null)
-							{
-								pNodeParent = SelectedItem.PropNode;
-							}
-							else
-							{
-								pNodeParent = PropManager.RootNode;
-							}
+						pNodeParent = SelectedItem.PropNode;
+					}
+					else
+					{
+						pNodeParent = PropManager.RootNode;
+					}
 
-							PropManager.AddPropNode(propNode, pNodeParent);
+					// If the props are to be grouped then...
+					PropNode groupNode;
+					if (propGroup.CreateGroup)
+					{
+						// Create the group prop node
+						groupNode = new(propGroup.GroupName);
+						
+						// Add the group node to the tree
+						PropManager.AddPropNode(groupNode, pNodeParent);
+
+						// Make the group node the parent
+						pNodeParent = groupNode;
+					}
+
+					// Loop over the props
+					foreach (IProp prop in propGroup.Props)
+					{
+						if (prop != null)
+						{
+							// Add the prop to the tree																					
+							PropManager.AddProp(prop, pNodeParent);
 
 							//Ensure parent is expanded
 							if (SelectedItem != null)
@@ -967,10 +984,8 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			return mbs.GetUserInput($"Please enter the {nameType} name.", $"Create {nameType}", suggestedName);
 		}
 
-		private async Task<IEnumerable<PropNode>> GeneratePropNodes(PropType propType)
-		{
-			//TODO ask the user what type of Prop We are going to assume Arch for now.
-
+		private async Task<IPropGroup> GeneratePropNodes(PropType propType)
+		{			
 			var dependencyResolver = this.GetDependencyResolver();
 
 			// Get the Catel type factory
@@ -1010,10 +1025,11 @@ namespace VixenApplication.SetupDisplay.ViewModels
 				// Determine if the wizard was cancelled 
 				if (result.HasValue && result.Value)
 				{
-					IEnumerable<PropNode> propNodes = propWizard.Factory.GetProps(propWizard.Wizard);
+					// Have the prop factory create the props from the wizard data
+					IPropGroup propGroup = propWizard.Factory.GetProps(propWizard.Wizard);
 
 					// User did not cancel					
-					return propNodes;  
+					return propGroup;  
 				}
 			}
 
