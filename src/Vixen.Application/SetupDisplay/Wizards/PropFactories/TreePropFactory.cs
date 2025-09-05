@@ -15,7 +15,7 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 		#region IPropFactory
 
 		/// <inheritdoc/>		
-		public IEnumerable<PropNode> GetProps(IPropWizard wizard)
+		public IPropGroup GetProps(IPropWizard wizard)
 		{
 			// Retrieve the Tree Prop wizard page
 			TreePropWizardPage treePropPage = (TreePropWizardPage)wizard.Pages.Single(page => page is TreePropWizardPage);
@@ -30,14 +30,14 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 
 			//TODO add in other fields when wizard has full function
 
-			// Create the collection of prop nodes to return 
-			List<PropNode> propNodes = new();
+			// Create the collection of props to return 
+			IPropGroup propGroup = new PropGroup();
 
 			// Create the tree prop node
-			propNodes.Add(new(tree));
+			propGroup.Props.Add(tree);
 
-			// Return the collection of prop nodes
-			return propNodes;						
+			// Return the collection of props
+			return propGroup;						
 		}
 
 		#endregion
