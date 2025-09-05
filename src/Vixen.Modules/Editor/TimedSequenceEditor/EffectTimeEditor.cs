@@ -52,7 +52,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-        private TimeSpan SequenceLength { get; set; }
+        private TimeSpan _sequenceLength;
+        private TimeSpan SequenceLength
+        {
+            get => _sequenceLength;
+            set
+            {
+                _sequenceLength = value;
+                txtStartTime.Maximum = value;
+                txtEndTime.Maximum = value;
+                txtDuration.Maximum = value;
+            }
+        }
 
         /// <summary>
 		/// Clean up any resources being used.
