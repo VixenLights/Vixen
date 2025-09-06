@@ -1,5 +1,22 @@
 Release Notes - Vixen 3
 
+Release Notes - Vixen 3 - 3.12u1 Build 
+
+** 7 issues resolved in this release. 
+
+** Improvements
+    * [VIX-3702] - "Create Evenly Divided Marks" dialog not using new time entry control
+    * [VIX-3704] - Update the README on Github to point to the website for developer setup
+
+** Bugs
+    * [VIX-3703] - New menu item, Settings → Keep Insert Mode Active, not showing
+    * [VIX-3707] - Mouse tilt wheel does not work in the left direction to scroll the timeline
+    * [VIX-3714] - Edit image maps dialog, Ok button does not work.
+    * [VIX-3715] - Hard crash after several effect clone operations
+    * [VIX-3718] - The Edit Time dialog option to set start and end times to beginning and end of sequence  sets everything to all zeros.
+
+
+
 Release Notes - Vixen 3 - 3.12u0 Build 
 
 ** 72 issues resolved in this release. 
