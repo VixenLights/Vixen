@@ -7,7 +7,7 @@
 
 <img src="Assets/Vixen3-Logo.png" width=600 />
 
-Vixen is a full featured sequencer for producing animated light shows. It provides all the software tools necessary to create and run an animated light show sequenced to music. It supports typical DIY controllers as well as DMX, traditional and pixel lighting. It runs on the Windows platform under the .Net Framework.
+Vixen is a full featured sequencer for producing animated light shows. It provides all the software tools necessary to create and run an animated light show sequenced to music. It supports typical DIY controllers as well as DMX, traditional and pixel lighting. It runs on the Windows platform under .NET Core.
 
 <img src="Assets/Editor.png" width=600 />
 
@@ -55,7 +55,7 @@ For current developer setup information, see the [Developer](https://www.vixenli
 Conventions for development:
 
 - The assembly name should be the name of the module (eg. TimedSequenceEditor), and
-  the default namespace should be "Module.<ModuleType>.<ModuleName>". For
+  the default namespace should be "Module.\<ModuleType>.\<ModuleName>". For
   example, Modules.Editor.TimedSequenceEditor.
  
   
@@ -63,9 +63,9 @@ Conventions for development:
   'Release' directory release builds and a Debug folder for Debug builds. We no longer actively support x86 builds.
   It will also depend on the type of module. For example:
   
-  Vixen Modules (Release):              $(SolutionDir)\Release\Output\Module.<ModuleType>.<ModuleName>
+  Vixen Modules (Release):              $(SolutionDir)\Release\Output\Module.ModuleType.ModuleName\
   Vixen Common assemblies (Release):    $(SolutionDir)\Release\Output\
-  Vixen Applications (Release):         $(SolutionDir)\Release\Output\
+  Vixen Applications (Release):         $(SolutionDir)\Release\Output
 
 - Assembly names are handled by the Directory.Build.Props file for each module type.
   
