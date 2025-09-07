@@ -8,7 +8,7 @@ using VixenModules.Editor.PropWizard;
 namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 {
 	/// <summary>
-	/// Creates tree prop nodes from wizard data.
+	/// Creates tree props from wizard data.
 	/// </summary>
 	internal class TreePropFactory : IPropFactory
 	{

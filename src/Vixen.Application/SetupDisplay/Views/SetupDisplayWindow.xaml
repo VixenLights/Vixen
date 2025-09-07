@@ -9,7 +9,8 @@
         xmlns:viewModels="clr-namespace:VixenApplication.SetupDisplay.ViewModels"
         Title="Display Setup" Height="850" Width="1200" WindowStartupLocation="CenterScreen" x:Name="DisplaySetup"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance Type=viewModels:SetupDisplayViewModel, IsDesignTimeCreatable=False}">
+        d:DataContext="{d:DesignInstance Type=viewModels:SetupDisplayViewModel, IsDesignTimeCreatable=False}"
+         Loaded="UserControl_Loaded">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -96,7 +97,7 @@
                                                   ItemSource="{Binding SelectedProp}"
                                                   ShowAttachedProperties="False"
                                                   ShowReadOnlyProperties="True"
-                                                  PropertyFilterVisibility="Collapsed"
+                                                  PropertyFilterVisibility="Collapsed"                                                   
                                                   Margin="5">
                         <wpfPropertyGrid:PropertyGrid.Resources>
                             <ResourceDictionary>
@@ -105,6 +106,9 @@
                                 </ResourceDictionary.MergedDictionaries>
                             </ResourceDictionary>
                         </wpfPropertyGrid:PropertyGrid.Resources>
+                        <wpfPropertyGrid:PropertyGrid.Layout>
+                            <wpfPropertyGrid:CategorizedLayout/>
+                        </wpfPropertyGrid:PropertyGrid.Layout>
                     </wpfPropertyGrid:PropertyGrid>
                 </Border>
             </Grid>
@@ -116,7 +120,9 @@
                 <WindowsFormsHost Grid.Row="0"  Margin="5">
                     <controls:ElementTree x:Name="ElementTree"/>
                 </WindowsFormsHost>
-                <views:PropPreview Grid.Row="1" Margin="5"/>
+                <views:PropPreview Grid.Row="1" Margin="5" Visibility="{Binding IsTwoD, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <Viewport3D Name="MainViewport" Grid.Row="1" Margin="5" Visibility="{Binding IsThreeD, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            />
             </Grid>
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions>
@@ -125,7 +131,6 @@
                 </Grid.RowDefinitions>
                 <views:PropComponentTree Margin="5" DataContext="{Binding PropComponentTreeViewModel}"></views:PropComponentTree>
             </Grid>
-
         </Grid>
     </DockPanel>
 

@@ -11,6 +11,7 @@
 		CandyCane,
 		Star,
 		Tree,
-		Grid
+		Grid,
+		IntelligentFixture,
 	}
 }
