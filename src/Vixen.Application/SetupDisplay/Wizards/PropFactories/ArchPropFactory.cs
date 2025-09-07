@@ -7,7 +7,7 @@ using VixenModules.Editor.PropWizard;
 namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 {
 	/// <summary>
-	/// Creates arch prop nodes from wizard data.
+	/// Creates arch props from wizard data.
 	/// </summary>
 	internal class ArchPropFactory : IPropFactory
 	{

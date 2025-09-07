@@ -46,6 +46,7 @@
                 <MenuItem Header="Add Prop">
                     <MenuItem Header="Arch" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreatePropCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="Arch"/>
                     <MenuItem Header="Tree" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreatePropCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="Tree"/>
+                    <MenuItem Header="Intelligent Fixture" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreatePropCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="IntelligentFixture"/>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="Create Empty Group" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreateNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>

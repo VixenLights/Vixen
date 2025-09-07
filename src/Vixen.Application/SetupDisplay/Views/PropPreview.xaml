@@ -6,7 +6,7 @@
              xmlns:converter="clr-namespace:VixenApplication.SetupDisplay.Converter"
              xmlns:model1="clr-namespace:Vixen.Sys.Props.Model;assembly=Vixen.Core"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="800" d:DesignWidth="800">
 
     <UserControl.Resources>
         <ResourceDictionary>

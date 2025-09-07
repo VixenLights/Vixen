@@ -10,12 +10,13 @@ namespace VixenModules.Editor.FixtureWizard.Wizard
     using System.Diagnostics;
     using System.Threading.Tasks;
     using VixenModules.Editor.FixtureWizard.Wizard.Models;
+	using VixenModules.Editor.PropWizard;
 
-    /// <summary>
-    /// Wizard for creating intelligent fixtures.
-    /// </summary>
-    /// <remarks>This class was created from the Catel Orc Wizard example</remarks>
-    public class IntelligentFixtureWizard : SideNavigationWizardBase, IFixtureWizard
+	/// <summary>
+	/// Wizard for creating intelligent fixtures.
+	/// </summary>
+	/// <remarks>This class was created from the Catel Orc Wizard example</remarks>
+	public class IntelligentFixtureWizard : PropWizardBase, IPropWizard
     {        
         #region Constructor
 
@@ -68,65 +69,7 @@ namespace VixenModules.Editor.FixtureWizard.Wizard
         private readonly IMessageService _messageService;
 
         #endregion
-
-        #region IFixtureWizard
-
-        /// <summary>
-        /// Refer to interface documentation.
-        /// </summary>
-        public INavigationController NavigationControllerWrapper
-        {
-            get { return NavigationController; }
-            set { NavigationController = value; }
-        }
-
-        /// <summary>
-        /// Refer to interface documentation.
-        /// </summary>
-        public bool ShowInTaskbarWrapper
-        {
-            get {  return ShowInTaskbar; }
-            set { ShowInTaskbar = value; }
-        }
-
-        /// <summary>
-        /// Refer to interface documentation.
-        /// </summary>
-        public bool ShowHelpWrapper
-        {
-            get { return IsHelpVisible; }
-            set { IsHelpVisible = value; }
-        }
-
-        /// <summary>
-        /// Refer to interface documentation.
-        /// </summary>
-        public bool AllowQuickNavigationWrapper
-        {
-            get { return AllowQuickNavigation; }
-            set { AllowQuickNavigation = value; }
-        }
-
-        /// <summary>
-        /// Refer to interface documentation.
-        /// </summary>
-        public bool HandleNavigationStatesWrapper
-        {
-            get {  return HandleNavigationStates; }
-            set { HandleNavigationStates = value; }
-        }
-
-        /// <summary>
-        /// Refer to interface documentation.
-        /// </summary>
-        public bool CacheViewsWrapper
-        {
-            get { return CacheViews; }
-            set { CacheViews = value; }
-        }
-
-        #endregion
-
+       
         #region IWizard
 
         /// <summary>
