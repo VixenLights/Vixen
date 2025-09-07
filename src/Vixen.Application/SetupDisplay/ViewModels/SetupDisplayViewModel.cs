@@ -44,6 +44,8 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			PropNodeTreeViewModel.PropertyChanged += PropNodeTreeViewModel_PropertyChanged;
 			PropNodeTreePropViewModel = new(PropNodeTreeViewModel);
 			PropNodeTreePropViewModel.PropertyChanged += PropNodeTreePropViewModel_PropertyChanged;
+			IsTwoD = true;
+			IsThreeD = true;	
 		}
 
 		private void PropNodeTreePropViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -94,6 +96,8 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			propManager.RootNode.AddChild(MockPropNodeGroup<Tree>("Mini Tree"));
 
 			propManager.RootNode.AddChild(MockPropNodeGroup<Arch>("Arch"));
+
+			propManager.RootNode.AddChild(MockPropNodeGroup<IntelligentFixtureProp>("Intelligent Fixture"));
 		}
 
 		private PropNode MockPropNodeGroup<T>(string name) where T : IProp, new()
@@ -174,7 +178,12 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		public IProp? SelectedProp
 		{
 			get { return GetValue<IProp>(SelectedPropProperty); }
-			set { SetValue(SelectedPropProperty, value); }
+			set 
+			{
+				IsThreeD = (value is IntelligentFixtureProp);
+				IsTwoD = !IsThreeD;
+				SetValue(SelectedPropProperty, value); 
+			}
 		}
 
 		/// <summary>
@@ -600,5 +609,33 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		}
 
 		#endregion]
+
+		/// <summary>
+		/// Gets or sets the SelectedProp value.
+		/// </summary>
+		public bool IsTwoD
+		{
+			get { return GetValue<bool>(TwoDPropProperty); }
+			set { SetValue(TwoDPropProperty, value); }
+		}
+
+		/// <summary>
+		/// SelectedProp property data.
+		/// </summary>
+		public static readonly IPropertyData TwoDPropProperty = RegisterProperty<bool>(nameof(IsTwoD));
+
+		/// <summary>
+		/// Gets or sets the SelectedProp value.
+		/// </summary>
+		public bool IsThreeD
+		{
+			get { return GetValue<bool>(ThreeDPropProperty); }
+			set { SetValue(ThreeDPropProperty, value); }
+		}
+
+		/// <summary>
+		/// SelectedProp property data.
+		/// </summary>
+		public static readonly IPropertyData ThreeDPropProperty = RegisterProperty<bool>(nameof(IsThreeD));
 	}
 }
