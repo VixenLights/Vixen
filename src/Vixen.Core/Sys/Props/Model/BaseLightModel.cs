@@ -4,12 +4,11 @@ using Vixen.Model;
 
 namespace Vixen.Sys.Props.Model
 {
-	public abstract class BaseLightModel : BindableBase, ILightPropModel
+	public abstract class BaseLightModel : BasePropModel, ILightPropModel
 	{
 		private int _rotationAngle;
 		private ObservableCollection<NodePoint> _nodes = new();
 
-		public Guid Id { get; init; } = Guid.NewGuid();
 
 		public ObservableCollection<NodePoint> Nodes
 		{

@@ -13,15 +13,16 @@ using Vixen.Sys.Props.Components;
 
 namespace VixenModules.App.Props.Models.Tree
 {
-	public class Tree : BaseLightProp, IProp
+	public class Tree : BaseLightProp<TreeModel>, IProp
 	{
-		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
+		#region Fields
 
-		private TreeModel _propModel;
 		private StartLocation _startLocation;
 		private bool _zigZag;
 		private int _zigZagOffset;
 		private readonly Debouncer _generateDebouncer;
+
+		#endregion
 
 
 		public Tree() : this("Tree 1", 0, 0)
@@ -44,8 +45,8 @@ namespace VixenModules.App.Props.Models.Tree
 
 			// Create Preview model
 			TreeModel model = new TreeModel(strings, nodesPerString);
-			_propModel = model;
-			_propModel.PropertyChanged += PropModel_PropertyChanged;
+			PropModel = model;
+			PropModel.PropertyChanged += PropModel_PropertyChanged;
 			PropertyChanged += Tree_PropertyChanged;
 
 			_generateDebouncer = new Debouncer(() =>
@@ -108,16 +109,6 @@ namespace VixenModules.App.Props.Models.Tree
 			}
 		}
 
-		[Browsable(false)]
-		IPropModel IProp.PropModel => PropModel;
-
-		[Browsable(false)]
-		public new TreeModel PropModel
-		{
-			get => _propModel;
-			protected set => SetProperty(ref _propModel, value);
-		}
-
 		/// <summary>
 		/// The number of light strings
 		/// </summary>
@@ -125,11 +116,11 @@ namespace VixenModules.App.Props.Models.Tree
 		[PropertyOrder(10)]
 		public int Strings
 		{
-			get => _propModel.Strings;
+			get => PropModel.Strings;
 			set
 			{
 				if (value <= 0) return;
-				_propModel.Strings = value;
+				PropModel.Strings = value;
 				OnPropertyChanged(nameof(Strings));
 			}
 		}
@@ -141,15 +132,15 @@ namespace VixenModules.App.Props.Models.Tree
 		[DisplayName("Nodes Per String")]
 		public int NodesPerString
 		{
-			get => _propModel.NodesPerString;
+			get => PropModel.NodesPerString;
 			set
 			{
 				if (value <= 0) return;
-				if (value == _propModel.NodesPerString)
+				if (value == PropModel.NodesPerString)
 				{
 					return;
 				}
-				_propModel.NodesPerString = value;
+				PropModel.NodesPerString = value;
 				OnPropertyChanged(nameof(NodesPerString));
 			}
 		}
@@ -158,16 +149,16 @@ namespace VixenModules.App.Props.Models.Tree
 		[PropertyOrder(12)]
 		public int NodeSize
 		{
-			get => _propModel.NodeSize;
+			get => PropModel.NodeSize;
 			set
 			{
 				if (value <= 0) return;
-				if (value == _propModel.NodeSize)
+				if (value == PropModel.NodeSize)
 				{
 					return;
 				}
 
-				_propModel.NodeSize = value;
+				PropModel.NodeSize = value;
 				OnPropertyChanged(nameof(NodeSize));
 			}
 		}
@@ -179,15 +170,15 @@ namespace VixenModules.App.Props.Models.Tree
 		[DisplayName("Degrees Coverage")]
 		public int DegreesCoverage
 		{
-			get => _propModel.DegreesCoverage;
+			get => PropModel.DegreesCoverage;
 			set
 			{
 				if (value > 360 || value <= 0) return;
-				if (value == _propModel.DegreesCoverage)
+				if (value == PropModel.DegreesCoverage)
 				{
 					return;
 				}
-				_propModel.DegreesCoverage = value;
+				PropModel.DegreesCoverage = value;
 				OnPropertyChanged(nameof(DegreesCoverage));
 			}
 		}
@@ -199,16 +190,16 @@ namespace VixenModules.App.Props.Models.Tree
 		[PropertyOrder(14)]
 		public int DegreeOffset
 		{
-			get => _propModel.DegreesOffset;
+			get => PropModel.DegreesOffset;
 			set
 			{
 				if (value > 359 || value < -359) return;
-				if (value == _propModel.DegreesOffset)
+				if (value == PropModel.DegreesOffset)
 				{
 					return;
 				}
 
-				_propModel.DegreesOffset = value;
+				PropModel.DegreesOffset = value;
 				OnPropertyChanged(nameof(DegreeOffset));
 			}
 		}
@@ -217,15 +208,15 @@ namespace VixenModules.App.Props.Models.Tree
 		[PropertyOrder(15)]
 		public int BaseHeight
 		{
-			get => _propModel.BaseHeight;
+			get => PropModel.BaseHeight;
 			set
 			{
-				if (value <= 0 || value == _propModel.BaseHeight)
+				if (value <= 0 || value == PropModel.BaseHeight)
 				{
 					return;
 				}
 
-				_propModel.BaseHeight = value;
+				PropModel.BaseHeight = value;
 				OnPropertyChanged(nameof(BaseHeight));
 			}
 		}
@@ -234,15 +225,15 @@ namespace VixenModules.App.Props.Models.Tree
 		[PropertyOrder(16)]
 		public int TopHeight
 		{
-			get => _propModel.TopHeight;
+			get => PropModel.TopHeight;
 			set
 			{
-				if (value <= 0 || value == _propModel.TopHeight)
+				if (value <= 0 || value == PropModel.TopHeight)
 				{
 					return;
 				}
 
-				_propModel.TopHeight = value;
+				PropModel.TopHeight = value;
 				OnPropertyChanged(nameof(TopHeight));
 			}
 		}
@@ -251,15 +242,15 @@ namespace VixenModules.App.Props.Models.Tree
 		[PropertyOrder(17)]
 		public int TopWidth
 		{
-			get => _propModel.TopWidth;
+			get => PropModel.TopWidth;
 			set
 			{
-				if (value <= 0 || value == _propModel.TopHeight)
+				if (value <= 0 || value == PropModel.TopHeight)
 				{
 					return;
 				}
 
-				_propModel.TopHeight = value;
+				PropModel.TopHeight = value;
 				OnPropertyChanged(nameof(TopWidth));
 			}
 		}
