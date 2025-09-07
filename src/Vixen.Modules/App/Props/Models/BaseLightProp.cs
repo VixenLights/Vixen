@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using NLog;
+using NLog.Filters;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -9,14 +10,14 @@ using Vixen.Attributes;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Props;
+using Vixen.Sys.Props.Model;
+using VixenModules.App.Props.Models.Tree;
 using VixenModules.Property.Color;
 
 namespace VixenModules.App.Props.Models
 {
-	public abstract class BaseLightProp : BaseProp
-	{
-		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
-		
+	public abstract class BaseLightProp<TModel> : BaseProp<TModel> where TModel : BasePropModel, IPropModel
+	{				
 		private StringTypes _stringType;
 		protected bool UpdateInProgress = false;
 
@@ -49,7 +50,7 @@ namespace VixenModules.App.Props.Models
 			get => _stringType;
 			set => SetProperty(ref _stringType, value);
 		}
-
+		
 		/// <summary>
 		/// Adds a specified number of string elements to the given element node.
 		/// </summary>

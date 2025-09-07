@@ -14,10 +14,8 @@ namespace VixenModules.App.Props.Models.Arch
 	/// <summary>
 	/// A class that defines an Arch Prop
 	/// </summary>
-	public class Arch : BaseLightProp, IProp
-	{
-		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
-		private ArchModel _propModel;
+	public class Arch : BaseLightProp<ArchModel>, IProp
+	{				
 		private ArchStartLocation _startLocation;
 		private readonly Debouncer _generateDebouncer;
 
@@ -35,8 +33,8 @@ namespace VixenModules.App.Props.Models.Arch
 		{
             StringType = stringType;
 			ArchModel model = new ArchModel(nodeCount);
-			_propModel = model;
-			_propModel.PropertyChanged += PropModel_PropertyChanged;
+			PropModel = model;
+			PropModel.PropertyChanged += PropModel_PropertyChanged;
 			PropertyChanged += Arch_PropertyChanged;
 			
 			_generateDebouncer = new Debouncer(() =>
@@ -91,29 +89,21 @@ namespace VixenModules.App.Props.Models.Arch
 			}
         }
 
-		[Browsable(false)]
-		IPropModel IProp.PropModel => PropModel;
-
-		[Browsable(false)]
-		public new ArchModel PropModel
-		{
-			get => _propModel;
-			protected set => SetProperty(ref _propModel, value);
-		}
+		
 
 		[DisplayName("Nodes Count")]
 		[PropertyOrder(10)]
 		public int NodeCount
 		{
-			get => _propModel.NodeCount;
+			get => PropModel.NodeCount;
 			set
 			{
-				if (value == _propModel.NodeCount)
+				if (value == PropModel.NodeCount)
 				{
 					return;
 				}
 
-				_propModel.NodeCount = value;
+				PropModel.NodeCount = value;
 				OnPropertyChanged(nameof(NodeCount));
 			}
 		}
@@ -122,15 +112,15 @@ namespace VixenModules.App.Props.Models.Arch
 		[PropertyOrder(11)]
 		public int NodeSize
 		{
-			get => _propModel.NodeSize;
+			get => PropModel.NodeSize;
 			set
 			{
-				if (value == _propModel.NodeSize)
+				if (value == PropModel.NodeSize)
 				{
 					return;
 				}
 
-				_propModel.NodeSize = value;
+				PropModel.NodeSize = value;
 				OnPropertyChanged(nameof(NodeSize));
 			}
 		}
