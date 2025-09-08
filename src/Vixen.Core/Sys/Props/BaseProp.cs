@@ -1,11 +1,14 @@
 ﻿#nullable enable
+using NLog;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Windows.Forms;
 using Vixen.Attributes;
 using Vixen.Model;
 using Vixen.Services;
 using Vixen.Sys.Props.Components;
+using Vixen.Sys.Props.Model;
 
 namespace Vixen.Sys.Props
 {
@@ -18,8 +21,14 @@ namespace Vixen.Sys.Props
 	/// of associated components and target nodes.
 	/// </remarks>
 	[Serializable]
-	public abstract class BaseProp : BindableBase, IProp
+	public abstract class BaseProp<TModel> : BindableBase, IProp where TModel : BasePropModel, IPropModel
 	{
+		#region Protected Static Properties
+
+		protected static Logger Logging { get; set; } = LogManager.GetCurrentClassLogger();
+
+		#endregion
+
 		private readonly Guid _id;
 		private string _name;
 		private string _createdBy;
@@ -35,7 +44,7 @@ namespace Vixen.Sys.Props
 			_createdBy = Environment.UserName;
 			PropType = propType;
 			PropComponents = new();
-			UserDefinedPropComponents = new ();
+			UserDefinedPropComponents = new();
 
 			PropertyChanged += BaseProp_PropertyChanged;
 		}
@@ -133,8 +142,26 @@ namespace Vixen.Sys.Props
 		[ReadOnly(true)]
 		public PropType PropType { get; init; }
 
+		/// <summary>
+		/// Gets or sets the visual model associated with the Prop.
+		/// </summary>
+		/// <remarks>
+		/// The <see cref="IPropModel"/> represents the underlying data structure or configuration
+		/// for the Props visual that is used to draw it. This property can be overridden in derived classes to
+		/// provide specific implementations of the Prop model.
+		/// </remarks>
+		[Browsable(false)]
+		IPropModel IProp.PropModel => PropModel;
 
-
+		private TModel _propModel;
+		
+		[Browsable(false)]
+		public TModel PropModel
+		{
+			get => _propModel;
+			protected set => SetProperty(ref _propModel, value);
+		}
+		
 		/// <summary>
 		/// Gets or sets the unique identifier of the root <see cref="ElementNode"/> 
 		/// associated with this Prop.
@@ -188,17 +215,7 @@ namespace Vixen.Sys.Props
 		/// </remarks>
 		protected string AutoPropNodeName => $"{AutoPropPrefix} Node";
 
-		/// <summary>
-		/// Gets or sets the visual model associated with the Prop.
-		/// </summary>
-		/// <remarks>
-		/// The <see cref="IPropModel"/> represents the underlying data structure or configuration
-		/// for the Props visual that is used to draw it. This property can be overridden in derived classes to
-		/// provide specific implementations of the Prop model.
-		/// </remarks>
-		[Browsable(false)]
-		public virtual IPropModel PropModel { get; protected set; } = null!;
-
+				
 		/// <summary>
 		/// Gets the target <see cref="IElementNode"/> associated with this Prop.
 		/// </summary>
@@ -212,10 +229,10 @@ namespace Vixen.Sys.Props
 		/// </value>
 		[Browsable(false)]
 		public virtual IElementNode TargetNode => GetOrCreateElementNode();
-		
+
 		[Browsable(false)]
 		public ObservableCollection<IPropComponent> PropComponents { get; init; }
-		
+
 		[Browsable(false)]
 		public ObservableCollection<IPropComponent> UserDefinedPropComponents { get; init; }
 
@@ -224,7 +241,7 @@ namespace Vixen.Sys.Props
 			RemovePropElementNode();
 			PropModified();
 		}
-
+		
 		/// <summary>
 		/// Minimally updates the <see cref="ModifiedDate"/> property to the current date and time.
 		/// </summary>
