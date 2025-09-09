@@ -3,7 +3,7 @@ using Vixen.Sys;
 
 namespace Vixen.Services
 {
-	internal interface IFileService
+	public interface IFileService
 	{
 		SystemConfig LoadSystemConfigFile(string filePath);
 		void SaveSystemConfigFile(SystemConfig systemConfig);
