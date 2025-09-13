@@ -718,10 +718,13 @@ namespace Common.Controls
 		public void ReorderControllers()
 		{
 			// Get the list of controller names in the order they are displayed in the treeview.
-			var sortList = new List<string>();
+			var sortList = new List<Guid>();
 			foreach (TreeNode node in treeview.Nodes)
 			{
-				sortList.Add(node.Text);
+                if (node.Tag is IControllerDevice device)
+                {
+                    sortList.Add(device.Id);
+                }
 			}
 
 			// Reorder the controllers in the system to match the new order in the treeview.
