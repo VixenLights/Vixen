@@ -195,16 +195,35 @@ namespace Vixen.Sys.Managers
 		}
 
 		/// <summary>
-		/// Reorder the output devices in the collection based on the specified sort order.
+		/// Reorder the output devices in the collection based on the specified sort order and ensure
+		/// their proper running state.
 		/// </summary>
-		/// <param name="SortOrder">Specifies the sorting order</param>
-		public void Reorder(List<String> SortOrder)
+		/// <param name="sortOrder">Specifies the sorting order</param>
+		public void Reorder(List<Guid> sortOrder)
 		{
-			foreach (var node in _mediator.OrderBy(item => SortOrder.IndexOf(item.Name)))
-			{
+			foreach (var node in _mediator.OrderBy(item => sortOrder.IndexOf(item.Id)))
+            {
+                var isStopped = !node.IsRunning;
+                var isPaused = node.IsPaused;
 				_mediator.Remove(node);
 				_mediator.Add(node);
-			}
+				//When controllers are added, they are automatically started if the execution state is started.
+				//So if it is started, we need to honor the running state of the controllers before adding them back.
+				//Otherwise, the execution state is probably the correct state and it can remain.
+                if (_mediator.ExecutionState == ExecutionState.Started)
+                {
+                    if (isStopped)
+                    {
+                        Stop(node);
+
+                    }
+                    else if (isPaused)
+                    {
+                        Pause(node);
+                    }
+                }
+               
+            }
 		}
 	}
 }
