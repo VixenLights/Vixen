@@ -2,6 +2,7 @@
 using Vixen.IO;
 using Vixen.IO.Factory;
 using Vixen.Sys;
+using System.IO;
 
 namespace Vixen.Services
 {
