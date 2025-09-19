@@ -1,8 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
 				<OutputType>WinExe</OutputType>
 				<UseWindowsForms>true</UseWindowsForms>
+				<UseWPF>true</UseWPF>
 				<RootNamespace>VixenApplication</RootNamespace>
 				<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 				<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
@@ -28,9 +29,12 @@
 
 		<ItemGroup>
 				<PackageReference Include="Catel.Core" />
+				<PackageReference Include="Catel.MVVM" />
+				<PackageReference Include="gong-wpf-dragdrop" />
 				<PackageReference Include="MessagePack" />
 				<PackageReference Include="Newtonsoft.Json" />
 				<PackageReference Include="NLog" />
+				<PackageReference Include="NLog.Web.AspNetCore" />
 				<PackageReference Include="Orchestra.Core" />
 		</ItemGroup>
 
@@ -42,6 +46,7 @@
 				<ProjectReference Include="..\Vixen.Common\NShape\NShape.csproj" />
 				<ProjectReference Include="..\Vixen.Common\Resources\Resources.csproj" />
 				<ProjectReference Include="..\Vixen.Common\Utilities\Utilities.csproj" />
+				<ProjectReference Include="..\Vixen.Common\WPFCommon\WPFCommon.csproj" />
 				<ProjectReference Include="..\Vixen.Common\WpfPropertyGrid.Themes\WpfPropertyGrid.Themes.csproj" />
 				<ProjectReference Include="..\Vixen.Common\WpfPropertyGrid\WpfPropertyGrid.csproj" />
 				<ProjectReference Include="..\Vixen.Core\Vixen.Core.csproj" />
@@ -49,6 +54,7 @@
 				<ProjectReference Include="..\Vixen.Modules\App\FixtureSpecificationManager\FixtureSpecificationManager.csproj" />
 				<ProjectReference Include="..\Vixen.Modules\App\Fixture\Fixture.csproj" />
 				<ProjectReference Include="..\Vixen.Modules\App\Modeling\Modeling.csproj" />
+				<ProjectReference Include="..\Vixen.Modules\App\Props\Props.csproj" />
 				<ProjectReference Include="..\Vixen.Modules\Editor\FixtureWizard\FixtureWizard.csproj" />
 				<ProjectReference Include="..\Vixen.Modules\OutputFilter\CoarseFineBreakdown\CoarseFineBreakdown.csproj" />
 				<ProjectReference Include="..\Vixen.Modules\OutputFilter\ColorBreakdown\ColorBreakdown.csproj" />
@@ -70,6 +76,9 @@
 						<AutoGen>True</AutoGen>
 						<DependentUpon>Resources.resx</DependentUpon>
 				</Compile>
+				<Compile Update="SetupDisplay\Wizards\Views\TreePropWizardPageView.xaml.cs">
+				  <SubType>Code</SubType>
+				</Compile>
 		</ItemGroup>
 
 		<ItemGroup>
@@ -77,6 +86,12 @@
 						<Generator>ResXFileCodeGenerator</Generator>
 						<LastGenOutput>Resources.Designer.cs</LastGenOutput>
 				</EmbeddedResource>
+		</ItemGroup>
+
+		<ItemGroup>
+		  <Folder Include="SetupDisplay\Behaviors\" />
+		  <Folder Include="SetupDisplay\Model\" />
+		  <Folder Include="SetupDisplay\Services\" />
 		</ItemGroup>
 
 </Project>

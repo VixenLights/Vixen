@@ -1,4 +1,6 @@
-﻿namespace Vixen.Export
+﻿using System.IO;
+
+namespace Vixen.Export
 {
     public sealed class CSVWriter : ExportWriterBase
     {

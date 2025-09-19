@@ -4,6 +4,7 @@ using System.Xml.XPath;
 using Vixen.Extensions;
 using Vixen.Services;
 using Vixen.Sys;
+using System.IO;
 
 namespace Vixen.IO.Xml.ModuleStore
 {
