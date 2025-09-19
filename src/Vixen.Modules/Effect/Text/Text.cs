@@ -341,7 +341,25 @@ namespace VixenModules.Effect.Text
 			get { return _data.CenterStop; }
 			set
 			{
-				_data.CenterStop = value;
+				if (_data.CenterStop = value == true)
+					EndStop = false;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 2)]
+		[ProviderDisplayName(@"EndStop")]
+		[ProviderDescription(@"EndStop")]
+		[PropertyOrder(5)]
+		public bool EndStop
+		{
+			get { return _data.EndStop; }
+			set
+			{
+				if (_data.EndStop = value == true)
+					CenterStop = false;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -683,6 +701,8 @@ namespace VixenModules.Effect.Text
 
 				{"CenterStop", Direction < TextDirection.Rotate},
 
+				{"EndStop", Direction < TextDirection.Rotate},
+
 				{"ExplodePositionCurve", Direction == TextDirection.Explode},
 
 				{"FallSpeedCurve", Direction == TextDirection.Fall},
@@ -888,34 +908,42 @@ namespace VixenModules.Effect.Text
 				switch (Direction)
 				{
 					case TextDirection.Left:
-						// left
 						int leftX = bufferWi - (int) (_directionPosition * (textsize.Width + bufferWi));
-						point =
-							new Point(Convert.ToInt32(CenterStop ? Math.Max(leftX, (bufferWi - (int) textsize.Width) / 2) : leftX),
-								offsetTop);
+						if (CenterStop == true)
+							leftX = Math.Max(leftX, (bufferWi - (int)textsize.Width) / 2);
+						else if (EndStop == true)
+							leftX = Math.Max(leftX, bufferWi - (int)textsize.Width);
+						point = new Point(leftX, offsetTop);
 						break;
+
 					case TextDirection.Right:
-						// right
 						int rightX = -_maxTextSize + (int) (_directionPosition * (_maxTextSize + bufferWi));
-						point =
-							new Point(Convert.ToInt32(CenterStop ? Math.Min(rightX, (bufferWi - (int) textsize.Width) / 2) : rightX),
-								offsetTop);
+						if (CenterStop == true)
+							rightX = Math.Min(rightX, (bufferWi - (int)textsize.Width) / 2);
+						else if (EndStop == true)
+							rightX = Math.Min(rightX, 0);
+						point = new Point(rightX, offsetTop);
 						break;
+
 					case TextDirection.Up:
-						// up
 						int upY = bufferHt - (int) (((textsize.Height * numberLines) + bufferHt) * _directionPosition);
-						point = new Point(offsetLeft,
-							Convert.ToInt32(CenterStop ? Math.Max(upY, (bufferHt - (int) (textsize.Height * numberLines)) / 2) : upY));
+						if (CenterStop == true)
+							upY = Math.Max(upY, (bufferHt - (int)(textsize.Height * numberLines)) / 2);
+						else if (EndStop == true)
+							upY = Math.Max(upY, bufferHt - (int)textsize.Height);
+						point = new Point(offsetLeft, upY);
 						break;
+
 					case TextDirection.Down:
-						// down
 						int downY = -(int) (textsize.Height * numberLines) +
 						            (int) (((textsize.Height * numberLines) + bufferHt) * _directionPosition);
-						point = new Point(offsetLeft,
-							Convert.ToInt32(CenterStop
-								? Math.Min(downY, (bufferHt - (int) (textsize.Height * numberLines)) / 2)
-								: downY));
+						if (CenterStop == true)
+							downY = Math.Min(downY, (bufferHt - (int)(textsize.Height * numberLines)) / 2);
+						else if (EndStop == true)
+							downY = Math.Min(downY, 0);
+						point = new Point(offsetLeft, downY);
 						break;
+
 					default:
 						// no movement - centered
 						point = new Point((bufferWi - _maxTextSize) / 2 + xOffset, offsetTop);

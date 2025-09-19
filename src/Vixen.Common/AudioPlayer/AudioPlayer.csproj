@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
 				<RootNamespace>Common.AudioPlayer</RootNamespace>
@@ -9,12 +9,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Win32.SystemEvents" Version="8.0.0" />
-    <PackageReference Include="NAudio.Core" Version="2.2.1" />
-    <PackageReference Include="NAudio.Vorbis" Version="1.5.0" />
-    <PackageReference Include="NAudio.Wasapi" Version="2.2.1" />
-    <PackageReference Include="NAudio.WinMM" Version="2.2.1" />
-    <PackageReference Include="NLog" Version="5.4.0" />
+    <PackageReference Include="Microsoft.Win32.SystemEvents" />
+    <PackageReference Include="NAudio.Core" />
+    <PackageReference Include="NAudio.Vorbis" />
+    <PackageReference Include="NAudio.Wasapi" />
+    <PackageReference Include="NAudio.WinMM" />
+    <PackageReference Include="NLog" />
   </ItemGroup>
 
   <ItemGroup>

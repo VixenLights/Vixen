@@ -640,7 +640,7 @@ namespace Common.Controls.Timeline
 		///via OnScroll event, or manually.</summary>
 		private void HandleHorizontalScroll()
 		{
-			VisibleTimeStart = pixelsToTime(-AutoScrollPosition.X);
+			VisibleTimeStart = PixelsToTime(-AutoScrollPosition.X);
 		}
 
 
@@ -1205,10 +1205,24 @@ namespace Common.Controls.Timeline
 		/// Moves the discovered elements within a range by the given amount of time. This is similar to the mouse dragging events, except
 		/// it's a single 'atomic' operation that moves the elements and raises an event to indicate they have moved.
 		/// </summary>
-		public void MoveElementsInRangeByTime(TimeSpan startTime, TimeSpan endTime, TimeSpan offset, bool processVisibleRows)
+		/// <param name="startTime">Specifies the inclusive starting time of the time window</param>
+		/// <param name="endTime">Specifies the inclusive ending time of the time window</param>
+		/// <param name="offset">
+		/// Specifies the amount of time to shift the Elements that are within the time window. A positive value adds time and a negative
+		/// value decreases time.
+		/// </param>
+		/// <param name="processVisibleRows">Specifies if only visible Elements should be impacted</param>
+		/// <param name="clipEffects">
+		/// Specifies that if moved Element start/end times fall outside the start/end time scale, the Elements times will be clipped. If clipping
+		/// is off, then the Element will only be moved to the extent of the start/end scale.
+		/// </param>
+		/// <returns>
+		/// The amount of time the Elements were moved. This could be different from the parameter 'offset' if 'clipEffects' is false.
+		/// </returns>
+		public TimeSpan MoveElementsInRangeByTime(TimeSpan startTime, TimeSpan endTime, TimeSpan offset, bool processVisibleRows, bool clipEffects = false)
 		{
 			IEnumerable<Element> elementsToMove = ElementsWithinRange(startTime, endTime, processVisibleRows);
-			MoveElementsByTime(elementsToMove, offset);
+			return MoveElementsByTime(elementsToMove, offset, clipEffects);
 		}
 
 		/// <summary>
@@ -1216,24 +1230,84 @@ namespace Common.Controls.Timeline
 		/// it's a single 'atomic' operation that moves the elements and raises an event to indicate they have moved.
 		/// Note that it does not utilize snap points at all.
 		/// </summary>
-		public void MoveElementsByTime(IEnumerable<Element> elements, TimeSpan offset)
+		/// <param name="elements">Specifies a list of Elements to move</param>
+		/// <param name="offset">
+		/// Specifies the amount of time to shift the Elements that are within the time window. A positive value adds time and a negative
+		/// value decreases time.
+		/// </param>
+		/// <param name="clipEffects">
+		/// Specifies that if moved Element start/end times fall outside the start/end time scale, the Elements times will be clipped. If clipping
+		/// is off, then the Element will only be moved to the extent of the start/end scale.
+		/// </param>
+		/// <returns>
+		/// The amount of time the Elements were moved. This could be different from the parameter 'offset' if 'clipEffects' is false.
+		/// </returns>
+		public TimeSpan MoveElementsByTime(IEnumerable<Element> elements, TimeSpan offset, bool clipEffects = false)
 		{
+			// If there are no Elements, then we've moved nothing.
 			if (!elements.Any())
-				return;
+				return TimeSpan.Zero;
 
 			m_elemMoveInfo = new ElementMoveInfo(new Point(), elements, VisibleTimeStart);
 
-			TimeSpan earliest = elements.Min(x => x.StartTime);
-			if ((earliest + offset) < TimeSpan.Zero)
-				offset = -earliest;
+			// If we're not clipping Elements, then determine the maximum amount of offset that can be
+			// achieved WITHOUT altering the start/end time of the Elements
+			if (clipEffects != true)
+			{
+				TimeSpan earliest = elements.Min(x => x.StartTime);
+				if ((earliest + offset) < TimeSpan.Zero)
+					offset = -earliest;
 
-			TimeSpan latest = elements.Max(x => x.EndTime);
-			if ((latest + offset) > TimeInfo.TotalTime)
-				offset = TimeInfo.TotalTime - latest;
+				TimeSpan latest = elements.Max(x => x.EndTime);
+				if ((latest + offset) > TimeInfo.TotalTime)
+					offset = TimeInfo.TotalTime - latest;
+			}
 
-			foreach (Element elem in elements) {
+			// Go through each Element and move it by the offset amount
+			foreach (var elem in elements)
+			{
 				elem.BeginUpdate();
-				elem.StartTime += offset;
+
+				// If the Element is completely shifted passed the end of the Sequence, then delete it.
+				if (clipEffects == true && elem.EndTime + offset < TimeSpan.Zero)
+				{
+					m_elemMoveInfo.AppendElementDeleteInfo(elem);
+					elem.Row.RemoveElement(elem);
+					// Note: do not advance 'index' since deleting the mark causes all the remaining Elements move up.
+				}
+
+				// If the Element is completely shifted passed the beginning of the Sequence, then delete it.
+				else if (clipEffects == true && elem.StartTime + offset > TimeInfo.TotalTime)
+				{
+					m_elemMoveInfo.AppendElementDeleteInfo(elem);
+					elem.Row.RemoveElement(elem);
+					// Note: do not advance 'index' since deleting the mark causes all the remaining Elements move up.
+				}
+
+				// else we'll simply adjust the starting time of the Element and potentially the duration
+				else
+				{
+					// Don't let the Element's start time be less than zero...
+					if (elem.StartTime + offset < TimeSpan.Zero)
+					{
+						// So clip the beginning of the Element
+						elem.StartTime = TimeSpan.Zero;
+						elem.Duration += elem.StartTime + offset;
+					}
+					// Don't let the Element's end time be greater than the end of the Sequence...
+					else if (elem.EndTime + offset > TimeInfo.TotalTime)
+					{
+						// So clip the ending of the Element
+						elem.StartTime += offset;
+						elem.EndTime = TimeInfo.TotalTime;
+					}
+					else
+					{
+						elem.StartTime += offset;
+					}
+
+				}
+
 				elem.EndUpdate();
 				RenderElement(elem);
 			}
@@ -1245,6 +1319,8 @@ namespace Common.Controls.Timeline
 				ElementsMovedNew(this, new ElementsChangedTimesEventArgs(m_elemMoveInfo, ElementMoveType.Move));
 
 			m_elemMoveInfo = null;
+
+			return offset;
 		}
 
 
@@ -1494,8 +1570,8 @@ namespace Common.Controls.Timeline
 		{
 			if (SelectedArea.Size.IsEmpty) return;
 			var containingRows = RowsIn(SelectedArea);
-			TimeSpan selStart = pixelsToTime(SelectedArea.Left);
-			TimeSpan selEnd = pixelsToTime(SelectedArea.Right);
+			TimeSpan selStart = PixelsToTime(SelectedArea.Left);
+			TimeSpan selEnd = PixelsToTime(SelectedArea.Right);
 			int selBottom = SelectedArea.Top + SelectedArea.Height;
 			string moveDirection = "Left";
 			if (useCAD)
@@ -1824,14 +1900,22 @@ namespace Common.Controls.Timeline
 		{
 			foreach (KeyValuePair<Element, ElementTimeInfo> e in changedElements)
 			{
-				// Key is reference to actual element. Value is class with its times before move.
-				// Swap the element's times with the saved times from before the move, so we can restore them later in redo.
-				ElementTimeInfo.SwapPlaces(e.Key, e.Value);
-				if (e.Key.Row != e.Value.Row)
+				// If the Element was deleted, then we'll need to re-add it back.
+				if (e.Value == null)
 				{
-					e.Value.Row.RemoveElement(e.Key);
 					e.Key.Row.AddElement(e.Key);
-					_ElementChangedRows(e.Key, e.Value.Row, e.Key.Row);
+				}
+				else
+				{
+					// Key is reference to actual element. Value is class with its times before move.
+					// Swap the element's times with the saved times from before the move, so we can restore them later in redo.
+					ElementTimeInfo.SwapPlaces(e.Key, e.Value);
+					if (e.Key.Row != e.Value.Row)
+					{
+						e.Value.Row.RemoveElement(e.Key);
+						e.Key.Row.AddElement(e.Key);
+						_ElementChangedRows(e.Key, e.Value.Row, e.Key.Row);
+					}
 				}
 				if(!e.Key.IsRendered) RenderElement(e.Key);
 					
@@ -2754,6 +2838,14 @@ namespace Common.Controls.Timeline
 
 			// Save the original parameters of an element
 			OriginalElements.Add(modifyingElement, new ElementTimeInfo(modifyingElement));
+		}
+
+		public void AppendElementDeleteInfo(Element modifyingElement)
+		{
+			if (OriginalElements == null)
+				throw new Exception("Appending a moving element without initializing moving.");
+
+			OriginalElements[modifyingElement] = null;
 		}
 
 		/// <summary>

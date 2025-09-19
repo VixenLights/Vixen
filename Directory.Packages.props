@@ -1,0 +1,51 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="AsyncAwaitBestPractices" Version="9.0.0" />
+    <PackageVersion Include="Catel.Core" Version="6.0.3" />
+    <PackageVersion Include="Catel.Fody" Version="4.9.0" />
+    <PackageVersion Include="Catel.MVVM" Version="6.0.3" />
+    <PackageVersion Include="Catel.Serialization.Json" Version="6.0.3" />
+    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageVersion Include="Debounce.Core" Version="1.0.0" />
+    <PackageVersion Include="DockPanelSuite" Version="3.1.1" />
+    <PackageVersion Include="DockPanelSuite.ThemeVS2015" Version="3.1.1" />
+    <PackageVersion Include="Fody" Version="6.6.4" />
+    <PackageVersion Include="FTD2XX.Net" Version="1.2.1" />
+    <PackageVersion Include="gong-wpf-dragdrop" Version="4.0.0" />
+    <PackageVersion Include="LiteDB" Version="4.1.4" />
+    <PackageVersion Include="LoadAssembliesOnStartup.Fody" Version="4.6.0" />
+    <PackageVersion Include="MessagePack" Version="2.5.192" />
+    <PackageVersion Include="Microsoft.Win32.SystemEvents" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.122" />
+    <PackageVersion Include="ModuleInit.Fody" Version="2.1.1" />
+    <PackageVersion Include="NAudio.Core" Version="2.2.1" />
+    <PackageVersion Include="NAudio.Vorbis" Version="1.5.0" />
+    <PackageVersion Include="NAudio.Wasapi" Version="2.2.1" />
+    <PackageVersion Include="NAudio.WinMM" Version="2.2.1" />
+    <PackageVersion Include="NCalc2" Version="2.1.0" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageVersion Include="NLog" Version="5.4.0" />
+    <PackageVersion Include="NLog.Web.AspNetCore" Version="5.4.0" />
+    <PackageVersion Include="Obsolete.Fody" Version="5.3.0" />
+    <PackageVersion Include="OpenTK" Version="4.8.2" />
+    <PackageVersion Include="Orc.Controls" Version="5.0.5" />
+    <PackageVersion Include="Orc.SystemInfo" Version="5.0.0" />
+    <PackageVersion Include="Orc.Wizard" Version="5.0.0" />
+    <PackageVersion Include="Orchestra.Core" Version="7.0.1" />
+    <PackageVersion Include="Svg" Version="3.4.7" />
+    <PackageVersion Include="System.Data.SqlClient" Version="4.8.6" />
+    <PackageVersion Include="System.Drawing.Common" Version="8.0.6" />
+    <PackageVersion Include="System.IO.Ports" Version="8.0.0" />
+    <PackageVersion Include="System.Reactive" Version="5.0.0" />
+    <PackageVersion Include="System.Resources.Extensions" Version="8.0.0" />
+    <PackageVersion Include="Zstandard.Net" Version="1.1.7" />
+    <PackageVersion Include="WixToolset.Heat" Version="5.0.0" />
+    <PackageVersion Include="WixToolset.Bal.wixext" Version="5.0.0" />
+    <PackageVersion Include="WixToolset.Netfx.wixext" Version="5.0.0" />
+    <PackageVersion Include="WixToolset.Util.wixext" Version="5.0.0" />
+  </ItemGroup>
+</Project>

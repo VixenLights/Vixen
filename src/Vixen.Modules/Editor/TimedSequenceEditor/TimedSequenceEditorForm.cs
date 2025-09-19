@@ -58,6 +58,7 @@ using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 using PropertyDescriptor = System.ComponentModel.PropertyDescriptor;
 using Size = System.Drawing.Size;
 using Common.Broadcast;
+using Vixen.Sys.Props;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -81,12 +82,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private int _delayCountDown;
 
 		private readonly Timer _autoSaveTimer = new Timer();
-
-		// Variables used by the add multiple effects dialog
-		private int _amLastEffectCount;
-		private TimeSpan _amLastStartTime;
-		private TimeSpan _amLastDuration;
-		private TimeSpan _amLastDurationBetween;
 
 		// a mapping of effects in the sequence to the element that represent them in the grid.
 		private Dictionary<EffectNode, Element> _effectNodeToElement;
@@ -151,6 +146,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private int _iconSize;
 		private int _toolStripImageSize;
 
+		private static class _properties
+		{
+			public static int effectCount = -1;
+			public static TimeSpan startTime;
+			public static TimeSpan endTime;
+			public static TimeSpan duration;
+			public static TimeSpan durationBetween;
+			public static bool alignToBeatMarks;
+			public static bool skipEOBeat;
+			public static bool fillDuration;
+			public static bool markStartEnd;
+			public static bool selectEffects;
+			public static bool panelBeatAlignment;
+			public static StringCollection checkedMarks;
+		};
 		#endregion
 
 		#region Constructor / Initialization
@@ -1229,7 +1239,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//Scale our default pixel height for the rows
 			if (_sequence.DefaultRowHeight != 0)
 			{
-			TimelineControl.rowHeight = _sequence.DefaultRowHeight;
+				TimelineControl.rowHeight = _sequence.DefaultRowHeight;
 			}
 			else
 			{
@@ -1244,6 +1254,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				AddNodeAsRow(node, null);
 			}
+
+			
+			AddNodeAsRow(VixenSystem.Props.RootNode, null);
+
+			AddNodeAsRow(VixenSystem.PropComponents.RootNode, null);
 
 			var rowSettings = _sequence.RowSettings;
 
@@ -2209,8 +2224,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected void ElementChangedRowsHandler(object sender, ElementRowChangeEventArgs e)
 		{
-			ElementNode oldElement = e.OldRow.Tag as ElementNode;
-			ElementNode newElement = e.NewRow.Tag as ElementNode;
+			IElementNode oldElement = e.OldRow.Tag as IElementNode;
+			IElementNode newElement = e.NewRow.Tag as IElementNode;
 			TimedSequenceElement movedElement = e.Element as TimedSequenceElement;
 
 			if (movedElement != null)
@@ -2223,7 +2238,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				// all rows that represent the new element and add it to them.
 				foreach (Row row in TimelineControl)
 				{
-					ElementNode rowElement = row.Tag as ElementNode;
+					IElementNode rowElement = row.Tag as IElementNode;
 
 					if (rowElement == oldElement && row != e.OldRow)
 						row.RemoveElement(movedElement);
@@ -2481,31 +2496,56 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void AddMultipleEffects(TimeSpan startTime, String effectName, Guid effectId, Row row)
 		{
-			var eDialog = new Form_AddMultipleEffects();
-			if (ModifierKeys == (Keys.Shift | Keys.Control) && _amLastEffectCount > 0)
+			var eDialog = new Form_AddMultipleEffects(SequenceLength);
+			eDialog.MarkCollections = _sequence.LabeledMarkCollections;
+			if (ModifierKeys.HasFlag(Keys.Shift) && (_properties.effectCount != -1))
 			{
-				eDialog.EffectCount = _amLastEffectCount;
-				eDialog.StartTime = _amLastStartTime;
-				eDialog.Duration = _amLastDuration;
-				eDialog.DurationBetween = _amLastDurationBetween;
+				eDialog.StartTime = _mPrevPlaybackStart == null ? _properties.startTime : (TimeSpan)_mPrevPlaybackStart;
+				eDialog.EndTime = _mPrevPlaybackEnd == null ? _properties.endTime : (TimeSpan)_mPrevPlaybackEnd;
+				eDialog.Duration = _properties.duration;
+				eDialog.DurationBetween = _properties.durationBetween;
+				eDialog.AlignToBeatMarks = _properties.alignToBeatMarks;
+				eDialog.SkipEOBeat = _properties.skipEOBeat;
+				eDialog.FillDuration = _properties.fillDuration;
+				eDialog.AlignToMarkStartEnd = _properties.markStartEnd;
+				eDialog.SelectEffects = _properties.selectEffects;
+				eDialog.ShowPanelBeatAlignment = _properties.panelBeatAlignment;
+				foreach( var checkedMark in _properties.checkedMarks)
+				{
+					eDialog.CheckMarkItem(checkedMark);
+				}
 			}
 			else
 			{
 				eDialog.EffectCount = 2;
-				eDialog.StartTime = startTime;
+				eDialog.StartTime = _mPrevPlaybackStart == null ? startTime : (TimeSpan)_mPrevPlaybackStart;
+				eDialog.EndTime = _mPrevPlaybackEnd == null ? SequenceLength : (TimeSpan)_mPrevPlaybackEnd;
 				eDialog.Duration = TimeSpan.FromSeconds(2);
 				eDialog.DurationBetween = TimeSpan.FromSeconds(2);
 			}
 			eDialog.EffectName = effectName;
-			eDialog.SequenceLength = eDialog.EndTime = SequenceLength;
-			eDialog.MarkCollections = _sequence.LabeledMarkCollections;
+			eDialog.SequenceLength = eDialog.EndTime;
 			eDialog.ShowDialog(this);
 			if (eDialog.DialogResult == DialogResult.OK)
 			{
-				_amLastEffectCount = eDialog.EffectCount;
-				_amLastStartTime = eDialog.StartTime;
-				_amLastDuration = eDialog.Duration;
-				_amLastDurationBetween = eDialog.DurationBetween;
+				// Save User configuration
+				_properties.effectCount = eDialog.EffectCount;
+				_properties.startTime = eDialog.StartTime;
+				_properties.endTime = eDialog.EndTime;
+				_properties.duration = eDialog.Duration;
+				_properties.durationBetween = eDialog.DurationBetween;
+				_properties.alignToBeatMarks = eDialog.AlignToBeatMarks;
+				_properties.skipEOBeat = eDialog.SkipEOBeat;
+				_properties.fillDuration = eDialog.FillDuration;
+				_properties.markStartEnd = eDialog.AlignToMarkStartEnd;
+				_properties.selectEffects = eDialog.SelectEffects;
+				_properties.panelBeatAlignment = eDialog.ShowPanelBeatAlignment;
+				_properties.checkedMarks = new StringCollection();
+				foreach (ListViewItem mark in eDialog.CheckedMarks)
+				{
+					_properties.checkedMarks.Add(mark.Text);
+				}
+
 				var newEffects = new List<EffectNode>();
 				if (eDialog.AlignToBeatMarks)
 				{
@@ -2691,7 +2731,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				startTime = TimelineControl.SelectedElements.Last().StartTime;
 				endTime = TimelineControl.SelectedElements.First().EndTime;
 			}
-			var dDialog = new EffectDistributionDialog();
+			var dDialog = new EffectDistributionDialog(SequenceLength);
 			var elementCount = TimelineControl.SelectedElements.Count();
 
 			dDialog.ElementCount = elementCount.ToString(CultureInfo.InvariantCulture);
@@ -3650,6 +3690,44 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		/// <summary>
+		/// Move Marks in a range by a given time offset.
+		/// </summary>
+		/// <param name="startTime">Specifies the inclusive starting time of the time window</param>
+		/// <param name="endTime">Specifies the inclusive ending time of the time window</param>
+		/// <param name="offset">
+		/// Specifies the amount of time to shift the Elements that are within the time window. A positive value adds time and a negative
+		/// value decreases time.
+		/// </param>
+		public void MoveMarksInRangeByTime(TimeSpan startTime, TimeSpan endTime, TimeSpan offset, bool processVisibleRows)
+		{
+			var marksBulkChangeInfo = new MarksBulkChangeInfo();
+
+			// Iterate through each Mark collection
+			foreach (MarkCollection mc in _sequence.LabeledMarkCollections.Where(x => ((processVisibleRows == true && x.ShowMarkBar == true) || 
+			                                                                            processVisibleRows == false) && 
+																					   x.Locked != true))
+			{
+				var marksMove = new Dictionary<IMark, IMark>();
+
+				// Offset all the Marks within this Mark collection and are within the time window
+				marksMove = mc.OffsetMarksByTime(startTime, endTime, offset, TimelineControl.TimeInfo.TotalTime);
+
+				// Collect each moved Mark into the bulk change info
+				foreach (var mark in marksMove)
+				{
+					marksBulkChangeInfo.Add(mark.Key, mark.Value);
+				}
+			}
+
+			// Save the bulk changed Marks in the Undo buffer
+			_undoMgr.AddUndoAction(new MarksBulkChangeUndoAction(this, marksBulkChangeInfo));
+			UpdateGridSnapTimes();
+			CheckAndRenderDirtyElementsAsync();
+			SequenceModified();
+		}
+
+
+		/// <summary>
 		/// Adds an EffectNode to the sequence and the TimelineControl.
 		/// </summary>
 		/// <param name="node"></param>
@@ -3793,7 +3871,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimeSpan timeSpan, object[] parameterValues = null)
 		{
 			// get the target element
-			var targetNode = (ElementNode) row.Tag;
+			var targetNode = (IElementNode) row.Tag;
 
 			// populate the given effect instance with the appropriate target node and times, and wrap it in an effectNode
 			effectInstance.TargetNodes = new[] {targetNode};
@@ -3954,14 +4032,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 									// dunno what we want to do: prompt to add new elements for them? map them to others? etc.
 									const string message = "TimedSequenceEditor: <AddElementForEffectNodeTpl> - No Timeline.Row is associated with a target ElementNode for this EffectNode. It now exists in the sequence, but not in the GUI.";
 									Logging.Error(message);
-									//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-									MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-									var messageBox = new MessageBoxForm(message, @"", false, false);
-									messageBox.ShowDialog(this);
+									if (InvokeRequired)
+									{
+										Invoke(new Delegates.GenericVoidString(ShowErrorMessage), message);
+									}
 								}
 							});
 			TimelineControl.grid.RenderElement(element);
 			return element;
+		}
+
+		private void ShowErrorMessage(string message)
+		{
+			MessageBoxForm mbf = new MessageBoxForm(message, "Error", MessageBoxButtons.OK, SystemIcons.Error);
+			mbf.ShowDialog(this);
 		}
 
 		private TimedSequenceElement SetupNewElementFromNode(EffectNode node)
@@ -4062,7 +4146,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		/// <param name="node">The node to generate a row for.</param>
 		/// <param name="parentRow">The parent node the row should belong to, if any.</param>
-		private void AddNodeAsRow(ElementNode node, Row parentRow)
+		private void AddNodeAsRow(IElementNode node, Row parentRow)
 		{
 			// made the new row from the given node and add it to the control.
 			TimedSequenceRowLabel label = new TimedSequenceRowLabel {Name = node.Name};
@@ -4090,7 +4174,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_doEventsCounter++;
 
 			// iterate through all if its children, adding them as needed
-			foreach (ElementNode child in node.Children)
+			foreach (IElementNode child in node.Children)
 			{
 				AddNodeAsRow(child, newRow);
 

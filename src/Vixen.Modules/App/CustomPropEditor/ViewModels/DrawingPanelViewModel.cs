@@ -543,6 +543,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				}
 
 			}
+
+			UpdateLightSizeProperty();
 		}
 
 		/// <summary>
@@ -581,6 +583,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 					em.LightSize--;
 				}
 			}
+
+			UpdateLightSizeProperty();
 		}
 
 		/// <summary>
@@ -624,6 +628,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				}
 
 			}
+
+			UpdateLightSizeProperty();
 		}
 
 		/// <summary>
@@ -635,6 +641,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			return SelectedItems.Count>1;
 		}
 
+		private void UpdateLightSizeProperty()
+		{
+			_elementTreeViewModel.SelectedItem.RaiseAllPropertiesChanged();
+		}
 		#endregion
 
 		#endregion

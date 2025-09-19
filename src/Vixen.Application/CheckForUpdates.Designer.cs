@@ -34,7 +34,7 @@
 			this.labelCurrentVersion = new System.Windows.Forms.Label();
 			this.textBoxReleaseNotes = new System.Windows.Forms.TextBox();
 			this.lblChangeLog = new System.Windows.Forms.Label();
-			this.linkLabelVixenDownLoadPage = new System.Windows.Forms.LinkLabel();
+			this.buttonDownload = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxIcon)).BeginInit();
 			this.tableLayoutPanel1.SuspendLayout();
@@ -120,20 +120,15 @@
 			this.lblChangeLog.Text = "Change Log between installed and available Versions:";
 			this.lblChangeLog.Visible = false;
 			// 
-			// linkLabelVixenDownLoadPage
+			// buttonDownload
 			// 
-			this.linkLabelVixenDownLoadPage.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.linkLabelVixenDownLoadPage.AutoSize = true;
-			this.linkLabelVixenDownLoadPage.Location = new System.Drawing.Point(181, 40);
-			this.linkLabelVixenDownLoadPage.Name = "linkLabelVixenDownLoadPage";
-			this.linkLabelVixenDownLoadPage.Size = new System.Drawing.Size(589, 136);
-			this.linkLabelVixenDownLoadPage.TabIndex = 9;
-			this.linkLabelVixenDownLoadPage.TabStop = true;
-			this.linkLabelVixenDownLoadPage.Text = "linkLabel1";
-			this.linkLabelVixenDownLoadPage.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-			this.linkLabelVixenDownLoadPage.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelVixenDownLoadPage_LinkClicked);
+			buttonDownload.Anchor = AnchorStyles.None;
+			buttonDownload.Name = "buttonDownload";
+			buttonDownload.AutoSize = true;
+			buttonDownload.TabIndex = 9;
+			buttonDownload.Text = "Download Latest Version";
+			buttonDownload.Visible = false;
+			buttonDownload.Click += buttonDownload_Click;
 			// 
 			// tableLayoutPanel1
 			// 
@@ -146,7 +141,7 @@
 			this.tableLayoutPanel1.Controls.Add(this.btnOK, 1, 5);
 			this.tableLayoutPanel1.Controls.Add(this.textBoxReleaseNotes, 0, 4);
 			this.tableLayoutPanel1.Controls.Add(this.lblChangeLog, 0, 3);
-			this.tableLayoutPanel1.Controls.Add(this.linkLabelVixenDownLoadPage, 1, 2);
+			this.tableLayoutPanel1.Controls.Add(this.buttonDownload, 1, 2);
 			this.tableLayoutPanel1.Controls.Add(this.labelHeading, 1, 0);
 			this.tableLayoutPanel1.Controls.Add(this.labelCurrentVersion, 1, 1);
 			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -195,7 +190,7 @@
 		private System.Windows.Forms.Label labelHeading;
 		private System.Windows.Forms.PictureBox pictureBoxIcon;
 		private System.Windows.Forms.Label lblChangeLog;
-		private System.Windows.Forms.LinkLabel linkLabelVixenDownLoadPage;
+		private System.Windows.Forms.Button buttonDownload;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 	}
 }

@@ -236,6 +236,8 @@ namespace Vixen.Sys
 			DataFlow = new DataFlowManager();
 			Elements = new ElementManager();
 			Nodes = new NodeManager();
+            Props = new ();
+            PropComponents = new();
 			OutputControllers = new OutputControllerManager(
 				new OutputDeviceCollection<OutputController>(),
 				new OutputDeviceExecution<OutputController>());
@@ -270,6 +272,8 @@ namespace Vixen.Sys
 
 			Elements.AddElements(SystemConfig.Elements);
 			Nodes.AddNodes(SystemConfig.Nodes);
+			//TODO Fix the following line of code by ensuring the Prop Node root is established once the Prop nodes are saved. 
+			Nodes.InitializePropRootNode();
 			OutputControllers.AddRange(SystemConfig.OutputControllers.Cast<OutputController>());
 			//SmartOutputControllers.AddRange(SystemConfig.SmartOutputControllers.Cast<SmartOutputController>());
 			Previews.AddRange(SystemConfig.Previews.Cast<OutputPreview>());
@@ -339,6 +343,8 @@ namespace Vixen.Sys
 
 		public static ElementManager Elements { get; private set; }
 		public static NodeManager Nodes { get; private set; }
+		public static PropManager Props { get; private set; }
+		public static PropComponentManager PropComponents { get; private set; }
 		public static OutputControllerManager OutputControllers { get; private set; }
 		//public static SmartOutputControllerManager SmartOutputControllers { get; private set; }
 		public static PreviewManager Previews { get; private set; }

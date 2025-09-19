@@ -167,14 +167,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		public override void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected,
-		                          bool forceDraw, double zoomLevel)
+		                          bool forceDraw, bool locked, double zoomLevel)
 		{
 			foreach (PreviewPixel pixel in Pixels) {
 				//if (highlightedElements != null && highlightedElements.Contains(pixel.Node))
 				//    pixel.Draw(fp, Color.HotPink);
 				//else
 				//    pixel.Draw(fp, Color.White);
-				DrawPixel(pixel, fp, editMode, highlightedElements, selected, forceDraw);
+				DrawPixel(pixel, fp, editMode, highlightedElements, selected, locked, forceDraw);
 			}
 		}
 

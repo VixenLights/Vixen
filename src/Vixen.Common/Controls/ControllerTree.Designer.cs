@@ -1,4 +1,6 @@
-﻿namespace Common.Controls
+﻿using Common.Controls.Theme;
+
+namespace Common.Controls
 {
 	partial class ControllerTree
 	{
@@ -161,17 +163,15 @@
 			// 
 			// treeview
 			// 
-			this.treeview.AllowDrop = true;
 			this.treeview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 			| System.Windows.Forms.AnchorStyles.Left)
 			| System.Windows.Forms.AnchorStyles.Right)));
 			this.treeview.ContextMenuStrip = this.contextMenuStripTreeView;
 			this.treeview.Cursor = System.Windows.Forms.Cursors.Default;
-			this.treeview.CustomDragCursor = null;
-			this.treeview.DragDefaultMode = System.Windows.Forms.DragDropEffects.None;
+			this.treeview.DragDefaultMode = System.Windows.Forms.DragDropEffects.Move;
 			this.treeview.DragDestinationNodeBackColor = System.Drawing.SystemColors.Highlight;
 			this.treeview.DragDestinationNodeForeColor = System.Drawing.SystemColors.HighlightText;
-			this.treeview.DragSourceNodeBackColor = System.Drawing.SystemColors.ControlLight;
+			this.treeview.DragSourceNodeBackColor = ThemeColorTable.ButtonBackColorHover;
 			this.treeview.DragSourceNodeForeColor = System.Drawing.SystemColors.ControlText;
 			this.treeview.HideSelection = false;
 			this.treeview.ImageIndex = 0;
@@ -183,7 +183,7 @@
 			this.treeview.SelectedNodes = ((System.Collections.Generic.List<System.Windows.Forms.TreeNode>)(resources.GetObject("treeview.SelectedNodes")));
 			this.treeview.Size = new System.Drawing.Size(298, 613);
 			this.treeview.TabIndex = 13;
-			this.treeview.UsingCustomDragCursor = false;
+			this.treeview.UsingCustomDragCursor = true;
 			this.treeview.Deselected += new System.EventHandler(this.treeview_Deselected);
 			this.treeview.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeView_BeforeCollapse);
 			this.treeview.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeView_BeforeExpand);
@@ -191,6 +191,7 @@
 			this.treeview.DoubleClick += new System.EventHandler(this.treeview_DoubleClick);
 			this.treeview.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeview_KeyDown);
 			this.treeview.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeView_MouseDown);
+			this.treeview.DragOverVerify += Treeview_DragOverVerify;
 			// 
 			// ControllerTree
 			// 

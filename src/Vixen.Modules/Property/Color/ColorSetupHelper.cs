@@ -13,10 +13,10 @@ namespace VixenModules.Property.Color
 	public partial class ColorSetupHelper : BaseForm, IElementSetupHelper
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		private const string Red = "Red";
-		private const string Green = "Green";
-		private const string Blue = "Blue";
-		private const string White = "White";
+		public const string Red = "Red";
+        public const string Green = "Green";
+        public const string Blue = "Blue";
+        public const string White = "White";
 
 		public ColorSetupHelper()
 		{
@@ -270,7 +270,13 @@ namespace VixenModules.Property.Color
 			return true;
 		}
 
-		private IEnumerable<IDataFlowComponentReference> _FindLeafOutputsOrBreakdownFilters(IDataFlowComponent component)
+        public static IEnumerable<IDataFlowComponentReference> FindLeafOutputsOrBreakdownFilters(
+            IDataFlowComponent component)
+        {
+            return _FindLeafOutputsOrBreakdownFilters(component);
+        }
+
+		private static IEnumerable<IDataFlowComponentReference> _FindLeafOutputsOrBreakdownFilters(IDataFlowComponent component)
 		{
 			if (component == null) {
 				yield break;

@@ -29,9 +29,9 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.txtStartTime = new System.Windows.Forms.MaskedTextBox();
-			this.txtEndTime = new System.Windows.Forms.MaskedTextBox();
-			this.txtOffset = new System.Windows.Forms.MaskedTextBox();
+			this.txtStartTime = new TimeControl();
+			this.txtEndTime = new TimeControl();
+			this.txtOffset = new TimeControl();
 			this.label1 = new System.Windows.Forms.Label();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
 			this.label2 = new System.Windows.Forms.Label();
@@ -43,6 +43,8 @@
 			this.radioButtonForward = new System.Windows.Forms.RadioButton();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.checkBoxVisibleRows = new System.Windows.Forms.CheckBox();
+			this.checkBoxClipEffects = new System.Windows.Forms.CheckBox();
+			this.checkBoxMoveMarks = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -52,9 +54,6 @@
 			this.txtStartTime.Name = "txtStartTime";
 			this.txtStartTime.Size = new System.Drawing.Size(116, 23);
 			this.txtStartTime.TabIndex = 0;
-			this.txtStartTime.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.txtStartTime_MaskInputRejected);
-			this.txtStartTime.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtStartTime_KeyDown);
-			this.txtStartTime.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtStartTime_KeyUp);
 			// 
 			// txtEndTime
 			// 
@@ -62,9 +61,6 @@
 			this.txtEndTime.Name = "txtEndTime";
 			this.txtEndTime.Size = new System.Drawing.Size(116, 23);
 			this.txtEndTime.TabIndex = 1;
-			this.txtEndTime.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.txtEndTime_MaskInputRejected);
-			this.txtEndTime.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtEndTime_KeyDown);
-			this.txtEndTime.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtEndTime_KeyUp);
 			// 
 			// txtOffset
 			// 
@@ -72,9 +68,6 @@
 			this.txtOffset.Name = "txtOffset";
 			this.txtOffset.Size = new System.Drawing.Size(116, 23);
 			this.txtOffset.TabIndex = 2;
-			this.txtOffset.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.txtOffset_MaskInputRejected);
-			this.txtOffset.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtOffset_KeyDown);
-			this.txtOffset.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtOffset_KeyUp);
 			// 
 			// label1
 			// 
@@ -115,7 +108,7 @@
 			// 
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnOk.Location = new System.Drawing.Point(114, 216);
+			this.btnOk.Location = new System.Drawing.Point(114, 266);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(87, 27);
 			this.btnOk.TabIndex = 7;
@@ -126,7 +119,7 @@
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(208, 216);
+			this.btnCancel.Location = new System.Drawing.Point(208, 266);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(87, 27);
 			this.btnCancel.TabIndex = 8;
@@ -177,6 +170,26 @@
 			this.checkBoxVisibleRows.Text = "Process visible rows only";
 			this.checkBoxVisibleRows.UseVisualStyleBackColor = true;
 			// 
+			// checkBoxClipEffects
+			// 
+			this.checkBoxClipEffects.AutoSize = true;
+			this.checkBoxClipEffects.Location = new System.Drawing.Point(63, 210);
+			this.checkBoxClipEffects.Name = "checkBoxClipEffects";
+			this.checkBoxClipEffects.Size = new System.Drawing.Size(156, 19);
+			this.checkBoxClipEffects.TabIndex = 10;
+			this.checkBoxClipEffects.Text = "Clip Effects";
+			this.checkBoxClipEffects.UseVisualStyleBackColor = true;
+			// 
+			// checkBoxMoveMarks
+			// 
+			this.checkBoxMoveMarks.AutoSize = true;
+			this.checkBoxMoveMarks.Location = new System.Drawing.Point(63, 232);
+			this.checkBoxMoveMarks.Name = "checkBoxMoveMarks";
+			this.checkBoxMoveMarks.Size = new System.Drawing.Size(156, 19);
+			this.checkBoxMoveMarks.TabIndex = 11;
+			this.checkBoxMoveMarks.Text = "Include Marks";
+			this.checkBoxMoveMarks.UseVisualStyleBackColor = true;
+			// 
 			// BulkEffectMoveForm
 			// 
 			this.AcceptButton = this.btnOk;
@@ -185,7 +198,9 @@
 			this.AutoSize = true;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(307, 255);
+			this.ClientSize = new System.Drawing.Size(307, 307);
+			this.Controls.Add(this.checkBoxMoveMarks);
+			this.Controls.Add(this.checkBoxClipEffects);
 			this.Controls.Add(this.checkBoxVisibleRows);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.btnCancel);
@@ -203,7 +218,6 @@
 			this.Name = "BulkEffectMoveForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Bulk Effect Move";
-			this.Load += new System.EventHandler(this.BulkEffectMoveForm_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
@@ -213,9 +227,9 @@
 
 		#endregion
 
-		private System.Windows.Forms.MaskedTextBox txtStartTime;
-		private System.Windows.Forms.MaskedTextBox txtEndTime;
-		private System.Windows.Forms.MaskedTextBox txtOffset;
+		private TimeControl txtStartTime;
+		private TimeControl txtEndTime;
+		private TimeControl txtOffset;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.LinkLabel linkLabel1;
 		private System.Windows.Forms.Label label2;
@@ -227,6 +241,7 @@
 		private System.Windows.Forms.RadioButton radioButtonForward;
 		private System.Windows.Forms.ToolTip toolTip;
 		private System.Windows.Forms.CheckBox checkBoxVisibleRows;
-
+		private System.Windows.Forms.CheckBox checkBoxClipEffects;
+		private System.Windows.Forms.CheckBox checkBoxMoveMarks;
 	}
 }

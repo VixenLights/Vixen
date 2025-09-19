@@ -41,6 +41,8 @@
 			this.buttonRenameController = new System.Windows.Forms.Button();
 			this.buttonDeleteController = new System.Windows.Forms.Button();
 			this.buttonAddController = new System.Windows.Forms.Button();
+			this.buttonRaiseControllerOrdering = new System.Windows.Forms.Button();
+			this.buttonLowerControllerOrdering = new System.Windows.Forms.Button();
 			this.comboBoxNewControllerType = new System.Windows.Forms.ComboBox();
 			this.label5 = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -193,13 +195,39 @@
 			this.buttonAddController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonAddController.Enabled = false;
 			this.buttonAddController.Location = new System.Drawing.Point(201, 6);
-			this.buttonAddController.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
+			this.buttonAddController.Margin = new System.Windows.Forms.Padding(3, 6, 1, 3);
 			this.buttonAddController.Name = "buttonAddController";
 			this.buttonAddController.Size = new System.Drawing.Size(24, 24);
 			this.buttonAddController.TabIndex = 35;
 			this.toolTip1.SetToolTip(this.buttonAddController, "Add");
 			this.buttonAddController.UseVisualStyleBackColor = false;
 			this.buttonAddController.Click += new System.EventHandler(this.buttonAddController_Click);
+			// 
+			// buttonRaiseControllerOrdering
+			// 
+			this.buttonRaiseControllerOrdering.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+			this.buttonRaiseControllerOrdering.Enabled = false;
+			this.buttonRaiseControllerOrdering.Location = new Point(229, 6);
+			this.buttonRaiseControllerOrdering.Margin = new Padding(3, 6, 1, 3);
+			this.buttonRaiseControllerOrdering.Name = "buttonRaiseControllerOrdering";
+			this.buttonRaiseControllerOrdering.Size = new Size(24, 24);
+			this.buttonRaiseControllerOrdering.TabIndex = 36;
+			this.toolTip1.SetToolTip(buttonRaiseControllerOrdering, "Move Controller(s) up");
+			this.buttonRaiseControllerOrdering.UseVisualStyleBackColor = false;
+			this.buttonRaiseControllerOrdering.Click += buttonRaiseControllerOrdering_Click;
+			// 
+			// buttonLowerControllerOrdering
+			// 
+			this.buttonLowerControllerOrdering.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+			this.buttonLowerControllerOrdering.Enabled = false;
+			this.buttonLowerControllerOrdering.Location = new Point(263, 6);
+			this.buttonLowerControllerOrdering.Margin = new Padding(3, 6, 1, 3);
+			this.buttonLowerControllerOrdering.Name = "buttonLowerControllerOrdering";
+			this.buttonLowerControllerOrdering.Size = new Size(24, 24);
+			this.buttonLowerControllerOrdering.TabIndex = 37;
+			this.toolTip1.SetToolTip(buttonLowerControllerOrdering, "Move Controller(s) down");
+			this.buttonLowerControllerOrdering.UseVisualStyleBackColor = false;
+			this.buttonLowerControllerOrdering.Click += buttonLowerControllerOrdering_Click;
 			// 
 			// comboBoxNewControllerType
 			// 
@@ -211,7 +239,7 @@
 			this.comboBoxNewControllerType.Location = new System.Drawing.Point(38, 8);
 			this.comboBoxNewControllerType.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
 			this.comboBoxNewControllerType.Name = "comboBoxNewControllerType";
-			this.comboBoxNewControllerType.Size = new System.Drawing.Size(157, 21);
+			this.comboBoxNewControllerType.Size = new System.Drawing.Size(140, 21);
 			this.comboBoxNewControllerType.TabIndex = 34;
 			this.comboBoxNewControllerType.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			// 
@@ -257,9 +285,11 @@
 			this.flowLayoutPanel2.Controls.Add(this.label5);
 			this.flowLayoutPanel2.Controls.Add(this.comboBoxNewControllerType);
 			this.flowLayoutPanel2.Controls.Add(this.buttonAddController);
+			this.flowLayoutPanel2.Controls.Add(this.buttonRaiseControllerOrdering);
+			this.flowLayoutPanel2.Controls.Add(this.buttonLowerControllerOrdering);
 			this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 3);
 			this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-			this.flowLayoutPanel2.Size = new System.Drawing.Size(244, 34);
+			this.flowLayoutPanel2.Size = new System.Drawing.Size(291, 34);
 			this.flowLayoutPanel2.TabIndex = 42;
 			this.flowLayoutPanel2.WrapContents = false;
 			// 
@@ -320,6 +350,8 @@
 
 		private System.Windows.Forms.GroupBox groupBoxSelectedController;
 		private System.Windows.Forms.Button buttonAddController;
+		private System.Windows.Forms.Button buttonRaiseControllerOrdering;
+		private System.Windows.Forms.Button buttonLowerControllerOrdering;
 		private System.Windows.Forms.ComboBox comboBoxNewControllerType;
 		private System.Windows.Forms.Label label5;
 		private Common.Controls.ControllerTree controllerTree;

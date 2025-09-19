@@ -10,6 +10,7 @@ using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex;
 using Color = System.Drawing.Color;
 using System.Xml.Serialization;
+using Common.Controls.Theme;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -301,7 +302,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		public virtual void DrawPixel(PreviewPixel pixel, FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements,
-		                              bool selected, bool forceDraw)
+		                              bool selected, bool locked, bool forceDraw)
 		{
 			int origPixelSize = pixel.PixelSize;
             if (forceDraw)
@@ -310,31 +311,31 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
             else
             {
-                Color pixelColor = Color.White;
-                if (StringType==StringTypes.Pixel && IsPixelOne(pixel))
+                Color pixelColor = ThemeColorTable.Unlinked;
+                if (!locked && StringType==StringTypes.Pixel && IsPixelOne(pixel))
 	            {
-		            pixelColor = Color.Yellow;
+		            pixelColor = ThemeColorTable.Pixel1;
 		            pixel.PixelSize = PixelSize + 2;
-	      
                 }
                 else
                 {
 	                if (selected)
 	                {
-		                pixelColor = PreviewTools.SelectedItemColor;
+		                pixelColor = ThemeColorTable.Selected;
 	                }
-	                else
+	                else if (pixel.NodeId != Guid.Empty)
 	                {
-		                if (pixel.NodeId != Guid.Empty)
-		                {
-			                if (highlightedElements.Contains(pixel.NodeId))
-			                {
-				                pixelColor = Color.HotPink;
-			                }
-			                else
-			                {
-								pixelColor = Color.Turquoise;
-							}
+						if (highlightedElements.Contains(pixel.NodeId))
+						{
+							pixelColor = ThemeColorTable.ElementSelected;
+						}
+						else if (locked)
+						{
+							pixelColor = ThemeColorTable.Locked;
+						}
+						else
+						{
+							pixelColor = ThemeColorTable.Linked;
 						}
 	                } 
                 }
@@ -361,11 +362,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		public override void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected,
-		                         bool forceDraw, double zoomLevel)
+		                         bool forceDraw, bool locked, double zoomLevel)
 		{
 			foreach (PreviewPixel pixel in Pixels) {
 
-				DrawPixel(pixel, fp, editMode, highlightedElements, selected, forceDraw);
+				DrawPixel(pixel, fp, editMode, highlightedElements, selected, locked, forceDraw);
 			}
 
 			DrawSelectPoints(fp);

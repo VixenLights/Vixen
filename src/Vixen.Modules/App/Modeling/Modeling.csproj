@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
 			<RootNamespace>VixenModules.App.Modeling</RootNamespace>
@@ -6,7 +6,7 @@
 		</PropertyGroup>
 
 		<ItemGroup>
-				<PackageReference Include="Svg" Version="3.4.7" />
+				<PackageReference Include="Svg" />
 		</ItemGroup>
 
 		<ItemGroup>

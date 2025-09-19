@@ -35,74 +35,117 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			get
 			{
-				TimeSpan StartTime;
-				TimeSpan.TryParseExact(txtStartTime.Text, timeFormat, CultureInfo.InvariantCulture, out StartTime);
-				return StartTime;
+				return txtStartTime.TimeSpan;
 			}
-			set { txtStartTime.Text = value.ToString(timeFormat); }
+			set { txtStartTime.TimeSpan = value; }
 		}
 
 		public TimeSpan EndTime
 		{
 			get
 			{
-				TimeSpan EndTime;
-				TimeSpan.TryParseExact(txtEndTime.Text, timeFormat, CultureInfo.InvariantCulture, out EndTime);
-				return EndTime;
+				return txtEndTime.TimeSpan;
 			}
-			set { txtEndTime.Text = value.ToString(timeFormat); }
+			set { txtEndTime.TimeSpan = value; }
 		}
 
 		public TimeSpan Duration
 		{
 			get
 			{
-				TimeSpan Duration;
-				TimeSpan.TryParseExact(txtDuration.Text, timeFormat, CultureInfo.InvariantCulture, out Duration);
-				return Duration;
+				return txtDuration.TimeSpan;
 			}
-			set { txtDuration.Text = value.ToString(timeFormat); }
+			set { txtDuration.TimeSpan = value; }
 		}
 
 		public TimeSpan DurationBetween
 		{
 			get
 			{
-				TimeSpan DurationBetween;
-				TimeSpan.TryParseExact(txtDurationBetween.Text, timeFormat, CultureInfo.InvariantCulture, out DurationBetween);
-				return DurationBetween;
+				return txtDurationBetween.TimeSpan;
 			}
-			set { txtDurationBetween.Text = value.ToString(timeFormat); }
+			set { txtDurationBetween.TimeSpan = value; }
 		}
 
-		public bool AlignToBeatMarks { get { return checkBoxAlignToBeatMarks.Checked; } }
-		public bool FillDuration { get { return checkBoxFillDuration.Checked; } }
-		public bool SelectEffects { get { return checkBoxSelectEffects.Checked; } }
-		public bool SkipEOBeat { get { return checkBoxSkipEOBeat.Checked; } }
+		public bool AlignToBeatMarks 
+		{ 
+			get { return checkBoxAlignToBeatMarks.Checked; } 
+			set { checkBoxAlignToBeatMarks.Checked = value; }
+		}
+		public bool FillDuration 
+		{ 
+			get { return checkBoxFillDuration.Checked; }
+			set { checkBoxFillDuration.Checked = value; }
+		}
+		public bool SelectEffects 
+		{ 
+			get { return checkBoxSelectEffects.Checked; }
+			set { checkBoxSelectEffects.Checked = value; }
+		}
+		public bool SkipEOBeat
+		{
+			get { return checkBoxSkipEOBeat.Checked; }
+			set { checkBoxSkipEOBeat.Checked = value; }
+		}
 
-		public bool AlignToMarkStartEnd => chkUseMarkStartEnd.Checked;
+		//public bool AlignToMarkStartEnd => chkUseMarkStartEnd.Checked;
+		public bool AlignToMarkStartEnd
+		{
+			get { return chkUseMarkStartEnd.Checked; }
+			set { chkUseMarkStartEnd.Checked = value; }
+		}
+
+		private bool _showPanelBeatAlignment;
+		public bool ShowPanelBeatAlignment
+		{ 
+			get
+			{
+				return _showPanelBeatAlignment;
+			}
+
+			set
+			{
+				if (value == true)
+				{
+					btnShowBeatMarkOptions_Click(this, EventArgs.Empty);
+				}
+				else
+				{
+					btnHideBeatMarkOptions_Click(this, EventArgs.Empty);
+				}
+			}
+		}
 
 		#endregion
 
 		#region Initialization
 
-		public Form_AddMultipleEffects()
+		public Form_AddMultipleEffects(TimeSpan sequenceLength)
 		{
 			InitializeComponent();
 			btnShowBeatMarkOptions.Image = Resources.bullet_toggle_plus;
 			btnHideBeatMarkOptions.Image = Resources.bullet_toggle_minus;
 			listBoxMarkCollections.Visible = false;
+			txtStartTime.Maximum = sequenceLength;
+			txtDuration.Minimum = TimeSpan.FromMilliseconds(10);
+			txtDuration.Maximum = sequenceLength;
+			txtDurationBetween.Maximum = sequenceLength;
+			txtEndTime.Maximum = sequenceLength;
+			txtStartTime.ValueChanged += TxtTime_ValueChanged;
+			txtDuration.ValueChanged += TxtTime_ValueChanged;
+			txtDurationBetween.ValueChanged += TxtTime_ValueChanged;
+			txtEndTime.ValueChanged += TxtTime_ValueChanged;
 			ThemeUpdateControls.UpdateControls(this);
-			panelBeatAlignment.Visible = false;
+		}
+
+		private void TxtTime_ValueChanged(object sender, EventArgs e)
+		{
+			CalculatePossibleEffects();
 		}
 
 		private void Form_AddMultipleEffects_Load(object sender, EventArgs e)
 		{
 			SetCheckboxStates();
-			txtStartTime.Culture = txtEndTime.Culture =
-				txtDuration.Culture = txtDurationBetween.Culture = CultureInfo.InvariantCulture;
-			txtStartTime.Mask = txtEndTime.Mask = txtDuration.Mask = txtDurationBetween.Mask = "0:00.000";
-			PopulateMarksList();
 			CalculatePossibleEffects();
 			//SetCheckboxStates();
 		}
@@ -110,193 +153,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#endregion
 
 		#region Event Handlers
-
-		#region txtStartTime
-
-		private void txtStartTime_KeyDown(object sender, KeyEventArgs e)
-		{
-			toolTip.Hide(txtStartTime);
-			btnOK.Enabled = true;
-		}
-
-		private void txtStartTime_KeyUp(object sender, KeyEventArgs e)
-		{
-			TimeSpan StartTime;
-			if (TimeSpan.TryParseExact(txtStartTime.Text, timeFormat, CultureInfo.InvariantCulture, out StartTime))
-			{
-				btnOK.Enabled = true;
-				CalculatePossibleEffects();
-			}
-			else
-			{
-				btnOK.Enabled = false;
-			}
-		}
-
-		private void txtStartTime_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
-		{
-			if (txtStartTime.MaskFull)
-			{
-				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You cannot enter any more data into the time field.", txtStartTime, 0, -40, 5000);
-			}
-			else if (e.Position == txtStartTime.Mask.Length)
-			{
-				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You cannot add extra number to the end of this time.", txtStartTime, 0, -40, 5000);
-			}
-			else
-			{
-				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You can only add numeric characters (0-9) into this time field.", txtStartTime, 0, -40, 5000);
-			}
-			btnOK.Enabled = false;
-		}
-
-		#endregion
-
-		#region txtEndTime
-
-		private void txtEndTime_KeyDown(object sender, KeyEventArgs e)
-		{
-			toolTip.Hide(txtEndTime);
-			btnOK.Enabled = true;
-		}
-
-		private void txtEndTime_KeyUp(object sender, KeyEventArgs e)
-		{
-			TimeSpan EndTime;
-			if (TimeSpan.TryParseExact(txtEndTime.Text, timeFormat, CultureInfo.InvariantCulture, out EndTime))
-			{
-				if (EndTime > SequenceLength)
-				{
-					toolTip.ToolTipTitle = "Invalid Time";
-					toolTip.Show("The given time exceeds seuqence length.", txtEndTime, 0, -40, 5000);
-					btnOK.Enabled = false;
-				}
-				else
-				{
-					btnOK.Enabled = true;
-					CalculatePossibleEffects();
-				}
-			}
-			else
-			{
-				btnOK.Enabled = false;
-			}
-		}
-
-		private void txtEndTime_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
-		{
-			if (txtEndTime.MaskFull)
-			{
-				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You cannot enter any more data into the time field.", txtEndTime, 0, -40, 5000);
-			}
-			else if (e.Position == txtEndTime.Mask.Length)
-			{
-				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You cannot add extra number to the end of this time.", txtEndTime, 0, -40, 5000);
-			}
-			else
-			{
-				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You can only add numeric characters (0-9) into this time field.", txtEndTime, 0, -40, 5000);
-			}
-			btnOK.Enabled = false;
-		}
-
-		#endregion
-
-		#region txtDuration
-
-		private void txtDuration_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
-		{
-			if (txtDuration.MaskFull)
-			{
-				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You cannot enter any more data into the time field.", txtDuration, 0, -40, 5000);
-			}
-			else if (e.Position == txtDuration.Mask.Length)
-			{
-				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You cannot add extra number to the end of this time.", txtDuration, 0, -40, 5000);
-			}
-			else
-			{
-				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You can only add numeric characters (0-9) into this time field.", txtDuration, 0, -40, 5000);
-			}
-			btnOK.Enabled = false;
-		}
-
-		private void txtDuration_KeyDown(object sender, KeyEventArgs e)
-		{
-			toolTip.Hide(txtDuration);
-			btnOK.Enabled = true;
-		}
-
-		private void txtDuration_KeyUp(object sender, KeyEventArgs e)
-		{
-			TimeSpan Duration;
-			if (TimeSpan.TryParseExact(txtDuration.Text, timeFormat, CultureInfo.InvariantCulture, out Duration) && Duration.TotalSeconds > .009)
-			{
-				btnOK.Enabled = true;
-				CalculatePossibleEffects();
-			}
-			else
-			{
-				if (TimeSpan.TryParseExact(txtDuration.Text, timeFormat, CultureInfo.InvariantCulture, out Duration) && Duration.TotalSeconds < .01)
-				{
-					toolTip.ToolTipTitle = "Invalid Time";
-					toolTip.Show("Minimum effect duration is .01 seconds.", txtDuration, 0, -40, 5000);
-				}
-				btnOK.Enabled = false;
-			}
-		}
-
-		#endregion
-
-		#region txtDurationBetween
-
-		private void txtDurationBetween_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
-		{
-			if (txtDurationBetween.MaskFull)
-			{
-				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You cannot enter any more data into the time field.", txtDurationBetween, 0, -40, 5000);
-			}
-			else if (e.Position == txtDurationBetween.Mask.Length)
-			{
-				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You cannot add extra number to the end of this time.", txtDurationBetween, 0, -40, 5000);
-			}
-			else
-			{
-				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You can only add numeric characters (0-9) into this time field.", txtDurationBetween, 0, -40, 5000);
-			}
-			btnOK.Enabled = false;
-		}
-
-		private void txtDurationBetween_KeyDown(object sender, KeyEventArgs e)
-		{
-			toolTip.Hide(txtDurationBetween);
-			btnOK.Enabled = true;
-		}
-
-		private void txtDurationBetween_KeyUp(object sender, KeyEventArgs e)
-		{
-			TimeSpan DurationBetween;
-			if (TimeSpan.TryParseExact(txtDurationBetween.Text, timeFormat, CultureInfo.InvariantCulture, out DurationBetween))
-			{
-				btnOK.Enabled = true;
-				CalculatePossibleEffects();
-			}
-			else btnOK.Enabled = false;
-		}
-
-		#endregion
 
 		#region Other Event Handlers
 
@@ -346,6 +202,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			txtDurationBetween.Enabled = (checkBoxAlignToBeatMarks.Checked ? false : true);
 			listBoxMarkCollections.Visible = !listBoxMarkCollections.Visible;
 			SetCheckboxStates();
+			PopulateMarksList();
 			if (checkBoxAlignToBeatMarks.Checked)
 			{
 				CalculatePossibleEffectsByBeatMarks();
@@ -453,18 +310,31 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			btnShowBeatMarkOptions.Visible = false;
 			btnHideBeatMarkOptions.Visible = true;
-			panelBeatAlignment.Visible = true;
+			_showPanelBeatAlignment = panelBeatAlignment.Visible = true;
 		}
 
 		private void btnHideBeatMarkOptions_Click(object sender, EventArgs e)
 		{
 			btnHideBeatMarkOptions.Visible = false;
 			btnShowBeatMarkOptions.Visible = true;
-			panelBeatAlignment.Visible = false;
+			_showPanelBeatAlignment = panelBeatAlignment.Visible = false;
 		}
 
 		#endregion
 
+		#endregion
+
+		#region Public Methods
+		public void CheckMarkItem(String source)
+		{
+			foreach (ListViewItem item in listBoxMarkCollections.Items)
+			{
+				if (item.Text == source)
+				{
+					item.Checked = true;
+				}
+			}
+		}
 		#endregion
 
 		#region Private Methods
@@ -499,19 +369,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 			}
 
-			//This gives us the available amount of time to fill.
 			int i = 1;
+			//This gives us the available amount of time to fill.
 			//TimeSpan WorkingTime = SequenceLength - StartTime;
 			TimeSpan WorkingTime = EndTime - StartTime;
 			TimeSpan UsesTime = (TimeSpan.FromTicks(Duration.Ticks * i) + TimeSpan.FromTicks(DurationBetween.Ticks * (i - 1))); ;
-			while (UsesTime < WorkingTime)
+			while (UsesTime > TimeSpan.Zero && UsesTime < WorkingTime)
 			{
 				i++;
 				UsesTime = (TimeSpan.FromTicks(Duration.Ticks * i) + TimeSpan.FromTicks(DurationBetween.Ticks * (i - 1)));
 			}
 			//Get rid of the straw that broke the camels back.
 			i--;
-			txtEffectCount.Maximum = i;
+			txtEffectCount.Value = txtEffectCount.Maximum = i;
 			lblPossibleEffects.Text = string.Format("{0} effects possible.", i);
 			btnOK.Enabled = (i == 0 ? false : true);
 		}
@@ -537,7 +407,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			var possibleEffects = (checkBoxFillDuration.Checked ? Times.Count() - 1 : Times.Count());
 			if (possibleEffects < 0) possibleEffects = 0;
-			txtEffectCount.Maximum = (int)(checkBoxSkipEOBeat.Checked ? Math.Ceiling(possibleEffects / 2d) : possibleEffects);
+			txtEffectCount.Value = txtEffectCount.Maximum = (int)(checkBoxSkipEOBeat.Checked ? Math.Ceiling(possibleEffects / 2d) : possibleEffects);
 			lblPossibleEffects.Text = $"{txtEffectCount.Maximum} effects possible.";
 			btnOK.Enabled = (Times.Count() == 0 ? false : true);
 		}

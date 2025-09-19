@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
 				<AssemblyName>Module.Editor.TimedSequenceEditor</AssemblyName>
@@ -11,14 +11,14 @@
 		</ItemGroup>
 
 		<ItemGroup>
-		  <PackageReference Include="Catel.MVVM" Version="6.0.3" />
-		  <PackageReference Include="Catel.Serialization.Json" Version="6.0.3" />
-		  <PackageReference Include="DockPanelSuite" Version="3.1.1" />
-		  <PackageReference Include="DockPanelSuite.ThemeVS2015" Version="3.1.1" />
-		  <PackageReference Include="gong-wpf-dragdrop" Version="4.0.0" />
-		  <PackageReference Include="MessagePack" Version="2.5.192" />
-		  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		  <PackageReference Include="NLog" Version="5.4.0" />
+		  <PackageReference Include="Catel.MVVM" />
+		  <PackageReference Include="Catel.Serialization.Json" />
+		  <PackageReference Include="DockPanelSuite" />
+		  <PackageReference Include="DockPanelSuite.ThemeVS2015" />
+		  <PackageReference Include="gong-wpf-dragdrop" />
+		  <PackageReference Include="MessagePack" />
+		  <PackageReference Include="Newtonsoft.Json" />
+		  <PackageReference Include="NLog" />
 		</ItemGroup>
 
 		<ItemGroup>
@@ -56,6 +56,9 @@
 		  <None Update="Forms\WPF\MarksDocker\Views\MarkDockerView.xaml">
 		    <Generator>MSBuild:Compile</Generator>
 		  </None>
+		  <Compile Update="CreateEvenMarksForm.cs">
+		    <SubType>Form</SubType>
+		  </Compile>
 			<Compile Update="Properties\Settings.Designer.cs">
 				<AutoGen>True</AutoGen>
 				<DesignTimeSharedInput>True</DesignTimeSharedInput>

@@ -314,6 +314,7 @@
 			// lblUniverseFileWarning
 			// 
 			this.lblUniverseFileWarning.AutoSize = true;
+			this.lblUniverseFileWarning.ForeColor = System.Drawing.Color.Yellow; 
 			this.lblUniverseFileWarning.Location = new System.Drawing.Point(145, 140);
 			this.lblUniverseFileWarning.Name = "lblUniverseFileWarning";
 			this.lblUniverseFileWarning.Size = new System.Drawing.Size(100, 15);

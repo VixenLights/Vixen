@@ -42,7 +42,6 @@
 			this.DropDownOpening += UndoButton_DropDownOpening;
 		}
 
-
 		public ListBox.ObjectCollection UndoItems
 		{
 			get { return m_dropControl.Items; }

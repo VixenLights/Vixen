@@ -1,57 +1,48 @@
-﻿using System.Globalization;
-using Common.Controls;
+﻿using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
+using Newtonsoft.Json.Linq;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
 	public partial class BulkEffectMoveForm : BaseForm
 	{
-		private const string TimeFormat = @"mm\:ss\.fff";
-		public BulkEffectMoveForm():this(TimeSpan.Zero)
+		public BulkEffectMoveForm():this(TimeSpan.Zero, TimeSpan.MaxValue)
 		{
 			
 		}
 
-		public BulkEffectMoveForm(TimeSpan startTime)
+		public BulkEffectMoveForm(TimeSpan startTime, TimeSpan sequencelength)
 		{
 			InitializeComponent();
 			ThemeUpdateControls.UpdateControls(this);
 			Start = startTime;
 			End = startTime;
+			txtStartTime.Maximum = sequencelength;
+			txtEndTime.Maximum = sequencelength;
+			txtOffset.Maximum = sequencelength;
 			Offset = TimeSpan.Zero;
-		}
-
-		private void BulkEffectMoveForm_Load(object sender, EventArgs e)
-		{
-			txtStartTime.Culture = txtEndTime.Culture = txtOffset.Culture = CultureInfo.InvariantCulture;
-			txtStartTime.Mask = txtEndTime.Mask = txtOffset.Mask = @"00:00.000";
 		}
 
 		public TimeSpan End
 		{
 			get
 			{
-				TimeSpan endTime;
-				TimeSpan.TryParseExact(txtEndTime.Text, TimeFormat, CultureInfo.InvariantCulture, out endTime);
-				return endTime;
+				return txtEndTime.TimeSpan;
 			}
 			set
 			{
-				txtEndTime.Text = value.ToString(TimeFormat);
+				txtEndTime.TimeSpan = value;
 			}
 		}
 		public TimeSpan Start
 		{
 			set
 			{
-				txtStartTime.Text = value.ToString(TimeFormat);
+				txtStartTime.TimeSpan = value;
 			}
 			get
 			{
-				TimeSpan start;
-				TimeSpan.TryParseExact(txtStartTime.Text, TimeFormat, CultureInfo.InvariantCulture, out start);
-				return start;
+				return txtStartTime.TimeSpan;
 			}
 		}
 
@@ -59,13 +50,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			get
 			{
-				TimeSpan offset;
-				TimeSpan.TryParseExact(txtOffset.Text, TimeFormat, CultureInfo.InvariantCulture, out offset);
-				return offset;
+				return txtOffset.TimeSpan;
 			}
 			set
 			{
-				txtOffset.Text = value.ToString(TimeFormat);
+				txtOffset.TimeSpan = value;
 			}
 		}
 
@@ -79,126 +68,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			get { return checkBoxVisibleRows.Checked; }
 		}
-		
-		private void txtStartTime_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
-		{
-			if (txtStartTime.MaskFull)
-			{
-				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You cannot enter any more data into the time field.", txtStartTime, 0, -20, 5000);
-			}
-			else if (e.Position == txtStartTime.Mask.Length)
-			{
-				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You cannot add extra number to the end of this time.", txtStartTime, 0, -20, 5000);
-			}
-			else
-			{
-				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You can only add numeric characters (0-9) into this time field.", txtStartTime, 0, -20, 5000);
-			}
-			btnOk.Enabled = false;
 
+		public bool ClipEffects
+		{
+			get { return checkBoxClipEffects.Checked; }
 		}
 
-		private void txtEndTime_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
+		public bool ProcessMarks
 		{
-			if (txtEndTime.MaskFull)
-			{
-				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You cannot enter any more data into the time field.", txtEndTime, 0, -20, 5000);
-			}
-			else if (e.Position == txtEndTime.Mask.Length)
-			{
-				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You cannot add extra number to the end of this time.", txtEndTime, 0, -20, 5000);
-			}
-			else
-			{
-				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You can only add numeric characters (0-9) into this time field.", txtEndTime, 0, -20, 5000);
-			}
-			btnOk.Enabled = false;
+			get { return checkBoxMoveMarks.Checked; }
 		}
 
-		private void txtOffset_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
-		{
-			if (txtOffset.MaskFull)
-			{
-				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You cannot enter any more data into the time field.", txtStartTime, 0, -20, 5000);
-			}
-			else if (e.Position == txtOffset.Mask.Length)
-			{
-				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You cannot add extra numbers to the end of this time.", txtStartTime, 0, -20, 5000);
-			}
-			else
-			{
-				toolTip.ToolTipTitle = "Invalid Time";
-				toolTip.Show("You can only add numeric characters (0-9) into this time field.", txtStartTime, 0, -20, 5000);
-			}
-			btnOk.Enabled = false;
-
-		}
-
-		private void txtStartTime_KeyDown(object sender, KeyEventArgs e)
-		{
-			toolTip.Hide(txtStartTime);
-			btnOk.Enabled = true;
-		}
-
-		private void txtStartTime_KeyUp(object sender, KeyEventArgs e)
-		{
-			TimeSpan start;
-			if (TimeSpan.TryParseExact(txtStartTime.Text, TimeFormat, CultureInfo.InvariantCulture, out start))
-			{
-				btnOk.Enabled = true;
-			}
-			else
-			{
-				btnOk.Enabled = false;
-			}
-
-		}
-
-		private void txtEndTime_KeyDown(object sender, KeyEventArgs e)
-		{
-			toolTip.Hide(txtEndTime);
-
-		}
-
-		private void txtEndTime_KeyUp(object sender, KeyEventArgs e)
-		{
-			TimeSpan duration;
-			if (TimeSpan.TryParseExact(txtEndTime.Text, TimeFormat, CultureInfo.InvariantCulture, out duration) && End >= Start)
-			{
-				btnOk.Enabled = true;
-			}
-			else
-			{
-				btnOk.Enabled = false;
-			}
-		}
-
-		private void txtOffset_KeyDown(object sender, KeyEventArgs e)
-		{
-			toolTip.Hide(txtEndTime);
-
-		}
-
-		private void txtOffset_KeyUp(object sender, KeyEventArgs e)
-		{
-			TimeSpan duration;
-			if (TimeSpan.TryParseExact(txtOffset.Text, TimeFormat, CultureInfo.InvariantCulture, out duration))
-			{
-				btnOk.Enabled = true;
-			}
-			else
-			{
-				btnOk.Enabled = false;
-			}
-		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{

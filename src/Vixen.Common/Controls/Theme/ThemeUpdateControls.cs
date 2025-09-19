@@ -34,7 +34,8 @@ namespace Common.Controls.Theme
 				c.Font = StandardFont;
 				if (c is Label l)
 				{
-					l.ForeColor = ThemeColorTable.ForeColor;
+					if (c.Tag?.ToString()?.Contains("KEEP_FORECOLOR") == false)
+						l.ForeColor = ThemeColorTable.ForeColor;
 					l.BackColor = ThemeColorTable.BackgroundColor;
 					if (l is LinkLabel ll)
 					{
@@ -105,12 +106,13 @@ namespace Common.Controls.Theme
 					}
 					continue;
 				}
-				if (c is MaskedTextBox & !c.ToString().Contains("UpDown"))
+				if (c is TimeControl)
 				{
-					MaskedTextBox btn = c as MaskedTextBox;
-					btn.ForeColor = ThemeColorTable.ForeColor;
-					btn.BackColor = ThemeColorTable.TextBoxBackgroundColor;
-					btn.BorderStyle = BorderStyle.FixedSingle;
+					var timeControl = c as TimeControl;
+					timeControl.ForeColor = ThemeColorTable.ForeColor;
+					timeControl.BackColor = ThemeColorTable.TextBoxBackgroundColor;
+					timeControl.BorderStyle = BorderStyle.FixedSingle;
+					UpdateControls(c, excludes);
 					continue;
 				}
 				if (c is ComboBox)

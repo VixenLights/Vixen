@@ -13,6 +13,12 @@ namespace Common.Controls
 {
 	public partial class ControllerTree : UserControl
 	{
+		public enum Direction
+		{
+			BACKWARD = -1,
+			FORWARD = 1
+		}
+
 		// sets of data to keep track of which items in the treeview are open, selected, visible etc., so that
 		// when we reload the tree, we can keep it looking relatively consistent with what the user had before.
 		private HashSet<string> _expandedNodes; // TreeNode paths that are expanded
@@ -669,6 +675,58 @@ namespace Common.Controls
 			treeview.ClearSelectedNodes();
 		}
 
+		/// <summary>
+		/// Moves selected nodes up or down in the treeview.
+		/// </summary>
+		/// <param name="direction">Specifies the direction to move the selected nodes.</param>
+		public void ReorderSelectedNodes(Direction direction)
+		{
+			// Iterate through the selected nodes in reverse order, so that we can
+			// remove them from the treeview without messing up the indexes of the
+			// remaining selected nodes.
+			var holdTreeNode = new List<TreeNode>();
+			for (int index = treeview.SelectedNodes.Count - 1; index >= 0; index--)
+			{
+				// Only move primary nodes
+				if (treeview.SelectedNodes[index].Level == 0)
+				{
+					holdTreeNode.Add(treeview.SelectedNodes[index]);
+					treeview.Nodes.Remove(treeview.SelectedNodes[index]);
+				}
+			}
+
+			// Now we can insert the selected nodes back into the treeview.
+			// We need to insert them in reverse order, so that the first selected
+			// node is at the top of the list.
+			int insertionPoint = -1;
+			for (int index = holdTreeNode.Count - 1; index >= 0; index--)
+			{
+				// Do some validation when inserting nodes at the top of the tree.
+				if (holdTreeNode[index].Index + (int)direction <= insertionPoint)
+					insertionPoint = holdTreeNode[index].Index;
+				else
+					insertionPoint = holdTreeNode[index].Index + (int)direction;
+
+				// Reinsert the node at the new index.
+				treeview.Nodes.Insert(insertionPoint, holdTreeNode[index]);
+			}
+		}
+
+		/// <summary>
+		/// Reorder the output controllers in the system to match the new order in the treeview.
+		/// </summary>
+		public void ReorderControllers()
+		{
+			// Get the list of controller names in the order they are displayed in the treeview.
+			var sortList = new List<string>();
+			foreach (TreeNode node in treeview.Nodes)
+			{
+				sortList.Add(node.Text);
+			}
+
+			// Reorder the controllers in the system to match the new order in the treeview.
+			VixenSystem.OutputControllers.Reorder(sortList);
+		}
 
 		#endregion
 
@@ -892,6 +950,11 @@ namespace Common.Controls
 		private void treeview_DoubleClick(object sender, EventArgs e)
 		{
 			if (SelectedControllers.Any()) ConfigureController(SelectedControllers.First());
+		}
+
+		private void Treeview_DragOverVerify(object sender, DragVerifyEventArgs e)
+		{
+			e.ValidDragTarget = e.DragBetweenNodes != DragBetweenNodes.DragOnTargetNode;
 		}
 	}
 }

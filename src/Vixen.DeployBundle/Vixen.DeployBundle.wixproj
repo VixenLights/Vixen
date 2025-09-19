@@ -24,9 +24,9 @@
     <OutputName>Vixen-$(App_Version)-Setup-32bit</OutputName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="WixToolset.Bal.wixext" Version="5.0.0" />
-    <PackageReference Include="WixToolset.Netfx.wixext" Version="5.0.0" />
-    <PackageReference Include="WixToolset.Util.wixext" Version="5.0.0" />
+    <PackageReference Include="WixToolset.Bal.wixext" />
+    <PackageReference Include="WixToolset.Netfx.wixext" />
+    <PackageReference Include="WixToolset.Util.wixext" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Vixen.Installer\Vixen.Installer.wixproj" />

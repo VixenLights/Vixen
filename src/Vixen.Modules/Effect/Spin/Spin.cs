@@ -37,8 +37,8 @@ namespace VixenModules.Effect.Spin
 					DepthOfEffect = 0;
 				}
 				else
-				{ 
-					CheckForInvalidColorData(); 
+				{
+					CheckForInvalidColorData();
 					var firstNode = TargetNodes.FirstOrDefault();
 					if (firstNode != null && DepthOfEffect > firstNode.GetMaxChildDepth() - 1)
 					{
@@ -65,9 +65,9 @@ namespace VixenModules.Effect.Spin
 				{
 					DoRendering(TargetNodes.ToList(), tokenSource);
 				}
-				
+
 			}
-			else 
+			else
 			{
 				if (TargetNodes.Length == 1)
 				{
@@ -97,7 +97,7 @@ namespace VixenModules.Effect.Spin
 			if (validColors.Any())
 			{
 				if (!validColors.Contains(_data.StaticColor) || !_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
-					//Discrete colors specified
+				//Discrete colors specified
 				{
 					_data.ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
 
@@ -148,9 +148,9 @@ namespace VixenModules.Effect.Spin
 			}
 			protected set { base.IsDirty = value; }
 		}
-		
+
 		[Value]
-		[ProviderCategory(@"Speed",4)]
+		[ProviderCategory(@"Speed", 4)]
 		[ProviderDisplayName(@"SpeedFormat")]
 		[ProviderDescription(@"SpinSpeedFormat")]
 		[PropertyOrder(1)]
@@ -168,7 +168,7 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[ProviderCategory(@"Pulse",5)]
+		[ProviderCategory(@"Pulse", 5)]
 		[ProviderDisplayName(@"PulseType")]
 		[ProviderDescription(@"PulseType")]
 		[PropertyOrder(1)]
@@ -201,7 +201,7 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[ProviderCategory(@"Color",1)]
+		[ProviderCategory(@"Color", 1)]
 		[ProviderDisplayName(@"ColorHandling")]
 		[ProviderDescription(@"ColorHandling")]
 		[PropertyOrder(1)]
@@ -219,7 +219,7 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[ProviderCategory(@"Speed",4)]
+		[ProviderCategory(@"Speed", 4)]
 		[ProviderDisplayName(@"RevolutionCount")]
 		[ProviderDescription(@"RevolutionCount")]
 		[PropertyOrder(3)]
@@ -235,7 +235,7 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[ProviderCategory(@"Speed",4)]
+		[ProviderCategory(@"Speed", 4)]
 		[ProviderDisplayName(@"RevolutionFrequency")]
 		[ProviderDescription(@"RevolutionFrequency")]
 		[PropertyOrder(4)]
@@ -251,7 +251,7 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[ProviderCategory(@"Speed",4)]
+		[ProviderCategory(@"Speed", 4)]
 		[ProviderDisplayName(@"RevolutionTime")]
 		[ProviderDescription(@"RevolutionTime")]
 		[PropertyOrder(5)]
@@ -267,7 +267,7 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[ProviderCategory(@"Pulse",5)]
+		[ProviderCategory(@"Pulse", 5)]
 		[ProviderDisplayName(@"PulseDuration")]
 		[ProviderDescription(@"PulseDuration")]
 		[PropertyOrder(2)]
@@ -283,7 +283,23 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[ProviderCategory(@"Pulse",5)]
+		[ProviderCategory(@"Pulse", 5)]
+		[ProviderDisplayName(@"PulseOverlap")]
+		[ProviderDescription(@"PulseOverlap")]
+		[PropertyOrder(3)]
+		public int PulseOverlap
+		{
+			get { return _data.PulseOverlap; }
+			set
+			{
+				_data.PulseOverlap = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Pulse", 5)]
 		[ProviderDisplayName(@"PulsePercent")]
 		[ProviderDescription(@"PulseSpinPercent")]
 		[PropertyEditor("SliderEditor")]
@@ -318,7 +334,7 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness",2)]
+		[ProviderCategory(@"Brightness", 2)]
 		[ProviderDisplayName(@"MinimumBrightness")]
 		[ProviderDescription(@"MinimumBrightness")]
 		[PropertyEditor("LevelEditor")]
@@ -335,7 +351,7 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[ProviderCategory(@"Color",1)]
+		[ProviderCategory(@"Color", 1)]
 		[ProviderDisplayName(@"Color")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(2)]
@@ -356,7 +372,7 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[ProviderCategory(@"Color",1)]
+		[ProviderCategory(@"Color", 1)]
 		[ProviderDisplayName(@"ColorGradient")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(3)]
@@ -383,7 +399,7 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness",2)]
+		[ProviderCategory(@"Brightness", 2)]
 		[ProviderDisplayName(@"PulseShape")]
 		[ProviderDescription(@"PulseShape")]
 		[PropertyOrder(1)]
@@ -399,7 +415,7 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[ProviderCategory(@"Direction",3)]
+		[ProviderCategory(@"Direction", 3)]
 		[ProviderDisplayName(@"Direction")]
 		[ProviderDescription(@"Direction")]
 		[TypeConverter(typeof(BooleanStringTypeConverter))]
@@ -417,7 +433,7 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[ProviderCategory(@"Depth",20)]
+		[ProviderCategory(@"Depth", 20)]
 		[ProviderDisplayName(@"Depth")]
 		[ProviderDescription(@"Depth")]
 		[TypeConverter(typeof(TargetElementDepthConverter))]
@@ -454,12 +470,12 @@ namespace VixenModules.Effect.Spin
 			UpdateTargetingAttributes();
 			TypeDescriptor.Refresh(this);
 		}
-		
+
 		private void UpdateTargetingAttributes()
 		{
 			var depth = DetermineDepth();
 			Debug.WriteLine($"Depth = {depth}, Selection = {TargetNodeHandling}, Length = {TargetNodes.Length}");
-			if(depth < 3 && TargetNodeHandling == TargetNodeSelection.Individual)
+			if (depth < 3 && TargetNodeHandling == TargetNodeSelection.Individual)
 			{
 				TargetNodeHandling = TargetNodeSelection.Group;
 			}
@@ -503,6 +519,7 @@ namespace VixenModules.Effect.Spin
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
 			{
 				{"PulseTime", PulseLengthFormat.Equals(SpinPulseLengthFormat.FixedTime)},
+				{"PulseOverlap", PulseLengthFormat.Equals(SpinPulseLengthFormat.FixedTime)},
 				{"PulsePercentage", PulseLengthFormat.Equals(SpinPulseLengthFormat.PercentageOfRevolution)}
 			};
 			SetBrowsable(propertyStates);
@@ -513,7 +530,7 @@ namespace VixenModules.Effect.Spin
 		private void DoRendering(List<IElementNode> renderNodes, CancellationTokenSource tokenSource = null)
 		{
 			int targetNodeCount = renderNodes.Count;
-			
+
 			//If there are no nodes to render on Exit!
 			if (targetNodeCount == 0) return;
 
@@ -523,7 +540,8 @@ namespace VixenModules.Effect.Spin
 			EffectIntents pulseData;
 
 			// apply the 'background' values to all targets if nonzero
-			if (EnableDefaultLevel) {
+			if (EnableDefaultLevel)
+			{
 				int i = 0;
 				foreach (IElementNode target in renderNodes)
 				{
@@ -534,42 +552,47 @@ namespace VixenModules.Effect.Spin
 					if (target == null)
 						continue;
 
-					if (target != null) {
-						double level = DefaultLevel*100.0;
+					if (target != null)
+					{
+						double level = DefaultLevel * 100.0;
 
 						// figure out what color gradient to use for the pulse
-						switch (ColorHandling) {
+						switch (ColorHandling)
+						{
 							case SpinColorHandling.GradientForEachPulse:
 								pulseData = PulseRenderer.RenderNode(target,
-									new Curve(new PointPairList(new double[] {0, 100}, new [] {level, level})), StaticColorGradient, TimeSpan, HasDiscreteColors, true);
+									new Curve(new PointPairList(new double[] { 0, 100 }, new[] { level, level })), StaticColorGradient, TimeSpan, HasDiscreteColors, true);
 								_elementData.Add(pulseData);
 								break;
 
 							case SpinColorHandling.GradientThroughWholeEffect:
 								pulseData = PulseRenderer.RenderNode(target,
-									new Curve(new PointPairList(new double[] { 0, 100 }, new [] { level, level })), ColorGradient, TimeSpan, HasDiscreteColors, true);
+									new Curve(new PointPairList(new double[] { 0, 100 }, new[] { level, level })), ColorGradient, TimeSpan, HasDiscreteColors, true);
 								_elementData.Add(pulseData);
 								break;
 
 							case SpinColorHandling.StaticColor:
 								pulseData = PulseRenderer.RenderNode(target,
-									new Curve(new PointPairList(new double[] {0, 100}, new[] {level, level})), StaticColorGradient, TimeSpan, HasDiscreteColors, true);
+									new Curve(new PointPairList(new double[] { 0, 100 }, new[] { level, level })), StaticColorGradient, TimeSpan, HasDiscreteColors, true);
 								_elementData.Add(pulseData);
 								break;
 
 							case SpinColorHandling.ColorAcrossItems:
-								double positionWithinGroup = i/(double) targetNodeCount;
-								if (discreteColors) {
+								double positionWithinGroup = i / (double)targetNodeCount;
+								if (discreteColors)
+								{
 									List<Tuple<Color, float>> colorsAtPosition =
 										ColorGradient.GetDiscreteColorsAndProportionsAt(positionWithinGroup);
-									foreach (Tuple<Color, float> colorProportion in colorsAtPosition) {
-										double value = level*colorProportion.Item2;
+									foreach (Tuple<Color, float> colorProportion in colorsAtPosition)
+									{
+										double value = level * colorProportion.Item2;
 										pulseData = PulseRenderer.RenderNode(target,
-											new Curve(new PointPairList(new double[] { 0, 100 }, new [] { value, value })), new ColorGradient(colorProportion.Item1), TimeSpan, HasDiscreteColors, true);
+											new Curve(new PointPairList(new double[] { 0, 100 }, new[] { value, value })), new ColorGradient(colorProportion.Item1), TimeSpan, HasDiscreteColors, true);
 										_elementData.Add(pulseData);
 									}
 								}
-								else {
+								else
+								{
 									pulseData = PulseRenderer.RenderNode(target,
 											new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { level, level })), new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup)), TimeSpan, HasDiscreteColors, true);
 									_elementData.Add(pulseData);
@@ -588,19 +611,33 @@ namespace VixenModules.Effect.Spin
 			// figure out the relative length of a individual pulse
 			double pulseConstant = 0; // how much of each pulse is a constant time
 			double pulseFractional = 0; // how much of each pulse is a fraction of a single spin
-			if (PulseLengthFormat == SpinPulseLengthFormat.FixedTime) {
-				pulseConstant = PulseTime;
+			if (PulseLengthFormat == SpinPulseLengthFormat.FixedTime)
+			{
+				if (PulseOverlap == 0)
+				{
+					pulseConstant = PulseTime;
+				}
+				else
+				{
+					pulseConstant = TimeSpan.TotalMilliseconds * (1.0 / (double)targetNodeCount) + PulseOverlap;
+					if (pulseConstant >= TimeSpan.TotalMilliseconds)
+					{
+						pulseConstant = TimeSpan.TotalMilliseconds - 1;
+					}
+				}
 			}
-			else if (PulseLengthFormat == SpinPulseLengthFormat.PercentageOfRevolution) {
-				pulseFractional = PulsePercentage/100.0;
+			else if (PulseLengthFormat == SpinPulseLengthFormat.PercentageOfRevolution)
+			{
+				pulseFractional = PulsePercentage / 100.0;
 			}
-			else if (PulseLengthFormat == SpinPulseLengthFormat.EvenlyDistributedAcrossSegments) {
-				pulseFractional = 1.0/(double) targetNodeCount;
+			else if (PulseLengthFormat == SpinPulseLengthFormat.EvenlyDistributedAcrossSegments)
+			{
+				pulseFractional = 1.0 / (double)targetNodeCount;
 			}
 
 			// magic number. (the inaccuracy of interpolating the curve into a position. eg. if we have 5 'positions', then
 			// the curve should really be from 0-80% for the last spin, to make sure the last pulse finishes accurately.)
-			double pulseInterpolationOffset = 1.0/(double) targetNodeCount;
+			double pulseInterpolationOffset = 1.0 / (double)targetNodeCount;
 
 			// figure out either the revolution count or time, based on what data we have
 			if (SpeedFormat == SpinSpeedFormat.RevolutionCount)
@@ -608,18 +645,20 @@ namespace VixenModules.Effect.Spin
 				var t = (RevolutionCount + pulseFractional - pulseInterpolationOffset);
 				if (t <= 0)
 				{
-					t = RevolutionCount > 0?RevolutionCount:1;
+					t = RevolutionCount > 0 ? RevolutionCount : 1;
 				}
 				revTimeMs = (TimeSpan.TotalMilliseconds - pulseConstant) / t;
 			}
-			else if (SpeedFormat == SpinSpeedFormat.RevolutionFrequency) {
-				revTimeMs = (1.0/RevolutionFrequency)*1000.0; // convert Hz to period ms
+			else if (SpeedFormat == SpinSpeedFormat.RevolutionFrequency)
+			{
+				revTimeMs = (1.0 / RevolutionFrequency) * 1000.0; // convert Hz to period ms
 			}
-			else if (SpeedFormat == SpinSpeedFormat.FixedTime) {
+			else if (SpeedFormat == SpinSpeedFormat.FixedTime)
+			{
 				revTimeMs = RevolutionTime;
 			}
 
-			double pulTimeMs = pulseConstant + (revTimeMs*pulseFractional);
+			double pulTimeMs = pulseConstant + (revTimeMs * pulseFractional);
 
 			TimeSpan revTimeSpan = TimeSpan.FromMilliseconds(revTimeMs);
 			TimeSpan pulseTimeSpan = TimeSpan.FromMilliseconds(pulTimeMs);
@@ -627,9 +666,9 @@ namespace VixenModules.Effect.Spin
 			// figure out which way we're moving through the elements
 			Curve movement;
 			if (ReverseSpin)
-				movement = new Curve(new PointPairList(new double[] {0, 100}, new double[] {100, 0}));
+				movement = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { 100, 0 }));
 			else
-				movement = new Curve(new PointPairList(new double[] {0, 100}, new double[] {0, 100}));
+				movement = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { 0, 100 }));
 
 			//TODO: get a better increment time. doing it every X ms is..... shitty at best.
 			//Less crappy is try to make some adjustment if there are a lot of nodes in a shorter time to sample more often. 
@@ -648,20 +687,22 @@ namespace VixenModules.Effect.Spin
 			// iterate up to and including the last pulse generated
 			// a bit iffy, but stops 'carry over' spins past the end (when there's overlapping spins). But we need to go past
 			// (total - pulse) as the last pulse can often be a bit inaccurate due to the rounding of the increment
-			for (TimeSpan current = TimeSpan.Zero; current <= TimeSpan - pulseTimeSpan + increment; current += increment) {
+			for (TimeSpan current = TimeSpan.Zero; current <= TimeSpan - pulseTimeSpan + increment; current += increment)
+			{
 				if (tokenSource != null && tokenSource.IsCancellationRequested)
 					return;
 
-				double currentPercentageIntoSpin = ((double) (current.Ticks%revTimeSpan.Ticks)/(double) revTimeSpan.Ticks)*100.0;
+				double currentPercentageIntoSpin = ((double)(current.Ticks % revTimeSpan.Ticks) / (double)revTimeSpan.Ticks) * 100.0;
 
 				double targetElementPosition = movement.GetValue(currentPercentageIntoSpin);
-				int currentNodeIndex = (int) ((targetElementPosition/100.0)*targetNodeCount);
+				int currentNodeIndex = (int)((targetElementPosition / 100.0) * targetNodeCount);
 
 				// on the off chance we hit the 100% mark *exactly*...
 				if (currentNodeIndex == targetNodeCount)
 					currentNodeIndex--;
 
-				if (currentNodeIndex >= targetNodeCount) {
+				if (currentNodeIndex >= targetNodeCount)
+				{
 					Logging.Warn(
 						"Spin effect: rendering, but the current node index is higher or equal to the total target nodes.");
 					continue;
@@ -674,7 +715,8 @@ namespace VixenModules.Effect.Spin
 				bool discreteColors = ColorModule.isElementNodeDiscreteColored(currentNode);
 
 				// figure out what color gradient to use for the pulse
-				switch (ColorHandling) {
+				switch (ColorHandling)
+				{
 					case SpinColorHandling.GradientForEachPulse:
 						pulseData = PulseRenderer.RenderNode(currentNode, new Curve(PulseCurve), ColorGradient, pulseTimeSpan, HasDiscreteColors);
 						pulseData.OffsetAllCommandsByTime(current);
@@ -682,21 +724,24 @@ namespace VixenModules.Effect.Spin
 						break;
 
 					case SpinColorHandling.GradientThroughWholeEffect:
-						double startPos = ((double) current.Ticks/(double) TimeSpan.Ticks);
+						double startPos = ((double)current.Ticks / (double)TimeSpan.Ticks);
 						double endPos = 1.0;
 						if (TimeSpan - current >= pulseTimeSpan)
 							endPos = ((double)(current + pulseTimeSpan).Ticks / (double)TimeSpan.Ticks);
 
-						if (discreteColors) {
+						if (discreteColors)
+						{
 							double range = endPos - startPos;
-							if (range <= 0.0) {
+							if (range <= 0.0)
+							{
 								Logging.Error("Spin: bad range: " + range + " (SP=" + startPos + ", EP=" + endPos + ")");
 								break;
 							}
 
 							ColorGradient cg = ColorGradient.GetSubGradientWithDiscreteColors(startPos, endPos);
 
-							foreach (Color color in cg.GetColorsInGradient()) {
+							foreach (Color color in cg.GetColorsInGradient())
+							{
 								if (tokenSource != null && tokenSource.IsCancellationRequested)
 									return;
 								Curve newCurve = new Curve(PulseCurve.Points);
@@ -710,7 +755,9 @@ namespace VixenModules.Effect.Spin
 								pulseData.OffsetAllCommandsByTime(current);
 								_elementData.Add(pulseData);
 							}
-						} else {
+						}
+						else
+						{
 							pulseData = PulseRenderer.RenderNode(currentNode, new Curve(PulseCurve), ColorGradient.GetSubGradient(startPos, endPos), pulseTimeSpan, HasDiscreteColors);
 							pulseData.OffsetAllCommandsByTime(current);
 							_elementData.Add(pulseData);
@@ -724,9 +771,11 @@ namespace VixenModules.Effect.Spin
 						break;
 
 					case SpinColorHandling.ColorAcrossItems:
-						if (discreteColors) {
+						if (discreteColors)
+						{
 							List<Tuple<Color, float>> colorsAtPosition = ColorGradient.GetDiscreteColorsAndProportionsAt(targetElementPosition / 100.0);
-							foreach (Tuple<Color, float> colorProportion in colorsAtPosition) {
+							foreach (Tuple<Color, float> colorProportion in colorsAtPosition)
+							{
 								if (tokenSource != null && tokenSource.IsCancellationRequested)
 									return;
 
@@ -742,7 +791,9 @@ namespace VixenModules.Effect.Spin
 								pulseData.OffsetAllCommandsByTime(current);
 								_elementData.Add(pulseData);
 							}
-						} else {
+						}
+						else
+						{
 							pulseData = PulseRenderer.RenderNode(currentNode, new Curve(PulseCurve), new ColorGradient(ColorGradient.GetColorAt(targetElementPosition / 100.0)), pulseTimeSpan, HasDiscreteColors);
 							pulseData.OffsetAllCommandsByTime(current);
 							_elementData.Add(pulseData);
@@ -760,13 +811,15 @@ namespace VixenModules.Effect.Spin
 		{
 			IEnumerable<IElementNode> renderNodes = null;
 
-			if (DepthOfEffect == 0) {
+			if (DepthOfEffect == 0)
+			{
 				renderNodes = node.GetLeafEnumerator().Distinct();
 			}
-			else 
+			else
 			{
-				renderNodes = new []{node};
-				for (int i = 0; i < DepthOfEffect; i++) {
+				renderNodes = new[] { node };
+				for (int i = 0; i < DepthOfEffect; i++)
+				{
 					renderNodes = renderNodes.SelectMany(x => x.Children).Distinct();
 				}
 			}

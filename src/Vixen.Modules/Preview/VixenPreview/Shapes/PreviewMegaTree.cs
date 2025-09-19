@@ -467,8 +467,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						var line = _strings[stringNum] as PreviewLine;
 					    if (line != null)
 					    {
-							var _top = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(basePixel), ZoomLevel, PreviewTools.RotateTypes.Clockwise);
-							var _base = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(topPixel), ZoomLevel, PreviewTools.RotateTypes.Clockwise);
+							var _top = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(topPixel), ZoomLevel, PreviewTools.RotateTypes.Clockwise);
+							var _base = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(basePixel), ZoomLevel, PreviewTools.RotateTypes.Clockwise);
 
 							line.SetPoint0(_base.X, _base.Y);
 					        line.SetPoint1(_top.X, _top.Y);
@@ -565,7 +565,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		public override void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected,
-		                          bool forceDraw, double zoomLevel)
+		                          bool forceDraw, bool locked, double zoomLevel)
 		{
 			if (_strings != null)
 			{
@@ -573,12 +573,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				{
 					foreach (PreviewPixel pixel in lightString._pixels)
 					{
-						DrawPixel(pixel, fp, editMode, highlightedElements, selected, forceDraw);
+						DrawPixel(pixel, fp, editMode, highlightedElements, selected, locked, forceDraw);
 					}
 				}
 			}
 
-			base.Draw(fp, editMode, highlightedElements, selected, forceDraw, zoomLevel);
+			base.Draw(fp, editMode, highlightedElements, selected, forceDraw, locked, zoomLevel);
 		}
 
 		public override object Clone()
