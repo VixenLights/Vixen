@@ -1,5 +1,14 @@
 Release Notes - Vixen 3
 
+Release Notes - Vixen 3 - 3.12u2 Build 
+
+** 1 issues resolved in this release. 
+
+** Bugs
+    * [VIX-3723] - Stopping controllers in Display Setup does not stick when Display Setup is closed.
+	
+
+
 Release Notes - Vixen 3 - 3.12u1 Build 
 
 ** 7 issues resolved in this release. 
