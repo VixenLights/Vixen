@@ -33,6 +33,11 @@ namespace Vixen.Sys
 			_time.Start();
 		}
 
+		public void Restart()
+		{
+			_time.Restart();
+		}
+
 		public bool IsRunning
 		{
 			get { return _time.IsRunning; }
