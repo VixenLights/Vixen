@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+		<PropertyGroup>
+				<AssemblyName>Module.App.$(MSBuildProjectName)</AssemblyName>
+			<RootNamespace>VixenModules.App.Props</RootNamespace>
+				<UseWPF>true</UseWPF>
+		</PropertyGroup>
+
+		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\..\Editor\FixtureGraphics\FixtureGraphics.csproj" />
+				<ProjectReference Include="..\..\Property\Color\Color.csproj" />
+				<ProjectReference Include="..\..\Property\Order\Order.csproj" />
+		</ItemGroup>
+
+		<ItemGroup>
+				<PackageReference Include="AsyncAwaitBestPractices" />
+				<PackageReference Include="Debounce.Core" />
+		</ItemGroup>
+
+</Project>

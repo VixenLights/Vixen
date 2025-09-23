@@ -1,0 +1,68 @@
+﻿using Vixen.Extensions;
+using Vixen.Sys.Props.Model;
+
+namespace VixenModules.App.Props.Models.Arch
+{
+	public class ArchModel: BaseLightModel
+	{
+        
+        private int _nodeSize;
+        private int _nodeCount;
+
+        public ArchModel():this(25)
+        {
+            
+        }
+
+        public ArchModel(int nodeCount, int nodeSize = 2)
+        {
+            _nodeCount = nodeCount;
+            _nodeSize = nodeSize;
+            Nodes.AddRange<NodePoint>(GetArchPoints(_nodeCount, _nodeSize, RotationAngle));
+			PropertyChanged += ArchModel_PropertyChanged;
+        }
+
+		private void ArchModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+            //TODO make this smarter to do the minimal to add, subtract, or update node size or rotation angle.
+            Nodes.Clear();
+            Nodes.AddRange<NodePoint>(GetArchPoints(_nodeCount, _nodeSize, RotationAngle));
+		}
+
+        public int NodeSize
+        {
+            get => _nodeSize;
+            set => SetProperty(ref _nodeSize, value);
+        }
+
+        public int NodeCount
+        {
+            get => _nodeCount;
+            set => SetProperty(ref _nodeCount, value);
+        }
+
+        public static List<NodePoint> GetArchPoints(double numPoints, int size, int rotationAngle)
+        {
+            List<NodePoint> vertices = new List<NodePoint>();
+            double xScale = .5f;
+            double yScale = 1;
+            double radianIncrement = Math.PI / (numPoints - 1);
+
+            double t = Math.PI;
+            while (vertices.Count < numPoints)
+            {
+                double x = xScale + xScale * Math.Cos(t);
+                double y = yScale + yScale * Math.Sin(t);
+                vertices.Add(new NodePoint(x, y){Size = size});
+                t += radianIncrement;
+            }
+
+            if (rotationAngle != 0)
+            {
+                RotateNodePoints(vertices, rotationAngle);
+            }
+
+            return vertices;
+        }
+	}
+}

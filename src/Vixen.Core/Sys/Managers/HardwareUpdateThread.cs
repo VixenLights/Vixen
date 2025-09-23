@@ -184,7 +184,12 @@ namespace Vixen.Sys.Managers
 		protected virtual void OnError()
 		{
 			if (Error != null) {
-				Error.Raise(this, EventArgs.Empty);
+				//this is no longer supported
+				//Error.Raise(this, EventArgs.Empty);
+				Logging.Error("A fatal exception has occured on the hardware update thread");
+				OutputDevice.Stop();
+				Logging.Error("Device " + OutputDevice.Name +
+				              " experienced an error during execution and was shutdown.");
 			}
 		}
 

@@ -1,6 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using Vixen.Module.Media;
 using Vixen.Services;
+using System.IO;
 
 namespace Vixen.Module.SequenceType.Surrogate
 {

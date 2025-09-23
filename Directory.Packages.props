@@ -4,11 +4,13 @@
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
+    <PackageVersion Include="AsyncAwaitBestPractices" Version="9.0.0" />
     <PackageVersion Include="Catel.Core" Version="6.0.3" />
     <PackageVersion Include="Catel.Fody" Version="4.9.0" />
     <PackageVersion Include="Catel.MVVM" Version="6.0.3" />
     <PackageVersion Include="Catel.Serialization.Json" Version="6.0.3" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageVersion Include="Debounce.Core" Version="1.0.0" />
     <PackageVersion Include="DockPanelSuite" Version="3.1.1" />
     <PackageVersion Include="DockPanelSuite.ThemeVS2015" Version="3.1.1" />
     <PackageVersion Include="Fody" Version="6.6.4" />
@@ -41,7 +43,7 @@
     <PackageVersion Include="System.Reactive" Version="5.0.0" />
     <PackageVersion Include="System.Resources.Extensions" Version="8.0.0" />
     <PackageVersion Include="Zstandard.Net" Version="1.1.7" />
-	<PackageVersion Include="WixToolset.Heat" Version="5.0.0" />
+    <PackageVersion Include="WixToolset.Heat" Version="5.0.0" />
     <PackageVersion Include="WixToolset.Bal.wixext" Version="5.0.0" />
     <PackageVersion Include="WixToolset.Netfx.wixext" Version="5.0.0" />
     <PackageVersion Include="WixToolset.Util.wixext" Version="5.0.0" />
