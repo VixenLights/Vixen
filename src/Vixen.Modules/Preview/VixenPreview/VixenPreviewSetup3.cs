@@ -981,8 +981,14 @@ namespace VixenModules.Preview.VixenPreview
 
 		private async void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			ModuleStore moduleStore = new ModuleStore();
+
+			// Mark this Preview as changed so the system-wide save will save just this Preview
+			foreach (var preview in VixenSystem.Previews.Where(x => x.ModuleInstanceId == _data.ModuleInstanceId))
+			{
+				preview.ContentChanged = true;
+			}
 			SaveLocationDataForElements();
-			await VixenSystem.SaveSystemAndModuleConfigAsync();
 		}
 
 		private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)

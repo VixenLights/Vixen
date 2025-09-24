@@ -16,6 +16,11 @@ namespace Vixen.Module
 			_Init();
 		}
 
+		public bool AddTo(Guid typeID, Guid instanceID, IModuleDataModel dataModel)
+		{
+			return _dataModels.TryAdd(Tuple.Create(typeID, instanceID), dataModel);
+		}
+
 		/// <summary>
 		/// Instantiates the data model for the module from the data in this data set.
 		/// Does not account for the module's instance id, therefore only one instance of a module

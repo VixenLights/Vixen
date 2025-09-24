@@ -6,7 +6,7 @@ using Vixen.Sys.Output;
 
 namespace Vixen.Sys
 {
-	internal class SystemConfig
+	public class SystemConfig
 	{
 		public static int DEFAULT_UPDATE_INTERVAL = 50;
 
@@ -31,6 +31,7 @@ namespace Vixen.Sys
 			IsPreviewThreaded = true; // opt-out
 			AllowFilterEvaluation = true; // opt-out
 			DefaultUpdateInterval = DEFAULT_UPDATE_INTERVAL;
+			Updated = false;
 		}
 
 		public string LoadedFilePath { get; set; }
@@ -150,7 +151,11 @@ namespace Vixen.Sys
 		public void Save()
 		{
 			FileService.Instance.SaveSystemConfigFile(this);
+			Updated = false;
 		}
+
+		// Determines if the SystemConfig has been modified
+		public bool Updated{ get; set; }
 
 		private IEnumerable<IOutputDevice> _GetDisabledDevices(IEnumerable<Guid> deviceIds)
 		{

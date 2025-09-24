@@ -92,6 +92,8 @@ namespace Vixen.Sys.Output
 			set { _updateInterval = value; }
 		}
 
+		public bool ContentChanged { get; set; }
+
 		/// <summary>
 		/// Just update the commands and don't send them out
 		/// </summary>

@@ -3,7 +3,7 @@ using Vixen.Sys.Attribute;
 
 namespace Vixen.Sys
 {
-	internal class ElementNodeTemplate
+	public class ElementNodeTemplate
 	{
 		private const string DIRECTORY_NAME = "Template\\Element";
 

@@ -9,6 +9,8 @@ namespace Vixen.IO.Xml.ModuleStore
 {
 	internal class ModuleStoreXElementMigrator : IContentMigrator<XElement>
 	{
+		private static bool _reentrantLock = false;
+
 		public ModuleStoreXElementMigrator()
 		{
 			ValidMigrations = new[]
@@ -16,7 +18,8 @@ namespace Vixen.IO.Xml.ModuleStore
 							  		new MigrationSegment<XElement>(1, 2, _Version_1_to_2),
 									new MigrationSegment<XElement>(2, 3, _Version_2_to_3),
 									new MigrationSegment<XElement>(3, 4, _Version_3_to_4),
-									new MigrationSegment<XElement>(4, 5, _Version_4_to_5)
+									new MigrationSegment<XElement>(4, 5, _Version_4_to_5),
+									new MigrationSegment<XElement>(5, 6, _Version_5_to_6)
 								  };
 		}
 
@@ -313,6 +316,64 @@ namespace Vixen.IO.Xml.ModuleStore
 		/// <remarks>Since there is no impact upgrading from 4 to 5, this simply returns the original content.</remarks>
 		private XElement _Version_4_to_5(XElement content)
 		{
+			return content;
+		}
+
+		/// <summary>
+		/// Version 5 to 6 conversion
+		/// </summary>
+		/// <param name="content"></param>
+		/// <returns>Converted content</returns>
+		private XElement _Version_5_to_6(XElement content)
+		{
+			// This lock is a special case to prevent the re-entrant call to this method because the VixenSystem.ModuleStore.Save method
+			// will call this method again when it saves the ModuleStore that is being changed here.
+			if (_reentrantLock == false)
+			{
+				_reentrantLock = true;
+				string systemDataPath = VixenSystem.GetSystemDataPath();
+				bool systemConfigUpdated = false;
+
+				// Load up the ModuleStore and SystemConfig files so we can save them with the changes.
+				VixenSystem.ModuleStore = FileService.Instance.LoadModuleStoreFile(Path.Combine(systemDataPath, Vixen.Sys.ModuleStore.FileName));
+				Vixen.Sys.SystemConfig systemConfig = FileService.Instance.LoadSystemConfigFile(Path.Combine(systemDataPath, Vixen.Sys.SystemConfig.FileName));
+
+				// Iterate through all the Previews in the system config.
+				Dictionary<string, int> previewIndex = new Dictionary<string, int>();
+				foreach (var preview in systemConfig.Previews)
+				{
+					// Check for duplicates
+					if (systemConfig.Previews.Count(x => x.Name == preview.Name) > 1)
+					{
+						// If the preview name already exists, append a number to the end of the name.
+						if (previewIndex.ContainsKey(preview.Name))
+						{
+							previewIndex[preview.Name]++;
+							preview.Name = preview.Name + $"-{previewIndex[preview.Name]}";
+							systemConfigUpdated = true;
+						}
+						else
+						{
+							previewIndex.Add(preview.Name, 0);
+						}
+					}
+
+					// Set the content changed flag so that the Preview will be saved.
+					preview.ContentChanged = true;
+				}
+
+				// This method will split out the Preview elements.
+				VixenSystem.ModuleStore.Save(systemConfig.Previews);
+
+				// If any Previews were renamed, save the System Config file.
+				if (systemConfigUpdated == true)
+				{
+					systemConfig.Save();
+				}
+
+				_reentrantLock = false;
+			}
+
 			return content;
 		}
 
