@@ -6,7 +6,11 @@ namespace Vixen.Sys.Props.Components
 {
 	public class PropComponent : BindableBase, IPropComponent
 	{
-		private readonly Dictionary<Guid, IElementNode> _elementNodes = new();
+		// These two Lists must remain in lock-step, index-wise. We use these instead of a Dictionary
+		// because a Dictionary is not guaranteed to remain in the same order as elements are appended and/or removed.
+		private readonly List<Guid> _elementGuid = new();
+		private readonly List<IElementNode> _elementNodeList = new();
+
 		private readonly PropCompositeNode _propCompositeNode = new();
 		private string _name;
 
@@ -46,14 +50,14 @@ namespace Vixen.Sys.Props.Components
 
 		public PropComponentType ComponentType { get; set; }
 
-		public IEnumerable<IElementNode> TargetNodes => _elementNodes.Values;
+		public IEnumerable<IElementNode> TargetNodes => _elementNodeList;
 
 		public void AddElementNodes(IEnumerable<IElementNode> nodes)
 		{
 			bool added = false;
 			foreach (var elementNode in nodes)
 			{
-				if (_elementNodes.TryAdd(elementNode.Id, elementNode))
+				if (TryAdd(elementNode, false))
 				{
 					added = true;
 				}
@@ -65,11 +69,16 @@ namespace Vixen.Sys.Props.Components
 			}
 		}
 
-		public bool TryAdd(IElementNode node)
+		public bool TryAdd(IElementNode node, bool notifyChange = true)
 		{
-			if (_elementNodes.TryAdd(node.Id, node))
+			if (!_elementGuid.Contains(node.Id))
 			{
-				OnPropertyChanged(nameof(TargetNodes));
+				_elementGuid.Add(node.Id);
+				_elementNodeList.Add(node);
+				if (notifyChange)
+				{
+					OnPropertyChanged(nameof(TargetNodes));
+				}
 				return true;
 			}
 
@@ -78,30 +87,47 @@ namespace Vixen.Sys.Props.Components
 
 		public bool TryRemove(Guid id, [MaybeNullWhen(false)] out IElementNode node)
 		{
-			bool removed = _elementNodes.Remove(id, out node);
-			if (removed)
+			int index = _elementGuid.IndexOf(id);
+			if (index != -1)
 			{
+				node = _elementNodeList[index];
+				_elementGuid.RemoveAt(index);
+				_elementNodeList.RemoveAt(index);
 				OnPropertyChanged(nameof(TargetNodes));
 			}
+			else
+			{
+				node = null;
+			}
 
-			return removed;
-
+			return index != -1;
 		}
 
 		public bool TryGet(Guid id, [MaybeNullWhen(false)] out IElementNode node)
 		{
-			return _elementNodes.TryGetValue(id, out node);
+			int index = _elementGuid.IndexOf(id);
+			if (index != -1)
+			{
+				node = _elementNodeList[index];
+			}
+			else
+			{
+				node = null;
+			}
+
+			return index != -1;
 		}
 
 		public void Clear()
 		{
-			_elementNodes.Clear();
+			_elementGuid.Clear();
+			_elementNodeList.Clear();
 			OnPropertyChanged(nameof(TargetNodes));
 		}
 
 		private void ElementNode_Changed(object? sender, ElementNodeChangedEventArgs e)
 		{
-			if (_elementNodes.ContainsKey(e.Node.Id))
+			if (_elementGuid.Contains(e.Node.Id))
 			{
 				OnPropertyChanged(nameof(TargetNodes));
 			}

@@ -9,6 +9,7 @@ using Orc.Theming;
 using Orc.Wizard;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows.Controls;
 using Vixen.Sys;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Props;
@@ -22,10 +23,19 @@ using IDropTarget = GongSolutions.Wpf.DragDrop.IDropTarget;
 
 namespace VixenApplication.SetupDisplay.ViewModels
 {
+	public class PropTypeMenuItem
+	{
+		public PropType Id { get; set; } 
+		public required string DisplayName { get; set; }
+	}
+
 	public class PropNodeTreeViewModel : ViewModelBase, IDropTarget, IDragSource
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		public event EventHandler ModelsChanged;
+
+		public ObservableCollection<PropTypeMenuItem> AvailableProps { get; }
+			= new ObservableCollection<PropTypeMenuItem>();
 
 		public PropNodeTreeViewModel()
 		{
@@ -42,6 +52,11 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			PropManager.PropCollectionChanged += PropManager_PropCollectionChanged;
 			SelectedItems = new();
 			SelectedItems.CollectionChanged += SelectedItemsCollectionChanged;
+
+			foreach (PropType menuItem in Enum.GetValues(typeof(PropType)))
+			{
+				AvailableProps.Add(new PropTypeMenuItem { Id = menuItem, DisplayName = PropTypeNames.GetName(menuItem) });
+			}
 		}
 
 		private void PropManager_PropCollectionChanged(object? sender, EventArgs e)
@@ -540,12 +555,12 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region CreateProp command
 
-		private TaskCommand<string> _createPropCommand;
+		private TaskCommand<PropType> _createPropCommand;
 
 		/// <summary>
 		/// Gets the CreateProp command.
 		/// </summary>
-		public TaskCommand<string> CreatePropCommand
+		public TaskCommand<PropType> CreatePropCommand
 		{
 			get { return _createPropCommand ??= new(CreateProp, CanCreateProp); }
 		}
@@ -553,52 +568,49 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// <summary>
 		/// Method to invoke when the CreatePropNode command is executed.
 		/// </summary>
-		private async Task CreateProp(string? propType)
+		private async Task CreateProp(PropType result)
 		{
-			if(Enum.TryParse(propType, out PropType result))
+			IPropGroup propGroup = await GeneratePropNodes(result);
+
+			if (propGroup != null)
 			{
-				IPropGroup propGroup = await GeneratePropNodes(result);
-
-				if (propGroup != null)
+				// Determine the parent of the group or props
+				PropNode pNodeParent;
+				if (SelectedItem != null)
 				{
-					// Determine the parent of the group or props
-					PropNode pNodeParent;
-					if (SelectedItem != null)
-					{
-						pNodeParent = SelectedItem.PropNode;
-					}
-					else
-					{
-						pNodeParent = PropManager.RootNode;
-					}
+					pNodeParent = SelectedItem.PropNode;
+				}
+				else
+				{
+					pNodeParent = PropManager.RootNode;
+				}
 
-					// If the props are to be grouped then...
-					PropNode groupNode;
-					if (propGroup.CreateGroup)
-					{
-						// Create the group prop node
-						groupNode = new(propGroup.GroupName);
+				// If the props are to be grouped then...
+				PropNode groupNode;
+				if (propGroup.CreateGroup)
+				{
+					// Create the group prop node
+					groupNode = new(propGroup.GroupName);
 						
-						// Add the group node to the tree
-						PropManager.AddPropNode(groupNode, pNodeParent);
+					// Add the group node to the tree
+					PropManager.AddPropNode(groupNode, pNodeParent);
 
-						// Make the group node the parent
-						pNodeParent = groupNode;
-					}
+					// Make the group node the parent
+					pNodeParent = groupNode;
+				}
 
-					// Loop over the props
-					foreach (IProp prop in propGroup.Props)
+				// Loop over the props
+				foreach (IProp prop in propGroup.Props)
+				{
+					if (prop != null)
 					{
-						if (prop != null)
-						{
-							// Add the prop to the tree																					
-							PropManager.AddProp(prop, pNodeParent);
+						// Add the prop to the tree																					
+						PropManager.AddProp(prop, pNodeParent);
 
-							//Ensure parent is expanded
-							if (SelectedItem != null)
-							{
-								SelectedItem.IsExpanded = true;
-							}
+						//Ensure parent is expanded
+						if (SelectedItem != null)
+						{
+							SelectedItem.IsExpanded = true;
 						}
 					}
 				}
@@ -609,7 +621,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// Method to check whether the CreatePropNode command can be executed.
 		/// </summary>
 		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
-		private bool CanCreateProp(string? propType)
+		private bool CanCreateProp(PropType propType)
 		{
 			if (SelectedItems.Count == 1 && SelectedItem is { IsGroupNode: true })
 			{

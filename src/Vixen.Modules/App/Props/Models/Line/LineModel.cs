@@ -5,6 +5,9 @@ namespace VixenModules.App.Props.Models.Line
 {
     public class LineModel:BaseLightModel
     {
+		public override void DrawModel()
+		{
+		}
 
         public bool AddStartPadding { get; set; }
 

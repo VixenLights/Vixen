@@ -5,9 +5,10 @@
     xmlns:utils="clr-namespace:Common.WPFCommon.Utils"
 	xmlns:sys="clr-namespace:System;assembly=mscorlib"
 	xmlns:controls="clr-namespace:Common.WPFCommon.Controls"
-	xmlns:catel="http://schemas.catelproject.com">
+	xmlns:catel="http://schemas.catelproject.com"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
 
-	<ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="Menu.xaml" />
   <ResourceDictionary Source="DefaultHiddenStyle.xaml"></ResourceDictionary>
 	</ResourceDictionary.MergedDictionaries>
@@ -2276,4 +2277,95 @@
 			<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource InactiveSelectionHighlightColor}"/>
 		</Style.Resources>
 	</Style>
+
+    <Style x:Key="ButtonStyle" TargetType="RepeatButton">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="{StaticResource BackColorBrush}"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RepeatButton">
+                    <Grid>
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border x:Name="BackgroundHighlighted" BorderBrush="#808080" BorderThickness="1,1,0,0" CornerRadius="2"/>
+                        <Border x:Name="BackgroundSunken" BorderBrush="#101010" BorderThickness="0,0,1,1" CornerRadius="2"/>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="BackgroundHighlighted" Property="BorderBrush" Value="#808080"/>
+                            <Setter TargetName="BackgroundSunken" Property="BorderBrush" Value="#101010"/>
+                            <Setter TargetName="BackgroundHighlighted" Property="BorderThickness" Value="0,0,0,1"/>
+                            <Setter TargetName="BackgroundSunken" Property="BorderThickness" Value="0,1,0,0"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type xctk:IntegerUpDown}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="xctk:IntegerUpDown">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <!-- TextBox -->
+                            <ColumnDefinition Width="18"/>
+                            <!-- Spinner -->
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Background -->
+                        <Border x:Name="Background" Background="{StaticResource BackColorBrush}" CornerRadius="2"/>
+                        <Border x:Name="BackgroundHighlighted" BorderBrush="#808080" BorderThickness="0,0,0,1" CornerRadius="2"/>
+                        <Border x:Name="BackgroundSunken" BorderBrush="#101010" BorderThickness="0,1,0,0" CornerRadius="2"/>
+
+                        <!-- Text Box -->
+                        <xctk:WatermarkTextBox x:Name="PART_TextBox"
+                                           Grid.Column="0"
+                                           BorderThickness="0"
+                                           Background="Transparent"
+                                           Foreground="{StaticResource ForeColorBrush}"
+                                           HorizontalContentAlignment="Left"
+                                           VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                           CaretBrush="{StaticResource ForeColorBrush}"
+                                           SnapsToDevicePixels="True"/>
+
+                        <!-- Spinner Buttons -->
+                        <xctk:ButtonSpinner x:Name="PART_Spinner"
+                                        Grid.Column="1"
+                                        Background="{StaticResource BackColorBrush}"
+                                        BorderThickness="0"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch">
+                            <xctk:ButtonSpinner.Template>
+                                <ControlTemplate TargetType="xctk:ButtonSpinner">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Up Button -->
+                                        <RepeatButton x:Name="PART_IncreaseButton" Grid.Row="0" Style="{StaticResource ButtonStyle}">
+                                            <Path Data="M 0 4 L 4 0 L 8 4 Z" Fill="{StaticResource ForeColorBrush}" Stretch="Uniform"/>
+                                        </RepeatButton>
+
+                                        <!-- Down Button -->
+                                        <RepeatButton x:Name="PART_DecreaseButton" Grid.Row="1" Style="{StaticResource ButtonStyle}">
+                                            <Path Data="M 0 0 L 4 4 L 8 0 Z" Fill="{StaticResource ForeColorBrush}" Stretch="Uniform"/>
+                                        </RepeatButton>
+                                    </Grid>
+                                </ControlTemplate>
+                            </xctk:ButtonSpinner.Template>
+                        </xctk:ButtonSpinner>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

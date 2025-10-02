@@ -31,6 +31,7 @@
 		<ItemGroup>
 				<PackageReference Include="Catel.Core" />
 				<PackageReference Include="Catel.MVVM" />
+				<PackageReference Include="Extended.Wpf.Toolkit" />
 				<PackageReference Include="gong-wpf-dragdrop" />
 				<PackageReference Include="MessagePack" />
 				<PackageReference Include="Newtonsoft.Json" />
