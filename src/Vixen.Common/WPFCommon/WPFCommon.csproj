@@ -10,6 +10,7 @@
     <PackageReference Include="Catel.MVVM" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
     <PackageReference Include="NLog" />
+	<PackageReference Include="Extended.Wpf.Toolkit" />
   </ItemGroup>
 
   <ItemGroup>
