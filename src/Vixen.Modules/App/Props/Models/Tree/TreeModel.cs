@@ -27,6 +27,11 @@ namespace VixenModules.App.Props.Models.Tree
 		{
 		}
 
+
+		public override void DrawModel()
+		{
+		}
+
 		public TreeModel(int strings = 16, int nodesPerString = 50, int nodeSize = 2)
 		{
 			_topWidth = 20;

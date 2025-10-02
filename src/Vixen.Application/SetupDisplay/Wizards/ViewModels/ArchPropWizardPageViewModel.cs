@@ -51,13 +51,8 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		public int NodeCount
 		{
 			get { return GetValue<int>(NodeCountProperty); }
-			set 
-			{ 
-				SetValue(NodeCountProperty, value);
-				RefreshGraphics();
-			}
+			set { SetValue(NodeCountProperty, value); }
 		}
-		private static readonly IPropertyData NodeCountProperty = RegisterProperty<int>(nameof(NodeCount));
 
 		[ViewModelToModel]
 		public int NodeCountMinimum
@@ -149,6 +144,7 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		}
 		private static readonly IPropertyData LightSizeMaximumProperty = RegisterProperty<int>(nameof(LightSizeMaximum));
 		#endregion
+
 
 		#region ArchWiringStart property
 		/// <summary>

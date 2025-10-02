@@ -66,20 +66,6 @@
                   ItemsSource="{Binding Source={markupExtensions:EnumBindingSource {x:Type location:ArchStartLocation}}}"
                   SelectedItem="{Binding ArchWiringStart, ConverterParameter={x:Type location:ArchStartLocation}, Converter={StaticResource EnumValueTypeConverter}}" Height="20"/>
 
-        <Label Grid.Column="0" Grid.Row="5" Content="Rotation" IsTabStop="False"/>
-        <Slider Grid.Column="1" Grid.Row="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
-                Value="{Binding Rotation, NotifyOnValidationError=True, ValidatesOnDataErrors=True}"
-                Minimum="{Binding RotationMinimum}"
-                Maximum="{Binding RotationMaximum}" 
-                TickFrequency="15" 
-                IsSnapToTickEnabled="True"
-                AutoToolTipPlacement="TopLeft"/>
-
-        <Border BorderBrush="White" BorderThickness="10" Height="1" Grid.Row="6" Grid.ColumnSpan="2" VerticalAlignment="Center"/>
-
-        <TextBlock Grid.Column="0" Grid.Row="8" Text="Optional Groups" Width="71" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="5,0,0,0"/>
-        <CheckBox Grid.Column="1" Grid.Row="8" Content="Left / Right" IsChecked="{Binding LeftRight}"/>
-
 		<Border BorderThickness="2"  Width="400" Grid.Column="2" Grid.Row="0" Grid.RowSpan="4"
             Height="400" Background="{StaticResource BackgroundControlBrush}" BorderBrush="{StaticResource BorderColorBrush}" Margin="5">
 			<glWpfControl:GLWpfControl
