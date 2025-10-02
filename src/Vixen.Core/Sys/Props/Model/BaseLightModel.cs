@@ -8,8 +8,16 @@ namespace Vixen.Sys.Props.Model
 	/// Maintains a base light model.
 	/// </summary>
 	public abstract class BaseLightModel : BasePropModel, ILightPropModel
-	{								
-		#region Protected Methods
+	{
+		private ObservableCollection<NodePoint> _nodes = new();
+
+		public abstract void DrawModel();
+
+		public ObservableCollection<NodePoint> Nodes
+		{
+			get => _nodes;
+			set => SetProperty(ref _nodes, value);
+		}
 
 		/// <summary>
 		/// Updates the nodes when a model property changes.
@@ -37,13 +45,15 @@ namespace Vixen.Sys.Props.Model
 			double sinTheta = Math.Sin(angleInRadians);
 			foreach (var nodePoint in nodePoints)
 			{
-				nodePoint.X =
+				double x =
 					cosTheta * (nodePoint.X - centerX) -
-						sinTheta * (nodePoint.Y - centerY) + centerX;
-				nodePoint.Y =
+						sinTheta * (nodePoint.Y - centerY);
+				 double y =
 					sinTheta * (nodePoint.X - centerX) +
-					 cosTheta * (nodePoint.Y - centerY) + centerY;
+					 cosTheta * (nodePoint.Y - centerY);
 
+				nodePoint.X = x + centerX;
+				nodePoint.Y = y + centerY;
 			}
 		}
 
