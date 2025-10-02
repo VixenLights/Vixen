@@ -6,12 +6,11 @@
                    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
                    xmlns:sys="clr-namespace:System;assembly=System.Runtime"
                    xmlns:props="clr-namespace:Vixen.Sys.Props;assembly=Vixen.Core"
+                   xmlns:location="clr-namespace:VixenModules.App.Props.Models.Arch;assembly=Module.App.Props"
                    xmlns:markupExtensions="clr-namespace:Common.WPFCommon.MarkupExtensions;assembly=WPFCommon"
                    xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
-		   xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl" 
-		   xmlns:views="clr-namespace:VixenApplication.SetupDisplay.Wizards.Views" 
-				   Loaded="PropWizardPageView_Loaded"
-				   Unloaded="PropWizardPageView_Unloaded">
+                   xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                   >
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -24,8 +23,8 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="{StaticResource BackColorBrush}">
-        <Grid.ColumnDefinitions>
+    <orccontrols:StackGrid Background="{StaticResource BackgroundDialogBrush}">
+        <orccontrols:StackGrid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
 			<ColumnDefinition Width="500" />
@@ -35,24 +34,51 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="10" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Label Grid.Column="0" Grid.Row="0" Content="Name" />
-        <TextBox Grid.Column="1" Grid.Row="0"  Text="{Binding Name, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+        <Label Grid.Column="0" Grid.Row="0" Content="Name" IsTabStop="False"/>
+        <TextBox Grid.Column="1" Grid.Row="0"  Text="{Binding Name, NotifyOnValidationError=True, ValidatesOnDataErrors=True}"/>
 
-        <Label Grid.Column="0" Grid.Row="1" Content="Light Count" />
-        <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding NodeCount, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
-            <b:Interaction.Behaviors>
-                <catel:NumericTextBox />
-            </b:Interaction.Behaviors>
-        </TextBox>
+        <Label Grid.Column="0" Grid.Row="1" Content="Light Count" IsTabStop="False"/>
+        <xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
+                    Value="{Binding NodeCount, NotifyOnValidationError=True, ValidatesOnDataErrors=True}"
+                    Maximum="{Binding NodeCountMaximum}"
+                    Minimum="{Binding NodeCountMinimum}"/>
 
-        <Label Grid.Column="0" Grid.Row="2" Content="Light Type" />
-        <ComboBox Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
-                  ItemsSource="{Binding Source={ markupExtensions:EnumBindingSource {x:Type props:StringTypes}}}"
-                 
-                  SelectedItem="{Binding StringType, Converter={StaticResource EnumValueTypeConverter}, ConverterParameter={x:Type props:StringTypes}}"/>
+        <Label Grid.Column="0" Grid.Row="2" Content="Light Size" IsTabStop="False"/>
+        <xctk:IntegerUpDown Grid.Column="2" Grid.Row="2" 
+                        Value="{Binding LightSize, NotifyOnValidationError=True, ValidatesOnDataErrors=True}"
+                        Maximum="{Binding LightSizeMaximum}"
+                        Minimum="{Binding LightSizeMinimum}"/>
+
+        <Label Grid.Column="0" Grid.Row="3" Content="Light Type" IsTabStop="False"/>
+        <ComboBox Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" IsEditable="False"
+                  ItemsSource="{Binding Source={markupExtensions:EnumBindingSource {x:Type props:StringTypes}}}"
+                  SelectedItem="{Binding StringType, ConverterParameter={x:Type props:StringTypes}, Converter={StaticResource EnumValueTypeConverter}}" Height="20"/>
+
+        <Label Grid.Column="0" Grid.Row="4" Content="Starting Position" IsTabStop="False"/>
+        <ComboBox Grid.Column="1" Grid.Row="4" VerticalAlignment="Center" IsEditable="False"
+                  ItemsSource="{Binding Source={markupExtensions:EnumBindingSource {x:Type location:ArchStartLocation}}}"
+                  SelectedItem="{Binding ArchWiringStart, ConverterParameter={x:Type location:ArchStartLocation}, Converter={StaticResource EnumValueTypeConverter}}" Height="20"/>
+
+        <Label Grid.Column="0" Grid.Row="5" Content="Rotation" IsTabStop="False"/>
+        <Slider Grid.Column="1" Grid.Row="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
+                Value="{Binding Rotation, NotifyOnValidationError=True, ValidatesOnDataErrors=True}"
+                Minimum="{Binding RotationMinimum}"
+                Maximum="{Binding RotationMaximum}" 
+                TickFrequency="15" 
+                IsSnapToTickEnabled="True"
+                AutoToolTipPlacement="TopLeft"/>
+
+        <Border BorderBrush="White" BorderThickness="10" Height="1" Grid.Row="6" Grid.ColumnSpan="2" VerticalAlignment="Center"/>
+
+        <TextBlock Grid.Column="0" Grid.Row="8" Text="Optional Groups" Width="71" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="5,0,0,0"/>
+        <CheckBox Grid.Column="1" Grid.Row="8" Content="Left / Right" IsChecked="{Binding LeftRight}"/>
 
 		<Border BorderThickness="2"  Width="400" Grid.Column="2" Grid.Row="0" Grid.RowSpan="4"
             Height="400" Background="{StaticResource BackgroundControlBrush}" BorderBrush="{StaticResource BorderColorBrush}" Margin="5">
