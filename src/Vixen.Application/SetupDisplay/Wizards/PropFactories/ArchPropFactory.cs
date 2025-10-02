@@ -25,6 +25,10 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 			// Configure the Arch properties
 			arch.NodeCount = archPropPage.NodeCount;
 			arch.StringType = archPropPage.StringType;
+			arch.ArchWiringStart = archPropPage.ArchWiringStart;
+			arch.LightSize = archPropPage.LightSize;
+			arch.Rotation = archPropPage.Rotation;
+			arch.LeftRight = archPropPage.LeftRight;
 
 			// Create the collection of props to return 
 			IPropGroup propGroup = new PropGroup();

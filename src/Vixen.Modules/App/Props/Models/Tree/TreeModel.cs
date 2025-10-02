@@ -22,12 +22,11 @@ namespace VixenModules.App.Props.Models.Tree
 		{ 
 		}	
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="strings">Number of string</param>
-		/// <param name="nodesPerString">Nodes (lights) per string</param>
-		/// <param name="nodeSize">Node (light) size </param>
+
+		public override void DrawModel()
+		{
+		}
+
 		public TreeModel(int strings = 16, int nodesPerString = 50, int nodeSize = 2)
 		{
 			_topWidth = 20;

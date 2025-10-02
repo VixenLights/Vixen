@@ -50,7 +50,7 @@ namespace Vixen.Sys.Props.Components
 		/// <see langword="true"/> if the <see cref="IElementNode"/> is successfully added; 
 		/// otherwise, <see langword="false"/>.
 		/// </returns>
-		bool TryAdd(IElementNode node);
+		bool TryAdd(IElementNode node, bool notifyChange = true);
 
 		/// <summary>
 		/// Attempts to remove an <see cref="IElementNode"/> by its unique identifier.

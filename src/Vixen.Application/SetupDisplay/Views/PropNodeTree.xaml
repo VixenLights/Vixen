@@ -43,10 +43,17 @@
             </Style>
 
             <ContextMenu x:Key="PropNodeTreeItemContextMenu">
-                <MenuItem Header="Add Prop">
-                    <MenuItem Header="Arch" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreatePropCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="Arch"/>
-                    <MenuItem Header="Tree" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreatePropCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="Tree"/>
-                    <MenuItem Header="Intelligent Fixture" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreatePropCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="IntelligentFixture"/>
+                <MenuItem Header="Add Prop" ItemsSource="{Binding DataContext.PropNodeTreeViewModel.AvailableProps, 
+                                RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+                    <MenuItem.ItemContainerStyle>
+                        <Style TargetType="MenuItem">
+                            <Setter Property="Header" Value="{Binding DisplayName}" />
+                            <Setter Property="Command" Value="{Binding DataContext.PropNodeTreeViewModel.CreatePropCommand,
+                                    RelativeSource={RelativeSource FindAncestor,
+                                    AncestorType={x:Type UserControl}}}" />
+                            <Setter Property="CommandParameter" Value="{Binding Id}" />
+                        </Style>
+                    </MenuItem.ItemContainerStyle>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="Create Empty Group" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreateNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>

@@ -129,5 +129,24 @@ namespace Vixen.Sys.Managers
 
 			public NotifyCollectionChangedAction Action { get; init; } = action;
 		}
+
+		public bool IsUniquePropTitle(String name)
+		{
+			string testName = $"Auto-Prop {name}";
+			return VixenSystem.Nodes.Any(x => x.Name.Equals(testName, StringComparison.CurrentCultureIgnoreCase)) != true;
+		}
+
+		public string GenerateUniquePropTitle(PropType type)
+		{
+			for (int i = 1; i < 10000; i++)
+			{
+				if (IsUniquePropTitle($"{PropTypeNames.GetName(type)} {i}"))
+				{
+					return $"{PropTypeNames.GetName(type)} {i}";
+				}
+			}
+
+			return string.Empty;
+		}
 	}
 }
