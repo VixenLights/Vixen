@@ -16,6 +16,7 @@
 				<PackageReference Include="OpenTK" />
 				<PackageReference Include="OpenTK.GLControl" />
 				<PackageReference Include="OpenTK.Windowing.Common" />
+				<PackageReference Include="OpenTK.GLWpfControl"/>
 		</ItemGroup>
 
 		<ItemGroup>
