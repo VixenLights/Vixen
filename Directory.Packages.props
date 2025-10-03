@@ -47,5 +47,6 @@
     <PackageVersion Include="WixToolset.Bal.wixext" Version="5.0.0" />
     <PackageVersion Include="WixToolset.Netfx.wixext" Version="5.0.0" />
     <PackageVersion Include="WixToolset.Util.wixext" Version="5.0.0" />
+    <PackageVersion Include="OpenTK.GLWpfControl" Version="4.3.3" />
   </ItemGroup>
 </Project>

@@ -13,6 +13,7 @@
 				<PackageReference Include="MessagePack" />
 				<PackageReference Include="NLog" />
 				<PackageReference Include="OpenTK" />
+                                <PackageReference Include="OpenTK.GLWpfControl"/>
 		</ItemGroup>
 
 		<ItemGroup>
