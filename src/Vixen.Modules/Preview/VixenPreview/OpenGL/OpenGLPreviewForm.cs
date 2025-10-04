@@ -1,21 +1,23 @@
 ﻿using System.Diagnostics;
-using System.Timers;
 
+using Common.Broadcast;
 using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
+using Common.OpenGLCommon;
+using Common.OpenGLCommon.Constructs.Shaders;
 using Common.Resources;
 using Common.Resources.Properties;
+
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using OpenTK.WinForms;
+
 using Vixen;
 using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
+
 using VixenModules.Editor.FixtureGraphics.OpenGL;
-using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
 using VixenModules.Preview.VixenPreview.Shapes;
-using Common.Broadcast;
 
 namespace VixenModules.Preview.VixenPreview.OpenGL
 {

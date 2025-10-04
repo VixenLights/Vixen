@@ -1,16 +1,28 @@
 ﻿using Catel.Data;
 using Catel.MVVM;
-using Orc.Wizard;
+
 using Vixen.Sys.Props;
+
 using VixenApplication.SetupDisplay.Wizards.Pages;
 
 namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 {
-	public class ArchPropWizardPageViewModel : WizardPageViewModelBase<ArchPropWizardPage>
+	public class ArchPropWizardPageViewModel : GraphicsWizardPageViewModelBase<ArchPropWizardPage, VixenModules.App.Props.Models.Arch.ArchModel>, IPropWizardPageViewModel
 	{
 		public ArchPropWizardPageViewModel(ArchPropWizardPage wizardPage) : base(wizardPage)
-		{
+		{					
+		}
 
+		/// <summary>
+		/// Refreshes the 3-D OpenGL graphics.
+		/// </summary>
+		private void RefreshGraphics()
+		{
+			// Pass the properties needed to draw the graphics to the temporary light prop model
+			LightPropModel.NodeCount = NodeCount;
+
+			// Update the prop nodes
+			LightPropModel.UpdatePropNodes();
 		}
 
 		#region Name property
@@ -41,7 +53,11 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		public int NodeCount
 		{
 			get { return GetValue<int>(NodeCountProperty); }
-			set { SetValue(NodeCountProperty, value); }
+			set 
+			{ 
+				SetValue(NodeCountProperty, value);
+				RefreshGraphics();
+			}
 		}
 
 		/// <summary>

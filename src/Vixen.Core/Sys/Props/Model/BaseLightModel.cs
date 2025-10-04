@@ -1,28 +1,28 @@
 ﻿#nullable enable
 using System.Collections.ObjectModel;
-using Vixen.Model;
+using Vixen.Extensions;
 
 namespace Vixen.Sys.Props.Model
 {
+	/// <summary>
+	/// Maintains a base light model.
+	/// </summary>
 	public abstract class BaseLightModel : BasePropModel, ILightPropModel
-	{
-		private int _rotationAngle;
-		private ObservableCollection<NodePoint> _nodes = new();
-
-
-		public ObservableCollection<NodePoint> Nodes
-		{
-			get => _nodes;
-			set => SetProperty(ref _nodes, value);
-		}
+	{								
+		#region Protected Methods
 
 		/// <summary>
-		/// The angle at which the core Prop is rotated.
+		/// Updates the nodes when a model property changes.
 		/// </summary>
-		public int RotationAngle
+		/// <param name="sender">Event sender</param>
+		/// <param name="e">Event arguments</param>
+		protected void PropertyModelChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
-			get => _rotationAngle;
-			set => SetProperty(ref _rotationAngle, value);
+			//TODO make this smarter to do the minimal to add, subtract, or update node size or rotation angle.
+			Nodes.Clear();
+			Nodes.AddRange(Get2DNodePoints());
+			ThreeDNodes.Clear();
+			ThreeDNodes.AddRange(Get3DNodePoints());
 		}
 
 		/// <summary>
@@ -49,6 +49,63 @@ namespace Vixen.Sys.Props.Model
 			}
 		}
 
+		#endregion
 
+		#region Protected Abstract Methods
+
+		/// <summary>
+		/// Retrieves the 3-D node points that make up the prop.
+		/// </summary>
+		/// <returns>3-D note points that make up the prop</returns>
+		protected abstract IEnumerable<NodePoint> Get3DNodePoints();
+
+		/// <summary>
+		/// Retrieves the 2-D node points that make up the prop.
+		/// </summary>
+		/// <returns>2-D note points that make up the prop</returns>
+		protected abstract IEnumerable<NodePoint> Get2DNodePoints();
+
+		#endregion
+
+		#region Public Properties
+
+		private ObservableCollection<NodePoint> _nodes = new();
+
+		public ObservableCollection<NodePoint> Nodes
+		{
+			get => _nodes;
+			set => SetProperty(ref _nodes, value);
+		}
+		
+		private ObservableCollection<NodePoint> _threeDNodes = new();
+
+		public ObservableCollection<NodePoint> ThreeDNodes
+		{
+			get => _threeDNodes;
+			set => SetProperty(ref _threeDNodes, value);
+		}
+
+		private int _rotationAngle;
+
+		/// <summary>
+		/// The angle at which the core Prop is rotated.
+		/// </summary>
+		public int RotationAngle
+		{
+			get => _rotationAngle;
+			set => SetProperty(ref _rotationAngle, value);
+		}
+
+		#endregion
+
+		#region Public Methods
+
+		public void UpdatePropNodes()
+		{
+			ThreeDNodes.Clear();
+			ThreeDNodes.AddRange(Get3DNodePoints());
+		}
+
+		#endregion
 	}
 }

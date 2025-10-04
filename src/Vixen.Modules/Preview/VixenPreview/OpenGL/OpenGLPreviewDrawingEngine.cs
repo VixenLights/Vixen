@@ -1,5 +1,8 @@
 ﻿using System.Diagnostics;
 
+using Common.OpenGLCommon;
+using Common.OpenGLCommon.Constructs.Shaders;
+
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
@@ -7,7 +10,6 @@ using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
 
 using VixenModules.Editor.FixtureGraphics.OpenGL;
-using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
 using VixenModules.Preview.VixenPreview.Shapes;
 
 namespace VixenModules.Preview.VixenPreview.OpenGL

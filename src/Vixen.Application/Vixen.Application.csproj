@@ -36,14 +36,18 @@
 				<PackageReference Include="NLog" />
 				<PackageReference Include="NLog.Web.AspNetCore" />
 				<PackageReference Include="Orchestra.Core" />
+				<PackageReference Include="OpenTK" />
+				<PackageReference Include="OpenTK.GLWpfControl" />
 		</ItemGroup>
 
 		<ItemGroup>
 				<ProjectReference Include="..\Vixen.Common\Broadcast\Broadcast.csproj" />
 				<ProjectReference Include="..\Vixen.Common\Controls\Controls.csproj" />
+				<ProjectReference Include="..\Vixen.Common\FastPixel\FastPixel.csproj" />
 				<ProjectReference Include="..\Vixen.Common\NShapeGeneralShapes\NShapeGeneralShapes.csproj" />
 				<ProjectReference Include="..\Vixen.Common\NShapeWinFormsUI\NShapeWinFormsUI.csproj" />
 				<ProjectReference Include="..\Vixen.Common\NShape\NShape.csproj" />
+				<ProjectReference Include="..\Vixen.Common\OpenGLCommon\OpenGLCommon.csproj" />
 				<ProjectReference Include="..\Vixen.Common\Resources\Resources.csproj" />
 				<ProjectReference Include="..\Vixen.Common\Utilities\Utilities.csproj" />
 				<ProjectReference Include="..\Vixen.Common\WPFCommon\WPFCommon.csproj" />
