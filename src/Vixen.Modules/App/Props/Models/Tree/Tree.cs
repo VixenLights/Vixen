@@ -32,7 +32,6 @@ namespace VixenModules.App.Props.Models.Tree
 
 		public Tree(string name, int strings, int nodesPerString) : this(name, strings, nodesPerString, StringTypes.Pixel)
 		{
-
 		}
 
 		public Tree(string name, int strings = 0, int nodesPerString = 0, StringTypes stringType = StringTypes.Pixel) : base(name, PropType.Tree)
@@ -286,6 +285,36 @@ namespace VixenModules.App.Props.Models.Tree
 			}
 		}
 
+		/// <summary>
+		/// Top radius of the tree as a percentage.
+		/// </summary>
+		[DisplayName("Top Radius")]
+		[PropertyOrder(21)]
+		public float TopRadius
+		{
+			get => PropModel.TopRadius;
+			set
+			{
+				PropModel.TopRadius = value;
+				OnPropertyChanged(nameof(TopRadius));
+			}
+		}
+		
+		/// <summary>
+		/// Bottom radius of the tree as a percentage.
+		/// </summary>
+		[DisplayName("Bottom Radius")]
+		[PropertyOrder(22)]
+		public float BottomRadius
+		{
+			get => PropModel.BottomRadius;
+			set
+			{
+				PropModel.BottomRadius = value;
+				OnPropertyChanged(nameof(BottomRadius));
+			}
+		}
+
 		protected async Task GenerateElementsAsync()
 		{
 			bool hasUpdatedStrings = false;
@@ -430,6 +459,5 @@ namespace VixenModules.App.Props.Models.Tree
 			VixenSystem.PropComponents.AddPropComponent(propComponentLeft, parentPropComponentNode);
 			VixenSystem.PropComponents.AddPropComponent(propComponentRight, parentPropComponentNode);
 		}
-
 	}
 }

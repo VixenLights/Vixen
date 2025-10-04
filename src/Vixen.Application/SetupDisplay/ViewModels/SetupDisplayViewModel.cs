@@ -1,30 +1,53 @@
 ﻿#nullable enable
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using System.Windows.Input;
+
 using Catel.Data;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
+
+using Common.WPFCommon.Command;
 using Common.WPFCommon.Services;
+
 using NLog;
+
 using Vixen.Sys;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Props;
 using Vixen.Sys.Props.Model;
+
+using VixenApplication.SetupDisplay.OpenGL;
+
 using VixenModules.App.Props.Models.Arch;
 using VixenModules.App.Props.Models.Tree;
+
 using Window = System.Windows.Window;
 
 namespace VixenApplication.SetupDisplay.ViewModels
-{
+{	
+	/// <summary>
+	/// Maintains the Display Setup view model.
+	/// </summary>
 	public class SetupDisplayViewModel : ViewModelBase
 	{
+		#region Fields
+
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private const int LayoutViewTab = 0;
 		private const int PropViewTab = 1;
 
+		#endregion 
+
+		#region Constructor
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
 		public SetupDisplayViewModel()
 		{
 			PropPreviewNodePoints = new();
@@ -45,9 +68,114 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			PropNodeTreePropViewModel = new(PropNodeTreeViewModel);
 			PropNodeTreePropViewModel.PropertyChanged += PropNodeTreePropViewModel_PropertyChanged;
 			IsTwoD = true;
-			IsThreeD = true;	
+			IsThreeD = true;
+
+			// Initialize the command to center the OpenGL preview
+			CenterPreview = new RelayCommand(ExecuteCenterPreview);
+
+			// Create the collection of view model rotations
+			Rotations = new();
+
+			// Create the X Axis rotation view model
+			AxisRotationViewModel xRotation = new AxisRotationViewModel();
+			xRotation.Axis = "X";
+			xRotation.RotationChanged += OnRotationChanged;
+			Rotations.Add(xRotation);
+
+			// Create the Y Axis rotation view model
+			AxisRotationViewModel yRotation = new AxisRotationViewModel();
+			yRotation.Axis = "Y";
+			yRotation.RotationChanged += OnRotationChanged;
+			Rotations.Add(yRotation);
+
+			// Create the Z Axis rotation view model
+			AxisRotationViewModel zRotation = new AxisRotationViewModel();
+			zRotation.Axis = "Z";
+			zRotation.RotationChanged += OnRotationChanged;						
+			Rotations.Add(zRotation);
 		}
 
+		#endregion
+
+		#region Public Properties
+
+		/// <summary>
+		/// Command to centers the preview.
+		/// </summary>
+		public ICommand CenterPreview { get; private set; }
+
+		/// <summary>
+		/// Gets or sets the SelectedProp value.
+		/// </summary>
+		public int ZRotation
+		{
+			get { return GetValue<int>(ZRotationProperty); }
+			set { SetValue(ZRotationProperty, value); }
+		}
+
+		/// <summary>
+		/// SelectedProp property data.
+		/// </summary>
+		public static readonly IPropertyData ZRotationProperty = RegisterProperty<int>(nameof(ZRotation));
+
+		/// <summary>
+		/// Collection of rotations to support rotating the props around the x,y, and z axis.
+		/// </summary>
+		public ObservableCollection<AxisRotationViewModel> Rotations
+		{
+			get
+			{
+				return GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty);
+			}
+			set
+			{
+				SetValue(RotationsProperty, value);
+			}
+		}
+
+		public static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
+
+		/// <summary>
+		/// Gets or sets the SelectedProp value.
+		/// </summary>
+		public bool IsTwoD
+		{
+			get { return GetValue<bool>(TwoDPropProperty); }
+			set { SetValue(TwoDPropProperty, value); }
+		}
+
+		/// <summary>
+		/// SelectedProp property data.
+		/// </summary>
+		public static readonly IPropertyData TwoDPropProperty = RegisterProperty<bool>(nameof(IsTwoD));
+
+		/// <summary>
+		/// Gets or sets the SelectedProp value.
+		/// </summary>
+		public bool IsThreeD
+		{
+			get { return GetValue<bool>(ThreeDPropProperty); }
+			set { SetValue(ThreeDPropProperty, value); }
+		}
+
+		/// <summary>
+		/// SelectedProp property data.
+		/// </summary>
+		public static readonly IPropertyData ThreeDPropProperty = RegisterProperty<bool>(nameof(IsThreeD));
+
+		#endregion
+
+		#region Private Methods
+
+		/// <summary>
+		/// Center preview command handler.
+		/// </summary>
+		private void ExecuteCenterPreview()
+		{
+			// Center the preview and return the new width and height
+			/*ClientSize =*/ DrawingEngine.ExecuteCenterPreview();
+		}
+	
 		private void PropNodeTreePropViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
 			if (SelectedTabIndex == PropViewTab && nameof(PropNodeTreePropViewModel.SelectedItem).Equals(e.PropertyName))
@@ -63,6 +191,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 					SelectedProp = null;
 					ClearPreviewModel();
 					ClearPropComponentTreeViewModel();
+					UpdatePreviewModel(SelectedProp);
 				}
 			}
 		}
@@ -82,9 +211,55 @@ namespace VixenApplication.SetupDisplay.ViewModels
 					SelectedProp = null;
 					ClearPreviewModel();
 					ClearPropComponentTreeViewModel();
+					UpdatePreviewModel(SelectedProp);
 				}
 			}
 		}
+
+		/// <summary>
+		/// Draws the specified prop model in an OpenTK viewport.
+		/// </summary>
+		/// <param name="propModel">Prop model to draw</param>
+		private void DrawProp(IPropModel? propModel)
+		{
+			// Wrap the prop in a collection
+			List<IPropModel> propModels = new List<IPropModel>();
+
+			// If a prop model was passed in then...
+			if (propModel != null)
+			{
+				// Add the prop model to the collection
+				propModels.Add(propModel);
+			}
+
+			int width = 0;
+			int height = 0;
+
+			// If the drawing engine already exists then...
+			if (DrawingEngine != null)
+			{
+				// Save off the width and height of the viewport
+				width = DrawingEngine.OpenTkControl_Width;
+				height = DrawingEngine.OpenTkControl_Height;
+
+				// Dispose of the preview drawing engine
+				DrawingEngine.Dispose();
+				DrawingEngine = null;
+			}
+
+			// Create a new drawing engine passing it the prop to display
+			DrawingEngine = new(propModels);
+			DrawingEngine.OpenTkControl_Width = width;
+			DrawingEngine.OpenTkControl_Height = height;
+
+			// Initialize the drawing engine with the camera on the axis (0,0,0)
+			DrawingEngine.Initialize(
+				0.0f,
+				0.0f,
+				0.0f);
+		}
+
+		#endregion
 
 		#region Mock Code
 
@@ -182,7 +357,79 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			{
 				IsThreeD = (value is IntelligentFixtureProp);
 				IsTwoD = !IsThreeD;
-				SetValue(SelectedPropProperty, value); 
+
+				// If the prop is a light based prop then...
+				if (value?.PropModel is ILightPropModel lightPropModel)
+				{
+					// Transfer the rotations from the model to the view model
+					int index = 0;
+					foreach (AxisRotationModel rotationModel in lightPropModel.Rotations)
+					{
+						Rotations[index].Axis = GetAxis(rotationModel.Axis);
+						Rotations[index].RotationAngle = rotationModel.RotationAngle;	
+						index++;
+					}
+				}
+				SetValue(SelectedPropProperty, value);
+			}
+		}
+
+		/// <summary>
+		/// Converts from axis string to enumeration.
+		/// </summary>
+		/// <param name="axis">String to convert</param>
+		/// <returns>Equivalent enumeration of the string</returns>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		private Axis GetAxis(string axis)
+		{			
+			return axis switch
+			{
+				"X" => Axis.XAxis,
+				"Y" => Axis.YAxis,
+				"Z" => Axis.ZAxis,
+				_ => throw new ArgumentOutOfRangeException(nameof(axis), "Unsupported rotation axis")
+			};
+		}
+
+		/// <summary>
+		/// Converts the enumeration into a display string.
+		/// </summary>
+		/// <param name="axis">Enumeration to convert</param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		private string GetAxis(Axis axis)
+		{
+			return axis switch
+			{
+				Axis.XAxis => "X",
+				Axis.YAxis => "Y",	
+				Axis.ZAxis => "Z",	
+				_ => throw new ArgumentOutOfRangeException(nameof(axis), "Unsupported rotation axis")
+			};
+		}
+
+		/// <summary>
+		/// Event handler for when a prop rotation changed.
+		/// </summary>
+		/// <param name="sender">Event sender</param>
+		/// <param name="e">Event arguments</param>
+		private void OnRotationChanged(object sender, EventArgs e)
+		{
+			// If the selected prop is a light based prop then...
+			if (SelectedProp?.PropModel is ILightPropModel lightPropModel)
+			{
+				// Transfer the rotations from the view model to the model
+				int index = 0;
+				foreach (AxisRotationViewModel rotationViewModel in Rotations)
+				{
+					AxisRotationModel rotationMdl = lightPropModel.Rotations[index];
+					rotationMdl.Axis = GetAxis(rotationViewModel.Axis);
+					rotationMdl.RotationAngle = rotationViewModel.RotationAngle;
+					index++;
+				}
+
+				// Update the prop nodes
+				lightPropModel.UpdatePropNodes();
 			}
 		}
 
@@ -582,16 +829,29 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		}
 
 		internal void UpdatePreviewModel(IProp prop)
-		{
-			//TODO update with whatever is needed to preview non-light models
-			if (prop.PropModel is ILightPropModel model)
+		{			
+			if (prop?.PropModel is ILightPropModel lightPropModel)
 			{
-				if (PropPreviewNodePoints != model.Nodes)
+				if (PropPreviewNodePoints != lightPropModel.Nodes)
 				{
-					PropPreviewNodePoints = model.Nodes;
+					PropPreviewNodePoints = lightPropModel.Nodes;
+					
+					// Draw the prop in OpenGL
+					DrawProp(lightPropModel);
 				}
 			}
+			else if (prop?.PropModel is IPropModel propModel)
+			{				
+				// Draw the prop in OpenGL
+				DrawProp(propModel);				
+			}			
+			else
+			{				
+				DrawProp(null);
+			}
 		}
+
+		public OpenGLPropDrawingEngine DrawingEngine { get; set; } = new OpenGLPropDrawingEngine(new List<IPropModel>());
 
 		#endregion
 
@@ -608,34 +868,6 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		}
 
-		#endregion]
-
-		/// <summary>
-		/// Gets or sets the SelectedProp value.
-		/// </summary>
-		public bool IsTwoD
-		{
-			get { return GetValue<bool>(TwoDPropProperty); }
-			set { SetValue(TwoDPropProperty, value); }
-		}
-
-		/// <summary>
-		/// SelectedProp property data.
-		/// </summary>
-		public static readonly IPropertyData TwoDPropProperty = RegisterProperty<bool>(nameof(IsTwoD));
-
-		/// <summary>
-		/// Gets or sets the SelectedProp value.
-		/// </summary>
-		public bool IsThreeD
-		{
-			get { return GetValue<bool>(ThreeDPropProperty); }
-			set { SetValue(ThreeDPropProperty, value); }
-		}
-
-		/// <summary>
-		/// SelectedProp property data.
-		/// </summary>
-		public static readonly IPropertyData ThreeDPropProperty = RegisterProperty<bool>(nameof(IsThreeD));
+		#endregion]		
 	}
 }

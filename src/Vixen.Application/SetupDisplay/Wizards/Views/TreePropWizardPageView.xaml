@@ -1,4 +1,4 @@
-﻿<catel:UserControl x:Class="VixenApplication.SetupDisplay.Wizards.Views.TreePropWizardPageView"
+﻿<views:WizardPageViewBase x:Class="VixenApplication.SetupDisplay.Wizards.Views.TreePropWizardPageView"
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:catel="http://schemas.catelproject.com"
@@ -7,7 +7,9 @@
                    xmlns:props="clr-namespace:Vixen.Sys.Props;assembly=Vixen.Core"
                    xmlns:markupExtensions="clr-namespace:Common.WPFCommon.MarkupExtensions;assembly=WPFCommon"
                    xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
-                  >
+				   xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
+				   xmlns:views="clr-namespace:VixenApplication.SetupDisplay.Wizards.Views"
+                   Loaded="PropWizardPageView_Loaded">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -20,19 +22,20 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <orccontrols:StackGrid Background="{StaticResource BackColorBrush}">
-        <orccontrols:StackGrid.ColumnDefinitions>
+    <Grid Background="{StaticResource BackColorBrush}">
+        <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
-        </orccontrols:StackGrid.ColumnDefinitions>
+			<ColumnDefinition Width="500" />
+        </Grid.ColumnDefinitions>
 
-        <orccontrols:StackGrid.RowDefinitions>
+        <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-        </orccontrols:StackGrid.RowDefinitions>
+        </Grid.RowDefinitions>
 
         <Label Grid.Column="0" Grid.Row="0" Content="Name" />
         <TextBox Grid.Column="1" Grid.Row="0"  Text="{Binding Name, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
@@ -55,6 +58,49 @@
                  
                   SelectedItem="{Binding StringType, Converter={StaticResource EnumValueTypeConverter}, ConverterParameter={x:Type props:StringTypes}}"/>
 
-    </orccontrols:StackGrid>
+		<Border BorderThickness="2"  Width="400" Grid.Column="2" Grid.Row="0" Grid.RowSpan="5"
+            Height="400" Background="{StaticResource BackgroundControlBrush}" BorderBrush="{StaticResource BorderColorBrush}" Margin="5">
+			
+				<glWpfControl:GLWpfControl
+				x:Name="OpenTkControl" 
+				SizeChanged="OpenTkControl_SizeChanged"
+                Render="OpenTkControl_OnRender"
+				MouseWheel="OpenTkControl_MouseWheel"
+                MouseDown="OpenTkControl_MouseDown"
+                MouseMove="OpenTkControl_MouseMove"
+                MouseUp="OpenTkControl_MouseUp">
+					<glWpfControl:GLWpfControl.ContextMenu>
+						<ContextMenu>
 
-</catel:UserControl>
+							<MenuItem Header="Center Preview"                          ToolTip="Repositions the viewpoint to the center of the preview." Command="{Binding CenterPreview}"/>
+							<MenuItem Header="Enable Light Scaling" IsCheckable="True" ToolTip="Scales the light size as the camera is zoomed in or out." IsChecked="{Binding EnableLightScaling }"/>
+							<!--<MenuItem Header="{Binding Location}"/> -->
+						</ContextMenu>
+					</glWpfControl:GLWpfControl.ContextMenu>
+				</glWpfControl:GLWpfControl>
+			</Border>
+
+
+		    <ScrollViewer Grid.Row="5" Grid.Column="1">
+				<ItemsControl ItemsSource="{Binding Rotations}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<StackPanel Orientation="Horizontal" Margin="5">
+						<ComboBox Width="20" Height="20" 
+                  ItemsSource="{Binding Axes}"
+                  SelectedItem="{Binding Axis}" />
+							<Slider Width="300" 
+                Minimum="-180" Maximum="180"
+                Value="{Binding RotationAngle}" />
+								<TextBlock Width="40" Margin="5,0,0,0"
+                   Text="{Binding RotationAngle, StringFormat=F0}" />
+							</StackPanel>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</ScrollViewer>
+
+
+	</Grid>
+
+</views:WizardPageViewBase>

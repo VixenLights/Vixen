@@ -21,9 +21,9 @@ namespace VixenApplication.SetupDisplay.Wizards.Wizard
 			ShowInTaskbar = true;
 			this.AddPage<ArchPropWizardPage>();
 
+			// Configure the size of the wizard
+			MinSize = new System.Windows.Size(1300, 605);
 			ResizeMode = System.Windows.ResizeMode.CanResize;
-
-
 		}
 
 		public override Task ShowHelpAsync()
