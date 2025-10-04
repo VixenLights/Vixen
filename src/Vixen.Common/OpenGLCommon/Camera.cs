@@ -1,7 +1,7 @@
 ﻿using OpenTK.Mathematics;
-using VixenModules.Preview.VixenPreview.OpenGL.Extensions;
+using Common.OpenGLCommon.Extensions;
 
-namespace VixenModules.Preview.VixenPreview.OpenGL
+namespace Common.OpenGLCommon
 {
 	public class Camera
 	{
@@ -52,6 +52,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 					_viewMatrix = Matrix4.CreateTranslation(-position) * Matrix4.CreateFromQuaternion(_orientation); ;
 					dirty = false;
 				}
+
 				return _viewMatrix;
 			}
 		}

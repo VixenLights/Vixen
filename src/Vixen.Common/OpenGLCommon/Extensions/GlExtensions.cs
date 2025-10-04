@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace VixenModules.Preview.VixenPreview.OpenGL.Extensions
+namespace Common.OpenGLCommon.Extensions
 {
 	public static class GlExtensions
 	{
@@ -34,7 +34,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Extensions
 			// "Quaternion Calculus and Fast Animation"
 
 			float t_trace = Rotation.Row0.X + Rotation.Row1.Y + Rotation.Row2.Z;
-			float t_root;
+			float t_root = 0.0f;
 
 			if (t_trace > 0.0)
 			{   // |w| > 1/2

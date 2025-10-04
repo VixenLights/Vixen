@@ -1,9 +1,11 @@
 ﻿using System.Runtime.InteropServices;
-using OpenTK.Graphics.OpenGL;
-using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
-using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex;
 
-namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs
+using Common.OpenGLCommon.Constructs.Shaders;
+using Common.OpenGLCommon.Constructs.Vertex;
+
+using OpenTK.Graphics.OpenGL;
+
+namespace Common.OpenGLCommon.Constructs
 {
 	public class GlUtility
 	{
@@ -46,7 +48,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs
 			GCHandle dataPtr = GCHandle.Alloc(data, GCHandleType.Pinned);
 			try
 			{
-				GL.BufferData(target, new IntPtr(size), (int)dataPtr.AddrOfPinnedObject() + position, usage);
+				GL.BufferData(target, new IntPtr(size), (IntPtr)((int)dataPtr.AddrOfPinnedObject() + position), usage);
 			}
 			finally
 			{

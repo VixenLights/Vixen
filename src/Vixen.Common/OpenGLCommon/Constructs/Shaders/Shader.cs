@@ -5,7 +5,7 @@ using OpenTK.Mathematics;
 using System.Numerics;
 #endif
 
-namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
+namespace Common.OpenGLCommon.Constructs.Shaders
 {
 	public class Shader : IDisposable
 	{

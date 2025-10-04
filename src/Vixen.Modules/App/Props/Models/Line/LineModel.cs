@@ -45,5 +45,14 @@ namespace VixenModules.App.Props.Models.Line
             return nodePoints;
         }
 
-    }
+		protected override IEnumerable<NodePoint> Get3DNodePoints()
+		{
+			throw new NotImplementedException();
+		}
+
+		protected override IEnumerable<NodePoint> Get2DNodePoints()
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

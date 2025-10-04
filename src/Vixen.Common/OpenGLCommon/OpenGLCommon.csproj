@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <RootNamespace>Common.OpenGLCommon</RootNamespace>
+	  <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Catel.Core" />
+    <PackageReference Include="Catel.MVVM" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
+    <PackageReference Include="NLog" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Vixen.Core\Vixen.Core.csproj" />
+    <ProjectReference Include="..\..\Vixen.Modules\Editor\FixtureGraphics\FixtureGraphics.csproj" />
+    <ProjectReference Include="..\Controls\Controls.csproj" />
+  </ItemGroup>
+
+</Project>

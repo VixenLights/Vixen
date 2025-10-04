@@ -1,23 +1,33 @@
 ﻿#nullable enable
 using System.Drawing;
-using Vixen.Extensions;
+
 using Vixen.Sys.Props.Model;
+
 using VixenModules.App.Props.Models.Line;
 
 namespace VixenModules.App.Props.Models.Tree
 {
+	/// <summary>
+	/// Maintains a tree prop model.
+	/// </summary>
 	[Serializable]
 	public class TreeModel : BaseLightModel
-	{
-		private int _strings;
-		private int _nodesPerString;
-		private int _nodeSize;
-		private int _topWidth;
-		private int _topHeight;
-		private int _baseHeight;
-		private int _degreesCoverage;
-		private int _degreesOffset;
+	{		
+		#region Constructor
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		public TreeModel() : this(16, 50, 2)
+		{ 
+		}	
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="strings">Number of string</param>
+		/// <param name="nodesPerString">Nodes (lights) per string</param>
+		/// <param name="nodeSize">Node (light) size </param>
 		public TreeModel(int strings = 16, int nodesPerString = 50, int nodeSize = 2)
 		{
 			_topWidth = 20;
@@ -27,9 +37,18 @@ namespace VixenModules.App.Props.Models.Tree
 			_strings = strings;
 			_nodesPerString = nodesPerString;
 			_nodeSize = nodeSize;
-			Nodes = new(GetTreePoints());
-			PropertyChanged += TreeModel_PropertyChanged;
+			_topRadius = 10;
+			_bottomRadius = 100;
+			Nodes = new(Get2DNodePoints());
+			ThreeDNodes = new(Get3DNodePoints());
+			PropertyChanged += PropertyModelChanged;			
 		}
+
+		#endregion
+
+		#region Public Properties
+
+		private int _strings;
 
 		public int Strings
 		{
@@ -37,11 +56,15 @@ namespace VixenModules.App.Props.Models.Tree
 			set => SetProperty(ref _strings, value);
 		}
 
+		private int _nodesPerString;
+
 		public int NodesPerString
 		{
 			get => _nodesPerString;
 			set => SetProperty(ref _nodesPerString, value);
 		}
+
+		private int _nodeSize;
 
 		public int NodeSize
 		{
@@ -49,11 +72,15 @@ namespace VixenModules.App.Props.Models.Tree
 			set => SetProperty(ref _nodeSize, value);
 		}
 
+		private int _topWidth;
+
 		public int TopWidth
 		{
 			get => _topWidth;
 			set => SetProperty(ref _topWidth, value);
 		}
+
+		private int _topHeight;
 
 		public int TopHeight
 		{
@@ -61,11 +88,15 @@ namespace VixenModules.App.Props.Models.Tree
 			set => SetProperty(ref _topHeight, value);
 		}
 
+		private int _baseHeight;
+
 		public int BaseHeight
 		{
 			get => _baseHeight;
 			set => SetProperty(ref _baseHeight, value);
 		}
+
+		private int _degreesCoverage;
 
 		public int DegreesCoverage
 		{
@@ -73,20 +104,39 @@ namespace VixenModules.App.Props.Models.Tree
 			set => SetProperty(ref _degreesCoverage, value);
 		}
 
+		private int _degreesOffset;
+
 		public int DegreesOffset
 		{
 			get => _degreesOffset;
 			set => SetProperty(ref _degreesOffset, value);
 		}
 
-		private void TreeModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+		private float _topRadius;
+
+		/// <summary>
+		/// Radius at the top of the tree as a percentage.
+		/// </summary>
+		public float TopRadius 
 		{
-			//TODO make this smarter to do the minimal to add, subtract, or update node size or rotation angle.
-			Nodes.Clear();
-            Nodes.AddRange(GetTreePoints());
+			get => _topRadius;
+			set => SetProperty(ref _topRadius, value);
 		}
 
-		private IEnumerable<NodePoint> GetTreePoints()
+		private float _bottomRadius;
+
+		/// <summary>
+		/// Radius at the bottom of the tree as a percentage.
+		/// </summary>
+		public float BottomRadius
+		{
+			get => _bottomRadius;
+			set => SetProperty(ref _bottomRadius, value);
+		}
+
+		#endregion
+				
+		protected override IEnumerable<NodePoint> Get2DNodePoints()
 		{
 			int width = 95;
 
@@ -130,8 +180,92 @@ namespace VixenModules.App.Props.Models.Tree
 
 			//Flatten the strings of NodePoints
 			return strings.SelectMany(x => x);
-
 		}
+
+		/// <summary>
+		/// Creates the 3-D points that make up the tree.
+		/// </summary>
+		/// <returns>3-D points that make up the tree</returns>
+		protected override IEnumerable<NodePoint> Get3DNodePoints()
+		{
+			// Create the collection of node points
+			List<NodePoint> treePoints = new List<NodePoint>();
+
+			// Maximum radius is half the drawing area
+			const double MaxWidth = 0.5;
+						
+			// Calculate the top and bottom radius
+			double topRadius = TopRadius / 100.0 * MaxWidth;
+			double bottomRadius = BottomRadius / 100.0 * MaxWidth;
+
+			double radiusDelta = (bottomRadius - topRadius) / NodesPerString;
+
+			// Loop over the number of strands
+			for (int i = 0; i < Strings; i++)
+			{
+				// Calculate the angle between strands
+				double angle = (DegreesCoverage / Strings) * i + DegreesOffset;
+
+				// Add a strand to the tree
+				treePoints.AddRange(CreateStrand(NodesPerString, angle, bottomRadius, radiusDelta, -MaxWidth, + 1.0 / NodesPerString ));
+			}
+					
+			// (Optionally) rotate the points along the X, Y, and Z axis
+			RotatePoints(treePoints);	
+
+			return treePoints;
+		}
+
+		/// <summary>
+		/// Creates a strand of nodes.
+		/// </summary>
+		/// <param name="nodesPerStrand">Number of nodes per strand</param>
+		/// <param name="angle">Position of the strand along the tree</param>		
+		/// <param name="bottomRadius">Bottom radius as a percentage</param>		
+		/// <param name="radiusDelta">Change in radius while moving up the tree</param>		
+		/// <param name="yStart"></param>
+		/// <param name="yDelta"></param>
+		/// <returns></returns>
+		private IEnumerable<NodePoint> CreateStrand(
+			int nodesPerStrand, 
+			double angle, 			
+			double bottomRadius, 
+			double radiusDelta,
+			double yStart, 
+			double yDelta)
+		{
+			// Create the collection of node points
+			List<NodePoint> strandPoints = new();
+
+			double radians = angle * Math.PI / 180; // Convert to radians
+			 
+			// Initialize the Y position of the strand nodes
+			double offsetY = yStart;
+
+			// Initialize the starting radius
+			double radius = bottomRadius;
+
+			// Loop over the nodes in the strand
+			for (int p = 0; p < nodesPerStrand; p++) 
+			{
+				// Calculate the position of the node
+				double offsetZ = Math.Sin(radians) * radius;
+				double offsetX = Math.Cos(radians) * radius;
+
+				// Add the node point
+				strandPoints.Add(new NodePoint(offsetX, offsetY, offsetZ));
+
+				// Decrement the radius as we move up the strand
+				radius -= radiusDelta;
+
+				// Increase the Y coordinate
+				offsetY += yDelta;
+			}
+
+			// Return the node points that make up the strand
+			return strandPoints;
+		}
+		
 		public static List<PointF> GetEllipsePoints(
 			double leftOffset,
 			double topOffset,

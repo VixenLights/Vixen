@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
+namespace Common.OpenGLCommon.Constructs.Shaders
 {
 	public class ShaderProgram : IDisposable
 	{

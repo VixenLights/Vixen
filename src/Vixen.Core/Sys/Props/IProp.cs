@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Vixen.Sys.Props.Components;
+using Vixen.Sys.Props.Model;
 
 namespace Vixen.Sys.Props
 {

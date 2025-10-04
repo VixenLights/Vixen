@@ -5,9 +5,9 @@ using OpenTK.Mathematics;
 using System.Numerics;
 #endif
 
-namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex
+namespace Common.OpenGLCommon.Constructs.Vertex
 {
-    public class VBO<T> : IDisposable
+	public class VBO<T> : IDisposable
         where T : struct
     {
         #region Properties

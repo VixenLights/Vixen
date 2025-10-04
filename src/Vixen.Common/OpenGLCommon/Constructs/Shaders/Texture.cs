@@ -1,10 +1,13 @@
-﻿using System.Drawing.Imaging;
+﻿using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
+
 using OpenTK.Graphics.OpenGL;
+
 using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 
-namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
+namespace Common.OpenGLCommon.Constructs.Shaders
 {
 	public class Texture : IDisposable
 	{
