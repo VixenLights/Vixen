@@ -13,6 +13,8 @@
 						<ExcludeAssets>runtime</ExcludeAssets>
 				</PackageReference>
 				<PackageReference Include="Zstandard.Net" />
+				<PackageReference Include="OpenTK"/>
+				<PackageReference Include="OpenTK.GLWpfControl"/>
 		</ItemGroup>
 	<ItemGroup>
 			<None Remove="Directory.Build.props" />

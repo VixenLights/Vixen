@@ -1,15 +1,26 @@
-﻿using Vixen.Sys.Props;
+﻿using System.ComponentModel;
+
+using OpenTK.Mathematics;
 using Vixen.Sys.Props.Model;
 using VixenModules.App.Props.Models.IntelligentFixture;
 using VixenModules.Editor.FixtureGraphics;
-using static System.ComponentModel.Design.ObjectSelectorEditor;
+using VixenModules.Editor.FixtureGraphics.OpenGL;
+
+
 
 namespace VixenModules.App.Props.Models.IntellligentFixture
 {
-	public class IntelligentFixtureModel: BasePropModel, IPropModel
+	/// <summary>
+	/// Maintains an intelligent fixture model.
+	/// </summary>
+	public class IntelligentFixtureModel: BasePropModel, IPropModel	
 	{
-               
-        public IntelligentFixtureModel() 
+		#region Constructor
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		public IntelligentFixtureModel() 
         {
 			// Default the movement constraints of the moving head
 			PanStartPosition = DefaultPanStartPosition;
@@ -46,6 +57,8 @@ namespace VixenModules.App.Props.Models.IntellligentFixture
 			// Default the maximum tilt travel time
 			MaxTiltTravelTime = DefaultMaxTiltTravelTime;
 		}
+
+		#endregion
 
 		#region Constants
 
@@ -110,38 +123,8 @@ namespace VixenModules.App.Props.Models.IntellligentFixture
 		private const double DefaultMaxColorWheelRotationSpeed = 1.0;
 
 		#endregion
-
-
-		/*
-        public IntelligentFixtureModel(int nodeCount, int nodeSize = 2)
-        {
-            _nodeCount = nodeCount;
-            _nodeSize = nodeSize;
-			Nodes.AddRange<NodePoint>(GetArchPoints(_nodeCount, _nodeSize, RotationAngle));
-			PropertyChanged += ArchModel_PropertyChanged;
-        }
-		*/
-
-		//private void ArchModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-		//{
-		//TODO make this smarter to do the minimal to add, subtract, or update node size or rotation angle.
-		//Nodes.Clear();
-		//Nodes.AddRange<NodePoint>(GetArchPoints(_nodeCount, _nodeSize, RotationAngle));
-		//}
-
-		/*
-        public int NodeSize
-        {
-            get => _nodeSize;
-            set => SetProperty(ref _nodeSize, value);
-        }
-
-        public int NodeCount
-        {
-            get => _nodeCount;
-            set => SetProperty(ref _nodeCount, value);
-        }    
-		*/
+				
+		#region Public Properties
 
 		public double MinColorWheelRotationSpeed { get; set; }
 		public double MaxColorWheelRotationSpeed { get; set; }
@@ -174,7 +157,8 @@ namespace VixenModules.App.Props.Models.IntellligentFixture
 
 		public YesNoType InvertTiltDirection { get; set; }
 
-		public MountingPositionType MountingPosition { get; set; }	
+		public MountingPositionType MountingPosition { get; set; }
 
+		#endregion
 	}
 }
