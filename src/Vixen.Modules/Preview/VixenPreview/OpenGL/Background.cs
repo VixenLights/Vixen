@@ -1,10 +1,13 @@
 ﻿using System.IO;
 using System.Runtime.InteropServices;
+
+using Common.OpenGLCommon;
+using Common.OpenGLCommon.Constructs;
+using Common.OpenGLCommon.Constructs.Shaders;
+using Common.OpenGLCommon.Constructs.Vertex;
+
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using VixenModules.Preview.VixenPreview.OpenGL.Constructs;
-using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
-using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex;
 
 namespace VixenModules.Preview.VixenPreview.OpenGL
 {
