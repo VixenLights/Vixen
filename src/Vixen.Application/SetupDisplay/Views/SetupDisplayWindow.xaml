@@ -7,6 +7,7 @@
         xmlns:wpfPropertyGrid="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
         xmlns:controls="clr-namespace:Common.Controls;assembly=Controls"
         xmlns:viewModels="clr-namespace:VixenApplication.SetupDisplay.ViewModels"
+	xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
         Title="Display Setup" Height="850" Width="1200" WindowStartupLocation="CenterScreen" x:Name="DisplaySetup"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewModels:SetupDisplayViewModel, IsDesignTimeCreatable=False}"
@@ -126,11 +127,66 @@
             </Grid>
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="2*"/>
-                    <RowDefinition Height="1*"/>
-                </Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+					<RowDefinition/>
+				</Grid.RowDefinitions>
                 <views:PropComponentTree Margin="5" DataContext="{Binding PropComponentTreeViewModel}"></views:PropComponentTree>
-            </Grid>
+
+				<Border BorderThickness="2"  Width="400"
+                    Height="400" Grid.Row="1" Background="{StaticResource BackgroundControlBrush}" BorderBrush="{StaticResource BorderColorBrush}" Margin="5">
+					<glWpfControl:GLWpfControl
+					x:Name="OpenTkControl" 
+					SizeChanged="OpenTkControl_SizeChanged"
+                    Render="OpenTkControl_OnRender"
+					MouseWheel="OpenTkControl_MouseWheel"
+                    MouseDown="OpenTkControl_MouseDown"
+                    MouseMove="OpenTkControl_MouseMove"
+                    MouseUp="OpenTkControl_MouseUp">
+							<glWpfControl:GLWpfControl.ContextMenu>
+								<ContextMenu>
+									
+								<MenuItem Header="Center Preview"                          ToolTip="Repositions the viewpoint to the center of the preview." Command="{Binding CenterPreview}"/>
+								<MenuItem Header="Enable Light Scaling" IsCheckable="True" ToolTip="Scales the light size as the camera is zoomed in or out." IsChecked="{Binding EnableLightScaling }"/>
+								<!--<MenuItem Header="{Binding Location}"/> -->
+								</ContextMenu>
+							</glWpfControl:GLWpfControl.ContextMenu>
+						</glWpfControl:GLWpfControl>
+				</Border>
+
+				<!--
+				<Slider Grid.Row="2" 
+					x:Name="zSlider"
+                    Minimum="0"
+                    Maximum="100"                    
+                    TickFrequency="10"
+                    IsSnapToTickEnabled="True"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+					Value="{Binding ZRotation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Width="350"/>
+				-->
+
+
+				<ScrollViewer Grid.Row="2">
+					<ItemsControl ItemsSource="{Binding Rotations}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<StackPanel Orientation="Horizontal" Margin="5">
+									<ComboBox Width="60" Height="20" 
+                                  ItemsSource="{Binding Axes}"                                  
+                                  SelectedItem="{Binding Axis}" />
+									<Slider Width="500"
+                                Minimum="-180" Maximum="180"
+                                Value="{Binding RotationAngle}" />
+									<TextBlock Width="40" Margin="5,0,0,0"
+                                   Text="{Binding RotationAngle, StringFormat=F0}" />
+								</StackPanel>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</ScrollViewer>
+			</Grid>
         </Grid>
     </DockPanel>
 

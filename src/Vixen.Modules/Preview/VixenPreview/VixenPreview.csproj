@@ -21,6 +21,7 @@
 				<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Common\FastPixel\FastPixel.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Common\Help\Help.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\OpenGLCommon\OpenGLCommon.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Common\Utilities\Utilities.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Common\WPFCommon\WPFCommon.csproj" />
