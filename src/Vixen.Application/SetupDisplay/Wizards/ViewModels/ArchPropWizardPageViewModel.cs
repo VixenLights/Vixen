@@ -231,10 +231,10 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		{
 			base.ValidateFields(validationResults);
 
-			//if (string.IsNullOrWhiteSpace(Name))
-			//{
-			//	validationResults.Add(FieldValidationResult.CreateError("Name", "Name is required"));
-			//}
+			if (string.IsNullOrWhiteSpace(Name))
+			{
+				validationResults.Add(FieldValidationResult.CreateError("Name", "Name is required"));
+			}
 		}
 	}
 }

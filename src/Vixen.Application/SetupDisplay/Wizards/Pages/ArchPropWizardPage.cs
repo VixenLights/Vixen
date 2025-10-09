@@ -1,18 +1,19 @@
 ﻿using Catel.Data;
 using Catel.MVVM;
 using Orc.Wizard;
+using Vixen.Extensions;
 using Vixen.Sys;
 using Vixen.Sys.Props;
 using VixenModules.App.Props.Models.Arch;
 
 namespace VixenApplication.SetupDisplay.Wizards.Pages
 {
-	public class ArchPropWizardPage : WizardPageBase, IPropWizardFinalPage
+	public class ArchPropWizardPage : WizardPageBase
 	{
 		public ArchPropWizardPage()
 		{
-			Title = PropTypeNames.GetName(PropType.Arch);
-			Description = $"Enter the details for your {Title}";
+			Title = "Basic Attributes";
+			Description = $"Enter attributes for {PropType.Arch.GetEnumDescription()}";
 			Name = VixenSystem.Props.GenerateUniquePropTitle(PropType.Arch);
 			NodeCountMinimum = 3;
 			NodeCountMaximum = 100;
@@ -26,13 +27,14 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 			Rotation = 0;
 			ArchWiringStart = ArchStartLocation.Left;
 			LeftRight = false;
+
+			Number = 1;
 		}
 
 		#region Name property
 		/// <summary>
 		/// Gets or sets the Name value.
 		/// </summary>
-		[ViewModelToModel]
 		public string Name
 		{
 			get { return GetValue<string>(NameProperty); }
@@ -203,17 +205,19 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 		/// </summary>
 		public bool LeftRight
 		{
-			get { return GetValue<bool>(leftRightProperty); }
-			set { SetValue(leftRightProperty, value); }
+			get { return GetValue<bool>(LeftRightProperty); }
+			set { SetValue(LeftRightProperty, value); }
 		}
-		private static readonly IPropertyData leftRightProperty = RegisterProperty<bool>(nameof(LeftRight));
+		private static readonly IPropertyData LeftRightProperty = RegisterProperty<bool>(nameof(LeftRight));
 		#endregion
 
 		public override ISummaryItem GetSummary()
 		{
 			return new SummaryItem
 			{
-				Summary = string.Format($"A new {PropTypeNames.GetName(PropType.Arch)} with name {Name} and {NodeCount} {StringType.ToString()} nodes")
+				Title = this.Title,
+				Summary = $"Prop Type: {PropType.Arch.GetEnumDescription()}\nName: {Name}\nLight Count: {NodeCount}\nLight Size: {LightSize}\n" +
+				          $"Light Type: {StringType}\nStarting Position: {ArchWiringStart}\nRotation: {Rotation}\u00B0"
 			};
 		}
 

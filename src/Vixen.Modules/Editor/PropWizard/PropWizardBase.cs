@@ -8,6 +8,8 @@ namespace VixenModules.Editor.PropWizard
 	/// </summary>
 	public abstract class PropWizardBase : SideNavigationWizardBase, IPropWizard
 	{
+		public int MyNumber;
+
 		#region Constructor
 
 		/// <summary>
@@ -17,12 +19,14 @@ namespace VixenModules.Editor.PropWizard
 		public PropWizardBase(ITypeFactory typeFactory) :
 			base(typeFactory)
 		{
+			ResizeMode = System.Windows.ResizeMode.CanResize;
+			MaxSize = new System.Windows.Size(800, 600);
 		}
 
 		#endregion
 
 		#region IPropWizard
-		
+
 		/// <inheritdoc/>		
 		public INavigationController NavigationControllerWrapper
 		{
