@@ -22,6 +22,8 @@ namespace Vixen.Sys.Props
 	/// of associated components and target nodes.
 	/// </remarks>
 	[Serializable]
+	[CategoryOrder("Attributes", 1)]
+	[CategoryOrder("Creation", 100)]
 	public abstract class BaseProp<TModel> : BindableBase, IProp where TModel : BasePropModel, IPropModel
 	{
 		#region Protected Static Properties
@@ -82,6 +84,7 @@ namespace Vixen.Sys.Props
 		/// <summary>
 		/// Gets or sets the name of the Prop.
 		/// </summary>
+		[Category("Attributes")]
 		[PropertyOrder(0)]
 		public string Name
 		{
@@ -101,8 +104,9 @@ namespace Vixen.Sys.Props
 			}
 		}
 
-		[PropertyOrder(1)]
+		[Category("Attributes")]
 		[DisplayName("Prop Type")]
+		[PropertyOrder(1)]
 		[ReadOnly(true)]
 		public PropType PropType { get; init; }
 
@@ -116,8 +120,9 @@ namespace Vixen.Sys.Props
 		/// <remarks>
 		/// This property is used to track the origin of the Prop for auditing and informational purposes.
 		/// </remarks>
-		[PropertyOrder(100)]
+		[Category("Creation")]
 		[DisplayName("Created By")]
+		[PropertyOrder(0)]
 		[ReadOnly(true)]
 		public string CreatedBy
 		{
@@ -132,8 +137,9 @@ namespace Vixen.Sys.Props
 		/// This property is initialized during the construction of the Prop and remains immutable.
 		/// It provides metadata about the creation of the Prop for tracking and auditing purposes.
 		/// </remarks>
-		[PropertyOrder(101)]
+		[Category("Creation")]
 		[DisplayName("Creation Date")]
+		[PropertyOrder(1)]
 		[ReadOnly(true)]
 		public DateTime CreationDate { get; init; }
 
@@ -143,8 +149,9 @@ namespace Vixen.Sys.Props
 		/// <value>
 		/// A <see cref="DateTime"/> representing the last modification date and time of the Prop.
 		/// </value>
-		[PropertyOrder(102)]
+		[Category("Creation")]
 		[DisplayName("Modified Date")]
+		[PropertyOrder(2)]
 		[ReadOnly(true)]
 		public DateTime ModifiedDate
 		{
