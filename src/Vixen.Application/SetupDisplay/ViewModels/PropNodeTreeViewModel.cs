@@ -10,6 +10,7 @@ using Orc.Wizard;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Controls;
+using Vixen.Extensions;
 using Vixen.Sys;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Props;
@@ -47,7 +48,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			PropComponentNodeViewModels = [pcvm];
 
 			PropNodes = new();
-			PropNodes.AddRange(RootNodeViewModel.SelectMany(x => x.GetPropEnumerator()));
+			Catel.Collections.CollectionExtensions.AddRange(PropNodes, RootNodeViewModel.SelectMany(x => x.GetPropEnumerator()));
 
 			PropManager.PropCollectionChanged += PropManager_PropCollectionChanged;
 			SelectedItems = new();
@@ -55,14 +56,14 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 			foreach (PropType menuItem in Enum.GetValues(typeof(PropType)))
 			{
-				AvailableProps.Add(new PropTypeMenuItem { Id = menuItem, DisplayName = PropTypeNames.GetName(menuItem) });
+				AvailableProps.Add(new PropTypeMenuItem { Id = menuItem, DisplayName = menuItem.GetEnumDescription() });
 			}
 		}
 
 		private void PropManager_PropCollectionChanged(object? sender, EventArgs e)
 		{
 			PropNodes.Clear();
-			PropNodes.AddRange(RootNodeViewModel.SelectMany(x => x.GetPropEnumerator()));
+			Catel.Collections.CollectionExtensions.AddRange(PropNodes, RootNodeViewModel.SelectMany(x => x.GetPropEnumerator()));
 		}
 
 		#region PropManager model property

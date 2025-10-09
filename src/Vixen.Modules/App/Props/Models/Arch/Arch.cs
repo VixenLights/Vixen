@@ -2,19 +2,21 @@
 #nullable enable
 using AsyncAwaitBestPractices;
 using Debounce.Core;
-using Microsoft.VisualBasic;
-using NLog;
 using System.ComponentModel;
 using Vixen.Attributes;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Props;
 using Vixen.Sys.Props.Components;
+using VixenModules.App.Curves;
 
 namespace VixenModules.App.Props.Models.Arch
 {
 	/// <summary>
 	/// A class that defines an Arch Prop
 	/// </summary>
+	[CategoryOrder("Attributes", 1)]
+	[CategoryOrder("Dimming Curve", 10)]
+	[CategoryOrder("Creation", 100)]
 	public class Arch : BaseLightProp<ArchModel>, IProp
 	{
 		private readonly Debouncer _generateDebouncer;
@@ -59,6 +61,7 @@ namespace VixenModules.App.Props.Models.Arch
 		}
 
 		private int _nodeCount;
+		[Category("Attributes")]
 		[DisplayName("Nodes Count")]
 		[PropertyOrder(10)]
 		public int NodeCount
@@ -74,6 +77,7 @@ namespace VixenModules.App.Props.Models.Arch
 		}
 
 		private int _lightSize;
+		[Category("Attributes")]
 		[DisplayName("Light Size")]
 		[PropertyOrder(11)]
 		public int LightSize
@@ -88,6 +92,7 @@ namespace VixenModules.App.Props.Models.Arch
 		}
 
 		private ArchStartLocation _archWiringStart;
+		[Category("Attributes")]
 		[DisplayName("Wiring Start")]
 		[PropertyOrder(12)]
 		public ArchStartLocation ArchWiringStart
@@ -102,8 +107,8 @@ namespace VixenModules.App.Props.Models.Arch
 		}
 
 		private int _rotation;
+		[Category("Attributes")]
 		[DisplayName("Rotation")]
-		[PropertyEditor("SliderEditor")]
 		[PropertyOrder(13)]
 		public int Rotation
 		{
@@ -117,9 +122,7 @@ namespace VixenModules.App.Props.Models.Arch
 		}
 
 		private bool _leftRight;
-		[Category("Optional")]
-		[DisplayName("Left / Right")]
-		[PropertyOrder(14)]
+		[Browsable(false)]
 		public bool LeftRight
 		{
 			get => _leftRight;
@@ -127,6 +130,42 @@ namespace VixenModules.App.Props.Models.Arch
 			{
 				_leftRight = value;
 				OnPropertyChanged(nameof(LeftRight));
+			}
+		}
+
+		private Curve _curve;
+		[Browsable(false)]
+		public Curve Curve
+		{
+			get { return _curve; }
+			set { _curve = value; }
+		}
+
+		[Category("Dimming Curve")]
+		[DisplayName("Curve")]
+		[PropertyOrder(14)]
+		public string CurveName
+		{
+			get
+			{
+				string result = "None Specified";
+				if (_curve != null)
+				{
+					if (_curve.CustomReferenceName != string.Empty)
+					{
+						result = _curve.CustomReferenceName;
+					}
+					else if (_curve.LibraryReferenceName != string.Empty)
+					{
+						result = _curve.LibraryReferenceName;
+					}
+					else if (_curve.Points.Count > 0)
+					{
+						result = "Custom";
+					}
+				}
+
+				return result;
 			}
 		}
 
@@ -199,7 +238,7 @@ namespace VixenModules.App.Props.Models.Arch
 				}
 			}
 
-			if (_leftRight == true)
+			if (LeftRight == true)
 			{
 				//Update the left and right to match the new node count
 				var propComponentLeft = PropComponents.FirstOrDefault(x => x.Name == $"{Name} Left");

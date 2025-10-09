@@ -357,7 +357,7 @@
 		<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
 		<!--<Setter Property="FontSize" Value="7.5pt"/>-->
 		<Setter Property="MinHeight" Value="20"/>
-		<Setter Property="MinWidth" Value="100"/>
+		<Setter Property="MinWidth" Value="70"/>
 		<Setter Property="VerticalContentAlignment" Value="Center"/>
 		<Setter Property="HorizontalContentAlignment" Value="Center"/>
 		<Setter Property="Margin" Value="10 10 10 10"/>
@@ -458,7 +458,7 @@
 		<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
 		<!--<Setter Property="FontSize" Value="7.5pt"/>-->
 		<Setter Property="MinHeight" Value="20"/>
-		<Setter Property="MinWidth" Value="100"/>
+		<Setter Property="MinWidth" Value="70"/>
 		<Setter Property="VerticalContentAlignment" Value="Center"/>
 		<Setter Property="HorizontalContentAlignment" Value="Center"/>
 		<Setter Property="Margin" Value="10 10 10 10"/>

@@ -16,6 +16,7 @@ using VixenModules.Property.Color;
 
 namespace VixenModules.App.Props.Models
 {
+	[CategoryOrder("Attributes", 1)]
 	public abstract class BaseLightProp<TModel> : BaseProp<TModel> where TModel : BasePropModel, IPropModel
 	{				
 		private StringTypes _stringType;
@@ -43,8 +44,9 @@ namespace VixenModules.App.Props.Models
 		/// </item>
 		/// </list>
 		/// </remarks>
-		[PropertyOrder(2)]
+		[Category("Attributes")]
 		[DisplayName("String Type")]
+		[PropertyOrder(2)]
 		public StringTypes StringType
 		{
 			get => _stringType;

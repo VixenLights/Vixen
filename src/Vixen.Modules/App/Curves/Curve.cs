@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.Serialization;
+using Vixen.Extensions;
 using Vixen.Module.App;
 using Vixen.Services;
 using ZedGraph;
@@ -30,6 +31,7 @@ namespace VixenModules.App.Curves
 		{
 			Points = new PointPairList(curve.Points);
 			LibraryReferenceName = curve.LibraryReferenceName;
+			CustomReferenceName = curve.CustomReferenceName;
 			IsCurrentLibraryCurve = curve.IsCurrentLibraryCurve;
 		}
 
@@ -45,12 +47,45 @@ namespace VixenModules.App.Curves
 			{
 				case CurveType.RampUp:
 					Points = new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 100.0 });
+					CustomReferenceName = CurveType.RampUp.GetEnumDescription();
 					break;
 				case CurveType.RampDown:
 					Points = new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 0.0 });
+					CustomReferenceName = CurveType.RampDown.GetEnumDescription();
 					break;
 				case CurveType.Flat100:
 					Points = new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 });
+					CustomReferenceName = CurveType.Flat100.GetEnumDescription();
+					break;
+				case CurveType.RampIncreaseCurve:
+					Points = new PointPairList();
+					CustomReferenceName = CurveType.RampIncreaseCurve.GetEnumDescription();
+					for (double x = 0; x <= 100; x+= 5)
+					{
+						double y = (Math.Pow(x / 100.0, 2) * 100.0);
+						if (y > 100.0) y = 100.0;
+						if (y < 0.0) y = 0.0;
+						if (double.IsNaN(y))
+						{
+							y = 100;
+						}
+						Points.Add(x, y);
+					}
+					break;
+				case CurveType.RampDecreaseCurve:
+					Points = new PointPairList();
+					CustomReferenceName = CurveType.RampDecreaseCurve.GetEnumDescription();
+					for (double x = 0; x <= 100; x += 5)
+					{
+						double y = 100 - (Math.Pow(x, 2) * 0.01);
+						if (y > 100.0) y = 100.0;
+						if (y < 0.0) y = 0.0;
+						if (double.IsNaN(y))
+						{
+							y = 100;
+						}
+						Points.Add(x, y);
+					}
 					break;
 			}
 		}
@@ -106,7 +141,24 @@ namespace VixenModules.App.Curves
 				else
 					return _libraryReferenceName;
 			}
-			set { _libraryReferenceName = value; }
+			set 
+			{
+				_libraryReferenceName = value;
+				if (value?.Length > 0)
+					_customReferenceName = string.Empty;
+			}
+		}
+
+		private string _customReferenceName;
+		public string CustomReferenceName
+		{
+			get { return _customReferenceName; }
+			set 
+			{ 
+				_customReferenceName = value;
+				if (value?.Length > 0)
+					_libraryReferenceName = string.Empty;
+			}
 		}
 
 		public bool IsLibraryReference

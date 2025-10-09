@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using Vixen.Extensions;
 using Vixen.Model;
 using Vixen.Sys.Props;
 
@@ -140,9 +141,9 @@ namespace Vixen.Sys.Managers
 		{
 			for (int i = 1; i < 10000; i++)
 			{
-				if (IsUniquePropTitle($"{PropTypeNames.GetName(type)} {i}"))
+				if (IsUniquePropTitle($"{type.GetEnumDescription()} {i}"))
 				{
-					return $"{PropTypeNames.GetName(type)} {i}";
+					return $"{type.GetEnumDescription()} {i}";
 				}
 			}
 
