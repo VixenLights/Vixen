@@ -643,7 +643,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		private void UpdateLightSizeProperty()
 		{
-			_elementTreeViewModel.SelectedItem.RaiseAllPropertiesChanged();
+			// SelectedItem is not always non-null
+			_elementTreeViewModel.SelectedItem?.RaiseAllPropertiesChanged();
 		}
 		#endregion
 
