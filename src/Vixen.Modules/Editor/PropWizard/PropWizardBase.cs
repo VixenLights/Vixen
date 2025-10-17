@@ -20,7 +20,7 @@ namespace VixenModules.Editor.PropWizard
 			base(typeFactory)
 		{
 			ResizeMode = System.Windows.ResizeMode.CanResize;
-			MaxSize = new System.Windows.Size(800, 600);
+			MaxSize = new System.Windows.Size(1050, 600);
 		}
 
 		#endregion

@@ -1,5 +1,8 @@
-﻿using Vixen.Extensions;
+﻿using System.Collections.ObjectModel;
+using Vixen.Extensions;
 using Vixen.Sys.Props.Model;
+using VixenModules.App.Props.Models;
+
 
 namespace VixenModules.App.Props.Models.Arch
 {
@@ -8,13 +11,11 @@ namespace VixenModules.App.Props.Models.Arch
 	/// </summary>
 	public class ArchModel: BaseLightModel
 	{
-		private Arch _arch;
+		IAttributeData _arch;
 
-		public ArchModel(Arch arch)
-        {
-			_arch = arch;
-            Nodes.AddRange<NodePoint>(GetArchPoints(_arch.NodeCount, _arch.LightSize, _arch.Rotation));
-        }
+		public ArchModel()
+		{
+		}
 
         public ArchModel(int nodeCount, int nodeSize = 2)
         {
@@ -30,9 +31,7 @@ namespace VixenModules.App.Props.Models.Arch
 		/// <inheritdoc/>				
 		protected override IEnumerable<NodePoint> Get3DNodePoints()
 		{
-            //TODO make this smarter to do the minimal to add, subtract, or update node size or rotation angle.
-            Nodes.Clear();
-            Nodes.AddRange<NodePoint>(GetArchPoints(_nodeCount, _nodeSize, RotationAngle));
+			return Get3DNodePoints(_arch.NodeCount, _arch.LightSize);
 		}
 
 		#endregion
@@ -69,11 +68,9 @@ namespace VixenModules.App.Props.Models.Arch
 			}
 
 			// (Optionally) rotate the points along the X, Y, and Z axis
-			RotatePoints(vertices);
+			RotatePoints(vertices, AxisRotationViewModel.ConvertToModel(_arch.Rotations));
 
 			return vertices;
 		}
-
-		#endregion
 	}
 }
