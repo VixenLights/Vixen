@@ -2,7 +2,6 @@
 
 using OpenTK.Mathematics;
 
-using Vixen.Annotations;
 using Vixen.Model;
 
 namespace Vixen.Sys.Props.Model
@@ -19,15 +18,6 @@ namespace Vixen.Sys.Props.Model
 		/// </summary>
 		protected BasePropModel()
 		{
-			AxisRotationModel x = new AxisRotationModel();
-			x.Axis = Axis.XAxis;
-			AxisRotationModel y = new AxisRotationModel();
-			y.Axis = Axis.YAxis;
-			AxisRotationModel z = new AxisRotationModel();
-			z.Axis = Axis.ZAxis;
-			Rotations.Add(x);
-			Rotations.Add(y);
-			Rotations.Add(z);
 		}
 
 		#endregion
@@ -37,9 +27,6 @@ namespace Vixen.Sys.Props.Model
 		/// <inheritdoc/>		
 		public Guid Id { get; init; } = Guid.NewGuid();
 
-		/// <inheritdoc/>		
-		public ObservableCollection<AxisRotationModel> Rotations { get; set; } = new ObservableCollection<AxisRotationModel>();
-
 		#endregion
 
 		#region Protected Methods
@@ -48,10 +35,10 @@ namespace Vixen.Sys.Props.Model
 		/// Rotates the specified vertices by up to three axis rotations.
 		/// </summary>
 		/// <param name="vertices">Vertices to rotate</param>
-		protected void RotatePoints(List<NodePoint> vertices)
+		protected void RotatePoints(List<NodePoint> vertices, ObservableCollection<AxisRotationModel>rotations)
 		{
 			// Loop over the rotations because order matters
-			foreach (AxisRotationModel rm in Rotations)
+			foreach (AxisRotationModel rm in rotations)
 			{
 				// If there is a rotation angle then...
 				if (rm.RotationAngle != 0.0)
