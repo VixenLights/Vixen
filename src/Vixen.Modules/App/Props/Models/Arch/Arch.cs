@@ -2,22 +2,35 @@
 #nullable enable
 using AsyncAwaitBestPractices;
 using Debounce.Core;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Vixen.Attributes;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Props;
 using Vixen.Sys.Props.Components;
+using Vixen.Sys.Props.Model;
 using VixenModules.App.Curves;
+using VixenModules.App.Props.Models;
 
 namespace VixenModules.App.Props.Models.Arch
 {
+	public interface IAttributeData
+	{
+		int NodeCount { get; set; }
+		int LightSize { get; set; }
+		ArchStartLocation ArchWiringStart { get; set; }
+		bool LeftRight { get; set; }
+		public ObservableCollection<AxisRotationViewModel> Rotations { get; set; }
+	}
+
 	/// <summary>
 	/// A class that defines an Arch Prop
 	/// </summary>
 	[CategoryOrder("Attributes", 1)]
-	[CategoryOrder("Dimming Curve", 10)]
+	[CategoryOrder("Rotation", 40)]
+	[CategoryOrder("Dimming Curve", 50)]
 	[CategoryOrder("Creation", 100)]
-	public class Arch : BaseLightProp<ArchModel>, IProp
+	public class Arch : BaseLightProp<ArchModel>, IProp, IAttributeData
 	{
 		private readonly Debouncer _generateDebouncer;
 
@@ -32,9 +45,15 @@ namespace VixenModules.App.Props.Models.Arch
 
 		public Arch(string name, int nodeCount = 0, StringTypes stringType = StringTypes.Pixel) : base(name, PropType.Arch)
 		{
+			Name = name;
+			NodeCount = nodeCount;
 			StringType = stringType;
-			PropModel = new ArchModel(this);
 			PropertyChanged += Arch_PropertyChanged;
+
+			// Create Preview model
+			ArchModel model = new ArchModel();
+			model.SetContext(this);
+			PropModel = model;
 
 			_generateDebouncer = new Debouncer(() =>
 			{
@@ -70,8 +89,8 @@ namespace VixenModules.App.Props.Models.Arch
 			set
 			{
 				_nodeCount = value;
-				PropModel.DrawModel();
-				_generateDebouncer.Debounce();
+				_generateDebouncer?.Debounce();
+				PropModel?.UpdatePropNodes();
 				OnPropertyChanged(nameof(NodeCount));
 			}
 		}
@@ -86,7 +105,7 @@ namespace VixenModules.App.Props.Models.Arch
 			set
 			{
 				_lightSize = value;
-				PropModel.DrawModel();
+				PropModel?.UpdatePropNodes();
 				OnPropertyChanged(nameof(LightSize));
 			}
 		}
@@ -106,18 +125,82 @@ namespace VixenModules.App.Props.Models.Arch
 			}
 		}
 
-		private int _rotation;
-		[Category("Attributes")]
-		[DisplayName("Rotation")]
-		[PropertyOrder(13)]
-		public int Rotation
+		private ObservableCollection<AxisRotationViewModel> _rotations;
+		[Browsable(false)]
+		public ObservableCollection<AxisRotationViewModel> Rotations
 		{
-			get => _rotation;
+			get => _rotations;
 			set
 			{
-				_rotation = value;
-				PropModel.DrawModel();
-				OnPropertyChanged(nameof(Rotation));
+				_rotations = value;
+				PropModel?.UpdatePropNodes();
+				OnPropertyChanged(nameof(Rotations));
+			}
+		}
+
+		[Category("Rotation")]
+		[DisplayName("X\u00B0")]
+		[PropertyOrder(1)]
+		public int XRotation
+		{
+			get
+			{
+				var rotation = Rotations?.FirstOrDefault(x => x.Axis == "X");
+				if (rotation != null)
+				{
+					return rotation.RotationAngle;
+				}
+				return 0;
+			}
+			set
+			{
+				var _rotations = Rotations;
+				_rotations[(int)Axis.XAxis].RotationAngle = value;
+				Rotations = _rotations;
+			}
+		}
+
+		[Category("Rotation")]
+		[DisplayName("Y\u00B0")]
+		[PropertyOrder(2)]
+		public int YRotation
+		{
+			get
+			{
+				var rotation = Rotations?.FirstOrDefault(y => y.Axis == "Y");
+				if (rotation != null)
+				{
+					return rotation.RotationAngle;
+				}
+				return 0;
+			}
+			set
+			{
+				var _rotations = Rotations;
+				_rotations[(int)Axis.YAxis].RotationAngle = value;
+				Rotations = _rotations;
+			}
+		}
+
+		[Category("Rotation")]
+		[DisplayName("Z\u00B0")]
+		[PropertyOrder(3)]
+		public int ZRotation
+		{
+			get
+			{
+				var rotation = Rotations?.FirstOrDefault(z => z.Axis == "Z");
+				if (rotation != null)
+				{
+					return rotation.RotationAngle;
+				}
+				return 0;
+			}
+			set
+			{
+				var _rotations = Rotations;
+				_rotations[(int)Axis.ZAxis].RotationAngle = value;
+				Rotations = _rotations;
 			}
 		}
 
@@ -143,7 +226,7 @@ namespace VixenModules.App.Props.Models.Arch
 
 		[Category("Dimming Curve")]
 		[DisplayName("Curve")]
-		[PropertyOrder(14)]
+		[PropertyOrder(30)]
 		public string CurveName
 		{
 			get

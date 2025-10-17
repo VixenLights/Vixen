@@ -1,17 +1,18 @@
 ﻿using Catel.Data;
 using Catel.MVVM;
-
+using System.Collections.ObjectModel;
 using Vixen.Sys.Props;
-
 using VixenApplication.SetupDisplay.Wizards.Pages;
 using VixenModules.App.Props.Models.Arch;
+using VixenModules.App.Props.Models;
 
 namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 {
-	public class ArchPropWizardPageViewModel : GraphicsWizardPageViewModelBase<ArchPropWizardPage, VixenModules.App.Props.Models.Arch.ArchModel>, IPropWizardPageViewModel
+	public class ArchPropWizardPageViewModel : GraphicsWizardPageViewModelBase<ArchPropWizardPage, VixenModules.App.Props.Models.Arch.ArchModel>, IPropWizardPageViewModel, VixenModules.App.Props.Models.Arch.IAttributeData
 	{
 		public ArchPropWizardPageViewModel(ArchPropWizardPage wizardPage) : base(wizardPage)
-		{					
+		{
+			LightPropModel.SetContext(this);
 		}
 
 		/// <summary>
@@ -19,9 +20,6 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		/// </summary>
 		private void RefreshGraphics()
 		{
-			// Pass the properties needed to draw the graphics to the temporary light prop model
-			LightPropModel.NodeCount = NodeCount;
-
 			// Update the prop nodes
 			LightPropModel.UpdatePropNodes();
 		}
@@ -51,8 +49,13 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		public int NodeCount
 		{
 			get { return GetValue<int>(NodeCountProperty); }
-			set { SetValue(NodeCountProperty, value); }
+			set 
+			{ 
+				SetValue(NodeCountProperty, value);
+				RefreshGraphics();
+			}
 		}
+		private static readonly IPropertyData NodeCountProperty = RegisterProperty<int>(nameof(NodeCount));
 
 		[ViewModelToModel]
 		public int NodeCountMinimum
@@ -110,7 +113,11 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		public int LightSize
 		{
 			get { return GetValue<int>(LightSizeProperty); }
-			set { SetValue(LightSizeProperty, Math.Clamp(value, LightSizeMinimum, LightSizeMaximum)); }
+			set 
+			{
+				SetValue(LightSizeProperty, Math.Clamp(value, LightSizeMinimum, LightSizeMaximum));
+				RefreshGraphics();
+			}
 		}
 		private static readonly IPropertyData LightSizeProperty = RegisterProperty<int>(nameof(LightSize));
 
@@ -145,7 +152,6 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		private static readonly IPropertyData LightSizeMaximumProperty = RegisterProperty<int>(nameof(LightSizeMaximum));
 		#endregion
 
-
 		#region ArchWiringStart property
 		/// <summary>
 		/// Gets or sets the Wiring Start value.
@@ -165,49 +171,22 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 
 		#region Rotation Control
 		/// <summary>
-		/// Gets or sets the degree of rotation.
+		/// Collection of rotations to support rotating the props around the x,y, and z axis.
 		/// </summary>
-		/// <remarks>
-		/// The rotation is constrained by <see cref="RotationMinimum"/> and <see cref="RotationMaximum"/>, consequently
-		/// set these values prior to setting Rotation.
-		/// </remarks>
 		[ViewModelToModel]
-		public int Rotation
+		public ObservableCollection<AxisRotationViewModel> Rotations
 		{
-			get { return GetValue<int>(RotationProperty); }
-			set { SetValue(RotationProperty, Math.Clamp(value, RotationMinimum, RotationMaximum)); }
-		}
-		private static readonly IPropertyData RotationProperty = RegisterProperty<int>(nameof(Rotation));
-
-		[ViewModelToModel]
-		public int RotationMinimum
-		{
-			get { return GetValue<int>(RotationMinimumProperty); }
-			set 
+			get
 			{
-				if (Rotation > value)
-				{
-					Rotation = value;
-				}
-				SetValue(RotationMinimumProperty, value); 
+				return GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty);
+			}
+			set
+			{
+				SetValue(RotationsProperty, value);
 			}
 		}
-		private static readonly IPropertyData RotationMinimumProperty = RegisterProperty<int>(nameof(RotationMinimum));
 
-		[ViewModelToModel]
-		public int RotationMaximum
-		{
-			get { return GetValue<int>(RotationMaximumProperty); }
-			set 
-			{
-				if (Rotation > value)
-				{
-					Rotation = value;
-				}
-				SetValue(RotationMaximumProperty, value); 
-			}
-		}
-		private static readonly IPropertyData RotationMaximumProperty = RegisterProperty<int>(nameof(RotationMaximum));
+		public static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
 		#endregion
 
 		#region Optional Left / Right property

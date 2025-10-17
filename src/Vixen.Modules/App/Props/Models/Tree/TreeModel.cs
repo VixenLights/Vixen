@@ -23,15 +23,6 @@ namespace VixenModules.App.Props.Models.Tree
 		}	
 
 
-		public override void DrawModel()
-		{
-		}
-
-
-		public override void DrawModel()
-		{
-		}
-
 		public TreeModel(int strings = 16, int nodesPerString = 50, int nodeSize = 2)
 		{
 			_topWidth = 20;
@@ -166,9 +157,10 @@ namespace VixenModules.App.Props.Models.Tree
 				// Add a strand to the tree
 				treePoints.AddRange(CreateStrand(NodesPerString, angle, bottomRadius, radiusDelta, -height / 2.0, + height / NodesPerString));
 			}
-					
+
 			// (Optionally) rotate the points along the X, Y, and Z axis
-			RotatePoints(treePoints);	
+			//ToDo : Replace null with rotation
+			RotatePoints(treePoints, null);	
 
 			return treePoints;
 		}

@@ -9,16 +9,7 @@ namespace Vixen.Sys.Props.Model
 	/// </summary>
 	public abstract class BaseLightModel : BasePropModel, ILightPropModel
 	{
-		private ObservableCollection<NodePoint> _nodes = new();
-
-		public abstract void DrawModel();
-
-		public ObservableCollection<NodePoint> Nodes
-		{
-			get => _nodes;
-			set => SetProperty(ref _nodes, value);
-		}
-
+		#region Protected Methods
 		/// <summary>
 		/// Updates the nodes when a model property changes.
 		/// </summary>
@@ -56,10 +47,14 @@ namespace Vixen.Sys.Props.Model
 				nodePoint.Y = y + centerY;
 			}
 		}
-
 		#endregion
 
-		#region Protected Abstract Methods
+		#region Abstract Methods
+		/// <summary>
+		/// Sets the context data for the prop.
+		/// </summary>
+		/// <param name="data">The context of the parent class.</param>
+		public abstract void SetContext(object data);
 
 		/// <summary>
 		/// Retrieves the 3-D node points that make up the prop.
@@ -90,6 +85,7 @@ namespace Vixen.Sys.Props.Model
 			set => SetProperty(ref _rotationAngle, value);
 		}
 
+		public ObservableCollection<AxisRotationModel> Rotations { get; set; }
 		#endregion
 
 		#region Public Methods
