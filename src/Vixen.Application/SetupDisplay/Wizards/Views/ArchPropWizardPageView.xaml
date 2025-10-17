@@ -10,7 +10,10 @@
                    xmlns:markupExtensions="clr-namespace:Common.WPFCommon.MarkupExtensions;assembly=WPFCommon"
                    xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
                    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-                   >
+		           xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl" 
+		           xmlns:views="clr-namespace:VixenApplication.SetupDisplay.Wizards.Views" 
+				   Loaded="PropWizardPageView_Loaded"
+				   Unloaded="PropWizardPageView_Unloaded">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -23,62 +26,106 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <orccontrols:StackGrid Background="{StaticResource BackgroundDialogBrush}">
-        <orccontrols:StackGrid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
+    <Grid Background="{StaticResource BackgroundDialogBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto">
+            </RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-			<ColumnDefinition Width="500" />
+			<ColumnDefinition Width="409" />
         </Grid.ColumnDefinitions>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="10" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+        <ScrollViewer Grid.Row="0" Grid.Column="0" Height="400" VerticalScrollBarVisibility="Auto">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="110" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="10" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-        <Label Grid.Column="0" Grid.Row="0" Content="Name" IsTabStop="False"/>
-        <TextBox Grid.Column="1" Grid.Row="0"  Text="{Binding Name, NotifyOnValidationError=True, ValidatesOnDataErrors=True}"/>
+                <Label Grid.Column="0" Grid.Row="0" Content="Name" IsTabStop="False"/>
+                <TextBox Grid.Column="1" Grid.Row="0"  Text="{Binding Name, NotifyOnValidationError=True, ValidatesOnDataErrors=True}"/>
 
-        <Label Grid.Column="0" Grid.Row="1" Content="Light Count" IsTabStop="False"/>
-        <xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
-                    Value="{Binding NodeCount, NotifyOnValidationError=True, ValidatesOnDataErrors=True}"
-                    Maximum="{Binding NodeCountMaximum}"
-                    Minimum="{Binding NodeCountMinimum}"/>
+                <Label Grid.Column="0" Grid.Row="1" Content="Light Count" IsTabStop="False"/>
+                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="1"
+                        Value="{Binding NodeCount, NotifyOnValidationError=True, ValidatesOnDataErrors=True}"
+                        Maximum="{Binding NodeCountMaximum}"
+                        Minimum="{Binding NodeCountMinimum}"/>
 
-        <Label Grid.Column="0" Grid.Row="2" Content="Light Size" IsTabStop="False"/>
-        <xctk:IntegerUpDown Grid.Column="2" Grid.Row="2" 
-                        Value="{Binding LightSize, NotifyOnValidationError=True, ValidatesOnDataErrors=True}"
-                        Maximum="{Binding LightSizeMaximum}"
-                        Minimum="{Binding LightSizeMinimum}"/>
+                <Label Grid.Column="0" Grid.Row="2" Content="Light Size" IsTabStop="False"/>
+                <xctk:IntegerUpDown Grid.Column="1" Grid.Row="2" 
+                            Value="{Binding LightSize, NotifyOnValidationError=True, ValidatesOnDataErrors=True}"
+                            Maximum="{Binding LightSizeMaximum}"
+                            Minimum="{Binding LightSizeMinimum}"/>
 
-        <Label Grid.Column="0" Grid.Row="3" Content="Light Type" IsTabStop="False"/>
-        <ComboBox Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" IsEditable="False"
-                  ItemsSource="{Binding Source={markupExtensions:EnumBindingSource {x:Type props:StringTypes}}}"
-                  SelectedItem="{Binding StringType, ConverterParameter={x:Type props:StringTypes}, Converter={StaticResource EnumValueTypeConverter}}" Height="20"/>
+                <Label Grid.Column="0" Grid.Row="3" Content="Light Type" IsTabStop="False"/>
+                <ComboBox Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" IsEditable="False"
+                      ItemsSource="{Binding Source={markupExtensions:EnumBindingSource {x:Type props:StringTypes}}}"
+                      SelectedItem="{Binding StringType, ConverterParameter={x:Type props:StringTypes}, Converter={StaticResource EnumValueTypeConverter}}" Height="20"/>
 
-        <Label Grid.Column="0" Grid.Row="4" Content="Starting Position" IsTabStop="False"/>
-        <ComboBox Grid.Column="1" Grid.Row="4" VerticalAlignment="Center" IsEditable="False"
-                  ItemsSource="{Binding Source={markupExtensions:EnumBindingSource {x:Type location:ArchStartLocation}}}"
-                  SelectedItem="{Binding ArchWiringStart, ConverterParameter={x:Type location:ArchStartLocation}, Converter={StaticResource EnumValueTypeConverter}}" Height="20"/>
+                <Label Grid.Column="0" Grid.Row="4" Content="Starting Position" IsTabStop="False"/>
+                <ComboBox Grid.Column="1" Grid.Row="4" VerticalAlignment="Center" IsEditable="False"
+                      ItemsSource="{Binding Source={markupExtensions:EnumBindingSource {x:Type location:ArchStartLocation}}}"
+                      SelectedItem="{Binding ArchWiringStart, ConverterParameter={x:Type location:ArchStartLocation}, Converter={StaticResource EnumValueTypeConverter}}" Height="20"/>
 
-		<Border BorderThickness="2"  Width="400" Grid.Column="2" Grid.Row="0" Grid.RowSpan="4"
-            Height="400" Background="{StaticResource BackgroundControlBrush}" BorderBrush="{StaticResource BorderColorBrush}" Margin="5">
+                <GroupBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Header="Rotation Angles">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <ItemsControl Grid.Row="5" Grid.Column="0" ItemsSource="{Binding Rotations}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="9.5">
+                                        <TextBlock Text="{Binding Axis}" VerticalAlignment="Center" />
+                                        <TextBlock Text="{Binding RotationAngle, StringFormat=' Axis @ {0:F0}&#176;'}" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <ItemsControl Grid.Row="5" Grid.Column="1" ItemsSource="{Binding Rotations}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" >
+                                        <Slider Width="220" Minimum="-180" Maximum="180" Value="{Binding RotationAngle}" AutoToolTipPlacement="TopLeft" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                </Grid>
+                </GroupBox>
+                
+                <Border BorderBrush="White" BorderThickness="10" Height="1" Grid.Row="6" Grid.ColumnSpan="2" VerticalAlignment="Center"/>
+
+                <TextBlock Grid.Column="0" Grid.Row="7" Text="Optional Groups" Width="71" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="5,0,0,0"/>
+                <CheckBox Grid.Column="1" Grid.Row="7" Content="Left / Right" IsChecked="{Binding LeftRight}"/>
+            </Grid>
+        </ScrollViewer>
+
+        <Border BorderThickness="2"  Width="400" Grid.Column="1" Grid.Row="0" VerticalAlignment="Top"
+            Height="400" Background="{StaticResource BackgroundControlBrush}" BorderBrush="{StaticResource BorderColorBrush}" Margin="9,0,0,0">
 			<glWpfControl:GLWpfControl
-		x:Name="OpenTkControl" 
-		SizeChanged="OpenTkControl_SizeChanged"
-        Render="OpenTkControl_OnRender"
-		MouseWheel="OpenTkControl_MouseWheel"
-        MouseDown="OpenTkControl_MouseDown"
-        MouseMove="OpenTkControl_MouseMove"
-        MouseUp="OpenTkControl_MouseUp">
+		                    x:Name="OpenTkControl" 
+		                    SizeChanged="OpenTkControl_SizeChanged"
+                            Render="OpenTkControl_OnRender"
+		                    MouseWheel="OpenTkControl_MouseWheel"
+                            MouseDown="OpenTkControl_MouseDown"
+                            MouseMove="OpenTkControl_MouseMove"
+                            MouseUp="OpenTkControl_MouseUp">
 				<glWpfControl:GLWpfControl.ContextMenu>
 					<ContextMenu>
-
 						<MenuItem Header="Center Preview"                          ToolTip="Repositions the viewpoint to the center of the preview." Command="{Binding CenterPreview}"/>
 						<MenuItem Header="Enable Light Scaling" IsCheckable="True" ToolTip="Scales the light size as the camera is zoomed in or out." IsChecked="{Binding EnableLightScaling }"/>
 						<!--<MenuItem Header="{Binding Location}"/> -->
@@ -86,26 +133,6 @@
 				</glWpfControl:GLWpfControl.ContextMenu>
 			</glWpfControl:GLWpfControl>
 		</Border>
-
-		<ScrollViewer Grid.Row="5" Grid.Column="1">
-			<ItemsControl ItemsSource="{Binding Rotations}">
-				<ItemsControl.ItemTemplate>
-					<DataTemplate>
-						<StackPanel Orientation="Horizontal" Margin="5">
-							<ComboBox Width="20" Height="20" 
-      ItemsSource="{Binding Axes}"
-      SelectedItem="{Binding Axis}" />
-							<Slider Width="300" 
-    Minimum="-180" Maximum="180"
-    Value="{Binding RotationAngle}" />
-							<TextBlock Width="40" Margin="5,0,0,0"
-       Text="{Binding RotationAngle, StringFormat=F0}" />
-						</StackPanel>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
-		</ScrollViewer>
-
 	</Grid>
 
 </views:WizardPageViewBase>

@@ -1,10 +1,13 @@
 ﻿using Catel.Data;
 using Catel.MVVM;
 using Orc.Wizard;
+using System.Collections.ObjectModel;
 using Vixen.Extensions;
 using Vixen.Sys;
 using Vixen.Sys.Props;
 using VixenModules.App.Props.Models.Arch;
+using VixenModules.App.Props.Models;
+using Vixen.Sys.Props.Model;
 
 namespace VixenApplication.SetupDisplay.Wizards.Pages
 {
@@ -20,15 +23,10 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 			NodeCount = 24;
 			LightSizeMinimum = 1;
 			LightSizeMaximum = 50;
-			LightSize = 5;
+			LightSize = 2;
 			StringType = StringTypes.Pixel;
-			RotationMinimum = 0;
-			RotationMaximum = 359;
-			Rotation = 0;
 			ArchWiringStart = ArchStartLocation.Left;
 			LeftRight = false;
-
-			Number = 1;
 		}
 
 		#region Name property
@@ -156,47 +154,18 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 		#endregion
 
 		#region Rotation property
-		/// <summary>
-		/// Gets or sets the degree of rotation.
-		/// </summary>
-		/// <remarks>
-		/// The rotation is constrained by <see cref="RotationMinimum"/> and <see cref="RotationMaximum"/>, consequently
-		/// set these values prior to setting Rotation.
-		/// </remarks>
-		public int Rotation
+		public ObservableCollection<AxisRotationViewModel> Rotations
 		{
-			get { return GetValue<int>(RotationProperty); }
-			set { SetValue(RotationProperty, Math.Clamp(value, RotationMinimum, RotationMaximum)); }
-		}
-		private static readonly IPropertyData RotationProperty = RegisterProperty<int>(nameof(Rotation));
-
-		protected int RotationMinimum
-		{
-			get { return GetValue<int>(RotationMinimumProperty); }
+			get
+			{
+				return GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty);
+			}
 			set
 			{
-				if (Rotation > value)
-				{
-					Rotation = value;
-				}
-				SetValue(RotationMinimumProperty, value);
+				SetValue(RotationsProperty, value);
 			}
 		}
-		private static readonly IPropertyData RotationMinimumProperty = RegisterProperty<int>(nameof(RotationMinimum));
-
-		protected int RotationMaximum
-		{
-			get { return GetValue<int>(RotationMaximumProperty); }
-			set
-			{
-				if (Rotation > value)
-				{
-					Rotation = value;
-				}
-				SetValue(RotationMaximumProperty, value);
-			}
-		}
-		private static readonly IPropertyData RotationMaximumProperty = RegisterProperty<int>(nameof(RotationMaximum));
+		public static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
 		#endregion
 
 		#region Optional Left / Right property
@@ -211,13 +180,20 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 		private static readonly IPropertyData LeftRightProperty = RegisterProperty<bool>(nameof(LeftRight));
 		#endregion
 
+		/// <summary>
+		/// Get a summary of the wizard page settings.
+		/// </summary>
+		/// <returns>Summary object.</returns>
 		public override ISummaryItem GetSummary()
 		{
 			return new SummaryItem
 			{
 				Title = this.Title,
 				Summary = $"Prop Type: {PropType.Arch.GetEnumDescription()}\nName: {Name}\nLight Count: {NodeCount}\nLight Size: {LightSize}\n" +
-				          $"Light Type: {StringType}\nStarting Position: {ArchWiringStart}\nRotation: {Rotation}\u00B0"
+				          $"Light Type: {StringType}\nStarting Position: {ArchWiringStart}\n" +
+						  $"{Rotations[(int)Axis.XAxis].Axis} Rotation: {Rotations[(int)Axis.XAxis].RotationAngle}\u00B0\n" +
+						  $"{Rotations[(int)Axis.YAxis].Axis} Rotation: {Rotations[(int)Axis.YAxis].RotationAngle}\u00B0\n" +
+						  $"{Rotations[(int)Axis.ZAxis].Axis} Rotation: {Rotations[(int)Axis.ZAxis].RotationAngle}\u00B0\n"
 			};
 		}
 
@@ -229,9 +205,10 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 		{
 			var arch = VixenSystem.Props.CreateProp<Arch>(Name);
 			arch.NodeCount = NodeCount;
+			arch.ArchWiringStart = ArchWiringStart;
 			arch.StringType = StringType;
 			arch.LightSize = LightSize;
-			arch.Rotation = Rotation;
+			arch.Rotations = Rotations;
 			return arch;
 		}
 	}
