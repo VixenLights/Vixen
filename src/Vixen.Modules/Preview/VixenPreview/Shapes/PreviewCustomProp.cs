@@ -2,6 +2,7 @@
 using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Media;
+using NLog;
 using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.Preview.VixenPreview.Converter;
@@ -19,7 +20,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private double _zoomLevel;
 		private Point _rotationCenter;
 		private PreviewDoublePoint _selectionPoint;
-//		private int _rotationAngle;
+
+        private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
 		public override string TypeName => @"Custom Prop";
 
@@ -54,9 +56,30 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[Browsable(false)]
 		public List<PreviewPixel> PropPixels { get; set; }
 
-		#region Overrides of PreviewBaseShape
+        #region Overrides of PreviewBaseShape
 
-		/// <inheritdoc />
+        #region Overrides of PreviewLightBaseShape
+
+        [DataMember,
+         Category("Settings"),
+         DisplayName("String Type"),
+         ReadOnly(true)]
+        public override StringTypes StringType
+        {
+            get
+            {
+                return base.StringType;
+            }
+            set
+            {
+				if(value != StringTypes.Custom) return;
+				base.StringType = value;
+            }
+        }
+
+        #endregion
+
+        /// <inheritdoc />
 		public override List<PreviewPixel> Pixels { get; set; }
 
 		#endregion
@@ -682,7 +705,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[OnDeserialized]
 		private new void OnDeserialized(StreamingContext context)
 		{
-			if (_dragPoints == null)
+            if (StringType != StringTypes.Custom)
+            {
+                StringType = StringTypes.Custom;
+                Logging.Warn($"{Name} is Custom Prop with string type {StringType.ToString()}. It has been converted to Custom");
+            }
+
+            if (_dragPoints == null)
 			{
 				_dragPoints = new List<PreviewDoublePoint>();
 			}
