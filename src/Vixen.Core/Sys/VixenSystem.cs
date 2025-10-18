@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Vixen.Instrumentation;
+using Vixen.Module;
 using Vixen.Services;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Output;
@@ -275,9 +276,30 @@ namespace Vixen.Sys
 			Filters.AddRange(SystemConfig.Filters);
 
 			DataFlow.Initialize(SystemConfig.DataFlow);
-		}
+			
+			CleanUpOrphanedPreviewModuleData();
+        }
 
-		public static void ReloadSystemConfig()
+        private static void CleanUpOrphanedPreviewModuleData()
+        {
+            //Clean up old orphaned preview module data. VIX-3734
+			// This will remove it from the module store and then when the user saves it will be persisted. 
+            var previewModuleData = ModuleStore.InstanceData.DataModels.Where(x =>
+                x.ModuleTypeId == Guid.Parse("f43c31bc-cfcd-4dbc-adb7-d349c9ec623d")); //From Preview Descriptor
+            foreach (var moduleDataModel in previewModuleData)
+            {
+                var preview = Previews.Get(moduleDataModel.ModuleInstanceId);
+                if (preview == null)
+                {
+                    //No Preview for the module data, so remove the module data.
+                    var model = new Tuple<Guid, Guid>(moduleDataModel.ModuleTypeId, moduleDataModel.ModuleInstanceId);
+                    ModuleStore.InstanceData.RemoveDataModel( model );
+					Logging.Warn($"Removed orphaned Preview data for instance {moduleDataModel.ModuleInstanceId}");
+                }
+            }
+        }
+
+        public static void ReloadSystemConfig()
 		{
 			bool wasRunning = Execution.IsOpen;
 			Execution.CloseExecution();

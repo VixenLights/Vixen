@@ -1,4 +1,6 @@
 ﻿using System.Collections;
+using Vixen.Module;
+using Vixen.Module.OutputFilter;
 using Vixen.Sys.Output;
 
 namespace Vixen.Sys.Managers
@@ -102,6 +104,7 @@ namespace Vixen.Sys.Managers
 
 		public bool Remove(OutputPreview outputDevice)
 		{
+			RemoveDataModel(outputDevice);
 			return _mediator.Remove(outputDevice);
 		}
 
@@ -129,5 +132,10 @@ namespace Vixen.Sys.Managers
 		{
 			return GetEnumerator();
 		}
-	}
+
+        private void RemoveDataModel(OutputPreview outputPreview)
+        {
+            VixenSystem.ModuleStore.InstanceData.RemoveModuleInstanceData(outputPreview.PreviewModule as IModuleInstance);
+        }
+    }
 }
