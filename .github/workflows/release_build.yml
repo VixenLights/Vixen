@@ -15,6 +15,9 @@ on:
       - .tgitconfig
       - 'Release Notes.txt'
       - 'Build/**'
+      - 'sandbox/**'
+      - '**/.editorconfig'
+      - 'Assets/**'
 
 jobs:
 
