@@ -5153,7 +5153,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 
 					nodesToAdd.Add(node);
-
+					
 					result++;
 				}
 				else
@@ -5168,6 +5168,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			// put it in the sequence and in the timeline display
 			List<TimedSequenceElement> elements = AddEffectNodes(nodesToAdd);
+			SelectEffectNodes(nodesToAdd);
 			SequenceModified();
 
 			var act = new EffectsPastedUndoAction(this, elements.Select(x => x.EffectNode));
