@@ -28,6 +28,7 @@
     </MappedFolders>
     <Networking>true</Networking>
     <LogonCommand>
+		<Command>powershell -ExecutionPolicy Bypass -File c:\Dev\Vixen\scripts\patch-sandbox.ps1</Command>
         <Command>explorer "c:\Dev\Vixen\scripts\startup.bat"</Command>
     </LogonCommand>
 	<VGpu>Enable</VGpu>
