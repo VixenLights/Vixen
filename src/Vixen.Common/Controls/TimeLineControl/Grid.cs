@@ -2708,9 +2708,10 @@ namespace Common.Controls.Timeline
 			if (!ResizeIndicator_Enabled) //If this option isn't enabled leave
 				return;
 
-			if (m_dragState == DragState.HResizing) //Draw line at start or end of effect, depending which end the user grabbed
+			if (m_dragState == DragState.HResizing) //Draw line at start or end of effect, depending on which end the user grabbed
 			{
-				_timelineGlobalEventManager.OnAlignmentActivity(new AlignmentEventArgs(true, new []{ _workingElement.EndTime }));
+				_timelineGlobalEventManager.OnAlignmentActivity(new AlignmentEventArgs(true, 
+					new []{ m_mouseResizeZone == ResizeZone.Front ? _workingElement.StartTime : _workingElement.EndTime }));
 				using (Pen p = new Pen(Color.FromName(ResizeIndicator_Color), 1))
 				{
 					var X = (m_mouseResizeZone == ResizeZone.Front ? timeToPixels(_workingElement.StartTime) : timeToPixels(_workingElement.EndTime) - 1);
