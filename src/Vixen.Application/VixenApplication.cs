@@ -562,14 +562,14 @@ namespace VixenApplication
 						//Get Latest Build
 						string getLatestDevelopementBuild =
 							await wc.GetStringAsync(
-								$"http://bugs.vixenlights.com/rest/api/latest/search?jql=Project='Vixen 3' AND fixVersion=DevBuild AND 'Fix Build Number'>{_currentBuildVersion} ORDER BY 'Fix Build Number' DESC&startAt=0&maxResults=1");
+								$"http://bugs.vixenlights.com/rest/api/latest/search/jql?jql=project='Vixen 3' AND fixVersion=DevBuild AND 'Fix Build Number'>{_currentBuildVersion} ORDER BY 'Fix Build Number' DESC&startAt=0&maxResults=1&fields=customfield_10032");
 						//This will parse the latest development build number
 						dynamic developementBuild = JObject.Parse(getLatestDevelopementBuild);
 						if (developementBuild.issues.Count > 0)
 						{
-							if (developementBuild.issues[0].fields.customfield_10112 != null)
+							if (developementBuild.issues[0].fields.customfield_10032 != null)
 							{
-								int latestDevelopementBuild = developementBuild.issues[0].fields.customfield_10112;
+								int latestDevelopementBuild = developementBuild.issues[0].fields.customfield_10032;
 								//This does not return an array as the results are contained in a wrapper object for paging info
 								//There results are in an array called issues, with in that is a set of fields that contain our custom field 
 								if (latestDevelopementBuild > _currentBuildVersion)
@@ -601,17 +601,15 @@ namespace VixenApplication
 						wc.Timeout = TimeSpan.FromMilliseconds(5000);
 						//Get the Latest Release
 						string getReleaseVersion =
-							await wc.GetStringAsync("http://bugs.vixenlights.com/rest/api/latest/project/VIX/versions?orderBy=releaseDate");
+							await wc.GetStringAsync("http://bugs.vixenlights.com/rest/api/latest/project/VIX/version?status=released&orderBy=-releaseDate&maxResults=1");
 						//Query returns an array of release version objects
-						var releaseVersions = JArray.Parse(getReleaseVersion);
+						dynamic releaseVersion = JObject.Parse(getReleaseVersion);
 						//get the last one that has released == true as they are in asending order
-						dynamic lastReleaseVersion = releaseVersions.Last(m => (bool)m.SelectToken("released"));
-						//This is the name of the release
-						string releaseVersion = lastReleaseVersion.name;
+						var releaseVersionName = (string)releaseVersion.values[0]["name"];
 
-						if (releaseVersion != _currentReleaseVersion)
+						if (releaseVersionName != _currentReleaseVersion)
 						{
-							return releaseVersion;
+							return releaseVersionName;
 						}
 					}
 				}
