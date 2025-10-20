@@ -51,13 +51,14 @@ namespace Common.Controls
 			reverseElementsToolStripMenuItem = new ToolStripMenuItem();
 			sortToolStripMenuItem = new ToolStripMenuItem();
 			exportWireDiagramToolStripMenuItem = new ToolStripMenuItem();
+			frontWireDiagramToolStripMenuItem = new ToolStripMenuItem();
+			backWireDiagramToolStripMenuItem = new ToolStripMenuItem();
 			exportElementTreeToolStripMenuItem = new ToolStripMenuItem();
 			contextMenuStripDragging = new ContextMenuStrip(components);
 			moveHereToolStripMenuItem = new ToolStripMenuItem();
 			copyHereToolStripMenuItem = new ToolStripMenuItem();
 			treeview = new MultiSelectTreeview();
-			frontWireDiagramToolStripMenuItem = new ToolStripMenuItem();
-			backWireDiagramToolStripMenuItem = new ToolStripMenuItem();
+			refreshToolStripMenuItem = new ToolStripMenuItem();
 			contextMenuStripTreeView.SuspendLayout();
 			contextMenuStripDragging.SuspendLayout();
 			SuspendLayout();
@@ -78,9 +79,9 @@ namespace Common.Controls
 			// contextMenuStripTreeView
 			// 
 			contextMenuStripTreeView.ImageScalingSize = new Size(24, 24);
-			contextMenuStripTreeView.Items.AddRange(new ToolStripItem[] { cutNodesToolStripMenuItem, copyNodesToolStripMenuItem, pasteNodesToolStripMenuItem, pasteAsNewToolStripMenuItem, toolStripSeparator1, nodePropertiesToolStripMenuItem, toolStripSeparator2, addNewNodeToolStripMenuItem, addMultipleNewNodesToolStripMenuItem, deleteNodesToolStripMenuItem, createGroupWithNodesToolStripMenuItem, renameNodesToolStripMenuItem, patternRenameToolStripMenuItem, collapseAllToolStripMenuItem, reverseElementsToolStripMenuItem, sortToolStripMenuItem, exportWireDiagramToolStripMenuItem, exportElementTreeToolStripMenuItem });
+			contextMenuStripTreeView.Items.AddRange(new ToolStripItem[] { cutNodesToolStripMenuItem, copyNodesToolStripMenuItem, pasteNodesToolStripMenuItem, pasteAsNewToolStripMenuItem, toolStripSeparator1, nodePropertiesToolStripMenuItem, toolStripSeparator2, addNewNodeToolStripMenuItem, addMultipleNewNodesToolStripMenuItem, deleteNodesToolStripMenuItem, createGroupWithNodesToolStripMenuItem, renameNodesToolStripMenuItem, patternRenameToolStripMenuItem, collapseAllToolStripMenuItem, reverseElementsToolStripMenuItem, sortToolStripMenuItem, exportWireDiagramToolStripMenuItem, exportElementTreeToolStripMenuItem, refreshToolStripMenuItem });
 			contextMenuStripTreeView.Name = "contextMenuStripTreeView";
-			contextMenuStripTreeView.Size = new Size(217, 390);
+			contextMenuStripTreeView.Size = new Size(217, 412);
 			contextMenuStripTreeView.Opening += contextMenuStripTreeView_Opening;
 			// 
 			// cutNodesToolStripMenuItem
@@ -217,6 +218,20 @@ namespace Common.Controls
 			exportWireDiagramToolStripMenuItem.Size = new Size(216, 22);
 			exportWireDiagramToolStripMenuItem.Text = "Export Wire Diagram";
 			// 
+			// frontWireDiagramToolStripMenuItem
+			// 
+			frontWireDiagramToolStripMenuItem.Name = "frontWireDiagramToolStripMenuItem";
+			frontWireDiagramToolStripMenuItem.Size = new Size(177, 22);
+			frontWireDiagramToolStripMenuItem.Text = "Front Wire Diagram";
+			frontWireDiagramToolStripMenuItem.Click += frontWireDiagramToolStripMenuItem_Click;
+			// 
+			// backWireDiagramToolStripMenuItem
+			// 
+			backWireDiagramToolStripMenuItem.Name = "backWireDiagramToolStripMenuItem";
+			backWireDiagramToolStripMenuItem.Size = new Size(177, 22);
+			backWireDiagramToolStripMenuItem.Text = "Back Wire Diagram";
+			backWireDiagramToolStripMenuItem.Click += backWireDiagramToolStripMenuItem_Click;
+			// 
 			// exportElementTreeToolStripMenuItem
 			// 
 			exportElementTreeToolStripMenuItem.Name = "exportElementTreeToolStripMenuItem";
@@ -268,19 +283,12 @@ namespace Common.Controls
 			treeview.UsingCustomDragCursor = false;
 			treeview.KeyDown += treeview_KeyDown;
 			// 
-			// frontWireDiagramToolStripMenuItem
+			// refreshToolStripMenuItem
 			// 
-			frontWireDiagramToolStripMenuItem.Name = "frontWireDiagramToolStripMenuItem";
-			frontWireDiagramToolStripMenuItem.Size = new Size(180, 22);
-			frontWireDiagramToolStripMenuItem.Text = "Front Wire Diagram";
-			frontWireDiagramToolStripMenuItem.Click += frontWireDiagramToolStripMenuItem_Click;
-			// 
-			// backWireDiagramToolStripMenuItem
-			// 
-			backWireDiagramToolStripMenuItem.Name = "backWireDiagramToolStripMenuItem";
-			backWireDiagramToolStripMenuItem.Size = new Size(180, 22);
-			backWireDiagramToolStripMenuItem.Text = "Back Wire Diagram";
-			backWireDiagramToolStripMenuItem.Click += backWireDiagramToolStripMenuItem_Click;
+			refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
+			refreshToolStripMenuItem.Size = new Size(216, 22);
+			refreshToolStripMenuItem.Text = "Refresh";
+			refreshToolStripMenuItem.Click += refreshToolStripMenuItem_Click;
 			// 
 			// ElementTree
 			// 
@@ -327,5 +335,6 @@ namespace Common.Controls
 		private ToolStripMenuItem exportElementTreeToolStripMenuItem;
 		private ToolStripMenuItem frontWireDiagramToolStripMenuItem;
 		private ToolStripMenuItem backWireDiagramToolStripMenuItem;
+		private ToolStripMenuItem refreshToolStripMenuItem;
 	}
 }

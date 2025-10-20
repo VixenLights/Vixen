@@ -1,16 +1,19 @@
-﻿using OpenTK.Graphics.OpenGL;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Drawing.Design;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
-using OpenTK.Mathematics;
-using Vixen.Sys;
-using VixenModules.Preview.VixenPreview.OpenGL.Constructs;
-using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
-using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex;
-using Color = System.Drawing.Color;
-using System.Xml.Serialization;
+
 using Common.Controls.Theme;
+using Common.OpenGLCommon;
+using Common.OpenGLCommon.Constructs.DrawingEngine.Shape;
+
+using OpenTK.Mathematics;
+
+using Vixen.Sys;
+
+using Common.OpenGLCommon.Constructs.Vertex;
+
+using Color = System.Drawing.Color;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -18,7 +21,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	/// Base class for preview shapes that are based on lights.
 	/// </summary>
 	[DataContract]
-	public abstract class PreviewLightBaseShape : PreviewBaseShape, ICloneable, IDisposable
+	public abstract class PreviewLightBaseShape : PreviewBaseShape, ICloneable, IDisposable, IOpenGLLightBasedDrawable
 	{
 		#region Fields
 
@@ -42,6 +45,46 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private int _pointsBufferSize;
 
 		#endregion
+
+		#region IOpenGLDrawable
+
+		/// <inheritdoc/>			
+		[Browsable(false)]
+		[IgnoreDataMember]
+		public VBO<float> VertexBufferObject 
+		{ 
+			get
+			{
+				return _pointsVBO;
+			}
+			set
+			{
+				_pointsVBO = value;
+			}
+		}
+		
+		public List<float> GetPoints()
+		{
+			return _points;
+		}
+		
+		/// <inheritdoc/>			
+		[Browsable(false)]
+		[IgnoreDataMember]
+		public int PointsBufferSize 
+		{ 
+			get
+			{
+				return _pointsBufferSize;
+			}
+			set
+			{
+				_pointsBufferSize = value;
+			}
+		}
+
+		#endregion
+
 
 		public enum StringTypes
 		{
@@ -471,71 +514,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// </summary>		
 		public void Draw()
 		{
-			//Logging.Debug("Entering Draw.");
-			if (_points.Count == 0)
-			{
-				//Logging.Debug("Exiting Draw.");
-				return;
-			}
-			
-			// If the points Vertex Buffer Object has not been created then
-			// this is the first time drawing this shape and additional configuration is required.
-			if (_pointsVBO == null)
-			{
-				// Create the Vertex Array Object 
-				GL.GenVertexArrays(1, out int vao);
-				VAO = vao;
-
-				// Bind the Vertex Array Object
-				// Any Vertex Array configuration will be associated with this VAO.
-				GL.BindVertexArray(VAO);
-
-				// Create the Vertex Buffer Object passing the light points
-				_pointsVBO = new VBO<float>(_points.ToArray());
-
-				// Tell OpenGL/OpenTK which buffer we want to work with for subsequent operations
-				GlUtility.BindBuffer(_pointsVBO);
-
-				// Store off the size of the buffer
-				_pointsBufferSize = _pointsVBO.Count;
-
-				// Specify the format and location of the vertex attribute data in the VBO
-				GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, VertexAttribPointerType.Float, false, EightFloatDataSize, IntPtr.Zero);
-				GL.EnableVertexAttribArray(ShaderProgram.VertexPosition);				
-				GL.VertexAttribPointer(ShaderProgram.VertexColor, 4, VertexAttribPointerType.Float, false, EightFloatDataSize, Vector3.SizeInBytes);
-				GL.EnableVertexAttribArray(ShaderProgram.VertexColor);
-				GL.VertexAttribPointer(ShaderProgram.VertexSize, 1, VertexAttribPointerType.Float, false, EightFloatDataSize, Vector3.SizeInBytes + Vector4.SizeInBytes);
-				GL.EnableVertexAttribArray(ShaderProgram.VertexSize);
-				
-				GL.DisableVertexAttribArray(ShaderProgram.TextureCoords);
-			}
-			else 
-			{
-				// Bind the Vertex Array Object
-				GL.BindVertexArray(VAO);
-								
-				// Tell OpenGL/OpenTK which buffer we want to work with for subsequent operations
-				GlUtility.BindBuffer(_pointsVBO);
-
-				// If the buffer is already of sufficient size then...
-				if (_pointsBufferSize >= _points.Count)
-				{
-					// Update the point data in the GPU
-					GL.BufferSubData<float>(BufferTarget.ArrayBuffer, 0, _points.Count * sizeof(float), _points.ToArray());
-				}
-				else
-				{
-					// Create and initialize a buffer object's data store. Allocate memory for the buffer and initialize the buffer with data
-					// This only needs to done when increasing the size of the buffer
-					GL.BufferData<float>(BufferTarget.ArrayBuffer, _points.Count * sizeof(float), _points.ToArray(), BufferUsageHint.StreamDraw);
-
-					// Update the size of the buffer
-					_pointsBufferSize = _points.Count;
-				}							
-			}
-			
-			// Draw the points
-			GL.DrawArrays(PrimitiveType.Points, 0, _points.Count / 8);												
+			DrawPointsUtility.DrawPoints(this);
 		}
 
 		

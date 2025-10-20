@@ -22,6 +22,7 @@ namespace Common.Controls
 		public ElementTree()
 		{
 			InitializeComponent();
+			ThemeUpdateControls.UpdateControls(this);
 			AutoSize = true;
 			treeview.Dock = DockStyle.Fill;
 			contextMenuStripTreeView.Renderer = new ThemeToolStripRenderer();
@@ -114,6 +115,7 @@ namespace Common.Controls
 
 		private void _PopulateNodeTree(IEnumerable<string> elementTreeNodesToSelect = null)
 		{
+			if (VixenSystem.Nodes == null) return;
 			// save metadata that is currently in the treeview
 			_selectedNodes = new HashSet<string>();
 			_topDisplayedNodes = new List<string>();
@@ -1247,7 +1249,7 @@ namespace Common.Controls
 		{
 			SortNodes();
 		}
-		
+
 		private async void ExportElementTreeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			using (var saveFileDialog = new SaveFileDialog())
@@ -1373,6 +1375,11 @@ namespace Common.Controls
 		private void backWireDiagramToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ExportDiagram?.Invoke(SelectedElementNodes.FirstOrDefault(), true);
+		}
+
+		private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			_PopulateNodeTree();
 		}
 	}
 }

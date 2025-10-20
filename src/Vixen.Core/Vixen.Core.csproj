@@ -1,18 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
 				<RootNamespace>Vixen</RootNamespace>
 				<UseWindowsForms>true</UseWindowsForms>
+				<UseWPF>true</UseWPF>
 				<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		</PropertyGroup>
 
 		<ItemGroup>
+				<PackageReference Include="Catel.MVVM" />
 				<PackageReference Include="Newtonsoft.Json" />
 				<PackageReference Include="NLog">
 						<ExcludeAssets>runtime</ExcludeAssets>
 				</PackageReference>
 				<PackageReference Include="System.Drawing.Common" />
 				<PackageReference Include="Zstandard.Net" />
+				<PackageReference Include="OpenTK" />
+				<PackageReference Include="OpenTK.GLWpfControl" />
 		</ItemGroup>
 	<ItemGroup>
 			<None Remove="Directory.Build.props" />

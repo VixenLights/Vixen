@@ -1,4 +1,6 @@
-﻿namespace Vixen.IO.Binary
+﻿using System.IO;
+
+namespace Vixen.IO.Binary
 {
 	class BinaryFileReader : IFileReader<byte[]>
 	{

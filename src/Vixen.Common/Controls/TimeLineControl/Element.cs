@@ -9,7 +9,7 @@ namespace Common.Controls.Timeline
 	{
 		private TimeSpan _startTime;
 		private TimeSpan _duration;
-		private ElementNode[] _targetNodes;
+		private IElementNode[] _targetNodes;
 		private static readonly Color Gray = Color.FromArgb(122, 122, 122);
 		private static readonly Color BorderColor = Color.Black;
 		private bool _selected;
@@ -43,7 +43,7 @@ namespace Common.Controls.Timeline
 		#region Begin/End update
 
 		private TimeSpan _origStartTime, _origDuration;
-		private ElementNode[] _origTargetNodes;
+		private IElementNode[] _origTargetNodes;
 
 		///<summary>Suspends raising events until EndUpdate is called.</summary>
 		public void BeginUpdate()
@@ -126,7 +126,7 @@ namespace Common.Controls.Timeline
 		/// </summary>
 		public Row Row { get; set; }
 
-		public ElementNode[] TargetNodes
+		public IElementNode[] TargetNodes
 		{
 			protected get
 			{
