@@ -49,9 +49,9 @@ namespace VixenModules.App.CustomPropEditor.Services
 			return true;
 		}
 
-		public Prop CreateProp(string name = "New Prop {1}")
+		public Prop CreateProp(string name = "New Prop {1}", int x = 800, int y = 600)
 		{
-			_prop = new Prop(name);
+			_prop = new Prop(name, x, y);
 			_models.Clear();
 			_models.Add(_prop.RootNode.Id, _prop.RootNode);
 			return _prop;
