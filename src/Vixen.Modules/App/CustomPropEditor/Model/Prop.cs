@@ -17,25 +17,30 @@ namespace VixenModules.App.CustomPropEditor.Model
 	    private string _createdBy;
 	    private string _type;
 
-	    public Prop(string name) : this()
+	    public Prop(string name) : this(name, 800, 600)
         {
             Name = name;
         }
 
-        public Prop()
+        public Prop():this("New Prop", 800, 600)
         {
-			Id = Guid.NewGuid();
-            RootNode = new ElementModel();
-			Image = CreateBitmapSource(800, 600, Color.FromRgb(0,0,0));
-            Opacity = 1;
-            Name = "New Prop";
-			CreationDate = DateTime.Now;
+			
+        }
+
+        public Prop(string name, int x, int y)
+        {
+	        Id = Guid.NewGuid();
+	        RootNode = new ElementModel();
+			Image = CreateBitmapSource(x, y, Color.FromRgb(0, 0, 0));
+			Opacity = 1;
+	        Name = name;
+	        CreationDate = DateTime.Now;
 	        ModifiedDate = CreationDate;
 	        CreatedBy = Environment.UserName;
-			VendorMetadata = new VendorMetadata();
-			PhysicalMetadata = new PhysicalMetadata();
-			InformationMetadata = new InformationMetadata();
-        }
+	        VendorMetadata = new VendorMetadata();
+	        PhysicalMetadata = new PhysicalMetadata();
+	        InformationMetadata = new InformationMetadata();
+		}
 
 	    public Guid Id { get; private set; }
 
@@ -189,8 +194,9 @@ namespace VixenModules.App.CustomPropEditor.Model
 
         private BitmapSource CreateBitmapSource(int width, int height, Color color)
         {
-            int stride = width / 8;
-            byte[] pixels = new byte[height * stride];
+            //int stride = width / 8;
+            int stride = ((width * PixelFormats.Indexed1.BitsPerPixel + 7) / 8 + 3) & ~3;
+			byte[] pixels = new byte[height * stride];
 
             List<Color> colors = new List<Color>();
             colors.Add(color);

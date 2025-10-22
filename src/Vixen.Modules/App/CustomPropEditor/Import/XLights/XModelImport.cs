@@ -36,17 +36,27 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 					string name = reader.GetAttribute("name");
 
 					CustomModel cm = new CustomModel(name);
-					p = PropModelServices.Instance().CreateProp($"{name} {{1}}");
-					p.CreatedBy = @"xModel Import";
-
+					
 					//These are the size of the grid near as I can tell
 					//We will use them to gauge a scale.
 					int.TryParse(reader.GetAttribute("parm1"), out var x);
 					int.TryParse(reader.GetAttribute("parm2"), out var y);
 
-					cm.X = x;
+					cm.X = x;  
 					cm.Y = y;
-					
+
+					if (x < 800 && y < 600)
+					{
+						//Ensure a minimum size by using the default
+						p = PropModelServices.Instance().CreateProp($"{name} {{1}}");
+					}
+					else
+					{
+						p = PropModelServices.Instance().CreateProp($"{name} {{1}}", x + 20, y + 20);
+					}
+
+					p.CreatedBy = @"xModel Import";
+
 					int.TryParse(reader.GetAttribute("PixelSize"), out var nodeSize);
 					cm.PixelSize = nodeSize;
 
