@@ -7,9 +7,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NLog" Version="5.3.2" />
-		<PackageReference Include="Catel.MVVM" Version="6.0.3" />
-		<PackageReference Include="gong-wpf-dragdrop" Version="3.2.1" />
+	  <Compile Remove="Setup\Services\**" />
+	  <EmbeddedResource Remove="Setup\Services\**" />
+	  <None Remove="Setup\Services\**" />
+	  <Page Remove="Setup\Services\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="NLog" />
+		<PackageReference Include="Catel.MVVM" />
+		<PackageReference Include="gong-wpf-dragdrop" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -19,10 +26,6 @@
 		<ProjectReference Include="..\..\..\Vixen.Common\WPFCommon\WPFCommon.csproj" />
 		<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
 		<ProjectReference Include="..\Color\Color.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Setup\Services\" />
 	</ItemGroup>
 
 </Project>
