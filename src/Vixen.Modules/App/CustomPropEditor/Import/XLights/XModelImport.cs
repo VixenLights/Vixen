@@ -1,8 +1,8 @@
-﻿using System.Drawing;
-using System.Xml;
-using Catel.IoC;
+﻿using Catel.IoC;
 using Catel.Services;
 using NLog;
+using System.Drawing;
+using System.Xml;
 using VixenModules.App.CustomPropEditor.Import.XLights.Faces;
 using VixenModules.App.CustomPropEditor.Import.XLights.Ranges;
 using VixenModules.App.CustomPropEditor.Model;
@@ -124,30 +124,107 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 						}
 						else if ("stateInfo".Equals(reader.Name))
 						{
-							var type = reader.GetAttribute("Type");
-							if (!string.IsNullOrEmpty(type) && type.Equals("NodeRange"))
+							if (reader.HasAttributes)
 							{
-								var stateInfo = new StateInfo(reader.GetAttribute("Name"));
-								for (int i = 1; i <= 40; i++)
+								var type = reader.GetAttribute("Type");
+								if (!string.IsNullOrEmpty(type) && type.Equals("NodeRange") || type.Equals("SingleNode"))
 								{
-									var ranges = reader.GetAttribute($"s{i}");
-									var color = reader.GetAttribute($"s{i}-Color");
-									var sname = reader.GetAttribute($"s{i}-Name");
-									if (!String.IsNullOrEmpty(ranges))
+									var stateInfo = new StateInfo(reader.GetAttribute("Name"));
+									
+									//Parse the state values
+									Dictionary<string, StateItem> states = new ();
+
+									while (reader.MoveToNextAttribute())
 									{
-										var si = new StateItem(i, sname);
-										si.RangeGroup = ParseRanges(ranges);
-										if (!String.IsNullOrEmpty(color))
+										switch (reader.Name)
 										{
-											si.Color = ColorTranslator.FromHtml(color);
+											case "Type":
+											case "NodeRange":
+											case "Name":
+											case "CustomColors":
+												continue;
 										}
 
-										stateInfo.StateItems.Add(si);
-									}
-								}
+										if (reader.Name.StartsWith("s"))
+										{
+											var parts = reader.Name.Split('-');
+											if (parts.Length > 0)
+											{
+												if (!states.ContainsKey(parts[0]))
+												{
+													if (int.TryParse(parts[0].Substring(1), out var index))
+													{
+														StateItem si = new StateItem(index);
+														states.Add(parts[0], si);
+													}
+												}
+												
+												if (parts.Length == 1)
+												{
+													var ranges = reader.Value;
+													if (states.ContainsKey(parts[0]))
+													{
+														if (type == "NodeRange")
+														{
+															states[parts[0]].RangeGroup = ParseRanges(ranges);
+														}
+														else if(type == "SingleNode")
+														{
+															var nodeInfo = ranges.Split(' ');
+															if (nodeInfo.Length == 2)
+															{
+																if (int.TryParse(nodeInfo[1],  out var nodeNumber))
+																{
+																	//we have a valid node, so send it to the range parser to create a range of one.
+																	states[parts[0]].RangeGroup = ParseRanges(nodeInfo[1]);
+																}
+															}
+														}
+														
+													}
+												}
+												else if (parts.Length == 2)
+												{
+													if ("Color".Equals(parts[1]))
+													{
+														var color = reader.Value;
+														if (!String.IsNullOrEmpty(color))
+														{
+															if (states.ContainsKey(parts[0]))
+															{
+																states[parts[0]].Color = ColorTranslator.FromHtml(color);
+															}
+														}
+													}
 
-								cm.StateInfos.Add(stateInfo);
+													if ("Name".Equals(parts[1]))
+													{
+														var stateItemName = reader.Value;
+														
+														if (states.ContainsKey(parts[0]))
+														{
+															states[parts[0]].Name = stateItemName;
+														}
+														
+													}
+												}
+											}
+										}
+									}
+
+									foreach (var stateItem in states)
+									{
+										if (stateItem.Value.RangeGroup == null)
+										{
+											continue;
+										}
+										stateInfo.StateItems.Add(stateItem.Value);
+									}
+									
+									cm.StateInfos.Add(stateInfo);
+								}
 							}
+							
 						}
 					}
 

@@ -11,9 +11,14 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			Index = index;
 		}
 
+		public StateItem(int index): this(index, String.Empty)
+		{
+			
+		}
+
 		public int Index { get; set; }
 
-		public string Name { get; }
+		public string Name { get; internal set; }
 
 		public Color Color { get; set; } = Color.White;
 
