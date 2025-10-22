@@ -175,7 +175,7 @@ namespace VixenModules.Preview.VixenPreview
 					NamingUtilities.Uniquify(_elementNames, TokenizeName(elementModel.Name)));
 				_elementModelMap.Add(elementModel.Id, node);
 				_elementNames.Add(node.Name);
-				if (elementModel.FaceComponent != FaceComponent.None)
+				if (elementModel.FaceDefinition.FaceComponent != FaceComponent.None)
 				{
 					FaceModule fm = null;
 					if (node.Properties.Contains(FaceDescriptor.ModuleId))
@@ -187,13 +187,13 @@ namespace VixenModules.Preview.VixenPreview
 						fm = node.Properties.Add(FaceDescriptor.ModuleId) as FaceModule;
 					}
 
-					if (ElementModel.IsPhoneme(elementModel.FaceComponent))
+					if (ElementModel.IsPhoneme(elementModel.FaceDefinition.FaceComponent))
 					{
-						fm.PhonemeList.Add(elementModel.FaceComponent.ToString(), true);
+						fm.PhonemeList.Add(elementModel.FaceDefinition.FaceComponent.ToString(), true);
 					}
 					else
 					{
-						switch (elementModel.FaceComponent)
+						switch (elementModel.FaceDefinition.FaceComponent)
 						{
 							case FaceComponent.EyesOpen:
 								fm.FaceComponents.Add(Property.Face.FaceComponent.EyesOpen, true);
@@ -206,6 +206,9 @@ namespace VixenModules.Preview.VixenPreview
 								break;
 						}
 					}
+					
+					//Handle colors
+					fm.DefaultColor = elementModel.FaceDefinition.DefaultColor;
 				}
 				if (elementModel.IsLightNode)
 				{
