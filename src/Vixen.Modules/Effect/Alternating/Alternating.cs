@@ -131,6 +131,10 @@ namespace VixenModules.Effect.Alternating
 			{
 				_data.Colors = value;
 				IsDirty = true;
+				if (HasDiscreteColors)
+				{
+					CheckForInvalidColorData();
+				}
 				OnPropertyChanged();
 			}
 		}
