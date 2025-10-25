@@ -15,7 +15,7 @@ namespace VixenModules.Effect.Wipe {
 		Burst,
 		[Description("Circle Burst")]
 		Circle,
-		[Description("Dimaond Burst")]
+		[Description("Diamond Burst")]
 		Dimaond
 	}
 }
