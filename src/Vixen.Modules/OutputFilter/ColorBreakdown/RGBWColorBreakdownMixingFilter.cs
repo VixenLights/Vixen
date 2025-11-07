@@ -88,19 +88,19 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		private void ConfigureRGBWFilter(ColorBreakdownItem breakdownItem)
 		{
 			// If the break down item color is red then...
-			if (breakdownItem.Color.Equals(Color.Red))
+			if (breakdownItem.Color.ToArgb().Equals(Color.Red.ToArgb()))
 			{
 				GetMaxProportionFunc = FilterRGBToRGBW_Red;
 			}
-			else if (breakdownItem.Color.Equals(Color.Lime))
+			else if (breakdownItem.Color.ToArgb().Equals(Color.Lime.ToArgb()))
 			{
 				GetMaxProportionFunc = FilterRGBToRGBW_Green;
 			}
-			else if (breakdownItem.Color.Equals(Color.Blue))
+			else if (breakdownItem.Color.ToArgb().Equals(Color.Blue.ToArgb()))
 			{
 				GetMaxProportionFunc = FilterRGBToRGBW_Blue;
 			}
-			else if (breakdownItem.Color.Equals(Color.White))
+			else if (breakdownItem.Color.ToArgb().Equals(Color.White.ToArgb()))
 			{
 				GetMaxProportionFunc = FilterRGBToRGBW_White;
 			}
