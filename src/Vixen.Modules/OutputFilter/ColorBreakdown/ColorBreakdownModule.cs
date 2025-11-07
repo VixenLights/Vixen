@@ -101,10 +101,10 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			    _data.BreakdownItems.Count == 4)
 			{
 				// Verify the colors are in the expected order
-				Debug.Assert(_data.BreakdownItems[0].Color == Color.Red);
-				Debug.Assert(_data.BreakdownItems[1].Color == Color.Lime);
-				Debug.Assert(_data.BreakdownItems[2].Color == Color.Blue);
-				Debug.Assert(_data.BreakdownItems[3].Color == Color.White);
+				Debug.Assert(_data.BreakdownItems[0].Color.ToArgb() == Color.Red.ToArgb());
+				Debug.Assert(_data.BreakdownItems[1].Color.ToArgb() == Color.Lime.ToArgb());
+				Debug.Assert(_data.BreakdownItems[2].Color.ToArgb() == Color.Blue.ToArgb());
+				Debug.Assert(_data.BreakdownItems[3].Color.ToArgb() == Color.White.ToArgb());
 
 				// Create the RGB to RGBW converter
 				rgbToRGBWConverter = new RGBToRGBWConverter();

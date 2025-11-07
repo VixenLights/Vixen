@@ -45,6 +45,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			comboBoxTemplates.Items.Add("RGBY");
 			comboBoxTemplates.Items.Add("RGxB");
 			comboBoxTemplates.Items.Add("GRBW");
+			comboBoxTemplates.Items.Add("GRWB");
 			comboBoxTemplates.SelectedIndex = 0;
 		}
 
@@ -116,7 +117,12 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 					addControl(new ColorBreakdownItemControl(Color.Blue, "Blue"));
 					addControl(new ColorBreakdownItemControl(Color.White, "White"));
 					break;
-
+				case "GRWB":
+					addControl(new ColorBreakdownItemControl(Color.Lime, "Green"));
+					addControl(new ColorBreakdownItemControl(Color.Red, "Red"));
+					addControl(new ColorBreakdownItemControl(Color.White, "White"));
+					addControl(new ColorBreakdownItemControl(Color.Blue, "Blue"));
+					break;
 				default:
 					Logging.Error("Color Breakdown Setup: got an unknown template to apply: " + template);
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
