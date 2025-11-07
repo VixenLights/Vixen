@@ -16,6 +16,8 @@ namespace VixenModules.Preview.VixenPreview
 		private IDisplayForm _displayForm;
 		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private readonly MillisecondsValue _updateTimeValue = new MillisecondsValue("Update time for preview");
+		private static bool _systemSupportsOpenGl = false;
+		private static bool _openGLSupportChecked = false;
 
 		public VixenPreviewModuleInstance()
 		{
@@ -59,10 +61,9 @@ namespace VixenModules.Preview.VixenPreview
 
 		internal static bool SupportsOpenGLPreview()
 		{
+			if (_openGLSupportChecked) return _systemSupportsOpenGl;
 			Logging.Info("Checking for OpenGL 3.3 Support" );
 			
-			bool supported = false;
-
 			lock (OpenGlPreviewForm.ContextLock)
 			{
 
@@ -86,7 +87,7 @@ namespace VixenModules.Preview.VixenPreview
 					if (major > 3 || (major == 3 && minor >= 3))
 					{
 						Logging.Info($"Open GL version supported: {major}.{minor}");
-						supported = true;
+						_systemSupportsOpenGl = true;
 					}
 					else
 					{
@@ -101,8 +102,9 @@ namespace VixenModules.Preview.VixenPreview
 
 			}
 			
-			Logging.Info($"OpenGL supported: {supported}");
-			return supported;
+			Logging.Info($"OpenGL supported: {_systemSupportsOpenGl}");
+			_openGLSupportChecked = true;
+			return _systemSupportsOpenGl;
 
 		}
 
