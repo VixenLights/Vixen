@@ -142,6 +142,7 @@ public partial class TimeControl : UserControl
 		textBox.GotFocus += textBox_GotFocus;
 		textBox.MouseDown += textBox_MouseDown;
 		textBox.MouseMove += textBox_MouseMove;
+		textBox.TextChanged += TextBox_TextChanged;
 
 		Panel panelUpDown = new Panel { Dock = DockStyle.Right, Width = 18 };
 		buttonUp = new Button { Dock = DockStyle.Top, Width = panelUpDown.Width, Height = textBox.Height / 2};
@@ -354,6 +355,12 @@ public partial class TimeControl : UserControl
 		SelectPos(caretPos);
 	}
 
+
+	private void TextBox_TextChanged(object sender, EventArgs e)
+	{
+		ValueChanged?.Invoke(this, EventArgs.Empty);
+	}
+
 	private void ButtonDown_Click(object sender, EventArgs e)
 	{
 		textBox.Focus();
@@ -528,8 +535,6 @@ public partial class TimeControl : UserControl
 			value = Maximum;
 		else if (value < Minimum)
 			value = Minimum;
-
-		ValueChanged?.Invoke(this, EventArgs.Empty);
 
 		return value.ToString(timeFormat);
 	}
