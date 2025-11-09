@@ -7,7 +7,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 {
 	public partial class EffectTimeEditor : BaseForm
 	{
-		public EffectTimeEditor(TimeSpan start, TimeSpan duration, TimeSpan sequenceLength)
+		public EffectTimeEditor(TimeSpan start, TimeSpan duration, TimeSpan sequenceLength, TimeSpan minimumDuration)
 		{
 			InitializeComponent();
 			ThemeUpdateControls.UpdateControls(this);
@@ -15,6 +15,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Duration = duration;
 			SequenceLength = sequenceLength;
 			End = Start + Duration;
+
+			txtDuration.Minimum = minimumDuration;
+			txtStartTime.Maximum = sequenceLength - minimumDuration;
+			txtEndTime.Minimum = Start + minimumDuration;
 
 			txtStartTime.ValueChanged += Time_Changed;
 			txtEndTime.ValueChanged += Time_Changed;
@@ -106,6 +110,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					Duration = _sequenceLength.Subtract(Start);
 				}
 				txtDuration.Maximum = _sequenceLength.Subtract(Start);
+				txtEndTime.Minimum = Start + txtDuration.Minimum;
 			}
 
 			// We're updating the Duration Time, so validate the Start Time

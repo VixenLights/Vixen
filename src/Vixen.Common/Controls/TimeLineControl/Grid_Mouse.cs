@@ -891,7 +891,7 @@ namespace Common.Controls.Timeline
 
 		#region [Mouse Drag] Horizontal Resize
 
-		private const int MinElemWidthPx = 10;
+		public const int MinElemWidthPx = 10;
 
 		private void beginHResize(Point gridLocation)
 		{
