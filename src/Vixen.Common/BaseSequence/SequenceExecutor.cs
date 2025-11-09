@@ -189,7 +189,7 @@ namespace BaseSequence
 				_syncContext.Post(x => _Stop(), null);
 			}
 
-			TimingSource = Sequence.GetTiming() ?? _GetDefaultTimingSource();
+			TimingSource = _GetDefaultTimingSource();
 
 			_LoadMedia();
 
