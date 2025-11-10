@@ -4300,8 +4300,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				var undo = new EffectsPropertyModifiedUndoAction(elementValues);
 				AddEffectsModifiedToUndo(undo);
-				TimelineControl.grid.ClearSelectedElements();
-				TimelineControl.SelectElement(element);
 				UpdateToolStrip4(
 					string.Format("{2} applied to {0} {1} effect(s).", elementValues.Count(), element.EffectNode.Effect.EffectName, type), 30);
 			}
