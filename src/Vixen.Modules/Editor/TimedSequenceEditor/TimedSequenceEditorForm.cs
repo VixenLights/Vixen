@@ -1714,8 +1714,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				var editorModuleDescriptorBase = (OwnerModule.Descriptor) as EditorModuleDescriptorBase;
 				if (editorModuleDescriptorBase != null)
 				{
-					Text = String.Format("{0} - [{1}{2}]", editorModuleDescriptorBase.TypeName,
-						String.IsNullOrEmpty(_sequence.Name) ? "Untitled" : _sequence.Name, IsModified ? " *" : "");
+					Text = String.Format("{0}{1} - {2}", 
+						String.IsNullOrEmpty(_sequence.Name) ? "Untitled" : _sequence.Name, 
+						IsModified ? " *" : "",
+						VixenSystem.ProfileName);
 				}
 				else
 				{
