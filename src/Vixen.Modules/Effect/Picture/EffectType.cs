@@ -33,7 +33,8 @@ namespace VixenModules.Effect.Picture
 		[Description("Peekaboo 270")]
 		RenderPicturePeekaboo270,
 		[Description("Wiggle")]
-		RenderPictureWiggle
-		
+		RenderPictureWiggle,
+		[Description("Resize")]
+		RenderPictureResize
 	}
 }

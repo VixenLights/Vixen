@@ -20,6 +20,7 @@ namespace VixenModules.Effect.Picture
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			Colors = new ColorGradient(Color.DodgerBlue);
 			ColorEffect = ColorEffect.None;
+			ScalingCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			ScalePercent = 50;
 			Source = PictureSource.Embedded;
 			MovementRate = 4;
@@ -64,6 +65,9 @@ namespace VixenModules.Effect.Picture
 
 		[DataMember]
 		public int ScalePercent { get; set; }
+
+		[DataMember]
+		public Curve ScalingCurve { get; set; }
 
 		[DataMember(EmitDefaultValue = false)]
 		public int XOffset { get; set; }

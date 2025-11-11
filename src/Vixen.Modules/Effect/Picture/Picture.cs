@@ -58,6 +58,7 @@ namespace VixenModules.Effect.Picture
 				UpdateDirectionAttribute();
 				UpdateMovementRateAttribute();
 				UpdateCenterStopAttribute();
+				UpdateSizingAttribute();
 				OnPropertyChanged();
 			}
 		}
@@ -146,6 +147,23 @@ namespace VixenModules.Effect.Picture
 			{
 				_data.YOffsetCurve = value;
 				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 1)]
+		[ProviderDisplayName(@"Sizing")]
+		[ProviderDescription(@"Sizing")]
+		[PropertyOrder(7)]
+		public Curve SizingCurve
+		{
+			get { return _data.ScalingCurve; }
+			set
+			{
+				_data.ScalingCurve = value;
+				IsDirty = true;
+				UpdateSizingAttribute();
 				OnPropertyChanged();
 			}
 		}
@@ -415,6 +433,7 @@ namespace VixenModules.Effect.Picture
 			UpdateStringOrientationAttributes();
 			UpdatePictureSourceAttribute(false);
 			UpdateCenterStopAttribute(false);
+			UpdateSizingAttribute(false);
 			TypeDescriptor.Refresh(this);
 		}
 
@@ -470,6 +489,24 @@ namespace VixenModules.Effect.Picture
 			}
 		}
 
+		/// <summary>
+		/// Determines when the 'Sizing' setting is applicable. 
+		/// </summary>
+		private void UpdateSizingAttribute(bool refresh = true)
+		{
+			// Sizing is only applicable for movement type of Resize
+			bool resizeApplicable = Type == EffectType.RenderPictureResize;
+
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			{
+				{nameof(SizingCurve), resizeApplicable }
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
 
 		private void UpdateMovementRateAttribute(bool refresh = true)
 		{
@@ -753,13 +790,28 @@ namespace VixenModules.Effect.Picture
 
 				if (_pictures.Count > 0)
 				{
-					for (int i = 0; i < _pictures.Count; i++)
+					if (Type == EffectType.RenderPictureResize && _pictures.Count == 1)
 					{
-						if (frame >= _pictures[i].frame)
+						_fp = new FastPixel.FastPixel(ScaleImage(_pictures[0].bitmap, CalculateSizing(GetEffectTimeIntervalPosition(frame) * 100)));
+					}
+
+					else
+					{
+						for (int i = 0; i < _pictures.Count; i++)
 						{
-							_fp = new FastPixel.FastPixel(_pictures[i].bitmap);
-							_pictures.RemoveAt(i);
-							break;
+							if (frame >= _pictures[i].frame)
+							{
+								if (Type == EffectType.RenderPictureResize)
+								{
+									_fp = new FastPixel.FastPixel(ScaleImage(_pictures[i].bitmap, CalculateSizing(GetEffectTimeIntervalPosition(frame) * 100)));
+								}
+								else
+								{
+									_fp = new FastPixel.FastPixel(_pictures[i].bitmap);
+								}
+								_pictures.RemoveAt(i);
+								break;
+							}
 						}
 					}
 				}
@@ -971,6 +1023,15 @@ namespace VixenModules.Effect.Picture
 			}
 			switch (Type)
 			{
+				case EffectType.RenderPictureResize:
+					if (TargetPositioning == TargetPositioningType.Locations)
+					{
+						locationY = _yoffset - y + _yOffsetAdj;
+						locationX = x + _xoffset - _xOffsetAdj;
+						break;
+					}
+					frameBuffer.SetPixel(xCoord - _xoffset + _xOffsetAdj, _yoffset - yCoord + _yOffsetAdj, fpColor);
+					return;
 				case EffectType.RenderPicturePeekaboo0:
 					if (TargetPositioning == TargetPositioningType.Locations)
 					{
@@ -1188,6 +1249,11 @@ namespace VixenModules.Effect.Picture
 			return ScaleCurveToValue(IncreaseBrightnessCurve.GetValue(intervalPos), 100, 10);
 		}
 
+		private double CalculateSizing(double intervalPos)
+		{
+			return ScaleCurveToValue(SizingCurve.GetValue(intervalPos), 100, 0) / 100;
+		}
+
 		private Color CustomColor(int frame, double level, Color fpColor, double adjustedBrightness)
 		{
 			if (ColorEffect == ColorEffect.CustomColor)
@@ -1247,6 +1313,10 @@ namespace VixenModules.Effect.Picture
 
 				var newWidth = (int) (image.Width * ratio);
 				var newHeight = (int) (image.Height * ratio);
+
+				// Make sure dimensions are at least 1 pixel
+				newWidth = Math.Max(1, newWidth);
+				newHeight = Math.Max(1, newHeight);
 
 				var newImage = new Bitmap(newWidth, newHeight);
 				using (var g = Graphics.FromImage(newImage))
