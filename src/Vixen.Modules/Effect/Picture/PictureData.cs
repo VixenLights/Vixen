@@ -116,6 +116,12 @@ namespace VixenModules.Effect.Picture
 			if (TilePictures == TilePictures.None)
 				TilePictures = TilePictures.BlueGlowDots;
 
+			// Ensure curves are not null. This use-case can be if loading a sequence prior to introducing the Movement of Resize 
+			if (ScalingCurve == null)
+			{
+				ScalingCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
+			}
+
 			//if one of them is null the others probably are, and if this one is not then they all should be good.
 			//Try to save some cycles on every load
 
