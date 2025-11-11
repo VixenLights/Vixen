@@ -150,7 +150,7 @@ namespace VixenModules.App.ExportWizard
 
 		private void btnAddAll_Click(object sender, EventArgs e)
 		{
-			var files = Directory.GetFiles(SequenceService.SequenceDirectory, "*.tim", SearchOption.AllDirectories);
+			var files = Directory.GetFiles(SequenceService.SequenceDirectory, "*.tim", SearchOption.TopDirectoryOnly);
 
 			AddFiles(files.Where(x => x.EndsWith(".tim")));
 		}
