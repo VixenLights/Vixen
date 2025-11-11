@@ -1,5 +1,6 @@
 ﻿using Common.Controls.TimelineControl;
 using Common.Controls.TimelineControl.LabeledMarks;
+using System.ComponentModel;
 using Vixen.Sys.LayerMixing;
 using Timer = System.Windows.Forms.Timer;
 
@@ -15,6 +16,14 @@ namespace Common.Controls.Timeline
 		private TimeSpan effectDrawMouseDownTime;
 		private TimeSpan effectDrawMouseUpTime;
 		private Point mouseDownGridLocation, mouseUpGridLocation;
+
+		#region Public Properties 
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public TimeSpan MinimumElementDuration
+		{
+			get { return PixelsToTime(Common.Controls.Timeline.Grid.MinElemWidthPx); }
+		}
+		#endregion
 
 		#region General Mouse Event-Related
 
