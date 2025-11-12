@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Xml.Linq;
+using Vixen.Services;
 
 namespace Vixen.IO.Xml
 {
@@ -8,7 +9,6 @@ namespace Vixen.IO.Xml
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private const int BackupsToKeep = 3;
 		private const int DaysToKeep = 3;
-		private const string BackupFolder = "auto_backup";
 
 		public void WriteFile(string filePath, XElement content)
 		{
@@ -76,7 +76,7 @@ namespace Vixen.IO.Xml
 			{
 				if (File.Exists(filePath))
 				{
-					var backupDirectory = Path.Combine(Path.GetDirectoryName(filePath), BackupFolder);
+					var backupDirectory = Path.Combine(Path.GetDirectoryName(filePath), SequenceService.SequenceBackupDirectory);
 					var fileName = Path.GetFileNameWithoutExtension(filePath);
 					var extension = Path.GetExtension(filePath);
 					var timeStamp = File.GetLastWriteTime(filePath);
@@ -119,7 +119,7 @@ namespace Vixen.IO.Xml
 				var oldBackups = folderContent.Where(x => x.Name.StartsWith($"{fileName}_backup"));
 				if (oldBackups.Any())
 				{
-					var directory = Path.Combine(Path.GetDirectoryName(filePath), BackupFolder);
+					var directory = Path.Combine(Path.GetDirectoryName(filePath), SequenceService.SequenceBackupDirectory);
 					foreach (var backup in oldBackups)
 					{
 						File.Move(backup.FullName, Path.Combine(directory, backup.Name));
@@ -127,7 +127,7 @@ namespace Vixen.IO.Xml
 				}
 
 				//Check the backup folder to purge.
-				folderPath = Path.Combine(folderPath, BackupFolder);
+				folderPath = Path.Combine(folderPath, SequenceService.SequenceBackupDirectory);
 				folderContent = new DirectoryInfo(folderPath).GetFileSystemInfos();
 				var backups = folderContent.Where(x => x.Name.StartsWith($"{fileNameWithoutExtension}_") || x.Name.StartsWith($"{fileName}_backup"));
 				if (backups.Count() > BackupsToKeep)

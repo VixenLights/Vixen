@@ -35,6 +35,7 @@
 			this.btnAdd = new System.Windows.Forms.Button();
 			this.btnDelete = new System.Windows.Forms.Button();
 			this.btnAddAll = new System.Windows.Forms.Button();
+			this.toolTip = new System.Windows.Forms.ToolTip();
 			this.SuspendLayout();
 			// 
 			// lblChooseSequences
@@ -82,6 +83,7 @@
 			this.btnAdd.Text = "button1";
 			this.btnAdd.UseVisualStyleBackColor = true;
 			this.btnAdd.Click += new System.EventHandler(this.btnSelectSequences_Click);
+			this.toolTip.SetToolTip(this.btnAdd, "Explore Sequence folder");
 			// 
 			// btnDelete
 			// 
@@ -93,6 +95,7 @@
 			this.btnDelete.Text = "button2";
 			this.btnDelete.UseVisualStyleBackColor = true;
 			this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+			this.toolTip.SetToolTip(this.btnDelete, "Remove Sequence(s) from list");
 			// 
 			// btnAddAll
 			// 
@@ -104,6 +107,7 @@
 			this.btnAddAll.Text = "button2";
 			this.btnAddAll.UseVisualStyleBackColor = true;
 			this.btnAddAll.Click += new System.EventHandler(this.btnAddAll_Click);
+			this.toolTip.SetToolTip(this.btnAddAll, "Add All Sequences from Profile");
 			// 
 			// BulkExportSourcesStage
 			// 
@@ -130,5 +134,6 @@
 		private System.Windows.Forms.Button btnAdd;
 		private System.Windows.Forms.Button btnDelete;
 		private System.Windows.Forms.Button btnAddAll;
+		private System.Windows.Forms.ToolTip toolTip;
 	}
 }

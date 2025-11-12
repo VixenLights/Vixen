@@ -10,9 +10,16 @@ namespace Vixen.Services
 	{
 		// There is no longer a Sequence class in the core assembly.  Better place for this?
 		[DataPath] public static readonly string SequenceDirectory = Path.Combine(Paths.DataRootPath, "Sequence");
+		[DataPath] public static readonly string SequenceBackupDirectory = Path.Combine(Paths.DataRootPath, SequenceDirectory + "\\auto_backup");
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		private static SequenceService _instance;
+
+		public enum DirectoryTypes
+		{
+			AllDirectories,
+			ExcludeBackup
+		};
 
 		private SequenceService()
 		{
@@ -23,7 +30,7 @@ namespace Vixen.Services
 			get { return _instance ?? (_instance = new SequenceService()); }
 		}
 
-		public string[] GetAllSequenceFileNames()
+		public string[] GetAllSequenceFileNames(DirectoryTypes directoryTypes = DirectoryTypes.AllDirectories)
 		{
 			// We can't assume where all of the sequence file types will exist, so to provide
 			// this functionality we will have to do the following:
@@ -35,9 +42,24 @@ namespace Vixen.Services
 			foreach (ISequenceTypeModuleDescriptor descriptor in sequenceDescriptors) {
 				fileTypes.Add(descriptor.FileExtension);
 			}
+
+			string[] result;
+			// Find all files of those types in the data branch, ignoring the backup folder.
+			if (directoryTypes == DirectoryTypes.ExcludeBackup)
+			{
+				result = fileTypes.SelectMany(x => Directory.GetFiles(Paths.DataRootPath, "*" + x, SearchOption.AllDirectories).Where(dir => !dir.Contains(SequenceBackupDirectory)))
+					   .Where(s => fileTypes.Contains(Path.GetExtension(s)))
+					   .ToArray();
+			}
 			// Find all files of those types in the data branch.
-			return
-				fileTypes.SelectMany(x => Directory.GetFiles(Paths.DataRootPath, "*" + x, SearchOption.AllDirectories)).Where(s => fileTypes.Contains(Path.GetExtension(s))).ToArray();
+			else
+			{
+				result = fileTypes.SelectMany(x => Directory.GetFiles(Paths.DataRootPath, "*" + x, SearchOption.AllDirectories))
+					   .Where(s => fileTypes.Contains(Path.GetExtension(s)))
+					   .ToArray();
+			}
+
+			return result;
 		}
 
 		public void Save(ISequence sequence, string filePath)
