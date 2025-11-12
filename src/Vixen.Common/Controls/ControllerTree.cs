@@ -18,6 +18,7 @@ namespace Common.Controls
 			BACKWARD = -1,
 			FORWARD = 1
 		}
+		private bool listReordered = false;
 
 		// sets of data to keep track of which items in the treeview are open, selected, visible etc., so that
 		// when we reload the tree, we can keep it looking relatively consistent with what the user had before.
@@ -710,6 +711,8 @@ namespace Common.Controls
 				// Reinsert the node at the new index.
 				treeview.Nodes.Insert(insertionPoint, holdTreeNode[index]);
 			}
+
+			listReordered = true;
 		}
 
 		/// <summary>
@@ -717,18 +720,23 @@ namespace Common.Controls
 		/// </summary>
 		public void ReorderControllers()
 		{
-			// Get the list of controller names in the order they are displayed in the treeview.
-			var sortList = new List<Guid>();
-			foreach (TreeNode node in treeview.Nodes)
+			if (listReordered == true)
 			{
-                if (node.Tag is IControllerDevice device)
-                {
-                    sortList.Add(device.Id);
-                }
-			}
+				// Get the list of controller names in the order they are displayed in the treeview.
+				var sortList = new List<Guid>();
+				foreach (TreeNode node in treeview.Nodes)
+				{
+					if (node.Tag is IControllerDevice device)
+					{
+						sortList.Add(device.Id);
+					}
+				}
 
-			// Reorder the controllers in the system to match the new order in the treeview.
-			VixenSystem.OutputControllers.Reorder(sortList);
+				// Reorder the controllers in the system to match the new order in the treeview.
+				VixenSystem.OutputControllers.Reorder(sortList);
+
+				listReordered = false;
+			}
 		}
 
 		#endregion
@@ -958,6 +966,7 @@ namespace Common.Controls
 		private void Treeview_DragOverVerify(object sender, DragVerifyEventArgs e)
 		{
 			e.ValidDragTarget = e.DragBetweenNodes != DragBetweenNodes.DragOnTargetNode;
+			listReordered = true;
 		}
 	}
 }
