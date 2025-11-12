@@ -71,7 +71,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			EffectGroups group = effectDesriptors.First().EffectGroup;
 			foreach (IEffectModuleDescriptor effectDesriptor in effectDesriptors)
 			{
-				if (effectDesriptor.EffectName == "Nutcracker") continue; //Remove this when the Nutcracker module is removed
 				if (effectDesriptor.EffectGroup != group)
 				{
 					ToolStripSeparator seperator = new ToolStripSeparator();

@@ -248,7 +248,6 @@ namespace VixenApplication.Setup
 			buttonHelp.Name = "buttonHelp";
 			buttonHelp.Size = new Size(89, 29);
 			buttonHelp.TabIndex = 60;
-			buttonHelp.Tag = "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/nutcracker-effects/";
 			buttonHelp.Text = "Help";
 			buttonHelp.UseVisualStyleBackColor = true;
 			buttonHelp.Click += buttonHelp_Click;

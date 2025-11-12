@@ -74,8 +74,6 @@ namespace VixenModules.App.SuperScheduler
 			this.buttonHelp.Name = "buttonHelp";
 			this.buttonHelp.Size = new System.Drawing.Size(70, 27);
 			this.buttonHelp.TabIndex = 60;
-			this.buttonHelp.Tag = "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/nutcracker-eff" +
-    "ects/";
 			this.buttonHelp.Text = "Help";
 			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.buttonHelp.UseVisualStyleBackColor = true;

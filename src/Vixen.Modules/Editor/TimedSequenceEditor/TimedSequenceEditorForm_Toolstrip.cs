@@ -1309,7 +1309,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				IEffectModuleDescriptor effectDescriptor in
 				ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
 			{
-				if (effectDescriptor.EffectName == "Nutcracker") continue;
 				switch (effectDescriptor.EffectGroup)
 				{
 					case EffectGroups.Basic:

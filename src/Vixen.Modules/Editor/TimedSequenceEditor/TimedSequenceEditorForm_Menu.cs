@@ -199,14 +199,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.SelectAllElements();
 		}
 
-		private void toolStripMenuItem_EditEffect_Click(object sender, EventArgs e)
-		{
-			if (TimelineControl.SelectedElements.Any())
-			{
-				EditElements(TimelineControl.SelectedElements.Cast<TimedSequenceElement>());
-			}
-		}
-
 		private void toolStripMenuItem_SnapTo_CheckedChanged(object sender, EventArgs e)
 		{
 			modeToolStripButton_SnapTo.Checked = toolStripMenuItem_SnapTo.Checked;

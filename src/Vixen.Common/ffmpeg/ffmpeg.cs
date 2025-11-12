@@ -21,32 +21,6 @@ namespace Vixen.Common.ffmpeg
 			FfmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"ffmpeg.exe");
 		}
 
-		[Obsolete("Instead use MakeScaledThumbNails to limit the amount of video converted to thumbnails")]
-		//Nutcracker Video Effect
-		public static void MakeThumbnails(string movieFile, int width, int height, string outputPath, int framesPerSecond = 20)
-		{
-			//make arguments string
-			string args;
-			args = " -i \"" + movieFile + "\"" +
-				   " -s " + width + "x" + height +
-				   " -vf " +
-				   " fps=" + framesPerSecond + " \"" + outputPath + "\\%10d.png\"";
-			//create a process
-			Process myProcess = new Process();
-			myProcess.StartInfo.UseShellExecute = false;
-			myProcess.StartInfo.RedirectStandardOutput = true;
-			//point ffmpeg location
-
-			myProcess.StartInfo.FileName = FfmpegPath;
-			//set arguments
-			myProcess.StartInfo.Arguments = args;
-			//Console.WriteLine(_ffmpegPath + " => " + args);
-			myProcess.Start();
-
-			myProcess.WaitForExit();
-
-		}
-
 		public static void MakeScaledThumbNails(string movieFile, string outputPath, double startPosition, double duration, int width, int height, bool maintainAspect, int rotateVideo, string cropVideo, double fps = 20, string cacheFileType = "bmp")
 		{
 			string args = $" -y -ss {startPosition} -i \"{movieFile}\" -an -t {duration.ToString(CultureInfo.InvariantCulture)} -vf \"scale={width}:{(maintainAspect ? -1 : height)}{cropVideo}, rotate={rotateVideo}*(PI/180)\" -r {fps} \"{outputPath}\\%5d.{cacheFileType}\"";
