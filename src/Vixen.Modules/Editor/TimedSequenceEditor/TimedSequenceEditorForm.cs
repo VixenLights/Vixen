@@ -58,6 +58,8 @@ using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 using PropertyDescriptor = System.ComponentModel.PropertyDescriptor;
 using Size = System.Drawing.Size;
 using Common.Broadcast;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -918,6 +920,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Element element = TimelineControl.grid.ElementAtPosition(mouseLocation);
 			if (element != null)
 			{
+				if (element.EffectNode.Effect.EffectName == "Wave")
+					return DragDropEffects.Copy;
 
 				var propertyData = MetadataRepository.GetProperties(element.EffectNode.Effect);
 				if (dataObject.GetDataPresent(typeof(Color)) &&
@@ -4160,7 +4164,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void UpdateEffectProperty(PropertyDescriptor descriptor, Element element, Object value)
 		{
-			descriptor.SetValue(element.EffectNode.Effect, value);
+			// Do special processing for the Wave effect
+			if (element.EffectNode.Effect.EffectName == "Wave")
+			{
+				// Set the color property
+				((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves[0].Color = (VixenModules.App.ColorGradients.ColorGradient)value;
+
+				// Force the effect to refresh
+				((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves = ((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves;
+			}
+
+			// All other effects
+			else
+			{
+				descriptor.SetValue(element.EffectNode.Effect, value);
+			}
+
 			element.UpdateNotifyContentChanged();
 			SequenceModified();
 		}
@@ -4529,8 +4548,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			Dictionary<Element, Tuple<Object, PropertyDescriptor>> elementValues = new Dictionary<Element, Tuple<object, PropertyDescriptor>>();
 
-			var properties = MetadataRepository.GetProperties(element.EffectNode.Effect).Where(x => (x.PropertyType == typeof(ColorGradient) ||
-				x.PropertyType == typeof(List<ColorGradient>) || x.PropertyType == typeof(List<GradientLevelPair>)) && x.IsBrowsable);
+			IEnumerable<PropertyData> properties;
+			if (element.EffectNode.Effect.EffectName == "Wave")
+			{
+				properties = new List<PropertyData>();
+				foreach (var wave in ((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves)
+				{
+					properties = properties.Concat(MetadataRepository.GetProperties(wave).Where(x => (x.PropertyType == typeof(ColorGradient) ||
+						x.PropertyType == typeof(List<ColorGradient>) || x.PropertyType == typeof(List<GradientLevelPair>)) && x.IsBrowsable));
+				}
+			}
+			else
+			{
+				properties = MetadataRepository.GetProperties(element.EffectNode.Effect).Where(x => (x.PropertyType == typeof(ColorGradient) ||
+					x.PropertyType == typeof(List<ColorGradient>) || x.PropertyType == typeof(List<GradientLevelPair>)) && x.IsBrowsable);
+			}
 			if (!properties.Any()) return;
 			if (properties.Count() == 1)
 			{
@@ -4635,8 +4667,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void HandleGradientDropOnGradient(ColorGradient gradient, Dictionary<Element, Tuple<object, PropertyDescriptor>> elementValues, Element e, PropertyDescriptor property)
 		{
-			elementValues.Add(e,
-				new Tuple<object, PropertyDescriptor>(property.GetValue(e.EffectNode.Effect), property));
+			//elementValues.Add(e,
+			//	new Tuple<object, PropertyDescriptor>(property.GetValue(e.EffectNode.Effect), property));
 			UpdateEffectProperty(property, e, gradient);
 		}
 
