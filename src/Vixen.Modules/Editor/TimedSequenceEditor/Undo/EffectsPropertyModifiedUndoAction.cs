@@ -1,6 +1,9 @@
 ﻿using System.ComponentModel;
 using Common.Controls;
 using Common.Controls.Timeline;
+using ExCSS;
+using Newtonsoft.Json.Linq;
+using VixenModules.Effect.Effect;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Undo
 {
@@ -18,34 +21,136 @@ namespace VixenModules.Editor.TimedSequenceEditor.Undo
 		public string DisplayName { get; private set; }
 		public override void Undo()
 		{
+			object previousColorData;
+
 			foreach (var element in ElementValues.Keys.ToList())
 			{
-				Tuple<Object, PropertyDescriptor> value = ElementValues[element];
-				object temp = value.Item2.GetValue(element.EffectNode.Effect);
-				value.Item2.SetValue(element.EffectNode.Effect, ElementValues[element].Item1);
-				ElementValues[element] = new Tuple<object, PropertyDescriptor>(temp,value.Item2);
+				object effectDetail, parentEffect = null;
+				object gradient;
+
+				Tuple<object, PropertyDescriptor> value = ElementValues[element];
+				if (value.Item1 is Tuple<object, object, object> tupleValue)
+				{
+					Tuple<object, object, object> colorData = (Tuple<object, object, object>)value.Item1;
+					effectDetail = colorData.Item1;
+					parentEffect = colorData.Item2;
+					gradient = colorData.Item3;
+				}
+				else
+				{
+					gradient = value.Item1;
+					effectDetail = element.EffectNode.Effect;
+				}
+
+				PropertyDescriptor propValue = (PropertyDescriptor)value.Item2;
+
+				// Save the current color
+				var saveColor = propValue.GetValue(effectDetail);
+
+				// Set the new color
+				propValue.SetValue(effectDetail, gradient);
+				
+				// Update the Effect
 				element.UpdateNotifyContentChanged();
+
+				// If this is a Wave or Liquid...
+				if (parentEffect != null)
+				{
+					// Save the previous color data
+					previousColorData = new Tuple<object, object, object>(effectDetail, parentEffect, saveColor);
+
+					// And force an update of all MVVM views, if a Wave or Liquid
+					if (((PixelEffectBase)parentEffect).EffectName == "Wave")
+					{
+						((VixenModules.Effect.Wave.Wave)parentEffect).Waves = ((VixenModules.Effect.Wave.Wave)parentEffect).Waves;
+					}
+					else if (((PixelEffectBase)parentEffect).EffectName == "Liquid")
+					{
+						((VixenModules.Effect.Liquid.Liquid)parentEffect).EmitterList = ((VixenModules.Effect.Liquid.Liquid)parentEffect).EmitterList;
+					}
+				}
+
+				// Else all other effects
+				else
+				{
+					// Save the previous color
+					previousColorData = saveColor;
+				}
+
+				// Save off for a Redo.
+				ElementValues[element] = new Tuple<object, PropertyDescriptor>(previousColorData, value.Item2);
 			}
-			
+
 
 			base.Undo();
 		}
 
 		public override void Redo()
 		{
+			object previousColorData;
+
 			foreach (var element in ElementValues.Keys.ToList())
 			{
-				Tuple<Object, PropertyDescriptor> value = ElementValues[element];
-				object temp = value.Item2.GetValue(element.EffectNode.Effect);
-				value.Item2.SetValue(element.EffectNode.Effect, ElementValues[element].Item1);
-				ElementValues[element] = new Tuple<object, PropertyDescriptor>(temp, value.Item2);
+				object effectDetail, parentEffect = null;
+				object gradient;
+
+				Tuple<object, PropertyDescriptor> value = ElementValues[element];
+				if (value.Item1 is Tuple<object, object, object> tupleValue)
+				{
+					Tuple<object, object, object> colorData = (Tuple<object, object, object>)value.Item1;
+					effectDetail = colorData.Item1;
+					parentEffect = colorData.Item2;
+					gradient = colorData.Item3;
+				}
+				else
+				{
+					gradient = value.Item1;
+					effectDetail = element.EffectNode.Effect;
+				}
+
+				PropertyDescriptor propValue = (PropertyDescriptor)value.Item2;
+
+				// Save the current color
+				var saveColor = propValue.GetValue(effectDetail);
+
+				// Set the new color
+				propValue.SetValue(effectDetail, gradient);
+				
+				// Update the Effect
 				element.UpdateNotifyContentChanged();
+
+				// If this is a Wave or Liquid...
+				if (parentEffect != null)
+				{
+					// Save the previous color data
+					previousColorData = new Tuple<object, object, object>(effectDetail, parentEffect, saveColor);
+
+					// And force an update of all MVVM views, if a Wave or Liquid
+					if (((PixelEffectBase)parentEffect).EffectName == "Wave")
+					{
+						((VixenModules.Effect.Wave.Wave)parentEffect).Waves = ((VixenModules.Effect.Wave.Wave)parentEffect).Waves;
+					}
+					else if (((PixelEffectBase)parentEffect).EffectName == "Liquid")
+					{
+						((VixenModules.Effect.Liquid.Liquid)parentEffect).EmitterList = ((VixenModules.Effect.Liquid.Liquid)parentEffect).EmitterList;
+					}
+				}
+
+				// Else all other effects
+				else
+				{
+					// Save the previous color
+					previousColorData = saveColor;
+				}
+
+				// Save off for an Undo.
+				ElementValues[element] = new Tuple<object, PropertyDescriptor>(previousColorData, value.Item2);
 			}
 			
 			base.Redo();
 		}
 
-		public override string Description
+public override string Description
 		{
 			get { return string.Format("{0} Effect(s) {1} modified", ElementValues.Count, DisplayName);; } 
 		}
