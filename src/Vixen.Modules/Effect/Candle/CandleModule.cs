@@ -284,7 +284,12 @@ namespace VixenModules.Effect.Candle
 
 		private float _GenerateStartingLevel()
 		{
-			return (float) _r.NextDouble();
+			float startingLevel = (float)_r.NextDouble();
+
+			startingLevel = Math.Max(startingLevel, _data.MinLevel);
+			startingLevel = Math.Min(startingLevel, _data.MaxLevel);
+
+			return startingLevel;
 		}
 
 		private float _GenerateStateLength()
