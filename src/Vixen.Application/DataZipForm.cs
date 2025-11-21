@@ -304,28 +304,32 @@ namespace VixenApplication
 			int filesComplete = 0;
 			try
 			{
-				using (ZipArchive archive = ZipFile.Open(archivePath, ZipArchiveMode.Update))
+				using (FileStream fs = File.Open(archivePath, FileMode.OpenOrCreate))
 				{
-					foreach (string file in files)
+					using (ZipArchive archive = new ZipArchive(fs, ZipArchiveMode.Update))
 					{
-						if (_bw.CancellationPending)
+						foreach (string file in files)
 						{
-							break;
-						}
-						if (!Excluded(file, exceptions))
-						{
-							var addFile = Path.GetFullPath(file);
-							if (addFile != archivePath)
+							if (_bw.CancellationPending)
 							{
-								addFile = addFile.Substring(folderFullPath.Length);
-								archive.CreateEntryFromFile(file, parentFolder + addFile);
-								filesComplete++;
-								var value = (int)(filesComplete / (double)fileCount * 100.0);
-								_bw.ReportProgress(value);
+								break;
+							}
+							if (!Excluded(file, exceptions))
+							{
+								var addFile = Path.GetFullPath(file);
+								if (addFile != archivePath)
+								{
+									addFile = addFile.Substring(folderFullPath.Length);
+									archive.CreateEntryFromFile(file, parentFolder + addFile);
+									filesComplete++;
+									var value = (int)(filesComplete / (double)fileCount * 80.0);
+									_bw.ReportProgress(value);
+								}
 							}
 						}
 					}
 				}
+				_bw.ReportProgress(100);
 				success = true;
 			}
 			catch (Exception ex)
