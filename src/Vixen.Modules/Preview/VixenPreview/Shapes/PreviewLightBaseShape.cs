@@ -59,6 +59,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						
 		private Color _pixelColor = Color.White;
 		public int _pixelSize = 3;
+
+		/// <summary>
+		/// Disposes of the vertex buffer object.
+		/// </summary>
+		/// <remarks>
+		/// When editing the preview the shapes are not disposed but the OpenTK control has been released.
+		/// This method provides the flexibility to only dispose of the OpenGL vertex buffer object.
+		/// </remarks>
+		public void DisposeOfVBO()
+		{
+			if (_pointsVBO != null)
+			{
+				_pointsVBO.Dispose();
+				_pointsVBO = null;
+			}
+		}
 		
 		/// <summary>
 		/// Vertex Array Object for OpenGL drawing of the light shape.
@@ -430,6 +446,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			_pixelCache = Pixels.Where(x => x.Node != null && x.Node.Element != null).ToList();
 			_points = new List<float>(_pixelCache.Count * 8);
+			_pointsVBO = null;
+			_pointsBufferSize = 0;
+
 			return _pixelCache.Count;
 		}
 
@@ -699,11 +718,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				_strings = null;
 
 				// Dispose of the points Vertex Buffer Object
-				if (_pointsVBO != null)
-				{
-					_pointsVBO.Dispose();	
-					_pointsVBO = null;	
-				}
+				DisposeOfVBO();				
 			}
 		}
 
