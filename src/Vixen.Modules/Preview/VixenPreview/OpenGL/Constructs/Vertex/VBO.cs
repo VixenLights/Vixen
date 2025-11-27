@@ -102,14 +102,6 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex
             : this(data, BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
         {
         }
-
-        /// <summary>
-        /// Check to ensure that the VBO was disposed of properly.
-        /// </summary>
-        ~VBO()
-        {
-            Dispose(false);
-        }
         #endregion
 
  

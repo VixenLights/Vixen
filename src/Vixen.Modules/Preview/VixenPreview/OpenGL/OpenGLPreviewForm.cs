@@ -266,6 +266,13 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			if (disposing && glControl != null)
 			{
+				// Loop over the light based display items
+				foreach(DisplayItem displayItem in _lightBasedDisplayItems)
+				{
+					// Dispose of the VBO
+					((PreviewLightBaseShape)displayItem?.Shape).DisposeOfVBO();
+				}
+
 				// Loop over the display item shapes that implement IDrawStaticPreviewShape
 				foreach (IDrawStaticPreviewShape staticShape in GetIDrawStaticPreviewShapes())
 				{
