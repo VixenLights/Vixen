@@ -309,7 +309,7 @@ namespace VixenModules.Effect.Wave
 							CalculateWaveFrequency(wave, intervalPosFactor),
 							CalculateWaveThickness(wave, intervalPosFactor),
 							CalculateWaveHeight(wave, intervalPosFactor),
-							CalculateWaveSpeed(wave, intervalPosFactor),
+							CalculateWaveSpeed(wave, intervalPosFactor, true),
 							CalculateWaveYOffset(wave, intervalPosFactor),
 							GetColor(wave, intervalPos),
 							wave.WaveType,
@@ -336,7 +336,7 @@ namespace VixenModules.Effect.Wave
 						wave,
 						frameBuffer,
 						wave.Direction,
-						CalculateWaveSpeed(wave, intervalPosFactor),
+						CalculateWaveSpeed(wave, intervalPosFactor, true),
 						false);
 				}
 			}
@@ -429,7 +429,7 @@ namespace VixenModules.Effect.Wave
 							CalculateWaveFrequency(wave, intervalPosFactor),
 							CalculateWaveThickness(wave, intervalPosFactor),
 							CalculateWaveHeight(wave, intervalPosFactor),
-							CalculateWaveSpeed(wave, intervalPosFactor),
+							CalculateWaveSpeed(wave, intervalPosFactor, false),
 							CalculateWaveYOffset(wave, intervalPosFactor),
 							GetColor(wave, intervalPos),							
 							wave.WaveType,
@@ -546,11 +546,13 @@ namespace VixenModules.Effect.Wave
 		/// <summary>
 		/// Calculates the speed of the wave.
 		/// </summary>		
-		private int CalculateWaveSpeed(IWaveform waveform, double intervalPos)
+		private int CalculateWaveSpeed(IWaveform waveform, double intervalPos, bool allowZero)
 		{
 			int speed = (int)Math.Round(ScaleCurveToValue(waveform.Speed.GetValue(intervalPos), MaxWaveVelocity * _speedIncrement, 0));
 
-			if (speed == 0)
+			// If the speed is set to zero and not allowed to be zero to ensure
+			// columns of the wave are still generated then...
+			if (speed == 0 && !allowZero)
 			{
 				speed = 1;
 			}
