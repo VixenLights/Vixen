@@ -273,31 +273,32 @@ namespace VixenModules.Preview.VixenPreview
 #endif
 
 #if OPENGL_PREVIEW_WIN_FORMS
-		/// <inheritdoc />
-		protected override void PlayerDeactivatedImpl()
-		{						
+
+	/// <inheritdoc />
+	protected override void PlayerDeactivatedImpl()
+	{
+		if (UseOpenGLRendering)
+		{
 			if (_displayForm.IsOnTopWhenPlaying)
 			{
-				((Window)_displayForm).Topmost = false;
-				((Window)_displayForm).Dispatcher.Invoke(SendToBack);
-			}			
+				((Form)_displayForm).TopMost = false;
+				((Form)_displayForm).SendToBack();
+			}
+			else
+			{
+				((Form)_displayForm).TopMost = false;
+				((Form)_displayForm).SendToBack();
+			}
 		}
+	}		
 #else
 		/// <inheritdoc />
 		protected override void PlayerDeactivatedImpl()
 		{
-			if (UseOpenGLRendering)
+			if (_displayForm.IsOnTopWhenPlaying)
 			{
-				if (_displayForm.IsOnTopWhenPlaying)
-				{
-					((Form)_displayForm).TopMost = false;
-					((Form)_displayForm).SendToBack();
-				}
-				else
-				{
-					((Form)_displayForm).TopMost = false;
-					((Form)_displayForm).SendToBack();
-				}
+				((Window)_displayForm).Topmost = false;
+				((Window)_displayForm).Dispatcher.Invoke(SendToBack);
 			}
 		}
 #endif
