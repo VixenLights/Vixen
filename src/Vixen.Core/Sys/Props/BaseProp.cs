@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using NLog;
+using System.CodeDom.Compiler;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -21,6 +22,8 @@ namespace Vixen.Sys.Props
 	/// of associated components and target nodes.
 	/// </remarks>
 	[Serializable]
+	[CategoryOrder("Attributes", 1)]
+	[CategoryOrder("Creation", 100)]
 	public abstract class BaseProp<TModel> : BindableBase, IProp where TModel : BasePropModel, IPropModel
 	{
 		#region Protected Static Properties
@@ -55,9 +58,10 @@ namespace Vixen.Sys.Props
 			{
 				switch (e.PropertyName)
 				{
-					case nameof(Name):
-						RenamePropElement();
-						break;
+				}
+				if (e.PropertyName != nameof(ModifiedDate))
+				{
+					PropModified();
 				}
 			}
 		}
@@ -80,20 +84,32 @@ namespace Vixen.Sys.Props
 		/// <summary>
 		/// Gets or sets the name of the Prop.
 		/// </summary>
-		/// <remarks>
-		/// The <see cref="Name"/> property is a friendly name for the Prop.
-		/// Changing this property triggers the renaming of associated Prop elements.
-		/// </remarks>
+		[Category("Attributes")]
 		[PropertyOrder(0)]
 		public string Name
 		{
 			get => _name;
 			set
 			{
-				SetProperty(ref _name, value);
-				PropModified();
+				if (!VixenSystem.Props.IsUniquePropTitle(value))
+				{
+					MessageBox.Show($"{value} already exists. Enter a unique name.", "Prop name must be unique", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+				else
+				{
+					RenamePropElement(_name, value);
+					SetProperty(ref _name, value);
+					OnPropertyChanged(nameof(Name));
+				}
 			}
 		}
+
+		[Category("Attributes")]
+		[DisplayName("Prop Type")]
+		[PropertyOrder(1)]
+		[ReadOnly(true)]
+		public PropType PropType { get; init; }
+
 
 		/// <summary>
 		/// Gets or sets the name of the user who created this Prop.
@@ -104,8 +120,10 @@ namespace Vixen.Sys.Props
 		/// <remarks>
 		/// This property is used to track the origin of the Prop for auditing and informational purposes.
 		/// </remarks>
-		[PropertyOrder(100)]
+		[Category("Creation")]
 		[DisplayName("Created By")]
+		[PropertyOrder(0)]
+		[ReadOnly(true)]
 		public string CreatedBy
 		{
 			get => _createdBy;
@@ -119,8 +137,10 @@ namespace Vixen.Sys.Props
 		/// This property is initialized during the construction of the Prop and remains immutable.
 		/// It provides metadata about the creation of the Prop for tracking and auditing purposes.
 		/// </remarks>
-		[PropertyOrder(101)]
+		[Category("Creation")]
 		[DisplayName("Creation Date")]
+		[PropertyOrder(1)]
+		[ReadOnly(true)]
 		public DateTime CreationDate { get; init; }
 
 		/// <summary>
@@ -129,18 +149,15 @@ namespace Vixen.Sys.Props
 		/// <value>
 		/// A <see cref="DateTime"/> representing the last modification date and time of the Prop.
 		/// </value>
-		[PropertyOrder(102)]
+		[Category("Creation")]
 		[DisplayName("Modified Date")]
+		[PropertyOrder(2)]
+		[ReadOnly(true)]
 		public DateTime ModifiedDate
 		{
 			get => _modifiedDate;
 			set => SetProperty(ref _modifiedDate, value);
 		}
-
-		[PropertyOrder(1)]
-		[DisplayName("Prop Type")]
-		[ReadOnly(true)]
-		public PropType PropType { get; init; }
 
 		/// <summary>
 		/// Gets or sets the visual model associated with the Prop.
@@ -313,10 +330,12 @@ namespace Vixen.Sys.Props
 		/// derived from the Prop's current name and the <see cref="AutoPropPrefix"/>.
 		/// The renaming operation is performed using the <see cref="VixenSystem.Nodes"/> manager.
 		/// </remarks>
-		protected void RenamePropElement()		
+		protected void RenamePropElement(String oldName, String newName)		
 		{
-			var propNode = GetOrCreateElementNode();
-			VixenSystem.Nodes.RenameNode(propNode, AutoPropName, false);
+			foreach(var node in PropComponents)
+			{
+				node.Name = node.Name.Replace(oldName, newName);
+			}
 		}
 
 		/// <summary>

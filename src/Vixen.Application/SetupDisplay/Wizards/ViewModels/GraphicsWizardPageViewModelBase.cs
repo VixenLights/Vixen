@@ -1,13 +1,10 @@
 ﻿using System.Collections.ObjectModel;
-
 using Catel.Data;
-
+using Catel.MVVM;
 using Orc.Wizard;
-
 using Vixen.Sys.Props.Model;
-
 using VixenApplication.SetupDisplay.OpenGL;
-using VixenApplication.SetupDisplay.ViewModels;
+using VixenModules.App.Props.Models;
 
 namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 {
@@ -74,6 +71,7 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		/// <summary>
 		/// Collection of rotations to support rotating the props around the x,y, and z axis.
 		/// </summary>
+		[ViewModelToModel]
 		public ObservableCollection<AxisRotationViewModel> Rotations
 		{
 			get
@@ -121,16 +119,6 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		/// <param name="e">Event arguments</param>
 		private void OnRotationChanged(object sender, EventArgs e)
 		{
-			// Transfer the rotations from the view model to the model
-			int index = 0;
-			foreach (AxisRotationViewModel rotationViewModel in Rotations)
-			{
-				AxisRotationModel rotationMdl = LightPropModel.Rotations[index];
-				rotationMdl.Axis = GetAxis(rotationViewModel.Axis);
-				rotationMdl.RotationAngle = rotationViewModel.RotationAngle;
-				index++;
-			}
-
 			// Update the prop nodes
 			LightPropModel.UpdatePropNodes();
 		}

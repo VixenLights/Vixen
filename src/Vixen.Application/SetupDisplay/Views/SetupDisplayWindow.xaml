@@ -83,7 +83,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1.5*"/>
                 <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width=".5*"/>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
@@ -128,13 +128,12 @@
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
-                    <RowDefinition/>
-					<RowDefinition/>
+                    <RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
                 <views:PropComponentTree Margin="5" DataContext="{Binding PropComponentTreeViewModel}"></views:PropComponentTree>
 
-				<Border BorderThickness="2"  Width="400"
-                    Height="400" Grid.Row="1" Background="{StaticResource BackgroundControlBrush}" BorderBrush="{StaticResource BorderColorBrush}" Margin="5">
+				<Border BorderThickness="2"  Width="400" Height="400" Margin="5"
+                    Grid.Row="1" Background="{StaticResource BackgroundControlBrush}" BorderBrush="{StaticResource BorderColorBrush}">
 					<glWpfControl:GLWpfControl
 					x:Name="OpenTkControl" 
 					SizeChanged="OpenTkControl_SizeChanged"
@@ -167,7 +166,7 @@
                     Width="350"/>
 				-->
 
-
+<!--
 				<ScrollViewer Grid.Row="2">
 					<ItemsControl ItemsSource="{Binding Rotations}">
 						<ItemsControl.ItemTemplate>
@@ -186,7 +185,8 @@
 						</ItemsControl.ItemTemplate>
 					</ItemsControl>
 				</ScrollViewer>
-			</Grid>
+-->
+                </Grid>
         </Grid>
     </DockPanel>
 
