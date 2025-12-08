@@ -36,7 +36,7 @@ namespace Common.WPFCommon.Services
 				{
 					wc.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (compatible; Vixen/1.0)");
 					wc.DefaultRequestHeaders.IfModifiedSince = modifiedTime;
-					wc.Timeout = TimeSpan.FromMilliseconds(5000);
+					wc.Timeout = TimeSpan.FromMilliseconds(20000);
 					//Get Latest inventory from the url.
 					var content = await wc.GetStreamAsync(url);
 					var fileStream = File.Create(targetPath);
@@ -61,7 +61,7 @@ namespace Common.WPFCommon.Services
 			using (HttpClient wc = new HttpClient())
 			{
 				wc.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (compatible; Vixen/1.0)");
-				wc.Timeout = TimeSpan.FromMilliseconds(5000);
+				wc.Timeout = TimeSpan.FromMilliseconds(20000);
 				return await wc.GetStringAsync(url);
 			}
 		}
