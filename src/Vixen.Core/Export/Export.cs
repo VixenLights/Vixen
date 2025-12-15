@@ -199,7 +199,9 @@ namespace Vixen.Export
                             
                             for (var uIndex = 0; uIndex < universes.Count(); uIndex++)
                             {
-                                if (uIndex>0 && channelOutputs.Universes.Any() && (universes[uIndex].Size == channelOutputs.Universes.Last().ChannelCount) )
+                                if (uIndex>0 && channelOutputs.Universes.Any() && (universes[uIndex].Size == channelOutputs.Universes.Last().ChannelCount) && 
+									//Universes are consecutive
+                                    channelOutputs.Universes.Last().UniverseId + channelOutputs.Universes.Last().UniverseCount == universes[uIndex].UniverseNumber)
                                 {
                                     channelOutputs.Universes.Last().UniverseCount++;
                                     fppStartChannel = fppStartChannel + universes[uIndex].Size;
