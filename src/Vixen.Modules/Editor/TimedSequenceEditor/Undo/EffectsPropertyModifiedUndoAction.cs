@@ -21,34 +21,34 @@ namespace VixenModules.Editor.TimedSequenceEditor.Undo
 		public string DisplayName { get; private set; }
 		public override void Undo()
 		{
-			object previousColorData;
+			object previousPropertyData;
 
 			foreach (var element in ElementValues.Keys.ToList())
 			{
 				object effectDetail, parentEffect = null;
-				object gradient;
+				object property;
 
 				Tuple<object, PropertyDescriptor> value = ElementValues[element];
 				if (value.Item1 is Tuple<object, object, object> tupleValue)
 				{
-					Tuple<object, object, object> colorData = (Tuple<object, object, object>)value.Item1;
-					effectDetail = colorData.Item1;
-					parentEffect = colorData.Item2;
-					gradient = colorData.Item3;
+					Tuple<object, object, object> propertyData = (Tuple<object, object, object>)value.Item1;
+					effectDetail = propertyData.Item1;
+					parentEffect = propertyData.Item2;
+					property = propertyData.Item3;
 				}
 				else
 				{
-					gradient = value.Item1;
+					property = value.Item1;
 					effectDetail = element.EffectNode.Effect;
 				}
 
 				PropertyDescriptor propValue = (PropertyDescriptor)value.Item2;
 
-				// Save the current color
-				var saveColor = propValue.GetValue(effectDetail);
+				// Save the current property (i.e. color, gradient, curve)
+				var saveProperty = propValue.GetValue(effectDetail);
 
-				// Set the new color
-				propValue.SetValue(effectDetail, gradient);
+				// Set the new property (i.e. color, gradient, curve)
+				propValue.SetValue(effectDetail, property);
 				
 				// Update the Effect
 				element.UpdateNotifyContentChanged();
@@ -56,8 +56,8 @@ namespace VixenModules.Editor.TimedSequenceEditor.Undo
 				// If this is a Wave or Liquid...
 				if (parentEffect != null)
 				{
-					// Save the previous color data
-					previousColorData = new Tuple<object, object, object>(effectDetail, parentEffect, saveColor);
+					// Save the previous property data
+					previousPropertyData = new Tuple<object, object, object>(effectDetail, parentEffect, saveProperty);
 
 					// And force an update of all MVVM views, if a Wave or Liquid
 					if (((PixelEffectBase)parentEffect).EffectName == "Wave")
@@ -74,11 +74,11 @@ namespace VixenModules.Editor.TimedSequenceEditor.Undo
 				else
 				{
 					// Save the previous color
-					previousColorData = saveColor;
+					previousPropertyData = saveProperty;
 				}
 
 				// Save off for a Redo.
-				ElementValues[element] = new Tuple<object, PropertyDescriptor>(previousColorData, value.Item2);
+				ElementValues[element] = new Tuple<object, PropertyDescriptor>(previousPropertyData, value.Item2);
 			}
 
 
