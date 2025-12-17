@@ -83,7 +83,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private readonly Timer _autoSaveTimer = new Timer();
 
-		// a mapping of effects in the sequence to the effectDetail that represent them in the grid.
+		// a mapping of effects in the sequence to the effect that represent them in the grid.
 		private Dictionary<EffectNode, Element> _effectNodeToElement;
 
 		// a mapping of system elements to the (possibly multiple) rows that represent them in the grid.
@@ -865,14 +865,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			else
 			{
 				Point p = new Point(e.X, e.Y);
-				//Check for effectDetail drop
+				//Check for effect drop
 				if (e.Data.GetDataPresent(typeof (Guid)))
 				{
 					Guid g = (Guid) e.Data.GetData(typeof (Guid));
 					EffectDropped(g, TimelineControl.grid.TimeAtPosition(p), TimelineControl.grid.RowAtPosition(p));
 				}
 
-				//Everything else applies to a effectDetail
+				//Everything else applies to a effect
 				Element element = TimelineControl.grid.ElementAtPosition(p);
 				if (element != null)
 				{
@@ -1391,7 +1391,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				// clear out all the old data
 				LoadSystemNodesToRows();
 
-				// load the new data: get all the commands in the sequence, and make a new effectDetail for each of them.
+				// load the new data: get all the commands in the sequence, and make a new effect for each of them.
 				_effectNodeToElement = new Dictionary<EffectNode, Element>();
 
 				TimelineControl.grid.SuppressInvalidate = true; //Hold off invalidating the grid while we bulk load.
@@ -2213,7 +2213,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected void ElementTimeChangedHandler(object sender, EventArgs e)
 		{
-			//TimedSequenceElement effectDetail = sender as TimedSequenceElement;
+			//TimedSequenceElement effect = sender as TimedSequenceElement;
 			SequenceModified();
 		}
 
@@ -2237,10 +2237,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				movedElement.TargetNodes = new[] {newElement};
 
-				// now that the effectDetail that this effectDetail has been updated to accurately reflect the change,
-				// move the actual effectDetail around. It's a single effectDetail in the grid, belonging to multiple rows:
-				// so find all rows that represent the old effectDetail, remove the effectDetail from them, and also find
-				// all rows that represent the new effectDetail and add it to them.
+				// now that the effect that this effect has been updated to accurately reflect the change,
+				// move the actual effect around. It's a single effect in the grid, belonging to multiple rows:
+				// so find all rows that represent the old effect, remove the effect from them, and also find
+				// all rows that represent the new effect and add it to them.
 				foreach (Row row in TimelineControl)
 				{
 					ElementNode rowElement = row.Tag as ElementNode;
@@ -2272,7 +2272,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected void DrawElement(object sender, DrawElementEventArgs e)
 		{
-			//Make sure we have enough of an effectDetail to show up
+			//Make sure we have enough of an effect to show up
 			if (e.Duration > TimeSpan.FromSeconds(.010))
 			{
 				var newEffects = new List<EffectNode>();
@@ -2287,7 +2287,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					catch (Exception ex)
 					{
-						string msg = "TimedSequenceEditor: <DrawElement> - error adding effectDetail of type " +
+						string msg = "TimedSequenceEditor: <DrawElement> - error adding effect of type " +
 						             newEffect.Descriptor.TypeId + " to row " +
 						             ((drawingRow == null) ? "<null>" : drawingRow.Name);
 							Logging.Error(ex, msg);
@@ -2418,7 +2418,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							}
 							else if (el != null && el.Any()) 
 							{
-								//if there are no selected elements, then try to apply to the effectDetail under the cursor
+								//if there are no selected elements, then try to apply to the effect under the cursor
 								foreach (var selectedElement in el)
 								{
 									var curentLayer = sequenceLayers.GetLayer(selectedElement.EffectNode);
@@ -2519,7 +2519,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						}
 						catch (Exception ex)
 						{
-							string msg = "TimedSequenceEditor: <AddMultipleEffects> - error adding effectDetail of type " + newEffect.Descriptor.TypeId + " to row " +
+							string msg = "TimedSequenceEditor: <AddMultipleEffects> - error adding effect of type " + newEffect.Descriptor.TypeId + " to row " +
 							             ((row == null) ? "<null>" : row.Name);
 							Logging.Error(ex, msg);
 						}
@@ -2567,7 +2567,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							}
 							catch (Exception ex)
 							{
-								string msg = "TimedSequenceEditor: <AddEffectsToBeatMarks> - error adding effectDetail of type " + newEffect.Descriptor.TypeId + " to row " +
+								string msg = "TimedSequenceEditor: <AddEffectsToBeatMarks> - error adding effect of type " + newEffect.Descriptor.TypeId + " to row " +
 											 ((row == null) ? "<null>" : row.Name);
 								Logging.Error(ex, msg);
 							}
@@ -2598,7 +2598,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//I don't remember why I put this here, for now its commented out until its verified that its not needed, then it will be removed
 			//if (TimelineControl.SelectedElements.First().EndTime == TimelineControl.SelectedElements.Last().EndTime)
 			//{
-			//	MessageBox.Show("The first and last effectDetail cannot have the same end time.", "Warning", MessageBoxButtons.OK);
+			//	MessageBox.Show("The first and last effect cannot have the same end time.", "Warning", MessageBoxButtons.OK);
 			//	return;
 			//}
 			bool startAtLastElement = false;
@@ -2615,7 +2615,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var totalDuration = endTime - startTime;
 			var effectDuration = totalDuration.TotalSeconds/totalElements;
 			TimeSpan effectTs = TimeSpan.FromSeconds(effectDuration);
-			//var msgString = string.Format("Total Elements: {0}\n Start Time: {1}\n End Time: {2}\n Total Duration: {3}\n Effect Duration: {4}\n TimeSpan Duration: {5}\n Start at last effectDetail: {6}", totalElements,startTime,endTime,totalDuration,effectDuration, effectTS.TotalSeconds, startAtLastElement);
+			//var msgString = string.Format("Total Elements: {0}\n Start Time: {1}\n End Time: {2}\n Total Duration: {3}\n Effect Duration: {4}\n TimeSpan Duration: {5}\n Start at last effect: {6}", totalElements,startTime,endTime,totalDuration,effectDuration, effectTS.TotalSeconds, startAtLastElement);
 			//MessageBox.Show(msgString);
 			//Sanity Check - Keep effects from becoming less than minimum.
 			if (effectDuration < .050)
@@ -2700,7 +2700,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				var elementsToDistribute = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
 				if (dDialog.StartWithFirst)
 				{
-					//We start with the first effectDetail
+					//We start with the first effect
 					for (int i = 0; i <= elementCount - 1; i++)
 					{
 						double thisStartTime = startTime.TotalSeconds;
@@ -2729,7 +2729,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				if (dDialog.StartWithLast)
 				{
-					//We start with the last effectDetail
+					//We start with the last effect
 					int placeCount = 0;
 					for (int i = elementCount - 1; i >= 0; i--)
 					{
@@ -3562,7 +3562,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				
 				try
 				{
-					// get the target effectDetail
+					// get the target effect
 					if (element.Row != null)
 					{
 						var effectNode = CreateEffectNode(newEffect, element.Row, element.StartTime, element.Duration);
@@ -3572,13 +3572,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					else
 					{
-						Logging.Error("TimedSequenceEditor: <CloneElements> - Skipping effectDetail; effectDetail.Row is null!");
+						Logging.Error("TimedSequenceEditor: <CloneElements> - Skipping effect; effect.Row is null!");
 						
 					}
 
 				} catch (Exception ex)
 				{
-					string msg = "TimedSequenceEditor CloneElements: error adding effectDetail of type " + newEffect.Descriptor.TypeId + " to row " +
+					string msg = "TimedSequenceEditor CloneElements: error adding effect of type " + newEffect.Descriptor.TypeId + " to row " +
 								 ((element.Row == null) ? "<null>" : element.Row.Name);
 					Logging.Error(ex, msg);
 				}
@@ -3644,8 +3644,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="startTime">Specifies the inclusive starting time of the time window</param>
 		/// <param name="endTime">Specifies the inclusive ending time of the time window</param>
 		/// <param name="offset">
-		/// Specifies the amount of time to shift the Elements that are within the time window. A positive newColor adds time and a negative
-		/// newColor decreases time.
+		/// Specifies the amount of time to shift the Elements that are within the time window. A positive newProperty adds time and a negative
+		/// newProperty decreases time.
 		/// </param>
 		public void MoveMarksInRangeByTime(TimeSpan startTime, TimeSpan endTime, TimeSpan offset, bool processVisibleRows)
 		{
@@ -3717,20 +3717,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			//Debug.WriteLine("{0}   RemoveEffectNodeAndElement(InstanceId={1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, node.Effect.InstanceId);
 
-			// Lookup this effectDetail node's Timeline Element
+			// Lookup this effect node's Timeline Element
 			if (_effectNodeToElement.ContainsKey(node))
 			{
 				TimedSequenceElement tse = (TimedSequenceElement) _effectNodeToElement[node];
 				TimelineControl.DeselectElement(tse);
-				foreach (Row row in TimelineControl) // Remove the effectDetail from all rows
+				foreach (Row row in TimelineControl) // Remove the effect from all rows
 					row.RemoveElement(tse);
 
 				// TODO: Unnecessary?
 				tse.ContentChanged -= ElementContentChangedHandler; // Unregister event handlers
 				tse.TimeChanged -= ElementTimeChangedHandler;
 				
-				_effectNodeToElement.Remove(node); // Remove the effectDetail node from the map
-				_sequence.RemoveData(node); // Remove the effectDetail node from sequence
+				_effectNodeToElement.Remove(node); // Remove the effect node from the map
+				_sequence.RemoveData(node); // Remove the effect node from sequence
 				Sequence.GetSequenceLayerManager().RemoveEffectNodeFromLayers(node);
 				_removedNodes.Add(node); //Store this away so we can clean it up later
 			}
@@ -3746,30 +3746,30 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 
 		/// <summary>
-		/// Creates a new effectDetail instance, and adds it to the sequence and TimelineControl.
+		/// Creates a new effect instance, and adds it to the sequence and TimelineControl.
 		/// </summary>
-		/// <param name="effectId">The GUID of the effectDetail module to instantiate</param>
-		/// <param name="row">The Common.Controls.Timeline.Row to add the effectDetail to</param>
-		/// <param name="startTime">The start time of the effectDetail</param>
-		/// <param name="timeSpan">The duration of the effectDetail</param>
+		/// <param name="effectId">The GUID of the effect module to instantiate</param>
+		/// <param name="row">The Common.Controls.Timeline.Row to add the effect to</param>
+		/// <param name="startTime">The start time of the effect</param>
+		/// <param name="timeSpan">The duration of the effect</param>
 		/// <param name="select">Optional indicator to set as the sole selection in the timeline</param>
 		private EffectNode AddNewEffectById(Guid effectId, Row row, TimeSpan startTime, TimeSpan timeSpan, bool select=false)
 		{
 			//Debug.WriteLine("{0}   addNewEffectById({1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, effectId);
-			// get a new instance of this effectDetail, populate it, and make a node for it
+			// get a new instance of this effect, populate it, and make a node for it
 
 			IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(effectId);
 			return AddEffectInstance(effect, row, startTime, timeSpan, select);
 		}
 
 		/// <summary>
-		/// Wraps an effectDetail instance in an EffectNode, adds it to the sequence, and an associated effectDetail to the timeline control.
+		/// Wraps an effect instance in an EffectNode, adds it to the sequence, and an associated effect to the timeline control.
 		/// Adds a Undo record for the add as well.
 		/// </summary>
 		/// <param name="effectInstance">Effect instance</param>
-		/// <param name="row">Common.Controls.Timeline.Row to add the effectDetail instance to</param>
-		/// <param name="startTime">The start time of the effectDetail</param>
-		/// <param name="timeSpan">The duration of the effectDetail</param>
+		/// <param name="row">Common.Controls.Timeline.Row to add the effect instance to</param>
+		/// <param name="startTime">The start time of the effect</param>
+		/// <param name="timeSpan">The duration of the effect</param>
 		/// <param name="select">Optional indicator to set as the sole selection in the timeline</param>
 		private EffectNode AddEffectInstance(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime, TimeSpan timeSpan, bool select = false)
 		{
@@ -3808,7 +3808,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			catch (Exception ex)
 			{
-				string msg = "TimedSequenceEditor: error adding effectDetail of type " + effectInstance.Descriptor.TypeId + " to row " +
+				string msg = "TimedSequenceEditor: error adding effect of type " + effectInstance.Descriptor.TypeId + " to row " +
 							 ((row == null) ? "<null>" : row.Name);
 				Logging.Error(ex, msg);
 			}
@@ -3819,10 +3819,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private EffectNode CreateEffectNode(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime,
 			TimeSpan timeSpan, object[] parameterValues = null)
 		{
-			// get the target effectDetail
+			// get the target effect
 			var targetNode = (ElementNode) row.Tag;
 
-			// populate the given effectDetail instance with the appropriate target node and times, and wrap it in an effectNode
+			// populate the given effect instance with the appropriate target node and times, and wrap it in an effectNode
 			effectInstance.TargetNodes = new[] {targetNode};
 			effectInstance.TimeSpan = timeSpan;
 			effectInstance.StartTime = startTime;
@@ -3844,11 +3844,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <summary>
 		/// Populates the TimelineControl grid with a new TimedSequenceElement for each of the given EffectNodes in the list.
 		/// Uses bulk loading feature of Row
-		/// Will add a single TimedSequenceElement to in each row that each targeted effectDetail of
-		/// the EffectNode references. It will also add callbacks to event handlers for the effectDetail.
+		/// Will add a single TimedSequenceElement to in each row that each targeted effect of
+		/// the EffectNode references. It will also add callbacks to event handlers for the effect.
 		/// </summary>
-		/// <param name="nodes">The EffectNode to make effectDetail(s) in the grid for.</param>
-		/// <param name="assignMediaAndMarks">Option to assign media and marks to the effectDetail nodes or not</param>
+		/// <param name="nodes">The EffectNode to make effect(s) in the grid for.</param>
+		/// <param name="assignMediaAndMarks">Option to assign media and marks to the effect nodes or not</param>
 		private void AddElementsForEffectNodes(IEnumerable<IDataNode> nodes, bool assignMediaAndMarks = true)
 		{
 			Dictionary<Row, List<Element>> rowMap =
@@ -3858,7 +3858,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				if (node.StartTime > _sequence.Length)
 				{
-					Logging.Warn("Effect start time {0} is beyond the sequence end time {1}. Dropping the effectDetail.", node.StartTime, _sequence.Length);
+					Logging.Warn("Effect start time {0} is beyond the sequence end time {1}. Dropping the effect.", node.StartTime, _sequence.Length);
 					if (nodesToRemove == null)
 					{
 						nodesToRemove = new List<EffectNode>();
@@ -3868,7 +3868,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				if (node.EndTime > _sequence.Length)
 				{
-					Logging.Warn("Effect end time {0} is beyond the sequence end time {1}. Adjusting the effectDetail length to fit.", node.StartTime, _sequence.Length);
+					Logging.Warn("Effect end time {0} is beyond the sequence end time {1}. Adjusting the effect length to fit.", node.StartTime, _sequence.Length);
 					if (node.Effect != null)
 					{
 						node.Effect.TimeSpan = _sequence.Length - node.StartTime;
@@ -3893,7 +3893,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					if (_elementNodeToRows.ContainsKey(target))
 					{
-						// Add the effectDetail to each row that represents the effectDetail this command is in.
+						// Add the effect to each row that represents the effect this command is in.
 						foreach (Row row in _elementNodeToRows[target])
 						{
 							if (!_effectNodeToElement.ContainsKey(node))
@@ -3906,7 +3906,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					else
 					{
-						// we don't have a row for the effectDetail this effectDetail is referencing; most likely, the row has
+						// we don't have a row for the effect this effect is referencing; most likely, the row has
 						// been deleted, or we're opening someone else's sequence, etc. Big fat TODO: here for that, then.
 						// dunno what we want to do: prompt to add new elements for them? map them to others? etc.
 						var message =
@@ -3950,21 +3950,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		/// <summary>
 		/// Populates the TimelineControl grid with a new TimedSequenceElement for the given EffectNode.
-		/// Will add a single TimedSequenceElement to in each row that each targeted effectDetail of
-		/// the EffectNode references. It will also add callbacks to event handlers for the effectDetail.
+		/// Will add a single TimedSequenceElement to in each row that each targeted effect of
+		/// the EffectNode references. It will also add callbacks to event handlers for the effect.
 		/// </summary>
-		/// <param name="node">The EffectNode to make effectDetail(s) in the grid for.</param>
+		/// <param name="node">The EffectNode to make effect(s) in the grid for.</param>
 		private TimedSequenceElement AddElementForEffectNodeTpl(EffectNode node)
 		{
 			TimedSequenceElement element = SetupNewElementFromNode(node);
 
-			// for the effectDetail, make a single effectDetail and add it to every row that represents its target elements
+			// for the effect, make a single effect and add it to every row that represents its target elements
 			node.Effect.TargetNodes.AsParallel().WithCancellation(_cancellationTokenSource.Token)
 				.ForAll(target =>
 							{
 								if (_elementNodeToRows.ContainsKey(target))
 								{
-									// Add the effectDetail to each row that represents the effectDetail this command is in.
+									// Add the effect to each row that represents the effect this command is in.
 									foreach (Row row in _elementNodeToRows[target])
 									{
 										if (!_effectNodeToElement.ContainsKey(node))
@@ -3976,7 +3976,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								}
 								else
 								{
-									// we don't have a row for the effectDetail this effectDetail is referencing; most likely, the row has
+									// we don't have a row for the effect this effect is referencing; most likely, the row has
 									// been deleted, or we're opening someone else's sequence, etc. Big fat TODO: here for that, then.
 									// dunno what we want to do: prompt to add new elements for them? map them to others? etc.
 									const string message = "TimedSequenceEditor: <AddElementForEffectNodeTpl> - No Timeline.Row is associated with a target ElementNode for this EffectNode. It now exists in the sequence, but not in the GUI.";
@@ -4022,7 +4022,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private async void RenderLipSyncElementsAsync()
 		{
-			//This is not ideal having the editor look for specific type of effectDetail. Need to find a better way for 
+			//This is not ideal having the editor look for specific type of effect. Need to find a better way for 
 			//the Lipsync effects to know if their mapping changed and mark themselves dirty.
 			Task t = Task.Factory.StartNew(() =>
 			{
@@ -4084,7 +4084,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private int _doEventsCounter;
 
 		/// <summary>
-		/// Adds a single given effectDetail node as a row in the timeline control. Recursively adds all
+		/// Adds a single given effect node as a row in the timeline control. Recursively adds all
 		/// child nodes of the given node as children, if needed.
 		/// </summary>
 		/// <param name="node">The node to generate a row for.</param>
@@ -4102,7 +4102,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//newRow.ElementRemoved += ElementRemovedFromRowHandler;
 			//newRow.ElementAdded += ElementAddedToRowHandler;
 
-			// Tag it with the node it refers to, and take note of which row the given effectDetail node will refer to.
+			// Tag it with the node it refers to, and take note of which row the given effect node will refer to.
 			newRow.Tag = node;
 			if (_elementNodeToRows.ContainsKey(node))
 				_elementNodeToRows[node].Add(newRow);
@@ -4132,7 +4132,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			//Modified 12-3-2014 to allow Control-Drop of effects to replace selected effects
 			
-			//TimeSpan startTime = Util.Min(TimelineControl.PixelsToTime(location.X), (_sequence.Length - duration)); // Ensure the effectDetail is inside the grid.
+			//TimeSpan startTime = Util.Min(TimelineControl.PixelsToTime(location.X), (_sequence.Length - duration)); // Ensure the effect is inside the grid.
 
 			if (ModifierKeys.HasFlag(Keys.Control) && TimelineControl.SelectedElements.Any())
 			{
@@ -4164,35 +4164,35 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void UpdateEffectProperty(PropertyDescriptor descriptor, Element element, Object newColor, int index = 0)
+		private void UpdateEffectProperty(PropertyDescriptor descriptor, Element element, Object newProperty, int index = 0)
 		{
-			// Do special processing for the Wave effectDetail
+			// Do special processing for the Wave effect
 			if (element.EffectNode.Effect.EffectName == "Wave")
 			{
-				// Replace one of the Wave's colors (specified by index)
-				((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves[index].Color = (VixenModules.App.ColorGradients.ColorGradient)newColor;
+				// Replace the existing property on the specified Wave (by index)
+				descriptor.SetValue(((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves[index], newProperty);
 
-				// Force the effectDetail to refresh, including all MVVM views
+				// Force the effect to refresh, including all MVVM views
 				((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves = ((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves;
 			}
 
-			// Or do special processing for the Liquid effectDetail
+			// Or do special processing for the Liquid effect
 			else if (element.EffectNode.Effect.EffectName == "Liquid")
 			{
 				// If we're updating the Color List, then...
 				if (descriptor.PropertyType == typeof(List<ColorGradient>))
 				{
-					// Replace the Color List
-					descriptor.SetValue((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect, newColor);
+					// Update the Color List
+					descriptor.SetValue(element.EffectNode.Effect, newProperty);
 				}
 
-				// Else replace one of the Emitter's colors (specified by index)
+				// Else replace one of the Emitter's properties
 				else
 				{
-					// Replace one of the Emitter's colors (specified by index)
-					((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect).EmitterList[index].Color = (VixenModules.App.ColorGradients.ColorGradient)newColor;
+					// Replace the ecisting property on the specified Emitter (by index)
+					descriptor.SetValue(((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect).EmitterList[index], newProperty);
 
-					// Force the effectDetail to refresh, including all MVVM views
+					// Force the effect to refresh, including all MVVM views
 					((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect).EmitterList = ((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect).EmitterList;
 				}
 			}
@@ -4200,7 +4200,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// All other effects
 			else
 			{
-				descriptor.SetValue(element.EffectNode.Effect, newColor);
+				descriptor.SetValue(element.EffectNode.Effect, newProperty);
 			}
 
 			element.UpdateNotifyContentChanged();
@@ -4308,7 +4308,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				var undo = new EffectsPropertyModifiedUndoAction(elementValues);
 				AddEffectsModifiedToUndo(undo);
 				UpdateToolStrip4(
-					string.Format("{2} applied to {0} {1} effectDetail(s).", elementValues.Count(), element.EffectNode.Effect.EffectName, type), 30);
+					string.Format("{2} applied to {0} {1} effect(s).", elementValues.Count(), element.EffectNode.Effect.EffectName, type), 30);
 			}
 		}
 
@@ -4443,20 +4443,95 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		
 		private void HandleCurveDrop(Element element, Curve curve)
 		{
+			Dictionary<Element, Tuple<Object, PropertyDescriptor>> elementValues = new Dictionary<Element, Tuple<object, PropertyDescriptor>>();
+			IEnumerable<PropertyData> targetProperties;
+			int totalCountofProperties = 0;
+			FormParameterPicker parameterPicker = new FormParameterPicker();
+
+			// If the effect is a Wave, then we'll need to do some special processing to build a list of target Curve properties
+			if (element.EffectNode.Effect.EffectName == "Wave")
+			{
+				targetProperties = new List<PropertyData>();
+
+				// Iterate through all the individual Waves to find all the Curves in each Wave
+				for (int index = 0; index < ((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves.Count; index ++)
+				{
+					// Accumulate the Curve properiesy
+					var wave = ((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves[index];
+					targetProperties = MetadataRepository.GetProperties(wave).Where(x => (x.PropertyType == typeof(Curve)) && x.IsBrowsable);
+					totalCountofProperties += targetProperties.Count();
+
+					parameterPicker.LoadParameterPicker(ProcessCurveProperties(wave, index + 1, targetProperties));
+				}
+			}
+
+			// Else if the effect is a Liquid, then we'll need to do some special processing to build a list of target Curve properties
+			else if (element.EffectNode.Effect.EffectName == "Liquid")
+			{
+				targetProperties = new List<PropertyData>();
+
+				// Iterate through all the indivudal Emitters to find all the Curves
+				for(int index = 0; index < ((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect).EmitterList.Count; index++)
+				{
+					var emitter = ((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect).EmitterList[index];
+					targetProperties = MetadataRepository.GetProperties(emitter).Where(x => x.PropertyType == typeof(Curve));
+
+					// Based upon the settings of the Emitter, we may need to filter out some of the Curve properties
+					if (emitter.Animate == true)
+					{
+						targetProperties = targetProperties.Where(x => x.Name != "X" && x.Name != "Y");
+					}
+					else
+					{
+						targetProperties = targetProperties.Where(x => x.Name != "VelocityX" && x.Name != "VelocityY");
+					}
+
+					if (emitter.NozzleMovement == NozzleMovement.FixedAngle)
+					{
+						targetProperties = targetProperties.Where(x => x.Name != "OscillationSpeed");
+					}
+					else if (emitter.NozzleMovement == NozzleMovement.Oscillate ||
+						     emitter.NozzleMovement == NozzleMovement.SpinCounterClockwise ||
+							 emitter.NozzleMovement == NozzleMovement.SpinClockwise)
+					{
+						targetProperties = targetProperties.Where(x => x.Name != "NozzleAngle");
+					}
+
+					if (emitter.FlowControl == FlowControl.UseMarks ||
+						emitter.FlowControl == FlowControl.Musical)
+					{
+						targetProperties = targetProperties.Where(x => x.Name != "Flow");
+					}
+
+					totalCountofProperties += targetProperties.Count();
+
+					parameterPicker.LoadParameterPicker(ProcessCurveProperties(emitter, index + 1, targetProperties));
+				}
+			}
+
+			// Else all the other effects. We'll do a simple Linq to collect all of the Curve properties
+			else
+			{
+				targetProperties = MetadataRepository.GetProperties(element.EffectNode.Effect).Where(x => (x.PropertyType == typeof(Curve) || x.PropertyType == typeof(List<GradientLevelPair>)) && x.IsBrowsable);
+				totalCountofProperties = targetProperties.Count();
+
+				parameterPicker.LoadParameterPicker(ProcessCurveProperties(element.EffectNode.Effect, 0, targetProperties));
+			}
+
 			_mouseOriginalPoint = new Point(MousePosition.X, MousePosition.Y);
 
 			var elements = GetElementsForDrop(element);
 
-			if (ValidateMultipleEffects(element, elements)) return;	
+			//if (ValidateMultipleEffects(element, elements)) return;	
 
-			Dictionary<Element, Tuple<Object, PropertyDescriptor>> elementValues = new Dictionary<Element, Tuple<object, PropertyDescriptor>>();
-
-			var properties = MetadataRepository.GetProperties(element.EffectNode.Effect).Where(x => (x.PropertyType == typeof(Curve) || x.PropertyType == typeof(List<GradientLevelPair>)) && x.IsBrowsable);
-			if (!properties.Any()) return;
-			
-			if (properties.Count() == 1)
+			if (totalCountofProperties == 0)
 			{
-				var property = properties.First();
+				return;
+			}
+			
+			else if (totalCountofProperties == 1)
+			{
+				var property = targetProperties.First();
 
 				if (property.PropertyType == typeof (Curve))
 				{
@@ -4475,38 +4550,47 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 			}
+
+			//We have more than one property of the same type
 			else
 			{
-				//We have more than one property of the same type
-				List<EffectParameterPickerControl> parameterPickerControls = properties.Where(p => p.PropertyType == typeof(Curve)).Select(propertyData => new EffectParameterPickerControl
-				{
-					PropertyInfo = propertyData.Descriptor,
-					ParameterImage = GetCurveBitmap((Curve)propertyData.Descriptor.GetValue(element.EffectNode.Effect))
-				}).ToList();
-
-				var gradientLevelList = properties.Where(p => p.PropertyType == typeof(List<GradientLevelPair>));
-				foreach (var propertyData in gradientLevelList)
-				{
-					List<GradientLevelPair> gradients = propertyData.Descriptor.GetValue(element.EffectNode.Effect) as List<GradientLevelPair>;
-					if (gradients == null) return;
-
-					parameterPickerControls.AddRange(CreateGradientLevelPairPickerControls(propertyData, gradients, false));
-				}
-
-				FormParameterPicker parameterPicker = CreateParameterPicker(parameterPickerControls);
-
 				ShowMultiDropMessage();
 				var dr = parameterPicker.ShowDialog(this);
 				if (dr == DialogResult.OK)
 				{
 					if (parameterPicker.PropertyInfo.PropertyType == typeof (Curve))
 					{
+						object effect = null;
+						object curveData = null;
+
 						foreach (var e in elements)
 						{
-							elementValues.Add(e,
-								new Tuple<object, PropertyDescriptor>(parameterPicker.PropertyInfo.GetValue(element.EffectNode.Effect),
-									parameterPicker.PropertyInfo));
-							UpdateEffectProperty(parameterPicker.PropertyInfo, e, curve);
+							// Collect the data for a Wave
+							if (e.EffectNode.Effect.EffectName == "Wave")
+							{
+								effect = ((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves[parameterPicker.SelectedControl.Index - 1];
+								curveData = new Tuple<object, object, object>(effect, element.EffectNode.Effect, parameterPicker.PropertyInfo.GetValue(effect));
+							}
+
+							// Collect the data for a Liquid
+							else if (e.EffectNode.Effect.EffectName == "Liquid")
+							{
+								effect = ((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect).EmitterList[parameterPicker.SelectedControl.Index - 1];
+								curveData = new Tuple<object, object, object>(effect, element.EffectNode.Effect, parameterPicker.PropertyInfo.GetValue(effect));
+							}
+
+							// Collect the data for all other effects
+							else
+							{
+								effect = element.EffectNode.Effect;
+								curveData = parameterPicker.PropertyInfo.GetValue(element.EffectNode.Effect);
+							}
+
+							// Save the current curve for an Undo operation
+							elementValues.Add(element, new Tuple<object, PropertyDescriptor>(curveData, parameterPicker.PropertyInfo));
+
+							// Complete the Effect update.
+							UpdateEffectProperty(parameterPicker.PropertyInfo, e, curve, parameterPicker.SelectedControl.Index - 1);
 						}
 					}
 					else if (parameterPicker.PropertyInfo.PropertyType == typeof(List<GradientLevelPair>))
@@ -4531,9 +4615,37 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 			}
+
 			CompleteDrop(elementValues, element, "Curve");
-			
 		}
+
+		private List<EffectParameterPickerControl> ProcessCurveProperties(object element, int displayIndex, IEnumerable<PropertyData> targetProperties)
+		{
+			List<EffectParameterPickerControl> parameterPickerControls = targetProperties.Where(p => p.PropertyType == typeof(Curve)).Select(propertyData => new EffectParameterPickerControl
+			{
+				Index = displayIndex,
+				PropertyInfo = propertyData.Descriptor,
+				ParameterImage = GetCurveBitmap((Curve)propertyData.Descriptor.GetValue(element)),
+				DisplayName = displayIndex != 0 ? $"{propertyData.DisplayName} {displayIndex}" : $"{propertyData.DisplayName}"
+			}).ToList();
+
+			var gradientLevelList = targetProperties.Where(p => p.PropertyType == typeof(List<GradientLevelPair>));
+			foreach (var propertyData in gradientLevelList)
+			{
+				List<GradientLevelPair> gradients = propertyData.Descriptor.GetValue(element) as List<GradientLevelPair>;
+				if (gradients == null)
+				{
+					return null;
+				}
+
+				parameterPickerControls.AddRange(CreateGradientLevelPairPickerControls(propertyData, gradients, false));
+			}
+
+			return parameterPickerControls;
+		}
+
+
+
 
 		private void HandleCurveDropOnGradientLevelPairList(PropertyData property, Element element, Dictionary<Element, Tuple<object, PropertyDescriptor>> elementValues, Curve curve)
 		{
@@ -4589,7 +4701,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			IEnumerable<PropertyData> targetProperties;
 
-			// If the effectDetail is a Wave, then we'll need to do some special processing to build a list of target Color properties
+			// If the effect is a Wave, then we'll need to do some special processing to build a list of target Color properties
 			if (element.EffectNode.Effect.EffectName == "Wave")
 			{
 				targetProperties = new List<PropertyData>();
@@ -4602,17 +4714,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 
-			// Else if the effectDetail is a Liquid, then we'll need to do some special processing to build a list of target Color properties
+			// Else if the effect is a Liquid, then we'll need to do some special processing to build a list of target Color properties
 			else if (element.EffectNode.Effect.EffectName == "Liquid")
 			{
 				targetProperties = new List<PropertyData>();
 				bool includeColorList = false;
 
 				// Iterate through all the indivudal Emitters to find the individual Colors, or if that Emitter specifies to use the Color List
-				foreach (var emmiter in ((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect).EmitterList)
+				foreach (var emitter in ((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect).EmitterList)
 				{
 					// Does this Emitter specify to use the Color List?
-					if (emmiter.UseColorArray == true)
+					if (emitter.UseColorArray == true)
 					{
 						// Only include a Color List if not already included from a previous Emitter.
 						if (includeColorList == false)
@@ -4626,7 +4738,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					// Else, accumulate the indvidual Emitter's Color
 					else
 					{
-						targetProperties = targetProperties.Concat(MetadataRepository.GetProperties(emmiter).Where(x => (x.PropertyType == typeof(ColorGradient))));
+						targetProperties = targetProperties.Concat(MetadataRepository.GetProperties(emitter).Where(x => (x.PropertyType == typeof(ColorGradient))));
 					}
 				}
 			}
@@ -4639,7 +4751,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			if (!targetProperties.Any()) return;
 
-			// Is there only one target Color property
+			// Is there only one Color property in the selected effect
 			if (targetProperties.Count() == 1)
 			{
 				var property = targetProperties.First();
@@ -4666,7 +4778,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 
-			// We have more than one Color property
+			// We have more than one Color property, so let the user select which one they want to change
 			else
 			{
 				List<EffectParameterPickerControl> parameterPickerControls;
@@ -4682,13 +4794,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						ColorGradient localGradient;
 
-						// If the effectDetail is a Wave, then point the Wave's Color
+						// If the effect is a Wave, then point to the Wave's Color
 						if (element.EffectNode.Effect.EffectName == "Wave")
 						{
 							localGradient = targetPropertiesList[index].Descriptor.GetValue(((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves[index]) as ColorGradient;
 						}
 
-						// Else if the effectDetail is a Liquid, then point to the Emitter's Color
+						// Else if the effect is a Liquid, then point to the Emitter's Color
 						else if (element.EffectNode.Effect.EffectName == "Liquid")
 						{
 							localGradient = targetPropertiesList[index].Descriptor.GetValue(((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect).EmitterList[index]) as ColorGradient;
@@ -4778,21 +4890,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void HandleGradientDropOnGradient(ColorGradient newGradient, Dictionary<Element, Tuple<object, PropertyDescriptor>> elementValues, Element element, PropertyDescriptor property, int index = 0)
 		{
-			object effectDetail = null;
+			object effect = null;
 			object colorData = null;
 
 			// If the target Effect is a Wave, build a color object with the current color, the Wave associated with this color, and the Effect
 			if (element.EffectNode.Effect.EffectName == "Wave")
 			{
-				effectDetail = ((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves[index];
-				colorData = new Tuple<object, object, object>(effectDetail, element.EffectNode.Effect, property.GetValue(effectDetail));
+				effect = ((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves[index];
+				colorData = new Tuple<object, object, object>(effect, element.EffectNode.Effect, property.GetValue(effect));
 			}
 
 			// Else if the target Effect is a Liquid, build a color object with the current color, the Emitter associated with this color, and the Effect
 			else if (element.EffectNode.Effect.EffectName == "Liquid")
 			{
-				effectDetail = ((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect).EmitterList[index];
-				colorData = new Tuple<object, object, object>(effectDetail, element.EffectNode.Effect, property.GetValue(effectDetail));
+				effect = ((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect).EmitterList[index];
+				colorData = new Tuple<object, object, object>(effect, element.EffectNode.Effect, property.GetValue(effect));
 			}
 
 			// Else for all other effects, save off the current color
@@ -4801,7 +4913,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				colorData = property.GetValue(element.EffectNode.Effect);
 			}
 
-			// Save the current color sor an Undo operation
+			// Save the current color for an Undo operation
 			elementValues.Add(element, new Tuple<object, PropertyDescriptor>(colorData, property));
 
 			// Complete the Effect update.
@@ -4935,29 +5047,29 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					if (effectDescriptors.Count <= 1)
 					{
-						//Do this if there is only one effectDetail that the file can be used with.
+						//Do this if there is only one effect that the file can be used with.
 						guid = effectDescriptors[0].TypeId;
 					}
 					else
 					{
-						//Checks to see if an effectDetail has already been used for the selected file type and if so then just use that effectDetail agiain.
-						//Saves having the user select an effectDetail for multiple files that are the same type.
+						//Checks to see if an effect has already been used for the selected file type and if so then just use that effect agiain.
+						//Saves having the user select an effect for multiple files that are the same type.
 						foreach (var effectDescriptor in effectDescriptors.Where(effectDescriptor => tempeffectGuid.Contains(effectDescriptor.TypeId)))
 						{
-							guid = effectDescriptor.TypeId; //effectDetail has already been selected so just use that same effectDetail again.
+							guid = effectDescriptor.TypeId; //effect has already been selected so just use that same effect again.
 							break;
 						}
 
-						//If effectDetail hasn't been auto selected then get the user to select one. Will bring up the Effect Selection Parameter Form
+						//If effect hasn't been auto selected then get the user to select one. Will bring up the Effect Selection Parameter Form
 						if (guid == Guid.Empty) guid = HandleFileDropOnEffectList(effectDescriptors);
 
-						//if guid is still empty then the file is not supported or user hit escape key and didn't select an effectDetail to use in Vixen so go to the next file.
+						//if guid is still empty then the file is not supported or user hit escape key and didn't select an effect to use in Vixen so go to the next file.
 						if (guid == Guid.Empty) continue;
 
 						tempeffectGuid.Add(guid); //Adds Effect Guid's so it can be checked against for the next file. This will save showing the Effect selection form everytime or the same file type.
 					}
 
-					//If effectDetail Placement is false then just stack all the new effcts on top of each other, else add them sequentially in the timeline.
+					//If effect Placement is false then just stack all the new effcts on top of each other, else add them sequentially in the timeline.
 					if (!dragFileSequencialEffectPlacement) i = 0;
 
 					IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(guid);
@@ -4995,7 +5107,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		//Will add each effectDetail to the Effect Selection Parameter form so the user can select which effectDetail to use with the file type.
+		//Will add each effect to the Effect Selection Parameter form so the user can select which effect to use with the file type.
 		private Guid HandleFileDropOnEffectList(IEnumerable<IEffectModuleDescriptor> effectDescriptors)
 		{
 			var parameterPickerControls = CreateEffectListPickerControls(effectDescriptors);
@@ -5244,7 +5356,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				if (moduleData != null)
 				{
-					//Make a new effectDetail and populate it with the detail data from the clipboard
+					//Make a new effect and populate it with the detail data from the clipboard
 					var newEffect = ApplicationServices.Get<IEffectModuleInstance>(effectModelCandidate.TypeId);
 
 					newEffect.ModuleData = moduleData;
@@ -5414,14 +5526,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		//private void SwapEffectData(Dictionary<Element, EffectModelCandidate> changedElements)
 		//{
 		//	List<Element> keys = new List<Element>(changedElements.Keys);
-		//	foreach (var effectDetail in keys)
+		//	foreach (var effect in keys)
 		//	{
 		//		EffectModelCandidate modelCandidate =
-		//			new EffectModelCandidate(effectDetail.EffectNode.Effect)();
+		//			new EffectModelCandidate(effect.EffectNode.Effect)();
 
-		//		effectDetail.EffectNode.Effect.ModuleData = changedElements[effectDetail].GetEffectData(); ;
-		//		changedElements[effectDetail] = modelCandidate;
-		//		effectDetail.UpdateNotifyContentChanged();
+		//		effect.EffectNode.Effect.ModuleData = changedElements[effect].GetEffectData(); ;
+		//		changedElements[effect] = modelCandidate;
+		//		effect.UpdateNotifyContentChanged();
 		//	}
 		//}
 
@@ -5493,7 +5605,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					throw new NotImplementedException("Cannot use sequence type with a Timed Sequence Editor");
 				}
-				//loadSequence(newColor); 
+				//loadSequence(newProperty); 
 			}
 		}
 
@@ -6211,11 +6323,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// Validate the Effect duration is within acceptable boundaries
 		/// </summary>
 		/// <param name="startTime">Start time of the Effect</param>
-		/// <param name="visibleDuration">If visibleDuration is true it will scale so that the whole effectDetail is visible while zoomed in</param>
-		/// <returns>Returns the default new effectDetail duration</returns>
+		/// <param name="visibleDuration">If visibleDuration is true it will scale so that the whole effect is visible while zoomed in</param>
+		/// <returns>Returns the default new effect duration</returns>
 		public TimeSpan GetDefaultEffectDuration(TimeSpan startTime,bool visibleDuration = true)
 		{
-			// The default length of a newly created effectDetail is 2 seconds
+			// The default length of a newly created effect is 2 seconds
 			TimeSpan defaultEffectDuration = TimeSpan.FromSeconds(2);
 			if (visibleDuration)
 			{
@@ -6224,7 +6336,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					defaultEffectDuration = (TimelineControl.VisibleTimeEnd - startTime).Scale(0.8);
 				}
-				// Don't make an effectDetail shorter than 250 milliseconds.
+				// Don't make an effect shorter than 250 milliseconds.
 				if (defaultEffectDuration.TotalMilliseconds <= 250)
 				{
 					defaultEffectDuration = TimeSpan.FromMilliseconds(250);
@@ -6242,7 +6354,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			EffectModelCandidates = new Dictionary<EffectModelCandidate, int>();
 		}
 
-		// a collection of elements and the number of rows they were below the top visible effectDetail when
+		// a collection of elements and the number of rows they were below the top visible effect when
 		// this data was generated and placed on the clipboard.
 		public Dictionary<EffectModelCandidate, int> EffectModelCandidates { get; set; }
 
