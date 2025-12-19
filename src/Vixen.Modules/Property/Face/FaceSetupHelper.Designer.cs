@@ -22,145 +22,180 @@
 		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
 		/// </summary>
-		private void InitializeComponent() {
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.tabControl = new TabControl();
-			this.tabMouth = new TabPage();
-			this.dataGridViewMouth = new System.Windows.Forms.DataGridView();
-			this.tabOther = new TabPage();
-			this.dataGridViewOther = new System.Windows.Forms.DataGridView();
-			this.tableLayoutPanel1.SuspendLayout();
-			this.tabControl.SuspendLayout();
-			this.tabMouth.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.dataGridViewMouth)).BeginInit();
-			this.tabOther.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.dataGridViewOther)).BeginInit();
-			this.SuspendLayout();
+		private void InitializeComponent()
+		{
+			DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+			DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+			DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+			DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+			buttonCancel = new Button();
+			buttonOK = new Button();
+			tableLayoutPanel1 = new TableLayoutPanel();
+			tabControl = new TabControl();
+			tabMouth = new TabPage();
+			dataGridViewMouth = new DataGridView();
+			tabOther = new TabPage();
+			dataGridViewOther = new DataGridView();
+			tableLayoutPanel1.SuspendLayout();
+			tabControl.SuspendLayout();
+			tabMouth.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)dataGridViewMouth).BeginInit();
+			tabOther.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)dataGridViewOther).BeginInit();
+			SuspendLayout();
 			// 
 			// buttonCancel
 			// 
-			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(774, 364);
-			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(87, 27);
-			this.buttonCancel.TabIndex = 6;
-			this.buttonCancel.Text = "Cancel";
-			this.buttonCancel.UseVisualStyleBackColor = true;
+			buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+			buttonCancel.DialogResult = DialogResult.Cancel;
+			buttonCancel.Location = new Point(774, 364);
+			buttonCancel.Name = "buttonCancel";
+			buttonCancel.Size = new Size(87, 27);
+			buttonCancel.TabIndex = 6;
+			buttonCancel.Text = "Cancel";
+			buttonCancel.UseVisualStyleBackColor = true;
 			// 
 			// buttonOK
 			// 
-			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.Location = new System.Drawing.Point(681, 364);
-			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(87, 27);
-			this.buttonOK.TabIndex = 5;
-			this.buttonOK.Text = "OK";
-			this.buttonOK.UseVisualStyleBackColor = true;
+			buttonOK.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+			buttonOK.DialogResult = DialogResult.OK;
+			buttonOK.Location = new Point(681, 364);
+			buttonOK.Name = "buttonOK";
+			buttonOK.Size = new Size(87, 27);
+			buttonOK.TabIndex = 5;
+			buttonOK.Text = "OK";
+			buttonOK.UseVisualStyleBackColor = true;
 			// 
 			// tableLayoutPanel1
 			// 
-			this.tableLayoutPanel1.ColumnCount = 2;
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel1.Controls.Add(this.tabControl, 0, 0);
-			this.tableLayoutPanel1.Controls.Add(this.buttonOK, 0, 2);
-			this.tableLayoutPanel1.Controls.Add(this.buttonCancel, 1, 2);
-			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 3;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(864, 394);
-			this.tableLayoutPanel1.TabIndex = 7;
+			tableLayoutPanel1.ColumnCount = 2;
+			tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+			tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle());
+			tableLayoutPanel1.Controls.Add(tabControl, 0, 0);
+			tableLayoutPanel1.Controls.Add(buttonOK, 0, 2);
+			tableLayoutPanel1.Controls.Add(buttonCancel, 1, 2);
+			tableLayoutPanel1.Dock = DockStyle.Fill;
+			tableLayoutPanel1.Location = new Point(0, 0);
+			tableLayoutPanel1.Name = "tableLayoutPanel1";
+			tableLayoutPanel1.RowCount = 3;
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle());
+			tableLayoutPanel1.Size = new Size(864, 394);
+			tableLayoutPanel1.TabIndex = 7;
 			// 
 			// tabControl
 			// 
-			this.tableLayoutPanel1.SetColumnSpan(this.tabControl, 2);
-			this.tabControl.Controls.Add(this.tabMouth);
-			this.tabControl.Controls.Add(this.tabOther);
-			this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tabControl.ItemSize = new System.Drawing.Size(42, 18);
-			this.tabControl.Location = new System.Drawing.Point(6, 6);
-			this.tabControl.Margin = new System.Windows.Forms.Padding(6);
-			this.tabControl.Name = "tabControl";
-			this.tabControl.SelectedIndex = 1;
-			this.tabControl.Size = new System.Drawing.Size(852, 329);
-			this.tabControl.TabIndex = 7;
-			//this.tabControl.UseVisualStyles = false;
+			tableLayoutPanel1.SetColumnSpan(tabControl, 2);
+			tabControl.Controls.Add(tabMouth);
+			tabControl.Controls.Add(tabOther);
+			tabControl.Dock = DockStyle.Fill;
+			tabControl.ItemSize = new Size(42, 18);
+			tabControl.Location = new Point(6, 6);
+			tabControl.Margin = new Padding(6);
+			tabControl.Name = "tabControl";
+			tabControl.SelectedIndex = 1;
+			tabControl.Size = new Size(852, 329);
+			tabControl.TabIndex = 7;
 			// 
 			// tabMouth
 			// 
-			this.tabMouth.Controls.Add(this.dataGridViewMouth);
-			this.tabMouth.Location = new System.Drawing.Point(4, 22);
-			this.tabMouth.Margin = new System.Windows.Forms.Padding(6);
-			this.tabMouth.Name = "tabMouth";
-			this.tabMouth.Size = new System.Drawing.Size(943, 507);
-			this.tabMouth.TabIndex = 1;
-			this.tabMouth.Text = "Mouth";
-			this.tabMouth.UseVisualStyleBackColor = true;
+			tabMouth.Controls.Add(dataGridViewMouth);
+			tabMouth.Location = new Point(4, 22);
+			tabMouth.Margin = new Padding(6);
+			tabMouth.Name = "tabMouth";
+			tabMouth.Size = new Size(844, 303);
+			tabMouth.TabIndex = 1;
+			tabMouth.Text = "Mouth";
+			tabMouth.UseVisualStyleBackColor = true;
 			// 
 			// dataGridViewMouth
 			// 
-			this.dataGridViewMouth.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.dataGridViewMouth.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.dataGridViewMouth.Location = new System.Drawing.Point(0, 0);
-			this.dataGridViewMouth.Name = "dataGridViewMouth";
-			this.dataGridViewMouth.Size = new System.Drawing.Size(943, 507);
-			this.dataGridViewMouth.TabIndex = 5;
-			this.dataGridViewMouth.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellContentClick);
-			this.dataGridViewMouth.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellDoubleClick);
-			this.dataGridViewMouth.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dataGridViewMouth_CellPainting);
+			dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+			dataGridViewCellStyle1.BackColor = SystemColors.Control;
+			dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
+			dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+			dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+			dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+			dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+			dataGridViewMouth.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+			dataGridViewMouth.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+			dataGridViewCellStyle2.BackColor = SystemColors.Window;
+			dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
+			dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+			dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+			dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+			dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+			dataGridViewMouth.DefaultCellStyle = dataGridViewCellStyle2;
+			dataGridViewMouth.Dock = DockStyle.Fill;
+			dataGridViewMouth.Location = new Point(0, 0);
+			dataGridViewMouth.Name = "dataGridViewMouth";
+			dataGridViewMouth.Size = new Size(844, 303);
+			dataGridViewMouth.TabIndex = 5;
+			dataGridViewMouth.CellContentClick += dataGridView_CellContentClick;
+			dataGridViewMouth.CellDoubleClick += dataGridView_CellDoubleClick;
+			dataGridViewMouth.CellPainting += dataGridViewMouth_CellPainting;
 			// 
 			// tabOther
 			// 
-			this.tabOther.Controls.Add(this.dataGridViewOther);
-			this.tabOther.Location = new System.Drawing.Point(4, 22);
-			this.tabOther.Margin = new System.Windows.Forms.Padding(6);
-			this.tabOther.Name = "tabOther";
-			this.tabOther.Size = new System.Drawing.Size(844, 303);
-			this.tabOther.TabIndex = 2;
-			this.tabOther.Text = "Outlines/Eyes";
+			tabOther.Controls.Add(dataGridViewOther);
+			tabOther.Location = new Point(4, 22);
+			tabOther.Margin = new Padding(6);
+			tabOther.Name = "tabOther";
+			tabOther.Size = new Size(844, 303);
+			tabOther.TabIndex = 2;
+			tabOther.Text = "Outlines/Eyes";
 			// 
 			// dataGridViewOther
 			// 
-			this.dataGridViewOther.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.dataGridViewOther.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.dataGridViewOther.Location = new System.Drawing.Point(0, 0);
-			this.dataGridViewOther.Name = "dataGridViewOther";
-			this.dataGridViewOther.Size = new System.Drawing.Size(844, 303);
-			this.dataGridViewOther.TabIndex = 22;
-			this.dataGridViewOther.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellContentClick);
-			this.dataGridViewOther.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellDoubleClick);
-			this.dataGridViewOther.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dataGridViewOther_CellPainting);
+			dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+			dataGridViewCellStyle3.BackColor = SystemColors.Control;
+			dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F);
+			dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
+			dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+			dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+			dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+			dataGridViewOther.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+			dataGridViewOther.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+			dataGridViewCellStyle4.BackColor = SystemColors.Window;
+			dataGridViewCellStyle4.Font = new Font("Segoe UI", 9F);
+			dataGridViewCellStyle4.ForeColor = SystemColors.ControlText;
+			dataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight;
+			dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+			dataGridViewCellStyle4.WrapMode = DataGridViewTriState.False;
+			dataGridViewOther.DefaultCellStyle = dataGridViewCellStyle4;
+			dataGridViewOther.Dock = DockStyle.Fill;
+			dataGridViewOther.Location = new Point(0, 0);
+			dataGridViewOther.Name = "dataGridViewOther";
+			dataGridViewOther.Size = new Size(844, 303);
+			dataGridViewOther.TabIndex = 22;
+			dataGridViewOther.CellContentClick += dataGridView_CellContentClick;
+			dataGridViewOther.CellDoubleClick += dataGridView_CellDoubleClick;
+			dataGridViewOther.CellPainting += dataGridViewOther_CellPainting;
 			// 
 			// FaceSetupHelper
 			// 
-			this.AcceptButton = this.buttonOK;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(864, 394);
-			this.Controls.Add(this.tableLayoutPanel1);
-			this.FormBorderStyle = FormBorderStyle.FixedDialog;
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.Name = "FaceSetupHelper";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Face Setup";
-			this.Load += new System.EventHandler(this.FaceSetupHelper_Load);
-			this.tableLayoutPanel1.ResumeLayout(false);
-			this.tabControl.ResumeLayout(false);
-			this.tabMouth.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.dataGridViewMouth)).EndInit();
-			this.tabOther.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.dataGridViewOther)).EndInit();
-			this.ResumeLayout(false);
+			AcceptButton = buttonOK;
+			AutoScaleDimensions = new SizeF(7F, 15F);
+			AutoScaleMode = AutoScaleMode.Font;
+			CancelButton = buttonCancel;
+			ClientSize = new Size(864, 394);
+			Controls.Add(tableLayoutPanel1);
+			MaximizeBox = false;
+			MinimizeBox = false;
+			Name = "FaceSetupHelper";
+			StartPosition = FormStartPosition.CenterParent;
+			Text = "Face Setup";
+			Load += FaceSetupHelper_Load;
+			tableLayoutPanel1.ResumeLayout(false);
+			tabControl.ResumeLayout(false);
+			tabMouth.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)dataGridViewMouth).EndInit();
+			tabOther.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)dataGridViewOther).EndInit();
+			ResumeLayout(false);
 
 		}
 
