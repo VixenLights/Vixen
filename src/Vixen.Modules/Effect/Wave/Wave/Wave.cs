@@ -8,6 +8,8 @@ using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
 using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
+using VixenModules.Editor.EffectEditor;
+using Vixen.Module.Effect;
 
 namespace VixenModules.Effect.Wave
 {
@@ -175,6 +177,7 @@ namespace VixenModules.Effect.Wave
 				_waves = value;
 				MarkDirty();
 				OnPropertyChanged();
+				CountOfSubEffects = Waves.Count();
 			}
 		}
 		
@@ -515,9 +518,42 @@ namespace VixenModules.Effect.Wave
 			UpdateRenderScaleFactorAttributes(true);
 		}
 
+		/// <summary>
+		/// Returns a Wave, by index.
+		/// </summary>
+		/// <param name="index">Specifies which Wave to access</param>
+		/// <returns>The Wave, specified by index</returns>
+		public override IWaveform GetSubEffect(int index)
+		{
+			return Waves[index];
+		}
+
+		/// <summary>
+		/// Refresh the Wave's MVVM bindings.
+		/// </summary>
+		public override void UpdateNotifyContentChanged()
+		{
+			OnPropertyChanged(nameof(Waves));
+		}
+
+		/// <summary>
+		/// Gets the properties for a Wave.
+		/// </summary>
+		/// <param name="index">Specifies which Wave to access</param>
+		/// <param name="propertyData">Specifies the Property Type to search for</param>
+		/// <param name="specialFilters">Specifies a filter value that modifies the returned Property List</param>
+		/// <returns>Returns all the properties that are of type Property Type</returns>
+		public override IEnumerable<PropertyData> GetSubEffectProperties(int index, object propertyData, IEffectModuleInstance.SpecialFilters specialFilters)
+		{
+			// Acquire a list of properties as specified in propertyData
+			var wave = Waves[index];
+			IEnumerable<PropertyData> targetProperties = MetadataRepository.GetProperties(wave).Where(x => (x.PropertyType == (Type)propertyData) && x.IsBrowsable);
+
+			return targetProperties;
+		}
 		#endregion
 
-		#region Information
+			#region Information
 
 		public override string Information
 		{
@@ -641,6 +677,8 @@ namespace VixenModules.Effect.Wave
 				// Add the serialized waveform to the collection
 				_data.WaveformData.Add(serializedWaveform);
 			}
+
+			CountOfSubEffects = Waves.Count();
 		}
 
 		/// <summary>

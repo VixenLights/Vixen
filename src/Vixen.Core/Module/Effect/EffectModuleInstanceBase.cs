@@ -8,6 +8,7 @@ using Vixen.Marks;
 using Vixen.Module.Media;
 using Vixen.Services;
 using Vixen.Sys;
+using static Vixen.Module.Effect.IEffectModuleInstance;
 
 namespace Vixen.Module.Effect
 {
@@ -26,6 +27,7 @@ namespace Vixen.Module.Effect
 		private DefaultValueArrayMember _parameterValues;
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private readonly Dictionary<string, bool> _browsableState = new Dictionary<string, bool>();
+		private int _countOfSubEffects = 0;
 
 		protected EffectModuleInstanceBase()
 		{
@@ -103,6 +105,44 @@ namespace Vixen.Module.Effect
 				_parameterValues.Values = value;
 				IsDirty = true;
 			}
+		}
+
+		/// <summary>
+		/// Returns the number of sub-effects
+		/// </summary>
+		public int CountOfSubEffects
+		{
+			get { return _countOfSubEffects; }
+			set { _countOfSubEffects = value; }
+		}
+
+		/// <summary>
+		/// Returns a sub-effect, by index.
+		/// </summary>
+		/// <param name="index">Specifies which sub-effect to access</param>
+		/// <returns>The sub-effect, specified by index</returns>
+		public virtual object GetSubEffect(int index)
+		{
+			return null;
+		}
+
+		/// <summary>
+		/// Refresh the sub-effect's MVVM bindings.
+		/// </summary>
+		public virtual void UpdateNotifyContentChanged()
+		{
+		}
+
+		/// <summary>
+		/// Gets the properties for a sub-effect like Emitter in Liquid and Waves in Wave.
+		/// </summary>
+		/// <param name="index">Specifies which sub0-effect to access</param>
+		/// <param name="propertyData">Specifies the Property Type to search for</param>
+		/// <param name="specialFilters">Specifies a filter value that modifies the returned Property List</param>
+		/// <returns>Returns all the properties that are of type Property Type</returns>
+		public virtual dynamic GetSubEffectProperties(int index, object propertyData, SpecialFilters specialFilters = SpecialFilters.NONE)
+		{
+			return null;
 		}
 
 		public bool PreRender(CancellationTokenSource cancellationToken = null)
