@@ -4,6 +4,7 @@ using Common.Controls.Timeline;
 using ExCSS;
 using Newtonsoft.Json.Linq;
 using VixenModules.Effect.Effect;
+using Vixen.Module.Effect;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Undo
 {
@@ -58,16 +59,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Undo
 				{
 					// Save the previous property data
 					previousPropertyData = new Tuple<object, object, object>(effectDetail, parentEffect, saveProperty);
-
-					// And force an update of all MVVM views, if a Wave or Liquid
-					if (((PixelEffectBase)parentEffect).EffectName == "Wave")
-					{
-						((VixenModules.Effect.Wave.Wave)parentEffect).Waves = ((VixenModules.Effect.Wave.Wave)parentEffect).Waves;
-					}
-					else if (((PixelEffectBase)parentEffect).EffectName == "Liquid")
-					{
-						((VixenModules.Effect.Liquid.Liquid)parentEffect).EmitterList = ((VixenModules.Effect.Liquid.Liquid)parentEffect).EmitterList;
-					}
+					((EffectModuleInstanceBase)parentEffect).UpdateNotifyContentChanged();
 				}
 
 				// Else all other effects
@@ -124,16 +116,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Undo
 				{
 					// Save the previous color data
 					previousColorData = new Tuple<object, object, object>(effectDetail, parentEffect, saveColor);
-
-					// And force an update of all MVVM views, if a Wave or Liquid
-					if (((PixelEffectBase)parentEffect).EffectName == "Wave")
-					{
-						((VixenModules.Effect.Wave.Wave)parentEffect).Waves = ((VixenModules.Effect.Wave.Wave)parentEffect).Waves;
-					}
-					else if (((PixelEffectBase)parentEffect).EffectName == "Liquid")
-					{
-						((VixenModules.Effect.Liquid.Liquid)parentEffect).EmitterList = ((VixenModules.Effect.Liquid.Liquid)parentEffect).EmitterList;
-					}
+					((EffectModuleInstanceBase)parentEffect).UpdateNotifyContentChanged();
 				}
 
 				// Else all other effects

@@ -4166,18 +4166,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void UpdateEffectProperty(PropertyDescriptor descriptor, Element element, Object newProperty, int index = 0)
 		{
-			// Do special processing for the Wave effect
-			if (element.EffectNode.Effect.EffectName == "Wave")
-			{
-				// Replace the existing property on the specified Wave (by index)
-				descriptor.SetValue(((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves[index], newProperty);
-
-				// Force the effect to refresh, including all MVVM views
-				((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves = ((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves;
-			}
-
-			// Or do special processing for the Liquid effect
-			else if (element.EffectNode.Effect.EffectName == "Liquid")
+			if (element.EffectNode.Effect.CountOfSubEffects > 0)
 			{
 				// If we're updating the Color List, then...
 				if (descriptor.PropertyType == typeof(List<ColorGradient>))
@@ -4189,12 +4178,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				// Else replace one of the Emitter's properties
 				else
 				{
-					// Replace the ecisting property on the specified Emitter (by index)
-					descriptor.SetValue(((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect).EmitterList[index], newProperty);
-
-					// Force the effect to refresh, including all MVVM views
-					((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect).EmitterList = ((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect).EmitterList;
+					// Replace the existing property on the specified Wave (by index)
+					descriptor.SetValue((element.EffectNode.Effect).GetSubEffect(index), newProperty);
 				}
+				element.EffectNode.Effect.UpdateNotifyContentChanged();
 			}
 
 			// All other effects
@@ -4444,69 +4431,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void HandleCurveDrop(Element element, Curve curve)
 		{
 			Dictionary<Element, Tuple<Object, PropertyDescriptor>> elementValues = new Dictionary<Element, Tuple<object, PropertyDescriptor>>();
-			IEnumerable<PropertyData> targetProperties;
+			IEnumerable<PropertyData> targetProperties = null;
 			int totalCountofProperties = 0;
 			FormParameterPicker parameterPicker = new FormParameterPicker();
 
-			// If the effect is a Wave, then we'll need to do some special processing to build a list of target Curve properties
-			if (element.EffectNode.Effect.EffectName == "Wave")
-			{
-				targetProperties = new List<PropertyData>();
+			// If an effect contains sub-effects like Emitters in Liquid or Waves in Wave, then iterate through each of the sub-effects collecting
+			// all the Curve properties
+            if (element.EffectNode.Effect.CountOfSubEffects > 0)
+            {
+				for (int index = 0; index < element.EffectNode.Effect.CountOfSubEffects; index++)
+                {
+					targetProperties = element.EffectNode.Effect.GetSubEffectProperties(index, typeof(Curve));
+                    totalCountofProperties = targetProperties.Count();
 
-				// Iterate through all the individual Waves to find all the Curves in each Wave
-				for (int index = 0; index < ((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves.Count; index ++)
-				{
-					// Accumulate the Curve properiesy
-					var wave = ((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves[index];
-					targetProperties = MetadataRepository.GetProperties(wave).Where(x => (x.PropertyType == typeof(Curve)) && x.IsBrowsable);
-					totalCountofProperties += targetProperties.Count();
-
-					parameterPicker.LoadParameterPicker(ProcessCurveProperties(wave, index + 1, targetProperties));
-				}
-			}
-
-			// Else if the effect is a Liquid, then we'll need to do some special processing to build a list of target Curve properties
-			else if (element.EffectNode.Effect.EffectName == "Liquid")
-			{
-				targetProperties = new List<PropertyData>();
-
-				// Iterate through all the indivudal Emitters to find all the Curves
-				for(int index = 0; index < ((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect).EmitterList.Count; index++)
-				{
-					var emitter = ((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect).EmitterList[index];
-					targetProperties = MetadataRepository.GetProperties(emitter).Where(x => x.PropertyType == typeof(Curve));
-
-					// Based upon the settings of the Emitter, we may need to filter out some of the Curve properties
-					if (emitter.Animate == true)
-					{
-						targetProperties = targetProperties.Where(x => x.Name != "X" && x.Name != "Y");
-					}
-					else
-					{
-						targetProperties = targetProperties.Where(x => x.Name != "VelocityX" && x.Name != "VelocityY");
-					}
-
-					if (emitter.NozzleMovement == NozzleMovement.FixedAngle)
-					{
-						targetProperties = targetProperties.Where(x => x.Name != "OscillationSpeed");
-					}
-					else if (emitter.NozzleMovement == NozzleMovement.Oscillate ||
-						     emitter.NozzleMovement == NozzleMovement.SpinCounterClockwise ||
-							 emitter.NozzleMovement == NozzleMovement.SpinClockwise)
-					{
-						targetProperties = targetProperties.Where(x => x.Name != "NozzleAngle");
-					}
-
-					if (emitter.FlowControl == FlowControl.UseMarks ||
-						emitter.FlowControl == FlowControl.Musical)
-					{
-						targetProperties = targetProperties.Where(x => x.Name != "Flow");
-					}
-
-					totalCountofProperties += targetProperties.Count();
-
-					parameterPicker.LoadParameterPicker(ProcessCurveProperties(emitter, index + 1, targetProperties));
-				}
+                    parameterPicker.LoadParameterPicker(ProcessCurveProperties(element.EffectNode.Effect.GetSubEffect(index), index + 1, targetProperties));
+                }
 			}
 
 			// Else all the other effects. We'll do a simple Linq to collect all of the Curve properties
@@ -4565,21 +4504,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 						foreach (var e in elements)
 						{
-							// Collect the data for a Wave
-							if (e.EffectNode.Effect.EffectName == "Wave")
+							// If an effect contains sub-effects like Emitters in Liquid or Waves in Wave, then point to the Curve in the sub-effect
+							if (e.EffectNode.Effect.CountOfSubEffects > 0)
 							{
-								effect = ((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves[parameterPicker.SelectedControl.Index - 1];
-								curveData = new Tuple<object, object, object>(effect, element.EffectNode.Effect, parameterPicker.PropertyInfo.GetValue(effect));
+								effect = e.EffectNode.Effect.GetSubEffect(parameterPicker.SelectedControl.Index - 1);
+								curveData = new Tuple<object, object, object>(effect, e.EffectNode.Effect, parameterPicker.PropertyInfo.GetValue(effect));
 							}
 
-							// Collect the data for a Liquid
-							else if (e.EffectNode.Effect.EffectName == "Liquid")
-							{
-								effect = ((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect).EmitterList[parameterPicker.SelectedControl.Index - 1];
-								curveData = new Tuple<object, object, object>(effect, element.EffectNode.Effect, parameterPicker.PropertyInfo.GetValue(effect));
-							}
-
-							// Collect the data for all other effects
+							// else for all other Effects....
 							else
 							{
 								effect = element.EffectNode.Effect;
@@ -4699,47 +4631,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			Dictionary<Element, Tuple<Object, PropertyDescriptor>> elementValues = new Dictionary<Element, Tuple<object, PropertyDescriptor>>();
 
-			IEnumerable<PropertyData> targetProperties;
+			IEnumerable<PropertyData> targetProperties = null;
 
-			// If the effect is a Wave, then we'll need to do some special processing to build a list of target Color properties
-			if (element.EffectNode.Effect.EffectName == "Wave")
+			// If an effect contains sub-effects like Emitters in Liquid or Waves in Wave, then iterate through each of the sub-effects collecting
+			// all the Gradient properties
+			if (element.EffectNode.Effect.CountOfSubEffects > 0)
 			{
 				targetProperties = new List<PropertyData>();
 
-				// Iterate through all the individual Waves to find the one Color in each Wave
-				foreach (var wave in ((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves)
+				for (int index = 0; index < element.EffectNode.Effect.CountOfSubEffects; index++)
 				{
-					// Accumulate the Color property
-					targetProperties = targetProperties.Concat(MetadataRepository.GetProperties(wave).Where(x => (x.PropertyType == typeof(ColorGradient)) && x.IsBrowsable));
-				}
-			}
-
-			// Else if the effect is a Liquid, then we'll need to do some special processing to build a list of target Color properties
-			else if (element.EffectNode.Effect.EffectName == "Liquid")
-			{
-				targetProperties = new List<PropertyData>();
-				bool includeColorList = false;
-
-				// Iterate through all the indivudal Emitters to find the individual Colors, or if that Emitter specifies to use the Color List
-				foreach (var emitter in ((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect).EmitterList)
-				{
-					// Does this Emitter specify to use the Color List?
-					if (emitter.UseColorArray == true)
-					{
-						// Only include a Color List if not already included from a previous Emitter.
-						if (includeColorList == false)
-						{
-							// Accumulate the Color List
-							targetProperties = targetProperties.Concat(MetadataRepository.GetProperties(((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect)).Where(x => x.PropertyType == typeof(List<ColorGradient>)));
-							includeColorList = true;
-						}
-					}
-
-					// Else, accumulate the indvidual Emitter's Color
-					else
-					{
-						targetProperties = targetProperties.Concat(MetadataRepository.GetProperties(emitter).Where(x => (x.PropertyType == typeof(ColorGradient))));
-					}
+					// We need to do this wacky temp assignment because Concat does compile with dynamic methods
+					IEnumerable<PropertyData> tempProperty = element.EffectNode.Effect.GetSubEffectProperties(index, typeof(ColorGradient), IEffectModuleInstance.SpecialFilters.LIQUID_USE_ONE_COLOR_LIST);
+					targetProperties = targetProperties.Concat(tempProperty);
 				}
 			}
 
@@ -4794,16 +4698,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						ColorGradient localGradient;
 
-						// If the effect is a Wave, then point to the Wave's Color
-						if (element.EffectNode.Effect.EffectName == "Wave")
+						// If an effect contains sub-effects like Emitters in Liquid or Waves in Wave, then point to the Gradient in the sub-effect
+						if (element.EffectNode.Effect.CountOfSubEffects > 0)
 						{
-							localGradient = targetPropertiesList[index].Descriptor.GetValue(((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves[index]) as ColorGradient;
-						}
-
-						// Else if the effect is a Liquid, then point to the Emitter's Color
-						else if (element.EffectNode.Effect.EffectName == "Liquid")
-						{
-							localGradient = targetPropertiesList[index].Descriptor.GetValue(((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect).EmitterList[index]) as ColorGradient;
+							localGradient = targetPropertiesList[index].Descriptor.GetValue(element.EffectNode.Effect.GetSubEffect(index)) as ColorGradient;
 						}
 
 						// Else, for all other effects, point to it's Color
@@ -4893,17 +4791,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			object effect = null;
 			object colorData = null;
 
-			// If the target Effect is a Wave, build a color object with the current color, the Wave associated with this color, and the Effect
-			if (element.EffectNode.Effect.EffectName == "Wave")
+			if (element.EffectNode.Effect.CountOfSubEffects > 0)
 			{
-				effect = ((VixenModules.Effect.Wave.Wave)element.EffectNode.Effect).Waves[index];
-				colorData = new Tuple<object, object, object>(effect, element.EffectNode.Effect, property.GetValue(effect));
-			}
-
-			// Else if the target Effect is a Liquid, build a color object with the current color, the Emitter associated with this color, and the Effect
-			else if (element.EffectNode.Effect.EffectName == "Liquid")
-			{
-				effect = ((VixenModules.Effect.Liquid.Liquid)element.EffectNode.Effect).EmitterList[index];
+				effect = element.EffectNode.Effect.GetSubEffect(index);
 				colorData = new Tuple<object, object, object>(effect, element.EffectNode.Effect, property.GetValue(effect));
 			}
 
