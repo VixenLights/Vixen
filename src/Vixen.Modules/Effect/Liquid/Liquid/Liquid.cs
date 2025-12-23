@@ -14,6 +14,8 @@ using VixenModules.Effect.Effect;
 using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Media.Audio;
+using VixenModules.Editor.EffectEditor;
+using Vixen.Module.Effect;
 
 namespace VixenModules.Effect.Liquid
 {
@@ -274,6 +276,12 @@ namespace VixenModules.Effect.Liquid
 			}
 		}
 
+		// This is a special property that is used to reserve space in generating the Parameter Picker list in TimedSequenceEditorForm
+		// DO NOT USE THIS PROPERTY FOR ANY REASON!!!
+		[Browsable(false)]
+		[ProviderDisplayName(@"PlaceHolder")]
+		public string PlaceHolder { get { return "Do not use"; } }
+
 		#endregion
 
 		#region Configuration Properties
@@ -435,6 +443,7 @@ namespace VixenModules.Effect.Liquid
 				_emitterList = value;
 				MarkDirty();
 				OnPropertyChanged();
+				CountOfSubEffects = _emitterList.Count();
 			}
 		}
 
@@ -987,6 +996,66 @@ namespace VixenModules.Effect.Liquid
 			}
 		}
 
+		/// <summary>
+		/// Returns an Emitter, by index.
+		/// </summary>
+		/// <param name="index">Specifies which Emitter to access</param>
+		/// <returns>The Emitter, specified by index</returns>
+		public override IEmitter GetSubEffect(int index)
+		{
+			return EmitterList[index];
+		}
+
+		/// <summary>
+		/// Refresh the Emitter's MVVM bindings.
+		/// </summary>
+		public override void UpdateNotifyContentChanged()
+		{
+			OnPropertyChanged(nameof(EmitterList));
+		}
+
+		/// <summary>
+		/// Gets the properties for an Emitter.
+		/// </summary>
+		/// <param name="index">Specifies which Emitter to access</param>
+		/// <param name="propertyData">Specifies the Property Type to search for</param>
+		/// <param name="specialFilters">Specifies a filter value that modifies the returned Property List</param>
+		/// <returns>Returns all the properties that are of type Property Type</returns>
+		public override IEnumerable<PropertyData> GetSubEffectProperties(int index, object propertyData, IEffectModuleInstance.SpecialFilters specialFilters)
+		{
+			IEnumerable<PropertyData> targetProperties;
+
+			// Acquire a list of properties as specified in propertyData
+			var emitter = EmitterList[index];
+			targetProperties = MetadataRepository.GetProperties(emitter).Where(x => (x.PropertyType == (Type)propertyData) && x.IsBrowsable);
+
+			// This is a special case where we will need to do some post-processing of the returned list of properties.
+			// In one or more Emitters, the User can select "Use Color List" where the Emitter leverages the higher-level Color List of the entire
+			// Liquid effect rather than the Color in the individual Emitters. In this case, we return the Color List instead.
+			// If the Special Filter is indicated and if other Emitters also specify "Use Color List", we will only return one Color List.
+			if ((Type)propertyData == typeof(ColorGradient))
+			{
+				if (emitter.UseColorArray == true)
+				{
+					targetProperties = MetadataRepository.GetProperties(this).Where(x => x.PropertyType == typeof(List<ColorGradient>));
+
+					if (specialFilters == IEffectModuleInstance.SpecialFilters.LIQUID_USE_ONE_COLOR_LIST)
+					{
+						for (int lookBack = 0; lookBack < index; lookBack++)
+						{
+							if (EmitterList[lookBack].UseColorArray == true)
+							{
+								// A previous Emitter is using the Color List so we do not return multiple Color Lists, so instead we return a placeholder property
+								targetProperties = MetadataRepository.GetProperties(this).Where(x => x.Name == "PlaceHolder");
+								break;
+							}
+						}
+					}
+				}
+			}
+
+			return targetProperties;
+		}
 		#endregion
 
 		#region Private Properties
@@ -1853,6 +1922,8 @@ namespace VixenModules.Effect.Liquid
 				// Add the emitter to the emitter collection
 				EmitterList.Add(emitterModel);
 			}
+
+			CountOfSubEffects = _emitterList.Count();
 		}
 
 		/// <summary>
