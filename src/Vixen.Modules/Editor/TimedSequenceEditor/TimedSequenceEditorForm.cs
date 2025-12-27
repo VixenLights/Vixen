@@ -981,7 +981,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				
 				_effectsForm = new Form_Effects(TimelineControl);
 				_effectsForm.EscapeDrawMode += EscapeDrawMode;
-				_effectsForm.Closing += _effectsForm_Closing;
+				_effectsForm.FormClosing += _effectsForm_Closing;
 				return _effectsForm;
 			}
 		}
@@ -1003,7 +1003,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//_marksForm.MarkCollectionChecked += MarkCollection_Checked;
 				//_marksForm.EditMarkCollection += MarkCollection_Edit;
 				//_marksForm.ChangedMarkCollection += MarkCollection_Changed;
-				_marksForm.Closing += _marksForm_Closing;
+				_marksForm.FormClosing += _marksForm_Closing;
 
 				return _marksForm;
 			}
@@ -1022,7 +1022,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				_layerEditor = new LayerEditor(_sequence.SequenceLayers);
 				_layerEditor.LayersChanged += LayerEditorLayersChanged;
-				_layerEditor.Closing +=LayerEditorOnClosing;
+				_layerEditor.FormClosing +=LayerEditorOnClosing;
 
 				return _layerEditor;
 			}
@@ -1117,18 +1117,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//MarksForm.MarkCollectionChecked -= MarkCollection_Checked;
 			//MarksForm.EditMarkCollection -= MarkCollection_Edit;
 			//MarksForm.ChangedMarkCollection -= MarkCollection_Changed;
-			MarksForm.Closing -= _marksForm_Closing;
+			MarksForm.FormClosing -= _marksForm_Closing;
 		}
 
 		private void _effectsForm_Closing(object sender, CancelEventArgs e)
 		{
 			EffectsForm.EscapeDrawMode -= EscapeDrawMode;
-			EffectsForm.Closing -= _effectsForm_Closing;
+			EffectsForm.FormClosing -= _effectsForm_Closing;
 		}
 
 		private void LayerEditorOnClosing(object sender, CancelEventArgs cancelEventArgs)
 		{
-			LayerEditor.Closing -= LayerEditorOnClosing;
+			LayerEditor.FormClosing -= LayerEditorOnClosing;
 		}
 
 		private void LayerEditorLayersChanged(object sender, EventArgs e)

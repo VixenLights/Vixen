@@ -26,7 +26,7 @@ namespace VixenModules.App.SuperScheduler
 			
 			Data = data;
 
-			Closing += SetupForm_Closing;
+			FormClosing += SetupForm_Closing;
 		}
 
 		private void SetupForm_Closing(object sender, CancelEventArgs e)
