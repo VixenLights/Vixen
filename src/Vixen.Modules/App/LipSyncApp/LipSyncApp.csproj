@@ -4,6 +4,7 @@
 				<AssemblyName>Module.App.$(MSBuildProjectName)</AssemblyName>
 			<RootNamespace>VixenModules.App.LipSyncApp</RootNamespace>
 				<UseWindowsForms>true</UseWindowsForms>
+			<NoWarn>$(NoWarn);WFO1000</NoWarn>
 		</PropertyGroup>
 
 		<ItemGroup>

@@ -4,6 +4,7 @@
 			<RootNamespace>VixenModules.App.Shows</RootNamespace>
 			<AssemblyName>Module.App.$(MSBuildProjectName)</AssemblyName>
 				<UseWindowsForms>true</UseWindowsForms>
+			<NoWarn>$(NoWarn);WFO1000</NoWarn>
 		</PropertyGroup>
 
 		<ItemGroup>

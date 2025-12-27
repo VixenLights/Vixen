@@ -5,11 +5,6 @@
 				<!--WPF needed here for images to be included as resources-->
 				<UseWPF>true</UseWPF>
 		</PropertyGroup>
-
-		<ItemGroup>
-				<PackageReference Include="System.Drawing.Common" />
-				<PackageReference Include="System.Resources.Extensions" />
-		</ItemGroup>
   <ItemGroup>
 				<None Include="accept.png" />
 				<None Include="arrow_down.png" />

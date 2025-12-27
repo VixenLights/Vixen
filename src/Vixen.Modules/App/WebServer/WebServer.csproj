@@ -5,6 +5,7 @@
 				<RootNameSpace>VixenModules.App.WebServer</RootNameSpace>
 				<EnableDynamicLoading>true</EnableDynamicLoading>
 				<UseWindowsForms>true</UseWindowsForms>
+			<NoWarn>$(NoWarn);WFO1000</NoWarn>
 		</PropertyGroup>
 
 		<ItemGroup>

@@ -3,12 +3,11 @@
 		<PropertyGroup>
 				<UseWindowsForms>true</UseWindowsForms>
 				<RootNamespace>Dataweb.NShape</RootNamespace>
+				<NoWarn>$(NoWarn);WFO1000</NoWarn>
 		</PropertyGroup>
 
 		<ItemGroup>
 				<PackageReference Include="System.Data.SqlClient" />
-				<PackageReference Include="System.Drawing.Common" />
-				<PackageReference Include="System.Resources.Extensions" />
 		</ItemGroup>
 
 		<ItemGroup>
