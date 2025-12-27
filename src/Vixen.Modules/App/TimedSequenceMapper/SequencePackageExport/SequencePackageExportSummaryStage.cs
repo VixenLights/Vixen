@@ -142,8 +142,6 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageExport
 					{
 						var seq = XDocument.Load(sequenceFile);
 						var fileElements = seq.Descendants().Where(x => x.Name.LocalName.Equals(@"FileName") 
-						                                                || x.Name.LocalName.Equals(@"Movie_DataPath")
-						                                                || x.Name.LocalName.Equals(@"Picture_FileName")
 						                                                || x.Name.LocalName.Equals(@"Glediator_FileName"));
 						foreach (var xElement in fileElements)
 						{
@@ -155,24 +153,6 @@ namespace VixenModules.App.TimedSequenceMapper.SequencePackageExport
 							{
 								var effectFiles = Directory.GetFiles(Paths.ModuleDataFilesPath, xElement.Value,
 									SearchOption.AllDirectories);
-								if (xElement.Name.LocalName.Equals(@"Movie_DataPath"))
-								{
-									var nutcrackerMovieDirectories =
-										Directory.GetDirectories(Paths.ModuleDataFilesPath, xElement.Value, SearchOption.AllDirectories);
-									if (nutcrackerMovieDirectories.Any())
-									{
-										var nutcrackerMovieFiles = new List<string>();
-										foreach (var nutcrackerMovieDirectory in nutcrackerMovieDirectories)
-										{
-											var movieFiles = Directory.GetFiles(nutcrackerMovieDirectory);
-											nutcrackerMovieFiles.AddRange(movieFiles);
-										}
-										
-										var temp = effectFiles.ToList();
-											temp.AddRange(nutcrackerMovieFiles);
-											effectFiles = temp.ToArray();
-									}
-								}
 
 								var mediaFiles = Directory.GetFiles(MediaService.MediaDirectory, xElement.Value,
 									SearchOption.TopDirectoryOnly);
