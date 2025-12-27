@@ -3,6 +3,7 @@
 		<PropertyGroup>
 				<UseWindowsForms>true</UseWindowsForms>
 				<RootNamespace>VixenModules.Output.E131</RootNamespace>
+			<NoWarn>$(NoWarn);WFO1000</NoWarn>
 		</PropertyGroup>
 
 		<ItemGroup>

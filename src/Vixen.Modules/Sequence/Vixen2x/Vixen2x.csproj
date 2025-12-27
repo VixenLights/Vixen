@@ -2,6 +2,7 @@
 
 		<PropertyGroup>
 				<RootNamespace>VixenModules.Seqence.Vixen2x</RootNamespace>
+			<NoWarn>$(NoWarn);WFO1000</NoWarn>
 		</PropertyGroup>
 
 		<ItemGroup>

@@ -3,6 +3,7 @@
 		<PropertyGroup>
 				<RootNamespace>VixenModules.Property.Orientation</RootNamespace>
 				<UseWindowsForms>true</UseWindowsForms>
+			<NoWarn>$(NoWarn);WFO1000</NoWarn>
 		</PropertyGroup>
 
 		<ItemGroup>

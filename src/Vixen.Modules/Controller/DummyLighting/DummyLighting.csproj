@@ -2,6 +2,7 @@
 
 		<PropertyGroup>
 				<RootNamespace>VixenModules.Output.DummyLighting</RootNamespace>
+			<NoWarn>$(NoWarn);WFO1000</NoWarn>
 		</PropertyGroup>
 
 		<ItemGroup>

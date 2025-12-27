@@ -3,6 +3,7 @@
 		<PropertyGroup>
 				<UseWindowsForms>true</UseWindowsForms>
 				<RootNamespace>Dataweb.NShape.WinFormsUI</RootNamespace>
+			<NoWarn>$(NoWarn);WFO1000</NoWarn>
 		</PropertyGroup>
 
 		<ItemGroup>
