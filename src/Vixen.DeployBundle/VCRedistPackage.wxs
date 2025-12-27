@@ -17,17 +17,17 @@
 
 				<!--
 				Source location for the binaries are the following urls. The content at these targets could be updated at anytime and thus 
-				the hash would not match if we tried to do like NET 6 or ASP.NET packages. So including the actual binary in the installer to
+				the hash would not match if we tried to do like NET 10 or ASP.NET packages. So including the actual binary in the installer to
 				ensure proper function.
 				
-				DownloadUrl="https://aka.ms/vs/17/release/vc_redist.x64.exe"
-				DownloadUrl="https://aka.ms/vs/17/release/vc_redist.x86.exe"
+				DownloadUrl="https://aka.ms/vc14/vc_redist.x64.exe"
+				DownloadUrl="https://aka.ms/vc14/vc_redist.x86.exe"
 				-->
 
 				<PackageGroup Id="VCRedistPackage">
 						<?if $(sys.BUILDARCH) = x64 ?>
 						<ExePackage DetectCondition="(VC_VER_x64 &gt;= v14.40.33810.0)"
-																		DisplayName="Microsoft Visual C++ 2015-2022 Redistributable (x64)"
+																		DisplayName="Microsoft Visual C++ 2017-2026 Redistributable (x64)"
 																		Compressed="yes"
 																		PerMachine="yes"															
 																		SourceFile="..\..\Installer\Redist\VC_redist.x64.exe"
@@ -36,7 +36,7 @@
 																		Permanent="true"/>
 						<?elseif $(sys.BUILDARCH) = x86 ?>
 						<ExePackage DetectCondition="(VC_VER_x86 &gt;= 14.40.33810.0)"
-																		DisplayName="Microsoft Visual C++ 2015-2022 Redistributable (x86)"
+																		DisplayName="Microsoft Visual C++ 2017-2026 Redistributable (x86)"
 																		Compressed="yes"
 																		PerMachine="yes"																
 																		SourceFile="..\..\Installer\Redist\VC_redist.x86.exe"
