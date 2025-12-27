@@ -29,7 +29,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			comboBoxFind.SelectedIndex = 0;
 
-			Closing += FindEffectForm_Closing;
+			FormClosing += FindEffectForm_Closing;
 			Resize += FindEffectForm_Resize;
 
 			// Establish automation to intercept quick keys meant for the Timeline window
