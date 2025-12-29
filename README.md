@@ -1,9 +1,7 @@
-![GitHub release (with filter)](https://img.shields.io/github/v/release/Vixenlights/Vixen?logo=GitHub)
-![GitHub release (with filter)](https://img.shields.io/github/v/release/Vixenlights/Vixen?filter=DevBuild*&logo=GitHub&label=pre-release)
-[![download](https://img.shields.io/badge/download-release-blue.svg)](https://www.vixenlights.com/download/release-build/)
-[![download](https://img.shields.io/badge/download-development-green.svg)](https://www.vixenlights.com/download/develop-build/)
-[![download](https://img.shields.io/badge/bugs-tracker-blue.svg)](http://bugs.vixenlights.com)
-
+[![GitHub release (with filter)](https://img.shields.io/github/v/release/Vixenlights/Vixen)](https://www.vixenlights.com/download/release-build/)
+[![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/vixenlights/vixen/latest/total)](https://www.vixenlights.com/download/release-build/)
+[![GitHub release (with filter)](https://img.shields.io/github/v/release/Vixenlights/Vixen?filter=DevBuild*&label=development)](https://www.vixenlights.com/download/develop-build/)
+[![Issue Tracker](https://img.shields.io/badge/issue-tracker-blue.svg?logo=jira)](http://bugs.vixenlights.com)
 
 <img src="Assets/Vixen3-Logo.png" width=600 />
 
