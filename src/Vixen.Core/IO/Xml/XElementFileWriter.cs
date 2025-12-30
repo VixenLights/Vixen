@@ -1,6 +1,8 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using Vixen.Services;
+using Vixen.Sys;
 
 namespace Vixen.IO.Xml
 {
@@ -9,6 +11,7 @@ namespace Vixen.IO.Xml
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private const int BackupsToKeep = 3;
 		private const int DaysToKeep = 3;
+		private const string BackupFolder = "auto_backup";
 
 		public void WriteFile(string filePath, XElement content)
 		{
@@ -76,7 +79,7 @@ namespace Vixen.IO.Xml
 			{
 				if (File.Exists(filePath))
 				{
-					var backupDirectory = Path.Combine(Path.GetDirectoryName(filePath), SequenceService.SequenceBackupDirectory);
+					var backupDirectory = Path.Combine(Path.GetDirectoryName(filePath), BackupFolder);
 					var fileName = Path.GetFileNameWithoutExtension(filePath);
 					var extension = Path.GetExtension(filePath);
 					var timeStamp = File.GetLastWriteTime(filePath);
@@ -90,7 +93,7 @@ namespace Vixen.IO.Xml
 						Logging.Warn("Backup file exists for some reason and is being deleted.");
 						//This should never happen being as we are using the date time as part of the file name
 						File.Delete(backupFile);
-											}
+					}
 					//Under the covers move does a rename which should be safer and faster than a copy
 					File.Move(filePath, backupFile);
 					success = PurgeOldBackups(filePath);
@@ -119,15 +122,31 @@ namespace Vixen.IO.Xml
 				var oldBackups = folderContent.Where(x => x.Name.StartsWith($"{fileName}_backup"));
 				if (oldBackups.Any())
 				{
-					var directory = Path.Combine(Path.GetDirectoryName(filePath), SequenceService.SequenceBackupDirectory);
+					var directory = Path.Combine(Path.GetDirectoryName(filePath), BackupFolder);
 					foreach (var backup in oldBackups)
 					{
 						File.Move(backup.FullName, Path.Combine(directory, backup.Name));
 					}
 				}
+				//VIX-3785 corrects a bug where SystemData backups where being saved in the Sequence auto_backup folder.
+				//Add logic to clean those old backups up.
+				if (VixenSystem.GetSystemDataPath().Equals(folderPath))
+				{
+					var sequenceFolderContents = new DirectoryInfo(Path.Combine(SequenceService.SequenceDirectory, BackupFolder)).GetFileSystemInfos();
+					var oldSystemBackups = sequenceFolderContents.Where(x => x.Name.StartsWith("ModuleStore_") || x.Name.StartsWith("SystemConfig_")).ToArray();
+					if (oldSystemBackups.Any())
+					{
+						
+						foreach (var oldSystemBackup in oldSystemBackups)
+						{
+							Logging.Info($"Removing system backup from sequence backup folder {oldSystemBackup.FullName}");
+							oldSystemBackup.Delete();
+						}
+					}
+				}
 
 				//Check the backup folder to purge.
-				folderPath = Path.Combine(folderPath, SequenceService.SequenceBackupDirectory);
+				folderPath = Path.Combine(folderPath, BackupFolder);
 				folderContent = new DirectoryInfo(folderPath).GetFileSystemInfos();
 				var backups = folderContent.Where(x => x.Name.StartsWith($"{fileNameWithoutExtension}_") || x.Name.StartsWith($"{fileName}_backup"));
 				if (backups.Count() > BackupsToKeep)

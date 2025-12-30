@@ -401,7 +401,11 @@ namespace Vixen.Sys
 			return FileService.Instance.LoadSystemConfigFile(systemConfigFilePath);
 		}
 
-	
+		public static string GetSystemDataPath()
+		{
+			return _GetSystemDataPath();
+		}
+
 		private static string _GetSystemDataPath()
 		{
 			// Look for a user data file in the binary directory.
