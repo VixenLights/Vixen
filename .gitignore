@@ -22,3 +22,4 @@ src/Vixen.Common/Box2D/Win32
 src/Vixen.Modules/Effect/Liquid/LiquidFunWrapper/x64
 /x64
 FodyWeavers.xsd
+.idea
