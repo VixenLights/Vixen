@@ -85,6 +85,22 @@ namespace Vixen.Sys.Managers
 			return context;
 		}
 
+		/// <summary>
+		/// Creates a Show context
+		/// </summary>
+		/// <param name="showName">Specifies the name of the Show.</param>
+		/// <param name="ID">Specifies the GUID of the Show.</param>
+		/// <returns>The context of the Show</returns>
+		/// <exception cref="ArgumentNullException"></exception>
+		public ShowContext CreateShowContext(String showName, string ID)
+		{
+			if (string.IsNullOrEmpty(showName)) throw new ArgumentNullException("show");
+
+			var context = new ShowContext(showName, Guid.Parse(ID));
+			_AddContext(context);
+			return context;
+		}
+
 		public void ReleaseContext(IContext context)
 		{
 			if (context == null) return;
