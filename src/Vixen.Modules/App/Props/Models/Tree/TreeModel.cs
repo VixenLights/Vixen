@@ -38,9 +38,8 @@ namespace VixenModules.App.Props.Models.Tree
 			_nodesPerString = nodesPerString;
 			_nodeSize = nodeSize;
 			_topRadius = 10;
-			_bottomRadius = 100;
-			Nodes = new(Get2DNodePoints());
-			ThreeDNodes = new(Get3DNodePoints());
+			_bottomRadius = 100;			
+			Nodes = new(Get3DNodePoints());
 			PropertyChanged += PropertyModelChanged;			
 		}
 
@@ -135,53 +134,7 @@ namespace VixenModules.App.Props.Models.Tree
 		}
 
 		#endregion
-				
-		protected override IEnumerable<NodePoint> Get2DNodePoints()
-		{
-			int width = 95;
-
-			double topLeftOffset = 5 + width / 2d - _topWidth / 2d;
-			double bottomTopOffset = 95 - _baseHeight;
-
-			double totalStringsInEllipse = Math.Ceiling(360d / Convert.ToDouble(_degreesCoverage) * Convert.ToDouble(Strings));
-
-			var topEllipsePoints = GetEllipsePoints(topLeftOffset,
-				0,
-				_topWidth,
-				_topHeight,
-				totalStringsInEllipse,
-				_degreesCoverage,
-				_degreesOffset);
-			var baseEllipsePoints = GetEllipsePoints(
-				0,
-				 bottomTopOffset,
-				 width,
-				 _baseHeight,
-				 totalStringsInEllipse,
-				 _degreesCoverage,
-				 _degreesOffset);
-
-			var strings = new List<List<NodePoint>>();
-
-			for (int stringNum = 0; stringNum < _strings; stringNum++)
-			{
-				if (stringNum < _strings && stringNum < topEllipsePoints.Count())
-				{
-					var topPoint = topEllipsePoints[_strings - 1 - stringNum];
-					var basePoint = baseEllipsePoints[_strings - 1 - stringNum];
-                    topPoint.X /= 100f;
-                    topPoint.Y /= 100f;
-                    basePoint.X /= 100f;
-                    basePoint.Y /= 100f;
-					var s = LineModel.GetLinePoints(_nodesPerString, basePoint, topPoint, _nodeSize);
-					strings.Add(s);
-				}
-			}
-
-			//Flatten the strings of NodePoints
-			return strings.SelectMany(x => x);
-		}
-
+						
 		/// <summary>
 		/// Creates the 3-D points that make up the tree.
 		/// </summary>

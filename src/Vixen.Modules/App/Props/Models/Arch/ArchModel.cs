@@ -26,22 +26,15 @@ namespace VixenModules.App.Props.Models.Arch
         public ArchModel(int nodeCount, int nodeSize = 2)
         {
             _nodeCount = nodeCount;
-            _nodeSize = nodeSize;
-            Nodes.AddRange<NodePoint>(Get2DNodePoints());
-			ThreeDNodes = new(Get3DNodePoints());			
+            _nodeSize = nodeSize;           
+			Nodes = new(Get3DNodePoints());			
 			PropertyChanged += PropertyModelChanged;
         }
 
 		#endregion
 
 		#region Protected Abstract Overrides
-		
-		/// <inheritdoc/>				
-		protected override IEnumerable<NodePoint> Get2DNodePoints()
-		{
-			return GetArchPoints(_nodeCount, _nodeSize, RotationAngle);
-		}
-
+				
 		/// <inheritdoc/>				
 		protected override IEnumerable<NodePoint> Get3DNodePoints()
 		{
@@ -71,31 +64,7 @@ namespace VixenModules.App.Props.Models.Arch
 		#endregion
 
 		#region Private Methods
-
-		private static List<NodePoint> GetArchPoints(double numPoints, int size, int rotationAngle)
-        {
-            List<NodePoint> vertices = new List<NodePoint>();
-            double xScale = .5f;
-            double yScale = 1;
-            double radianIncrement = Math.PI / (numPoints - 1);
-
-            double t = Math.PI;
-            while (vertices.Count < numPoints)
-            {
-                double x = xScale + xScale * Math.Cos(t);
-                double y = yScale + yScale * Math.Sin(t);
-                vertices.Add(new NodePoint(x, y){Size = size});
-                t += radianIncrement;
-            }
-
-            if (rotationAngle != 0)
-            {
-                RotateNodePoints(vertices, rotationAngle);
-            }
-
-            return vertices;
-        }
-		
+				
 		/// <summary>
 		/// Calculates the 3-D points that make up the arch.
 		/// </summary>
