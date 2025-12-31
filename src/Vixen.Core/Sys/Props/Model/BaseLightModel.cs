@@ -18,11 +18,9 @@ namespace Vixen.Sys.Props.Model
 		/// <param name="e">Event arguments</param>
 		protected void PropertyModelChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
-			//TODO make this smarter to do the minimal to add, subtract, or update node size or rotation angle.
+			//TODO make this smarter to do the minimal to add, subtract, or update node size or rotation angle.			
 			Nodes.Clear();
-			Nodes.AddRange(Get2DNodePoints());
-			ThreeDNodes.Clear();
-			ThreeDNodes.AddRange(Get3DNodePoints());
+			Nodes.AddRange(Get3DNodePoints());
 		}
 
 		/// <summary>
@@ -58,31 +56,17 @@ namespace Vixen.Sys.Props.Model
 		/// </summary>
 		/// <returns>3-D note points that make up the prop</returns>
 		protected abstract IEnumerable<NodePoint> Get3DNodePoints();
-
-		/// <summary>
-		/// Retrieves the 2-D node points that make up the prop.
-		/// </summary>
-		/// <returns>2-D note points that make up the prop</returns>
-		protected abstract IEnumerable<NodePoint> Get2DNodePoints();
-
+		
 		#endregion
 
 		#region Public Properties
-
+				
 		private ObservableCollection<NodePoint> _nodes = new();
 
 		public ObservableCollection<NodePoint> Nodes
 		{
 			get => _nodes;
 			set => SetProperty(ref _nodes, value);
-		}
-		
-		private ObservableCollection<NodePoint> _threeDNodes = new();
-
-		public ObservableCollection<NodePoint> ThreeDNodes
-		{
-			get => _threeDNodes;
-			set => SetProperty(ref _threeDNodes, value);
 		}
 
 		private int _rotationAngle;
@@ -102,8 +86,8 @@ namespace Vixen.Sys.Props.Model
 
 		public void UpdatePropNodes()
 		{
-			ThreeDNodes.Clear();
-			ThreeDNodes.AddRange(Get3DNodePoints());
+			Nodes.Clear();
+			Nodes.AddRange(Get3DNodePoints());
 		}
 
 		#endregion
