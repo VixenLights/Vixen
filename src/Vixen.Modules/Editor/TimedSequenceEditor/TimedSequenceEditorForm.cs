@@ -314,18 +314,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				SetDockDefaults();
 			}
 
-			if (GridForm.IsHidden)
+			//Check to see if the timeline is hidden or off-screen when floating.
+			if (GridForm.IsHidden || (GridForm.DockState == DockState.Float && !IsFormOnScreen(GridForm.Pane.FloatWindow)))
 			{
+				Logging.Info($"Timeline is floating off screen and will be put back in the docked position. {GridForm.Pane.FloatWindow.Bounds}");
 				GridForm.DockState = DockState.Document;
+				GridForm.IsFloat = false;
 			}
 
 			//Check to see if the timeline is undocked and in some small size that might be lost or hard to find. 
-			if (GridForm.Width < 200 && GridForm.DockState == DockState.Float)
+			if (GridForm.DockState == DockState.Float && (GridForm.Pane.FloatWindow.Width < 100 || GridForm.Pane.FloatWindow.Height < 100))
 			{
-				//Set a reasonable float size and dock us back in the main form where we belong.
-				//This will also help ensure we can set the splitter location later
-				GridForm.Pane.FloatWindow.Size = new Size(300, 300);
-				GridForm.DockState = DockState.Document;
+				//Set a reasonable size for the floating window.
+				Logging.Info($"Timeline is floating and is very small and will be set back to 300, 300 in size. {GridForm.Pane.FloatWindow.Bounds}");
+				GridForm.Pane.FloatWindow.Size = new Size(400, 400);
 			}
 
 			if (EffectEditorForm.DockState == DockState.Unknown)
@@ -657,7 +659,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(new Point(rect.Top, rect.Right)));
 		}
 
-		private bool IsVisibleOnAnyScreen(Rectangle rect)
+		public static bool IsFormOnScreen(Form form)
+		{
+			return IsVisibleOnAnyScreen(form.Bounds);
+		}
+
+		private static bool IsVisibleOnAnyScreen(Rectangle rect)
 		{
 			return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
 		}
