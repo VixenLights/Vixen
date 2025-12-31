@@ -121,9 +121,6 @@
                 <WindowsFormsHost Grid.Row="0"  Margin="5">
                     <controls:ElementTree x:Name="ElementTree"/>
                 </WindowsFormsHost>
-                <views:PropPreview Grid.Row="1" Margin="5" Visibility="{Binding IsTwoD, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                <Viewport3D Name="MainViewport" Grid.Row="1" Margin="5" Visibility="{Binding IsThreeD, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            />
             </Grid>
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions>

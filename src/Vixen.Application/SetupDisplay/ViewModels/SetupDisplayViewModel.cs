@@ -66,9 +66,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			PropNodeTreeViewModel = new();
 			PropNodeTreeViewModel.PropertyChanged += PropNodeTreeViewModel_PropertyChanged;
 			PropNodeTreePropViewModel = new(PropNodeTreeViewModel);
-			PropNodeTreePropViewModel.PropertyChanged += PropNodeTreePropViewModel_PropertyChanged;
-			IsTwoD = true;
-			IsThreeD = true;
+			PropNodeTreePropViewModel.PropertyChanged += PropNodeTreePropViewModel_PropertyChanged;			
 
 			// Initialize the command to center the OpenGL preview
 			CenterPreview = new RelayCommand(ExecuteCenterPreview);
@@ -134,35 +132,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		}
 
 		public static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
-
-		/// <summary>
-		/// Gets or sets the SelectedProp value.
-		/// </summary>
-		public bool IsTwoD
-		{
-			get { return GetValue<bool>(TwoDPropProperty); }
-			set { SetValue(TwoDPropProperty, value); }
-		}
-
-		/// <summary>
-		/// SelectedProp property data.
-		/// </summary>
-		public static readonly IPropertyData TwoDPropProperty = RegisterProperty<bool>(nameof(IsTwoD));
-
-		/// <summary>
-		/// Gets or sets the SelectedProp value.
-		/// </summary>
-		public bool IsThreeD
-		{
-			get { return GetValue<bool>(ThreeDPropProperty); }
-			set { SetValue(ThreeDPropProperty, value); }
-		}
-
-		/// <summary>
-		/// SelectedProp property data.
-		/// </summary>
-		public static readonly IPropertyData ThreeDPropProperty = RegisterProperty<bool>(nameof(IsThreeD));
-
+		
 		#endregion
 
 		#region Private Methods
@@ -354,10 +324,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		{
 			get { return GetValue<IProp>(SelectedPropProperty); }
 			set 
-			{
-				IsThreeD = (value is IntelligentFixtureProp);
-				IsTwoD = !IsThreeD;
-
+			{				
 				// If the prop is a light based prop then...
 				if (value?.PropModel is ILightPropModel lightPropModel)
 				{
