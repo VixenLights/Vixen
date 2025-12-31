@@ -72,7 +72,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		private void CreateFullColorPoints(float referenceHeight)
 		{			
 			// Loop over the 3-D points associated with the prop
-			foreach (NodePoint nodePoint in _propModel.ThreeDNodes)
+			foreach (NodePoint nodePoint in _propModel.Nodes)
 			{				
 				// Adjust (scale) the 3-D points for the reference height
 				_points.Add((float)(nodePoint.X * referenceHeight));

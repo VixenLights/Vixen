@@ -1,26 +1,17 @@
-﻿using System.Diagnostics;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-
-using Common.Controls;
-
+﻿using Common.Controls;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Wpf;
-
 using Orc.Theming;
-
+using System.Diagnostics;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
 using Vixen.Sys;
 using Vixen.Sys.Managers;
-
 using VixenApplication.SetupDisplay.ViewModels;
-
 using VixenModules.App.Modeling;
 using VixenModules.Editor.FixtureGraphics.WPF;
-
 using WPFCommon.Extensions;
-
 using Timer = System.Threading.Timer;
 
 
@@ -105,10 +96,7 @@ namespace VixenApplication.SetupDisplay.Views
 		/// <param name="sender">Event sender</param>
 		/// <param name="e"><Event arguments/param>
 		private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
-		{
-			// Draw moving head 
-			DrawMovingHead((int)Math.Min(MainViewport.ActualWidth, MainViewport.ActualHeight), System.Drawing.Color.Purple, MainViewport);
-
+		{			
 			// Position the camera at the origin
 			float cameraX = 0.0f;
 			float cameraY = 0.0f;
@@ -122,34 +110,7 @@ namespace VixenApplication.SetupDisplay.Views
 		}
 
 		#endregion
-
-		/// <summary>
-		/// Displays two moving head fixtures on the user control using the specified viewports.
-		/// </summary>
-		/// <param name="size">Width and height of the moving head</param>
-		/// <param name="color">Color of the light beam</param>
-		/// <param name="leftViewport">Left viewport to render in</param>
-		/// <param name="rightViewport">Right viewport to render in</param>
-		protected void DrawMovingHead(
-			int size,
-			System.Drawing.Color color,		
-			Viewport3D viewport)
-		{
-			// Configure the left moving head
-			_movingHead.MovingHead.IncludeLegend = false;
-			_movingHead.MovingHead.TiltAngle = 45.0;
-			_movingHead.MovingHead.PanAngle = 35.0;
-			_movingHead.MovingHead.BeamColorLeft = color;
-			_movingHead.MovingHead.BeamColorRight = color;
-			_movingHead.MovingHead.BeamLength = 20;
-			_movingHead.MovingHead.Focus = 20;
-
-			// Draw the moving head
-			_movingHead.DrawFixtureNoBitmap(size, size, 1.0, 0, 0, viewport);
-
-			(DataContext as SetupDisplayViewModel).IsThreeD = false;			
-		}
-		
+				
 		/// <summary>
 		/// This is the main render method for the OpenTK WPF control.
 		/// </summary>
