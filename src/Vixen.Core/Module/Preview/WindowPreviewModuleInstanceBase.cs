@@ -14,11 +14,25 @@ namespace Vixen.Module.Preview
 		protected bool UseWPF { get; set; }
 
 		private IThreadBehavior _threadBehavior;
-
+		
 		protected override IThreadBehavior ThreadBehavior
 		{
 			get
 			{
+				// If we are using WPF / OpenGL but the thread behavior is Windows Forms then...
+				if (UseWPF && _threadBehavior is MultiThreadBehavior)
+				{
+					_threadBehavior.Stop();
+					_threadBehavior = null;
+				}
+
+				// If we are using Windows Forms but the thread behavior is WPF then...
+				if (!UseWPF && _threadBehavior is WPFMultiThreadBehavior)
+				{
+					_threadBehavior.Stop();
+					_threadBehavior = null;
+				}
+
 				if (UseWPF)
 				{
 					if (_threadBehavior == null)
