@@ -146,6 +146,7 @@ namespace VixenModules.Preview.VixenPreview
 		private void SetupPreviewForm()
 		{
 			lock (_formLock) {
+				UseWPF = GetDataModel().UseOpenGL;
 
 				if (!UseOpenGLRendering)
 				{
@@ -161,7 +162,7 @@ namespace VixenModules.Preview.VixenPreview
 						_displayForm = new WPFOpenGLPreviewView(
 							GetDataModel(), 
 							InstanceId, 
-							new WPFOpenGLPreviewViewModel(GetDataModel(), InstanceId, new OpenGLPreviewDrawingEngine(GetDataModel())));													
+							new WPFOpenGLPreviewViewModel(GetDataModel(), InstanceId, new OpenGLPreviewDrawingEngine(GetDataModel())));						
 #endif
 					}
 					catch (Exception ex)
@@ -202,10 +203,10 @@ namespace VixenModules.Preview.VixenPreview
 			_setupForm = new VixenPreviewSetup3();
 			var data = GetDataModel();
 			_setupForm.Data = data;
-			
+
 			// Show the Preview Setup Dialog
 			_setupForm.ShowDialog();
-
+			
 #if OPENGL_PREVIEW_WIN_FORMS
 			if (data.UseOpenGL && _displayForm?.GetType() != typeof(OpenGlPreviewForm))
 			{
