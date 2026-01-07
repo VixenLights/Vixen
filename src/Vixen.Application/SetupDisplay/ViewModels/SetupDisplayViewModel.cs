@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -25,7 +24,7 @@ using VixenApplication.SetupDisplay.OpenGL;
 
 using VixenModules.App.Props.Models.Arch;
 using VixenModules.App.Props.Models.Tree;
-
+using VixenModules.App.Props.Models;
 using Window = System.Windows.Window;
 
 namespace VixenApplication.SetupDisplay.ViewModels
@@ -358,55 +357,10 @@ namespace VixenApplication.SetupDisplay.ViewModels
 				IsThreeD = (value is IntelligentFixtureProp);
 				IsTwoD = !IsThreeD;
 
-				// If the prop is a light based prop then...
-				if (value?.PropModel is ILightPropModel lightPropModel)
-				{
-					// Transfer the rotations from the model to the view model
-					int index = 0;
-					foreach (AxisRotationModel rotationModel in lightPropModel.Rotations)
-					{
-						Rotations[index].Axis = GetAxis(rotationModel.Axis);
-						Rotations[index].RotationAngle = rotationModel.RotationAngle;	
-						index++;
-					}
-				}
 				SetValue(SelectedPropProperty, value);
 			}
 		}
 
-		/// <summary>
-		/// Converts from axis string to enumeration.
-		/// </summary>
-		/// <param name="axis">String to convert</param>
-		/// <returns>Equivalent enumeration of the string</returns>
-		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		private Axis GetAxis(string axis)
-		{			
-			return axis switch
-			{
-				"X" => Axis.XAxis,
-				"Y" => Axis.YAxis,
-				"Z" => Axis.ZAxis,
-				_ => throw new ArgumentOutOfRangeException(nameof(axis), "Unsupported rotation axis")
-			};
-		}
-
-		/// <summary>
-		/// Converts the enumeration into a display string.
-		/// </summary>
-		/// <param name="axis">Enumeration to convert</param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		private string GetAxis(Axis axis)
-		{
-			return axis switch
-			{
-				Axis.XAxis => "X",
-				Axis.YAxis => "Y",	
-				Axis.ZAxis => "Z",	
-				_ => throw new ArgumentOutOfRangeException(nameof(axis), "Unsupported rotation axis")
-			};
-		}
 
 		/// <summary>
 		/// Event handler for when a prop rotation changed.
@@ -418,16 +372,6 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			// If the selected prop is a light based prop then...
 			if (SelectedProp?.PropModel is ILightPropModel lightPropModel)
 			{
-				// Transfer the rotations from the view model to the model
-				int index = 0;
-				foreach (AxisRotationViewModel rotationViewModel in Rotations)
-				{
-					AxisRotationModel rotationMdl = lightPropModel.Rotations[index];
-					rotationMdl.Axis = GetAxis(rotationViewModel.Axis);
-					rotationMdl.RotationAngle = rotationViewModel.RotationAngle;
-					index++;
-				}
-
 				// Update the prop nodes
 				lightPropModel.UpdatePropNodes();
 			}

@@ -16,8 +16,9 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 		/// <inheritdoc/>		
 		public IPropGroup GetProps(IPropWizard wizard)
 		{
-			// Retrieve the Tree Prop wizard page
+			// Retrieve the Tree Prop wizard pages
 			ArchPropWizardPage archPropPage = (ArchPropWizardPage)wizard.Pages.Single(page => page is ArchPropWizardPage);
+			DimmingWizardPage dimmingPage = (DimmingWizardPage)wizard.Pages.Single(page => page is DimmingWizardPage);
 
 			// Create the Arch prop
 			Arch arch = VixenSystem.Props.CreateProp<Arch>(archPropPage.Name);
@@ -25,6 +26,11 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 			// Configure the Arch properties
 			arch.NodeCount = archPropPage.NodeCount;
 			arch.StringType = archPropPage.StringType;
+			arch.ArchWiringStart = archPropPage.ArchWiringStart;
+			arch.LightSize = archPropPage.LightSize;
+			arch.LeftRight = archPropPage.LeftRight;
+			arch.Rotations = archPropPage.Rotations;
+			arch.Curve = dimmingPage.Curve;
 
 			// Create the collection of props to return 
 			IPropGroup propGroup = new PropGroup();

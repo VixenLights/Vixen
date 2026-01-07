@@ -22,12 +22,7 @@ namespace VixenModules.App.Props.Models.Tree
 		{ 
 		}	
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="strings">Number of string</param>
-		/// <param name="nodesPerString">Nodes (lights) per string</param>
-		/// <param name="nodeSize">Node (light) size </param>
+
 		public TreeModel(int strings = 16, int nodesPerString = 50, int nodeSize = 2)
 		{
 			_topWidth = 20;
@@ -41,7 +36,6 @@ namespace VixenModules.App.Props.Models.Tree
 			_bottomRadius = 100;
 			Nodes = new(Get2DNodePoints());
 			ThreeDNodes = new(Get3DNodePoints());
-			PropertyChanged += PropertyModelChanged;			
 		}
 
 		#endregion
@@ -135,7 +129,13 @@ namespace VixenModules.App.Props.Models.Tree
 		}
 
 		#endregion
-				
+
+		/// <inheritdoc/>				
+		public override void SetContext(object data)
+		{
+			throw new NotImplementedException();
+		}
+
 		protected override IEnumerable<NodePoint> Get2DNodePoints()
 		{
 			int width = 95;
@@ -209,9 +209,10 @@ namespace VixenModules.App.Props.Models.Tree
 				// Add a strand to the tree
 				treePoints.AddRange(CreateStrand(NodesPerString, angle, bottomRadius, radiusDelta, -MaxWidth, + 1.0 / NodesPerString ));
 			}
-					
+
 			// (Optionally) rotate the points along the X, Y, and Z axis
-			RotatePoints(treePoints);	
+			//ToDo : Replace null with rotation
+			RotatePoints(treePoints, null);	
 
 			return treePoints;
 		}

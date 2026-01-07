@@ -1,7 +1,9 @@
 ﻿using Catel.Data;
 using Catel.MVVM;
+using System.Collections.ObjectModel;
+using Vixen.Sys.Props.Model;
 
-namespace VixenApplication.SetupDisplay.ViewModels
+namespace VixenModules.App.Props.Models
 {
 	/// <summary>
 	/// Maintains a rotation around a coordinate axis.
@@ -33,6 +35,24 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			}
 		}
 
+		/// <summary>
+		/// Converts the enumeration into a display string.
+		/// </summary>
+		/// <param name="axis">Enumeration to convert</param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		public void ConvertAxis(Vixen.Sys.Props.Model.Axis axis)
+		{
+			Axis = axis switch
+			{
+				Vixen.Sys.Props.Model.Axis.XAxis => "X",
+				Vixen.Sys.Props.Model.Axis.YAxis => "Y",
+				Vixen.Sys.Props.Model.Axis.ZAxis => "Z",
+				_ => throw new ArgumentOutOfRangeException(nameof(axis), "Unsupported rotation axis")
+			};
+		}
+
+
 		public static readonly IPropertyData AxisProperty = RegisterProperty<string>(nameof(Axis));
 
 		/// <summary>
@@ -60,5 +80,23 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		public event EventHandler RotationChanged;
 
 		#endregion
+
+		public static ObservableCollection<AxisRotationModel> ConvertToModel(ObservableCollection<AxisRotationViewModel> rotations)
+		{
+			// Transfer the rotations from the view model to the model
+			var models = new ObservableCollection<AxisRotationModel>();
+			if (rotations != null)
+			{
+				foreach (AxisRotationViewModel rotationViewModel in rotations)
+				{
+					AxisRotationModel rotationMdl = new();
+					rotationMdl.ConvertAxis(rotationViewModel.Axis);
+					rotationMdl.RotationAngle = rotationViewModel.RotationAngle;
+					models.Add(rotationMdl);
+				}
+			}
+			return models;
+		}
+
 	}
 }
