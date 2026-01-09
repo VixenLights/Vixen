@@ -19,7 +19,7 @@
 				<ProjectReference Include="..\..\App\Curves\Curves.csproj" />
 				<ProjectReference Include="..\..\App\Polygon\Polygon.csproj" />
 				<ProjectReference Include="..\..\Effect\Effect\Effect.csproj" />
-				<ProjectReference Include="..\..\Effect\Fixture\FixtureEffect\FixtureEffect.csproj" />
+				<ProjectReference Include="..\..\Effect\Fixture\IFixtureFunctionExpando\IFixtureFunctionExpando.csproj" />
 				<ProjectReference Include="..\..\Effect\Liquid\Emitter\Emitter.csproj" />
 				<ProjectReference Include="..\..\Effect\Morph\IMorphPolygon\IMorphPolygon.csproj" />
 				<ProjectReference Include="..\..\Effect\Wave\IWaveform\IWaveform.csproj" />

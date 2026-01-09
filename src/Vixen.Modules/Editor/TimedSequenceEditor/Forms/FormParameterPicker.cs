@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using Common.Controls;
 using Common.Controls.Theme;
 using Vixen.Module.Effect;
@@ -9,7 +10,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	public partial class FormParameterPicker : BaseForm
 	{
 		private readonly Timer _timer = new Timer();
-		List<List<EffectParameterPickerControl>> _controlsList = new List<List<EffectParameterPickerControl>>();
+		List<Tuple<List<EffectParameterPickerControl>, string>> _controlsList = new List<Tuple<List<EffectParameterPickerControl>, string>>();
 		int _currentIndex = 0;
 		double _closeInterval = 8000;
 
@@ -44,9 +45,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		/// <param name="controls">The controls to render the items in the picker.</param>
 		/// <param name="closeInterval">The auto cancel interval.</param>
-		public FormParameterPicker(IEnumerable<EffectParameterPickerControl> controls, double closeInterval=8000) : this(closeInterval)
+		public FormParameterPicker(IEnumerable<EffectParameterPickerControl> controls, string title = "", double closeInterval=8000) : this(closeInterval)
 		{
-			LoadParameterPicker(controls.ToList());
+			LoadParameterPicker(controls.ToList(), title);
 		}
 
 		private void FormParameterPicker_Activated(object sender, EventArgs e)
@@ -55,9 +56,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_timer.Start();
 		}
 
-		public void LoadParameterPicker(List<EffectParameterPickerControl> controls)
+		public void LoadParameterPicker(List<EffectParameterPickerControl> controls, string title = "")
 		{
-			_controlsList.Add(controls);
+			_controlsList.Add(new Tuple<List<EffectParameterPickerControl>, string>(controls, title));
 
 			// For every page of controls, increase the close interval
 			_timer.Interval = _closeInterval * _controlsList.Count();
@@ -82,7 +83,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			// Display all the controls for the current index
-			foreach (EffectParameterPickerControl control in _controlsList[index])
+			title.Text = _controlsList[index].Item2;
+			foreach (EffectParameterPickerControl control in _controlsList[index].Item1)
 				{
 					control.Click += ParameterControl_Clicked;
 					flowLayoutPanel1.Controls.Add(control);

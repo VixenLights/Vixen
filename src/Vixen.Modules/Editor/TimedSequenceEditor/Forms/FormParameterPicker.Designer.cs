@@ -34,6 +34,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
 			previousButton = new Button();
 			nextButton = new Button();
+			title = new Label();
 			SuspendLayout();
 
 			///
@@ -59,6 +60,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			nextButton.Click += NextButton_Click;
 			nextButton.Anchor = AnchorStyles.None;
 
+			///
+			/// Title
+			/// 
+			title.AutoSize = true;
+			title.Dock = DockStyle.Fill;
+			title.Anchor = AnchorStyles.Top;
+
 			// 
 			// flowLayoutPanel1
 			// 
@@ -80,9 +88,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			tableLayoutPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			tableLayoutPanel.Location = new System.Drawing.Point(1, 1);
 			tableLayoutPanel.ColumnCount = 3;
-			tableLayoutPanel.Controls.Add(previousButton, 0, 0);
-			tableLayoutPanel.Controls.Add(flowLayoutPanel1, 1, 0);
-			tableLayoutPanel.Controls.Add(nextButton, 2, 0);
+			tableLayoutPanel.RowCount = 2;
+			tableLayoutPanel.Controls.Add(previousButton, 0, 1);
+			tableLayoutPanel.Controls.Add(flowLayoutPanel1, 1, 1);
+			tableLayoutPanel.Controls.Add(title, 1, 0);
+			tableLayoutPanel.Controls.Add(nextButton, 2, 1);
 
 			// 
 			// FormParameterPicker
@@ -111,5 +121,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
 		private Button previousButton;
 		private Button nextButton;
+		private Label title;
 	}
 }

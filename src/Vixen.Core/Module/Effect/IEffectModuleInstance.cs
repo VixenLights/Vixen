@@ -1,4 +1,6 @@
-﻿namespace Vixen.Module.Effect
+﻿using System.ComponentModel;
+
+namespace Vixen.Module.Effect
 {
 	public interface IEffectModuleInstance : IEffect, IModuleInstance
 	{
@@ -13,10 +15,11 @@
 		void MarkDirty();
 		void Removing();
 
-		/// <summary>
-		/// Returns the number of sub-effects
-		/// </summary>
-		int CountOfSubEffects { 
+        /// <summary>
+        /// Returns the number of sub-effects
+        /// </summary>
+        [Browsable(false)]
+        int CountOfSubEffects { 
 			get { return 0; }
 			set { }
 		}
@@ -48,6 +51,16 @@
 		virtual dynamic GetSubEffectProperties(int index, object propertyData, SpecialFilters specialFilters = SpecialFilters.NONE)
 		{
 			return null;
+		}
+
+        /// <summary>
+        /// Gets the sub-effect's name
+        /// </summary>
+        /// <param name="index">Specifies which sub-effect to access</param>
+        /// <returns>Returns the sub-effect's name</returns>
+		public virtual string GetSubEffectName(int index)
+		{
+			return string.Empty;
 		}
 	}
 }

@@ -58,7 +58,6 @@ using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 using PropertyDescriptor = System.ComponentModel.PropertyDescriptor;
 using Size = System.Drawing.Size;
 using Common.Broadcast;
-using VixenModules.Effect.Liquid;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -916,16 +915,73 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				return DragDropEffects.Copy;
 			}
+
 			Element element = TimelineControl.grid.ElementAtPosition(mouseLocation);
-			if (element != null)
+            if (element == null)
+            {
+                return DragDropEffects.None;
+            }
+
+            IEnumerable<PropertyData> propertyData = null;
+
+			// Some Effects, like Waves or Emitters are comprised of sub-effects
+			if (element.EffectNode.Effect.CountOfSubEffects > 0)
 			{
-				if (element.EffectNode.Effect.EffectName == "Wave")
-					return DragDropEffects.Copy;
+				// So we'll go through each of the sub-effects to see if they can support the desired drop function
+				for (var index = 0; index < element.EffectNode.Effect.CountOfSubEffects; index++)
+				{
+					// Check if we can drop a Curve
+                    if (dataObject.GetDataPresent(typeof(Curve)))
+                    {
+                        propertyData = element.EffectNode.Effect.GetSubEffectProperties(index, typeof(Curve));
+                        if (propertyData.Any() == true)
+                        {
+                            return DragDropEffects.Copy;
+                        }
+                    }
 
-				if (element.EffectNode.Effect.EffectName == "Liquid")
-					return DragDropEffects.Copy;
+                    // Else check if we can drop one of the Color types
+                    else if (dataObject.GetDataPresent(typeof(Color)) ||
+                             dataObject.GetDataPresent(typeof(ColorGradient)) ||
+                             dataObject.GetDataPresent(typeof(List<ColorGradient>)))
+                    {
+                        propertyData = element.EffectNode.Effect.GetSubEffectProperties(index, typeof(Color));
+                        if (propertyData.Any() == true)
+                        {
+                            return DragDropEffects.Copy;
+                        }
 
-				var propertyData = MetadataRepository.GetProperties(element.EffectNode.Effect);
+                        propertyData =
+                            element.EffectNode.Effect.GetSubEffectProperties(index, typeof(ColorGradient));
+                        if (propertyData.Any() == true)
+                        {
+                            return DragDropEffects.Copy;
+                        }
+
+                        propertyData =
+                            element.EffectNode.Effect.GetSubEffectProperties(index, typeof(List<ColorGradient>));
+                        if (propertyData.Any() == true)
+                        {
+                            return DragDropEffects.Copy;
+                        }
+
+                        propertyData =
+                            element.EffectNode.Effect.GetSubEffectProperties(index,
+                                typeof(List<GradientLevelPair>));
+                        if (dataObject.GetDataPresent(typeof(List<GradientLevelPair>)) &&
+                            propertyData.Any() == true)
+                        {
+                            return DragDropEffects.Copy;
+                        }
+                    }
+                }
+			}
+
+			// All other Effects....
+			else
+			{
+				propertyData = MetadataRepository.GetProperties(element.EffectNode.Effect);
+
 				if (dataObject.GetDataPresent(typeof(Color)) &&
 					propertyData.Any(x => (x.PropertyType == typeof(Color) || x.PropertyType == typeof(ColorGradient) || x.PropertyType == typeof(List<ColorGradient>) || x.PropertyType == typeof(List<GradientLevelPair>)) && x.IsBrowsable))
 				{
@@ -938,7 +994,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							return DragDropEffects.None;
 						}
 					}
-					
+
 					return DragDropEffects.Copy;
 				}
 				if (dataObject.GetDataPresent(typeof(ColorGradient)) &&
@@ -4209,9 +4265,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return true;
 		}
 
-		private FormParameterPicker CreateParameterPicker(List<EffectParameterPickerControl> parameterPickerControls)
+		private FormParameterPicker CreateParameterPicker(List<EffectParameterPickerControl> parameterPickerControls, string title = "")
 		{
-			FormParameterPicker parameterPicker = new FormParameterPicker(parameterPickerControls)
+			FormParameterPicker parameterPicker = new FormParameterPicker(parameterPickerControls, title)
 			{
 				StartPosition = FormStartPosition.Manual,
 				Top = _mouseOriginalPoint.Y
@@ -4430,29 +4486,29 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		
 		private void HandleCurveDrop(Element element, Curve curve)
 		{
-			Dictionary<Element, Tuple<Object, PropertyDescriptor>> elementValues = new Dictionary<Element, Tuple<object, PropertyDescriptor>>();
+			var elementValues = new Dictionary<Element, Tuple<object, PropertyDescriptor>>();
 			IEnumerable<PropertyData> targetProperties = null;
-			int totalCountofProperties = 0;
-			FormParameterPicker parameterPicker = new FormParameterPicker();
+			var totalCountOfProperties = 0;
+			var parameterPicker = new FormParameterPicker();
 
 			// If an effect contains sub-effects like Emitters in Liquid or Waves in Wave, then iterate through each of the sub-effects collecting
 			// all the Curve properties
             if (element.EffectNode.Effect.CountOfSubEffects > 0)
             {
-				for (int index = 0; index < element.EffectNode.Effect.CountOfSubEffects; index++)
+				for (var index = 0; index < element.EffectNode.Effect.CountOfSubEffects; index++)
                 {
 					targetProperties = element.EffectNode.Effect.GetSubEffectProperties(index, typeof(Curve));
-                    totalCountofProperties = targetProperties.Count();
+                    totalCountOfProperties += targetProperties.Count();
 
-                    parameterPicker.LoadParameterPicker(ProcessCurveProperties(element.EffectNode.Effect.GetSubEffect(index), index + 1, targetProperties));
+                    parameterPicker.LoadParameterPicker(ProcessCurveProperties(element.EffectNode.Effect.GetSubEffect(index), index + 1, targetProperties), element.EffectNode.Effect.GetSubEffectName(index));
                 }
 			}
 
-			// Else all the other effects. We'll do a simple Linq to collect all of the Curve properties
+			// Else all the other effects. We'll do a simple Linq to collect all the Curve properties
 			else
 			{
 				targetProperties = MetadataRepository.GetProperties(element.EffectNode.Effect).Where(x => (x.PropertyType == typeof(Curve) || x.PropertyType == typeof(List<GradientLevelPair>)) && x.IsBrowsable);
-				totalCountofProperties = targetProperties.Count();
+				totalCountOfProperties = targetProperties.Count();
 
 				parameterPicker.LoadParameterPicker(ProcessCurveProperties(element.EffectNode.Effect, 0, targetProperties));
 			}
@@ -4463,20 +4519,37 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			//if (ValidateMultipleEffects(element, elements)) return;	
 
-			if (totalCountofProperties == 0)
+			if (totalCountOfProperties == 0)
 			{
 				return;
 			}
 			
-			else if (totalCountofProperties == 1)
+			else if (totalCountOfProperties == 1)
 			{
 				var property = targetProperties.First();
 
 				if (property.PropertyType == typeof (Curve))
 				{
+					object effect = null;
+					object curveData = null;
+
 					foreach (var e in elements)
 					{
-						elementValues.Add(e, new Tuple<object, PropertyDescriptor>(property.Descriptor.GetValue(e.EffectNode.Effect), property.Descriptor));
+						// If an effect contains sub-effects like Emitters in Liquid or Waves in Wave, then point to the Curve in the sub-effect
+						if (e.EffectNode.Effect.CountOfSubEffects > 0)
+						{
+							effect = e.EffectNode.Effect.GetSubEffect(0);
+							curveData = new Tuple<object, object, object>(effect, e.EffectNode.Effect, property.Descriptor.GetValue(effect));
+						}
+
+						// else for all other Effects....
+						else
+						{
+							effect = element.EffectNode.Effect;
+                            curveData = property.Descriptor.GetValue(element.EffectNode.Effect);
+						}
+
+                        elementValues.Add(e, new Tuple<object, PropertyDescriptor>(property.Descriptor.GetValue(effect), property.Descriptor));
 						UpdateEffectProperty(property.Descriptor, e, curve);
 					}
 				}
@@ -4558,7 +4631,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				Index = displayIndex,
 				PropertyInfo = propertyData.Descriptor,
 				ParameterImage = GetCurveBitmap((Curve)propertyData.Descriptor.GetValue(element)),
-				DisplayName = displayIndex != 0 ? $"{propertyData.DisplayName} {displayIndex}" : $"{propertyData.DisplayName}"
+				DisplayName = propertyData.DisplayName
 			}).ToList();
 
 			var gradientLevelList = targetProperties.Where(p => p.PropertyType == typeof(List<GradientLevelPair>));
@@ -4629,7 +4702,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (elements == null || !elements.Any()) return;
 			var element = elements.First();
 
-			Dictionary<Element, Tuple<Object, PropertyDescriptor>> elementValues = new Dictionary<Element, Tuple<object, PropertyDescriptor>>();
+			var elementValues = new Dictionary<Element, Tuple<object, PropertyDescriptor>>();
 
 			IEnumerable<PropertyData> targetProperties = null;
 
@@ -4639,13 +4712,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				targetProperties = new List<PropertyData>();
 
-				for (int index = 0; index < element.EffectNode.Effect.CountOfSubEffects; index++)
+				for (var index = 0; index < element.EffectNode.Effect.CountOfSubEffects; index++)
 				{
-					// We need to do this wacky temp assignment because Concat does compile with dynamic methods
-					IEnumerable<PropertyData> tempProperty = element.EffectNode.Effect.GetSubEffectProperties(index, typeof(ColorGradient), IEffectModuleInstance.SpecialFilters.LIQUID_USE_ONE_COLOR_LIST);
-					targetProperties = targetProperties.Concat(tempProperty);
+                    targetProperties = targetProperties.Concat((IEnumerable<PropertyData>)element.EffectNode.Effect.GetSubEffectProperties(index, typeof(ColorGradient), IEffectModuleInstance.SpecialFilters.LIQUID_USE_ONE_COLOR_LIST));
 				}
-			}
+            }
 
 			// Else all the other effects. We'll do a simple Linq to collect all of the Color properties
 			else
@@ -4686,6 +4757,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			else
 			{
 				List<EffectParameterPickerControl> parameterPickerControls;
+                string pickerTitle = string.Empty;
 
 				parameterPickerControls = new List<EffectParameterPickerControl>();
 
@@ -4702,14 +4774,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						if (element.EffectNode.Effect.CountOfSubEffects > 0)
 						{
 							localGradient = targetPropertiesList[index].Descriptor.GetValue(element.EffectNode.Effect.GetSubEffect(index)) as ColorGradient;
-						}
+                            pickerTitle = element.EffectNode.Effect.GetSubEffectName(-1);
+                        }
 
 						// Else, for all other effects, point to it's Color
 						else
 						{
 							localGradient = targetPropertiesList[index].Descriptor.GetValue(element.EffectNode.Effect) as ColorGradient;
-						}
-						if (localGradient == null) return;
+                            pickerTitle = "Colors";
+                        }
+                        if (localGradient == null) return;
 
 						// Create a picker for the Color, but first adjust the Index to reflect this Color's position in the picker list
 						var pickerControls = CreateGradientPickerControls(targetPropertiesList[index], localGradient, index + 1);
@@ -4725,21 +4799,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 						// Create a picker for the Color List
 						parameterPickerControls.AddRange(CreateGradientListPickerControls(targetPropertiesList[index], gradientList));
+                        pickerTitle = "Gradients";
 					}
 
-					// Else, is the Color a list of Color Gradient pairs
-					else if (targetPropertiesList[index].PropertyType == typeof(List<GradientLevelPair>))
+                    // Else, is the Color a list of Color Gradient pairs
+                    else if (targetPropertiesList[index].PropertyType == typeof(List<GradientLevelPair>))
 					{
 						List<GradientLevelPair> gradientsLevelGroup = targetPropertiesList[index].Descriptor.GetValue(element.EffectNode.Effect) as List<GradientLevelPair>;
 						if (gradientsLevelGroup == null) return;
 
 						// Create a picker for the Color Pair
 						parameterPickerControls.AddRange(CreateGradientLevelPairPickerControls(targetPropertiesList[index], gradientsLevelGroup));
+                        pickerTitle = "Gradient Pairs";
 					}
 
-				}
+                }
 
-				FormParameterPicker parameterPicker = CreateParameterPicker(parameterPickerControls);
+				FormParameterPicker parameterPicker = CreateParameterPicker(parameterPickerControls, pickerTitle);
 
 				ShowMultiDropMessage();
 				var dr = parameterPicker.ShowDialog(this);

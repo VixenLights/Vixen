@@ -1003,13 +1003,38 @@ namespace VixenModules.Effect.Liquid
 		/// <returns>The Emitter, specified by index</returns>
 		public override IEmitter GetSubEffect(int index)
 		{
-			return EmitterList[index];
+            if (index >= 0 && index < EmitterList.Count)
+            {
+			    return EmitterList[index];
+            }
+
+            Debug.Assert(false, "Wave index out of range");
+            return null;
 		}
 
-		/// <summary>
-		/// Refresh the Emitter's MVVM bindings.
-		/// </summary>
-		public override void UpdateNotifyContentChanged()
+        /// <summary>
+        /// Gets the sub-effect's name
+        /// </summary>
+        /// <param name="index">Specifies which sub-effect to access. -1 returns "All Emitters"</param>
+        /// <returns>Returns the sub-effect's name</returns>
+        public override string GetSubEffectName(int index)
+        {
+            if (index == -1)
+            {
+                return "All Emitters";
+            }
+            else if (index < EmitterList.Count)
+            {
+                return $"Emitter {index + 1}";
+            }
+
+            return string.Empty;
+        }
+		
+        /// <summary>
+        /// Refresh the Emitter's MVVM bindings.
+        /// </summary>
+        public override void UpdateNotifyContentChanged()
 		{
 			OnPropertyChanged(nameof(EmitterList));
 		}
@@ -1023,11 +1048,15 @@ namespace VixenModules.Effect.Liquid
 		/// <returns>Returns all the properties that are of type Property Type</returns>
 		public override IEnumerable<PropertyData> GetSubEffectProperties(int index, object propertyData, IEffectModuleInstance.SpecialFilters specialFilters)
 		{
-			IEnumerable<PropertyData> targetProperties;
+            if (index < 0 && index > EmitterList.Count)
+            {
+                Debug.Assert(false, "Emitter index out of range");
+                return null;
+            }
 
 			// Acquire a list of properties as specified in propertyData
-			var emitter = EmitterList[index];
-			targetProperties = MetadataRepository.GetProperties(emitter).Where(x => (x.PropertyType == (Type)propertyData) && x.IsBrowsable);
+            var emitter = EmitterList[index];
+			var targetProperties = MetadataRepository.GetProperties(emitter).Where(x => (x.PropertyType == (Type)propertyData) && x.IsBrowsable);
 
 			// This is a special case where we will need to do some post-processing of the returned list of properties.
 			// In one or more Emitters, the User can select "Use Color List" where the Emitter leverages the higher-level Color List of the entire
@@ -1041,7 +1070,7 @@ namespace VixenModules.Effect.Liquid
 
 					if (specialFilters == IEffectModuleInstance.SpecialFilters.LIQUID_USE_ONE_COLOR_LIST)
 					{
-						for (int lookBack = 0; lookBack < index; lookBack++)
+						for (var lookBack = 0; lookBack < index; lookBack++)
 						{
 							if (EmitterList[lookBack].UseColorArray == true)
 							{

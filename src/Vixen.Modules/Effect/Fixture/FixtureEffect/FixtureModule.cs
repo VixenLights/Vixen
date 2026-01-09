@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using Vixen.Attributes;
 using Vixen.Module;
+using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
@@ -12,6 +13,7 @@ using VixenModules.Effect.Pulse;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.IntelligentFixture;
 using IElementNode = Vixen.Sys.IElementNode;
+using VixenModules.Editor.EffectEditor;
 
 
 namespace VixenModules.Effect.Fixture
@@ -123,6 +125,7 @@ namespace VixenModules.Effect.Fixture
 				_functionItemCollection = value;
 				MarkDirty();
 				OnPropertyChanged();
+				CountOfSubEffects = _functionItemCollection.Count();
 			}
 		}
 
@@ -304,6 +307,64 @@ namespace VixenModules.Effect.Fixture
 			}
 		}
 
+		/// <summary>
+		/// Returns a Function, by index.
+		/// </summary>
+		/// <param name="index">Specifies which Function to access</param>
+		/// <returns>The Function, specified by index</returns>
+		public override IFixtureFunctionExpando GetSubEffect(int index)
+		{
+			if (index >= 0 || index < Functions.Count)
+			{
+                return Functions[index];
+			}
+
+            Debug.Assert(false, "Function index out of range");
+            return null;
+		}
+
+        /// <summary>
+        /// Refresh the Wave's MVVM bindings.
+        /// </summary>
+        public override void UpdateNotifyContentChanged()
+		{
+			OnPropertyChanged(nameof(Functions));
+		}
+
+		/// <summary>
+		/// Gets the properties for a Wave.
+		/// </summary>
+		/// <param name="index">Specifies which Function to access</param>
+		/// <param name="propertyData">Specifies the Property Type to search for</param>
+		/// <param name="specialFilters">Specifies a filter value that modifies the returned Property List</param>
+		/// <returns>Returns all the properties that are of type Property Type</returns>
+		public override IEnumerable<PropertyData> GetSubEffectProperties(int index, object propertyData, IEffectModuleInstance.SpecialFilters specialFilters)
+		{
+            if (index < 0 || index > Functions.Count)
+            {
+                Debug.Assert(false, "Function index out of range");
+                return null;
+            }
+
+            // Acquire a list of properties as specified in propertyData
+			var targetProperties = MetadataRepository.GetProperties(Functions[index]).Where(x => (x.PropertyType == (Type)propertyData) && x.IsBrowsable);
+
+			return targetProperties;
+		}
+
+		public override string GetSubEffectName(int index)
+		{
+            if (index == -1)
+            {
+                return "All Functions";
+            }
+			else if (index < Functions.Count)
+			{
+				return Functions[index].FunctionName;
+			}
+
+			return string.Empty;
+		}
 		#endregion
 
 		#region Protected Properties

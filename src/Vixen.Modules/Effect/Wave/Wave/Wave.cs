@@ -525,13 +525,39 @@ namespace VixenModules.Effect.Wave
 		/// <returns>The Wave, specified by index</returns>
 		public override IWaveform GetSubEffect(int index)
 		{
-			return Waves[index];
-		}
+            if (index >= 0 && index < Waves.Count)
+            {
+                return Waves[index];
+            }
 
-		/// <summary>
-		/// Refresh the Wave's MVVM bindings.
-		/// </summary>
-		public override void UpdateNotifyContentChanged()
+            Debug.Assert(false, "Wave index out of range");
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the sub-effect's name
+        /// </summary>
+        /// <param name="index">Specifies which sub-effect to access. -1 returns "All Waves"</param>
+        /// <returns>Returns the sub-effect's name</returns>
+        public override string GetSubEffectName(int index)
+        {
+            if (index == -1)
+            {
+                return "All Waves";
+            }
+            else if (index < Waves.Count)
+            {
+                return $"Wave {index + 1}";
+            }
+
+            return string.Empty;
+        }
+
+
+        /// <summary>
+        /// Refresh the Wave's MVVM bindings.
+        /// </summary>
+        public override void UpdateNotifyContentChanged()
 		{
 			OnPropertyChanged(nameof(Waves));
 		}
@@ -545,9 +571,15 @@ namespace VixenModules.Effect.Wave
 		/// <returns>Returns all the properties that are of type Property Type</returns>
 		public override IEnumerable<PropertyData> GetSubEffectProperties(int index, object propertyData, IEffectModuleInstance.SpecialFilters specialFilters)
 		{
-			// Acquire a list of properties as specified in propertyData
-			var wave = Waves[index];
-			IEnumerable<PropertyData> targetProperties = MetadataRepository.GetProperties(wave).Where(x => (x.PropertyType == (Type)propertyData) && x.IsBrowsable);
+            if (index < 0 && index > Waves.Count)
+            {
+                Debug.Assert(false, "Wave index out of range");
+                return null;
+            }
+
+            // Acquire a list of properties as specified in propertyData
+            var wave = Waves[index];
+			var targetProperties = MetadataRepository.GetProperties(wave).Where(x => (x.PropertyType == (Type)propertyData) && x.IsBrowsable);
 
 			return targetProperties;
 		}
