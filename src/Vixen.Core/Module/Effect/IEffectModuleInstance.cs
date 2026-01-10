@@ -45,10 +45,10 @@ namespace Vixen.Module.Effect
 		/// Gets the properties for a sub-effect like Emitter in Liquid and Waves in Wave.
 		/// </summary>
 		/// <param name="index">Specifies which sub0-effect to access</param>
-		/// <param name="propertyData">Specifies the Property Type to search for</param>
+		/// <param name="propertyType">Specifies the Property Type to search for</param>
 		/// <param name="specialFilters">Specifies a filter value that modifies the returned Property List</param>
 		/// <returns>Returns all the properties that are of type Property Type</returns>
-		virtual dynamic GetSubEffectProperties(int index, object propertyData, SpecialFilters specialFilters = SpecialFilters.None)
+		virtual dynamic GetSubEffectProperties(int index, Type propertyType, SpecialFilters specialFilters = SpecialFilters.None)
 		{
 			return null;
 		}

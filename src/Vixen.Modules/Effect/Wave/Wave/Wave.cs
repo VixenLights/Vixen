@@ -562,14 +562,14 @@ namespace VixenModules.Effect.Wave
 			OnPropertyChanged(nameof(Waves));
 		}
 
-		/// <summary>
-		/// Gets the properties for a Wave.
-		/// </summary>
-		/// <param name="index">Specifies which Wave to access</param>
-		/// <param name="propertyData">Specifies the Property Type to search for</param>
-		/// <param name="specialFilters">Specifies a filter value that modifies the returned Property List</param>
-		/// <returns>Returns all the properties that are of type Property Type</returns>
-		public override IEnumerable<PropertyData> GetSubEffectProperties(int index, object propertyData, IEffectModuleInstance.SpecialFilters specialFilters)
+        /// <summary>
+        /// Gets the properties for a Wave.
+        /// </summary>
+        /// <param name="index">Specifies which Wave to access</param>
+        /// <param name="propertyType">Specifies the Property Type to search for</param>
+        /// <param name="specialFilters">Specifies a filter value that modifies the returned Property List</param>
+        /// <returns>Returns all the properties that are of type Property Type</returns>
+        public override IEnumerable<PropertyData> GetSubEffectProperties(int index, Type propertyType, IEffectModuleInstance.SpecialFilters specialFilters)
 		{
             if (index < 0 && index > Waves.Count)
             {
@@ -577,9 +577,9 @@ namespace VixenModules.Effect.Wave
                 return null;
             }
 
-            // Acquire a list of properties as specified in propertyData
+            // Acquire a list of properties as specified in propertyType
             var wave = Waves[index];
-			var targetProperties = MetadataRepository.GetProperties(wave).Where(x => (x.PropertyType == (Type)propertyData) && x.IsBrowsable);
+			var targetProperties = MetadataRepository.GetProperties(wave).Where(x => (x.PropertyType == (Type)propertyType) && x.IsBrowsable);
 
 			return targetProperties;
 		}

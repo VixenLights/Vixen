@@ -335,10 +335,10 @@ namespace VixenModules.Effect.Fixture
 		/// Gets the properties for a Fixture.
 		/// </summary>
 		/// <param name="index">Specifies which Function to access</param>
-		/// <param name="propertyData">Specifies the Property Type to search for</param>
+		/// <param name="propertyType">Specifies the Property Type to search for</param>
 		/// <param name="specialFilters">Specifies a filter value that modifies the returned Property List</param>
 		/// <returns>Returns all the properties that are of type Property Type</returns>
-		public override IEnumerable<PropertyData> GetSubEffectProperties(int index, object propertyData, IEffectModuleInstance.SpecialFilters specialFilters)
+		public override IEnumerable<PropertyData> GetSubEffectProperties(int index, Type propertyType, IEffectModuleInstance.SpecialFilters specialFilters)
 		{
             if (index < 0 || index > Functions.Count)
             {
@@ -346,8 +346,8 @@ namespace VixenModules.Effect.Fixture
                 return null;
             }
 
-            // Acquire a list of properties as specified in propertyData
-			var targetProperties = MetadataRepository.GetProperties(Functions[index]).Where(x => (x.PropertyType == (Type)propertyData) && x.IsBrowsable);
+            // Acquire a list of properties as specified in propertyType
+            var targetProperties = MetadataRepository.GetProperties(Functions[index]).Where(x => (x.PropertyType == (Type)propertyType) && x.IsBrowsable);
 
 			return targetProperties;
 		}

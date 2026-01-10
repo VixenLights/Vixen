@@ -1039,14 +1039,14 @@ namespace VixenModules.Effect.Liquid
 			OnPropertyChanged(nameof(EmitterList));
 		}
 
-		/// <summary>
-		/// Gets the properties for an Emitter.
-		/// </summary>
-		/// <param name="index">Specifies which Emitter to access</param>
-		/// <param name="propertyData">Specifies the Property Type to search for</param>
-		/// <param name="specialFilters">Specifies a filter value that modifies the returned Property List</param>
-		/// <returns>Returns all the properties that are of type Property Type</returns>
-		public override IEnumerable<PropertyData> GetSubEffectProperties(int index, object propertyData, IEffectModuleInstance.SpecialFilters specialFilters)
+        /// <summary>
+        /// Gets the properties for an Emitter.
+        /// </summary>
+        /// <param name="index">Specifies which Emitter to access</param>
+        /// <param name="propertyType">Specifies the Property Type to search for</param>
+        /// <param name="specialFilters">Specifies a filter value that modifies the returned Property List</param>
+        /// <returns>Returns all the properties that are of type Property Type</returns>
+        public override IEnumerable<PropertyData> GetSubEffectProperties(int index, Type propertyType, IEffectModuleInstance.SpecialFilters specialFilters)
 		{
             if (index < 0 && index > EmitterList.Count)
             {
@@ -1054,15 +1054,15 @@ namespace VixenModules.Effect.Liquid
                 return null;
             }
 
-			// Acquire a list of properties as specified in propertyData
+            // Acquire a list of properties as specified in propertyType
             var emitter = EmitterList[index];
-			var targetProperties = MetadataRepository.GetProperties(emitter).Where(x => (x.PropertyType == (Type)propertyData) && x.IsBrowsable);
+			var targetProperties = MetadataRepository.GetProperties(emitter).Where(x => (x.PropertyType == (Type)propertyType) && x.IsBrowsable);
 
 			// This is a special case where we will need to do some post-processing of the returned list of properties.
 			// In one or more Emitters, the User can select "Use Color List" where the Emitter leverages the higher-level Color List of the entire
 			// Liquid effect rather than the Color in the individual Emitters. In this case, we return the Color List instead.
 			// If the Special Filter is indicated and if other Emitters also specify "Use Color List", we will only return one Color List.
-			if ((Type)propertyData == typeof(ColorGradient))
+			if ((Type)propertyType == typeof(ColorGradient))
 			{
 				if (emitter.UseColorArray == true)
 				{

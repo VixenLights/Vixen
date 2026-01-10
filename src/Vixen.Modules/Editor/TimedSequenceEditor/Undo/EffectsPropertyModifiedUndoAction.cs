@@ -1,9 +1,6 @@
 ﻿using System.ComponentModel;
 using Common.Controls;
 using Common.Controls.Timeline;
-using ExCSS;
-using Newtonsoft.Json.Linq;
-using VixenModules.Effect.Effect;
 using Vixen.Module.Effect;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Undo
@@ -133,7 +130,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Undo
 			base.Redo();
 		}
 
-public override string Description
+		public override string Description
 		{
 			get { return string.Format("{0} Effect(s) {1} modified", ElementValues.Count, DisplayName);; } 
 		}
