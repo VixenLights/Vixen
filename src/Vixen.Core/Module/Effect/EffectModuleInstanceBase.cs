@@ -141,7 +141,7 @@ namespace Vixen.Module.Effect
 		/// <param name="propertyData">Specifies the Property Type to search for</param>
 		/// <param name="specialFilters">Specifies a filter value that modifies the returned Property List</param>
 		/// <returns>Returns all the properties that are of type Property Type</returns>
-		public virtual dynamic GetSubEffectProperties(int index, object propertyData, SpecialFilters specialFilters = SpecialFilters.NONE)
+		public virtual dynamic GetSubEffectProperties(int index, object propertyData, SpecialFilters specialFilters = SpecialFilters.None)
 		{
 			return null;
 		}

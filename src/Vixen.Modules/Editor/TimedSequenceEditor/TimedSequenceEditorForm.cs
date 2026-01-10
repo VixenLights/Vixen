@@ -4714,7 +4714,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				for (var index = 0; index < element.EffectNode.Effect.CountOfSubEffects; index++)
 				{
-                    targetProperties = targetProperties.Concat((IEnumerable<PropertyData>)element.EffectNode.Effect.GetSubEffectProperties(index, typeof(ColorGradient), IEffectModuleInstance.SpecialFilters.LIQUID_USE_ONE_COLOR_LIST));
+                    targetProperties = targetProperties.Concat((IEnumerable<PropertyData>)element.EffectNode.Effect.GetSubEffectProperties(index, typeof(ColorGradient), IEffectModuleInstance.SpecialFilters.LiquidUseOneColorList));
 				}
             }
 

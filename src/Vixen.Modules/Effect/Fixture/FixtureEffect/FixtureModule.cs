@@ -324,7 +324,7 @@ namespace VixenModules.Effect.Fixture
 		}
 
         /// <summary>
-        /// Refresh the Wave's MVVM bindings.
+        /// Refresh the Fixture's MVVM bindings.
         /// </summary>
         public override void UpdateNotifyContentChanged()
 		{
@@ -332,7 +332,7 @@ namespace VixenModules.Effect.Fixture
 		}
 
 		/// <summary>
-		/// Gets the properties for a Wave.
+		/// Gets the properties for a Fixture.
 		/// </summary>
 		/// <param name="index">Specifies which Function to access</param>
 		/// <param name="propertyData">Specifies the Property Type to search for</param>
@@ -419,12 +419,14 @@ namespace VixenModules.Effect.Fixture
 
 			// Replace the fixture functions exposed by the effect
 			Functions = functionItemCollection;
-		}
 
-		/// <summary>
-		/// Update the fixture function model data.
-		/// </summary>
-		private void UpdateModelData()
+			CountOfSubEffects = Functions.Count();
+        }
+
+        /// <summary>
+        /// Update the fixture function model data.
+        /// </summary>
+        private void UpdateModelData()
 		{
 			// Save off the fixture functions
 			Data.FixtureFunctions = _fixtureFunctions;

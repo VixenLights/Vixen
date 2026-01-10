@@ -6,8 +6,8 @@ namespace Vixen.Module.Effect
 	{
 		enum SpecialFilters
 		{
-			NONE,
-			LIQUID_USE_ONE_COLOR_LIST
+			None,
+			LiquidUseOneColorList
 		}
 
 		 bool ForceGenerateVisualRepresentation { get;   }
@@ -48,7 +48,7 @@ namespace Vixen.Module.Effect
 		/// <param name="propertyData">Specifies the Property Type to search for</param>
 		/// <param name="specialFilters">Specifies a filter value that modifies the returned Property List</param>
 		/// <returns>Returns all the properties that are of type Property Type</returns>
-		virtual dynamic GetSubEffectProperties(int index, object propertyData, SpecialFilters specialFilters = SpecialFilters.NONE)
+		virtual dynamic GetSubEffectProperties(int index, object propertyData, SpecialFilters specialFilters = SpecialFilters.None)
 		{
 			return null;
 		}
