@@ -933,7 +933,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					// Check if we can drop a Curve
                     if (dataObject.GetDataPresent(typeof(Curve)))
                     {
-                        propertyData = element.EffectNode.Effect.GetSubEffectProperties(index, typeof(Curve));
+                        propertyData = (IEnumerable<PropertyData>)element.EffectNode.Effect.GetSubEffectProperties(index, typeof(Curve));
                         if (propertyData.Any() == true)
                         {
                             return DragDropEffects.Copy;
@@ -945,28 +945,28 @@ namespace VixenModules.Editor.TimedSequenceEditor
                              dataObject.GetDataPresent(typeof(ColorGradient)) ||
                              dataObject.GetDataPresent(typeof(List<ColorGradient>)))
                     {
-                        propertyData = element.EffectNode.Effect.GetSubEffectProperties(index, typeof(Color));
+                        propertyData = (IEnumerable<PropertyData>)element.EffectNode.Effect.GetSubEffectProperties(index, typeof(Color));
                         if (propertyData.Any() == true)
                         {
                             return DragDropEffects.Copy;
                         }
 
                         propertyData =
-                            element.EffectNode.Effect.GetSubEffectProperties(index, typeof(ColorGradient));
+	                        (IEnumerable<PropertyData>)element.EffectNode.Effect.GetSubEffectProperties(index, typeof(ColorGradient));
                         if (propertyData.Any() == true)
                         {
                             return DragDropEffects.Copy;
                         }
 
                         propertyData =
-                            element.EffectNode.Effect.GetSubEffectProperties(index, typeof(List<ColorGradient>));
+	                        (IEnumerable<PropertyData>)element.EffectNode.Effect.GetSubEffectProperties(index, typeof(List<ColorGradient>));
                         if (propertyData.Any() == true)
                         {
                             return DragDropEffects.Copy;
                         }
 
                         propertyData =
-                            element.EffectNode.Effect.GetSubEffectProperties(index,
+	                        (IEnumerable<PropertyData>)element.EffectNode.Effect.GetSubEffectProperties(index,
                                 typeof(List<GradientLevelPair>));
                         if (dataObject.GetDataPresent(typeof(List<GradientLevelPair>)) &&
                             propertyData.Any() == true)
@@ -4497,7 +4497,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             {
 				for (var index = 0; index < element.EffectNode.Effect.CountOfSubEffects; index++)
                 {
-					targetProperties = element.EffectNode.Effect.GetSubEffectProperties(index, typeof(Curve));
+					targetProperties = (IEnumerable<PropertyData>)element.EffectNode.Effect.GetSubEffectProperties(index, typeof(Curve));
                     totalCountOfProperties += targetProperties.Count();
 
                     parameterPicker.LoadParameterPicker(ProcessCurveProperties(element.EffectNode.Effect.GetSubEffect(index), index + 1, targetProperties), element.EffectNode.Effect.GetSubEffectName(index));
@@ -4714,7 +4714,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				for (var index = 0; index < element.EffectNode.Effect.CountOfSubEffects; index++)
 				{
-                    targetProperties = targetProperties.Concat((IEnumerable<PropertyData>)element.EffectNode.Effect.GetSubEffectProperties(index, typeof(ColorGradient), IEffectModuleInstance.SpecialFilters.LiquidUseOneColorList));
+                    targetProperties = targetProperties.Concat((IEnumerable<PropertyData>)element.EffectNode.Effect.GetSubEffectProperties(index, typeof(ColorGradient), IEffectModuleInstance.SpecialFilters.UseOneColorList));
 				}
             }
 

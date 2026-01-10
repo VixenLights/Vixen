@@ -1068,7 +1068,7 @@ namespace VixenModules.Effect.Liquid
 				{
 					targetProperties = MetadataRepository.GetProperties(this).Where(x => x.PropertyType == typeof(List<ColorGradient>));
 
-					if (specialFilters == IEffectModuleInstance.SpecialFilters.LiquidUseOneColorList)
+					if (specialFilters == IEffectModuleInstance.SpecialFilters.UseOneColorList)
 					{
 						for (var lookBack = 0; lookBack < index; lookBack++)
 						{

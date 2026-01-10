@@ -3,7 +3,7 @@ using System.ComponentModel;
 using Common.Controls;
 using Common.Controls.Theme;
 using Vixen.Module.Effect;
-using Timer = System.Timers.Timer;
+using Timer = System.Windows.Forms.Timer;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -11,14 +11,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	{
 		private readonly Timer _timer = new Timer();
 		List<Tuple<List<EffectParameterPickerControl>, string>> _controlsList = new List<Tuple<List<EffectParameterPickerControl>, string>>();
-		int _currentIndex = 0;
-		double _closeInterval = 8000;
+		private int _currentIndex;
+		private readonly int _closeInterval;
 
 		/// <summary>
 		/// Shows the parameter picker window.
 		/// </summary>
 		/// <param name="closeInterval">The auto cancel interval.</param>
-		public FormParameterPicker(double closeInterval = 8000)
+		public FormParameterPicker(int closeInterval = 8000)
 		{
 			InitializeComponent();
 			tableLayoutPanel.ColumnStyles.Add(new ColumnStyle());
@@ -37,7 +37,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				: MousePosition.X - Width;
 
 			_closeInterval = closeInterval;
-			_timer.Elapsed += _timer_Elapsed;
+			_timer.Tick += _timer_Elapsed;
 		}
 
 		/// <summary>
@@ -45,7 +45,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		/// <param name="controls">The controls to render the items in the picker.</param>
 		/// <param name="closeInterval">The auto cancel interval.</param>
-		public FormParameterPicker(IEnumerable<EffectParameterPickerControl> controls, string title = "", double closeInterval=8000) : this(closeInterval)
+		public FormParameterPicker(IEnumerable<EffectParameterPickerControl> controls, string title = "", int closeInterval = 8000) : this(closeInterval)
 		{
 			LoadParameterPicker(controls.ToList(), title);
 		}
@@ -105,7 +105,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void _timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+		private void _timer_Elapsed(object sender, EventArgs e)
 		{
 			CloseForm(DialogResult.Cancel);
 		}
