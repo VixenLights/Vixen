@@ -569,7 +569,7 @@ namespace VixenModules.Effect.Wave
         /// <param name="propertyType">Specifies the Property Type to search for</param>
         /// <param name="specialFilters">Specifies a filter value that modifies the returned Property List</param>
         /// <returns>Returns all the properties that are of type Property Type</returns>
-        public override IEnumerable<PropertyData> GetSubEffectProperties(int index, Type propertyType, IEffectModuleInstance.SpecialFilters specialFilters)
+        public override IEnumerable<PropertyDescriptor> GetSubEffectProperties(int index, Type propertyType, IEffectModuleInstance.SpecialFilters specialFilters)
 		{
             if (index < 0 && index > Waves.Count)
             {
@@ -581,7 +581,7 @@ namespace VixenModules.Effect.Wave
             var wave = Waves[index];
 			var targetProperties = MetadataRepository.GetProperties(wave).Where(x => (x.PropertyType == (Type)propertyType) && x.IsBrowsable);
 
-			return targetProperties;
+			return targetProperties.Select(x => x.Descriptor); ;
 		}
 		#endregion
 
