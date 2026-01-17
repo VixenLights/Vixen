@@ -34,14 +34,29 @@ namespace VixenApplication.SetupDisplay.ViewModels
 	/// Maintains the Display Setup view model.
 	/// </summary>
 	public class SetupDisplayViewModel : ViewModelBase
-	{
-		#region Fields
+	{				
+		#region Constants
 
-		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private const int LayoutViewTab = 0;
 		private const int PropViewTab = 1;
 
-		#endregion 
+		#endregion
+
+		#region Fields
+
+		/// <summary>
+		/// Prop model to display in the prop preview on the next render cycle.
+		/// </summary>
+		private IProp _nextPreviewProp;
+
+		/// <summary>
+		/// Prop model currently being displayed in the prop preview.
+		/// </summary>
+		private IProp _currentPreviewProp;
+
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
+
+		#endregion
 
 		#region Constructor
 
@@ -50,8 +65,6 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		public SetupDisplayViewModel()
 		{
-			PropPreviewNodePoints = new();
-
 			//Initial creation to mock. Remove once VixenSystem can load and save
 			//if (!VixenSystem.Props.RootNodes.Any())
 			//         {
@@ -67,6 +80,9 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			PropNodeTreeViewModel.PropertyChanged += PropNodeTreeViewModel_PropertyChanged;
 			PropNodeTreePropViewModel = new(PropNodeTreeViewModel);
 			PropNodeTreePropViewModel.PropertyChanged += PropNodeTreePropViewModel_PropertyChanged;			
+
+			// Initialize the command to add a prop to the preview
+			AddPropToPreview = new RelayCommand(AddSelectedPropToPreview);
 
 			// Initialize the command to center the OpenGL preview
 			CenterPreview = new RelayCommand(ExecuteCenterPreview);
@@ -96,6 +112,11 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		#endregion
 
 		#region Public Properties
+
+		/// <summary>
+		/// Command to add a prop to the preview;
+		/// </summary>
+		public ICommand AddPropToPreview { get; private set; }
 
 		/// <summary>
 		/// Command to centers the preview.
@@ -132,10 +153,19 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		}
 
 		public static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
-		
+
 		#endregion
 
 		#region Private Methods
+
+		/// <summary>
+		/// Adds the currently selected prop to the preview.
+		/// </summary>
+		private void AddSelectedPropToPreview()
+		{
+			// Add the selected prop to the preview
+			DisplayPreviewDrawingEngine.AddProps(new List<IPropModel>{ SelectedProp.PropModel });
+		}
 
 		/// <summary>
 		/// Center preview command handler.
@@ -143,7 +173,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		private void ExecuteCenterPreview()
 		{
 			// Center the preview and return the new width and height
-			/*ClientSize =*/ DrawingEngine.ExecuteCenterPreview();
+			/*ClientSize =*/ PropPreviewDrawingEngine.ExecuteCenterPreview();
 		}
 	
 		private void PropNodeTreePropViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -158,8 +188,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 				}
 				else
 				{
-					SelectedProp = null;
-					ClearPreviewModel();
+					SelectedProp = null;					
 					ClearPropComponentTreeViewModel();
 					UpdatePreviewModel(SelectedProp);
 				}
@@ -178,8 +207,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 				}
 				else
 				{
-					SelectedProp = null;
-					ClearPreviewModel();
+					SelectedProp = null;					
 					ClearPropComponentTreeViewModel();
 					UpdatePreviewModel(SelectedProp);
 				}
@@ -206,24 +234,24 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			int height = 0;
 
 			// If the drawing engine already exists then...
-			if (DrawingEngine != null)
+			if (PropPreviewDrawingEngine != null)
 			{
 				// Save off the width and height of the viewport
-				width = DrawingEngine.OpenTkControl_Width;
-				height = DrawingEngine.OpenTkControl_Height;
+				width = PropPreviewDrawingEngine.OpenTkControl_Width;
+				height = PropPreviewDrawingEngine.OpenTkControl_Height;
 
 				// Dispose of the preview drawing engine
-				DrawingEngine.Dispose();
-				DrawingEngine = null;
+				PropPreviewDrawingEngine.Dispose();
+				PropPreviewDrawingEngine = null;
 			}
 
 			// Create a new drawing engine passing it the prop to display
-			DrawingEngine = new(propModels);
-			DrawingEngine.OpenTkControl_Width = width;
-			DrawingEngine.OpenTkControl_Height = height;
+			PropPreviewDrawingEngine = new(propModels);
+			PropPreviewDrawingEngine.OpenTkControl_Width = width;
+			PropPreviewDrawingEngine.OpenTkControl_Height = height;
 
 			// Initialize the drawing engine with the camera on the axis (0,0,0)
-			DrawingEngine.Initialize(
+			PropPreviewDrawingEngine.Initialize(
 				0.0f,
 				0.0f,
 				0.0f);
@@ -424,25 +452,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		public static readonly IPropertyData PropComponentTreeViewModelProperty = RegisterProperty<PropComponentTreeViewModel>(nameof(PropComponentTreeViewModel));
 
 		#endregion
-
-		#region PropPreviewNodePoints property
-
-		/// <summary>
-		/// Gets or sets the PropPreviewNodePoints value.
-		/// </summary>
-		public ObservableCollection<NodePoint>? PropPreviewNodePoints
-		{
-			get { return GetValue<ObservableCollection<NodePoint>>(SelectedItemNodesProperty); }
-			private set { SetValue(SelectedItemNodesProperty, value); }
-		}
-
-		/// <summary>
-		/// PropPreviewNodePoints property data.
-		/// </summary>
-		public static readonly IPropertyData SelectedItemNodesProperty = RegisterProperty<ObservableCollection<NodePoint>>(nameof(PropPreviewNodePoints));
-
-		#endregion
-
+			
 		#region Menu Commands
 
 		#region OpenProp command
@@ -788,37 +798,50 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		#endregion
 
 		#region PropPreview Methods
-
-		internal void ClearPreviewModel()
-		{
-			PropPreviewNodePoints = null;
-
-		}
-
+		
+		/// <summary>
+		/// Updates the prop displayed in the prop preview.
+		/// </summary>
+		/// <param name="prop">Prop to display in the prop preview</param>
 		internal void UpdatePreviewModel(IProp prop)
-		{			
-			if (prop?.PropModel is ILightPropModel lightPropModel)
+		{
+			// Save off the prop model to display in the prop preview
+			_nextPreviewProp = prop;			
+		}
+
+		/// <summary>
+		/// Draws the currently selected prop in the prop preview.
+		/// </summary>
+		/// <remarks>
+		/// This method needs to be called within the OpenTK control render method.
+		/// Otherwise the two OpenTK controls get confused and the prop preview won't render properly or consistently.
+		/// </remarks>
+		public void DrawProp()
+		{
+			// If the prop preview model has changed then...
+			if (_nextPreviewProp != _currentPreviewProp)
 			{
-				if (PropPreviewNodePoints != lightPropModel.Nodes)
-				{
-					PropPreviewNodePoints = lightPropModel.Nodes;
-					
-					// Draw the prop in OpenGL
-					DrawProp(lightPropModel);
-				}
-			}
-			else if (prop?.PropModel is IPropModel propModel)
-			{				
-				// Draw the prop in OpenGL
-				DrawProp(propModel);				
-			}			
-			else
-			{				
-				DrawProp(null);
+				// Draw the prop in the OpenGL prop preview
+				DrawProp(_nextPreviewProp?.PropModel);
+
+				// Save off the current prop preview prop model
+				_currentPreviewProp = _nextPreviewProp;	
 			}
 		}
 
-		public OpenGLPropDrawingEngine DrawingEngine { get; set; } = new OpenGLPropDrawingEngine(new List<IPropModel>());
+		#region Public Properties
+
+		/// <summary>
+		/// Drawing engine for the prop preview.
+		/// </summary>
+		public OpenGLPropDrawingEngine PropPreviewDrawingEngine { get; set; } = new OpenGLPropDrawingEngine(new List<IPropModel>());
+
+		/// <summary>
+		/// Drawing engine for the display preview.
+		/// </summary>
+		public OpenGLSetupPreviewDrawingEngine DisplayPreviewDrawingEngine { get; set; } = new OpenGLSetupPreviewDrawingEngine(new List<IPropModel>());
+
+		#endregion
 
 		#endregion
 

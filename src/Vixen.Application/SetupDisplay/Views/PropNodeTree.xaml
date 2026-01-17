@@ -52,6 +52,7 @@
                 <MenuItem Header="Create Empty Group" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreateNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
                 <MenuItem Header="Copy to New Group" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreateGroupCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
                 <MenuItem Header="Move to New Group" Command="{Binding Path=DataContext.PropNodeTreeViewModel.MoveToGroupCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
+                <MenuItem Header="Add Prop To Preview" Command="{Binding Path=DataContext.AddPropToPreview, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
                 <Separator/>
                 <MenuItem Header="Cut" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CutCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
                     <MenuItem.Icon>

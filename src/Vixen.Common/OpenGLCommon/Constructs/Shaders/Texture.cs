@@ -61,10 +61,7 @@ namespace Common.OpenGLCommon.Constructs.Shaders
 			GL.BindTexture(TextureTarget, 0);
 		}
 
-		~Texture()
-		{
-			Dispose(false);
-		}
+
 		#endregion
 
 		#region Methods

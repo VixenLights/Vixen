@@ -102,6 +102,7 @@ namespace Common.OpenGLCommon.Constructs.Vertex
             : this(data, BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
         {
         }
+        
         #endregion
 
  

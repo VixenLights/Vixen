@@ -118,10 +118,6 @@ namespace Common.OpenGLCommon.Constructs.Shaders
 			DisposeChildren = true;
 		}
 
-		~ShaderProgram()
-		{
-			Dispose(false);
-		}
 		#endregion
 
 		/// <summary>
