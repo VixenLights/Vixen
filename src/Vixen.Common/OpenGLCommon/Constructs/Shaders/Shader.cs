@@ -58,10 +58,7 @@ namespace Common.OpenGLCommon.Constructs.Shaders
 			GetParams(source);
 		}
 
-		~Shader()
-		{
-			Dispose(false);
-		}
+	
 		#endregion
 
 		#region GetParams

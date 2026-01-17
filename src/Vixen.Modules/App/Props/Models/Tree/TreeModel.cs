@@ -139,17 +139,17 @@ namespace VixenModules.App.Props.Models.Tree
 		/// Creates the 3-D points that make up the tree.
 		/// </summary>
 		/// <returns>3-D points that make up the tree</returns>
-		protected override IEnumerable<NodePoint> Get3DNodePoints()
+		private IEnumerable<NodePoint> Get3DNodePoints(float width, float height)
 		{
 			// Create the collection of node points
 			List<NodePoint> treePoints = new List<NodePoint>();
 
 			// Maximum radius is half the drawing area
-			const double MaxWidth = 0.5;
+			double maxWidth = width / 2.0;
 						
 			// Calculate the top and bottom radius
-			double topRadius = TopRadius / 100.0 * MaxWidth;
-			double bottomRadius = BottomRadius / 100.0 * MaxWidth;
+			double topRadius = TopRadius / 100.0 * maxWidth;
+			double bottomRadius = BottomRadius / 100.0 * maxWidth;
 
 			double radiusDelta = (bottomRadius - topRadius) / NodesPerString;
 
@@ -160,13 +160,22 @@ namespace VixenModules.App.Props.Models.Tree
 				double angle = (DegreesCoverage / Strings) * i + DegreesOffset;
 
 				// Add a strand to the tree
-				treePoints.AddRange(CreateStrand(NodesPerString, angle, bottomRadius, radiusDelta, -MaxWidth, + 1.0 / NodesPerString ));
+				treePoints.AddRange(CreateStrand(NodesPerString, angle, bottomRadius, radiusDelta, -height / 2.0, + height / NodesPerString));
 			}
 					
 			// (Optionally) rotate the points along the X, Y, and Z axis
 			RotatePoints(treePoints);	
 
 			return treePoints;
+		}
+		
+		/// <summary>
+		/// Creates the 3-D points that make up the tree.
+		/// </summary>
+		/// <returns>3-D points that make up the tree</returns>
+		protected override IEnumerable<NodePoint> Get3DNodePoints()
+		{
+			return Get3DNodePoints(1.0f, 1.0f);		
 		}
 
 		/// <summary>

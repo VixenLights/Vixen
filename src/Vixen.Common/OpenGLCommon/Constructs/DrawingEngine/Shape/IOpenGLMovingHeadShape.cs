@@ -11,9 +11,10 @@ namespace Common.OpenGLCommon.Constructs.DrawingEngine.Shape
 		/// Initialize the moving head with the specified drawing area height.
 		/// </summary>
 		/// <remarks>The reference height is used to determine the maximum beam length</remarks>
+		/// <param name="height">Height of the moving head</param>
 		/// <param name="referenceHeight">Height of the drawing area / background image</param>
 		/// <param name="redraw">Delegate that redraws the preview</param>
-		void Initialize(float referenceHeight, Action redraw);
+		void Initialize(float height, float referenceHeight, Action redraw);
 
 		/// <summary>
 		/// Gets the OpenGL moving head associated with the shape.
@@ -28,5 +29,10 @@ namespace Common.OpenGLCommon.Constructs.DrawingEngine.Shape
 		/// <param name="referenceHeight">Height of the background</param>
 		/// <param name="standardFrame">True when the volumes are being updated for standard frame update</param>
 		void UpdateVolumes(int maxBeamLength, float referenceHeight, bool standardFrame);
+
+		/// <summary>
+		/// Size of the moving head along the Y axis.
+		/// </summary>
+		float SizeY { get; set; }
 	}
 }

@@ -6,8 +6,9 @@ using OpenTK.Mathematics;
 
 using Vixen.Sys.Props.Model;
 
-using VixenModules.App.Props.Models.IntellligentFixture;
+using VixenApplication.SetupDisplay.OpenGL.Shapes;
 
+using VixenModules.App.Props.Models.IntellligentFixture;
 
 
 namespace VixenApplication.SetupDisplay.OpenGL
@@ -41,15 +42,30 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		{		
 			// Extract out the light props
 			LightProps = props.Where(prp => prp is ILightPropModel).Select(prp => new LightPropOpenGLData((ILightPropModel)prp)).Cast<ILightPropOpenGLData>().ToList();
-
+				
 			// Extract out the intelligent fixture props
-			IntelligentFixtureProps = props.Where(prp => prp is IntelligentFixtureModel).Select(prp => new IntelligentFixturePropOpenGLData((IntelligentFixtureModel)prp)).Cast<IntelligentFixturePropOpenGLData>().ToList();			
+			IntelligentFixtureProps = props.Where(prp => prp is IntelligentFixtureModel).Select(prp => new IntelligentFixturePropOpenGLData((IntelligentFixtureModel)prp)).Cast<IntelligentFixturePropOpenGLData>().ToList();
+
+			// Loop over the light props
+			foreach (IPropOpenGLData prop in LightProps)
+			{
+				// The Prop Preview is normalized sizing (0 - 1)
+				prop.SizeX = 1.0f;
+				prop.SizeY = 1.0f;
+				prop.SizeZ = 1.0f;
+			}
+
+			// Loop over the intelligent fixtures
+			foreach (IntelligentFixturePropOpenGLData prop in IntelligentFixtureProps)
+			{				
+				prop.SizeY = 1.0f;
+			}
 		}
 
 		#endregion
 
 		#region Protected Abstract Methods
-		
+
 		/// <inheritdoc/>
 		protected override void ResetTimers()
 		{
@@ -89,14 +105,15 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		}
 
 		/// <inheritdoc/>		
-		protected override void UpdateLightShapePoints(float projectionHeight)
-		{			
-			Parallel.ForEach(LightProps, ParallelOptions, d => d.UpdateDrawPoints(projectionHeight));
+		protected override void UpdateLightShapePoints(float referenceHeight)
+		{
+			Parallel.ForEach(LightProps, ParallelOptions, d => d.UpdateDrawPoints(referenceHeight));
 		}
 
 		/// <inheritdoc/>		
 		protected override void DrawPoints(ILightPropOpenGLData prop)
 		{
+			// Draw the line points associated with the prop
 			DrawPointsUtility.DrawPoints(prop);			
 		}
 
@@ -105,7 +122,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		{			
 			// Initialize the moving head render strategy with the applicable display item shapes
 			InitializeMovingHeadRenderStrategy(OnRenderFrameOnGUIThread);
-			
+
 			// Determine which points on the shape need to drawn and what color to draw them
 			UpdateLightShapePoints(ProjectionHeight);
 					
@@ -127,7 +144,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				RenderStaticPreviewShapes(perspective, true, OpenTkControl_Width, OpenTkControl_Height);
 
 				// Draw the light points
-				DrawPoints(mvp);				
+				DrawPoints(mvp);
 			}					
 		}
 

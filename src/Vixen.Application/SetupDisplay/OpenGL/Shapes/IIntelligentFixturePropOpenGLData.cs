@@ -22,9 +22,10 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// Initialize the moving head with the specified drawing area height.
 		/// </summary>
 		/// <remarks>The reference height is used to determine the maximum beam length</remarks>
+		/// <param name="height">Height of the moving head</param>
 		/// <param name="referenceHeight">Height of the drawing area / background image</param>
 		/// <param name="redraw">Delegate that redraws the preview</param>
-		void Initialize(float referenceHeight, Action redraw);
+		void Initialize(float height, float referenceHeight, Action redraw);
 
 		/// <summary>
 		/// Gets the OpenGL moving head associated with the shape.
