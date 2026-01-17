@@ -4,16 +4,20 @@ using Common.OpenGLCommon.Constructs.DrawingEngine.Shape;
 
 using OpenTK.Mathematics;
 
+using VixenApplication.SetupDisplay.OpenGL.Shapes;
+
 using VixenModules.App.Props.Models.IntellligentFixture;
 using VixenModules.Editor.FixtureGraphics;
 using VixenModules.Editor.FixtureGraphics.OpenGL;
+using VixenModules.Editor.FixtureGraphics.OpenGL.Volumes;
 
 namespace VixenApplication.SetupDisplay.OpenGL
 {
 	/// <summary>
 	/// Maintains OpenGL data structures required to draw an intelligent fixture prop.
 	/// </summary>
-	public class IntelligentFixturePropOpenGLData : IIntelligentFixturePropOpenGLData, IOpenGLMovingHeadShape, IDrawStaticPreviewShape
+	public class IntelligentFixturePropOpenGLData : PropOpenGLData,
+		IIntelligentFixturePropOpenGLData, IOpenGLMovingHeadShape, IDrawStaticPreviewShape
 	{
 		#region Constructor
 
@@ -48,7 +52,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 
 		#endregion
 
-		#region IIntelligentFixturePropOpenGLData
+		#region IDrawStaticPreviewShape
 
 		/// <summary>
 		/// Refer to interface documentation.
@@ -87,12 +91,16 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			}
 		}
 
+		#endregion
+
+		#region IOpenGLMovingHeadShape
+
 		/// <inheritdoc/>
 		[Browsable(false)]
 		public IRenderMovingHeadOpenGL MovingHead { get; private set; }
 
 		/// <inheritdoc/>
-		public void Initialize(float referenceHeight, Action redraw)
+		public void Initialize(float height, float referenceHeight, Action redraw)
 		{
 			// Create the moving head OpenGL implementation
 			_movingHeadOpenGL = new MovingHeadOpenGL();
@@ -112,19 +120,45 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			_movingHeadCurrentSettings.Legend = "R1";
 			
 			// Initialize the moving head
-			_movingHeadOpenGL.Initialize(referenceHeight, referenceHeight, (100.0 - _propModel.BeamTransparency) / 100.0, _propModel.BeamWidthMultiplier, _propModel.MountingPosition);
+			_movingHeadOpenGL.Initialize(height, referenceHeight, (100.0 - _propModel.BeamTransparency) / 100.0, _propModel.BeamWidthMultiplier, _propModel.MountingPosition);
 
 			// Expose the moving head as a property
 			MovingHead = _movingHeadOpenGL;
-		}
 
+			// Get the physical fixture volumes (no beam volumes)
+			List<IVolume> fixtureVolumes = _movingHeadOpenGL.GetPhysicalFixtureVolumes().ToList();
+			
+			// Create a collection of vertex coordinates
+			List<Vector3> coordinates = new();
+
+			// Loop over the fixture volumes
+			foreach (IVolume fixtureVolume in fixtureVolumes)
+			{
+				// Get the vertices of the volume
+				Vector3[] verts = fixtureVolume.GetVertices();
+				
+				// Loop over the vertices
+				foreach (Vector3 v in verts)
+				{
+					// Translate the vertex by the X and Y of the fixture
+					Vector3 translate = v;
+					translate.X += X;
+					translate.Y += Y;
+					coordinates.Add(translate);
+				}
+			}
+
+			// Initialize the selection vertices
+			InitializeSelectionVertices(coordinates, height);
+		}
+		
 		/// <inheritdoc/>
 		public void UpdateVolumes(int maxBeamLength, float referenceHeight, bool standardFrame)
 		{			
 			// Update the volumes on the OpenGL implementation
 			_movingHeadOpenGL.UpdateVolumes(
-				0,
-				0,
+				(int)X,
+				(int)Y,
 				maxBeamLength);			
 		}
 
@@ -134,10 +168,9 @@ namespace VixenApplication.SetupDisplay.OpenGL
 
 		/// <inheritdoc/>
 		public void Dispose()
-		{
-			throw new NotImplementedException();
+		{			
 		}
 
-		#endregion
+		#endregion		
 	}
 }

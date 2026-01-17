@@ -197,8 +197,8 @@ namespace Common.OpenGLCommon.Constructs.DrawingEngine
 		/// <summary>
 		/// Determines which light points need to be drawn and with what color.
 		/// </summary>
-		/// <param name="projectHeight">Height of the logical view</param>
-		protected abstract void UpdateLightShapePoints(float projectHeight);
+		/// <param name="referenceHeightY">Height of the logical view</param>
+		protected abstract void UpdateLightShapePoints(float referenceHeightY);
 
 		/// <summary>
 		/// Draws the light points associated with the specified shape.
@@ -254,10 +254,12 @@ namespace Common.OpenGLCommon.Constructs.DrawingEngine
 		/// Initializes the moving head render strategy with shapes that are made up of graphical volumes.
 		/// </summary>
 		/// <param name="redraw">Method to redraw the preview</param>
-		protected void InitializeMovingHeadRenderStrategy(System.Action redraw)
+		/// <param name="recreateRenderStrategy">Flag to have the drawing engine recreate the moving head render strategy class</param>
+		protected void InitializeMovingHeadRenderStrategy(Action redraw, bool recreateRenderStrategy = false)
 		{
-			// If the moving head render strategy has not been created then...
-			if (_movingHeadRenderStrategy == null)
+			// If the moving head render strategy has not been created or
+			// the caller requested a new instance then...
+			if (_movingHeadRenderStrategy == null || recreateRenderStrategy)
 			{
 				// Reset all strobe timers
 				ResetTimers();
@@ -267,17 +269,17 @@ namespace Common.OpenGLCommon.Constructs.DrawingEngine
 
 				// Loop over the moving heads
 				foreach (IOpenGLMovingHeadShape movingHeadVolumes in GetMovingHeadShapes())
-				{
+				{					
 					// Initialize the moving head with the reference height and redraw delegate
 					float referenceHeight = GetReferenceHeight();
-					movingHeadVolumes.Initialize(referenceHeight, redraw);
+					movingHeadVolumes.Initialize(movingHeadVolumes.SizeY, referenceHeight, redraw);
 
 					// Give the shape to the render strategy
 					_movingHeadRenderStrategy.Shapes.Add(movingHeadVolumes.MovingHead);
 				}
 
 				// Initialize the moving head render strategy
-				_movingHeadRenderStrategy.Initialize();
+				_movingHeadRenderStrategy.Initialize();				
 			}
 		}
 		
@@ -545,7 +547,7 @@ namespace Common.OpenGLCommon.Constructs.DrawingEngine
 		/// <param name="cameraX">X axis position of the camera</param>
 		/// <param name="cameraY">Y axis position of the camera</param>
 		/// <param name="cameraZ">Z axis position of the camera</param>
-		public void Initialize(
+		public virtual void Initialize(
 			float cameraX,
 			float cameraY,
 			float cameraZ)
@@ -735,10 +737,7 @@ namespace Common.OpenGLCommon.Constructs.DrawingEngine
 				{
 					LightPointProgram.DisposeChildren = true;
 					LightPointProgram.Dispose();
-					LightPointProgram = null;
-
-					//_background.Dispose();
-					//_background = null;
+					LightPointProgram = null;					
 				}
 			}			
 		}

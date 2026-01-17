@@ -25,6 +25,13 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 		IEnumerable<Tuple<IVolume, Guid>> GetVolumes();
 
 		/// <summary>
+		/// Gets the graphical volumes that make up the physical intelligent fixture.
+		/// Does not include any beam volumes.
+		/// </summary>
+		/// <returns>Volumes that make up the physical fixture</returns>
+		IEnumerable<IVolume> GetPhysicalFixtureVolumes();
+
+		/// <summary>
 		/// Draws the legend for the moving head.
 		/// </summary>
 		/// <param name="translateX">X Position of the moving head</param>

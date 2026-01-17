@@ -1,13 +1,15 @@
-﻿using Vixen.Sys.Props.Model;
+﻿using OpenTK.Mathematics;
 
-using Common.OpenGLCommon.Constructs.Vertex;
+using Vixen.Sys.Props.Model;
+
+using VixenApplication.SetupDisplay.OpenGL.Shapes;
 
 namespace VixenApplication.SetupDisplay.OpenGL
 {
 	/// <summary>
 	/// Maintains OpenGL data structures required to draw a light based prop.
 	/// </summary>
-	public class LightPropOpenGLData : ILightPropOpenGLData
+	public class LightPropOpenGLData : PropOpenGLData, ILightPropOpenGLData
 	{
 		#region Constructor
 
@@ -18,7 +20,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		public LightPropOpenGLData(ILightPropModel lightPropModel)
 		{
 			// Store off the light prop model
-			_propModel = lightPropModel;	
+			_propModel = lightPropModel;			
 		}
 
 		#endregion
@@ -26,41 +28,29 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		#region Fields
 
 		/// <summary>
-		/// Collection of vertices to be drawn.
+		/// Collection of point vertices to be drawn.
 		/// </summary>
-		private List<float> _points = new List<float>();
+		private List<float> _points = new List<float>();		
 
 		/// <summary>
 		/// Model associated with the light based prop.
 		/// </summary>
 		private ILightPropModel _propModel;
-		
+
 		#endregion
 
-		#region IPropOpenGLData
-		
-		/// <inheritdoc/>		
-		public int PointsBufferSize { get; set; }
+		#region ILightPropOpenGLData
 
 		/// <inheritdoc/>		
-		public VBO<float> VertexBufferObject { get; set; }
-
-		/// <inheritdoc/>		
-		public int VAO { get; set; }
-
-		/// <inheritdoc/>		
-		public void UpdateDrawPoints(float referenceHeight)
+		public void UpdateDrawPoints(float controlHeight)
 		{
+			// Clear the points
 			_points.Clear();
-			CreateFullColorPoints(referenceHeight);
-		}
 
-		/// <inheritdoc/>		
-		public List<float> GetPoints()
-		{
-			return _points;
+			// Create the color points
+			CreateFullColorPoints(controlHeight);
 		}
-
+						
 		#endregion
 
 		#region Private Methods
@@ -68,17 +58,26 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// <summary>
 		/// Creates the vertex data required to draw the light points.
 		/// </summary>
-		/// <param name="referenceHeight">Logical height of the view</param>
-		private void CreateFullColorPoints(float referenceHeight)
-		{			
+		/// <param name="controlHeight">Logical height of the view</param>
+		private void CreateFullColorPoints(float controlHeight)
+		{												
+			List<Vector3> coordinates = new List<Vector3>();
+			
 			// Loop over the 3-D points associated with the prop
 			foreach (NodePoint nodePoint in _propModel.Nodes)
 			{				
 				// Adjust (scale) the 3-D points for the reference height
-				_points.Add((float)(nodePoint.X * referenceHeight));
-				_points.Add((float)(nodePoint.Y * referenceHeight));						
-				_points.Add((float)(nodePoint.Z * referenceHeight));
-						
+				_points.Add((float)(nodePoint.X * SizeX) + X);
+				_points.Add((float)(nodePoint.Y * SizeY) + Y);						
+				_points.Add((float)(nodePoint.Z * SizeZ));
+
+				Vector3 vPoint = new Vector3();
+				vPoint.X = (float)(nodePoint.X * SizeX + X);
+				vPoint.Y = (float)(nodePoint.Y * SizeY + Y);
+				vPoint.Z = (float)(nodePoint.Z * SizeZ);
+
+				coordinates.Add(vPoint);
+
 				// Configure the vertex as Full White
 				_points.Add(0xff); // R
 				_points.Add(0xff); // G
@@ -88,23 +87,16 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				// Add the light point size
 				_points.Add(nodePoint.Size);				
 			}
+
+			// Clear the previous frame points
+			Vertices.Clear();
+			Vertices.AddRange(_points);
+
+			// Initialize the vertices used to indicate the prop is selected
+			// TODO: Should this be optimized to only run when the prop is actually selected
+			InitializeSelectionVertices(coordinates, SizeY);			
 		}
 
-		#endregion
-
-		#region IDisposable
-
-		/// <inheritdoc/>		
-		public void Dispose()
-		{
-			// Dispose of the points Vertex Buffer Object
-			if (VertexBufferObject != null)
-			{
-				(VertexBufferObject).Dispose();
-				VertexBufferObject = null;
-			}
-		}
-
-		#endregion
+		#endregion						
 	}
 }
