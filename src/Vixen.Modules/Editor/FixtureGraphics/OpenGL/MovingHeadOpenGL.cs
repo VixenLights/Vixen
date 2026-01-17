@@ -49,21 +49,17 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 
 		#endregion
 
-		#region Static Fields
+		#region Fields
 
 		/// <summary>
 		/// Font library used to draw the legend.
 		/// </summary>
-		private static QFont _qFont;
+		private QFont _qFont;
 
 		/// <summary>
 		/// Drawing library used to draw the legend.
 		/// </summary>
-		private static QFontDrawing _qFontDrawing;
-
-		#endregion
-
-		#region Fields
+		private QFontDrawing _qFontDrawing;
 
 		/// <summary>
 		/// Maintains geometry constants for the moving head fixture.
@@ -619,6 +615,14 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 			volumes.AddRange(_beamVolumes.Select(volume => new Tuple<IVolume, Guid>(volume, ColorVolumeShader2.ShaderID)));
 
 			return volumes;
+		}
+
+		/// <inheritdoc/>
+		public IEnumerable<IVolume> GetPhysicalFixtureVolumes()
+		{
+			// Only return the volumes for the physical fixture
+			// Not including any of the beam volumes
+			return _grayVolumes;
 		}
 
 		/// <summary>

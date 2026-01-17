@@ -7,11 +7,11 @@
         xmlns:wpfPropertyGrid="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
         xmlns:controls="clr-namespace:Common.Controls;assembly=Controls"
         xmlns:viewModels="clr-namespace:VixenApplication.SetupDisplay.ViewModels"
-	xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
+	    xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
         Title="Display Setup" Height="850" Width="1200" WindowStartupLocation="CenterScreen" x:Name="DisplaySetup"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewModels:SetupDisplayViewModel, IsDesignTimeCreatable=False}"
-         Loaded="UserControl_Loaded">
+        Loaded="UserControl_Loaded">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -21,170 +21,166 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <DockPanel Background="{StaticResource BackgroundControlBrush}">
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="File" Name="FileMenu">
-                <MenuItem Header="New" Command="{Binding NewPropCommand}">
-                    <MenuItem.Icon>
-                        <Image Source="/Resources;component/NewFile_6276.png" Width="16" Height="16"></Image>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Open" Command="{Binding OpenPropCommand}">
-                    <MenuItem.Icon>
-                        <Image Source="/Resources;component/Open_6529.png" Width="16" Height="16"></Image>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Save" Command="{Binding SaveModelCommand}">
-                    <MenuItem.Icon>
-                        <Image Source="/Resources;component/Save_6530.png" Width="16" Height="16"></Image>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Save As" Command="{Binding SaveModelAsCommand}"/>
-                <MenuItem Header="Import xModel" Command="{Binding ImportCommand}" CommandParameter="xModel"/>
-                <MenuItem Header="Exit" Command="{Binding ExitCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=DisplaySetup}">
-                    <MenuItem.Icon>
-                        <Image Source="/Resources;component/Close_6519.png" Width="16" Height="16"></Image>
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
-            <MenuItem Header="Edit" Name="EditMenu">
-                <MenuItem Header="Cut" Command="{Binding PropNodeTreeViewModel.CutCommand}">
-                    <MenuItem.Icon>
-                        <Image Source="/Resources;component/cut.png" Width="16" Height="16"></Image>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Copy" Command="{Binding PropNodeTreeViewModel.CopyCommand}">
-                    <MenuItem.Icon>
-                        <Image Source="/Resources;component/page_white_copy.png" Width="16" Height="16"></Image>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Paste" Command="{Binding PropNodeTreeViewModel.PasteCommand}">
-                    <MenuItem.Icon>
-                        <Image Source="/Resources;component/page_white_paste.png" Width="16" Height="16"></Image>
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
-            <MenuItem Header="Help">
-                <MenuItem Header="View Help" Command="{Binding HelpCommand}">
-                    <MenuItem.Icon>
-                        <Image Source="/Resources;component/help.png" Width="16" Height="16" />
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
-        </Menu>
-        <StatusBar DockPanel.Dock="Bottom">
-            <StatusBarItem>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Status Bar"></TextBlock>
-                </StackPanel>
-            </StatusBarItem>
-        </StatusBar>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.5*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1.5*"/>
-                <ColumnDefinition Width=".5*"/>
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="2*"/>
-                    <RowDefinition Height="1.5*"/>
-                </Grid.RowDefinitions>
+	<DockPanel Background="{StaticResource BackgroundControlBrush}">
+		<Menu DockPanel.Dock="Top">
+			<MenuItem Header="File" Name="FileMenu">
+				<MenuItem Header="New" Command="{Binding NewPropCommand}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/NewFile_6276.png" Width="16" Height="16"></Image>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Open" Command="{Binding OpenPropCommand}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/Open_6529.png" Width="16" Height="16"></Image>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Save" Command="{Binding SaveModelCommand}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/Save_6530.png" Width="16" Height="16"></Image>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Save As" Command="{Binding SaveModelAsCommand}"/>
+				<MenuItem Header="Import xModel" Command="{Binding ImportCommand}" CommandParameter="xModel"/>
+				<MenuItem Header="Exit" Command="{Binding ExitCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=DisplaySetup}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/Close_6519.png" Width="16" Height="16"></Image>
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
+			<MenuItem Header="Edit" Name="EditMenu">
+				<MenuItem Header="Cut" Command="{Binding PropNodeTreeViewModel.CutCommand}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/cut.png" Width="16" Height="16"></Image>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Copy" Command="{Binding PropNodeTreeViewModel.CopyCommand}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/page_white_copy.png" Width="16" Height="16"></Image>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Paste" Command="{Binding PropNodeTreeViewModel.PasteCommand}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/page_white_paste.png" Width="16" Height="16"></Image>
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
+			<MenuItem Header="Help">
+				<MenuItem Header="View Help" Command="{Binding HelpCommand}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/help.png" Width="16" Height="16" />
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
+		</Menu>
+		<StatusBar DockPanel.Dock="Bottom">
+			<StatusBarItem>
+				<StackPanel Orientation="Horizontal">
+					<TextBlock Text="Status Bar"></TextBlock>
+				</StackPanel>
+			</StatusBarItem>
+		</StatusBar>
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="400"/>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+			<Grid Grid.Column="0">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*"/>
+					<RowDefinition Height="*"/>
+					<RowDefinition Height="310"/>
+				</Grid.RowDefinitions>
 
-                <views:PropNodeTree Grid.Row="0" Margin="5"/>
-                <Border Grid.Row="1" BorderThickness="1" BorderBrush="{StaticResource BorderColorBrush}" Margin="5">
-                    <wpfPropertyGrid:PropertyGrid  Background="{StaticResource DisabledShadow}"
+				<views:PropNodeTree Grid.Row="0" Margin="5"/>
+
+				<Border BorderThickness="2"  Width="300" Height="300" Margin="5"
+                    Grid.Row="2" Background="{StaticResource BackgroundControlBrush}" BorderBrush="{StaticResource BorderColorBrush}">
+					<glWpfControl:GLWpfControl
+						x:Name="OpenTkControl" 
+						SizeChanged="OpenTkControl_SizeChanged"
+						Render="OpenTkControl_OnRender"
+						MouseWheel="OpenTkControl_MouseWheel"
+						MouseDown="OpenTkControl_MouseDown"
+						MouseMove="OpenTkControl_MouseMove"
+						MouseUp="OpenTkControl_MouseUp">
+						<glWpfControl:GLWpfControl.ContextMenu>
+							<ContextMenu>
+
+								<MenuItem Header="Center Preview"                          ToolTip="Repositions the viewpoint to the center of the preview." Command="{Binding CenterPreview}"/>
+								<MenuItem Header="Enable Light Scaling" IsCheckable="True" ToolTip="Scales the light size as the camera is zoomed in or out." IsChecked="{Binding EnableLightScaling }"/>
+								<!--<MenuItem Header="{Binding Location}"/> -->
+							</ContextMenu>
+						</glWpfControl:GLWpfControl.ContextMenu>
+					</glWpfControl:GLWpfControl>
+				</Border>
+
+
+
+				<Border Grid.Row="1" BorderThickness="1" BorderBrush="{StaticResource BorderColorBrush}" Margin="5">
+					<wpfPropertyGrid:PropertyGrid  Background="{StaticResource DisabledShadow}"
                                                   ItemSource="{Binding SelectedProp}"
                                                   ShowAttachedProperties="False"
                                                   ShowReadOnlyProperties="True"
                                                   PropertyFilterVisibility="Collapsed"                                                   
                                                   Margin="5">
-                        <wpfPropertyGrid:PropertyGrid.Resources>
-                            <ResourceDictionary>
-                                <ResourceDictionary.MergedDictionaries>
-                                    <wpfPropertyGrid:KaxamlTheme/>
-                                </ResourceDictionary.MergedDictionaries>
-                            </ResourceDictionary>
-                        </wpfPropertyGrid:PropertyGrid.Resources>
-                        <wpfPropertyGrid:PropertyGrid.Layout>
-                            <wpfPropertyGrid:CategorizedLayout/>
-                        </wpfPropertyGrid:PropertyGrid.Layout>
-                    </wpfPropertyGrid:PropertyGrid>
-                </Border>
-            </Grid>
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="2*"/>
-                    <RowDefinition Height="1*"/>
-                </Grid.RowDefinitions>
-                <WindowsFormsHost Grid.Row="0"  Margin="5">
-                    <controls:ElementTree x:Name="ElementTree"/>
-                </WindowsFormsHost>
-            </Grid>
-            <Grid Grid.Column="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-					<RowDefinition/>
-				</Grid.RowDefinitions>
-                <views:PropComponentTree Margin="5" DataContext="{Binding PropComponentTreeViewModel}"></views:PropComponentTree>
+						<wpfPropertyGrid:PropertyGrid.Resources>
+							<ResourceDictionary>
+								<ResourceDictionary.MergedDictionaries>
+									<wpfPropertyGrid:KaxamlTheme/>
+								</ResourceDictionary.MergedDictionaries>
+							</ResourceDictionary>
+						</wpfPropertyGrid:PropertyGrid.Resources>
+						<wpfPropertyGrid:PropertyGrid.Layout>
+							<wpfPropertyGrid:CategorizedLayout/>
+						</wpfPropertyGrid:PropertyGrid.Layout>
+					</wpfPropertyGrid:PropertyGrid>
+				</Border>
+			</Grid>
 
-				<Border BorderThickness="2"  Width="400"
-                    Height="400" Grid.Row="1" Background="{StaticResource BackgroundControlBrush}" BorderBrush="{StaticResource BorderColorBrush}" Margin="5">
-					<glWpfControl:GLWpfControl
-					x:Name="OpenTkControl" 
-					SizeChanged="OpenTkControl_SizeChanged"
-                    Render="OpenTkControl_OnRender"
-					MouseWheel="OpenTkControl_MouseWheel"
-                    MouseDown="OpenTkControl_MouseDown"
-                    MouseMove="OpenTkControl_MouseMove"
-                    MouseUp="OpenTkControl_MouseUp">
-							<glWpfControl:GLWpfControl.ContextMenu>
+			<GridSplitter Grid.Column="1"
+                  Width="5"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  Background="Gray" />
+
+			<Grid Grid.Column="2">
+				<TabControl HorizontalAlignment="Stretch" Margin="5">
+					<TabItem Header="Dev" HorizontalAlignment="Stretch">
+
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="2*"/>
+								<RowDefinition Height="1*"/>
+							</Grid.RowDefinitions>
+							<WindowsFormsHost Grid.Row="0"  Margin="5" >
+								<controls:ElementTree x:Name="ElementTree" Width="400"/>
+							</WindowsFormsHost>
+							
+							<views:PropComponentTree Grid.Row="1" Margin="5" DataContext="{Binding PropComponentTreeViewModel}" Width="300"></views:PropComponentTree>
+						</Grid>
+					</TabItem>
+					<TabItem Header="Preview 1">
+                        <glWpfControl:GLWpfControl
+							x:Name="OpenTkControlPreview" 							
+							Render="OpenTkControlPreview_OnRender"
+							SizeChanged="OpenTkControlPreview_SizeChanged"
+                            MouseDown="OpenTkControlPreview_MouseDown"
+							MouseMove="OpenTkControlPreview_MouseMove"
+                            MouseUp="OpenTkControlPreview_MouseUp"
+							Loaded="OpenTkControlPreview_Loaded">
+                            <glWpfControl:GLWpfControl.ContextMenu>
 								<ContextMenu>
-									
-								<MenuItem Header="Center Preview"                          ToolTip="Repositions the viewpoint to the center of the preview." Command="{Binding CenterPreview}"/>
-								<MenuItem Header="Enable Light Scaling" IsCheckable="True" ToolTip="Scales the light size as the camera is zoomed in or out." IsChecked="{Binding EnableLightScaling }"/>
-								<!--<MenuItem Header="{Binding Location}"/> -->
+
+									<MenuItem Header="Center Preview"                          ToolTip="Repositions the viewpoint to the center of the preview." Command="{Binding CenterPreview}"/>
+									<MenuItem Header="Enable Light Scaling" IsCheckable="True" ToolTip="Scales the light size as the camera is zoomed in or out." IsChecked="{Binding EnableLightScaling }"/>
+									<!--<MenuItem Header="{Binding Location}"/> -->
 								</ContextMenu>
 							</glWpfControl:GLWpfControl.ContextMenu>
 						</glWpfControl:GLWpfControl>
-				</Border>
-
-				<!--
-				<Slider Grid.Row="2" 
-					x:Name="zSlider"
-                    Minimum="0"
-                    Maximum="100"                    
-                    TickFrequency="10"
-                    IsSnapToTickEnabled="True"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-					Value="{Binding ZRotation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    Width="350"/>
-				-->
-
-
-				<ScrollViewer Grid.Row="2">
-					<ItemsControl ItemsSource="{Binding Rotations}">
-						<ItemsControl.ItemTemplate>
-							<DataTemplate>
-								<StackPanel Orientation="Horizontal" Margin="5">
-									<ComboBox Width="60" Height="20" 
-                                  ItemsSource="{Binding Axes}"                                  
-                                  SelectedItem="{Binding Axis}" />
-									<Slider Width="500"
-                                Minimum="-180" Maximum="180"
-                                Value="{Binding RotationAngle}" />
-									<TextBlock Width="40" Margin="5,0,0,0"
-                                   Text="{Binding RotationAngle, StringFormat=F0}" />
-								</StackPanel>
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
-					</ItemsControl>
-				</ScrollViewer>
+					</TabItem>
+				</TabControl>
 			</Grid>
-        </Grid>
-    </DockPanel>
-
+		</Grid>
+	</DockPanel>
 </Window>
