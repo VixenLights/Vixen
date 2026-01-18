@@ -1,6 +1,8 @@
 ﻿using Common.OpenGLCommon.Constructs.DrawingEngine.Primitive;
 using OpenTK.Mathematics;
 
+using Vixen.Sys.Props.Model;
+
 namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 {
 	/// <summary>
@@ -13,7 +15,8 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		protected PropOpenGLData()
+		/// <param name="propModel">Prop model of the prop</param>
+		protected PropOpenGLData(IPropModel propModel)
 		{
 			// Initialize the resize corner handles
 			_upperLeftResizeCorner = new OpenGLDrawablePrimitive();
@@ -30,6 +33,9 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 			// Configure the base class to NOT calculate the minimum and maximum
 			// from the vertices
 			CalculateMinAndMaxFromVertices = false;
+
+			// Store off the prop model
+			PropModelId = propModel.Id;
 		}
 
 		#endregion
@@ -131,6 +137,9 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 			// Return whether the mouse was over a resize handle
 			return upperLeft || upperRight || lowerLeft || lowerRight;
 		}
+
+		/// <inheritdoc/>
+		public Guid PropModelId { get; set; }
 
 		#endregion
 

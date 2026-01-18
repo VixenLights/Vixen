@@ -25,7 +25,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// Constructor
 		/// </summary>
 		/// <param name="prop">Intelligent fixture prop model</param>
-		public IntelligentFixturePropOpenGLData(IntelligentFixtureModel propModel)
+		public IntelligentFixturePropOpenGLData(IntelligentFixtureModel propModel) : base(propModel)
 		{
 			// Store off the intelligent fixture prop model
 			_propModel = propModel ;	
