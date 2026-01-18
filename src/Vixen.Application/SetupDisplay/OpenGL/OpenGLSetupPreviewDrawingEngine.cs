@@ -38,6 +38,11 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// Flag indicating that left mouse button is down.
 		/// </summary>
 		private bool _mouseButtonDown;
+
+		/// <summary>
+		/// Flag that indciates a prop move operation is in progress.
+		/// </summary>
+		private bool _propMoveInProgress;
 		
 		/// <summary>
 		/// Flag indicating that the mouse is over a resize handle on mouse down.
@@ -341,6 +346,9 @@ namespace VixenApplication.SetupDisplay.OpenGL
 
 			// Set a flag to indicate the mouse is no longer down
 			_mouseButtonDown = false;
+
+			// Indicate any prop move operations are complete
+			_propMoveInProgress = false;
 		}
 
 		/// <summary>
@@ -408,9 +416,13 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				// Loop over the selected props
 				foreach (IPropOpenGLData prop in SelectedProps)
 				{
-					// If the mouse is over the prop then...
-					if (IsMouseOverProp(mousePos, prop))
+					// If the mouse is over the prop or
+					// a prop move is in progress then...
+					if (IsMouseOverProp(mousePos, prop) || _propMoveInProgress)
 					{
+						// Remember we started a prop move operation
+						_propMoveInProgress = true;
+
 						// Get the mouse position in world coordinates
 						Vector3 mouseWorldPosition = GetMouseMovementInWorld(previousMouseX, previousMouseY, mouseX, mouseY, prop);
 		
