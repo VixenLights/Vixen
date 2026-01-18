@@ -158,11 +158,7 @@ namespace VixenApplication.SetupDisplay.Views
 		{
 			// If the window is minimized then short circuit the render
 			if (WindowState != WindowState.Minimized)
-			{				
-				// Set the view port of the prop preview
-				// TODO: Should this be optimized to only call when the underlying data changes
-				SetViewport(OpenTkControl);
-	
+			{									
 				// Draw the selected prop
 				(DataContext as SetupDisplayViewModel).DrawProp();
 
@@ -197,11 +193,7 @@ namespace VixenApplication.SetupDisplay.Views
 					
 			// If the window is minimized then short circuit the render
 			if (WindowState != WindowState.Minimized)
-			{				
-				// Set the view port of the preview setup
-				// TODO: Should this be optimized to only call when the underlying data changes
-				SetViewport(OpenTkControlPreview);
-				
+			{												
 				// Have the drawing engine refresh the frame
 				(DataContext as SetupDisplayViewModel).DisplayPreviewDrawingEngine.RenderPreview();
 			}			
@@ -231,6 +223,9 @@ namespace VixenApplication.SetupDisplay.Views
 		/// <param name="e">Event arguments</param>
 		private void OpenTkControl_SizeChanged(object sender, SizeChangedEventArgs e)
 		{
+			// Set the view port of the prop preview			
+			SetViewport(OpenTkControl);
+
 			// Forward the call to the drawing engine
 			(DataContext as SetupDisplayViewModel).PropPreviewDrawingEngine.OpenTKDrawingAreaChanged(e.NewSize.Width, e.NewSize.Height);			
 		}
@@ -242,6 +237,9 @@ namespace VixenApplication.SetupDisplay.Views
 		/// <param name="e">Event arguments</param>
 		private void OpenTkControlPreview_SizeChanged(object sender, SizeChangedEventArgs e)
 		{
+			// Set the view port of the preview setup
+			SetViewport(OpenTkControlPreview);
+
 			// Forward the call to the drawing engine
 			(DataContext as SetupDisplayViewModel).DisplayPreviewDrawingEngine.OpenTKDrawingAreaChanged(e.NewSize.Width, e.NewSize.Height);			
 		}
