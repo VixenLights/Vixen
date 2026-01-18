@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -30,7 +31,7 @@ namespace VixenApplication.SetupDisplay.Views
 	/// Code Behind file for the SetupDisplayWindow.
 	/// This class handles events for the Setup Display Window.
 	/// </summary>
-	public partial class SetupDisplayWindow: Window
+	public partial class SetupDisplayWindow : Window
 	{
 		#region Fields
 
@@ -73,14 +74,14 @@ namespace VixenApplication.SetupDisplay.Views
 		/// </summary>
 		public SetupDisplayWindow()
 		{
-            ThemeManager.Current.SynchronizeTheme();
+			ThemeManager.Current.SynchronizeTheme();
 			InitializeComponent();
-            Icon = Common.Resources.Properties.Resources.Icon_Vixen3.ToImageSource();
-            DataContext = new SetupDisplayViewModel();
-            _nodeRefreshTimer = new Timer(Timer_Elapsed, null, 2000, Timeout.Infinite);
-            NodeManager.NodesChanged += NodeManager_NodesChanged;
-            ElementTree.ExportDiagram = ExportWireDiagram;
-			
+			Icon = Common.Resources.Properties.Resources.Icon_Vixen3.ToImageSource();
+			DataContext = new SetupDisplayViewModel();
+			_nodeRefreshTimer = new Timer(Timer_Elapsed, null, 2000, Timeout.Infinite);
+			NodeManager.NodesChanged += NodeManager_NodesChanged;
+			ElementTree.ExportDiagram = ExportWireDiagram;
+
 			// Selects OpenGL version 3.3
 			GLWpfControlSettings settings = new GLWpfControlSettings
 			{
@@ -102,11 +103,11 @@ namespace VixenApplication.SetupDisplay.Views
 		#region Private Methods
 
 		private void Timer_Elapsed(object? state)
-        {
-	        if (ElementTree.InvokeRequired)
-	        {
-		        ElementTree.Invoke(ElementTree.PopulateNodeTree);
-	        }
+		{
+			if (ElementTree.InvokeRequired)
+			{
+				ElementTree.Invoke(ElementTree.PopulateNodeTree);
+			}
 			Debug.WriteLine("Refreshed");
 		}
 
@@ -119,16 +120,19 @@ namespace VixenApplication.SetupDisplay.Views
 		{
 			ElementModeling.ElementsToSvg(node, flip);
 		}
-				
+
 		/// <summary>
 		/// Event handler for the preview setup.
 		/// </summary>
 		/// <param name="sender">Sender of the event</param>
 		/// <param name="e">Event arguments</param>
-		void OpenTkControlPreview_Loaded(object sender, System.EventArgs e)
+		private void OpenTkControlPreview_Loaded(object sender, System.EventArgs e)
 		{
 			// Remember that the preview setup OpenTK control has been loaded
-			_openTKControlLoaded = true;			
+			_openTKControlLoaded = true;
+
+			// Refresh the CanExecute delegates
+			(DataContext as SetupDisplayViewModel).RefreshCanExecuteCommands();
 		}
 
 		/// <summary>
@@ -136,20 +140,20 @@ namespace VixenApplication.SetupDisplay.Views
 		/// </summary>
 		/// <param name="sender">Event sender</param>
 		/// <param name="e"><Event arguments/param>
-		private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+		private void UserControl_Loaded(object sender, RoutedEventArgs e)
 		{			
 			// Position the camera at the origin
 			float cameraX = 0.0f;
 			float cameraY = 0.0f;
 			float cameraZ = 0.0f;
-			
+
 			// Initialize the drawing engine with the camera position and size of the drawing area
-			(DataContext as SetupDisplayViewModel).PropPreviewDrawingEngine.Initialize(			
+			(DataContext as SetupDisplayViewModel).PropPreviewDrawingEngine.Initialize(
 				cameraX,
 				cameraY,
 				cameraZ);
 		}
-						
+
 		/// <summary>
 		/// This is the main render method for the OpenTK WPF control.
 		/// </summary>
@@ -158,12 +162,12 @@ namespace VixenApplication.SetupDisplay.Views
 		{
 			// If the window is minimized then short circuit the render
 			if (WindowState != WindowState.Minimized)
-			{									
+			{
 				// Draw the selected prop
 				(DataContext as SetupDisplayViewModel).DrawProp();
 
 				// Have the drawing engine refresh the frame
-				(DataContext as SetupDisplayViewModel).PropPreviewDrawingEngine.RenderPreview();				
+				(DataContext as SetupDisplayViewModel).PropPreviewDrawingEngine.RenderPreview();
 			}
 		}
 
@@ -172,7 +176,7 @@ namespace VixenApplication.SetupDisplay.Views
 		/// </summary>
 		/// <param name="delta">Time span between frames</param>
 		private void OpenTkControlPreview_OnRender(TimeSpan delta)
-		{			
+		{
 			// If the OpenTK preview setup control has just been loaded then...
 			if (_openTKControlLoaded)
 			{
@@ -186,17 +190,17 @@ namespace VixenApplication.SetupDisplay.Views
 					cameraX,
 					cameraY,
 					cameraZ);
-
+			
 				// Remember that we have intialized the drawing engine
 				_openTKControlLoaded = false;
 			}
-					
+
 			// If the window is minimized then short circuit the render
 			if (WindowState != WindowState.Minimized)
-			{												
+			{
 				// Have the drawing engine refresh the frame
 				(DataContext as SetupDisplayViewModel).DisplayPreviewDrawingEngine.RenderPreview();
-			}			
+			}
 		}
 
 		/// <summary>
@@ -227,7 +231,7 @@ namespace VixenApplication.SetupDisplay.Views
 			SetViewport(OpenTkControl);
 
 			// Forward the call to the drawing engine
-			(DataContext as SetupDisplayViewModel).PropPreviewDrawingEngine.OpenTKDrawingAreaChanged(e.NewSize.Width, e.NewSize.Height);			
+			(DataContext as SetupDisplayViewModel).PropPreviewDrawingEngine.OpenTKDrawingAreaChanged(e.NewSize.Width, e.NewSize.Height);
 		}
 
 		/// <summary>
@@ -241,7 +245,7 @@ namespace VixenApplication.SetupDisplay.Views
 			SetViewport(OpenTkControlPreview);
 
 			// Forward the call to the drawing engine
-			(DataContext as SetupDisplayViewModel).DisplayPreviewDrawingEngine.OpenTKDrawingAreaChanged(e.NewSize.Width, e.NewSize.Height);			
+			(DataContext as SetupDisplayViewModel).DisplayPreviewDrawingEngine.OpenTKDrawingAreaChanged(e.NewSize.Width, e.NewSize.Height);
 		}
 
 		/// <summary>
@@ -262,7 +266,7 @@ namespace VixenApplication.SetupDisplay.Views
 			(DataContext as SetupDisplayViewModel).PropPreviewDrawingEngine.Zoom(direction);
 
 			// This should trigger the control to redraw
-			OpenTkControl.InvalidateVisual();			
+			OpenTkControl.InvalidateVisual();
 		}
 
 		/// <summary>
@@ -327,7 +331,7 @@ namespace VixenApplication.SetupDisplay.Views
 			Cursor = System.Windows.Input.Cursors.Arrow;
 
 			// Set flag to remember that the mouse button is no longer being pressed
-			_mouseDown = false;			
+			_mouseDown = false;
 		}
 
 		/// <summary>
@@ -352,7 +356,7 @@ namespace VixenApplication.SetupDisplay.Views
 		{
 			// If the left button has been pressed then...
 			if (e.LeftButton == MouseButtonState.Pressed)
-			{				
+			{
 				// If the mouse has just been clicked then we hide the cursor and store the position
 				Cursor = System.Windows.Input.Cursors.Hand;
 
@@ -389,7 +393,7 @@ namespace VixenApplication.SetupDisplay.Views
 
 			// If the mouse has not moved significantly then exit
 			if (eX == _prevMousePositionX && eY == _prevMousePositionY) return;
-			
+
 			// Have the drawing engine handle the mouse move event
 			bool overResizeBox = (DataContext as SetupDisplayViewModel).DisplayPreviewDrawingEngine.MouseMove(_prevMousePositionX, _prevMousePositionY, eX, eY);
 
@@ -399,11 +403,11 @@ namespace VixenApplication.SetupDisplay.Views
 
 			// If the Left mouse button is down then...			
 			if (e.LeftButton == MouseButtonState.Pressed)
-			{				
+			{
 				// This should trigger the control to redraw
 				OpenTkControl.InvalidateVisual();
 			}
-			
+
 			// If the mouse is over a resize handle then...
 			if (overResizeBox)
 			{

@@ -17,7 +17,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// Constructor
 		/// </summary>
 		/// <param name="lightPropModel">Model associated with the prop</param>
-		public LightPropOpenGLData(ILightPropModel lightPropModel)
+		public LightPropOpenGLData(ILightPropModel lightPropModel) : base(lightPropModel)
 		{
 			// Store off the light prop model
 			_propModel = lightPropModel;			

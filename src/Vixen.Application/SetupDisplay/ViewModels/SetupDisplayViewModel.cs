@@ -82,7 +82,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			PropNodeTreePropViewModel.PropertyChanged += PropNodeTreePropViewModel_PropertyChanged;			
 
 			// Initialize the command to add a prop to the preview
-			AddPropToPreview = new RelayCommand(AddSelectedPropToPreview);
+			AddPropToPreview = new RelayCommand(AddSelectedPropToPreview, CanAddPropToPreview);
 
 			// Initialize the command to center the OpenGL preview
 			CenterPreview = new RelayCommand(ExecuteCenterPreview);
@@ -165,6 +165,9 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		{
 			// Add the selected prop to the preview
 			DisplayPreviewDrawingEngine.AddProps(new List<IPropModel>{ SelectedProp.PropModel });
+
+			// Force the CanExecute delegate to run
+			((RelayCommand)AddPropToPreview).RaiseCanExecuteChanged();
 		}
 
 		/// <summary>
@@ -255,6 +258,20 @@ namespace VixenApplication.SetupDisplay.ViewModels
 				0.0f,
 				0.0f,
 				0.0f);
+		}
+
+		/// <summary>
+		/// Returns true if the select prop can be added to the preview.
+		/// </summary>
+		/// <returns>True if the select prop can be added to the preview.</returns>
+		private bool CanAddPropToPreview()
+		{
+			// If the Preview has been initialized and
+			// there is a selected prop and
+			// the preview does NOT already contain the select prop
+			return DisplayPreviewDrawingEngine.Initialized &&
+				SelectedProp?.PropModel != null &&
+				!DisplayPreviewDrawingEngine.Props.Any(itm => itm.PropModelId == SelectedProp?.PropModel.Id);
 		}
 
 		#endregion
@@ -366,6 +383,9 @@ namespace VixenApplication.SetupDisplay.ViewModels
 					}
 				}
 				SetValue(SelectedPropProperty, value);
+
+				// Force the CanExecute delegate to run
+				((RelayCommand)AddPropToPreview).RaiseCanExecuteChanged();				
 			}
 		}
 
@@ -827,6 +847,15 @@ namespace VixenApplication.SetupDisplay.ViewModels
 				// Save off the current prop preview prop model
 				_currentPreviewProp = _nextPreviewProp;	
 			}
+		}
+
+		/// <summary>
+		/// Refreshes CanExecute commands.
+		/// </summary>
+		public void RefreshCanExecuteCommands()
+		{
+			// Force the CanExecute delegate to run
+			((RelayCommand)AddPropToPreview).RaiseCanExecuteChanged();
 		}
 
 		#region Public Properties

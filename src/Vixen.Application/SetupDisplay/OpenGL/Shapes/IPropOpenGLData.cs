@@ -70,5 +70,10 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 			int height, 
 			Vector2 mousePos, 
 			out ResizeHandles handle);
+
+		/// <summary>
+		/// ID of the associated prop model.
+		/// </summary>
+		Guid PropModelId { get; set; }
 	}
 }

@@ -68,12 +68,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// Collection of selected props.
 		/// </summary>
 		private List<IPropOpenGLData> SelectedProps { get; set; }
-
-		/// <summary>
-		/// Collection of Props being displayed on the preview.
-		/// </summary>
-		private List<IPropOpenGLData> Props { get; set; }
-
+		
 		/// <summary>
 		/// Collection of light based props.
 		/// </summary>
@@ -311,7 +306,10 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			base.Initialize(cameraX, cameraY, cameraZ);
 
 			// Initialize the color line shader program
-			LineProgram = new ColorLineShaderProgram();			
+			LineProgram = new ColorLineShaderProgram();
+
+			// Store off that the preview has been initialized
+			Initialized = true;
 		}
 		
 		/// <summary>
@@ -452,46 +450,43 @@ namespace VixenApplication.SetupDisplay.OpenGL
 
 			// Default to NOT being over a resize handle
 			_overResizeHandleOnMouseDown = false;
-
-			ResizeHandles activeHandle = ResizeHandles.BottomRight;
-
+			
 			// Loop over the selected props
 			foreach (IPropOpenGLData prop in SelectedProps)
-			{
-				// If the prop is selected then...
-				if (prop.Selected)
+			{				
+				// Store off mouse position at the beginning of the move operation
+				_startMousePosition.X = mouseX;
+				_startMousePosition.Y = mouseY;
+
+				// If the mouse is over the a resize handle then...
+				if (prop.MouseOverResizeHandle(
+					CreatePerspective(),
+					Camera.ViewMatrix,
+					OpenTkControl_Width,
+					OpenTkControl_Height,
+					new Vector2(mouseX, mouseY),
+					out _activeResizeHandle))
 				{
-					// Store off mouse position at the beginning of the move operation
-					_startMousePosition.X = mouseX;
-					_startMousePosition.Y = mouseY;
-
-					// If the mouse is over the a resize handle then...
-					if (prop.MouseOverResizeHandle(
-						CreatePerspective(),
-						Camera.ViewMatrix,
-						OpenTkControl_Width,
-						OpenTkControl_Height,
-						new Vector2(mouseX, mouseY),
-						out activeHandle))
-					{
-						// Store off the scale at the beginning of the resize operation
-						_mouseDownInitialSize.X = prop.SizeX;
-						_mouseDownInitialSize.Y = prop.SizeY;
-						_mouseDownInitialSize.Z = prop.SizeZ;
-												
-						// Remember which resize handle is active
-						_activeResizeHandle = activeHandle;
-
-						// Set a flag that the mouse started over a resize handle
-						_overResizeHandleOnMouseDown = true;
-					}
-				}
+					// Store off the scale at the beginning of the resize operation
+					_mouseDownInitialSize.X = prop.SizeX;
+					_mouseDownInitialSize.Y = prop.SizeY;
+					_mouseDownInitialSize.Z = prop.SizeZ;
+																	
+					// Set a flag that the mouse started over a resize handle
+					_overResizeHandleOnMouseDown = true;
+				}				
 			}
 		}
 
 		#endregion
 
 		#region Public Properties
+
+		/// <summary>
+		/// Collection of Props being displayed on the preview.
+		/// </summary>
+		public List<IPropOpenGLData> Props { get; set; }
+
 
 		private PropPreviewBackground _background;
 
@@ -509,6 +504,11 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				_background = value;
 			}
 		}
+
+		/// <summary>
+		/// True if the preview has been loaded and initialized.
+		/// </summary>
+		public bool Initialized { get; set; }
 
 		#endregion
 
