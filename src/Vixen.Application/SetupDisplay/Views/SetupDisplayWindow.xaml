@@ -145,7 +145,7 @@
                   Background="Gray" />
 
 			<Grid Grid.Column="2">
-				<TabControl HorizontalAlignment="Stretch" Margin="5">
+				<TabControl HorizontalAlignment="Stretch" Margin="5" x:Name="PreviewTabControl">
 					<TabItem Header="Dev" HorizontalAlignment="Stretch">
 
 						<Grid>
