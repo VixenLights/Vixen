@@ -161,7 +161,13 @@
 						</Grid>
 					</TabItem>
 					<TabItem Header="Preview 1">
-                        <glWpfControl:GLWpfControl
+						<DockPanel>
+							<ToolBar DockPanel.Dock="Top">
+								<Button Command="{Binding SelectBackgroundImage}">
+									<Image Source="BackgroundImage.png" Width="32" Height="32"/>
+								</Button> 
+							</ToolBar>
+							<glWpfControl:GLWpfControl
 							x:Name="OpenTkControlPreview" 							
 							Render="OpenTkControlPreview_OnRender"
 							SizeChanged="OpenTkControlPreview_SizeChanged"
@@ -178,6 +184,7 @@
 								</ContextMenu>
 							</glWpfControl:GLWpfControl.ContextMenu>
 						</glWpfControl:GLWpfControl>
+						</DockPanel>
 					</TabItem>
 				</TabControl>
 			</Grid>
