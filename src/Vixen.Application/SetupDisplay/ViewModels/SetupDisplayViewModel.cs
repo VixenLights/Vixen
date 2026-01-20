@@ -181,6 +181,13 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			// If the user selected a file then...
 			if (result == DialogResult.OK)
 			{
+				// If the background class exists then...
+				if (DisplayPreviewDrawingEngine.Background != null)
+				{
+					// Dispose of the previous background
+					DisplayPreviewDrawingEngine.Background.Dispose();
+				}
+
 				// Assign the background image to the drawing engine
 				DisplayPreviewDrawingEngine.Background = new PropPreviewBackground(dialog.FileName, 1.0f);
 			}
