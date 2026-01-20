@@ -18,6 +18,7 @@
 
 		<ItemGroup>
 				<None Remove="NLog.config" />
+				<None Remove="SetupDisplay\Views\BackgroundImage.png" />
 		</ItemGroup>
 
 		<ItemGroup>
@@ -96,6 +97,12 @@
 		  <Folder Include="SetupDisplay\Behaviors\" />
 		  <Folder Include="SetupDisplay\Model\" />
 		  <Folder Include="SetupDisplay\Services\" />
+		</ItemGroup>
+
+		<ItemGroup>
+		  <Resource Include="SetupDisplay\Views\BackgroundImage.png">
+		    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		  </Resource>
 		</ItemGroup>
 
 </Project>
