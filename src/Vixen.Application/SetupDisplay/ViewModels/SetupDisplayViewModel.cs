@@ -25,6 +25,7 @@ using VixenApplication.SetupDisplay.OpenGL;
 
 using VixenModules.App.Props.Models.Arch;
 using VixenModules.App.Props.Models.Tree;
+using VixenModules.Preview.VixenPreview.OpenGL;
 
 using Window = System.Windows.Window;
 
@@ -87,6 +88,9 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			// Initialize the command to center the OpenGL preview
 			CenterPreview = new RelayCommand(ExecuteCenterPreview);
 
+			// Initialize the select background image command
+			SelectBackgroundImage = new RelayCommand(SelectBackground);
+
 			// Create the collection of view model rotations
 			Rotations = new();
 
@@ -124,6 +128,11 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		public ICommand CenterPreview { get; private set; }
 
 		/// <summary>
+		/// Command for selecting the background image for the preview.
+		/// </summary>
+		public ICommand SelectBackgroundImage { get; private set; }
+
+		/// <summary>
 		/// Gets or sets the SelectedProp value.
 		/// </summary>
 		public int ZRotation
@@ -157,6 +166,32 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		#endregion
 
 		#region Private Methods
+
+		/// <summary>
+		/// Selects the background image.
+		/// </summary>
+		private void SelectBackground()
+		{
+			// Create the Microsoft Open File Dialog
+			OpenFileDialog dialog = new OpenFileDialog { Title = "Select a Background", Filter = "JPG Files (*.jpg)|*.jpg" };
+
+			// Display the File Selection Dialog
+			DialogResult? result = dialog.ShowDialog();
+
+			// If the user selected a file then...
+			if (result == DialogResult.OK)
+			{
+				// If the background class exists then...
+				if (DisplayPreviewDrawingEngine.Background != null)
+				{
+					// Dispose of the previous background
+					DisplayPreviewDrawingEngine.Background.Dispose();
+				}
+
+				// Assign the background image to the drawing engine
+				DisplayPreviewDrawingEngine.Background = new PropPreviewBackground(dialog.FileName, 1.0f);
+			}
+		}
 
 		/// <summary>
 		/// Adds the currently selected prop to the preview.
