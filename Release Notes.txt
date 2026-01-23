@@ -1,5 +1,70 @@
 Release Notes - Vixen 3
 
+
+Release Notes - Vixen 3 - 3.12u6 Build
+
+** 5 issues resolved in this release.
+
+** Improvements
+	* [VIX-3716] - Remove the old pop up effect editor dialog
+	* [VIX-3780] - The LipSync mapping screen for mapping face components to elements is not resizable.
+** Bugs
+	* [VIX-3773] - FPP Export is producing incorrect universe file when universes are not consecutive
+	* [VIX-3782] - Undocked Timeline is not visible
+	* [VIX-3785] - System and ModuleStore backups are landing in the Sequence auto_backup folder instead of the SystemData auto_backup folder
+	
+
+
+Release Notes - Vixen 3 - 3.12u5 Build
+
+** 3 issues resolved in this release.
+
+** Bugs
+	* [VIX-3748] - Wave Effect: When the speed is zero, the wave still moves.
+	* [VIX-3766] - OpenGL Preview no longer draws if the Setup Preview is opened after any sequence or effect preview occurs.
+	* [VIX-3772] - Vendor Browser can timeout on slow connections
+	
+
+
+Release Notes - Vixen 3 - 3.12u4 Build
+
+** 10 issues resolved in this release.
+
+** Improvements
+	* [VIX-3724] - Only update the controller order in the mediator when the user changes the order.
+	* [VIX-3746] - Add the profile name to the title bar in the sequence editor.
+** Bugs
+	* [VIX-3727] - Export wizard button to add all sequences should ignore sequences from the auto_backup folder.
+	* [VIX-3747] - When dropping a color / gradient on a set of selected effects, the selection is lost
+	* [VIX-3751] - GRWB Color Crash
+	* [VIX-3753] - Vixen crashes with a System.AccessViolationException when trying to open Preview Setup
+	* [VIX-3754] - Improve functionality of Effect Time Editor popup
+	* [VIX-3762] - Zip Profile Wizard can fail when working with very large profiles
+	* [VIX-3763] - Candle effect can have a starting value that violates the min / max constraint.
+** New Features
+	* [VIX-3737] - Enhance the Picture effect with a movement type of expand / compress.
+	
+
+
+Release Notes - Vixen 3 - 3.12u3 Build
+
+** 12 issues resolved in this release.
+
+** Bugs
+	* [VIX-3729] - After updating, I noticed that some elements no longer appear on the preview window when starting a sequence. The "command" is visible in the sequence editor window but doesn’t activate when the sequence runs.
+	* [VIX-3732] - Custom Prop Editor crashing on prop when trying to increase light size.
+	* [VIX-3734] - There can be orphaned Preview module data in some profiles if the preview was not properly removed.
+	* [VIX-3736] - Effect resize indicator does not appear in the waveform when sizing the front of the effect.
+	* [VIX-3739] - The check for a newer development build no longer works
+	* [VIX-3740] - Adding an additional color to the alternating does not validate color on discrete elements.
+	* [VIX-3741] - Importing vendor model with a size larger than 800 x 600 does not set the correct Prop size.
+	* [VIX-3742] - The formatting of the state attributes in imported xmodel files has changed and states are not parsed correctly.
+	* [VIX-3743] - The Lipsync element mapping screen has a poor user experience.
+	* [VIX-3744] - Wipe Direction Diamond Burst is spelled incorrectly
+** Improvements
+	* [VIX-3735] - Add preference for indent style to be tab in the .editorconfig to avoid further file differences on new code.
+	* [VIX-3738] - Pasted effects should be selected.
+
 Release Notes - Vixen 3 - 3.12u2 Build 
 
 ** 1 issues resolved in this release. 
