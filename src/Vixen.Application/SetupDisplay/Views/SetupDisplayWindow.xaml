@@ -174,7 +174,10 @@
                             MouseDown="OpenTkControlPreview_MouseDown"
 							MouseMove="OpenTkControlPreview_MouseMove"
                             MouseUp="OpenTkControlPreview_MouseUp"
-							Loaded="OpenTkControlPreview_Loaded">
+							Loaded="OpenTkControlPreview_Loaded"
+							MouseWheel="OpenTkControlPreview_MouseWheel"
+							KeyDown="OpenTkControlPreview_KeyDown"
+							Focusable="True">
                             <glWpfControl:GLWpfControl.ContextMenu>
 								<ContextMenu>
 
