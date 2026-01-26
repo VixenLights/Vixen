@@ -60,6 +60,12 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// </summary>
 		private bool _recreateMovingHeadRenderStrategy;
 
+		/// <summary>
+		/// Previous mouse position in screen coordinates.
+		/// This position is used when moving the camera.
+		/// </summary>
+		private Vector2i _prevMousePosition;
+		
 		#endregion
 
 		#region Private Properties
@@ -355,6 +361,9 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// <returns>True when the mouse is over a resize handle</returns>
 		public bool MouseMove(int previousMouseX, int previousMouseY, int mouseX, int mouseY)
 		{
+			// Get the mouse position in screen coordinates
+			Vector2i mousePos = new Vector2i(mouseX, mouseY);
+
 			// If the mouse is down and was over a resize handle then			
 			if (_mouseButtonDown && _overResizeHandleOnMouseDown)
 			{
@@ -385,10 +394,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 
 				// Loop over the selected prop
 				foreach (IPropOpenGLData prop in SelectedProps)
-				{
-					// Create a Vector2 with the mouse cursor position
-					Vector2 mousePos = new Vector2(mouseX, mouseY);
-					
+				{					
 					// Get the mouse position in world coordinates
 					Vector3 mouseWorldPos = GetMouseMovementInWorld((int)_startMousePosition.X, (int)_startMousePosition.Y, mouseX, mouseY, prop);
 					
@@ -401,37 +407,64 @@ namespace VixenApplication.SetupDisplay.OpenGL
 					_recreateMovingHeadRenderStrategy = (prop is IIntelligentFixturePropOpenGLData);					
 				}
 			}
-			// Otherwise if the mouse is down then...
-			else if (_mouseButtonDown)
-			{				
-				// Get the mouse position in screen coordinates
-				Vector2 mousePos = new Vector2(mouseX, mouseY);
-
+			// Otherwise if the mouse is down and the mouse is over a selected prop then...
+			else if (_mouseButtonDown && IsOverSelectedProp(mousePos))
+			{								
 				// Loop over the selected props
 				foreach (IPropOpenGLData prop in SelectedProps)
-				{
-					// If the mouse is over the prop or
-					// a prop move is in progress then...
-					if (IsMouseOverProp(mousePos, prop) || _propMoveInProgress)
-					{
-						// Remember we started a prop move operation
-						_propMoveInProgress = true;
+				{					
+					// Remember we started a prop move operation
+					_propMoveInProgress = true;
 
-						// Get the mouse position in world coordinates
-						Vector3 mouseWorldPosition = GetMouseMovementInWorld(previousMouseX, previousMouseY, mouseX, mouseY, prop);
+					// Get the mouse position in world coordinates
+					Vector3 mouseWorldPosition = GetMouseMovementInWorld(previousMouseX, previousMouseY, mouseX, mouseY, prop);
 		
-						// Move the prop
-						prop.X += mouseWorldPosition.X;
-						prop.Y += mouseWorldPosition.Y;
+					// Move the prop
+					prop.X += mouseWorldPosition.X;
+					prop.Y += mouseWorldPosition.Y;
 
-						// Re-create the moving head render strategy if the prop is a moving head
-						_recreateMovingHeadRenderStrategy = (prop is IIntelligentFixturePropOpenGLData);						
-					}
+					// Re-create the moving head render strategy if the prop is a moving head
+					_recreateMovingHeadRenderStrategy = (prop is IIntelligentFixturePropOpenGLData);											
 				}
+			}
+			// Otherwise just move the camera
+			else if (_mouseButtonDown)
+			{				
+				// Move the view camera 
+				MoveCamera(_prevMousePosition.X, _prevMousePosition.Y, mousePos.X, mousePos.Y);
+
+				// Save off the mouse position
+				_prevMousePosition = mousePos;				
 			}
 
 			// Return whether the mouse is over a resize handle
 			return IsMouseOverAResizeHandle(mouseX, mouseY);
+		}
+
+		/// <summary>
+		/// Returns true if the mouse is over a selected prop.
+		/// </summary>
+		/// <param name="mousePos">Position of the mouse</param>
+		/// <returns>True if the mouse is over a selected prop</returns>
+		private bool IsOverSelectedProp(Vector2 mousePos)
+		{
+			// Default to NOT being over a selected prop
+			bool overSelectedProp = false;
+
+			// Loop over the selected props
+			foreach (IPropOpenGLData prop in SelectedProps)
+			{
+				// If the mouse is over the prop or
+				// a prop move is in progress then...
+				if (IsMouseOverProp(mousePos, prop) || _propMoveInProgress)
+				{
+					// Indicate we are over a selected prop
+					overSelectedProp = true;
+				}
+			}
+
+			// Return whether the mouse is over a selected prop
+			return overSelectedProp;
 		}
 
 		/// <summary>
@@ -441,6 +474,9 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// <param name="mouseY">Position of the mouse in Y screen coordinates</param>
 		public void MouseDown(int mouseX, int mouseY)
 		{
+			// Store off the mouse position in support of moving the camera
+			_prevMousePosition = new Vector2i(mouseX, mouseY);
+			
 			// Set a flag that the preview mouse is down
 			_mouseButtonDown = true;
 
