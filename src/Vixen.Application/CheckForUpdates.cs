@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 using Catel.Logging;
 using Common.Controls;
@@ -29,7 +30,6 @@ namespace VixenApplication
 			pictureBoxIcon.Image = Resources.VixenImage;
 			labelHeading.Font = new Font(labelHeading.Font.Name, 20F);
 			labelCurrentVersion.Font = new Font(labelCurrentVersion.Font.Name, 10F);
-			buttonDownload.Font = new Font(buttonDownload.Font.Name, 20F);
 			_currentVersionType = VersionInfo.CurrentVersionType;
 			
 		}
@@ -37,7 +37,7 @@ namespace VixenApplication
 		private async void CheckForUpdates_Load(object sender, EventArgs e)
 		{
 			//Add Installed version and type to the Form Title
-			Text = @" " + _currentVersionType + @" " + VersionInfo.VersionName + @" Installed"; 
+			Text = $@"{VersionInfo.VersionName} Installed"; 
 			//display a message to the user that we are doing stuff
 			labelCurrentVersion.Text = @"Checking for updates, please wait.";
 
@@ -63,20 +63,19 @@ namespace VixenApplication
 
 			await PopulateChangeLog(); //Add relevant Tickets and Descriptions to the TextBox.
 
+			labelCurrentVersion.Text = $@"{_currentVersionType} {_latestVersion} is the latest.";
+
 			if (_newVersionAvailable)
 			{
-				labelCurrentVersion.Text = String.Empty;
+				labelHeading.Text = $@"An updated {_currentVersionType.ToLower(CultureInfo.CurrentCulture)} build is available.";
 				textBoxReleaseNotes.Visible = true;
 				labelHeading.Visible = true;
 				lblChangeLog.Visible = true;
-				buttonDownload.Text = $@"Download {_currentVersionType} version {_latestVersion}";
 				buttonDownload.Visible = true;
 			}
 			else
 			{
-				labelCurrentVersion.Text = 
-					@"Vixen " + _currentVersionType + @" " + _currentVersion + @" is the latest " + _currentVersionType;
-				labelHeading.Text = @"You have the latest " + _currentVersionType + @" installed!";
+				labelHeading.Text = $@"You have the latest {_currentVersionType.ToLower(CultureInfo.CurrentCulture)} build installed.";
 				textBoxReleaseNotes.Text = "";
 				buttonDownload.Visible = false;
 			}
