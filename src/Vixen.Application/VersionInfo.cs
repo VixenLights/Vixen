@@ -36,10 +36,10 @@ namespace VixenApplication
 		}
 
 		/// <summary>
-		/// Asynchronously retrieves the latest available development build version for Vixen 3 from the remote bug tracking
+		/// Asynchronously retrieves the latest available development build version for Vixen from the remote bug tracking
 		/// service.
 		/// </summary>
-		/// <remarks>This method attempts to connect to the Vixen 3 bug tracking website to determine if a newer
+		/// <remarks>This method attempts to connect to the Vixen bug tracking website to determine if a newer
 		/// development build is available. If the service is unreachable or an error occurs, the method logs the error and
 		/// returns an empty string. The method enforces a 5-second timeout for the HTTP request.</remarks>
 		/// <returns>A string representing the latest development build version number if available; otherwise, an empty string if no
