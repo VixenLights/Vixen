@@ -1,8 +1,11 @@
-﻿using System.Collections.ObjectModel;
-using Catel.Collections;
+﻿using Catel.Collections;
 using Catel.Data;
+using Catel.IoC;
 using Catel.MVVM;
+using Catel.Services;
 using Common.Controls;
+using System.Collections.ObjectModel;
+using TimedSequenceEditor.Forms.WPF.MarksDocker.ViewModels;
 using Vixen.Marks;
 using VixenModules.App.Marks;
 using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services;
@@ -141,29 +144,34 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 
 		#region ExportCollection command
 
-		private Command _exportCollectionCommand;
+		private TaskCommand _exportCollectionCommand;
 
 		/// <summary>
 		/// Gets the ExportCollection command.
 		/// </summary>
-		public Command ExportCollectionCommand
+		public TaskCommand ExportCollectionCommand
 		{
-			get { return _exportCollectionCommand ?? (_exportCollectionCommand = new Command(ExportCollection, CanExportCollection)); }
+			get { return _exportCollectionCommand ??= new TaskCommand(ExportCollection, CanExportCollection); }
 		}
 
 		/// <summary>
 		/// Method to invoke when the ExportCollection command is executed.
 		/// </summary>
-		private void ExportCollection()
+		private async Task ExportCollection()
 		{
+			var vm = new MarkExportWindowViewModel(MarkCollections);
+			var dependencyResolver = this.GetDependencyResolver();
+			var uiVisualizerService = dependencyResolver.Resolve<UIVisualizerService>();
+			await uiVisualizerService.ShowDialogAsync(vm);
+
 			var bDialog = new BeatMarkExportDialog();
 
 			if (bDialog.ShowDialog() == DialogResult.OK)
 			{
 				if (bDialog.IsVixen3Selection)
-					MarkImportExportService.ExportMarkCollections("vixen3", MarkCollections);
+					MarkImportExportService.ExportMarkCollections("vixen3", vm.SelectedItems);
 				if (bDialog.IsAudacitySelection)
-					MarkImportExportService.ExportMarkCollections("audacity", MarkCollections);
+					MarkImportExportService.ExportMarkCollections("audacity", vm.SelectedItems);
 				if (!bDialog.IsVixen3Selection && !bDialog.IsAudacitySelection)
 				{
 					var messageBox = new MessageBoxForm("No export type selected", "Warning", MessageBoxButtons.OK, SystemIcons.Warning);

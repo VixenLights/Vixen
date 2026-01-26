@@ -29,6 +29,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		public bool IsPangolinBeyondSelection => radioPangolinBeyondFormat.Checked;
+
 		private void BeatMarkExportDialog_Load(object sender, EventArgs e)
 		{
 			radioVixen3Format.Checked = true;
