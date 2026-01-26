@@ -191,6 +191,11 @@ namespace VixenApplication
 			helpMenu.DropDown.Items.Add(vixenYouTubeChannelMenu);
 
 			ToolStripMenuItem updatesMenu = new ToolStripMenuItem("Check for Updates");
+			if (VersionInfo.IsTestBuild)
+			{
+				//Disable the Check for updates menu item as there is no need to have it enabled for Test Builds.
+				updatesMenu.Enabled = false;
+			}
 			updatesMenu.Click += new System.EventHandler(this.UpdatesMenu_Click);
 			helpMenu.DropDown.Items.Add(updatesMenu);
 
