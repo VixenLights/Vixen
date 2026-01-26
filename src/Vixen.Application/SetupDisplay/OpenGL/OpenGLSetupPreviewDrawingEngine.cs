@@ -224,11 +224,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// <inheritdoc/>		
 		protected override float GetZoomFactor()
 		{
-			// TODO: THIS NEEDS TO BE REVISITED FOR THE PREVIEW SETUP
-			//
-			// Since the props are being draw on a 1x1 coordinate system
-			// The zoom needs to divided by a factor of 100
-			return 100;
+			return 1.0f;
 		}
 
 		/// <inheritdoc/>		

@@ -1,11 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 
 using Common.Controls;
+using Common.OpenGLCommon.Constructs.DrawingEngine;
 
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Wpf;
@@ -15,6 +14,7 @@ using Orc.Theming;
 using Vixen.Sys;
 using Vixen.Sys.Managers;
 
+using VixenApplication.SetupDisplay.OpenGL;
 using VixenApplication.SetupDisplay.ViewModels;
 
 using VixenModules.App.Modeling;
@@ -254,6 +254,23 @@ namespace VixenApplication.SetupDisplay.Views
 		/// <param name="sender">Event sender</param>
 		/// <param name="e">Event arguments</param>
 		private void OpenTkControl_MouseWheel(object sender, MouseWheelEventArgs e)
+		{			
+			// Call helper method to zoom the OpenTK viewport
+			OpenTkControl_MouseWheel(sender, e, OpenTkControl, (DataContext as SetupDisplayViewModel).PropPreviewDrawingEngine);
+		}
+
+		/// <summary>
+		/// Event when the Mouse wheel is moved over the OpenTK control.
+		/// </summary>
+		/// <param name="sender">Event sender</param>
+		/// <param name="e">Event arguments</param>		
+		/// <param name="openTKControl">OpenTK WPF control</param>
+		/// <param name="drawingEngine">Associated drawing engine</param>
+		private void OpenTkControl_MouseWheel(
+			object sender,
+			MouseWheelEventArgs e,
+			GLWpfControl openTKControl,
+			OpenGLDrawingEngineBase<ILightPropOpenGLData> drawingEngine)			
 		{
 			int factor = 20;
 			if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift)
@@ -263,10 +280,57 @@ namespace VixenApplication.SetupDisplay.Views
 			int direction = -(e.Delta * SystemInformation.MouseWheelScrollLines / factor);
 
 			// Update the zoom of the preview
-			(DataContext as SetupDisplayViewModel).PropPreviewDrawingEngine.Zoom(direction);
+			drawingEngine.Zoom(direction);
 
 			// This should trigger the control to redraw
-			OpenTkControl.InvalidateVisual();
+			openTKControl.InvalidateVisual();			
+		}
+
+		/// <summary>
+		/// Event when a key is pressed in the OpenTK Preview control.
+		/// </summary>
+		/// <param name="sender">Event sender</param>
+		/// <param name="e">Event arguments</param>
+		private void OpenTkControlPreview_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		{	
+			// If either of the zoom keys (I or O) are pressed then...
+			if (e.Key == Key.I || e.Key == Key.O)
+			{
+				// Determine if either of the shift keys are down 
+				bool shift = Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift);
+
+				int factor = 20;
+				if (shift)
+				{
+					factor = 5;
+				}
+
+				int delta = 120;
+				if (e.Key != Key.I)
+				{
+					delta = -delta;
+				}
+
+				// Determine the zoom factor
+				int direction = -(delta * SystemInformation.MouseWheelScrollLines / factor);
+
+				// Update the zoom of the preview
+				(DataContext as SetupDisplayViewModel).DisplayPreviewDrawingEngine.Zoom(direction);
+
+				// This should trigger the control to redraw
+				OpenTkControlPreview.InvalidateVisual();
+			}							
+		}
+
+		/// <summary>
+		/// Event when the Mouse wheel is moved over the OpenTK control.
+		/// </summary>
+		/// <param name="sender">Event sender</param>
+		/// <param name="e">Event arguments</param>
+		private void OpenTkControlPreview_MouseWheel(object sender, MouseWheelEventArgs e)
+		{
+			// Call helper method to zoom the OpenTK viewport
+			OpenTkControl_MouseWheel(sender, e, OpenTkControlPreview, (DataContext as SetupDisplayViewModel).DisplayPreviewDrawingEngine);
 		}
 
 		/// <summary>
@@ -354,6 +418,9 @@ namespace VixenApplication.SetupDisplay.Views
 		/// <param name="e">Event arguments</param>
 		private void OpenTkControlPreview_MouseDown(object sender, MouseButtonEventArgs e)
 		{
+			// Ensure that the OpenTKControlPreview control receives focus
+			OpenTkControlPreview.Focus();
+
 			// If the left button has been pressed then...
 			if (e.LeftButton == MouseButtonState.Pressed)
 			{
