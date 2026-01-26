@@ -1282,7 +1282,7 @@ namespace VixenApplication
 			Cursor = Cursors.Default;
 
 			var checkForUpdates = new CheckForUpdates();
-			checkForUpdates.ShowDialog();
+			checkForUpdates.ShowDialog(this);
 			checkForUpdates.Dispose();
 		}
 

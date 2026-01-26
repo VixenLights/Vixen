@@ -25,8 +25,7 @@ namespace VixenApplication
 		{
 			InitializeComponent();
 			ThemeUpdateControls.UpdateControls(this);
-			textBoxReleaseNotes.AutoSize = false;
-			textBoxReleaseNotes.Height = (int)(ScalingTools.GetScaleFactor() * 225);
+			textBoxReleaseNotes.AutoSize = true;
 			pictureBoxIcon.Image = Resources.VixenImage;
 			labelHeading.Font = new Font(labelHeading.Font.Name, 20F);
 			labelCurrentVersion.Font = new Font(labelCurrentVersion.Font.Name, 10F);
@@ -72,6 +71,8 @@ namespace VixenApplication
 				labelHeading.Visible = true;
 				lblChangeLog.Visible = true;
 				buttonDownload.Visible = true;
+				textBoxReleaseNotes.AutoSize = false;
+				textBoxReleaseNotes.Height = (int)(ScalingTools.GetScaleFactor() * 225);
 			}
 			else
 			{
@@ -278,7 +279,7 @@ namespace VixenApplication
 			byte[] fileBytes = await httpClient.GetByteArrayAsync(fileToDownload);
 			await File.WriteAllBytesAsync(downloadPath + "\\" + fileName, fileBytes);
 
-			var messageBox = new MessageBoxForm($"Latest version download to {downloadPath}.", "Info", MessageBoxButtons.OK, SystemIcons.Information);
+			var messageBox = new MessageBoxForm($"Latest version downloaded to {downloadPath}.", "Info", MessageBoxButtons.OK, SystemIcons.Information);
 			messageBox.ShowDialogThreadSafe(this);
 
 			//Turn off the wait cursor while we do stuff
