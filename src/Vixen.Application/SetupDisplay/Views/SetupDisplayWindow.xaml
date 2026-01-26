@@ -10,9 +10,8 @@
 	    xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
         Title="Display Setup" Height="850" Width="1200" WindowStartupLocation="CenterScreen" x:Name="DisplaySetup"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance Type=viewModels:SetupDisplayViewModel, IsDesignTimeCreatable=False}"
-        Loaded="UserControl_Loaded">
-
+        d:DataContext="{d:DesignInstance Type=viewModels:SetupDisplayViewModel, IsDesignTimeCreatable=False}">
+	
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -96,23 +95,8 @@
 
 				<Border BorderThickness="2"  Width="300" Height="300" Margin="5"
                     Grid.Row="2" Background="{StaticResource BackgroundControlBrush}" BorderBrush="{StaticResource BorderColorBrush}">
-					<glWpfControl:GLWpfControl
-						x:Name="OpenTkControl" 
-						SizeChanged="OpenTkControl_SizeChanged"
-						Render="OpenTkControl_OnRender"
-						MouseWheel="OpenTkControl_MouseWheel"
-						MouseDown="OpenTkControl_MouseDown"
-						MouseMove="OpenTkControl_MouseMove"
-						MouseUp="OpenTkControl_MouseUp">
-						<glWpfControl:GLWpfControl.ContextMenu>
-							<ContextMenu>
 
-								<MenuItem Header="Center Preview"                          ToolTip="Repositions the viewpoint to the center of the preview." Command="{Binding PropPreviewCenter}"/>
-								<MenuItem Header="Enable Light Scaling" IsCheckable="True" ToolTip="Scales the light size as the camera is zoomed in or out." IsChecked="{Binding EnableLightScaling }"/>
-								<!--<MenuItem Header="{Binding Location}"/> -->
-							</ContextMenu>
-						</glWpfControl:GLWpfControl.ContextMenu>
-					</glWpfControl:GLWpfControl>
+					<views:PropPreview/>
 				</Border>
 
 
@@ -161,33 +145,7 @@
 						</Grid>
 					</TabItem>
 					<TabItem Header="Preview 1">
-						<DockPanel>
-							<ToolBar DockPanel.Dock="Top">
-								<Button Command="{Binding SelectBackgroundImage}">
-									<Image Source="BackgroundImage.png" Width="32" Height="32"/>
-								</Button> 
-							</ToolBar>
-							<glWpfControl:GLWpfControl
-							x:Name="OpenTkControlPreview" 							
-							Render="OpenTkControlPreview_OnRender"
-							SizeChanged="OpenTkControlPreview_SizeChanged"
-                            MouseDown="OpenTkControlPreview_MouseDown"
-							MouseMove="OpenTkControlPreview_MouseMove"
-                            MouseUp="OpenTkControlPreview_MouseUp"
-							Loaded="OpenTkControlPreview_Loaded"
-							MouseWheel="OpenTkControlPreview_MouseWheel"
-							KeyDown="OpenTkControlPreview_KeyDown"
-							Focusable="True">
-                            <glWpfControl:GLWpfControl.ContextMenu>
-								<ContextMenu>
-
-									<MenuItem Header="Center Preview"                          ToolTip="Repositions the viewpoint to the center of the preview." Command="{Binding DisplayPreviewCenter}"/>
-									<MenuItem Header="Enable Light Scaling" IsCheckable="True" ToolTip="Scales the light size as the camera is zoomed in or out." IsChecked="{Binding EnableLightScaling }"/>
-									<!--<MenuItem Header="{Binding Location}"/> -->
-								</ContextMenu>
-							</glWpfControl:GLWpfControl.ContextMenu>
-						</glWpfControl:GLWpfControl>
-						</DockPanel>
+						<views:PreviewSetup/>
 					</TabItem>
 				</TabControl>
 			</Grid>
