@@ -85,8 +85,11 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			// Initialize the command to add a prop to the preview
 			AddPropToPreview = new RelayCommand(AddSelectedPropToPreview, CanAddPropToPreview);
 
-			// Initialize the command to center the OpenGL preview
-			CenterPreview = new RelayCommand(ExecuteCenterPreview);
+			// Initialize the command to center the OpenGL prop preview
+			PropPreviewCenter = new RelayCommand(ExecuteCenterPropPreview);
+
+			// Initialize the command to center the OpenGL display preview
+			DisplayPreviewCenter = new RelayCommand(ExecuteCenterDisplayPreview);
 
 			// Initialize the select background image command
 			SelectBackgroundImage = new RelayCommand(SelectBackground);
@@ -123,9 +126,14 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		public ICommand AddPropToPreview { get; private set; }
 
 		/// <summary>
-		/// Command to centers the preview.
+		/// Command that centers the prop preview.
 		/// </summary>
-		public ICommand CenterPreview { get; private set; }
+		public ICommand PropPreviewCenter { get; private set; }
+
+		/// <summary>
+		/// Command that centers the display preview.
+		/// </summary>
+		public ICommand DisplayPreviewCenter { get; private set; }
 
 		/// <summary>
 		/// Command for selecting the background image for the preview.
@@ -206,14 +214,23 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		}
 
 		/// <summary>
-		/// Center preview command handler.
+		/// Center prop preview command handler.
 		/// </summary>
-		private void ExecuteCenterPreview()
+		private void ExecuteCenterPropPreview()
 		{
-			// Center the preview and return the new width and height
+			// Center the prop preview and return the new width and height
 			/*ClientSize =*/ PropPreviewDrawingEngine.ExecuteCenterPreview();
 		}
-	
+
+		/// <summary>
+		/// Center display preview command handler.
+		/// </summary>
+		private void ExecuteCenterDisplayPreview()
+		{
+			// Center the display preview and return the new width and height
+			/*ClientSize =*/DisplayPreviewDrawingEngine.ExecuteCenterPreview();
+		}
+
 		private void PropNodeTreePropViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
 			if (SelectedTabIndex == PropViewTab && nameof(PropNodeTreePropViewModel.SelectedItem).Equals(e.PropertyName))

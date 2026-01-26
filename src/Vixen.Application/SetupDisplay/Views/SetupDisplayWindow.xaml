@@ -107,7 +107,7 @@
 						<glWpfControl:GLWpfControl.ContextMenu>
 							<ContextMenu>
 
-								<MenuItem Header="Center Preview"                          ToolTip="Repositions the viewpoint to the center of the preview." Command="{Binding CenterPreview}"/>
+								<MenuItem Header="Center Preview"                          ToolTip="Repositions the viewpoint to the center of the preview." Command="{Binding PropPreviewCenter}"/>
 								<MenuItem Header="Enable Light Scaling" IsCheckable="True" ToolTip="Scales the light size as the camera is zoomed in or out." IsChecked="{Binding EnableLightScaling }"/>
 								<!--<MenuItem Header="{Binding Location}"/> -->
 							</ContextMenu>
@@ -181,7 +181,7 @@
                             <glWpfControl:GLWpfControl.ContextMenu>
 								<ContextMenu>
 
-									<MenuItem Header="Center Preview"                          ToolTip="Repositions the viewpoint to the center of the preview." Command="{Binding CenterPreview}"/>
+									<MenuItem Header="Center Preview"                          ToolTip="Repositions the viewpoint to the center of the preview." Command="{Binding DisplayPreviewCenter}"/>
 									<MenuItem Header="Enable Light Scaling" IsCheckable="True" ToolTip="Scales the light size as the camera is zoomed in or out." IsChecked="{Binding EnableLightScaling }"/>
 									<!--<MenuItem Header="{Binding Location}"/> -->
 								</ContextMenu>
