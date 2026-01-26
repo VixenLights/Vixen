@@ -21,17 +21,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-			public bool IsAudacitySelection
+		public bool IsAudacitySelection
 		{
-			get 
+			get
 			{
 				return radioAudacityFormat.Checked;
 			}
 		}
 
-			private void BeatMarkExportDialog_Load(object sender, EventArgs e)
-			{
-				radioVixen3Format.Checked = true;
-			}
+		private void BeatMarkExportDialog_Load(object sender, EventArgs e)
+		{
+			radioVixen3Format.Checked = true;
+		}
 	}
 }
