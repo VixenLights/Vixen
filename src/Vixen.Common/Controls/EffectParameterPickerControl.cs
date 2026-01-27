@@ -11,36 +11,22 @@ namespace Common.Controls
 			InitializeComponent();
 		}
 
-		private PropertyDescriptor _propertyInfo;
+		private PropertyDetail _propertyDetail;
 
-		private IEffectModuleDescriptor _effectPropertyInfo;
-
-		public PropertyDescriptor PropertyInfo
+		public PropertyDetail PropertyDetail
 		{
-			get { return _propertyInfo; }
+			get { return _propertyDetail; }
 			set
 			{
-				_propertyInfo = value;
-				if (_propertyInfo != null)
+				_propertyDetail = value;
+				if (_propertyDetail != null)
 				{
-					DisplayName = _propertyInfo.DisplayName;
-				}
-			}
-		}
-		public IEffectModuleDescriptor EffectPropertyInfo
-		{
-			get { return _effectPropertyInfo; }
-			set
-			{
-				_effectPropertyInfo = value;
-				if (_propertyInfo != null)
-				{
-					DisplayName = _effectPropertyInfo.EffectName;
+					DisplayName = _propertyDetail.Name;
 				}
 			}
 		}
 
-		public String DisplayName
+		public string DisplayName
 		{
 			set { labelParameterName.Text = value; } 
 		}

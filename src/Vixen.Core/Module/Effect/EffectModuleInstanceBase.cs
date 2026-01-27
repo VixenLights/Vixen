@@ -8,7 +8,6 @@ using Vixen.Marks;
 using Vixen.Module.Media;
 using Vixen.Services;
 using Vixen.Sys;
-using static Vixen.Module.Effect.IEffectModuleInstance;
 
 namespace Vixen.Module.Effect
 {
@@ -27,7 +26,6 @@ namespace Vixen.Module.Effect
 		private DefaultValueArrayMember _parameterValues;
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private readonly Dictionary<string, bool> _browsableState = new Dictionary<string, bool>();
-		private int _countOfSubEffects = 0;
 
 		protected EffectModuleInstanceBase()
 		{
@@ -107,26 +105,6 @@ namespace Vixen.Module.Effect
 			}
 		}
 
-        /// <summary>
-        /// Returns the number of sub-effects
-        /// </summary>
-        [Browsable(false)]
-		public int CountOfSubEffects
-		{
-			get { return _countOfSubEffects; }
-			set { _countOfSubEffects = value; }
-		}
-
-		/// <summary>
-		/// Returns a sub-effect, by index.
-		/// </summary>
-		/// <param name="index">Specifies which sub-effect to access</param>
-		/// <returns>The sub-effect, specified by index</returns>
-		public virtual object GetSubEffect(int index)
-		{
-			return null;
-		}
-
 		/// <summary>
 		/// Refresh the sub-effect's MVVM bindings.
 		/// </summary>
@@ -135,25 +113,19 @@ namespace Vixen.Module.Effect
 		}
 
 		/// <summary>
-		/// Gets the properties for a sub-effect like Emitter in Liquid and Waves in Wave.
+		/// Gets the properties of the effect.
 		/// </summary>
-		/// <param name="index">Specifies which sub-effect to access</param>
-		/// <param name="propertyType">Specifies the Property Type to search for</param>
-		/// <param name="specialFilters">Specifies a filter value that modifies the returned Property List</param>
-		/// <returns>Returns all the properties that are of type Property Type</returns>
-		public virtual IEnumerable<PropertyDescriptor> GetSubEffectProperties(int index, Type propertyType, SpecialFilters specialFilters = SpecialFilters.None)
+		/// <param name="baseProperty"></param>
+		/// <returns>Returns all the public properties of the effect</returns>
+		public virtual List<EffectProperties> GetProperties(IEnumerable<PropertyDescriptor> baseProperty)
 		{
-			return null;
-		}
+			var propertyList = new List<EffectProperties>();
+			if (baseProperty != null)
+			{
+				propertyList.Add(new EffectProperties(this, baseProperty, ""));
+			}
 
-        /// <summary>
-        /// Gets the sub-effect's name
-        /// </summary>
-        /// <param name="index">Specifies which sub-effect to access</param>
-        /// <returns>Returns the sub-effect's name</returns>
-        public virtual string GetSubEffectName(int index)
-		{
-			return string.Empty;
+			return propertyList;
 		}
 
 		public bool PreRender(CancellationTokenSource cancellationToken = null)
@@ -200,6 +172,18 @@ namespace Vixen.Module.Effect
 			}
 
 			return _Render();
+		}
+
+		/// <summary>
+		/// Update a property and notify of content change.
+		/// </summary>
+		/// <param name="descriptor">Specifies the property's descriptor</param>
+		/// <param name="effect">Specifies the effect the property belongs to. If the effect contains sub-effects (i.e. Wave), this is the sub-effect instance.</param>
+		/// <param name="newProperty">Specifies the new property value to set</param>
+		public virtual void UpdateProperty(PropertyDescriptor descriptor, object effect, Object newProperty)
+		{
+			descriptor.SetValue(effect, newProperty);
+			UpdateNotifyContentChanged();
 		}
 
 		public string PropertyInfo()

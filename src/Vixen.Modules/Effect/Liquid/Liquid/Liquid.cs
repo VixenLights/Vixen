@@ -443,7 +443,6 @@ namespace VixenModules.Effect.Liquid
 				_emitterList = value;
 				MarkDirty();
 				OnPropertyChanged();
-				CountOfSubEffects = _emitterList.Count();
 			}
 		}
 
@@ -996,41 +995,6 @@ namespace VixenModules.Effect.Liquid
 			}
 		}
 
-		/// <summary>
-		/// Returns an Emitter, by index.
-		/// </summary>
-		/// <param name="index">Specifies which Emitter to access</param>
-		/// <returns>The Emitter, specified by index</returns>
-		public override IEmitter GetSubEffect(int index)
-		{
-            if (index >= 0 && index < EmitterList.Count)
-            {
-			    return EmitterList[index];
-            }
-
-            Debug.Assert(false, "Wave index out of range");
-            return null;
-		}
-
-        /// <summary>
-        /// Gets the sub-effect's name
-        /// </summary>
-        /// <param name="index">Specifies which sub-effect to access. -1 returns "All Emitters"</param>
-        /// <returns>Returns the sub-effect's name</returns>
-        public override string GetSubEffectName(int index)
-        {
-            if (index == -1)
-            {
-                return "All Emitters";
-            }
-            else if (index < EmitterList.Count)
-            {
-                return $"Emitter {index + 1}";
-            }
-
-            return string.Empty;
-        }
-		
         /// <summary>
         /// Refresh the Emitter's MVVM bindings.
         /// </summary>
@@ -1039,52 +1003,75 @@ namespace VixenModules.Effect.Liquid
 			OnPropertyChanged(nameof(EmitterList));
 		}
 
-        /// <summary>
-        /// Gets the properties for an Emitter.
-        /// </summary>
-        /// <param name="index">Specifies which Emitter to access</param>
-        /// <param name="propertyType">Specifies the Property Type to search for</param>
-        /// <param name="specialFilters">Specifies a filter value that modifies the returned Property List</param>
-        /// <returns>Returns all the properties that are of type Property Type</returns>
-        public override IEnumerable<PropertyDescriptor> GetSubEffectProperties(int index, Type propertyType, IEffectModuleInstance.SpecialFilters specialFilters)
+		/// <summary>
+		/// Returns a list of properties for the Fixture effect. The properties will be returned in 
+		/// two types. The first type will be a collection of curve properties for each emitter. If there
+		/// are multiple emitters, there will be a corresponding type.
+		/// The second type will be a single collection of color properties for all emitters.
+		/// </summary>
+		/// <param name="baseProperty"></param>
+		/// <returns></returns>
+		public override List<EffectProperties> GetProperties(IEnumerable<PropertyDescriptor> baseProperty)
 		{
-            if (index < 0 && index > EmitterList.Count)
-            {
-                Debug.Assert(false, "Emitter index out of range");
-                return null;
-            }
+			var propertyList = new List<EffectProperties>();
+			var indexCurve = 1;
+			var indexColor = 1;
+			var colorArrayUsed = false;
 
-            // Acquire a list of properties as specified in propertyType
-            var emitter = EmitterList[index];
-			var targetProperties = MetadataRepository.GetProperties(emitter).Where(x => (x.PropertyType == (Type)propertyType) && x.IsBrowsable);
-
-			// This is a special case where we will need to do some post-processing of the returned list of properties.
-			// In one or more Emitters, the User can select "Use Color List" where the Emitter leverages the higher-level Color List of the entire
-			// Liquid effect rather than the Color in the individual Emitters. In this case, we return the Color List instead.
-			// If the Special Filter is indicated and if other Emitters also specify "Use Color List", we will only return one Color List.
-			if ((Type)propertyType == typeof(ColorGradient))
+			// Iterate through each emitter, collecting all emitter's colors into a single list
+			foreach (var emitter in EmitterList)
 			{
+				// If this emitter specifies to use the Effect's Color List, then...
 				if (emitter.UseColorArray == true)
 				{
-					targetProperties = MetadataRepository.GetProperties(this).Where(x => x.PropertyType == typeof(List<ColorGradient>));
-
-					if (specialFilters == IEffectModuleInstance.SpecialFilters.UseOneColorList)
+					// If a previous emitter has not already added the Effect's Color List properties, then don't include them again
+					if (colorArrayUsed == false)
 					{
-						for (var lookBack = 0; lookBack < index; lookBack++)
+						var propDetail = MetadataRepository.GetProperties(this).Where(x => (x.PropertyType == typeof(List<ColorGradient>)) && x.IsBrowsable).Select(x => x.Descriptor);
+						if (propDetail != null)
 						{
-							if (EmitterList[lookBack].UseColorArray == true)
+							if (propertyList.Count == 0)
 							{
-								// A previous Emitter is using the Color List so we do not return multiple Color Lists, so instead we return a placeholder property
-								targetProperties = MetadataRepository.GetProperties(this).Where(x => x.Name == "PlaceHolder");
-								break;
+								propertyList.Add(new EffectProperties("All Emitters"));
 							}
+							propertyList.First().Add(this, propDetail);
 						}
+					}
+
+					// Increment the color property index and set that the color array has been used
+					indexColor++;
+					colorArrayUsed = true;
+				}
+
+				// Otherwise, get the color property for this emitter
+				else
+				{
+					var propDetail = MetadataRepository.GetProperties(emitter)?.Where(x => (x.PropertyType == typeof(Color) || x.PropertyType == typeof(ColorGradient)) && x.IsBrowsable)?.Select(x => x.Descriptor)?.FirstOrDefault();
+					if (propDetail != null)
+					{
+						if (propertyList.Count == 0)
+						{
+							propertyList.Add(new EffectProperties("All Emitters"));
+						}
+						propertyList.First().Add(emitter, propDetail, $"{propDetail.DisplayName} {indexColor++}");
 					}
 				}
 			}
 
-			return targetProperties.Select(x => x.Descriptor);
+			// Collect all curve properties for each emitter into a separate collection
+			foreach (var emitter in EmitterList)
+			{
+				var targetProperties = MetadataRepository.GetProperties(emitter).Where(x => (x.PropertyType == typeof(Curve)) && x.IsBrowsable).Select(x => x.Descriptor);
+
+				if (targetProperties.Count() != 0)
+				{
+					propertyList.Add(new EffectProperties(emitter, targetProperties, $"Emitter {indexCurve++}"));
+				}
+			}
+
+			return propertyList;
 		}
+
 		#endregion
 
 		#region Private Properties
@@ -1951,8 +1938,6 @@ namespace VixenModules.Effect.Liquid
 				// Add the emitter to the emitter collection
 				EmitterList.Add(emitterModel);
 			}
-
-			CountOfSubEffects = _emitterList.Count();
 		}
 
 		/// <summary>
@@ -2078,6 +2063,22 @@ namespace VixenModules.Effect.Liquid
 		public override string InformationLink
 		{
 			get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/Liquid/"; }
+		}
+
+		#endregion
+
+		#region Public Methods
+		/// <summary>
+		/// Update a property and notify of content change.
+		/// </summary>
+		/// <param name="descriptor">Specifies the property's descriptor</param>
+		/// <param name="effect">Specifies the effect or sub-effect the property belongs to.</param>
+		/// <param name="newProperty">Specifies the new property value to set</param>
+		public override void UpdateProperty(PropertyDescriptor descriptor, object effect, Object newProperty)
+		{
+			descriptor.SetValue(effect, newProperty);
+			MarkDirty();
+			UpdateNotifyContentChanged();
 		}
 
 		#endregion

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using Common.Controls;
+﻿using Common.Controls;
 using Common.Controls.Theme;
 using Vixen.Module.Effect;
 using Timer = System.Windows.Forms.Timer;
@@ -56,6 +54,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_timer.Start();
 		}
 
+		public void LoadParameterPicker(List<Tuple<List<EffectParameterPickerControl>, string>> controls)
+		{
+			foreach (var prop in controls)
+			{
+				_controlsList.Add(new Tuple<List<EffectParameterPickerControl>, string>(prop.Item1, prop.Item2));
+			}
+
+			// For every page of controls, increase the close interval
+			_timer.Interval = _closeInterval * _controlsList.Count();
+
+		}
+
 		public void LoadParameterPicker(List<EffectParameterPickerControl> controls, string title = "")
 		{
 			_controlsList.Add(new Tuple<List<EffectParameterPickerControl>, string>(controls, title));
@@ -64,7 +74,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_timer.Interval = _closeInterval * _controlsList.Count();
 		}
 
-		private void PopulatePickerGUI(int index)
+        private void PopulatePickerGUI(int index)
 		{
 			flowLayoutPanel1.Controls.Clear();
 
@@ -84,14 +94,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			// Display all the controls for the current index
 			title.Text = _controlsList[index].Item2;
-			foreach (EffectParameterPickerControl control in _controlsList[index].Item1)
-				{
-					control.Click += ParameterControl_Clicked;
-					flowLayoutPanel1.Controls.Add(control);
-				}
+			foreach (var control in _controlsList[index].Item1)
+			{
+				control.Click += ParameterControl_Clicked;
+				flowLayoutPanel1.Controls.Add(control);
+			}
 
 			// If this is the last page, then don't show the Next button
-			if (index == _controlsList.Count() - 1)
+			if (index == _controlsList.Count - 1)
 			{
 				tableLayoutPanel.ColumnStyles[2].SizeType = SizeType.Absolute;
 				tableLayoutPanel.ColumnStyles[2].Width = 0;
@@ -119,9 +129,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void ParameterControl_Clicked(object sender, EventArgs e)
 		{
 			_timer.Stop();
-			EffectParameterPickerControl control = (EffectParameterPickerControl)sender;
-			PropertyInfo = control.PropertyInfo;
-			EffectPropertyInfo = control.EffectPropertyInfo;
+			var control = (EffectParameterPickerControl)sender;
+			PropertyDetail = control.PropertyDetail;
 			SelectedControl = control;
 			CloseForm(DialogResult.OK);
 		}
@@ -138,7 +147,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			PopulatePickerGUI(_currentIndex);
 		}
 
-		public PropertyDescriptor PropertyInfo { get; private set; }
+		public PropertyDetail PropertyDetail { get; private set; }
 
 		public IEffectModuleDescriptor EffectPropertyInfo { get; set; }
 
@@ -151,7 +160,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (flowLayoutPanel1.BorderStyle != BorderStyle.FixedSingle) return;
 			const int thickness = 3;
 			const int halfThickness = thickness/2;
-			using (Pen p = new Pen(Color.Black, thickness))
+			using (var p = new Pen(Color.Black, thickness))
 			{
 				e.Graphics.DrawRectangle(p, new Rectangle(halfThickness,
 					halfThickness,

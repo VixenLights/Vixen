@@ -177,7 +177,6 @@ namespace VixenModules.Effect.Wave
 				_waves = value;
 				MarkDirty();
 				OnPropertyChanged();
-				CountOfSubEffects = Waves.Count();
 			}
 		}
 		
@@ -518,42 +517,6 @@ namespace VixenModules.Effect.Wave
 			UpdateRenderScaleFactorAttributes(true);
 		}
 
-		/// <summary>
-		/// Returns a Wave, by index.
-		/// </summary>
-		/// <param name="index">Specifies which Wave to access</param>
-		/// <returns>The Wave, specified by index</returns>
-		public override IWaveform GetSubEffect(int index)
-		{
-            if (index >= 0 && index < Waves.Count)
-            {
-                return Waves[index];
-            }
-
-            Debug.Assert(false, "Wave index out of range");
-            return null;
-        }
-
-        /// <summary>
-        /// Gets the sub-effect's name
-        /// </summary>
-        /// <param name="index">Specifies which sub-effect to access. -1 returns "All Waves"</param>
-        /// <returns>Returns the sub-effect's name</returns>
-        public override string GetSubEffectName(int index)
-        {
-            if (index == -1)
-            {
-                return "All Waves";
-            }
-            else if (index < Waves.Count)
-            {
-                return $"Wave {index + 1}";
-            }
-
-            return string.Empty;
-        }
-
-
         /// <summary>
         /// Refresh the Wave's MVVM bindings.
         /// </summary>
@@ -562,26 +525,37 @@ namespace VixenModules.Effect.Wave
 			OnPropertyChanged(nameof(Waves));
 		}
 
-        /// <summary>
-        /// Gets the properties for a Wave.
-        /// </summary>
-        /// <param name="index">Specifies which Wave to access</param>
-        /// <param name="propertyType">Specifies the Property Type to search for</param>
-        /// <param name="specialFilters">Specifies a filter value that modifies the returned Property List</param>
-        /// <returns>Returns all the properties that are of type Property Type</returns>
-        public override IEnumerable<PropertyDescriptor> GetSubEffectProperties(int index, Type propertyType, IEffectModuleInstance.SpecialFilters specialFilters)
+		/// <summary>
+		/// Returns a list of properties for the Wave effect. The properties will be returned in 
+		/// two types. The first type will be a collection of curve properties for each wave. If there
+		/// are multiple waves, there will be a corresponding type.
+		/// The second type will be a single collection of color properties for all waves.
+		/// </summary>
+		/// <param name="baseProperty"></param>
+		/// <returns></returns>
+		public override List<EffectProperties> GetProperties(IEnumerable<PropertyDescriptor> baseProperty)
 		{
-            if (index < 0 && index > Waves.Count)
-            {
-                Debug.Assert(false, "Wave index out of range");
-                return null;
-            }
+			var propertyList = new List<EffectProperties>();
+			var indexCurve = 1;
+			var indexColor = 1;
 
-            // Acquire a list of properties as specified in propertyType
-            var wave = Waves[index];
-			var targetProperties = MetadataRepository.GetProperties(wave).Where(x => (x.PropertyType == (Type)propertyType) && x.IsBrowsable);
+			// Iterate through each wave, collecting all wave's colors into a single list
+			propertyList.Add(new EffectProperties("All Waves"));
+			foreach (var wave in Waves)
+			{
+				var propDetail = MetadataRepository.GetProperties(wave).Where(x => (x.PropertyType == typeof(ColorGradient)) && x.IsBrowsable).Select(x => x.Descriptor).First();
+				propertyList.First().Add(wave, propDetail, $"{propDetail.DisplayName} {indexColor++}");
+			}
 
-			return targetProperties.Select(x => x.Descriptor); ;
+			// Collect all curve properties for each wave into a separate collection
+			foreach (var wave in Waves)
+			{
+				var targetProperties = MetadataRepository.GetProperties(wave).Where(x => (x.PropertyType == typeof(Curve)) && x.IsBrowsable).Select(x => x.Descriptor);
+
+				propertyList.Add(new EffectProperties(wave, targetProperties, $"Wave {indexCurve++}"));
+			}
+
+			return propertyList;
 		}
 		#endregion
 
@@ -709,8 +683,6 @@ namespace VixenModules.Effect.Wave
 				// Add the serialized waveform to the collection
 				_data.WaveformData.Add(serializedWaveform);
 			}
-
-			CountOfSubEffects = Waves.Count();
 		}
 
 		/// <summary>
@@ -1930,6 +1902,22 @@ namespace VixenModules.Effect.Wave
 			{
 				TypeDescriptor.Refresh(this);
 			}
+		}
+
+		#endregion
+
+		#region Public Methods
+		/// <summary>
+		/// Update a property and notify of content change.
+		/// </summary>
+		/// <param name="descriptor">Specifies the property's descriptor</param>
+		/// <param name="effect">Specifies the effect or sub-effect the property belongs to.</param>
+		/// <param name="newProperty">Specifies the new property value to set</param>
+		public override void UpdateProperty(PropertyDescriptor descriptor, object effect, Object newProperty)
+		{
+			descriptor.SetValue(effect, newProperty);
+			MarkDirty();
+			UpdateNotifyContentChanged();
 		}
 
 		#endregion

@@ -125,7 +125,6 @@ namespace VixenModules.Effect.Fixture
 				_functionItemCollection = value;
 				MarkDirty();
 				OnPropertyChanged();
-				CountOfSubEffects = _functionItemCollection.Count();
 			}
 		}
 
@@ -200,6 +199,19 @@ namespace VixenModules.Effect.Fixture
 				// Otherwise draw the effect ame in a white font
 				DrawText(graphics, clippingRect, Color.White, "Fixture", 0, 0, clippingRect.Height);
 			}
+		}
+
+		/// <summary>
+		/// Update a property and notify of content change.
+		/// </summary>
+		/// <param name="descriptor">Specifies the property's descriptor</param>
+		/// <param name="effect">Specifies the effect or sub-effect the property belongs to.</param>
+		/// <param name="newProperty">Specifies the new property value to set</param>
+		public override void UpdateProperty(PropertyDescriptor descriptor, object effect, Object newProperty)
+		{
+			descriptor.SetValue(effect, newProperty);
+			MarkDirty();
+			UpdateNotifyContentChanged();
 		}
 
 		#endregion
@@ -307,22 +319,6 @@ namespace VixenModules.Effect.Fixture
 			}
 		}
 
-		/// <summary>
-		/// Returns a Function, by index.
-		/// </summary>
-		/// <param name="index">Specifies which Function to access</param>
-		/// <returns>The Function, specified by index</returns>
-		public override IFixtureFunctionExpando GetSubEffect(int index)
-		{
-			if (index >= 0 || index < Functions.Count)
-			{
-                return Functions[index];
-			}
-
-            Debug.Assert(false, "Function index out of range");
-            return null;
-		}
-
         /// <summary>
         /// Refresh the Fixture's MVVM bindings.
         /// </summary>
@@ -332,38 +328,29 @@ namespace VixenModules.Effect.Fixture
 		}
 
 		/// <summary>
-		/// Gets the properties for a Fixture.
+		/// Returns a list of properties for the Fixture effect.
 		/// </summary>
-		/// <param name="index">Specifies which Function to access</param>
-		/// <param name="propertyType">Specifies the Property Type to search for</param>
-		/// <param name="specialFilters">Specifies a filter value that modifies the returned Property List</param>
-		/// <returns>Returns all the properties that are of type Property Type</returns>
-		public override IEnumerable<PropertyDescriptor> GetSubEffectProperties(int index, Type propertyType, IEffectModuleInstance.SpecialFilters specialFilters)
+		/// <param name="baseProperty"></param>
+		/// <returns></returns>
+		public override List<EffectProperties> GetProperties(IEnumerable<PropertyDescriptor> baseProperty)
 		{
-            if (index < 0 || index > Functions.Count)
-            {
-                Debug.Assert(false, "Function index out of range");
-                return null;
-            }
+			var propertyList = new List<EffectProperties>();
+			var index = 1;
 
-            // Acquire a list of properties as specified in propertyType
-            var targetProperties = MetadataRepository.GetProperties(Functions[index]).Where(x => (x.PropertyType == (Type)propertyType) && x.IsBrowsable);
+			// For the Fixture effect, we'll return all properties as a single group
+			propertyList.Add(new EffectProperties("All Functions"));
 
-			return targetProperties.Select(x => x.Descriptor); ;
-		}
-
-		public override string GetSubEffectName(int index)
-		{
-            if (index == -1)
-            {
-                return "All Functions";
-            }
-			else if (index < Functions.Count)
+			// Iterate through all functions and get their Curve properties
+			foreach (var function in Functions)
 			{
-				return Functions[index].FunctionName;
+				var propDetail = MetadataRepository.GetProperties(function).Where(x => (x.PropertyType == typeof(Curve)) && x.IsBrowsable).Select(x => x.Descriptor).FirstOrDefault();
+				if (propDetail != null)
+				{
+					propertyList.First().Add(function, propDetail, $"{function.FunctionName} {index++}");
+				}
 			}
 
-			return string.Empty;
+			return propertyList;
 		}
 		#endregion
 
@@ -419,8 +406,6 @@ namespace VixenModules.Effect.Fixture
 
 			// Replace the fixture functions exposed by the effect
 			Functions = functionItemCollection;
-
-			CountOfSubEffects = Functions.Count();
         }
 
         /// <summary>
