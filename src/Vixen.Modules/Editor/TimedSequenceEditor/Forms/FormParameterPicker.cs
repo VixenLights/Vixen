@@ -30,6 +30,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void _timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
 		{
+			if (InvokeRequired)
+			{
+				BeginInvoke(() => CloseForm(DialogResult.Cancel));
+				return;
+			}
 			CloseForm(DialogResult.Cancel);
 		}
 
@@ -49,7 +54,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			CloseForm(DialogResult.OK);
 		}
 
-		public PropertyDescriptor PropertyInfo { get; private set; }
+		public PropertyMetaData PropertyInfo { get; private set; }
 
 		public IEffectModuleDescriptor EffectPropertyInfo { get; set; }
 

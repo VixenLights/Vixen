@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Timers;
 using System.Windows;
 using System.Windows.Forms.Integration;
@@ -13,6 +14,7 @@ using Element = Common.Controls.Timeline.Element;
 using PropertyValueChangedEventArgs = VixenModules.Editor.EffectEditor.PropertyValueChangedEventArgs;
 using Timer = System.Timers.Timer;
 using Common.Broadcast;
+using Vixen.Module.Effect;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -131,14 +133,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void EffectPropertyEditorValueChanged(object sender, PropertyValueChangedEventArgs e)
 		{
-			Dictionary<Element, Tuple<Object, PropertyDescriptor>> elementValues = new Dictionary<Element, Tuple<object, PropertyDescriptor>>();
+			Dictionary<Element, Tuple<Object, PropertyMetaData>> elementValues = new Dictionary<Element, Tuple<object, PropertyMetaData>>();
 
 			int i = 0;
 			foreach (var element in _elements)
 			{
+				if (e.Property.Component is IEffect effect)
+				{
+					Debug.WriteLine("It is an effect");
+				}
 				element.UpdateNotifyContentChanged();
 				if (e.OldValue != null)
-					elementValues.Add(element, new Tuple<object, PropertyDescriptor>(e.OldValue[i], e.Property.UnderLyingPropertyDescriptor(i)));
+					elementValues.Add(element, new Tuple<object, PropertyMetaData>(e.OldValue[i], new PropertyMetaData(e.Property.UnderLyingPropertyDescriptor(i), e.Property.Component)));
 				i++;
 			}
 
