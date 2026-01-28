@@ -591,7 +591,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 				var markRecords = new List<MarkRecord>();
 				foreach (var emc in collections)
 				{
-					//Covert to Hex and remove the leading #
+					//Convert to Hex and remove the leading #
 					var color = ToHex(emc.MarkCollection.Decorator.Color).Substring(1);
 					foreach (IMark mark in emc.MarkCollection.Marks)
 					{
