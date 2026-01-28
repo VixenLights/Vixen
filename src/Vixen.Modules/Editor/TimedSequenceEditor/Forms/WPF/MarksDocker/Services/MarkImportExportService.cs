@@ -529,7 +529,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 
 		//Beat Mark Collection Export routine 2-7-2014 JMB
 		//In the audacity section, if the MarkCollections.Count = 1 then we assume the collection is bars and iMarkCollection++
-		//Other wise its beats, at least from the information I have studied, and we do not iMarkCollection++ to keep the collections together properly.
+		//Otherwise its beats, at least from the information I have studied, and we do not iMarkCollection++ to keep the collections together properly.
 		public static async Task ExportMarkCollections(MarkExportType exportType, IList<ExportableMarkCollection> collections)
 		{
 			var saveFileDialog = new SaveFileDialog();
