@@ -585,8 +585,6 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 
 			if (exportType == MarkExportType.PangolinBeyond)
 			{
-				List<string> beatMarks = new List<string>();
-
 				//Create a list of marks
 				var markRecords = new List<MarkRecord>();
 				foreach (var emc in collections)
@@ -600,8 +598,9 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 					}
 				}
 
-				var orderedMarks = markRecords.OrderBy(x => x.StartTime);
+				var orderedMarks = markRecords.OrderBy(x => x.StartTime).ToList();
 
+				var beatMarks = new List<string>(orderedMarks.Count + 1);
 				//Add the required header
 				beatMarks.Add("#,Name,Start,Color");
 				int markNum = 1;
