@@ -167,9 +167,12 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 
 			if (result.DialogResult == true)
 			{
+				var busyIndicatorService = dependencyResolver.Resolve<IBusyIndicatorService>();
+				busyIndicatorService.Show();
 				var selectedCollections =
 					vm.ExportOptionsVmList.Where(x => x.IsIncluded).Select(m => new ExportableMarkCollection(m.MarkCollection, m.IsTextIncluded)).ToList();
 				await MarkImportExportService.ExportMarkCollections(vm.MarkExportType, selectedCollections);
+				busyIndicatorService.Hide();
 			}
 		}
 
