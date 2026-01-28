@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using Catel.Collections;
 using Common.Controls;
 using NLog;
+using TimedSequenceEditor.Forms.WPF.MarksDocker.Services;
 using Vixen.Marks;
 using Vixen.Sys;
 using VixenModules.App.Marks;
@@ -529,10 +530,10 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 		//Beat Mark Collection Export routine 2-7-2014 JMB
 		//In the audacity section, if the MarkCollections.Count = 1 then we assume the collection is bars and iMarkCollection++
 		//Other wise its beats, at least from the information I have studied, and we do not iMarkCollection++ to keep the collections together properly.
-		public static void ExportMarkCollections(string exportType, ObservableCollection<IMarkCollection> collections)
+		public static async Task ExportMarkCollections(MarkExportType exportType, IList<ExportableMarkCollection> collections)
 		{
 			var saveFileDialog = new SaveFileDialog();
-			if (exportType == "vixen3")
+			if (exportType == MarkExportType.Vixen)
 			{
 				saveFileDialog.DefaultExt = ".v3m";
 				saveFileDialog.Filter = @"Vixen 3 Mark Collection (*.v3m)|*.v3m|All Files (*.*)|*.*";
@@ -548,16 +549,16 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 
 					DataContractSerializer ser = CreateSerializer(typeof(List<IMarkCollection>), false);
 					var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
-					ser.WriteObject(writer, collections);
+					ser.WriteObject(writer, collections.Select(x => x.MarkCollection));
 					writer.Close();
 				}
 			}
 
-			if (exportType == "audacity")
+			if (exportType == MarkExportType.Audacity)
 			{
 				int iMarkCollection = 0;
 				List<string> beatMarks = new List<string>();
-				foreach (IMarkCollection mc in collections)
+				foreach (IMarkCollection mc in collections.Select(x => x.MarkCollection))
 				{
 					iMarkCollection++;
 					foreach (IMark mark in mc.Marks)
@@ -574,16 +575,78 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 				{
 					string name = saveFileDialog.FileName;
 
-					using (StreamWriter file = new StreamWriter(name))
+					await using StreamWriter file = new StreamWriter(name);
+					foreach (string bm in beatMarks.OrderBy(x => x))
 					{
-						foreach (string bm in beatMarks.OrderBy(x => x))
-						{
-							file.WriteLine(bm);
-						}
+						await file.WriteLineAsync(bm);
+					}
+				}
+			}
+
+			if (exportType == MarkExportType.PangolinBeyond)
+			{
+				List<string> beatMarks = new List<string>();
+
+				//Create a list of marks
+				var markRecords = new List<MarkRecord>();
+				foreach (var emc in collections)
+				{
+					//Covert to Hex and remove the leading #
+					var color = ToHex(emc.MarkCollection.Decorator.Color).Substring(1);
+					foreach (IMark mark in emc.MarkCollection.Marks)
+					{
+						var markText = emc.IsTextIncluded ? mark.Text.Replace(',', ' ') : string.Empty;
+						markRecords.Add(new MarkRecord(mark.StartTime,markText,color));
+					}
+				}
+
+				var orderedMarks = markRecords.OrderBy(x => x.StartTime);
+
+				//Add the required header
+				beatMarks.Add("#,Name,Start,Color");
+				int markNum = 1;
+				foreach (var mr in orderedMarks)
+				{
+					var timeText = mr.StartTime.Hours > 0
+						? mr.StartTime.ToString(@"hh\:mm\:ss\:fff")
+						: mr.StartTime.ToString(@"mm\:ss\:fff");
+					beatMarks.Add($"M{markNum},{mr.Text},{timeText},{mr.Color}");
+					markNum++;
+				}
+
+				saveFileDialog.DefaultExt = ".csv";
+				saveFileDialog.Filter = @"CSV Files (*.csv)|*.csv|All Files (*.*)|*.*";
+				if (saveFileDialog.ShowDialog() == DialogResult.OK)
+				{
+					string name = saveFileDialog.FileName;
+
+					await using StreamWriter file = new StreamWriter(name);
+					foreach (string bm in beatMarks)
+					{
+						await file.WriteLineAsync(bm);
 					}
 				}
 			}
 		}
 
+		//This should be in an extension class, but the one in Vixen.Core adds a conflict with the AddRange in Catel.Collections
+		//Need to find a better way to handle that and refactor this later.
+		public static string ToHex(Color color)
+		{
+			return $"#{color.R:X2}{color.G:X2}{color.B:X2}";
+		}
+
+	}
+
+	record struct MarkRecord(TimeSpan StartTime, string Text, string Color)
+	{
+
+	}
+
+	public enum MarkExportType
+	{
+		Vixen,
+		Audacity,
+		PangolinBeyond
 	}
 }

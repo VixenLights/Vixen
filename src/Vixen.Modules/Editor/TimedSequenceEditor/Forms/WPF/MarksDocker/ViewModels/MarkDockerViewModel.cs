@@ -5,6 +5,7 @@ using Catel.MVVM;
 using Catel.Services;
 using Common.Controls;
 using System.Collections.ObjectModel;
+using TimedSequenceEditor.Forms.WPF.MarksDocker.Services;
 using TimedSequenceEditor.Forms.WPF.MarksDocker.ViewModels;
 using Vixen.Marks;
 using VixenModules.App.Marks;
@@ -162,21 +163,13 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 			var vm = new MarkExportWindowViewModel(MarkCollections);
 			var dependencyResolver = this.GetDependencyResolver();
 			var uiVisualizerService = dependencyResolver.Resolve<UIVisualizerService>();
-			await uiVisualizerService.ShowDialogAsync(vm);
+			var result = await uiVisualizerService.ShowDialogAsync(vm);
 
-			var bDialog = new BeatMarkExportDialog();
-
-			if (bDialog.ShowDialog() == DialogResult.OK)
+			if (result.DialogResult == true)
 			{
-				if (bDialog.IsVixen3Selection)
-					MarkImportExportService.ExportMarkCollections("vixen3", vm.SelectedItems);
-				if (bDialog.IsAudacitySelection)
-					MarkImportExportService.ExportMarkCollections("audacity", vm.SelectedItems);
-				if (!bDialog.IsVixen3Selection && !bDialog.IsAudacitySelection)
-				{
-					var messageBox = new MessageBoxForm("No export type selected", "Warning", MessageBoxButtons.OK, SystemIcons.Warning);
-					messageBox.ShowDialog();
-				}
+				var selectedCollections =
+					vm.ExportOptionsVmList.Where(x => x.IsIncluded).Select(m => new ExportableMarkCollection(m.MarkCollection, m.IsTextIncluded)).ToList();
+				await MarkImportExportService.ExportMarkCollections(vm.MarkExportType, selectedCollections);
 			}
 		}
 

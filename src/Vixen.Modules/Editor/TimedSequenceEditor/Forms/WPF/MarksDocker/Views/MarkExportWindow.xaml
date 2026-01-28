@@ -4,105 +4,75 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TimedSequenceEditor.Forms.WPF.MarksDocker.Views"
-        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
-        xmlns:behaviors="clr-namespace:Common.WPFCommon.Behaviors;assembly=WPFCommon"
-        xmlns:marks="clr-namespace:Vixen.Marks;assembly=Vixen.Core"
+        xmlns:viewModels="clr-namespace:TimedSequenceEditor.Forms.WPF.MarksDocker.ViewModels"
+        xmlns:views="clr-namespace:TimedSequenceEditor.Forms.WPF.MarksDocker.Views"
         mc:Ignorable="d"  WindowStartupLocation="CenterOwner" 
               CanCloseUsingEscape="True" WindowStyle="ToolWindow"
-        Title="Export Mark Collections" Height="450" Width="800">
+        Title="Export Mark Collections" Height="400" Width="600">
 
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-
-            <Style x:Key="MarkCollectionListViewItem" TargetType="{x:Type ListViewItem}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                            <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
-                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <!--<MultiTrigger>
-                        <MultiTrigger.Conditions>
-                            <Condition Property="IsMouseOver" Value="True"/>
-                        </MultiTrigger.Conditions>
-                        <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.MouseOver.Background}"/>
-                        <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.MouseOver.Border}"/>
-                    </MultiTrigger>-->
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="Selector.IsSelectionActive" Value="False"/>
-                                        <Condition Property="IsSelected" Value="True"/>
-                                    </MultiTrigger.Conditions>
-                                    <Setter Property="Background" TargetName="Bd" Value="{StaticResource BackColorBrush}"/>
-                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource BackColorBrush}"/>
-                                </MultiTrigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="Selector.IsSelectionActive" Value="True"/>
-                                        <Condition Property="IsSelected" Value="True"/>
-                                    </MultiTrigger.Conditions>
-                                    <Setter Property="Background" TargetName="Bd" Value="{StaticResource BackColorBrush}"/>
-                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource BackColorBrush}"/>
-                                </MultiTrigger>
-                                <Trigger Property="IsEnabled" Value="False">
-                                    <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
         </ResourceDictionary>
     </Window.Resources>
     <DockPanel Background="{StaticResource BackColorBrush}">
-        <TextBlock DockPanel.Dock="Top" Text="Select the Mark Collections to export"  VerticalAlignment="Center" Margin="5,10"/>
         <WrapPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
             <Button HorizontalAlignment="Right" Width="75" Margin="6" IsDefault="True" Command="{Binding OkCommand}">Ok</Button>
             <Button HorizontalAlignment="Right" Width="75" Margin="6" IsCancel="True" Command="{Binding CancelCommand}">Cancel</Button>
         </WrapPanel>
-        <ListView x:Name="MarkCollectionsView" SelectionMode="Multiple" ItemsSource="{Binding MarkCollections}" ItemContainerStyle="{StaticResource MarkCollectionListViewItem}">
-            <b:Interaction.Behaviors>
-                <behaviors:MultiSelectionBehavior SelectedItems="{Binding SelectedItems}" />
-            </b:Interaction.Behaviors>
-            <ListView.ItemTemplate>
-                <DataTemplate DataType="{x:Type marks:IMarkCollection}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <CheckBox IsChecked="{Binding Path=IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" 
-                                  HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock Grid.Column="1" Text="{Binding Name}"/>
-                    </Grid>
-                </DataTemplate>
-           </ListView.ItemTemplate>
-            <!--<ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Select" Width="100">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding Path=IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"
-                                          HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Name" Width="Auto">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate DataType="{x:Type marks:IMarkCollection}">
-                                <TextBlock Text="{Binding Name}"></TextBlock>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    --><!--<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="Auto" />--><!--
-                </GridView>
-            </ListView.View>-->
-        </ListView>
-       
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Vertical">
+                <Label Content="Select Mark Collections To Export" FontWeight="Bold"/>
+                <ScrollViewer DockPanel.Dock="Bottom" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="Black">
+                    <Border Margin="1" BorderBrush="{StaticResource BackColorBrush}" BorderThickness="1">
+                        <Grid Grid.IsSharedSizeScope="True">
+                            <Grid.Resources>
+                                <DataTemplate x:Key="MarkCollectionRow" DataType="{x:Type viewModels:MarkExportWindowViewModel}">
+                                    <views:MarkCollectionExportRowView/>
+                                </DataTemplate>
+                            </Grid.Resources>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition SharedSizeGroup="A"/>
+                                <ColumnDefinition SharedSizeGroup="B"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Border Grid.Row="0" Background="{StaticResource BackColorBrush}" Grid.Column="0" BorderBrush="{StaticResource BackColorBrush}" BorderThickness="0,0,1,1" Padding="2">
+                                <Image Source="/Resources;component/select-forecolor.png" Height="16" ToolTip="Include Collection"/>
+                            </Border>
+                            <Border Grid.Row="0" Name="TextIncludedOptionHeader" Visibility="{Binding IsTextOptionVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Background="{StaticResource BackColorBrush}" Grid.Column="1" BorderBrush="{StaticResource BackColorBrush}" BorderThickness="0,0,1,1" Padding="2">
+                                <Image Source="/Resources;component/text-forecolor.png" Height="16" ToolTip="Include Mark Text"/>
+                            </Border>
+
+                            <Border Grid.Row="0" Background="{StaticResource BackColorBrush}" Grid.Column="2" BorderBrush="{StaticResource BackColorBrush}" BorderThickness="0,0,1,1" Padding="2">
+                                <TextBlock Text="Collection"/>
+                            </Border>
+
+                            <ItemsControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding ExportOptionsVmList}" ItemTemplate="{StaticResource MarkCollectionRow}"/>
+                        </Grid>
+                    </Border>
+                </ScrollViewer>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Vertical">
+                <Border BorderThickness="1">
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="Export Format" FontWeight="Bold"/>
+                        <RadioButton GroupName="Group1" Content="Vixen" IsChecked="{Binding IsVixenFormat}"/>
+                        <RadioButton GroupName="Group1" Content="Audacity" IsChecked="{Binding IsAudacityFormat}"/>
+                        <RadioButton GroupName="Group1" Content="Pangolin Beyond" IsChecked="{Binding IsPangolinBeyondFormat}"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
     </DockPanel>
 </catel:Window>
