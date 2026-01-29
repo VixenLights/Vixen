@@ -129,7 +129,12 @@ namespace VixenModules.App.Props.Models.Tree
 		}
 
 		#endregion
-						
+		public override void SetContext(object data)
+		{
+			throw new ArgumentException("Invalid data type. Expected IAttributeData.", nameof(data));
+		}
+
+
 		/// <summary>
 		/// Creates the 3-D points that make up the tree.
 		/// </summary>

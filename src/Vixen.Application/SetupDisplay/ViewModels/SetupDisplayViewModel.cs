@@ -896,6 +896,28 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		}
 
-		#endregion]		
+        #endregion]		
+
+        private Axis GetAxis(string axis)
+        {
+	        return axis switch
+	        {
+		        "X" => Axis.XAxis,
+		        "Y" => Axis.YAxis,
+		        "Z" => Axis.ZAxis,
+		        _ => throw new ArgumentOutOfRangeException(nameof(axis), "Unsupported rotation axis")
+	        };
+        }
+
+        private string GetAxis(Axis axis)
+        {
+            return axis switch
+            {
+                Axis.XAxis => "X",
+                Axis.YAxis => "Y",
+                Axis.ZAxis => "Z",
+                _ => throw new ArgumentOutOfRangeException(nameof(axis), "Unsupported rotation axis")
+            };
+        }
 	}
 }

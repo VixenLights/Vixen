@@ -12,22 +12,36 @@ namespace VixenModules.App.Props.Models.Arch
 	public class ArchModel: BaseLightModel
 	{
 		IAttributeData _arch;
+		int _nodeCount = 0;
+		int _nodeSize = 0;
 
 		public ArchModel()
 		{
 		}
 
-        public ArchModel(int nodeCount, int nodeSize = 2)
-        {
-            _nodeCount = nodeCount;
-            _nodeSize = nodeSize;           
-			Nodes = new(Get3DNodePoints());			
+		public ArchModel(int nodeCount, int nodeSize = 2)
+		{
+			_nodeCount = nodeCount;
+			_nodeSize = nodeSize;
+			Nodes = new(Get3DNodePoints());
 			PropertyChanged += PropertyModelChanged;
-
-		#endregion
+		}
 
 		#region Protected Abstract Overrides
-				
+		/// <inheritdoc/>				
+		public override void SetContext(object data)
+		{
+			if (data is IAttributeData attributeData)
+			{
+				_arch = attributeData;
+				Nodes = new(Get3DNodePoints());
+			}
+			else
+			{
+				throw new ArgumentException("Invalid data type. Expected IAttributeData.", nameof(data));
+			}
+		}
+
 		/// <inheritdoc/>				
 		protected override IEnumerable<NodePoint> Get3DNodePoints()
 		{
@@ -36,8 +50,7 @@ namespace VixenModules.App.Props.Models.Arch
 
 		#endregion
 
-		#region Private Methods
-				
+			
 		/// <summary>
 		/// Calculates the 3-D points that make up the arch.
 		/// </summary>
