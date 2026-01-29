@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 using OpenTK.Mathematics;
 using Vixen.Sys.Props.Model;
@@ -159,6 +160,7 @@ namespace VixenModules.App.Props.Models.IntellligentFixture
 
 		public MountingPositionType MountingPosition { get; set; }
 
+		public ObservableCollection<AxisRotationModel> Rotations { get; set; }
 		#endregion
 	}
 }
