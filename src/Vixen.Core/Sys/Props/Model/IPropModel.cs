@@ -12,5 +12,9 @@ namespace Vixen.Sys.Props.Model
 		/// </summary>
 		Guid Id { get; init; }
 
+		/// <summary>
+		/// Collection of axis rotations.
+		/// </summary>
+		ObservableCollection<AxisRotationModel> Rotations { get; set; }
 	}
 }
