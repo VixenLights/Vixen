@@ -37,23 +37,23 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 			Rotations = new();
 
 			// Create the X Axis rotation view model
-			AxisRotationViewModel xRotation = new AxisRotationViewModel();
+			var xRotation = new AxisRotationViewModel();
 			xRotation.Axis = "X";
 			xRotation.RotationChanged += OnRotationChanged;
 			Rotations.Add(xRotation);
 
 			// Create the Y Axis rotation view model
-			AxisRotationViewModel yRotation = new AxisRotationViewModel();
+			var yRotation = new AxisRotationViewModel();
 			yRotation.Axis = "Y";
 			yRotation.RotationChanged += OnRotationChanged;
 			Rotations.Add(yRotation);
 
 			// Create the Z Axis rotation view model
-			AxisRotationViewModel zRotation = new AxisRotationViewModel();
+			var zRotation = new AxisRotationViewModel();
 			zRotation.Axis = "Z";
 			zRotation.RotationChanged += OnRotationChanged;
 			Rotations.Add(zRotation);
-		}
+        }
 
 		#endregion
 
@@ -96,29 +96,37 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		#region Private Methods
 
 		/// <summary>
-		/// Converts from axis string to enumeration.
-		/// </summary>
-		/// <param name="axis">String to convert</param>
-		/// <returns>Equivalent enumeration of the string</returns>
-		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		private Axis GetAxis(string axis)
-		{
-			return axis switch
-			{
-				"X" => Axis.XAxis,
-				"Y" => Axis.YAxis,
-				"Z" => Axis.ZAxis,
-				_ => throw new ArgumentOutOfRangeException(nameof(axis), "Unsupported rotation axis")
-			};
-		}
-
-		/// <summary>
 		/// Event handler for when a prop rotation changed.
 		/// </summary>
 		/// <param name="sender">Event sender</param>
 		/// <param name="e">Event arguments</param>
 		private void OnRotationChanged(object sender, EventArgs e)
 		{
+			// Get the changed axis and the axis it now duplicates, if any
+			var newRotation = sender as AxisRotationViewModel;
+			if (newRotation == null)
+			{
+				return;
+			}
+
+			var duplicateRotation = Rotations.FirstOrDefault(x => x != newRotation && x.Axis == newRotation.Axis);
+
+			// If there is an axis duplication (i.e. two axis have the same plane), then...
+			if (duplicateRotation != null)
+			{
+				// Find the Axis that is no longer specified
+				var otherRotation = Rotations.FirstOrDefault(x => x != newRotation && x != duplicateRotation);
+				if (otherRotation == null)
+				{
+					return;
+				}
+				var missingAxis = newRotation.Axes.FirstOrDefault(x => x != duplicateRotation.Axis && x != otherRotation.Axis);
+
+				// Then assign the missing axis to the duplicated plane and swap the rotations between the new and duplicated axes
+				duplicateRotation.Axis = missingAxis;
+				(duplicateRotation.RotationAngle, newRotation.RotationAngle) = (newRotation.RotationAngle, duplicateRotation.RotationAngle);
+			}
+
 			// Update the prop nodes
 			LightPropModel.UpdatePropNodes();
 		}

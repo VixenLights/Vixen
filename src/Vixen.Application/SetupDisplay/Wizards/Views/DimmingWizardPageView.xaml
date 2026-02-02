@@ -10,7 +10,7 @@
                   xmlns:markupExtensions="clr-namespace:Common.WPFCommon.MarkupExtensions;assembly=WPFCommon"
                   xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
                   xmlns:zed="clr-namespace:ZedGraph;assembly=Module.App.Curves"
-                  xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                  xmlns:controls="clr-namespace:Common.WPFCommon.Controls;assembly=WPFCommon"
                   >
 
     <UserControl.Resources>
@@ -97,11 +97,11 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Label Content="X:" Grid.Row="0" Grid.Column="0"  Margin="0,6,0,0"/>
-                <xctk:IntegerUpDown Grid.Row="0" Grid.Column="1" Width="50" Minimum="0" Maximum="100" Margin="0,6,10,0"
-                                    x:Name="XCoord" ValueChanged="UpdateCoordinatesButton" />
+                <controls:NumericTextSpinBox Grid.Row="0" Grid.Column="1" Width="50" Minimum="0" Maximum="100" Margin="0,6,10,0"
+                                             x:Name="XCoord" ValueChanged="UpdateCoordinatesButton" />
                 <Label Content="  Y:" Grid.Row="0" Grid.Column="2" Margin="0,6,0,0"/>
-                <xctk:IntegerUpDown Grid.Row="0" Grid.Column="3" Width="50" Minimum="0" Maximum="100" Margin="0,6,10,0"
-                                    x:Name="YCoord" ValueChanged="UpdateCoordinatesButton" />
+                <controls:NumericTextSpinBox Grid.Row="0" Grid.Column="3" Width="50" Minimum="0" Maximum="100" Margin="0,6,10,0"
+                                             x:Name="YCoord" ValueChanged="UpdateCoordinatesButton" />
             </Grid>
             <Label Content="Ctrl+&lt;left mouse&gt; to add a point." Grid.Row="2" Padding="0,3,0,0"/>
             <Label Content="Alt+&lt;left mouse&gt; to remove a point." Grid.Row="3" Padding="0"/>
@@ -132,7 +132,7 @@
                             ToolTip="Draw curve from left side to right side of grid using the left mouse button."
                             ToolTipService.InitialShowDelay="1"/>
                     <Label Content="Draw Interval" Grid.Row="0" Grid.Column="6" />
-                    <xctk:IntegerUpDown Grid.Row="0" Grid.Column="7" Value="5" Width="50" Minimum="1" Maximum="20"
+                    <controls:NumericTextSpinBox Grid.Row="0" Grid.Column="7" Value="5" Width="50" Minimum="1" Maximum="20"
                                         x:Name="DrawInterval" ValueChanged="UpdateDrawIntervalButton"/>
 
                     <!-- Group Curve Row 2 -->

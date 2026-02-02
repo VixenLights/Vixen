@@ -196,9 +196,9 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 				ReverseCurveButton.IsEnabled = false;
 				InvertCurveButton.IsEnabled = false;
 				XCoord.IsEnabled = false;
-				XCoord.Text = string.Empty;
+				XCoord.Value = 0;
 				YCoord.IsEnabled = false;
-				YCoord.Text = string.Empty;
+				YCoord.Value = 0;
 			}
 
 			UpdateViewModel();
