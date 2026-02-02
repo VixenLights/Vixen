@@ -26,14 +26,19 @@
 		public int RotationAngle { get; set; }
 
 		/// <summary>
+		/// Event when one of the rotation properties have changed.
+		/// </summary>
+		public event EventHandler RotationChanged;
+
+		/// <summary>
 		/// Converts from axis string to enumeration.
 		/// </summary>
 		/// <param name="axis">String to convert</param>
 		/// <returns>Equivalent enumeration of the string</returns>
 		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		public void ConvertAxis(string axis)
+		public Axis ConvertAxis(string axis)
 		{
-			Axis = axis switch
+			return Axis = axis switch
 			{
 				"X" => Axis.XAxis,
 				"Y" => Axis.YAxis,
@@ -42,7 +47,18 @@
 			};
 		}
 
-		public override string ToString()
+		private string ConvertAxis(Axis axis)
+		{
+			return axis switch
+			{
+				Axis.XAxis => "X",
+				Axis.YAxis => "Y",
+				Axis.ZAxis => "Z",
+				_ => throw new ArgumentOutOfRangeException(nameof(axis), "Unsupported rotation axis")
+			};
+		}
+
+        public override string ToString()
 		{
 			return $"{RotationAngle}";
 		}
