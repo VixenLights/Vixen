@@ -6,7 +6,6 @@ using Orc.Wizard;
 using System.Windows.Input;
 using Vixen.Extensions;
 using Vixen.Sys.Props;
-using Xceed.Wpf.Toolkit;
 using VixenModules.App.Curves;
 using VixenApplication.SetupDisplay.Wizards.ViewModels;
 using System.Runtime.CompilerServices;
