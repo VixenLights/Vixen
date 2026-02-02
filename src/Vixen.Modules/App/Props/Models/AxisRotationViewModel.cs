@@ -35,24 +35,6 @@ namespace VixenModules.App.Props.Models
 			}
 		}
 
-		/// <summary>
-		/// Converts the enumeration into a display string.
-		/// </summary>
-		/// <param name="axis">Enumeration to convert</param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		public void ConvertAxis(Vixen.Sys.Props.Model.Axis axis)
-		{
-			Axis = axis switch
-			{
-				Vixen.Sys.Props.Model.Axis.XAxis => "X",
-				Vixen.Sys.Props.Model.Axis.YAxis => "Y",
-				Vixen.Sys.Props.Model.Axis.ZAxis => "Z",
-				_ => throw new ArgumentOutOfRangeException(nameof(axis), "Unsupported rotation axis")
-			};
-		}
-
-
 		public static readonly IPropertyData AxisProperty = RegisterProperty<string>(nameof(Axis));
 
 		/// <summary>

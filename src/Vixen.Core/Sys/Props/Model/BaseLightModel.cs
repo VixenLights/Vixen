@@ -74,17 +74,6 @@ namespace Vixen.Sys.Props.Model
 			set => SetProperty(ref _nodes, value);
 		}
 
-		private int _rotationAngle;
-
-		/// <summary>
-		/// The angle at which the core Prop is rotated.
-		/// </summary>
-		public int RotationAngle
-		{
-			get => _rotationAngle;
-			set => SetProperty(ref _rotationAngle, value);
-		}
-
 		public ObservableCollection<AxisRotationModel> Rotations { get; set; }
 		#endregion
 
