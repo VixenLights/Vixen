@@ -72,4 +72,8 @@
 				<Resource Include="Images\paste.png" />
 		</ItemGroup>
 
+		<ItemGroup>
+		  <Folder Include="Behaviors\" />
+		</ItemGroup>
+
 </Project>

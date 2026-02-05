@@ -377,6 +377,8 @@
 				<Content Include="folder_error.png" />
 				<Content Include="folder_explore.png" />
 				<Resource Include="folder_go.png" />
+				<Resource Include="select-forecolor.png" />
+				<Resource Include="text-forecolor.png" />
 				<Resource Include="TriangleExclamation.png" />
 				<None Include="plus.png" />
 				<None Include="minus.png" />
@@ -391,6 +393,7 @@
 			<None Remove="Resources\clock_go.png" />
 			<None Remove="Resources\add.png" />
 			<None Remove="Resources\delete.png" />
+			<None Remove="text-forecolor.png" />
 			<None Remove="TriangleExclamation.png" />
 		</ItemGroup>
 

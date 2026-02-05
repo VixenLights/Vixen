@@ -554,6 +554,8 @@
 	<!-- Checkbox style RadioButton -->
 
 	<Style x:Key="CheckRadioButton" TargetType="{x:Type RadioButton}">
+	<Setter Property="OverridesDefaultStyle" Value="true"/>
+		<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type RadioButton}">
