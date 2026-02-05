@@ -547,10 +547,18 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 						IndentChars = "\t"
 					};
 
-					DataContractSerializer ser = CreateSerializer(typeof(List<IMarkCollection>), false);
-					var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
-					ser.WriteObject(writer, collections.Select(x => x.MarkCollection));
-					writer.Close();
+					try
+					{
+						DataContractSerializer ser = CreateSerializer(typeof(List<IMarkCollection>), false);
+						var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
+						ser.WriteObject(writer, collections.Select(x => x.MarkCollection).ToList());
+						writer.Close();
+					}
+					catch (Exception ex)
+					{
+						Logging.Error(ex,"An exception occured trying to export the mark collection");
+					}
+					
 				}
 			}
 
