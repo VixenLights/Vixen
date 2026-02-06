@@ -138,10 +138,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			int i = 0;
 			foreach (var element in _elements)
 			{
-				if (e.Property.Component is IEffect effect)
-				{
-					Debug.WriteLine("It is an effect");
-				}
 				element.UpdateNotifyContentChanged();
 				if (e.OldValue != null)
 					elementValues.Add(element, new Tuple<object, PropertyMetaData>(e.OldValue[i], new PropertyMetaData(e.Property.UnderLyingPropertyDescriptor(i), e.Property.Component)));
