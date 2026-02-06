@@ -4126,13 +4126,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			//Modified 12-3-2014 to allow Control-Drop of effects to replace selected effects
 			
-			//TimeSpan startTime = Util.Min(TimelineControl.PixelsToTime(location.X), (_sequence.Length - duration)); // Ensure the element is inside the grid.
-
 			if (ModifierKeys.HasFlag(Keys.Control) && TimelineControl.SelectedElements.Any())
 			{
 
-				var message = string.Format("This action will replace {0} effects, are you sure ?",
-					TimelineControl.SelectedElements.Count());
+				var message = $"This action will replace {TimelineControl.SelectedElements.Count()} effects, are you sure ?";
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm(message, @"Replace existing effects?", true, false);
@@ -4165,13 +4162,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			element.UpdateNotifyContentChanged();
 			SequenceModified();
 		}
-
-		//private void UpdateEffectProperty(PropertyDescriptor descriptor, Element element, Object value)
-		//{
-		//	descriptor.SetValue(element.EffectNode.Effect, value);
-		//	element.UpdateNotifyContentChanged();
-		//	SequenceModified();
-		//}
 
 		private bool ShowMultipleEffectDropMessage(string name)
 		{
@@ -4208,7 +4198,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				Index = i,
 				PropertyInfo = property,
 				ParameterImage = GetColorGradientBitmap(t),
-				DisplayName = string.Format("{0} {1}", property.DisplayName, i + 1)
+				DisplayName = $"{property.DisplayName} {i + 1}"
 			}).ToList();
 			return parameterPickerControls;
 		}
@@ -4221,7 +4211,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				Index = i,
 				PropertyInfo = property,
 				ParameterImage = gradient?GetColorGradientBitmap(t.ColorGradient):GetCurveBitmap(t.Curve),
-				DisplayName = string.Format("{0} {1}", property.DisplayName, i + 1)
+				DisplayName = $"{property.DisplayName} {i + 1}"
 			}).ToList();
 			return parameterPickerControls;
 		}
@@ -4257,8 +4247,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				var undo = new EffectsPropertyModifiedUndoAction(elementValues);
 				AddEffectsModifiedToUndo(undo);
-				UpdateToolStrip4(
-					string.Format("{2} applied to {0} {1} effect(s).", elementValues.Count(), element.EffectNode.Effect.EffectName, type), 30);
+				UpdateToolStrip4($"{type} applied to {elementValues.Count} {element.EffectNode.Effect.EffectName} effect(s).", 30);
 			}
 		}
 
