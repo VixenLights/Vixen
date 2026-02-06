@@ -194,7 +194,20 @@ namespace VixenModules.Effect.Wave
 		[ProviderDisplayName(@"Frequency")]
 		[ProviderDescription(@"Frequency")]
 		[PropertyOrder(9)]
-		public Curve Frequency { get; set; }
+		public Curve Frequency
+		{
+			get => _frequency;
+			set
+			{
+				if (Equals(value, _frequency))
+				{
+					return;
+				}
+
+				_frequency = value;
+				OnPropertyChanged();
+			}
+		}
 
 		[ProviderDisplayName(@"PhaseShift")]
 		[ProviderDescription(@"PhaseShift")]
@@ -206,27 +219,92 @@ namespace VixenModules.Effect.Wave
 		[ProviderDisplayName(@"Thickness")]
 		[ProviderDescription(@"WaveThickness")]
 		[PropertyOrder(11)]
-		public Curve Thickness { get; set; }
-						
+		public Curve Thickness
+		{
+			get => _thickness;
+			set
+			{
+				if (Equals(value, _thickness))
+				{
+					return;
+				}
+
+				_thickness = value;
+				OnPropertyChanged();
+			}
+		}
+
 		[ProviderDisplayName(@"Amplitude")]
 		[ProviderDescription(@"Amplitude")]
 		[PropertyOrder(12)]
-		public Curve Height { get; set; }
-		
+		public Curve Height
+		{
+			get => _height;
+			set
+			{
+				if (Equals(value, _height))
+				{
+					return;
+				}
+
+				_height = value;
+				OnPropertyChanged();
+			}
+		}
+
 		[ProviderDisplayName(@"YOffset")]
 		[ProviderDescription(@"WaveYOffset")]
 		[PropertyOrder(13)]
-		public Curve YOffset { get; set; }
+		public Curve YOffset
+		{
+			get => _yOffset;
+			set
+			{
+				if (Equals(value, _yOffset))
+				{
+					return;
+				}
+
+				_yOffset = value;
+				OnPropertyChanged();
+			}
+		}
 
 		[ProviderDisplayName(@"Speed")]
 		[ProviderDescription(@"WaveSpeed")]
 		[PropertyOrder(14)]
-		public Curve Speed { get; set; }
-		
+		public Curve Speed
+		{
+			get => _speed;
+			set
+			{
+				if (Equals(value, _speed))
+				{
+					return;
+				}
+
+				_speed = value;
+				OnPropertyChanged();
+			}
+		}
+
 		[ProviderDisplayName(@"Color")]
 		[ProviderDescription(@"WaveColor")]
 		[PropertyOrder(15)]
-		public ColorGradient Color { get; set; }
+		public ColorGradient Color
+		{
+			get => _color;
+			set
+			{
+				if (Equals(value, _color))
+				{
+					return;
+				}
+
+				_color = value;
+				OnPropertyChanged();
+			}
+		}
 
 		[ProviderDisplayName(@"ColorHandling")]
 		[ProviderDescription(@"WaveColorHandling")]
@@ -360,6 +438,12 @@ namespace VixenModules.Effect.Wave
 			}
 		}		
 		private ObservableCollection<IMarkCollection> _markCollections;
+		private ColorGradient _color;
+		private Curve _frequency;
+		private Curve _thickness;
+		private Curve _height;
+		private Curve _yOffset;
+		private Curve _speed;
 
 		/// <summary>
 		/// Collection of the mark collections.

@@ -105,6 +105,7 @@ namespace VixenModules.Effect.Wave
 
 			// Create the collection of waves
 			_waves = new WaveFormCollection();
+			_waves.ChildPropertyChanged += _waves_ChildPropertyChanged;
 
 			// Give the wave a reference to the effect.
 			// This is needed so that the waveforms can use the parent to register (listen) for mark collection events
@@ -172,12 +173,27 @@ namespace VixenModules.Effect.Wave
 			}
 			set
 			{
+				//The effect editor has most likely changed a child property and is just updating the collection here
+				//to force a property change. Need to refactor the Effect editor to just change the property and let this
+				//property changed event handler propagate it up.
+				if (_waves != value)
+				{
+					//We have a whole new collection, so we need to set the event handler.
+					_waves.ChildPropertyChanged -= _waves_ChildPropertyChanged;
+					_waves.ChildPropertyChanged += _waves_ChildPropertyChanged;
+				}
 				_waves = value;
 				MarkDirty();
 				OnPropertyChanged();
 			}
 		}
-		
+
+		private void _waves_ChildPropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			MarkDirty();
+			OnPropertyChanged(nameof(Waves));
+		}
+
 		#endregion
 
 		#region Protected Methods
