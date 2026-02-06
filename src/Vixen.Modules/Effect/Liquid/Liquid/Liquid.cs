@@ -432,6 +432,15 @@ namespace VixenModules.Effect.Liquid
 			}
 			set
 			{
+				//The effect editor has most likely changed a child property and is just updating the collection here
+				//to force a property change. Need to refactor the Effect editor to just change the property and let this
+				//property changed event handler propagate it up.
+				if (_emitterList != value)
+				{
+					//We have a whole new collection, so we need to set the event handler.
+					_emitterList.ChildPropertyChanged -= EmitterListChildPropertyChanged;
+					_emitterList.ChildPropertyChanged += EmitterListChildPropertyChanged;
+				}
 				_emitterList = value;
 				MarkDirty();
 				OnPropertyChanged();
@@ -1959,6 +1968,8 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>		
 		private void EmitterListChildPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{	
+			MarkDirty();
+			OnPropertyChanged(nameof(EmitterList));
 			// Updates the browseable state of the audio attributes
 			UpdateAudioAttributes();
 
