@@ -56,6 +56,22 @@ namespace VixenModules.Effect.Effect
 					}
 					break;
 				case NotifyCollectionChangedAction.Replace:
+					if (e.OldItems != null)
+					{
+						foreach (T removedItem in e.OldItems)
+						{
+							ProcessItemRemoved(removedItem);
+						}
+					}
+
+					if (e.NewItems != null)
+					{
+						foreach (T addedItem in e.NewItems)
+						{
+							ProcessItemAdded(addedItem);
+						}
+					}
+					
 					NotifyChildPropertyChanged(this, _propertyName);
 					break;
 				case NotifyCollectionChangedAction.Reset:
