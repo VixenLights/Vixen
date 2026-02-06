@@ -44,12 +44,13 @@ namespace Common.OpenGLCommon.Constructs.DrawingEngine.Primitive
 		/// <summary>
 		/// Returns true if the mouse is over the primitive.
 		/// </summary>
+		/// <param name="cameraPosition">Position of the OpenGL camera</param>
 		/// <param name="projectionMatrix">OpenGL projection matrix</param>
 		/// <param name="viewMatrix">OpenGL view (camera matrix)</param>
 		/// <param name="width">Width of the OpenTKControl</param>
 		/// <param name="height">Height of the OpenTKControl</param>
 		/// <param name="mousePosition">Mouse position in screen coordinates</param>
 		/// <returns>True if the mouse is over the primitive</returns>
-		bool MouseOver(Matrix4 projectionMatrix, Matrix4 viewMatrix, int width, int height, Vector2 mousePosition);
+		bool MouseOver(Vector3 cameraPosition, Matrix4 projectionMatrix, Matrix4 viewMatrix, int width, int height, Vector2 mousePosition);
 	}
 }

@@ -88,24 +88,28 @@ namespace Common.OpenGLCommon.Constructs.DrawingEngine.Primitive
 		}
 
 		/// <inheritdoc/>
-		public bool MouseOver(Matrix4 projectionMatrix, Matrix4 viewMatrix, int width, int height, Vector2 mousePos)
+		public bool MouseOver(Vector3 cameraPos, Matrix4 projectionMatrix, Matrix4 viewMatrix, int width, int height, Vector2 mousePos)
 		{
+			// Default to not over the drawing primitive
 			bool mouseOver = false;
 
-
-			var (rayOrigin, rayDir) = MouseHitTest.CreateRayFromMouse(
+			// Compute the direction of a ray to the mouse click 
+			Vector3 rayDir = MouseHitTest.CreateRayFromMouse(
 							mousePos,
 							projectionMatrix,
 							viewMatrix,
 							width,
 							height);
 
+			// Get the minimum and maximum of the prop
 			Vector3 min = GetMinimum();
 			Vector3 max = GetMaximum();
 
+			// Determine if the ray intersects with the prop
 			float distance = 0;
-			if (MouseHitTest.RayIntersectsAABB(rayOrigin, rayDir, min, max, out distance))
+			if (MouseHitTest.RayIntersectsAABB(cameraPos, rayDir, min, max, out distance))
 			{
+				// Indicate that the mouse is over the prop
 				mouseOver = true;
 			}
 
@@ -116,10 +120,21 @@ namespace Common.OpenGLCommon.Constructs.DrawingEngine.Primitive
 
 		#region Protected Properties
 
+		/// <summary>
+		/// Minimum coordinate of the primitive.
+		/// Note this coordinate is created looking at each axis separately.
+		/// </summary>
 		protected Vector3 Minimum { get; set; }
 
+		/// <summary>
+		/// Maximum coordinate of the primitive.
+		/// Note this coordinate is created looking at each axis separately.
+		/// </summary>
 		protected Vector3 Maximum { get; set; }
 
+		/// <summary>
+		/// Flag that indicates if the Minimum and Maxium are calculated from the vertices.
+		/// </summary>
 		protected bool CalculateMinAndMaxFromVertices { get; set; }
 
 		#endregion
