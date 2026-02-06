@@ -28,7 +28,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		public IntelligentFixturePropOpenGLData(IntelligentFixtureModel propModel) : base(propModel)
 		{
 			// Store off the intelligent fixture prop model
-			_propModel = propModel ;	
+			_propModel = propModel;			
 		}
 
 		#endregion
@@ -112,22 +112,26 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			_movingHeadCurrentSettings.BeamColorRight = Color.Purple;
 			_movingHeadCurrentSettings.IncludeLegend = false;
 			_movingHeadCurrentSettings.TiltAngle = 135.0;
-			_movingHeadCurrentSettings.PanAngle = 215.0;			
+			_movingHeadCurrentSettings.PanAngle = 215.0;
 			_movingHeadCurrentSettings.BeamLength = 40;
 			_movingHeadCurrentSettings.Focus = 40;
 
 			_movingHeadCurrentSettings.IncludeLegend = true;
 			_movingHeadCurrentSettings.Legend = "R1";
-			
+
 			// Initialize the moving head
 			_movingHeadOpenGL.Initialize(height, referenceHeight, (100.0 - _propModel.BeamTransparency) / 100.0, _propModel.BeamWidthMultiplier, _propModel.MountingPosition);
 
 			// Expose the moving head as a property
-			MovingHead = _movingHeadOpenGL;
+			MovingHead = _movingHeadOpenGL;			
+		}
 
+		/// <inheritdoc/>
+		public void InitializeSelectionVertices(float height)
+		{
 			// Get the physical fixture volumes (no beam volumes)
 			List<IVolume> fixtureVolumes = _movingHeadOpenGL.GetPhysicalFixtureVolumes().ToList();
-			
+
 			// Create a collection of vertex coordinates
 			List<Vector3> coordinates = new();
 
@@ -140,11 +144,14 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				// Loop over the vertices
 				foreach (Vector3 v in verts)
 				{
-					// Translate the vertex by the X and Y of the fixture
-					Vector3 translate = v;
-					translate.X += X;
-					translate.Y += Y;
-					coordinates.Add(translate);
+					// Create a vector4 from the vertice
+					Vector4 v4 = new Vector4(v, 1.0f);
+
+					// Update vertice based on the model matrix
+					Vector4 vf = Vector4.TransformRow(v4, fixtureVolume.ModelMatrix);					
+					
+					// Add the vertice to the coordinates collection
+					coordinates.Add(vf.Xyz);
 				}
 			}
 

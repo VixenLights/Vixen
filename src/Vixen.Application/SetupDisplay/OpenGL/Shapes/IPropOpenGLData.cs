@@ -56,6 +56,7 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 		/// <summary>
 		/// Returns true if the mouse if over a resize handle.
 		/// </summary>
+		/// <param name="cameraPosition">View matrix of the viewport</param>
 		/// <param name="viewMatrix">View matrix of the viewport</param>
 		/// <param name="projectionMatrix">Projection matrix of the viewport</param>
 		/// <param name="width">Width of the OpenTK control</param>
@@ -64,6 +65,7 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 		/// <param name="handle">Handle the mouse is over</param>
 		/// <returns>True if the mouse is over a resize handle</returns>
 		bool MouseOverResizeHandle(
+			Vector3 cameraPosition,
 			Matrix4 viewMatrix, 
 			Matrix4 projectionMatrix, 
 			int width, 

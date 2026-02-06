@@ -18,8 +18,8 @@ namespace Common.OpenGLCommon.Constructs.DrawingEngine
 		/// <param name="view">OpenGL view matrix</param>
 		/// <param name="screenWidth">Width of the OpenTK control</param>
 		/// <param name="screenHeight">Height of the OpenTK control</param>
-		/// <returns>3-D vector with a direction</returns>
-		public static (Vector3 origin, Vector3 direction) CreateRayFromMouse(
+		/// <returns>3-D direction vector of the mouse click</returns>
+		public static Vector3 CreateRayFromMouse(
 			Vector2 mousePos,
 			Matrix4 projection,
 			Matrix4 view,
@@ -43,8 +43,8 @@ namespace Common.OpenGLCommon.Constructs.DrawingEngine
 
 			Vector3 rayDirection = Vector3.Normalize(new Vector3(worldCoords.X, worldCoords.Y, worldCoords.Z));
 			Vector3 rayOrigin = invView.ExtractTranslation();
-
-			return (rayOrigin, rayDirection);
+			
+			return rayDirection;
 		}
 
 		/// <summary>

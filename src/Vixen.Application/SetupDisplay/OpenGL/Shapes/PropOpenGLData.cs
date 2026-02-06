@@ -23,10 +23,15 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 			_upperRightResizeCorner = new OpenGLDrawablePrimitive();
 			_lowerRightResizeCorner = new OpenGLDrawablePrimitive();
 			_lowerLeftResizeCorner = new OpenGLDrawablePrimitive();
-			
-			// Initialize the selection rectangle
-			_selectionRectangle = new OpenGLDrawablePrimitive();
-			
+
+			// Initialize selection cuboid
+			_selectionCuboidLeft = new OpenGLDrawablePrimitive();
+			_selectionCuboidRight = new OpenGLDrawablePrimitive();
+			_selectionCuboidTop = new OpenGLDrawablePrimitive();
+			_selectionCuboidBottom = new OpenGLDrawablePrimitive();
+			_selectionCuboidFront = new OpenGLDrawablePrimitive();
+			_selectionCuboidBack = new OpenGLDrawablePrimitive();
+
 			// Initialize the center drag move handle
 			_centerX = new OpenGLDrawablePrimitive();
 
@@ -61,12 +66,37 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 		/// Lower left corner resize handle.
 		/// </summary>
 		private IOpenGLDrawablePrimitive _lowerLeftResizeCorner;
-		
+				
 		/// <summary>
-		/// Prop selection rectangular outline primitive.
+		/// Left side of the prop selection cuboid.
 		/// </summary>
-		private IOpenGLDrawablePrimitive _selectionRectangle;
-		
+		private IOpenGLDrawablePrimitive _selectionCuboidLeft;
+
+		/// <summary>
+		/// Right side of the prop selection cuboid.
+		/// </summary>
+		private IOpenGLDrawablePrimitive _selectionCuboidRight;
+
+		/// <summary>
+		/// Top side of the prop selection cuboid.
+		/// </summary>
+		private IOpenGLDrawablePrimitive _selectionCuboidTop;
+
+		/// <summary>
+		/// Bottom side of the prop selection cuboid.
+		/// </summary>
+		private IOpenGLDrawablePrimitive _selectionCuboidBottom;
+
+		/// <summary>
+		/// Front side of the prop selection cuboid.
+		/// </summary>
+		private IOpenGLDrawablePrimitive _selectionCuboidFront;
+
+		/// <summary>
+		/// Back side of the prop selection cuboid.
+		/// </summary>
+		private IOpenGLDrawablePrimitive _selectionCuboidBack;
+
 		/// <summary>
 		/// Prop center move handle.
 		/// </summary>
@@ -96,6 +126,7 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 
 		/// <inheritdoc/>
 		public bool MouseOverResizeHandle(
+			Vector3 cameraPosition,
 			Matrix4 projectionMatrix, 
 			Matrix4 viewMatrix, 
 			int width, 
@@ -107,28 +138,28 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 			handle = ResizeHandles.BottomRight;
 
 			// Check to see if the mouse is over the upper left resize handle
-			bool upperLeft = _upperLeftResizeCorner.MouseOver(projectionMatrix, viewMatrix, width, height, mousePos);
+			bool upperLeft = _upperLeftResizeCorner.MouseOver(cameraPosition, projectionMatrix, viewMatrix, width, height, mousePos);
 			if (upperLeft)
 			{
 				handle = ResizeHandles.TopLeft;
 			}
 
 			// Check to see if the mouse is over the upper right resize handle
-			bool upperRight = _upperRightResizeCorner.MouseOver(projectionMatrix, viewMatrix, width, height, mousePos);
+			bool upperRight = _upperRightResizeCorner.MouseOver(cameraPosition, projectionMatrix, viewMatrix, width, height, mousePos);
 			if (upperRight)
 			{
 				handle = ResizeHandles.TopRight;
 			}
 
 			// Check to see if the mouse is over the lower left resize handle
-			bool lowerLeft = _lowerLeftResizeCorner.MouseOver(projectionMatrix, viewMatrix, width, height, mousePos);
+			bool lowerLeft = _lowerLeftResizeCorner.MouseOver(cameraPosition, projectionMatrix, viewMatrix, width, height, mousePos);
 			if (lowerLeft)
 			{
 				handle = ResizeHandles.BottomLeft;
 			}
 
 			// Check to see if the mouse is over the lower right resize handle
-			bool lowerRight = _lowerRightResizeCorner.MouseOver(projectionMatrix, viewMatrix, width, height, mousePos);
+			bool lowerRight = _lowerRightResizeCorner.MouseOver(cameraPosition, projectionMatrix, viewMatrix, width, height, mousePos);
 			if (lowerRight)
 			{
 				handle = ResizeHandles.BottomRight;
@@ -160,13 +191,15 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 			CalculateAbsoluteMinAndMaxVertices(coordinates, out minimum, out maximum);			
 			
 			// Initialize the selection rectangle vertices
-			InitializeSelectionRectangle(minimum.X, minimum.Y, maximum.X, maximum.Y);
+			// Adding 1 to the z component to avoid overlap with the prop
+			InitializeSelectionRectangle(minimum.X, minimum.Y, minimum.Z, maximum.X, maximum.Y, maximum.Z + 1);
 			
 			// Initialize the resize handle vertices
-			InitializeResizeCornerHandles(minimum.X, minimum.Y, maximum.X, maximum.Y);
+			// Adding 1 to the z component to avoid overlap with the prop
+			InitializeResizeCornerHandles(minimum.X, minimum.Y, minimum.Z, maximum.X, maximum.Y, maximum.Z + 1);
 			
 			// Initialize the center drag move handle vertices
-			InitializeCenterXMoveHandle(heightY);
+			InitializeCenterXMoveHandle(heightY, maximum.Z);
 		}
 
 		#endregion
@@ -243,7 +276,7 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 		/// Initializes the vertices of the center X drag move handle.
 		/// </summary>
 		/// <param name="sizeY">Size of the prop in the Y axis</param>
-		private void InitializeCenterXMoveHandle(float sizeY)
+		private void InitializeCenterXMoveHandle(float sizeY, float minZ)
 		{ 
 			// Clear the center X selection handle vertices
 			_centerX.Vertices.Clear();
@@ -251,38 +284,38 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 			// X ->
 			_centerX.Vertices.Add(0.0f + X); // X
 			_centerX.Vertices.Add(0.0f + Y); // Y
-			_centerX.Vertices.Add(0.0f);     // Z
+			_centerX.Vertices.Add(minZ);     // Z
 
 			_centerX.Vertices.Add(0.2f * sizeY + X); // X
 			_centerX.Vertices.Add(0.0f * sizeY + Y); // Y
-			_centerX.Vertices.Add(0.0f);             // Z
+			_centerX.Vertices.Add(minZ);             // Z
 
 			// <- X
 			_centerX.Vertices.Add(0.0f + X); // X
 			_centerX.Vertices.Add(0.0f + Y); // Y
-			_centerX.Vertices.Add(0.0f);     // Z
+			_centerX.Vertices.Add(minZ);     // Z
 
 			_centerX.Vertices.Add(-0.2f * sizeY + X); // X
 			_centerX.Vertices.Add(0.0f + Y);          // Y
-			_centerX.Vertices.Add(0.0f);              // Z
+			_centerX.Vertices.Add(minZ);              // Z
 
 			// Y Up
 			_centerX.Vertices.Add(0.0f + X); // X
 			_centerX.Vertices.Add(0.0f + Y); // Y
-			_centerX.Vertices.Add(0.0f);     // Z
+			_centerX.Vertices.Add(minZ);     // Z
 
 			_centerX.Vertices.Add(0.0f + X);         // X
 			_centerX.Vertices.Add(0.2f * sizeY + Y); // Y
-			_centerX.Vertices.Add(0.0f);             // Z
+			_centerX.Vertices.Add(minZ);             // Z
 
 			// Y Down
 			_centerX.Vertices.Add(0.0f + X); // X
 			_centerX.Vertices.Add(0.0f + Y); // Y
-			_centerX.Vertices.Add(0.0f);     // Z
+			_centerX.Vertices.Add(minZ);     // Z
 
 			_centerX.Vertices.Add(0.0f + X);          // X
 			_centerX.Vertices.Add(-0.2f * sizeY + Y); // Y
-			_centerX.Vertices.Add(0.0f);              // Z
+			_centerX.Vertices.Add(minZ);              // Z
 		}
 
 		/// <summary>
@@ -292,32 +325,102 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 		/// <param name="minY">Minimum Y coordinate of the prop</param>
 		/// <param name="maxX">Maximum X coordinate of the prop</param>
 		/// <param name="maxY">Maximum Y coordinate of the prop</param>
-		private void InitializeSelectionRectangle(float minX, float minY, float maxX, float maxY)
+		private void InitializeSelectionRectangle(float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
 		{
-			_selectionRectangle.Vertices.Clear();
+			// ** FRONT **
+			_selectionCuboidFront.Vertices.Clear();
 
 			// Upper Left
-			_selectionRectangle.Vertices.Add(minX);
-			_selectionRectangle.Vertices.Add(minY);
-			_selectionRectangle.Vertices.Add(0.0f);
+			_selectionCuboidFront.Vertices.Add(minX);
+			_selectionCuboidFront.Vertices.Add(minY);
+			_selectionCuboidFront.Vertices.Add(minZ);
 
 			// Upper Right
-			_selectionRectangle.Vertices.Add(maxX);
-			_selectionRectangle.Vertices.Add(minY);
-			_selectionRectangle.Vertices.Add(0.0f);
+			_selectionCuboidFront.Vertices.Add(maxX);
+			_selectionCuboidFront.Vertices.Add(minY);
+			_selectionCuboidFront.Vertices.Add(minZ);
 
 			// Lower Right
-			_selectionRectangle.Vertices.Add(maxX);
-			_selectionRectangle.Vertices.Add(maxY);
-			_selectionRectangle.Vertices.Add(0.0f);
+			_selectionCuboidFront.Vertices.Add(maxX);
+			_selectionCuboidFront.Vertices.Add(maxY);
+			_selectionCuboidFront.Vertices.Add(minZ);
 
 			// Lower Left
-			_selectionRectangle.Vertices.Add(minX);
-			_selectionRectangle.Vertices.Add(maxY);
-			_selectionRectangle.Vertices.Add(0.0f);
+			_selectionCuboidFront.Vertices.Add(minX);
+			_selectionCuboidFront.Vertices.Add(maxY);
+			_selectionCuboidFront.Vertices.Add(minZ);
+
+			// ** Back **
+			_selectionCuboidBack.Vertices.Clear();
+
+			// Upper Left
+			_selectionCuboidBack.Vertices.Add(minX);
+			_selectionCuboidBack.Vertices.Add(minY);
+			_selectionCuboidBack.Vertices.Add(maxZ);
+
+			// Upper Right
+			_selectionCuboidBack.Vertices.Add(maxX);
+			_selectionCuboidBack.Vertices.Add(minY);
+			_selectionCuboidBack.Vertices.Add(maxZ);
+
+			// Lower Right
+			_selectionCuboidBack.Vertices.Add(maxX);
+			_selectionCuboidBack.Vertices.Add(maxY);
+			_selectionCuboidBack.Vertices.Add(maxZ);
+
+			// Lower Left
+			_selectionCuboidBack.Vertices.Add(minX);
+			_selectionCuboidBack.Vertices.Add(maxY);
+			_selectionCuboidBack.Vertices.Add(maxZ);
+
+			// ** Left Side **
+			_selectionCuboidLeft.Vertices.Clear();
+
+			// Upper Left
+			_selectionCuboidLeft.Vertices.Add(minX);
+			_selectionCuboidLeft.Vertices.Add(minY);
+			_selectionCuboidLeft.Vertices.Add(minZ);
+
+			// Lower Left
+			_selectionCuboidLeft.Vertices.Add(minX);
+			_selectionCuboidLeft.Vertices.Add(maxY);
+			_selectionCuboidLeft.Vertices.Add(minZ);
+
+			// Lower Rear
+			_selectionCuboidLeft.Vertices.Add(minX);
+			_selectionCuboidLeft.Vertices.Add(maxY);
+			_selectionCuboidLeft.Vertices.Add(maxZ);
+
+			// Upper Rear
+			_selectionCuboidLeft.Vertices.Add(minX);
+			_selectionCuboidLeft.Vertices.Add(minY);
+			_selectionCuboidLeft.Vertices.Add(maxZ);
+
+			// ** Right Side **
+			_selectionCuboidRight.Vertices.Clear();
+
+			// Upper Left
+			_selectionCuboidRight.Vertices.Add(maxX);
+			_selectionCuboidRight.Vertices.Add(minY);
+			_selectionCuboidRight.Vertices.Add(minZ);
+
+			// Lower Left
+			_selectionCuboidRight.Vertices.Add(maxX);
+			_selectionCuboidRight.Vertices.Add(maxY);
+			_selectionCuboidRight.Vertices.Add(minZ);
+
+			// Lower Rear
+			_selectionCuboidRight.Vertices.Add(maxX);
+			_selectionCuboidRight.Vertices.Add(maxY);
+			_selectionCuboidRight.Vertices.Add(maxZ);
+
+			// Upper Rear
+			_selectionCuboidRight.Vertices.Add(maxX);
+			_selectionCuboidRight.Vertices.Add(minY);
+			_selectionCuboidRight.Vertices.Add(maxZ);
 		}
 
-		private void InitializeResizeCornerHandles(float minX, float minY, float maxX, float maxY)
+		private void InitializeResizeCornerHandles(float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
 		{
 			// Size of the resize handle in pixel
 			const float SizeOfHandle = 50f;
@@ -327,73 +430,73 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 
 			_lowerLeftResizeCorner.Vertices.Add(minX);
 			_lowerLeftResizeCorner.Vertices.Add(minY);
-			_lowerLeftResizeCorner.Vertices.Add(0.0f);
+			_lowerLeftResizeCorner.Vertices.Add(maxZ);
 
 			_lowerLeftResizeCorner.Vertices.Add(minX);
 			_lowerLeftResizeCorner.Vertices.Add(minY + SizeOfHandle);
-			_lowerLeftResizeCorner.Vertices.Add(0.0f);
+			_lowerLeftResizeCorner.Vertices.Add(maxZ);
 
 			_lowerLeftResizeCorner.Vertices.Add(minX + SizeOfHandle);
 			_lowerLeftResizeCorner.Vertices.Add(minY + SizeOfHandle);
-			_lowerLeftResizeCorner.Vertices.Add(0.0f);
+			_lowerLeftResizeCorner.Vertices.Add(maxZ);
 
 			_lowerLeftResizeCorner.Vertices.Add(minX + SizeOfHandle);
 			_lowerLeftResizeCorner.Vertices.Add(minY);
-			_lowerLeftResizeCorner.Vertices.Add(0.0f);
+			_lowerLeftResizeCorner.Vertices.Add(maxZ);
 
 			// Upper Right Resize Handle Box
 			_upperRightResizeCorner.Vertices.Clear();
 			_upperRightResizeCorner.Vertices.Add(maxX - SizeOfHandle);
 			_upperRightResizeCorner.Vertices.Add(maxY);
-			_upperRightResizeCorner.Vertices.Add(0.0f);
+			_upperRightResizeCorner.Vertices.Add(maxZ);
 
 			_upperRightResizeCorner.Vertices.Add(maxX);
 			_upperRightResizeCorner.Vertices.Add(maxY);
-			_upperRightResizeCorner.Vertices.Add(0.0f);
+			_upperRightResizeCorner.Vertices.Add(maxZ);
 
 			_upperRightResizeCorner.Vertices.Add(maxX);
 			_upperRightResizeCorner.Vertices.Add(maxY - SizeOfHandle);
-			_upperRightResizeCorner.Vertices.Add(0.0f);
+			_upperRightResizeCorner.Vertices.Add(maxZ);
 
 			_upperRightResizeCorner.Vertices.Add(maxX - SizeOfHandle);
 			_upperRightResizeCorner.Vertices.Add(maxY - SizeOfHandle);
-			_upperRightResizeCorner.Vertices.Add(0.0f);
+			_upperRightResizeCorner.Vertices.Add(maxZ);
 
 			// Lower Right Resize Handle Box
 			_lowerRightResizeCorner.Vertices.Clear();
 			_lowerRightResizeCorner.Vertices.Add(maxX - SizeOfHandle);
 			_lowerRightResizeCorner.Vertices.Add(minY);
-			_lowerRightResizeCorner.Vertices.Add(0.0f);
+			_lowerRightResizeCorner.Vertices.Add(maxZ);
 
 			_lowerRightResizeCorner.Vertices.Add(maxX);
 			_lowerRightResizeCorner.Vertices.Add(minY);
-			_lowerRightResizeCorner.Vertices.Add(0.0f);
+			_lowerRightResizeCorner.Vertices.Add(maxZ);
 
 			_lowerRightResizeCorner.Vertices.Add(maxX);
 			_lowerRightResizeCorner.Vertices.Add(minY + SizeOfHandle);
-			_lowerRightResizeCorner.Vertices.Add(0.0f);
+			_lowerRightResizeCorner.Vertices.Add(maxZ);
 
 			_lowerRightResizeCorner.Vertices.Add(maxX - SizeOfHandle);
 			_lowerRightResizeCorner.Vertices.Add(minY + SizeOfHandle);
-			_lowerRightResizeCorner.Vertices.Add(0.0f);
+			_lowerRightResizeCorner.Vertices.Add(maxZ);
 
 			// Upper Left Resize Handle Box
 			_upperLeftResizeCorner.Vertices.Clear();
 			_upperLeftResizeCorner.Vertices.Add(minX);
 			_upperLeftResizeCorner.Vertices.Add(maxY);
-			_upperLeftResizeCorner.Vertices.Add(0.0f);
+			_upperLeftResizeCorner.Vertices.Add(maxZ);
 
 			_upperLeftResizeCorner.Vertices.Add(minX + SizeOfHandle);
 			_upperLeftResizeCorner.Vertices.Add(maxY);
-			_upperLeftResizeCorner.Vertices.Add(0.0f);
+			_upperLeftResizeCorner.Vertices.Add(maxZ);
 
 			_upperLeftResizeCorner.Vertices.Add(minX + SizeOfHandle);
 			_upperLeftResizeCorner.Vertices.Add(maxY - SizeOfHandle);
-			_upperLeftResizeCorner.Vertices.Add(0.0f);
+			_upperLeftResizeCorner.Vertices.Add(maxZ);
 
 			_upperLeftResizeCorner.Vertices.Add(minX);
 			_upperLeftResizeCorner.Vertices.Add(maxY - SizeOfHandle);
-			_upperLeftResizeCorner.Vertices.Add(0.0f);
+			_upperLeftResizeCorner.Vertices.Add(maxZ);
 		}
 
 		#endregion
@@ -405,13 +508,31 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 		{
 			return _centerX;
 		}
-		
+
 		/// <inheritdoc/>		
-		public IOpenGLDrawablePrimitive GetSelectionRectangle()
+		public IOpenGLDrawablePrimitive GetSelectionCuboidLeftSide()
 		{
-			return _selectionRectangle;	
+			return _selectionCuboidLeft;
 		}
 
+		/// <inheritdoc/>		
+		public IOpenGLDrawablePrimitive GetSelectionCuboidRightSide()
+		{
+			return _selectionCuboidRight;
+		}
+
+		/// <inheritdoc/>		
+		public IOpenGLDrawablePrimitive GetSelectionCuboidFrontSide()
+		{
+			return _selectionCuboidFront;
+		}
+
+		/// <inheritdoc/>		
+		public IOpenGLDrawablePrimitive GetSelectionCuboidBackSide()
+		{
+			return _selectionCuboidBack;
+		}
+		
 		/// <inheritdoc/>
 		public IOpenGLDrawablePrimitive GetUpperLeftCornerResizeBox()
 		{
@@ -451,8 +572,7 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 			_upperLeftResizeCorner.Dispose();						
 			_upperRightResizeCorner.Dispose();									
 			_lowerRightResizeCorner.Dispose();						
-			_lowerLeftResizeCorner.Dispose();							
-			_selectionRectangle.Dispose();
+			_lowerLeftResizeCorner.Dispose();										
 			_centerX.Dispose();							
 		}
 
