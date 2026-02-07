@@ -999,6 +999,9 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			       colorIndex < _timelineColors.Count &&
 				   Items.Count <= _timelineColors.Count)
 			{
+				// Increment to the next color
+				colorIndex++;
+
 				// If we are at the end of the available colors then...
 				if (colorIndex == _timelineColors.Count)
 				{
