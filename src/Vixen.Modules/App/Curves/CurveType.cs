@@ -11,10 +11,6 @@ namespace VixenModules.App.Curves
 		[Description("Ramp Down")]
 		RampDown,
 		[Description("Full 100")]
-		Flat100,
-		[Description("Increasing Curve")]
-		RampIncreaseCurve,
-		[Description("Decreasing Curve")]
-		RampDecreaseCurve
+		Flat100
 	}
 }

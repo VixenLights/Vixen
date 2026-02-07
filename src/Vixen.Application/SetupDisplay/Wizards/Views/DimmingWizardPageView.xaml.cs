@@ -1,13 +1,11 @@
-﻿using Catel.Data;
-using Catel.Reflection;
-using System.Collections.Specialized;
+﻿using Catel.Reflection;
 using System.ComponentModel;
-using System.Text.RegularExpressions;
 using System.Windows;
-using Vixen.Extensions;
 using VixenApplication.SetupDisplay.Wizards.ViewModels;
 using VixenModules.App.Curves;
 using ZedGraph;
+using System.Windows.Controls;
+using static VixenApplication.SetupDisplay.Wizards.Pages.DimmingWizardPage;
 
 namespace VixenApplication.SetupDisplay.Wizards.Views
 {
@@ -19,13 +17,8 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 		{
 			InitializeComponent();
 
-
-			SimpleCurve.Visibility = Visibility.Collapsed;
+			SimpleDimming.Visibility = Visibility.Collapsed;
 			CustomCurve.Visibility = Visibility.Collapsed;
-			RampUpLabel.Content = CurveType.RampUp.GetEnumDescription();
-			RampDownLabel.Content = CurveType.RampDown.GetEnumDescription();
-			RampIncreaseCurveLabel.Content = CurveType.RampIncreaseCurve.GetEnumDescription();
-			RampDecreaseCurveLabel.Content = CurveType.RampDecreaseCurve.GetEnumDescription();
 
 			_curveEditor = new CurveEditor(zedGraphControl);
 			Curve = new Curve();
@@ -64,6 +57,17 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 			zedGraphControl.ScrollMinY2 = 0D;
 		}
 
+		private DimmingType? DimmingTypeOption
+		{
+			get { return (ViewModel as DimmingWizardPageViewModel)?.DimmingTypeOption; }
+			set {
+				if (ViewModel is DimmingWizardPageViewModel viewModel)
+				{
+					viewModel.DimmingTypeOption = value.Value;
+				}
+			}
+		}
+
 		public Curve Curve
 		{
 			get { return _curveEditor?.Curve; }
@@ -77,6 +81,30 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 			}
 		}
 
+		protected override void OnViewModelChanged()
+		{
+			base.OnViewModelChanged();
+
+			if (DimmingTypeOption == DimmingType.Simple)
+			{
+				SimpleDimming.Visibility = Visibility.Visible;
+				SimpleDimmingButton.IsChecked = true;
+			}
+
+			else if (DimmingTypeOption == DimmingType.Library)
+			{
+				CustomCurve.Visibility = Visibility.Visible;
+				LibraryCurveButton.IsChecked = true;
+			}
+
+			else
+			{
+				SimpleDimming.Visibility = Visibility.Collapsed;
+				CustomCurve.Visibility = Visibility.Collapsed;
+				NoCurveButton.IsChecked = true;
+			}
+		}
+
 		private void UpdateViewModel()
 		{
 			if (ViewModel is DimmingWizardPageViewModel viewModel)
@@ -87,65 +115,81 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 
 		private void NoCurveButtonClick(object sender, RoutedEventArgs e)
 		{
-			SimpleCurve.Visibility = Visibility.Collapsed;
+			SimpleDimming.Visibility = Visibility.Collapsed;
 			CustomCurve.Visibility = Visibility.Collapsed;
+			DimmingTypeOption = DimmingType.NoCurve;
 			_curveEditor.Clear();
 
 			UpdateViewModel();
 		}
 
-		private void SimpleCurveButtonClick(object sender, RoutedEventArgs e)
+		private void SimpleDimmingButtonClick(object sender, RoutedEventArgs e)
 		{
-			SimpleCurve.Visibility = Visibility.Visible;
+			SimpleDimming.Visibility = Visibility.Visible;
 			CustomCurve.Visibility = Visibility.Collapsed;
+			DimmingTypeOption = DimmingType.Simple;
 			_curveEditor.Clear();
+		}
+
+		private void SetupGammaGrid(System.Windows.Controls.Grid grid, int brightness, double gamma)
+		{
+			if (grid == null)
+			{
+				return;
+			}
+
+			grid.RowDefinitions.Clear();
+			grid.ColumnDefinitions.Clear();
+			grid.Children.Clear();
+
+			grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(50) });
+			grid.ShowGridLines = false;
+
+			for (int i = 0; i < 10; i++)
+			{
+				grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(10, GridUnitType.Star) });
+
+				double y = (Math.Pow((double)(i+1)/10, gamma) * brightness + 0.5) / 100 * 255;
+				byte colorValue = (byte)Math.Clamp(y, 0, 255);
+				var backgroundColor = System.Windows.Media.Color.FromRgb(colorValue, colorValue, colorValue);
+
+				var cellBorder = new System.Windows.Controls.Border
+				{
+					BorderBrush = System.Windows.Media.Brushes.Gray,
+					BorderThickness = new Thickness(i == 0 ? 1 : 0, 1, 1, 1), // Prevent double-thick internal borders
+					Background = new System.Windows.Media.SolidColorBrush(backgroundColor),
+					SnapsToDevicePixels = true
+					};
+
+				System.Windows.Controls.Grid.SetColumn(cellBorder, i);
+				System.Windows.Controls.Grid.SetRow(cellBorder, 0);
+
+				grid.Children.Add(cellBorder);
+			}
+		}
+
+		private void BrightnessSlider_ValueChanged(object sender, RoutedEventArgs e)
+		{
+			if (BrightnessSlider != null && GammaSlider != null)
+			{
+				// Refresh the grid with new values
+				SetupGammaGrid(GammaGrid, (int)BrightnessSlider.Value, GammaSlider.Value);
+			}
+		}
+
+		private void GammaSlider_ValueChanged(object sender, RoutedEventArgs e)
+		{
+			if (BrightnessSlider != null && GammaSlider != null)
+			{
+				SetupGammaGrid(GammaGrid, (int)BrightnessSlider.Value, GammaSlider.Value);
+			}
 		}
 
 		private void LibraryCurveButtonClick(object sender, RoutedEventArgs e)
 		{
-			SimpleCurve.Visibility = Visibility.Collapsed;
+			SimpleDimming.Visibility = Visibility.Collapsed;
 			CustomCurve.Visibility = Visibility.Visible;
-		}
-
-		private void RampUpButtonClick(object sender, RoutedEventArgs e)
-		{
-			_curveEditor.Curve = new Curve(CurveType.RampUp);
-			SimpleDimmingCurveButton.Content = Regex.Replace(SimpleDimmingCurveButton.Content.ToString(), "-.*", $"- {CurveType.RampUp.GetEnumDescription()}");
-
-			UpdateViewModel();
-		}
-
-		private void RampDownButtonClick(object sender, RoutedEventArgs e)
-		{
-			_curveEditor.Curve = new Curve(CurveType.RampDown);
-			SimpleDimmingCurveButton.Content = Regex.Replace(SimpleDimmingCurveButton.Content.ToString(), "-.*", $"- {CurveType.RampDown.GetEnumDescription()}");
-
-			UpdateViewModel();
-		}
-
-		private void RampIncreaseCurveButtonClick(object sender, RoutedEventArgs e)
-		{
-			_curveEditor.Curve = new Curve(CurveType.RampIncreaseCurve);
-			SimpleDimmingCurveButton.Content = Regex.Replace(SimpleDimmingCurveButton.Content.ToString(), "-.*", $"- {CurveType.RampIncreaseCurve.GetEnumDescription()}");
-
-			UpdateViewModel();
-		}
-
-		private void RampDecreaseCurveButtonClick(object sender, RoutedEventArgs e)
-		{
-			_curveEditor.Curve = new Curve(CurveType.RampDecreaseCurve);
-			SimpleDimmingCurveButton.Content = Regex.Replace(SimpleDimmingCurveButton.Content.ToString(), "-.*", $"- {CurveType.RampDecreaseCurve.GetEnumDescription()}");
-
-			UpdateViewModel();
-		}
-
-		private void GrowingDecreaseButtonClick(object sender, RoutedEventArgs e)
-		{
-			_curveEditor.Curve = new Curve(CurveType.RampDown);
-			SimpleDimmingCurveButton.Content = Regex.Replace(SimpleDimmingCurveButton.Content.ToString(), "-.*", $"- {CurveType.RampDown.GetEnumDescription()}");
-			_curveEditor.LibraryCurveName = CurveType.RampUp.GetEnumDescription();
-
-			UpdateViewModel();
+			DimmingTypeOption = DimmingType.Library;
 		}
 
 		private void ReverseCurveButtonClick(object sender, RoutedEventArgs e)

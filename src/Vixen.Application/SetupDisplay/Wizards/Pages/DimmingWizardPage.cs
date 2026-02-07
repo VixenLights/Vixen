@@ -1,40 +1,57 @@
 ﻿using Catel.Data;
-using Catel.MVVM;
-using Common.WPFCommon.Command;
-using NAudio.Wave;
 using Orc.Wizard;
-using System.Windows.Input;
 using Vixen.Extensions;
 using Vixen.Sys.Props;
 using VixenModules.App.Curves;
-using VixenApplication.SetupDisplay.Wizards.ViewModels;
-using System.Runtime.CompilerServices;
-using Microsoft.VisualBasic;
-using System.Xml.Linq;
-using System.Security.Cryptography;
 
 namespace VixenApplication.SetupDisplay.Wizards.Pages
 {
 	public class DimmingWizardPage : WizardPageBase
 	{
+		public enum DimmingType
+		{
+			NoCurve,
+			Simple,
+			Library
+		}
 
 		public DimmingWizardPage()
 		{
 			Title = "Dimming Curve";
 			Description = $"Enter dimming information";
+			Curve = null;
+			DimmingTypeOption = DimmingType.NoCurve;
+			Brightness = 80;
+			Gamma = 2.2;
 		}
 
-		#region Curve property
-		/// <summary>
-		/// Gets or sets the size of each light.
-		/// </summary>
+		public DimmingType DimmingTypeOption
+		{
+			get { return GetValue<DimmingType>(DimmingTypeOptionProperty); }
+			set { SetValue(DimmingTypeOptionProperty, value); }
+		}
+		private static readonly IPropertyData DimmingTypeOptionProperty = RegisterProperty<DimmingType>(nameof(DimmingTypeOption));
+
+		public int Brightness
+		{
+			get { return GetValue<int>(BrightnessProperty); }
+			set { SetValue(BrightnessProperty, value); }
+		}
+		private static readonly IPropertyData BrightnessProperty = RegisterProperty<int>(nameof(Brightness));
+
+		public double Gamma
+		{
+			get { return GetValue<double>(GammaProperty); }
+			set { SetValue(GammaProperty, value); }
+		}
+		private static readonly IPropertyData GammaProperty = RegisterProperty<double>(nameof(Gamma));
+
 		public Curve Curve
 		{
 			get { return GetValue<Curve>(CurveProperty); }
 			set { SetValue(CurveProperty, value); }
 		}
 		private static readonly IPropertyData CurveProperty = RegisterProperty<Curve>(nameof(Curve));
-		#endregion
 
 		private PropType _propType;
 		public PropType PropType
@@ -48,19 +65,19 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 		public override ISummaryItem GetSummary()
 		{
 			string curveName = "None Specified";
-			if (Curve != null)
+			if (DimmingTypeOption == DimmingType.Simple)
 			{
-				if (Curve.CustomReferenceName != string.Empty)
+				curveName = $"Brightness: {Brightness}%, Gamma: {Gamma}";
+			}
+			else if (DimmingTypeOption == DimmingType.Library && Curve != null)
+			{
+				if (Curve.LibraryReferenceName != string.Empty)
 				{
-					curveName = Curve.CustomReferenceName;
-				}
-				else if (Curve.LibraryReferenceName != string.Empty)
-				{
-					curveName = Curve.LibraryReferenceName;
+					curveName = $"Library Curve: {Curve.LibraryReferenceName}";
 				}
 				else if (Curve.Points.Count > 0)
 				{
-					curveName = "Custom";
+					curveName = "Custom Curve";
 				}
 			}
 
