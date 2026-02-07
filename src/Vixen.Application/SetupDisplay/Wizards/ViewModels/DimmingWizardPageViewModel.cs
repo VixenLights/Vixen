@@ -1,14 +1,9 @@
 ﻿using Catel.Data;
 using Catel.MVVM;
-using Common.WPFCommon.Command;
-using NAudio.Wave;
 using Orc.Wizard;
-using System.Windows;
-using System.Windows.Input;
-using Vixen.Sys.Props;
 using VixenApplication.SetupDisplay.Wizards.Pages;
 using VixenModules.App.Curves;
-using ZedGraph;
+using static VixenApplication.SetupDisplay.Wizards.Pages.DimmingWizardPage;
 
 namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 {
@@ -19,17 +14,36 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		}
 
 		[ViewModelToModel]
+		public DimmingType DimmingTypeOption
+		{
+			get { return GetValue<DimmingType>(DimmingTypeOptionProperty); }
+			set { SetValue(DimmingTypeOptionProperty, value); }
+		}
+		private static readonly IPropertyData DimmingTypeOptionProperty = RegisterProperty<DimmingType>(nameof(DimmingTypeOption));
+
+		[ViewModelToModel]
+		public int Brightness
+		{
+			get { return GetValue<int>(BrightnessProperty); }
+			set { SetValue(BrightnessProperty, value); }
+		}
+		private static readonly IPropertyData BrightnessProperty = RegisterProperty<int>(nameof(Brightness));
+
+		[ViewModelToModel]
+		public double Gamma
+		{
+			get { return GetValue<double>(GammaProperty); }
+			set { SetValue(GammaProperty, value); }
+		}
+		private static readonly IPropertyData GammaProperty = RegisterProperty<double>(nameof(Gamma));
+
+
+		[ViewModelToModel]
 		public Curve Curve
 		{
 			get { return GetValue<Curve>(CurveProperty); }
 			set { SetValue(CurveProperty, value); }
 		}
 		private static readonly IPropertyData CurveProperty = RegisterProperty<Curve>(nameof(Curve));
-
-		protected override void ValidateFields(List<IFieldValidationResult> validationResults)
-		{
-			base.ValidateFields(validationResults);
-		}
-
 	}
 }

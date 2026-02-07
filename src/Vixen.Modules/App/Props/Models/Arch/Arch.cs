@@ -234,11 +234,7 @@ namespace VixenModules.App.Props.Models.Arch
 				string result = "None Specified";
 				if (_curve != null)
 				{
-					if (_curve.CustomReferenceName != string.Empty)
-					{
-						result = _curve.CustomReferenceName;
-					}
-					else if (_curve.LibraryReferenceName != string.Empty)
+					if (_curve.LibraryReferenceName != string.Empty)
 					{
 						result = _curve.LibraryReferenceName;
 					}
