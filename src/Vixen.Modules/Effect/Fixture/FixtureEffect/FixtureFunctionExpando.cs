@@ -99,9 +99,7 @@ namespace VixenModules.Effect.Fixture
 
 		private string _functionName;
 
-		/// <summary>
-		/// Refer to interface documentation.
-		/// </summary>
+		/// <inheritdoc/>		
 		[Browsable(false)]
 		public string FunctionName 
 		{ 
@@ -129,23 +127,39 @@ namespace VixenModules.Effect.Fixture
 						ColorWheelIndexData = fixtureFunction.ColorWheelData;
 					}
 				}
+
+				OnPropertyChanged();
 			}
 		}
 
-		/// <summary>
-		/// Refer to interface documentation.
-		/// </summary>
+		private FunctionIdentity _functionIdentity;
+
+		/// <inheritdoc/>		
 		[Browsable(false)]
-		public FunctionIdentity FunctionIdentity { get; set; }
+		public FunctionIdentity FunctionIdentity
+		{
+			get
+			{
+				return _functionIdentity;
+			}
+			set
+			{
+				if (Equals(value, _functionIdentity))
+				{
+					return;
+				}
+
+				_functionIdentity = value;
+				OnPropertyChanged();
+			}
+		}
 
 		/// <summary>
 		/// Backing field for the function type.
 		/// </summary>
 		private FixtureFunctionType _functionType;
 
-		/// <summary>
-		/// Refer interface documentation.
-		/// </summary>
+		/// <inheritdoc/>		
 		[Browsable(false)]
 		public FixtureFunctionType FunctionType
 		{
@@ -159,20 +173,36 @@ namespace VixenModules.Effect.Fixture
 				
 				// Update the visibility of the controls
 				UpdateFunctionTypeAttributes();
+
+				OnPropertyChanged();
 			}
 		}
 
-		/// <summary>
-		/// Fixture functions associated with the fixture specification.
-		/// </summary>
+		private List<FixtureFunction> _fixtureFunctions;
+
+		/// <inheritdoc/>		
 		[Browsable(false)]
-		public List<App.Fixture.FixtureFunction> FixtureFunctions { get; set; }
+		public List<FixtureFunction> FixtureFunctions
+		{
+			get
+			{
+				return _fixtureFunctions;
+			}
+			set
+			{
+				if (Equals(value, _fixtureFunctions))
+				{
+					return;
+				}
+
+				_fixtureFunctions = value;
+				OnPropertyChanged();
+			}
+		}
 
 		private string _indexValue;
-
-		/// <summary>
-		/// Refer to interface documentation.
-		/// </summary>
+		
+		/// <inheritdoc/>		
 		[ProviderDisplayName(@"FixtureIndexValue")]
 		[ProviderDescription(@"FixtureIndexValue")]
 		[TypeConverter(typeof(FixtureIndexCollectionNameConverter))]
@@ -217,6 +247,9 @@ namespace VixenModules.Effect.Fixture
 
 				// Update the visibility of the controls
 				UpdateFunctionTypeAttributes();
+
+				// Fire the property chagned event
+				OnPropertyChanged();
 			}
 		}
 		
@@ -265,24 +298,61 @@ namespace VixenModules.Effect.Fixture
 					// Update the visibility of the controls
 					UpdateFunctionTypeAttributes();
 				}
+
+				// Fire the property chagned event
+				OnPropertyChanged();	
 			}
 		}
 
-		/// <summary>
-		/// Refer to interface documentation.
-		/// </summary>
+		private Curve _range;
+		
+		/// <inheritdoc/>		
 		[ProviderDisplayName(@"FixtureRange")]
 		[ProviderDescription(@"FixtureRange")]
 		[PropertyOrder(3)]
-		public Curve Range { get; set; }
+		public Curve Range 
+		{ 
+			get
+			{
+				return _range; 
+			}
+			set
+			{
+				if (Equals(value, _range))
+				{
+					return;
+				}
 
-		/// <summary>
-		/// Refer to interface documentation.
-		/// </summary>
+				_range = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private Curve _intensity;
+
+		/// <inheritdoc/>		
 		[ProviderDisplayName(@"FixtureColorIntensity")]
 		[ProviderDescription(@"FixtureColorIntensity")]
 		[PropertyOrder(4)]
-		public Curve Intensity { get; set; }
+		public Curve Intensity
+		{
+			get
+			{
+				return _intensity;
+			}
+			set
+			{
+				if (Equals(value, _intensity))
+				{
+					return;
+				}
+
+				_intensity = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private ColorGradient _color;
 
 		/// <summary>
 		/// Refer to interface documentation.
@@ -290,13 +360,47 @@ namespace VixenModules.Effect.Fixture
 		[ProviderDisplayName(@"FixtureColor")]
 		[ProviderDescription(@"FixtureColor")]
 		[PropertyOrder(5)]
-		public ColorGradient Color { get; set; }
+		public ColorGradient Color
+		{
+			get
+			{
+				return _color;
+			}
+			set
+			{
+				if (Equals(value, _color))
+				{
+					return;
+				}
+
+				_color = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private Color _timelineColor;
 
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>
 		[Browsable(false)]
-		public Color TimelineColor { get; set; }
+		public Color TimelineColor
+		{
+			get
+			{
+				return _timelineColor;
+			}
+			set
+			{
+				if (Equals(value, _timelineColor))
+				{
+					return;
+				}
+
+				_timelineColor = value;
+				OnPropertyChanged();
+			}
+		}
 
 		#endregion
 
