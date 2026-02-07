@@ -47,7 +47,6 @@ namespace VixenModules.App.Props.Models.Arch
 		{
 			return Get3DNodePoints(_arch.NodeCount, _arch.LightSize);
 		}
-
 		#endregion
 
 			

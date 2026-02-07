@@ -2,11 +2,6 @@
                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:catel="http://schemas.catelproject.com"
-                  xmlns:orccontrols="http://schemas.wildgums.com/orc/controls"
-                  xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
-                  xmlns:sys="clr-namespace:System;assembly=System.Runtime"
-                  xmlns:props="clr-namespace:Vixen.Sys.Props;assembly=Vixen.Core"
-                  xmlns:location="clr-namespace:VixenModules.App.Props.Models.Arch;assembly=Module.App.Props"
                   xmlns:markupExtensions="clr-namespace:Common.WPFCommon.MarkupExtensions;assembly=WPFCommon"
                   xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
                   xmlns:zed="clr-namespace:ZedGraph;assembly=Module.App.Curves"
@@ -33,50 +28,40 @@
         </Grid.RowDefinitions>
             
         <!-- Curve Selection buttons -->
-        <RadioButton Content="No Dimming Curve" IsChecked="True" Grid.Row="0" Click="NoCurveButtonClick"></RadioButton>
-        <RadioButton x:Name="SimpleDimmingCurveButton" Content="Simple Dimming Curves - none selected" Grid.Row="1" Click="SimpleCurveButtonClick"></RadioButton>
-        <RadioButton Content="Library Dimming Curve" Grid.Row="2" Click="LibraryCurveButtonClick"></RadioButton>
+        <RadioButton x:Name="NoCurveButton" Content="No Dimming" IsChecked="True" Grid.Row="0" Click="NoCurveButtonClick"></RadioButton>
+        <RadioButton x:Name="SimpleDimmingButton" Content="Simple Dimming" Grid.Row="1" Click="SimpleDimmingButtonClick"></RadioButton>
+        <RadioButton x:Name="LibraryCurveButton" Content="Library Dimming Curves" Grid.Row="2" Click="LibraryCurveButtonClick"></RadioButton>
         <Border BorderBrush="White" BorderThickness="10" Height="1" Grid.Row="3" Margin="5" VerticalAlignment="Center"/>
 
-        <!-- Simple Curves -->
-        <Grid x:Name="SimpleCurve" Grid.Row="4" Visibility="Hidden">
+        <!-- Gamma Curves -->
+        <Grid x:Name="SimpleDimming" Grid.Row="4" Visibility="Collapsed">
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Row="0" Grid.Column="0" Margin="3">
-                <Button x:Name="RampUpButton" Click="RampUpButtonClick" >
-                    <Image Source="/Resources;component/RampUp.png" Stretch="Fill" />
-                </Button>
-                <Label x:Name="RampUpLabel" HorizontalContentAlignment="Center"></Label>
-            </StackPanel>
-            <StackPanel Grid.Row="0" Grid.Column="1" Margin="3">
-                <Button x:Name="RampDownButton" Click="RampDownButtonClick">
-                    <Image Source="/Resources;component/RampDown.png" Stretch="Fill" />
-                </Button>
-                <Label x:Name="RampDownLabel" HorizontalContentAlignment="Center"></Label>
-            </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="0" Margin="3">
-                <Button x:Name="RampIncreaseCurveButton" Click="RampIncreaseCurveButtonClick">
-                    <Image Source="/Resources;component/RampIncrease.png" Stretch="Fill" />
-                </Button>
-                <Label x:Name="RampIncreaseCurveLabel" HorizontalContentAlignment="Center"></Label>
-            </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="1" Margin="3">
-                <Button x:Name="RampDecreaseCurveButton" Click="RampDecreaseCurveButtonClick">
-                    <Image Source="/Resources;component/RampDecrease.png" Stretch="Fill" />
-                </Button>
-                <Label x:Name="RampDecreaseCurveLabel" HorizontalContentAlignment="Center"></Label>
-            </StackPanel>
+            <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Enter Maximum Brightness</Label>
+            <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Enter Ramp Steps</Label>
+            <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Brightness Curve</Label>
+            <controls:SuperSlider x:Name="BrightnessSlider" Grid.Row="0" Grid.Column="1" Minimum="0" Maximum="100" 
+                                  Value="{Binding Brightness}"
+                                  ValueChanged="BrightnessSlider_ValueChanged" AutoToolTipPlacement="TopLeft"/>
+            <controls:SuperSlider x:Name="GammaSlider" Grid.Row="1" Grid.Column="1" Minimum="1.0" Maximum="4.0"
+                                  TickFrequency="0.1" SmallChange="0.3" LargeChange="0.5" 
+                                  AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="1"
+                                  ValueChanged="GammaSlider_ValueChanged"
+                                  Value="{Binding Gamma}"/>
+            <Grid x:Name="GammaGrid" Grid.Row="2" Grid.Column="1" ShowGridLines="True">
+            </Grid>
         </Grid>
-
+        
         <!-- Custom Curve -->
-        <Grid x:Name="CustomCurve" Grid.Row="4" Visibility="hidden">
+        <Grid x:Name="CustomCurve" Grid.Row="4" Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
