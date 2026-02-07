@@ -11,56 +11,54 @@ namespace Common.WPFCommon.Controls
 	public partial class SuperSlider : UserControl
     {
 		#region Constructors
-        public SuperSlider()
-        {
-            InitializeComponent();
-
-            // This handles the initial sync after XAML parsing is done
-            this.Loaded += (s, e) =>
-            {
-	            if (ValueSlider != null)
-	            {
-		            ValueSlider.Minimum = this.Minimum;
-		            ValueSlider.Maximum = this.Maximum;
-		            ValueSlider.Value = this.Value;
-	            }
-            };
-        }
+		public SuperSlider()
+		{
+			InitializeComponent();
+		}
 		#endregion
 
 		#region Properties
 		public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
-	        nameof(Value), typeof(int), typeof(SuperSlider), new PropertyMetadata(default(int), OnValueChanged));
+			nameof(Value), typeof(double), typeof(SuperSlider),
+			new FrameworkPropertyMetadata(
+				1.0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.Journal, OnValueChanged));
 
-		public int Value
+		public double Value
 		{
-			get => (int)GetValue(ValueProperty);
+			get => (double)GetValue(ValueProperty);
 			set => SetValue(ValueProperty, value);
 		}
 
-		public static readonly DependencyProperty MinimumProperty = DependencyProperty.Register(
-	        nameof(Minimum), typeof(int), typeof(SuperSlider), new PropertyMetadata(default(int), OnMinimumChanged));
+		public static readonly RoutedEvent ValueChangedEvent = EventManager.RegisterRoutedEvent(
+			"ValueChanged", RoutingStrategy.Bubble, typeof(RoutedPropertyChangedEventHandler<double>), typeof(SuperSlider));
 
-		public int Minimum
+		public event RoutedPropertyChangedEventHandler<double> ValueChanged
 		{
-			get => (int)GetValue(MinimumProperty);
+			add { AddHandler(ValueChangedEvent, value); }
+			remove { RemoveHandler(ValueChangedEvent, value); } // Added the period and brackets for clarity
+		}
+
+		public static readonly DependencyProperty MinimumProperty = DependencyProperty.Register(
+			nameof(Minimum), typeof(double), typeof(SuperSlider), new PropertyMetadata(1.0));
+
+		public double Minimum
+		{
+			get => (double)GetValue(MinimumProperty);
 			set => SetValue(MinimumProperty, value);
 		}
 
 		public static readonly DependencyProperty MaximumProperty = DependencyProperty.Register(
-	        nameof(Maximum), typeof(int), typeof(SuperSlider), new PropertyMetadata(default(int), OnMaximumChanged));
+	        nameof(Maximum), typeof(double), typeof(SuperSlider), new PropertyMetadata(100.0));
 
-        public int Maximum
+        public double Maximum
         {
-	        get => (int)GetValue(MaximumProperty);
+	        get => (double)GetValue(MaximumProperty);
 	        set => SetValue(MaximumProperty, value);
         }
 
 		public static readonly DependencyProperty AutoToolTipPlacementProperty = DependencyProperty.Register(
-	        nameof(AutoToolTipPlacement),
-	        typeof(AutoToolTipPlacement),
-	        typeof(SuperSlider),
-	        new PropertyMetadata(AutoToolTipPlacement.None, OnAutoToolTipPlacementChanged)); // Link the callback here
+	        nameof(AutoToolTipPlacement),typeof(AutoToolTipPlacement), typeof(SuperSlider),
+	        new PropertyMetadata(AutoToolTipPlacement.None));
 
         public AutoToolTipPlacement AutoToolTipPlacement
         {
@@ -68,77 +66,69 @@ namespace Common.WPFCommon.Controls
 	        set => SetValue(AutoToolTipPlacementProperty, value); // Keep this simple
         }
 
-		#endregion
+        public static readonly DependencyProperty AutoToolTipPrecisionProperty = DependencyProperty.Register(
+	        nameof(AutoToolTipPrecision), typeof(int), typeof(SuperSlider), new PropertyMetadata(0));
 
-		#region Callbacks
-		private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        public int AutoToolTipPrecision
+        {
+	        get => (int)GetValue(AutoToolTipPrecisionProperty);
+	        set => SetValue(AutoToolTipPrecisionProperty, value);
+        }
+
+		public static readonly DependencyProperty TickFrequencyProperty = DependencyProperty.Register(
+	        nameof(TickFrequency), typeof(double), typeof(SuperSlider), new PropertyMetadata(1.0));
+
+        public double TickFrequency
 		{
-			var control = (SuperSlider)d;
-			int newValue = (int)e.NewValue;
+	        get => (double)GetValue(TickFrequencyProperty);
+	        set => SetValue(TickFrequencyProperty, value);
+        }
 
-			if (control.ValueSlider != null && control.ValueSlider.Value != newValue)
-			{
-				control.ValueSlider.Value = newValue;
-			}
-		}
-		private static void OnMinimumChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        public static readonly DependencyProperty SmallChangeProperty = DependencyProperty.Register(
+	        nameof(SmallChange), typeof(double), typeof(SuperSlider), new PropertyMetadata(1.0));
+
+        public double SmallChange
 		{
-			var control = (SuperSlider)d;
-			int newMinimum = (int)e.NewValue;
+	        get => (double)GetValue(SmallChangeProperty);
+	        set => SetValue(SmallChangeProperty, value);
+        }
 
-			if (control.ValueSlider != null)
-			{
-				control.ValueSlider.Minimum = newMinimum;
-			}
+        public static readonly DependencyProperty LargeChangeProperty = DependencyProperty.Register(
+	        nameof(LargeChange), typeof(double), typeof(SuperSlider), new PropertyMetadata(1.0));
 
-			if (control.Value < newMinimum)
-			{
-				control.Value = newMinimum;
-			}
-		}
-
-		private static void OnMaximumChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        public double LargeChange
 		{
-			var control = (SuperSlider)d;
-			int newMaximum = (int)e.NewValue;
+	        get => (double)GetValue(LargeChangeProperty);
+	        set => SetValue(LargeChangeProperty, value);
+        }
 
-			if (control.ValueSlider != null)
-			{
-				control.ValueSlider.Maximum = newMaximum;
-			}
+        private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+	        var control = (SuperSlider)d;
+	        var newValue = (double)e.NewValue;
 
-			if (control.Value > newMaximum)
-			{
-				control.Value = newMaximum;
-			}
-		}
-
-		private static void OnAutoToolTipPlacementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-		{
-			var control = (SuperSlider)d;
-
-			// Check if the internal slider exists yet (important during initialization)
-			if (control.ValueSlider != null)
-			{
-				control.ValueSlider.AutoToolTipPlacement = (AutoToolTipPlacement)e.NewValue;
-			}
-		}
+			var args = new RoutedPropertyChangedEventArgs<double>((double)e.OldValue, (double)e.NewValue)
+	        {
+		        RoutedEvent = ValueChangedEvent
+	        };
+	        control.RaiseEvent(args);
+        }
 		#endregion
 
 		#region Event Handlers
 		private void DecreaseButton_Click(object sender, RoutedEventArgs e)
 		{
-			Value--;
+			Value -= SmallChange;
 		}
 
 		private void IncreaseButton_Click(object sender, RoutedEventArgs e)
 		{
-			Value++;
+			Value += SmallChange;
 		}
 
 		private void ResetButton_Click(object sender, RoutedEventArgs e)
 		{
-			Value = (int)((Maximum - Minimum) / 2) + Minimum;
+			Value = ((Maximum - Minimum) / 2) + Minimum;
 		}
 
 		private void ValueSlider_Scroll(object sender, MouseWheelEventArgs e)
@@ -146,19 +136,11 @@ namespace Common.WPFCommon.Controls
 			// Check if the wheel was moved up or down
 			if (e.Delta > 0)
 			{
-				// Scroll Up: Increase value
-				if (Value < Maximum)
-				{
-					Value++;
-				}
+				Value += SmallChange;
 			}
 			else if (e.Delta < 0)
 			{
-				// Scroll Down: Decrease value
-				if (Value > Minimum)
-				{
-					Value--;
-				}
+				Value -= SmallChange;
 			}
 
 			e.Handled = true;
@@ -166,11 +148,9 @@ namespace Common.WPFCommon.Controls
 
 		private void ValueSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
-			int newValue = (int)Math.Round(e.NewValue);
-
-			if (this.Value != newValue)
+			if (!Equals(this.Value, e.NewValue))
 			{
-				this.Value = newValue;
+				SetCurrentValue(ValueProperty, e.NewValue);
 			}
 		}		
 		#endregion

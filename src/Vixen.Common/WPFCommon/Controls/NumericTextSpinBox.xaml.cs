@@ -10,60 +10,34 @@ namespace Common.WPFCommon.Controls
     /// </summary>
     public partial class NumericTextSpinBox : UserControl
     {
+	    static private Regex _regex = new Regex("[^0-9]");
+
 		#region Properties
 		public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
-		    nameof(Value), typeof(int), typeof(NumericTextSpinBox), new PropertyMetadata(default(int), OnValueChanged));
+		    nameof(Value), typeof(int), typeof(NumericTextSpinBox), new PropertyMetadata(0, OnValueChanged, ValidateValue));
 
 	    public int Value
 	    {
-			get
-			{
-				return (int)GetValue(ValueProperty);
-			}
-			set
-			{
-				value = Math.Clamp(value, Minimum, Maximum);
-				SetValue(ValueProperty, value);
-				ValueBox.Text = value.ToString();
-			}
+			get => (int)GetValue(ValueProperty);
+			set => SetValue(ValueProperty, value);
 		}
 
 	    public static readonly DependencyProperty MinimumProperty = DependencyProperty.Register(
-		    nameof(Minimum), typeof(int), typeof(NumericTextSpinBox), new PropertyMetadata(default(int)));
+		    nameof(Minimum), typeof(int), typeof(NumericTextSpinBox), new PropertyMetadata(0, ValidateValue_Callback));
 
 	    public int Minimum
 	    {
-		    get
-		    {
-			    return (int)GetValue(MinimumProperty);
-		    }
-		    set
-		    {
-			    SetValue(MinimumProperty, value);
-				if (Value < Minimum)
-				{
-					Value = Minimum;
-				}
-			}
+		    get => (int)GetValue(MinimumProperty);
+		    set => SetValue(MinimumProperty, value);
 		}
 
 	    public static readonly DependencyProperty MaximumProperty = DependencyProperty.Register(
-		    nameof(Maximum), typeof(int), typeof(NumericTextSpinBox), new PropertyMetadata(default(int)));
+		    nameof(Maximum), typeof(int), typeof(NumericTextSpinBox), new PropertyMetadata(100, ValidateValue_Callback));
 
 	    public int Maximum
 	    {
-		    get
-		    {
-			    return (int)GetValue(MaximumProperty);
-		    }
-		    set
-		    {
-			    SetValue(MaximumProperty, value);
-				if (Value > Maximum)
-				{
-					Value = Maximum;
-				}
-			}
+		    get => (int)GetValue(MaximumProperty);
+		    set => SetValue(MaximumProperty, value);
 		}
 		#endregion
 
@@ -82,9 +56,6 @@ namespace Common.WPFCommon.Controls
 		public NumericTextSpinBox()
         {
 			InitializeComponent();
-            Maximum = Int32.MaxValue;
-			Minimum = Int32.MinValue;
-			Value = 0;
 		}
 		#endregion
 
@@ -92,14 +63,27 @@ namespace Common.WPFCommon.Controls
 		private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
 			var control = (NumericTextSpinBox)d;
-			if (control.ValueBox != null)
+			int newValue = (int)e.NewValue;
+
+			if (control.ValueBox != null && control.ValueBox.Text != newValue.ToString())
 			{
-				control.ValueBox.Text = control.Value.ToString();
+				control.ValueBox.Text = newValue.ToString();
 			}
 
-			// Fire the Routed Event
 			control.RaiseEvent(new RoutedEventArgs(ValueChangedEvent));
 		}
+
+		private static object ValidateValue(DependencyObject d, object baseValue)
+		{
+			var control = (NumericTextSpinBox)d;
+			int value = (int)baseValue;
+			return Math.Clamp(value, control.Minimum, control.Maximum);
+		}
+
+		private static void ValidateValue_Callback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			d.CoerceValue(ValueProperty);
+		}		
 		#endregion
 
 		#region Event Handlers
@@ -121,20 +105,19 @@ namespace Common.WPFCommon.Controls
 			else
 			{
 				// If it's NOT a digit, block it
-				Regex regex = new Regex("[^0-9]");
-				e.Handled = regex.IsMatch(e.Text);
+				e.Handled = _regex.IsMatch(e.Text);
 			}
         }
 
 		private void ValueBox_LostFocus(object sender, EventArgs e)
 		{
-			if (int.TryParse(ValueBox.Text, out int result) == false)
+			if (int.TryParse(ValueBox.Text, out int result))
 			{
-				Value = Minimum;
+				Value = result;
 			}
 			else
 			{
-				Value = Convert.ToInt32(ValueBox.Text);
+				Value = Minimum;
 			}
 		}
 
