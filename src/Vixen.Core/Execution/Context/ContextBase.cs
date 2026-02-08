@@ -26,7 +26,7 @@ namespace Vixen.Execution.Context
 
 		public abstract IExecutor Executor { set; }
 
-		public Guid Id { get; private set; }
+		public Guid Id { get; set; }
 
 		public abstract string Name { get; }
 

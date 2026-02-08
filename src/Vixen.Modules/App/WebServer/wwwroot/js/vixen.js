@@ -18,17 +18,19 @@ function ViewModel() {
 	var self = this;
 	self.elements = ko.observableArray();
 	self.sequences = ko.observableArray();
-	self.selectedSequence = ko.observable();
+	self.shows = ko.observableArray();
+	self.listOfPresentations = ko.observableArray([
+		{ title: "Sequences", list: self.sequences },
+		{ title: "Shows", list: self.shows }]);
+	self.selectedPresentation = ko.observable();
 	self.status = ko.observable();
 	self.timeout = ko.observable(30);
 	self.elementIntensity = ko.observable(100);
 	self.delayedElementIntensity = ko.pureComputed(self.elementIntensity).extend({ rateLimit: { timeout: 500, method: "notifyWhenChangesStop" } });
 	self.elementResults = ko.observableArray();
-	//self.elements = ko.observable();
 	self.selectedElement = ko.observable();
 	self.selectedColor = ko.observable("#FFFFFF");
 	self.elementTree = ko.observableArray();
-	self.selectedSequence = ko.observable();
 	self.search = ko.observable(true);
 	self.searchToken = ko.observable();
 	self.delayedSearchToken = ko.pureComputed(self.searchToken).extend({ rateLimit: { timeout: 300, method: "notifyWhenChangesStop" } });
@@ -315,8 +317,8 @@ function ViewModel() {
 
 	//Sequence functions
 
-	self.stopSequence = function(data) {
-		$.post(playerUrl + '/stopSequence', data.Sequence ? ko.mapping.toJS(data.Sequence) : data.selectedSequence(), null, 'JSON')
+	self.stopPresentation = function (data) {
+		$.post(playerUrl + '/stopPresentation', data.Sequence ? ko.mapping.toJS(data.Sequence) : JSON.parse(data.selectedPresentation()), null, 'JSON')
 			.done(function (status) {
 				self.status(status.Message);
 				self.clearStatus(5);
@@ -326,41 +328,47 @@ function ViewModel() {
 			});
 	}
 
-	self.pauseSequence = function (data) {
-		$.post(playerUrl + '/pauseSequence', data.Sequence ? ko.mapping.toJS(data.Sequence) : data.selectedSequence(), null, 'JSON')
+	self.pausePresentation = function (data) {
+		$.post(playerUrl + '/pausePresentation', data.Sequence ? ko.mapping.toJS(data.Sequence) : JSON.parse(data.selectedPresentation()), null, 'JSON')
 			.done(function (status) {
 				self.status(status.Message);
 				self.clearStatus(5);
+				document.getElementById("BRB-text").innerText = "Play";
 			}).error(function (jqXHR, status, error) {
 				self.status(error);
 				self.hideLoading();
 			});
 	}
 
-	self.playSequence = function(data) {
+	self.playPresentation = function (data) {
 		self.showLoading();
-		$.post(playerUrl + '/playSequence', data.Sequence ? ko.mapping.toJS(data.Sequence) : data.selectedSequence(), null, 'JSON')
+		$.post(playerUrl + '/playPresentation', data.Sequence ? ko.mapping.toJS(data.Sequence) : JSON.parse(data.selectedPresentation()), null, "JSON")
 			.done(function (status) {
 				self.status(status.Message);
 				self.clearStatus(5);
 				self.hideLoading();
+				document.getElementById("BRB-text").innerText = "Pause";
 			}).error(function(jqXHR, status, error) {
 					self.status(error);
 					self.hideLoading();
 			});
 	}
 
-	self.getSequences = function() {
+	self.getPresentations = function () {
 		$.get(playerUrl + '/getSequences')
 			.done(function (data) {
 				self.sequences(data);
-				var selectedSequence = amplify.store(storeSequenceKey);
-				if (selectedSequence && selectedSequence.Name) {
-					self.selectedSequence(
-						self.findSequence(selectedSequence.Name)
-					);
-				}
-			}).error(function(jqXHR, status, error) {
+				self.setSelect();
+			}).error(function (jqXHR, status, error) {
+				self.status(error);
+				self.hideLoading();
+			});
+
+		$.get(playerUrl + '/getShows')
+			.done(function (data) {
+				self.shows(data);
+				self.setSelect();
+			}).error(function (jqXHR, status, error) {
 				self.status(error);
 				self.hideLoading();
 			});
@@ -380,7 +388,7 @@ function ViewModel() {
 		amplify.store(storeIntensityKey, val);
 	});
 
-	self.selectedSequence.subscribe(function (val) {
+	self.selectedPresentation.subscribe(function (val) {
 		amplify.store(storeSequenceKey, val);
 	});
 
@@ -394,6 +402,23 @@ function ViewModel() {
 		setTimeout(function () {
 			$('#loading-indicator').hide();
 		}, 300);
+	}
+
+	self.pressBigRedButton = function (val) {
+		if (document.getElementById("BRB-text").innerText == "Play")
+			self.playPresentation(val);
+		else
+			self.pausePresentation(val);
+	}
+
+	self.showBigRedButton = function () {
+		$('#standard-presentation').hide();
+		$('#big-red-button').show();
+	}
+
+	self.hideBigRedButton = function () {
+		$('#standard-presentation').show();
+		$('#big-red-button').hide();
 	}
 
 	self.retrieveStoredSettings = function () {
@@ -452,19 +477,43 @@ function ViewModel() {
 		ko.mapping.fromJS(states, sequenceStatusMapping, self.nowPlayingList);
 	}
 
-	self.findSequence = function (sequenceName) {
-		for (var i = 0, len = model.sequences().length; i < len; i++) {
-			if (model.sequences()[i].Name === sequenceName)
-				return model.sequences()[i]; // Return as soon as the object is found
+	self.setSelect = function () {
+		// Get the previous instance's Select item
+		var previousSelect = JSON.parse(amplify.store(storeSequenceKey));
+
+		// Find and select the associated Option in the Select
+		if (previousSelect != null || previousSelect.Name != null) {
+			for (var outer = 0; outer < self.listOfPresentations().length; outer++) {
+				for (var inner = 0; inner < self.listOfPresentations()[outer].list().length; inner++) {
+					if (self.listOfPresentations()[outer].list()[inner].Name == previousSelect.Name) {
+						document.getElementById(self.listOfPresentations()[outer].list()[inner].Name).selected = true;
+						self.selectedPresentation(previousSelect);
+						return;
+					}
+				}
+			}
 		}
-		return null; // The object was not found
+
+		// If we get here, then no match was found, so just choose the first
+		document.getElementById('select-presentations').selectedIndex = 0;
+
+		return;
+	}
+
+	self.convertToJSON = function (Info, Name)
+	{
+		var result = {
+			Info: Info,
+			Name: Name
+		};
+		return ko.toJSON(result);
 	}
 
 	self.init = function ()
 	{
 		self.showLoading();
 		self.getElements();
-		self.getSequences();
+		self.getPresentations();
 		self.getControllers();
 		self.retrieveStoredSettings();
 		self.initSysytemStatusHub();

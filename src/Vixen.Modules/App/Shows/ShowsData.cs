@@ -1,5 +1,7 @@
-﻿using System.Runtime.Serialization;
+﻿using Common.Broadcast;
+using System.Runtime.Serialization;
 using Vixen.Module;
+using VixenModules.App.WebServer.Model;
 
 namespace VixenModules.App.Shows
 {
@@ -32,7 +34,13 @@ namespace VixenModules.App.Shows
 			} 
 		}
 
-		static public Show GetShow(Guid id) 
+		[OnDeserialized]
+		private void OnDeserialized(StreamingContext ctx)
+		{
+			Broadcast.Subscribe<string>(this, "RetrieveShowList", SendShowList);
+		}
+
+		static public Show GetShow(Guid id)
 		{
 			foreach (Show show in _shows)
 			{
@@ -57,6 +65,27 @@ namespace VixenModules.App.Shows
 			ShowsData newData = (ShowsData)MemberwiseClone();
 			//newData.ScheduledItems = ScheduledItems.ToList();
 			return newData;
+		}
+
+		/// <summary>
+		/// Create a listing of all the shows to transmit via the RESTful API 
+		/// </summary>
+		/// <param name="x"></param>
+		private void SendShowList(string name)
+		{
+			List<Presentation> _webShowList = new List<Presentation>();
+
+			foreach (Show show in ShowList)
+			{
+				Presentation showItem = new Presentation() {
+					Name = show.Name,
+					Info = show.ID.ToString()
+				};
+
+				_webShowList.Add(showItem);
+			}
+
+			Broadcast.Publish<List<Presentation>>("GetShowList", _webShowList);
 		}
 	}
 }

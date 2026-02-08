@@ -14,27 +14,53 @@ namespace VixenModules.App.WebServer.Controllers
 			return SequenceHelper.Status();
 		}
 
-		public IEnumerable<Sequence> GetSequences()
+		public IEnumerable<Presentation> GetSequences()
 		{
 			return SequenceHelper.GetSequences();
 		}
 
-		[HttpPost]
-		public Status PlaySequence(Sequence sequence)
+		public IEnumerable<Presentation> GetShows()
 		{
-			return SequenceHelper.PlaySequence(sequence);
+			return ShowHelper.GetShows();
 		}
 
 		[HttpPost]
-		public Status PauseSequence(Sequence sequence)
+		public Status PlayPresentation(Presentation presentation)
 		{
-			return SequenceHelper.PauseSequence(sequence);
+			if (presentation.Info.EndsWith(".tim") == true)
+			{
+				return SequenceHelper.PlaySequence(presentation);
+			}
+			else
+			{
+				return ShowHelper.PlayShow(presentation);
+			}
 		}
 
 		[HttpPost]
-		public Status StopSequence(Sequence sequence)
+		public Status PausePresentation(Presentation presentation)
 		{
-			return SequenceHelper.StopSequence(sequence);
+			if (presentation.Info.EndsWith(".tim") == true)
+			{
+				return SequenceHelper.PauseSequence(presentation);
+			}
+			else
+			{
+				return ShowHelper.PauseShow(presentation);
+			}
+		}
+
+		[HttpPost]
+		public Status StopPresentation(Presentation presentation)
+		{
+			if (presentation.Info.EndsWith(".tim") == true)
+			{
+				return SequenceHelper.StopSequence(presentation);
+			}
+			else
+			{
+				return ShowHelper.StopShow(presentation);
+			}
 		}
 	}
 }
