@@ -14,6 +14,8 @@ using VixenModules.Effect.Effect;
 using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Media.Audio;
+using VixenModules.Editor.EffectEditor;
+using Vixen.Module.Effect;
 
 namespace VixenModules.Effect.Liquid
 {
@@ -273,6 +275,12 @@ namespace VixenModules.Effect.Liquid
 				MarkDirty();
 			}
 		}
+
+		// This is a special property that is used to reserve space in generating the Parameter Picker list in TimedSequenceEditorForm
+		// DO NOT USE THIS PROPERTY FOR ANY REASON!!!
+		[Browsable(false)]
+		[ProviderDisplayName(@"PlaceHolder")]
+		public string PlaceHolder { get { return "Do not use"; } }
 
 		#endregion
 
@@ -985,6 +993,83 @@ namespace VixenModules.Effect.Liquid
 					_data.MixColors,
 					ConvertEmittersToEmitterWrappers(0, 0, 0).ToArray());
 			}
+		}
+
+        /// <summary>
+        /// Refresh the Emitter's MVVM bindings.
+        /// </summary>
+        public override void UpdateNotifyContentChanged()
+		{
+			OnPropertyChanged(nameof(EmitterList));
+		}
+
+		/// <summary>
+		/// Returns a list of properties for the Fixture effect. The properties will be returned in 
+		/// two types. The first type will be a collection of curve properties for each emitter. If there
+		/// are multiple emitters, there will be a corresponding type.
+		/// The second type will be a single collection of color properties for all emitters.
+		/// </summary>
+		/// <param name="baseProperty"></param>
+		/// <returns></returns>
+		public override List<EffectProperties> GetProperties(IEnumerable<PropertyDescriptor> baseProperty)
+		{
+			var propertyList = new List<EffectProperties>();
+			var indexCurve = 1;
+			var indexColor = 1;
+			var colorArrayUsed = false;
+
+			// Iterate through each emitter, collecting all emitter's colors into a single list
+			foreach (var emitter in EmitterList)
+			{
+				// If this emitter specifies to use the Effect's Color List, then...
+				if (emitter.UseColorArray == true)
+				{
+					// If a previous emitter has not already added the Effect's Color List properties, then don't include them again
+					if (colorArrayUsed == false)
+					{
+						var propDetail = MetadataRepository.GetProperties(this).Where(x => (x.PropertyType == typeof(List<ColorGradient>)) && x.IsBrowsable).Select(x => x.Descriptor);
+						if (propDetail != null)
+						{
+							if (propertyList.Count == 0)
+							{
+								propertyList.Add(new EffectProperties("All Emitters"));
+							}
+							propertyList.First().Add(this, propDetail);
+						}
+					}
+
+					// Increment the color property index and set that the color array has been used
+					indexColor++;
+					colorArrayUsed = true;
+				}
+
+				// Otherwise, get the color property for this emitter
+				else
+				{
+					var propDetail = MetadataRepository.GetProperties(emitter)?.Where(x => (x.PropertyType == typeof(Color) || x.PropertyType == typeof(ColorGradient)) && x.IsBrowsable)?.Select(x => x.Descriptor)?.FirstOrDefault();
+					if (propDetail != null)
+					{
+						if (propertyList.Count == 0)
+						{
+							propertyList.Add(new EffectProperties("All Emitters"));
+						}
+						propertyList.First().Add(emitter, propDetail, $"{propDetail.DisplayName} {indexColor++}");
+					}
+				}
+			}
+
+			// Collect all curve properties for each emitter into a separate collection
+			foreach (var emitter in EmitterList)
+			{
+				var targetProperties = MetadataRepository.GetProperties(emitter).Where(x => (x.PropertyType == typeof(Curve)) && x.IsBrowsable).Select(x => x.Descriptor);
+
+				if (targetProperties.Count() != 0)
+				{
+					propertyList.Add(new EffectProperties(emitter, targetProperties, $"Emitter {indexCurve++}"));
+				}
+			}
+
+			return propertyList;
 		}
 
 		#endregion
@@ -1978,6 +2063,22 @@ namespace VixenModules.Effect.Liquid
 		public override string InformationLink
 		{
 			get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/Liquid/"; }
+		}
+
+		#endregion
+
+		#region Public Methods
+		/// <summary>
+		/// Update a property and notify of content change.
+		/// </summary>
+		/// <param name="descriptor">Specifies the property's descriptor</param>
+		/// <param name="effect">Specifies the effect or sub-effect the property belongs to.</param>
+		/// <param name="newProperty">Specifies the new property value to set</param>
+		public override void UpdateProperty(PropertyDescriptor descriptor, object effect, Object newProperty)
+		{
+			descriptor.SetValue(effect, newProperty);
+			MarkDirty();
+			UpdateNotifyContentChanged();
 		}
 
 		#endregion

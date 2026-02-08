@@ -8,6 +8,8 @@ using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
 using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
+using VixenModules.Editor.EffectEditor;
+using Vixen.Module.Effect;
 
 namespace VixenModules.Effect.Wave
 {
@@ -515,9 +517,49 @@ namespace VixenModules.Effect.Wave
 			UpdateRenderScaleFactorAttributes(true);
 		}
 
+        /// <summary>
+        /// Refresh the Wave's MVVM bindings.
+        /// </summary>
+        public override void UpdateNotifyContentChanged()
+		{
+			OnPropertyChanged(nameof(Waves));
+		}
+
+		/// <summary>
+		/// Returns a list of properties for the Wave effect. The properties will be returned in 
+		/// two types. The first type will be a collection of curve properties for each wave. If there
+		/// are multiple waves, there will be a corresponding type.
+		/// The second type will be a single collection of color properties for all waves.
+		/// </summary>
+		/// <param name="baseProperty"></param>
+		/// <returns></returns>
+		public override List<EffectProperties> GetProperties(IEnumerable<PropertyDescriptor> baseProperty)
+		{
+			var propertyList = new List<EffectProperties>();
+			var indexCurve = 1;
+			var indexColor = 1;
+
+			// Iterate through each wave, collecting all wave's colors into a single list
+			propertyList.Add(new EffectProperties("All Waves"));
+			foreach (var wave in Waves)
+			{
+				var propDetail = MetadataRepository.GetProperties(wave).Where(x => (x.PropertyType == typeof(ColorGradient)) && x.IsBrowsable).Select(x => x.Descriptor).First();
+				propertyList.First().Add(wave, propDetail, $"{propDetail.DisplayName} {indexColor++}");
+			}
+
+			// Collect all curve properties for each wave into a separate collection
+			foreach (var wave in Waves)
+			{
+				var targetProperties = MetadataRepository.GetProperties(wave).Where(x => (x.PropertyType == typeof(Curve)) && x.IsBrowsable).Select(x => x.Descriptor);
+
+				propertyList.Add(new EffectProperties(wave, targetProperties, $"Wave {indexCurve++}"));
+			}
+
+			return propertyList;
+		}
 		#endregion
 
-		#region Information
+			#region Information
 
 		public override string Information
 		{
@@ -1860,6 +1902,22 @@ namespace VixenModules.Effect.Wave
 			{
 				TypeDescriptor.Refresh(this);
 			}
+		}
+
+		#endregion
+
+		#region Public Methods
+		/// <summary>
+		/// Update a property and notify of content change.
+		/// </summary>
+		/// <param name="descriptor">Specifies the property's descriptor</param>
+		/// <param name="effect">Specifies the effect or sub-effect the property belongs to.</param>
+		/// <param name="newProperty">Specifies the new property value to set</param>
+		public override void UpdateProperty(PropertyDescriptor descriptor, object effect, Object newProperty)
+		{
+			descriptor.SetValue(effect, newProperty);
+			MarkDirty();
+			UpdateNotifyContentChanged();
 		}
 
 		#endregion

@@ -105,6 +105,29 @@ namespace Vixen.Module.Effect
 			}
 		}
 
+		/// <summary>
+		/// Refresh the sub-effect's MVVM bindings.
+		/// </summary>
+		public virtual void UpdateNotifyContentChanged()
+		{
+		}
+
+		/// <summary>
+		/// Gets the properties of the effect.
+		/// </summary>
+		/// <param name="baseProperty"></param>
+		/// <returns>Returns all the public properties of the effect</returns>
+		public virtual List<EffectProperties> GetProperties(IEnumerable<PropertyDescriptor> baseProperty)
+		{
+			var propertyList = new List<EffectProperties>();
+			if (baseProperty != null)
+			{
+				propertyList.Add(new EffectProperties(this, baseProperty, ""));
+			}
+
+			return propertyList;
+		}
+
 		public bool PreRender(CancellationTokenSource cancellationToken = null)
 		{
 			bool success = true;
@@ -149,6 +172,18 @@ namespace Vixen.Module.Effect
 			}
 
 			return _Render();
+		}
+
+		/// <summary>
+		/// Update a property and notify of content change.
+		/// </summary>
+		/// <param name="descriptor">Specifies the property's descriptor</param>
+		/// <param name="effect">Specifies the effect the property belongs to. If the effect contains sub-effects (i.e. Wave), this is the sub-effect instance.</param>
+		/// <param name="newProperty">Specifies the new property value to set</param>
+		public virtual void UpdateProperty(PropertyDescriptor descriptor, object effect, Object newProperty)
+		{
+			descriptor.SetValue(effect, newProperty);
+			UpdateNotifyContentChanged();
 		}
 
 		public string PropertyInfo()

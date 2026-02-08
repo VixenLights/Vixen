@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using Vixen.Attributes;
 using Vixen.Module;
+using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
@@ -12,6 +13,7 @@ using VixenModules.Effect.Pulse;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.IntelligentFixture;
 using IElementNode = Vixen.Sys.IElementNode;
+using VixenModules.Editor.EffectEditor;
 
 
 namespace VixenModules.Effect.Fixture
@@ -199,6 +201,19 @@ namespace VixenModules.Effect.Fixture
 			}
 		}
 
+		/// <summary>
+		/// Update a property and notify of content change.
+		/// </summary>
+		/// <param name="descriptor">Specifies the property's descriptor</param>
+		/// <param name="effect">Specifies the effect or sub-effect the property belongs to.</param>
+		/// <param name="newProperty">Specifies the new property value to set</param>
+		public override void UpdateProperty(PropertyDescriptor descriptor, object effect, Object newProperty)
+		{
+			descriptor.SetValue(effect, newProperty);
+			MarkDirty();
+			UpdateNotifyContentChanged();
+		}
+
 		#endregion
 
 		#region Protected Methods
@@ -304,6 +319,39 @@ namespace VixenModules.Effect.Fixture
 			}
 		}
 
+        /// <summary>
+        /// Refresh the Fixture's MVVM bindings.
+        /// </summary>
+        public override void UpdateNotifyContentChanged()
+		{
+			OnPropertyChanged(nameof(Functions));
+		}
+
+		/// <summary>
+		/// Returns a list of properties for the Fixture effect.
+		/// </summary>
+		/// <param name="baseProperty"></param>
+		/// <returns></returns>
+		public override List<EffectProperties> GetProperties(IEnumerable<PropertyDescriptor> baseProperty)
+		{
+			var propertyList = new List<EffectProperties>();
+			var index = 1;
+
+			// For the Fixture effect, we'll return all properties as a single group
+			propertyList.Add(new EffectProperties("All Functions"));
+
+			// Iterate through all functions and get their Curve properties
+			foreach (var function in Functions)
+			{
+				var propDetail = MetadataRepository.GetProperties(function).Where(x => (x.PropertyType == typeof(Curve)) && x.IsBrowsable).Select(x => x.Descriptor).FirstOrDefault();
+				if (propDetail != null)
+				{
+					propertyList.First().Add(function, propDetail, $"{function.FunctionName} {index++}");
+				}
+			}
+
+			return propertyList;
+		}
 		#endregion
 
 		#region Protected Properties
@@ -358,12 +406,12 @@ namespace VixenModules.Effect.Fixture
 
 			// Replace the fixture functions exposed by the effect
 			Functions = functionItemCollection;
-		}
+        }
 
-		/// <summary>
-		/// Update the fixture function model data.
-		/// </summary>
-		private void UpdateModelData()
+        /// <summary>
+        /// Update the fixture function model data.
+        /// </summary>
+        private void UpdateModelData()
 		{
 			// Save off the fixture functions
 			Data.FixtureFunctions = _fixtureFunctions;
