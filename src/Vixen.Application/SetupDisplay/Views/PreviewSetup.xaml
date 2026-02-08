@@ -14,10 +14,13 @@
 					<Image Source="BackgroundImage.png" Width="32" Height="32"/>
 				</Button>
 				<ToggleButton IsChecked="{Binding DisplayPreviewDrawingEngine.IsSelectMode}">
-					<Image Source="buttonSelect.png" Width="32" Height="32"/>
+					<Image Source="buttonContainsSelect.png" Width="32" Height="32"/>
 				</ToggleButton>
 				<ToggleButton IsChecked="{Binding DisplayPreviewDrawingEngine.IsPartialSelectMode}">
 					<Image Source="buttonPartialSelect.png" Width="32" Height="32"/>
+				</ToggleButton>
+				<ToggleButton IsChecked="{Binding DisplayPreviewDrawingEngine.IsPanMode}">
+					<Image Source="buttonSelect.png" Width="32" Height="32"/>
 				</ToggleButton>
 			</ToolBar>
 			<glWpfControl:GLWpfControl
