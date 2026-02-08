@@ -33,11 +33,29 @@ namespace Common.OpenGLCommon.Constructs.DrawingEngine.Shape
 		IOpenGLDrawablePrimitive GetLowerLeftCornerResizeBox();
 
 		/// <summary>
-		/// Gets the primitive geometry and OpenGL related state to draw a rectangle around a prop.
+		/// Gets the left side drawing primitive for the selection cuboid.
 		/// </summary>
-		/// <returns></returns>
-		IOpenGLDrawablePrimitive GetSelectionRectangle();
+		/// <returns>Drawing primitive for the left side of the selection cuboid</returns>
+		IOpenGLDrawablePrimitive GetSelectionCuboidLeftSide();
 
+		/// <summary>
+		/// Gets the right side drawing primitive for the selection cuboid.
+		/// </summary>
+		/// <returns>Drawing primitive for the right side of the selection cuboid</returns>
+		IOpenGLDrawablePrimitive GetSelectionCuboidRightSide();
+
+		/// <summary>
+		/// Gets the front side drawing primitive for the selection cuboid.
+		/// </summary>
+		/// <returns>Drawing primitive for the front side of the selection cuboid</returns>
+		IOpenGLDrawablePrimitive GetSelectionCuboidFrontSide();
+
+		/// <summary>
+		/// Gets the front side drawing primitive for the selection cuboid.
+		/// </summary>
+		/// <returns>Drawing primitive for the back side of the selection cuboid</returns>
+		IOpenGLDrawablePrimitive GetSelectionCuboidBackSide();
+		
 		/// <summary>
 		/// Gets a center + drag move handle primitive geometry and OpenGL related state.
 		/// </summary>

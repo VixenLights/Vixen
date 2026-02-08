@@ -28,6 +28,12 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		void Initialize(float height, float referenceHeight, Action redraw);
 
 		/// <summary>
+		/// Initializes the selection cuboid vertices.
+		/// </summary>
+		/// <param name="height">Height of the intelligent fixture</param>
+		void InitializeSelectionVertices(float height);
+
+		/// <summary>
 		/// Gets the OpenGL moving head associated with the shape.
 		/// </summary>
 		/// <remarks>This property allows all the moving heads to drawn together to improve performance</remarks>

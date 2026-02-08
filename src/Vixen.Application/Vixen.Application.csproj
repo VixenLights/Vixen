@@ -19,6 +19,8 @@
 		<ItemGroup>
 				<None Remove="NLog.config" />
 				<None Remove="SetupDisplay\Views\BackgroundImage.png" />
+				<None Remove="SetupDisplay\Views\buttonPartialSelect.png" />
+				<None Remove="SetupDisplay\Views\buttonSelect.png" />
 		</ItemGroup>
 
 		<ItemGroup>
@@ -26,6 +28,15 @@
 						<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 				</Content>
 				<Content Include="Vixen3.ico" />
+		</ItemGroup>
+
+		<ItemGroup>
+		  <Resource Include="SetupDisplay\Views\buttonPartialSelect.png">
+		    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		  </Resource>
+		  <Resource Include="SetupDisplay\Views\buttonSelect.png">
+		    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		  </Resource>
 		</ItemGroup>
 
 		<ItemGroup>
