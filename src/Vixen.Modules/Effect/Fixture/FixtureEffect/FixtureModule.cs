@@ -385,15 +385,15 @@ namespace VixenModules.Effect.Fixture
 				    functionViewModel.FunctionType == FixtureFunctionType.RGBColor)
 				{
 					// Save off the intensity as the range
-					functionModel.Range = new Curve(functionViewModel.Intensity);
-					functionModel.Color = functionViewModel.Color;
+					functionModel.Range = new Curve(functionViewModel.Intensity);					
 				}
 				else
 				{
 					// Otherwise it is straight forward mapping
 					functionModel.Range = new Curve(functionViewModel.Range);
 				}
-				
+
+				functionModel.Color = functionViewModel.Color;
 				functionModel.FunctionIdentity = functionViewModel.FunctionIdentity;
 				functionModel.IndexValue = functionViewModel.IndexValue;
 				functionModel.ColorIndexValue = functionViewModel.ColorIndexValue;
