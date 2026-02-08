@@ -619,9 +619,9 @@ namespace VixenApplication.SetupDisplay.OpenGL
 					_recreateMovingHeadRenderStrategy = (prop is IIntelligentFixturePropOpenGLData);
 				}
 			}
-			// Otherwise if not in rubberband selection mode and
+			// Otherwise if in Pan Mode and 
 			// the mouse is down then...
-			else if (!(IsSelectMode || IsPartialSelectMode) && _mouseButtonDown)
+			else if (IsPanMode && _mouseButtonDown)
 			{
 				// Move the view camera 
 				MoveCamera(_prevMousePosition.X, _prevMousePosition.Y, mousePos.X, mousePos.Y);
@@ -799,6 +799,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 
 				OnPropertyChanged(nameof(IsPartialSelectMode));
 				OnPropertyChanged(nameof(IsSelectMode));
+				OnPropertyChanged(nameof(IsPanMode));
 			}
 		}
 
@@ -824,6 +825,33 @@ namespace VixenApplication.SetupDisplay.OpenGL
 
 				OnPropertyChanged(nameof(IsPartialSelectMode));
 				OnPropertyChanged(nameof(IsSelectMode));
+				OnPropertyChanged(nameof(IsPanMode));
+			}
+		}
+
+		private bool _isPanMode;
+
+		/// <summary>
+		/// True when in panning mode.		
+		/// </summary>
+		public bool IsPanMode
+		{
+			get
+			{
+				return _isPanMode;
+			}
+			set
+			{
+				_isPanMode = value;
+				if (_isPanMode)
+				{
+					IsSelectMode = false;
+					IsPartialSelectMode = false;
+				}
+
+				OnPropertyChanged(nameof(IsPartialSelectMode));
+				OnPropertyChanged(nameof(IsSelectMode));
+				OnPropertyChanged(nameof(IsPanMode));
 			}
 		}
 
