@@ -56,6 +56,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (descriptor.IsBrowsable == filterBrowsable)
 				{
 					result.Add(new PropertyMetaData(descriptor, target));
+					
+					if (PropertyMetaData.IsCollectionType(descriptor.PropertyType))
+					{
+						if (descriptor.GetValue(target) is ICollection collectionObject)
+						{
+							foreach (object o in collectionObject)
+							{
+								result.AddRange(PropertyDiscovery.GetBrowsableProperties(o));
+							}
+						}
+					}
 				}
 			}
 
