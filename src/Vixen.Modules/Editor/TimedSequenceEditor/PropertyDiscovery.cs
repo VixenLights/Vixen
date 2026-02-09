@@ -1,6 +1,8 @@
-﻿using System.Collections;
-using ExCSS;
+﻿using ExCSS;
+using System.Collections;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -33,7 +35,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					continue;
 				}
 
-				if (PropertyMetaData.IsCollectionType(descriptor.PropertyType))
+				if (descriptor.IsBrowsable == filterBrowsable && PropertyMetaData.IsCollectionType(descriptor.PropertyType))
 				{
 					if (descriptor.GetValue(target) is ICollection collectionObject)
 					{
@@ -57,7 +59,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					result.Add(new PropertyMetaData(descriptor, target));
 					
-					if (PropertyMetaData.IsCollectionType(descriptor.PropertyType))
+					if (descriptor.IsBrowsable == filterBrowsable && PropertyMetaData.IsCollectionType(descriptor.PropertyType))
 					{
 						if (descriptor.GetValue(target) is ICollection collectionObject)
 						{
@@ -72,5 +74,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			return result;
 		}
+
+		public static string GetDisplayName(Type type)
+		{
+			// Try to get DisplayNameAttribute
+			var displayNameAttr = type.GetCustomAttribute<DisplayNameAttribute>();
+			if (displayNameAttr != null)
+			{
+				return displayNameAttr.DisplayName;
+			}
+
+			// Try to get DisplayAttribute
+			var displayAttr = type.GetCustomAttribute<DisplayAttribute>();
+			if (displayAttr != null)
+			{
+				return displayAttr.Name;
+			}
+
+			// If neither is found, return the class name itself
+			return type.Name;
+		}
 	}
+
 }

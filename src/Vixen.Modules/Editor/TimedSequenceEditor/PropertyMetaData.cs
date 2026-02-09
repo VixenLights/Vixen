@@ -45,6 +45,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public object Owner { get; init; } = owner;
 
+		public string OwnerDisplayName => PropertyDiscovery.GetDisplayName(Owner.GetType());
+
 		#region IEquatable<PropertyMetaData> Members
 
 		public bool Equals(PropertyMetaData other)
@@ -67,5 +69,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		#endregion
+
 	}
 }
