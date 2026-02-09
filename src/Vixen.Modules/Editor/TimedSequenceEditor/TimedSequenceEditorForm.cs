@@ -4525,21 +4525,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			var properties = PropertyDiscovery.GetBrowsableProperties(target).ToList();
 
-			/*
-			var propertyDataCollections = properties.Where(x => x.IsCollection).ToList();
-			foreach (var propertyDataCollection in propertyDataCollections)
-			{
-				if (propertyDataCollection.Descriptor.GetValue(target) is ICollection collectionObject)
-				{
-					foreach (object o in collectionObject)
-					{
-						properties.AddRange(PropertyDiscovery.GetBrowsableProperties(o));
-					}
-				}
-			}
-			*/
-			
-
 			return properties;
 		}
 
