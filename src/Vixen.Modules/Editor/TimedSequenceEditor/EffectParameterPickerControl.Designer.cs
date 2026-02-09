@@ -28,43 +28,56 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.labelParameterName = new System.Windows.Forms.Label();
-			this.pictureParameterImage = new System.Windows.Forms.PictureBox();
-			((System.ComponentModel.ISupportInitialize)(this.pictureParameterImage)).BeginInit();
-			this.SuspendLayout();
+			labelParameterName = new Label();
+			pictureParameterImage = new PictureBox();
+			flowLayoutPanel1 = new FlowLayoutPanel();
+			((System.ComponentModel.ISupportInitialize)pictureParameterImage).BeginInit();
+			flowLayoutPanel1.SuspendLayout();
+			SuspendLayout();
 			// 
 			// labelParameterName
 			// 
-			this.labelParameterName.Location = new System.Drawing.Point(-3, 72);
-			this.labelParameterName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-			this.labelParameterName.Name = "labelParameterName";
-			this.labelParameterName.Size = new System.Drawing.Size(106, 42);
-			this.labelParameterName.TabIndex = 1;
-			this.labelParameterName.Text = "Parameter Name";
-			this.labelParameterName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.labelParameterName.Click += new System.EventHandler(this.labelParameterName_Click);
+			labelParameterName.Location = new Point(4, 68);
+			labelParameterName.Margin = new Padding(4, 0, 4, 0);
+			labelParameterName.Name = "labelParameterName";
+			labelParameterName.Size = new Size(60, 39);
+			labelParameterName.TabIndex = 1;
+			labelParameterName.Text = "Gradients";
+			labelParameterName.TextAlign = ContentAlignment.MiddleCenter;
+			labelParameterName.Click += labelParameterName_Click;
 			// 
 			// pictureParameterImage
 			// 
-			this.pictureParameterImage.Location = new System.Drawing.Point(16, 4);
-			this.pictureParameterImage.Margin = new System.Windows.Forms.Padding(4);
-			this.pictureParameterImage.Name = "pictureParameterImage";
-			this.pictureParameterImage.Size = new System.Drawing.Size(64, 64);
-			this.pictureParameterImage.TabIndex = 2;
-			this.pictureParameterImage.TabStop = false;
-			this.pictureParameterImage.Click += new System.EventHandler(this.pictureParameterImage_Click);
+			pictureParameterImage.Location = new Point(4, 4);
+			pictureParameterImage.Margin = new Padding(4);
+			pictureParameterImage.Name = "pictureParameterImage";
+			pictureParameterImage.Size = new Size(60, 60);
+			pictureParameterImage.TabIndex = 2;
+			pictureParameterImage.TabStop = false;
+			pictureParameterImage.Click += pictureParameterImage_Click;
+			// 
+			// flowLayoutPanel1
+			// 
+			flowLayoutPanel1.Controls.Add(pictureParameterImage);
+			flowLayoutPanel1.Controls.Add(labelParameterName);
+			flowLayoutPanel1.Dock = DockStyle.Fill;
+			flowLayoutPanel1.FlowDirection = FlowDirection.TopDown;
+			flowLayoutPanel1.Location = new Point(0, 0);
+			flowLayoutPanel1.Name = "flowLayoutPanel1";
+			flowLayoutPanel1.Size = new Size(75, 115);
+			flowLayoutPanel1.TabIndex = 3;
 			// 
 			// EffectParameterPickerControl
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.pictureParameterImage);
-			this.Controls.Add(this.labelParameterName);
-			this.Margin = new System.Windows.Forms.Padding(4);
-			this.Name = "EffectParameterPickerControl";
-			this.Size = new System.Drawing.Size(102, 123);
-			((System.ComponentModel.ISupportInitialize)(this.pictureParameterImage)).EndInit();
-			this.ResumeLayout(false);
+			AutoScaleDimensions = new SizeF(7F, 15F);
+			AutoScaleMode = AutoScaleMode.Font;
+			Controls.Add(flowLayoutPanel1);
+			Margin = new Padding(4);
+			Name = "EffectParameterPickerControl";
+			Size = new Size(75, 115);
+			((System.ComponentModel.ISupportInitialize)pictureParameterImage).EndInit();
+			flowLayoutPanel1.ResumeLayout(false);
+			ResumeLayout(false);
 
 		}
 
@@ -72,6 +85,6 @@
 
 		private System.Windows.Forms.Label labelParameterName;
 		private System.Windows.Forms.PictureBox pictureParameterImage;
-
+		private FlowLayoutPanel flowLayoutPanel1;
 	}
 }

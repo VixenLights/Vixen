@@ -115,6 +115,9 @@ namespace VixenModules.Effect.Morph
 			// Initialize the collection of morph polygons
 			_morphPolygons = new MorphPolygonsObservableCollection();
 
+			// Register for the MorphPolygons child property changed event
+			_morphPolygons.ChildPropertyChanged += MorphPolygonsChildPropertyChanged;
+
 			// Initialize the render data for patterned polygons			
 			_wipePolygonRenderData = new List<MorphWipePolygonRenderData>();
 
@@ -896,6 +899,12 @@ namespace VixenModules.Effect.Morph
 				MarkDirty();
 				OnPropertyChanged();
 			}
+		}
+
+		private void MorphPolygonsChildPropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			MarkDirty();
+			OnPropertyChanged(nameof(MorphPolygons));
 		}
 
 		#endregion
