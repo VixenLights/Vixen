@@ -140,7 +140,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				element.UpdateNotifyContentChanged();
 				if (e.OldValue != null)
-					elementValues.Add(element, new Tuple<object, PropertyMetaData>(e.OldValue[i], new PropertyMetaData(e.Property.UnderLyingPropertyDescriptor(i), e.Property.Component)));
+					elementValues.Add(element, new Tuple<object, PropertyMetaData>(e.OldValue[i], new PropertyMetaData(e.Property.UnderLyingPropertyDescriptor(i), new PropertyOwnerMetaData(e.Property.Component))));
 				i++;
 			}
 

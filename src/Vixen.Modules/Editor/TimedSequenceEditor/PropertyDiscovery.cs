@@ -24,14 +24,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return CollectProperties(target).AsReadOnly();
 		}
 
-		private static List<PropertyMetaData> CollectProperties(object target, IList<Type> types, bool filterBrowsable = true)
+		private static List<PropertyMetaData> CollectProperties(object target, IList<Type> types, bool filterBrowsable = true, int collectionIndex = -1)
 		{
 			var result = new List<PropertyMetaData>();
 			foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(target, PropertyFilter))
 			{
 				if (descriptor.IsBrowsable == filterBrowsable && types.Contains(descriptor.PropertyType))
 				{
-					result.Add(new PropertyMetaData(descriptor, target));
+					result.Add(new PropertyMetaData(descriptor, new PropertyOwnerMetaData(target, collectionIndex)));
 					continue;
 				}
 
@@ -39,9 +39,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					if (descriptor.GetValue(target) is ICollection collectionObject)
 					{
+						int index = 0;
 						foreach (object o in collectionObject)
 						{
-							result.AddRange(CollectProperties(o, types));
+							result.AddRange(CollectProperties(o, types, filterBrowsable, index));
+							index++;
 						}
 					}
 				}
@@ -50,22 +52,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return result;
 		}
 
-		private static List<PropertyMetaData> CollectProperties(object target, bool filterBrowsable = true)
+		private static List<PropertyMetaData> CollectProperties(object target, bool filterBrowsable = true, int collectionIndex = -1)
 		{
 			var result = new List<PropertyMetaData>();
 			foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(target, PropertyFilter))
 			{
 				if (descriptor.IsBrowsable == filterBrowsable)
 				{
-					result.Add(new PropertyMetaData(descriptor, target));
+					result.Add(new PropertyMetaData(descriptor, new PropertyOwnerMetaData(target, collectionIndex)));
 					
 					if (descriptor.IsBrowsable == filterBrowsable && PropertyMetaData.IsCollectionType(descriptor.PropertyType))
 					{
 						if (descriptor.GetValue(target) is ICollection collectionObject)
 						{
+							int index = 0;
 							foreach (object o in collectionObject)
 							{
-								result.AddRange(PropertyDiscovery.GetBrowsableProperties(o));
+								result.AddRange(CollectProperties(o, filterBrowsable, index));
+								index++;
 							}
 						}
 					}

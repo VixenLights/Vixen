@@ -1,10 +1,9 @@
 ﻿using System.Collections;
 using System.ComponentModel;
-using Vixen.Module;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	public class PropertyMetaData(PropertyDescriptor descriptor, object owner) : IEquatable<PropertyMetaData>
+	public class PropertyMetaData(PropertyDescriptor descriptor, PropertyOwnerMetaData owner) : IEquatable<PropertyMetaData>
 	{
 		public PropertyDescriptor Descriptor { get; init; } = descriptor;
 
@@ -43,10 +42,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return typeof(ICollection).IsAssignableFrom(t);
 		}
 
-		public object Owner { get; init; } = owner;
+		public object Owner => OwnerMetaData.Owner;
 
-		public string OwnerDisplayName => PropertyDiscovery.GetDisplayName(Owner.GetType());
+		public PropertyOwnerMetaData OwnerMetaData { get; init; } = owner;
 
+		
 		#region IEquatable<PropertyMetaData> Members
 
 		public bool Equals(PropertyMetaData other)

@@ -1,6 +1,7 @@
-﻿using System.ComponentModel;
-using Common.Controls;
+﻿using Common.Controls;
 using Common.Controls.Theme;
+using System;
+using System.ComponentModel;
 using Vixen.Module.Effect;
 using Timer = System.Timers.Timer;
 
@@ -19,17 +20,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			InitializeComponent();
 
-			var groupedControls = controls.GroupBy(x => x.PropertyInfo.Owner).ToList();
+			var groupedControls = controls.GroupBy(x => x.PropertyInfo.OwnerMetaData.Owner).ToList();
 
 			if (groupedControls.Count > 1)
 			{
-				int index = 1;
 				flowLayoutPanel1.FlowDirection = FlowDirection.TopDown;
 				foreach (IGrouping<object, EffectParameterPickerControl> effectParameterPickerControls in groupedControls)
 				{
+					var ownerMetaData = effectParameterPickerControls.First().PropertyInfo.OwnerMetaData;
+					var displayName = ownerMetaData.OwnerDisplayName;
+					if (ownerMetaData.IsCollectionChild)
+					{
+						displayName += $" {ownerMetaData.CollectionIndex + 1}";
+					}
 					var grpBox = new GroupBox()
 					{
-						Text = $@"{effectParameterPickerControls.First().PropertyInfo.OwnerDisplayName} {index}",
+						Text = displayName,
 						AutoSize = true,
 						AutoSizeMode = AutoSizeMode.GrowAndShrink
 					};
@@ -50,8 +56,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						control.Click += ParameterControl_Clicked;
 						flowRow.Controls.Add(control);
 					}
-
-					index++;
 				}
 			}
 
