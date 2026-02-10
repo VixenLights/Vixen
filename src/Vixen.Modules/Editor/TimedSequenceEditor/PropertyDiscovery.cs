@@ -1,7 +1,9 @@
-﻿using ExCSS;
+﻿#nullable enable
+
 using System.Collections;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace VixenModules.Editor.TimedSequenceEditor
@@ -79,7 +81,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return result;
 		}
 
-		public static string GetDisplayName(Type type)
+		public static string? GetDisplayName(Type type)
 		{
 			// Try to get DisplayNameAttribute
 			var displayNameAttr = type.GetCustomAttribute<DisplayNameAttribute>();
@@ -97,6 +99,34 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			// If neither is found, return the class name itself
 			return type.Name;
+		}
+
+		public static List<PropertyMetaData> FindPropertyByNameAndType(object component, Type propertyType, string propertyName)
+		{
+			List<Type> types = new List<Type>(){propertyType};
+			return CollectProperties(component, types).Where(x => x.Name == propertyName).ToList();
+		}
+
+		
+
+	}
+
+	public static class PropertyDiscoveryExtensions
+	{
+		public static PropertyMetaData ToNewOwner(this PropertyMetaData propertyMetaData, object newOwner)
+		{
+			if (newOwner.GetType() == propertyMetaData.Owner.GetType())
+			{
+				var propertyOwnerMetaData =
+					new PropertyOwnerMetaData(newOwner, propertyMetaData.OwnerMetaData.CollectionIndex);
+				return new PropertyMetaData(propertyMetaData.Descriptor, propertyOwnerMetaData);
+			}
+			//Otherwise our property is a child collection type.
+			var propertyMetaDataList =
+				PropertyDiscovery.FindPropertyByNameAndType(newOwner, propertyMetaData.PropertyType,
+					propertyMetaData.Name).Where(x => x.OwnerMetaData.IsCollectionChild && x.OwnerMetaData.CollectionIndex == propertyMetaData.OwnerMetaData.CollectionIndex);
+			//hopefully there is only one.
+			return propertyMetaDataList.First();
 		}
 	}
 

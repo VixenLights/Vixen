@@ -4286,14 +4286,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Dictionary<Element, Tuple<Object, PropertyMetaData>> elementValues = new Dictionary<Element, Tuple<object, PropertyMetaData>>();
 
 			if (!properties.Any()) return;
-			if (properties.Count() == 1)
+			if (properties.Count == 1)
 			{
 				var property = properties.First();
 				if (property.PropertyType == typeof (Color))
 				{
 					foreach (var e in elements)
 					{
-						HandleColorDropOnColor(color, elementValues, e, property);
+						HandleColorDropOnColor(color, elementValues, e, property.ToNewOwner(e.EffectNode.Effect));
 					}
 				}
 			}
@@ -4333,29 +4333,30 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					
 					foreach (var e in elements)
 					{
+						var propertyInfo = parameterPicker.PropertyInfo.ToNewOwner(e.EffectNode.Effect);
 						if (parameterPicker.PropertyInfo.PropertyType == typeof (Color))
 						{
-							HandleColorDropOnColor(color, elementValues, e, parameterPicker.PropertyInfo);
+							HandleColorDropOnColor(color, elementValues, e, propertyInfo);
 						}
 						else if (parameterPicker.PropertyInfo.PropertyType == typeof(ColorGradient))
 						{
-							HandleGradientDropOnGradient(new ColorGradient(color), elementValues, e, parameterPicker.PropertyInfo);
+							HandleGradientDropOnGradient(new ColorGradient(color), elementValues, e, propertyInfo);
 						}
 						else if (parameterPicker.PropertyInfo.PropertyType == typeof(List<ColorGradient>))
 						{
-							List<ColorGradient> gradients = parameterPicker.PropertyInfo.Descriptor.GetValue(parameterPicker.PropertyInfo.Owner) as List<ColorGradient>;
+							List<ColorGradient> gradients = propertyInfo.Descriptor.GetValue(propertyInfo.Owner) as List<ColorGradient>;
 							var newGradients = gradients.ToList();
 							newGradients[parameterPicker.SelectedControl.Index] = new ColorGradient(color);
-							elementValues.Add(element, new Tuple<object, PropertyMetaData>(parameterPicker.PropertyInfo.Descriptor.GetValue(parameterPicker.PropertyInfo.Owner), parameterPicker.PropertyInfo));
-							UpdateEffectProperty(parameterPicker.PropertyInfo, element, newGradients);		
+							elementValues.Add(element, new Tuple<object, PropertyMetaData>(parameterPicker.PropertyInfo.Descriptor.GetValue(parameterPicker.PropertyInfo.Owner), propertyInfo));
+							UpdateEffectProperty(propertyInfo, element, newGradients);		
 						}
 						else if (parameterPicker.PropertyInfo.PropertyType == typeof(List<GradientLevelPair>))
 						{
-							List<GradientLevelPair> gradients = parameterPicker.PropertyInfo.Descriptor.GetValue(parameterPicker.PropertyInfo.Owner) as List<GradientLevelPair>;
+							List<GradientLevelPair> gradients = propertyInfo.Descriptor.GetValue(propertyInfo.Owner) as List<GradientLevelPair>;
 							var newGradients = gradients.ToList();
 							newGradients[parameterPicker.SelectedControl.Index] = new GradientLevelPair(new ColorGradient(color), gradients[parameterPicker.SelectedControl.Index].Curve);
-							elementValues.Add(element, new Tuple<object, PropertyMetaData>(parameterPicker.PropertyInfo.Descriptor.GetValue(parameterPicker.PropertyInfo.Owner), parameterPicker.PropertyInfo));
-							UpdateEffectProperty(parameterPicker.PropertyInfo, element, newGradients);
+							elementValues.Add(element, new Tuple<object, PropertyMetaData>(propertyInfo.Descriptor.GetValue(propertyInfo.Owner), propertyInfo));
+							UpdateEffectProperty(propertyInfo, element, newGradients);
 						}
 					}
 				}
@@ -4395,7 +4396,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			
 			if (!properties.Any()) return;
 			
-			if (properties.Count() == 1)
+			if (properties.Count == 1)
 			{
 				var property = properties.First();
 
@@ -4403,15 +4404,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					foreach (var e in elements)
 					{
-						elementValues.Add(e, new Tuple<object, PropertyMetaData>(property.Descriptor.GetValue(property.Owner), property));
-						UpdateEffectProperty(property, e, curve);
+						var propertyInfo = property.ToNewOwner(e.EffectNode.Effect);
+						elementValues.Add(e, new Tuple<object, PropertyMetaData>(propertyInfo.Descriptor.GetValue(propertyInfo.Owner), propertyInfo));
+						UpdateEffectProperty(propertyInfo, e, curve);
 					}
 				}
 				else if (property.PropertyType == typeof(List<GradientLevelPair>))
 				{
 					foreach (var e in elements)
 					{
-						HandleCurveDropOnGradientLevelPairList(property, e, elementValues, curve);
+						var propertyInfo = property.ToNewOwner(e.EffectNode.Effect);
+						HandleCurveDropOnGradientLevelPairList(propertyInfo, e, elementValues, curve);
 					}
 				}
 
@@ -4444,25 +4447,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						foreach (var e in elements)
 						{
-							elementValues.Add(e,
-								new Tuple<object, PropertyMetaData>(parameterPicker.PropertyInfo.Descriptor.GetValue(parameterPicker.PropertyInfo.Owner),
-									parameterPicker.PropertyInfo));
-							UpdateEffectProperty(parameterPicker.PropertyInfo, e, curve);
+							var propertyInfo = parameterPicker.PropertyInfo.ToNewOwner(e.EffectNode.Effect);
+							elementValues.Add(e, new Tuple<object, PropertyMetaData>(propertyInfo.Descriptor.GetValue(propertyInfo.Owner), propertyInfo));
+							UpdateEffectProperty(propertyInfo, e, curve);
 						}
 					}
 					else if (parameterPicker.PropertyInfo.PropertyType == typeof(List<GradientLevelPair>))
 					{
-						List<GradientLevelPair> gradientLevelPairs = parameterPicker.PropertyInfo.Descriptor.GetValue(parameterPicker.PropertyInfo.Owner) as List<GradientLevelPair>;
-						if (gradientLevelPairs != null)
+						foreach (var e in elements)
 						{
-							var newGradientLevelPairs = gradientLevelPairs.ToList();
-							newGradientLevelPairs[parameterPicker.SelectedControl.Index] =
-								new GradientLevelPair(gradientLevelPairs[parameterPicker.SelectedControl.Index].ColorGradient, curve);
-							elementValues.Add(element,
-								new Tuple<object, PropertyMetaData>(parameterPicker.PropertyInfo.Descriptor.GetValue(parameterPicker.PropertyInfo.Owner),
-									parameterPicker.PropertyInfo));
-							UpdateEffectProperty(parameterPicker.PropertyInfo, element, newGradientLevelPairs);
+							var propertyInfo = parameterPicker.PropertyInfo.ToNewOwner(e.EffectNode.Effect);
+							if (propertyInfo.Descriptor.GetValue(propertyInfo.Owner) is List<GradientLevelPair> gradientLevelPairs)
+							{
+								var newGradientLevelPairs = gradientLevelPairs.ToList();
+								newGradientLevelPairs[parameterPicker.SelectedControl.Index] =
+									new GradientLevelPair(gradientLevelPairs[parameterPicker.SelectedControl.Index].ColorGradient, curve);
+								elementValues.Add(e, new Tuple<object, PropertyMetaData>(propertyInfo.Descriptor.GetValue(propertyInfo.Owner), propertyInfo));
+								UpdateEffectProperty(propertyInfo, e, newGradientLevelPairs);
+							}
 						}
+						
 					}
 					
 				}
@@ -4500,7 +4504,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				var newGradientLevelPairs = gradientLevelPairs.ToList();
 				newGradientLevelPairs[parameterPicker.SelectedControl.Index] = new GradientLevelPair(gradientLevelPairs[parameterPicker.SelectedControl.Index].ColorGradient, curve);
-				elementValues.Add(element, new Tuple<object, PropertyMetaData>(parameterPicker.PropertyInfo.Descriptor.GetValue(property.Owner), parameterPicker.PropertyInfo));
+				elementValues.Add(element, 
+					new Tuple<object, PropertyMetaData>(parameterPicker.PropertyInfo.Descriptor.GetValue(parameterPicker.PropertyInfo.Owner), parameterPicker.PropertyInfo));
 				UpdateEffectProperty(parameterPicker.PropertyInfo, element, newGradientLevelPairs);
 			}
 		}
@@ -4550,28 +4555,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (!properties.Any()) return;
 			if (properties.Count == 1)
 			{
-				var property = properties.First();
-				if (property.PropertyType == typeof(ColorGradient))
+				foreach (var e in elements)
 				{
-					foreach (var e in elements)
+					var property = GetPropertyMetaDataForTypes(e.EffectNode.Effect, GradientTypes).First();
+					if (property.PropertyType == typeof(ColorGradient))
 					{
 						HandleGradientDropOnGradient(gradient, elementValues, e, property);
 					}
-				}
-				else if (property.PropertyType == typeof(List<ColorGradient>))
-				{
-					foreach (var e in elements)
+					else if (property.PropertyType == typeof(List<ColorGradient>))
 					{
-						HandleGradientDropOnColorGradientList(property, e, elementValues, gradient);
+						HandleGradientDropOnColorGradientList(property, e, elementValues, gradient); //Validated
 					}
-				}
-				else if (property.PropertyType == typeof(List<GradientLevelPair>))
-				{
-					foreach (var e in elements)
+					else if (property.PropertyType == typeof(List<GradientLevelPair>))
 					{
 						HandleGradientDropOnGradientLevelPairList(property, e, elementValues, gradient);
 					}
 				}
+
 			}
 			else
 			{
@@ -4609,32 +4609,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					foreach (var e in elements)
 					{
-
+						var propertyInfo = parameterPicker.PropertyInfo.ToNewOwner(e.EffectNode.Effect);
 						if (parameterPicker.PropertyInfo.PropertyType == typeof(ColorGradient))
 						{
-							HandleGradientDropOnGradient(gradient, elementValues, e, parameterPicker.PropertyInfo);
+							HandleGradientDropOnGradient(gradient, elementValues, e, propertyInfo);
 						}
 						else if (parameterPicker.PropertyInfo.PropertyType == typeof(List<ColorGradient>))
 						{
-							List<ColorGradient> gradients =
-								parameterPicker.PropertyInfo.Descriptor.GetValue(parameterPicker.PropertyInfo.Owner) as List<ColorGradient>;
+							List<ColorGradient> gradients = propertyInfo.Descriptor.GetValue(propertyInfo.Owner) as List<ColorGradient>;
 							var newGradients = gradients.ToList();
 							newGradients[parameterPicker.SelectedControl.Index] = gradient;
-							elementValues.Add(element,
-								new Tuple<object, PropertyMetaData>(parameterPicker.PropertyInfo.Descriptor.GetValue(parameterPicker.PropertyInfo.Owner),
-									parameterPicker.PropertyInfo));
-							UpdateEffectProperty(parameterPicker.PropertyInfo, element, newGradients);
+							elementValues.Add(e, new Tuple<object, PropertyMetaData>(propertyInfo.Descriptor.GetValue(propertyInfo.Owner), propertyInfo));
+							UpdateEffectProperty(propertyInfo, e, newGradients);
 						}
 						else if (parameterPicker.PropertyInfo.PropertyType == typeof(List<GradientLevelPair>))
 						{
-							List<GradientLevelPair> gradients =
-								parameterPicker.PropertyInfo.Descriptor.GetValue(parameterPicker.PropertyInfo.Owner) as List<GradientLevelPair>;
+							List<GradientLevelPair> gradients = propertyInfo.Descriptor.GetValue(propertyInfo.Owner) as List<GradientLevelPair>;
 							var newGradients = gradients.ToList();
 							newGradients[parameterPicker.SelectedControl.Index] = new GradientLevelPair(gradient, gradients[parameterPicker.SelectedControl.Index].Curve);
-							elementValues.Add(element,
-								new Tuple<object, PropertyMetaData>(parameterPicker.PropertyInfo.Descriptor.GetValue(parameterPicker.PropertyInfo.Owner),
-									parameterPicker.PropertyInfo));
-							UpdateEffectProperty(parameterPicker.PropertyInfo, element, newGradients);
+							elementValues.Add(e, new Tuple<object, PropertyMetaData>(propertyInfo.Descriptor.GetValue(propertyInfo.Owner), propertyInfo));
+							UpdateEffectProperty(propertyInfo, e, newGradients);
 						}
 					}
 				}
