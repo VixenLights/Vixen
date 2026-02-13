@@ -4555,20 +4555,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (!properties.Any()) return;
 			if (properties.Count == 1)
 			{
+				var property = properties.First();
 				foreach (var e in elements)
 				{
-					var property = GetPropertyMetaDataForTypes(e.EffectNode.Effect, GradientTypes).First();
-					if (property.PropertyType == typeof(ColorGradient))
+					var propertyMetaData = property.Owner == e.EffectNode.Effect
+						? property
+						: property.ToNewOwner(e.EffectNode.Effect);
+					
+					
+					if (propertyMetaData.PropertyType == typeof(ColorGradient))
 					{
-						HandleGradientDropOnGradient(gradient, elementValues, e, property);
+						HandleGradientDropOnGradient(gradient, elementValues, e, propertyMetaData);
 					}
-					else if (property.PropertyType == typeof(List<ColorGradient>))
+					else if (propertyMetaData.PropertyType == typeof(List<ColorGradient>))
 					{
-						HandleGradientDropOnColorGradientList(property, e, elementValues, gradient); //Validated
+						HandleGradientDropOnColorGradientList(propertyMetaData, e, elementValues, gradient);
 					}
-					else if (property.PropertyType == typeof(List<GradientLevelPair>))
+					else if (propertyMetaData.PropertyType == typeof(List<GradientLevelPair>))
 					{
-						HandleGradientDropOnGradientLevelPairList(property, e, elementValues, gradient);
+						HandleGradientDropOnGradientLevelPairList(propertyMetaData, e, elementValues, gradient);
 					}
 				}
 
