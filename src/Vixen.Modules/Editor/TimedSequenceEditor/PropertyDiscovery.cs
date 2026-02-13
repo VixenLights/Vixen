@@ -3,7 +3,6 @@
 using System.Collections;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.Reflection;
 
 namespace VixenModules.Editor.TimedSequenceEditor
@@ -16,11 +15,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			                            PropertyFilterOptions.Valid)
 		};
 
+		/// <summary>
+		/// Retrieves a collection of browsable property metadata for the specified target object, filtered by the provided
+		/// list of types.
+		/// </summary>
+		/// <param name="target">The object whose properties are to be examined. Cannot be null.</param>
+		/// <param name="types">A list of types used to filter the properties to include. Only properties matching these types will be considered.
+		/// Cannot be null.</param>
+		/// <returns>A read-only collection of PropertyMetaData objects representing the browsable properties of the target object that
+		/// match the specified types. The collection will be empty if no matching properties are found.</returns>
 		public static IEnumerable<PropertyMetaData> GetBrowsableProperties(object target, IList<Type> types)
 		{
 			return CollectProperties(target, types).AsReadOnly();
 		}
 
+		/// <summary>
+		/// Retrieves a collection of property metadata for the specified object that are considered browsable.
+		/// </summary>
+		/// <param name="target">The object whose browsable properties are to be retrieved. Cannot be null.</param>
+		/// <returns>An enumerable collection of <see cref="PropertyMetaData"/> objects representing the browsable properties of the
+		/// specified object. The collection will be empty if no browsable properties are found.</returns>
 		public static IEnumerable<PropertyMetaData> GetBrowsableProperties(object target)
 		{
 			return CollectProperties(target).AsReadOnly();
@@ -81,6 +95,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return result;
 		}
 
+		/// <summary>
+		/// Gets the display name for the specified type, using display-related attributes if available.
+		/// </summary>
+		/// <remarks>This method checks for a DisplayNameAttribute or DisplayAttribute applied to the type. If neither
+		/// attribute is found, the method returns the type's simple name. This is commonly used for UI display or metadata
+		/// purposes.</remarks>
+		/// <param name="type">The type for which to retrieve the display name. Cannot be null.</param>
+		/// <returns>A string containing the display name defined by a DisplayNameAttribute or DisplayAttribute if present; otherwise,
+		/// the type's name. Returns null if the display attribute is present but its name is not set.</returns>
 		public static string? GetDisplayName(Type type)
 		{
 			// Try to get DisplayNameAttribute
@@ -101,6 +124,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return type.Name;
 		}
 
+		/// <summary>
+		/// Finds all properties of the specified component that match the given property name and type.
+		/// </summary>
+		/// <param name="component">The object whose properties are to be searched. Cannot be null.</param>
+		/// <param name="propertyType">The type that the property must match. Cannot be null.</param>
+		/// <param name="propertyName">The name of the property to search for. The comparison is case-sensitive.</param>
+		/// <returns>A list of PropertyMetaData objects representing the properties that match the specified name and type. Returns an
+		/// empty list if no matching properties are found.</returns>
 		public static List<PropertyMetaData> FindPropertyByNameAndType(object component, Type propertyType, string propertyName)
 		{
 			List<Type> types = new List<Type>(){propertyType};
@@ -113,8 +144,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 	public static class PropertyDiscoveryExtensions
 	{
+		/// <summary>
+		/// This converts an existing PropertyMetaData to one with the target type found in the new owner by creating a new instance with the
+		/// original TypeDescriptor and the new owner. The new owner should have the same Type in its hierarchy as the TypeDescriptor describes.
+		/// The logic will look for the Type of the same name in the new owners properties, or any of its collection properties and assign the owner
+		/// to the parent class of the named Typed.
+		/// </summary>
+		/// <param name="propertyMetaData"></param>
+		/// <param name="newOwner"></param>
+		/// <returns></returns>
 		public static PropertyMetaData ToNewOwner(this PropertyMetaData propertyMetaData, object newOwner)
 		{
+			if (newOwner == null) throw new ArgumentNullException(nameof(newOwner));
 			if (newOwner.GetType() == propertyMetaData.Owner.GetType())
 			{
 				var propertyOwnerMetaData =
@@ -124,7 +165,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//Otherwise our property is a child collection type.
 			var propertyMetaDataList =
 				PropertyDiscovery.FindPropertyByNameAndType(newOwner, propertyMetaData.PropertyType,
-					propertyMetaData.Name).Where(x => x.OwnerMetaData.IsCollectionChild && x.OwnerMetaData.CollectionIndex == propertyMetaData.OwnerMetaData.CollectionIndex);
+					propertyMetaData.Name).Where(x => x.OwnerMetaData.IsCollectionChild && x.OwnerMetaData.CollectionIndex == propertyMetaData.OwnerMetaData.CollectionIndex).ToArray();
+
+			if (!propertyMetaDataList.Any())
+			{
+				throw new ArgumentException("The newOwner does not contain the required property");
+			}
 			//hopefully there is only one.
 			return propertyMetaDataList.First();
 		}
