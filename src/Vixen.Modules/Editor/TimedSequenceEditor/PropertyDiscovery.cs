@@ -145,22 +145,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	public static class PropertyDiscoveryExtensions
 	{
 		/// <summary>
-		/// This converts an existing PropertyMetaData to one with the target type found in the new owner by creating a new instance with the
-		/// original TypeDescriptor and the new owner. The new owner should have the same Type in its hierarchy as the TypeDescriptor describes.
-		/// The logic will look for the Type of the same name in the new owners properties, or any of its collection properties and assign the owner
-		/// to the parent class of the named Typed.
+		/// Attempts to create a new PropertyMetaData instance associated with a specified new owner, preserving the property
+		/// context and collection index.
 		/// </summary>
-		/// <param name="propertyMetaData"></param>
-		/// <param name="newOwner"></param>
-		/// <returns></returns>
-		public static PropertyMetaData ToNewOwner(this PropertyMetaData propertyMetaData, object newOwner)
+		/// <remarks>If the new owner is of the same type as the original owner, the property metadata is transferred
+		/// directly. If the property represents a child collection item, the method attempts to locate the corresponding
+		/// property in the new owner's collection with the same index. If no matching property is found, the method returns
+		/// false and null.</remarks>
+		/// <param name="propertyMetaData">The PropertyMetaData instance to transfer to the new owner. Must not be null.</param>
+		/// <param name="newOwner">The object that will become the new owner of the property metadata. Cannot be null.</param>
+		/// <returns>A tuple containing a boolean indicating success, and the new PropertyMetaData instance if successful; otherwise,
+		/// null.</returns>
+		/// <exception cref="ArgumentNullException">Thrown if newOwner is null.</exception>
+		public static (bool success, PropertyMetaData? propertyMetaData) ToNewOwner(this PropertyMetaData propertyMetaData, object newOwner)
 		{
 			if (newOwner == null) throw new ArgumentNullException(nameof(newOwner));
 			if (newOwner.GetType() == propertyMetaData.Owner.GetType())
 			{
 				var propertyOwnerMetaData =
 					new PropertyOwnerMetaData(newOwner, propertyMetaData.OwnerMetaData.CollectionIndex);
-				return new PropertyMetaData(propertyMetaData.Descriptor, propertyOwnerMetaData);
+				return (true, new PropertyMetaData(propertyMetaData.Descriptor, propertyOwnerMetaData));
 			}
 			//Otherwise our property is a child collection type.
 			var propertyMetaDataList =
@@ -169,10 +173,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (!propertyMetaDataList.Any())
 			{
-				throw new ArgumentException("The newOwner does not contain the required property");
+				return (false,null);
 			}
 			//hopefully there is only one.
-			return propertyMetaDataList.First();
+			return (true, propertyMetaDataList.First());
 		}
 	}
 
