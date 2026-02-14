@@ -1,11 +1,11 @@
 REM Download windowsdesktop-runtime
-curl -L "https://builds.dotnet.microsoft.com/dotnet/WindowsDesktop/10.0.1/windowsdesktop-runtime-10.0.1-win-x64.exe" --output C:\users\WDAGUtilityAccount\Downloads\windowsdesktop-runtime.exe
+curl -L "https://builds.dotnet.microsoft.com/dotnet/WindowsDesktop/10.0.3/windowsdesktop-runtime-10.0.3-win-x64.exe" --output C:\users\WDAGUtilityAccount\Downloads\windowsdesktop-runtime.exe
 
 REM Install windowsdesktop-runtime
 C:\users\WDAGUtilityAccount\Downloads\windowsdesktop-runtime.exe /norestart /quiet
 
 REM Download aspcore-runtime
-curl -L "https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/10.0.1/aspnetcore-runtime-10.0.1-win-x64.exe" --output C:\users\WDAGUtilityAccount\Downloads\aspcore-runtime.exe
+curl -L "https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/10.0.3/aspnetcore-runtime-10.0.3-win-x64.exe" --output C:\users\WDAGUtilityAccount\Downloads\aspcore-runtime.exe
 
 REM Install aspcore-runtime
 C:\users\WDAGUtilityAccount\Downloads\aspcore-runtime.exe /norestart /quiet
