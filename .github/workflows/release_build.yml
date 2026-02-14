@@ -52,6 +52,15 @@ jobs:
       
       - name: Display dotnet version
         run: dotnet --version
+        
+      - name: Install Visual Studio Build Tools 2026 (v145)
+        shell: pwsh
+        run: |
+          Write-Host "Installing VS 2026 Build Tools..."
+          choco install visualstudio2026buildtools `
+            --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --includeRecommended --quiet" `
+            -y --ignore-package-exit-codes=3010
+          Write-Host "VS 2026 Build Tools installation completed"
 
       - name: create a custom version using run number offset by 968 
         shell: bash
