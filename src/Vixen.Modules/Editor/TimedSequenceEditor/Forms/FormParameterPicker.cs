@@ -33,6 +33,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						displayName += $" {ownerMetaData.CollectionIndex + 1}";
 					}
+
+					if (displayName.Length > 10)
+					{
+						displayName = displayName.Substring(0, 10);
+					}
 					var grpBox = new GroupBox()
 					{
 						Text = displayName,

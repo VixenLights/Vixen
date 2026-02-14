@@ -17,6 +17,19 @@
 		/// </summary>
 		public int CollectionIndex { get; init; } = collectionIndex;
 
-		public string OwnerDisplayName => PropertyDiscovery.GetDisplayName(Owner.GetType());
+		/// <summary>
+		/// Gets the display name of the owner, providing a user-friendly name based on the owner's type when appropriate.
+		/// </summary>
+		/// <remarks>If the owner's string representation matches its type name, this property returns a descriptive
+		/// display name using the PropertyDiscovery class. Otherwise, it returns the owner's string representation. This can
+		/// be useful for displaying owner information in UI elements or logs.</remarks>
+		public string OwnerDisplayName
+		{
+			get
+			{
+				var name = Owner.ToString();
+				return name != null && name.Equals(Owner.GetType().ToString())?PropertyDiscovery.GetDisplayName(Owner.GetType()):Owner.ToString();
+			}
+		}
 	}
 }
