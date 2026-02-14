@@ -7,7 +7,8 @@
         xmlns:wpfPropertyGrid="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
         xmlns:controls="clr-namespace:Common.Controls;assembly=Controls"
         xmlns:viewModels="clr-namespace:VixenApplication.SetupDisplay.ViewModels"
-	    xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
+        xmlns:html="clr-namespace:TheArtOfDev.HtmlRenderer.WPF;assembly=HtmlRenderer.Wpf"
+        xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
         Title="Display Setup" Height="850" Width="1200" WindowStartupLocation="CenterScreen" x:Name="DisplaySetup"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewModels:SetupDisplayViewModel, IsDesignTimeCreatable=False}">
@@ -102,23 +103,9 @@
 
 
 				<Border Grid.Row="1" BorderThickness="1" BorderBrush="{StaticResource BorderColorBrush}" Margin="5">
-					<wpfPropertyGrid:PropertyGrid  Background="{StaticResource DisabledShadow}"
-                                                  ItemSource="{Binding SelectedProp}"
-                                                  ShowAttachedProperties="False"
-                                                  ShowReadOnlyProperties="True"
-                                                  PropertyFilterVisibility="Collapsed"                                                   
-                                                  Margin="5">
-						<wpfPropertyGrid:PropertyGrid.Resources>
-							<ResourceDictionary>
-								<ResourceDictionary.MergedDictionaries>
-									<wpfPropertyGrid:KaxamlTheme/>
-								</ResourceDictionary.MergedDictionaries>
-							</ResourceDictionary>
-						</wpfPropertyGrid:PropertyGrid.Resources>
-						<wpfPropertyGrid:PropertyGrid.Layout>
-							<wpfPropertyGrid:CategorizedLayout/>
-						</wpfPropertyGrid:PropertyGrid.Layout>
-					</wpfPropertyGrid:PropertyGrid>
+                    <html:HtmlPanel Text="{Binding SelectedPropText}" 
+                                    Background="{StaticResource DisabledShadow}" 
+                                    MinHeight="150"/>
 				</Border>
 			</Grid>
 

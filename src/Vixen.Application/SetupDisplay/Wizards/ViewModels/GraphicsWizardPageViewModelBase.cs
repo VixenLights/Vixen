@@ -2,8 +2,13 @@
 using Catel.Data;
 using Catel.MVVM;
 using Orc.Wizard;
+using Vixen.Sys;
+using Vixen.Sys.Props;
 using Vixen.Sys.Props.Model;
 using VixenApplication.SetupDisplay.OpenGL;
+using VixenApplication.SetupDisplay.Wizards.Factory;
+using VixenApplication.SetupDisplay.Wizards.HelperTools;
+using VixenApplication.SetupDisplay.Wizards.PropFactories;
 using VixenModules.App.Props.Models;
 
 namespace VixenApplication.SetupDisplay.Wizards.ViewModels
@@ -18,51 +23,30 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		where TPropModel : class, ILightPropModel, new()	
 	{
 		#region Constructor
-
 		/// <summary>
 		/// Constructor
 		/// </summary>
 		/// <param name="wizardPage">Wizard page model</param>
 		protected GraphicsWizardPageViewModelBase(TWizardPage wizardPage) : base(wizardPage)
 		{
-			// Create a temporary prop model
 			LightPropModel = new TPropModel();
 			List<IPropModel> propModels = new List<IPropModel>();
 			propModels.Add(LightPropModel);
-			
+
 			// Create the prop drawing engine
 			DrawingEngine = new OpenGLPropDrawingEngine(propModels);
 
-			// Create the collection of view model rotations
-			Rotations = new();
-
-			// Create the X Axis rotation view model
-			var xRotation = new AxisRotationViewModel();
-			xRotation.Axis = "X";
-			xRotation.RotationChanged += OnRotationChanged;
-			Rotations.Add(xRotation);
-
-			// Create the Y Axis rotation view model
-			var yRotation = new AxisRotationViewModel();
-			yRotation.Axis = "Y";
-			yRotation.RotationChanged += OnRotationChanged;
-			Rotations.Add(yRotation);
-
-			// Create the Z Axis rotation view model
-			var zRotation = new AxisRotationViewModel();
-			zRotation.Axis = "Z";
-			zRotation.RotationChanged += OnRotationChanged;
-			Rotations.Add(zRotation);
-        }
+			foreach (var rotation in Rotations)
+			{
+				rotation.RotationChanged += OnRotationChanged;
+			}
+		}
 
 		#endregion
 
 		#region Protected Properties
 
-		/// <summary>
-		/// Light prop model used to generate the graphics.
-		/// </summary>
-		protected TPropModel LightPropModel { get; set; }
+		public TPropModel LightPropModel { get; set; }
 
 		#endregion
 
@@ -94,7 +78,6 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		#endregion
 
 		#region Private Methods
-
 		/// <summary>
 		/// Event handler for when a prop rotation changed.
 		/// </summary>
@@ -127,10 +110,11 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 				(duplicateRotation.RotationAngle, newRotation.RotationAngle) = (newRotation.RotationAngle, duplicateRotation.RotationAngle);
 			}
 
+			LightPropModel.PropParameters.Update("Rotations", AxisRotationViewModel.ConvertToModel(Rotations));
+
 			// Update the prop nodes
 			LightPropModel.UpdatePropNodes();
 		}
-
 		#endregion
 	}
 }

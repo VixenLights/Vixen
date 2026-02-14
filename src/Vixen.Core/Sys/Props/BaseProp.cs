@@ -253,6 +253,8 @@ namespace Vixen.Sys.Props
 		[Browsable(false)]
 		public ObservableCollection<IPropComponent> UserDefinedPropComponents { get; init; }
 
+		public abstract string GetSummary();
+
 		public virtual void CleanUp()
 		{
 			RemovePropElementNode();

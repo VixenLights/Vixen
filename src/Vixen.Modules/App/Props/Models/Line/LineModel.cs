@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using Vixen.Sys.Props.Model;
+using VixenApplication.SetupDisplay.Wizards.HelperTools;
 
 namespace VixenModules.App.Props.Models.Line
 {
@@ -44,11 +45,6 @@ namespace VixenModules.App.Props.Models.Line
         }
 
 		/// <inheritdoc/>				
-		public override void SetContext(object data)
-		{
-			throw new NotImplementedException();
-		}
-
 		protected override IEnumerable<NodePoint> Get3DNodePoints()
 		{
 			throw new NotImplementedException();
