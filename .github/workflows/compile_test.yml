@@ -34,7 +34,7 @@ jobs:
 
     steps:
     
-      - name Checkout
+      - name: Checkout
         uses: actions/checkout@v4
       
       - uses: nuget/setup-nuget@v2
