@@ -5,6 +5,7 @@ using VixenApplication.SetupDisplay.Wizards.ViewModels;
 using VixenModules.App.Curves;
 using ZedGraph;
 using System.Windows.Controls;
+using VixenModules.App.Props.Models;
 using static VixenApplication.SetupDisplay.Wizards.Pages.DimmingWizardPage;
 
 namespace VixenApplication.SetupDisplay.Wizards.Views
@@ -57,13 +58,22 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 			zedGraphControl.ScrollMinY2 = 0D;
 		}
 
-		private DimmingType? DimmingTypeOption
+		private DimmingType DimmingTypeOption
 		{
-			get { return (ViewModel as DimmingWizardPageViewModel)?.DimmingTypeOption; }
+			get
+			{
+				var vm = ViewModel as DimmingWizardPageViewModel;
+				if (vm != null)
+				{
+					return vm.DimmingTypeOption;
+				}
+
+				return DimmingType.NoCurve;
+			}
 			set {
 				if (ViewModel is DimmingWizardPageViewModel viewModel)
 				{
-					viewModel.DimmingTypeOption = value.Value;
+					viewModel.DimmingTypeOption = value;
 				}
 			}
 		}

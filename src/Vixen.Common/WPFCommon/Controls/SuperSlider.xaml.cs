@@ -35,7 +35,7 @@ namespace Common.WPFCommon.Controls
 		public event RoutedPropertyChangedEventHandler<double> ValueChanged
 		{
 			add { AddHandler(ValueChangedEvent, value); }
-			remove { RemoveHandler(ValueChangedEvent, value); } // Added the period and brackets for clarity
+			remove { RemoveHandler(ValueChangedEvent, value); }
 		}
 
 		public static readonly DependencyProperty MinimumProperty = DependencyProperty.Register(
@@ -63,7 +63,7 @@ namespace Common.WPFCommon.Controls
         public AutoToolTipPlacement AutoToolTipPlacement
         {
 	        get => (AutoToolTipPlacement)GetValue(AutoToolTipPlacementProperty);
-	        set => SetValue(AutoToolTipPlacementProperty, value); // Keep this simple
+	        set => SetValue(AutoToolTipPlacementProperty, value);
         }
 
         public static readonly DependencyProperty AutoToolTipPrecisionProperty = DependencyProperty.Register(

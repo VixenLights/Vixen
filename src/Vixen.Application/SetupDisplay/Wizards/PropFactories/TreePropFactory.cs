@@ -40,6 +40,20 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 			return propGroup;						
 		}
 
+		public (IProp, IPropGroup) CreateBaseProp()
+		{
+			return (null, null);
+		}
+
+		public void LoadWizard(IProp prop, IPropWizard wizard)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void UpdateProp(IProp prop, IPropWizard wizard)
+		{
+			throw new NotImplementedException();
+		}
 		#endregion
 	}
 }

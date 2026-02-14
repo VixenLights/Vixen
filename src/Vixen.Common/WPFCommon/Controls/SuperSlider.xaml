@@ -68,9 +68,9 @@
                   Stretch="Uniform"/>
         </Button>
         <Slider Grid.Column="1" x:Name="ValueSlider"
-                Value="{Binding Value, RelativeSource={RelativeSource AncestorType={x:Type local:SuperSlider}}, Mode=TwoWay}"
                 Minimum="{Binding Minimum, RelativeSource={RelativeSource AncestorType={x:Type local:SuperSlider}}}"
                 Maximum="{Binding Maximum, RelativeSource={RelativeSource AncestorType={x:Type local:SuperSlider}}}"
+                Value="{Binding Value, RelativeSource={RelativeSource AncestorType={x:Type local:SuperSlider}}, Mode=TwoWay}"
                 TickFrequency="{Binding TickFrequency, RelativeSource={RelativeSource AncestorType={x:Type local:SuperSlider}}}"
                 SmallChange="{Binding SmallChange, RelativeSource={RelativeSource AncestorType={x:Type local:SuperSlider}}}"
                 LargeChange="{Binding LargeChange, RelativeSource={RelativeSource AncestorType={x:Type local:SuperSlider}}}"
