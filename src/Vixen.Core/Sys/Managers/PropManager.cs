@@ -133,8 +133,7 @@ namespace Vixen.Sys.Managers
 
 		public bool IsUniquePropTitle(String name)
 		{
-			string testName = $"Auto-Prop {name}";
-			return VixenSystem.Nodes.Any(x => x.Name.Equals(testName, StringComparison.CurrentCultureIgnoreCase)) != true;
+			return VixenSystem.Props.RootNodes.Any(x => x.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase)) != true;
 		}
 
 		public string GenerateUniquePropTitle(PropType type)

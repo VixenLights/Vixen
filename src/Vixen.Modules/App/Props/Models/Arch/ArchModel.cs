@@ -1,6 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using Catel.Reflection;
+using System.Collections.ObjectModel;
 using Vixen.Extensions;
 using Vixen.Sys.Props.Model;
+using VixenApplication.SetupDisplay.Wizards.HelperTools;
 using VixenModules.App.Props.Models;
 
 
@@ -11,53 +13,24 @@ namespace VixenModules.App.Props.Models.Arch
 	/// </summary>
 	public class ArchModel: BaseLightModel
 	{
-		IAttributeData _arch;
-		int _nodeCount = 0;
-		int _nodeSize = 0;
-
 		public ArchModel()
 		{
-		}
-
-		public ArchModel(int nodeCount, int nodeSize = 2)
-		{
-			_nodeCount = nodeCount;
-			_nodeSize = nodeSize;
+			PropParameters.Update("NodeCount", 3);
+			PropParameters.Update("LightSize", 2);
 			Nodes = new(Get3DNodePoints());
 			PropertyChanged += PropertyModelChanged;
 		}
 
-		#region Protected Abstract Overrides
-		/// <inheritdoc/>				
-		public override void SetContext(object data)
-		{
-			if (data is IAttributeData attributeData)
-			{
-				_arch = attributeData;
-				Nodes = new(Get3DNodePoints());
-			}
-			else
-			{
-				throw new ArgumentException("Invalid data type. Expected IAttributeData.", nameof(data));
-			}
-		}
-
-		/// <inheritdoc/>				
-		protected override IEnumerable<NodePoint> Get3DNodePoints()
-		{
-			return Get3DNodePoints(_arch.NodeCount, _arch.LightSize);
-		}
-		#endregion
-
-			
 		/// <summary>
 		/// Calculates the 3-D points that make up the arch.
 		/// </summary>
-		/// <param name="numPoints">Number of node points in the arch</param>
-		/// <param name="size">Size of the light</param>
 		/// <returns>Collection of node points that make up the arch</returns>
-		public List<NodePoint> Get3DNodePoints(double numPoints, int size)
+		protected override IEnumerable<NodePoint> Get3DNodePoints()
 		{
+			int numPoints = (int)PropParameters.Get("NodeCount");
+			int size = (int)PropParameters.Get("LightSize");
+			ObservableCollection<AxisRotationModel> rotations = (ObservableCollection<AxisRotationModel>)PropParameters.Get("Rotations");
+
 			List<NodePoint> vertices = new List<NodePoint>();
 			double xScale = .5f;
 			double yScale = 1;
@@ -80,7 +53,7 @@ namespace VixenModules.App.Props.Models.Arch
 			}
 
 			// (Optionally) rotate the points along the X, Y, and Z axis
-			RotatePoints(vertices, AxisRotationViewModel.ConvertToModel(_arch.Rotations));
+			RotatePoints(vertices, rotations);
 
 			return vertices;
 		}

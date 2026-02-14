@@ -1,4 +1,6 @@
-﻿namespace Vixen.Sys.Props.Model
+﻿using System.ComponentModel;
+
+namespace Vixen.Sys.Props.Model
 {
 	/// <summary>
 	/// Defines the coordinate system axis.
@@ -6,8 +8,8 @@
 	public enum Axis
 	{
 		XAxis,
-		YAxis, 
-		ZAxis	
+		YAxis,
+		ZAxis
 	};
 
 	/// <summary>
@@ -47,7 +49,7 @@
 			};
 		}
 
-		private string ConvertAxis(Axis axis)
+		public static string ConvertAxis(Axis axis)
 		{
 			return axis switch
 			{

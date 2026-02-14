@@ -1004,6 +1004,9 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			// Get the Catel type factory
 			ITypeFactory typeFactory = this.GetTypeFactory();
 
+			IPropFactory newPropFactory = PropFactory.CreateInstance(propType);
+			(IProp newProp, IPropGroup propGroup) = newPropFactory.CreateBaseProp();
+
 			// Retrieve the color scheme service
 			IBaseColorSchemeService baseColorService = (IBaseColorSchemeService)dependencyResolver.Resolve(typeof(IBaseColorSchemeService));
 
@@ -1012,6 +1015,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 			// Use the type factory to create the prop wizard
 			(IPropWizard Wizard, IPropFactory Factory) propWizard = PropWizardFactory.CreateInstance(propType, typeFactory);
+
 
 			// Configure the wizard window to show up in the Windows task bar
 			propWizard.Wizard.ShowInTaskbarWrapper = true;
@@ -1031,6 +1035,8 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			// Configure the wizard with a navigation controller														
 			propWizard.Wizard.NavigationControllerWrapper = typeFactory.CreateInstanceWithParametersAndAutoCompletion<PropWizardNavigationController>(propWizard.Wizard);
 
+			newPropFactory.LoadWizard(newProp, propWizard.Wizard);
+
 			var ws = dependencyResolver.Resolve<IWizardService>();
 			if (ws != null && propWizard.Wizard != null)
 			{
@@ -1039,7 +1045,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 				if (result.HasValue && result.Value)
 				{
 					// Have the prop factory create the props from the wizard data
-					IPropGroup propGroup = propWizard.Factory.GetProps(propWizard.Wizard);
+					newPropFactory.UpdateProp(newProp, propWizard.Wizard);
 
 					// User did not cancel					
 					return propGroup;  

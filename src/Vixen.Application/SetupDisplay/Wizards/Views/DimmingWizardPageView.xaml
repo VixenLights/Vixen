@@ -46,7 +46,7 @@
             </Grid.ColumnDefinitions>
 
             <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Enter Maximum Brightness</Label>
-            <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Enter Ramp Steps</Label>
+            <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Enter Gamma Value</Label>
             <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Brightness Curve</Label>
             <controls:SuperSlider x:Name="BrightnessSlider" Grid.Row="0" Grid.Column="1" Minimum="0" Maximum="100" 
                                   Value="{Binding Brightness}"

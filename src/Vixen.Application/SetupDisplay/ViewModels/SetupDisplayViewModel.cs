@@ -2,7 +2,9 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Input;
 
 using Catel.Data;
@@ -421,26 +423,29 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		{
 			get { return GetValue<IProp>(SelectedPropProperty); }
 			set 
-			{				
-				// If the prop is a light based prop then...
-				if (value?.PropModel is ILightPropModel lightPropModel)
-				{
-					// Transfer the rotations from the model to the view model
-					int index = 0;
-					foreach (AxisRotationModel rotationModel in lightPropModel.Rotations)
-					{
-						Rotations[index].Axis = GetAxis(rotationModel.Axis);
-						Rotations[index].RotationAngle = rotationModel.RotationAngle;	
-						index++;
-					}
-				}
+			{
 				SetValue(SelectedPropProperty, value);
+				SelectedPropText = (value as IProp)?.GetSummary();
 
 				// Force the CanExecute delegate to run
 				((RelayCommand)AddPropToPreview).RaiseCanExecuteChanged();				
 			}
 		}
 
+		public string SelectedPropText
+		{
+			get { return GetValue<string>(SelectedPropTextProperty); }
+			set { SetValue(SelectedPropTextProperty, value); }
+		}
+		public static readonly IPropertyData SelectedPropTextProperty = RegisterProperty<string>(nameof(SelectedPropText));
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		// Standard method to notify the UI of changes
+		protected void OnPropertyChanged([CallerMemberName] string name = null)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+		}
 
 		/// <summary>
 		/// Event handler for when a prop rotation changed.
@@ -453,7 +458,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			if (SelectedProp?.PropModel is ILightPropModel lightPropModel)
 			{
 				// Update the prop nodes
-				lightPropModel.UpdatePropNodes();
+//ToDo(1)				lightPropModel.UpdatePropNodes();
 			}
 		}
 

@@ -31,7 +31,12 @@ namespace VixenModules.App.Props.Models.Arch
 
 			PropModel = new IntelligentFixtureModel();			
 		}
-		
+
+		public override string GetSummary()
+		{
+			return null;
+		}
+
 		/*
 
 		public Arch(string name, int nodeCount) : this(name, nodeCount, StringTypes.Pixel)
@@ -46,7 +51,7 @@ namespace VixenModules.App.Props.Models.Arch
 			PropModel = model;
 			PropModel.PropertyChanged += PropModel_PropertyChanged;
 			PropertyChanged += Arch_PropertyChanged;
-			
+
 			_generateDebouncer = new Debouncer(() =>
 			{
 				GenerateElementsAsync().SafeFireAndForget();
@@ -196,7 +201,7 @@ namespace VixenModules.App.Props.Models.Arch
 		private void UpdateDefaultPropComponents()
 		{
 			var head = GetOrCreatePropElementNode();
-			
+
 			//Update the left and right to match the new node count
 			var propComponentLeft = PropComponents.FirstOrDefault(x => x.Name == $"{Name} Left");
 			var propComponentRight = PropComponents.FirstOrDefault(x => x.Name == $"{Name} Right");
