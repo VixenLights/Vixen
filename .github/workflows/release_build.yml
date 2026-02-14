@@ -42,7 +42,16 @@ jobs:
       
     steps:
     
-      - uses: actions/checkout@v4
+      - name Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+      
+      - name: Display dotnet version
+        run: dotnet --version
 
       - name: create a custom version using run number offset by 968 
         shell: bash

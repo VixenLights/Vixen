@@ -34,9 +34,18 @@ jobs:
 
     steps:
     
-      - uses: actions/checkout@v4
+      - name Checkout
+        uses: actions/checkout@v4
       
       - uses: nuget/setup-nuget@v2
+      
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+      
+      - name: Display dotnet version
+        run: dotnet --version
         
       - uses: microsoft/setup-msbuild@v2
       
