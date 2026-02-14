@@ -37,8 +37,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
-      - uses: nuget/setup-nuget@v2
-      
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v4
         with:
@@ -49,11 +47,8 @@ jobs:
         
       - uses: microsoft/setup-msbuild@v2
       
-      - name: NuGet Restore
-        run: nuget restore Vixen.sln
-        
       - name: Build Release
-        run: msbuild Vixen.sln -m -t:Rebuild -p:Configuration=Release
+        run: msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release
   
       - run: dir
         shell: cmd

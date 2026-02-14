@@ -109,7 +109,7 @@ jobs:
     outputs:
       setup_64: ${{ env.SETUP_64 }}
 
-    runs-on: windows-2022
+    runs-on: windows-2025
 
     steps:
     
@@ -119,18 +119,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: _releaseNotes
-       
-      - uses: nuget/setup-nuget@v2
         
       - uses: microsoft/setup-msbuild@v2
         with:
           msbuild-architecture: x64
       
-      - name: NuGet Restore
-        run: nuget restore Vixen.sln
-        
       - name: Build x64
-        run: msbuild Vixen.sln -m -t:Rebuild -p:Configuration=Deploy -p:Platform=x64 -p:PlatformTarget=x64 -p:Environment=${{ needs.setup.outputs.environment }} -p:App_Version=${{ needs.setup.outputs.app_version }} -p:Assembly_Version=${{ needs.setup.outputs.version }}
+        run: msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Deploy -p:Platform=x64 -p:PlatformTarget=x64 -p:Environment=${{ needs.setup.outputs.environment }} -p:App_Version=${{ needs.setup.outputs.app_version }} -p:Assembly_Version=${{ needs.setup.outputs.version }}
   
       - name: Set installer name in environment
         working-directory: Release\Setup\${{ needs.setup.outputs.environment }}
@@ -151,7 +146,7 @@ jobs:
       - setup
       - build_x64
 
-    runs-on: windows-2022
+    runs-on: windows-2025
 
     steps:
 
