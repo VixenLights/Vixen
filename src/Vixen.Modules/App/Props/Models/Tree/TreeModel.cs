@@ -2,7 +2,7 @@
 using System.Drawing;
 
 using Vixen.Sys.Props.Model;
-
+using VixenApplication.SetupDisplay.Wizards.HelperTools;
 using VixenModules.App.Props.Models.Line;
 
 namespace VixenModules.App.Props.Models.Tree
@@ -33,7 +33,8 @@ namespace VixenModules.App.Props.Models.Tree
 			_nodesPerString = nodesPerString;
 			_nodeSize = nodeSize;
 			_topRadius = 10;
-			_bottomRadius = 100;			
+			_bottomRadius = 100;
+
 			Nodes = new(Get3DNodePoints());
 			PropertyChanged += PropertyModelChanged;			
 		}
@@ -129,18 +130,15 @@ namespace VixenModules.App.Props.Models.Tree
 		}
 
 		#endregion
-		public override void SetContext(object data)
-		{
-			throw new ArgumentException("Invalid data type. Expected IAttributeData.", nameof(data));
-		}
-
-
 		/// <summary>
 		/// Creates the 3-D points that make up the tree.
 		/// </summary>
 		/// <returns>3-D points that make up the tree</returns>
-		private IEnumerable<NodePoint> Get3DNodePoints(float width, float height)
+		protected override IEnumerable<NodePoint> Get3DNodePoints()
 		{
+			float width = (float)PropParameters["Width"];
+			float height = (float)PropParameters["Height"];
+
 			// Create the collection of node points
 			List<NodePoint> treePoints = new List<NodePoint>();
 
@@ -170,15 +168,6 @@ namespace VixenModules.App.Props.Models.Tree
 			return treePoints;
 		}
 		
-		/// <summary>
-		/// Creates the 3-D points that make up the tree.
-		/// </summary>
-		/// <returns>3-D points that make up the tree</returns>
-		protected override IEnumerable<NodePoint> Get3DNodePoints()
-		{
-			return Get3DNodePoints(1.0f, 1.0f);		
-		}
-
 		/// <summary>
 		/// Creates a strand of nodes.
 		/// </summary>

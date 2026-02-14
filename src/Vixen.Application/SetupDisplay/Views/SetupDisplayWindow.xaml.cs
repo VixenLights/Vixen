@@ -57,7 +57,7 @@ namespace VixenApplication.SetupDisplay.Views
 			{
 				ElementTree.Invoke(ElementTree.PopulateNodeTree);
 			}
-			Debug.WriteLine("Refreshed");
+//			Debug.WriteLine("Refreshed");
 		}
 
 		private void NodeManager_NodesChanged(object? sender, EventArgs e)

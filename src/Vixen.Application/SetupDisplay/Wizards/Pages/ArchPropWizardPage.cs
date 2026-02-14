@@ -8,6 +8,7 @@ using Vixen.Sys.Props;
 using VixenModules.App.Props.Models.Arch;
 using VixenModules.App.Props.Models;
 using Vixen.Sys.Props.Model;
+using System.ComponentModel;
 
 namespace VixenApplication.SetupDisplay.Wizards.Pages
 {
@@ -17,12 +18,14 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 		{
 			Title = "Basic Attributes";
 			Description = $"Enter attributes for {PropType.Arch.GetEnumDescription()}";
-			Name = VixenSystem.Props.GenerateUniquePropTitle(PropType.Arch);
 			NodeCountMinimum = 3;
 			NodeCountMaximum = 100;
-			NodeCount = 24;
 			LightSizeMinimum = 1;
 			LightSizeMaximum = 50;
+
+			// Generic parameters
+			Name = "Arch";
+			NodeCount = 20;
 			LightSize = 2;
 			StringType = StringTypes.Pixel;
 			ArchWiringStart = ArchStartLocation.Left;
@@ -52,7 +55,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 		public int NodeCount
 		{
 			get { return GetValue<int>(NodeCountProperty); }
-			set { SetValue(NodeCountProperty, Math.Clamp(value, NodeCountMinimum, NodeCountMaximum)); }
+			set { SetValue(NodeCountProperty, value); }
 		}
 		private static readonly IPropertyData NodeCountProperty = RegisterProperty<int>(nameof(NodeCount));
 
@@ -189,27 +192,30 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 			return new SummaryItem
 			{
 				Title = this.Title,
-				Summary = $"Prop Type: {PropType.Arch.GetEnumDescription()}\nName: {Name}\nLight Count: {NodeCount}\nLight Size: {LightSize}\n" +
-				          $"Light Type: {StringType}\nStarting Position: {ArchWiringStart}\n" +
-						  $"{Rotations[(int)Axis.XAxis].Axis} Rotation: {Rotations[(int)Axis.XAxis].RotationAngle}\u00B0\n" +
-						  $"{Rotations[(int)Axis.YAxis].Axis} Rotation: {Rotations[(int)Axis.YAxis].RotationAngle}\u00B0\n" +
-						  $"{Rotations[(int)Axis.ZAxis].Axis} Rotation: {Rotations[(int)Axis.ZAxis].RotationAngle}\u00B0\n"
+				Summary = $"Prop Type: {PropType.Arch.GetEnumDescription()}\n" +
+						  $"Name: {Name}\n" +
+						  $"Light Count: {NodeCount}\n" +
+						  $"Light Size: {LightSize}\n" +
+				          $"Light Type: {StringType}\n" +
+						  $"Starting Position: {ArchWiringStart}\n" +
+						  $"{Rotations[0].Axis} Rotation: {Rotations[0].RotationAngle}\u00B0\n" +
+						  $"{Rotations[1].Axis} Rotation: {Rotations[1].RotationAngle}\u00B0\n" +
+						  $"{Rotations[2].Axis} Rotation: {Rotations[2].RotationAngle}\u00B0"
 			};
 		}
 
-		/// <summary>
-		/// Gets the prop based on the settings in the wizard.
-		/// </summary>
-		/// <returns>A copy of the prop.</returns>
-		public IProp GetProp()
-		{
-			var arch = VixenSystem.Props.CreateProp<Arch>(Name);
-			arch.NodeCount = NodeCount;
-			arch.ArchWiringStart = ArchWiringStart;
-			arch.StringType = StringType;
-			arch.LightSize = LightSize;
-			arch.Rotations = Rotations;
-			return arch;
-		}
+		///// <summary>
+		///// Gets the prop based on the settings in the wizard.
+		///// </summary>
+		///// <returns>A copy of the prop.</returns>
+		//public IProp GetProp()
+		//{
+		//	var arch = VixenSystem.Props.CreateProp<Arch>(Name);
+		//	arch.NodeCount = NodeCount;
+		//	arch.ArchWiringStart = ArchWiringStart;
+		//	arch.StringType = StringType;
+		//	arch.LightSize = LightSize;
+		//	return arch;
+		//}
 	}
 }

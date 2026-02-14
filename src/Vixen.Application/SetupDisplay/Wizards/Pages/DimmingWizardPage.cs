@@ -1,24 +1,22 @@
 ﻿using Catel.Data;
 using Orc.Wizard;
+using System.Runtime.CompilerServices;
 using Vixen.Extensions;
 using Vixen.Sys.Props;
+using Vixen.Sys.Props.Model;
 using VixenModules.App.Curves;
+using VixenModules.App.Props.Models;
 
 namespace VixenApplication.SetupDisplay.Wizards.Pages
 {
 	public class DimmingWizardPage : WizardPageBase
 	{
-		public enum DimmingType
-		{
-			NoCurve,
-			Simple,
-			Library
-		}
-
 		public DimmingWizardPage()
 		{
 			Title = "Dimming Curve";
 			Description = $"Enter dimming information";
+
+			// Set with some default parameters
 			Curve = null;
 			DimmingTypeOption = DimmingType.NoCurve;
 			Brightness = 80;
@@ -67,7 +65,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 			string curveName = "None Specified";
 			if (DimmingTypeOption == DimmingType.Simple)
 			{
-				curveName = $"Brightness: {Brightness}%, Gamma: {Gamma}";
+				curveName = $"Brightness: {Brightness}%, Gamma: {Gamma:0.0}";
 			}
 			else if (DimmingTypeOption == DimmingType.Library && Curve != null)
 			{
@@ -88,9 +86,9 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 			};
 		}
 
-		public IProp GetProp()
-		{
-			return null;
-		}
+		//public IProp GetProp()
+		//{
+		//	return null;
+		//}
 	}
 }

@@ -56,7 +56,9 @@ namespace Vixen.Sys.Props
 		/// </summary>
 		IPropModel PropModel { get; }
 
-	
+		public abstract string GetSummary();
+
+
 		/// <summary>
 		/// Gets the collection of components associated with the prop.
 		/// </summary>

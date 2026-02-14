@@ -56,6 +56,11 @@ namespace VixenModules.App.Props.Models.Tree
 			//TODO Map element structure to model nodes
 		}
 
+		override public string GetSummary()
+		{
+			return null;
+		}
+
 		private async void Tree_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
 			try
