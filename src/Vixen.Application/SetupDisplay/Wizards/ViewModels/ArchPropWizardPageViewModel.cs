@@ -5,14 +5,20 @@ using Vixen.Sys.Props;
 using VixenApplication.SetupDisplay.Wizards.Pages;
 using VixenModules.App.Props.Models.Arch;
 using VixenModules.App.Props.Models;
+using Vixen.Sys.Props.Model;
+using VixenApplication.SetupDisplay.OpenGL;
+using Vixen.Sys;
+using System.ComponentModel;
+using System.Reflection;
+using VixenApplication.SetupDisplay.Wizards.HelperTools;
+using System;
 
 namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 {
-	public class ArchPropWizardPageViewModel : GraphicsWizardPageViewModelBase<ArchPropWizardPage, VixenModules.App.Props.Models.Arch.ArchModel>, IPropWizardPageViewModel, VixenModules.App.Props.Models.Arch.IAttributeData
+	public class ArchPropWizardPageViewModel : GraphicsWizardPageViewModelBase<ArchPropWizardPage, VixenModules.App.Props.Models.Arch.ArchModel>, IPropWizardPageViewModel
 	{
 		public ArchPropWizardPageViewModel(ArchPropWizardPage wizardPage) : base(wizardPage)
 		{
-			LightPropModel.SetContext(this);
 		}
 
 		/// <summary>
@@ -21,6 +27,8 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		private void RefreshGraphics()
 		{
 			// Update the prop nodes
+			LightPropModel.PropParameters.Update("NodeCount", NodeCount);
+			LightPropModel.PropParameters.Update("LightSize", LightSize);
 			LightPropModel.UpdatePropNodes();
 		}
 
@@ -35,8 +43,8 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 			set { SetValue(NameProperty, value); }
 		}
 		private static readonly IPropertyData NameProperty = RegisterProperty<string>(nameof(Name));
-		#endregion
 
+		#endregion
 		#region NodeCount property
 		/// <summary>
 		/// Gets or sets the number of lights.
@@ -49,8 +57,8 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		public int NodeCount
 		{
 			get { return GetValue<int>(NodeCountProperty); }
-			set 
-			{ 
+			set
+			{
 				SetValue(NodeCountProperty, value);
 				RefreshGraphics();
 			}
@@ -169,25 +177,6 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		private static readonly IPropertyData ArchWiringStartProperty = RegisterProperty<ArchStartLocation>(nameof(ArchWiringStart));
 		#endregion
 
-		#region Rotation Control
-		/// <summary>
-		/// Collection of rotations to support rotating the props around the x,y, and z axis.
-		/// </summary>
-		[ViewModelToModel]
-		public ObservableCollection<AxisRotationViewModel> Rotations
-		{
-			get
-			{
-				return GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty);
-			}
-			set
-			{
-				SetValue(RotationsProperty, value);
-			}
-		}
-
-		public static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
-		#endregion
 
 		#region Optional Left / Right property
 		/// <summary>
@@ -214,6 +203,12 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 			{
 				validationResults.Add(FieldValidationResult.CreateError("Name", "Name is required"));
 			}
+		}
+
+		protected override async Task InitializeAsync()
+		{
+			await base.InitializeAsync();
+			RefreshGraphics();
 		}
 	}
 }

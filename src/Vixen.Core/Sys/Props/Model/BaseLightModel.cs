@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System.Collections.ObjectModel;
 using Vixen.Extensions;
+using VixenApplication.SetupDisplay.Wizards.HelperTools;
 
 namespace Vixen.Sys.Props.Model
 {
@@ -51,12 +52,6 @@ namespace Vixen.Sys.Props.Model
 
 		#region Abstract Methods
 		/// <summary>
-		/// Sets the context data for the prop.
-		/// </summary>
-		/// <param name="data">The context of the parent class.</param>
-		public abstract void SetContext(object data);
-
-		/// <summary>
 		/// Retrieves the 3-D node points that make up the prop.
 		/// </summary>
 		/// <returns>3-D note points that make up the prop</returns>
@@ -73,8 +68,6 @@ namespace Vixen.Sys.Props.Model
 			get => _nodes;
 			set => SetProperty(ref _nodes, value);
 		}
-
-		public ObservableCollection<AxisRotationModel> Rotations { get; set; }
 		#endregion
 
 		#region Public Methods

@@ -3,6 +3,7 @@ using Catel.MVVM;
 using Orc.Wizard;
 using VixenApplication.SetupDisplay.Wizards.Pages;
 using VixenModules.App.Curves;
+using VixenModules.App.Props.Models;
 using static VixenApplication.SetupDisplay.Wizards.Pages.DimmingWizardPage;
 
 namespace VixenApplication.SetupDisplay.Wizards.ViewModels
