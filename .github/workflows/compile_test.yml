@@ -30,7 +30,7 @@ jobs:
 
   compile_test:
   
-    runs-on: windows-2022
+    runs-on: windows-2025
 
     steps:
     

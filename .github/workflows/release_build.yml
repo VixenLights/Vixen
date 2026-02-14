@@ -25,7 +25,7 @@ jobs:
   
     if: github.repository == 'VixenLights/Vixen' || ${{ vars.CAN_RUN_RELEASE_ACTION }} == 'true'
   
-    runs-on: windows-2022
+    runs-on: windows-2025
     environment: 
       name: delayed-build
 
