@@ -4,6 +4,7 @@
 				<AssemblyName>Module.Editor.TimedSequenceEditor</AssemblyName>
 			 <UseWindowsForms>true</UseWindowsForms>
 				<UseWPF>true</UseWPF>
+			<NoWarn>$(NoWarn);WFO1000</NoWarn>
 		</PropertyGroup>
 
 		<ItemGroup>

@@ -12,7 +12,7 @@
 		<Version>$(Assembly_Version)</Version>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/VixenLights/Vixen</RepositoryUrl>
-		<TargetFramework>net8.0-windows</TargetFramework>
+		<TargetFramework>net10.0-windows</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>

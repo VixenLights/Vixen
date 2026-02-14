@@ -5,6 +5,7 @@
 				<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 				<RootNamespace>Common.Controls</RootNamespace>
 				<UseWindowsForms>true</UseWindowsForms>
+				<NoWarn>$(NoWarn);WFO1000</NoWarn>
 		</PropertyGroup>
 
 		<ItemGroup>

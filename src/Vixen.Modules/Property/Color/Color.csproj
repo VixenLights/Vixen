@@ -3,6 +3,7 @@
 		<PropertyGroup>
 				<RootNamespace>VixenModules.Property.Color</RootNamespace>
 				<UseWindowsForms>true</UseWindowsForms>
+			<NoWarn>$(NoWarn);WFO1000</NoWarn>
 		</PropertyGroup>
 
 		<ItemGroup>
