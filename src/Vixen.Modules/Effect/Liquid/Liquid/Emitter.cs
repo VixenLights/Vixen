@@ -297,7 +297,20 @@ namespace VixenModules.Effect.Liquid
 		[ProviderDisplayName(@"ParticleColor")]
 		[ProviderDescription(@"ParticleColor")]
 		[PropertyOrder(3)]
-		public ColorGradient Color { get; set; }
+		public ColorGradient Color
+		{
+			get => _color;
+			set
+			{
+				if (Equals(value, _color))
+				{
+					return;
+				}
+
+				_color = value;
+				OnPropertyChanged();
+			}
+		}
 
 		/// <summary>
 		/// Brightness of the emitter color.
@@ -305,7 +318,20 @@ namespace VixenModules.Effect.Liquid
 		[ProviderDisplayName(@"EmitterBrightness")]
 		[ProviderDescription(@"EmitterBrightness")]
 		[PropertyOrder(4)]
-		public Curve Brightness { get; set; }
+		public Curve Brightness
+		{
+			get => _brightness;
+			set
+			{
+				if (Equals(value, _brightness))
+				{
+					return;
+				}
+
+				_brightness = value;
+				OnPropertyChanged();
+			}
+		}
 
 		/// <summary>
 		/// Lifetime of the emitter particles.
@@ -313,7 +339,20 @@ namespace VixenModules.Effect.Liquid
 		[ProviderDisplayName(@"ParticleLifetime")]
 		[ProviderDescription(@"ParticleLifetime")]
 		[PropertyOrder(5)]
-		public Curve Lifetime { get; set; }
+		public Curve Lifetime
+		{
+			get => _lifetime;
+			set
+			{
+				if (Equals(value, _lifetime))
+				{
+					return;
+				}
+
+				_lifetime = value;
+				OnPropertyChanged();
+			}
+		}
 
 		/// <summary>
 		/// Velocity of the particles.
@@ -321,7 +360,20 @@ namespace VixenModules.Effect.Liquid
 		[ProviderDisplayName(@"ParticleVelocity")]
 		[ProviderDescription(@"ParticleVelocity")]
 		[PropertyOrder(6)]
-		public Curve ParticleVelocity { get; set; }
+		public Curve ParticleVelocity
+		{
+			get => _particleVelocity;
+			set
+			{
+				if (Equals(value, _particleVelocity))
+				{
+					return;
+				}
+
+				_particleVelocity = value;
+				OnPropertyChanged();
+			}
+		}
 
 		private bool _animate = false;
 
@@ -440,7 +492,20 @@ namespace VixenModules.Effect.Liquid
 		[ProviderDisplayName(@"VelocityX")]
 		[ProviderDescription(@"VelocityX")]
 		[PropertyOrder(12)]
-		public Curve VelocityX { get; set; }
+		public Curve VelocityX
+		{
+			get => _velocityX;
+			set
+			{
+				if (Equals(value, _velocityX))
+				{
+					return;
+				}
+
+				_velocityX = value;
+				OnPropertyChanged();
+			}
+		}
 
 		/// <summary>
 		/// Velocity of the emittter in the Y direction.
@@ -448,7 +513,20 @@ namespace VixenModules.Effect.Liquid
 		[ProviderDisplayName(@"VelocityY")]
 		[ProviderDescription(@"VelocityY")]
 		[PropertyOrder(13)]
-		public Curve VelocityY { get; set; }
+		public Curve VelocityY
+		{
+			get => _velocityY;
+			set
+			{
+				if (Equals(value, _velocityY))
+				{
+					return;
+				}
+
+				_velocityY = value;
+				OnPropertyChanged();
+			}
+		}
 
 		/// <summary>
 		/// Manual position of the emitter in the X direction.
@@ -456,7 +534,20 @@ namespace VixenModules.Effect.Liquid
 		[ProviderDisplayName(@"XPosition")]
 		[ProviderDescription(@"XPosition")]
 		[PropertyOrder(14)]
-		public Curve X { get; set; }
+		public Curve X
+		{
+			get => _x;
+			set
+			{
+				if (Equals(value, _x))
+				{
+					return;
+				}
+
+				_x = value;
+				OnPropertyChanged();
+			}
+		}
 
 		/// <summary>
 		/// Manual position of the emitter in the Y direction.
@@ -464,15 +555,41 @@ namespace VixenModules.Effect.Liquid
 		[ProviderDisplayName(@"YPosition")]
 		[ProviderDescription(@"YPosition")]
 		[PropertyOrder(15)]
-		public Curve Y { get; set; }
-				
+		public Curve Y
+		{
+			get => _y;
+			set
+			{
+				if (Equals(value, _y))
+				{
+					return;
+				}
+
+				_y = value;
+				OnPropertyChanged();
+			}
+		}
+
 		/// <summary>
 		/// Source size of the emitter.
 		/// </summary>
 		[ProviderDisplayName(@"NozzleSize")]
 		[ProviderDescription(@"NozzleSize")]
 		[PropertyOrder(16)]
-		public Curve SourceSize { get; set; }
+		public Curve SourceSize
+		{
+			get => _sourceSize;
+			set
+			{
+				if (Equals(value, _sourceSize))
+				{
+					return;
+				}
+
+				_sourceSize = value;
+				OnPropertyChanged();
+			}
+		}
 
 		private NozzleMovement _nozzleMovement = NozzleMovement.FixedAngle;
 
@@ -502,8 +619,21 @@ namespace VixenModules.Effect.Liquid
 		[ProviderDisplayName(@"NozzleAngle")]
 		[ProviderDescription(@"NozzleAngle")]
 		[PropertyOrder(18)]
-		public Curve NozzleAngle { get; set; }
-				
+		public Curve NozzleAngle
+		{
+			get => _nozzleAngle;
+			set
+			{
+				if (Equals(value, _nozzleAngle))
+				{
+					return;
+				}
+
+				_nozzleAngle = value;
+				OnPropertyChanged();
+			}
+		}
+
 		private int _oscillateStartAngle;
 
 		/// <summary>
@@ -556,7 +686,20 @@ namespace VixenModules.Effect.Liquid
 		[ProviderDisplayName(@"NozzleSpeed")]
 		[ProviderDescription(@"NozzleSpeed")]
 		[PropertyOrder(21)]
-		public Curve OscillationSpeed { get; set; }
+		public Curve OscillationSpeed
+		{
+			get => _oscillationSpeed;
+			set
+			{
+				if (Equals(value, _oscillationSpeed))
+				{
+					return;
+				}
+
+				_oscillationSpeed = value;
+				OnPropertyChanged();
+			}
+		}
 
 		private FlowControl _flowControl = FlowControl.Continuous;
 
@@ -586,8 +729,26 @@ namespace VixenModules.Effect.Liquid
 		[ProviderDisplayName(@"Flow")]
 		[ProviderDescription(@"Flow")]
 		[PropertyOrder(23)]
-		public Curve Flow { get; set; }
-				
+		public Curve Flow
+		{
+			get => _flow;
+			set
+			{
+				if (Equals(value, _flow))
+				{
+					return;
+				}
+
+				_flow = value;
+				OnPropertyChanged();
+			}
+		}
+
+		public override string ToString()
+		{
+			return "Emitter";
+		}
+
 		/// <summary>
 		/// Updates the selected mark collection drop down.
 		/// This method allows for the associated mark collection to be renamed.
@@ -761,6 +922,18 @@ namespace VixenModules.Effect.Liquid
 		}
 
 		private int _offTime = 0;
+		private ColorGradient _color;
+		private Curve _brightness;
+		private Curve _lifetime;
+		private Curve _particleVelocity;
+		private Curve _velocityX;
+		private Curve _velocityY;
+		private Curve _x;
+		private Curve _y;
+		private Curve _sourceSize;
+		private Curve _nozzleAngle;
+		private Curve _oscillationSpeed;
+		private Curve _flow;
 
 		/// <summary>
 		/// Off time for the emitter in seconds.

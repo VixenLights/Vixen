@@ -1,5 +1,7 @@
-﻿using System.ComponentModel;
-using Common.Controls;
+﻿using Common.Controls;
+using Common.Controls.Theme;
+using System;
+using System.ComponentModel;
 using Vixen.Module.Effect;
 using Timer = System.Timers.Timer;
 
@@ -18,11 +20,98 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			InitializeComponent();
 
-			foreach (EffectParameterPickerControl control in controls)
+			var groupedControls = controls.GroupBy(x => x.PropertyInfo.OwnerMetaData.Owner).ToList();
+
+			if (groupedControls.Count > 1)
 			{
-				control.Click += ParameterControl_Clicked;
-				flowLayoutPanel1.Controls.Add(control);
+				flowLayoutPanel1.FlowDirection = FlowDirection.TopDown;
+				foreach (IGrouping<object, EffectParameterPickerControl> effectParameterPickerControls in groupedControls)
+				{
+					var ownerMetaData = effectParameterPickerControls.First().PropertyInfo.OwnerMetaData;
+					var displayName = ownerMetaData.OwnerDisplayName;
+					if (ownerMetaData.IsCollectionChild)
+					{
+						displayName += $" {ownerMetaData.CollectionIndex + 1}";
+					}
+
+					if (displayName.Length > 10)
+					{
+						displayName = displayName.Substring(0, 10);
+					}
+					var grpBox = new GroupBox()
+					{
+						Text = displayName,
+						AutoSize = true,
+						AutoSizeMode = AutoSizeMode.GrowAndShrink
+					};
+					ThemeUpdateControls.UpdateControls(grpBox);
+					flowLayoutPanel1.Controls.Add(grpBox);
+					var flowRow = new FlowLayoutPanel
+					{
+						FlowDirection = FlowDirection.LeftToRight,
+						Margin = new Padding(5, 5, 5, 5),
+						Dock = DockStyle.Fill,
+						AutoSize = true,
+						AutoSizeMode = AutoSizeMode.GrowOnly
+					};
+					grpBox.Controls.Add(flowRow);
+					foreach (EffectParameterPickerControl control in effectParameterPickerControls)
+					{
+						control.Margin = new Padding(0);
+						control.Click += ParameterControl_Clicked;
+						flowRow.Controls.Add(control);
+					}
+				}
 			}
+
+			else
+			{
+				flowLayoutPanel1.FlowDirection = FlowDirection.LeftToRight;
+				var groupControls = controls.Where(x => !string.IsNullOrEmpty(x.GroupName)).OrderBy(x => x.GroupName)
+					.ThenBy(x => x.Index);
+
+				foreach (EffectParameterPickerControl control in controls)
+				{
+					//Skip the group controls
+					if (string.IsNullOrEmpty(control.GroupName))
+					{
+						control.Click += ParameterControl_Clicked;
+						flowLayoutPanel1.Controls.Add(control);
+					}
+				}
+
+				var groupName = string.Empty;
+				FlowLayoutPanel flowRow = null;
+				foreach (var gc in groupControls)
+				{
+					if (gc.GroupName != groupName)
+					{
+						groupName = gc.GroupName;
+						var grpBox = new GroupBox()
+						{
+							Text = gc.GroupName,
+							AutoSize = true,
+							AutoSizeMode = AutoSizeMode.GrowAndShrink
+						};
+						ThemeUpdateControls.UpdateControls(grpBox);
+						flowLayoutPanel1.Controls.Add(grpBox);
+						flowRow = new FlowLayoutPanel
+						{
+							FlowDirection = FlowDirection.LeftToRight,
+							Margin = new Padding(5, 5, 5, 5),
+							Dock = DockStyle.Fill,
+							AutoSize = true,
+							AutoSizeMode = AutoSizeMode.GrowOnly
+						};
+						grpBox.Controls.Add(flowRow);
+					}
+
+					gc.Click += ParameterControl_Clicked;
+					flowRow?.Controls.Add(gc);
+				}
+			}
+
+				
 			_timer.Interval = closeInterval;
 			_timer.Elapsed += _timer_Elapsed;
 			_timer.Start();
@@ -30,6 +119,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void _timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
 		{
+			if (InvokeRequired)
+			{
+				BeginInvoke(() => CloseForm(DialogResult.Cancel));
+				return;
+			}
 			CloseForm(DialogResult.Cancel);
 		}
 
@@ -49,7 +143,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			CloseForm(DialogResult.OK);
 		}
 
-		public PropertyDescriptor PropertyInfo { get; private set; }
+		public PropertyMetaData PropertyInfo { get; private set; }
 
 		public IEffectModuleDescriptor EffectPropertyInfo { get; set; }
 

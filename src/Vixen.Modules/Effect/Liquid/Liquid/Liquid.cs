@@ -432,7 +432,18 @@ namespace VixenModules.Effect.Liquid
 			}
 			set
 			{
+				if (_emitterList != value && _emitterList != null)
+				{
+					//We have a whole new collection, so we need to unset the event handler.
+					_emitterList.ChildPropertyChanged -= EmitterListChildPropertyChanged;
+					if (value != null)
+					{
+						//We have a new collection, so we need to set the event handler.
+						value.ChildPropertyChanged += EmitterListChildPropertyChanged;
+					}
+				}
 				_emitterList = value;
+				
 				MarkDirty();
 				OnPropertyChanged();
 			}
@@ -1959,6 +1970,8 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>		
 		private void EmitterListChildPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{	
+			MarkDirty();
+			OnPropertyChanged(nameof(EmitterList));
 			// Updates the browseable state of the audio attributes
 			UpdateAudioAttributes();
 
