@@ -1,20 +1,22 @@
-﻿using System.ComponentModel;
+﻿using Common.Broadcast;
+using System.Collections;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.DirectoryServices.ActiveDirectory;
 using System.Timers;
 using System.Windows;
 using System.Windows.Forms.Integration;
-using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using System.Windows.Threading;
 using Vixen.Execution.Context;
+using Vixen.Module.Effect;
 using Vixen.Sys;
 using VixenModules.Editor.EffectEditor;
 using VixenModules.Editor.TimedSequenceEditor.Undo;
 using WeifenLuo.WinFormsUI.Docking;
 using Element = Common.Controls.Timeline.Element;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using PropertyValueChangedEventArgs = VixenModules.Editor.EffectEditor.PropertyValueChangedEventArgs;
 using Timer = System.Timers.Timer;
-using Common.Broadcast;
-using Vixen.Module.Effect;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -140,12 +142,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				element.UpdateNotifyContentChanged();
 				if (e.OldValue != null)
-					elementValues.Add(element, new Tuple<object, PropertyMetaData>(e.OldValue[i], new PropertyMetaData(e.Property.UnderLyingPropertyDescriptor(i), new PropertyOwnerMetaData(e.Property.Component))));
+				{
+					object component = IsCollection(e.Property.Component) ? ((IList)e.Property.Component)[i] : e.Property.Component;
+					elementValues.Add(element, new Tuple<object, PropertyMetaData>(e.OldValue[i], new PropertyMetaData(e.Property.UnderLyingPropertyDescriptor(i), new PropertyOwnerMetaData(component))));
+				}
 				i++;
 			}
 
 			var undo = new EffectsPropertyModifiedUndoAction(elementValues);
 			_sequenceEditorForm.AddEffectsModifiedToUndo(undo);
+		}
+
+		public bool IsCollection(object o)
+		{
+			return typeof(IList).IsAssignableFrom(o.GetType());
 		}
 
 		/// <summary>
