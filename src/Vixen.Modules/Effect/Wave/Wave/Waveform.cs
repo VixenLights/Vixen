@@ -365,7 +365,12 @@ namespace VixenModules.Effect.Wave
 				return BufferHt / 2.0;
 			}
 		}
-			
+
+		public override string ToString()
+		{
+			return "Waveform";
+		}
+
 		[Browsable(false)]
 		public int LastWaveThickness { get; set; }
 

@@ -744,6 +744,11 @@ namespace VixenModules.Effect.Liquid
 			}
 		}
 
+		public override string ToString()
+		{
+			return "Emitter";
+		}
+
 		/// <summary>
 		/// Updates the selected mark collection drop down.
 		/// This method allows for the associated mark collection to be renamed.

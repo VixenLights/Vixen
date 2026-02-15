@@ -332,6 +332,11 @@ namespace VixenModules.Effect.Morph
 		[Browsable(false)]
 		public double Time { get; set; }
 
+		public override string ToString()
+		{
+			return "Polygon";
+		}
+
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>
