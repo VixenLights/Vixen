@@ -37,7 +37,7 @@
 			// 
 			// labelParameterName
 			// 
-			labelParameterName.Location = new Point(4, 68);
+			labelParameterName.Location = new Point(4, 72);
 			labelParameterName.Margin = new Padding(4, 0, 4, 0);
 			labelParameterName.Name = "labelParameterName";
 			labelParameterName.Size = new Size(60, 39);
@@ -51,7 +51,7 @@
 			pictureParameterImage.Location = new Point(4, 4);
 			pictureParameterImage.Margin = new Padding(4);
 			pictureParameterImage.Name = "pictureParameterImage";
-			pictureParameterImage.Size = new Size(60, 60);
+			pictureParameterImage.Size = new Size(64, 64);
 			pictureParameterImage.TabIndex = 2;
 			pictureParameterImage.TabStop = false;
 			pictureParameterImage.Click += pictureParameterImage_Click;

@@ -4768,9 +4768,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private Bitmap drawBitmapBorder(Bitmap image)
 		{
 			Graphics gfx = Graphics.FromImage(image);
-			using (Pen p = new Pen(Color.FromArgb(136,136,136), 2))
+			using (Pen p = new Pen(Color.FromArgb(136,136,136), 1))
 			{
-				gfx.DrawRectangle(p, 0, 0, image.Width, image.Height);	
+				gfx.DrawRectangle(p, 0, 0, image.Width-1, image.Height-1);	
 			}
 			return image;	
 		}
