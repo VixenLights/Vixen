@@ -4,11 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:VixenApplication.SetupDisplay.Views"
-        xmlns:wpfPropertyGrid="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
         xmlns:controls="clr-namespace:Common.Controls;assembly=Controls"
         xmlns:viewModels="clr-namespace:VixenApplication.SetupDisplay.ViewModels"
         xmlns:html="clr-namespace:TheArtOfDev.HtmlRenderer.WPF;assembly=HtmlRenderer.Wpf"
-        xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
         Title="Display Setup" Height="850" Width="1200" WindowStartupLocation="CenterScreen" x:Name="DisplaySetup"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewModels:SetupDisplayViewModel, IsDesignTimeCreatable=False}">
