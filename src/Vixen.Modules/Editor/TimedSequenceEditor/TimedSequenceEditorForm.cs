@@ -4210,14 +4210,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private FormParameterPicker CreateParameterPicker(List<EffectParameterPickerControl> parameterPickerControls)
 		{
+			var bounds = Screen.FromControl(this).WorkingArea;
+
 			FormParameterPicker parameterPicker = new FormParameterPicker(parameterPickerControls)
 			{
 				StartPosition = FormStartPosition.Manual,
 				Top = _mouseOriginalPoint.Y
 			};
-			parameterPicker.Left = ((_mouseOriginalPoint.X + parameterPicker.Width) < Screen.FromControl(this).Bounds.Width)
+			parameterPicker.Left = ((_mouseOriginalPoint.X + parameterPicker.Width) < bounds.Width)
 				? _mouseOriginalPoint.X
 				: _mouseOriginalPoint.X - parameterPicker.Width;
+
+			//Make sure we are not off the bottom of the visible screen
+			if (parameterPicker.Height + _mouseOriginalPoint.Y > bounds.Height)
+			{
+				parameterPicker.Top = bounds.Height - parameterPicker.Height - 5;
+			}
 			return parameterPicker;
 		}
 
