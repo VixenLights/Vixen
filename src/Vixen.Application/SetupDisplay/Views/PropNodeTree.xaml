@@ -19,7 +19,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Themes/Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-
+            <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+            
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converters:BooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" True="Collapsed" False="Visible"/>
 
@@ -42,9 +43,13 @@
                 <Setter Property="ContextMenu" Value="{StaticResource PropNodeTreeContextMenu}"/>
             </Style>
 
-            <ContextMenu x:Key="PropNodeTreeItemContextMenu">
-                <MenuItem Header="Add Prop" ItemsSource="{Binding DataContext.PropNodeTreeViewModel.AvailableProps, 
-                                RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+            <ContextMenu x:Key="PropNodeTreeItemContextMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                <MenuItem Header="Add Prop" 
+                       Visibility="{Binding DataContext.PropNodeTreeViewModel.IsTopNode,
+                             RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},
+                             Converter={StaticResource BoolToVis}}"
+                       ItemsSource="{Binding DataContext.PropNodeTreeViewModel.AvailableProps, 
+                             RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
                     <MenuItem.ItemContainerStyle>
                         <Style TargetType="MenuItem">
                             <Setter Property="Header" Value="{Binding DisplayName}" />
@@ -55,6 +60,13 @@
                         </Style>
                     </MenuItem.ItemContainerStyle>
                 </MenuItem>
+                <MenuItem Header="Change Prop"
+                          Visibility="{Binding DataContext.PropNodeTreeViewModel.IsSubNode,
+                              RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},
+                              Converter={StaticResource BoolToVis}}"
+                          Command="{Binding DataContext.PropNodeTreeViewModel.ChangePropCommand,
+                              RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                          CommandParameter="{Binding}" />
                 <Separator/>
                 <MenuItem Header="Create Empty Group" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreateNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
                 <MenuItem Header="Copy to New Group" Command="{Binding Path=DataContext.PropNodeTreeViewModel.CreateGroupCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>

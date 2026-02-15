@@ -29,7 +29,7 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 			arch.LightSize = archPropPage.LightSize;
 			arch.LeftRight = archPropPage.LeftRight;
 			arch.Rotations = AxisRotationViewModel.ConvertToModel(archPropPage.Rotations);
-			arch.PropModel = archPropPage.Li
+			arch.PropModel = archPropPage.LightPropModel;
 
 			DimmingWizardPage dimmingPage = (DimmingWizardPage)wizard.Pages.Single(page => page is DimmingWizardPage);
 			arch.Curve = dimmingPage.Curve;
@@ -96,6 +96,7 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 			arch.LightSize = archPropPage.LightSize;
 			arch.LeftRight = archPropPage.LeftRight;
 			arch.Rotations = AxisRotationViewModel.ConvertToModel(archPropPage.Rotations);
+			arch.PropModel = archPropPage.LightPropModel;
 
 			DimmingWizardPage dimmingPage = (DimmingWizardPage)wizard.Pages.Single(page => page is DimmingWizardPage);
 			arch.Curve = dimmingPage.Curve;

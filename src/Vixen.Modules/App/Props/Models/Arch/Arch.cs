@@ -54,7 +54,7 @@ namespace VixenModules.App.Props.Models.Arch
 			PropertyChanged += Arch_PropertyChanged;
 
 			// Create Preview model
-//			PropModel = new ArchModel();
+			PropModel = new ArchModel();
 
 			_generateDebouncer = new Debouncer(() =>
 			{

@@ -159,17 +159,18 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 		#region Rotation property
 		public ObservableCollection<AxisRotationViewModel> Rotations
 		{
-			get
-			{
-				return GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty);
-			}
-			set
-			{
-				SetValue(RotationsProperty, value);
-			}
+			get { return GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty); }
+			set { SetValue(RotationsProperty, value); }
 		}
 		public static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
 		#endregion
+
+		public ArchModel LightPropModel
+		{
+			get { return GetValue<ArchModel>(LightPropModelProperty); }
+			set { SetValue(LightPropModelProperty, value); }
+		}
+		public static readonly IPropertyData LightPropModelProperty = RegisterProperty<ArchModel>(nameof(LightPropModel));
 
 		#region Optional Left / Right property
 		/// <summary>
