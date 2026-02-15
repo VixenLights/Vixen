@@ -4594,16 +4594,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			HandleGradientDropOnElements(elements, color);
 		}
 
-		private static IEnumerable<PropertyMetaData> GetPropertyMetaData(IEffect target)
-		{
-			var properties = PropertyDiscovery.GetBrowsableProperties(target).ToList();
-
-			return properties;
-		}
-
 		private static IEnumerable<PropertyMetaData> GetPropertyMetaDataForTypes(IEffect target, IList<Type> types)
 		{
-			return PropertyDiscovery.GetBrowsableProperties(target, types).ToList();
+			return PropertyDiscovery.GetBrowsableProperties(target, types);
 		}
 
 		private static readonly IList<Type> GradientTypes = [typeof(ColorGradient), typeof(List<ColorGradient>), typeof(List<GradientLevelPair>)];
