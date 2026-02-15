@@ -16,6 +16,7 @@ using Vixen.Sys.Props.Components;
 using Vixen.Sys.Props.Model;
 using VixenModules.App.Curves;
 using VixenModules.App.Props.Models;
+using System.Security.Cryptography;
 
 namespace VixenModules.App.Props.Models.Arch
 {
@@ -40,8 +41,8 @@ namespace VixenModules.App.Props.Models.Arch
 		{
 			Name = name;
 			StringType = stringType;
-			NodeCount = 29;
-			LightSize = 4;
+			NodeCount = 24;
+			LightSize = 2;
 			StringType = StringTypes.Pixel;
 			ArchWiringStart = ArchStartLocation.Left;
 			LeftRight = false;
@@ -125,6 +126,7 @@ namespace VixenModules.App.Props.Models.Arch
 			{
 				_leftRight = value;
 				OnPropertyChanged(nameof(LeftRight));
+				UpdateDefaultPropComponents();
 			}
 		}
 
@@ -147,8 +149,13 @@ namespace VixenModules.App.Props.Models.Arch
 				$"<b>{Rotations[0].Axis} Rotation:</b> {Rotations[0].RotationAngle}\u00B0<br>" +
 				$"<b>{Rotations[1].Axis} Rotation:</b> {Rotations[1].RotationAngle}\u00B0<br>" +
 				$"<b>{Rotations[2].Axis} Rotation:</b> {Rotations[2].RotationAngle}\u00B0<br>" +
-				"</body>" +
-				GetDimmingSummary();
+				 "</body>" +
+				 "<h2>Additional Props</h2>" +
+				 "<body>" +
+				$"<b>Left and Right Arches:</b> {LeftRight}<br>" +
+				 "</body>" +
+				GetDimmingSummary() +
+				GetBaseSummary();
 
 			return Summary;
 		}
@@ -262,6 +269,20 @@ namespace VixenModules.App.Props.Models.Arch
 					}
 
 					i++;
+				}
+			}
+			else
+			{
+				// Remove Right
+				if (PropComponents.Count == 3)
+				{
+					PropComponents.Remove(PropComponents[2]);
+				}
+
+				// Remove Left
+				if (PropComponents.Count == 2)
+				{
+					PropComponents.Remove(PropComponents[1]);
 				}
 			}
 		}

@@ -45,8 +45,6 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="10" />
-                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
                 <Label Grid.Column="0" Grid.Row="0" Content="Name" IsTabStop="False"/>
@@ -99,11 +97,6 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </GroupBox>
-                
-                <Border BorderBrush="White" BorderThickness="10" Height="1" Grid.Row="6" Grid.ColumnSpan="2" VerticalAlignment="Center"/>
-
-                <TextBlock Grid.Column="0" Grid.Row="7" Text="Optional Groups" Width="71" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="5,0,0,0"/>
-                <CheckBox Grid.Column="1" Grid.Row="7" Content="Left / Right" IsChecked="{Binding LeftRight}"/>
             </Grid>
         </ScrollViewer>
 

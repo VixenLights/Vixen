@@ -1,17 +1,8 @@
 ﻿using Catel.Data;
 using Catel.MVVM;
-using System.Collections.ObjectModel;
 using Vixen.Sys.Props;
 using VixenApplication.SetupDisplay.Wizards.Pages;
 using VixenModules.App.Props.Models.Arch;
-using VixenModules.App.Props.Models;
-using Vixen.Sys.Props.Model;
-using VixenApplication.SetupDisplay.OpenGL;
-using Vixen.Sys;
-using System.ComponentModel;
-using System.Reflection;
-using VixenApplication.SetupDisplay.Wizards.HelperTools;
-using System;
 
 namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 {
@@ -175,20 +166,6 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		/// ArchWiringStart property data.
 		/// </summary>
 		private static readonly IPropertyData ArchWiringStartProperty = RegisterProperty<ArchStartLocation>(nameof(ArchWiringStart));
-		#endregion
-
-
-		#region Optional Left / Right property
-		/// <summary>
-		/// Gets or sets if the wizard will additional generate a left and right group.
-		/// </summary>
-		[ViewModelToModel]
-		public bool LeftRight
-		{
-			get { return GetValue<bool>(leftRightProperty); }
-			set { SetValue(leftRightProperty, value); }
-		}
-		private static readonly IPropertyData leftRightProperty = RegisterProperty<bool>(nameof(LeftRight));
 		#endregion
 
 		/// <summary>

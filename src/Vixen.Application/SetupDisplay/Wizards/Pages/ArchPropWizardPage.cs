@@ -1,14 +1,10 @@
 ﻿using Catel.Data;
-using Catel.MVVM;
 using Orc.Wizard;
 using System.Collections.ObjectModel;
 using Vixen.Extensions;
-using Vixen.Sys;
 using Vixen.Sys.Props;
 using VixenModules.App.Props.Models.Arch;
 using VixenModules.App.Props.Models;
-using Vixen.Sys.Props.Model;
-using System.ComponentModel;
 
 namespace VixenApplication.SetupDisplay.Wizards.Pages
 {
@@ -29,7 +25,6 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 			LightSize = 2;
 			StringType = StringTypes.Pixel;
 			ArchWiringStart = ArchStartLocation.Left;
-			LeftRight = false;
 		}
 
 		#region Name property
@@ -171,18 +166,6 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 			set { SetValue(LightPropModelProperty, value); }
 		}
 		public static readonly IPropertyData LightPropModelProperty = RegisterProperty<ArchModel>(nameof(LightPropModel));
-
-		#region Optional Left / Right property
-		/// <summary>
-		/// Gets or sets if the wizard will additional generate a left and right group.
-		/// </summary>
-		public bool LeftRight
-		{
-			get { return GetValue<bool>(LeftRightProperty); }
-			set { SetValue(LeftRightProperty, value); }
-		}
-		private static readonly IPropertyData LeftRightProperty = RegisterProperty<bool>(nameof(LeftRight));
-		#endregion
 
 		/// <summary>
 		/// Get a summary of the wizard page settings.
