@@ -4210,7 +4210,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				Index = i,
 				PropertyInfo = property,
 				ParameterImage = gradient?GetColorGradientBitmap(t.ColorGradient):GetCurveBitmap(t.Curve),
-				DisplayName = $"{property.DisplayName} {i + 1}"
+				DisplayName = (gradient?"Gradient ":"Curve ") + (i + 1),
+				GroupName = $"{property.DisplayName}"
 			}).ToList();
 			return parameterPickerControls;
 		}

@@ -48,14 +48,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					flowLayoutPanel1.Controls.Add(grpBox);
 					var flowRow = new FlowLayoutPanel
 					{
-						FlowDirection = FlowDirection.RightToLeft,
+						FlowDirection = FlowDirection.LeftToRight,
 						Margin = new Padding(5, 5, 5, 5),
 						Dock = DockStyle.Fill,
 						AutoSize = true,
 						AutoSizeMode = AutoSizeMode.GrowOnly
 					};
 					grpBox.Controls.Add(flowRow);
-					foreach (EffectParameterPickerControl control in effectParameterPickerControls.Reverse())
+					foreach (EffectParameterPickerControl control in effectParameterPickerControls)
 					{
 						control.Margin = new Padding(0);
 						control.Click += ParameterControl_Clicked;
@@ -66,11 +66,48 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			else
 			{
-				flowLayoutPanel1.FlowDirection = FlowDirection.RightToLeft;
-				foreach (EffectParameterPickerControl control in controls.Reverse())
+				flowLayoutPanel1.FlowDirection = FlowDirection.LeftToRight;
+				var groupControls = controls.Where(x => !string.IsNullOrEmpty(x.GroupName)).OrderBy(x => x.GroupName)
+					.ThenBy(x => x.Index);
+
+				foreach (EffectParameterPickerControl control in controls)
 				{
-					control.Click += ParameterControl_Clicked;
-					flowLayoutPanel1.Controls.Add(control);
+					//Skip the group controls
+					if (string.IsNullOrEmpty(control.GroupName))
+					{
+						control.Click += ParameterControl_Clicked;
+						flowLayoutPanel1.Controls.Add(control);
+					}
+				}
+
+				var groupName = string.Empty;
+				FlowLayoutPanel flowRow = null;
+				foreach (var gc in groupControls)
+				{
+					if (gc.GroupName != groupName)
+					{
+						groupName = gc.GroupName;
+						var grpBox = new GroupBox()
+						{
+							Text = gc.GroupName,
+							AutoSize = true,
+							AutoSizeMode = AutoSizeMode.GrowAndShrink
+						};
+						ThemeUpdateControls.UpdateControls(grpBox);
+						flowLayoutPanel1.Controls.Add(grpBox);
+						flowRow = new FlowLayoutPanel
+						{
+							FlowDirection = FlowDirection.LeftToRight,
+							Margin = new Padding(5, 5, 5, 5),
+							Dock = DockStyle.Fill,
+							AutoSize = true,
+							AutoSizeMode = AutoSizeMode.GrowOnly
+						};
+						grpBox.Controls.Add(flowRow);
+					}
+
+					gc.Click += ParameterControl_Clicked;
+					flowRow?.Controls.Add(gc);
 				}
 			}
 

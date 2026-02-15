@@ -51,6 +51,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public int Index { get; set; }
 
+		public string GroupName { get; set; } = string.Empty;
+
 		private void pictureParameterImage_Click(object sender, EventArgs e)
 		{
 			OnClick(e);
