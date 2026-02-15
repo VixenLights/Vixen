@@ -4208,7 +4208,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return true;
 		}
 
-		private FormParameterPicker CreateParameterPicker(List<EffectParameterPickerControl> parameterPickerControls)
+		private FormParameterPicker CreateParameterPicker(IEnumerable<EffectParameterPickerControl> parameterPickerControls)
 		{
 			var bounds = Screen.FromControl(this).WorkingArea;
 
@@ -4229,7 +4229,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return parameterPicker;
 		}
 
-		private List<EffectParameterPickerControl> CreateGradientListPickerControls(PropertyMetaData property, List<ColorGradient> gradients)
+		private IEnumerable<EffectParameterPickerControl> CreateGradientListPickerControls(PropertyMetaData property, List<ColorGradient> gradients)
 		{
 			var parameterPickerControls = gradients.Select((t, i) => new EffectParameterPickerControl
 			{
@@ -4237,21 +4237,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				PropertyInfo = property,
 				ParameterImage = GetColorGradientBitmap(t),
 				DisplayName = $"{property.DisplayName} {i + 1}"
-			}).ToList();
+			});
 			return parameterPickerControls;
 		}
 
 
-		private List<EffectParameterPickerControl> CreateGradientLevelPairPickerControls(PropertyMetaData property, List<GradientLevelPair> gradientLevelPairs, bool gradient=true)
+		private IEnumerable<EffectParameterPickerControl> CreateGradientLevelPairPickerControls(PropertyMetaData property, List<GradientLevelPair> gradientLevelPairs, bool gradient=true)
 		{
 			var parameterPickerControls = gradientLevelPairs.Select((t, i) => new EffectParameterPickerControl
 			{
 				Index = i,
 				PropertyInfo = property,
-				ParameterImage = gradient?GetColorGradientBitmap(t.ColorGradient):GetCurveBitmap(t.Curve),
-				DisplayName = (gradient?"Gradient ":"Curve ") + (i + 1),
+				ParameterImage = gradient ? GetColorGradientBitmap(t.ColorGradient) : GetCurveBitmap(t.Curve),
+				DisplayName = (gradient ? "Gradient " : "Curve ") + (i + 1),
 				GroupName = $"{property.DisplayName}"
-			}).ToList();
+			});
 			return parameterPickerControls;
 		}
 
@@ -4440,7 +4440,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			Dictionary<Element, Tuple<Object, PropertyMetaData>> elementValues = new Dictionary<Element, Tuple<object, PropertyMetaData>>();
 
-			//TODO Do all Curve types have the GradientLevelPair and the constant can be updated?
 			var properties = GetPropertyMetaDataForTypes(element.EffectNode.Effect, CurveTypes).ToList();
 			
 			if (!properties.Any()) return;
