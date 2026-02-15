@@ -45,6 +45,11 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 			return (null, null);
 		}
 
+		public IPropGroup EditExistingProp(IProp prop)
+		{
+			return null;
+		}
+
 		public void LoadWizard(IProp prop, IPropWizard wizard)
 		{
 			throw new NotImplementedException();
