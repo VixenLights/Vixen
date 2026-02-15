@@ -176,7 +176,7 @@ namespace Vixen.Sys.Props
 		public TModel PropModel
 		{
 			get => _propModel;
-			protected set => SetProperty(ref _propModel, value);
+			set => SetProperty(ref _propModel, value);
 		}
 		
 		/// <summary>

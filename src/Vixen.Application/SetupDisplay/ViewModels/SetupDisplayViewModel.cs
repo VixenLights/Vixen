@@ -453,6 +453,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			{
 				if (PropNodeTreePropViewModel.SelectedItem is { PropNode.IsProp: true, PropNode.Prop: not null })
 				{
+					UpdatePreviewModel(null);
 					SelectedProp = PropNodeTreePropViewModel.SelectedItem.PropNode.Prop;
 					UpdatePreviewModel(SelectedProp);
 					UpdatePropComponentTreeViewModel(SelectedProp);
@@ -473,7 +474,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 				if (PropNodeTreeViewModel.SelectedItem is { PropNode.IsProp: true, PropNode.Prop: not null })
 				{
 					SelectedProp = PropNodeTreeViewModel.SelectedItem.PropNode.Prop;
-					UpdatePreviewModel(SelectedProp);
+					UpdatePreviewModel(SelectedProp, true);
 					UpdatePropComponentTreeViewModel(SelectedProp);
 				}
 				else
@@ -639,7 +640,19 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			set 
 			{
 				SetValue(SelectedPropProperty, value);
-				SelectedPropText = (value as IProp)?.GetSummary();
+				var prop = value as IProp;
+				if (prop == null)
+				{
+					SelectedPropText = string.Empty;
+					PropNodeTreeViewModel.IsTopNode = true;
+					PropNodeTreeViewModel.IsSubNode = false;
+				}
+				else
+				{
+					SelectedPropText = prop.GetSummary();
+					PropNodeTreeViewModel.IsTopNode = false;
+					PropNodeTreeViewModel.IsSubNode = true;
+				}
 
 				// Force the CanExecute delegate to run
 				((RelayCommand)AddPropToPreview).RaiseCanExecuteChanged();				
@@ -1076,6 +1089,9 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// <param name="prop">Prop to display in the prop preview</param>
 		internal void UpdatePreviewModel(IProp? prop)
 		{
+			if (force == true)
+				DrawProp(prop?.PropModel);
+
 			// Save off the prop model to display in the prop preview
 			_nextPreviewProp = prop;			
 		}
