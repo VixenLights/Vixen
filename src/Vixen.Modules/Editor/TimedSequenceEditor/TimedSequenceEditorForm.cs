@@ -919,40 +919,39 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (element != null)
 			{
 
-				var propertyData = GetPropertyMetaData(element.EffectNode.Effect).ToList();
-
-				if (dataObject.GetDataPresent(typeof(Color)) &&
-					propertyData.Any(x => (x.PropertyType == typeof(Color) || x.PropertyType == typeof(ColorGradient) || x.PropertyType == typeof(List<ColorGradient>) || x.PropertyType == typeof(List<GradientLevelPair>)) && x.IsBrowsable))
+				if (dataObject.GetDataPresent(typeof(Color)) && PropertyDiscovery.ContainsTypes(element.EffectNode.Effect, AllColorTypes))
 				{
 					var discreteColors = GetDiscreteColors(element.EffectNode.Effect);
 					if (discreteColors.Any())
 					{
-						var c = (Color)dataObject.GetData(typeof(Color));
-						if (!discreteColors.Contains(c))
+						if (dataObject.GetData(typeof(Color)) is Color c)
 						{
-							return DragDropEffects.None;
+							if (!discreteColors.Contains(c))
+							{
+								return DragDropEffects.None;
+							}
 						}
 					}
 					
 					return DragDropEffects.Copy;
 				}
-				if (dataObject.GetDataPresent(typeof(ColorGradient)) &&
-					propertyData.Any(x => (x.PropertyType == typeof(ColorGradient) || x.PropertyType == typeof(List<ColorGradient>) || x.PropertyType == typeof(List<GradientLevelPair>)) && x.IsBrowsable))
+				if (dataObject.GetDataPresent(typeof(ColorGradient)) && PropertyDiscovery.ContainsTypes(element.EffectNode.Effect, GradientTypes))
 				{
 					var discreteColors = GetDiscreteColors(element.EffectNode.Effect);
 					if (discreteColors.Any())
 					{
-						var c = (ColorGradient)dataObject.GetData(typeof(ColorGradient));
-						var colors = c.Colors.Select(x => x.Color.ToRGB().ToArgb());
-						if (!discreteColors.IsSupersetOf(colors))
+						if (dataObject.GetData(typeof(ColorGradient)) is ColorGradient c)
 						{
-							return DragDropEffects.None;
+							var colors = c.Colors.Select(x => x.Color.ToRGB().ToArgb());
+							if (!discreteColors.IsSupersetOf(colors))
+							{
+								return DragDropEffects.None;
+							}
 						}
 					}
 					return DragDropEffects.Copy;
 				}
-				if (dataObject.GetDataPresent(typeof(Curve)) &&
-					propertyData.Any(x => (x.PropertyType == typeof(Curve) || x.PropertyType == typeof(List<GradientLevelPair>)) && x.IsBrowsable))
+				if (dataObject.GetDataPresent(typeof(Curve)) && PropertyDiscovery.ContainsTypes(element.EffectNode.Effect, CurveTypes))
 				{
 					return DragDropEffects.Copy;
 				}
@@ -4402,7 +4401,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Dictionary<Element, Tuple<Object, PropertyMetaData>> elementValues = new Dictionary<Element, Tuple<object, PropertyMetaData>>();
 
 			//TODO Do all Curve types have the GradientLevelPair and the constant can be updated?
-			var properties = GetPropertyMetaDataForTypes(element.EffectNode.Effect, CurveTypes.Concat([typeof(List<GradientLevelPair>)]).ToList()).ToList();
+			var properties = GetPropertyMetaDataForTypes(element.EffectNode.Effect, CurveTypes).ToList();
 			
 			if (!properties.Any()) return;
 			
@@ -4570,7 +4569,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private static readonly IList<Type> GradientTypes = [typeof(ColorGradient), typeof(List<ColorGradient>), typeof(List<GradientLevelPair>)];
 		private static readonly IList<Type> ColorTypes = [typeof(Color)];
 		private static readonly IList<Type> AllColorTypes = GradientTypes.Concat(ColorTypes).ToList();
-		private static readonly IList<Type> CurveTypes = [typeof(Curve)];
+		private static readonly IList<Type> CurveTypes = [typeof(Curve), typeof(List<GradientLevelPair>)];
 		
 		private void HandleGradientDropOnElements(IEnumerable<Element> elements, ColorGradient gradient)
 		{

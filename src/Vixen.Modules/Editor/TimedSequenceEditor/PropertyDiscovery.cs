@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System.Collections;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
@@ -10,10 +11,46 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	public class PropertyDiscovery
 	{
 		private static readonly Attribute[] PropertyFilter =
-		{
+		[
 			new PropertyFilterAttribute(PropertyFilterOptions.SetValues | PropertyFilterOptions.UnsetValues |
-			                            PropertyFilterOptions.Valid)
-		};
+			                            PropertyFilterOptions.Valid), BrowsableAttribute.Yes
+		];
+
+		/// <summary>
+		/// Determines whether the specified object contains any properties whose types match those in the provided list.
+		/// </summary>
+		/// <remarks>This method recursively examines collection properties to determine if any nested objects contain
+		/// properties of the specified types. Use this method to search for type matches within complex or nested object
+		/// graphs.</remarks>
+		/// <param name="target">The object to inspect for properties. Cannot be null.</param>
+		/// <param name="types">A list of types to check against the properties of the target object. Cannot be null or empty.</param>
+		/// <returns>true if any property of the target object or its contained collection elements matches one of the specified types;
+		/// otherwise, false.</returns>
+		public static bool ContainsTypes(object target, IList<Type> types)
+		{
+			foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(target, PropertyFilter))
+			{
+				if (types.Contains(descriptor.PropertyType))
+				{
+					return true;
+				}
+				if (PropertyMetaData.IsCollectionType(descriptor.PropertyType))
+				{
+					if (descriptor.GetValue(target) is ICollection collectionObject)
+					{
+						foreach (object o in collectionObject)
+						{
+							if (ContainsTypes(o, types))
+							{
+								return true;
+							}
+						}
+					}
+				}
+			}
+
+			return false;
+		}
 
 		/// <summary>
 		/// Retrieves a collection of browsable property metadata for the specified target object, filtered by the provided
@@ -40,25 +77,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return CollectProperties(target).AsReadOnly();
 		}
 
-		private static List<PropertyMetaData> CollectProperties(object target, IList<Type> types, bool filterBrowsable = true, int collectionIndex = -1)
+		private static List<PropertyMetaData> CollectProperties(object target, IList<Type> types, int collectionIndex = -1)
 		{
 			var result = new List<PropertyMetaData>();
 			foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(target, PropertyFilter))
 			{
-				if (descriptor.IsBrowsable == filterBrowsable && types.Contains(descriptor.PropertyType))
+				if (types.Contains(descriptor.PropertyType))
 				{
 					result.Add(new PropertyMetaData(descriptor, new PropertyOwnerMetaData(target, collectionIndex)));
 					continue;
 				}
 
-				if (descriptor.IsBrowsable == filterBrowsable && PropertyMetaData.IsCollectionType(descriptor.PropertyType))
+				if (PropertyMetaData.IsCollectionType(descriptor.PropertyType))
 				{
 					if (descriptor.GetValue(target) is ICollection collectionObject)
 					{
 						int index = 0;
 						foreach (object o in collectionObject)
 						{
-							result.AddRange(CollectProperties(o, types, filterBrowsable, index));
+							result.AddRange(CollectProperties(o, types, index));
 							index++;
 						}
 					}
@@ -68,25 +105,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return result;
 		}
 
-		private static List<PropertyMetaData> CollectProperties(object target, bool filterBrowsable = true, int collectionIndex = -1)
+		private static List<PropertyMetaData> CollectProperties(object target, int collectionIndex = -1)
 		{
 			var result = new List<PropertyMetaData>();
 			foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(target, PropertyFilter))
 			{
-				if (descriptor.IsBrowsable == filterBrowsable)
+				result.Add(new PropertyMetaData(descriptor, new PropertyOwnerMetaData(target, collectionIndex)));
+				
+				if (PropertyMetaData.IsCollectionType(descriptor.PropertyType))
 				{
-					result.Add(new PropertyMetaData(descriptor, new PropertyOwnerMetaData(target, collectionIndex)));
-					
-					if (descriptor.IsBrowsable == filterBrowsable && PropertyMetaData.IsCollectionType(descriptor.PropertyType))
+					if (descriptor.GetValue(target) is ICollection collectionObject)
 					{
-						if (descriptor.GetValue(target) is ICollection collectionObject)
+						int index = 0;
+						foreach (object o in collectionObject)
 						{
-							int index = 0;
-							foreach (object o in collectionObject)
-							{
-								result.AddRange(CollectProperties(o, filterBrowsable, index));
-								index++;
-							}
+							result.AddRange(CollectProperties(o, index));
+							index++;
 						}
 					}
 				}
