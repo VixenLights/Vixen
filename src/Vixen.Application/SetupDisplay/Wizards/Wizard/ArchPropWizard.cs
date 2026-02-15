@@ -4,6 +4,8 @@ using Catel.Services;
 using Orc.Wizard;
 using VixenApplication.SetupDisplay.Wizards.Pages;
 using VixenModules.Editor.PropWizard;
+using Vixen.Sys.Props;
+using Vixen.Extensions;
 
 namespace VixenApplication.SetupDisplay.Wizards.Wizard
 {
@@ -17,13 +19,15 @@ namespace VixenApplication.SetupDisplay.Wizards.Wizard
 
 			_messageService = messageService;
 
-			Title = "Arch Prop";
+			Title = $"{PropType.Arch.GetEnumDescription()} Prop";
 			ShowInTaskbar = true;
-			this.AddPage<ArchPropWizardPage>();
 
-			// Configure the size of the wizard
-			MinSize = new System.Windows.Size(1300, 605);
-			ResizeMode = System.Windows.ResizeMode.CanResize;
+			this.AddPage<ArchPropWizardPage>();
+			this.AddPage<ArchPropAdditionalWizardPage>();
+			DimmingWizardPage dimmingPage = this.AddPage<DimmingWizardPage>();
+			dimmingPage.PropType = PropType.Arch;
+			SummaryWizardPage summaryPage = this.AddPage<SummaryWizardPage>();
+			summaryPage.Description = $"Below is a summary of the {Title} selections.";
 		}
 
 		public override Task ShowHelpAsync()

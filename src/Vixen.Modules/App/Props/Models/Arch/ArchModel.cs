@@ -1,5 +1,10 @@
-﻿using Vixen.Extensions;
+﻿using Catel.Reflection;
+using System.Collections.ObjectModel;
+using Vixen.Extensions;
 using Vixen.Sys.Props.Model;
+using VixenApplication.SetupDisplay.Wizards.HelperTools;
+using VixenModules.App.Props.Models;
+
 
 namespace VixenModules.App.Props.Models.Arch
 {
@@ -7,72 +12,25 @@ namespace VixenModules.App.Props.Models.Arch
 	/// Maintains an Arch prop model.
 	/// </summary>
 	public class ArchModel: BaseLightModel
-	{                        
-		#region Constructors
-
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		public ArchModel():this(25)
-        {
-            
-        }
-
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="nodeCount">Number of nodes in the arch</param>
-		/// <param name="nodeSize">Size of the nodes</param>
-        public ArchModel(int nodeCount, int nodeSize = 2)
-        {
-            _nodeCount = nodeCount;
-            _nodeSize = nodeSize;           
-			Nodes = new(Get3DNodePoints());			
-			PropertyChanged += PropertyModelChanged;
-        }
-
-		#endregion
-
-		#region Protected Abstract Overrides
-				
-		/// <inheritdoc/>				
-		protected override IEnumerable<NodePoint> Get3DNodePoints()
+	{
+		public ArchModel()
 		{
-			return Get3DNodePoints(_nodeCount, _nodeSize);
+			PropParameters.Update("NodeCount", 3);
+			PropParameters.Update("LightSize", 2);
+			Nodes = new(Get3DNodePoints());
+			PropertyChanged += PropertyModelChanged;
 		}
 
-		#endregion
-
-		#region Public Properties
-
-		private int _nodeSize;
-
-		public int NodeSize
-        {
-            get => _nodeSize;
-            set => SetProperty(ref _nodeSize, value);
-        }
-
-		private int _nodeCount;
-
-		public int NodeCount
-        {
-            get => _nodeCount;
-            set => SetProperty(ref _nodeCount, value);
-        }
-
-		#endregion
-
-		#region Private Methods
-				
 		/// <summary>
 		/// Calculates the 3-D points that make up the arch.
 		/// </summary>
-		/// <param name="numPoints">Number of node points in the arch</param>
-		/// <param name="size">Size of the light</param>
 		/// <returns>Collection of node points that make up the arch</returns>
-		public List<NodePoint> Get3DNodePoints(double numPoints, int size)
+		protected override IEnumerable<NodePoint> Get3DNodePoints()
 		{
+			int numPoints = (int)PropParameters.Get("NodeCount");
+			int size = (int)PropParameters.Get("LightSize");
+			ObservableCollection<AxisRotationModel> rotations = (ObservableCollection<AxisRotationModel>)PropParameters.Get("Rotations");
+
 			List<NodePoint> vertices = new List<NodePoint>();
 			double xScale = .5f;
 			double yScale = 1;
@@ -95,11 +53,9 @@ namespace VixenModules.App.Props.Models.Arch
 			}
 
 			// (Optionally) rotate the points along the X, Y, and Z axis
-			RotatePoints(vertices);
+			RotatePoints(vertices, rotations);
 
 			return vertices;
 		}
-
-		#endregion
 	}
 }

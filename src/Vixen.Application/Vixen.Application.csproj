@@ -43,6 +43,7 @@
 				<PackageReference Include="Catel.Core" />
 				<PackageReference Include="Catel.MVVM" />
 				<PackageReference Include="gong-wpf-dragdrop" />
+				<PackageReference Include="HtmlRenderer.WPF" />
 				<PackageReference Include="MessagePack" />
 				<PackageReference Include="Newtonsoft.Json" />
 				<PackageReference Include="NLog" />
@@ -92,7 +93,7 @@
 						<AutoGen>True</AutoGen>
 						<DependentUpon>Resources.resx</DependentUpon>
 				</Compile>
-				<Compile Update="SetupDisplay\Wizards\Views\TreePropWizardPageView.xaml.cs">
+				<Compile Update="SetupDisplay\Wizards\Views\Tree\TreePropWizardPageView.xaml.cs">
 				  <SubType>Code</SubType>
 				</Compile>
 		</ItemGroup>

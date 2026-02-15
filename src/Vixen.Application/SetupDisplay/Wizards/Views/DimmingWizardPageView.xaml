@@ -1,0 +1,161 @@
+﻿<catel:UserControl x:Class="VixenApplication.SetupDisplay.Wizards.Views.DimmingWizardPageView"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:catel="http://schemas.catelproject.com"
+                  xmlns:markupExtensions="clr-namespace:Common.WPFCommon.MarkupExtensions;assembly=WPFCommon"
+                  xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
+                  xmlns:zed="clr-namespace:ZedGraph;assembly=Module.App.Curves"
+                  xmlns:controls="clr-namespace:Common.WPFCommon.Controls;assembly=WPFCommon"
+                  >
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/SetupDisplay/Themes/Theme.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <markupExtensions:EnumBindingSourceExtension x:Key="EnumBindingSource"/>
+            <converters:EnumValueTypeConverter x:Key="EnumValueTypeConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Background="{StaticResource BackgroundDialogBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+            
+        <!-- Curve Selection buttons -->
+        <RadioButton x:Name="NoCurveButton" Content="No Dimming" IsChecked="True" Grid.Row="0" Click="NoCurveButtonClick"></RadioButton>
+        <RadioButton x:Name="SimpleDimmingButton" Content="Simple Dimming" Grid.Row="1" Click="SimpleDimmingButtonClick"></RadioButton>
+        <RadioButton x:Name="LibraryCurveButton" Content="Library Dimming Curves" Grid.Row="2" Click="LibraryCurveButtonClick"></RadioButton>
+        <Border BorderBrush="White" BorderThickness="10" Height="1" Grid.Row="3" Margin="5" VerticalAlignment="Center"/>
+
+        <!-- Gamma Curves -->
+        <Grid x:Name="SimpleDimming" Grid.Row="4" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Enter Maximum Brightness</Label>
+            <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Enter Gamma Value</Label>
+            <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Brightness Curve</Label>
+            <controls:SuperSlider x:Name="BrightnessSlider" Grid.Row="0" Grid.Column="1" Minimum="0" Maximum="100" 
+                                  Value="{Binding Brightness}"
+                                  ValueChanged="BrightnessSlider_ValueChanged" AutoToolTipPlacement="TopLeft"/>
+            <controls:SuperSlider x:Name="GammaSlider" Grid.Row="1" Grid.Column="1" Minimum="1.0" Maximum="4.0"
+                                  TickFrequency="0.1" SmallChange="0.3" LargeChange="0.5" 
+                                  AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="1"
+                                  ValueChanged="GammaSlider_ValueChanged"
+                                  Value="{Binding Gamma}"/>
+            <Grid x:Name="GammaGrid" Grid.Row="2" Grid.Column="1" ShowGridLines="True">
+            </Grid>
+        </Grid>
+        
+        <!-- Custom Curve -->
+        <Grid x:Name="CustomCurve" Grid.Row="4" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+
+            <WindowsFormsHost Grid.Row="0" Grid.Column="0" Width="295" Height="295" Margin="0,3,0,0">
+                <zed:ZedGraphControl x:Name="zedGraphControl" />
+            </WindowsFormsHost>
+            <Grid Grid.Row="1" HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="X:" Grid.Row="0" Grid.Column="0"  Margin="0,6,0,0"/>
+                <controls:NumericTextSpinBox Grid.Row="0" Grid.Column="1" Width="50" Minimum="0" Maximum="100" Margin="0,6,10,0"
+                                             x:Name="XCoord" ValueChanged="UpdateCoordinatesButton" />
+                <Label Content="  Y:" Grid.Row="0" Grid.Column="2" Margin="0,6,0,0"/>
+                <controls:NumericTextSpinBox Grid.Row="0" Grid.Column="3" Width="50" Minimum="0" Maximum="100" Margin="0,6,10,0"
+                                             x:Name="YCoord" ValueChanged="UpdateCoordinatesButton" />
+            </Grid>
+            <Label Content="Ctrl+&lt;left mouse&gt; to add a point." Grid.Row="2" Padding="0,3,0,0"/>
+            <Label Content="Alt+&lt;left mouse&gt; to remove a point." Grid.Row="3" Padding="0"/>
+
+            <!-- Group Curve -->
+            <GroupBox Header="Curve" Grid.Row="4">
+                <Grid Margin="3,8,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Group Curve Row 1 -->
+                    <Button Content="Reverse Curve" Grid.Row="0" Grid.Column="0" Width="100" Height="10" Margin="0,0,6,6"
+                            x:Name="ReverseCurveButton" Click="ReverseCurveButtonClick"/>
+                    <Button Content="Draw Curve" Grid.Row="0" Grid.Column="1" Width="100" Height="10" Margin="0,0,6,6"
+                            x:Name="DrawCurveButton" Click="DrawCurveButtonClick"
+                            ToolTip="Draw curve from left side to right side of grid using the left mouse button."
+                            ToolTipService.InitialShowDelay="1"/>
+                    <Label Content="Draw Interval" Grid.Row="0" Grid.Column="6" />
+                    <controls:NumericTextSpinBox Grid.Row="0" Grid.Column="7" Value="5" Width="50" Minimum="1" Maximum="20"
+                                        x:Name="DrawInterval" ValueChanged="UpdateDrawIntervalButton"/>
+
+                    <!-- Group Curve Row 2 -->
+                    <Button Content="Invert Curve" Grid.Row="1" Grid.Column="0" Width="100" Height="10"  Margin="0,0,6,6"
+                            x:Name="InvertCurveButton" Click="InvertCurveButtonClick" />
+                    <Button Content="f(x) Curve" Grid.Row="1" Grid.Column="1" Width="100" Height="10"  Margin="0,0,6,6"
+                            x:Name="fxCurveButton" Click="fxCurveButtonClick" />
+                </Grid>
+            </GroupBox>
+
+            <!-- Group Library -->
+            <GroupBox Header="Library" Grid.Row="5">
+                <Grid Margin="3,8,0,0">
+                    <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Group Library Row 1 -->
+                    <Button Content="Load Curve" Grid.Row="0" Grid.Column="0" Width="100" Height="10"  Margin="0,0,6,6"
+                            x:Name="LoadCurveButton" Click="LoadCurveButtonClick"/>
+                        <TextBlock x:Name="CurveLibrary" Text="This curve is not linked to any in the library." TextWrapping="WrapWithOverflow"
+                               Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,6,6" />
+
+                        <!-- Group Library Row 2 -->
+                    <Button Content="Save Curve" Grid.Row="1" Grid.Column="0" Width="100" Height="10"  Margin="0,0,6,6"
+                            x:Name="SaveCurveButton" Click="SaveCurveButtonClick"/>
+                    <Button Content="Unlink Curve" Grid.Row="1" Grid.Column="1" Width="100" Height="10" Margin="0,0,6,6" IsEnabled="false"
+                            x:Name="UnlinkCurveButton" Click="UnlinkCurveButtonClick"/>
+                    <Button Content="Edit Library Curve" Grid.Row="1" Grid.Column="2" Width="120" Height="10" Margin="0,0,6,6" IsEnabled="false"
+                            x:Name="EditLibraryCurveButton" Click="EditLibraryCurveButtonClick"/>
+                    </Grid>
+                </GroupBox>
+        </Grid>
+    </Grid>
+</catel:UserControl>

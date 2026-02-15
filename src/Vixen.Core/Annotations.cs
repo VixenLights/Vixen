@@ -170,7 +170,7 @@ namespace Vixen.Annotations
   /// Describes dependency between method input and output.
   /// </summary>
   /// <syntax>
-  /// <p>Function Definition Table syntax:</p>
+  /// <p>Function Definition Table syntax:<br>
   /// <list>
   /// <item>FDT      ::= FDTRow [;FDTRow]*</item>
   /// <item>FDTRow   ::= Input =&gt; Output | Output &lt;= Input</item>

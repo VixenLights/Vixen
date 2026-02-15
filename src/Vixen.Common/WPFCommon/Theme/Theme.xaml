@@ -7,9 +7,9 @@
 	xmlns:controls="clr-namespace:Common.WPFCommon.Controls"
 	xmlns:catel="http://schemas.catelproject.com">
 
-	<ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="Menu.xaml" />
-  <ResourceDictionary Source="DefaultHiddenStyle.xaml"></ResourceDictionary>
+    <ResourceDictionary Source="DefaultHiddenStyle.xaml"></ResourceDictionary>
 	</ResourceDictionary.MergedDictionaries>
 
 
@@ -356,7 +356,7 @@
 		<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
 		<!--<Setter Property="FontSize" Value="7.5pt"/>-->
 		<Setter Property="MinHeight" Value="20"/>
-		<Setter Property="MinWidth" Value="100"/>
+		<Setter Property="MinWidth" Value="70"/>
 		<Setter Property="VerticalContentAlignment" Value="Center"/>
 		<Setter Property="HorizontalContentAlignment" Value="Center"/>
 		<Setter Property="Margin" Value="10 10 10 10"/>
@@ -457,7 +457,7 @@
 		<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
 		<!--<Setter Property="FontSize" Value="7.5pt"/>-->
 		<Setter Property="MinHeight" Value="20"/>
-		<Setter Property="MinWidth" Value="100"/>
+		<Setter Property="MinWidth" Value="70"/>
 		<Setter Property="VerticalContentAlignment" Value="Center"/>
 		<Setter Property="HorizontalContentAlignment" Value="Center"/>
 		<Setter Property="Margin" Value="10 10 10 10"/>
@@ -2276,4 +2276,33 @@
 			<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource InactiveSelectionHighlightColor}"/>
 		</Style.Resources>
 	</Style>
+
+    <Style x:Key="ButtonStyle" TargetType="RepeatButton">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="{StaticResource BackColorBrush}"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RepeatButton">
+                    <Grid>
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border x:Name="BackgroundHighlighted" BorderBrush="#808080" BorderThickness="1,1,0,0" CornerRadius="2"/>
+                        <Border x:Name="BackgroundSunken" BorderBrush="#101010" BorderThickness="0,0,1,1" CornerRadius="2"/>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="BackgroundHighlighted" Property="BorderBrush" Value="#808080"/>
+                            <Setter TargetName="BackgroundSunken" Property="BorderBrush" Value="#101010"/>
+                            <Setter TargetName="BackgroundHighlighted" Property="BorderThickness" Value="0,0,0,1"/>
+                            <Setter TargetName="BackgroundSunken" Property="BorderThickness" Value="0,1,0,0"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using NLog;
+using System.CodeDom.Compiler;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -55,9 +56,10 @@ namespace Vixen.Sys.Props
 			{
 				switch (e.PropertyName)
 				{
-					case nameof(Name):
-						RenamePropElement();
-						break;
+				}
+				if (e.PropertyName != nameof(ModifiedDate))
+				{
+					PropModified();
 				}
 			}
 		}
@@ -70,7 +72,6 @@ namespace Vixen.Sys.Props
 		/// This identifier is automatically generated upon the creation of the Prop
 		/// and is used to uniquely distinguish it within the Vixen system.
 		/// </remarks>
-		[Browsable(false)]
 		public Guid Id
 		{
 			get => _id;
@@ -80,20 +81,30 @@ namespace Vixen.Sys.Props
 		/// <summary>
 		/// Gets or sets the name of the Prop.
 		/// </summary>
-		/// <remarks>
-		/// The <see cref="Name"/> property is a friendly name for the Prop.
-		/// Changing this property triggers the renaming of associated Prop elements.
-		/// </remarks>
-		[PropertyOrder(0)]
 		public string Name
 		{
 			get => _name;
 			set
 			{
-				SetProperty(ref _name, value);
-				PropModified();
+				if (_name.Equals(value))
+				{
+					// Do nothing as we're not changing the name
+				}
+				else if (!VixenSystem.Props.IsUniquePropTitle(value))
+				{
+					MessageBox.Show($"{value} already exists. Enter a unique name.", "Prop name must be unique", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+				else
+				{
+					RenamePropElement(_name, value);
+					SetProperty(ref _name, value);
+					OnPropertyChanged(nameof(Name));
+				}
 			}
 		}
+
+		public PropType PropType { get; init; }
+
 
 		/// <summary>
 		/// Gets or sets the name of the user who created this Prop.
@@ -104,8 +115,6 @@ namespace Vixen.Sys.Props
 		/// <remarks>
 		/// This property is used to track the origin of the Prop for auditing and informational purposes.
 		/// </remarks>
-		[PropertyOrder(100)]
-		[DisplayName("Created By")]
 		public string CreatedBy
 		{
 			get => _createdBy;
@@ -119,8 +128,6 @@ namespace Vixen.Sys.Props
 		/// This property is initialized during the construction of the Prop and remains immutable.
 		/// It provides metadata about the creation of the Prop for tracking and auditing purposes.
 		/// </remarks>
-		[PropertyOrder(101)]
-		[DisplayName("Creation Date")]
 		public DateTime CreationDate { get; init; }
 
 		/// <summary>
@@ -129,18 +136,11 @@ namespace Vixen.Sys.Props
 		/// <value>
 		/// A <see cref="DateTime"/> representing the last modification date and time of the Prop.
 		/// </value>
-		[PropertyOrder(102)]
-		[DisplayName("Modified Date")]
 		public DateTime ModifiedDate
 		{
 			get => _modifiedDate;
 			set => SetProperty(ref _modifiedDate, value);
 		}
-
-		[PropertyOrder(1)]
-		[DisplayName("Prop Type")]
-		[ReadOnly(true)]
-		public PropType PropType { get; init; }
 
 		/// <summary>
 		/// Gets or sets the visual model associated with the Prop.
@@ -150,16 +150,14 @@ namespace Vixen.Sys.Props
 		/// for the Props visual that is used to draw it. This property can be overridden in derived classes to
 		/// provide specific implementations of the Prop model.
 		/// </remarks>
-		[Browsable(false)]
 		IPropModel IProp.PropModel => PropModel;
 
 		private TModel _propModel;
 		
-		[Browsable(false)]
 		public TModel PropModel
 		{
 			get => _propModel;
-			protected set => SetProperty(ref _propModel, value);
+			set => SetProperty(ref _propModel, value);
 		}
 		
 		/// <summary>
@@ -172,7 +170,6 @@ namespace Vixen.Sys.Props
 		/// If the identifier is <see cref="Guid.Empty"/>, it indicates that no 
 		/// root <see cref="ElementNode"/> is currently associated with the Prop.
 		/// </remarks>
-		[Browsable(false)]
 		public Guid RootPropElementNodeId { get; protected set; } = Guid.Empty;
 
 		/// <summary>
@@ -227,14 +224,13 @@ namespace Vixen.Sys.Props
 		/// <value>
 		/// The <see cref="IElementNode"/> representing the target node of the Prop.
 		/// </value>
-		[Browsable(false)]
 		public virtual IElementNode TargetNode => GetOrCreateElementNode();
 
-		[Browsable(false)]
 		public ObservableCollection<IPropComponent> PropComponents { get; init; }
 
-		[Browsable(false)]
 		public ObservableCollection<IPropComponent> UserDefinedPropComponents { get; init; }
+
+		public abstract string GetSummary();
 
 		public virtual void CleanUp()
 		{
@@ -313,10 +309,12 @@ namespace Vixen.Sys.Props
 		/// derived from the Prop's current name and the <see cref="AutoPropPrefix"/>.
 		/// The renaming operation is performed using the <see cref="VixenSystem.Nodes"/> manager.
 		/// </remarks>
-		protected void RenamePropElement()		
+		protected void RenamePropElement(String oldName, String newName)		
 		{
-			var propNode = GetOrCreateElementNode();
-			VixenSystem.Nodes.RenameNode(propNode, AutoPropName, false);
+			foreach(var node in PropComponents)
+			{
+				node.Name = node.Name.Replace(oldName, newName);
+			}
 		}
 
 		/// <summary>
@@ -403,5 +401,18 @@ namespace Vixen.Sys.Props
 
 		// Add other properties to manage things like controller target, 
 
+
+	public string GetBaseSummary()
+		{
+			string summary =
+				 "<h2>Prop Information</h2>" +
+				 "<body>" +
+				$"<b>Created by:</b> {CreatedBy}<br>" +
+				$"<b>Creation Date:</b> {CreationDate}<br>" +
+				$"<b>Modified Date:</b> {ModifiedDate}" +
+				 "</body>";
+
+			return summary;
+		}
 	}
 }

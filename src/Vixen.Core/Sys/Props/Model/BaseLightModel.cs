@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System.Collections.ObjectModel;
 using Vixen.Extensions;
+using VixenApplication.SetupDisplay.Wizards.HelperTools;
 
 namespace Vixen.Sys.Props.Model
 {
@@ -8,9 +9,8 @@ namespace Vixen.Sys.Props.Model
 	/// Maintains a base light model.
 	/// </summary>
 	public abstract class BaseLightModel : BasePropModel, ILightPropModel
-	{								
+	{
 		#region Protected Methods
-
 		/// <summary>
 		/// Updates the nodes when a model property changes.
 		/// </summary>
@@ -37,20 +37,20 @@ namespace Vixen.Sys.Props.Model
 			double sinTheta = Math.Sin(angleInRadians);
 			foreach (var nodePoint in nodePoints)
 			{
-				nodePoint.X =
+				double x =
 					cosTheta * (nodePoint.X - centerX) -
-						sinTheta * (nodePoint.Y - centerY) + centerX;
-				nodePoint.Y =
+						sinTheta * (nodePoint.Y - centerY);
+				 double y =
 					sinTheta * (nodePoint.X - centerX) +
-					 cosTheta * (nodePoint.Y - centerY) + centerY;
+					 cosTheta * (nodePoint.Y - centerY);
 
+				nodePoint.X = x + centerX;
+				nodePoint.Y = y + centerY;
 			}
 		}
-
 		#endregion
 
-		#region Protected Abstract Methods
-
+		#region Abstract Methods
 		/// <summary>
 		/// Retrieves the 3-D node points that make up the prop.
 		/// </summary>
@@ -68,18 +68,6 @@ namespace Vixen.Sys.Props.Model
 			get => _nodes;
 			set => SetProperty(ref _nodes, value);
 		}
-
-		private int _rotationAngle;
-
-		/// <summary>
-		/// The angle at which the core Prop is rotated.
-		/// </summary>
-		public int RotationAngle
-		{
-			get => _rotationAngle;
-			set => SetProperty(ref _rotationAngle, value);
-		}
-
 		#endregion
 
 		#region Public Methods

@@ -2,6 +2,7 @@
 
 using NLog;
 using NLog.Filters;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -11,19 +12,30 @@ using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Props;
 using Vixen.Sys.Props.Model;
+using VixenModules.App.Curves;
 using VixenModules.App.Props.Models.Tree;
 using VixenModules.Property.Color;
 
 namespace VixenModules.App.Props.Models
 {
+	public enum DimmingType
+	{
+		NoCurve,
+		Simple,
+		Library
+	}
+
 	public abstract class BaseLightProp<TModel> : BaseProp<TModel> where TModel : BasePropModel, IPropModel
-	{				
-		private StringTypes _stringType;
+	{
 		protected bool UpdateInProgress = false;
 
 		protected BaseLightProp(string name, PropType propType) : base(name, propType)
 		{
 			StringType = StringTypes.Pixel;
+			Rotations = new ObservableCollection<AxisRotationModel>();
+			Rotations.Add(new AxisRotationModel() { Axis = Axis.XAxis, RotationAngle = 0});
+			Rotations.Add(new AxisRotationModel() { Axis = Axis.YAxis, RotationAngle = 0 });
+			Rotations.Add(new AxisRotationModel() { Axis = Axis.ZAxis, RotationAngle = 0 });
 		}
 
 		/// <summary>
@@ -43,14 +55,68 @@ namespace VixenModules.App.Props.Models
 		/// </item>
 		/// </list>
 		/// </remarks>
-		[PropertyOrder(2)]
-		[DisplayName("String Type")]
+		private StringTypes _stringType;
 		public StringTypes StringType
 		{
 			get => _stringType;
 			set => SetProperty(ref _stringType, value);
 		}
-		
+
+		private ObservableCollection<AxisRotationModel> _rotations;
+		public ObservableCollection<AxisRotationModel> Rotations
+		{
+			get => _rotations;
+			set
+			{
+				_rotations = value;
+				OnPropertyChanged(nameof(Rotations));
+			}
+		}
+
+		private Curve _curve;
+		public Curve Curve
+		{ 
+			get => _curve;
+			set
+			{
+				_curve = value;
+				OnPropertyChanged(nameof(Curve));
+			}
+		}
+
+		private DimmingType _dimmingTypeOption;
+		public DimmingType DimmingTypeOption
+		{
+			get => _dimmingTypeOption;
+			set
+			{
+				_dimmingTypeOption = value;
+				OnPropertyChanged(nameof(DimmingTypeOption));
+			}
+		}
+
+		private int _brightness;
+		public int Brightness
+		{
+			get => _brightness;
+			set
+			{
+				_brightness = value;
+				OnPropertyChanged(nameof(Brightness));
+			}
+		}
+
+		private double _gamma;
+		public double Gamma
+		{
+			get => _gamma;
+			set
+			{
+				_gamma = value;
+				OnPropertyChanged(nameof(Gamma));
+			}
+		}
+
 		/// <summary>
 		/// Adds a specified number of string elements to the given element node.
 		/// </summary>
@@ -323,5 +389,33 @@ namespace VixenModules.App.Props.Models
 			UpdateInProgress = false;
 		}
 
+		protected string GetDimmingSummary()
+		{
+			string summary = "<h2>Dimming Curve</h2><body>";
+
+			if (DimmingTypeOption == DimmingType.Simple)
+			{
+				summary += $"<b>Brightness:</b> {Brightness}%<br>" +
+				           $"<b>Gamma:</b> {Gamma:0.0}";
+			}
+			else if (DimmingTypeOption == DimmingType.Library && Curve != null)
+			{
+				if (Curve.LibraryReferenceName != string.Empty)
+				{
+					summary += $"<b>Library Curve:</b> {Curve.LibraryReferenceName}";
+				}
+				else if (Curve.Points.Count > 0)
+				{
+					summary += "<b/>Custom Curve";
+				}
+			}
+			else
+			{
+				summary += "<b/>None Specified";
+			}
+			summary += "</body>";
+
+			return summary;
+		}
 	}
 }

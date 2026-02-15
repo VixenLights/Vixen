@@ -1,4 +1,5 @@
 ﻿using Vixen.Sys;
+using Vixen.Sys.Props;
 using VixenApplication.Setup.ElementTemplates;
 using VixenModules.App.FixtureSpecificationManager;
 using VixenModules.App.Props.Models.Arch;
@@ -76,6 +77,25 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 			return fixturePropGroup;			
 		}
 
+		public (IProp, IPropGroup) CreateBaseProp()
+		{
+			return (null, null);
+		}
+
+		public IPropGroup EditExistingProp(IProp prop)
+		{
+			return null;
+		}
+
+		public void LoadWizard(IProp prop, IPropWizard wizard)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void UpdateProp(IProp prop, IPropWizard wizard)
+		{
+			throw new NotImplementedException();
+		}
 		#endregion
 	}
 }

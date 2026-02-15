@@ -1,17 +1,22 @@
-﻿namespace Vixen.Sys.Props
+﻿using System.ComponentModel;
+
+namespace Vixen.Sys.Props
 {
 	public enum PropType
 	{
-		Custom,
-		Single,
-		Line,
-		PolyLine,
+		[Description("Arch")]
 		Arch,
-		Circle,
-		CandyCane,
-		Star,
+		[Description("Tree")]
 		Tree,
-		Grid,
+		[Description("Intelligent Fixture")]
 		IntelligentFixture,
+		//Custom,
+		//Single,
+		//Line,
+		//PolyLine,
+		//Circle,
+		//CandyCane,
+		//Star,
+		//Grid
 	}
 }

@@ -1,13 +1,15 @@
 ﻿using System.Collections.ObjectModel;
-
 using Catel.Data;
-
+using Catel.MVVM;
 using Orc.Wizard;
-
+using Vixen.Sys;
+using Vixen.Sys.Props;
 using Vixen.Sys.Props.Model;
-
 using VixenApplication.SetupDisplay.OpenGL;
-using VixenApplication.SetupDisplay.ViewModels;
+using VixenApplication.SetupDisplay.Wizards.Factory;
+using VixenApplication.SetupDisplay.Wizards.HelperTools;
+using VixenApplication.SetupDisplay.Wizards.PropFactories;
+using VixenModules.App.Props.Models;
 
 namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 {
@@ -21,51 +23,36 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		where TPropModel : class, ILightPropModel, new()	
 	{
 		#region Constructor
-
 		/// <summary>
 		/// Constructor
 		/// </summary>
 		/// <param name="wizardPage">Wizard page model</param>
 		protected GraphicsWizardPageViewModelBase(TWizardPage wizardPage) : base(wizardPage)
 		{
-			// Create a temporary prop model
 			LightPropModel = new TPropModel();
 			List<IPropModel> propModels = new List<IPropModel>();
 			propModels.Add(LightPropModel);
-			
+
 			// Create the prop drawing engine
 			DrawingEngine = new OpenGLPropDrawingEngine(propModels);
 
-			// Create the collection of view model rotations
-			Rotations = new();
-
-			// Create the X Axis rotation view model
-			AxisRotationViewModel xRotation = new AxisRotationViewModel();
-			xRotation.Axis = "X";
-			xRotation.RotationChanged += OnRotationChanged;
-			Rotations.Add(xRotation);
-
-			// Create the Y Axis rotation view model
-			AxisRotationViewModel yRotation = new AxisRotationViewModel();
-			yRotation.Axis = "Y";
-			yRotation.RotationChanged += OnRotationChanged;
-			Rotations.Add(yRotation);
-
-			// Create the Z Axis rotation view model
-			AxisRotationViewModel zRotation = new AxisRotationViewModel();
-			zRotation.Axis = "Z";
-			zRotation.RotationChanged += OnRotationChanged;
-			Rotations.Add(zRotation);
+			foreach (var rotation in Rotations)
+			{
+				rotation.RotationChanged += OnRotationChanged;
+			}
 		}
 
 		#endregion
 
 		#region Protected Properties
 
-		/// <summary>
-		/// Light prop model used to generate the graphics.
-		/// </summary>
-		protected TPropModel LightPropModel { get; set; }
+		[ViewModelToModel]
+		public TPropModel LightPropModel
+		{
+			get { return GetValue<TPropModel>(LightPropModelProperty); }
+			set { SetValue(LightPropModelProperty, value); }
+		}
+		public static readonly IPropertyData LightPropModelProperty = RegisterProperty<TPropModel>(nameof(LightPropModel));
 
 		#endregion
 
@@ -74,18 +61,12 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		/// <summary>
 		/// Collection of rotations to support rotating the props around the x,y, and z axis.
 		/// </summary>
+		[ViewModelToModel]
 		public ObservableCollection<AxisRotationViewModel> Rotations
 		{
-			get
-			{
-				return GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty);
-			}
-			set
-			{
-				SetValue(RotationsProperty, value);
-			}
+			get { return GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty); }
+			set { SetValue(RotationsProperty, value); }
 		}
-
 		public static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
 
 		/// <summary>
@@ -96,24 +77,6 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		#endregion
 
 		#region Private Methods
-
-		/// <summary>
-		/// Converts from axis string to enumeration.
-		/// </summary>
-		/// <param name="axis">String to convert</param>
-		/// <returns>Equivalent enumeration of the string</returns>
-		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		private Axis GetAxis(string axis)
-		{
-			return axis switch
-			{
-				"X" => Axis.XAxis,
-				"Y" => Axis.YAxis,
-				"Z" => Axis.ZAxis,
-				_ => throw new ArgumentOutOfRangeException(nameof(axis), "Unsupported rotation axis")
-			};
-		}
-
 		/// <summary>
 		/// Event handler for when a prop rotation changed.
 		/// </summary>
@@ -121,20 +84,36 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		/// <param name="e">Event arguments</param>
 		private void OnRotationChanged(object sender, EventArgs e)
 		{
-			// Transfer the rotations from the view model to the model
-			int index = 0;
-			foreach (AxisRotationViewModel rotationViewModel in Rotations)
+			// Get the changed axis and the axis it now duplicates, if any
+			var newRotation = sender as AxisRotationViewModel;
+			if (newRotation == null)
 			{
-				AxisRotationModel rotationMdl = LightPropModel.Rotations[index];
-				rotationMdl.Axis = GetAxis(rotationViewModel.Axis);
-				rotationMdl.RotationAngle = rotationViewModel.RotationAngle;
-				index++;
+				return;
 			}
+
+			var duplicateRotation = Rotations.FirstOrDefault(x => x != newRotation && x.Axis == newRotation.Axis);
+
+			// If there is an axis duplication (i.e. two axis have the same plane), then...
+			if (duplicateRotation != null)
+			{
+				// Find the Axis that is no longer specified
+				var otherRotation = Rotations.FirstOrDefault(x => x != newRotation && x != duplicateRotation);
+				if (otherRotation == null)
+				{
+					return;
+				}
+				var missingAxis = newRotation.Axes.FirstOrDefault(x => x != duplicateRotation.Axis && x != otherRotation.Axis);
+
+				// Then assign the missing axis to the duplicated plane and swap the rotations between the new and duplicated axes
+				duplicateRotation.Axis = missingAxis;
+				(duplicateRotation.RotationAngle, newRotation.RotationAngle) = (newRotation.RotationAngle, duplicateRotation.RotationAngle);
+			}
+
+			LightPropModel.PropParameters.Update("Rotations", AxisRotationViewModel.ConvertToModel(Rotations));
 
 			// Update the prop nodes
 			LightPropModel.UpdatePropNodes();
 		}
-
 		#endregion
 	}
 }

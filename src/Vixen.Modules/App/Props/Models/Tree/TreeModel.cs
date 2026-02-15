@@ -2,7 +2,7 @@
 using System.Drawing;
 
 using Vixen.Sys.Props.Model;
-
+using VixenApplication.SetupDisplay.Wizards.HelperTools;
 using VixenModules.App.Props.Models.Line;
 
 namespace VixenModules.App.Props.Models.Tree
@@ -22,12 +22,7 @@ namespace VixenModules.App.Props.Models.Tree
 		{ 
 		}	
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="strings">Number of string</param>
-		/// <param name="nodesPerString">Nodes (lights) per string</param>
-		/// <param name="nodeSize">Node (light) size </param>
+
 		public TreeModel(int strings = 16, int nodesPerString = 50, int nodeSize = 2)
 		{
 			_topWidth = 20;
@@ -38,7 +33,8 @@ namespace VixenModules.App.Props.Models.Tree
 			_nodesPerString = nodesPerString;
 			_nodeSize = nodeSize;
 			_topRadius = 10;
-			_bottomRadius = 100;			
+			_bottomRadius = 100;
+
 			Nodes = new(Get3DNodePoints());
 			PropertyChanged += PropertyModelChanged;			
 		}
@@ -134,13 +130,15 @@ namespace VixenModules.App.Props.Models.Tree
 		}
 
 		#endregion
-						
 		/// <summary>
 		/// Creates the 3-D points that make up the tree.
 		/// </summary>
 		/// <returns>3-D points that make up the tree</returns>
-		private IEnumerable<NodePoint> Get3DNodePoints(float width, float height)
+		protected override IEnumerable<NodePoint> Get3DNodePoints()
 		{
+			float width = (float)PropParameters["Width"];
+			float height = (float)PropParameters["Height"];
+
 			// Create the collection of node points
 			List<NodePoint> treePoints = new List<NodePoint>();
 
@@ -162,22 +160,14 @@ namespace VixenModules.App.Props.Models.Tree
 				// Add a strand to the tree
 				treePoints.AddRange(CreateStrand(NodesPerString, angle, bottomRadius, radiusDelta, -height / 2.0, + height / NodesPerString));
 			}
-					
+
 			// (Optionally) rotate the points along the X, Y, and Z axis
-			RotatePoints(treePoints);	
+			//ToDo : Replace null with rotation
+			RotatePoints(treePoints, null);	
 
 			return treePoints;
 		}
 		
-		/// <summary>
-		/// Creates the 3-D points that make up the tree.
-		/// </summary>
-		/// <returns>3-D points that make up the tree</returns>
-		protected override IEnumerable<NodePoint> Get3DNodePoints()
-		{
-			return Get3DNodePoints(1.0f, 1.0f);		
-		}
-
 		/// <summary>
 		/// Creates a strand of nodes.
 		/// </summary>

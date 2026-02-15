@@ -291,9 +291,12 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		public override int GetHashCode()
 		{
-
 			return string.Format("{0}:{1}:{2}", _r, _g, _b).GetHashCode();
+		}
 
+		public string ToHex()
+		{
+			return $"{(int)(_r*255):X2}{(int)(_g*255):X2}{(int)(_b*255):X2}";
 		}
 
 		#endregion

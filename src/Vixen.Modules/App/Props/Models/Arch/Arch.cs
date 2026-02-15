@@ -1,139 +1,163 @@
 ﻿
 #nullable enable
 using AsyncAwaitBestPractices;
+using Common.Controls.Theme;
 using Debounce.Core;
-using NLog;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Drawing;
+using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
+using Vixen.Extensions;
+using Vixen.Sys;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Props;
 using Vixen.Sys.Props.Components;
+using Vixen.Sys.Props.Model;
+using VixenModules.App.Curves;
+using VixenModules.App.Props.Models;
+using System.Security.Cryptography;
 
 namespace VixenModules.App.Props.Models.Arch
 {
+	public enum ArchStartLocation
+	{
+		Left,
+		Right
+	}
+
 	/// <summary>
 	/// A class that defines an Arch Prop
 	/// </summary>
 	public class Arch : BaseLightProp<ArchModel>, IProp
-	{				
-		private ArchStartLocation _startLocation;
+	{
 		private readonly Debouncer _generateDebouncer;
 
-		public Arch() : this("Arch 1", 0)
+		public Arch() : this("Arch Temp")
 		{
-
-		}
-
-		public Arch(string name, int nodeCount) : this(name, nodeCount, StringTypes.Pixel)
-		{
-
 		}
 
 		public Arch(string name, int nodeCount = 0, StringTypes stringType = StringTypes.Pixel) : base(name, PropType.Arch)
 		{
-            StringType = stringType;
-			ArchModel model = new ArchModel(nodeCount);
-			PropModel = model;
-			PropModel.PropertyChanged += PropModel_PropertyChanged;
+			Name = name;
+			StringType = stringType;
+			NodeCount = 24;
+			LightSize = 2;
+			StringType = StringTypes.Pixel;
+			ArchWiringStart = ArchStartLocation.Left;
+			LeftRight = false;
+
+			DimmingTypeOption = DimmingType.NoCurve;
+			Brightness = 80;
+			Gamma = 2.2;
+			Curve = null;
+
 			PropertyChanged += Arch_PropertyChanged;
-			
+
+			// Create Preview model
+			PropModel = new ArchModel();
+
 			_generateDebouncer = new Debouncer(() =>
 			{
 				GenerateElementsAsync().SafeFireAndForget();
 			}, 500);
 		}
 
-		private async void Arch_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            try
-            {
-                if (e.PropertyName != null)
-                {
-                    switch (e.PropertyName)
-                    {
-                        case nameof(StringType):
-                            _generateDebouncer.Debounce();
-                            break;
-                        case nameof(StartLocation):
-                            await UpdatePatchingOrder();
-							break;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
+		private void Arch_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+			try
+			{
+				if (e.PropertyName != null)
+				{
+					switch (e.PropertyName)
+					{
+					}
+				}
+			}
+			catch (Exception ex)
+			{
 				Logging.Error(ex, $"An error occured handling Arch property {e.PropertyName} changed");
 			}
-        }
 
-		private async void PropModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            try
-            {
-                if (e.PropertyName != null)
-                {
-                    switch (e.PropertyName)
-                    {
-                        case nameof(NodeCount):
-	                        await GenerateElementsAsync();
-                            break;
-                        case nameof(StartLocation):
-                            await UpdatePatchingOrder(); //The defaults are fine for an Arch
-							break;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-				Logging.Error(ex, $"An error occured handling model property {e.PropertyName} changed");
-			}
-        }
+		}
 
-		
-
-		[DisplayName("Nodes Count")]
-		[PropertyOrder(10)]
+		private int _nodeCount;
 		public int NodeCount
 		{
-			get => PropModel.NodeCount;
+			get => _nodeCount;
 			set
 			{
-				if (value == PropModel.NodeCount)
-				{
-					return;
-				}
-
-				PropModel.NodeCount = value;
+				_nodeCount = value;
+				_generateDebouncer?.Debounce();
+//ToDo(1)				PropModel?.UpdatePropNodes();
 				OnPropertyChanged(nameof(NodeCount));
 			}
 		}
 
-		[DisplayName("Nodes Size")]
-		[PropertyOrder(11)]
-		public int NodeSize
+		private int _lightSize;
+		public int LightSize
 		{
-			get => PropModel.NodeSize;
+			get => _lightSize;
 			set
 			{
-				if (value == PropModel.NodeSize)
-				{
-					return;
-				}
-
-				PropModel.NodeSize = value;
-				OnPropertyChanged(nameof(NodeSize));
+				_lightSize = value;
+//ToDo(1)				PropModel?.UpdatePropNodes();
+				OnPropertyChanged(nameof(LightSize));
 			}
 		}
 
-		[DisplayName("Wiring Start")]
-		[PropertyOrder(12)]
-		public ArchStartLocation StartLocation
+		private ArchStartLocation _archWiringStart;
+		public ArchStartLocation ArchWiringStart
 		{
-			get => _startLocation;
+			get => _archWiringStart;
 			set
 			{
-				SetProperty(ref _startLocation, value);
+				_archWiringStart = value;
+				UpdatePatchingOrder().SafeFireAndForget(); ;
+				OnPropertyChanged(nameof(ArchWiringStart));
 			}
+		}
+
+		private bool _leftRight;
+		public bool LeftRight
+		{
+			get => _leftRight;
+			set
+			{
+				_leftRight = value;
+				OnPropertyChanged(nameof(LeftRight));
+				UpdateDefaultPropComponents();
+			}
+		}
+
+		public override string GetSummary()
+		{
+			string Summary =
+				"<style>" +
+				$"  h2   {{color: #{new RGB(ThemeColorTable.ForeColor).ToHex()}; margin-top: 0; margin-bottom: 0; text-decoration: underline;}}" +
+				$"  body {{color: #{new RGB(ThemeColorTable.ForeColor).ToHex()}; margin-top: 0;}}" +
+				$"  b    {{color: #{new RGB(ThemeColorTable.ForeColorDisabled).ToHex()}; margin-left: 20px;}}" +
+				"</style>" +
+				$"<h2>Basic Attributes</h2>" +
+				"<body>" +
+				$"<b>Prop Type:</b> {PropType.Arch.GetEnumDescription()}<br>" +
+				$"<b>Name:</b> {Name}<br>" +
+				$"<b>Light Count:</b> {NodeCount}<br>" +
+				$"<b>Light Size:</b> {LightSize}<br>" +
+				$"<b>Light Type:</b> {StringType}<br>" +
+				$"<b>Starting Position:</b> {ArchWiringStart}<br>" +
+				$"<b>{Rotations[0].Axis} Rotation:</b> {Rotations[0].RotationAngle}\u00B0<br>" +
+				$"<b>{Rotations[1].Axis} Rotation:</b> {Rotations[1].RotationAngle}\u00B0<br>" +
+				$"<b>{Rotations[2].Axis} Rotation:</b> {Rotations[2].RotationAngle}\u00B0<br>" +
+				 "</body>" +
+				 "<h2>Additional Props</h2>" +
+				 "<body>" +
+				$"<b>Left and Right Arches:</b> {LeftRight}<br>" +
+				 "</body>" +
+				GetDimmingSummary() +
+				GetBaseSummary();
+
+			return Summary;
 		}
 
 		protected async Task GenerateElementsAsync()
@@ -170,7 +194,7 @@ namespace VixenModules.App.Props.Models.Arch
 
 		private async Task UpdatePatchingOrder()
 		{
-			await AddOrUpdatePatchingOrder(StartLocation == ArchStartLocation.Left ? Props.StartLocation.BottomLeft : Props.StartLocation.BottomRight);
+			await AddOrUpdatePatchingOrder(ArchWiringStart == ArchStartLocation.Left ? Props.StartLocation.BottomLeft : Props.StartLocation.BottomRight);
 		}
 
 		#region PropComponents
@@ -178,55 +202,90 @@ namespace VixenModules.App.Props.Models.Arch
 		private void UpdateDefaultPropComponents()
 		{
 			var head = GetOrCreateElementNode();
-			
-			//Update the left and right to match the new node count
-			var propComponentLeft = PropComponents.FirstOrDefault(x => x.Name == $"{Name} Left");
-			var propComponentRight = PropComponents.FirstOrDefault(x => x.Name == $"{Name} Right");
-
-			if (propComponentLeft == null)
+			if (!PropComponents.Any())
 			{
-				propComponentLeft = PropComponentManager.CreatePropComponent($"{Name} Left", Id, PropComponentType.PropDefined);
-				PropComponents.Add(propComponentLeft);
-			}
-			else
-			{
-				propComponentLeft.Clear();
-			}
-
-			if (propComponentRight == null)
-			{
-				propComponentRight = PropComponentManager.CreatePropComponent($"{Name} Right", Id, PropComponentType.PropDefined);
-				PropComponents.Add(propComponentRight);
-			}
-			else
-			{
-				propComponentRight.Clear();
-			}
-
-			int middle =  (int)Math.Round(NodeCount / 2d, MidpointRounding.AwayFromZero);
-			int i = 0;
-			foreach (var stringNode in head.Children)
-			{
-				if (i < middle)
+				var propComponent = PropComponentManager.CreatePropComponent($"{Name} Nodes", Id, PropComponentType.PropDefined);
+				foreach (var stringNode in head.Children)
 				{
-					propComponentLeft.TryAdd(stringNode);
+					propComponent.TryAdd(stringNode);
+				}
+				PropComponents.Add(propComponent);
+			}
+
+			//Add new nodes, if any
+			else if (head.Count() > PropComponents.First().TargetNodes.Count())
+			{
+				foreach (var node in head.Children.Except(PropComponents.First().TargetNodes))
+				{
+					PropComponents.First().TryAdd(node);
+				}
+			}
+			else
+			{
+				//Remove nodes that no longer exist, if any
+				foreach (var node in PropComponents.First().TargetNodes.Except(head.Children).ToList())
+				{
+					PropComponents.First().TryRemove(node.Id, out _);
+				}
+			}
+
+			if (LeftRight == true)
+			{
+				//Update the left and right to match the new node count
+				var propComponentLeft = PropComponents.FirstOrDefault(x => x.Name == $"{Name} Left");
+				var propComponentRight = PropComponents.FirstOrDefault(x => x.Name == $"{Name} Right");
+
+				if (propComponentLeft == null)
+				{
+					propComponentLeft = PropComponentManager.CreatePropComponent($"{Name} Left", Id, PropComponentType.PropDefined);
+					PropComponents.Add(propComponentLeft);
 				}
 				else
 				{
-					propComponentRight.TryAdd(stringNode);
+					propComponentLeft.Clear();
 				}
 
-				i++;
+				if (propComponentRight == null)
+				{
+					propComponentRight = PropComponentManager.CreatePropComponent($"{Name} Right", Id, PropComponentType.PropDefined);
+					PropComponents.Add(propComponentRight);
+				}
+				else
+				{
+					propComponentRight.Clear();
+				}
+
+				int middle = (int)Math.Round(NodeCount / 2d, MidpointRounding.AwayFromZero);
+				int i = 0;
+				foreach (var stringNode in head.Children)
+				{
+					if (i < middle)
+					{
+						propComponentLeft.TryAdd(stringNode);
+					}
+					else
+					{
+						propComponentRight.TryAdd(stringNode);
+					}
+
+					i++;
+				}
+			}
+			else
+			{
+				// Remove Right
+				if (PropComponents.Count == 3)
+				{
+					PropComponents.Remove(PropComponents[2]);
+				}
+
+				// Remove Left
+				if (PropComponents.Count == 2)
+				{
+					PropComponents.Remove(PropComponents[1]);
+				}
 			}
 		}
-
 		#endregion
-
-	}
-
-	public enum ArchStartLocation
-	{
-		Left,
-		Right
 	}
 }
