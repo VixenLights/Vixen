@@ -22,7 +22,8 @@ namespace VixenModules.Effect.Fixture
 			FunctionIdentity = FunctionIdentity.Custom;
 			FunctionName = String.Empty;
 			Range = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
-			TimelineColor = System.Drawing.Color.White;	
+			TimelineColor = System.Drawing.Color.White;
+			Color = new App.ColorGradients.ColorGradient();
 		}
 
 		#endregion
@@ -108,7 +109,7 @@ namespace VixenModules.Effect.Fixture
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
-			//Ensure Color is populated
+			// Ensure Color is populated
 			Color ??= new App.ColorGradients.ColorGradient();
 		}
 

@@ -287,6 +287,10 @@ namespace VixenModules.App.ColorGradients
 		public ColorGradient(Color staticColor)
 			: this()
 		{
+			if (staticColor == null)
+			{
+				throw new ArgumentException("Color argument is null");
+			}
 			_colors.Clear();
 			_colors.Add(new ColorPoint(staticColor, 0));
 		}
@@ -294,6 +298,11 @@ namespace VixenModules.App.ColorGradients
 		public ColorGradient(IEnumerable<Color> colors)
 			: this()
 		{
+			if (colors == null)
+			{
+				throw new ArgumentException("Color collection argument is null");
+			}
+
 			_colors.Clear();
 			foreach (Color c in colors) {
 				_colors.Add(new ColorPoint(c, 0));
@@ -878,6 +887,11 @@ namespace VixenModules.App.ColorGradients
 		/// <param name="other"></param>
 		public void CloneFrom(ColorGradient other)
 		{
+			if (other == null)
+			{
+				throw new ArgumentException("Color argument is null");
+			}
+			
 			CloneDataFrom(other);
 
 			// grab all the library-linking details as well
@@ -891,6 +905,11 @@ namespace VixenModules.App.ColorGradients
 		/// <param name="other"></param>
 		public void CloneDataFrom(ColorGradient other)
 		{
+			if (other == null)
+			{
+				throw new ArgumentException("Color argument is null");
+			}
+
 			_colors = new PointList<ColorPoint>();
 			foreach (ColorPoint cp in other.Colors) {
 				_colors.Add(new ColorPoint(cp));
