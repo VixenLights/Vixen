@@ -23,13 +23,16 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 			// Create the Arch prop
 			Arch arch = VixenSystem.Props.CreateProp<Arch>(archPropPage.Name);
 			// Configure the Arch properties
+			arch.Name = archPropPage.Name;
 			arch.NodeCount = archPropPage.NodeCount;
 			arch.StringType = archPropPage.StringType;
 			arch.ArchWiringStart = archPropPage.ArchWiringStart;
 			arch.LightSize = archPropPage.LightSize;
-			arch.LeftRight = archPropPage.LeftRight;
 			arch.Rotations = AxisRotationViewModel.ConvertToModel(archPropPage.Rotations);
 			arch.PropModel = archPropPage.LightPropModel;
+
+			ArchPropAdditionalWizardPage additionalPage = (ArchPropAdditionalWizardPage)wizard.Pages.Single(page => page is ArchPropAdditionalWizardPage);
+			arch.LeftRight = additionalPage.LeftRight;
 
 			DimmingWizardPage dimmingPage = (DimmingWizardPage)wizard.Pages.Single(page => page is DimmingWizardPage);
 			arch.Curve = dimmingPage.Curve;
@@ -62,6 +65,18 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 			return (arch, propGroup);
 		}
 
+		public IPropGroup EditExistingProp(IProp arch)
+		{
+			// Create the collection of props to return 
+			IPropGroup propGroup = new PropGroup();
+
+			// Add the Arch to the prop collections 
+			propGroup.Props.Add(arch);
+
+			// Return the collection of props
+			return propGroup;
+		}
+
 		public void LoadWizard(IProp prop, IPropWizard wizard)
 		{
 			Arch arch = (Arch)prop;
@@ -73,8 +88,10 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 			archPropPage.StringType = arch.StringType;
 			archPropPage.ArchWiringStart = arch.ArchWiringStart;
 			archPropPage.LightSize = arch.LightSize;
-			archPropPage.LeftRight = arch.LeftRight;
 			archPropPage.Rotations = AxisRotationViewModel.ConvertToViewModel(arch.Rotations);
+
+			ArchPropAdditionalWizardPage additionalPage = (ArchPropAdditionalWizardPage)wizard.Pages.Single(page => page is ArchPropAdditionalWizardPage);
+			additionalPage.LeftRight = arch.LeftRight;
 
 			DimmingWizardPage dimmingPage = (DimmingWizardPage)wizard.Pages.Single(page => page is DimmingWizardPage);
 			dimmingPage.Curve = arch.Curve;
@@ -90,13 +107,16 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 			// Retrieve the Prop wizard pages
 			ArchPropWizardPage archPropPage = (ArchPropWizardPage)wizard.Pages.Single(page => page is ArchPropWizardPage);
 			// Configure the Arch properties
+			arch.Name = archPropPage.Name;
 			arch.NodeCount = archPropPage.NodeCount;
 			arch.StringType = archPropPage.StringType;
 			arch.ArchWiringStart = archPropPage.ArchWiringStart;
 			arch.LightSize = archPropPage.LightSize;
-			arch.LeftRight = archPropPage.LeftRight;
 			arch.Rotations = AxisRotationViewModel.ConvertToModel(archPropPage.Rotations);
 			arch.PropModel = archPropPage.LightPropModel;
+
+			ArchPropAdditionalWizardPage additionalPage = (ArchPropAdditionalWizardPage)wizard.Pages.Single(page => page is ArchPropAdditionalWizardPage);
+			arch.LeftRight = additionalPage.LeftRight;
 
 			DimmingWizardPage dimmingPage = (DimmingWizardPage)wizard.Pages.Single(page => page is DimmingWizardPage);
 			arch.Curve = dimmingPage.Curve;

@@ -23,6 +23,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Wizard
 			ShowInTaskbar = true;
 
 			this.AddPage<ArchPropWizardPage>();
+			this.AddPage<ArchPropAdditionalWizardPage>();
 			DimmingWizardPage dimmingPage = this.AddPage<DimmingWizardPage>();
 			dimmingPage.PropType = PropType.Arch;
 			SummaryWizardPage summaryPage = this.AddPage<SummaryWizardPage>();
