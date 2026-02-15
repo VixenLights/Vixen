@@ -46,7 +46,13 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 
 		#region Protected Properties
 
-		public TPropModel LightPropModel { get; set; }
+		[ViewModelToModel]
+		public TPropModel LightPropModel
+		{
+			get { return GetValue<TPropModel>(LightPropModelProperty); }
+			set { SetValue(LightPropModelProperty, value); }
+		}
+		public static readonly IPropertyData LightPropModelProperty = RegisterProperty<TPropModel>(nameof(LightPropModel));
 
 		#endregion
 
@@ -58,16 +64,9 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		[ViewModelToModel]
 		public ObservableCollection<AxisRotationViewModel> Rotations
 		{
-			get
-			{
-				return GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty);
-			}
-			set
-			{
-				SetValue(RotationsProperty, value);
-			}
+			get { return GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty); }
+			set { SetValue(RotationsProperty, value); }
 		}
-
 		public static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
 
 		/// <summary>

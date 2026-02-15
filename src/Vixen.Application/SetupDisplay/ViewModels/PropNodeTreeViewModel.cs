@@ -142,6 +142,29 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#endregion
 
+		public bool IsTopNode
+		{
+			get => GetValue<bool>(IsTopNodeProperty);
+			set => SetValue(IsTopNodeProperty, value);
+		}
+
+		public static readonly IPropertyData IsTopNodeProperty =
+			RegisterProperty<bool>(nameof(IsTopNode), true);
+
+		public bool IsSubNode
+		{
+			get => GetValue<bool>(IsSubNodeProperty);
+			set => SetValue(IsSubNodeProperty, value);
+		}
+
+		public static readonly IPropertyData IsSubNodeProperty =
+			RegisterProperty<bool>(nameof(IsSubNode), false);
+
+
+		private void OnIsTopNodeChanged()
+		{
+			RaisePropertyChanged(nameof(IsSubNode));
+		}
 		#region SelectedItems property
 
 		/// <summary>
@@ -178,6 +201,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			MoveToGroupCommand.RaiseCanExecuteChanged();
 			CreateNodeCommand.RaiseCanExecuteChanged();
 			CreatePropCommand.RaiseCanExecuteChanged();
+			ChangePropCommand.RaiseCanExecuteChanged();
 		}
 
 		#endregion
@@ -634,6 +658,43 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#endregion
 
+
+
+
+
+		#region ChangeProp command
+
+		private TaskCommand<PropType> _changePropCommand;
+
+		public TaskCommand<PropType> ChangePropCommand
+		{
+			get { return _changePropCommand ??= new(ChangeProp, CanChangeProp); }
+		}
+
+		private async Task ChangeProp(PropType result)
+		{
+			IPropGroup propGroup = await EditPropNodes(SelectedItems[0].PropNode.Prop);
+			RaisePropertyChanged(nameof(SelectedItem));
+		}
+
+		private bool CanChangeProp(PropType propType)
+		{
+			if (SelectedItems.Count == 1 && SelectedItem is { IsGroupNode: true })
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		#endregion
+
+
+
+
+
+
+
 		#region Cut command
 
 		private Command _cutCommand;
@@ -1055,6 +1116,64 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			return null;
 		}
 
+		private async Task<IPropGroup> EditPropNodes(IProp newProp)
+		{
+			var dependencyResolver = this.GetDependencyResolver();
+
+			// Get the Catel type factory
+			ITypeFactory typeFactory = this.GetTypeFactory();
+
+			var propType = newProp.PropType;
+			IPropFactory newPropFactory = PropFactory.CreateInstance(propType);
+			(IProp XXnewProp, IPropGroup propGroup) = newPropFactory.CreateBaseProp();
+
+			// Retrieve the color scheme service
+			IBaseColorSchemeService baseColorService = (IBaseColorSchemeService)dependencyResolver.Resolve(typeof(IBaseColorSchemeService));
+
+			// Select the dark color scheme
+			baseColorService.SetBaseColorScheme("Dark");
+
+			// Use the type factory to create the prop wizard
+			(IPropWizard Wizard, IPropFactory Factory) propWizard = PropWizardFactory.CreateInstance(propType, typeFactory);
+
+
+			// Configure the wizard window to show up in the Windows task bar
+			propWizard.Wizard.ShowInTaskbarWrapper = true;
+
+			// Enable the help button
+			propWizard.Wizard.ShowHelpWrapper = true;
+
+			// Configure the wizard to allow the user to jump between already visited pages
+			propWizard.Wizard.AllowQuickNavigationWrapper = true;
+
+			// Allow Catel to help determine when it is safe to transition to the next wizard page
+			propWizard.Wizard.HandleNavigationStatesWrapper = true;
+
+			// Configure the wizard to NOT cache views
+			propWizard.Wizard.CacheViewsWrapper = false;
+
+			// Configure the wizard with a navigation controller														
+			propWizard.Wizard.NavigationControllerWrapper = typeFactory.CreateInstanceWithParametersAndAutoCompletion<PropWizardNavigationController>(propWizard.Wizard);
+
+			newPropFactory.LoadWizard(newProp, propWizard.Wizard);
+
+			var ws = dependencyResolver.Resolve<IWizardService>();
+			if (ws != null && propWizard.Wizard != null)
+			{
+				bool? result = (await ws.ShowWizardAsync(propWizard.Wizard)).DialogResult;
+				// Determine if the wizard was cancelled 
+				if (result.HasValue && result.Value)
+				{
+					// Have the prop factory create the props from the wizard data
+					newPropFactory.UpdateProp(newProp, propWizard.Wizard);
+
+					// User did not cancel					
+					return propGroup;
+				}
+			}
+
+			return null;
+		}
 		#endregion
 
 		#region Event Handling
