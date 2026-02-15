@@ -1125,7 +1125,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 			var propType = newProp.PropType;
 			IPropFactory newPropFactory = PropFactory.CreateInstance(propType);
-			(IProp XXnewProp, IPropGroup propGroup) = newPropFactory.CreateBaseProp();
+			IPropGroup propGroup = newPropFactory.EditExistingProp(newProp);
 
 			// Retrieve the color scheme service
 			IBaseColorSchemeService baseColorService = (IBaseColorSchemeService)dependencyResolver.Resolve(typeof(IBaseColorSchemeService));

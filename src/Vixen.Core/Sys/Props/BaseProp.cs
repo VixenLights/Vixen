@@ -22,8 +22,6 @@ namespace Vixen.Sys.Props
 	/// of associated components and target nodes.
 	/// </remarks>
 	[Serializable]
-	[CategoryOrder("Attributes", 1)]
-	[CategoryOrder("Creation", 100)]
 	public abstract class BaseProp<TModel> : BindableBase, IProp where TModel : BasePropModel, IPropModel
 	{
 		#region Protected Static Properties
@@ -74,7 +72,6 @@ namespace Vixen.Sys.Props
 		/// This identifier is automatically generated upon the creation of the Prop
 		/// and is used to uniquely distinguish it within the Vixen system.
 		/// </remarks>
-		[Browsable(false)]
 		public Guid Id
 		{
 			get => _id;
@@ -84,14 +81,16 @@ namespace Vixen.Sys.Props
 		/// <summary>
 		/// Gets or sets the name of the Prop.
 		/// </summary>
-		[Category("Attributes")]
-		[PropertyOrder(0)]
 		public string Name
 		{
 			get => _name;
 			set
 			{
-				if (!VixenSystem.Props.IsUniquePropTitle(value))
+				if (_name.Equals(value))
+				{
+					// Do nothing as we're not changing the name
+				}
+				else if (!VixenSystem.Props.IsUniquePropTitle(value))
 				{
 					MessageBox.Show($"{value} already exists. Enter a unique name.", "Prop name must be unique", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
@@ -104,10 +103,6 @@ namespace Vixen.Sys.Props
 			}
 		}
 
-		[Category("Attributes")]
-		[DisplayName("Prop Type")]
-		[PropertyOrder(1)]
-		[ReadOnly(true)]
 		public PropType PropType { get; init; }
 
 
@@ -120,10 +115,6 @@ namespace Vixen.Sys.Props
 		/// <remarks>
 		/// This property is used to track the origin of the Prop for auditing and informational purposes.
 		/// </remarks>
-		[Category("Creation")]
-		[DisplayName("Created By")]
-		[PropertyOrder(0)]
-		[ReadOnly(true)]
 		public string CreatedBy
 		{
 			get => _createdBy;
@@ -137,10 +128,6 @@ namespace Vixen.Sys.Props
 		/// This property is initialized during the construction of the Prop and remains immutable.
 		/// It provides metadata about the creation of the Prop for tracking and auditing purposes.
 		/// </remarks>
-		[Category("Creation")]
-		[DisplayName("Creation Date")]
-		[PropertyOrder(1)]
-		[ReadOnly(true)]
 		public DateTime CreationDate { get; init; }
 
 		/// <summary>
@@ -149,10 +136,6 @@ namespace Vixen.Sys.Props
 		/// <value>
 		/// A <see cref="DateTime"/> representing the last modification date and time of the Prop.
 		/// </value>
-		[Category("Creation")]
-		[DisplayName("Modified Date")]
-		[PropertyOrder(2)]
-		[ReadOnly(true)]
 		public DateTime ModifiedDate
 		{
 			get => _modifiedDate;
@@ -167,12 +150,10 @@ namespace Vixen.Sys.Props
 		/// for the Props visual that is used to draw it. This property can be overridden in derived classes to
 		/// provide specific implementations of the Prop model.
 		/// </remarks>
-		[Browsable(false)]
 		IPropModel IProp.PropModel => PropModel;
 
 		private TModel _propModel;
 		
-		[Browsable(false)]
 		public TModel PropModel
 		{
 			get => _propModel;
@@ -189,7 +170,6 @@ namespace Vixen.Sys.Props
 		/// If the identifier is <see cref="Guid.Empty"/>, it indicates that no 
 		/// root <see cref="ElementNode"/> is currently associated with the Prop.
 		/// </remarks>
-		[Browsable(false)]
 		public Guid RootPropElementNodeId { get; protected set; } = Guid.Empty;
 
 		/// <summary>
@@ -244,13 +224,10 @@ namespace Vixen.Sys.Props
 		/// <value>
 		/// The <see cref="IElementNode"/> representing the target node of the Prop.
 		/// </value>
-		[Browsable(false)]
 		public virtual IElementNode TargetNode => GetOrCreateElementNode();
 
-		[Browsable(false)]
 		public ObservableCollection<IPropComponent> PropComponents { get; init; }
 
-		[Browsable(false)]
 		public ObservableCollection<IPropComponent> UserDefinedPropComponents { get; init; }
 
 		public abstract string GetSummary();
@@ -424,5 +401,18 @@ namespace Vixen.Sys.Props
 
 		// Add other properties to manage things like controller target, 
 
+
+	public string GetBaseSummary()
+		{
+			string summary =
+				 "<h2>Prop Information</h2>" +
+				 "<body>" +
+				$"<b>Created by:</b> {CreatedBy}<br>" +
+				$"<b>Creation Date:</b> {CreationDate}<br>" +
+				$"<b>Modified Date:</b> {ModifiedDate}" +
+				 "</body>";
+
+			return summary;
+		}
 	}
 }

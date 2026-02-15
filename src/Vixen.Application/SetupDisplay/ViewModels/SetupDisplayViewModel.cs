@@ -239,7 +239,6 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			{
 				if (PropNodeTreePropViewModel.SelectedItem is { PropNode.IsProp: true, PropNode.Prop: not null })
 				{
-					UpdatePreviewModel(null);
 					SelectedProp = PropNodeTreePropViewModel.SelectedItem.PropNode.Prop;
 					UpdatePreviewModel(SelectedProp);
 					UpdatePropComponentTreeViewModel(SelectedProp);

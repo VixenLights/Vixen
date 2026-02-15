@@ -1,9 +1,7 @@
 ﻿using Catel.Data;
 using Orc.Wizard;
-using System.Runtime.CompilerServices;
 using Vixen.Extensions;
 using Vixen.Sys.Props;
-using Vixen.Sys.Props.Model;
 using VixenModules.App.Curves;
 using VixenModules.App.Props.Models;
 
