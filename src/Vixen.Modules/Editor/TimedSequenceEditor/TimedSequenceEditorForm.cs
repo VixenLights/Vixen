@@ -524,6 +524,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.grid.DragOver += TimelineControlGrid_DragOver;
 			TimelineControl.grid.DragEnter += TimelineControlGrid_DragEnter;
 			TimelineControl.grid.DragDrop += TimelineControlGrid_DragDrop;
+			TimelineControl.grid.DragLeave += TimelineControlGrid_DragLeave;
 			Row.RowHeightChanged += TimeLineControl_Row_RowHeightChanged;
 
 			LoadAvailableEffects();
@@ -894,6 +895,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 
+			_dragDropToElementEffect.element = null;
+			_dragDropToElementEffect.effect = DragDropEffects.None;
+
 		}
 
 		private void TimelineControlGrid_DragEnter(object sender, DragEventArgs e)
@@ -909,16 +913,36 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				e.Effect = IsValidDataObject(e.Data, new Point(e.X, e.Y));
 		}
 
+		private void TimelineControlGrid_DragLeave(object sender, EventArgs e)
+		{
+			_dragDropToElementEffect.element = null;
+			_dragDropToElementEffect.effect = DragDropEffects.None;
+		}
+
+		/// <summary>
+		/// Represents the element currently targeted by a drag-and-drop operation and the associated drag-and-drop effect.
+		/// </summary>
+		/// <remarks>This field stores the current state of an ongoing drag-and-drop interaction, including the UI
+		/// element being hovered over and the effect that will be applied if the drop is completed. It is typically used to
+		/// manage feedback and behavior during drag-and-drop operations.</remarks>
+		private (Element? element, DragDropEffects effect) _dragDropToElementEffect = (null, DragDropEffects.None);
 		private DragDropEffects IsValidDataObject(IDataObject dataObject, Point mouseLocation)
 		{
 			if (dataObject.GetDataPresent(typeof(Guid)) && TimelineControl.grid.RowAtPosition(mouseLocation)!=null)
 			{
+				_dragDropToElementEffect.element = null;
+				_dragDropToElementEffect.effect = DragDropEffects.None;
 				return DragDropEffects.Copy;
 			}
 			Element element = TimelineControl.grid.ElementAtPosition(mouseLocation);
 			if (element != null)
 			{
+				if (_dragDropToElementEffect.element == element)
+				{
+					return _dragDropToElementEffect.effect;
+				}
 
+				_dragDropToElementEffect.element = element;
 				if (dataObject.GetDataPresent(typeof(Color)) && PropertyDiscovery.ContainsTypes(element.EffectNode.Effect, AllColorTypes))
 				{
 					var discreteColors = GetDiscreteColors(element.EffectNode.Effect);
@@ -928,11 +952,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						{
 							if (!discreteColors.Contains(c))
 							{
+								_dragDropToElementEffect.effect = DragDropEffects.None;
 								return DragDropEffects.None;
 							}
 						}
 					}
-					
+
+					_dragDropToElementEffect.effect = DragDropEffects.Copy;
 					return DragDropEffects.Copy;
 				}
 				if (dataObject.GetDataPresent(typeof(ColorGradient)) && PropertyDiscovery.ContainsTypes(element.EffectNode.Effect, GradientTypes))
@@ -945,18 +971,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							var colors = c.Colors.Select(x => x.Color.ToRGB().ToArgb());
 							if (!discreteColors.IsSupersetOf(colors))
 							{
+								_dragDropToElementEffect.effect = DragDropEffects.None;
 								return DragDropEffects.None;
 							}
 						}
 					}
+
+					_dragDropToElementEffect.effect = DragDropEffects.Copy;
 					return DragDropEffects.Copy;
 				}
 				if (dataObject.GetDataPresent(typeof(Curve)) && PropertyDiscovery.ContainsTypes(element.EffectNode.Effect, CurveTypes))
 				{
+					_dragDropToElementEffect.effect = DragDropEffects.Copy;
 					return DragDropEffects.Copy;
 				}
 			}
 
+			_dragDropToElementEffect.effect = DragDropEffects.None;
 			return DragDropEffects.None;	
 		}
 
