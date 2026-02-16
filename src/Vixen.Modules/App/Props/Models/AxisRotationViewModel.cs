@@ -1,7 +1,6 @@
 ﻿using Catel.Data;
 using Catel.MVVM;
 using System.Collections.ObjectModel;
-using Vixen.Extensions;
 using Vixen.Sys.Props.Model;
 
 namespace VixenModules.App.Props.Models
@@ -64,6 +63,12 @@ namespace VixenModules.App.Props.Models
 
 		#endregion
 
+		/// <summary>
+		/// Convert rotation object from ViewModel to Model
+		/// </summary>
+		/// <param name="rotations">Specifies the Rotation object in ViewModel format</param>
+		/// <returns>Returns an <see cref="System.Collections.ObjectModel.ObservableCollection{AxisRotationModel}"/>
+		/// that specifies the Model version of the rotations.</returns>
 		public static ObservableCollection<AxisRotationModel> ConvertToModel(ObservableCollection<AxisRotationViewModel> rotations)
 		{
 			// Transfer the rotations from the view model to the model
@@ -81,6 +86,12 @@ namespace VixenModules.App.Props.Models
 			return models;
 		}
 
+		/// <summary>
+		/// Convert rotation object from Model to ViewModel
+		/// </summary>
+		/// <param name="rotations">Specifies the Rotation object in Model format</param>
+		/// <returns>Returns an <see cref="System.Collections.ObjectModel.ObservableCollection{AxisRotationViewModel}"/>
+		/// that specifies the ViewModel version of the rotations.</returns>
 		public static ObservableCollection<AxisRotationViewModel> ConvertToViewModel(ObservableCollection<AxisRotationModel> rotations)
 		{
 			// Transfer the rotations from the model to the view model

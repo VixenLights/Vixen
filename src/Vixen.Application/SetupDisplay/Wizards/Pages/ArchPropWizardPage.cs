@@ -187,19 +187,5 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 						  $"{Rotations[2].Axis} Rotation: {Rotations[2].RotationAngle}\u00B0"
 			};
 		}
-
-		///// <summary>
-		///// Gets the prop based on the settings in the wizard.
-		///// </summary>
-		///// <returns>A copy of the prop.</returns>
-		//public IProp GetProp()
-		//{
-		//	var arch = VixenSystem.Props.CreateProp<Arch>(Name);
-		//	arch.NodeCount = NodeCount;
-		//	arch.ArchWiringStart = ArchWiringStart;
-		//	arch.StringType = StringType;
-		//	arch.LightSize = LightSize;
-		//	return arch;
-		//}
 	}
 }

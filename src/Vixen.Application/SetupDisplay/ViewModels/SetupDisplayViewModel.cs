@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using System.Windows;
 using System.Windows.Input;
 
 using Catel.Data;
@@ -639,16 +638,19 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			set 
 			{
 				SetValue(SelectedPropProperty, value);
-				var prop = value as IProp;
-				if (prop == null)
+
+				// Is a Prop is not selected?
+				if (value == null)
 				{
-					SelectedPropText = string.Empty;
+					// No prop selected
+					PropInformationViewer = string.Empty;
 					PropNodeTreeViewModel.IsTopNode = true;
 					PropNodeTreeViewModel.IsSubNode = false;
 				}
 				else
 				{
-					SelectedPropText = prop.GetSummary();
+					// Prop is selected
+					PropInformationViewer = value.GetSummary();
 					PropNodeTreeViewModel.IsTopNode = false;
 					PropNodeTreeViewModel.IsSubNode = true;
 				}
@@ -658,12 +660,17 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			}
 		}
 
-		public string SelectedPropText
+		#region PropInformationViewer property
+		/// <summary>
+		/// Set the text of the informational window
+		/// </summary>
+		public string PropInformationViewer
 		{
-			get { return GetValue<string>(SelectedPropTextProperty); }
-			set { SetValue(SelectedPropTextProperty, value); }
+			get { return GetValue<string>(PropInformationViewerProperty); }
+			set { SetValue(PropInformationViewerProperty, value); }
 		}
-		public static readonly IPropertyData SelectedPropTextProperty = RegisterProperty<string>(nameof(SelectedPropText));
+		private static readonly IPropertyData PropInformationViewerProperty = RegisterProperty<string>(nameof(PropInformationViewer));
+		#endregion
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -671,21 +678,6 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		protected void OnPropertyChanged([CallerMemberName] string name = null)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-		}
-
-		/// <summary>
-		/// Event handler for when a prop rotation changed.
-		/// </summary>
-		/// <param name="sender">Event sender</param>
-		/// <param name="e">Event arguments</param>
-		private void OnRotationChanged(object? sender, EventArgs e)
-		{
-			// If the selected prop is a light based prop then...
-			if (SelectedProp?.PropModel is ILightPropModel lightPropModel)
-			{
-				// Update the prop nodes
-//ToDo(1)				lightPropModel.UpdatePropNodes();
-			}
 		}
 
 		/// <summary>
@@ -1086,7 +1078,8 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// Updates the prop displayed in the prop preview.
 		/// </summary>
 		/// <param name="prop">Prop to display in the prop preview</param>
-		internal void UpdatePreviewModel(IProp? prop)
+		/// <param name="force">Force the Preview to update immediately</param>
+		internal void UpdatePreviewModel(IProp prop, bool force = false)
 		{
 			if (force == true)
 				DrawProp(prop?.PropModel);
