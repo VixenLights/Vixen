@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace Vixen.Sys.Props.Model
+﻿namespace Vixen.Sys.Props.Model
 {
 	/// <summary>
 	/// Defines the coordinate system axis.
@@ -49,6 +47,12 @@ namespace Vixen.Sys.Props.Model
 			};
 		}
 
+		/// <summary>
+		/// Converts from enumeration to axis string.
+		/// </summary>
+		/// <param name="axis">Enumeration to convert</param>
+		/// <returns>Returns a <see cref="string"/> equivalent of the enumeration</returns>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
 		public static string ConvertAxis(Axis axis)
 		{
 			return axis switch

@@ -1,19 +1,11 @@
 ﻿#nullable enable
-
-using NLog;
-using NLog.Filters;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
-using System.Reflection.Emit;
-using Vixen.Attributes;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Props;
 using Vixen.Sys.Props.Model;
 using VixenModules.App.Curves;
-using VixenModules.App.Props.Models.Tree;
 using VixenModules.Property.Color;
 
 namespace VixenModules.App.Props.Models
@@ -33,11 +25,12 @@ namespace VixenModules.App.Props.Models
 		{
 			StringType = StringTypes.Pixel;
 			Rotations = new ObservableCollection<AxisRotationModel>();
-			Rotations.Add(new AxisRotationModel() { Axis = Axis.XAxis, RotationAngle = 0});
+			Rotations.Add(new AxisRotationModel() { Axis = Axis.XAxis, RotationAngle = 0 });
 			Rotations.Add(new AxisRotationModel() { Axis = Axis.YAxis, RotationAngle = 0 });
 			Rotations.Add(new AxisRotationModel() { Axis = Axis.ZAxis, RotationAngle = 0 });
 		}
 
+		#region Properties
 		/// <summary>
 		/// Gets or sets the type of string used in the light prop.
 		/// </summary>
@@ -116,6 +109,7 @@ namespace VixenModules.App.Props.Models
 				OnPropertyChanged(nameof(Gamma));
 			}
 		}
+		#endregion
 
 		/// <summary>
 		/// Adds a specified number of string elements to the given element node.
@@ -389,6 +383,10 @@ namespace VixenModules.App.Props.Models
 			UpdateInProgress = false;
 		}
 
+		/// <summary>
+		/// Get the HTML summary of all the Dimming parameter values
+		/// </summary>
+		/// <returns>Returns the <see cref="string"/> summary in HTML format</returns>
 		protected string GetDimmingSummary()
 		{
 			string summary = "<h2>Dimming Curve</h2><body>";

@@ -1,6 +1,8 @@
 ﻿using Catel.Data;
 using Catel.MVVM;
+using Dataweb.NShape.Advanced;
 using Orc.Wizard;
+using Vixen.Annotations;
 using VixenApplication.SetupDisplay.Wizards.Pages;
 using VixenModules.App.Curves;
 using VixenModules.App.Props.Models;
@@ -37,7 +39,6 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		}
 		private static readonly IPropertyData GammaProperty = RegisterProperty<double>(nameof(Gamma));
 
-
 		[ViewModelToModel]
 		public Curve Curve
 		{
@@ -45,5 +46,20 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 			set { SetValue(CurveProperty, value); }
 		}
 		private static readonly IPropertyData CurveProperty = RegisterProperty<Curve>(nameof(Curve));
+
+		/// <summary>
+		/// Called when leaving the page
+		/// </summary>
+		/// <returns>True: if navigation proceeds<br/>False: if navigation is cancelled</returns>
+		[UsedImplicitly]
+		protected override Task OnClosingAsync()
+		{
+			// If the simple curve is set, then generate a gamma curve
+			//if (DimmingTypeOption == DimmingType.Simple)
+			//{
+			//	Curve = new Curve().SetGamma(Gamma, Brightness);
+			//}
+			return base.OnClosingAsync();
+		}
 	}
 }

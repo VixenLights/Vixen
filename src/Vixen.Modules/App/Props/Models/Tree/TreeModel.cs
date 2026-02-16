@@ -2,7 +2,6 @@
 using System.Drawing;
 
 using Vixen.Sys.Props.Model;
-using VixenApplication.SetupDisplay.Wizards.HelperTools;
 using VixenModules.App.Props.Models.Line;
 
 namespace VixenModules.App.Props.Models.Tree

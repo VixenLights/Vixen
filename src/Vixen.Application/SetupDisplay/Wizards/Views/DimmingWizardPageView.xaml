@@ -24,7 +24,7 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
+            <RowDefinition Height="350" />
         </Grid.RowDefinitions>
             
         <!-- Curve Selection buttons -->
@@ -36,9 +36,9 @@
         <!-- Gamma Curves -->
         <Grid x:Name="SimpleDimming" Grid.Row="4" Visibility="Collapsed">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="160"/>
@@ -61,77 +61,78 @@
         </Grid>
         
         <!-- Custom Curve -->
-        <Grid x:Name="CustomCurve" Grid.Row="4" Visibility="Collapsed">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
+        <ScrollViewer x:Name="CustomCurve" Grid.Row="4" Visibility="Collapsed" VerticalScrollBarVisibility="Visible" ScrollChanged="ChartScrollViewer_ScrollChanged">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
 
-            <WindowsFormsHost Grid.Row="0" Grid.Column="0" Width="295" Height="295" Margin="0,3,0,0">
-                <zed:ZedGraphControl x:Name="zedGraphControl" />
-            </WindowsFormsHost>
-            <Grid Grid.Row="1" HorizontalAlignment="Center">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <Label Content="X:" Grid.Row="0" Grid.Column="0"  Margin="0,6,0,0"/>
-                <controls:NumericTextSpinBox Grid.Row="0" Grid.Column="1" Width="50" Minimum="0" Maximum="100" Margin="0,6,10,0"
-                                             x:Name="XCoord" ValueChanged="UpdateCoordinatesButton" />
-                <Label Content="  Y:" Grid.Row="0" Grid.Column="2" Margin="0,6,0,0"/>
-                <controls:NumericTextSpinBox Grid.Row="0" Grid.Column="3" Width="50" Minimum="0" Maximum="100" Margin="0,6,10,0"
-                                             x:Name="YCoord" ValueChanged="UpdateCoordinatesButton" />
-            </Grid>
-            <Label Content="Ctrl+&lt;left mouse&gt; to add a point." Grid.Row="2" Padding="0,3,0,0"/>
-            <Label Content="Alt+&lt;left mouse&gt; to remove a point." Grid.Row="3" Padding="0"/>
-
-            <!-- Group Curve -->
-            <GroupBox Header="Curve" Grid.Row="4">
-                <Grid Margin="3,8,0,0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                <WindowsFormsHost x:Name="ZedGraphControlHost" Grid.Row="0" Grid.Column="0" Width="295" Height="295" Margin="0,3,0,0">
+                    <zed:ZedGraphControl x:Name="zedGraphControl" />
+                </WindowsFormsHost>
+                <Grid Grid.Row="1" HorizontalAlignment="Center">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
+                    <Label Content="X:" Grid.Row="0" Grid.Column="0"  Margin="0,6,0,0"/>
+                    <controls:NumericTextSpinBox Grid.Row="0" Grid.Column="1" Width="50" Minimum="0" Maximum="100" Margin="0,6,10,0"
+                                             x:Name="XCoord" ValueChanged="UpdateCoordinatesButton" />
+                    <Label Content="  Y:" Grid.Row="0" Grid.Column="2" Margin="0,6,0,0"/>
+                    <controls:NumericTextSpinBox Grid.Row="0" Grid.Column="3" Width="50" Minimum="0" Maximum="100" Margin="0,6,10,0"
+                                             x:Name="YCoord" ValueChanged="UpdateCoordinatesButton" />
+                </Grid>
+                <Label Content="Ctrl+&lt;left mouse&gt; to add a point." Grid.Row="2" Padding="0,3,0,0"/>
+                <Label Content="Alt+&lt;left mouse&gt; to remove a point." Grid.Row="3" Padding="0"/>
 
-                    <!-- Group Curve Row 1 -->
-                    <Button Content="Reverse Curve" Grid.Row="0" Grid.Column="0" Width="100" Height="10" Margin="0,0,6,6"
+                <!-- Group Curve -->
+                <GroupBox Header="Curve" Grid.Row="4">
+                    <Grid Margin="3,8,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Group Curve Row 1 -->
+                        <Button Content="Reverse Curve" Grid.Row="0" Grid.Column="0" Width="100" Height="10" Margin="0,0,6,6"
                             x:Name="ReverseCurveButton" Click="ReverseCurveButtonClick"/>
-                    <Button Content="Draw Curve" Grid.Row="0" Grid.Column="1" Width="100" Height="10" Margin="0,0,6,6"
+                        <Button Content="Draw Curve" Grid.Row="0" Grid.Column="1" Width="100" Height="10" Margin="0,0,6,6"
                             x:Name="DrawCurveButton" Click="DrawCurveButtonClick"
                             ToolTip="Draw curve from left side to right side of grid using the left mouse button."
                             ToolTipService.InitialShowDelay="1"/>
-                    <Label Content="Draw Interval" Grid.Row="0" Grid.Column="6" />
-                    <controls:NumericTextSpinBox Grid.Row="0" Grid.Column="7" Value="5" Width="50" Minimum="1" Maximum="20"
+                        <Label Content="Draw Interval" Grid.Row="0" Grid.Column="6" />
+                        <controls:NumericTextSpinBox Grid.Row="0" Grid.Column="7" Value="5" Width="50" Minimum="1" Maximum="20"
                                         x:Name="DrawInterval" ValueChanged="UpdateDrawIntervalButton"/>
 
-                    <!-- Group Curve Row 2 -->
-                    <Button Content="Invert Curve" Grid.Row="1" Grid.Column="0" Width="100" Height="10"  Margin="0,0,6,6"
+                        <!-- Group Curve Row 2 -->
+                        <Button Content="Invert Curve" Grid.Row="1" Grid.Column="0" Width="100" Height="10"  Margin="0,0,6,6"
                             x:Name="InvertCurveButton" Click="InvertCurveButtonClick" />
-                    <Button Content="f(x) Curve" Grid.Row="1" Grid.Column="1" Width="100" Height="10"  Margin="0,0,6,6"
+                        <Button Content="f(x) Curve" Grid.Row="1" Grid.Column="1" Width="100" Height="10"  Margin="0,0,6,6"
                             x:Name="fxCurveButton" Click="fxCurveButtonClick" />
-                </Grid>
-            </GroupBox>
+                    </Grid>
+                </GroupBox>
 
-            <!-- Group Library -->
-            <GroupBox Header="Library" Grid.Row="5">
-                <Grid Margin="3,8,0,0">
-                    <Grid.RowDefinitions>
+                <!-- Group Library -->
+                <GroupBox Header="Library" Grid.Row="5">
+                    <Grid Margin="3,8,0,0">
+                        <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
@@ -142,20 +143,21 @@
                         </Grid.ColumnDefinitions>
 
                         <!-- Group Library Row 1 -->
-                    <Button Content="Load Curve" Grid.Row="0" Grid.Column="0" Width="100" Height="10"  Margin="0,0,6,6"
+                        <Button Content="Load Curve" Grid.Row="0" Grid.Column="0" Width="100" Height="10"  Margin="0,0,6,6"
                             x:Name="LoadCurveButton" Click="LoadCurveButtonClick"/>
                         <TextBlock x:Name="CurveLibrary" Text="This curve is not linked to any in the library." TextWrapping="WrapWithOverflow"
                                Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,6,6" />
 
                         <!-- Group Library Row 2 -->
-                    <Button Content="Save Curve" Grid.Row="1" Grid.Column="0" Width="100" Height="10"  Margin="0,0,6,6"
+                        <Button Content="Save Curve" Grid.Row="1" Grid.Column="0" Width="100" Height="10"  Margin="0,0,6,6"
                             x:Name="SaveCurveButton" Click="SaveCurveButtonClick"/>
-                    <Button Content="Unlink Curve" Grid.Row="1" Grid.Column="1" Width="100" Height="10" Margin="0,0,6,6" IsEnabled="false"
+                        <Button Content="Unlink Curve" Grid.Row="1" Grid.Column="1" Width="100" Height="10" Margin="0,0,6,6" IsEnabled="false"
                             x:Name="UnlinkCurveButton" Click="UnlinkCurveButtonClick"/>
-                    <Button Content="Edit Library Curve" Grid.Row="1" Grid.Column="2" Width="120" Height="10" Margin="0,0,6,6" IsEnabled="false"
+                        <Button Content="Edit Library Curve" Grid.Row="1" Grid.Column="2" Width="120" Height="10" Margin="0,0,6,6" IsEnabled="false"
                             x:Name="EditLibraryCurveButton" Click="EditLibraryCurveButtonClick"/>
                     </Grid>
                 </GroupBox>
-        </Grid>
+            </Grid>
+        </ScrollViewer>
     </Grid>
 </catel:UserControl>

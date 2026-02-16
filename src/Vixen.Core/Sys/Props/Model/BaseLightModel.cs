@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using System.Collections.ObjectModel;
 using Vixen.Extensions;
-using VixenApplication.SetupDisplay.Wizards.HelperTools;
 
 namespace Vixen.Sys.Props.Model
 {

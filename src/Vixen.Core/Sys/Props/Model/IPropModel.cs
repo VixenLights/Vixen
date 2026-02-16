@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-namespace Vixen.Sys.Props.Model
+﻿namespace Vixen.Sys.Props.Model
 {
 	/// <summary>
 	/// Base interface for Prop model implementations

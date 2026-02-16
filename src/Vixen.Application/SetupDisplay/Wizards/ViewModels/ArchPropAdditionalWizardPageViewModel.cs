@@ -11,10 +11,9 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		{
 		}
 
-
 		#region Optional Left / Right property
 		/// <summary>
-		/// Gets or sets if the wizard will additional generate a left and right group.
+		/// Gets or sets if the wizard will additionally generate a left and right prop.
 		/// </summary>
 		[ViewModelToModel]
 		public bool LeftRight
@@ -32,7 +31,6 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		protected override void ValidateFields(List<IFieldValidationResult> validationResults)
 		{
 			base.ValidateFields(validationResults);
-
 		}
 	}
 }

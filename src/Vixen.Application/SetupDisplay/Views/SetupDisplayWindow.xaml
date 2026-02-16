@@ -101,7 +101,7 @@
 
 
 				<Border Grid.Row="1" BorderThickness="1" BorderBrush="{StaticResource BorderColorBrush}" Margin="5">
-                    <html:HtmlPanel Text="{Binding SelectedPropText}" 
+                    <html:HtmlPanel Text="{Binding PropInformationViewer}" 
                                     Background="{StaticResource DisabledShadow}" 
                                     MinHeight="150"/>
 				</Border>

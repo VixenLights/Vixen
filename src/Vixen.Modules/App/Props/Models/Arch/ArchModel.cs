@@ -1,10 +1,5 @@
-﻿using Catel.Reflection;
-using System.Collections.ObjectModel;
-using Vixen.Extensions;
+﻿using System.Collections.ObjectModel;
 using Vixen.Sys.Props.Model;
-using VixenApplication.SetupDisplay.Wizards.HelperTools;
-using VixenModules.App.Props.Models;
-
 
 namespace VixenModules.App.Props.Models.Arch
 {
@@ -15,9 +10,13 @@ namespace VixenModules.App.Props.Models.Arch
 	{
 		public ArchModel()
 		{
+			// Set up default parameters
 			PropParameters.Update("NodeCount", 3);
 			PropParameters.Update("LightSize", 2);
+
+			// Set up a node structure to display the prop
 			Nodes = new(Get3DNodePoints());
+
 			PropertyChanged += PropertyModelChanged;
 		}
 

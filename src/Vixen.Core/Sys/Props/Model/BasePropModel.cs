@@ -3,7 +3,7 @@
 using OpenTK.Mathematics;
 
 using Vixen.Model;
-using VixenApplication.SetupDisplay.Wizards.HelperTools;
+using Vixen.Sys.Props.HelperTools;
 
 namespace Vixen.Sys.Props.Model
 {

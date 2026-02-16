@@ -34,8 +34,8 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 			set { SetValue(NameProperty, value); }
 		}
 		private static readonly IPropertyData NameProperty = RegisterProperty<string>(nameof(Name));
-
 		#endregion
+
 		#region NodeCount property
 		/// <summary>
 		/// Gets or sets the number of lights.
