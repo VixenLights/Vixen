@@ -1,5 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-using VixenApplication.SetupDisplay.Wizards.HelperTools;
+using Vixen.Sys.Props.HelperTools;
 
 namespace Vixen.Sys.Props.Model
 {

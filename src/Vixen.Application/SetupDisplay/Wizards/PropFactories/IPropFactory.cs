@@ -1,7 +1,5 @@
 ﻿using Vixen.Sys.Props;
-using VixenApplication.SetupDisplay.Wizards.Wizard;
 using VixenModules.Editor.PropWizard;
-using VixenModules.App.Props.Models.Arch;
 
 namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 {
@@ -15,8 +13,6 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 		/// </summary>
 		/// <param name="wizard">Prop wizard to create prop nodes from</param>
 		/// <returns>A collection of props in an optional group</returns>
-		IPropGroup GetProps(IPropWizard wizard);
-
 		(IProp, IPropGroup) CreateBaseProp();
 
 		IPropGroup EditExistingProp(IProp prop);

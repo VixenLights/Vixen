@@ -9,18 +9,21 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 {
 	public class DimmingWizardPage : WizardPageBase
 	{
+		#region Constructors
 		public DimmingWizardPage()
 		{
-			Title = "Dimming Curve";
-			Description = $"Enter dimming information";
-
 			// Set with some default parameters
+			Title = "Dimming Curve";
+			Description = "Enter dimming information";
+
 			Curve = null;
 			DimmingTypeOption = DimmingType.NoCurve;
 			Brightness = 80;
 			Gamma = 2.2;
 		}
+		#endregion
 
+		#region Public Properties
 		public DimmingType DimmingTypeOption
 		{
 			get { return GetValue<DimmingType>(DimmingTypeOptionProperty); }
@@ -57,10 +60,13 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 				Description = $"Enter dimming information for {_propType.GetEnumDescription()}";
 			}
 		}
+		#endregion
 
+		#region Base class overrides
 		public override ISummaryItem GetSummary()
 		{
 			string curveName = "None Specified";
+
 			if (DimmingTypeOption == DimmingType.Simple)
 			{
 				curveName = $"Brightness: {Brightness}%, Gamma: {Gamma:0.0}";
@@ -83,10 +89,6 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 				Summary = curveName
 			};
 		}
-
-		//public IProp GetProp()
-		//{
-		//	return null;
-		//}
+		#endregion
 	}
 }

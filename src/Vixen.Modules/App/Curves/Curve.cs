@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Antlr4.Runtime.Misc;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 using Vixen.Module.App;
 using Vixen.Services;
@@ -28,9 +29,12 @@ namespace VixenModules.App.Curves
 		/// <param name="curve"></param>
 		public Curve(Curve curve)
 		{
-			Points = new PointPairList(curve.Points);
-			LibraryReferenceName = curve.LibraryReferenceName;
-			IsCurrentLibraryCurve = curve.IsCurrentLibraryCurve;
+			if (curve != null)
+			{
+				Points = new PointPairList(curve.Points);
+				LibraryReferenceName = curve.LibraryReferenceName;
+				IsCurrentLibraryCurve = curve.IsCurrentLibraryCurve;
+			}
 		}
 
 		// default Curve constructor makes a ramp with x = y.
@@ -96,6 +100,23 @@ namespace VixenModules.App.Curves
 
 
 		[DataMember] protected string _libraryReferenceName;
+
+		public Curve SetGamma(double gamma, int brightness, int interval = 5)
+		{
+			Points = CreateGamma(gamma, brightness);
+
+			return this;
+		}
+
+		private PointPairList CreateGamma(double gamma, int brightness, int interval = 5)
+		{
+			PointPairList points = new PointPairList();
+			for (int x = 0; x <= brightness; x += interval)
+			{
+				points.Add(new PointPair(x, Math.Pow(x / 100.0, gamma) * brightness));
+			}
+			return points;
+		}
 
 		public string LibraryReferenceName
 		{

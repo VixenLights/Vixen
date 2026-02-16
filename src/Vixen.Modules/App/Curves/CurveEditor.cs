@@ -118,7 +118,10 @@ namespace VixenModules.App.Curves
 
 		public void Clear()
 		{
-			zedGraphControl.GraphPane.CurveList[0].Clear();
+			if (zedGraphControl.GraphPane.CurveList.Count > 0)
+			{
+				zedGraphControl.GraphPane.CurveList[0].Clear();
+			}
 			zedGraphControl.Invalidate();
 		}
 

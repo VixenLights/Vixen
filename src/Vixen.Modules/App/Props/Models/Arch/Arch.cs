@@ -3,20 +3,12 @@
 using AsyncAwaitBestPractices;
 using Common.Controls.Theme;
 using Debounce.Core;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Drawing;
 using Common.Controls.ColorManagement.ColorModels;
-using Vixen.Attributes;
 using Vixen.Extensions;
-using Vixen.Sys;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Props;
 using Vixen.Sys.Props.Components;
-using Vixen.Sys.Props.Model;
-using VixenModules.App.Curves;
-using VixenModules.App.Props.Models;
-using System.Security.Cryptography;
 
 namespace VixenModules.App.Props.Models.Arch
 {
@@ -39,6 +31,7 @@ namespace VixenModules.App.Props.Models.Arch
 
 		public Arch(string name, int nodeCount = 0, StringTypes stringType = StringTypes.Pixel) : base(name, PropType.Arch)
 		{
+			// Set some default parameters
 			Name = name;
 			StringType = stringType;
 			NodeCount = 24;
@@ -81,6 +74,7 @@ namespace VixenModules.App.Props.Models.Arch
 
 		}
 
+		#region Properties
 		private int _nodeCount;
 		public int NodeCount
 		{
@@ -89,7 +83,6 @@ namespace VixenModules.App.Props.Models.Arch
 			{
 				_nodeCount = value;
 				_generateDebouncer?.Debounce();
-//ToDo(1)				PropModel?.UpdatePropNodes();
 				OnPropertyChanged(nameof(NodeCount));
 			}
 		}
@@ -101,7 +94,6 @@ namespace VixenModules.App.Props.Models.Arch
 			set
 			{
 				_lightSize = value;
-//ToDo(1)				PropModel?.UpdatePropNodes();
 				OnPropertyChanged(nameof(LightSize));
 			}
 		}
@@ -129,7 +121,12 @@ namespace VixenModules.App.Props.Models.Arch
 				UpdateDefaultPropComponents();
 			}
 		}
+		#endregion
 
+		/// <summary>
+		/// Get the HTML summary of all the parameter values
+		/// </summary>
+		/// <returns>Returns the <see cref="string"/> summary in HTML format</returns>
 		public override string GetSummary()
 		{
 			string Summary =
@@ -160,6 +157,10 @@ namespace VixenModules.App.Props.Models.Arch
 			return Summary;
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		protected async Task GenerateElementsAsync()
 		{
 			await Task.Factory.StartNew(async () =>
@@ -199,6 +200,9 @@ namespace VixenModules.App.Props.Models.Arch
 
 		#region PropComponents
 
+		/// <summary>
+		/// Update the nodes for the Arch Prop
+		/// </summary>
 		private void UpdateDefaultPropComponents()
 		{
 			var head = GetOrCreateElementNode();
@@ -229,6 +233,7 @@ namespace VixenModules.App.Props.Models.Arch
 				}
 			}
 
+			// Is LeftRight specified, then create two additional props
 			if (LeftRight == true)
 			{
 				//Update the left and right to match the new node count
@@ -255,6 +260,8 @@ namespace VixenModules.App.Props.Models.Arch
 					propComponentRight.Clear();
 				}
 
+
+				// Figure what the middle node number is and create a left from 0 to middle, and a right from middle to last
 				int middle = (int)Math.Round(NodeCount / 2d, MidpointRounding.AwayFromZero);
 				int i = 0;
 				foreach (var stringNode in head.Children)
@@ -271,6 +278,8 @@ namespace VixenModules.App.Props.Models.Arch
 					i++;
 				}
 			}
+
+			// Else, no LeftRight is specified, so remove these
 			else
 			{
 				// Remove Right

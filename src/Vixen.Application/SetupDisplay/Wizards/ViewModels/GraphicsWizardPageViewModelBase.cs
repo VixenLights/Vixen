@@ -2,13 +2,8 @@
 using Catel.Data;
 using Catel.MVVM;
 using Orc.Wizard;
-using Vixen.Sys;
-using Vixen.Sys.Props;
 using Vixen.Sys.Props.Model;
 using VixenApplication.SetupDisplay.OpenGL;
-using VixenApplication.SetupDisplay.Wizards.Factory;
-using VixenApplication.SetupDisplay.Wizards.HelperTools;
-using VixenApplication.SetupDisplay.Wizards.PropFactories;
 using VixenModules.App.Props.Models;
 
 namespace VixenApplication.SetupDisplay.Wizards.ViewModels
@@ -41,23 +36,19 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 				rotation.RotationChanged += OnRotationChanged;
 			}
 		}
-
 		#endregion
 
 		#region Protected Properties
-
 		[ViewModelToModel]
 		public TPropModel LightPropModel
 		{
 			get { return GetValue<TPropModel>(LightPropModelProperty); }
 			set { SetValue(LightPropModelProperty, value); }
 		}
-		public static readonly IPropertyData LightPropModelProperty = RegisterProperty<TPropModel>(nameof(LightPropModel));
-
+		private static readonly IPropertyData LightPropModelProperty = RegisterProperty<TPropModel>(nameof(LightPropModel));
 		#endregion
 
 		#region Public Properties
-
 		/// <summary>
 		/// Collection of rotations to support rotating the props around the x,y, and z axis.
 		/// </summary>
@@ -67,13 +58,12 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 			get { return GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty); }
 			set { SetValue(RotationsProperty, value); }
 		}
-		public static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
+		private static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
 
 		/// <summary>
 		/// OpenGL prop drawing engine.
 		/// </summary>
 		public OpenGLPropDrawingEngine DrawingEngine { get; set; } = new OpenGLPropDrawingEngine(new List<IPropModel>());
-
 		#endregion
 
 		#region Private Methods
@@ -84,13 +74,14 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		/// <param name="e">Event arguments</param>
 		private void OnRotationChanged(object sender, EventArgs e)
 		{
-			// Get the changed axis and the axis it now duplicates, if any
+			// Is there a changed axis?
 			var newRotation = sender as AxisRotationViewModel;
 			if (newRotation == null)
 			{
 				return;
 			}
 
+			// Then try to find the axis it now duplicates
 			var duplicateRotation = Rotations.FirstOrDefault(x => x != newRotation && x.Axis == newRotation.Axis);
 
 			// If there is an axis duplication (i.e. two axis have the same plane), then...
@@ -102,13 +93,15 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 				{
 					return;
 				}
+
 				var missingAxis = newRotation.Axes.FirstOrDefault(x => x != duplicateRotation.Axis && x != otherRotation.Axis);
 
-				// Then assign the missing axis to the duplicated plane and swap the rotations between the new and duplicated axes
+				// Finally assign the missing axis to the duplicated plane and swap the rotations between the new and duplicated axes
 				duplicateRotation.Axis = missingAxis;
 				(duplicateRotation.RotationAngle, newRotation.RotationAngle) = (newRotation.RotationAngle, duplicateRotation.RotationAngle);
 			}
 
+			// Set the updated parameters
 			LightPropModel.PropParameters.Update("Rotations", AxisRotationViewModel.ConvertToModel(Rotations));
 
 			// Update the prop nodes

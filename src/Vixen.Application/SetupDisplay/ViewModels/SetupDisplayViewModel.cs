@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using System.Windows;
 using System.Windows.Input;
 
 using Catel.Data;
@@ -95,27 +94,6 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 			// Initialize the select background image command
 			SelectBackgroundImage = new RelayCommand(SelectBackground);
-
-			// Create the collection of view model rotations
-			Rotations = new();
-
-			// Create the X Axis rotation view model
-			AxisRotationViewModel xRotation = new AxisRotationViewModel();
-			xRotation.Axis = "X";
-			xRotation.RotationChanged += OnRotationChanged;
-			Rotations.Add(xRotation);
-
-			// Create the Y Axis rotation view model
-			AxisRotationViewModel yRotation = new AxisRotationViewModel();
-			yRotation.Axis = "Y";
-			yRotation.RotationChanged += OnRotationChanged;
-			Rotations.Add(yRotation);
-
-			// Create the Z Axis rotation view model
-			AxisRotationViewModel zRotation = new AxisRotationViewModel();
-			zRotation.Axis = "Z";
-			zRotation.RotationChanged += OnRotationChanged;						
-			Rotations.Add(zRotation);
 		}
 
 		#endregion
@@ -141,38 +119,6 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// Command for selecting the background image for the preview.
 		/// </summary>
 		public ICommand SelectBackgroundImage { get; private set; }
-
-		/// <summary>
-		/// Gets or sets the SelectedProp value.
-		/// </summary>
-		public int ZRotation
-		{
-			get { return GetValue<int>(ZRotationProperty); }
-			set { SetValue(ZRotationProperty, value); }
-		}
-
-		/// <summary>
-		/// SelectedProp property data.
-		/// </summary>
-		public static readonly IPropertyData ZRotationProperty = RegisterProperty<int>(nameof(ZRotation));
-
-		/// <summary>
-		/// Collection of rotations to support rotating the props around the x,y, and z axis.
-		/// </summary>
-		public ObservableCollection<AxisRotationViewModel> Rotations
-		{
-			get
-			{
-				return GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty);
-			}
-			set
-			{
-				SetValue(RotationsProperty, value);
-			}
-		}
-
-		public static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
-
 		#endregion
 
 		#region Private Methods
@@ -425,16 +371,19 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			set 
 			{
 				SetValue(SelectedPropProperty, value);
-				var prop = value as IProp;
-				if (prop == null)
+
+				// Is a Prop is not selected?
+				if (value == null)
 				{
-					SelectedPropText = string.Empty;
+					// No prop selected
+					PropInformationViewer = string.Empty;
 					PropNodeTreeViewModel.IsTopNode = true;
 					PropNodeTreeViewModel.IsSubNode = false;
 				}
 				else
 				{
-					SelectedPropText = prop.GetSummary();
+					// Prop is selected
+					PropInformationViewer = value.GetSummary();
 					PropNodeTreeViewModel.IsTopNode = false;
 					PropNodeTreeViewModel.IsSubNode = true;
 				}
@@ -444,12 +393,17 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			}
 		}
 
-		public string SelectedPropText
+		#region PropInformationViewer property
+		/// <summary>
+		/// Set the text of the informational window
+		/// </summary>
+		public string PropInformationViewer
 		{
-			get { return GetValue<string>(SelectedPropTextProperty); }
-			set { SetValue(SelectedPropTextProperty, value); }
+			get { return GetValue<string>(PropInformationViewerProperty); }
+			set { SetValue(PropInformationViewerProperty, value); }
 		}
-		public static readonly IPropertyData SelectedPropTextProperty = RegisterProperty<string>(nameof(SelectedPropText));
+		private static readonly IPropertyData PropInformationViewerProperty = RegisterProperty<string>(nameof(PropInformationViewer));
+		#endregion
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -457,21 +411,6 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		protected void OnPropertyChanged([CallerMemberName] string name = null)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-		}
-
-		/// <summary>
-		/// Event handler for when a prop rotation changed.
-		/// </summary>
-		/// <param name="sender">Event sender</param>
-		/// <param name="e">Event arguments</param>
-		private void OnRotationChanged(object sender, EventArgs e)
-		{
-			// If the selected prop is a light based prop then...
-			if (SelectedProp?.PropModel is ILightPropModel lightPropModel)
-			{
-				// Update the prop nodes
-//ToDo(1)				lightPropModel.UpdatePropNodes();
-			}
 		}
 
 		/// <summary>
@@ -849,6 +788,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// Updates the prop displayed in the prop preview.
 		/// </summary>
 		/// <param name="prop">Prop to display in the prop preview</param>
+		/// <param name="force">Force the Preview to update immediately</param>
 		internal void UpdatePreviewModel(IProp prop, bool force = false)
 		{
 			if (force == true)

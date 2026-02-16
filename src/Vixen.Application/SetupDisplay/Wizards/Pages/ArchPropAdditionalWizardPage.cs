@@ -11,12 +11,14 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 		{
 			Title = "Additional Props";
 			Description = $"Create additional Props for {PropType.Arch.GetEnumDescription()}";
+
+			// Set default value(s)
 			LeftRight = false;
 		}
 
 		#region Optional Left / Right property
 		/// <summary>
-		/// Gets or sets if the wizard will additional generate a left and right group.
+		/// Gets or sets if the wizard will additionally generate a left and right prop.
 		/// </summary>
 		public bool LeftRight
 		{
@@ -38,20 +40,6 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 				Summary = $"Left & Right Arches: {LeftRight}"
 			};
 		}
-
-		///// <summary>
-		///// Gets the prop based on the settings in the wizard.
-		///// </summary>
-		///// <returns>A copy of the prop.</returns>
-		//public IProp GetProp()
-		//{
-		//	var arch = VixenSystem.Props.CreateProp<Arch>(Name);
-		//	arch.NodeCount = NodeCount;
-		//	arch.ArchWiringStart = ArchWiringStart;
-		//	arch.StringType = StringType;
-		//	arch.LightSize = LightSize;
-		//	return arch;
-		//}
 	}
 }
 
