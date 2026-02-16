@@ -1,11 +1,8 @@
 ﻿#nullable enable
 using NLog;
-using System.CodeDom.Compiler;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Windows.Forms;
-using Vixen.Attributes;
 using Vixen.Model;
 using Vixen.Services;
 using Vixen.Sys.Props.Components;
@@ -63,8 +60,8 @@ namespace Vixen.Sys.Props
 				}
 			}
 		}
-
 		#endregion
+
 		/// <summary>
 		/// Gets the unique identifier for the Prop.
 		/// </summary>

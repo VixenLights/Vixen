@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 using Vixen.Sys.Props.Model;
-using VixenApplication.SetupDisplay.Wizards.HelperTools;
 
 namespace VixenModules.App.Props.Models.Line
 {
