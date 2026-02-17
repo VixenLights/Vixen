@@ -21,12 +21,6 @@ using IDropTarget = GongSolutions.Wpf.DragDrop.IDropTarget;
 
 namespace VixenApplication.SetupDisplay.ViewModels
 {
-	public class PropTypeMenuItem
-	{
-		public PropType Id { get; set; } 
-		public required string DisplayName { get; set; }
-	}
-
 	public class PropNodeTreeViewModel : ViewModelBase, IDropTarget, IDragSource
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
@@ -45,7 +39,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			PropComponentNodeViewModels = [pcvm];
 
 			PropNodes = new();
-			Catel.Collections.CollectionExtensions.AddRange(PropNodes, RootNodeViewModel.SelectMany(x => x.GetPropEnumerator()));
+			PropNodes.AddRange(RootNodeViewModel.SelectMany(x => x.GetPropEnumerator()));
 
 			PropManager.PropCollectionChanged += PropManager_PropCollectionChanged;
 			SelectedItems = new();
@@ -60,7 +54,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		private void PropManager_PropCollectionChanged(object? sender, EventArgs e)
 		{
 			PropNodes.Clear();
-			Catel.Collections.CollectionExtensions.AddRange(PropNodes, RootNodeViewModel.SelectMany(x => x.GetPropEnumerator()));
+			PropNodes.AddRange(RootNodeViewModel.SelectMany(x => x.GetPropEnumerator()));
 		}
 
 		#region PropManager model property
