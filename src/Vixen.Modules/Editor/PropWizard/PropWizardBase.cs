@@ -8,8 +8,6 @@ namespace VixenModules.Editor.PropWizard
 	/// </summary>
 	public abstract class PropWizardBase : SideNavigationWizardBase, IPropWizard
 	{
-		public int MyNumber;
-
 		#region Constructor
 
 		/// <summary>
