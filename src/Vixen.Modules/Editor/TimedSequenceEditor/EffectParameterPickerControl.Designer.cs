@@ -37,10 +37,13 @@
 			// 
 			// labelParameterName
 			// 
+			labelParameterName.AutoSize = true;
 			labelParameterName.Location = new Point(4, 72);
-			labelParameterName.Margin = new Padding(4, 0, 4, 0);
+			labelParameterName.Margin = new Padding(4, 0, 4, 5);
+			labelParameterName.MaximumSize = new Size(64, 0);
+			labelParameterName.MinimumSize = new Size(64, 15);
 			labelParameterName.Name = "labelParameterName";
-			labelParameterName.Size = new Size(60, 39);
+			labelParameterName.Size = new Size(64, 15);
 			labelParameterName.TabIndex = 1;
 			labelParameterName.Text = "Gradients";
 			labelParameterName.TextAlign = ContentAlignment.MiddleCenter;
@@ -58,26 +61,31 @@
 			// 
 			// flowLayoutPanel1
 			// 
+			flowLayoutPanel1.AutoSize = true;
 			flowLayoutPanel1.Controls.Add(pictureParameterImage);
 			flowLayoutPanel1.Controls.Add(labelParameterName);
 			flowLayoutPanel1.Dock = DockStyle.Fill;
 			flowLayoutPanel1.FlowDirection = FlowDirection.TopDown;
 			flowLayoutPanel1.Location = new Point(0, 0);
 			flowLayoutPanel1.Name = "flowLayoutPanel1";
-			flowLayoutPanel1.Size = new Size(75, 115);
+			flowLayoutPanel1.Size = new Size(72, 92);
 			flowLayoutPanel1.TabIndex = 3;
 			// 
 			// EffectParameterPickerControl
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
+			AutoSize = true;
+			AutoSizeMode = AutoSizeMode.GrowAndShrink;
 			Controls.Add(flowLayoutPanel1);
 			Margin = new Padding(4);
 			Name = "EffectParameterPickerControl";
-			Size = new Size(75, 115);
+			Size = new Size(72, 92);
 			((System.ComponentModel.ISupportInitialize)pictureParameterImage).EndInit();
 			flowLayoutPanel1.ResumeLayout(false);
+			flowLayoutPanel1.PerformLayout();
 			ResumeLayout(false);
+			PerformLayout();
 
 		}
 
