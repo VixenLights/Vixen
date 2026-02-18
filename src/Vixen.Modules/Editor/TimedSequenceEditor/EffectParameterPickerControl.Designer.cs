@@ -37,6 +37,7 @@
 			// 
 			// labelParameterName
 			// 
+			labelParameterName.Anchor = AnchorStyles.Top;
 			labelParameterName.AutoSize = true;
 			labelParameterName.Location = new Point(4, 72);
 			labelParameterName.Margin = new Padding(4, 0, 4, 5);
@@ -51,6 +52,7 @@
 			// 
 			// pictureParameterImage
 			// 
+			pictureParameterImage.Anchor = AnchorStyles.Top;
 			pictureParameterImage.Location = new Point(4, 4);
 			pictureParameterImage.Margin = new Padding(4);
 			pictureParameterImage.Name = "pictureParameterImage";
@@ -67,9 +69,11 @@
 			flowLayoutPanel1.Dock = DockStyle.Fill;
 			flowLayoutPanel1.FlowDirection = FlowDirection.TopDown;
 			flowLayoutPanel1.Location = new Point(0, 0);
+			flowLayoutPanel1.Margin = new Padding(0);
 			flowLayoutPanel1.Name = "flowLayoutPanel1";
 			flowLayoutPanel1.Size = new Size(72, 92);
 			flowLayoutPanel1.TabIndex = 3;
+			flowLayoutPanel1.WrapContents = false;
 			// 
 			// EffectParameterPickerControl
 			// 
