@@ -23,7 +23,7 @@ jobs:
 
   setup:
   
-    if: github.repository == 'VixenLights/Vixen' || ${{ vars.CAN_RUN_RELEASE_ACTION }} == 'true'
+    if: github.repository == 'VixenLights/Vixen' || vars.CAN_RUN_RELEASE_ACTION == 'true'
   
     runs-on: windows-2025-vs2026
     environment: 
