@@ -35,6 +35,9 @@ namespace VixenModules.Effect.Fixture
 
 			// Initialize the collection of fixture functions
 			_fixtureFunctions = new List<FixtureFunction>();
+
+			// Register for the child property changed events
+			Functions.ChildPropertyChanged += Functions_ChildPropertyChanged;
 		}
 
 		#endregion
@@ -119,8 +122,20 @@ namespace VixenModules.Effect.Fixture
 				return _functionItemCollection;
 			}
 			set
-			{
+			{				
+				if (_functionItemCollection != value && _functionItemCollection != null)
+				{
+					// We have a whole new collection, so we need to unregister the event handler on the old collection
+					_functionItemCollection.ChildPropertyChanged -= Functions_ChildPropertyChanged;
+
+					if (value != null)
+					{
+						// We have a new collection, so we need to register for the child property changed event
+						value.ChildPropertyChanged += Functions_ChildPropertyChanged;
+					}
+				}
 				_functionItemCollection = value;
+
 				MarkDirty();
 				OnPropertyChanged();
 			}
@@ -630,6 +645,20 @@ namespace VixenModules.Effect.Fixture
 			}
 
 			return barBitmap;
+		}
+
+		/// <summary>
+		/// Event handler for when a property on one of the child Function Expando objects changes.
+		/// </summary>
+		/// <param name="sender">Event sender</param>
+		/// <param name="e">Event arguments</param>
+		private void Functions_ChildPropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			// Mark the effect as dirty to force it to render
+			MarkDirty();
+
+			// Identify the Functions collection has changed
+			OnPropertyChanged(nameof(Functions));
 		}
 
 		#endregion

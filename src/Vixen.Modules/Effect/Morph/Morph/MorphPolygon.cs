@@ -14,6 +14,7 @@ namespace VixenModules.Effect.Morph
 	/// Maintains morph polygon settings for the morph effect.
 	/// </summary>
 	[ExpandableObject]
+	[ProviderDisplayName("Polygon")]
 	public class MorphPolygon : ExpandoObjectBase, IMorphPolygon
 	{
 		#region Constructor
@@ -132,7 +133,20 @@ namespace VixenModules.Effect.Morph
 		[ProviderDisplayName(@"HeadColor")]
 		[ProviderDescription(@"HeadColor")]
 		[PropertyOrder(5)]
-		public ColorGradient HeadColor { get; set; }
+		public ColorGradient HeadColor
+		{
+			get => _headColor;
+			set
+			{
+				if (Equals(value, _headColor))
+				{
+					return;
+				}
+
+				_headColor = value;
+				OnPropertyChanged();
+			}
+		}
 
 		/// <summary>
 		/// Refer to interface documentation.
@@ -142,14 +156,40 @@ namespace VixenModules.Effect.Morph
 		[ProviderDisplayName(@"HeadBrightness")]
 		[ProviderDescription(@"HeadBrightness")]
 		[PropertyOrder(6)]
-		public Curve HeadBrightness { get; set; }
+		public Curve HeadBrightness
+		{
+			get => _headBrightness;
+			set
+			{
+				if (Equals(value, _headBrightness))
+				{
+					return;
+				}
+
+				_headBrightness = value;
+				OnPropertyChanged();
+			}
+		}
 
 		[Value]
 		[ProviderCategory(@"Configuration", 1)]
 		[ProviderDisplayName(@"TailColor")]
 		[ProviderDescription(@"TailColor")]
 		[PropertyOrder(7)]
-		public ColorGradient TailColor { get; set; }
+		public ColorGradient TailColor
+		{
+			get => _tailColor;
+			set
+			{
+				if (Equals(value, _tailColor))
+				{
+					return;
+				}
+
+				_tailColor = value;
+				OnPropertyChanged();
+			}
+		}
 
 		/// <summary>
 		/// Refer to interface documentation.
@@ -159,7 +199,20 @@ namespace VixenModules.Effect.Morph
 		[ProviderDisplayName(@"TailBrightness")]
 		[ProviderDescription(@"TailBrightness")]
 		[PropertyOrder(8)]
-		public Curve TailBrightness { get; set; }
+		public Curve TailBrightness
+		{
+			get => _tailBrightness;
+			set
+			{
+				if (Equals(value, _tailBrightness))
+				{
+					return;
+				}
+
+				_tailBrightness = value;
+				OnPropertyChanged();
+			}
+		}
 
 		[Value]
 		[ProviderCategory(@"Configuration", 1)]
@@ -168,8 +221,17 @@ namespace VixenModules.Effect.Morph
 		[PropertyOrder(9)]
 		public ColorGradient FillColor
 		{
-			get;
-			set;			
+			get => _fillColor;
+			set
+			{
+				if (Equals(value, _fillColor))
+				{
+					return;
+				}
+
+				_fillColor = value;
+				OnPropertyChanged();
+			}
 		}
 
 		/// <summary>
@@ -180,7 +242,20 @@ namespace VixenModules.Effect.Morph
 		[ProviderDisplayName(@"FillBrightness")]
 		[ProviderDescription(@"FillBrightness")]
 		[PropertyOrder(10)]
-		public Curve FillBrightness { get; set; }
+		public Curve FillBrightness
+		{
+			get => _fillBrightness;
+			set
+			{
+				if (Equals(value, _fillBrightness))
+				{
+					return;
+				}
+
+				_fillBrightness = value;
+				OnPropertyChanged();
+			}
+		}
 
 		private Polygon _polygon;
 
@@ -225,6 +300,12 @@ namespace VixenModules.Effect.Morph
 		}
 
 		private Ellipse _ellipse;
+		private Curve _headBrightness;
+		private Curve _tailBrightness;
+		private Curve _fillBrightness;
+		private ColorGradient _headColor;
+		private ColorGradient _tailColor;
+		private ColorGradient _fillColor;
 
 		[Browsable(false)]
 		public Ellipse Ellipse
@@ -250,6 +331,11 @@ namespace VixenModules.Effect.Morph
 		
 		[Browsable(false)]
 		public double Time { get; set; }
+
+		public override string ToString()
+		{
+			return "Polygon";
+		}
 
 		/// <summary>
 		/// Refer to interface documentation.
