@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <Copyright>2025 Vixen Team</Copyright>
     <RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>

@@ -17,7 +17,7 @@
     <PackageVersion Include="LiteDB" Version="4.1.4" />
     <PackageVersion Include="LoadAssembliesOnStartup.Fody" Version="4.6.0" />
     <PackageVersion Include="MessagePack" Version="2.5.192" />
-    <PackageVersion Include="Microsoft.Win32.SystemEvents" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Win32.SystemEvents" Version="10.0.1" />
     <PackageVersion Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.122" />
     <PackageVersion Include="ModuleInit.Fody" Version="2.1.1" />
     <PackageVersion Include="NAudio.Core" Version="2.2.1" />
@@ -36,12 +36,12 @@
     <PackageVersion Include="Orchestra.Core" Version="7.0.1" />
     <PackageVersion Include="Svg" Version="3.4.7" />
     <PackageVersion Include="System.Data.SqlClient" Version="4.8.6" />
-    <PackageVersion Include="System.Drawing.Common" Version="8.0.6" />
-    <PackageVersion Include="System.IO.Ports" Version="8.0.0" />
+    <PackageVersion Include="System.Drawing.Common" Version="10.0.1" />
+    <PackageVersion Include="System.IO.Ports" Version="10.0.1" />
     <PackageVersion Include="System.Reactive" Version="5.0.0" />
     <PackageVersion Include="System.Resources.Extensions" Version="8.0.0" />
     <PackageVersion Include="Zstandard.Net" Version="1.1.7" />
-	<PackageVersion Include="WixToolset.Heat" Version="5.0.0" />
+    <PackageVersion Include="WixToolset.Heat" Version="5.0.0" />
     <PackageVersion Include="WixToolset.Bal.wixext" Version="5.0.0" />
     <PackageVersion Include="WixToolset.Netfx.wixext" Version="5.0.0" />
     <PackageVersion Include="WixToolset.Util.wixext" Version="5.0.0" />

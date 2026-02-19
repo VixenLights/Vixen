@@ -4,6 +4,7 @@
 				<RootNamespace>VixenModules.Preview.VixenPreview</RootNamespace>
 				<UseWindowsForms>true</UseWindowsForms>
 				<UseWPF>true</UseWPF>
+				<NoWarn>$(NoWarn);WFO1000</NoWarn>
 		</PropertyGroup>
 
 		<ItemGroup>

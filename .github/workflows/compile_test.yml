@@ -30,21 +30,20 @@ jobs:
 
   compile_test:
   
-    runs-on: windows-2022
+    runs-on: windows-2025-vs2026
 
     steps:
     
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
       
-      - uses: nuget/setup-nuget@v2
-        
+      - name: Display dotnet version
+        run: dotnet --version
+          
       - uses: microsoft/setup-msbuild@v2
       
-      - name: NuGet Restore
-        run: nuget restore Vixen.sln
-        
       - name: Build Release
-        run: msbuild Vixen.sln -m -t:Rebuild -p:Configuration=Release
+        run: msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release
   
       - run: dir
         shell: cmd
