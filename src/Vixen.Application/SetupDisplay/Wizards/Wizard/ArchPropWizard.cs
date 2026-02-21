@@ -27,6 +27,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Wizard
 			this.AddPage<ArchPropAdditionalWizardPage>();
 			DimmingWizardPage dimmingPage = this.AddPage<DimmingWizardPage>();
 			dimmingPage.PropType = PropType.Arch;
+			this.AddPage<ColorWizardPage>();
 			SummaryWizardPage summaryPage = this.AddPage<SummaryWizardPage>();
 			summaryPage.Description = $"Below is a summary of the {Title} selections.";
 		}

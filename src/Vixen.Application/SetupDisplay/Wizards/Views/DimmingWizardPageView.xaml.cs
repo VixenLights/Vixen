@@ -6,8 +6,6 @@ using VixenModules.App.Curves;
 using ZedGraph;
 using System.Windows.Controls;
 using VixenModules.App.Props.Models;
-using static VixenApplication.SetupDisplay.Wizards.Pages.DimmingWizardPage;
-using Orc.Theming;
 using System.Windows.Media;
 using System.Runtime.InteropServices;
 
@@ -138,6 +136,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 				}
 			}
 		}
+
 		protected override void OnViewModelChanged()
 		{
 			base.OnViewModelChanged();

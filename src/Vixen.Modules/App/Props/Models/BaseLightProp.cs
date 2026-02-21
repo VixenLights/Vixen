@@ -17,6 +17,13 @@ namespace VixenModules.App.Props.Models
 		Library
 	}
 
+	public enum ColorType
+	{
+		SingleColor,
+		MultipleColors,
+		RGBColors
+	}
+
 	public abstract class BaseLightProp<TModel> : BaseProp<TModel> where TModel : BasePropModel, IPropModel
 	{
 		protected bool UpdateInProgress = false;
@@ -68,7 +75,7 @@ namespace VixenModules.App.Props.Models
 
 		private Curve _curve;
 		public Curve Curve
-		{ 
+		{
 			get => _curve;
 			set
 			{
@@ -107,6 +114,39 @@ namespace VixenModules.App.Props.Models
 			{
 				_gamma = value;
 				OnPropertyChanged(nameof(Gamma));
+			}
+		}
+
+		private ColorType _colorTypeOption;
+		public ColorType ColorTypeOption
+		{
+			get => _colorTypeOption;
+			set
+			{
+				_colorTypeOption = value;
+				OnPropertyChanged(nameof(ColorTypeOption));
+			}
+		}
+
+		private Color _singleColorOption;
+		public Color SingleColorOption
+		{
+			get => _singleColorOption;
+			set
+			{
+				_singleColorOption = value;
+				OnPropertyChanged(nameof(SingleColorOption));
+			}
+		}
+
+		private string _selectedColorSet;
+		public string SelectedColorSet
+		{
+			get => _selectedColorSet;
+			set
+			{
+				_selectedColorSet = value;
+				OnPropertyChanged(nameof(SelectedColorSet));
 			}
 		}
 		#endregion
@@ -157,18 +197,18 @@ namespace VixenModules.App.Props.Models
 		protected async Task UpdateStringNodeCount(int nodeCount, ElementNode? propNode = null)
 		{
 			propNode ??= GetOrCreateElementNode();
-			
+
 			if (propNode.IsLeaf || propNode.GetMaxChildDepth() > 2)
 			{
 				throw new InvalidOperationException("Prop does not have direct leaf children");
 			}
-			
+
 			while (UpdateInProgress)
 			{
 				await Task.Delay(100);
 			}
 			UpdateInProgress = true;
-			
+
 			var existingNodes = propNode.Children.Count();
 			if (existingNodes == nodeCount) return;
 
@@ -206,12 +246,12 @@ namespace VixenModules.App.Props.Models
 		protected async Task UpdateNodesPerString(int nodesPerString, ElementNode? propNode = null)
 		{
 			propNode ??= GetOrCreateElementNode();
-			
+
 			if (propNode.IsLeaf || propNode.GetMaxChildDepth() > 3)
 			{
 				throw new InvalidOperationException("Prop does not have direct leaf children");
 			}
-			
+
 			while (UpdateInProgress)
 			{
 				await Task.Delay(100);
@@ -260,13 +300,13 @@ namespace VixenModules.App.Props.Models
 		protected async Task UpdateStrings(int strings, ElementNode? propNode = null)
 		{
 			propNode ??= GetOrCreateElementNode();
-			
+
 			while (UpdateInProgress)
 			{
 				await Task.Delay(500);
 			}
 			UpdateInProgress = true;
-			
+
 			var existingStrings = propNode.Children.Count();
 			if (existingStrings == strings) return;
 
@@ -342,11 +382,11 @@ namespace VixenModules.App.Props.Models
 			{
 				await Task.Delay(100);
 			}
-			
+
 			UpdateInProgress = true;
 			var propNode = GetOrCreateElementNode();
 			PropertySetupHelper.AddOrUpdatePatchingOrder(propNode, startLocation, zigZag, zigZagOffset);
-			
+
 			UpdateInProgress = false;
 		}
 
@@ -394,7 +434,7 @@ namespace VixenModules.App.Props.Models
 			if (DimmingTypeOption == DimmingType.Simple)
 			{
 				summary += $"<b>Brightness:</b> {Brightness}%<br>" +
-				           $"<b>Gamma:</b> {Gamma:0.0}";
+						   $"<b>Gamma:</b> {Gamma:0.0}";
 			}
 			else if (DimmingTypeOption == DimmingType.Library && Curve != null)
 			{
@@ -411,6 +451,37 @@ namespace VixenModules.App.Props.Models
 			{
 				summary += "<b/>None Specified";
 			}
+			summary += "</body>";
+
+			return summary;
+		}
+
+		/// <summary>
+		/// Get the HTML summary of all the Color parameter values
+		/// </summary>
+		/// <returns>Returns the <see cref="string"/> summary in HTML format</returns>
+		protected string GetColorSummary()
+		{
+			string summary = "<h2>Light Coloring</h2><body>";
+
+			if (ColorTypeOption == ColorType.SingleColor)
+			{
+				summary += "<b>Single Color:</b><ul style=\"margin-top: 0;\">" +
+					       $"<li>Red is {SingleColorOption.R}</li>" + 
+						   $"<li>Green is {SingleColorOption.G}</li>" +
+						   $"<li>Blue is {SingleColorOption.B}</li></ul>";
+			}
+
+			else if (ColorTypeOption == ColorType.MultipleColors)
+			{
+				summary += $"<b>Multiple Colors:</b> {SelectedColorSet}";
+			}
+
+			else if (ColorTypeOption == ColorType.RGBColors)
+			{
+				summary += $"<b>RGB Colors:</b> {SelectedColorSet}";
+			}
+
 			summary += "</body>";
 
 			return summary;

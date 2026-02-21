@@ -76,6 +76,12 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 			dimmingPage.Brightness = arch.Brightness;
 			dimmingPage.Gamma = arch.Gamma;
 			dimmingPage.DimmingTypeOption = arch.DimmingTypeOption;
+
+			// Configure the Color Arch properties
+			ColorWizardPage colorPage = (ColorWizardPage)wizard.Pages.Single(page => page is ColorWizardPage);
+			colorPage.ColorTypeOption = arch.ColorTypeOption;
+			colorPage.SingleColorOption = arch.SingleColorOption;
+			colorPage.SelectedColorSet = arch.SelectedColorSet;
 		}
 
 		/// <summary>
@@ -107,6 +113,12 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 			arch.Brightness = dimmingPage.Brightness;
 			arch.Gamma = dimmingPage.Gamma;
 			arch.DimmingTypeOption = dimmingPage.DimmingTypeOption;
+
+			// Configure the Color Arch properties
+			ColorWizardPage colorPage = (ColorWizardPage)wizard.Pages.Single(page => page is ColorWizardPage);
+			arch.ColorTypeOption = colorPage.ColorTypeOption;
+			arch.SingleColorOption = colorPage.SingleColorOption;
+			arch.SelectedColorSet = colorPage.SelectedColorSet;
 		}
 	}
 }
