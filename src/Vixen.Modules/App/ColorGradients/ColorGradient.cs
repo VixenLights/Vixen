@@ -289,7 +289,7 @@ namespace VixenModules.App.ColorGradients
 		{
 			if (staticColor == null)
 			{
-				throw new ArgumentException("Color argument is null");
+				throw new ArgumentNullException(nameof(staticColor));
 			}
 			_colors.Clear();
 			_colors.Add(new ColorPoint(staticColor, 0));
@@ -300,7 +300,7 @@ namespace VixenModules.App.ColorGradients
 		{
 			if (colors == null)
 			{
-				throw new ArgumentException("Color collection argument is null");
+				throw new ArgumentNullException(nameof(colors));
 			}
 
 			_colors.Clear();
@@ -889,7 +889,7 @@ namespace VixenModules.App.ColorGradients
 		{
 			if (other == null)
 			{
-				throw new ArgumentException("Color argument is null");
+				throw new ArgumentNullException(nameof(other));
 			}
 			
 			CloneDataFrom(other);
@@ -907,7 +907,7 @@ namespace VixenModules.App.ColorGradients
 		{
 			if (other == null)
 			{
-				throw new ArgumentException("Color argument is null");
+				throw new ArgumentNullException(nameof(other));
 			}
 
 			_colors = new PointList<ColorPoint>();
