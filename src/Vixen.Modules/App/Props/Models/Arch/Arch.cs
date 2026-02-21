@@ -9,6 +9,9 @@ using Vixen.Extensions;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Props;
 using Vixen.Sys.Props.Components;
+using VixenModules.Property.Color;
+using System.Collections.ObjectModel;
+using Vixen.Services;
 
 namespace VixenModules.App.Props.Models.Arch
 {
@@ -44,6 +47,15 @@ namespace VixenModules.App.Props.Models.Arch
 			Brightness = 80;
 			Gamma = 2.2;
 			Curve = null;
+
+			ColorTypeOption = ColorType.SingleColor;
+			SingleColorOption = System.Drawing.Color.RoyalBlue;
+			var staticData = ApplicationServices.GetModuleStaticData(ColorDescriptor.ModuleId) as ColorStaticData;
+			if (staticData != null)
+			{
+				var ColorSetNames = new ObservableCollection<string>(staticData.GetColorSetNames());
+				SelectedColorSet = ColorSetNames[0];
+			}
 
 			PropertyChanged += Arch_PropertyChanged;
 
@@ -152,6 +164,7 @@ namespace VixenModules.App.Props.Models.Arch
 				$"<b>Left and Right Arches:</b> {LeftRight}<br>" +
 				 "</body>" +
 				GetDimmingSummary() +
+				GetColorSummary() +
 				GetBaseSummary();
 
 			return Summary;
