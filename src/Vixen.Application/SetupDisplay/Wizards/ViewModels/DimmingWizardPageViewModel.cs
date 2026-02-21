@@ -1,6 +1,5 @@
 ﻿using Catel.Data;
 using Catel.MVVM;
-using Dataweb.NShape.Advanced;
 using Orc.Wizard;
 using Vixen.Annotations;
 using VixenApplication.SetupDisplay.Wizards.Pages;
