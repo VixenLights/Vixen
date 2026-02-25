@@ -1,4 +1,5 @@
-﻿using Catel.Data;
+﻿using System.ComponentModel;
+using Catel.Data;
 using Orc.Wizard;
 using Vixen.Extensions;
 using Vixen.Sys.Props;
@@ -13,9 +14,9 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 		public DimmingWizardPage()
 		{
 			// Set with some default parameters
-			Title = "Dimming Curve";
-			Description = "Enter dimming information";
-
+			Title = "Brightness Level";
+			Description = "Configure the brightness level";
+			
 			Curve = null;
 			DimmingTypeOption = DimmingType.NoCurve;
 			Brightness = 80;
@@ -34,16 +35,38 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 		public int Brightness
 		{
 			get { return GetValue<int>(BrightnessProperty); }
-			set { SetValue(BrightnessProperty, value); }
+			set 
+			{ 
+				SetValue(BrightnessProperty, value);
+				BrightnessDefault = value;
+			}
 		}
 		private static readonly IPropertyData BrightnessProperty = RegisterProperty<int>(nameof(Brightness));
+
+		public int BrightnessDefault
+		{
+			get { return GetValue<int>(BrightnessDefaultProperty); }
+			set { SetValue(BrightnessDefaultProperty, value); }
+		}
+		private static readonly IPropertyData BrightnessDefaultProperty = RegisterProperty<int>(nameof(BrightnessDefault));
 
 		public double Gamma
 		{
 			get { return GetValue<double>(GammaProperty); }
-			set { SetValue(GammaProperty, value); }
+			set 
+			{ 
+				SetValue(GammaProperty, value);
+				GammaDefault = value;
+			}
 		}
 		private static readonly IPropertyData GammaProperty = RegisterProperty<double>(nameof(Gamma));
+
+		public double GammaDefault
+		{
+			get { return GetValue<double>(GammaDefaultProperty); }
+			set { SetValue(GammaDefaultProperty, value); }
+		}
+		private static readonly IPropertyData GammaDefaultProperty = RegisterProperty<double>(nameof(GammaDefault));
 
 		public Curve Curve
 		{
@@ -57,7 +80,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 		{
 			set { 
 				_propType = value;
-				Description = $"Enter dimming information for {_propType.GetEnumDescription()}";
+				Description += $" for {_propType.GetEnumDescription()}";
 			}
 		}
 		#endregion
@@ -65,11 +88,11 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 		#region Base class overrides
 		public override ISummaryItem GetSummary()
 		{
-			string curveName = "None Specified";
+			string curveName = "Full brightness";
 
 			if (DimmingTypeOption == DimmingType.Simple)
 			{
-				curveName = $"Brightness: {Brightness}%, Gamma: {Gamma:0.0}";
+				curveName = $"Maximum Brightness: {Brightness}%\nBrightness Speed: {Gamma:0.0}";
 			}
 			else if (DimmingTypeOption == DimmingType.Library && Curve != null)
 			{

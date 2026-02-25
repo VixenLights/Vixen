@@ -18,7 +18,7 @@ namespace Common.WPFCommon.Controls
 		#endregion
 
 		#region Properties
-		public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
+		private static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
 			nameof(Value), typeof(double), typeof(SuperSlider),
 			new FrameworkPropertyMetadata(
 				1.0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.Journal, OnValueChanged));
@@ -29,7 +29,7 @@ namespace Common.WPFCommon.Controls
 			set => SetValue(ValueProperty, value);
 		}
 
-		public static readonly RoutedEvent ValueChangedEvent = EventManager.RegisterRoutedEvent(
+		private static readonly RoutedEvent ValueChangedEvent = EventManager.RegisterRoutedEvent(
 			"ValueChanged", RoutingStrategy.Bubble, typeof(RoutedPropertyChangedEventHandler<double>), typeof(SuperSlider));
 
 		public event RoutedPropertyChangedEventHandler<double> ValueChanged
@@ -38,7 +38,16 @@ namespace Common.WPFCommon.Controls
 			remove { RemoveHandler(ValueChangedEvent, value); }
 		}
 
-		public static readonly DependencyProperty MinimumProperty = DependencyProperty.Register(
+		private static readonly DependencyProperty DefaultValueProperty = DependencyProperty.Register(
+			nameof(DefaultValue), typeof(double), typeof(SuperSlider), new PropertyMetadata(double.MinValue));
+
+		public double DefaultValue
+		{
+			get => (double)GetValue(DefaultValueProperty);
+			set => SetValue(DefaultValueProperty, value);
+		}
+
+		private static readonly DependencyProperty MinimumProperty = DependencyProperty.Register(
 			nameof(Minimum), typeof(double), typeof(SuperSlider), new PropertyMetadata(1.0));
 
 		public double Minimum
@@ -47,7 +56,7 @@ namespace Common.WPFCommon.Controls
 			set => SetValue(MinimumProperty, value);
 		}
 
-		public static readonly DependencyProperty MaximumProperty = DependencyProperty.Register(
+		private static readonly DependencyProperty MaximumProperty = DependencyProperty.Register(
 	        nameof(Maximum), typeof(double), typeof(SuperSlider), new PropertyMetadata(100.0));
 
         public double Maximum
@@ -56,7 +65,7 @@ namespace Common.WPFCommon.Controls
 	        set => SetValue(MaximumProperty, value);
         }
 
-		public static readonly DependencyProperty AutoToolTipPlacementProperty = DependencyProperty.Register(
+		private static readonly DependencyProperty AutoToolTipPlacementProperty = DependencyProperty.Register(
 	        nameof(AutoToolTipPlacement),typeof(AutoToolTipPlacement), typeof(SuperSlider),
 	        new PropertyMetadata(AutoToolTipPlacement.None));
 
@@ -66,7 +75,7 @@ namespace Common.WPFCommon.Controls
 	        set => SetValue(AutoToolTipPlacementProperty, value);
         }
 
-        public static readonly DependencyProperty AutoToolTipPrecisionProperty = DependencyProperty.Register(
+        private static readonly DependencyProperty AutoToolTipPrecisionProperty = DependencyProperty.Register(
 	        nameof(AutoToolTipPrecision), typeof(int), typeof(SuperSlider), new PropertyMetadata(0));
 
         public int AutoToolTipPrecision
@@ -75,7 +84,7 @@ namespace Common.WPFCommon.Controls
 	        set => SetValue(AutoToolTipPrecisionProperty, value);
         }
 
-		public static readonly DependencyProperty TickFrequencyProperty = DependencyProperty.Register(
+		private static readonly DependencyProperty TickFrequencyProperty = DependencyProperty.Register(
 	        nameof(TickFrequency), typeof(double), typeof(SuperSlider), new PropertyMetadata(1.0));
 
         public double TickFrequency
@@ -84,7 +93,7 @@ namespace Common.WPFCommon.Controls
 	        set => SetValue(TickFrequencyProperty, value);
         }
 
-        public static readonly DependencyProperty SmallChangeProperty = DependencyProperty.Register(
+        private static readonly DependencyProperty SmallChangeProperty = DependencyProperty.Register(
 	        nameof(SmallChange), typeof(double), typeof(SuperSlider), new PropertyMetadata(1.0));
 
         public double SmallChange
@@ -93,7 +102,7 @@ namespace Common.WPFCommon.Controls
 	        set => SetValue(SmallChangeProperty, value);
         }
 
-        public static readonly DependencyProperty LargeChangeProperty = DependencyProperty.Register(
+        private static readonly DependencyProperty LargeChangeProperty = DependencyProperty.Register(
 	        nameof(LargeChange), typeof(double), typeof(SuperSlider), new PropertyMetadata(1.0));
 
         public double LargeChange
@@ -115,6 +124,18 @@ namespace Common.WPFCommon.Controls
         }
 		#endregion
 
+		#region overrides
+		protected override void OnInitialized(EventArgs e)
+		{
+			base.OnInitialized(e);
+
+			if (ReadLocalValue(DefaultValueProperty) == DependencyProperty.UnsetValue)
+			{
+				SetCurrentValue(DefaultValueProperty, Value);
+			}
+		}
+		#endregion
+
 		#region Event Handlers
 		private void DecreaseButton_Click(object sender, RoutedEventArgs e)
 		{
@@ -128,7 +149,7 @@ namespace Common.WPFCommon.Controls
 
 		private void ResetButton_Click(object sender, RoutedEventArgs e)
 		{
-			Value = ((Maximum - Minimum) / 2) + Minimum;
+			Value = DefaultValue;
 		}
 
 		private void ValueSlider_Scroll(object sender, MouseWheelEventArgs e)

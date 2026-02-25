@@ -217,7 +217,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 			{
 				grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(10, GridUnitType.Star) });
 
-				double y = (Math.Pow((double)(i+1)/10, gamma) * brightness + 0.5) / 100 * 255;
+				double y = (Math.Pow((double)(i + 1) / 10, gamma) * brightness + 0.5) / 100 * 255;
 				byte colorValue = (byte)Math.Clamp(y, 0, 255);
 				var backgroundColor = System.Windows.Media.Color.FromRgb(colorValue, colorValue, colorValue);
 
@@ -227,7 +227,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 					BorderThickness = new Thickness(i == 0 ? 1 : 0, 1, 1, 1), // Prevent double-thick internal borders
 					Background = new System.Windows.Media.SolidColorBrush(backgroundColor),
 					SnapsToDevicePixels = true
-					};
+				};
 
 				Grid.SetColumn(cellBorder, i);
 				Grid.SetRow(cellBorder, 0);

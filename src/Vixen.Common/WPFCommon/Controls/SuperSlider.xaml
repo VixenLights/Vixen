@@ -61,7 +61,8 @@
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
-        <Button Grid.Column="0" Click="DecreaseButton_Click" IsTabStop="False" Width="16" Height="16" Style="{StaticResource ArrowButtonStyle}">
+        <Button Grid.Column="0" Click="DecreaseButton_Click" IsTabStop="False" Width="16" Height="16" Style="{StaticResource ArrowButtonStyle}" 
+                ToolTip="Decrease value">
             <Path Data="M 8 0 L 0 4 L 8 8 Z" 
                   Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" 
                   Width="8" 
@@ -80,19 +81,24 @@
                 ValueChanged="ValueSlider_ValueChanged"
                 Background="Transparent"
                 Foreground="{StaticResource ForeColorBrush}"/>
-        <Button Grid.Column="2" Click="ResetButton_Click" IsTabStop="False" Width="16" Height="16" Style="{StaticResource ArrowButtonStyle}">
-            <Path Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" 
-                  Width="10" Stretch="Uniform">
-                <Path.Data>
-                    <GeometryGroup FillRule="EvenOdd">
-                        <EllipseGeometry Center="4,4" RadiusX="4" RadiusY="4" />
-                        <EllipseGeometry Center="4,4" RadiusX="2" RadiusY="2" />
-                    </GeometryGroup>
-                </Path.Data>
+        <Button Grid.Column="2" Click="ResetButton_Click" IsTabStop="False" Width="16" Height="16" Style="{StaticResource ArrowButtonStyle}"
+                ToolTip="Reset value">
+            <Path 
+                Data="
+                  M 6.5,4
+                  A 2.5,2.5 0 1 0 4,6.5
+                  M 3.7,6.7
+                  L 2.9,7.3
+                  M 4.2,6.9
+                  L 3.3,5.5"
+                Fill="Transparent" StrokeThickness="1.5"
+                Stroke="White"
+                Width="10" Stretch="Uniform">
             </Path>
         </Button>
         
-        <Button Grid.Column="3" Click="IncreaseButton_Click" IsTabStop="False" Width="16" Height="16" Style="{StaticResource ArrowButtonStyle}">
+        <Button Grid.Column="3" Click="IncreaseButton_Click" IsTabStop="False" Width="16" Height="16" Style="{StaticResource ArrowButtonStyle}"
+                ToolTip="Increase value">
             <Path Data="M 0 0 L 8 4 L 0 8 Z" 
                   Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" 
                   Width="8" Stretch="Uniform"/>

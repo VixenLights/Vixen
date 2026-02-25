@@ -56,7 +56,14 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		public ObservableCollection<AxisRotationViewModel> Rotations
 		{
 			get { return GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty); }
-			set { SetValue(RotationsProperty, value); }
+			set
+			{
+				SetValue(RotationsProperty, value);
+				for (int index = 0; index < Rotations.Count; index++)
+				{
+					Rotations[index].RotationAngleDefault = Rotations[index].RotationAngle;
+				}
+			}
 		}
 		private static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
 
@@ -108,5 +115,11 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 			LightPropModel.UpdatePropNodes();
 		}
 		#endregion
+
+		protected override async Task InitializeAsync()
+		{
+			// Set the updated parameters
+			LightPropModel.PropParameters.Update("Rotations", AxisRotationViewModel.ConvertToModel(Rotations));
+		}
 	}
 }
