@@ -34,7 +34,7 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <CheckBox Grid.Column="0" Grid.Row="0" Content="Left &amp; Right" IsChecked="{Binding LeftRight}"/>
+                <CheckBox Grid.Column="0" Grid.Row="0" Content="Left Half &amp; Right Half" IsChecked="{Binding LeftRight}"/>
             </Grid>
         </ScrollViewer>
 

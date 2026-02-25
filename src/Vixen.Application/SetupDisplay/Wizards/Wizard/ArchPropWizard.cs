@@ -21,7 +21,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Wizard
 
 			Title = $"{PropType.Arch.GetEnumDescription()} Prop";
 			ShowInTaskbar = true;
-
+			
 			// Set up the Wizard pages
 			this.AddPage<ArchPropWizardPage>();
 			this.AddPage<ArchPropAdditionalWizardPage>();
