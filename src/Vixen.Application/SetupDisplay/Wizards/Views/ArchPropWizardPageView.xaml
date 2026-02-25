@@ -90,6 +90,7 @@
                                     <controls:SuperSlider Grid.Column="1" 
                                           Minimum="-180" 
                                           Maximum="180" 
+                                          DefaultValue="{Binding RotationAngleDefault}" 
                                           Value="{Binding RotationAngle, Mode=TwoWay}" 
                                           AutoToolTipPlacement="TopLeft" />
                                 </Grid>
