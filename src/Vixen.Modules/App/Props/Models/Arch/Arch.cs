@@ -41,7 +41,7 @@ namespace VixenModules.App.Props.Models.Arch
 			LightSize = 2;
 			StringType = StringTypes.Pixel;
 			ArchWiringStart = ArchStartLocation.Left;
-			LeftRight = false;
+			LeftRight = true;
 
 			DimmingTypeOption = DimmingType.NoCurve;
 			Brightness = 80;

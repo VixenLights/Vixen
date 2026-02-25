@@ -27,9 +27,9 @@
         </Grid.RowDefinitions>
 
         <!-- Color Selection buttons -->
-        <RadioButton x:Name="SingleColorButton" Content="Contains only a single color" IsChecked="True" Grid.Row="0" Click="SingleColorButtonClick"></RadioButton>
-        <RadioButton x:Name="MultipleColorButton" Content="Made up of multiple colors" Grid.Row="1" Click="MultipleColorButtonClick"></RadioButton>
-        <RadioButton x:Name="RGBColorButton" Content="Full RGB colors" Grid.Row="2" Click="RGBColorButtonClick"></RadioButton>
+        <RadioButton x:Name="SingleColorButton" Content="Single Discreet Color" IsChecked="True" Grid.Row="0" Click="SingleColorButtonClick"></RadioButton>
+        <RadioButton x:Name="MultipleColorButton" Content="Multiple Discrete Colors" Grid.Row="1" Click="MultipleColorButtonClick"></RadioButton>
+        <RadioButton x:Name="RGBColorButton" Content="Color Mixing (RGB)" Grid.Row="2" Click="RGBColorButtonClick"></RadioButton>
         <Border BorderBrush="White" BorderThickness="10" Height="1" Grid.Row="3" Margin="5" VerticalAlignment="Center"/>
 
         <!-- Single Color -->

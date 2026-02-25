@@ -184,7 +184,11 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 
 		protected override async Task InitializeAsync()
 		{
+			LightPropModel.PropParameters.Update("NodeCount", NodeCount);
+			LightPropModel.PropParameters.Update("LightSize", LightSize);
+
 			await base.InitializeAsync();
+
 			RefreshGraphics();
 		}
 	}

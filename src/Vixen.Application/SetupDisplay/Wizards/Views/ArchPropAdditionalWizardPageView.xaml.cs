@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace VixenApplication.SetupDisplay.Wizards.Views
+﻿namespace VixenApplication.SetupDisplay.Wizards.Views
 {
 	/// <summary>
 	/// Interaction logic for ArchPropAdditionalWizardPageView.xaml

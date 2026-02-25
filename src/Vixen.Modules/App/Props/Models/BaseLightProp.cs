@@ -429,12 +429,12 @@ namespace VixenModules.App.Props.Models
 		/// <returns>Returns the <see cref="string"/> summary in HTML format</returns>
 		protected string GetDimmingSummary()
 		{
-			string summary = "<h2>Dimming Curve</h2><body>";
+			string summary = "<h2>Brightness Level</h2><body>";
 
 			if (DimmingTypeOption == DimmingType.Simple)
 			{
-				summary += $"<b>Brightness:</b> {Brightness}%<br>" +
-						   $"<b>Gamma:</b> {Gamma:0.0}";
+				summary += $"<b>Maximum Brightness:</b> {Brightness}%<br>" +
+						   $"<b>Brightness Speed:</b> {Gamma:0.0}";
 			}
 			else if (DimmingTypeOption == DimmingType.Library && Curve != null)
 			{
@@ -449,7 +449,7 @@ namespace VixenModules.App.Props.Models
 			}
 			else
 			{
-				summary += "<b/>None Specified";
+				summary += "<b/>Full Brightness";
 			}
 			summary += "</body>";
 
