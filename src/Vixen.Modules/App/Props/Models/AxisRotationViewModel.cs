@@ -34,8 +34,7 @@ namespace VixenModules.App.Props.Models
 				RotationChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
-
-		public static readonly IPropertyData AxisProperty = RegisterProperty<string>(nameof(Axis));
+		private static readonly IPropertyData AxisProperty = RegisterProperty<string>(nameof(Axis));
 
 		/// <summary>
 		/// Amount of rotation in degrees.
@@ -49,9 +48,14 @@ namespace VixenModules.App.Props.Models
 				RotationChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
+		private static readonly IPropertyData RotationAngleProperty = RegisterProperty<int>(nameof(RotationAngle));
 
-		public static readonly IPropertyData RotationAngleProperty = RegisterProperty<int>(nameof(RotationAngle));
-
+		public int RotationAngleDefault
+		{
+			get { return GetValue<int>(RotationAngleDefaultProperty); }
+			set { SetValue(RotationAngleDefaultProperty, value); }
+		}
+		private static readonly IPropertyData RotationAngleDefaultProperty = RegisterProperty<int>(nameof(RotationAngleDefault));
 		#endregion
 
 		#region Events
