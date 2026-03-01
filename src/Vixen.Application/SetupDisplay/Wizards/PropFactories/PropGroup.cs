@@ -26,7 +26,7 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 		public bool CreateGroup { get; set; }
 
 		///<inheritdoc/>
-		public string GroupName { get; set; }
+		public string GroupName { get; set; } = String.Empty;
 
 		///<inheritdoc/>
 		public IList<IProp> Props { get; private set; } 

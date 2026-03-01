@@ -25,7 +25,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 	public class PropNodeTreeViewModel : ViewModelBase, IDropTarget, IDragSource
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		public event EventHandler ModelsChanged;
+		public event EventHandler? ModelsChanged;
 
 		public PropNodeTreeViewModel()
 		{
@@ -268,7 +268,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region CreateGroup command
 
-		private Command _createGroupCommand;
+		private Command? _createGroupCommand;
 
 		/// <summary>
 		/// Gets the CreateGroup command.
@@ -311,7 +311,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region MoveToGroup command
 
-		private Command _moveToGroupCommand;
+		private Command? _moveToGroupCommand;
 
 		/// <summary>
 		/// Gets the MoveToGroup command.
@@ -377,7 +377,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region SubstitutionRename command
 
-		private Command _substitutionRenameCommand;
+		private Command? _substitutionRenameCommand;
 
 		/// <summary>
 		/// Gets the PatternRename command.
@@ -435,7 +435,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region Rename command
 
-		private Command _renameCommand;
+		private Command? _renameCommand;
 
 		/// <summary>
 		/// Gets the Rename command.
@@ -498,7 +498,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region CreatePropNode command
 
-		private Command _createNodeCommand;
+		private Command? _createNodeCommand;
 
 		/// <summary>
 		/// Gets the CreatePropNode command.
@@ -540,7 +540,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region CreateProp command
 
-		private TaskCommand<string> _createPropCommand;
+		private TaskCommand<string>? _createPropCommand;
 
 		/// <summary>
 		/// Gets the CreateProp command.
@@ -557,7 +557,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		{
 			if(Enum.TryParse(propType, out PropType result))
 			{
-				IPropGroup propGroup = await GeneratePropNodes(result);
+				IPropGroup? propGroup = await GeneratePropNodes(result);
 
 				if (propGroup != null)
 				{
@@ -623,7 +623,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region Cut command
 
-		private Command _cutCommand;
+		private Command? _cutCommand;
 
 		/// <summary>
 		/// Gets the Cut command.
@@ -671,7 +671,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region Copy command
 
-		private Command _copyCommand;
+		private Command? _copyCommand;
 
 		/// <summary>
 		/// Gets the Copy command.
@@ -707,7 +707,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region Paste command
 
-		private Command _pasteCommand;
+		private Command? _pasteCommand;
 
 		/// <summary>
 		/// Gets the Paste command.
@@ -785,7 +785,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region PasteAsNew command
 
-		private Command _pasteAsNewCommand;
+		private Command? _pasteAsNewCommand;
 
 		/// <summary>
 		/// Gets the PasteAsNew command.
@@ -874,7 +874,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region Delete command
 
-		private Command _deleteCommand;
+		private Command? _deleteCommand;
 
 		/// <summary>
 		/// Gets the Delete command.
@@ -980,11 +980,17 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		{
 			var nameType = createGroup ? "group" : "prop";
 			var dependencyResolver = this.GetDependencyResolver();
-			var mbs = dependencyResolver.Resolve<IMessageBoxService>();
+			IMessageBoxService? mbs = dependencyResolver.Resolve<IMessageBoxService>();
+
+			if (mbs == null)
+			{
+				throw new Exception("Unable to create " + nameof(IMessageBoxService));
+			}
+
 			return mbs.GetUserInput($"Please enter the {nameType} name.", $"Create {nameType}", suggestedName);
 		}
 
-		private async Task<IPropGroup> GeneratePropNodes(PropType propType)
+		private async Task<IPropGroup?> GeneratePropNodes(PropType propType)
 		{			
 			var dependencyResolver = this.GetDependencyResolver();
 
@@ -992,14 +998,24 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			ITypeFactory typeFactory = this.GetTypeFactory();
 
 			// Retrieve the color scheme service
-			IBaseColorSchemeService baseColorService = (IBaseColorSchemeService)dependencyResolver.Resolve(typeof(IBaseColorSchemeService));
+			IBaseColorSchemeService? baseColorService = (IBaseColorSchemeService?)dependencyResolver.Resolve(typeof(IBaseColorSchemeService));
 
+			if (baseColorService == null)
+			{
+				throw new Exception("Unable to create " + nameof(IBaseColorSchemeService));
+			}
+			
 			// Select the dark color scheme
 			baseColorService.SetBaseColorScheme("Dark");
 
 			// Use the type factory to create the prop wizard
-			(IPropWizard Wizard, IPropFactory Factory) propWizard = PropWizardFactory.CreateInstance(propType, typeFactory);
+			(IPropWizard? Wizard, IPropFactory Factory) propWizard = PropWizardFactory.CreateInstance(propType, typeFactory);
 
+			if (propWizard.Wizard == null)
+			{
+				throw new Exception("Unable to create Wizard");
+			}
+			
 			// Configure the wizard window to show up in the Windows task bar
 			propWizard.Wizard.ShowInTaskbarWrapper = true;
 

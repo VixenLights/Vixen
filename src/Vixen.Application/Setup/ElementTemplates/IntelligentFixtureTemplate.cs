@@ -121,7 +121,12 @@ namespace VixenApplication.Setup.ElementTemplates
 
 			// Create the wizard service
 			IDependencyResolver dependencyResolver = this.GetDependencyResolver();
-			IWizardService wizardService = (IWizardService)dependencyResolver.Resolve(typeof(IWizardService));
+			IWizardService? wizardService = (IWizardService?)dependencyResolver.Resolve(typeof(IWizardService));
+
+			if (wizardService == null)
+			{
+				throw new Exception("Unable to create " + nameof(IWizardService));
+			}
 
 			// Display the intelligent fixture wizard
 			bool? result = (await wizardService.ShowWizardAsync(_wizard)).DialogResult;
@@ -191,16 +196,26 @@ namespace VixenApplication.Setup.ElementTemplates
 			IDependencyResolver dependencyResolver = this.GetDependencyResolver();
 
 			// Retrieve the color scheme service
-			IBaseColorSchemeService baseColorService = (IBaseColorSchemeService)dependencyResolver.Resolve(typeof(IBaseColorSchemeService));
+			IBaseColorSchemeService? baseColorService = (IBaseColorSchemeService?)dependencyResolver.Resolve(typeof(IBaseColorSchemeService));
+
+			if (baseColorService == null)
+			{
+				throw new Exception("Unable to create " + nameof(IBaseColorSchemeService));
+			}
 
 			// Select the dark color scheme
 			baseColorService.SetBaseColorScheme("Dark");
 
 			// Retrieve the accent color service
-			IAccentColorService accentColorServer = (IAccentColorService)dependencyResolver.Resolve(typeof(IAccentColorService));
+			IAccentColorService? accentColorService = (IAccentColorService?)dependencyResolver.Resolve(typeof(IAccentColorService));
+
+			if (accentColorService == null)
+			{
+				throw new Exception("Unable to create " + nameof(IAccentColorService));
+			}
 
 			// Configure the page bubbles on the left to be blue to look better with the dark theme
-			accentColorServer.SetAccentColor((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("DodgerBlue"));
+			accentColorService.SetAccentColor((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("DodgerBlue"));
 
 			// Show the fixture wizard
 			bool? cancelled = await ShowWizardAsync();

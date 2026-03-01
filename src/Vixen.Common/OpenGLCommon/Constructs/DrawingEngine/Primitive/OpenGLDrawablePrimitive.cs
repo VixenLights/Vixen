@@ -142,7 +142,7 @@ namespace Common.OpenGLCommon.Constructs.DrawingEngine.Primitive
 		#region IDisposable
 
 		/// <inheritdoc/>
-		public void Dispose()
+		public virtual void Dispose()
 		{
 			// If the vertex buffer object has been initialized then...
 			if (VBO != null)

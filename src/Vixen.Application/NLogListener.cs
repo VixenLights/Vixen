@@ -14,22 +14,22 @@ namespace VixenApplication
 		#region Overrides of LogListenerBase
 
 		/// <inheritdoc />
-		protected override void Debug(ILog log, string message, object extraData, LogData logData, DateTime time)
+		protected override void Debug(ILog log, string message, object? extraData, LogData? logData, DateTime time)
 		{
 			Logging.Debug(message);
 		}
 
-		protected override void Info(ILog log, string message, object extraData, LogData logData, DateTime time)
+		protected override void Info(ILog log, string message, object? extraData, LogData? logData, DateTime time)
 		{
 			Logging.Info(message);
 		}
 
-		protected override void Warning(ILog log, string message, object extraData, LogData logData, DateTime time)
+		protected override void Warning(ILog log, string message, object? extraData, LogData? logData, DateTime time)
 		{
 			Logging.Warn(message);
 		}
 
-		protected override void Error(ILog log, string message, object extraData, LogData logData, DateTime time)
+		protected override void Error(ILog log, string message, object? extraData, LogData? logData, DateTime time)
 		{
 			Logging.Error(message);
 		}
