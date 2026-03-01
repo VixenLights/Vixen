@@ -43,12 +43,12 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// <summary>
 		/// OpenGL implementation of the moving head graphic.
 		/// </summary>
-		private MovingHeadOpenGL _movingHeadOpenGL;
+		private MovingHeadOpenGL? _movingHeadOpenGL;
 
 		/// <summary>
 		/// Current moving head settings.  This property aids with determining if the graphics are stale.
 		/// </summary>
-		private IMovingHead _movingHeadCurrentSettings;
+		private IMovingHead? _movingHeadCurrentSettings;
 
 		#endregion
 
@@ -71,7 +71,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			if (_propModel.ShowLegend)
 			{				
 				// Draw the legend under the moving head			
-				_movingHeadOpenGL.DrawLegend(
+				_movingHeadOpenGL?.DrawLegend(
 					0, // Translation not required					
 					0, // Translation not required					
 					projectionMatrix,
@@ -97,7 +97,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 
 		/// <inheritdoc/>
 		[Browsable(false)]
-		public IRenderMovingHeadOpenGL MovingHead { get; private set; }
+		public IRenderMovingHeadOpenGL? MovingHead { get; private set; }
 
 		/// <inheritdoc/>
 		public void Initialize(float height, float referenceHeight, Action redraw)
@@ -129,6 +129,11 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// <inheritdoc/>
 		public void InitializeSelectionVertices(float height)
 		{
+			if (_movingHeadOpenGL == null)
+			{
+				throw new Exception(nameof(_movingHeadOpenGL)+ " is null.");
+			}
+
 			// Get the physical fixture volumes (no beam volumes)
 			List<IVolume> fixtureVolumes = _movingHeadOpenGL.GetPhysicalFixtureVolumes().ToList();
 
@@ -163,19 +168,10 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		public void UpdateVolumes(int maxBeamLength, float referenceHeight, bool standardFrame)
 		{			
 			// Update the volumes on the OpenGL implementation
-			_movingHeadOpenGL.UpdateVolumes(
+			_movingHeadOpenGL?.UpdateVolumes(
 				(int)X,
 				(int)Y,
 				maxBeamLength);			
-		}
-
-		#endregion
-
-		#region IDisposable
-
-		/// <inheritdoc/>
-		public void Dispose()
-		{			
 		}
 
 		#endregion		

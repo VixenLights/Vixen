@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -30,7 +29,7 @@ using VixenModules.Preview.VixenPreview.OpenGL;
 using Window = System.Windows.Window;
 
 namespace VixenApplication.SetupDisplay.ViewModels
-{	
+{
 	/// <summary>
 	/// Maintains the Display Setup view model.
 	/// </summary>
@@ -48,12 +47,12 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// <summary>
 		/// Prop model to display in the prop preview on the next render cycle.
 		/// </summary>
-		private IProp _nextPreviewProp;
+		private IProp? _nextPreviewProp;
 
 		/// <summary>
 		/// Prop model currently being displayed in the prop preview.
 		/// </summary>
-		private IProp _currentPreviewProp;
+		private IProp? _currentPreviewProp;
 
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
@@ -206,6 +205,12 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		private void AddSelectedPropToPreview()
 		{
+			if (SelectedProp == null ||
+				SelectedProp.PropModel == null)
+			{
+				throw new Exception("No Prop Selected to Add to Preview");
+			}
+
 			// Add the selected prop to the preview
 			DisplayPreviewDrawingEngine.AddProps(new List<IPropModel>{ SelectedProp.PropModel });
 
@@ -218,6 +223,10 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		private void ExecuteCenterPropPreview()
 		{
+			if (PropPreviewDrawingEngine == null)
+			{
+				throw new Exception(nameof(PropPreviewDrawingEngine) + " is null!");
+			}
 			// Center the prop preview and return the new width and height
 			/*ClientSize =*/ PropPreviewDrawingEngine.ExecuteCenterPreview();
 		}
@@ -480,7 +489,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		/// <param name="sender">Event sender</param>
 		/// <param name="e">Event arguments</param>
-		private void OnRotationChanged(object sender, EventArgs e)
+		private void OnRotationChanged(object? sender, EventArgs e)
 		{
 			// If the selected prop is a light based prop then...
 			if (SelectedProp?.PropModel is ILightPropModel lightPropModel)
@@ -512,7 +521,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// <summary>
 		/// Gets or sets the PropComponentTreeViewModel value.
 		/// </summary>
-		public PropComponentTreeViewModel PropComponentTreeViewModel
+		public PropComponentTreeViewModel? PropComponentTreeViewModel
 		{
 			get { return GetValue<PropComponentTreeViewModel>(PropComponentTreeViewModelProperty); }
 			set { SetValue(PropComponentTreeViewModelProperty, value); }
@@ -529,7 +538,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region OpenProp command
 
-		private Command _openPropCommand;
+		private Command? _openPropCommand;
 
 		/// <summary>
 		/// Gets the OpenProp command.
@@ -547,6 +556,12 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		{
 			var dependencyResolver = this.GetDependencyResolver();
 			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
+
+			if (openFileService == null)
+			{
+				throw new Exception("Could not create " + nameof(IOpenFileService));
+			}
+
 			var determineFileContext = new DetermineOpenFileContext()
 			{
 				IsMultiSelect = false,
@@ -563,6 +578,12 @@ namespace VixenApplication.SetupDisplay.ViewModels
 				if (!string.IsNullOrEmpty(path))
 				{
 					var pleaseWaitService = dependencyResolver.Resolve<IBusyIndicatorService>();
+
+					if (pleaseWaitService == null)
+					{
+						throw new Exception("Could not create " + nameof(IBusyIndicatorService));
+					}
+
 					pleaseWaitService.Show();
 					// LoadPropFromPath(path);
 					pleaseWaitService.Hide();
@@ -574,7 +595,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region SaveModel command
 
-		private Command _saveModelCommand;
+		private Command? _saveModelCommand;
 
 		/// <summary>
 		/// Gets the SaveModel command.
@@ -597,7 +618,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region SaveModelAs command
 
-		private Command _saveModelAsCommand;
+		private Command? _saveModelAsCommand;
 
 		/// <summary>
 		/// Gets the SaveModelAs command.
@@ -613,14 +634,15 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		private async void SaveModelAs()
 		{
-
+			// TODO
+			await Task.CompletedTask;
 		}
 
 		#endregion
 
 		#region Exit command
 
-		private Command<Window> _exitCommand;
+		private Command<Window>? _exitCommand;
 
 		/// <summary>
 		/// Gets the Exit command.
@@ -634,7 +656,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// <summary>
 		/// Method to invoke when the Exit command is executed.
 		/// </summary>
-		private void Exit(Window window)
+		private void Exit(Window? window)
 		{
 			window?.Close();
 		}
@@ -643,7 +665,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region Closing command
 
-		private Command<CancelEventArgs> _closingCommand;
+		private Command<CancelEventArgs>? _closingCommand;
 
 		/// <summary>
 		/// Gets the Closing command.
@@ -657,7 +679,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// <summary>
 		/// Method to invoke when the Closing command is executed.
 		/// </summary>
-		private void Closing(CancelEventArgs e)
+		private void Closing(CancelEventArgs? e)
 		{
 			//if (TestIsDirty())
 			//{
@@ -680,7 +702,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region NewProp command
 
-		private Command _newPropCommand;
+		private Command? _newPropCommand;
 
 		/// <summary>
 		/// Gets the NewProp command.
@@ -717,7 +739,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region Import command
 
-		private Command<string> _importCommand;
+		private Command<string>? _importCommand;
 
 		/// <summary>
 		/// Gets the Import command.
@@ -731,10 +753,15 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// <summary>
 		/// Method to invoke when the Import command is executed.
 		/// </summary>
-		private async void Import(string type)
+		private async void Import(string? type)
 		{
 			var dependencyResolver = this.GetDependencyResolver();
 			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
+
+			if (openFileService == null)
+			{
+				throw new Exception("Unable to create " + nameof(IOpenFileService));
+			}
 
 			var determineFileContext = new DetermineOpenFileContext()
 			{
@@ -748,10 +775,16 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 			if (result.Result)
 			{
-				string path = result.FileName;
+				string? path = result.FileName;
 				if (!string.IsNullOrEmpty(path))
 				{
 					var pleaseWaitService = dependencyResolver.Resolve<IBusyIndicatorService>();
+
+					if (pleaseWaitService == null)
+					{
+						throw new Exception("Unable to create " + nameof(IBusyIndicatorService));
+					}
+
 					pleaseWaitService.Show();
 					await ImportProp(path);
 					pleaseWaitService.Hide();
@@ -772,6 +805,9 @@ namespace VixenApplication.SetupDisplay.ViewModels
 				//	//Switch to selection mode VIX-2784
 				//	DrawingPanelViewModel.IsDrawing = false;
 				//}
+
+				// TODO
+				await Task.CompletedTask;
 			}
 			catch (Exception e)
 			{
@@ -789,7 +825,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region ImportVendorXModel command
 
-		private TaskCommand _openVendorBrowserCommand;
+		private TaskCommand? _openVendorBrowserCommand;
 
 		/// <summary>
 		/// Gets the ImportVendorXModel command.
@@ -805,7 +841,8 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		private async Task OpenVendorBrowserAsync()
 		{
-
+			// TODO
+			await Task.CompletedTask;
 		}
 
 		#endregion
@@ -857,7 +894,17 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// SelectedTabIndex property data.
 		/// </summary>
 		public static readonly IPropertyData SelectedTabIndexProperty =
-			RegisterProperty<int>(nameof(SelectedTabIndex), null, (sender, e) => ((SetupDisplayViewModel)sender).OnSelectedTabIndexChanged());
+			RegisterProperty<int>(nameof(SelectedTabIndex), null, OnSelectedTabIndexChanged);
+
+		private static void OnSelectedTabIndexChanged(object? sender, EventArgs e)
+		{
+			if (sender == null)
+			{
+				throw new ArgumentNullException(nameof(sender));
+			}
+
+			((SetupDisplayViewModel)sender).OnSelectedTabIndexChanged();
+		}
 
 		/// <summary>
 		/// Called when the SelectedTabIndex property has changed.
@@ -875,7 +922,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// Updates the prop displayed in the prop preview.
 		/// </summary>
 		/// <param name="prop">Prop to display in the prop preview</param>
-		internal void UpdatePreviewModel(IProp prop)
+		internal void UpdatePreviewModel(IProp? prop)
 		{
 			// Save off the prop model to display in the prop preview
 			_nextPreviewProp = prop;			
@@ -915,7 +962,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// <summary>
 		/// Drawing engine for the prop preview.
 		/// </summary>
-		public OpenGLPropDrawingEngine PropPreviewDrawingEngine { get; set; } = new OpenGLPropDrawingEngine(new List<IPropModel>());
+		public OpenGLPropDrawingEngine? PropPreviewDrawingEngine { get; set; } = new OpenGLPropDrawingEngine(new List<IPropModel>());
 
 		/// <summary>
 		/// Drawing engine for the display preview.

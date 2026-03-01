@@ -52,7 +52,7 @@ namespace VixenApplication.SetupDisplay.Views
 				float cameraZ = 0.0f;
 
 				// Initialize the drawing engine
-				(DataContext as SetupDisplayViewModel).DisplayPreviewDrawingEngine.Initialize(
+				GetViewModel().DisplayPreviewDrawingEngine.Initialize(
 					cameraX,
 					cameraY,
 					cameraZ);
@@ -60,9 +60,9 @@ namespace VixenApplication.SetupDisplay.Views
 				// Remember that we have intialized the drawing engine
 				_openTKControlLoaded = false;
 			}
-			
+
 			// Have the drawing engine refresh the frame
-			(DataContext as SetupDisplayViewModel).DisplayPreviewDrawingEngine.RenderPreview();			
+			GetViewModel().DisplayPreviewDrawingEngine.RenderPreview();					
 		}
 
 		/// <summary>
@@ -76,7 +76,7 @@ namespace VixenApplication.SetupDisplay.Views
 			_openTKControlLoaded = true;
 
 			// Refresh the CanExecute delegates
-			(DataContext as SetupDisplayViewModel).RefreshCanExecuteCommands();
+			GetViewModel().RefreshCanExecuteCommands();
 		}
 		
 		/// <summary>
@@ -87,7 +87,7 @@ namespace VixenApplication.SetupDisplay.Views
 		private void OpenTkControlPreview_SizeChanged(object sender, SizeChangedEventArgs e)
 		{
 			// Call base class implementation
-			OpenTkControl_SizeChanged(sender, e, OpenTkControlPreview, (DataContext as SetupDisplayViewModel).DisplayPreviewDrawingEngine);			
+			OpenTkControl_SizeChanged(sender, e, OpenTkControlPreview, GetViewModel().DisplayPreviewDrawingEngine);			
 		}
 
 		/// <summary>
@@ -119,7 +119,7 @@ namespace VixenApplication.SetupDisplay.Views
 				int direction = -(delta * SystemInformation.MouseWheelScrollLines / factor);
 
 				// Update the zoom of the preview
-				(DataContext as SetupDisplayViewModel).DisplayPreviewDrawingEngine.Zoom(direction);
+				GetViewModel().DisplayPreviewDrawingEngine.Zoom(direction);
 
 				// This should trigger the control to redraw
 				OpenTkControlPreview.InvalidateVisual();
@@ -134,7 +134,7 @@ namespace VixenApplication.SetupDisplay.Views
 		private void OpenTkControlPreview_MouseWheel(object sender, MouseWheelEventArgs e)
 		{
 			// Call helper method to zoom the OpenTK viewport
-			OpenTkControl_MouseWheel(sender, e, OpenTkControlPreview, (DataContext as SetupDisplayViewModel).DisplayPreviewDrawingEngine);
+			OpenTkControl_MouseWheel(sender, e, OpenTkControlPreview, GetViewModel().DisplayPreviewDrawingEngine);
 		}
 
 		/// <summary>
@@ -158,7 +158,7 @@ namespace VixenApplication.SetupDisplay.Views
 				PrevMousePositionY = (int)e.GetPosition(OpenTkControlPreview).Y;
 
 				// Forward the preview setup OpenTK control mouse down event to the drawing engine
-				(DataContext as SetupDisplayViewModel).DisplayPreviewDrawingEngine.MouseDown(PrevMousePositionX, PrevMousePositionY);
+				GetViewModel().DisplayPreviewDrawingEngine.MouseDown(PrevMousePositionX, PrevMousePositionY);
 			}
 		}
 
@@ -170,7 +170,7 @@ namespace VixenApplication.SetupDisplay.Views
 		private void OpenTkControlPreview_MouseUp(object sender, MouseButtonEventArgs e)
 		{
 			// Forward the mouse up event to the preview setup drawing engine
-			(DataContext as SetupDisplayViewModel).DisplayPreviewDrawingEngine.MouseUp(new OpenTK.Mathematics.Vector2(PrevMousePositionX, PrevMousePositionY));
+			GetViewModel().DisplayPreviewDrawingEngine.MouseUp(new OpenTK.Mathematics.Vector2(PrevMousePositionX, PrevMousePositionY));
 		}
 
 		/// <summary>
@@ -188,7 +188,7 @@ namespace VixenApplication.SetupDisplay.Views
 			if (eX == PrevMousePositionX && eY == PrevMousePositionY) return;
 
 			// Have the drawing engine handle the mouse move event
-			bool overResizeBox = (DataContext as SetupDisplayViewModel).DisplayPreviewDrawingEngine.MouseMove(PrevMousePositionX, PrevMousePositionY, eX, eY);
+			bool overResizeBox = GetViewModel().DisplayPreviewDrawingEngine.MouseMove(PrevMousePositionX, PrevMousePositionY, eX, eY);
 
 			// Save off the mouse position
 			PrevMousePositionX = eX;
@@ -213,7 +213,27 @@ namespace VixenApplication.SetupDisplay.Views
 				Cursor = System.Windows.Input.Cursors.Arrow;
 			}
 		}
-		
+
+		/// <summary>
+		/// Gets the view model associated with the view.
+		/// </summary>
+		/// <returns><see cref="SetupDisplayViewModel"></returns>
+		/// <exception cref="Exception"></exception>
+		private SetupDisplayViewModel GetViewModel()
+		{
+			if (DataContext == null)
+			{
+				throw new Exception(nameof(DataContext) + " is null!");	
+			}
+
+			if (!(DataContext is SetupDisplayViewModel viewModel))
+			{
+				throw new Exception("DataContext is wrong type!");
+			}
+
+			return viewModel;
+		}
+
 		#endregion
 	}
 }
