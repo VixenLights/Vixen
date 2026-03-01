@@ -93,6 +93,30 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// </summary>
 		private float _rubberBandStartY;
 
+		/// <summary>
+		/// Top left X coordinate in screen coordinates of the normalized rubberband selection rectangle.
+		/// Normalized such that the ruberband is always oriented left to right, top to bottom.
+		/// </summary>
+		private float _normalizedRubberbandPt1X;
+
+		/// <summary>
+		/// Top left Y coordinate in screen coordinates of the normalized rubberband selection rectangle.
+		/// Normalized such that the ruberband is always oriented left to right, top to bottom.
+		/// </summary>
+		private float _normalizedRubberbandPt1Y;
+
+		/// <summary>
+		/// Bottom right X coordinate in screen coordinates of the normalized rubberband selection rectangle.
+		/// Normalized such that the ruberband is always oriented left to right, top to bottom.
+		/// </summary>
+		private float _normalizedRubberbandPt2X;
+
+		/// <summary>
+		/// Bottom right Y coordinate in screen coordinates of the normalized rubberband selection rectangle.
+		/// Normalized such that the ruberband is always oriented left to right, top to bottom.
+		/// </summary>
+		private float _normalizedRubberbandPt2Y;
+
 		#endregion
 
 		#region Private Properties
@@ -445,59 +469,19 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				_rubberbandPrimitive.Vertices.Add(_rubberbandStartInWorld.X);
 				_rubberbandPrimitive.Vertices.Add(endPoint.Y);
 				_rubberbandPrimitive.Vertices.Add(0.0f);
-
-				// Declare some screen coordinates				
-				float pt1X;
-				float pt1Y;
-				float pt2X;
-				float pt2Y;
-
+				
 				// To simplify the logic always assuming the rubberband is 
-				// moving from left to right, top to bottom.
-				// The following logic keeps the points in this order.
-
-				// If the rubberband start X position is less than the current mouse X position then...
-				if (_rubberBandStartX < mouseX)
-				{
-					// If the rubberband start Y position is less than the current mouse Y position then...
-					if (_rubberBandStartY < mouseY)
-					{
-						pt1X = _rubberBandStartX;
-						pt1Y = _rubberBandStartY;
-						pt2X = mouseX;
-						pt2Y = mouseY;
-					}
-					else
-					{
-						pt1X = _rubberBandStartX;
-						pt1Y = mouseY;
-						pt2X = mouseX;
-						pt2Y = _rubberBandStartY;
-					}
-				}
-				else
-				{
-					if (_rubberBandStartY < mouseY)
-					{
-						pt1X = mouseX;
-						pt1Y = _rubberBandStartY;
-						pt2X = _rubberBandStartX;
-						pt2Y = mouseY;
-					}
-					else
-					{
-						pt1X = mouseX;
-						pt1Y = mouseY;
-						pt2X = _rubberBandStartX;
-						pt2Y = _rubberBandStartY;
-					}
-				}
-
+				// moving from left to right, top to bottom.				
+				_normalizedRubberbandPt1X = Math.Min(_rubberBandStartX, mouseX);
+				_normalizedRubberbandPt2X = Math.Max(_rubberBandStartX, mouseX);
+				_normalizedRubberbandPt1Y = Math.Min(_rubberBandStartY, mouseY);
+				_normalizedRubberbandPt2Y = Math.Max(_rubberBandStartY, mouseY);
+								
 				// Convert the screen coordinates into 3-D world coordinates
-				Vector3 leftTop = GetMousePointInWorld(new Vector2(pt1X, pt1Y));
-				Vector3 rightTop = GetMousePointInWorld(new Vector2(pt2X, pt1Y));
-				Vector3 bottomRight = GetMousePointInWorld(new Vector2(pt2X, pt2Y));
-				Vector3 bottomLeft = GetMousePointInWorld(new Vector2(pt1X, pt2Y));
+				Vector3 leftTop = GetMousePointInWorld(new Vector2(_normalizedRubberbandPt1X, _normalizedRubberbandPt1Y));
+				Vector3 rightTop = GetMousePointInWorld(new Vector2(_normalizedRubberbandPt2X, _normalizedRubberbandPt1Y));
+				Vector3 bottomRight = GetMousePointInWorld(new Vector2(_normalizedRubberbandPt2X, _normalizedRubberbandPt2Y));
+				Vector3 bottomLeft = GetMousePointInWorld(new Vector2(_normalizedRubberbandPt1X, _normalizedRubberbandPt2Y));
 
 				// Loop over all the props
 				foreach (IPropOpenGLData prop in Props)
@@ -528,7 +512,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 					{
 						// If the prop intersects the rubberband selection or
 						// contains the entire prop then...
-						if (IntersectsProp(leftTop, rightTop, bottomRight, bottomLeft, prop.GetMinimum(), prop.GetMaximum()) ||
+						if (IntersectsProp(prop.GetMinimum(), prop.GetMaximum()) ||
 							ContainsProp(leftTop, bottomRight, prop.GetMinimum(), prop.GetMaximum()))							
 						{
 							// If the prop is not already selected then...
@@ -636,25 +620,18 @@ namespace VixenApplication.SetupDisplay.OpenGL
 
 		/// <summary>
 		/// Returns true if the prop represented by the minimum and maximum vectors intersect with
-		/// the rectangle formed by topLeft, topRight, bottomRight, and bottomLeft.
-		/// </summary>
-		/// <param name="topLeft">Top left point of the rectangle</param>
-		/// <param name="bottomRight">Bottom right point of the rectangle</param>
+		/// the rubberband frustum.
+		/// </summary>				
 		/// <param name="minimum">Minimum values of the prop along each axis</param>
 		/// <param name="maximum">Maximum values of the prop along each axis</param>
-		/// <returns>True if the prop intersects with the rectangle</returns>
-		private bool IntersectsProp(Vector3 topLeft, Vector3 topRight, Vector3 bottomRight, Vector3 bottomLeft, Vector3 minimum, Vector3 maximum)
+		/// <returns>True if the prop intersects with the frustum created from the rubberband rectangle</returns>
+		private bool IntersectsProp(			
+			Vector3 minimum, 
+			Vector3 maximum)
 		{
-			// Return whether the prop intersects with the rectangle
-			return
-				((topLeft.X >= minimum.X && topLeft.X <= maximum.X &&
-				 topLeft.Y >= minimum.Y && topLeft.Y <= maximum.Y) ||
-				(bottomRight.X >= minimum.X && bottomRight.X <= maximum.X &&
-				 bottomRight.Y >= minimum.Y && bottomRight.Y <= maximum.Y) ||
-				(topRight.X >= minimum.X && topRight.X <= maximum.X &&
-				 topRight.Y >= minimum.Y && topRight.Y <= maximum.Y) ||
-				 (bottomLeft.X >= minimum.X && bottomLeft.X <= maximum.X &&
-				 bottomLeft.Y >= minimum.Y && bottomLeft.Y <= maximum.Y));						
+			// Check to see if the prop intersects with the rubberband frustum
+			return IsBoxIntersectingFrustum(
+				CreateSelectionFrustum(), minimum, maximum);				
 		}
 		
 		/// <summary>
@@ -1277,8 +1254,8 @@ namespace VixenApplication.SetupDisplay.OpenGL
 
 			float depth = (clip.Z + 1.0f) * 0.5f; // convert NDC Z → depth buffer range
 
-			var lastWorld = Unproject(new Vector3(previousMouseX, previousMouseY, depth), Camera.ViewMatrix, CreatePerspective(), new Size(OpenTkControl_Width, OpenTkControl_Height));
-			var currWorld = Unproject(new Vector3(mouseX, mouseY, depth), Camera.ViewMatrix, CreatePerspective(), new Size(OpenTkControl_Width, OpenTkControl_Height));
+			Vector3 lastWorld = Unproject(previousMouseX, previousMouseY, depth, Camera.ViewMatrix, CreatePerspective());
+			Vector3 currWorld = Unproject(mouseX, mouseY, depth, Camera.ViewMatrix, CreatePerspective());
 
 			propPos = currWorld - lastWorld;
 
@@ -1288,34 +1265,105 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// <summary>
 		/// Unprojects a screen coordinate into world coordinates.
 		/// </summary>
-		/// <param name="screenPos">Screen position to unproject</param>
+		/// <param name="screenX">Screen position on the X axis</param>
+		/// <param name="screenY">Screen position on the Y axis</param>
+		/// <param name="depth">
+		/// The depth value in the range [0.0, 1.0], where 0.0 represents 
+		/// the Near clipping plane and 1.0 represents the Far clipping plane.
+		/// </param>
 		/// <param name="view">View matrix</param>
 		/// <param name="proj">Project matrix</param>
-		/// <param name="viewport">Size of the viewport</param>
 		/// <returns>Screen position in world coordinates</returns>
-		private Vector3 Unproject(Vector3 screenPos, Matrix4 view, Matrix4 proj, Size viewport)
+		private Vector3 Unproject(float screenX, float screenY, float depth, Matrix4 view, Matrix4 proj)
 		{
-			Vector4 vec;
+			// 1. Map Screen Pixels to NDC (-1 to 1)
+			float ndcX = (2.0f * screenX / OpenTkControl_Width) - 1.0f;
+			float ndcY = 1.0f - (2.0f * screenY / OpenTkControl_Height);
 
-			vec.X = 2.0f * screenPos.X / viewport.Width - 1.0f;
-			vec.Y = 1.0f - 2.0f * screenPos.Y / viewport.Height;
-			vec.Z = screenPos.Z * 2.0f - 1.0f;
-			vec.W = 1.0f;
+			// 2. Map Depth (0 to 1) to NDC (-1 to 1)
+			// This is the missing piece in your second method!
+			float ndcZ = depth; //(depth * 2.0f) - 1.0f;
 
-			Matrix4 inv = Matrix4.Invert(view * proj);
-			// Vector4 result = OpenTK.Mathematics.Vector4.Transform(vec, inv);
-			Vector4 result = new Vector4(
-			vec.X * inv.M11 + vec.Y * inv.M21 + vec.Z * inv.M31 + vec.W * inv.M41,
-			vec.X * inv.M12 + vec.Y * inv.M22 + vec.Z * inv.M32 + vec.W * inv.M42,
-			vec.X * inv.M13 + vec.Y * inv.M23 + vec.Z * inv.M33 + vec.W * inv.M43,
-			vec.X * inv.M14 + vec.Y * inv.M24 + vec.Z * inv.M34 + vec.W * inv.M44);
+			// 3. Transform by Inverse View-Projection
+			Matrix4 invVP = Matrix4.Invert(view * proj);
+			Vector4 ndc = new Vector4(ndcX, ndcY, ndcZ, 1.0f);
 
-			if (result.W > float.Epsilon)
-				result /= result.W;
+			// Using TransformRow to match OpenTK's Matrix * Vector convention
+			Vector4 world = Vector4.TransformRow(ndc, invVP);
 
-			return new Vector3(result.X, result.Y, result.Z);
+			// 4. Perspective Divide (Crucial for 3D depth)
+			if (Math.Abs(world.W) > float.Epsilon)
+			{
+				return world.Xyz / world.W;
+			}
+
+			return world.Xyz;
+		}
+
+		/// <summary>
+		/// Creates the rubberband selection frustum.
+		/// </summary>
+		/// <returns>Selection frustum as a collection of planes</returns>
+		private List<Plane> CreateSelectionFrustum()
+		{
+			// Top-Left corner on the Near plane
+			Vector3 ptTL_Near = Unproject(_normalizedRubberbandPt1X, _normalizedRubberbandPt1Y, 0.0f, Camera.ViewMatrix, CreatePerspective());
+			// Bottom-Right corner on the Near plane
+			Vector3 ptBR_Near = Unproject(_normalizedRubberbandPt2X, _normalizedRubberbandPt2Y, 0.0f, Camera.ViewMatrix, CreatePerspective());
+			Vector3 ptTR_Near = Unproject(_normalizedRubberbandPt2X, _normalizedRubberbandPt1Y, 0.0f, Camera.ViewMatrix, CreatePerspective());
+			Vector3 ptBL_Near = Unproject(_normalizedRubberbandPt1X, _normalizedRubberbandPt2Y, 0.0f, Camera.ViewMatrix, CreatePerspective());
+
+			// Top-Left corner on the Far plane
+			Vector3 ptTL_Far = Unproject(_normalizedRubberbandPt1X, _normalizedRubberbandPt1Y, 1.0f, Camera.ViewMatrix, CreatePerspective());
+			// Bottom-Right corner on the Far plane
+			Vector3 ptBR_Far = Unproject(_normalizedRubberbandPt2X, _normalizedRubberbandPt2Y, 1.0f, Camera.ViewMatrix, CreatePerspective());			
+			Vector3 ptTR_Far = Unproject(_normalizedRubberbandPt2X, _normalizedRubberbandPt1Y, 1.0f, Camera.ViewMatrix, CreatePerspective());
+			Vector3 ptBL_Far = Unproject(_normalizedRubberbandPt1X, _normalizedRubberbandPt2Y, 1.0f, Camera.ViewMatrix, CreatePerspective());
+			
+			List<Plane> selectionFrustum = new List<Plane>
+			{
+				new Plane(ptTL_Near, ptBL_Near, ptTR_Near), // Near Plane
+				new Plane(ptTL_Far, ptTR_Far, ptBL_Far),    // Far Plane								
+				new Plane(ptBL_Near, ptTL_Near, ptBL_Far),  // Left Plane
+				new Plane(ptTR_Near, ptBR_Near, ptTR_Far),  // Right Plane
+				new Plane(ptTL_Near, ptTR_Near, ptTL_Far),  // Top Plane
+				new Plane(ptBL_Near, ptBL_Far, ptBR_Near)   // Bottom Plane
+			};
+
+			return selectionFrustum;
+		}
+
+		/// <summary>
+		/// Returns true if the specified box intersects the frustum.
+		/// </summary>
+		/// <param name="frustum">Frustum to test</param>
+		/// <param name="boxMin">Box minimum point</param>
+		/// <param name="boxMax">Box maximum point</param>
+		/// <returns>True if the box intersects the frustum</returns>
+		private bool IsBoxIntersectingFrustum(List<Plane> frustum, Vector3 boxMin, Vector3 boxMax)
+		{
+			// Loop over the planes in the frustum
+			foreach (Plane plane in frustum)
+			{
+				// The "Negative Vertex" is the corner of the box furthest OPPOSITE the normal
+				Vector3 negativeVertex = new Vector3(
+					plane.Normal.X >= 0 ? boxMin.X : boxMax.X,
+					plane.Normal.Y >= 0 ? boxMin.Y : boxMax.Y,
+					plane.Normal.Z >= 0 ? boxMin.Z : boxMax.Z
+				);
+
+				// If the point furthest along the normal is behind the plane, 
+				// the entire box is definitely outside this plane.
+				if (Vector3.Dot(plane.Normal, negativeVertex) > plane.Distance)
+				{
+					// Note: If you find ONE plane where the box is entirely on the "outside" 
+					// side, there is no intersection.
+					return false;
+				}
+			}
+			return true;
 		}
 
 		#endregion
-	}
+	}	
 }
