@@ -20,8 +20,10 @@
 		<ItemGroup>
 				<None Remove="NLog.config" />
 				<None Remove="SetupDisplay\Views\BackgroundImage.png" />
+				<None Remove="SetupDisplay\Views\buttonContainsSelect.png" />
 				<None Remove="SetupDisplay\Views\buttonPartialSelect.png" />
 				<None Remove="SetupDisplay\Views\buttonSelect.png" />
+				<None Remove="SetupDisplay\Views\hand-drag.png" />
 		</ItemGroup>
 
 		<ItemGroup>
@@ -32,10 +34,13 @@
 		</ItemGroup>
 
 		<ItemGroup>
-		  <Resource Include="SetupDisplay\Views\buttonPartialSelect.png">
+		  <Resource Include="SetupDisplay\Views\buttonContainsSelect.png">
 		    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		  </Resource>
-		  <Resource Include="SetupDisplay\Views\buttonSelect.png">
+		</ItemGroup>
+
+		<ItemGroup>
+		  <Resource Include="SetupDisplay\Views\buttonPartialSelect.png">
 		    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		  </Resource>
 		</ItemGroup>
@@ -113,6 +118,9 @@
 
 		<ItemGroup>
 		  <Resource Include="SetupDisplay\Views\BackgroundImage.png">
+		    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		  </Resource>
+		  <Resource Include="SetupDisplay\Views\buttonSelect.png">
 		    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		  </Resource>
 		</ItemGroup>
