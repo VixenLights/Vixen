@@ -30,7 +30,7 @@ jobs:
 
   compile_test:
   
-    runs-on: windows-2022
+    runs-on: windows-latest
 
     steps:
     
@@ -47,7 +47,7 @@ jobs:
       - uses: microsoft/setup-msbuild@v2
       
       - name: Build Release
-        run: msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release
+        run: msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64
   
       - run: dir
         shell: cmd
