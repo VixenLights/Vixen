@@ -5,7 +5,7 @@ namespace VixenApplication
 {
 	internal static class Program
 	{
-		//Test comment to trigger build
+		//Test comment to trigger build 2
 		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private const string ErrorMsg = "An application error occurred. Please contact the Vixen Dev Team " +
 									"with the following information:\n\n";
