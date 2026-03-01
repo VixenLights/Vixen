@@ -1282,7 +1282,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 
 			// 2. Map Depth (0 to 1) to NDC (-1 to 1)
 			// This is the missing piece in your second method!
-			float ndcZ = depth; //(depth * 2.0f) - 1.0f;
+			float ndcZ = (depth * 2.0f) - 1.0f;
 
 			// 3. Transform by Inverse View-Projection
 			Matrix4 invVP = Matrix4.Invert(view * proj);
