@@ -202,7 +202,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region BeginEdit command
 
-		private Command _beginEditCommand;
+		private Command? _beginEditCommand;
 
 		/// <summary>
 		/// Gets the LeftMouseUp command.
@@ -229,7 +229,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region DoneEditing command
 
-		private Command _doneEditingCommand;
+		private Command? _doneEditingCommand;
 
 		/// <summary>
 		/// Gets the EditFocusLost command.
@@ -254,7 +254,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region CancelEditing command
 
-		private Command _cancelEditingCommand;
+		private Command? _cancelEditingCommand;
 
 		/// <summary>
 		/// Gets the CancelEditing command.

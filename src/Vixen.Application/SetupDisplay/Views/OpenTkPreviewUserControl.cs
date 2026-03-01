@@ -44,7 +44,7 @@ namespace VixenApplication.SetupDisplay.Views
 			object sender,
 			MouseWheelEventArgs e,
 			GLWpfControl openTKControl,
-			OpenGLDrawingEngineBase<ILightPropOpenGLData> drawingEngine)
+			OpenGLDrawingEngineBase<ILightPropOpenGLData>? drawingEngine)
 		{
 			int factor = 20;
 			if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift)
@@ -54,7 +54,7 @@ namespace VixenApplication.SetupDisplay.Views
 			int direction = -(e.Delta * SystemInformation.MouseWheelScrollLines / factor);
 
 			// Update the zoom of the preview
-			drawingEngine.Zoom(direction);
+			drawingEngine?.Zoom(direction);
 
 			// This should trigger the control to redraw
 			openTKControl.InvalidateVisual();
@@ -84,13 +84,13 @@ namespace VixenApplication.SetupDisplay.Views
 		/// <param name="e">Event arguments</param>
 		/// <param name="openTKControl">OpenTK WPF control</param>
 		/// <param name="drawingEngine">Associated drawing engine</param>
-		protected void OpenTkControl_SizeChanged(object sender, SizeChangedEventArgs e, GLWpfControl openTKControl, OpenGLDrawingEngineBase<ILightPropOpenGLData> drawingEngine)
+		protected void OpenTkControl_SizeChanged(object sender, SizeChangedEventArgs e, GLWpfControl openTKControl, OpenGLDrawingEngineBase<ILightPropOpenGLData>? drawingEngine)
 		{
 			// Set the view port of the OpenTK control
 			SetViewport(openTKControl);
 
 			// Forward the call to the drawing engine
-			drawingEngine.OpenTKDrawingAreaChanged(e.NewSize.Width, e.NewSize.Height);
+			drawingEngine?.OpenTKDrawingAreaChanged(e.NewSize.Width, e.NewSize.Height);
 		}
 
 		/// <summary>

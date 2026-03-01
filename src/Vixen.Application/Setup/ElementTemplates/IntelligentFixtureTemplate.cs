@@ -124,6 +124,11 @@ namespace VixenApplication.Setup.ElementTemplates
 			IWizardService? wizardService = dependencyResolver.Resolve<IWizardService>();
 			ArgumentNullException.ThrowIfNull(wizardService);
 
+			if (wizardService == null)
+			{
+				throw new Exception("Unable to create " + nameof(IWizardService));
+			}
+
 			// Display the intelligent fixture wizard
 			bool? result = (await wizardService.ShowWizardAsync(_wizard)).DialogResult;
 
@@ -195,6 +200,11 @@ namespace VixenApplication.Setup.ElementTemplates
 			IBaseColorSchemeService? baseColorService = dependencyResolver.Resolve<IBaseColorSchemeService>();
 			ArgumentNullException.ThrowIfNull(baseColorService);
 
+			if (baseColorService == null)
+			{
+				throw new Exception("Unable to create " + nameof(IBaseColorSchemeService));
+			}
+
 			// Select the dark color scheme
 			baseColorService.SetBaseColorScheme("Dark");
 
@@ -202,8 +212,13 @@ namespace VixenApplication.Setup.ElementTemplates
 			IAccentColorService? accentColorServer = dependencyResolver.Resolve<IAccentColorService>();
 			ArgumentNullException.ThrowIfNull(accentColorServer);
 
+			if (accentColorService == null)
+			{
+				throw new Exception("Unable to create " + nameof(IAccentColorService));
+			}
+
 			// Configure the page bubbles on the left to be blue to look better with the dark theme
-			accentColorServer.SetAccentColor((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("DodgerBlue"));
+			accentColorService.SetAccentColor((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("DodgerBlue"));
 
 			// Show the fixture wizard
 			bool? cancelled = await ShowWizardAsync();

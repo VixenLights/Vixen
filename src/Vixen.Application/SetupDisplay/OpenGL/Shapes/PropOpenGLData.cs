@@ -564,8 +564,9 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 		/// <summary>
 		/// <inheritdoc/>
 		/// </summary>
-		public void Dispose()
+		public override void Dispose()
 		{
+			// Call the base class implementation
 			base.Dispose();
 
 			// Dispose of the drawing primitives

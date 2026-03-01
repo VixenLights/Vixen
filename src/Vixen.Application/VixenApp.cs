@@ -1284,11 +1284,11 @@ namespace VixenApplication
 			SetupPreviews();
 		}
 
-		private void buttonSetupDisplay_Click(object sender, EventArgs e)
+		private async void buttonSetupDisplay_Click(object sender, EventArgs e)
 		{
             if ((ModifierKeys & Keys.Control) == Keys.Control)
             {
-				SetupDisplayNew();
+				await SetupDisplayNew();
             }
             else
             {

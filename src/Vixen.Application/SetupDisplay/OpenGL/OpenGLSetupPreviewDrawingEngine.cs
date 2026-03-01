@@ -167,6 +167,9 @@ namespace VixenApplication.SetupDisplay.OpenGL
 
 			// Create the rubber band drawing primitive
 			_rubberbandPrimitive = new OpenGLDrawablePrimitive();
+
+			// Initialize the color line shader program
+			LineProgram = new ColorLineShaderProgram();
 		}
 
 		#endregion
@@ -248,7 +251,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				ClearScreen();
 
 				// Draw the background
-				_background.Draw(perspective, Camera.ViewMatrix);
+				Background?.Draw(perspective, Camera.ViewMatrix);
 				
 				// Render static preview shapes (moving heads)
 				RenderStaticPreviewShapes(perspective, true, OpenTkControl_Width, OpenTkControl_Height);
@@ -281,14 +284,30 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		protected override float GetReferenceHeight()
 		{
 			const int DefaultHeight = 600;
-			return _background.HasBackground ? _background.Height : DefaultHeight;
+
+			float height = DefaultHeight;
+
+			if (Background != null && Background.HasBackground)
+			{
+				height = Background.Height;
+			}
+
+			return height;
 		}
 
 		/// <inheritdoc/>		
 		protected override float GetReferenceWidth()
 		{
 			const int DefaultWidth = 800;
-			return _background.HasBackground ? _background.Width : DefaultWidth;
+			
+			float width = DefaultWidth;	
+
+			if (Background != null && Background.HasBackground)
+			{
+				width = Background.Width;
+			}
+
+			return width;
 		}
 
 		/// <inheritdoc/>		
@@ -301,7 +320,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		protected override void InitializeBackground()
 		{
 			// Initialize the preview background
-			_background = new PropPreviewBackground("a469f44f-a21e-485e-af05-95b9b69a3fd0.jpg", 1.0f);			
+			Background = new PropPreviewBackground("a469f44f-a21e-485e-af05-95b9b69a3fd0.jpg", 1.0f);			
 		}
 
 		/// <inheritdoc/>		
@@ -370,10 +389,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		{
 			// Call the base class
 			base.Initialize(cameraX, cameraY, cameraZ);
-
-			// Initialize the color line shader program
-			LineProgram = new ColorLineShaderProgram();
-
+			
 			// Store off that the preview has been initialized
 			Initialized = true;
 		}
@@ -847,25 +863,12 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// Collection of Props being displayed on the preview.
 		/// </summary>
 		public List<IPropOpenGLData> Props { get; set; }
-
-
-		private PropPreviewBackground _background;
-		
+				
 		/// <summary>
 		/// OpenGL logic used to draw the background.
 		/// </summary>
-		public PropPreviewBackground Background
-		{
-			get
-			{
-				return _background;
-			}
-			set
-			{
-				_background = value;
-			}
-		}
-
+		public PropPreviewBackground? Background { get; set; }
+		
 		/// <summary>
 		/// True if the preview has been loaded and initialized.
 		/// </summary>
@@ -883,10 +886,10 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			lock (ContextLock)
 			{
 				// Dispose of the class managing the background 
-				if (_background != null)
+				if (Background != null)
 				{
-					_background.Dispose();
-					_background = null;
+					Background.Dispose();
+					Background = null;
 				}
 			}
 

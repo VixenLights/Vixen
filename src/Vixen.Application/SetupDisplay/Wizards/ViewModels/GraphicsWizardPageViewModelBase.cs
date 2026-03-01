@@ -119,7 +119,7 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		/// </summary>
 		/// <param name="sender">Event sender</param>
 		/// <param name="e">Event arguments</param>
-		private void OnRotationChanged(object sender, EventArgs e)
+		private void OnRotationChanged(object? sender, EventArgs e)
 		{
 			// Transfer the rotations from the view model to the model
 			int index = 0;
