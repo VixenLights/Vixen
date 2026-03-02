@@ -85,7 +85,6 @@ namespace Vixen.Sys.Props.Components
 			}
 
 			return removed;
-
 		}
 
 		public bool TryGet(Guid id, [MaybeNullWhen(false)] out IElementNode node)

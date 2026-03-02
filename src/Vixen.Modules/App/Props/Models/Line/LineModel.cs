@@ -5,7 +5,6 @@ namespace VixenModules.App.Props.Models.Line
 {
     public class LineModel:BaseLightModel
     {
-
         public bool AddStartPadding { get; set; }
 
         public bool AddEndPadding { get; set; }
@@ -44,6 +43,7 @@ namespace VixenModules.App.Props.Models.Line
             return nodePoints;
         }
 
+		/// <inheritdoc/>				
 		protected override IEnumerable<NodePoint> Get3DNodePoints()
 		{
 			throw new NotImplementedException();

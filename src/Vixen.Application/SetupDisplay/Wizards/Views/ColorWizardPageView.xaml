@@ -1,0 +1,118 @@
+﻿<catel:UserControl x:Class="VixenApplication.SetupDisplay.Wizards.Views.ColorWizardPageView"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:catel="http://schemas.catelproject.com"
+                  xmlns:markupExtensions="clr-namespace:Common.WPFCommon.MarkupExtensions;assembly=WPFCommon"
+                  xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
+                  xmlns:color="clr-namespace:VixenModules.Property.Color;assembly=Module.Property.Color"
+                  xmlns:sys="clr-namespace:System;assembly=System.Runtime"                   >
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/SetupDisplay/Themes/Theme.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <markupExtensions:EnumBindingSourceExtension x:Key="EnumBindingSource"/>
+            <converters:EnumValueTypeConverter x:Key="EnumValueTypeConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Background="{StaticResource BackgroundDialogBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="350" />
+        </Grid.RowDefinitions>
+
+        <!-- Color Selection buttons -->
+        <RadioButton x:Name="SingleColorButton" Content="Single Discreet Color" IsChecked="True" Grid.Row="0" Click="SingleColorButtonClick"></RadioButton>
+        <RadioButton x:Name="MultipleColorButton" Content="Multiple Discrete Colors" Grid.Row="1" Click="MultipleColorButtonClick"></RadioButton>
+        <RadioButton x:Name="RGBColorButton" Content="Color Mixing (RGB)" Grid.Row="2" Click="RGBColorButtonClick"></RadioButton>
+        <Border BorderBrush="White" BorderThickness="10" Height="1" Grid.Row="3" Margin="5" VerticalAlignment="Center"/>
+
+        <!-- Single Color -->
+        <Grid x:Name="SingleColor" Grid.Row="4" Visibility="Visible">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" HorizontalContentAlignment="Center">
+                    The Prop will always be this single color. Select the color below to change.
+                </Label>
+                <WindowsFormsHost x:Name="SingleColorHost" Grid.Row="1" Width="150" Height="150" >
+                    <color:ColorPanel x:Name="ColorPanelControl" ColorChanged="ColorPanel_ColorChanged"/>
+                </WindowsFormsHost>
+            </Grid>
+        </Grid>
+
+        <!-- Multiple Colors -->
+        <Grid x:Name="MultipleColor" Grid.Row="4" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center">
+                The Prop will be multiple, independent colors that do not mix.
+            </Label>
+            <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center">
+                (e.g. multiple strings of different colors wrapped around each item.)
+            </Label>
+            <Label Grid.Row="3" Grid.Column="0" Width="45" HorizontalAlignment="Right">
+                Colors:
+            </Label>
+            <ComboBox x:Name="MultipleColorsList" Grid.Row="3" Grid.Column="1" Width="200" Margin="5,0,20,0" HorizontalAlignment="Left"
+                      ItemsSource="{Binding ColorSetNames}"
+                      SelectedItem="{Binding SelectedColorSet, Mode=TwoWay}">
+            </ComboBox>
+            <Button Grid.Row="3" Grid.Column="2" Width="100" HorizontalAlignment="Left" Click="EditColorsButtonClick">
+                Edit Colors
+            </Button>
+        </Grid>
+
+        <!-- RGB Color -->
+        <Grid x:Name="RGBColor" Grid.Row="4" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center">
+                The Prop will be full RGB lights with colors that mix.
+            </Label>
+            <Label Grid.Row="2" Grid.Column="0" Width="45" HorizontalAlignment="Right">
+                Colors:
+            </Label>
+            <ComboBox x:Name="RGBColorsList" Grid.Row="2" Grid.Column="1" Width="200" Margin="5,0,20,0" HorizontalAlignment="Left"
+                      SelectedItem="{Binding SelectedColorSet, Mode=TwoWay}">
+                <ComboBox.ItemsSource>
+                    <x:Array Type="{x:Type sys:String}">
+                        <sys:String>RGB</sys:String>
+                        <sys:String>RBG</sys:String>
+                        <sys:String>GBR</sys:String>
+                        <sys:String>GRB</sys:String>
+                        <sys:String>BRG</sys:String>
+                        <sys:String>BGR</sys:String>
+                        <sys:String>RGBW</sys:String>
+                        <sys:String>GRWB</sys:String>
+                    </x:Array>
+                </ComboBox.ItemsSource>
+            </ComboBox>
+        </Grid>
+    </Grid>
+</catel:UserControl>

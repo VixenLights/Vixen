@@ -15,12 +15,18 @@ namespace VixenModules.App.Curves
 		private bool _drawCurve;
 		private string _holdFunction = String.Empty;
 
-		public CurveEditor()
+		public CurveEditor(ZedGraph.ZedGraphControl _zedGraphControl = null)
 		{
 			InitializeComponent();
 			ThemeUpdateControls.UpdateControls(this);
 
 			textBoxThreshold.MaxLength = 2;
+			Threshold = 5;
+
+			if (_zedGraphControl != null)
+			{
+				zedGraphControl = _zedGraphControl;
+			}
 
 			zedGraphControl.GraphPane.XAxis.MajorGrid.IsVisible = true;
 			zedGraphControl.GraphPane.XAxis.MajorGrid.Color = ThemeColorTable.GroupBoxBorderColor;
@@ -96,12 +102,34 @@ namespace VixenModules.App.Curves
 
 		public bool ReadonlyCurve { get; internal set; }
 
-		private bool zedGraphControl_PreMouseMoveEvent(ZedGraphControl sender, MouseEventArgs e)
+		private int _threshold;
+		public int Threshold
+		{
+			get { return _threshold; }
+			set { _threshold = value; }
+		}
+
+		private string _LibraryName;
+		public string LibraryName
+		{
+			get { return _LibraryName; }
+			set { _LibraryName = value; }
+		}
+
+		public void Clear()
+		{
+			if (zedGraphControl.GraphPane.CurveList.Count > 0)
+			{
+				zedGraphControl.GraphPane.CurveList[0].Clear();
+			}
+			zedGraphControl.Invalidate();
+		}
+
+		public bool zedGraphControl_PreMouseMoveEvent(ZedGraphControl sender, MouseEventArgs e)
 		{
 			double newX, newY;
 			if (e.Button == MouseButtons.Left && _drawCurve)
 			{
-				int textThreshold = textBoxThreshold.Text == "" ? (int) 0 : Convert.ToInt16(textBoxThreshold.Text);
 				// only add if we've actually clicked on the pane, so make sure the mouse is over it first
 				if (zedGraphControl.MasterPane.FindPane(e.Location) != null)
 				{
@@ -129,7 +157,7 @@ namespace VixenModules.App.Curves
 						newY = 0;
 					}
 
-					if (_tempX < newX - textThreshold)
+					if (_tempX < newX - Threshold)
 					{
 						if (newX >= 0)
 							pointList.Insert(0, newX, newY);
@@ -214,7 +242,7 @@ namespace VixenModules.App.Curves
 			return false;
 		}
 
-		private bool zedGraphControl_PostMouseMoveEvent(ZedGraphControl sender, MouseEventArgs e)
+		public bool zedGraphControl_PostMouseMoveEvent(ZedGraphControl sender, MouseEventArgs e)
 		{
 			if (sender.DragEditingPair == null)
 				return true;
@@ -238,7 +266,7 @@ namespace VixenModules.App.Curves
 			return true;
 		}
 
-		private bool zedGraphControl_MouseDownEvent(ZedGraphControl sender, MouseEventArgs e)
+		public bool zedGraphControl_MouseDownEvent(ZedGraphControl sender, MouseEventArgs e)
 		{
 			if (ReadonlyCurve)
 				return false;
@@ -301,7 +329,7 @@ namespace VixenModules.App.Curves
 			return false;
 		}
 
-		private bool zedGraphControl_MouseUpEvent(ZedGraphControl sender, MouseEventArgs e)
+		public bool zedGraphControl_MouseUpEvent(ZedGraphControl sender, MouseEventArgs e)
 		{
 			if (_drawCurve)
 			{
@@ -402,7 +430,7 @@ namespace VixenModules.App.Curves
 			zedGraphControl.Invalidate();
 		}
 
-		private void buttonLoadCurveFromLibrary_Click(object sender, EventArgs e)
+		public void buttonLoadCurveFromLibrary_Click(object sender, EventArgs e)
 		{
 			CurveLibrarySelector selector = new CurveLibrarySelector();
 			if (selector.ShowDialog() == DialogResult.OK && selector.SelectedItem != null) {
@@ -414,7 +442,7 @@ namespace VixenModules.App.Curves
 			}
 		}
 
-		private void buttonSaveCurveToLibrary_Click(object sender, EventArgs e)
+		public void buttonSaveCurveToLibrary_Click(object sender, EventArgs e)
 		{
 			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Curve name?");
 
@@ -447,13 +475,13 @@ namespace VixenModules.App.Curves
 			}
 		}
 
-		private void buttonUnlinkCurve_Click(object sender, EventArgs e)
+		public void buttonUnlinkCurve_Click(object sender, EventArgs e)
 		{
 			Curve.UnlinkFromLibraryCurve();
 			PopulateFormWithCurve(Curve);
 		}
 
-		private void buttonEditLibraryCurve_Click(object sender, EventArgs e)
+		public void buttonEditLibraryCurve_Click(object sender, EventArgs e)
 		{
 			string libraryName = Curve.LibraryReferenceName;
 
@@ -462,7 +490,7 @@ namespace VixenModules.App.Curves
 			PopulateFormWithCurve(Curve);
 		}
 
-		private void btnReverse_Click(object sender, EventArgs e)
+		public void btnReverse_Click(object sender, EventArgs e)
 		{
 
 			foreach (var curveItem in zedGraphControl.GraphPane.CurveList)
@@ -482,7 +510,7 @@ namespace VixenModules.App.Curves
 			zedGraphControl.Invalidate();
 		}
 
-		private void btnInvert_Click(object sender, EventArgs e)
+		public void btnInvert_Click(object sender, EventArgs e)
 		{
 			foreach (var curveItem in zedGraphControl.GraphPane.CurveList)
 			{
@@ -495,7 +523,7 @@ namespace VixenModules.App.Curves
 			zedGraphControl.Invalidate();
 		}
 
-		private void btnUpdateCoordinates_Click(object sender, EventArgs e)
+		public void btnUpdateCoordinates_Click(object sender, EventArgs e)
 		{
 			if(double.TryParse(txtXValue.Text, out var x))
 			{
@@ -514,7 +542,7 @@ namespace VixenModules.App.Curves
 			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 
-		private void btnDraw_Click(object sender, EventArgs e)
+		public void btnDraw_Click(object sender, EventArgs e)
 		{
 			toolTip.ToolTipTitle = "Draw Curve";
 			toolTip.Show("Draw curve from left side to right side of grid using the left mouse button", btnDraw, -100, -400, 4000);
@@ -524,7 +552,7 @@ namespace VixenModules.App.Curves
 			_drawCurve = true;
 		}
 
-		private void btnFunctionCurve_Click(object sender, EventArgs e)
+		public void btnFunctionCurve_Click(object sender, EventArgs e)
 		{
 			FunctionGenerator fGen = new FunctionGenerator(_holdFunction);
 			var result = fGen.ShowDialog(this);
@@ -553,7 +581,8 @@ namespace VixenModules.App.Curves
 					return;
 				}
 
-				var step = Convert.ToInt16(textBoxThreshold.Text);
+//				var step = Convert.ToInt16(textBoxThreshold.Text);
+				var step = Threshold;
 				int lastXValue = 0;
 				for (int x = 0; x <= 100; x+=step)
 				{
@@ -592,12 +621,19 @@ namespace VixenModules.App.Curves
 
 		private void textBoxThreshold_TextChanged(object sender, EventArgs e)
 		{
-			if (textBoxThreshold.Text == "") return;
+			if (textBoxThreshold.Text == "")
+			{
+				Threshold = 1;
+				return;
+			}
+
 			if (Convert.ToInt16(textBoxThreshold.Text) > 20)
 			{
 				textBoxThreshold.Text = @"20";
 				toolTip.Show("Draw Threshold has a maximun value of 20", textBoxThreshold, 0, 30, 3000);
 			}
+
+			Threshold = Convert.ToInt16(textBoxThreshold.Text);
 		}
 	}
 }

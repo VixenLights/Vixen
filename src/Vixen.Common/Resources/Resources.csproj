@@ -116,6 +116,10 @@
 				<None Include="Resources\distribute.png" />
 				<None Include="Resources\Settings.png" />
 				<None Include="Resources\open.png" />
+				<Resource Include="RampDecrease.png" />
+				<Resource Include="RampDown.png" />
+				<Resource Include="RampIncrease.png" />
+				<Resource Include="RampUp.png" />
 				<Resource Include="Resources\boldLine.png" />
 				<None Include="Resources\openMarkManager.png" />
 				<Resource Include="Resources\add_Collection.png" />
@@ -388,6 +392,10 @@
 		</ItemGroup>
 		<ItemGroup>
 			<None Remove="cog_error_red.png" />
+			<None Remove="RampDecrease.png" />
+			<None Remove="RampDown.png" />
+			<None Remove="RampIncrease.png" />
+			<None Remove="RampUp.png" />
 			<None Remove="Resources\clock_go.png" />
 			<None Remove="Resources\add.png" />
 			<None Remove="Resources\delete.png" />

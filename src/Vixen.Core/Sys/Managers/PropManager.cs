@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using Vixen.Extensions;
 using Vixen.Model;
 using Vixen.Sys.Props;
 
@@ -128,6 +129,24 @@ namespace Vixen.Sys.Managers
 			public IProp Prop { get; init; } = prop;
 
 			public NotifyCollectionChangedAction Action { get; init; } = action;
+		}
+
+		public bool IsUniquePropTitle(String name)
+		{
+			return VixenSystem.Props.RootNodes.Any(x => x.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase)) != true;
+		}
+
+		public string GenerateUniquePropTitle(PropType type)
+		{
+			for (int i = 1; i < 10000; i++)
+			{
+				if (IsUniquePropTitle($"{type.GetEnumDescription()} {i}"))
+				{
+					return $"{type.GetEnumDescription()} {i}";
+				}
+			}
+
+			return string.Empty;
 		}
 	}
 }

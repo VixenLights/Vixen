@@ -1,8 +1,8 @@
 ﻿#nullable enable
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 
@@ -27,6 +27,7 @@ using VixenModules.App.Props.Models.Arch;
 using VixenModules.App.Props.Models.Tree;
 using VixenModules.Preview.VixenPreview.OpenGL;
 
+using VixenModules.App.Props.Models;
 using Window = System.Windows.Window;
 
 namespace VixenApplication.SetupDisplay.ViewModels
@@ -93,27 +94,6 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 			// Initialize the select background image command
 			SelectBackgroundImage = new RelayCommand(SelectBackground);
-
-			// Create the collection of view model rotations
-			Rotations = new();
-
-			// Create the X Axis rotation view model
-			AxisRotationViewModel xRotation = new AxisRotationViewModel();
-			xRotation.Axis = "X";
-			xRotation.RotationChanged += OnRotationChanged;
-			Rotations.Add(xRotation);
-
-			// Create the Y Axis rotation view model
-			AxisRotationViewModel yRotation = new AxisRotationViewModel();
-			yRotation.Axis = "Y";
-			yRotation.RotationChanged += OnRotationChanged;
-			Rotations.Add(yRotation);
-
-			// Create the Z Axis rotation view model
-			AxisRotationViewModel zRotation = new AxisRotationViewModel();
-			zRotation.Axis = "Z";
-			zRotation.RotationChanged += OnRotationChanged;						
-			Rotations.Add(zRotation);
 		}
 
 		#endregion
@@ -139,38 +119,6 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// Command for selecting the background image for the preview.
 		/// </summary>
 		public ICommand SelectBackgroundImage { get; private set; }
-
-		/// <summary>
-		/// Gets or sets the SelectedProp value.
-		/// </summary>
-		public int ZRotation
-		{
-			get { return GetValue<int>(ZRotationProperty); }
-			set { SetValue(ZRotationProperty, value); }
-		}
-
-		/// <summary>
-		/// SelectedProp property data.
-		/// </summary>
-		public static readonly IPropertyData ZRotationProperty = RegisterProperty<int>(nameof(ZRotation));
-
-		/// <summary>
-		/// Collection of rotations to support rotating the props around the x,y, and z axis.
-		/// </summary>
-		public ObservableCollection<AxisRotationViewModel> Rotations
-		{
-			get
-			{
-				return GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty);
-			}
-			set
-			{
-				SetValue(RotationsProperty, value);
-			}
-		}
-
-		public static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
-
 		#endregion
 
 		#region Private Methods
@@ -257,7 +205,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 				if (PropNodeTreeViewModel.SelectedItem is { PropNode.IsProp: true, PropNode.Prop: not null })
 				{
 					SelectedProp = PropNodeTreeViewModel.SelectedItem.PropNode.Prop;
-					UpdatePreviewModel(SelectedProp);
+					UpdatePreviewModel(SelectedProp, true);
 					UpdatePropComponentTreeViewModel(SelectedProp);
 				}
 				else
@@ -421,83 +369,48 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		{
 			get { return GetValue<IProp>(SelectedPropProperty); }
 			set 
-			{				
-				// If the prop is a light based prop then...
-				if (value?.PropModel is ILightPropModel lightPropModel)
-				{
-					// Transfer the rotations from the model to the view model
-					int index = 0;
-					foreach (AxisRotationModel rotationModel in lightPropModel.Rotations)
-					{
-						Rotations[index].Axis = GetAxis(rotationModel.Axis);
-						Rotations[index].RotationAngle = rotationModel.RotationAngle;	
-						index++;
-					}
-				}
+			{
 				SetValue(SelectedPropProperty, value);
+
+				// Is a Prop is not selected?
+				if (value == null)
+				{
+					// No prop selected
+					PropInformationViewer = string.Empty;
+					PropNodeTreeViewModel.IsTopNode = true;
+					PropNodeTreeViewModel.IsSubNode = false;
+				}
+				else
+				{
+					// Prop is selected
+					PropInformationViewer = value.GetSummary();
+					PropNodeTreeViewModel.IsTopNode = false;
+					PropNodeTreeViewModel.IsSubNode = true;
+				}
 
 				// Force the CanExecute delegate to run
 				((RelayCommand)AddPropToPreview).RaiseCanExecuteChanged();				
 			}
 		}
 
+		#region PropInformationViewer property
 		/// <summary>
-		/// Converts from axis string to enumeration.
+		/// Set the text of the informational window
 		/// </summary>
-		/// <param name="axis">String to convert</param>
-		/// <returns>Equivalent enumeration of the string</returns>
-		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		private Axis GetAxis(string axis)
-		{			
-			return axis switch
-			{
-				"X" => Axis.XAxis,
-				"Y" => Axis.YAxis,
-				"Z" => Axis.ZAxis,
-				_ => throw new ArgumentOutOfRangeException(nameof(axis), "Unsupported rotation axis")
-			};
-		}
-
-		/// <summary>
-		/// Converts the enumeration into a display string.
-		/// </summary>
-		/// <param name="axis">Enumeration to convert</param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		private string GetAxis(Axis axis)
+		public string PropInformationViewer
 		{
-			return axis switch
-			{
-				Axis.XAxis => "X",
-				Axis.YAxis => "Y",	
-				Axis.ZAxis => "Z",	
-				_ => throw new ArgumentOutOfRangeException(nameof(axis), "Unsupported rotation axis")
-			};
+			get { return GetValue<string>(PropInformationViewerProperty); }
+			set { SetValue(PropInformationViewerProperty, value); }
 		}
+		private static readonly IPropertyData PropInformationViewerProperty = RegisterProperty<string>(nameof(PropInformationViewer));
+		#endregion
 
-		/// <summary>
-		/// Event handler for when a prop rotation changed.
-		/// </summary>
-		/// <param name="sender">Event sender</param>
-		/// <param name="e">Event arguments</param>
-		private void OnRotationChanged(object sender, EventArgs e)
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		// Standard method to notify the UI of changes
+		protected void OnPropertyChanged([CallerMemberName] string name = null)
 		{
-			// If the selected prop is a light based prop then...
-			if (SelectedProp?.PropModel is ILightPropModel lightPropModel)
-			{
-				// Transfer the rotations from the view model to the model
-				int index = 0;
-				foreach (AxisRotationViewModel rotationViewModel in Rotations)
-				{
-					AxisRotationModel rotationMdl = lightPropModel.Rotations[index];
-					rotationMdl.Axis = GetAxis(rotationViewModel.Axis);
-					rotationMdl.RotationAngle = rotationViewModel.RotationAngle;
-					index++;
-				}
-
-				// Update the prop nodes
-				lightPropModel.UpdatePropNodes();
-			}
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 		}
 
 		/// <summary>
@@ -875,8 +788,12 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// Updates the prop displayed in the prop preview.
 		/// </summary>
 		/// <param name="prop">Prop to display in the prop preview</param>
-		internal void UpdatePreviewModel(IProp prop)
+		/// <param name="force">Force the Preview to update immediately</param>
+		internal void UpdatePreviewModel(IProp prop, bool force = false)
 		{
+			if (force == true)
+				DrawProp(prop?.PropModel);
+
 			// Save off the prop model to display in the prop preview
 			_nextPreviewProp = prop;			
 		}
@@ -939,6 +856,28 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		}
 
-		#endregion]		
+        #endregion]		
+
+        private Axis GetAxis(string axis)
+        {
+	        return axis switch
+	        {
+		        "X" => Axis.XAxis,
+		        "Y" => Axis.YAxis,
+		        "Z" => Axis.ZAxis,
+		        _ => throw new ArgumentOutOfRangeException(nameof(axis), "Unsupported rotation axis")
+	        };
+        }
+
+        private string GetAxis(Axis axis)
+        {
+            return axis switch
+            {
+                Axis.XAxis => "X",
+                Axis.YAxis => "Y",
+                Axis.ZAxis => "Z",
+                _ => throw new ArgumentOutOfRangeException(nameof(axis), "Unsupported rotation axis")
+            };
+        }
 	}
 }

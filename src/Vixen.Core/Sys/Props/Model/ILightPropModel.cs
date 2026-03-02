@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using Vixen.Sys.Props.HelperTools;
 
 namespace Vixen.Sys.Props.Model
 {
@@ -6,7 +7,9 @@ namespace Vixen.Sys.Props.Model
 	/// Maintains light prop model.
 	/// </summary>
 	public interface ILightPropModel : IPropModel
-	{		
+	{
+		PropParameters PropParameters { get; set; }
+
 		/// <summary>
 		/// Collection of 3-D prop nodes.
 		/// </summary>

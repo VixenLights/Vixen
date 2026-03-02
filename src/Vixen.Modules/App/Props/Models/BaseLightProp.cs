@@ -1,31 +1,43 @@
 ﻿#nullable enable
-
-using NLog;
-using NLog.Filters;
-using System.ComponentModel;
-using System.Diagnostics;
+using System.Collections.ObjectModel;
 using System.Drawing;
-using System.Reflection.Emit;
-using Vixen.Attributes;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Props;
 using Vixen.Sys.Props.Model;
-using VixenModules.App.Props.Models.Tree;
+using VixenModules.App.Curves;
 using VixenModules.Property.Color;
 
 namespace VixenModules.App.Props.Models
 {
+	public enum DimmingType
+	{
+		NoCurve,
+		Simple,
+		Library
+	}
+
+	public enum ColorType
+	{
+		SingleColor,
+		MultipleColors,
+		RGBColors
+	}
+
 	public abstract class BaseLightProp<TModel> : BaseProp<TModel> where TModel : BasePropModel, IPropModel
-	{				
-		private StringTypes _stringType;
+	{
 		protected bool UpdateInProgress = false;
 
 		protected BaseLightProp(string name, PropType propType) : base(name, propType)
 		{
 			StringType = StringTypes.Pixel;
+			Rotations = new ObservableCollection<AxisRotationModel>();
+			Rotations.Add(new AxisRotationModel() { Axis = Axis.XAxis, RotationAngle = 0 });
+			Rotations.Add(new AxisRotationModel() { Axis = Axis.YAxis, RotationAngle = 0 });
+			Rotations.Add(new AxisRotationModel() { Axis = Axis.ZAxis, RotationAngle = 0 });
 		}
 
+		#region Properties
 		/// <summary>
 		/// Gets or sets the type of string used in the light prop.
 		/// </summary>
@@ -43,14 +55,102 @@ namespace VixenModules.App.Props.Models
 		/// </item>
 		/// </list>
 		/// </remarks>
-		[PropertyOrder(2)]
-		[DisplayName("String Type")]
+		private StringTypes _stringType;
 		public StringTypes StringType
 		{
 			get => _stringType;
 			set => SetProperty(ref _stringType, value);
 		}
-		
+
+		private ObservableCollection<AxisRotationModel> _rotations;
+		public ObservableCollection<AxisRotationModel> Rotations
+		{
+			get => _rotations;
+			set
+			{
+				_rotations = value;
+				OnPropertyChanged(nameof(Rotations));
+			}
+		}
+
+		private Curve _curve;
+		public Curve Curve
+		{
+			get => _curve;
+			set
+			{
+				_curve = value;
+				OnPropertyChanged(nameof(Curve));
+			}
+		}
+
+		private DimmingType _dimmingTypeOption;
+		public DimmingType DimmingTypeOption
+		{
+			get => _dimmingTypeOption;
+			set
+			{
+				_dimmingTypeOption = value;
+				OnPropertyChanged(nameof(DimmingTypeOption));
+			}
+		}
+
+		private int _brightness;
+		public int Brightness
+		{
+			get => _brightness;
+			set
+			{
+				_brightness = value;
+				OnPropertyChanged(nameof(Brightness));
+			}
+		}
+
+		private double _gamma;
+		public double Gamma
+		{
+			get => _gamma;
+			set
+			{
+				_gamma = value;
+				OnPropertyChanged(nameof(Gamma));
+			}
+		}
+
+		private ColorType _colorTypeOption;
+		public ColorType ColorTypeOption
+		{
+			get => _colorTypeOption;
+			set
+			{
+				_colorTypeOption = value;
+				OnPropertyChanged(nameof(ColorTypeOption));
+			}
+		}
+
+		private Color _singleColorOption;
+		public Color SingleColorOption
+		{
+			get => _singleColorOption;
+			set
+			{
+				_singleColorOption = value;
+				OnPropertyChanged(nameof(SingleColorOption));
+			}
+		}
+
+		private string _selectedColorSet;
+		public string SelectedColorSet
+		{
+			get => _selectedColorSet;
+			set
+			{
+				_selectedColorSet = value;
+				OnPropertyChanged(nameof(SelectedColorSet));
+			}
+		}
+		#endregion
+
 		/// <summary>
 		/// Adds a specified number of string elements to the given element node.
 		/// </summary>
@@ -97,18 +197,18 @@ namespace VixenModules.App.Props.Models
 		protected async Task UpdateStringNodeCount(int nodeCount, ElementNode? propNode = null)
 		{
 			propNode ??= GetOrCreateElementNode();
-			
+
 			if (propNode.IsLeaf || propNode.GetMaxChildDepth() > 2)
 			{
 				throw new InvalidOperationException("Prop does not have direct leaf children");
 			}
-			
+
 			while (UpdateInProgress)
 			{
 				await Task.Delay(100);
 			}
 			UpdateInProgress = true;
-			
+
 			var existingNodes = propNode.Children.Count();
 			if (existingNodes == nodeCount) return;
 
@@ -146,12 +246,12 @@ namespace VixenModules.App.Props.Models
 		protected async Task UpdateNodesPerString(int nodesPerString, ElementNode? propNode = null)
 		{
 			propNode ??= GetOrCreateElementNode();
-			
+
 			if (propNode.IsLeaf || propNode.GetMaxChildDepth() > 3)
 			{
 				throw new InvalidOperationException("Prop does not have direct leaf children");
 			}
-			
+
 			while (UpdateInProgress)
 			{
 				await Task.Delay(100);
@@ -200,13 +300,13 @@ namespace VixenModules.App.Props.Models
 		protected async Task UpdateStrings(int strings, ElementNode? propNode = null)
 		{
 			propNode ??= GetOrCreateElementNode();
-			
+
 			while (UpdateInProgress)
 			{
 				await Task.Delay(500);
 			}
 			UpdateInProgress = true;
-			
+
 			var existingStrings = propNode.Children.Count();
 			if (existingStrings == strings) return;
 
@@ -282,11 +382,11 @@ namespace VixenModules.App.Props.Models
 			{
 				await Task.Delay(100);
 			}
-			
+
 			UpdateInProgress = true;
 			var propNode = GetOrCreateElementNode();
 			PropertySetupHelper.AddOrUpdatePatchingOrder(propNode, startLocation, zigZag, zigZagOffset);
-			
+
 			UpdateInProgress = false;
 		}
 
@@ -323,5 +423,68 @@ namespace VixenModules.App.Props.Models
 			UpdateInProgress = false;
 		}
 
+		/// <summary>
+		/// Get the HTML summary of all the Dimming parameter values
+		/// </summary>
+		/// <returns>Returns the <see cref="string"/> summary in HTML format</returns>
+		protected string GetDimmingSummary()
+		{
+			string summary = "<h2>Brightness Level</h2><body>";
+
+			if (DimmingTypeOption == DimmingType.Simple)
+			{
+				summary += $"<b>Maximum Brightness:</b> {Brightness}%<br>" +
+						   $"<b>Brightness Speed:</b> {Gamma:0.0}";
+			}
+			else if (DimmingTypeOption == DimmingType.Library && Curve != null)
+			{
+				if (Curve.LibraryReferenceName != string.Empty)
+				{
+					summary += $"<b>Library Curve:</b> {Curve.LibraryReferenceName}";
+				}
+				else if (Curve.Points.Count > 0)
+				{
+					summary += "<b/>Custom Curve";
+				}
+			}
+			else
+			{
+				summary += "<b/>Full Brightness";
+			}
+			summary += "</body>";
+
+			return summary;
+		}
+
+		/// <summary>
+		/// Get the HTML summary of all the Color parameter values
+		/// </summary>
+		/// <returns>Returns the <see cref="string"/> summary in HTML format</returns>
+		protected string GetColorSummary()
+		{
+			string summary = "<h2>Light Coloring</h2><body>";
+
+			if (ColorTypeOption == ColorType.SingleColor)
+			{
+				summary += "<b>Single Color:</b><ul style=\"margin-top: 0;\">" +
+					       $"<li>Red is {SingleColorOption.R}</li>" + 
+						   $"<li>Green is {SingleColorOption.G}</li>" +
+						   $"<li>Blue is {SingleColorOption.B}</li></ul>";
+			}
+
+			else if (ColorTypeOption == ColorType.MultipleColors)
+			{
+				summary += $"<b>Multiple Colors:</b> {SelectedColorSet}";
+			}
+
+			else if (ColorTypeOption == ColorType.RGBColors)
+			{
+				summary += $"<b>RGB Colors:</b> {SelectedColorSet}";
+			}
+
+			summary += "</body>";
+
+			return summary;
+		}
 	}
 }
