@@ -1,17 +1,18 @@
 ﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
 					xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
 
-		<?include EnvironmentInclude.wxi?>
-		
-  <Package Name="$(var.Name)" Manufacturer="Vixen Lights" Version="$(Version)" UpgradeCode="$(var.UpgradeCode)">
-    <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
-			
-    <Feature Id="Release">
-      <ComponentGroupRef Id="HarvestedComponents" />
-						<ComponentRef Id="RegistryInstallValue" />
-						<ComponentRef Id="DesktopApplicationShortcut"/>
-            <ComponentRef Id="ApplicationShortcut"/>
-    </Feature>
-  </Package>
-		
+	<?include EnvironmentInclude.wxi?>
+
+	<Package Name="$(var.Name)" Manufacturer="Vixen Lights" Version="$(Version)" UpgradeCode="$(var.UpgradeCode)">
+		<MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
+
+		<Feature Id="Release">
+			<Files Include="$(var.PublishFolder)\**">
+				<Exclude Files="**\*.pdb"/>
+			</Files>
+			<ComponentRef Id="DesktopApplicationShortcut"/>
+			<ComponentRef Id="ApplicationShortcut"/>
+		</Feature>
+	</Package>
+
 </Wix>
