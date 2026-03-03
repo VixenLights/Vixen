@@ -319,8 +319,6 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// <inheritdoc/>		
 		protected override void InitializeBackground()
 		{
-			// Initialize the preview background
-			Background = new PropPreviewBackground("a469f44f-a21e-485e-af05-95b9b69a3fd0.jpg", 1.0f);			
 		}
 
 		/// <inheritdoc/>		

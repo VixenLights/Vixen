@@ -205,12 +205,9 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		private void AddSelectedPropToPreview()
 		{
-			if (SelectedProp == null ||
-				SelectedProp.PropModel == null)
-			{
-				throw new Exception("No Prop Selected to Add to Preview");
-			}
-
+			ArgumentNullException.ThrowIfNull(SelectedProp);
+			ArgumentNullException.ThrowIfNull(SelectedProp.PropModel);
+			
 			// Add the selected prop to the preview
 			DisplayPreviewDrawingEngine.AddProps(new List<IPropModel>{ SelectedProp.PropModel });
 
@@ -223,10 +220,8 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		private void ExecuteCenterPropPreview()
 		{
-			if (PropPreviewDrawingEngine == null)
-			{
-				throw new Exception(nameof(PropPreviewDrawingEngine) + " is null!");
-			}
+			ArgumentNullException.ThrowIfNull(PropPreviewDrawingEngine);
+			
 			// Center the prop preview and return the new width and height
 			/*ClientSize =*/ PropPreviewDrawingEngine.ExecuteCenterPreview();
 		}

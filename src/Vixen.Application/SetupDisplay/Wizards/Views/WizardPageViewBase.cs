@@ -59,10 +59,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 				RenderContinuously = true,
 			};
 
-			if (OpenTkCntrl == null)
-			{
-				throw new Exception(nameof(OpenTkCntrl) + " is null!");
-			}
+			ArgumentNullException.ThrowIfNull(OpenTkCntrl);
 
 			// Sets up the OpenGL context and prepares the control to render OpenGL content 
 			OpenTkCntrl.Start(settings);
@@ -118,10 +115,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 			// Forward the call to the drawing engine
 			GetViewModel().DrawingEngine.OpenTKDrawingAreaChanged(e.NewSize.Width, e.NewSize.Height);
 
-			if (OpenTkCntrl == null)
-			{
-				throw new Exception(nameof(OpenTkCntrl) + " is null!");
-			}
+			ArgumentNullException.ThrowIfNull(OpenTkCntrl);
 
 			var dpiScale = VisualTreeHelper.GetDpi(OpenTkCntrl);
 			int pixelWidth = (int)(OpenTkCntrl.ActualWidth * dpiScale.DpiScaleX);
@@ -147,10 +141,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 			// Update the zoom of the preview
 			GetViewModel().DrawingEngine.Zoom(direction);
 
-			if (OpenTkCntrl == null)
-			{
-				throw new Exception(nameof(OpenTkCntrl) + " is null!");
-			}
+			ArgumentNullException.ThrowIfNull(OpenTkCntrl);
 
 			// This should trigger the control to redraw
 			OpenTkCntrl.InvalidateVisual();			
@@ -202,10 +193,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 				_prevMousePositionX = eX;
 				_prevMousePositionY = eY;
 
-				if (OpenTkCntrl == null)
-				{
-					throw new Exception(nameof(OpenTkCntrl) + " is null!");
-				}
+				ArgumentNullException.ThrowIfNull(OpenTkCntrl);
 
 				// This should trigger the control to redraw
 				OpenTkCntrl.InvalidateVisual();
@@ -233,10 +221,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 		/// <exception cref="Exception"></exception>
 		private IPropWizardPageViewModel GetViewModel()
 		{
-			if (DataContext == null)
-			{
-				throw new Exception(nameof(DataContext) + " is null!");
-			}
+			ArgumentNullException.ThrowIfNull(DataContext);
 
 			if (!(DataContext is IPropWizardPageViewModel viewModel))
 			{
