@@ -96,10 +96,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			// Use the type factory to create the intelligent fixture wizard
 			_wizard = typeFactory.CreateInstance(typeof(IntelligentFixtureWizard)) as IFixtureWizard;
 
-			if (_wizard == null)
-			{
-				throw new ArgumentNullException(nameof(_wizard));
-			}
+			ArgumentNullException.ThrowIfNull(_wizard);
 
 			// Configure the wizard window to show up in the Windows task bar
 			_wizard.ShowInTaskbarWrapper = true;
@@ -124,11 +121,8 @@ namespace VixenApplication.Setup.ElementTemplates
 			IWizardService? wizardService = dependencyResolver.Resolve<IWizardService>();
 			ArgumentNullException.ThrowIfNull(wizardService);
 
-			if (wizardService == null)
-			{
-				throw new Exception("Unable to create " + nameof(IWizardService));
-			}
-
+			ArgumentNullException.ThrowIfNull(wizardService);
+			
 			// Display the intelligent fixture wizard
 			bool? result = (await wizardService.ShowWizardAsync(_wizard)).DialogResult;
 
@@ -200,10 +194,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			IBaseColorSchemeService? baseColorService = dependencyResolver.Resolve<IBaseColorSchemeService>();
 			ArgumentNullException.ThrowIfNull(baseColorService);
 
-			if (baseColorService == null)
-			{
-				throw new Exception("Unable to create " + nameof(IBaseColorSchemeService));
-			}
+			ArgumentNullException.ThrowIfNull(baseColorService);
 
 			// Select the dark color scheme
 			baseColorService.SetBaseColorScheme("Dark");
@@ -212,10 +203,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			IAccentColorService? accentColorServer = dependencyResolver.Resolve<IAccentColorService>();
 			ArgumentNullException.ThrowIfNull(accentColorServer);
 
-			if (accentColorService == null)
-			{
-				throw new Exception("Unable to create " + nameof(IAccentColorService));
-			}
+			ArgumentNullException.ThrowIfNull(accentColorService);
 
 			// Configure the page bubbles on the left to be blue to look better with the dark theme
 			accentColorService.SetAccentColor((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("DodgerBlue"));

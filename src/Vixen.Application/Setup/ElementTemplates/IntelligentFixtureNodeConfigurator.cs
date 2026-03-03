@@ -604,10 +604,7 @@ namespace VixenApplication.Setup.ElementTemplates
 				ApplicationServices.Get<IOutputFilterModuleInstance>(DimmingFilterDescriptor.ModuleId) as
 					DimmingFilterModule;
 
-			if (filter == null)
-			{
-				throw new ArgumentNullException(nameof(filter));
-			}
+			ArgumentNullException.ThrowIfNull(filter);
 
 			// Assign the filter the function name as the tag
 			filter.Tag = function.Name;
@@ -627,10 +624,8 @@ namespace VixenApplication.Setup.ElementTemplates
 			if (dimmingCurveSelection != DimmingCurveSelection.NoDimmingCurve &&
 				!isColorMixing)
 			{
-				if (dimmingCurve == null)
-				{
-					throw new ArgumentNullException(nameof(dimmingCurve));
-				}
+				ArgumentNullException.ThrowIfNull(dimmingCurve);
+				
 				// Add the dimming curve to the flow
 				AddFilterToNodesLastFilter(node, CreateDimmingCurve(dimmingCurve));
 			}
