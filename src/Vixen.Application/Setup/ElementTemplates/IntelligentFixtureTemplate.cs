@@ -96,10 +96,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			// Use the type factory to create the intelligent fixture wizard
 			_wizard = typeFactory.CreateInstance(typeof(IntelligentFixtureWizard)) as IFixtureWizard;
 
-			if (_wizard == null)
-			{
-				throw new ArgumentNullException(nameof(_wizard));
-			}
+			ArgumentNullException.ThrowIfNull(_wizard);
 
 			// Configure the wizard window to show up in the Windows task bar
 			_wizard.ShowInTaskbarWrapper = true;
@@ -123,11 +120,8 @@ namespace VixenApplication.Setup.ElementTemplates
 			IDependencyResolver dependencyResolver = this.GetDependencyResolver();
 			IWizardService? wizardService = (IWizardService?)dependencyResolver.Resolve(typeof(IWizardService));
 
-			if (wizardService == null)
-			{
-				throw new Exception("Unable to create " + nameof(IWizardService));
-			}
-
+			ArgumentNullException.ThrowIfNull(wizardService);
+			
 			// Display the intelligent fixture wizard
 			bool? result = (await wizardService.ShowWizardAsync(_wizard)).DialogResult;
 
@@ -198,10 +192,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			// Retrieve the color scheme service
 			IBaseColorSchemeService? baseColorService = (IBaseColorSchemeService?)dependencyResolver.Resolve(typeof(IBaseColorSchemeService));
 
-			if (baseColorService == null)
-			{
-				throw new Exception("Unable to create " + nameof(IBaseColorSchemeService));
-			}
+			ArgumentNullException.ThrowIfNull(baseColorService);
 
 			// Select the dark color scheme
 			baseColorService.SetBaseColorScheme("Dark");
@@ -209,10 +200,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			// Retrieve the accent color service
 			IAccentColorService? accentColorService = (IAccentColorService?)dependencyResolver.Resolve(typeof(IAccentColorService));
 
-			if (accentColorService == null)
-			{
-				throw new Exception("Unable to create " + nameof(IAccentColorService));
-			}
+			ArgumentNullException.ThrowIfNull(accentColorService);
 
 			// Configure the page bubbles on the left to be blue to look better with the dark theme
 			accentColorService.SetAccentColor((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("DodgerBlue"));

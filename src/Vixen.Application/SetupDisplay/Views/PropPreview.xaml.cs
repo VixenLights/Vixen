@@ -144,10 +144,7 @@ namespace VixenApplication.SetupDisplay.Views
 		/// <exception cref="Exception"></exception>
 		private SetupDisplayViewModel GetViewModel()
 		{
-			if (DataContext == null)
-			{
-				throw new Exception(nameof(DataContext) + " is null!");
-			}
+			ArgumentNullException.ThrowIfNull(DataContext);
 
 			if (!(DataContext is SetupDisplayViewModel viewModel))
 			{

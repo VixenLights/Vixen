@@ -982,11 +982,8 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			var dependencyResolver = this.GetDependencyResolver();
 			IMessageBoxService? mbs = dependencyResolver.Resolve<IMessageBoxService>();
 
-			if (mbs == null)
-			{
-				throw new Exception("Unable to create " + nameof(IMessageBoxService));
-			}
-
+			ArgumentNullException.ThrowIfNull(mbs);
+			
 			return mbs.GetUserInput($"Please enter the {nameType} name.", $"Create {nameType}", suggestedName);
 		}
 
@@ -1000,21 +997,15 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			// Retrieve the color scheme service
 			IBaseColorSchemeService? baseColorService = (IBaseColorSchemeService?)dependencyResolver.Resolve(typeof(IBaseColorSchemeService));
 
-			if (baseColorService == null)
-			{
-				throw new Exception("Unable to create " + nameof(IBaseColorSchemeService));
-			}
-			
+			ArgumentNullException.ThrowIfNull(baseColorService);
+						
 			// Select the dark color scheme
 			baseColorService.SetBaseColorScheme("Dark");
 
 			// Use the type factory to create the prop wizard
 			(IPropWizard? Wizard, IPropFactory Factory) propWizard = PropWizardFactory.CreateInstance(propType, typeFactory);
 
-			if (propWizard.Wizard == null)
-			{
-				throw new Exception("Unable to create Wizard");
-			}
+			ArgumentNullException.ThrowIfNull(propWizard.Wizard);
 			
 			// Configure the wizard window to show up in the Windows task bar
 			propWizard.Wizard.ShowInTaskbarWrapper = true;

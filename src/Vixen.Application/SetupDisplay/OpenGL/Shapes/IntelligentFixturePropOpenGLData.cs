@@ -129,11 +129,8 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// <inheritdoc/>
 		public void InitializeSelectionVertices(float height)
 		{
-			if (_movingHeadOpenGL == null)
-			{
-				throw new Exception(nameof(_movingHeadOpenGL)+ " is null.");
-			}
-
+			ArgumentNullException.ThrowIfNull(_movingHeadOpenGL);
+			
 			// Get the physical fixture volumes (no beam volumes)
 			List<IVolume> fixtureVolumes = _movingHeadOpenGL.GetPhysicalFixtureVolumes().ToList();
 
