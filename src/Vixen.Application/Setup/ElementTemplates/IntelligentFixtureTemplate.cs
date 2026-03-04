@@ -96,7 +96,10 @@ namespace VixenApplication.Setup.ElementTemplates
 			// Use the type factory to create the intelligent fixture wizard
 			_wizard = typeFactory.CreateInstance(typeof(IntelligentFixtureWizard)) as IFixtureWizard;
 
-			ArgumentNullException.ThrowIfNull(_wizard);
+			if (_wizard is null)
+			{
+				throw new InvalidOperationException(nameof(_wizard) + " is null!");
+			}
 
 			// Configure the wizard window to show up in the Windows task bar
 			_wizard.ShowInTaskbarWrapper = true;

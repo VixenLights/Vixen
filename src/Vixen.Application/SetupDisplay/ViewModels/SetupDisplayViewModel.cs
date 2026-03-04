@@ -205,9 +205,12 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		private void AddSelectedPropToPreview()
 		{
-			ArgumentNullException.ThrowIfNull(SelectedProp);
-			ArgumentNullException.ThrowIfNull(SelectedProp.PropModel);
-			
+			if (SelectedProp is null ||
+				SelectedProp.PropModel is null)
+			{
+				throw new InvalidOperationException("No Prop Selected to Add to Preview");
+			}
+
 			// Add the selected prop to the preview
 			DisplayPreviewDrawingEngine.AddProps(new List<IPropModel>{ SelectedProp.PropModel });
 
@@ -220,8 +223,10 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		private void ExecuteCenterPropPreview()
 		{
-			ArgumentNullException.ThrowIfNull(PropPreviewDrawingEngine);
-			
+			if (PropPreviewDrawingEngine is null)
+			{
+				throw new Exception(nameof(PropPreviewDrawingEngine) + " is null!");
+			}
 			// Center the prop preview and return the new width and height
 			/*ClientSize =*/ PropPreviewDrawingEngine.ExecuteCenterPreview();
 		}
@@ -552,10 +557,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			var dependencyResolver = this.GetDependencyResolver();
 			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
 
-			if (openFileService == null)
-			{
-				throw new Exception("Could not create " + nameof(IOpenFileService));
-			}
+			ArgumentNullException.ThrowIfNull(openFileService);
 
 			var determineFileContext = new DetermineOpenFileContext()
 			{
@@ -574,11 +576,8 @@ namespace VixenApplication.SetupDisplay.ViewModels
 				{
 					var pleaseWaitService = dependencyResolver.Resolve<IBusyIndicatorService>();
 
-					if (pleaseWaitService == null)
-					{
-						throw new Exception("Could not create " + nameof(IBusyIndicatorService));
-					}
-
+					ArgumentNullException.ThrowIfNull(pleaseWaitService);
+					
 					pleaseWaitService.Show();
 					// LoadPropFromPath(path);
 					pleaseWaitService.Hide();
@@ -753,11 +752,8 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			var dependencyResolver = this.GetDependencyResolver();
 			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
 
-			if (openFileService == null)
-			{
-				throw new Exception("Unable to create " + nameof(IOpenFileService));
-			}
-
+			ArgumentNullException.ThrowIfNull(openFileService);
+			
 			var determineFileContext = new DetermineOpenFileContext()
 			{
 				IsMultiSelect = false,
@@ -775,10 +771,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 				{
 					var pleaseWaitService = dependencyResolver.Resolve<IBusyIndicatorService>();
 
-					if (pleaseWaitService == null)
-					{
-						throw new Exception("Unable to create " + nameof(IBusyIndicatorService));
-					}
+					ArgumentNullException.ThrowIfNull(pleaseWaitService);
 
 					pleaseWaitService.Show();
 					await ImportProp(path);
@@ -893,11 +886,8 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		private static void OnSelectedTabIndexChanged(object? sender, EventArgs e)
 		{
-			if (sender == null)
-			{
-				throw new ArgumentNullException(nameof(sender));
-			}
-
+			ArgumentNullException.ThrowIfNull(sender);
+			
 			((SetupDisplayViewModel)sender).OnSelectedTabIndexChanged();
 		}
 
