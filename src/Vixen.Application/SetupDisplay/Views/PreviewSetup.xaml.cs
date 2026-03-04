@@ -221,11 +221,14 @@ namespace VixenApplication.SetupDisplay.Views
 		/// <exception cref="Exception"></exception>
 		private SetupDisplayViewModel GetViewModel()
 		{
-			ArgumentNullException.ThrowIfNull(DataContext);
-						
-			if (!(DataContext is SetupDisplayViewModel viewModel))
+			if (DataContext is null)
 			{
-				throw new Exception("DataContext is wrong type!");
+				throw new InvalidOperationException(nameof(DataContext) + " is null!");	
+			}
+						
+			if (DataContext is not SetupDisplayViewModel viewModel)
+			{
+				throw new InvalidOperationException(nameof(DataContext) + " is the wrong type!");
 			}
 
 			return viewModel;

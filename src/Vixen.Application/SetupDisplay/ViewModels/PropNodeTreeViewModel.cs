@@ -1005,7 +1005,10 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			// Use the type factory to create the prop wizard
 			(IPropWizard? Wizard, IPropFactory Factory) propWizard = PropWizardFactory.CreateInstance(propType, typeFactory);
 
-			ArgumentNullException.ThrowIfNull(propWizard.Wizard);
+			if (propWizard.Wizard is null)
+			{
+				throw new InvalidOperationException("Unable to create Wizard");
+			}
 			
 			// Configure the wizard window to show up in the Windows task bar
 			propWizard.Wizard.ShowInTaskbarWrapper = true;
