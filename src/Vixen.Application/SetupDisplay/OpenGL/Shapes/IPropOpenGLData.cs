@@ -42,18 +42,6 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 		bool Selected { get; set; }
 
 		/// <summary>
-		/// Gets the minimum vertex values along all three axis.
-		/// </summary>
-		/// <returns>Minimum vertex values along all three axis</returns>
-		Vector3 GetMinimum();
-
-		/// <summary>
-		/// Gets the maximum vertex values along all three axis.
-		/// </summary>
-		/// <returns>Maximum vertex values along all three axis</returns>
-		Vector3 GetMaximum();
-
-		/// <summary>
 		/// Returns true if the mouse if over a resize handle.
 		/// </summary>
 		/// <param name="cameraPosition">View matrix of the viewport</param>

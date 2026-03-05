@@ -96,9 +96,9 @@ namespace VixenApplication.Setup.ElementTemplates
 			// Use the type factory to create the intelligent fixture wizard
 			_wizard = typeFactory.CreateInstance(typeof(IntelligentFixtureWizard)) as IFixtureWizard;
 
-			if (_wizard == null)
+			if (_wizard is null)
 			{
-				throw new ArgumentNullException(nameof(_wizard));
+				throw new InvalidOperationException(nameof(_wizard) + " is null!");
 			}
 
 			// Configure the wizard window to show up in the Windows task bar
@@ -121,8 +121,10 @@ namespace VixenApplication.Setup.ElementTemplates
 
 			// Create the wizard service
 			IDependencyResolver dependencyResolver = this.GetDependencyResolver();
-			IWizardService wizardService = (IWizardService)dependencyResolver.Resolve(typeof(IWizardService));
+			IWizardService? wizardService = (IWizardService?)dependencyResolver.Resolve(typeof(IWizardService));
 
+			ArgumentNullException.ThrowIfNull(wizardService);
+			
 			// Display the intelligent fixture wizard
 			bool? result = (await wizardService.ShowWizardAsync(_wizard)).DialogResult;
 
@@ -191,16 +193,20 @@ namespace VixenApplication.Setup.ElementTemplates
 			IDependencyResolver dependencyResolver = this.GetDependencyResolver();
 
 			// Retrieve the color scheme service
-			IBaseColorSchemeService baseColorService = (IBaseColorSchemeService)dependencyResolver.Resolve(typeof(IBaseColorSchemeService));
+			IBaseColorSchemeService? baseColorService = (IBaseColorSchemeService?)dependencyResolver.Resolve(typeof(IBaseColorSchemeService));
+
+			ArgumentNullException.ThrowIfNull(baseColorService);
 
 			// Select the dark color scheme
 			baseColorService.SetBaseColorScheme("Dark");
 
 			// Retrieve the accent color service
-			IAccentColorService accentColorServer = (IAccentColorService)dependencyResolver.Resolve(typeof(IAccentColorService));
+			IAccentColorService? accentColorService = (IAccentColorService?)dependencyResolver.Resolve(typeof(IAccentColorService));
+
+			ArgumentNullException.ThrowIfNull(accentColorService);
 
 			// Configure the page bubbles on the left to be blue to look better with the dark theme
-			accentColorServer.SetAccentColor((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("DodgerBlue"));
+			accentColorService.SetAccentColor((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("DodgerBlue"));
 
 			// Show the fixture wizard
 			bool? cancelled = await ShowWizardAsync();

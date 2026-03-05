@@ -40,7 +40,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 		/// <summary>
 		/// OpenTK WPF Control.
 		/// </summary>
-		protected GLWpfControl OpenTkCntrl { get; set; }
+		protected GLWpfControl? OpenTkCntrl { get; set; }
 
 		#endregion
 
@@ -59,6 +59,11 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 				RenderContinuously = true,
 			};
 
+			if (OpenTkCntrl is null)
+			{
+				throw new InvalidOperationException(nameof(OpenTkCntrl) + " is null!");
+			}
+
 			// Sets up the OpenGL context and prepares the control to render OpenGL content 
 			OpenTkCntrl.Start(settings);
 		}
@@ -76,7 +81,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 			float cameraZ = 0.0f;
 
 			// Initialize the drawing engine with the camera position and size of the drawing area
-			(DataContext as IPropWizardPageViewModel).DrawingEngine.Initialize(
+			GetViewModel().DrawingEngine.Initialize(
 				cameraX,
 				cameraY,
 				cameraZ);
@@ -90,7 +95,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 		protected void PropWizardPageView_Unloaded(object sender, RoutedEventArgs e)
 		{
 			// Dispose of the OpenGL resources
-			(DataContext as IPropWizardPageViewModel).DrawingEngine.Dispose();
+			GetViewModel().DrawingEngine.Dispose();
 		}
 
 		/// <summary>
@@ -98,9 +103,9 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 		/// </summary>
 		/// <param name="delta">Time between render calls</param>
 		protected void OpenTkControl_OnRender(TimeSpan delta)
-		{			
+		{
 			// Have the drawing engine refresh the frame
-			(DataContext as IPropWizardPageViewModel).DrawingEngine.RenderPreview();			
+			GetViewModel().DrawingEngine.RenderPreview();			
 		}
 		
 		/// <summary>
@@ -111,8 +116,13 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 		protected void OpenTkControl_SizeChanged(object sender, SizeChangedEventArgs e)
 		{
 			// Forward the call to the drawing engine
-			(DataContext as IPropWizardPageViewModel).DrawingEngine.OpenTKDrawingAreaChanged(e.NewSize.Width, e.NewSize.Height);
-			
+			GetViewModel().DrawingEngine.OpenTKDrawingAreaChanged(e.NewSize.Width, e.NewSize.Height);
+
+			if (OpenTkCntrl is null)
+			{
+				throw new InvalidOperationException(nameof(OpenTkCntrl) + " is null!");
+			}
+
 			var dpiScale = VisualTreeHelper.GetDpi(OpenTkCntrl);
 			int pixelWidth = (int)(OpenTkCntrl.ActualWidth * dpiScale.DpiScaleX);
 			int pixelHeight = (int)(OpenTkCntrl.ActualHeight * dpiScale.DpiScaleY);
@@ -135,7 +145,12 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 			int direction = -(e.Delta * SystemInformation.MouseWheelScrollLines / factor);
 
 			// Update the zoom of the preview
-			(DataContext as IPropWizardPageViewModel).DrawingEngine.Zoom(direction);
+			GetViewModel().DrawingEngine.Zoom(direction);
+
+			if (OpenTkCntrl is null)
+			{
+				throw new InvalidOperationException(nameof(OpenTkCntrl) + " is null!");
+			}
 
 			// This should trigger the control to redraw
 			OpenTkCntrl.InvalidateVisual();			
@@ -181,11 +196,16 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 			if (_mouseDown && e.LeftButton == MouseButtonState.Pressed)
 			{
 				// Move the view camera 
-				(DataContext as IPropWizardPageViewModel).DrawingEngine.MoveCamera(_prevMousePositionX, _prevMousePositionY, eX, eY);
+				GetViewModel().DrawingEngine.MoveCamera(_prevMousePositionX, _prevMousePositionY, eX, eY);
 
 				// Save off the mouse position
 				_prevMousePositionX = eX;
 				_prevMousePositionY = eY;
+
+				if (OpenTkCntrl is null)
+				{
+					throw new InvalidOperationException(nameof(OpenTkCntrl) + " is null!");
+				}
 
 				// This should trigger the control to redraw
 				OpenTkCntrl.InvalidateVisual();
@@ -206,6 +226,26 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 			_mouseDown = false;			
 		}
 
-		#endregion	
+		/// <summary>
+		/// Gets the view model associated with the view.
+		/// </summary>
+		/// <returns><see cref="IPropWizardPageViewModel"></returns>
+		/// <exception cref="Exception"></exception>
+		private IPropWizardPageViewModel GetViewModel()
+		{
+			if (DataContext is null)
+			{
+				throw new InvalidOperationException(nameof(DataContext) + " is null!");
+			}
+
+			if (!(DataContext is IPropWizardPageViewModel viewModel))
+			{
+				throw new Exception("DataContext is wrong type!");
+			}
+
+			return viewModel;
+		}
+
+		#endregion
 	}
 }

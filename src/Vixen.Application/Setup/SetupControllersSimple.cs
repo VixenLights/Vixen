@@ -125,7 +125,7 @@ namespace VixenApplication.Setup
 					if (node.Tag is int tag)
 					{
 						outputIndex = tag;
-						controller = node?.Parent?.Tag as IControllerDevice;
+						controller = node.Parent?.Tag as IControllerDevice;
 						if (controller == null)
 						{
 							Logging.Error("node parent is not a controller: " + node.Name);
@@ -260,7 +260,7 @@ namespace VixenApplication.Setup
 			}
 		}
 
-		private void buttonSelectSourceElements_Click(object sender, EventArgs e)
+		private void buttonSelectSourceElements_Click(object? sender, EventArgs e)
 		{
 			List<ElementNode> elementNodesToSelect = new List<ElementNode>();
 

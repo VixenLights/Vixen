@@ -217,6 +217,16 @@ namespace VixenApplication.Setup
 		/// <param name="e">Contains the event data</param>
 		public void control_UnpatchControllers(object? sender, EventArgs e)
 		{
+			if (_setupPatchingSimple is null)
+			{
+				throw new InvalidOperationException(nameof(_setupPatchingSimple) + " is null!");
+			}
+
+			if (_currentPatchingControl is null)
+			{ 
+				throw new InvalidOperationException(nameof(_setupPatchingGraphical) + " is null!");
+			}
+
 			_setupPatchingSimple.UnpatchControllers();
 			if (_currentPatchingControl == _setupPatchingGraphical)
 				_setupPatchingGraphical.UpdateConnectionsForControllers();

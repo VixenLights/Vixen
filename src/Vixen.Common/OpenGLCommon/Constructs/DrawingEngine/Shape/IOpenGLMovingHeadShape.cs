@@ -20,7 +20,7 @@ namespace Common.OpenGLCommon.Constructs.DrawingEngine.Shape
 		/// Gets the OpenGL moving head associated with the shape.
 		/// </summary>
 		/// <remarks>This property allows all the moving heads to drawn together to improve performance</remarks>
-		IRenderMovingHeadOpenGL MovingHead { get; }
+		IRenderMovingHeadOpenGL? MovingHead { get; }
 
 		/// <summary>
 		/// Updates the volumes for the specified maximum beam length and scale factor.

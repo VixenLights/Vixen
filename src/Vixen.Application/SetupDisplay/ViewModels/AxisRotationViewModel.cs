@@ -57,7 +57,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// <summary>
 		/// Event when one of the rotation properties have changed.
 		/// </summary>
-		public event EventHandler RotationChanged;
+		public event EventHandler? RotationChanged;
 
 		#endregion
 	}
