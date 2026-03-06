@@ -32,6 +32,12 @@ namespace VixenApplication.SetupDisplay.Views
 		/// is only initialized once.
 		/// </summary>
 		bool _openTKControlLoaded = false;
+
+		/// <summary>
+		/// This flag keeps track of if either of the ctrl keys are being pressed while
+		/// in the preview setup.
+		/// </summary>
+		bool _ctrlKeyPressed = false;
 		
 		#endregion
 
@@ -124,6 +130,28 @@ namespace VixenApplication.SetupDisplay.Views
 				// This should trigger the control to redraw
 				OpenTkControlPreview.InvalidateVisual();
 			}
+
+			// If either of the ctrl keys have been pressed then...
+			if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+			{
+				// Remember that the ctrl key has been pressed
+				_ctrlKeyPressed = true;
+			}
+		}
+
+		/// <summary>
+		/// Event when a key is released in the OpenTK Preview control.
+		/// </summary>
+		/// <param name="sender">Event sender</param>
+		/// <param name="e">Event arguments</param>
+		private void OpenTkControlPreview_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			// If either of the ctrl keys have been released then...
+			if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+			{
+				// Clear the ctrl key flag
+				_ctrlKeyPressed = false;
+			}
 		}
 
 		/// <summary>
@@ -170,7 +198,9 @@ namespace VixenApplication.SetupDisplay.Views
 		private void OpenTkControlPreview_MouseUp(object sender, MouseButtonEventArgs e)
 		{
 			// Forward the mouse up event to the preview setup drawing engine
-			GetViewModel().DisplayPreviewDrawingEngine.MouseUp(new OpenTK.Mathematics.Vector2(PrevMousePositionX, PrevMousePositionY));
+			GetViewModel().DisplayPreviewDrawingEngine.MouseUp(
+				new OpenTK.Mathematics.Vector2(PrevMousePositionX, PrevMousePositionY), 
+				_ctrlKeyPressed);
 		}
 
 		/// <summary>

@@ -391,18 +391,23 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			// Store off that the preview has been initialized
 			Initialized = true;
 		}
-		
+
 		/// <summary>
 		/// Handles mouse up preview events to select props.
 		/// </summary>
 		/// <param name="mousePos">Position of the mouse in screen coordinates</param>
-		public void MouseUp(Vector2 mousePos)
+		/// <param name="ctrlKeyPressed">True when the ctrl key is being pressed</param>
+		public void MouseUp(Vector2 mousePos, bool ctrlKeyPressed)
 		{
 			// If a rubberband operation is not in progress then...
 			if (!_rubberbandOperationInProgress)
 			{
-				// Clear all selected props
-				ClearSelectedProps();
+				// If the ctrl key has NOT been pressed then...
+				if (!ctrlKeyPressed)
+				{
+					// Clear all selected props
+					ClearSelectedProps();
+				}
 								
 				// Loop over all the props
 				foreach (IPropOpenGLData prop in Props)
@@ -629,7 +634,9 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			}
 
 			// Return whether the mouse is over a resize handle
-			return IsMouseOverAResizeHandle(mouseX, mouseY);
+			// and only one prop is selected then...
+			return IsMouseOverAResizeHandle(mouseX, mouseY) &&
+				SelectedProps.Count == 1;
 		}
 
 		/// <summary>
