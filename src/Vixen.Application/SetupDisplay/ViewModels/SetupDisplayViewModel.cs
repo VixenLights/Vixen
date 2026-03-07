@@ -21,6 +21,7 @@ using Vixen.Sys.Props;
 using Vixen.Sys.Props.Model;
 
 using VixenApplication.SetupDisplay.OpenGL;
+using VixenApplication.SetupDisplay.OpenGL.Shapes;
 
 using VixenModules.App.Props.Models.Arch;
 using VixenModules.App.Props.Models.Tree;
@@ -93,6 +94,14 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			// Initialize the select background image command
 			SelectBackgroundImage = new RelayCommand(SelectBackground);
 
+			// Register for the Selected Props collection changed event
+			DisplayPreviewDrawingEngine.SelectedProps.CollectionChanged += SelectedProps_CollectionChanged;
+
+			// Initialize the commands to lock and unlock props
+			Lock = new RelayCommand(LockSelectedProps, CanLockSelectedProps);
+			Unlock = new RelayCommand(UnlockSelectedProps, CanUnlockSelectedProps);
+			UnlockAll = new RelayCommand(UnlockAllProps, CanUnlockAllProps);
+
 			// Create the collection of view model rotations
 			Rotations = new();
 
@@ -140,6 +149,21 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		public ICommand SelectBackgroundImage { get; private set; }
 
 		/// <summary>
+		/// Command for locking the selected props.
+		/// </summary>
+		public ICommand Lock { get; private set; }
+
+		/// <summary>
+		/// Command for unlocking the selected props.
+		/// </summary>
+		public ICommand Unlock { get; private set; }
+
+		/// <summary>
+		/// Command for unlocking all props.
+		/// </summary>
+		public ICommand UnlockAll { get; private set; }
+
+		/// <summary>
 		/// Gets or sets the SelectedProp value.
 		/// </summary>
 		public int ZRotation
@@ -173,6 +197,153 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		#endregion
 
 		#region Private Methods
+
+		/// <summary>
+		/// Event handler when the selected props in the setup preview change.
+		/// </summary>
+		/// <param name="sender">The source of the event</param>
+		/// <param name="e">Event arguments</param>
+		private void SelectedProps_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			// Update the enabled/disabled status of the lock and unlock commands
+			UpdateLockUnlockCommands();
+		}
+
+		/// <summary>
+		/// Updates the enabled/disabled status of the lock and unlock commands.
+		/// </summary>
+		private void UpdateLockUnlockCommands()
+		{
+			// Refresh the CanExecute status of the lock and unlock commands
+			((RelayCommand)Lock).RaiseCanExecuteChanged();
+			((RelayCommand)Unlock).RaiseCanExecuteChanged();
+			((RelayCommand)UnlockAll).RaiseCanExecuteChanged();
+		}
+
+		/// <summary>
+		/// Returns true if there are selected props to lock.
+		/// </summary>
+		/// <returns>True if there are selected props to lock</returns>
+		private bool CanLockSelectedProps()
+		{
+			// Default to there not being any props to lock
+			bool propsToLock = false;
+
+			// Loop over the selected props
+			foreach (IPropOpenGLData prop in DisplayPreviewDrawingEngine.SelectedProps)
+			{
+				// If the prop is unlocked then...
+				if (!prop.Locked)
+				{
+					// Indicate the lock command should be enabled
+					propsToLock = true;
+
+					break;
+				}
+			}
+
+			return propsToLock;
+		}
+		
+		/// <summary>
+		/// Locks the selected props.
+		/// </summary>
+		private void LockSelectedProps()
+		{		
+			// Loop over the selected props
+			foreach(IPropOpenGLData prop in DisplayPreviewDrawingEngine.SelectedProps)
+			{
+				// Lock the prop
+				prop.Locked = true;
+			}
+
+			// Refresh the lock / unlock commands
+			UpdateLockUnlockCommands();
+		}
+
+		/// <summary>
+		/// Returns true if there are selected props to unlock.
+		/// </summary>
+		/// <returns>True if there are selected props to unlock</returns>
+		private bool CanUnlockSelectedProps()
+		{
+			// Default to there not being any props to unlock
+			bool propsToUnlock = false;
+
+			// Loop over the selected props
+			foreach (IPropOpenGLData prop in DisplayPreviewDrawingEngine.SelectedProps)
+			{
+				// If the prop is locked then...
+				if (prop.Locked)
+				{
+					// Indicate the unlock command should be enabled
+					propsToUnlock = true;
+				}
+			}
+
+			return propsToUnlock;
+		}
+
+		/// <summary>
+		/// Locks the selected props.
+		/// </summary>
+		private void UnlockSelectedProps()
+		{
+			// Loop over the selected props
+			foreach (IPropOpenGLData prop in DisplayPreviewDrawingEngine.SelectedProps)
+			{
+				// Lock the prop
+				prop.Locked = false;
+
+				// Break out of the loop
+				break;
+			}
+
+			// Refresh the lock / unlock commands
+			UpdateLockUnlockCommands();
+		}
+
+		/// <summary>
+		/// Returns true if there are any props to unlock.
+		/// </summary>
+		/// <returns>True if there are any props to unlock</returns>
+		private bool CanUnlockAllProps()
+		{
+			// Default to there not being any props to unlock
+			bool propsToUnlock = false;
+
+			// Loop over all props
+			foreach (IPropOpenGLData prop in DisplayPreviewDrawingEngine.Props)
+			{
+				// If the prop is locked then...
+				if (prop.Locked)
+				{
+					// Indicate the unlock all command should be enabled
+					propsToUnlock = true;
+
+					// Break out of the loop
+					break;
+				}
+			}
+
+			return propsToUnlock;
+		}
+
+		/// <summary>
+		/// Unlocks all locked props.
+		/// </summary>
+		private void UnlockAllProps()
+		{
+			// Loop over all props
+			foreach (IPropOpenGLData prop in DisplayPreviewDrawingEngine.Props)
+			{
+				// Set the prop to unlocked
+				prop.Locked = false;
+			}
+
+			// Refresh the lock / unlock commands
+			UpdateLockUnlockCommands();
+		}
 
 		/// <summary>
 		/// Selects the background image.

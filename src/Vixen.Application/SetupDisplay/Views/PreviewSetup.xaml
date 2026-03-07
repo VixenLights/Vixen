@@ -22,6 +22,15 @@
 				<ToggleButton IsChecked="{Binding DisplayPreviewDrawingEngine.IsPanMode}">
 					<Image Source="buttonSelect.png" Width="32" Height="32"/>
 				</ToggleButton>
+				<Button Command="{Binding Lock}">
+					<Image Source="pack://application:,,,/Resources;component/Resources/locked.png" Width="32" Height="32"/>					
+				</Button>
+				<Button Command="{Binding Unlock}">
+					<Image Source="pack://application:,,,/Resources;component/Resources/unlocked.png" Width="32" Height="32"/>
+				</Button>
+				<Button Command="{Binding UnlockAll}">
+					<Image Source="pack://application:,,,/Resources;component/Resources/unlockedAll.png" Width="32" Height="32"/>
+				</Button>
 			</ToolBar>
 			<glWpfControl:GLWpfControl
 				x:Name="OpenTkControlPreview" 							

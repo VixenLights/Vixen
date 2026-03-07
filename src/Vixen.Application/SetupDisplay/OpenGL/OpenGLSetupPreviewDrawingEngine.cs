@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows.Media.Media3D;
 
 using Common.OpenGLCommon;
@@ -119,13 +120,17 @@ namespace VixenApplication.SetupDisplay.OpenGL
 
 		#endregion
 
-		#region Private Properties
+		#region Public Properties
 
 		/// <summary>
 		/// Collection of selected props.
 		/// </summary>
-		private List<IPropOpenGLData> SelectedProps { get; set; }
-		
+		public ObservableCollection<IPropOpenGLData> SelectedProps { get; set; }
+
+		#endregion
+
+		#region Private Properties
+
 		/// <summary>
 		/// Collection of light based props.
 		/// </summary>
@@ -152,8 +157,8 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		public OpenGLSetupPreviewDrawingEngine(List<IPropModel> props)
 		{
 			// Initialize the selected props collection
-			SelectedProps = new List<IPropOpenGLData>();
-
+			SelectedProps = new ObservableCollection<IPropOpenGLData>();
+			
 			// Extract out the light props
 			LightProps = props.Where(prp => prp is ILightPropModel).Select(prp => new LightPropOpenGLData((ILightPropModel)prp)).Cast<ILightPropOpenGLData>().ToList();
 
@@ -173,7 +178,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		}
 
 		#endregion
-		
+
 		#region Protected Abstract Methods
 
 		/// <inheritdoc/>
@@ -612,9 +617,11 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			}
 			// Otherwise if only one props is selected and 
 			// the mouse is down and
+			// the prop s NOT locked and
 			// the mouse is over a selected prop then...
 			else if (SelectedProps.Count == 1 &&
-				_mouseButtonDown && 
+				_mouseButtonDown &&
+				!SelectedProps[0].Locked &&
 				IsOverSelectedProp(mousePos))
 			{
 				// Loop over the selected props
@@ -645,10 +652,12 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				_prevMousePosition = mousePos;
 			}
 
-			// Return whether the mouse is over a resize handle
-			// and only one prop is selected then...
+			// Return whether the mouse is over a resize handle and
+			// only one prop is selected and
+			// the prop is NOT locked then...
 			return IsMouseOverAResizeHandle(mouseX, mouseY) &&
-				SelectedProps.Count == 1;
+				SelectedProps.Count == 1 &&
+				!SelectedProps[0].Locked;
 		}
 
 		/// <summary>
@@ -744,8 +753,10 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				_startMousePosition.X = mouseX;
 				_startMousePosition.Y = mouseY;
 				
-				// If the mouse is over the a resize handle then...
-				if (selectedProp.MouseOverResizeHandle(
+				// If the selected prop is NOT locked and
+				// if the mouse is over the a resize handle then...
+				if (!selectedProp.Locked &&
+					selectedProp.MouseOverResizeHandle(
 					Camera.Position,
 					CreatePerspective(),
 					Camera.ViewMatrix,
@@ -1040,8 +1051,10 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			Matrix4 viewMatrix,
 			Matrix4 projectionMatrix)
 		{
-			// If only one prop is selected then...
-			if (SelectedProps.Count == 1)
+			// If only one prop is selected and
+			// the prop is NOT locked then...
+			if (SelectedProps.Count == 1 &&
+				!SelectedProps[0].Locked)
 			{
 				// Draw the resize handles
 				DrawLines(
@@ -1069,8 +1082,10 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			Matrix4 viewMatrix,
 			Matrix4 projectionMatrix)
 		{
-			// If only one prop is selected then...
-			if (SelectedProps.Count == 1)
+			// If only one prop is selected and
+			// the prop is NOT locked then...
+			if (SelectedProps.Count == 1 &&
+				!SelectedProps[0].Locked)
 			{
 				// Draw the move handle			
 				DrawLines(
