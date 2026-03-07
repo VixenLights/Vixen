@@ -125,6 +125,9 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 		public float SizeZ { get; set; }
 
 		/// <inheritdoc/>
+		public bool Locked { get; set; }
+
+		/// <inheritdoc/>
 		public bool MouseOverResizeHandle(
 			Vector3 cameraPosition,
 			Matrix4 projectionMatrix, 

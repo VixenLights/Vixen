@@ -78,8 +78,17 @@ namespace VixenApplication.SetupDisplay.OpenGL
 
 				coordinates.Add(vPoint);
 
-				// If the prop is selected then...
-				if (Selected)
+				// If the prop is locked then...				
+				if (Locked)
+				{
+					// Configure the vertex as Dark Gray
+					_points.Add(Color.DarkGray.R); // R
+					_points.Add(Color.DarkGray.G); // G
+					_points.Add(Color.DarkGray.B); // B
+					_points.Add(0xff); // Alpha (Brightness)
+				}
+				// Otherwise if the prop is selected then...
+				else if (Selected)
 				{
 					// Configure the vertex as Lime Green
 					_points.Add(Color.LimeGreen.R);  // R
