@@ -415,11 +415,23 @@ namespace VixenApplication.SetupDisplay.OpenGL
 					// If the mouse if over the specified prop then...
 					if (IsMouseOverProp(mousePos, prop))
 					{
-						// Indicate the prop is selected
-						prop.Selected = true;
+						// If the prop is not selected then...
+						if (!prop.Selected)
+						{
+							// Indicate the prop is selected
+							prop.Selected = true;
 
-						// Add the prop to the collection of selected props
-						SelectedProps.Add(prop);
+							// Add the prop to the collection of selected props
+							SelectedProps.Add(prop);
+						}
+						else
+						{
+							// Indicate the prop is NOT selected
+							prop.Selected = false;
+
+							// Add the prop to the collection of selected props
+							SelectedProps.Remove(prop);
+						}							
 					}
 				}
 			}
