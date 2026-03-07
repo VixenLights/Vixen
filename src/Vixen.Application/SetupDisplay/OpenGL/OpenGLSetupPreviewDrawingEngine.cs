@@ -264,6 +264,9 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				// Loop over the intelligent fixture props
 				foreach (IIntelligentFixturePropOpenGLData movingHeadVolumes in GetMovingHeadShapes())
 				{
+					// Update the beam color based on preview state
+					movingHeadVolumes.UpdateBeamColor();
+					
 					// Initialize the selection vertices of the intelligent fixture
 					movingHeadVolumes.InitializeSelectionVertices(movingHeadVolumes.SizeY);
 				}

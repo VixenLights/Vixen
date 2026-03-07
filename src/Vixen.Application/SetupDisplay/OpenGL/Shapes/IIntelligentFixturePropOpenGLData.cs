@@ -1,5 +1,6 @@
-﻿using VixenModules.Editor.FixtureGraphics.OpenGL;
-using VixenApplication.SetupDisplay.OpenGL.Shapes;
+﻿using VixenApplication.SetupDisplay.OpenGL.Shapes;
+
+using VixenModules.Editor.FixtureGraphics.OpenGL;
 
 
 namespace VixenApplication.SetupDisplay.OpenGL
@@ -46,5 +47,10 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// <param name="referenceHeight">Height of the background</param>
 		/// <param name="standardFrame">True when the volumes are being updated for standard frame update</param>
 		void UpdateVolumes(int maxBeamLength, float referenceHeight, bool standardFrame);
+		
+		/// <summary>
+		/// Updates the beam color based on preview state.
+		/// </summary>
+		void UpdateBeamColor();
 	}
 }
