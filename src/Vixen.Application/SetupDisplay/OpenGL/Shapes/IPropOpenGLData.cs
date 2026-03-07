@@ -42,6 +42,11 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 		bool Selected { get; set; }
 
 		/// <summary>
+		/// True when the prop is locked and cannot be moved or resized.
+		/// </summary>
+		bool Locked { get; set; }
+
+		/// <summary>
 		/// Returns true if the mouse if over a resize handle.
 		/// </summary>
 		/// <param name="cameraPosition">View matrix of the viewport</param>

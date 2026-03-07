@@ -124,6 +124,8 @@
 				<Resource Include="Resources\delete_32.png" />
 				<None Include="Resources\marks.png" />
 				<None Include="Resources\VixenImage.png" />
+				<Resource Include="Resources\unlocked.png" />
+				<Resource Include="Resources\unlockedAll.png" />
 				<Resource Include="Saveall_6518.png" />
 				<Resource Include="Save_6530.png" />
 				<Resource Include="Open_6529.png" />
@@ -391,6 +393,8 @@
 			<None Remove="Resources\clock_go.png" />
 			<None Remove="Resources\add.png" />
 			<None Remove="Resources\delete.png" />
+			<None Remove="Resources\unlocked.png" />
+			<None Remove="Resources\unlockedAll.png" />
 			<None Remove="TriangleExclamation.png" />
 		</ItemGroup>
 

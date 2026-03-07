@@ -125,6 +125,9 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 		public float SizeZ { get; set; }
 
 		/// <inheritdoc/>
+		public bool Locked { get; set; }
+
+		/// <inheritdoc/>
 		public bool MouseOverResizeHandle(
 			Vector3 cameraPosition,
 			Matrix4 projectionMatrix, 
@@ -200,6 +203,31 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 			
 			// Initialize the center drag move handle vertices
 			InitializeCenterXMoveHandle(heightY, maximum.Z);
+		}
+
+		/// <summary>
+		/// Gets the color of the prop.
+		/// </summary>
+		/// <returns>Color of the prop</returns>
+		protected Color GetPropColor()
+		{
+			// Default the color to Turquoise
+			Color color = Color.Turquoise; 
+
+			// If the prop is locked then...
+			if (Locked)
+			{				
+				// Set the color to dark gray
+				color = Color.DarkGray;
+			}
+			// Otherwise if the prop is selected then...
+			else if (Selected)
+			{
+				// Set the prop to lime green
+				color = Color.LimeGreen;				
+			}
+
+			return color;
 		}
 
 		#endregion
