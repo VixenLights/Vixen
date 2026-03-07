@@ -179,6 +179,11 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// <inheritdoc/>
 		public void UpdateBeamColor()
 		{
+			if (_movingHeadCurrentSettings is null)
+			{
+				throw new InvalidOperationException(nameof(_movingHeadCurrentSettings) + " is null!");
+			}
+			
 			// Update the beam color
 			_movingHeadCurrentSettings.BeamColorLeft = GetPropColor();
 			_movingHeadCurrentSettings.BeamColorRight = GetPropColor();			
