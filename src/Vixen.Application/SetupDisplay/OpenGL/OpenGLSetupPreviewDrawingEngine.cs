@@ -386,6 +386,35 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			Props.AddRange(lightProps);
 			Props.AddRange(fixtureProps);
 		}
+		
+		/// <summary>
+		/// Removes the specified preview props from the preview.
+		/// </summary>
+		/// <param name="props">Colleciton of preview props to remove</param>
+		public void RemoveProps(List<IPropOpenGLData> props)
+		{
+			// Loop over the preview props to remove
+			foreach(IPropOpenGLData prop in props)
+			{
+				// If the prop is a light based prop then...
+				if (prop is ILightPropOpenGLData lightProp)
+				{
+					// Remove the light based prop
+					LightProps.Remove(lightProp);
+					Props.Remove(prop);
+				}
+				// Otherwise if the prop is an intelligent fixture then...						
+				else if (prop is IntelligentFixturePropOpenGLData fixtureProp)
+				{
+					// Remove the intelligent fixture prop
+					IntelligentFixtureProps.Remove(fixtureProp);
+					Props.Remove(prop);
+
+					// Indicate that the render strategy needs to be recreated
+					_recreateMovingHeadRenderStrategy = true;
+				}
+			}			
+		}
 
 		/// <inheritdoc>/>		
 		public override void Initialize(
