@@ -152,6 +152,17 @@ namespace VixenApplication.SetupDisplay.Views
 				// Clear the ctrl key flag
 				_ctrlKeyPressed = false;
 			}
+
+			// If the delete key was pressed then...
+			if (e.Key == Key.Delete)
+			{
+				// Check to see if there are props to delete then...
+				if (GetViewModel().DeletePreviewProp.CanExecute(null))
+				{
+					// Excecute the command to delete the props
+					GetViewModel().DeletePreviewProp.Execute(null);
+				}
+			}
 		}
 
 		/// <summary>
