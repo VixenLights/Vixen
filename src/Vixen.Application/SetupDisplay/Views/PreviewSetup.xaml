@@ -10,6 +10,9 @@
 	<Grid>
 		<DockPanel>
 			<ToolBar DockPanel.Dock="Top">
+				<Button Command="{Binding DeletePreviewProp}">
+					<Image Source="pack://application:,,,/Resources;component/Resources/delete_32.png" Width="32" Height="32"/>
+				</Button>
 				<Button Command="{Binding SelectBackgroundImage}">
 					<Image Source="BackgroundImage.png" Width="32" Height="32"/>
 				</Button>

@@ -102,6 +102,9 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			Unlock = new RelayCommand(UnlockSelectedProps, CanUnlockSelectedProps);
 			UnlockAll = new RelayCommand(UnlockAllProps, CanUnlockAllProps);
 
+			// Intialize the command to delete selected preview props
+			DeletePreviewProp = new RelayCommand(DeleteSelectedPreviewProps, CanDeleteSelectedPreviewProps);
+
 			// Create the collection of view model rotations
 			Rotations = new();
 
@@ -127,6 +130,11 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		#endregion
 
 		#region Public Properties
+
+		/// <summary>
+		/// Command to delete a prop from the setup preview.
+		/// </summary>
+		public ICommand DeletePreviewProp { get; private set; }
 
 		/// <summary>
 		/// Command to add a prop to the preview;
@@ -207,6 +215,9 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		{
 			// Update the enabled/disabled status of the lock and unlock commands
 			UpdateLockUnlockCommands();
+
+			// Update the enabled/disabled status of the delete preview prop command
+			((RelayCommand)DeletePreviewProp).RaiseCanExecuteChanged();
 		}
 
 		/// <summary>
@@ -343,6 +354,28 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 			// Refresh the lock / unlock commands
 			UpdateLockUnlockCommands();
+		}
+
+		/// <summary>
+		/// Returns true when there are selected preview props to delete.
+		/// </summary>
+		/// <returns>True when there are selected preview props to delete</returns>
+		private bool CanDeleteSelectedPreviewProps()
+		{
+			// Return true if there are any selected props
+			return DisplayPreviewDrawingEngine.SelectedProps.Count > 0;
+		}
+
+		/// <summary>
+		/// Deletes the selected props from the preview setup.
+		/// </summary>
+		private void DeleteSelectedPreviewProps()
+		{
+			// Remove the selected props from the preview setup
+			DisplayPreviewDrawingEngine.RemoveProps(DisplayPreviewDrawingEngine.SelectedProps.ToList());
+
+			// Clear the selected props collection
+			DisplayPreviewDrawingEngine.SelectedProps.Clear();	
 		}
 
 		/// <summary>
