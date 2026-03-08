@@ -10,35 +10,48 @@ namespace Common.WPFCommon.Controls
     /// </summary>
     public partial class NumericTextSpinBox : UserControl
     {
-	    static private Regex _regex = new Regex("[^0-9]");
+	    static private Regex _regex = new Regex("[0-9]");
 
 		#region Properties
 		public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
-		    nameof(Value), typeof(int), typeof(NumericTextSpinBox), new PropertyMetadata(0, OnValueChanged, ValidateValue));
+		    nameof(Value), typeof(double), typeof(NumericTextSpinBox), new PropertyMetadata((double)0, OnValueChanged, ValidateValue));
 
-	    public int Value
-	    {
-			get => (int)GetValue(ValueProperty);
-			set => SetValue(ValueProperty, value);
+	    public double Value
+		{
+			get => (double)GetValue(ValueProperty);
+			set
+			{
+				var newValue = Math.Round(value, DecimalPlaces);
+				SetValue(ValueProperty, newValue);
+			}
 		}
 
-	    public static readonly DependencyProperty MinimumProperty = DependencyProperty.Register(
-		    nameof(Minimum), typeof(int), typeof(NumericTextSpinBox), new PropertyMetadata(0, ValidateValue_Callback));
+		public static readonly DependencyProperty MinimumProperty = DependencyProperty.Register(
+		    nameof(Minimum), typeof(double), typeof(NumericTextSpinBox), new PropertyMetadata((double)0, ValidateValue_Callback));
 
-	    public int Minimum
+	    public double Minimum
 	    {
-		    get => (int)GetValue(MinimumProperty);
+		    get => (double)GetValue(MinimumProperty);
 		    set => SetValue(MinimumProperty, value);
 		}
 
 	    public static readonly DependencyProperty MaximumProperty = DependencyProperty.Register(
-		    nameof(Maximum), typeof(int), typeof(NumericTextSpinBox), new PropertyMetadata(100, ValidateValue_Callback));
+		    nameof(Maximum), typeof(double), typeof(NumericTextSpinBox), new PropertyMetadata((double)100, ValidateValue_Callback));
 
-	    public int Maximum
+	    public double Maximum
 	    {
-		    get => (int)GetValue(MaximumProperty);
+		    get => (double)GetValue(MaximumProperty);
 		    set => SetValue(MaximumProperty, value);
 		}
+
+	    public static readonly DependencyProperty DecimalPlacesProperty = DependencyProperty.Register(
+		    nameof(DecimalPlaces), typeof(int), typeof(NumericTextSpinBox), new PropertyMetadata(0));
+
+	    public int DecimalPlaces
+	    {
+		    get => (int)GetValue(DecimalPlacesProperty);
+		    set => SetValue(DecimalPlacesProperty, value);
+	    }
 		#endregion
 
 		#region Events
@@ -60,23 +73,23 @@ namespace Common.WPFCommon.Controls
 		#endregion
 
 		#region Callbacks
+		/// <summary>
+		/// Set the text box to the entered value
+		/// </summary>
+		/// <param name="d"></param>
+		/// <param name="e"></param>
 		private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
 			var control = (NumericTextSpinBox)d;
-			int newValue = (int)e.NewValue;
 
-			if (control.ValueBox != null && control.ValueBox.Text != newValue.ToString())
-			{
-				control.ValueBox.Text = newValue.ToString();
-			}
-
+			control.ValueBox.Text = control.Value.ToString($"F{control.DecimalPlaces}");
 			control.RaiseEvent(new RoutedEventArgs(ValueChangedEvent));
 		}
 
 		private static object ValidateValue(DependencyObject d, object baseValue)
 		{
 			var control = (NumericTextSpinBox)d;
-			int value = (int)baseValue;
+			var value = (double)baseValue;
 			return Math.Clamp(value, control.Minimum, control.Maximum);
 		}
 
@@ -87,31 +100,62 @@ namespace Common.WPFCommon.Controls
 		#endregion
 
 		#region Event Handlers
+		/// <summary>
+		/// Validate if the proposed number is valid
+		/// </summary>
+		/// <param name="sender">Specifies the Control that is being validated</param>
+		/// <param name="e">Specifies Text that is being validated</param>
+		/// <remarks>e.Handled is set to false if the character is to be ignored</remarks>
 		private void NumberValidation(object sender, TextCompositionEventArgs e)
         {
 	        TextBox tb = sender as TextBox;
+			string newText;
 
-			// Only allow a minus if it is at the start AND there isn't already a minus sign there.
-			if (e.Text == "-")
+			// What would the resulting value be if the character entered replaced some existing text
+	        if (tb.SelectionLength > 0)
+	        {
+		        newText = tb.Text.Remove(tb.SelectionStart, tb.SelectionLength).Insert(tb.SelectionStart, e.Text);
+	        }
+
+	        // or inserted some new text
+	        else
+	        {
+		        newText = tb.Text.Insert(tb.CaretIndex, e.Text);
+	        }
+
+			// Now let's validate that new value.
+			// First, a special case that JUST a decimal or negative sign is entered
+			if (newText.Length == 1 && (e.Text == "." || e.Text == "-"))
 			{
-				e.Handled = tb.SelectionStart != 0 || tb.Text.Contains("-");
+				e.Handled = false;
 			}
 
-			// Don't allow anything in front of the minus sign
-			else if (tb.SelectionStart == 0 && tb.SelectionLength == 0 && tb.Text.StartsWith("-"))
-				e.Handled = true;
+			// Else verify it's a valid number and within range
+	        else if (double.TryParse(newText, out double result) && Minimum <= result && result <= Maximum)
+	        {
+		        int decimalPoint = newText.LastIndexOf('.');
 
-			// If the user types anything else, check if it's a digit
-			else
-			{
-				// If it's NOT a digit, block it
-				e.Handled = _regex.IsMatch(e.Text);
-			}
-        }
+				// If there's a decimal point, verify the value is within the specified precision
+				if (decimalPoint != -1 && newText.Length - decimalPoint > DecimalPlaces + 1)
+				{
+					e.Handled = true;
+				}
+				else
+				{
+					e.Handled = false;
+				}
+	        }
+
+			// Or finally the value entered is not acceptable.
+	        else
+	        {
+		        e.Handled = true;
+	        }
+		}
 
 		private void ValueBox_LostFocus(object sender, EventArgs e)
 		{
-			if (int.TryParse(ValueBox.Text, out int result))
+			if (double.TryParse(ValueBox.Text, out double result))
 			{
 				Value = result;
 			}
@@ -147,7 +191,7 @@ namespace Common.WPFCommon.Controls
 				// Scroll Up: Increase value
 				if (Value < Maximum)
 				{
-					Value++;
+					Value += StepValue(DecimalPlaces);
 				}
 			}
 			else if (e.Delta < 0)
@@ -155,7 +199,7 @@ namespace Common.WPFCommon.Controls
 				// Scroll Down: Decrease value
 				if (Value > Minimum)
 				{
-					Value--;
+					Value -= StepValue(DecimalPlaces);
 				}
 			}
 
@@ -166,6 +210,12 @@ namespace Common.WPFCommon.Controls
 
 		private void ValueBox_PreviewKeyDown(object sender, KeyEventArgs e)
 		{
+			TextBox tb = sender as TextBox;
+			if (double.TryParse(tb.Text, out double result) == false)
+			{
+				result = Value;
+			}
+
 			switch (e.Key)
 			{
 				case Key.Home:
@@ -179,7 +229,7 @@ namespace Common.WPFCommon.Controls
 					break;
 
 				case Key.PageUp:
-					Value += (Maximum - Minimum + 1)/10;
+					Value = result + (Maximum - Minimum + 1)/10;
 					if (Value > Maximum)
 					{
 						Value = Maximum;
@@ -188,7 +238,7 @@ namespace Common.WPFCommon.Controls
 					break;
 
 				case Key.PageDown:
-					Value -= (Maximum - Minimum + 1) / 10;
+					Value = result - (Maximum - Minimum + 1) / 10;
 					if (Value < Minimum)
 					{
 						Value = Minimum;
@@ -199,7 +249,7 @@ namespace Common.WPFCommon.Controls
 				case Key.Up:
 					if (Value < Maximum)
 					{
-						Value++;
+						Value = result + StepValue(DecimalPlaces);
 					}
 					e.Handled = true;
 					break;
@@ -207,7 +257,7 @@ namespace Common.WPFCommon.Controls
 				case Key.Down:
 					if (Value > Minimum)
 					{
-						Value--;
+						Value = result - StepValue(DecimalPlaces);
 					}
 					e.Handled = true;
 					break;
@@ -224,7 +274,7 @@ namespace Common.WPFCommon.Controls
         {
 			if (Value > Minimum)
 			{
-				Value--;
+				Value -= StepValue(DecimalPlaces);
 			}
 			ValueBox.Focus();
         }
@@ -233,9 +283,16 @@ namespace Common.WPFCommon.Controls
         {
 			if (Value < Maximum)
 			{
-				Value++;
+				Value += StepValue(DecimalPlaces);
 			}
 			ValueBox.Focus();
+		}
+		#endregion
+
+		#region Private methods
+		private double StepValue(int decimalPrecision)
+		{
+			return Math.Pow(10, -decimalPrecision);
 		}
 		#endregion
 	}

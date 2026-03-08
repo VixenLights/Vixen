@@ -72,14 +72,11 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 
 			// Configure the wizard with the Dimming Arch properties
 			DimmingWizardPage dimmingPage = (DimmingWizardPage)wizard.Pages.Single(page => page is DimmingWizardPage);
-			dimmingPage.Curve = arch.Curve;
 			dimmingPage.Brightness = arch.Brightness;
 			dimmingPage.Gamma = arch.Gamma;
-			dimmingPage.DimmingTypeOption = arch.DimmingTypeOption;
 
 			// Configure the Color Arch properties
 			ColorWizardPage colorPage = (ColorWizardPage)wizard.Pages.Single(page => page is ColorWizardPage);
-			colorPage.ColorTypeOption = arch.ColorTypeOption;
 			colorPage.SingleColorOption = arch.SingleColorOption;
 			colorPage.SelectedColorSet = arch.SelectedColorSet;
 		}
@@ -109,14 +106,11 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 
 			// Configure the Dimming Arch properties
 			DimmingWizardPage dimmingPage = (DimmingWizardPage)wizard.Pages.Single(page => page is DimmingWizardPage);
-			arch.Curve = dimmingPage.Curve;
 			arch.Brightness = dimmingPage.Brightness;
 			arch.Gamma = dimmingPage.Gamma;
-			arch.DimmingTypeOption = dimmingPage.DimmingTypeOption;
 
 			// Configure the Color Arch properties
 			ColorWizardPage colorPage = (ColorWizardPage)wizard.Pages.Single(page => page is ColorWizardPage);
-			arch.ColorTypeOption = colorPage.ColorTypeOption;
 			arch.SingleColorOption = colorPage.SingleColorOption;
 			arch.SelectedColorSet = colorPage.SelectedColorSet;
 		}
