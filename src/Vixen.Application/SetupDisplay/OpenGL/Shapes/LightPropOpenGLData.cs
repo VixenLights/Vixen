@@ -78,24 +78,15 @@ namespace VixenApplication.SetupDisplay.OpenGL
 
 				coordinates.Add(vPoint);
 
-				// If the prop is selected then...
-				if (Selected)
-				{
-					// Configure the vertex as Lime Green
-					_points.Add(Color.LimeGreen.R);  // R
-					_points.Add(Color.LimeGreen.G);  // G
-					_points.Add(Color.LimeGreen.B);  // B
-					_points.Add(0xff); // Alpha (Brightness)
-				}
-				else
-				{
-					// Configure the vertex as Turquoise
-					_points.Add(Color.Turquoise.R); // R
-					_points.Add(Color.Turquoise.G); // G
-					_points.Add(Color.Turquoise.B); // B
-					_points.Add(0xff); // Alpha (Brightness)
-				}
-					
+				// Get the color of the prop based on preview state
+				Color propColor = GetPropColor();
+
+				// Configure the vertex color
+				_points.Add(propColor.R); // R
+				_points.Add(propColor.G); // G
+				_points.Add(propColor.B); // B
+				_points.Add(0xff); // Alpha (Brightness)
+									
 				// Add the light point size
 				_points.Add(nodePoint.Size);				
 			}

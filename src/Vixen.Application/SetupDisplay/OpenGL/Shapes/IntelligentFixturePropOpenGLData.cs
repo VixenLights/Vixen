@@ -107,9 +107,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 
 			// Set the moving head settings to the OpenGL settings
 			_movingHeadCurrentSettings = _movingHeadOpenGL.MovingHead;
-
-			_movingHeadCurrentSettings.BeamColorLeft = Color.Purple;
-			_movingHeadCurrentSettings.BeamColorRight = Color.Purple;
+			UpdateBeamColor();			
 			_movingHeadCurrentSettings.IncludeLegend = false;
 			_movingHeadCurrentSettings.TiltAngle = 135.0;
 			_movingHeadCurrentSettings.PanAngle = 215.0;
@@ -174,6 +172,23 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				maxBeamLength);			
 		}
 
-		#endregion		
+		#endregion
+
+		#region IIntelligentFixturePropOpenGLData Methods
+
+		/// <inheritdoc/>
+		public void UpdateBeamColor()
+		{
+			if (_movingHeadCurrentSettings is null)
+			{
+				throw new InvalidOperationException(nameof(_movingHeadCurrentSettings) + " is null!");
+			}
+			
+			// Update the beam color
+			_movingHeadCurrentSettings.BeamColorLeft = GetPropColor();
+			_movingHeadCurrentSettings.BeamColorRight = GetPropColor();			
+		}
+
+		#endregion
 	}
 }
