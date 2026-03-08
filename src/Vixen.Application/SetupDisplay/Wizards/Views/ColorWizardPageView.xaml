@@ -18,22 +18,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Background="{StaticResource BackgroundDialogBrush}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="350" />
-        </Grid.RowDefinitions>
-
-        <!-- Color Selection buttons -->
-        <RadioButton x:Name="SingleColorButton" Content="Single Discreet Color" IsChecked="True" Grid.Row="0" Click="SingleColorButtonClick"></RadioButton>
-        <RadioButton x:Name="MultipleColorButton" Content="Multiple Discrete Colors" Grid.Row="1" Click="MultipleColorButtonClick"></RadioButton>
-        <RadioButton x:Name="RGBColorButton" Content="Color Mixing (RGB)" Grid.Row="2" Click="RGBColorButtonClick"></RadioButton>
-        <Border BorderBrush="White" BorderThickness="10" Height="1" Grid.Row="3" Margin="5" VerticalAlignment="Center"/>
 
         <!-- Single Color -->
-        <Grid x:Name="SingleColor" Grid.Row="4" Visibility="Visible">
+        <Grid x:Name="SingleColor" Visibility="Visible">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
@@ -50,7 +37,7 @@
         </Grid>
 
         <!-- Multiple Colors -->
-        <Grid x:Name="MultipleColor" Grid.Row="4" Visibility="Collapsed">
+        <Grid x:Name="MultipleColor" Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -81,7 +68,7 @@
         </Grid>
 
         <!-- RGB Color -->
-        <Grid x:Name="RGBColor" Grid.Row="4" Visibility="Collapsed">
+        <Grid x:Name="RGBColor" Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="30"/>
