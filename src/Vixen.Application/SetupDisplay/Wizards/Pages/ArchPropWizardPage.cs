@@ -5,6 +5,7 @@ using Vixen.Extensions;
 using Vixen.Sys.Props;
 using VixenModules.App.Props.Models.Arch;
 using VixenModules.App.Props.Models;
+using Common.WPFCommon.Converters;
 
 namespace VixenApplication.SetupDisplay.Wizards.Pages
 {
@@ -23,7 +24,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 			Name = "Arch";
 			NodeCount = 20;
 			LightSize = 2;
-			StringType = StringTypes.Pixel;
+			StringType = StringTypes.ColorMixingRGB;
 			ArchWiringStart = ArchStartLocation.Left;
 		}
 
@@ -180,8 +181,8 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 						  $"Name: {Name}\n" +
 						  $"Light Count: {NodeCount}\n" +
 						  $"Light Size: {LightSize}\n" +
-				          $"Light Type: {StringType}\n" +
-						  $"Starting Position: {ArchWiringStart}\n" +
+				          $"Light Type: {EnumValueTypeConverter.GetDescription(StringType)}\n" +
+						  $"Starting Position: {EnumValueTypeConverter.GetDescription(ArchWiringStart)}\n" +
 						  $"{Rotations[0].Axis} Rotation: {Rotations[0].RotationAngle}\u00B0\n" +
 						  $"{Rotations[1].Axis} Rotation: {Rotations[1].RotationAngle}\u00B0\n" +
 						  $"{Rotations[2].Axis} Rotation: {Rotations[2].RotationAngle}\u00B0"

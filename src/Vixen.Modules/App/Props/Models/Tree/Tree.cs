@@ -30,11 +30,11 @@ namespace VixenModules.App.Props.Models.Tree
 			//Set initial to 0 so creation does not trigger element generation.
 		}
 
-		public Tree(string name, int strings, int nodesPerString) : this(name, strings, nodesPerString, StringTypes.Pixel)
+		public Tree(string name, int strings, int nodesPerString) : this(name, strings, nodesPerString, StringTypes.ColorMixingRGB)
 		{
 		}
 
-		public Tree(string name, int strings = 0, int nodesPerString = 0, StringTypes stringType = StringTypes.Pixel) : base(name, PropType.Tree)
+		public Tree(string name, int strings = 0, int nodesPerString = 0, StringTypes stringType = StringTypes.ColorMixingRGB) : base(name, PropType.Tree)
 		{
 			PropType = PropType.Tree;
 			Name = name;

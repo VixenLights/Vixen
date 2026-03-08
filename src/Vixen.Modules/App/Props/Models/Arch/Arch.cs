@@ -12,6 +12,7 @@ using Vixen.Sys.Props.Components;
 using VixenModules.Property.Color;
 using System.Collections.ObjectModel;
 using Vixen.Services;
+using Common.WPFCommon.Converters;
 
 namespace VixenModules.App.Props.Models.Arch
 {
@@ -32,23 +33,20 @@ namespace VixenModules.App.Props.Models.Arch
 		{
 		}
 
-		public Arch(string name, int nodeCount = 0, StringTypes stringType = StringTypes.Pixel) : base(name, PropType.Arch)
+		public Arch(string name, int nodeCount = 0, StringTypes stringType = StringTypes.ColorMixingRGB) : base(name, PropType.Arch)
 		{
 			// Set some default parameters
 			Name = name;
 			StringType = stringType;
 			NodeCount = 24;
 			LightSize = 2;
-			StringType = StringTypes.Pixel;
 			ArchWiringStart = ArchStartLocation.Left;
 			LeftRight = true;
 
-			DimmingTypeOption = DimmingType.NoCurve;
-			Brightness = 80;
-			Gamma = 2.2;
+			Brightness = 100;
+			Gamma = 1;
 			Curve = null;
 
-			ColorTypeOption = ColorType.SingleColor;
 			SingleColorOption = System.Drawing.Color.RoyalBlue;
 			var staticData = ApplicationServices.GetModuleStaticData(ColorDescriptor.ModuleId) as ColorStaticData;
 			if (staticData != null)
@@ -153,8 +151,8 @@ namespace VixenModules.App.Props.Models.Arch
 				$"<b>Name:</b> {Name}<br>" +
 				$"<b>Light Count:</b> {NodeCount}<br>" +
 				$"<b>Light Size:</b> {LightSize}<br>" +
-				$"<b>Light Type:</b> {StringType}<br>" +
-				$"<b>Starting Position:</b> {ArchWiringStart}<br>" +
+				$"<b>Light Type:</b> {EnumValueTypeConverter.GetDescription(StringType)}<br>" +
+				$"<b>Starting Position:</b> {EnumValueTypeConverter.GetDescription(ArchWiringStart)}<br>" +
 				$"<b>{Rotations[0].Axis} Rotation:</b> {Rotations[0].RotationAngle}\u00B0<br>" +
 				$"<b>{Rotations[1].Axis} Rotation:</b> {Rotations[1].RotationAngle}\u00B0<br>" +
 				$"<b>{Rotations[2].Axis} Rotation:</b> {Rotations[2].RotationAngle}\u00B0<br>" +

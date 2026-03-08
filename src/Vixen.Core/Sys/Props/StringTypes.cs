@@ -1,8 +1,16 @@
-﻿namespace Vixen.Sys.Props
+﻿using System.ComponentModel;
+
+namespace Vixen.Sys.Props
 {
 	public enum StringTypes
 	{
-		Standard,
-		Pixel
+		[Description("All Lights are a single color")] 
+		SingleColor,
+
+		[Description("String is made up of multiple independant colors")]
+		MultiColor,
+
+		[Description("Full RGB color mixing")]
+		ColorMixingRGB
 	}
 }

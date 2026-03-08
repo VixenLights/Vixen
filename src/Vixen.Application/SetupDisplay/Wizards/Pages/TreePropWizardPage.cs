@@ -15,7 +15,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 			Name = "Tree 1";
 			Strings = 16;
 			NodesPerString = 50;
-			StringType = StringTypes.Pixel;
+			StringType = StringTypes.ColorMixingRGB;
 		}
 		#region Name property
 

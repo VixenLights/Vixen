@@ -10,13 +10,6 @@ using VixenModules.Property.Color;
 
 namespace VixenModules.App.Props.Models
 {
-	public enum DimmingType
-	{
-		NoCurve,
-		Simple,
-		Library
-	}
-
 	public enum ColorType
 	{
 		SingleColor,
@@ -30,7 +23,7 @@ namespace VixenModules.App.Props.Models
 
 		protected BaseLightProp(string name, PropType propType) : base(name, propType)
 		{
-			StringType = StringTypes.Pixel;
+			StringType = StringTypes.ColorMixingRGB;
 			Rotations = new ObservableCollection<AxisRotationModel>();
 			Rotations.Add(new AxisRotationModel() { Axis = Axis.XAxis, RotationAngle = 0 });
 			Rotations.Add(new AxisRotationModel() { Axis = Axis.YAxis, RotationAngle = 0 });
@@ -48,10 +41,10 @@ namespace VixenModules.App.Props.Models
 		/// The <see cref="StringType"/> property determines the behavior and configuration of the light prop:
 		/// <list type="bullet">
 		/// <item>
-		/// <description><see cref="StringTypes.Pixel"/> indicates that the string supports full-color pixels.</description>
+		/// <description><see cref="StringTypes.ColorMixingRGB"/> indicates that the string supports full-color pixels.</description>
 		/// </item>
 		/// <item>
-		/// <description><see cref="StringTypes.Standard"/> indicates that the string supports single-color lights.</description>
+		/// <description><see cref="StringTypes.SingleColor"/> indicates that the string supports single-color lights.</description>
 		/// </item>
 		/// </list>
 		/// </remarks>
@@ -84,17 +77,6 @@ namespace VixenModules.App.Props.Models
 			}
 		}
 
-		private DimmingType _dimmingTypeOption;
-		public DimmingType DimmingTypeOption
-		{
-			get => _dimmingTypeOption;
-			set
-			{
-				_dimmingTypeOption = value;
-				OnPropertyChanged(nameof(DimmingTypeOption));
-			}
-		}
-
 		private int _brightness;
 		public int Brightness
 		{
@@ -114,17 +96,6 @@ namespace VixenModules.App.Props.Models
 			{
 				_gamma = value;
 				OnPropertyChanged(nameof(Gamma));
-			}
-		}
-
-		private ColorType _colorTypeOption;
-		public ColorType ColorTypeOption
-		{
-			get => _colorTypeOption;
-			set
-			{
-				_colorTypeOption = value;
-				OnPropertyChanged(nameof(ColorTypeOption));
 			}
 		}
 
@@ -170,7 +141,7 @@ namespace VixenModules.App.Props.Models
 				string stringName = $"{AutoPropStringName} {i + 1}";
 				ElementNode stringNode = ElementNodeService.Instance.CreateSingle(node, stringName, true, false);
 
-				if (StringType == StringTypes.Pixel)
+				if (StringType == StringTypes.ColorMixingRGB)
 				{
 					AddNodeElements(stringNode, nodesPerString);
 				}
@@ -334,10 +305,10 @@ namespace VixenModules.App.Props.Models
 		/// The color configuration is determined by the <see cref="StringType"/> property:
 		/// <list type="bullet">
 		/// <item>
-		/// <description>If the <see cref="StringType"/> is <see cref="StringTypes.Pixel"/>, the color type is set to <see cref="ElementColorType.FullColor"/>, and the full color order is "RGB".</description>
+		/// <description>If the <see cref="StringType"/> is <see cref="StringTypes.ColorMixingRGB"/>, the color type is set to <see cref="ElementColorType.FullColor"/>, and the full color order is "RGB".</description>
 		/// </item>
 		/// <item>
-		/// <description>If the <see cref="StringType"/> is <see cref="StringTypes.Standard"/>, the color type is set to <see cref="ElementColorType.SingleColor"/>, and the single color is set to red.</description>
+		/// <description>If the <see cref="StringType"/> is <see cref="StringTypes.SingleColor"/>, the color type is set to <see cref="ElementColorType.SingleColor"/>, and the single color is set to red.</description>
 		/// </item>
 		/// </list>
 		/// </remarks>
@@ -346,11 +317,11 @@ namespace VixenModules.App.Props.Models
 			// TODO Get color order info from the Prop properties at some point
 			ColorConfiguration cf = new()
 			{
-				ColorType = StringType == StringTypes.Pixel
+				ColorType = StringType == StringTypes.ColorMixingRGB
 					? ElementColorType.FullColor
 					: ElementColorType.SingleColor,
-				FullColorOrder = StringType == StringTypes.Pixel ? "RGB" : String.Empty,
-				SingleColor = StringType == StringTypes.Standard ? Color.Red : Color.Empty
+				FullColorOrder = StringType == StringTypes.ColorMixingRGB ? "RGB" : String.Empty,
+				SingleColor = StringType == StringTypes.SingleColor ? Color.Red : Color.Empty
 			};
 			return cf;
 		}
@@ -429,29 +400,12 @@ namespace VixenModules.App.Props.Models
 		/// <returns>Returns the <see cref="string"/> summary in HTML format</returns>
 		protected string GetDimmingSummary()
 		{
-			string summary = "<h2>Brightness Level</h2><body>";
-
-			if (DimmingTypeOption == DimmingType.Simple)
-			{
-				summary += $"<b>Maximum Brightness:</b> {Brightness}%<br>" +
-						   $"<b>Brightness Speed:</b> {Gamma:0.0}";
-			}
-			else if (DimmingTypeOption == DimmingType.Library && Curve != null)
-			{
-				if (Curve.LibraryReferenceName != string.Empty)
-				{
-					summary += $"<b>Library Curve:</b> {Curve.LibraryReferenceName}";
-				}
-				else if (Curve.Points.Count > 0)
-				{
-					summary += "<b/>Custom Curve";
-				}
-			}
-			else
-			{
-				summary += "<b/>Full Brightness";
-			}
-			summary += "</body>";
+			string summary = 
+				"<h2>Brightness Level</h2>" +
+				"<body>" +
+				$"<b>Maximum Brightness:</b> {Brightness}%<br>" +
+				$"<b>Gamma:</b> {Gamma:0.0}" +
+				"</body>";
 
 			return summary;
 		}
@@ -464,7 +418,7 @@ namespace VixenModules.App.Props.Models
 		{
 			string summary = "<h2>Light Coloring</h2><body>";
 
-			if (ColorTypeOption == ColorType.SingleColor)
+			if (StringType == StringTypes.SingleColor)
 			{
 				summary += "<b>Single Color:</b><ul style=\"margin-top: 0;\">" +
 					       $"<li>Red is {SingleColorOption.R}</li>" + 
@@ -472,12 +426,12 @@ namespace VixenModules.App.Props.Models
 						   $"<li>Blue is {SingleColorOption.B}</li></ul>";
 			}
 
-			else if (ColorTypeOption == ColorType.MultipleColors)
+			else if (StringType == StringTypes.MultiColor)
 			{
 				summary += $"<b>Multiple Colors:</b> {SelectedColorSet}";
 			}
 
-			else if (ColorTypeOption == ColorType.RGBColors)
+			else if (StringType == StringTypes.ColorMixingRGB)
 			{
 				summary += $"<b>RGB Colors:</b> {SelectedColorSet}";
 			}

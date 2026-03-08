@@ -15,14 +15,6 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		}
 
 		[ViewModelToModel]
-		public DimmingType DimmingTypeOption
-		{
-			get { return GetValue<DimmingType>(DimmingTypeOptionProperty); }
-			set { SetValue(DimmingTypeOptionProperty, value); }
-		}
-		private static readonly IPropertyData DimmingTypeOptionProperty = RegisterProperty<DimmingType>(nameof(DimmingTypeOption));
-
-		[ViewModelToModel]
 		public int Brightness
 		{
 			get { return GetValue<int>(BrightnessProperty); }
@@ -46,27 +38,6 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		}
 		private static readonly IPropertyData GammaProperty = RegisterProperty<double>(nameof(Gamma));
 
-		[ViewModelToModel]
-		public double GammaDefault
-		{
-			get { return GetValue<double>(GammaDefaultProperty); }
-			set { SetValue(GammaDefaultProperty, value); }
-		}
-		private static readonly IPropertyData GammaDefaultProperty = RegisterProperty<double>(nameof(GammaDefault));
-
-		[ViewModelToModel]
-		public Curve Curve
-		{
-			get { return GetValue<Curve>(CurveProperty); }
-			set { SetValue(CurveProperty, value); }
-		}
-		private static readonly IPropertyData CurveProperty = RegisterProperty<Curve>(nameof(Curve));
-
-		private void OnGammaChanged()
-		{
-			GammaDefault = Gamma;
-		}
-
 		/// <summary>
 		/// Called when leaving the page
 		/// </summary>
@@ -74,11 +45,6 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		[UsedImplicitly]
 		protected override Task OnClosingAsync()
 		{
-			// If the simple curve is set, then generate a gamma curve
-			//if (DimmingTypeOption == DimmingType.Simple)
-			//{
-			//	Curve = new Curve().SetGamma(Gamma, Brightness);
-			//}
 			return base.OnClosingAsync();
 		}
 	}

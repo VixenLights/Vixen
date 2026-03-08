@@ -1,35 +1,39 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
 using System.Globalization;
-using Catel.MVVM.Converters;
-using Vixen.Sys.Props;
+using System.Reflection;
+using System.Windows.Data;
 
 namespace Common.WPFCommon.Converters
 {
 	public class EnumValueTypeConverter : IValueConverter
 	{
+		public static string GetDescription(Enum value)
+		{
+			if (value == null) return string.Empty;
+			var field = value.GetType().GetField(value.ToString());
+			var attribute = field?.GetCustomAttribute<DescriptionAttribute>();
+			return attribute?.Description ?? value.ToString();
+		}
+
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (parameter is Type { IsEnum: true } t)
+			if (value == null) return string.Empty;
+
+			// Get the description attribute
+			FieldInfo fi = value.GetType().GetField(value.ToString());
+			if (fi != null)
 			{
-				if (value is Enum enumValue)
-				{
-					var name = value.ToString() ?? String.Empty;
-					return Enum.Parse(t, name);
-				}
+				var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+				return attributes.Length > 0 ? attributes[0].Description : value.ToString();
 			}
 
-			throw new ArgumentException("Invalid Enum conversion");
+			return value.ToString();
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (targetType.IsEnum && value is Enum enumValue)
-			{
-				var name = value.ToString() ?? String.Empty;
-				return Enum.Parse(targetType, name);
-			}
-
-			throw new ArgumentException("Invalid Enum conversion");
+			// We don't usually need to convert back if using an ItemTemplate
+			return Binding.DoNothing;
 		}
 	}
 }

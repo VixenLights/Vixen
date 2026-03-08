@@ -1,10 +1,9 @@
-﻿using Catel.Data;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using Vixen.Services;
+using Vixen.Sys.Props;
 using VixenApplication.SetupDisplay.Wizards.ViewModels;
-using VixenModules.App.Props.Models;
 using VixenModules.Property.Color;
 
 
@@ -20,22 +19,22 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 			InitializeComponent();
 		}
 
-		private ColorType ColorTypeOption
+		private StringTypes StringType
 		{
 			get
 			{
 				if (ViewModel is ColorWizardPageViewModel viewModel)
 				{
-					return viewModel.ColorTypeOption;
+					return viewModel.StringType;
 				}
 
-				return ColorType.SingleColor;
+				return StringTypes.MultiColor;
 			}
 			set
 			{
 				if (ViewModel is ColorWizardPageViewModel viewModel)
 				{
-					viewModel.ColorTypeOption = value;
+					viewModel.StringType = value;
 				}
 			}
 		}
@@ -105,7 +104,6 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 			SingleColor.Visibility = Visibility.Visible;
 			MultipleColor.Visibility = Visibility.Collapsed;
 			RGBColor.Visibility = Visibility.Collapsed;
-			ColorTypeOption = ColorType.SingleColor;
 			OnViewModelChanged();
 		}
 
@@ -114,7 +112,6 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 			SingleColor.Visibility = Visibility.Collapsed;
 			MultipleColor.Visibility = Visibility.Visible;
 			RGBColor.Visibility = Visibility.Collapsed;
-			ColorTypeOption = ColorType.MultipleColors;
 			OnViewModelChanged();
 		}
 
@@ -123,7 +120,6 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 			SingleColor.Visibility = Visibility.Collapsed;
 			MultipleColor.Visibility = Visibility.Collapsed;
 			RGBColor.Visibility = Visibility.Visible;
-			ColorTypeOption = ColorType.RGBColors;
 			OnViewModelChanged();
 		}
 
@@ -153,10 +149,10 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 		{
 			base.OnViewModelChanged();
 
-			if (ColorTypeOption == ColorType.SingleColor)
+
+			if (StringType == StringTypes.SingleColor)
 			{
 				SingleColor.Visibility = Visibility.Visible;
-				SingleColorButton.IsChecked = true;
 				MultipleColor.Visibility = Visibility.Collapsed;
 				RGBColor.Visibility = Visibility.Collapsed;
 
@@ -166,20 +162,18 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 				}
 			}
 
-			else if (ColorTypeOption == ColorType.MultipleColors)
+			else if (StringType == StringTypes.MultiColor)
 			{
 				SingleColor.Visibility = Visibility.Collapsed;
 				MultipleColor.Visibility = Visibility.Visible;
-				MultipleColorButton.IsChecked = true;
 				RGBColor.Visibility = Visibility.Collapsed;
 			}
 
-			else if (ColorTypeOption == ColorType.RGBColors)
+			else if (StringType == StringTypes.ColorMixingRGB)
 			{
 				SingleColor.Visibility = Visibility.Collapsed;
 				MultipleColor.Visibility = Visibility.Collapsed;
 				RGBColor.Visibility = Visibility.Visible;
-				RGBColorButton.IsChecked = true;
 			}
 		}
 	}

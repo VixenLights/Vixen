@@ -2,7 +2,7 @@
 using Orc.Wizard;
 using System.Collections.ObjectModel;
 using Vixen.Services;
-using VixenModules.App.Props.Models;
+using Vixen.Sys.Props;
 using VixenModules.Property.Color;
 
 namespace VixenApplication.SetupDisplay.Wizards.Pages
@@ -16,7 +16,6 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 			Title = "Color Configuration";
 			Description = "Configure how this Prop handles color";
 
-			ColorTypeOption = ColorType.SingleColor;
 			SingleColorOption = Color.RoyalBlue;
 			var staticData = ApplicationServices.GetModuleStaticData(ColorDescriptor.ModuleId) as ColorStaticData;
 			if (staticData != null)
@@ -28,12 +27,12 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 		#endregion
 
 		#region Public Properties
-		public ColorType ColorTypeOption
+		public StringTypes StringType
 		{
-			get { return GetValue<ColorType>(ColorTypeOptionProperty); }
-			set { SetValue(ColorTypeOptionProperty, value); }
+			get { return GetValue<StringTypes>(StringTypeProperty); }
+			set { SetValue(StringTypeProperty, value); }
 		}
-		private static readonly IPropertyData ColorTypeOptionProperty = RegisterProperty<ColorType>(nameof(ColorTypeOption));
+		private static readonly IPropertyData StringTypeProperty = RegisterProperty<StringTypes>(nameof(StringType));
 
 		public Color SingleColorOption
 		{
@@ -62,15 +61,15 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 		{
 			string colorInfo = "None Specified";
 
-			if (ColorTypeOption == ColorType.SingleColor)
+			if (StringType == StringTypes.SingleColor)
 			{
 				colorInfo = $"Single Color:\n    Red is {SingleColorOption.R}\n    Green is {SingleColorOption.G}\n    Blue is {SingleColorOption.B}";
 			}
-			else if (ColorTypeOption == ColorType.MultipleColors)
+			else if (StringType == StringTypes.MultiColor)
 			{
 				colorInfo = $"Multiple Colors: {SelectedColorSet}";
 			}
-			if (ColorTypeOption == ColorType.RGBColors)
+			if (StringType == StringTypes.ColorMixingRGB)
 			{
 				colorInfo = $"RGB Colors: {SelectedColorSet}";
 			}
@@ -80,6 +79,11 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 				Title = this.Title,
 				Summary = colorInfo
 			};
+		}
+
+		public override async Task InitializeAsync()
+		{
+			await base.InitializeAsync();
 		}
 		#endregion
 	}

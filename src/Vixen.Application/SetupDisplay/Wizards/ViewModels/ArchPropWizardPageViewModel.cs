@@ -191,5 +191,16 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 
 			RefreshGraphics();
 		}
+
+		protected override async Task OnClosingAsync()
+		{
+			ColorWizardPage colorPage = (ColorWizardPage)this.Wizard.Pages.Single(page => page is ColorWizardPage);
+			if (colorPage != null)
+			{
+				colorPage.StringType = StringType;
+			}
+
+			await base.OnClosingAsync();
+		}
 	}
 }
