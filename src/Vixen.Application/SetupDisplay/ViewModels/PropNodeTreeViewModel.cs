@@ -569,7 +569,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region CreateProp command
 
-		private TaskCommand<string>? _createPropCommand;
+		private TaskCommand<PropType>? _createPropCommand;
 
 		/// <summary>
 		/// Gets the CreateProp command.
@@ -582,11 +582,9 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// <summary>
 		/// Method to invoke when the CreatePropNode command is executed.
 		/// </summary>
-		private async Task CreateProp(string? propType)
+		private async Task CreateProp(PropType result)
 		{
-			if(Enum.TryParse(propType, out PropType result))
-			{
-				IPropGroup? propGroup = await GeneratePropNodes(result);
+			IPropGroup propGroup = await GeneratePropNodes(result);
 
 			if (propGroup != null)
 			{
@@ -607,7 +605,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 				{
 					// Create the group prop node
 					groupNode = new(propGroup.GroupName);
-						
+
 					// Add the group node to the tree
 					PropManager.AddPropNode(groupNode, pNodeParent);
 
