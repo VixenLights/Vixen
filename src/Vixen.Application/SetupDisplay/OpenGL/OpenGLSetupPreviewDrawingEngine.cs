@@ -347,6 +347,54 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		#region Public Methods
 
 		/// <summary>
+		/// Moves the selected props up one pixel.
+		/// </summary>
+		public void NudgeSelectedPropsUp()
+		{
+			// Loop over the selected props
+			foreach(IPropOpenGLData prop in SelectedProps)
+			{
+				prop.Y += 1; // Move prop up one pixel
+			}
+		}
+
+		/// <summary>
+		/// Moves the selected props down one pixel.
+		/// </summary>
+		public void NudgeSelectedPropsDown()
+		{
+			// Loop over the selected props
+			foreach (IPropOpenGLData prop in SelectedProps)
+			{
+				prop.Y -= 1; // Move prop down one pixel
+			}
+		}
+
+		/// <summary>
+		/// Moves the selected props left one pixel.
+		/// </summary>
+		public void NudgeSelectedPropsLeft()
+		{
+			// Loop over the selected props
+			foreach (IPropOpenGLData prop in SelectedProps)
+			{
+				prop.X -= 1; // Move the prop left one pixel
+			}
+		}
+
+		/// <summary>
+		/// Moves the selected props right one pixel.
+		/// </summary>
+		public void NudgeSelectedPropsRight()
+		{
+			// Loop over the selected props
+			foreach (IPropOpenGLData prop in SelectedProps)
+			{
+				prop.X += 1; // Move the prop right one pixel
+			}
+		}
+
+		/// <summary>
 		/// Adds the specified props to the preview.
 		/// </summary>
 		/// <param name="props">Props to add</param>
