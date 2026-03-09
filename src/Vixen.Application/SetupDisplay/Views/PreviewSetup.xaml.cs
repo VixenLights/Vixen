@@ -20,7 +20,10 @@ namespace VixenApplication.SetupDisplay.Views
 			InitializeComponent();
 
 			// Initialize the OpenTK Display Preview
-			InitializeOpenTk(OpenTkControlPreview);			
+			InitializeOpenTk(OpenTkControlPreview);
+
+			// Register for the Preview Key Down Event
+			this.PreviewKeyDown += PreviewSetup_PreviewKeyDown;
 		}
 
 		#endregion
@@ -38,11 +41,25 @@ namespace VixenApplication.SetupDisplay.Views
 		/// in the preview setup.
 		/// </summary>
 		bool _ctrlKeyPressed = false;
-		
+
 		#endregion
 
 		#region Private Methods
-		
+
+		/// <summary>
+		/// Preview key down event to prevent WPF from stealing the Key up event.
+		/// </summary>
+		/// <param name="sender">Event sender</param>
+		/// <param name="e">Event arguments</param>
+		private void PreviewSetup_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			if (e.Key == Key.Up || e.Key == Key.Down ||
+				e.Key == Key.Left || e.Key == Key.Right)
+			{
+				e.Handled = true; // Stop WPF from stealing it
+			}
+		}
+
 		/// <summary>
 		/// Renders the OpenTK preview setup.
 		/// </summary>
@@ -162,6 +179,30 @@ namespace VixenApplication.SetupDisplay.Views
 					// Excecute the command to delete the props
 					GetViewModel().DeletePreviewProp.Execute(null);
 				}
+			}
+			// If the Up key was pressed then...
+			else if (e.Key == Key.Up)
+			{
+				// Nudge the selected props up
+				GetViewModel().DisplayPreviewDrawingEngine.NudgeSelectedPropsUp();
+			}
+			// If the Down key was pressed then..
+			else if (e.Key == Key.Down)
+			{
+				// Nudge the selected props down
+				GetViewModel().DisplayPreviewDrawingEngine.NudgeSelectedPropsDown();
+			}
+			// If the Left key was pressed then..
+			else if (e.Key == Key.Left)
+			{
+				// Nudge the selected props left
+				GetViewModel().DisplayPreviewDrawingEngine.NudgeSelectedPropsLeft();
+			}
+			// If the Right key was pressed then..
+			else if (e.Key == Key.Right)
+			{
+				// Nudge the selected props right
+				GetViewModel().DisplayPreviewDrawingEngine.NudgeSelectedPropsRight();
 			}
 		}
 
