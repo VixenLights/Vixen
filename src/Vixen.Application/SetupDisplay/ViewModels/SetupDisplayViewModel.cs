@@ -892,6 +892,21 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			}
 		}
 
+		/// <summary>
+		/// Event handler for when a prop rotation changed.
+		/// </summary>
+		/// <param name="sender">Event sender</param>
+		/// <param name="e">Event arguments</param>
+		private void OnRotationChanged(object? sender, EventArgs e)
+		{
+			// If the selected prop is a light based prop then...
+			if (SelectedProp?.PropModel is ILightPropModel lightPropModel)
+			{
+				// Update the prop nodes
+				//ToDo(1)				lightPropModel.UpdatePropNodes();
+			}
+		}
+
 		#region PropInformationViewer property
 		/// <summary>
 		/// Set the text of the informational window
