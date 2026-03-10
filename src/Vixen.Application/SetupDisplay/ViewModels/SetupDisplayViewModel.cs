@@ -117,33 +117,6 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 			// Intialize the command to delete selected preview props
 			DeletePreviewProp = new RelayCommand(DeleteSelectedPreviewProps, CanDeleteSelectedPreviewProps);
-
-			// Create the collection of view model rotations
-			Rotations = new();
-
-			// Create the X Axis rotation view model
-			AxisRotationViewModel xRotation = new AxisRotationViewModel();
-			xRotation.Axis = "X";
-			xRotation.RotationChanged += OnRotationChanged;
-			Rotations.Add(xRotation);
-
-			// Create the Y Axis rotation view model
-			AxisRotationViewModel yRotation = new AxisRotationViewModel();
-			yRotation.Axis = "Y";
-			yRotation.RotationChanged += OnRotationChanged;
-			Rotations.Add(yRotation);
-
-			// Create the Z Axis rotation view model
-			AxisRotationViewModel zRotation = new AxisRotationViewModel();
-			zRotation.Axis = "Z";
-			zRotation.RotationChanged += OnRotationChanged;						
-			Rotations.Add(zRotation);
-
-			// Default the background to full intensity
-			BackgroundBrightness = 1.0f;
-
-			// Default the background brightness slider to disabled
-			BackgroundBrightnessEnabled = false;
 		}
 
 		#endregion
@@ -889,21 +862,6 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 				// Force the CanExecute delegate to run
 				((RelayCommand)AddPropToPreview).RaiseCanExecuteChanged();				
-			}
-		}
-
-		/// <summary>
-		/// Event handler for when a prop rotation changed.
-		/// </summary>
-		/// <param name="sender">Event sender</param>
-		/// <param name="e">Event arguments</param>
-		private void OnRotationChanged(object? sender, EventArgs e)
-		{
-			// If the selected prop is a light based prop then...
-			if (SelectedProp?.PropModel is ILightPropModel lightPropModel)
-			{
-				// Update the prop nodes
-				//ToDo(1)				lightPropModel.UpdatePropNodes();
 			}
 		}
 
