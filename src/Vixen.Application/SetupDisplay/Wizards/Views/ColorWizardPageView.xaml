@@ -5,7 +5,8 @@
                   xmlns:markupExtensions="clr-namespace:Common.WPFCommon.MarkupExtensions;assembly=WPFCommon"
                   xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
                   xmlns:color="clr-namespace:VixenModules.Property.Color;assembly=Module.Property.Color"
-                  xmlns:sys="clr-namespace:System;assembly=System.Runtime"                   >
+                  xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+                  xmlns:sysprops="clr-namespace:Vixen.Sys.Props;assembly=Vixen.Core">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -13,93 +14,120 @@
                 <ResourceDictionary Source="/SetupDisplay/Themes/Theme.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <markupExtensions:EnumBindingSourceExtension x:Key="EnumBindingSource"/>
-            <converters:EnumValueTypeConverter x:Key="EnumValueTypeConverter"/>
+            <converters:EnumValueTypeConverter x:Key="EnumToDescriptionConverter" />
+            <markupExtensions:EnumBindingSourceExtension x:Key="StringTypeValues" EnumType="{x:Type sysprops:StringTypes}" />
         </ResourceDictionary>
     </UserControl.Resources>
+    
     <Grid Background="{StaticResource BackgroundDialogBrush}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
 
-        <!-- Single Color -->
-        <Grid x:Name="SingleColor" Visibility="Visible">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-
-                <Label Grid.Row="0" HorizontalContentAlignment="Center">
-                    The Prop will always be this single color. Select the color below to change.
-                </Label>
-                <WindowsFormsHost x:Name="SingleColorHost" Grid.Row="1" Width="150" Height="150" >
-                    <color:ColorPanel x:Name="ColorPanelControl" ColorChanged="ColorPanel_ColorChanged"/>
-                </WindowsFormsHost>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Content="Light Type" IsTabStop="False"/>
+                <ComboBox x:Name="LightTypeComboBox" Grid.Column="1" VerticalAlignment="Center" Height="20" IsEditable="False"
+                          ItemsSource="{Binding Source={StaticResource StringTypeValues}}"
+                          SelectionChanged="LightType_SelectionChanged">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
             </Grid>
-        </Grid>
+            <Border BorderBrush="White" BorderThickness="10" Height="1" Grid.Row="1" Margin="5" VerticalAlignment="Center"/>
+            <Grid Grid.Row="2">
+                <!-- Single Color -->
+                <Grid x:Name="SingleColor" Visibility="Visible">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
 
-        <!-- Multiple Colors -->
-        <Grid x:Name="MultipleColor" Visibility="Collapsed">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center">
-                The Prop will be multiple, independent colors that do not mix.
-            </Label>
-            <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center">
-                (e.g. multiple strings of different colors wrapped around each item.)
-            </Label>
-            <Label Grid.Row="3" Grid.Column="0" Width="45" HorizontalAlignment="Right">
-                Colors:
-            </Label>
-            <ComboBox x:Name="MultipleColorsList" Grid.Row="3" Grid.Column="1" Width="200" Margin="5,0,20,0" HorizontalAlignment="Left"
-                      ItemsSource="{Binding ColorSetNames}"
-                      SelectedItem="{Binding SelectedColorSet, Mode=TwoWay}">
-            </ComboBox>
-            <Button Grid.Row="3" Grid.Column="2" Width="100" HorizontalAlignment="Left" Click="EditColorsButtonClick">
-                Edit Colors
-            </Button>
-        </Grid>
+                        <Label Grid.Row="0" HorizontalContentAlignment="Center">
+                            The Prop will always be this single color. Select the color below to change.
+                        </Label>
+                        <WindowsFormsHost x:Name="SingleColorHost" Grid.Row="1" Width="150" Height="150" >
+                            <color:ColorPanel x:Name="ColorPanelControl" ColorChanged="ColorPanel_ColorChanged"/>
+                        </WindowsFormsHost>
+                    </Grid>
+                </Grid>
 
-        <!-- RGB Color -->
-        <Grid x:Name="RGBColor" Visibility="Collapsed">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center">
-                The Prop will be full RGB lights with colors that mix.
-            </Label>
-            <Label Grid.Row="2" Grid.Column="0" Width="45" HorizontalAlignment="Right">
-                Colors:
-            </Label>
-            <ComboBox x:Name="RGBColorsList" Grid.Row="2" Grid.Column="1" Width="200" Margin="5,0,20,0" HorizontalAlignment="Left"
-                      SelectedItem="{Binding SelectedColorSet, Mode=TwoWay}">
-                <ComboBox.ItemsSource>
-                    <x:Array Type="{x:Type sys:String}">
-                        <sys:String>RGB</sys:String>
-                        <sys:String>RBG</sys:String>
-                        <sys:String>GBR</sys:String>
-                        <sys:String>GRB</sys:String>
-                        <sys:String>BRG</sys:String>
-                        <sys:String>BGR</sys:String>
-                        <sys:String>RGBW</sys:String>
-                        <sys:String>GRWB</sys:String>
-                    </x:Array>
-                </ComboBox.ItemsSource>
-            </ComboBox>
+                <!-- Multiple Colors -->
+                <Grid x:Name="MultipleColor" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center">
+                        The Prop will be multiple, independent colors that do not mix.
+                    </Label>
+                    <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center">
+                        (e.g. multiple strings of different colors wrapped around each item.)
+                    </Label>
+                    <Label Grid.Row="3" Grid.Column="0" Width="45" HorizontalAlignment="Right">
+                        Colors:
+                    </Label>
+                    <ComboBox x:Name="MultipleColorsList" Grid.Row="3" Grid.Column="1" Width="200" Margin="5,0,20,0" HorizontalAlignment="Left"
+                              ItemsSource="{Binding ColorSetNames}"
+                              SelectedItem="{Binding SelectedColorSet, Mode=TwoWay}">
+                    </ComboBox>
+                    <Button Grid.Row="3" Grid.Column="2" Width="100" HorizontalAlignment="Left" Click="EditColorsButtonClick">
+                        Edit Colors
+                    </Button>
+                </Grid>
+
+                <!-- RGB Color -->
+                <Grid x:Name="RGBColor" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center">
+                        The Prop will be full RGB lights with colors that mix.
+                    </Label>
+                    <Label Grid.Row="2" Grid.Column="0" Width="45" HorizontalAlignment="Right">
+                        Colors:
+                    </Label>
+                    <ComboBox x:Name="RGBColorsList" Grid.Row="2" Grid.Column="1" Width="200" Margin="5,0,20,0" HorizontalAlignment="Left"
+                              SelectedItem="{Binding SelectedColorSet, Mode=TwoWay}">
+                        <ComboBox.ItemsSource>
+                            <x:Array Type="{x:Type sys:String}">
+                                <sys:String>RGB</sys:String>
+                                <sys:String>RBG</sys:String>
+                                <sys:String>GBR</sys:String>
+                                <sys:String>GRB</sys:String>
+                                <sys:String>BRG</sys:String>
+                                <sys:String>BGR</sys:String>
+                                <sys:String>RGBW</sys:String>
+                                <sys:String>GRWB</sys:String>
+                            </x:Array>
+                        </ComboBox.ItemsSource>
+                    </ComboBox>
+                </Grid>
+            </Grid>
         </Grid>
     </Grid>
 </catel:UserControl>

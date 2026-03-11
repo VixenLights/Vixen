@@ -1,4 +1,5 @@
 ﻿using Catel.Data;
+using Common.WPFCommon.Converters;
 using Orc.Wizard;
 using System.Collections.ObjectModel;
 using Vixen.Services;
@@ -16,6 +17,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 			Title = "Color Configuration";
 			Description = "Configure how this Prop handles color";
 
+			StringType = StringTypes.ColorMixingRGB;
 			SingleColorOption = Color.RoyalBlue;
 			var staticData = ApplicationServices.GetModuleStaticData(ColorDescriptor.ModuleId) as ColorStaticData;
 			if (staticData != null)
@@ -59,19 +61,19 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 		#region Base class overrides
 		public override ISummaryItem GetSummary()
 		{
-			string colorInfo = "None Specified";
+			string colorInfo = $"Light Type: {EnumValueTypeConverter.GetDescription(StringType)}\n";
 
 			if (StringType == StringTypes.SingleColor)
 			{
-				colorInfo = $"Single Color:\n    Red is {SingleColorOption.R}\n    Green is {SingleColorOption.G}\n    Blue is {SingleColorOption.B}";
+				colorInfo += $"Single Color:\n    Red is {SingleColorOption.R}\n    Green is {SingleColorOption.G}\n    Blue is {SingleColorOption.B}";
 			}
 			else if (StringType == StringTypes.MultiColor)
 			{
-				colorInfo = $"Multiple Colors: {SelectedColorSet}";
+				colorInfo += $"Multiple Colors: {SelectedColorSet}";
 			}
 			if (StringType == StringTypes.ColorMixingRGB)
 			{
-				colorInfo = $"RGB Colors: {SelectedColorSet}";
+				colorInfo += $"RGB Colors: {SelectedColorSet}";
 			}
 
 			return new SummaryItem
