@@ -24,7 +24,6 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 			Name = "Arch";
 			NodeCount = 20;
 			LightSize = 2;
-			StringType = StringTypes.ColorMixingRGB;
 			ArchWiringStart = ArchStartLocation.Left;
 		}
 
@@ -82,18 +81,6 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 			}
 		}
 		private static readonly IPropertyData NodeCountMaximumProperty = RegisterProperty<int>(nameof(NodeCountMaximum));
-		#endregion
-
-		#region StringType property
-		/// <summary>
-		/// Gets or sets the prop type.
-		/// </summary>
-		public StringTypes StringType
-		{
-			get { return GetValue<StringTypes>(StringTypeProperty); }
-			set { SetValue(StringTypeProperty, value); }
-		}
-		private static readonly IPropertyData StringTypeProperty = RegisterProperty<StringTypes>(nameof(StringType));
 		#endregion
 
 		#region LightSize property
@@ -181,7 +168,6 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 						  $"Name: {Name}\n" +
 						  $"Light Count: {NodeCount}\n" +
 						  $"Light Size: {LightSize}\n" +
-				          $"Light Type: {EnumValueTypeConverter.GetDescription(StringType)}\n" +
 						  $"Starting Position: {EnumValueTypeConverter.GetDescription(ArchWiringStart)}\n" +
 						  $"{Rotations[0].Axis} Rotation: {Rotations[0].RotationAngle}\u00B0\n" +
 						  $"{Rotations[1].Axis} Rotation: {Rotations[1].RotationAngle}\u00B0\n" +
