@@ -18,7 +18,6 @@
                 <ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <converters:EnumValueTypeConverter x:Key="EnumToDescriptionConverter" />
-            <markupExtensions:EnumBindingSourceExtension x:Key="StringTypeValues" EnumType="{x:Type sysprops:StringTypes}" />
             <markupExtensions:EnumBindingSourceExtension x:Key="ArchWiringStartValues" EnumType="{x:Type location:ArchStartLocation}" />
         </ResourceDictionary>
     </UserControl.Resources>
@@ -63,19 +62,8 @@
                         Maximum="{Binding LightSizeMaximum}"
                         Minimum="{Binding LightSizeMinimum}"/>
 
-                <Label Grid.Column="0" Grid.Row="3" Content="Light Type" IsTabStop="False"/>
-                <ComboBox x:Name="LightTypeComboBox" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Height="20" IsEditable="False"
-                          ItemsSource="{Binding Source={StaticResource StringTypeValues}}"
-                          SelectionChanged="LightType_SelectionChanged">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                
-                <Label Grid.Column="0" Grid.Row="4" Content="Starting Position" IsTabStop="False"/>
-                <ComboBox x:Name="ArchWiringStartComboBox" Grid.Column="1" Grid.Row="4" VerticalAlignment="Center" Height="20" IsEditable="False"
+                <Label Grid.Column="0" Grid.Row="3" Content="Starting Position" IsTabStop="False"/>
+                <ComboBox x:Name="ArchWiringStartComboBox" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Height="20" IsEditable="False"
                           ItemsSource="{Binding Source={StaticResource ArchWiringStartValues}}"
                           SelectionChanged="ArchWiringStart_SelectionChanged">
                     <ComboBox.ItemTemplate>
@@ -85,7 +73,7 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
 
-                <GroupBox Grid.Row="5" Grid.ColumnSpan="2" Header="Rotation Angles">
+                <GroupBox Grid.Row="4" Grid.ColumnSpan="2" Header="Rotation Angles">
                     <ItemsControl ItemsSource="{Binding Rotations}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>

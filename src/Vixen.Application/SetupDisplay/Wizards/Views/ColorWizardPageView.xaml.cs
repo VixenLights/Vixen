@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using Vixen.Services;
 using Vixen.Sys.Props;
 using VixenApplication.SetupDisplay.Wizards.ViewModels;
@@ -14,6 +15,8 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 	/// </summary>
 	public partial class ColorWizardPageView : INotifyPropertyChanged
 	{
+		private bool _changeLock = false;
+
 		public ColorWizardPageView()
 		{
 			InitializeComponent();
@@ -99,30 +102,6 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 			}
 		}
 
-		private void SingleColorButtonClick(object sender, RoutedEventArgs e)
-		{
-			SingleColor.Visibility = Visibility.Visible;
-			MultipleColor.Visibility = Visibility.Collapsed;
-			RGBColor.Visibility = Visibility.Collapsed;
-			OnViewModelChanged();
-		}
-
-		private void MultipleColorButtonClick(object sender, RoutedEventArgs e)
-		{
-			SingleColor.Visibility = Visibility.Collapsed;
-			MultipleColor.Visibility = Visibility.Visible;
-			RGBColor.Visibility = Visibility.Collapsed;
-			OnViewModelChanged();
-		}
-
-		private void RGBColorButtonClick(object sender, RoutedEventArgs e)
-		{
-			SingleColor.Visibility = Visibility.Collapsed;
-			MultipleColor.Visibility = Visibility.Collapsed;
-			RGBColor.Visibility = Visibility.Visible;
-			OnViewModelChanged();
-		}
-
 		private void EditColorsButtonClick(object sender, RoutedEventArgs e)
 		{
 			using (ColorSetsSetupForm cssf = new ColorSetsSetupForm(ApplicationServices.GetModuleStaticData(ColorDescriptor.ModuleId) as ColorStaticData))
@@ -140,6 +119,17 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 			}
 		}
 
+		private void LightType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			var control = sender as System.Windows.Controls.ComboBox;
+
+			if (_changeLock == false && control != null && control.SelectedItem != null)
+			{
+				StringType = (StringTypes)control.SelectedItem;
+				OnViewModelChanged();
+			}
+		}
+
 		private void ColorPanel_ColorChanged(object sender, EventArgs e)
 		{
 			SingleColorOption = ColorPanelControl.Color;
@@ -149,6 +139,24 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 		{
 			base.OnViewModelChanged();
 
+			// Set a temporary lock so we don't get into a reentrancy condition when setting the initial values of
+			// ComboBoxes
+			_changeLock = true;
+
+			// This code replaces directly setting the value in the XAML because
+			// WPF sometimes struggles to match a Boxed Enum (from the ViewModel) with
+			// the Enum Objects (from the MarkupExtension) if the DataContext isn't
+			// fully inherited at the moment of instantiation.
+			for (int index = 0; index < LightTypeComboBox.Items.Count; index++)
+			{
+				var item = LightTypeComboBox.Items[index];
+
+				if (item != null && item.ToString() == StringType.ToString())
+				{
+					LightTypeComboBox.SelectedIndex = index;
+					break;
+				}
+			}
 
 			if (StringType == StringTypes.SingleColor)
 			{
@@ -175,6 +183,8 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 				MultipleColor.Visibility = Visibility.Collapsed;
 				RGBColor.Visibility = Visibility.Visible;
 			}
+
+			_changeLock = false;
 		}
 	}
 }
