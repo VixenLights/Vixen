@@ -87,19 +87,6 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		private static readonly IPropertyData NodeCountMaximumProperty = RegisterProperty<int>(nameof(NodeCountMaximum));
 		#endregion
 
-		#region StringType property
-		/// <summary>
-		/// Gets or sets the prop type.
-		/// </summary>
-		[ViewModelToModel]
-		public StringTypes StringType
-		{
-			get { return GetValue<StringTypes>(StringTypeProperty); }
-			set { SetValue(StringTypeProperty, value); }
-		}
-		private static readonly IPropertyData StringTypeProperty = RegisterProperty<StringTypes>(nameof(StringType));
-		#endregion
-
 		#region LightSize property
 		/// <summary>
 		/// Gets or sets the size of each light.
@@ -190,17 +177,6 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 			await base.InitializeAsync();
 
 			RefreshGraphics();
-		}
-
-		protected override async Task OnClosingAsync()
-		{
-			ColorWizardPage colorPage = (ColorWizardPage)this.Wizard.Pages.Single(page => page is ColorWizardPage);
-			if (colorPage != null)
-			{
-				colorPage.StringType = StringType;
-			}
-
-			await base.OnClosingAsync();
 		}
 	}
 }

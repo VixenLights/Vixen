@@ -31,26 +31,6 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 		#endregion
 
 		#region Properties
-		private StringTypes StringType
-		{
-			get
-			{
-				if (ViewModel is ArchPropWizardPageViewModel viewModel)
-				{
-					return viewModel.StringType;
-				}
-
-				return StringTypes.SingleColor;
-			}
-			set
-			{
-				if (ViewModel is ArchPropWizardPageViewModel viewModel)
-				{
-					viewModel.StringType = value;
-				}
-			}
-		}
-
 		private ArchStartLocation ArchWiringStart
 		{
 			get
@@ -73,16 +53,6 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 		#endregion
 
 		#region Control Events
-		private void LightType_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			var control = sender as System.Windows.Controls.ComboBox;
-
-			if (_changeLock == false && control != null && control.SelectedItem != null)
-			{
-				StringType = (StringTypes)control.SelectedItem;
-			}
-		}
-
 		private void ArchWiringStart_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			var control = sender as System.Windows.Controls.ComboBox;
@@ -110,17 +80,6 @@ namespace VixenApplication.SetupDisplay.Wizards.Views
 				// WPF sometimes struggles to match a Boxed Enum (from the ViewModel) with
 				// the Enum Objects (from the MarkupExtension) if the DataContext isn't
 				// fully inherited at the moment of instantiation.
-				for (int index = 0; index < LightTypeComboBox.Items.Count; index++)
-				{
-					var item = LightTypeComboBox.Items[index];
-
-					if (item != null && item.ToString() == StringType.ToString())
-					{
-						LightTypeComboBox.SelectedIndex = index;
-						break;
-					}
-				}
-
 				for (int index = 0; index < ArchWiringStartComboBox.Items.Count; index++)
 				{
 					var item = ArchWiringStartComboBox.Items[index];

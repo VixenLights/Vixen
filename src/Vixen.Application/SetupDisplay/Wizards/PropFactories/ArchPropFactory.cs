@@ -61,7 +61,6 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 			ArchPropWizardPage archPropPage = (ArchPropWizardPage)wizard.Pages.Single(page => page is ArchPropWizardPage);
 			archPropPage.Name = arch.Name;
 			archPropPage.NodeCount = arch.NodeCount;
-			archPropPage.StringType = arch.StringType;
 			archPropPage.ArchWiringStart = arch.ArchWiringStart;
 			archPropPage.LightSize = arch.LightSize;
 			archPropPage.Rotations = AxisRotationViewModel.ConvertToViewModel(arch.Rotations);
@@ -77,6 +76,7 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 
 			// Configure the Color Arch properties
 			ColorWizardPage colorPage = (ColorWizardPage)wizard.Pages.Single(page => page is ColorWizardPage);
+			colorPage.StringType = arch.StringType;
 			colorPage.SingleColorOption = arch.SingleColorOption;
 			colorPage.SelectedColorSet = arch.SelectedColorSet;
 		}
@@ -94,7 +94,6 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 			ArchPropWizardPage archPropPage = (ArchPropWizardPage)wizard.Pages.Single(page => page is ArchPropWizardPage);
 			arch.Name = archPropPage.Name;
 			arch.NodeCount = archPropPage.NodeCount;
-			arch.StringType = archPropPage.StringType;
 			arch.ArchWiringStart = archPropPage.ArchWiringStart;
 			arch.LightSize = archPropPage.LightSize;
 			arch.Rotations = AxisRotationViewModel.ConvertToModel(archPropPage.Rotations);
@@ -111,6 +110,7 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 
 			// Configure the Color Arch properties
 			ColorWizardPage colorPage = (ColorWizardPage)wizard.Pages.Single(page => page is ColorWizardPage);
+			arch.StringType = colorPage.StringType;
 			arch.SingleColorOption = colorPage.SingleColorOption;
 			arch.SelectedColorSet = colorPage.SelectedColorSet;
 		}

@@ -37,7 +37,6 @@ namespace VixenModules.App.Props.Models.Arch
 		{
 			// Set some default parameters
 			Name = name;
-			StringType = stringType;
 			NodeCount = 24;
 			LightSize = 2;
 			ArchWiringStart = ArchStartLocation.Left;
@@ -47,6 +46,7 @@ namespace VixenModules.App.Props.Models.Arch
 			Gamma = 1;
 			Curve = null;
 
+			StringType = stringType;
 			SingleColorOption = System.Drawing.Color.RoyalBlue;
 			var staticData = ApplicationServices.GetModuleStaticData(ColorDescriptor.ModuleId) as ColorStaticData;
 			if (staticData != null)
@@ -151,7 +151,6 @@ namespace VixenModules.App.Props.Models.Arch
 				$"<b>Name:</b> {Name}<br>" +
 				$"<b>Light Count:</b> {NodeCount}<br>" +
 				$"<b>Light Size:</b> {LightSize}<br>" +
-				$"<b>Light Type:</b> {EnumValueTypeConverter.GetDescription(StringType)}<br>" +
 				$"<b>Starting Position:</b> {EnumValueTypeConverter.GetDescription(ArchWiringStart)}<br>" +
 				$"<b>{Rotations[0].Axis} Rotation:</b> {Rotations[0].RotationAngle}\u00B0<br>" +
 				$"<b>{Rotations[1].Axis} Rotation:</b> {Rotations[1].RotationAngle}\u00B0<br>" +

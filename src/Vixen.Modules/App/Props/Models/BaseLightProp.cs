@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using Common.WPFCommon.Converters;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using Vixen.Services;
@@ -416,7 +417,8 @@ namespace VixenModules.App.Props.Models
 		/// <returns>Returns the <see cref="string"/> summary in HTML format</returns>
 		protected string GetColorSummary()
 		{
-			string summary = "<h2>Light Coloring</h2><body>";
+			string summary = "<h2>Light Coloring</h2><body>" +
+							$"<b>Light Type:</b> {EnumValueTypeConverter.GetDescription(StringType)}<br>";
 
 			if (StringType == StringTypes.SingleColor)
 			{
