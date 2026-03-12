@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using Vixen.Sys.Props.HelperTools;
 
 namespace Vixen.Sys.Props.Model
 {
@@ -8,13 +7,15 @@ namespace Vixen.Sys.Props.Model
 	/// </summary>
 	public interface ILightPropModel : IPropModel
 	{
-		PropParameters PropParameters { get; set; }
-
 		/// <summary>
 		/// Collection of 3-D prop nodes.
 		/// </summary>
 		ObservableCollection<NodePoint> Nodes { get; set; }
-					
+
+		public int LightSize { get; set;  }
+
+		public ObservableCollection<AxisRotationModel> AxisRotationModel { get; set; }
+
 		/// <summary>
 		/// Updates prop nodes for rotation changes.
 		/// </summary>

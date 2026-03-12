@@ -18,8 +18,8 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		private void RefreshGraphics()
 		{
 			// Update the prop nodes
-			LightPropModel.PropParameters.Update("NodeCount", NodeCount);
-			LightPropModel.PropParameters.Update("LightSize", LightSize);
+			LightPropModel.NumPoints = NodeCount;
+			LightPropModel.LightSize = LightSize;
 			LightPropModel.UpdatePropNodes();
 		}
 
@@ -171,8 +171,8 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 
 		protected override async Task InitializeAsync()
 		{
-			LightPropModel.PropParameters.Update("NodeCount", NodeCount);
-			LightPropModel.PropParameters.Update("LightSize", LightSize);
+			LightPropModel.NumPoints = NodeCount;
+			LightPropModel.LightSize = LightSize;
 
 			await base.InitializeAsync();
 
