@@ -1,9 +1,6 @@
 ﻿using System.Collections.ObjectModel;
-
 using OpenTK.Mathematics;
-
 using Vixen.Model;
-using Vixen.Sys.Props.HelperTools;
 
 namespace Vixen.Sys.Props.Model
 {
@@ -12,31 +9,12 @@ namespace Vixen.Sys.Props.Model
 	/// </summary>
 	public abstract class BasePropModel : BindableBase
 	{
-		private PropParameters _propParameters = null;
-
-		#region Constructor
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		protected BasePropModel()
-		{
-			PropParameters = new PropParameters();
-			PropParameters.Update("Rotations", new ObservableCollection<AxisRotationModel>());
-		}
-
-		#endregion
-
 		#region IPropModel
 
 		/// <inheritdoc/>		
 		public Guid Id { get; init; } = Guid.NewGuid();
 
 		#endregion
-		public PropParameters PropParameters
-		{
-			get { return _propParameters; }
-			set { _propParameters = value; }
-		}
 
 		#region Protected Methods
 

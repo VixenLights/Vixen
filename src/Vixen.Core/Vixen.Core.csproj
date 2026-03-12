@@ -29,6 +29,10 @@
 				<EmbeddedResource Include="Fonts\RadioLand.ttf" />
 		</ItemGroup>
 
+		<ItemGroup>
+		  <Folder Include="Sys\Props\HelperTools\" />
+		</ItemGroup>
+
 		<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 				<Exec Command="copy &quot;$(SolutionDir)\Release Notes.txt&quot; &quot;$(OutputPath)&quot;&#xD;&#xA;copy &quot;$(SolutionDir)\License.txt&quot; &quot;$(OutputPath)&quot;" />
 		</Target>
