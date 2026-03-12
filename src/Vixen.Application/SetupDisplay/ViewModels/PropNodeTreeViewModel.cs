@@ -150,10 +150,6 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		public static readonly IPropertyData IsSubNodeProperty = RegisterProperty<bool>(nameof(IsSubNode), false);
 		#endregion
 
-		private void OnIsTopNodeChanged()
-		{
-			RaisePropertyChanged(nameof(IsSubNode));
-		}
 		#region SelectedItems property
 
 		/// <summary>
