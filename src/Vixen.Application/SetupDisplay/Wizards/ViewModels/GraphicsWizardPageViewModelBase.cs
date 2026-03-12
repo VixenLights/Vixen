@@ -110,7 +110,7 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 			}
 
 			// Set the updated parameters
-			LightPropModel.PropParameters.Update("Rotations", AxisRotationViewModel.ConvertToModel(Rotations));
+			LightPropModel.AxisRotationModel = AxisRotationViewModel.ConvertToModel(Rotations);
 
 			// Update the prop nodes
 			LightPropModel.UpdatePropNodes();
@@ -120,7 +120,7 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		protected override async Task InitializeAsync()
 		{
 			// Set the updated parameters
-			LightPropModel.PropParameters.Update("Rotations", AxisRotationViewModel.ConvertToModel(Rotations));
+			LightPropModel.AxisRotationModel = AxisRotationViewModel.ConvertToModel(Rotations);
 		}
 	}
 }

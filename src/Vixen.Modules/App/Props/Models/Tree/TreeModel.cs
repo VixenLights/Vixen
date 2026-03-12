@@ -135,8 +135,8 @@ namespace VixenModules.App.Props.Models.Tree
 		/// <returns>3-D points that make up the tree</returns>
 		protected override IEnumerable<NodePoint> Get3DNodePoints()
 		{
-			float width = (float)PropParameters["Width"];
-			float height = (float)PropParameters["Height"];
+			float width = 0;// (float)PropParameters["Width"];
+			float height = 0;// (float)PropParameters["Height"];
 
 			// Create the collection of node points
 			List<NodePoint> treePoints = new List<NodePoint>();
