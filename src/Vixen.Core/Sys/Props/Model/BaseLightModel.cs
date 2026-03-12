@@ -67,6 +67,20 @@ namespace Vixen.Sys.Props.Model
 			get => _nodes;
 			set => SetProperty(ref _nodes, value);
 		}
+
+		private int _lightSize = 2;
+		public int LightSize
+		{
+			get => _lightSize;
+			set => _lightSize = value;
+		}
+
+		private ObservableCollection<AxisRotationModel> _axisRotationModel;
+		public ObservableCollection<AxisRotationModel> AxisRotationModel
+		{
+			get => _axisRotationModel;
+			set => _axisRotationModel = value;
+		}
 		#endregion
 
 		#region Public Methods
