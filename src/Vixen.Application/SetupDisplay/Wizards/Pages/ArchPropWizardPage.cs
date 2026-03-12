@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using Vixen.Extensions;
 using Vixen.Sys.Props;
 using VixenModules.App.Props.Models.Arch;
-using VixenModules.App.Props.Models;
 using Common.WPFCommon.Converters;
+using VixenApplication.SetupDisplay.ViewModels;
 
 namespace VixenApplication.SetupDisplay.Wizards.Pages
 {

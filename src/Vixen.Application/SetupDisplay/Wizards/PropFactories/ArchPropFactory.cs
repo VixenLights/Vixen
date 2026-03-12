@@ -1,7 +1,7 @@
 ﻿using Vixen.Sys;
 using Vixen.Sys.Props;
+using VixenApplication.SetupDisplay.ViewModels;
 using VixenApplication.SetupDisplay.Wizards.Pages;
-using VixenModules.App.Props.Models;
 using VixenModules.App.Props.Models.Arch;
 using VixenModules.Editor.PropWizard;
 

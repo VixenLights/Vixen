@@ -4,7 +4,7 @@ using Catel.MVVM;
 using Orc.Wizard;
 using Vixen.Sys.Props.Model;
 using VixenApplication.SetupDisplay.OpenGL;
-using VixenModules.App.Props.Models;
+using VixenApplication.SetupDisplay.ViewModels;
 
 namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 {

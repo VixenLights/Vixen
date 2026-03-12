@@ -1,9 +1,9 @@
-﻿using Catel.Data;
+﻿using System.Collections.ObjectModel;
+using Catel.Data;
 using Catel.MVVM;
-using System.Collections.ObjectModel;
 using Vixen.Sys.Props.Model;
 
-namespace VixenModules.App.Props.Models
+namespace VixenApplication.SetupDisplay.ViewModels
 {
 	/// <summary>
 	/// Maintains a rotation around a coordinate axis.

@@ -19,8 +19,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Themes/Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <BooleanToVisibilityConverter x:Key="BoolToVis"/>
-            
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converters:BooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" True="Collapsed" False="Visible"/>
 
@@ -47,7 +45,7 @@
                 <MenuItem Header="Add Prop" 
                        Visibility="{Binding DataContext.PropNodeTreeViewModel.IsTopNode,
                              RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},
-                             Converter={StaticResource BoolToVis}}"
+                             Converter={StaticResource BooleanToVisibilityConverter}}"
                        ItemsSource="{Binding DataContext.PropNodeTreeViewModel.AvailableProps, 
                              RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
                     <MenuItem.ItemContainerStyle>
@@ -63,7 +61,7 @@
                 <MenuItem Header="Edit Prop"
                           Visibility="{Binding DataContext.PropNodeTreeViewModel.IsSubNode,
                               RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},
-                              Converter={StaticResource BoolToVis}}"
+                              Converter={StaticResource BooleanToVisibilityConverter}}"
                           Command="{Binding DataContext.PropNodeTreeViewModel.ChangePropCommand,
                               RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
                           CommandParameter="{Binding}" />
