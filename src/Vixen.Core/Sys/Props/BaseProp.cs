@@ -83,15 +83,7 @@ namespace Vixen.Sys.Props
 			get => _name;
 			set
 			{
-				if (_name.Equals(value))
-				{
-					// Do nothing as we're not changing the name
-				}
-				else if (!VixenSystem.Props.IsUniquePropTitle(value))
-				{
-					MessageBox.Show($"{value} already exists. Enter a unique name.", "Prop name must be unique", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				}
-				else
+				if (_name.Equals(value) == false)
 				{
 					RenamePropElement(_name, value);
 					SetProperty(ref _name, value);
