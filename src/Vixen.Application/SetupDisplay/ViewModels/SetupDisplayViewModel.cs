@@ -514,7 +514,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			}
 
 			// Create a new drawing engine passing it the prop to display
-			PropPreviewDrawingEngine = new(propModels);
+			PropPreviewDrawingEngine = new(propModels, height, 1.0f);
 			PropPreviewDrawingEngine.OpenTkControl_Width = width;
 			PropPreviewDrawingEngine.OpenTkControl_Height = height;
 
@@ -1151,7 +1151,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// <summary>
 		/// Drawing engine for the prop preview.
 		/// </summary>
-		public OpenGLPropDrawingEngine? PropPreviewDrawingEngine { get; set; } = new OpenGLPropDrawingEngine(new List<IPropModel>());
+		public OpenGLPropDrawingEngine? PropPreviewDrawingEngine { get; set; } = new OpenGLPropDrawingEngine(new List<IPropModel>(), 1, 100.0f);
 
 		/// <summary>
 		/// Drawing engine for the display preview.
