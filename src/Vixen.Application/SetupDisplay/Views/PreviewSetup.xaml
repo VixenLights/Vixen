@@ -7,6 +7,19 @@
 			 xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+
+	<Control.Resources>
+		<Style x:Key="DisabledAwareTextBlock" TargetType="TextBlock">
+			<Setter Property="Foreground" Value="White" />
+			<Style.Triggers>
+				<Trigger Property="IsEnabled" Value="False">
+					<Setter Property="Foreground" Value="Gray" />
+					<Setter Property="Opacity" Value="0.6" />
+				</Trigger>
+			</Style.Triggers>
+		</Style>
+	</Control.Resources>
+
 	<Grid>
 		<DockPanel>
 			<ToolBar DockPanel.Dock="Top">
@@ -16,6 +29,22 @@
 				<Button Command="{Binding SelectBackgroundImage}">
 					<Image Source="BackgroundImage.png" Width="32" Height="32"/>
 				</Button>
+				<StackPanel Orientation="Vertical">
+					
+					<Slider Width="150"
+					Minimum="0"
+					Maximum="1"
+					 Value="{Binding BackgroundBrightness}"
+					TickFrequency="0.1"					
+					IsSnapToTickEnabled="True" 
+					IsEnabled="{Binding BackgroundBrightnessEnabled}"
+							/>
+					<TextBlock Text="Background Brightness" 
+						Style="{StaticResource DisabledAwareTextBlock}"
+						IsEnabled="{Binding BackgroundBrightnessEnabled}"
+						VerticalAlignment="Center"
+						Margin="0,0,5,0" />
+				</StackPanel>
 				<ToggleButton IsChecked="{Binding DisplayPreviewDrawingEngine.IsSelectMode}">
 					<Image Source="buttonContainsSelect.png" Width="32" Height="32"/>
 				</ToggleButton>

@@ -39,12 +39,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		/// File name of the background image.
 		/// </summary>
 		private string _backgroundFilename;
-		
-		/// <summary>
-		/// Brightness of the background.
-		/// </summary>
-		private float _backgroundBrightness;		
-
+				
 		/// <summary>
 		/// Shader program used to draw the background.
 		/// </summary>
@@ -80,7 +75,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			_backgroundFilename = backgroundFilename;	
 			
 			// Store off backbround brightness
-			_backgroundBrightness = brightness;
+			BackgroundBrightness = brightness;
 			
 			// Initialize the background drawing (OpenGL Shader)
 			InitializeBackground();
@@ -105,6 +100,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		/// </summary>
 		public bool HasBackground { get; private set; }
 
+		/// <summary>
+		/// Brightness of the background.
+		/// </summary>
+		public float BackgroundBrightness { get; set; }
+
 		#endregion
 
 		#region Public Methods
@@ -125,7 +125,10 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			
 			// Activate the background shader program
 			_backgroundProgram.Use();
-			
+
+			// Transfer the brightness of the background
+			_backgroundProgram.TransferBrightnessUniform(BackgroundBrightness);
+
 			// Transfer the projection and camera view matrices			
 			_backgroundProgram.TransferGlobalUniforms(fov, cameraView);
 
@@ -219,7 +222,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			_backgroundProgram.TransferModelMatrixUniform(Matrix4.Identity);
 
 			// Transfer the brightness of the background
-			_backgroundProgram.TransferBrightnessUniform(_backgroundBrightness);
+			_backgroundProgram.TransferBrightnessUniform(BackgroundBrightness);
 			
 			// Create a texture from the bitmap
 			_backgroundTexture = new Texture(backgroundBitmap);
