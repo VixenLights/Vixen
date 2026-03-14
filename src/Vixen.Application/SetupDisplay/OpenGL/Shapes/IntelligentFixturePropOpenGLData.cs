@@ -103,7 +103,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		public void Initialize(float height, float referenceHeight, Action redraw)
 		{
 			// Create the moving head OpenGL implementation
-			_movingHeadOpenGL = new MovingHeadOpenGL();
+			_movingHeadOpenGL = new MovingHeadOpenGL(useSharedQFont: false);
 
 			// Set the moving head settings to the OpenGL settings
 			_movingHeadCurrentSettings = _movingHeadOpenGL.MovingHead;
