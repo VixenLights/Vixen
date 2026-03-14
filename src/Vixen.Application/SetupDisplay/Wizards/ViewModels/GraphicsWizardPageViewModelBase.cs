@@ -34,7 +34,7 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 			propModels.Add(LightPropModel);
 			
 			// Create the prop drawing engine
-			DrawingEngine = new OpenGLPropDrawingEngine(propModels);
+			DrawingEngine = new OpenGLPropDrawingEngine(propModels, 1, 100.0f);
 
 			// Create the collection of view model rotations
 			Rotations = new();
@@ -91,7 +91,7 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		/// <summary>
 		/// OpenGL prop drawing engine.
 		/// </summary>
-		public OpenGLPropDrawingEngine DrawingEngine { get; set; } = new OpenGLPropDrawingEngine(new List<IPropModel>());
+		public OpenGLPropDrawingEngine DrawingEngine { get; set; } = new OpenGLPropDrawingEngine(new List<IPropModel>(), 1, 100f);
 
 		#endregion
 
