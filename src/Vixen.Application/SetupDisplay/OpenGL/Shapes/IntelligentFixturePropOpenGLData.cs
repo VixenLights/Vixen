@@ -72,8 +72,8 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			{				
 				// Draw the legend under the moving head			
 				_movingHeadOpenGL?.DrawLegend(
-					0, // Translation not required					
-					0, // Translation not required					
+					(int)X, 
+					(int)Y, 
 					projectionMatrix,
 					viewMatrix);
 			}
