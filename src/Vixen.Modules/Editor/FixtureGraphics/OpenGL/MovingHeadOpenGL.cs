@@ -20,22 +20,27 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		public MovingHeadOpenGL()
-		{			
-			// If the QFont libraries have not been created then...
-			if (_qFontDrawing == null)
-			{
-				// Load the font
-				_qFont = new QFont(Environment.GetFolderPath(Environment.SpecialFolder.Fonts) + "\\cour.ttf", 32, new QFontBuilderConfiguration(true));				
-				_qFontDrawing = new QFontDrawing(); 
-			}
-
+		/// <param name="useSharedQFont">Flag indicating to use a shared static QFont</param>
+		public MovingHeadOpenGL(bool useSharedQFont)
+		{						
 			// Create the collections for the volumes
 			_grayVolumes = new List<IVolume>();
 			_beamVolumes = new List<IVolume>();
 
 			// Create the settings class 
 			MovingHead = new MovingHeadSettings();
+
+			// Store off whether to use a shared QFont
+			_useSharedQFont = useSharedQFont;
+
+			// If using shared QFont and
+			// QFont libraries have not been created then...
+			if (_useSharedQFont && _qFontDrawing == null)
+			{								
+				// Load the font
+				_qFont = new QFont(Environment.GetFolderPath(Environment.SpecialFolder.Fonts) + "\\cour.ttf", 32, new QFontBuilderConfiguration(true));
+				_qFontDrawing = new QFontDrawing();			
+			}
 		}
 
 		#endregion
@@ -54,12 +59,17 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 		/// <summary>
 		/// Font library used to draw the legend.
 		/// </summary>
-		private QFont _qFont;
+		private static QFont _qFont;
 
 		/// <summary>
 		/// Drawing library used to draw the legend.
 		/// </summary>
-		private QFontDrawing _qFontDrawing;
+		private static QFontDrawing _qFontDrawing;
+
+		/// <summary>
+		/// Flag indicating if a shared QFont should be used.
+		/// </summary>
+		private bool _useSharedQFont;	
 
 		/// <summary>
 		/// Maintains geometry constants for the moving head fixture.
@@ -669,8 +679,26 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 			// If the legend is to be drawn then...
 			if (MovingHead.IncludeLegend)
 			{
+				// Declare QFont
+				QFont qFont;
+				QFontDrawing qFontDrawing;
+
+				// If using a shared QFont then...
+				if (_useSharedQFont)
+				{
+					qFont = _qFont;
+					qFontDrawing = _qFontDrawing;	
+				}
+				// Otherwise create a local QFont
+				else
+				{
+					// Load the font
+					qFont = new QFont(Environment.GetFolderPath(Environment.SpecialFolder.Fonts) + "\\cour.ttf", 32, new QFontBuilderConfiguration(true));
+					qFontDrawing = new QFontDrawing();
+				}
+								
 				// Clear the font drawing primitives
-				_qFontDrawing.DrawingPrimitives.Clear();	
+				qFontDrawing.DrawingPrimitives.Clear();	
 						
 				// Determine the position of the legend text
 				Vector3 positionOfText = new Vector3(
@@ -679,10 +707,23 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 					(float)-_geometry.GetBaseDepth());
 				
 				// Draw the text
-				_qFontDrawing.Print(_qFont, MovingHead.Legend, positionOfText, QFontAlignment.Left, MovingHead.LegendColor);
-				_qFontDrawing.RefreshBuffers();
-				_qFontDrawing.ProjectionMatrix = viewMatrix * projectionMatrix;				
-				_qFontDrawing.Draw();
+				qFontDrawing.Print(qFont, MovingHead.Legend, positionOfText, QFontAlignment.Left, MovingHead.LegendColor);
+				qFontDrawing.RefreshBuffers();
+				qFontDrawing.ProjectionMatrix = viewMatrix * projectionMatrix;				
+				qFontDrawing.Draw();
+
+				// If using a local QFont then...
+				if (!_useSharedQFont)
+				{
+					// Dispose of the library
+					qFont.Dispose();
+					qFont = null;
+
+					// Dispose of the library
+					qFontDrawing.Dispose();
+					QFontDrawing.DisposeStaticState();
+					qFontDrawing = null;
+				}
 			}
 		}
 
@@ -694,23 +735,27 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL
 		/// Refer to MSDN documentation.
 		/// </summary>
 		public void Dispose()
-		{			
-			// If the QFont library has not been disposed of then...
-			if (_qFont != null)
+		{
+			// If using a shared QFont then...
+			if (_useSharedQFont)
 			{
-				// Dispose of the library
-				_qFont.Dispose();
-				_qFont = null;
-			}
+				// If the QFont library has not been disposed of then...
+				if (_qFont != null)
+				{
+					// Dispose of the library
+					_qFont.Dispose();
+					_qFont = null;
+				}
 
-			// If the QFont Drawing library has not been disposed of then...
-			if (_qFontDrawing != null)
-			{
-				// Dispose of the library
-				_qFontDrawing.Dispose();
-				QFontDrawing.DisposeStaticState();
-				_qFontDrawing = null;
-			}						
+				// If the QFont Drawing library has not been disposed of then...
+				if (_qFontDrawing != null)
+				{
+					// Dispose of the library
+					_qFontDrawing.Dispose();
+					QFontDrawing.DisposeStaticState();
+					_qFontDrawing = null;
+				}
+			}
 		}
 
 		#endregion
