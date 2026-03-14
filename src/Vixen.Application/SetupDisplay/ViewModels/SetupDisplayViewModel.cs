@@ -125,6 +125,12 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			zRotation.Axis = "Z";
 			zRotation.RotationChanged += OnRotationChanged;						
 			Rotations.Add(zRotation);
+
+			// Default the background to full intensity
+			BackgroundBrightness = 1.0f;
+
+			// Default the background brightness slider to disabled
+			BackgroundBrightnessEnabled = false;
 		}
 
 		#endregion
@@ -201,6 +207,50 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		}
 
 		public static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
+
+		#endregion
+
+		#region Catel Public Properties
+
+		/// <summary>
+		/// True when the BackgroundBrigtness slider is enabled.
+		/// </summary>
+		public bool BackgroundBrightnessEnabled
+		{
+			get { return GetValue<bool>(BackgroundEnabledProperty); }
+			set { SetValue(BackgroundEnabledProperty, value); }			
+		}
+				
+		/// <summary>
+		/// Background Brightness Enabled property data.
+		/// </summary>
+		public static readonly IPropertyData BackgroundEnabledProperty = RegisterProperty<bool>(nameof(BackgroundBrightnessEnabled));
+
+		/// <summary>
+		/// Background Brightness value (0.0 - 1.0)
+		/// </summary>
+		/// <remarks>1.0 is full intensity</remarks>
+		public float BackgroundBrightness
+		{
+			get { return GetValue<float>(BackgroundBrightnessProperty); }
+			
+			set 
+			{ 
+				SetValue(BackgroundBrightnessProperty, value);
+
+				// If the background has been created on the drawing engine then...
+				if (DisplayPreviewDrawingEngine.Background != null)
+				{
+					// Give the background intensity to the background
+					DisplayPreviewDrawingEngine.Background.BackgroundBrightness = value;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Background Brightness property data.
+		/// </summary>
+		public static readonly IPropertyData BackgroundBrightnessProperty = RegisterProperty<float>(nameof(BackgroundBrightness));
 
 		#endregion
 
@@ -401,6 +451,9 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 				// Assign the background image to the drawing engine
 				DisplayPreviewDrawingEngine.Background = new PropPreviewBackground(dialog.FileName, 1.0f);
+
+				// Since a background image has been selected enable the brightness slider
+				BackgroundBrightnessEnabled = true;
 			}
 		}
 
@@ -514,7 +567,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			}
 
 			// Create a new drawing engine passing it the prop to display
-			PropPreviewDrawingEngine = new(propModels);
+			PropPreviewDrawingEngine = new(propModels, height, 1.0f);
 			PropPreviewDrawingEngine.OpenTkControl_Width = width;
 			PropPreviewDrawingEngine.OpenTkControl_Height = height;
 
@@ -1151,7 +1204,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// <summary>
 		/// Drawing engine for the prop preview.
 		/// </summary>
-		public OpenGLPropDrawingEngine? PropPreviewDrawingEngine { get; set; } = new OpenGLPropDrawingEngine(new List<IPropModel>());
+		public OpenGLPropDrawingEngine? PropPreviewDrawingEngine { get; set; } = new OpenGLPropDrawingEngine(new List<IPropModel>(), 1, 100.0f);
 
 		/// <summary>
 		/// Drawing engine for the display preview.
