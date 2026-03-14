@@ -30,6 +30,17 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// </summary>
 		private List<IntelligentFixturePropOpenGLData> IntelligentFixtureProps { get; set; }
 
+		/// <summary>
+		/// Height of the 3-D world.  It is assumed that the height and width are equal.
+		/// </summary>
+		private int _referenceHeight;
+		
+		/// <summary>
+		/// Zoom factor adjustment.
+		/// </summary>
+		/// <remarks>If the world coordinates are 0 - 1 the zoom needs to be adjusted</remarks>
+		private float _zoomFactor;
+
 		#endregion
 
 		#region Constructor
@@ -37,8 +48,15 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		/// <param name="data">Preview data</param>		
-		public OpenGLPropDrawingEngine(List<IPropModel> props)
+		/// <param name="props">Props to display</param>
+		/// <param name="referenceHeight">Height of the world</param>
+		/// <param name="zoomFactor">Zoom factor adjustment</param>
+		/// <remarks>
+		/// For most of the props we are attempting to use a reference height of 1.0.
+		/// Exception being the Intelligent Fixture.  The Intelligent Fixture requires a large world
+		/// height.  For Intelligent Fixtures intending to use the height of the WPF OpenTK control height.
+		/// </remarks>
+		public OpenGLPropDrawingEngine(List<IPropModel> props, int referenceHeight, float zoomFactor)
 		{		
 			// Extract out the light props
 			LightProps = props.Where(prp => prp is ILightPropModel).Select(prp => new LightPropOpenGLData((ILightPropModel)prp)).Cast<ILightPropOpenGLData>().ToList();
@@ -46,19 +64,24 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			// Extract out the intelligent fixture props
 			IntelligentFixtureProps = props.Where(prp => prp is IntelligentFixtureModel).Select(prp => new IntelligentFixturePropOpenGLData((IntelligentFixtureModel)prp)).Cast<IntelligentFixturePropOpenGLData>().ToList();
 
+			// Save off the height of the world
+			_referenceHeight = referenceHeight;
+
+			// Save off the zoom factor
+			_zoomFactor = zoomFactor;
+
 			// Loop over the light props
 			foreach (IPropOpenGLData prop in LightProps)
-			{
-				// The Prop Preview is normalized sizing (0 - 1)
-				prop.SizeX = 1.0f;
-				prop.SizeY = 1.0f;
-				prop.SizeZ = 1.0f;
+			{				
+				prop.SizeX = _referenceHeight;
+				prop.SizeY = _referenceHeight;
+				prop.SizeZ = _referenceHeight;
 			}
 
 			// Loop over the intelligent fixtures
 			foreach (IntelligentFixturePropOpenGLData prop in IntelligentFixtureProps)
 			{				
-				prop.SizeY = 1.0f;
+				prop.SizeY = _referenceHeight;
 			}
 		}
 
@@ -151,25 +174,27 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// <inheritdoc/>		
 		protected override float GetReferenceHeight()
 		{
-			// Draw in a world view of 1.0 x 1.0
-			// Note for Intelligent Fixtures to display a legend this needs to be changed to something like 400x400
-			return 1.0f;
+			// For light props expect a world view of 1.0 x 1.0
+			// For Intelligent Fixtures to display a legend this needs > 1.0 so we are using the OpenTK control height.
+			return _referenceHeight;
 		}
 
 		/// <inheritdoc/>		
 		protected override float GetReferenceWidth()
 		{
-			// Draw in a world view of 1.0 x 1.0
-			// Note for Intelligent Fixtures to display a legend this needs to be changed to something like 400x400
-			return 1.0f;
+			// For light props expect a world view of 1.0 x 1.0
+			// For Intelligent Fixtures to display a legend this needs > 1.0 so we are using the OpenTK control height.
+			return _referenceHeight;
 		}
 
 		/// <inheritdoc/>		
 		protected override float GetZoomFactor()
 		{
-			// Since the props are being draw on a 1x1 coordinate system
-			// The zoom needs to divided by a factor of 100
-			return 100;
+			// Light props are being draw on a 1x1 world coordinate system
+			// so the zoom factor is expected to be a value of 100.
+			// For Intelligent fixture the world coordinate system matches the height of the OpenTK control
+			// so the zoom factor would be expected to be a value of 1.
+			return _zoomFactor;
 		}
 
 		/// <inheritdoc/>		
