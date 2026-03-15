@@ -26,11 +26,6 @@
 		public int RotationAngle { get; set; }
 
 		/// <summary>
-		/// Event when one of the rotation properties have changed.
-		/// </summary>
-		public event EventHandler RotationChanged;
-
-		/// <summary>
 		/// Converts from axis string to enumeration.
 		/// </summary>
 		/// <param name="axis">String to convert</param>

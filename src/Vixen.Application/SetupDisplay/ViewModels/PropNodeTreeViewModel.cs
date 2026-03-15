@@ -652,7 +652,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		private async Task ChangeProp(PropType result)
 		{
-			IPropGroup propGroup = await EditPropNode(SelectedItems[0].PropNode.Prop);
+			EditPropNode(SelectedItems[0].PropNode.Prop);
 			RaisePropertyChanged(nameof(SelectedItem));
 		}
 
@@ -1041,7 +1041,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			ITypeFactory typeFactory = this.GetTypeFactory();
 
 			// Create a Prop Factory for the specific prop type 
-			IPropFactory newPropFactory = PropFactory.CreateInstance(propType);
+			IPropFactory newPropFactory = PropWizardFactory.CreateInstance(propType);
 
 			// Create a default Prop
 			(IProp newProp, IPropGroup propGroup) = newPropFactory.CreateBaseProp();
@@ -1105,7 +1105,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		/// <param name="existingProp">Specifies the prop to edit</param>
 		/// <returns>The <see cref="IPropGroup"/> that contains the updated Prop</returns>
-		private async Task<IPropGroup> EditPropNode(IProp existingProp)
+		private async void EditPropNode(IProp existingProp)
 		{
 			var dependencyResolver = this.GetDependencyResolver();
 
@@ -1113,8 +1113,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			ITypeFactory typeFactory = this.GetTypeFactory();
 
 			// Configure current prop for editing
-			IPropFactory newPropFactory = PropFactory.CreateInstance(existingProp.PropType);
-			IPropGroup propGroup = newPropFactory.EditExistingProp(existingProp);
+			IPropFactory newPropFactory = PropWizardFactory.CreateInstance(existingProp.PropType);
 
 			// Retrieve the color scheme service
 			IBaseColorSchemeService baseColorService = (IBaseColorSchemeService)dependencyResolver.Resolve(typeof(IBaseColorSchemeService));
@@ -1157,11 +1156,11 @@ namespace VixenApplication.SetupDisplay.ViewModels
 					newPropFactory.UpdateProp(existingProp, propWizard.Wizard);
 
 					// User did not cancel					
-					return propGroup;
+					return;
 				}
 			}
 
-			return null;
+			return;
 		}
 		#endregion
 

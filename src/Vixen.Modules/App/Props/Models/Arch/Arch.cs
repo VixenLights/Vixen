@@ -55,8 +55,6 @@ namespace VixenModules.App.Props.Models.Arch
 				SelectedColorSet = ColorSetNames[0];
 			}
 
-			PropertyChanged += Arch_PropertyChanged;
-
 			// Create Preview model
 			PropModel = new ArchModel();
 
@@ -64,24 +62,6 @@ namespace VixenModules.App.Props.Models.Arch
 			{
 				GenerateElementsAsync().SafeFireAndForget();
 			}, 500);
-		}
-
-		private void Arch_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-		{
-			try
-			{
-				if (e.PropertyName != null)
-				{
-					switch (e.PropertyName)
-					{
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				Logging.Error(ex, $"An error occured handling Arch property {e.PropertyName} changed");
-			}
-
 		}
 
 		#region Properties
