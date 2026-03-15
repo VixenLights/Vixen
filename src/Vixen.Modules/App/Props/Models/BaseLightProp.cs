@@ -1,31 +1,37 @@
 ﻿#nullable enable
-
-using NLog;
-using NLog.Filters;
-using System.ComponentModel;
-using System.Diagnostics;
+using Common.WPFCommon.Converters;
+using System.Collections.ObjectModel;
 using System.Drawing;
-using System.Reflection.Emit;
-using Vixen.Attributes;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Props;
 using Vixen.Sys.Props.Model;
-using VixenModules.App.Props.Models.Tree;
+using VixenModules.App.Curves;
 using VixenModules.Property.Color;
 
 namespace VixenModules.App.Props.Models
 {
+	public enum ColorType
+	{
+		SingleColor,
+		MultipleColors,
+		RGBColors
+	}
+
 	public abstract class BaseLightProp<TModel> : BaseProp<TModel> where TModel : BasePropModel, IPropModel
-	{				
-		private StringTypes _stringType;
+	{
 		protected bool UpdateInProgress = false;
 
 		protected BaseLightProp(string name, PropType propType) : base(name, propType)
 		{
-			StringType = StringTypes.Pixel;
+			StringType = StringTypes.ColorMixingRGB;
+			Rotations = new ObservableCollection<AxisRotationModel>();
+			Rotations.Add(new AxisRotationModel() { Axis = Axis.XAxis, RotationAngle = 0 });
+			Rotations.Add(new AxisRotationModel() { Axis = Axis.YAxis, RotationAngle = 0 });
+			Rotations.Add(new AxisRotationModel() { Axis = Axis.ZAxis, RotationAngle = 0 });
 		}
 
+		#region Properties
 		/// <summary>
 		/// Gets or sets the type of string used in the light prop.
 		/// </summary>
@@ -36,21 +42,87 @@ namespace VixenModules.App.Props.Models
 		/// The <see cref="StringType"/> property determines the behavior and configuration of the light prop:
 		/// <list type="bullet">
 		/// <item>
-		/// <description><see cref="StringTypes.Pixel"/> indicates that the string supports full-color pixels.</description>
+		/// <description><see cref="StringTypes.ColorMixingRGB"/> indicates that the string supports full-color pixels.</description>
 		/// </item>
 		/// <item>
-		/// <description><see cref="StringTypes.Standard"/> indicates that the string supports single-color lights.</description>
+		/// <description><see cref="StringTypes.SingleColor"/> indicates that the string supports single-color lights.</description>
 		/// </item>
 		/// </list>
 		/// </remarks>
-		[PropertyOrder(2)]
-		[DisplayName("String Type")]
+		private StringTypes _stringType;
 		public StringTypes StringType
 		{
 			get => _stringType;
 			set => SetProperty(ref _stringType, value);
 		}
-		
+
+		private ObservableCollection<AxisRotationModel> _rotations;
+		public ObservableCollection<AxisRotationModel> Rotations
+		{
+			get => _rotations;
+			set
+			{
+				_rotations = value;
+				OnPropertyChanged(nameof(Rotations));
+			}
+		}
+
+		private Curve _curve;
+		public Curve Curve
+		{
+			get => _curve;
+			set
+			{
+				_curve = value;
+				OnPropertyChanged(nameof(Curve));
+			}
+		}
+
+		private int _brightness;
+		public int Brightness
+		{
+			get => _brightness;
+			set
+			{
+				_brightness = value;
+				OnPropertyChanged(nameof(Brightness));
+			}
+		}
+
+		private double _gamma;
+		public double Gamma
+		{
+			get => _gamma;
+			set
+			{
+				_gamma = value;
+				OnPropertyChanged(nameof(Gamma));
+			}
+		}
+
+		private Color _singleColorOption;
+		public Color SingleColorOption
+		{
+			get => _singleColorOption;
+			set
+			{
+				_singleColorOption = value;
+				OnPropertyChanged(nameof(SingleColorOption));
+			}
+		}
+
+		private string _selectedColorSet;
+		public string SelectedColorSet
+		{
+			get => _selectedColorSet;
+			set
+			{
+				_selectedColorSet = value;
+				OnPropertyChanged(nameof(SelectedColorSet));
+			}
+		}
+		#endregion
+
 		/// <summary>
 		/// Adds a specified number of string elements to the given element node.
 		/// </summary>
@@ -70,7 +142,7 @@ namespace VixenModules.App.Props.Models
 				string stringName = $"{AutoPropStringName} {i + 1}";
 				ElementNode stringNode = ElementNodeService.Instance.CreateSingle(node, stringName, true, false);
 
-				if (StringType == StringTypes.Pixel)
+				if (StringType == StringTypes.ColorMixingRGB)
 				{
 					AddNodeElements(stringNode, nodesPerString);
 				}
@@ -97,18 +169,18 @@ namespace VixenModules.App.Props.Models
 		protected async Task UpdateStringNodeCount(int nodeCount, ElementNode? propNode = null)
 		{
 			propNode ??= GetOrCreateElementNode();
-			
+
 			if (propNode.IsLeaf || propNode.GetMaxChildDepth() > 2)
 			{
 				throw new InvalidOperationException("Prop does not have direct leaf children");
 			}
-			
+
 			while (UpdateInProgress)
 			{
 				await Task.Delay(100);
 			}
 			UpdateInProgress = true;
-			
+
 			var existingNodes = propNode.Children.Count();
 			if (existingNodes == nodeCount) return;
 
@@ -146,12 +218,12 @@ namespace VixenModules.App.Props.Models
 		protected async Task UpdateNodesPerString(int nodesPerString, ElementNode? propNode = null)
 		{
 			propNode ??= GetOrCreateElementNode();
-			
+
 			if (propNode.IsLeaf || propNode.GetMaxChildDepth() > 3)
 			{
 				throw new InvalidOperationException("Prop does not have direct leaf children");
 			}
-			
+
 			while (UpdateInProgress)
 			{
 				await Task.Delay(100);
@@ -200,13 +272,13 @@ namespace VixenModules.App.Props.Models
 		protected async Task UpdateStrings(int strings, ElementNode? propNode = null)
 		{
 			propNode ??= GetOrCreateElementNode();
-			
+
 			while (UpdateInProgress)
 			{
 				await Task.Delay(500);
 			}
 			UpdateInProgress = true;
-			
+
 			var existingStrings = propNode.Children.Count();
 			if (existingStrings == strings) return;
 
@@ -234,10 +306,10 @@ namespace VixenModules.App.Props.Models
 		/// The color configuration is determined by the <see cref="StringType"/> property:
 		/// <list type="bullet">
 		/// <item>
-		/// <description>If the <see cref="StringType"/> is <see cref="StringTypes.Pixel"/>, the color type is set to <see cref="ElementColorType.FullColor"/>, and the full color order is "RGB".</description>
+		/// <description>If the <see cref="StringType"/> is <see cref="StringTypes.ColorMixingRGB"/>, the color type is set to <see cref="ElementColorType.FullColor"/>, and the full color order is "RGB".</description>
 		/// </item>
 		/// <item>
-		/// <description>If the <see cref="StringType"/> is <see cref="StringTypes.Standard"/>, the color type is set to <see cref="ElementColorType.SingleColor"/>, and the single color is set to red.</description>
+		/// <description>If the <see cref="StringType"/> is <see cref="StringTypes.SingleColor"/>, the color type is set to <see cref="ElementColorType.SingleColor"/>, and the single color is set to red.</description>
 		/// </item>
 		/// </list>
 		/// </remarks>
@@ -246,11 +318,11 @@ namespace VixenModules.App.Props.Models
 			// TODO Get color order info from the Prop properties at some point
 			ColorConfiguration cf = new()
 			{
-				ColorType = StringType == StringTypes.Pixel
+				ColorType = StringType == StringTypes.ColorMixingRGB
 					? ElementColorType.FullColor
 					: ElementColorType.SingleColor,
-				FullColorOrder = StringType == StringTypes.Pixel ? "RGB" : String.Empty,
-				SingleColor = StringType == StringTypes.Standard ? Color.Red : Color.Empty
+				FullColorOrder = StringType == StringTypes.ColorMixingRGB ? "RGB" : String.Empty,
+				SingleColor = StringType == StringTypes.SingleColor ? Color.Red : Color.Empty
 			};
 			return cf;
 		}
@@ -282,11 +354,11 @@ namespace VixenModules.App.Props.Models
 			{
 				await Task.Delay(100);
 			}
-			
+
 			UpdateInProgress = true;
 			var propNode = GetOrCreateElementNode();
 			PropertySetupHelper.AddOrUpdatePatchingOrder(propNode, startLocation, zigZag, zigZagOffset);
-			
+
 			UpdateInProgress = false;
 		}
 
@@ -323,5 +395,52 @@ namespace VixenModules.App.Props.Models
 			UpdateInProgress = false;
 		}
 
+		/// <summary>
+		/// Get the HTML summary of all the Dimming parameter values
+		/// </summary>
+		/// <returns>Returns the <see cref="string"/> summary in HTML format</returns>
+		protected string GetDimmingSummary()
+		{
+			string summary = 
+				"<h2>Brightness Level</h2>" +
+				"<body>" +
+				$"<b>Maximum Brightness:</b> {Brightness}%<br>" +
+				$"<b>Gamma:</b> {Gamma:0.0}" +
+				"</body>";
+
+			return summary;
+		}
+
+		/// <summary>
+		/// Get the HTML summary of all the Color parameter values
+		/// </summary>
+		/// <returns>Returns the <see cref="string"/> summary in HTML format</returns>
+		protected string GetColorSummary()
+		{
+			string summary = "<h2>Light Coloring</h2><body>" +
+							$"<b>Light Type:</b> {EnumValueTypeConverter.GetDescription(StringType)}<br>";
+
+			if (StringType == StringTypes.SingleColor)
+			{
+				summary += "<b>Single Color:</b><ul style=\"margin-top: 0;\">" +
+					       $"<li>Red is {SingleColorOption.R}</li>" + 
+						   $"<li>Green is {SingleColorOption.G}</li>" +
+						   $"<li>Blue is {SingleColorOption.B}</li></ul>";
+			}
+
+			else if (StringType == StringTypes.MultiColor)
+			{
+				summary += $"<b>Multiple Colors:</b> {SelectedColorSet}";
+			}
+
+			else if (StringType == StringTypes.ColorMixingRGB)
+			{
+				summary += $"<b>RGB Colors:</b> {SelectedColorSet}";
+			}
+
+			summary += "</body>";
+
+			return summary;
+		}
 	}
 }

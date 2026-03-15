@@ -8,9 +8,8 @@ namespace Vixen.Sys.Props.Model
 	/// Maintains a base light model.
 	/// </summary>
 	public abstract class BaseLightModel : BasePropModel, ILightPropModel
-	{								
+	{
 		#region Protected Methods
-
 		/// <summary>
 		/// Updates the nodes when a model property changes.
 		/// </summary>
@@ -23,34 +22,9 @@ namespace Vixen.Sys.Props.Model
 			Nodes.AddRange(Get3DNodePoints());
 		}
 
-		/// <summary>
-		/// Rotates the NodePoints around the center of a 0,1 matrix.
-		/// </summary>
-		/// <param name="nodePoints"></param>
-		/// <param name="angleInDegrees"></param>
-		protected static void RotateNodePoints(List<NodePoint> nodePoints, int angleInDegrees)
-		{
-			double centerX = .5;
-			double centerY = .5;
-			double angleInRadians = angleInDegrees * (Math.PI / 180);
-			double cosTheta = Math.Cos(angleInRadians);
-			double sinTheta = Math.Sin(angleInRadians);
-			foreach (var nodePoint in nodePoints)
-			{
-				nodePoint.X =
-					cosTheta * (nodePoint.X - centerX) -
-						sinTheta * (nodePoint.Y - centerY) + centerX;
-				nodePoint.Y =
-					sinTheta * (nodePoint.X - centerX) +
-					 cosTheta * (nodePoint.Y - centerY) + centerY;
-
-			}
-		}
-
 		#endregion
 
-		#region Protected Abstract Methods
-
+		#region Abstract Methods
 		/// <summary>
 		/// Retrieves the 3-D node points that make up the prop.
 		/// </summary>
@@ -69,17 +43,19 @@ namespace Vixen.Sys.Props.Model
 			set => SetProperty(ref _nodes, value);
 		}
 
-		private int _rotationAngle;
-
-		/// <summary>
-		/// The angle at which the core Prop is rotated.
-		/// </summary>
-		public int RotationAngle
+		private int _lightSize = 2;
+		public int LightSize
 		{
-			get => _rotationAngle;
-			set => SetProperty(ref _rotationAngle, value);
+			get => _lightSize;
+			set => _lightSize = value;
 		}
 
+		private ObservableCollection<AxisRotationModel> _axisRotationModel;
+		public ObservableCollection<AxisRotationModel> AxisRotationModel
+		{
+			get => _axisRotationModel;
+			set => _axisRotationModel = value;
+		}
 		#endregion
 
 		#region Public Methods

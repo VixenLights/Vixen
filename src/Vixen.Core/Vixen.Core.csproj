@@ -8,14 +8,15 @@
 		</PropertyGroup>
 
 		<ItemGroup>
+				<PackageReference Include="Catel.MVVM" />
 				<PackageReference Include="Newtonsoft.Json" />
 				<PackageReference Include="NLog">
 						<ExcludeAssets>runtime</ExcludeAssets>
 				</PackageReference>
 				<PackageReference Include="System.Drawing.Common" />
 				<PackageReference Include="Zstandard.Net" />
-				<PackageReference Include="OpenTK"/>
-				<PackageReference Include="OpenTK.GLWpfControl"/>
+				<PackageReference Include="OpenTK" />
+				<PackageReference Include="OpenTK.GLWpfControl" />
 		</ItemGroup>
 	<ItemGroup>
 			<None Remove="Directory.Build.props" />
@@ -26,6 +27,10 @@
 		<ItemGroup>
 				<EmbeddedResource Include="Fonts\DigitalDream.ttf" />
 				<EmbeddedResource Include="Fonts\RadioLand.ttf" />
+		</ItemGroup>
+
+		<ItemGroup>
+		  <Folder Include="Sys\Props\HelperTools\" />
 		</ItemGroup>
 
 		<Target Name="PostBuild" AfterTargets="PostBuildEvent">

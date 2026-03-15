@@ -1,5 +1,7 @@
-﻿using Catel.Data;
+﻿using System.Collections.ObjectModel;
+using Catel.Data;
 using Catel.MVVM;
+using Vixen.Sys.Props.Model;
 
 namespace VixenApplication.SetupDisplay.ViewModels
 {
@@ -32,8 +34,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 				RotationChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
-
-		public static readonly IPropertyData AxisProperty = RegisterProperty<string>(nameof(Axis));
+		private static readonly IPropertyData AxisProperty = RegisterProperty<string>(nameof(Axis));
 
 		/// <summary>
 		/// Amount of rotation in degrees.
@@ -47,9 +48,14 @@ namespace VixenApplication.SetupDisplay.ViewModels
 				RotationChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
+		private static readonly IPropertyData RotationAngleProperty = RegisterProperty<int>(nameof(RotationAngle));
 
-		public static readonly IPropertyData RotationAngleProperty = RegisterProperty<int>(nameof(RotationAngle));
-
+		public int RotationAngleDefault
+		{
+			get { return GetValue<int>(RotationAngleDefaultProperty); }
+			set { SetValue(RotationAngleDefaultProperty, value); }
+		}
+		private static readonly IPropertyData RotationAngleDefaultProperty = RegisterProperty<int>(nameof(RotationAngleDefault));
 		#endregion
 
 		#region Events
@@ -60,5 +66,49 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		public event EventHandler? RotationChanged;
 
 		#endregion
+
+		/// <summary>
+		/// Convert rotation object from ViewModel to Model
+		/// </summary>
+		/// <param name="rotations">Specifies the Rotation object in ViewModel format</param>
+		/// <returns>Returns an <see cref="System.Collections.ObjectModel.ObservableCollection{AxisRotationModel}"/>
+		/// that specifies the Model version of the rotations.</returns>
+		public static ObservableCollection<AxisRotationModel> ConvertToModel(ObservableCollection<AxisRotationViewModel> rotations)
+		{
+			// Transfer the rotations from the view model to the model
+			var models = new ObservableCollection<AxisRotationModel>();
+			if (rotations != null)
+			{
+				foreach (AxisRotationViewModel rotationViewModel in rotations)
+				{
+					AxisRotationModel rotationMdl = new();
+					rotationMdl.ConvertAxis(rotationViewModel.Axis);
+					rotationMdl.RotationAngle = rotationViewModel.RotationAngle;
+					models.Add(rotationMdl);
+				}
+			}
+			return models;
+		}
+
+		/// <summary>
+		/// Convert rotation object from Model to ViewModel
+		/// </summary>
+		/// <param name="rotations">Specifies the Rotation object in Model format</param>
+		/// <returns>Returns an <see cref="System.Collections.ObjectModel.ObservableCollection{AxisRotationViewModel}"/>
+		/// that specifies the ViewModel version of the rotations.</returns>
+		public static ObservableCollection<AxisRotationViewModel> ConvertToViewModel(ObservableCollection<AxisRotationModel> rotations)
+		{
+			// Transfer the rotations from the model to the view model
+			var models = new ObservableCollection<AxisRotationViewModel>();
+			if (rotations != null)
+			{
+				foreach (AxisRotationModel rotationModel in rotations)
+				{
+					models.Add(new AxisRotationViewModel() { Axis = AxisRotationModel.ConvertAxis(rotationModel.Axis), RotationAngle = rotationModel.RotationAngle });
+				}
+			}
+			return models;
+		}
+
 	}
 }

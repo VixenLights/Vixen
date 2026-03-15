@@ -1,5 +1,4 @@
-﻿using Catel.Collections;
-using Catel.Data;
+﻿using Catel.Data;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
@@ -9,11 +8,11 @@ using Orc.Theming;
 using Orc.Wizard;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using Vixen.Extensions;
 using Vixen.Sys;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Props;
 using VixenApplication.SetupDisplay.Wizards.Factory;
-using VixenApplication.SetupDisplay.Wizards.Pages;
 using VixenApplication.SetupDisplay.Wizards.PropFactories;
 using VixenApplication.SetupDisplay.Wizards.Wizard;
 using VixenModules.Editor.PropWizard;
@@ -26,6 +25,9 @@ namespace VixenApplication.SetupDisplay.ViewModels
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		public event EventHandler? ModelsChanged;
+
+		public ObservableCollection<PropTypeMenuItem> AvailableProps { get; }
+			= new ObservableCollection<PropTypeMenuItem>();
 
 		public PropNodeTreeViewModel()
 		{
@@ -42,6 +44,11 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			PropManager.PropCollectionChanged += PropManager_PropCollectionChanged;
 			SelectedItems = new();
 			SelectedItems.CollectionChanged += SelectedItemsCollectionChanged;
+
+			foreach (PropType menuItem in Enum.GetValues(typeof(PropType)))
+			{
+				AvailableProps.Add(new PropTypeMenuItem { Id = menuItem, DisplayName = menuItem.GetEnumDescription() });
+			}
 		}
 
 		private void PropManager_PropCollectionChanged(object? sender, EventArgs e)
@@ -126,6 +133,23 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#endregion
 
+		#region Temporary properties to get Change Prop to work
+		// Temporary properties to get Change Prop to work
+		public bool IsTopNode
+		{
+			get => GetValue<bool>(IsTopNodeProperty);
+			set => SetValue(IsTopNodeProperty, value);
+		}
+		public static readonly IPropertyData IsTopNodeProperty = RegisterProperty<bool>(nameof(IsTopNode), true);
+
+		public bool IsSubNode
+		{
+			get => GetValue<bool>(IsSubNodeProperty);
+			set => SetValue(IsSubNodeProperty, value);
+		}
+		public static readonly IPropertyData IsSubNodeProperty = RegisterProperty<bool>(nameof(IsSubNode), false);
+		#endregion
+
 		#region SelectedItems property
 
 		/// <summary>
@@ -162,6 +186,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			MoveToGroupCommand.RaiseCanExecuteChanged();
 			CreateNodeCommand.RaiseCanExecuteChanged();
 			CreatePropCommand.RaiseCanExecuteChanged();
+			ChangePropCommand.RaiseCanExecuteChanged();
 		}
 
 		#endregion
@@ -540,12 +565,12 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		#region CreateProp command
 
-		private TaskCommand<string>? _createPropCommand;
+		private TaskCommand<PropType>? _createPropCommand;
 
 		/// <summary>
 		/// Gets the CreateProp command.
 		/// </summary>
-		public TaskCommand<string> CreatePropCommand
+		public TaskCommand<PropType> CreatePropCommand
 		{
 			get { return _createPropCommand ??= new(CreateProp, CanCreateProp); }
 		}
@@ -553,52 +578,49 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// <summary>
 		/// Method to invoke when the CreatePropNode command is executed.
 		/// </summary>
-		private async Task CreateProp(string? propType)
+		private async Task CreateProp(PropType result)
 		{
-			if(Enum.TryParse(propType, out PropType result))
+			IPropGroup propGroup = await GeneratePropNodes(result);
+
+			if (propGroup != null)
 			{
-				IPropGroup? propGroup = await GeneratePropNodes(result);
-
-				if (propGroup != null)
+				// Determine the parent of the group or props
+				PropNode pNodeParent;
+				if (SelectedItem != null)
 				{
-					// Determine the parent of the group or props
-					PropNode pNodeParent;
-					if (SelectedItem != null)
-					{
-						pNodeParent = SelectedItem.PropNode;
-					}
-					else
-					{
-						pNodeParent = PropManager.RootNode;
-					}
+					pNodeParent = SelectedItem.PropNode;
+				}
+				else
+				{
+					pNodeParent = PropManager.RootNode;
+				}
 
-					// If the props are to be grouped then...
-					PropNode groupNode;
-					if (propGroup.CreateGroup)
-					{
-						// Create the group prop node
-						groupNode = new(propGroup.GroupName);
-						
-						// Add the group node to the tree
-						PropManager.AddPropNode(groupNode, pNodeParent);
+				// If the props are to be grouped then...
+				PropNode groupNode;
+				if (propGroup.CreateGroup)
+				{
+					// Create the group prop node
+					groupNode = new(propGroup.GroupName);
 
-						// Make the group node the parent
-						pNodeParent = groupNode;
-					}
+					// Add the group node to the tree
+					PropManager.AddPropNode(groupNode, pNodeParent);
 
-					// Loop over the props
-					foreach (IProp prop in propGroup.Props)
+					// Make the group node the parent
+					pNodeParent = groupNode;
+				}
+
+				// Loop over the props
+				foreach (IProp prop in propGroup.Props)
+				{
+					if (prop != null)
 					{
-						if (prop != null)
+						// Add the prop to the tree																					
+						PropManager.AddProp(prop, pNodeParent);
+
+						//Ensure parent is expanded
+						if (SelectedItem != null)
 						{
-							// Add the prop to the tree																					
-							PropManager.AddProp(prop, pNodeParent);
-
-							//Ensure parent is expanded
-							if (SelectedItem != null)
-							{
-								SelectedItem.IsExpanded = true;
-							}
+							SelectedItem.IsExpanded = true;
 						}
 					}
 				}
@@ -609,7 +631,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// Method to check whether the CreatePropNode command can be executed.
 		/// </summary>
 		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
-		private bool CanCreateProp(string? propType)
+		private bool CanCreateProp(PropType propType)
 		{
 			if (SelectedItems.Count == 1 && SelectedItem is { IsGroupNode: true })
 			{
@@ -619,6 +641,30 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			return false;
 		}
 
+		#endregion
+
+		#region ChangeProp command
+		private TaskCommand<PropType> _changePropCommand;
+		public TaskCommand<PropType> ChangePropCommand
+		{
+			get { return _changePropCommand ??= new(ChangeProp, CanChangeProp); }
+		}
+
+		private async Task ChangeProp(PropType result)
+		{
+			EditPropNode(SelectedItems[0].PropNode.Prop);
+			RaisePropertyChanged(nameof(SelectedItem));
+		}
+
+		private bool CanChangeProp(PropType propType)
+		{
+			if (SelectedItems.Count == 1 && SelectedItem is { IsGroupNode: true })
+			{
+				return false;
+			}
+
+			return true;
+		}
 		#endregion
 
 		#region Cut command
@@ -994,6 +1040,12 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			// Get the Catel type factory
 			ITypeFactory typeFactory = this.GetTypeFactory();
 
+			// Create a Prop Factory for the specific prop type 
+			IPropFactory newPropFactory = PropWizardFactory.CreateInstance(propType);
+
+			// Create a default Prop
+			(IProp newProp, IPropGroup propGroup) = newPropFactory.CreateBaseProp();
+
 			// Retrieve the color scheme service
 			IBaseColorSchemeService? baseColorService = (IBaseColorSchemeService?)dependencyResolver.Resolve(typeof(IBaseColorSchemeService));
 
@@ -1028,6 +1080,8 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			// Configure the wizard with a navigation controller														
 			propWizard.Wizard.NavigationControllerWrapper = typeFactory.CreateInstanceWithParametersAndAutoCompletion<PropWizardNavigationController>(propWizard.Wizard);
 
+			newPropFactory.LoadWizard(newProp, propWizard.Wizard);
+
 			var ws = dependencyResolver.Resolve<IWizardService>();
 			if (ws != null && propWizard.Wizard != null)
 			{
@@ -1035,8 +1089,8 @@ namespace VixenApplication.SetupDisplay.ViewModels
 				// Determine if the wizard was cancelled 
 				if (result.HasValue && result.Value)
 				{
-					// Have the prop factory create the props from the wizard data
-					IPropGroup propGroup = propWizard.Factory.GetProps(propWizard.Wizard);
+					// Have the prop factory update the default prop from the wizard data
+					newPropFactory.UpdateProp(newProp, propWizard.Wizard);
 
 					// User did not cancel					
 					return propGroup;  
@@ -1046,6 +1100,68 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			return null;
 		}
 
+		/// <summary>
+		/// Display the Prop Wizard to edit an existing Prop
+		/// </summary>
+		/// <param name="existingProp">Specifies the prop to edit</param>
+		/// <returns>The <see cref="IPropGroup"/> that contains the updated Prop</returns>
+		private async void EditPropNode(IProp existingProp)
+		{
+			var dependencyResolver = this.GetDependencyResolver();
+
+			// Get the Catel type factory
+			ITypeFactory typeFactory = this.GetTypeFactory();
+
+			// Configure current prop for editing
+			IPropFactory newPropFactory = PropWizardFactory.CreateInstance(existingProp.PropType);
+
+			// Retrieve the color scheme service
+			IBaseColorSchemeService baseColorService = (IBaseColorSchemeService)dependencyResolver.Resolve(typeof(IBaseColorSchemeService));
+
+			// Select the dark color scheme
+			baseColorService.SetBaseColorScheme("Dark");
+
+			// Use the type factory to create the prop wizard
+			(IPropWizard Wizard, IPropFactory Factory) propWizard = PropWizardFactory.CreateInstance(existingProp.PropType, typeFactory);
+
+
+			// Configure the wizard window to show up in the Windows task bar
+			propWizard.Wizard.ShowInTaskbarWrapper = true;
+
+			// Enable the help button
+			propWizard.Wizard.ShowHelpWrapper = true;
+
+			// Configure the wizard to allow the user to jump between already visited pages
+			propWizard.Wizard.AllowQuickNavigationWrapper = true;
+
+			// Allow Catel to help determine when it is safe to transition to the next wizard page
+			propWizard.Wizard.HandleNavigationStatesWrapper = true;
+
+			// Configure the wizard to NOT cache views
+			propWizard.Wizard.CacheViewsWrapper = false;
+
+			// Configure the wizard with a navigation controller														
+			propWizard.Wizard.NavigationControllerWrapper = typeFactory.CreateInstanceWithParametersAndAutoCompletion<PropWizardNavigationController>(propWizard.Wizard);
+
+			newPropFactory.LoadWizard(existingProp, propWizard.Wizard);
+
+			var ws = dependencyResolver.Resolve<IWizardService>();
+			if (ws != null && propWizard.Wizard != null)
+			{
+				bool? result = (await ws.ShowWizardAsync(propWizard.Wizard)).DialogResult;
+				// Determine if the wizard was cancelled 
+				if (result.HasValue && result.Value)
+				{
+					// Have the prop factory update the prop from the wizard data
+					newPropFactory.UpdateProp(existingProp, propWizard.Wizard);
+
+					// User did not cancel					
+					return;
+				}
+			}
+
+			return;
+		}
 		#endregion
 
 		#region Event Handling
