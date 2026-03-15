@@ -7,24 +7,6 @@ using VixenModules.Editor.PropWizard;
 
 namespace VixenApplication.SetupDisplay.Wizards.Factory
 {
-	public static class PropFactory
-	{
-		public static IPropFactory CreateInstance(PropType propType)
-		{
-			switch (propType)
-			{
-				case PropType.Arch:
-					return (new ArchPropFactory());
-				case PropType.Tree:
-					return (new TreePropFactory());
-				case PropType.IntelligentFixture:
-					return (new IntelligentFixturePropFactory());
-				default:
-					throw new Exception("Unsupported Prop Type");
-			}
-		}
-	}
-
 	/// <summary>
 	/// Wizard Factory that creates a prop wizard for a specific prop type specified by the caller.
 	/// </summary>
@@ -54,6 +36,20 @@ namespace VixenApplication.SetupDisplay.Wizards.Factory
 			}   
         }
 
-		#endregion 
+        public static IPropFactory CreateInstance(PropType propType)
+        {
+	        switch (propType)
+	        {
+		        case PropType.Arch:
+			        return (new ArchPropFactory());
+		        case PropType.Tree:
+			        return (new TreePropFactory());
+		        case PropType.IntelligentFixture:
+			        return (new IntelligentFixturePropFactory());
+		        default:
+			        throw new Exception("Unsupported Prop Type");
+	        }
+        }
+		#endregion
 	}
 }
