@@ -16,7 +16,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 			Title = "Basic Attributes";
 			Description = $"Enter attributes for {PropType.Arch.GetEnumDescription()}";
 			NodeCountMinimum = 3;
-			NodeCountMaximum = 100;
+			NodeCountMaximum = 10000;
 			LightSizeMinimum = 1;
 			LightSizeMaximum = 50;
 
