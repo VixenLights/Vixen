@@ -32,23 +32,6 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 		}
 
 		/// <summary>
-		/// Sets up a Prop Group with the existing Prop
-		/// </summary>
-		/// <param name="arch">Specifies the Arch prop to edit</param>
-		/// <returns>Returns <see cref="IPropGroup"/> which specifies the group that contains the Prop</returns>
-		public IPropGroup EditExistingProp(IProp arch)
-		{
-			// Create the collection of props to return 
-			IPropGroup propGroup = new PropGroup();
-
-			// Add the Arch to the prop collections 
-			propGroup.Props.Add(arch);
-
-			// Return the collection of props
-			return propGroup;
-		}
-
-		/// <summary>
 		/// Transfers data from the Arch Prop into the Wizard
 		/// </summary>
 		/// <param name="prop">Specifies the Arch prop source</param>

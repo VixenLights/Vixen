@@ -15,8 +15,6 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 		/// <returns>A collection of props in an optional group</returns>
 		(IProp, IPropGroup) CreateBaseProp();
 
-		IPropGroup EditExistingProp(IProp prop);
-
 		void LoadWizard(IProp prop, IPropWizard wizard);
 
 		void UpdateProp(IProp prop, IPropWizard wizard);
