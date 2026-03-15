@@ -10,8 +10,6 @@ namespace Common.WPFCommon.Controls
     /// </summary>
     public partial class NumericTextSpinBox : UserControl
     {
-	    static private Regex _regex = new Regex("[0-9]");
-
 		#region Properties
 		public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
 		    nameof(Value), typeof(double), typeof(NumericTextSpinBox), new PropertyMetadata((double)0, OnValueChanged, ValidateValue));
@@ -131,7 +129,7 @@ namespace Common.WPFCommon.Controls
 			}
 
 			// Else verify it's a valid number and within range
-	        else if (double.TryParse(newText, out double result) && Minimum <= result && result <= Maximum)
+	        else if (double.TryParse(newText, out double result))
 	        {
 		        int decimalPoint = newText.LastIndexOf('.');
 
@@ -229,7 +227,7 @@ namespace Common.WPFCommon.Controls
 					break;
 
 				case Key.PageUp:
-					Value = result + (Maximum - Minimum + 1)/10;
+					Value = result + (Maximum - Minimum)/10.0;
 					if (Value > Maximum)
 					{
 						Value = Maximum;
@@ -238,7 +236,7 @@ namespace Common.WPFCommon.Controls
 					break;
 
 				case Key.PageDown:
-					Value = result - (Maximum - Minimum + 1) / 10;
+					Value = result - (Maximum - Minimum) / 10.0;
 					if (Value < Minimum)
 					{
 						Value = Minimum;
