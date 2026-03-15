@@ -1,6 +1,5 @@
 ﻿using Catel.Data;
 using Catel.MVVM;
-using Vixen.Sys.Props;
 using VixenApplication.SetupDisplay.Wizards.Pages;
 using VixenModules.App.Props.Models.Arch;
 
