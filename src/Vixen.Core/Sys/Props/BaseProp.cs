@@ -43,6 +43,10 @@ namespace Vixen.Sys.Props
 			PropType = propType;
 			PropComponents = new();
 			UserDefinedPropComponents = new();
+			Rotations = new ObservableCollection<AxisRotationModel>();
+			Rotations.Add(new AxisRotationModel() { Axis = Axis.XAxis, RotationAngle = 0 });
+			Rotations.Add(new AxisRotationModel() { Axis = Axis.YAxis, RotationAngle = 0 });
+			Rotations.Add(new AxisRotationModel() { Axis = Axis.ZAxis, RotationAngle = 0 });
 
 			PropertyChanged += BaseProp_PropertyChanged;
 		}
@@ -94,6 +98,16 @@ namespace Vixen.Sys.Props
 
 		public PropType PropType { get; init; }
 
+		private ObservableCollection<AxisRotationModel> _rotations;
+		public ObservableCollection<AxisRotationModel> Rotations
+		{
+			get => _rotations;
+			set
+			{
+				_rotations = value;
+				OnPropertyChanged(nameof(Rotations));
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets the name of the user who created this Prop.

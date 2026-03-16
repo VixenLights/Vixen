@@ -159,8 +159,6 @@ namespace VixenModules.App.Props.Models.IntellligentFixture
 		public YesNoType InvertTiltDirection { get; set; }
 
 		public MountingPositionType MountingPosition { get; set; }
-
-		public ObservableCollection<AxisRotationModel> Rotations { get; set; }
 		#endregion
 	}
 }
