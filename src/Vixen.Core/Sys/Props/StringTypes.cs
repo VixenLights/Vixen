@@ -7,7 +7,7 @@ namespace Vixen.Sys.Props
 		[Description("All Lights are a single color")] 
 		SingleColor,
 
-		[Description("String is made up of multiple independant colors")]
+		[Description("Multiple Independent Color Strings")]
 		MultiColor,
 
 		[Description("Full RGB color mixing")]
