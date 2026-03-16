@@ -47,7 +47,6 @@ namespace VixenModules.App.Props.Models.Arch
 			Curve = null;
 
 			StringType = stringType;
-			SingleColorOption = System.Drawing.Color.RoyalBlue;
 			var staticData = ApplicationServices.GetModuleStaticData(ColorDescriptor.ModuleId) as ColorStaticData;
 			if (staticData != null)
 			{
