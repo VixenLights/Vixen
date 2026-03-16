@@ -11,13 +11,6 @@ using VixenModules.Property.Color;
 
 namespace VixenModules.App.Props.Models
 {
-	public enum ColorType
-	{
-		SingleColor,
-		MultipleColors,
-		RGBColors
-	}
-
 	public abstract class BaseLightProp<TModel> : BaseProp<TModel> where TModel : BasePropModel, IPropModel
 	{
 		protected bool UpdateInProgress = false;
@@ -25,10 +18,9 @@ namespace VixenModules.App.Props.Models
 		protected BaseLightProp(string name, PropType propType) : base(name, propType)
 		{
 			StringType = StringTypes.ColorMixingRGB;
-			Rotations = new ObservableCollection<AxisRotationModel>();
-			Rotations.Add(new AxisRotationModel() { Axis = Axis.XAxis, RotationAngle = 0 });
-			Rotations.Add(new AxisRotationModel() { Axis = Axis.YAxis, RotationAngle = 0 });
-			Rotations.Add(new AxisRotationModel() { Axis = Axis.ZAxis, RotationAngle = 0 });
+			Brightness = 100;
+			Gamma = 1.0;
+			SingleColorOption = System.Drawing.Color.RoyalBlue;
 		}
 
 		#region Properties
@@ -54,17 +46,6 @@ namespace VixenModules.App.Props.Models
 		{
 			get => _stringType;
 			set => SetProperty(ref _stringType, value);
-		}
-
-		private ObservableCollection<AxisRotationModel> _rotations;
-		public ObservableCollection<AxisRotationModel> Rotations
-		{
-			get => _rotations;
-			set
-			{
-				_rotations = value;
-				OnPropertyChanged(nameof(Rotations));
-			}
 		}
 
 		private Curve _curve;
