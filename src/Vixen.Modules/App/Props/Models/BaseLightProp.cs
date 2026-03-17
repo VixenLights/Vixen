@@ -48,6 +48,17 @@ namespace VixenModules.App.Props.Models
 			set => SetProperty(ref _stringType, value);
 		}
 
+		private int _lightSize;
+		public int LightSize
+		{
+			get => _lightSize;
+			set
+			{
+				_lightSize = value;
+				OnPropertyChanged(nameof(LightSize));
+			}
+		}
+
 		private Curve _curve;
 		public Curve Curve
 		{
