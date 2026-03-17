@@ -4,6 +4,7 @@ using Catel.MVVM;
 using Vixen.Sys.Props;
 
 using VixenApplication.SetupDisplay.Wizards.Pages;
+using VixenModules.App.Props;
 
 namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 {
@@ -21,9 +22,18 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		/// </summary>
 		private void RefreshGraphics()
 		{
-			// Pass the properties needed to draw the graphics to the temporary light prop model
+			// Pass the properties needed to draw the graphics to the light prop model
 			LightPropModel.Strings = Strings;
 			LightPropModel.NodesPerString = NodesPerString;
+			LightPropModel.TopWidth = TopWidth;
+			LightPropModel.TopHeight = TopWidth;
+			LightPropModel.BaseHeight = BaseHeight;
+			LightPropModel.DegreesCoverage = DegreesCoverage;
+			LightPropModel.Strings = Strings;
+			LightPropModel.NodesPerString = NodesPerString;
+			LightPropModel.LightSize = LightSize;
+			LightPropModel.TopRadius = TopRadius;
+			LightPropModel.BottomRadius = BottomRadius;
 
 			// Update the prop nodes
 			LightPropModel.UpdatePropNodes();
@@ -56,18 +66,14 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		[ViewModelToModel]
 		public int Strings
 		{
-			get { return GetValue<int>(StringsProperty); }
+			get { return GetValue<int>(NodeCountProperty); }
 			set
 			{
-				SetValue(StringsProperty, value);
+				SetValue(NodeCountProperty, value);
 				RefreshGraphics();
 			}
 		}
-
-		/// <summary>
-		/// NodeCount property data.
-		/// </summary>
-		public static readonly IPropertyData StringsProperty = RegisterProperty<int>(nameof(Strings));
+		public static readonly IPropertyData NodeCountProperty = RegisterProperty<int>(nameof(Strings));
 
 		#endregion
 
@@ -94,24 +100,167 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 
 		#endregion
 
-		#region StringType property
 
-		/// <summary>
-		/// Gets or sets the StringType value.
-		/// </summary>
 		[ViewModelToModel]
-		public StringTypes StringType
+		public int LightSize
 		{
-			get { return GetValue<StringTypes>(StringTypeProperty); }
-			set { SetValue(StringTypeProperty, value); }
+			get { return GetValue<int>(LightSizeProperty); }
+			set { SetValue(LightSizeProperty, Math.Clamp(value, LightSizeMinimum, LightSizeMaximum)); }
 		}
+		private static readonly IPropertyData LightSizeProperty = RegisterProperty<int>(nameof(LightSize));
 
-		/// <summary>
-		/// StringType property data.
-		/// </summary>
-		public static readonly IPropertyData StringTypeProperty = RegisterProperty<StringTypes>(nameof(StringType));
+		[ViewModelToModel]
+		protected int LightSizeMinimum
+		{
+			get { return GetValue<int>(LightSizeMinimumProperty); }
+			set
+			{
+				if (LightSize < value)
+				{
+					LightSize = value;
+				}
+				SetValue(LightSizeMinimumProperty, value);
+			}
+		}
+		private static readonly IPropertyData LightSizeMinimumProperty = RegisterProperty<int>(nameof(LightSizeMinimum));
 
-		#endregion
+		[ViewModelToModel]
+		protected int LightSizeMaximum
+		{
+			get { return GetValue<int>(LightSizeMaximumProperty); }
+			set
+			{
+				if (LightSize > value)
+				{
+					LightSize = value;
+				}
+				SetValue(LightSizeMaximumProperty, value);
+			}
+		}
+		private static readonly IPropertyData LightSizeMaximumProperty = RegisterProperty<int>(nameof(LightSizeMaximum));
+
+		[ViewModelToModel]
+		public int DegreesCoverage
+		{
+			get { return GetValue<int>(DegreesCoverageProperty); }
+			set 
+			{
+				SetValue(DegreesCoverageProperty, value);
+				RefreshGraphics();
+			}
+        }
+		public static readonly IPropertyData DegreesCoverageProperty = RegisterProperty<int>(nameof(DegreesCoverage));
+
+		[ViewModelToModel]
+		public int DegreeOffset
+		{
+			get { return GetValue<int>(DegreeOffsetProperty); }
+			set 
+			{
+				SetValue(DegreeOffsetProperty, value);
+				RefreshGraphics();
+			}
+        }
+		public static readonly IPropertyData DegreeOffsetProperty = RegisterProperty<int>(nameof(DegreeOffset));
+
+		[ViewModelToModel]
+		public int BaseHeight
+		{
+			get { return GetValue<int>(BaseHeightProperty); }
+			set 
+			{
+				SetValue(BaseHeightProperty, value);
+				RefreshGraphics();
+			}
+        }
+		public static readonly IPropertyData BaseHeightProperty = RegisterProperty<int>(nameof(BaseHeight));
+
+		[ViewModelToModel]
+		public int TopHeight
+		{
+			get { return GetValue<int>(TopHeightProperty); }
+			set 
+			{ 
+				SetValue(TopHeightProperty, value);
+				RefreshGraphics();
+			}
+        }
+		public static readonly IPropertyData TopHeightProperty = RegisterProperty<int>(nameof(TopHeight));
+
+		[ViewModelToModel]
+		public int TopWidth
+		{
+			get { return GetValue<int>(TopWidthProperty); }
+			set 
+			{ 
+				SetValue(TopWidthProperty, value);
+				RefreshGraphics();
+			}
+        }
+		public static readonly IPropertyData TopWidthProperty = RegisterProperty<int>(nameof(TopWidth));
+
+		[ViewModelToModel]
+		public StartLocation StartLocation
+		{
+			get { return GetValue<StartLocation>(StartLocationProperty); }
+			set 
+			{ 
+				SetValue(StartLocationProperty, value);
+				RefreshGraphics();
+			}
+        }
+		public static readonly IPropertyData StartLocationProperty = RegisterProperty<StartLocation>(nameof(StartLocation));
+
+		[ViewModelToModel]
+		public bool ZigZag
+		{
+			get { return GetValue<bool>(ZigZagProperty); }
+			set 
+			{ 
+				SetValue(ZigZagProperty, value);
+				RefreshGraphics();
+			}
+        }
+		public static readonly IPropertyData ZigZagProperty = RegisterProperty<bool>(nameof(ZigZag));
+
+		[ViewModelToModel]
+		public int ZigZagOffset
+		{
+			get { return GetValue<int>(ZigZagOffsetProperty); }
+			set 
+			{ 
+				SetValue(ZigZagOffsetProperty, value);
+				RefreshGraphics();
+			}
+        }
+		public static readonly IPropertyData ZigZagOffsetProperty = RegisterProperty<int>(nameof(ZigZagOffset));
+
+		[ViewModelToModel]
+		public float TopRadius
+		{
+			get { return GetValue<float>(TopRadiusProperty); }
+			set 
+			{ 
+				SetValue(TopRadiusProperty, value);
+				RefreshGraphics();
+			}
+        }
+		public static readonly IPropertyData TopRadiusProperty = RegisterProperty<float>(nameof(TopRadius));
+
+		[ViewModelToModel]
+		public float BottomRadius
+		{
+			get { return GetValue<float>(BottomRadiusProperty); }
+			set 
+			{ 
+				SetValue(BottomRadiusProperty, value);
+				RefreshGraphics();
+			}
+        }
+		public static readonly IPropertyData BottomRadiusProperty = RegisterProperty<float>(nameof(BottomRadius));
+
+
+
 
 		protected override void ValidateFields(List<IFieldValidationResult> validationResults)
 		{
@@ -134,6 +283,13 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 					"Nodes per string must be greater than 0"));
 
 			}
+		}
+
+		protected override async Task InitializeAsync()
+		{
+			await base.InitializeAsync();
+
+			RefreshGraphics();
 		}
 	}
 }

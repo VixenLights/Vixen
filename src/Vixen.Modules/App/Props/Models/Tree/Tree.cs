@@ -1,11 +1,12 @@
 ﻿#nullable enable
 
-using NLog;
 using System.ComponentModel;
-using System.Diagnostics;
 using AsyncAwaitBestPractices;
+using Common.Controls.ColorManagement.ColorModels;
+using Common.Controls.Theme;
+using Common.WPFCommon.Converters;
 using Debounce.Core;
-using Vixen.Attributes;
+using Vixen.Extensions;
 using Vixen.Sys;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Props;
@@ -17,9 +18,6 @@ namespace VixenModules.App.Props.Models.Tree
 	{
 		#region Fields
 
-		private StartLocation _startLocation;
-		private bool _zigZag;
-		private int _zigZagOffset;
 		private readonly Debouncer _generateDebouncer;
 
 		#endregion
@@ -41,24 +39,65 @@ namespace VixenModules.App.Props.Models.Tree
 			StringType = stringType;
 			ZigZagOffset = 50;
 			StartLocation = StartLocation.BottomLeft;
+			TopWidth = 20;
+			TopHeight = TopWidth / 2;
+			BaseHeight = 40;
+			DegreesCoverage = 360;
+			DegreeOffset = 0;
+			Strings = 16;
+			NodesPerString = 50;
+			LightSize = 2;
+			TopRadius = 10;
+			BottomRadius = 100;
 
 			// Create Preview model
-			TreeModel model = new TreeModel(strings, nodesPerString);
-			PropModel = model;
-			PropModel.PropertyChanged += PropModel_PropertyChanged;
-			PropertyChanged += Tree_PropertyChanged;
+			PropModel = new TreeModel(strings, nodesPerString);
 
 			_generateDebouncer = new Debouncer(() =>
 			{
 				GenerateElementsAsync().SafeFireAndForget();
 			}, 500);
-
-			//TODO Map element structure to model nodes
 		}
 
 		override public string GetSummary()
 		{
-			return null;
+			string Summary =
+				"<style>" + 
+				$"  h2   {{color: #{new RGB(ThemeColorTable.ForeColor).ToHex()}; margin-top: 0; margin-bottom: 0; text-decoration: underline;}}" +
+				$"  body {{color: #{new RGB(ThemeColorTable.ForeColor).ToHex()}; margin-top: 0;}}" +
+				$"  b    {{color: #{new RGB(ThemeColorTable.ForeColorDisabled).ToHex()}; margin-left: 20px;}}" +
+				"</style>" +
+				$"<h2>Basic Attributes</h2>" +
+				"<body>" +
+				$"<b>Prop Type:</b> {PropType.Tree.GetEnumDescription()}<br>" +
+				$"<b>Name:</b> {Name}<br>" +
+				$"<b>Strings:</b> {Strings}<br>" +
+				$"<b>Nodes per String:</b> {NodesPerString}<br>" +
+				$"<b>Light Size:</b> {LightSize}<br>" +
+				$"<b>Degrees Coverage:</b> {DegreesCoverage}<br>" +
+				$"<b>Degree offset:</b> {DegreeOffset}<br>" +
+				$"<b>Base Height:</b> {BaseHeight}<br>" +
+				$"<b>Top Height:</b> {TopHeight}<br>" +
+				$"<b>Top Width:</b> {TopWidth}<br>" +
+				$"<b>Nodes per String:</b> {NodesPerString}<br>" +
+				$"<b>Start Location:</b> {EnumValueTypeConverter.GetDescription(StartLocation)}<br>" +
+				$"<b>ZigZag:</b> {ZigZag}<br>" +
+				$"<b>ZigZag Offset:</b> {ZigZagOffset}<br>" +
+				$"<b>Top Radius:</b> {TopRadius}<br>" +
+				$"<b>Bottom Radius:</b> {BottomRadius}<br>" +
+				$"<b>{Rotations[0].Axis} Rotation:</b> {Rotations[0].RotationAngle}\u00B0<br>" +
+				$"<b>{Rotations[1].Axis} Rotation:</b> {Rotations[1].RotationAngle}\u00B0<br>" +
+				$"<b>{Rotations[2].Axis} Rotation:</b> {Rotations[2].RotationAngle}\u00B0<br>" +
+				"</body>" +
+				"<h2>Additional Props</h2>" +
+				"<body>" +
+//				$"<b>Left and Right Tree:</b> {LeftRight}<br>" +
+				"</body>" +
+				GetDimmingSummary() +
+				GetColorSummary() +
+				GetBaseSummary();
+
+			return Summary;
 		}
 
 		private async void Tree_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -116,15 +155,14 @@ namespace VixenModules.App.Props.Models.Tree
 		/// <summary>
 		/// The number of light strings
 		/// </summary>
-		[DisplayName("String Count")]
-		[PropertyOrder(10)]
+		private int _strings;
 		public int Strings
 		{
-			get => PropModel.Strings;
+			get => _strings;
 			set
 			{
 				if (value <= 0) return;
-				PropModel.Strings = value;
+				SetProperty(ref _strings, value);
 				OnPropertyChanged(nameof(Strings));
 			}
 		}
@@ -132,57 +170,37 @@ namespace VixenModules.App.Props.Models.Tree
 		/// <summary>
 		/// The number of light nodes per string
 		/// </summary>
-		[PropertyOrder(11)]
-		[DisplayName("Nodes Per String")]
+		private int _nodesPerString;
 		public int NodesPerString
 		{
-			get => PropModel.NodesPerString;
+			get => _nodesPerString;
 			set
 			{
 				if (value <= 0) return;
-				if (value == PropModel.NodesPerString)
+				if (value == _nodesPerString)
 				{
 					return;
 				}
-				PropModel.NodesPerString = value;
+				SetProperty(ref _nodesPerString, value);
 				OnPropertyChanged(nameof(NodesPerString));
-			}
-		}
-
-		[DisplayName("Nodes Size")]
-		[PropertyOrder(12)]
-		public int NodeSize
-		{
-			get => PropModel.NodeSize;
-			set
-			{
-				if (value <= 0) return;
-				if (value == PropModel.NodeSize)
-				{
-					return;
-				}
-
-				PropModel.NodeSize = value;
-				OnPropertyChanged(nameof(NodeSize));
 			}
 		}
 
 		/// <summary>
 		/// The degrees of coverage for the Tree. ex. 180 for a half tree.
 		/// </summary>
-		[PropertyOrder(13)]
-		[DisplayName("Degrees Coverage")]
+		private int _degreesCoverage;
 		public int DegreesCoverage
 		{
-			get => PropModel.DegreesCoverage;
+			get => _degreesCoverage;
 			set
 			{
 				if (value > 360 || value <= 0) return;
-				if (value == PropModel.DegreesCoverage)
+				if (value == _degreesCoverage)
 				{
 					return;
 				}
-				PropModel.DegreesCoverage = value;
+				SetProperty(ref _degreesCoverage, value);
 				OnPropertyChanged(nameof(DegreesCoverage));
 			}
 		}
@@ -190,96 +208,86 @@ namespace VixenModules.App.Props.Models.Tree
 		/// <summary>
 		/// Offset in the rotation of where string one occurs in degrees.
 		/// </summary>
-		[DisplayName("Degree Offset")]
-		[PropertyOrder(14)]
+		private int _degreesOffset;
 		public int DegreeOffset
 		{
-			get => PropModel.DegreesOffset;
+			get => _degreesOffset;
 			set
 			{
 				if (value > 359 || value < -359) return;
-				if (value == PropModel.DegreesOffset)
+				if (value == _degreesOffset)
 				{
 					return;
 				}
 
-				PropModel.DegreesOffset = value;
+				SetProperty(ref _degreesOffset, value);
 				OnPropertyChanged(nameof(DegreeOffset));
 			}
 		}
 
-		[DisplayName("Base Height")]
-		[PropertyOrder(15)]
+		private int _baseHeight;
 		public int BaseHeight
 		{
-			get => PropModel.BaseHeight;
+			get => _baseHeight;
 			set
 			{
-				if (value <= 0 || value == PropModel.BaseHeight)
+				if (value <= 0)
 				{
 					return;
 				}
 
-				PropModel.BaseHeight = value;
+				SetProperty(ref _baseHeight, value);
 				OnPropertyChanged(nameof(BaseHeight));
 			}
 		}
 
-		[DisplayName("Top Height")]
-		[PropertyOrder(16)]
+		private int _topHeight;
 		public int TopHeight
 		{
-			get => PropModel.TopHeight;
+			get => _topHeight;
 			set
 			{
-				if (value <= 0 || value == PropModel.TopHeight)
+				if (value <= 0)
 				{
 					return;
 				}
 
-				PropModel.TopHeight = value;
+				SetProperty(ref _topHeight, value);
 				OnPropertyChanged(nameof(TopHeight));
 			}
 		}
 
-		[DisplayName("Top Width")]
-		[PropertyOrder(17)]
+		private int _topWidth;
 		public int TopWidth
 		{
-			get => PropModel.TopWidth;
+			get => _topWidth;
 			set
 			{
-				if (value <= 0 || value == PropModel.TopHeight)
+				if (value <= 0)
 				{
 					return;
 				}
 
-				PropModel.TopHeight = value;
+				SetProperty(ref _topWidth, value);
 				OnPropertyChanged(nameof(TopWidth));
 			}
 		}
 
-		[Category("Patching")]
-		[DisplayName("Wiring Start")]
-		[PropertyOrder(18)]
+		private StartLocation _startLocation;
 		public StartLocation StartLocation
 		{
 			get => _startLocation;
 			set => SetProperty(ref _startLocation, value);
 		}
 
-		[Category("Patching")]
-		[DisplayName("Zig Zag")]
-		[PropertyOrder(19)]
+		private bool _zigZag;
 		public bool ZigZag
 		{
 			get => _zigZag;
 			set => SetProperty(ref _zigZag, value);
 		}
 
-		[Category("Patching")]
-		[DisplayName("Zig Zag Every")]
-		[PropertyOrder(20)]
+		private int _zigZagOffset;
 		public int ZigZagOffset
 		{
 			get => _zigZagOffset;
@@ -293,29 +301,27 @@ namespace VixenModules.App.Props.Models.Tree
 		/// <summary>
 		/// Top radius of the tree as a percentage.
 		/// </summary>
-		[DisplayName("Top Radius")]
-		[PropertyOrder(21)]
+		private float _topRadius;
 		public float TopRadius
 		{
-			get => PropModel.TopRadius;
+			get => _topRadius;
 			set
 			{
-				PropModel.TopRadius = value;
+				SetProperty(ref _topRadius, value);
 				OnPropertyChanged(nameof(TopRadius));
 			}
 		}
-		
+
 		/// <summary>
 		/// Bottom radius of the tree as a percentage.
 		/// </summary>
-		[DisplayName("Bottom Radius")]
-		[PropertyOrder(22)]
+		private float _bottomRadius;
 		public float BottomRadius
 		{
-			get => PropModel.BottomRadius;
+			get => _bottomRadius;
 			set
 			{
-				PropModel.BottomRadius = value;
+				SetProperty(ref _bottomRadius, value);
 				OnPropertyChanged(nameof(BottomRadius));
 			}
 		}

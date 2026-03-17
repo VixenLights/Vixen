@@ -1,8 +1,6 @@
 ﻿#nullable enable
 using System.Drawing;
-
 using Vixen.Sys.Props.Model;
-using VixenModules.App.Props.Models.Line;
 
 namespace VixenModules.App.Props.Models.Tree
 {
@@ -18,23 +16,23 @@ namespace VixenModules.App.Props.Models.Tree
 		/// Constructor
 		/// </summary>
 		public TreeModel() : this(16, 50, 2)
-		{ 
-		}	
+		{
+		}
 
 
 		public TreeModel(int strings = 16, int nodesPerString = 50, int nodeSize = 2)
 		{
-			_topWidth = 20;
-			_topHeight = _topWidth / 2;
-			_baseHeight = 40;
-			_degreesCoverage = 360;
-			_strings = strings;
-			_nodesPerString = nodesPerString;
-			_nodeSize = nodeSize;
-			_topRadius = 10;
-			_bottomRadius = 100;
+			//_topWidth = 20;
+			//_topHeight = _topWidth / 2;
+			//_baseHeight = 40;
+			//_degreesCoverage = 360;
+			//_strings = strings;
+			//_nodesPerString = nodesPerString;
+			//_nodeSize = nodeSize;
+			//_topRadius = 10;
+			//_bottomRadius = 100;
 
-			Nodes = new(Get3DNodePoints());
+//			Nodes = new(Get3DNodePoints());
 			PropertyChanged += PropertyModelChanged;			
 		}
 
@@ -135,8 +133,8 @@ namespace VixenModules.App.Props.Models.Tree
 		/// <returns>3-D points that make up the tree</returns>
 		protected override IEnumerable<NodePoint> Get3DNodePoints()
 		{
-			float width = 0;// (float)PropParameters["Width"];
-			float height = 0;// (float)PropParameters["Height"];
+			float width = 1.0f;
+			float height = 1.0f;
 
 			// Create the collection of node points
 			List<NodePoint> treePoints = new List<NodePoint>();
@@ -162,7 +160,7 @@ namespace VixenModules.App.Props.Models.Tree
 
 			// (Optionally) rotate the points along the X, Y, and Z axis
 			//ToDo : Replace null with rotation
-			RotatePoints(treePoints, null);	
+			RotatePoints(treePoints, AxisRotationModel);	
 
 			return treePoints;
 		}

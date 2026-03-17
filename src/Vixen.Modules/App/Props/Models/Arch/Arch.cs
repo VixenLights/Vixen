@@ -3,7 +3,6 @@
 using AsyncAwaitBestPractices;
 using Common.Controls.Theme;
 using Debounce.Core;
-using System.ComponentModel;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Extensions;
 using Vixen.Sys.Managers;
@@ -73,17 +72,6 @@ namespace VixenModules.App.Props.Models.Arch
 				_nodeCount = value;
 				_generateDebouncer?.Debounce();
 				OnPropertyChanged(nameof(NodeCount));
-			}
-		}
-
-		private int _lightSize;
-		public int LightSize
-		{
-			get => _lightSize;
-			set
-			{
-				_lightSize = value;
-				OnPropertyChanged(nameof(LightSize));
 			}
 		}
 

@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using Vixen.Sys.Props.Model;
+﻿using Vixen.Sys.Props.Model;
 
 namespace VixenModules.App.Props.Models.Arch
 {

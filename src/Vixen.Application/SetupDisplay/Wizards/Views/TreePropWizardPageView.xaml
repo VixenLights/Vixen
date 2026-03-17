@@ -9,7 +9,8 @@
                    xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
 				   xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
 				   xmlns:views="clr-namespace:VixenApplication.SetupDisplay.Wizards.Views"
-                   Loaded="PropWizardPageView_Loaded">
+				   xmlns:controls="clr-namespace:Common.WPFCommon.Controls;assembly=WPFCommon"
+				   Loaded="PropWizardPageView_Loaded">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -22,85 +23,192 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="{StaticResource BackColorBrush}">
+    <Grid Background="{StaticResource BackgroundDialogBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto">
+            </RowDefinition>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
-			<ColumnDefinition Width="500" />
+            <ColumnDefinition Width="409" />
         </Grid.ColumnDefinitions>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+        <ScrollViewer Grid.Row="0" Grid.Column="0" Height="400" VerticalScrollBarVisibility="Auto">
 
-        <Label Grid.Column="0" Grid.Row="0" Content="Name" />
-        <TextBox Grid.Column="1" Grid.Row="0"  Text="{Binding Name, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+            <Grid Background="{StaticResource BackColorBrush}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="110" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-        <Label Grid.Column="0" Grid.Row="1" Content="String Count" />
-        <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Strings, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
-            <b:Interaction.Behaviors>
-                <catel:NumericTextBox />
-            </b:Interaction.Behaviors>
-        </TextBox>
-        <Label Grid.Column="0" Grid.Row="2" Content="Nodes Per String" />
-        <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding NodesPerString, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
-            <b:Interaction.Behaviors>
-                <catel:NumericTextBox />
-            </b:Interaction.Behaviors>
-        </TextBox>
-        <Label Grid.Column="0" Grid.Row="3" Content="Light Type" />
-        <ComboBox Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
-                  ItemsSource="{Binding Source={ markupExtensions:EnumBindingSource {x:Type props:StringTypes}}}"
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Label Grid.Column="0" Grid.Row="0" Content="Name" />
+                <TextBox Grid.Column="1" Grid.Row="0"  Text="{Binding Name, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+
+                <Label Grid.Column="0" Grid.Row="1" Content="Strings" />
+                <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Strings, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
+                    <b:Interaction.Behaviors>
+                        <catel:NumericTextBox />
+                    </b:Interaction.Behaviors>
+                </TextBox>
+        
+                <Label Grid.Column="0" Grid.Row="2" Content="Nodes Per String" />
+                <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding NodesPerString, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
+                    <b:Interaction.Behaviors>
+                        <catel:NumericTextBox />
+                    </b:Interaction.Behaviors>
+                </TextBox>
+        
+                <Label Grid.Column="0" Grid.Row="3" Content="Light Type" />
+                <ComboBox Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
+                          ItemsSource="{Binding Source={ markupExtensions:EnumBindingSource {x:Type props:StringTypes}}}"
                  
-                  SelectedItem="{Binding StringType, Converter={StaticResource EnumValueTypeConverter}, ConverterParameter={x:Type props:StringTypes}}"/>
+                          SelectedItem="{Binding StringType, Converter={StaticResource EnumValueTypeConverter}, ConverterParameter={x:Type props:StringTypes}}"/>
 
-		<Border BorderThickness="2"  Width="400" Grid.Column="2" Grid.Row="0" Grid.RowSpan="5"
-            Height="400" Background="{StaticResource BackgroundControlBrush}" BorderBrush="{StaticResource BorderColorBrush}" Margin="5">
-			
-				<glWpfControl:GLWpfControl
-				x:Name="OpenTkControl" 
-				SizeChanged="OpenTkControl_SizeChanged"
-                Render="OpenTkControl_OnRender"
-				MouseWheel="OpenTkControl_MouseWheel"
-                MouseDown="OpenTkControl_MouseDown"
-                MouseMove="OpenTkControl_MouseMove"
-                MouseUp="OpenTkControl_MouseUp">
-					<glWpfControl:GLWpfControl.ContextMenu>
-						<ContextMenu>
+                <Label Grid.Column="0" Grid.Row="4" Content="Degrees Coverage" />
+                <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding DegreesCoverage, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
+                    <b:Interaction.Behaviors>
+                        <catel:NumericTextBox />
+                    </b:Interaction.Behaviors>
+                </TextBox>
 
-							<MenuItem Header="Center Preview"                          ToolTip="Repositions the viewpoint to the center of the preview." Command="{Binding CenterPreview}"/>
-							<MenuItem Header="Enable Light Scaling" IsCheckable="True" ToolTip="Scales the light size as the camera is zoomed in or out." IsChecked="{Binding EnableLightScaling }"/>
-							<!--<MenuItem Header="{Binding Location}"/> -->
-						</ContextMenu>
-					</glWpfControl:GLWpfControl.ContextMenu>
-				</glWpfControl:GLWpfControl>
-			</Border>
+                <Label Grid.Column="0" Grid.Row="5" Content="Degree Offset" />
+                <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding DegreeOffset, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
+                    <b:Interaction.Behaviors>
+                        <catel:NumericTextBox />
+                    </b:Interaction.Behaviors>
+                </TextBox>
 
+                <Label Grid.Column="0" Grid.Row="6" Content="Base Height" />
+                <TextBox Grid.Column="1" Grid.Row="6" Text="{Binding BaseHeight, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
+                    <b:Interaction.Behaviors>
+                        <catel:NumericTextBox />
+                    </b:Interaction.Behaviors>
+                </TextBox>
 
-		    <ScrollViewer Grid.Row="5" Grid.Column="1">
-				<ItemsControl ItemsSource="{Binding Rotations}">
-					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-							<StackPanel Orientation="Horizontal" Margin="5">
-						<ComboBox Width="20" Height="20" 
-                  ItemsSource="{Binding Axes}"
-                  SelectedItem="{Binding Axis}" />
-							<Slider Width="300" 
-                Minimum="-180" Maximum="180"
-                Value="{Binding RotationAngle}" />
-								<TextBlock Width="40" Margin="5,0,0,0"
-                   Text="{Binding RotationAngle, StringFormat=F0}" />
-							</StackPanel>
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-				</ItemsControl>
-			</ScrollViewer>
+                <Label Grid.Column="0" Grid.Row="8" Content="Top Height" />
+                <TextBox Grid.Column="1" Grid.Row="8" Text="{Binding TopHeight, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
+                    <b:Interaction.Behaviors>
+                        <catel:NumericTextBox />
+                    </b:Interaction.Behaviors>
+                </TextBox>
 
+                <Label Grid.Column="0" Grid.Row="9" Content="Top Width" />
+                <TextBox Grid.Column="1" Grid.Row="9" Text="{Binding TopWidth, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
+                    <b:Interaction.Behaviors>
+                        <catel:NumericTextBox />
+                    </b:Interaction.Behaviors>
+                </TextBox>
 
-	</Grid>
+                <Label Grid.Column="0" Grid.Row="10" Content="Nodes Per String" />
+                <TextBox Grid.Column="1" Grid.Row="10" Text="{Binding NodesPerString, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
+                    <b:Interaction.Behaviors>
+                        <catel:NumericTextBox />
+                    </b:Interaction.Behaviors>
+                </TextBox>
+
+                <Label Grid.Column="0" Grid.Row="11" Content="ZigZag" />
+                <TextBox Grid.Column="1" Grid.Row="11" Text="{Binding ZigZag, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
+                    <b:Interaction.Behaviors>
+                        <catel:NumericTextBox />
+                    </b:Interaction.Behaviors>
+                </TextBox>
+
+                <Label Grid.Column="0" Grid.Row="12" Content="ZigZag Offset" />
+                <TextBox Grid.Column="1" Grid.Row="12" Text="{Binding ZigZagOffset, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
+                    <b:Interaction.Behaviors>
+                        <catel:NumericTextBox />
+                    </b:Interaction.Behaviors>
+                </TextBox>
+
+                <Label Grid.Column="0" Grid.Row="13" Content="Top Radius" />
+                <TextBox Grid.Column="1" Grid.Row="13" Text="{Binding TopRadius, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
+                    <b:Interaction.Behaviors>
+                        <catel:NumericTextBox />
+                    </b:Interaction.Behaviors>
+                </TextBox>
+
+                <Label Grid.Column="0" Grid.Row="14" Content="Top Height" />
+                <TextBox Grid.Column="1" Grid.Row="14" Text="{Binding TopHeight, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
+                    <b:Interaction.Behaviors>
+                        <catel:NumericTextBox />
+                    </b:Interaction.Behaviors>
+                </TextBox>
+
+                <Label Grid.Column="0" Grid.Row="15" Content="Bottom Radius" />
+                <TextBox Grid.Column="1" Grid.Row="15" Text="{Binding BottomRadius, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" >
+                    <b:Interaction.Behaviors>
+                        <catel:NumericTextBox />
+                    </b:Interaction.Behaviors>
+                </TextBox>
+
+                <GroupBox Grid.Row="16" Grid.ColumnSpan="2" Header="Rotation Angles">
+                    <ItemsControl ItemsSource="{Binding Rotations}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="90" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                        <ComboBox MinWidth="40" Height="20" ItemsSource="{Binding Axes}" SelectedItem="{Binding Axis}" />
+                                        <TextBlock Text="{Binding RotationAngle, StringFormat=' {0:F0}&#176;'}" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                                    </StackPanel>
+
+                                    <controls:SuperSlider Grid.Column="1" 
+                                          Minimum="-180" 
+                                          Maximum="180" 
+                                          DefaultValue="{Binding RotationAngleDefault}" 
+                                          Value="{Binding RotationAngle, Mode=TwoWay}" 
+                                          AutoToolTipPlacement="TopLeft" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </GroupBox>
+            </Grid>
+        </ScrollViewer>
+
+        <Border BorderThickness="2"  Width="400" Grid.Column="1" Grid.Row="0" VerticalAlignment="Top"
+            Height="400" Background="{StaticResource BackgroundControlBrush}" BorderBrush="{StaticResource BorderColorBrush}" Margin="9,0,0,0">
+            <glWpfControl:GLWpfControl
+		                    x:Name="OpenTkControl" 
+		                    SizeChanged="OpenTkControl_SizeChanged"
+                            Render="OpenTkControl_OnRender"
+		                    MouseWheel="OpenTkControl_MouseWheel"
+                            MouseDown="OpenTkControl_MouseDown"
+                            MouseMove="OpenTkControl_MouseMove"
+                            MouseUp="OpenTkControl_MouseUp">
+                <glWpfControl:GLWpfControl.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Center Preview"                          ToolTip="Repositions the viewpoint to the center of the preview." Command="{Binding CenterPreview}"/>
+                        <MenuItem Header="Enable Light Scaling" IsCheckable="True" ToolTip="Scales the light size as the camera is zoomed in or out." IsChecked="{Binding EnableLightScaling }"/>
+                        <!--<MenuItem Header="{Binding Location}"/> -->
+                    </ContextMenu>
+                </glWpfControl:GLWpfControl.ContextMenu>
+            </glWpfControl:GLWpfControl>
+        </Border>
+    </Grid>
 
 </views:WizardPageViewBase>
