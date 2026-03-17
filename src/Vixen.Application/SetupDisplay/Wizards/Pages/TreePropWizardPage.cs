@@ -1,7 +1,12 @@
 ﻿using Catel.Data;
 using Orc.Wizard;
+using System.Collections.ObjectModel;
+using Common.WPFCommon.Converters;
+using Vixen.Extensions;
 using Vixen.Sys;
 using Vixen.Sys.Props;
+using VixenApplication.SetupDisplay.ViewModels;
+using VixenModules.App.Props;
 using VixenModules.App.Props.Models.Tree;
 
 namespace VixenApplication.SetupDisplay.Wizards.Pages
@@ -10,12 +15,13 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 	{
 		public TreePropWizardPage()
 		{
-			Title = "Tree";
-			Description = $"Enter the details for your {Title}";
+			Title = "Basic Attributes";
+			Description = $"Enter attributes for {PropType.Tree.GetEnumDescription()}";
+
+			// Generic parameters
 			Name = "Tree 1";
 			Strings = 16;
 			NodesPerString = 50;
-			StringType = StringTypes.ColorMixingRGB;
 		}
 		#region Name property
 
@@ -45,10 +51,6 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 			get { return GetValue<int>(NodeCountProperty); }
 			set { SetValue(NodeCountProperty, value); }
 		}
-
-		/// <summary>
-		/// Strings property data.
-		/// </summary>
 		public static readonly IPropertyData NodeCountProperty = RegisterProperty<int>(nameof(Strings));
 
 		#endregion
@@ -71,40 +73,158 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 
 		#endregion
 
-		#region StringType property
-
-		/// <summary>
-		/// Gets or sets the StringType value.
-		/// </summary>
-		public StringTypes StringType
+		public int LightSize
 		{
-			get { return GetValue<StringTypes>(StringTypeProperty); }
-			set { SetValue(StringTypeProperty, value); }
+			get { return GetValue<int>(LightSizeProperty); }
+			set { SetValue(LightSizeProperty, Math.Clamp(value, LightSizeMinimum, LightSizeMaximum)); }
 		}
+		private static readonly IPropertyData LightSizeProperty = RegisterProperty<int>(nameof(LightSize));
 
-		/// <summary>
-		/// StringType property data.
-		/// </summary>
-		public static readonly IPropertyData StringTypeProperty = RegisterProperty<StringTypes>(nameof(StringType));
+		protected int LightSizeMinimum
+		{
+			get { return GetValue<int>(LightSizeMinimumProperty); }
+			set
+			{
+				if (LightSize < value)
+				{
+					LightSize = value;
+				}
+				SetValue(LightSizeMinimumProperty, value);
+			}
+		}
+		private static readonly IPropertyData LightSizeMinimumProperty = RegisterProperty<int>(nameof(LightSizeMinimum));
 
+		protected int LightSizeMaximum
+		{
+			get { return GetValue<int>(LightSizeMaximumProperty); }
+			set
+			{
+				if (LightSize > value)
+				{
+					LightSize = value;
+				}
+				SetValue(LightSizeMaximumProperty, value);
+			}
+		}
+		private static readonly IPropertyData LightSizeMaximumProperty = RegisterProperty<int>(nameof(LightSizeMaximum));
+
+		public int DegreesCoverage
+		{
+			get { return GetValue<int>(DegreesCoverageProperty); }
+			set { SetValue(DegreesCoverageProperty, value); }
+		}
+		public static readonly IPropertyData DegreesCoverageProperty = RegisterProperty<int>(nameof(DegreesCoverage));
+
+		public int DegreeOffset
+		{
+			get { return GetValue<int>(DegreeOffsetProperty); }
+			set { SetValue(DegreeOffsetProperty, value); }
+		}
+		public static readonly IPropertyData DegreeOffsetProperty = RegisterProperty<int>(nameof(DegreeOffset));
+
+		public int BaseHeight
+		{
+			get { return GetValue<int>(BaseHeightProperty); }
+			set { SetValue(BaseHeightProperty, value); }
+		}
+		public static readonly IPropertyData BaseHeightProperty = RegisterProperty<int>(nameof(BaseHeight));
+
+		public int TopHeight
+		{
+			get { return GetValue<int>(TopHeightProperty); }
+			set { SetValue(TopHeightProperty, value); }
+		}
+		public static readonly IPropertyData TopHeightProperty = RegisterProperty<int>(nameof(TopHeight));
+
+		public int TopWidth
+		{
+			get { return GetValue<int>(TopWidthProperty); }
+			set { SetValue(TopWidthProperty, value); }
+		}
+		public static readonly IPropertyData TopWidthProperty = RegisterProperty<int>(nameof(TopWidth));
+
+		public StartLocation StartLocation
+		{
+			get { return GetValue<StartLocation>(StartLocationProperty); }
+			set { SetValue(StartLocationProperty, value); }
+		}
+		public static readonly IPropertyData StartLocationProperty = RegisterProperty<StartLocation>(nameof(StartLocation));
+
+		public bool ZigZag
+		{
+			get { return GetValue<bool>(ZigZagProperty); }
+			set { SetValue(ZigZagProperty, value); }
+		}
+		public static readonly IPropertyData ZigZagProperty = RegisterProperty<bool>(nameof(ZigZag));
+
+		public int ZigZagOffset
+		{
+			get { return GetValue<int>(ZigZagOffsetProperty); }
+			set { SetValue(ZigZagOffsetProperty, value); }
+		}
+		public static readonly IPropertyData ZigZagOffsetProperty = RegisterProperty<int>(nameof(ZigZagOffset));
+
+		public float TopRadius
+		{
+			get { return GetValue<float>(TopRadiusProperty); }
+			set { SetValue(TopRadiusProperty, value); }
+		}
+		public static readonly IPropertyData TopRadiusProperty = RegisterProperty<float>(nameof(TopRadius));
+
+		public float BottomRadius
+		{
+			get { return GetValue<float>(BottomRadiusProperty); }
+			set { SetValue(BottomRadiusProperty, value); }
+		}
+		public static readonly IPropertyData BottomRadiusProperty = RegisterProperty<float>(nameof(BottomRadius));
+
+		#region Rotation property
+		public ObservableCollection<AxisRotationViewModel> Rotations
+		{
+			get { return GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty); }
+			set { SetValue(RotationsProperty, value); }
+		}
+		private static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
 		#endregion
+
+		public TreeModel LightPropModel
+		{
+			get { return GetValue<TreeModel>(LightPropModelProperty); }
+			set { SetValue(LightPropModelProperty, value); }
+		}
+		private static readonly IPropertyData LightPropModelProperty = RegisterProperty<TreeModel>(nameof(LightPropModel));
 
 		public override ISummaryItem GetSummary()
 		{
 			return new SummaryItem
 			{
-				Title = "Tree",
-				Summary = string.Format("A new {0} with name {1} and {2} Strings with {3} nodes per string and {4} type nodes", Title, Name, Strings, NodesPerString,
-					StringType.ToString())
-			};
+				Title = this.Title,
+				Summary = $"Prop Type: {PropType.Tree.GetEnumDescription()}\n" +
+				          $"Name: {Name}\n" +
+				          $"Strings: {Strings}\n" +
+				          $"Light Size: {LightSize}\n" +
+				          $"Start Location: {EnumValueTypeConverter.GetDescription(StartLocation)}\n" +
+				          $"Nodes Per String: {NodesPerString}\n" +
+				          $"Degree Offset: {DegreeOffset}\n" +
+				          $"Degrees Coverage: {DegreesCoverage}\n" +
+				          $"Base Height: {BaseHeight}\n" +
+				          $"Top Height: {TopHeight}\n" +
+				          $"Top Width: {TopWidth}\n" +
+				          $"ZigZag: {ZigZag}\n" +
+				          $"ZigZag Offset: {ZigZagOffset}\n" +
+				          $"Top Radius: {TopRadius}\n" +
+				          $"Bottom Radius: {BottomRadius}\n" +
+				          $"{Rotations[0].Axis} Rotation: {Rotations[0].RotationAngle}\u00B0\n" +
+				          $"{Rotations[1].Axis} Rotation: {Rotations[1].RotationAngle}\u00B0\n" +
+				          $"{Rotations[2].Axis} Rotation: {Rotations[2].RotationAngle}\u00B0"
+            };
 		}
 
-		public IProp GetProp()
+        public IProp GetProp()
 		{
 			var tree = VixenSystem.Props.CreateProp<Tree>(Name);
 			tree.Strings = Strings;
 			tree.NodesPerString = NodesPerString;
-			tree.StringType = StringType;
 			//TODO add in other fields when wizard has full function
 			return tree;
 		}

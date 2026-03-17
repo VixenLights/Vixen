@@ -3,6 +3,8 @@ using Catel.IoC;
 using Catel.Services;
 using Orc.Wizard;
 using System.Diagnostics;
+using Vixen.Extensions;
+using Vixen.Sys.Props;
 using VixenApplication.SetupDisplay.Wizards.Pages;
 using VixenModules.Editor.PropWizard;
 
@@ -21,13 +23,16 @@ namespace VixenApplication.SetupDisplay.Wizards.Wizard
 
 			_messageService = messageService;
 
-			Title = "Tree Prop";
+			Title = $"{PropType.Tree.GetEnumDescription()} Prop";
 			ShowInTaskbar = true;
-			this.AddPage<TreePropWizardPage>();
 
-			// Configure the size of the wizard
-			MinSize = new System.Windows.Size(1300, 605);
-			ResizeMode = System.Windows.ResizeMode.CanResize;			
+			// Set up the Wizard pages
+			this.AddPage<TreePropWizardPage>();
+			DimmingWizardPage dimmingPage = this.AddPage<DimmingWizardPage>();
+			dimmingPage.PropType = PropType.Tree;
+			this.AddPage<ColorWizardPage>();
+			SummaryWizardPage summaryPage = this.AddPage<SummaryWizardPage>();
+			summaryPage.Description = $"Below is a summary of the {Title} selections.";
 		}
 
 		#region IWizard
