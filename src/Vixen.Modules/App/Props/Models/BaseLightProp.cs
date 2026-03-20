@@ -1,7 +1,9 @@
 ﻿#nullable enable
 using Common.WPFCommon.Converters;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Drawing;
+using System.Windows.Media.Imaging;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Props;
@@ -11,7 +13,7 @@ using VixenModules.Property.Color;
 
 namespace VixenModules.App.Props.Models
 {
-	public abstract class BaseLightProp<TModel> : BaseProp<TModel> where TModel : BasePropModel, IPropModel
+	public abstract class BaseLightProp<TModel> : BaseProp<TModel> where TModel : BaseLightModel, IPropModel
 	{
 		protected bool UpdateInProgress = false;
 
@@ -21,6 +23,8 @@ namespace VixenModules.App.Props.Models
 			Brightness = 100;
 			Gamma = 1.0;
 			SingleColorOption = System.Drawing.Color.RoyalBlue;
+
+			PropertyChanged += BaseLightProp_PropertyChanged;
 		}
 
 		#region Properties
@@ -114,6 +118,28 @@ namespace VixenModules.App.Props.Models
 			}
 		}
 		#endregion
+
+		private void BaseLightProp_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName != null)
+			{
+				switch (e.PropertyName)
+				{
+					case nameof(LightSize):
+						HandleLightPropChanged();
+						break;
+				}
+			}
+		}
+
+		private void HandleLightPropChanged()
+		{
+			if (PropModel == null)
+				return;
+
+			PropModel.LightSize = LightSize;
+			PropModel.UpdatePropNodes();
+		}
 
 		/// <summary>
 		/// Adds a specified number of string elements to the given element node.

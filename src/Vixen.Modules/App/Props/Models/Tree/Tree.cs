@@ -1,11 +1,11 @@
 ﻿#nullable enable
 
-using System.ComponentModel;
 using AsyncAwaitBestPractices;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.Theme;
 using Common.WPFCommon.Converters;
 using Debounce.Core;
+using System.ComponentModel;
 using Vixen.Extensions;
 using Vixen.Sys;
 using Vixen.Sys.Managers;
@@ -57,12 +57,14 @@ namespace VixenModules.App.Props.Models.Tree
 			{
 				GenerateElementsAsync().SafeFireAndForget();
 			}, 500);
+
+			PropertyChanged += Tree_PropertyChanged;
 		}
 
 		override public string GetSummary()
 		{
 			string Summary =
-				"<style>" + 
+				"<style>" +
 				$"  h2   {{color: #{new RGB(ThemeColorTable.ForeColor).ToHex()}; margin-top: 0; margin-bottom: 0; text-decoration: underline;}}" +
 				$"  body {{color: #{new RGB(ThemeColorTable.ForeColor).ToHex()}; margin-top: 0;}}" +
 				$"  b    {{color: #{new RGB(ThemeColorTable.ForeColorDisabled).ToHex()}; margin-left: 20px;}}" +
@@ -91,65 +93,13 @@ namespace VixenModules.App.Props.Models.Tree
 				"</body>" +
 				"<h2>Additional Props</h2>" +
 				"<body>" +
-//				$"<b>Left and Right Tree:</b> {LeftRight}<br>" +
+				//				$"<b>Left and Right Tree:</b> {LeftRight}<br>" +
 				"</body>" +
 				GetDimmingSummary() +
 				GetColorSummary() +
 				GetBaseSummary();
 
 			return Summary;
-		}
-
-		private async void Tree_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-		{
-			try
-			{
-				// Name is handled in the base class so we need to handle our own.
-				if (e.PropertyName != null)
-				{
-					switch (e.PropertyName)
-					{
-						case nameof(StringType):
-							_generateDebouncer.Debounce();
-							break;
-						case nameof(StartLocation):
-						case nameof(ZigZag):
-						case nameof(ZigZagOffset):
-							await AddOrUpdatePatchingOrder(_startLocation, _zigZag, _zigZagOffset);
-							break;
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				Logging.Error(ex, $"An error occured handling Tree property {e.PropertyName} changed");
-			}
-		}
-
-		private async void PropModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-		{
-			try
-			{
-				if (e.PropertyName != null)
-				{
-					switch (e.PropertyName)
-					{
-						case nameof(Strings):
-						case nameof(NodesPerString):
-							_generateDebouncer.Debounce();
-							break;
-						case nameof(StartLocation):
-						case nameof(ZigZag):
-						case nameof(ZigZagOffset):
-							await AddOrUpdatePatchingOrder();
-							break;
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				Logging.Error(ex, $"An error occured handling model property {e.PropertyName} changed");
-			}
 		}
 
 		/// <summary>
@@ -324,6 +274,56 @@ namespace VixenModules.App.Props.Models.Tree
 				SetProperty(ref _bottomRadius, value);
 				OnPropertyChanged(nameof(BottomRadius));
 			}
+		}
+
+		private async void Tree_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+			try
+			{
+				// Name is handled in the base class so we need to handle our own.
+				if (e.PropertyName != null)
+				{
+					switch (e.PropertyName)
+					{
+						case nameof(StringType):
+							_generateDebouncer.Debounce();
+							break;
+
+						case nameof(StartLocation):
+						case nameof(ZigZag):
+						case nameof(ZigZagOffset):
+							await AddOrUpdatePatchingOrder(_startLocation, _zigZag, _zigZagOffset);
+							break;
+
+						case nameof(NodesPerString):
+						case nameof(TopRadius):
+						case nameof(BottomRadius):
+						case nameof(DegreesCoverage):
+						case nameof(DegreeOffset):
+						case nameof(Strings):
+							HandleTreeChanged();
+							break;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, $"An error occured handling Tree property {e.PropertyName} changed");
+			}
+		}
+
+		private void HandleTreeChanged()
+		{
+			if (PropModel == null)
+				return;
+
+			PropModel.NodesPerString = NodesPerString;
+			PropModel.TopRadius = TopRadius;
+			PropModel.BottomRadius = BottomRadius;
+			PropModel.DegreesCoverage = DegreesCoverage;
+			PropModel.DegreesOffset = DegreeOffset;
+			PropModel.Strings = Strings;
+			PropModel.UpdatePropNodes();
 		}
 
 		protected async Task GenerateElementsAsync()

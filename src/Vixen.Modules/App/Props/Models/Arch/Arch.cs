@@ -1,17 +1,18 @@
 ﻿
 #nullable enable
 using AsyncAwaitBestPractices;
-using Common.Controls.Theme;
-using Debounce.Core;
 using Common.Controls.ColorManagement.ColorModels;
+using Common.Controls.Theme;
+using Common.WPFCommon.Converters;
+using Debounce.Core;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using Vixen.Extensions;
+using Vixen.Services;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Props;
 using Vixen.Sys.Props.Components;
 using VixenModules.Property.Color;
-using System.Collections.ObjectModel;
-using Vixen.Services;
-using Common.WPFCommon.Converters;
 
 namespace VixenModules.App.Props.Models.Arch
 {
@@ -34,6 +35,9 @@ namespace VixenModules.App.Props.Models.Arch
 
 		public Arch(string name, int nodeCount = 0, StringTypes stringType = StringTypes.ColorMixingRGB) : base(name, PropType.Arch)
 		{
+			// Create Preview model
+			PropModel = new ArchModel();
+
 			// Set some default parameters
 			Name = name;
 			NodeCount = 24;
@@ -53,13 +57,12 @@ namespace VixenModules.App.Props.Models.Arch
 				SelectedColorSet = ColorSetNames[0];
 			}
 
-			// Create Preview model
-			PropModel = new ArchModel();
-
 			_generateDebouncer = new Debouncer(() =>
 			{
 				GenerateElementsAsync().SafeFireAndForget();
 			}, 500);
+
+			PropertyChanged += Arch_PropertyChanged;
 		}
 
 		#region Properties
@@ -70,6 +73,8 @@ namespace VixenModules.App.Props.Models.Arch
 			set
 			{
 				_nodeCount = value;
+				PropModel.NumPoints = _nodeCount;
+				PropModel.UpdatePropNodes();
 				_generateDebouncer?.Debounce();
 				OnPropertyChanged(nameof(NodeCount));
 			}
@@ -99,6 +104,28 @@ namespace VixenModules.App.Props.Models.Arch
 			}
 		}
 		#endregion
+
+		private void Arch_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName != null)
+			{
+				switch (e.PropertyName)
+				{
+					case nameof(NodeCount):
+						HandleArchChanged();
+						break;
+				}
+			}
+		}
+
+		private void HandleArchChanged()
+		{
+			if (PropModel == null)
+				return;
+
+			PropModel.NumPoints = NodeCount;
+			PropModel.UpdatePropNodes();
+		}
 
 		/// <summary>
 		/// Get the HTML summary of all the parameter values

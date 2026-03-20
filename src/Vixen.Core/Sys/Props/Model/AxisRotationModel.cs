@@ -1,4 +1,6 @@
-﻿namespace Vixen.Sys.Props.Model
+﻿using Vixen.Model;
+
+namespace Vixen.Sys.Props.Model
 {
 	/// <summary>
 	/// Defines the coordinate system axis.
@@ -13,25 +15,30 @@
 	/// <summary>
 	/// Maintains a rotation around an axis.
 	/// </summary>
-	public class AxisRotationModel
-	{
+	public class AxisRotationModel : BindableBase
+    {
 		/// <summary>
 		/// Axis to rotate about.
 		/// </summary>
 		public Axis Axis { get; set; }
 
-		/// <summary>
-		/// Rotation angle in degrees.
-		/// </summary>
-		public int RotationAngle { get; set; }
+        /// <summary>
+        /// Rotation angle in degrees.
+        /// </summary>
+        private int _rotationAngle;
+        public int RotationAngle
+        {
+	        get => _rotationAngle;
+	        set => SetProperty(ref _rotationAngle, value);
+        }
 
-		/// <summary>
-		/// Converts from axis string to enumeration.
-		/// </summary>
-		/// <param name="axis">String to convert</param>
-		/// <returns>Equivalent enumeration of the string</returns>
-		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		public Axis ConvertAxis(string axis)
+        /// <summary>
+        /// Converts from axis string to enumeration.
+        /// </summary>
+        /// <param name="axis">String to convert</param>
+        /// <returns>Equivalent enumeration of the string</returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public Axis ConvertAxis(string axis)
 		{
 			return Axis = axis switch
 			{
