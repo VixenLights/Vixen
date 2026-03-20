@@ -148,13 +148,6 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 		private static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
 		#endregion
 
-		public ArchModel LightPropModel
-		{
-			get { return GetValue<ArchModel>(LightPropModelProperty); }
-			set { SetValue(LightPropModelProperty, value); }
-		}
-		private static readonly IPropertyData LightPropModelProperty = RegisterProperty<ArchModel>(nameof(LightPropModel));
-
 		/// <summary>
 		/// Get a summary of the wizard page settings.
 		/// </summary>

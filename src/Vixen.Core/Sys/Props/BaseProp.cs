@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using NLog;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using Vixen.Model;
@@ -50,6 +51,7 @@ namespace Vixen.Sys.Props
 
 			PropertyChanged += BaseProp_PropertyChanged;
 		}
+		#endregion
 
 		private void BaseProp_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
@@ -57,23 +59,25 @@ namespace Vixen.Sys.Props
 			{
 				switch (e.PropertyName)
 				{
+					case nameof(Rotations):
+						HandleRotationsChanged();
+						break;
 				}
-				if (e.PropertyName != nameof(ModifiedDate))
+            if (e.PropertyName != nameof(ModifiedDate))
 				{
 					PropModified();
 				}
 			}
 		}
-		#endregion
 
-		/// <summary>
-		/// Gets the unique identifier for the Prop.
-		/// </summary>
-		/// <remarks>
-		/// This identifier is automatically generated upon the creation of the Prop
-		/// and is used to uniquely distinguish it within the Vixen system.
-		/// </remarks>
-		public Guid Id
+        /// <summary>
+        /// Gets the unique identifier for the Prop.
+        /// </summary>
+        /// <remarks>
+        /// This identifier is automatically generated upon the creation of the Prop
+        /// and is used to uniquely distinguish it within the Vixen system.
+        /// </remarks>
+        public Guid Id
 		{
 			get => _id;
 			init => SetProperty(ref _id, value);
@@ -91,7 +95,6 @@ namespace Vixen.Sys.Props
 				{
 					RenamePropElement(_name, value);
 					SetProperty(ref _name, value);
-					OnPropertyChanged(nameof(Name));
 				}
 			}
 		}
@@ -104,21 +107,38 @@ namespace Vixen.Sys.Props
 			get => _rotations;
 			set
 			{
+				// Handle changes to both the Rotation collection and individual elements within the Rotation collection
+				if (ReferenceEquals(_rotations, value))
+					return;
+
+				if (_rotations != null)
+				{
+					_rotations.CollectionChanged -= Rotations_CollectionChanged;
+					UnsubscribeFromItems(_rotations);
+				}
+
 				_rotations = value;
+
+				if (_rotations != null)
+				{
+					_rotations.CollectionChanged += Rotations_CollectionChanged;
+					SubscribeToItems(_rotations);
+				}
+
 				OnPropertyChanged(nameof(Rotations));
 			}
-		}
+        }
 
-		/// <summary>
-		/// Gets or sets the name of the user who created this Prop.
-		/// </summary>
-		/// <value>
-		/// A <see cref="string"/> representing the creator's username.
-		/// </value>
-		/// <remarks>
-		/// This property is used to track the origin of the Prop for auditing and informational purposes.
-		/// </remarks>
-		public string CreatedBy
+        /// <summary>
+        /// Gets or sets the name of the user who created this Prop.
+        /// </summary>
+        /// <value>
+        /// A <see cref="string"/> representing the creator's username.
+        /// </value>
+        /// <remarks>
+        /// This property is used to track the origin of the Prop for auditing and informational purposes.
+        /// </remarks>
+        public string CreatedBy
 		{
 			get => _createdBy;
 			set => SetProperty(ref _createdBy, value);
@@ -162,18 +182,71 @@ namespace Vixen.Sys.Props
 			get => _propModel;
 			set => SetProperty(ref _propModel, value);
 		}
-		
-		/// <summary>
-		/// Gets or sets the unique identifier of the root <see cref="ElementNode"/> 
-		/// associated with this Prop.
-		/// </summary>
-		/// <remarks>
-		/// This property serves as a link between the Prop and its corresponding 
-		/// root <see cref="ElementNode"/> in the legacy ElementNode tree. 
-		/// If the identifier is <see cref="Guid.Empty"/>, it indicates that no 
-		/// root <see cref="ElementNode"/> is currently associated with the Prop.
-		/// </remarks>
-		public Guid RootPropElementNodeId { get; protected set; } = Guid.Empty;
+
+		private void Rotations_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (e.OldItems != null)
+				UnsubscribeFromItems(e.OldItems.Cast<AxisRotationModel>());
+
+			if (e.NewItems != null)
+				SubscribeToItems(e.NewItems.Cast<AxisRotationModel>());
+
+			HandleRotationsChanged();
+		}
+
+		private void HandleRotationsChanged()
+		{
+			if (PropModel == null)
+				return;
+
+			PropModel.AxisRotationModel = _rotations;
+
+			if (PropModel is BaseLightModel lightModel)
+			{
+				lightModel.UpdatePropNodes();
+			}
+			else
+			{
+				// TODO: handle non-light models
+			}
+		}
+
+        private void SubscribeToItems(IEnumerable<AxisRotationModel> items)
+		{
+			foreach (var item in items)
+			{
+				item.PropertyChanged += RotationItem_PropertyChanged;
+			}
+		}
+
+		private void UnsubscribeFromItems(IEnumerable<AxisRotationModel> items)
+		{
+			foreach (var item in items)
+			{
+				item.PropertyChanged -= RotationItem_PropertyChanged;
+			}
+		}
+
+		private void RotationItem_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof(AxisRotationModel.RotationAngle) ||
+			    e.PropertyName == nameof(AxisRotationModel.Axis))
+			{
+				HandleRotationsChanged();
+			}
+		}
+
+        /// <summary>
+        /// Gets or sets the unique identifier of the root <see cref="ElementNode"/> 
+        /// associated with this Prop.
+        /// </summary>
+        /// <remarks>
+        /// This property serves as a link between the Prop and its corresponding 
+        /// root <see cref="ElementNode"/> in the legacy ElementNode tree. 
+        /// If the identifier is <see cref="Guid.Empty"/>, it indicates that no 
+        /// root <see cref="ElementNode"/> is currently associated with the Prop.
+        /// </remarks>
+        public Guid RootPropElementNodeId { get; protected set; } = Guid.Empty;
 
 		/// <summary>
 		/// Gets the prefix used for automatically generated property names in the Prop system.

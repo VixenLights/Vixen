@@ -57,6 +57,11 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		private IProp? _currentPreviewProp;
 
+		/// <summary>
+		/// Flag to refresh the preview prop graphics.
+		/// </summary>
+		private bool _refreshPreviewProp;
+		
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
 		#endregion
@@ -677,7 +682,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 				if (PropNodeTreeViewModel.SelectedItem is { PropNode.IsProp: true, PropNode.Prop: not null })
 				{
 					SelectedProp = PropNodeTreeViewModel.SelectedItem.PropNode.Prop;
-					UpdatePreviewModel(SelectedProp, true);
+					UpdatePreviewModel(SelectedProp);
 					UpdatePropComponentTreeViewModel(SelectedProp);
 				}
 				else
@@ -1284,34 +1289,38 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// </summary>
 		/// <param name="prop">Prop to display in the prop preview</param>
 		/// <param name="force">Force the Preview to update immediately</param>
-		internal void UpdatePreviewModel(IProp prop, bool force = false)
+		internal void UpdatePreviewModel(IProp prop)
 		{
-			if (force == true)
-				DrawProp(prop?.PropModel);
-
 			// Save off the prop model to display in the prop preview
-			_nextPreviewProp = prop;			
+			_nextPreviewProp = prop;
+
+			// Set flag to redraw the preview prop
+			_refreshPreviewProp = true;
 		}
 
-		/// <summary>
-		/// Draws the currently selected prop in the prop preview.
-		/// </summary>
-		/// <remarks>
-		/// This method needs to be called within the OpenTK control render method.
-		/// Otherwise the two OpenTK controls get confused and the prop preview won't render properly or consistently.
-		/// </remarks>
-		public void DrawProp()
+        /// <summary>
+        /// Draws the currently selected prop in the prop preview.
+        /// </summary>
+        /// <remarks>
+        /// This method needs to be called within the OpenTK control render method.
+        /// Otherwise the two OpenTK controls get confused and the prop preview won't render properly or consistently.
+        /// </remarks>
+        public void DrawProp()
 		{
-			// If the prop preview model has changed then...
-			if (_nextPreviewProp != _currentPreviewProp)
+            // If the prop preview model has changed then...
+            if (_nextPreviewProp != _currentPreviewProp ||
+                _refreshPreviewProp)
 			{
-				// Draw the prop in the OpenGL prop preview
-				DrawProp(_nextPreviewProp?.PropModel);
+                // Draw the prop in the OpenGL prop preview
+                DrawProp(_nextPreviewProp?.PropModel);
 
 				// Save off the current prop preview prop model
-				_currentPreviewProp = _nextPreviewProp;	
+				_currentPreviewProp = _nextPreviewProp;
+
+				// Reset the refresh flag
+				_refreshPreviewProp = false;
 			}
-		}
+        }
 
 		/// <summary>
 		/// Refreshes CanExecute commands.
