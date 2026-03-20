@@ -80,7 +80,6 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
 			arch.ArchWiringStart = archPropPage.ArchWiringStart;
 			arch.LightSize = archPropPage.LightSize;
 			arch.Rotations = AxisRotationViewModel.ConvertToModel(archPropPage.Rotations);
-			arch.PropModel = archPropPage.LightPropModel;
 
 			// Configure the Additional Arch properties
 			ArchPropAdditionalWizardPage additionalPage = (ArchPropAdditionalWizardPage)wizard.Pages.Single(page => page is ArchPropAdditionalWizardPage);

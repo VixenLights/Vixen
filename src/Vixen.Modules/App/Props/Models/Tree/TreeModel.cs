@@ -22,17 +22,6 @@ namespace VixenModules.App.Props.Models.Tree
 
 		public TreeModel(int strings = 16, int nodesPerString = 50, int nodeSize = 2)
 		{
-			//_topWidth = 20;
-			//_topHeight = _topWidth / 2;
-			//_baseHeight = 40;
-			//_degreesCoverage = 360;
-			//_strings = strings;
-			//_nodesPerString = nodesPerString;
-			//_nodeSize = nodeSize;
-			//_topRadius = 10;
-			//_bottomRadius = 100;
-
-//			Nodes = new(Get3DNodePoints());
 			PropertyChanged += PropertyModelChanged;			
 		}
 
@@ -202,7 +191,7 @@ namespace VixenModules.App.Props.Models.Tree
 				double offsetX = Math.Cos(radians) * radius;
 
 				// Add the node point
-				strandPoints.Add(new NodePoint(offsetX, offsetY, offsetZ));
+				strandPoints.Add(new NodePoint(offsetX, offsetY, offsetZ) { Size = LightSize });
 
 				// Decrement the radius as we move up the strand
 				radius -= radiusDelta;

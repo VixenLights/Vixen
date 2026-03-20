@@ -16,14 +16,28 @@ namespace Vixen.Sys.Props.Model
 
 		#endregion
 
-		#region Protected Methods
+		#region Public Properties
+		private ObservableCollection<AxisRotationModel> _axisRotationModel;
+        public ObservableCollection<AxisRotationModel> AxisRotationModel
+        {
+	        get => _axisRotationModel;
+	        set => _axisRotationModel = value;
+        }
+        #endregion
 
-		/// <summary>
-		/// Rotates the specified vertices by up to three axis rotations.
-		/// </summary>
-		/// <param name="vertices">Vertices to rotate</param>
-		protected void RotatePoints(List<NodePoint> vertices, ObservableCollection<AxisRotationModel>rotations)
+        #region Protected Methods
+
+        /// <summary>
+        /// Rotates the specified vertices by up to three axis rotations.
+        /// </summary>
+        /// <param name="vertices">Vertices to rotate</param>
+        protected void RotatePoints(List<NodePoint> vertices, ObservableCollection<AxisRotationModel>rotations)
 		{
+			if (rotations == null)
+			{
+				return;
+			}
+
 			// Loop over the rotations because order matters
 			foreach (AxisRotationModel rm in rotations)
 			{

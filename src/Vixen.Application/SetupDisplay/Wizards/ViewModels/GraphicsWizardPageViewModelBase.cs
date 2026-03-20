@@ -39,7 +39,6 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		#endregion
 
 		#region Protected Properties
-		[ViewModelToModel]
 		public TPropModel LightPropModel
 		{
 			get { return GetValue<TPropModel>(LightPropModelProperty); }
