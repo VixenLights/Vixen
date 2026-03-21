@@ -102,6 +102,17 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			Unlock = new RelayCommand(UnlockSelectedProps, CanUnlockSelectedProps);
 			UnlockAll = new RelayCommand(UnlockAllProps, CanUnlockAllProps);
 
+			// Initialize the setup preview alignment commands
+			MatchProperties = new RelayCommand(MatchPropProperties, CanMatchProperties);
+			DistributeHorizontally = new RelayCommand(DistributePropsHorizontally, CanDistributeProps);
+			DistributeVertically = new RelayCommand(DistributePropsVertically, CanDistributeProps);
+			AlignVertically = new RelayCommand(AlignPropsVertically, CanAlignProps);
+			AlignHorizontally = new RelayCommand(AlignPropsHorizontally, CanAlignProps);
+			AlignLeft = new RelayCommand(AlignPropsLeft, CanAlignProps);
+			AlignRight = new RelayCommand(AlignPropsRight, CanAlignProps);
+			AlignBottom = new RelayCommand(AlignPropsBottom, CanAlignProps);
+			AlignTop = new RelayCommand(AlignPropsTop, CanAlignProps);
+
 			// Intialize the command to delete selected preview props
 			DeletePreviewProp = new RelayCommand(DeleteSelectedPreviewProps, CanDeleteSelectedPreviewProps);
 
@@ -176,6 +187,51 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// Command for unlocking all props.
 		/// </summary>
 		public ICommand UnlockAll { get; private set; }
+		
+		/// <summary>
+		/// Command to make the selected props the same size.
+		/// </summary>
+		public ICommand MatchProperties { get; private set; }
+		
+		/// <summary>
+		/// Command to distribute the selected props horizontally.
+		/// </summary>
+		public ICommand DistributeHorizontally { get; private set; }
+				
+		/// <summary>
+		/// Command to distribute the selected props vertically.
+		/// </summary>
+		public ICommand DistributeVertically { get; private set; }
+				
+		/// <summary>
+		/// Command to align the selected props vertically.
+		/// </summary>
+		public ICommand AlignVertically { get; private set; }
+		
+		/// <summary>
+		/// Command to align the selected props horizontally.
+		/// </summary>
+		public ICommand AlignHorizontally { get; private set; }
+		
+		/// <summary>
+		/// Command to align the selected props horizontally on the left.
+		/// </summary>
+		public ICommand	AlignLeft { get; private set; }
+
+		/// <summary>
+		/// Command to align the selected props horizontally on the right.
+		/// </summary>
+		public ICommand	AlignRight { get; private set; }
+
+		/// <summary>
+		/// Command to align the selected props vertically on the bottom.
+		/// </summary>
+		public ICommand AlignBottom { get; private set; }
+
+		/// <summary>
+		/// Command to align the selected props vertically on the top.
+		/// </summary>
+		public ICommand AlignTop { get; private set; }
 
 		/// <summary>
 		/// Gets or sets the SelectedProp value.
@@ -257,6 +313,117 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		#region Private Methods
 
 		/// <summary>
+		/// Returns true if the selected props can all be made the same size.
+		/// </summary>
+		/// <returns>True if the selected props can all be made the same size</returns>
+		private bool CanMatchProperties()
+		{
+			// Need at least 2 selected props to enable this command
+			return DisplayPreviewDrawingEngine.SelectedProps.Count > 1;
+		}
+
+		/// <summary>
+		/// Makes the selected props all the same size.
+		/// </summary>
+		private void MatchPropProperties()
+		{
+			// Delegate to the drawing engine
+			DisplayPreviewDrawingEngine.MatchPropProperties();	
+		}
+
+		/// <summary>
+		/// Returns true if the selected props can be distributed either horizontally or vertically.
+		/// </summary>
+		/// <returns>True if the selected props can be distributed either horizontally or vertically</returns>
+		private bool CanDistributeProps()
+		{
+			// Need at least 3 selected props to distribute
+			return DisplayPreviewDrawingEngine.SelectedProps.Count > 2;
+		}
+
+		/// <summary>
+		/// Distributes the selected props horizontally.
+		/// </summary>
+		private void DistributePropsHorizontally()
+		{
+			// Delegate to the drawing engine
+			DisplayPreviewDrawingEngine.DistributePropsHorizontally();
+		}
+
+		/// <summary>
+		/// Distributes the selected props vertically.
+		/// </summary>
+		private void DistributePropsVertically()
+		{
+			// Delegate to the drawing engine
+			DisplayPreviewDrawingEngine.DistributePropsVertically();
+		}
+
+		/// <summary>
+		/// Returns true if the selected props can be aligned either horizontally or vertically.
+		/// </summary>
+		/// <returns>true if the selected props can be aligned either horizontally or vertically</returns>
+		private bool CanAlignProps()
+		{			
+			// Need at least two selected props to align
+			return DisplayPreviewDrawingEngine.SelectedProps.Count > 1;
+		}
+
+		/// <summary>
+		/// Aligns the selected props vertically.
+		/// </summary>
+		private void AlignPropsVertically()
+		{
+			// Delegate to the drawing engine
+			DisplayPreviewDrawingEngine.AlignPropsVertically();
+		}
+
+		/// <summary>
+		/// Aligns the selected props horizontally.
+		/// </summary>
+		private void AlignPropsHorizontally()
+		{
+			// Delegate to the drawing engine
+			DisplayPreviewDrawingEngine.AlignPropsHorizontally();
+		}
+
+		/// <summary>
+		/// Aligns the selected props along the X axis on the left side.
+		/// </summary>
+		private void AlignPropsLeft()
+		{
+			// Delegate to the drawing engine
+			DisplayPreviewDrawingEngine.AlignPropsLeft();
+		}
+
+		/// <summary>
+		/// Aligns the selected props along the X axis on the right side.
+		/// </summary>
+		private void AlignPropsRight()
+		{
+			// Delegate to the drawing engine
+			DisplayPreviewDrawingEngine.AlignPropsRight();
+		}
+
+		/// <summary>
+		/// Aligns the selected props along the Y axis on the bottom.
+		/// </summary>
+		private void AlignPropsBottom()
+		{
+			// Delegate to the drawing engine
+			DisplayPreviewDrawingEngine.AlignPropsBottom();
+		}
+
+		/// <summary>
+		/// Aligns the selected props along the Y axis on the top.
+		/// </summary>
+		private void AlignPropsTop()
+		{
+			// Delegate to the drawing engine
+			DisplayPreviewDrawingEngine.AlignPropsTop();
+		}
+
+		/// <summary>
 		/// Event handler when the selected props in the setup preview change.
 		/// </summary>
 		/// <param name="sender">The source of the event</param>
@@ -268,6 +435,18 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 			// Update the enabled/disabled status of the delete preview prop command
 			((RelayCommand)DeletePreviewProp).RaiseCanExecuteChanged();
+
+			// Update the enabled/disabled status of the alignment commands based
+			// on the number of selected props
+			((RelayCommand)MatchProperties).RaiseCanExecuteChanged();
+			((RelayCommand)DistributeHorizontally).RaiseCanExecuteChanged();
+			((RelayCommand)DistributeVertically).RaiseCanExecuteChanged();
+			((RelayCommand)AlignVertically).RaiseCanExecuteChanged();
+			((RelayCommand)AlignHorizontally).RaiseCanExecuteChanged();
+			((RelayCommand)AlignLeft).RaiseCanExecuteChanged();
+			((RelayCommand)AlignRight).RaiseCanExecuteChanged();
+			((RelayCommand)AlignBottom).RaiseCanExecuteChanged();
+			((RelayCommand)AlignTop).RaiseCanExecuteChanged();
 		}
 
 		/// <summary>
