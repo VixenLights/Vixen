@@ -9,7 +9,7 @@ namespace VixenModules.App.Props.Models.Tree
 	/// </summary>
 	[Serializable]
 	public class TreeModel : BaseLightModel
-	{		
+	{
 		#region Constructor
 
 		/// <summary>
@@ -19,10 +19,15 @@ namespace VixenModules.App.Props.Models.Tree
 		{
 		}
 
-
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="strings">Number of string</param>
+		/// <param name="nodesPerString">Nodes (lights) per string</param>
+		/// <param name="nodeSize">Node (light) size </param>
 		public TreeModel(int strings = 16, int nodesPerString = 50, int nodeSize = 2)
 		{
-			PropertyChanged += PropertyModelChanged;			
+			PropertyChanged += PropertyModelChanged;
 		}
 
 		#endregion
@@ -98,7 +103,7 @@ namespace VixenModules.App.Props.Models.Tree
 		/// <summary>
 		/// Radius at the top of the tree as a percentage.
 		/// </summary>
-		public float TopRadius 
+		public float TopRadius
 		{
 			get => _topRadius;
 			set => SetProperty(ref _topRadius, value);
@@ -116,6 +121,7 @@ namespace VixenModules.App.Props.Models.Tree
 		}
 
 		#endregion
+
 		/// <summary>
 		/// Creates the 3-D points that make up the tree.
 		/// </summary>
@@ -130,7 +136,7 @@ namespace VixenModules.App.Props.Models.Tree
 
 			// Maximum radius is half the drawing area
 			double maxWidth = width / 2.0;
-						
+
 			// Calculate the top and bottom radius
 			double topRadius = TopRadius / 100.0 * maxWidth;
 			double bottomRadius = BottomRadius / 100.0 * maxWidth;
@@ -144,16 +150,15 @@ namespace VixenModules.App.Props.Models.Tree
 				double angle = (DegreesCoverage / Strings) * i + DegreesOffset;
 
 				// Add a strand to the tree
-				treePoints.AddRange(CreateStrand(NodesPerString, angle, bottomRadius, radiusDelta, -height / 2.0, + height / NodesPerString));
+				treePoints.AddRange(CreateStrand(NodesPerString, angle, bottomRadius, radiusDelta, -height / 2.0, +height / NodesPerString));
 			}
 
-			// (Optionally) rotate the points along the X, Y, and Z axis
-			//ToDo : Replace null with rotation
-			RotatePoints(treePoints, AxisRotationModel);	
+			// (Optionally) rotate the points along the X, Y, and Z axis			
+			RotatePoints(treePoints, AxisRotationModel);
 
 			return treePoints;
 		}
-		
+
 		/// <summary>
 		/// Creates a strand of nodes.
 		/// </summary>
@@ -165,18 +170,18 @@ namespace VixenModules.App.Props.Models.Tree
 		/// <param name="yDelta"></param>
 		/// <returns></returns>
 		private IEnumerable<NodePoint> CreateStrand(
-			int nodesPerStrand, 
-			double angle, 			
-			double bottomRadius, 
+			int nodesPerStrand,
+			double angle,
+			double bottomRadius,
 			double radiusDelta,
-			double yStart, 
+			double yStart,
 			double yDelta)
 		{
 			// Create the collection of node points
 			List<NodePoint> strandPoints = new();
 
 			double radians = angle * Math.PI / 180; // Convert to radians
-			 
+
 			// Initialize the Y position of the strand nodes
 			double offsetY = yStart;
 
@@ -184,7 +189,7 @@ namespace VixenModules.App.Props.Models.Tree
 			double radius = bottomRadius;
 
 			// Loop over the nodes in the strand
-			for (int p = 0; p < nodesPerStrand; p++) 
+			for (int p = 0; p < nodesPerStrand; p++)
 			{
 				// Calculate the position of the node
 				double offsetZ = Math.Sin(radians) * radius;
@@ -203,7 +208,7 @@ namespace VixenModules.App.Props.Models.Tree
 			// Return the node points that make up the strand
 			return strandPoints;
 		}
-		
+
 		public static List<PointF> GetEllipsePoints(
 			double leftOffset,
 			double topOffset,
@@ -243,5 +248,5 @@ namespace VixenModules.App.Props.Models.Tree
 			}
 			return points;
 		}
-    }
+	}
 }
