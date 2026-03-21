@@ -8,63 +8,70 @@ using VixenApplication.SetupDisplay.ViewModels;
 
 namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 {
-	/// <summary>
-	/// Base class for a wizard page that also displays 3-D prop graphics.
-	/// </summary>
-	/// <typeparam name="TWizardPage">Type of wizard page</typeparam>
-	/// <typeparam name="TPropModel">Type of prop model</typeparam>
-	public class GraphicsWizardPageViewModelBase<TWizardPage, TPropModel> : WizardPageViewModelBase<TWizardPage>
-		where TWizardPage : class, IWizardPage
-		where TPropModel : class, ILightPropModel, new()	
-	{
-		#region Constructor
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="wizardPage">Wizard page model</param>
-		protected GraphicsWizardPageViewModelBase(TWizardPage wizardPage) : base(wizardPage)
-		{
-			LightPropModel = new TPropModel();
-			List<IPropModel> propModels = new List<IPropModel>();
-			propModels.Add(LightPropModel);
+    /// <summary>
+    /// Base class for a wizard page that also displays 3-D prop graphics.
+    /// </summary>
+    /// <typeparam name="TWizardPage">Type of wizard page</typeparam>
+    /// <typeparam name="TPropModel">Type of prop model</typeparam>
+    public class GraphicsWizardPageViewModelBase<TWizardPage, TPropModel> : WizardPageViewModelBase<TWizardPage>
+        where TWizardPage : class, IWizardPage
+        where TPropModel : class, ILightPropModel, new()
+    {
+        #region Constructor
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="wizardPage">Wizard page model</param>
+        protected GraphicsWizardPageViewModelBase(TWizardPage wizardPage) : base(wizardPage)
+        {
+            LightPropModel = new TPropModel();
+            List<IPropModel> propModels = new List<IPropModel>();
+            propModels.Add(LightPropModel);
 
 			// Create the prop drawing engine
 			DrawingEngine = new OpenGLPropDrawingEngine(propModels, 1, 100.0f);
 
-			foreach (var rotation in Rotations)
-			{
-				rotation.RotationChanged += OnRotationChanged;
-			}
-		}
-		#endregion
+            // Initialize the Rotation collection
+            ObservableCollection<AxisRotationModel> rotations = new ObservableCollection<AxisRotationModel>();
+            rotations.Add(new AxisRotationModel() { Axis = Axis.XAxis, RotationAngle = 0 });
+            rotations.Add(new AxisRotationModel() { Axis = Axis.YAxis, RotationAngle = 0 });
+            rotations.Add(new AxisRotationModel() { Axis = Axis.ZAxis, RotationAngle = 0 });
+            Rotations = AxisRotationViewModel.ConvertToViewModel(rotations);
 
-		#region Protected Properties
-		public TPropModel LightPropModel
-		{
-			get { return GetValue<TPropModel>(LightPropModelProperty); }
-			set { SetValue(LightPropModelProperty, value); }
-		}
-		private static readonly IPropertyData LightPropModelProperty = RegisterProperty<TPropModel>(nameof(LightPropModel));
-		#endregion
+            foreach (var rotation in Rotations)
+            {
+                rotation.RotationChanged += OnRotationChanged;
+            }
+        }
+        #endregion
 
-		#region Public Properties
-		/// <summary>
-		/// Collection of rotations to support rotating the props around the x,y, and z axis.
-		/// </summary>
-		[ViewModelToModel]
-		public ObservableCollection<AxisRotationViewModel> Rotations
-		{
-			get { return GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty); }
-			set
-			{
-				SetValue(RotationsProperty, value);
-				for (int index = 0; index < Rotations.Count; index++)
-				{
-					Rotations[index].RotationAngleDefault = Rotations[index].RotationAngle;
-				}
-			}
-		}
-		private static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
+        #region Protected Properties
+        public TPropModel LightPropModel
+        {
+            get { return GetValue<TPropModel>(LightPropModelProperty); }
+            set { SetValue(LightPropModelProperty, value); }
+        }
+        private static readonly IPropertyData LightPropModelProperty = RegisterProperty<TPropModel>(nameof(LightPropModel));
+        #endregion
+
+        #region Public Properties
+        /// <summary>
+        /// Collection of rotations to support rotating the props around the x,y, and z axis.
+        /// </summary>
+        [ViewModelToModel]
+        public ObservableCollection<AxisRotationViewModel> Rotations
+        {
+            get { return GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty); }
+            set
+            {
+                SetValue(RotationsProperty, value);
+                for (int index = 0; index < Rotations.Count; index++)
+                {
+                    Rotations[index].RotationAngleDefault = Rotations[index].RotationAngle;
+                }
+            }
+        }
+        private static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
 
 		/// <summary>
 		/// OpenGL prop drawing engine.
@@ -73,53 +80,53 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 
 		#endregion
 
-		#region Private Methods
-		/// <summary>
-		/// Event handler for when a prop rotation changed.
-		/// </summary>
-		/// <param name="sender">Event sender</param>
-		/// <param name="e">Event arguments</param>
-		private void OnRotationChanged(object? sender, EventArgs e)
-		{
-			// Is there a changed axis?
-			var newRotation = sender as AxisRotationViewModel;
-			if (newRotation == null)
-			{
-				return;
-			}
+        #region Private Methods
+        /// <summary>
+        /// Event handler for when a prop rotation changed.
+        /// </summary>
+        /// <param name="sender">Event sender</param>
+        /// <param name="e">Event arguments</param>
+        private void OnRotationChanged(object? sender, EventArgs e)
+        {
+            // Is there a changed axis?
+            var newRotation = sender as AxisRotationViewModel;
+            if (newRotation == null)
+            {
+                return;
+            }
 
-			// Then try to find the axis it now duplicates
-			var duplicateRotation = Rotations.FirstOrDefault(x => x != newRotation && x.Axis == newRotation.Axis);
+            // Then try to find the axis it now duplicates
+            var duplicateRotation = Rotations.FirstOrDefault(x => x != newRotation && x.Axis == newRotation.Axis);
 
-			// If there is an axis duplication (i.e. two axis have the same plane), then...
-			if (duplicateRotation != null)
-			{
-				// Find the Axis that is no longer specified
-				var otherRotation = Rotations.FirstOrDefault(x => x != newRotation && x != duplicateRotation);
-				if (otherRotation == null)
-				{
-					return;
-				}
+            // If there is an axis duplication (i.e. two axis have the same plane), then...
+            if (duplicateRotation != null)
+            {
+                // Find the Axis that is no longer specified
+                var otherRotation = Rotations.FirstOrDefault(x => x != newRotation && x != duplicateRotation);
+                if (otherRotation == null)
+                {
+                    return;
+                }
 
-				var missingAxis = newRotation.Axes.FirstOrDefault(x => x != duplicateRotation.Axis && x != otherRotation.Axis);
+                var missingAxis = newRotation.Axes.FirstOrDefault(x => x != duplicateRotation.Axis && x != otherRotation.Axis);
 
-				// Finally assign the missing axis to the duplicated plane and swap the rotations between the new and duplicated axes
-				duplicateRotation.Axis = missingAxis;
-				(duplicateRotation.RotationAngle, newRotation.RotationAngle) = (newRotation.RotationAngle, duplicateRotation.RotationAngle);
-			}
+                // Finally assign the missing axis to the duplicated plane and swap the rotations between the new and duplicated axes
+                duplicateRotation.Axis = missingAxis;
+                (duplicateRotation.RotationAngle, newRotation.RotationAngle) = (newRotation.RotationAngle, duplicateRotation.RotationAngle);
+            }
 
-			// Set the updated parameters
-			LightPropModel.AxisRotationModel = AxisRotationViewModel.ConvertToModel(Rotations);
+            // Set the updated parameters
+            LightPropModel.AxisRotationModel = AxisRotationViewModel.ConvertToModel(Rotations);
 
-			// Update the prop nodes
-			LightPropModel.UpdatePropNodes();
-		}
-		#endregion
+            // Update the prop nodes
+            LightPropModel.UpdatePropNodes();
+        }
+        #endregion
 
-		protected override async Task InitializeAsync()
-		{
-			// Set the updated parameters
-			LightPropModel.AxisRotationModel = AxisRotationViewModel.ConvertToModel(Rotations);
-		}
-	}
+        protected override async Task InitializeAsync()
+        {
+            // Set the updated parameters
+            LightPropModel.AxisRotationModel = AxisRotationViewModel.ConvertToModel(Rotations);
+        }
+    }
 }
