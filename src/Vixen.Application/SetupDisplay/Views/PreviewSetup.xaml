@@ -23,10 +23,10 @@
 	<Grid>
 		<DockPanel>
 			<ToolBar DockPanel.Dock="Top">
-				<Button Command="{Binding DeletePreviewProp}">
+				<Button Command="{Binding DeletePreviewProp}" ToolTip="Remove Preview Prop">
 					<Image Source="pack://application:,,,/Resources;component/Resources/delete_32.png" Width="32" Height="32"/>
 				</Button>
-				<Button Command="{Binding SelectBackgroundImage}">
+				<Button Command="{Binding SelectBackgroundImage}" ToolTip="Select Background Image">
 					<Image Source="BackgroundImage.png" Width="32" Height="32"/>
 				</Button>
 				<StackPanel Orientation="Vertical">
@@ -38,57 +38,57 @@
 					TickFrequency="0.1"					
 					IsSnapToTickEnabled="True" 
 					IsEnabled="{Binding BackgroundBrightnessEnabled}"
-							/>
+					ToolTip="Background Brightness"/>
 					<TextBlock Text="Background Brightness" 
 						Style="{StaticResource DisabledAwareTextBlock}"
 						IsEnabled="{Binding BackgroundBrightnessEnabled}"
 						VerticalAlignment="Center"
 						Margin="0,0,5,0" />
 				</StackPanel>
-				<ToggleButton IsChecked="{Binding DisplayPreviewDrawingEngine.IsSelectMode}">
+				<ToggleButton IsChecked="{Binding DisplayPreviewDrawingEngine.IsSelectMode}" ToolTip="Select Entire Prop">
 					<Image Source="buttonContainsSelect.png" Width="32" Height="32"/>
 				</ToggleButton>
-				<ToggleButton IsChecked="{Binding DisplayPreviewDrawingEngine.IsPartialSelectMode}">
+				<ToggleButton IsChecked="{Binding DisplayPreviewDrawingEngine.IsPartialSelectMode}" ToolTip="Select Partial Prop">
 					<Image Source="buttonPartialSelect.png" Width="32" Height="32"/>
 				</ToggleButton>
-				<ToggleButton IsChecked="{Binding DisplayPreviewDrawingEngine.IsPanMode}">
+				<ToggleButton IsChecked="{Binding DisplayPreviewDrawingEngine.IsPanMode}" ToolTip="Pan Preview">
 					<Image Source="buttonSelect.png" Width="32" Height="32"/>
 				</ToggleButton>
-				<Button Command="{Binding Lock}">
+				<Button Command="{Binding Lock}" ToolTip="Lock Props">
 					<Image Source="pack://application:,,,/Resources;component/Resources/locked.png" Width="32" Height="32"/>					
 				</Button>
-				<Button Command="{Binding Unlock}">
+				<Button Command="{Binding Unlock}" ToolTip="Unlock Props">
 					<Image Source="pack://application:,,,/Resources;component/Resources/unlocked.png" Width="32" Height="32"/>
 				</Button>
-				<Button Command="{Binding UnlockAll}">
+				<Button Command="{Binding UnlockAll}" ToolTip="Unlock All Props">
 					<Image Source="pack://application:,,,/Resources;component/Resources/unlockedAll.png" Width="32" Height="32"/>
 				</Button>
 				 				 				 				 				 				 				 				 				
-				<Button Command="{Binding MatchProperties}">
+				<Button Command="{Binding MatchProperties}" ToolTip="Make Selected Props Same Size">
 					<Image Source="pack://application:,,,/Resources;component/buttonMatchProperties.BackgroundImage.png" Width="32" Height="32"/>
 				</Button>
-				<Button Command="{Binding DistributeHorizontally}">
+				<Button Command="{Binding DistributeHorizontally}" ToolTip="Distribute Props Horizontally">
 					<Image Source="pack://application:,,,/Resources;component/buttonDistributeHorizontal.BackgroundImage.png" Width="32" Height="32"/>
 				</Button>
-				<Button Command="{Binding DistributeVertically}">
+				<Button Command="{Binding DistributeVertically}" ToolTip="Distribute Props Vertically">
 					<Image Source="pack://application:,,,/Resources;component/buttonDistributeVertical.BackgroundImage.png" Width="32" Height="32"/>
 				</Button>
-				<Button Command="{Binding AlignVertically}">
+				<Button Command="{Binding AlignVertically}" ToolTip="Align Props Vertically">
 					<Image Source="pack://application:,,,/Resources;component/buttonAlignHorizMid.BackgroundImage.png" Width="32" Height="32"/>
 				</Button>
-				<Button Command="{Binding AlignHorizontally}">
+				<Button Command="{Binding AlignHorizontally}" ToolTip="Align Props Horizontally">
 					<Image Source="pack://application:,,,/Resources;component/buttonAlignVertMid.BackgroundImage.png" Width="32" Height="32"/>
 				</Button>
-				<Button Command="{Binding AlignLeft}">
+				<Button Command="{Binding AlignLeft}" ToolTip="Align Props Left">
 					<Image Source="pack://application:,,,/Resources;component/buttonAlignLeft.BackgroundImage.png" Width="32" Height="32"/>
 				</Button>
-				<Button Command="{Binding AlignRight}">
+				<Button Command="{Binding AlignRight}" ToolTip="Align Props Right">
 					<Image Source="pack://application:,,,/Resources;component/buttonAlignRight.BackgroundImage.png" Width="32" Height="32"/>
 				</Button>
-				<Button Command="{Binding AlignTop}">
+				<Button Command="{Binding AlignTop}" ToolTip="Align Props Top">
 					<Image Source="pack://application:,,,/Resources;component/buttonAlignTop.BackgroundImage.png" Width="32" Height="32"/>
 				</Button>
-				<Button Command="{Binding AlignBottom}">
+				<Button Command="{Binding AlignBottom}" ToolTip="Align Props Bottom">
 					<Image Source="pack://application:,,,/Resources;component/buttonAlignBottom.BackgroundImage.png" Width="32" Height="32"/>
 				</Button>
 			</ToolBar>
