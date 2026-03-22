@@ -879,7 +879,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public void Initialize(int referenceHeight, Action redraw)
 		{
 			// Create the moving head OpenGL implementation
-			_movingHeadOpenGL = new MovingHeadOpenGL();
+			_movingHeadOpenGL = new MovingHeadOpenGL(useSharedQFont: true);
 
 			// Set the moving head settings to the OpenGL settings
 			_movingHeadCurrentSettings = _movingHeadOpenGL.MovingHead;
