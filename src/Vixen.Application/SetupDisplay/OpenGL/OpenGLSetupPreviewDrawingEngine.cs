@@ -347,6 +347,264 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		#region Public Methods
 
 		/// <summary>
+		/// Makes the selected props all the same size.
+		/// The first selected prop determines the size.
+		/// </summary>
+		public void MatchPropProperties()
+		{
+			// Get the first selected prop
+			IPropOpenGLData firstProp = SelectedProps[0];
+			
+			// Loop over the selected props
+			foreach (IPropOpenGLData prop in SelectedProps.Skip(1))
+			{
+				// Make the prop the same size as the first prop
+				prop.SizeX = firstProp.SizeX;	
+				prop.SizeY = firstProp.SizeY;	
+				prop.SizeZ = firstProp.SizeZ;	
+			}
+
+			// Check to see if the intelligent fixtures need to be redrawn
+			CheckIfIntelligentFixturesNeedRedrawn();
+		}
+
+		/// <summary>
+		/// Distributes props evenly along the X-axis.
+		/// </summary>
+		public void DistributePropsHorizontally()
+		{
+			// Determine how may props to distribute
+			int propCount = SelectedProps.Count;
+
+			// Initialize local variables to determine the min and max X values
+			float minX = float.MaxValue;
+			float maxX = float.MinValue;
+
+			// Loop over the selected props
+			foreach(IPropOpenGLData prop in SelectedProps)
+			{
+				// Check to see if the the prop X coordinate is less than the current minimum
+				if (prop.X < minX)
+				{
+					// Store off the new minimum value
+					minX = prop.X;
+				}
+			}
+
+			// Loop over the selected props
+			foreach (IPropOpenGLData prop in SelectedProps)
+			{
+				// Check to see if the the prop X coordinate is less than the current maximum
+				if (prop.X > maxX)
+				{
+					// Store off the new maximum value
+					maxX = prop.X;
+				}
+			}
+			
+			// Calculate the evenly distributed horizontal distance between props
+			float distanceBetween = (maxX - minX) / (propCount - 1);
+
+			// Find the first prop, by ordering the selected props by their X coordinate
+			float xPos = SelectedProps.OrderBy(p => p.X).First().X;
+
+			// Loop over the remaining props
+			foreach (IPropOpenGLData prop in SelectedProps.OrderBy(p => p.X).Skip(1))
+			{
+				// Calculate the new X position of the prop
+				xPos += distanceBetween;
+
+				// Assign the new X coordinate
+				prop.X = xPos;				
+			}
+
+			// Check to see if the intelligent fixtures need to be redrawn
+			CheckIfIntelligentFixturesNeedRedrawn();
+		}
+
+		/// <summary>
+		/// Distributes props evenly along the Y-axis.
+		/// </summary>
+		public void DistributePropsVertically()
+		{
+			// Determine how may props to distribute
+			int propCount = SelectedProps.Count;
+
+			// Initialize local variables to determine the min and max X values
+			float minY = float.MaxValue;
+			float maxY = float.MinValue;
+
+			// Loop over the selected props
+			foreach (IPropOpenGLData prop in SelectedProps)
+			{
+				// Check to see if the the prop X coordinate is less than the current minimum
+				if (prop.Y < minY)
+				{
+					// Store off the new minimum value
+					minY = prop.Y;
+				}
+			}
+
+			// Loop over the selected props
+			foreach (IPropOpenGLData prop in SelectedProps)
+			{
+				// Check to see if the the prop X coordinate is less than the current maximum
+				if (prop.Y > maxY)
+				{
+					// Store off the new maximum value
+					maxY = prop.Y;
+				}
+			}
+
+			// Calculate the evenly distributed vertical distance between props
+			float distanceBetween = (maxY - minY) / (propCount - 1);
+
+			// Find the first prop, by ordering the selected props by their Y coordinate
+			float yPos = SelectedProps.OrderBy(p => p.Y).First().Y;
+
+			// Loop over the remaining props
+			foreach (IPropOpenGLData prop in SelectedProps.OrderBy(p => p.Y).Skip(1))
+			{
+				// Calculate the new Y position of the prop
+				yPos += distanceBetween;
+
+				// Assign the new Y coordinate
+				prop.Y = yPos;
+			}
+
+			// Check to see if the intelligent fixtures need to be redrawn
+			CheckIfIntelligentFixturesNeedRedrawn();
+		}
+
+		/// <summary>
+		/// Aligns selected props vertically.
+		/// First prop determines the vertical position of all selected props.
+		/// </summary>
+		public void AlignPropsVertically()
+		{
+			// Retrieve the Y position of the first selected prop
+			float yPos = SelectedProps.First().Y;
+
+			// Loop over the selected props
+			foreach (IPropOpenGLData prop in SelectedProps.Skip(1))
+			{
+				// Assign the Y position of the prop
+				prop.Y = yPos;	
+			}
+
+			// Check to see if the intelligent fixtures need to be redrawn
+			CheckIfIntelligentFixturesNeedRedrawn();
+		}
+
+		/// <summary>
+		/// Aligns selected props horizontally.
+		/// First prop determines the horizontal position of all selected props.
+		/// </summary>
+		public void AlignPropsHorizontally()
+		{
+			// Retrieve the X position of the first selected prop
+			float xPos = SelectedProps.First().X;
+
+			// Loop over the selected props
+			foreach (IPropOpenGLData prop in SelectedProps.Skip(1))
+			{
+				// Assign the X position of the prop
+				prop.X = xPos;
+			}
+
+			// Check to see if the intelligent fixtures need to be redrawn
+			CheckIfIntelligentFixturesNeedRedrawn();
+		}
+
+		/// <summary>
+		/// Aligns the selected props on the left.
+		/// </summary>
+		public void AlignPropsLeft()
+		{
+			// Retrieve the first selected prop
+			IPropOpenGLData firstProp = SelectedProps.First();
+
+			// Determine the left position of the prop
+			float xLeftPos = firstProp.X - firstProp.SizeX / 2.0f;
+
+			// Loop over the selected props
+			foreach (IPropOpenGLData prop in SelectedProps.Skip(1))
+			{
+				// Assign the X position of the prop
+				prop.X += xLeftPos - (prop.X - prop.SizeX / 2.0f);
+			}
+
+			// Check to see if the intelligent fixtures need to be redrawn
+			CheckIfIntelligentFixturesNeedRedrawn();
+		}
+
+		/// <summary>
+		/// Aligns the selected props on the right.
+		/// </summary>
+		public void AlignPropsRight()
+		{
+			// Retrieve the first selected prop
+			IPropOpenGLData firstProp = SelectedProps.First();
+
+			// Determine the right position of the prop
+			float xRightPos = firstProp.X + firstProp.SizeX / 2.0f;
+
+			// Loop over the selected props
+			foreach (IPropOpenGLData prop in SelectedProps.Skip(1))
+			{
+				// Assign the X position of the prop
+				prop.X += xRightPos - (prop.X + prop.SizeX / 2.0f);
+			}
+
+			// Check to see if the intelligent fixtures need to be redrawn
+			CheckIfIntelligentFixturesNeedRedrawn();
+		}
+
+		/// <summary>
+		/// Aligns the selected props on the bottom.
+		/// </summary>
+		public void AlignPropsBottom()
+		{
+			// Retrieve the first selected prop
+			IPropOpenGLData firstProp = SelectedProps.First();
+
+			// Determine the bottom position of the prop
+			float yTopPos = firstProp.Y - firstProp.SizeY / 2.0f;
+
+			// Loop over the selected props
+			foreach (IPropOpenGLData prop in SelectedProps.Skip(1))
+			{
+				// Assign the Y position of the prop
+				prop.Y += yTopPos - (prop.Y - prop.SizeY / 2.0f);
+			}
+
+			// Check to see if the intelligent fixtures need to be redrawn
+			CheckIfIntelligentFixturesNeedRedrawn();
+		}
+
+		/// <summary>
+		/// Aligns the selected props on the top.
+		/// </summary>
+		public void AlignPropsTop()
+		{
+			// Retrieve the first selected prop
+			IPropOpenGLData firstProp = SelectedProps.First();
+
+			// Determine the bottom position of the prop
+			float yTopPos = firstProp.Y + firstProp.SizeY / 2.0f;
+
+			// Loop over the selected props
+			foreach (IPropOpenGLData prop in SelectedProps.Skip(1))
+			{
+				// Assign the Y position of the prop
+				prop.Y += yTopPos - (prop.Y + prop.SizeY / 2.0f);
+			}
+
+			// Check to see if the intelligent fixtures need to be redrawn
+			CheckIfIntelligentFixturesNeedRedrawn();
+		}
+
+		/// <summary>
 		/// Moves the selected props up one pixel.
 		/// </summary>
 		public void NudgeSelectedPropsUp()
@@ -1008,6 +1266,19 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		#endregion
 
 		#region Private Methods
+
+		/// <summary>
+		/// Checks to see if the intelligent fixtures need to be redrawn.
+		/// </summary>
+		private void CheckIfIntelligentFixturesNeedRedrawn()
+		{
+			// If any of the selected props are intelligent fixtures then...
+			if (SelectedProps.Any(prop => prop is IIntelligentFixturePropOpenGLData))
+			{
+				// Set the flag to redraw the intelligent fixtures
+				_recreateMovingHeadRenderStrategy = true;
+			}
+		}
 
 		/// <summary>
 		/// Clears all selected props.

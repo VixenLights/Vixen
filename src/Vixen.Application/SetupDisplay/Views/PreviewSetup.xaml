@@ -63,6 +63,34 @@
 				<Button Command="{Binding UnlockAll}">
 					<Image Source="pack://application:,,,/Resources;component/Resources/unlockedAll.png" Width="32" Height="32"/>
 				</Button>
+				 				 				 				 				 				 				 				 				
+				<Button Command="{Binding MatchProperties}">
+					<Image Source="pack://application:,,,/Resources;component/buttonMatchProperties.BackgroundImage.png" Width="32" Height="32"/>
+				</Button>
+				<Button Command="{Binding DistributeHorizontally}">
+					<Image Source="pack://application:,,,/Resources;component/buttonDistributeHorizontal.BackgroundImage.png" Width="32" Height="32"/>
+				</Button>
+				<Button Command="{Binding DistributeVertically}">
+					<Image Source="pack://application:,,,/Resources;component/buttonDistributeVertical.BackgroundImage.png" Width="32" Height="32"/>
+				</Button>
+				<Button Command="{Binding AlignVertically}">
+					<Image Source="pack://application:,,,/Resources;component/buttonAlignHorizMid.BackgroundImage.png" Width="32" Height="32"/>
+				</Button>
+				<Button Command="{Binding AlignHorizontally}">
+					<Image Source="pack://application:,,,/Resources;component/buttonAlignVertMid.BackgroundImage.png" Width="32" Height="32"/>
+				</Button>
+				<Button Command="{Binding AlignLeft}">
+					<Image Source="pack://application:,,,/Resources;component/buttonAlignLeft.BackgroundImage.png" Width="32" Height="32"/>
+				</Button>
+				<Button Command="{Binding AlignRight}">
+					<Image Source="pack://application:,,,/Resources;component/buttonAlignRight.BackgroundImage.png" Width="32" Height="32"/>
+				</Button>
+				<Button Command="{Binding AlignTop}">
+					<Image Source="pack://application:,,,/Resources;component/buttonAlignTop.BackgroundImage.png" Width="32" Height="32"/>
+				</Button>
+				<Button Command="{Binding AlignBottom}">
+					<Image Source="pack://application:,,,/Resources;component/buttonAlignBottom.BackgroundImage.png" Width="32" Height="32"/>
+				</Button>
 			</ToolBar>
 			<glWpfControl:GLWpfControl
 				x:Name="OpenTkControlPreview" 							
