@@ -5072,8 +5072,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					break;
 			}
 
-			if (data == null)
-				return result;
 			TimeSpan offset = pasteTime == TimeSpan.Zero ? TimeSpan.Zero : data.EarliestStartTime;
 			Row targetRow = TimelineControl.SelectedRow ?? TimelineControl.ActiveRow ?? TimelineControl.TopVisibleRow;
 			List<Row> visibleRows = new List<Row>(TimelineControl.VisibleRows);
