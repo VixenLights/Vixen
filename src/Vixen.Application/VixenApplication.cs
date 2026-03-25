@@ -370,7 +370,7 @@ namespace VixenApplication
 			{
 				MessageBoxForm mbf = new MessageBoxForm("You have open editor(s) with unsaved changes, are you sure you want to close Vixen?\n\n If you choose yes, you will be prompted to save those editors as they are closed.",
 					"Close Vixen?", MessageBoxButtons.YesNo, SystemIcons.Warning);
-				var result = mbf.ShowDialog(this);
+				var result = await mbf.ShowDialogAsync(this);
 				if (result == DialogResult.No)
 				{
 					e.Cancel = true;
@@ -413,7 +413,7 @@ namespace VixenApplication
 			if (!await VixenSystem.Start(this, _disableControllers, _rootDataDirectory, _openExecution, _startupProgress))
 			{
 				var messageBox = new MessageBoxForm("An error occurred starting the system and the application will be halted.", "Error", MessageBoxButtons.OK, SystemIcons.Error);
-				messageBox.ShowDialog(this);
+				await messageBox.ShowDialogAsync(this);
 				Application.Exit();
 			}
 
@@ -959,7 +959,7 @@ namespace VixenApplication
 		{
 			using (ConfigPreviews form = new ConfigPreviews())
 			{
-				DialogResult result = form.ShowDialog();
+				DialogResult result = await form.ShowDialogAsync();
 				if (result == DialogResult.OK)
 				{
 					Cursor = Cursors.WaitCursor;
@@ -992,7 +992,7 @@ namespace VixenApplication
 		{
 			using (DisplaySetup form = new DisplaySetup())
 			{
-				DialogResult dr = form.ShowDialog();
+				DialogResult dr = await form.ShowDialogAsync();
 
 				if (dr == DialogResult.OK)
 				{
@@ -1051,7 +1051,7 @@ namespace VixenApplication
 		private async void optionsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			var dlg = new OptionsDialog();
-			var res = dlg.ShowDialog();
+			var res = await dlg.ShowDialogAsync();
 			// so far the dialog box does it all, no real need for this check...
 			if (res == DialogResult.OK)
 			{
@@ -1282,7 +1282,7 @@ namespace VixenApplication
 			Cursor = Cursors.Default;
 
 			var checkForUpdates = new CheckForUpdates();
-			checkForUpdates.ShowDialog(this);
+			await checkForUpdates.ShowDialogAsync(this);
 			checkForUpdates.Dispose();
 		}
 
