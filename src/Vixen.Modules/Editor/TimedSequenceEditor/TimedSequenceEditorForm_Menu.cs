@@ -525,20 +525,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
                                   Duration = TimeSpan.FromMilliseconds(phoneme.DurationMS - 1),
                                   StartTime = startTime
                               };
-                        result.EffectModelCandidates.Add(modelCandidate, rownum);
+                        result.EffectModelCandidates.Add(new EffectModelRecord(modelCandidate, rownum));
                         if (startTime < result.EarliestStartTime)
                             result.EarliestStartTime = startTime;
                         effect.PreRender();
                     }                   
-                    IDataObject dataObject = new DataObject(ClipboardFormatName);
-                    dataObject.SetData(result);
-                    Clipboard.SetDataObject(dataObject, true);
-                    _TimeLineSequenceClipboardContentsChanged(EventArgs.Empty);
+                    SetTimelineElementsClipboardData(result);
                     SequenceModified();
                 }
                 rownum++;
             }
-            string displayStr = rownum + " Voices imported to clipboard as seperate rows\n\n";            
+            string displayStr = rownum + " Voices imported to clipboard as separate rows\n\n";            
             int j = 1;
             foreach (string voiceStr in papagayoFile.VoiceList)
             {
