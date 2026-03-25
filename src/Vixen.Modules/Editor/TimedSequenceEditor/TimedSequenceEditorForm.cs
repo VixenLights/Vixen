@@ -1,14 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Timers;
-using System.Windows.Forms.Integration;
-using System.Xml;
-using Common.AudioPlayer;
+﻿using Common.AudioPlayer;
+using Common.Broadcast;
 using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
@@ -18,19 +9,25 @@ using Common.Controls.TimelineControl.LabeledMarks;
 using Common.Resources;
 using Common.Resources.Properties;
 using NLog;
+using System.Collections;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Reflection.Metadata;
+using System.Runtime.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Timers;
+using System.Windows.Forms.Integration;
+using System.Xml;
 using Vixen;
 using Vixen.Execution;
 using Vixen.Execution.Context;
 using Vixen.Marks;
 using Vixen.Module;
 using Vixen.Module.App;
-using VixenModules.App.Curves;
-using VixenModules.App.LipSyncApp;
-using VixenModules.Effect.Effect;
-using VixenModules.Effect.Picture;
-using VixenModules.Effect.Shapes;
-using VixenModules.Media.Audio;
-using VixenModules.Effect.LipSync;
 using Vixen.Module.Editor;
 using Vixen.Module.Effect;
 using Vixen.Module.Media;
@@ -39,25 +36,31 @@ using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.LayerMixing;
 using VixenModules.App.ColorGradients;
+using VixenModules.App.Curves;
+using VixenModules.App.LipSyncApp;
 using VixenModules.App.Marks;
-using VixenModules.Editor.EffectEditor;
 using VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels;
 using VixenModules.App.TimedSequenceMapper.SequenceElementMapper.Views;
+using VixenModules.Editor.EffectEditor;
 using VixenModules.Editor.TimedSequenceEditor.Undo;
+using VixenModules.Effect.Effect;
+using VixenModules.Effect.LipSync;
+using VixenModules.Effect.Picture;
+using VixenModules.Effect.Shapes;
+using VixenModules.Media.Audio;
+using VixenModules.Property.Color;
 using VixenModules.Sequence.Timed;
 using WeifenLuo.WinFormsUI.Docking;
-using Element = Common.Controls.Timeline.Element;
-using Timer = System.Windows.Forms.Timer;
-using VixenModules.Property.Color;
+using Cursors = System.Windows.Forms.Cursors;
 using DockPanel = WeifenLuo.WinFormsUI.Docking.DockPanel;
+using Element = Common.Controls.Timeline.Element;
 using ListView = System.Windows.Forms.ListView;
 using ListViewItem = System.Windows.Forms.ListViewItem;
 using MarkCollection = VixenModules.App.Marks.MarkCollection;
-using Cursors = System.Windows.Forms.Cursors;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 using PropertyDescriptor = System.ComponentModel.PropertyDescriptor;
 using Size = System.Drawing.Size;
-using Common.Broadcast;
+using Timer = System.Windows.Forms.Timer;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -2150,7 +2153,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					Debug.WriteLine("WindowProc DRAWCLIPBOARD: " + m.Msg, "WndProc");
 
-					if (ClipboardHasData())
+					if (ClipboardHasTimelineElementData())
 					{
 						_TimeLineSequenceClipboardContentsChanged(EventArgs.Empty);
 					}
@@ -3461,33 +3464,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				Logging.Error("TimedSequenceEditor: <CursorMovedHandler> - timeSpanEventArgs = null!");
 			}
-		}
-
-		private void UpdatePasteMenuStates()
-		{
-			editToolStripButton_Paste.Enabled = toolStripMenuItem_Paste.Enabled = GetClipboardCount() > 0;
-			editToolStripButton_PasteVisibleMarks.Visible = toolStripMenuItem_PasteToMarks.Enabled = GetMarksPresent() && GetClipboardCount() > 0;
-			editToolStripButton_PasteInvert.Visible = toolStripMenuItem_PasteInvert.Enabled = GetClipboardCount() > 1;
-			editToolStripButton_PasteDropDown.Enabled = toolStripMenuItem_PasteSpecial.Enabled =
-			toolStripMenuItem_PasteToMarks.Enabled || toolStripMenuItem_PasteInvert.Enabled;
-		}
-
-		private bool ClipboardHasData()
-		{
-			IDataObject dataObject = Clipboard.GetDataObject();
-			return dataObject != null && dataObject.GetDataPresent(ClipboardFormatName.Name);
-		}
-
-		private int GetClipboardCount()
-		{
-			// Gets number of Effects on the clipboard, used to determine which paste options will be enabled.
-			IDataObject dataObject = Clipboard.GetDataObject();
-			if (dataObject.GetDataPresent(ClipboardFormatName.Name))
-			{
-				if (dataObject.GetData(ClipboardFormatName.Name) is TimelineElementsClipboardData data)
-					return data.EffectModelCandidates.Count;
-			}
-			return 0;
 		}
 
 		private bool GetMarksPresent()
@@ -4965,6 +4941,72 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Clipboard
 
+		private void UpdatePasteMenuStates()
+		{
+			var count = GetTimelineElementsClipboardEffectCount();
+			editToolStripButton_Paste.Enabled = toolStripMenuItem_Paste.Enabled = count > 0;
+			editToolStripButton_PasteVisibleMarks.Visible = toolStripMenuItem_PasteToMarks.Enabled = GetMarksPresent() && count > 0;
+			editToolStripButton_PasteInvert.Visible = toolStripMenuItem_PasteInvert.Enabled = count > 1;
+			editToolStripButton_PasteDropDown.Enabled = toolStripMenuItem_PasteSpecial.Enabled = 
+				toolStripMenuItem_PasteToMarks.Enabled || toolStripMenuItem_PasteInvert.Enabled;
+		}
+
+		/// <summary>
+		/// Determines whether the clipboard contains data in the timeline element format.
+		/// </summary>
+		/// <returns>true if the clipboard contains data in the timeline element format; otherwise, false.</returns>
+		private bool ClipboardHasTimelineElementData()
+		{
+			return Clipboard.ContainsData(ClipboardFormatName.Name);
+		}
+
+		/// <summary>
+		/// Gets the number of effect model candidates available in the clipboard timeline elements.
+		/// </summary>
+		/// <remarks>Call this method to determine how many effect model candidates are currently available from the
+		/// clipboard timeline elements. Ensure that the clipboard contains valid timeline data before relying on the returned
+		/// count.</remarks>
+		/// <returns>The number of effect model candidates in the clipboard timeline elements. Returns 0 if no clipboard data is
+		/// present.</returns>
+		private int GetTimelineElementsClipboardEffectCount()
+		{
+			var timelineData = GetTimelineElementsClipboardData();
+			return timelineData != null ? timelineData.EffectModelCandidates.Count : 0;
+		}
+
+		/// <summary>
+		/// Retrieves timeline elements data from the clipboard if available in the expected format.
+		/// </summary>
+		/// <remarks>This method checks whether the clipboard contains data in the specified timeline elements format
+		/// before attempting to retrieve it. Callers should verify the return value for <see langword="null"/> to determine
+		/// if valid data was retrieved.</remarks>
+		/// <returns>A <see cref="TimelineElementsClipboardData"/> instance containing the timeline elements from the clipboard; or
+		/// <see langword="null"/> if the clipboard does not contain data in the required format.</returns>
+		private TimelineElementsClipboardData GetTimelineElementsClipboardData()
+		{
+			if (ClipboardHasTimelineElementData())
+			{
+				if (Clipboard.TryGetData<TimelineElementsClipboardData>(ClipboardFormatName.Name, out var timelineData))
+				{
+					return timelineData;
+				}
+			}
+			return null;
+		}
+
+		/// <summary>
+		/// Sets the clipboard data for timeline elements using the specified data object.
+		/// </summary>
+		/// <remarks>This method serializes the provided data as JSON and stores it in the clipboard under a specific
+		/// format. Ensure that the data object is valid before calling this method.</remarks>
+		/// <param name="data">The timeline elements clipboard data to be serialized and placed on the clipboard.</param>
+		private void SetTimelineElementsClipboardData(TimelineElementsClipboardData data)
+		{
+			ArgumentNullException.ThrowIfNull(data);
+			Clipboard.SetDataAsJson(ClipboardFormatName.Name, data);
+			//_TimeLineSequenceClipboardContentsChanged(EventArgs.Empty);
+		}
+
 		private void ClipboardAddData(bool cutElements)
 		{
 			if (!TimelineControl.SelectedElements.Any())
@@ -4983,12 +5025,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			foreach (Row row in TimelineControl.VisibleRows)
 			{
 				//Check that the same Row name has not already been processed and will skip if the same Row is found visible in another group.
-				if (uniqueStrings.Contains(row.Name)) continue;
-				uniqueStrings.Add(row.Name);
+				if (!uniqueStrings.Add(row.Name)) continue;
 
 				// Since removals may happen during enumeration, make a copy with ToArray().
 
-				//If we already have the elements becasue the same row is duplicated then skip.
+				//If we already have the elements because the same row is duplicated then skip.
 				if (affectedElements.Intersect(row.SelectedElements).Any())
 				{
 					rownum++;
@@ -5012,7 +5053,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								LayerName = layer.LayerName,
 								LayerTypeId = layer.FilterTypeId
 							};
-					result.EffectModelCandidates.Add(modelCandidate, relativeVisibleRow);
+					result.EffectModelCandidates.Add(new EffectModelRecord(modelCandidate, relativeVisibleRow));
 
 					if (elem.StartTime < result.EarliestStartTime)
 						result.EarliestStartTime = elem.StartTime;
@@ -5030,12 +5071,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				var act = new EffectsCutUndoAction(this, affectedElements.Select(x => x.EffectNode));
 				_undoMgr.AddUndoAction(act);	
 			}
-			
 
-			IDataObject dataObject = new DataObject(ClipboardFormatName);
-			dataObject.SetData(result);
-			Clipboard.SetDataObject(dataObject, true);
-			_TimeLineSequenceClipboardContentsChanged(EventArgs.Empty);
+			SetTimelineElementsClipboardData(result);
 		}
 
 		private void ClipboardCut()
@@ -5056,17 +5093,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public int ClipboardPaste(TimeSpan pasteTime)
 		{
 			int result = 0;
-			TimelineElementsClipboardData data = null;
-			IDataObject dataObject = Clipboard.GetDataObject();
-
-			if (dataObject == null)
-				return result;
-
-			if (dataObject.GetDataPresent(ClipboardFormatName.Name))
-			{
-				data = dataObject.GetData(ClipboardFormatName.Name) as TimelineElementsClipboardData;
-			}
-
+			TimelineElementsClipboardData data = GetTimelineElementsClipboardData();
+			
 			if(data == null)
 			{
 				return result;
@@ -5074,14 +5102,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			List<int> index = new List<int>();
 			List<TimeSpan> markStartTimes = new List<TimeSpan>();
-			List<KeyValuePair<EffectModelCandidate, int>> effects;
+			List<EffectModelRecord> effects;
 			switch (PastingMode)
 			{
 				case PastingMode.VisibleMarks:
 				{
 					// We need to order the effects by Start time as they are currently ordered by Row index first which is
 					// no good for pasting to Mark Collection or Visible Marks.
-					effects = data.EffectModelCandidates.OrderBy(x => (x.Key.StartTime)).ToList();
+					effects = data.EffectModelCandidates.OrderBy(x => (x.EffectModel.StartTime)).ToList();
 					for (int i = 0; i < _sequence.LabeledMarkCollections.Count; i++)
 					{
 						// Only continue process visible Mark collections
@@ -5112,9 +5140,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					break;
 				}
 				case PastingMode.Invert:
-					foreach (KeyValuePair<EffectModelCandidate, int> order in data.EffectModelCandidates)
+					foreach (EffectModelRecord order in data.EffectModelCandidates)
 					{
-						index.Add(data.EffectModelCandidates.Last().Value - order.Value);
+						index.Add(data.EffectModelCandidates.Last().RowOffset - order.RowOffset);
 					}
 					effects = data.EffectModelCandidates.ToList();
 					break;
@@ -5131,10 +5159,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			List<Row> visibleRows = new List<Row>(TimelineControl.VisibleRows);
 			int topTargetRoxIndex = visibleRows.IndexOf(targetRow);
 			List<EffectNode> nodesToAdd = new List<EffectNode>();
-			foreach (KeyValuePair<EffectModelCandidate, int> kvp in effects)
+			foreach (EffectModelRecord effectModelRecord in effects)
 			{
-				EffectModelCandidate effectModelCandidate = kvp.Key;
-				int relativeRow = kvp.Value;
+				EffectModelCandidate effectModelCandidate = effectModelRecord.EffectModel;
+				int relativeRow = effectModelRecord.RowOffset;
 				TimeSpan targetTime = effectModelCandidate.StartTime - offset + pasteTime;
 				switch (PastingMode)
 				{
@@ -5932,15 +5960,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
                               Duration = data.Duration,
                               StartTime = data.StartOffset
                           };
-                    result.EffectModelCandidates.Add(modelCandidate, 0);
+                    result.EffectModelCandidates.Add(new EffectModelRecord(modelCandidate, 0));
                     if (data.StartOffset < result.EarliestStartTime)
                         result.EarliestStartTime = data.StartOffset;
                     effect.PreRender();
                 }
-                IDataObject dataObject = new DataObject(ClipboardFormatName);
-                dataObject.SetData(result);
-                Clipboard.SetDataObject(dataObject, true);
-                _TimeLineSequenceClipboardContentsChanged(EventArgs.Empty);
+
+				SetTimelineElementsClipboardData(result);
+
                 int pasted = 0;
                 if (args.Placement == TranslatePlacement.Cursor)
                 {
@@ -6156,20 +6183,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 	}
 
-	[Serializable]
 	internal class TimelineElementsClipboardData
 	{
-		public TimelineElementsClipboardData()
-		{
-			EffectModelCandidates = new Dictionary<EffectModelCandidate, int>();
-		}
-
 		// a collection of elements and the number of rows they were below the top visible element when
 		// this data was generated and placed on the clipboard.
-		public Dictionary<EffectModelCandidate, int> EffectModelCandidates { get; set; }
+		public List<EffectModelRecord> EffectModelCandidates { get; init; } = new();
 
 		public int FirstVisibleRow { get; set; }
 
 		public TimeSpan EarliestStartTime { get; set; }
+	}
+
+	internal record EffectModelRecord(EffectModelCandidate EffectModel, int RowOffset)
+	{
+		
 	}
 }

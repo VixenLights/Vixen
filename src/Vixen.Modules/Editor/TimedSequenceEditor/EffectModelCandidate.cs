@@ -1,7 +1,7 @@
 using System.IO;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using System.Xml;
-using Vixen.Annotations;
 using Vixen.Module;
 using Vixen.Module.Effect;
 
@@ -12,11 +12,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	/// <summary>
 	/// Class to hold effect data to allow it to be placed on the clipboard and be reconstructed when later pasted
 	/// </summary>
-	[Serializable]
 	public class EffectModelCandidate
 	{
-		private readonly string? _moduleDataClass;
-		private readonly byte[]? _effectData;
+		[JsonInclude]
+		private string? _moduleDataClass;
+		[JsonInclude]
+		private byte[]? _effectData;
+
+		/// <summary>
+		/// Initializes a new instance of the EffectModelCandidate class. This parameterless constructor is intended for use
+		/// during deserialization. Do not use in code!
+		/// </summary>
+		/// <remarks>Some serialization frameworks require a public parameterless constructor to instantiate objects
+		/// during the deserialization process. This constructor should not typically be used directly in application
+		/// code.</remarks>
+		public EffectModelCandidate()
+		{
+			
+		}
 
 		public EffectModelCandidate(IEffectModuleInstance effect)
 		{
@@ -48,6 +61,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public TimeSpan StartTime { get; set; }
 		public TimeSpan Duration { get; set; }
+
+		[JsonInclude] 
 		public Guid TypeId { get; private set; }
 		public Guid LayerId { get; set; }
 		public Guid LayerTypeId { get; set; }

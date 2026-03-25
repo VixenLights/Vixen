@@ -411,7 +411,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			contextMenuItemCopy.Enabled = contextMenuItemCut.Enabled = TimelineControl.SelectedElements.Any();
 
 			// Gets Clipboard Count to be used with some of the Pasting options.
-			int clipboardCount = GetClipboardCount();
+			int clipboardCount = GetTimelineElementsClipboardEffectCount();
 			ToolStripMenuItem contextMenuItemPaste = new ToolStripMenuItem("Paste", null, toolStripMenuItem_Paste_Click)
 			{
 				ShortcutKeyDisplayString = @"Ctrl+V", Image = Resources.page_white_paste,
