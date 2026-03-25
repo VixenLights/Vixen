@@ -133,9 +133,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private readonly double _scaleFactor = 1;
 		private bool _suppressModifiedEvents;
 
-		//for external clipboard events.
-		IntPtr _clipboardViewerNext;
-		
 		private readonly TimeLineGlobalEventManager _timeLineGlobalEventManager;
 		private readonly TimeLineGlobalStateManager _timeLineGlobalStateManager;
 		private readonly MarksSelectionManager _marksSelectionManager;
@@ -515,7 +512,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			TimelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
 			TimelineControl.grid.MouseDown += TimelineControl_MouseDown;
-			TimeLineSequenceClipboardContentsChanged += TimelineSequenceTimeLineSequenceClipboardContentsChanged;
 			_timeLineGlobalEventManager.CursorMoved += CursorMovedHandler;
 			TimelineControl.ElementsSelected += timelineControl_ElementsSelected;
 			TimelineControl.ContextSelected += timelineControl_ContextSelected;
@@ -771,7 +767,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			TimelineControl.SelectionChanged -= TimelineControlOnSelectionChanged;
 			TimelineControl.grid.MouseDown -= TimelineControl_MouseDown;
-			TimeLineSequenceClipboardContentsChanged -= TimelineSequenceTimeLineSequenceClipboardContentsChanged;
 			_timeLineGlobalEventManager.CursorMoved -= CursorMovedHandler;
 			TimelineControl.ElementsSelected -= timelineControl_ElementsSelected;
 			TimelineControl.ContextSelected -= timelineControl_ContextSelected;
@@ -2123,98 +2118,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		/// <summary>
-		/// Register this form as a Clipboard Viewer application
-		/// </summary>
-		private void RegisterClipboardViewer()
-		{
-			_clipboardViewerNext = User32.SetClipboardViewer(this.Handle);
-		}
-
-		/// <summary>
-		/// Remove this form from the Clipboard Viewer list
-		/// </summary>
-		private void UnregisterClipboardViewer()
-		{
-			User32.ChangeClipboardChain(this.Handle, _clipboardViewerNext);
-		}
-
-		protected override void WndProc(ref Message m)
-		{
-			switch ((Msgs)m.Msg)
-			{
-				//
-				// The WM_DRAWCLIPBOARD message is sent to the first window 
-				// in the clipboard viewer chain when the content of the 
-				// clipboard changes. This enables a clipboard viewer 
-				// window to display the new content of the clipboard. 
-				//
-				case Msgs.WM_DRAWCLIPBOARD:
-
-					Debug.WriteLine("WindowProc DRAWCLIPBOARD: " + m.Msg, "WndProc");
-
-					if (ClipboardHasTimelineElementData())
-					{
-						_TimeLineSequenceClipboardContentsChanged(EventArgs.Empty);
-					}
-
-					//
-					// Each window that receives the WM_DRAWCLIPBOARD message 
-					// must call the SendMessage function to pass the message 
-					// on to the next window in the clipboard viewer chain.
-					//
-					User32.SendMessage(_clipboardViewerNext, m.Msg, m.WParam, m.LParam);
-					break;
-
-				//
-				// The WM_CHANGECBCHAIN message is sent to the first window 
-				// in the clipboard viewer chain when a window is being 
-				// removed from the chain. 
-				//
-				case Msgs.WM_CHANGECBCHAIN:
-					Debug.WriteLine("WM_CHANGECBCHAIN: lParam: " + m.LParam, "WndProc");
-
-					// When a clipboard viewer window receives the WM_CHANGECBCHAIN message, 
-					// it should call the SendMessage function to pass the message to the 
-					// next window in the chain, unless the next window is the window 
-					// being removed. In this case, the clipboard viewer should save 
-					// the handle specified by the lParam parameter as the next window in the chain. 
-
-					//
-					// wParam is the Handle to the window being removed from 
-					// the clipboard viewer chain 
-					// lParam is the Handle to the next window in the chain 
-					// following the window being removed. 
-					if (m.WParam == _clipboardViewerNext)
-					{
-						//
-						// If wParam is the next clipboard viewer then it
-						// is being removed so update pointer to the next
-						// window in the clipboard chain
-						//
-						_clipboardViewerNext = m.LParam;
-					}
-					else
-					{
-						User32.SendMessage(_clipboardViewerNext, m.Msg, m.WParam, m.LParam);
-					}
-					break;
-
-				default:
-					//
-					// Let the form process the messages that we are
-					// not interested in
-					//
-					base.WndProc(ref m);
-					break;
-			}
-		}
-
-		private void TimelineSequenceTimeLineSequenceClipboardContentsChanged(object sender, EventArgs eventArgs)
-		{
-			UpdatePasteMenuStates();
-		}
-
 		private void TimelineControlOnSelectionChanged(object sender, EventArgs eventArgs)
 		{
 			editToolStripButton_Copy.Enabled = editToolStripButton_Cut.Enabled = TimelineControl.SelectedElements.Any();
@@ -3175,25 +3078,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void toolStripEdit_MouseEnter(object sender, EventArgs e)
 		{
 			UpdatePasteMenuStates();
-		}
-
-		#endregion
-
-		#region Events
-
-		//Create internal event for data being placed on clipboard as there is no outside data relevant
-		//and monitoring the system clipboard gets into a bunch of not so pretty user32 api calls
-		//So we will just deal with our own data. If other editors crop up that we can import data 
-		//from via the clipboard, then this can be readdressed. This is mainly adding polish so we 
-		//can set the enabled state of the paste menu items. JU 9/18/2012
-		private static event EventHandler TimeLineSequenceClipboardContentsChanged;
-
-		private void _TimeLineSequenceClipboardContentsChanged(EventArgs e)
-		{
-			if (TimeLineSequenceClipboardContentsChanged != null)
-			{
-				TimeLineSequenceClipboardContentsChanged(this, null);
-			}
 		}
 
 		#endregion
@@ -4941,6 +4825,43 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Clipboard
 
+		/// <summary>
+		/// Register this form as a Clipboard Format Listener to receive notifications when the clipboard content changes.
+		/// </summary>
+		private void RegisterClipboardViewer()
+		{
+			User32.AddClipboardFormatListener(Handle);
+		}
+
+		/// <summary>
+		/// Remove this form from the Clipboard Format Listener registration to stop receiving notifications when the clipboard content changes.
+		/// </summary>
+		private void UnregisterClipboardViewer()
+		{
+			User32.RemoveClipboardFormatListener(Handle);
+		}
+
+		protected override void WndProc(ref Message m)
+		{
+			switch ((Msgs)m.Msg)
+			{
+
+				case Msgs.WM_CLIPBOARDUPDATE:
+					//We are listening for global clipboard updates because we are interested if effects are placed on the clipboard from other timeline editors or instances of Vixen.
+					Debug.WriteLine("WindowProc WM_CLIPBOARDUPDATE: " + m.Msg, "WndProc");
+
+					if (ClipboardHasTimelineElementData())
+					{
+						UpdatePasteMenuStates();
+					}
+
+					break;
+
+			}
+
+			base.WndProc(ref m);
+		}
+
 		private void UpdatePasteMenuStates()
 		{
 			var count = GetTimelineElementsClipboardEffectCount();
@@ -5004,7 +4925,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			ArgumentNullException.ThrowIfNull(data);
 			Clipboard.SetDataAsJson(ClipboardFormatName.Name, data);
-			//_TimeLineSequenceClipboardContentsChanged(EventArgs.Empty);
 		}
 
 		private void ClipboardAddData(bool cutElements)

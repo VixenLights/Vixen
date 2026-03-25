@@ -2,25 +2,18 @@
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	public delegate int WindowProcDelegate(IntPtr hw, IntPtr uMsg, IntPtr wParam, IntPtr lParam);
-
-
 	/// <summary>
 	/// Windows User32 DLL declarations
 	/// </summary>
 	public class User32
 	{
-		[DllImport("User32.dll", CharSet = CharSet.Auto)]
-		public static extern IntPtr SetClipboardViewer(IntPtr hWnd);
+		[DllImport("user32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool AddClipboardFormatListener(System.IntPtr hwnd);
 
-		[DllImport("User32.dll", CharSet = CharSet.Auto)]
-		public static extern bool ChangeClipboardChain(
-			IntPtr hWndRemove,  // handle to window to remove
-			IntPtr hWndNewNext  // handle to next window
-			);
-
-		[DllImport("user32.dll", CharSet = CharSet.Auto)]
-		public static extern int SendMessage(IntPtr hwnd, int wMsg, IntPtr wParam, IntPtr lParam);
+		[DllImport("user32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool RemoveClipboardFormatListener(System.IntPtr hwnd);
 
 	}
 
@@ -224,6 +217,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		WM_HOTKEY = 0x0312,
 		WM_PRINT = 0x0317,
 		WM_PRINTCLIENT = 0x0318,
+		WM_CLIPBOARDUPDATE = 0x031D,
 		WM_HANDHELDFIRST = 0x0358,
 		WM_HANDHELDLAST = 0x035F,
 		WM_AFXFIRST = 0x0360,
