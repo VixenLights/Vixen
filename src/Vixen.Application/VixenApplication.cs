@@ -2,10 +2,7 @@
 
 using Catel.IoC;
 using Common.Controls;
-using Common.Controls.Scaling;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
-using Newtonsoft.Json.Linq;
 using NLog;
 using System.Diagnostics;
 using System.Runtime;
@@ -18,15 +15,13 @@ using Vixen.Sys;
 using VixenApplication.Setup;
 using Application = System.Windows.Forms.Application;
 using Color = System.Drawing.Color;
-using Pen = System.Drawing.Pen;
 using Point = System.Drawing.Point;
 using SystemFonts = System.Drawing.SystemFonts;
 using Timer = System.Windows.Forms.Timer;
 using WPFApplication = System.Windows.Application;
-using System.ComponentModel;
-using System.Drawing;
 using Common.WPFCommon.Services;
-using System.Windows.Media;
+using ControlzEx.Theming;
+using LogManager = NLog.LogManager;
 
 namespace VixenApplication
 {
@@ -39,8 +34,6 @@ namespace VixenApplication
 		private bool _stopping;
 		private bool _openExecution = true;
 		private bool _disableControllers = false;
-		private bool _devBuild = false;
-		private bool _testBuild;
 		private string _rootDataDirectory;
 		private CpuUsage _cpuUsage;
 		private int _currentBuildVersion;
@@ -67,24 +60,32 @@ namespace VixenApplication
 				var app = new WPFApplication();
 			}
 
-			WPFApplication.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-			//Load up the common WPF them file for our WPF application parts.
-			ResourceDictionary dict = new ResourceDictionary
+			if (WPFApplication.Current != null)
 			{
-				Source = new Uri("/WPFCommon;component/Theme/Theme.xaml", UriKind.Relative)
-			};
+				WPFApplication.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+				//Load up the common WPF them file for our WPF application parts.
+				ResourceDictionary dict = new ResourceDictionary
+				{
+					Source = new Uri("/WPFCommon;component/Theme/Theme.xaml", UriKind.Relative)
+				};
 
-			// This resource dictionary is required by the Orc Wizard library
-			ResourceDictionary dictOrc = new ResourceDictionary
+				// This resource dictionary is required by the Orc Wizard library
+				ResourceDictionary dictOrc = new ResourceDictionary
+				{
+					Source = new Uri("/Orc.Wizard;component/themes/generic.xaml", UriKind.Relative)
+				};
+
+				WPFApplication.Current.Resources.MergedDictionaries.Add(dictOrc);
+				WPFApplication.Current.Resources.MergedDictionaries.Add(dict);
+
+				// Applies Orc Theme; This call makes the InfoBarMessageControl header bar readable in a dark theme
+				WPFApplication.Current.ApplyTheme();
+
+			}
+			else
 			{
-				Source = new Uri("/Orc.Wizard;component/themes/generic.xaml", UriKind.Relative)
-			};
-
-			WPFApplication.Current.Resources.MergedDictionaries.Add(dictOrc);
-			WPFApplication.Current.Resources.MergedDictionaries.Add(dict);
-
-			// Applies Orc Theme; This call makes the InfoBarMessageControl header bar readable in a dark theme
-			WPFApplication.Current.ApplyTheme();
+				Logging.Error("WpfApplication.Current is null. Unable to initialize WPF application resources. This may cause errors in WPF-based editors and configuration screens.");
+			}
 
 			//End WPF init
 
@@ -94,7 +95,7 @@ namespace VixenApplication
 			//Workaround for a MS bug
 			statusStrip.Padding = new Padding(statusStrip.Padding.Left,
 			statusStrip.Padding.Top, statusStrip.Padding.Left, statusStrip.Padding.Bottom);
-			statusStrip.Font = SystemFonts.StatusFont;
+			statusStrip.Font = SystemFonts.StatusFont ?? ThemeUpdateControls.StandardFont;
 
 			ThemeUpdateControls.UpdateControls(this);
 			statusStrip.BackColor = ThemeColorTable.BackgroundColor;
@@ -183,11 +184,11 @@ namespace VixenApplication
 			menuStripMain.Items.Add(helpMenu);
 
 			ToolStripMenuItem onlineMenu = new ToolStripMenuItem("Online Help");
-			onlineMenu.Click += new System.EventHandler(this.OnlineHelpMenu_Click);
+			onlineMenu.Click += new EventHandler(OnlineHelpMenu_Click);
 			helpMenu.DropDown.Items.Add(onlineMenu);
 
 			ToolStripMenuItem vixenYouTubeChannelMenu = new ToolStripMenuItem("Vixen YouTube Channel");
-			vixenYouTubeChannelMenu.Click += new System.EventHandler(this.VixenYouTubeChannelMenu_Click);
+			vixenYouTubeChannelMenu.Click += new EventHandler(VixenYouTubeChannelMenu_Click);
 			helpMenu.DropDown.Items.Add(vixenYouTubeChannelMenu);
 
 			ToolStripMenuItem updatesMenu = new ToolStripMenuItem("Check for Updates");
@@ -196,15 +197,15 @@ namespace VixenApplication
 				//Disable the Check for updates menu item as there is no need to have it enabled for Test Builds.
 				updatesMenu.Enabled = false;
 			}
-			updatesMenu.Click += new System.EventHandler(this.UpdatesMenu_Click);
+			updatesMenu.Click += new EventHandler(UpdatesMenu_Click);
 			helpMenu.DropDown.Items.Add(updatesMenu);
 
 			ToolStripMenuItem releaseNotesMenu = new ToolStripMenuItem("Release Notes");
-			releaseNotesMenu.Click += new System.EventHandler(this.ReleaseNotesMenu_Click);
+			releaseNotesMenu.Click += new EventHandler(ReleaseNotesMenu_Click);
 			helpMenu.DropDown.Items.Add(releaseNotesMenu);
 
 			ToolStripMenuItem aboutMenu = new ToolStripMenuItem("About Vixen");
-			aboutMenu.Click += new System.EventHandler(this.AboutMenu_Click);
+			aboutMenu.Click += new EventHandler(AboutMenu_Click);
 			helpMenu.DropDown.Items.Add(aboutMenu);
 		}
 
@@ -345,14 +346,14 @@ namespace VixenApplication
 			return locked;
 		}
 
-		private void StartJITProfiler()
+		private static void StartJITProfiler()
 		{
 			try
 			{
 				string perfDataPath =
-					System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), "Vixen");
-				if (!System.IO.Directory.Exists(perfDataPath))
-					System.IO.Directory.CreateDirectory(perfDataPath);
+					Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen");
+				if (!Directory.Exists(perfDataPath))
+					Directory.CreateDirectory(perfDataPath);
 
 				ProfileOptimization.SetProfileRoot(perfDataPath);
 				ProfileOptimization.StartProfile("~perfData.tmp");
@@ -369,7 +370,7 @@ namespace VixenApplication
 			{
 				MessageBoxForm mbf = new MessageBoxForm("You have open editor(s) with unsaved changes, are you sure you want to close Vixen?\n\n If you choose yes, you will be prompted to save those editors as they are closed.",
 					"Close Vixen?", MessageBoxButtons.YesNo, SystemIcons.Warning);
-				var result = mbf.ShowDialog(this);
+				var result = await mbf.ShowDialogAsync(this);
 				if (result == DialogResult.No)
 				{
 					e.Cancel = true;
@@ -406,13 +407,13 @@ namespace VixenApplication
 
 			await PopulateVersionStringsAsync();
 
-			_startupProgress?.Report(Tuple.Create(10, "Starting up"));
+			_startupProgress.Report(Tuple.Create(10, "Starting up"));
 
 
 			if (!await VixenSystem.Start(this, _disableControllers, _rootDataDirectory, _openExecution, _startupProgress))
 			{
 				var messageBox = new MessageBoxForm("An error occurred starting the system and the application will be halted.", "Error", MessageBoxButtons.OK, SystemIcons.Error);
-				messageBox.ShowDialog(this);
+				await messageBox.ShowDialogAsync(this);
 				Application.Exit();
 			}
 
@@ -426,9 +427,9 @@ namespace VixenApplication
 			openFileDialog.InitialDirectory = SequenceService.SequenceDirectory;
 
 			// Add menu items for the logs.
-			string logDirectory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Vixen 3", "Logs");
+			string logDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Vixen 3", "Logs");
 
-			var di = new System.IO.DirectoryInfo(logDirectory);
+			var di = new DirectoryInfo(logDirectory);
 
 			_startupProgress.Report(Tuple.Create(90, "Finalizing"));
 
@@ -510,7 +511,6 @@ namespace VixenApplication
 				labelBuild.ForeColor = labelRelease.ForeColor = Color.Red;
 				toolStripStatusUpdates.Text = String.Empty;
 				Logging.Info($"{_releaseVersion}");
-				_testBuild = true;
 			}
 			else
 			{
@@ -705,9 +705,9 @@ namespace VixenApplication
 		{
 			//string logDirectory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Vixen 3");
 			string logDirectory = _rootDataDirectory;
-			if (System.IO.Directory.Exists(logDirectory))
+			if (Directory.Exists(logDirectory))
 			{
-				NLog.Config.LoggingConfiguration config = NLog.LogManager.Configuration;
+				NLog.Config.LoggingConfiguration config = LogManager.Configuration;
 				config.AllTargets.ToList().ForEach(t =>
 				{
 					var target = t as NLog.Targets.FileTarget;
@@ -722,7 +722,7 @@ namespace VixenApplication
 					}
 				});
 
-				NLog.LogManager.Configuration = config;
+				LogManager.Configuration = config;
 			}
 			//config.AllTargets.ToList().ForEach(t => {
 			//	var target = t as NLog.Targets.FileTarget;
@@ -914,7 +914,7 @@ namespace VixenApplication
 			openFileDialog.Filter = filter;
 
 			// if the user hit 'ok' on the dialog, try opening the selected file(s) in an approriate editor
-			if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			if (openFileDialog.ShowDialog() == DialogResult.OK)
 			{
 				foreach (string file in openFileDialog.FileNames)
 				{
@@ -959,7 +959,7 @@ namespace VixenApplication
 		{
 			using (ConfigPreviews form = new ConfigPreviews())
 			{
-				DialogResult result = form.ShowDialog();
+				DialogResult result = await form.ShowDialogAsync();
 				if (result == DialogResult.OK)
 				{
 					Cursor = Cursors.WaitCursor;
@@ -992,7 +992,7 @@ namespace VixenApplication
 		{
 			using (DisplaySetup form = new DisplaySetup())
 			{
-				DialogResult dr = form.ShowDialog();
+				DialogResult dr = await form.ShowDialogAsync();
 
 				if (dr == DialogResult.OK)
 				{
@@ -1034,7 +1034,7 @@ namespace VixenApplication
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void executionStateChangedHandler(object sender, EventArgs e)
@@ -1051,7 +1051,7 @@ namespace VixenApplication
 		private async void optionsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			var dlg = new OptionsDialog();
-			var res = dlg.ShowDialog();
+			var res = await dlg.ShowDialogAsync();
 			// so far the dialog box does it all, no real need for this check...
 			if (res == DialogResult.OK)
 			{
@@ -1063,7 +1063,7 @@ namespace VixenApplication
 		// so instead, just take this as a notification to update with the current state of the execution engine.
 		private void updateExecutionState()
 		{
-			toolStripStatusLabelExecutionState.Text = "Execution: " + Vixen.Sys.Execution.State;
+			toolStripStatusLabelExecutionState.Text = "Execution: " + Execution.State;
 
 			if (Execution.IsOpen)
 			{
@@ -1088,7 +1088,7 @@ namespace VixenApplication
 
 		private void _ViewLog(string logName)
 		{
-			string logDirectory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Vixen 3", "Logs");
+			string logDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Vixen 3", "Logs");
 
 			using (Process process = new Process())
 			{
@@ -1227,7 +1227,7 @@ namespace VixenApplication
 		private void profilesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			DataProfileForm f = new DataProfileForm();
-			if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			if (f.ShowDialog() == DialogResult.OK)
 			{
 				// Do something...
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
@@ -1282,7 +1282,7 @@ namespace VixenApplication
 			Cursor = Cursors.Default;
 
 			var checkForUpdates = new CheckForUpdates();
-			checkForUpdates.ShowDialog(this);
+			await checkForUpdates.ShowDialogAsync(this);
 			checkForUpdates.Dispose();
 		}
 

@@ -9,19 +9,16 @@ namespace VixenApplication.Setup
 {
 	public partial class DisplaySetup : BaseForm
 	{
-		private SetupElementsTree? _setupElementsTree;
+		private readonly SetupElementsTree _setupElementsTree;
 
-		private SetupPatchingSimple? _setupPatchingSimple;
-		private SetupPatchingGraphical? _setupPatchingGraphical;
+		private readonly SetupPatchingSimple _setupPatchingSimple;
+		private readonly SetupPatchingGraphical _setupPatchingGraphical;
 
-		private SetupControllersSimple? _setupControllersSimple;
+		private readonly SetupControllersSimple _setupControllersSimple;
 
 		private ISetupElementsControl? _currentElementControl;
 		private ISetupPatchingControl? _currentPatchingControl;
 		private ISetupControllersControl? _currentControllersControl;
-
-		private readonly IElementTemplate[] _elementTemplates;
-		private readonly IElementSetupHelper[] _elementSetupHelpers;
 
 		public DisplaySetup()
 		{
@@ -35,14 +32,10 @@ namespace VixenApplication.Setup
 				controllersHeaderLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F);
 			}
 
-			_elementTemplates = Vixen.Services.ApplicationServices.GetAllElementTemplates();
-			_elementSetupHelpers = Vixen.Services.ApplicationServices.GetAllElementSetupHelpers();
-		}
+			IElementTemplate[] elementTemplates = Vixen.Services.ApplicationServices.GetAllElementTemplates();
+			IElementSetupHelper[] elementSetupHelpers = Vixen.Services.ApplicationServices.GetAllElementSetupHelpers();
 
-
-		private void DisplaySetup_Load(object sender, EventArgs e)
-		{
-			_setupElementsTree = new SetupElementsTree(_elementTemplates, _elementSetupHelpers);
+			_setupElementsTree = new SetupElementsTree(elementTemplates, elementSetupHelpers);
 			_setupElementsTree.Dock = DockStyle.Fill;
 			_setupElementsTree.MasterForm = this;
 
@@ -56,14 +49,15 @@ namespace VixenApplication.Setup
 			_setupControllersSimple = new SetupControllersSimple(this);
 			_setupControllersSimple.Dock = DockStyle.Fill;
 			_setupControllersSimple.MasterForm = this;
+		}
 
+
+		private void DisplaySetup_Load(object sender, EventArgs e)
+		{
 			ActivateControllersControl(_setupControllersSimple);
 			ActivateElementControl(_setupElementsTree);
 			
 			radioButtonPatchingSimple.Checked = true;
-			//splitContainer1.SplitterDistance = tableLayoutPanelElementSetup.Width + 6;
-			//splitContainer2.SplitterDistance = (int)(patchingPaneTableLayoutPanel.Width + (10 * ScalingTools.GetScaleFactor()));
-
 		}
 
 

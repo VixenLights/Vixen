@@ -15,7 +15,7 @@ namespace VixenApplication.Setup
 	{
 		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
-		public SetupControllersSimple(DisplaySetup _displaySetup)
+		public SetupControllersSimple(DisplaySetup displaySetup)
 		{
 			InitializeComponent();
 			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
@@ -51,9 +51,9 @@ namespace VixenApplication.Setup
 
 			controllerTree.ControllerSelectionChanged += controllerTree_ControllerSelectionChanged;
 			controllerTree.ControllersChanged += controllerTree_ControllersChanged;
-			controllerTree.unpatchControllerToolStripMenuItem.Click += _displaySetup.control_UnpatchControllers;
-			controllerTree.unpatchChannelsToolStripMenuItem.Click += _displaySetup.control_UnpatchControllers;
-			controllerTree.findPatchedChannelsToolStripMenuItem.Click += new System.EventHandler(buttonSelectSourceElements_Click);
+			controllerTree.unpatchControllerToolStripMenuItem.Click += displaySetup.control_UnpatchControllers;
+			controllerTree.unpatchChannelsToolStripMenuItem.Click += displaySetup.control_UnpatchControllers;
+			controllerTree.findPatchedChannelsToolStripMenuItem.Click += buttonSelectSourceElements_Click;
 
 			UpdateForm();
 		}
@@ -125,7 +125,7 @@ namespace VixenApplication.Setup
 					if (node.Tag is int tag)
 					{
 						outputIndex = tag;
-						controller = node?.Parent?.Tag as IControllerDevice;
+						controller = node.Parent?.Tag as IControllerDevice;
 						if (controller == null)
 						{
 							Logging.Error("node parent is not a controller: " + node.Name);
@@ -260,7 +260,7 @@ namespace VixenApplication.Setup
 			}
 		}
 
-		private void buttonSelectSourceElements_Click(object sender, EventArgs e)
+		private void buttonSelectSourceElements_Click(object? sender, EventArgs e)
 		{
 			List<ElementNode> elementNodesToSelect = new List<ElementNode>();
 
