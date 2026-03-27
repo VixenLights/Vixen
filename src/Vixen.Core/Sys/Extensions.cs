@@ -135,16 +135,25 @@ namespace Vixen.Sys
 			return source.IndexOf(value, comparison) >= 0;
 		}
 
+		/// <summary>
+		/// This operation should no longer be used and existing instances should be replaced with more modern mechanisms in the future.
+		/// </summary>
+		/// <param name="thisEvent"></param>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		[Obsolete("This operation should no longer be used and existing instances should be replaced with more modern mechanisms in the future.")]
 		public static void Raise(this MulticastDelegate thisEvent, object sender, EventArgs e)
 		{
-			//AsyncCallback callback = new AsyncCallback(EndAsynchronousEvent);
-
-			foreach (Delegate d in thisEvent.GetInvocationList()) {
-				EventHandler uiMethod = d as EventHandler;
-				if (uiMethod != null) {
-					ISynchronizeInvoke target = d.Target as ISynchronizeInvoke;
-					if (target != null) target.BeginInvoke(uiMethod, new[] {sender, e});
-					else uiMethod.BeginInvoke(sender, e, null, uiMethod);
+			foreach (var @delegate in thisEvent?.GetInvocationList() ?? [])
+			{
+				var handler = (EventHandler)@delegate;
+				if (handler.Target is Control control && control.InvokeRequired)
+				{
+					control.BeginInvoke(handler, sender, e);
+				}
+				else
+				{
+					handler(sender, e);
 				}
 			}
 		}
