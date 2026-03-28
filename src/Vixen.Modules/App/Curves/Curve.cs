@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using Vixen.Module.App;
 using Vixen.Services;
 using ZedGraph;
@@ -68,6 +69,7 @@ namespace VixenModules.App.Curves
 		private PointPairList _points;
 
 		[DataMember]
+		[JsonInclude]
 		public PointPairList Points
 		{
 			get

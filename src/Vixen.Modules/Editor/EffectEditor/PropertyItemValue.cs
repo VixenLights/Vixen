@@ -27,6 +27,7 @@ using VixenModules.Editor.EffectEditor.Internal;
 using VixenModules.Editor.EffectEditor.PropertyEditing;
 using VixenModules.Effect.Effect;
 using Point = System.Windows.Point;
+using DragDropUtils = Common.WPFCommon.Input.DragDropUtils;
 
 namespace VixenModules.Editor.EffectEditor
 {
@@ -213,20 +214,25 @@ namespace VixenModules.Editor.EffectEditor
 				{
 					if (ParentProperty.PropertyType == typeof (Color) || obj.GetDataPresent(typeof (Color)))
 					{
-						var c = (Color) obj.GetData(typeof (Color));
-						if (!discreteColors.Contains(c))
+						if (DragDropUtils.TryGetDragDropData(obj, out Color c))
 						{
-							return false;
+							if (!discreteColors.Contains(c))
+							{
+								return false;
+							}
 						}
 					}
 					else
 					{
-						var c = (ColorGradient)obj.GetData(typeof(ColorGradient));
-						var colors = c.Colors.Select(x => x.Color.ToRGB().ToArgb());
-						if (!discreteColors.IsSupersetOf(colors))
+						if (DragDropUtils.TryGetDragDropData(obj, out ColorGradient c))
 						{
-							return false;
-						}	
+							var colors = c.Colors.Select(x => x.Color.ToRGB().ToArgb());
+							if (!discreteColors.IsSupersetOf(colors))
+							{
+								return false;
+							}
+						}
+						
 					}
 				}
 				
@@ -258,18 +264,20 @@ namespace VixenModules.Editor.EffectEditor
 
 		public void OnDropCompleted(IDataObject obj, Point dropPoint)
 		{
-			var data = obj.GetData(ParentProperty.PropertyType);
-			if (data != null && data.GetType() == ParentProperty.PropertyType)
+			
+			if(DragDropUtils.TryGetDragDropData(obj, ParentProperty.PropertyType, out var data))
 			{
 				Value = data;
 			}
 			else
 			{
 				//Check to see if we are trying to assign color to a gradient
-				data = obj.GetData(typeof (Color));
-				if (data is Color && SupportsColorGradient())
+				if (obj.GetDataPresent(typeof(Color)) && SupportsColorGradient())
 				{
-					Value = new ColorGradient((Color) data);
+					if (DragDropUtils.TryGetDragDropData(obj, out Color c))
+					{
+						Value = new ColorGradient(c);
+					}
 				}
 			}
 		}
@@ -292,7 +300,7 @@ namespace VixenModules.Editor.EffectEditor
 
 		public DataObject GetDataObject(UIElement draggedElt)
 		{
-			return new DataObject(Value);
+			return DragDropUtils.CreateDataObject(Value);
 		}
 
 		public void FinishDrag(UIElement draggedElt, DragDropEffects finalEffects)

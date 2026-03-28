@@ -30,6 +30,11 @@ namespace VixenModules.App.ColorGradients
 			[DataMember] private double _position;
 			[DataMember] private double _focus;
 
+			public Point(): this(0)
+			{
+				
+			}
+
 			/// <summary>
 			/// ctor
 			/// </summary>
@@ -828,6 +833,11 @@ namespace VixenModules.App.ColorGradients
 				CheckLibraryReference();
 				return _alphas;
 			}
+
+			init
+			{
+				_alphas = value;
+			}
 		}
 
 		public PointList<ColorPoint> Colors
@@ -836,6 +846,11 @@ namespace VixenModules.App.ColorGradients
 			{
 				CheckLibraryReference();
 				return _colors;
+			}
+
+			init
+			{
+				_colors = value;
 			}
 		}
 
@@ -1387,6 +1402,11 @@ namespace VixenModules.App.ColorGradients
 		//variables
 		[DataMember] private double _alpha;
 
+		public AlphaPoint():this(255, 0)
+		{
+			
+		}
+
 		/// <summary>
 		/// ctor
 		/// </summary>
@@ -1478,6 +1498,11 @@ namespace VixenModules.App.ColorGradients
 	{
 		//variables
 		[DataMember] private XYZ _color;
+
+		public ColorPoint() :this(System.Drawing.Color.White, 0)
+		{
+			
+		}
 
 		/// <summary>
 		/// ctor

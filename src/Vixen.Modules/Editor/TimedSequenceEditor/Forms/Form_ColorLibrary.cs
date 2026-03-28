@@ -14,6 +14,7 @@ using Common.Controls.Theme;
 using Common.Resources;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 using Common.Broadcast;
+using Utilities;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -492,33 +493,34 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_dragX + 10 < e.X || _dragY + 10 < e.Y || _dragX - 10 > e.X || _dragY - 10 > e.Y)
 			{
 				Point p = listViewColors.PointToClient(new Point(e.X, e.Y));
-				ListViewItem movetoNewPosition = listViewColors.GetItemAt(p.X, p.Y);
-				if (e.Effect == DragDropEffects.Copy)
+				ListViewItem moveToNewPosition = listViewColors.GetItemAt(p.X, p.Y);
+				if (e.Effect == DragDropEffects.Copy && e.Data != null)
 				{
-					Color c = (Color) e.Data.GetData(typeof (Color));
-					ListViewItem item = CreateColorListItem(c);
-					if (movetoNewPosition != null)
+					if (DragDropUtils.TryGetDragDropData(e.Data, out Color c))
 					{
-						int index = movetoNewPosition.Index;
-						listViewColors.Items.Insert(index, item);
-					}
-					else
-					{
-						listViewColors.Items.Add(item);
-					}
-					
-					ListViewItem_SetSpacing(listViewColors, _sideGap, _sideGap);
-					Update_ColorOrder();
-					OnColorsChanged();
+						ListViewItem item = CreateColorListItem(c);
+						if (moveToNewPosition != null)
+						{
+							int index = moveToNewPosition.Index;
+							listViewColors.Items.Insert(index, item);
+						}
+						else
+						{
+							listViewColors.Items.Add(item);
+						}
 
+						ListViewItem_SetSpacing(listViewColors, _sideGap, _sideGap);
+						Update_ColorOrder();
+						OnColorsChanged();
+					}
 				}
 				else if (e.Effect == DragDropEffects.Move)
 				{
 					listViewColors.BeginUpdate();
 					listViewColors.Alignment = ListViewAlignment.Default;
 					List<ListViewItem> listViewItems = listViewColors.SelectedItems.Cast<ListViewItem>().ToList();
-					if (movetoNewPosition != null && listViewColors.SelectedItems[0].Index > movetoNewPosition.Index) listViewItems.Reverse();
-					int index = movetoNewPosition?.Index ?? listViewColors.Items.Count - 1;
+					if (moveToNewPosition != null && listViewColors.SelectedItems[0].Index > moveToNewPosition.Index) listViewItems.Reverse();
+					int index = moveToNewPosition?.Index ?? listViewColors.Items.Count - 1;
 					foreach (ListViewItem item in listViewItems)
 					{
 						listViewColors.Items.Remove(item);

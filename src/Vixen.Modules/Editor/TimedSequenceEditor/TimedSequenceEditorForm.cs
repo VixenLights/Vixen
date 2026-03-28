@@ -15,13 +15,11 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Reflection.Metadata;
 using System.Runtime.Serialization;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Timers;
 using System.Windows.Forms.Integration;
 using System.Xml;
+using Utilities;
 using Vixen;
 using Vixen.Execution;
 using Vixen.Execution.Context;
@@ -58,7 +56,6 @@ using ListView = System.Windows.Forms.ListView;
 using ListViewItem = System.Windows.Forms.ListViewItem;
 using MarkCollection = VixenModules.App.Marks.MarkCollection;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
-using PropertyDescriptor = System.ComponentModel.PropertyDescriptor;
 using Size = System.Drawing.Size;
 using Timer = System.Windows.Forms.Timer;
 
@@ -851,6 +848,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void TimelineControlGrid_DragDrop(object sender, DragEventArgs e)
 		{
+			if (e.Data == null) return;
 			//Checks to see if drag items are of a Filetype, dragged from Windows Explorer.
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
@@ -866,8 +864,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//Check for effect drop
 				if (e.Data.GetDataPresent(typeof (Guid)))
 				{
-					Guid g = (Guid) e.Data.GetData(typeof (Guid));
-					EffectDropped(g, TimelineControl.grid.TimeAtPosition(p), TimelineControl.grid.RowAtPosition(p));
+					if (e.Data.GetData(typeof(Guid)) is Guid g)
+					{
+						EffectDropped(g, TimelineControl.grid.TimeAtPosition(p), TimelineControl.grid.RowAtPosition(p));
+					}
+					else
+					{
+						throw new InvalidOperationException("Guid data was present but could not be retrieved.");
+					}
 				}
 
 				//Everything else applies to a element
@@ -876,18 +880,36 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					if (e.Data.GetDataPresent(typeof (ColorGradient)))
 					{
-						ColorGradient cg = (ColorGradient) e.Data.GetData(typeof (ColorGradient));
-						HandleGradientDrop(element, cg);
+						if (DragDropUtils.TryGetDragDropData(e.Data, out ColorGradient cg))
+						{
+							HandleGradientDrop(element, cg);
+						}
+						else
+						{
+							Debug.WriteLine("ColorGradient data found in unexpected format.");
+						}
 					}
 					else if (e.Data.GetDataPresent(typeof (Curve)))
 					{
-						Curve curve = (Curve) e.Data.GetData(typeof (Curve));
-						HandleCurveDrop(element, curve);
+						if (DragDropUtils.TryGetDragDropData(e.Data, out Curve curve))
+						{
+							HandleCurveDrop(element, curve);
+						} 
+						else
+						{
+							Debug.WriteLine("Curve data found in unexpected format.");
+						}
 					}
 					else if (e.Data.GetDataPresent(typeof (Color)))
 					{
-						Color color = (Color) e.Data.GetData(typeof (Color));
-						HandleColorDrop(element, color);
+						if (DragDropUtils.TryGetDragDropData(e.Data, out Color color))
+						{
+							HandleColorDrop(element, color);
+						}
+						else
+						{
+							Debug.WriteLine("Color data found in unexpected format.");
+						}
 					}
 
 				}
@@ -905,6 +927,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void TimelineControlGrid_DragOver(object sender, DragEventArgs e)
 		{
+			if (e.Data == null)
+			{
+				//This should not happen, but handle it sensibly if it does.
+				_dragDropToElementEffect.element = null;
+				_dragDropToElementEffect.effect = DragDropEffects.None;
+				e.Effect = DragDropEffects.None;
+				return;
+			}
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 				e.Effect = DragDropEffects.Copy;
 			else
@@ -946,7 +976,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					var discreteColors = GetDiscreteColors(element.EffectNode.Effect);
 					if (discreteColors.Any())
 					{
-						if (dataObject.GetData(typeof(Color)) is Color c)
+						if (DragDropUtils.TryGetDragDropData(dataObject, out Color c))
 						{
 							if (!discreteColors.Contains(c))
 							{
@@ -964,7 +994,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					var discreteColors = GetDiscreteColors(element.EffectNode.Effect);
 					if (discreteColors.Any())
 					{
-						if (dataObject.GetData(typeof(ColorGradient)) is ColorGradient c)
+						if(DragDropUtils.TryGetDragDropData(dataObject, out ColorGradient c))
 						{
 							var colors = c.Colors.Select(x => x.Color.ToRGB().ToArgb());
 							if (!discreteColors.IsSupersetOf(colors))
@@ -4638,6 +4668,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				newGradients[parameterPicker.SelectedControl.Index] = new GradientLevelPair(gradient, gradients[parameterPicker.SelectedControl.Index].Curve);
 				elementValues.Add(element, new Tuple<object, PropertyMetaData>(parameterPicker.PropertyInfo.Descriptor.GetValue(parameterPicker.PropertyInfo.Owner), parameterPicker.PropertyInfo));
 				UpdateEffectProperty(parameterPicker.PropertyInfo, element, newGradients);
+				Debug.WriteLine("Gradient updated on GradientLevelPair list");
 			}
 		}
 		
