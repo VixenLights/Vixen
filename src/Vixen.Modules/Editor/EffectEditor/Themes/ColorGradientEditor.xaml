@@ -1,8 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:editors="clr-namespace:VixenModules.Editor.EffectEditor.Editors"
-                    xmlns:input="clr-namespace:VixenModules.Editor.EffectEditor.Input"
-                    xmlns:controls="clr-namespace:VixenModules.Editor.EffectEditor.Controls">
+                    xmlns:controls="clr-namespace:VixenModules.Editor.EffectEditor.Controls"
+                    xmlns:commonInput="clr-namespace:Common.WPFCommon.Input;assembly=WPFCommon"
+                    xmlns:input="clr-namespace:VixenModules.Editor.EffectEditor.Input">
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="Converters.xaml" />
         <ResourceDictionary Source="SliderPoint.xaml"></ResourceDictionary>
@@ -44,8 +45,8 @@
 							<Grid>
 								<Image x:Name="GradientImage" Height="32"
 									Focusable="True" ToolTip="{Binding StringValue}"
-										input:DragDropManager.DropTargetAdvisor="{Binding}" 
-									   input:DragDropManager.DragSourceAdvisor="{Binding}"
+										commonInput:DragDropManager.DropTargetAdvisor="{Binding}" 
+									   commonInput:DragDropManager.DragSourceAdvisor="{Binding}"
 									   Width="{Binding Path=ActualWidth, ElementName=Container, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
 									   Stretch="Fill">
 									<Image.InputBindings>
@@ -84,9 +85,9 @@
 							<Grid>
 								<Image x:Name="GradientImage" Height="32"
 									Focusable="True" 
-									   input:DragDropTargetType.TargetType="ColorGradient"
-									   input:DragDropManager.DropTargetAdvisor="{Binding}" 
-									   input:DragDropManager.DragSourceAdvisor="{Binding}"
+                                    commonInput:DragDropTargetType.TargetType="ColorGradient"
+									   commonInput:DragDropManager.DropTargetAdvisor="{Binding}" 
+									   commonInput:DragDropManager.DragSourceAdvisor="{Binding}"
 									   Width="{Binding Path=ActualWidth, ElementName=GradientContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='-5'}"
 									   Stretch="Fill">
 									<Image.InputBindings>
