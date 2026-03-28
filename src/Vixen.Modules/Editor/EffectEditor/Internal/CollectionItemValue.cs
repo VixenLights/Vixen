@@ -1,15 +1,16 @@
-﻿using System.Collections;
+﻿using NLog;
+using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.Windows;
-using NLog;
 using Vixen.Attributes;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Editor.EffectEditor.Input;
 using VixenModules.Editor.EffectEditor.PropertyEditing;
 using Point = System.Windows.Point;
+using DragDropUtils = Common.WPFCommon.Input.DragDropUtils;
 
 namespace VixenModules.Editor.EffectEditor.Internal
 {
@@ -291,19 +292,23 @@ namespace VixenModules.Editor.EffectEditor.Internal
 				{
 					if (obj.GetDataPresent(typeof (Color)))
 					{
-						var c = (Color) obj.GetData(typeof (Color));
-						if (!discreteColors.Contains(c))
+						if (DragDropUtils.TryGetDragDropData(obj, out Color c))
 						{
-							return false;
+							if (!discreteColors.Contains(c))
+							{
+								return false;
+							}
 						}
 					}
 					else
 					{
-						var c = (ColorGradient) obj.GetData(typeof (ColorGradient));
-						var colors = c.Colors.Select(x => x.Color.ToRGB().ToArgb());
-						if (!discreteColors.IsSupersetOf(colors))
+						if (DragDropUtils.TryGetDragDropData(obj, out ColorGradient c))
 						{
-							return false;
+							var colors = c.Colors.Select(x => x.Color.ToRGB().ToArgb());
+							if (!discreteColors.IsSupersetOf(colors))
+							{
+								return false;
+							}
 						}
 					}
 				}
@@ -355,22 +360,29 @@ namespace VixenModules.Editor.EffectEditor.Internal
 				//Our type does not match, so either we are applying Color to a Gradient or something to a GradientLevelPair
 			else if (obj.GetDataPresent(typeof(Color)))
 			{
-				data = obj.GetData(typeof(Color));
-				HandleColorDrop((Color)data);
+				if(DragDropUtils.TryGetDragDropData(obj, out Color c))
+				{
+					HandleColorDrop(c);
+				}
 			}
 			else if (obj.GetDataPresent(typeof (ColorGradient)) && ItemType == typeof(GradientLevelPair))
 			{
-				var cg = obj.GetData(typeof (ColorGradient)) as ColorGradient;
-				var glp = (GradientLevelPair) Value;
-				var newGradientLevelPair = new GradientLevelPair(cg, glp.Curve);
-				Value = newGradientLevelPair;
+				if (DragDropUtils.TryGetDragDropData(obj, out ColorGradient cg))
+				{
+					var glp = (GradientLevelPair)Value;
+					var newGradientLevelPair = new GradientLevelPair(cg, glp.Curve);
+					Value = newGradientLevelPair;
+				}
 			}
 			else if (obj.GetDataPresent(typeof(Curve)) && ItemType == typeof(GradientLevelPair))
 			{
-				var c = obj.GetData(typeof(Curve)) as Curve;
-				var glp = (GradientLevelPair)Value;
-				var newGradientLevelPair = new GradientLevelPair(glp.ColorGradient, c);
-				Value = newGradientLevelPair;
+				if (DragDropUtils.TryGetDragDropData(obj, out Curve c))
+				{
+					var glp = (GradientLevelPair)Value;
+					var newGradientLevelPair = new GradientLevelPair(glp.ColorGradient, c);
+					Value = newGradientLevelPair;
+				}
+				
 			}
 		}
 
@@ -410,11 +422,11 @@ namespace VixenModules.Editor.EffectEditor.Internal
 				var item = (GradientLevelPair) Value;
 				if (DragDropTargetType.GetTargetType(SourceUI).Equals("Curve"))
 				{
-					return new DataObject(item.Curve);
+					return DragDropUtils.CreateDataObject(item.Curve);
 				}
-				return new DataObject(item.ColorGradient);
+				return DragDropUtils.CreateDataObject(item.ColorGradient);
 			}
-			return new DataObject(Value);
+			return DragDropUtils.CreateDataObject(Value);
 		}
 
 		public void FinishDrag(UIElement draggedElt, DragDropEffects finalEffects)

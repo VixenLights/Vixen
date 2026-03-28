@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
+using Utilities;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 using Common.Broadcast;
 
@@ -330,7 +331,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (LinkCurves) newCurve.LibraryReferenceName = listViewCurves.SelectedItems[0].Name;
 
 			newCurve.IsCurrentLibraryCurve = false;
-			listViewCurves.DoDragDrop(newCurve, DragDropEffects.Copy);
+			var dataObject = DragDropUtils.CreateDataObject(newCurve);
+			listViewCurves.DoDragDrop(dataObject, DragDropEffects.Copy);
 		}
 
 		private void listViewCurves_DragEnter(object sender, DragEventArgs e)
@@ -338,21 +340,28 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_dragX = e.X;
 			_dragY = e.Y;
 
-			if (e.Data.GetDataPresent(typeof(ListViewItem)))
+			if (e.Data != null)
 			{
-				e.Effect = DragDropEffects.Move;
-				return;
-			}
-
-			if (e.Data.GetDataPresent(typeof(Curve)))
-			{
-				Curve c = (Curve)e.Data.GetData(typeof(Curve));
-				if (!c.IsLibraryReference)
+				if (e.Data.GetDataPresent(typeof(ListViewItem)))
 				{
-					e.Effect = DragDropEffects.Copy;
-					return;	
+					e.Effect = DragDropEffects.Move;
+					return;
+				}
+
+				if (e.Data.GetDataPresent(typeof(Curve)))
+				{
+					if (DragDropUtils.TryGetDragDropData(e.Data, out Curve c))
+					{
+						if (!c.IsLibraryReference)
+						{
+							e.Effect = DragDropEffects.Copy;
+							return;
+						}
+					}
+
 				}
 			}
+			
 			e.Effect = DragDropEffects.None;
 		}
 
@@ -361,22 +370,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_dragX + 10 < e.X || _dragY + 10 < e.Y || _dragX - 10 > e.X || _dragY - 10 > e.Y)
 			{
 				Point p = listViewCurves.PointToClient(new Point(e.X, e.Y));
-				ListViewItem movetoNewPosition = listViewCurves.GetItemAt(p.X, p.Y);
-				if (e.Effect == DragDropEffects.Copy)
+				ListViewItem moveToNewPosition = listViewCurves.GetItemAt(p.X, p.Y);
+				if (e.Effect == DragDropEffects.Copy && e.Data != null)
 				{
-					Curve c = (Curve) e.Data.GetData(typeof(Curve));
-					int index = movetoNewPosition?.Index ?? listViewCurves.Items.Count;
-					
-					if(AddCurveToLibrary(c, false)) return;
-					
-					Populate_Curves();
-
-					if (listViewCurves.Items.Count == _curveLibrary.Count())
+					if (DragDropUtils.TryGetDragDropData(e.Data, out Curve c))
 					{
-						ListViewItem cloneToNew =
-							(ListViewItem) listViewCurves.Items[listViewCurves.Items.Count - 1].Clone();
-						listViewCurves.Items.Remove(listViewCurves.Items[listViewCurves.Items.Count - 1]);
-						listViewCurves.Items.Insert(index, cloneToNew);
+						int index = moveToNewPosition?.Index ?? listViewCurves.Items.Count;
+
+						if (AddCurveToLibrary(c, false)) return;
+
+						Populate_Curves();
+
+						if (listViewCurves.Items.Count == _curveLibrary.Count())
+						{
+							ListViewItem cloneToNew =
+								(ListViewItem)listViewCurves.Items[listViewCurves.Items.Count - 1].Clone();
+							listViewCurves.Items.Remove(listViewCurves.Items[listViewCurves.Items.Count - 1]);
+							listViewCurves.Items.Insert(index, cloneToNew);
+						}
 					}
 				}
 				else if (e.Effect == DragDropEffects.Move)
@@ -384,8 +395,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					listViewCurves.BeginUpdate();
 					listViewCurves.Alignment = ListViewAlignment.Default;
 					List<ListViewItem> listViewItems = listViewCurves.SelectedItems.Cast<ListViewItem>().ToList();
-					if (movetoNewPosition != null && listViewCurves.SelectedItems[0].Index > movetoNewPosition.Index) listViewItems.Reverse();
-					int index = movetoNewPosition?.Index ?? listViewCurves.Items.Count - 1;
+					if (moveToNewPosition != null && listViewCurves.SelectedItems[0].Index > moveToNewPosition.Index) listViewItems.Reverse();
+					int index = moveToNewPosition?.Index ?? listViewCurves.Items.Count - 1;
 					foreach (ListViewItem item in listViewItems)
 					{
 						listViewCurves.Items.Remove(item);
