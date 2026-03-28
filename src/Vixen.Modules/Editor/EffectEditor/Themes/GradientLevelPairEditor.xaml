@@ -61,16 +61,4 @@
 		</StackPanel>
 	</DataTemplate>
 
-    <!--<Border BorderThickness="1" BorderBrush="#888888" Margin="10 0 0 0">
-        <Image input:DragDropTargetType.TargetType="Curve"  Source="{Binding Value.Curve, Converter={StaticResource CurveToImageConverter}}" 
-									   Height="25" Width="25" Focusable="True"
-									input:DragDropManager.DropTargetAdvisor="{Binding}" input:DragDropManager.DragSourceAdvisor="{Binding}" ToolTip="{Binding Value.Curve.LibraryReferenceName}">
-            <Image.InputBindings>
-                <MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowGradientLevelCurveEditor"
-						              CommandParameter="{Binding}" />
-            </Image.InputBindings>
-        </Image>
-    </Border>-->
-
-
 </ResourceDictionary>

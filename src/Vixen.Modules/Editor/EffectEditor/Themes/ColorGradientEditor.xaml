@@ -9,23 +9,6 @@
         <ResourceDictionary Source="SliderPoint.xaml"></ResourceDictionary>
 	</ResourceDictionary.MergedDictionaries>
 
-	<!--<DataTemplate x:Key="{x:Static editors:EditorKeys.GradientEditorKey}">
-		<StackPanel Orientation="Horizontal">
-			<Border BorderThickness="1" BorderBrush="#888888">
-				<Image Source="{Binding Value, Converter={StaticResource ColorGradientToImageConverter}}" Height="25" Width="25" 
-					   Focusable="True" ToolTip="{Binding StringValue}"
-				       input:DragDropManager.DropTargetAdvisor="{Binding}" input:DragDropManager.DragSourceAdvisor="{Binding}">
-					<Image.InputBindings>
-						<MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowDialogEditor"
-						              CommandParameter="{Binding}" />
-						<KeyBinding Key="Enter" Command="input:PropertyEditorCommands.ShowDialogEditor"
-									CommandParameter="{Binding}"/>
-					</Image.InputBindings>
-				</Image>
-			</Border>
-		</StackPanel>
-	</DataTemplate>-->
-
     <DataTemplate x:Key="{x:Static editors:EditorKeys.GradientEditorKey}">
         <controls:InlineGradientEditor
 			x:Name="PART_editor"
@@ -117,35 +100,4 @@
         </Setter>
     </Style>
 
-    <!--<Style TargetType="{x:Type controls:InlineGradientEditor}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type controls:InlineGradientEditor}">
-                    <StackPanel x:Name="Container"  HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                        <Border BorderThickness="1" BorderBrush="#888888" Margin="4,0,4,0">
-                            <Image x:Name="GradientImage" Height="32"
-					            Focusable="True" ToolTip="{Binding StringValue}"
-				                    input:DragDropManager.DropTargetAdvisor="{Binding}" 
-                                   input:DragDropManager.DragSourceAdvisor="{Binding}"
-                                   Width="{Binding Path=ActualWidth, ElementName=Container, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
-                                   Stretch="Fill">
-                                <Image.InputBindings>
-                                    <MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowDialogEditor"
-						              CommandParameter="{Binding}" />
-                                    <KeyBinding Key="Enter" Command="input:PropertyEditorCommands.ShowDialogEditor"
-												CommandParameter="{Binding}"/>
-                                </Image.InputBindings>
-                            </Image>
-                        </Border>
-                        <Image x:Name="FaderImage" Height="10" 
-                               Width="{Binding Path=ActualWidth, ElementName=Container, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
-                                Stretch="Fill" >
-
-                        </Image>
-                    </StackPanel>
-                    
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>-->
 </ResourceDictionary>

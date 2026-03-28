@@ -9,23 +9,6 @@
 	    <ResourceDictionary Source="SliderPoint.xaml"></ResourceDictionary>
 	</ResourceDictionary.MergedDictionaries>
 
-    <!--<DataTemplate x:Key="{x:Static editors:EditorKeys.CurveEditorKey}">
-		<StackPanel Orientation="Horizontal">
-			<Border BorderThickness="1" BorderBrush="#888888">
-				<Image Source="{Binding Value, Converter={StaticResource CurveToImageConverter}}" Height="25" Width="25" 
-					   Focusable="True" ToolTip="{Binding StringValue}"
-				       input:DragDropManager.DropTargetAdvisor="{Binding}" input:DragDropManager.DragSourceAdvisor="{Binding}">
-					<Image.InputBindings>
-						<MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowDialogEditor"
-						              CommandParameter="{Binding}" />
-						<KeyBinding Key="Enter" Command="input:PropertyEditorCommands.ShowDialogEditor"
-												CommandParameter="{Binding}"/>
-					</Image.InputBindings>
-				</Image>
-			</Border>
-		</StackPanel>
-	</DataTemplate>-->
-
     <DataTemplate x:Key="{x:Static editors:EditorKeys.CurveEditorKey}">
         <controls:InlineCurveEditor
 			x:Name="PART_editor"
@@ -71,18 +54,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-
-    <!--<Border BorderThickness="1" BorderBrush="#888888" Margin="10 0 0 0">
-        <Image input:DragDropTargetType.TargetType="Curve"  Source="{Binding Value.Curve, Converter={StaticResource CurveToImageConverter}}" 
-									   Height="25" Width="25" Focusable="True"
-									input:DragDropManager.DropTargetAdvisor="{Binding}" input:DragDropManager.DragSourceAdvisor="{Binding}" ToolTip="{Binding Value.Curve.LibraryReferenceName}">
-            <Image.InputBindings>
-                <MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowGradientLevelCurveEditor"
-						              CommandParameter="{Binding}" />
-            </Image.InputBindings>
-        </Image>
-    </Border>-->
-
+   
     <Style TargetType="{x:Type controls:InlineGradientPairCurveEditor}" BasedOn="{StaticResource CurveSliderPointStyle}">
         <Setter Property="Template">
             <Setter.Value>
