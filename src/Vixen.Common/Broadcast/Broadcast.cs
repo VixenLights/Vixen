@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-using Vixen.Sys;
-using System.Collections.Concurrent;
+﻿using Vixen.Sys;
 using WPFApplication = System.Windows.Application;
 using CommunityToolkit.Mvvm.Messaging;
 
@@ -77,7 +75,7 @@ namespace Common.Broadcast
 		/// <param name="message">Specify the message content</param>
 		public static void Publish<T>(String channel, T message) where T : class
 		{
-			if (VixenSystem.UIThread == System.Threading.Thread.CurrentThread)
+			if (VixenSystem.UIThread == Thread.CurrentThread)
 				WeakReferenceMessenger.Default.Send<T, String>(message, channel);
 			else
 				WPFApplication.Current.Dispatcher.Invoke( (Action)(() => WeakReferenceMessenger.Default.Send<T, String>(message, channel) ));
