@@ -1,8 +1,6 @@
 ﻿using System.Diagnostics;
-using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Windowing.Desktop;
-using OpenTK.WinForms;
 using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
 using VixenModules.Preview.VixenPreview.GDIPreview;

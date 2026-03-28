@@ -29,7 +29,9 @@
     <PackageVersion Include="NLog" Version="6.1.1" />
     <PackageVersion Include="NLog.Web.AspNetCore" Version="6.1.2" />
     <PackageVersion Include="Obsolete.Fody" Version="5.3.1" />
-    <PackageVersion Include="OpenTK" Version="4.8.2" />
+    <PackageVersion Include="OpenTK" Version="4.9.4" />
+    <PackageVersion Include="OpenTK.GLControl" Version="4.0.2" />
+    <PackageVersion Include="OpenTK.Windowing.Common" Version="4.9.4" />
     <PackageVersion Include="Orc.Controls" Version="5.4.1" />
     <PackageVersion Include="Orc.SystemInfo" Version="5.1.0" />
     <PackageVersion Include="Orc.Wizard" Version="5.2.0" />
