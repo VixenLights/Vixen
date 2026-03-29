@@ -352,8 +352,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 
 		public void OnDropCompleted(IDataObject obj, Point dropPoint)
 		{
-			var data = obj.GetData(ItemType);
-			if (data != null && data.GetType() == ItemType)
+			if (DragDropUtils.TryGetDragDropData(obj, ItemType, out object data))
 			{
 				Value = data;
 			}
