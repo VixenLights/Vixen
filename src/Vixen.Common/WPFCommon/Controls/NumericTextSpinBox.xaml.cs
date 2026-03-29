@@ -12,7 +12,8 @@ namespace Common.WPFCommon.Controls
     {
 		#region Properties
 		public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
-		    nameof(Value), typeof(double), typeof(NumericTextSpinBox), new PropertyMetadata((double)0, OnValueChanged, ValidateValue));
+		    nameof(Value), typeof(double), typeof(NumericTextSpinBox), 
+			new FrameworkPropertyMetadata((double)0,FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,OnValueChanged,ValidateValue));
 
 	    public double Value
 		{
