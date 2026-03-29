@@ -141,7 +141,9 @@ jobs:
 
 
   create_release:
-  
+    permissions:
+      contents: write
+
     needs:
       - setup
       - build_x64
@@ -154,6 +156,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: _setup64
+          path: setup-artifact
           
       - name: Download Build Release Notes Markdown artifact
         uses: actions/download-artifact@v8
@@ -165,26 +168,14 @@ jobs:
         
       - name: show github env
         run: echo "${GITHUB_ENV}"
-          
-      - name: Create release
-        id: create_release
-        uses: VixenLights/create-release@main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ needs.setup.outputs.release_tag }}
-          release_name: ${{ needs.setup.outputs.release_tag }}
-          body_path: Release Notes.md
-          draft: false
-          prerelease: ${{ needs.setup.outputs.pre_release }}
-        
-      - name: Upload x64 release asset
-        uses: VixenLights/upload-release-asset@main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ needs.build_x64.outputs.setup_64 }}
-          asset_name: ${{ needs.build_x64.outputs.setup_64 }}
-          asset_content_type: application/vnd.microsoft.portable-executable
 
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: setup-artifact/*.*
+          body_path: Release Notes.md
+          name: ${{ needs.setup.outputs.release_tag }}
+          tag_name: ${{ needs.setup.outputs.release_tag }}
+          prerelease: ${{ needs.setup.outputs.pre_release }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
