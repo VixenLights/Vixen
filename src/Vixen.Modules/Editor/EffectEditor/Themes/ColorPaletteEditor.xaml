@@ -4,7 +4,8 @@
                     xmlns:editors="clr-namespace:VixenModules.Editor.EffectEditor.Editors"
                     xmlns:input="clr-namespace:VixenModules.Editor.EffectEditor.Input"
                     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-                    xmlns:behaviors="clr-namespace:Common.WPFCommon.Behaviors;assembly=WPFCommon">
+                    xmlns:behaviors="clr-namespace:Common.WPFCommon.Behaviors;assembly=WPFCommon"
+                    xmlns:commonInput="clr-namespace:Common.WPFCommon.Input;assembly=WPFCommon">
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="Converters.xaml" />
 	</ResourceDictionary.MergedDictionaries>
@@ -31,7 +32,7 @@
 							<Border BorderThickness="1" BorderBrush="#888888">
 								<Rectangle Fill="{Binding Value, Converter={StaticResource SystemColorToSolidBrushConverter}}" 
 				           Width="25" Height="25" Margin="0" HorizontalAlignment="Center"
-				           input:DragDropManager.DropTargetAdvisor="{Binding}" input:DragDropManager.DragSourceAdvisor="{Binding}">
+				           commonInput:DragDropManager.DropTargetAdvisor="{Binding}" commonInput:DragDropManager.DragSourceAdvisor="{Binding}">
 									<Rectangle.InputBindings>
 										<MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowDialogEditor"
 						              CommandParameter="{Binding}" />

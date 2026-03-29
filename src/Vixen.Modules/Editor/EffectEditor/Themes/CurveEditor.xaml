@@ -2,29 +2,12 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:VixenModules.Editor.EffectEditor.Controls"
                     xmlns:editors="clr-namespace:VixenModules.Editor.EffectEditor.Editors"
-                    xmlns:input="clr-namespace:VixenModules.Editor.EffectEditor.Input"
-                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
-	<ResourceDictionary.MergedDictionaries>
+                    xmlns:commonInput="clr-namespace:Common.WPFCommon.Input;assembly=WPFCommon"
+                    xmlns:input="clr-namespace:VixenModules.Editor.EffectEditor.Input">
+    <ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="Converters.xaml" />
 	    <ResourceDictionary Source="SliderPoint.xaml"></ResourceDictionary>
 	</ResourceDictionary.MergedDictionaries>
-
-    <!--<DataTemplate x:Key="{x:Static editors:EditorKeys.CurveEditorKey}">
-		<StackPanel Orientation="Horizontal">
-			<Border BorderThickness="1" BorderBrush="#888888">
-				<Image Source="{Binding Value, Converter={StaticResource CurveToImageConverter}}" Height="25" Width="25" 
-					   Focusable="True" ToolTip="{Binding StringValue}"
-				       input:DragDropManager.DropTargetAdvisor="{Binding}" input:DragDropManager.DragSourceAdvisor="{Binding}">
-					<Image.InputBindings>
-						<MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowDialogEditor"
-						              CommandParameter="{Binding}" />
-						<KeyBinding Key="Enter" Command="input:PropertyEditorCommands.ShowDialogEditor"
-												CommandParameter="{Binding}"/>
-					</Image.InputBindings>
-				</Image>
-			</Border>
-		</StackPanel>
-	</DataTemplate>-->
 
     <DataTemplate x:Key="{x:Static editors:EditorKeys.CurveEditorKey}">
         <controls:InlineCurveEditor
@@ -44,8 +27,8 @@
                                 <Image x:Name="CurveImage" Source="{Binding Value, RelativeSource={RelativeSource TemplatedParent}, 
                                 Converter={StaticResource CurveToImageConverter}, ConverterParameter=true }" Height="32"
 					            Focusable="True" ToolTip="{Binding StringValue}"
-				                    input:DragDropManager.DropTargetAdvisor="{Binding}" 
-                                   input:DragDropManager.DragSourceAdvisor="{Binding}"
+                                commonInput:DragDropManager.DropTargetAdvisor="{Binding}" 
+                                commonInput:DragDropManager.DragSourceAdvisor="{Binding}"
                                    Width="{Binding Path=ActualWidth, ElementName=Container, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
                                    Stretch="Fill">
                                     <Image.InputBindings>
@@ -71,18 +54,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-
-    <!--<Border BorderThickness="1" BorderBrush="#888888" Margin="10 0 0 0">
-        <Image input:DragDropTargetType.TargetType="Curve"  Source="{Binding Value.Curve, Converter={StaticResource CurveToImageConverter}}" 
-									   Height="25" Width="25" Focusable="True"
-									input:DragDropManager.DropTargetAdvisor="{Binding}" input:DragDropManager.DragSourceAdvisor="{Binding}" ToolTip="{Binding Value.Curve.LibraryReferenceName}">
-            <Image.InputBindings>
-                <MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowGradientLevelCurveEditor"
-						              CommandParameter="{Binding}" />
-            </Image.InputBindings>
-        </Image>
-    </Border>-->
-
+   
     <Style TargetType="{x:Type controls:InlineGradientPairCurveEditor}" BasedOn="{StaticResource CurveSliderPointStyle}">
         <Setter Property="Template">
             <Setter.Value>
@@ -96,9 +68,9 @@
                                 <Image Name="CurveImage"  Source="{Binding Value.Curve, RelativeSource={RelativeSource TemplatedParent}, 
                                         Converter={StaticResource CurveToImageConverter}, ConverterParameter=true }" Height="32"
 					                    Focusable="True" 
-				                            input:DragDropManager.DropTargetAdvisor="{Binding}" 
-                                           input:DragDropManager.DragSourceAdvisor="{Binding}"
-                                           input:DragDropTargetType.TargetType="Curve" 
+                                        commonInput:DragDropManager.DropTargetAdvisor="{Binding}" 
+                                        commonInput:DragDropManager.DragSourceAdvisor="{Binding}"
+                                           commonInput:DragDropTargetType.TargetType="Curve" 
                                            Width="{Binding Path=ActualWidth, ElementName=CurveContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
                                            Stretch="Fill">
                                     <Image.InputBindings>
