@@ -43,10 +43,10 @@ jobs:
     steps:
     
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           global-json-file: global.json
       
@@ -90,13 +90,13 @@ jobs:
         run: ./Build/CreateReleaseNotes.ps1 -jiraUrl "http://bugs.vixenlights.com" -project "Vixen 3" -fixVersion "${env:VIX_NOTES_FIX_VERSION}" -buildType "${env:VIX_NOTES_BUILD_TYPE}"
       
       - name: Upload Release Notes artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: _releaseNotes
           path: "Release Notes.txt"
           
       - name: Upload Build Release Notes Markdown artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: _releaseNotesMd
           path: "Release Notes.md"
@@ -113,14 +113,14 @@ jobs:
 
     steps:
     
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       
       - name: Download Release Notes artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: _releaseNotes
         
-      - uses: microsoft/setup-msbuild@v2
+      - uses: microsoft/setup-msbuild@v3
         with:
           msbuild-architecture: x64
       
@@ -134,7 +134,7 @@ jobs:
           echo "SETUP_64=$(echo Vixen*Setup-64bit.exe)" >> $GITHUB_ENV
 
       - name: Upload _setup64 artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: _setup64
           path: Release\Setup\${{ needs.setup.outputs.environment }}\${{ env.SETUP_64 }}
@@ -151,12 +151,12 @@ jobs:
     steps:
 
       - name: Download _setup64 artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: _setup64
           
       - name: Download Build Release Notes Markdown artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: _releaseNotesMd
           

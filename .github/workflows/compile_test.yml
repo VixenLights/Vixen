@@ -35,17 +35,17 @@ jobs:
     steps:
     
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           global-json-file: global.json
       
       - name: Display dotnet version
         run: dotnet --version
           
-      - uses: microsoft/setup-msbuild@v2
+      - uses: microsoft/setup-msbuild@v3
       
       - name: Build Release
         run: msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release
