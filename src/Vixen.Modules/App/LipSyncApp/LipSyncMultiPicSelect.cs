@@ -1,4 +1,5 @@
 ﻿using Common.Controls.Theme;
+using System.ComponentModel;
 
 namespace VixenModules.App.LipSyncApp
 {
@@ -120,9 +121,20 @@ namespace VixenModules.App.LipSyncApp
 			this.DialogResult = DialogResult.OK;
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string[] DropFileNames { get; set; }
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Dictionary<string,string> PicMappings { get; set; }
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string CurrentPhonemeString { get; set; }
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Dictionary<string,Bitmap> CurrentMappings { get; set; }
 	}
 }

@@ -27,155 +27,151 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.groupBoxLibrary = new System.Windows.Forms.GroupBox();
-			this.buttonEditLibraryItem = new System.Windows.Forms.Button();
-			this.buttonUnlink = new System.Windows.Forms.Button();
-			this.labelCurve = new System.Windows.Forms.Label();
-			this.buttonSaveToLibrary = new System.Windows.Forms.Button();
-			this.buttonLoadFromLibrary = new System.Windows.Forms.Button();
-			this.gradientEditPanel = new VixenModules.App.ColorGradients.GradientEditPanel();
-			this.groupBoxLibrary.SuspendLayout();
-			this.SuspendLayout();
+			buttonCancel = new Button();
+			buttonOK = new Button();
+			groupBoxLibrary = new GroupBox();
+			buttonEditLibraryItem = new Button();
+			buttonUnlink = new Button();
+			labelCurve = new Label();
+			buttonSaveToLibrary = new Button();
+			buttonLoadFromLibrary = new Button();
+			gradientEditPanel = new GradientEditPanel();
+			groupBoxLibrary.SuspendLayout();
+			SuspendLayout();
 			// 
 			// buttonCancel
 			// 
-			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonCancel.AutoSize = true;
-			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(399, 270);
-			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(93, 29);
-			this.buttonCancel.TabIndex = 5;
-			this.buttonCancel.Text = "Cancel";
-			this.buttonCancel.UseVisualStyleBackColor = true;
+			buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+			buttonCancel.AutoSize = true;
+			buttonCancel.DialogResult = DialogResult.Cancel;
+			buttonCancel.Location = new Point(399, 270);
+			buttonCancel.Name = "buttonCancel";
+			buttonCancel.Size = new Size(93, 29);
+			buttonCancel.TabIndex = 5;
+			buttonCancel.Text = "Cancel";
+			buttonCancel.UseVisualStyleBackColor = true;
 			// 
 			// buttonOK
 			// 
-			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonOK.AutoSize = true;
-			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.Location = new System.Drawing.Point(299, 270);
-			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(93, 29);
-			this.buttonOK.TabIndex = 4;
-			this.buttonOK.Text = "OK";
-			this.buttonOK.UseVisualStyleBackColor = true;
+			buttonOK.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+			buttonOK.AutoSize = true;
+			buttonOK.DialogResult = DialogResult.OK;
+			buttonOK.Location = new Point(300, 270);
+			buttonOK.Name = "buttonOK";
+			buttonOK.Size = new Size(93, 29);
+			buttonOK.TabIndex = 4;
+			buttonOK.Text = "OK";
+			buttonOK.UseVisualStyleBackColor = true;
 			// 
 			// groupBoxLibrary
 			// 
-			this.groupBoxLibrary.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBoxLibrary.Controls.Add(this.buttonEditLibraryItem);
-			this.groupBoxLibrary.Controls.Add(this.buttonUnlink);
-			this.groupBoxLibrary.Controls.Add(this.labelCurve);
-			this.groupBoxLibrary.Controls.Add(this.buttonSaveToLibrary);
-			this.groupBoxLibrary.Controls.Add(this.buttonLoadFromLibrary);
-			this.groupBoxLibrary.Location = new System.Drawing.Point(14, 159);
-			this.groupBoxLibrary.Name = "groupBoxLibrary";
-			this.groupBoxLibrary.Size = new System.Drawing.Size(478, 98);
-			this.groupBoxLibrary.TabIndex = 9;
-			this.groupBoxLibrary.TabStop = false;
-			this.groupBoxLibrary.Text = "Library";
-			this.groupBoxLibrary.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			groupBoxLibrary.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+			groupBoxLibrary.Controls.Add(buttonEditLibraryItem);
+			groupBoxLibrary.Controls.Add(buttonUnlink);
+			groupBoxLibrary.Controls.Add(labelCurve);
+			groupBoxLibrary.Controls.Add(buttonSaveToLibrary);
+			groupBoxLibrary.Controls.Add(buttonLoadFromLibrary);
+			groupBoxLibrary.Location = new Point(14, 159);
+			groupBoxLibrary.Name = "groupBoxLibrary";
+			groupBoxLibrary.Size = new Size(478, 98);
+			groupBoxLibrary.TabIndex = 9;
+			groupBoxLibrary.TabStop = false;
+			groupBoxLibrary.Text = "Library";
+			groupBoxLibrary.Paint += groupBoxes_Paint;
 			// 
 			// buttonEditLibraryItem
 			// 
-			this.buttonEditLibraryItem.AutoSize = true;
-			this.buttonEditLibraryItem.BackColor = System.Drawing.Color.Transparent;
-			this.buttonEditLibraryItem.Location = new System.Drawing.Point(247, 58);
-			this.buttonEditLibraryItem.Name = "buttonEditLibraryItem";
-			this.buttonEditLibraryItem.Size = new System.Drawing.Size(128, 29);
-			this.buttonEditLibraryItem.TabIndex = 4;
-			this.buttonEditLibraryItem.Text = "Edit Library Gradient";
-			this.buttonEditLibraryItem.UseVisualStyleBackColor = false;
-			this.buttonEditLibraryItem.Click += new System.EventHandler(this.buttonEditLibraryItem_Click);
+			buttonEditLibraryItem.AutoSize = true;
+			buttonEditLibraryItem.BackColor = Color.Transparent;
+			buttonEditLibraryItem.Location = new Point(247, 58);
+			buttonEditLibraryItem.Name = "buttonEditLibraryItem";
+			buttonEditLibraryItem.Size = new Size(128, 29);
+			buttonEditLibraryItem.TabIndex = 4;
+			buttonEditLibraryItem.Text = "Edit Library Gradient";
+			buttonEditLibraryItem.UseVisualStyleBackColor = false;
+			buttonEditLibraryItem.Click += buttonEditLibraryItem_Click;
 			// 
 			// buttonUnlink
 			// 
-			this.buttonUnlink.AutoSize = true;
-			this.buttonUnlink.BackColor = System.Drawing.Color.Transparent;
-			this.buttonUnlink.Location = new System.Drawing.Point(124, 58);
-			this.buttonUnlink.Name = "buttonUnlink";
-			this.buttonUnlink.Size = new System.Drawing.Size(117, 29);
-			this.buttonUnlink.TabIndex = 3;
-			this.buttonUnlink.Text = "Unlink Gradient";
-			this.buttonUnlink.UseVisualStyleBackColor = false;
-			this.buttonUnlink.Click += new System.EventHandler(this.buttonUnlink_Click);
+			buttonUnlink.AutoSize = true;
+			buttonUnlink.BackColor = Color.Transparent;
+			buttonUnlink.Location = new Point(124, 58);
+			buttonUnlink.Name = "buttonUnlink";
+			buttonUnlink.Size = new Size(117, 29);
+			buttonUnlink.TabIndex = 3;
+			buttonUnlink.Text = "Unlink Gradient";
+			buttonUnlink.UseVisualStyleBackColor = false;
+			buttonUnlink.Click += buttonUnlink_Click;
 			// 
 			// labelCurve
 			// 
-			this.labelCurve.AutoSize = true;
-			this.labelCurve.Location = new System.Drawing.Point(120, 29);
-			this.labelCurve.Name = "labelCurve";
-			this.labelCurve.Size = new System.Drawing.Size(277, 15);
-			this.labelCurve.TabIndex = 2;
-			this.labelCurve.Text = "This curve is linked to the library curve: \'ASDFASDF\'";
+			labelCurve.AutoSize = true;
+			labelCurve.Location = new Point(120, 29);
+			labelCurve.Name = "labelCurve";
+			labelCurve.Size = new Size(276, 15);
+			labelCurve.TabIndex = 2;
+			labelCurve.Text = "This curve is linked to the library curve: 'ASDFASDF'";
 			// 
 			// buttonSaveToLibrary
 			// 
-			this.buttonSaveToLibrary.AutoSize = true;
-			this.buttonSaveToLibrary.Location = new System.Drawing.Point(14, 58);
-			this.buttonSaveToLibrary.Name = "buttonSaveToLibrary";
-			this.buttonSaveToLibrary.Size = new System.Drawing.Size(93, 29);
-			this.buttonSaveToLibrary.TabIndex = 1;
-			this.buttonSaveToLibrary.Text = "Save Preset";
-			this.buttonSaveToLibrary.UseVisualStyleBackColor = false;
-			this.buttonSaveToLibrary.Click += new System.EventHandler(this.buttonSaveToLibrary_Click);
+			buttonSaveToLibrary.AutoSize = true;
+			buttonSaveToLibrary.Location = new Point(14, 58);
+			buttonSaveToLibrary.Name = "buttonSaveToLibrary";
+			buttonSaveToLibrary.Size = new Size(93, 29);
+			buttonSaveToLibrary.TabIndex = 1;
+			buttonSaveToLibrary.Text = "Save Preset";
+			buttonSaveToLibrary.UseVisualStyleBackColor = false;
+			buttonSaveToLibrary.Click += buttonSaveToLibrary_Click;
 			// 
 			// buttonLoadFromLibrary
 			// 
-			this.buttonLoadFromLibrary.AutoSize = true;
-			this.buttonLoadFromLibrary.Location = new System.Drawing.Point(14, 22);
-			this.buttonLoadFromLibrary.Name = "buttonLoadFromLibrary";
-			this.buttonLoadFromLibrary.Size = new System.Drawing.Size(93, 29);
-			this.buttonLoadFromLibrary.TabIndex = 0;
-			this.buttonLoadFromLibrary.Text = "Load Preset";
-			this.buttonLoadFromLibrary.UseVisualStyleBackColor = false;
-			this.buttonLoadFromLibrary.Click += new System.EventHandler(this.buttonLoadFromLibrary_Click);
+			buttonLoadFromLibrary.AutoSize = true;
+			buttonLoadFromLibrary.Location = new Point(14, 22);
+			buttonLoadFromLibrary.Name = "buttonLoadFromLibrary";
+			buttonLoadFromLibrary.Size = new Size(93, 29);
+			buttonLoadFromLibrary.TabIndex = 0;
+			buttonLoadFromLibrary.Text = "Load Preset";
+			buttonLoadFromLibrary.UseVisualStyleBackColor = false;
+			buttonLoadFromLibrary.Click += buttonLoadFromLibrary_Click;
 			// 
 			// gradientEditPanel
 			// 
-			this.gradientEditPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.gradientEditPanel.AutoSize = true;
-			this.gradientEditPanel.DiscreteColors = false;
-			this.gradientEditPanel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.gradientEditPanel.Location = new System.Drawing.Point(14, 14);
-			this.gradientEditPanel.LockColorEditorHSV_Value = false;
-			this.gradientEditPanel.MinimumSize = new System.Drawing.Size(416, 138);
-			this.gradientEditPanel.Name = "gradientEditPanel";
-			this.gradientEditPanel.ReadOnly = false;
-			this.gradientEditPanel.Size = new System.Drawing.Size(478, 138);
-			this.gradientEditPanel.TabIndex = 0;
-			this.gradientEditPanel.ValidDiscreteColors = null;
+			gradientEditPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+			gradientEditPanel.AutoSize = true;
+			gradientEditPanel.BackColor = Color.FromArgb(68, 68, 68);
+			gradientEditPanel.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+			gradientEditPanel.ForeColor = Color.FromArgb(235, 235, 235);
+			gradientEditPanel.Location = new Point(14, 14);
+			gradientEditPanel.Margin = new Padding(4, 3, 4, 3);
+			gradientEditPanel.MinimumSize = new Size(416, 138);
+			gradientEditPanel.Name = "gradientEditPanel";
+			gradientEditPanel.Size = new Size(478, 138);
+			gradientEditPanel.TabIndex = 0;
 			// 
 			// ColorGradientEditor
 			// 
-			this.AcceptButton = this.buttonOK;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.AutoSize = true;
-			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(506, 314);
-			this.Controls.Add(this.gradientEditPanel);
-			this.Controls.Add(this.groupBoxLibrary);
-			this.Controls.Add(this.buttonCancel);
-			this.Controls.Add(this.buttonOK);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.KeyPreview = true;
-			this.MinimumSize = new System.Drawing.Size(522, 352);
-			this.Name = "ColorGradientEditor";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Color Gradient Editor";
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ColorGradientEditor_KeyDown);
-			this.groupBoxLibrary.ResumeLayout(false);
-			this.groupBoxLibrary.PerformLayout();
-			this.ResumeLayout(false);
-			this.PerformLayout();
+			AcceptButton = buttonOK;
+			AutoScaleDimensions = new SizeF(7F, 15F);
+			AutoScaleMode = AutoScaleMode.Font;
+			AutoSize = true;
+			BackColor = Color.FromArgb(68, 68, 68);
+			CancelButton = buttonCancel;
+			ClientSize = new Size(506, 314);
+			Controls.Add(gradientEditPanel);
+			Controls.Add(groupBoxLibrary);
+			Controls.Add(buttonCancel);
+			Controls.Add(buttonOK);
+			FormBorderStyle = FormBorderStyle.FixedDialog;
+			KeyPreview = true;
+			MinimumSize = new Size(522, 352);
+			Name = "ColorGradientEditor";
+			StartPosition = FormStartPosition.CenterParent;
+			Text = "Color Gradient Editor";
+			KeyDown += ColorGradientEditor_KeyDown;
+			groupBoxLibrary.ResumeLayout(false);
+			groupBoxLibrary.PerformLayout();
+			ResumeLayout(false);
+			PerformLayout();
 
 		}
 

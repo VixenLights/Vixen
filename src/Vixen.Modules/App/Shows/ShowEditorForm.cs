@@ -57,7 +57,7 @@ namespace VixenModules.App.Shows
 			tabControlShowItems.SelectedIndex = 2;
 		}
 
-		public Show ShowData { get; set; }
+		public Show ShowData { get; }
 
 		private void buttonHelp_Click(object sender, EventArgs e)
 		{

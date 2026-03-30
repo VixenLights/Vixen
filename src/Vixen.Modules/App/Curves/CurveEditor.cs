@@ -1,10 +1,11 @@
 ﻿using Common.Controls;
+using Common.Controls.Theme;
 using Common.Resources.Properties;
+using NCalc2;
+using System.ComponentModel;
 using Vixen.Module.App;
 using Vixen.Services;
 using ZedGraph;
-using Common.Controls.Theme;
-using NCalc2;
 
 namespace VixenModules.App.Curves
 {
@@ -59,6 +60,8 @@ namespace VixenModules.App.Curves
 
 		private Curve _curve;
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Curve Curve
 		{
 			get { return _curve; }
@@ -71,6 +74,8 @@ namespace VixenModules.App.Curves
 
 		private string _libraryCurveName;
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string LibraryCurveName
 		{
 			get { return _libraryCurveName; }
@@ -94,7 +99,7 @@ namespace VixenModules.App.Curves
 			}
 		}
 
-		public bool ReadonlyCurve { get; internal set; }
+		public bool ReadonlyCurve { get; private set; }
 
 		private bool zedGraphControl_PreMouseMoveEvent(ZedGraphControl sender, MouseEventArgs e)
 		{

@@ -28,20 +28,6 @@ namespace ZedGraph
 	public class ZedGraphException : System.ApplicationException
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ZedGraphException"/>
-		/// class with serialized data.
-		/// </summary>
-		/// <param name="info">The <see cref="System.Runtime.Serialization.SerializationInfo"/>
-		/// instance that holds the serialized object data about the exception being thrown.</param>
-		/// <param name="context">The <see cref="System.Runtime.Serialization.StreamingContext"/>
-		/// instance that contains contextual information about the source or destination.</param>
-		protected ZedGraphException(System.Runtime.Serialization.SerializationInfo info,
-		                            System.Runtime.Serialization.StreamingContext context)
-			: base(info, context)
-		{
-		}
-
-		/// <summary>
 		/// Initializes a new instance of the <see cref="Exception"/> class with a specified
 		/// error message and a reference to the inner exception that is the cause of this exception.
 		/// </summary>

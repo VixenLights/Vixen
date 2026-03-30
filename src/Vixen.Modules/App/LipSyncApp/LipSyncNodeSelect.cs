@@ -1,5 +1,6 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
+using System.ComponentModel;
 using Vixen.Sys;
 
 namespace VixenModules.App.LipSyncApp
@@ -23,7 +24,12 @@ namespace VixenModules.App.LipSyncApp
 			recurseCB.Checked = true;
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int MaxNodes { get; set; }
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool AllowGroups
 		{
 			get
@@ -37,6 +43,8 @@ namespace VixenModules.App.LipSyncApp
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool AllowRecursiveAdd
 		{
 			get
@@ -50,6 +58,8 @@ namespace VixenModules.App.LipSyncApp
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool StringsAreRows
 		{
 			get
@@ -65,6 +75,8 @@ namespace VixenModules.App.LipSyncApp
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool MatrixOptionsOnly
 		{
 			get
@@ -83,7 +95,7 @@ namespace VixenModules.App.LipSyncApp
 			}
 		}
 
-		public bool Changed { get; set; }
+		public bool Changed { get; private set; }
 		
 		private void BuildNode(TreeNode parentNode, IElementNode node)
 		{
@@ -133,7 +145,7 @@ namespace VixenModules.App.LipSyncApp
 				return retVal;
 			}
 
-			set
+			private set
 			{
 				List<string> names = value;
 				_selectedNodeNames = value;

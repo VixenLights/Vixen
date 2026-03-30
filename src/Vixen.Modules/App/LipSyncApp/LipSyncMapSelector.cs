@@ -1,7 +1,8 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
-using Vixen.Services;
+using System.ComponentModel;
 using Vixen.Module.App;
+using Vixen.Services;
 
 namespace VixenModules.App.LipSyncApp
 {
@@ -17,6 +18,8 @@ namespace VixenModules.App.LipSyncApp
 			Changed = false;
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool Changed { get; set; }
 
 		private string RenameOldLabel { get; set; }

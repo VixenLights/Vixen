@@ -1,5 +1,6 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
+using System.ComponentModel;
 using Vixen.Marks;
 using VixenModules.App.Marks;
 
@@ -22,6 +23,8 @@ namespace VixenModules.App.LipSyncApp
 			_lastMarkIndex = -1;
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IList<IMarkCollection> MarkCollections { get; set; }
 		//public List<Dictionary<string,List<TimeSpan>>> MarkCollections { get; set; }
 

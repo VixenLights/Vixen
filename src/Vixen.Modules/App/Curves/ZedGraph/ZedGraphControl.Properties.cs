@@ -721,6 +721,9 @@ namespace ZedGraph
 		/// axis ranges from 0 to 100, then a 0.05 value for ScrollGrace would set the scroll range
 		/// to -5 to 105.
 		/// </remarks>
+		[Bindable(true), Category("Display"),
+		DefaultValue(0),
+		Description("Set a \"grace\" value that leaves a buffer area around the data when IsAutoScrollRange is true")]
 		public double ScrollGrace
 		{
 			get { return _scrollGrace; }
@@ -1241,9 +1244,20 @@ namespace ZedGraph
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int DragIndex { get; internal set; }
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public CurveItem DragCurve { get; internal set; }
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public PointPair DragStartPair { get; internal set; }
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public PointPair DragEditingPair { get; internal set; }
 
 		#endregion

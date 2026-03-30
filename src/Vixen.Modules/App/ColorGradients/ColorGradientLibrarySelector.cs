@@ -1,8 +1,9 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
-using Vixen.Services;
+using System.ComponentModel;
 using Vixen.Module.App;
+using Vixen.Services;
 
 namespace VixenModules.App.ColorGradients
 {
@@ -21,6 +22,8 @@ namespace VixenModules.App.ColorGradients
 		/// <summary>
 		/// Change the effect of double clicking on a curve. Ok invokes the Ok button, Edit invokes the Edit button.
 		/// </summary>
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Mode DoubleClickMode { get; set; }
 
 		private void ColorGradientLibrarySelector_Load(object sender, EventArgs e)
