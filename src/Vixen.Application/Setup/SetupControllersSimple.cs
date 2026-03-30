@@ -1,8 +1,9 @@
 ﻿using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 using Common.Resources;
+using Common.Resources.Properties;
+using System.ComponentModel;
 using Vixen.Data.Flow;
 using Vixen.Module.Controller;
 using Vixen.Services;
@@ -164,6 +165,8 @@ namespace VixenApplication.Setup
 			return result;
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public ControllersAndOutputsSet SelectedControllersAndOutputs
 		{
 			get { return BuildSelectedControllersAndOutputs(); }
@@ -178,6 +181,8 @@ namespace VixenApplication.Setup
 			get { return this; }
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public DisplaySetup? MasterForm { get; set; }
 
 		public void UpdatePatching()

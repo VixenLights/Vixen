@@ -1,6 +1,7 @@
-﻿using Common.Controls.Theme;
+﻿using Common.Controls;
+using Common.Controls.Theme;
 using Common.Resources.Properties;
-using Common.Controls;
+using System.ComponentModel;
 
 namespace VixenApplication
 {
@@ -71,18 +72,22 @@ namespace VixenApplication
 			IsSelectedProfileLocked();
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string DataFolder
 		{
 			get { return _dataFolder; }
 			set { _dataFolder = value; }
 		}
 
-		public int ProfileNumber
+		private int ProfileNumber
 		{
 			get { return _profileNumber; }
 			set { _profileNumber = value; }
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string ProfileName { get; set; } = String.Empty;
 
 		private void SelectProfile_Load(object sender, EventArgs e)

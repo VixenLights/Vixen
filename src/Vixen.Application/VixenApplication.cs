@@ -209,7 +209,7 @@ namespace VixenApplication
 			helpMenu.DropDown.Items.Add(aboutMenu);
 		}
 
-		public string LockFilePath { get; set; }
+		private string LockFilePath { get; set; }
 
 		private static string _uniqueProcessId = null;
 

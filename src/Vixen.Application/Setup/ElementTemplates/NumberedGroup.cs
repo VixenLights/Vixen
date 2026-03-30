@@ -1,6 +1,7 @@
 ﻿using Common.Controls.Theme;
 using Common.Resources.Properties;
 using NLog;
+using System.ComponentModel;
 using Vixen.Rule;
 using Vixen.Services;
 using Vixen.Sys;
@@ -28,11 +29,11 @@ namespace VixenApplication.Setup.ElementTemplates
 			Count = count;
 		}
 
-		public string GroupName { get; set; }
+		private string GroupName { get; set; }
 
-		public string Prefix { get; set; }
+		private string Prefix { get; set; }
 
-		public int Count { get; set; }
+		private int Count { get; set; }
 
 		public virtual string TemplateName
 		{
