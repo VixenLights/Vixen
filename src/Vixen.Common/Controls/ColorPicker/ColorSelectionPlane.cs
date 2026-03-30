@@ -152,12 +152,16 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			get { return _bmp; }
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		internal double PositionX
 		{
 			get { return _x; }
 			set { SetPosition(value, _y); }
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		internal double PositionY
 		{
 			get { return _y; }

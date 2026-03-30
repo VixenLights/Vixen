@@ -1,6 +1,7 @@
 ﻿using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
+using System.ComponentModel;
 
 namespace Common.Controls.NameGeneration
 {
@@ -45,6 +46,8 @@ namespace Common.Controls.NameGeneration
 			PopulateNames();
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public List<string> Names { get; set; }
 
 		private void PopulateNames()

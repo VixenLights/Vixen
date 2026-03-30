@@ -70,10 +70,16 @@ namespace Common.Controls
 		// different things in different places.  For example, dragging to reorder elements might not be
 		// desired, or icons might not be wanted, or only groups displayed, etc., etc.
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool AllowDragging { get; set; }
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool AllowPropertyEdit { get; set; }
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool AllowWireExport { get; set; }
 
 
@@ -639,6 +645,8 @@ namespace Common.Controls
 
 		public delegate void ExportDiagramDelegate(ElementNode node, bool flip = false);
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public ExportDiagramDelegate ExportDiagram { get; set; }
 
 		public void DeleteNode(TreeNode tn)

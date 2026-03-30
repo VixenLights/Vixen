@@ -8,7 +8,8 @@ using Vixen.Marks;
 
 namespace Common.Controls.Timeline
 {
-	[System.ComponentModel.DesignerCategory("")] // Prevent this from showing up in designer.
+#pragma warning disable WFO1000  // This class is not a Designer type control so disabling to avoid all the noise of the hidden attribute
+	[DesignerCategory("")] // Prevent this from showing up in designer.
 	public class TimelineControl : TimelineControlBase, IEnumerable<Row>
 	{
 		//These are the 96 DPI based defaults. They should be scaled if used.

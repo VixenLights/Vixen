@@ -1,5 +1,6 @@
-using System.Drawing.Drawing2D;
 using Common.Controls.ColorManagement.ColorModels;
+using System.ComponentModel;
+using System.Drawing.Drawing2D;
 
 namespace Common.Controls.ColorManagement.ColorPicker
 {
@@ -136,6 +137,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			get { return _bmp; }
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		internal double Position
 		{
 			get { return _position; }

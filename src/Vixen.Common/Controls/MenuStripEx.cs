@@ -1,4 +1,6 @@
-﻿namespace Common.Controls
+﻿using System.ComponentModel;
+
+namespace Common.Controls
 {
 	/// <summary>
 	/// This class adds on to the functionality provided in System.Windows.Forms.MenuStrip.
@@ -11,6 +13,8 @@
 		/// Gets or sets whether the MenuStripEx honors item clicks when its containing form does
 		/// not have input focus.
 		/// </summary>
+		[Bindable(true), Category("Display"), DefaultValue(true),
+		 Description("Gets or sets whether the MenuStripEx honors item clicks when its containing form does")]
 		public bool ClickThrough
 		{
 			get { return this.clickThrough; }

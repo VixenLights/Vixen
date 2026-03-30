@@ -809,6 +809,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		/// gets or sets the color as device-independent CIE-XYZ color
 		/// </summary>
 		[Description("gets or sets the color as device-independent CIE-XYZ color")]
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public XYZ Color
 		{
 			get { return InternalColor; }
@@ -842,6 +844,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		/// <summary>
 		/// if true, will lock the value for V to 100%.
 		/// </summary>
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool LockValue_V
 		{
 			get { return lockValueV; }

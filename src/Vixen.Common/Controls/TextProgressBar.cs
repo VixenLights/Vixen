@@ -18,11 +18,11 @@ namespace Common.Controls
 
     public class TextProgressBar : ProgressBar
     {
-        [Description("Font of the text on ProgressBar"), Category("Additional Options")]
+        [Description("Font of the text on ProgressBar"), Category("Additional Options"), DefaultValue(typeof(Font), "Arial")]
         public Font TextFont { get; set; } = ThemeUpdateControls.StandardFont;
         
         private SolidBrush _textColourBrush = new SolidBrush(ThemeColorTable.ForeColor);
-        [Category("Additional Options")]
+        [Category("Additional Options"), DefaultValue(typeof(Color), "Black")]
         public Color TextColor {
             get {
                 return _textColourBrush.Color;
@@ -35,7 +35,7 @@ namespace Common.Controls
         }
 
         private SolidBrush _progressColourBrush = (SolidBrush) Brushes.LightGreen;
-        [Category("Additional Options"), Browsable(true), EditorBrowsable(EditorBrowsableState.Always)]
+        [Category("Additional Options"), Browsable(true), EditorBrowsable(EditorBrowsableState.Always), DefaultValue(typeof(Color), "Lime")]
         public Color ProgressColor
         {
             get
@@ -50,7 +50,7 @@ namespace Common.Controls
         }
 
         private ProgressBarDisplayMode _visualMode = ProgressBarDisplayMode.CurrProgress;
-        [Category("Additional Options"), Browsable(true)]
+        [Category("Additional Options"), Browsable(true), DefaultValue(ProgressBarDisplayMode.CurrProgress)]
         public ProgressBarDisplayMode VisualMode {
             get {
                 return _visualMode;
@@ -64,7 +64,8 @@ namespace Common.Controls
 
         private string _text = string.Empty;
 
-        [Description("If it's empty, % will be shown"), Category("Additional Options"), Browsable(true), EditorBrowsable(EditorBrowsableState.Always)]
+        [Description("If it's empty, % will be shown"), Category("Additional Options"), Browsable(true), EditorBrowsable(EditorBrowsableState.Always),
+         DefaultValue("")]
         public string CustomText
         {
             get

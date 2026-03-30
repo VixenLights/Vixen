@@ -13,6 +13,8 @@ using Vixen.Execution.Context;
 using Vixen.Marks;
 using Vixen.Sys.LayerMixing;
 
+#pragma warning disable WFO1000  // This class is not a Designer type control so disabling to avoid all the noise of the hidden attribute
+
 namespace Common.Controls.Timeline
 {
 	/// <summary>
