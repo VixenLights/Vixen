@@ -1,6 +1,6 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
+using System.ComponentModel;
 
 namespace VixenModules.Property.Order {
 	public partial class SetupForm : BaseForm
@@ -11,7 +11,8 @@ namespace VixenModules.Property.Order {
 			Order = data.Order;
 		}
 
-
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int Order {
 			get { return (int)numericUpDownXPosition.Value; }
 			set {

@@ -1,5 +1,6 @@
 ﻿using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
+using System.ComponentModel;
 
 namespace VixenModules.Property.Color
 {
@@ -29,6 +30,8 @@ namespace VixenModules.Property.Color
 
 		private System.Drawing.Color _color = System.Drawing.Color.Black;
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public System.Drawing.Color Color
 		{
 			get { return _color; }

@@ -1,6 +1,6 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
+using System.ComponentModel;
 
 namespace VixenModules.Property.Orientation {
 	public partial class SetupForm : BaseForm
@@ -16,7 +16,8 @@ namespace VixenModules.Property.Orientation {
 			Orientation = defaultOrientation;
 		}
 
-
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Orientation Orientation
 		{
 			get { return (Orientation)comboBoxOrientation.SelectedItem; }
