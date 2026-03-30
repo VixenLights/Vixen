@@ -1,6 +1,7 @@
-﻿using System.Diagnostics;
-using Common.Controls;
+﻿using Common.Controls;
 using Common.Controls.Theme;
+using System.ComponentModel;
+using System.Diagnostics;
 using Vixen.Commands;
 
 namespace VixenModules.Output.DebugController
@@ -10,12 +11,13 @@ namespace VixenModules.Output.DebugController
 		private Stopwatch _timer;
 		private long _lastUpdateMs;
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool Verbose { get; set; }
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool AppendText { get; set; }
-
-		public int MsPerUpdate { get; set; }
-
 
 		public DebugControllerOutputForm()
 		{

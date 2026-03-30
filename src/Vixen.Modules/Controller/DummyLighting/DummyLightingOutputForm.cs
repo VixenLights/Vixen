@@ -1,6 +1,7 @@
-﻿using System.Drawing;
+﻿using Common.Controls;
+using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
-using Common.Controls;
 using Vixen.Commands;
 
 namespace VixenModules.Output.DummyLighting
@@ -30,11 +31,13 @@ namespace VixenModules.Output.DummyLighting
 			// when it should really return true.
 			IntPtr handle = this.Handle;
 
-			renderingStyle = RenderStyle.Monochrome;
+			RenderingStyle = RenderStyle.Monochrome;
 			_commandHandler = new CommandHandler();
 		}
 
-		public RenderStyle renderingStyle
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public RenderStyle RenderingStyle
 		{
 			get { return _renderingStyle; }
 			set
@@ -44,6 +47,8 @@ namespace VixenModules.Output.DummyLighting
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int OutputCount
 		{
 			get { return _outputCount; }
@@ -56,7 +61,7 @@ namespace VixenModules.Output.DummyLighting
 
 		private void _generateValues(int outputs)
 		{
-			switch (renderingStyle) {
+			switch (RenderingStyle) {
 				case RenderStyle.Monochrome:
 					_values = new byte[outputs];
 					_colorValues = null;
@@ -135,7 +140,7 @@ namespace VixenModules.Output.DummyLighting
 			System.Drawing.Color color;
 			e.Graphics.Clear(System.Drawing.Color.Black);
 
-			switch (renderingStyle) {
+			switch (RenderingStyle) {
 				case RenderStyle.Monochrome:
 					for (int i = 0; i < _values.Length; i++) {
 						color = System.Drawing.Color.FromArgb(_values[i], System.Drawing.Color.White);

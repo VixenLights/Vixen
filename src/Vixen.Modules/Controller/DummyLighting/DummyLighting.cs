@@ -49,7 +49,7 @@ namespace VixenModules.Output.DummyLighting
 		public override void Start()
 		{
 			_form = new DummyLightingOutputForm();
-			_form.renderingStyle = _data.RenderStyle;
+			_form.RenderingStyle = _data.RenderStyle;
 			_form.Text = _data.FormTitle;
 			_form.OutputCount = OutputCount;
 			_form.Show();
@@ -69,11 +69,11 @@ namespace VixenModules.Output.DummyLighting
 
 		public override bool Setup()
 		{
-			DummyLightingSetup setup = new DummyLightingSetup(_form.renderingStyle, _form.Text);
+			DummyLightingSetup setup = new DummyLightingSetup(_form.RenderingStyle, _form.Text);
 			DialogResult result = setup.ShowDialog();
 			if (result == DialogResult.OK) {
 				_data.RenderStyle = setup.RenderStyle;
-				_form.renderingStyle = setup.RenderStyle;
+				_form.RenderingStyle = setup.RenderStyle;
 				_data.FormTitle = setup.FormTitle;
 				_form.Text = setup.FormTitle;
 				_SetDataPolicy();

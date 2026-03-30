@@ -2,13 +2,12 @@
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Theme;
-using Resources = Common.Resources.Properties.Resources;
 
 namespace VixenModules.Output.CommandController
 {
 	public partial class SetupForm : BaseForm
 	{
-		public Data RdsData { get; set; }
+		public Data RdsData { get; }
 
 		public SetupForm(Data data)
 		{

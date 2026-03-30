@@ -1,11 +1,11 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 
 namespace VixenModules.Controller.E131
 {
-	using System.Windows.Forms;
+	using System.ComponentModel;
     using System.Net;
+	using System.Windows.Forms;
 
 	public partial class UnicastForm : BaseForm
 	{
@@ -16,6 +16,8 @@ namespace VixenModules.Controller.E131
             ipTextBox.BringToFront();
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string IpAddrText
 		{
             get { if (networkNameRadio.Checked) return this.networkNameTextBox.Text; else return this.ipTextBox.Text; }

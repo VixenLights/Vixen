@@ -136,8 +136,9 @@ namespace VixenModules.Output.E131
 
 		}
 
-		
-        public int EventRepeatCount
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public int EventRepeatCount
         {
             get
             {
@@ -154,6 +155,8 @@ namespace VixenModules.Output.E131
             set { this.eventRepeatCountTextBox.Text = value.ToString(); }
         }
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int EventSuppressCount
 		{
 			get
@@ -171,30 +174,40 @@ namespace VixenModules.Output.E131
 			set { this.eventSuppressCountTextBox.Text = value.ToString(); }
 		}
 
-        public bool AutoPopulateStart
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public bool AutoPopulateStart
         {
             get { return !autoPopulateStart.Checked; }
             set { autoPopulateStart.Checked = !value; autoPopulateStateUpdate(); }
         }
 
-        public bool Blind
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public bool Blind
         {
             get { return chkBoxTransmitBlind.Checked; }
             set { chkBoxTransmitBlind.Checked = value; }
         }
 
-        public int Priority
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public int Priority
         {
             get { return Convert.ToInt16(numericPriority.Value); }
             set { numericPriority.Value = value; }
         }
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int PluginChannelCount
         {
             set { this.pluginChannelCount = value; }
         }
 
-        public bool StatisticsOption
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public bool StatisticsOption
         {
             get { return this.statisticsCheckBox.Checked; }
 
@@ -206,7 +219,9 @@ namespace VixenModules.Output.E131
             get { return this.univDGVN.Rows.Count; }
         }
 
-        public bool WarningsOption
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public bool WarningsOption
         {
             get { return this.warningsCheckBox.Checked; }
 
