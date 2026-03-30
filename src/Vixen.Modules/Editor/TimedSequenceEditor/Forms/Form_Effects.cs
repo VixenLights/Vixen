@@ -13,7 +13,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private TreeNode _mNode;
 		private bool _beginDragDrop;
 		public event EventHandler EscapeDrawMode;
-		public TimelineControl TimelineControl { get; set; }
+		public TimelineControl TimelineControl { get; }
 
 		public Form_Effects(TimelineControl timelineControl)
 		{

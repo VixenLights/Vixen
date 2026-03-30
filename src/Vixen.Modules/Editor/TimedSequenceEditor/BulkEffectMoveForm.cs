@@ -1,6 +1,7 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
 using Newtonsoft.Json.Linq;
+using System.ComponentModel;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -29,14 +30,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				return txtEndTime.TimeSpan;
 			}
-			set
+			private set
 			{
 				txtEndTime.TimeSpan = value;
 			}
 		}
 		public TimeSpan Start
 		{
-			set
+			private set
 			{
 				txtStartTime.TimeSpan = value;
 			}
@@ -52,7 +53,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				return txtOffset.TimeSpan;
 			}
-			set
+			private set
 			{
 				txtOffset.TimeSpan = value;
 			}

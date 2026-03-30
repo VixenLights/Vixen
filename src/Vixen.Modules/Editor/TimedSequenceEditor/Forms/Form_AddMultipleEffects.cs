@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+﻿using System.ComponentModel;
 using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
@@ -11,6 +11,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#region Member Variables
 
 		private const string timeFormat = @"m\:ss\.fff";
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IEnumerable<IMarkCollection> MarkCollections { get; set; }
 
 		public ListView.CheckedListViewItemCollection CheckedMarks
@@ -18,19 +21,27 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			get { return listBoxMarkCollections.CheckedItems; }
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int EffectCount
 		{
 			get { return int.Parse(txtEffectCount.Text); }
 			set { txtEffectCount.Text = value.ToString(); }
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string EffectName
 		{
 			set { this.Text = string.Format("Add {0} effects", value); }
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public TimeSpan SequenceLength { get; set; }
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public TimeSpan StartTime
 		{
 			get
@@ -40,6 +51,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			set { txtStartTime.TimeSpan = value; }
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public TimeSpan EndTime
 		{
 			get
@@ -49,6 +62,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			set { txtEndTime.TimeSpan = value; }
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public TimeSpan Duration
 		{
 			get
@@ -58,6 +73,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			set { txtDuration.TimeSpan = value; }
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public TimeSpan DurationBetween
 		{
 			get
@@ -67,28 +84,40 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			set { txtDurationBetween.TimeSpan = value; }
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool AlignToBeatMarks 
 		{ 
 			get { return checkBoxAlignToBeatMarks.Checked; } 
 			set { checkBoxAlignToBeatMarks.Checked = value; }
 		}
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool FillDuration 
 		{ 
 			get { return checkBoxFillDuration.Checked; }
 			set { checkBoxFillDuration.Checked = value; }
 		}
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool SelectEffects 
 		{ 
 			get { return checkBoxSelectEffects.Checked; }
 			set { checkBoxSelectEffects.Checked = value; }
 		}
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool SkipEOBeat
 		{
 			get { return checkBoxSkipEOBeat.Checked; }
 			set { checkBoxSkipEOBeat.Checked = value; }
 		}
 
-		//public bool AlignToMarkStartEnd => chkUseMarkStartEnd.Checked;
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool AlignToMarkStartEnd
 		{
 			get { return chkUseMarkStartEnd.Checked; }
@@ -96,6 +125,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		private bool _showPanelBeatAlignment;
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool ShowPanelBeatAlignment
 		{ 
 			get

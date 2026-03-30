@@ -69,7 +69,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		internal IEnumerable<Element> Elements
 		{
 			get { return _elements; }
-			set
+			private set
 			{
 				_elements.Clear();
 				_elements.AddRange(value);

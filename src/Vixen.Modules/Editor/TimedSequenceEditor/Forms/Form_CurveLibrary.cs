@@ -1,21 +1,22 @@
-﻿using System.Globalization;
+﻿using Common.Broadcast;
 using Common.Controls;
-using Common.Controls.Timeline;
-using Common.Resources.Properties;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Xml;
-using VixenModules.App.Curves;
-using Vixen.Services;
-using Vixen.Module.App;
-using WeifenLuo.WinFormsUI.Docking;
-using System.Runtime.InteropServices;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
+using Common.Controls.Timeline;
 using Common.Resources;
+using Common.Resources.Properties;
+using System.ComponentModel;
+using System.Globalization;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
+using System.Xml;
 using Utilities;
+using Vixen.Module.App;
+using Vixen.Services;
+using VixenModules.App.Curves;
+using WeifenLuo.WinFormsUI.Docking;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
-using Common.Broadcast;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -44,13 +45,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Public Members
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool LinkCurves
 		{ 
 			get { return checkBoxLinkCurves.Checked; }
 			set { checkBoxLinkCurves.Checked = value; }
 		}
 
-		public TimelineControl TimelineControl { get; set; }
+		public TimelineControl TimelineControl { get; }
 
 		#endregion
 

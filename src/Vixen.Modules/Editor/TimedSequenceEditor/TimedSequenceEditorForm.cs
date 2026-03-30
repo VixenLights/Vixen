@@ -4843,9 +4843,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Overridden form functions (On___)
 
-		public bool IgnoreKeyDownEvents { get; set; }
+		public bool IgnoreKeyDownEvents { get; private set; }
 
-		public Guid InstanceId { get; set; } = Guid.NewGuid();
+		public Guid InstanceId { get; } = Guid.NewGuid();
 
 		protected override void OnFormClosed(FormClosedEventArgs e)
 		{
@@ -5346,7 +5346,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public bool IsEditorStateModified
 		{
 			get { return _editorStateModified; }
-			set { _editorStateModified = value; }
 		}
 
 		public void RefreshSequence()
@@ -5377,6 +5376,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public ISequence Sequence
 		{
 			get { return _sequence; }
@@ -5532,6 +5533,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IEditorModuleInstance OwnerModule { get; set; }
 
 		void IEditorUserInterface.StartEditor()
@@ -5646,6 +5649,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			get { return false; }
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public float Speed
 		{
 			get { return _timingSpeed; }

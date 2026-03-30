@@ -1,4 +1,5 @@
-﻿using Vixen.Module.Effect;
+﻿using System.ComponentModel;
+using Vixen.Module.Effect;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -14,6 +15,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private IEffectModuleDescriptor _effectPropertyInfo;
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public PropertyMetaData PropertyInfo
 		{
 			get { return _propertyInfo; }
@@ -26,6 +29,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 		}
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IEffectModuleDescriptor EffectPropertyInfo
 		{
 			get { return _effectPropertyInfo; }
@@ -39,18 +45,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public String DisplayName
 		{
 			set { labelParameterName.Text = value; } 
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Bitmap ParameterImage
 		{
 			set { pictureParameterImage.Image = value; }
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int Index { get; set; }
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string GroupName { get; set; } = string.Empty;
 
 		private void pictureParameterImage_Click(object sender, EventArgs e)

@@ -5,7 +5,6 @@
 			 <UseWindowsForms>true</UseWindowsForms>
 				<UseWPF>true</UseWPF>
 			<RootNamespace>VixenModules.Editor.TimedSequenceEditor</RootNamespace>
-			<NoWarn>$(NoWarn);WFO1000</NoWarn>
 		</PropertyGroup>
 
 		<ItemGroup>

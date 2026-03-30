@@ -1,13 +1,14 @@
-﻿using System.IO;
-using System.Runtime.Serialization;
-using System.Xml;
-using Common.Controls;
+﻿using Common.Controls;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
+using System.ComponentModel;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Xml;
 using VixenModules.Sequence.Timed;
 using Color = System.Drawing.Color;
 using Pen = System.Drawing.Pen;
@@ -18,6 +19,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	{
 		#region Member Variables
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public List<ColorCollection> ColorCollections { get; set; }
 		private Boolean _isDirty;
 		private ColorCollection _currentCollection;

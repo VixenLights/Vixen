@@ -23,14 +23,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				return txtEndTime.TimeSpan;
 			}
-			set
+			private set
 			{
 				txtEndTime.TimeSpan = value;
 			}
 		}
 		public TimeSpan Start
 		{
-			set
+			private set
 			{
 				txtStartTime.TimeSpan = value;
 			}

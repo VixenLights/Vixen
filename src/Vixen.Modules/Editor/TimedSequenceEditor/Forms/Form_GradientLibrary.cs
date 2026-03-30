@@ -1,20 +1,21 @@
-﻿using System.Globalization;
+﻿using Common.Broadcast;
 using Common.Controls;
-using Common.Controls.Timeline;
-using Common.Resources.Properties;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Xml;
-using VixenModules.App.ColorGradients;
-using Vixen.Services;
-using Utilities;
-using Vixen.Module.App;
-using WeifenLuo.WinFormsUI.Docking;
-using System.Runtime.InteropServices;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
+using Common.Controls.Timeline;
 using Common.Resources;
-using Common.Broadcast;
+using Common.Resources.Properties;
+using System.ComponentModel;
+using System.Globalization;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
+using System.Xml;
+using Utilities;
+using Vixen.Module.App;
+using Vixen.Services;
+using VixenModules.App.ColorGradients;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -42,14 +43,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#endregion
 
 		#region Public Members
-		
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool LinkGradients
 		{
 			get { return checkBoxLinkGradients.Checked; }
 			set { checkBoxLinkGradients.Checked = value; }
 		}
 
-		public TimelineControl TimelineControl { get; set; }
+		public TimelineControl TimelineControl { get; }
 
 		#endregion
 
