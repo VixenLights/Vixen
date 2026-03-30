@@ -1,6 +1,6 @@
 ﻿namespace VixenModules.SequenceType.Vixen2x
 {
-    partial class CoversionProgressForm
+    partial class ConversionProgressForm
     {
         /// <summary>
         /// Required designer variable.
@@ -48,7 +48,7 @@
 			this.lblStatusLine.TabIndex = 4;
 			this.lblStatusLine.Text = "Status here";
 			// 
-			// CoversionProgressForm
+			// ConversionProgressForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -58,7 +58,7 @@
 			this.Controls.Add(this.lblStatusLine);
 			this.DoubleBuffered = true;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.Name = "CoversionProgressForm";
+			this.Name = "ConversionProgressForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Coversion Progress Form";
 			this.ResumeLayout(false);

@@ -7,7 +7,7 @@
 
 		String DisplayName { get; set; }
 
-		Guid InstanceId { get; set; }
+		Guid InstanceId { get; }
 
 		bool IsOnTopWhenPlaying { get; }
 	}

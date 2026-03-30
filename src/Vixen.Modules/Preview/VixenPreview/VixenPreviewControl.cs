@@ -166,12 +166,19 @@ namespace VixenModules.Preview.VixenPreview
 			UndoManager.AddUndoAction(action);
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		internal UndoManager UndoManager { get; set; }
 
+		[Bindable(true), Category("Display"), DefaultValue(false),
+		 Description("Set the value for whether to show info")]
 		public bool ShowInfo { get; set; }
 
 		private double _zoomLevel = 1;
 
+
+		[Bindable(true), Category("Display"), DefaultValue(1),
+		 Description("Set the value for the zoom level")]
 		public double ZoomLevel
 		{
 			get { return _zoomLevel; }
@@ -231,6 +238,8 @@ namespace VixenModules.Preview.VixenPreview
 		public bool IsSingleItemSelected => _selectedDisplayItem != null;
 		public DisplayItem SingleItemSelected => _selectedDisplayItem;
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public List<DisplayItem> SelectedDisplayItems
 		{
 			get
@@ -242,6 +251,8 @@ namespace VixenModules.Preview.VixenPreview
 			set { _selectedDisplayItems = value; }
 		}
 
+		[Bindable(true), Category("Display"), DefaultValue(255),
+		 Description("Set the value for the background alpha")]
 		public int BackgroundAlpha
 		{
 			get
@@ -266,6 +277,8 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool EditMode
 		{
 			set
@@ -390,6 +403,8 @@ namespace VixenModules.Preview.VixenPreview
 
 		public Size VirtualSize => new Size(Width+hScroll.Maximum, Height+vScroll.Maximum);
 
+		[Bindable(true), Category("Display"), DefaultValue(null),
+		 Description("Set the background")]
 		public Bitmap Background
 		{
 			get { return _background; }
@@ -1706,6 +1721,8 @@ namespace VixenModules.Preview.VixenPreview
 			return null;
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Tools CurrentTool
 		{
 			get { return _currentTool; }
@@ -2031,6 +2048,8 @@ namespace VixenModules.Preview.VixenPreview
 			EndUpdate();
 		}
 
+		[Bindable(true), Category("Display"), DefaultValue(false),
+		 Description("Set the value for paused")]
 		public bool Paused
 		{
 			set

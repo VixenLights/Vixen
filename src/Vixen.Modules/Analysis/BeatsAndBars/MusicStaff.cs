@@ -1,4 +1,5 @@
-﻿using Common.Controls.Scaling;
+﻿using System.ComponentModel;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 
 namespace VixenModules.Analysis.BeatsAndBars
@@ -39,6 +40,8 @@ namespace VixenModules.Analysis.BeatsAndBars
 			return (int)(x * _scale);
 		}
 
+		[Bindable(true), Category("Display"), DefaultValue(4),
+		 Description("Set the value for the number of beats per bar")]
 		public int BeatsPerBar { get; set; }
 
 		public bool SplitBeats
@@ -202,6 +205,8 @@ namespace VixenModules.Analysis.BeatsAndBars
 			Invalidate();
 		}
 
+		[Bindable(true), Category("Display"), DefaultValue(0),
+		 Description("Set the value for the number of beats per period")]
 		public double BeatPeriod
 		{
 			get { return m_beatPeriod; }

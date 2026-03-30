@@ -23,7 +23,7 @@ namespace VixenModules.SequenceType.Vixen2x
 
 		public ISequence Sequence { get; set; }
 
-		private CoversionProgressForm conversionProgressBar = null;
+		private ConversionProgressForm conversionProgressBar = null;
 		public Vixen2SequenceData parsedV2Sequence = null;
 		private List<ChannelMapping> mappings = null;
 		public Dictionary<Guid, List<ChannelMapping>> m_GuidToV2ChanList = new Dictionary<Guid, List<ChannelMapping>>();
@@ -34,7 +34,7 @@ namespace VixenModules.SequenceType.Vixen2x
 			mappings = list;
 			m_GuidToV2ChanList = convertMapping(mappings);
 
-			conversionProgressBar = new CoversionProgressForm();
+			conversionProgressBar = new ConversionProgressForm();
 			conversionProgressBar.Show();
 
 			conversionProgressBar.SetupProgressBar(0, parsedV2Sequence.ElementCount);

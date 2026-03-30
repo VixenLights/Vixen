@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing.Imaging;
 using VixenModules.Preview.VixenPreview.Shapes;
 
@@ -39,13 +40,17 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 		/// <summary>
 		/// Display items that make up the preview.
 		/// </summary>
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public List<DisplayItem> DisplayItems { get; set; }
 
 		/// <summary>
 		/// Lock to prevent threading issues with the FastPixel frame buffer.
 		/// </summary>
 		public static object FastPixelLock { get;  set; }
-		
+
+		[Bindable(true), Category("Display"), DefaultValue(null),
+		 Description("Set the value for the background")]
 		public Image Background
 		{
 			get
@@ -72,6 +77,8 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			}
 		}
 
+		[Bindable(true), Category("Display"), DefaultValue(50),
+		 Description("Set the alpha value for the background")]
 		public int BackgroundAlpha 
 		{
 			get
@@ -95,8 +102,12 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			}
 		}
 
+		[Bindable(true), Category("Display"), DefaultValue(0),
+		 Description("Set the frame rate value")]
 		public long FrameRate { get; set; }
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public FastPixel.FastPixel FastPixel
 		{
 			get
@@ -114,6 +125,8 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			get { return FastPixel.locked; }
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public double ZoomLevel { get; set; } = 1;
 
 		public void CreateAlphaBackground()

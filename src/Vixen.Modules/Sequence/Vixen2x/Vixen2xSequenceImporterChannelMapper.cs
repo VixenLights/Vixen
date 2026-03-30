@@ -91,8 +91,8 @@ namespace VixenModules.SequenceType.Vixen2x
 			m_defaultPixelColors.Add("GBR", new List<Color>(colorList));
 		}
 
-		public List<ChannelMapping> Mappings { get; set; }
-		public string MappingName { get; set; }
+		public List<ChannelMapping> Mappings { get; private set; }
+		public string MappingName { get; private set; }
 
 
 		private void PopulateNodeTreeMultiSelect()

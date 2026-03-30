@@ -5,6 +5,7 @@ using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using Vixen;
@@ -329,6 +330,8 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public VixenPreviewData Data { get; set; }
 						
 		public void UpdatePreview(/*Vixen.Preview.PreviewElementIntentStates elementStates*/)
@@ -639,6 +642,8 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string DisplayName
 		{
 			get { return _displayName; }
@@ -658,7 +663,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 		}
 
 		/// <inheritdoc />
-		public Guid InstanceId { get; set; }
+		public Guid InstanceId { get; }
 
 		/// <inheritdoc />
 		public bool IsOnTopWhenPlaying { get; private set; }
@@ -673,7 +678,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 		public double ZoomLevel
 		{
 			get { return _zoomLevel; }
-			set
+			private set
 			{
 				double ZoomMax = 2;
 

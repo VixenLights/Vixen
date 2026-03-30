@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using Common.Controls;
+﻿using Common.Controls;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
+using Common.Resources.Properties;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
-using Common.Controls.Scaling;
+using Vixen.Sys;
 using VixenModules.Editor.VixenPreviewSetup3.Undo;
 using VixenModules.Preview.VixenPreview.Shapes;
-using VixenModules.Property.Location;
-using Common.Resources.Properties;
-using Vixen.Sys;
 using VixenModules.Preview.VixenPreview.Undo;
+using VixenModules.Property.Location;
 using WeifenLuo.WinFormsUI.Docking;
 using Button = System.Windows.Forms.Button;
 using Control = System.Windows.Forms.Control;
@@ -39,6 +35,8 @@ namespace VixenModules.Preview.VixenPreview
 
 		public event EventHandler<PreviewItemMoveEventArgs> PreviewItemsAlignNew;
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public VixenPreviewData Data {
 			set {
 				_data = value;

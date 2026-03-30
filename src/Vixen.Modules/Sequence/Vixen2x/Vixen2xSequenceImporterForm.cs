@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using Common.Controls;
 using Vixen.Sys;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
-
 
 namespace VixenModules.SequenceType.Vixen2x
 {
 	public partial class Vixen2xSequenceImporterForm : BaseForm
 	{
-		public ISequence Sequence { get; set; }
+		public ISequence Sequence { get; private set; }
 
 		private bool mapExists;
 		private string vixen2ImportFile;
