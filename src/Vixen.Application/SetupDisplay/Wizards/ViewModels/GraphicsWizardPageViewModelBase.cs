@@ -1,7 +1,8 @@
-﻿using System.Collections.ObjectModel;
-using Catel.Data;
+﻿using Catel.Data;
 using Catel.MVVM;
 using Orc.Wizard;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using Vixen.Sys.Props.Model;
 using VixenApplication.SetupDisplay.OpenGL;
 using VixenApplication.SetupDisplay.ViewModels;
@@ -31,17 +32,7 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 			// Create the prop drawing engine
 			DrawingEngine = new OpenGLPropDrawingEngine(propModels, 1, 100.0f);
 
-            // Initialize the Rotation collection
-            ObservableCollection<AxisRotationModel> rotations = new ObservableCollection<AxisRotationModel>();
-            rotations.Add(new AxisRotationModel() { Axis = Axis.XAxis, RotationAngle = 0 });
-            rotations.Add(new AxisRotationModel() { Axis = Axis.YAxis, RotationAngle = 0 });
-            rotations.Add(new AxisRotationModel() { Axis = Axis.ZAxis, RotationAngle = 0 });
-            Rotations = AxisRotationViewModel.ConvertToViewModel(rotations);
-
-            foreach (var rotation in Rotations)
-            {
-                rotation.RotationChanged += OnRotationChanged;
-            }
+			AttachRotationHandlers(Rotations);
         }
         #endregion
 
@@ -64,14 +55,27 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
             get { return GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty); }
             set
             {
-                SetValue(RotationsProperty, value);
-                for (int index = 0; index < Rotations.Count; index++)
-                {
-                    Rotations[index].RotationAngleDefault = Rotations[index].RotationAngle;
-                }
+				// If the current and new collection are the same reference, do nothing. Otherwise, detach handlers from the current collection,
+				// set the new collection, and attach handlers to the new collection.
+				var _currentRotations = GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty);
+	            if (!ReferenceEquals(_currentRotations, value))
+	            {
+		            DetachRotationHandlers(_currentRotations);
+		            SetValue(RotationsProperty, value);
+		            AttachRotationHandlers(value);
+	            }
+
+	            var _rotations = GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty);
+	            if (_rotations != null)
+	            {
+		            for (int index = 0; index < _rotations.Count; index++)
+		            {
+			            _rotations[index].RotationAngleDefault = _rotations[index].RotationAngle;
+		            }
+	            }
             }
         }
-        private static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
+		private static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
 
 		/// <summary>
 		/// OpenGL prop drawing engine.
@@ -80,13 +84,95 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 
 		#endregion
 
-        #region Private Methods
-        /// <summary>
-        /// Event handler for when a prop rotation changed.
-        /// </summary>
-        /// <param name="sender">Event sender</param>
-        /// <param name="e">Event arguments</param>
-        private void OnRotationChanged(object? sender, EventArgs e)
+		#region Private Methods
+		/// <summary>
+		/// Add Rotation Handlers to the collection and each item in the collection. This ensures that when a rotation is changed, 
+		/// the prop nodes will update accordingly. It also ensures that when the collection changes (e.g. a new rotation is added), 
+		/// the new item will have handlers attached.
+		/// </summary>
+		/// <param name="rotationCollection">Specifies the collection of rotation view models to attach handlers.</param>
+		private void AttachRotationHandlers(ObservableCollection<AxisRotationViewModel>? rotationCollection)
+		{
+			if (rotationCollection == null)
+			{
+				return;
+			}
+
+			// Ensure collection changed handler is attached only once
+			rotationCollection.CollectionChanged -= OnRotationsCollectionChanged;
+			rotationCollection.CollectionChanged += OnRotationsCollectionChanged;
+
+			foreach (var rotation in rotationCollection)
+			{
+				// Ensure rotation changed handler is attached only once
+				rotation.RotationChanged -= OnRotationChanged;
+				rotation.RotationChanged += OnRotationChanged;
+			}
+		}
+
+		/// <summary>
+		/// Detaches event handlers related to rotation changes from the specified collection and its items.
+		/// </summary>
+		/// <param name="rotationCollection">Specifies the collection of rotation view models from which to remove event handlers.</param>
+		private void DetachRotationHandlers(ObservableCollection<AxisRotationViewModel>? rotationCollection)
+		{
+			if (rotationCollection == null)
+			{
+				return;
+			}
+
+			rotationCollection.CollectionChanged -= OnRotationsCollectionChanged;
+
+			foreach (var rotation in rotationCollection)
+			{
+				rotation.RotationChanged -= OnRotationChanged;
+			}
+		}
+
+		/// <summary>
+		/// Event handler for when a collection of rotation view models changed.
+		/// </summary>
+		/// <param name="sender">Event sender</param>
+		/// <param name="e">Event arguments</param>
+		private void OnRotationsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (e == null)
+			{
+				return;
+			}
+
+			if (e.OldItems != null)
+			{
+				foreach (AxisRotationViewModel oldItem in e.OldItems)
+				{
+					oldItem.RotationChanged -= OnRotationChanged;
+				}
+			}
+
+			if (e.NewItems != null)
+			{
+				foreach (AxisRotationViewModel newItem in e.NewItems)
+				{
+					// Ensure rotation changed handler is attached only once
+					newItem.RotationChanged -= OnRotationChanged;
+					newItem.RotationChanged += OnRotationChanged;
+				}
+			}
+
+			if (e.Action == NotifyCollectionChangedAction.Reset && sender is ObservableCollection<AxisRotationViewModel> rotationCollection)
+			{
+				// Reattach for the new state of the collection
+				DetachRotationHandlers(rotationCollection);
+				AttachRotationHandlers(rotationCollection);
+			}
+		}
+
+		/// <summary>
+		/// Event handler for when a prop rotation changed.
+		/// </summary>
+		/// <param name="sender">Event sender</param>
+		/// <param name="e">Event arguments</param>
+		private void OnRotationChanged(object? sender, EventArgs e)
         {
             // Is there a changed axis?
             var newRotation = sender as AxisRotationViewModel;
