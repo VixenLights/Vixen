@@ -1,11 +1,12 @@
 ﻿using Catel.Data;
+using Common.WPFCommon.Converters;
 using Orc.Wizard;
 using System.Collections.ObjectModel;
 using Vixen.Extensions;
 using Vixen.Sys.Props;
-using VixenModules.App.Props.Models.Arch;
-using Common.WPFCommon.Converters;
+using Vixen.Sys.Props.Model;
 using VixenApplication.SetupDisplay.ViewModels;
+using VixenModules.App.Props.Models.Arch;
 
 namespace VixenApplication.SetupDisplay.Wizards.Pages
 {
@@ -25,6 +26,13 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 			NodeCount = 20;
 			LightSize = 2;
 			ArchWiringStart = ArchStartLocation.Left;
+
+			// Initialize the Rotation collection
+			ObservableCollection<AxisRotationModel> rotations = new ObservableCollection<AxisRotationModel>();
+			rotations.Add(new AxisRotationModel() { Axis = Axis.XAxis, RotationAngle = 0 });
+			rotations.Add(new AxisRotationModel() { Axis = Axis.YAxis, RotationAngle = 0 });
+			rotations.Add(new AxisRotationModel() { Axis = Axis.ZAxis, RotationAngle = 0 });
+			Rotations = AxisRotationViewModel.ConvertToViewModel(rotations);
 		}
 
 		#region Name property
