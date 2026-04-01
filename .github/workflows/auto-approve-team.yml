@@ -1,14 +1,16 @@
 name: Auto approve PRs for merge approved by Vixen Developer Team members
 
 on:
-  workflow_dispatch:
   pull_request_review:
     types: [submitted]
+
+env:
+  ACTUAL_USER: ${{ github.actor }}
 
 jobs:
   # Auto approve PR with Vixen Developer Team member approval
   auto-approve:
-    if: github.event.review.state == 'approved'
+    if: ${{ github.event.review.state == 'approved' }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -18,17 +20,24 @@ jobs:
         id: teamAffiliation
         uses: tspascoal/get-user-teams-membership@v3
         with:
-          username: ${{ github.actor }}
-          team: vixen-developers
+          username: ${{ env.ACTUAL_USER }}
+          team: Vixen Developers
           GITHUB_TOKEN: ${{ secrets.READ_ORG_MEMBERS }}
+
+      - name: Show Vixen Developer Team affiliation output
+        run: |
+          echo "The output was ${{ steps.teamAffiliation.outputs.isTeamMember }}"
 
       - name: Check user for Vixen Maintainer Team affiliation
         id: maintainerAffiliation
         uses: tspascoal/get-user-teams-membership@v3
         with:
-          username: ${{ github.actor }}
-          team: vixen-maintainer
+          username: ${{ env.ACTUAL_USER }}
+          team: Vixen Maintainer
           GITHUB_TOKEN: ${{ secrets.READ_ORG_MEMBERS }}
+
+      - name: Show Vixen Maintainer Team affiliation output
+        run: echo "The output was ${{ steps.maintainerAffiliation.outputs.isTeamMember }}"
 
       - name: Auto approve if team member
         if: ${{ steps.teamAffiliation.outputs.isTeamMember == 'true' && steps.maintainerAffiliation.outputs.isTeamMember == 'false' }}
