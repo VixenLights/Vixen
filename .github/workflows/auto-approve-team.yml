@@ -1,0 +1,36 @@
+name: Auto approve PRs for merge approved by Vixen Developer Team members
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  # Auto approve PR with Vixen Developer Team member approval
+  auto-approve:
+    if: github.event.review.state == 'approved'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+     
+    steps:
+      - name: Check user for Vixen Developer Team affiliation
+        id: teamAffiliation
+        uses: tspascoal/get-user-teams-membership@v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.READ_ORG_MEMBERS }} 
+          username: ${{ github.actor }}
+          team: vixen-developers
+
+      - name: Check user for Vixen Maintainer Team affiliation
+        id: maintainerAffiliation
+        uses: tspascoal/get-user-teams-membership@v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.READ_ORG_MEMBERS }} 
+          username: ${{ github.actor }}
+          team: vixen-maintainer
+
+      - name: Auto approve if team member
+        if: ${{ steps.teamAffiliation.outputs.isTeamMember == 'true' && steps.maintainerAffiliation.outputs.isTeamMember == 'false' }}
+        uses: hmarr/auto-approve-action@v4
+        with:
+          review-message: "Auto approved with Vixen Developer Team member approval"
