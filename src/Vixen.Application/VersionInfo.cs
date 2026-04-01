@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Net.Http;
+using Newtonsoft.Json.Linq;
 using NLog;
 using Vixen.Sys;
 
