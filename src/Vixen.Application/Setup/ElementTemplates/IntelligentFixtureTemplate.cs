@@ -203,11 +203,9 @@ namespace VixenApplication.Setup.ElementTemplates
 			baseColorService.SetBaseColorScheme("Dark");
 
 			// Retrieve the accent color service
-			IAccentColorService? accentColorServer = dependencyResolver.Resolve<IAccentColorService>();
-			ArgumentNullException.ThrowIfNull(accentColorServer);
-
+			IAccentColorService? accentColorService = dependencyResolver.Resolve<IAccentColorService>();
 			ArgumentNullException.ThrowIfNull(accentColorService);
-
+			
 			// Configure the page bubbles on the left to be blue to look better with the dark theme
 			accentColorService.SetAccentColor((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("DodgerBlue"));
 

@@ -1,10 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-
 using Common.WPFCommon.Command;
-
-using OpenTK.WinForms;
 
 namespace VixenModules.Preview.VixenPreview.OpenGL
 {
