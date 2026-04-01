@@ -1,6 +1,7 @@
 name: Auto approve PRs for merge approved by Vixen Developer Team members
 
 on:
+  workflow_dispatch:
   pull_request_review:
     types: [submitted]
 
@@ -17,17 +18,17 @@ jobs:
         id: teamAffiliation
         uses: tspascoal/get-user-teams-membership@v3
         with:
-          GITHUB_TOKEN: ${{ secrets.READ_ORG_MEMBERS }} 
           username: ${{ github.actor }}
           team: vixen-developers
+          GITHUB_TOKEN: ${{ secrets.READ_ORG_MEMBERS }}
 
       - name: Check user for Vixen Maintainer Team affiliation
         id: maintainerAffiliation
         uses: tspascoal/get-user-teams-membership@v3
         with:
-          GITHUB_TOKEN: ${{ secrets.READ_ORG_MEMBERS }} 
           username: ${{ github.actor }}
           team: vixen-maintainer
+          GITHUB_TOKEN: ${{ secrets.READ_ORG_MEMBERS }}
 
       - name: Auto approve if team member
         if: ${{ steps.teamAffiliation.outputs.isTeamMember == 'true' && steps.maintainerAffiliation.outputs.isTeamMember == 'false' }}
