@@ -8,7 +8,6 @@ using Common.Resources;
 using Common.Resources.Properties;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using OpenTK.WinForms;
 using Vixen;
 using Vixen.Sys;
 using Vixen.Sys.Instrumentation;

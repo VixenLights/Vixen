@@ -4,6 +4,7 @@
     <Nullable>disable</Nullable>
     <Copyright>2025 Vixen Team</Copyright>
     <RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+	  <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Vixen.Core\Vixen.Core.csproj" />
-    <ProjectReference Include="..\WPFCommon\WPFCommon.csproj" />
   </ItemGroup>
 
 </Project>

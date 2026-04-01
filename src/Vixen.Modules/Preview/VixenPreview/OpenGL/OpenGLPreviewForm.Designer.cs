@@ -16,7 +16,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.glControl = new OpenTK.WinForms.GLControl();
+			this.glControl = new OpenTK.GLControl.GLControl();
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusPixelsLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusPixels = new System.Windows.Forms.ToolStripStatusLabel();
@@ -114,7 +114,7 @@
 
 		#endregion
 
-		private OpenTK.WinForms.GLControl glControl;
+		private OpenTK.GLControl.GLControl glControl;
 		private System.Windows.Forms.StatusStrip statusStrip;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusPixelsLabel;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusPixels;

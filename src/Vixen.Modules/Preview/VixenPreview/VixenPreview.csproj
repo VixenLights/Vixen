@@ -14,6 +14,8 @@
 				<PackageReference Include="MessagePack" />
 				<PackageReference Include="NLog" />
 				<PackageReference Include="OpenTK" />
+				<PackageReference Include="OpenTK.GLControl" />
+				<PackageReference Include="OpenTK.Windowing.Common" />
 		</ItemGroup>
 
 		<ItemGroup>
@@ -39,12 +41,6 @@
 				<ProjectReference Include="..\..\Property\Location\Location.csproj" />
 				<ProjectReference Include="..\..\Property\Order\Order.csproj" />
 				<ProjectReference Include="..\..\Property\Orientation\Orientation.csproj" />
-		</ItemGroup>
-
-		<ItemGroup>
-		  <Reference Include="OpenTK.WinForms">
-		    <HintPath>..\..\..\Vixen.Common\Libraries\OpenTK.WinForms.dll</HintPath>
-		  </Reference>
 		</ItemGroup>
 
 		<ItemGroup>

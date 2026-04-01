@@ -9,7 +9,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
     <ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
-    <ProjectReference Include="..\..\LayerMixingFilter\Mask\Mask.csproj" />
     <ProjectReference Include="..\..\Media\Audio\Audio.csproj" />
     <ProjectReference Include="..\QMLibrary\QMLibrary.vcxproj" />
   </ItemGroup>
