@@ -1,17 +1,12 @@
-﻿using System.Collections.ObjectModel;
-
-using Catel.Data;
-
+﻿using Catel.Data;
 using Common.WPFCommon.Converters;
-
 using Orc.Wizard;
-
+using System.Collections.ObjectModel;
 using Vixen.Extensions;
 using Vixen.Sys;
 using Vixen.Sys.Props;
-
+using Vixen.Sys.Props.Model;
 using VixenApplication.SetupDisplay.ViewModels;
-
 using VixenModules.App.Props;
 using VixenModules.App.Props.Models.Tree;
 
@@ -32,7 +27,14 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
             LightSize = 2;
             TopRadius = 10;
             BottomRadius = 100;
-        }
+
+			// Initialize the Rotation collection
+			ObservableCollection<AxisRotationModel> rotations = new ObservableCollection<AxisRotationModel>();
+			rotations.Add(new AxisRotationModel() { Axis = Axis.XAxis, RotationAngle = 0 });
+			rotations.Add(new AxisRotationModel() { Axis = Axis.YAxis, RotationAngle = 0 });
+			rotations.Add(new AxisRotationModel() { Axis = Axis.ZAxis, RotationAngle = 0 });
+			Rotations = AxisRotationViewModel.ConvertToViewModel(rotations);
+		}
         #region Name property
 
         /// <summary>
@@ -189,12 +191,15 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
         public static readonly IPropertyData BottomRadiusProperty = RegisterProperty<float>(nameof(BottomRadius));
 
         #region Rotation property
-        public ObservableCollection<AxisRotationViewModel> Rotations
+        
+		
+		public ObservableCollection<AxisRotationViewModel> Rotations
         {
             get { return GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty); }
             set { SetValue(RotationsProperty, value); }
         }
         private static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
+		
         #endregion
 
         public TreeModel LightPropModel
