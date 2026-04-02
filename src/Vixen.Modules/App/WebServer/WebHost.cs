@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using NLog.Extensions.Logging;
 
 namespace VixenModules.App.WebServer
@@ -8,7 +9,7 @@ namespace VixenModules.App.WebServer
 
 	public class WebHost
 	{ 
-		private IWebHost? _host;
+		private IHost? _host;
 		private readonly Data _data;
 		private bool _isRunning;
 		private static CancellationTokenSource _cancelTokenSource = new CancellationTokenSource();
@@ -18,18 +19,21 @@ namespace VixenModules.App.WebServer
 			_data = data;
 		}
 
-		private IWebHost CreateHostBuilder()
+		private IHost CreateHostBuilder()
 		{
-			var host = new WebHostBuilder()
-				.UseKestrel()
-				.ConfigureLogging((_, logging) => {
-					logging.AddNLog();
-				})
-				.CaptureStartupErrors(true)
-				.UseUrls($"http://*:{_data.HttpPort}")
-				.UseStartup<Startup>()
-				.Build();
-			
+			var host = new HostBuilder()
+				.ConfigureWebHost(webBuilder =>
+				{
+					webBuilder.UseKestrel()
+						.ConfigureLogging((_, logging) =>
+						{
+							logging.AddNLog();
+						})
+						.CaptureStartupErrors(true)
+						.UseUrls($"http://*:{_data.HttpPort}")
+						.UseStartup<Startup>();
+				}).Build();
+				
 			return host;
 		}
 
@@ -46,7 +50,7 @@ namespace VixenModules.App.WebServer
 
 		public async Task Stop()
 		{
-			_cancelTokenSource.Cancel();
+			await _cancelTokenSource.CancelAsync();
 			if (_host != null)
 			{
 				await _host.StopAsync();
