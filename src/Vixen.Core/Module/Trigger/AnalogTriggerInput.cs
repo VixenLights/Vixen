@@ -6,7 +6,7 @@ namespace Vixen.Module.Trigger
 	public class AnalogTriggerInput : TriggerInput
 	{
 		private double _value;
-		private bool _wasTriggered = false;
+		private bool _wasTriggered;
 
 		public AnalogTriggerInput(Guid id)
 			: base(TriggerInputType.Analog, id)

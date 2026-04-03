@@ -1,9 +1,8 @@
 ﻿using Vixen.IO.Factory;
+using Vixen.Sys;
 
 namespace Vixen.IO.Persistor
 {
-	using Vixen.Sys;
-
 	internal class ElementNodeTemplatePersistor : IObjectPersistor<ElementNodeTemplate>
 	{
 		public void SaveToFile(ElementNodeTemplate obj, string filePath)

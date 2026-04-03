@@ -8,7 +8,7 @@ namespace Vixen.Data.Evaluator
 	{
 		public override void Handle(IIntentState<RGBValue> obj)
 		{
-			System.UInt16 level = (System.UInt16)(System.UInt16.MaxValue * obj.GetValue().Intensity);
+			UInt16 level = (UInt16)(UInt16.MaxValue * obj.GetValue().Intensity);
 			EvaluatorValue = new _16BitCommand(level);
 		}
 

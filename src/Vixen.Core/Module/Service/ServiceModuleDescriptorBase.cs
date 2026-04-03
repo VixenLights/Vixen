@@ -39,7 +39,7 @@
 
 		public bool Equals(ServiceModuleDescriptorBase x, ServiceModuleDescriptorBase y)
 		{
-			return Equals((IServiceModuleDescriptor) x, (IServiceModuleDescriptor) y);
+			return Equals(x, (IServiceModuleDescriptor) y);
 		}
 
 		public int GetHashCode(ServiceModuleDescriptorBase obj)

@@ -1,17 +1,16 @@
 ﻿using System.Xml.Linq;
 using Vixen.IO.Policy;
 using Vixen.IO.Xml.Serializer;
+using Vixen.Sys;
 
 namespace Vixen.IO.Xml.Program
 {
-	using Vixen.Sys;
-
 	internal class XmlProgramFilePolicy : ProgramFilePolicy
 	{
-		private Program _program;
+		private Sys.Program _program;
 		private XElement _content;
 
-		public XmlProgramFilePolicy(Program program, XElement content)
+		public XmlProgramFilePolicy(Sys.Program program, XElement content)
 		{
 			_program = program;
 			_content = content;

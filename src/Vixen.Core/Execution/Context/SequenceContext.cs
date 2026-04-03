@@ -1,4 +1,5 @@
-﻿using Vixen.Sys;
+﻿using Vixen.Module.Timing;
+using Vixen.Sys;
 using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Execution.Context
@@ -13,7 +14,7 @@ namespace Vixen.Execution.Context
 		public event EventHandler<SequenceEventArgs> SequenceEnded;
 		public event EventHandler<ExecutorMessageEventArgs> Message;
 		public event EventHandler<ExecutorMessageEventArgs> Error;
-		private bool disposed = false;
+		private bool disposed;
 
 		public ISequence Sequence
 		{
@@ -100,7 +101,7 @@ namespace Vixen.Execution.Context
 			_sequenceExecutor.Stop();
 		}
 
-		protected override Module.Timing.ITiming _SequenceTiming
+		protected override ITiming _SequenceTiming
 		{
 			get { return _sequenceExecutor != null ? _sequenceExecutor.TimingSource : null; }
 		}

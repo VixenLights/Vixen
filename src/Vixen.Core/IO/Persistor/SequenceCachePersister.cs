@@ -1,5 +1,5 @@
-﻿using Vixen.IO.Factory;
-using Vixen.Cache.Sequence;
+﻿using Vixen.Cache.Sequence;
+using Vixen.IO.Factory;
 
 namespace Vixen.IO.Persistor
 {

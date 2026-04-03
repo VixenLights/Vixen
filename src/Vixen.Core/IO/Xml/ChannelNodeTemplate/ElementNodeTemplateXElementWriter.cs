@@ -2,11 +2,9 @@
 
 namespace Vixen.IO.Xml.ElementNodeTemplate
 {
-	using Vixen.Sys;
-
-	internal class ElementNodeTemplateXElementWriter : IObjectContentWriter<XElement, ElementNodeTemplate>
+	internal class ElementNodeTemplateXElementWriter : IObjectContentWriter<XElement, Sys.ElementNodeTemplate>
 	{
-		public void WriteContentToObject(XElement content, ElementNodeTemplate obj)
+		public void WriteContentToObject(XElement content, Sys.ElementNodeTemplate obj)
 		{
 			XmlElementNodeTemplateFilePolicy xmlFilePolicy = new XmlElementNodeTemplateFilePolicy(obj, content);
 			xmlFilePolicy.Read();
@@ -22,9 +20,9 @@ namespace Vixen.IO.Xml.ElementNodeTemplate
 		void IObjectContentWriter.WriteContentToObject(object content, object obj)
 		{
 			if (!(content is XElement)) throw new InvalidOperationException("Content must be an XElement.");
-			if (!(obj is ElementNodeTemplate)) throw new InvalidOperationException("Object must be a ElementNodeTemplate.");
+			if (!(obj is Sys.ElementNodeTemplate)) throw new InvalidOperationException("Object must be a ElementNodeTemplate.");
 
-			WriteContentToObject((XElement) content, (ElementNodeTemplate) obj);
+			WriteContentToObject((XElement) content, (Sys.ElementNodeTemplate) obj);
 		}
 
 		int IObjectContentWriter.GetContentVersion(object content)

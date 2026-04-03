@@ -123,7 +123,7 @@
 		public AppCommand(string name, string text, Image image)
 			: this(name, text)
 		{
-			this.Image = image;
+			Image = image;
 		}
 
 		public ToolStripItem Item
@@ -244,7 +244,7 @@
 			Context,
 			Menu,
 			Separator
-		};
+		}
 
 		private AppCommandStyle _style;
 
@@ -269,19 +269,19 @@
 							_toolStripItem = new ToolStripSeparator();
 							break;
 					}
-					this.Enabled = this.Enabled;
-					this.Image = this.Image;
-					this.MergeIndex = this.MergeIndex;
+					Enabled = Enabled;
+					Image = Image;
+					MergeIndex = MergeIndex;
 					_toolStripItem.MergeAction = MergeAction.Insert;
 					AppCommand[] items = Items;
 					_items.Clear();
 					foreach (AppCommand item in items) {
 						Add(item);
 					}
-					this.Name = this.Name;
-					this.Parent = this.Parent;
-					this.Text = this.Text;
-					this.Visible = this.Visible;
+					Name = Name;
+					Parent = Parent;
+					Text = Text;
+					Visible = Visible;
 					_toolStripItem.Click += ItemClick;
 				}
 			}
@@ -320,10 +320,9 @@
 				// Found the child, continue the traversal.
 				return appCommand.Find(pathRemaining);
 			}
-			else {
-				// Child not found, invalid path.
-				return null;
-			}
+
+			// Child not found, invalid path.
+			return null;
 		}
 
 		private int _mergeIndex;

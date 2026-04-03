@@ -39,7 +39,7 @@
 
 		public bool Equals(MediaModuleDescriptorBase x, MediaModuleDescriptorBase y)
 		{
-			return Equals(x as IMediaModuleDescriptor, y as IMediaModuleDescriptor);
+			return Equals(x, y as IMediaModuleDescriptor);
 		}
 
 		public int GetHashCode(MediaModuleDescriptorBase obj)

@@ -51,7 +51,7 @@ namespace Vixen.Module.Media
 
 		public bool Equals(MediaModuleInstanceBase x, MediaModuleInstanceBase y)
 		{
-			return Equals(x as IMediaModuleInstance, y as IMediaModuleInstance);
+			return Equals(x, y as IMediaModuleInstance);
 		}
 
 		public int GetHashCode(MediaModuleInstanceBase obj)

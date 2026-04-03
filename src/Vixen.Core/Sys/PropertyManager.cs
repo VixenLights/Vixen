@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System.Collections;
 using Vixen.Module;
 using Vixen.Module.Property;
 
@@ -132,7 +133,7 @@ namespace Vixen.Sys
 			return _items.Values.GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}

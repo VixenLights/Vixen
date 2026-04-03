@@ -35,7 +35,7 @@
 
 		public bool Equals(InputModuleDescriptorBase x, InputModuleDescriptorBase y)
 		{
-			return Equals(x as IInputModuleDescriptor, y as IInputModuleDescriptor);
+			return Equals(x, y as IInputModuleDescriptor);
 		}
 
 		public int GetHashCode(InputModuleDescriptorBase obj)

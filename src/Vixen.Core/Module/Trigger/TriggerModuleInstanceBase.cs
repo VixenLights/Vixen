@@ -149,7 +149,7 @@
 
 		public bool Equals(TriggerModuleInstanceBase x, TriggerModuleInstanceBase y)
 		{
-			return Equals(x as ITriggerModuleInstance, y as ITriggerModuleInstance);
+			return Equals(x, y as ITriggerModuleInstance);
 		}
 
 		public int GetHashCode(TriggerModuleInstanceBase obj)

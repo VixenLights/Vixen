@@ -35,7 +35,7 @@
 
 		public bool Equals(OutputFilterModuleDescriptorBase x, OutputFilterModuleDescriptorBase y)
 		{
-			return Equals(x as IOutputFilterModuleDescriptor, y as IOutputFilterModuleDescriptor);
+			return Equals(x, y as IOutputFilterModuleDescriptor);
 		}
 
 		public int GetHashCode(OutputFilterModuleDescriptorBase obj)

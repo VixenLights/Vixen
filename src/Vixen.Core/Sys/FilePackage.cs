@@ -1,4 +1,6 @@
-﻿namespace Vixen.Sys
+﻿using System.Collections;
+
+namespace Vixen.Sys
 {
 	public abstract class FilePackage : IEnumerable<IPackageFileContent>
 	{
@@ -31,7 +33,7 @@
 			return _files.GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}

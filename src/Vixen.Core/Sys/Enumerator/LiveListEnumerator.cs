@@ -1,4 +1,6 @@
-﻿namespace Vixen.Sys.Enumerator
+﻿using System.Collections;
+
+namespace Vixen.Sys.Enumerator
 {
 	internal class LiveListEnumerator<T> : IEnumerator<T>
 	{
@@ -21,7 +23,7 @@
 		{
 		}
 
-		object System.Collections.IEnumerator.Current
+		object IEnumerator.Current
 		{
 			get { return Current; }
 		}

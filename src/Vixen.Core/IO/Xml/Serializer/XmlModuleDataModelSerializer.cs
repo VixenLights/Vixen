@@ -1,6 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using System.Text;
 using System.Xml.Linq;
+using NLog;
 using Vixen.Module;
 using Vixen.Sys;
 
@@ -8,14 +9,14 @@ namespace Vixen.IO.Xml.Serializer
 {
 	internal class XmlModuleDataModelSerializer : IXmlSerializer<IModuleDataModel>
 	{
-		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger logging = LogManager.GetCurrentClassLogger();
 
 		private const string ELEMENT_MODULE = "Module";
 		private const string ATTR_DATA_MODEL_TYPE = "dataModelType";
 		private const string ATTR_MODULE_TYPE = "moduleType";
 		private const string ATTR_MODULE_INSTANCE = "moduleInstance";
 		private const string ATTR_DATA_MODEL_ASSEMBLY_NAME = "assemblyName";
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
 		public XElement WriteObject(IModuleDataModel value)
 		{

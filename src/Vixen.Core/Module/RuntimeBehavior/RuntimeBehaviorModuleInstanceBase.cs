@@ -35,7 +35,7 @@ namespace Vixen.Module.RuntimeBehavior
 
 		public bool Equals(RuntimeBehaviorModuleInstanceBase x, RuntimeBehaviorModuleInstanceBase y)
 		{
-			return Equals(x as IRuntimeBehaviorModuleInstance, y as IRuntimeBehaviorModuleInstance);
+			return Equals(x, y as IRuntimeBehaviorModuleInstance);
 		}
 
 		public int GetHashCode(RuntimeBehaviorModuleInstanceBase obj)

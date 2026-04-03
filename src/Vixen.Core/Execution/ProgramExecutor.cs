@@ -1,4 +1,5 @@
-﻿using Vixen.Execution.DataSource;
+﻿using NLog;
+using Vixen.Execution.DataSource;
 using Vixen.Module.Timing;
 using Vixen.Sys;
 using Vixen.Sys.LayerMixing;
@@ -10,14 +11,14 @@ namespace Vixen.Execution
 		private QueuingSequenceEnumerator _sequenceEnumerator;
 		private ISequenceExecutor _sequenceExecutor;
 		private RunState _state;
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
 		private enum RunState
 		{
 			Stopped,
 			Playing,
 			Stopping
-		};
+		}
 
 		public event EventHandler<ProgramEventArgs> ProgramStarted;
 		public event EventHandler<ProgramEventArgs> ProgramEnded;

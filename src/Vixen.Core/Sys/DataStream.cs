@@ -1,4 +1,5 @@
-﻿using Vixen.Extensions;
+﻿using System.Collections;
+using Vixen.Extensions;
 using Vixen.Sys.Enumerator;
 
 namespace Vixen.Sys
@@ -27,7 +28,7 @@ namespace Vixen.Sys
 			return new LiveListEnumerator<IDataNode>(_data);
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}

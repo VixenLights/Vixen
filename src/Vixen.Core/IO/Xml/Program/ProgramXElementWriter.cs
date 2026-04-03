@@ -2,11 +2,9 @@
 
 namespace Vixen.IO.Xml.Program
 {
-	using Vixen.Sys;
-
-	internal class ProgramXElementWriter : IObjectContentWriter<XElement, Program>
+	internal class ProgramXElementWriter : IObjectContentWriter<XElement, Sys.Program>
 	{
-		public void WriteContentToObject(XElement content, Program obj)
+		public void WriteContentToObject(XElement content, Sys.Program obj)
 		{
 			XmlProgramFilePolicy xmlFilePolicy = new XmlProgramFilePolicy(obj, content);
 			xmlFilePolicy.Read();
@@ -22,9 +20,9 @@ namespace Vixen.IO.Xml.Program
 		void IObjectContentWriter.WriteContentToObject(object content, object obj)
 		{
 			if (!(content is XElement)) throw new InvalidOperationException("Content must be an XElement.");
-			if (!(obj is Program)) throw new InvalidOperationException("Object must be a Program.");
+			if (!(obj is Sys.Program)) throw new InvalidOperationException("Object must be a Program.");
 
-			WriteContentToObject((XElement) content, (Program) obj);
+			WriteContentToObject((XElement) content, (Sys.Program) obj);
 		}
 
 		int IObjectContentWriter.GetContentVersion(object content)

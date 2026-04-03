@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using NLog;
 using Vixen.Sys.Instrumentation;
 using Vixen.Sys.Output;
 
@@ -6,7 +7,7 @@ namespace Vixen.Sys.Managers
 {
 	internal class HardwareUpdateThread : IDisposable
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private Thread _thread;
 		private ExecutionState _threadState = ExecutionState.Stopped;
 		private EventWaitHandle _finished;
@@ -80,7 +81,7 @@ namespace Vixen.Sys.Managers
 			}
 		}
 
-		private long _lastMs = 0;
+		private long _lastMs;
 		
 		private void _ThreadFunc()
 		{

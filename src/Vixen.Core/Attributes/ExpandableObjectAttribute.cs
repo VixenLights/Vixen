@@ -2,8 +2,5 @@
 {
 	public class ExpandableObjectAttribute : Attribute
 	{
-		public ExpandableObjectAttribute()
-		{
-		}
 	}
 }

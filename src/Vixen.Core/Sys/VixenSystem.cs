@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System.Configuration;
+using System.Reflection;
+using NLog;
 using Vixen.Instrumentation;
 using Vixen.Services;
 using Vixen.Sys.Managers;
@@ -8,7 +10,7 @@ namespace Vixen.Sys
 {
 	public class VixenSystem
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
 		public enum RunState
 		{
@@ -16,7 +18,7 @@ namespace Vixen.Sys
 			Starting,
 			Started,
 			Stopping
-		};
+		}
 
 		private static RunState _state = RunState.Stopped;
 		private static bool _systemConfigSaving;
@@ -370,7 +372,7 @@ namespace Vixen.Sys
 		public static OutputDeviceFacade OutputDeviceManagement { get; private set; }
 		public static bool VersionBeyondWindowsXP {
 			get {
-				System.OperatingSystem osInfo = System.Environment.OSVersion;
+				OperatingSystem osInfo = Environment.OSVersion;
 				if (osInfo.Platform == PlatformID.Win32NT) {
 					//If OsVersion is > XP then allow D2D
 					if (osInfo.Version.Major > 5) return true;
@@ -427,7 +429,7 @@ namespace Vixen.Sys
 
 		private static string _GetUserDataPath()
 		{
-			string dataPath = System.Configuration.ConfigurationManager.AppSettings["DataPath"];
+			string dataPath = ConfigurationManager.AppSettings["DataPath"];
 			return dataPath ?? Paths.DefaultDataRootPath;
 		}
 

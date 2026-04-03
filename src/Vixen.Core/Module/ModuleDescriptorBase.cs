@@ -1,4 +1,6 @@
-﻿namespace Vixen.Module
+﻿using System.Reflection;
+
+namespace Vixen.Module
 {
 	[Serializable]
 	public abstract class ModuleDescriptorBase : IModuleDescriptor, IEqualityComparer<IModuleDescriptor>,
@@ -29,7 +31,7 @@
 
 		public string FileName { get; set; }
 
-		public System.Reflection.Assembly Assembly { get; set; }
+		public Assembly Assembly { get; set; }
 
 		public virtual Guid[] Dependencies
 		{
@@ -53,7 +55,7 @@
 
 		public bool Equals(ModuleDescriptorBase x, ModuleDescriptorBase y)
 		{
-			return Equals(x as IModuleDescriptor, y as IModuleDescriptor);
+			return Equals(x, y as IModuleDescriptor);
 		}
 
 		public int GetHashCode(ModuleDescriptorBase obj)

@@ -51,7 +51,7 @@ namespace Vixen.Module.Property
 
 		public bool Equals(PropertyModuleInstanceBase x, PropertyModuleInstanceBase y)
 		{
-			return Equals(x as IPropertyModuleInstance, y as IPropertyModuleInstance);
+			return Equals(x, y as IPropertyModuleInstance);
 		}
 
 		public int GetHashCode(PropertyModuleInstanceBase obj)

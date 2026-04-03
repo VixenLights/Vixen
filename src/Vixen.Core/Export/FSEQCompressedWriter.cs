@@ -15,22 +15,22 @@ namespace Vixen.Export
 		private const double V2FseqOutCompressionBlockSize = 64 * 1024; // 64KB blocks
 
 		//Working fields
-		private uint _offsetToChannelData = 0;
-		private uint _channelsPerFrame = 0;
-		private uint _numberFrames = 0;
-		private uint _framesPerBlock = 0;
+		private uint _offsetToChannelData;
+		private uint _channelsPerFrame;
+		private uint _numberFrames;
+		private uint _framesPerBlock;
 		private byte _numberCompressionBlocks;
 		private readonly byte _numberSparseRanges = 0;
-		private uint _currentFrame = 0;
-		private ushort _currentFrameInBlock = 0;
-		private ushort _currentBlock = 0;
-		private uint _blockStartFrame = 0;
+		private uint _currentFrame;
+		private ushort _currentFrameInBlock;
+		private ushort _currentBlock;
+		private uint _blockStartFrame;
 		private readonly List<VariableHeader> _variableHeaders;
 
-		private FileStream _outfs = null;
+		private FileStream _outfs;
 		private MemoryStream _memoryStream;
 		private ZstandardStream _zStdStream;
-		private BinaryWriter _dataOut = null;
+		private BinaryWriter _dataOut;
 
 		private readonly Dictionary<uint, uint> _compressBlockMap;
 		private readonly Dictionary<uint, uint> _sparseRangeBlocks;
@@ -334,7 +334,7 @@ namespace Vixen.Export
 
 		private uint ComputeMaxBlockCount()
 		{
-			ulong size = (ulong) (_channelsPerFrame * _numberFrames);
+			ulong size = _channelsPerFrame * _numberFrames;
 			var numberBlocks = Math.Ceiling(size / V2FseqOutCompressionBlockSize);
 			
 			if (numberBlocks > 255)

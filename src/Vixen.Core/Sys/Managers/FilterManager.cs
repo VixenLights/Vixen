@@ -1,9 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System.Collections;
+using System.Diagnostics;
 using Vixen.Data.Flow;
 using Vixen.Module.OutputFilter;
 using Vixen.Sys.Instrumentation;
-
-
 
 namespace Vixen.Sys.Managers
 {
@@ -214,7 +213,7 @@ namespace Vixen.Sys.Managers
 			return _instances.Values.GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}

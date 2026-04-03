@@ -8,16 +8,16 @@ namespace Vixen.Export
         private const Byte _vMajor = 1;
         private const UInt16 _fixedHeaderLength = 28;
         private UInt32 _dataOffset = _fixedHeaderLength;
-        private Int32 _seqNumChannels = 0;
-        private UInt32 _seqNumPeriods = 0;
+        private Int32 _seqNumChannels;
+        private UInt32 _seqNumPeriods;
         private UInt16 _numUniverses = 0;    //Ignored by Pi Player
         private UInt16 _universeSize = 0;    //Ignored by Pi Player
         private Byte _gamma = 1;             //0=encoded, 1=linear, 2=RGB Ignored by FPP
 		private Byte _colorEncoding = 2;
         private readonly List<VariableHeader> _variableHeaders;
 
-		private FileStream _outfs = null;
-        private BinaryWriter _dataOut = null;
+		private FileStream _outfs;
+        private BinaryWriter _dataOut;
 
         private Byte[] _padding;
 

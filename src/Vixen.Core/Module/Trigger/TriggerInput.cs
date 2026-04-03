@@ -14,8 +14,8 @@ namespace Vixen.Module.Trigger
 
 		public TriggerInput(TriggerInputType type, Guid id)
 		{
-			this.Type = type;
-			this.Id = id;
+			Type = type;
+			Id = id;
 		}
 
 		public TriggerInput(TriggerInputType type)

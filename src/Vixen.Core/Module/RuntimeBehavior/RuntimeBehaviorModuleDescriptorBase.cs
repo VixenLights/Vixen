@@ -35,7 +35,7 @@
 
 		public bool Equals(RuntimeBehaviorModuleDescriptorBase x, RuntimeBehaviorModuleDescriptorBase y)
 		{
-			return Equals(x as IRuntimeBehaviorModuleDescriptor, y as IRuntimeBehaviorModuleDescriptor);
+			return Equals(x, y as IRuntimeBehaviorModuleDescriptor);
 		}
 
 		public int GetHashCode(RuntimeBehaviorModuleDescriptorBase obj)

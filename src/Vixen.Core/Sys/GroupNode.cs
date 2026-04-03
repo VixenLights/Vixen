@@ -1,4 +1,6 @@
-﻿namespace Vixen.Sys
+﻿using System.Collections;
+
+namespace Vixen.Sys
 {
 	public abstract class GroupNode<T> : IEnumerable<T>
 	{
@@ -126,7 +128,7 @@
 			return _children.SelectMany(x => x).GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}

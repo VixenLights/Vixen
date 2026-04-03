@@ -1,4 +1,5 @@
-﻿using Vixen.Sys.Output;
+﻿using NLog;
+using Vixen.Sys.Output;
 
 namespace Vixen.Sys.Managers
 {
@@ -6,7 +7,7 @@ namespace Vixen.Sys.Managers
 		where T : class, IOutputDevice
 	{
 		private Dictionary<Guid, HardwareUpdateThread> _updateThreads;
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
 		public OutputDeviceExecution()
 		{

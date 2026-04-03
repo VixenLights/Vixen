@@ -27,7 +27,7 @@
 
 		public bool Equals(ModuleTemplateModuleInstanceBase x, ModuleTemplateModuleInstanceBase y)
 		{
-			return Equals(x as IModuleTemplateModuleInstance, y as IModuleTemplateModuleInstance);
+			return Equals(x, y as IModuleTemplateModuleInstance);
 		}
 
 		public int GetHashCode(ModuleTemplateModuleInstanceBase obj)

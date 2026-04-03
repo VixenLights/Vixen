@@ -1,7 +1,6 @@
 ﻿using System.Xml;
 using System.Xml.Serialization;
 
-
 namespace Vixen.Export
 {
     public sealed class Vix2Writer : ExportWriterBase
@@ -10,7 +9,7 @@ namespace Vixen.Export
         private Byte[] _periodData;
         private int _curPeriod;
         SequenceSessionData _sessionData;
-        private FileStream _outfs = null;
+        private FileStream _outfs;
         private int _adder;
 
         public Vix2Writer()
@@ -87,7 +86,7 @@ namespace Vixen.Export
  
             foreach (string channelName in _sessionData.ChannelNames)
             {
-                tempChannel = new Vix2Channel() 
+                tempChannel = new Vix2Channel
                 { 
                     name = channelName, 
                     id = count, 
@@ -127,7 +126,7 @@ namespace Vixen.Export
         }
     }
 
-    [Serializable()]
+    [Serializable]
     [XmlRoot("Program")]
     public class Vix2XMLData
     {

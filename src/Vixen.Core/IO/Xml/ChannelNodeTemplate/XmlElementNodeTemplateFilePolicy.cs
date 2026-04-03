@@ -1,17 +1,16 @@
 ﻿using System.Xml.Linq;
 using Vixen.IO.Policy;
 using Vixen.IO.Xml.Serializer;
+using Vixen.Sys;
 
 namespace Vixen.IO.Xml.ElementNodeTemplate
 {
-	using Vixen.Sys;
-
 	internal class XmlElementNodeTemplateFilePolicy : ElementNodeTemplateFilePolicy
 	{
-		private ElementNodeTemplate _template;
+		private Sys.ElementNodeTemplate _template;
 		private XElement _content;
 
-		public XmlElementNodeTemplateFilePolicy(ElementNodeTemplate template, XElement content)
+		public XmlElementNodeTemplateFilePolicy(Sys.ElementNodeTemplate template, XElement content)
 		{
 			_template = template;
 			_content = content;

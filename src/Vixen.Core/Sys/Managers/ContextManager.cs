@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
+using NLog;
 using Vixen.Execution;
 using Vixen.Execution.Context;
+using Vixen.Services;
 using Vixen.Sys.Attribute;
 using Vixen.Sys.Instrumentation;
 
@@ -10,7 +12,7 @@ namespace Vixen.Sys.Managers
 {
 	public class ContextManager : IEnumerable<IContext>
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		//This was a ConcurrentDictionary for a while, but grabbing an instance enumerator can be costly as it makes a read only copy
 		//General locking on a Dictionary is sufficient here and more performant for iterating
 		private readonly Dictionary<Guid, IContext> _instances;
@@ -74,7 +76,7 @@ namespace Vixen.Sys.Managers
 
 		public ISequenceContext CreateSequenceContext(ContextFeatures contextFeatures, ISequence sequence)
 		{
-			ISequenceExecutor executor = Vixen.Services.SequenceTypeService.Instance.CreateSequenceExecutor(sequence);
+			ISequenceExecutor executor = SequenceTypeService.Instance.CreateSequenceExecutor(sequence);
 			ISequenceContext context = (ISequenceContext) _CreateContext(ContextTargetType.Sequence, contextFeatures);
 			if (executor != null && context != null) {
 				context.Executor = executor;

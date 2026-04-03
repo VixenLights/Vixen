@@ -2,11 +2,9 @@
 
 namespace Vixen.IO.Xml.ElementNodeTemplate
 {
-	using Vixen.Sys;
-
-	internal class ElementNodeTemplateXElementReader : IObjectContentReader<XElement, ElementNodeTemplate>
+	internal class ElementNodeTemplateXElementReader : IObjectContentReader<XElement, Sys.ElementNodeTemplate>
 	{
-		public XElement ReadContentFromObject(ElementNodeTemplate obj)
+		public XElement ReadContentFromObject(Sys.ElementNodeTemplate obj)
 		{
 			XElement content = new XElement("ElementNodeTemplate");
 			XmlRootAttributeVersion.SetVersion(content, ObjectVersion.ElementNodeTemplate);
@@ -17,8 +15,8 @@ namespace Vixen.IO.Xml.ElementNodeTemplate
 
 		object IObjectContentReader.ReadContentFromObject(object obj)
 		{
-			if (!(obj is ElementNodeTemplate)) throw new InvalidOperationException("Object must be a ElementNodeTemplate.");
-			return ReadContentFromObject((ElementNodeTemplate) obj);
+			if (!(obj is Sys.ElementNodeTemplate)) throw new InvalidOperationException("Object must be a ElementNodeTemplate.");
+			return ReadContentFromObject((Sys.ElementNodeTemplate) obj);
 		}
 	}
 }

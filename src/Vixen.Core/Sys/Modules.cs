@@ -1,5 +1,6 @@
-﻿using System.Text;
-using System.Reflection;
+﻿using System.Reflection;
+using System.Text;
+using NLog;
 using Vixen.Module;
 using Vixen.Services;
 using Vixen.Sys.Attribute;
@@ -8,7 +9,7 @@ namespace Vixen.Sys
 {
 	internal class Modules
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		// Module type id : IModuleInstance implementor
 		private static Dictionary<Guid, Type> _activators = new Dictionary<Guid, Type>();
 		// Module type id : module descriptor
@@ -346,13 +347,13 @@ namespace Vixen.Sys
 		{
 			// Example of type: IMediaModuleInstance
 			Type instanceType;
-			if (_activators.TryGetValue(moduleTypeId, out instanceType)) {
+			if (_activators.TryGetValue(moduleTypeId, out instanceType))
+			{
 				if (type.IsInterface) {
 					return instanceType.ImplementsInterface(type);
 				}
-				else {
-					return instanceType.IsSubclassOf(type);
-				}
+
+				return instanceType.IsSubclassOf(type);
 			}
 			return false;
 		}

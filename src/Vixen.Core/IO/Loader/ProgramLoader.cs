@@ -1,9 +1,8 @@
 ﻿using Vixen.IO.Factory;
+using Vixen.Sys;
 
 namespace Vixen.IO.Loader
 {
-	using Vixen.Sys;
-
 	internal class ProgramLoader : IObjectLoader<Program>
 	{
 		public Program LoadFromFile(string filePath)

@@ -3,12 +3,12 @@
     public sealed class ESEQWriter : ExportWriterBase
     {
 	    private const UInt16 _fixedHeaderLength = 20;
-        private Int32 _seqNumChannels = 0;
+        private Int32 _seqNumChannels;
         private readonly Int32 _startAddress = 0;
         private readonly Int32 _numModels = 1;
 
-        private FileStream _outfs = null;
-        private BinaryWriter _dataOut = null;
+        private FileStream _outfs;
+        private BinaryWriter _dataOut;
 
         private Byte[] _padding;
 
@@ -65,7 +65,7 @@
 
         public override void OpenSession(SequenceSessionData data)
         {
-            this.SeqPeriodTime = data.PeriodMS;
+            SeqPeriodTime = data.PeriodMS;
             OpenSession(data.OutFileName, data.ChannelNames.Count);
         }
 

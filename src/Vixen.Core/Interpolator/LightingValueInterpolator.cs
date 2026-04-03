@@ -1,8 +1,9 @@
 ﻿using Vixen.Data.Value;
+using Vixen.Sys.Attribute;
 
 namespace Vixen.Interpolator
 {
-	[Sys.Attribute.Interpolator(typeof (LightingValue))]
+	[Interpolator(typeof (LightingValue))]
 	internal class LightingValueInterpolator : Interpolator<LightingValue>
 	{
 		protected override LightingValue InterpolateValue(double percent, LightingValue startValue, LightingValue endValue)

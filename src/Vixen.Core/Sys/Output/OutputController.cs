@@ -1,8 +1,9 @@
 ﻿using System.Diagnostics;
-using Vixen.Factory;
-using Vixen.Data.Flow;
-using Vixen.Module.Controller;
+using NLog;
 using Vixen.Commands;
+using Vixen.Data.Flow;
+using Vixen.Factory;
+using Vixen.Module.Controller;
 using Vixen.Sys.Instrumentation;
 
 namespace Vixen.Sys.Output
@@ -12,7 +13,7 @@ namespace Vixen.Sys.Output
 	/// </summary>
 	public class OutputController : IControllerDevice
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		//Because of bad design, this needs to be created before the base class is instantiated.
 		private readonly CommandOutputDataFlowAdapterFactory _adapterFactory = new CommandOutputDataFlowAdapterFactory();
 		private readonly IOutputMediator<CommandOutput> _outputMediator;
@@ -24,7 +25,7 @@ namespace Vixen.Sys.Output
 		private MillisecondsValue _updateTimeValue;
 		private ICommand[] commands = new ICommand[0];
 		
-		private ParallelOptions _parallelOptions = new ParallelOptions()
+		private ParallelOptions _parallelOptions = new ParallelOptions
 		{
 			MaxDegreeOfParallelism = Environment.ProcessorCount
 		};
@@ -108,7 +109,7 @@ namespace Vixen.Sys.Output
 						var o = Outputs[x].State;
 						Outputs[x].Command = o?.Value != null ? dataPolicy.GenerateCommand(o) : null;
 						return dataPolicy;
-					}, (x) => { }); //nothing to do but let the datapolicy expire
+					}, x => { }); //nothing to do but let the datapolicy expire
 				}
 				else
 				{

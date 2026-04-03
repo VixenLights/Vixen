@@ -1,11 +1,12 @@
 ﻿using System.Xml.Linq;
+using NLog;
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml.Serializer
 {
 	internal class XmlCompressedFileSerializer : IXmlSerializer<IPackageFileContent>
 	{
-		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger logging = LogManager.GetCurrentClassLogger();
 
 		private const string ELEMENT_FILE = "File";
 		private const string ATTR_FILE_PATH = "path";

@@ -1,4 +1,6 @@
-﻿namespace Vixen.Sys.Output
+﻿using System.Collections;
+
+namespace Vixen.Sys.Output
 {
 	internal class OutputCollection<T> : IHasOutputs<T>, IEnumerable<T>
 		where T : Output
@@ -103,7 +105,7 @@
 			return _outputs.GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}

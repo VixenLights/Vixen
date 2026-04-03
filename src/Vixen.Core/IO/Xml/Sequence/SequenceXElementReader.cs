@@ -92,9 +92,8 @@ namespace Vixen.IO.Xml.Sequence
 			if (quotient > 0) {
 				return _GetAlias(quotient - 1) + (char) (aliasIndex%26 + 'a');
 			}
-			else {
-				return ((char) (aliasIndex + 'a')).ToString();
-			}
+
+			return ((char) (aliasIndex + 'a')).ToString();
 		}
 	}
 }

@@ -44,7 +44,7 @@ namespace Vixen.Module.OutputFilter
 
 		public bool Equals(OutputFilterModuleInstanceBase x, OutputFilterModuleInstanceBase y)
 		{
-			return Equals(x as IOutputFilterModuleInstance, y as IOutputFilterModuleInstance);
+			return Equals(x, y as IOutputFilterModuleInstance);
 		}
 
 		public int GetHashCode(OutputFilterModuleInstanceBase obj)

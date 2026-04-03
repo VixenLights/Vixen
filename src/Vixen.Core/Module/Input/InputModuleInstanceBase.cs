@@ -159,7 +159,7 @@
 
 		public bool Equals(InputModuleInstanceBase x, InputModuleInstanceBase y)
 		{
-			return Equals(x as IInputModuleInstance, y as IInputModuleInstance);
+			return Equals(x, y as IInputModuleInstance);
 		}
 
 		public int GetHashCode(InputModuleInstanceBase obj)

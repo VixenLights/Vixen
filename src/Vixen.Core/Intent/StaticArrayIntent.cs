@@ -1,5 +1,5 @@
-using Vixen.Sys;
 using Vixen.Data.Value;
+using Vixen.Sys;
 using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Intent

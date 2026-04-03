@@ -1,4 +1,5 @@
 ﻿using System.Xml.Linq;
+using NLog;
 using Vixen.Module;
 
 namespace Vixen.IO.Xml.Serializer
@@ -6,7 +7,7 @@ namespace Vixen.IO.Xml.Serializer
 	internal class XmlModuleDataSetSerializer<DataSet> : IXmlSerializer<DataSet>
 		where DataSet : class, IModuleDataSet, new()
 	{
-		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger logging = LogManager.GetCurrentClassLogger();
 
 		private const string ELEMENT_MODULE_DATA = "ModuleData";
 

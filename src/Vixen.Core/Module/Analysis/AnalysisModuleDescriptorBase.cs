@@ -39,7 +39,7 @@
 
 		public bool Equals(AnalysisModuleDescriptorBase x, AnalysisModuleDescriptorBase y)
 		{
-			return Equals(x as IAnalysisModuleDescriptor, y as IAnalysisModuleDescriptor);
+			return Equals(x, y as IAnalysisModuleDescriptor);
 		}
 
 		public int GetHashCode(AnalysisModuleDescriptorBase obj)

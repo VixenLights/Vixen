@@ -23,7 +23,7 @@
 
 		public bool Equals(EditorModuleInstanceBase x, EditorModuleInstanceBase y)
 		{
-			return Equals(x as IEditorModuleInstance, y as IEditorModuleInstance);
+			return Equals(x, y as IEditorModuleInstance);
 		}
 
 		public int GetHashCode(EditorModuleInstanceBase obj)

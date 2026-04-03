@@ -5,7 +5,7 @@
 	/// </summary>
 	/// <typeparam name="T">Enumeration type to use for the tag</typeparam>
 	public struct RangeValue<T> : IIntentDataType
-		where T : System.Enum
+		where T : Enum
 	{
 		#region Constructor 
 

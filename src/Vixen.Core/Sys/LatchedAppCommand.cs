@@ -44,7 +44,7 @@
 			{
 				if (value != _isChecked) {
 					_isChecked = value;
-					(this.Item as ToolStripMenuItem).Checked = value;
+					(Item as ToolStripMenuItem).Checked = value;
 					OnChecked(new LatchedEventArgs(value));
 				}
 			}
@@ -67,7 +67,7 @@
 						_menuItem.CheckedChanged -= _itemCheckedHandler;
 					}
 
-					_menuItem = value as ToolStripMenuItem;
+					_menuItem = value;
 					_menuItem.CheckOnClick = true;
 					_menuItem.CheckedChanged += _itemCheckedHandler;
 				}

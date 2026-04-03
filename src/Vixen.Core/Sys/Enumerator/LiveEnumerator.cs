@@ -1,4 +1,6 @@
-﻿namespace Vixen.Sys.Enumerator
+﻿using System.Collections;
+
+namespace Vixen.Sys.Enumerator
 {
 	/// <summary>
 	/// 
@@ -30,7 +32,7 @@
 		{
 		}
 
-		object System.Collections.IEnumerator.Current
+		object IEnumerator.Current
 		{
 			get { return Current; }
 		}

@@ -10,7 +10,7 @@ namespace Vixen.Sys
 		private static ConcurrentDictionary<Type, PropertyInfo[]> mycache = new ConcurrentDictionary<Type, PropertyInfo[]>();
 
 		private object _owner;
-		private PropertyInfo[] _valueProperties = null;
+		private PropertyInfo[] _valueProperties;
 
 		public DefaultValueArrayMember(object owner)
 		{

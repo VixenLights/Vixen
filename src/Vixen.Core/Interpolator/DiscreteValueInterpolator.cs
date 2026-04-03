@@ -1,8 +1,9 @@
 ﻿using Vixen.Data.Value;
+using Vixen.Sys.Attribute;
 
 namespace Vixen.Interpolator
 {
-	[Sys.Attribute.Interpolator(typeof(DiscreteValue))]
+	[Interpolator(typeof(DiscreteValue))]
 	public class DiscreteValueInterpolator: Interpolator<DiscreteValue>
 	{
 		protected override DiscreteValue InterpolateValue(double percent, DiscreteValue startValue, DiscreteValue endValue)

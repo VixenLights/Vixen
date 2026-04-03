@@ -39,7 +39,7 @@
 
 		public bool Equals(ServiceModuleInstanceBase x, ServiceModuleInstanceBase y)
 		{
-			return Equals((IServiceModuleInstance) x, (IServiceModuleInstance) y);
+			return Equals(x, (IServiceModuleInstance) y);
 		}
 
 		public int GetHashCode(ServiceModuleInstanceBase obj)

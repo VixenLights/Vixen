@@ -4,7 +4,7 @@
 	{
 		public static void Run()
 		{
-			Vixen.Sys.Execution.SystemTime.Start();
+			Sys.Execution.SystemTime.Start();
 		}
 	}
 }

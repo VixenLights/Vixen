@@ -1,11 +1,12 @@
-﻿using Vixen.Sys.State.Execution.Behavior;
+﻿using NLog;
+using Vixen.Sys.State.Execution.Behavior;
 
 namespace Vixen.Sys.State.Execution
 {
 	public class TestOpeningState : State
 	{
 		public const string StateName = "Opening for testing";
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
 		public TestOpeningState(ExecutionStateEngine engine)
 			: base(engine)

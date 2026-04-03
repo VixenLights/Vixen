@@ -35,7 +35,7 @@
 
 		public bool Equals(EffectEditorModuleInstanceBase x, EffectEditorModuleInstanceBase y)
 		{
-			return Equals(x as IEffectEditorModuleInstance, y as IEffectEditorModuleInstance);
+			return Equals(x, y as IEffectEditorModuleInstance);
 		}
 
 		public int GetHashCode(EffectEditorModuleInstanceBase obj)

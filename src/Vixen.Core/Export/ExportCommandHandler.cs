@@ -1,5 +1,5 @@
-﻿using Vixen.Sys.Dispatch;
-using Vixen.Commands;
+﻿using Vixen.Commands;
+using Vixen.Sys.Dispatch;
 
 namespace Vixen.Export
 {

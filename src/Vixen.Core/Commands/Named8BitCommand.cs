@@ -5,7 +5,7 @@
     /// </summary>
     /// <typeparam name="T">Type of index command</typeparam>
     public class Named8BitCommand<T> : _8BitCommand
-		where T : System.Enum
+		where T : Enum
 	{
 		#region Constructors 
 
