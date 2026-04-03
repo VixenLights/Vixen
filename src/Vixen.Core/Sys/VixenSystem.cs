@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using Vixen.Instrumentation;
-using Vixen.Module;
 using Vixen.Services;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Output;

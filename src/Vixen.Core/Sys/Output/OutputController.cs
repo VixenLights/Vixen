@@ -4,7 +4,6 @@ using Vixen.Data.Flow;
 using Vixen.Module.Controller;
 using Vixen.Commands;
 using Vixen.Sys.Instrumentation;
-using Newtonsoft.Json.Linq;
 
 namespace Vixen.Sys.Output
 {

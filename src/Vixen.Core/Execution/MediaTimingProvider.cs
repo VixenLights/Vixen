@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Linq;
-using Vixen.Module.Media;
+﻿using Vixen.Module.Media;
 using Vixen.Module.Timing;
 using Vixen.Services;
 using Vixen.Sys;

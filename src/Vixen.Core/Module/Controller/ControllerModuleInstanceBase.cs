@@ -1,5 +1,4 @@
-﻿using System.DirectoryServices.ActiveDirectory;
-using Vixen.Commands;
+﻿using Vixen.Commands;
 using Vixen.Sys;
 using Vixen.Sys.Output;
 

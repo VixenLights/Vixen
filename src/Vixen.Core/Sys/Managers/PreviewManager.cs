@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using Vixen.Module;
-using Vixen.Module.OutputFilter;
 using Vixen.Sys.Output;
 
 namespace Vixen.Sys.Managers
