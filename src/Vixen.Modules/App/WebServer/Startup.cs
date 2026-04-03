@@ -1,4 +1,5 @@
-﻿
+﻿#nullable enable
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +16,7 @@ namespace VixenModules.App.WebServer
 	/// </summary>
 	public class Startup
 	{
-		private static Logger Logging = LogManager.GetCurrentClassLogger();
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
 		public void ConfigureServices(IServiceCollection services)
 		{
@@ -26,7 +27,7 @@ namespace VixenModules.App.WebServer
 			});
 			services.AddSignalR().AddJsonProtocol(options => {
 				options.PayloadSerializerOptions.PropertyNamingPolicy = null;
-			}); ;
+			});
 
 			services.AddScoped<ContextBroadcaster>();
 		}
@@ -41,7 +42,7 @@ namespace VixenModules.App.WebServer
 
 			appLifetime.ApplicationStopping.Register(() =>
 			{
-				Logging.Info("Webaerver is stopping...");
+				Logging.Info("Webserver is stopping...");
 			});
 
 			appLifetime.ApplicationStopped.Register(() =>
@@ -51,6 +52,8 @@ namespace VixenModules.App.WebServer
 
 			app.UseDefaultFiles();
 
+			app.UseMiddleware<RequestLoggingMiddleware>();
+			
 			//	//Where our content lives
 			string contentPath = Path.Combine(Environment.CurrentDirectory, @".\wwwroot");
 			app.UseStaticFiles(new StaticFileOptions
