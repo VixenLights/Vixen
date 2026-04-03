@@ -20,7 +20,6 @@ using SystemFonts = System.Drawing.SystemFonts;
 using Timer = System.Windows.Forms.Timer;
 using WPFApplication = System.Windows.Application;
 using Common.WPFCommon.Services;
-using ControlzEx.Theming;
 using LogManager = NLog.LogManager;
 
 namespace VixenApplication

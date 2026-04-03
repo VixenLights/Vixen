@@ -1,7 +1,5 @@
-﻿using System.Diagnostics;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
-using Catel.Logging;
 using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;

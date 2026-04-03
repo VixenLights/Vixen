@@ -1,7 +1,6 @@
 ﻿using Common.Controls.Theme;
 using Common.Resources.Properties;
 using NLog;
-using System.ComponentModel;
 using Vixen.Rule;
 using Vixen.Services;
 using Vixen.Sys;

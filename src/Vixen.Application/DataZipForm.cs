@@ -1,11 +1,8 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources;
-using Common.Resources.Properties;
 using NLog;
 using System.ComponentModel;
 using System.IO.Compression;
-using Common.Controls.Scaling;
 
 namespace VixenApplication
 {
