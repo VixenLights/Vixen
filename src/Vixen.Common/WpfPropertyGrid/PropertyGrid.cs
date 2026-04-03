@@ -15,13 +15,10 @@
  */
 
 using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
 

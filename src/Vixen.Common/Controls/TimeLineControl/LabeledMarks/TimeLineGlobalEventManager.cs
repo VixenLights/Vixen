@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Common.Controls.Timeline;
+﻿using Common.Controls.Timeline;
 
 namespace Common.Controls.TimelineControl.LabeledMarks
 {

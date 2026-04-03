@@ -1,7 +1,6 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 using Catel;
-using Catel.IoC;
 using Catel.Services;
 using Common.Controls;
 
