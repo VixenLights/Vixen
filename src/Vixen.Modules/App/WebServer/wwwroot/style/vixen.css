@@ -16,7 +16,7 @@ html[data-useragent*='rv:11.0'] .ui-navbar li {
 	list-style-image: url(data:0);
 }
 
-#Elements, #Sequences{
+#Elements, #Presentations{
 	padding-top: 70px;
 }
 
@@ -45,7 +45,7 @@ html[data-useragent*='rv:11.0'] .ui-navbar li {
 		min-height: 0px;
 	}
 
-	#Sequences{
+	#presentations{
 		padding-top: 0px;
 	}
 }
@@ -57,7 +57,7 @@ html[data-useragent*='rv:11.0'] .ui-navbar li {
 		/*height: 600px; */
 	}
 
-	#Sequences {
+	#Presentations {
 		padding-top: 0;
 	}
 
