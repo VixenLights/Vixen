@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 using System.Text.RegularExpressions;
-using VixenModules.App.CustomPropEditor.Model;
 
 namespace VixenModules.App.CustomPropEditor.Extensions
 {

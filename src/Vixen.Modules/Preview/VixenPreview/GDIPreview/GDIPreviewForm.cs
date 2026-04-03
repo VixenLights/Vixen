@@ -9,7 +9,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using Vixen;
-using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
 using VixenModules.Preview.VixenPreview.Shapes;

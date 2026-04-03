@@ -4,13 +4,10 @@ using System.Text.RegularExpressions;
 using System.Windows.Controls.WpfPropertyGrid;
 using System.Windows.Media;
 using Catel.Data;
-using Catel.Logging;
 using Catel.MVVM;
-using Newtonsoft.Json.Linq;
 using VixenModules.App.CustomPropEditor.Extensions;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
-using PropertyData = Catel.Data.PropertyData;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels
 {

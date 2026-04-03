@@ -1,14 +1,10 @@
 ﻿using Common.Broadcast;
 using System.Collections;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.DirectoryServices.ActiveDirectory;
 using System.Timers;
 using System.Windows;
 using System.Windows.Forms.Integration;
 using System.Windows.Threading;
 using Vixen.Execution.Context;
-using Vixen.Module.Effect;
 using Vixen.Sys;
 using VixenModules.Editor.EffectEditor;
 using VixenModules.Editor.TimedSequenceEditor.Undo;

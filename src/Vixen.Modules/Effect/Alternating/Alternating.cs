@@ -1,5 +1,4 @@
-﻿using NLog;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Vixen.Attributes;
 using Vixen.Marks;
 using Vixen.Module;

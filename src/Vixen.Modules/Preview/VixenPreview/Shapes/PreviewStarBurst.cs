@@ -1,7 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using System.ComponentModel;
 using Vixen.Sys;
-using FastPixel;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {

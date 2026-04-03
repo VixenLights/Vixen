@@ -19,7 +19,6 @@
 
 using System.Runtime.Serialization;
 using System.Drawing.Drawing2D;
-using System.Security.Permissions;
 using Common.Controls.Theme;
 
 namespace ZedGraph

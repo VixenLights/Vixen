@@ -1,5 +1,4 @@
-﻿using System;
-using Vixen.Module.SequenceType;
+﻿using Vixen.Module.SequenceType;
 using VixenModules.Sequence.Timed;
 using VixenModules.SequenceType.Vixen2x;
 

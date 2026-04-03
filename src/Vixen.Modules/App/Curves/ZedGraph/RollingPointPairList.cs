@@ -19,7 +19,6 @@
 //=============================================================================
 
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace ZedGraph
 {

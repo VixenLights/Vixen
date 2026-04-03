@@ -4,7 +4,6 @@ using Common.Controls.ControlsEx.ValueControls;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 using Common.DiscreteColorPicker.Views;
 
 namespace VixenModules.App.ColorGradients

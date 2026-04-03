@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-using Catel.Data;
+﻿using Catel.Data;
 using VixenModules.App.Fixture;
 
 namespace VixenModules.Editor.FixturePropertyEditor.ViewModels

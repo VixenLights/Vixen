@@ -3,7 +3,6 @@ using Catel.Data;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
-using Common.Controls;
 using System.Collections.ObjectModel;
 using TimedSequenceEditor.Forms.WPF.MarksDocker.Services;
 using TimedSequenceEditor.Forms.WPF.MarksDocker.ViewModels;

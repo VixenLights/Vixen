@@ -3,7 +3,6 @@ using Common.Controls.Theme;
 using QMLibrary;
 using System.ComponentModel;
 using Vixen.Marks;
-using VixenModules.Analysis.BeatsAndBars.Properties;
 using VixenModules.Media.Audio;
 
 namespace VixenModules.Analysis.BeatsAndBars

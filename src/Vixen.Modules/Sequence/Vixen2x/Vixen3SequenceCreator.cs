@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using Common.Controls;
+﻿using Common.Controls;
 using Vixen.Sys;
 using VixenModules.Sequence.Timed;
 using System.Windows.Forms;
-using System.IO;
-using System.ComponentModel;
 using Vixen.Services;
-using Vixen.Module.Effect;
-using VixenModules.App.Curves;
-using VixenModules.App.ColorGradients;
 using System.Drawing;
-using ZedGraph;
 
 namespace VixenModules.SequenceType.Vixen2x
 {

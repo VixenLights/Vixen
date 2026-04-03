@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using VixenModules.App.CustomPropEditor.Import.XLights.Faces;
+﻿using VixenModules.App.CustomPropEditor.Import.XLights.Faces;
 
 namespace VixenModules.App.CustomPropEditor.Import.XLights
 {

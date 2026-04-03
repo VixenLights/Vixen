@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using System.Drawing;
 using System.Reflection;
 using Vixen.Sys;
 using System.ComponentModel;
 using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 
 namespace VixenModules.SequenceType.Vixen2x
 {

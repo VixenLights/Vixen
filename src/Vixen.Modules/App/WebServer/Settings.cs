@@ -2,7 +2,6 @@
 using Common.Controls.Theme;
 using System.ComponentModel;
 using System.Diagnostics;
-using Resources = Common.Resources.Properties.Resources;
 
 namespace VixenModules.App.WebServer
 {

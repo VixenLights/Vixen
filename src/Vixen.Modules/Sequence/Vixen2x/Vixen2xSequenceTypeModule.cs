@@ -5,11 +5,7 @@ using Vixen.Module.SequenceType;
 using Vixen.Sys;
 using VixenModules.Sequence.Timed;
 using VixenModules.SequenceType.Vixen2x;
-using System;
-using System.Collections.Generic;
 using Vixen.Module;
-using Vixen.Services;
-using Vixen.Module.App;
 
 namespace VixenModules.Sequence.Vixen2x
 {

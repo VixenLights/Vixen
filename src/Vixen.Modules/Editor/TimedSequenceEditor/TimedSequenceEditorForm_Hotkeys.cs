@@ -1,6 +1,5 @@
 ﻿using Common.Controls.Timeline;
 using Element = Common.Controls.Timeline.Element;
-using Common.Controls.ControlsEx;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {

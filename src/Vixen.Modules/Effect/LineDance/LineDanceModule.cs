@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Windows.Interop;
 
 using Vixen.Attributes;
 using Vixen.Data.Value;

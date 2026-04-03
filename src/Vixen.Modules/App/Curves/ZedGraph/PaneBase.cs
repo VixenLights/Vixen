@@ -23,7 +23,6 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Drawing.Imaging;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 #endregion
 

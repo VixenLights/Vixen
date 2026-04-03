@@ -1,6 +1,5 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 using NCalc2;
 using System.ComponentModel;
 using Vixen.Module.App;

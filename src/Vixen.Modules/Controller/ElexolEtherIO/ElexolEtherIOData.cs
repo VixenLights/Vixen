@@ -1,4 +1,3 @@
-using System.Net;
 using System.Runtime.Serialization;
 
 using Vixen.Module;

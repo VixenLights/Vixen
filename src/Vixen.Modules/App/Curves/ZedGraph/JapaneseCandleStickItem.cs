@@ -20,7 +20,6 @@
 #region Using directives
 
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 #endregion
 

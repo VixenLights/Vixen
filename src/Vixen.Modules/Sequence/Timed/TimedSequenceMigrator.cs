@@ -26,7 +26,6 @@ using ZedGraph;
 using Liquid;
 using Vixen.Sys;
 using VixenModules.Effect.SetPosition;
-using System.Diagnostics;
 
 
 namespace VixenModules.Sequence.Timed

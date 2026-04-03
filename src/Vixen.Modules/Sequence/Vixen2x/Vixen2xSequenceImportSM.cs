@@ -1,10 +1,4 @@
-﻿using System;
-using System.Linq;
-using Vixen.Sys;
-using VixenModules.Sequence.Timed;
-using System.Windows.Forms;
-using System.IO;
-using System.ComponentModel;
+﻿using Vixen.Sys;
 using Vixen.Services;
 using Vixen.Module.Effect;
 using VixenModules.App.Curves;

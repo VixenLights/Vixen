@@ -2,7 +2,6 @@
 using System.IO.Ports;
 using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 
 namespace VixenModules.Output.Renard
 {

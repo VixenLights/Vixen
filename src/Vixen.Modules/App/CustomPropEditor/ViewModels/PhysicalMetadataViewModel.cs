@@ -4,7 +4,6 @@ using Catel.Data;
 using Catel.MVVM;
 using VixenModules.App.CustomPropEditor.Converters;
 using VixenModules.App.CustomPropEditor.Model;
-using PropertyData = Catel.Data.PropertyData;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels
 {

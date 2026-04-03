@@ -9,7 +9,6 @@ using VixenModules.Preview.VixenPreview.OpenGL.Constructs;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex;
 using Color = System.Drawing.Color;
-using System.Xml.Serialization;
 using Common.Controls.Theme;
 
 namespace VixenModules.Preview.VixenPreview.Shapes

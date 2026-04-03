@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 
 namespace VixenModules.App.Curves
 {

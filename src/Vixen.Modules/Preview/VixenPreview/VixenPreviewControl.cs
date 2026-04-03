@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Catel.IoC;
 using Catel.Services;
 
 using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 using Common.WPFCommon.Services;
 
 using Vixen;

@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Windows.Controls;
-using System.Windows.Media;
-
-using Common.Controls.ColorManagement.ColorModels;
+﻿using Common.Controls.ColorManagement.ColorModels;
 
 using VixenModules.App.ColorGradients;
 using VixenModules.Effect.Effect;

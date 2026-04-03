@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 
 using Common.Controls.ColorManagement.ColorModels;
-using Common.Controls.Timeline;
 
 using Vixen.Attributes;
 using Vixen.Module;
@@ -14,8 +13,6 @@ using VixenModules.Effect.Border;
 using VixenModules.Effect.Effect;
 using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
-
-using ZedGraph;
 
 namespace VixenModules.Effect.Borders
 {

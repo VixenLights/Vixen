@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {

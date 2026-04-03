@@ -1,5 +1,4 @@
 ﻿using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace VixenModules.App.Shows
 {

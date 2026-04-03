@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace VixenModules.App.CustomPropEditor.Import.XLights
+﻿namespace VixenModules.App.CustomPropEditor.Import.XLights
 {
 	public class StateInfo
 	{
