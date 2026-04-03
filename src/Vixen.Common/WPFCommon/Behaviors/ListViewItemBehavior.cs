@@ -64,7 +64,7 @@ namespace Common.WPFCommon.Behaviors
 			// Only react to the Selected event raised by the ListViewItem 
 			// whose IsSelected property was modified.  Ignore all ancestors 
 			// who are merely reporting that a descendant's Selected fired. 
-			if (!Object.ReferenceEquals(sender, e.OriginalSource))
+			if (!ReferenceEquals(sender, e.OriginalSource))
 				return;
 
 			if (e.OriginalSource is ListViewItem item)

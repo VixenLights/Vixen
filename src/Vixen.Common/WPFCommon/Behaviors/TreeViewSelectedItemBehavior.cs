@@ -32,22 +32,22 @@ namespace Common.WPFCommon.Behaviors
 		{
 			base.OnAttached();
 
-			this.AssociatedObject.SelectedItemChanged += OnTreeViewSelectedItemChanged;
+			AssociatedObject.SelectedItemChanged += OnTreeViewSelectedItemChanged;
 		}
 
 		protected override void OnDetaching()
 		{
 			base.OnDetaching();
 
-			if (this.AssociatedObject != null)
+			if (AssociatedObject != null)
 			{
-				this.AssociatedObject.SelectedItemChanged -= OnTreeViewSelectedItemChanged;
+				AssociatedObject.SelectedItemChanged -= OnTreeViewSelectedItemChanged;
 			}
 		}
 
 		private void OnTreeViewSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
 		{
-			this.SelectedItem = e.NewValue;
+			SelectedItem = e.NewValue;
 		}
 	}
 }

@@ -46,7 +46,7 @@ namespace Common.WPFCommon.Input
 
 		private void UpdatePosition()
 		{
-			AdornerLayer layer = this.Parent as AdornerLayer;
+			AdornerLayer layer = Parent as AdornerLayer;
 			if (layer != null)
 			{
 				layer.Update(AdornedElement);
@@ -74,7 +74,7 @@ namespace Common.WPFCommon.Input
 		{
 			GeneralTransformGroup result = new GeneralTransformGroup();
 			result.Children.Add(new TranslateTransform(Left, Top));
-			if (Left > 0) this.Visibility = Visibility.Visible;
+			if (Left > 0) Visibility = Visibility.Visible;
 			result.Children.Add(base.GetDesiredTransform(transform));
 
 			return result;

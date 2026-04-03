@@ -17,14 +17,14 @@ namespace Common.WPFCommon.Utils
         public TransformedCollection(IEnumerable<TSource> sourceCollection, Func<TSource, TTarget> setup, Action<TTarget> teardown = null) :
             base(new List<TTarget>(sourceCollection.Select(setup)))
         {
-            this._setup = setup;
-            this._teardown = teardown;
+            _setup = setup;
+            _teardown = teardown;
 
-            this._sourceCollection = sourceCollection;
-            var notifyCollectionChanged = this._sourceCollection as INotifyCollectionChanged;
+            _sourceCollection = sourceCollection;
+            var notifyCollectionChanged = _sourceCollection as INotifyCollectionChanged;
             if (notifyCollectionChanged != null)
             {
-                notifyCollectionChanged.CollectionChanged += this.OnSourceCollectionChanged;
+                notifyCollectionChanged.CollectionChanged += OnSourceCollectionChanged;
             }
         }
         #endregion
@@ -36,37 +36,37 @@ namespace Common.WPFCommon.Utils
         #region Public Methods
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
         }
         #endregion
 
         #region Protected Methods
         protected virtual void Dispose(bool disposing)
         {
-            if (!this._disposed)
+            if (!_disposed)
             {
                 if (disposing)
                 {
                     // Cleanup managed resources
-                    var notifyCollectionChanged = this._sourceCollection as INotifyCollectionChanged;
+                    var notifyCollectionChanged = _sourceCollection as INotifyCollectionChanged;
                     if (notifyCollectionChanged != null)
                     {
-                        notifyCollectionChanged.CollectionChanged -= this.OnSourceCollectionChanged;
+                        notifyCollectionChanged.CollectionChanged -= OnSourceCollectionChanged;
                     }
                 }
 
                 // Cleanup unmanaged resources
 
                 // Mark the object as disposed
-                this._disposed = true;
+                _disposed = true;
             }
         }
 
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            if (this.CollectionChanged != null)
+            if (CollectionChanged != null)
             {
-                this.CollectionChanged(this, e);
+                CollectionChanged(this, e);
             }
         }
         #endregion
@@ -76,17 +76,17 @@ namespace Common.WPFCommon.Utils
         {
             if (e.Action == NotifyCollectionChangedAction.Reset)
             {
-                if (this._teardown != null)
+                if (_teardown != null)
                 {
-                    foreach (TTarget target in this.Items)
+                    foreach (TTarget target in Items)
                     {
-                        this._teardown(target);
+                        _teardown(target);
                     }
                 }
 
-                this.Items.Clear();
-                this.Items.AddRange(this._sourceCollection.Select(this._setup));
-                this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                Items.Clear();
+                Items.AddRange(_sourceCollection.Select(_setup));
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             }
             else if (e.Action == NotifyCollectionChangedAction.Move)
             {
@@ -97,14 +97,14 @@ namespace Common.WPFCommon.Utils
                     newItems = new List<object>();
                     for (int i = 0; i < e.OldItems.Count; i++)
                     {
-                        TTarget target = this.Items[e.OldStartingIndex];
+                        TTarget target = Items[e.OldStartingIndex];
                         newItems.Add(target);
-                        this.Items.RemoveAt(e.OldStartingIndex);
-                        this.Items.Insert(i + e.NewStartingIndex, target);
+                        Items.RemoveAt(e.OldStartingIndex);
+                        Items.Insert(i + e.NewStartingIndex, target);
                     }
                 }
 
-                this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, newItems, e.NewStartingIndex, e.OldStartingIndex));
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, newItems, e.NewStartingIndex, e.OldStartingIndex));
             }
             else
             {
@@ -114,13 +114,13 @@ namespace Common.WPFCommon.Utils
                     oldItems = new List<object>();
                     for (int i = 0; i < e.OldItems.Count; i++)
                     {
-                        TTarget target = this.Items[e.OldStartingIndex];
+                        TTarget target = Items[e.OldStartingIndex];
                         oldItems.Add(target);
-                        if (this._teardown != null)
+                        if (_teardown != null)
                         {
-                            this._teardown(target);
+                            _teardown(target);
                         }
-                        this.Items.RemoveAt(e.OldStartingIndex);
+                        Items.RemoveAt(e.OldStartingIndex);
                     }
                 }
 
@@ -130,23 +130,23 @@ namespace Common.WPFCommon.Utils
                     newItems = new List<object>();
                     for (int i = 0; i < e.NewItems.Count; i++)
                     {
-                        TTarget target = this._setup((TSource)e.NewItems[i]);
+                        TTarget target = _setup((TSource)e.NewItems[i]);
                         newItems.Add(target);
-                        this.Items.Insert(i + e.NewStartingIndex, target);
+                        Items.Insert(i + e.NewStartingIndex, target);
                     }
                 }
 
                 if (e.Action == NotifyCollectionChangedAction.Remove)
                 {
-                    this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, oldItems, e.OldStartingIndex));
+                    OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, oldItems, e.OldStartingIndex));
                 }
                 else if (e.Action == NotifyCollectionChangedAction.Add)
                 {
-                    this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, newItems, e.NewStartingIndex));
+                    OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, newItems, e.NewStartingIndex));
                 }
                 else if (e.Action == NotifyCollectionChangedAction.Replace)
                 {
-                    this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newItems, oldItems, e.NewStartingIndex));
+                    OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newItems, oldItems, e.NewStartingIndex));
                 }
             }
         }
