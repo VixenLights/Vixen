@@ -1,8 +1,9 @@
-﻿using Common.Controls.Theme;
+﻿using Common.Controls;
+using Common.Controls.Scaling;
+using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
-using Common.Controls;
-using Common.Controls.Scaling;
+using System.ComponentModel;
 using Utilities;
 using Vixen.Data.Flow;
 using Vixen.Module.Property;
@@ -88,7 +89,8 @@ namespace VixenApplication.Setup
 			ElementsChanged?.Invoke(this, e);
 		}
 
-
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IEnumerable<ElementNode> SelectedElements
 		{
 			get { return elementTree.SelectedElementNodes; }
@@ -103,6 +105,8 @@ namespace VixenApplication.Setup
 			get { return this; }
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public DisplaySetup? MasterForm { get; set; }
 
 		public void UpdatePatching()

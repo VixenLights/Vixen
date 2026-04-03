@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.Timers;
-
+﻿using Common.Broadcast;
 using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
@@ -8,13 +6,14 @@ using Common.Resources;
 using Common.Resources.Properties;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
+using System.ComponentModel;
+using System.Diagnostics;
 using Vixen;
 using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
 using VixenModules.Editor.FixtureGraphics.OpenGL;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
 using VixenModules.Preview.VixenPreview.Shapes;
-using Common.Broadcast;
 
 namespace VixenModules.Preview.VixenPreview.OpenGL
 {
@@ -378,6 +377,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		#region IDisplayForm
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public VixenPreviewData Data { get; set; }
 		public void Setup()
 		{
@@ -429,6 +430,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		public long FrameRate { get; private set; }
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string DisplayName
 		{
 			get { return _displayName; }
@@ -448,7 +451,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		}
 
 		/// <inheritdoc />
-		public Guid InstanceId { get; set; }
+		public Guid InstanceId { get; }
 
 		/// <inheritdoc />
 		public bool IsOnTopWhenPlaying { get; private set; }

@@ -13,7 +13,9 @@ namespace VixenModules.Property.Color
 			ThemeUpdateControls.UpdateControls(this);
 		}
 
-		public ColorModule ColorModule { get; set; }
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		internal ColorModule ColorModule { get; set; }
 
 		private void ColorSetupForm_Load(object sender, EventArgs e)
 		{

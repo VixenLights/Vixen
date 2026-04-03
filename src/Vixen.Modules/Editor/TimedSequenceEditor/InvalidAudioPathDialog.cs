@@ -1,13 +1,12 @@
 ﻿using System.IO;
 using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
 	public partial class InvalidAudioPathDialog : BaseForm
 	{
-		public InvalidAudioDialogResult InvalidAudioDialogResult { get; set; }
+		public InvalidAudioDialogResult InvalidAudioDialogResult { get; private set; }
 		
 		public InvalidAudioPathDialog(string audioPath)
 		{

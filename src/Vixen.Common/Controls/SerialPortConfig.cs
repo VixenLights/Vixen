@@ -1,6 +1,7 @@
-﻿using System.Text;
+﻿using Common.Controls.Theme;
+using System.ComponentModel;
 using System.IO.Ports;
-using Common.Controls.Theme;
+using System.Text;
 
 namespace Common.Controls
 {
@@ -73,6 +74,8 @@ namespace Common.Controls
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public SerialPort SelectedPort
 		{
 			get

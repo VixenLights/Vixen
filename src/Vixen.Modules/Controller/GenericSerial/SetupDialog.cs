@@ -1,15 +1,13 @@
-﻿using System.IO.Ports;
-using System.Windows.Forms;
-using Common.Controls;
+﻿using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
+using System.IO.Ports;
+using System.Windows.Forms;
 
 namespace VixenModules.Output.GenericSerial
 {
 	public partial class SetupDialog : BaseForm
 	{
 		private Data _data;
-		private SerialPort _serialPort = null;
 
 		public SetupDialog(Data data)
 		{
@@ -34,7 +32,7 @@ namespace VixenModules.Output.GenericSerial
 
 			if (!string.IsNullOrEmpty(data.PortName)) {
 				Port = new SerialPort(data.PortName, data.BaudRate, data.Parity, data.DataBits, data.StopBits);
-				updateSettingLabel();
+				UpdateSettingLabel();
 				btnOkay.Enabled = true;
 			}
 			else {
@@ -45,11 +43,11 @@ namespace VixenModules.Output.GenericSerial
 
 		private void btnPortSetup_Click(object sender, EventArgs e)
 		{
-			using (Common.Controls.SerialPortConfig serialPortConfig = new Common.Controls.SerialPortConfig(Port)) {
+			using (SerialPortConfig serialPortConfig = new SerialPortConfig(Port)) {
 				if (serialPortConfig.ShowDialog() == DialogResult.OK) {
 					Port = serialPortConfig.SelectedPort;
 					btnOkay.Enabled = true;
-					updateSettingLabel();
+					UpdateSettingLabel();
 				}
 			}
 		}
@@ -69,29 +67,25 @@ namespace VixenModules.Output.GenericSerial
 			_data.Header = cbHeader.Checked ? tbHeader.Text : string.Empty;
 			_data.Footer = cbFooter.Checked ? tbFooter.Text : string.Empty;
 
-			_data.BaudRate = _serialPort.BaudRate;
-			_data.DataBits = _serialPort.DataBits;
-			_data.Parity = _serialPort.Parity;
-			_data.PortName = _serialPort.PortName;
-			_data.StopBits = _serialPort.StopBits;
+			_data.BaudRate = Port.BaudRate;
+			_data.DataBits = Port.DataBits;
+			_data.Parity = Port.Parity;
+			_data.PortName = Port.PortName;
+			_data.StopBits = Port.StopBits;
 		}
 
-		private void updateSettingLabel()
+		private void UpdateSettingLabel()
 		{
 			lblSettings.Text = string.Format(
 				"{0}: {1}, {2}, {3}, {4}",
-				_serialPort.PortName,
-				_serialPort.BaudRate,
-				_serialPort.Parity,
-				_serialPort.DataBits,
-				_serialPort.StopBits);
+				Port.PortName,
+				Port.BaudRate,
+				Port.Parity,
+				Port.DataBits,
+				Port.StopBits);
 		}
 
-		public SerialPort Port
-		{
-			set { _serialPort = value; }
-			get { return _serialPort; }
-		}
+		public SerialPort Port { private set; get; }
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{

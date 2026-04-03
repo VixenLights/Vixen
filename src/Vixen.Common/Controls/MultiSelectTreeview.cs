@@ -81,7 +81,8 @@ namespace Common.Controls
 		/// </summary>
 		[
 			Description("The custom cursor to use when dragging an item, if UsingCustomDragCursor is set to true."),
-			Category("Drag and drop")
+			Category("Drag and drop"),
+			DefaultValue(null)
 		]
 		public Cursor CustomDragCursor
 		{
@@ -94,7 +95,8 @@ namespace Common.Controls
 		/// </summary>
 		[
 			Description("If a custom cursor should be using while dragging."),
-			Category("Drag and drop")
+			Category("Drag and drop"),
+			DefaultValue(false)
 		]
 		public bool UsingCustomDragCursor
 		{
@@ -107,7 +109,8 @@ namespace Common.Controls
 		/// </summary>
 		[
 			Description("The background colour of the node being dragged over."),
-			Category("Drag and drop")
+			Category("Drag and drop"),
+			DefaultValue(typeof(SystemColors), "Highlight")
 		]
 		public Color DragDestinationNodeForeColor
 		{
@@ -120,7 +123,8 @@ namespace Common.Controls
 		/// </summary>
 		[
 			Description("The foreground colour of the node being dragged over."),
-			Category("Drag and drop")
+			Category("Drag and drop"),
+			DefaultValue(typeof(SystemColors), "Highlight")
 		]
 		public Color DragDestinationNodeBackColor
 		{
@@ -133,7 +137,8 @@ namespace Common.Controls
 		/// </summary>
 		[
 			Description("The background colour of the node(s) being dragged."),
-			Category("Drag and drop")
+			Category("Drag and drop"),
+			DefaultValue(typeof(SystemColors), "ControlText")
 		]
 		public Color DragSourceNodeForeColor
 		{
@@ -146,7 +151,8 @@ namespace Common.Controls
 		/// </summary>
 		[
 			Description("The foreground colour of the node(s) being dragged."),
-			Category("Drag and drop")
+			Category("Drag and drop"),
+			DefaultValue(typeof(SystemColors), "ControlLight")
 		]
 		public Color DragSourceNodeBackColor
 		{
@@ -159,7 +165,8 @@ namespace Common.Controls
 		/// </summary>
 		[
 			Description("The drag mode (move,copy etc.)"),
-			Category("Drag and drop")
+			Category("Drag and drop"),
+			DefaultValue(DragDropEffects.Move)
 		]
 		public DragDropEffects DragDefaultMode
 		{
@@ -182,6 +189,8 @@ namespace Common.Controls
 
 		private List<TreeNode> m_SelectedNodes = null;
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public List<TreeNode> SelectedNodes
 		{
 			get { return m_SelectedNodes; }
@@ -199,6 +208,8 @@ namespace Common.Controls
 		// Note we use the new keyword to Hide the native treeview's SelectedNode property.
 		private TreeNode m_SelectedNode;
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public new TreeNode SelectedNode
 		{
 			get { return m_SelectedNode; }

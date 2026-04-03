@@ -37,7 +37,7 @@ namespace VixenModules.App.SuperScheduler
 			}
 		}
 
-		public SuperSchedulerData Data { get; set; }
+		public SuperSchedulerData Data { get; }
 
 		private void buttonAddSchedule_Click(object sender, EventArgs e)
 		{

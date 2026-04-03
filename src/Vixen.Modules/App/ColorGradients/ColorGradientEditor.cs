@@ -1,8 +1,9 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
-using Vixen.Services;
+using System.ComponentModel;
 using Vixen.Module.App;
+using Vixen.Services;
 
 namespace VixenModules.App.ColorGradients
 {
@@ -28,7 +29,7 @@ namespace VixenModules.App.ColorGradients
 		public ColorGradient Gradient
 		{
 			get { return _gradient; }
-			set
+			private set
 			{
 				_gradient = new ColorGradient(value);
 				PopulateFormWithGradient(_gradient);
@@ -37,6 +38,8 @@ namespace VixenModules.App.ColorGradients
 
 		private string _libraryItemName;
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string LibraryItemName
 		{
 			get { return _libraryItemName; }

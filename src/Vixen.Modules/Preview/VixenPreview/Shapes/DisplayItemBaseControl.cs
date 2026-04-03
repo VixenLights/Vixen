@@ -1,4 +1,6 @@
-﻿namespace VixenModules.Preview.VixenPreview.Shapes
+﻿using System.ComponentModel;
+
+namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	public partial class DisplayItemBaseControl : UserControl
 	{
@@ -16,12 +18,16 @@
 			InitializeComponent();
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string Title
 		{
 			get { return _title; }
 			set { _title = value; }
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public PreviewBaseShape Shape
 		{
 			get { return _shape; }

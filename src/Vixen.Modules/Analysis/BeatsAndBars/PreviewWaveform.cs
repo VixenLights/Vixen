@@ -1,6 +1,7 @@
 ﻿using Common.Controls.Timeline;
 using Common.Controls.TimelineControl;
 using Common.Controls.TimelineControl.LabeledMarks;
+using System.ComponentModel;
 using VixenModules.Media.Audio;
 
 namespace VixenModules.Analysis.BeatsAndBars
@@ -27,6 +28,8 @@ namespace VixenModules.Analysis.BeatsAndBars
 			Controls.Add(m_waveform);
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public new int Width
 		{
 			get { return base.Width; }
@@ -37,6 +40,8 @@ namespace VixenModules.Analysis.BeatsAndBars
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public new int Height
 		{
 			get { return base.Height; }
@@ -47,12 +52,8 @@ namespace VixenModules.Analysis.BeatsAndBars
 			}
 		}
 
-		public new Color BackColor
-		{
-			get { return m_waveform.BackColor; }
-			set { m_waveform.BackColor = value; }
-		}
-
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public TimeSpan PreviewPeriod
 		{
 			get { return m_info.TotalTime; }
@@ -67,6 +68,8 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 		private List<TimeSpan> m_intervalMarks;
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public List<TimeSpan> IntervalMarks
 		{
 			get

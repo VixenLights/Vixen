@@ -1,7 +1,6 @@
-﻿using System.Windows.Forms;
-using Common.Controls;
+﻿using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
+using System.ComponentModel;
 
 namespace VixenModules.Output.DummyLighting
 {
@@ -18,6 +17,8 @@ namespace VixenModules.Output.DummyLighting
 
 		private RenderStyle _style;
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public RenderStyle RenderStyle
 		{
 			get { return _style; }
@@ -33,6 +34,8 @@ namespace VixenModules.Output.DummyLighting
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string FormTitle
 		{
 			get { return textBoxWindowTitle.Text; }

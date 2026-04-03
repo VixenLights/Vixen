@@ -292,10 +292,6 @@ namespace VixenModules.App.ColorGradients
 		public ColorGradient(Color staticColor)
 			: this()
 		{
-			if (staticColor == null)
-			{
-				throw new ArgumentNullException(nameof(staticColor));
-			}
 			_colors.Clear();
 			_colors.Add(new ColorPoint(staticColor, 0));
 		}

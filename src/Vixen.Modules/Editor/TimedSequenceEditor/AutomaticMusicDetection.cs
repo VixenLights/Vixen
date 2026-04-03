@@ -1,8 +1,9 @@
-﻿using Common.Resources.Properties;
-using VixenModules.Media.Audio;
-using System.Collections.Concurrent;
-using Common.Controls;
+﻿using Common.Controls;
 using Common.Controls.Theme;
+using Common.Resources.Properties;
+using System.Collections.Concurrent;
+using System.ComponentModel;
+using VixenModules.Media.Audio;
 using Timer = System.Windows.Forms.Timer;
 
 namespace VixenModules.Editor.TimedSequenceEditor
@@ -31,6 +32,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private List<int> _indexes;
 		private Audio _audio;
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public List<int> Indexes
 		{
 			get { return _indexes; }
@@ -44,6 +47,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int Accuracy
 		{
 			get { return settings.MusicAccuracy; }

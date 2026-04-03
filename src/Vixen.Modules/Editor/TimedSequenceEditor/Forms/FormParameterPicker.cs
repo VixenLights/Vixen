@@ -145,9 +145,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public PropertyMetaData PropertyInfo { get; private set; }
 
-		public IEffectModuleDescriptor EffectPropertyInfo { get; set; }
-
-		public int ParameterIndex { get; set; }
+		public IEffectModuleDescriptor EffectPropertyInfo { get; private set; }
 
 		public EffectParameterPickerControl SelectedControl { get; private set; }
 

@@ -1,6 +1,7 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
+using System.ComponentModel;
 using Vixen.Data.Flow;
 using Vixen.Module.OutputFilter;
 using Vixen.Rule;
@@ -333,6 +334,8 @@ namespace VixenModules.Property.Color
 
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool SilentMode { get; set; }
 
 		private void ColorSetupHelper_Load(object sender, EventArgs e)

@@ -3,6 +3,7 @@ using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
+using System.ComponentModel;
 
 namespace VixenModules.App.SuperScheduler
 {
@@ -89,6 +90,8 @@ namespace VixenModules.App.SuperScheduler
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string Status
 		{
 			set

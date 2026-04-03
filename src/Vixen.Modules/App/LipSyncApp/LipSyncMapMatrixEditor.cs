@@ -1,6 +1,7 @@
-﻿using Vixen.Sys;
-using Common.Controls;
+﻿using Common.Controls;
 using Common.Controls.Theme;
+using System.ComponentModel;
+using Vixen.Sys;
 
 namespace VixenModules.App.LipSyncApp
 {
@@ -59,6 +60,8 @@ namespace VixenModules.App.LipSyncApp
 			LoadIconsAndBitmaps();
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string LibraryMappingName
 		{
 			get { return nameTextBox.Text; }
@@ -68,6 +71,8 @@ namespace VixenModules.App.LipSyncApp
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public LipSyncMapData MapData
 		{
 			get

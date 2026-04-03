@@ -14,8 +14,9 @@
 //Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //=============================================================================
 
-using System.Drawing.Printing;
 using Common.Controls;
+using System.ComponentModel;
+using System.Drawing.Printing;
 
 namespace ZedGraph
 {
@@ -104,6 +105,8 @@ namespace ZedGraph
 		/// Gets or sets the <see cref="System.Drawing.Printing.PrintDocument" /> instance
 		/// that is used for all of the context menu printing functions.
 		/// </summary>
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public PrintDocument PrintDocument
 		{
 			get

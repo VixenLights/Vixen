@@ -1,9 +1,10 @@
 using Common.Controls.NameGeneration;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
+using System.ComponentModel;
 using Vixen.Rule;
 using Vixen.Rule.Name;
-using Common.Controls.Scaling;
 
 namespace Common.Controls
 {
@@ -98,6 +99,8 @@ namespace Common.Controls
 			listViewGenerators.Items[0].Selected = true;
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public List<string> Names { get; set; }
 
 

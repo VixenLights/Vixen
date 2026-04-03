@@ -105,6 +105,8 @@ namespace Common.Controls.ControlsEx.ValueControls
 
 			#region properties
 
+			[Browsable(false)]
+			[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 			public Orientation TrackerOrientation
 			{
 				get { return _trackerorientation; }

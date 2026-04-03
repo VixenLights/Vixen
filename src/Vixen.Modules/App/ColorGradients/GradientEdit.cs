@@ -644,8 +644,12 @@ namespace VixenModules.App.ColorGradients
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool ReadOnly { get; set; }
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool DiscreteColors
 		{
 			get { return _discreteColors; }
@@ -656,6 +660,8 @@ namespace VixenModules.App.ColorGradients
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IEnumerable<Color> ValidDiscreteColors
 		{
 			get { return _validDiscreteColors; }

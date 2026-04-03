@@ -24,7 +24,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_playing = false;
 		}
 
-		public List<TimeSpan> Results { get; set; }
+		public List<TimeSpan> Results { get; }
 
 		private void buttonPlay_Click(object sender, EventArgs e)
 		{

@@ -1,7 +1,6 @@
 ﻿using Common.Broadcast;
 using Common.Controls.Theme;
 using Common.Controls.Timeline;
-using Common.Resources.Properties;
 using Vixen.Sys.LayerMixing;
 using WeifenLuo.WinFormsUI.Docking;
 using Element = Common.Controls.Timeline.Element;
@@ -10,7 +9,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 {
 	public partial class FindEffectForm : DockContent
 	{
-		public TimelineControl TimelineControl { get; set; }
+		public TimelineControl TimelineControl { get; }
 
 		private readonly SequenceLayers _layerManager;
 		private bool _rowEventsAdded;

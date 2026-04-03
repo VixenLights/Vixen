@@ -237,6 +237,8 @@ namespace VixenModules.App.ColorGradients
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IEnumerable<Color> ValidDiscreteColors
 		{
 			get { return edit.ValidDiscreteColors; }
@@ -247,6 +249,8 @@ namespace VixenModules.App.ColorGradients
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool DiscreteColors
 		{
 			get { return edit.DiscreteColors; }
@@ -257,10 +261,14 @@ namespace VixenModules.App.ColorGradients
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool LockColorEditorHSV_Value { get; set; }
 
 		private bool _readonly;
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool ReadOnly
 		{
 			get { return _readonly; }

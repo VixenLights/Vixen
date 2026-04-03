@@ -1,4 +1,5 @@
 ﻿using Common.Controls.Theme;
+using System.ComponentModel;
 
 namespace Common.Controls
 {
@@ -37,6 +38,8 @@ namespace Common.Controls
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public SelectionMode SelectionMode
 		{
 			get

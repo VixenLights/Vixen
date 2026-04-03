@@ -1,4 +1,5 @@
 ﻿using Common.Controls.Theme;
+using System.ComponentModel;
 
 namespace Common.Controls
 {
@@ -22,6 +23,8 @@ namespace Common.Controls
 
 		#region Properties
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public UndoButtonType ButtonType { get; set; }
 
 		public ListBox.ObjectCollection Items

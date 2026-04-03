@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Drawing.Text;
 using System.Drawing.Drawing2D;
 using Common.Controls.Scaling;
@@ -11,6 +10,7 @@ using Vixen.Marks;
 
 namespace Common.Controls.Timeline
 {
+#pragma warning disable WFO1000  // This class is not a Designer type control so disabling to avoid all the noise of the hidden attribute
 	[System.ComponentModel.DesignerCategory("")] // Prevent this from showing up in designer.
 	public class Ruler : TimelineControlBase
 	{

@@ -3,6 +3,7 @@
 using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
+using System.ComponentModel;
 using System.Diagnostics;
 using Vixen.Data.Flow;
 using Vixen.Module.OutputFilter;
@@ -77,6 +78,8 @@ namespace VixenApplication.Setup
 			get { return this; }
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public DisplaySetup MasterForm { get; set; }
 
 		public event EventHandler<FiltersEventArgs> FiltersAdded;

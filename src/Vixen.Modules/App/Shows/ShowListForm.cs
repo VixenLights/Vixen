@@ -23,7 +23,7 @@ namespace VixenModules.App.Shows
 			Data = data;
 		}
 
-		public ShowsData Data { get; set; }
+		public ShowsData Data { get; }
 
 		#region Form Events
 

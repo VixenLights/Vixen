@@ -1,5 +1,6 @@
-using System.Collections;
 using Common.Controls.Theme;
+using System.Collections;
+using System.ComponentModel;
 
 namespace Common.Controls
 {
@@ -9,6 +10,9 @@ namespace Common.Controls
 		private List<ListViewItem> _reorderExcludedRows = new List<ListViewItem>(); 
 
 		private bool allowRowReorder = true;
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool AllowRowReorder
 		{
 			get
@@ -32,6 +36,8 @@ namespace Common.Controls
 			_reorderExcludedRows.Add(item);
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public new SortOrder Sorting
 		{
 			get

@@ -1,8 +1,9 @@
-﻿using System.Windows.Forms;
-using System.Net;
-using Common.Controls;
+﻿using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
+using System.ComponentModel;
+using System.Net;
+using System.Windows.Forms;
 
 namespace VixenModules.Output.DDP
 {
@@ -22,6 +23,8 @@ namespace VixenModules.Output.DDP
 			}
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IPAddress Address
 		{
 			get

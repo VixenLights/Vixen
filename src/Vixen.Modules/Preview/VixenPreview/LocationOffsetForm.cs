@@ -1,6 +1,7 @@
-﻿using System.Windows.Media.Media3D;
-using Common.Controls;
+﻿using Common.Controls;
 using Common.Controls.Theme;
+using System.ComponentModel;
+using System.Windows.Media.Media3D;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -19,6 +20,8 @@ namespace VixenModules.Preview.VixenPreview
 			Offset = new Vector3D(txtX.IntValue, txtY.IntValue, 0);
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Vector3D Offset { get; set; }
 	}
 }

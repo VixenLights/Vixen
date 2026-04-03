@@ -1,6 +1,7 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources;
+using System.ComponentModel;
 
 namespace VixenModules.App.LipSyncApp
 {
@@ -88,6 +89,8 @@ namespace VixenModules.App.LipSyncApp
 			TranslatedString = phonemeTextBox.Text;
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string TranslatedString
 		{
 			get 

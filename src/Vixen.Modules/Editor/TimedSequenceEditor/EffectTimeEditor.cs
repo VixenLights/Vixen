@@ -1,7 +1,8 @@
-﻿using System.Globalization;
-using Common.Controls;
+﻿using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
+using System.ComponentModel;
+using System.Globalization;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -25,7 +26,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			txtDuration.ValueChanged += Time_Changed;
 		}
 
-
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public TimeSpan Duration
 		{
 			get
@@ -37,6 +39,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				txtDuration.TimeSpan = value;
 			}
 		}
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public TimeSpan Start
 		{
 			get 
@@ -48,6 +53,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				txtStartTime.TimeSpan = value;
 			}
 		}
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public TimeSpan End
 		{
 			get

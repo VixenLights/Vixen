@@ -3,10 +3,11 @@ using NLog;
 
 namespace Common.Controls.Timeline
 {
+#pragma warning disable WFO1000  // This class is not a Designer type control so disabling to avoid all the noise of the hidden attribute
 	/// <summary>
 	/// The base class for all time-related controls in the TimelineControl.
 	/// </summary>
-	[System.ComponentModel.DesignerCategory("")] // Prevent this from showing up in designer.
+	[DesignerCategory("")] // Prevent this from showing up in designer.
 	public abstract class TimelineControlBase : UserControl
 	{
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();

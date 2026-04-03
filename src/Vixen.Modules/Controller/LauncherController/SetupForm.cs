@@ -1,13 +1,11 @@
-﻿using System.Windows.Forms;
-using Common.Controls;
+﻿using Common.Controls;
 using Common.Controls.Theme;
-using Resources = Common.Resources.Properties.Resources;
 
 namespace VixenModules.Output.LauncherController
 {
 	public partial class SetupForm : BaseForm
 	{
-		public Data LauncherData { get; set; }
+		public Data LauncherData { get; }
 
 		public SetupForm(Data data)
 		{

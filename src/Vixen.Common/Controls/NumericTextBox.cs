@@ -70,7 +70,7 @@ namespace Common.Controls
 			_oldText = "";
 		}
 
-		[Description("Select input type for textbox"), Category("NumericText")]
+		[Description("Select input type for textbox"), Category("NumericText"), DefaultValue(NumberFormat.UnsignedInteger)]
 		public NumberFormat NumberFormat
 		{
 			get { return numberFormat; }
@@ -83,14 +83,14 @@ namespace Common.Controls
 			}
 		}
 
-		[Description("enable or disable thousands separator"), Category("NumericText")]
+		[Description("enable or disable thousands separator"), Category("NumericText"), DefaultValue(false)]
 		public bool Usegroupseparator
 		{
 			get { return _usegroupseparator; }
 			set { _usegroupseparator = value; _oldText = ""; OnTextChanged(new EventArgs()); }
 		}
 
-		[Description("digit count after decimal separator"), Category("NumericText")]
+		[Description("digit count after decimal separator"), Category("NumericText"), DefaultValue(0)]
 		public int DecimalNumber
 		{
 			get { return _decimalNumber; }
@@ -102,7 +102,8 @@ namespace Common.Controls
 			}
 		}
 
-		[Description("Select thousands separator char except < e E > and local decimal separator, negativeSign"), Category("NumericText")]
+		[Description("Select thousands separator char except < e E > and local decimal separator, negativeSign"), Category("NumericText"),
+			DefaultValue(',')]
 		public char Groupsep
 		{
 			get { return _groupSeparator; }
@@ -114,7 +115,7 @@ namespace Common.Controls
 			}
 		}
 
-		[Description("Maximum value in textbox"), Category("NumericText")]
+		[Description("Maximum value in textbox"), Category("NumericText"), DefaultValue(100)]
 		public double MaxValue
 		{
 			get { return _maxValue; }
@@ -129,7 +130,7 @@ namespace Common.Controls
 			}
 		}
 
-		[Description("Minimum value in textbox"), Category("NumericText")]
+		[Description("Minimum value in textbox"), Category("NumericText"), DefaultValue(0)]
 		public double MinValue
 		{
 			get { return _minValue; }
@@ -144,7 +145,7 @@ namespace Common.Controls
 			}
 		}
 
-		[Description("Enable or disable Maximum value control"), Category("NumericText")]
+		[Description("Enable or disable Maximum value control"), Category("NumericText"), DefaultValue(false)]
 		public bool MaxCheck
 		{
 			get { return _maxCheck; }
@@ -156,7 +157,7 @@ namespace Common.Controls
 			}
 		}
 
-		[Description("Enable or disable Minimum value control"), Category("NumericText")]
+		[Description("Enable or disable Minimum value control"), Category("NumericText"), DefaultValue(false)]
 		public bool MinCheck
 		{
 			get { return _minCheck; }

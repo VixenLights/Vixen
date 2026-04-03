@@ -2093,6 +2093,8 @@ namespace VixenApplication.Setup
 			get { return this; }
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public DisplaySetup MasterForm { get; set; }
 
 		public void OnFiltersAdded(IEnumerable<IOutputFilterModuleInstance> filters)

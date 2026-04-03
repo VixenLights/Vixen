@@ -4,16 +4,16 @@ namespace VixenModules.App.Shows
 {
 	public partial class LaunchTypeTester : BaseForm
 	{
-		public ShowItem ShowItem { get; set; }
-		public LaunchAction action;
+		public ShowItem ShowItem { get; }
+		private readonly LaunchAction _action;
 
 		public LaunchTypeTester(ShowItem showItem)
 		{
 			InitializeComponent();
 			ShowItem = showItem;
-			action = new LaunchAction(ShowItem);
-			action.ActionComplete += OnActionComplete;
-			action.Execute();
+			_action = new LaunchAction(ShowItem);
+			_action.ActionComplete += OnActionComplete;
+			_action.Execute();
 		}
 
 		private delegate void OnActionCompleteDelegate(Object sender, EventArgs e);
@@ -23,15 +23,15 @@ namespace VixenModules.App.Shows
 				this.Invoke(new OnActionCompleteDelegate(OnActionComplete), sender, e);
 			else
 			{
-				textBoxOutput.Text = action.ResultString;
+				textBoxOutput.Text = _action.ResultString;
 				labelStatus.Text = "Status: Run Complete";
 			}
 		}
 
 		private void buttonClose_Click(object sender, EventArgs e)
 		{
-			action.ActionComplete -= OnActionComplete;
-			action.Stop();
+			_action.ActionComplete -= OnActionComplete;
+			_action.Stop();
 			Close();
 		}
 

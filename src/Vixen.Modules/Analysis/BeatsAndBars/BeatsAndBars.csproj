@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-				<AssemblyName>Module.Analysis.BeatsAndBars</AssemblyName>
+	  <AssemblyName>Module.Analysis.BeatsAndBars</AssemblyName>
 	  <UseWindowsForms>true</UseWindowsForms>
-	  <NoWarn>$(NoWarn);WFO1000</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,6 +1,7 @@
-﻿using System.Diagnostics;
-using Common.Controls;
+﻿using Common.Controls;
 using Common.Controls.Theme;
+using System.ComponentModel;
+using System.Diagnostics;
 using Resources = Common.Resources.Properties.Resources;
 
 namespace VixenModules.App.WebServer
@@ -36,6 +37,8 @@ namespace VixenModules.App.WebServer
 			linkLabel1.Text = string.Format("http://{0}:{1}/", System.Net.Dns.GetHostName(), Port);
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int Port
 		{
 			get { return (int)this.numericUpDown1.Value; }
@@ -47,6 +50,9 @@ namespace VixenModules.App.WebServer
 				OnSettingsChanged();
 			}
 		}
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool WebServerEnabled
 		{
 			get { return this.checkBox1.Checked; }

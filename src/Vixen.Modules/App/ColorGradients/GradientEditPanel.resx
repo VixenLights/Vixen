@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="label4.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top</value>
   </data>
@@ -130,10 +130,14 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 0</value>
+    <value>4, 0</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="label4.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 0, 4, 0</value>
   </data>
   <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>34, 13</value>
+    <value>39, 15</value>
   </data>
   <data name="label4.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -148,7 +152,7 @@
     <value>label4</value>
   </data>
   <data name="&gt;&gt;label4.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;label4.Parent" xml:space="preserve">
     <value>flowLayoutPanel1</value>
@@ -169,10 +173,13 @@
     <value>NoControl</value>
   </data>
   <data name="lblColorSelect.Location" type="System.Drawing.Point, System.Drawing">
-    <value>43, 3</value>
+    <value>51, 3</value>
+  </data>
+  <data name="lblColorSelect.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 3, 4, 3</value>
   </data>
   <data name="lblColorSelect.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 25</value>
+    <value>75, 29</value>
   </data>
   <data name="lblColorSelect.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -181,7 +188,7 @@
     <value>lblColorSelect</value>
   </data>
   <data name="&gt;&gt;lblColorSelect.Type" xml:space="preserve">
-    <value>Common.Controls.ColorManagement.ColorPicker.ColorLabel, Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>Common.Controls.ColorManagement.ColorPicker.ColorLabel, Controls, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;lblColorSelect.Parent" xml:space="preserve">
     <value>flowLayoutPanel1</value>
@@ -199,10 +206,13 @@
     <value>NoControl</value>
   </data>
   <data name="label5.Location" type="System.Drawing.Point, System.Drawing">
-    <value>113, 0</value>
+    <value>134, 0</value>
+  </data>
+  <data name="label5.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 0, 4, 0</value>
   </data>
   <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>51, 13</value>
+    <value>56, 15</value>
   </data>
   <data name="label5.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -217,7 +227,7 @@
     <value>label5</value>
   </data>
   <data name="&gt;&gt;label5.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;label5.Parent" xml:space="preserve">
     <value>flowLayoutPanel1</value>
@@ -232,10 +242,13 @@
     <value>False</value>
   </data>
   <data name="vColorLoc.Location" type="System.Drawing.Point, System.Drawing">
-    <value>170, 3</value>
+    <value>198, 3</value>
+  </data>
+  <data name="vColorLoc.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 3, 4, 3</value>
   </data>
   <data name="vColorLoc.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 25</value>
+    <value>75, 25</value>
   </data>
   <data name="vColorLoc.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -247,7 +260,7 @@
     <value>vColorLoc</value>
   </data>
   <data name="&gt;&gt;vColorLoc.Type" xml:space="preserve">
-    <value>Common.Controls.ControlsEx.ValueControls.ValueUpDown, Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>Common.Controls.ControlsEx.ValueControls.ValueUpDown, Controls, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;vColorLoc.Parent" xml:space="preserve">
     <value>flowLayoutPanel1</value>
@@ -271,13 +284,13 @@
     <value>NoControl</value>
   </data>
   <data name="btnDeleteColor.Location" type="System.Drawing.Point, System.Drawing">
-    <value>252, 3</value>
+    <value>295, 3</value>
   </data>
   <data name="btnDeleteColor.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>15, 3, 3, 3</value>
+    <value>18, 3, 4, 3</value>
   </data>
   <data name="btnDeleteColor.Size" type="System.Drawing.Size, System.Drawing">
-    <value>72, 25</value>
+    <value>84, 31</value>
   </data>
   <data name="btnDeleteColor.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -289,7 +302,7 @@
     <value>btnDeleteColor</value>
   </data>
   <data name="&gt;&gt;btnDeleteColor.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnDeleteColor.Parent" xml:space="preserve">
     <value>flowLayoutPanel1</value>
@@ -301,10 +314,13 @@
     <value>Fill</value>
   </data>
   <data name="flowLayoutPanel1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 16</value>
+    <value>4, 19</value>
+  </data>
+  <data name="flowLayoutPanel1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 3, 4, 3</value>
   </data>
   <data name="flowLayoutPanel1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>393, 32</value>
+    <value>457, 37</value>
   </data>
   <data name="flowLayoutPanel1.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -313,7 +329,7 @@
     <value>flowLayoutPanel1</value>
   </data>
   <data name="&gt;&gt;flowLayoutPanel1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.FlowLayoutPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.FlowLayoutPanel, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;flowLayoutPanel1.Parent" xml:space="preserve">
     <value>grpStops</value>
@@ -328,10 +344,16 @@
     <value>False</value>
   </data>
   <data name="grpStops.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 78</value>
+    <value>0, 90</value>
+  </data>
+  <data name="grpStops.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 3, 4, 3</value>
+  </data>
+  <data name="grpStops.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 3, 4, 3</value>
   </data>
   <data name="grpStops.Size" type="System.Drawing.Size, System.Drawing">
-    <value>399, 51</value>
+    <value>465, 59</value>
   </data>
   <data name="grpStops.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -343,7 +365,7 @@
     <value>grpStops</value>
   </data>
   <data name="&gt;&gt;grpStops.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;grpStops.Parent" xml:space="preserve">
     <value>$this</value>
@@ -358,10 +380,10 @@
     <value>0, 0</value>
   </data>
   <data name="edit.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 10</value>
+    <value>4, 3, 4, 12</value>
   </data>
   <data name="edit.Size" type="System.Drawing.Size, System.Drawing">
-    <value>399, 78</value>
+    <value>465, 90</value>
   </data>
   <data name="edit.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
@@ -373,7 +395,7 @@
     <value>edit</value>
   </data>
   <data name="&gt;&gt;edit.Type" xml:space="preserve">
-    <value>VixenModules.App.ColorGradients.GradientEdit, ColorGradients, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>VixenModules.App.ColorGradients.GradientEdit, Module.App.ColorGradients, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;edit.Parent" xml:space="preserve">
     <value>$this</value>
@@ -385,18 +407,21 @@
     <value>True</value>
   </metadata>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 13</value>
+    <value>7, 15</value>
+  </data>
+  <data name="$this.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 3, 4, 3</value>
   </data>
   <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
-    <value>357, 120</value>
+    <value>416, 138</value>
   </data>
   <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
-    <value>399, 129</value>
+    <value>465, 149</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>GradientEditPanel</value>
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>System.Windows.Forms.UserControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.UserControl, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

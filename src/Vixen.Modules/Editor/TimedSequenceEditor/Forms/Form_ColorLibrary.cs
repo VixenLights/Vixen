@@ -43,7 +43,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Public Members
 
-		public TimelineControl TimelineControl { get; set; }
+		public TimelineControl TimelineControl { get; }
 
 		/// <summary>
 		/// A read only list of the colors in the library

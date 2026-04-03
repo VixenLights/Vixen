@@ -11,6 +11,8 @@ using FontStyle = System.Drawing.FontStyle;
 
 namespace Common.Controls.Timeline
 {
+
+#pragma warning disable WFO1000  // This class is not a Designer type control so disabling to avoid all the noise of the hidden attribute
 	/// <summary>
 	/// Waveform visualizer class
 	/// </summary>

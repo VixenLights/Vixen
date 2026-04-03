@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Common.Controls;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
-using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using Common.Controls;
-using Common.Controls.Theme;
-using Common.Resources.Properties;
+using System.Windows.Forms;
 
 namespace VixenModules.Output.ElexolEtherIO
 {
@@ -58,17 +59,24 @@ namespace VixenModules.Output.ElexolEtherIO
 
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IPAddress IPAddr
 		{
 			get;
 			set;
 		}
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int MinIntensity
 		{
 			get;
 			set;
 		}
 
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int DataPort
 		{
 			get;

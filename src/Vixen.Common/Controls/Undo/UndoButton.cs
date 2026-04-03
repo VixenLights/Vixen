@@ -1,4 +1,6 @@
-﻿namespace Common.Controls
+﻿using System.ComponentModel;
+
+namespace Common.Controls
 {
 	[System.ComponentModel.DesignerCategory("")] // Prevent this from showing up in designer.
 	public class UndoButton : ToolStripSplitButton
@@ -67,6 +69,9 @@
 		}
 
 		private UndoButtonType buttonType;
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public UndoButtonType ButtonType {
 			get {
 				return buttonType;

@@ -1,8 +1,8 @@
 ﻿using Common.Controls.TimelineControl;
-using Common.Controls.TimelineControl.LabeledMarks;
 using System.ComponentModel;
-using Vixen.Sys.LayerMixing;
 using Timer = System.Windows.Forms.Timer;
+
+#pragma warning disable WFO1000  // This class is not a Designer type control so disabling to avoid all the noise of the hidden attribute
 
 namespace Common.Controls.Timeline
 {

@@ -1,4 +1,5 @@
-﻿using Common.Controls;
+﻿using System.ComponentModel;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 
@@ -13,7 +14,8 @@ namespace VixenModules.Property.Location {
 			Z = data.Z;
 		}
 
-
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int X {
 			get { return (int)numericUpDownXPosition.Value; }
 			set {
@@ -21,12 +23,18 @@ namespace VixenModules.Property.Location {
 
 			}
 		}
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int Y {
 			get { return (int)numericUpDownYPosition.Value; }
 			set {
 				numericUpDownYPosition.Value = value;
 			}
 		}
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int Z {
 			get { return (int)numericUpDownZPosition.Value; }
 			set {

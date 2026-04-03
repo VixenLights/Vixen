@@ -39,7 +39,7 @@ public partial class TimeControl : UserControl
 	/// <summary>
 	/// Gets or sets the time value in a TimeSpan format
 	/// </summary>
-	[Browsable(true)]
+	[Browsable(true), DefaultValue(TimeSpan.SecondsPerMinute)]
 	public TimeSpan TimeSpan
 	{
 		get
@@ -58,7 +58,7 @@ public partial class TimeControl : UserControl
 	/// <summary>
 	/// Gets or sets the time value in milliseconds
 	/// </summary>
-	[Browsable(true)]
+	[Browsable(true), DefaultValue(0)]
 	public double Milliseconds
 	{
 		get
@@ -83,12 +83,6 @@ public partial class TimeControl : UserControl
 		get => textBox.Text;
 	}
 
-	[Obsolete("This method is obsolete. Use TimeSpan or Milliseconds methods.", true)]
-	public new String Text
-	{
-		set => throw new NotImplementedException();
-		get => throw new NotImplementedException();
-	}
 	#endregion
 
 	#region Constructors
