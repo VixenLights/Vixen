@@ -1,26 +1,57 @@
 name: Auto approve PRs for merge approved by Vixen Developer Team members
 
 on:
-  pull_request_review:
-    types: [submitted]
-
-env:
-  ACTUAL_USER: ${{ github.actor }}
+  workflow_run:
+      workflows: ["Review Submitted"]
+      types:
+        - completed
 
 jobs:
   # Auto approve PR with Vixen Developer Team member approval
-  auto-approve:
-    if: ${{ github.event.review.state == 'approved' }}
+  setup-auto-approve:
     runs-on: ubuntu-latest
+    outputs:
+      reviewed: ${{ steps.setup.outputs.reviewed }}
+      actor: ${{ steps.setup.outputs.actor }}
+      pr_number: ${{ steps.setup.outputs.pr_number }}
+    
+    steps:
+      - name: Download pr review artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: pr_info
+          path: ./downloaded-data
+
+      - name: setup
+        run: |
+          # Read file content (e.g., "review_state|pr_number|review_actor")
+          PR_INFO=$(cat ./downloaded-data/pr_review_info)
+          
+          # Split by | and assign to temporary bash variables
+          IFS='|' read -r REVIEW_STATE PR_NUMBER ACTOR <<< "PR_INFO"
+
+          if [ "$REVIEW_STATE" == "approved" ]; then
+            echo "reviewed=true" >> $GITHUB_OUTPUT
+          else
+            echo "reviewed=false" >> $GITHUB_OUTPUT
+          fi
+         
+          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          echo "actor=$ACTOR" >> $GITHUB_OUTPUT
+
+  auto-approve:
+    runs-on: ubuntu-latest
+    needs: setup-auto-approve
+    if: ${{ needs.setup-auto-approve.outputs.reviewed == 'true' }}
     permissions:
       pull-requests: write
-     
+
     steps:
       - name: Check user for Vixen Developer Team affiliation
         id: teamAffiliation
         uses: tspascoal/get-user-teams-membership@v3
         with:
-          username: ${{ env.ACTUAL_USER }}
+          username: ${{ needs.setup-auto-approve.outputs.actor }}
           team: Vixen Developers
           GITHUB_TOKEN: ${{ secrets.READ_ORG_MEMBERS }}
 
@@ -32,7 +63,7 @@ jobs:
         id: maintainerAffiliation
         uses: tspascoal/get-user-teams-membership@v3
         with:
-          username: ${{ env.ACTUAL_USER }}
+          username: ${{ needs.setup-auto-approve.outputs.actor }}
           team: Vixen Maintainer
           GITHUB_TOKEN: ${{ secrets.READ_ORG_MEMBERS }}
 
@@ -43,4 +74,5 @@ jobs:
         if: ${{ steps.teamAffiliation.outputs.isTeamMember == 'true' && steps.maintainerAffiliation.outputs.isTeamMember == 'false' }}
         uses: hmarr/auto-approve-action@v4
         with:
+          pull-request-number: ${{ needs.setup-auto-approve.outputs.pr_number }}
           review-message: "Auto approved with Vixen Developer Team member approval"

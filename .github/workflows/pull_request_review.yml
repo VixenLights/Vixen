@@ -1,0 +1,25 @@
+name: Review Submitted
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  upload-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Save PR review info
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REVIEW_STATE: ${{ github.event.review.state }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          mkdir -p ./pr
+          echo "$REVIEW_STATE|$PR_NUMBER|$ACTOR > ./pr/pr_review_info
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pr_review_info
+          path: pr/
+          retention-days: 1
+  
