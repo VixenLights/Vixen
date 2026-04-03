@@ -910,7 +910,7 @@ namespace Common.Controls
 			int runningCount = 0;
 			int notRunningCount = 0;
 
-			this.unpatchControllerToolStripMenuItem.Enabled = false;
+			unpatchControllerToolStripMenuItem.Enabled = false;
 
 			foreach (IControllerDevice controller in SelectedControllers) {
 				if (controller.IsRunning) {
@@ -924,16 +924,16 @@ namespace Common.Controls
 				foreach (var output in controller.Outputs)
 					if (output.Source != null && output.Source.Component != null)
 					{
-						this.unpatchControllerToolStripMenuItem.Enabled = true;
+						unpatchControllerToolStripMenuItem.Enabled = true;
 						break;
 					}
 			}
 
 			// Show the menu item as singular or plural
 			if (SelectedControllers.Count() > 1)
-				this.unpatchControllerToolStripMenuItem.Text = "Unpatch Controllers";
+				unpatchControllerToolStripMenuItem.Text = "Unpatch Controllers";
 			else
-				this.unpatchControllerToolStripMenuItem.Text = "Unpatch Controller";
+				unpatchControllerToolStripMenuItem.Text = "Unpatch Controller";
 
 			_someSelectedControllersRunning = runningCount > 0;
 			_someSelectedControllersNotRunning = notRunningCount > 0;

@@ -52,12 +52,12 @@ namespace Common.Controls.Theme
 		private static Color _timeLineLabelBackColor = _highlightColor;
 
 		//Preview
-		private static Color _pixel1 = System.Drawing.Color.Yellow;
-		private static Color _locked = System.Drawing.Color.DarkRed;
-		private static Color _element_selected = System.Drawing.Color.HotPink;
-		private static Color _unlinked = System.Drawing.Color.White;
-		private static Color _selected = System.Drawing.Color.LimeGreen;
-		private static Color _linked = System.Drawing.Color.Turquoise;
+		private static Color _pixel1 = Color.Yellow;
+		private static Color _locked = Color.DarkRed;
+		private static Color _element_selected = Color.HotPink;
+		private static Color _unlinked = Color.White;
+		private static Color _selected = Color.LimeGreen;
+		private static Color _linked = Color.Turquoise;
 
 		//Forms
 		public static Color BackgroundColor

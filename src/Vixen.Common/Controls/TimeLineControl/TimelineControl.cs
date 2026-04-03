@@ -85,7 +85,7 @@ namespace Common.Controls.Timeline
 				Row.RowHeightResized -= RowHeightResizedHandler;
 				Row.RowLabelContextMenuSelect -= RowLabelContextMenuHandler;
 			}
-			this.timelineRowList.EnableDisableHandlers(enabled);
+			timelineRowList.EnableDisableHandlers(enabled);
 		}
 		#region Initialization
 		protected override void Dispose(bool disposing)
@@ -124,13 +124,13 @@ namespace Common.Controls.Timeline
 		}
 		private void InitializeControls()
 		{
-			this.SuspendLayout();
+			SuspendLayout();
 
 			// (this) Timeline Control
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.AutoSize = true;
-			this.Name = "TimelineControl";
+			AutoScaleDimensions = new SizeF(6F, 13F);
+			AutoScaleMode = AutoScaleMode.Font;
+			AutoSize = true;
+			Name = "TimelineControl";
 
 
 			// Split Container
@@ -142,7 +142,7 @@ namespace Common.Controls.Timeline
 			                 		FixedPanel = FixedPanel.Panel1,
 			                 		Panel1MinSize = 100,
 			                 	};
-			this.Controls.Add(this.splitContainer);
+			Controls.Add(splitContainer);
 
 			// Split container panels
 			splitContainer.BeginInit();
@@ -155,7 +155,7 @@ namespace Common.Controls.Timeline
 			splitContainer.EndInit();
 		
 			splitContainer.PerformAutoScale();
-			this.ResumeLayout(false);
+			ResumeLayout(false);
 		}
 
 		// Panel 1 - the left side of the splitContainer

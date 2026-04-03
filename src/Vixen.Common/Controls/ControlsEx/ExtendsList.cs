@@ -96,7 +96,7 @@ namespace Common.Controls.ControlsEx
 
 		#region IEnumerable Member
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return _inner.GetEnumerator();
 		}

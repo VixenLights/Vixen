@@ -22,10 +22,10 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		public ColorBgra(uint argb)
 		{
-			this.A = (byte) (argb >> 24);
-			this.R = (byte) (argb >> 16);
-			this.G = (byte) (argb >> 8);
-			this.B = (byte) (argb);
+			A = (byte) (argb >> 24);
+			R = (byte) (argb >> 16);
+			G = (byte) (argb >> 8);
+			B = (byte) (argb);
 		}
 
 		public ColorBgra(byte r, byte g, byte b) :
@@ -35,10 +35,10 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		public ColorBgra(byte a, byte r, byte g, byte b)
 		{
-			this.A = a;
-			this.R = r;
-			this.G = g;
-			this.B = b;
+			A = a;
+			R = r;
+			G = g;
+			B = b;
 		}
 
 		#endregion

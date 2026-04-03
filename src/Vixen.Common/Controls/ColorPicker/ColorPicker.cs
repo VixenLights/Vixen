@@ -6,40 +6,40 @@ using Message = System.Windows.Forms.Message;
 namespace Common.Controls.ColorManagement.ColorPicker
 {
 	/// <summary>
-	/// Zusammenfassung für Form1.
+	/// Zusammenfassung fï¿½r Form1.
 	/// </summary>
-	public sealed class ColorPicker : System.Windows.Forms.Form
+	public sealed class ColorPicker : Form
 	{
 		private ColorSelectionPlane colorSelectionPlane1;
 		private ColorSelectionFader colorSelectionFader1;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Button btnCancel;
-		private System.Windows.Forms.Button btnOK;
-		private System.Windows.Forms.RadioButton rdHSV_H;
-		private System.Windows.Forms.RadioButton rdHSV_S;
-		private System.Windows.Forms.RadioButton rdHSV_V;
-		private System.Windows.Forms.RadioButton rdSecond_1;
-		private System.Windows.Forms.RadioButton rdSecond_2;
-		private System.Windows.Forms.RadioButton rdSecond_3;
-		private System.Windows.Forms.ContextMenuStrip contextMenu;
-		private System.Windows.Forms.ToolStripMenuItem ctxHSV_RGB;
-		private System.Windows.Forms.ToolStripMenuItem ctxHSV_LAB;
-		private System.Windows.Forms.TextBox tbHSV_H;
-		private System.Windows.Forms.TextBox tbHSV_S;
-		private System.Windows.Forms.TextBox tbHSV_V;
-		private System.Windows.Forms.TextBox tbSecond_1;
-		private System.Windows.Forms.TextBox tbSecond_2;
-		private System.Windows.Forms.TextBox tbSecond_3;
-		private System.Windows.Forms.Label lblHSV_H;
-		private System.Windows.Forms.Label lblHSV_S;
-		private System.Windows.Forms.Label lblHSV_V;
-		private System.Windows.Forms.Label lblSecond_1;
-		private System.Windows.Forms.Label lblSecond_2;
-		private System.Windows.Forms.Label lblSecond_3;
+		private Label label1;
+		private Button btnCancel;
+		private Button btnOK;
+		private RadioButton rdHSV_H;
+		private RadioButton rdHSV_S;
+		private RadioButton rdHSV_V;
+		private RadioButton rdSecond_1;
+		private RadioButton rdSecond_2;
+		private RadioButton rdSecond_3;
+		private ContextMenuStrip contextMenu;
+		private ToolStripMenuItem ctxHSV_RGB;
+		private ToolStripMenuItem ctxHSV_LAB;
+		private TextBox tbHSV_H;
+		private TextBox tbHSV_S;
+		private TextBox tbHSV_V;
+		private TextBox tbSecond_1;
+		private TextBox tbSecond_2;
+		private TextBox tbSecond_3;
+		private Label lblHSV_H;
+		private Label lblHSV_S;
+		private Label lblHSV_V;
+		private Label lblSecond_1;
+		private Label lblSecond_2;
+		private Label lblSecond_3;
 		private ColorLabel lblColorOut;
-		private System.Windows.Forms.ToolStripMenuItem separator1;
-		private System.Windows.Forms.ToolStripMenuItem ctxPrevColor;
-		private System.Windows.Forms.ToolStripMenuItem ctxCopy;
+		private ToolStripMenuItem separator1;
+		private ToolStripMenuItem ctxPrevColor;
+		private ToolStripMenuItem ctxCopy;
 		private ToolTip toolTip;
 		private GroupBox quickPickBox;
 		private Button blueButton;
@@ -95,340 +95,340 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		#region Vom Windows Form-Designer generierter Code
 
 		/// <summary>
-		/// Erforderliche Methode für die Designerunterstützung. 
-		/// Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
+		/// Erforderliche Methode fÃ¼r die DesignerunterstÃ¼tzung. 
+		/// Der Inhalt der Methode darf nicht mit dem Code-Editor geÃ¤ndert werden.
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ColorPicker));
-			this.label1 = new System.Windows.Forms.Label();
-			this.btnCancel = new System.Windows.Forms.Button();
-			this.btnOK = new System.Windows.Forms.Button();
-			this.contextMenu = new System.Windows.Forms.ContextMenuStrip();
-			this.ctxHSV_RGB = new System.Windows.Forms.ToolStripMenuItem();
-			this.ctxHSV_LAB = new System.Windows.Forms.ToolStripMenuItem();
-			this.separator1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.ctxPrevColor = new System.Windows.Forms.ToolStripMenuItem();
-			this.ctxCopy = new System.Windows.Forms.ToolStripMenuItem();
-			this.rdHSV_H = new System.Windows.Forms.RadioButton();
-			this.rdHSV_S = new System.Windows.Forms.RadioButton();
-			this.rdHSV_V = new System.Windows.Forms.RadioButton();
-			this.rdSecond_1 = new System.Windows.Forms.RadioButton();
-			this.rdSecond_2 = new System.Windows.Forms.RadioButton();
-			this.rdSecond_3 = new System.Windows.Forms.RadioButton();
-			this.tbHSV_H = new System.Windows.Forms.TextBox();
-			this.tbHSV_S = new System.Windows.Forms.TextBox();
-			this.tbHSV_V = new System.Windows.Forms.TextBox();
-			this.tbSecond_1 = new System.Windows.Forms.TextBox();
-			this.tbSecond_2 = new System.Windows.Forms.TextBox();
-			this.tbSecond_3 = new System.Windows.Forms.TextBox();
-			this.lblHSV_H = new System.Windows.Forms.Label();
-			this.lblHSV_S = new System.Windows.Forms.Label();
-			this.lblHSV_V = new System.Windows.Forms.Label();
-			this.lblSecond_1 = new System.Windows.Forms.Label();
-			this.lblSecond_2 = new System.Windows.Forms.Label();
-			this.lblSecond_3 = new System.Windows.Forms.Label();
-			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-			this.quickPickBox = new System.Windows.Forms.GroupBox();
-			this.whiteButton = new System.Windows.Forms.Button();
-			this.blueButton = new System.Windows.Forms.Button();
-			this.greenButton = new System.Windows.Forms.Button();
-			this.redButton = new System.Windows.Forms.Button();
-			this.lblColorOut = new Common.Controls.ColorManagement.ColorPicker.ColorLabel();
-			this.colorSelectionFader1 = new Common.Controls.ColorManagement.ColorPicker.ColorSelectionFader();
-			this.colorSelectionPlane1 = new Common.Controls.ColorManagement.ColorPicker.ColorSelectionPlane();
-			this.quickPickBox.SuspendLayout();
-			this.SuspendLayout();
+			components = new Container();
+			ComponentResourceManager resources = new ComponentResourceManager(typeof(ColorPicker));
+			label1 = new Label();
+			btnCancel = new Button();
+			btnOK = new Button();
+			contextMenu = new ContextMenuStrip();
+			ctxHSV_RGB = new ToolStripMenuItem();
+			ctxHSV_LAB = new ToolStripMenuItem();
+			separator1 = new ToolStripMenuItem();
+			ctxPrevColor = new ToolStripMenuItem();
+			ctxCopy = new ToolStripMenuItem();
+			rdHSV_H = new RadioButton();
+			rdHSV_S = new RadioButton();
+			rdHSV_V = new RadioButton();
+			rdSecond_1 = new RadioButton();
+			rdSecond_2 = new RadioButton();
+			rdSecond_3 = new RadioButton();
+			tbHSV_H = new TextBox();
+			tbHSV_S = new TextBox();
+			tbHSV_V = new TextBox();
+			tbSecond_1 = new TextBox();
+			tbSecond_2 = new TextBox();
+			tbSecond_3 = new TextBox();
+			lblHSV_H = new Label();
+			lblHSV_S = new Label();
+			lblHSV_V = new Label();
+			lblSecond_1 = new Label();
+			lblSecond_2 = new Label();
+			lblSecond_3 = new Label();
+			toolTip = new ToolTip(components);
+			quickPickBox = new GroupBox();
+			whiteButton = new Button();
+			blueButton = new Button();
+			greenButton = new Button();
+			redButton = new Button();
+			lblColorOut = new ColorLabel();
+			colorSelectionFader1 = new ColorSelectionFader();
+			colorSelectionPlane1 = new ColorSelectionPlane();
+			quickPickBox.SuspendLayout();
+			SuspendLayout();
 			// 
 			// label1
 			// 
-			resources.ApplyResources(this.label1, "label1");
-			this.label1.Name = "label1";
+			resources.ApplyResources(label1, "label1");
+			label1.Name = "label1";
 			// 
 			// btnCancel
 			// 
-			resources.ApplyResources(this.btnCancel, "btnCancel");
-			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Name = "btnCancel";
-			this.btnCancel.UseVisualStyleBackColor = false;
+			resources.ApplyResources(btnCancel, "btnCancel");
+			btnCancel.DialogResult = DialogResult.Cancel;
+			btnCancel.Name = "btnCancel";
+			btnCancel.UseVisualStyleBackColor = false;
 			// 
 			// btnOK
 			// 
-			resources.ApplyResources(this.btnOK, "btnOK");
-			this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnOK.Name = "btnOK";
-			this.btnOK.UseVisualStyleBackColor = false;
+			resources.ApplyResources(btnOK, "btnOK");
+			btnOK.DialogResult = DialogResult.OK;
+			btnOK.Name = "btnOK";
+			btnOK.UseVisualStyleBackColor = false;
 			// 
 			// contextMenu
 			// 
-			this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripMenuItem[] {
-            this.ctxHSV_RGB,
-            this.ctxHSV_LAB,
-            this.separator1,
-            this.ctxPrevColor,
-            this.ctxCopy});
+			contextMenu.Items.AddRange(new ToolStripMenuItem[] {
+            ctxHSV_RGB,
+            ctxHSV_LAB,
+            separator1,
+            ctxPrevColor,
+            ctxCopy});
 			// 
 			// ctxHSV_RGB
 			// 
-			this.ctxHSV_RGB.Checked = true;
+			ctxHSV_RGB.Checked = true;
 			//this.ctxHSV_RGB.Index = 0;
-			this.ctxHSV_RGB.Checked = true;
-			resources.ApplyResources(this.ctxHSV_RGB, "ctxHSV_RGB");
-			this.ctxHSV_RGB.Click += new System.EventHandler(this.ctxOptions_Click);
+			ctxHSV_RGB.Checked = true;
+			resources.ApplyResources(ctxHSV_RGB, "ctxHSV_RGB");
+			ctxHSV_RGB.Click += new EventHandler(ctxOptions_Click);
 			// 
 			// ctxHSV_LAB
 			// 
 			//this.ctxHSV_LAB.Index = 1;
-			this.ctxHSV_LAB.Checked = true;
-			resources.ApplyResources(this.ctxHSV_LAB, "ctxHSV_LAB");
-			this.ctxHSV_LAB.Click += new System.EventHandler(this.ctxOptions_Click);
+			ctxHSV_LAB.Checked = true;
+			resources.ApplyResources(ctxHSV_LAB, "ctxHSV_LAB");
+			ctxHSV_LAB.Click += new EventHandler(ctxOptions_Click);
 			// 
 			// separator1
 			// 
 			//this.separator1.Index = 2;
-			resources.ApplyResources(this.separator1, "separator1");
+			resources.ApplyResources(separator1, "separator1");
 			// 
 			// ctxPrevColor
 			// 
 			//this.ctxPrevColor.Index = 3;
-			resources.ApplyResources(this.ctxPrevColor, "ctxPrevColor");
-			this.ctxPrevColor.Click += new System.EventHandler(this.ctxOptions_Click);
+			resources.ApplyResources(ctxPrevColor, "ctxPrevColor");
+			ctxPrevColor.Click += new EventHandler(ctxOptions_Click);
 			// 
 			// ctxCopy
 			// 
 			//this.ctxCopy.Index = 4;
-			resources.ApplyResources(this.ctxCopy, "ctxCopy");
-			this.ctxCopy.Click += new System.EventHandler(this.ctxOptions_Click);
+			resources.ApplyResources(ctxCopy, "ctxCopy");
+			ctxCopy.Click += new EventHandler(ctxOptions_Click);
 			// 
 			// rdHSV_H
 			// 
-			this.rdHSV_H.Checked = true;
-			resources.ApplyResources(this.rdHSV_H, "rdHSV_H");
-			this.rdHSV_H.Name = "rdHSV_H";
-			this.rdHSV_H.TabStop = true;
-			this.rdHSV_H.CheckedChanged += new System.EventHandler(this.UpdaterdFaderedChanged);
+			rdHSV_H.Checked = true;
+			resources.ApplyResources(rdHSV_H, "rdHSV_H");
+			rdHSV_H.Name = "rdHSV_H";
+			rdHSV_H.TabStop = true;
+			rdHSV_H.CheckedChanged += new EventHandler(UpdaterdFaderedChanged);
 			// 
 			// rdHSV_S
 			// 
-			resources.ApplyResources(this.rdHSV_S, "rdHSV_S");
-			this.rdHSV_S.Name = "rdHSV_S";
-			this.rdHSV_S.CheckedChanged += new System.EventHandler(this.UpdaterdFaderedChanged);
+			resources.ApplyResources(rdHSV_S, "rdHSV_S");
+			rdHSV_S.Name = "rdHSV_S";
+			rdHSV_S.CheckedChanged += new EventHandler(UpdaterdFaderedChanged);
 			// 
 			// rdHSV_V
 			// 
-			resources.ApplyResources(this.rdHSV_V, "rdHSV_V");
-			this.rdHSV_V.Name = "rdHSV_V";
-			this.rdHSV_V.CheckedChanged += new System.EventHandler(this.UpdaterdFaderedChanged);
+			resources.ApplyResources(rdHSV_V, "rdHSV_V");
+			rdHSV_V.Name = "rdHSV_V";
+			rdHSV_V.CheckedChanged += new EventHandler(UpdaterdFaderedChanged);
 			// 
 			// rdSecond_1
 			// 
-			resources.ApplyResources(this.rdSecond_1, "rdSecond_1");
-			this.rdSecond_1.Name = "rdSecond_1";
-			this.rdSecond_1.CheckedChanged += new System.EventHandler(this.UpdaterdFaderedChanged);
+			resources.ApplyResources(rdSecond_1, "rdSecond_1");
+			rdSecond_1.Name = "rdSecond_1";
+			rdSecond_1.CheckedChanged += new EventHandler(UpdaterdFaderedChanged);
 			// 
 			// rdSecond_2
 			// 
-			resources.ApplyResources(this.rdSecond_2, "rdSecond_2");
-			this.rdSecond_2.Name = "rdSecond_2";
-			this.rdSecond_2.CheckedChanged += new System.EventHandler(this.UpdaterdFaderedChanged);
+			resources.ApplyResources(rdSecond_2, "rdSecond_2");
+			rdSecond_2.Name = "rdSecond_2";
+			rdSecond_2.CheckedChanged += new EventHandler(UpdaterdFaderedChanged);
 			// 
 			// rdSecond_3
 			// 
-			resources.ApplyResources(this.rdSecond_3, "rdSecond_3");
-			this.rdSecond_3.Name = "rdSecond_3";
-			this.rdSecond_3.CheckedChanged += new System.EventHandler(this.UpdaterdFaderedChanged);
+			resources.ApplyResources(rdSecond_3, "rdSecond_3");
+			rdSecond_3.Name = "rdSecond_3";
+			rdSecond_3.CheckedChanged += new EventHandler(UpdaterdFaderedChanged);
 			// 
 			// tbHSV_H
 			// 
-			resources.ApplyResources(this.tbHSV_H, "tbHSV_H");
-			this.tbHSV_H.Name = "tbHSV_H";
-			this.tbHSV_H.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tbValue_KeyUp);
-			this.tbHSV_H.Leave += new System.EventHandler(this.tbValue_Leave);
+			resources.ApplyResources(tbHSV_H, "tbHSV_H");
+			tbHSV_H.Name = "tbHSV_H";
+			tbHSV_H.KeyUp += new KeyEventHandler(tbValue_KeyUp);
+			tbHSV_H.Leave += new EventHandler(tbValue_Leave);
 			// 
 			// tbHSV_S
 			// 
-			resources.ApplyResources(this.tbHSV_S, "tbHSV_S");
-			this.tbHSV_S.Name = "tbHSV_S";
-			this.tbHSV_S.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tbValue_KeyUp);
-			this.tbHSV_S.Leave += new System.EventHandler(this.tbValue_Leave);
+			resources.ApplyResources(tbHSV_S, "tbHSV_S");
+			tbHSV_S.Name = "tbHSV_S";
+			tbHSV_S.KeyUp += new KeyEventHandler(tbValue_KeyUp);
+			tbHSV_S.Leave += new EventHandler(tbValue_Leave);
 			// 
 			// tbHSV_V
 			// 
-			resources.ApplyResources(this.tbHSV_V, "tbHSV_V");
-			this.tbHSV_V.Name = "tbHSV_V";
-			this.tbHSV_V.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tbValue_KeyUp);
-			this.tbHSV_V.Leave += new System.EventHandler(this.tbValue_Leave);
+			resources.ApplyResources(tbHSV_V, "tbHSV_V");
+			tbHSV_V.Name = "tbHSV_V";
+			tbHSV_V.KeyUp += new KeyEventHandler(tbValue_KeyUp);
+			tbHSV_V.Leave += new EventHandler(tbValue_Leave);
 			// 
 			// tbSecond_1
 			// 
-			resources.ApplyResources(this.tbSecond_1, "tbSecond_1");
-			this.tbSecond_1.Name = "tbSecond_1";
-			this.tbSecond_1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tbValue_KeyUp);
-			this.tbSecond_1.Leave += new System.EventHandler(this.tbValue_Leave);
+			resources.ApplyResources(tbSecond_1, "tbSecond_1");
+			tbSecond_1.Name = "tbSecond_1";
+			tbSecond_1.KeyUp += new KeyEventHandler(tbValue_KeyUp);
+			tbSecond_1.Leave += new EventHandler(tbValue_Leave);
 			// 
 			// tbSecond_2
 			// 
-			resources.ApplyResources(this.tbSecond_2, "tbSecond_2");
-			this.tbSecond_2.Name = "tbSecond_2";
-			this.tbSecond_2.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tbValue_KeyUp);
-			this.tbSecond_2.Leave += new System.EventHandler(this.tbValue_Leave);
+			resources.ApplyResources(tbSecond_2, "tbSecond_2");
+			tbSecond_2.Name = "tbSecond_2";
+			tbSecond_2.KeyUp += new KeyEventHandler(tbValue_KeyUp);
+			tbSecond_2.Leave += new EventHandler(tbValue_Leave);
 			// 
 			// tbSecond_3
 			// 
-			resources.ApplyResources(this.tbSecond_3, "tbSecond_3");
-			this.tbSecond_3.Name = "tbSecond_3";
-			this.tbSecond_3.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tbValue_KeyUp);
-			this.tbSecond_3.Leave += new System.EventHandler(this.tbValue_Leave);
+			resources.ApplyResources(tbSecond_3, "tbSecond_3");
+			tbSecond_3.Name = "tbSecond_3";
+			tbSecond_3.KeyUp += new KeyEventHandler(tbValue_KeyUp);
+			tbSecond_3.Leave += new EventHandler(tbValue_Leave);
 			// 
 			// lblHSV_H
 			// 
-			resources.ApplyResources(this.lblHSV_H, "lblHSV_H");
-			this.lblHSV_H.Name = "lblHSV_H";
+			resources.ApplyResources(lblHSV_H, "lblHSV_H");
+			lblHSV_H.Name = "lblHSV_H";
 			// 
 			// lblHSV_S
 			// 
-			resources.ApplyResources(this.lblHSV_S, "lblHSV_S");
-			this.lblHSV_S.Name = "lblHSV_S";
+			resources.ApplyResources(lblHSV_S, "lblHSV_S");
+			lblHSV_S.Name = "lblHSV_S";
 			// 
 			// lblHSV_V
 			// 
-			resources.ApplyResources(this.lblHSV_V, "lblHSV_V");
-			this.lblHSV_V.Name = "lblHSV_V";
+			resources.ApplyResources(lblHSV_V, "lblHSV_V");
+			lblHSV_V.Name = "lblHSV_V";
 			// 
 			// lblSecond_1
 			// 
-			resources.ApplyResources(this.lblSecond_1, "lblSecond_1");
-			this.lblSecond_1.Name = "lblSecond_1";
+			resources.ApplyResources(lblSecond_1, "lblSecond_1");
+			lblSecond_1.Name = "lblSecond_1";
 			// 
 			// lblSecond_2
 			// 
-			resources.ApplyResources(this.lblSecond_2, "lblSecond_2");
-			this.lblSecond_2.Name = "lblSecond_2";
+			resources.ApplyResources(lblSecond_2, "lblSecond_2");
+			lblSecond_2.Name = "lblSecond_2";
 			// 
 			// lblSecond_3
 			// 
-			resources.ApplyResources(this.lblSecond_3, "lblSecond_3");
-			this.lblSecond_3.Name = "lblSecond_3";
+			resources.ApplyResources(lblSecond_3, "lblSecond_3");
+			lblSecond_3.Name = "lblSecond_3";
 			// 
 			// toolTip
 			// 
-			this.toolTip.AutomaticDelay = 1000;
-			this.toolTip.AutoPopDelay = 5000;
-			this.toolTip.InitialDelay = 1000;
-			this.toolTip.ReshowDelay = 200;
+			toolTip.AutomaticDelay = 1000;
+			toolTip.AutoPopDelay = 5000;
+			toolTip.InitialDelay = 1000;
+			toolTip.ReshowDelay = 200;
 			// 
 			// quickPickBox
 			// 
-			this.quickPickBox.Controls.Add(this.whiteButton);
-			this.quickPickBox.Controls.Add(this.blueButton);
-			this.quickPickBox.Controls.Add(this.greenButton);
-			this.quickPickBox.Controls.Add(this.redButton);
-			resources.ApplyResources(this.quickPickBox, "quickPickBox");
-			this.quickPickBox.Name = "quickPickBox";
-			this.quickPickBox.TabStop = false;
-			this.quickPickBox.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			quickPickBox.Controls.Add(whiteButton);
+			quickPickBox.Controls.Add(blueButton);
+			quickPickBox.Controls.Add(greenButton);
+			quickPickBox.Controls.Add(redButton);
+			resources.ApplyResources(quickPickBox, "quickPickBox");
+			quickPickBox.Name = "quickPickBox";
+			quickPickBox.TabStop = false;
+			quickPickBox.Paint += new PaintEventHandler(groupBoxes_Paint);
 			// 
 			// whiteButton
 			// 
-			this.whiteButton.BackColor = System.Drawing.Color.White;
-			this.whiteButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-			resources.ApplyResources(this.whiteButton, "whiteButton");
-			this.whiteButton.Name = "whiteButton";
-			this.whiteButton.UseVisualStyleBackColor = false;
-			this.whiteButton.Click += new System.EventHandler(this.whiteButton_Click);
+			whiteButton.BackColor = System.Drawing.Color.White;
+			whiteButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			resources.ApplyResources(whiteButton, "whiteButton");
+			whiteButton.Name = "whiteButton";
+			whiteButton.UseVisualStyleBackColor = false;
+			whiteButton.Click += new EventHandler(whiteButton_Click);
 			// 
 			// blueButton
 			// 
-			this.blueButton.BackColor = System.Drawing.Color.Blue;
-			this.blueButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-			resources.ApplyResources(this.blueButton, "blueButton");
-			this.blueButton.Name = "blueButton";
-			this.blueButton.UseVisualStyleBackColor = false;
-			this.blueButton.Click += new System.EventHandler(this.blueButton_Click);
+			blueButton.BackColor = System.Drawing.Color.Blue;
+			blueButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			resources.ApplyResources(blueButton, "blueButton");
+			blueButton.Name = "blueButton";
+			blueButton.UseVisualStyleBackColor = false;
+			blueButton.Click += new EventHandler(blueButton_Click);
 			// 
 			// greenButton
 			// 
-			this.greenButton.BackColor = System.Drawing.Color.Green;
-			this.greenButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-			resources.ApplyResources(this.greenButton, "greenButton");
-			this.greenButton.Name = "greenButton";
-			this.greenButton.UseVisualStyleBackColor = false;
-			this.greenButton.Click += new System.EventHandler(this.greenButton_Click);
+			greenButton.BackColor = System.Drawing.Color.Green;
+			greenButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			resources.ApplyResources(greenButton, "greenButton");
+			greenButton.Name = "greenButton";
+			greenButton.UseVisualStyleBackColor = false;
+			greenButton.Click += new EventHandler(greenButton_Click);
 			// 
 			// redButton
 			// 
-			this.redButton.BackColor = System.Drawing.Color.Red;
-			this.redButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-			resources.ApplyResources(this.redButton, "redButton");
-			this.redButton.Name = "redButton";
-			this.redButton.UseVisualStyleBackColor = false;
-			this.redButton.Click += new System.EventHandler(this.redButton_Click);
+			redButton.BackColor = System.Drawing.Color.Red;
+			redButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+			resources.ApplyResources(redButton, "redButton");
+			redButton.Name = "redButton";
+			redButton.UseVisualStyleBackColor = false;
+			redButton.Click += new EventHandler(redButton_Click);
 			// 
 			// lblColorOut
 			// 
-			resources.ApplyResources(this.lblColorOut, "lblColorOut");
-			this.lblColorOut.BackColor = System.Drawing.Color.WhiteSmoke;
-			this.lblColorOut.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-			this.lblColorOut.ContextMenuStrip = this.contextMenu;
-			this.lblColorOut.Name = "lblColorOut";
-			this.lblColorOut.OldColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-			this.toolTip.SetToolTip(this.lblColorOut, resources.GetString("lblColorOut.ToolTip"));
-			this.lblColorOut.ColorChanged += new System.EventHandler(this.lblColorOut_ColorChanged);
+			resources.ApplyResources(lblColorOut, "lblColorOut");
+			lblColorOut.BackColor = System.Drawing.Color.WhiteSmoke;
+			lblColorOut.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+			lblColorOut.ContextMenuStrip = contextMenu;
+			lblColorOut.Name = "lblColorOut";
+			lblColorOut.OldColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+			toolTip.SetToolTip(lblColorOut, resources.GetString("lblColorOut.ToolTip"));
+			lblColorOut.ColorChanged += new EventHandler(lblColorOut_ColorChanged);
 			// 
 			// colorSelectionFader1
 			// 
-			resources.ApplyResources(this.colorSelectionFader1, "colorSelectionFader1");
-			this.colorSelectionFader1.Name = "colorSelectionFader1";
-			this.colorSelectionFader1.TabStop = false;
-			this.toolTip.SetToolTip(this.colorSelectionFader1, resources.GetString("colorSelectionFader1.ToolTip"));
+			resources.ApplyResources(colorSelectionFader1, "colorSelectionFader1");
+			colorSelectionFader1.Name = "colorSelectionFader1";
+			colorSelectionFader1.TabStop = false;
+			toolTip.SetToolTip(colorSelectionFader1, resources.GetString("colorSelectionFader1.ToolTip"));
 			// 
 			// colorSelectionPlane1
 			// 
-			resources.ApplyResources(this.colorSelectionPlane1, "colorSelectionPlane1");
-			this.colorSelectionPlane1.Name = "colorSelectionPlane1";
-			this.colorSelectionPlane1.TabStop = false;
-			this.toolTip.SetToolTip(this.colorSelectionPlane1, resources.GetString("colorSelectionPlane1.ToolTip"));
+			resources.ApplyResources(colorSelectionPlane1, "colorSelectionPlane1");
+			colorSelectionPlane1.Name = "colorSelectionPlane1";
+			colorSelectionPlane1.TabStop = false;
+			toolTip.SetToolTip(colorSelectionPlane1, resources.GetString("colorSelectionPlane1.ToolTip"));
 			// 
 			// ColorPicker
 			// 
-			this.AcceptButton = this.btnOK;
+			AcceptButton = btnOK;
 			resources.ApplyResources(this, "$this");
-			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.CancelButton = this.btnCancel;
-			this.Controls.Add(this.quickPickBox);
-			this.Controls.Add(this.lblColorOut);
-			this.Controls.Add(this.lblHSV_H);
-			this.Controls.Add(this.tbSecond_3);
-			this.Controls.Add(this.tbSecond_2);
-			this.Controls.Add(this.tbSecond_1);
-			this.Controls.Add(this.tbHSV_V);
-			this.Controls.Add(this.tbHSV_S);
-			this.Controls.Add(this.tbHSV_H);
-			this.Controls.Add(this.rdHSV_H);
-			this.Controls.Add(this.btnCancel);
-			this.Controls.Add(this.label1);
-			this.Controls.Add(this.colorSelectionFader1);
-			this.Controls.Add(this.colorSelectionPlane1);
-			this.Controls.Add(this.btnOK);
-			this.Controls.Add(this.rdHSV_S);
-			this.Controls.Add(this.rdHSV_V);
-			this.Controls.Add(this.rdSecond_1);
-			this.Controls.Add(this.rdSecond_2);
-			this.Controls.Add(this.rdSecond_3);
-			this.Controls.Add(this.lblHSV_S);
-			this.Controls.Add(this.lblHSV_V);
-			this.Controls.Add(this.lblSecond_1);
-			this.Controls.Add(this.lblSecond_2);
-			this.Controls.Add(this.lblSecond_3);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.Name = "ColorPicker";
-			this.ShowInTaskbar = false;
-			this.quickPickBox.ResumeLayout(false);
-			this.ResumeLayout(false);
-			this.PerformLayout();
+			BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			CancelButton = btnCancel;
+			Controls.Add(quickPickBox);
+			Controls.Add(lblColorOut);
+			Controls.Add(lblHSV_H);
+			Controls.Add(tbSecond_3);
+			Controls.Add(tbSecond_2);
+			Controls.Add(tbSecond_1);
+			Controls.Add(tbHSV_V);
+			Controls.Add(tbHSV_S);
+			Controls.Add(tbHSV_H);
+			Controls.Add(rdHSV_H);
+			Controls.Add(btnCancel);
+			Controls.Add(label1);
+			Controls.Add(colorSelectionFader1);
+			Controls.Add(colorSelectionPlane1);
+			Controls.Add(btnOK);
+			Controls.Add(rdHSV_S);
+			Controls.Add(rdHSV_V);
+			Controls.Add(rdSecond_1);
+			Controls.Add(rdSecond_2);
+			Controls.Add(rdSecond_3);
+			Controls.Add(lblHSV_S);
+			Controls.Add(lblHSV_V);
+			Controls.Add(lblSecond_1);
+			Controls.Add(lblSecond_2);
+			Controls.Add(lblSecond_3);
+			FormBorderStyle = FormBorderStyle.FixedDialog;
+			MaximizeBox = false;
+			MinimizeBox = false;
+			Name = "ColorPicker";
+			ShowInTaskbar = false;
+			quickPickBox.ResumeLayout(false);
+			ResumeLayout(false);
+			PerformLayout();
 
 		}
 
@@ -586,7 +586,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		#region contextmenu
 
-		private void ctxOptions_Click(object sender, System.EventArgs e)
+		private void ctxOptions_Click(object sender, EventArgs e)
 		{
 			Mode newmode = _mode;
 			if (sender == ctxPrevColor) {
@@ -627,7 +627,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		#region rdFader
 
-		private void UpdaterdFaderedChanged(object sender, System.EventArgs e)
+		private void UpdaterdFaderedChanged(object sender, EventArgs e)
 		{
 			if (sender == rdHSV_H)
 				_fader = Fader.HSV_H;
@@ -666,7 +666,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		#region tbValue
 
-		private void tbValue_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
+		private void tbValue_KeyUp(object sender, KeyEventArgs e)
 		{
 			if (!(sender is TextBox)) return;
 			if (e.KeyCode == Keys.Return) {
@@ -736,7 +736,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			UpdatetbValue((TextBox) sender);
 		}
 
-		private void tbValue_Leave(object sender, System.EventArgs e)
+		private void tbValue_Leave(object sender, EventArgs e)
 		{
 			UpdatetbValue(null);
 		}
@@ -792,7 +792,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			UpdatetbValue(null);
 		}
 
-		private void lblColorOut_ColorChanged(object sender, System.EventArgs e)
+		private void lblColorOut_ColorChanged(object sender, EventArgs e)
 		{
 			InternalColor = XYZ.FromRGB(lblColorOut.Color);
 			_module.XYZ = InternalColor;

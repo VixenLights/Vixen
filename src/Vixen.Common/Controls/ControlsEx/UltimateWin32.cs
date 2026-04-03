@@ -160,10 +160,10 @@ namespace Common.Controls.ControlsEx
 
 			public COMRECT(int x, int y, int width, int height)
 			{
-				this.Left = x;
-				this.Top = y;
-				this.Right = x + width;
-				this.Bottom = y + height;
+				Left = x;
+				Top = y;
+				Right = x + width;
+				Bottom = y + height;
 			}
 		}
 
@@ -190,8 +190,8 @@ namespace Common.Controls.ControlsEx
 		{
 			public POINTAPI(Point pt)
 			{
-				this.x = pt.X;
-				this.y = pt.Y;
+				x = pt.X;
+				y = pt.Y;
 			}
 
 			internal int x;
@@ -213,26 +213,26 @@ namespace Common.Controls.ControlsEx
 
 			public RECT(int x, int y, int width, int height)
 			{
-				this.Left = x;
-				this.Top = y;
-				this.Right = x + width;
-				this.Bottom = y + height;
+				Left = x;
+				Top = y;
+				Right = x + width;
+				Bottom = y + height;
 			}
 
 			public void Inflate(int width, int height)
 			{
-				this.Left -= width;
-				this.Right += width;
-				this.Top -= height;
-				this.Bottom += height;
+				Left -= width;
+				Right += width;
+				Top -= height;
+				Bottom += height;
 			}
 
 			public void Offset(int x, int y)
 			{
-				this.Left += x;
-				this.Right += x;
-				this.Top += y;
-				this.Bottom += y;
+				Left += x;
+				Right += x;
+				Top += y;
+				Bottom += y;
 			}
 
 			#region operators
@@ -274,11 +274,11 @@ namespace Common.Controls.ControlsEx
 
 			public Size Size
 			{
-				get { return new Size(this.Width, this.Height); }
+				get { return new Size(Width, Height); }
 				set
 				{
-					this.Width = value.Width;
-					this.Height = value.Height;
+					Width = value.Width;
+					Height = value.Height;
 				}
 			}
 
@@ -316,17 +316,17 @@ namespace Common.Controls.ControlsEx
 
 			public SCROLLINFO()
 			{
-				this.cbSize = Marshal.SizeOf(typeof (SCROLLINFO));
+				cbSize = Marshal.SizeOf(typeof (SCROLLINFO));
 			}
 
 			public SCROLLINFO(int mask, int min, int max, int page, int pos)
 			{
-				this.cbSize = Marshal.SizeOf(typeof (SCROLLINFO));
-				this.fMask = mask;
-				this.nMin = min;
-				this.nMax = max;
-				this.nPage = page;
-				this.nPos = pos;
+				cbSize = Marshal.SizeOf(typeof (SCROLLINFO));
+				fMask = mask;
+				nMin = min;
+				nMax = max;
+				nPage = page;
+				nPos = pos;
 			}
 		}
 
@@ -437,20 +437,20 @@ namespace Common.Controls.ControlsEx
 
 			public NCGraphics(IntPtr hdc)
 			{
-				this._targetgraphics = Graphics.FromHdc(hdc);
+				_targetgraphics = Graphics.FromHdc(hdc);
 				Size size = Size.Ceiling(_targetgraphics.VisibleClipBounds.Size);
-				this._membitmap = new Bitmap(size.Width, size.Height);
-				this._memgraphics = Graphics.FromImage(this._membitmap);
+				_membitmap = new Bitmap(size.Width, size.Height);
+				_memgraphics = Graphics.FromImage(_membitmap);
 			}
 
 			public void Dispose()
 			{
 				//render
-				this._targetgraphics.DrawImageUnscaled(this._membitmap, Point.Empty);
+				_targetgraphics.DrawImageUnscaled(_membitmap, Point.Empty);
 				//dispose
-				this._memgraphics.Dispose();
-				this._membitmap.Dispose();
-				this._targetgraphics.Dispose();
+				_memgraphics.Dispose();
+				_membitmap.Dispose();
+				_targetgraphics.Dispose();
 			}
 
 			/// <summary>
@@ -458,7 +458,7 @@ namespace Common.Controls.ControlsEx
 			/// </summary>
 			public Graphics Graphics
 			{
-				get { return this._memgraphics; }
+				get { return _memgraphics; }
 			}
 		}
 

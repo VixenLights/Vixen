@@ -28,8 +28,8 @@ namespace Common.Controls.ControlsEx.ListControls
 		{
 			public Cell(int row, int column)
 			{
-				this.Row = row;
-				this.Column = column;
+				Row = row;
+				Column = column;
 			}
 
 			public int Row;
@@ -95,12 +95,12 @@ namespace Common.Controls.ControlsEx.ListControls
 		{
 			_cacheindex = int.MinValue;
 			//calculate maximum number of lines which fit the control
-			_lines = Math.Max(1, (clientsize.Width - 2)/(base._fieldsize.Width + 1));
+			_lines = Math.Max(1, (clientsize.Width - 2)/(_fieldsize.Width + 1));
 			//calculate row count
 			int rem, rows = Math.DivRem(count, _lines, out rem);
 			if (rem != 0) rows++;
 			//if hscroll is visible, recalculate
-			if (rows*(base._fieldsize.Height + 1) > clientsize.Height) {
+			if (rows*(_fieldsize.Height + 1) > clientsize.Height) {
 				_lines = Math.Max(1, (clientsize.Width - 2 - SystemInformation.VerticalScrollBarWidth)/
 				                     (_fieldsize.Width + 1));
 				//calculate row count
@@ -109,7 +109,7 @@ namespace Common.Controls.ControlsEx.ListControls
 			}
 			//update scrollbars
 			return new Size(0,
-			                1 + rows*(base._fieldsize.Height + 1));
+			                1 + rows*(_fieldsize.Height + 1));
 		}
 
 		/// <summary>
@@ -118,7 +118,7 @@ namespace Common.Controls.ControlsEx.ListControls
 		/// </summary>
 		protected override int GetIndexAt(int x, int y)
 		{
-			Cell c = this.GetCellAtPosition(x, y);
+			Cell c = GetCellAtPosition(x, y);
 			return c.Row*_lines + c.Column;
 		}
 
@@ -131,15 +131,15 @@ namespace Common.Controls.ControlsEx.ListControls
 			//optimization for drawing
 			if (index == _cacheindex + 1) {
 				_cacheindex = index;
-				_cachebounds.X += base._fieldsize.Width + 1;
+				_cachebounds.X += _fieldsize.Width + 1;
 				if (_cachecol >= _lines) {
 					_cachecol = 0;
 					_cachebounds.X = 1;
-					_cachebounds.Y += base._fieldsize.Height + 1;
+					_cachebounds.Y += _fieldsize.Height + 1;
 				}
 			}
 			_cacheindex = index;
-			Cell c = this.GetCellAtIndex(index);
+			Cell c = GetCellAtIndex(index);
 			_cachecol = c.Column;
 			return _cachebounds = GetBoundsAtCell(c);
 		}
@@ -161,10 +161,10 @@ namespace Common.Controls.ControlsEx.ListControls
 		private Rectangle GetBoundsAtCell(Cell c)
 		{
 			return new Rectangle(
-				1 + c.Column*(base._fieldsize.Width + 1),
-				1 + c.Row*(base._fieldsize.Height + 1),
-				base._fieldsize.Width,
-				base._fieldsize.Height);
+				1 + c.Column*(_fieldsize.Width + 1),
+				1 + c.Row*(_fieldsize.Height + 1),
+				_fieldsize.Width,
+				_fieldsize.Height);
 		}
 
 		/// <summary>
@@ -175,8 +175,8 @@ namespace Common.Controls.ControlsEx.ListControls
 		protected override Cell GetCellAtPosition(int x, int y)
 		{
 			return new Cell(
-				Math.Max(0, y/(base._fieldsize.Height + 1)), //row
-				Math.Max(0, Math.Min(_lines - 1, x/(base._fieldsize.Width + 1)))); //column
+				Math.Max(0, y/(_fieldsize.Height + 1)), //row
+				Math.Max(0, Math.Min(_lines - 1, x/(_fieldsize.Width + 1)))); //column
 		}
 
 		/// <summary>

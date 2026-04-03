@@ -63,7 +63,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			if (newL == _color.L) return;
 			_color.L = newL;
 			RaiseColorChanged();
-			System.Windows.Forms.Application.DoEvents();
+			Application.DoEvents();
 			UpdatePlaneImage();
 		}
 
@@ -143,7 +143,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			if (newa == _color.b) return;
 			_color.a = newa;
 			RaiseColorChanged();
-			System.Windows.Forms.Application.DoEvents();
+			Application.DoEvents();
 			UpdatePlaneImage();
 		}
 
@@ -223,7 +223,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			if (newb == _color.b) return;
 			_color.b = newb;
 			RaiseColorChanged();
-			System.Windows.Forms.Application.DoEvents();
+			Application.DoEvents();
 			UpdatePlaneImage();
 		}
 

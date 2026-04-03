@@ -29,7 +29,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 			{
 				if (owner == null)
 					throw new ArgumentNullException("owner");
-				this._owner = owner;
+				_owner = owner;
 			}
 
 			#region public members
@@ -38,10 +38,10 @@ namespace Common.Controls.ControlsEx.ValueControls
 			{
 				if (mainform == null)
 					throw new ArgumentNullException("mainform");
-				if (this.Handle != IntPtr.Zero)
-					this.ReleaseHandle();
+				if (Handle != IntPtr.Zero)
+					ReleaseHandle();
 				if (mainform.IsHandleCreated)
-					this.AssignHandle(mainform.Handle);
+					AssignHandle(mainform.Handle);
 			}
 
 			#endregion
@@ -83,7 +83,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 			{
 				if (owner == null)
 					throw new ArgumentNullException("owner");
-				this._owner = owner;
+				_owner = owner;
 			}
 
 			#region controller
@@ -109,7 +109,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 			/// </summary>
 			private void ProcessMouseDown()
 			{
-				if (!_owner.Bounds.Contains(Control.MousePosition))
+				if (!_owner.Bounds.Contains(MousePosition))
 					_owner.Close();
 			}
 
@@ -130,10 +130,10 @@ namespace Common.Controls.ControlsEx.ValueControls
 		/// </summary>
 		public PopupForm()
 		{
-			this.ControlBox = false;
-			this.FormBorderStyle = FormBorderStyle.None;
-			this.StartPosition = FormStartPosition.Manual;
-			this.ShowInTaskbar = false;
+			ControlBox = false;
+			FormBorderStyle = FormBorderStyle.None;
+			StartPosition = FormStartPosition.Manual;
+			ShowInTaskbar = false;
 			//filters
 			_mousefilter = new MouseFilter(this);
 			_activationfilter = new ActivationFilter(this);
@@ -145,7 +145,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 		{
 			if (ctl == null)
 				throw new ArgumentNullException("ctl");
-			this.Location = screenpos;
+			Location = screenpos;
 			//filters
 			Application.AddMessageFilter(_mousefilter);
 			Form mainfrm = ctl.FindForm();
@@ -163,7 +163,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 		{
 			e.Cancel = true;
 			base.OnClosing(e);
-			this.Hide();
+			Hide();
 			//
 			Application.RemoveMessageFilter(_mousefilter);
 			_activationfilter.ReleaseHandle();
@@ -188,7 +188,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 				IntPtr hdc = Win32.GetWindowDC(m.HWnd);
 				if (hdc == IntPtr.Zero) return;
 				Graphics gr = Graphics.FromHdc(hdc);
-				ControlPaint.DrawBorder3D(gr, 0, 0, this.Width, this.Height,
+				ControlPaint.DrawBorder3D(gr, 0, 0, Width, Height,
 				                          Border3DStyle.RaisedInner, Border3DSide.All);
 				gr.Dispose();
 				Win32.ReleaseDC(m.HWnd, hdc);

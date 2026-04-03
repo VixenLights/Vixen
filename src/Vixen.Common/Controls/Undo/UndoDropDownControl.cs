@@ -11,8 +11,8 @@ namespace Common.Controls
 		{
 			InitializeComponent();
 			ThemeUpdateControls.UpdateControls(this);
-			this.DoubleBuffered = true;
-			this.ButtonType = UndoButtonType.UndoButton;
+			DoubleBuffered = true;
+			ButtonType = UndoButtonType.UndoButton;
 
 			listbox.MouseMove += listbox_MouseMove;
 			listbox.MouseDown += listbox_MouseDown;

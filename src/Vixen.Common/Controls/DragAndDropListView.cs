@@ -17,11 +17,11 @@ namespace Common.Controls
 		{
 			get
 			{
-				return this.allowRowReorder;
+				return allowRowReorder;
 			}
 			set
 			{
-				this.allowRowReorder = value;
+				allowRowReorder = value;
 				base.AllowDrop = value;
 			}
 		}
@@ -68,28 +68,28 @@ namespace Common.Controls
 		protected override void OnDragDrop(DragEventArgs e)
 		{
 			
-			if(!this.AllowRowReorder)
+			if(!AllowRowReorder)
 			{
 				return;
 			}
-			if(base.SelectedItems.Count==0)
+			if(SelectedItems.Count==0)
 			{
 				return;
 			}
-			Point cp = base.PointToClient(new Point(e.X, e.Y));
-			ListViewItem dragToItem = base.GetItemAt(cp.X, cp.Y);
+			Point cp = PointToClient(new Point(e.X, e.Y));
+			ListViewItem dragToItem = GetItemAt(cp.X, cp.Y);
 			if(dragToItem==null)
 			{
 				return;
 			}
 			int dropIndex = dragToItem.Index;
-			if(dropIndex>base.SelectedItems[0].Index)
+			if(dropIndex>SelectedItems[0].Index)
 			{
 				dropIndex++;
 			}
 			ArrayList insertItems = 
-				new ArrayList(base.SelectedItems.Count);
-			foreach(ListViewItem item in base.SelectedItems)
+				new ArrayList(SelectedItems.Count);
+			foreach(ListViewItem item in SelectedItems)
 			{
 				var newItem = (ListViewItem)item.Clone();
 				newItem.Name = item.Name;
@@ -99,18 +99,18 @@ namespace Common.Controls
 			{
 				ListViewItem insertItem =
 					(ListViewItem)insertItems[i];
-				base.Items.Insert(dropIndex, insertItem);
+				Items.Insert(dropIndex, insertItem);
 			}
-			foreach(ListViewItem removeItem in base.SelectedItems)
+			foreach(ListViewItem removeItem in SelectedItems)
 			{
-				base.Items.Remove(removeItem);
+				Items.Remove(removeItem);
 			}
 			base.OnDragDrop(e);
 		}
 		
 		protected override void OnDragOver(DragEventArgs e)
 		{
-			if(!this.AllowRowReorder)
+			if(!AllowRowReorder)
 			{
 				e.Effect = DragDropEffects.None;
 				return;
@@ -120,14 +120,14 @@ namespace Common.Controls
 				e.Effect = DragDropEffects.None;
 				return;
 			}
-			Point cp = base.PointToClient(new Point(e.X, e.Y));
-			ListViewItem hoverItem = base.GetItemAt(cp.X, cp.Y);
+			Point cp = PointToClient(new Point(e.X, e.Y));
+			ListViewItem hoverItem = GetItemAt(cp.X, cp.Y);
 			if(hoverItem==null || _reorderExcludedRows.Contains(hoverItem))
 			{
 				e.Effect = DragDropEffects.None;
 				return;
 			}
-			foreach(ListViewItem moveItem in base.SelectedItems)
+			foreach(ListViewItem moveItem in SelectedItems)
 			{
 				if(moveItem.Index==hoverItem.Index)
 				{
@@ -152,7 +152,7 @@ namespace Common.Controls
 		protected override void OnDragEnter(DragEventArgs e)
 		{
 			base.OnDragEnter(e);
-			if(!this.AllowRowReorder)
+			if(!AllowRowReorder)
 			{
 				e.Effect = DragDropEffects.None;
 				return;
@@ -181,11 +181,11 @@ namespace Common.Controls
 				return;
 			}
 			base.OnItemDrag(e);
-			if(!this.AllowRowReorder)
+			if(!AllowRowReorder)
 			{
 				return;
 			}
-			base.DoDragDrop(REORDER, DragDropEffects.Move);
+			DoDragDrop(REORDER, DragDropEffects.Move);
 		}
 
 		public void ColumnAutoSize()

@@ -55,7 +55,7 @@ namespace Common.Controls
 						MessageBoxForm.msgIcon = SystemIcons.Hand; //this is used if you want to add a system icon to the message form.
 						var messageBox = new MessageBoxForm("The port number is not a valid hexadecimal number.", "Parallel Port Setup", false, false);
 						messageBox.ShowDialog();
-						base.DialogResult = DialogResult.None;
+						DialogResult = DialogResult.None;
 					}
 				}
 				else {

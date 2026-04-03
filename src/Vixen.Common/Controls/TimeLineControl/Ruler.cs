@@ -253,7 +253,7 @@ namespace Common.Controls.Timeline
 		private void recalculate()
 		{
 			// Calculate the correct font size based on height
-			int desiredPixelHeight = (this.Size.Height/3);
+			int desiredPixelHeight = (Size.Height/3);
 
 			if (m_font != null)
 				m_font.Dispose();
@@ -490,7 +490,7 @@ namespace Common.Controls.Timeline
 		{
 			base.OnMouseMove(e);
 
-			if (m_button == System.Windows.Forms.MouseButtons.Left)
+			if (m_button == MouseButtons.Left)
 			{
 				switch (m_mouseState)
 				{
@@ -620,7 +620,7 @@ namespace Common.Controls.Timeline
 			if (e.Clicks == 2)
 			{
 				// Add a mark
-				OnClickedAtTime(new RulerClickedEventArgs(PixelsToTime(e.X) + VisibleTimeStart, Form.ModifierKeys, m_button));
+				OnClickedAtTime(new RulerClickedEventArgs(PixelsToTime(e.X) + VisibleTimeStart, ModifierKeys, m_button));
 			}
 			else
 			{
@@ -634,12 +634,12 @@ namespace Common.Controls.Timeline
 
 						case MouseState.DragWait:
 							// Didn't move enough to be considered dragging. Just a click.
-							OnClickedAtTime(new RulerClickedEventArgs(PixelsToTime(e.X) + VisibleTimeStart, Form.ModifierKeys, m_button));
+							OnClickedAtTime(new RulerClickedEventArgs(PixelsToTime(e.X) + VisibleTimeStart, ModifierKeys, m_button));
 							break;
 
 						case MouseState.Dragging:
 							// Finished a time range drag.
-							OnTimeRangeDragged(new ModifierKeysEventArgs(Form.ModifierKeys));
+							OnTimeRangeDragged(new ModifierKeysEventArgs(ModifierKeys));
 							break;
 						case MouseState.DraggingMark:
 							if (_marksSelectionManager.SelectedMarks.Any())
@@ -677,7 +677,7 @@ namespace Common.Controls.Timeline
 					else
 					{
 						//TODO this is jenky and should be fixed to be more specific.
-						OnClickedAtTime(new RulerClickedEventArgs(PixelsToTime(e.X) + VisibleTimeStart, Form.ModifierKeys, m_button));
+						OnClickedAtTime(new RulerClickedEventArgs(PixelsToTime(e.X) + VisibleTimeStart, ModifierKeys, m_button));
 					}
 				}
 			}

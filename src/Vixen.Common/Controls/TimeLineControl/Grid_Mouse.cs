@@ -21,7 +21,7 @@ namespace Common.Controls.Timeline
 		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public TimeSpan MinimumElementDuration
 		{
-			get { return PixelsToTime(Common.Controls.Timeline.Grid.MinElemWidthPx); }
+			get { return PixelsToTime(MinElemWidthPx); }
 		}
 		#endregion
 
@@ -60,7 +60,7 @@ namespace Common.Controls.Timeline
 					return;
 
 				_beginEffectDraw = true;
-				this.Cursor = Cursors.Cross;
+				Cursor = Cursors.Cross;
 				effectDrawMouseDownTime = PixelsToTime(gridLocation.X);
 				beginDrawBox(gridLocation);
 				m_lastSingleSelectedElementLocation = Point.Empty;				
@@ -211,7 +211,7 @@ namespace Common.Controls.Timeline
 				switch (m_dragState) { 
 					case DragState.Drawing:
 						_beginEffectDraw = false;
-						this.Cursor = Cursors.Default;
+						Cursor = Cursors.Default;
 						effectDrawMouseUpTime = PixelsToTime(gridLocation.X);
 						StartDrawMode(this, new DrawElementEventArgs(SelectedEffect, GetRowsWithin(DrawingArea), effectDrawMouseDownTime, effectDrawMouseUpTime));
 						MouseUp_DrawSelect(gridLocation);

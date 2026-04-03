@@ -2,7 +2,7 @@
 
 namespace Common.Controls
 {
-	[System.ComponentModel.DesignerCategory("")] // Prevent this from showing up in designer.
+	[DesignerCategory("")] // Prevent this from showing up in designer.
 	public class UndoButton : ToolStripSplitButton
 	{
 		private ToolStripDropDown m_toolDrop = null;
@@ -37,11 +37,11 @@ namespace Common.Controls
 			m_toolDrop.Items.Add(m_toolHost);
 
 
-			this.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			this.BackgroundImageLayout = ImageLayout.Stretch;
+			DisplayStyle = ToolStripItemDisplayStyle.Image;
+			BackgroundImageLayout = ImageLayout.Stretch;
 
 			// There is no OnDropDownOpening to override, so I guess we have to do it this way.
-			this.DropDownOpening += UndoButton_DropDownOpening;
+			DropDownOpening += UndoButton_DropDownOpening;
 		}
 
 		public ListBox.ObjectCollection UndoItems
@@ -52,7 +52,7 @@ namespace Common.Controls
 
 		private void UndoButton_DropDownOpening(object sender, EventArgs e)
 		{
-			m_toolDrop.Show(this.Parent, new Point(this.Bounds.Left, this.Bounds.Bottom));
+			m_toolDrop.Show(Parent, new Point(Bounds.Left, Bounds.Bottom));
 			m_dropControl.Reset();
 			m_dropControl.Focus();
 		}

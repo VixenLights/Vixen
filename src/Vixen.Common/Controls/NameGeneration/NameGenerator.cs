@@ -323,14 +323,14 @@ namespace Common.Controls
 			if (index > 0)
 			{
 	//			this.listViewGenerators.Items[index - 1].BackColor = Color.DodgerBlue;
-				this.listViewGenerators.Items[index - 1].Selected = true;
+				listViewGenerators.Items[index - 1].Selected = true;
 			}
 			else
 			{
 				if (listViewGenerators.Items.Count != index)
 				{
 	//				this.listViewGenerators.Items[index].BackColor = Color.DodgerBlue;
-					this.listViewGenerators.Items[index].Selected = true;
+					listViewGenerators.Items[index].Selected = true;
 				}
 			}
 			if (index < listViewGenerators.Items.Count)
@@ -359,7 +359,7 @@ namespace Common.Controls
 			Generators[index] = ng;
 			SyncGeneratorsToListView();
 			PopulateNames();
-			this.listViewGenerators.Items[index - 1].Selected = true;
+			listViewGenerators.Items[index - 1].Selected = true;
 		}
 
 		private void buttonMoveRuleDown_Click(object sender, EventArgs e)
@@ -376,7 +376,7 @@ namespace Common.Controls
 			Generators[index] = ng;
 			SyncGeneratorsToListView();
 			PopulateNames();
-			this.listViewGenerators.Items[index + 1].Selected = true;
+			listViewGenerators.Items[index + 1].Selected = true;
 		}
 
 		private void listViewGenerators_Highlight(object sender, DrawListViewItemEventArgs e)

@@ -29,7 +29,7 @@ namespace Common.Controls.ControlsEx
 			//search nearest tracker value
 			int win = 5;
 			double dist = double.MaxValue;
-			for (int i = 0; i < ScaleFactor.CommonZooms.Length; i++) {
+			for (int i = 0; i < CommonZooms.Length; i++) {
 				//squared distance
 				double d = CommonZooms[i] - value;
 				d = d*d;
@@ -60,8 +60,8 @@ namespace Common.Controls.ControlsEx
 				throw new ArgumentException("numerator must be greater than 0");
 			if (denominator <= 0)
 				throw new ArgumentException("denomitator must be greater than 0");
-			this._numerator = numerator;
-			this._denominator = denominator;
+			_numerator = numerator;
+			_denominator = denominator;
 		}
 
 		/// <summary>
@@ -174,7 +174,7 @@ namespace Common.Controls.ControlsEx
 		/// </summary>
 		public override string ToString()
 		{
-			return this.ToDouble().ToString("0%");
+			return ToDouble().ToString("0%");
 		}
 
 		#region scale

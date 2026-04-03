@@ -24,12 +24,12 @@ namespace Common.Controls.DragDropListView
     public ListViewItemDragEventArgs(ListViewItem sourceItem, ListViewItem dropItem, int insertionIndex, InsertionMode insertionMode, int x, int y)
       : this()
     {
-      this.Item = sourceItem;
-      this.DropItem = dropItem;
-      this.X = x;
-      this.Y = y;
-      this.InsertionIndex = insertionIndex;
-      this.InsertionMode = insertionMode;
+      Item = sourceItem;
+      DropItem = dropItem;
+      X = x;
+      Y = y;
+      InsertionIndex = insertionIndex;
+      InsertionMode = insertionMode;
     }
 
     #endregion

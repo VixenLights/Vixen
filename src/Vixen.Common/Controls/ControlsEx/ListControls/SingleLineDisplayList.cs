@@ -32,10 +32,10 @@ namespace Common.Controls.ControlsEx.ListControls
 				value = Math.Max(5, Math.Min(2000, value));
 				if (value == _aspect) return;
 				_aspect = value;
-				this.AutoScrollMinSize = GetTotalSize(
+				AutoScrollMinSize = GetTotalSize(
 					ClientSize, Items.Count);
 				if (Items.Count > 0)
-					this.Refresh();
+					Refresh();
 			}
 		}
 
@@ -57,11 +57,11 @@ namespace Common.Controls.ControlsEx.ListControls
 		{
 			_cacheindex = int.MinValue;
 			//item covers full clientheight (without border, scrollbar)
-			base._fieldsize.Height = Math.Max(10, clientsize.Height - 2);
+			_fieldsize.Height = Math.Max(10, clientsize.Height - 2);
 			//width is calculated by aspect rate
-			base._fieldsize.Width = Math.Max(10, ((clientsize.Height - 4)*100)/_aspect);
+			_fieldsize.Width = Math.Max(10, ((clientsize.Height - 4)*100)/_aspect);
 			//width
-			int w = 1 + count*(base._fieldsize.Width + 1);
+			int w = 1 + count*(_fieldsize.Width + 1);
 			if (w > clientsize.Width)
 				_fieldsize.Height = Math.Max(10,
 				                             _fieldsize.Height - SystemInformation.HorizontalScrollBarHeight);
@@ -75,7 +75,7 @@ namespace Common.Controls.ControlsEx.ListControls
 		/// </summary>
 		protected override int GetIndexAt(int x, int y)
 		{
-			return x/(base._fieldsize.Width + 1);
+			return x/(_fieldsize.Width + 1);
 		}
 
 		/// <summary>
@@ -92,14 +92,14 @@ namespace Common.Controls.ControlsEx.ListControls
 			}
 			_cacheindex = index;
 			return _cachebounds = new Rectangle(
-			                      	(index*(base._fieldsize.Width + 1)) + 1, 1,
-			                      	base._fieldsize.Width, base._fieldsize.Height);
+			                      	(index*(_fieldsize.Width + 1)) + 1, 1,
+			                      	_fieldsize.Width, _fieldsize.Height);
 		}
 
 		protected override void GetDrawingInterval(Rectangle clip, out int start, out int stop)
 		{
-			start = this.GetIndexAt(clip.X, 0);
-			stop = this.GetIndexAt(clip.Right, 0);
+			start = GetIndexAt(clip.X, 0);
+			stop = GetIndexAt(clip.Right, 0);
 		}
 
 		#endregion
@@ -120,11 +120,11 @@ namespace Common.Controls.ControlsEx.ListControls
 		{
 			_cacheindex = int.MinValue;
 			//item covers full clientwidth (without border, scrollbar)
-			base._fieldsize.Width = Math.Max(10, clientsize.Width - 2);
+			_fieldsize.Width = Math.Max(10, clientsize.Width - 2);
 			//calculate height by aspect rate
-			base._fieldsize.Height = Math.Max(10, ((clientsize.Width - 4)*_aspect)/100);
+			_fieldsize.Height = Math.Max(10, ((clientsize.Width - 4)*_aspect)/100);
 			//height
-			int h = 1 + count*(base._fieldsize.Height + 1);
+			int h = 1 + count*(_fieldsize.Height + 1);
 			if (h > clientsize.Height)
 				_fieldsize.Width = Math.Max(10,
 				                            _fieldsize.Width - SystemInformation.VerticalScrollBarWidth);
@@ -138,7 +138,7 @@ namespace Common.Controls.ControlsEx.ListControls
 		/// </summary>
 		protected override int GetIndexAt(int x, int y)
 		{
-			return y/(base._fieldsize.Height + 1);
+			return y/(_fieldsize.Height + 1);
 		}
 
 		/// <summary>
@@ -155,14 +155,14 @@ namespace Common.Controls.ControlsEx.ListControls
 			}
 			_cacheindex = index;
 			return _cachebounds = new Rectangle(
-			                      	1, (index*(base._fieldsize.Height + 1)) + 1,
-			                      	base._fieldsize.Width, base._fieldsize.Height);
+			                      	1, (index*(_fieldsize.Height + 1)) + 1,
+			                      	_fieldsize.Width, _fieldsize.Height);
 		}
 
 		protected override void GetDrawingInterval(Rectangle clip, out int start, out int stop)
 		{
-			start = this.GetIndexAt(0, clip.Y);
-			stop = this.GetIndexAt(0, clip.Bottom);
+			start = GetIndexAt(0, clip.Y);
+			stop = GetIndexAt(0, clip.Bottom);
 		}
 
 		#endregion

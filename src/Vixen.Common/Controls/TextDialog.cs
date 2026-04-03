@@ -14,7 +14,7 @@ namespace Common.Controls
 		public TextDialog(string prompt, string title)
 			: this(prompt)
 		{
-			this.Text = title;
+			Text = title;
 		}
 
 		public TextDialog(string prompt, string title, string initialText, bool selectInitialText = false)

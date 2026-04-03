@@ -16,8 +16,8 @@ namespace Common.Controls.ControlsEx
 		{
 			public ZoomTracker()
 			{
-				this.SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-				this.BackColor = Color.Transparent;
+				SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+				BackColor = Color.Transparent;
 			}
 		}
 
@@ -39,17 +39,17 @@ namespace Common.Controls.ControlsEx
 			: base(new ZoomTracker())
 		{
 			//load .resx
-			System.ComponentModel.ComponentResourceManager resources =
-				new System.ComponentModel.ComponentResourceManager(typeof (ZoomBar));
+			ComponentResourceManager resources =
+				new ComponentResourceManager(typeof (ZoomBar));
 			zoom_in = (Bitmap) resources.GetObject("zoom_in");
 			zoom_out = (Bitmap) resources.GetObject("zoom_out");
 			//
-			HMiniTracker tracker = this.Control as ZoomTracker;
+			HMiniTracker tracker = Control as ZoomTracker;
 			tracker.Width = 120;
 			tracker.Assign(5, ScaleFactor.CommonZooms.Length - 1, 0);
 			tracker.ValueChanged += new ValueChangedEH(tracker_ValueChanged);
 			//make room for buttons
-			this.Padding = new Padding(20, 0, 20, 0);
+			Padding = new Padding(20, 0, 20, 0);
 		}
 
 		#region controller
@@ -73,8 +73,8 @@ namespace Common.Controls.ControlsEx
 		private void tracker_ValueChanged(ValueControl sender, ValueChangedEventArgs e)
 		{
 			_zoom = ScaleFactor.CommonZooms[sender.Value];
-			this.ToolTipText = _zoom.ToString();
-			this.Invalidate();
+			ToolTipText = _zoom.ToString();
+			Invalidate();
 			//
 			if (ZoomChanged != null)
 				ZoomChanged(this, new EventArgs());
@@ -95,7 +95,7 @@ namespace Common.Controls.ControlsEx
 		{
 			base.OnPaint(e);
 			if (zoom_in != null && zoom_out != null) {
-				ZoomTracker trk = this.Control as ZoomTracker;
+				ZoomTracker trk = Control as ZoomTracker;
 				//zoom out button
 				if (trk.Value <= trk.Minimum || !Enabled)
 					ControlPaint.DrawImageDisabled(e.Graphics,
@@ -103,27 +103,27 @@ namespace Common.Controls.ControlsEx
 				else {
 					if (loc == MouseLoc.ZoomOut && Control.MouseButtons != MouseButtons.None)
 						ControlPaint.DrawBorder3D(e.Graphics,
-						                          new Rectangle(0, 0, 20, this.Height),
+						                          new Rectangle(0, 0, 20, Height),
 						                          Border3DStyle.RaisedInner);
 					e.Graphics.DrawImageUnscaled(zoom_out, Point.Empty);
 				}
 				//zoom in button
 				if (trk.Value >= trk.Maximum || !Enabled)
 					ControlPaint.DrawImageDisabled(e.Graphics,
-					                               zoom_in, this.Width - zoom_in.Width, 0, SystemColors.Control);
+					                               zoom_in, Width - zoom_in.Width, 0, SystemColors.Control);
 				else {
 					if (loc == MouseLoc.ZoomIn && Control.MouseButtons != MouseButtons.None)
 						ControlPaint.DrawBorder3D(e.Graphics,
-						                          new Rectangle(this.Width - 20, 0, 20, this.Height),
+						                          new Rectangle(Width - 20, 0, 20, Height),
 						                          Border3DStyle.RaisedInner);
-					e.Graphics.DrawImageUnscaled(zoom_in, new Point(this.Width - zoom_in.Width, 0));
+					e.Graphics.DrawImageUnscaled(zoom_in, new Point(Width - zoom_in.Width, 0));
 				}
 			}
 			//100% zoom line
-			e.Graphics.DrawLine(Pens.Black, this.Width/2 - 1, 3*this.Height/4,
-			                    this.Width/2 - 1, this.Height - 1);
-			e.Graphics.DrawLine(Pens.White, this.Width/2, 3*this.Height/4 + 1,
-			                    this.Width/2, this.Height);
+			e.Graphics.DrawLine(Pens.Black, Width/2 - 1, 3*Height/4,
+			                    Width/2 - 1, Height - 1);
+			e.Graphics.DrawLine(Pens.White, Width/2, 3*Height/4 + 1,
+			                    Width/2, Height);
 		}
 
 		#region buttons
@@ -134,7 +134,7 @@ namespace Common.Controls.ControlsEx
 		{
 			if (pt.X < 20)
 				return MouseLoc.ZoomOut;
-			else if (pt.X > this.Width - 20)
+			else if (pt.X > Width - 20)
 				return MouseLoc.ZoomIn;
 			return MouseLoc.Out;
 		}
@@ -145,7 +145,7 @@ namespace Common.Controls.ControlsEx
 			base.OnMouseDown(e);
 			loc = GetLocation(e.Location);
 			if (loc != MouseLoc.Out)
-				this.Invalidate();
+				Invalidate();
 		}
 
 		//unhighlight, do clicking
@@ -153,7 +153,7 @@ namespace Common.Controls.ControlsEx
 		{
 			base.OnMouseUp(e);
 			//update and click
-			ZoomTracker trk = this.Control as ZoomTracker;
+			ZoomTracker trk = Control as ZoomTracker;
 			switch (loc) {
 				case MouseLoc.ZoomIn:
 					trk.Value++;
@@ -180,7 +180,7 @@ namespace Common.Controls.ControlsEx
 			get { return base.Enabled; }
 			set
 			{
-				this.Invalidate();
+				Invalidate();
 				base.Enabled = value;
 			}
 		}
@@ -196,9 +196,9 @@ namespace Common.Controls.ControlsEx
 			{
 				if (value == _zoom) return;
 				_zoom = value;
-				this.ToolTipText = _zoom.ToString();
-				(this.Control as ZoomTracker).Value = ScaleFactor.GetNearestCommonZoom(value);
-				this.Invalidate();
+				ToolTipText = _zoom.ToString();
+				(Control as ZoomTracker).Value = ScaleFactor.GetNearestCommonZoom(value);
+				Invalidate();
 			}
 		}
 

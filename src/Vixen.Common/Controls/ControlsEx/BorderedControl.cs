@@ -88,7 +88,7 @@ namespace Common.Controls.ControlsEx
 			{
 				if (value == _border) return;
 				_border = value;
-				this.RecreateHandle();
+				RecreateHandle();
 			}
 		}
 

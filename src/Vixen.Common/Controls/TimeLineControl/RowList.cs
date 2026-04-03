@@ -116,8 +116,8 @@
 
 		public void AddRowLabel(RowLabel trl)
 		{
-			if (this.InvokeRequired) {
-				this.Invoke(new AddRowLabelDelegate(AddRowLabel), trl);
+			if (InvokeRequired) {
+				Invoke(new AddRowLabelDelegate(AddRowLabel), trl);
 			}
 			else {
 				RowLabels.Add(trl);

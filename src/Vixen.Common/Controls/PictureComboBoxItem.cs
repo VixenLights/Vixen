@@ -6,7 +6,7 @@
 		private int _width = 0;
 		private int _height = 0;
 
-		public PictureComboBoxItem(string text, System.IO.FileInfo file, int width, int height)
+		public PictureComboBoxItem(string text, FileInfo file, int width, int height)
 		{
 			Text = text;
 			File = file;

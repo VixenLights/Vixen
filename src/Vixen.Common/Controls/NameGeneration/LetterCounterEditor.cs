@@ -28,7 +28,7 @@ namespace Common.Controls.NameGeneration
 		}
 
 
-		private void textBoxStartLetter_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+		private void textBoxStartLetter_KeyPress(object sender, KeyPressEventArgs e)
 		{
 			// Check for a unwanted character in the KeyDown event.
 			if (System.Text.RegularExpressions.Regex.IsMatch(e.KeyChar.ToString(), @"[^A-Z^a-z^\b]"))

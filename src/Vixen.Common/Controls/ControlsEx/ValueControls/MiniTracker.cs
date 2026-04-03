@@ -18,13 +18,13 @@ namespace Common.Controls.ControlsEx.ValueControls
 		/// </summary>
 		public MiniTracker()
 		{
-			this.SetStyle(ControlStyles.AllPaintingInWmPaint |
+			SetStyle(ControlStyles.AllPaintingInWmPaint |
 			              ControlStyles.DoubleBuffer |
 			              ControlStyles.UserPaint |
 			              ControlStyles.ResizeRedraw, true);
 			_tracker = new ElementInfo();
 			_tracker.State = ElementState.hot;
-			_tracker.Bounds = new Rectangle(0, this.Height/2 - 7, 11, 20);
+			_tracker.Bounds = new Rectangle(0, Height/2 - 7, 11, 20);
 			toolTip = new ToolTip();
 			MouseHover += MiniTracker_MouseHover;
 			MouseLeave += MiniTracker_MouseLeave;
@@ -64,7 +64,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 		// make sure the tracker is aligned correct
 		protected override void OnSizeChanged(EventArgs e)
 		{
-			this.UpdateTrackerPosition();
+			UpdateTrackerPosition();
 			base.OnSizeChanged(e);
 		}
 
@@ -72,10 +72,10 @@ namespace Common.Controls.ControlsEx.ValueControls
 		protected override void OnEnabledChanged(EventArgs e)
 		{
 			base.OnEnabledChanged(e);
-			_tracker.State = this.Enabled
+			_tracker.State = Enabled
 			                 	? ElementState.hot
 			                 	: ElementState.disabled;
-			this.Refresh();
+			Refresh();
 		}
 
 		#region mouse actions
@@ -83,7 +83,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			base.OnMouseDown(e);
-			if (!this.Enabled) return;
+			if (!Enabled) return;
 			if (_tracker.Bounds.Contains(e.X, e.Y)) {
 				_offsetx = _tracker.Bounds.X - e.X;
 				_offsety = _tracker.Bounds.Y - e.Y;
@@ -91,27 +91,27 @@ namespace Common.Controls.ControlsEx.ValueControls
 			else {
 				_offsetx = -_tracker.Bounds.Width/2;
 				_offsety = -_tracker.Bounds.Height/2;
-				this.SetValue(e.X + _offsetx, e.Y + _offsetx);
+				SetValue(e.X + _offsetx, e.Y + _offsetx);
 			}
 			_tracker.State = ElementState.pushed;
-			this.Refresh();
+			Refresh();
 		}
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
-			if (!this.Enabled || e.Button != MouseButtons.Left || _tracker.State != ElementState.pushed) return;
-			if (this.SetValue(e.X + _offsetx, e.Y + _offsety))
-				this.Refresh();
+			if (!Enabled || e.Button != MouseButtons.Left || _tracker.State != ElementState.pushed) return;
+			if (SetValue(e.X + _offsetx, e.Y + _offsety))
+				Refresh();
 		}
 
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			base.OnMouseUp(e);
-			if (!this.Enabled) return;
+			if (!Enabled) return;
 			_tracker.State = ElementState.hot;
 			_offsetx = _offsety = 0;
-			this.Refresh();
+			Refresh();
 		}
 
 		#endregion
@@ -125,9 +125,9 @@ namespace Common.Controls.ControlsEx.ValueControls
 		{
 			maximum = Math.Max(maximum, minimum + 1);
 			value = Math.Max(minimum, Math.Min(maximum, value));
-			base.SetMinimumCore(minimum);
-			base.SetMaximumCore(maximum);
-			base.SetValueCore(value);
+			SetMinimumCore(minimum);
+			SetMaximumCore(maximum);
+			SetValueCore(value);
 		}
 
 		private void MiniTracker_MouseHover(object sender, EventArgs e)
@@ -166,12 +166,12 @@ namespace Common.Controls.ControlsEx.ValueControls
 		{
 			base.OnPaint(e);
 
-			IntPtr data = Win32.OpenThemeData2(this.Handle, "Trackbar");
+			IntPtr data = Win32.OpenThemeData2(Handle, "Trackbar");
 			if (data != IntPtr.Zero) {
 				IntPtr hdc = e.Graphics.GetHdc();
 				Win32.RECT rct = new Win32.RECT(
-					_tracker.Bounds.Width/2, this.Height/2 - 2,
-					this.Width - _tracker.Bounds.Width, 4);
+					_tracker.Bounds.Width/2, Height/2 - 2,
+					Width - _tracker.Bounds.Width, 4);
 				Win32.DrawThemeBackground2(data, hdc, 1, 1, ref rct);
 				rct = _tracker.Bounds;
 				Win32.DrawThemeBackground2(data, hdc, 4, 1 + (int) _tracker.State, ref rct);
@@ -180,8 +180,8 @@ namespace Common.Controls.ControlsEx.ValueControls
 			}
 			else {
 				ControlPaint.DrawBorder3D(e.Graphics,
-				                          _tracker.Bounds.Width/2, this.Height/2 - 2,
-				                          this.Width - _tracker.Bounds.Width, 4,
+				                          _tracker.Bounds.Width/2, Height/2 - 2,
+				                          Width - _tracker.Bounds.Width, 4,
 				                          Border3DStyle.SunkenOuter, Border3DSide.All);
 				ControlPaint.DrawButton(e.Graphics, _tracker.Bounds, ButtonState.Normal);
 			}
@@ -191,15 +191,15 @@ namespace Common.Controls.ControlsEx.ValueControls
 		{
 			_tracker.Bounds.X =
 				_tracker.Bounds.Width/2 + GetPercentage(
-					this.Width - _tracker.Bounds.Width*2);
+					Width - _tracker.Bounds.Width*2);
 		}
 
 		protected override bool SetValue(int x, int y)
 		{
-			if (this.Width <= this._tracker.Bounds.Width*2) return false;
+			if (Width <= _tracker.Bounds.Width*2) return false;
 			int oldvalue = Value;
-			if (SetPercentage(x - this._tracker.Bounds.Width/2,
-			                  this.Width - this._tracker.Bounds.Width*2)) {
+			if (SetPercentage(x - _tracker.Bounds.Width/2,
+			                  Width - _tracker.Bounds.Width*2)) {
 				base.RaiseValueChanged();
 			}
 			return true;
@@ -207,7 +207,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 
 		protected override void OnSizeChanged(EventArgs e)
 		{
-			_tracker.Bounds.Y = (this.Height - this._tracker.Bounds.Height)/2;
+			_tracker.Bounds.Y = (Height - _tracker.Bounds.Height)/2;
 			base.OnSizeChanged(e);
 		}
 	}
@@ -226,12 +226,12 @@ namespace Common.Controls.ControlsEx.ValueControls
 		{
 			base.OnPaint(e);
 
-			IntPtr data = Win32.OpenThemeData2(this.Handle, "Trackbar");
+			IntPtr data = Win32.OpenThemeData2(Handle, "Trackbar");
 			if (data != IntPtr.Zero) {
 				IntPtr hdc = e.Graphics.GetHdc();
 				Win32.RECT rct = new Win32.RECT(
-					this.Width/2 - 2, _tracker.Bounds.Height/2,
-					4, this.Height - _tracker.Bounds.Height);
+					Width/2 - 2, _tracker.Bounds.Height/2,
+					4, Height - _tracker.Bounds.Height);
 				Win32.DrawThemeBackground2(data, hdc, 1, 1, ref rct);
 				rct = _tracker.Bounds;
 				Win32.DrawThemeBackground2(data, hdc, 8, 1 + (int) _tracker.State, ref rct);
@@ -240,8 +240,8 @@ namespace Common.Controls.ControlsEx.ValueControls
 			}
 			else {
 				ControlPaint.DrawBorder3D(e.Graphics,
-				                          _tracker.Bounds.Width/2, this.Height/2 - 2,
-				                          this.Width - _tracker.Bounds.Width, 4,
+				                          _tracker.Bounds.Width/2, Height/2 - 2,
+				                          Width - _tracker.Bounds.Width, 4,
 				                          Border3DStyle.SunkenOuter, Border3DSide.All);
 				ControlPaint.DrawButton(e.Graphics, _tracker.Bounds, ButtonState.Normal);
 			}
@@ -251,15 +251,15 @@ namespace Common.Controls.ControlsEx.ValueControls
 		{
 			_tracker.Bounds.Y =
 				_tracker.Bounds.Height/2 + 1 + GetPercentage(
-					this.Height - _tracker.Bounds.Height*2);
+					Height - _tracker.Bounds.Height*2);
 		}
 
 		protected override bool SetValue(int x, int y)
 		{
-			if (this.Height <= this._tracker.Bounds.Height*2) return false;
+			if (Height <= _tracker.Bounds.Height*2) return false;
 			int oldvalue = Value;
 			if (SetPercentage(y - _tracker.Bounds.Height/2 + 1,
-			                  this.Height - _tracker.Bounds.Height*2)) {
+			                  Height - _tracker.Bounds.Height*2)) {
 				base.RaiseValueChanged();
 			}
 			return true;
@@ -267,7 +267,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 
 		protected override void OnSizeChanged(EventArgs e)
 		{
-			_tracker.Bounds.X = (this.Width - this._tracker.Bounds.Width)/2;
+			_tracker.Bounds.X = (Width - _tracker.Bounds.Width)/2;
 			base.OnSizeChanged(e);
 		}
 	}

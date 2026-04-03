@@ -74,7 +74,7 @@ namespace Common.Controls.ControlsEx.ListControls
 				//selection
 				if (index <= Owner._selection) {
 					Owner._selection =
-						Math.Min(this.Count - 1, Owner._selection + 1);
+						Math.Min(Count - 1, Owner._selection + 1);
 					Owner.RaiseSelectionChanged();
 				}
 				Owner.Reload();
@@ -91,7 +91,7 @@ namespace Common.Controls.ControlsEx.ListControls
 			{
 				value.Refresh -= new EventHandler(OnElementRefresh);
 				if (index <= Owner._selection) {
-					Owner._selection = Math.Min(this.Count - 1,
+					Owner._selection = Math.Min(Count - 1,
 					                            Math.Max(0, Owner._selection - 1));
 					Owner.RaiseSelectionChanged();
 				}
@@ -121,7 +121,7 @@ namespace Common.Controls.ControlsEx.ListControls
 			{
 				if (Owner._selection != -1)
 					Owner.RaiseBeforeSelectionChanged();
-				foreach (DisplayItem elem in this.InnerList)
+				foreach (DisplayItem elem in InnerList)
 					elem.Refresh -= new EventHandler(OnElementRefresh);
 			}
 
@@ -188,15 +188,15 @@ namespace Common.Controls.ControlsEx.ListControls
 
 		public DisplayList()
 		{
-			this._coll = CreateItemCollection();
+			_coll = CreateItemCollection();
 			if (_coll == null)
 				throw new ArgumentException("collection not initialized");
-			this.SetStyle(
+			SetStyle(
 				ControlStyles.DoubleBuffer |
 				ControlStyles.UserPaint |
 				ControlStyles.AllPaintingInWmPaint |
 				ControlStyles.ResizeRedraw, true);
-			this.BackColor = SystemColors.Window;
+			BackColor = SystemColors.Window;
 		}
 
 		#region layout
@@ -387,9 +387,9 @@ namespace Common.Controls.ControlsEx.ListControls
 		{
 			base.OnPaint(e);
 			if (Items.Count < 1) return;
-			e.Graphics.TranslateTransform(this.AutoScrollPosition.X,
-			                              this.AutoScrollPosition.Y);
-			e.Graphics.RenderingOrigin = this.AutoScrollPosition;
+			e.Graphics.TranslateTransform(AutoScrollPosition.X,
+			                              AutoScrollPosition.Y);
+			e.Graphics.RenderingOrigin = AutoScrollPosition;
 			//compute start and stop positions according to clipping
 			//area, to prevent unnecessary drawing
 			int start, stop;
@@ -413,7 +413,7 @@ namespace Common.Controls.ControlsEx.ListControls
 				//draw item text
 				if (TextVisible) {
 					using (StringFormat fmt = CreateStringFormat()) {
-						this.DrawElementText(e.Graphics, rct, fmt, i);
+						DrawElementText(e.Graphics, rct, fmt, i);
 						rct = GetRemainingArea(rct, fmt);
 					}
 				}
@@ -433,8 +433,8 @@ namespace Common.Controls.ControlsEx.ListControls
 			if (e.Button != MouseButtons.Left)
 				return;
 			//set up drag start position
-			this._dragrct = new Rectangle(new Point(e.X, e.Y), SystemInformation.DragSize);
-			this._dragrct.Offset(-this._dragrct.Width/2, -this._dragrct.Height/2);
+			_dragrct = new Rectangle(new Point(e.X, e.Y), SystemInformation.DragSize);
+			_dragrct.Offset(-_dragrct.Width/2, -_dragrct.Height/2);
 			//set selected index, collection
 			//boundaries are checked in the setting function
 			int index = GetIndexAtPosition(e.Location);
@@ -459,27 +459,27 @@ namespace Common.Controls.ControlsEx.ListControls
 			}
 			else if (e.Button == MouseButtons.Left &&
 			         _selection != -1 &&
-			         this._drags != DisplayDrags.NoDrag) {
+			         _drags != DisplayDrags.NoDrag) {
 				if (!_dragrct.Contains(e.X, e.Y)) {
-					switch (this._drags) {
+					switch (_drags) {
 						case DisplayDrags.ElementCopy:
 							{
 								//drag the currently selected item
-								this.DoDragDrop(this._coll[_selection], DragDropEffects.Move);
+								DoDragDrop(_coll[_selection], DragDropEffects.Move);
 								break;
 							}
 						case DisplayDrags.ElementMove:
 							{
 								//drag the currently selected item and remove it from the collection
-								if (this.DoDragDrop(this._coll[_selection], DragDropEffects.Move) == DragDropEffects.Move)
-									this._coll.RemoveAt(_selection);
+								if (DoDragDrop(_coll[_selection], DragDropEffects.Move) == DragDropEffects.Move)
+									_coll.RemoveAt(_selection);
 								break;
 							}
 						case DisplayDrags.TagCopy:
 							{
 								//drag the tag of the currently selected element, if there is one
-								if (this._coll[_selection].Tag == null) return;
-								this.DoDragDrop(this._coll[_selection].Tag, DragDropEffects.Copy);
+								if (_coll[_selection].Tag == null) return;
+								DoDragDrop(_coll[_selection].Tag, DragDropEffects.Copy);
 								break;
 							}
 					}
@@ -502,8 +502,8 @@ namespace Common.Controls.ControlsEx.ListControls
 		{
 			base.OnSystemColorsChanged(e);
 			//make sure, the right selection color is used
-			if (this._coll.Count > 0)
-				this.Refresh();
+			if (_coll.Count > 0)
+				Refresh();
 		}
 
 		protected override void OnSizeChanged(EventArgs e)
@@ -519,9 +519,9 @@ namespace Common.Controls.ControlsEx.ListControls
 			if (_suspend > 0)
 				return;
 			AutoScrollPosition = Point.Empty;
-			this.AutoScrollMinSize = GetTotalSize(
+			AutoScrollMinSize = GetTotalSize(
 				Size, Items.Count);
-			this.Refresh();
+			Refresh();
 		}
 
 		/// <summary>
@@ -532,10 +532,10 @@ namespace Common.Controls.ControlsEx.ListControls
 		{
 			if (index < 0 || _suspend > 0)
 				return;
-			Rectangle bounds = this.GetBoundsAt(index);
+			Rectangle bounds = GetBoundsAt(index);
 			bounds.Offset(AutoScrollPosition.X,
 			              AutoScrollPosition.Y);
-			this.Invalidate(bounds);
+			Invalidate(bounds);
 		}
 
 		/// <summary>
@@ -610,7 +610,7 @@ namespace Common.Controls.ControlsEx.ListControls
 		 DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public DisplayItemCollection Items
 		{
-			get { return this._coll; }
+			get { return _coll; }
 		}
 
 		/// <summary>
@@ -658,8 +658,8 @@ namespace Common.Controls.ControlsEx.ListControls
 		 DefaultValue(typeof (DisplayDrags), "ElementCopy")]
 		public DisplayDrags DisplayDrags
 		{
-			get { return this._drags; }
-			set { this._drags = value; }
+			get { return _drags; }
+			set { _drags = value; }
 		}
 
 		/// <summary>
@@ -675,7 +675,7 @@ namespace Common.Controls.ControlsEx.ListControls
 					return;
 				_textalign = value;
 				if (TextVisible)
-					this.Refresh();
+					Refresh();
 			}
 		}
 
@@ -705,7 +705,7 @@ namespace Common.Controls.ControlsEx.ListControls
 					return;
 				_textvertical = value;
 				if (TextVisible)
-					this.Refresh();
+					Refresh();
 			}
 		}
 
@@ -743,7 +743,7 @@ namespace Common.Controls.ControlsEx.ListControls
 				if (value == _includeindex) return;
 				_includeindex = value;
 				if ((_displayStyle & ToolStripItemDisplayStyle.Text) != 0)
-					this.Refresh();
+					Refresh();
 			}
 		}
 

@@ -15,7 +15,7 @@ namespace Common.Controls.Timeline
 		{
 			AutoScaleMode = AutoScaleMode.Font;
 			if (timeinfo== null)
-				timeinfo= new Timeline.TimeInfo();
+				timeinfo= new TimeInfo();
 			
 			TimeInfo = timeinfo;
 			TimeInfo.TimePerPixelChanged += OnTimePerPixelChanged;
@@ -214,7 +214,7 @@ namespace Common.Controls.Timeline
 			try {
                 base.WndProc(ref m);
 				
-                if (m.HWnd != this.Handle) {
+                if (m.HWnd != Handle) {
 					return;
 				}
 				switch (m.Msg) {
