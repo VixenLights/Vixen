@@ -25,7 +25,7 @@ namespace VixenModules.App.WebServer
 				: string.Empty;
 
 			// Log Response Details
-			Logging.Debug("{Ip} - \"{Method} {Path} {Protocol}\" {StatusCode} {Size}", address, 
+			Logging.Info("{Ip} - \"{Method} {Path} {Protocol}\" {StatusCode} {Size}", address, 
 				context.Request.Method, context.Request.Path, context.Request.Protocol, context.Response.StatusCode, context.Response.ContentLength);
 		}
 

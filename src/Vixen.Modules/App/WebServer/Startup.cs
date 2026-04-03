@@ -52,10 +52,8 @@ namespace VixenModules.App.WebServer
 
 			app.UseDefaultFiles();
 
-#if DEBUG
 			app.UseMiddleware<RequestLoggingMiddleware>();
-#endif
-
+			
 			//	//Where our content lives
 			string contentPath = Path.Combine(Environment.CurrentDirectory, @".\wwwroot");
 			app.UseStaticFiles(new StaticFileOptions
