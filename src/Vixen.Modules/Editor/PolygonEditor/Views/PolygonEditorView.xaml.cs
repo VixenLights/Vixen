@@ -163,7 +163,7 @@ namespace VixenModules.Editor.PolygonEditor.Views
 				}
 
 				// Give the view model the width of the window
-				vm.WindowWidth = (int)this.Width;				
+				vm.WindowWidth = (int)Width;				
 			}
 		}
 

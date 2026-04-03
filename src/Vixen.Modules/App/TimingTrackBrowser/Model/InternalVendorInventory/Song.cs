@@ -97,7 +97,7 @@ namespace VixenModules.App.TimingTrackBrowser.Model.InternalVendorInventory
         {
             if (obj is Song s)
             {
-                return -String.Compare(s.Title, this.Title, StringComparison.CurrentCulture);
+                return -String.Compare(s.Title, Title, StringComparison.CurrentCulture);
             }
 
             return 0;

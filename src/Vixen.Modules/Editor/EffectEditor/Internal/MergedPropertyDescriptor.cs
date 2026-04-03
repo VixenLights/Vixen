@@ -63,8 +63,8 @@ namespace VixenModules.Editor.EffectEditor.Internal
 				object target = targets.GetValue(i);
 
 				descriptors[i].AddValueChanged(target, OnValueChanged);
-				EventHandler h = (EventHandler) this.handlers[target];
-				this.handlers[target] = Delegate.Combine(h, handler);
+				EventHandler h = (EventHandler) handlers[target];
+				handlers[target] = Delegate.Combine(h, handler);
 			}
 		}
 
@@ -83,13 +83,13 @@ namespace VixenModules.Editor.EffectEditor.Internal
 				descriptors[i].RemoveValueChanged(target, OnValueChanged);
 				if (handlers != null)
 				{
-					EventHandler h = (EventHandler) this.handlers[target];
+					EventHandler h = (EventHandler) handlers[target];
 					h = (EventHandler) Delegate.Remove(h, handler);
 
 					if (h != null)
-						this.handlers[target] = h;
+						handlers[target] = h;
 					else
-						this.handlers.Remove(target);
+						handlers.Remove(target);
 				}
 			}
 		}
@@ -98,9 +98,9 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		{
 			if (internalValueSet) return;
 
-			if (component != null && this.handlers != null)
+			if (component != null && handlers != null)
 			{
-				EventHandler handler = (EventHandler) this.handlers[component];
+				EventHandler handler = (EventHandler) handlers[component];
 				if (handler != null)
 					handler(component, e);
 			}
@@ -108,20 +108,20 @@ namespace VixenModules.Editor.EffectEditor.Internal
 
 		public override bool CanResetValue(object component)
 		{
-			if (this.canReset == TriState.Unknown)
+			if (canReset == TriState.Unknown)
 			{
-				this.canReset = TriState.Yes;
+				canReset = TriState.Yes;
 				Array a = (Array) component;
-				for (int i = 0; i < this.descriptors.Length; i++)
+				for (int i = 0; i < descriptors.Length; i++)
 				{
-					if (!this.descriptors[i].CanResetValue(this.GetPropertyOwnerForComponent(a, i)))
+					if (!descriptors[i].CanResetValue(GetPropertyOwnerForComponent(a, i)))
 					{
-						this.canReset = TriState.No;
+						canReset = TriState.No;
 						break;
 					}
 				}
 			}
-			return (this.canReset == TriState.Yes);
+			return (canReset == TriState.Yes);
 		}
 
 		private object CopyValue(object value)
@@ -191,7 +191,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 
 		public override object GetEditor(Type editorBaseType)
 		{
-			return this.descriptors[0].GetEditor(editorBaseType);
+			return descriptors[0].GetEditor(editorBaseType);
 		}
 
 		private object GetPropertyOwnerForComponent(Array a, int i)
@@ -199,7 +199,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 			object propertyOwner = a.GetValue(i);
 			if (propertyOwner is ICustomTypeDescriptor)
 			{
-				propertyOwner = ((ICustomTypeDescriptor) propertyOwner).GetPropertyOwner(this.descriptors[i]);
+				propertyOwner = ((ICustomTypeDescriptor) propertyOwner).GetPropertyOwner(descriptors[i]);
 			}
 			return propertyOwner;
 		}
@@ -207,31 +207,31 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		public override object GetValue(object component)
 		{
 			bool flag;
-			return this.GetValue((Array) component, out flag);
+			return GetValue((Array) component, out flag);
 		}
 
 		public object GetValue(Array components, out bool allEqual)
 		{
 			allEqual = true;
-			object obj2 = this.descriptors[0].GetValue(this.GetPropertyOwnerForComponent(components, 0));
+			object obj2 = descriptors[0].GetValue(GetPropertyOwnerForComponent(components, 0));
 			if (obj2 is ICollection)
 			{
-				if (this.collection == null)
-					this.collection = new MultiMergeCollection((ICollection) obj2);
+				if (collection == null)
+					collection = new MultiMergeCollection((ICollection) obj2);
 				else
 				{
-					if (this.collection.Locked)
-						return this.collection;
+					if (collection.Locked)
+						return collection;
 
-					this.collection.SetItems((ICollection) obj2);
+					collection.SetItems((ICollection) obj2);
 				}
 			}
-			for (int i = 1; i < this.descriptors.Length; i++)
+			for (int i = 1; i < descriptors.Length; i++)
 			{
-				object obj3 = this.descriptors[i].GetValue(this.GetPropertyOwnerForComponent(components, i));
-				if (this.collection != null)
+				object obj3 = descriptors[i].GetValue(GetPropertyOwnerForComponent(components, i));
+				if (collection != null)
 				{
-					if (!this.collection.MergeCollection((ICollection) obj3))
+					if (!collection.MergeCollection((ICollection) obj3))
 					{
 						allEqual = false;
 						return obj2;
@@ -250,7 +250,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 				}
 			}
 
-			if ((allEqual && (this.collection != null)) && (this.collection.Count == 0))
+			if ((allEqual && (collection != null)) && (collection.Count == 0))
 				return null;
 
 			return obj2;
@@ -266,7 +266,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 			object[] objArray = new object[components.Length];
 
 			for (int i = 0; i < components.Length; i++)
-				objArray[i] = this.descriptors[i].GetValue(this.GetPropertyOwnerForComponent(components, i));
+				objArray[i] = descriptors[i].GetValue(GetPropertyOwnerForComponent(components, i));
 
 			return objArray;
 		}
@@ -275,22 +275,22 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		{
 			Array a = (Array) component;
 
-			for (int i = 0; i < this.descriptors.Length; i++)
-				this.descriptors[i].ResetValue(this.GetPropertyOwnerForComponent(a, i));
+			for (int i = 0; i < descriptors.Length; i++)
+				descriptors[i].ResetValue(GetPropertyOwnerForComponent(a, i));
 		}
 
 		private void SetCollectionValues(Array a, IList listValue)
 		{
 			try
 			{
-				if (this.collection != null)
-					this.collection.Locked = true;
+				if (collection != null)
+					collection.Locked = true;
 
 				object[] array = new object[listValue.Count];
 				listValue.CopyTo(array, 0);
-				for (int i = 0; i < this.descriptors.Length; i++)
+				for (int i = 0; i < descriptors.Length; i++)
 				{
-					IList list = this.descriptors[i].GetValue(this.GetPropertyOwnerForComponent(a, i)) as IList;
+					IList list = descriptors[i].GetValue(GetPropertyOwnerForComponent(a, i)) as IList;
 					if (list != null)
 					{
 						list.Clear();
@@ -310,8 +310,8 @@ namespace VixenModules.Editor.EffectEditor.Internal
 			}
 			finally
 			{
-				if (this.collection != null)
-					this.collection.Locked = false;
+				if (collection != null)
+					collection.Locked = false;
 			}
 		}
 
@@ -319,33 +319,33 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		{
 			Array a = (Array) component;
 
-			if ((value is IList) && typeof (IList).IsAssignableFrom(this.PropertyType))
+			if ((value is IList) && typeof (IList).IsAssignableFrom(PropertyType))
 			{
 				//TODO: Check whether internalValueSet should be configured here too...
-				this.SetCollectionValues(a, (IList) value);
+				SetCollectionValues(a, (IList) value);
 			}
 			else
 			{
 				internalValueSet = true;
-				for (int i = 0; i < this.descriptors.Length; i++)
+				for (int i = 0; i < descriptors.Length; i++)
 				{
-					object obj2 = this.CopyValue(value);
-					object owner = this.GetPropertyOwnerForComponent(a, i);
-					this.descriptors[i].SetValue(owner, obj2);
+					object obj2 = CopyValue(value);
+					object owner = GetPropertyOwnerForComponent(a, i);
+					descriptors[i].SetValue(owner, obj2);
 
 					//OnValueChanged(owner, new PropertyChangedEventArgs(descriptors[i].Name));
 				}
 				internalValueSet = false;
-				OnValueChanged(component, new PropertyChangedEventArgs(this.Name));
+				OnValueChanged(component, new PropertyChangedEventArgs(Name));
 			}
 		}
 
 		public override bool ShouldSerializeValue(object component)
 		{
 			Array a = (Array) component;
-			for (int i = 0; i < this.descriptors.Length; i++)
+			for (int i = 0; i < descriptors.Length; i++)
 			{
-				if (!this.descriptors[i].ShouldSerializeValue(this.GetPropertyOwnerForComponent(a, i)))
+				if (!descriptors[i].ShouldSerializeValue(GetPropertyOwnerForComponent(a, i)))
 					return false;
 			}
 			return true;
@@ -354,36 +354,36 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		// Properties
 		public override Type ComponentType
 		{
-			get { return this.descriptors[0].ComponentType; }
+			get { return descriptors[0].ComponentType; }
 		}
 
 		public override TypeConverter Converter
 		{
-			get { return this.descriptors[0].Converter; }
+			get { return descriptors[0].Converter; }
 		}
 
 		public override string DisplayName
 		{
-			get { return this.descriptors[0].DisplayName; }
+			get { return descriptors[0].DisplayName; }
 		}
 
 		public override bool IsLocalizable
 		{
 			get
 			{
-				if (this.localizable == TriState.Unknown)
+				if (localizable == TriState.Unknown)
 				{
-					this.localizable = TriState.Yes;
-					foreach (PropertyDescriptor descriptor in this.descriptors)
+					localizable = TriState.Yes;
+					foreach (PropertyDescriptor descriptor in descriptors)
 					{
 						if (!descriptor.IsLocalizable)
 						{
-							this.localizable = TriState.No;
+							localizable = TriState.No;
 							break;
 						}
 					}
 				}
-				return (this.localizable == TriState.Yes);
+				return (localizable == TriState.Yes);
 			}
 		}
 
@@ -391,19 +391,19 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		{
 			get
 			{
-				if (this.readOnly == TriState.Unknown)
+				if (readOnly == TriState.Unknown)
 				{
-					this.readOnly = TriState.No;
-					foreach (PropertyDescriptor descriptor in this.descriptors)
+					readOnly = TriState.No;
+					foreach (PropertyDescriptor descriptor in descriptors)
 					{
 						if (descriptor.IsReadOnly)
 						{
-							this.readOnly = TriState.Yes;
+							readOnly = TriState.Yes;
 							break;
 						}
 					}
 				}
-				return (this.readOnly == TriState.Yes);
+				return (readOnly == TriState.Yes);
 			}
 		}
 
@@ -429,12 +429,12 @@ namespace VixenModules.Editor.EffectEditor.Internal
 
 		public PropertyDescriptor this[int index]
 		{
-			get { return this.descriptors[index]; }
+			get { return descriptors[index]; }
 		}
 
 		public override Type PropertyType
 		{
-			get { return this.descriptors[0].PropertyType; }
+			get { return descriptors[0].PropertyType; }
 		}
 
 		private class MultiMergeCollection : ICollection, IEnumerable
@@ -444,30 +444,30 @@ namespace VixenModules.Editor.EffectEditor.Internal
 
 			public MultiMergeCollection(ICollection original)
 			{
-				this.SetItems(original);
+				SetItems(original);
 			}
 
 			public void CopyTo(Array array, int index)
 			{
-				if (this.items != null)
-					Array.Copy(this.items, 0, array, index, this.items.Length);
+				if (items != null)
+					Array.Copy(items, 0, array, index, items.Length);
 			}
 
 			public IEnumerator GetEnumerator()
 			{
-				if (this.items != null)
-					return this.items.GetEnumerator();
+				if (items != null)
+					return items.GetEnumerator();
 
 				return new object[0].GetEnumerator();
 			}
 
 			public bool MergeCollection(ICollection newCollection)
 			{
-				if (!this.locked)
+				if (!locked)
 				{
-					if (this.items.Length != newCollection.Count)
+					if (items.Length != newCollection.Count)
 					{
-						this.items = new object[0];
+						items = new object[0];
 						return false;
 					}
 
@@ -475,10 +475,10 @@ namespace VixenModules.Editor.EffectEditor.Internal
 					newCollection.CopyTo(array, 0);
 					for (int i = 0; i < array.Length; i++)
 					{
-						if (((array[i] == null) != (this.items[i] == null)) ||
-						    ((this.items[i] != null) && !this.items[i].Equals(array[i])))
+						if (((array[i] == null) != (items[i] == null)) ||
+						    ((items[i] != null) && !items[i].Equals(array[i])))
 						{
-							this.items = new object[0];
+							items = new object[0];
 							return false;
 						}
 					}
@@ -488,10 +488,10 @@ namespace VixenModules.Editor.EffectEditor.Internal
 
 			public void SetItems(ICollection collection)
 			{
-				if (!this.locked)
+				if (!locked)
 				{
-					this.items = new object[collection.Count];
-					collection.CopyTo(this.items, 0);
+					items = new object[collection.Count];
+					collection.CopyTo(items, 0);
 				}
 			}
 
@@ -499,8 +499,8 @@ namespace VixenModules.Editor.EffectEditor.Internal
 			{
 				get
 				{
-					if (this.items != null)
-						return this.items.Length;
+					if (items != null)
+						return items.Length;
 
 					return 0;
 				}
@@ -508,8 +508,8 @@ namespace VixenModules.Editor.EffectEditor.Internal
 
 			public bool Locked
 			{
-				get { return this.locked; }
-				set { this.locked = value; }
+				get { return locked; }
+				set { locked = value; }
 			}
 
 			bool ICollection.IsSynchronized

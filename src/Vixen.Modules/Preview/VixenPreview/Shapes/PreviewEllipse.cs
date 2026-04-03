@@ -251,7 +251,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 
 			if (_selectedPoint == _bottomRight &&
-					System.Windows.Forms.Control.ModifierKeys == System.Windows.Forms.Keys.Control)
+					Control.ModifierKeys == Keys.Control)
 			{
 				_bottomRight.Y = _topLeft.Y + (_bottomRight.X - _topLeft.X);
 			}

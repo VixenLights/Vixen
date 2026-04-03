@@ -1,11 +1,12 @@
 ﻿using System.Diagnostics;
+using NLog;
 
 namespace VixenModules.App.Shows
 {
 	public class LaunchAction: Action
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		private Process process = null;
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
+		private Process process;
 
 		public LaunchAction(ShowItem showItem)
 			: base(showItem)
@@ -27,7 +28,7 @@ namespace VixenModules.App.Shows
 
 			ResultString = string.Empty;
 
-			process.Exited += new EventHandler((sender, eventArgs) =>
+			process.Exited += (sender, eventArgs) =>
 			{
 				ResultString = process.StandardOutput.ReadToEnd();
 				if (ResultString == string.Empty)
@@ -38,7 +39,7 @@ namespace VixenModules.App.Shows
 				{
 					Complete();
 				}
-			});
+			};
 
 			try
 			{

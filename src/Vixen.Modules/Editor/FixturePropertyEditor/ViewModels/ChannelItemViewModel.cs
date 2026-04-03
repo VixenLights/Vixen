@@ -147,7 +147,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 
 				// If the function name is still the special 'Ignore' function name and
 				// the function is being set to a function other than 'None' then...
-				if (Name == ChannelItemViewModel.IgnoreFunctionName &&
+				if (Name == IgnoreFunctionName &&
 					value != "None")
 				{
 					// Make the function name match the selected function

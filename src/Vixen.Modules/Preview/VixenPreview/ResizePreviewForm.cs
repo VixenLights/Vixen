@@ -40,7 +40,7 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			_newWidth = (int) numericWidth.Value;
 			_newHeight = (int) numericHeight.Value;
-			DialogResult = System.Windows.Forms.DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void ResizePreviewForm_Load(object sender, EventArgs e)

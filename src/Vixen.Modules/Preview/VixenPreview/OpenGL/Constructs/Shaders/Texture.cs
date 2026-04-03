@@ -120,7 +120,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 					throw new Exception("File was not a DDS file format.");
 
 				DDS.DDSURFACEDESC2 imageData = DDS.DDSURFACEDESC2.FromBinaryReader(stream);//new DDS.DDSURFACEDESC2(stream);  // read the DirectDraw surface descriptor
-				this.Size = new Size((int)imageData.Width, (int)imageData.Height);
+				Size = new Size((int)imageData.Width, (int)imageData.Height);
 
 				if (imageData.LinearSize == 0)
 					throw new Exception("The linear scan line size was zero.");

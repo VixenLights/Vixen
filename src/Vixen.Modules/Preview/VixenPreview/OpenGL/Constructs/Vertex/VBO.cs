@@ -53,9 +53,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex
 
             vboID = GlUtility.CreateVBO<T>(BufferTarget = target, data, hint, length);
 
-            this.Size = (data is int[] || data is float[] ? 1 : (data is Vector2[] ? 2 : (data is Vector3[] ? 3 : (data is Vector4[] ? 4 : 0))));
-            this.PointerType = (data is int[] ? VertexAttribPointerType.Int : VertexAttribPointerType.Float);
-            this.Count = length;
+            Size = (data is int[] || data is float[] ? 1 : (data is Vector2[] ? 2 : (data is Vector3[] ? 3 : (data is Vector4[] ? 4 : 0))));
+            PointerType = (data is int[] ? VertexAttribPointerType.Int : VertexAttribPointerType.Float);
+            Count = length;
         }
 
 	    /// <summary>
@@ -74,9 +74,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex
 
             vboID = GlUtility.CreateVBO<T>(BufferTarget = target, data, hint, position, length);
 
-            this.Size = (data is int[] || data is float[] ? 1 : (data is Vector2[] ? 2 : (data is Vector3[] ? 3 : (data is Vector4[] ? 4 : 0))));
-            this.PointerType = (data is int[] ? VertexAttribPointerType.Int : VertexAttribPointerType.Float);
-            this.Count = length;
+            Size = (data is int[] || data is float[] ? 1 : (data is Vector2[] ? 2 : (data is Vector3[] ? 3 : (data is Vector4[] ? 4 : 0))));
+            PointerType = (data is int[] ? VertexAttribPointerType.Int : VertexAttribPointerType.Float);
+            Count = length;
         }
 
         /// <summary>

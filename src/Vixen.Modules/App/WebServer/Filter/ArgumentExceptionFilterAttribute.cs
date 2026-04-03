@@ -7,7 +7,7 @@ namespace VixenModules.App.WebServer.Filter
 {
 	public class ArgumentExceptionFilterAttribute : ExceptionFilterAttribute
 	{
-		private static readonly NLog.Logger Logging = LogManager.GetCurrentClassLogger();
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
 		public override void OnException(ExceptionContext context)
 		{

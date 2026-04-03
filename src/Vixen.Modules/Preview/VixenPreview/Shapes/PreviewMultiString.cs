@@ -300,9 +300,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			base.MouseMove(x, y, changeX, changeY);
         }
 
-        public override void MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
+        public override void MouseUp(object sender, MouseEventArgs e)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            if (e.Button == MouseButtons.Left)
             {
                 if (Creating)
                 {
@@ -448,7 +448,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public override object Clone()
         {
-            PreviewMultiString newMultiString = (PreviewMultiString)this.MemberwiseClone();
+            PreviewMultiString newMultiString = (PreviewMultiString)MemberwiseClone();
 
 			foreach (PreviewPixel pixel in _pixels)
 			{

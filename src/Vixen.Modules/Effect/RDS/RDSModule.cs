@@ -69,7 +69,7 @@ namespace VixenModules.Effect.RDS
 
 
 
-		public override void GenerateVisualRepresentation(System.Drawing.Graphics g, System.Drawing.Rectangle clipRectangle)
+		public override void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle)
 		{	
 			try {
 
@@ -96,7 +96,7 @@ namespace VixenModules.Effect.RDS
 			//Nothing to do
 		}
 
-		protected override Vixen.Sys.EffectIntents _Render()
+		protected override EffectIntents _Render()
 		{
 			return _elementData;
 		}

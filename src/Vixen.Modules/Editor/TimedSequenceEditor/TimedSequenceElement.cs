@@ -25,10 +25,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (!SuspendEvents)
 			{
-				if (this.EffectNode != null)
+				if (EffectNode != null)
 				{
-					this.EffectNode.StartTime = this.StartTime;
-					this.EffectNode.Effect.TimeSpan = this.Duration;
+					EffectNode.StartTime = StartTime;
+					EffectNode.Effect.TimeSpan = Duration;
 					EffectNode.Effect.StartTime = StartTime;
 				}
 

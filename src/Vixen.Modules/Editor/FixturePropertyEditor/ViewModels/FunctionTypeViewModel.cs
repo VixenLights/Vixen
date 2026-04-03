@@ -828,8 +828,8 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 					// Display the index user control
 					DisplayIndex(
 						PreviouslySelectedItem.IndexData, 
-						PreviouslySelectedItem.FunctionIdentity == Vixen.Data.Value.FunctionIdentity.Gobo, // Display Image Column for Gobo functions
-						PreviouslySelectedItem.FunctionIdentity == Vixen.Data.Value.FunctionIdentity.OpenClosePrism,
+						PreviouslySelectedItem.FunctionIdentity == FunctionIdentity.Gobo, // Display Image Column for Gobo functions
+						PreviouslySelectedItem.FunctionIdentity == FunctionIdentity.OpenClosePrism,
 						Items.Where(itm => itm.FunctionIdentity == FunctionIdentity.Prism).Select(itm => itm.Name).ToList(),
 						selectedItem.AssociatedFunctionName); 
 					break;
@@ -840,14 +840,14 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 				case FixtureFunctionType.Range:
 
 					// If the function is the Pan or Tilt then...
-					if (PreviouslySelectedItem.FunctionIdentity == Vixen.Data.Value.FunctionIdentity.Pan ||
-						PreviouslySelectedItem.FunctionIdentity == Vixen.Data.Value.FunctionIdentity.Tilt)
+					if (PreviouslySelectedItem.FunctionIdentity == FunctionIdentity.Pan ||
+						PreviouslySelectedItem.FunctionIdentity == FunctionIdentity.Tilt)
 					{
 						// Display the pan/tilt rotation limits
-						DisplayTiltPan(PreviouslySelectedItem.RotationLimits, RaiseCanExecuteChanged, PreviouslySelectedItem.FunctionIdentity == Vixen.Data.Value.FunctionIdentity.Pan);
+						DisplayTiltPan(PreviouslySelectedItem.RotationLimits, RaiseCanExecuteChanged, PreviouslySelectedItem.FunctionIdentity == FunctionIdentity.Pan);
 					}
 					// If the function is Zoom then...
-					else if (PreviouslySelectedItem.FunctionIdentity == Vixen.Data.Value.FunctionIdentity.Zoom)
+					else if (PreviouslySelectedItem.FunctionIdentity == FunctionIdentity.Zoom)
 					{
 						// Display the zoom data
 						DisplayZoom(PreviouslySelectedItem.ZoomNarrowToWide, RaiseCanExecuteChanged);

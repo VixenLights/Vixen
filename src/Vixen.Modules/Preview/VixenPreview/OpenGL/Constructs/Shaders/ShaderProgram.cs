@@ -70,10 +70,10 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 		/// <param name="generateVAO">Indicates whether the shader program should generate the Vertex Array Object</param>
 		public ShaderProgram(Shader vertexShader, Shader fragmentShader, bool generateVAO)
 		{
-			this.VertexShader = vertexShader;
-			this.FragmentShader = fragmentShader;
-			this.ProgramId = GL.CreateProgram();
-			this.DisposeChildren = false;
+			VertexShader = vertexShader;
+			FragmentShader = fragmentShader;
+			ProgramId = GL.CreateProgram();
+			DisposeChildren = false;
 
 			GL.BindAttribLocation(ProgramId, VertexPosition, "vertexPosition");
 			GL.BindAttribLocation(ProgramId, VertexColor, "vertexColor");
@@ -159,7 +159,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 		#region Methods
 		public void Use()
 		{
-			GL.UseProgram(this.ProgramId);
+			GL.UseProgram(ProgramId);
 		}
 
 		public int GetUniformLocation(string Name)

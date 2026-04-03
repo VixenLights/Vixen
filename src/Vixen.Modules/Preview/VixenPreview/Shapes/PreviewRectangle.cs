@@ -514,7 +514,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				_selectedPoint.Y = point.Y;
 				if (lockXY ||
 				    (_selectedPoint == _bottomRight &&
-				     System.Windows.Forms.Control.ModifierKeys == System.Windows.Forms.Keys.Control)) {
+				     Control.ModifierKeys == Keys.Control)) {
 					_topRight.X = point.X;
 					_bottomLeft.Y = point.Y;
 				}

@@ -5,8 +5,8 @@
 	using System.Linq;
 	using System.Windows.Forms;
 	using System.Windows.Input;
-	using VixenModules.App.Curves;
-	using VixenModules.Editor.FixtureWizard.Wizard.Models;
+	using App.Curves;
+	using Models;
 
     /// <summary>
 	/// Wizard view model page that configures dimming curves for the fixture.

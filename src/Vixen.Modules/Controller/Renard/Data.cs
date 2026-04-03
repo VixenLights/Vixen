@@ -30,7 +30,7 @@ namespace VixenModules.Output.Renard
 
 		public override IModuleDataModel Clone()
 		{
-			return this.MemberwiseClone() as IModuleDataModel;
+			return MemberwiseClone() as IModuleDataModel;
 		}
 
 		public bool IsValid

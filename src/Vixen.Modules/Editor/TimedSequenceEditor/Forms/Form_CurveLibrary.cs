@@ -226,7 +226,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		internal bool AddCurveToLibrary(Curve c, bool edit=true)
 		{
-			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Curve name?");
+			TextDialog dialog = new TextDialog("Curve name?");
 
 			while (dialog.ShowDialog() == DialogResult.OK)
 			{
@@ -546,7 +546,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			base.OnMouseWheel(e);
-			if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+			if ((ModifierKeys & Keys.Control) == Keys.Control)
 			{
 				if (_scaleText)
 				{

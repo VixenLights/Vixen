@@ -160,7 +160,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					//Instead of going through the strings multiple times.. do it once
 					// set all the sub-strings to match the connection state for elements
 					foreach (PreviewLightBaseShape line in _strings)
-						line.connectStandardStrings = this.connectStandardStrings;
+						line.connectStandardStrings = connectStandardStrings;
 
 					// Set all the StringTypes in the substrings
 					foreach (PreviewLightBaseShape line in _strings) {
@@ -432,7 +432,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		
 		public override object Clone()
 		{
-			var shape = (PreviewLightBaseShape)this.MemberwiseClone();
+			var shape = (PreviewLightBaseShape)MemberwiseClone();
 			foreach (var previewPixel in Pixels)
 			{
 				shape.Pixels.Add(previewPixel.Clone());

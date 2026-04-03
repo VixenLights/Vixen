@@ -217,7 +217,7 @@ namespace VixenModules.App.SuperScheduler
 				{
 					using (Shows.ShowEditorForm f = new Shows.ShowEditorForm(show))
 					{
-						if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+						if (f.ShowDialog() == DialogResult.OK)
 						{
 							UpdateListItem(scheduleItem);
 							_isDirty = true;

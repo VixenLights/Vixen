@@ -281,7 +281,7 @@ namespace VixenModules.Effect.Morph
 		private Line _line;
 
 		[Browsable(false)]
-		public App.Polygon.Line Line
+		public Line Line
 		{
 			get
 			{

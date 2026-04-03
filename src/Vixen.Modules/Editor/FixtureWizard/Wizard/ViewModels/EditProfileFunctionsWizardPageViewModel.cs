@@ -6,9 +6,9 @@
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Threading.Tasks;
-	using VixenModules.App.Fixture;
+	using App.Fixture;
 	using VixenModules.Editor.FixturePropertyEditor.ViewModels;
-	using VixenModules.Editor.FixtureWizard.Wizard.Models;
+	using Models;
 
 	/// <summary>
 	/// Wizard view model page for editing the profile's functions.
@@ -70,7 +70,7 @@
         protected override Task<bool> SaveAsync()
         {
             // Get the child view models
-            IEnumerable<IViewModel> childViewModels = this.GetChildViewModels();
+            IEnumerable<IViewModel> childViewModels = GetChildViewModels();
 
             // Retreive the function type view model
             FunctionTypeViewModel childVM = (FunctionTypeViewModel)childViewModels.Single(vm => vm is FunctionTypeViewModel);

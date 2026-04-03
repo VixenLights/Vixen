@@ -1,4 +1,5 @@
-﻿using Common.Controls.Theme;
+﻿using Common.Controls;
+using Common.Controls.Theme;
 
 namespace VixenModules.App.Shows
 {
@@ -23,7 +24,7 @@ namespace VixenModules.App.Shows
 		{
 			foreach (Show show in _shows)
 			{
-				Common.Controls.ComboBoxItem item = new Common.Controls.ComboBoxItem(show.Name, show);
+				ComboBoxItem item = new ComboBoxItem(show.Name, show);
 				if (show.ID != _currentShowID)
 				{
 					comboBoxShow.Items.Add(item);
@@ -42,7 +43,7 @@ namespace VixenModules.App.Shows
 
 		private void comboBoxShow_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			Common.Controls.ComboBoxItem comboBoxItem = (sender as ComboBox).SelectedItem as Common.Controls.ComboBoxItem;
+			ComboBoxItem comboBoxItem = (sender as ComboBox).SelectedItem as ComboBoxItem;
 			Show item = comboBoxItem.Value as Show;
 			_showItem.Show_ShowID = item.ID;
 			_showItem.Name = "Start show: " + item.Name;

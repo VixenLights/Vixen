@@ -77,7 +77,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			PreviewKeyDown += EnumDropdown_PreviewKeyDown;
 		}
 
-		void EnumDropdown_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		void EnumDropdown_PreviewKeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Key == Key.Down)
 			{

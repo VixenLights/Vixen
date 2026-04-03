@@ -33,7 +33,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string EffectName
 		{
-			set { this.Text = string.Format("Add {0} effects", value); }
+			set { Text = string.Format("Add {0} effects", value); }
 		}
 
 		[Browsable(false)]

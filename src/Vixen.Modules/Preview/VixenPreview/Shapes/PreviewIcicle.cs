@@ -355,7 +355,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			base.MouseMove(x, y, changeX, changeY);
 		}
 
-        public override void MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
+        public override void MouseUp(object sender, MouseEventArgs e)
         {
             base.MouseUp(sender, e);
             creating = false;
@@ -411,7 +411,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override object Clone()
 		{
-            PreviewIcicle newIcicle = (PreviewIcicle)this.MemberwiseClone();
+            PreviewIcicle newIcicle = (PreviewIcicle)MemberwiseClone();
 
 			newIcicle._points = new List<PreviewPoint>();
 

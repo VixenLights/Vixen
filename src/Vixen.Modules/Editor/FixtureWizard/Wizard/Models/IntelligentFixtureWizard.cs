@@ -9,7 +9,7 @@ namespace VixenModules.Editor.FixtureWizard.Wizard
     using System.Linq;
     using System.Diagnostics;
     using System.Threading.Tasks;
-    using VixenModules.Editor.FixtureWizard.Wizard.Models;
+    using Models;
 
     /// <summary>
     /// Wizard for creating intelligent fixtures.

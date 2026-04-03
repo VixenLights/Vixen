@@ -1,11 +1,13 @@
-﻿namespace VixenModules.App.Shows
+﻿using System.ComponentModel;
+
+namespace VixenModules.App.Shows
 {
 	partial class LaunchTypeTester
 	{
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+		private IContainer components = null;
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -85,8 +87,8 @@
 
 		#endregion
 
-		private System.Windows.Forms.TextBox textBoxOutput;
-		private System.Windows.Forms.Button buttonClose;
-		private System.Windows.Forms.Label labelStatus;
+		private TextBox textBoxOutput;
+		private Button buttonClose;
+		private Label labelStatus;
 	}
 }

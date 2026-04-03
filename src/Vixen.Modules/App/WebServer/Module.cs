@@ -10,7 +10,7 @@ namespace VixenModules.App.WebServer
 {
 	public class Module : AppModuleInstanceBase
 	{
-		private static readonly NLog.Logger Logging = LogManager.GetCurrentClassLogger();
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private const string MENU_ID_ROOT = "WebserverRoot";
 		
 		internal static LiveContext? LiveContext { get; set; }

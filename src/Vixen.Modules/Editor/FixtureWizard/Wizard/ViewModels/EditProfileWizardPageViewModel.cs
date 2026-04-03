@@ -6,9 +6,9 @@
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Threading.Tasks;
-	using VixenModules.App.Fixture;
+	using App.Fixture;
 	using VixenModules.Editor.FixturePropertyEditor.ViewModels;
-	using VixenModules.Editor.FixtureWizard.Wizard.Models;
+	using Models;
 
 	/// <summary>
 	/// Wizard view model page for editing the profile's channels.
@@ -70,7 +70,7 @@
         protected override Task<bool> SaveAsync()
         {
             // Get the child view models
-            IEnumerable<IViewModel> childViewModels = this.GetChildViewModels();
+            IEnumerable<IViewModel> childViewModels = GetChildViewModels();
 
             // Retrieve the fixture property editor view model
             FixturePropertyEditorViewModel fixtureEditor = (FixturePropertyEditorViewModel)childViewModels.Single(vm => vm is FixturePropertyEditorViewModel);
@@ -104,7 +104,7 @@
 	        bool isPageValid = true;
 
 	        // Get the child view models
-	        IEnumerable<IViewModel> childViewModels = this.GetChildViewModels();
+	        IEnumerable<IViewModel> childViewModels = GetChildViewModels();
 
 	        // If the child view models have been created then...
 	        if (childViewModels.Count() > 0)

@@ -542,7 +542,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			base.OnMouseWheel(e);
-			if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+			if ((ModifierKeys & Keys.Control) == Keys.Control)
 			{
 				if (e.Delta > 0)
 					_colorLibraryScale = _colorLibraryScale * 1.03;

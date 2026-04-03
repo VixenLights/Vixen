@@ -99,12 +99,12 @@ namespace VixenModules.Editor.EffectEditor.Controls
       bool isEven = true;
       bool foundSelected = false;
 
-      foreach (UIElement element in this.Children)
+      foreach (UIElement element in Children)
       {
 
-        if (this.IsItemsHost)
+        if (IsItemsHost)
         {
-          Selector SelectorParent = this.TemplatedParent as Selector;
+          Selector SelectorParent = TemplatedParent as Selector;
 
           if (SelectorParent != null)
           {

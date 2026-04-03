@@ -120,11 +120,11 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 				if (_showBorders)
 				{
 					
-					this.Location = Cursor.Position - _mouseGrabOffset.Value - BorderOffset();
+					Location = Cursor.Position - _mouseGrabOffset.Value - BorderOffset();
 				}
 				else
 				{
-					this.Location = Cursor.Position - _mouseGrabOffset.Value;
+					Location = Cursor.Position - _mouseGrabOffset.Value;
 				}
 				
 			}
@@ -416,12 +416,12 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 		public void Reload()
 		{
 			if (NodeToPixel == null)
-				throw new System.ArgumentException("PreviewBase.NodeToPixel == null");
+				throw new ArgumentException("PreviewBase.NodeToPixel == null");
 
 			NodeToPixel.Clear();
 
 			if (DisplayItems == null)
-				throw new System.ArgumentException("DisplayItems == null");
+				throw new ArgumentException("DisplayItems == null");
 
 			if (DisplayItems != null)
 			{
@@ -433,7 +433,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 					if (item.IsLightShape())
 					{ 
 						if (item.LightShape.Pixels == null)
-							throw new System.ArgumentException("item.Shape.Pixels == null");
+							throw new ArgumentException("item.Shape.Pixels == null");
 
 						foreach (PreviewPixel pixel in item.LightShape.Pixels)
 						{
@@ -504,7 +504,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			if (Data == null)
 			{
 				Logging.Warn("VixenPreviewDisplay_Move: Data is null. abandoning move. (Thread ID: " +
-											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+											Thread.CurrentThread.ManagedThreadId + ")");
 				return;
 			}
 
@@ -518,7 +518,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			if (Data == null)
 			{
 				Logging.Warn("VixenPreviewDisplay_Resize: Data is null. abandoning resize. (Thread ID: " +
-											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+											Thread.CurrentThread.ManagedThreadId + ")");
 				return;
 			}
 

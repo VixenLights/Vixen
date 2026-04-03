@@ -592,7 +592,7 @@ namespace VixenModules.Effect.Video
 			settingsToHash.Append(FrameTime);
 			settingsToHash.Append(StretchToGrid);
 			settingsToHash.Append(ScaleToGrid);
-			settingsToHash.Append(Vixen.Sys.VixenSystem.VideoEffect_CacheFileType);
+			settingsToHash.Append(VixenSystem.VideoEffect_CacheFileType);
 			_settingsHash = Convert.ToHexString(MD5.HashData(Encoding.UTF8.GetBytes(settingsToHash.ToString())));
 		}
 
@@ -656,7 +656,7 @@ namespace VixenModules.Effect.Video
 				if (VideoLength > StartTimeSeconds + (TimeSpan.TotalSeconds * ((double)PlayBackSpeed / 100 + 1)))
 				{
 					_currentMovieImageNum = 0;
-					string cacheFileExt = Vixen.Sys.VixenSystem.VideoEffect_CacheFileType;
+					string cacheFileExt = VixenSystem.VideoEffect_CacheFileType;
 
 					// Height and Width needs to be evenly divisible to work or ffmpeg complains.
 					if (_renderHeight % 2 != 0) _renderHeight++;
@@ -1178,7 +1178,7 @@ namespace VixenModules.Effect.Video
 
 		protected override void Dispose(bool disposing)
 		{
-			if (Vixen.Sys.VixenSystem.ClearEffectCacheOnExit)
+			if (VixenSystem.ClearEffectCacheOnExit)
 			{
 				Removing();
 				try

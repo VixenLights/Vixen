@@ -52,7 +52,7 @@ namespace VixenModules.Effect.Effect
 		/// </summary>
 		/// <param name="context">Single effect or a collection of effects</param>
 		/// <returns>Collection of string names</returns>
-		public override TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
+		public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
 		{
 			// Create the return collection
 			List<string> values = new List<string>();
@@ -92,7 +92,7 @@ namespace VixenModules.Effect.Effect
 				}
 			}
 
-			return new TypeConverter.StandardValuesCollection(values.ToArray());
+			return new StandardValuesCollection(values.ToArray());
 
 		}
 

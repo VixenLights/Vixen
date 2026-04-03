@@ -67,15 +67,15 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
                     if (text.Contains("'s")) text = text.Substring(0, text.IndexOf('s')) + text.Substring(text.IndexOf('s') + 1);
                 }
 
-                this.Text = text;
-                this.LineNumber = lineNumber;
-                this.Offset = offset;
-                this.TokenType = type;
+                Text = text;
+                LineNumber = lineNumber;
+                Offset = offset;
+                TokenType = type;
             }
 
             public void SetText(string text)
             {
-                this.Text = text;
+                Text = text;
             }
 
             public override string ToString()
@@ -119,9 +119,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 
             public Line(string text, int lineNumber, bool comment = false)
             {
-                this.Text = text;
-                this.LineNumber = lineNumber;
-                this.Comment = comment;
+                Text = text;
+                LineNumber = lineNumber;
+                Comment = comment;
             }
 
             public override string ToString()

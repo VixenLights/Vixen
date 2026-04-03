@@ -24,8 +24,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
             public Vector2(double x, double y)
             {
-                this.X = x;
-                this.Y = y;
+                X = x;
+                Y = y;
             }
             public static Vector2 operator -(Vector2 a, Vector2 b)
             {
@@ -70,7 +70,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-		public static System.Object renderLock = new System.Object();
+		public static Object renderLock = new Object();
 		public static Color SelectedItemColor = Color.LimeGreen;
 		public static Color HighlightedElementColor = Color.Pink;
 
@@ -237,7 +237,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				// First we need to see if the object needs to be translated in the X-Y plane.
 				// So, find where the new center would be
 				shape._selectedPoint.PointType = PreviewPoint.PointTypes.None;
-				var newCenter = PreviewTools.TransformPreviewPoint(shape, new PreviewPoint(shape.Center), 1);
+				var newCenter = TransformPreviewPoint(shape, new PreviewPoint(shape.Center), 1);
 				shape._selectedPoint.PointType = PreviewPoint.PointTypes.RotateHandle;
 
 				// Check to see if any translation is needed.
@@ -332,8 +332,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			shape.RotationAxis.Y = shape.Center.Y;
 
 			// Calculate the rotational geometry
-			var point = PreviewTools.TransformPreviewPoint(shape, new PreviewPoint(basePoint.X, basePoint.Y), -zoomLevel, _rotateTargetAxis);
-			double angle = PreviewTools.GetAngle(shape.RotationAxis.ToPoint(), point);
+			var point = TransformPreviewPoint(shape, new PreviewPoint(basePoint.X, basePoint.Y), -zoomLevel, _rotateTargetAxis);
+			double angle = GetAngle(shape.RotationAxis.ToPoint(), point);
 
 			// Use Detents of 0, 45, 90, 135, 180, 225, 270 and 315 when holding the Ctrl modifier key down.
 			if (useDetents)

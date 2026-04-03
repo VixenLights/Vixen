@@ -325,7 +325,7 @@ namespace VixenModules.App.TimedSequenceMapper.SequenceElementMapper.ViewModels
 			}
 			else
 			{
-				await this.CloseViewModelAsync(true);
+				await CloseViewModelAsync(true);
 			}
 		}
 

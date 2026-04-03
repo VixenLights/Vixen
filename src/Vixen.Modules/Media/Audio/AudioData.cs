@@ -12,8 +12,8 @@ namespace VixenModules.Media.Audio
 		{
 			get {
 
-				if (!System.IO.File.Exists(filePath) && !string.IsNullOrWhiteSpace(relativeAudioPath)) {
-					filePath =  System.IO.Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().FullName).DirectoryName, relativeAudioPath);
+				if (!File.Exists(filePath) && !string.IsNullOrWhiteSpace(relativeAudioPath)) {
+					filePath =  Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().FullName).DirectoryName, relativeAudioPath);
 				}
 
 				return filePath; 
@@ -23,7 +23,7 @@ namespace VixenModules.Media.Audio
 			{
 				filePath=value;
 
-				if (System.IO.File.Exists(filePath) && string.IsNullOrWhiteSpace(relativeAudioPath))
+				if (File.Exists(filePath) && string.IsNullOrWhiteSpace(relativeAudioPath))
 					relativeAudioPath=	Vixen.Utility.PathUtility.MakeRelativePath(new FileInfo(Assembly.GetExecutingAssembly().FullName).DirectoryName, filePath);
 			}
 		}

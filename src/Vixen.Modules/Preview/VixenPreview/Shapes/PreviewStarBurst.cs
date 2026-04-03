@@ -398,7 +398,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
                 // Should the height = the width?
                 if (_selectedPoint == _bottomRight &&
-                    System.Windows.Forms.Control.ModifierKeys == System.Windows.Forms.Keys.Control)
+                    Control.ModifierKeys == Keys.Control)
                 {
                     int height = point.Y - _topRight.Y;
                     _topRight.X = _topLeft.X + height;

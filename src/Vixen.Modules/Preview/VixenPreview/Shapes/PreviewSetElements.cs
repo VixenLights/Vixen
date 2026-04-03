@@ -131,13 +131,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			if (connectStandardStrings && _shapes[0].StringType == PreviewLightBaseShape.StringTypes.Standard)
 			{
-				comboStrings.Items.Add(new Common.Controls.ComboBoxItem(_strings[0].StringName, _strings[0]));
+				comboStrings.Items.Add(new ComboBoxItem(_strings[0].StringName, _strings[0]));
 			}
 			else
 			{
 				foreach (PreviewSetElementString lightString in _strings)
 				{
-					comboStrings.Items.Add(new Common.Controls.ComboBoxItem(lightString.StringName, lightString));
+					comboStrings.Items.Add(new ComboBoxItem(lightString.StringName, lightString));
 				}
 			}
 			if (_strings.Count > 0)
@@ -248,7 +248,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private void UpdateListLinkedElements()
 		{
 			listLinkedElements.Items.Clear();
-			Common.Controls.ComboBoxItem comboBoxItem = comboStrings.SelectedItem as Common.Controls.ComboBoxItem;
+			ComboBoxItem comboBoxItem = comboStrings.SelectedItem as ComboBoxItem;
 			if (comboBoxItem != null)
 			{
 				PreviewSetElementString elementString = comboBoxItem.Value as PreviewSetElementString;
@@ -344,7 +344,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private void buttonCancel_Click(object sender, EventArgs e)
 		{
-			DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 			Close();
 		}
 
@@ -371,7 +371,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					if (_shapes[i].Pixels.Count == 0)
 						continue;
 					comboidx++;
-					var item = comboStrings.Items[comboidx] as Common.Controls.ComboBoxItem;
+					var item = comboStrings.Items[comboidx] as ComboBoxItem;
 					var lightString = item.Value as PreviewSetElementString;
 					var shape = _shapes[i];
 
@@ -411,7 +411,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			_shapes.ForEach(x => x.Layout());
 
-			DialogResult = System.Windows.Forms.DialogResult.OK;
+			DialogResult = DialogResult.OK;
 			Close();
 		}
 
@@ -469,7 +469,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private void buttonSetLightCount_Click(object sender, EventArgs e)
 		{
-			Common.Controls.ComboBoxItem comboBoxItem = comboStrings.SelectedItem as Common.Controls.ComboBoxItem;
+			ComboBoxItem comboBoxItem = comboStrings.SelectedItem as ComboBoxItem;
 			if (comboBoxItem != null)
 			{
 				PreviewSetElementString elementString = comboBoxItem.Value as PreviewSetElementString;
@@ -491,7 +491,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private void reverseElementLinkingInThisStringToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			ComboBoxItem comboBoxItem = comboStrings.SelectedItem as Common.Controls.ComboBoxItem;
+			ComboBoxItem comboBoxItem = comboStrings.SelectedItem as ComboBoxItem;
 			if (comboBoxItem != null)
 			{
 				PreviewSetElementString elementString = comboBoxItem.Value as PreviewSetElementString;

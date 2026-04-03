@@ -57,7 +57,7 @@ namespace VixenModules.App.CustomPropEditor
 			}
 		}
 
-		private void RootCommand_Click(object sender, System.EventArgs e)
+		private void RootCommand_Click(object sender, EventArgs e)
 		{
 			CustomPropEditorWindow mw = new CustomPropEditorWindow();
 			//PropEditorWindow mw = new PropEditorWindow();

@@ -583,7 +583,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override object Clone()
 		{
-			PreviewMegaTree newTree = (PreviewMegaTree) this.MemberwiseClone();
+			PreviewMegaTree newTree = (PreviewMegaTree) MemberwiseClone();
 
 			newTree._strings = new List<PreviewBaseShape>();
 			foreach (PreviewLightBaseShape line in _strings) {

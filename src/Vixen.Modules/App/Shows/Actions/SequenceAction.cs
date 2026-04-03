@@ -1,4 +1,5 @@
-﻿using Vixen.Execution;
+﻿using NLog;
+using Vixen.Execution;
 using Vixen.Execution.Context;
 using Vixen.Module.Media;
 using Vixen.Sys;
@@ -7,8 +8,8 @@ namespace VixenModules.App.Shows
 {
 	public class SequenceAction : Action
 	{
-		private ISequenceContext _sequenceContext = null;
-		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private ISequenceContext _sequenceContext;
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private ISequence _sequence;
 		private bool _canExecute = true;
 		private bool _preProcessingCompleted;

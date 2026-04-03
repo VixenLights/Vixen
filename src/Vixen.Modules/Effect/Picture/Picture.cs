@@ -1340,8 +1340,8 @@ namespace VixenModules.Effect.Picture
 					new float[] {0, 0, 0, 1, 0},
 					new float[] {0, 0, 0, 0, 1}
 				};
-				var ia = new System.Drawing.Imaging.ImageAttributes();
-				ia.SetColorMatrix(new System.Drawing.Imaging.ColorMatrix(matrix));
+				var ia = new ImageAttributes();
+				ia.SetColorMatrix(new ColorMatrix(matrix));
 				var rc = new Rectangle(0, 0, srce.Width, srce.Height);
 				gr.DrawImage(srce, rc, 0, 0, srce.Width, srce.Height, GraphicsUnit.Pixel, ia);
 				return bmp;

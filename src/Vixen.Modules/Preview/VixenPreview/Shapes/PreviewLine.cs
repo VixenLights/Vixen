@@ -332,7 +332,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override object Clone()
 		{
-			PreviewLine newLine = (PreviewLine) this.MemberwiseClone();
+			PreviewLine newLine = (PreviewLine) MemberwiseClone();
 
 			newLine._pixels = new List<PreviewPixel>();
 

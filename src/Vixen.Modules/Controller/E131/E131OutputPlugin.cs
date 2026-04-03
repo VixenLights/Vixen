@@ -158,7 +158,7 @@ namespace VixenModules.Controller.E131
 			using (var setupForm = new SetupForm())
 			{
 				// Tell the setupForm our output count
-				setupForm.PluginChannelCount = this.OutputCount;
+				setupForm.PluginChannelCount = OutputCount;
 
 				List<int> initialUniverseList = new List<int>();
 
@@ -188,7 +188,7 @@ namespace VixenModules.Controller.E131
 					running = false; //prevent updates
 					if (running)
 					{
-						this.Stop();
+						Stop();
 					}
 
 					_data.Warnings = setupForm.WarningsOption;
@@ -237,7 +237,7 @@ namespace VixenModules.Controller.E131
 						}
 					}
 
-					this.Start();
+					Start();
 				}
 			}
 
@@ -304,35 +304,35 @@ namespace VixenModules.Controller.E131
 
 			if (_data.Statistics)
 			{
-				if (this._messageTexts.Length > 0)
+				if (_messageTexts.Length > 0)
 				{
-					this._messageTexts.AppendLine();
+					_messageTexts.AppendLine();
 				}
 
-				this._messageTexts.AppendLine(string.Format("Events: {0}", this._eventCnt));
-				this._messageTexts.AppendLine(string.Format("Total Time: {0} Ticks; {1} ms", this._totalTicks,
-					TimeSpan.FromTicks(this._totalTicks).Milliseconds));
+				_messageTexts.AppendLine(string.Format("Events: {0}", _eventCnt));
+				_messageTexts.AppendLine(string.Format("Total Time: {0} Ticks; {1} ms", _totalTicks,
+					TimeSpan.FromTicks(_totalTicks).Milliseconds));
 
 				foreach (var uE in _data.Universes)
 				{
 					if (uE.Active)
 					{
-						this._messageTexts.AppendLine();
-						this._messageTexts.Append(uE.StatsToText);
+						_messageTexts.AppendLine();
+						_messageTexts.Append(uE.StatsToText);
 					}
 				}
 
 				J1MsgBox.ShowMsg(
 					"Plugin Statistics:",
-					this._messageTexts.ToString(),
+					_messageTexts.ToString(),
 					"J1Sys E1.31 Vixen Plugin",
 					MessageBoxButtons.OK,
 					MessageBoxIcon.Information);
 			}
 
 			// this._universeTable.Clear();
-			if (this._nicTable != null) this._nicTable.Clear();
-			this._nicTable = new SortedList<string, NetworkInterface>();
+			if (_nicTable != null) _nicTable.Clear();
+			_nicTable = new SortedList<string, NetworkInterface>();
 		}
 
 		// -------------------------------------------------------------
@@ -372,12 +372,12 @@ namespace VixenModules.Controller.E131
 			var nicSockets = new SortedList<string, Socket>();
 
 			// load all of our xml into working objects
-			this.LoadSetupNodeInfo();
+			LoadSetupNodeInfo();
 
 
 			// initialize plugin wide stats
-			this._eventCnt = 0;
-			this._totalTicks = 0;
+			_eventCnt = 0;
+			_totalTicks = 0;
 
 			if (_data.Unicast == null && _data.Multicast == null)
 				if (_data.Universes[0] != null && (_data.Universes[0].Multicast != null || _data.Universes[0].Unicast != null))
@@ -399,7 +399,7 @@ namespace VixenModules.Controller.E131
 				}
 
 			// find all of the network interfaces & build a sorted list indexed by Id
-			this._nicTable = new SortedList<string, NetworkInterface>();
+			_nicTable = new SortedList<string, NetworkInterface>();
 
 			NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
 			foreach (var nic in nics)
@@ -407,7 +407,7 @@ namespace VixenModules.Controller.E131
 				if (nic.NetworkInterfaceType != NetworkInterfaceType.Tunnel &&
 				    nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
 				{
-					this._nicTable.Add(nic.Id, nic);
+					_nicTable.Add(nic.Id, nic);
 				}
 			}
 
@@ -420,7 +420,7 @@ namespace VixenModules.Controller.E131
 			}
 
 			// initialize messageTexts stringbuilder to hold all warnings/errors
-			this._messageTexts = new StringBuilder();
+			_messageTexts = new StringBuilder();
 
 			// now we need to scan the universeTable
 			foreach (var uE in _data.Universes)
@@ -488,7 +488,7 @@ namespace VixenModules.Controller.E131
 						var multicastIpEndPoint = new IPEndPoint(multicastIpAddress, 5568);
 
 						// first check for multicast id in nictable
-						if (!this._nicTable.ContainsKey(_data.Multicast))
+						if (!_nicTable.ContainsKey(_data.Multicast))
 						{
 							// no - deactivate and scream & yell!!
 							NLog.LogManager.GetCurrentClassLogger()
@@ -510,7 +510,7 @@ namespace VixenModules.Controller.E131
 						else
 						{
 							// yes - let's get a working networkinterface object
-							networkInterface = this._nicTable[_data.Multicast];
+							networkInterface = _nicTable[_data.Multicast];
 
 							// have we done this multicast id before?
 							if (nicSockets.ContainsKey(_data.Multicast))
@@ -553,7 +553,7 @@ namespace VixenModules.Controller.E131
 
 								if (ipAddress == null)
 								{
-									this._messageTexts.AppendLine(string.Format("No IP On Multicast Interface: {0} - {1}", networkInterface.Name,
+									_messageTexts.AppendLine(string.Format("No IP On Multicast Interface: {0} - {1}", networkInterface.Name,
 										uE.InfoToText));
 								}
 								else
@@ -599,7 +599,7 @@ namespace VixenModules.Controller.E131
 			}
 
 			// any warnings/errors recorded?
-			if (this._messageTexts.Length > 0)
+			if (_messageTexts.Length > 0)
 			{
 				// should we display them
 				if (_data.Warnings)
@@ -607,13 +607,13 @@ namespace VixenModules.Controller.E131
 					// show our warnings/errors
 					J1MsgBox.ShowMsg(
 						"The following warnings and errors were detected during startup:",
-						this._messageTexts.ToString(),
+						_messageTexts.ToString(),
 						"Startup Warnings/Errors",
 						MessageBoxButtons.OK,
 						MessageBoxIcon.Exclamation);
 
 					// discard warning/errors after reporting them
-					this._messageTexts = new StringBuilder();
+					_messageTexts = new StringBuilder();
 				}
 			}
 
@@ -703,7 +703,7 @@ namespace VixenModules.Controller.E131
 
 		private E131ModuleDataModel GetDataModel()
 		{
-			return (E131ModuleDataModel) this.ModuleData;
+			return (E131ModuleDataModel) ModuleData;
 		}
 
 		public override void UpdateState(int chainIndex, ICommand[] outputStates)
@@ -801,7 +801,7 @@ namespace VixenModules.Controller.E131
 			}
 			_updateStateStopWatch.Stop();
 
-			this._totalTicks += _updateStateStopWatch.ElapsedTicks;
+			_totalTicks += _updateStateStopWatch.ElapsedTicks;
 		}
 
 		private void LoadSetupNodeInfo()
@@ -822,10 +822,10 @@ namespace VixenModules.Controller.E131
 			if (_data.Universes == null)
 				_data.Universes = new List<UniverseEntry>();
 
-			if (System.IO.File.Exists("Modules\\Controller\\E131settings.xml"))
+			if (File.Exists("Modules\\Controller\\E131settings.xml"))
 			{
 				ImportOldSettingsFile();
-				System.IO.File.Move("Modules\\Controller\\E131settings.xml", "Modules\\Controller\\E131settings.xml.old");
+				File.Move("Modules\\Controller\\E131settings.xml", "Modules\\Controller\\E131settings.xml.old");
 			}
 		}
 

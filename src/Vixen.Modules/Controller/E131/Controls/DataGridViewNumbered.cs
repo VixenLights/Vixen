@@ -27,12 +27,12 @@ namespace VixenModules.Output.E131.Controls
 
 			// determine the display size of the row number string using
 			// the DataGridView's current font.
-			SizeF size = e.Graphics.MeasureString(strRowNumber, this.Font);
+			SizeF size = e.Graphics.MeasureString(strRowNumber, Font);
 
 			// adjust the width of the column that contains the row header cells 
 			// if necessary
-			if (this.RowHeadersWidth < (int) (size.Width + 20)) {
-				this.RowHeadersWidth = (int) (size.Width + 20);
+			if (RowHeadersWidth < (int) (size.Width + 20)) {
+				RowHeadersWidth = (int) (size.Width + 20);
 			}
 
 			// this brush will be used to draw the row number string on the
@@ -43,7 +43,7 @@ namespace VixenModules.Output.E131.Controls
 			// the brush defined above and the DataGridView's default font
 			e.Graphics.DrawString(
 				strRowNumber,
-				this.Font,
+				Font,
 				b,
 				e.RowBounds.Location.X + 15,
 				e.RowBounds.Location.Y + ((e.RowBounds.Height - size.Height)/2));

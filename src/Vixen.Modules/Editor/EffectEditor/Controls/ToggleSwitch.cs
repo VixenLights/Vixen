@@ -152,9 +152,9 @@ namespace VixenModules.Editor.EffectEditor.Controls
         {
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                if ((this.IsChecked == true) && (!String.IsNullOrWhiteSpace(newCheckedToolTip)))
+                if ((IsChecked == true) && (!String.IsNullOrWhiteSpace(newCheckedToolTip)))
                 {
-                    this.ToolTip = new ToolTip() { Content = newCheckedToolTip };
+                    ToolTip = new ToolTip() { Content = newCheckedToolTip };
                 }
             }));
         }
@@ -573,9 +573,9 @@ namespace VixenModules.Editor.EffectEditor.Controls
         {
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                if ((this.IsChecked == false) && (!String.IsNullOrWhiteSpace(newUncheckedToolTip)))
+                if ((IsChecked == false) && (!String.IsNullOrWhiteSpace(newUncheckedToolTip)))
                 {
-                    this.ToolTip = new ToolTip() { Content = newUncheckedToolTip };
+                    ToolTip = new ToolTip() { Content = newUncheckedToolTip };
                 }
             }));
         }
@@ -637,9 +637,9 @@ namespace VixenModules.Editor.EffectEditor.Controls
             // Set the ToggleSwitch's ToolTip to CheckedToolTip property if it 
             // is not null or empty, else set the ToolTip to null.
             if (!String.IsNullOrWhiteSpace(CheckedToolTip))
-                this.ToolTip = new ToolTip() { Content = CheckedToolTip };
+                ToolTip = new ToolTip() { Content = CheckedToolTip };
             else
-                this.ToolTip = null;
+                ToolTip = null;
         }
 
         /// <summary>
@@ -658,9 +658,9 @@ namespace VixenModules.Editor.EffectEditor.Controls
             // Set the ToggleSwitch's ToolTip to UncheckedToolTip property if it 
             // is not null or empty, else set the ToolTip to null.
             if (!String.IsNullOrWhiteSpace(UncheckedToolTip))
-                this.ToolTip = new ToolTip() { Content = UncheckedToolTip };
+                ToolTip = new ToolTip() { Content = UncheckedToolTip };
             else
-                this.ToolTip = null;
+                ToolTip = null;
         }
 
         #endregion
@@ -804,7 +804,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
             {
                 // Change the margin of the content border so that its size is (1 + contentBorderMargin) times the width of
                 // the Toggle switch
-                contentBorder.Margin = new Thickness(-(this.Width * contentBorderMargin) + 1, 0, -(this.Width * contentBorderMargin) + 1, 0);
+                contentBorder.Margin = new Thickness(-(Width * contentBorderMargin) + 1, 0, -(Width * contentBorderMargin) + 1, 0);
             }
 
 

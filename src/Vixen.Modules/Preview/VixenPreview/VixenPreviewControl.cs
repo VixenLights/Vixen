@@ -555,24 +555,24 @@ namespace VixenModules.Preview.VixenPreview
 				context = BufferedGraphicsManager.Current;
 				if (context != null)
 				{
-					if (this.Width > 0 && this.Height > 0 && (this.Height != lastHeight || this.Width != lastWidth || forceAllocation))
+					if (Width > 0 && Height > 0 && (Height != lastHeight || Width != lastWidth || forceAllocation))
 					{
-						lastHeight = this.Height;
-						lastWidth = this.Width;
+						lastHeight = Height;
+						lastWidth = Width;
 
-						context.MaximumBuffer = new Size(this.Width + 1, this.Height + 1);
+						context.MaximumBuffer = new Size(Width + 1, Height + 1);
 
 						if (bufferedGraphics != null)
 						{
 							bufferedGraphics.Dispose();
 							bufferedGraphics = null;
-							bufferedGraphics = context.Allocate(this.CreateGraphics(),
-								new Rectangle(0, 0, this.Width + 1, this.Height + 1));
+							bufferedGraphics = context.Allocate(CreateGraphics(),
+								new Rectangle(0, 0, Width + 1, Height + 1));
 						}
 						else
 						{
-							bufferedGraphics = context.Allocate(this.CreateGraphics(),
-								new Rectangle(0, 0, this.Width + 1, this.Height + 1));
+							bufferedGraphics = context.Allocate(CreateGraphics(),
+								new Rectangle(0, 0, Width + 1, Height + 1));
 						}
 
 						bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
@@ -643,10 +643,10 @@ namespace VixenModules.Preview.VixenPreview
 			if (_editMode)
 			{
 				_elementSelected = elementsForm.SelectedNode;
-				bool controlPressed = Control.ModifierKeys.HasFlag(Keys.Control);
-				bool shiftPressed =Control.ModifierKeys.HasFlag(Keys.Shift);
+				bool controlPressed = ModifierKeys.HasFlag(Keys.Control);
+				bool shiftPressed =ModifierKeys.HasFlag(Keys.Shift);
 				PreviewPoint translatedPoint = new PreviewPoint(e.X + hScroll.Value, e.Y + vScroll.Value);
-				if (e.Button == System.Windows.Forms.MouseButtons.Left)
+				if (e.Button == MouseButtons.Left)
 				{
 					if (_currentTool == Tools.Select)
 					{
@@ -865,7 +865,7 @@ namespace VixenModules.Preview.VixenPreview
 						}
 					}
 				}
-				else if (e.Button == System.Windows.Forms.MouseButtons.Right)
+				else if (e.Button == MouseButtons.Right)
 				{
 					contextMenuStrip1.Items.Clear();
 					SelectItemUnderPoint(translatedPoint, false, shiftPressed);
@@ -1018,7 +1018,7 @@ namespace VixenModules.Preview.VixenPreview
 						contextMenuStrip1.Show(this, e.Location);
 					}
 				}
-				else if (e.Button == System.Windows.Forms.MouseButtons.Middle)
+				else if (e.Button == MouseButtons.Middle)
 				{
 					// Pan
 					zoomTo = MousePointToZoomPoint(e.Location);
@@ -1159,7 +1159,7 @@ namespace VixenModules.Preview.VixenPreview
 				BeginUpdate();
 				PreviewPoint translatedPoint = new PreviewPoint(e.X + hScroll.Value, e.Y + vScroll.Value);
 				Point zoomPoint = PointToZoomPoint(translatedPoint.ToPoint());
-				if (e.Button == System.Windows.Forms.MouseButtons.Middle)
+				if (e.Button == MouseButtons.Middle)
 				{
 					// Woo hoo... we're panning with the middle mouse button
 					// Set the new background position based on the mouse position
@@ -1193,14 +1193,14 @@ namespace VixenModules.Preview.VixenPreview
 							if (item.Shape.ShapeInRect(_bandRect, changeX > 0))
 							{
 								if (!SelectedDisplayItems.Contains(item) && 
-									(Control.ModifierKeys.HasFlag(Keys.Shift) || !item.Shape.Locked))
+									(ModifierKeys.HasFlag(Keys.Shift) || !item.Shape.Locked))
 								{
 									SelectedDisplayItems.Add(item);
 									OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 								}
 							}
 							else if (SelectedDisplayItems.Contains(item) &&
-								     (Control.ModifierKeys.HasFlag(Keys.Shift) || !item.Shape.Locked))
+								     (ModifierKeys.HasFlag(Keys.Shift) || !item.Shape.Locked))
 							{
 								SelectedDisplayItems.Remove(item);
 								OnSelectionChanged?.Invoke(this, EventArgs.Empty);
@@ -1419,7 +1419,7 @@ namespace VixenModules.Preview.VixenPreview
 				}
 				e.Handled = true;
 			}
-			else if (e.KeyCode == Keys.Oemplus && Control.ModifierKeys == Keys.Control)
+			else if (e.KeyCode == Keys.Oemplus && ModifierKeys == Keys.Control)
 			{
 				if (ZoomLevel < 4)
 				{
@@ -1427,7 +1427,7 @@ namespace VixenModules.Preview.VixenPreview
 				}
 				e.Handled = true;
 			}
-			else if (e.KeyCode == Keys.OemMinus && Control.ModifierKeys == Keys.Control)
+			else if (e.KeyCode == Keys.OemMinus && ModifierKeys == Keys.Control)
 			{
 				if (ZoomLevel > .25)
 				{
@@ -1988,13 +1988,13 @@ namespace VixenModules.Preview.VixenPreview
 			NodeToPixel.Clear();
 			
 			if (DisplayItems == null)
-				throw new System.ArgumentException("DisplayItems == null");
+				throw new ArgumentException("DisplayItems == null");
 
 			foreach (DisplayItem item in DisplayItems)
 			{
 				if (item.IsLightShape() &&
 					item.LightShape.Pixels == null)
-					throw new System.ArgumentException("item.Shape.Pixels == null");
+					throw new ArgumentException("item.Shape.Pixels == null");
 
 				if (item.IsLightShape())
 				{
@@ -2473,7 +2473,7 @@ namespace VixenModules.Preview.VixenPreview
 					newDisplayItem.Shape.Select(true);
 					string xml = PreviewTools.SerializeToString(newDisplayItem.Clone());
 					string destFileName = PreviewTools.TemplateWithFolder(f.TemplateName + ".xml");
-					System.IO.File.WriteAllText(destFileName, xml);
+					File.WriteAllText(destFileName, xml);
 				}
 			}
 			return newDisplayItem;
@@ -2481,7 +2481,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void AddTtemplateToPreview(string fileName)
 		{
-			if (System.IO.File.Exists(fileName))
+			if (File.Exists(fileName))
 			{
 				// Read the entire template file (stoopid waste of resources, but how else?)
 				string xml = File.ReadAllText(fileName);
@@ -2993,7 +2993,7 @@ namespace VixenModules.Preview.VixenPreview
 				}
 			}
 
-			bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
+			bufferedGraphics.Render(Graphics.FromHwnd(Handle));
 		}
 
 		public void EraseScreen()

@@ -188,7 +188,7 @@ namespace VixenModules.App.LipSyncApp
 			{
 				Library.RemoveMapping(mapName);
 			}
-			this.PopulateListWithMappings();
+			PopulateListWithMappings();
 		}
 
 		private void buttonCloneMap_Click(object sender, EventArgs e)
@@ -198,7 +198,7 @@ namespace VixenModules.App.LipSyncApp
 				string mapName = Library.CloneLibraryMapping(lvItem.Name);
 				if (mapName != "")
 				{
-					this.PopulateListWithMappings();
+					PopulateListWithMappings();
 					Changed = true;
 				}
 			}

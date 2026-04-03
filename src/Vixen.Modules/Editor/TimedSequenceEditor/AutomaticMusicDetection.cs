@@ -21,7 +21,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			freqTimer.Tick += freqTimer_Tick;
 			freqTimer.Enabled = true;
 
-			this.numericUpDown1.Value = Accuracy;
+			numericUpDown1.Value = Accuracy;
 		}
 
 		private Properties.Settings settings = new Properties.Settings();
@@ -96,7 +96,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		    }
 		    else
 		    {
-		        this.freqTimer.Enabled = false;
+		        freqTimer.Enabled = false;
 		    }
 		}
 
@@ -106,10 +106,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			List<Control> elements = new List<Control>();
 
-			int count = this.Controls.Count;
+			int count = Controls.Count;
 			if (count > 0) {
 				for (int j = 0; j < count; j++) {
-					var child = this.Controls[j];
+					var child = Controls[j];
 					if (child.GetType() == typeof (GroupBox)) {
 						for (int k = 0; k < child.Controls.Count; k++) {
 							var box = child.Controls[k];
@@ -128,12 +128,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void highlightCheckbox(int id, bool Highlight)
 		{
-			if (this.InvokeRequired)
-				this.Invoke(new highlightCheckboxDelegate(highlightCheckbox), id, Highlight);
+			if (InvokeRequired)
+				Invoke(new highlightCheckboxDelegate(highlightCheckbox), id, Highlight);
 			else {
 				var box = FindCheckBox(id.ToString());
 				if (box != null)
-					box.BackColor = Highlight ? Color.Blue : this.BackColor;
+					box.BackColor = Highlight ? Color.Blue : BackColor;
 			}
 		}
 
@@ -143,10 +143,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				case "Stop":
 					_audio.Stop();
 					btnPreviewAudio.Text = "Preview Audio";
-					this.freqs.Clear();
+					freqs.Clear();
 					break;
 				default:
-					this.freqs.Clear();
+					freqs.Clear();
 					_audio.Start();
 					btnPreviewAudio.Text = "Stop";
 
@@ -156,7 +156,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void numericUpDown1_ValueChanged(object sender, EventArgs e)
 		{
-			this.Accuracy = (int) numericUpDown1.Value;
+			Accuracy = (int) numericUpDown1.Value;
 		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)

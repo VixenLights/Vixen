@@ -7,9 +7,9 @@
 	using System.Collections.Generic;
 	using System.Collections.ObjectModel;
 	using System.Linq;
-	using VixenModules.App.Fixture;
-	using VixenModules.App.FixtureSpecificationManager;
-	using VixenModules.Editor.FixtureWizard.Wizard.Models;
+	using App.Fixture;
+	using App.FixtureSpecificationManager;
+	using Models;
 
 	/// <summary>
 	/// Wizard view model page that selects an existing fixture profile or initiates the creation of a new profile.

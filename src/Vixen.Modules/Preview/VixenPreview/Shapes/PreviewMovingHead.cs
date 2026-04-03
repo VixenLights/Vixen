@@ -289,7 +289,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_zoomLevel = zoomLevel;
 
 			// Called the shared Draw method
-			Draw(fp, editMode, highlightedElements, selected, false, this.Locked, zoomLevel);
+			Draw(fp, editMode, highlightedElements, selected, false, Locked, zoomLevel);
 			
 			// Restore the _zoomLevel back to 1.0 to support editing the preview
 			_zoomLevel = 1.0;

@@ -255,7 +255,7 @@ namespace VixenModules.App.TimingTrackBrowser.ViewModels
                     Log.Error(noBrowser, noBrowser.Message);
 				}
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
 				Log.Error(e, "Error opening link");
             }

@@ -1,11 +1,13 @@
-﻿namespace VixenModules.App.Shows
+﻿using System.ComponentModel;
+
+namespace VixenModules.App.Shows
 {
 	partial class WebPageTypeTester
 	{
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+		private IContainer components = null;
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -79,8 +81,8 @@
 
 		#endregion
 
-		private System.Windows.Forms.WebBrowser webBrowser;
-		private System.Windows.Forms.Button buttonClose;
-		private System.Windows.Forms.Label labelURL;
+		private WebBrowser webBrowser;
+		private Button buttonClose;
+		private Label labelURL;
 	}
 }

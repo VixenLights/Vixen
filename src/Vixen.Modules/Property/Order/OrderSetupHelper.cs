@@ -126,7 +126,7 @@ namespace VixenModules.Property.Order
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				var messageBox = new MessageBoxForm("The total selected pixels must be evenly divisable by the zigzag length", "Zigzag Error", false, false);
-				MessageBoxForm.msgIcon = System.Drawing.SystemIcons.Exclamation; //this is used if you want to add a system icon to the message form.
+				MessageBoxForm.msgIcon = SystemIcons.Exclamation; //this is used if you want to add a system icon to the message form.
 				messageBox.ShowDialog();
 			}
 				

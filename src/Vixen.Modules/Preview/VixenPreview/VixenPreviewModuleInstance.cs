@@ -29,7 +29,7 @@ namespace VixenModules.Preview.VixenPreview
 				if (base.ModuleData == null) {
 					base.ModuleData = new VixenPreviewData();
 					Logging.Warn("VixenPreview: access of null ModuleData. Creating new one. (Thread ID: " +
-					                            System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+					                            Thread.CurrentThread.ManagedThreadId + ")");
 				}
 				return base.ModuleData;
 			}

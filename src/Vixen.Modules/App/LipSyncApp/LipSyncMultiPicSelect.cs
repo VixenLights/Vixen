@@ -29,8 +29,8 @@ namespace VixenModules.App.LipSyncApp
 				+ Environment.NewLine
 				+ "Please select the desired mapping";
 
-			this.ForeColor = ThemeColorTable.ForeColor;
-			this.BackColor = ThemeColorTable.BackgroundColor;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
 
 
 			foreach (KeyValuePair<string, ComboBox> kvp in comboBoxes)
@@ -118,7 +118,7 @@ namespace VixenModules.App.LipSyncApp
 			filterSelections("U",u_comboBox.SelectedIndex);
 			filterSelections("WQ",wq_comboBox.SelectedIndex);
 
-			this.DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		[Browsable(false)]

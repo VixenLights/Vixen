@@ -118,7 +118,7 @@ namespace VixenModules.App.SuperScheduler
 			{
 				using (SetupForm form = new SetupForm(_data))
 				{
-					if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+					if (form.ShowDialog() == DialogResult.OK)
 					{
 
 					}

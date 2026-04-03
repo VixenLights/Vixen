@@ -294,7 +294,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void NewColorCollection()
 		{
-			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Collecton Name?");
+			TextDialog dialog = new TextDialog("Collecton Name?");
 			while (dialog.ShowDialog() == DialogResult.OK)
 			{
 				if (dialog.Response == string.Empty)

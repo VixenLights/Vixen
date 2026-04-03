@@ -71,7 +71,7 @@ namespace VixenModules.Controller.E131.J1Sys
 
 		private J1MsgBox()
 		{
-			this.InitBox();
+			InitBox();
 		}
 
 		public static DialogResult ShowErrMsg(string text, string caption)
@@ -119,7 +119,7 @@ namespace VixenModules.Controller.E131.J1Sys
 			MessageBoxButtons messageBoxButtons,
 			MessageBoxIcon messageBoxIcon)
 		{
-			Graphics grfx = this.CreateGraphics();
+			Graphics grfx = CreateGraphics();
 			SizeF scrollTextSizeF;
 			int btns;
 			Point textPoint, btnsPoint;
@@ -128,32 +128,32 @@ namespace VixenModules.Controller.E131.J1Sys
 			bool hasIcon;
 			Font captionFont;
 
-			this.SuspendLayout();
+			SuspendLayout();
 
 			// first re-init box to the defaults (ours)
-			this.InitBox();
+			InitBox();
 
 			// calculate the raw size of the caption
 			captionFont = new Font(SystemInformation.MenuFont, FontStyle.Bold);
 			SizeF captionSizeF = grfx.MeasureString(caption, captionFont);
 
 			// calculate the raw size of the text
-			SizeF textSizeF = text.Length != 0 ? grfx.MeasureString(text, this.Font) : new SizeF(0, 0);
+			SizeF textSizeF = text.Length != 0 ? grfx.MeasureString(text, Font) : new SizeF(0, 0);
 
 			// set the msgIcon
 			if (messageBoxIcon != MessageBoxIcon.None) {
-				this._msgIcon = LoadMessageBoxIcon(messageBoxIcon);
+				_msgIcon = LoadMessageBoxIcon(messageBoxIcon);
 			}
 
-			hasIcon = this._msgIcon != null;
+			hasIcon = _msgIcon != null;
 
 			// if needed, create the textbox and add it to the form
 			if (scrollText != null) {
-				scrollTextSizeF = grfx.MeasureString(scrollText, this.Font);
-				this._msgScrollTextBox = new TextBox {Text = scrollText, Multiline = true, ReadOnly = true};
-				this._msgScrollTextBox.Select(0, 0);
-				this._msgScrollTextBox.ScrollBars = ScrollBars.Both;
-				this.Controls.Add(this._msgScrollTextBox);
+				scrollTextSizeF = grfx.MeasureString(scrollText, Font);
+				_msgScrollTextBox = new TextBox {Text = scrollText, Multiline = true, ReadOnly = true};
+				_msgScrollTextBox.Select(0, 0);
+				_msgScrollTextBox.ScrollBars = ScrollBars.Both;
+				Controls.Add(_msgScrollTextBox);
 			}
 			else {
 				scrollTextSizeF = new SizeF(0, 0);
@@ -162,32 +162,32 @@ namespace VixenModules.Controller.E131.J1Sys
 			// create the button controls and add them to form
 			switch (messageBoxButtons) {
 				case MessageBoxButtons.AbortRetryIgnore:
-					this.AddBtn("Abort");
-					this.AddBtn("Retry");
-					this.AddBtn("Ignore");
+					AddBtn("Abort");
+					AddBtn("Retry");
+					AddBtn("Ignore");
 					break;
 
 				case MessageBoxButtons.OK:
-					this.AddBtn("OK");
+					AddBtn("OK");
 					break;
 
 				case MessageBoxButtons.OKCancel:
-					this.AddBtn("OK");
-					this.AddBtn("Cancel");
+					AddBtn("OK");
+					AddBtn("Cancel");
 					break;
 
 				case MessageBoxButtons.RetryCancel:
-					this.AddBtn("Retry");
-					this.AddBtn("Cancel");
+					AddBtn("Retry");
+					AddBtn("Cancel");
 					break;
 				case MessageBoxButtons.YesNo:
-					this.AddBtn("Yes");
-					this.AddBtn("No");
+					AddBtn("Yes");
+					AddBtn("No");
 					break;
 				case MessageBoxButtons.YesNoCancel:
-					this.AddBtn("Yes");
-					this.AddBtn("No");
-					this.AddBtn("Cancel");
+					AddBtn("Yes");
+					AddBtn("No");
+					AddBtn("Cancel");
 					break;
 			}
 
@@ -195,7 +195,7 @@ namespace VixenModules.Controller.E131.J1Sys
 			Size btnsSize = new Size();
 			btns = 0;
 
-			foreach (Control control in this.Controls) {
+			foreach (Control control in Controls) {
 				if (control.GetType() == typeof (Button)) {
 					btnsSize.Width += control.Size.Width;
 					btnsSize.Height = control.Size.Height;
@@ -224,7 +224,7 @@ namespace VixenModules.Controller.E131.J1Sys
 			// next check the icon/text combination
 			width = 0;
 			if (hasIcon) {
-				width = this._msgIcon.Size.Width + clientWhiteSpace;
+				width = _msgIcon.Size.Width + clientWhiteSpace;
 			}
 
 			width += (int) textSizeF.Width + 1;
@@ -251,17 +251,17 @@ namespace VixenModules.Controller.E131.J1Sys
 
 			width = clientWidth;
 			if (hasIcon) {
-				width -= this._msgIcon.Size.Width + clientWhiteSpace;
+				width -= _msgIcon.Size.Width + clientWhiteSpace;
 			}
 
 			if (width < textSizeF.Width) {
-				textSizeF = grfx.MeasureString(text, this.Font, width);
+				textSizeF = grfx.MeasureString(text, Font, width);
 			}
 
 			// now calculate the height of client
 			clientHeight = 0;
 			if (hasIcon) {
-				clientHeight = this._msgIcon.Size.Height;
+				clientHeight = _msgIcon.Size.Height;
 			}
 
 			if (textSizeF.Height > clientHeight) {
@@ -289,22 +289,22 @@ namespace VixenModules.Controller.E131.J1Sys
 				clientHeight = clientMaxHeight;
 			}
 
-			this.ClientSize = new Size(clientWidth + 2*clientWhiteSpace, clientHeight + 2*clientWhiteSpace);
+			ClientSize = new Size(clientWidth + 2*clientWhiteSpace, clientHeight + 2*clientWhiteSpace);
 
-			this._msgIconPoint = new Point(clientWhiteSpace, clientWhiteSpace);
+			_msgIconPoint = new Point(clientWhiteSpace, clientWhiteSpace);
 			textPoint = new Point(clientWhiteSpace, clientWhiteSpace);
 			if (hasIcon) {
-				if (this._msgIcon.Size.Height > textSizeF.Height) {
-					textPoint.Y += (this._msgIcon.Size.Height - (int) textSizeF.Height)/2;
+				if (_msgIcon.Size.Height > textSizeF.Height) {
+					textPoint.Y += (_msgIcon.Size.Height - (int) textSizeF.Height)/2;
 				}
 
-				textPoint.X += this._msgIcon.Size.Width + clientWhiteSpace;
+				textPoint.X += _msgIcon.Size.Width + clientWhiteSpace;
 			}
 
 			if (scrollText != null) {
 				height = 0;
 				if (hasIcon) {
-					height = this._msgIcon.Size.Height;
+					height = _msgIcon.Size.Height;
 				}
 
 				if ((int) textSizeF.Height > height) {
@@ -317,54 +317,54 @@ namespace VixenModules.Controller.E131.J1Sys
 
 				height += clientWhiteSpace;
 
-				this._msgScrollTextBox.Location = new Point(clientWhiteSpace, height);
-				this._msgScrollTextBox.Width = this.ClientSize.Width - 2*clientWhiteSpace;
-				this._msgScrollTextBox.Height = this.ClientSize.Height - 2*clientWhiteSpace - btnsSize.Height - height;
+				_msgScrollTextBox.Location = new Point(clientWhiteSpace, height);
+				_msgScrollTextBox.Width = ClientSize.Width - 2*clientWhiteSpace;
+				_msgScrollTextBox.Height = ClientSize.Height - 2*clientWhiteSpace - btnsSize.Height - height;
 			}
 
 			btnsPoint = new Point(
-				(this.ClientSize.Width - btnsSize.Width)/2,
-				this.ClientSize.Height - (btnsSize.Height + clientWhiteSpace));
+				(ClientSize.Width - btnsSize.Width)/2,
+				ClientSize.Height - (btnsSize.Height + clientWhiteSpace));
 
 			// set the results for the Form class and our OnPaint
-			this.Text = caption;
+			Text = caption;
 
-			this._msgText = text;
-			this._msgTextRectF = this._msgText.Length > 0
+			_msgText = text;
+			_msgTextRectF = _msgText.Length > 0
 			                     	? new RectangleF(textPoint, textSizeF)
 			                     	: new RectangleF(0, 0, 0, 0);
 
-			foreach (Control control in this.Controls) {
+			foreach (Control control in Controls) {
 				if (control.GetType() == typeof (Button)) {
 					control.Location = btnsPoint;
 					btnsPoint.X += control.Size.Width + 10;
 				}
 			}
 
-			this.ResumeLayout();
+			ResumeLayout();
 
 			grfx.Dispose();
 		}
 
 		public DialogResult Show(string text)
 		{
-			return this.Show(text, null, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.None);
+			return Show(text, null, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.None);
 		}
 
 		public DialogResult Show(string text, string caption)
 		{
-			return this.Show(text, null, caption, MessageBoxButtons.OK, MessageBoxIcon.None);
+			return Show(text, null, caption, MessageBoxButtons.OK, MessageBoxIcon.None);
 		}
 
 		public DialogResult Show(string text, string caption, MessageBoxButtons messageBoxButtons)
 		{
-			return this.Show(text, null, caption, messageBoxButtons, MessageBoxIcon.None);
+			return Show(text, null, caption, messageBoxButtons, MessageBoxIcon.None);
 		}
 
 		public DialogResult Show(
 			string text, string caption, MessageBoxButtons messageBoxButtons, MessageBoxIcon messageBoxIcon)
 		{
-			return this.Show(text, null, caption, messageBoxButtons, messageBoxIcon);
+			return Show(text, null, caption, messageBoxButtons, messageBoxIcon);
 		}
 
 		public DialogResult Show(
@@ -374,21 +374,21 @@ namespace VixenModules.Controller.E131.J1Sys
 			MessageBoxButtons messageBoxButtons,
 			MessageBoxIcon messageBoxIcon)
 		{
-			this.Make(text, scrollText, caption, messageBoxButtons, messageBoxIcon);
-			return this.ShowDialog();
+			Make(text, scrollText, caption, messageBoxButtons, messageBoxIcon);
+			return ShowDialog();
 		}
 
 		protected override void OnPaint(PaintEventArgs paintEventArgs)
 		{
 			base.OnPaint(paintEventArgs);
 
-			if (this._msgIcon != null) {
+			if (_msgIcon != null) {
 				paintEventArgs.Graphics.DrawIconUnstretched(
-					this._msgIcon, new Rectangle(this._msgIconPoint, this._msgIcon.Size));
+					_msgIcon, new Rectangle(_msgIconPoint, _msgIcon.Size));
 			}
 
-			if (this._msgText.Length > 0) {
-				paintEventArgs.Graphics.DrawString(this._msgText, this.Font, Brushes.Black, this._msgTextRectF);
+			if (_msgText.Length > 0) {
+				paintEventArgs.Graphics.DrawString(_msgText, Font, Brushes.Black, _msgTextRectF);
 			}
 		}
 
@@ -460,75 +460,75 @@ namespace VixenModules.Controller.E131.J1Sys
 		{
 			var btn = new Button {Text = "&" + title, Name = title + "Btn"};
 
-			btn.Click += this.BtnClick;
-			this.Controls.Add(btn);
+			btn.Click += BtnClick;
+			Controls.Add(btn);
 		}
 
 		private void BtnClick(object sender, EventArgs e)
 		{
 			switch (((Button) sender).Name) {
 				case "AbortBtn":
-					this.DialogResult = DialogResult.Abort;
+					DialogResult = DialogResult.Abort;
 					break;
 
 				case "CancelBtn":
-					this.DialogResult = DialogResult.Cancel;
+					DialogResult = DialogResult.Cancel;
 					break;
 
 				case "IgnoreBtn":
-					this.DialogResult = DialogResult.Ignore;
+					DialogResult = DialogResult.Ignore;
 					break;
 
 				case "NoBtn":
-					this.DialogResult = DialogResult.No;
+					DialogResult = DialogResult.No;
 					break;
 
 				case "OKBtn":
-					this.DialogResult = DialogResult.OK;
+					DialogResult = DialogResult.OK;
 					break;
 
 				case "RetryBtn":
-					this.DialogResult = DialogResult.Retry;
+					DialogResult = DialogResult.Retry;
 					break;
 
 				case "YesBtn":
-					this.DialogResult = DialogResult.Yes;
+					DialogResult = DialogResult.Yes;
 					break;
 			}
 
-			this.Close();
+			Close();
 		}
 
 		private void InitBox()
 		{
-			this.Icon = null;
-			this.ControlBox = false;
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.StartPosition = FormStartPosition.CenterScreen;
+			Icon = null;
+			ControlBox = false;
+			MaximizeBox = false;
+			MinimizeBox = false;
+			StartPosition = FormStartPosition.CenterScreen;
 
-			this.Controls.Clear();
+			Controls.Clear();
 
-			this._msgIcon = null;
-			this._msgIconPoint = new Point();
-			this._msgText = string.Empty;
-			this._msgTextRectF = new RectangleF();
-			this._msgScrollTextBox = null;
+			_msgIcon = null;
+			_msgIconPoint = new Point();
+			_msgText = string.Empty;
+			_msgTextRectF = new RectangleF();
+			_msgScrollTextBox = null;
 
-			this.DialogResult = DialogResult.None;
+			DialogResult = DialogResult.None;
 		}
 
 		private void InitializeComponent()
 		{
-			this.SuspendLayout();
+			SuspendLayout();
 			// 
 			// J1MsgBox
 			// 
-			this.AutoSize = true;
-			this.ClientSize = new System.Drawing.Size(284, 262);
-			this.Name = "J1MsgBox";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.ResumeLayout(false);
+			AutoSize = true;
+			ClientSize = new Size(284, 262);
+			Name = "J1MsgBox";
+			StartPosition = FormStartPosition.CenterParent;
+			ResumeLayout(false);
 
 		}
 	}

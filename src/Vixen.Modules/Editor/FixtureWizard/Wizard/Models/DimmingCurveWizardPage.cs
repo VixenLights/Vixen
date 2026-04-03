@@ -1,7 +1,7 @@
 ﻿namespace VixenModules.Editor.FixtureWizard.Wizard.Models
 {
 	using System.Diagnostics;
-	using VixenModules.App.Curves;
+	using App.Curves;
 
 	/// <summary>
 	/// Wizard page configures fixture dimming curves.

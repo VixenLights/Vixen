@@ -87,7 +87,7 @@ namespace VixenModules.Output.ElexolEtherIO
 				MinIntensity = m_MinIntensity;
 				DataPort = int.Parse(portTextBox.Text);
 
-				DialogResult = System.Windows.Forms.DialogResult.OK;
+				DialogResult = DialogResult.OK;
 			}
 			else
 			{

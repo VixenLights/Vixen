@@ -11,7 +11,7 @@ namespace VixenModules.Controller.E131
 	{
 		public UnicastForm()
 		{
-			this.InitializeComponent();
+			InitializeComponent();
 			ThemeUpdateControls.UpdateControls(this);
             ipTextBox.BringToFront();
 		}
@@ -20,31 +20,31 @@ namespace VixenModules.Controller.E131
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string IpAddrText
 		{
-            get { if (networkNameRadio.Checked) return this.networkNameTextBox.Text; else return this.ipTextBox.Text; }
+            get { if (networkNameRadio.Checked) return networkNameTextBox.Text; else return ipTextBox.Text; }
 
             set {
-                IPAddress temp; if (IPAddress.TryParse(value, out temp)) this.ipTextBox.Text = value; else { networkNameTextBox.Text = value; } updateChecked();
+                IPAddress temp; if (IPAddress.TryParse(value, out temp)) ipTextBox.Text = value; else { networkNameTextBox.Text = value; } updateChecked();
             }
 		}
 
-		private void UnicastForm_Load(object sender, System.EventArgs e)
+		private void UnicastForm_Load(object sender, EventArgs e)
 		{
 		}
 
-		private void ipTextBox_TextChanged(object sender, System.EventArgs e)
+		private void ipTextBox_TextChanged(object sender, EventArgs e)
 		{
 		}
 
-		private void okButton_Click(object sender, System.EventArgs e)
+		private void okButton_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.OK;
-			this.Close();
+			DialogResult = DialogResult.OK;
+			Close();
 		}
 
-		private void cancelButton_Click(object sender, System.EventArgs e)
+		private void cancelButton_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
-			this.Close();
+			DialogResult = DialogResult.Cancel;
+			Close();
 		}
 
         private void updateChecked()
@@ -66,7 +66,7 @@ namespace VixenModules.Controller.E131
 
         }
 
-        private void Radio_CheckedChanged(object sender, System.EventArgs e)
+        private void Radio_CheckedChanged(object sender, EventArgs e)
         {
             updateChecked();
         }

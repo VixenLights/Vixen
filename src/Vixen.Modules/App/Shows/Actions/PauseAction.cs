@@ -26,7 +26,7 @@ namespace VixenModules.App.Shows
 			{
 				_timer.Stop();
 				_timer.Elapsed -= Timer_Tick;
-				base.Complete();
+				Complete();
 			}
 		}
 
@@ -35,7 +35,7 @@ namespace VixenModules.App.Shows
 			//Timer timer = (sender as Timer);
 			_timer.Stop(); 
 			_timer.Elapsed -= Timer_Tick;
-			base.Complete();
+			Complete();
 		}
 	}
 }

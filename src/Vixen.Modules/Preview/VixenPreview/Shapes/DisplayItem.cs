@@ -151,10 +151,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public bool Equals(DisplayItem obj)
 		{
 			if (obj == null) return false;
-			return obj.Shape.Left == this.Shape.Left &&
-				   obj.Shape.Right == this.Shape.Right &&
-				   obj.Shape.Top == this.Shape.Top &&
-				   obj.Shape.Bottom == this.Shape.Bottom;
+			return obj.Shape.Left == Shape.Left &&
+				   obj.Shape.Right == Shape.Right &&
+				   obj.Shape.Top == Shape.Top &&
+				   obj.Shape.Bottom == Shape.Bottom;
 		}
 	}
 }

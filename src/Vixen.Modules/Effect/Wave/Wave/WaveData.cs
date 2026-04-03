@@ -37,9 +37,9 @@ namespace VixenModules.Effect.Wave
 			
 			Colors = new List<ColorGradient>
 			{
-				new ColorGradient(System.Drawing.Color.Blue),
-				new ColorGradient(System.Drawing.Color.White),
-				new ColorGradient(System.Drawing.Color.Purple)
+				new ColorGradient(Color.Blue),
+				new ColorGradient(Color.White),
+				new ColorGradient(Color.Purple)
 			};
 		}
 

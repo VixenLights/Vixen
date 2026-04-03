@@ -24,12 +24,12 @@ namespace VixenModules.Output.DummyLighting
 			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.DoubleBuffer, true);
-			_brush = new SolidBrush(System.Drawing.Color.Black);
+			_brush = new SolidBrush(Color.Black);
 
 			// If the form has been created but not shown, the handle may not yet be
 			// created.  If that's the case, then calls to InvokeRequired may return false
 			// when it should really return true.
-			IntPtr handle = this.Handle;
+			IntPtr handle = Handle;
 
 			RenderingStyle = RenderStyle.Monochrome;
 			_commandHandler = new CommandHandler();
@@ -137,13 +137,13 @@ namespace VixenModules.Output.DummyLighting
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			//Not taking any optimizing steps to see how it does.
-			System.Drawing.Color color;
-			e.Graphics.Clear(System.Drawing.Color.Black);
+			Color color;
+			e.Graphics.Clear(Color.Black);
 
 			switch (RenderingStyle) {
 				case RenderStyle.Monochrome:
 					for (int i = 0; i < _values.Length; i++) {
-						color = System.Drawing.Color.FromArgb(_values[i], System.Drawing.Color.White);
+						color = Color.FromArgb(_values[i], Color.White);
 						_brush.Color = color;
 						e.Graphics.FillRectangle(_brush, (i%_across)*(_boxWidth + 1), (i/_across)*(_boxHeight + 1), _boxWidth, _boxHeight);
 					}
@@ -155,7 +155,7 @@ namespace VixenModules.Output.DummyLighting
 						byte G = _values[i - 1];
 						byte B = _values[i - 0];
 
-						color = System.Drawing.Color.FromArgb(R, G, B);
+						color = Color.FromArgb(R, G, B);
 						_brush.Color = color;
 
 						int square = i/3;

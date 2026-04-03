@@ -132,8 +132,8 @@ namespace VixenModules.App.Modeling
 
 		private static void OpenDoc(SvgDocument doc)
 		{
-			var file = System.IO.Path.GetTempFileName();
-			var filePath = System.IO.Path.ChangeExtension(file, "svg");
+			var file = Path.GetTempFileName();
+			var filePath = Path.ChangeExtension(file, "svg");
 			doc.Write(filePath);
 			var psi = new ProcessStartInfo()
 			{

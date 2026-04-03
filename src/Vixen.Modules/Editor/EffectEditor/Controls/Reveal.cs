@@ -199,7 +199,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
         double childWidth = child.DesiredSize.Width;
         double childHeight = child.DesiredSize.Height;
 
-        if (this.UseDesiredSize)
+        if (UseDesiredSize)
         {
           double x = CalculateLeft(childWidth, percent, horizontalReveal);
           double y = CalculateTop(childHeight, percent, verticalReveal);
@@ -270,7 +270,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
       animation.Duration = TimeSpan.FromMilliseconds(Duration * currentProgress);
       animation.FillBehavior = FillBehavior.HoldEnd;
 
-      this.BeginAnimation(AnimationProgressProperty, animation);
+      BeginAnimation(AnimationProgressProperty, animation);
     }
 
     #endregion

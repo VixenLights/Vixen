@@ -15,7 +15,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			// If the Timeline window is NOT docked, then turn on KeyPreview so this form intercepts keystrokes, which is then
 			// broadcast to the TimedSequenceEditor keystroke handler (parent window when docked).
-			KeyPreview = this.DockState == DockState.Float;
+			KeyPreview = DockState == DockState.Float;
 		}
 
 		protected Guid InstanceId { get; init; }

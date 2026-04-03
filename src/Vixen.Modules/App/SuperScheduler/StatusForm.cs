@@ -70,7 +70,7 @@ namespace VixenModules.App.SuperScheduler
 				foreach (Shows.Show show in shows)
 				{
 					bool foundIt = false;
-					foreach (Common.Controls.ComboBoxItem oldItem in comboBoxShows.Items)
+					foreach (ComboBoxItem oldItem in comboBoxShows.Items)
 					{
 						Shows.Show comboBoxScheduleItem = oldItem.Value as Shows.Show;
 						if (comboBoxScheduleItem.ID == show.ID)
@@ -83,7 +83,7 @@ namespace VixenModules.App.SuperScheduler
 
 					if (!foundIt)
 					{
-						Common.Controls.ComboBoxItem newItem = new Common.Controls.ComboBoxItem(show.Name, show);
+						ComboBoxItem newItem = new ComboBoxItem(show.Name, show);
 						comboBoxShows.Items.Add(newItem);
 					}
 				}
@@ -132,8 +132,8 @@ namespace VixenModules.App.SuperScheduler
 			{
 				if (!IsDisposed)
 				{
-					if (this.InvokeRequired)
-						this.Invoke(new AddLogEntryDelegate(AddLogEntry), logEntry);
+					if (InvokeRequired)
+						Invoke(new AddLogEntryDelegate(AddLogEntry), logEntry);
 					else
 					{
 						listBoxLog.Items.Insert(0, logEntry);
@@ -170,7 +170,7 @@ namespace VixenModules.App.SuperScheduler
 
 		private void buttonPlayShowNow_Click(object sender, EventArgs e)
 		{
-			Common.Controls.ComboBoxItem item = comboBoxShows.SelectedItem as Common.Controls.ComboBoxItem;
+			ComboBoxItem item = comboBoxShows.SelectedItem as ComboBoxItem;
 			if (item != null)
 			{
 				Shows.Show show = item.Value as Shows.Show;

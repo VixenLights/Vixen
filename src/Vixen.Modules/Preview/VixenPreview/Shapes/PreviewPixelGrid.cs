@@ -548,7 +548,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override object Clone()
 		{
-			PreviewPixelGrid newGrid = (PreviewPixelGrid) this.MemberwiseClone();
+			PreviewPixelGrid newGrid = (PreviewPixelGrid) MemberwiseClone();
 
 			newGrid._strings = new List<PreviewBaseShape>();
 			foreach (PreviewLightBaseShape line in _strings) {

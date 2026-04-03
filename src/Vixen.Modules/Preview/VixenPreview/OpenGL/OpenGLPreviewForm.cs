@@ -599,7 +599,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			if (!_formLoading) SaveWindowState();
 		}
 
-		private void PreviewWindow_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
+		private void PreviewWindow_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			if (e.CloseReason == CloseReason.UserClosing)
 			{
@@ -614,7 +614,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			}
 		}
 
-		private void glControl_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
+		private void glControl_Paint(object sender, PaintEventArgs e)
 		{
 			RenderPreview(false);
 		}

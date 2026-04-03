@@ -5,7 +5,7 @@ using Vixen.Sys;
 
 namespace VixenModules.App.LipSyncApp
 {
-	public partial class LipSyncMapMatrixEditor: Common.Controls.BaseForm
+	public partial class LipSyncMapMatrixEditor: BaseForm
 	{
 		private static int MIN_PICTUREBOX_WIDTH = 96;
 		private static int MIN_PICTUREBOX_HEIGHT = 96;
@@ -29,7 +29,7 @@ namespace VixenModules.App.LipSyncApp
 
 		public LipSyncMapMatrixEditor()
 		{
-			this.LibraryMappingName = "Default";
+			LibraryMappingName = "Default";
 			InitializeComponent();
 			renderedPicture.MinimumSize = new Size(MIN_PICTUREBOX_WIDTH, MIN_PICTUREBOX_HEIGHT);
 			renderedPicture.MaximumSize = new Size(MAX_PICTUREBOX_WIDTH, MAX_PICTUREBOX_HEIGHT);
@@ -39,7 +39,7 @@ namespace VixenModules.App.LipSyncApp
 
 			_moduleDirPath = Paths.ModuleDataFilesPath + "\\LipSync";
 			_pictureBitmaps = new Dictionary<string, Bitmap>();
-			this.MapData = new LipSyncMapData();
+			MapData = new LipSyncMapData();
 			LoadIconsAndBitmaps();
 		}
 
@@ -48,7 +48,7 @@ namespace VixenModules.App.LipSyncApp
 			Location = ActiveForm != null ? new Point(ActiveForm.Location.X - 150, ActiveForm.Location.Y - 100) : new Point(200, 100);
 			InitializeComponent();
 			ThemeUpdateControls.UpdateControls(this);
-			this.MapData = (LipSyncMapData)mapData.Clone();
+			MapData = (LipSyncMapData)mapData.Clone();
 			renderedPicture.MinimumSize = new Size(MIN_PICTUREBOX_WIDTH, MIN_PICTUREBOX_HEIGHT);
 			renderedPicture.MaximumSize = new Size(MAX_PICTUREBOX_WIDTH, MAX_PICTUREBOX_HEIGHT);
 			renderedPicture.SizeMode = PictureBoxSizeMode.CenterImage;
@@ -265,7 +265,7 @@ namespace VixenModules.App.LipSyncApp
 				_noImageBmp = Common.Resources.Properties.Resources.NoImage;
 			}
 
-			if (this.MapData.UsingDefaults)
+			if (MapData.UsingDefaults)
 			{
 				_pictureBitmaps.Add(PhonemeType.AI.ToString(), Common.Resources.Properties.Resources.AI_Transparent);
 				_pictureBitmaps.Add(PhonemeType.E.ToString(), Common.Resources.Properties.Resources.E_Transparent);
@@ -280,7 +280,7 @@ namespace VixenModules.App.LipSyncApp
 				nameTextBox.Text = MapData.LibraryReferenceName;
 				savePicBitmaps();
 				_pictureBitmaps.Clear();
-				this.MapData.UsingDefaults = false;
+				MapData.UsingDefaults = false;
 			}
 
 			currentPhonemeIndex = 0;
@@ -308,7 +308,7 @@ namespace VixenModules.App.LipSyncApp
 			MapData.Notes = notesTextBox.Text;
 
 			MapData.IsMatrix = false;
-			this.UseWaitCursor = true;
+			UseWaitCursor = true;
 			foreach(PhonemeType phoneme in Enum.GetValues(typeof(PhonemeType)))
 			{
 				try
@@ -345,7 +345,7 @@ namespace VixenModules.App.LipSyncApp
 			}
 
 			MapData.ClearImageCache();
-			this.UseWaitCursor = false;
+			UseWaitCursor = false;
 		}
 
 		private void buttonOK_Click(object sender, EventArgs args)
@@ -535,10 +535,10 @@ namespace VixenModules.App.LipSyncApp
 		{
 			if (fileNames.Length == 1)
 			{
-				this.UseWaitCursor = true;
+				UseWaitCursor = true;
 				openPicFile(fileNames[0]);
 				renderPictureBoxImage();
-				this.UseWaitCursor = false;
+				UseWaitCursor = false;
 			}
 			else
 			{
@@ -546,12 +546,12 @@ namespace VixenModules.App.LipSyncApp
 				_mps.DropFileNames = fileNames;
 				_mps.CurrentMappings = _pictureBitmaps;
 				_mps.CurrentPhonemeString = CurrentPhonemeString;
-				var parent = System.Windows.Forms.Application.OpenForms.Cast<Form>()
+				var parent = Application.OpenForms.Cast<Form>()
 					.FirstOrDefault(x => x.Name.Equals("LipSyncMapMatrixEditor"));
 				DialogResult result = _mps.ShowDialog(parent);
 				if (DialogResult.OK == result)
 				{
-					this.UseWaitCursor = true;
+					UseWaitCursor = true;
 					Dictionary<string, string> files = _mps.PicMappings;
 					foreach (KeyValuePair<string,string> kvp in files)
 					{
@@ -565,7 +565,7 @@ namespace VixenModules.App.LipSyncApp
 						}
 					}
 					renderPictureBoxImage();
-					this.UseWaitCursor = false;
+					UseWaitCursor = false;
 				}
 			}
 		}

@@ -119,11 +119,11 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		/// Model representation of the ellipse.
 		/// </summary>
 		[Model]
-		public App.Polygon.Ellipse Ellipse
+		public Ellipse Ellipse
 		{
 			get
 			{
-				return (App.Polygon.Ellipse)Shape;
+				return (Ellipse)Shape;
 				//return GetValue<App.Polygon.Ellipse>(EllipseModelProperty);
 			}
 			set

@@ -1,11 +1,13 @@
-﻿namespace VixenModules.App.Shows
+﻿using System.ComponentModel;
+
+namespace VixenModules.App.Shows
 {
 	partial class ShowEditorForm
 	{
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+		private IContainer components = null;
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -342,27 +344,27 @@
 
 		#endregion
 
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.GroupBox groupBoxItemEdit;
-		private System.Windows.Forms.Button buttonDeleteItem;
-		private System.Windows.Forms.Button buttonAddItem;
-        private System.Windows.Forms.Button buttonHelp;
-		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.GroupBox groupBoxAction;
-		private System.Windows.Forms.ComboBox comboBoxActions;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.ListView listViewShowItems;
-		private System.Windows.Forms.ColumnHeader columnHeader1;
-		private System.Windows.Forms.Label labelHelp;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBoxShowName;
-		private System.Windows.Forms.ToolTip toolTip1;
-		private System.Windows.Forms.Button buttonCancel;
+		private Button buttonOK;
+		private GroupBox groupBoxItemEdit;
+		private Button buttonDeleteItem;
+		private Button buttonAddItem;
+        private Button buttonHelp;
+		private GroupBox groupBox2;
+		private GroupBox groupBoxAction;
+		private ComboBox comboBoxActions;
+		private Label label3;
+		private ListView listViewShowItems;
+		private ColumnHeader columnHeader1;
+		private Label labelHelp;
+		private Label label1;
+		private TextBox textBoxShowName;
+		private ToolTip toolTip1;
+		private Button buttonCancel;
 		private TabControl tabControlShowItems;
 		private TabPage tabPageStartup;
 		private TabPage tabPageBackground;
 		private TabPage tabPageSequential;
 		private TabPage tabPageShutdown;
-		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+		private TableLayoutPanel tableLayoutPanel1;
 	}
 }

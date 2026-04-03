@@ -193,7 +193,7 @@ namespace VixenModules.App.LipSyncApp
 			if (editor.ShowDialog(parent) == DialogResult.OK)
 			{
 				if ((name.Equals(editor.LibraryMappingName) == false) &&
-					(this.Contains(editor.LibraryMappingName) == true))
+					(Contains(editor.LibraryMappingName) == true))
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.

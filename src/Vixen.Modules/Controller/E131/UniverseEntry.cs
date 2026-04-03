@@ -20,73 +20,73 @@ namespace VixenModules.Controller.E131
 		public UniverseEntry(
 			int rowNum, bool active, int universe, int start, int size, string unicast, string multicast, int ttl)
 		{
-			this.RowNum = rowNum;
-			this.Active = active;
-			this.Universe = universe;
-			this.Start = start;
-			this.Size = size;
-			this.Unicast = unicast; //deprecated
-			this.Multicast = multicast; //deprecated
-			this.Ttl = ttl; //deprecated
+			RowNum = rowNum;
+			Active = active;
+			Universe = universe;
+			Start = start;
+			Size = size;
+			Unicast = unicast; //deprecated
+			Multicast = multicast; //deprecated
+			Ttl = ttl; //deprecated
 
-			this.Socket = null;
-			this.DestIpEndPoint = null;
-			this.PhyBuffer = null;
-			this.EventRepeatCount = 0;
-			this.EventSuppressCount = 0;
+			Socket = null;
+			DestIpEndPoint = null;
+			PhyBuffer = null;
+			EventRepeatCount = 0;
+			EventSuppressCount = 0;
 
-			this.seqNum = 0;
+			seqNum = 0;
 
-			this.PktCount = 0;
-			this.SlotCount = 0;
+			PktCount = 0;
+			SlotCount = 0;
 		}
 
         public UniverseEntry(
         int rowNum, bool active, int universe, int start, int size)
         {
-            this.RowNum = rowNum;
-            this.Active = active;
-            this.Universe = universe;
-            this.Start = start;
-            this.Size = size;
-            this.Unicast = null; //deprecated
-            this.Multicast = null; //deprecated
-            this.Ttl = 64; //deprecated
+            RowNum = rowNum;
+            Active = active;
+            Universe = universe;
+            Start = start;
+            Size = size;
+            Unicast = null; //deprecated
+            Multicast = null; //deprecated
+            Ttl = 64; //deprecated
 
-            this.Socket = null;
-            this.DestIpEndPoint = null;
-            this.PhyBuffer = null;
-            this.EventRepeatCount = 0;
-            this.EventSuppressCount = 0;
+            Socket = null;
+            DestIpEndPoint = null;
+            PhyBuffer = null;
+            EventRepeatCount = 0;
+            EventSuppressCount = 0;
 
-            this.seqNum = 0;
+            seqNum = 0;
 
-            this.PktCount = 0;
-            this.SlotCount = 0;
+            PktCount = 0;
+            SlotCount = 0;
         }
 
         public UniverseEntry(
         int rowNum, bool active, int universe, int start, int size, string unicast, string multicast)
         {
-            this.RowNum = rowNum;
-            this.Active = active;
-            this.Universe = universe;
-            this.Start = start;
-            this.Size = size;
-            this.Unicast = unicast; //deprecated
-            this.Multicast = multicast; //deprecated
-            this.Ttl = 64; //deprecated
+            RowNum = rowNum;
+            Active = active;
+            Universe = universe;
+            Start = start;
+            Size = size;
+            Unicast = unicast; //deprecated
+            Multicast = multicast; //deprecated
+            Ttl = 64; //deprecated
 
-            this.Socket = null;
-            this.DestIpEndPoint = null;
-            this.PhyBuffer = null;
-            this.EventRepeatCount = 0;
-            this.EventSuppressCount = 0;
+            Socket = null;
+            DestIpEndPoint = null;
+            PhyBuffer = null;
+            EventRepeatCount = 0;
+            EventSuppressCount = 0;
 
-            this.seqNum = 0;
+            seqNum = 0;
 
-            this.PktCount = 0;
-            this.SlotCount = 0;
+            PktCount = 0;
+            SlotCount = 0;
         }
 
 		/// <summary>
@@ -118,24 +118,24 @@ namespace VixenModules.Controller.E131
 			{
 				var text = new StringBuilder();
 				text.Append("Row ");
-				text.Append(this.RowNum.ToString());
+				text.Append(RowNum.ToString());
 				text.Append(":");
 				text.Append(" Univ=");
-				text.Append(this.Universe.ToString());
+				text.Append(Universe.ToString());
 				text.Append(" Start=");
-				text.Append((this.Start + 1).ToString());
+				text.Append((Start + 1).ToString());
 				text.Append(" Size=");
-				text.Append(this.Size.ToString());
-				if (this.Unicast != null) {
+				text.Append(Size.ToString());
+				if (Unicast != null) {
 					text.Append(" Unicast");
 				}
 
-				if (this.Multicast != null) {
+				if (Multicast != null) {
 					text.Append(" Multicast");
 				}
 
 				text.Append(" TTL=");
-				text.Append(this.Ttl.ToString());
+				text.Append(Ttl.ToString());
 				return text.ToString();
 			}
 		}
@@ -168,10 +168,10 @@ namespace VixenModules.Controller.E131
 			{
 				var text = new StringBuilder();
 				text.Append("Row ");
-				text.Append(this.RowNum.ToString());
+				text.Append(RowNum.ToString());
 				text.Append(":");
 				text.Append(" Univ=");
-				text.Append(this.Universe.ToString());
+				text.Append(Universe.ToString());
 				return text.ToString();
 			}
 		}
@@ -202,14 +202,14 @@ namespace VixenModules.Controller.E131
 			{
 				var text = new StringBuilder();
 				text.Append("Row ");
-				text.Append(this.RowNum.ToString());
+				text.Append(RowNum.ToString());
 				text.Append(":");
 				text.Append(" Univ=");
-				text.Append(this.Universe.ToString());
+				text.Append(Universe.ToString());
 				text.Append("  Packets=");
-				text.Append(this.PktCount.ToString());
+				text.Append(PktCount.ToString());
 				text.Append("  Slots=");
-				text.Append(this.SlotCount.ToString());
+				text.Append(SlotCount.ToString());
 				return text.ToString();
 			}
 		}

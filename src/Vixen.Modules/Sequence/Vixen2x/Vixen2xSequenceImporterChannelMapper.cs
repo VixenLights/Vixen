@@ -358,7 +358,7 @@ namespace VixenModules.SequenceType.Vixen2x
 				{
 					DialogResult result = MessageBox.Show("You are about to over write existing items.  Do you wish to continue?",
 					                                      "Continue", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-					if (result == System.Windows.Forms.DialogResult.OK) 
+					if (result == DialogResult.OK) 
 					{
 						startingIndex = dragToItem.Index;
 						ParseNodes(treeview.SelectedNodes);
@@ -402,7 +402,7 @@ namespace VixenModules.SequenceType.Vixen2x
 		{
 			if (String.IsNullOrEmpty(mappingNameTextBox.Text)) {
 				MessageBox.Show("Please enter name of Map.", "Missing Name", MessageBoxButtons.OKCancel, MessageBoxIcon.Stop);
-				DialogResult = System.Windows.Forms.DialogResult.None;
+				DialogResult = DialogResult.None;
 			}
 			else {
 				CreateV2toV3MappingTable();

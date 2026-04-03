@@ -9,7 +9,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 	/// <remarks>
 	/// https://stackoverflow.com/questions/26057518/how-to-edit-row-in-datagrid-after-getting-some-validation-errors-in-any-one-of-t
 	/// </remarks>
-	public partial class VixenDataGrid : System.Windows.Controls.DataGrid
+	public partial class VixenDataGrid : DataGrid
 	{
 		#region Constructor
 
@@ -19,7 +19,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 		public VixenDataGrid()
 		{
 			// This call allows the DataGrid styles to apply to this derived grid
-			this.SetResourceReference(StyleProperty, typeof(DataGrid));
+			SetResourceReference(StyleProperty, typeof(DataGrid));
 		}
 
 		#endregion
@@ -40,9 +40,9 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 			bool hasRowValidationError = false;
 			BindingFlags bindingFlags = BindingFlags.FlattenHierarchy | BindingFlags.NonPublic | BindingFlags.Instance;
 			//Current cell
-			PropertyInfo cellErrorInfo = this.GetType().BaseType.GetProperty("HasCellValidationError", bindingFlags);
+			PropertyInfo cellErrorInfo = GetType().BaseType.GetProperty("HasCellValidationError", bindingFlags);
 			//Grid level
-			PropertyInfo rowErrorInfo = this.GetType().BaseType.GetProperty("HasRowValidationError", bindingFlags);
+			PropertyInfo rowErrorInfo = GetType().BaseType.GetProperty("HasRowValidationError", bindingFlags);
 
 			if (cellErrorInfo != null) hasCellValidationError = (bool)cellErrorInfo.GetValue(this, null);
 			if (rowErrorInfo != null) hasRowValidationError = (bool)rowErrorInfo.GetValue(this, null);

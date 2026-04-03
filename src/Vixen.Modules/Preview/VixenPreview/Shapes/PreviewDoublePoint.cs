@@ -8,19 +8,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	{
 		private double _x = 0;
 		private double _y = 0;
-		private Shapes.PreviewPoint.PointTypes _pointType = Shapes.PreviewPoint.PointTypes.None;
+		private PreviewPoint.PointTypes _pointType = PreviewPoint.PointTypes.None;
 
 		public PreviewDoublePoint()
 		{
 		}
 
-		public Shapes.PreviewPoint.PointTypes PointType
+		public PreviewPoint.PointTypes PointType
 		{
 			get { return _pointType; }
 			set { _pointType = value; }
 		}
 
-		public PreviewDoublePoint(double x, double y, Shapes.PreviewPoint.PointTypes type) : this(x, y)
+		public PreviewDoublePoint(double x, double y, PreviewPoint.PointTypes type) : this(x, y)
 		{
 			PointType = type;
 		}
@@ -31,7 +31,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_y = y;
 		}
 
-		public PreviewDoublePoint(Shapes.PreviewPoint pointToClone)
+		public PreviewDoublePoint(PreviewPoint pointToClone)
 		{
 			_x = pointToClone.X;
 			_y = pointToClone.Y;

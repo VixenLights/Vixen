@@ -647,7 +647,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_sequence.LabeledMarkCollections.Remove(mark.First());
 
 			// Create a new mark group
-			VixenModules.App.Marks.MarkCollection mc = new VixenModules.App.Marks.MarkCollection();
+			App.Marks.MarkCollection mc = new App.Marks.MarkCollection();
 			mc.Name = $"{marksForm.Divisions} Divisions";
 
 			// Check if an existing mark has a similar name

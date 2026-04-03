@@ -26,7 +26,7 @@ namespace VixenModules.App.LipSyncApp
 		{
 			get
 			{
-				return (PapagayoImportObject.SoundFrames - 1) * 1000 / (int)PapagayoImportObject.FPS;
+				return (SoundFrames - 1) * 1000 / (int)FPS;
 			}
 		}
 
@@ -295,7 +295,7 @@ namespace VixenModules.App.LipSyncApp
 			PapagayoPhoneme newPhoneme = null;
 			for (int eventIndex = 0; eventIndex < SoundFrames; eventIndex++)
 			{
-				eventList.Add(this.GetEventPhoneme(eventIndex));
+				eventList.Add(GetEventPhoneme(eventIndex));
 			}
 
 			foreach(PapagayoPhoneme phoneme in eventList)
@@ -416,7 +416,7 @@ namespace VixenModules.App.LipSyncApp
 
 		public PapagayoPhoneme GetEventPhoneme(int eventNum)
 		{
-			foreach (PapagayoWord word in this.m_words)
+			foreach (PapagayoWord word in m_words)
 			{
 				if (eventNum >= word.StartFrame &&
 					eventNum <= word.EndFrame)
@@ -502,11 +502,11 @@ namespace VixenModules.App.LipSyncApp
 
 		public PapagayoPhoneme(PapagayoPhoneme copyObj)
 		{
-			this.m_state = copyObj.m_state;
-			this.m_Text = copyObj.m_Text;
-			this.StartFrame = copyObj.StartFrame;
-			this.EndFrame = copyObj.EndFrame;
-			this.m_type = copyObj.m_type;
+			m_state = copyObj.m_state;
+			m_Text = copyObj.m_Text;
+			StartFrame = copyObj.StartFrame;
+			EndFrame = copyObj.EndFrame;
+			m_type = copyObj.m_type;
 		}
 
 		public PapagayoPhoneme(string pair, PapagayoPhoneme lastObj)
@@ -558,7 +558,7 @@ namespace VixenModules.App.LipSyncApp
 		public bool isPhonemeType(string testVal)
 		{
 			return ((testVal != null) &&
-				(this.m_Text.Equals(testVal.ToUpper())));
+				(m_Text.Equals(testVal.ToUpper())));
 		}
 
 	}
