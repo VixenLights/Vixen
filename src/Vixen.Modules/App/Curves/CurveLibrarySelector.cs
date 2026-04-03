@@ -97,7 +97,7 @@ namespace VixenModules.App.Curves
 
 		private void buttonNewCurve_Click(object sender, EventArgs e)
 		{
-			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Curve name?");
+			TextDialog dialog = new TextDialog("Curve name?");
 
 			while (dialog.ShowDialog() == DialogResult.OK)
 			{

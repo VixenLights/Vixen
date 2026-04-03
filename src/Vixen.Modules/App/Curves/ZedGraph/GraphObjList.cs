@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2004  John Champion
+//Copyright Â© 2004  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -45,7 +45,7 @@ namespace ZedGraph
 		public GraphObjList(GraphObjList rhs)
 		{
 			foreach (GraphObj item in rhs)
-				this.Add((GraphObj) ((ICloneable) item).Clone());
+				Add((GraphObj) ((ICloneable) item).Clone());
 		}
 
 		/// <summary>
@@ -55,7 +55,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -181,7 +181,7 @@ namespace ZedGraph
 				return -1;
 
 			GraphObj graphObj = this[index];
-			this.RemoveAt(index);
+			RemoveAt(index);
 
 			index += relativePos;
 			if (index < 0)
@@ -230,7 +230,7 @@ namespace ZedGraph
 			// Draw the items in reverse order, so the last items in the
 			// list appear behind the first items (consistent with
 			// CurveList)
-			for (int i = this.Count - 1; i >= 0; i--) {
+			for (int i = Count - 1; i >= 0; i--) {
 				GraphObj item = this[i];
 				if (item.ZOrder == zOrder && item.IsVisible) {
 					Region region = null;

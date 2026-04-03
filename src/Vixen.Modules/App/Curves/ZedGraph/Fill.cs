@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2004  John Champion
+//Copyright Â© 2004  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -244,7 +244,7 @@ namespace ZedGraph
 			blend.Positions[1] = 1.0f;
 			_type = FillType.Brush;
 
-			this.CreateBrushFromBlend(blend, angle);
+			CreateBrushFromBlend(blend, angle);
 		}
 
 		/// <summary>
@@ -293,7 +293,7 @@ namespace ZedGraph
 			blend.Positions[2] = 1.0f;
 			_type = FillType.Brush;
 
-			this.CreateBrushFromBlend(blend, angle);
+			CreateBrushFromBlend(blend, angle);
 		}
 
 		/// <summary>
@@ -322,7 +322,7 @@ namespace ZedGraph
 		{
 			Init();
 			_type = FillType.Brush;
-			this.CreateBrushFromBlend(blend, angle);
+			CreateBrushFromBlend(blend, angle);
 		}
 
 		/// <summary>
@@ -364,7 +364,7 @@ namespace ZedGraph
 				blend.Positions[i] = (float) i/(float) (colors.Length - 1);
 			_type = FillType.Brush;
 
-			this.CreateBrushFromBlend(blend, angle);
+			CreateBrushFromBlend(blend, angle);
 		}
 
 		/// <summary>
@@ -407,7 +407,7 @@ namespace ZedGraph
 			blend.Positions = positions;
 			_type = FillType.Brush;
 
-			this.CreateBrushFromBlend(blend, angle);
+			CreateBrushFromBlend(blend, angle);
 		}
 
 		/// <summary>
@@ -527,7 +527,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -895,7 +895,7 @@ namespace ZedGraph
 		public Brush MakeBrush(RectangleF rect, PointPair dataValue)
 		{
 			// get a brush
-			if (this.IsVisible && (!_color.IsEmpty || _brush != null)) {
+			if (IsVisible && (!_color.IsEmpty || _brush != null)) {
 				if (rect.Height < 1.0F)
 					rect.Height = 1.0F;
 				if (rect.Width < 1.0F)
@@ -1123,8 +1123,8 @@ namespace ZedGraph
 		/// <see cref="FillType.GradientByZ" /> <see cref="FillType" />.</param>
 		public void Draw(Graphics g, RectangleF rect, PointPair pt)
 		{
-			if (this.IsVisible) {
-				using (Brush brush = this.MakeBrush(rect, pt)) {
+			if (IsVisible) {
+				using (Brush brush = MakeBrush(rect, pt)) {
 					g.FillRectangle(brush, rect);
 				}
 			}

@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2006  John Champion
+//Copyright Â© 2006  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -51,9 +51,9 @@ namespace ZedGraph
 			_color = Default.Color;
 			_penWidth = Default.PenWidth;
 
-			this.IsOutside = Default.IsOutside;
-			this.IsInside = Default.IsInside;
-			this.IsOpposite = Default.IsOpposite;
+			IsOutside = Default.IsOutside;
+			IsInside = Default.IsInside;
+			IsOpposite = Default.IsOpposite;
 			_isCrossOutside = Default.IsCrossOutside;
 			_isCrossInside = Default.IsCrossInside;
 		}
@@ -68,9 +68,9 @@ namespace ZedGraph
 			_color = rhs._color;
 			_penWidth = rhs._penWidth;
 
-			this.IsOutside = rhs.IsOutside;
-			this.IsInside = rhs.IsInside;
-			this.IsOpposite = rhs.IsOpposite;
+			IsOutside = rhs.IsOutside;
+			IsInside = rhs.IsInside;
+			IsOpposite = rhs.IsOpposite;
 			_isCrossOutside = rhs._isCrossOutside;
 			_isCrossInside = rhs._isCrossInside;
 		}
@@ -82,7 +82,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -168,9 +168,9 @@ namespace ZedGraph
 		{
 			set
 			{
-				this.IsOutside = value;
-				this.IsInside = value;
-				this.IsOpposite = value;
+				IsOutside = value;
+				IsInside = value;
+				IsOpposite = value;
 				_isCrossOutside = value;
 				_isCrossInside = value;
 			}
@@ -471,7 +471,7 @@ namespace ZedGraph
 		                   float shift, float scaledTic)
 		{
 			// draw the outside tic
-			if (this.IsOutside)
+			if (IsOutside)
 				g.DrawLine(pen, pixVal, shift, pixVal, shift + scaledTic);
 
 			// draw the cross tic
@@ -479,7 +479,7 @@ namespace ZedGraph
 				g.DrawLine(pen, pixVal, 0.0f, pixVal, scaledTic);
 
 			// draw the inside tic
-			if (this.IsInside)
+			if (IsInside)
 				g.DrawLine(pen, pixVal, shift, pixVal, shift - scaledTic);
 
 			// draw the inside cross tic
@@ -487,7 +487,7 @@ namespace ZedGraph
 				g.DrawLine(pen, pixVal, 0.0f, pixVal, -scaledTic);
 
 			// draw the opposite tic
-			if (this.IsOpposite)
+			if (IsOpposite)
 				g.DrawLine(pen, pixVal, topPix, pixVal, topPix + scaledTic);
 		}
 

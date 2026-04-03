@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2004  John Champion
+//Copyright Â© 2004  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -827,18 +827,18 @@ namespace ZedGraph
 		                              bool isGrowOnly)
 		{
 			// save the original value of minSpace
-			float oldSpace = this.MinSpace;
+			float oldSpace = MinSpace;
 			// set minspace to zero, since we don't want it to affect the CalcSpace() result
-			this.MinSpace = 0;
+			MinSpace = 0;
 			// Calculate the space required for the current graph assuming scalefactor = 1.0
 			// and apply the bufferFraction
 			float fixedSpace;
-			float space = this.CalcSpace(g, pane, 1.0F, out fixedSpace)*bufferFraction;
+			float space = CalcSpace(g, pane, 1.0F, out fixedSpace)*bufferFraction;
 			// isGrowOnly indicates the minSpace can grow but not shrink
 			if (isGrowOnly)
 				space = Math.Max(oldSpace, space);
 			// Set the minSpace
-			this.MinSpace = space;
+			MinSpace = space;
 		}
 
 		/// <summary>
@@ -958,7 +958,7 @@ namespace ZedGraph
 		internal float CalcCrossFraction(GraphPane pane)
 		{
 			// if this axis is not shifted due to the Cross value
-			if (!this.IsCrossShifted(pane)) {
+			if (!IsCrossShifted(pane)) {
 				// if it's the primary axis and the scale labels are on the inside, then we
 				// don't need to save any room for the axis labels (they will be inside the chart rect)
 				if (IsPrimary(pane) && _scale._isLabelsInside)
@@ -1088,8 +1088,8 @@ namespace ZedGraph
 
 			// Account for the Axis
 			if (_isVisible) {
-				bool hasTic = this.MajorTic.IsOutside || this.MajorTic._isCrossOutside ||
-				              this.MinorTic.IsOutside || this.MinorTic._isCrossOutside;
+				bool hasTic = MajorTic.IsOutside || MajorTic._isCrossOutside ||
+				              MinorTic.IsOutside || MinorTic._isCrossOutside;
 
 				// account for the tic space.  Leave the tic space for any type of outside tic (Outside Tic Space)
 				if (hasTic)
@@ -1101,8 +1101,8 @@ namespace ZedGraph
 					_tmpSpace += axisGap;
 
 					// if it has inside tics, leave another tic space (Inside Tic Space)
-					if (this.MajorTic._isInside || this.MajorTic._isCrossInside ||
-					    this.MinorTic._isInside || this.MinorTic._isCrossInside)
+					if (MajorTic._isInside || MajorTic._isCrossInside ||
+					    MinorTic._isInside || MinorTic._isCrossInside)
 						_tmpSpace += ticSize;
 				}
 
@@ -1122,7 +1122,7 @@ namespace ZedGraph
 				// if ( str.Length > 0 && _title._isVisible )
 				if (!string.IsNullOrEmpty(str) && _title._isVisible) {
 					//tmpSpace += this.TitleFontSpec.BoundingBox( g, str, scaleFactor ).Height;
-					fixedSpace = this.Title.FontSpec.BoundingBox(g, str, scaleFactor).Height +
+					fixedSpace = Title.FontSpec.BoundingBox(g, str, scaleFactor).Height +
 					             scaledTitleGap;
 					_tmpSpace += fixedSpace;
 
@@ -1135,7 +1135,7 @@ namespace ZedGraph
 
 			// for the Y axes, make sure that enough space is left to fit the first
 			// and last X axis scale label
-			if (this.IsPrimary(pane) && ((
+			if (IsPrimary(pane) && ((
 			                             	(this is YAxis && (
 			                             	                  	(!pane.XAxis._scale._isSkipFirstLabel &&
 			                             	                  	 !pane.XAxis._scale._isReverse) ||
@@ -1231,14 +1231,14 @@ namespace ZedGraph
 		public void DrawMinorTics(Graphics g, GraphPane pane, double baseVal, float shift,
 		                          float scaleFactor, float topPix)
 		{
-			if ((this.MinorTic.IsOutside || this.MinorTic.IsOpposite || this.MinorTic.IsInside ||
-			     this.MinorTic._isCrossOutside || this.MinorTic._isCrossInside || _minorGrid._isVisible)
+			if ((MinorTic.IsOutside || MinorTic.IsOpposite || MinorTic.IsInside ||
+			     MinorTic._isCrossOutside || MinorTic._isCrossInside || _minorGrid._isVisible)
 			    && _isVisible) {
 				double tMajor = _scale._majorStep*_scale.MajorUnitMultiplier,
 				       tMinor = _scale._minorStep*_scale.MinorUnitMultiplier;
 
 				if (_scale.IsLog || tMinor < tMajor) {
-					float minorScaledTic = this.MinorTic.ScaledTic(scaleFactor);
+					float minorScaledTic = MinorTic.ScaledTic(scaleFactor);
 
 					// Minor tics start at the minimum value and step all the way thru
 					// the full scale.  This means that if the minor step size is not
@@ -1315,10 +1315,10 @@ namespace ZedGraph
 			//if ( _isVisible && _title._isVisible && str.Length > 0 )
 			if (_isVisible && _title._isVisible && !string.IsNullOrEmpty(str)) {
 				bool hasTic = (_scale._isLabelsInside
-				               	? (this.MajorTic.IsInside || this.MajorTic._isCrossInside ||
-				               	   this.MinorTic.IsInside || this.MinorTic._isCrossInside)
-				               	: (this.MajorTic.IsOutside || this.MajorTic._isCrossOutside || this.MinorTic.IsOutside ||
-				               	   this.MinorTic._isCrossOutside));
+				               	? (MajorTic.IsInside || MajorTic._isCrossInside ||
+				               	   MinorTic.IsInside || MinorTic._isCrossInside)
+				               	: (MajorTic.IsOutside || MajorTic._isCrossOutside || MinorTic.IsOutside ||
+				               	   MinorTic._isCrossOutside));
 
 				// Calculate the title position in screen coordinates
 				float x = (_scale._maxPix - _scale._minPix)/2;
@@ -1335,7 +1335,7 @@ namespace ZedGraph
 				// rely on ChartRect).
 
 				float gap = scaledTic*(hasTic ? 1.0f : 0.0f) +
-				            this.Title.FontSpec.BoundingBox(g, str, scaleFactor).Height/2.0F;
+				            Title.FontSpec.BoundingBox(g, str, scaleFactor).Height/2.0F;
 				float y = (_scale._isVisible
 				           	? _scale.GetScaleMaxSpace(g, pane, scaleFactor, true).Height
 				           	  + scaledLabelGap
@@ -1355,7 +1355,7 @@ namespace ZedGraph
 				y += scaledTitleGap;
 
 				// Draw the title
-				this.Title.FontSpec.Draw(g, pane, str, x, y,
+				Title.FontSpec.Draw(g, pane, str, x, y,
 				                         AlignH.Center, alignV, scaleFactor);
 			}
 		}
@@ -1410,17 +1410,17 @@ namespace ZedGraph
 		{
 			// if there is a valid ScaleFormatEvent, then try to use it to create the label
 			// the label will be non-null if it's to be used
-			if (this.ScaleFormatEvent != null) {
+			if (ScaleFormatEvent != null) {
 				string label;
 
-				label = this.ScaleFormatEvent(pane, this, dVal, index);
+				label = ScaleFormatEvent(pane, this, dVal, index);
 				if (label != null)
 					return label;
 			}
 
 			// second try.  If there's no custom ScaleFormatEvent, then just call
 			// _scale.MakeLabel according to the type of scale
-			if (this.Scale != null)
+			if (Scale != null)
 				return _scale.MakeLabel(pane, index, dVal);
 			else
 				return "?";

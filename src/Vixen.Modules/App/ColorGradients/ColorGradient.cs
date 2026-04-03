@@ -48,8 +48,8 @@ namespace VixenModules.App.ColorGradients
 			/// </summary>
 			public Point(double position, double focus)
 			{
-				if (!ColorGradient.isValid(position) ||
-				    !ColorGradient.isValid(focus))
+				if (!isValid(position) ||
+				    !isValid(focus))
 					throw new ArgumentException("position or focus");
 				_position = position;
 				_focus = focus;
@@ -70,7 +70,7 @@ namespace VixenModules.App.ColorGradients
 				get { return _position; }
 				set
 				{
-					if (!ColorGradient.isValid(value))
+					if (!isValid(value))
 						throw new ArgumentException("point");
 					if (value == _position)
 						return;
@@ -87,7 +87,7 @@ namespace VixenModules.App.ColorGradients
 				get { return _focus; }
 				set
 				{
-					if (!ColorGradient.isValid(value))
+					if (!isValid(value))
 						throw new ArgumentException("focus");
 					if (value == _focus)
 						return;
@@ -105,8 +105,8 @@ namespace VixenModules.App.ColorGradients
 				Point grd = obj as Point;
 				if (grd == null)
 					return false;
-				return grd._focus == this._focus &&
-				       grd._position == this._position;
+				return grd._focus == _focus &&
+				       grd._position == _position;
 			}
 
 			public override int GetHashCode()
@@ -153,7 +153,7 @@ namespace VixenModules.App.ColorGradients
 				if (Count != rhs.Count)
 					return false;
 
-				for (int i = 0; i < this.Count; i++)
+				for (int i = 0; i < Count; i++)
 				{
 					if (!this[i].Equals(rhs[i]))
 						return false;
@@ -1073,7 +1073,7 @@ namespace VixenModules.App.ColorGradients
 		{
 			if (coll == null || value == null)
 				throw new ArgumentNullException("coll or value");
-			if (!ColorGradient.isValid(focuspos))
+			if (!isValid(focuspos))
 				throw new ArgumentException("focuspos");
 			//
 			T[] sorted = coll.SortedArray();
@@ -1456,7 +1456,7 @@ namespace VixenModules.App.ColorGradients
 		public override bool Equals(object obj)
 		{
 			return base.Equals(obj) &&
-			       ((AlphaPoint) obj)._alpha == this._alpha;
+			       ((AlphaPoint) obj)._alpha == _alpha;
 		}
 
 		public override int GetHashCode()
@@ -1551,7 +1551,7 @@ namespace VixenModules.App.ColorGradients
 		public override bool Equals(object obj)
 		{
 			return base.Equals(obj) &&
-			       ((ColorPoint) obj)._color == this._color;
+			       ((ColorPoint) obj)._color == _color;
 		}
 
 		public override int GetHashCode()

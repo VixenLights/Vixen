@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2005  John Champion
+//Copyright Â© 2005  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -462,9 +462,9 @@ namespace ZedGraph
 
 				if (_isPreventLabelOverlap) {
 					// Calculate the maximum number of labels
-					double maxLabels = (double) this.CalcMaxLabels(g, pane, scaleFactor);
+					double maxLabels = (double) CalcMaxLabels(g, pane, scaleFactor);
 
-					if (maxLabels < this.CalcNumTics())
+					if (maxLabels < CalcNumTics())
 						_majorStep = CalcDateStepSize(_max - _min, maxLabels);
 				}
 			}
@@ -527,7 +527,7 @@ namespace ZedGraph
 					if (tempStep == 1.0)
 						scale._minorStep = 0.25;
 					else
-						scale._minorStep = Scale.CalcStepSize(tempStep, targetSteps);
+						scale._minorStep = CalcStepSize(tempStep, targetSteps);
 				}
 			}
 			else if (range > Default.RangeYearMonth) {
@@ -831,7 +831,7 @@ namespace ZedGraph
 		internal override string MakeLabel(GraphPane pane, int index, double dVal)
 		{
 			if (_format == null)
-				_format = Scale.Default.Format;
+				_format = Default.Format;
 
 			return XDate.ToString(dVal, _format);
 		}

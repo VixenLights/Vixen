@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2004  John Champion
+//Copyright Â© 2004  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -505,9 +505,9 @@ namespace ZedGraph
 			bool b = MouseDown == null || MouseUp == null || MouseMove == null;
 
 			// Link in these events from the base class, since we disable them from this class.
-			base.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ZedGraphControl_MouseDown);
-			base.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ZedGraphControl_MouseUp);
-			base.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ZedGraphControl_MouseMove);
+			base.MouseDown += new MouseEventHandler(ZedGraphControl_MouseDown);
+			base.MouseUp += new MouseEventHandler(ZedGraphControl_MouseUp);
+			base.MouseMove += new MouseEventHandler(ZedGraphControl_MouseMove);
 
 			//this.MouseWheel += new System.Windows.Forms.MouseEventHandler( this.ZedGraphControl_MouseWheel );
 
@@ -522,7 +522,7 @@ namespace ZedGraph
 			_resourceManager = new ResourceManager("VixenModules.App.Curves.ZedGraph.ZedGraphLocale",
 			                                       Assembly.GetExecutingAssembly());
 
-			Rectangle rect = new Rectangle(0, 0, this.Size.Width, this.Size.Height);
+			Rectangle rect = new Rectangle(0, 0, Size.Width, Size.Height);
 			_masterPane = new MasterPane(string.Empty, rect);
 			_masterPane.Margin.All = 0;
 			_masterPane.Title.IsVisible = false;
@@ -533,19 +533,19 @@ namespace ZedGraph
 
 			//GraphPane graphPane = new GraphPane( rect, "Title", "X Axis", "Y Axis" );
 			GraphPane graphPane = new GraphPane(rect, titleStr, xStr, yStr);
-			using (Graphics g = this.CreateGraphics()) {
+			using (Graphics g = CreateGraphics()) {
 				graphPane.AxisChange(g);
 				//g.Dispose();
 			}
 			_masterPane.Add(graphPane);
 
-			this.hScrollBar1.Minimum = 0;
-			this.hScrollBar1.Maximum = 100;
-			this.hScrollBar1.Value = 0;
+			hScrollBar1.Minimum = 0;
+			hScrollBar1.Maximum = 100;
+			hScrollBar1.Value = 0;
 
-			this.vScrollBar1.Minimum = 0;
-			this.vScrollBar1.Maximum = 100;
-			this.vScrollBar1.Value = 0;
+			vScrollBar1.Minimum = 0;
+			vScrollBar1.Maximum = 100;
+			vScrollBar1.Value = 0;
 
 			_xScrollRange = new ScrollRange(true);
 			_yScrollRangeList = new ScrollRangeList();
@@ -590,13 +590,13 @@ namespace ZedGraph
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			lock (this) {
-				if (BeenDisposed || _masterPane == null || this.GraphPane == null)
+				if (BeenDisposed || _masterPane == null || GraphPane == null)
 					return;
 
-				if (hScrollBar1 != null && this.GraphPane != null &&
+				if (hScrollBar1 != null && GraphPane != null &&
 				    vScrollBar1 != null && _yScrollRangeList != null) {
-					SetScroll(hScrollBar1, this.GraphPane.XAxis, _xScrollRange.Min, _xScrollRange.Max);
-					SetScroll(vScrollBar1, this.GraphPane.YAxis, _yScrollRangeList[0].Min,
+					SetScroll(hScrollBar1, GraphPane.XAxis, _xScrollRange.Min, _xScrollRange.Max);
+					SetScroll(vScrollBar1, GraphPane.YAxis, _yScrollRangeList[0].Min,
 					          _yScrollRangeList[0].Max);
 				}
 
@@ -672,17 +672,17 @@ namespace ZedGraph
 		/// <param name="e">
 		/// An EventArgs object.
 		/// </param>
-		protected void ZedGraphControl_ReSize(object sender, System.EventArgs e)
+		protected void ZedGraphControl_ReSize(object sender, EventArgs e)
 		{
 			lock (this) {
 				if (BeenDisposed || _masterPane == null)
 					return;
 
-				Size newSize = this.Size;
+				Size newSize = Size;
 
 				if (_isShowHScrollBar) {
 					hScrollBar1.Visible = true;
-					newSize.Height -= this.hScrollBar1.Size.Height;
+					newSize.Height -= hScrollBar1.Size.Height;
 					hScrollBar1.Location = new Point(0, newSize.Height);
 					hScrollBar1.Size = new Size(newSize.Width, hScrollBar1.Height);
 				}
@@ -691,18 +691,18 @@ namespace ZedGraph
 
 				if (_isShowVScrollBar) {
 					vScrollBar1.Visible = true;
-					newSize.Width -= this.vScrollBar1.Size.Width;
+					newSize.Width -= vScrollBar1.Size.Width;
 					vScrollBar1.Location = new Point(newSize.Width, 0);
 					vScrollBar1.Size = new Size(vScrollBar1.Width, newSize.Height);
 				}
 				else
 					vScrollBar1.Visible = false;
 
-				using (Graphics g = this.CreateGraphics()) {
+				using (Graphics g = CreateGraphics()) {
 					_masterPane.ReSize(g, new RectangleF(0, 0, newSize.Width, newSize.Height));
 					//g.Dispose();
 				}
-				this.Invalidate();
+				Invalidate();
 			}
 		}
 
@@ -720,7 +720,7 @@ namespace ZedGraph
 				if (BeenDisposed || _masterPane == null)
 					return;
 
-				using (Graphics g = this.CreateGraphics()) {
+				using (Graphics g = CreateGraphics()) {
 					_masterPane.AxisChange(g);
 					//g.Dispose();
 				}

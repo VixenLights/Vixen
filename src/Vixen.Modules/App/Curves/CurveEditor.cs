@@ -253,7 +253,7 @@ namespace VixenModules.App.Curves
 			// if CTRL is pressed, and we're not near a specific point, add a new point
 
 			double newX, newY;
-			if (Control.ModifierKeys.HasFlag(Keys.Control) &&
+			if (ModifierKeys.HasFlag(Keys.Control) &&
 			    !zedGraphControl.GraphPane.FindNearestPoint(e.Location, out curve, out dragPointIndex)) {
 				// only add if we've actually clicked on the pane, so make sure the mouse is over it first
 				if (zedGraphControl.MasterPane.FindPane(e.Location) != null) {
@@ -282,7 +282,7 @@ namespace VixenModules.App.Curves
 				}
 			}
 			// if the ALT key was pressed, and we're near a point, delete it -- but only if there would be at least two points left
-			if (Control.ModifierKeys.HasFlag(Keys.Alt) &&
+			if (ModifierKeys.HasFlag(Keys.Alt) &&
 			    zedGraphControl.GraphPane.FindNearestPoint(e.Location, out curve, out dragPointIndex)) {
 				PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
 				if (pointList.Count > 2) {
@@ -420,7 +420,7 @@ namespace VixenModules.App.Curves
 
 		private void buttonSaveCurveToLibrary_Click(object sender, EventArgs e)
 		{
-			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Curve name?");
+			TextDialog dialog = new TextDialog("Curve name?");
 
 			while (dialog.ShowDialog() == DialogResult.OK) {
 				if (dialog.Response == string.Empty) {

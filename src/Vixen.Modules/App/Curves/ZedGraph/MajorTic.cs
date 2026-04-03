@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2006  John Champion
+//Copyright Â© 2006  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -43,9 +43,9 @@ namespace ZedGraph
 			_color = Default.Color;
 			_penWidth = Default.PenWidth;
 
-			this.IsOutside = Default.IsOutside;
-			this.IsInside = Default.IsInside;
-			this.IsOpposite = Default.IsOpposite;
+			IsOutside = Default.IsOutside;
+			IsInside = Default.IsInside;
+			IsOpposite = Default.IsOpposite;
 			_isCrossOutside = Default.IsCrossOutside;
 			_isCrossInside = Default.IsCrossInside;
 
@@ -69,7 +69,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>

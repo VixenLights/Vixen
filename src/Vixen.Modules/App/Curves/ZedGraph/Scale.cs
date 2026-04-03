@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2004  John Champion
+//Copyright Â© 2004  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -1044,7 +1044,7 @@ namespace ZedGraph
 		{
 			get
 			{
-				AxisType type = this.Type;
+				AxisType type = Type;
 
 				return type == AxisType.Ordinal ||
 				       type == AxisType.Text ||
@@ -1862,7 +1862,7 @@ namespace ZedGraph
 		internal virtual string MakeLabel(GraphPane pane, int index, double dVal)
 		{
 			if (_format == null)
-				_format = Scale.Default.Format;
+				_format = Default.Format;
 
 			// linear or ordinal is the default behavior
 			// this method is overridden for other Scale types
@@ -1924,7 +1924,7 @@ namespace ZedGraph
 					string tmpStr = _ownerAxis.MakeLabelEventWorks(pane, i, dVal);
 
 					SizeF sizeF;
-					if (this.IsLog && _isUseTenPower)
+					if (IsLog && _isUseTenPower)
 						sizeF = _fontSpec.BoundingBoxTenPower(g, tmpStr,
 						                                      scaleFactor);
 					else
@@ -2253,7 +2253,7 @@ namespace ZedGraph
 			string tmpStr = _ownerAxis.MakeLabelEventWorks(pane, i, dVal);
 
 			float height;
-			if (this.IsLog && _isUseTenPower)
+			if (IsLog && _isUseTenPower)
 				height = _fontSpec.BoundingBoxTenPower(g, tmpStr, scaleFactor).Height;
 			else
 				height = _fontSpec.BoundingBox(g, tmpStr, scaleFactor).Height;
@@ -2278,7 +2278,7 @@ namespace ZedGraph
 			else
 				av = _alignH == AlignH.Left ? AlignV.Top : (_alignH == AlignH.Right ? AlignV.Bottom : AlignV.Center);
 
-			if (this.IsLog && _isUseTenPower)
+			if (IsLog && _isUseTenPower)
 				_fontSpec.DrawTenPower(g, pane, tmpStr,
 				                       pixVal, textCenter,
 				                       ah, av,
@@ -2471,7 +2471,7 @@ namespace ZedGraph
 			double range = maxVal - minVal;
 
 			// "Grace" is applied to the numeric axis types only
-			bool numType = !this.IsAnyOrdinal;
+			bool numType = !IsAnyOrdinal;
 
 			// For autoranged values, assign the value.  If appropriate, adjust the value by the
 			// "Grace" value.
@@ -2531,7 +2531,7 @@ namespace ZedGraph
 		/// </param>
 		public int CalcMaxLabels(Graphics g, GraphPane pane, float scaleFactor)
 		{
-			SizeF size = this.GetScaleMaxSpace(g, pane, scaleFactor, false);
+			SizeF size = GetScaleMaxSpace(g, pane, scaleFactor, false);
 
 			// The font angles are already set such that the Width is parallel to the appropriate (X or Y)
 			// axis.  Therefore, we always use size.Width.
@@ -2863,7 +2863,7 @@ namespace ZedGraph
 		public float Transform(bool isOverrideOrdinal, int i, double x)
 		{
 			// ordinal types ignore the X value, and just use the ordinal position
-			if (this.IsAnyOrdinal && i >= 0 && !isOverrideOrdinal)
+			if (IsAnyOrdinal && i >= 0 && !isOverrideOrdinal)
 				x = (double) i + 1.0;
 			return Transform(x);
 		}

@@ -20,7 +20,7 @@ namespace VixenModules.App.Curves
 		{
 		}
 
-		public override Vixen.Sys.IApplication Application
+		public override IApplication Application
 		{
 			set { }
 		}
@@ -111,7 +111,7 @@ namespace VixenModules.App.Curves
 			CurveEditor editor = new CurveEditor(curve);
 			editor.LibraryCurveName = name;
 
-			if (editor.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+			if (editor.ShowDialog() == DialogResult.OK) {
 				_RemoveCurve(name);
 				AddCurve(name, editor.Curve);
 				return true;

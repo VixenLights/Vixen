@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2004  John Champion
+//Copyright Â© 2004  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -126,7 +126,7 @@ namespace ZedGraph
 		/// the <see cref="Line"/> and <see cref="Symbol"/> properties.
 		/// </param>
 		public StickItem(string label, IPointList points, Color color)
-			: this(label, points, color, ZedGraph.LineBase.Default.Width)
+			: this(label, points, color, LineBase.Default.Width)
 		{
 		}
 
@@ -163,7 +163,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>

@@ -1,6 +1,6 @@
 //============================================================================
 //RadarPointList Class
-//Copyright © 2006  John Champion, Jerry Vos
+//Copyright Â© 2006  John Champion, Jerry Vos
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -62,7 +62,7 @@ namespace ZedGraph
 		{
 			get
 			{
-				int count = this.Count;
+				int count = Count;
 				// The last point is a repeat of the first point
 				if (index == count - 1)
 					index = 0;
@@ -81,7 +81,7 @@ namespace ZedGraph
 			}
 			set
 			{
-				int count = this.Count;
+				int count = Count;
 				// The last point is a repeat of the first point
 				if (index == count - 1)
 					index = 0;
@@ -147,7 +147,7 @@ namespace ZedGraph
 		public RadarPointList(RadarPointList rhs)
 		{
 			for (int i = 0; i < rhs.Count; i++)
-				this.Add(rhs.GetAt(i));
+				Add(rhs.GetAt(i));
 		}
 
 		/// <summary>
@@ -157,7 +157,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>

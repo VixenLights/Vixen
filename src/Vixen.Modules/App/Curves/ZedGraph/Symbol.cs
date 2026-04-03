@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2004  John Champion
+//Copyright Â© 2004  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -304,7 +304,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -395,7 +395,7 @@ namespace ZedGraph
 		{
 			// Only draw if the symbol is visible
 			if (_isVisible &&
-			    this.Type != SymbolType.None &&
+			    Type != SymbolType.None &&
 			    x < 100000 && x > -100000 &&
 			    y < 100000 && y > -100000) {
 				Matrix saveMatrix = g.Transform;
@@ -450,7 +450,7 @@ namespace ZedGraph
 
 			// Only draw if the symbol is visible
 			if (_isVisible &&
-			    this.Type != SymbolType.None &&
+			    Type != SymbolType.None &&
 			    x < 100000 && x > -100000 &&
 			    y < 100000 && y > -100000) {
 				SmoothingMode sModeSave = g.SmoothingMode;
@@ -458,8 +458,8 @@ namespace ZedGraph
 					g.SmoothingMode = SmoothingMode.HighQuality;
 
 				using (Pen pen = _border.GetPen(pane, scaleFactor, dataValue))
-				using (GraphicsPath path = this.MakePath(g, scaleFactor))
-				using (Brush brush = this.Fill.MakeBrush(path.GetBounds(), dataValue)) {
+				using (GraphicsPath path = MakePath(g, scaleFactor))
+				using (Brush brush = Fill.MakeBrush(path.GetBounds(), dataValue)) {
 					DrawSymbol(g, x, y, path, pen, brush);
 				}
 
@@ -647,10 +647,10 @@ namespace ZedGraph
 
 							if (curX != PointPair.Missing &&
 							    curY != PointPair.Missing &&
-							    !System.Double.IsNaN(curX) &&
-							    !System.Double.IsNaN(curY) &&
-							    !System.Double.IsInfinity(curX) &&
-							    !System.Double.IsInfinity(curY) &&
+							    !Double.IsNaN(curX) &&
+							    !Double.IsNaN(curY) &&
+							    !Double.IsInfinity(curX) &&
+							    !Double.IsInfinity(curY) &&
 							    (curX > 0 || !xIsLog) &&
 							    (!yIsLog || curY > 0.0) &&
 							    (xIsOrdinal || (curX >= xMin && curX <= xMax))) {
@@ -671,12 +671,12 @@ namespace ZedGraph
 								if (_fill.IsGradientValueType || _border._gradientFill.IsGradientValueType) {
 									using (Brush tBrush = _fill.MakeBrush(rect, points[i]))
 									using (Pen tPen = _border.GetPen(pane, scaleFactor, points[i]))
-										this.DrawSymbol(g, tmpX, tmpY, path, tPen, tBrush);
+										DrawSymbol(g, tmpX, tmpY, path, tPen, tBrush);
 								}
 								else {
 									// Otherwise, the brush is already defined
 									// Draw the symbol at the specified pixel location
-									this.DrawSymbol(g, tmpX, tmpY, path, pen, brush);
+									DrawSymbol(g, tmpX, tmpY, path, pen, brush);
 								}
 							}
 						}

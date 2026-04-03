@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2004  John Champion
+//Copyright Â© 2004  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -300,7 +300,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -391,7 +391,7 @@ namespace ZedGraph
 				//	this.FontSpec.Draw( g, pane.IsPenWidthScaled, this.text, pix.X, pix.Y,
 				//		this.location.AlignH, this.location.AlignV, scaleFactor );
 				//else
-				this.FontSpec.Draw(g, pane, _text, pix.X, pix.Y,
+				FontSpec.Draw(g, pane, _text, pix.X, pix.Y,
 				                   _location.AlignH, _location.AlignV, scaleFactor, _layoutArea);
 			}
 		}
@@ -427,7 +427,7 @@ namespace ZedGraph
 			PointF pix = _location.Transform(pane);
 
 			return _fontSpec.PointInBox(pt, g, _text, pix.X, pix.Y,
-			                            _location.AlignH, _location.AlignV, scaleFactor, this.LayoutArea);
+			                            _location.AlignH, _location.AlignV, scaleFactor, LayoutArea);
 		}
 
 		/// <summary>

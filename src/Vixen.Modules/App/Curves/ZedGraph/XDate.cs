@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2004  John Champion
+//Copyright Â© 2004  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -1462,7 +1462,7 @@ namespace ZedGraph
 			if (! (target is XDate))
 				throw new ArgumentException();
 
-			return (this.XLDate).CompareTo(((XDate) target).XLDate);
+			return (XLDate).CompareTo(((XDate) target).XLDate);
 		}
 
 		#endregion
@@ -1542,7 +1542,7 @@ namespace ZedGraph
 		/// <returns>A string representation of the date</returns>
 		public string ToString(string fmtStr)
 		{
-			return ToString(this.XLDate, fmtStr);
+			return ToString(XLDate, fmtStr);
 		}
 
 		/// <summary>

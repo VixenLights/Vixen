@@ -50,10 +50,10 @@ namespace ZedGraph
 		/// <param name="b">The brightness value, ranging from 0 (black) to 255 (white)</param>
 		public HSBColor(int h, int s, int b)
 		{
-			this.H = (byte) h;
-			this.S = (byte) s;
-			this.B = (byte) b;
-			this.A = 255;
+			H = (byte) h;
+			S = (byte) s;
+			B = (byte) b;
+			A = 255;
 		}
 
 		/// <summary>
@@ -69,7 +69,7 @@ namespace ZedGraph
 		public HSBColor(int a, int h, int s, int b)
 			: this(h, s, b)
 		{
-			this.A = (byte) a;
+			A = (byte) a;
 		}
 
 		/// <summary>

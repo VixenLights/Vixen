@@ -1,6 +1,6 @@
 //============================================================================
 //PointPair4 Class
-//Copyright © 2006  Jerry Vos & John Champion
+//Copyright Â© 2006  Jerry Vos & John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -45,7 +45,7 @@ namespace ZedGraph {
 		/// </summary>
 		public PointPair4()
 			: base() {
-			this.T = 0;
+			T = 0;
 		}
 
 		/// <summary>
@@ -57,7 +57,7 @@ namespace ZedGraph {
 		/// <param name="t">This pair's t coordinate.</param>
 		public PointPair4(double x, double y, double z, double t)
 			: base(x, y, z) {
-			this.T = t;
+			T = t;
 		}
 
 		/// <summary>
@@ -71,7 +71,7 @@ namespace ZedGraph {
 		/// <param name="label">This pair's string label (<see cref="PointPair.Tag"/>)</param>
 		public PointPair4(double x, double y, double z, double t, string label) :
 			base(x, y, z, label) {
-			this.T = t;
+			T = t;
 		}
 
 		/// <summary>
@@ -80,7 +80,7 @@ namespace ZedGraph {
 		/// <param name="rhs">The basis for the copy.</param>
 		public PointPair4(PointPair4 rhs)
 			: base(rhs) {
-			this.T = rhs.T;
+			T = rhs.T;
 		}
 
 		#endregion
@@ -132,18 +132,18 @@ namespace ZedGraph {
 		/// <returns>true if any value is invalid</returns>
 		public bool IsInvalid4D {
 			get {
-				return this.X == PointPair.Missing ||
-					   this.Y == PointPair.Missing ||
-					   this.Z == PointPair.Missing ||
-					   this.T == PointPair.Missing ||
-					   Double.IsInfinity(this.X) ||
-					   Double.IsInfinity(this.Y) ||
-					   Double.IsInfinity(this.Z) ||
-					   Double.IsInfinity(this.T) ||
-					   Double.IsNaN(this.X) ||
-					   Double.IsNaN(this.Y) ||
-					   Double.IsNaN(this.Z) ||
-					   Double.IsNaN(this.T);
+				return X == Missing ||
+					   Y == Missing ||
+					   Z == Missing ||
+					   T == Missing ||
+					   Double.IsInfinity(X) ||
+					   Double.IsInfinity(Y) ||
+					   Double.IsInfinity(Z) ||
+					   Double.IsInfinity(T) ||
+					   Double.IsNaN(X) ||
+					   Double.IsNaN(Y) ||
+					   Double.IsNaN(Z) ||
+					   Double.IsNaN(T);
 			}
 		}
 
@@ -158,7 +158,7 @@ namespace ZedGraph {
 		/// <param name="isShowZT">true to show the third "Z" and fourth "T" value coordinates</param>
 		/// <returns>A string representation of the PointPair4</returns>
 		public new string ToString(bool isShowZT) {
-			return this.ToString(PointPair.DefaultFormat, isShowZT);
+			return ToString(DefaultFormat, isShowZT);
 		}
 
 		/// <summary>
@@ -190,10 +190,10 @@ namespace ZedGraph {
 		/// double type value (see <see cref="System.Double.ToString()"/>).</param>
 		/// <returns>A string representation of the PointPair</returns>
 		public string ToString(string formatX, string formatY, string formatZ, string formatT) {
-			return "( " + this.X.ToString(formatX) +
-				   ", " + this.Y.ToString(formatY) +
-				   ", " + this.Z.ToString(formatZ) +
-				   ", " + this.T.ToString(formatT) +
+			return "( " + X.ToString(formatX) +
+				   ", " + Y.ToString(formatY) +
+				   ", " + Z.ToString(formatZ) +
+				   ", " + T.ToString(formatT) +
 				   " )";
 		}
 

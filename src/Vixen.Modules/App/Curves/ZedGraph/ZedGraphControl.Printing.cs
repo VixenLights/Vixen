@@ -57,7 +57,7 @@ namespace ZedGraph
 		{
 			PrintDocument pd = sender as PrintDocument;
 
-			MasterPane mPane = this.MasterPane;
+			MasterPane mPane = MasterPane;
 			bool[] isPenSave = new bool[mPane.PaneList.Count + 1];
 			bool[] isFontSave = new bool[mPane.PaneList.Count + 1];
 			isPenSave[0] = mPane.IsPenWidthScaled;
@@ -88,7 +88,7 @@ namespace ZedGraph
 			                                        e.MarginBounds.Top, newSize.Width, newSize.Height));
 			mPane.Draw(e.Graphics);
 
-			using (Graphics g = this.CreateGraphics()) {
+			using (Graphics g = CreateGraphics()) {
 				mPane.ReSize(g, saveRect);
 				//g.Dispose();
 			}

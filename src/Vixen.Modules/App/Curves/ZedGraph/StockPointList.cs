@@ -1,6 +1,6 @@
 //============================================================================
 //PointPairList Class
-//Copyright © 2006  John Champion
+//Copyright Â© 2006  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -63,7 +63,7 @@ namespace ZedGraph
 		{
 			for (int i = 0; i < rhs.Count; i++) {
 				StockPt pt = new StockPt(rhs[i]);
-				this.Add(pt);
+				Add(pt);
 			}
 		}
 
@@ -74,7 +74,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>

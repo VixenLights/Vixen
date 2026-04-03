@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2005  John Champion
+//Copyright Â© 2005  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -148,7 +148,7 @@ namespace ZedGraph
 				// Calculate the new step size
 				if (scale._majorStepAuto) {
 					// Calculate the step size based on targetSteps
-					scale._majorStep = Scale.CalcStepSize(scale._max - scale._min,
+					scale._majorStep = CalcStepSize(scale._max - scale._min,
 					                                      (scale._ownerAxis is XAxis || scale._ownerAxis is X2Axis)
 					                                      	? Default.TargetXSteps
 					                                      	: Default.TargetYSteps);
@@ -172,7 +172,7 @@ namespace ZedGraph
 
 				// Calculate the new minor step size
 				if (scale._minorStepAuto)
-					scale._minorStep = Scale.CalcStepSize(scale._majorStep,
+					scale._minorStep = CalcStepSize(scale._majorStep,
 					                                      (scale._ownerAxis is XAxis || scale._ownerAxis is X2Axis)
 					                                      	? Default.TargetMinorXSteps
 					                                      	: Default.TargetMinorYSteps);

@@ -20,7 +20,7 @@ namespace VixenModules.App.ColorGradients
 		{
 		}
 
-		public override Vixen.Sys.IApplication Application
+		public override IApplication Application
 		{
 			set { }
 		}
@@ -114,7 +114,7 @@ namespace VixenModules.App.ColorGradients
 			ColorGradientEditor editor = new ColorGradientEditor(cg, false, null);
 			editor.LibraryItemName = name;
 
-			if (editor.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+			if (editor.ShowDialog() == DialogResult.OK) {
 				_RemoveColorGradient(name);
 				AddColorGradient(name, editor.Gradient);
 				return true;

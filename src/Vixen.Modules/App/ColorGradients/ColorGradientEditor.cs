@@ -117,7 +117,7 @@ namespace VixenModules.App.ColorGradients
 		private void buttonLoadFromLibrary_Click(object sender, EventArgs e)
 		{
 			ColorGradientLibrarySelector selector = new ColorGradientLibrarySelector();
-			if (selector.ShowDialog() == System.Windows.Forms.DialogResult.OK && selector.SelectedItem != null) {
+			if (selector.ShowDialog() == DialogResult.OK && selector.SelectedItem != null) {
 				// make a new curve that references the selected library curve, and set it to the current Curve
 				ColorGradient newGradient = new ColorGradient(selector.SelectedItem.Item2);
 				newGradient.LibraryReferenceName = selector.SelectedItem.Item1;
@@ -128,9 +128,9 @@ namespace VixenModules.App.ColorGradients
 
 		private void buttonSaveToLibrary_Click(object sender, EventArgs e)
 		{
-			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Gradient name?");
+			TextDialog dialog = new TextDialog("Gradient name?");
 
-			while (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+			while (dialog.ShowDialog() == DialogResult.OK) {
 				if (dialog.Response == string.Empty) {
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.

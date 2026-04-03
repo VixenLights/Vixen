@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2005  John Champion
+//Copyright Â© 2005  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -48,7 +48,7 @@ namespace ZedGraph
 		public Y2AxisList(Y2AxisList rhs)
 		{
 			foreach (Y2Axis item in rhs) {
-				this.Add(item.Clone());
+				Add(item.Clone());
 			}
 		}
 
@@ -59,7 +59,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -84,7 +84,7 @@ namespace ZedGraph
 		/// <value>An <see cref="Axis"/> object reference.</value>
 		public new Y2Axis this[int index]
 		{
-			get { return (((index < 0 || index >= this.Count) ? null : base[index])); }
+			get { return (((index < 0 || index >= Count) ? null : base[index])); }
 		}
 
 		/// <summary>

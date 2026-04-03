@@ -107,9 +107,9 @@ namespace VixenModules.App.ColorGradients
 
 		private void buttonNewColorGradient_Click(object sender, EventArgs e)
 		{
-			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Gradient name?");
+			TextDialog dialog = new TextDialog("Gradient name?");
 
-			while (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			while (dialog.ShowDialog() == DialogResult.OK)
 			{
 				if (dialog.Response == string.Empty)
 				{
@@ -133,7 +133,7 @@ namespace VixenModules.App.ColorGradients
 						PopulateListWithColorGradients();
 						break;
 					}
-					else if (messageBox.DialogResult == System.Windows.Forms.DialogResult.Cancel)
+					else if (messageBox.DialogResult == DialogResult.Cancel)
 					{
 						break;
 					}
