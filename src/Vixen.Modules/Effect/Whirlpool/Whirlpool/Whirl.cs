@@ -564,10 +564,15 @@ namespace VixenModules.Effect.Whirlpool
 
 		#endregion
 
+		#region Public Overrides 
+		
+		/// <inheritdoc/>
 		public override string ToString()
 		{
 			return "Whirl";
 		}
+
+		#endregion
 
 		#region Public Methods
 

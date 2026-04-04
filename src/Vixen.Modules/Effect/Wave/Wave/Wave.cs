@@ -178,23 +178,17 @@ namespace VixenModules.Effect.Wave
 				if (_waves != value && _waves!= null)
 				{
 					//We have a whole new collection, so we need to unset the event handler.
-					_waves.ChildPropertyChanged -= _waves_ChildPropertyChanged;
+					_waves.ChildPropertyChanged -= OnWavesChildPropertyChanged;
 					if (value != null)
 					{
 						//We have a new collection, so we need to set the event handler.
-						value.ChildPropertyChanged += _waves_ChildPropertyChanged;
+						value.ChildPropertyChanged += OnWavesChildPropertyChanged;
 					}
 				}
 				_waves = value;
 				MarkDirty();
 				OnPropertyChanged();
 			}
-		}
-
-		private void _waves_ChildPropertyChanged(object sender, PropertyChangedEventArgs e)
-		{
-			MarkDirty();
-			OnPropertyChanged(nameof(Waves));
 		}
 
 		#endregion
@@ -551,6 +545,17 @@ namespace VixenModules.Effect.Wave
 		#endregion
 
 		#region Private Methods
+
+		/// <summary>
+		/// Waves child property changed event handler.
+		/// </summary>
+		/// <param name="sender">Event sender</param>
+		/// <param name="e">Event arguments</param>
+		private void OnWavesChildPropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			MarkDirty();
+			OnPropertyChanged(nameof(Waves));
+		}
 
 		/// <summary>
 		/// Updates the visibility of fields.

@@ -332,11 +332,6 @@ namespace VixenModules.Effect.Morph
 		[Browsable(false)]
 		public double Time { get; set; }
 
-		public override string ToString()
-		{
-			return "Polygon";
-		}
-
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>
@@ -538,6 +533,16 @@ namespace VixenModules.Effect.Morph
 		/// Height of the display element associated with the effect.
 		/// </summary>
 		public static int BufferHeight { get; set; }
+		
+		#endregion
+		
+		#region Public Override Methods
+		
+		/// <inheritdoc/>
+		public override string ToString()
+		{
+			return "Polygon";
+		}
 		
 		#endregion
 	}
