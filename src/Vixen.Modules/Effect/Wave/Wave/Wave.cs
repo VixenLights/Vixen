@@ -107,7 +107,7 @@ namespace VixenModules.Effect.Wave
 			_waves = new WaveFormCollection();
 
 			// Register for the EmitterList child property changed event
-			_waves.ChildPropertyChanged += _waves_ChildPropertyChanged;
+			_waves.ChildPropertyChanged += OnWavesChildPropertyChanged;
 
 			// Give the wave a reference to the effect.
 			// This is needed so that the waveforms can use the parent to register (listen) for mark collection events
