@@ -11,23 +11,12 @@ namespace VixenModules.App.Props.Models.Tree
 	public class TreeModel : BaseLightModel
 	{
 		#region Constructor
-
+		
 		/// <summary>
 		/// Constructor
-		/// </summary>
-		public TreeModel() : this(16, 50, 2)
-		{
-		}
-
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="strings">Number of string</param>
-		/// <param name="nodesPerString">Nodes (lights) per string</param>
-		/// <param name="nodeSize">Node (light) size </param>
-		public TreeModel(int strings = 16, int nodesPerString = 50, int nodeSize = 2)
-		{
-			PropertyChanged += PropertyModelChanged;
+		/// </summary>		
+		public TreeModel()
+		{ 			
 		}
 
 		#endregion
@@ -122,6 +111,8 @@ namespace VixenModules.App.Props.Models.Tree
 
 		#endregion
 
+		#region Protected Override Methods
+
 		/// <summary>
 		/// Creates the 3-D points that make up the tree.
 		/// </summary>
@@ -150,7 +141,7 @@ namespace VixenModules.App.Props.Models.Tree
 				double angle = (DegreesCoverage / Strings) * i + DegreesOffset;
 
 				// Add a strand to the tree
-				treePoints.AddRange(CreateStrand(NodesPerString, angle, bottomRadius, radiusDelta, -height / 2.0, +height / NodesPerString));
+				treePoints.AddRange(CreateStrand(NodesPerString, angle, bottomRadius, radiusDelta, -height / 2.0, + height / NodesPerString));
 			}
 
 			// (Optionally) rotate the points along the X, Y, and Z axis			
@@ -158,6 +149,10 @@ namespace VixenModules.App.Props.Models.Tree
 
 			return treePoints;
 		}
+
+		#endregion
+
+		#region Private Methods
 
 		/// <summary>
 		/// Creates a strand of nodes.
@@ -208,8 +203,8 @@ namespace VixenModules.App.Props.Models.Tree
 			// Return the node points that make up the strand
 			return strandPoints;
 		}
-
-		public static List<PointF> GetEllipsePoints(
+				
+		private static List<PointF> GetEllipsePoints(
 			double leftOffset,
 			double topOffset,
 			double width,
@@ -248,5 +243,7 @@ namespace VixenModules.App.Props.Models.Tree
 			}
 			return points;
 		}
+
+		#endregion
 	}
 }

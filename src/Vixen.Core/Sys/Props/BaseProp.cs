@@ -20,7 +20,8 @@ namespace Vixen.Sys.Props
 	/// of associated components and target nodes.
 	/// </remarks>
 	[Serializable]
-	public abstract class BaseProp<TModel> : BindableBase, IProp where TModel : BasePropModel, IPropModel
+	public abstract class BaseProp<TModel> : BindableBase, IProp 
+		where TModel : BasePropModel, IPropModel, new ()
 	{
 		#region Protected Static Properties
 
@@ -37,6 +38,9 @@ namespace Vixen.Sys.Props
 
 		protected BaseProp(string name, PropType propType)
 		{
+			// Create the prop model
+			PropModel = new TModel();
+			
 			Id = Guid.NewGuid();
 			_name = name;
 			CreationDate = _modifiedDate = DateTime.Now;
@@ -49,11 +53,16 @@ namespace Vixen.Sys.Props
 			Rotations.Add(new AxisRotationModel() { Axis = Axis.YAxis, RotationAngle = 0 });
 			Rotations.Add(new AxisRotationModel() { Axis = Axis.ZAxis, RotationAngle = 0 });
 
-			PropertyChanged += BaseProp_PropertyChanged;
+			PropertyChanged += Prop_PropertyChanged;
 		}
 		#endregion
-
-		private void BaseProp_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+				
+		/// <summary>
+		/// Property changed event handler.
+		/// </summary>
+		/// <param name="sender">Event sender</param>
+		/// <param name="e">Event arguments</param>
+		protected virtual void Prop_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName != null)
 			{
@@ -61,9 +70,9 @@ namespace Vixen.Sys.Props
 				{
 					case nameof(Rotations):
 						HandleRotationsChanged();
-						break;
+						break;					
 				}
-            if (e.PropertyName != nameof(ModifiedDate))
+				if (e.PropertyName != nameof(ModifiedDate))
 				{
 					PropModified();
 				}

@@ -7,10 +7,18 @@ namespace VixenModules.App.Props.Models.Arch
 	/// </summary>
 	public class ArchModel: BaseLightModel
 	{
+		#region Constructor
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
 		public ArchModel()
-		{
-			PropertyChanged += PropertyModelChanged;
+		{			
 		}
+
+		#endregion
+
+		#region Public Properties
 
 		private int _numPoints = 3;
 		public int NumPoints
@@ -18,6 +26,10 @@ namespace VixenModules.App.Props.Models.Arch
 			get => _numPoints;
 			set => _numPoints = value;
 		}
+
+		#endregion
+
+		#region Protected Overrides
 
 		/// <summary>
 		/// Calculates the 3-D points that make up the arch.
@@ -51,5 +63,7 @@ namespace VixenModules.App.Props.Models.Arch
 
 			return vertices;
 		}
+
+		#endregion
 	}
 }

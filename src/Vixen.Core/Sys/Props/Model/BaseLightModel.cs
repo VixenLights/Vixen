@@ -8,14 +8,15 @@ namespace Vixen.Sys.Props.Model
 	/// Maintains a base light model.
 	/// </summary>
 	public abstract class BaseLightModel : BasePropModel, ILightPropModel
-	{
+	{		
 		#region Protected Methods
+
 		/// <summary>
 		/// Updates the nodes when a model property changes.
 		/// </summary>
 		/// <param name="sender">Event sender</param>
 		/// <param name="e">Event arguments</param>
-		protected void PropertyModelChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+		protected override void PropertyModelChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
 			//TODO make this smarter to do the minimal to add, subtract, or update node size or rotation angle.			
 			Nodes.Clear();
@@ -47,7 +48,7 @@ namespace Vixen.Sys.Props.Model
 		public int LightSize
 		{
 			get => _lightSize;
-			set => _lightSize = value;
+			set => SetProperty(ref _lightSize, value);
 		}
 
 		#endregion
