@@ -1,10 +1,8 @@
 ﻿
 #nullable enable
-using AsyncAwaitBestPractices;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.Theme;
 using Common.WPFCommon.Converters;
-using Debounce.Core;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Vixen.Extensions;
@@ -27,17 +25,14 @@ namespace VixenModules.App.Props.Models.Arch
 	/// </summary>
 	public class Arch : BaseLightProp<ArchModel>, IProp
 	{
-		private readonly Debouncer _generateDebouncer;
+		#region Constructors
 
 		public Arch() : this("Arch Temp")
 		{
 		}
 
 		public Arch(string name, int nodeCount = 0, StringTypes stringType = StringTypes.ColorMixingRGB) : base(name, PropType.Arch)
-		{
-			// Create Preview model
-			PropModel = new ArchModel();
-
+		{			
 			// Set some default parameters
 			Name = name;
 			NodeCount = 24;
@@ -55,27 +50,24 @@ namespace VixenModules.App.Props.Models.Arch
 			{
 				var ColorSetNames = new ObservableCollection<string>(staticData.GetColorSetNames());
 				SelectedColorSet = ColorSetNames[0];
-			}
-
-			_generateDebouncer = new Debouncer(() =>
-			{
-				GenerateElementsAsync().SafeFireAndForget();
-			}, 500);
-
-			PropertyChanged += Arch_PropertyChanged;
+			}						
 		}
 
-		#region Properties
-		private int _nodeCount;
+		#endregion
+
+		#region Public Properties
+
 		public int NodeCount
 		{
-			get => _nodeCount;
+			get => PropModel.NumPoints;
 			set
 			{
-				_nodeCount = value;
-				PropModel.NumPoints = _nodeCount;
-				PropModel.UpdatePropNodes();
-				_generateDebouncer?.Debounce();
+				if (value == PropModel.NumPoints)
+				{
+					return;
+				}
+
+				PropModel.NumPoints = value;
 				OnPropertyChanged(nameof(NodeCount));
 			}
 		}
@@ -87,7 +79,6 @@ namespace VixenModules.App.Props.Models.Arch
 			set
 			{
 				_archWiringStart = value;
-				UpdatePatchingOrder().SafeFireAndForget(); ;
 				OnPropertyChanged(nameof(ArchWiringStart));
 			}
 		}
@@ -103,29 +94,10 @@ namespace VixenModules.App.Props.Models.Arch
 				UpdateDefaultPropComponents();
 			}
 		}
+
 		#endregion
-
-		private void Arch_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-		{
-			if (e.PropertyName != null)
-			{
-				switch (e.PropertyName)
-				{
-					case nameof(NodeCount):
-						HandleArchChanged();
-						break;
-				}
-			}
-		}
-
-		private void HandleArchChanged()
-		{
-			if (PropModel == null)
-				return;
-
-			PropModel.NumPoints = NodeCount;
-			PropModel.UpdatePropNodes();
-		}
+		
+		#region Public Method Overrides
 
 		/// <summary>
 		/// Get the HTML summary of all the parameter values
@@ -161,11 +133,15 @@ namespace VixenModules.App.Props.Models.Arch
 			return Summary;
 		}
 
+		#endregion
+
+		#region Protected Methods
+
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <returns></returns>
-		protected async Task GenerateElementsAsync()
+		protected override async Task GenerateElementsAsync()
 		{
 			await Task.Factory.StartNew(async () =>
 			{
@@ -197,12 +173,44 @@ namespace VixenModules.App.Props.Models.Arch
 			});
 		}
 
+		protected override async void Prop_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+            try
+            {
+				if (e.PropertyName != null)
+				{
+					// Call base class implementation
+					base.Prop_PropertyChanged(sender, e);
+
+					switch (e.PropertyName)
+					{
+						case nameof(StringType):
+							GenerateDebouncer.Debounce();
+							break;
+						case nameof(NodeCount):
+							PropModel.UpdatePropNodes();
+							GenerateDebouncer.Debounce();
+							break;
+						case nameof(ArchWiringStart):
+                            await UpdatePatchingOrder();
+							break;						
+					}
+				}
+            }
+            catch (Exception ex)
+            {
+				Logging.Error(ex, $"An error occured handling Arch property {e.PropertyName} changed");
+			}
+		}
+		
+		#endregion
+
+		#region Private Methods
+
 		private async Task UpdatePatchingOrder()
 		{
 			await AddOrUpdatePatchingOrder(ArchWiringStart == ArchStartLocation.Left ? Props.StartLocation.BottomLeft : Props.StartLocation.BottomRight);
 		}
-
-		#region PropComponents
 
 		/// <summary>
 		/// Update the nodes for the Arch Prop
@@ -299,6 +307,6 @@ namespace VixenModules.App.Props.Models.Arch
 				}
 			}
 		}
-		#endregion
+		#endregion		
 	}
 }
