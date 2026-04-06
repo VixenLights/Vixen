@@ -9,6 +9,7 @@ on:
 jobs:
   # Auto approve PR with Vixen Developer Team member approval
   setup-auto-approve:
+    if: github.repository == 'VixenLights/Vixen' && github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     outputs:
       reviewed: ${{ steps.setup.outputs.reviewed }}
@@ -16,6 +17,7 @@ jobs:
       pr_number: ${{ steps.setup.outputs.pr_number }}
     
     steps:
+      - run: echo "Running on the main repository."
       - name: Download pr review artifacts
         uses: actions/download-artifact@v4
         with:
