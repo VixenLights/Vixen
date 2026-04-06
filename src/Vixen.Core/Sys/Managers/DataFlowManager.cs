@@ -153,8 +153,7 @@ namespace Vixen.Sys.Managers
 			if (component.Source == null) return;
 
 			IDataFlowComponent parent = component.Source.Component;
-			List<IDataFlowComponent> children = null;
-			_componentDestinations.TryGetValue(parent, out children);
+			_componentDestinations.TryGetValue(parent, out var children);
 
 			if (children == null) {
 				Logging.Error("removing the source from a data flow component, but it's not already a child of the source!");

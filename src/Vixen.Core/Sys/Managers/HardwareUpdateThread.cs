@@ -95,8 +95,7 @@ namespace Vixen.Sys.Managers
 					_intervalDeltaValue.Set(Math.Abs(OutputDevice.UpdateInterval - dtMs));
 					_lastMs = nowMs;
 
-					bool allowed = false;
-					Execution.UpdateState( out allowed);
+					Execution.UpdateState( out var allowed);
 					long execMs = _localTime.ElapsedMilliseconds - nowMs;
 
 					_UpdateOutputDevice();

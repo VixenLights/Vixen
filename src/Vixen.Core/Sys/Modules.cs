@@ -245,7 +245,7 @@ namespace Vixen.Sys
 			List<IModuleDescriptor> descriptors = new List<IModuleDescriptor>();
 
 			if (File.Exists(filePath)) {
-				Assembly assembly = null;
+				Assembly assembly;
 				try {
 					assembly = Assembly.LoadFrom(filePath);
 				}
@@ -360,8 +360,7 @@ namespace Vixen.Sys
 
 		public static IModuleDescriptor GetDescriptorById(Guid moduleTypeId)
 		{
-			IModuleDescriptor descriptor = null;
-			_moduleDescriptors.TryGetValue(moduleTypeId, out descriptor);
+			_moduleDescriptors.TryGetValue(moduleTypeId, out var descriptor);
 			return descriptor;
 		}
 

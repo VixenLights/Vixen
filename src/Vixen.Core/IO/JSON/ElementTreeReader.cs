@@ -10,7 +10,7 @@ namespace Vixen.IO.JSON
 		/// <inheritdoc />
 		public ElementNodeProxy ReadFile(string filePath)
 		{
-			ElementNodeProxy proxy = null;
+			ElementNodeProxy proxy;
 			JsonSerializer serializer = JsonSerializer.CreateDefault();
 			serializer.NullValueHandling = NullValueHandling.Ignore;
 			serializer.DefaultValueHandling = DefaultValueHandling.Ignore;

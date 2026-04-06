@@ -129,22 +129,20 @@ namespace Vixen.Module
 
 		private IModuleDataModel _GetAsTypeData(IModuleInstance module)
 		{
-			IModuleDataModel model = null;
+			IModuleDataModel model;
 			_dataModels.TryGetValue(Tuple.Create(module.Descriptor.TypeId, module.Descriptor.TypeId), out model);
 			return model;
 		}
 
 		private IModuleDataModel _GetAsTypeData(Guid id)
 		{
-			IModuleDataModel model = null;
-			_dataModels.TryGetValue(Tuple.Create(id, id), out model);
+			_dataModels.TryGetValue(Tuple.Create(id, id), out var model);
 			return model;
 		}
 
 		private IModuleDataModel _GetAsInstanceData(IModuleInstance module)
 		{
-			IModuleDataModel model = null;
-			_dataModels.TryGetValue(Tuple.Create(module.TypeId, module.InstanceId), out model);
+			_dataModels.TryGetValue(Tuple.Create(module.TypeId, module.InstanceId), out var model);
 			return model;
 		}
 

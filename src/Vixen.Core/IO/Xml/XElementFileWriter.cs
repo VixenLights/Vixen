@@ -155,11 +155,11 @@ namespace Vixen.IO.Xml
 					if(orderedBackups.Any())
 					{
 						int dayNum = 0;
-						int skipNum = 0;
 						try
 						{
 							foreach (var dateGroup in orderedBackups)
 							{
+								int skipNum;
 								switch (dayNum)
 								{
 									case 0:
