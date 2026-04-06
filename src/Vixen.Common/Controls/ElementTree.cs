@@ -480,7 +480,7 @@ namespace Common.Controls
 
 			// first determine the node that they will be moved to. This will depend on if we are dragging onto a node
 			// directly, or above/below one to reorder.
-			ElementNode newParentNode = null; // the ElementNode that the selected items will move to
+			ElementNode newParentNode; // the ElementNode that the selected items will move to
 			TreeNode expandNode = null; // if we need to expand a node once we've moved everything
 			int index = -1;
 
@@ -497,11 +497,7 @@ namespace Common.Controls
 			}
 			else
 			{
-				if (e.TargetNode.Parent == null)
-				{
-					newParentNode = null; // needs to go at the root level
-				}
-				else
+				if (e.TargetNode.Parent != null)
 				{
 					newParentNode = e.TargetNode.Parent.Tag as ElementNode;
 				}
@@ -589,8 +585,8 @@ namespace Common.Controls
 			// of the new parent node are considered OK, as we might just be shuffling them around. Normally, this would
 			// be A Bad Thing, since it would seem like we're adding a child to the group it's already in. (This is only
 			// the case when moving; if copying, it should be disabled. That's checked later.)
-			IEnumerable<ElementNode> invalidNodesForTarget = null;
-			IEnumerable<ElementNode> permittedNodesForTarget = null;
+			IEnumerable<ElementNode> invalidNodesForTarget;
+			IEnumerable<ElementNode> permittedNodesForTarget;
 
 			if (e.DragBetweenNodes == DragBetweenNodes.DragOnTargetNode ||
 				e.DragBetweenNodes == DragBetweenNodes.DragBelowTargetNode && e.TargetNode.IsExpanded)

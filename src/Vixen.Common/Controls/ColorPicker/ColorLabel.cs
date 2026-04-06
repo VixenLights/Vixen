@@ -47,7 +47,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			if (Enabled) {
 				//draw info panel
 				int infowidth = 0,
-				    y = 0;
+				    y;
 				if (_screen && _tl_picker != null) {
 					infowidth = Height;
 					y = (Height - _tl_picker.Height)/2;

@@ -213,9 +213,9 @@ namespace Common.Controls
 		protected string NormalTextToNumericString()
 		{
 			string Text = this.Text;
-			string TextTemp1 = "", TextTemp2 = "";
+			var TextTemp2 = string.Empty;
 			#region Lowering Characters
-			TextTemp1 = Text.ToLower();
+			var TextTemp1 = Text.ToLower();
 			#endregion
 			#region Remove Unknown Characters
 			int FloatNumber = 0;

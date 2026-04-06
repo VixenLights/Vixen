@@ -1094,8 +1094,7 @@ namespace Common.Controls.Timeline
 
 			foreach (Row row in processRows)
 			{
-				List<Element> elements = new List<Element>();
-				elements = SelectedElements.Any() ? row.SelectedElements.ToList() : row.ToList();
+				var elements = SelectedElements.Any() ? row.SelectedElements.ToList() : row.ToList();
 
 				if (!elements.Any()) continue;
 

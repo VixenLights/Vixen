@@ -35,7 +35,7 @@ namespace VixenApplication.GraphicalPatching
 		public override bool ProcessMouseEvent(IDiagramPresenter diagramPresenter, MouseEventArgsDg e)
 		{
 			if (diagramPresenter == null) throw new ArgumentNullException("diagramPresenter");
-			bool result = false;
+			bool result;
 			// get new mouse state
 			MouseState newMouseState = MouseState.Empty;
 			newMouseState.Buttons = e.Buttons;
@@ -550,7 +550,7 @@ namespace VixenApplication.GraphicalPatching
 						else {
 							// If there is no shape under the cursor, start a SelectWithFrame action,
 							// otherwise start a MoveShape action
-							bool canMove = false;
+							bool canMove;
 							if (!selectedShapeAtCursorInfo.IsEmpty) {
 								// If there are selected shapes, check these shapes...
 								canMove = IsMoveShapeFeasible(diagramPresenter, mouseState, selectedShapeAtCursorInfo);
@@ -885,7 +885,6 @@ namespace VixenApplication.GraphicalPatching
 			ResetPreviewShapes(diagramPresenter);
 
 			// Move (preview copies of) the selected shapes
-			Rectangle shapeBounds = Rectangle.Empty;
 			foreach (Shape originalShape in diagramPresenter.SelectedShapes) {
 				// Get preview of the shape to move...
 				Shape previewShape = FindPreviewOfShape(originalShape);
@@ -937,12 +936,12 @@ namespace VixenApplication.GraphicalPatching
 
 			// calculate "Snap to Grid/ControlPoint" offset
 			snapDeltaX = snapDeltaY = 0;
-			if (selectedShapeAtCursorInfo.IsCursorAtGluePoint) {
-				ControlPointId targetPtId;
-				Shape targetShape = FindNearestControlPoint(diagramPresenter, selectedShapeAtCursorInfo.Shape,
-				                                            selectedShapeAtCursorInfo.ControlPointId,
-				                                            ControlPointCapabilities.Connect, distanceX, distanceY, out snapDeltaX,
-				                                            out snapDeltaY, out targetPtId);
+			if (selectedShapeAtCursorInfo.IsCursorAtGluePoint)
+			{
+				FindNearestControlPoint(diagramPresenter, selectedShapeAtCursorInfo.Shape,
+					selectedShapeAtCursorInfo.ControlPointId,
+					ControlPointCapabilities.Connect, distanceX, distanceY, out snapDeltaX,
+					out snapDeltaY, out _);
 			}
 			else
 				FindNearestSnapPoint(diagramPresenter, selectedShapeAtCursorInfo.Shape, selectedShapeAtCursorInfo.ControlPointId,
@@ -955,7 +954,6 @@ namespace VixenApplication.GraphicalPatching
 
 			// Move selected shapes
 			ResizeModifiers resizeModifier = GetResizeModifier(mouseState);
-			Point originalPtPos = Point.Empty;
 			foreach (Shape selectedShape in diagramPresenter.SelectedShapes) {
 				Shape previewShape = FindPreviewOfShape(selectedShape);
 				// Perform movement
@@ -970,7 +968,7 @@ namespace VixenApplication.GraphicalPatching
 		// apply the resize action
 		private bool PerformMoveHandle(IDiagramPresenter diagramPresenter)
 		{
-			bool result = false;
+			bool result;
 			Invalidate(diagramPresenter);
 
 			int distanceX = CurrentMouseState.X - ActionStartMouseState.X;

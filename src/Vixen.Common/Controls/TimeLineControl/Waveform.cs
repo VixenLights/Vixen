@@ -20,7 +20,6 @@ namespace Common.Controls.Timeline
 	public sealed class Waveform : TimelineControlBase
 	{
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
-		private double samplesPerPixel;
 		private List<Sample> samples;
 		private Audio audio;
 		private bool _creatingSamples = false;

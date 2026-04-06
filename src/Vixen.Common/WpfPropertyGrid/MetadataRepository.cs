@@ -227,9 +227,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
       if (target == null) throw new ArgumentNullException("target");
       if (string.IsNullOrEmpty(propertyName)) throw new ArgumentNullException("propertyName");
 
-      PropertySet propertySet = null;
-
-      if (!Properties.TryGetValue(target.GetType(), out propertySet))
+      if (!Properties.TryGetValue(target.GetType(), out var propertySet))
         propertySet = CollectProperties(target);
 
       PropertyData property;

@@ -369,7 +369,7 @@ namespace Common.Controls.Timeline
 		{
 			// Adapted from from Audacity, Ruler.cpp
 
-			string timeFormat = string.Empty;
+			string timeFormat;
 
 			if (m_MinorTick >= TimeSpan.FromHours(1)) {
 				// Round time to nearest hour
