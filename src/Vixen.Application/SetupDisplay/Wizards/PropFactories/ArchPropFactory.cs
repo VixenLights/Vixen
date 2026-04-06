@@ -48,7 +48,7 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
             archPropPage.NodeCount = arch.NodeCount;
             archPropPage.ArchWiringStart = arch.ArchWiringStart;
             archPropPage.LightSize = arch.LightSize;
-            archPropPage.Rotations = AxisRotationViewModel.ConvertToViewModel(arch.Rotations);
+            archPropPage.Rotations = AxisRotationViewModel.ConvertToViewModel(arch.AxisRotations);
 
             // Configure the wizard with the Additional Arch properties
             ArchPropAdditionalWizardPage additionalPage = (ArchPropAdditionalWizardPage)wizard.Pages.Single(page => page is ArchPropAdditionalWizardPage);
@@ -81,7 +81,7 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
             arch.NodeCount = archPropPage.NodeCount;
             arch.ArchWiringStart = archPropPage.ArchWiringStart;
             arch.LightSize = archPropPage.LightSize;
-            arch.Rotations = AxisRotationViewModel.ConvertToModel(archPropPage.Rotations);
+            arch.AxisRotations = AxisRotationViewModel.ConvertToModel(archPropPage.Rotations);
 
             // Configure the Additional Arch properties
             ArchPropAdditionalWizardPage additionalPage = (ArchPropAdditionalWizardPage)wizard.Pages.Single(page => page is ArchPropAdditionalWizardPage);

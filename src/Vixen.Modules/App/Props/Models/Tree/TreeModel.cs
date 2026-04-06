@@ -145,7 +145,7 @@ namespace VixenModules.App.Props.Models.Tree
 			}
 
 			// (Optionally) rotate the points along the X, Y, and Z axis			
-			RotatePoints(treePoints, AxisRotationModel);
+			RotatePoints(treePoints, AxisRotations);
 
 			return treePoints;
 		}

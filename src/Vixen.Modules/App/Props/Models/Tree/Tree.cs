@@ -77,9 +77,9 @@ namespace VixenModules.App.Props.Models.Tree
 				$"<b>ZigZag Offset:</b> {ZigZagOffset}<br>" +
 				$"<b>Top Radius:</b> {TopRadius}<br>" +
 				$"<b>Bottom Radius:</b> {BottomRadius}<br>" +
-				$"<b>{Rotations[0].Axis} Rotation:</b> {Rotations[0].RotationAngle}\u00B0<br>" +
-				$"<b>{Rotations[1].Axis} Rotation:</b> {Rotations[1].RotationAngle}\u00B0<br>" +
-				$"<b>{Rotations[2].Axis} Rotation:</b> {Rotations[2].RotationAngle}\u00B0<br>" +
+				$"<b>{AxisRotations[0].Axis} Rotation:</b> {AxisRotations[0].RotationAngle}\u00B0<br>" +
+				$"<b>{AxisRotations[1].Axis} Rotation:</b> {AxisRotations[1].RotationAngle}\u00B0<br>" +
+				$"<b>{AxisRotations[2].Axis} Rotation:</b> {AxisRotations[2].RotationAngle}\u00B0<br>" +
 				"</body>" +
 				"<h2>Additional Props</h2>" +
 				"<body>" +
