@@ -901,12 +901,6 @@ namespace VixenModules.Effect.Morph
 			}
 		}
 
-		private void MorphPolygonsChildPropertyChanged(object sender, PropertyChangedEventArgs e)
-		{
-			MarkDirty();
-			OnPropertyChanged(nameof(MorphPolygons));
-		}
-
 		#endregion
 
 		#region Protected Methods
@@ -3409,7 +3403,18 @@ namespace VixenModules.Effect.Morph
 			
 			TypeDescriptor.Refresh(this);			
 		}
-	}
 
-	#endregion
+		/// <summary>
+		/// Morph polygons child property changed event handler.
+		/// </summary>
+		/// <param name="sender">Event sender</param>
+		/// <param name="e">Event arguments</param>
+		private void MorphPolygonsChildPropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			MarkDirty();
+			OnPropertyChanged(nameof(MorphPolygons));
+		}
+
+		#endregion
+	}
 }
