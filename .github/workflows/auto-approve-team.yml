@@ -19,7 +19,7 @@ jobs:
       - name: Download pr review artifacts
         uses: actions/download-artifact@v4
         with:
-          name: pr_info
+          name: pr_review_info
           path: ./downloaded-data
 
       - name: setup
