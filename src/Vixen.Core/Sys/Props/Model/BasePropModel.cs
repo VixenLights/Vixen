@@ -9,6 +9,19 @@ namespace Vixen.Sys.Props.Model
 	/// </summary>
 	public abstract class BasePropModel : BindableBase
 	{
+		#region Constructor
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		protected BasePropModel()
+		{
+			// Register for model property changes
+			PropertyChanged += PropertyModelChanged;
+		}
+
+		#endregion
+
 		#region IPropModel
 
 		/// <inheritdoc/>		
@@ -23,15 +36,22 @@ namespace Vixen.Sys.Props.Model
 	        get => _axisRotationModel;
 	        set => _axisRotationModel = value;
         }
-        #endregion
+		#endregion
 
-        #region Protected Methods
+		#region Protected Methods
 
-        /// <summary>
-        /// Rotates the specified vertices by up to three axis rotations.
-        /// </summary>
-        /// <param name="vertices">Vertices to rotate</param>
-        protected void RotatePoints(List<NodePoint> vertices, ObservableCollection<AxisRotationModel>rotations)
+		/// <summary>
+		/// Allows derived models to update calculated state when a model property changes.
+		/// </summary>
+		/// <param name="sender">Event sender</param>
+		/// <param name="e">Event arguments</param>
+		protected abstract void PropertyModelChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e);
+
+		/// <summary>
+		/// Rotates the specified vertices by up to three axis rotations.
+		/// </summary>
+		/// <param name="vertices">Vertices to rotate</param>
+		protected void RotatePoints(List<NodePoint> vertices, ObservableCollection<AxisRotationModel>rotations)
 		{
 			if (rotations == null)
 			{

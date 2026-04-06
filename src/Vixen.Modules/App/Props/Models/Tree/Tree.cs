@@ -1,10 +1,8 @@
 ﻿#nullable enable
 
-using AsyncAwaitBestPractices;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.Theme;
 using Common.WPFCommon.Converters;
-using Debounce.Core;
 using System.ComponentModel;
 using Vixen.Extensions;
 using Vixen.Sys;
@@ -14,14 +12,12 @@ using Vixen.Sys.Props.Components;
 
 namespace VixenModules.App.Props.Models.Tree
 {
+	/// <summary>
+	/// Maintains a tree prop.
+	/// </summary>
 	public class Tree : BaseLightProp<TreeModel>, IProp
-	{
-		#region Fields
-
-		private readonly Debouncer _generateDebouncer;
-
-		#endregion
-
+	{		
+		#region Constructors
 
 		public Tree() : this("Tree 1", 0, 0)
 		{
@@ -33,7 +29,7 @@ namespace VixenModules.App.Props.Models.Tree
 		}
 
 		public Tree(string name, int strings = 0, int nodesPerString = 0, StringTypes stringType = StringTypes.ColorMixingRGB) : base(name, PropType.Tree)
-		{
+		{			
 			PropType = PropType.Tree;
 			Name = name;
 			StringType = stringType;
@@ -48,18 +44,12 @@ namespace VixenModules.App.Props.Models.Tree
 			NodesPerString = 50;
 			LightSize = 2;
 			TopRadius = 10;
-			BottomRadius = 100;
-
-			// Create Preview model
-			PropModel = new TreeModel(strings, nodesPerString);
-
-			_generateDebouncer = new Debouncer(() =>
-			{
-				GenerateElementsAsync().SafeFireAndForget();
-			}, 500);
-
-			PropertyChanged += Tree_PropertyChanged;
+			BottomRadius = 100;					
 		}
+
+		#endregion
+
+		#region Public Override Methods
 
 		override public string GetSummary()
 		{
@@ -102,17 +92,20 @@ namespace VixenModules.App.Props.Models.Tree
 			return Summary;
 		}
 
+		#endregion
+
+		#region Public Properties
+
 		/// <summary>
 		/// The number of light strings
 		/// </summary>
-		private int _strings;
 		public int Strings
 		{
-			get => _strings;
+			get => PropModel.Strings;
 			set
 			{
 				if (value <= 0) return;
-				SetProperty(ref _strings, value);
+				PropModel.Strings = value;
 				OnPropertyChanged(nameof(Strings));
 			}
 		}
@@ -120,18 +113,17 @@ namespace VixenModules.App.Props.Models.Tree
 		/// <summary>
 		/// The number of light nodes per string
 		/// </summary>
-		private int _nodesPerString;
 		public int NodesPerString
 		{
-			get => _nodesPerString;
+			get => PropModel.NodesPerString;
 			set
 			{
 				if (value <= 0) return;
-				if (value == _nodesPerString)
+				if (value == PropModel.NodesPerString)
 				{
 					return;
 				}
-				SetProperty(ref _nodesPerString, value);
+				PropModel.NodesPerString = value;
 				OnPropertyChanged(nameof(NodesPerString));
 			}
 		}
@@ -139,18 +131,18 @@ namespace VixenModules.App.Props.Models.Tree
 		/// <summary>
 		/// The degrees of coverage for the Tree. ex. 180 for a half tree.
 		/// </summary>
-		private int _degreesCoverage;
+		
 		public int DegreesCoverage
 		{
-			get => _degreesCoverage;
+			get => PropModel.DegreesCoverage;
 			set
 			{
 				if (value > 360 || value <= 0) return;
-				if (value == _degreesCoverage)
+				if (value == PropModel.DegreesCoverage)
 				{
 					return;
 				}
-				SetProperty(ref _degreesCoverage, value);
+				PropModel.DegreesCoverage = value;
 				OnPropertyChanged(nameof(DegreesCoverage));
 			}
 		}
@@ -161,48 +153,48 @@ namespace VixenModules.App.Props.Models.Tree
 		private int _degreesOffset;
 		public int DegreeOffset
 		{
-			get => _degreesOffset;
+			get => PropModel.DegreesOffset;
 			set
 			{
 				if (value > 359 || value < -359) return;
-				if (value == _degreesOffset)
+				if (value == PropModel.DegreesOffset)
 				{
 					return;
 				}
 
-				SetProperty(ref _degreesOffset, value);
+				PropModel.DegreesOffset = value;
 				OnPropertyChanged(nameof(DegreeOffset));
 			}
 		}
 
-		private int _baseHeight;
+	
 		public int BaseHeight
 		{
-			get => _baseHeight;
+			get => PropModel.BaseHeight;
 			set
 			{
-				if (value <= 0)
+				if (value <= 0 || value == PropModel.BaseHeight)
 				{
 					return;
 				}
 
-				SetProperty(ref _baseHeight, value);
+				PropModel.BaseHeight = value;
 				OnPropertyChanged(nameof(BaseHeight));
 			}
 		}
 
-		private int _topHeight;
+	
 		public int TopHeight
 		{
-			get => _topHeight;
+			get => PropModel.TopHeight;
 			set
 			{
-				if (value <= 0)
+				if (value <= 0 || value == PropModel.TopHeight)
 				{
 					return;
 				}
 
-				SetProperty(ref _topHeight, value);
+				PropModel.TopHeight = value;
 				OnPropertyChanged(nameof(TopHeight));
 			}
 		}
@@ -210,15 +202,15 @@ namespace VixenModules.App.Props.Models.Tree
 		private int _topWidth;
 		public int TopWidth
 		{
-			get => _topWidth;
+			get => PropModel.TopWidth;
 			set
 			{
-				if (value <= 0)
+				if (value <= 0 || value == PropModel.TopHeight)
 				{
 					return;
 				}
 
-				SetProperty(ref _topWidth, value);
+				PropModel.TopHeight = value;
 				OnPropertyChanged(nameof(TopWidth));
 			}
 		}
@@ -251,13 +243,12 @@ namespace VixenModules.App.Props.Models.Tree
 		/// <summary>
 		/// Top radius of the tree as a percentage.
 		/// </summary>
-		private float _topRadius;
 		public float TopRadius
 		{
-			get => _topRadius;
+			get => PropModel.TopRadius;
 			set
 			{
-				SetProperty(ref _topRadius, value);
+				PropModel.TopRadius = value;
 				OnPropertyChanged(nameof(TopRadius));
 			}
 		}
@@ -265,116 +256,22 @@ namespace VixenModules.App.Props.Models.Tree
 		/// <summary>
 		/// Bottom radius of the tree as a percentage.
 		/// </summary>
-		private float _bottomRadius;
 		public float BottomRadius
 		{
-			get => _bottomRadius;
+			get => PropModel.BottomRadius;
 			set
 			{
-				SetProperty(ref _bottomRadius, value);
+				PropModel.BottomRadius = value;
 				OnPropertyChanged(nameof(BottomRadius));
 			}
 		}
+		
+		//TODO Map element structure to model nodes
+					
+		#endregion
 
-		private async void Tree_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-		{
-			try
-			{
-				// Name is handled in the base class so we need to handle our own.
-				if (e.PropertyName != null)
-				{
-					switch (e.PropertyName)
-					{
-						case nameof(StringType):
-							_generateDebouncer.Debounce();
-							break;
-
-						case nameof(StartLocation):
-						case nameof(ZigZag):
-						case nameof(ZigZagOffset):
-							await AddOrUpdatePatchingOrder(_startLocation, _zigZag, _zigZagOffset);
-							break;
-
-						case nameof(NodesPerString):
-						case nameof(TopRadius):
-						case nameof(BottomRadius):
-						case nameof(DegreesCoverage):
-						case nameof(DegreeOffset):
-						case nameof(Strings):
-							HandleTreeChanged();
-							break;
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				Logging.Error(ex, $"An error occured handling Tree property {e.PropertyName} changed");
-			}
-		}
-
-		private void HandleTreeChanged()
-		{
-			if (PropModel == null)
-				return;
-
-			PropModel.NodesPerString = NodesPerString;
-			PropModel.TopRadius = TopRadius;
-			PropModel.BottomRadius = BottomRadius;
-			PropModel.DegreesCoverage = DegreesCoverage;
-			PropModel.DegreesOffset = DegreeOffset;
-			PropModel.Strings = Strings;
-			PropModel.UpdatePropNodes();
-		}
-
-		protected async Task GenerateElementsAsync()
-		{
-			bool hasUpdatedStrings = false;
-			bool hasUpdatedNodes = false;
-
-			try
-			{
-				var propNode = GetOrCreateElementNode();
-				if (propNode.IsLeaf && Strings > 0)
-				{
-					AddStringElements(propNode, Strings, NodesPerString);
-					hasUpdatedStrings = true;
-				}
-				else if (propNode.Children.Count() != Strings)
-				{
-					await UpdateStrings(Strings).ConfigureAwait(false);
-					hasUpdatedStrings = true;
-				}
-
-				if (propNode.Children.Any())
-				{
-					if (propNode.Children.First().Children.Count() != NodesPerString)
-					{
-						await UpdateNodesPerString(NodesPerString).ConfigureAwait(false);
-						hasUpdatedStrings = true;
-					}
-				}
-
-				if (hasUpdatedStrings || hasUpdatedNodes)
-				{
-					await AddOrUpdatePatchingOrder(_startLocation, _zigZag, _zigZagOffset)
-						.ConfigureAwait(false);
-
-					await AddOrUpdateColorHandling().ConfigureAwait(false);
-				}
-
-				if (hasUpdatedStrings)
-				{
-					UpdateDefaultPropComponents();
-				}
-
-			}
-			catch (Exception e)
-			{
-				Logging.Error(e, "An exception occured creating the prop");
-			}
-
-		}
-
+		#region Private Methods
+		
 		private void UpdateDefaultPropComponents()
 		{
 
@@ -470,5 +367,95 @@ namespace VixenModules.App.Props.Models.Tree
 			VixenSystem.PropComponents.AddPropComponent(propComponentLeft, parentPropComponentNode);
 			VixenSystem.PropComponents.AddPropComponent(propComponentRight, parentPropComponentNode);
 		}
+
+		#endregion
+
+		#region Protected Methods
+
+		protected async void Prop_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+			try
+			{			
+				// Name is handled in the base class so we need to handle our own.
+				if (e.PropertyName != null)
+				{
+					// Call base class implementation
+					base.Prop_PropertyChanged(sender, e);
+
+					switch (e.PropertyName)
+					{
+						case nameof(StartLocation):
+						case nameof(ZigZag):
+						case nameof(ZigZagOffset):
+							await AddOrUpdatePatchingOrder(_startLocation, _zigZag, _zigZagOffset);
+							break;
+
+						case nameof(NodesPerString):
+						case nameof(TopRadius):
+						case nameof(BottomRadius):
+						case nameof(DegreesCoverage):
+						case nameof(DegreeOffset):
+						case nameof(Strings):
+							GenerateDebouncer.Debounce();
+							break;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, $"An error occured handling Tree property {e.PropertyName} changed");
+			}
+		}
+		
+		protected override async Task GenerateElementsAsync()
+		{
+			bool hasUpdatedStrings = false;
+			bool hasUpdatedNodes = false;
+
+			try
+			{
+				var propNode = GetOrCreateElementNode();
+				if (propNode.IsLeaf && Strings > 0)
+				{
+					AddStringElements(propNode, Strings, NodesPerString);
+					hasUpdatedStrings = true;
+				}
+				else if (propNode.Children.Count() != Strings)
+				{
+					await UpdateStrings(Strings).ConfigureAwait(false);
+					hasUpdatedStrings = true;
+				}
+
+				if (propNode.Children.Any())
+				{
+					if (propNode.Children.First().Children.Count() != NodesPerString)
+					{
+						await UpdateNodesPerString(NodesPerString).ConfigureAwait(false);
+						hasUpdatedStrings = true;
+					}
+				}
+
+				if (hasUpdatedStrings || hasUpdatedNodes)
+				{
+					await AddOrUpdatePatchingOrder(_startLocation, _zigZag, _zigZagOffset)
+						.ConfigureAwait(false);
+
+					await AddOrUpdateColorHandling().ConfigureAwait(false);
+				}
+
+				if (hasUpdatedStrings)
+				{
+					UpdateDefaultPropComponents();
+				}
+
+			}
+			catch (Exception e)
+			{
+				Logging.Error(e, "An exception occured creating the prop");
+			}
+
+		}
+
+		#endregion
 	}
 }

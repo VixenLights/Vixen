@@ -1,13 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-
-using OpenTK.Mathematics;
+﻿using System.ComponentModel;
 using Vixen.Sys.Props.Model;
 using VixenModules.App.Props.Models.IntelligentFixture;
 using VixenModules.Editor.FixtureGraphics;
-using VixenModules.Editor.FixtureGraphics.OpenGL;
-
-
 
 namespace VixenModules.App.Props.Models.IntellligentFixture
 {
@@ -159,6 +153,15 @@ namespace VixenModules.App.Props.Models.IntellligentFixture
 		public YesNoType InvertTiltDirection { get; set; }
 
 		public MountingPositionType MountingPosition { get; set; }
+		#endregion
+
+		#region Protected Methods
+
+		/// <inheritdoc/>
+		protected override void PropertyModelChanged(object? sender, PropertyChangedEventArgs e)
+		{
+		}
+
 		#endregion
 	}
 }

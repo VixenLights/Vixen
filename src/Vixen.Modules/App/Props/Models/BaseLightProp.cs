@@ -1,9 +1,9 @@
 ﻿#nullable enable
+using AsyncAwaitBestPractices;
 using Common.WPFCommon.Converters;
-using System.Collections.ObjectModel;
+using Debounce.Core;
 using System.ComponentModel;
 using System.Drawing;
-using System.Windows.Media.Imaging;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Props;
@@ -13,21 +13,26 @@ using VixenModules.Property.Color;
 
 namespace VixenModules.App.Props.Models
 {
-	public abstract class BaseLightProp<TModel> : BaseProp<TModel> where TModel : BaseLightModel, IPropModel
+	public abstract class BaseLightProp<TModel> : BaseProp<TModel> 
+		where TModel : BaseLightModel, IPropModel, new()	
 	{
 		protected bool UpdateInProgress = false;
 
 		protected BaseLightProp(string name, PropType propType) : base(name, propType)
 		{
+			GenerateDebouncer = new Debouncer(() =>
+			{
+				GenerateElementsAsync().SafeFireAndForget();
+			}, 500);
+
 			StringType = StringTypes.ColorMixingRGB;
 			Brightness = 100;
 			Gamma = 1.0;
-			SingleColorOption = System.Drawing.Color.RoyalBlue;
-
-			PropertyChanged += BaseLightProp_PropertyChanged;
+			SingleColorOption = System.Drawing.Color.RoyalBlue;				
 		}
 
-		#region Properties
+		#region Public Properties
+		
 		/// <summary>
 		/// Gets or sets the type of string used in the light prop.
 		/// </summary>
@@ -51,14 +56,18 @@ namespace VixenModules.App.Props.Models
 			get => _stringType;
 			set => SetProperty(ref _stringType, value);
 		}
-
-		private int _lightSize;
+		
 		public int LightSize
 		{
-			get => _lightSize;
+			get => PropModel.LightSize;
 			set
 			{
-				_lightSize = value;
+				if (value == PropModel.LightSize)
+				{
+					return;
+				}
+
+				PropModel.LightSize = value;
 				OnPropertyChanged(nameof(LightSize));
 			}
 		}
@@ -117,29 +126,41 @@ namespace VixenModules.App.Props.Models
 				OnPropertyChanged(nameof(SelectedColorSet));
 			}
 		}
+
 		#endregion
 
-		private void BaseLightProp_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		#region Protected Properties
+
+		/// <summary>
+		/// Utility for deferring element generation for the prop.
+		/// </summary>		
+		protected Debouncer GenerateDebouncer { get; set; }
+
+		#endregion
+
+		#region Protected Methods
+
+		protected override void Prop_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName != null)
 			{
 				switch (e.PropertyName)
 				{
+					case nameof(StringType):
+						GenerateDebouncer.Debounce();
+						break;
 					case nameof(LightSize):
-						HandleLightPropChanged();
+						PropModel.UpdatePropNodes();						
 						break;
 				}
 			}
 		}
-
-		private void HandleLightPropChanged()
-		{
-			if (PropModel == null)
-				return;
-
-			PropModel.LightSize = LightSize;
-			PropModel.UpdatePropNodes();
-		}
+		
+		/// <summary>
+		/// Allows derived light props to generate or update the elements associated with the prop.
+		/// </summary>
+		/// <returns>Task to generate elements</returns>
+		protected abstract Task GenerateElementsAsync();
 
 		/// <summary>
 		/// Adds a specified number of string elements to the given element node.
@@ -460,5 +481,7 @@ namespace VixenModules.App.Props.Models
 
 			return summary;
 		}
+
+		#endregion
 	}
 }
