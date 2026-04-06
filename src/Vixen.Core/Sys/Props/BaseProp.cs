@@ -48,11 +48,7 @@ namespace Vixen.Sys.Props
 			PropType = propType;
 			PropComponents = new();
 			UserDefinedPropComponents = new();
-			Rotations = new ObservableCollection<AxisRotationModel>();
-			Rotations.Add(new AxisRotationModel() { Axis = Axis.XAxis, RotationAngle = 0 });
-			Rotations.Add(new AxisRotationModel() { Axis = Axis.YAxis, RotationAngle = 0 });
-			Rotations.Add(new AxisRotationModel() { Axis = Axis.ZAxis, RotationAngle = 0 });
-
+			
 			PropertyChanged += Prop_PropertyChanged;
 		}
 		#endregion
@@ -65,13 +61,7 @@ namespace Vixen.Sys.Props
 		protected virtual void Prop_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName != null)
-			{
-				switch (e.PropertyName)
-				{
-					case nameof(Rotations):
-						HandleRotationsChanged();
-						break;					
-				}
+			{				
 				if (e.PropertyName != nameof(ModifiedDate))
 				{
 					PropModified();
@@ -108,8 +98,28 @@ namespace Vixen.Sys.Props
 			}
 		}
 
+		public ObservableCollection<AxisRotationModel> AxisRotations
+		{
+			get
+			{
+				return PropModel.AxisRotations;
+			}
+			set
+			{
+				if (value == PropModel.AxisRotations)
+				{
+					return;
+				}
+
+				PropModel.AxisRotations = value;
+				OnPropertyChanged(nameof(AxisRotations));
+			}
+		}
+
 		public PropType PropType { get; init; }
 
+
+		/*
 		private ObservableCollection<AxisRotationModel> _rotations;
 		public ObservableCollection<AxisRotationModel> Rotations
 		{
@@ -137,6 +147,7 @@ namespace Vixen.Sys.Props
 				OnPropertyChanged(nameof(Rotations));
 			}
         }
+		*/
 
         /// <summary>
         /// Gets or sets the name of the user who created this Prop.
@@ -191,60 +202,7 @@ namespace Vixen.Sys.Props
 			get => _propModel;
 			set => SetProperty(ref _propModel, value);
 		}
-
-		private void Rotations_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-		{
-			if (e.OldItems != null)
-				UnsubscribeFromItems(e.OldItems.Cast<AxisRotationModel>());
-
-			if (e.NewItems != null)
-				SubscribeToItems(e.NewItems.Cast<AxisRotationModel>());
-
-			HandleRotationsChanged();
-		}
-
-		private void HandleRotationsChanged()
-		{
-			if (PropModel == null)
-				return;
-
-			PropModel.AxisRotationModel = _rotations;
-
-			if (PropModel is BaseLightModel lightModel)
-			{
-				lightModel.UpdatePropNodes();
-			}
-			else
-			{
-				// TODO: handle non-light models
-			}
-		}
-
-        private void SubscribeToItems(IEnumerable<AxisRotationModel> items)
-		{
-			foreach (var item in items)
-			{
-				item.PropertyChanged += RotationItem_PropertyChanged;
-			}
-		}
-
-		private void UnsubscribeFromItems(IEnumerable<AxisRotationModel> items)
-		{
-			foreach (var item in items)
-			{
-				item.PropertyChanged -= RotationItem_PropertyChanged;
-			}
-		}
-
-		private void RotationItem_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-		{
-			if (e.PropertyName == nameof(AxisRotationModel.RotationAngle) ||
-			    e.PropertyName == nameof(AxisRotationModel.Axis))
-			{
-				HandleRotationsChanged();
-			}
-		}
-
+		
         /// <summary>
         /// Gets or sets the unique identifier of the root <see cref="ElementNode"/> 
         /// associated with this Prop.

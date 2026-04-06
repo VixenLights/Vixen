@@ -13,9 +13,7 @@ namespace Vixen.Sys.Props.Model
 		ObservableCollection<NodePoint> Nodes { get; set; }
 
 		public int LightSize { get; set;  }
-
-		public ObservableCollection<AxisRotationModel> AxisRotationModel { get; set; }
-
+		
 		/// <summary>
 		/// Updates prop nodes for rotation changes.
 		/// </summary>

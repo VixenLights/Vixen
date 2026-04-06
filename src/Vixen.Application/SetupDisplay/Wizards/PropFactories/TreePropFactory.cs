@@ -58,7 +58,7 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
             treePropPage.ZigZagOffset = tree.ZigZagOffset;
             treePropPage.TopRadius = tree.TopRadius;
             treePropPage.BottomRadius = tree.BottomRadius;
-            treePropPage.Rotations = AxisRotationViewModel.ConvertToViewModel(tree.Rotations);
+            treePropPage.Rotations = AxisRotationViewModel.ConvertToViewModel(tree.AxisRotations);
 
             // Configure the wizard with the Additional Tree properties
             //TreePropAdditionalWizardPage additionalPage = (TreePropAdditionalWizardPage)wizard.Pages.Single(page => page is TreePropAdditionalWizardPage);
@@ -101,7 +101,7 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
             tree.ZigZagOffset = treePropPage.ZigZagOffset;
             tree.TopRadius = treePropPage.TopRadius;
             tree.BottomRadius = treePropPage.BottomRadius;
-            tree.Rotations = AxisRotationViewModel.ConvertToModel(treePropPage.Rotations);
+            tree.AxisRotations = AxisRotationViewModel.ConvertToModel(treePropPage.Rotations);
 
             // Configure the Additional Tree properties
             //TreePropAdditionalWizardPage additionalPage = (TreePropAdditionalWizardPage)wizard.Pages.Single(page => page is TreePropAdditionalWizardPage);

@@ -59,7 +59,7 @@ namespace VixenModules.App.Props.Models.Arch
 			}
 
 			// (Optionally) rotate the points along the X, Y, and Z axis
-			RotatePoints(vertices, AxisRotationModel);
+			RotatePoints(vertices, AxisRotations);
 
 			return vertices;
 		}

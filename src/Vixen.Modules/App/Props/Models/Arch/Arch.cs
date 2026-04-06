@@ -118,9 +118,9 @@ namespace VixenModules.App.Props.Models.Arch
 				$"<b>Light Count:</b> {NodeCount}<br>" +
 				$"<b>Light Size:</b> {LightSize}<br>" +
 				$"<b>Starting Position:</b> {EnumValueTypeConverter.GetDescription(ArchWiringStart)}<br>" +
-				$"<b>{Rotations[0].Axis} Rotation:</b> {Rotations[0].RotationAngle}\u00B0<br>" +
-				$"<b>{Rotations[1].Axis} Rotation:</b> {Rotations[1].RotationAngle}\u00B0<br>" +
-				$"<b>{Rotations[2].Axis} Rotation:</b> {Rotations[2].RotationAngle}\u00B0<br>" +
+				$"<b>{AxisRotations[0].Axis} Rotation:</b> {AxisRotations[0].RotationAngle}\u00B0<br>" +
+				$"<b>{AxisRotations[1].Axis} Rotation:</b> {AxisRotations[1].RotationAngle}\u00B0<br>" +
+				$"<b>{AxisRotations[2].Axis} Rotation:</b> {AxisRotations[2].RotationAngle}\u00B0<br>" +
 				 "</body>" +
 				 "<h2>Additional Props</h2>" +
 				 "<body>" +

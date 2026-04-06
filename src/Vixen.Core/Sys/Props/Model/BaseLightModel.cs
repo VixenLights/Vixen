@@ -55,7 +55,7 @@ namespace Vixen.Sys.Props.Model
 
 		#region Public Methods
 
-		public void UpdatePropNodes()
+		public override void UpdatePropNodes()
 		{
 			Nodes.Clear();
 			Nodes.AddRange(Get3DNodePoints());
