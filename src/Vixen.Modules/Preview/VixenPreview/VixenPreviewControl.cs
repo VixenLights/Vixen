@@ -1696,7 +1696,7 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			foreach (DisplayItem displayItem in DisplayItems)
 			{
-				bool selected = false;
+				bool selected;
 				if (_selectedDisplayItems?.Count > 0)
 				{
 					selected = _selectedDisplayItems.Find(displayItem.Equals) != null;

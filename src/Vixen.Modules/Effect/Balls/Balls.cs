@@ -565,7 +565,7 @@ namespace VixenModules.Effect.Balls
 							//Changes the Ball color when it collides with another ball and will not change to the same color.
 							if (Colors.Count > 1 && ChangeCollideColor)
 							{
-								var colorIndex = 0;
+								int colorIndex;
 								do
 								{
 									colorIndex = Rand(0, Colors.Count);

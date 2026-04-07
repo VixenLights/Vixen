@@ -194,7 +194,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 					{
 						if (nWidth == 0) nWidth = 1;        // smallest mipmap is 1x1 pixels
 						if (nHeight == 0) nHeight = 1;
-						int nSize = 0;
+						int nSize;
 
 						if (compressed)
 						{

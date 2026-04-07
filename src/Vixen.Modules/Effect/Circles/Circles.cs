@@ -372,7 +372,7 @@ namespace VixenModules.Effect.Circles
 				: (int) Math.Round(distanceFromBallCenter);
 
 			radius = (radius * _circleCount);
-			bool finished = false;
+			bool finished;
 
 			switch (CircleRadialDirection)
 			{

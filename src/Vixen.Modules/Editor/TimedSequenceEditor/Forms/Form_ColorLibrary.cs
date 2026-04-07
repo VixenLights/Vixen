@@ -336,10 +336,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_lastFolder != string.Empty) openFileDialog.InitialDirectory = _lastFolder;
 			if (openFileDialog.ShowDialog() != DialogResult.OK) return;
 			_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
-			List<Color> colors = new List<Color>();
 
 			try
 			{
+				List<Color> colors;
 				using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
 				{
 					DataContractSerializer ser = new DataContractSerializer(typeof(List<Color>));

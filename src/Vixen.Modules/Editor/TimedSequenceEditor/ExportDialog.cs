@@ -336,7 +336,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         private void SetWorkingState(string message, bool isWorking, bool allowStop)
         {
-            string newStatus = "";
+            string newStatus;
             buttonStart.Enabled = !isWorking;
             buttonStop.Enabled = allowStop;
             outputFormatComboBox.Enabled = !isWorking;

@@ -472,10 +472,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_lastFolder != string.Empty) openFileDialog.InitialDirectory = _lastFolder;
 			if (openFileDialog.ShowDialog() != DialogResult.OK) return;
 			_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
-			Dictionary<string, Curve> curves = new Dictionary<string, Curve>();
 
 			try
 			{
+				Dictionary<string, Curve> curves;
 				using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
 				{
 					DataContractSerializer ser = new DataContractSerializer(typeof(Dictionary<string, Curve>));

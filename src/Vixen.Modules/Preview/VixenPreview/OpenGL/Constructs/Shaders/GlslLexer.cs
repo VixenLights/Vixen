@@ -252,7 +252,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
             using (StringReader stream = new StringReader(fileContents))
             {
                 bool comment = false, remove = false;
-                string temp = "";
+                string temp;
 
                 while ((temp = stream.ReadLine()) != null)
                 {

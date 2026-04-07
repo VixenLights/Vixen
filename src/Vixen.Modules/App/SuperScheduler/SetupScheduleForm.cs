@@ -123,7 +123,7 @@ namespace VixenModules.App.SuperScheduler
 
 		public void SetTime()
 		{
-			TimeSpan t = TimeSpan.Zero;
+			TimeSpan t;
 
 			if (dateEndTime.Value < dateStartTime.Value)
 			{

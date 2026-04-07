@@ -48,7 +48,7 @@
         /// <returns>Summary string for the page</returns>
         protected override string GetSummaryString()
         {
-	        string summaryString = string.Empty;
+	        string summaryString;
 
 	        if (NoColorSupport)
 	        {

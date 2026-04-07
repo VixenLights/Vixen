@@ -492,7 +492,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		public override bool CanSave()
 		{
 			// Default to being able to save
-			bool canSave = true;
+			bool canSave;
 
 			// If the color wheel VM exists then...
 			if (ColorWheelVM != null)

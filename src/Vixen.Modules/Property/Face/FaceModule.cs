@@ -85,19 +85,13 @@ namespace VixenModules.Property.Face {
 
 		public bool PhonemeState(string phonemeName)
 		{
-			bool retVal = false;
-
-			PhonemeList.TryGetValue(phonemeName, out retVal);
-
+			PhonemeList.TryGetValue(phonemeName, out var retVal);
 			return retVal;
 		}
 
 		public bool IsFaceComponentType(FaceComponent type)
 		{
-			bool retVal;
-
-			FaceComponents.TryGetValue(type, out retVal);
-
+			FaceComponents.TryGetValue(type, out var retVal);
 			return retVal;
 		}
 

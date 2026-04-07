@@ -46,9 +46,7 @@ namespace VixenModules.Effect.Strobe
 
 		private IEnumerable<IElementNode> GetNodesToRenderOn()
 		{
-			IEnumerable<IElementNode> renderNodes = TargetNodes;
-			
-			renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).Distinct();
+			var renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).Distinct();
 
 			return renderNodes;
 		}

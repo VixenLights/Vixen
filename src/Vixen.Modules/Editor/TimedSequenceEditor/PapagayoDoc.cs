@@ -99,7 +99,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
         public void Load(string fileName)
         {
             string line;
-            PapagayoVoice voice = null;
 
             m_state = 0;
             m_soundPath = null;
@@ -152,7 +151,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
                         m_numVoices = Convert.ToInt32(line);
                         for (int j = 0; j < m_numVoices; j++)
                         {
-                            voice = new PapagayoVoice();
+                            var voice = new PapagayoVoice();
                             voice.EndFrame = PapagayoImportObject.SoundFrames;
                             voice.Load(file);
                             m_voices.Add(voice.VoiceName.Trim(), voice);

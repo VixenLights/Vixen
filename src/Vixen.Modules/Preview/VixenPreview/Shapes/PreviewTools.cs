@@ -206,7 +206,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <exception cref="ArgumentNullException">No rotation axis was defined</exception>
 		public static PreviewPoint TransformPreviewPoint(PreviewBaseShape shape, PreviewPoint point, double zoomLevel = 1, RotateTypes direction = RotateTypes.Clockwise)
 		{
-			PreviewPoint returnPoint = null;
+			PreviewPoint returnPoint;
 			double zoomToPhysical = 1;
 			double zoomToRelative = 1;
 

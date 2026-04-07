@@ -101,7 +101,6 @@ namespace VixenModules.App.LipSyncApp
 		public void Load(string fileName)
 		{
 			string line;
-			PapagayoVoice voice = null;
 
 			m_state = 0;
 			m_soundPath = null;
@@ -154,7 +153,7 @@ namespace VixenModules.App.LipSyncApp
 						m_numVoices = Convert.ToInt32(line);
 						for (int j = 0; j < m_numVoices; j++)
 						{
-							voice = new PapagayoVoice();
+							var voice = new PapagayoVoice();
 							voice.EndFrame = PapagayoImportObject.SoundFrames;
 							voice.Load(file);
 							m_voices.Add(voice.VoiceName.Trim(), voice);
@@ -292,7 +291,6 @@ namespace VixenModules.App.LipSyncApp
 			List<PapagayoPhoneme> eventList = new List<PapagayoPhoneme>();
 			List<PapagayoPhoneme> newList = new List<PapagayoPhoneme>();
 			PapagayoPhoneme coalescedPhoneme = null;
-			PapagayoPhoneme newPhoneme = null;
 			for (int eventIndex = 0; eventIndex < SoundFrames; eventIndex++)
 			{
 				eventList.Add(GetEventPhoneme(eventIndex));
@@ -311,7 +309,7 @@ namespace VixenModules.App.LipSyncApp
 				}
 				else
 				{
-					newPhoneme = new PapagayoPhoneme(coalescedPhoneme);
+					var newPhoneme = new PapagayoPhoneme(coalescedPhoneme);
 					newList.Add(newPhoneme);
 					coalescedPhoneme = phoneme;
 				}

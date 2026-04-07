@@ -614,8 +614,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void toolStripMenuItem_divideMarksEvenly_Click(object sender, EventArgs e)
 		{
 			const int MinMarkWidthPx = 12;
-			TimeSpan lengthTime = TimeSpan.MinValue;
-			double lengthDivision = 0;
+			double lengthDivision;
 
 			var marksForm = new CreateEvenMarksForm(_mPrevPlaybackStart, _mPrevPlaybackEnd, SequenceLength);
 			DialogResult dialogReturn;
@@ -625,7 +624,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (dialogReturn == DialogResult.Cancel)
 					return;
 
-				lengthTime = marksForm.End - marksForm.Start;
+				var lengthTime = marksForm.End - marksForm.Start;
 				lengthDivision = lengthTime.TotalMilliseconds / marksForm.Divisions;
 
 				// Verify that the time span and number of divisions can sufficiently fit within the defined space

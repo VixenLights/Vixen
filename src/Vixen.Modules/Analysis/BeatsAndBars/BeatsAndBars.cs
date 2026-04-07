@@ -31,7 +31,6 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 		private IDictionary<int, ICollection<ManagedFeature>> GenerateFeatures(ManagedPlugin plugin, float[] fSampleData, bool showProgress = true)
 		{
-			int j = 0;
 			IDictionary<int, ICollection<ManagedFeature>> retVal = 
 				new ConcurrentDictionary<int, ICollection<ManagedFeature>>();
 
@@ -43,16 +42,16 @@ namespace VixenModules.Analysis.BeatsAndBars
 			
 			int stepSize = plugin.GetPreferredStepSize();
 
-			double progressVal = 0;
 			uint frequency = (uint)m_audioModule.Frequency;
 			if (frequency != 0)
 			{
 				float[] fSamples = new float[plugin.GetPreferredBlockSize()];
+				int j;
 				for (j = 0;
-					((fSampleData.Length - j) >= plugin.GetPreferredBlockSize());
-					j += stepSize)
+				     ((fSampleData.Length - j) >= plugin.GetPreferredBlockSize());
+				     j += stepSize)
 				{
-					progressVal = (j / (double)fSampleData.Length) * 100.0;
+					var progressVal = (j / (double)fSampleData.Length) * 100.0;
 					progressDlg.UpdateProgress((int)progressVal);
 
 					Array.Copy(fSampleData, j, fSamples, 0, fSamples.Length);
@@ -92,13 +91,12 @@ namespace VixenModules.Analysis.BeatsAndBars
 			mc.Name = settings.AllCollectionName;
 
 			double lastFeatureMS = -1;
-			double featureMS = -1;
 
 			foreach (ManagedFeature feature in featureSet)
 			{
 				if (feature.hasTimestamp)
 				{
-					featureMS = feature.timestamp.totalMilliseconds();
+					var featureMS = feature.timestamp.totalMilliseconds();
 					if (lastFeatureMS != -1)
 					{
 						double interval = (featureMS - lastFeatureMS) / settings.Divisions;
@@ -124,13 +122,11 @@ namespace VixenModules.Analysis.BeatsAndBars
 			MarkCollection mc = new MarkCollection();
 			mc.Name = settings.BarsCollectionName;
 
-			double featureMS = -1;
-
 			foreach (ManagedFeature feature in featureSet)
 			{
 				if (feature.hasTimestamp)
 				{
-					featureMS = feature.timestamp.totalMilliseconds();
+					var featureMS = feature.timestamp.totalMilliseconds();
 					mc.AddMark(new Mark(TimeSpan.FromMilliseconds(featureMS)));
 				}
 			}
@@ -175,10 +171,6 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 			int count = 0;
 
-			double featureMS = -1;
-			double lastFeatureMS = -1;
-			int labelVal = 0;
-
 			ManagedFeature lastFeature = null;
 
 			foreach (ManagedFeature feature in featureSet)
@@ -189,13 +181,13 @@ namespace VixenModules.Analysis.BeatsAndBars
 					continue;
 				}
 
-				labelVal = (Convert.ToInt32(lastFeature.label) * 2) - 1;
-				lastFeatureMS = lastFeature.timestamp.totalMilliseconds();
+				var labelVal = (Convert.ToInt32(lastFeature.label) * 2) - 1;
+				var lastFeatureMS = lastFeature.timestamp.totalMilliseconds();
 
 				tsValuePairs[count++] =
 					new KeyValuePair<int, double>(labelVal, lastFeatureMS);
 
-				featureMS = feature.timestamp.totalMilliseconds();
+				var featureMS = feature.timestamp.totalMilliseconds();
 				tsValuePairs[count] =
 					new KeyValuePair<int, double>(labelVal + 1,
 						lastFeatureMS + ((featureMS - lastFeatureMS) / settings.Divisions));
@@ -224,7 +216,6 @@ namespace VixenModules.Analysis.BeatsAndBars
 		private double EstimateBeatPeriod(ICollection<ManagedFeature> features)
 		{
 			double retVal = 0;
-			double featureMS = -1;
 			double lastFeatureMS = -1;
 			bool startCalcs = false;
 
@@ -234,7 +225,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 				if ((feature.hasTimestamp) && (startCalcs))
 				{
-					featureMS = feature.timestamp.totalMilliseconds();
+					var featureMS = feature.timestamp.totalMilliseconds();
 
 					if ((lastFeatureMS != -1) && (retVal == 0))
 					{

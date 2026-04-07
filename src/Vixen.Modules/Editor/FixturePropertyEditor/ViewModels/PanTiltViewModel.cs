@@ -180,8 +180,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			else
 			{
 				// Attempt to parse the angle into an integer
-				int intValue = 0;
-				bool valid = int.TryParse(value, out intValue);
+				bool valid = int.TryParse(value, out var intValue);
 
 				// If the string did not parse into a int then...
 				if (!valid)
@@ -205,10 +204,8 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		private void ValidateMinimumLessThanMaximum(List<IFieldValidationResult> validationResults)
 		{
 			// Attempt to parse the angles into an integers
-			int startPositionValue = 0;
-			int stopPositionValue = 0;
-			bool validStartPosition = int.TryParse(StartPosition, out startPositionValue);
-			bool validStopPosition = int.TryParse(StopPosition, out stopPositionValue);
+			bool validStartPosition = int.TryParse(StartPosition, out var startPositionValue);
+			bool validStopPosition = int.TryParse(StopPosition, out var stopPositionValue);
 
 			// If both values are valid then...
 			if (validStartPosition && validStopPosition)

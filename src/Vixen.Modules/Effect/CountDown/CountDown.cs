@@ -1227,7 +1227,7 @@ namespace VixenModules.Effect.CountDown
 				minCrossHashWidth = 1;
 			}
 
-			int crossHashWidth = 0;
+			int crossHashWidth;
 
 			switch (SizeMode)
 			{

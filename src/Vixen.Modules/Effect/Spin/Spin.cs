@@ -809,7 +809,7 @@ namespace VixenModules.Effect.Spin
 
 		private List<IElementNode> GetNodesToRenderOn(IElementNode node)
 		{
-			IEnumerable<IElementNode> renderNodes = null;
+			IEnumerable<IElementNode> renderNodes;
 
 			if (DepthOfEffect == 0)
 			{

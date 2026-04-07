@@ -304,7 +304,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         private double SegmentLength(int segmentNum)
         {
             // Get the length of just this line
-            double thisLineLength = 0;
+            double thisLineLength;
             // Is this a horizontal line?
             if (_points[segmentNum].X == _points[segmentNum + 1].X)
             {

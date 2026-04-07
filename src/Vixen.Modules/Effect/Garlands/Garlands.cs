@@ -673,7 +673,7 @@ namespace VixenModules.Effect.Garlands
 
 			if (y < height)
 			{
-				int rowIndex = 0;
+				int rowIndex;
 				if (Direction == GarlandsDirection.Up || Direction == GarlandsDirection.Left)
 				{
 					rowIndex = height - y - 1;

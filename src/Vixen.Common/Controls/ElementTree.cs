@@ -480,7 +480,7 @@ namespace Common.Controls
 
 			// first determine the node that they will be moved to. This will depend on if we are dragging onto a node
 			// directly, or above/below one to reorder.
-			ElementNode newParentNode; // the ElementNode that the selected items will move to
+			ElementNode newParentNode = null; // the ElementNode that the selected items will move to
 			TreeNode expandNode = null; // if we need to expand a node once we've moved everything
 			int index = -1;
 

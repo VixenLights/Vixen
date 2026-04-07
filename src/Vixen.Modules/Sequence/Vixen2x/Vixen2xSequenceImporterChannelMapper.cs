@@ -282,12 +282,11 @@ namespace VixenModules.SequenceType.Vixen2x
 		private void CreateV2toV3MappingTable()
 		{
 			//default these to white
-			Color vixen2Color = Color.Empty;
 
 			Mappings = new List<ChannelMapping>();
-			foreach (ListViewItem itemrow in listViewMapping.Items) 
+			foreach (ListViewItem itemrow in listViewMapping.Items)
 			{
-				vixen2Color = itemrow.SubItems[(int)mapperColumnId.v2channelColor].BackColor;
+				var vixen2Color = itemrow.SubItems[(int)mapperColumnId.v2channelColor].BackColor;
 
 				if (!String.IsNullOrEmpty(itemrow.SubItems[(int)mapperColumnId.v3Destination].Text)) 
 				{

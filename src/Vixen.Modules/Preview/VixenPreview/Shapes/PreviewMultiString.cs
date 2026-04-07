@@ -329,9 +329,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 // We've got an ElementNode selected in the tree, now figure out what to do with it.
                 else
                 {
-                    int inputStringCount = 0;
-                    int inputPixelCount = 0;
-                    PreviewTools.CountPixelsAndStrings(inputElements, out inputPixelCount, out inputStringCount);
+	                PreviewTools.CountPixelsAndStrings(inputElements, out var inputPixelCount, out var inputStringCount);
                     int stringNum = _strings.Count();
 
                     // is this a single node with no children?

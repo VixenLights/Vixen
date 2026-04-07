@@ -177,11 +177,10 @@ namespace VixenModules.Editor.EffectEditor.Internal
 		protected override AttributeCollection CreateAttributeCollection()
 		{
 			IEnumerable<Attribute> attributes = null;
-			Attribute[] buffer = null;
 
 			foreach (PropertyDescriptor descriptor in descriptors)
 			{
-				buffer = new Attribute[descriptor.Attributes.Count];
+				var buffer = new Attribute[descriptor.Attributes.Count];
 				descriptor.Attributes.CopyTo(buffer, 0);
 				attributes = (attributes == null) ? buffer : attributes.Intersect(buffer);
 			}

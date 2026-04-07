@@ -109,9 +109,6 @@ namespace VixenModules.SequenceType.Vixen2x
 			Vixen2xSequenceImportSM import = new Vixen2xSequenceImportSM(Sequence, parsedV2Sequence.EventPeriod);
 
 			// the current color is based on the intensity of a three channel group
-			int red = 0;
-			int green = 0;
-			int blue = 0;
 
 			// for each channel in the V2 sequence
 			for (var currentElementNum = 0; currentElementNum < parsedV2Sequence.ElementCount; currentElementNum++)
@@ -130,8 +127,6 @@ namespace VixenModules.SequenceType.Vixen2x
 				// Logging.Debug("importSequenceData:currentElementNum: " + currentElementNum);
 
 				string elementName = v2ChannelMapping.ChannelName;
-				Color currentColor = Color.FromArgb(255, 255, 255);
-				byte currentIntensity = 0;
 
 				conversionProgressBar.UpdateProgressBar(currentElementNum);
 				Application.DoEvents();
@@ -161,10 +156,11 @@ namespace VixenModules.SequenceType.Vixen2x
 				for (uint currentEventNum = 0; currentEventNum < parsedV2Sequence.EventsPerElement; currentEventNum++)
 				{
 					// get the intensity for this V2 channel
-					currentIntensity = parsedV2Sequence.EventData[currentElementNum * parsedV2Sequence.EventsPerElement + currentEventNum];
+					var currentIntensity = parsedV2Sequence.EventData[currentElementNum * parsedV2Sequence.EventsPerElement + currentEventNum];
 
 					// is this an RGB Pixel?
-					if (true == v2ChannelMapping.RgbPixel)
+					Color currentColor;
+					if (v2ChannelMapping.RgbPixel)
 					{
 						// Only process the RED channel of a three channel pixel
 						if (Color.Red != v2ChannelMapping.DestinationColor)
@@ -173,9 +169,9 @@ namespace VixenModules.SequenceType.Vixen2x
 							continue;
 						} // end not red pixel channel
 
-						red = 0;
-						green = 0;
-						blue = 0;
+						var red = 0;
+						var green = 0;
+						var blue = 0;
 
 						// process the input colors bound to this output channel
 						foreach (ChannelMapping v2Channel in m_GuidToV2ChanList[v2ChannelMapping.ElementNodeId])

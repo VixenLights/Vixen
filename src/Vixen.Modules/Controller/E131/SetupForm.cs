@@ -980,8 +980,7 @@ namespace VixenModules.Output.E131
 					if (overlapWarning) break;
 				}
 
-				var destination = new Tuple<string, string>(null, null);
-				destination = GetDestination(); //Item1 Unicast, Item2 Multicast
+				var destination = GetDestination(); //Item1 Unicast, Item2 Multicast
 
 				//prevent duplicates in this plugin instance
 				foreach (DataGridViewRow r1 in univDGVN.Rows)
@@ -1181,15 +1180,14 @@ namespace VixenModules.Output.E131
 
             //Validate that the unicast destination isn't in use by another instance of the plugin
 
-            var destination = new Tuple<string, string>(null, null);
-            destination = GetDestination(); //Item1 Unicast, Item2 Multicast
+            var destination = GetDestination(); //Item1 Unicast, Item2 Multicast
 
             foreach (E131OutputPlugin p in E131OutputPlugin.PluginInstances)
             {
                 if (p.isSetupOpen) //don't validate against this instance of the plugin
                     continue;
 
-                if ((p.ModuleData as E131ModuleDataModel).Unicast == destination.Item1)
+                if ((p.ModuleData as E131ModuleDataModel)?.Unicast == destination.Item1)
                 {
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.

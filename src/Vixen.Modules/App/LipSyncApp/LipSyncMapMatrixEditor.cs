@@ -184,8 +184,6 @@ namespace VixenModules.App.LipSyncApp
 					Bitmap fileBmp = new Bitmap(picPath);
 					_pictureBitmaps[phonemeString] = new Bitmap(fileBmp);
 					fileBmp.Dispose();
-					fileBmp = null;
-					
 				}
 			}
 		} 
@@ -382,11 +380,10 @@ namespace VixenModules.App.LipSyncApp
 
 		private void renderPictureBoxImage()
 		{
-			Bitmap rawBitmap = null;
-			if (_pictureBitmaps.TryGetValue(CurrentPhonemeString,out rawBitmap))
+			if (_pictureBitmaps.TryGetValue(CurrentPhonemeString,out var rawBitmap))
 			{
-				int newRenderWidth = 0;
-				int newRenderHeight = 0;
+				int newRenderWidth;
+				int newRenderHeight;
 				float aspectRatio = (float)rawBitmap.Size.Width / (float)rawBitmap.Size.Height;
 
 				if (aspectRatio < 1)  //Width is less than height
@@ -523,8 +520,7 @@ namespace VixenModules.App.LipSyncApp
 
 		private void OnDragDrop(object sender, DragEventArgs e)
 		{
-			string[] fileNames = null;
-			bool validData = ValidateDrag(out fileNames, e);
+			bool validData = ValidateDrag(out var fileNames, e);
 			if (validData)
 			{
 				loadNewPics(fileNames);
@@ -590,7 +586,6 @@ namespace VixenModules.App.LipSyncApp
 		private void editButton_Click(object sender, EventArgs e)
 		{
 			string fileName = PictureDirPath + "\\" + CurrentPhonemeString + "_tmp.bmp";
-			Bitmap editBmap = null;	 
 
 			try
 			{
@@ -608,11 +603,10 @@ namespace VixenModules.App.LipSyncApp
 				Logging.Warn(err, errorMsg);
 			}
 
-			if (_pictureBitmaps.TryGetValue(CurrentPhonemeString, out editBmap))
+			if (_pictureBitmaps.TryGetValue(CurrentPhonemeString, out var editBmap))
 			{
 				editBmap.Save(fileName);
 				editBmap.Dispose();
-				editBmap = null;
 			}
 			
 			System.Diagnostics.ProcessStartInfo procInfo = new System.Diagnostics.ProcessStartInfo();
@@ -627,7 +621,6 @@ namespace VixenModules.App.LipSyncApp
 				Bitmap newBmp = new Bitmap(fileName);
 				_pictureBitmaps[CurrentPhonemeString] = new Bitmap(newBmp);
 				newBmp.Dispose();
-				newBmp = null;
 
 				File.Delete(fileName);
 			}

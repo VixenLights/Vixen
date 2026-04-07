@@ -122,8 +122,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						else if (lastChildLightCount != childCount) {
 							return false;
 						}
-						lastChildLightCount = childCount;
-
+						
 						foreach (ElementNode child in parent.Children) {
 							// If there are sub-groups this is not a grid element!
 							if (!child.IsLeaf) {

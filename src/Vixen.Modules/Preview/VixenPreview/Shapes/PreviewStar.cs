@@ -415,7 +415,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						Point point1;
 						Point point2;
 						Point point3;
-						var ellipsePointNum = 0;
+						int ellipsePointNum;
 						if (StringDirection == StringDirections.Clockwise)
 						{
 							ellipsePointNum = i;

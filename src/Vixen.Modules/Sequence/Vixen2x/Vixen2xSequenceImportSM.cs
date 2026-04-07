@@ -137,10 +137,10 @@ namespace VixenModules.SequenceType.Vixen2x
 			//			Logging.Info("Vixen2xSequenceImport::GenerateSetLevelEffect - Entry");
 
 			EffectNode effectNode = null;
-			IEffectModuleInstance setLevelInstance = null;
 
 			do
 			{
+				IEffectModuleInstance setLevelInstance;
 				if (null == (setLevelInstance = ApplicationServices.Get<IEffectModuleInstance>(Guid.Parse("32cff8e0-5b10-4466-a093-0d232c55aac0"))))
 				{
 					// could not get the structure

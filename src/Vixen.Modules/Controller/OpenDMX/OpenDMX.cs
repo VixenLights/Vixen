@@ -244,7 +244,7 @@ namespace VixenModules.Controller.OpenDMX
 
 		    //Close device
 		    ftStatus = tempFtdiDevice.Close();
-			Logging.Info("Closing FTDI device interogation.");
+			Logging.Info($"Closing FTDI device interogation. {ftStatus.ToString()}");
 
 		    return devices;
 	    }

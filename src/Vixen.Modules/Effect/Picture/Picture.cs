@@ -1258,8 +1258,7 @@ namespace VixenModules.Effect.Picture
 		{
 			if (ColorEffect == ColorEffect.CustomColor)
 			{
-				Color newColor = new Color();
-				newColor = Colors.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100);
+				var newColor = Colors.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100);
 				double hsvLevel = Convert.ToInt32(fpColor.GetBrightness() * 255);
 				HSV hsv = HSV.FromRGB(newColor);
 				hsv.V = hsvLevel / 100;

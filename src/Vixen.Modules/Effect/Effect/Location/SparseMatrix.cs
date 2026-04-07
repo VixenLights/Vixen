@@ -42,8 +42,7 @@
 			Dictionary<int, T> cols;
 			if (_rows.TryGetValue(row, out cols))
 			{
-				T value = default(T);
-				if (cols.TryGetValue(col, out value))
+				if (cols.TryGetValue(col, out var value))
 				{
 					retValue = value;
 					return true;
@@ -64,8 +63,7 @@
 			Dictionary<int, T> cols;
 			if (_rows.TryGetValue(row, out cols))
 			{
-				T value = default(T);
-				if (cols.TryGetValue(col, out value))
+				if (cols.TryGetValue(col, out var value))
 					return value;
 			}
 			return default(T);

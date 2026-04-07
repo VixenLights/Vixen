@@ -70,7 +70,7 @@ namespace VixenModules.Editor.PolygonEditor.Views
 				vm.CanvasHeight = (int)Math.Ceiling(_polygonContainer.Height * factor);
 
 				// Determine the X and Y scale factors
-				double xScaleFactor = 1.0; 
+				double xScaleFactor; 
 
 				// Need to guard against dividing by zero when working with 1 pixel width
 				if (_polygonContainer.Width - 1.0 == 0.0)
@@ -82,7 +82,7 @@ namespace VixenModules.Editor.PolygonEditor.Views
 					xScaleFactor = (vm.CanvasWidth - 1.0) / (_polygonContainer.Width - 1.0);
 				}
 
-				double yScaleFactor = 1.0;
+				double yScaleFactor;
 
 				// Need to guard against dividing by zero when working with 1 pixel height
 				if (_polygonContainer.Height - 1.0 == 0.0)

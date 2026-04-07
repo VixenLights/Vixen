@@ -223,10 +223,9 @@ namespace VixenModules.App.SuperScheduler
 			get
 			{			
 				// Default the next time to run to the current date / time
-				DateTime dateTime = DateTime.Now;
 
 				// Check to see if this item is still scheduable
-				if (!IsSchedulableInFuture(out dateTime))
+				if (!IsSchedulableInFuture(out var dateTime))
 				{
 					// Otherwise return null
 					return null;

@@ -708,11 +708,9 @@ namespace VixenModules.Sequence.Timed
 
 			foreach (var lipSyncElement in lipSyncElements.ToList())
 			{
-				LipSyncMapData mapData = null;
-
 				var lipSyncData = DeSerializer<LipSyncData>(lipSyncElement);
 
-				if (_library.Library.TryGetValue(lipSyncData.PhonemeMapping, out mapData))
+				if (_library.Library.TryGetValue(lipSyncData.PhonemeMapping, out var mapData))
 				{
 					if ((null != mapData) && (mapData.IsMatrix))
 					{

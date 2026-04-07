@@ -1507,11 +1507,8 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>		
 		private int CalculateEmitterMusicalFlow(IEmitter emitter, int time, int frame)
 		{
-			// Initialize the flow to Off
-			int value = 0;
-			
 			// Initialize the flow to the maximum musical flow
-			value = MaxEmitterMusicFlow;
+			var value = MaxEmitterMusicFlow;
 
 			// Return the volume for the current frame
 			double volume = 0;

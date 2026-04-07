@@ -895,7 +895,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				return;
 			}
 			float scale = _focalDepth / _camera.Position.Z;
-			float sizeScale = 0;
+			float sizeScale;
 			if (_background.HasBackground)
 			{
 				sizeScale = ((float) _width / _background.Width + (float) _height / _background.Height) / 2f;

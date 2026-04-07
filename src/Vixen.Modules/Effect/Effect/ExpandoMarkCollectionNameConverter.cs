@@ -45,9 +45,8 @@ namespace VixenModules.Effect.Effect
 
 		public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
 		{
-			ObservableCollection<IMarkCollection> markCollections = null;
 			IMarkCollectionExpandoObject expando = (IMarkCollectionExpandoObject)context.Instance;
-			markCollections = expando.MarkCollections;
+			var markCollections = expando.MarkCollections;
 
 			List<string> values = new List<string>();
 

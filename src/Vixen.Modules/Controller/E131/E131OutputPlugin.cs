@@ -200,9 +200,7 @@ namespace VixenModules.Controller.E131
 					_data.Priority = setupForm.Priority;
 					_data.Universes.Clear();
 
-					var destination = new Tuple<string, string>(null, null);
-
-					destination = setupForm.GetDestination();
+					var destination = setupForm.GetDestination();
 
 					_data.Unicast = destination.Item1;
 					_data.Multicast = destination.Item2;
@@ -366,7 +364,6 @@ namespace VixenModules.Controller.E131
 			Socket unicastSocket = null;
 
 			// working ipaddress object
-			IPAddress ipAddress = null;
 
 			// a sortedlist containing the multicast sockets we've already done
 			var nicSockets = new SortedList<string, Socket>();
@@ -541,7 +538,7 @@ namespace VixenModules.Controller.E131
 								UnicastIPAddressInformationCollection unicasts = ipProperties.UnicastAddresses;
 
 
-								ipAddress = null;
+								IPAddress ipAddress = null;
 
 								foreach (var unicast in unicasts)
 								{

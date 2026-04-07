@@ -210,7 +210,6 @@ namespace VixenModules.Controller.E131.J1Sys
 			// we've got all the sizes and made the buttons,
 			// now figure clientsize, and our points of reference
 			clientWidth = 0;
-			clientHeight = 0;
 			clientMaxWidth = 600;
 			clientMaxHeight = 400;
 			clientWhiteSpace = 15;

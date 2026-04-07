@@ -14,8 +14,7 @@ namespace VixenModules.App.Shows
 
 		public static void ConsumerFinished(string sequenceFile, Guid id)
 		{
-			SequenceEntry entry = null;
-			if (ActiveSequences.TryGetValue(sequenceFile, out entry))
+			if (ActiveSequences.TryGetValue(sequenceFile, out var entry))
 			{
 				lock (entry)
 				{

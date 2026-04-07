@@ -138,7 +138,6 @@ namespace VixenModules.SequenceType.Vixen2x
 					{
 						ProfilePath = Path.GetDirectoryName(dialog.FileName);
 						ProfileName = dialog.SafeFileName;
-						root = null;
 						root = XElement.Load(dialog.FileName);
 
 						foreach (XElement e in root.Elements("ChannelObjects").Elements("Channel"))

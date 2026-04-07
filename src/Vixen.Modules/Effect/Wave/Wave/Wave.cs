@@ -1464,7 +1464,7 @@ namespace VixenModules.Effect.Wave
 			// Calculate the wave amplitude
 			int amp = wave.BufferHt * waveHeight / 100;
 
-			int yStart = 0;
+			int yStart;
 
 			if (amp == 0)
 			{
@@ -1832,9 +1832,6 @@ namespace VixenModules.Effect.Wave
 			// If a mark collection has been selected then...
 			if (!string.IsNullOrEmpty(waveform.MarkCollectionName))
 			{
-				// If a mark collection has been specified then default to NOT active
-				markActive = false;
-				
 				// Get the selected mark collection
 				IMarkCollection marks = MarkCollections.FirstOrDefault(item => item.Id == waveform.MarkCollectionId);
 

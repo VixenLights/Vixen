@@ -81,9 +81,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		    {
 		        for (int item = 0; item < _audio.DetectionNotes.Count(); item++)
 		        {
-		            TimeSpan value = TimeSpan.MinValue;
-
-		            if (freqs.TryGetValue(item, out value))
+			        if (freqs.TryGetValue(item, out var value))
 		            {
 		                var highlight = (_audio.Position - value) <= TimeSpan.FromMilliseconds(Accuracy);
 		                if (_audio.Position == TimeSpan.MinValue)

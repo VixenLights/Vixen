@@ -177,7 +177,7 @@ namespace VixenModules.Preview.VixenPreview
 				_elementNames.Add(node.Name);
 				if (elementModel.FaceDefinition.FaceComponent != FaceComponent.None)
 				{
-					FaceModule fm = null;
+					FaceModule fm;
 					if (node.Properties.Contains(FaceDescriptor.ModuleId))
 					{
 						fm = node.Properties.Get(FaceDescriptor.ModuleId) as FaceModule;
