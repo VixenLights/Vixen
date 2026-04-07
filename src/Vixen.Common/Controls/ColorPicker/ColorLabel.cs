@@ -124,7 +124,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		/// specifies the color without alpha
 		/// </summary>
 		[Description("specifies the color without alpha"),
-		 DefaultValueAttribute(typeof (Color), "Black")]
+		 DefaultValue(typeof (Color), "Black")]
 		public Color Color
 		{
 			get { return _color; }
@@ -141,7 +141,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		/// specifies the previous color without alpha
 		/// </summary>
 		[Description("specifies the previous color without alpha"),
-		 DefaultValueAttribute(typeof (Color), "Black")]
+		 DefaultValue(typeof (Color), "Black")]
 		public Color OldColor
 		{
 			get { return _oldcolor; }

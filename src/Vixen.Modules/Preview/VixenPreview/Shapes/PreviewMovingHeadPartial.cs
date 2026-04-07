@@ -148,9 +148,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Layout();						
 		}
 	
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Top Left"),
-		 DescriptionAttribute("Rectangles are defined by 4 points. This is point 1.")]
+		 Description("Rectangles are defined by 4 points. This is point 1.")]
 		public Point TopLeftPoint
 		{
 			get
@@ -168,9 +168,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Top Right"),
-		 DescriptionAttribute("Rectangles are defined by 4 points. This is point 2.")]
+		 Description("Rectangles are defined by 4 points. This is point 2.")]
 		public Point TopRightPoint
 		{
 			get
@@ -186,9 +186,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Bottom Right"),
-		 DescriptionAttribute("Rectangles are defined by 4 points. This is point 3.")]
+		 Description("Rectangles are defined by 4 points. This is point 3.")]
 		public Point BottomRightPoint
 		{
 			get
@@ -204,9 +204,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Botom Left"),
-		 DescriptionAttribute("Rectangles are defined by 4 points. This is point 4.")]
+		 Description("Rectangles are defined by 4 points. This is point 4.")]
 		public Point BottomLeftPoint
 		{
 			get

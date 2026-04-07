@@ -75,9 +75,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Layout();
 		}
 
-        [CategoryAttribute("Settings"),
+        [Category("Settings"),
          DisplayName("Vertical Spacing"),
-         DescriptionAttribute("This is the spacing between each light in a vertical icicle strand.")]
+         Description("This is the spacing between each light in a vertical icicle strand.")]
         public int VerticalSpacing
         {
             get
@@ -92,9 +92,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Point 1"),
-		 DescriptionAttribute("Icicles are defined by 2 points. This is point 1.")]
+		 Description("Icicles are defined by 2 points. This is point 1.")]
 		public Point Point1
 		{
 			get
@@ -111,9 +111,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Point 2"),
-		 DescriptionAttribute("Icicles are defined by 2 points. This is point 2.")]
+		 Description("Icicles are defined by 2 points. This is point 2.")]
 		public Point Point2
 		{
 			get
@@ -130,9 +130,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-        [CategoryAttribute("Settings"),
+        [Category("Settings"),
          DisplayName("Icicle Count"),
-         DescriptionAttribute("Number of icicles in the string.")]
+         Description("Number of icicles in the string.")]
         public int StringCount
         {
             set
@@ -171,7 +171,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 
         [Editor(typeof(PreviewSetElementsUIEditor), typeof(UITypeEditor)),
-         CategoryAttribute("Settings"),
+         Category("Settings"),
          DisplayName("Linked Elements")]
         public override List<PreviewLightBaseShape> Strings
         {

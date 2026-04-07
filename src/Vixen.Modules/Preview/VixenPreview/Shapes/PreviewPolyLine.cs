@@ -107,9 +107,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //    }
         //}
 
-        [CategoryAttribute("Settings"),
+        [Category("Settings"),
          DisplayName("Light Count"),
-         DescriptionAttribute("Number of pixels or lights in the string.")]
+         Description("Number of pixels or lights in the string.")]
         public int PixelCount
         {
             get { return Pixels.Count; }

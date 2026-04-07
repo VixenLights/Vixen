@@ -123,7 +123,7 @@ namespace VixenModules.App.Fixture
 		/// <summary>
 		/// Color to use on timeline for effect graphical representation.
 		/// </summary>
-		[XmlIgnoreAttribute]
+		[XmlIgnore]
 		public Color TimelineColor
 		{	
 			get

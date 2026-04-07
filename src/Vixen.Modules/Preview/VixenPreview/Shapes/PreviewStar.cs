@@ -195,9 +195,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("String Direction"),
-		 DescriptionAttribute("Do the lights rotate around the star clockwise or counter-clockwise?")]
+		 Description("Do the lights rotate around the star clockwise or counter-clockwise?")]
 		public StringDirections StringDirection
 		{
 			get
@@ -211,9 +211,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Light Count"),
-		 DescriptionAttribute("The number of lights in the star.")]
+		 Description("The number of lights in the star.")]
 		public int PixelCount
 		{
 			set
@@ -233,9 +233,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return _pixelCount; }
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Bottom Right"),
-		 DescriptionAttribute("The bottom right point of bounding box of the star.")]
+		 Description("The bottom right point of bounding box of the star.")]
 		public Point BottomRight
 		{
 			get
@@ -252,9 +252,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Top Left"),
-		 DescriptionAttribute("The top left point of the bounding box of the star.")]
+		 Description("The top left point of the bounding box of the star.")]
 		public Point TopLeft
 		{
 			get
@@ -273,8 +273,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		[DataMember]
 		int _XYRotation = 18;
-		[CategoryAttribute("Settings"),
-		DescriptionAttribute("The prop can be rotated about the Z axis in the XY plane. This is the rotation angle."),
+		[Category("Settings"),
+		Description("The prop can be rotated about the Z axis in the XY plane. This is the rotation angle."),
 		DisplayName("XY Rotation")]
 		public int XYRotation
 		{
@@ -289,9 +289,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Inside Size"),
-		 DescriptionAttribute("The size, in percent of the inside star diameter in relation to the outside diameter.")]
+		 Description("The size, in percent of the inside star diameter in relation to the outside diameter.")]
 		public int InsideSize
 		{
 			get { return _insideSize; }
@@ -302,9 +302,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Star Points"),
-		 DescriptionAttribute("The number of points on the star.")]
+		 Description("The number of points on the star.")]
 		public int PointCount
 		{
 			get { return _pointCount; }

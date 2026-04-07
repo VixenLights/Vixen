@@ -187,9 +187,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		#region "Properties'
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Lights Per String"),
-		 DescriptionAttribute("The number of lights on each string of the Pixel Grid")]
+		 Description("The number of lights on each string of the Pixel Grid")]
 		public int LightsPerString
 		{
 			set
@@ -202,9 +202,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return _lightsPerString; }
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("String Count"),
-		 DescriptionAttribute("Number of strings on Pixel Grid")]
+		 Description("Number of strings on Pixel Grid")]
 		public int StringCount
 		{
 			set
@@ -274,9 +274,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
         }
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Bottom Right"),
-		 DescriptionAttribute("Lower right point of Pixel Grid.")]
+		 Description("Lower right point of Pixel Grid.")]
 		public Point BottomRight
 		{
 			get
@@ -317,9 +317,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Top Left"),
-		 DescriptionAttribute("Upper left point of Pixel Grid.")]
+		 Description("Upper left point of Pixel Grid.")]
 		public Point TopLeft
 		{
 			get
@@ -336,9 +336,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("String Orientation"),
-		 DescriptionAttribute("Orientation of strings in pixel grid. Vertical is Up/Down, Horizontal is Left/Right")]
+		 Description("Orientation of strings in pixel grid. Vertical is Up/Down, Horizontal is Left/Right")]
 		public StringOrientations StringOrientation 
 		{ 
 			get 

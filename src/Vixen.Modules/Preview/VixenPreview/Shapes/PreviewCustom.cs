@@ -57,9 +57,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Position"),
-		 DescriptionAttribute("Top, left position of this custom object.")]
+		 Description("Top, left position of this custom object.")]
 		public Point TopLeft
 		{
 			get

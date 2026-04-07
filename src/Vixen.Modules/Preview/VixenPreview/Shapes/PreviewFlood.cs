@@ -49,8 +49,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		[DataMember,
-		 CategoryAttribute("Settings"),
-		 DescriptionAttribute("The size of the light point on the preview."),
+		 Category("Settings"),
+		 Description("The size of the light point on the preview."),
 		 DisplayName("Light Size")]
 		public override int PixelSize
 		{
@@ -63,9 +63,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Point 1"),
-		 DescriptionAttribute("Spot lights are defined by 1 point.")]
+		 Description("Spot lights are defined by 1 point.")]
 		public Point Point1
 		{
 			get

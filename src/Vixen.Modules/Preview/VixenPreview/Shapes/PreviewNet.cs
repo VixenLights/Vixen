@@ -61,9 +61,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		#region "Properties"
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Top Left"),
-		 DescriptionAttribute("Nets are defined by 4 points. This is point 1.")]
+		 Description("Nets are defined by 4 points. This is point 1.")]
 		public Point TopLeftPoint
 		{
 			get
@@ -80,9 +80,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Top Right"),
-		 DescriptionAttribute("Nets are defined by 4 points. This is point 2.")]
+		 Description("Nets are defined by 4 points. This is point 2.")]
 		public Point TopRightPoint
 		{
 			get
@@ -99,9 +99,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Bottom Right"),
-		 DescriptionAttribute("Nets are defined by 4 points. This is point 3.")]
+		 Description("Nets are defined by 4 points. This is point 3.")]
 		public Point BottomRightPoint
 		{
 			get
@@ -118,9 +118,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Botom Left"),
-		 DescriptionAttribute("Nets are defined by 4 points. This is point 4.")]
+		 Description("Nets are defined by 4 points. This is point 4.")]
 		public Point BottomLeftPoint
 		{
 			get
@@ -137,9 +137,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Light Spacing"),
-		 DescriptionAttribute("This is the spacing between each light in the net.")]
+		 Description("This is the spacing between each light in the net.")]
 		public int PixelSpacing
 		{
 			get { return _pixelSpacing; }

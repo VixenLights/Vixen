@@ -111,7 +111,7 @@ namespace Common.Controls.Timeline
 		public int StackCount { get; set; }
 
 
-		[NonSerializedAttribute]
+		[NonSerialized]
 		private EffectNode _effectNode;
 
 		public EffectNode EffectNode

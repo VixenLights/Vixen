@@ -172,9 +172,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		#region "Properties'
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Top Height"),
-		 DescriptionAttribute("Height of Mega Tree top.")]
+		 Description("Height of Mega Tree top.")]
 		public int TopHeight
 		{
 			set
@@ -185,9 +185,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return _topHeight; }
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Top Width"),
-		 DescriptionAttribute("Width of Mega Tree top.")]
+		 Description("Width of Mega Tree top.")]
 		public int TopWidth
 		{
 			set
@@ -198,9 +198,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return _topWidth; }
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Base Height"),
-		 DescriptionAttribute("Height of Mega Tree base.")]
+		 Description("Height of Mega Tree base.")]
 		public int BaseHeight
 		{
 			set
@@ -211,9 +211,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return _baseHeight; }
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("String Coverage Degrees"),
-		 DescriptionAttribute("Coverage in degrees that strings go around Mega Tree.")]
+		 Description("Coverage in degrees that strings go around Mega Tree.")]
 		public int Degrees
 		{
 			set
@@ -225,8 +225,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		
-		[CategoryAttribute("Settings"),
-		DescriptionAttribute("Degree offset can be used to center the Mega Tree."),
+		[Category("Settings"),
+		Description("Degree offset can be used to center the Mega Tree."),
 		DisplayName("Degree Offset")]
 		public int DegreeOffset
 		{
@@ -241,9 +241,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Lights Per String"),
-		 DescriptionAttribute("The number of lights on each string of the Mega Tree")]
+		 Description("The number of lights on each string of the Mega Tree")]
 		public int LightsPerString
 		{
 			set
@@ -256,9 +256,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return _lightsPerString; }
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("String Count"),
-		 DescriptionAttribute("Number of strings on Mega Tree")]
+		 Description("Number of strings on Mega Tree")]
 		public int StringCount
 		{
 			set
@@ -325,9 +325,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Top Left"),
-		 DescriptionAttribute("Upper left point of Mega Tree.")]
+		 Description("Upper left point of Mega Tree.")]
 		public Point TopLeft
 		{
 			get
@@ -344,9 +344,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Bottom Right"),
-		 DescriptionAttribute("Lower right point of Mega Tree.")]
+		 Description("Lower right point of Mega Tree.")]
 		public Point BottomRight
 		{
 			get
@@ -596,7 +596,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		[Editor(typeof (PreviewSetElementsUIEditor), typeof (UITypeEditor)),
-		 CategoryAttribute("Settings"),
+		 Category("Settings"),
 		 DisplayName("Linked Elements")]
 		public override List<PreviewLightBaseShape> Strings
 		{

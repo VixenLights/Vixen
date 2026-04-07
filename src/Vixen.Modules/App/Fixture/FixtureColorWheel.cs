@@ -58,13 +58,13 @@ namespace VixenModules.App.Fixture
 		/// <summary>
 		/// First color of the entry.
 		/// </summary>
-		[XmlIgnoreAttribute]
+		[XmlIgnore]
 		public Color Color1 { get; set; }
 
 		/// <summary>
 		/// Second color of the entry.
 		/// </summary>
-		[XmlIgnoreAttribute]
+		[XmlIgnore]
 		public Color Color2 { get; set; }
 
 		/// <summary>

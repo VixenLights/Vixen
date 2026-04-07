@@ -118,9 +118,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Top Left"),
-		 DescriptionAttribute("Star Bursts are defined by 2 points. This is point 1.")]
+		 Description("Star Bursts are defined by 2 points. This is point 1.")]
 		public Point TopLeftPoint
 		{
 			get
@@ -141,9 +141,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Bottom Right"),
-		 DescriptionAttribute("Star Bursts are defined by 2 points. This is point 2.")]
+		 Description("Star Bursts are defined by 2 points. This is point 2.")]
 		public Point BottomRightPoint
 		{
 			get
@@ -164,8 +164,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         [DataMember]
         int _XYRotation = 0;
-        [CategoryAttribute("Settings"),
-        DescriptionAttribute("The prop can be rotated about the Z axis in the XY plane. This is the rotation angle."),
+        [Category("Settings"),
+        Description("The prop can be rotated about the Z axis in the XY plane. This is the rotation angle."),
         DisplayName("XY Rotation")]
         public int XYRotation
         {
@@ -180,9 +180,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Light Count per Spoke"),
-		 DescriptionAttribute("Number of pixels or lights in each spoke of the star burst.")]
+		 Description("Number of pixels or lights in each spoke of the star burst.")]
 		public int LightCount
 		{
 			get { return Strings[0].Pixels.Count; }
@@ -196,18 +196,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Direction"),
-		 DescriptionAttribute("Wrap direction."),
+		 Description("Wrap direction."),
 		 DataMember]
 		public Directions Direction { get; set; }
 
         [DataMember]
         int _innerCircleSize;
 
-        [CategoryAttribute("Settings"),
+        [Category("Settings"),
          DisplayName("Inner Circle Size"),
-         DescriptionAttribute("The strings on each spoke attach to the middle of the star burst. This is the size of the inner circle."),]
+         Description("The strings on each spoke attach to the middle of the star burst. This is the size of the inner circle."),]
         public int InnerCircleSize
         {
             get 

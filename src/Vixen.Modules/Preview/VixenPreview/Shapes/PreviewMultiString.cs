@@ -64,7 +64,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         }
 
         [Editor(typeof(PreviewSetElementsUIEditor), typeof(UITypeEditor)),
-         CategoryAttribute("Settings"),
+         Category("Settings"),
          DisplayName("Linked Elements")]
         public override List<PreviewLightBaseShape> Strings
         {

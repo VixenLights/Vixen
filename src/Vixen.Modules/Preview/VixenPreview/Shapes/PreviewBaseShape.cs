@@ -139,8 +139,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		Browsable(true),
 		PropertyOrder(99),   // 99 so it goes to the end of the list
 		DisplayName("Rotation Angle"),
-		DescriptionAttribute("Rotates the prop by the specified degrees. " +
-			                 "A positive value rotates in a clockwise direction and a negative value rotates in a counter-clockwise direction."),
+		Description("Rotates the prop by the specified degrees. " +
+		            "A positive value rotates in a clockwise direction and a negative value rotates in a counter-clockwise direction."),
 		Category("Position")]
 		public int RotationAngle
 		{
