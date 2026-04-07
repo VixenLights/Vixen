@@ -143,7 +143,7 @@ namespace VixenModules.SequenceType.Vixen2x
 				}
 
 				// is this a valid pixel configuration
-				if ((true == v2ChannelMapping.RgbPixel) && (3 != m_GuidToV2ChanList[v2ChannelMapping.ElementNodeId].Count))
+				if (v2ChannelMapping.RgbPixel && (3 != m_GuidToV2ChanList[v2ChannelMapping.ElementNodeId].Count))
 				{
 					Logging.Error("importSequenceData: Configuration error. Found '" + m_GuidToV2ChanList[v2ChannelMapping.ElementNodeId].Count + "' V2 channels attached to element '" + elementName + "'. Expected 3(RGB). Converting element to non color mixing mode.");
 					v2ChannelMapping.RgbPixel = false;

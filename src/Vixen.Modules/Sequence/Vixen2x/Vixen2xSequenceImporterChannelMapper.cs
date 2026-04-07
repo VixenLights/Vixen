@@ -150,7 +150,7 @@ namespace VixenModules.SequenceType.Vixen2x
 				item.SubItems[(int)mapperColumnId.v3Destination].Tag = enode;
 
 				// are we processing an RGB Pixel?
-				if(true == checkBoxRGB.Checked)
+				if(checkBoxRGB.Checked)
 				{
 					// use a fixed translation
 					// MessageBox.Show("m_defaultPixelColors.Count: '" + m_defaultPixelColors.Count + "' comboBoxColorOrder.SelectedText: '" + comboBoxColorOrder.SelectedItem.ToString() + "' i: " + i + "'", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);					
@@ -258,7 +258,7 @@ namespace VixenModules.SequenceType.Vixen2x
 					item.SubItems.Add(string.Empty);
 				}
 				// rgbPixel
-				if( true == mapping.RgbPixel )
+				if( mapping.RgbPixel )
 				{
 					item.SubItems.Add("Yes");
 				}
@@ -324,7 +324,7 @@ namespace VixenModules.SequenceType.Vixen2x
 		/// <param name="e"></param>
 		private void checkBoxRGB_CheckedChanged(object sender, EventArgs e)
 		{
-			if(true == checkBoxRGB.Checked)
+			if(checkBoxRGB.Checked)
 			{
 				// disable the repeat counter and enter pixel mode
 				numericUpDownRepeatElements.Enabled = false;

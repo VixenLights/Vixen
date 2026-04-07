@@ -167,7 +167,7 @@ namespace VixenModules.App.LipSyncApp
 
 					foreach (PhonemeType phoneme in phonemeList)
 					{
-						if (doPhonemeAlign == true)
+						if (doPhonemeAlign)
 						{
 							timing = CalcPhonemeTimespans(selMC, mcIndex++, 1);
 							phonemeIndex = 0;

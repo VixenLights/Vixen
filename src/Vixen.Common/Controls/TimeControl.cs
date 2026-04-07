@@ -385,7 +385,7 @@ public partial class TimeControl : UserControl
 	{
 		Brush brushArrow;
 
-		if (buttonUp.Enabled == true)
+		if (buttonUp.Enabled)
 		{
 			brushArrow = new SolidBrush(ThemeColorTable.ButtonTextColor);
 		}
@@ -400,7 +400,7 @@ public partial class TimeControl : UserControl
 	{
 		Brush brushArrow;
 
-		if (buttonUp.Enabled == true)
+		if (buttonUp.Enabled)
 		{
 			brushArrow = new SolidBrush(ThemeColorTable.ButtonTextColor);
 		}
@@ -456,7 +456,7 @@ public partial class TimeControl : UserControl
 		{
 			while (++position < textBox.Text.Length)
 			{
-				if (Char.IsNumber(text[position]) == true)
+				if (Char.IsNumber(text[position]))
 				{
 					text[position] = '0';
 				}
@@ -467,7 +467,7 @@ public partial class TimeControl : UserControl
 		{
 			while (++position < textBox.Text.Length)
 			{
-				if (Char.IsNumber(text[position]) == true)
+				if (Char.IsNumber(text[position]))
 				{
 					if (position == 0 || position == 3)
 					{
@@ -510,7 +510,7 @@ public partial class TimeControl : UserControl
 		{
 			for (position = 0; position < textBox.Text.Length - 1; position++)
 			{
-				if (Char.IsNumber(textBox.Text[position]) == true && textBox.Text[position] != '0')
+				if (Char.IsNumber(textBox.Text[position]) && textBox.Text[position] != '0')
 				{
 					break;
 				}

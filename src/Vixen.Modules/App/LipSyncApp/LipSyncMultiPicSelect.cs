@@ -79,7 +79,7 @@ namespace VixenModules.App.LipSyncApp
 				}
 				else
 				{
-					if (CurrentMappings.TryGetValue(searchPhoneme,out searchValue) == true)
+					if (CurrentMappings.TryGetValue(searchPhoneme,out searchValue))
 					{
 						comboBoxes[searchPhoneme].SelectedIndex = 1;
 					}

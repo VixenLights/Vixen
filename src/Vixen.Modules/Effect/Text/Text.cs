@@ -341,10 +341,16 @@ namespace VixenModules.Effect.Text
 			get { return _data.CenterStop; }
 			set
 			{
-				if (_data.CenterStop = value == true)
-					EndStop = false;
-				IsDirty = true;
-				OnPropertyChanged();
+				if (_data.CenterStop != value)
+				{
+					_data.CenterStop = value;
+					if (_data.CenterStop)
+					{
+						EndStop = false;
+					}
+					IsDirty = true;
+					OnPropertyChanged();
+				}
 			}
 		}
 
@@ -358,10 +364,15 @@ namespace VixenModules.Effect.Text
 			get { return _data.EndStop; }
 			set
 			{
-				if (_data.EndStop = value == true)
-					CenterStop = false;
-				IsDirty = true;
-				OnPropertyChanged();
+				if (_data.EndStop != value)
+				{
+					if (_data.EndStop)
+					{
+						CenterStop = false;
+					}
+					IsDirty = true;
+					OnPropertyChanged();
+				}
 			}
 		}
 
@@ -909,27 +920,27 @@ namespace VixenModules.Effect.Text
 				{
 					case TextDirection.Left:
 						int leftX = bufferWi - (int) (_directionPosition * (textsize.Width + bufferWi));
-						if (CenterStop == true)
+						if (CenterStop)
 							leftX = Math.Max(leftX, (bufferWi - (int)textsize.Width) / 2);
-						else if (EndStop == true)
+						else if (EndStop)
 							leftX = Math.Max(leftX, bufferWi - (int)textsize.Width);
 						point = new Point(leftX, offsetTop);
 						break;
 
 					case TextDirection.Right:
 						int rightX = -_maxTextSize + (int) (_directionPosition * (_maxTextSize + bufferWi));
-						if (CenterStop == true)
+						if (CenterStop)
 							rightX = Math.Min(rightX, (bufferWi - (int)textsize.Width) / 2);
-						else if (EndStop == true)
+						else if (EndStop)
 							rightX = Math.Min(rightX, 0);
 						point = new Point(rightX, offsetTop);
 						break;
 
 					case TextDirection.Up:
 						int upY = bufferHt - (int) (((textsize.Height * numberLines) + bufferHt) * _directionPosition);
-						if (CenterStop == true)
+						if (CenterStop)
 							upY = Math.Max(upY, (bufferHt - (int)(textsize.Height * numberLines)) / 2);
-						else if (EndStop == true)
+						else if (EndStop)
 							upY = Math.Max(upY, bufferHt - (int)textsize.Height);
 						point = new Point(offsetLeft, upY);
 						break;
@@ -937,9 +948,9 @@ namespace VixenModules.Effect.Text
 					case TextDirection.Down:
 						int downY = -(int) (textsize.Height * numberLines) +
 						            (int) (((textsize.Height * numberLines) + bufferHt) * _directionPosition);
-						if (CenterStop == true)
+						if (CenterStop)
 							downY = Math.Min(downY, (bufferHt - (int)(textsize.Height * numberLines)) / 2);
-						else if (EndStop == true)
+						else if (EndStop)
 							downY = Math.Min(downY, 0);
 						point = new Point(offsetLeft, downY);
 						break;

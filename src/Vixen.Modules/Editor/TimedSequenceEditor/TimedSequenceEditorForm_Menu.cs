@@ -653,7 +653,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			int nextSimilarMark = 1;
 			foreach(var markItem in _sequence.LabeledMarkCollections)
 			{
-				if (markItem.Name.StartsWith(mc.Name) == true)
+				if (markItem.Name.StartsWith(mc.Name))
 				{
 					Regex regex = new Regex(@"\d+");
 					var match = regex.Match(markItem.Name.Substring(mc.Name.Length));
@@ -698,7 +698,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				TimeSpan offset = dialog.IsForward ? dialog.Offset : -dialog.Offset;
 				offset = TimelineControl.grid.MoveElementsInRangeByTime(dialog.Start, dialog.End, offset, dialog.ProcessVisibleRows, dialog.ClipEffects);
 
-				if (dialog.ProcessMarks == true && offset != TimeSpan.Zero)
+				if (dialog.ProcessMarks && offset != TimeSpan.Zero)
 				{
 					MoveMarksInRangeByTime(dialog.Start, dialog.End, offset, dialog.ProcessVisibleRows);
 				}

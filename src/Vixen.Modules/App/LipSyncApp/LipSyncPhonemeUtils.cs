@@ -685,7 +685,7 @@ namespace VixenModules.App.LipSyncApp
 				{
 					if (!items[j].Equals(""))
 					{
-						if (cmu2pbDict.TryGetValue(items[j], out tempVal) == true)
+						if (cmu2pbDict.TryGetValue(items[j], out tempVal))
 						{
 							phonemeList.Add(tempVal);
 						}
@@ -722,7 +722,7 @@ namespace VixenModules.App.LipSyncApp
 
 		public static void InitDictionary()
 		{
-			if (initComplete == true) 
+			if (initComplete) 
 			{ 
 				return; 
 			}

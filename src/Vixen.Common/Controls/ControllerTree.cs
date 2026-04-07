@@ -718,7 +718,7 @@ namespace Common.Controls
 		/// </summary>
 		public void ReorderControllers()
 		{
-			if (listReordered == true)
+			if (listReordered)
 			{
 				// Get the list of controller names in the order they are displayed in the treeview.
 				var sortList = new List<Guid>();

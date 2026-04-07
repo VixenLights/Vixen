@@ -1141,12 +1141,12 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				foreach (DisplayItem item in SelectedDisplayItems)
 				{
-					item.Shape.SetSelectPoint(paste == true ? new PreviewPoint(0,0) : null);
+					item.Shape.SetSelectPoint(paste ? new PreviewPoint(0,0) : null);
 				}
 			}
 			else if (_selectedDisplayItem != null)
 			{
-				_selectedDisplayItem.Shape.SetSelectPoint(paste == true ? new PreviewPoint(0,0) : null);
+				_selectedDisplayItem.Shape.SetSelectPoint(paste ? new PreviewPoint(0,0) : null);
 			}
 			Capture = true;
 			_mouseCaptured = true;
@@ -2182,7 +2182,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void Unlock(bool all = false)
 		{
-			if (all == true)
+			if (all)
 			{
 				var action = new PreviewItemsLockUndoAction(this, SelectedDisplayItems);//Start Undo Action.
 				UndoManager.AddUndoAction(action);

@@ -137,7 +137,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			set
 			{
-				if (value == true)
+				if (value)
 				{
 					btnShowBeatMarkOptions_Click(this, EventArgs.Empty);
 				}

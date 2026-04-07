@@ -1270,7 +1270,7 @@ namespace Common.Controls.Timeline
 				elem.BeginUpdate();
 
 				// If the Element is completely shifted passed the end of the Sequence, then delete it.
-				if (clipEffects == true && elem.EndTime + offset < TimeSpan.Zero)
+				if (clipEffects && elem.EndTime + offset < TimeSpan.Zero)
 				{
 					m_elemMoveInfo.AppendElementDeleteInfo(elem);
 					elem.Row.RemoveElement(elem);
@@ -1278,7 +1278,7 @@ namespace Common.Controls.Timeline
 				}
 
 				// If the Element is completely shifted passed the beginning of the Sequence, then delete it.
-				else if (clipEffects == true && elem.StartTime + offset > TimeInfo.TotalTime)
+				else if (clipEffects && elem.StartTime + offset > TimeInfo.TotalTime)
 				{
 					m_elemMoveInfo.AppendElementDeleteInfo(elem);
 					elem.Row.RemoveElement(elem);

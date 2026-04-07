@@ -127,7 +127,7 @@ namespace VixenModules.App.LipSyncApp
 
 			if (insertNew)
 			{
-				if (string.IsNullOrWhiteSpace(mapName) == true)
+				if (string.IsNullOrWhiteSpace(mapName))
 				{
 					mapName = "New Map";
 				}
@@ -135,7 +135,7 @@ namespace VixenModules.App.LipSyncApp
 				{
 					mapName = name;
 				}
-				while (Library.Keys.Contains(mapName) == true)
+				while (Library.Keys.Contains(mapName))
 				{
 					mapName = string.Format(mapName + "({0})", ++uniqueKeyIndex);
 				}
@@ -163,7 +163,7 @@ namespace VixenModules.App.LipSyncApp
 			if (origMapping != null)
 			{
 				Library[name].IsCurrentLibraryMapping = false;
-				if (IsDefaultMapping(name) == true)
+				if (IsDefaultMapping(name))
 				{
 					_defaultMap = null;
 				}
@@ -193,7 +193,7 @@ namespace VixenModules.App.LipSyncApp
 			if (editor.ShowDialog(parent) == DialogResult.OK)
 			{
 				if ((name.Equals(editor.LibraryMappingName) == false) &&
-					(Contains(editor.LibraryMappingName) == true))
+					Contains(editor.LibraryMappingName))
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
@@ -205,7 +205,7 @@ namespace VixenModules.App.LipSyncApp
 					doRemove = (messageBox.DialogResult == DialogResult.OK) ? true : false;
 				}
 
-				if (doRemove == true)
+				if (doRemove)
 				{
 					RemoveMapping(name);
 				}

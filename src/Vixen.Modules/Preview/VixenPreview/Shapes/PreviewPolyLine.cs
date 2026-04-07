@@ -69,7 +69,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				PixelCount = 2;
 			}
 
-			if (Creating == true)
+			if (Creating)
 			{
 				EndCreation();
 			}

@@ -278,7 +278,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			if (_selectPoints != null && _selectPoints.Count > 0) 
 			{
-				if (ShowRotation == true)
+				if (ShowRotation)
 				{
 					// Set the X position of the Rotation Handle
 					rotateHandle.X = Center.X;
@@ -307,7 +307,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					{
 						fp.DrawRectangle(transformedPoint.X, transformedPoint.Y, SelectPointSize, Color.White);
 					}
-					else if (point?.PointType == PreviewPoint.PointTypes.RotateHandle && ShowRotation == true)
+					else if (point?.PointType == PreviewPoint.PointTypes.RotateHandle && ShowRotation)
 					{
 						fp.DrawCircle(transformedPoint.X, transformedPoint.Y, SelectPointSize, Color.White);
 					}

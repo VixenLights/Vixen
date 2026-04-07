@@ -320,7 +320,7 @@ namespace VixenModules.Preview.VixenPreview
 			else if (previewForm.Preview.SelectedDisplayItems.Any())
 			{
 				// If any selected prop is locked, then show "Unlock"
-				if (previewForm.Preview.SelectedDisplayItems.FindIndex(x => x.Shape.Locked == true) >= 0)
+				if (previewForm.Preview.SelectedDisplayItems.FindIndex(x => x.Shape.Locked) >= 0)
 					btnUnlock.Enabled = unlockToolStripMenuItem.Enabled = true;
 				// If any selected prop is unlocked, then show "Lock"
 				if (previewForm.Preview.SelectedDisplayItems.FindIndex(x => x.Shape.Locked == false) >= 0)
@@ -328,7 +328,7 @@ namespace VixenModules.Preview.VixenPreview
 			}
 			
 			// If any prop is locked, then show "Unlock All"
-			if (previewForm.Preview.DisplayItems.FindIndex(x => x.Shape.Locked == true) >= 0)
+			if (previewForm.Preview.DisplayItems.FindIndex(x => x.Shape.Locked) >= 0)
 				btnUnlockAll.Enabled = unlockAllToolStripMenuItem.Enabled = true;
 
 			var multiSelect = previewForm.Preview.SelectedDisplayItems.Count > 1;

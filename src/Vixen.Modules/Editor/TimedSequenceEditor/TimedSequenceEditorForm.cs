@@ -3567,7 +3567,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var marksBulkChangeInfo = new MarksBulkChangeInfo();
 
 			// Iterate through each Mark collection
-			foreach (MarkCollection mc in _sequence.LabeledMarkCollections.Where(x => ((processVisibleRows == true && x.ShowMarkBar == true) || 
+			foreach (MarkCollection mc in _sequence.LabeledMarkCollections.Where(x => ((processVisibleRows && x.ShowMarkBar) || 
 			                                                                            processVisibleRows == false) && 
 																					   x.Locked != true))
 			{

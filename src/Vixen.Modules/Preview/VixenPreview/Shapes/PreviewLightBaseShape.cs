@@ -424,7 +424,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 				if (allIn && result == false)
 					break;
-				else if (!allIn && result == true)
+				else if (!allIn && result)
 					break;
             }
 			return result;

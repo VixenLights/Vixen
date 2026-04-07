@@ -624,7 +624,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			int _returnSize = 0;
 
 			// If a single light element...
-			if (lights.IsLeaf == true && lights.IsGroupNode != true)
+			if (lights.IsLeaf && lights.IsGroupNode != true)
 				_returnSize = lights.LightSize;
 
 			// Else if a Group of Lights....
@@ -632,7 +632,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			{
 				foreach (var child in lights.Children)
 				{
-					int _tempSize = child.IsGroupNode == true ? GetLightsSizes(child) : child.LightSize;
+					int _tempSize = child.IsGroupNode ? GetLightsSizes(child) : child.LightSize;
 
 					// Set the initial light size
 					if (_returnSize == 0)

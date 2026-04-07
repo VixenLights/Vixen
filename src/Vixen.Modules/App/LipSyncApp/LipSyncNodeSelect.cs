@@ -184,7 +184,7 @@ namespace VixenModules.App.LipSyncApp
 
 		private void addElementNodes(IElementNode node, bool recurse)
 		{
-			if ((allowGroupsCheckbox.Checked == true) || (node.IsLeaf == true))
+			if (allowGroupsCheckbox.Checked || node.IsLeaf)
 			{
 				addToChosenTargets(node);
 			}
