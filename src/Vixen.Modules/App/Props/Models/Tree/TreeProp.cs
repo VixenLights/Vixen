@@ -15,20 +15,20 @@ namespace VixenModules.App.Props.Models.Tree
 	/// <summary>
 	/// Maintains a tree prop.
 	/// </summary>
-	public class Tree : BaseLightProp<TreeModel>, IProp
+	public class TreeProp : BaseLightProp<TreeModel>, IProp
 	{		
 		#region Constructors
 
-		public Tree() : this("Tree 1", 0, 0)
+		public TreeProp() : this("Tree 1", 0, 0)
 		{
 			//Set initial to 0 so creation does not trigger element generation.
 		}
 
-		public Tree(string name, int strings, int nodesPerString) : this(name, strings, nodesPerString, StringTypes.ColorMixingRGB)
+		public TreeProp(string name, int strings, int nodesPerString) : this(name, strings, nodesPerString, StringTypes.ColorMixingRGB)
 		{
 		}
 
-		public Tree(string name, int strings = 0, int nodesPerString = 0, StringTypes stringType = StringTypes.ColorMixingRGB) : base(name, PropType.Tree)
+		public TreeProp(string name, int strings = 0, int nodesPerString = 0, StringTypes stringType = StringTypes.ColorMixingRGB) : base(name, PropType.Tree)
 		{			
 			PropType = PropType.Tree;
 			Name = name;

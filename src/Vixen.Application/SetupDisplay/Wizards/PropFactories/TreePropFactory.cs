@@ -18,7 +18,7 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
         public IPropGroup GetProps(IPropWizard wizard)
         {
             // Create the Tree prop
-            Tree tree = VixenSystem.Props.CreateProp<Tree>(VixenSystem.Props.GenerateUniquePropTitle(PropType.Tree));
+            TreeProp tree = VixenSystem.Props.CreateProp<TreeProp>(VixenSystem.Props.GenerateUniquePropTitle(PropType.Tree));
 
             // Transfer the data from the wizard into the tree prop
             UpdateProp(tree, wizard);
@@ -40,7 +40,7 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
         /// <param name="wizard">Specifies the Tree prop wizard destination</param>
         public void LoadWizard(IProp prop, IPropWizard wizard)
         {
-            Tree tree = (Tree)prop;
+            TreeProp tree = (TreeProp)prop;
 
             // Configure the wizard with the base Tree properties
             TreePropWizardPage treePropPage = (TreePropWizardPage)wizard.Pages.Single(page => page is TreePropWizardPage);
@@ -83,7 +83,7 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
         /// <param name="wizard">Specifies the Tree prop wizard source</param>
         public void UpdateProp(IProp prop, IPropWizard wizard)
         {
-            Tree tree = (Tree)prop;
+            TreeProp tree = (TreeProp)prop;
 
             // Configure the base Tree properties
             TreePropWizardPage treePropPage = (TreePropWizardPage)wizard.Pages.Single(page => page is TreePropWizardPage);

@@ -18,7 +18,7 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
         public IPropGroup GetProps(IPropWizard wizard)
         {
             // Create the Arch prop
-            Arch arch = VixenSystem.Props.CreateProp<Arch>(VixenSystem.Props.GenerateUniquePropTitle(PropType.Arch));
+            ArchProp arch = VixenSystem.Props.CreateProp<ArchProp>(VixenSystem.Props.GenerateUniquePropTitle(PropType.Arch));
 
             // Transfer the data from the wizard into the arch prop
             UpdateProp(arch, wizard);
@@ -40,7 +40,7 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
         /// <param name="wizard">Specifies the Arch prop wizard destination</param>
         public void LoadWizard(IProp prop, IPropWizard wizard)
         {
-            Arch arch = (Arch)prop;
+            ArchProp arch = (ArchProp)prop;
 
             // Configure the wizard with the base Arch properties
             ArchPropWizardPage archPropPage = (ArchPropWizardPage)wizard.Pages.Single(page => page is ArchPropWizardPage);
@@ -73,7 +73,7 @@ namespace VixenApplication.SetupDisplay.Wizards.PropFactories
         /// <param name="wizard">Specifies the Arch prop wizard source</param>
         public void UpdateProp(IProp prop, IPropWizard wizard)
         {
-            Arch arch = (Arch)prop;
+            ArchProp arch = (ArchProp)prop;
 
             // Configure the base Arch properties
             ArchPropWizardPage archPropPage = (ArchPropWizardPage)wizard.Pages.Single(page => page is ArchPropWizardPage);
