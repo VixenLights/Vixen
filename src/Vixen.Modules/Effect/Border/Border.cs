@@ -1340,7 +1340,6 @@ namespace VixenModules.Effect.Borders
 			int yc_adj = (int)Math.Round(ScaleCurveToValue(YOffsetCurve.GetValue(intervalPosFactor), 100, -100));
 
 			bool reverse_dir = Reverse; 
-			bool pixelOffsets = false; 
 			bool wrap_x = WrapX; 
 			bool wrap_y = WrapY;
 
@@ -1374,11 +1373,9 @@ namespace VixenModules.Effect.Borders
 
 			int xoffset_adj = xc_adj;
 			int yoffset_adj = yc_adj;
-			if (!pixelOffsets)
-			{
-				xoffset_adj = (int)((xoffset_adj * bufferWi) / 100.0); // xc_adj is from -100 to 100
-				yoffset_adj = (int)((yoffset_adj * bufferHt) / 100.0); // yc_adj is from -100 to 100
-			}
+
+			xoffset_adj = (int)((xoffset_adj * bufferWi) / 100.0); // xc_adj is from -100 to 100
+			yoffset_adj = (int)((yoffset_adj * bufferHt) / 100.0); // yc_adj is from -100 to 100
 
 			for (int thick = 0; thick < thickness; thick++)
 			{

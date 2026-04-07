@@ -224,10 +224,9 @@ namespace VixenModules.App.LipSyncApp
 
 			if (origMapping != null)
 			{
-				LipSyncMapData newMapping = new LipSyncMapData(origMapping);
-				if ((newMapping != null) && (newName != ""))
+				if (newName != "")
 				{
-					string newTmpName = CloneLibraryMapping(oldName,newName);
+					CloneLibraryMapping(oldName,newName);
 					RemoveMapping(oldName, true);
 					retVal = true;
 				}

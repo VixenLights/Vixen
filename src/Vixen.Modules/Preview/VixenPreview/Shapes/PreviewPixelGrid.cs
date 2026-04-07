@@ -107,7 +107,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			int lastChildLightCount = -1;
 			childLightCount = -1;
-			if (selectedNode != null && selectedNode.Children != null) {
+			if (selectedNode != null) {
 				int parentStringCount = selectedNode.Children.ToList().Count;
 				// Selected node has to be a group!
 				if (!selectedNode.IsLeaf && parentStringCount >= 2) {

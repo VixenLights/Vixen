@@ -1210,7 +1210,7 @@ namespace VixenModules.Effect.Picture
 					{
 						locationX = locationX % _imageWidth;
 					}
-					else if (locationX < 0)
+					else
 					{
 						locationX = Convert.ToInt32(locationX % _imageWidth) + _imageWidth - 1;
 					}
@@ -1219,10 +1219,11 @@ namespace VixenModules.Effect.Picture
 					{
 						locationY = Convert.ToInt32((locationY % _imageHeight));
 					}
-					else if (locationY < 0)
+					else
 					{
 						locationY = Convert.ToInt32(locationY % _imageHeight) + _imageHeight - 1;
 					}
+
 					break;
 			}
 

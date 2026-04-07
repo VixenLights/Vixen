@@ -292,28 +292,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private void SetLinkedElementItems(ListViewItem item, ElementNode channelNode)
 		{
-			//ListViewItem item = listLinkedElements.Items[0];
-			PreviewPixel pixel = item.Tag as PreviewPixel;
-
-			if (channelNode != null)
+			if (channelNode != null && item != null && item.Tag is PreviewPixel pixel)
 			{
 				// Is this node an element?
 				if (channelNode.Element != null)
 				{
 					pixel.Node = channelNode;
-					if (item != null)
+					if (item.SubItems.Count > 1)
 					{
-						if (item.SubItems.Count > 1)
-						{
-							item.SubItems[1].Text = channelNode.Name;
-						}
-						else
-						{
-							if (channelNode != null)
-							{
-								item.SubItems.Add(channelNode.Name);
-							}
-						}
+						item.SubItems[1].Text = channelNode.Name;
+					}
+					else
+					{
+						item.SubItems.Add(channelNode.Name);
 					}
 				}
 				else // This node is a group, iterate
@@ -324,10 +315,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						if (item.Index < listLinkedElements.Items.Count && child.Element != null)
 						{
 							SetLinkedElementItems(nextItem, child);
-							//}
-							//else
-							//{
-							//    SetLinkedElementItems(nextItem, child);
 							if (nextItem.Index == listLinkedElements.Items.Count - 1)
 							{
 								return;

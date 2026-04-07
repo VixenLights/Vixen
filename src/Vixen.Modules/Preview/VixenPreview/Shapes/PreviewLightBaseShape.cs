@@ -322,7 +322,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			int origPixelSize = pixel.PixelSize;
             if (forceDraw)
             {
-                pixel.Draw(fp, forceDraw);
+                pixel.Draw(fp, true);
             }
             else
             {

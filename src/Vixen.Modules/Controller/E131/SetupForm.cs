@@ -73,23 +73,18 @@ namespace VixenModules.Output.E131
             var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
             foreach (var networkInterface in networkInterfaces)
             {
-                if (networkInterface == null)
-                {
-                    continue;
-                }
-
-                // if not a tunnel
+	            // if not a tunnel
                if (networkInterface.NetworkInterfaceType != NetworkInterfaceType.Tunnel && networkInterface.NetworkInterfaceType != NetworkInterfaceType.Loopback && networkInterface.SupportsMulticast)
-                {
-                    // then add it to multicasts table by name
-                    multicasts.Add(networkInterface.Name, 0);
+               {
+	               // then add it to multicasts table by name
+	               multicasts.Add(networkInterface.Name, 0);
 
-                    // add it to available nicIDs table
-                    nicIDs.Add(networkInterface.Id, networkInterface.Name);
+	               // add it to available nicIDs table
+	               nicIDs.Add(networkInterface.Id, networkInterface.Name);
 
-                    // add it to available nicNames table
-                    nicNames.Add(networkInterface.Name, networkInterface.Id);
-                }
+	               // add it to available nicNames table
+	               nicNames.Add(networkInterface.Name, networkInterface.Id);
+               }
             }
 
             // finally initialize the form

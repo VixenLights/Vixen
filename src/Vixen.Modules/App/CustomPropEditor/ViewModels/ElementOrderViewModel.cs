@@ -328,8 +328,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			var itemsControl = dropInfo.VisualTarget as ItemsControl;
 			if (itemsControl != null)
 			{
-				var editableItems = itemsControl.Items as IEditableCollectionView;
-				if (editableItems != null)
+				if (itemsControl.Items is IEditableCollectionView editableItems)
 				{
 					var newItemPlaceholderPosition = editableItems.NewItemPlaceholderPosition;
 					if (newItemPlaceholderPosition == NewItemPlaceholderPosition.AtBeginning && insertIndex == 0)

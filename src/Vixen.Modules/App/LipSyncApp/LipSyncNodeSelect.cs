@@ -189,11 +189,11 @@ namespace VixenModules.App.LipSyncApp
 				addToChosenTargets(node);
 			}
 
-			if (recurse == true)
+			if (recurse)
 			{
 				foreach (IElementNode childNode in node.Children)
 				{
-					addElementNodes(childNode, recurse);
+					addElementNodes(childNode, true);
 				}
 			}
 		}

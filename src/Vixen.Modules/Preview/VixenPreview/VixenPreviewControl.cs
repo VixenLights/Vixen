@@ -660,14 +660,15 @@ namespace VixenModules.Preview.VixenPreview
 							}
 							else
 							{
-								SelectItemUnderPoint(translatedPoint, controlPressed, shiftPressed);
+								SelectItemUnderPoint(translatedPoint, true, shiftPressed);
 							}
 							EndUpdate();
 							return;
 						}
 
 						// Is there a single display item selected?
-						if (_selectedDisplayItem != null && !controlPressed)
+						//controlPressed is not true here because we returned above when it was
+						if (_selectedDisplayItem != null)
 						{
 							// Lets see if we've got a drag or rotation point.
 							PreviewPoint selectedPoint = _selectedDisplayItem.Shape.PointInSelectPoint(translatedPoint);
@@ -696,7 +697,7 @@ namespace VixenModules.Preview.VixenPreview
 						}
 							// Are there multiple items selected?
 							// If so, we're moving, can't resize them...
-						else if (SelectedDisplayItems.Count > 1 && !controlPressed)
+						else if (SelectedDisplayItems.Count > 1)
 						{
 							//if (MouseOverSelectedDisplayItems(e.X, e.Y)) {
 							//    StartMove(e.X, e.Y);
@@ -717,7 +718,7 @@ namespace VixenModules.Preview.VixenPreview
 							}
 						}
 
-						SelectItemUnderPoint(translatedPoint, controlPressed, shiftPressed);
+						SelectItemUnderPoint(translatedPoint, false, shiftPressed);
 
 						// If we get this far, and we've got nothing selected, we're drawing a rubber band!
 						if (_selectedDisplayItem == null && SelectedDisplayItems.Count == 0)

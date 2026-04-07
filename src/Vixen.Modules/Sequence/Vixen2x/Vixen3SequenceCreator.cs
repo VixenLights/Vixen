@@ -82,21 +82,18 @@ namespace VixenModules.SequenceType.Vixen2x
 			Sequence.Length = TimeSpan.FromMilliseconds(parsedV2Sequence.SeqLengthInMills);
 
 			var songFileName = parsedV2Sequence.SongPath + Path.DirectorySeparatorChar + parsedV2Sequence.SongFileName;
-			if (songFileName != null)
+			if (File.Exists(songFileName))
 			{
-				if (File.Exists(songFileName))
-				{
-					Sequence.AddMedia(MediaService.Instance.GetMedia(songFileName));
-				}
-				else
-				{
-					var message = string.Format("Could not locate the audio file '{0}'; please add it manually " +
-												"after import (Under Tools -> Associate Audio).", Path.GetFileName(songFileName));
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-					var messageBox = new MessageBoxForm(message, "Couldn't find audio", false, false);
-					messageBox.ShowDialog();
-				}
+				Sequence.AddMedia(MediaService.Instance.GetMedia(songFileName));
+			}
+			else
+			{
+				var message = string.Format("Could not locate the audio file '{0}'; please add it manually " +
+				                            "after import (Under Tools -> Associate Audio).", Path.GetFileName(songFileName));
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(message, "Couldn't find audio", false, false);
+				messageBox.ShowDialog();
 			}
 		}
 

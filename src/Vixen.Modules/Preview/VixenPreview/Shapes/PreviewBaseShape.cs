@@ -378,17 +378,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			if (_selectPoints != null)
 			{
 				foreach (PreviewPoint selectPoint in _selectPoints) {
-					// Disallow the rotation axis as a selectable point
-					if (selectPoint.PointType == PreviewPoint.PointTypes.RotationAxis)
-						continue;
-
-					var pp = PreviewTools.TransformPreviewPoint(this, selectPoint, ZoomLevel);
-
 					if (selectPoint != null) {
+						// Disallow the rotation axis as a selectable point
+						if (selectPoint.PointType == PreviewPoint.PointTypes.RotationAxis)
+							continue;
+
+						var pp = PreviewTools.TransformPreviewPoint(this, selectPoint, ZoomLevel);
+						
 						if (point.X >= pp.X - (SelectPointSize / 2) &&
-							point.Y >= pp.Y - (SelectPointSize/2) &&
-							point.X <= pp.X + (SelectPointSize/2) &&
-							point.Y <= pp.Y + (SelectPointSize/2)) {
+						    point.Y >= pp.Y - (SelectPointSize/2) &&
+						    point.X <= pp.X + (SelectPointSize/2) &&
+						    point.Y <= pp.Y + (SelectPointSize/2)) {
 							return selectPoint;
 						}
 					}

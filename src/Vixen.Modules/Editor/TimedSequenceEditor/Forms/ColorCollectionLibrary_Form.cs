@@ -159,13 +159,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void RemoveColorFromCollection()
 		{
-			if (_currentCollection == null || listViewColors.SelectedItems == null)
+			if (_currentCollection == null)
 				return;
 
 			foreach (ListViewItem listItem in listViewColors.SelectedItems)
 			{
-				_currentCollection.Color.Remove((Color) listItem.Tag);
-				_isDirty = true;
+				if (listItem.Tag is Color c)
+				{
+					_currentCollection.Color.Remove(c);
+					_isDirty = true;
+				}
 			}
 
 			PopulateCollectionColors(_currentCollection);
