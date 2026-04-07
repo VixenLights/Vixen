@@ -23,15 +23,15 @@ namespace VixenModules.App.Props.Models.Arch
 	/// <summary>
 	/// A class that defines an Arch Prop
 	/// </summary>
-	public class Arch : BaseLightProp<ArchModel>, IProp
+	public class ArchProp : BaseLightProp<ArchModel>, IProp
 	{
 		#region Constructors
 
-		public Arch() : this("Arch Temp")
+		public ArchProp() : this("Arch Temp")
 		{
 		}
 
-		public Arch(string name, int nodeCount = 0, StringTypes stringType = StringTypes.ColorMixingRGB) : base(name, PropType.Arch)
+		public ArchProp(string name, int nodeCount = 0, StringTypes stringType = StringTypes.ColorMixingRGB) : base(name, PropType.Arch)
 		{			
 			// Set some default parameters
 			Name = name;
