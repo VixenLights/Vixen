@@ -214,11 +214,10 @@ namespace Common.Controls.ControlsEx
 
 		public void CopyTo(B[] array, int arrayIndex)
 		{
-			if (array != null)
-				foreach (T item in _inner) {
-					if (arrayIndex >= array.Length) return;
-					array[arrayIndex++] = item;
-				}
+			foreach (T item in _inner) {
+				if (arrayIndex >= array.Length) return;
+				array[arrayIndex++] = item;
+			}
 		}
 
 		public int Count

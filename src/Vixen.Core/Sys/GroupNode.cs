@@ -59,7 +59,7 @@ namespace Vixen.Sys
 			// children of other nodes, not just this one).
 			if (cleanupIfFloating && Parents.Count() == 0) {
 				foreach (GroupNode<T> child in _children.ToList()) {
-					child.RemoveFromParent(this, cleanupIfFloating);
+					child.RemoveFromParent(this, true);
 				}
 			}
 

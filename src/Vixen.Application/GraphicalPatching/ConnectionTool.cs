@@ -968,7 +968,6 @@ namespace VixenApplication.GraphicalPatching
 		// apply the resize action
 		private bool PerformMoveHandle(IDiagramPresenter diagramPresenter)
 		{
-			bool result;
 			Invalidate(diagramPresenter);
 
 			int distanceX = CurrentMouseState.X - ActionStartMouseState.X;
@@ -1030,9 +1029,8 @@ namespace VixenApplication.GraphicalPatching
 
 			snapDeltaX = snapDeltaY = 0;
 			snapPtId = ControlPointId.None;
-			result = true;
 
-			return result;
+			return true;
 		}
 
 		#endregion

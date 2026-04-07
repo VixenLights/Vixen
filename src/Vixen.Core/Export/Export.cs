@@ -292,8 +292,6 @@ namespace Vixen.Export
 						    {
 							    //Validate ip address
 							    ip = controller.ControllerNetworkConfiguration.IpAddress.ToString();
-							    if (ip == null)
-								    ip = string.Empty;
 						    }
 						    var s =
 							    $"{(uc.Active ? "1" : "0")},{uc.UniverseNumber}," +

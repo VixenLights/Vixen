@@ -5,8 +5,8 @@ namespace VixenApplication.Setup
 {
 	interface ISetupPatchingControl
 	{
-		event EventHandler<FiltersEventArgs> FiltersAdded;
-		event EventHandler PatchingUpdated;
+		event EventHandler<FiltersEventArgs>? FiltersAdded;
+		event EventHandler? PatchingUpdated;
 
 		void UpdateElementSelection(IEnumerable<ElementNode> nodes);
 		void UpdateElementDetails(IEnumerable<ElementNode> nodes);

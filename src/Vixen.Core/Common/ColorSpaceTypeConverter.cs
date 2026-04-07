@@ -28,8 +28,6 @@ namespace Common.Controls.ColorManagement.ColorModels
 		                                   object value)
 		{
 			if (value is string) {
-				if (culture == null)
-					culture = CultureInfo.CurrentCulture;
 				//
 				string text = (string) value;
 				string[] parts = text.Split(culture.TextInfo.ListSeparator.ToCharArray());
