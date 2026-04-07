@@ -11,7 +11,6 @@ namespace VixenModules.LayerMixingFilter.Mask
 			if (highLayerValue.Intensity > 0)
 			{
 				lowLayerValue.Intensity = 0;
-				return lowLayerValue;
 			}
 			return lowLayerValue;
 		}

@@ -29,11 +29,9 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 			{
 				return instance;
 			}
-			else
-			{
-				instance = new TimeLineGlobalEventManager(id);
-				Instances.Add(id, instance);
-			}
+
+			instance = new TimeLineGlobalEventManager(id);
+			Instances.Add(id, instance);
 
 			return instance;
 		}
