@@ -33,10 +33,7 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 			LightPropModel.NodesPerString = NodesPerString;
 			LightPropModel.LightSize = LightSize;
 			LightPropModel.TopRadius = TopRadius;
-			LightPropModel.BottomRadius = BottomRadius;
-
-			// Update the prop nodes
-			LightPropModel.UpdatePropNodes();
+			LightPropModel.BottomRadius = BottomRadius;			
 		}
 
 		#region Name property

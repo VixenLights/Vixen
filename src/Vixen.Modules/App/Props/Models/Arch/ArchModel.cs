@@ -1,4 +1,5 @@
-﻿using Vixen.Sys.Props.Model;
+﻿using System.Xml.Linq;
+using Vixen.Sys.Props.Model;
 
 namespace VixenModules.App.Props.Models.Arch
 {
@@ -24,7 +25,7 @@ namespace VixenModules.App.Props.Models.Arch
 		public int NumPoints
 		{
 			get => _numPoints;
-			set => _numPoints = value;
+			set => SetProperty(ref _numPoints, value);
 		}
 
 		#endregion

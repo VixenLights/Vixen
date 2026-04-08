@@ -187,8 +187,7 @@ namespace VixenModules.App.Props.Models.Arch
 						case nameof(StringType):
 							GenerateDebouncer.Debounce();
 							break;
-						case nameof(NodeCount):
-							PropModel.UpdatePropNodes();
+						case nameof(NodeCount):							
 							GenerateDebouncer.Debounce();
 							break;
 						case nameof(ArchWiringStart):

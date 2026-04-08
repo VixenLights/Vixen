@@ -18,8 +18,7 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		{
 			// Update the prop nodes
 			LightPropModel.NumPoints = NodeCount;
-			LightPropModel.LightSize = LightSize;
-			LightPropModel.UpdatePropNodes();
+			LightPropModel.LightSize = LightSize;			
 		}
 
 		#region Name property

@@ -148,10 +148,7 @@ namespace VixenModules.App.Props.Models
 				{
 					case nameof(StringType):
 						GenerateDebouncer.Debounce();
-						break;
-					case nameof(LightSize):
-						PropModel.UpdatePropNodes();						
-						break;
+						break;					
 				}
 			}
 		}
