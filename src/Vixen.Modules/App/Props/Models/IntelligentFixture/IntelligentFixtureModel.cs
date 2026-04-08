@@ -153,6 +153,7 @@ namespace VixenModules.App.Props.Models.IntellligentFixture
 		public YesNoType InvertTiltDirection { get; set; }
 
 		public MountingPositionType MountingPosition { get; set; }
+		
 		#endregion
 
 		#region Protected Methods
