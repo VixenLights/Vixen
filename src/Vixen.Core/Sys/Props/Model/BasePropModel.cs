@@ -96,7 +96,7 @@ namespace Vixen.Sys.Props.Model
 		/// Rotates the specified vertices by up to three axis rotations.
 		/// </summary>
 		/// <param name="vertices">Vertices to rotate</param>
-		protected void RotatePoints(List<NodePoint> vertices, ObservableCollection<AxisRotationModel>rotations)
+		protected void RotatePoints(List<NodePoint> vertices, ObservableCollection<AxisRotationModel> rotations)
 		{
 			if (rotations == null)
 			{
@@ -129,7 +129,7 @@ namespace Vixen.Sys.Props.Model
 				}
 			}
 		}
-		
+
 		#endregion
 
 		#region Private Methods
