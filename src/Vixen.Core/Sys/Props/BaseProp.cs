@@ -69,14 +69,14 @@ namespace Vixen.Sys.Props
 			}
 		}
 
-        /// <summary>
-        /// Gets the unique identifier for the Prop.
-        /// </summary>
-        /// <remarks>
-        /// This identifier is automatically generated upon the creation of the Prop
-        /// and is used to uniquely distinguish it within the Vixen system.
-        /// </remarks>
-        public Guid Id
+		/// <summary>
+		/// Gets the unique identifier for the Prop.
+		/// </summary>
+		/// <remarks>
+		/// This identifier is automatically generated upon the creation of the Prop
+		/// and is used to uniquely distinguish it within the Vixen system.
+		/// </remarks>
+		public Guid Id
 		{
 			get => _id;
 			init => SetProperty(ref _id, value);
@@ -85,6 +85,10 @@ namespace Vixen.Sys.Props
 		/// <summary>
 		/// Gets or sets the name of the Prop.
 		/// </summary>
+		/// <remarks>
+		/// The <see cref="Name"/> property is a friendly name for the Prop.
+		/// Changing this property triggers the renaming of associated Prop elements.
+		/// </remarks>
 		public string Name
 		{
 			get => _name;
@@ -117,37 +121,6 @@ namespace Vixen.Sys.Props
 		}
 
 		public PropType PropType { get; init; }
-
-
-		/*
-		private ObservableCollection<AxisRotationModel> _rotations;
-		public ObservableCollection<AxisRotationModel> Rotations
-		{
-			get => _rotations;
-			set
-			{
-				// Handle changes to both the Rotation collection and individual elements within the Rotation collection
-				if (ReferenceEquals(_rotations, value))
-					return;
-
-				if (_rotations != null)
-				{
-					_rotations.CollectionChanged -= Rotations_CollectionChanged;
-					UnsubscribeFromItems(_rotations);
-				}
-
-				_rotations = value;
-
-				if (_rotations != null)
-				{
-					_rotations.CollectionChanged += Rotations_CollectionChanged;
-					SubscribeToItems(_rotations);
-				}
-
-				OnPropertyChanged(nameof(Rotations));
-			}
-        }
-		*/
 
         /// <summary>
         /// Gets or sets the name of the user who created this Prop.
