@@ -123,8 +123,6 @@ namespace VixenApplication.Setup.ElementTemplates
 			IDependencyResolver dependencyResolver = this.GetDependencyResolver();
 			IWizardService? wizardService = dependencyResolver.Resolve<IWizardService>();
 			ArgumentNullException.ThrowIfNull(wizardService);
-
-			ArgumentNullException.ThrowIfNull(wizardService);
 			
 			// Display the intelligent fixture wizard
 			bool? result = (await wizardService.ShowWizardAsync(_wizard)).DialogResult;
@@ -195,8 +193,6 @@ namespace VixenApplication.Setup.ElementTemplates
 
 			// Retrieve the color scheme service
 			IBaseColorSchemeService? baseColorService = dependencyResolver.Resolve<IBaseColorSchemeService>();
-			ArgumentNullException.ThrowIfNull(baseColorService);
-
 			ArgumentNullException.ThrowIfNull(baseColorService);
 
 			// Select the dark color scheme
