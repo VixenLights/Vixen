@@ -760,9 +760,9 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		{
 			PropManager propManager = VixenSystem.Props;
 
-			propManager.RootNode.AddChild(MockPropNodeGroup<Tree>("Mini Tree"));
+			propManager.RootNode.AddChild(MockPropNodeGroup<TreeProp>("Mini Tree"));
 
-			propManager.RootNode.AddChild(MockPropNodeGroup<Arch>("Arch"));
+			propManager.RootNode.AddChild(MockPropNodeGroup<ArchProp>("Arch"));
 
 			propManager.RootNode.AddChild(MockPropNodeGroup<IntelligentFixtureProp>("Intelligent Fixture"));
 		}

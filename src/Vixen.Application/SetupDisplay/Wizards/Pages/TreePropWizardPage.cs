@@ -237,7 +237,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 
         public IProp GetProp()
         {
-            var tree = VixenSystem.Props.CreateProp<Tree>(Name);
+            var tree = VixenSystem.Props.CreateProp<TreeProp>(Name);
             tree.Strings = Strings;
             tree.NodesPerString = NodesPerString;
             //TODO add in other fields when wizard has full function
