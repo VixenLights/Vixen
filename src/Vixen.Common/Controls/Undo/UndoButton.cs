@@ -6,7 +6,6 @@ namespace Common.Controls
 	public class UndoButton : ToolStripSplitButton
 	{
 		private ToolStripDropDown m_toolDrop = null;
-		private ToolStripControlHost m_toolHost = null;
 		private UndoDropDownControl m_dropControl = null;
 
 		private const int SetWidth = 200;
@@ -23,18 +22,18 @@ namespace Common.Controls
 			m_dropControl.ButtonType = ButtonType;
 
 			// ...hosted by a ToolStripControlHost
-			m_toolHost = new ToolStripControlHost(m_dropControl)
-			             	{
-			             		Size = new Size(SetWidth, SetHeight),
-			             		Margin = new Padding(0)
-			             	};
+			var mToolHost = new ToolStripControlHost(m_dropControl)
+			{
+				Size = new Size(SetWidth, SetHeight),
+				Margin = new Padding(0)
+			};
 
 			// ... and shown in a ToolStripDropDown.
 			m_toolDrop = new ToolStripDropDown()
 			             	{
 			             		Padding = new Padding(0)
 			             	};
-			m_toolDrop.Items.Add(m_toolHost);
+			m_toolDrop.Items.Add(mToolHost);
 
 
 			DisplayStyle = ToolStripItemDisplayStyle.Image;

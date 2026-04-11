@@ -12,7 +12,6 @@ namespace VixenModules.Output.ElexolEtherIO
 	{
 		private int m_MinIntensity = 1;
 		private IPAddress m_IPAddress = null;
-		private ElexolEtherIOData _data;
 		private readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public SetupDialog(ElexolEtherIOData data)
@@ -20,29 +19,27 @@ namespace VixenModules.Output.ElexolEtherIO
 			InitializeComponent();
 			ThemeUpdateControls.UpdateControls(this);
 
-			_data = data;
-
-			if (_data.Address == null)
+			if (data.Address == null)
 			{
 				ipAddressTextBox.Text = "127.0.0.1";
 			}
 			else
 			{
-				ipAddressTextBox.Text = _data.Address.ToString();
+				ipAddressTextBox.Text = data.Address.ToString();
 			}
 
-			if (_data.Port <= 0)
+			if (data.Port <= 0)
 			{
 				portTextBox.Text = "2424";
 			}
 			else
 			{
-				portTextBox.Text = _data.Port.ToString();
+				portTextBox.Text = data.Port.ToString();
 			}
 
-			if (_data.MinimumIntensity > 1)
+			if (data.MinimumIntensity > 1)
 			{
-				m_MinIntensity = _data.MinimumIntensity;
+				m_MinIntensity = data.MinimumIntensity;
 			}
 			sliderMinIntensityTrackBar.Value = m_MinIntensity;
 			minIntensityLabel.Text = m_MinIntensity.ToString();

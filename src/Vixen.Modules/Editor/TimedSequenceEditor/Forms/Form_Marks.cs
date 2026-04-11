@@ -14,7 +14,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private ElementHost host;
 		private readonly MarkDockerView _markDockerView;
-		private MarkDockerViewModel _mdvm;
 
 		public Form_Marks(TimedSequence sequence)
 		{
@@ -25,8 +24,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			Catel.Windows.Controls.UserControl.DefaultSkipSearchingForInfoBarMessageControlValue = true;
 
-			_mdvm = new MarkDockerViewModel(sequence.LabeledMarkCollections);
-			_markDockerView = new MarkDockerView(_mdvm);
+			var mdvm = new MarkDockerViewModel(sequence.LabeledMarkCollections);
+			_markDockerView = new MarkDockerView(mdvm);
 			host.Child = _markDockerView;
 
 			Controls.Add(host);

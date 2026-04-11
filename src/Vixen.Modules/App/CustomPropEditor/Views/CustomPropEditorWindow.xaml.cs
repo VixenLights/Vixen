@@ -9,13 +9,12 @@ namespace VixenModules.App.CustomPropEditor.Views
     /// </summary>
     public partial class CustomPropEditorWindow : Window
     {
-        private readonly PropEditorViewModel _viewModel;
-        public CustomPropEditorWindow()
+	    public CustomPropEditorWindow()
         {
-            InitializeComponent();
+	        InitializeComponent();
             Icon = Common.Resources.Properties.Resources.Icon_Vixen3.ToImageSource();
-            _viewModel = new PropEditorViewModel();
-            DataContext = _viewModel;
+            var viewModel = new PropEditorViewModel();
+            DataContext = viewModel;
         }
     }
 }

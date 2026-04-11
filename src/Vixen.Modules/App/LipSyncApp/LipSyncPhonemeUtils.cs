@@ -432,15 +432,13 @@ namespace VixenModules.App.LipSyncApp
 
 	class PapagayoWord : PapagayoImportObject
 	{
-		string line = null;
 		string m_wordText = null;
-		int m_numPhoneme = 0;
 		PapagayoPhoneme[] m_phoneme = null;
 
 		public PapagayoWord(StreamReader file,
 			ref List<PapagayoPhoneme> phonemes)
 		{
-			line = file.ReadLine();
+			var line = file.ReadLine();
 			if (line == null)
 			{
 				throw new IOException("Corrupt File Format");
@@ -453,11 +451,11 @@ namespace VixenModules.App.LipSyncApp
 				m_wordText = split[0].TrimStart(null);
 				StartFrame = Convert.ToInt32(split[1].TrimStart(null));
 				EndFrame = Convert.ToInt32(split[2].TrimStart(null));
-				m_numPhoneme = Convert.ToInt32(split[3].TrimStart(null));
-				m_phoneme = new PapagayoPhoneme[m_numPhoneme];
+				var mNumPhoneme = Convert.ToInt32(split[3].TrimStart(null));
+				m_phoneme = new PapagayoPhoneme[mNumPhoneme];
 
 				PapagayoPhoneme lastObj = null;
-				for (int j = 0; j < m_numPhoneme; j++)
+				for (int j = 0; j < mNumPhoneme; j++)
 				{
 					if ((line = file.ReadLine()) != null)
 					{
