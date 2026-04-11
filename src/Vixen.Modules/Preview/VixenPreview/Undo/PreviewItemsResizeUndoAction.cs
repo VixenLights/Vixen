@@ -32,7 +32,7 @@ namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 		{
 			get
 			{
-				return string.Format("Resize 1");
+				return "Resize 1";
 			}
 		}
 	}
