@@ -1303,14 +1303,14 @@ namespace VixenApplication.SetupDisplay.ViewModels
 			_refreshPreviewProp = true;
 		}
 
-        /// <summary>
-        /// Draws the currently selected prop in the prop preview.
-        /// </summary>
-        /// <remarks>
-        /// This method needs to be called within the OpenTK control render method.
-        /// Otherwise the two OpenTK controls get confused and the prop preview won't render properly or consistently.
-        /// </remarks>
-        public void DrawProp()
+		/// <summary>
+		/// Draws the currently selected prop in the prop preview.
+		/// </summary>
+		/// <remarks>
+		/// This method needs to be called within the OpenTK control render method.
+		/// Otherwise the two OpenTK controls get confused and the prop preview won't render properly or consistently.
+		/// </remarks>
+		public void DrawProp()
 		{
 			// If the prop preview model has changed then or 
 			// the current preview prop has been modified then...
@@ -1326,7 +1326,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 				// Reset the refresh flag
 				_refreshPreviewProp = false;
 			}
-        }
+		}
 
 		/// <summary>
 		/// Refreshes CanExecute commands.
@@ -1366,7 +1366,6 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 		}
 
-        #endregion]		
-
+		#endregion]		
 	}
 }
