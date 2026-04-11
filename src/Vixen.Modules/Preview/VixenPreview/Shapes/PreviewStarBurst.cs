@@ -379,8 +379,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				int pointNum = 0;
 				foreach (PreviewLine line in Strings)
 				{
-					var _inner = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(innerEllipse[pointNum]), ZoomLevel, PreviewTools.RotateTypes.Clockwise);
-					var _outer = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(outerEllipse[pointNum]), ZoomLevel, PreviewTools.RotateTypes.Clockwise);
+					var _inner = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(innerEllipse[pointNum]), ZoomLevel);
+					var _outer = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(outerEllipse[pointNum]), ZoomLevel);
 
 					line.Point1 = _inner.ToPoint();
 					line.Point2 = _outer.ToPoint();

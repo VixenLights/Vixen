@@ -719,7 +719,7 @@ namespace Common.Controls
 			if (!skipPatchCheck && CheckAndPromptIfNodeWillLosePatches(parent))
 				return null;
 
-			ElementNode newNode = ElementNodeService.Instance.CreateSingle(parent, nodeName, true);
+			ElementNode newNode = ElementNodeService.Instance.CreateSingle(parent, nodeName);
 			if (repopulateNodeTree)
 				PopulateNodeTree(newNode);
 			return newNode;

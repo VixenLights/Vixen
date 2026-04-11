@@ -213,7 +213,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public override void SetSelectPoint(PreviewPoint point)
 		{
 			foreach (PreviewLightBaseShape shape in Strings) {
-				shape.SetSelectPoint(null);
+				shape.SetSelectPoint();
 			}
 			topLeftStart = new PreviewPoint(_topLeft.X, _topLeft.Y);
 			startWidth = BottomRight.X - TopLeft.X;

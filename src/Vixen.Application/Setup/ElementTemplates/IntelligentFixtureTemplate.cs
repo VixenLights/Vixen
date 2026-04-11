@@ -1085,7 +1085,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			_colorPropertyCreated = false;
 
 			// Create the new display element node
-			ElementNode node = ElementNodeService.Instance.CreateSingle(null, fixtureName, true, true);
+			ElementNode node = ElementNodeService.Instance.CreateSingle(null, fixtureName);
 
 			// Add the intelligent fixture property to the new node
 			node.Properties.Add(IntelligentFixtureDescriptor._typeId);

@@ -419,8 +419,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						PreviewLine line = _strings[stringNum] as PreviewLine;
 						var x1 = (int)Math.Round(x, MidpointRounding.AwayFromZero);
 
-						line.Point1 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(x1, y + height), ZoomLevel, PreviewTools.RotateTypes.Clockwise).ToPoint();
-						line.Point2 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(x1, y), ZoomLevel, PreviewTools.RotateTypes.Clockwise).ToPoint();
+						line.Point1 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(x1, y + height), ZoomLevel).ToPoint();
+						line.Point2 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(x1, y), ZoomLevel).ToPoint();
 						line.ZoomLevel = 1;
 
 						line.Layout();
@@ -438,8 +438,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					{
 						PreviewLine line = _strings[stringNum] as PreviewLine;
 						var y1 = (int)Math.Round(y, MidpointRounding.AwayFromZero);
-						line.Point1 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(x, y1), ZoomLevel, PreviewTools.RotateTypes.Clockwise).ToPoint();
-						line.Point2 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint((x + width), y1), ZoomLevel, PreviewTools.RotateTypes.Clockwise).ToPoint();
+						line.Point1 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(x, y1), ZoomLevel).ToPoint();
+						line.Point2 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint((x + width), y1), ZoomLevel).ToPoint();
 						line.ZoomLevel = 1;
 
 						line.Layout();

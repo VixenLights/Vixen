@@ -263,8 +263,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     var line = Strings[stringNum] as PreviewLine;
                     line.AddStartPadding = stringNum > 0;
 
-					line.Point1 = PreviewTools.TransformPreviewPoint(this, _points[stringNum], ZoomLevel, PreviewTools.RotateTypes.Clockwise).ToPoint();
-                    line.Point2 = PreviewTools.TransformPreviewPoint(this, _points[stringNum + 1], ZoomLevel, PreviewTools.RotateTypes.Clockwise).ToPoint();
+					line.Point1 = PreviewTools.TransformPreviewPoint(this, _points[stringNum], ZoomLevel).ToPoint();
+                    line.Point2 = PreviewTools.TransformPreviewPoint(this, _points[stringNum + 1], ZoomLevel).ToPoint();
                     line.ZoomLevel = 1;
                 }
             }

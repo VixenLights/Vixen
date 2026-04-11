@@ -237,7 +237,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				// First we need to see if the object needs to be translated in the X-Y plane.
 				// So, find where the new center would be
 				shape._selectedPoint.PointType = PreviewPoint.PointTypes.None;
-				var newCenter = TransformPreviewPoint(shape, new PreviewPoint(shape.Center), 1);
+				var newCenter = TransformPreviewPoint(shape, new PreviewPoint(shape.Center));
 				shape._selectedPoint.PointType = PreviewPoint.PointTypes.RotateHandle;
 
 				// Check to see if any translation is needed.

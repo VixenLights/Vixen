@@ -14,7 +14,7 @@
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.ResizeRedraw, true);
-			EnableDisableHandlers(true);
+			EnableDisableHandlers();
 		}
 
 		#region Properties

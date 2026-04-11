@@ -302,8 +302,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					line.Point1 = new Point((int)Math.Round(x), (int)Math.Round(y));
                     line.Point2 = new Point((int)Math.Round(x), (int)Math.Round(y) + lineLength);
 
-					line.Point1 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(line.Point1), ZoomLevel, PreviewTools.RotateTypes.Clockwise).ToPoint();
-					line.Point2 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(line.Point2), ZoomLevel, PreviewTools.RotateTypes.Clockwise).ToPoint();
+					line.Point1 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(line.Point1), ZoomLevel).ToPoint();
+					line.Point2 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(line.Point2), ZoomLevel).ToPoint();
 					line.ZoomLevel = 1;
 
 					x -= xSpacing;

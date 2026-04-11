@@ -145,7 +145,7 @@ namespace VixenModules.Effect.Borders
 				_data.Thickness = value;
 				IsDirty = true;
 				OnPropertyChanged();
-				UpdateMarqueeModeControlAttributes(true);
+				UpdateMarqueeModeControlAttributes();
 			}
 		}
 

@@ -2529,7 +2529,7 @@ namespace VixenModules.Preview.VixenPreview
 					if (OnSelectDisplayItem != null) OnSelectDisplayItem(this, _selectedDisplayItem);
 					_selectedDisplayItem.Shape.MoveTo(10, 10);
 					_selectedDisplayItem.Shape.Select(true);
-					_selectedDisplayItem.Shape.SetSelectPoint(null);
+					_selectedDisplayItem.Shape.SetSelectPoint();
 
 					PreviewItemAddAction(); //starts Undo_Redo Action
 

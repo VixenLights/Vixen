@@ -239,7 +239,7 @@ namespace VixenModules.Effect.Whirlpool
 			set
 			{
 				_whirlpoolMode = value;
-				UpdateWhirlModeConfigurationAttributes(true);
+				UpdateWhirlModeConfigurationAttributes();
 
 				// If the whirlpool mode is meteor then...
 				if (_whirlpoolMode == WhirlpoolMode.Meteor)
@@ -362,7 +362,7 @@ namespace VixenModules.Effect.Whirlpool
 			set
 			{
 				_thickness = value;
-				UpdateThicknessAttributes(true);
+				UpdateThicknessAttributes();
 				OnPropertyChanged();
 			}
 		}
@@ -417,7 +417,7 @@ namespace VixenModules.Effect.Whirlpool
 			set
 			{
 				_colorMode = value;
-				UpdateColorModeAttribute(true);
+				UpdateColorModeAttribute();
 				OnPropertyChanged();
 			}
 		}

@@ -143,7 +143,7 @@ namespace VixenModules.Effect.Whirlpool
 				_data.Columns = value;
 				IsDirty = true;
 				UpdateGridPanels();
-				UpdateWhirlpoolPanelAttributes(true);
+				UpdateWhirlpoolPanelAttributes();
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(Whirls));
 			}
@@ -164,7 +164,7 @@ namespace VixenModules.Effect.Whirlpool
 				_data.Rows = value;
 				IsDirty = true;
 				UpdateGridPanels();
-				UpdateWhirlpoolPanelAttributes(true);
+				UpdateWhirlpoolPanelAttributes();
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(Whirls));
 			}
@@ -202,7 +202,7 @@ namespace VixenModules.Effect.Whirlpool
 			{
 				_data.IndividualConfiguration = value;
 				IsDirty = true;
-				UpdateWhirlAttributes(true);
+				UpdateWhirlAttributes();
 				OnPropertyChanged();
 			}
 		}
@@ -224,7 +224,7 @@ namespace VixenModules.Effect.Whirlpool
 				_data.WhirlMode = value;
 				IsDirty = true;
 				UpdateWhirlMode(value);
-				UpdateWhirlModeConfigurationAttributes(true);
+				UpdateWhirlModeConfigurationAttributes();
 
 				// If the whirlpool mode is meteor then...
 				if (_data.WhirlMode == WhirlpoolMode.Meteor)
@@ -356,7 +356,7 @@ namespace VixenModules.Effect.Whirlpool
 			{
 				_data.Thickness = value;
 				UpdateThickness(value);
-				UpdateThicknessAttributes(true);
+				UpdateThicknessAttributes();
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -917,7 +917,7 @@ namespace VixenModules.Effect.Whirlpool
 		/// </summary>
 		private void UpdateAllAttributes()
 		{
-			UpdateStringOrientationAttributes(false);
+			UpdateStringOrientationAttributes();
 			UpdateColorModeAttribute(false);
 			UpdateWhirlAttributes(false);
 			UpdateWhirlModeConfigurationAttributes(false);

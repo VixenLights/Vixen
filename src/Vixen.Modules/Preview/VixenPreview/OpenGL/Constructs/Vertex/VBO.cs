@@ -99,7 +99,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex
         /// </summary>
         /// <param name="data">Specifies a pointer to data that will be copied into the data store for initialization.</param>
         public VBO(T[] data)
-            : this(data, BufferTarget.ArrayBuffer, BufferUsageHint.StaticDraw)
+            : this(data, BufferTarget.ArrayBuffer)
         {
         }
         #endregion

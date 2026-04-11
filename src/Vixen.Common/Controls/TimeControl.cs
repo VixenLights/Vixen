@@ -123,7 +123,7 @@ public partial class TimeControl : UserControl
 		if (maxValue != null)
 			Initialize(TimeSpan.FromMilliseconds(value), TimeSpan.FromMilliseconds((double)maxValue));
 		else
-			Initialize(TimeSpan.FromMilliseconds(value), null);
+			Initialize(TimeSpan.FromMilliseconds(value));
 	}
 
 	private void Initialize(TimeSpan value, TimeSpan? maxValue = null)
