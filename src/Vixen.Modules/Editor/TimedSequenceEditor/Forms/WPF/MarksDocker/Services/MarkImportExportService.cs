@@ -256,7 +256,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 					{
 						const string pattern = @"(\d*\.\d*)\s(\d*\.\d*)\s(\d)";
 						MatchCollection matches = Regex.Matches(file, pattern);
-						int numBeats = Convert.ToInt32(matches.Cast<Match>().Max(x => x.Groups[3].Value));
+						int numBeats = Convert.ToInt32(matches.Max(x => x.Groups[3].Value));
 						var marks = new List<MarkCollection>(numBeats);
 						for (int i = 0; i < numBeats; i++)
 						{

@@ -660,13 +660,6 @@ namespace VixenApplication.GraphicalPatching
 					diagramPresenter.SelectShape(childShape ?? shapeToSelect, false);
 					result = true;
 				}
-
-				// validate if the desired shape or its parent was selected
-				if (shapeToSelect.Parent != null) {
-					if (!diagramPresenter.SelectedShapes.Contains(shapeToSelect))
-						if (diagramPresenter.SelectedShapes.Contains(shapeToSelect.Parent))
-							shapeToSelect = shapeToSelect.Parent;
-				}
 			}
 			else if (selectedShapeAtCursorInfo.IsEmpty) {
 				// if there was no other shape to select and none of the selected shapes is under the cursor,
