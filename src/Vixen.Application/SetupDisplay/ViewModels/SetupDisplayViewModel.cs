@@ -122,6 +122,12 @@ namespace VixenApplication.SetupDisplay.ViewModels
 
 			// Intialize the command to delete selected preview props
 			DeletePreviewProp = new RelayCommand(DeleteSelectedPreviewProps, CanDeleteSelectedPreviewProps);
+			
+			// Default the background to full intensity
+			BackgroundBrightness = 1.0f;
+
+			// Default the background brightness slider to disabled
+			BackgroundBrightnessEnabled = false;
 		}
 
 		#endregion
@@ -1288,8 +1294,7 @@ namespace VixenApplication.SetupDisplay.ViewModels
 		/// Updates the prop displayed in the prop preview.
 		/// </summary>
 		/// <param name="prop">Prop to display in the prop preview</param>
-		/// <param name="force">Force the Preview to update immediately</param>
-		internal void UpdatePreviewModel(IProp prop)
+		internal void UpdatePreviewModel(IProp? prop)
 		{
 			// Save off the prop model to display in the prop preview
 			_nextPreviewProp = prop;
@@ -1307,8 +1312,9 @@ namespace VixenApplication.SetupDisplay.ViewModels
         /// </remarks>
         public void DrawProp()
 		{
-            // If the prop preview model has changed then...
-            if (_nextPreviewProp != _currentPreviewProp ||
+			// If the prop preview model has changed then or 
+			// the current preview prop has been modified then...
+			if (_nextPreviewProp != _currentPreviewProp ||
                 _refreshPreviewProp)
 			{
                 // Draw the prop in the OpenGL prop preview
