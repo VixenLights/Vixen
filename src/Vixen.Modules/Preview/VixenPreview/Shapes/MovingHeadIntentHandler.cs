@@ -657,79 +657,76 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// </summary>33
 		/// <param name="commandIntent">Tagged command intent</param>
 		public override void Handle(IIntentState<CommandValue> commandIntent)
-		{
-			// Attempt to cast the command intent to a named fixture index command
-			Named8BitCommand<FixtureIndexType> taggedCommand = commandIntent.GetValue().Command as Named8BitCommand<FixtureIndexType>;
-
+		{			
 			// If the intent is a named commmand then...
-			if (taggedCommand != null)
+			if (commandIntent.GetValue().Command is Named8BitCommand<FixtureIndexType> taggedCommand)
 			{
 				// Update the legend on the moving head shape
-				UpdateLegend(taggedCommand);				
-			}
-			
-			// If the named command is the LampOff command or
-			// shutter closed command then...
-			if (((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.LampOff ||
-				((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.ShutterClosed)
-			{
-				// Turn off the moving head beam
-				MovingHead.OnOff = false;
-			}
-			// If the named command is the LampOn command or
-			// shutter Open command then...
-			else if (((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.LampOn ||
-					 ((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.ShutterOpen)
-			{
-				// If not in strobe mode then...
-				if (!_strobeModeEnabled)
+				UpdateLegend(taggedCommand);
+
+				// If the named command is the LampOff command or
+				// shutter closed command then...
+				if (((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.LampOff ||
+					((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.ShutterClosed)
 				{
-					// Turn on the moving head beam
-					MovingHead.OnOff = true;
+					// Turn off the moving head beam
+					MovingHead.OnOff = false;
 				}
+				// If the named command is the LampOn command or
+				// shutter Open command then...
+				else if (((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.LampOn ||
+						 ((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.ShutterOpen)
+				{
+					// If not in strobe mode then...
+					if (!_strobeModeEnabled)
+					{
+						// Turn on the moving head beam
+						MovingHead.OnOff = true;
+					}
+				}
+				// If the command is a color wheel index command then...
+				else if (((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.ColorWheel)
+				{
+					// Handle the color wheel index command
+					HandleColorWheelCommand(taggedCommand);
+				}
+				// Otherwise if the command is to strobe then...
+				else if (((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.Strobe)
+				{
+					// Store off a flag that the fixture is in strobe mode so that the shutter
+					// doesn't get automatically opened
+					_strobeModeEnabled = true;
+
+					// Store off the a strobe intent was received
+					_strobeIntentDetected = true;
+
+					// Retrieve the min and max strobe range constraints
+					int min = taggedCommand.RangeMinimum;
+					int max = taggedCommand.RangeMaximum;
+
+					// Convert fixture strobe constraints from Hz to ms
+					double fixtureMinimumInMs = 1.0 / StrobeRateMinimum * 1000;
+					double fixtureMaximumInMs = 1.0 / StrobeRateMaximum * 1000;
+
+					// Retrieve the strobe rate from the intent command
+					double sRate = (double)taggedCommand.CommandValue;
+
+					// Determine how far away from the minimum the rate is
+					double distanceFromMinimum = sRate - min;
+
+					// Determine penetration into the range as percent (0-1)
+					double penetrationRatio = distanceFromMinimum / (max - min);
+
+					// Apply the ratio to strobe rate range
+					double strobeRateMs = penetrationRatio * (fixtureMinimumInMs - fixtureMaximumInMs) + fixtureMaximumInMs;
+
+					// Flip things around since the maximum strobe rate is really the smaller number
+					MovingHead.StrobeRate = (int)(fixtureMinimumInMs + fixtureMaximumInMs) - (int)strobeRateMs;
+				}
+
+				//TODO: Better place to put this code?
+				MovingHead.BeamLength = (int)BeamLength;
 			}
-			// If the command is a color wheel index command then...
-			else if (((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.ColorWheel)
-			{
-				// Handle the color wheel index command
-				HandleColorWheelCommand(taggedCommand);
-			}
-			// Otherwise if the command is to strobe then...
-			else if (((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.Strobe)
-			{
-				// Store off a flag that the fixture is in strobe mode so that the shutter
-				// doesn't get automatically opened
-				_strobeModeEnabled = true;
-
-				// Store off the a strobe intent was received
-				_strobeIntentDetected = true;
-
-				// Retrieve the min and max strobe range constraints
-				int min = taggedCommand.RangeMinimum;
-				int max = taggedCommand.RangeMaximum;
-
-				// Convert fixture strobe constraints from Hz to ms
-				double fixtureMinimumInMs = 1.0 / StrobeRateMinimum * 1000;
-				double fixtureMaximumInMs = 1.0 / StrobeRateMaximum * 1000;
-
-				// Retrieve the strobe rate from the intent command
-				double sRate = (double)taggedCommand.CommandValue;
-			
-				// Determine how far away from the minimum the rate is
-				double distanceFromMinimum = sRate - min;
-
-				// Determine penetration into the range as percent (0-1)
-				double penetrationRatio =  distanceFromMinimum / (max - min);
-
-				// Apply the ratio to strobe rate range
-				double strobeRateMs = penetrationRatio * (fixtureMinimumInMs - fixtureMaximumInMs) + fixtureMaximumInMs;
-
-				// Flip things around since the maximum strobe rate is really the smaller number
-				MovingHead.StrobeRate = (int)(fixtureMinimumInMs + fixtureMaximumInMs) - (int)strobeRateMs;
-			}
-			
-			//TODO: Better place to put this code?
-			MovingHead.BeamLength = (int)BeamLength;
 		}
 
 		#endregion
