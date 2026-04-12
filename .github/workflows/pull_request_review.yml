@@ -16,7 +16,7 @@ jobs:
           ACTOR: ${{ github.actor }}
         run: |
           mkdir -p ./pr
-          echo "$REVIEW_STATE|$PR_NUMBER|$ACTOR > ./pr/pr_review_info
+          echo "$REVIEW_STATE|$PR_NUMBER|$ACTOR" > ./pr/pr_review_info
       - uses: actions/upload-artifact@v4
         with:
           name: pr_review_info
