@@ -10,7 +10,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
     /// <summary>
     /// Maintains fixture index data view.
     /// </summary>
-    public partial class IndexedView : IRefreshGrid
+    public partial class IndexedView : DataGridView, IRefreshGrid
 	{
 		#region Constructor
 		
@@ -64,58 +64,6 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 			}
 		}
 
-
-		#endregion
-
-		#region Private EditCellInOneClick Methods
-
-		/// <summary>
-		/// Datagrid event when a cell receives focus.
-		/// </summary>
-		/// <param name="sender">Event sender</param>
-		/// <param name="e">Event arguments</param>
-		/// <remarks>This solution was found here:
-		/// https://stackoverflow.com/questions/3426765/single-click-edit-in-wpf-datagrid
-		/// </remarks>
-		private void DataGrid_CellGotFocus(object sender, RoutedEventArgs e)
-		{
-			// Lookup for the source to be DataGridCell
-			if (e.OriginalSource.GetType() == typeof(DataGridCell))
-			{
-				// Starts the Edit on the row;
-				DataGrid grd = (DataGrid)sender;
-				grd.BeginEdit(e);
-
-				Control control = GetFirstChildByType<Control>(e.OriginalSource as DataGridCell);
-				if (control != null)
-				{
-					control.Focus();
-				}
-			}
-		}
-
-		/// <summary>
-		/// Refer to https://stackoverflow.com/questions/3426765/single-click-edit-in-wpf-datagrid for more information.
-		/// </summary>		
-		private T GetFirstChildByType<T>(DependencyObject prop) where T : DependencyObject
-		{
-			for (int i = 0; i < VisualTreeHelper.GetChildrenCount(prop); i++)
-			{
-				DependencyObject child = VisualTreeHelper.GetChild((prop), i) as DependencyObject;
-				if (child == null)
-					continue;
-
-				T castedProp = child as T;
-				if (castedProp != null)
-					return castedProp;
-
-				castedProp = GetFirstChildByType<T>(child);
-
-				if (castedProp != null)
-					return castedProp;
-			}
-			return null;
-		}
 
 		#endregion
 

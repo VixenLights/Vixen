@@ -1,4 +1,4 @@
-﻿<catel:UserControl x:Class="VixenModules.Editor.FixturePropertyEditor.Views.IndexedView"
+﻿<local:DataGridView x:Class="VixenModules.Editor.FixturePropertyEditor.Views.IndexedView"
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:catel="http://schemas.catelproject.com"
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -182,4 +182,4 @@
 		</WrapPanel>
 
 	</Grid>
-</catel:UserControl>
+</local:DataGridView>
