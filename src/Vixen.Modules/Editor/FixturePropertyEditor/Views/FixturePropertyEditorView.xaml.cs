@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Media;
 using VixenModules.Editor.FixturePropertyEditor.ViewModels;
 
 namespace VixenModules.Editor.FixturePropertyEditor.Views
