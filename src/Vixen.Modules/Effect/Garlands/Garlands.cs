@@ -290,7 +290,7 @@ namespace VixenModules.Effect.Garlands
 			int garlandsState;
 			if (MovementType == MovementType.Iterations)
 			{
-				garlandsState = (int) (limit - _frames*(limit/ GetNumberFrames() * Iterations))/4; //Iterations
+				garlandsState = (limit - _frames*(limit/ GetNumberFrames() * Iterations))/4; //Iterations
 				if (garlandsState <= 0)
 					_frames = 0;
 			}
@@ -411,7 +411,7 @@ namespace VixenModules.Effect.Garlands
 		// return a value between c1 and c2
 		private int ChannelBlend(int c1, int c2, double ratio)
 		{
-			return c1 + (int)Math.Floor(ratio * (double)(c2 - c1) + 0.5);
+			return c1 + (int)Math.Floor(ratio * (c2 - c1) + 0.5);
 		}
 
 		public Color Get2ColorBlend(int coloridx1, int coloridx2, double ratio, int frame)
@@ -471,7 +471,7 @@ namespace VixenModules.Effect.Garlands
 				int garlandsState;
 				if (MovementType == MovementType.Iterations)
 				{
-					garlandsState = (int)(limit - _frames * (limit / GetNumberFrames() * Iterations)) / 4; 
+					garlandsState = (limit - _frames * (limit / GetNumberFrames() * Iterations)) / 4; 
 					if (garlandsState <= 0)
 					{
 						_frames = 0;

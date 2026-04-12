@@ -28,7 +28,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		private Rectangle GetScrollerRectangle(double pos)
 		{
 			return new Rectangle(
-				0, (int) (_position*(double) (Height - 11)),
+				0, (int) (_position*(Height - 11)),
 				Width - 1, 10);
 		}
 
@@ -59,7 +59,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			e.Graphics.Restore(state);
 			//draw gridlines
 			if ((ModifierKeys & Keys.Shift) != 0) {
-				float dy = (float) (Height - 11)/8f, y = 5f;
+				float dy = (Height - 11)/8f, y = 5f;
 				using (Pen pn = new Pen(new HatchBrush(HatchStyle.SmallCheckerBoard,
 				                                       Color.FromArgb(80, 255, 255, 255),
 				                                       Color.FromArgb(0, 0, 0, 0)))) {
@@ -99,7 +99,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		{
 			base.OnMouseDown(e);
 			if (SetPosition(
-				(double) (e.Y - 5)/(double) Math.Max(1, Height - 11)))
+				(e.Y - 5)/(double) Math.Max(1, Height - 11)))
 				RaiseScroll();
 		}
 
@@ -108,7 +108,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			base.OnMouseMove(e);
 			if (e.Button == MouseButtons.Left)
 				if (SetPosition(
-					(double) (e.Y - 5)/(double) Math.Max(1, Height - 11)))
+					(e.Y - 5)/(double) Math.Max(1, Height - 11)))
 					RaiseScroll();
 		}
 

@@ -1158,8 +1158,8 @@ namespace VixenModules.Effect.Borders
 		/// <param name="frameBuffer">Frame buffer to render into</param>
 		private void RenderEffectMarqueeSingleString(int effectFrame, IPixelFrameBuffer frameBuffer)
 		{
-			int bufferWi = (int)Math.Round(((double)(_bufferWi * XScale) / 100.0));
-			int bufferHt = (int)Math.Round(((double)(_bufferHt * YScale) / 100.0));
+			int bufferWi = (int)Math.Round(_bufferWi * XScale / 100.0);
+			int bufferHt = (int)Math.Round(_bufferHt * YScale / 100.0);
 
 			// Calculate the length of the single string of pixels
 			int length = bufferWi * bufferHt;
@@ -1363,8 +1363,8 @@ namespace VixenModules.Effect.Borders
 			
 			int corner_x1 = 0;
 			int corner_y1 = 0;
-			int corner_x2 = (int)Math.Round(((double)(bufferWi * x_scale) / 100.0) - 1.0);
-			int corner_y2 = (int)Math.Round(((double)(bufferHt * y_scale) / 100.0) - 1.0);
+			int corner_x2 = (int)Math.Round(bufferWi * x_scale / 100.0 - 1.0);
+			int corner_y2 = (int)Math.Round(bufferHt * y_scale / 100.0 - 1.0);
 			int sign = 1;
 			if (reverse_dir)
 			{

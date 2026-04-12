@@ -176,7 +176,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
             RoutedPropertyChangedEventArgs<double> e)
         {
             // find appropriate tick spot, and set slider value
-            SetValueToTick(this, (double)e.NewValue);
+            SetValueToTick(this, e.NewValue);
         }
 
         

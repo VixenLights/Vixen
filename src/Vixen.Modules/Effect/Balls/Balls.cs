@@ -797,7 +797,7 @@ namespace VixenModules.Effect.Balls
 
 		private int CalculateSize(double intervalPosFactor)
 		{
-			int value = (int)ScaleCurveToValue(SizeCurve.GetValue(intervalPosFactor), (int)(_minBuffer / 2), 1);
+			int value = (int)ScaleCurveToValue(SizeCurve.GetValue(intervalPosFactor), _minBuffer / 2.0, 1);
 			if (value < 1) value = 1;
 			return value;
 		}

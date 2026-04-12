@@ -204,16 +204,16 @@ namespace VixenModules.SequenceType.Vixen2x
 						} // end process each V2 channel assigned to the v3 channel
 
 						// get the max intensity for this v2 channel set
-						currentIntensity = Convert.ToByte(Math.Min( (int)255, Math.Max(red, Math.Max(green, blue))));
+						currentIntensity = Convert.ToByte(Math.Min( 255, Math.Max(red, Math.Max(green, blue))));
 
 						// Scale the color to full intensity and let the intensity value attenuate it.
 						if (0 != currentIntensity)
 						{
 							double multplier = Convert.ToDouble(byte.MaxValue) / Convert.ToDouble(currentIntensity);
 
-							red = Math.Min(((int)255), Convert.ToInt32(Convert.ToDouble(red) * multplier));
-							green = Math.Min(((int)255), Convert.ToInt32(Convert.ToDouble(green) * multplier));
-							blue = Math.Min(((int)255), Convert.ToInt32(Convert.ToDouble(blue) * multplier));
+							red = Math.Min(255, Convert.ToInt32(Convert.ToDouble(red) * multplier));
+							green = Math.Min(255, Convert.ToInt32(Convert.ToDouble(green) * multplier));
+							blue = Math.Min(255, Convert.ToInt32(Convert.ToDouble(blue) * multplier));
 						}
 
 						// set the final color

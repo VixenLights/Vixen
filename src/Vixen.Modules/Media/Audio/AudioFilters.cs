@@ -14,7 +14,7 @@ namespace VixenModules.Media.Audio
     {
         public static double[] HighPass(double freq, int sampleRate, double[] data)
         {
-            double fc = (double)freq / sampleRate;
+            double fc = freq / sampleRate;
             int numOfPoles;
             if (fc <= .02) numOfPoles = 4;
             else if (fc <= .05) numOfPoles = 6;
@@ -66,7 +66,7 @@ namespace VixenModules.Media.Audio
 
         public static double[] LowPass(double freq, int sampleRate, double[] data)
         {
-            double fc = (double)freq / sampleRate;
+            double fc = freq / sampleRate;
             int numOfPoles;
             if (fc <= .02) numOfPoles = 4;
             else if (fc <= .05) numOfPoles = 6;

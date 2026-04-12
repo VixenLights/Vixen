@@ -865,20 +865,20 @@ namespace Common.Controls.Timeline
 				if (ZoomToMousePosition)
 				{
 					// holding the control key zooms the horizontal axis under the cursor, by 10% per mouse wheel tick
-					ZoomTime(1.0 - ((double)e.Delta / 1200.0), e.Location);
+					ZoomTime(1.0 - e.Delta / 1200.0, e.Location);
 	//			waveform.Invalidate();
 			}
 				else
 				{
 					// holding the control key zooms the horizontal axis, by 10% per mouse wheel tick
-					Zoom(1.0 - ((double)e.Delta / 1200.0));
+					Zoom(1.0 - e.Delta / 1200.0);
 				}
 			}
 			else if (ModifierKeys.HasFlag(Keys.Shift)) {
 				// holding the skift key moves the horizontal axis, by 10% of the visible time span per mouse wheel tick
 				// wheel towards user   --> negative delta --> VisibleTimeStart increases
 				// wheel away from user --> positive delta --> VisibleTimeStart decreases
-				VisibleTimeStart += VisibleTimeSpan.Scale(-((double)e.Delta / 1200.0));
+				VisibleTimeStart += VisibleTimeSpan.Scale(-(e.Delta / 1200.0));
 	//			waveform.Invalidate();
 			}
 			else {

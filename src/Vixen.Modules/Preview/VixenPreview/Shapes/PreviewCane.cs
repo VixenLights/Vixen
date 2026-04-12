@@ -277,7 +277,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			if (_bottomRightPoint != null && _archLeftPoint != null)
 			{
-				double pixelSpacing = (double)(_bottomRightPoint.Y - _archLeftPoint.Y) / (double)_linePixelCount;
+				double pixelSpacing = (_bottomRightPoint.Y - _archLeftPoint.Y) / (double)_linePixelCount;
 				for (int i = 0; i < _linePixelCount; i++)
 				{
 					PreviewPixel pixel = _pixels[i];

@@ -292,8 +292,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			if (_points != null && _points.Count > 0)
 			{
-				double xSpacing = (double)(_points[0].X - _points[1].X) / (double)(StringCount - 1);
-				double ySpacing = (double)(_points[0].Y - _points[1].Y) / (double)(StringCount - 1);
+				double xSpacing = (_points[0].X - _points[1].X) / (double)(StringCount - 1);
+				double ySpacing = (_points[0].Y - _points[1].Y) / (double)(StringCount - 1);
 				double x = _points[0].X;
 				double y = _points[0].Y;
 				foreach (PreviewLine line in Strings)

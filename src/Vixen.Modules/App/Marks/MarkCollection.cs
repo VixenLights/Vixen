@@ -327,7 +327,7 @@ namespace VixenModules.App.Marks
 							_marks[index].Duration += _marks[index].EndTime;
 						}
 
-						marksChange.Add(marksPreMove, (IMark)_marks[index]);
+						marksChange.Add(marksPreMove, _marks[index]);
 					
 						// Move to the next Mark.
 						index++;

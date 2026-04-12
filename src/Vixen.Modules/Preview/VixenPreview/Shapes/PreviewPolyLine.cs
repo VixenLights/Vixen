@@ -368,8 +368,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                                                     new PreviewTools.Vector2(_points[pointNum + 1].ToPoint()),
                                                     Convert.ToInt32(thisEmptyStartLength + thisActiveLineLength));
 
-                            double xSpacing = (double)(lineStartPoint.X - lineEndPoint.X) / (double)(pixelSpacesInThisLine);
-                            double ySpacing = (double)(lineStartPoint.Y - lineEndPoint.Y) / (double)(pixelSpacesInThisLine);
+                            double xSpacing = (lineStartPoint.X - lineEndPoint.X) / pixelSpacesInThisLine;
+                            double ySpacing = (lineStartPoint.Y - lineEndPoint.Y) / pixelSpacesInThisLine;
                             double x = lineStartPoint.X;
                             double y = lineStartPoint.Y;
 

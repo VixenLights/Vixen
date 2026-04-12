@@ -83,7 +83,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 			get
 			{
 				Bitmap retVal = null;
-				int actualNoteSize = NoteSize * (int)((splitBeatsCB.Checked) ? 2 : 1);
+				int actualNoteSize = NoteSize * (splitBeatsCB.Checked ? 2 : 1);
 
 				if (actualNoteSize == 2)
 				{

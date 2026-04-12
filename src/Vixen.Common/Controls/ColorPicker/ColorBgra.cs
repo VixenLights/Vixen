@@ -29,7 +29,7 @@ namespace Common.Controls.ColorManagement.ColorModels
 		}
 
 		public ColorBgra(byte r, byte g, byte b) :
-			this((byte) 255, r, g, b)
+			this(255, r, g, b)
 		{
 		}
 
@@ -69,7 +69,7 @@ namespace Common.Controls.ColorManagement.ColorModels
 		/// </summary>
 		public int Alpha
 		{
-			get { return (int) A; }
+			get { return A; }
 			set { A = (byte) Math.Min(255, Math.Max(0, value)); }
 		}
 
@@ -78,7 +78,7 @@ namespace Common.Controls.ColorManagement.ColorModels
 		/// </summary>
 		public int Red
 		{
-			get { return (int) R; }
+			get { return R; }
 			set { R = (byte) Math.Min(255, Math.Max(0, value)); }
 		}
 
@@ -87,7 +87,7 @@ namespace Common.Controls.ColorManagement.ColorModels
 		/// </summary>
 		public int Green
 		{
-			get { return (int) G; }
+			get { return G; }
 			set { G = (byte) Math.Min(255, Math.Max(0, value)); }
 		}
 
@@ -96,7 +96,7 @@ namespace Common.Controls.ColorManagement.ColorModels
 		/// </summary>
 		public int Blue
 		{
-			get { return (int) B; }
+			get { return B; }
 			set { B = (byte) Math.Min(255, Math.Max(0, value)); }
 		}
 
@@ -110,10 +110,10 @@ namespace Common.Controls.ColorManagement.ColorModels
 		public static ColorBgra FromArgb(Color value)
 		{
 			return new ColorBgra(
-				(byte) value.A,
-				(byte) value.R,
-				(byte) value.G,
-				(byte) value.B);
+				value.A,
+				value.R,
+				value.G,
+				value.B);
 		}
 
 		/// <summary>
@@ -122,10 +122,10 @@ namespace Common.Controls.ColorManagement.ColorModels
 		public Color ToArgb()
 		{
 			return Color.FromArgb(
-				(int) A,
-				(int) R,
-				(int) G,
-				(int) B);
+				A,
+				R,
+				G,
+				B);
 		}
 
 		#endregion

@@ -194,9 +194,9 @@ namespace VixenModules.App.ColorGradients
 				if (pt == null)
 					return;
 				if (edit.FocusSelection)
-					pt.Focus = (double) vColorLoc.Value/100.0;
+					pt.Focus = vColorLoc.Value/100.0;
 				else
-					pt.Position = (double) vColorLoc.Value/100.0;
+					pt.Position = vColorLoc.Value/100.0;
 			}
 		}
 

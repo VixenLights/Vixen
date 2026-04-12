@@ -1136,7 +1136,7 @@ namespace VixenModules.Effect.Whirlpool
 		/// <returns>Offset of the effect in the X axis</returns>
 		private int CalculateXOffset(double intervalPos)
 		{
-			return (int)Math.Round(ScaleCurveToValue(XOffsetCurve.GetValue(intervalPos), (int)(_bufferWi / 2), (int)(-_bufferWi / 2)));
+			return (int)Math.Round(ScaleCurveToValue(XOffsetCurve.GetValue(intervalPos), (int)(_bufferWi / 2d), (int)(-_bufferWi / 2d)));
 		}
 
 		/// <summary>
@@ -1146,7 +1146,7 @@ namespace VixenModules.Effect.Whirlpool
 		/// <returns>Offset of the effect in the Y axis</returns>
 		private int CalculateYOffset(double intervalPos)
 		{
-			return (int)Math.Round(ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), (int)(_bufferHt / 2), (int)(-_bufferHt / 2)));
+			return (int)Math.Round(ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), (int)(_bufferHt / 2d), (int)(-_bufferHt / 2d)));
 		}
 
 		/// <summary>

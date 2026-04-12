@@ -434,7 +434,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
         private void outputFormatComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox comboBox = (ComboBox)sender;
-            _profile.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ExportFormat", Name), (int)comboBox.SelectedIndex);
+            _profile.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ExportFormat", Name), comboBox.SelectedIndex);
             chkCompress.Enabled = _exportOps.CanCompress(outputFormatComboBox.SelectedItem.ToString());
 			SetUniverseVersionEnabled();
         }
@@ -467,7 +467,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				comboBox.SelectedIndex = exportResolutionDefault;
 			}
 
-            _profile.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ExportResolution", Name), (int)comboBox.SelectedIndex);
+            _profile.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ExportResolution", Name), comboBox.SelectedIndex);
         }
 
 		private void chkGenerateControllerInfo_CheckedChanged(object sender, EventArgs e)

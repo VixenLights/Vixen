@@ -628,7 +628,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
         protected override void OnChecked(RoutedEventArgs e)
         {
             // Hide the tooltip if it is displayed
-            ToolTip tt = ((ToolTip)ToolTipService.GetToolTip((DependencyObject)this));
+            ToolTip tt = ((ToolTip)ToolTipService.GetToolTip(this));
             if (tt != null)
                 tt.IsOpen = false;
 
@@ -649,7 +649,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
         protected override void OnUnchecked(RoutedEventArgs e)
         {
             // Hide the tooltip if it is displayed
-            ToolTip tt = ((ToolTip)ToolTipService.GetToolTip((DependencyObject)this));
+            ToolTip tt = ((ToolTip)ToolTipService.GetToolTip(this));
             if (tt != null)
                 tt.IsOpen = false;
 

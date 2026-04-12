@@ -250,8 +250,8 @@ namespace Common.Controls.ControlsEx.ListControls
 		private Rectangle GetTransformedBounds(System.Drawing.Drawing2D.Matrix transform, Rectangle rct)
 		{
 			return new Rectangle(rct.X, rct.Y,
-			                     (int) ((float) rct.Width*transform.Elements[0]),
-			                     (int) ((float) rct.Height*transform.Elements[3]));
+			                     (int) (rct.Width*transform.Elements[0]),
+			                     (int) (rct.Height*transform.Elements[3]));
 		}
 
 		#region properties

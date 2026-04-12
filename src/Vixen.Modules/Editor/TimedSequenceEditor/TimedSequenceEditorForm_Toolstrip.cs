@@ -220,7 +220,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButton_DecreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			audioToolStripButton_Audio_Devices.Image = Resources.Audio_Devices;
 			audioToolStripButton_Audio_Devices.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			audioToolStripLabel_TimingSpeed.Image  = (Image)SpeedVisualisation();
+			audioToolStripLabel_TimingSpeed.Image  = SpeedVisualisation();
 			audioToolStripLabel_TimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripAudio.MouseWheel += toolStripAudio_MouseWheel;
 		}

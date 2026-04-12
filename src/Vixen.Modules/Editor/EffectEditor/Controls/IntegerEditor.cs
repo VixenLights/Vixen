@@ -453,7 +453,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private int EnforceLimitsAndPrecision(int value)
 		{
-			return (int) Math.Max(Minimum, Math.Min(Maximum, value));
+			return Math.Max(Minimum, Math.Min(Maximum, value));
 		}
 
 		#endregion Helpers

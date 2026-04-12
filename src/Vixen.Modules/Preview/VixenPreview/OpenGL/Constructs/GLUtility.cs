@@ -46,7 +46,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs
 			GCHandle dataPtr = GCHandle.Alloc(data, GCHandleType.Pinned);
 			try
 			{
-				GL.BufferData(target, new IntPtr(size), (IntPtr)((int)dataPtr.AddrOfPinnedObject() + position), usage);
+				GL.BufferData(target, new IntPtr(size), (int)dataPtr.AddrOfPinnedObject() + position, usage);
 			}
 			finally
 			{

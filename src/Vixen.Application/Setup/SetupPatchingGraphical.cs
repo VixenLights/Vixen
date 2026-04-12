@@ -843,7 +843,7 @@ namespace VixenApplication.Setup
 						int columnWidth = _filterWidth / totalShapes;
 						int shapeWidth = Math.Max(Math.Min(columnWidth, ShapeMaxWidth), ShapeMinWidth);
 						int internalColumnOffset = (columnWidth - shapeWidth) / 2;
-						int xpos = _filterX + (int)(shapesSoFar * columnWidth) + internalColumnOffset;
+						int xpos = _filterX + shapesSoFar * columnWidth + internalColumnOffset;
 
 						shapesSoFar++;
 

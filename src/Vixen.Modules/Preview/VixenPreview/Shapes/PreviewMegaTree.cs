@@ -456,7 +456,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 																   _degrees,
 																   _degreeOffset);
 
-				for (int stringNum = 0; stringNum < (int)_stringCount; stringNum++)
+				for (int stringNum = 0; stringNum < _stringCount; stringNum++)
 				{
 					if (stringNum < StringCount && stringNum < _topEllipsePoints.Count())
 					{

@@ -37,7 +37,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			const int lvmFirst = 0x1000;
 			const int lvmSeticonspacing = lvmFirst + 53;
-			SendMessage(listview.Handle, lvmSeticonspacing, IntPtr.Zero, (IntPtr)MakeLong(leftPadding, topPadding));
+			SendMessage(listview.Handle, lvmSeticonspacing, IntPtr.Zero, MakeLong(leftPadding, topPadding));
 		}
 
 		#endregion

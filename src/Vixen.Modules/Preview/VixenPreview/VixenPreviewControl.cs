@@ -2071,7 +2071,7 @@ namespace VixenModules.Preview.VixenPreview
 		public void Paste()
 		{
 			string xml = Clipboard.GetText();
-			SelectedDisplayItems = (List<DisplayItem>) PreviewTools.DeSerializeToDisplayItemList(xml);
+			SelectedDisplayItems = PreviewTools.DeSerializeToDisplayItemList(xml);
 			List<DisplayItem> selected = new List<DisplayItem>(SelectedDisplayItems.ToArray());
 			if (SelectedDisplayItems.Any())
 			{
@@ -2853,11 +2853,11 @@ namespace VixenModules.Preview.VixenPreview
 
 				if (spaceToFill > 0)
 				{
-					float shapeSpacing = (float) spaceToFill/(float) (shapeCount - 1);
+					float shapeSpacing = spaceToFill/(float) (shapeCount - 1);
 					int propSpaceSoFar = 0;
 					for (int shapeNum = 1; shapeNum < shapeCount - 1; shapeNum++)
 					{
-						var newLeft = shapes[0].Right + propSpaceSoFar + (Convert.ToInt32(shapeSpacing*(float) shapeNum));
+						var newLeft = shapes[0].Right + propSpaceSoFar + (Convert.ToInt32(shapeSpacing*shapeNum));
 						if (newLeft >= 0 && newLeft < Background.Width)
 						{
 							//only move to valid coordinates.
@@ -2890,11 +2890,11 @@ namespace VixenModules.Preview.VixenPreview
 
 				if (spaceToFill > 0)
 				{
-					float shapeSpacing = (float) spaceToFill/(float) (shapeCount - 1);
+					float shapeSpacing = spaceToFill/(float) (shapeCount - 1);
 					int propSpaceSoFar = 0;
 					for (int shapeNum = 1; shapeNum < shapeCount - 1; shapeNum++)
 					{
-						var newTop = shapes[0].Bottom + propSpaceSoFar + (Convert.ToInt32(shapeSpacing*(float) shapeNum));
+						var newTop = shapes[0].Bottom + propSpaceSoFar + (Convert.ToInt32(shapeSpacing*shapeNum));
 						if (newTop >= 0 && newTop < Background.Height)
 						{
 							shapes[shapeNum].Top = newTop;

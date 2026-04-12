@@ -128,7 +128,7 @@ namespace VixenModules.Effect.Pattern
 			int count = colors;
 						
 			// Add together all the brick colors with mortar separating them
-			return (int)(count * brickWidth) + count * mortarHeight;			
+			return count * brickWidth + count * mortarHeight;			
 		}
 
 		/// <summary>

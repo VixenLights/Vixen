@@ -443,7 +443,7 @@ namespace VixenModules.Effect.Dissolve
 		[PropertyOrder(0)]
 		public bool EnableDepth
 		{
-			get { return (bool)_data.EnableDepth; }
+			get { return _data.EnableDepth; }
 			set
 			{
 				_data.EnableDepth = value;
@@ -589,7 +589,7 @@ namespace VixenModules.Effect.Dissolve
 				{
 					double position = DissolveMode == DissolveMode.TimeInterval || DissolveMarkType != DissolveMarkType.PerMark
 						? (double)100 / intervals * i
-						: (double)100 / interval * j;
+						: 100 / interval * j;
 
 					// Gets number of Pixels that need to be created/removed.
 					if (DissolveMode == DissolveMode.MarkCollection && DissolveMarkType != DissolveMarkType.PerMark)

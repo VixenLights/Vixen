@@ -1320,9 +1320,9 @@ namespace VixenModules.Effect.Shapes
 							child.Stroke = new SvgColourServer(OutlineColors[shape.StrokeColorIndex]
 								.GetColorAt(pos));
 							child.StrokeWidth = TargetPositioning == TargetPositioningType.Locations
-								? (SvgUnit) (new SvgUnit(StrokeWidth / _scaleShapeWidth) * _minBuffer / StringCount /
-								             shape.LocationRatio1)
-								: (SvgUnit) (new SvgUnit(StrokeWidth / _scaleShapeWidth));
+								? new SvgUnit(StrokeWidth / _scaleShapeWidth) * _minBuffer / StringCount /
+								  shape.LocationRatio1
+								: new SvgUnit(StrokeWidth / _scaleShapeWidth);
 
 							if (FadeType != FadeType.None)
 							{
@@ -1349,8 +1349,8 @@ namespace VixenModules.Effect.Shapes
 					{
 						shape.SvgImage.Stroke = new SvgColourServer(OutlineColors[shape.StrokeColorIndex]
 							.GetColorAt(pos));
-						shape.SvgImage.StrokeWidth = (SvgUnit) (new SvgUnit(StrokeWidth / _scaleShapeWidth) * _minBuffer / StringCount /
-						                               shape.LocationRatio1);
+						shape.SvgImage.StrokeWidth = new SvgUnit(StrokeWidth / _scaleShapeWidth) * _minBuffer / StringCount /
+						                             shape.LocationRatio1;
 
 						if ((CalculateShapeOutLine(_intervalPosFactor) < 100) || (CalculateShapeOutLineSpace(_intervalPosFactor) > 0))
 						{

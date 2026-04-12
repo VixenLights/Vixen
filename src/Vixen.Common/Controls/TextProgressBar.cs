@@ -167,7 +167,7 @@ namespace Common.Controls
 
                 Point location = new Point(((Width / 2) - (int)len.Width / 2), ((Height / 2) - (int)len.Height / 2));
                 
-                g.DrawString(text, TextFont, (Brush)_textColourBrush, location);
+                g.DrawString(text, TextFont, _textColourBrush, location);
             }
         }
         

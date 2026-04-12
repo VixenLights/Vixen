@@ -127,7 +127,7 @@ namespace VixenModules.Effect.Liquid
 			// Clone the emitters
 			for (int index = 0; index < EmitterData.Count; index++)
 			{				
-				result.EmitterData.Add((EmitterData)(EmitterData[index]).CreateInstanceForClone());
+				result.EmitterData.Add((EmitterData[index]).CreateInstanceForClone());
 			}
 
 			return result;

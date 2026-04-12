@@ -377,7 +377,7 @@ namespace VixenModules.Effect.Life
 
 		private int ChannelBlend(int c1, int c2, double ratio)
 		{
-			return c1 + (int)Math.Floor(ratio * (double)(c2 - c1) + 0.5);
+			return c1 + (int)Math.Floor(ratio * (c2 - c1) + 0.5);
 		}
 
 		private void CopyPixelsToTempBuf(IPixelFrameBuffer frameBuffer)

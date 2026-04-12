@@ -730,7 +730,7 @@ namespace VixenModules.Effect.Fireworks
 			HSV hsv = new HSV();
 			if (ColorType == FireworksColorType.Random)
 			{
-				hsv.H = (float)(Rand() % 1000) / 1000.0f;
+				hsv.H = Rand() % 1000 / 1000.0f;
 				hsv.S = 1.0f;
 				hsv.V = 1.0f;
 			}
@@ -815,7 +815,7 @@ namespace VixenModules.Effect.Fireworks
 							_fireworkBursts[i].HSV = HSV.FromRGB(ColorGradients[Rand() % colorcnt].GetColorAt(pos));
 							break;
 						case FireworksColorType.RainBow: //No user colors are used for Rainbow effect.
-							_fireworkBursts[i].HSV.H = (float)(Rand() % 1000) / 1000.0f;
+							_fireworkBursts[i].HSV.H = Rand() % 1000 / 1000.0f;
 							_fireworkBursts[i].HSV.S = 1.0f;
 							_fireworkBursts[i].HSV.V = 1.0f;
 							break;

@@ -619,7 +619,7 @@ namespace VixenModules.Effect.Spin
 				}
 				else
 				{
-					pulseConstant = TimeSpan.TotalMilliseconds * (1.0 / (double)targetNodeCount) + PulseOverlap;
+					pulseConstant = TimeSpan.TotalMilliseconds * (1.0 / targetNodeCount) + PulseOverlap;
 					if (pulseConstant >= TimeSpan.TotalMilliseconds)
 					{
 						pulseConstant = TimeSpan.TotalMilliseconds - 1;
@@ -632,12 +632,12 @@ namespace VixenModules.Effect.Spin
 			}
 			else if (PulseLengthFormat == SpinPulseLengthFormat.EvenlyDistributedAcrossSegments)
 			{
-				pulseFractional = 1.0 / (double)targetNodeCount;
+				pulseFractional = 1.0 / targetNodeCount;
 			}
 
 			// magic number. (the inaccuracy of interpolating the curve into a position. eg. if we have 5 'positions', then
 			// the curve should really be from 0-80% for the last spin, to make sure the last pulse finishes accurately.)
-			double pulseInterpolationOffset = 1.0 / (double)targetNodeCount;
+			double pulseInterpolationOffset = 1.0 / targetNodeCount;
 
 			// figure out either the revolution count or time, based on what data we have
 			if (SpeedFormat == SpinSpeedFormat.RevolutionCount)
@@ -692,7 +692,7 @@ namespace VixenModules.Effect.Spin
 				if (tokenSource != null && tokenSource.IsCancellationRequested)
 					return;
 
-				double currentPercentageIntoSpin = ((double)(current.Ticks % revTimeSpan.Ticks) / (double)revTimeSpan.Ticks) * 100.0;
+				double currentPercentageIntoSpin = current.Ticks % revTimeSpan.Ticks / (double)revTimeSpan.Ticks * 100.0;
 
 				double targetElementPosition = movement.GetValue(currentPercentageIntoSpin);
 				int currentNodeIndex = (int)((targetElementPosition / 100.0) * targetNodeCount);
@@ -724,10 +724,10 @@ namespace VixenModules.Effect.Spin
 						break;
 
 					case SpinColorHandling.GradientThroughWholeEffect:
-						double startPos = ((double)current.Ticks / (double)TimeSpan.Ticks);
+						double startPos = (current.Ticks / (double)TimeSpan.Ticks);
 						double endPos = 1.0;
 						if (TimeSpan - current >= pulseTimeSpan)
-							endPos = ((double)(current + pulseTimeSpan).Ticks / (double)TimeSpan.Ticks);
+							endPos = (current + pulseTimeSpan).Ticks / (double)TimeSpan.Ticks;
 
 						if (discreteColors)
 						{

@@ -111,7 +111,7 @@ namespace VixenModules.Output.ElexolEtherIO
 					client.Send(sendPckt, sendPckt.Length);
 
 					// Wait for data to be available or a timeout to ocurr.
-					while ((client.Available == 0) && (((TimeSpan)(DateTime.Now - begin)).TotalSeconds < 1))
+					while (client.Available == 0 && (DateTime.Now - begin).TotalSeconds < 1)
 					{
 						Thread.Sleep(10);
 					}

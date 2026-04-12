@@ -984,7 +984,7 @@ namespace VixenModules.Effect.Meteors
 					switch (ColorType)
 					{
 						case MeteorsColorType.RainBow: //No user colors are used for Rainbow effect.
-							meteor.Hsv.H = (float) (Rand()%1000)/1000.0f;
+							meteor.Hsv.H = Rand()%1000/1000.0f;
 							meteor.Hsv.S = 1.0f;
 							meteor.Hsv.V = 1.0f;
 							break;
@@ -994,7 +994,7 @@ namespace VixenModules.Effect.Meteors
 					}
 					hsv = meteor.Hsv;
 					//**
-					hsv.V *= meteor.HsvBrightness * (TailTaperCurve.GetValue((double)ph / (double)tailLength *100 ) / 100) * level;
+					hsv.V *= meteor.HsvBrightness * (TailTaperCurve.GetValue(ph / (double)tailLength * 100 ) / 100) * level;
 					//hsv.V *= meteor.HsvBrightness * (float) (1.0 - (double) ph/tailLength) * level;
 					//**
 					var decPlaces = (int)(meteor.TailX * ph % 1d * 100);

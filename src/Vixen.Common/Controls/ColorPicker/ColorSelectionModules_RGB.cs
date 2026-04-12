@@ -50,7 +50,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		protected override void OnUpdateFaderPosition(ColorSelectionFader fader)
 		{
-			fader.Position = (double) (_color.R)/255.0;
+			fader.Position = _color.R/255.0;
 		}
 
 		protected override void OnFaderScroll(ColorSelectionFader fader)
@@ -69,7 +69,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		protected override void OnUpdatePlaneImage(Bitmap bmp)
 		{
 			double green = 255.0,
-			       delta_green = -255.0/(double) bmp.Height;
+			       delta_green = -255.0/bmp.Height;
 			Color[] lincols = new Color[2];
 			using (Graphics gr = Graphics.FromImage(bmp)) {
 				using (LinearGradientBrush brs = new LinearGradientBrush(
@@ -89,8 +89,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		protected override void OnUpdatePlanePosition(ColorSelectionPlane plane)
 		{
-			plane.SetPosition((double) (_color.B)/255.0,
-			                  1.0 - (double) (_color.G)/255.0);
+			plane.SetPosition(_color.B/255.0,
+			                  1.0 - _color.G/255.0);
 		}
 
 		protected override void OnPlaneScroll(ColorSelectionPlane plane)
@@ -125,7 +125,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		protected override void OnUpdateFaderPosition(ColorSelectionFader fader)
 		{
-			fader.Position = (double) (_color.G)/255.0;
+			fader.Position = _color.G/255.0;
 		}
 
 		protected override void OnFaderScroll(ColorSelectionFader fader)
@@ -144,7 +144,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		protected override void OnUpdatePlaneImage(Bitmap bmp)
 		{
 			double red = 255.0,
-			       delta_red = -255.0/(double) bmp.Height;
+			       delta_red = -255.0/bmp.Height;
 			Color[] lincols = new Color[2];
 			using (Graphics gr = Graphics.FromImage(bmp)) {
 				using (LinearGradientBrush brs = new LinearGradientBrush(
@@ -164,8 +164,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		protected override void OnUpdatePlanePosition(ColorSelectionPlane plane)
 		{
-			plane.SetPosition((double) (_color.B)/255.0,
-			                  1.0 - (double) (_color.R)/255.0);
+			plane.SetPosition(_color.B/255.0,
+			                  1.0 - _color.R/255.0);
 		}
 
 		protected override void OnPlaneScroll(ColorSelectionPlane plane)
@@ -200,7 +200,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		protected override void OnUpdateFaderPosition(ColorSelectionFader fader)
 		{
-			fader.Position = (double) (_color.B)/255.0;
+			fader.Position = _color.B/255.0;
 		}
 
 		protected override void OnFaderScroll(ColorSelectionFader fader)
@@ -219,7 +219,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		protected override void OnUpdatePlaneImage(Bitmap bmp)
 		{
 			double green = 255.0,
-			       delta_green = -255.0/(double) bmp.Height;
+			       delta_green = -255.0/bmp.Height;
 			Color[] lincols = new Color[2];
 			using (Graphics gr = Graphics.FromImage(bmp)) {
 				using (LinearGradientBrush brs = new LinearGradientBrush(
@@ -239,8 +239,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		protected override void OnUpdatePlanePosition(ColorSelectionPlane plane)
 		{
-			plane.SetPosition((double) (_color.R)/255.0,
-			                  1.0 - (double) (_color.G)/255.0);
+			plane.SetPosition(_color.R/255.0,
+			                  1.0 - _color.G/255.0);
 		}
 
 		protected override void OnPlaneScroll(ColorSelectionPlane plane)

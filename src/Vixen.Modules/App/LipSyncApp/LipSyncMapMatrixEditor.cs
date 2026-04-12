@@ -384,7 +384,7 @@ namespace VixenModules.App.LipSyncApp
 			{
 				int newRenderWidth;
 				int newRenderHeight;
-				float aspectRatio = (float)rawBitmap.Size.Width / (float)rawBitmap.Size.Height;
+				float aspectRatio = rawBitmap.Size.Width / (float)rawBitmap.Size.Height;
 
 				if (aspectRatio < 1)  //Width is less than height
 				{
@@ -392,7 +392,7 @@ namespace VixenModules.App.LipSyncApp
 						(rawBitmap.Width > MAX_PICTUREBOX_WIDTH) ? MAX_PICTUREBOX_WIDTH : rawBitmap.Width;
 
 					newRenderHeight = 
-						(int)((float)rawBitmap.Height * ((float)newRenderWidth / (float)rawBitmap.Width));
+						(int)(rawBitmap.Height * (newRenderWidth / (float)rawBitmap.Width));
 				}
 				else if (aspectRatio > 1) //Width is greater than height
 				{
@@ -400,7 +400,7 @@ namespace VixenModules.App.LipSyncApp
 						(rawBitmap.Height> MAX_PICTUREBOX_HEIGHT) ? MAX_PICTUREBOX_HEIGHT: rawBitmap.Height;
 
 					newRenderWidth =
-						(int)((float)rawBitmap.Width * ((float)newRenderHeight / (float)rawBitmap.Height));
+						(int)(rawBitmap.Width * (newRenderHeight / (float)rawBitmap.Height));
 					
 				}
 				else //Width and Height are equal

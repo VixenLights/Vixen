@@ -403,7 +403,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             try
             {
                 Bitmap b = new Bitmap(size.Width, size.Height);
-                using (Graphics g = Graphics.FromImage((Image)b))
+                using (Graphics g = Graphics.FromImage(b))
                 {
                     g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
 

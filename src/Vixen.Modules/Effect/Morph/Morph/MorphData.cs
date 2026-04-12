@@ -145,7 +145,7 @@ namespace VixenModules.Effect.Morph
 			// Clone the Morph Polygons
 			for (int index = 0; index < MorphPolygonData.Count; index++)
 			{
-				result.MorphPolygonData.Add((MorphPolygonData)(MorphPolygonData[index]).CreateInstanceForClone());
+				result.MorphPolygonData.Add(MorphPolygonData[index].CreateInstanceForClone());
 			}
 					
 			return result;

@@ -563,8 +563,8 @@ namespace Common.Controls
 		protected override void WndProc(ref Message m)
 		{
 			// Stop erase background message
-			if (m.Msg == (int) 0x0014) {
-				m.Msg = (int) 0x0000; // Set to null
+			if (m.Msg == 0x0014) {
+				m.Msg = 0x0000; // Set to null
 			}
 
 			switch (m.Msg) {
@@ -689,9 +689,9 @@ namespace Common.Controls
 
 			// Scrolling down/up
 			if (pt.Y + 10 > ClientSize.Height)
-				SendMessage(Handle, 277, (IntPtr) 1, 0);
+				SendMessage(Handle, 277, 1, 0);
 			else if (pt.Y < Top + 10)
-				SendMessage(Handle, 277, (IntPtr) 0, 0);
+				SendMessage(Handle, 277, 0, 0);
 		}
 
 		protected override void OnDragLeave(EventArgs e)

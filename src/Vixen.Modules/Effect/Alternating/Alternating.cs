@@ -294,7 +294,7 @@ namespace VixenModules.Effect.Alternating
 		[ProviderDescription(@"AlternatingDepth")]
 		public bool EnableDepth
 		{
-			get { return (bool)_data.EnableDepth; }
+			get { return _data.EnableDepth; }
 			set
 			{
 				_data.EnableDepth = value;

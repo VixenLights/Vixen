@@ -111,7 +111,7 @@ namespace VixenModules.Effect.Wipe
 			List<Tuple<int, IElementNode[]>> groups = new List<Tuple<int, IElementNode[]>>();
 			_steps = (int) (DistanceFromPoint(new Point(_maxX, _maxY), new Point(_minX, _minY)) / 2);
 			
-			Point centerPoint = new Point((int)((int)((XOffset + 100) / 2) * _bufferWidth / 100) + _minX, (int)((100 - (int)((YOffset + 100) / 2)) * _bufferHeight / 100) + _minY);
+			Point centerPoint = new Point((int)((XOffset + 100) / 2) * _bufferWidth / 100 + _minX, (100 - (int)((YOffset + 100) / 2)) * _bufferHeight / 100 + _minY);
 			int steps = GetMaxSteps(centerPoint);
 
 			_pulsePercent = (int) (_bufferWidth * (PulsePercent / 100));
@@ -141,7 +141,7 @@ namespace VixenModules.Effect.Wipe
 			int xOffset = (int)((XOffset + 100) / 2);
 			int yOffset = (int)((YOffset + 100) / 2);
 
-			Point centerPoint = new Point((int)(xOffset * _bufferWidth / 100) + _minX, (int)((100 - yOffset) * _bufferHeight / 100) + _minY);
+			Point centerPoint = new Point(xOffset * _bufferWidth / 100 + _minX, (100 - yOffset) * _bufferHeight / 100 + _minY);
 			int steps = (int)(GetMaxSteps(centerPoint) * 1.41);
 
 			xOffset = (int)(Math.Round(ScaleCurveToValue(xOffset, -_bufferWidth, _bufferWidth)) / 2);
@@ -156,8 +156,8 @@ namespace VixenModules.Effect.Wipe
 				foreach (Tuple<IElementNode, int, int, int> node in renderedNodes)
 				{
 					// Do the Down/Left or Up/Right directions
-					int nodeLocation = (int)((node.Item3 - _minY + yOffset) - (node.Item2 - _minX + xOffset) +
-					                         (_bufferWidth - _bufferHeight) / 2);
+					int nodeLocation = (node.Item3 - _minY + yOffset) - (node.Item2 - _minX + xOffset) +
+					                   (_bufferWidth - _bufferHeight) / 2;
 					if (nodeLocation < 0) nodeLocation = -nodeLocation;
 					if (nodeLocation == i &&
 					    ((_maxY - _midY - yOffset - node.Item3) <= i && (_maxX - _midX - xOffset - node.Item2) <= i) &&
@@ -188,12 +188,12 @@ namespace VixenModules.Effect.Wipe
 		private List<IElementNode[]> GetRenderedRectangle(List<Tuple<IElementNode, int, int, int>> renderedNodes)
 		{
 			List<Tuple<int, IElementNode[]>> groups = new List<Tuple<int, IElementNode[]>>();
-			_steps = (int)(Math.Max(_bufferWidth, _bufferHeight) / 2);
+			_steps = Math.Max(_bufferWidth, _bufferHeight) / 2;
 
 			int xOffset = (int)((XOffset + 100) / 2);
 			int yOffset = (int)((YOffset + 100) / 2);
 
-			Point centerPoint = new Point((int)(xOffset * _bufferWidth / 100) + _minX, (int)(yOffset * _bufferHeight / 100) + _minY);
+			Point centerPoint = new Point(xOffset * _bufferWidth / 100 + _minX, yOffset * _bufferHeight / 100 + _minY);
 			int steps = GetMaxSteps(centerPoint);
 
 			xOffset = (int)Math.Round(ScaleCurveToValue(xOffset, -_bufferWidth, _bufferWidth)) / 2;
@@ -351,7 +351,7 @@ namespace VixenModules.Effect.Wipe
 						}
 						else
 						{
-							double positionWithinGroup = (double)(1.0 / (TimeSpan.Ticks - segmentPulse.Ticks)) * (effectTime.Ticks);
+							double positionWithinGroup = 1.0 / (TimeSpan.Ticks - segmentPulse.Ticks) * (effectTime.Ticks);
 							if (ColorAcrossItemPerCount) positionWithinGroup = positionWithinGroup * PassCount % 1;
 							if (HasDiscreteColors)
 							{
@@ -440,7 +440,7 @@ namespace VixenModules.Effect.Wipe
 						}
 						else
 						{
-							double positionWithinGroup = (double)(1.0 / (TimeSpan.Ticks - segmentPulse.Ticks)) * (effectTime.Ticks);
+							double positionWithinGroup = 1.0 / (TimeSpan.Ticks - segmentPulse.Ticks) * (effectTime.Ticks);
 							if (ColorAcrossItemPerCount) positionWithinGroup = positionWithinGroup * PassCount % 1;
 							if (HasDiscreteColors)
 							{

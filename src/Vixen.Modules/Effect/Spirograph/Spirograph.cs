@@ -306,8 +306,8 @@ namespace VixenModules.Effect.Spirograph
 			Color col; //   we will define an hsv color model.
 			int colorcnt = Colors.Count;
 
-			xc = (int) (BufferWi/2); // 20x100 flex strips with 2 fols per strip = 40x50
-			yc = (int) (BufferHt/2);
+			xc = BufferWi/2; // 20x100 flex strips with 2 fols per strip = 40x50
+			yc = BufferHt/2;
 			R = (float) (xc*(OCR / 100.0)); //  Radius of the large circle just fits in the width of model
 			r = (float)(xc * (ICR / 100.0)); // start little circle at 1/4 of max width
 			if (r > R) r = R;
@@ -362,7 +362,7 @@ namespace VixenModules.Effect.Spirograph
 					}
 					else
 					{
-						HSV hsv = new HSV((float)(Rand() % 1000) / 1000.0f, 1.0f, 1.0f * level);
+						HSV hsv = new HSV(Rand() % 1000 / 1000.0f, 1.0f, 1.0f * level);
 						col = hsv.ToRGB();
 					}
 					frameBuffer.SetPixel(x, y, col);

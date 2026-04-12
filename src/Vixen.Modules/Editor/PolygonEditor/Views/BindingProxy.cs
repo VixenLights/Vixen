@@ -16,7 +16,7 @@ namespace VixenModules.Editor.PolygonEditor.Views
 		{
 			get
 			{
-				return (object)GetValue(DataProperty);
+				return GetValue(DataProperty);
 			}
 			set
 			{

@@ -892,12 +892,12 @@ namespace VixenModules.Effect.Text
 				if (Direction == TextDirection.Rotate)
 				{
 					//move rotation point to center of image
-					graphics.TranslateTransform((float) (bitmap.Width / 2 + xOffset), (float) (bitmap.Height / 2 + (yOffset / 2)));
+					graphics.TranslateTransform(bitmap.Width / 2f + xOffset, bitmap.Height / 2f + (yOffset / 2f));
 					//rotate
 					graphics.SmoothingMode = SmoothingMode.HighQuality;
 					graphics.RotateTransform(textAngle);
 					//move image back
-					graphics.TranslateTransform(-(float) (bitmap.Width / 2 + xOffset), -(float) (bitmap.Height / 2 + (yOffset / 2)));
+					graphics.TranslateTransform(-(bitmap.Width / 2f + xOffset), -(bitmap.Height / 2f + (yOffset / 2f)));
 				}
 
 				switch (Direction)

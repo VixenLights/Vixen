@@ -146,10 +146,8 @@ namespace VixenModules.App.ColorGradients
 		[Serializable]
 		public class PointList<T> : CollectionBase<T> where T : Point, IComparable<T>
 		{
-			protected bool Equals(PointList<T> obj)
+			protected bool Equals(PointList<T> rhs)
 			{
-				
-				PointList<T> rhs = obj as PointList<T>;
 				if (Count != rhs.Count)
 					return false;
 
@@ -483,10 +481,10 @@ namespace VixenModules.App.ColorGradients
 			//
 			for (int i = 0; i < blend.Colors.Length; i++) {
 				if (blend.Colors[i].A != 255)
-					Alphas.Add(new AlphaPoint((byte) blend.Colors[i].A,
-					                          (double) blend.Positions[i]));
+					Alphas.Add(new AlphaPoint(blend.Colors[i].A,
+					                          blend.Positions[i]));
 				Colors.Add(new ColorPoint(blend.Colors[i],
-				                          (double) blend.Positions[i]));
+				                          blend.Positions[i]));
 			}
 		}
 
@@ -668,7 +666,7 @@ namespace VixenModules.App.ColorGradients
 			pos = Clamp(pos);
 			//
 			int a, b;
-			SearchPos<float, float>(blend.Positions, (float) pos, out a, out b);
+			SearchPos<float, float>(blend.Positions, pos, out a, out b);
 			return Interpolate(blend.Colors, blend.Positions, a, b, pos);
 		}
 
@@ -1407,7 +1405,7 @@ namespace VixenModules.App.ColorGradients
 		/// ctor
 		/// </summary>
 		public AlphaPoint(byte alpha, double point)
-			: this((double) alpha/255.0, .5, point)
+			: this(alpha/255.0, .5, point)
 		{
 		}
 

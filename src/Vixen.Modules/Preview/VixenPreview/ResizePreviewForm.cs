@@ -81,8 +81,8 @@ namespace VixenModules.Preview.VixenPreview
         {
             if (numericHeight.Value < 10) numericHeight.Value = 10;
             if (_lockAspect) { 
-                double aspect = (double)numericWidth.Value / (double)_origWidth;
-                numericHeight.Value = (int)((double)_origHeight * aspect);
+                double aspect = (double)numericWidth.Value / _origWidth;
+                numericHeight.Value = (int)(_origHeight * aspect);
             }
         }
 	}

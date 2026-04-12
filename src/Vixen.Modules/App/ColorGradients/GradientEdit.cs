@@ -42,12 +42,12 @@ namespace VixenModules.App.ColorGradients
 		{
 			if (_orientation == Orientation.Horizontal)
 				return Math.Max(0.0, Math.Min(1.0,
-				                              (double) (pt.X - _border)/
-				                              (double) Math.Max(1.0, Width - _border*2 - 1)));
+				                              (pt.X - _border)/
+				                              Math.Max(1.0, Width - _border*2 - 1)));
 			//vertical
 			return Math.Max(0.0, Math.Min(1.0,
-			                              (double) (pt.Y - _border)/
-			                              (double) Math.Max(1.0, Height - _border*2 - 1)));
+			                              (pt.Y - _border)/
+			                              Math.Max(1.0, Height - _border*2 - 1)));
 		}
 
 		/// <summary>
@@ -57,11 +57,11 @@ namespace VixenModules.App.ColorGradients
 		{
 			if (_orientation == Orientation.Horizontal)
 				return new Rectangle(
-					(int) (pos*(double) (Width - _border*2 - 1)), 0,
+					(int) (pos*(Width - _border*2 - 1)), 0,
 					_border*2, Height - 1);
 			//vertical
 			return new Rectangle(
-				0, (int) (pos*(double) (Height - _border*2 - 1)),
+				0, (int) (pos*(Height - _border*2 - 1)),
 				Width - 1, _border*2);
 		}
 

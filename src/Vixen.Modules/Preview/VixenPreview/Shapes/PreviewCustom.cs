@@ -181,7 +181,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// See if we're resizing
 			if (_selectedPoint != null)
 			{
-				double aspect = ((double) startWidth + (double) changeX)/(double) startWidth;
+				double aspect = (startWidth + changeX)/(double) startWidth;
 				//Resize(aspect);
                 foreach (PreviewLightBaseShape shape in Strings)
                 {

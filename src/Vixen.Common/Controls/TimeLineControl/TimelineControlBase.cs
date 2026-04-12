@@ -146,7 +146,7 @@ namespace Common.Controls.Timeline
 			if (TimePerPixel.Ticks == 0)
 				throw new DivideByZeroException("Time per pixel is zero!");
 
-			return (Single) t.Ticks/(Single) TimePerPixel.Ticks;
+			return (Single) t.Ticks/TimePerPixel.Ticks;
 		}
 		#endregion
 
@@ -220,7 +220,7 @@ namespace Common.Controls.Timeline
 				switch (m.Msg) {
 					case WM_MOUSEHWHEEL:
 						MouseHWheelMsg(m.WParam, m.LParam);
-						m.Result = (IntPtr) 1;
+						m.Result = 1;
 						break;
                 }
 			}

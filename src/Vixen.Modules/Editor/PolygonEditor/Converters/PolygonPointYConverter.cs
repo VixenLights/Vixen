@@ -61,7 +61,7 @@ namespace VixenModules.Editor.PolygonEditor.Converters
 			double dblValue = double.Parse((string)value);
 
 			// Subtract one and then apply the scale factor
-			return ((BufferHt - 1) - ((double) dblValue - 1)) * YScaleFactor;
+			return (BufferHt - 1 - (dblValue - 1)) * YScaleFactor;
 		}
 
 		#endregion

@@ -600,12 +600,12 @@ namespace Common.Controls.Timeline
 			//Modifies area to include full row in drawing area
 			var TempDrawArea = Util.RectangleFromPoints(topLeft, bottomRight);
 			var RowMembers = GetRowsWithin(TempDrawArea);
-			var FirstRow = (Row)RowMembers.First();
-			var LastRow = (Row)RowMembers.Last();
+			var FirstRow = RowMembers.First();
+			var LastRow = RowMembers.Last();
 			topLeft = new Point(Math.Min(m_drawingRectangleStart.X, gridLocation.X),
-										Math.Min(m_drawingRectangleStart.Y, (int)FirstRow.DisplayTop) + 1);
+										Math.Min(m_drawingRectangleStart.Y, FirstRow.DisplayTop) + 1);
 			bottomRight = new Point(Math.Max(m_drawingRectangleStart.X, gridLocation.X),
-											Math.Max(m_drawingRectangleStart.Y, ((int)LastRow.DisplayTop + (int)LastRow.Height)) - 2);
+											Math.Max(m_drawingRectangleStart.Y, LastRow.DisplayTop + LastRow.Height) - 2);
 
 			DrawingArea = Util.RectangleFromPoints(topLeft, bottomRight);
 			Invalidate();

@@ -368,8 +368,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
         /// </summary>
         public static readonly DependencyProperty CurrentDescriptionProperty =
             DependencyProperty.Register("CurrentDescription", typeof(string), typeof(PropertyGrid),
-                new FrameworkPropertyMetadata((string)"",
-                    new PropertyChangedCallback(OnCurrentDescriptionChanged)));
+                new FrameworkPropertyMetadata(string.Empty, OnCurrentDescriptionChanged));
 
         /// <summary>
         /// Gets or sets the CurrentDescription property.  

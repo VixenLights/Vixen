@@ -79,7 +79,7 @@ namespace VixenModules.App.LipSyncApp
 
 			set
 			{
-				string newDefaultName = (string)value;
+				string newDefaultName = value;
 
 				if (_staticData.Library.ContainsKey(newDefaultName))
 				{

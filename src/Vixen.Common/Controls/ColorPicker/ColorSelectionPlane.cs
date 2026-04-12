@@ -39,8 +39,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		private Rectangle GetCursorBounds(double x, double y)
 		{
 			return new Rectangle(
-				(int) (x*(double) (Width - 3)) - 4,
-				(int) (y*(double) (Height - 3)) - 4,
+				(int) (x*(Width - 3)) - 4,
+				(int) (y*(Height - 3)) - 4,
 				10, 10);
 		}
 
@@ -77,8 +77,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 					e.Graphics.DrawEllipse(Pens.White, GetCursorBounds(_x, _y));
 			}
 			if ((ModifierKeys & Keys.Shift) != 0) {
-				float dx = (float) (Width - 3)/8f,
-				      dy = (float) (Height - 3)/8f,
+				float dx = (Width - 3)/8f,
+				      dy = (Height - 3)/8f,
 				      x = 1f,
 				      y = 1f;
 				using (Pen pn = new Pen(new HatchBrush(HatchStyle.SmallCheckerBoard,
@@ -98,8 +98,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		{
 			base.OnMouseDown(e);
 			if (SetPosition(
-				(double) (e.X - 0)/Math.Max(1.0, (double) (Width - 2)),
-				(double) (e.Y - 0)/Math.Max(1.0, (double) (Height - 2))))
+				e.X/Math.Max(1.0, Width - 2.0),
+				e.Y/Math.Max(1.0, Height - 2.0)))
 				RaiseScroll();
 		}
 
@@ -108,8 +108,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			base.OnMouseMove(e);
 			if (e.Button != MouseButtons.None)
 				if (SetPosition(
-					(double) (e.X - 0)/Math.Max(1.0, (double) (Width - 2)),
-					(double) (e.Y - 0)/Math.Max(1.0, (double) (Height - 2))))
+					e.X/Math.Max(1.0, Width - 2.0),
+					e.Y/Math.Max(1.0, Height - 2.0)))
 					RaiseScroll();
 		}
 

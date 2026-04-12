@@ -411,7 +411,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				{
 					int width = _bottomRight.X - _topLeft.X;
 					int height = _bottomRight.Y - _topLeft.Y;
-					double stringXSpacing = (double)width / (double)(StringCount - 1);
+					double stringXSpacing = width / (double)(StringCount - 1);
 					double x = _topLeft.X;
 					int y = _topLeft.Y;
 					for (int stringNum = 0; stringNum < StringCount; stringNum++)

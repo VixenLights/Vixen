@@ -151,12 +151,12 @@ namespace Common.Controls.ControlsEx
 		/// </summary>
 		public double ToDouble()
 		{
-			return ((double) _numerator)/((double) _denominator);
+			return _numerator/(double) _denominator;
 		}
 
 		public float ToFloat()
 		{
-			return (float) _numerator/(float) _denominator;
+			return _numerator/(float) _denominator;
 		}
 
 		public static implicit operator double(ScaleFactor value)
@@ -184,7 +184,7 @@ namespace Common.Controls.ControlsEx
 		/// </summary>
 		public double Scale(double value)
 		{
-			return (value*(double) _numerator)/(double) _denominator;
+			return value*_numerator/_denominator;
 		}
 
 		/// <summary>
@@ -192,7 +192,7 @@ namespace Common.Controls.ControlsEx
 		/// </summary>
 		public float Scale(float value)
 		{
-			return (value*(float) _numerator)/(float) _denominator;
+			return value*_numerator/_denominator;
 		}
 
 		/// <summary>
@@ -244,7 +244,7 @@ namespace Common.Controls.ControlsEx
 		/// </summary>
 		public double Unscale(double value)
 		{
-			return (value*(double) _denominator)/(double) _numerator;
+			return value*_denominator/_numerator;
 		}
 
 		/// <summary>
@@ -252,7 +252,7 @@ namespace Common.Controls.ControlsEx
 		/// </summary>
 		public float Unscale(float value)
 		{
-			return (value*(float) _denominator)/(float) _numerator;
+			return value*_denominator/_numerator;
 		}
 
 		/// <summary>

@@ -1305,8 +1305,8 @@ namespace VixenModules.Effect.Picture
 		{
 			lock (image)
 			{
-				int maxWidth = Convert.ToInt32((double) image.Width * scale);
-				int maxHeight = Convert.ToInt32((double) image.Height * scale);
+				int maxWidth = Convert.ToInt32(image.Width * scale);
+				int maxHeight = Convert.ToInt32(image.Height * scale);
 				var ratioX = (double) maxWidth / image.Width;
 				var ratioY = (double) maxHeight / image.Height;
 				var ratio = Math.Min(ratioX, ratioY);

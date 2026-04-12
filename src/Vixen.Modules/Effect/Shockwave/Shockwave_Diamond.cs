@@ -107,7 +107,7 @@ namespace VixenModules.Effect.Shockwave
 		private double CalculateIntensityBasedOnDistanceFromCenter(double center, int x, int width)
 		{
 			// Calculate the distance from the center of the diamond edge
-			double distanceAwayFromCenter = Math.Abs((double)x - center);
+			double distanceAwayFromCenter = Math.Abs(x - center);
 			
 			// If the distance is greater than the width then...
 			if (distanceAwayFromCenter > width)
@@ -209,7 +209,7 @@ namespace VixenModules.Effect.Shockwave
 			double intensityIncrement = 1.0 / thickness;
 
 			// Initialize the start to the center of the prop plus the length of the diamond
-			int yStart = (int)(centerY + outerLength / 2);
+			int yStart = centerY + outerLength / 2;
 
 			// Start the diamond with a thickness of 1 pixel
 			int rowWidth = 1;
@@ -266,7 +266,7 @@ namespace VixenModules.Effect.Shockwave
 				}
 
 				// Update the width of the diamond row
-				rowWidth = UpdateRowWidth(h, rowWidth, (int)outerLength);
+				rowWidth = UpdateRowWidth(h, rowWidth, outerLength);
 
 				// Move to the next row in the diamond
 				yStart -= 1;

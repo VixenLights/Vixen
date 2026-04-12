@@ -10,7 +10,7 @@ namespace Common.WPFCommon.Behaviors
 
 		public object SelectedItem
 		{
-			get { return (object)GetValue(SelectedItemProperty); }
+			get { return GetValue(SelectedItemProperty); }
 			set { SetValue(SelectedItemProperty, value); }
 		}
 
