@@ -64,7 +64,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			whiteButton.BackgroundImage = null;
 			redButton.BackColor = System.Drawing.Color.Red;
 			redButton.BackgroundImage = null;
-			greenButton.BackColor = System.Drawing.Color.Green;
+			greenButton.BackColor = System.Drawing.Color.Lime;
 			greenButton.BackgroundImage = null;
 			blueButton.BackColor = System.Drawing.Color.Blue;
 			blueButton.BackgroundImage = null;
