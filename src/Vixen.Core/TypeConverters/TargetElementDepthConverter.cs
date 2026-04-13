@@ -13,7 +13,7 @@ namespace Vixen.TypeConverters
 			return true;
 		}
 
-		public override bool CanConvertTo(ITypeDescriptorContext? context, Type destinationType)
+		public override bool CanConvertTo(ITypeDescriptorContext? context, Type? destinationType)
 		{
 			return true;
 		}

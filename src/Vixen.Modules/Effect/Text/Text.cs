@@ -1054,7 +1054,7 @@ namespace VixenModules.Effect.Text
 
 		private double CalculateFallSpeedScale(double intervalPos)
 		{
-			return (double)ScaleCurveToValue(FallSpeedCurve.GetValue(intervalPos), 20, 0);
+			return ScaleCurveToValue(FallSpeedCurve.GetValue(intervalPos), 20, 0);
 		}
 
 		private float CalculateExplodeSpeed(double intervalPos)
@@ -1249,7 +1249,7 @@ namespace VixenModules.Effect.Text
 									rect = new Rectangle(
 										(int) ((int) rectf.X + _directionClass[_characterNumber].XOffset *
 										       _explodePosition),
-										(int) ((int) p.Y + _directionClass[_characterNumber].YOffset *
+										(int) (p.Y + _directionClass[_characterNumber].YOffset *
 										       _explodePosition),
 										(int)((rectf.Width + 1) * 1.6), (int) rectf.Height + 1);
 									break;

@@ -24,7 +24,6 @@ namespace VixenModules.Effect.Effect
 		private EffectIntents _elementData;
 		private int _stringCount;
 		private int _maxPixelsPerString;
-		private Curve _baseLevelCurve = new Curve(CurveType.Flat100);
 		private bool _elementsCached;
 		private List<Element> _cachedElements;
 
@@ -154,17 +153,11 @@ namespace VixenModules.Effect.Effect
 		[PropertyOrder(3)]
 		public abstract StringOrientation StringOrientation { get; set; }
 
-		[Browsable(false)]
-		public virtual Color BaseColor { 
-			get { return Color.Transparent; }
-			set { }
-		}
+		[Browsable(false)] 
+		public virtual Color BaseColor { get; set; } = Color.Transparent;
 
-		[Browsable(false)]
-		public virtual Curve BaseLevelCurve {
-			get { return _baseLevelCurve; }
-			set { }
-		}
+		[Browsable(false)] 
+		public virtual Curve BaseLevelCurve { get; set; } = new(CurveType.Flat100);
 
 		[Browsable(false)]
 		public virtual bool UseBaseColor { get; set; }

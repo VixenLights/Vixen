@@ -147,7 +147,7 @@ namespace VixenModules.Effect.Pattern
 			int count = 2;
 			
 			// Need the bar thickness then the bar spacing for each of the brick color bars
-			return (int)(count * brickHeight) + count * mortorHeight;			
+			return count * brickHeight + count * mortorHeight;			
 		}
 
 		/// <summary>
