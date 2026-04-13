@@ -1,6 +1,7 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
 using System.ComponentModel;
+using NLog;
 using Vixen.Module.App;
 using Vixen.Services;
 
@@ -8,6 +9,7 @@ namespace VixenModules.App.ColorGradients
 {
 	public partial class ColorGradientLibrarySelector : BaseForm
 	{
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private readonly Pen _borderPen = new Pen(Color.FromArgb(136, 136, 136), 2);
 
 		public ColorGradientLibrarySelector()
@@ -82,7 +84,6 @@ namespace VixenModules.App.ColorGradients
 			buttonDeleteColorGradient.Enabled = false;
 			buttonEditColorGradient.ForeColor = ThemeColorTable.ForeColorDisabled;
 			buttonDeleteColorGradient.ForeColor = ThemeColorTable.ForeColorDisabled;
-			;
 		}
 
 		private void listViewColorGradients_SelectedIndexChanged(object sender, EventArgs e)
@@ -105,72 +106,93 @@ namespace VixenModules.App.ColorGradients
 			}
 		}
 
-		private void buttonNewColorGradient_Click(object sender, EventArgs e)
+		private async void buttonNewColorGradient_Click(object sender, EventArgs e)
 		{
-			TextDialog dialog = new TextDialog("Gradient name?");
-
-			while (dialog.ShowDialog() == DialogResult.OK)
+			try
 			{
-				if (dialog.Response == string.Empty)
-				{
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					MessageBoxForm.msgIcon = SystemIcons.Error;
-					var messageBox = new MessageBoxForm("Please enter a name.", "Color Gradient Name", false, false);
-					messageBox.ShowDialog();
-					continue;
-				}
+				TextDialog dialog = new TextDialog("Gradient name?");
 
-				if (Library.Contains(dialog.Response))
+				while (await dialog.ShowDialogAsync() == DialogResult.OK)
 				{
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					var messageBox = new MessageBoxForm("There is already a gradient with that name. Do you want to overwrite it?", "Overwrite gradient?", true, true);
-					MessageBoxForm.msgIcon = SystemIcons.Question;
-					messageBox.ShowDialog();
-					if (messageBox.DialogResult == DialogResult.OK)
+					if (dialog.Response == string.Empty)
 					{
-						Library.AddColorGradient(dialog.Response, new ColorGradient());
-						Library.EditLibraryItem(dialog.Response);
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Error;
+						var messageBox = new MessageBoxForm("Please enter a name.", "Color Gradient Name", false, false);
+						await messageBox.ShowDialogAsync();
+						continue;
+					}
+
+					if (Library.Contains(dialog.Response))
+					{
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						var messageBox = new MessageBoxForm("There is already a gradient with that name. Do you want to overwrite it?", "Overwrite gradient?", true, true);
+						MessageBoxForm.msgIcon = SystemIcons.Question;
+						await messageBox.ShowDialogAsync();
+						if (messageBox.DialogResult == DialogResult.OK)
+						{
+							await Library.AddColorGradientAsync(dialog.Response, new ColorGradient());
+							await Library.EditLibraryItemAsync(dialog.Response);
+							PopulateListWithColorGradients();
+							break;
+						}
+						else if (messageBox.DialogResult == DialogResult.Cancel)
+						{
+							break;
+						}
+					}
+					else
+					{
+						await Library.AddColorGradientAsync(dialog.Response, new ColorGradient());
+						await Library.EditLibraryItemAsync(dialog.Response);
 						PopulateListWithColorGradients();
 						break;
 					}
-					else if (messageBox.DialogResult == DialogResult.Cancel)
-					{
-						break;
-					}
 				}
-				else
-				{
-					Library.AddColorGradient(dialog.Response, new ColorGradient());
-					Library.EditLibraryItem(dialog.Response);
-					PopulateListWithColorGradients();
-					break;
-				}
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "An error occurred trying to create a new color gradient.");
 			}
 		}
 
-		private void buttonEditColorGradient_Click(object sender, EventArgs e)
+		private async void buttonEditColorGradient_Click(object sender, EventArgs e)
 		{
-			if (listViewColorGradients.SelectedItems.Count != 1)
-				return;
+			try
+			{
+				if (listViewColorGradients.SelectedItems.Count != 1)
+					return;
 
-			Library.EditLibraryItem(listViewColorGradients.SelectedItems[0].Name);
+				await Library.EditLibraryItemAsync(listViewColorGradients.SelectedItems[0].Name);
 
-			PopulateListWithColorGradients();
+				PopulateListWithColorGradients();
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "Error editing library color gradient.");
+			}
 		}
 
-		private void buttonDeleteColorGradient_Click(object sender, EventArgs e)
+		private async void buttonDeleteColorGradient_Click(object sender, EventArgs e)
 		{
-			if (listViewColorGradients.SelectedItems.Count == 0)
-				return;
-
-			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-			MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-			var messageBox = new MessageBoxForm("If you delete this library gradient, ALL places it is used will be unlinked and will become independent gradients. Are you sure you want to continue?", "Delete library gradient?", true, false);
-			messageBox.ShowDialog();
-			if (messageBox.DialogResult == DialogResult.OK)
+			try
 			{
-				Library.RemoveColorGradient(listViewColorGradients.SelectedItems[0].Name);
-				PopulateListWithColorGradients();
+				if (listViewColorGradients.SelectedItems.Count == 0)
+					return;
+
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("If you delete this library gradient, ALL places it is used will be unlinked and will become independent gradients. Are you sure you want to continue?", "Delete library gradient?", true, false);
+				await messageBox.ShowDialogAsync();
+				if (messageBox.DialogResult == DialogResult.OK)
+				{
+					await Library.RemoveColorGradientAsync(listViewColorGradients.SelectedItems[0].Name);
+					PopulateListWithColorGradients();
+				}
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "An error occurred trying to delete the selected color gradient.");
 			}
 		}
 

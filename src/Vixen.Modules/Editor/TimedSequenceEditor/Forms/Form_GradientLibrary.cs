@@ -206,32 +206,46 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Event Handlers
 
-		private void toolStripButtonEditGradient_Click(object sender, EventArgs e)
+		private async void toolStripButtonEditGradient_Click(object sender, EventArgs e)
 		{
-			if (listViewGradients.SelectedItems.Count == 0)
-				return;
+			try
+			{
+				if (listViewGradients.SelectedItems.Count == 0)
+					return;
 
-			_colorGradientLibrary.EditLibraryItem(listViewGradients.SelectedItems[0].Name);
-			OnGradientLibraryChanged();
+				await _colorGradientLibrary.EditLibraryItemAsync(listViewGradients.SelectedItems[0].Name);
+				OnGradientLibraryChanged();
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "While editing Color Gradient");
+			}
 		}
 
-		private void toolStripButtonNewGradient_Click(object sender, EventArgs e)
+		private async void toolStripButtonNewGradient_Click(object sender, EventArgs e)
 		{
-			AddGradientToLibrary(new ColorGradient());
+			try
+			{
+				await AddGradientToLibraryAsync(new ColorGradient());
+			}
+			catch (Exception ex)
+			{
+				Logging.Error("While adding new Color Gradient: " + ex.InnerException);
+			}
 		}
 
-		internal bool AddGradientToLibrary(ColorGradient cg, bool edit = true)
+		internal async Task<bool> AddGradientToLibraryAsync(ColorGradient cg, bool edit = true)
 		{
 			TextDialog dialog = new TextDialog("Gradient name?");
 
-			while (dialog.ShowDialog() == DialogResult.OK)
+			while (await dialog.ShowDialogAsync() == DialogResult.OK)
 			{
 				if (dialog.Response == string.Empty)
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("Please enter a name.", "Warning", false, false);
-					messageBox.ShowDialog();
+					await messageBox.ShowDialogAsync();
 					continue;
 				}
 
@@ -240,13 +254,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("There is already a gradient with that name. Do you want to overwrite it?", "Overwrite gradient?", true, true);
-					messageBox.ShowDialog();
+					await messageBox.ShowDialogAsync();
 					if (messageBox.DialogResult == DialogResult.OK)
 					{
-						_colorGradientLibrary.AddColorGradient(dialog.Response, cg);
+						await _colorGradientLibrary.AddColorGradientAsync(dialog.Response, cg);
 						if (edit)
 						{
-							_colorGradientLibrary.EditLibraryItem(dialog.Response);
+							await _colorGradientLibrary.EditLibraryItemAsync(dialog.Response);
 						}
 						OnGradientLibraryChanged();
 						return false;
@@ -259,10 +273,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				else
 				{
-					_colorGradientLibrary.AddColorGradient(dialog.Response, cg);
+					await _colorGradientLibrary.AddColorGradientAsync(dialog.Response, cg);
 					if (edit)
 					{
-						_colorGradientLibrary.EditLibraryItem(dialog.Response);
+						await _colorGradientLibrary.EditLibraryItemAsync(dialog.Response);
 					}
 					OnGradientLibraryChanged();
 					return false;
@@ -271,23 +285,30 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return true;
 		}
 
-		private void toolStripButtonDeleteGradient_Click(object sender, EventArgs e)
+		private async void toolStripButtonDeleteGradient_Click(object sender, EventArgs e)
 		{
-			if (listViewGradients.SelectedItems.Count == 0)
-				return;
-
-			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-			MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-			var messageBox = new MessageBoxForm("If you delete the selected library gradient(s), ALL places it is used will be unlinked and will" +
-								@" become independent gradients. Are you sure you want to continue?", "Delete library gradient?", true, true);
-			messageBox.ShowDialog();
-
-			if (messageBox.DialogResult == DialogResult.OK)
+			try
 			{
-				_colorGradientLibrary.BeginBulkUpdate();
-				foreach (ListViewItem item in listViewGradients.SelectedItems) _colorGradientLibrary.RemoveColorGradient(item.Name);
-				_colorGradientLibrary.EndBulkUpdate();
-				OnGradientLibraryChanged();
+				if (listViewGradients.SelectedItems.Count == 0)
+					return;
+
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("If you delete the selected library gradient(s), ALL places it is used will be unlinked and will" +
+				                                    @" become independent gradients. Are you sure you want to continue?", "Delete library gradient?", true, true);
+				await messageBox.ShowDialogAsync();
+
+				if (messageBox.DialogResult == DialogResult.OK)
+				{
+					_colorGradientLibrary.BeginBulkUpdate();
+					foreach (ListViewItem item in listViewGradients.SelectedItems) await _colorGradientLibrary.RemoveColorGradientAsync(item.Name);
+					_colorGradientLibrary.EndBulkUpdate();
+					OnGradientLibraryChanged();
+				}
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "While deleting Color Gradient from the library" );
 			}
 		}
 
@@ -365,7 +386,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			e.Effect = DragDropEffects.None;
 		}
 
-		private void listViewGradients_DragDrop(object sender, DragEventArgs e)
+		private async void listViewGradients_DragDrop(object sender, DragEventArgs e)
 		{
 			if (_dragX + 10 < e.X || _dragY + 10 < e.Y || _dragX - 10 > e.X || _dragY - 10 > e.Y)
 			{
@@ -378,7 +399,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						int index = movetoNewPosition?.Index ?? listViewGradients.Items.Count;
 
-						if (AddGradientToLibrary(c, false)) return;
+						if (await AddGradientToLibraryAsync(c, false)) return;
 
 						Populate_Gradients();
 
@@ -461,7 +482,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		internal void ImportGradientLibrary()
+		internal async Task ImportGradientLibraryAsync()
 		{
 			OpenFileDialog openFileDialog = new OpenFileDialog
 			{
@@ -496,7 +517,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						i++;
 					}
 
-					_colorGradientLibrary.AddColorGradient(gradientName, gradient.Value);
+					await _colorGradientLibrary.AddColorGradientAsync(gradientName, gradient.Value);
 				}
 
 				_colorGradientLibrary.EndBulkUpdate();
@@ -510,9 +531,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				MessageBoxForm.msgIcon =
 					SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
 				var messageBox =
-					new MessageBoxForm("Sorry, we didn't reconize the data in that file as valid Color Gradient Library data.",
+					new MessageBoxForm("Sorry, we didn't recognize the data in that file as valid Color Gradient Library data.",
 						"Invalid file", false, false);
-				messageBox.ShowDialog();
+				await messageBox.ShowDialogAsync();
 			}
 		}
 
@@ -525,9 +546,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ExportGradientLibrary();
 		}
 
-		private void toolStripButtonImportGradients_Click(object sender, EventArgs e)
+		private async void toolStripButtonImportGradients_Click(object sender, EventArgs e)
 		{
-			ImportGradientLibrary();
+			await ImportGradientLibraryAsync();
 		}
 
 		private void Form_ToolPalette_FormClosing(object sender, FormClosingEventArgs e)

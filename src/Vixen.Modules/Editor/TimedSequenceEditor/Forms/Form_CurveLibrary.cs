@@ -210,31 +210,45 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Event Handlers
 
-		private void toolStripButtonEditCurve_Click(object sender, EventArgs e)
+		private async void toolStripButtonEditCurve_Click(object sender, EventArgs e)
 		{
-			if (listViewCurves.SelectedItems.Count == 0)
-				return;
+			try
+			{
+				if (listViewCurves.SelectedItems.Count == 0)
+					return;
 
-			_curveLibrary.EditLibraryCurve(listViewCurves.SelectedItems[0].Name);
-			OnCurveLibraryChanged();
+				await _curveLibrary.EditLibraryCurveAsync(listViewCurves.SelectedItems[0].Name);
+				OnCurveLibraryChanged();
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "An error occurred while editing a curve");
+			}
 		}
 
-		private void toolStripButtonNewCurve_Click(object sender, EventArgs e)
+		private async void toolStripButtonNewCurve_Click(object sender, EventArgs e)
 		{
-			AddCurveToLibrary(new Curve());
+			try
+			{
+				await AddCurveToLibraryAsync(new Curve());
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "An error occurred while adding a new curve");
+			}
 		}
 
-		internal bool AddCurveToLibrary(Curve c, bool edit=true)
+		internal async Task<bool> AddCurveToLibraryAsync(Curve c, bool edit=true)
 		{
 			TextDialog dialog = new TextDialog("Curve name?");
 
-			while (dialog.ShowDialog() == DialogResult.OK)
+			while (await dialog.ShowDialogAsync() == DialogResult.OK)
 			{
 				if (dialog.Response == string.Empty)
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					var messageBox = new MessageBoxForm("Please enter a name.", "Curve Name", false, false);
-					messageBox.ShowDialog();
+					await messageBox.ShowDialogAsync();
 					continue;
 				}
 
@@ -243,13 +257,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("There is already a curve with that name. Do you want to overwrite it?", "Overwrite curve?", true, true);
-					messageBox.ShowDialog();
+					await messageBox.ShowDialogAsync();
 					if (messageBox.DialogResult == DialogResult.OK)
 					{
-						_curveLibrary.AddCurve(dialog.Response, c);
+						await _curveLibrary.AddCurveAsync(dialog.Response, c);
 						if (edit)
 						{
-							_curveLibrary.EditLibraryCurve(dialog.Response);
+							await _curveLibrary.EditLibraryCurveAsync(dialog.Response);
 						}
 						OnCurveLibraryChanged();
 						return false;
@@ -262,10 +276,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				else
 				{
-					_curveLibrary.AddCurve(dialog.Response, c);
+					await _curveLibrary.AddCurveAsync(dialog.Response, c);
 					if (edit)
 					{
-						_curveLibrary.EditLibraryCurve(dialog.Response);
+						await _curveLibrary.EditLibraryCurveAsync(dialog.Response);
 					}
 					OnCurveLibraryChanged();
 					return false;
@@ -274,23 +288,30 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return true;
 		}
 
-		private void toolStripButtonDeleteCurve_Click(object sender, EventArgs e)
+		private async void toolStripButtonDeleteCurve_Click(object sender, EventArgs e)
 		{
-			if (listViewCurves.SelectedItems.Count == 0)
-				return;
-
-			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-			MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-			var messageBox = new MessageBoxForm("If you delete the Selected library curve(s), ALL places it is used will be unlinked and will" +
-								@" become independent curves. Are you sure you want to continue?", "Delete library curve?", true, true);
-			messageBox.ShowDialog();
-
-			if (messageBox.DialogResult == DialogResult.OK)
+			try
 			{
-				_curveLibrary.BeginBulkUpdate();
-				foreach (ListViewItem item in listViewCurves.SelectedItems) _curveLibrary.RemoveCurve(item.Name);
-				_curveLibrary.EndBulkUpdate();
-				OnCurveLibraryChanged();
+				if (listViewCurves.SelectedItems.Count == 0)
+					return;
+
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("If you delete the Selected library curve(s), ALL places it is used will be unlinked and will" +
+				                                    @" become independent curves. Are you sure you want to continue?", "Delete library curve?", true, true);
+				await messageBox.ShowDialogAsync();
+
+				if (messageBox.DialogResult == DialogResult.OK)
+				{
+					_curveLibrary.BeginBulkUpdate();
+					foreach (ListViewItem item in listViewCurves.SelectedItems) await _curveLibrary.RemoveCurveAsync(item.Name);
+					_curveLibrary.EndBulkUpdate();
+					OnCurveLibraryChanged();
+				}
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "An error occurred while deleting a curve");
 			}
 		}
 
@@ -368,53 +389,60 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			e.Effect = DragDropEffects.None;
 		}
 
-		private void listViewCurves_DragDrop(object sender, DragEventArgs e)
+		private async void listViewCurves_DragDrop(object sender, DragEventArgs e)
 		{
-			if (_dragX + 10 < e.X || _dragY + 10 < e.Y || _dragX - 10 > e.X || _dragY - 10 > e.Y)
+			try
 			{
-				Point p = listViewCurves.PointToClient(new Point(e.X, e.Y));
-				ListViewItem moveToNewPosition = listViewCurves.GetItemAt(p.X, p.Y);
-				if (e.Effect == DragDropEffects.Copy && e.Data != null)
+				if (_dragX + 10 < e.X || _dragY + 10 < e.Y || _dragX - 10 > e.X || _dragY - 10 > e.Y)
 				{
-					if (DragDropUtils.TryGetDragDropData(e.Data, out Curve c))
+					Point p = listViewCurves.PointToClient(new Point(e.X, e.Y));
+					ListViewItem moveToNewPosition = listViewCurves.GetItemAt(p.X, p.Y);
+					if (e.Effect == DragDropEffects.Copy && e.Data != null)
 					{
-						int index = moveToNewPosition?.Index ?? listViewCurves.Items.Count;
-
-						if (AddCurveToLibrary(c, false)) return;
-
-						Populate_Curves();
-
-						if (listViewCurves.Items.Count == _curveLibrary.Count())
+						if (DragDropUtils.TryGetDragDropData(e.Data, out Curve c))
 						{
-							ListViewItem cloneToNew =
-								(ListViewItem)listViewCurves.Items[listViewCurves.Items.Count - 1].Clone();
-							listViewCurves.Items.Remove(listViewCurves.Items[listViewCurves.Items.Count - 1]);
-							listViewCurves.Items.Insert(index, cloneToNew);
+							int index = moveToNewPosition?.Index ?? listViewCurves.Items.Count;
+
+							if (await AddCurveToLibraryAsync(c, false)) return;
+
+							Populate_Curves();
+
+							if (listViewCurves.Items.Count == _curveLibrary.Count())
+							{
+								ListViewItem cloneToNew =
+									(ListViewItem)listViewCurves.Items[listViewCurves.Items.Count - 1].Clone();
+								listViewCurves.Items.Remove(listViewCurves.Items[listViewCurves.Items.Count - 1]);
+								listViewCurves.Items.Insert(index, cloneToNew);
+							}
 						}
 					}
-				}
-				else if (e.Effect == DragDropEffects.Move)
-				{
-					listViewCurves.BeginUpdate();
-					listViewCurves.Alignment = ListViewAlignment.Default;
-					List<ListViewItem> listViewItems = listViewCurves.SelectedItems.Cast<ListViewItem>().ToList();
-					if (moveToNewPosition != null && listViewCurves.SelectedItems[0].Index > moveToNewPosition.Index) listViewItems.Reverse();
-					int index = moveToNewPosition?.Index ?? listViewCurves.Items.Count - 1;
-					foreach (ListViewItem item in listViewItems)
+					else if (e.Effect == DragDropEffects.Move)
 					{
-						listViewCurves.Items.Remove(item);
-						listViewCurves.Items.Insert(index, item);
+						listViewCurves.BeginUpdate();
+						listViewCurves.Alignment = ListViewAlignment.Default;
+						List<ListViewItem> listViewItems = listViewCurves.SelectedItems.Cast<ListViewItem>().ToList();
+						if (moveToNewPosition != null && listViewCurves.SelectedItems[0].Index > moveToNewPosition.Index) listViewItems.Reverse();
+						int index = moveToNewPosition?.Index ?? listViewCurves.Items.Count - 1;
+						foreach (ListViewItem item in listViewItems)
+						{
+							listViewCurves.Items.Remove(item);
+							listViewCurves.Items.Insert(index, item);
+						}
+						listViewCurves.Alignment = ListViewAlignment.Top;
+						listViewCurves.EndUpdate();
 					}
-					listViewCurves.Alignment = ListViewAlignment.Top;
-					listViewCurves.EndUpdate();
-				}
 
-				_curveLibrary.BeginBulkUpdate();
-				_curveLibrary.Library.Clear();
-				foreach (ListViewItem curve in listViewCurves.Items) _curveLibrary.Library[curve.Text] = (Curve)curve.Tag;
-				_curveLibrary.EndBulkUpdate();
-				ImageSetup();
-				OnCurveLibraryChanged();
+					_curveLibrary.BeginBulkUpdate();
+					_curveLibrary.Library.Clear();
+					foreach (ListViewItem curve in listViewCurves.Items) _curveLibrary.Library[curve.Text] = (Curve)curve.Tag;
+					_curveLibrary.EndBulkUpdate();
+					ImageSetup();
+					OnCurveLibraryChanged();
+				}
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "An error occurred while dragging a curve");
 			}
 		}
 
@@ -461,7 +489,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		internal void ImportCurveLibrary()
+		internal async Task ImportCurveLibraryAsync()
 		{
 			OpenFileDialog openFileDialog = new OpenFileDialog
 			{
@@ -495,7 +523,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						i++;
 					}
 
-					_curveLibrary.AddCurve(curveName, curve.Value);
+					await _curveLibrary.AddCurveAsync(curveName, curve.Value);
 				}
 
 				_curveLibrary.EndBulkUpdate();
@@ -524,9 +552,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ExportCurveLibrary();
 		}
 
-		private void toolStripButtonImportCurves_Click(object sender, EventArgs e)
+		private async void toolStripButtonImportCurves_Click(object sender, EventArgs e)
 		{
-			ImportCurveLibrary();
+			try
+			{
+				await ImportCurveLibraryAsync();
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "An error occurred while importing a curve library");
+			}
 		}
 
 		#endregion
