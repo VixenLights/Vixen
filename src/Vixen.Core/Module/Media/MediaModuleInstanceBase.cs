@@ -14,8 +14,7 @@ namespace Vixen.Module.Media
 
 		/// <inheritdoc />
 		public abstract ITiming TimingSource { get; }
-		public abstract int CurrentPlaybackDeviceIndex { get; set; }
-
+		
 		public virtual bool HasSetup
 		{
 			get { return false; }

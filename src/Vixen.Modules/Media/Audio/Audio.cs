@@ -255,10 +255,6 @@ namespace VixenModules.Media.Audio
 
 		public AudioOutputManager AudioOutputManager => _audioSystem.AudioOutputManager;
 
-		/// <inheritdoc />
-		[Obsolete("No longer populated and will be zero. Use CurrentPlaybackDeviceId")]
-		public override int CurrentPlaybackDeviceIndex { get; set; }
-
 		public TimeSpan Position
 		{
 			get
