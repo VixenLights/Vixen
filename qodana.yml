@@ -1,0 +1,147 @@
+﻿version: "1.0"
+linter: qodana-dotnet
+withinDocker: false
+dotnet:
+  solution: Vixen.sln
+profile:
+  name: qodana.recommended
+exclude:
+  - name: CheckDependencyLicenses
+  - name: ResxNotResolved
+  - name: All
+    paths:
+      - src/Vixen.Application/NLog.xsd
+      - src/Vixen.Common/NShape
+      - src/Vixen.Common/NShapeGeneralShapes
+      - src/Vixen.Common/NShapeWinFormsUI
+      - src/Vixen.Common/Resources
+      - src/Vixen.Common/Controls/ColorPicker/ColorPicker.cs
+      - src/Vixen.Modules/App/Webserver/wwwroot
+      - src/Vixen.Modules/App/Curves/ZedGraph
+      - src/Vixen.Installer
+      - src/Vixen.DeployBundle
+      - Build
+      - sandbox
+      - Release
+      - Installer
+      - Assets
+      - Debug
+      - Release Notes.txt
+      
+  - name: UnusedType.Global
+    paths:
+      - src\Vixen.Application\Setup\ElementTemplates\Arch.cs
+      - src\Vixen.Application\Setup\ElementTemplates\CandyCane.cs
+      - src\Vixen.Application\Setup\ElementTemplates\Icicles.cs
+      - src\Vixen.Application\Setup\ElementTemplates\IntelligentFixtureTemplate.cs
+      - src\Vixen.Application\Setup\ElementTemplates\LipSync.cs
+      - src\Vixen.Application\Setup\ElementTemplates\Megatree.cs
+      - src\Vixen.Application\Setup\ElementTemplates\PixelGrid.cs
+      - src\Vixen.Application\Setup\ElementTemplates\SingleItem.cs
+      - src\Vixen.Application\Setup\ElementTemplates\Star.cs
+      - src\Vixen.Application\Setup\ElementTemplates\StarBurst.cs
+      - src\Vixen.Common\AudioPlayer\SoundTouch\SoundTouchProfile.cs
+      - src\Vixen.Common\AudioPlayer\AudioOutputProxy.cs
+      - src\Vixen.Common\AudioPlayer\VolumeEventArgs.cs
+      - src\Vixen.Common\Controls\ControlsEx\ValueControls\ValueScrollbar.cs
+      - src\Vixen.Common\Controls\TimeLineControl\LabeledMarks\SelectedMarkMoveEventArgs.cs
+      - src\Vixen.Common\Controls\TimeLineControl\Ruler.cs
+      - src\Vixen.Common\Controls\Undo\AddToListUndoAction.cs
+      - src\Vixen.Common\Controls\Undo\ModifyItemUndoAction.cs
+      - src\Vixen.Common\Controls\Undo\RemoveFromListUndoAction.cs
+      - src\Vixen.Common\Controls\BaseUserControl.cs
+      - src\Vixen.Core\Delegates\Delegates.cs
+      - src\Vixen.Modules\App\WebServer\Descriptor.cs
+      - src\Vixen.Modules\App\SuperScheduler\SuperSchedulerDescriptor.cs
+      - src\Vixen.Modules\App\Shows\ShowsDescriptor.cs
+      - src\Vixen.Modules\App\Instrumentation\InstrumentationDescriptor.cs
+      - src\Vixen.Modules\App\ExportWizard\ExportWizardDescriptor.cs
+      - src\Vixen.Modules\App\CustomPropEditor\CustomPropEditorDescriptor.cs
+      - src\Vixen.Modules\Controller\DDP\DDPDescriptor.cs
+      - src\Vixen.Modules\Controller\DebugController\DebugController.cs
+      - src\Vixen.Modules\Controller\DMXUsbPro\Descriptor.cs
+      - src\Vixen.Modules\Controller\DummyLighting\DummyLightingDescriptor.cs
+      - src\Vixen.Modules\Controller\ElexolEtherIO\ElexolEtherIODescriptor.cs
+      - src\Vixen.Modules\Controller\GenericSerial\Descriptor.cs
+      - src\Vixen.Modules\Controller\LauncherController\Descriptor.cs
+      - src\Vixen.Modules\Controller\OpenDMX\OpenDMXDescriptor.cs
+      - src\Vixen.Modules\Controller\RDSController\Descriptor.cs
+      - src\Vixen.Modules\Controller\RDSController\RdsSerialPort.cs
+      - src\Vixen.Modules\Controller\Renard\Descriptor.cs
+      - src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditorDescriptor.cs
+      - src\Vixen.Modules\LayerMixingFilter\ChromaKey\ChromaKeyModuleDescriptor.cs
+      - src\Vixen.Modules\LayerMixingFilter\ColorChange\ColorChangeModuleDescriptor.cs
+      - src\Vixen.Modules\LayerMixingFilter\HighestValue\HighestValueModuleDescriptor.cs
+      - src\Vixen.Modules\LayerMixingFilter\IntensityOverlay\IntensityOverlayModuleDescriptor.cs
+      - src\Vixen.Modules\LayerMixingFilter\LumaKey\LumaKeyModuleDescriptor.cs
+      - src\Vixen.Modules\LayerMixingFilter\Mask\MaskModuleDescriptor.cs
+      - src\Vixen.Modules\LayerMixingFilter\MaskFill\MaskFillModuleDescriptor.cs
+      - src\Vixen.Modules\LayerMixingFilter\MultiplyColor\MultiplyColorModuleDescriptor.cs
+      - src\Vixen.Modules\LayerMixingFilter\ProportionalMix\ProportionalMixModuleDescriptor.cs
+      - src\Vixen.Modules\Media\Audio\AudioDescriptor.cs
+      - src\Vixen.Modules\Property\Grid\Descriptor.cs
+      - src\Vixen.Modules\Property\Orientation\OrientationSetupHelper.cs
+      - src\Vixen.Modules\Sequence\Timed\TimedSequenceDescriptor.cs
+      - src\Vixen.Modules\Sequence\Vixen2x\Vixen2xSequenceDescriptor.cs
+      - src\Vixen.Modules\Timing\Generic\Descriptor.cs
+      - src\Vixen.Modules\Editor\FixtureWizard\Wizard\ViewModels\AutomationWizardPageViewModel.cs
+      - src\Vixen.Modules\Editor\FixtureWizard\Wizard\ViewModels\ColorSupportWizardPageViewModel.cs
+      - src\Vixen.Modules\Editor\FixtureWizard\Wizard\ViewModels\DimmingCurveWizardPageViewModel.cs
+      - src\Vixen.Modules\Editor\FixtureWizard\Wizard\ViewModels\EditProfileFunctionsWizardPageViewModel.cs
+      - src\Vixen.Modules\Editor\FixtureWizard\Wizard\ViewModels\EditProfileWizardPageViewModel.cs
+      - src\Vixen.Modules\Editor\FixtureWizard\Wizard\ViewModels\GroupingWizardPageViewModel.cs
+      - src\Vixen.Modules\Editor\FixtureWizard\Wizard\ViewModels\SelectProfileWizardPageViewModel.cs
+      - src\Vixen.Modules\Editor\FixtureWizard\Wizard\Views\AutomationWizardPageView.xaml
+      - src\Vixen.Modules\Editor\FixtureWizard\Wizard\Views\AutomationWizardPageView.xaml.cs
+      - src\Vixen.Modules\Editor\FixtureWizard\Wizard\Views\ColorSupportWizardPageView.xaml
+      - src\Vixen.Modules\Editor\FixtureWizard\Wizard\Views\ColorSupportWizardPageView.xaml.cs
+      - src\Vixen.Modules\Editor\FixtureWizard\Wizard\Views\DimmingCurveWizardPageView.xaml
+      - src\Vixen.Modules\Editor\FixtureWizard\Wizard\Views\DimmingCurveWizardPageView.xaml.cs
+      - src\Vixen.Modules\Editor\FixtureWizard\Wizard\Views\EditProfileFunctionsWizardPageView.xaml
+      - src\Vixen.Modules\Editor\FixtureWizard\Wizard\Views\EditProfileFunctionsWizardPageView.xaml.cs
+      - src\Vixen.Modules\Editor\FixtureWizard\Wizard\Views\EditProfileWizardPageView.xaml
+      - src\Vixen.Modules\Editor\FixtureWizard\Wizard\Views\EditProfileWizardPageView.xaml.cs
+      - src\Vixen.Modules\Editor\FixtureWizard\Wizard\Views\GroupingWizardPageView.xaml
+      - src\Vixen.Modules\Editor\FixtureWizard\Wizard\Views\GroupingWizardPageView.xaml.cs
+      - src\Vixen.Modules\Editor\FixtureWizard\Wizard\Views\SelectProfileWizardPageView.xaml
+      - src\Vixen.Modules\Editor\FixtureWizard\Wizard\Views\SelectProfileWizardPageView.xaml.cs
+      - src\Vixen.Modules\Editor\FixtureWizard\ModuleInitializer.cs
+      - src\Vixen.Modules\Editor\EffectEditor\Editors\FilePathEditor.cs
+      - src\Vixen.Modules\Editor\EffectEditor\Editors\GledPathEditor.cs
+      - src\Vixen.Modules\Editor\EffectEditor\Editors\ImagePathEditor.cs
+      - src\Vixen.Modules\Editor\EffectEditor\Editors\LevelEditor.cs
+      - src\Vixen.Modules\Editor\EffectEditor\Editors\SelectionEditor.cs
+      - src\Vixen.Modules\Editor\EffectEditor\Editors\SliderDoubleEditor.cs
+      - src\Vixen.Modules\Editor\EffectEditor\Editors\SliderEditor.cs
+      - src\Vixen.Modules\Editor\EffectEditor\Editors\SliderPercentageEditor.cs
+      - src\Vixen.Modules\Editor\EffectEditor\Editors\SvgPathEditor.cs
+      - src\Vixen.Modules\Editor\EffectEditor\Editors\VideoPathEditor.cs
+      - src\Vixen.Modules\Analysis\BeatsAndBars\BeatsAndBarsDescriptor.cs
+      - src\Vixen.Core\Data\Combinator\_16Bit\16BitAverageCombinator.cs
+      - src\Vixen.Core\Data\Combinator\_16Bit\16BitHighestWinsCombinator.cs
+      - src\Vixen.Core\Data\Combinator\_32Bit\32BitHighestWinsCombinator.cs
+      - src\Vixen.Core\Data\Combinator\_64Bit\64BitHighestWinsCombinator.cs
+      - src\Vixen.Core\Data\Evaluator\16BitEvaluator.cs
+      - src\Vixen.Core\Data\Evaluator\32BitEvaluator.cs
+      - src\Vixen.Core\Data\Evaluator\64BitEvaluator.cs
+      - src\Vixen.Core\Common\ColorSpaces.cs
+  - name: HardcodedPasswords
+    paths:
+      - src\Vixen.Common\Controls\ListSelectDialog.resx
+      - src\Vixen.Common\Controls\MessageBoxForm.resx
+      - src\Vixen.Common\Controls\NumberDialog.resx
+      - src\Vixen.Common\Controls\TextDialog.resx
+      - src\Vixen.Modules\Editor\TimedSequenceEditor\MarkTapper.resx
+      - src\Vixen.Modules\Controller\GenericSerial\SetupDialog.resx
+      - src\Vixen.Modules\Controller\E131\UnicastForm.resx
+      - src\Vixen.Modules\Controller\E131\SetupForm.resx
+  - name: CSharpWarnings__CS0618
+    paths:
+      - src\Vixen.Common\WpfPropertyGrid\PropertyItemValue.cs
+  - name: CheckNamespace
+    paths:
+      - src\Vixen.Modules\Controller\E131
+      - src\Vixen.Modules\LayerMixingFilter
+      - src\Vixen.Modules\OutputFilter
+      - src\Vixen.Modules\Sequence\Vixen2x
+      - src\Vixen.Modules\Sequence\Timed
