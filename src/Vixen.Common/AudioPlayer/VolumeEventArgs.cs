@@ -1,4 +1,4 @@
-﻿namespace NAudioWrapper
+﻿namespace Common.AudioPlayer
 {
 	public class VolumeEventArgs:EventArgs
 	{

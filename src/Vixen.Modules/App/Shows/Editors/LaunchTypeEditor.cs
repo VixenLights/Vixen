@@ -3,7 +3,7 @@ using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 
-namespace VixenModules.App.Shows
+namespace VixenModules.App.Shows.Editors
 {
 	public partial class LaunchTypeEditor : TypeEditorBase
 	{

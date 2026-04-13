@@ -1,6 +1,6 @@
 ﻿using Common.Controls;
 
-namespace VixenModules.App.Shows
+namespace VixenModules.App.Shows.Editors
 {
 	public partial class LaunchTypeTester : BaseForm
 	{

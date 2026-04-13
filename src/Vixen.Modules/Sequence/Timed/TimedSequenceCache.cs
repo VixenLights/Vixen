@@ -1,4 +1,4 @@
-﻿using Common.BaseSequence;
+﻿using BaseSequence;
 
 namespace VixenModules.Sequence.Timed
 {

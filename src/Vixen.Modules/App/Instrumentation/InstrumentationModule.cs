@@ -1,9 +1,8 @@
-﻿namespace VixenModules.App.InstrumentationPanel
-{
-	using System;
-	using Vixen.Module.App;
-	using Vixen.Sys;
+﻿using Vixen.Module.App;
+using Vixen.Sys;
 
+namespace VixenModules.App.Instrumentation
+{
 	public class InstrumentationModule : AppModuleInstanceBase
 	{
 		private const string ID_MENU = "Instrumentation_Main";

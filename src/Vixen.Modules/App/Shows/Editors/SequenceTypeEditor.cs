@@ -5,7 +5,7 @@ using Common.Resources;
 using Common.Resources.Properties;
 using Vixen.Services;
 
-namespace VixenModules.App.Shows
+namespace VixenModules.App.Shows.Editors
 {
 	public partial class SequenceTypeEditor : TypeEditorBase
 	{

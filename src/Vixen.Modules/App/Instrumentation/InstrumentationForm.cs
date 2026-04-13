@@ -2,7 +2,7 @@
 using Common.Controls.Theme;
 using Vixen.Sys;
 
-namespace VixenModules.App.InstrumentationPanel
+namespace VixenModules.App.Instrumentation
 {
 	public partial class InstrumentationForm : BaseForm
 	{

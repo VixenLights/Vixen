@@ -1,6 +1,6 @@
 ﻿using Vixen.Module.App;
 
-namespace VixenModules.App.InstrumentationPanel
+namespace VixenModules.App.Instrumentation
 {
 	public class InstrumentationDescriptor : AppModuleDescriptorBase
 	{

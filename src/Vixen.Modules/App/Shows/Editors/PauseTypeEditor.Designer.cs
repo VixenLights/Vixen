@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace VixenModules.App.Shows
+namespace VixenModules.App.Shows.Editors
 {
 	partial class PauseTypeEditor
 	{

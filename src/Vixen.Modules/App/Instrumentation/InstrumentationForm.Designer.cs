@@ -1,4 +1,4 @@
-﻿namespace VixenModules.App.InstrumentationPanel
+﻿namespace VixenModules.App.Instrumentation
 {
 	sealed partial class InstrumentationForm {
 		/// <summary>

@@ -1,7 +1,6 @@
 ﻿using Vixen.Module.App;
-using VixenModules.App.CustomPropEditor;
 
-namespace VixenModules.App.InputEffectRouter
+namespace VixenModules.App.CustomPropEditor
 {
 	public class CustomPropEditorDescriptor : AppModuleDescriptorBase
 	{

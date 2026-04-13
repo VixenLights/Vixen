@@ -4,6 +4,7 @@ using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 using Common.VixenHelp;
+using VixenModules.App.Shows.Editors;
 
 namespace VixenModules.App.Shows
 {

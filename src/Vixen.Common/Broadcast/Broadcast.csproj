@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Nullable>disable</Nullable>
     <Copyright>2025 Vixen Team</Copyright>
-    <RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+      <RootNamespace>Common.Broadcast</RootNamespace>
 	  <UseWPF>true</UseWPF>
   </PropertyGroup>
 

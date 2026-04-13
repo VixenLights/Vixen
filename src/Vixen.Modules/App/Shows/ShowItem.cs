@@ -1,6 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using Vixen.Extensions;
 using Vixen.Services;
+using VixenModules.App.Shows.Editors;
 
 namespace VixenModules.App.Shows
 {
