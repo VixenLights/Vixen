@@ -21,6 +21,8 @@ jobs:
       - name: Download pr review artifacts
         uses: actions/download-artifact@v4
         with:
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           name: pr_review_info
           path: ./downloaded-data
 
