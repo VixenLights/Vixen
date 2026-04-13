@@ -223,11 +223,6 @@ namespace VixenModules.App.LipSyncApp
 			get { return m_voiceName; }
 		}
 
-		public PapagayoVoice()
-		{
-
-		}
-
 		public void Load(StreamReader file)
 		{
 			m_voiceName = null;
@@ -353,11 +348,6 @@ namespace VixenModules.App.LipSyncApp
 		string m_text;
 		int m_numWords;
 		PapagayoWord[] m_words = null;
-
-		public PapagayoPhrase()
-		{
-
-		}
 
 		public void Load(StreamReader file, ref List<PapagayoPhoneme> phonemes)
 		{

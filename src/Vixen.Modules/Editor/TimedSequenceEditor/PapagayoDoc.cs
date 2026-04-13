@@ -239,11 +239,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
             get { return m_voiceName; }
         }
 
-        public PapagayoVoice()
-        {
-
-        }
-
 	    public List<PapagayoPhrase> Phrases => m_phrases.ToList();
 
         public void Load(StreamReader file)
@@ -379,12 +374,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
         int m_numWords;
         PapagayoWord[] m_words = null;
 
-        public PapagayoPhrase()
-        {
-
-        }
-
-	    public List<PapagayoWord> Words => m_words.ToList();
+        public List<PapagayoWord> Words => m_words.ToList();
 
 	    public String Text => m_text;
 

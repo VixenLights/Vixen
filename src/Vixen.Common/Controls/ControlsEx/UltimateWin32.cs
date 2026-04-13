@@ -177,15 +177,6 @@ namespace Common.Controls.ControlsEx
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public struct NCCALCSIZE_PARAMS
-		{
-			public RECT newbounds;
-			public RECT oldbounds;
-			public RECT oldclientbounds;
-			public IntPtr lppos;
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
 		public struct POINTAPI
 		{
 			public POINTAPI(Point pt)
@@ -330,18 +321,6 @@ namespace Common.Controls.ControlsEx
 			}
 		}
 
-		[StructLayout(LayoutKind.Sequential)]
-		public struct WINDOWPOS
-		{
-			internal int hwnd;
-			internal int hWndInsertAfter;
-			internal int x;
-			internal int y;
-			internal int cx;
-			internal int cy;
-			internal int flags;
-		}
-
 		#endregion
 
 		#region user functions
@@ -414,51 +393,6 @@ namespace Common.Controls.ControlsEx
 			}
 			catch {
 				return;
-			}
-		}
-
-		#endregion
-
-		#region user types
-
-		/// <summary>
-		/// Double Buffered Graphics class
-		/// </summary>
-		public class NCGraphics : IDisposable
-		{
-			#region variables
-
-			private Graphics _targetgraphics,
-			                 _memgraphics;
-
-			private Bitmap _membitmap;
-
-			#endregion
-
-			public NCGraphics(IntPtr hdc)
-			{
-				_targetgraphics = Graphics.FromHdc(hdc);
-				Size size = Size.Ceiling(_targetgraphics.VisibleClipBounds.Size);
-				_membitmap = new Bitmap(size.Width, size.Height);
-				_memgraphics = Graphics.FromImage(_membitmap);
-			}
-
-			public void Dispose()
-			{
-				//render
-				_targetgraphics.DrawImageUnscaled(_membitmap, Point.Empty);
-				//dispose
-				_memgraphics.Dispose();
-				_membitmap.Dispose();
-				_targetgraphics.Dispose();
-			}
-
-			/// <summary>
-			/// gets the graphics buffer to render on
-			/// </summary>
-			public Graphics Graphics
-			{
-				get { return _memgraphics; }
 			}
 		}
 
