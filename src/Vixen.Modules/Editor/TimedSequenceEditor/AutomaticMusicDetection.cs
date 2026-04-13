@@ -13,8 +13,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public AutomaticMusicDetection(Audio audio)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			_audio = audio;
 			//_audio.FrequencyDetected += _audio_FrequencyDetected;
