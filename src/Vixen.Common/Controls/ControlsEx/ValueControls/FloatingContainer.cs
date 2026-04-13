@@ -158,13 +158,11 @@ namespace Common.Controls.ControlsEx.ValueControls
 
 		#region controller
 
-		//don't allow closing, hide instead
-		protected override void OnClosing(CancelEventArgs e)
+		protected override void OnFormClosing(FormClosingEventArgs e)
 		{
 			e.Cancel = true;
-			base.OnClosing(e);
+			base.OnFormClosing(e);
 			Hide();
-			//
 			Application.RemoveMessageFilter(_mousefilter);
 			_activationfilter.ReleaseHandle();
 		}

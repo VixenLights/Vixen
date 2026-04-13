@@ -603,8 +603,6 @@ namespace VixenModules.Preview.VixenPreview
 		/// </summary>
 		private void CheckForIntelligentFixturesAndOpenGL()
 		{
-			bool continueToExit = true;
-
 			// If the OpenGL preview is NOT selected and
 			// there are Intelligent Fixtures then...
 			if (!Data.UseOpenGL &&

@@ -34,7 +34,7 @@
 		private void InitializeForm()
 		{
 			_form = new InstrumentationForm();
-			_form.Closed += _form_Closed;
+			_form.FormClosed += _form_Closed;
 		}
 
 		private void OnMainMenuOnClick(object sender, EventArgs e)
@@ -43,7 +43,7 @@
 				InitializeForm();
 			}
 
-			_form.Show();
+			_form!.Show();
 		}
 
 		private void _AddMenu()

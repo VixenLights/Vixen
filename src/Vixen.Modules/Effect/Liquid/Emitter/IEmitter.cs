@@ -206,11 +206,6 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>
 		ObservableCollection<string> MarkNameCollection { get; set; }
 
-		/// <summary>
-		/// Collection of the mark collections.
-		/// </summary>
-		ObservableCollection<IMarkCollection> MarkCollections { get; set; }
-
 		// The following properties are not persisted but are used during rendering.
 
 		/// <summary>

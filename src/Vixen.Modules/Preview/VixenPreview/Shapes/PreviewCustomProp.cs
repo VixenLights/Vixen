@@ -178,7 +178,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		//}
 
 
-		private static Point Center(Rect rect)
+		private new static Point Center(Rect rect)
 		{
 			return new Point(rect.Left + rect.Width / 2,
 				rect.Top + rect.Height / 2);
